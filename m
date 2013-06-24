@@ -1,21 +1,21 @@
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [RFC PATCH v2 01/12] dmaengine: PL08x: Refactor
- pl08x_getbytes_chan() to lower indentation
-Date: Tue, 25 Jun 2013 00:09:14 +0200
-Message-ID: <CACRpkdYuF7Scg4n4a_EL2WW3qyFV5f5Vr-6RPohE-4O0wd=QpA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 02/12] dmaengine: PL08x: Add support
+ for different offset of CONFIG register
+Date: Tue, 25 Jun 2013 00:11:15 +0200
+Message-ID: <CACRpkdatCWT0zd4VW3oiSUpg8Zz+xOEB+PUjFym1Q5RHQix3Cw@mail.gmail.com>
 References: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com>
- <1371933764-24875-2-git-send-email-tomasz.figa@gmail.com>
+ <1371933764-24875-3-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f46.google.com (mail-oa0-f46.google.com
- [209.85.219.46])
- by alsa0.perex.cz (Postfix) with ESMTP id C358A265001
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 00:09:15 +0200 (CEST)
-Received: by mail-oa0-f46.google.com with SMTP id h1so12581555oag.5
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 15:09:14 -0700 (PDT)
-In-Reply-To: <1371933764-24875-2-git-send-email-tomasz.figa@gmail.com>
+Received: from mail-ob0-f177.google.com (mail-ob0-f177.google.com
+ [209.85.214.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72483265006
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 00:11:16 +0200 (CEST)
+Received: by mail-ob0-f177.google.com with SMTP id ta17so11203195obb.22
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 15:11:15 -0700 (PDT)
+In-Reply-To: <1371933764-24875-3-git-send-email-tomasz.figa@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,13 +31,9 @@ List-Id: alsa-devel@alsa-project.org
 
 On Sat, Jun 22, 2013 at 10:42 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
 
-> Further patch will introduce support for PL080S, which requires some
-> things to be done conditionally, thus increasing indentation level of
-> some functions even more.
->
-> This patch reduces indentation level of pl08x_getbytes_chan() function
-> by inverting several conditions and returning from function wherever
-> possible.
+> Some variants of PL08x (namely PL080S, found in Samsung S3C64xx SoCs)
+> have CONFIG register at different offset. This patch makes the driver
+> use offset from vendor data struct.
 >
 > Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
 
