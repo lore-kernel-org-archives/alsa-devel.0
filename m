@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/3] ALSA: hda - Add auto_mute_via_amp flag to
-	generic parser
-Date: Mon, 24 Jun 2013 16:32:56 +0200
-Message-ID: <1372084377-14431-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 1/3] ALSA: vmaster: Add snd_ctl_sync_vmaster()
+	helper function
+Date: Mon, 24 Jun 2013 16:32:55 +0200
+Message-ID: <1372084377-14431-2-git-send-email-tiwai@suse.de>
 References: <1372084377-14431-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DC01265272
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FB58265286
  for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 16:32:14 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E48DEA5230
+ by mx2.suse.de (Postfix) with ESMTP id EDD69A52BF
  for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 16:32:11 +0200 (CEST)
 In-Reply-To: <1372084377-14431-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,141 +27,136 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add a new flag, auto_mute_via_amp, to determine the behavior of the
-headphone / line-out auto-mute.  When this flag is set, the generic
-driver mutes the speaker and line outputs via the amp mute of each
-pin, instead of changing the pin control values.
+Introduce a new helper function, snd_ctl_sync_vmaster(), which updates
+the slave put callbacks forcibly as well as calling the hook.  This
+will be used in the upcoming patch in HD-audio codec driver for
+toggling the mute in vmaster slaves.
 
-This is introduced for devices that don't work expectedly with the pin
-control values; for example, some devices are known to keep enabling
-the speaker outputs no matter which pin control values are set on the
-speaker pins.
-
-The driver doesn't check actually whether the pins have the output amp
-caps, but assumes that the proper mixer (mute) controls are created on
-all these pins.  If not the case, you can't use this flag for your
-device.
+Along with the new function, the old snd_ctl_sync_vmaster_hook() is
+replaced as a macro calling with the argument hook_only=true.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_generic.c | 47 ++++++++++++++++++++++++++++++++++++++++++++-
- sound/pci/hda/hda_generic.h |  4 ++++
- 2 files changed, 50 insertions(+), 1 deletion(-)
+ include/sound/control.h |  3 ++-
+ sound/core/vmaster.c    | 65 ++++++++++++++++++++++++++++++++++---------------
+ 2 files changed, 47 insertions(+), 21 deletions(-)
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 4b1524a..4649473 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -133,6 +133,9 @@ static void parse_user_hints(struct hda_codec *codec)
- 	val = snd_hda_get_bool_hint(codec, "line_in_auto_switch");
- 	if (val >= 0)
- 		spec->line_in_auto_switch = !!val;
-+	val = snd_hda_get_bool_hint(codec, "auto_mute_via_amp");
-+	if (val >= 0)
-+		spec->auto_mute_via_amp = !!val;
- 	val = snd_hda_get_bool_hint(codec, "need_dac_fix");
- 	if (val >= 0)
- 		spec->need_dac_fix = !!val;
-@@ -808,6 +811,9 @@ static void resume_path_from_idx(struct hda_codec *codec, int path_idx)
-  * Helper functions for creating mixer ctl elements
-  */
+diff --git a/include/sound/control.h b/include/sound/control.h
+index 34bc93d..5358892 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -233,7 +233,8 @@ snd_ctl_add_slave_uncached(struct snd_kcontrol *master,
+ int snd_ctl_add_vmaster_hook(struct snd_kcontrol *kctl,
+ 			     void (*hook)(void *private_data, int),
+ 			     void *private_data);
+-void snd_ctl_sync_vmaster_hook(struct snd_kcontrol *kctl);
++void snd_ctl_sync_vmaster(struct snd_kcontrol *kctl, bool hook_only);
++#define snd_ctl_sync_vmaster_hook(kctl)	snd_ctl_sync_vmaster(kctl, true)
  
-+static int hda_gen_mixer_mute_put(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol);
-+
- enum {
- 	HDA_CTL_WIDGET_VOL,
- 	HDA_CTL_WIDGET_MUTE,
-@@ -815,7 +821,15 @@ enum {
- };
- static const struct snd_kcontrol_new control_templates[] = {
- 	HDA_CODEC_VOLUME(NULL, 0, 0, 0),
--	HDA_CODEC_MUTE(NULL, 0, 0, 0),
-+	/* only the put callback is replaced for handling the special mute */
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.subdevice = HDA_SUBDEV_AMP_FLAG,
-+		.info = snd_hda_mixer_amp_switch_info,
-+		.get = snd_hda_mixer_amp_switch_get,
-+		.put = hda_gen_mixer_mute_put, /* replaced */
-+		.private_value = HDA_COMPOSE_AMP_VAL(0, 3, 0, 0),
-+	},
- 	HDA_BIND_MUTE(NULL, 0, 0, 0),
- };
- 
-@@ -922,6 +936,23 @@ static int add_stereo_sw(struct hda_codec *codec, const char *pfx,
- 	return add_sw_ctl(codec, pfx, cidx, chs, path);
+ /*
+  * Helper functions for jack-detection controls
+diff --git a/sound/core/vmaster.c b/sound/core/vmaster.c
+index 02f90b4..5df8dc2 100644
+--- a/sound/core/vmaster.c
++++ b/sound/core/vmaster.c
+@@ -310,20 +310,10 @@ static int master_get(struct snd_kcontrol *kcontrol,
+ 	return 0;
  }
  
-+/* playback mute control with the software mute bit check */
-+static int hda_gen_mixer_mute_put(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct hda_gen_spec *spec = codec->spec;
-+
-+	if (spec->auto_mute_via_amp) {
-+		hda_nid_t nid = get_amp_nid(kcontrol);
-+		bool enabled = !((spec->mute_bits >> nid) & 1);
-+		ucontrol->value.integer.value[0] &= enabled;
-+		ucontrol->value.integer.value[1] &= enabled;
-+	}
-+
-+	return snd_hda_mixer_amp_switch_put(kcontrol, ucontrol);
+-static int master_put(struct snd_kcontrol *kcontrol,
+-		      struct snd_ctl_elem_value *ucontrol)
++static int sync_slaves(struct link_master *master, int old_val, int new_val)
+ {
+-	struct link_master *master = snd_kcontrol_chip(kcontrol);
+ 	struct link_slave *slave;
+ 	struct snd_ctl_elem_value *uval;
+-	int err, old_val;
+-
+-	err = master_init(master);
+-	if (err < 0)
+-		return err;
+-	old_val = master->val;
+-	if (ucontrol->value.integer.value[0] == old_val)
+-		return 0;
+ 
+ 	uval = kmalloc(sizeof(*uval), GFP_KERNEL);
+ 	if (!uval)
+@@ -332,11 +322,33 @@ static int master_put(struct snd_kcontrol *kcontrol,
+ 		master->val = old_val;
+ 		uval->id = slave->slave.id;
+ 		slave_get_val(slave, uval);
+-		master->val = ucontrol->value.integer.value[0];
++		master->val = new_val;
+ 		slave_put_val(slave, uval);
+ 	}
+ 	kfree(uval);
+-	if (master->hook && !err)
++	return 0;
 +}
 +
- /* any ctl assigned to the path with the given index? */
- static bool path_has_mixer(struct hda_codec *codec, int path_idx, int ctl_type)
- {
-@@ -3719,6 +3750,16 @@ static void do_automute(struct hda_codec *codec, int num_pins, hda_nid_t *pins,
- 		unsigned int val, oldval;
- 		if (!nid)
- 			break;
++static int master_put(struct snd_kcontrol *kcontrol,
++		      struct snd_ctl_elem_value *ucontrol)
++{
++	struct link_master *master = snd_kcontrol_chip(kcontrol);
++	int err, new_val, old_val;
++	bool first_init;
 +
-+		if (spec->auto_mute_via_amp) {
-+			if (mute)
-+				spec->mute_bits |= (1ULL << nid);
-+			else
-+				spec->mute_bits &= ~(1ULL << nid);
-+			set_pin_eapd(codec, nid, !mute);
-+			continue;
-+		}
++	err = master_init(master);
++	if (err < 0)
++		return err;
++	first_init = err;
++	old_val = master->val;
++	new_val = ucontrol->value.integer.value[0];
++	if (new_val == old_val)
++		return 0;
 +
- 		oldval = snd_hda_codec_get_pin_target(codec, nid);
- 		if (oldval & PIN_IN)
- 			continue; /* no mute for inputs */
-@@ -3786,6 +3827,10 @@ static void call_update_outputs(struct hda_codec *codec)
- 		spec->automute_hook(codec);
- 	else
- 		snd_hda_gen_update_outputs(codec);
-+
-+	/* sync the whole vmaster slaves to reflect the new auto-mute status */
-+	if (spec->auto_mute_via_amp && !codec->bus->shutdown)
-+		snd_ctl_sync_vmaster(spec->vmaster_mute.sw_kctl);
++	err = sync_slaves(master, old_val, new_val);
++	if (err < 0)
++		return err;
++	if (master->hook && first_init)
+ 		master->hook(master->hook_private_data, master->val);
+ 	return 1;
  }
+@@ -442,20 +454,33 @@ int snd_ctl_add_vmaster_hook(struct snd_kcontrol *kcontrol,
+ EXPORT_SYMBOL_GPL(snd_ctl_add_vmaster_hook);
  
- /* standard HP-automute helper */
-diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 7620031..e199a85 100644
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -209,6 +209,7 @@ struct hda_gen_spec {
- 	unsigned int master_mute:1;	/* master mute over all */
- 	unsigned int keep_vref_in_automute:1; /* Don't clear VREF in automute */
- 	unsigned int line_in_auto_switch:1; /* allow line-in auto switch */
-+	unsigned int auto_mute_via_amp:1; /* auto-mute via amp instead of pinctl */
- 
- 	/* parser behavior flags; set before snd_hda_gen_parse_auto_config() */
- 	unsigned int suppress_auto_mute:1; /* suppress input jack auto mute */
-@@ -237,6 +238,9 @@ struct hda_gen_spec {
- 	unsigned int have_aamix_ctl:1;
- 	unsigned int hp_mic_jack_modes:1;
- 
-+	/* additional mute flags (only effective with auto_mute_via_amp=1) */
-+	u64 mute_bits;
+ /**
+- * snd_ctl_sync_vmaster_hook - Sync the vmaster hook
++ * snd_ctl_sync_vmaster - Sync the vmaster slaves and hook
+  * @kcontrol: vmaster kctl element
++ * @hook_only: sync only the hook
+  *
+- * Call the hook function to synchronize with the current value of the given
+- * vmaster element.  NOP when NULL is passed to @kcontrol or the hook doesn't
+- * exist.
++ * Forcibly call the put callback of each slave and call the hook function
++ * to synchronize with the current value of the given vmaster element.
++ * NOP when NULL is passed to @kcontrol.
+  */
+-void snd_ctl_sync_vmaster_hook(struct snd_kcontrol *kcontrol)
++void snd_ctl_sync_vmaster(struct snd_kcontrol *kcontrol, bool hook_only)
+ {
+ 	struct link_master *master;
++	bool first_init = false;
 +
- 	/* badness tables for output path evaluations */
- 	const struct badness_table *main_out_badness;
- 	const struct badness_table *extra_out_badness;
+ 	if (!kcontrol)
+ 		return;
+ 	master = snd_kcontrol_chip(kcontrol);
+-	if (master->hook)
++	if (!hook_only) {
++		int err = master_init(master);
++		if (err < 0)
++			return;
++		first_init = err;
++		err = sync_slaves(master, master->val, master->val);
++		if (err < 0)
++			return;
++	}
++
++	if (master->hook && !first_init)
+ 		master->hook(master->hook_private_data, master->val);
+ }
+-EXPORT_SYMBOL_GPL(snd_ctl_sync_vmaster_hook);
++EXPORT_SYMBOL_GPL(snd_ctl_sync_vmaster);
 -- 
 1.8.3.1
