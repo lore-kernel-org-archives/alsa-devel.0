@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 1/4] ASoC: twl6040: Drop using
-	devm_request_threaded_irq()
-Date: Mon, 24 Jun 2013 15:42:03 +0200
-Message-ID: <1372081326-6917-2-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 2/4] MFD: twl6040: Update register bit
+	definitions
+Date: Mon, 24 Jun 2013 15:42:04 +0200
+Message-ID: <1372081326-6917-3-git-send-email-peter.ujfalusi@ti.com>
 References: <1372081326-6917-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 09E1A26501A
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 15:42:11 +0200 (CEST)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A279265066
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 15:42:14 +0200 (CEST)
 In-Reply-To: <1372081326-6917-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,41 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>, patches@linaro.org
+Cc: Samuel Ortiz <sameo@linux.intel.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-We need to free the irq at twl6040_remove() which is called when the machine
-driver has been removed (the card has been removed).
-If we fail to do that, next time when the machine driver is loaded the
-codec's probe will fail since the irq has been already requested.
+Add define for: HSDRV, HFDAC, HFPGA and HFDRV enable bits
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+CC: Samuel Ortiz <sameo@linux.intel.com>
 ---
- sound/soc/codecs/twl6040.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ include/linux/mfd/twl6040.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 9b9a6e5..c2f2fdb 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -1143,7 +1143,7 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+diff --git a/include/linux/mfd/twl6040.h b/include/linux/mfd/twl6040.h
+index 94ac944..7e7fbce 100644
+--- a/include/linux/mfd/twl6040.h
++++ b/include/linux/mfd/twl6040.h
+@@ -125,8 +125,15 @@
  
- 	mutex_init(&priv->mutex);
+ #define TWL6040_HSDACENA		(1 << 0)
+ #define TWL6040_HSDACMODE		(1 << 1)
++#define TWL6040_HSDRVENA		(1 << 2)
+ #define TWL6040_HSDRVMODE		(1 << 3)
  
--	ret = devm_request_threaded_irq(codec->dev, priv->plug_irq, NULL,
-+	ret = request_threaded_irq(priv->plug_irq, NULL,
- 					twl6040_audio_handler, IRQF_NO_SUSPEND,
- 					"twl6040_irq_plug", codec);
- 	if (ret) {
-@@ -1159,6 +1159,9 @@ static int twl6040_probe(struct snd_soc_codec *codec)
- 
- static int twl6040_remove(struct snd_soc_codec *codec)
- {
-+	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
++/* HFLCTL/R (0x14/0x16) fields */
 +
-+	free_irq(priv->plug_irq, codec);
- 	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
++#define TWL6040_HFDACENA		(1 << 0)
++#define TWL6040_HFPGAENA		(1 << 1)
++#define TWL6040_HFDRVENA		(1 << 4)
++
+ /* VIBCTLL/R (0x18/0x1A) fields */
  
- 	return 0;
+ #define TWL6040_VIBENA			(1 << 0)
 -- 
 1.8.2.1
