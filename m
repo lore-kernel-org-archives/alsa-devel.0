@@ -1,21 +1,21 @@
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [RFC PATCH v2 06/12] dmaengine: PL08x: Fix reading
- the byte count in cctl
-Date: Tue, 25 Jun 2013 00:28:48 +0200
-Message-ID: <CACRpkdbq6PoMbKGeVWdj=j9=O67cXu-Y0wRJ3SKjn8K339qf=w@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 07/12] dmaengine: PL08x: Add cyclic
+	transfer support
+Date: Tue, 25 Jun 2013 00:33:51 +0200
+Message-ID: <CACRpkdZrZFZ0MDP8=CWp9gv+1R6GfEktkgWaLDgEgzgfqGXucA@mail.gmail.com>
 References: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com>
- <1371933764-24875-7-git-send-email-tomasz.figa@gmail.com>
+ <1371933764-24875-8-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f52.google.com (mail-oa0-f52.google.com
- [209.85.219.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 8523F265006
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 00:28:49 +0200 (CEST)
-Received: by mail-oa0-f52.google.com with SMTP id g12so12331719oah.39
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 15:28:48 -0700 (PDT)
-In-Reply-To: <1371933764-24875-7-git-send-email-tomasz.figa@gmail.com>
+Received: from mail-oa0-f53.google.com (mail-oa0-f53.google.com
+ [209.85.219.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id D76BA265006
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 00:33:52 +0200 (CEST)
+Received: by mail-oa0-f53.google.com with SMTP id k14so12550327oag.26
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 15:33:52 -0700 (PDT)
+In-Reply-To: <1371933764-24875-8-git-send-email-tomasz.figa@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,13 +33,16 @@ On Sat, Jun 22, 2013 at 10:42 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
 
 > From: Alban Bedel <alban.bedel@avionic-design.de>
 >
-> There are more fields than just SWIDTH in CH_CONTROL register, so read
-> register value must be masked in addition to shifting.
+> Many audio interface drivers require support of cyclic transfers to work
+> correctly, for example Samsung ASoC DMA driver. This patch adds support
+> for cyclic transfers to the amba-pl08x driver.
 >
 > Signed-off-by: Alban Bedel <alban.bedel@avionic-design.de>
+> [tfiga: Rebase and slightly beautify the original patch.]
 > Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Looks good to me:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
