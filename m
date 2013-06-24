@@ -1,20 +1,14 @@
-From: "Wang, Xingchao" <xingchao.wang@intel.com>
-Subject: Re: [PATCH 2/2] ALSA: hda - get realtime ELD info when
- codec suspended
-Date: Mon, 24 Jun 2013 11:56:21 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC489011833B68@SHSMSX104.ccr.corp.intel.com>
-References: <1372074324-13563-1-git-send-email-xingchao.wang@linux.intel.com>
- <1372074324-13563-2-git-send-email-xingchao.wang@linux.intel.com>
- <s5hmwqfvizc.wl%tiwai@suse.de>
+From: Wang Xingchao <xingchao.wang@linux.intel.com>
+Subject: [PATCH 1/2] ALSA: hda - Remove unused variable
+Date: Mon, 24 Jun 2013 09:10:18 -0400
+Message-ID: <1372079419-31903-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id A19EF261B36
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 13:56:25 +0200 (CEST)
-In-Reply-To: <s5hmwqfvizc.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 74574261B36
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 13:59:55 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,105 +18,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, Wang Xingchao <xingchao.wang@linux.intel.com>, xingchao.wang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, June 24, 2013 7:36 PM
-> To: Wang Xingchao
-> Cc: alsa-devel@alsa-project.org; Wang, Xingchao
-> Subject: Re: [PATCH 2/2] ALSA: hda - get realtime ELD info when codec
-> suspended
-> 
-> At Mon, 24 Jun 2013 07:45:24 -0400,
-> Wang Xingchao wrote:
-> >
-> > when controller/codec in runtime suspended mode, monitor hotplug would
-> > not trigger unsolicited event. This patch tries to power up codec and
-> > hdmi driver would probe ELD info again.
-> 
-> I don't know whether this is the wanted behavior.
-> The proc file is supposed to read the driver's status, not to trigger anything.
-> 
+Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-I explained in another mail what the patch fix. In the real case, when HDMI monitor removed,
-Eld# still hold monitor information because the codec/controller is in suspend mode atm and has no chance to refresh eld.
-Even when controller/codec waken up, it will not refresh eld# as gfx side handled hdmi hotplut when audio driver suspended.
-Then user will always see eld valid info but in fact the monitor is removed already, obviously it's a bug.
-
-Thanks
---xingchao
-
-> 
-> Takashi
-> 
-> > Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
-> > ---
-> >  sound/pci/hda/hda_eld.c   | 6 ++++++
-> >  sound/pci/hda/hda_local.h | 1 +
-> >  2 files changed, 7 insertions(+)
-> >
-> > diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c index
-> > d0d7ac1..914712a 100644
-> > --- a/sound/pci/hda/hda_eld.c
-> > +++ b/sound/pci/hda/hda_eld.c
-> > @@ -482,6 +482,7 @@ static void hdmi_print_eld_info(struct
-> snd_info_entry *entry,
-> >  				struct snd_info_buffer *buffer)
-> >  {
-> >  	struct hdmi_eld *eld = entry->private_data;
-> > +	struct hda_codec *codec = eld->codec;
-> >  	struct parsed_hdmi_eld *e = &eld->info;
-> >  	char buf[SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
-> >  	int i;
-> > @@ -500,11 +501,14 @@ static void hdmi_print_eld_info(struct
-> snd_info_entry *entry,
-> >  		[4 ... 7] = "reserved"
-> >  	};
-> >
-> > +	snd_hda_power_up(codec);
-> > +
-> >  	mutex_lock(&eld->lock);
-> >  	snd_iprintf(buffer, "monitor_present\t\t%d\n", eld->monitor_present);
-> >  	snd_iprintf(buffer, "eld_valid\t\t%d\n", eld->eld_valid);
-> >  	if (!eld->eld_valid) {
-> >  		mutex_unlock(&eld->lock);
-> > +		snd_hda_power_down(codec);
-> >  		return;
-> >  	}
-> >  	snd_iprintf(buffer, "monitor_name\t\t%s\n", e->monitor_name); @@
-> > -529,6 +533,7 @@ static void hdmi_print_eld_info(struct snd_info_entry
-> *entry,
-> >  	for (i = 0; i < e->sad_count; i++)
-> >  		hdmi_print_sad_info(i, e->sad + i, buffer);
-> >  	mutex_unlock(&eld->lock);
-> > +	snd_hda_power_down(codec);
-> >  }
-> >
-> >  static void hdmi_write_eld_info(struct snd_info_entry *entry, @@
-> > -614,6 +619,7 @@ int snd_hda_eld_proc_new(struct hda_codec *codec,
-> struct hdmi_eld *eld,
-> >  	entry->c.text.write = hdmi_write_eld_info;
-> >  	entry->mode |= S_IWUSR;
-> >  	eld->proc_entry = entry;
-> > +	eld->codec = codec;
-> >
-> >  	return 0;
-> >  }
-> > diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-> > index e0bf753..1aaf8b6 100644
-> > --- a/sound/pci/hda/hda_local.h
-> > +++ b/sound/pci/hda/hda_local.h
-> > @@ -747,6 +747,7 @@ struct hdmi_eld {
-> >  #ifdef CONFIG_PROC_FS
-> >  	struct snd_info_entry *proc_entry;
-> >  #endif
-> > +	struct hda_codec *codec;
-> >  };
-> >
-> >  int snd_hdmi_get_eld_size(struct hda_codec *codec, hda_nid_t nid);
-> > --
-> > 1.8.1.2
-> >
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 7803ddd..0f7a380 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1891,7 +1891,6 @@ static void intel_haswell_fixup_connect_list(struct hda_codec *codec,
+ 
+ 	/* override pins connection list */
+ 	snd_printdd("hdmi: haswell: override pin connection 0x%x\n", nid);
+-	nconns = max(spec->num_cvts, 4);
+ 	snd_hda_override_conn_list(codec, nid, spec->num_cvts, spec->cvt_nids);
+ }
+ 
+-- 
+1.8.1.2
