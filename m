@@ -1,18 +1,14 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [RFC PATCH] ALSA: hda - reset hda link during
- system/runtime suspend
-Date: Mon, 24 Jun 2013 10:47:51 +0200
-Message-ID: <51C807B7.1070107@canonical.com>
-References: <1372083534-9706-1-git-send-email-mengdong.lin@intel.com>
+From: Wang Xingchao <xingchao.wang@linux.intel.com>
+Subject: [PATCH 1/2] ALSA: hdmi - poll eld at resume time
+Date: Mon, 24 Jun 2013 07:45:23 -0400
+Message-ID: <1372074324-13563-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 134762608C7
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 10:47:54 +0200 (CEST)
-In-Reply-To: <1372083534-9706-1-git-send-email-mengdong.lin@intel.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 38EB52617B6
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 12:35:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +18,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@intel.com
-Cc: tiwai@suse.de, pshou@realtek.com, alsa-devel@alsa-project.org, kailang@realtek.com
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, Wang Xingchao <xingchao.wang@linux.intel.com>, xingchao.wang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 06/24/2013 04:18 PM, mengdong.lin@intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@intel.com>
->
-> If all the codecs report ClkStopOK (OK to stop bus clock) after being put to
-> D3, this patch will reset the HDA link before the controller is put to D3.
+Hdmi driver may not receive intrinsic event from gfx side when
+it's in runtime suspend mode. There's no ELD info when exit from
+runtime suspend. This patch avoid missing ELD info.
 
-Thanks, but there seems to be no such checking of the ClkStopOK as you 
-describe in the patch? Or am I missing something?
+Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
->
-> So the link will be in reset during system or runtime suspend, the bus clock
-> stops and the codecs are in D3(ClkStop) state.
->
-> This may help to reduce power consumption by dozens of mW on some peripheral
-> hda codecs.
->
-> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
->
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index f089fa0..9f110c7 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -1120,6 +1120,20 @@ static void azx_load_dsp_cleanup(struct hda_bus *bus,
->   				 struct snd_dma_buffer *dmab);
->   #endif
->
-> +/* enter link reset */
-> +static void azx_reset_link(struct azx *chip)
-> +{
-> +	unsigned long timeout;
-> +
-> +	/* reset controller */
-> +	azx_writel(chip, GCTL, azx_readl(chip, GCTL) & ~ICH6_GCTL_RESET);
-> +
-> +	timeout = jiffies + msecs_to_jiffies(100);
-> +	while ((azx_readb(chip, GCTL) & ICH6_GCTL_RESET) &&
-> +			time_before(jiffies, timeout))
-> +		usleep_range(500, 1000);
-> +}
-> +
->   /* reset codec link */
->   static int azx_reset(struct azx *chip, int full_reset)
->   {
-> @@ -2894,6 +2908,7 @@ static int azx_suspend(struct device *dev)
->   	if (chip->initialized)
->   		snd_hda_suspend(chip->bus);
->   	azx_stop_chip(chip);
-> +	azx_reset_link(chip);
->   	if (chip->irq >= 0) {
->   		free_irq(chip->irq, chip);
->   		chip->irq = -1;
-> @@ -2946,6 +2961,7 @@ static int azx_runtime_suspend(struct device *dev)
->   	struct azx *chip = card->private_data;
->
->   	azx_stop_chip(chip);
-> +	azx_reset_link(chip);
->   	azx_clear_irq_pending(chip);
->   	return 0;
->   }
->
-
-
-
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 7803ddd..cb8ac66 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1868,12 +1868,33 @@ static void generic_hdmi_free(struct hda_codec *codec)
+ 	kfree(spec);
+ }
+ 
++#ifdef CONFIG_PM
++static int generic_hdmi_resume(struct hda_codec *codec)
++{
++	struct hdmi_spec *spec = codec->spec;
++	int pin_idx;
++
++	generic_hdmi_init(codec);
++	snd_hda_codec_resume_amp(codec);
++	snd_hda_codec_resume_cache(codec);
++
++	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
++		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
++		hdmi_present_sense(per_pin, 1);
++	}
++	return 0;
++}
++#endif
++
+ static const struct hda_codec_ops generic_hdmi_patch_ops = {
+ 	.init			= generic_hdmi_init,
+ 	.free			= generic_hdmi_free,
+ 	.build_pcms		= generic_hdmi_build_pcms,
+ 	.build_controls		= generic_hdmi_build_controls,
+ 	.unsol_event		= hdmi_unsol_event,
++#ifdef CONFIG_PM
++	.resume 		= generic_hdmi_resume,
++#endif
+ };
+ 
+ 
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+1.8.1.2
