@@ -1,19 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v4 1/4] ASoC: codecs: adau1701: move
- firmware download to adau1701_reset()
-Date: Mon, 24 Jun 2013 19:12:35 +0200
-Message-ID: <51C87E03.30606@metafoo.de>
-References: <1372084292-4859-1-git-send-email-zonque@gmail.com>
- <1372084292-4859-2-git-send-email-zonque@gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [RFC PATCH v2 01/12] dmaengine: PL08x: Refactor
+ pl08x_getbytes_chan() to lower indentation
+Date: Tue, 25 Jun 2013 00:09:14 +0200
+Message-ID: <CACRpkdYuF7Scg4n4a_EL2WW3qyFV5f5Vr-6RPohE-4O0wd=QpA@mail.gmail.com>
+References: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com>
+ <1371933764-24875-2-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-229.synserver.de (smtp-out-229.synserver.de
- [212.40.185.229])
- by alsa0.perex.cz (Postfix) with ESMTP id C13FF261B00
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 19:12:28 +0200 (CEST)
-In-Reply-To: <1372084292-4859-2-git-send-email-zonque@gmail.com>
+Received: from mail-oa0-f46.google.com (mail-oa0-f46.google.com
+ [209.85.219.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id C358A265001
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 00:09:15 +0200 (CEST)
+Received: by mail-oa0-f46.google.com with SMTP id h1so12581555oag.5
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 15:09:14 -0700 (PDT)
+In-Reply-To: <1371933764-24875-2-git-send-email-tomasz.figa@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,83 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, =?ISO-8859-1?Q?Heiko_St=FCbner?= <heiko@sntech.de>, Padmavathi Venna <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Alessandro Rubini <rubini@gnudd.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Kukjin Kim <kgene.kim@samsung.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Thomas Abraham <thomas.abraham@linaro.org>, Grant Likely <grant.likely@linaro.org>, Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/24/2013 04:31 PM, Daniel Mack wrote:
-> The chip needs a new download after each reset, so the code to do that
-> needs to live in adau1701_reset().
-> 
-> Signed-off-by: Daniel Mack <zonque@gmail.com>
+On Sat, Jun 22, 2013 at 10:42 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+> Further patch will introduce support for PL080S, which requires some
+> things to be done conditionally, thus increasing indentation level of
+> some functions even more.
+>
+> This patch reduces indentation level of pl08x_getbytes_chan() function
+> by inverting several conditions and returning from function wherever
+> possible.
+>
+> Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
 
-> ---
->  sound/soc/codecs/adau1701.c | 32 ++++++++++++--------------------
->  1 file changed, 12 insertions(+), 20 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-> index b6b1a77..997fc3b 100644
-> --- a/sound/soc/codecs/adau1701.c
-> +++ b/sound/soc/codecs/adau1701.c
-> @@ -184,27 +184,20 @@ static unsigned int adau1701_read(struct snd_soc_codec *codec, unsigned int reg)
->  	return value;
->  }
->  
-> -static void adau1701_reset(struct snd_soc_codec *codec)
-> +static int adau1701_reset(struct snd_soc_codec *codec)
->  {
->  	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
-> -
-> -	if (!gpio_is_valid(adau1701->gpio_nreset))
-> -		return;
-> -
-> -	gpio_set_value(adau1701->gpio_nreset, 0);
-> -	/* minimum reset time is 20ns */
-> -	udelay(1);
-> -	gpio_set_value(adau1701->gpio_nreset, 1);
-> -	/* power-up time may be as long as 85ms */
-> -	mdelay(85);
-> -}
-> -
-> -static int adau1701_init(struct snd_soc_codec *codec)
-> -{
-> -	int ret;
->  	struct i2c_client *client = to_i2c_client(codec->dev);
-> +	int ret;
->  
-> -	adau1701_reset(codec);
-> +	if (gpio_is_valid(adau1701->gpio_nreset)) {
-> +		gpio_set_value(adau1701->gpio_nreset, 0);
-> +		/* minimum reset time is 20ns */
-> +		udelay(1);
-> +		gpio_set_value(adau1701->gpio_nreset, 1);
-> +		/* power-up time may be as long as 85ms */
-> +		mdelay(85);
-> +	}
->  
->  	ret = process_sigma_firmware(client, ADAU1701_FIRMWARE);
->  	if (ret) {
-> @@ -213,6 +206,7 @@ static int adau1701_init(struct snd_soc_codec *codec)
->  	}
->  
->  	snd_soc_write(codec, ADAU1701_DACSET, ADAU1701_DACSET_DACINIT);
-> +	snd_soc_write(codec, ADAU1701_DSPCTRL, ADAU1701_DSPCTRL_CR);
->  
->  	return 0;
->  }
-> @@ -498,12 +492,10 @@ static int adau1701_probe(struct snd_soc_codec *codec)
->  
->  	codec->control_data = to_i2c_client(codec->dev);
->  
-> -	ret = adau1701_init(codec);
-> +	ret = adau1701_reset(codec);
->  	if (ret)
->  		return ret;
->  
-> -	snd_soc_write(codec, ADAU1701_DSPCTRL, ADAU1701_DSPCTRL_CR);
-> -
->  	return 0;
->  }
->  
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
