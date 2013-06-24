@@ -1,23 +1,19 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [ucm] Adding list for caching multiple opened
- control devices
-Date: Mon, 24 Jun 2013 19:09:33 +0200
-Message-ID: <51C87D4D.5070601@gmail.com>
-References: <1371801284-31603-1-git-send-email-zonque@gmail.com>
- <1371801284-31603-2-git-send-email-zonque@gmail.com>
- <20130621150019.GZ27646@sirena.org.uk> <51C4916A.3080008@gmail.com>
- <1371939012.85385.YahooMailNeo@web121506.mail.ne1.yahoo.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v4 1/4] ASoC: codecs: adau1701: move
+ firmware download to adau1701_reset()
+Date: Mon, 24 Jun 2013 19:12:35 +0200
+Message-ID: <51C87E03.30606@metafoo.de>
+References: <1372084292-4859-1-git-send-email-zonque@gmail.com>
+ <1372084292-4859-2-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f180.google.com (mail-ea0-f180.google.com
- [209.85.215.180])
- by alsa0.perex.cz (Postfix) with ESMTP id C29E02654D6
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 19:09:00 +0200 (CEST)
-Received: by mail-ea0-f180.google.com with SMTP id k10so6222170eaj.39
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 10:09:00 -0700 (PDT)
-In-Reply-To: <1371939012.85385.YahooMailNeo@web121506.mail.ne1.yahoo.com>
+Received: from smtp-out-229.synserver.de (smtp-out-229.synserver.de
+ [212.40.185.229])
+ by alsa0.perex.cz (Postfix) with ESMTP id C13FF261B00
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 19:12:28 +0200 (CEST)
+In-Reply-To: <1372084292-4859-2-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,184 +23,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: sajeesh sidharthan <sajeesh.sidharthan@yahoo.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 23.06.2013 00:10, sajeesh sidharthan wrote:
-> Hello.
->
-> I would like to contribute to alsa development. As a first step, I
-> have made changes for caching control devices in ucm.
-
-Thank you for doing this.
-
-> Please review the following changes and let me know if I can check in
-> the changes and how to check in?
-
-First of all, please do not hijack an email thread by clicking on the
-'reply' button and changing the subject line. An email contains internal
-references to other mails in the same thread that most email clients
-won't allow you to see or edit. Your email was hence hidden inside
-another thread, and most likely it was overlooked by the UCM maintainer.
-
-Second, you should always Cc: the relevant maintainers in your emails.
-In this case, Liam and Takashi. I copied them now.
-
-And third, please use 'git commit', 'git format-patch' and 'git
-send-email', which will format everything correctly for you. And note
-that you need to add a 'Signed-off-by:' line with your name and email
-address, as done in other patches.
-
-I can't really comment on the actual patch. Let's hope Liam or Takashi
-can :)
-
-
-Daniel
-
-
-> ----------------------
+On 06/24/2013 04:31 PM, Daniel Mack wrote:
+> The chip needs a new download after each reset, so the code to do that
+> needs to live in adau1701_reset().
 > 
-> diff --git a/src/ucm/main.c b/src/ucm/main.c
-> index 030c9b1..3219778 100644
-> --- a/src/ucm/main.c
-> +++ b/src/ucm/main.c
-> @@ -131,31 +131,33 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
->              const char *ctl_dev)
->  {
->      int err;
-> +    struct list_head *pos;
-> +    struct snd_ctl_list *snd_ctl;
->  
-> -    /* FIXME: add a list of ctl devices to uc_mgr structure and
-> -           cache accesses for multiple opened ctl devices */
-> -    if (uc_mgr->ctl_dev != NULL && strcmp(ctl_dev, uc_mgr->ctl_dev) == 0) {
-> -        *ctl = uc_mgr->ctl;
-> -        return 0;
-> -    }
-> -    if (uc_mgr->ctl_dev) {
-> -        free(uc_mgr->ctl_dev);
-> -        uc_mgr->ctl_dev = NULL;
-> -        snd_ctl_close(uc_mgr->ctl);
-> -    
-> +    list_for_each(pos, &uc_mgr->ctl_list) {
-> +        snd_ctl = list_entry(pos, struct snd_ctl_list, list);
-> +        if(!snd_ctl)
-> +            break;
-> +        if(!strcmp(snd_ctl->ctl_dev, ctl_dev)) {
-> +            *ctl = snd_ctl->ctl;
-> +            return 0;
-> +        }
->      }
->      err = snd_ctl_open(ctl, ctl_dev, 0);
->      if (err < 0)
->          return err;
-> -    uc_mgr->ctl_dev = strdup(ctl_dev);
-> -    if (uc_mgr->ctl_dev == NULL) {
-> -        snd_ctl_close(*ctl);
-> -        return -ENOMEM;
-> -    }
-> -    uc_mgr->ctl = *ctl;
-> +
-> +    if (*ctl) {
-> +        snd_ctl = malloc(sizeof(struct snd_ctl_list));
-> +        snd_ctl->ctl_dev = strdup(ctl_dev);
-> +        snd_ctl->ctl = *ctl;
-> +        list_add_tail(&snd_ctl->list, &uc_mgr->ctl_list);
-> +    }
-> +
->      return 0;
+> Signed-off-by: Daniel Mack <zonque@gmail.com>
+
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+
+> ---
+>  sound/soc/codecs/adau1701.c | 32 ++++++++++++--------------------
+>  1 file changed, 12 insertions(+), 20 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+> index b6b1a77..997fc3b 100644
+> --- a/sound/soc/codecs/adau1701.c
+> +++ b/sound/soc/codecs/adau1701.c
+> @@ -184,27 +184,20 @@ static unsigned int adau1701_read(struct snd_soc_codec *codec, unsigned int reg)
+>  	return value;
 >  }
 >  
-> +
->  static int execute_cset(snd_ctl_t *ctl, char *cset)
+> -static void adau1701_reset(struct snd_soc_codec *codec)
+> +static int adau1701_reset(struct snd_soc_codec *codec)
 >  {
->      char *pos;
-> @@ -622,6 +624,7 @@ int snd_use_case_mgr_open(snd_use_case_mgr_t **mgr,
->      INIT_LIST_HEAD(&uc_mgr->value_list);
->      INIT_LIST_HEAD(&uc_mgr->active_modifiers);
->      INIT_LIST_HEAD(&uc_mgr->active_devices);
-> +    INIT_LIST_HEAD(&uc_mgr->ctl_list);
->      pthread_mutex_init(&uc_mgr->mutex, NULL);
+>  	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
+> -
+> -	if (!gpio_is_valid(adau1701->gpio_nreset))
+> -		return;
+> -
+> -	gpio_set_value(adau1701->gpio_nreset, 0);
+> -	/* minimum reset time is 20ns */
+> -	udelay(1);
+> -	gpio_set_value(adau1701->gpio_nreset, 1);
+> -	/* power-up time may be as long as 85ms */
+> -	mdelay(85);
+> -}
+> -
+> -static int adau1701_init(struct snd_soc_codec *codec)
+> -{
+> -	int ret;
+>  	struct i2c_client *client = to_i2c_client(codec->dev);
+> +	int ret;
 >  
->      uc_mgr->card_name = strdup(card_name);
-> diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
-> index 13e82da..86a51c7 100644
-> --- a/src/ucm/ucm_local.h
-> +++ b/src/ucm/ucm_local.h
-> @@ -82,6 +82,12 @@ struct dev_list {
->  };
+> -	adau1701_reset(codec);
+> +	if (gpio_is_valid(adau1701->gpio_nreset)) {
+> +		gpio_set_value(adau1701->gpio_nreset, 0);
+> +		/* minimum reset time is 20ns */
+> +		udelay(1);
+> +		gpio_set_value(adau1701->gpio_nreset, 1);
+> +		/* power-up time may be as long as 85ms */
+> +		mdelay(85);
+> +	}
 >  
+>  	ret = process_sigma_firmware(client, ADAU1701_FIRMWARE);
+>  	if (ret) {
+> @@ -213,6 +206,7 @@ static int adau1701_init(struct snd_soc_codec *codec)
+>  	}
 >  
-> +struct snd_ctl_list {
-> +    snd_ctl_t *ctl;
-> +    char *ctl_dev;
-> +    struct list_head list;
-> +};
-> +
->  /*
->   * Describes a Use Case Modifier and it's enable and disable sequences.
->   * A use case verb can have N modifiers.
-> @@ -183,8 +189,8 @@ struct snd_use_case_mgr {
->      pthread_mutex_t mutex;
+>  	snd_soc_write(codec, ADAU1701_DACSET, ADAU1701_DACSET_DACINIT);
+> +	snd_soc_write(codec, ADAU1701_DSPCTRL, ADAU1701_DSPCTRL_CR);
 >  
->      /* change to list of ctl handles */
-> -    snd_ctl_t *ctl;
-> -    char *ctl_dev;
-> +    
-> +    struct list_head ctl_list;
->  };
+>  	return 0;
+>  }
+> @@ -498,12 +492,10 @@ static int adau1701_probe(struct snd_soc_codec *codec)
 >  
->  #define uc_error SNDERR
-> diff --git a/src/ucm/utils.c b/src/ucm/utils.c
-> index 2def0b8..f18a2ac 100644
-> --- a/src/ucm/utils.c
-> +++ b/src/ucm/utils.c
-> @@ -99,6 +99,21 @@ void uc_mgr_free_value(struct list_head *base)
->      }
+>  	codec->control_data = to_i2c_client(codec->dev);
+>  
+> -	ret = adau1701_init(codec);
+> +	ret = adau1701_reset(codec);
+>  	if (ret)
+>  		return ret;
+>  
+> -	snd_soc_write(codec, ADAU1701_DSPCTRL, ADAU1701_DSPCTRL_CR);
+> -
+>  	return 0;
 >  }
 >  
-> +
-> +void uc_mgr_free_ctl(struct list_head *base)
-> +{
-> +    struct list_head *pos, *npos;
-> +    struct snd_ctl_list *ctl_list;
-> +    
-> +    list_for_each_safe(pos, npos, base) {
-> +        ctl_list = list_entry(pos, struct snd_ctl_list, list);
-> +        free(ctl_list->ctl_dev);
-> +        snd_ctl_close(ctl_list->ctl);
-> +        list_del(&ctl_list->list);
-> +        free(ctl_list);
-> +    }
-> +}
-> +
->  void uc_mgr_free_dev_list(struct list_head *base)
->  {
->      struct list_head *pos, *npos;
-> @@ -220,12 +235,7 @@ void uc_mgr_free_verb(snd_use_case_mgr_t *uc_mgr)
->      uc_mgr->active_verb = NULL;
->      INIT_LIST_HEAD(&uc_mgr->active_devices);
->      INIT_LIST_HEAD(&uc_mgr->active_modifiers);
-> -    if (uc_mgr->ctl != NULL) {
-> -        snd_ctl_close(uc_mgr->ctl);
-> -        uc_mgr->ctl = NULL;
-> -    }
-> -    free(uc_mgr->ctl_dev);
-> -    uc_mgr->ctl_dev = NULL;
-> +    uc_mgr_free_ctl(&uc_mgr->ctl_list);
->  }
->  
->  void uc_mgr_free(snd_use_case_mgr_t *uc_mgr)
-> 
-> 
-> 
-> 
-> ---------------------
-> 
-> Sajeesh
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
