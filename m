@@ -1,21 +1,21 @@
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [RFC PATCH v2 02/12] dmaengine: PL08x: Add support
- for different offset of CONFIG register
-Date: Tue, 25 Jun 2013 00:11:15 +0200
-Message-ID: <CACRpkdatCWT0zd4VW3oiSUpg8Zz+xOEB+PUjFym1Q5RHQix3Cw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 03/12] dmaengine: PL08x: Rework LLI
+ handling to be less fragile
+Date: Tue, 25 Jun 2013 00:23:09 +0200
+Message-ID: <CACRpkdYm7gFVLzRpQ2J97M+-zQAug_ftJhyi_kniTgCk=GT_bQ@mail.gmail.com>
 References: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com>
- <1371933764-24875-3-git-send-email-tomasz.figa@gmail.com>
+ <1371933764-24875-4-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f177.google.com (mail-ob0-f177.google.com
- [209.85.214.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 72483265006
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 00:11:16 +0200 (CEST)
-Received: by mail-ob0-f177.google.com with SMTP id ta17so11203195obb.22
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 15:11:15 -0700 (PDT)
-In-Reply-To: <1371933764-24875-3-git-send-email-tomasz.figa@gmail.com>
+Received: from mail-ob0-f174.google.com (mail-ob0-f174.google.com
+ [209.85.214.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5D1A265001
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 00:23:10 +0200 (CEST)
+Received: by mail-ob0-f174.google.com with SMTP id wd20so11344195obb.19
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 15:23:09 -0700 (PDT)
+In-Reply-To: <1371933764-24875-4-git-send-email-tomasz.figa@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,13 +31,65 @@ List-Id: alsa-devel@alsa-project.org
 
 On Sat, Jun 22, 2013 at 10:42 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
 
-> Some variants of PL08x (namely PL080S, found in Samsung S3C64xx SoCs)
-> have CONFIG register at different offset. This patch makes the driver
-> use offset from vendor data struct.
->
-> Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
+> +enum {
+> +       PL080_LLI_SRC,
+> +       PL080_LLI_DST,
+> +       PL080_LLI_LLI,
+> +       PL080_LLI_CCTL,
+> +
+> +       PL080_LLI_WORDS
+> +};
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I usually don't like it when enums are not given names, and are
+implicitly cast to integers.
+
+I think it'd be better to just use #define for these so we know what
+is going on.
+
+> @@ -181,7 +177,7 @@ struct pl08x_txd {
+>         struct virt_dma_desc vd;
+>         struct list_head dsg_list;
+>         dma_addr_t llis_bus;
+> -       struct pl08x_lli *llis_va;
+> +       u32 *llis_va;
+
+It's nice that you use the u32 * here for proper indexing into an
+array.
+
+> -/* Size (bytes) of each LLI buffer allocated for one transfer */
+> -# define PL08X_LLI_TSFR_SIZE   0x2000
+> -
+> -/* Maximum times we call dma_pool_alloc on this pool without freeing */
+> -#define MAX_NUM_TSFR_LLIS      (PL08X_LLI_TSFR_SIZE/sizeof(struct pl08x_lli))
+> +/*
+> + * Number of LLIs in each LLI buffer allocated for one transfer
+> + * (maximum times we call dma_pool_alloc on this pool without freeing)
+> + */
+> +#define MAX_NUM_TSFR_LLIS      512
+
+And I like this nice side effect that we allocate a number of LLIs rather
+than a fixed-size buffer.
+
+> +static void pl08x_write_lli(struct pl08x_driver_data *pl08x,
+> +               struct pl08x_phy_chan *phychan, const u32 *lli, u32 ccfg)
+> +{
+> +       dev_vdbg(&pl08x->adev->dev,
+> +               "WRITE channel %d: csrc=0x%08x, cdst=0x%08x, "
+> +               "clli=0x%08x, cctl=0x%08x, ccfg=0x%08x\n",
+> +               phychan->id, lli[PL080_LLI_SRC], lli[PL080_LLI_DST],
+> +               lli[PL080_LLI_LLI], lli[PL080_LLI_CCTL], ccfg);
+> +
+> +       writel(lli[PL080_LLI_SRC], phychan->base + PL080_CH_SRC_ADDR);
+> +       writel(lli[PL080_LLI_DST], phychan->base + PL080_CH_DST_ADDR);
+> +       writel(lli[PL080_LLI_LLI], phychan->base + PL080_CH_LLI);
+> +       writel(lli[PL080_LLI_CCTL], phychan->base + PL080_CH_CONTROL);
+> +
+> +       writel(ccfg, phychan->reg_config);
+
+Take this opportunity to replace the first four writel() with writel_relaxed(),
+keep the last one to make sure all hit the hardware.
+
+Apart from that this looks nice!
 
 Yours,
 Linus Walleij
