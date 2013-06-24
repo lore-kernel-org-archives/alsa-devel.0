@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC updates for v3.10
-Date: Mon, 24 Jun 2013 15:05:28 +0100
-Message-ID: <20130624140528.GL27646@sirena.org.uk>
-References: <20130624114836.GK27646@sirena.org.uk>
- <s5hfvw7vh77.wl%tiwai@suse.de>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 2/5] ASoC: codecs: tas5086: open-code I2C
+	transfer routines
+Date: Mon, 24 Jun 2013 16:25:29 +0200
+Message-ID: <1372083932-4318-2-git-send-email-zonque@gmail.com>
+References: <1372083932-4318-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5421754717222693985=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 432B0261B16
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 16:05:34 +0200 (CEST)
-In-Reply-To: <s5hfvw7vh77.wl%tiwai@suse.de>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D9CA26501A
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 16:25:31 +0200 (CEST)
+In-Reply-To: <1372083932-4318-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +21,134 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+In order to support registers of unequal sizes, the I2C I/O has to be
+open-coded.
 
---===============5421754717222693985==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="x+FS1wzm/v+2h3Q5"
-Content-Disposition: inline
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/soc/codecs/tas5086.c | 85 +++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 84 insertions(+), 1 deletion(-)
 
-
---x+FS1wzm/v+2h3Q5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 24, 2013 at 02:14:36PM +0200, Takashi Iwai wrote:
-
-> But, I'm not entirely sure whether I'm going to request a pull just
-> for this.  How important are these?  Are they a "must"?
-
-It'll keep.
-
---x+FS1wzm/v+2h3Q5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRyFIlAAoJELSic+t+oim9J78QAJ4nph8LGq9j0voFviZlrJUK
-auK/SU/Yrhhf+ezYZyFEwvigtcADMqoHEXJEdwuPLXQ9vQu2YngqiFepmmg2EV4D
-GAhspRYn66xnFIrB9pIW8mCWUqWPZJ9ucOMjh5FX4dAEWQwxPwIhPYJuAV+PqtPt
-TTKXJOCdePYMLzaQb8caiSw/dqCDm4wN80Lw5tydmsi+/7ULin02FxQApbrrleOu
-7kQBMvC6QFasBcXF4Cr3xfJ95X8l5Zx8PsruOpmS3Ra8Ebea0ZhnpOccxo+PF/mU
-ISYCrORVQQBpFECDM5XnAxRXKvfy41/vGiUT3S1/pZp3xBvYjQXzK2vCZrTjZ+ID
-fWWrQeMEzVEHd0lf6s2vUhIdxmK+iZD6Xnum3UH1I9ZcsBIWj5nuEZLZrQn+uFme
-APVBvhcSmVSLl644N7WS8DtwW1Lgmi9zAeHUYVzj0klUX0Qp230FR92FpMXAo3ru
-SU9/K4gtdNN8N199eQl9xttCj3ZGnAEfoqjNwWx+jU3o2wc3OnOsGvVXRpRbgc7C
-vChoz7mwEGvUXXzvg7PT834kW9S0OTvENMROka38LsgXybQqEwHkEn40qhASb1Zl
-tRthMQqq9sCJPEEUAkh4FO07Nueokhma9T9a68fqywXrb1yCSYzVne5GK1lq6i6k
-RHWQ3UOxQsnqL6lU6DnC
-=F2qT
------END PGP SIGNATURE-----
-
---x+FS1wzm/v+2h3Q5--
-
---===============5421754717222693985==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5421754717222693985==--
+diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
+index 6c5470c..833bccd 100644
+--- a/sound/soc/codecs/tas5086.c
++++ b/sound/soc/codecs/tas5086.c
+@@ -119,6 +119,17 @@ static const struct reg_default tas5086_reg_defaults[] = {
+ 	{ 0x1c,	0x05 },
+ };
+ 
++static int tas5086_register_size(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case TAS5086_DEV_ID ... TAS5086_BKNDERR:
++		return 1;
++	}
++
++	dev_err(dev, "Unsupported register address: %d\n", reg);
++	return 0;
++}
++
+ static bool tas5086_accessible_reg(struct device *dev, unsigned int reg)
+ {
+ 	return !((reg == 0x0f) || (reg >= 0x11 && reg <= 0x17));
+@@ -140,6 +151,76 @@ static bool tas5086_writeable_reg(struct device *dev, unsigned int reg)
+ 	return tas5086_accessible_reg(dev, reg) && (reg != TAS5086_DEV_ID);
+ }
+ 
++static int tas5086_reg_write(void *context, unsigned int reg,
++			      unsigned int value)
++{
++	struct i2c_client *client = context;
++	unsigned int i, size;
++	uint8_t buf[5];
++	int ret;
++
++	size = tas5086_register_size(&client->dev, reg);
++	if (size == 0)
++		return -EINVAL;
++
++	buf[0] = reg;
++
++	for (i = size; i >= 1; --i) {
++		buf[i] = value;
++		value >>= 8;
++	}
++
++	ret = i2c_master_send(client, buf, size + 1);
++	if (ret == size + 1)
++		return 0;
++	else if (ret < 0)
++		return ret;
++	else
++		return -EIO;
++}
++
++static int tas5086_reg_read(void *context, unsigned int reg,
++			     unsigned int *value)
++{
++	struct i2c_client *client = context;
++	uint8_t send_buf, recv_buf[4];
++	struct i2c_msg msgs[2];
++	unsigned int size;
++	unsigned int i;
++	int ret;
++
++	size = tas5086_register_size(&client->dev, reg);
++	if (size == 0)
++		return -EINVAL;
++
++	send_buf = reg;
++
++	msgs[0].addr = client->addr;
++	msgs[0].len = sizeof(send_buf);
++	msgs[0].buf = &send_buf;
++	msgs[0].flags = 0;
++
++	msgs[1].addr = client->addr;
++	msgs[1].len = size;
++	msgs[1].buf = recv_buf;
++	msgs[1].flags = I2C_M_RD;
++
++	ret = i2c_transfer(client->adapter, msgs, ARRAY_SIZE(msgs));
++	if (ret < 0)
++		return ret;
++	else if (ret != ARRAY_SIZE(msgs))
++		return -EIO;
++
++	*value = 0;
++
++	for (i = 0; i < size; i++) {
++		*value <<= 8;
++		*value |= recv_buf[i];
++	}
++
++	return 0;
++}
++
+ struct tas5086_private {
+ 	struct regmap	*regmap;
+ 	unsigned int	mclk, sclk;
+@@ -508,6 +589,8 @@ static const struct regmap_config tas5086_regmap = {
+ 	.volatile_reg		= tas5086_volatile_reg,
+ 	.writeable_reg		= tas5086_writeable_reg,
+ 	.readable_reg		= tas5086_accessible_reg,
++	.reg_read		= tas5086_reg_read,
++	.reg_write		= tas5086_reg_write,
+ };
+ 
+ static int tas5086_i2c_probe(struct i2c_client *i2c,
+@@ -522,7 +605,7 @@ static int tas5086_i2c_probe(struct i2c_client *i2c,
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	priv->regmap = devm_regmap_init_i2c(i2c, &tas5086_regmap);
++	priv->regmap = devm_regmap_init(dev, NULL, i2c, &tas5086_regmap);
+ 	if (IS_ERR(priv->regmap)) {
+ 		ret = PTR_ERR(priv->regmap);
+ 		dev_err(&i2c->dev, "Failed to create regmap: %d\n", ret);
+-- 
+1.8.1.4
