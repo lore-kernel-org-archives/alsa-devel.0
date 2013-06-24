@@ -1,15 +1,17 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: Tegra and i.MX are mutually exclusive
-Date: Mon, 24 Jun 2013 17:04:20 +0200
-Message-ID: <5967649.DUvDfofhX4@wuerfel>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/4] ASoC: twl6040: Drop using
+	devm_request_threaded_irq()
+Date: Mon, 24 Jun 2013 16:06:26 +0100
+Message-ID: <20130624150626.GR27646@sirena.org.uk>
+References: <1372081326-6917-1-git-send-email-peter.ujfalusi@ti.com>
+ <1372081326-6917-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5887427877773020245=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
- [212.227.126.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F4542650C6
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 17:03:32 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4EC3426501A
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 17:06:29 +0200 (CEST)
+In-Reply-To: <1372081326-6917-2-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,26 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Both Tegra and i.MX provide ac97 operations, which can only
-exist once in the kernel. They can both be built as loadable
-modules (only one of them needs to be loaded anyway), but we
-have to disallow enabling them both as built-in.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+--===============5887427877773020245==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="rwSwrS9OkH+FvIfA"
+Content-Disposition: inline
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 3843a18..5958948 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -99,6 +99,7 @@ endif # SND_POWERPC_SOC
- menuconfig SND_IMX_SOC
- 	tristate "SoC Audio for Freescale i.MX CPUs"
- 	depends on ARCH_MXC
-+	depends on SND_SOC_TEGRA=n || (SND_SOC_TEGRA=m && m)
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the i.MX CPUs.
+
+--rwSwrS9OkH+FvIfA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jun 24, 2013 at 03:42:03PM +0200, Peter Ujfalusi wrote:
+> We need to free the irq at twl6040_remove() which is called when the machine
+> driver has been removed (the card has been removed).
+> If we fail to do that, next time when the machine driver is loaded the
+> codec's probe will fail since the irq has been already requested.
+
+Applied all, thanks.
+
+--rwSwrS9OkH+FvIfA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRyGBvAAoJELSic+t+oim9064P/RqCCVgEVGYLl8IBoOu/R93A
+5bsxlThBZ1LsSBzR5xzBsO2k3SqsUxbfpZ/FM0jwy9X8ft1JyTToW6rTtzeb6ryz
+K8LWn91k2BAHgoDJljpn4j1wjQi+pOkV7U89UVGikksI0cvNostvJ/T3SISQzwst
+FJO8/K2TCpSduXyIBOdyvweZUg0jsK3EtjjctSgNFu7yei0HBibkE0QWJU2x4uZL
+xHg6qguAjPV+b9Cjoet0rRDb3hjL+2UGsZe/p2rDQ///y2uu8ul5XXrRb+vL64Ho
+yFUaiP7s6P119pdYF/lvBhP9svAtlmSWJqEALyDfu6JT7jCoYBR68SK/2y4Yw35d
+KA5aTTkulXHoDAUn7vBtYTGHFDbyzvtTCtjD7h9ozlmNVBGyd/ZXll4g7mrJS89J
+VUfMHV++3KN1kAQ5xlfKonNnL2Nh0l50cfJI9S6gSu8IXx3UH+dy2XSELbDE5ipT
+23aflYJURC2sCW756jAUuxCbRZPE4r+aJNw7chXV1+6bP0Mdzl7mtifJS9VuTHOm
+TzFQXpWivDYU0rcknWT31cRr9ABjN9wC1E61QjLGli/hiGMNtLneMEd9d7J/2UFv
+87qbTKrI3lAjrm+8V87Ce1yv477POXG54Oc28pvfW89jYd1mlBQGqcM6+GrFXr4w
+GNo/wsLc/Iu43i22YAyB
+=Nuzz
+-----END PGP SIGNATURE-----
+
+--rwSwrS9OkH+FvIfA--
+
+--===============5887427877773020245==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5887427877773020245==--
