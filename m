@@ -1,18 +1,22 @@
-From: "Wang, Xingchao" <xingchao.wang@intel.com>
-Subject: Re: [PATCH 1/2] ALSA: hdmi - poll eld at resume time
-Date: Mon, 24 Jun 2013 12:19:42 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC489011833BCC@SHSMSX104.ccr.corp.intel.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 2/2] ALSA: hda - get realtime ELD info when
+ codec suspended
+Date: Mon, 24 Jun 2013 14:47:01 +0200
+Message-ID: <51C83FC5.3090005@canonical.com>
 References: <1372074324-13563-1-git-send-email-xingchao.wang@linux.intel.com>
- <s5hobavvj4n.wl%tiwai@suse.de>
+ <1372074324-13563-2-git-send-email-xingchao.wang@linux.intel.com>
+ <s5hmwqfvizc.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC489011833B68@SHSMSX104.ccr.corp.intel.com>
+ <s5hk3ljvhu2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 26DC6261B16
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 14:19:52 +0200 (CEST)
-In-Reply-To: <s5hobavvj4n.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id E43D426257D
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 14:47:04 +0200 (CEST)
+In-Reply-To: <s5hk3ljvhu2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,79 +27,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <xingchao.wang@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
+ Xingchao" <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 06/24/2013 02:00 PM, Takashi Iwai wrote:
+> At Mon, 24 Jun 2013 11:56:21 +0000,
+> Wang, Xingchao wrote:
+>>
+>>> -----Original Message-----
+>>> From: Takashi Iwai [mailto:tiwai@suse.de]
+>>> Sent: Monday, June 24, 2013 7:36 PM
+>>> To: Wang Xingchao
+>>> Cc: alsa-devel@alsa-project.org; Wang, Xingchao
+>>> Subject: Re: [PATCH 2/2] ALSA: hda - get realtime ELD info when codec
+>>> suspended
+>>>
+>>> At Mon, 24 Jun 2013 07:45:24 -0400,
+>>> Wang Xingchao wrote:
+>>>>
+>>>> when controller/codec in runtime suspended mode, monitor hotplug would
+>>>> not trigger unsolicited event.
 
+And here's the original problem IMO: If you can't detect plug/unplug in 
+runtime suspend mode, the runtime suspend mode is broken. Userspace 
+relies on getting notification when a HDMI/DP connection is 
+plugged/unplugged. If no unsol event is triggered, how is userspace 
+notified?
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, June 24, 2013 7:33 PM
-> To: Wang Xingchao
-> Cc: alsa-devel@alsa-project.org; Wang, Xingchao
-> Subject: Re: [PATCH 1/2] ALSA: hdmi - poll eld at resume time
-> 
-> At Mon, 24 Jun 2013 07:45:23 -0400,
-> Wang Xingchao wrote:
-> >
-> > Hdmi driver may not receive intrinsic event from gfx side when it's in
-> > runtime suspend mode. There's no ELD info when exit from runtime
-> > suspend. This patch avoid missing ELD info.
-> 
-> hda_call_codec_resume() sets the jack detection all dirty, thus each jack
-> detection callback should be called at resume.  Didn't it work as expected?
+This patch tries to power up codec and
+>>>> hdmi driver would probe ELD info again.
+>>>
+>>> I don't know whether this is the wanted behavior.
+>>> The proc file is supposed to read the driver's status, not to trigger anything.
+>>>
+>>
+>> I explained in another mail what the patch fix. In the real case, when HDMI monitor removed,
+>> Eld# still hold monitor information because the codec/controller is in suspend mode atm and has no chance to refresh eld.
+>
+> And this is no bug, per se.  The proc file shows the driver's current
+> status, not the hardware's raw status.
 
-I would double check that. In my test, it doesnot work as expected.
+Well, the codec proc file shows the hardware's raw status (which 
+includes powering up the codec), perhaps it would be more consistent if 
+the eld proc file did the same?
 
---xingchao
-> 
-> 
-> Takashi
-> 
-> >
-> > Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
-> > ---
-> >  sound/pci/hda/patch_hdmi.c | 21 +++++++++++++++++++++
-> >  1 file changed, 21 insertions(+)
-> >
-> > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> > index 7803ddd..cb8ac66 100644
-> > --- a/sound/pci/hda/patch_hdmi.c
-> > +++ b/sound/pci/hda/patch_hdmi.c
-> > @@ -1868,12 +1868,33 @@ static void generic_hdmi_free(struct hda_codec
-> *codec)
-> >  	kfree(spec);
-> >  }
-> >
-> > +#ifdef CONFIG_PM
-> > +static int generic_hdmi_resume(struct hda_codec *codec) {
-> > +	struct hdmi_spec *spec = codec->spec;
-> > +	int pin_idx;
-> > +
-> > +	generic_hdmi_init(codec);
-> > +	snd_hda_codec_resume_amp(codec);
-> > +	snd_hda_codec_resume_cache(codec);
-> > +
-> > +	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-> > +		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
-> > +		hdmi_present_sense(per_pin, 1);
-> > +	}
-> > +	return 0;
-> > +}
-> > +#endif
-> > +
-> >  static const struct hda_codec_ops generic_hdmi_patch_ops = {
-> >  	.init			= generic_hdmi_init,
-> >  	.free			= generic_hdmi_free,
-> >  	.build_pcms		= generic_hdmi_build_pcms,
-> >  	.build_controls		= generic_hdmi_build_controls,
-> >  	.unsol_event		= hdmi_unsol_event,
-> > +#ifdef CONFIG_PM
-> > +	.resume 		= generic_hdmi_resume,
-> > +#endif
-> >  };
-> >
-> >
-> > --
-> > 1.8.1.2
-> >
+>> Even when controller/codec waken up, it will not refresh eld# as gfx side hand
+> led hdmi hotplut when audio driver suspended.
+>
+> ... and this is actually the bug.
+> But, it's still unclear why the jack detection callback isn't called
+> at resume.
+
+Well, I haven't double checked, but is there anyone actually calling it? 
+Just setting a jack to dirty does not cause any action in itself.
+
+And btw, even if the proc file might show old information, we also have 
+the ELD bytes ctrl, which IMO should always correctly return 0 if 
+there's nothing connected.
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
