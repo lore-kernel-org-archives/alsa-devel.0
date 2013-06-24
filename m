@@ -1,16 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 4/4] ASoC: twl6040: Add digital mute support
-Date: Mon, 24 Jun 2013 15:42:06 +0200
-Message-ID: <1372081326-6917-5-git-send-email-peter.ujfalusi@ti.com>
-References: <1372081326-6917-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC updates for v3.10
+Date: Mon, 24 Jun 2013 15:05:28 +0100
+Message-ID: <20130624140528.GL27646@sirena.org.uk>
+References: <20130624114836.GK27646@sirena.org.uk>
+ <s5hfvw7vh77.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5421754717222693985=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id E792A2625EE
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 15:42:16 +0200 (CEST)
-In-Reply-To: <1372081326-6917-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 432B0261B16
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 16:05:34 +0200 (CEST)
+In-Reply-To: <s5hfvw7vh77.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,150 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>, patches@linaro.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-To reduce pop noise during playback stream start and stop the codec needs
-to have the digital_mute callback implemented.
-The codec need to be muted before the CPU dai has been stopped (McPDM).
-Stopping the McPDM will generate a pop on the codec since no signal on the
-PDM bus means full negative amplitude.
-By managing the mute/unmute state of the outputs we can decrease the amount
-of pop noise when playback starts or stops.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/codecs/twl6040.c | 91 +++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 90 insertions(+), 1 deletion(-)
+--===============5421754717222693985==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="x+FS1wzm/v+2h3Q5"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 9ea3dbc..44621dd 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -75,6 +75,8 @@ struct twl6040_data {
- 	int pll_power_mode;
- 	int hs_power_mode;
- 	int hs_power_mode_locked;
-+	bool dl1_unmuted;
-+	bool dl2_unmuted;
- 	unsigned int clk_in;
- 	unsigned int sysclk;
- 	struct twl6040_jack_data hs_jack;
-@@ -228,6 +230,25 @@ static int twl6040_read_reg_volatile(struct snd_soc_codec *codec,
- 	return value;
- }
- 
-+static bool twl6040_is_path_unmuted(struct snd_soc_codec *codec,
-+				    unsigned int reg)
-+{
-+	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (reg) {
-+	case TWL6040_REG_HSLCTL:
-+	case TWL6040_REG_HSRCTL:
-+	case TWL6040_REG_EARCTL:
-+		/* DL1 path */
-+		return priv->dl1_unmuted;
-+	case TWL6040_REG_HFLCTL:
-+	case TWL6040_REG_HFRCTL:
-+		return priv->dl2_unmuted;
-+	default:
-+		return 1;
-+	};
-+}
-+
- /*
-  * write to the twl6040 register space
-  */
-@@ -240,7 +261,8 @@ static int twl6040_write(struct snd_soc_codec *codec,
- 		return -EIO;
- 
- 	twl6040_write_reg_cache(codec, reg, value);
--	if (likely(reg < TWL6040_REG_SW_SHADOW))
-+	if (likely(reg < TWL6040_REG_SW_SHADOW) &&
-+	    twl6040_is_path_unmuted(codec, reg))
- 		return twl6040_reg_write(twl6040, reg, value);
- 	else
- 		return 0;
-@@ -1034,11 +1056,78 @@ static int twl6040_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	return 0;
- }
- 
-+static void twl6040_mute_path(struct snd_soc_codec *codec, enum twl6040_dai_id id,
-+			     int mute)
-+{
-+	struct twl6040 *twl6040 = codec->control_data;
-+	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
-+	int hslctl, hsrctl, earctl;
-+	int hflctl, hfrctl;
-+
-+	switch (id) {
-+	case TWL6040_DAI_DL1:
-+		hslctl = twl6040_read_reg_cache(codec, TWL6040_REG_HSLCTL);
-+		hsrctl = twl6040_read_reg_cache(codec, TWL6040_REG_HSRCTL);
-+		earctl = twl6040_read_reg_cache(codec, TWL6040_REG_EARCTL);
-+
-+		if (mute) {
-+			/* Power down drivers and DACs */
-+			earctl &= ~0x01;
-+			hslctl &= ~(TWL6040_HSDRVENA | TWL6040_HSDACENA);
-+			hsrctl &= ~(TWL6040_HSDRVENA | TWL6040_HSDACENA);
-+
-+		}
-+
-+		twl6040_reg_write(twl6040, TWL6040_REG_EARCTL, earctl);
-+		twl6040_reg_write(twl6040, TWL6040_REG_HSLCTL, hslctl);
-+		twl6040_reg_write(twl6040, TWL6040_REG_HSRCTL, hsrctl);
-+		priv->dl1_unmuted = !mute;
-+		break;
-+	case TWL6040_DAI_DL2:
-+		hflctl = twl6040_read_reg_cache(codec, TWL6040_REG_HFLCTL);
-+		hfrctl = twl6040_read_reg_cache(codec, TWL6040_REG_HFRCTL);
-+
-+		if (mute) {
-+			/* Power down drivers and DACs */
-+			hflctl &= ~(TWL6040_HFDACENA | TWL6040_HFPGAENA |
-+				    TWL6040_HFDRVENA);
-+			hfrctl &= ~(TWL6040_HFDACENA | TWL6040_HFPGAENA |
-+				    TWL6040_HFDRVENA);
-+		}
-+
-+		twl6040_reg_write(twl6040, TWL6040_REG_HFLCTL, hflctl);
-+		twl6040_reg_write(twl6040, TWL6040_REG_HFRCTL, hfrctl);
-+		priv->dl2_unmuted = !mute;
-+		break;
-+	default:
-+		break;
-+	};
-+}
-+
-+static int twl6040_digital_mute(struct snd_soc_dai *dai, int mute)
-+{
-+	switch (dai->id) {
-+	case TWL6040_DAI_LEGACY:
-+		twl6040_mute_path(dai->codec, TWL6040_DAI_DL1, mute);
-+		twl6040_mute_path(dai->codec, TWL6040_DAI_DL2, mute);
-+		break;
-+	case TWL6040_DAI_DL1:
-+	case TWL6040_DAI_DL2:
-+		twl6040_mute_path(dai->codec, dai->id, mute);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dai_ops twl6040_dai_ops = {
- 	.startup	= twl6040_startup,
- 	.hw_params	= twl6040_hw_params,
- 	.prepare	= twl6040_prepare,
- 	.set_sysclk	= twl6040_set_dai_sysclk,
-+	.digital_mute	= twl6040_digital_mute,
- };
- 
- static struct snd_soc_dai_driver twl6040_dai[] = {
--- 
-1.8.2.1
+
+--x+FS1wzm/v+2h3Q5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jun 24, 2013 at 02:14:36PM +0200, Takashi Iwai wrote:
+
+> But, I'm not entirely sure whether I'm going to request a pull just
+> for this.  How important are these?  Are they a "must"?
+
+It'll keep.
+
+--x+FS1wzm/v+2h3Q5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRyFIlAAoJELSic+t+oim9J78QAJ4nph8LGq9j0voFviZlrJUK
+auK/SU/Yrhhf+ezYZyFEwvigtcADMqoHEXJEdwuPLXQ9vQu2YngqiFepmmg2EV4D
+GAhspRYn66xnFIrB9pIW8mCWUqWPZJ9ucOMjh5FX4dAEWQwxPwIhPYJuAV+PqtPt
+TTKXJOCdePYMLzaQb8caiSw/dqCDm4wN80Lw5tydmsi+/7ULin02FxQApbrrleOu
+7kQBMvC6QFasBcXF4Cr3xfJ95X8l5Zx8PsruOpmS3Ra8Ebea0ZhnpOccxo+PF/mU
+ISYCrORVQQBpFECDM5XnAxRXKvfy41/vGiUT3S1/pZp3xBvYjQXzK2vCZrTjZ+ID
+fWWrQeMEzVEHd0lf6s2vUhIdxmK+iZD6Xnum3UH1I9ZcsBIWj5nuEZLZrQn+uFme
+APVBvhcSmVSLl644N7WS8DtwW1Lgmi9zAeHUYVzj0klUX0Qp230FR92FpMXAo3ru
+SU9/K4gtdNN8N199eQl9xttCj3ZGnAEfoqjNwWx+jU3o2wc3OnOsGvVXRpRbgc7C
+vChoz7mwEGvUXXzvg7PT834kW9S0OTvENMROka38LsgXybQqEwHkEn40qhASb1Zl
+tRthMQqq9sCJPEEUAkh4FO07Nueokhma9T9a68fqywXrb1yCSYzVne5GK1lq6i6k
+RHWQ3UOxQsnqL6lU6DnC
+=F2qT
+-----END PGP SIGNATURE-----
+
+--x+FS1wzm/v+2h3Q5--
+
+--===============5421754717222693985==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5421754717222693985==--
