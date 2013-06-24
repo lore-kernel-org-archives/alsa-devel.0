@@ -1,21 +1,21 @@
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [RFC PATCH v2 05/12] dmaengine: PL08x: Add support
- for different maximum transfer size
-Date: Tue, 25 Jun 2013 00:27:28 +0200
-Message-ID: <CACRpkdZRJr=_yrd70NP2HfkO2ts1L-nv+Q44JvLxme7Tz+-e6g@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 06/12] dmaengine: PL08x: Fix reading
+ the byte count in cctl
+Date: Tue, 25 Jun 2013 00:28:48 +0200
+Message-ID: <CACRpkdbq6PoMbKGeVWdj=j9=O67cXu-Y0wRJ3SKjn8K339qf=w@mail.gmail.com>
 References: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com>
- <1371933764-24875-6-git-send-email-tomasz.figa@gmail.com>
+ <1371933764-24875-7-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f43.google.com (mail-oa0-f43.google.com
- [209.85.219.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 915D2265006
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 00:27:29 +0200 (CEST)
-Received: by mail-oa0-f43.google.com with SMTP id i7so12607696oag.16
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 15:27:28 -0700 (PDT)
-In-Reply-To: <1371933764-24875-6-git-send-email-tomasz.figa@gmail.com>
+Received: from mail-oa0-f52.google.com (mail-oa0-f52.google.com
+ [209.85.219.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8523F265006
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 00:28:49 +0200 (CEST)
+Received: by mail-oa0-f52.google.com with SMTP id g12so12331719oah.39
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 15:28:48 -0700 (PDT)
+In-Reply-To: <1371933764-24875-7-git-send-email-tomasz.figa@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,14 +31,12 @@ List-Id: alsa-devel@alsa-project.org
 
 On Sat, Jun 22, 2013 at 10:42 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
 
-> PL080S has separate register to store transfer size in, allowing single
-> transfer to be much larger than in standard PL080.
+> From: Alban Bedel <alban.bedel@avionic-design.de>
 >
-> This patch makes the amba-pl08x driver aware of this and removes writing
-> transfer size to reserved bits of CH_CONTROL register on PL080S, which
-> was not a problem witn transfer sizes fitting the original bitfield
-> of PL080, but now would overwrite other fields.
+> There are more fields than just SWIDTH in CH_CONTROL register, so read
+> register value must be masked in addition to shifting.
 >
+> Signed-off-by: Alban Bedel <alban.bedel@avionic-design.de>
 > Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
 
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
