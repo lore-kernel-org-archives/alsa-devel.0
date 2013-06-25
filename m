@@ -1,94 +1,134 @@
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH -next] ASoC: mid-x86: Convert to use devm_* APIs
-Date: Tue, 25 Jun 2013 10:16:56 +0800
-Message-ID: <CAPgLHd89RzJrpMEs+zR8cQvGHruWvne8e0kGb1LeCqoHdKogHA@mail.gmail.com>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [PATCH 2/2 V2] ALSA: hda - Add cache connection
+	info
+Date: Tue, 25 Jun 2013 02:29:58 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC48901183426D@SHSMSX104.ccr.corp.intel.com>
+References: <1372079419-31903-1-git-send-email-xingchao.wang@linux.intel.com>
+ <1372079419-31903-2-git-send-email-xingchao.wang@linux.intel.com>
+ <s5hip13vhjb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, wfp5p@virginia.edu, vinod.koul@linux.intel.com, ramesh.babu@intel.com, namartax.kohli@intel.com
-Cc: yongjun_wei@trendmicro.com.cn, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E23D26518E
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 04:30:03 +0200 (CEST)
+In-Reply-To: <s5hip13vhjb.wl%tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <xingchao.wang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Hi Takashi,
 
-devm_* APIs are device managed and make code simpler.
+I revised the patch and will send you now. The "Cache connection" name was replaced with "In-driver connection".
+In my test with only one HDMI monitor connected at second pin, it looks like:
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- sound/soc/mid-x86/mfld_machine.c | 29 ++++++++++-------------------
- 1 file changed, 10 insertions(+), 19 deletions(-)
+Node 5/7:
+  Connection: 0
+  In-driver Connection: 3
+     0x02 0x03 0x04
 
-diff --git a/sound/soc/mid-x86/mfld_machine.c b/sound/soc/mid-x86/mfld_machine.c
-index 78d5825..e16bcd1 100644
---- a/sound/soc/mid-x86/mfld_machine.c
-+++ b/sound/soc/mid-x86/mfld_machine.c
-@@ -371,7 +371,7 @@ static int snd_mfld_mc_probe(struct platform_device *pdev)
- 
- 	/* audio interrupt base of SRAM location where
- 	 * interrupts are stored by System FW */
--	mc_drv_ctx = kzalloc(sizeof(*mc_drv_ctx), GFP_ATOMIC);
-+	mc_drv_ctx = devm_kzalloc(&pdev->dev, sizeof(*mc_drv_ctx), GFP_ATOMIC);
- 	if (!mc_drv_ctx) {
- 		pr_err("allocation failed\n");
- 		return -ENOMEM;
-@@ -381,40 +381,33 @@ static int snd_mfld_mc_probe(struct platform_device *pdev)
- 				pdev, IORESOURCE_MEM, "IRQ_BASE");
- 	if (!irq_mem) {
- 		pr_err("no mem resource given\n");
--		ret_val = -ENODEV;
--		goto unalloc;
-+		return -ENODEV;
- 	}
--	mc_drv_ctx->int_base = ioremap_nocache(irq_mem->start,
--					resource_size(irq_mem));
-+	mc_drv_ctx->int_base = devm_ioremap_nocache(&pdev->dev, irq_mem->start,
-+						    resource_size(irq_mem));
- 	if (!mc_drv_ctx->int_base) {
- 		pr_err("Mapping of cache failed\n");
--		ret_val = -ENOMEM;
--		goto unalloc;
-+		return -ENOMEM;
- 	}
- 	/* register for interrupt */
--	ret_val = request_threaded_irq(irq, snd_mfld_jack_intr_handler,
-+	ret_val = devm_request_threaded_irq(&pdev->dev, irq,
-+			snd_mfld_jack_intr_handler,
- 			snd_mfld_jack_detection,
- 			IRQF_SHARED, pdev->dev.driver->name, mc_drv_ctx);
- 	if (ret_val) {
- 		pr_err("cannot register IRQ\n");
--		goto unalloc;
-+		return ret_val;
- 	}
- 	/* register the soc card */
- 	snd_soc_card_mfld.dev = &pdev->dev;
- 	ret_val = snd_soc_register_card(&snd_soc_card_mfld);
- 	if (ret_val) {
- 		pr_debug("snd_soc_register_card failed %d\n", ret_val);
--		goto freeirq;
-+		return ret_val;
- 	}
- 	platform_set_drvdata(pdev, mc_drv_ctx);
- 	pr_debug("successfully exited probe\n");
--	return ret_val;
--
--freeirq:
--	free_irq(irq, mc_drv_ctx);
--unalloc:
--	kfree(mc_drv_ctx);
--	return ret_val;
-+	return 0;
- }
- 
- static int snd_mfld_mc_remove(struct platform_device *pdev)
-@@ -422,9 +415,7 @@ static int snd_mfld_mc_remove(struct platform_device *pdev)
- 	struct mfld_mc_private *mc_drv_ctx = platform_get_drvdata(pdev);
- 
- 	pr_debug("snd_mfld_mc_remove called\n");
--	free_irq(platform_get_irq(pdev, 0), mc_drv_ctx);
- 	snd_soc_unregister_card(&snd_soc_card_mfld);
--	kfree(mc_drv_ctx);
- 	return 0;
- }
- 
+Node 6:
+  Connection: 3
+     0x02* 0x03 0x04
+
+Thanks
+--xingchao
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, June 24, 2013 8:07 PM
+> To: Wang Xingchao
+> Cc: alsa-devel@alsa-project.org; Wang, Xingchao
+> Subject: Re: [PATCH 2/2 V2] ALSA: hda - Add cache connection info
+> 
+> At Mon, 24 Jun 2013 09:10:19 -0400,
+> Wang Xingchao wrote:
+> >
+> > Pin's connection list may change dynamically with hot-plug event on
+> > Intel Haswell chip. Users would see connections be "0" in codec#.
+> > when play audio on this pin, software choose connections from cache.
+> > So add Cache connection info to avoid confuse.
+> >
+> > Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+> > ---
+> >  sound/pci/hda/hda_proc.c | 17 ++++++++++++++++-
+> >  1 file changed, 16 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c index
+> > 0fee8fa..403589c 100644
+> > --- a/sound/pci/hda/hda_proc.c
+> > +++ b/sound/pci/hda/hda_proc.c
+> > @@ -504,6 +504,8 @@ static void print_conn_list(struct snd_info_buffer
+> *buffer,
+> >  			    int conn_len)
+> >  {
+> >  	int c, curr = -1;
+> > +	const hda_nid_t *list;
+> > +	int cache_len;
+> >
+> >  	if (conn_len > 1 &&
+> >  	    wid_type != AC_WID_AUD_MIX &&
+> > @@ -511,7 +513,7 @@ static void print_conn_list(struct snd_info_buffer
+> *buffer,
+> >  	    wid_type != AC_WID_POWER)
+> >  		curr = snd_hda_codec_read(codec, nid, 0,
+> >  					  AC_VERB_GET_CONNECT_SEL, 0);
+> > -	snd_iprintf(buffer, "  Connection: %d\n", conn_len);
+> > +	snd_iprintf(buffer, "  Raw Connection: %d\n", conn_len);
+> 
+> Don't change the existing entry.  It'll break the user-space tools that read the
+> proc contents.
+> 
+> >  	if (conn_len > 0) {
+> >  		snd_iprintf(buffer, "    ");
+> >  		for (c = 0; c < conn_len; c++) {
+> > @@ -521,6 +523,19 @@ static void print_conn_list(struct snd_info_buffer
+> *buffer,
+> >  		}
+> >  		snd_iprintf(buffer, "\n");
+> >  	}
+> > +
+> > +	/* Get Cache connections info */
+> > +	cache_len = snd_hda_get_conn_list(codec, nid, &list);
+> > +	if (cache_len != conn_len
+> > +			|| memcmp(list, conn, conn_len)) {
+> > +		snd_iprintf(buffer, "  Cache Connection: %d\n", conn_len);
+> 
+> Must be cache_len.
+> 
+> Also "Cache connection" might be a bit misleading.  In this case, it's not
+> cached but used as alternative in driver.  "In-driver connection"
+> or such?  English-native people can give better advice...
+> 
+> > +		if (cache_len > 0) {
+> > +			snd_iprintf(buffer, "    ");
+> > +			for (c = 0; c < conn_len; c++)
+> 
+> Must be cache_len, too.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> 
+> > +				snd_iprintf(buffer, " 0x%02x", list[c]);
+> > +			snd_iprintf(buffer, "\n");
+> > +		}
+> > +	}
+> >  }
+> >
+> >  static void print_gpio(struct snd_info_buffer *buffer,
+> > --
+> > 1.8.1.2
+> >
