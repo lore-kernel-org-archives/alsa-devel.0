@@ -1,43 +1,72 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 2/3] ARM: dts: mx28: Provide a codec clock
-Date: Tue, 25 Jun 2013 22:22:58 +0800
-Message-ID: <20130625142257.GE12178@S2101-09.ap.freescale.net>
-References: <1372168801-4221-1-git-send-email-fabio.estevam@freescale.com>
- <1372168801-4221-2-git-send-email-fabio.estevam@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC PATCH v2 00/12] ARM: s3c64xx: Let amba-pl08x driver handle
+ DMA
+Date: Tue, 25 Jun 2013 16:38:43 +0100
+Message-ID: <20130625153843.GF27646@sirena.org.uk>
+References: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com>
+ <20130625102818.GA27646@sirena.org.uk>
+ <6520269.XdaOpEg0Ud@amdc1227>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E815265274
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 16:22:33 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qPhbOctOI3h5o759"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1372168801-4221-2-git-send-email-fabio.estevam@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@freescale.com>
-Cc: marex@denx.de, alsa-devel@alsa-project.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <6520269.XdaOpEg0Ud@amdc1227>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tomasz Figa <t.figa@samsung.com>
+Cc: Tomasz Figa <tomasz.figa@gmail.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Linus Walleij <linus.walleij@linaro.org>, Alessandro Rubini <rubini@gnudd.com>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Grant Likely <grant.likely@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Padmavathi Venna <padma.v@samsung.com>, Thomas Abraham <thomas.abraham@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>Russell King - ARM Linux <lin>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 25, 2013 at 11:00:00AM -0300, Fabio Estevam wrote:
-> Since commit 9e13f345887 (ASoC: sgtl5000: Let the codec acquire its clock) it is 
-> necessary to pass a codec clock to the sgtl5000 driver.
-> 
-> Since the saif mclk cannot be passed as a real clock within the clock framework,
-> let's pass a dummy one to the codec driver.
-> 
-Why can not saif driver register the mclk to clock framework?
 
-Shawn
+--qPhbOctOI3h5o759
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> The mxs-saif driver will activate the codec clock.
-> 
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+On Tue, Jun 25, 2013 at 01:22:20PM +0200, Tomasz Figa wrote:
+> On Tuesday 25 of June 2013 11:28:18 Mark Brown wrote:
+
+> > On my non-DT s3c64xx system I get this when trying to use SPI for the
+> > first time:
+
+> Could you clarify first time? Does it work on further retries?
+
+No, the system appears to lock up fairly solidly - I suspect poor error
+handling in the SPI driver.
+
+> > [    1.739385] s3c64xx-spi s3c6410-spi.0: Failed to get RX DMA channel
+> > [    1.743437] spi_master spi0: failed to prepare transfer hardware
+
+> > though I haven't yet tried your clock patches (there were some conficts
+> > that I didn't get round to picking up yet).
+
+> This shouldn't really matter, as long as the pl080 drivers probes=20
+> correctly.
+
+Indeed, I was wondering if it was failing to probe due to not getting
+its clocks though since that's another area you've been actively working
+on.
+
+--qPhbOctOI3h5o759
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRybmAAAoJELSic+t+oim913QP/juMt3TkCGQjjxdjvuMq43df
+qSp98jXUvmvlCtiGXei/uV3RcIj98fYj5y7KP8CqSqMVoqbdURSTZojkFEOilp1c
+Rd6fhfUJLQ5h5xFBfdSYqBnphXp/DqX7z754SeAgH21xjD8w4fDTqxObAqLQ+6B7
+G27WceaFLTkQfpiGekL1KZWIT6N/f20bcfkiVGU8ek20xytwF+5GMrB/FF1apCvA
+bK6a69QUAkHnPNBIr3XA53G+Yz9xmvNkC8fH0Ygii9qEyQ8io2oWCfrZ3MErUq5n
+Bi5jxNX1+ILF4sdXyhr6Ugz4KzZ4EuuHkollwLSD96QTT0rV27NGRH3L31unfWIN
+VaLAKPMPMLybN6nwUIdjw3J58oV85AdbJvwTrsGC4NIv0hyvPs52NVcxya3Ykynm
+sG+vJquEPzgyA+CdE6ql10oET7OCvCcxqgwodZjn2VVv+iOzT8hZkrp/yZv/N+BE
+QzWq+43OUV5kORwRCvJ3mldwlsmbTYPFL8PMdXNj4CeV8Yw5arxfBDrTrd/TtUYw
+Z6dF5AClNYmrPd0DcVdS/IllVGMXBHA26l8MbokYjCzdkDzpKKXxW5/exI+Mn1LR
+pDezJ3H3tRmu4CV11NWOOELin0taPewrxpBw/K9qR+RtzAVHhe4jESUn1zMjSTCM
+hErhd6oowRnGVSeK55pW
+=CVWt
+-----END PGP SIGNATURE-----
+
+--qPhbOctOI3h5o759--
