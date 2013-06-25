@@ -1,31 +1,40 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC PATCH v2 05/12] dmaengine: PL08x: Add support for
- different maximum transfer size
-Date: Tue, 25 Jun 2013 21:40:04 +0530
-Message-ID: <20130625161003.GQ23141@intel.com>
-References: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com>
- <1371933764-24875-6-git-send-email-tomasz.figa@gmail.com>
+From: "Ki'Sak" <kisak42@gmail.com>
+Subject: CA0110 analog mic capture flatline
+Date: Tue, 25 Jun 2013 13:11:51 -0400
+Message-ID: <CAL=yMgVtrL0ZoSAp-=7kChv9vXkKDrALv+fgHAcP655km6WX+A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1371933764-24875-6-git-send-email-tomasz.figa@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Dan Williams <djbw@fb.com>, Linus Walleij <linus.walleij@linaro.org>, Alessandro Rubini <rubini@gnudd.com>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Mark Brown <broonie@kernel.org>, Grant Likely <grant.likely@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Padmavathi Venna <padma.v@samsung.com>, Thomas Abraham <thomas.abraham@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Alban Bedel <alba>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-we0-f182.google.com (mail-we0-f182.google.com
+ [74.125.82.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94D5E2652C2
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 19:11:51 +0200 (CEST)
+Received: by mail-we0-f182.google.com with SMTP id p60so9597824wes.13
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 10:11:51 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jun 22, 2013 at 10:42:37PM +0200, Tomasz Figa wrote:
-> PL080S has separate register to store transfer size in, allowing single
-> transfer to be much larger than in standard PL080.
-> 
-> This patch makes the amba-pl08x driver aware of this and removes writing
-> transfer size to reserved bits of CH_CONTROL register on PL080S, which
-> was not a problem witn transfer sizes fitting the original bitfield
-> of PL080, but now would overwrite other fields.
-> 
-> Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
-Acked by: Vinod Koul <vinod.koul@intel.com>
+Good day alsa-devel,
 
---
-~Vinod
+I have a "Creative Labs [SB X-Fi Xtreme Audio] CA0110-IBG" which I have
+been unable to capture any content from the analog mic jack. I am a Gentoo
+Linux user with the 3.8.13 kernel / alsa 1.0.26. This issue has been filed
+with the wrong devs over at ubuntu's bugtracker and opensuse's forum. Also,
+I found a report that analog capture was working on this card as recently
+as September 2009.
+
+Thank you for your time,
+Ki'Sak
+
+Note: I have already tried to report this issue, this is a resend without
+urls due to 2 weeks without a response or it reaching the mailing list.
