@@ -1,17 +1,16 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH 3/3] ASoC: sgtl5000: Defer probe in case of I2C
-	error
-Date: Tue, 25 Jun 2013 11:00:01 -0300
-Message-ID: <1372168801-4221-3-git-send-email-fabio.estevam@freescale.com>
+Subject: [PATCH 2/3] ARM: dts: mx28: Provide a codec clock
+Date: Tue, 25 Jun 2013 11:00:00 -0300
+Message-ID: <1372168801-4221-2-git-send-email-fabio.estevam@freescale.com>
 References: <1372168801-4221-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe001.messaging.microsoft.com [207.46.163.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 4741E2608EC
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 16:00:45 +0200 (CEST)
+Received: from tx2outboundpool.messaging.microsoft.com
+ (tx2ehsobe005.messaging.microsoft.com [65.55.88.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 100D62608EC
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 16:00:58 +0200 (CEST)
 In-Reply-To: <1372168801-4221-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,36 +25,59 @@ To: broonie@kernel.org
 Cc: marex@denx.de, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-In case of I2C error, let's defer the probe.
+Since commit 9e13f345887 (ASoC: sgtl5000: Let the codec acquire its clock) it is 
+necessary to pass a codec clock to the sgtl5000 driver.
 
-On mx28, for example, the first read of the codec revision register fails 
-because there is no codec clock provided at this point. The codec clock will be 
-enabled later in the mxs-saif driver, so return -EPROBE_DEFER in case of I2C 
-read error, so that the codec driver can do another attempt at a later stage 
-when the codec clock is available.
+Since the saif mclk cannot be passed as a real clock within the clock framework,
+let's pass a dummy one to the codec driver.
+
+The mxs-saif driver will activate the codec clock.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/codecs/sgtl5000.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/imx28-apx4devkit.dts | 2 +-
+ arch/arm/boot/dts/imx28-evk.dts        | 2 +-
+ arch/arm/boot/dts/imx28-m28evk.dts     | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index d441559..a2dce4a 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1536,9 +1536,12 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+diff --git a/arch/arm/boot/dts/imx28-apx4devkit.dts b/arch/arm/boot/dts/imx28-apx4devkit.dts
+index 43bf3c7..f26bf2f 100644
+--- a/arch/arm/boot/dts/imx28-apx4devkit.dts
++++ b/arch/arm/boot/dts/imx28-apx4devkit.dts
+@@ -147,7 +147,7 @@
+ 					reg = <0x0a>;
+ 					VDDA-supply = <&reg_3p3v>;
+ 					VDDIO-supply = <&reg_3p3v>;
+-
++					clocks = <&clks 65>;
+ 				};
  
- 	/* read chip information */
- 	ret = regmap_read(sgtl5000->regmap, SGTL5000_CHIP_ID, &reg);
--	if (ret)
-+	if (ret) {
-+		ret = -EPROBE_DEFER; /* If I2C read failed, try again later */
- 		goto disable_clk;
+ 				pcf8563: rtc@51 {
+diff --git a/arch/arm/boot/dts/imx28-evk.dts b/arch/arm/boot/dts/imx28-evk.dts
+index 3637bf3..28f20b6 100644
+--- a/arch/arm/boot/dts/imx28-evk.dts
++++ b/arch/arm/boot/dts/imx28-evk.dts
+@@ -193,7 +193,7 @@
+ 					reg = <0x0a>;
+ 					VDDA-supply = <&reg_3p3v>;
+ 					VDDIO-supply = <&reg_3p3v>;
+-
++					clocks = <&clks 65>;
+ 				};
  
-+	}
-+
- 	if (((reg & SGTL5000_PARTID_MASK) >> SGTL5000_PARTID_SHIFT) !=
- 	    SGTL5000_PARTID_PART_ID) {
- 		dev_err(&client->dev,
+ 				at24@51 {
+diff --git a/arch/arm/boot/dts/imx28-m28evk.dts b/arch/arm/boot/dts/imx28-m28evk.dts
+index 880df2f..a09c5bf 100644
+--- a/arch/arm/boot/dts/imx28-m28evk.dts
++++ b/arch/arm/boot/dts/imx28-m28evk.dts
+@@ -184,7 +184,7 @@
+ 					reg = <0x0a>;
+ 					VDDA-supply = <&reg_3p3v>;
+ 					VDDIO-supply = <&reg_3p3v>;
+-
++					clocks = <&clks 65>;
+ 				};
+ 
+ 				eeprom: eeprom@51 {
 -- 
 1.8.1.2
