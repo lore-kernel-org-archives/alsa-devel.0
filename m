@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Tegra and i.MX are mutually exclusive
-Date: Tue, 25 Jun 2013 10:26:12 +0100
-Message-ID: <20130625092612.GX27646@sirena.org.uk>
-References: <5967649.DUvDfofhX4@wuerfel>
- <51C93A62.1050702@metafoo.de>
+Subject: Re: [PATCH 1/5] ASoC: codecs: tas5086: fix
+	documentation
+Date: Tue, 25 Jun 2013 10:26:58 +0100
+Message-ID: <20130625092658.GY27646@sirena.org.uk>
+References: <1372083932-4318-1-git-send-email-zonque@gmail.com>
+ <20130624160551.GU27646@sirena.org.uk> <51C877F8.2010106@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5376930129321819097=="
+Content-Type: multipart/mixed; boundary="===============0365339758265455012=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C9BE26520A
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 11:26:17 +0200 (CEST)
-In-Reply-To: <51C93A62.1050702@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 670172655F4
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 11:27:00 +0200 (CEST)
+In-Reply-To: <51C877F8.2010106@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,72 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Stephen Warren <swarren@wwwdotorg.org>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5376930129321819097==
+--===============0365339758265455012==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qy9NDBoEzxL7V3MP"
+	protocol="application/pgp-signature"; boundary="TNwgp3ukRgvXRjlQ"
 Content-Disposition: inline
 
 
---qy9NDBoEzxL7V3MP
+--TNwgp3ukRgvXRjlQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jun 25, 2013 at 08:36:18AM +0200, Lars-Peter Clausen wrote:
+On Mon, Jun 24, 2013 at 06:46:48PM +0200, Daniel Mack wrote:
+> On 24.06.2013 18:05, Mark Brown wrote:
 
-> It's just the ac97 drivers that are mutually exclusive. I'm not sure whether
-> it makes sense to make the whole platforms mutually exclusive for this.
+> > Applied al, thanks.  Though specifying this in nanoseconds does seem
+> > absurdly high resolution...
 
-I agree, this is excessive and seems to rather defeat the point of
-having multi-platform in the first place.  It makes it impossible to
-build the sound drivers multi-platform all for the sake of a bus which
-is used by approximately nothing these days (hence the lack of love the
-code has had).
+> Meh, I was confused, sorry. That first patch need to be revered (or
+> dropped), the documentation was correct as it stood. The time values are
+> given in fractions of milliseconds, not microseconds. My bad.
 
-> Also this is not limited to tegra and imx. As more platforms are converted
-> to multiplatform ARM the same issue will pop up for other platforms as well.
-> I don't think your solution will scale really well for multiple platforms.
-> The best solution would of course be to make AC97 work properly with
-> multiple AC97 drivers. But maybe we can get away with a 'choice' Kconfig
-> entry which allows you to select which platforms AC97 driver you want to build.
+Dropped.
 
-It should be easy enough to refactor so that we assign the ops pointer
-when the driver is loaded instead of at link time which isn't solving
-the issue but makes it better.  I'll send some patches.
-
---qy9NDBoEzxL7V3MP
+--TNwgp3ukRgvXRjlQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRyWIxAAoJELSic+t+oim9ALQP/j4qkWKmvEmxXsgeeKennPVD
-NasS+TIHqnqdMKej1DOBb+geHtYC5ykZxLiajfEcE/Q7vm2gmrCBlkZyZZXbg00/
-OwmgUjC93lH8uSV0xPkahPonZJTyub3G9fQ5R7wI1t1v19qZfqbzqjhcPUEghMsI
-pCW2+/gMikhj0qzrhLp9MwnzACh8AU7QygSjDw4OV8iAIXAG2A20pgP0Rg7Ld54F
-qxf2zBx6sF3knC80NuLVpDpMBFBRE9PjFmEjMpmq0EK0sVJSjUN3y+wr703ccklO
-D7LxHd2DvdNyuitBSNQv7t8bO4NOg33U5+x/IdOqmajJ2bB8p+Qjtu8lwhsukT+m
-1RryMPxLqowj1oVr+VnLDAExPPNBXwwlX2dA1wFNUXpEBMx8DZ2tP1yPh6Gbhq+b
-V7XKNFfsi2gQBJjXHVHb0LrefUKBOTYIXbaE0RL7z56Dw4VXD0bF6b+K/S1lR0Ra
-DROn9VvZEyVBuuXHQpH4Jj2Ak5P2MryTjOMk09EEyL0lsgmzpT/3JSoxljsStkba
-P42O9+TsB7RMUXMuxcdHsjlJ5jgD+XAkbqkZnfUsGCe5fDDmrVEyRAxmXcjmTIfC
-qszFVk2u6i6AyePzhA5+051V4E1/s0+e8svEUThZ+xVHm8qLa+EWSLlwopkMSspV
-HY0fvDwj0GdZqWQE77+M
-=CgMf
+iQIcBAEBAgAGBQJRyWJfAAoJELSic+t+oim9D1gQAJrUgwBnl5pEgfrI2dlm0z/6
+yjlwgivVneqyznhfm9DfN1fqGUPHad/68ueC0VfFnOFC6p/pD2xH2MKz4hT2PuE5
+hMaWuq1I2Gf0njYwyhEAsY5ykTVxOCXYM3EdFcbP3yRXPAiqJNzQdgsYuVjQ1Hv+
+arjyOwsdaDGlzKdDk4paMYUqgbSFQ1SNlzHiyPoHaxjPiuOazFtOJS50oj7JM/MN
+Z+lUXEwHUvdFuxkr+/qlJUIjHgYqxdhrzdquIUI65/IXvZcqgfHoomhYvc8pbWdR
+vQ8KN/Al6EDF8/jwAtcP40p5df3HLorVOpFLw1SNZq6l8k0bmeXlY0XTsSHcKrHw
+VbQQq5pG2sWlZch/LXcpuezDk4sAi2ggveOovy6RYq9uoq0jifUAnRNw2Ir5wlxK
+mR4Qe8XGCzL7o9bEcyQCl9Raz1pJYONVlEPaOgIbVx0uDHyMoAJn2EvpZf0TvDDc
+WQrrfmeJf1E0Q047uSK3tkuCSHi3Pwbp4F253+XfZz/nutqwViJwOMsmxmmkh/fD
+kKTkiIWYfTmK48mCx+M71uVCWCoFMpyPPYmMhJG456eNQbRhgdMME4v/8n6Mu0Lf
+f9lQdTM8WUS5U9vHBwOd7gTt74QWerJern7af+3PiRhYG1UxnDz2FMA39xM42OMo
+sWO7FHTR3kToaRPqAIxL
+=mmio
 -----END PGP SIGNATURE-----
 
---qy9NDBoEzxL7V3MP--
+--TNwgp3ukRgvXRjlQ--
 
---===============5376930129321819097==
+--===============0365339758265455012==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5376930129321819097==--
+--===============0365339758265455012==--
