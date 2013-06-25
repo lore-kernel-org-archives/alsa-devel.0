@@ -1,17 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: codecs: tas5086: fix
-	documentation
-Date: Tue, 25 Jun 2013 10:26:58 +0100
-Message-ID: <20130625092658.GY27646@sirena.org.uk>
-References: <1372083932-4318-1-git-send-email-zonque@gmail.com>
- <20130624160551.GU27646@sirena.org.uk> <51C877F8.2010106@gmail.com>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [PATCH 2/2] ALSA: hda - get realtime ELD info when
+ codec suspended
+Date: Tue, 25 Jun 2013 09:33:51 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC4890118344E1@SHSMSX104.ccr.corp.intel.com>
+References: <1372074324-13563-1-git-send-email-xingchao.wang@linux.intel.com>
+ <1372074324-13563-2-git-send-email-xingchao.wang@linux.intel.com>
+ <s5hmwqfvizc.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC489011833B68@SHSMSX104.ccr.corp.intel.com>
+ <s5hk3ljvhu2.wl%tiwai@suse.de> <51C83FC5.3090005@canonical.com>
+ <s5h38s7vf2v.wl%tiwai@suse.de> <51C94A80.70709@canonical.com>
+ <s5hobauzkse.wl%tiwai@suse.de> <51C95CA3.7000001@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0365339758265455012=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 670172655F4
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 11:27:00 +0200 (CEST)
-In-Reply-To: <51C877F8.2010106@gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80C08265243
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 11:34:16 +0200 (CEST)
+In-Reply-To: <51C95CA3.7000001@canonical.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +28,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============0365339758265455012==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TNwgp3ukRgvXRjlQ"
-Content-Disposition: inline
+Hi David,
 
 
---TNwgp3ukRgvXRjlQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org
+> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of David Henningsson
+> Sent: Tuesday, June 25, 2013 5:02 PM
+> To: Wang, Xingchao
+> Cc: Takashi Iwai; alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] [PATCH 2/2] ALSA: hda - get realtime ELD info when
+> codec suspended
+> 
+> On 06/25/2013 09:55 AM, Takashi Iwai wrote:
+> > At Tue, 25 Jun 2013 09:45:04 +0200,
+> > David Henningsson wrote:
+> >>> There is a low power mode that allows the jack detection, but this
+> >>> is different from the aggressive power-saving with runtime D3.
+> >>
+> >> If "aggressive power-saving with runtime D3" is the same as
+> >> AZX_DCAPS_PM_RUNTIME, this is also enabled for analog codecs
+> >> connected to a Lynx point controller.
+> >>
+> >> It looks like userspace have problems getting notifications for e g
+> >> headphone insertion on Lynx point controllers, so this is not only an
+> >> HDMI/DP problem?
+> >
+> > Yes.
+> >
+> >> Trying to read up a little on this, there seem to be an option to set
+> >> the WAKEEN register to have jack detection working even when the
+> >> controller is in D3. (refer HDA specification 4.5.9.2:
+> >> Codec Wake From System S0, Controller D3.) But it seems we do not
+> >> (yet) use this feature. Is this something that could/should be
+> >> implemented to fix the jack detection problems that seems to be
+> >> happening otherwise?
+> >
+> > It sounds feasible, at least for traditional jack detection of analog
+> > pins.  But I'm not sure whether this would help for the Intel graphics
+> > case.  Just need testing.
+> 
+> Xingchao, what are your thoughts about using WAKEEN to wakeup both Lynx
+> point and Haswell HDMI?
 
-On Mon, Jun 24, 2013 at 06:46:48PM +0200, Daniel Mack wrote:
-> On 24.06.2013 18:05, Mark Brown wrote:
+That's okay for me, I would do some test on that. do you have some test cases?
+That would help me verify them when enable WAKEEN feature.
 
-> > Applied al, thanks.  Though specifying this in nanoseconds does seem
-> > absurdly high resolution...
-
-> Meh, I was confused, sorry. That first patch need to be revered (or
-> dropped), the documentation was correct as it stood. The time values are
-> given in fractions of milliseconds, not microseconds. My bad.
-
-Dropped.
-
---TNwgp3ukRgvXRjlQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRyWJfAAoJELSic+t+oim9D1gQAJrUgwBnl5pEgfrI2dlm0z/6
-yjlwgivVneqyznhfm9DfN1fqGUPHad/68ueC0VfFnOFC6p/pD2xH2MKz4hT2PuE5
-hMaWuq1I2Gf0njYwyhEAsY5ykTVxOCXYM3EdFcbP3yRXPAiqJNzQdgsYuVjQ1Hv+
-arjyOwsdaDGlzKdDk4paMYUqgbSFQ1SNlzHiyPoHaxjPiuOazFtOJS50oj7JM/MN
-Z+lUXEwHUvdFuxkr+/qlJUIjHgYqxdhrzdquIUI65/IXvZcqgfHoomhYvc8pbWdR
-vQ8KN/Al6EDF8/jwAtcP40p5df3HLorVOpFLw1SNZq6l8k0bmeXlY0XTsSHcKrHw
-VbQQq5pG2sWlZch/LXcpuezDk4sAi2ggveOovy6RYq9uoq0jifUAnRNw2Ir5wlxK
-mR4Qe8XGCzL7o9bEcyQCl9Raz1pJYONVlEPaOgIbVx0uDHyMoAJn2EvpZf0TvDDc
-WQrrfmeJf1E0Q047uSK3tkuCSHi3Pwbp4F253+XfZz/nutqwViJwOMsmxmmkh/fD
-kKTkiIWYfTmK48mCx+M71uVCWCoFMpyPPYmMhJG456eNQbRhgdMME4v/8n6Mu0Lf
-f9lQdTM8WUS5U9vHBwOd7gTt74QWerJern7af+3PiRhYG1UxnDz2FMA39xM42OMo
-sWO7FHTR3kToaRPqAIxL
-=mmio
------END PGP SIGNATURE-----
-
---TNwgp3ukRgvXRjlQ--
-
---===============0365339758265455012==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0365339758265455012==--
+Thanks
+--xingchao
+> 
+> 
+> --
+> David Henningsson, Canonical Ltd.
+> https://launchpad.net/~diwic
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
