@@ -1,46 +1,31 @@
-From: Mark Brown <broonie@linaro.org>
-Subject: [PATCH] ASoC: wm9705: Remove noisy print on boot
-Date: Tue, 25 Jun 2013 17:21:42 +0100
-Message-ID: <1372177302-9282-1-git-send-email-broonie@linaro.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [RFC PATCH v2 05/12] dmaengine: PL08x: Add support for
+ different maximum transfer size
+Date: Tue, 25 Jun 2013 21:40:04 +0530
+Message-ID: <20130625161003.GQ23141@intel.com>
+References: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com>
+ <1371933764-24875-6-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C6C626568B
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 18:21:48 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1371933764-24875-6-git-send-email-tomasz.figa@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Dan Williams <djbw@fb.com>, Linus Walleij <linus.walleij@linaro.org>, Alessandro Rubini <rubini@gnudd.com>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Mark Brown <broonie@kernel.org>, Grant Likely <grant.likely@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Padmavathi Venna <padma.v@samsung.com>, Thomas Abraham <thomas.abraham@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Alban Bedel <alba>
 List-Id: alsa-devel@alsa-project.org
 
-There's no content in the announcement.
+On Sat, Jun 22, 2013 at 10:42:37PM +0200, Tomasz Figa wrote:
+> PL080S has separate register to store transfer size in, allowing single
+> transfer to be much larger than in standard PL080.
+> 
+> This patch makes the amba-pl08x driver aware of this and removes writing
+> transfer size to reserved bits of CH_CONTROL register on PL080S, which
+> was not a problem witn transfer sizes fitting the original bitfield
+> of PL080, but now would overwrite other fields.
+> 
+> Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
+Acked by: Vinod Koul <vinod.koul@intel.com>
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/codecs/wm9705.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
-index 05b1f34..a5fc61d 100644
---- a/sound/soc/codecs/wm9705.c
-+++ b/sound/soc/codecs/wm9705.c
-@@ -337,8 +337,6 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
- {
- 	int ret = 0;
- 
--	printk(KERN_INFO "WM9705 SoC Audio Codec\n");
--
- 	ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, 0);
- 	if (ret < 0) {
- 		printk(KERN_ERR "wm9705: failed to register AC97 codec\n");
--- 
-1.8.3.1
+--
+~Vinod
