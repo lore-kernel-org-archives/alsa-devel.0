@@ -1,27 +1,56 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC PATCH v2 02/12] dmaengine: PL08x: Add support for
- different offset of CONFIG register
-Date: Tue, 25 Jun 2013 21:04:40 +0530
-Message-ID: <20130625153440.GP23141@intel.com>
-References: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com>
- <1371933764-24875-3-git-send-email-tomasz.figa@gmail.com>
+From: Mark Brown <broonie@linaro.org>
+Subject: [PATCH] ASoC: stac9766: Remove version number
+Date: Tue, 25 Jun 2013 17:07:25 +0100
+Message-ID: <1372176445-8135-1-git-send-email-broonie@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1371933764-24875-3-git-send-email-tomasz.figa@gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Dan Williams <djbw@fb.com>, Linus Walleij <linus.walleij@linaro.org>, Alessandro Rubini <rubini@gnudd.com>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Mark Brown <broonie@kernel.org>, Grant Likely <grant.likely@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Padmavathi Venna <padma.v@samsung.com>, Thomas Abraham <thomas.abraham@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Alban Bedel <alba>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4443926569C
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 18:07:28 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jun 22, 2013 at 10:42:34PM +0200, Tomasz Figa wrote:
-> Some variants of PL08x (namely PL080S, found in Samsung S3C64xx SoCs)
-> have CONFIG register at different offset. This patch makes the driver
-> use offset from vendor data struct.
-> 
-> Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+There is no need to have versioning beyond that for the kernel, especially
+when the version number never gets updated.
 
---
-~Vinod
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/stac9766.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/sound/soc/codecs/stac9766.c b/sound/soc/codecs/stac9766.c
+index 2eda85ba..cbc7ae3 100644
+--- a/sound/soc/codecs/stac9766.c
++++ b/sound/soc/codecs/stac9766.c
+@@ -28,8 +28,6 @@
+ 
+ #include "stac9766.h"
+ 
+-#define STAC9766_VERSION "0.10"
+-
+ /*
+  * STAC9766 register cache
+  */
+@@ -338,8 +336,6 @@ static int stac9766_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	int ret = 0;
+ 
+-	printk(KERN_INFO "STAC9766 SoC Audio Codec %s\n", STAC9766_VERSION);
+-
+ 	ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, 0);
+ 	if (ret < 0)
+ 		goto codec_err;
+-- 
+1.8.3.1
