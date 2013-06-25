@@ -1,40 +1,53 @@
-From: "Ki'Sak" <kisak42@gmail.com>
-Subject: CA0110 analog mic capture flatline
-Date: Tue, 25 Jun 2013 13:11:51 -0400
-Message-ID: <CAL=yMgVtrL0ZoSAp-=7kChv9vXkKDrALv+fgHAcP655km6WX+A@mail.gmail.com>
+From: Mike Turquette <mturquette@linaro.org>
+Subject: Re: [PATCH 2/3] ARM: dts: mx28: Provide a codec clock
+Date: Tue, 25 Jun 2013 10:27:59 -0700
+Message-ID: <20130625172759.23972.34839@quantum>
+References: <1372168801-4221-1-git-send-email-fabio.estevam@freescale.com>
+ <1372168801-4221-2-git-send-email-fabio.estevam@freescale.com>
+ <20130625142257.GE12178@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f182.google.com (mail-we0-f182.google.com
- [74.125.82.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 94D5E2652C2
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 19:11:51 +0200 (CEST)
-Received: by mail-we0-f182.google.com with SMTP id p60so9597824wes.13
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 10:11:51 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20130625142257.GE12178@S2101-09.ap.freescale.net>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <fabio.estevam@freescale.com>
+Cc: marex@denx.de, alsa-devel@alsa-project.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Good day alsa-devel,
+Quoting Shawn Guo (2013-06-25 07:22:58)
+> On Tue, Jun 25, 2013 at 11:00:00AM -0300, Fabio Estevam wrote:
+> > Since commit 9e13f345887 (ASoC: sgtl5000: Let the codec acquire its clock) it is 
+> > necessary to pass a codec clock to the sgtl5000 driver.
+> > 
+> > Since the saif mclk cannot be passed as a real clock within the clock framework,
+> > let's pass a dummy one to the codec driver.
+> > 
+> Why can not saif driver register the mclk to clock framework?
 
-I have a "Creative Labs [SB X-Fi Xtreme Audio] CA0110-IBG" which I have
-been unable to capture any content from the analog mic jack. I am a Gentoo
-Linux user with the 3.8.13 kernel / alsa 1.0.26. This issue has been filed
-with the wrong devs over at ubuntu's bugtracker and opensuse's forum. Also,
-I found a report that analog capture was working on this card as recently
-as September 2009.
+There are a growing number of drivers which define their own clocks. One
+example can be found in drivers/media/platform/omap3isp/isp.c.
 
-Thank you for your time,
-Ki'Sak
+Regards,
+Mike
 
-Note: I have already tried to report this issue, this is a resend without
-urls due to 2 weeks without a response or it reaching the mailing list.
+> 
+> Shawn
+> 
+> > The mxs-saif driver will activate the codec clock.
+> > 
+> > Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
