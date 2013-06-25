@@ -1,43 +1,71 @@
-From: Tomasz Figa <t.figa@samsung.com>
-Subject: Re: [RFC PATCH v2 00/12] ARM: s3c64xx: Let amba-pl08x driver handle DMA
-Date: Tue, 25 Jun 2013 13:22:20 +0200
-Message-ID: <6520269.XdaOpEg0Ud@amdc1227>
-References: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com>
- <20130625102818.GA27646@sirena.org.uk>
+From: Fabio Estevam <fabio.estevam@freescale.com>
+Subject: [PATCH 1/3] clk: mxs: clk-imx28: Provide a dummy clock
+Date: Tue, 25 Jun 2013 10:59:59 -0300
+Message-ID: <1372168801-4221-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <20130625102818.GA27646@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Tomasz Figa <tomasz.figa@gmail.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Linus Walleij <linus.walleij@linaro.org>, Alessandro Rubini <rubini@gnudd.com>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Grant Likely <grant.likely@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Padmavathi Venna <padma.v@samsung.com>, Thomas Abraham <thomas.abraham@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>Russell King - ARM Linux <lin>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from db8outboundpool.messaging.microsoft.com
+ (mail-db8lp0187.outbound.messaging.microsoft.com [213.199.154.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id 051BA265268
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 16:00:46 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: marex@denx.de, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Mike Turquette <mturquette@linaro.org>, shawn.guo@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Sometimes it is useful to be able to pass a dummy clock for a driver.
 
-Thanks for testing this series.
+Add support for a dummy clock.
 
-On Tuesday 25 of June 2013 11:28:18 Mark Brown wrote:
-> On Sat, Jun 22, 2013 at 10:42:32PM +0200, Tomasz Figa wrote:
-> > This is another version of my patches extending support of amba-pl08x
-> > DMA engine driver to PL080S DMA engine (PL080 modified by Samsung)
-> > found
-> > in Samsung S3C64xx SoCs.
-> 
-> On my non-DT s3c64xx system I get this when trying to use SPI for the
-> first time:
+Cc: Mike Turquette <mturquette@linaro.org>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ Documentation/devicetree/bindings/clock/imx28-clock.txt | 1 +
+ drivers/clk/mxs/clk-imx28.c                             | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-Could you clarify first time? Does it work on further retries?
-
-> [    1.739385] s3c64xx-spi s3c6410-spi.0: Failed to get RX DMA channel
-> [    1.743437] spi_master spi0: failed to prepare transfer hardware
-> 
-> though I haven't yet tried your clock patches (there were some conficts
-> that I didn't get round to picking up yet).
-
-This shouldn't really matter, as long as the pl080 drivers probes 
-correctly.
-
-Best regards,
-Tomasz
+diff --git a/Documentation/devicetree/bindings/clock/imx28-clock.txt b/Documentation/devicetree/bindings/clock/imx28-clock.txt
+index e6587af..5a153ef 100644
+--- a/Documentation/devicetree/bindings/clock/imx28-clock.txt
++++ b/Documentation/devicetree/bindings/clock/imx28-clock.txt
+@@ -76,6 +76,7 @@ clocks and IDs.
+ 	usb0_phy	62
+ 	usb1_phy	63
+ 	enet_out	64
++	dummy		65
+ 
+ Examples:
+ 
+diff --git a/drivers/clk/mxs/clk-imx28.c b/drivers/clk/mxs/clk-imx28.c
+index 4faf0af..6b55211 100644
+--- a/drivers/clk/mxs/clk-imx28.c
++++ b/drivers/clk/mxs/clk-imx28.c
+@@ -143,7 +143,7 @@ enum imx28_clk {
+ 	emi_xtal, lcdif_div, etm_div, ptp, saif0_div, saif1_div,
+ 	clk32k_div, rtc, lradc, spdif_div, clk32k, pwm, uart, ssp0,
+ 	ssp1, ssp2, ssp3, gpmi, spdif, emi, saif0, saif1, lcdif, etm,
+-	fec, can0, can1, usb0, usb1, usb0_phy, usb1_phy, enet_out,
++	fec, can0, can1, usb0, usb1, usb0_phy, usb1_phy, enet_out, dummy,
+ 	clk_max
+ };
+ 
+@@ -234,6 +234,7 @@ int __init mx28_clocks_init(void)
+ 	clks[usb0_phy] = clk_register_gate(NULL, "usb0_phy", "pll0", 0, PLL0CTRL0, 18, 0, &mxs_lock);
+ 	clks[usb1_phy] = clk_register_gate(NULL, "usb1_phy", "pll1", 0, PLL1CTRL0, 18, 0, &mxs_lock);
+ 	clks[enet_out] = clk_register_gate(NULL, "enet_out", "pll2", 0, ENET, 18, 0, &mxs_lock);
++	clks[dummy] = mxs_clk_fixed("dummy", 0);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(clks); i++)
+ 		if (IS_ERR(clks[i])) {
+-- 
+1.8.1.2
