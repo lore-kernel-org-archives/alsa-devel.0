@@ -1,24 +1,24 @@
-From: "Wang, Xingchao" <xingchao.wang@intel.com>
-Subject: Re: [PATCH 1/2] ALSA: hdmi - poll eld at resume time
-Date: Tue, 25 Jun 2013 08:30:09 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC48901183445F@SHSMSX104.ccr.corp.intel.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 2/2] ALSA: hda - get realtime ELD info when
+ codec suspended
+Date: Tue, 25 Jun 2013 11:02:27 +0200
+Message-ID: <51C95CA3.7000001@canonical.com>
 References: <1372074324-13563-1-git-send-email-xingchao.wang@linux.intel.com>
- <s5hobavvj4n.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC489011833BCC@SHSMSX104.ccr.corp.intel.com>
- <s5h61x3vfke.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC48901183434E@SHSMSX104.ccr.corp.intel.com>
- <s5h8v1y2076.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC4890118343CA@SHSMSX104.ccr.corp.intel.com>
- <s5hy59yzn2f.wl%tiwai@suse.de> <s5hwqpizmy8.wl%tiwai@suse.de>
+ <1372074324-13563-2-git-send-email-xingchao.wang@linux.intel.com>
+ <s5hmwqfvizc.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC489011833B68@SHSMSX104.ccr.corp.intel.com>
+ <s5hk3ljvhu2.wl%tiwai@suse.de> <51C83FC5.3090005@canonical.com>
+ <s5h38s7vf2v.wl%tiwai@suse.de> <51C94A80.70709@canonical.com>
+ <s5hobauzkse.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 39DD8265655
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 10:30:39 +0200 (CEST)
-In-Reply-To: <s5hwqpizmy8.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF01226520A
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2013 11:02:29 +0200 (CEST)
+In-Reply-To: <s5hobauzkse.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,119 +28,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <xingchao.wang@linux.intel.com>
+To: "Wang, Xingchao" <xingchao.wang@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 06/25/2013 09:55 AM, Takashi Iwai wrote:
+> At Tue, 25 Jun 2013 09:45:04 +0200,
+> David Henningsson wrote:
+>>> There is a low power mode that allows the jack detection, but this is
+>>> different from the aggressive power-saving with runtime D3.
+>>
+>> If "aggressive power-saving with runtime D3" is the same as
+>> AZX_DCAPS_PM_RUNTIME, this is also enabled for analog codecs connected
+>> to a Lynx point controller.
+>>
+>> It looks like userspace have problems getting notifications for e g
+>> headphone insertion on Lynx point controllers, so this is not only an
+>> HDMI/DP problem?
+>
+> Yes.
+>
+>> Trying to read up a little on this, there seem to be an option to set
+>> the WAKEEN register to have jack detection working even when the
+>> controller is in D3. (refer HDA specification 4.5.9.2:
+>> Codec Wake From System S0, Controller D3.)
+>> But it seems we do not (yet) use this feature. Is this something that
+>> could/should be implemented to fix the jack detection problems that
+>> seems to be happening otherwise?
+>
+> It sounds feasible, at least for traditional jack detection of analog
+> pins.  But I'm not sure whether this would help for the Intel graphics
+> case.  Just need testing.
+
+Xingchao, what are your thoughts about using WAKEEN to wakeup both Lynx 
+point and Haswell HDMI?
 
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, June 25, 2013 3:09 PM
-> To: Wang, Xingchao
-> Cc: alsa-devel@alsa-project.org; Wang Xingchao
-> Subject: Re: [PATCH 1/2] ALSA: hdmi - poll eld at resume time
-> 
-> At Tue, 25 Jun 2013 09:06:32 +0200,
-> Takashi Iwai wrote:
-> >
-> > At Tue, 25 Jun 2013 06:34:49 +0000,
-> > Wang, Xingchao wrote:
-> > >
-> > > Hi Takashi,
-> > >
-> > > > -----Original Message-----
-> > > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > Sent: Tuesday, June 25, 2013 2:07 PM
-> > > > To: Wang, Xingchao
-> > > > Cc: alsa-devel@alsa-project.org; Wang Xingchao
-> > > > Subject: Re: [PATCH 1/2] ALSA: hdmi - poll eld at resume time
-> > > >
-> > > > At Tue, 25 Jun 2013 04:54:05 +0000, Wang, Xingchao wrote:
-> > > > >
-> > > > > Hi Takashi,
-> > > > >
-> > > > >
-> > > > > > -----Original Message-----
-> > > > > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > > > Sent: Monday, June 24, 2013 8:50 PM
-> > > > > > To: Wang, Xingchao
-> > > > > > Cc: alsa-devel@alsa-project.org; Wang Xingchao
-> > > > > > Subject: Re: [PATCH 1/2] ALSA: hdmi - poll eld at resume time
-> > > > > >
-> > > > > > At Mon, 24 Jun 2013 12:19:42 +0000, Wang, Xingchao wrote:
-> > > > > > >
-> > > > > > >
-> > > > > > >
-> > > > > > > > -----Original Message-----
-> > > > > > > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > > > > > Sent: Monday, June 24, 2013 7:33 PM
-> > > > > > > > To: Wang Xingchao
-> > > > > > > > Cc: alsa-devel@alsa-project.org; Wang, Xingchao
-> > > > > > > > Subject: Re: [PATCH 1/2] ALSA: hdmi - poll eld at resume
-> > > > > > > > time
-> > > > > > > >
-> > > > > > > > At Mon, 24 Jun 2013 07:45:23 -0400, Wang Xingchao wrote:
-> > > > > > > > >
-> > > > > > > > > Hdmi driver may not receive intrinsic event from gfx
-> > > > > > > > > side when it's in runtime suspend mode. There's no ELD
-> > > > > > > > > info when exit from runtime suspend. This patch avoid missing
-> ELD info.
-> > > > > > > >
-> > > > > > > > hda_call_codec_resume() sets the jack detection all dirty,
-> > > > > > > > thus each jack detection callback should be called at
-> > > > > > > > resume.  Didn't it work as
-> > > > > > expected?
-> > > > > > >
-> > > > > > > I would double check that. In my test, it doesnot work as expected.
-> > > > > >
-> > > > > > OK, I found the problem.  patch_hdmi.c enables the jack
-> > > > > > detection stuff without the callback, so the resume code
-> > > > > > triggers the check of jack detection but only updates the kcontrols.
-> > > > >
-> > > > > You patch did not resolve the issue.
-> > > > > I added some debug log, the callback wasnot called at all.
-> > > >
-> > > > Even if you unplugged while runtime suspend?
-> > >
-> > > Yes, the controller/codec suspended in runtime already.
-> > >
-> > > >
-> > > > The callback is called only when the plug status (i.e. the jack
-> > > > detection state) change is detected at the resume time -- i.e. the
-> > > > state the driver holds differs from the state at the resume.
-> > > >
-> > >
-> > > Do you assume jackpoll_interval be non-zero? If so the hda_jackpoll_work
-> will continue to run periodically.
-> > > IMO the callback just need be called only once at resume time.
-> >
-> > Hmm, the problem is that the callback updater isn't called in the
-> > resume path as default.  The oneliner below will fix it.
-> 
-> Forgot to attach...
-
-Yes, it works if call snd_hda_jack_poll_all(codec) directly, but sometimes read pin sense value is 0xc000,0000 even unplug monitor, and eld# will keep valid all the time.
-Although sometimes it works(the ELD info refreshed correctly), you have to wake up controller/codec before check eld info(cat codec# or play a piece of audio).
-
-Thanks
---xingchao
-
-> 
-> 
-> Takashi
-> 
-> ---
-> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c index
-> 35090b3..86d4709 100644
-> --- a/sound/pci/hda/hda_codec.c
-> +++ b/sound/pci/hda/hda_codec.c
-> @@ -3942,6 +3942,7 @@ static void hda_call_codec_resume(struct
-> hda_codec *codec)
->  			codec->patch_ops.init(codec);
->  		snd_hda_codec_resume_amp(codec);
->  		snd_hda_codec_resume_cache(codec);
-> +		snd_hda_jack_poll_all(codec);
->  	}
-> 
->  	if (codec->jackpoll_interval)
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
