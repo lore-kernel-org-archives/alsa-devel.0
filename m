@@ -1,53 +1,32 @@
-From: Mike Turquette <mturquette@linaro.org>
-Subject: Re: [PATCH 2/3] ARM: dts: mx28: Provide a codec clock
-Date: Tue, 25 Jun 2013 10:27:59 -0700
-Message-ID: <20130625172759.23972.34839@quantum>
-References: <1372168801-4221-1-git-send-email-fabio.estevam@freescale.com>
- <1372168801-4221-2-git-send-email-fabio.estevam@freescale.com>
- <20130625142257.GE12178@S2101-09.ap.freescale.net>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [RFC PATCH v2 01/12] dmaengine: PL08x: Refactor
+	pl08x_getbytes_chan() to lower indentation
+Date: Tue, 25 Jun 2013 19:30:51 +0100
+Message-ID: <20130625183050.GA2718@n2100.arm.linux.org.uk>
+References: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com> <1371933764-24875-2-git-send-email-tomasz.figa@gmail.com> <20130625151612.GO23141@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20130625142257.GE12178@S2101-09.ap.freescale.net>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <fabio.estevam@freescale.com>
-Cc: marex@denx.de, alsa-devel@alsa-project.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130625151612.GO23141@intel.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Tomasz Figa <tomasz.figa@gmail.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Dan Williams <djbw@fb.com>, Linus Walleij <linus.walleij@linaro.org>, Alessandro Rubini <rubini@gnudd.com>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Mark Brown <broonie@kernel.org>, Grant Likely <grant.likely@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Padmavathi Venna <padma.v@samsung.com>, Thomas Abraham <thomas.abraham@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Alban Bedel <alban.bedel@avioni>
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Shawn Guo (2013-06-25 07:22:58)
-> On Tue, Jun 25, 2013 at 11:00:00AM -0300, Fabio Estevam wrote:
-> > Since commit 9e13f345887 (ASoC: sgtl5000: Let the codec acquire its clock) it is 
-> > necessary to pass a codec clock to the sgtl5000 driver.
-> > 
-> > Since the saif mclk cannot be passed as a real clock within the clock framework,
-> > let's pass a dummy one to the codec driver.
-> > 
-> Why can not saif driver register the mclk to clock framework?
+On Tue, Jun 25, 2013 at 08:46:12PM +0530, Vinod Koul wrote:
+> On Sat, Jun 22, 2013 at 10:42:33PM +0200, Tomasz Figa wrote:
+> > -			BUG_ON(clli < llis_bus || clli >= llis_bus +
+> > +	llis_va = txd->llis_va;
+> > +	llis_bus = txd->llis_bus;
+> > +
+> > +	BUG_ON(clli < llis_bus || clli >= llis_bus +
+> >  				sizeof(struct pl08x_lli) * MAX_NUM_TSFR_LLIS);
+> IMO BUG_ON is too much for this. Perhaps returning error and logging error would
+> be okay
 
-There are a growing number of drivers which define their own clocks. One
-example can be found in drivers/media/platform/omap3isp/isp.c.
+That should be a separate patch, because that's an unrelated change
+to this patch.  As this part is just reformatting this part of the
+code, it should contain no actual changes.
 
-Regards,
-Mike
-
-> 
-> Shawn
-> 
-> > The mxs-saif driver will activate the codec clock.
-> > 
-> > Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+There's lots that this driver "should" do differently...
