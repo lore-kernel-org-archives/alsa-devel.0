@@ -1,96 +1,80 @@
-From: "Wang, Xingchao" <xingchao.wang@intel.com>
-Subject: Re: [PATCH 1/2] ALSA: hdmi - poll eld at resume time
-Date: Wed, 26 Jun 2013 04:28:43 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC489011834CF7@SHSMSX104.ccr.corp.intel.com>
-References: <1372074324-13563-1-git-send-email-xingchao.wang@linux.intel.com>
- <s5hobavvj4n.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC489011833BCC@SHSMSX104.ccr.corp.intel.com>
- <s5h61x3vfke.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC48901183434E@SHSMSX104.ccr.corp.intel.com>
- <s5h8v1y2076.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC4890118343CA@SHSMSX104.ccr.corp.intel.com>
- <s5hy59yzn2f.wl%tiwai@suse.de> <s5hwqpizmy8.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC48901183445F@SHSMSX104.ccr.corp.intel.com>
+From: Arun Raghavan <arun.raghavan@collabora.co.uk>
+Subject: Re: [alsa-devel] PulseAudio and softvol
+Date: Wed, 26 Jun 2013 12:29:31 +0530
+Message-ID: <1372229971.4981.21.camel@localhost>
+References: <1368611744.6590.8.camel@localhost> <519362EB.7050603@perex.cz>
+	<s5hd2ssmsd2.wl%tiwai@suse.de> <5193692A.4060007@perex.cz>
+	<51936B74.6080105@canonical.com> <51936FDB.2050407@perex.cz>
+	<s5h1u98mn2y.wl%tiwai@suse.de> <519383D3.3000303@canonical.com>
+	<51938525.4090208@perex.cz> <s5hr4h8l7fx.wl%tiwai@suse.de>
+	<519389B1.6080400@perex.cz> <s5hli7gl6hf.wl%tiwai@suse.de>
+	<5193A1C9.9010108@perex.cz> <s5ha9nwl1ut.wl%tiwai@suse.de>
+	<5193A8D4.4090008@perex.cz> <s5h4ne4ky13.wl%tiwai@suse.de>
+	<51947D45.1040003@canonical.com>
+Reply-To: General PulseAudio Discussion
+	<pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 0ACF1261AD5
- for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2013 06:28:49 +0200 (CEST)
-In-Reply-To: <46B810F6945F7C4788E11DCE57EC48901183445F@SHSMSX104.ccr.corp.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, 'Wang Xingchao' <xingchao.wang@linux.intel.com>
+Return-path: <pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <51947D45.1040003@canonical.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Sender: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+Errors-To: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-
-> -----Original Message-----
-> From: Wang, Xingchao
-> Sent: Tuesday, June 25, 2013 4:30 PM
-> To: Takashi Iwai
-> Cc: alsa-devel@alsa-project.org; Wang Xingchao
-
-[snip]
-
-> > > >
-> > > > Do you assume jackpoll_interval be non-zero? If so the
-> > > > hda_jackpoll_work
-> > will continue to run periodically.
-> > > > IMO the callback just need be called only once at resume time.
-> > >
-> > > Hmm, the problem is that the callback updater isn't called in the
-> > > resume path as default.  The oneliner below will fix it.
-> >
-> > Forgot to attach...
+On Thu, 2013-05-16 at 08:31 +0200, David Henningsson wrote:
+> On 05/15/2013 06:28 PM, Takashi Iwai wrote:
+[...]
+> > Yes, but the invocation of PCM softvol isn't guaranteed to be first
+> > before the reference to the already existing user ctl element.
+> > snd_mixer_open() can be called before that.
 > 
-> Yes, it works if call snd_hda_jack_poll_all(codec) directly, but sometimes read
-> pin sense value is 0xc000,0000 even unplug monitor, and eld# will keep valid all
-> the time.
-> Although sometimes it works(the ELD info refreshed correctly), you have to
-> wake up controller/codec before check eld info(cat codec# or play a piece of
-> audio).
-
-The fix is not enough.
-When hotplug event happen and codec/controller in active state, hdmi_intrinsic_event() will be called.
-In such scenario, jack event would be reported but not handled(hdmi_present_sense() was moved to callback).
-So there's no eld info updated, have to trigger codec_resume to update the eld info.
-
-If App depends on ELD# info to check external monitor status, it may cause confuse as eld# under /proc donot
-Provide realtime information.
-
-Thanks
---xingchao
+> So this is a transient problem, right? As soon as the first PCM is 
+> opened, the TLV would be corrected, and then stay corrected for all 
+> times to come.
 > 
-> Thanks
-> --xingchao
+> And looking at the current PulseAudio code, it does open the pcm device 
+> before it opens the mixer/ctl device.
+> So, if this isn't possible to solve in a better way, maybe we need to be 
+> pragmatic about it - PulseAudio is the only application we know that 
+> would care, and it opens the pcm device first. So in practice, it looks 
+> like the TLV approach would work.
 > 
-> >
-> >
-> > Takashi
-> >
-> > ---
-> > diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-> > index
-> > 35090b3..86d4709 100644
-> > --- a/sound/pci/hda/hda_codec.c
-> > +++ b/sound/pci/hda/hda_codec.c
-> > @@ -3942,6 +3942,7 @@ static void hda_call_codec_resume(struct
-> > hda_codec *codec)
-> >  			codec->patch_ops.init(codec);
-> >  		snd_hda_codec_resume_amp(codec);
-> >  		snd_hda_codec_resume_cache(codec);
-> > +		snd_hda_jack_poll_all(codec);
-> >  	}
-> >
-> >  	if (codec->jackpoll_interval)
+[...]
+> > The very reason we'd like to filter out the mixer control created by
+> > softvol is that this mixer element confuses PA as if it actually
+> > changes the volume (e.g. "PCM") although PA ignores the softvol.  If
+
+Actually, we don't currently ignore softvol. I guess we could add the
+no-softvol flag once we're able to make sure we don't have any softvol
+controls.
+
+> > user creates PCM volume in alsaloop in a different fashion as PA
+> > expected, the similar problem may happen.  How can we detect this
+> > logically...?  In other words, how can PA adjust the mixer elements
+> > for alsaloop properly?
+> 
+> So if alsaloop is run, only once, that could cause a control to be added 
+> for all future, due to alsactl saving and restoring it?
+> 
+> If so, that looks like a problem with alsaloop. If it adds controls, it 
+> should also remove them.
+> 
+> If no, I don't think we need to worry. Alsaloop is probably mostly used 
+> on non-PA systems (as PA has module-loopback which does the same thing).
+
+Seems this thread died out. I didn't quite understand the
+alsaloop/alsactl-specific concerns, tbh. What do we need to do to take
+this forwards?
+
+Cheers,
+Arun
