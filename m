@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ac97: Support multi-platform AC'97
-Date: Wed, 26 Jun 2013 15:57:55 +0100
-Message-ID: <20130626145755.GQ27646@sirena.org.uk>
-References: <1372247296-17108-1-git-send-email-broonie@kernel.org>
- <3333302.d3tySHZuq0@wuerfel>
+Subject: Re: [PATCH -next] ASoC: mid-x86: Convert to use devm_*
+	APIs
+Date: Wed, 26 Jun 2013 16:22:10 +0100
+Message-ID: <20130626152210.GR27646@sirena.org.uk>
+References: <CAPgLHd89RzJrpMEs+zR8cQvGHruWvne8e0kGb1LeCqoHdKogHA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2496378210394697866=="
+Content-Type: multipart/mixed; boundary="===============5376936263638629368=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B71F2654F7
- for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2013 16:57:59 +0200 (CEST)
-In-Reply-To: <3333302.d3tySHZuq0@wuerfel>
+ by alsa0.perex.cz (Postfix) with ESMTP id EE37226550D
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2013 17:22:28 +0200 (CEST)
+In-Reply-To: <CAPgLHd89RzJrpMEs+zR8cQvGHruWvne8e0kGb1LeCqoHdKogHA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: vinod.koul@linux.intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, ramesh.babu@intel.com, yongjun_wei@trendmicro.com.cn, wfp5p@virginia.edu, namartax.kohli@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2496378210394697866==
+--===============5376936263638629368==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Jtzgsd50XOpelISN"
+	protocol="application/pgp-signature"; boundary="w1WLgcEPVIWvtHEy"
 Content-Disposition: inline
 
 
---Jtzgsd50XOpelISN
+--w1WLgcEPVIWvtHEy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 26, 2013 at 02:40:16PM +0200, Arnd Bergmann wrote:
+On Tue, Jun 25, 2013 at 10:16:56AM +0800, Wei Yongjun wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>=20
+> devm_* APIs are device managed and make code simpler.
 
-> The idea is to turn the ac97 ops into a pointer that is passed around
-> the structures that actually use it. See below for how far I got with
-> this.
+Applied, thanks.
 
-We already have a perfectly good way of doing this called a bus - if we
-get this working properly we may as well just get the bus thing working
-properly.
-
---Jtzgsd50XOpelISN
+--w1WLgcEPVIWvtHEy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRywFwAAoJELSic+t+oim95UQP/iYxXBHAR+2uVv2FwfQjQQiL
-Nk+aBTRGbq7IlL5LOC/yGUEiyymQ3ictzYfMnatv4QBru88fbWYtv6P3ItKq5QQ6
-aZ6oa7aOajY4XHDyVrtnn2pOk4M3D5ootw7IsOx1Ey1iQvB+kc3TGbFc/nZWR9EN
-w+LEGo7UdGp6W1AbLfDurNvaTUnagq51f5DFBq+2lQH/qeZfe4tzJqz+UfC7RlcH
-PqeqVSannTL99UUdFhHxuIG9MonBLmZktD3xCQ4UMV6xHUkh4ar2FS4e/30fdDI4
-pxDqDJ0M+47a36GmRpfNvBN1XCahwmS5v/ZK7ZK5RMIoRvPPV/REDxhIJ737iuYN
-BYKNWWNAXxZGAtZAZdoUdJzui+oxXz/mMXgAEh5MhUIMEjdpgCv6LG0aZO2lrTKw
-X6gj5H1yc+MepFOhuUgBH6AGbZLZMOSGA+nK67oXQc4NECi7MhmbvhAB+OBF6Hjr
-ogf371giSpZhlATl0CzzA3ZBSQq7FemNDV0sOvkiGULluid3ZaF4SZC4ql2pdyTg
-Wo6wTQ5sHg5wGOaq+IcBGZ3NDX/E0bF0y4TKvVPNW5CgbLMDbF2iizCp5cVn/tPA
-kNyGAuakUDIIVhlg2AAuIJ85W8KZ+sAhLC8k2mzIQ3e6N2tzIJQlZhgCn3KiFJ+L
-4KLITn6NR9BjSCNm0up0
-=eOOU
+iQIbBAEBAgAGBQJRywcfAAoJELSic+t+oim93ZsP+PCyAc5HubQFBzarNnVXlhEo
+zYozhcA5oLg6PqopnqavLV0Zn1lEZE14EBMRo2tdUm6UWeV7sYrdatDkLTriqgm9
+I4b5cm9tRRAjwlqJrsY4nE39hPpMECFADO80vyEfKrCpNFvSGFVZhGFOH8J/al7a
+N+Gy2Yr7/qU0m1paaoKpkAYeZg1v0yVqUJvryQVIQcG2RdhsEswIOyGZGRU6E1jU
+pdIhy+fBsvwwitJdz5aoVUUKQiSJYlzq6r4L6TYf8Ul1aunSkrGNmL8qygeGrmv3
+tCJeZ/qfmeIltKupszNm6y5lvRhpLggGBG1tK/jGqAOKM60iVloW3wUgOfzWhrav
+kB4zQac3F2iNI37PBUBqfUhPN7DHEOhoBNJQSoyMZvdXut5q8ixo8A2gMq7xgYFX
+1OyHvz2//0fj3jG7p2Jh0KbTNAdWrs/mDfBFGe1YCOMmi0rIohOvPjoVo5ENIMwG
+tm2U/GfpF/3fvEDcy1csMVfkBBvOGqVklhoFsUxAjjRVL4Vs4Xew6UVtAIquKVLZ
+1PPdfrv+Pr89O6sV7vqH6hVTKjGn9wJz6j3sKJzEFtBF3PRufjE4hWI85CxNWYds
+dzUyT3/dSasdlXXMowL9w7/uEw/Aw04A9yEViOhSqWpeCB1z5Yj1WRk30P7GxlZc
+ZCJFnnUN9wuqmk0dc6w=
+=oLF2
 -----END PGP SIGNATURE-----
 
---Jtzgsd50XOpelISN--
+--w1WLgcEPVIWvtHEy--
 
---===============2496378210394697866==
+--===============5376936263638629368==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2496378210394697866==--
+--===============5376936263638629368==--
