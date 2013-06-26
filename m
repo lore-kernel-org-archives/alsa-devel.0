@@ -1,85 +1,61 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: [PATCH] ASoC: tegra-ac97: Do common and clock init prior to component registration
-Date: Wed, 26 Jun 2013 12:28:31 +0100
-Message-ID: <1372246111-15781-1-git-send-email-broonie@kernel.org>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: txx9aclc_ac97: Convert to
+	devm_ioremap_resource()
+Date: Wed, 26 Jun 2013 12:41:43 +0100
+Message-ID: <1372246903-16874-1-git-send-email-broonie@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 02E55265379
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2013 13:41:53 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+From: Mark Brown <broonie@linaro.org>
 
-Otherwise we may instantiate and hence have something try to access the
-device while it is still completing initialisation.
-
-Signed-off-by: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/tegra/tegra20_ac97.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ sound/soc/txx9/txx9aclc-ac97.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
-index 9043626d..48037f7 100644
---- a/sound/soc/tegra/tegra20_ac97.c
-+++ b/sound/soc/tegra/tegra20_ac97.c
-@@ -395,23 +395,9 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
- 	ac97->capture_dma_data.maxburst = 4;
- 	ac97->capture_dma_data.slave_id = of_dma[0];
+diff --git a/sound/soc/txx9/txx9aclc-ac97.c b/sound/soc/txx9/txx9aclc-ac97.c
+index 8a28403..8ee8d42 100644
+--- a/sound/soc/txx9/txx9aclc-ac97.c
++++ b/sound/soc/txx9/txx9aclc-ac97.c
+@@ -188,9 +188,9 @@ static int txx9aclc_ac97_dev_probe(struct platform_device *pdev)
+ 	if (!r)
+ 		return -EBUSY;
  
--	ret = snd_soc_register_component(&pdev->dev, &tegra20_ac97_component,
--					 &tegra20_ac97_dai, 1);
--	if (ret) {
--		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
--		ret = -ENOMEM;
--		goto err_clk_put;
--	}
--
--	ret = tegra_pcm_platform_register(&pdev->dev);
--	if (ret) {
--		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
--		goto err_unregister_component;
--	}
--
- 	ret = tegra_asoc_utils_init(&ac97->util_data, &pdev->dev);
- 	if (ret)
--		goto err_unregister_pcm;
-+		goto err_clk_put;
+-	if (!devm_request_mem_region(&pdev->dev, r->start, resource_size(r),
+-				     dev_name(&pdev->dev)))
+-		return -EBUSY;
++	drvdata->base = devm_ioremap_resource(&pdev->dev, r);
++	if (IS_ERR(drvdata->base))
++		return PTR_ERR(drvdata->base);
  
- 	ret = tegra_asoc_utils_set_ac97_rate(&ac97->util_data);
- 	if (ret)
-@@ -423,17 +409,31 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
- 		goto err_asoc_utils_fini;
- 	}
- 
-+	ret = snd_soc_register_component(&pdev->dev, &tegra20_ac97_component,
-+					 &tegra20_ac97_dai, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
-+		ret = -ENOMEM;
-+		goto err_asoc_utils_fini;
-+	}
-+
-+	ret = tegra_pcm_platform_register(&pdev->dev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
-+		goto err_unregister_component;
-+	}
-+
- 	/* XXX: crufty ASoC AC97 API - only one AC97 codec allowed */
- 	workdata = ac97;
- 
- 	return 0;
- 
--err_asoc_utils_fini:
--	tegra_asoc_utils_fini(&ac97->util_data);
- err_unregister_pcm:
- 	tegra_pcm_platform_unregister(&pdev->dev);
- err_unregister_component:
- 	snd_soc_unregister_component(&pdev->dev);
-+err_asoc_utils_fini:
-+	tegra_asoc_utils_fini(&ac97->util_data);
- err_clk_put:
- err:
- 	return ret;
+ 	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
+ 	if (!drvdata)
+@@ -201,9 +201,6 @@ static int txx9aclc_ac97_dev_probe(struct platform_device *pdev)
+ 	    r->start >= TXX9_DIRECTMAP_BASE &&
+ 	    r->start < TXX9_DIRECTMAP_BASE + 0x400000)
+ 		drvdata->physbase |= 0xf00000000ull;
+-	drvdata->base = devm_ioremap(&pdev->dev, r->start, resource_size(r));
+-	if (!drvdata->base)
+-		return -EBUSY;
+ 	err = devm_request_irq(&pdev->dev, irq, txx9aclc_ac97_irq,
+ 			       0, dev_name(&pdev->dev), drvdata);
+ 	if (err < 0)
 -- 
 1.8.3.1
