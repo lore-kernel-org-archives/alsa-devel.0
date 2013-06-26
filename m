@@ -1,13 +1,22 @@
-From: Forest Bond <forest@alittletooquiet.net>
-Subject: snd_device_name_hint segfaults
-Date: Wed, 26 Jun 2013 14:39:09 -0400
-Message-ID: <20130626183909.GI18126@alittletooquiet.net>
+From: Tomasz Figa <tomasz.figa@gmail.com>
+Subject: Re: [RFC PATCH v2 03/12] dmaengine: PL08x: Rework LLI
+	handling to be less fragile
+Date: Thu, 27 Jun 2013 00:04:23 +0200
+Message-ID: <2212577.G2ANCYONVo@flatron>
+References: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com>
+ <1371933764-24875-4-git-send-email-tomasz.figa@gmail.com>
+ <CACRpkdYm7gFVLzRpQ2J97M+-zQAug_ftJhyi_kniTgCk=GT_bQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4250579076951112840=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from storm.alittletooquiet.net (storm.alittletooquiet.net
- [67.23.28.199]) by alsa0.perex.cz (Postfix) with ESMTP id 8C62626163B
- for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2013 20:50:48 +0200 (CEST)
+Received: from mail-bk0-f50.google.com (mail-bk0-f50.google.com
+ [209.85.214.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 712DC265552
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 00:04:20 +0200 (CEST)
+Received: by mail-bk0-f50.google.com with SMTP id ik8so1795bkc.23
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2013 15:04:20 -0700 (PDT)
+In-Reply-To: <CACRpkdYm7gFVLzRpQ2J97M+-zQAug_ftJhyi_kniTgCk=GT_bQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,132 +26,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Padmavathi Venna <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Alessandro Rubini <rubini@gnudd.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Kukjin Kim <kgene.kim@samsung.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Thomas Abraham <thomas.abraham@linaro.org>, Grant Likely <grant.likely@linaro.org>, Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tuesday 25 of June 2013 00:23:09 Linus Walleij wrote:
+> On Sat, Jun 22, 2013 at 10:42 PM, Tomasz Figa <tomasz.figa@gmail.com> 
+wrote:
+> > +enum {
+> > +       PL080_LLI_SRC,
+> > +       PL080_LLI_DST,
+> > +       PL080_LLI_LLI,
+> > +       PL080_LLI_CCTL,
+> > +
+> > +       PL080_LLI_WORDS
+> > +};
+> 
+> I usually don't like it when enums are not given names, and are
+> implicitly cast to integers.
+> 
+> I think it'd be better to just use #define for these so we know what
+> is going on.
 
---===============4250579076951112840==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RpqchZ26BWispMcB"
-Content-Disposition: inline
+OK. I didn't have any preference for one or the other way and I randomly 
+chose to use enum, but since you seem to have one (and hard to disagree 
+with), I will change this patch to use #define.
 
+> > @@ -181,7 +177,7 @@ struct pl08x_txd {
+> > 
+> >         struct virt_dma_desc vd;
+> >         struct list_head dsg_list;
+> >         dma_addr_t llis_bus;
+> > 
+> > -       struct pl08x_lli *llis_va;
+> > +       u32 *llis_va;
+> 
+> It's nice that you use the u32 * here for proper indexing into an
+> array.
+> 
+> > -/* Size (bytes) of each LLI buffer allocated for one transfer */
+> > -# define PL08X_LLI_TSFR_SIZE   0x2000
+> > -
+> > -/* Maximum times we call dma_pool_alloc on this pool without freeing
+> > */ -#define MAX_NUM_TSFR_LLIS      (PL08X_LLI_TSFR_SIZE/sizeof(struct
+> > pl08x_lli)) +/*
+> > + * Number of LLIs in each LLI buffer allocated for one transfer
+> > + * (maximum times we call dma_pool_alloc on this pool without
+> > freeing)
+> > + */
+> > +#define MAX_NUM_TSFR_LLIS      512
+> 
+> And I like this nice side effect that we allocate a number of LLIs
+> rather than a fixed-size buffer.
 
---RpqchZ26BWispMcB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+As we're at it, is there any reason to choose this particular number of 
+LLis? I have calculated it from the buffer size defined originally, but I 
+wonder if 512 LLIs for single transfer isn't too much?
 
-Hi,
+> > +static void pl08x_write_lli(struct pl08x_driver_data *pl08x,
+> > +               struct pl08x_phy_chan *phychan, const u32 *lli, u32
+> > ccfg) +{
+> > +       dev_vdbg(&pl08x->adev->dev,
+> > +               "WRITE channel %d: csrc=0x%08x, cdst=0x%08x, "
+> > +               "clli=0x%08x, cctl=0x%08x, ccfg=0x%08x\n",
+> > +               phychan->id, lli[PL080_LLI_SRC], lli[PL080_LLI_DST],
+> > +               lli[PL080_LLI_LLI], lli[PL080_LLI_CCTL], ccfg);
+> > +
+> > +       writel(lli[PL080_LLI_SRC], phychan->base + PL080_CH_SRC_ADDR);
+> > +       writel(lli[PL080_LLI_DST], phychan->base + PL080_CH_DST_ADDR);
+> > +       writel(lli[PL080_LLI_LLI], phychan->base + PL080_CH_LLI);
+> > +       writel(lli[PL080_LLI_CCTL], phychan->base + PL080_CH_CONTROL);
+> > +
+> > +       writel(ccfg, phychan->reg_config);
+> 
+> Take this opportunity to replace the first four writel() with
+> writel_relaxed(), keep the last one to make sure all hit the hardware.
 
-I'm seeing segfaults with VLC similar to those reported here:
+OK.
 
-  http://mailman.alsa-project.org/pipermail/alsa-devel/2013-January/059168.=
-html
+> Apart from that this looks nice!
 
-This is on Ubuntu 12.04 with the latest alsa-lib package (1.0.25-1ubuntu10.=
-2)
-and the following patches also applied:
+Thanks.
 
-* 2cfc8b9b44a8e493c41b3d63d5a00b306a18a5ed
-  snd_pcm_direct_parse_open_conf(): use thread-safe getgrnam_r()
-* 44c1a623dd1fc9e831616b663bebc54ca98df994
-  Add snd_lib_error_set_local() to install a thread-local error handler.
-* 25dbb102810b31c02358904d70d53c960fb0a10e
-  snd_device_name_hint(): do not change the global error handler.
-* f49b2dc522a2564315c76d075203b15a39941e8a
-  snd_device_name_hint(): do not use global snd_config.
-* 7f2b2c8c1650a1883b48abfcdb455138943854f9
-  conf: Fix a memory access violation resulting from improper error propoga=
-tion
-
-So I think there are still issues when calling snd_device_name_hint(-1, ...=
-).
-
-Here is the backtrace:
-
-#0  0x003f0e78 in __strcpy_chk () from /lib/i386-linux-gnu/libc.so.6
-#1  0x0625084b in strcpy (__src=3D0x0, __dest=3D0xb6025e80 "pcm.(null)") at=
- /usr/include/i386-li
-nux-gnu/bits/string3.h:105
-#2  try_config (config=3D0xaf1c4df0, list=3D0xb52fe804, base=3D0x323e962 "p=
-cm", name=3D0x0) at nameh
-int.c:243
-#3  0x06251bc5 in add_software_devices (list=3D0xb52fe804, config=3D0xaf1c4=
-df0) at namehint.c:51
-2
-#4  snd_device_name_hint (card=3D-1, iface=3D<optimized out>, hints=3D0xb52=
-fe90c) at namehint.c:59
-1
-#5  0x0323c9bb in GetDevices (obj=3D0xb6271700, item=3D0x0, prefs_dev=3D<op=
-timized out>) at alsa.c
-:721
-#6  0x0323d4c0 in Probe (dev=3D0xb6011df8 "default", obj=3D0xb6271700) at a=
-lsa.c:161
-#7  Open (obj=3D0xb6271700) at alsa.c:539
-#8  0x0a6c73d0 in generic_start (func=3D0x323cd10, ap=3D0xb52fed98 "\273") =
-at modules/modules.c:422
-#9  0x0a6c7a3a in vlc_module_load (p_this=3D0xb6271700, psz_capability=3D0x=
-a70b959 "audio output", psz_name=3D<optimized out>, b_strict=3Dfalse,
-    probe=3D0xa6c73c0 <generic_start>) at modules/modules.c:347
-#10 0x0a6c8002 in module_need (obj=3D0xb6271700, cap=3D0xa70b959 "audio out=
-put", name=3D0xa70d2bd "$aout", strict=3Dfalse) at modules/modules.c:437
-#11 0x0a6b1242 in aout_OutputNew (p_aout=3D0xb6271700, p_format=3D0xb52feea=
-c) at audio_output/output.c:59
-#12 0x0a6ad77f in aout_DecNew (p_aout=3D0xb6271700, p_format=3D0xb52feeac, =
-p_replay_gain=3D0xaef02a14, p_request_vout=3D0xb52feed0)
-    at audio_output/dec.c:112
-#13 0x0a67066e in aout_new_buffer (p_dec=3D0xaef02870, i_samples=3D1024) at=
- input/decoder.c:2286
-#14 0x0a672690 in decoder_NewAudioBuffer (p_decoder=3D0xaef02870, i_size=3D=
-1024) at input/decoder.c:213
-#15 0x04032f8c in DecodeBlock (p_dec=3D0xaef02870, pp_block=3D0xb52ff05c) a=
-t faad.c:464
-#16 0x0a670891 in DecoderDecodeAudio (p_dec=3D0xaef02870, p_block=3D0xaef03=
-000) at input/decoder.c:1291
-#17 0x0a6716f5 in DecoderProcessAudio (b_flush=3Dfalse, p_block=3D0xaef0300=
-0, p_dec=3D0xaef02870) at input/decoder.c:1936
-#18 DecoderProcess (p_dec=3D0xaef02870, p_block=3D<optimized out>) at input=
-/decoder.c:2059
-#19 0x0a671959 in DecoderThread (p_data=3D0xaef02870) at input/decoder.c:938
-#20 0x001fbd4c in start_thread () from /lib/i386-linux-gnu/libpthread.so.0
-#21 0x003ddace in clone () from /lib/i386-linux-gnu/libc.so.6
-
-As a work around I will probably patch VLC to not call snd_device_name_hint=
- this
-way.  I see this has been done for other applications:
-
-http://code.google.com/p/chromium/issues/detail?id=3D95797
-http://code.mythtv.org/trac/ticket/10809
-
-But I wanted to try diagnosing the issue first.  Thoughts?
-
-Thanks,
-Forest
---=20
-Forest Bond
-http://www.alittletooquiet.net
-http://www.rapidrollout.com
-
---RpqchZ26BWispMcB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAlHLNU0ACgkQRO4fQQdv5AxMJwCeJiFE4ge8x085PCrDoRZDXEl6
-D10AoNG2cG0Pt6ESAR63Zm/5xsClHV2b
-=qIFB
------END PGP SIGNATURE-----
-
---RpqchZ26BWispMcB--
-
---===============4250579076951112840==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4250579076951112840==--
+Best regards,
+Tomasz
