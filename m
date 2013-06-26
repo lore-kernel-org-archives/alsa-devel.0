@@ -1,60 +1,78 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/3] ASoC: ac97c: Use module_platform_driver()
-Date: Wed, 26 Jun 2013 11:35:37 +0100
-Message-ID: <1372242937-9278-3-git-send-email-broonie@kernel.org>
-References: <1372242937-9278-1-git-send-email-broonie@kernel.org>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: [PATCH] ASoC: bf5xx-ac97: Convert to
+	devm_gpio_request_one()
+Date: Wed, 26 Jun 2013 12:02:10 +0100
+Message-ID: <1372244530-9701-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 19FDC265319
- for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2013 12:37:13 +0200 (CEST)
-In-Reply-To: <1372242937-9278-1-git-send-email-broonie@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <manuel.lauss@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
+Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
+List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Cc: uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+From: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
+Also clean up the error reporting from failed requests while we're at it.
+
+Signed-off-by: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/au1x/ac97c.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+ sound/soc/blackfin/bf5xx-ac97.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/au1x/ac97c.c b/sound/soc/au1x/ac97c.c
-index 44b8dce..a51dabe 100644
---- a/sound/soc/au1x/ac97c.c
-+++ b/sound/soc/au1x/ac97c.c
-@@ -338,19 +338,7 @@ static struct platform_driver au1xac97c_driver = {
- 	.remove		= au1xac97c_drvremove,
- };
+diff --git a/sound/soc/blackfin/bf5xx-ac97.c b/sound/soc/blackfin/bf5xx-ac97.c
+index c66bef8..8010f32 100644
+--- a/sound/soc/blackfin/bf5xx-ac97.c
++++ b/sound/soc/blackfin/bf5xx-ac97.c
+@@ -293,13 +293,14 @@ static int asoc_bfin_ac97_probe(struct platform_device *pdev)
  
--static int __init au1xac97c_load(void)
--{
--	ac97c_workdata = NULL;
--	return platform_driver_register(&au1xac97c_driver);
--}
--
--static void __exit au1xac97c_unload(void)
--{
--	platform_driver_unregister(&au1xac97c_driver);
--}
--
--module_init(au1xac97c_load);
--module_exit(au1xac97c_unload);
-+module_platform_driver(&au1xac97c_driver);
+ #ifdef CONFIG_SND_BF5XX_HAVE_COLD_RESET
+ 	/* Request PB3 as reset pin */
+-	if (gpio_request(CONFIG_SND_BF5XX_RESET_GPIO_NUM, "SND_AD198x RESET")) {
+-		pr_err("Failed to request GPIO_%d for reset\n",
+-				CONFIG_SND_BF5XX_RESET_GPIO_NUM);
+-		ret =  -1;
++	ret = devm_gpio_request_one(&pdev->dev,
++				    CONFIG_SND_BF5XX_RESET_GPIO_NUM,
++				    GPIOF_OUT_INIT_HIGH, "SND_AD198x RESET") {
++		dev_err(&pdev->dev,
++			"Failed to request GPIO_%d for reset: %d\n",
++			CONFIG_SND_BF5XX_RESET_GPIO_NUM, ret);
+ 		goto gpio_err;
+ 	}
+-	gpio_direction_output(CONFIG_SND_BF5XX_RESET_GPIO_NUM, 1);
+ #endif
  
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Au1000/1500/1100 AC97C ASoC driver");
+ 	sport_handle = sport_init(pdev, 2, sizeof(struct ac97_frame),
+@@ -349,10 +350,6 @@ static int asoc_bfin_ac97_probe(struct platform_device *pdev)
+ sport_config_err:
+ 	sport_done(sport_handle);
+ sport_err:
+-#ifdef CONFIG_SND_BF5XX_HAVE_COLD_RESET
+-	gpio_free(CONFIG_SND_BF5XX_RESET_GPIO_NUM);
+-gpio_err:
+-#endif
+ 
+ 	return ret;
+ }
+@@ -363,9 +360,6 @@ static int asoc_bfin_ac97_remove(struct platform_device *pdev)
+ 
+ 	snd_soc_unregister_component(&pdev->dev);
+ 	sport_done(sport_handle);
+-#ifdef CONFIG_SND_BF5XX_HAVE_COLD_RESET
+-	gpio_free(CONFIG_SND_BF5XX_RESET_GPIO_NUM);
+-#endif
+ 
+ 	return 0;
+ }
 -- 
 1.8.3.1
