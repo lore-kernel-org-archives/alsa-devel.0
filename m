@@ -1,14 +1,14 @@
-From: Mark Brown <broonie@linaro.org>
+From: Mark Brown <broonie@kernel.org>
 Subject: [PATCH 1/3] ASoC: psc-ac97: Use devm_ioremap_resource()
-Date: Wed, 26 Jun 2013 11:32:28 +0100
-Message-ID: <1372242750-8954-1-git-send-email-broonie@linaro.org>
+Date: Wed, 26 Jun 2013 11:35:35 +0100
+Message-ID: <1372242937-9278-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id DEF9F2652F9
- for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2013 12:32:33 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C0FD2652F9
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2013 12:37:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,6 +21,8 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: Manuel Lauss <manuel.lauss@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
+
+From: Mark Brown <broonie@linaro.org>
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
