@@ -1,57 +1,96 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: How to clear the ALSA audio settings remembered
-	by	system?
-Date: Thu, 27 Jun 2013 07:06:31 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80127A04E@SHSMSX101.ccr.corp.intel.com>
-References: <F46914AEC2663F4A9BB62374E5EEF8F80127A004@SHSMSX101.ccr.corp.intel.com>
+From: Marek Belisko <marek.belisko@streamunlimited.com>
+Subject: Re: [PATCH] ASoC: Add PCM1681 codec driver.
+Date: Thu, 27 Jun 2013 09:49:56 +0200
+Message-ID: <51CBEEA4.5090106@streamunlimited.com>
+References: <1372251928-15706-1-git-send-email-marek.belisko@streamunlimited.com> <20130626143001.GP27646@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id F1B2B261A24
- for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 09:07:19 +0200 (CEST)
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F80127A004@SHSMSX101.ccr.corp.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20130626143001.GP27646@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Marek Belisko <marek.belisko@gmail.com>, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, rob.herring@calxeda.com, rob@landley.net, lgirdwood@gmail.com, devicetree-discuss@lists.ozlabs.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Is 'alsactl init' the proper command?
-It works for me.
+Hi Mark,
+On 06/26/2013 04:30 PM, Mark Brown wrote:
+> On Wed, Jun 26, 2013 at 03:05:28PM +0200, Marek Belisko wrote:
+>
+>> +#define PCM1681_ATT_CONTROL(X)	(X <= 6 ? X : X + 9) /* Attenuation level */
+>
+> Write a function for this.
+This macro is used when creating controls for channels volume so this 
+cannot be rewritten to function. I also thinking about updating macro 
+name to PCM1681_CHANNEL_VOL(X).
+>
+>> +static bool pcm1681_writeable_reg(struct device *dev, unsigned register reg)
+>> +{
+>> +	return pcm1681_accessible_reg(dev, reg) &&
+>> +		(reg != PCM1681_ZERO_DETECT_STATUS);
+>> +}
+>
+>> +static int pcm1681_digital_mute(struct snd_soc_dai *dai, int mute)
+>> +{
+>> +	struct snd_soc_codec *codec = dai->codec;
+>> +	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
+>> +	int ret, val = 0;
+>> +
+>> +	if (mute)
+>> +		val = PCM1681_SOFT_MUTE_ALL;
+>> +
+>
+> This would be clearer if written as an if .. else - otherwise it looks
+> like an uninitalised value might be used.
+OK.
+>
+>> +static int pcm1681_hw_params(struct snd_pcm_substream *substream,
+>> +			     struct snd_pcm_hw_params *params,
+>> +			     struct snd_soc_dai *dai)
+>> +{
+>> +	struct snd_soc_codec *codec = dai->codec;
+>> +	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
+>> +	int val = 0;
+>> +	int pcm_format = params_format(params);
+>> +
+>> +	priv->rate = params_rate(params);
+>> +
+>
+> Shouldn't there be a call to set the deemphasis here?
+Right. I'll add it here.
+>
+>> +static int pcm1681_probe(struct snd_soc_codec *codec)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>> +static int pcm1681_remove(struct snd_soc_codec *codec)
+>> +{
+>> +	return 0;
+>> +}
+>
+> Remove empty functions.
+Will do.
+>
 
-Thanks
-Mengdong
+Thanks,
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org
-> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Lin, Mengdong
-> Sent: Thursday, June 27, 2013 2:50 PM
-> To: alsa-devel@alsa-project.org
-> Subject: [alsa-devel] How to clear the ALSA audio settings remembered by
-> system?
-> 
-> Hi,
-> 
-> Could anyone tell me how to clear the ALSA audio settings remembered by
-> system?
-> 
-> I change some audio codec settings by amixer. And it seems the ALSA has
-> remembered these settings and apply on next boot. And these will change
-> my test result.
-> How can I let system forgot these changes?
-> 
-> Many thanks
-> Mengdong
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+marek
+
+-- 
+Marek Belisko
+
+Software Developer
+StreamUnlimited Engineering GmbH
+Gutheil Schodergasse 8-12
+A-1100 Vienna, Austria
+
+Office: +421 267200087
+
+e-mail: marek.belisko@streamunlimited.com
+http://www.streamunlimited.com
+
+Meet us at:
+
+IFA - Berlin, 6-11 September
+CEDIA - Denver, 25-28 September
