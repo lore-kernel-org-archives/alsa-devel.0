@@ -1,17 +1,15 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 2/2] ASoC: adau1701: remove control_data
-	assignment
-Date: Thu, 27 Jun 2013 22:00:05 +0200
-Message-ID: <1372363205-31244-2-git-send-email-zonque@gmail.com>
-References: <1372363205-31244-1-git-send-email-zonque@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [git pull] [PATCH 0/7] add support for many Roland and
+	Yamaha devices
+Date: Thu, 27 Jun 2013 22:16:11 +0200
+Message-ID: <51CC9D8B.7060601@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id E45E126566D
- for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 21:59:35 +0200 (CEST)
-In-Reply-To: <1372363205-31244-1-git-send-email-zonque@gmail.com>
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 944AE26562D
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 22:15:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,32 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, lars@metafoo.de, Daniel Mack <zonque@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-codec->control_data has to be left unset to make the ASoC core access
-the regmap properly.
+The following changes since commit f722406faae2d073cc1d01063d1123c35425939e:
 
-That bug slipped in during a rebase session of the driver refactoring.
+  Linux 3.10-rc1 (2013-05-11 17:14:08 -0700)
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
----
- sound/soc/codecs/adau1701.c | 2 --
- 1 file changed, 2 deletions(-)
+are available in the git repository at:
 
-diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-index ce56065..16e5555 100644
---- a/sound/soc/codecs/adau1701.c
-+++ b/sound/soc/codecs/adau1701.c
-@@ -599,8 +599,6 @@ static int adau1701_probe(struct snd_soc_codec *codec)
- 	unsigned int val;
- 	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
- 
--	codec->control_data = to_i2c_client(codec->dev);
--
- 	/*
- 	 * Let the pll_clkdiv variable default to something that won't happen
- 	 * at runtime. That way, we can postpone the firmware download from
--- 
-1.8.1.4
+  git://git.alsa-project.org/alsa-kprivate.git full-roland-support
+
+for you to fetch changes up to b7f33917bcd993ff81f3f80b9dc1890fb7410c6d:
+
+  ALSA: usb-audio: add quirks for Roland QUAD/OCTO-CAPTURE (2013-06-27 21:59:50 +0200)
+
+----------------------------------------------------------------
+Clemens Ladisch (7):
+      ALSA: usb-audio: store protocol version in struct audioformat
+      ALSA: usb-audio: detect implicit feedback on Roland devices
+      ALSA: usb-audio: add support for many Roland/Yamaha devices
+      ALSA: usb-audio: add MIDI port names for some Roland devices
+      ALSA: usb-audio: remove superfluous Roland quirks
+      ALSA: usb-audio: claim autodetected PCM interfaces all at once
+      ALSA: usb-audio: add quirks for Roland QUAD/OCTO-CAPTURE
+
+ sound/usb/card.h         |   1 +
+ sound/usb/clock.c        |   4 +-
+ sound/usb/format.c       |  34 +---
+ sound/usb/format.h       |   2 +-
+ sound/usb/midi.c         |  74 +++++++
+ sound/usb/pcm.c          |  45 ++++-
+ sound/usb/quirks-table.h | 497 +++++++++--------------------------------------
+ sound/usb/quirks.c       | 209 ++++++++++++++++++++
+ sound/usb/stream.c       |  18 +-
+ sound/usb/usbaudio.h     |   2 +
+ 10 files changed, 445 insertions(+), 441 deletions(-)
