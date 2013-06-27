@@ -1,21 +1,23 @@
-From: Samuel Ortiz <sameo@linux.intel.com>
-Subject: Re: [PATCH 2/4] MFD: twl6040: Update register bit
-	definitions
-Date: Thu, 27 Jun 2013 10:25:03 +0200
-Message-ID: <20130627082503.GE4576@zurbaran>
-References: <1372081326-6917-1-git-send-email-peter.ujfalusi@ti.com>
- <1372081326-6917-3-git-send-email-peter.ujfalusi@ti.com>
- <20130627080547.GD4576@zurbaran>
- <20130627082003.GU27646@sirena.org.uk>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [RFC PATCH v2 03/12] dmaengine: PL08x: Rework LLI
+ handling to be less fragile
+Date: Thu, 27 Jun 2013 11:31:06 +0200
+Message-ID: <CACRpkdYx_K9OkDDcXtHCwg4U3tB+1p3uj35-090sdoH6PU5OZw@mail.gmail.com>
+References: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com>
+ <1371933764-24875-4-git-send-email-tomasz.figa@gmail.com>
+ <CACRpkdYm7gFVLzRpQ2J97M+-zQAug_ftJhyi_kniTgCk=GT_bQ@mail.gmail.com>
+ <2212577.G2ANCYONVo@flatron>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id E1068265588
- for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 10:26:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130627082003.GU27646@sirena.org.uk>
+Received: from mail-ob0-f182.google.com (mail-ob0-f182.google.com
+ [209.85.214.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 942A7265588
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 11:31:08 +0200 (CEST)
+Received: by mail-ob0-f182.google.com with SMTP id va7so476163obc.41
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 02:31:06 -0700 (PDT)
+In-Reply-To: <2212577.G2ANCYONVo@flatron>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,28 +27,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@linaro.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, =?ISO-8859-1?Q?Heiko_St=FCbner?= <heiko@sntech.de>, Padmavathi Venna <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Alessandro Rubini <rubini@gnudd.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Kukjin Kim <kgene.kim@samsung.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Thomas Abraham <thomas.abraham@linaro.org>, Grant Likely <grant.likely@linaro.org>, Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 27, 2013 at 09:20:03AM +0100, Mark Brown wrote:
-> On Thu, Jun 27, 2013 at 10:05:47AM +0200, Samuel Ortiz wrote:
-> 
-> > I don't see the rest of the patchset, so I can't tell if there's a build
-> > time dependeny between this one and the other patches.
-> > I applied it for now, please let me know if you'd like the whole
-> > patchset to go through another tree at once.
-> 
-> There's build dependencies - the new register bits are used by the
-> following patches.  I'd already applied this to ASoC and sent it
-> upstream unfortunately so I can't rebase it out or pull in your commit
-> instead sadly.
-No worries, that shouldn't cause any merge issues.
-I dropped it from mfd-next.
+On Thu, Jun 27, 2013 at 12:04 AM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
 
-Cheers,
-Samuel.
+>> > +#define MAX_NUM_TSFR_LLIS      512
+>>
+>> And I like this nice side effect that we allocate a number of LLIs
+>> rather than a fixed-size buffer.
+>
+> As we're at it, is there any reason to choose this particular number of
+> LLis? I have calculated it from the buffer size defined originally, but I
+> wonder if 512 LLIs for single transfer isn't too much?
 
--- 
-Intel Open Source Technology Centre
-http://oss.intel.com/
+Hm that would be some kind of rule-of-thumb thing.
+
+It depends on the typical DMA request size divided by the max
+bytes you can stash into an LLI in the smallest case.
+
+For example when issueing things like this:
+
+dd if=/dev/mmc0 of=/dev/null
+
+you can get *really* large LLI lists, maybe if you want to make
+a real engineering exercise you could instrument the code to
+accumulate a few stats and run this stressful usecase on the
+S3C and see where you end up?
+
+Then calculate backwards for the smaller LLI chunks of the
+unmodified PL08x and get a proper estimate.
+
+One way forward would be not to hardcode this as a
+#define but making it a field of the vendor data I guess.
+
+Yours,
+Linus Walleij
