@@ -1,17 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH 7/7] ALSA: usb-audio: add quirks for Roland
-	QUAD/OCTO-CAPTURE
-Date: Thu, 27 Jun 2013 22:20:34 +0200
-Message-ID: <51CC9E92.8070305@ladisch.de>
-References: <51CC9D8B.7060601@ladisch.de>
+From: Przemek Rudy <prudy1@o2.pl>
+Subject: [PATCH - microII 1/1] ALSA: usb-audio: Add Audio
+	Advantage Micro II
+Date: Thu, 27 Jun 2013 23:52:33 +0200
+Message-ID: <1372369954-32403-1-git-send-email-prudy1@o2.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 29CA626565A
- for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 22:19:44 +0200 (CEST)
-In-Reply-To: <51CC9D8B.7060601@ladisch.de>
+Received: from moh2-ve3.go2.pl (moh2-ve3.go2.pl [193.17.41.208])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBCFA2619D1
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 23:52:39 +0200 (CEST)
+Received: from moh2-ve3.go2.pl (unknown [10.0.0.208])
+ by moh2-ve3.go2.pl (Postfix) with ESMTP id 8F6813705F7
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 23:52:39 +0200 (CEST)
+Received: from unknown (unknown [10.0.0.74])
+ by moh2-ve3.go2.pl (Postfix) with SMTP
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 23:52:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,162 +25,277 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Przemek Rudy <prudy1@o2.pl>
 List-Id: alsa-devel@alsa-project.org
 
-The Roland Quad/Octo-Capture devices use some unknown vendor-specific
-mechanism to switch sample rates (and to manage other controls).  To
-prevent the driver from attempting to use any other than the default
-44.1 kHz sample rate, use quirks to hide the other alternate settings.
 
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
----
- sound/usb/quirks-table.h | 134 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 134 insertions(+)
+Signed-off-by: Przemek Rudy <prudy1@o2.pl>
 
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index ebe9144..d42a584 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -9,6 +9,8 @@
+  *	    Alan Cox (alan@lxorguk.ukuu.org.uk)
+  *	    Thomas Sailer (sailer@ife.ee.ethz.ch)
+  *
++ *   Audio Advantage Micro II support added by:
++ *	    Przemek Rudy (prudy1@o2.pl)
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -30,6 +32,7 @@
+ #include <linux/usb.h>
+ #include <linux/usb/audio.h>
+ 
++#include <sound/asoundef.h>
+ #include <sound/core.h>
+ #include <sound/control.h>
+ #include <sound/hwdep.h>
+@@ -1315,6 +1318,211 @@ static struct std_mono_table ebox44_table[] = {
+ 	{}
+ };
+ 
++/* Audio Advantage Micro II findings:
++ *
++ * Mapping spdif AES bits to vendor register.bit:
++ * AES0: [0 0 0 0 2.3 2.2 2.1 2.0] - default 0x00
++ * AES1: [3.3 3.2.3.1.3.0 2.7 2.6 2.5 2.4] - default: 0x01
++ * AES2: [0 0 0 0 0 0 0 0]
++ * AES3: [0 0 0 0 0 0 x 0] - 'x' bit is set basing on standard usb request
++ *                           (UAC_EP_CS_ATTR_SAMPLE_RATE) for Audio Devices
++ *
++ * power on values:
++ * r2: 0x10
++ * r3: 0x20 (b7 is zeroed just before playback (except IEC61937) and set
++ *           just after it to 0xa0, presumably it disables/mutes some analog
++ *           parts when there is no audio.)
++ * r9: 0x28
++ *
++ * Optical transmitter on/off:
++ * vendor register.bit: 9.1
++ * 0 - on (0x28 register value)
++ * 1 - off (0x2a register value)
++ *
++ */
++static int snd_microii_spdif_info(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
++	uinfo->count = 1;
++	return 0;
++}
++
++static int snd_microii_spdif_default_get(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
++	int err;
++	struct usb_interface *iface;
++	struct usb_host_interface *alts;
++	unsigned int ep;
++	unsigned char data[3];
++	int rate;
++
++	ucontrol->value.iec958.status[0] = kcontrol->private_value & 0xff;
++	ucontrol->value.iec958.status[1] = (kcontrol->private_value >> 8) & 0xff;
++	ucontrol->value.iec958.status[2] = 0x00;
++
++	/* use known values for that card: interface#1 altsetting#1 */
++	iface = usb_ifnum_to_if(mixer->chip->dev, 1);
++	alts = &iface->altsetting[1];
++	ep = get_endpoint(alts, 0)->bEndpointAddress;
++
++	err = snd_usb_ctl_msg(mixer->chip->dev,
++			usb_rcvctrlpipe(mixer->chip->dev, 0),
++			UAC_GET_CUR,
++			USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_IN,
++			UAC_EP_CS_ATTR_SAMPLE_RATE << 8,
++			ep,
++			data,
++			sizeof(data));
++	if (err < 0)
++		goto end;
++
++	rate = data[0] | (data[1] << 8) | (data[2] << 16);
++	ucontrol->value.iec958.status[3] = (rate == 48000) ?
++			IEC958_AES3_CON_FS_48000 : IEC958_AES3_CON_FS_44100;
++
++	err = 0;
++end:
++	return err;
++}
++
++static int snd_microii_spdif_default_put(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
++	int err;
++	u8 reg;
++	unsigned long priv_backup = kcontrol->private_value;
++
++	reg = ((ucontrol->value.iec958.status[1] & 0x0f) << 4) |
++			(ucontrol->value.iec958.status[0] & 0x0f);
++	err = snd_usb_ctl_msg(mixer->chip->dev,
++			usb_sndctrlpipe(mixer->chip->dev, 0),
++			UAC_SET_CUR,
++			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
++			reg,
++			2,
++			NULL,
++			0);
++	if (err < 0)
++		goto end;
++
++	kcontrol->private_value &= 0xfffff0f0;
++	kcontrol->private_value |= (ucontrol->value.iec958.status[1] & 0x0f) << 8;
++	kcontrol->private_value |= (ucontrol->value.iec958.status[0] & 0x0f);
++
++	reg = (ucontrol->value.iec958.status[0] & IEC958_AES0_NONAUDIO) ?
++			0xa0 : 0x20;
++	reg |= (ucontrol->value.iec958.status[1] >> 4) & 0x0f;
++	err = snd_usb_ctl_msg(mixer->chip->dev,
++			usb_sndctrlpipe(mixer->chip->dev, 0),
++			UAC_SET_CUR,
++			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
++			reg,
++			3,
++			NULL,
++			0);
++	if (err < 0)
++		goto end;
++
++	kcontrol->private_value &= 0xffff0fff;
++	kcontrol->private_value |= (ucontrol->value.iec958.status[1] & 0xf0) << 8;
++
++	/* The frequency bits in AES3 cannot be set via register access. */
++
++	/* Silently ignore any bits from the request that cannot be set. */
++
++	err = (priv_backup != kcontrol->private_value);
++end:
++	return err;
++}
++
++static int snd_microii_spdif_mask_get(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.iec958.status[0] = 0x0f;
++	ucontrol->value.iec958.status[1] = 0xff;
++	ucontrol->value.iec958.status[2] = 0x00;
++	ucontrol->value.iec958.status[3] = 0x00;
++
++	return 0;
++}
++
++static int snd_microii_spdif_switch_get(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = !(kcontrol->private_value & 0x02);
++
++	return 0;
++}
++
++static int snd_microii_spdif_switch_put(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
++	int err;
++	u8 reg = ucontrol->value.integer.value[0] ? 0x28 : 0x2a;
++
++	err = snd_usb_ctl_msg(mixer->chip->dev,
++			usb_sndctrlpipe(mixer->chip->dev, 0),
++			UAC_SET_CUR,
++			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
++			reg,
++			9,
++			NULL,
++			0);
++
++	if (!err) {
++		err = (reg != (kcontrol->private_value & 0x0ff));
++		if (err)
++			kcontrol->private_value = reg;
++	}
++
++	return err;
++}
++
++static struct snd_kcontrol_new snd_microii_mixer_spdif[] = {
++	{
++		.iface =    SNDRV_CTL_ELEM_IFACE_PCM,
++		.name =     SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
++		.info =     snd_microii_spdif_info,
++		.get =      snd_microii_spdif_default_get,
++		.put =      snd_microii_spdif_default_put,
++		.private_value = 0x00000100UL,/* reset value */
++	},
++	{
++		.access =   SNDRV_CTL_ELEM_ACCESS_READ,
++		.iface =    SNDRV_CTL_ELEM_IFACE_PCM,
++		.name =     SNDRV_CTL_NAME_IEC958("", PLAYBACK, MASK),
++		.info =     snd_microii_spdif_info,
++		.get =      snd_microii_spdif_mask_get,
++	},
++	{
++		.iface =    SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name =     SNDRV_CTL_NAME_IEC958("", PLAYBACK, SWITCH),
++		.info =     snd_ctl_boolean_mono_info,
++		.get =      snd_microii_spdif_switch_get,
++		.put =      snd_microii_spdif_switch_put,
++		.private_value = 0x00000028UL,/* reset value */
++	}
++};
++
++static int snd_microii_controls_create(struct usb_mixer_interface *mixer)
++{
++	int err, i;
++
++	for (i = 0; i < ARRAY_SIZE(snd_microii_mixer_spdif); ++i) {
++		err = snd_ctl_add(mixer->chip->card,
++			snd_ctl_new1(&snd_microii_mixer_spdif[i], mixer));
++		if (err < 0)
++			return err;
++	}
++
++	return err;
++}
++
+ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ {
+ 	int err = 0;
+@@ -1353,6 +1561,10 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 		err = snd_xonar_u1_controls_create(mixer);
+ 		break;
+ 
++	case USB_ID(0x0d8c, 0x0103): /* Audio Advantage Micro II */
++		err = snd_microii_controls_create(mixer);
++		break;
++
+ 	case USB_ID(0x17cc, 0x1011): /* Traktor Audio 6 */
+ 		err = snd_nativeinstruments_create_mixer(mixer,
+ 				snd_nativeinstruments_ta6_mixers,
 diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index da4d87f..9c636c2 100644
+index 8b75bcf..2be7410 100644
 --- a/sound/usb/quirks-table.h
 +++ b/sound/usb/quirks-table.h
-@@ -1581,6 +1581,140 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		}
+@@ -3434,4 +3434,16 @@ YAMAHA_DEVICE(0x7010, "UB99"),
  	}
  },
+ 
 +{
-+	/* only 44.1 kHz works at the moment */
-+	USB_DEVICE(0x0582, 0x0120),
-+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		/* .vendor_name = "Roland", */
-+		/* .product_name = "OCTO-CAPTURE", */
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+					.channels = 10,
-+					.iface = 0,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x05,
-+					.ep_attr = 0x05,
-+					.rates = SNDRV_PCM_RATE_44100,
-+					.rate_min = 44100,
-+					.rate_max = 44100,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 44100 }
-+				}
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+					.channels = 12,
-+					.iface = 1,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x85,
-+					.ep_attr = 0x25,
-+					.rates = SNDRV_PCM_RATE_44100,
-+					.rate_min = 44100,
-+					.rate_max = 44100,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 44100 }
-+				}
-+			},
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+				.data = & (const struct snd_usb_midi_endpoint_info) {
-+					.out_cables = 0x0001,
-+					.in_cables  = 0x0001
-+				}
-+			},
-+			{
-+				.ifnum = 3,
-+				.type = QUIRK_IGNORE_INTERFACE
-+			},
-+			{
-+				.ifnum = 4,
-+				.type = QUIRK_IGNORE_INTERFACE
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
++	/*
++	 * The original product_name is "USB Sound Device", however this name
++	 * is also used by the CM106 based cards, so make it unique.
++	 */
++	USB_DEVICE(0x0d8c, 0x0103),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.product_name = "Audio Advantage MicroII",
++		.ifnum = QUIRK_NO_INTERFACE
 +	}
 +},
-+{
-+	/* only 44.1 kHz works at the moment */
-+	USB_DEVICE(0x0582, 0x012f),
-+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		/* .vendor_name = "Roland", */
-+		/* .product_name = "QUAD-CAPTURE", */
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+					.channels = 4,
-+					.iface = 0,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x05,
-+					.ep_attr = 0x05,
-+					.rates = SNDRV_PCM_RATE_44100,
-+					.rate_min = 44100,
-+					.rate_max = 44100,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 44100 }
-+				}
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+					.channels = 6,
-+					.iface = 1,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x85,
-+					.ep_attr = 0x25,
-+					.rates = SNDRV_PCM_RATE_44100,
-+					.rate_min = 44100,
-+					.rate_max = 44100,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 44100 }
-+				}
-+			},
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+				.data = & (const struct snd_usb_midi_endpoint_info) {
-+					.out_cables = 0x0001,
-+					.in_cables  = 0x0001
-+				}
-+			},
-+			{
-+				.ifnum = 3,
-+				.type = QUIRK_IGNORE_INTERFACE
-+			},
-+			{
-+				.ifnum = 4,
-+				.type = QUIRK_IGNORE_INTERFACE
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
- /* this catches most recent vendor-specific Roland devices */
- {
- 	.match_flags = USB_DEVICE_ID_MATCH_VENDOR |
++
+ #undef USB_DEVICE_VENDOR_SPEC
+-- 
+1.8.1.4
