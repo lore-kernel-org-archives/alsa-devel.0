@@ -1,52 +1,33 @@
-From: Kevin Hilman <khilman@linaro.org>
-Subject: [PATCH 2/2] ASoC: ac97: fixup multi-platform AC'97 module build
- failure
-Date: Fri, 28 Jun 2013 11:17:49 -0700
-Message-ID: <1372443469-20191-3-git-send-email-khilman@linaro.org>
-References: <1372443469-20191-1-git-send-email-khilman@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1372443469-20191-1-git-send-email-khilman@linaro.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
-Cc: Olof Johansson <olof@lixom.net>, linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@linaro.org>
+From: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH 1/2] ASoC: tegra20-ac97: Remove duplicate error message
+Date: Fri, 28 Jun 2013 21:53:24 +0200
+Message-ID: <1372449205-22231-1-git-send-email-thierry.reding@gmail.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-commit b047e1cc (ASoC: ac97: Support multi-platform AC'97) introduced
-some build failures for modules wanting to access the generic
-soc_ac97_ops.  For example:
+devm_ioremap_resource() already outputs an error message when any of the
+operations it performs fails, so the duplicate in the caller can be
+removed.
 
-ERROR: "soc_ac97_ops" [sound/soc/codecs/snd-soc-wm9712.ko] undefined!
-
-To fix, export soc_ac97_ops to modules.
-
-Cc: Mark Brown <broonie@linaro.org>
-Signed-off-by: Kevin Hilman <khilman@linaro.org>
+Signed-off-by: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
- sound/soc/soc-core.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/tegra/tegra20_ac97.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 309e5c9..0ec070c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2081,6 +2081,7 @@ int snd_soc_new_ac97_codec(struct snd_soc_codec *codec,
- EXPORT_SYMBOL_GPL(snd_soc_new_ac97_codec);
+diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
+index 9043626d..c1f08f3 100644
+--- a/sound/soc/tegra/tegra20_ac97.c
++++ b/sound/soc/tegra/tegra20_ac97.c
+@@ -344,7 +344,6 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	regs = devm_ioremap_resource(&pdev->dev, mem);
+ 	if (IS_ERR(regs)) {
+ 		ret = PTR_ERR(regs);
+-		dev_err(&pdev->dev, "ioremap failed: %d\n", ret);
+ 		goto err_clk_put;
+ 	}
  
- struct snd_ac97_bus_ops *soc_ac97_ops;
-+EXPORT_SYMBOL_GPL(soc_ac97_ops);
- 
- int snd_soc_set_ac97_ops(struct snd_ac97_bus_ops *ops)
- {
 -- 
-1.8.3
+1.8.3.1
