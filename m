@@ -1,52 +1,45 @@
-From: Jordi Mallach <jordi@debian.org>
-Subject: [PATCH] Add -lm to test programs to fix build failure.
-Date: Fri, 28 Jun 2013 15:05:44 +0200
-Message-ID: <1372424744-27504-1-git-send-email-jordi@debian.org>
+From: Kevin Hilman <khilman@linaro.org>
+Subject: [PATCH 0/2] ASoc: ac97: fix multi-platform build failures
+Date: Fri, 28 Jun 2013 11:17:47 -0700
+Message-ID: <1372443469-20191-1-git-send-email-khilman@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tempesta.oskuro.net (tempesta.oskuro.net [92.243.30.96])
- by alsa0.perex.cz (Postfix) with ESMTP id F0AED2656EF
- for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2013 15:05:54 +0200 (CEST)
-Received: from penyagolosa.oskuro.net (167.22.15.37.dynamic.jazztel.es
- [37.15.22.167])
- by tempesta.oskuro.net (Postfix) with ESMTPSA id A075762742
- for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2013 15:06:02 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Cc: Olof Johansson <olof@lixom.net>, linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-Add -lm to test programs that use sin(), to fix a build failure with recent
-binutils.
+Hi Mark,
 
-Signed-off-by: Jordi Mallach <jordi@debian.org>
----
- test/Makefile.am | 2 ++
- 1 file changed, 2 insertions(+)
+When building next-20130628, I noticed a few build errors for
+cm_x300_defconfig that were introduced by the new multi-platform AC'97
+support.
 
-diff --git a/test/Makefile.am b/test/Makefile.am
-index 8705402..c1896f8 100644
---- a/test/Makefile.am
-+++ b/test/Makefile.am
-@@ -7,8 +7,10 @@ check_PROGRAMS=control pcm pcm_min latency seq \
- 
- control_LDADD=../src/libasound.la
- pcm_LDADD=../src/libasound.la
-+pcm_LDFLAGS= -lm
- pcm_min_LDADD=../src/libasound.la
- latency_LDADD=../src/libasound.la
-+latency_LDFLAGS= -lm
- seq_LDADD=../src/libasound.la
- playmidi1_LDADD=../src/libasound.la
- timer_LDADD=../src/libasound.la
+Here's a couple fixup patches, that should maybe just be folded into
+the originals, assuming they're the correct fixes.  At least it things
+build again for 
+
+Kevin
+
+
+Kevin Hilman (2):
+  ASoC: ac97: pxa2xx: fixup multi-platform AC'97 build failures
+  ASoC: ac97: fixup multi-platform AC'97 module build failure
+
+ sound/soc/pxa/pxa2xx-ac97.c | 2 ++
+ sound/soc/pxa/pxa2xx-ac97.h | 3 ---
+ sound/soc/soc-core.c        | 1 +
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
 -- 
-1.8.3.1
+1.8.3
