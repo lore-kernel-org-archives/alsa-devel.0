@@ -1,15 +1,16 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Yet another Dell headset mic quirk
-Date: Fri, 28 Jun 2013 08:53:34 +0200
-Message-ID: <1372402414-2787-1-git-send-email-david.henningsson@canonical.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: C-Media 6632A unsupported (asus xonar u7)
+Date: Fri, 28 Jun 2013 09:25:51 +0200
+Message-ID: <51CD3A7F.4040906@ladisch.de>
+References: <CANOmF+myQN0dyJoogCju4w+ScvrcXBNq1EGk99keM048SE0HoQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C40426564C
- for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2013 08:53:37 +0200 (CEST)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 89E2B265665
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2013 09:25:54 +0200 (CEST)
+In-Reply-To: <CANOmF+myQN0dyJoogCju4w+ScvrcXBNq1EGk99keM048SE0HoQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,30 +20,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1195597@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
+To: Julius von kohout <juliusvonkohout@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This quirk is needed for the headset mic to work on this Dell
-machine.
+Julius von kohout wrote:
+> Hi ive got a new usb soundcard with the brand new C-Media 6632A chip and
+> want to help with debugging.
 
-BugLink: https://bugs.launchpad.net/bugs/1195597
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+Please show the output of "lsusb -v" for this device.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index ae12111..6d7041d 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3509,6 +3509,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0606, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0608, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0609, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x0613, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
- 	SND_PCI_QUIRK(0x103c, 0x18e6, "HP", ALC269_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x1973, "HP Pavilion", ALC269_FIXUP_HP_MUTE_LED_MIC1),
--- 
-1.7.9.5
+> cannot get ctl value: req = 0x81, wValue = 0x0, wIndex = 0x1400, type = 3
+
+This sounds like a bug in the device's firmware.
+
+
+Regards,
+Clemens
