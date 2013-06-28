@@ -1,20 +1,24 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: Replace the magic number 44 with
-	const
-Date: Fri, 28 Jun 2013 12:23:18 +0200
-Message-ID: <1372414998-7618-2-git-send-email-tiwai@suse.de>
-References: <1372414998-7618-1-git-send-email-tiwai@suse.de>
+From: =?UTF-8?B?UHJ6ZW15c8WCYXcgUnVkeQ==?= <prudy1@o2.pl>
+Subject: Re: [PATCH - microII 1/1] ALSA: usb-audio: Add Audio
+ Advantage Micro II
+Date: Fri, 28 Jun 2013 13:07:22 +0200
+Message-ID: <51CD6E6A.1030805@o2.pl>
+References: <1372369954-32403-1-git-send-email-prudy1@o2.pl>
+ <s5hwqpemtqa.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E00D82656A9
- for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2013 12:22:27 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B0E0CA535B
- for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2013 12:22:27 +0200 (CEST)
-In-Reply-To: <1372414998-7618-1-git-send-email-tiwai@suse.de>
+Received: from moh3-ve1.go2.pl (moh3-ve2.go2.pl [193.17.41.86])
+ by alsa0.perex.cz (Postfix) with ESMTP id 559282656B0
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2013 13:07:26 +0200 (CEST)
+Received: from moh3-ve1.go2.pl (unknown [10.0.0.157])
+ by moh3-ve1.go2.pl (Postfix) with ESMTP id CB0F7AF6968
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2013 13:07:25 +0200 (CEST)
+Received: from unknown (unknown [10.0.0.108])
+ by moh3-ve1.go2.pl (Postfix) with SMTP
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2013 13:07:25 +0200 (CEST)
+In-Reply-To: <s5hwqpemtqa.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,172 +28,310 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The char arrays with size 44 are for the name string of
-snd_ctl_elem_id.  Define the constant and replace the raw numbers with
-it for clarifying better.
+Sure Takashi, here you are:
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/uapi/sound/asound.h  |  2 ++
- sound/pci/ac97/ac97_codec.c  |  2 +-
- sound/pci/asihpi/asihpi.c    |  2 +-
- sound/pci/hda/hda_generic.c  | 12 ++++++------
- sound/pci/hda/hda_jack.c     |  2 +-
- sound/pci/hda/patch_ca0132.c |  8 ++++----
- 6 files changed, 15 insertions(+), 13 deletions(-)
+------------------
+This patch is adding extensive support (beside standard usb audio class)
+for Audio Advantage Micro II usb sound card.
+Features included:
+- Access to AES bits (so now sending the IEC61937 compliant stream is
+possible).
+- Mixer SPDIF control added to turn on/off the optical transmitter.
+------------------
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index e3983d5..041203f 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -817,6 +817,8 @@ typedef int __bitwise snd_ctl_elem_iface_t;
- #define SNDRV_CTL_POWER_D3hot		(SNDRV_CTL_POWER_D3|0x0000)	/* Off, with power */
- #define SNDRV_CTL_POWER_D3cold		(SNDRV_CTL_POWER_D3|0x0001)	/* Off, without power */
- 
-+#define SNDRV_CTL_ELEM_ID_NAME_MAXLEN	44
-+
- struct snd_ctl_elem_id {
- 	unsigned int numid;		/* numeric identifier, zero = invalid */
- 	snd_ctl_elem_iface_t iface;	/* interface identifier */
-diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
-index d37c683..445ca48 100644
---- a/sound/pci/ac97/ac97_codec.c
-+++ b/sound/pci/ac97/ac97_codec.c
-@@ -1296,7 +1296,7 @@ static int snd_ac97_cmix_new_stereo(struct snd_card *card, const char *pfx,
- 				    struct snd_ac97 *ac97)
- {
- 	int err;
--	char name[44];
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	unsigned char lo_max, hi_max;
- 
- 	if (! snd_ac97_valid_reg(ac97, reg))
-diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
-index fbc1720..185d54a 100644
---- a/sound/pci/asihpi/asihpi.c
-+++ b/sound/pci/asihpi/asihpi.c
-@@ -1278,7 +1278,7 @@ struct hpi_control {
- 	u16 dst_node_type;
- 	u16 dst_node_index;
- 	u16 band;
--	char name[44]; /* copied to snd_ctl_elem_id.name[44]; */
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* copied to snd_ctl_elem_id.name[44]; */
- };
- 
- static const char * const asihpi_tuner_band_names[] = {
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 6460fc5..8e77cbb 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -854,7 +854,7 @@ static int add_control_with_pfx(struct hda_gen_spec *spec, int type,
- 				const char *pfx, const char *dir,
- 				const char *sfx, int cidx, unsigned long val)
- {
--	char name[44];
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	snprintf(name, sizeof(name), "%s %s %s", pfx, dir, sfx);
- 	if (!add_control(spec, type, name, cidx, val))
- 		return -ENOMEM;
-@@ -1931,7 +1931,7 @@ static int create_extra_outs(struct hda_codec *codec, int num_pins,
- 
- 	for (i = 0; i < num_pins; i++) {
- 		const char *name;
--		char tmp[44];
-+		char tmp[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 		int err, idx = 0;
- 
- 		if (num_pins == 2 && i == 1 && !strcmp(pfx, "Speaker"))
-@@ -2484,7 +2484,7 @@ static int create_out_jack_modes(struct hda_codec *codec, int num_pins,
- 		}
- 		if (get_out_jack_num_items(codec, pin) > 1) {
- 			struct snd_kcontrol_new *knew;
--			char name[44];
-+			char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 			get_jack_mode_name(codec, pin, name, sizeof(name));
- 			knew = snd_hda_gen_add_kctl(spec, name,
- 						    &out_jack_mode_enum);
-@@ -2616,7 +2616,7 @@ static int create_in_jack_mode(struct hda_codec *codec, hda_nid_t pin)
- {
- 	struct hda_gen_spec *spec = codec->spec;
- 	struct snd_kcontrol_new *knew;
--	char name[44];
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	unsigned int defcfg;
- 
- 	if (pin == spec->hp_mic_pin)
-@@ -3316,7 +3316,7 @@ static int add_single_cap_ctl(struct hda_codec *codec, const char *label,
- 			      bool inv_dmic)
- {
- 	struct hda_gen_spec *spec = codec->spec;
--	char tmpname[44];
-+	char tmpname[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	int type = is_switch ? HDA_CTL_WIDGET_MUTE : HDA_CTL_WIDGET_VOL;
- 	const char *sfx = is_switch ? "Switch" : "Volume";
- 	unsigned int chs = inv_dmic ? 1 : 3;
-@@ -3578,7 +3578,7 @@ static int parse_mic_boost(struct hda_codec *codec)
- 		struct nid_path *path;
- 		unsigned int val;
- 		int idx;
--		char boost_label[44];
-+		char boost_label[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 
- 		idx = imux->items[i].index;
- 		if (idx >= imux->num_items)
-diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
-index 9e0a952..3fd2973 100644
---- a/sound/pci/hda/hda_jack.c
-+++ b/sound/pci/hda/hda_jack.c
-@@ -398,7 +398,7 @@ static int add_jack_kctl(struct hda_codec *codec, hda_nid_t nid,
- 			 const char *base_name)
- {
- 	unsigned int def_conf, conn;
--	char name[44];
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	int idx, err;
- 	bool phantom_jack;
- 
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 90ff7a3..6e9876f 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -139,7 +139,7 @@ enum {
- #define DSP_SPEAKER_OUT_LATENCY         7
- 
- struct ct_effect {
--	char name[44];
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	hda_nid_t nid;
- 	int mid; /*effect module ID*/
- 	int reqs[EFFECT_VALS_MAX_COUNT]; /*effect module request*/
-@@ -270,7 +270,7 @@ enum {
- };
- 
- struct ct_tuning_ctl {
--	char name[44];
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	hda_nid_t parent_nid;
- 	hda_nid_t nid;
- 	int mid; /*effect module ID*/
-@@ -3103,7 +3103,7 @@ static int add_tuning_control(struct hda_codec *codec,
- 				hda_nid_t pnid, hda_nid_t nid,
- 				const char *name, int dir)
- {
--	char namestr[44];
-+	char namestr[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	int type = dir ? HDA_INPUT : HDA_OUTPUT;
- 	struct snd_kcontrol_new knew =
- 		HDA_CODEC_VOLUME_MONO(namestr, nid, 1, 0, type);
-@@ -3935,7 +3935,7 @@ static int ca0132_volume_tlv(struct snd_kcontrol *kcontrol, int op_flag,
- static int add_fx_switch(struct hda_codec *codec, hda_nid_t nid,
- 			 const char *pfx, int dir)
- {
--	char namestr[44];
-+	char namestr[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	int type = dir ? HDA_INPUT : HDA_OUTPUT;
- 	struct snd_kcontrol_new knew =
- 		CA0132_CODEC_MUTE_MONO(namestr, nid, 1, type);
--- 
-1.8.3.1
+Best,
+Przemek
+
+On 2013-06-28 12:10, Takashi Iwai wrote:
+> At Thu, 27 Jun 2013 23:52:33 +0200,
+> Przemek Rudy wrote:
+>>
+>>
+>> Signed-off-by: Przemek Rudy <prudy1@o2.pl>
+> 
+> The changes look OK to me, but the patch description is completely
+> missing.  Please give a bit more details in the patch description
+> part.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+>> diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+>> index ebe9144..d42a584 100644
+>> --- a/sound/usb/mixer_quirks.c
+>> +++ b/sound/usb/mixer_quirks.c
+>> @@ -9,6 +9,8 @@
+>>   *	    Alan Cox (alan@lxorguk.ukuu.org.uk)
+>>   *	    Thomas Sailer (sailer@ife.ee.ethz.ch)
+>>   *
+>> + *   Audio Advantage Micro II support added by:
+>> + *	    Przemek Rudy (prudy1@o2.pl)
+>>   *
+>>   *   This program is free software; you can redistribute it and/or modify
+>>   *   it under the terms of the GNU General Public License as published by
+>> @@ -30,6 +32,7 @@
+>>  #include <linux/usb.h>
+>>  #include <linux/usb/audio.h>
+>>  
+>> +#include <sound/asoundef.h>
+>>  #include <sound/core.h>
+>>  #include <sound/control.h>
+>>  #include <sound/hwdep.h>
+>> @@ -1315,6 +1318,211 @@ static struct std_mono_table ebox44_table[] = {
+>>  	{}
+>>  };
+>>  
+>> +/* Audio Advantage Micro II findings:
+>> + *
+>> + * Mapping spdif AES bits to vendor register.bit:
+>> + * AES0: [0 0 0 0 2.3 2.2 2.1 2.0] - default 0x00
+>> + * AES1: [3.3 3.2.3.1.3.0 2.7 2.6 2.5 2.4] - default: 0x01
+>> + * AES2: [0 0 0 0 0 0 0 0]
+>> + * AES3: [0 0 0 0 0 0 x 0] - 'x' bit is set basing on standard usb request
+>> + *                           (UAC_EP_CS_ATTR_SAMPLE_RATE) for Audio Devices
+>> + *
+>> + * power on values:
+>> + * r2: 0x10
+>> + * r3: 0x20 (b7 is zeroed just before playback (except IEC61937) and set
+>> + *           just after it to 0xa0, presumably it disables/mutes some analog
+>> + *           parts when there is no audio.)
+>> + * r9: 0x28
+>> + *
+>> + * Optical transmitter on/off:
+>> + * vendor register.bit: 9.1
+>> + * 0 - on (0x28 register value)
+>> + * 1 - off (0x2a register value)
+>> + *
+>> + */
+>> +static int snd_microii_spdif_info(struct snd_kcontrol *kcontrol,
+>> +	struct snd_ctl_elem_info *uinfo)
+>> +{
+>> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
+>> +	uinfo->count = 1;
+>> +	return 0;
+>> +}
+>> +
+>> +static int snd_microii_spdif_default_get(struct snd_kcontrol *kcontrol,
+>> +	struct snd_ctl_elem_value *ucontrol)
+>> +{
+>> +	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
+>> +	int err;
+>> +	struct usb_interface *iface;
+>> +	struct usb_host_interface *alts;
+>> +	unsigned int ep;
+>> +	unsigned char data[3];
+>> +	int rate;
+>> +
+>> +	ucontrol->value.iec958.status[0] = kcontrol->private_value & 0xff;
+>> +	ucontrol->value.iec958.status[1] = (kcontrol->private_value >> 8) & 0xff;
+>> +	ucontrol->value.iec958.status[2] = 0x00;
+>> +
+>> +	/* use known values for that card: interface#1 altsetting#1 */
+>> +	iface = usb_ifnum_to_if(mixer->chip->dev, 1);
+>> +	alts = &iface->altsetting[1];
+>> +	ep = get_endpoint(alts, 0)->bEndpointAddress;
+>> +
+>> +	err = snd_usb_ctl_msg(mixer->chip->dev,
+>> +			usb_rcvctrlpipe(mixer->chip->dev, 0),
+>> +			UAC_GET_CUR,
+>> +			USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_IN,
+>> +			UAC_EP_CS_ATTR_SAMPLE_RATE << 8,
+>> +			ep,
+>> +			data,
+>> +			sizeof(data));
+>> +	if (err < 0)
+>> +		goto end;
+>> +
+>> +	rate = data[0] | (data[1] << 8) | (data[2] << 16);
+>> +	ucontrol->value.iec958.status[3] = (rate == 48000) ?
+>> +			IEC958_AES3_CON_FS_48000 : IEC958_AES3_CON_FS_44100;
+>> +
+>> +	err = 0;
+>> +end:
+>> +	return err;
+>> +}
+>> +
+>> +static int snd_microii_spdif_default_put(struct snd_kcontrol *kcontrol,
+>> +	struct snd_ctl_elem_value *ucontrol)
+>> +{
+>> +	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
+>> +	int err;
+>> +	u8 reg;
+>> +	unsigned long priv_backup = kcontrol->private_value;
+>> +
+>> +	reg = ((ucontrol->value.iec958.status[1] & 0x0f) << 4) |
+>> +			(ucontrol->value.iec958.status[0] & 0x0f);
+>> +	err = snd_usb_ctl_msg(mixer->chip->dev,
+>> +			usb_sndctrlpipe(mixer->chip->dev, 0),
+>> +			UAC_SET_CUR,
+>> +			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+>> +			reg,
+>> +			2,
+>> +			NULL,
+>> +			0);
+>> +	if (err < 0)
+>> +		goto end;
+>> +
+>> +	kcontrol->private_value &= 0xfffff0f0;
+>> +	kcontrol->private_value |= (ucontrol->value.iec958.status[1] & 0x0f) << 8;
+>> +	kcontrol->private_value |= (ucontrol->value.iec958.status[0] & 0x0f);
+>> +
+>> +	reg = (ucontrol->value.iec958.status[0] & IEC958_AES0_NONAUDIO) ?
+>> +			0xa0 : 0x20;
+>> +	reg |= (ucontrol->value.iec958.status[1] >> 4) & 0x0f;
+>> +	err = snd_usb_ctl_msg(mixer->chip->dev,
+>> +			usb_sndctrlpipe(mixer->chip->dev, 0),
+>> +			UAC_SET_CUR,
+>> +			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+>> +			reg,
+>> +			3,
+>> +			NULL,
+>> +			0);
+>> +	if (err < 0)
+>> +		goto end;
+>> +
+>> +	kcontrol->private_value &= 0xffff0fff;
+>> +	kcontrol->private_value |= (ucontrol->value.iec958.status[1] & 0xf0) << 8;
+>> +
+>> +	/* The frequency bits in AES3 cannot be set via register access. */
+>> +
+>> +	/* Silently ignore any bits from the request that cannot be set. */
+>> +
+>> +	err = (priv_backup != kcontrol->private_value);
+>> +end:
+>> +	return err;
+>> +}
+>> +
+>> +static int snd_microii_spdif_mask_get(struct snd_kcontrol *kcontrol,
+>> +	struct snd_ctl_elem_value *ucontrol)
+>> +{
+>> +	ucontrol->value.iec958.status[0] = 0x0f;
+>> +	ucontrol->value.iec958.status[1] = 0xff;
+>> +	ucontrol->value.iec958.status[2] = 0x00;
+>> +	ucontrol->value.iec958.status[3] = 0x00;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int snd_microii_spdif_switch_get(struct snd_kcontrol *kcontrol,
+>> +	struct snd_ctl_elem_value *ucontrol)
+>> +{
+>> +	ucontrol->value.integer.value[0] = !(kcontrol->private_value & 0x02);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int snd_microii_spdif_switch_put(struct snd_kcontrol *kcontrol,
+>> +	struct snd_ctl_elem_value *ucontrol)
+>> +{
+>> +	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
+>> +	int err;
+>> +	u8 reg = ucontrol->value.integer.value[0] ? 0x28 : 0x2a;
+>> +
+>> +	err = snd_usb_ctl_msg(mixer->chip->dev,
+>> +			usb_sndctrlpipe(mixer->chip->dev, 0),
+>> +			UAC_SET_CUR,
+>> +			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+>> +			reg,
+>> +			9,
+>> +			NULL,
+>> +			0);
+>> +
+>> +	if (!err) {
+>> +		err = (reg != (kcontrol->private_value & 0x0ff));
+>> +		if (err)
+>> +			kcontrol->private_value = reg;
+>> +	}
+>> +
+>> +	return err;
+>> +}
+>> +
+>> +static struct snd_kcontrol_new snd_microii_mixer_spdif[] = {
+>> +	{
+>> +		.iface =    SNDRV_CTL_ELEM_IFACE_PCM,
+>> +		.name =     SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
+>> +		.info =     snd_microii_spdif_info,
+>> +		.get =      snd_microii_spdif_default_get,
+>> +		.put =      snd_microii_spdif_default_put,
+>> +		.private_value = 0x00000100UL,/* reset value */
+>> +	},
+>> +	{
+>> +		.access =   SNDRV_CTL_ELEM_ACCESS_READ,
+>> +		.iface =    SNDRV_CTL_ELEM_IFACE_PCM,
+>> +		.name =     SNDRV_CTL_NAME_IEC958("", PLAYBACK, MASK),
+>> +		.info =     snd_microii_spdif_info,
+>> +		.get =      snd_microii_spdif_mask_get,
+>> +	},
+>> +	{
+>> +		.iface =    SNDRV_CTL_ELEM_IFACE_MIXER,
+>> +		.name =     SNDRV_CTL_NAME_IEC958("", PLAYBACK, SWITCH),
+>> +		.info =     snd_ctl_boolean_mono_info,
+>> +		.get =      snd_microii_spdif_switch_get,
+>> +		.put =      snd_microii_spdif_switch_put,
+>> +		.private_value = 0x00000028UL,/* reset value */
+>> +	}
+>> +};
+>> +
+>> +static int snd_microii_controls_create(struct usb_mixer_interface *mixer)
+>> +{
+>> +	int err, i;
+>> +
+>> +	for (i = 0; i < ARRAY_SIZE(snd_microii_mixer_spdif); ++i) {
+>> +		err = snd_ctl_add(mixer->chip->card,
+>> +			snd_ctl_new1(&snd_microii_mixer_spdif[i], mixer));
+>> +		if (err < 0)
+>> +			return err;
+>> +	}
+>> +
+>> +	return err;
+>> +}
+>> +
+>>  int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+>>  {
+>>  	int err = 0;
+>> @@ -1353,6 +1561,10 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+>>  		err = snd_xonar_u1_controls_create(mixer);
+>>  		break;
+>>  
+>> +	case USB_ID(0x0d8c, 0x0103): /* Audio Advantage Micro II */
+>> +		err = snd_microii_controls_create(mixer);
+>> +		break;
+>> +
+>>  	case USB_ID(0x17cc, 0x1011): /* Traktor Audio 6 */
+>>  		err = snd_nativeinstruments_create_mixer(mixer,
+>>  				snd_nativeinstruments_ta6_mixers,
+>> diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+>> index 8b75bcf..2be7410 100644
+>> --- a/sound/usb/quirks-table.h
+>> +++ b/sound/usb/quirks-table.h
+>> @@ -3434,4 +3434,16 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+>>  	}
+>>  },
+>>  
+>> +{
+>> +	/*
+>> +	 * The original product_name is "USB Sound Device", however this name
+>> +	 * is also used by the CM106 based cards, so make it unique.
+>> +	 */
+>> +	USB_DEVICE(0x0d8c, 0x0103),
+>> +	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+>> +		.product_name = "Audio Advantage MicroII",
+>> +		.ifnum = QUIRK_NO_INTERFACE
+>> +	}
+>> +},
+>> +
+>>  #undef USB_DEVICE_VENDOR_SPEC
+>> -- 
+>> 1.8.1.4
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
