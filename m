@@ -1,23 +1,15 @@
-From: Przemek Rudy <prudy1@o2.pl>
-Subject: [PATCH - microII 1/1] conf/cards: add Audio Advantage
-	Micro II
-Date: Thu, 27 Jun 2013 23:52:34 +0200
-Message-ID: <1372369954-32403-2-git-send-email-prudy1@o2.pl>
-References: <1372369954-32403-1-git-send-email-prudy1@o2.pl>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Yet another Dell headset mic quirk
+Date: Fri, 28 Jun 2013 08:53:34 +0200
+Message-ID: <1372402414-2787-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moh2-ve3.go2.pl (moh2-ve3.go2.pl [193.17.41.208])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AE6026564C
- for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 23:52:41 +0200 (CEST)
-Received: from moh2-ve3.go2.pl (unknown [10.0.0.208])
- by moh2-ve3.go2.pl (Postfix) with ESMTP id D76933705F7
- for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 23:52:40 +0200 (CEST)
-Received: from unknown (unknown [10.0.0.74])
- by moh2-ve3.go2.pl (Postfix) with SMTP
- for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2013 23:52:40 +0200 (CEST)
-In-Reply-To: <1372369954-32403-1-git-send-email-prudy1@o2.pl>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C40426564C
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2013 08:53:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,58 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Przemek Rudy <prudy1@o2.pl>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: 1195597@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+This quirk is needed for the headset mic to work on this Dell
+machine.
 
-Signed-off-by: Przemek Rudy <prudy1@o2.pl>
+BugLink: https://bugs.launchpad.net/bugs/1195597
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
-index 0d93175..8a6d9ca 100644
---- a/src/conf/cards/USB-Audio.conf
-+++ b/src/conf/cards/USB-Audio.conf
-@@ -101,6 +101,41 @@ USB-Audio."Audiophile USB (tm)".pcm.iec958 {
- 	}
- }
- 
-+# For this card we can (and must to get IEC61937) set AES bits
-+USB-Audio."MicroII".pcm.iec958 "cards.USB-Audio.Audio Advantage MicroII.pcm.iec958"
-+USB-Audio."Audio Advantage MicroII".pcm.iec958 {
-+	@args [ CARD AES0 AES1 AES2 AES3 ]
-+	@args.CARD { type string }
-+	@args.AES0 { type integer }
-+	@args.AES1 { type integer }
-+	@args.AES2 { type integer }
-+	@args.AES3 { type integer }
-+
-+    type hooks
-+    slave.pcm {
-+		type hw
-+		card $CARD
-+    }
-+
-+    hooks.0 {
-+		type ctl_elems
-+		hook_args [
-+			{
-+				interface PCM
-+				name "IEC958 Playback Default"
-+				preserve true
-+				optional true
-+				value [ $AES0 $AES1 $AES2 $AES3 ]
-+			}
-+			{
-+				name "IEC958 Playback Switch"
-+				lock true
-+				preserve true
-+				value 1
-+			}
-+		]
-+	}
-+}
- 
- ################################################################################
- 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index ae12111..6d7041d 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3509,6 +3509,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0606, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0608, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0609, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x0613, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
+ 	SND_PCI_QUIRK(0x103c, 0x18e6, "HP", ALC269_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x1973, "HP Pavilion", ALC269_FIXUP_HP_MUTE_LED_MIC1),
 -- 
-1.8.1.4
+1.7.9.5
