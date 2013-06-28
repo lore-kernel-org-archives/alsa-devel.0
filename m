@@ -1,16 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: tas5086: fix
- TAS5086_CLOCK_CONTROL register size
-Date: Fri, 28 Jun 2013 12:16:03 +0100
-Message-ID: <20130628111603.GE27646@sirena.org.uk>
-References: <1372363151-31082-1-git-send-email-zonque@gmail.com>
+Subject: ASoC updates for v3.11
+Date: Fri, 28 Jun 2013 12:34:31 +0100
+Message-ID: <20130628113431.GF27646@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2008917554135021001=="
+Content-Type: multipart/mixed; boundary="===============4067402884680913863=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9093C261670
- for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2013 13:16:06 +0200 (CEST)
-In-Reply-To: <1372363151-31082-1-git-send-email-zonque@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B72DE2656AE
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2013 13:34:34 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +17,177 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2008917554135021001==
+--===============4067402884680913863==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="d/z4umqiXmNgwtKu"
+	protocol="application/pgp-signature"; boundary="v/4eu41oUtfYjxrl"
 Content-Disposition: inline
 
 
---d/z4umqiXmNgwtKu
+--v/4eu41oUtfYjxrl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jun 27, 2013 at 09:59:10PM +0200, Daniel Mack wrote:
-> The TAS5086_CLOCK_CONTROL also has a size of 1 byte.
+The following changes since commit 9e895ace5d82df8929b16f58e9f515f6d54ab82d:
 
-Applied both, thanks.
+  Linux 3.10-rc7 (2013-06-22 09:47:31 -1000)
 
---d/z4umqiXmNgwtKu
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.11-2
+
+for you to fetch changes up to 27516080b21cbcb936440d2a3171867860b9a881:
+
+  Merge remote-tracking branch 'asoc/topic/x86' into asoc-next (2013-06-28 12:17:07 +0100)
+
+The diffstat is a bit odd I think due to the synthetic tree I generated
+in an effort to cut out the fixes from v3.10-rc7 from it :/
+
+----------------------------------------------------------------
+
+ASoC: More updates for v3.11
+
+Some more fixes and enhancements, and also a bunch of refectoring for
+AC'97 support which enables more than one AC'97 controller driver to be
+built in.
+
+----------------------------------------------------------------
+Daniel Mack (10):
+      ASoC: tas5086: open-code I2C transfer routines
+      ASoC: tas5086: add more register defines
+      ASoC: tas5086: add DAPM mux controls
+      ASoC: tas5086: add support for pwm start mode config
+      ASoC: adau1701: move firmware download to adau1701_reset()
+      ASoC: adau1701: allow configuration of PLL mode pins
+      ASoC: adau1701: switch to direct regmap API usage
+      ASoC: adau1701: add support for pin muxing
+      ASoC: tas5086: fix TAS5086_CLOCK_CONTROL register size
+      ASoC: tas5086: fix Mid-Z implementation
+
+Lars-Peter Clausen (11):
+      ASoC: tlv320aix3x: Use SOC_SINGLE_EXT() instead of open-coding it
+      ASoC: wm8400: Use SOC_SINGLE_EXT_TLV() instead of open-coding it
+      ASoC: wm8903: Use SOC_SINGLE_EXT() instead of open-coding it
+      ASoC: wm8904: Use SOC_SINGLE_EXT() instead of open-coding it
+      ASoC: wm8990: Use SOC_SINGLE_EXT_TLV() instead of open-coding it
+      ASoC: wm8991: Use SOC_SINGLE_EXT_TLV() instead of open-coding it
+      ASoC: wm8994: Use SOC_SINGLE_EXT() instead of open-coding it
+      ASoC: wm8995: Use SOC_SINGLE_EXT() instead of open-coding it
+      ASoC: wm_hubs: Use SOC_SINGLE_EXT() instead of open-coding it
+      ASoC: wm_adsp: Use SND_SOC_DAPM_PGA_E() instead of open-coding it
+      ASoC: 88pm860x: Use SND_SOC_DAPM_PGA_E() instead of open-coding it
+
+Mark Brown (25):
+      ASoC: stac9766: Remove version number
+      ASoC: wm9705: Remove noisy print on boot
+      ASoC: samsung-ac97: Use devm_clk_get()
+      ASoC: samsung-ac97: Convert to devm_ioremap_resource()
+      ASoC: psc-ac97: Use devm_ioremap_resource()
+      ASoC: psc-ac97: Convert to module_platform_driver()
+      ASoC: ac97c: Use module_platform_driver()
+      ASoC: bf5xx-ac97: Convert to devm_gpio_request_one()
+      ASoC: ep93xx: Remove redundant dev_set_drvdata() calls
+      ASoC: nuc900-ac97: Convert to use devm_ APIs
+      ASoC: tegra20-ac97: Convert to devm_clk_get()
+      ASoC: tegra20-ac97: Convert to devm_ioremap_resource()
+      ASoC: tegra-ac97: Do common and clock init prior to component registration
+      ASoC: txx9aclc_ac97: Convert to devm_ioremap_resource()
+      ASoC: wm9705: Remove noisy print on boot
+      Merge branch 'topic/stac9766' of git://git.kernel.org/.../broonie/sound into asoc-ac97
+      Merge branch 'topic/wm9705' of git://git.kernel.org/.../broonie/sound into asoc-ac97
+      ASoC: ac97: Support multi-platform AC'97
+      ASoC: mfld: Remove unused variable
+      Merge remote-tracking branch 'asoc/topic/adau1701' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/adsp' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/ext' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/tas5086' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/twl6040' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/x86' into asoc-next
+
+Peter Ujfalusi (4):
+      ASoC: twl6040: Drop using devm_request_threaded_irq()
+      mfd: twl6040: Update register bit definitions
+      ASoC: twl6040: Assign id for each DAI
+      ASoC: twl6040: Add digital mute support
+
+Wei Yongjun (1):
+      ASoC: mid-x86: Convert to use devm_* APIs
+
+ .../devicetree/bindings/sound/adi,adau1701.txt     |  35 ++
+ .../devicetree/bindings/sound/ti,tas5086.txt       |  11 +
+ include/linux/mfd/twl6040.h                        |   7 +
+ include/sound/soc.h                                |   4 +-
+ sound/soc/au1x/ac97c.c                             |  21 +-
+ sound/soc/au1x/psc-ac97.c                          |  33 +-
+ sound/soc/blackfin/bf5xx-ac97.c                    |  29 +-
+ sound/soc/cirrus/ep93xx-ac97.c                     |  12 +-
+ sound/soc/codecs/88pm860x-codec.c                  |   6 +-
+ sound/soc/codecs/ac97.c                            |   7 +-
+ sound/soc/codecs/ad1980.c                          |  12 +-
+ sound/soc/codecs/adau1701.c                        | 302 ++++++++++++--
+ sound/soc/codecs/stac9766.c                        |  26 +-
+ sound/soc/codecs/tas5086.c                         | 330 ++++++++++++++-
+ sound/soc/codecs/tlv320aic3x.c                     |   6 +-
+ sound/soc/codecs/twl6040.c                         | 109 ++++-
+ sound/soc/codecs/wm8400.c                          |   9 +-
+ sound/soc/codecs/wm8903.c                          |   6 +-
+ sound/soc/codecs/wm8904.c                          |   9 +-
+ sound/soc/codecs/wm8990.c                          |  11 +-
+ sound/soc/codecs/wm8991.h                          |   9 +-
+ sound/soc/codecs/wm8994.c                          |  12 +-
+ sound/soc/codecs/wm8995.h                          |   7 +-
+ sound/soc/codecs/wm9705.c                          |  16 +-
+ sound/soc/codecs/wm9712.c                          |  18 +-
+ sound/soc/codecs/wm9713.c                          |  18 +-
+ sound/soc/codecs/wm_adsp.c                         | 459 ++++++++++++++++++++-
+ sound/soc/codecs/wm_adsp.h                         |  13 +-
+ sound/soc/codecs/wm_hubs.c                         |   6 +-
+ sound/soc/fsl/imx-ssi.c                            |  11 +-
+ sound/soc/fsl/mpc5200_psc_ac97.c                   |  10 +-
+ sound/soc/mid-x86/mfld_machine.c                   |  32 +-
+ sound/soc/nuc900/nuc900-ac97.c                     |  60 +--
+ sound/soc/pxa/pxa2xx-ac97.c                        |   8 +-
+ sound/soc/samsung/ac97.c                           |  42 +-
+ sound/soc/sh/hac.c                                 |   8 +-
+ sound/soc/soc-core.c                               |  16 +
+ sound/soc/tegra/tegra20_ac97.c                     |  66 ++-
+ sound/soc/txx9/txx9aclc-ac97.c                     |  17 +-
+ 39 files changed, 1447 insertions(+), 366 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/adi,adau1701.txt
+
+--v/4eu41oUtfYjxrl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRzXBvAAoJELSic+t+oim9ce4QAJ11B914MfJvsBZGFOdnwhov
-YGhXvAuNU5z8vTJGx6WUbNMwMg8YL/zzjittnWicaOhKFIGEvTk4R1hnx/3l8FKX
-14cgQvqsI4jThfneEQwAIaztsZBL4WHHlDpVFQvDzVpRmDIMpkAw/Ys6Oh0T7aLP
-CEyjCyFjYYDMW4ptMuLPTkdoGC8AjfkMlSbN/d4dkehPCJXTTgxkfscsMgUeojc/
-BOcYCPqTB/41Nd9WRjn63lbXmZdmqMV2ei3CqU4NXbsFQ4Dhx5qOUvawozDg1JZN
-2Ytg64p8KPaRIFS3PQG1Yhn0J1p5BiGEUP7F9Kjj349kJoilBhLCR1tAoA0mMBzP
-a0Q1yD3r9bHzxocjmkdwYrL5/aeXwwxOcID7oKTcf8vzRp7lFYk256Tx+zMUbn+Y
-e0Z44AVYNJtkGQQbFBE6+Ofsnxw3lQyR6GALDZ+JW3Z7SXnKt2yPYFRRrpzqvy1F
-OUOkR4MJ96VQS/RkSsgPQdybAjvj8Rv24n4UMZimKjcMUMoB3GUJnUw+yt2BSYi0
-kcGSze3Py68UtFoi/+Ko4EoBJv12gknn3Ot9FMB58V1NwEd99nFLDFvBDOL62Sl3
-sOEalu/J+Wu8PpAQ+riEfthwmlzwagogvCzbAjDk75hppIucxIola3sTzwwYJVz3
-BY42qs3FYCP5+N6NsVn/
-=vohO
+iQIcBAEBAgAGBQJRzXTEAAoJELSic+t+oim92OoQAJm43X8kfVACmVTnsallbbmy
+anfZLbsZvkjU9joLQZEAEQXU7NriWdj8mSDHOJevxtmgExQnmJwaTlFj5IweME4O
+QBD+Kw6eisAmORzbz27QpGNOaCxObQQ6CwqcgAmoZ3CFNbYSZIGdipIZ5vCELAMq
+x/pNTRjhxG379/nMYe5YyWARbSNDMd5vL3yAvFdhvgOzxbW+zMY8vu3E84sB3nWv
+qWYNf94XPChVR+FTgcqdajBZJg7JYGhls+cLx6YpwI9A2bLyv+/agbiORUYONTzR
+6uzssNP/nysDo0dqrT2Qenfl1NpG+WZFoUqHQ8g8RM4g/4xTOSaeJyWDPry27j2r
+auafHLGQMn8BUdMDoa2gZjWAGM1Uatvu34GpUMoBqlU0K4kNTtUNqN5QzVUn0Os3
+j3npsTWt0DFBw5JI6nqi10qN0bdFYgne2HerMVR0H+HTIoV9YAKStKugGgKIJHQ9
+zt4EjbL+wKACthtaZiIKfGuGzAnpNAvyXLQVacGal3wiCAM1EkwvAPkTNNwE6i1+
+zAgzXzP1xPn0JEqKYEJ404aUiMmI+fyG677q8Zl+1V7q2BNvyFpXtx8RYs5MHIzy
+/UQt+JoCEhIW7yHOwViUkfr+cZC3Yz/qPS4KUZ7w5vcdjmYSEYhuK//RTdPr1ehZ
+28e22nsquAbiwUKN0kar
+=I7tW
 -----END PGP SIGNATURE-----
 
---d/z4umqiXmNgwtKu--
+--v/4eu41oUtfYjxrl--
 
---===============2008917554135021001==
+--===============4067402884680913863==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2008917554135021001==--
+--===============4067402884680913863==--
