@@ -1,35 +1,76 @@
-From: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 2/2] ASoC: tegra20-ac97: Remove unused variable
-Date: Fri, 28 Jun 2013 21:53:25 +0200
-Message-ID: <1372449205-22231-2-git-send-email-thierry.reding@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: tegra20-ac97: Remove duplicate
+	error message
+Date: Sat, 29 Jun 2013 10:55:20 +0100
+Message-ID: <20130629095520.GM27646@sirena.org.uk>
 References: <1372449205-22231-1-git-send-email-thierry.reding@gmail.com>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1372449205-22231-1-git-send-email-thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============3880712307746083871=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C8502608C7
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jun 2013 11:55:27 +0200 (CEST)
+In-Reply-To: <1372449205-22231-1-git-send-email-thierry.reding@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Thierry Reding <thierry.reding@gmail.com>
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
-With the conversion to devm_ioremap_resource() the memregion variable is
-no longer used so it can be dropped.
 
-Signed-off-by: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- sound/soc/tegra/tegra20_ac97.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--===============3880712307746083871==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="kpiHLpCjRhsX9c1O"
+Content-Disposition: inline
 
-diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
-index c1f08f3..0fef1b4 100644
---- a/sound/soc/tegra/tegra20_ac97.c
-+++ b/sound/soc/tegra/tegra20_ac97.c
-@@ -313,7 +313,7 @@ static const struct regmap_config tegra20_ac97_regmap_config = {
- static int tegra20_ac97_platform_probe(struct platform_device *pdev)
- {
- 	struct tegra20_ac97 *ac97;
--	struct resource *mem, *memregion;
-+	struct resource *mem;
- 	u32 of_dma[2];
- 	void __iomem *regs;
- 	int ret = 0;
--- 
-1.8.3.1
+
+--kpiHLpCjRhsX9c1O
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jun 28, 2013 at 09:53:24PM +0200, Thierry Reding wrote:
+> devm_ioremap_resource() already outputs an error message when any of the
+> operations it performs fails, so the duplicate in the caller can be
+> removed.
+
+Applied both, thanks.
+
+--kpiHLpCjRhsX9c1O
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRzq8EAAoJELSic+t+oim97+oP/3jFpp9D7t/f6GEot1wjUQH/
+3ewjVuD0EympJb/E85omv6DAprW9j3y1ADabF9BQ8M6gERn/stGej9MdujX65OTy
+dpbdcx9gq7aSpPPta1EnVzv2FijlpAZ9hyySyG0tO2AX7dtLxf7eT/1KjmZEpJUq
+5ADiz6epkaW7zneH6n8gqJAe5ud2kT79wOm0cs+fz1WxTgOCTRFJz8dBDnCTw+s4
+1/6fC8FZfFS3WNLZvf74pOe7z8td23pJBZGRZcroKxJZk5SjtHJlckWpGkaDzcwk
+qpP1HCwgVsFxgbc1HAxSGvCAHkKWEMnzXjx34znXDk//FcVJg5Wu7EKUyzhsv60V
+ZQSuJW8Wbw6QejzerATdM9j9k677GXGzHdK7UZiCh/XZhKLDlR4w03x2nwO5U3dE
+KCvuFQ+F94YJHw4aP0PZD6rx1BeZZfNJG1oJfziTqVgRrPVeh0TJvN6uOOX+Oyui
+sV2pDYTtulK2t209axGGlq1O9LBCqdtMOyrZgwY+7bDNb+QPYlauKeYFq4m/Z8SP
+WQA8q/+k3XDAZ6gaZkvcwG+azH7K0CW2ZzrDZRl0PW3fc3nB0hvgfUAcSGTVRMyX
+YN2sjkGPuakP+eJ3RX0auBkg7pBVZiRVHbBjMT+EJ6yK6JpUuG/SiiJX6b32Mb2g
+uSFAL4zPaON82RJ142u4
+=mM7B
+-----END PGP SIGNATURE-----
+
+--kpiHLpCjRhsX9c1O--
+
+--===============3880712307746083871==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3880712307746083871==--
