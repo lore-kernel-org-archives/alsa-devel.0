@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: adau1701: more direct regmap
-	usage
-Date: Sun, 30 Jun 2013 12:42:55 +0100
-Message-ID: <20130630114255.GQ27646@sirena.org.uk>
-References: <1372363205-31244-1-git-send-email-zonque@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Query on Audio DMA using DMAEngine
+Date: Sun, 30 Jun 2013 14:06:09 +0200
+Message-ID: <51D01F31.3010602@metafoo.de>
+References: <083BC63EECB6FD41B8E81CF7FD87CC0F2E4F1488@DLEE08.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4023007007126408492=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id EC0FD262606
- for <alsa-devel@alsa-project.org>; Sun, 30 Jun 2013 13:43:02 +0200 (CEST)
-In-Reply-To: <1372363205-31244-1-git-send-email-zonque@gmail.com>
+Received: from mailhost.informatik.uni-hamburg.de
+ (mailhost.informatik.uni-hamburg.de [134.100.9.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 21A13262606
+ for <alsa-devel@alsa-project.org>; Sun, 30 Jun 2013 14:02:40 +0200 (CEST)
+In-Reply-To: <083BC63EECB6FD41B8E81CF7FD87CC0F2E4F1488@DLEE08.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de
+To: "Fernandes, Joel" <joelf@ti.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Added alsa-devel to Cc.
 
---===============4023007007126408492==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8KlXS1coelMGD729"
-Content-Disposition: inline
+On 06/28/2013 05:27 AM, Fernandes, Joel wrote:
+> Hi Lars,
+> 
+> Hope you are doing well.
+> 
+> I am implementing Cyclic DMA support in the EDMA driver that is used by Davinci and now newer TI SoCs.
+> I am thinking once I am done I can plug it into the snd_dmaengine framework.
+> 
+> Currently however, the davinci-pcm code directly programs the EDMA. That is what I am working to replace with a single driver and adapt to the snd dmaengine framework. However, once the current code in davinci-pcm uses internal RAM as an intermediate step in the whole DMA process (First data is TX to IRAM from DRAM and then from DRAM to the audio device).
+> 
+> Do you have any ideas on how we can adapt to the framework, such that we can till use the IRAM? Are there any existing implementations out there that do something similar?
 
+Hm, I guess using the snd_dmaengine_pcm helper functions here shouldn't be too
+hard. Using the generic snd_dmaengine_pcm driver will require some extensions
+to it though. The mmp platform (pxa/mmp-pcm.c) is also using some kind of
+on-chip memory, so having support for this in the generic driver certainly
+makes sense. For the chaining you'd probably have to extend the dmaengine
+framework, since this kind of interleaved mem-to-mem and mem-to-dev cyclic
+transfer is currently not possible.
 
---8KlXS1coelMGD729
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm wondering though why do you need to copy the data to RAM first, is it not
+possible to map the IRAM to userspace?
 
-On Thu, Jun 27, 2013 at 10:00:04PM +0200, Daniel Mack wrote:
-> Replace calls to snd_soc_update_bits() with regmap_update_bits().
-
-Applied both, thanks.
-
---8KlXS1coelMGD729
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR0Bm8AAoJELSic+t+oim98R0P/11IN5g2c/GBYB1BG1o8KmN3
-oQ46R2zhmqxsiAa+b0V6p1Lw7ML8ZanE1KvZ49Q8xiHyQeOYTOicwey9gK6WSUQt
-eZEIP8RVHDL1a2W6FOJTsp9hhdPwzTI2oqOL17FouTe0dy7qsmNS8xj/TBc2W/il
-UH7rDl1twESmsgu/pH479hEZ4s4TJ25uX0FGHGrLIrWDPyAVyDTC+p2AZeOlAxZh
-01CszxvlCN5VQX4VbPUPW5oKaYzc/Ntz8in06KXhZiRDYV8wpw+L3jP+gRevciwM
-Qmg3lCENHIoQSo7tYBZTBXqCJinF4kCMa/FWcLRMr8Y8X1aOk9iUMGcehZZQyF8m
-eBSFToHxhvxdSnM1YGgHGjM+XDHzqmkpI5UOAzH1VpWu/vyO8YUgVM/lGLI/gqJz
-evavixmh2L0VVfJSG8sDLKJlD2OZdyuYjplZBWE9TW33PyttZanIafblYjlctFJR
-kuj/iNr7lYnrrcv5dWhkn/MfB90XNI+TMcUWt/z3DEB53SENkH2f8aNLDvF3NRfZ
-/IO6u9lsprFqaBAD+YQOuMDNQjYvbRd5PaskUyeiWngLQfnYZArbeBjVAluH4imF
-NX+E9Ei9bWueEW/n32T9JvLwH5UQrnI9bEGKiTLy6Cs6G4HRFtfGlHxJCnCawtbh
-JWE974eYCt9MPHtPOvhc
-=d4E5
------END PGP SIGNATURE-----
-
---8KlXS1coelMGD729--
-
---===============4023007007126408492==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4023007007126408492==--
+- Lars
