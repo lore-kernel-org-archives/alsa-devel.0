@@ -1,16 +1,12 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] ASoc: ac97: fix multi-platform build
-	failures
-Date: Sat, 29 Jun 2013 13:24:58 +0100
-Message-ID: <20130629122458.GN27646@sirena.org.uk>
-References: <1372443469-20191-1-git-send-email-khilman@linaro.org>
+From: alex.d.wiggins@gmail.com
+Subject: [PATCH - oss plugin update revised 1/2] oss: Add
+	support of 32-bit and other formats
+Date: Sun, 30 Jun 2013 01:47:07 +0100
+Message-ID: <51cf8030.0867b40a.36ac.ffffad56@mx.google.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4890897747718113458=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D42D261A5D
- for <alsa-devel@alsa-project.org>; Sat, 29 Jun 2013 14:25:02 +0200 (CEST)
-In-Reply-To: <1372443469-20191-1-git-send-email-khilman@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +16,257 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kevin Hilman <khilman@linaro.org>
-Cc: Olof Johansson <olof@lixom.net>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org
+To: patch@alsa-project.org
+Cc: Alex Wiggins <alex.d.wiggins@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Alex Wiggins <alex.d.wiggins@gmail.com>
 
---===============4890897747718113458==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="L339ydo2OqXZvxFp"
-Content-Disposition: inline
+Added support of 32-bit and other audio formats via 3 changes:
 
+ - Additional audio format definitions
+   at the top of the file (if required);
 
---L339ydo2OqXZvxFp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ - Additional audio formats in oss_hw_params
+   (to allow as input to pass to OSS);
 
-On Fri, Jun 28, 2013 at 11:17:47AM -0700, Kevin Hilman wrote:
-> Hi Mark,
->=20
-> When building next-20130628, I noticed a few build errors for
-> cm_x300_defconfig that were introduced by the new multi-platform AC'97
-> support.
+ - Additional audio formats in oss_hw_constraint
+   (to allow to report to ALSA).
 
-Applied both, thanks.
+Signed-off-by: Alex Wiggins <alex.d.wiggins@gmail.com>
 
---L339ydo2OqXZvxFp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRztIXAAoJELSic+t+oim9e24P/A5MU7b0rHv80hsXeZ77gk/s
-0XuNOAQqMZd/P4xupLR53O7tC9saeWaeYUSLtBw9UZXPp+HVeh1xc4F3iBf9eDjL
-x0TvQCAvv3GnjV1HDyN97Pjka+khHZ0n0h+gZEGvIinzLtwz6O8YB/XglUiQMqYB
-iUc9+QZotLxdUeC7gSjANxB0v9XMadnfxvVCJJsRJFazCeX/UcKIS1+IuS5VDXTJ
-GpONMURRPQ0iuuX0VxXESuIP7BqiXoaJoQ5TbuCI35SfuaYDeTlREkbTWWvqToTD
-qwyaUl47K4cZUU7sq25k66JaI2cXyuMVm5fG/ZY5sw8yyOUyiyk1M+DsaI4P350f
-cXO39YMvR3OQvs18h3tK8pcYfykcAyDHO41Kp9AYKCE9BQvgpkua5GlxdFLbi2b+
-IepNlSZVCL9xMkpYdFy0Y2El+a6TFvc3IZi7+c7mLjWYgiG2rO0I8bqOfnbmS0kv
-NWMdHzlHqKX/6OcpLHpTTGrszjib/mZhQqGJxsARNXMuFIiPnXCRQxGw1W5m+diX
-jNIjirmRR0z6uJf8CTNa6ew1mS6vEUvz1CuzONiDZE+klRU7E19Zg2HGwqur8txN
-C9Wyv5wZJhPVEoE4JxtVv5PiF9GRczayMO5XfRQaI0ieygW6P0OqMSrmwM3XdFfT
-mcjyQ9Y+Q59EzpvtCJ+x
-=M5hY
------END PGP SIGNATURE-----
-
---L339ydo2OqXZvxFp--
-
---===============4890897747718113458==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4890897747718113458==--
+diff --git a/oss/pcm_oss.c b/oss/pcm_oss.c
+index d43b44c..d5b5bc4 100644
+--- a/oss/pcm_oss.c
++++ b/oss/pcm_oss.c
+@@ -24,6 +24,32 @@
+ #include <alsa/pcm_external.h>
+ #include <linux/soundcard.h>
+ 
++/* definitions for additional OSS formats if required */
++#ifndef AFMT_S32_LE
++#define AFMT_S32_LE 0x00001000
++#endif
++#ifndef AFMT_S32_BE
++#define AFMT_S32_BE 0x00002000
++#endif
++#ifndef AFMT_S24_LE
++#define AFMT_S24_LE 0x00008000
++#endif
++#ifndef AFMT_S24_BE
++#define AFMT_S24_BE 0x00010000
++#endif
++#ifndef AFMT_S24_PACKED
++#define AFMT_S24_PACKED 0x00040000
++#endif
++#ifndef AFMT_FLOAT
++#define AFMT_FLOAT 0x00004000
++#endif
++#ifndef AFMT_SPDIF_RAW
++#define AFMT_SPDIF_RAW 0x00020000
++#endif
++#ifndef AFMT_VORBIS
++#define AFMT_VORBIS 0x00000800
++#endif
++
+ typedef struct snd_pcm_oss {
+ 	snd_pcm_ioplug_t io;
+ 	char *device;
+@@ -165,6 +191,145 @@ static int oss_hw_params(snd_pcm_ioplug_t *io,
+ 	case SND_PCM_FORMAT_S16_BE:
+ 		oss->format = AFMT_S16_BE;
+ 		break;
++	/* allow additional data formats (such as 32 bit) as input
++	   to pass to OSS (set in OSS driver) */
++	case SND_PCM_FORMAT_S32_LE:
++		oss->format = AFMT_S32_LE;
++		break;
++	case SND_PCM_FORMAT_S32_BE:
++		oss->format = AFMT_S32_BE;
++		break;
++	case SND_PCM_FORMAT_S8:
++		oss->format = AFMT_S8;
++		break;
++	case SND_PCM_FORMAT_U16_LE:
++		oss->format = AFMT_U16_LE;
++		break;
++	case SND_PCM_FORMAT_U16_BE:
++		oss->format = AFMT_U16_BE;
++		break;
++	case SND_PCM_FORMAT_S24_LE:
++		oss->format = AFMT_S24_LE;
++		break;
++	case SND_PCM_FORMAT_S24_BE:
++		oss->format = AFMT_S24_BE;
++		break;
++	case SND_PCM_FORMAT_MU_LAW:
++		oss->format = AFMT_MU_LAW;
++		break;
++	case SND_PCM_FORMAT_A_LAW:
++		oss->format = AFMT_A_LAW;
++		break;
++	case SND_PCM_FORMAT_IMA_ADPCM:
++		oss->format = AFMT_IMA_ADPCM;
++		break;
++	case SND_PCM_FORMAT_MPEG:
++		oss->format = AFMT_MPEG;
++		break;
++	case SND_PCM_FORMAT_S24_3LE:
++		oss->format = AFMT_S24_PACKED;
++		break;
++	case SND_PCM_FORMAT_FLOAT:
++		oss->format = AFMT_FLOAT;
++		break;
++	case SND_PCM_FORMAT_IEC958_SUBFRAME:
++		oss->format = AFMT_SPDIF_RAW;
++		break;
++	/* following formats need defining checking native endian: */
++	#if 0
++	case SND_PCM_FORMAT_S16:
++		oss->format = AFMT_S16_NE;
++		break;
++	case SND_PCM_FORMAT_U16:
++		oss->format = AFMT_U16_NE;
++		break;
++	case SND_PCM_FORMAT_S24:
++		oss->format = AFMT_S24_NE;
++		break;
++	case SND_PCM_FORMAT_S32:
++		oss->format = AFMT_S32_NE;
++	#endif
++	/* following formats found in ALSA but not in OSS: */
++	#if 0
++	case SND_PCM_FORMAT_U24_LE:
++		oss->format = AFMT_U24_LE;
++		break;
++	case SND_PCM_FORMAT_U24_BE:
++		oss->format = AFMT_U24_BE;
++		break;
++	case SND_PCM_FORMAT_U32_LE:
++		oss->format = AFMT_U32_LE;
++		break;
++	case SND_PCM_FORMAT_U32_BE:
++		oss->format = AFMT_U32_BE;
++		break;
++	case SND_PCM_FORMAT_FLOAT_LE:
++		oss->format = AFMT_FLOAT_LE;
++		break;
++	case SND_PCM_FORMAT_FLOAT_BE:
++		oss->format = AFMT_FLOAT_BE;
++		break;
++	case SND_PCM_FORMAT_FLOAT64_LE:
++		oss->format = AFMT_FLOAT64_LE;
++		break;
++	case SND_PCM_FORMAT_FLOAT64_BE:
++		oss->format = AFMT_FLOAT64_BE;
++		break;
++	case SND_PCM_FORMAT_IEC958_SUBFRAME_LE:
++		oss->format = AFMT_SPDIF_RAW_LE;
++		break;
++	case SND_PCM_FORMAT_IEC958_SUBFRAME_BE:
++		oss->format = AFMT_SPDIF_RAW_BE;
++		break;
++	case SND_PCM_FORMAT_GSM:
++		oss->format = AFMT_GSM;
++		break;
++	case SND_PCM_FORMAT_SPECIAL:
++		oss->format = AFMT_SPECIAL;
++		break;
++	case SND_PCM_FORMAT_S24_3BE:
++		oss->format = AFMT_S24_PACKED_BE;
++		break;
++	case SND_PCM_FORMAT_U24_3LE:
++		oss->format = AFMT_U24_PACKED;
++		break;
++	case SND_PCM_FORMAT_U24_3BE:
++		oss->format = AFMT_U24_PACKED_BE;
++		break;
++	case SND_PCM_FORMAT_S20_3LE:
++		oss->format = ;
++		break;
++	case SND_PCM_FORMAT_S20_3BE:
++		oss->format = ;
++		break;
++	case SND_PCM_FORMAT_U20_3LE:
++		oss->format = ;
++		break;
++	case SND_PCM_FORMAT_U20_3BE:
++		oss->format = ;
++		break;
++	case SND_PCM_FORMAT_S18_3LE:
++		oss->format = ;
++		break;
++	case SND_PCM_FORMAT_S18_3BE:
++		oss->format = ;
++		break;
++	case SND_PCM_FORMAT_U18_3LE:
++		oss->format = ;
++		break;
++	case SND_PCM_FORMAT_U18_3BE:
++		oss->format = ;
++		break;
++	case SND_PCM_FORMAT_U24:
++		oss->format = AFMT_U24_NE;
++		break;
++	case SND_PCM_FORMAT_U32:
++		oss->format = AFMT_U32_NE;
++		break;
++	case SND_PCM_FORMAT_FLOAT64:
++		oss->format = AFMT_FLOAT64;
++		break;
++	#endif
+ 	default:
+ 		fprintf(stderr, "*** OSS: unsupported format %s\n", snd_pcm_format_name(io->format));
+ 		return -EINVAL;
+@@ -239,7 +404,7 @@ static int oss_hw_constraint(snd_pcm_oss_t *oss)
+ 		SND_PCM_ACCESS_MMAP_INTERLEAVED
+ 	};
+ 	unsigned int nformats;
+-	unsigned int format[5];
++	unsigned int format[20];
+ 	unsigned int nchannels;
+ 	unsigned int channel[6];
+ 	/* period and buffer bytes must be power of two */
+@@ -273,6 +438,40 @@ static int oss_hw_constraint(snd_pcm_oss_t *oss)
+ 		format[nformats++] = SND_PCM_FORMAT_S16_BE;
+ 	if (tmp & AFMT_MU_LAW)
+ 		format[nformats++] = SND_PCM_FORMAT_MU_LAW;
++	/* allow additional data formats (such as 32 bit)
++	   to be reported from OSS to ALSA below */
++	if (tmp & AFMT_S32_LE)
++		format[nformats++] = SND_PCM_FORMAT_S32_LE;
++	if (tmp & AFMT_S32_BE)
++		format[nformats++] = SND_PCM_FORMAT_S32_BE;
++	if (tmp & AFMT_A_LAW)
++		format[nformats++] = SND_PCM_FORMAT_A_LAW;
++	if (tmp & AFMT_IMA_ADPCM)
++		format[nformats++] = SND_PCM_FORMAT_IMA_ADPCM;
++	if (tmp & AFMT_S8)
++		format[nformats++] = SND_PCM_FORMAT_S8;
++	if (tmp & AFMT_U16_LE)
++		format[nformats++] = SND_PCM_FORMAT_U16_LE;
++	if (tmp & AFMT_U16_BE)
++		format[nformats++] = SND_PCM_FORMAT_U16_BE ;
++	if (tmp & AFMT_MPEG)
++		format[nformats++] = SND_PCM_FORMAT_MPEG;
++	if (tmp & AFMT_FLOAT)
++		format[nformats++] = SND_PCM_FORMAT_FLOAT;
++	if (tmp & AFMT_S24_LE)
++		format[nformats++] = SND_PCM_FORMAT_S24_LE;
++	if (tmp & AFMT_S24_BE)
++		format[nformats++] = SND_PCM_FORMAT_S24_BE;
++	if (tmp & AFMT_SPDIF_RAW)
++		format[nformats++] = SND_PCM_FORMAT_IEC958_SUBFRAME;
++	if (tmp & AFMT_S24_PACKED)
++		format[nformats++] = SND_PCM_FORMAT_S24_3LE;
++	/* following formats found in OSS but not in ALSA */
++	if (tmp & AFMT_AC3)
++		format[nformats++] = SND_PCM_FORMAT_UNKNOWN;
++	if (tmp & AFMT_VORBIS)
++		format[nformats++] = SND_PCM_FORMAT_UNKNOWN;
++	/* assume signed 16 bit (native CPU endian) if not found above */
+ 	if (! nformats)
+ 		format[nformats++] = SND_PCM_FORMAT_S16;
+ 	if ((err = snd_pcm_ioplug_set_param_list(io, SND_PCM_IOPLUG_HW_FORMAT,
+-- 
+1.8.3.1
