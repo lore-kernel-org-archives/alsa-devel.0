@@ -1,65 +1,129 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: adav80x: Add module device table for
- adav801
-Date: Mon, 01 Jul 2013 14:16:06 +0200
-Message-ID: <51D17306.1080307@metafoo.de>
-References: <1372668544.17974.1.camel@phoenix>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Add PCM1681 codec driver.
+Date: Mon, 01 Jul 2013 14:37:09 +0200
+Message-ID: <51D177F5.2040805@metafoo.de>
+References: <1372251928-15706-1-git-send-email-marek.belisko@streamunlimited.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 107BE26508D
- for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 14:12:38 +0200 (CEST)
-In-Reply-To: <1372668544.17974.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <1372251928-15706-1-git-send-email-marek.belisko@streamunlimited.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: Marek Belisko <marek.belisko@gmail.com>
+Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, lgirdwood@gmail.com, rob.herring@calxeda.com, linux-kernel@vger.kernel.org, Marek Belisko <marek.belisko@streamunlimited.com>, broonie@kernel.org, rob@landley.net, grant.likely@linaro.org, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 07/01/2013 10:49 AM, Axel Lin wrote:
-> This driver can be built as module, thus add module device table for
-> adav801 to support module auto loading.
-> 
-> To make the naming consistent, also rename adav80x_id to adav80x_i2c_id.
-> 
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+On 06/26/2013 03:05 PM, Marek Belisko wrote:
+[...]
+> +static int pcm1681_deemph[] = { 44100, 48000, 32000 };
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+const
 
-> --- sound/soc/codecs/adav80x.c | 13 ++++++++++--- 1 file changed, 10
-> insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c index
-> 3c839cc..15b012d0 100644 --- a/sound/soc/codecs/adav80x.c +++
-> b/sound/soc/codecs/adav80x.c @@ -868,6 +868,12 @@ static int
-> adav80x_bus_remove(struct device *dev) }
-> 
-> #if defined(CONFIG_SPI_MASTER) +static const struct spi_device_id
-> adav80x_spi_id[] = { +	{ "adav801", 0 }, +	{ } +}; 
-> +MODULE_DEVICE_TABLE(spi, adav80x_spi_id); + static int
-> adav80x_spi_probe(struct spi_device *spi) { return
-> adav80x_bus_probe(&spi->dev, SND_SOC_SPI); @@ -885,15 +891,16 @@ static
-> struct spi_driver adav80x_spi_driver = { }, .probe		= adav80x_spi_probe, 
-> .remove		= adav80x_spi_remove, +	.id_table	= adav80x_spi_id, }; #endif
-> 
-> #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE) -static const struct
-> i2c_device_id adav80x_id[] = { +static const struct i2c_device_id
-> adav80x_i2c_id[] = { { "adav803", 0 }, { } }; -MODULE_DEVICE_TABLE(i2c,
-> adav80x_id); +MODULE_DEVICE_TABLE(i2c, adav80x_i2c_id);
-> 
-> static int adav80x_i2c_probe(struct i2c_client *client, const struct
-> i2c_device_id *id) @@ -913,7 +920,7 @@ static struct i2c_driver
-> adav80x_i2c_driver = { }, .probe = adav80x_i2c_probe, .remove =
-> adav80x_i2c_remove, -	.id_table = adav80x_id, +	.id_table =
-> adav80x_i2c_id, }; #endif
-> 
+> +
+> +static int pcm1681_set_deemph(struct snd_soc_codec *codec)
+> +{
+> +	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
+> +	int i = 0, val = -1, ret;
+> +
+> +	if (priv->deemph)
+> +		for (i = 0; i < ARRAY_SIZE(pcm1681_deemph); i++)
+> +			if (pcm1681_deemph[i] == priv->rate)
+> +				val = i;
+> +
+> +	/* enable choosen frequency */
+> +	if (val != -1)
+> +		regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
+> +					PCM1681_DEEMPH_RATE_MASK, val);
+
+So if the current sample rate doesn't match any of the available deempth rates
+the current setting is kept. This doesn't seem right.
+
+> +
+> +	/* enable/disable deemphasis functionality */
+> +	ret = regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
+> +				PCM1681_DEEMPH_MASK, priv->deemph);
+> +
+> +	return ret;
+> +}
+> +
+[...]
+> +
+> +static int pcm1681_digital_mute(struct snd_soc_dai *dai, int mute)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
+> +	int ret, val = 0;
+> +
+> +	if (mute)
+> +		val = PCM1681_SOFT_MUTE_ALL;
+> +
+> +	ret = regmap_write(priv->regmap, PCM1681_SOFT_MUTE, val);
+
+How about just
+
+return regmap_write(...)
+
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+[...]
+> +static const DECLARE_TLV_DB_SCALE(pcm1681_dac_tlv, -6350, 50, 1);
+> +
+> +static const struct snd_kcontrol_new pcm1681_controls[] = {
+> +	SOC_DOUBLE_R_TLV("PCM1681 Channel 1/2 Playback Volume",
+> +			PCM1681_ATT_CONTROL(1), PCM1681_ATT_CONTROL(2), 0,
+> +			0x7f, 0, pcm1681_dac_tlv),
+> +	SOC_DOUBLE_R_TLV("PCM1681 Channel 3/4 Playback Volume",
+> +			PCM1681_ATT_CONTROL(3), PCM1681_ATT_CONTROL(4), 0,
+> +			0x7f, 0, pcm1681_dac_tlv),
+> +	SOC_DOUBLE_R_TLV("PCM1681 Channel 5/6 Playback Volume",
+> +			PCM1681_ATT_CONTROL(5), PCM1681_ATT_CONTROL(6), 0,
+> +			0x7f, 0, pcm1681_dac_tlv),
+> +	SOC_DOUBLE_R_TLV("PCM1681 Channel 7/8 Playback Volume",
+> +			PCM1681_ATT_CONTROL(7), PCM1681_ATT_CONTROL(8), 0,
+> +			0x7f, 0, pcm1681_dac_tlv),
+> +	SOC_SINGLE_BOOL_EXT("PCM1681 De-emphasis Switch", 0,
+> +			    pcm1681_get_deemph, pcm1681_put_deemph),
+> +};
+
+The name of the codec should probably not be in the control names.
+
+[...]
+> +#ifdef CONFIG_OF
+> +static const struct of_device_id pcm1681_dt_ids[] = {
+> +	{ .compatible = "ti,pcm1681", },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, pcm1681_dt_ids);
+> +#endif
+> +
+> +static const struct regmap_config pcm1681_regmap = {
+> +	.reg_bits		= 8,
+> +	.val_bits		= 8,
+> +	.max_register		= ARRAY_SIZE(pcm1681_reg_defaults),
+
+max_register is the last register in the register map, so usually this would be
+ARRAY_SIZE(...) + 1
+
+> +	.reg_defaults		= pcm1681_reg_defaults,
+> +	.num_reg_defaults	= ARRAY_SIZE(pcm1681_reg_defaults),
+> +	.writeable_reg		= pcm1681_writeable_reg,
+> +	.readable_reg		= pcm1681_accessible_reg,
+> +};
+[...]
+> +
+> +static struct snd_soc_codec_driver soc_codec_dev_pcm1681 = {
+> +	.probe			= pcm1681_probe,
+> +	.remove			= pcm1681_remove,
+> +	.controls		= pcm1681_controls,
+> +	.num_controls		= ARRAY_SIZE(pcm1681_controls),
+> +};
+> +
+> +#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+
+Since the driver only supports I2C there is no need for this ifdef
+[...]
+
