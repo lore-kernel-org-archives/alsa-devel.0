@@ -1,58 +1,79 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [alsa-devel] [PATCH 1/4] ASoC: sgtl5000: give it a ramping time
- before writting
-Date: Mon, 01 Jul 2013 21:28:26 +0200
-Message-ID: <51D1D85A.8060807@free-electrons.com>
-References: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
- <20130701153327.GX13206@S2101-09.ap.freescale.net>
- <CAOMZO5B5jh1XciO4K1u3yBcHHDAgi8hA3GcywnJd11M7=aOPxA@mail.gmail.com>
- <201307011943.27489.marex@denx.de>
- <CAOMZO5DtgahX3WLdM-P9=ODhJVMTRHFuS9=6zHQiS9-3wCJcmA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: wm8994: Move runtime PM init to platform
+	device init
+Date: Mon,  1 Jul 2013 20:47:10 +0100
+Message-ID: <1372708030-8162-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CAOMZO5DtgahX3WLdM-P9=ODhJVMTRHFuS9=6zHQiS9-3wCJcmA@mail.gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B296261721
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 21:47:16 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Mark Brown <broonie@linaro.org>
 
-On 01/07/2013 21:14, Fabio Estevam wrote:
-> Hi Marek,
-> 
-> On Mon, Jul 1, 2013 at 2:43 PM, Marek Vasut <marex@denx.de> wrote:
-> 
->> I think you can just disable the PIO mode altogether (around line 500 ... if
->> (msg->len < 8) ... replace this with if (0) ) and then the problem should not be
->> there (if it's a PIO problem).
-> 
-> Yes, this is a good suggestion.
-> 
-> This is what I did on 3.10 kernel:
-> 
-> - Booted a 3.10 kernel, audio is probed correctly
-> 
-> - Enabled touchscreen:
-> 
+As well as being better style this allows the device to idle when there is
+no audio card instantaited which is probably what we want.
 
-It definitely seems to be an issue with PIO mode as the investigation
-from Torsten Fleischer showed. I'll test that on my boards tonight. I'll
-also try to remove the touchscreen support to see if I observe the same
-thing as you do.
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/wm8994.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 1d4b1ec..02c320f 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -4014,9 +4014,6 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
+ 
+ 	wm8994->micdet_irq = control->pdata.micdet_irq;
+ 
+-	pm_runtime_enable(codec->dev);
+-	pm_runtime_idle(codec->dev);
+-
+ 	/* By default use idle_bias_off, will override for WM8994 */
+ 	codec->dapm.idle_bias_off = 1;
+ 
+@@ -4389,8 +4386,6 @@ static int wm8994_codec_remove(struct snd_soc_codec *codec)
+ 
+ 	wm8994_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 
+-	pm_runtime_disable(codec->dev);
+-
+ 	for (i = 0; i < ARRAY_SIZE(wm8994->fll_locked); i++)
+ 		wm8994_free_irq(wm8994->wm8994, WM8994_IRQ_FLL1_LOCK + i,
+ 				&wm8994->fll_locked[i]);
+@@ -4449,6 +4444,9 @@ static int wm8994_probe(struct platform_device *pdev)
+ 
+ 	wm8994->wm8994 = dev_get_drvdata(pdev->dev.parent);
+ 
++	pm_runtime_enable(&pdev->dev);
++	pm_runtime_idle(&pdev->dev);
++
+ 	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_wm8994,
+ 			wm8994_dai, ARRAY_SIZE(wm8994_dai));
+ }
+@@ -4456,6 +4454,8 @@ static int wm8994_probe(struct platform_device *pdev)
+ static int wm8994_remove(struct platform_device *pdev)
+ {
+ 	snd_soc_unregister_codec(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
++
+ 	return 0;
+ }
+ 
 -- 
-Alexandre Belloni, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+1.8.3.1
