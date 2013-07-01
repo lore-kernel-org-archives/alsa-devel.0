@@ -1,18 +1,15 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 4/4] ARM: mxs: saif0 is the clock provider to
-	sgtl5000
-Date: Mon, 1 Jul 2013 16:16:11 +0800
-Message-ID: <1372666571-17276-5-git-send-email-shawn.guo@linaro.org>
-References: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
+Subject: [PATCH 0/4] Fix mxs audio regressions
+Date: Mon, 1 Jul 2013 16:16:07 +0800
+Message-ID: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
- by alsa0.perex.cz (Postfix) with ESMTP id A870C265074
- for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 10:16:21 +0200 (CEST)
-In-Reply-To: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe002.messaging.microsoft.com [207.46.163.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id A596B265053
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 10:16:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,68 +23,35 @@ To: alsa-devel@alsa-project.org
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, marex@denx.de, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-These systems all use saif0 as the mclock provider to codec sgtl5000.
-Reflect that in device tree source, so that sgtl5000 can find the clock
-by calling clk_get().
+The mxs audio got terribly broken during 3.11 development cycle due to
+the following two commits.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
+  af8ee11 ASoC: sgtl5000: Fix driver probe after reset
+  9e13f34 ASoC: sgtl5000: Let the codec acquire its clock
+
+The series fixes the regressions and bring mxs audio back to work.
+
+Mark,
+
+Please consider to take the whole series as fixes through your tree
+during 3.11-rc, so that we do not get a regression in the final v3.11
+release.
+
+Shawn
+
+Shawn Guo (4):
+  ASoC: sgtl5000: give it a ramping time before writting
+  ASoC: sgtl5000: defer the probe if clock is not found
+  ASoC: mxs: register saif mclk to clock framework
+  ARM: mxs: saif0 is the clock provider to sgtl5000
+
  arch/arm/boot/dts/imx28-apx4devkit.dts |    2 +-
  arch/arm/boot/dts/imx28-evk.dts        |    2 +-
  arch/arm/boot/dts/imx28-m28evk.dts     |    2 +-
  arch/arm/boot/dts/imx28.dtsi           |    1 +
- 4 files changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/codecs/sgtl5000.c            |   10 ++++++++-
+ sound/soc/mxs/mxs-saif.c               |   35 ++++++++++++++++++++++++++++++++
+ 6 files changed, 48 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx28-apx4devkit.dts b/arch/arm/boot/dts/imx28-apx4devkit.dts
-index 43bf3c7..0e7fed4 100644
---- a/arch/arm/boot/dts/imx28-apx4devkit.dts
-+++ b/arch/arm/boot/dts/imx28-apx4devkit.dts
-@@ -147,7 +147,7 @@
- 					reg = <0x0a>;
- 					VDDA-supply = <&reg_3p3v>;
- 					VDDIO-supply = <&reg_3p3v>;
--
-+					clocks = <&saif0>;
- 				};
- 
- 				pcf8563: rtc@51 {
-diff --git a/arch/arm/boot/dts/imx28-evk.dts b/arch/arm/boot/dts/imx28-evk.dts
-index 3637bf3..dccb223 100644
---- a/arch/arm/boot/dts/imx28-evk.dts
-+++ b/arch/arm/boot/dts/imx28-evk.dts
-@@ -193,7 +193,7 @@
- 					reg = <0x0a>;
- 					VDDA-supply = <&reg_3p3v>;
- 					VDDIO-supply = <&reg_3p3v>;
--
-+					clocks = <&saif0>;
- 				};
- 
- 				at24@51 {
-diff --git a/arch/arm/boot/dts/imx28-m28evk.dts b/arch/arm/boot/dts/imx28-m28evk.dts
-index 880df2f..44d9da5 100644
---- a/arch/arm/boot/dts/imx28-m28evk.dts
-+++ b/arch/arm/boot/dts/imx28-m28evk.dts
-@@ -184,7 +184,7 @@
- 					reg = <0x0a>;
- 					VDDA-supply = <&reg_3p3v>;
- 					VDDIO-supply = <&reg_3p3v>;
--
-+					clocks = <&saif0>;
- 				};
- 
- 				eeprom: eeprom@51 {
-diff --git a/arch/arm/boot/dts/imx28.dtsi b/arch/arm/boot/dts/imx28.dtsi
-index 6a8acb0..9524a05 100644
---- a/arch/arm/boot/dts/imx28.dtsi
-+++ b/arch/arm/boot/dts/imx28.dtsi
-@@ -837,6 +837,7 @@
- 				compatible = "fsl,imx28-saif";
- 				reg = <0x80042000 0x2000>;
- 				interrupts = <59 80>;
-+				#clock-cells = <0>;
- 				clocks = <&clks 53>;
- 				dmas = <&dma_apbx 4>;
- 				dma-names = "rx-tx";
 -- 
 1.7.9.5
