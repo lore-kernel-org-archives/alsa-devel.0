@@ -1,19 +1,19 @@
-From: Marek Vasut <marex@denx.de>
+From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
 Subject: Re: [PATCH 1/4] ASoC: sgtl5000: give it a ramping time
 	before writting
-Date: Mon, 1 Jul 2013 12:54:18 +0200
-Message-ID: <201307011254.18952.marex@denx.de>
+Date: Mon, 1 Jul 2013 12:57:44 +0200
+Message-ID: <20945.24744.908437.551717@ipc1.ka-ro>
 References: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
  <1372666571-17276-2-git-send-email-shawn.guo@linaro.org>
- <20130701100710.GB27646@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
- by alsa0.perex.cz (Postfix) with ESMTP id CDE642625D8
- for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 12:54:21 +0200 (CEST)
-In-Reply-To: <20130701100710.GB27646@sirena.org.uk>
+Received: from mail.karo-electronics.de (mail.karo-electronics.de
+ [81.173.242.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE30A2625D8
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 12:57:51 +0200 (CEST)
+In-Reply-To: <1372666571-17276-2-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,36 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, marex@denx.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Mark Brown,
-
-> On Mon, Jul 01, 2013 at 04:16:08PM +0800, Shawn Guo wrote:
-> > +	/*
-> > +	 * It seems that sgtl5000 takes a longer time to get the registers
-> > +	 * ready for write than bread.  Let's give it a ramping time before
-> > +	 * the first write goes.
-> > +	 */
-> > +	msleep(50);
-> > +
-> > 
-> >  	/* Ensure sgtl5000 will start with sane register values */
-> >  	ret = sgtl5000_fill_defaults(sgtl5000);
-> >  	if (ret)
-> 
-> This seems like a really odd place to add the sleep - I'd have expected
-> this to be a part of or just after the reset operation.  It's a *really*
-> long sleep too, though if that's what you need that's what you need.
-
-The delay might also be caused by the I2C driver, I have this in my ToDo to 
-check, but I didn't get to it yet. On the other hand, if subsequent IO does 
-work, then it's unlikely to be the case.
-
-> Also "bread" :)
-
-Of course, sometimes you want to put a lot of things on it, like bacon and such.
-
-Best regards,
-Marek Vasut
+U2hhd24gR3VvIHdyaXRlczoKPiBTaW5jZSBjb21taXQgYWY4ZWUxMSAoQVNvQzogc2d0bDUwMDA6
+IEZpeCBkcml2ZXIgcHJvYmUgYWZ0ZXIgcmVzZXQpLAo+IGl0J3MgdmVyeSBvZmVuIHRvIHJ1biBp
+bnRvIHRoZSBmb2xsb3dpbmcgcHJvYmUgZXJyb3Igb24gaW14MjguIEl0IGlzCj4gY2F1c2VkIGJ5
+IHRoZSByZWdtYXBfd3JpdGUoKSBmYWlsdXJlIGluIHNndGw1MDAwX2ZpbGxfZGVmYXVsdHMoKS4K
+PiBIb3dldmVyLCB0aGUgcmVnbWFwX3JlYWQoKSBiZWZvcmUgdGhpcyBoYXMgYWxyZWFkeSBiZWVu
+IHdvcmtpbmcuICBJdAo+IHNlZW1zIHRoYXQgc2d0bDUwMDAgdGFrZXMgYSBsb25nZXIgcmFtcGlu
+ZyB0aW1lIHRvIGdldCB0aGUgcmVnaXN0ZXJzCj4gcmVhZHkgZm9yIHdyaXRlIHRoYW4gcmVhZC4K
+PiAKPiBbICAgIDEuOTkxNTc5XSBzZ3RsNTAwMCAwLTAwMGE6IHNndGw1MDAwIHJldmlzaW9uIDB4
+MTEKPiBbICAgIDIuMDIxNjU1XSBteHMtc2d0bDUwMDAgc291bmQuMTI6IEFTb0M6IENPREVDIChu
+dWxsKSBub3QgcmVnaXN0ZXJlZAo+IFsgICAgMi4wMzkwODddIG14cy1zZ3RsNTAwMCBzb3VuZC4x
+Mjogc25kX3NvY19yZWdpc3Rlcl9jYXJkIGZhaWxlZCAoLTUxNykKPiBbICAgIDIuMDQ2Mjk5XSBw
+bGF0Zm9ybSBzb3VuZC4xMjogRHJpdmVyIG14cy1zZ3RsNTAwMCByZXF1ZXN0cyBwcm9iZSBkZWZl
+cnJhbAo+IAo+IEZpeCB0aGUgcmVncmVzc2lvbiBieSBnaXZpbmcgaXQgYSByYW1waW5nIHRpbWUg
+YmVmb3JlIHRoZSBmaXJzdCB3cml0ZS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBTaGF3biBHdW8gPHNo
+YXduLmd1b0BsaW5hcm8ub3JnPgo+IC0tLQo+ICBzb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMg
+fCAgICA3ICsrKysrKysKPiAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKQo+IAo+IGRp
+ZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMgYi9zb3VuZC9zb2MvY29kZWNz
+L3NndGw1MDAwLmMKPiBpbmRleCBkNDQxNTU5Li4yMGJjYTAzIDEwMDY0NAo+IC0tLSBhL3NvdW5k
+L3NvYy9jb2RlY3Mvc2d0bDUwMDAuYwo+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAu
+Ywo+IEBAIC0xNTUyLDYgKzE1NTIsMTMgQEAgc3RhdGljIGludCBzZ3RsNTAwMF9pMmNfcHJvYmUo
+c3RydWN0IGkyY19jbGllbnQgKmNsaWVudCwKPiAgCj4gIAlpMmNfc2V0X2NsaWVudGRhdGEoY2xp
+ZW50LCBzZ3RsNTAwMCk7Cj4gIAo+ICsJLyoKPiArCSAqIEl0IHNlZW1zIHRoYXQgc2d0bDUwMDAg
+dGFrZXMgYSBsb25nZXIgdGltZSB0byBnZXQgdGhlIHJlZ2lzdGVycwo+ICsJICogcmVhZHkgZm9y
+IHdyaXRlIHRoYW4gYnJlYWQuICBMZXQncyBnaXZlIGl0IGEgcmFtcGluZyB0aW1lIGJlZm9yZQog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5eXl5eCj4KV2hhdCBzb3J0IG9mIGJyZWFk
+PyA7LSkKCgpMb3RoYXIgV2HDn21hbm4KLS0gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCgpLYS1SbyBlbGVjdHJvbmljcyBHbWJIIHwg
+UGFzY2Fsc3RyYcOfZSAyMiB8IEQgLSA1MjA3NiBBYWNoZW4KUGhvbmU6ICs0OSAyNDA4IDE0MDIt
+MCB8IEZheDogKzQ5IDI0MDggMTQwMi0xMApHZXNjaMOkZnRzZsO8aHJlcjogTWF0dGhpYXMgS2F1
+c3NlbgpIYW5kZWxzcmVnaXN0ZXJlaW50cmFnOiBBbXRzZ2VyaWNodCBBYWNoZW4sIEhSQiA0OTk2
+Cgp3d3cua2Fyby1lbGVjdHJvbmljcy5kZSB8IGluZm9Aa2Fyby1lbGVjdHJvbmljcy5kZQpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
