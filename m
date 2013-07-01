@@ -1,19 +1,20 @@
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH 1/4] ASoC: sgtl5000: give it a ramping time
-	before writting
-Date: Mon, 1 Jul 2013 12:57:44 +0200
-Message-ID: <20945.24744.908437.551717@ipc1.ka-ro>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 2/4] ASoC: sgtl5000: defer the probe if
+	clock is not	found
+Date: Mon, 1 Jul 2013 12:33:10 +0100
+Message-ID: <20130701113310.GA24642@n2100.arm.linux.org.uk>
 References: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
- <1372666571-17276-2-git-send-email-shawn.guo@linaro.org>
+ <1372666571-17276-3-git-send-email-shawn.guo@linaro.org>
+ <20130701094525.GY27646@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.karo-electronics.de (mail.karo-electronics.de
- [81.173.242.67])
- by alsa0.perex.cz (Postfix) with ESMTP id CE30A2625D8
- for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 12:57:51 +0200 (CEST)
-In-Reply-To: <1372666571-17276-2-git-send-email-shawn.guo@linaro.org>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id F041826508D
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 13:33:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130701094525.GY27646@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,42 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, marex@denx.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, marex@denx.de, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-U2hhd24gR3VvIHdyaXRlczoKPiBTaW5jZSBjb21taXQgYWY4ZWUxMSAoQVNvQzogc2d0bDUwMDA6
-IEZpeCBkcml2ZXIgcHJvYmUgYWZ0ZXIgcmVzZXQpLAo+IGl0J3MgdmVyeSBvZmVuIHRvIHJ1biBp
-bnRvIHRoZSBmb2xsb3dpbmcgcHJvYmUgZXJyb3Igb24gaW14MjguIEl0IGlzCj4gY2F1c2VkIGJ5
-IHRoZSByZWdtYXBfd3JpdGUoKSBmYWlsdXJlIGluIHNndGw1MDAwX2ZpbGxfZGVmYXVsdHMoKS4K
-PiBIb3dldmVyLCB0aGUgcmVnbWFwX3JlYWQoKSBiZWZvcmUgdGhpcyBoYXMgYWxyZWFkeSBiZWVu
-IHdvcmtpbmcuICBJdAo+IHNlZW1zIHRoYXQgc2d0bDUwMDAgdGFrZXMgYSBsb25nZXIgcmFtcGlu
-ZyB0aW1lIHRvIGdldCB0aGUgcmVnaXN0ZXJzCj4gcmVhZHkgZm9yIHdyaXRlIHRoYW4gcmVhZC4K
-PiAKPiBbICAgIDEuOTkxNTc5XSBzZ3RsNTAwMCAwLTAwMGE6IHNndGw1MDAwIHJldmlzaW9uIDB4
-MTEKPiBbICAgIDIuMDIxNjU1XSBteHMtc2d0bDUwMDAgc291bmQuMTI6IEFTb0M6IENPREVDIChu
-dWxsKSBub3QgcmVnaXN0ZXJlZAo+IFsgICAgMi4wMzkwODddIG14cy1zZ3RsNTAwMCBzb3VuZC4x
-Mjogc25kX3NvY19yZWdpc3Rlcl9jYXJkIGZhaWxlZCAoLTUxNykKPiBbICAgIDIuMDQ2Mjk5XSBw
-bGF0Zm9ybSBzb3VuZC4xMjogRHJpdmVyIG14cy1zZ3RsNTAwMCByZXF1ZXN0cyBwcm9iZSBkZWZl
-cnJhbAo+IAo+IEZpeCB0aGUgcmVncmVzc2lvbiBieSBnaXZpbmcgaXQgYSByYW1waW5nIHRpbWUg
-YmVmb3JlIHRoZSBmaXJzdCB3cml0ZS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBTaGF3biBHdW8gPHNo
-YXduLmd1b0BsaW5hcm8ub3JnPgo+IC0tLQo+ICBzb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMg
-fCAgICA3ICsrKysrKysKPiAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKQo+IAo+IGRp
-ZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMgYi9zb3VuZC9zb2MvY29kZWNz
-L3NndGw1MDAwLmMKPiBpbmRleCBkNDQxNTU5Li4yMGJjYTAzIDEwMDY0NAo+IC0tLSBhL3NvdW5k
-L3NvYy9jb2RlY3Mvc2d0bDUwMDAuYwo+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAu
-Ywo+IEBAIC0xNTUyLDYgKzE1NTIsMTMgQEAgc3RhdGljIGludCBzZ3RsNTAwMF9pMmNfcHJvYmUo
-c3RydWN0IGkyY19jbGllbnQgKmNsaWVudCwKPiAgCj4gIAlpMmNfc2V0X2NsaWVudGRhdGEoY2xp
-ZW50LCBzZ3RsNTAwMCk7Cj4gIAo+ICsJLyoKPiArCSAqIEl0IHNlZW1zIHRoYXQgc2d0bDUwMDAg
-dGFrZXMgYSBsb25nZXIgdGltZSB0byBnZXQgdGhlIHJlZ2lzdGVycwo+ICsJICogcmVhZHkgZm9y
-IHdyaXRlIHRoYW4gYnJlYWQuICBMZXQncyBnaXZlIGl0IGEgcmFtcGluZyB0aW1lIGJlZm9yZQog
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5eXl5eCj4KV2hhdCBzb3J0IG9mIGJyZWFk
-PyA7LSkKCgpMb3RoYXIgV2HDn21hbm4KLS0gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCgpLYS1SbyBlbGVjdHJvbmljcyBHbWJIIHwg
-UGFzY2Fsc3RyYcOfZSAyMiB8IEQgLSA1MjA3NiBBYWNoZW4KUGhvbmU6ICs0OSAyNDA4IDE0MDIt
-MCB8IEZheDogKzQ5IDI0MDggMTQwMi0xMApHZXNjaMOkZnRzZsO8aHJlcjogTWF0dGhpYXMgS2F1
-c3NlbgpIYW5kZWxzcmVnaXN0ZXJlaW50cmFnOiBBbXRzZ2VyaWNodCBBYWNoZW4sIEhSQiA0OTk2
-Cgp3d3cua2Fyby1lbGVjdHJvbmljcy5kZSB8IGluZm9Aa2Fyby1lbGVjdHJvbmljcy5kZQpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Mon, Jul 01, 2013 at 10:45:25AM +0100, Mark Brown wrote:
+> On Mon, Jul 01, 2013 at 04:16:09PM +0800, Shawn Guo wrote:
+> > It's not always the case that clock is already available when sgtl5000
+> > get probed at the first time, e.g. the clock is provided by CPU DAI
+> > which may be probed after sgtl5000.  So let's defer the probe when
+> > devm_clk_get() call fails and give it chance to try later.
+> 
+> Why not fix this in the clock API - the same logic is going to apply to
+> a great proportion of clocks?
+
+It's not ever clear whether a missing clock is because it's just not
+provided or whether it's because it hasn't been registered yet.  The
+decision to defer on missing resources is something which a _driver_
+using the resource should make, not the subsystem providing the
+resource - because the driver should know better whether that resource
+is optional, whether it can continue to initialise without it and maybe
+try again later, or whether it does need to defer.
+
+Take for instance a video driver. :)  It may be that it can't do all
+resolutions, but it can do some without an external clock, so it may
+decide that it can initialise without the external clock and allow one
+of the possible modes to be set - and when the external clock does
+appear, it can then allow the other modes.
+
+That kind of information is unknown at the subsystem level, and so the
+subsystem level should only ever return "I don't know about this" not
+"defer probe".
