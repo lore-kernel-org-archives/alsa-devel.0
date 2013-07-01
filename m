@@ -1,17 +1,26 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: add ak4554 driver
-Date: Mon, 01 Jul 2013 17:32:29 +0200
-Message-ID: <51D1A10D.5000303@metafoo.de>
-References: <87bo6mixuj.wl%kuninori.morimoto.gx@renesas.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 1/4] ASoC: sgtl5000: give it a ramping time
+ before writting
+Date: Mon, 1 Jul 2013 23:33:29 +0800
+Message-ID: <20130701153327.GX13206@S2101-09.ap.freescale.net>
+References: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
+ <1372666571-17276-2-git-send-email-shawn.guo@linaro.org>
+ <20130701100710.GB27646@sirena.org.uk>
+ <201307011254.18952.marex@denx.de>
+ <CAOMZO5BAs5-Tf_O0TVLFAuCchVuukV+bH2MpjqMU83tTw2GD=Q@mail.gmail.com>
+ <20130701142610.GR13206@S2101-09.ap.freescale.net>
+ <20130701143415.GA14172@S2101-09.ap.freescale.net>
+ <CAOMZO5Bh5CZLBO-epVA9Vivo-mqmBJZhy7iA6HiMy+xLzDj40w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DE5C2651B7
- for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 17:29:03 +0200 (CEST)
-In-Reply-To: <87bo6mixuj.wl%kuninori.morimoto.gx@renesas.com>
+Received: from tx2outboundpool.messaging.microsoft.com
+ (tx2ehsobe001.messaging.microsoft.com [65.55.88.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 480852651BF
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 17:33:40 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5Bh5CZLBO-epVA9Vivo-mqmBJZhy7iA6HiMy+xLzDj40w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,74 +30,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/01/2013 08:43 AM, Kuninori Morimoto wrote:
-> +
-> +static int ak4554_dai_hw_params(struct snd_pcm_substream *substream,
-> +				struct snd_pcm_hw_params *params,
-> +				struct snd_soc_dai *dai)
-> +{
-> +	struct ak4554_priv *priv = dev_get_drvdata(dai->dev);
-> +
-> +	if ((priv->usrcnt > 0) &&
-> +	    (priv->rate != params_rate(params))) {
-> +		dev_err(dai->dev, "asymmetric rate\n");
-> +		return -EIO;
-> +	}
-> +
-> +	priv->usrcnt++;
-> +	priv->rate = params_rate(params);
+On Mon, Jul 01, 2013 at 12:11:58PM -0300, Fabio Estevam wrote:
+> On Mon, Jul 1, 2013 at 11:34 AM, Shawn Guo <shawn.guo@linaro.org> wrote:
+> 
+> > And also why we do not see the impact of i2c issue on sgtl5000 before
+> > the offending commit af8ee11 (ASoC: sgtl5000: Fix driver probe after
+> > reset)?
+> 
+> Probably because the mxs i2c was working before this commit.
 
-Set the symmetric_rates field of the dai driver to 1 to enforce symmetric
-rates. No need to implement this by hand.
+Do you have a commit id at which mxs i2c is known good?  I would like to
+find out it's a mxs i2c issue or sgtl5000 problem.
 
-> +
-> +	return 0;
-> +}
-> +
-[...]
-> +
-> +struct snd_soc_dai_driver ak4554_dai[] = {
-> +	{
-> +		.name = "ak4554-hifi-playback",
-> +		.playback = {
-> +			.stream_name = "Playback",
-> +			.channels_min = 2,
-> +			.channels_max = 2,
-> +			.rates = SNDRV_PCM_RATE_8000_48000,
-> +			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-> +		},
-> +		.ops = &ak4554_dai_ops,
-> +	}, {
-> +		.name = "ak4554-hifi-capture",
-> +		.capture = {
-> +			.stream_name = "Capture",
-> +			.channels_min = 2,
-> +			.channels_max = 2,
-> +			.rates = SNDRV_PCM_RATE_8000_48000,
-> +			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-> +		},
-> +		.ops = &ak4554_dai_ops,
-> +	}
-> +};
-> +EXPORT_SYMBOL_GPL(ak4554_dai);
+> 
+> Commit af8ee11 does fix the reset probe on mx51/mx53/mx6.
+> 
+> It's only on mx28 that we have this issue.
+> 
+> Also, please see this patch from Alexandre Belloni:
+> https://lkml.org/lkml/2013/6/24/430
+> 
+> He can only connect the ADC chip if he uses I2C bitbang mode on mx28.
 
-I don't think this needs to be exported and the struct should be static
+Does I2C bitbang mode help fix the sgtl5000 issue here?
 
-> +
-> +static int ak4554_probe(struct snd_soc_codec *codec)
-> +{
-> +	dev_info(codec->dev, "probed\n");
-> +	return 0;
-> +}
-> +
-> +static int ak4554_remove(struct snd_soc_codec *codec)
-> +{
-> +	dev_info(codec->dev, "removed\n");
-> +	return 0;
-> +}
-
-Remove the two functions above, there is not much point in printing these messages.
+Shawn
