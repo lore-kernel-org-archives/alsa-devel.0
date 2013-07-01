@@ -1,48 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Multiple DA9055 chips
-Date: Mon, 1 Jul 2013 17:48:33 +0100
-Message-ID: <20130701164833.GL27646@sirena.org.uk>
+From: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH 1/4] ASoC: sgtl5000: give it a ramping time
+	before writting
+Date: Mon, 1 Jul 2013 19:43:27 +0200
+Message-ID: <201307011943.27489.marex@denx.de>
+References: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
+ <20130701153327.GX13206@S2101-09.ap.freescale.net>
+ <CAOMZO5B5jh1XciO4K1u3yBcHHDAgi8hA3GcywnJd11M7=aOPxA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZaNUQUWeUBsaJYg9"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: David Dajun Chen <david.chen@diasemi.com>, Ashish Chavan <ashish.chavan@kpitcummins.com>, Ashish Jangam <ashish.jangam@kpitcummins.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A6DE2651B7
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 19:43:29 +0200 (CEST)
+In-Reply-To: <CAOMZO5B5jh1XciO4K1u3yBcHHDAgi8hA3GcywnJd11M7=aOPxA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Dear Fabio Estevam,
 
---ZaNUQUWeUBsaJYg9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On Mon, Jul 1, 2013 at 12:33 PM, Shawn Guo <shawn.guo@linaro.org> wrote:
+> > On Mon, Jul 01, 2013 at 12:11:58PM -0300, Fabio Estevam wrote:
+> >> On Mon, Jul 1, 2013 at 11:34 AM, Shawn Guo <shawn.guo@linaro.org> wrote:
+> >> > And also why we do not see the impact of i2c issue on sgtl5000 before
+> >> > the offending commit af8ee11 (ASoC: sgtl5000: Fix driver probe after
+> >> > reset)?
+> >> 
+> >> Probably because the mxs i2c was working before this commit.
+> > 
+> > Do you have a commit id at which mxs i2c is known good?  I would like to
+> > find out it's a mxs i2c issue or sgtl5000 problem.
+> 
+> I don't have it, but I am adding Alexandre in case he knows.
+> 
+> Alexandre,
+> 
+> Do you happen to know a commit id which does not show the mxs i2c
+> timeouts you have been observing?
 
-It seems we have two drivers in mainline for da9055 on I2C.  We've got
-one in sound/soc/codecs/da9055.c and one in drivers/mfd/da9055-i2c.c,
-both registering themselves identically.  What's going on here?  Is this
-a combined CODEC and PMIC, has someone decided to release two chips with
-the same name or is one of the drivers misnamed?
+I think you can just disable the PIO mode altogether (around line 500 ... if 
+(msg->len < 8) ... replace this with if (0) ) and then the problem should not be 
+there (if it's a PIO problem).
 
---ZaNUQUWeUBsaJYg9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIbBAEBAgAGBQJR0bLeAAoJELSic+t+oim9qeAP9RXgq/jL9ooeltPA6ZysfnDM
-0XH3OomLPXWiy6i1dpy2xU43Ese9Ak7toSVA3u7rV2aOvGoUeoEmBErp2I5AkaML
-rz7qShxwV5iTC/fcgSsEY2KErG3HSQ//kORa0v7a6puo8yjlJWqLwW953lSu+WZN
-M6GxBlC0wCPGakNukvcn8xM1WyoiZkSKVOZq7vHPC6J6RWwdec8OaDQgxMs9QXSZ
-mNZiAH78aYrCEVcU4OPhMWg7G4JSxptv83Syxb+ctc+mZEHeP+MYXsLBHjxHFrMb
-VlWZooEATYVsC/iKFYXQgsmiCojIe44Plm9i99DJZrrI37IRskF087RO7y99G/Sn
-3NpWt2s6yCWs2VGQ08Z8dEaimYvipVt5lcFAIgTlrOe7v09cRE26ITJt5Xp1Vfng
-09DnWbaqJ3zsc6zVad6vcEDrdYg1E+XkYVXb4ACesOnDQNcuD/INKCX0IF1ArQ7v
-B01XXeUdAqOFm7ATn4XFNWBM1y+qmMLmUAH/lSyb4LSHDN2LLjFLAJkeYKoFMsAA
-eEuLV4VfN/eGUAO9FHFVQhmblviKsklGXUNr8oxdZcUVUquQ7Rs7QYUzy5WumnWd
-A96x9GK4Trr43IW+oQkzmlw0hF7wPzMjYE+xO0Ky/kFjZJYShLJRyNYixVr8OHlI
-xhwqX8NcsSNoW4y3HgA=
-=gzFp
------END PGP SIGNATURE-----
-
---ZaNUQUWeUBsaJYg9--
+Best regards,
+Marek Vasut
