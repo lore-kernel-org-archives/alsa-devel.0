@@ -1,129 +1,110 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Add PCM1681 codec driver.
-Date: Mon, 01 Jul 2013 14:37:09 +0200
-Message-ID: <51D177F5.2040805@metafoo.de>
-References: <1372251928-15706-1-git-send-email-marek.belisko@streamunlimited.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/4] ASoC: sgtl5000: defer the probe if
+	clock is not found
+Date: Mon, 1 Jul 2013 13:51:13 +0100
+Message-ID: <20130701125113.GK27646@sirena.org.uk>
+References: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
+ <1372666571-17276-3-git-send-email-shawn.guo@linaro.org>
+ <20130701094525.GY27646@sirena.org.uk>
+ <20130701113310.GA24642@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <1372251928-15706-1-git-send-email-marek.belisko@streamunlimited.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Marek Belisko <marek.belisko@gmail.com>
-Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, lgirdwood@gmail.com, rob.herring@calxeda.com, linux-kernel@vger.kernel.org, Marek Belisko <marek.belisko@streamunlimited.com>, broonie@kernel.org, rob@landley.net, grant.likely@linaro.org, zonque@gmail.com
+Content-Type: multipart/mixed; boundary="===============3548516172631435293=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A01326513B
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 14:52:02 +0200 (CEST)
+In-Reply-To: <20130701113310.GA24642@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, marex@denx.de, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/26/2013 03:05 PM, Marek Belisko wrote:
-[...]
-> +static int pcm1681_deemph[] = { 44100, 48000, 32000 };
 
-const
+--===============3548516172631435293==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ttU9AGiyjxxpUEJf"
+Content-Disposition: inline
 
-> +
-> +static int pcm1681_set_deemph(struct snd_soc_codec *codec)
-> +{
-> +	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
-> +	int i = 0, val = -1, ret;
-> +
-> +	if (priv->deemph)
-> +		for (i = 0; i < ARRAY_SIZE(pcm1681_deemph); i++)
-> +			if (pcm1681_deemph[i] == priv->rate)
-> +				val = i;
-> +
-> +	/* enable choosen frequency */
-> +	if (val != -1)
-> +		regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
-> +					PCM1681_DEEMPH_RATE_MASK, val);
 
-So if the current sample rate doesn't match any of the available deempth rates
-the current setting is kept. This doesn't seem right.
+--ttU9AGiyjxxpUEJf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +
-> +	/* enable/disable deemphasis functionality */
-> +	ret = regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
-> +				PCM1681_DEEMPH_MASK, priv->deemph);
-> +
-> +	return ret;
-> +}
-> +
-[...]
-> +
-> +static int pcm1681_digital_mute(struct snd_soc_dai *dai, int mute)
-> +{
-> +	struct snd_soc_codec *codec = dai->codec;
-> +	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
-> +	int ret, val = 0;
-> +
-> +	if (mute)
-> +		val = PCM1681_SOFT_MUTE_ALL;
-> +
-> +	ret = regmap_write(priv->regmap, PCM1681_SOFT_MUTE, val);
+On Mon, Jul 01, 2013 at 12:33:10PM +0100, Russell King - ARM Linux wrote:
+> On Mon, Jul 01, 2013 at 10:45:25AM +0100, Mark Brown wrote:
 
-How about just
+> > Why not fix this in the clock API - the same logic is going to apply to
+> > a great proportion of clocks?
 
-return regmap_write(...)
+> It's not ever clear whether a missing clock is because it's just not
+> provided or whether it's because it hasn't been registered yet.  The
+> decision to defer on missing resources is something which a _driver_
+> using the resource should make, not the subsystem providing the
+> resource - because the driver should know better whether that resource
+> is optional, whether it can continue to initialise without it and maybe
+> try again later, or whether it does need to defer.
 
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-[...]
-> +static const DECLARE_TLV_DB_SCALE(pcm1681_dac_tlv, -6350, 50, 1);
-> +
-> +static const struct snd_kcontrol_new pcm1681_controls[] = {
-> +	SOC_DOUBLE_R_TLV("PCM1681 Channel 1/2 Playback Volume",
-> +			PCM1681_ATT_CONTROL(1), PCM1681_ATT_CONTROL(2), 0,
-> +			0x7f, 0, pcm1681_dac_tlv),
-> +	SOC_DOUBLE_R_TLV("PCM1681 Channel 3/4 Playback Volume",
-> +			PCM1681_ATT_CONTROL(3), PCM1681_ATT_CONTROL(4), 0,
-> +			0x7f, 0, pcm1681_dac_tlv),
-> +	SOC_DOUBLE_R_TLV("PCM1681 Channel 5/6 Playback Volume",
-> +			PCM1681_ATT_CONTROL(5), PCM1681_ATT_CONTROL(6), 0,
-> +			0x7f, 0, pcm1681_dac_tlv),
-> +	SOC_DOUBLE_R_TLV("PCM1681 Channel 7/8 Playback Volume",
-> +			PCM1681_ATT_CONTROL(7), PCM1681_ATT_CONTROL(8), 0,
-> +			0x7f, 0, pcm1681_dac_tlv),
-> +	SOC_SINGLE_BOOL_EXT("PCM1681 De-emphasis Switch", 0,
-> +			    pcm1681_get_deemph, pcm1681_put_deemph),
-> +};
+Given how common it is to have a hard requirement for a clock I think we
+should at least have a helper which implements deferral, even if it's
+not part of the default request function, since so many drivers ought to
+be using it.  Doing this in by default doesn't prevent the driver
+overriding, though - the driver can choose to squash down the PROBE_DEFER
+into a fatal error.
 
-The name of the codec should probably not be in the control names.
+One nice thing you can sometimes do here in the DT case is to have the
+subsystem tell the driver the difference between "this clock is mapped
+but not yet registered" and "this clock is not physically present"
+though there's never any guarantee that the provided resource will
+actually load.  I don't think the idiom for the clock API is to provide
+every single clock in DT though so that might not be doable.
 
-[...]
-> +#ifdef CONFIG_OF
-> +static const struct of_device_id pcm1681_dt_ids[] = {
-> +	{ .compatible = "ti,pcm1681", },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, pcm1681_dt_ids);
-> +#endif
-> +
-> +static const struct regmap_config pcm1681_regmap = {
-> +	.reg_bits		= 8,
-> +	.val_bits		= 8,
-> +	.max_register		= ARRAY_SIZE(pcm1681_reg_defaults),
+> Take for instance a video driver. :)  It may be that it can't do all
+> resolutions, but it can do some without an external clock, so it may
+> decide that it can initialise without the external clock and allow one
+> of the possible modes to be set - and when the external clock does
+> appear, it can then allow the other modes.
 
-max_register is the last register in the register map, so usually this would be
-ARRAY_SIZE(...) + 1
+Yes, that's the sort of case where you do definitely want to just carry
+on (though there is then some vulnerability to changes in init ordering
+with things like modular kernels).
 
-> +	.reg_defaults		= pcm1681_reg_defaults,
-> +	.num_reg_defaults	= ARRAY_SIZE(pcm1681_reg_defaults),
-> +	.writeable_reg		= pcm1681_writeable_reg,
-> +	.readable_reg		= pcm1681_accessible_reg,
-> +};
-[...]
-> +
-> +static struct snd_soc_codec_driver soc_codec_dev_pcm1681 = {
-> +	.probe			= pcm1681_probe,
-> +	.remove			= pcm1681_remove,
-> +	.controls		= pcm1681_controls,
-> +	.num_controls		= ARRAY_SIZE(pcm1681_controls),
-> +};
-> +
-> +#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+--ttU9AGiyjxxpUEJf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Since the driver only supports I2C there is no need for this ifdef
-[...]
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
 
+iQIcBAEBAgAGBQJR0Xs+AAoJELSic+t+oim9OqMP/joS8xf/RzTHAs31qvxLP0BV
+9qSDpqBodKIBVQ7joeBp/LjL0oje8e/F8p1mt/Zrk5Ea37hwRypQ7UVtfkTlHqEo
+jskEElSF091GdrUeoBrvnm6vcSQDCKT5PZrPDYir0th+qVPmaz6MxBfNd6oFL5AT
+kK5UR9fgK38YW3NuNOYqUapJm5JzYaCXkLxC+0FMSc++rDVNOlErh9EpJUU9jMDc
+P8M9M2LxULn6o18uLkF50p92PzOeFEg6M/66JHk+PJ1/YEVs+GKAuQyZtsoATR8X
+pZDpMSvG45qUvojY0PBIwO/q+SRDpLbvTydc6yR61vooKMmNWOVkgmwLQfjNHDz9
+M1xtzCSaUZ2aLzbyiayS0lLcOYlk8DYk8DJZfmCCgfuJG/YhuwI3GLsprIpUzDqJ
+De01e2tso7pRl+KPYqgEUGrT3Hot/mZF0Rj/K4bGqw8D7NCxE4V8IIDrToafdbIJ
+4CU9hJCg3GzQ42i/ruHf8z9o+Qaz68FeXNcCd7mjYOV5rro12n4kdOWeYlP+mgWI
+QqCPWta2LQxiX4rLWd2uG359g6uY8nfPCZ03S9CftG+wVzUDSCna00AYGjj1Jm9C
+qTEd75U2iCSA0B1IdHmgwxFhr1P9glTPd2Pkak90sk40x2Lgz6LtiTketZZXyzwt
+PjInK1VW3elzcz4HBMHk
+=O4QY
+-----END PGP SIGNATURE-----
+
+--ttU9AGiyjxxpUEJf--
+
+--===============3548516172631435293==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3548516172631435293==--
