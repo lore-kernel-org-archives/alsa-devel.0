@@ -1,20 +1,18 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 2/4] ASoC: sgtl5000: defer the probe if
-	clock is not	found
-Date: Mon, 1 Jul 2013 12:33:10 +0100
-Message-ID: <20130701113310.GA24642@n2100.arm.linux.org.uk>
-References: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
- <1372666571-17276-3-git-send-email-shawn.guo@linaro.org>
- <20130701094525.GY27646@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: adav80x: Add module device table for
+ adav801
+Date: Mon, 01 Jul 2013 14:16:06 +0200
+Message-ID: <51D17306.1080307@metafoo.de>
+References: <1372668544.17974.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id F041826508D
- for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 13:33:30 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130701094525.GY27646@sirena.org.uk>
+Received: from mailhost.informatik.uni-hamburg.de
+ (mailhost.informatik.uni-hamburg.de [134.100.9.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 107BE26508D
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 14:12:38 +0200 (CEST)
+In-Reply-To: <1372668544.17974.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, marex@denx.de, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 01, 2013 at 10:45:25AM +0100, Mark Brown wrote:
-> On Mon, Jul 01, 2013 at 04:16:09PM +0800, Shawn Guo wrote:
-> > It's not always the case that clock is already available when sgtl5000
-> > get probed at the first time, e.g. the clock is provided by CPU DAI
-> > which may be probed after sgtl5000.  So let's defer the probe when
-> > devm_clk_get() call fails and give it chance to try later.
+On 07/01/2013 10:49 AM, Axel Lin wrote:
+> This driver can be built as module, thus add module device table for
+> adav801 to support module auto loading.
 > 
-> Why not fix this in the clock API - the same logic is going to apply to
-> a great proportion of clocks?
+> To make the naming consistent, also rename adav80x_id to adav80x_i2c_id.
+> 
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
 
-It's not ever clear whether a missing clock is because it's just not
-provided or whether it's because it hasn't been registered yet.  The
-decision to defer on missing resources is something which a _driver_
-using the resource should make, not the subsystem providing the
-resource - because the driver should know better whether that resource
-is optional, whether it can continue to initialise without it and maybe
-try again later, or whether it does need to defer.
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 
-Take for instance a video driver. :)  It may be that it can't do all
-resolutions, but it can do some without an external clock, so it may
-decide that it can initialise without the external clock and allow one
-of the possible modes to be set - and when the external clock does
-appear, it can then allow the other modes.
-
-That kind of information is unknown at the subsystem level, and so the
-subsystem level should only ever return "I don't know about this" not
-"defer probe".
+> --- sound/soc/codecs/adav80x.c | 13 ++++++++++--- 1 file changed, 10
+> insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c index
+> 3c839cc..15b012d0 100644 --- a/sound/soc/codecs/adav80x.c +++
+> b/sound/soc/codecs/adav80x.c @@ -868,6 +868,12 @@ static int
+> adav80x_bus_remove(struct device *dev) }
+> 
+> #if defined(CONFIG_SPI_MASTER) +static const struct spi_device_id
+> adav80x_spi_id[] = { +	{ "adav801", 0 }, +	{ } +}; 
+> +MODULE_DEVICE_TABLE(spi, adav80x_spi_id); + static int
+> adav80x_spi_probe(struct spi_device *spi) { return
+> adav80x_bus_probe(&spi->dev, SND_SOC_SPI); @@ -885,15 +891,16 @@ static
+> struct spi_driver adav80x_spi_driver = { }, .probe		= adav80x_spi_probe, 
+> .remove		= adav80x_spi_remove, +	.id_table	= adav80x_spi_id, }; #endif
+> 
+> #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE) -static const struct
+> i2c_device_id adav80x_id[] = { +static const struct i2c_device_id
+> adav80x_i2c_id[] = { { "adav803", 0 }, { } }; -MODULE_DEVICE_TABLE(i2c,
+> adav80x_id); +MODULE_DEVICE_TABLE(i2c, adav80x_i2c_id);
+> 
+> static int adav80x_i2c_probe(struct i2c_client *client, const struct
+> i2c_device_id *id) @@ -913,7 +920,7 @@ static struct i2c_driver
+> adav80x_i2c_driver = { }, .probe = adav80x_i2c_probe, .remove =
+> adav80x_i2c_remove, -	.id_table = adav80x_id, +	.id_table =
+> adav80x_i2c_id, }; #endif
+> 
