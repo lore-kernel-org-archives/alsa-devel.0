@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/4] ASoC: sgtl5000: defer the probe if
-	clock is not found
-Date: Mon, 1 Jul 2013 10:45:25 +0100
-Message-ID: <20130701094525.GY27646@sirena.org.uk>
+Subject: Re: [PATCH 1/4] ASoC: sgtl5000: give it a ramping time
+ before writting
+Date: Mon, 1 Jul 2013 11:07:10 +0100
+Message-ID: <20130701100710.GB27646@sirena.org.uk>
 References: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
- <1372666571-17276-3-git-send-email-shawn.guo@linaro.org>
+ <1372666571-17276-2-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3362735048498532692=="
+Content-Type: multipart/mixed; boundary="===============7773486997935376623=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id ABE672625D8
- for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 11:45:28 +0200 (CEST)
-In-Reply-To: <1372666571-17276-3-git-send-email-shawn.guo@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E3E02625D8
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 12:07:18 +0200 (CEST)
+In-Reply-To: <1372666571-17276-2-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,54 +26,64 @@ Cc: Fabio Estevam <fabio.estevam@freescale.com>, marex@denx.de, alsa-devel@alsa-
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3362735048498532692==
+--===============7773486997935376623==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="W0OM0P+/SpWvhefz"
+	protocol="application/pgp-signature"; boundary="+NWYRNQpSl62EBce"
 Content-Disposition: inline
 
 
---W0OM0P+/SpWvhefz
+--+NWYRNQpSl62EBce
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jul 01, 2013 at 04:16:09PM +0800, Shawn Guo wrote:
-> It's not always the case that clock is already available when sgtl5000
-> get probed at the first time, e.g. the clock is provided by CPU DAI
-> which may be probed after sgtl5000.  So let's defer the probe when
-> devm_clk_get() call fails and give it chance to try later.
+On Mon, Jul 01, 2013 at 04:16:08PM +0800, Shawn Guo wrote:
 
-Why not fix this in the clock API - the same logic is going to apply to
-a great proportion of clocks?
+> +	/*
+> +	 * It seems that sgtl5000 takes a longer time to get the registers
+> +	 * ready for write than bread.  Let's give it a ramping time before
+> +	 * the first write goes.
+> +	 */
+> +	msleep(50);
+> +
+>  	/* Ensure sgtl5000 will start with sane register values */
+>  	ret = sgtl5000_fill_defaults(sgtl5000);
+>  	if (ret)
 
---W0OM0P+/SpWvhefz
+This seems like a really odd place to add the sleep - I'd have expected
+this to be a part of or just after the reset operation.  It's a *really*
+long sleep too, though if that's what you need that's what you need.
+
+Also "bread" :)
+
+--+NWYRNQpSl62EBce
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR0U+yAAoJELSic+t+oim9zfEP/3mUJFAeLL+2knKPDbU7t6KN
-h0bsJhvnn6p8iC48uN1mLaf7Zg4vApZ4tCfe6oHXm5GmBJcHtCr6IbDIBPnLh6+8
-BTYkz3peYjHPjfdAH7ex0pw8yldkpJnQBPMlx9zmbHZk7DYvmaVBLSEpcf8Zo5xt
-yi49EmW5p73sqzhof8Se+cO/AhptCRDYctaJPzhaA/BuPZNtOQsSOcszNRqgmPlY
-X6gkHNa7sg6ahO8CYNstYCNAtgwdDW4NakRhRfbP3OUS5aM+ql9FQgxyty65iH+2
-TDu8lz00jvaD16akQGI3tKY/lTOEsLVvhJZbAFcSg+F7dHIFCC6IeZMvf94wW340
-8DIC6kyOUi0Tqs5n0yTLY2cTKwc141FB3lDJeu1Gld2GgrukRm6T8Jmj+BTQRyzw
-4tYmnluA6itFjHvwRa6O9CjnOV5U/4ae3mU+SNg4G3S2B9B8QSMom6moDVU12/OE
-Iki3Ld/03md0/MK+cYtpawLTIPAH8pm74rzo40BogR1OHpvyi2hLkfghHXXcQWv8
-D4sTMQwfBWOc//GOKKOuM/Ld6D0SafQyIbJufVVpQ/EHrn9fW3dF3roL5HRPq2ka
-D4MyZZF1Ng6QpE0BSji1/lqzpXyw7agzlIckmJsivSn4LGwiYhI+AzCEefDVSjCV
-w72izECOaAv+pnkVfnyu
-=HqBf
+iQIcBAEBAgAGBQJR0VTLAAoJELSic+t+oim9QU4QAJ5th7cSNaCT5tNV71l+UXrU
+P76mrWuk03vd6Y162YqoG0vTmimRc19mrOhwAFz7Gg3Hdts5nh0/lDnhhMFiUbNM
+EAkfC6UysC4F+TEJcQbRe0XpV4I7e9eaPE+SNo6sdt+FIQbTfqO2Ym+Z52/SvsKi
+MRrxrmon37uSpJy1S7HqCqfQTj/Z79YGgU1vCO8vQJWXC8D0Ux8HmZRubx33uqAf
+pEjsCkSmgIP8spDi6TqmUMzTH1LCYZssekK2WKwoU+4q5UJ+baNxSqRyOwATx1Gc
+NB8OH19mOfzxWy6vdeS/Jbrwb/PZw9GMwWeVkcbVwXY1AFHqTZfniqSJvIAB+xO2
+AK2AaTn8YsyErj/L4+gdKxwTW/R1XOCQFWWr9QdZ67wwrx8zmKni9FlJqHg6MFKg
+Zvj17z0CEVB+7fZSrdZmWayfv/imOiMEw+qfcTjjWuXnm/LzEKIiNTeWaEugmq69
+wE6vXOibu55vYeZlh1fvs7sX95jt+IB+ic+BSxK4tpb0STLUym5gFKRAVFsPkoHA
+TZqEBzOlq98y3j4t2qzaJpj4QardobtSv8j4PcynNFAmYgLw2r5mbGu3YBlmczsa
+lfyZO+vm4TS9B6ATs33tBuGKoBxVLasGUrqPqhlaTiyHIdIiUREh+sktv5iYmJDX
+2buKEea5sdTo1qGIqvKH
+=KghG
 -----END PGP SIGNATURE-----
 
---W0OM0P+/SpWvhefz--
+--+NWYRNQpSl62EBce--
 
---===============3362735048498532692==
+--===============7773486997935376623==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3362735048498532692==--
+--===============7773486997935376623==--
