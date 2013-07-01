@@ -1,15 +1,18 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 0/4] Fix mxs audio regressions
-Date: Mon, 1 Jul 2013 16:16:07 +0800
-Message-ID: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
+Subject: [PATCH 1/4] ASoC: sgtl5000: give it a ramping time
+	before writting
+Date: Mon, 1 Jul 2013 16:16:08 +0800
+Message-ID: <1372666571-17276-2-git-send-email-shawn.guo@linaro.org>
+References: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe002.messaging.microsoft.com [207.46.163.25])
- by alsa0.perex.cz (Postfix) with ESMTP id A596B265053
- for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 10:16:31 +0200 (CEST)
+ (co9ehsobe005.messaging.microsoft.com [207.46.163.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BF69265065
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2013 10:16:34 +0200 (CEST)
+In-Reply-To: <1372666571-17276-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +26,42 @@ To: alsa-devel@alsa-project.org
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, marex@denx.de, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-The mxs audio got terribly broken during 3.11 development cycle due to
-the following two commits.
+Since commit af8ee11 (ASoC: sgtl5000: Fix driver probe after reset),
+it's very ofen to run into the following probe error on imx28. It is
+caused by the regmap_write() failure in sgtl5000_fill_defaults().
+However, the regmap_read() before this has already been working.  It
+seems that sgtl5000 takes a longer ramping time to get the registers
+ready for write than read.
 
-  af8ee11 ASoC: sgtl5000: Fix driver probe after reset
-  9e13f34 ASoC: sgtl5000: Let the codec acquire its clock
+[    1.991579] sgtl5000 0-000a: sgtl5000 revision 0x11
+[    2.021655] mxs-sgtl5000 sound.12: ASoC: CODEC (null) not registered
+[    2.039087] mxs-sgtl5000 sound.12: snd_soc_register_card failed (-517)
+[    2.046299] platform sound.12: Driver mxs-sgtl5000 requests probe deferral
 
-The series fixes the regressions and bring mxs audio back to work.
+Fix the regression by giving it a ramping time before the first write.
 
-Mark,
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+---
+ sound/soc/codecs/sgtl5000.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Please consider to take the whole series as fixes through your tree
-during 3.11-rc, so that we do not get a regression in the final v3.11
-release.
-
-Shawn
-
-Shawn Guo (4):
-  ASoC: sgtl5000: give it a ramping time before writting
-  ASoC: sgtl5000: defer the probe if clock is not found
-  ASoC: mxs: register saif mclk to clock framework
-  ARM: mxs: saif0 is the clock provider to sgtl5000
-
- arch/arm/boot/dts/imx28-apx4devkit.dts |    2 +-
- arch/arm/boot/dts/imx28-evk.dts        |    2 +-
- arch/arm/boot/dts/imx28-m28evk.dts     |    2 +-
- arch/arm/boot/dts/imx28.dtsi           |    1 +
- sound/soc/codecs/sgtl5000.c            |   10 ++++++++-
- sound/soc/mxs/mxs-saif.c               |   35 ++++++++++++++++++++++++++++++++
- 6 files changed, 48 insertions(+), 4 deletions(-)
-
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index d441559..20bca03 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1552,6 +1552,13 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+ 
+ 	i2c_set_clientdata(client, sgtl5000);
+ 
++	/*
++	 * It seems that sgtl5000 takes a longer time to get the registers
++	 * ready for write than bread.  Let's give it a ramping time before
++	 * the first write goes.
++	 */
++	msleep(50);
++
+ 	/* Ensure sgtl5000 will start with sane register values */
+ 	ret = sgtl5000_fill_defaults(sgtl5000);
+ 	if (ret)
 -- 
 1.7.9.5
