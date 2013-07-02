@@ -1,26 +1,26 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: imx_mc13783: add .owner to struct snd_soc_card
-Date: Tue, 2 Jul 2013 19:14:35 +0100
-Message-ID: <20130702181435.GW27646@sirena.org.uk>
-References: <CAPgLHd9uFhvTi+Kw2RkJEQLVepeC8K0WA2ZhPY=N7jveY0T3OQ@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: db1200: add .owner to struct snd_soc_card
+Date: Tue, 2 Jul 2013 19:15:10 +0100
+Message-ID: <20130702181509.GX27646@sirena.org.uk>
+References: <CAPgLHd9kdRD1fJZZWLN+=0ddsb3ZxjovA3OU4Ctrbvj_b3Jw3A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Q6s/hoVGC5OdHMNF"
+	protocol="application/pgp-signature"; boundary="B3UyBIKcLn4zZXdv"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAPgLHd9uFhvTi+Kw2RkJEQLVepeC8K0WA2ZhPY=N7jveY0T3OQ@mail.gmail.com>
+In-Reply-To: <CAPgLHd9kdRD1fJZZWLN+=0ddsb3ZxjovA3OU4Ctrbvj_b3Jw3A@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, wfp5p@virginia.edu, fabio.estevam@freescale.com, shawn.guo@linaro.org, yongjun_wei@trendmicro.com.cn, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, wfp5p@virginia.edu, yongjun_wei@trendmicro.com.cn, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Q6s/hoVGC5OdHMNF
+--B3UyBIKcLn4zZXdv
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 02, 2013 at 05:26:00PM +0800, Wei Yongjun wrote:
+On Tue, Jul 02, 2013 at 05:19:25PM +0800, Wei Yongjun wrote:
 > From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 >=20
 > Add missing .owner of struct snd_soc_card. This prevents the
@@ -28,26 +28,26 @@ On Tue, Jul 02, 2013 at 05:26:00PM +0800, Wei Yongjun wrote:
 
 Applied, thanks.
 
---Q6s/hoVGC5OdHMNF
+--B3UyBIKcLn4zZXdv
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR0xiIAAoJELSic+t+oim9fmQQAIv0Du3IQZw9ZY1iddprQdBY
-jRVeq4Xf0xnvNTnI21FZH76zNcm9NZadjXYJ5b9SMPhD0m0F8R5bpqjDZ9S0hR4u
-60Tp/FLyOpg69OO/5Fotjcp7bGPz9gwtgoNxYqmr3oupqmWYflVOemnzeD+rRZDp
-g5z80r3w2hjGoighfFl/c3qjVBPLZh2uLri2e4OQFVZZxWCXlUS4Jw3mKttoS+zZ
-ugjDfNPZutUtA9dR/Za64B0wfWz6TCg/AgKi2cC37hJtUgDkaRaWsoPqt/W4yc5z
-g1Dn1Qm9Pe8ddxy5WtB87Ftz21fNHpSS5CZ3lfB33tIThGXeGeo2Kpjvz/w7PT+l
-ANhKbmPrrVF/HVxV1Ptpo6xdVKDZXoF+wuzTpWNryhz1hMIdDRRtoSMIWEmq1wNk
-5fV4e/zHPYltsq1fnXYMLKJEuVXmIxd0NANICaULog2xhqEuM9u2BcGZ6NZ++2X9
-h2V4iDT0k6xS3WJo2/l7mDUB7oMj1tPy/EEjDoLwPW2bry8WUavduWDSLx2IPOVq
-hy/1oU/OjigYfmdwj3K/1UXiF2xSUhPKVLxcbZJcLOIwH0qzWZssiaNLMROK2x0Y
-k1qqjhRo751H/1JI2V3c1wtSgfZNacs+Fj5yRbsLoeSP6txM9FZ3tm6G0f1X82TQ
-lgChW2NGBAPRar+QmZ3C
-=gXSw
+iQIcBAEBAgAGBQJR0xiqAAoJELSic+t+oim9iNMQAJFVNf5ahAWjE9VZb3eBcBmS
+OegQLnJUGU3XxokKl1CtHA3LtC8vkb89ZOYRDqLYvkAIvDxHE2UCLCnWez7ILsug
+KvmKe3mfjZwKw11PErbKo0JRS9WLfT+85vJq4vS5I4P5D4kp/8q9FX8LN2dqdr1q
+AAzJX+GfwCqWRe/yCWHXyg03R1A+0UC+aQHWrFp6IsD9XyrCYVtoSAeKikqpNzf1
+B8JDEqO4l086MYUAi5A8HrPmQFRDsRunWJFF2IMxIjJ47Qqz/7In0T+tZzE3FJhO
+f3b+K6LCv892j30816ehbYjQwVBu7xy+AP6l6UM9JGUoHn74Zqla0WmecE9nK5sa
+oZkp/a5gOzGqw0rPAeDz5kX/HTzdE9kACbvkMvn9Owch5wANn/jdhRN5VclwzJfZ
+3TGOvLzPGNFBCkpYCsE3gxdIPXPsK0DPJCmEVn7jzgyyiF5854dym6gpuai2R60u
+a7OANkjLhr/6jVQ0oqvOzn/wrh3LUZYMvfhkMSuLYmiubTdIbtEBvE+pUG+nWl6L
+PLpjT9vz81E9x72pJmI2rdZKs42sDNjDVM0qgt3fj/k1sfQtz6nycMWQD0/LKlsq
+G6NcrdyI6DVZpOUcomfZZ9pyHpNXdjFyTyd20R1RTzsUvQRVcPl+TxLMK64xRv9Q
+miXxO3bpmTawGm4V+ekR
+=g4YW
 -----END PGP SIGNATURE-----
 
---Q6s/hoVGC5OdHMNF--
+--B3UyBIKcLn4zZXdv--
