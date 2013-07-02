@@ -1,33 +1,134 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Re: Multiple DA9055 chips
-Date: Tue, 2 Jul 2013 16:37:34 +0530
-Message-ID: <1372763254.2770.29.camel@matrix>
-References: <20130701164833.GL27646@sirena.org.uk>
-	 <1372757513.28415.2.camel@matrix> <20130702093130.GX27646@sirena.org.uk>
-	 <1372759357.29900.3.camel@matrix>  <20130702103101.GH27646@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: samsung: Remove obsolete GPIO based DT
+	pinmuxing
+Date: Tue,  2 Jul 2013 13:11:30 +0100
+Message-ID: <1372767090-14963-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130702103101.GH27646@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: David Dajun Chen <david.chen@diasemi.com>, Ashish Jangam <ashish.jangam@kpitcummins.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 725C026545C
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jul 2013 14:11:40 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2013-07-02 at 11:31 +0100, Mark Brown wrote:
-> On Tue, Jul 02, 2013 at 03:32:37PM +0530, Ashish Chavan wrote:
-> 
-> > > OK, in that case the CODEC driver is just plain broken then.  Did anyone
-> > > actually test this stuff?  Please fix.
-> 
-> > Yes, I think so. Actually the CODEC driver was merged before PMIC ino
-> > main line and was tested at that time. I will check with PMIC team if
-> > they did test with CODEC.
-> 
-> > I guess the fix should be in PMIC, right?
-> 
-> Both drivers need to be changed.
+From: Mark Brown <broonie@linaro.org>
 
-OK. We will fix both of them.
-Thanks for pointing this out.
+Since the Samsung platforms have moved to pinctrl for pin muxing and that
+is handled in the core the old GPIO based muxing code can just be removed.
+Something similar had been submitted by Thomas Abraham back in March but
+a resubmission following review never happened.
+
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/samsung/i2s.c | 66 +++----------------------------------------------
+ 1 file changed, 4 insertions(+), 62 deletions(-)
+
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 82ebb1a..7a17346 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1016,52 +1016,6 @@ static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
+ 	return i2s;
+ }
+ 
+-#ifdef CONFIG_OF
+-static int samsung_i2s_parse_dt_gpio(struct i2s_dai *i2s)
+-{
+-	struct device *dev = &i2s->pdev->dev;
+-	int index, gpio, ret;
+-
+-	for (index = 0; index < 7; index++) {
+-		gpio = of_get_gpio(dev->of_node, index);
+-		if (!gpio_is_valid(gpio)) {
+-			dev_err(dev, "invalid gpio[%d]: %d\n", index, gpio);
+-			goto free_gpio;
+-		}
+-
+-		ret = gpio_request(gpio, dev_name(dev));
+-		if (ret) {
+-			dev_err(dev, "gpio [%d] request failed\n", gpio);
+-			goto free_gpio;
+-		}
+-		i2s->gpios[index] = gpio;
+-	}
+-	return 0;
+-
+-free_gpio:
+-	while (--index >= 0)
+-		gpio_free(i2s->gpios[index]);
+-	return -EINVAL;
+-}
+-
+-static void samsung_i2s_dt_gpio_free(struct i2s_dai *i2s)
+-{
+-	unsigned int index;
+-	for (index = 0; index < 7; index++)
+-		gpio_free(i2s->gpios[index]);
+-}
+-#else
+-static int samsung_i2s_parse_dt_gpio(struct i2s_dai *dai)
+-{
+-	return -EINVAL;
+-}
+-
+-static void samsung_i2s_dt_gpio_free(struct i2s_dai *dai)
+-{
+-}
+-
+-#endif
+-
+ static const struct of_device_id exynos_i2s_match[];
+ 
+ static inline int samsung_i2s_get_driver_data(struct platform_device *pdev)
+@@ -1235,18 +1189,10 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 		pri_dai->sec_dai = sec_dai;
+ 	}
+ 
+-	if (np) {
+-		if (samsung_i2s_parse_dt_gpio(pri_dai)) {
+-			dev_err(&pdev->dev, "Unable to configure gpio\n");
+-			ret = -EINVAL;
+-			goto err;
+-		}
+-	} else {
+-		if (i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
+-			dev_err(&pdev->dev, "Unable to configure gpio\n");
+-			ret = -EINVAL;
+-			goto err;
+-		}
++	if (i2s_pdata && i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
++		dev_err(&pdev->dev, "Unable to configure gpio\n");
++		ret = -EINVAL;
++		goto err;
+ 	}
+ 
+ 	snd_soc_register_component(&pri_dai->pdev->dev, &samsung_i2s_component,
+@@ -1267,14 +1213,10 @@ static int samsung_i2s_remove(struct platform_device *pdev)
+ {
+ 	struct i2s_dai *i2s, *other;
+ 	struct resource *res;
+-	struct s3c_audio_pdata *i2s_pdata = pdev->dev.platform_data;
+ 
+ 	i2s = dev_get_drvdata(&pdev->dev);
+ 	other = i2s->pri_dai ? : i2s->sec_dai;
+ 
+-	if (!i2s_pdata->cfg_gpio && pdev->dev.of_node)
+-		samsung_i2s_dt_gpio_free(i2s->pri_dai);
+-
+ 	if (other) {
+ 		other->pri_dai = NULL;
+ 		other->sec_dai = NULL;
+-- 
+1.8.3.1
