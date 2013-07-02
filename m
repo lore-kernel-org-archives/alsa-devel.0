@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] mfd: arizona: Add GPIO control
- register bit definitions
-Date: Tue, 2 Jul 2013 16:51:44 +0100
-Message-ID: <20130702155144.GS27646@sirena.org.uk>
-References: <1372776817-29811-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: brownstone: add .owner to struct
+	snd_soc_card
+Date: Tue, 2 Jul 2013 19:13:31 +0100
+Message-ID: <20130702181331.GU27646@sirena.org.uk>
+References: <CAPgLHd-VN4BiM=cEkFF4EgbL7iqR1XrhEzBiKyoJBVnzKspHJg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5460438688645895944=="
+Content-Type: multipart/mixed; boundary="===============7178140751244729580=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C0B626549A
- for <alsa-devel@alsa-project.org>; Tue,  2 Jul 2013 17:51:49 +0200 (CEST)
-In-Reply-To: <1372776817-29811-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 613DD2654B3
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jul 2013 20:13:53 +0200 (CEST)
+In-Reply-To: <CAPgLHd-VN4BiM=cEkFF4EgbL7iqR1XrhEzBiKyoJBVnzKspHJg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux@arm.linux.org.uk, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, haojian.zhuang@gmail.com, yongjun_wei@trendmicro.com.cn, eric.y.miao@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5460438688645895944==
+--===============7178140751244729580==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VMHhwLwacXQnT70n"
+	protocol="application/pgp-signature"; boundary="7Bm0M7I+ZJ5WKh7s"
 Content-Disposition: inline
 
 
---VMHhwLwacXQnT70n
+--7Bm0M7I+ZJ5WKh7s
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 02, 2013 at 03:53:36PM +0100, Charles Keepax wrote:
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-> ---
->  include/linux/mfd/arizona/registers.h |   35 +++++++++++++++++++++++++++++++++
+On Tue, Jul 02, 2013 at 05:26:21PM +0800, Wei Yongjun wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>=20
+> Add missing .owner of struct snd_soc_card. This prevents the
+> module from being removed from underneath its users.
 
-It's probably best to do what we do for several of the other MFDs and
-put these in a separate header as they are useful for platform data
-users.
+Applied, thanks.
 
---VMHhwLwacXQnT70n
+--7Bm0M7I+ZJ5WKh7s
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR0vcNAAoJELSic+t+oim90rIP/0CwIJ8mcLreUnbjY58WZ78Y
-oV6/98CVNwcwPkQ7O6Iszd8lyj39/MQMinbjcRZwZ64jgI8JyWgn8aQUHK+m6XFF
-YPspybvJ+RFgbNP4A8LE2Ohyuc+sYJccGvkU3Jai90xozjfEnWCKF3Rbk61VfOzB
-H0afojTiqa+F37LFLFF8fjaL6NsEL5ttQsQmWidJH3/RBE6l3WAmiLcQ2lzU61aK
-nSvZdp7rleunT3STH7R8dmHFbkIuA/hGlNM1LJqND9JgvBik41FjRAj8YirsNJGo
-XIQgGd9BRd8ujA3/1UUJVpJMowWiNXDOJc+q/pqv7EaQufnBEXni493k7WodBlWn
-Nhf60bhw3vXF6bPwlE3OOMf9tac5DWTsglWho5STmtO5/ghzMyiYF0zIuLQoZs8A
-XsAXuuk4cmvkQasy7FefPlogvy6Ls+N+CLtsKrOUwHvLiXhXNrhW39//bt6alegc
-sUKWOjRDia5VuNc3L3qCowe8jv6oubmPYOPhbfvXGSzx4rGEVx6A03S/f8Ukaw1Z
-NGct4CcaLYJb0fABeKhsJV07CxkD2GUfAGAozwl16C5FkV1PvI3bd6iTd+t64vGC
-tfpi0F6Wu1w4fcIeZBNxxDjC040kNO1Me4v9EDCAGJo5IeeDp/78I5l7opByxX/7
-q4+vi9f0W72UdeykLxCP
-=afdE
+iQIcBAEBAgAGBQJR0xhIAAoJELSic+t+oim90TQP/3t1NZvLnMQn0HXkttqbQ8qr
+viErAc+/cLzqsU1Q77C8Vg2O3FZpOEhc15ru7E0pGi22LkDD9iqacypPYBvGOkys
+7tlelniz+xpZywTVnaMS44NZ04tiMKIAhpXcA6N7l2ZBY3hBKmDtg2i/a6vVFswH
+oldyoDDaXKHJ1EqlI/p3VYLUb7WXaKAFNp8bBLc1Cof9dxk5S8rdTQxAAohCRTw5
+tHEGgW6+GkQfXEww1GUEKpvrkaLS9h1MY9KiASUUygpPpCYCHKQXcveWYh0bHR3O
+r4MrzOFDQ2uTefwC7K+RvVmnCtM/zL811lZtJSwQ+MQSDW/OPy+3e8sIBUE6Fmu0
+BzjDAQlYN3jmXy6dpKdZFsxZN3zdL2OSIq6oXCXlsnkmgyNc7AzcNHoXaqMz8XwG
+olxInVU6Ihi9JaG2PfW3xgnrm70tUt0/Ssl/AhFoYpVqe8iGCplWmgWUvSdFrHMf
+63HF/qK7dA6LWeGSsDwVrIpVLlFbjF4NzSSBNvTdfX21lBhuxXQMpobwaXc1hrBL
+xKiuVV9Ndm+7YxiFj1K5CG8FmrxMRAfwptDW0FqWmmcl71qygPRjdsuBcMqnB/fD
+e0bcRcasWHiywrWKYpWFSJERAVzpNJTx6LJEvhcoJk86ldETN3CzcAfL0e7DlLng
+qs76lDhmDgU4fuughvtk
+=YRCW
 -----END PGP SIGNATURE-----
 
---VMHhwLwacXQnT70n--
+--7Bm0M7I+ZJ5WKh7s--
 
---===============5460438688645895944==
+--===============7178140751244729580==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5460438688645895944==--
+--===============7178140751244729580==--
