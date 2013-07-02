@@ -1,17 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Query on Audio DMA using DMAEngine
-Date: Tue, 2 Jul 2013 13:16:25 +0100
-Message-ID: <20130702121625.GM27646@sirena.org.uk>
-References: <083BC63EECB6FD41B8E81CF7FD87CC0F2E4F1488@DLEE08.ent.ti.com>
- <51D01F31.3010602@metafoo.de> <51D11D64.3070805@topic.nl>
- <51D22CAE.2020302@ti.com> <51D26CD8.7020709@topic.nl>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: no analog playback device for HDA STAC9221 inside
+ VirtualBox 4.2.14
+Date: Tue, 2 Jul 2013 20:47:21 +0800
+Message-ID: <CAN8cciYm9v5Ey3VsOaJLB8SzQgOvnmuNYjQRhjY_exAURfj_kg@mail.gmail.com>
+References: <CAN8ccib1qrJ5jNXYeo45KBX5wDKNeFp59dU0_ecXs16kBEgxsA@mail.gmail.com>
+ <s5hip0ty1hq.wl%tiwai@suse.de>
+ <CAN8ccibgA3NFouZVJZd6tuFEEP51ZYtY=F-0YQ59zpUt5UDr1g@mail.gmail.com>
+ <s5hehbhxzpx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0998401918624973197=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EEBA26545C
- for <alsa-devel@alsa-project.org>; Tue,  2 Jul 2013 14:16:29 +0200 (CEST)
-In-Reply-To: <51D26CD8.7020709@topic.nl>
+Received: from mail-ie0-f173.google.com (mail-ie0-f173.google.com
+ [209.85.223.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id DCAA726545C
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jul 2013 14:47:22 +0200 (CEST)
+Received: by mail-ie0-f173.google.com with SMTP id k13so11831043iea.4
+ for <alsa-devel@alsa-project.org>; Tue, 02 Jul 2013 05:47:22 -0700 (PDT)
+In-Reply-To: <s5hehbhxzpx.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +27,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mike Looijmans <mike.looijmans@topic.nl>
-Cc: Joel Fernandes <joelf@ti.com>, alsa-devel@alsa-project.org, lars@metafoo.de
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+> > > >
+> > > > HDA STAC9221 audio work for (64bit) Fedora 16, Ubuntu 11.10 and
+> Opensuse
+> > > > 11.4 Live CD inside virtualbox 4.2.14
+> > > >
+> > > > no sound for this emulated HDA sound card since Ubuntu 12.04 Live CD
+> > > >
+> > > > No analog playback device  for Saucy or Fedora 19 Live CD
+> > >
+> > > It looks strange that VirtualBox sets up the pins for 5.1 speaker +
+> > > headphone.  Is this really the wanted setup as a virtual machine?
+> > >
+> > > Some truncated control names found in alsa-info.sh output should have
+> > > been fixed in sound git tree now.
+> > >
+> > >
+> > it work with opensuse 11.4 for both HDA and AC97 , but no sound card
+> > modules loaded in opensuse 12.3 Live CD
+>
+> Well, it doesn't clarify whether the culprit is VirtualBox's change or
+> HD-audio driver's change at all...  How did 11.4 work?  Did it work
+> with 5.1 + headphone setup in VME?
+>
 
---===============0998401918624973197==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3dPKw/kcnFYEODXu"
-Content-Disposition: inline
+it only support stereo in 11.4
 
+analog playback device still appear in Ubuntu 13.04 (before sigmtel use
+auto generic parser)
 
---3dPKw/kcnFYEODXu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/patch_sigmatel.c?id=0a4278464eba4bf98c0d6304c62a1116553125d3
 
-On Tue, Jul 02, 2013 at 08:02:00AM +0200, Mike Looijmans wrote:
-> On 07/02/2013 03:28 AM, Joel Fernandes wrote:
+https://www.virtualbox.org/browser/vbox/trunk/src/VBox/Devices/Audio/DevIchHdaCodec.cpp
 
-> >Sweet! Any particular reason why it wasn't merged in vs the existing ping-pong code?
-
-> I've posted questions and other stuff concerning the McASP/OMAP1,
-> but there was very little interest, so I supposed the chipset was on
-> its way out and there wasn't any point in maintaining it.
-
-Did you CC the relevant maintainers and other people working on the
-code?  You've not done so on this thread...  if you only post to the
-list it's very likely that people won't see what you've sent.
-
---3dPKw/kcnFYEODXu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR0sSWAAoJELSic+t+oim9/l4P+wWZ0YI6Gfr0KXahW0NyWDRM
-4WYPA5ClO+F6TWyF3Yd/1+7jBZoCZdRVoXT+cBKtV6bjlkEmXGJmH2CYC4ONyS4s
-XUHSN5twE+osxND3WYT0Zc2b/oSK6FWaxvWZ7cKe6+QGfU3k/BzPIkiunw9D/xFp
-oz3h+hhgL5nqmzzKaNRiFJOlrwm05NAIJXJWqINSUrftSkmSyY/cN3Z3Lirnzsok
-EhcORzAYeVqMIcjJE10TZEn9HvIPaQ/1+hwTBetEa86MuIbTxO2mrHHjlxH6EvAr
-tHhhi55QHKJZ4OFiO3+q7doCMS+OqBp4gVWIu8d6HcIxkJZoRsvv178VnVDKpE73
-S2JYqM+jYUZRYW0mZeNqCfLj8Afs4UyOpJaxbIETG6URBLn+HadPd+fSyHLgxnHB
-mVOBF0ssSQobfTZMjvBr8JdVnGm1O5IMs+ZBfqxoASi4Rrv+/+ks+apH5wOdoFZJ
-G40j+hQ0IuOqZL1iiUfMCJr3fo2X7SCJAeWOfCoC3+N0C0tNoJJyRlCBAWxqIJDQ
-KupcjYjaF6Lz5/iGe/JulnaPPdfpUfKLzrZhXcRgs4L3KfkquCmQcmnaH1o9JmnM
-JbBICgZD6e12tyVHILkP8aT7WDwoRGXNgNRqs8pEuvj4xkx3Aw03mDaJDlDs8ho4
-9WkjkDYVc18AYmGlsUi1
-=iiVH
------END PGP SIGNATURE-----
-
---3dPKw/kcnFYEODXu--
-
---===============0998401918624973197==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0998401918624973197==--
+https://www.virtualbox.org/browser/vbox/trunk/src/VBox/Devices/Audio/DevIchHda.cpp
