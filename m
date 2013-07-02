@@ -1,34 +1,82 @@
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH] ASoC: ttc_dkb: add .owner to struct snd_soc_card
-Date: Tue, 2 Jul 2013 17:26:40 +0800
-Message-ID: <CAPgLHd_CJUYf8Ry=J9Y8ZPSrCgqPLTj74rDr__bxoymQ8GR_1A@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Multiple DA9055 chips
+Date: Tue, 2 Jul 2013 10:31:30 +0100
+Message-ID: <20130702093130.GX27646@sirena.org.uk>
+References: <20130701164833.GL27646@sirena.org.uk>
+ <1372757513.28415.2.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: eric.y.miao@gmail.com, linux@arm.linux.org.uk, haojian.zhuang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de
-Cc: yongjun_wei@trendmicro.com.cn, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============1913309484079669502=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id E30AE265325
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jul 2013 11:31:34 +0200 (CEST)
+In-Reply-To: <1372757513.28415.2.camel@matrix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Ashish Jangam <ashish.jangam@kpitcummins.com>, linux-kernel@vger.kernel.org, David Dajun Chen <david.chen@diasemi.com>, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-Add missing .owner of struct snd_soc_card. This prevents the
-module from being removed from underneath its users.
+--===============1913309484079669502==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="i4PQY6bUD8mHTt/C"
+Content-Disposition: inline
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- sound/soc/pxa/ttc-dkb.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/pxa/ttc-dkb.c b/sound/soc/pxa/ttc-dkb.c
-index f4ea4f6..13c9ee0 100644
---- a/sound/soc/pxa/ttc-dkb.c
-+++ b/sound/soc/pxa/ttc-dkb.c
-@@ -122,6 +122,7 @@ static struct snd_soc_dai_link ttc_pm860x_hifi_dai[] = {
- /* ttc/td audio machine driver */
- static struct snd_soc_card ttc_dkb_card = {
- 	.name = "ttc-dkb-hifi",
-+	.owner = THIS_MODULE,
- 	.dai_link = ttc_pm860x_hifi_dai,
- 	.num_links = ARRAY_SIZE(ttc_pm860x_hifi_dai),
- 
+--i4PQY6bUD8mHTt/C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jul 02, 2013 at 03:01:53PM +0530, Ashish Chavan wrote:
+> On Mon, 2013-07-01 at 17:48 +0100, Mark Brown wrote:
+> > It seems we have two drivers in mainline for da9055 on I2C.  We've got
+> > one in sound/soc/codecs/da9055.c and one in drivers/mfd/da9055-i2c.c,
+> > both registering themselves identically.  What's going on here?  Is this
+> > a combined CODEC and PMIC, has someone decided to release two chips with
+> > the same name or is one of the drivers misnamed?
+
+> Yes, this is a combined CODEC and PMIC.
+
+OK, in that case the CODEC driver is just plain broken then.  Did anyone
+actually test this stuff?  Please fix.
+
+--i4PQY6bUD8mHTt/C
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR0p3vAAoJELSic+t+oim9ROQP/16p+njQaqCQ4WODW7mrlBJn
+kaEJ/XfRMpP5b3OnsZ46Q2DK2S54le1RAnoeOihPPA5PI7jS8vbmiBRrmBAhNwMb
+OIJ+qCFiq7V7qZHqnMUgiC0VraYR0E3xukipidP8NaRocfcdy5Hn48YVmZuYzLF1
+ERjKxBfpAFxPQm4nPYnthbgpgYES0G6v27rm2NQ7fk+Mk2gHIgjCZuIHSDuNUCJ2
+1TtZ+nGmlBudAgEiBdSUAAMou3l3Cx+W5QI7b60NAPy4myFPhh2qi5x5T1pNEcu2
+t1IosELLwMrz/O5PYVwWaIJDd5e+I71j2VZEQWBJEdn0cDGhaPxNnV2iYE//pSDt
+pl8fPV8CjOdqGguooKsW2ul6I7S9xTpZ5/xe3lDiXz3iILTZpd66AxJVWl9U5WpM
+/6zOmgyUHHEIty2iSNyZWy06iFqwRQmfZPxu+5NSDIMVx4ETEDJP3TngZI5bZk/L
+ARcq2wkx1u58xWk37JaHfrbPfuMoC6W5/kdjCJ7IBAqFKtjjApuQAbTXHDSYHOPg
+9bF4a5CyLNpjqVqlzE1ApeD5TAM8ShZhK5+joLjsk6kxfY18XThHSHiLZiz8z4GK
+P8LUB/sHRUssQWu7kVMFTtMSLgKkKi8lfHg7aaoB2DTXGNMgJHnopk5VlYpvRiNV
+nQwzX2OiVk+3H163kon4
+=UnbR
+-----END PGP SIGNATURE-----
+
+--i4PQY6bUD8mHTt/C--
+
+--===============1913309484079669502==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1913309484079669502==--
