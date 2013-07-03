@@ -1,13 +1,13 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v9 09/10] ASoC: fsl: Move fsl-ssi binding doc to sound/
-Date: Wed, 3 Jul 2013 17:18:02 +0100
-Message-ID: <20130703161802.GT27646@sirena.org.uk>
+Subject: Re: [PATCH v9 10/10] ASoC: fsl: Update fsl-ssi binding doc
+Date: Wed, 3 Jul 2013 17:19:00 +0100
+Message-ID: <20130703161900.GU27646@sirena.org.uk>
 References: <1371734429-6081-1-git-send-email-mpa@pengutronix.de>
- <1371734429-6081-10-git-send-email-mpa@pengutronix.de>
+ <1371734429-6081-11-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6866564759508376287=="
+Content-Type: multipart/mixed; boundary="===============8672202232846921022=="
 Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1371734429-6081-10-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+In-Reply-To: <1371734429-6081-11-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
  <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
 List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
@@ -23,48 +23,48 @@ Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6866564759508376287==
+--===============8672202232846921022==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mqRNdCMOlOOulWfi"
+	protocol="application/pgp-signature"; boundary="aQoHefV7R8EJhyq8"
 Content-Disposition: inline
 
 
---mqRNdCMOlOOulWfi
+--aQoHefV7R8EJhyq8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jun 20, 2013 at 03:20:28PM +0200, Markus Pargmann wrote:
-> fsl-ssi was located in powerpc/fsl/ssi.txt. This is no powerpc specific
-> device, so it should be moved to sound/ as it connects to differen audio
-> codecs.
+On Thu, Jun 20, 2013 at 03:20:29PM +0200, Markus Pargmann wrote:
+> Update the fsl-ssi bindings. DMA is no required property anymore and
+> uses the generic DMA bindings. imx-fiq is a new alternative to DMA
 
-Applied, thanks.
+These updates should be done as part of the patches making the code
+changes - see the review comment I had earlier for an example.
 
---mqRNdCMOlOOulWfi
+--aQoHefV7R8EJhyq8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR1E63AAoJELSic+t+oim9d3QP/20z7x85Ie5FLcDNn//ON1U+
-LgwRkme6APviyuwzavmX15v4p4m1lEZ2cfrODD+fR4yl4L2x0xrCs9XB8e5VbdCj
-YZYaHSSgqQGZMaxuFGyOmLaiCeZKNoetvmutZ6+Px9ZyDeaGDtSzyxDzlgdZ38AH
-rHi854dIJRdwmKjtbH1dgkhm6uOaiWlRG3ccsaE7T+Qa2UPFTFEymGs/jZd0l2mZ
-HSxBA3Tbw9RWoNeOxnwJfR9mULR9+eNbWnRUeQYdA2Y/J8FHynr7Y+xF0H8bHcvk
-cAX3kkWg3h0Dxszzjytsh6v2zx6XExnHrG4xYpasVSwjvbYTGjFeephc8+c6HofW
-FIvgn+PVN9UyN+PAjtsFd9quA257JG594LBkyzivovqNIPi2uv5hwcX2OF4G2R1X
-WyC3UesdcHZoP6Rg3rmmTjGp2t0qaU5xp7LfyEM7TsTQ/vApNGe3LKblBijk0swG
-eAVZLyyJtJ+v8sxGQfMDYl61Z8pOF/Yq2fKZflvCNK22rG+YqLK9l7OwEk44Czr5
-c+j2Pq3v8DypnpevrZeCsWF+5zOBjkLWJAxXQPLM61H6E+v8od7KdkMCHVBAhXvx
-RUghPHn9byFYQpwixpYT0pYqU0luv0FaxErp3Mt5635hCCSOxhDGAwMfZJgW6DNN
-B5sXXhNd0xLdwT9cb9bn
-=BFL5
+iQIcBAEBAgAGBQJR1E7xAAoJELSic+t+oim9uVUP/2F3tPQFDuEDPO1Go0VL3ASy
+uVS04PVlcVcBb+7Vl5XSMcePS27c/MkdZcBk3G1KJuyq/DosIjjLzrzbkQbVTR9W
+zhE/qLGwAH0+7Dj60IyrXjqDGgaZ0rFzpHRXSZ2bMG8Ng8pjlj4GqiVVW6PeCttT
+ToYZ1jCebhap9KPkfkva+ZkBBCFZ7fTE3nLOxr4LVjCUxwwMQ3hZioQ1Z9tejR7w
+rskFBOzZ+PDozUJJVkngdsldhN16ncenJnQJT6G0qaOrxPwq+3Bo+AbXA1ntOooa
+dsdnsVfZtoIFlllPrMKlcqwv3ONjAIYDgoj/aF6WMOeS/u7JNxvBx2t9Mmoo3OPO
+/lxwYmVIkcxT99XaG0x28OdB4fAzfSG3J3O93Jn38S/WnyaBdZkAi+gNPLzqqMaG
+KTU7xQuDXU53SKIzXgrnws3yZd5VHPvLj1nnS4PUcTq0EGu+8esP+BR8+X+B3WQE
+/RzYVNVAW0+u5tqZ2WZSL3hrQB6VlTB10F8Vsn8pixpL3qEv2wZaCBH3JDuX+Mq2
+OoS5VztXN7DyfpAKH5NB7+VBSm1Bv+9qCxqci2n4+owzWbqUkSDq9cTOq+oLsaIf
+TdZYeZrXkx1ha0CvvTddwssBnoLRdZ95mrrO/ZEwsNitj3yElUNG2ls316DyMNun
+/PtNmfFbQ4m1izQ60hdh
+=Mpmi
 -----END PGP SIGNATURE-----
 
---mqRNdCMOlOOulWfi--
+--aQoHefV7R8EJhyq8--
 
---===============6866564759508376287==
+--===============8672202232846921022==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -75,4 +75,4 @@ devicetree-discuss mailing list
 devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 https://lists.ozlabs.org/listinfo/devicetree-discuss
 
---===============6866564759508376287==--
+--===============8672202232846921022==--
