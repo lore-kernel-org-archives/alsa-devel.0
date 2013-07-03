@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/6] ASoC: add Renesas R-Car Generation
- feature
-Date: Wed, 3 Jul 2013 12:10:34 +0100
-Message-ID: <20130703111034.GI27646@sirena.org.uk>
-References: <87a9m6ixgp.wl%kuninori.morimoto.gx@renesas.com>
- <8761wuixf1.wl%kuninori.morimoto.gx@renesas.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v2 1/2] mfd: arizona: Add GPIO control register
+	bit definitions
+Date: Wed,  3 Jul 2013 13:38:45 +0100
+Message-ID: <1372855126-13122-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6831392712458851400=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B468A26554A
- for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2013 13:10:37 +0200 (CEST)
-In-Reply-To: <8761wuixf1.wl%kuninori.morimoto.gx@renesas.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3EB4E2655A4
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2013 14:46:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,73 +19,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: broonie@kernel.org, sameo@linux.intel.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ include/linux/mfd/arizona/gpio.h |   96 ++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 96 insertions(+), 0 deletions(-)
+ create mode 100644 include/linux/mfd/arizona/gpio.h
 
---===============6831392712458851400==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MEto6KzE24Smlj/z"
-Content-Disposition: inline
-
-
---MEto6KzE24Smlj/z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sun, Jun 30, 2013 at 11:53:10PM -0700, Kuninori Morimoto wrote:
-
-> +u32 rsnd_read(struct rsnd_priv *priv,
-> +	      struct rsnd_mod *mod, enum rsnd_reg reg)
-> +{
-> +	void __iomem *base = rsnd_gen_reg_get(priv, mod, reg);
-> +
-> +	BUG_ON(!base);
-> +
-> +	return ioread32(base);
-> +}
-
-regmap?  I don't know if the new regmap field API helps with the fact
-that some of the registers have been moved about.
-
-> +static void rsnd_gen2_remove(struct platform_device *pdev,
-> +			     struct rsnd_priv *priv)
-> +{
-> +}
-
-There's quite a few empty functions here - it'd be better to be able to
-avoid them.
-
---MEto6KzE24Smlj/z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR1AanAAoJELSic+t+oim9Yd4P/3WBrNhQasEF2WtYimwLBAye
-pK+CJGrJOkclbkOWuXR7N/hMBGCisNytYB3EhHZ2w+pzEFvXMHgPz3pPEGL/wO19
-oOYUchtX9NI3DQjWI/tFasx7PDZJA84q03Avk+z+w+T4L82wqqE2YPPpfyigtdya
-YUiTDAwA6axIq7YS7zVdkHLlifw9kDy98TscubvAjH9h4PYTAGi9HFz59QQZCXDE
-g97dCEWVBxFiQZQQGLQXe0jKgRVmkDxQpTZwTahVu+CABSAvLjVQvWfcmsPdi4Yy
-+r075cII2XrDVoAuvUuV3nVVnepYleTeQo2PPYSWEKoZK7ld6ixeGOJFCIDzCIti
-L2YJTfRyduE4r3qfv6sqOiIfrbrb17dZ+J2XUGpWcLAbHaeETSBYfzzAuyPf9DGF
-sjy212FV+F56WMFPq/3NOm+BYZi/1ED++/0GzPD/DviCl2ilkD5pFk13KNQMArkF
-6YQ+u7LS4ET3FKGEK+GLcdI/6PVrbArMTRLrUMT5bhZ1h1oL5PxEJR/5wRR5ZTKs
-fOzx3kBGcI9lgzu0KfGORbWciVQuQ3TSAfkQJVEoEa6w0GKRdXds2CdnfioIFZsy
-Oc3hdg+zNrVtCdO3MSm8lHuMYD98+b7IKqFUHfewOTLipVCCZevVHPcbmJov7Hka
-eMweev6s4iuamCOEMR/4
-=jEtY
------END PGP SIGNATURE-----
-
---MEto6KzE24Smlj/z--
-
---===============6831392712458851400==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6831392712458851400==--
+diff --git a/include/linux/mfd/arizona/gpio.h b/include/linux/mfd/arizona/gpio.h
+new file mode 100644
+index 0000000..d2146bb
+--- /dev/null
++++ b/include/linux/mfd/arizona/gpio.h
+@@ -0,0 +1,96 @@
++/*
++ * GPIO configuration for Arizona devices
++ *
++ * Copyright 2013 Wolfson Microelectronics. PLC.
++ *
++ * Author: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef _ARIZONA_GPIO_H
++#define _ARIZONA_GPIO_H
++
++#define ARIZONA_GP_FN_TXLRCLK                    0x00
++#define ARIZONA_GP_FN_GPIO                       0x01
++#define ARIZONA_GP_FN_IRQ1                       0x02
++#define ARIZONA_GP_FN_IRQ2                       0x03
++#define ARIZONA_GP_FN_OPCLK                      0x04
++#define ARIZONA_GP_FN_FLL1_OUT                   0x05
++#define ARIZONA_GP_FN_FLL2_OUT                   0x06
++#define ARIZONA_GP_FN_PWM1                       0x08
++#define ARIZONA_GP_FN_PWM2                       0x09
++#define ARIZONA_GP_FN_SYSCLK_UNDERCLOCKED        0x0A
++#define ARIZONA_GP_FN_ASYNCCLK_UNDERCLOCKED      0x0B
++#define ARIZONA_GP_FN_FLL1_LOCK                  0x0C
++#define ARIZONA_GP_FN_FLL2_LOCK                  0x0D
++#define ARIZONA_GP_FN_FLL1_CLOCK_OK              0x0F
++#define ARIZONA_GP_FN_FLL2_CLOCK_OK              0x10
++#define ARIZONA_GP_FN_HEADPHONE_DET              0x12
++#define ARIZONA_GP_FN_MIC_DET                    0x13
++#define ARIZONA_GP_FN_WSEQ_STATUS                0x15
++#define ARIZONA_GP_FN_CIF_ADDRESS_ERROR          0x16
++#define ARIZONA_GP_FN_ASRC1_LOCK                 0x1A
++#define ARIZONA_GP_FN_ASRC2_LOCK                 0x1B
++#define ARIZONA_GP_FN_ASRC_CONFIG_ERROR          0x1C
++#define ARIZONA_GP_FN_DRC1_SIGNAL_DETECT         0x1D
++#define ARIZONA_GP_FN_DRC1_ANTICLIP              0x1E
++#define ARIZONA_GP_FN_DRC1_DECAY                 0x1F
++#define ARIZONA_GP_FN_DRC1_NOISE                 0x20
++#define ARIZONA_GP_FN_DRC1_QUICK_RELEASE         0x21
++#define ARIZONA_GP_FN_DRC2_SIGNAL_DETECT         0x22
++#define ARIZONA_GP_FN_DRC2_ANTICLIP              0x23
++#define ARIZONA_GP_FN_DRC2_DECAY                 0x24
++#define ARIZONA_GP_FN_DRC2_NOISE                 0x25
++#define ARIZONA_GP_FN_DRC2_QUICK_RELEASE         0x26
++#define ARIZONA_GP_FN_MIXER_DROPPED_SAMPLE       0x27
++#define ARIZONA_GP_FN_AIF1_CONFIG_ERROR          0x28
++#define ARIZONA_GP_FN_AIF2_CONFIG_ERROR          0x29
++#define ARIZONA_GP_FN_AIF3_CONFIG_ERROR          0x2A
++#define ARIZONA_GP_FN_SPK_TEMP_SHUTDOWN          0x2B
++#define ARIZONA_GP_FN_SPK_TEMP_WARNING           0x2C
++#define ARIZONA_GP_FN_UNDERCLOCKED               0x2D
++#define ARIZONA_GP_FN_OVERCLOCKED                0x2E
++#define ARIZONA_GP_FN_DSP_IRQ1                   0x35
++#define ARIZONA_GP_FN_DSP_IRQ2                   0x36
++#define ARIZONA_GP_FN_ASYNC_OPCLK                0x3D
++#define ARIZONA_GP_FN_BOOT_DONE                  0x44
++#define ARIZONA_GP_FN_DSP1_RAM_READY             0x45
++#define ARIZONA_GP_FN_SYSCLK_ENA_STATUS          0x4B
++#define ARIZONA_GP_FN_ASYNCCLK_ENA_STATUS        0x4C
++
++#define ARIZONA_GPN_DIR                          0x8000  /* GPN_DIR */
++#define ARIZONA_GPN_DIR_MASK                     0x8000  /* GPN_DIR */
++#define ARIZONA_GPN_DIR_SHIFT                        15  /* GPN_DIR */
++#define ARIZONA_GPN_DIR_WIDTH                         1  /* GPN_DIR */
++#define ARIZONA_GPN_PU                           0x4000  /* GPN_PU */
++#define ARIZONA_GPN_PU_MASK                      0x4000  /* GPN_PU */
++#define ARIZONA_GPN_PU_SHIFT                         14  /* GPN_PU */
++#define ARIZONA_GPN_PU_WIDTH                          1  /* GPN_PU */
++#define ARIZONA_GPN_PD                           0x2000  /* GPN_PD */
++#define ARIZONA_GPN_PD_MASK                      0x2000  /* GPN_PD */
++#define ARIZONA_GPN_PD_SHIFT                         13  /* GPN_PD */
++#define ARIZONA_GPN_PD_WIDTH                          1  /* GPN_PD */
++#define ARIZONA_GPN_LVL                          0x0800  /* GPN_LVL */
++#define ARIZONA_GPN_LVL_MASK                     0x0800  /* GPN_LVL */
++#define ARIZONA_GPN_LVL_SHIFT                        11  /* GPN_LVL */
++#define ARIZONA_GPN_LVL_WIDTH                         1  /* GPN_LVL */
++#define ARIZONA_GPN_POL                          0x0400  /* GPN_POL */
++#define ARIZONA_GPN_POL_MASK                     0x0400  /* GPN_POL */
++#define ARIZONA_GPN_POL_SHIFT                        10  /* GPN_POL */
++#define ARIZONA_GPN_POL_WIDTH                         1  /* GPN_POL */
++#define ARIZONA_GPN_OP_CFG                       0x0200  /* GPN_OP_CFG */
++#define ARIZONA_GPN_OP_CFG_MASK                  0x0200  /* GPN_OP_CFG */
++#define ARIZONA_GPN_OP_CFG_SHIFT                      9  /* GPN_OP_CFG */
++#define ARIZONA_GPN_OP_CFG_WIDTH                      1  /* GPN_OP_CFG */
++#define ARIZONA_GPN_DB                           0x0100  /* GPN_DB */
++#define ARIZONA_GPN_DB_MASK                      0x0100  /* GPN_DB */
++#define ARIZONA_GPN_DB_SHIFT                          8  /* GPN_DB */
++#define ARIZONA_GPN_DB_WIDTH                          1  /* GPN_DB */
++#define ARIZONA_GPN_FN_MASK                      0x007F  /* GPN_DB */
++#define ARIZONA_GPN_FN_SHIFT                          0  /* GPN_DB */
++#define ARIZONA_GPN_FN_WIDTH                          7  /* GPN_DB */
++
++#endif
+-- 
+1.7.2.5
