@@ -1,87 +1,142 @@
-From: Joel Fernandes <joelf-l0cyMroinI0@public.gmane.org>
-Subject: Re: Query on Audio DMA using DMAEngine
-Date: Wed, 3 Jul 2013 14:56:27 -0500
-Message-ID: <51D481EB.5030902@ti.com>
-References: <083BC63EECB6FD41B8E81CF7FD87CC0F2E4F1488@DLEE08.ent.ti.com>
-	<51D01F31.3010602@metafoo.de> <51D11D64.3070805@topic.nl>
-	<51D24A01.2050709@ti.com> <51D26A18.8040903@topic.nl>
-	<20130702121345.GL27646@sirena.org.uk>
-	<51D3EA42.3040205@metafoo.de>
-	<20130703094307.GE27646@sirena.org.uk> <51D4245F.8070307@topic.nl>
+From: Paulo Zanoni <przanoni@gmail.com>
+Subject: Re: [PATCH 0/4 V7] Power-well API implementation for
+	Haswell
+Date: Wed, 3 Jul 2013 17:00:51 -0300
+Message-ID: <CA+gsUGSBf5hit=fmjcrcy=fKJPNaFe02VkkM_=pYkVUwVyvG2Q@mail.gmail.com>
+References: <1369922831-727-1-git-send-email-xingchao.wang@linux.intel.com>
+	<20130606153441.GI7827@phenom.ffwll.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <51D4245F.8070307-Oq418RWZeHk@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Mike Looijmans <mike.looijmans-Oq418RWZeHk@public.gmane.org>
-Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <20130606153441.GI7827@phenom.ffwll.local>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+To: Daniel Vetter <daniel@ffwll.ch>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, daniel.vetter@ffwll.ch, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, liam.r.girdwood@intel.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mike,
-
-On 07/03/2013 08:17 AM, Mike Looijmans wrote:
-> On 07/03/2013 11:43 AM, Mark Brown wrote:
->> On Wed, Jul 03, 2013 at 11:09:22AM +0200, Lars-Peter Clausen wrote:
->>> On 07/02/2013 02:13 PM, Mark Brown wrote:
+2013/6/6 Daniel Vetter <daniel@ffwll.ch>:
+> On Thu, May 30, 2013 at 10:07:07PM +0800, Wang Xingchao wrote:
+>> Hi all,
 >>
->>>> This sort of cyclic thing tends to be best, ideally you don't need
->>>> interrupts at all (other than a timer).
+>>    This is V7 and here're some changes notes:
+>>    change from V6-->V7:
+>>    - rename variable
+>>    - use HAS_POWER_WELL instead of IS_HASWELL
+>>    - put structure inside drm_i915_private
+>>    - use WARN_ON for global pointer check
 >>
->>> Yes, this is usually how it is done. But I'm wondering maybe the EDMA
->>> controller only has a small total amount of slots available.
+>>    change from V5-->V6:
+>>    - Remove duplication code in new introduced probe work
+>>    - move duplication code in azx_probe_continue
+>>    - remove unused #ifdef
+>>    - replace request_module with symbol_request
+>>    - replace spin_lock_irq with spin_lock_irqsave in gfx side
+>>    - other typo fixes
+>>    (review by Takashi)
 >>
->> Well, you don't need particularly many slots so long as you can cope
->> with a large period size.
-> 
-> On the OMAP L138, there are 128 PARAM slots. 32 of those are tied to hardware
-> events (though you can use them if you aren't using the related hardware, for
-> example the UART drivers don't use DMA so you can freely use those slots if you
-> want), leaving (at least) 96 PARAM slots free. Both audio events are on the same
-> controller, so you can't use the 128 of the other one (the OMAP has 2 EDMA
-> controllers). Only a few dozen of those are being used by various drivers, the
-> SD card driver being the most hungry.
-> For the system to work, you can even get away with only using one slot, and
-> hence one period, but then you'll have to use a mmap and a timer to fill it.
-> 
-> I experimented with various memory layouts. For large transfers, using 2 big
-> periods was quite enough. I also tested with very small period sizes. Using the
+>>    change from V4-->V5:
+>>    - fix reference count bug
+>>    - new patch on general runtime pm support for audio pci device
+>>    - new patch to avoid request_module() deadlock
+>>
+>>    change between V3-->V4:
+>>    - add new structure i915_power_well
+>>    - initialize drm_device pointer at module init time
+>>    - change function name
+>>
+>>    change between V2-->V3:
+>>    - make SND_HDA_I915 selectable
+>>    - use snd_printdd to output message
+>>    - add return error code check
+>>    - use symbol_request to replace symbol_get
+>>    - release power_well at azx_free
+>>    - some typo fixes
+>>
+>>    changes between V1-->V2:
+>>    - use reference count to track power-well usage
+>>    - remove external module, compiled into snd-hda-intel instead
+>>    - manage symbols and module loading properly
+>>    - remove IS_HSW macro, use flag instead
+>>    - remove audio callback for gfx driver to avoid dependency
+>>    - split whole patch into two pieces for easy review
+>>    - more typo fixes
+>>
+>>
+>> Takashi Iwai (1):
+>>   ALSA: hda - Move azx_first_init() into azx_probe_continue()
+>>
+>> Wang Xingchao (3):
+>>   ALSA: hda - Fix runtime PM check
+>>   ALSA: hda - Add power-welll support for haswell HDA
+>>   i915/drm: Add private api for power well usage
+>
+> After discussion with Dave and Takashi I've merged the entire series to
+> drm-intel-next. I'll show up in the next linux-next and I'll forward it to
+> Dave for mergin into drm-next in roughly 2 weeks.
 
-Wouldn't very small periods take up too many interrupts, and also occupy lots of
-slots?
+So today I unblacklisted the audio modules on one of my Haswell
+machines and booted it with i915.disable_power_well=1. I only have an
+eDP output (it doesn't have audio) and I see the power well is
+enabled. This is wrong, the power well should be disabled since we
+only have an eDP panel, and we don't support audio on eDP. I checked
+on dmesg and the audio driver requests the power well but never
+releases it.
 
-> original code, I was unable to reliably capture (to /dev/null) at period sizes
-> below 80 samples. With the cyclic DMA, I could set a period size of only 40
-> samples and still be able to record audio reliably, when using only 8 periods.
-> The same for playback, basically. So that's how I arrived at the MAX_PERIODS
-> define of "8". It will only claim channels when you use them, so setting it to
-> say "100" will not crash the system.
+So I decided to do the same test on another Haswell machine, and on
+that specific machine the audio driver gets the power well and then
+releases it at azx_runtime_suspend. This machine is also eDP-only
 
-Thanks for your post Mike. It makes more sense to me now.
-Correct me if I'm wrong but:
-- more the periods, more the granularity- but the drawback is you'd need more
-slots and too many interrupts; so we want fewer periods as many as we need. I
-still don't know though, how do we arrive at an acceptable number that userspace
-expects?
-- periods also will determine buffer size. Considering in future if we'd want to
-use IRAM as the buffer which is limited on some users of the davinci-pcm, there
-might not be enough buffer space.
+I was expecting that on both cases the audio driver would release the
+power well as soon as it sees there's no connected output capable of
+HD audio.
 
-So too many periods is certainly not a good thing. I wonder how we can arrive at
-what would constitute an acceptable number? As Linus said, "we never break
-userspace :P" so I'd rather not change anything that breaks someone's audio
-application.
+How can I help debugging this?
 
-I will post some RFC notes soon capture our discussion and other ideas I had put
-together for EDMA as some notes to summarize and get everyone's opinion. I will
-copy you on that as well. Thanks.
+Thanks,
+Paulo
 
--Joel
+>
+> Thanks, Daniel
+>
+>>
+>>  drivers/gpu/drm/i915/i915_dma.c  |    6 +++
+>>  drivers/gpu/drm/i915/i915_drv.h  |   12 ++++++
+>>  drivers/gpu/drm/i915/intel_drv.h |    4 ++
+>>  drivers/gpu/drm/i915/intel_pm.c  |   81 ++++++++++++++++++++++++++++++++---
+>>  include/drm/i915_powerwell.h     |   36 ++++++++++++++++
+>>  sound/pci/hda/Kconfig            |   10 +++++
+>>  sound/pci/hda/Makefile           |    2 +
+>>  sound/pci/hda/hda_i915.c         |   75 ++++++++++++++++++++++++++++++++
+>>  sound/pci/hda/hda_i915.h         |   35 +++++++++++++++
+>>  sound/pci/hda/hda_intel.c        |   87 ++++++++++++++++++++++++++++++--------
+>>  10 files changed, 324 insertions(+), 24 deletions(-)
+>>  create mode 100644 include/drm/i915_powerwell.h
+>>  create mode 100644 sound/pci/hda/hda_i915.c
+>>  create mode 100644 sound/pci/hda/hda_i915.h
+>>
+>> --
+>> 1.7.9.5
+>>
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> +41 (0) 79 365 57 48 - http://blog.ffwll.ch
+> _______________________________________________
+> Intel-gfx mailing list
+> Intel-gfx@lists.freedesktop.org
+> http://lists.freedesktop.org/mailman/listinfo/intel-gfx
+
+
+
+-- 
+Paulo Zanoni
