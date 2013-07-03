@@ -1,55 +1,104 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [v2 0/5] ASoC: atmel-pcm: align with generic dmaengine framwork
-Date: Wed, 3 Jul 2013 10:52:57 +0100
-Message-ID: <20130703095257.GF27646@sirena.org.uk>
-References: <1372840680-2253-1-git-send-email-voice.shen@atmel.com>
+Subject: Re: [PATCH 1/6] ASoC: add Renesas R-Car core feature
+Date: Wed, 3 Jul 2013 11:56:17 +0100
+Message-ID: <20130703105617.GH27646@sirena.org.uk>
+References: <87a9m6ixgp.wl%kuninori.morimoto.gx@renesas.com>
+ <878v1qixfq.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sF4+LqaTi7T9hg64"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1372840680-2253-1-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, lars@metafoo.de, richard.genoud@gmail.com, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============9190138058131552102=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD3FE26554A
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2013 12:56:22 +0200 (CEST)
+In-Reply-To: <878v1qixfq.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---sF4+LqaTi7T9hg64
+--===============9190138058131552102==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2oEZHvVXAe659F+M"
+Content-Disposition: inline
+
+
+--2oEZHvVXAe659F+M
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 03, 2013 at 04:37:55PM +0800, Bo Shen wrote:
-> This patch set is based on linux next-20130701
->=20
-> mainly implement
->   - move set dma data from hw_params to startup callback to avoid memory =
-leak
->   - align atmel pcm with generic dmaenigne framwork
+On Sun, Jun 30, 2013 at 11:52:45PM -0700, Kuninori Morimoto wrote:
 
-Applied all, thanks.
+> + * Gen1
+> + *
+> + * SRU		: Sound Routing Unit
+> + *  - SRC	: Sampling Rate Converter
+> + *  - CMD
+> + *    - CTU	: Channel Count Conversion Unit
+> + *    - MIX	: Mixer
+> + *    - DVC	: Digital Volume and Mute Function
+> + *  - SSI	: Serial Sound Interface
+> + *
+> + * Gen2
+> + *
+> + * SCU		: Sampling Rate Converter Unit
+> + *  - SRC	: Sampling Rate Converter
+> + *  - CMD
+> + *   - CTU	: Channel Count Conversion Unit
+> + *   - MIX	: Mixer
+> + *   - DVC	: Digital Volume and Mute Function
+> + * SSIU		: Serial Sound Interface Unit
+> + *  - SSI	: Serial Sound Interface
 
---sF4+LqaTi7T9hg64
+So, this hardware looks like something that should be using the soc-pcm
+framework or representing the SCU as a CODEC device but it seems that
+the final result here is going to be something that is open coded inside
+the CPU driver.  This stuff doesn't all need to be added in the first
+version but it does need to be where we're heading.
+
+I think it'd help review here to strip out a lot of the stubs that are
+in place and focus on just getting the basic functionality up and
+running then build up the functionality later.  Right now it seems like
+there's a lot of internal structure in here that's not connected to the
+ASoC frameworks at all.
+
+--2oEZHvVXAe659F+M
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR0/R2AAoJELSic+t+oim9s5oP/RNy3R5MZ/1cc+iptc3jhnFu
-/tAX0H3Lb7VBXItxNTnCfmlaDlmUL38M6+3RdTucleSOfy74EHNfjZdk6J4glQD5
-yPOACt+/3NwomuGKKm58QChyvEgJSdMORtTFQ4715xnBgCo3uV8Ez7rYFNZfIcR9
-xCyaOcgZziND6T2BZgOi4W5/6ufXPJvecYL0L89dyUZE38WlmGwvNN46lH64JlLo
-r4Z3HsJYylgBuiWB9ZSGhqqzhSeCa6x8Didg0vEEVCvGoigEKnONwgNO5a6NBvsY
-bStwmpiNHRDfFFC+0XeKoHquZyUp0obg1GrtgggZTUy4ncwpgXjZ1pbijyeRHloz
-pEv6/jWdB5tM1pTx7O+N+zW8DoyhJ6UZ0Fs429Ns63/+wjKxAtpoOoWpca3xKyg6
-EHHZt1wcapC20QHCpuN0xPvc6fPCOevIbkdBzB5hMdCacJE5nevWbpgOGriGIMyS
-tTztOGHIwH7cPWy5mypQoGP1BlGSH+RiuUNJxszjulGfHihBl3XvVhYjCiKFxRNf
-lyHjYvIhx+mc+b1kIHBR21QegvmRbtuCuCn4RwLqDKfCs6gEHmBlcWBN8+5Vtvxp
-MhXIphoQxa4TpXLsp+i6JqwluR4sr2QPXqmk92nBWn5Ms54W09HBwNMM84bQRJiF
-abzRmcOcfhmoZE573d1e
-=I097
+iQIcBAEBAgAGBQJR1ANOAAoJELSic+t+oim9lU4P/3h9BEpVlsrtzLXrH2jib1BI
+5mZCu64bhVp4i61mLTJqM86L4pesh9ayGV4NEm5xZGi+GkkRmfPaKbmsYkwgWrAv
+6mj8KyZsB8CorKOFQGHanFyBR3kV66jaaulTePsq0rp3zCRBYnWNa0EvIIp9Z9Lp
+E1lXxTrgbfc8uzmEBnhKpLrArcLgPtxExt5or8FgeaRDTOcGG6M+JWCz+7/qZ8oM
+mrobCIKB/MM9SoYjJWznbbd5R/+D7XWsXXKq7EHeKk63DyRhJ+4G3Ep+JBCUpN0R
+Cka9IuUsRwc6et39I1qnpoW/vZpW33Z5Vcgo7Wt3i1NhAdXBciCgFftdS7vkfywS
+KKIyDfX3Yr+9wNtgq7UAyq4ANpHnZFTr3ZHv0Pd50+EmzNgs6L2Pr7LMv2UYraf8
+Pp2k+jRO9a+/I1KkcoOMl8WQth+SJZhhUaeZb7vzdDY9V8oIpIWoE888J6tk3E2k
+LT4i+4SPs0gknKHu0dI3IeMABXRJeP3MlymRV4gxvyuKk+y7UiPU59Bg0wmDzenF
+zby7UFZUinAh+IlXo5ZfWya/3kExqSB8NiBpMCJlq3bQdXhotEs/jBuilQAiO5kj
+KpDHLHNkIyvfNvInUQuS04PIeTC30GQUkMCoexaZAVXYTT8fOQh/d+Xf0GcTt4Yr
+YE3a5ES0zn3YcqeXLOHi
+=U9N4
 -----END PGP SIGNATURE-----
 
---sF4+LqaTi7T9hg64--
+--2oEZHvVXAe659F+M--
+
+--===============9190138058131552102==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9190138058131552102==--
