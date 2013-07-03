@@ -1,35 +1,86 @@
 From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: atmel_ssc_dai: move set dma data
- to startup callback
-Date: Wed, 3 Jul 2013 09:20:25 +0800
-Message-ID: <51D37C59.3090306@atmel.com>
-References: <1372755849-19546-1-git-send-email-voice.shen@atmel.com> <1372755849-19546-2-git-send-email-voice.shen@atmel.com> <51D2F0FA.6040409@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: atmel-pcm: use generic dmaengine
+ framework
+Date: Wed, 3 Jul 2013 09:33:59 +0800
+Message-ID: <51D37F87.2010008@atmel.com>
+References: <1372755849-19546-1-git-send-email-voice.shen@atmel.com> <1372755849-19546-3-git-send-email-voice.shen@atmel.com> <51D2F306.7040603@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <51D2F0FA.6040409@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <51D2F306.7040603@metafoo.de>
+Sender: linux-sound-owner@vger.kernel.org
 To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, richard.genoud@gmail.com, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi Lars-Peter,
 
-On 7/2/2013 23:25, Lars-Peter Clausen wrote:
+On 7/2/2013 23:34, Lars-Peter Clausen wrote:
 > On 07/02/2013 11:04 AM, Bo Shen wrote:
 > [...]
->> +	dma_params->substream = substream;
+>> -/*--------------------------------------------------------------------------*\
+>> - * DMAENGINE operations
+>> -\*--------------------------------------------------------------------------*/
+>> -static bool filter(struct dma_chan *chan, void *slave)
+>> -{
+>> -	struct at_dma_slave *sl = slave;
+>> -
+>> -	if (sl->dma_dev == chan->device->dev) {
+>> -		chan->private = sl;
+>> -		return true;
+>> -	} else {
+>> -		return false;
+>> -	}
+>> -}
 >
-> Unrelated to this patch, but having a substream field in the dma_params seems
-> to be redundant, since you need to know the substream to get the dma_params in
-> the first place. Looking at the code it also seems to be unused other than this
-> assignment. Maybe you can send a follow up patch to remove it.
->
-> [...]
->
+> I'm wondering why is filtering no longer required?
 
-Yes, this is redundant. I will remove it in next version patches.
+Now this is handled by at_dma_filter in at_hdmac driver. More 
+information, you can reference: <driver/dma/at_hdmac.c> file
+
+> [...]
+>> +		slave_config->dst_addr = (dma_addr_t)ssc->phybase + SSC_THR;
+> [...]
+>> +		slave_config->src_addr = (dma_addr_t)ssc->phybase + SSC_RHR;
+>
+> Change the type of phybase to dma_addr_t
+
+It should be:
+slave_config->dst_addr = (dma_addr_t)(ssc->phybase + SSC_THR);
+slave_config->src_addr = (dma_addr_t)(ssc->phybase + SSC_RHR);
+
+> [...]
+>>   }
+>>
+>> -static int atmel_pcm_dma_prepare(struct snd_pcm_substream *substream)
+>> -{
+>> -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>> -	struct atmel_pcm_dma_params *prtd;
+>> -
+>> -	prtd = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+>> -
+>> -	ssc_writex(prtd->ssc->regs, SSC_IER, prtd->mask->ssc_error);
+>> -	ssc_writex(prtd->ssc->regs, SSC_CR, prtd->mask->ssc_enable);
+>
+> These writes are also completely lost
+
+This will be moved to DAI driver startup callback function.
+
+>> -
+>> -	return 0;
+>> -}
+>
+> I think it would also be good to get rid of any references to the ssc struct
+> from the DMA driver and move them over to the DAI driver.
+
+I will try to implement this in next version patch.
+
+Thanks.
+
+> - Lars
+>
 
 Best Regards,
 Bo Shen
+
