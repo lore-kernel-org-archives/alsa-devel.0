@@ -1,17 +1,25 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 2/2] ASoC: arizona: Add signal activity
-	output for DRC
-Date: Wed,  3 Jul 2013 13:38:46 +0100
-Message-ID: <1372855126-13122-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1372855126-13122-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mike Looijmans <mike.looijmans@topic.nl>
+Subject: Re: Query on Audio DMA using DMAEngine
+Date: Wed, 03 Jul 2013 15:17:19 +0200
+Message-ID: <51D4245F.8070307@topic.nl>
+References: <083BC63EECB6FD41B8E81CF7FD87CC0F2E4F1488@DLEE08.ent.ti.com>
+ <51D01F31.3010602@metafoo.de> <51D11D64.3070805@topic.nl>
+ <51D24A01.2050709@ti.com> <51D26A18.8040903@topic.nl>
+ <20130702121345.GL27646@sirena.org.uk> <51D3EA42.3040205@metafoo.de>
+ <20130703094307.GE27646@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3DE80265570
- for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2013 14:46:03 +0200 (CEST)
-In-Reply-To: <1372855126-13122-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from atl4mhob08.myregisteredsite.com
+ (atl4mhob08.myregisteredsite.com [209.17.115.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id E28EF2655A6
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2013 15:17:22 +0200 (CEST)
+Received: from mailpod.hostingplatform.com ([10.30.71.210])
+ by atl4mhob08.myregisteredsite.com (8.14.4/8.14.4) with ESMTP id
+ r63DHLVb028374
+ for <alsa-devel@alsa-project.org>; Wed, 3 Jul 2013 09:17:21 -0400
+In-Reply-To: <20130703094307.GE27646@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,152 +29,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, sameo@linux.intel.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Joel Fernandes <joelf@ti.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-When doing signal activity detection, the only output from the DRC will
-often be a GPIO pin. This patch adds a signal activity output that is
-activated when a GPIO is configured to output the DRC signal activity
-detection.
+On 07/03/2013 11:43 AM, Mark Brown wrote:
+> On Wed, Jul 03, 2013 at 11:09:22AM +0200, Lars-Peter Clausen wrote:
+>> On 07/02/2013 02:13 PM, Mark Brown wrote:
+>
+>>> This sort of cyclic thing tends to be best, ideally you don't need
+>>> interrupts at all (other than a timer).
+>
+>> Yes, this is usually how it is done. But I'm wondering maybe the EDMA
+>> controller only has a small total amount of slots available.
+>
+> Well, you don't need particularly many slots so long as you can cope
+> with a large period size.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c |   35 +++++++++++++++++++++++++++++++++++
- sound/soc/codecs/arizona.h |    1 +
- sound/soc/codecs/wm5102.c  |    6 ++++++
- sound/soc/codecs/wm5110.c  |    9 +++++++++
- 4 files changed, 51 insertions(+), 0 deletions(-)
+On the OMAP L138, there are 128 PARAM slots. 32 of those are tied to 
+hardware events (though you can use them if you aren't using the related 
+hardware, for example the UART drivers don't use DMA so you can freely 
+use those slots if you want), leaving (at least) 96 PARAM slots free. 
+Both audio events are on the same controller, so you can't use the 128 
+of the other one (the OMAP has 2 EDMA controllers). Only a few dozen of 
+those are being used by various drivers, the SD card driver being the 
+most hungry.
+For the system to work, you can even get away with only using one slot, 
+and hence one period, but then you'll have to use a mmap and a timer to 
+fill it.
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 389f232..cf2a413 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -19,6 +19,7 @@
- #include <sound/tlv.h>
- 
- #include <linux/mfd/arizona/core.h>
-+#include <linux/mfd/arizona/gpio.h>
- #include <linux/mfd/arizona/registers.h>
- 
- #include "arizona.h"
-@@ -223,6 +224,40 @@ int arizona_init_spk(struct snd_soc_codec *codec)
- }
- EXPORT_SYMBOL_GPL(arizona_init_spk);
- 
-+int arizona_init_gpio(struct snd_soc_codec *codec)
-+{
-+	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct arizona *arizona = priv->arizona;
-+	int i;
-+
-+	switch (arizona->type) {
-+	case WM5110:
-+		snd_soc_dapm_disable_pin(&codec->dapm, "DRC2 Signal Activity");
-+		/* Intentional fall through */
-+	default:
-+		snd_soc_dapm_disable_pin(&codec->dapm, "DRC1 Signal Activity");
-+		break;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(arizona->pdata.gpio_defaults); i++) {
-+		switch (arizona->pdata.gpio_defaults[i] & ARIZONA_GPN_FN_MASK) {
-+		case ARIZONA_GP_FN_DRC1_SIGNAL_DETECT:
-+			snd_soc_dapm_enable_pin(&codec->dapm,
-+						"DRC1 Signal Activity");
-+			break;
-+		case ARIZONA_GP_FN_DRC2_SIGNAL_DETECT:
-+			snd_soc_dapm_enable_pin(&codec->dapm,
-+						"DRC2 Signal Activity");
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(arizona_init_gpio);
-+
- const char *arizona_mixer_texts[ARIZONA_NUM_MIXER_INPUTS] = {
- 	"None",
- 	"Tone Generator 1",
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index af39f10..fe8bd3d 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -241,6 +241,7 @@ extern int arizona_set_fll(struct arizona_fll *fll, int source,
- 			   unsigned int Fref, unsigned int Fout);
- 
- extern int arizona_init_spk(struct snd_soc_codec *codec);
-+extern int arizona_init_gpio(struct snd_soc_codec *codec);
- 
- extern int arizona_init_dai(struct arizona_priv *priv, int dai);
- 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 100fdad..20e11f1 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -967,6 +967,8 @@ SND_SOC_DAPM_INPUT("IN2R"),
- SND_SOC_DAPM_INPUT("IN3L"),
- SND_SOC_DAPM_INPUT("IN3R"),
- 
-+SND_SOC_DAPM_OUTPUT("DRC1 Signal Activity"),
-+
- SND_SOC_DAPM_PGA_E("IN1L PGA", ARIZONA_INPUT_ENABLES, ARIZONA_IN1L_ENA_SHIFT,
- 		   0, NULL, 0, arizona_in_ev,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
-@@ -1468,6 +1470,9 @@ static const struct snd_soc_dapm_route wm5102_dapm_routes[] = {
- 	{ "SPKDAT1R", NULL, "OUT5R" },
- 
- 	{ "MICSUPP", NULL, "SYSCLK" },
-+
-+	{ "DRC1 Signal Activity", NULL, "DRC1L" },
-+	{ "DRC1 Signal Activity", NULL, "DRC1R" },
- };
- 
- static int wm5102_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
-@@ -1578,6 +1583,7 @@ static int wm5102_codec_probe(struct snd_soc_codec *codec)
- 		return ret;
- 
- 	arizona_init_spk(codec);
-+	arizona_init_gpio(codec);
- 
- 	snd_soc_dapm_disable_pin(&codec->dapm, "HAPTICS");
- 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 88ad7db..f36f9bd 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -414,6 +414,9 @@ SND_SOC_DAPM_INPUT("IN3R"),
- SND_SOC_DAPM_INPUT("IN4L"),
- SND_SOC_DAPM_INPUT("IN4R"),
- 
-+SND_SOC_DAPM_OUTPUT("DRC1 Signal Activity"),
-+SND_SOC_DAPM_OUTPUT("DRC2 Signal Activity"),
-+
- SND_SOC_DAPM_PGA_E("IN1L PGA", ARIZONA_INPUT_ENABLES, ARIZONA_IN1L_ENA_SHIFT,
- 		   0, NULL, 0, arizona_in_ev,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
-@@ -871,6 +874,11 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
- 	{ "SPKDAT2R", NULL, "OUT6R" },
- 
- 	{ "MICSUPP", NULL, "SYSCLK" },
-+
-+	{ "DRC1 Signal Activity", NULL, "DRC1L" },
-+	{ "DRC1 Signal Activity", NULL, "DRC1R" },
-+	{ "DRC2 Signal Activity", NULL, "DRC2L" },
-+	{ "DRC2 Signal Activity", NULL, "DRC2R" },
- };
- 
- static int wm5110_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
-@@ -978,6 +986,7 @@ static int wm5110_codec_probe(struct snd_soc_codec *codec)
- 		return ret;
- 
- 	arizona_init_spk(codec);
-+	arizona_init_gpio(codec);
- 
- 	snd_soc_dapm_disable_pin(&codec->dapm, "HAPTICS");
- 
--- 
-1.7.2.5
+I experimented with various memory layouts. For large transfers, using 2 
+big periods was quite enough. I also tested with very small period 
+sizes. Using the original code, I was unable to reliably capture (to 
+/dev/null) at period sizes below 80 samples. With the cyclic DMA, I 
+could set a period size of only 40 samples and still be able to record 
+audio reliably, when using only 8 periods. The same for playback, 
+basically. So that's how I arrived at the MAX_PERIODS define of "8". It 
+will only claim channels when you use them, so setting it to say "100" 
+will not crash the system.
+
+The period size is limited by the EDMA parameter set. It can only 
+transfer 64k-1 "words" per slot. You can (and should!) use the McASP 
+FIFO buffer to increase the word size, thus allowing for period sizes in 
+the megabyte range.
+
+M.
