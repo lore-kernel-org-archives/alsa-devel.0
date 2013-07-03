@@ -1,13 +1,13 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v9 01/10] ASoC: imx-pcm-dma: DT support
-Date: Wed, 3 Jul 2013 17:02:18 +0100
-Message-ID: <20130703160218.GO27646@sirena.org.uk>
+Subject: Re: [PATCH v9 02/10] ASoC: imx-pcm-fiq: Introduce pcm-fiq-params
+Date: Wed, 3 Jul 2013 17:02:31 +0100
+Message-ID: <20130703160231.GP27646@sirena.org.uk>
 References: <1371734429-6081-1-git-send-email-mpa@pengutronix.de>
- <1371734429-6081-2-git-send-email-mpa@pengutronix.de>
+ <1371734429-6081-3-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5049908821415017243=="
+Content-Type: multipart/mixed; boundary="===============7640909895019689373=="
 Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1371734429-6081-2-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+In-Reply-To: <1371734429-6081-3-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
  <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
 List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
@@ -23,48 +23,47 @@ Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5049908821415017243==
+--===============7640909895019689373==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bk1rFQtr5T/2h+/m"
+	protocol="application/pgp-signature"; boundary="xncXys66qXuJqdVV"
 Content-Disposition: inline
 
 
---bk1rFQtr5T/2h+/m
+--xncXys66qXuJqdVV
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jun 20, 2013 at 03:20:20PM +0200, Markus Pargmann wrote:
-> This patch removes the NO_DT flag. The pdev pointer may have a proper
-> of_node with the dmas property, so we can use it to request DMA
-> channels.
+On Thu, Jun 20, 2013 at 03:20:21PM +0200, Markus Pargmann wrote:
+> Cleaner parameter passing for imx-pcm-fiq. Create a seperated fiq-params
+> struct to pass all arguments.
 
 Applied, thanks.
 
---bk1rFQtr5T/2h+/m
+--xncXys66qXuJqdVV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR1EsGAAoJELSic+t+oim9gQcQAI62FNXD2MxYK0gDI10wETU7
-GAduvJehRbWv9dfNJHgTjOD6JKDk/G/MH8oCcWaue8l6ZdtGp39/xd1S5ld+tHzG
-6LkvfgpUZvLRxuggdHyKg1euSNFghAzeZbH0eUUQ7aF2tyYCnFghA5Mv32JRl4wP
-8Bkb28xgQLtyqewxvu2+jQ/iWKxG75I+tUscQYOXRDfooECKnuYHaKe4UrhvUIsf
-ouYUbc6JGVxHCDxX+FuoM+KO2URy8Tp2+f/NUrQYWvZpHKjqVfTAz1HiZftZIUBa
-PhXH02GRQsMOPzlXpzK/pKVAd3ubWyzD4ebUp+wyRcRcWkFrmDJdkA55y08o2i/M
-Ms6x+27QOswQXhPfF6giPCXSJvJKBYd9HS6u0iyapa+s64SHUP5FlYV9dDu0XQ0u
-1M1COe8c9dNViIeHZ0aUDpE+6j7rx8NxoJc+51Fv16PLiD9iWLVuSFWLxL50l+D4
-fZ2lqdOsEnXmbeK9MmuLw4RJo6T8X1qTWHzPBYghaHicueADgzGFnxP+CGDK1k4H
-K4+OwaoiJeyz9CCHLP1ql0gV4jLKW3YB2habivq+eU0yb4T3nT8lsYlNtcLd9FgR
-rCPOsYjUgyzvUyR3rL+SScas4gBoLSPsUMbpI8MuujVKdJKFwc88O3iOzIA2+1cg
-uZDjuloXF0NtQkMU+JCh
-=jGU6
+iQIcBAEBAgAGBQJR1EsTAAoJELSic+t+oim9kfQP/2HBvXTcMimz6CuDx2GGfQQI
+BnUcNlWe6VFyMaM6S4MyKWYbPDXiRnBS/i20x5S09xbJ/M7Td079pAt76xpSPVCf
++SW/1dnu/jbVl/8oZFHA67scj9EAODf41UmKvkNqbnSZF9x5XW9+MDqMy6CWYvsQ
+NOTXHg495snE3zjs601Q368XtVJJKn88GzAawKN/fPK3XvCSEj3ba6CQY1JP70vq
+1iPyXep8knOyGb2b/EwWVhYlF+RZlWl1tM8ySrA9+GLayvf7uBW3tuoG+DOU+8kU
+aMiW9ZafDtBEBpFAclEWktyiwlzQBUDpnM1euZ2F4dspHgD8t0bQSKIbowp+yCY5
+ECq9W58HT9UnaZMZIX6UEOr4i7ROdeC0FbojabQSSSg0jBVsqvaUB+tEk3U1omMr
+bHTYdbIWlpVJYOOVq8fesJ068wrrwCEkF2QWUQ+Nis4CFpxBliLN7iTTWdT8qBEx
+jheYVwNhspJypouK3lEgjQckfqj253EnQr39BXM11j4zZkcFwMunfktKVF+1HWYk
+Jcc7CvFh4z2gICnTb+RfIcwF5zrICn6mkLOnErm5W2Y4bJr0CcwAZYPw5H/HJ/EM
+vtGBEvA0+1Rr3IfYzvwpOPr9xpC5VSxQHZUp6X3BIuXKu59pRJjwZnBP5DpzlYzf
+CMpODqvrEObotZWPztPw
+=x1tW
 -----END PGP SIGNATURE-----
 
---bk1rFQtr5T/2h+/m--
+--xncXys66qXuJqdVV--
 
---===============5049908821415017243==
+--===============7640909895019689373==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -75,4 +74,4 @@ devicetree-discuss mailing list
 devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 https://lists.ozlabs.org/listinfo/devicetree-discuss
 
---===============5049908821415017243==--
+--===============7640909895019689373==--
