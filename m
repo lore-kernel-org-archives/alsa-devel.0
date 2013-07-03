@@ -1,15 +1,17 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 1/2] mfd: arizona: Add GPIO control register
-	bit definitions
-Date: Wed,  3 Jul 2013 13:38:45 +0100
-Message-ID: <1372855126-13122-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v2 2/2] ASoC: arizona: Add signal activity
+	output for DRC
+Date: Wed,  3 Jul 2013 13:38:46 +0100
+Message-ID: <1372855126-13122-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1372855126-13122-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3EB4E2655A4
- for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2013 14:46:01 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3DE80265570
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2013 14:46:03 +0200 (CEST)
+In-Reply-To: <1372855126-13122-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,113 +25,148 @@ To: broonie@kernel.org, sameo@linux.intel.com
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+When doing signal activity detection, the only output from the DRC will
+often be a GPIO pin. This patch adds a signal activity output that is
+activated when a GPIO is configured to output the DRC signal activity
+detection.
+
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- include/linux/mfd/arizona/gpio.h |   96 ++++++++++++++++++++++++++++++++++++++
- 1 files changed, 96 insertions(+), 0 deletions(-)
- create mode 100644 include/linux/mfd/arizona/gpio.h
+ sound/soc/codecs/arizona.c |   35 +++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/arizona.h |    1 +
+ sound/soc/codecs/wm5102.c  |    6 ++++++
+ sound/soc/codecs/wm5110.c  |    9 +++++++++
+ 4 files changed, 51 insertions(+), 0 deletions(-)
 
-diff --git a/include/linux/mfd/arizona/gpio.h b/include/linux/mfd/arizona/gpio.h
-new file mode 100644
-index 0000000..d2146bb
---- /dev/null
-+++ b/include/linux/mfd/arizona/gpio.h
-@@ -0,0 +1,96 @@
-+/*
-+ * GPIO configuration for Arizona devices
-+ *
-+ * Copyright 2013 Wolfson Microelectronics. PLC.
-+ *
-+ * Author: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 389f232..cf2a413 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -19,6 +19,7 @@
+ #include <sound/tlv.h>
+ 
+ #include <linux/mfd/arizona/core.h>
++#include <linux/mfd/arizona/gpio.h>
+ #include <linux/mfd/arizona/registers.h>
+ 
+ #include "arizona.h"
+@@ -223,6 +224,40 @@ int arizona_init_spk(struct snd_soc_codec *codec)
+ }
+ EXPORT_SYMBOL_GPL(arizona_init_spk);
+ 
++int arizona_init_gpio(struct snd_soc_codec *codec)
++{
++	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct arizona *arizona = priv->arizona;
++	int i;
 +
-+#ifndef _ARIZONA_GPIO_H
-+#define _ARIZONA_GPIO_H
++	switch (arizona->type) {
++	case WM5110:
++		snd_soc_dapm_disable_pin(&codec->dapm, "DRC2 Signal Activity");
++		/* Intentional fall through */
++	default:
++		snd_soc_dapm_disable_pin(&codec->dapm, "DRC1 Signal Activity");
++		break;
++	}
 +
-+#define ARIZONA_GP_FN_TXLRCLK                    0x00
-+#define ARIZONA_GP_FN_GPIO                       0x01
-+#define ARIZONA_GP_FN_IRQ1                       0x02
-+#define ARIZONA_GP_FN_IRQ2                       0x03
-+#define ARIZONA_GP_FN_OPCLK                      0x04
-+#define ARIZONA_GP_FN_FLL1_OUT                   0x05
-+#define ARIZONA_GP_FN_FLL2_OUT                   0x06
-+#define ARIZONA_GP_FN_PWM1                       0x08
-+#define ARIZONA_GP_FN_PWM2                       0x09
-+#define ARIZONA_GP_FN_SYSCLK_UNDERCLOCKED        0x0A
-+#define ARIZONA_GP_FN_ASYNCCLK_UNDERCLOCKED      0x0B
-+#define ARIZONA_GP_FN_FLL1_LOCK                  0x0C
-+#define ARIZONA_GP_FN_FLL2_LOCK                  0x0D
-+#define ARIZONA_GP_FN_FLL1_CLOCK_OK              0x0F
-+#define ARIZONA_GP_FN_FLL2_CLOCK_OK              0x10
-+#define ARIZONA_GP_FN_HEADPHONE_DET              0x12
-+#define ARIZONA_GP_FN_MIC_DET                    0x13
-+#define ARIZONA_GP_FN_WSEQ_STATUS                0x15
-+#define ARIZONA_GP_FN_CIF_ADDRESS_ERROR          0x16
-+#define ARIZONA_GP_FN_ASRC1_LOCK                 0x1A
-+#define ARIZONA_GP_FN_ASRC2_LOCK                 0x1B
-+#define ARIZONA_GP_FN_ASRC_CONFIG_ERROR          0x1C
-+#define ARIZONA_GP_FN_DRC1_SIGNAL_DETECT         0x1D
-+#define ARIZONA_GP_FN_DRC1_ANTICLIP              0x1E
-+#define ARIZONA_GP_FN_DRC1_DECAY                 0x1F
-+#define ARIZONA_GP_FN_DRC1_NOISE                 0x20
-+#define ARIZONA_GP_FN_DRC1_QUICK_RELEASE         0x21
-+#define ARIZONA_GP_FN_DRC2_SIGNAL_DETECT         0x22
-+#define ARIZONA_GP_FN_DRC2_ANTICLIP              0x23
-+#define ARIZONA_GP_FN_DRC2_DECAY                 0x24
-+#define ARIZONA_GP_FN_DRC2_NOISE                 0x25
-+#define ARIZONA_GP_FN_DRC2_QUICK_RELEASE         0x26
-+#define ARIZONA_GP_FN_MIXER_DROPPED_SAMPLE       0x27
-+#define ARIZONA_GP_FN_AIF1_CONFIG_ERROR          0x28
-+#define ARIZONA_GP_FN_AIF2_CONFIG_ERROR          0x29
-+#define ARIZONA_GP_FN_AIF3_CONFIG_ERROR          0x2A
-+#define ARIZONA_GP_FN_SPK_TEMP_SHUTDOWN          0x2B
-+#define ARIZONA_GP_FN_SPK_TEMP_WARNING           0x2C
-+#define ARIZONA_GP_FN_UNDERCLOCKED               0x2D
-+#define ARIZONA_GP_FN_OVERCLOCKED                0x2E
-+#define ARIZONA_GP_FN_DSP_IRQ1                   0x35
-+#define ARIZONA_GP_FN_DSP_IRQ2                   0x36
-+#define ARIZONA_GP_FN_ASYNC_OPCLK                0x3D
-+#define ARIZONA_GP_FN_BOOT_DONE                  0x44
-+#define ARIZONA_GP_FN_DSP1_RAM_READY             0x45
-+#define ARIZONA_GP_FN_SYSCLK_ENA_STATUS          0x4B
-+#define ARIZONA_GP_FN_ASYNCCLK_ENA_STATUS        0x4C
++	for (i = 0; i < ARRAY_SIZE(arizona->pdata.gpio_defaults); i++) {
++		switch (arizona->pdata.gpio_defaults[i] & ARIZONA_GPN_FN_MASK) {
++		case ARIZONA_GP_FN_DRC1_SIGNAL_DETECT:
++			snd_soc_dapm_enable_pin(&codec->dapm,
++						"DRC1 Signal Activity");
++			break;
++		case ARIZONA_GP_FN_DRC2_SIGNAL_DETECT:
++			snd_soc_dapm_enable_pin(&codec->dapm,
++						"DRC2 Signal Activity");
++			break;
++		default:
++			break;
++		}
++	}
 +
-+#define ARIZONA_GPN_DIR                          0x8000  /* GPN_DIR */
-+#define ARIZONA_GPN_DIR_MASK                     0x8000  /* GPN_DIR */
-+#define ARIZONA_GPN_DIR_SHIFT                        15  /* GPN_DIR */
-+#define ARIZONA_GPN_DIR_WIDTH                         1  /* GPN_DIR */
-+#define ARIZONA_GPN_PU                           0x4000  /* GPN_PU */
-+#define ARIZONA_GPN_PU_MASK                      0x4000  /* GPN_PU */
-+#define ARIZONA_GPN_PU_SHIFT                         14  /* GPN_PU */
-+#define ARIZONA_GPN_PU_WIDTH                          1  /* GPN_PU */
-+#define ARIZONA_GPN_PD                           0x2000  /* GPN_PD */
-+#define ARIZONA_GPN_PD_MASK                      0x2000  /* GPN_PD */
-+#define ARIZONA_GPN_PD_SHIFT                         13  /* GPN_PD */
-+#define ARIZONA_GPN_PD_WIDTH                          1  /* GPN_PD */
-+#define ARIZONA_GPN_LVL                          0x0800  /* GPN_LVL */
-+#define ARIZONA_GPN_LVL_MASK                     0x0800  /* GPN_LVL */
-+#define ARIZONA_GPN_LVL_SHIFT                        11  /* GPN_LVL */
-+#define ARIZONA_GPN_LVL_WIDTH                         1  /* GPN_LVL */
-+#define ARIZONA_GPN_POL                          0x0400  /* GPN_POL */
-+#define ARIZONA_GPN_POL_MASK                     0x0400  /* GPN_POL */
-+#define ARIZONA_GPN_POL_SHIFT                        10  /* GPN_POL */
-+#define ARIZONA_GPN_POL_WIDTH                         1  /* GPN_POL */
-+#define ARIZONA_GPN_OP_CFG                       0x0200  /* GPN_OP_CFG */
-+#define ARIZONA_GPN_OP_CFG_MASK                  0x0200  /* GPN_OP_CFG */
-+#define ARIZONA_GPN_OP_CFG_SHIFT                      9  /* GPN_OP_CFG */
-+#define ARIZONA_GPN_OP_CFG_WIDTH                      1  /* GPN_OP_CFG */
-+#define ARIZONA_GPN_DB                           0x0100  /* GPN_DB */
-+#define ARIZONA_GPN_DB_MASK                      0x0100  /* GPN_DB */
-+#define ARIZONA_GPN_DB_SHIFT                          8  /* GPN_DB */
-+#define ARIZONA_GPN_DB_WIDTH                          1  /* GPN_DB */
-+#define ARIZONA_GPN_FN_MASK                      0x007F  /* GPN_DB */
-+#define ARIZONA_GPN_FN_SHIFT                          0  /* GPN_DB */
-+#define ARIZONA_GPN_FN_WIDTH                          7  /* GPN_DB */
++	return 0;
++}
++EXPORT_SYMBOL_GPL(arizona_init_gpio);
 +
-+#endif
+ const char *arizona_mixer_texts[ARIZONA_NUM_MIXER_INPUTS] = {
+ 	"None",
+ 	"Tone Generator 1",
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index af39f10..fe8bd3d 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -241,6 +241,7 @@ extern int arizona_set_fll(struct arizona_fll *fll, int source,
+ 			   unsigned int Fref, unsigned int Fout);
+ 
+ extern int arizona_init_spk(struct snd_soc_codec *codec);
++extern int arizona_init_gpio(struct snd_soc_codec *codec);
+ 
+ extern int arizona_init_dai(struct arizona_priv *priv, int dai);
+ 
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index 100fdad..20e11f1 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -967,6 +967,8 @@ SND_SOC_DAPM_INPUT("IN2R"),
+ SND_SOC_DAPM_INPUT("IN3L"),
+ SND_SOC_DAPM_INPUT("IN3R"),
+ 
++SND_SOC_DAPM_OUTPUT("DRC1 Signal Activity"),
++
+ SND_SOC_DAPM_PGA_E("IN1L PGA", ARIZONA_INPUT_ENABLES, ARIZONA_IN1L_ENA_SHIFT,
+ 		   0, NULL, 0, arizona_in_ev,
+ 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
+@@ -1468,6 +1470,9 @@ static const struct snd_soc_dapm_route wm5102_dapm_routes[] = {
+ 	{ "SPKDAT1R", NULL, "OUT5R" },
+ 
+ 	{ "MICSUPP", NULL, "SYSCLK" },
++
++	{ "DRC1 Signal Activity", NULL, "DRC1L" },
++	{ "DRC1 Signal Activity", NULL, "DRC1R" },
+ };
+ 
+ static int wm5102_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
+@@ -1578,6 +1583,7 @@ static int wm5102_codec_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 
+ 	arizona_init_spk(codec);
++	arizona_init_gpio(codec);
+ 
+ 	snd_soc_dapm_disable_pin(&codec->dapm, "HAPTICS");
+ 
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 88ad7db..f36f9bd 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -414,6 +414,9 @@ SND_SOC_DAPM_INPUT("IN3R"),
+ SND_SOC_DAPM_INPUT("IN4L"),
+ SND_SOC_DAPM_INPUT("IN4R"),
+ 
++SND_SOC_DAPM_OUTPUT("DRC1 Signal Activity"),
++SND_SOC_DAPM_OUTPUT("DRC2 Signal Activity"),
++
+ SND_SOC_DAPM_PGA_E("IN1L PGA", ARIZONA_INPUT_ENABLES, ARIZONA_IN1L_ENA_SHIFT,
+ 		   0, NULL, 0, arizona_in_ev,
+ 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
+@@ -871,6 +874,11 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
+ 	{ "SPKDAT2R", NULL, "OUT6R" },
+ 
+ 	{ "MICSUPP", NULL, "SYSCLK" },
++
++	{ "DRC1 Signal Activity", NULL, "DRC1L" },
++	{ "DRC1 Signal Activity", NULL, "DRC1R" },
++	{ "DRC2 Signal Activity", NULL, "DRC2L" },
++	{ "DRC2 Signal Activity", NULL, "DRC2R" },
+ };
+ 
+ static int wm5110_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
+@@ -978,6 +986,7 @@ static int wm5110_codec_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 
+ 	arizona_init_spk(codec);
++	arizona_init_gpio(codec);
+ 
+ 	snd_soc_dapm_disable_pin(&codec->dapm, "HAPTICS");
+ 
 -- 
 1.7.2.5
