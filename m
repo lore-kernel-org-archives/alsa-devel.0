@@ -1,13 +1,13 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v9 02/10] ASoC: imx-pcm-fiq: Introduce pcm-fiq-params
-Date: Wed, 3 Jul 2013 17:02:31 +0100
-Message-ID: <20130703160231.GP27646@sirena.org.uk>
+Subject: Re: [PATCH v9 04/10] ASoC: fsl-ssi: Add support for imx-pcm-fiq
+Date: Wed, 3 Jul 2013 17:06:37 +0100
+Message-ID: <20130703160637.GQ27646@sirena.org.uk>
 References: <1371734429-6081-1-git-send-email-mpa@pengutronix.de>
- <1371734429-6081-3-git-send-email-mpa@pengutronix.de>
+ <1371734429-6081-5-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7640909895019689373=="
+Content-Type: multipart/mixed; boundary="===============5476273638503086282=="
 Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1371734429-6081-3-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+In-Reply-To: <1371734429-6081-5-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
  <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
 List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
@@ -23,47 +23,52 @@ Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7640909895019689373==
+--===============5476273638503086282==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xncXys66qXuJqdVV"
+	protocol="application/pgp-signature"; boundary="0BR6GWi1HhdMNcLr"
 Content-Disposition: inline
 
 
---xncXys66qXuJqdVV
+--0BR6GWi1HhdMNcLr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jun 20, 2013 at 03:20:21PM +0200, Markus Pargmann wrote:
-> Cleaner parameter passing for imx-pcm-fiq. Create a seperated fiq-params
-> struct to pass all arguments.
+On Thu, Jun 20, 2013 at 03:20:23PM +0200, Markus Pargmann wrote:
 
-Applied, thanks.
+> +	ssi_private->use_dma = !of_property_read_bool(np, "fsl,imx-fiq");
+> +
 
---xncXys66qXuJqdVV
+This binding should be documented.  I'm not sure it really needs to be
+a binding, though - is it not possible for the driver to just figure out
+that DMA won't work automatically (for example by looking at the CODEC
+in use)?  I'm not sure this is a good name either, it should be saying
+why the FIQ is needed rather than saying that we should use the FIQ.
+
+--0BR6GWi1HhdMNcLr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR1EsTAAoJELSic+t+oim9kfQP/2HBvXTcMimz6CuDx2GGfQQI
-BnUcNlWe6VFyMaM6S4MyKWYbPDXiRnBS/i20x5S09xbJ/M7Td079pAt76xpSPVCf
-+SW/1dnu/jbVl/8oZFHA67scj9EAODf41UmKvkNqbnSZF9x5XW9+MDqMy6CWYvsQ
-NOTXHg495snE3zjs601Q368XtVJJKn88GzAawKN/fPK3XvCSEj3ba6CQY1JP70vq
-1iPyXep8knOyGb2b/EwWVhYlF+RZlWl1tM8ySrA9+GLayvf7uBW3tuoG+DOU+8kU
-aMiW9ZafDtBEBpFAclEWktyiwlzQBUDpnM1euZ2F4dspHgD8t0bQSKIbowp+yCY5
-ECq9W58HT9UnaZMZIX6UEOr4i7ROdeC0FbojabQSSSg0jBVsqvaUB+tEk3U1omMr
-bHTYdbIWlpVJYOOVq8fesJ068wrrwCEkF2QWUQ+Nis4CFpxBliLN7iTTWdT8qBEx
-jheYVwNhspJypouK3lEgjQckfqj253EnQr39BXM11j4zZkcFwMunfktKVF+1HWYk
-Jcc7CvFh4z2gICnTb+RfIcwF5zrICn6mkLOnErm5W2Y4bJr0CcwAZYPw5H/HJ/EM
-vtGBEvA0+1Rr3IfYzvwpOPr9xpC5VSxQHZUp6X3BIuXKu59pRJjwZnBP5DpzlYzf
-CMpODqvrEObotZWPztPw
-=x1tW
+iQIcBAEBAgAGBQJR1EwKAAoJELSic+t+oim9WYsP/3ne67UUTnznuFgP47O3eQpt
+LrOhgs1C7wyvymC4X4SB8PiC5yvFSxaWkYHg5J0bc+tCD9F0bw7CUbGJuYmxKvyz
+/zN8XPueLx0J0dtVuReChLkGbTu8kEK71+R3WDlClyonoYqg4rsxvXhQvpNkz017
+JXZaL1AOLcYcisn0XBCf4y9i6NhfkRz9jfSs0BSI5jkYkVr+t8eBdbkyFlLOEXBi
+6zIy9U81avrX8Q9IL/hih8uDei3HMJJnZvDMDdbbIGXJFCBDMMCX7g4y24WruojJ
+lQm81PKKV0mMq5JyCqTpZZBnHTzrSGBxdExQx8WLqt+ZzH4LLTvLA7uP9Y1McC7l
+R4sAXW2iUktH9ej9X2jksUXInsHp2xNBgEOYfwLj5RVoefeXeCB4XhQOmFe378AK
+NSsfjjnCutneKDjubjpaBsx6p7eQNf/xSwglkEirB4Lrc+pOENKtCYIO59CPDlfW
+Z2olez5QqbMI+N6yJjEeXtcQMZAYGDuWhhPSs5J6YuI2hWv+Hy718xppDg2/oGzU
+iqQdc3Az0KMjfs6YVMyknRLA6hgcHZfIP7GfFzHCu6Gnw+/BQ+tHmT5P02l0Gf2J
+tEBbmQOZedH+bgYIBU2iZ9vQu3iPaDHaPspHxdbm1PDpWR8+tv5LA99wL2v+kASY
+QKUbiqlYgAFqOQyoaQHt
+=hrLH
 -----END PGP SIGNATURE-----
 
---xncXys66qXuJqdVV--
+--0BR6GWi1HhdMNcLr--
 
---===============7640909895019689373==
+--===============5476273638503086282==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -74,4 +79,4 @@ devicetree-discuss mailing list
 devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 https://lists.ozlabs.org/listinfo/devicetree-discuss
 
---===============7640909895019689373==--
+--===============5476273638503086282==--
