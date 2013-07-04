@@ -1,19 +1,15 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 3/3] ASoC: sglt5000: Fix
-	SGTL5000_PLL_FRAC_DIV_MASK
-Date: Thu,  4 Jul 2013 18:08:50 -0300
-Message-ID: <1372972130-32451-3-git-send-email-festevam@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: sglt5000: Provide the reg_stride
+	field
+Date: Thu, 4 Jul 2013 23:51:04 +0100
+Message-ID: <20130704225104.GL27646@sirena.org.uk>
 References: <1372972130-32451-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2980694396412668398=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gh0-f180.google.com (mail-gh0-f180.google.com
- [209.85.160.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 5442B2657EC
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 23:09:42 +0200 (CEST)
-Received: by mail-gh0-f180.google.com with SMTP id f18so531029ghb.39
- for <alsa-devel@alsa-project.org>; Thu, 04 Jul 2013 14:09:41 -0700 (PDT)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9ECC52657EC
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jul 2013 00:51:11 +0200 (CEST)
 In-Reply-To: <1372972130-32451-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,33 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
+To: Fabio Estevam <festevam@gmail.com>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, oskar@scara.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
 
-SGTL5000_PLL_FRAC_DIV_MASK is used to mask bits 0-10 (11 bits in total) of
-register CHIP_PLL_CTRL, so fix the mask to accomodate all this bit range.
+--===============2980694396412668398==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="QKoJkuK3/9uDCifc"
+Content-Disposition: inline
 
-Reported-by: Oskar Schirmer <oskar@scara.com>
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/codecs/sgtl5000.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
-index 4b69229..2f8c889 100644
---- a/sound/soc/codecs/sgtl5000.h
-+++ b/sound/soc/codecs/sgtl5000.h
-@@ -347,7 +347,7 @@
- #define SGTL5000_PLL_INT_DIV_MASK		0xf800
- #define SGTL5000_PLL_INT_DIV_SHIFT		11
- #define SGTL5000_PLL_INT_DIV_WIDTH		5
--#define SGTL5000_PLL_FRAC_DIV_MASK		0x0700
-+#define SGTL5000_PLL_FRAC_DIV_MASK		0x07ff
- #define SGTL5000_PLL_FRAC_DIV_SHIFT		0
- #define SGTL5000_PLL_FRAC_DIV_WIDTH		11
- 
--- 
-1.8.1.2
+--QKoJkuK3/9uDCifc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Jul 04, 2013 at 06:08:48PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> sgtl5000 has 16-bit registers, so we need to tell regmap to use a reg_str=
+ide of
+> two bytes.
+
+No we don't, the stride is in terms of registers not bytes.  At least
+not according to that patch description anyway.
+
+--QKoJkuK3/9uDCifc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR1fxVAAoJELSic+t+oim9UWAP/0VNsOyF/EVGCNS6/dKS+iCd
+k6bCEzeY8/2hdbiC9Cok42pSlM4GcpAYx5jJ4HR03JRBNOEfhYDqUuzBciG0+7On
+tIySvSsoEV2XGRTWsjOmr/ErVUKUcqCrz85ajGxMEhsiNAOl8INKSR+3LkruzHHJ
+HPllVNTnWrJcHJhHcYsmFLs6jJPF/pCrxRqEaXneYgt9ra+wUvyeh+bgRGX2/rNn
+yDTHRwbfV5J/2nO9/DdEKFt8qx5wMFAofuIe3qGV+Lwtz7EhvyZpE+N/0Yn18h1g
+BAAXepWFF24oD1M0p6L6HB2CIxRi6uA/fEV20q1ztYWRxBUePJzSgzy++7mlx5Td
+y6v/mTVR7DWXHdknW7GkKcVnS/0ap49iW4IA4WghvWt1kw/M1rz/GWQqnDHF5PJM
+we9Blb5jmug95l9cife0WAaRhiqGrMjBC2gOTJ4TVGmtjhmqof+zD3v705p3kRkS
+0GOuuXi6wgTEson+iOx9gvJ0ox/dG71tgHCTzFkIs/TDkrOdcr92vkVjej6VTLmq
+epettAj3gOZHDzSg4YtOyk4GltpzlELPwz8NXRGuR9IDZqB3TsOuv0k1H3Sjp/ur
+oVLNMafgnE/V7yu6tWEJUdVoWXGqfMW9rFq9RF5oVUORF0tkI9tvjUDbxkdV5xjF
+69TSdOV9YHRu4WsKbCto
+=xNc4
+-----END PGP SIGNATURE-----
+
+--QKoJkuK3/9uDCifc--
+
+--===============2980694396412668398==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2980694396412668398==--
