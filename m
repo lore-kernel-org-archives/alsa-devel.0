@@ -1,16 +1,15 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v3 2/2] ASoC: arizona: Add signal activity
-	output for DRC
-Date: Thu,  4 Jul 2013 08:56:28 +0100
-Message-ID: <1372924588-14666-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 1/2] mfd: arizona: Add GPIO control
+ register bit definitions
+Date: Thu, 4 Jul 2013 09:49:59 +0100
+Message-ID: <20130704084959.GI27646@sirena.org.uk>
 References: <1372924588-14666-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9148025842646979825=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7B6E72656BA
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 10:03:43 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06C562656B3
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 10:50:07 +0200 (CEST)
 In-Reply-To: <1372924588-14666-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,150 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, sameo@linux.intel.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-When doing signal activity detection, the only output from the DRC will
-often be a GPIO pin. This patch adds a signal activity output that is
-activated when a GPIO is configured to output the DRC signal activity
-detection.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c |   33 +++++++++++++++++++++++++++++++++
- sound/soc/codecs/arizona.h |    1 +
- sound/soc/codecs/wm5102.c  |    6 ++++++
- sound/soc/codecs/wm5110.c  |    9 +++++++++
- 4 files changed, 49 insertions(+), 0 deletions(-)
+--===============9148025842646979825==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="H6JajqBy5V+yykme"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 389f232..eb5c80d 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -19,6 +19,7 @@
- #include <sound/tlv.h>
- 
- #include <linux/mfd/arizona/core.h>
-+#include <linux/mfd/arizona/gpio.h>
- #include <linux/mfd/arizona/registers.h>
- 
- #include "arizona.h"
-@@ -223,6 +224,38 @@ int arizona_init_spk(struct snd_soc_codec *codec)
- }
- EXPORT_SYMBOL_GPL(arizona_init_spk);
- 
-+int arizona_init_gpio(struct snd_soc_codec *codec)
-+{
-+	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct arizona *arizona = priv->arizona;
-+	int i;
-+
-+	switch (arizona->type) {
-+	case WM5110:
-+		snd_soc_dapm_disable_pin(&codec->dapm, "DRC2 Signal Activity");
-+	}
-+
-+	snd_soc_dapm_disable_pin(&codec->dapm, "DRC1 Signal Activity");
-+
-+	for (i = 0; i < ARRAY_SIZE(arizona->pdata.gpio_defaults); i++) {
-+		switch (arizona->pdata.gpio_defaults[i] & ARIZONA_GPN_FN_MASK) {
-+		case ARIZONA_GP_FN_DRC1_SIGNAL_DETECT:
-+			snd_soc_dapm_enable_pin(&codec->dapm,
-+						"DRC1 Signal Activity");
-+			break;
-+		case ARIZONA_GP_FN_DRC2_SIGNAL_DETECT:
-+			snd_soc_dapm_enable_pin(&codec->dapm,
-+						"DRC2 Signal Activity");
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(arizona_init_gpio);
-+
- const char *arizona_mixer_texts[ARIZONA_NUM_MIXER_INPUTS] = {
- 	"None",
- 	"Tone Generator 1",
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index af39f10..fe8bd3d 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -241,6 +241,7 @@ extern int arizona_set_fll(struct arizona_fll *fll, int source,
- 			   unsigned int Fref, unsigned int Fout);
- 
- extern int arizona_init_spk(struct snd_soc_codec *codec);
-+extern int arizona_init_gpio(struct snd_soc_codec *codec);
- 
- extern int arizona_init_dai(struct arizona_priv *priv, int dai);
- 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 100fdad..20e11f1 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -967,6 +967,8 @@ SND_SOC_DAPM_INPUT("IN2R"),
- SND_SOC_DAPM_INPUT("IN3L"),
- SND_SOC_DAPM_INPUT("IN3R"),
- 
-+SND_SOC_DAPM_OUTPUT("DRC1 Signal Activity"),
-+
- SND_SOC_DAPM_PGA_E("IN1L PGA", ARIZONA_INPUT_ENABLES, ARIZONA_IN1L_ENA_SHIFT,
- 		   0, NULL, 0, arizona_in_ev,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
-@@ -1468,6 +1470,9 @@ static const struct snd_soc_dapm_route wm5102_dapm_routes[] = {
- 	{ "SPKDAT1R", NULL, "OUT5R" },
- 
- 	{ "MICSUPP", NULL, "SYSCLK" },
-+
-+	{ "DRC1 Signal Activity", NULL, "DRC1L" },
-+	{ "DRC1 Signal Activity", NULL, "DRC1R" },
- };
- 
- static int wm5102_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
-@@ -1578,6 +1583,7 @@ static int wm5102_codec_probe(struct snd_soc_codec *codec)
- 		return ret;
- 
- 	arizona_init_spk(codec);
-+	arizona_init_gpio(codec);
- 
- 	snd_soc_dapm_disable_pin(&codec->dapm, "HAPTICS");
- 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 88ad7db..f36f9bd 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -414,6 +414,9 @@ SND_SOC_DAPM_INPUT("IN3R"),
- SND_SOC_DAPM_INPUT("IN4L"),
- SND_SOC_DAPM_INPUT("IN4R"),
- 
-+SND_SOC_DAPM_OUTPUT("DRC1 Signal Activity"),
-+SND_SOC_DAPM_OUTPUT("DRC2 Signal Activity"),
-+
- SND_SOC_DAPM_PGA_E("IN1L PGA", ARIZONA_INPUT_ENABLES, ARIZONA_IN1L_ENA_SHIFT,
- 		   0, NULL, 0, arizona_in_ev,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
-@@ -871,6 +874,11 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
- 	{ "SPKDAT2R", NULL, "OUT6R" },
- 
- 	{ "MICSUPP", NULL, "SYSCLK" },
-+
-+	{ "DRC1 Signal Activity", NULL, "DRC1L" },
-+	{ "DRC1 Signal Activity", NULL, "DRC1R" },
-+	{ "DRC2 Signal Activity", NULL, "DRC2L" },
-+	{ "DRC2 Signal Activity", NULL, "DRC2R" },
- };
- 
- static int wm5110_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
-@@ -978,6 +986,7 @@ static int wm5110_codec_probe(struct snd_soc_codec *codec)
- 		return ret;
- 
- 	arizona_init_spk(codec);
-+	arizona_init_gpio(codec);
- 
- 	snd_soc_dapm_disable_pin(&codec->dapm, "HAPTICS");
- 
--- 
-1.7.2.5
+
+--H6JajqBy5V+yykme
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jul 04, 2013 at 08:56:27AM +0100, Charles Keepax wrote:
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+
+Reviewed-by: Mark Brown <broonie@linaro.org>
+
+but what was the change from the last time?
+
+--H6JajqBy5V+yykme
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR1TczAAoJELSic+t+oim9ZdoQAIBKaSIUyxQnB9sM68+VPC21
+wC0btJ76ZzclhU+lslsqY/jxCLB/SDERz7g2x06BnnN5LjLUnHh0306h1zN/pRjP
+0tph7bjvJcdZtJ/zlaZdp372DGwtEaYPgJJW6FoNt3uemtw3wmVyF8ECikxwyuSs
+DLLd1vSBn5UTfz7nEvSSuvf1EPgzuZ645Tu2YVkqM2ZJN+QYcRdtcNSZZcqogPQk
+6+0CIlxY/d0qN6Rbe82tosb1YYyU9X/MQmeXfTBAWM7v8leo8QOPeSnjQhqE2Gy+
+OjvZJ+0J9XLSdDIr3msLMdMt4JuLbwiBVqlfXyDZVm0Ps/JwZIjhvrnZ7rRcpe5q
+5G/nNBPlAXRYwIOTq+DBSyzPMvoMLaQH93zr3/d7/CsnAbncrjTqb+3CimdjS9Hd
+xRojLWJTQTS/OZjoaxhr5p7ZwTEucmFpmUJTl0unjE17IeT6NhosN2+W+bi3/Xcv
+Ont6KlDgr7SfzM5Q1+E7F37GQpD5+futy+HPFMd1jpgQo8hh85Aa2jN2C+1GfNmy
+Ci4dnMXsm0ucEY8sSJyZgvuFKg2zCNvAAWALRMix62qPQCsreFgLOcLAPO6SL745
++fs7mDinDqKe5EkraWNGJGz6FglY6qe/8Y9OJNnJ84vvDuM7jMHzTAKbMxbpE5Wu
+BOXDXlGHsBxvOytyEx8h
+=42HF
+-----END PGP SIGNATURE-----
+
+--H6JajqBy5V+yykme--
+
+--===============9148025842646979825==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9148025842646979825==--
