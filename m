@@ -1,14 +1,15 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 01/11] ALSA: hdspm - Add missing defines for
-	RME AIO and RayDAT
-Date: Thu,  4 Jul 2013 15:16:28 +0200
-Message-ID: <1372943796-18998-2-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 02/11] ALSA: hdspm - Introduce
+	hdspm_is_raydat_or_aio()
+Date: Thu,  4 Jul 2013 15:16:29 +0200
+Message-ID: <1372943796-18998-3-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1372943796-18998-1-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1372943796-18998-2-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1372943796-18998-1-git-send-email-adi@drcomp.erfurt.thur.de>
+In-Reply-To: <1372943796-18998-2-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,40 +23,41 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The driver did not support all possible configurations. These defines
-will be used by later commits to add the missing functionality.
+RME RayDAT and AIO cards are new designs with different register
+settings. Since we need to distinguish them from older cards multiple
+times in the driver, refactor the code into a separate helper function.
+
+No functional change intended.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index bd50193..a0fc961 100644
+index a0fc961..32a87dc 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -258,6 +258,25 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
+@@ -1011,6 +1011,12 @@ static inline int HDSPM_bit2freq(int n)
+ 	return bit2freq_tab[n];
+ }
  
- #define HDSPM_wclk_sel (1<<30)
- 
-+/* additional control register bits for AIO*/
-+#define HDSPM_c0_Wck48				0x20 /* also RayDAT */
-+#define HDSPM_c0_Input0				0x1000
-+#define HDSPM_c0_Input1				0x2000
-+#define HDSPM_c0_Spdif_Opt			0x4000
-+#define HDSPM_c0_Pro				0x8000
-+#define HDSPM_c0_clr_tms			0x10000
-+#define HDSPM_c0_AEB1				0x20000
-+#define HDSPM_c0_AEB2				0x40000
-+#define HDSPM_c0_LineOut			0x80000
-+#define HDSPM_c0_AD_GAIN0			0x100000
-+#define HDSPM_c0_AD_GAIN1			0x200000
-+#define HDSPM_c0_DA_GAIN0			0x400000
-+#define HDSPM_c0_DA_GAIN1			0x800000
-+#define HDSPM_c0_PH_GAIN0			0x1000000
-+#define HDSPM_c0_PH_GAIN1			0x2000000
-+#define HDSPM_c0_Sym6db				0x4000000
++static bool hdspm_is_raydat_or_aio(struct hdspm *hdspm)
++{
++	return ((AIO == hdspm->io_type) || (RayDAT == hdspm->io_type));
++}
 +
 +
- /* --- bit helper defines */
- #define HDSPM_LatencyMask    (HDSPM_Latency0|HDSPM_Latency1|HDSPM_Latency2)
- #define HDSPM_FrequencyMask  (HDSPM_Frequency0|HDSPM_Frequency1|\
+ /* Write/read to/from HDSPM with Adresses in Bytes
+    not words but only 32Bit writes are allowed */
+ 
+@@ -5142,9 +5148,8 @@ static int snd_hdspm_set_defaults(struct hdspm * hdspm)
+ 
+ 	all_in_all_mixer(hdspm, 0 * UNITY_GAIN);
+ 
+-	if (hdspm->io_type == AIO || hdspm->io_type == RayDAT) {
++	if (hdspm_is_raydat_or_aio(hdspm))
+ 		hdspm_write(hdspm, HDSPM_WR_SETTINGS, hdspm->settings_register);
+-	}
+ 
+ 	/* set a default rate so that the channel map is set up. */
+ 	hdspm_set_rate(hdspm, 48000, 1);
 -- 
 1.8.3.1
