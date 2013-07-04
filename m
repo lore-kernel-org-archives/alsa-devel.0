@@ -1,16 +1,20 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: ASoC: wm8962: NULL pdata pointer
-Date: Thu, 4 Jul 2013 14:29:14 +0800
-Message-ID: <20130704062913.GC14617@S2101-09.ap.freescale.net>
+From: Jordi Mallach <jordi@debian.org>
+Subject: Re: [PATCH] Add -lm to test programs to fix build
+ failure.
+Date: Thu, 04 Jul 2013 09:29:29 +0200
+Message-ID: <1372922969.19157.20.camel@penyagolosa.oskuro.net>
+References: <1372424744-27504-1-git-send-email-jordi@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe003.messaging.microsoft.com [207.46.163.26])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B05E261B09
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 08:28:46 +0200 (CEST)
-Content-Disposition: inline
+Received: from tempesta.oskuro.net (tempesta.oskuro.net [92.243.30.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB8E926569A
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 09:29:31 +0200 (CEST)
+Received: from [192.168.1.140] (167.22.15.37.dynamic.jazztel.es [37.15.22.167])
+ by tempesta.oskuro.net (Postfix) with ESMTPSA id DBFE661DF2
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 09:29:41 +0200 (CEST)
+In-Reply-To: <1372424744-27504-1-git-send-email-jordi@debian.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,40 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
-
-I'm running next-20130703 and seeing the following NULL pointer bug.
-
-Unable to handle kernel NULL pointer dereference at virtual address 00000004
-pgd = 80004000
-[00000004] *pgd=00000000
-Internal error: Oops: 5 [#1] SMP ARM
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 3.10.0-next-20130703 #6
-task: bf870000 ti: bf874000 task.ti: bf874000
-PC is at wm8962_probe+0x140/0x6b4
-...
-
-It seems to me that it's caused by a merge error in 384b834.  And the
-change below can remove the problem.
-
-Shawn
-
----8<----
-
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index b1dc7d4..e2de9ec 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3377,7 +3377,7 @@ static int wm8962_probe(struct snd_soc_codec *codec)
- {
-        int ret;
-        struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
--       struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
-+       struct wm8962_pdata *pdata = &wm8962->pdata;
-        int i, trigger, irq_pol;
-        bool dmicclk, dmicdat;
+VGFrYXNoaSwgZGlkIHlvdSBzZWUgdGhlIHBvc3QgYmVsb3cgZnJvbSBsYXN0IEZyaWRheT8KClRo
+YW5rcywKSm9yZGkKCkVsIGR2IDI4IGRlIDA2IGRlIDIwMTMgYSBsZXMgMTU6MDUgKzAyMDAsIGVu
+L25hIEpvcmRpIE1hbGxhY2ggdmEKZXNjcml1cmU6Cj4gQWRkIC1sbSB0byB0ZXN0IHByb2dyYW1z
+IHRoYXQgdXNlIHNpbigpLCB0byBmaXggYSBidWlsZCBmYWlsdXJlIHdpdGggcmVjZW50Cj4gYmlu
+dXRpbHMuCj4gCj4gU2lnbmVkLW9mZi1ieTogSm9yZGkgTWFsbGFjaCA8am9yZGlAZGViaWFuLm9y
+Zz4KPiAtLS0KPiAgdGVzdC9NYWtlZmlsZS5hbSB8IDIgKysKPiAgMSBmaWxlIGNoYW5nZWQsIDIg
+aW5zZXJ0aW9ucygrKQo+IAo+IGRpZmYgLS1naXQgYS90ZXN0L01ha2VmaWxlLmFtIGIvdGVzdC9N
+YWtlZmlsZS5hbQo+IGluZGV4IDg3MDU0MDIuLmMxODk2ZjggMTAwNjQ0Cj4gLS0tIGEvdGVzdC9N
+YWtlZmlsZS5hbQo+ICsrKyBiL3Rlc3QvTWFrZWZpbGUuYW0KPiBAQCAtNyw4ICs3LDEwIEBAIGNo
+ZWNrX1BST0dSQU1TPWNvbnRyb2wgcGNtIHBjbV9taW4gbGF0ZW5jeSBzZXEgXAo+ICAKPiAgY29u
+dHJvbF9MREFERD0uLi9zcmMvbGliYXNvdW5kLmxhCj4gIHBjbV9MREFERD0uLi9zcmMvbGliYXNv
+dW5kLmxhCj4gK3BjbV9MREZMQUdTPSAtbG0KPiAgcGNtX21pbl9MREFERD0uLi9zcmMvbGliYXNv
+dW5kLmxhCj4gIGxhdGVuY3lfTERBREQ9Li4vc3JjL2xpYmFzb3VuZC5sYQo+ICtsYXRlbmN5X0xE
+RkxBR1M9IC1sbQo+ICBzZXFfTERBREQ9Li4vc3JjL2xpYmFzb3VuZC5sYQo+ICBwbGF5bWlkaTFf
+TERBREQ9Li4vc3JjL2xpYmFzb3VuZC5sYQo+ICB0aW1lcl9MREFERD0uLi9zcmMvbGliYXNvdW5k
+LmxhCgotLSAKSm9yZGkgTWFsbGFjaCBQw6lyZXogIC0tICBEZWJpYW4gZGV2ZWxvcGVyICAgICBo
+dHRwOi8vd3d3LmRlYmlhbi5vcmcvCmpvcmRpQHNpbmRvbWluaW8ubmV0ICAgICBqb3JkaUBkZWJp
+YW4ub3JnICAgICBodHRwOi8vd3d3LnNpbmRvbWluaW8ubmV0LwpHbnVQRyBwdWJsaWMga2V5IGlu
+Zm9ybWF0aW9uIGF2YWlsYWJsZSBhdCBodHRwOi8vb3NrdXJvLm5ldC8KCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
