@@ -1,17 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [usb-audio] VIA/Audinst HUD-mx2: One of two PCM
- device is available for playback
-Date: Thu, 04 Jul 2013 13:22:41 +0200
-Message-ID: <51D55B01.2090705@ladisch.de>
-References: <51D3662A.9010708@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/1] ASoC: Samsung: Remove redundant comment
+Date: Thu, 4 Jul 2013 13:51:29 +0100
+Message-ID: <20130704125129.GY27646@sirena.org.uk>
+References: <1372935277-30488-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8099876078274763802=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id BDCC6264F0B
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 13:22:48 +0200 (CEST)
-In-Reply-To: <51D3662A.9010708@sakamocchi.jp>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2AD0C261A51
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 14:51:33 +0200 (CEST)
+In-Reply-To: <1372935277-30488-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,32 +19,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> This sound card has two PCM devices. If the sound card is realized "card
-> 0", there are "hw:0,0" and "hw:0,1". But former seems not to generate
-> sound and latter seems to generate.
 
-This device has multiple alternate settings for PCM and AC-3 playback.
-The driver creates multiple devices for those because it has no other
-mechanism to distinguish them.
-
-The AC-3 setting happens to be listed first in the descriptors.
-
-> 2. are there some ways to use hw:0,1 as a default?
-
-Entires like these in ~/.asoundrc or /etc/asound.conf:
-
-  defaults.pcm.card 0
-  defaults.pcm.device 1
+--===============8099876078274763802==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gH8YzSUI9zUQSeK8"
+Content-Disposition: inline
 
 
-I'd guess the driver could be changed to enumerate alternate settings in
-two steps, first for PCM formats, then for others.
+--gH8YzSUI9zUQSeK8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jul 04, 2013 at 04:24:37PM +0530, Sachin Kamat wrote:
+> There is a typo in the filename (i2c mentioned instead of i2s).
+> However, this is a redundant piece of information. Delete it
+> altogether.
+
+Applied, thanks.
+
+--gH8YzSUI9zUQSeK8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR1W/OAAoJELSic+t+oim96MwP/iOUm60+qhcANyv4mSIYqeAf
+Eww5w9WuSGCtgO7zkZqNm3T8gi5hxXEDeohp+yNLAFpF2lb4NdgRd/Q+RTHZzp5m
+i974Ncpx6P6gTPSIBuQf3ufG6g8HAOUAPhwYBTOPXd4zIomm3/Yp/oOzkKuT+tB7
+/i/splAzzMRURMNfcxm9UaApp+6zDqGgMhgrdXb5F0sJNOY/s9McSjDKHpMem5U/
+NW25boobjC/6myvw7G7rapzOb9OwN/40rtFiKyCYYZcg76Ro4o313keWSl/J440k
+tXZXUeKk49cZvPdfw1zgaDV9m/Ny6iBVRgI4CV0knGc0tFtHMx2232eGivb3t3Fa
+vRZfN0JpGma5eVpEti1+8ZikLB9ikNmUm0y/S0FdOwFQot3AKu+84OPE52Ss5vN6
+yfVSAtw48siAs62FtBvUucC55K7ak30FfigePuLh6HpkhzWlny2ir5vYiJKbi/0j
+cndySSRlOgaY0e4HuiJZ2eBrm1p0YnYKeC0JKpywxISTbRpMqKQu/CcrlY185T+L
+I9995xhiJAnR9VuIFaJuE5IgIuWLdv4gjLsI8wf6kJivA6PdHZouTwmzTmWIHbwP
+G70E7ut6dWvZQxRnerdDihNPSndehNtjmIvyU47EPiardw0iUB+rQil/q9QBt84b
+If9JNX1kcG6qkaa0wT3h
+=EYy9
+-----END PGP SIGNATURE-----
+
+--gH8YzSUI9zUQSeK8--
+
+--===============8099876078274763802==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-Regards,
-Clemens
+--===============8099876078274763802==--
