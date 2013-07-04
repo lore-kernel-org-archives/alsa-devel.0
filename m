@@ -1,17 +1,16 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 04/11] ALSA: hdspm - Drop duplicate code in
-	hdspm_set_system_clock_mode()
-Date: Thu,  4 Jul 2013 15:16:31 +0200
-Message-ID: <1372943796-18998-5-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 03/11] ALSA: hdspm - Augment
+	HDSPM_TOGGLE_SETTING for AIO/RayDAT
+Date: Thu,  4 Jul 2013 15:16:30 +0200
+Message-ID: <1372943796-18998-4-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1372943796-18998-1-git-send-email-adi@drcomp.erfurt.thur.de>
  <1372943796-18998-2-git-send-email-adi@drcomp.erfurt.thur.de>
  <1372943796-18998-3-git-send-email-adi@drcomp.erfurt.thur.de>
- <1372943796-18998-4-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1372943796-18998-4-git-send-email-adi@drcomp.erfurt.thur.de>
+In-Reply-To: <1372943796-18998-3-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,54 +24,57 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hdspm_set_system_clock_mode() is almost a one-by-one copy of
-hdspm_set_toggle_setting(). To improve code quality, remove the
-duplication.
+The HDSPM_TOGGLE_SETTING functions alter the control_register on older
+cards. On newer cards (AIO/RayDAT), they have to operate on the
+settings_register instead.
+
+This patch augments the existing functions to work with AIO/RayDAT, too.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 118d727..631c546 100644
+index 32a87dc..118d727 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -995,6 +995,7 @@ static inline void snd_hdspm_initialize_midi_flush(struct hdspm *hdspm);
- static inline int hdspm_get_pll_freq(struct hdspm *hdspm);
- static int hdspm_update_simple_mixer_controls(struct hdspm *hdspm);
- static int hdspm_autosync_ref(struct hdspm *hdspm);
-+static int hdspm_set_toggle_setting(struct hdspm *hdspm, u32 regmask, int out);
- static int snd_hdspm_set_defaults(struct hdspm *hdspm);
- static int hdspm_system_clock_mode(struct hdspm *hdspm);
- static void hdspm_set_sgbuf(struct hdspm *hdspm,
-@@ -2384,26 +2385,10 @@ static int hdspm_system_clock_mode(struct hdspm *hdspm)
-  **/
- static void hdspm_set_system_clock_mode(struct hdspm *hdspm, int mode)
+@@ -3092,16 +3092,35 @@ static int snd_hdspm_get_tco_ltc_frames(struct snd_kcontrol *kcontrol,
+ 
+ static int hdspm_toggle_setting(struct hdspm *hdspm, u32 regmask)
  {
--	switch (hdspm->io_type) {
--	case AIO:
--	case RayDAT:
--		if (0 == mode)
--			hdspm->settings_register |= HDSPM_c0Master;
--		else
--			hdspm->settings_register &= ~HDSPM_c0Master;
--
--		hdspm_write(hdspm, HDSPM_WR_SETTINGS, hdspm->settings_register);
--		break;
--
--	default:
--		if (0 == mode)
--			hdspm->control_register |= HDSPM_ClockModeMaster;
--		else
--			hdspm->control_register &= ~HDSPM_ClockModeMaster;
--
--		hdspm_write(hdspm, HDSPM_controlRegister,
--				hdspm->control_register);
--	}
-+	hdspm_set_toggle_setting(hdspm,
-+			(hdspm_is_raydat_or_aio(hdspm)) ?
-+			HDSPM_c0Master : HDSPM_ClockModeMaster,
-+			(0 == mode));
+-	return (hdspm->control_register & regmask) ? 1 : 0;
++	u32 reg;
++
++	if (hdspm_is_raydat_or_aio(hdspm))
++		reg = hdspm->settings_register;
++	else
++		reg = hdspm->control_register;
++
++	return (reg & regmask) ? 1 : 0;
  }
  
+ static int hdspm_set_toggle_setting(struct hdspm *hdspm, u32 regmask, int out)
+ {
++	u32 *reg;
++	u32 target_reg;
++
++	if (hdspm_is_raydat_or_aio(hdspm)) {
++		reg = &(hdspm->settings_register);
++		target_reg = HDSPM_WR_SETTINGS;
++	} else {
++		reg = &(hdspm->control_register);
++		target_reg = HDSPM_controlRegister;
++	}
++
+ 	if (out)
+-		hdspm->control_register |= regmask;
++		*reg |= regmask;
+ 	else
+-		hdspm->control_register &= ~regmask;
+-	hdspm_write(hdspm, HDSPM_controlRegister, hdspm->control_register);
++		*reg &= ~regmask;
++
++	hdspm_write(hdspm, target_reg, *reg);
  
+ 	return 0;
+ }
 -- 
 1.8.3.1
