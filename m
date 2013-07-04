@@ -1,44 +1,126 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [Intel-gfx] [PATCH] drm/i915: switch
- disable_power_well default value to 1
-Date: Thu, 4 Jul 2013 20:54:44 +0200
-Message-ID: <20130704185444.GI18285@phenom.ffwll.local>
-References: <1372882333-4011-1-git-send-email-przanoni@gmail.com>
+From: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
+Subject: Re: [PATCH] ASoC: samsung: Remove obsolete GPIO based DT pinmuxing
+Date: Thu, 04 Jul 2013 21:18:48 +0200
+Message-ID: <51D5CA98.8020406@gmail.com>
+References: <1372767090-14963-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f171.google.com (mail-ea0-f171.google.com
- [209.85.215.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BBF92657B5
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 20:54:44 +0200 (CEST)
-Received: by mail-ea0-f171.google.com with SMTP id m14so1018769eaj.30
- for <alsa-devel@alsa-project.org>; Thu, 04 Jul 2013 11:54:44 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1372882333-4011-1-git-send-email-przanoni@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Paulo Zanoni <przanoni@gmail.com>
-Cc: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, Paulo Zanoni <paulo.r.zanoni@intel.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1372767090-14963-1-git-send-email-broonie@kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 03, 2013 at 05:12:13PM -0300, Paulo Zanoni wrote:
-> From: Paulo Zanoni <paulo.r.zanoni@intel.com>
-> 
-> Now that the audio driver is using our power well API, everything
-> should be working correctly, so let's give it a try.
-> 
-> Signed-off-by: Paulo Zanoni <paulo.r.zanoni@intel.com>
-Picked up for -fixes, thanks for the patch.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+On 07/02/2013 02:11 PM, Mark Brown wrote:
+> From: Mark Brown<broonie@linaro.org>
+>
+> Since the Samsung platforms have moved to pinctrl for pin muxing and that
+> is handled in the core the old GPIO based muxing code can just be removed.
+> Something similar had been submitted by Thomas Abraham back in March but
+> a resubmission following review never happened.
+>
+> Signed-off-by: Mark Brown<broonie@linaro.org>
+
+Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+
+> ---
+>   sound/soc/samsung/i2s.c | 66 +++----------------------------------------------
+>   1 file changed, 4 insertions(+), 62 deletions(-)
+>
+> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+> index 82ebb1a..7a17346 100644
+> --- a/sound/soc/samsung/i2s.c
+> +++ b/sound/soc/samsung/i2s.c
+> @@ -1016,52 +1016,6 @@ static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
+>   	return i2s;
+>   }
+>
+> -#ifdef CONFIG_OF
+> -static int samsung_i2s_parse_dt_gpio(struct i2s_dai *i2s)
+> -{
+> -	struct device *dev =&i2s->pdev->dev;
+> -	int index, gpio, ret;
+> -
+> -	for (index = 0; index<  7; index++) {
+> -		gpio = of_get_gpio(dev->of_node, index);
+> -		if (!gpio_is_valid(gpio)) {
+> -			dev_err(dev, "invalid gpio[%d]: %d\n", index, gpio);
+> -			goto free_gpio;
+> -		}
+> -
+> -		ret = gpio_request(gpio, dev_name(dev));
+> -		if (ret) {
+> -			dev_err(dev, "gpio [%d] request failed\n", gpio);
+> -			goto free_gpio;
+> -		}
+> -		i2s->gpios[index] = gpio;
+> -	}
+> -	return 0;
+> -
+> -free_gpio:
+> -	while (--index>= 0)
+> -		gpio_free(i2s->gpios[index]);
+> -	return -EINVAL;
+> -}
+> -
+> -static void samsung_i2s_dt_gpio_free(struct i2s_dai *i2s)
+> -{
+> -	unsigned int index;
+> -	for (index = 0; index<  7; index++)
+> -		gpio_free(i2s->gpios[index]);
+> -}
+> -#else
+> -static int samsung_i2s_parse_dt_gpio(struct i2s_dai *dai)
+> -{
+> -	return -EINVAL;
+> -}
+> -
+> -static void samsung_i2s_dt_gpio_free(struct i2s_dai *dai)
+> -{
+> -}
+> -
+> -#endif
+> -
+>   static const struct of_device_id exynos_i2s_match[];
+>
+>   static inline int samsung_i2s_get_driver_data(struct platform_device *pdev)
+> @@ -1235,18 +1189,10 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+>   		pri_dai->sec_dai = sec_dai;
+>   	}
+>
+> -	if (np) {
+> -		if (samsung_i2s_parse_dt_gpio(pri_dai)) {
+> -			dev_err(&pdev->dev, "Unable to configure gpio\n");
+> -			ret = -EINVAL;
+> -			goto err;
+> -		}
+> -	} else {
+> -		if (i2s_pdata->cfg_gpio&&  i2s_pdata->cfg_gpio(pdev)) {
+> -			dev_err(&pdev->dev, "Unable to configure gpio\n");
+> -			ret = -EINVAL;
+> -			goto err;
+> -		}
+> +	if (i2s_pdata&&  i2s_pdata->cfg_gpio&&  i2s_pdata->cfg_gpio(pdev)) {
+> +		dev_err(&pdev->dev, "Unable to configure gpio\n");
+> +		ret = -EINVAL;
+> +		goto err;
+>   	}
+>
+>   	snd_soc_register_component(&pri_dai->pdev->dev,&samsung_i2s_component,
+> @@ -1267,14 +1213,10 @@ static int samsung_i2s_remove(struct platform_device *pdev)
+>   {
+>   	struct i2s_dai *i2s, *other;
+>   	struct resource *res;
+> -	struct s3c_audio_pdata *i2s_pdata = pdev->dev.platform_data;
+>
+>   	i2s = dev_get_drvdata(&pdev->dev);
+>   	other = i2s->pri_dai ? : i2s->sec_dai;
+>
+> -	if (!i2s_pdata->cfg_gpio&&  pdev->dev.of_node)
+> -		samsung_i2s_dt_gpio_free(i2s->pri_dai);
+> -
+>   	if (other) {
+>   		other->pri_dai = NULL;
+>   		other->sec_dai = NULL;
