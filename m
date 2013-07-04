@@ -1,20 +1,15 @@
-From: Jordi Mallach <jordi@debian.org>
-Subject: Re: [PATCH] Add -lm to test programs to fix build
- failure.
-Date: Thu, 04 Jul 2013 09:29:29 +0200
-Message-ID: <1372922969.19157.20.camel@penyagolosa.oskuro.net>
-References: <1372424744-27504-1-git-send-email-jordi@debian.org>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v3 1/2] mfd: arizona: Add GPIO control register
+	bit definitions
+Date: Thu,  4 Jul 2013 08:56:27 +0100
+Message-ID: <1372924588-14666-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tempesta.oskuro.net (tempesta.oskuro.net [92.243.30.96])
- by alsa0.perex.cz (Postfix) with ESMTP id DB8E926569A
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 09:29:31 +0200 (CEST)
-Received: from [192.168.1.140] (167.22.15.37.dynamic.jazztel.es [37.15.22.167])
- by tempesta.oskuro.net (Postfix) with ESMTPSA id DBFE661DF2
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 09:29:41 +0200 (CEST)
-In-Reply-To: <1372424744-27504-1-git-send-email-jordi@debian.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0FEC42656B4
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 10:03:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,28 +19,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org, sameo@linux.intel.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSwgZGlkIHlvdSBzZWUgdGhlIHBvc3QgYmVsb3cgZnJvbSBsYXN0IEZyaWRheT8KClRo
-YW5rcywKSm9yZGkKCkVsIGR2IDI4IGRlIDA2IGRlIDIwMTMgYSBsZXMgMTU6MDUgKzAyMDAsIGVu
-L25hIEpvcmRpIE1hbGxhY2ggdmEKZXNjcml1cmU6Cj4gQWRkIC1sbSB0byB0ZXN0IHByb2dyYW1z
-IHRoYXQgdXNlIHNpbigpLCB0byBmaXggYSBidWlsZCBmYWlsdXJlIHdpdGggcmVjZW50Cj4gYmlu
-dXRpbHMuCj4gCj4gU2lnbmVkLW9mZi1ieTogSm9yZGkgTWFsbGFjaCA8am9yZGlAZGViaWFuLm9y
-Zz4KPiAtLS0KPiAgdGVzdC9NYWtlZmlsZS5hbSB8IDIgKysKPiAgMSBmaWxlIGNoYW5nZWQsIDIg
-aW5zZXJ0aW9ucygrKQo+IAo+IGRpZmYgLS1naXQgYS90ZXN0L01ha2VmaWxlLmFtIGIvdGVzdC9N
-YWtlZmlsZS5hbQo+IGluZGV4IDg3MDU0MDIuLmMxODk2ZjggMTAwNjQ0Cj4gLS0tIGEvdGVzdC9N
-YWtlZmlsZS5hbQo+ICsrKyBiL3Rlc3QvTWFrZWZpbGUuYW0KPiBAQCAtNyw4ICs3LDEwIEBAIGNo
-ZWNrX1BST0dSQU1TPWNvbnRyb2wgcGNtIHBjbV9taW4gbGF0ZW5jeSBzZXEgXAo+ICAKPiAgY29u
-dHJvbF9MREFERD0uLi9zcmMvbGliYXNvdW5kLmxhCj4gIHBjbV9MREFERD0uLi9zcmMvbGliYXNv
-dW5kLmxhCj4gK3BjbV9MREZMQUdTPSAtbG0KPiAgcGNtX21pbl9MREFERD0uLi9zcmMvbGliYXNv
-dW5kLmxhCj4gIGxhdGVuY3lfTERBREQ9Li4vc3JjL2xpYmFzb3VuZC5sYQo+ICtsYXRlbmN5X0xE
-RkxBR1M9IC1sbQo+ICBzZXFfTERBREQ9Li4vc3JjL2xpYmFzb3VuZC5sYQo+ICBwbGF5bWlkaTFf
-TERBREQ9Li4vc3JjL2xpYmFzb3VuZC5sYQo+ICB0aW1lcl9MREFERD0uLi9zcmMvbGliYXNvdW5k
-LmxhCgotLSAKSm9yZGkgTWFsbGFjaCBQw6lyZXogIC0tICBEZWJpYW4gZGV2ZWxvcGVyICAgICBo
-dHRwOi8vd3d3LmRlYmlhbi5vcmcvCmpvcmRpQHNpbmRvbWluaW8ubmV0ICAgICBqb3JkaUBkZWJp
-YW4ub3JnICAgICBodHRwOi8vd3d3LnNpbmRvbWluaW8ubmV0LwpHbnVQRyBwdWJsaWMga2V5IGlu
-Zm9ybWF0aW9uIGF2YWlsYWJsZSBhdCBodHRwOi8vb3NrdXJvLm5ldC8KCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ include/linux/mfd/arizona/gpio.h |   96 ++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 96 insertions(+), 0 deletions(-)
+ create mode 100644 include/linux/mfd/arizona/gpio.h
+
+diff --git a/include/linux/mfd/arizona/gpio.h b/include/linux/mfd/arizona/gpio.h
+new file mode 100644
+index 0000000..d2146bb
+--- /dev/null
++++ b/include/linux/mfd/arizona/gpio.h
+@@ -0,0 +1,96 @@
++/*
++ * GPIO configuration for Arizona devices
++ *
++ * Copyright 2013 Wolfson Microelectronics. PLC.
++ *
++ * Author: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef _ARIZONA_GPIO_H
++#define _ARIZONA_GPIO_H
++
++#define ARIZONA_GP_FN_TXLRCLK                    0x00
++#define ARIZONA_GP_FN_GPIO                       0x01
++#define ARIZONA_GP_FN_IRQ1                       0x02
++#define ARIZONA_GP_FN_IRQ2                       0x03
++#define ARIZONA_GP_FN_OPCLK                      0x04
++#define ARIZONA_GP_FN_FLL1_OUT                   0x05
++#define ARIZONA_GP_FN_FLL2_OUT                   0x06
++#define ARIZONA_GP_FN_PWM1                       0x08
++#define ARIZONA_GP_FN_PWM2                       0x09
++#define ARIZONA_GP_FN_SYSCLK_UNDERCLOCKED        0x0A
++#define ARIZONA_GP_FN_ASYNCCLK_UNDERCLOCKED      0x0B
++#define ARIZONA_GP_FN_FLL1_LOCK                  0x0C
++#define ARIZONA_GP_FN_FLL2_LOCK                  0x0D
++#define ARIZONA_GP_FN_FLL1_CLOCK_OK              0x0F
++#define ARIZONA_GP_FN_FLL2_CLOCK_OK              0x10
++#define ARIZONA_GP_FN_HEADPHONE_DET              0x12
++#define ARIZONA_GP_FN_MIC_DET                    0x13
++#define ARIZONA_GP_FN_WSEQ_STATUS                0x15
++#define ARIZONA_GP_FN_CIF_ADDRESS_ERROR          0x16
++#define ARIZONA_GP_FN_ASRC1_LOCK                 0x1A
++#define ARIZONA_GP_FN_ASRC2_LOCK                 0x1B
++#define ARIZONA_GP_FN_ASRC_CONFIG_ERROR          0x1C
++#define ARIZONA_GP_FN_DRC1_SIGNAL_DETECT         0x1D
++#define ARIZONA_GP_FN_DRC1_ANTICLIP              0x1E
++#define ARIZONA_GP_FN_DRC1_DECAY                 0x1F
++#define ARIZONA_GP_FN_DRC1_NOISE                 0x20
++#define ARIZONA_GP_FN_DRC1_QUICK_RELEASE         0x21
++#define ARIZONA_GP_FN_DRC2_SIGNAL_DETECT         0x22
++#define ARIZONA_GP_FN_DRC2_ANTICLIP              0x23
++#define ARIZONA_GP_FN_DRC2_DECAY                 0x24
++#define ARIZONA_GP_FN_DRC2_NOISE                 0x25
++#define ARIZONA_GP_FN_DRC2_QUICK_RELEASE         0x26
++#define ARIZONA_GP_FN_MIXER_DROPPED_SAMPLE       0x27
++#define ARIZONA_GP_FN_AIF1_CONFIG_ERROR          0x28
++#define ARIZONA_GP_FN_AIF2_CONFIG_ERROR          0x29
++#define ARIZONA_GP_FN_AIF3_CONFIG_ERROR          0x2A
++#define ARIZONA_GP_FN_SPK_TEMP_SHUTDOWN          0x2B
++#define ARIZONA_GP_FN_SPK_TEMP_WARNING           0x2C
++#define ARIZONA_GP_FN_UNDERCLOCKED               0x2D
++#define ARIZONA_GP_FN_OVERCLOCKED                0x2E
++#define ARIZONA_GP_FN_DSP_IRQ1                   0x35
++#define ARIZONA_GP_FN_DSP_IRQ2                   0x36
++#define ARIZONA_GP_FN_ASYNC_OPCLK                0x3D
++#define ARIZONA_GP_FN_BOOT_DONE                  0x44
++#define ARIZONA_GP_FN_DSP1_RAM_READY             0x45
++#define ARIZONA_GP_FN_SYSCLK_ENA_STATUS          0x4B
++#define ARIZONA_GP_FN_ASYNCCLK_ENA_STATUS        0x4C
++
++#define ARIZONA_GPN_DIR                          0x8000  /* GPN_DIR */
++#define ARIZONA_GPN_DIR_MASK                     0x8000  /* GPN_DIR */
++#define ARIZONA_GPN_DIR_SHIFT                        15  /* GPN_DIR */
++#define ARIZONA_GPN_DIR_WIDTH                         1  /* GPN_DIR */
++#define ARIZONA_GPN_PU                           0x4000  /* GPN_PU */
++#define ARIZONA_GPN_PU_MASK                      0x4000  /* GPN_PU */
++#define ARIZONA_GPN_PU_SHIFT                         14  /* GPN_PU */
++#define ARIZONA_GPN_PU_WIDTH                          1  /* GPN_PU */
++#define ARIZONA_GPN_PD                           0x2000  /* GPN_PD */
++#define ARIZONA_GPN_PD_MASK                      0x2000  /* GPN_PD */
++#define ARIZONA_GPN_PD_SHIFT                         13  /* GPN_PD */
++#define ARIZONA_GPN_PD_WIDTH                          1  /* GPN_PD */
++#define ARIZONA_GPN_LVL                          0x0800  /* GPN_LVL */
++#define ARIZONA_GPN_LVL_MASK                     0x0800  /* GPN_LVL */
++#define ARIZONA_GPN_LVL_SHIFT                        11  /* GPN_LVL */
++#define ARIZONA_GPN_LVL_WIDTH                         1  /* GPN_LVL */
++#define ARIZONA_GPN_POL                          0x0400  /* GPN_POL */
++#define ARIZONA_GPN_POL_MASK                     0x0400  /* GPN_POL */
++#define ARIZONA_GPN_POL_SHIFT                        10  /* GPN_POL */
++#define ARIZONA_GPN_POL_WIDTH                         1  /* GPN_POL */
++#define ARIZONA_GPN_OP_CFG                       0x0200  /* GPN_OP_CFG */
++#define ARIZONA_GPN_OP_CFG_MASK                  0x0200  /* GPN_OP_CFG */
++#define ARIZONA_GPN_OP_CFG_SHIFT                      9  /* GPN_OP_CFG */
++#define ARIZONA_GPN_OP_CFG_WIDTH                      1  /* GPN_OP_CFG */
++#define ARIZONA_GPN_DB                           0x0100  /* GPN_DB */
++#define ARIZONA_GPN_DB_MASK                      0x0100  /* GPN_DB */
++#define ARIZONA_GPN_DB_SHIFT                          8  /* GPN_DB */
++#define ARIZONA_GPN_DB_WIDTH                          1  /* GPN_DB */
++#define ARIZONA_GPN_FN_MASK                      0x007F  /* GPN_DB */
++#define ARIZONA_GPN_FN_SHIFT                          0  /* GPN_DB */
++#define ARIZONA_GPN_FN_WIDTH                          7  /* GPN_DB */
++
++#endif
+-- 
+1.7.2.5
