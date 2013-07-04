@@ -1,15 +1,15 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] ASoC: wm8962: fix NULL pdata pointer
-Date: Thu, 4 Jul 2013 23:14:00 +0800
-Message-ID: <1372950840-13393-1-git-send-email-shawn.guo@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm8962: fix NULL pdata pointer
+Date: Thu, 4 Jul 2013 16:50:28 +0100
+Message-ID: <20130704155028.GF27646@sirena.org.uk>
+References: <1372950840-13393-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7995608980979294847=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe001.messaging.microsoft.com [65.55.88.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FACD261ADA
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 17:13:34 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 477DD261ADA
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 17:50:32 +0200 (CEST)
+In-Reply-To: <1372950840-13393-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,53 +19,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Stehle Vincent-B46079 <B46079@freescale.com>, linux-arm-kernel@lists.infradead.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Stehle Vincent-B46079 <B46079@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-There is an error in merge commit 384b834 on conflict resolution which
-causes the following NULL pdata pointer bug.
 
-wm8962 0-001a: customer id 0 revision D
-Unable to handle kernel NULL pointer dereference at virtual address 00000004
-pgd = 80004000
-[00000004] *pgd=00000000
-Internal error: Oops: 5 [#1] SMP ARM
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 3.10.0+ #1
-task: bf870000 ti: bf874000 task.ti: bf874000
-PC is at wm8962_probe+0x134/0x6c8
-LR is at regmap_unlock_mutex+0x10/0x14
-pc : [<80452100>]    lr : [<80304cf4>]    psr: a0000113
-sp : bf875c98  ip : 00000000  fp : bf875cd4
-r10: 00000000  r9 : bfb1830c  r8 : 80779bc4
-r7 : 00000000  r6 : 00000001  r5 : bfbac010  r4 : bfb33e00
-r3 : 80304ce4  r2 : 00000000  r1 : 00000001  r0 : fffffffb
-Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
-Control: 10c53c7d  Table: 1000404a  DAC: 00000017
-Process swapper/0 (pid: 1, stack limit = 0xbf874238)
-Stack: (0xbf875c98 to 0xbf876000)
-...
+--===============7995608980979294847==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="EZNZmU/Pkwyv++bx"
+Content-Disposition: inline
 
-Fix the error by assigning pdata a correct pointer.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- sound/soc/codecs/wm8962.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--EZNZmU/Pkwyv++bx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index b1dc7d4..e2de9ec 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3377,7 +3377,7 @@ static int wm8962_probe(struct snd_soc_codec *codec)
- {
- 	int ret;
- 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
--	struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
-+	struct wm8962_pdata *pdata = &wm8962->pdata;
- 	int i, trigger, irq_pol;
- 	bool dmicclk, dmicdat;
- 
--- 
-1.7.9.5
+On Thu, Jul 04, 2013 at 11:14:00PM +0800, Shawn Guo wrote:
+> There is an error in merge commit 384b834 on conflict resolution which
+> causes the following NULL pdata pointer bug.
+
+Applied, thanks.
+
+--EZNZmU/Pkwyv++bx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR1ZnBAAoJELSic+t+oim9rkEP/0Vu4DTBjeilJWf2qShWOvs0
+2uS0PH47halpzrrBVFQ1C+Q/COkaLU79cLCz6z1CYn0dDOZ19TgiJ/8J8v3L4sTE
+x/K7MsRI3z5LM+m004gWuWeTF5GcbsEYmibbkdhzFyio6MEta0SSPTef90tzIO3x
+TX3mUzF+PfZ80Bq3lNnXef9o5uIDKRJ/Rkg6/OCMOVZWMz5WjoLnX1ulAvSgZ+jk
+1HyVhtx/eXkuLwNpfj8DjwRt5re8e4bkLbUAf08oCF+B7JHkgJRhMYc5bnX1lLs0
+yTm90G1VMGNIrvB6G7j9HOTo0g+2ZYYUDl5T1wkhdmz0ZglSD59Zw00LecgjLgk0
+Ms4SnLmpHe3Q9kDZUY72VTGoKqt67y60QZWS75+t9pakqYhAdhGPRJmH64t9ekBT
+ncTwih1zjVACPCthRs8RUv7bRUWKKMHuS3G/biz2xkMyHJWjFxBmvzdo98M0Rhjo
+0y8QRtyQh8kPdz0kHaghCrnUGRg9f/NeX7+qTS+DZaGDs7A83MCwh9laBr2XQxW9
+QcRpvr64tQtq0LIJc267cuhTPt+202lzgk+WFhGXnG0s4qe3nnltLJjDVHQpk2wx
+f2MchvB/qYzxxUH1xYSDshQ8yaMVhaAceN/eyTCEVPKfdQ5IhNf62baWzzU1kcFE
+pxpBYzqT0rHTXTZEphRU
+=K1XI
+-----END PGP SIGNATURE-----
+
+--EZNZmU/Pkwyv++bx--
+
+--===============7995608980979294847==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7995608980979294847==--
