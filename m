@@ -1,12 +1,14 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 10/11] ALSA: hdspm - Add support for AEBs on
-	RME AIO
-Date: Thu,  4 Jul 2013 16:45:09 +0200
-Message-ID: <1372949110-20441-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 11/11] ALSA: hdspm - Fix S/PDIF Sync status and
+	frequency on RME AIO
+Date: Thu,  4 Jul 2013 16:45:10 +0200
+Message-ID: <1372949110-20441-2-git-send-email-adi@drcomp.erfurt.thur.de>
+References: <1372949110-20441-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1372949110-20441-1-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,167 +22,34 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-AIO cards allow to use AEB (Analogue Expansion Boards) to add four
-input and/or output channels.
-
-This patch adds the necessary code to detect and enable the additional
-I/O channels.
+This is a left-over mistake from old code, the correct register offset is
+provided in kcontrol->private_value, not in the index.
+Cf. RayDAT case, where it has already been corrected.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 111713c..585397b 100644
+index 585397b..5007f84 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -648,7 +648,8 @@ static char *texts_ports_aio_in_ss[] = {
- 	"AES.L", "AES.R",
- 	"SPDIF.L", "SPDIF.R",
- 	"ADAT.1", "ADAT.2", "ADAT.3", "ADAT.4", "ADAT.5", "ADAT.6",
--	"ADAT.7", "ADAT.8"
-+	"ADAT.7", "ADAT.8",
-+	"AEB.1", "AEB.2", "AEB.3", "AEB.4"
- };
- 
- static char *texts_ports_aio_out_ss[] = {
-@@ -657,14 +658,16 @@ static char *texts_ports_aio_out_ss[] = {
- 	"SPDIF.L", "SPDIF.R",
- 	"ADAT.1", "ADAT.2", "ADAT.3", "ADAT.4", "ADAT.5", "ADAT.6",
- 	"ADAT.7", "ADAT.8",
--	"Phone.L", "Phone.R"
-+	"Phone.L", "Phone.R",
-+	"AEB.1", "AEB.2", "AEB.3", "AEB.4"
- };
- 
- static char *texts_ports_aio_in_ds[] = {
- 	"Analogue.L", "Analogue.R",
- 	"AES.L", "AES.R",
- 	"SPDIF.L", "SPDIF.R",
--	"ADAT.1", "ADAT.2", "ADAT.3", "ADAT.4"
-+	"ADAT.1", "ADAT.2", "ADAT.3", "ADAT.4",
-+	"AEB.1", "AEB.2", "AEB.3", "AEB.4"
- };
- 
- static char *texts_ports_aio_out_ds[] = {
-@@ -672,14 +675,16 @@ static char *texts_ports_aio_out_ds[] = {
- 	"AES.L", "AES.R",
- 	"SPDIF.L", "SPDIF.R",
- 	"ADAT.1", "ADAT.2", "ADAT.3", "ADAT.4",
--	"Phone.L", "Phone.R"
-+	"Phone.L", "Phone.R",
-+	"AEB.1", "AEB.2", "AEB.3", "AEB.4"
- };
- 
- static char *texts_ports_aio_in_qs[] = {
- 	"Analogue.L", "Analogue.R",
- 	"AES.L", "AES.R",
- 	"SPDIF.L", "SPDIF.R",
--	"ADAT.1", "ADAT.2", "ADAT.3", "ADAT.4"
-+	"ADAT.1", "ADAT.2", "ADAT.3", "ADAT.4",
-+	"AEB.1", "AEB.2", "AEB.3", "AEB.4"
- };
- 
- static char *texts_ports_aio_out_qs[] = {
-@@ -687,7 +692,8 @@ static char *texts_ports_aio_out_qs[] = {
- 	"AES.L", "AES.R",
- 	"SPDIF.L", "SPDIF.R",
- 	"ADAT.1", "ADAT.2", "ADAT.3", "ADAT.4",
--	"Phone.L", "Phone.R"
-+	"Phone.L", "Phone.R",
-+	"AEB.1", "AEB.2", "AEB.3", "AEB.4"
- };
- 
- static char *texts_ports_aes32[] = {
-@@ -764,8 +770,8 @@ static char channel_map_aio_in_ss[HDSPM_MAX_CHANNELS] = {
- 	8, 9,			/* aes in, */
- 	10, 11,			/* spdif in */
- 	12, 13, 14, 15, 16, 17, 18, 19,	/* ADAT in */
--	-1, -1,
--	-1, -1, -1, -1, -1, -1, -1, -1,
-+	2, 3, 4, 5,		/* AEB */
-+	-1, -1, -1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
-@@ -779,7 +785,8 @@ static char channel_map_aio_out_ss[HDSPM_MAX_CHANNELS] = {
- 	10, 11,			/* spdif out */
- 	12, 13, 14, 15, 16, 17, 18, 19,	/* ADAT out */
- 	6, 7,			/* phone out */
--	-1, -1, -1, -1, -1, -1, -1, -1,
-+	2, 3, 4, 5,		/* AEB */
-+	-1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
-@@ -792,7 +799,8 @@ static char channel_map_aio_in_ds[HDSPM_MAX_CHANNELS] = {
- 	8, 9,			/* aes in */
- 	10, 11,			/* spdif in */
- 	12, 14, 16, 18,		/* adat in */
--	-1, -1, -1, -1, -1, -1,
-+	2, 3, 4, 5,		/* AEB */
-+	-1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
-@@ -807,7 +815,7 @@ static char channel_map_aio_out_ds[HDSPM_MAX_CHANNELS] = {
- 	10, 11,			/* spdif out */
- 	12, 14, 16, 18,		/* adat out */
- 	6, 7,			/* phone out */
--	-1, -1, -1, -1,
-+	2, 3, 4, 5,		/* AEB */
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
-@@ -821,7 +829,8 @@ static char channel_map_aio_in_qs[HDSPM_MAX_CHANNELS] = {
- 	8, 9,			/* aes in */
- 	10, 11,			/* spdif in */
- 	12, 16,			/* adat in */
--	-1, -1, -1, -1, -1, -1, -1, -1,
-+	2, 3, 4, 5,		/* AEB */
-+	-1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
-@@ -836,7 +845,8 @@ static char channel_map_aio_out_qs[HDSPM_MAX_CHANNELS] = {
- 	10, 11,			/* spdif out */
- 	12, 16,			/* adat out */
- 	6, 7,			/* phone out */
--	-1, -1, -1, -1, -1, -1,
-+	2, 3, 4, 5,		/* AEB */
-+	-1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
-@@ -6602,10 +6612,6 @@ static int snd_hdspm_create(struct snd_card *card,
+@@ -2312,7 +2312,7 @@ static int snd_hdspm_get_autosync_sample_rate(struct snd_kcontrol *kcontrol,
+ 		default:
+ 			ucontrol->value.enumerated.item[0] =
+ 				hdspm_get_s1_sample_rate(hdspm,
+-						ucontrol->id.index-1);
++						kcontrol->private_value-1);
+ 		}
  		break;
  
- 	case AIO:
--		if (0 == (hdspm_read(hdspm, HDSPM_statusRegister2) & HDSPM_s2_AEBI_D)) {
--			snd_printk(KERN_INFO "HDSPM: AEB input board found, but not supported\n");
--		}
--
- 		hdspm->ss_in_channels = AIO_IN_SS_CHANNELS;
- 		hdspm->ds_in_channels = AIO_IN_DS_CHANNELS;
- 		hdspm->qs_in_channels = AIO_IN_QS_CHANNELS;
-@@ -6613,6 +6619,20 @@ static int snd_hdspm_create(struct snd_card *card,
- 		hdspm->ds_out_channels = AIO_OUT_DS_CHANNELS;
- 		hdspm->qs_out_channels = AIO_OUT_QS_CHANNELS;
+@@ -3930,7 +3930,8 @@ static int snd_hdspm_get_sync_check(struct snd_kcontrol *kcontrol,
+ 		case 5: /* SYNC IN */
+ 			val = hdspm_sync_in_sync_check(hdspm); break;
+ 		default:
+-			val = hdspm_s1_sync_check(hdspm, ucontrol->id.index-1);
++			val = hdspm_s1_sync_check(hdspm,
++					kcontrol->private_value-1);
+ 		}
+ 		break;
  
-+		if (0 == (hdspm_read(hdspm, HDSPM_statusRegister2) & HDSPM_s2_AEBI_D)) {
-+			snd_printk(KERN_INFO "HDSPM: AEB input board found\n");
-+			hdspm->ss_in_channels += 4;
-+			hdspm->ds_in_channels += 4;
-+			hdspm->qs_in_channels += 4;
-+		}
-+
-+		if (0 == (hdspm_read(hdspm, HDSPM_statusRegister2) & HDSPM_s2_AEBO_D)) {
-+			snd_printk(KERN_INFO "HDSPM: AEB output board found\n");
-+			hdspm->ss_out_channels += 4;
-+			hdspm->ds_out_channels += 4;
-+			hdspm->qs_out_channels += 4;
-+		}
-+
- 		hdspm->channel_map_out_ss = channel_map_aio_out_ss;
- 		hdspm->channel_map_out_ds = channel_map_aio_out_ds;
- 		hdspm->channel_map_out_qs = channel_map_aio_out_qs;
 -- 
 1.8.3.1
