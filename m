@@ -1,18 +1,14 @@
-From: varun Yadav <varunyadav83@gmail.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: ASoC: wm8962: NULL pdata pointer
-Date: Thu, 4 Jul 2013 15:13:30 +0530
-Message-ID: <CAEdSvOz5dmUfLZ0SQdym0HJhf21DsqxTqGqZ2fG=J684s=xdVg@mail.gmail.com>
+Date: Thu, 4 Jul 2013 10:45:07 +0100
+Message-ID: <20130704094507.GN27646@sirena.org.uk>
 References: <20130704062913.GC14617@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3840652290711112586=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f46.google.com (mail-la0-f46.google.com
- [209.85.215.46])
- by alsa0.perex.cz (Postfix) with ESMTP id EB23C26563C
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 11:43:30 +0200 (CEST)
-Received: by mail-la0-f46.google.com with SMTP id eg20so1035465lab.5
- for <alsa-devel@alsa-project.org>; Thu, 04 Jul 2013 02:43:30 -0700 (PDT)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0756C261670
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 11:45:11 +0200 (CEST)
 In-Reply-To: <20130704062913.GC14617@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,59 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Mark Brown <broonie@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shwan,
 
-Do you have spk-mono in imx6q-sabresd.dts file, if yes then remove it.
-
-Regards,
-Varun
-
+--===============3840652290711112586==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RmrLSWhN5mxSx4z6"
+Content-Disposition: inline
 
 
-On Thu, Jul 4, 2013 at 11:59 AM, Shawn Guo <shawn.guo@linaro.org> wrote:
+--RmrLSWhN5mxSx4z6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Jul 04, 2013 at 02:29:14PM +0800, Shawn Guo wrote:
 > Mark,
->
+>=20
 > I'm running next-20130703 and seeing the following NULL pointer bug.
->
-> Unable to handle kernel NULL pointer dereference at virtual address
-> 00000004
-> pgd = 80004000
-> [00000004] *pgd=00000000
-> Internal error: Oops: 5 [#1] SMP ARM
-> Modules linked in:
-> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 3.10.0-next-20130703 #6
-> task: bf870000 ti: bf874000 task.ti: bf874000
-> PC is at wm8962_probe+0x140/0x6b4
-> ...
->
-> It seems to me that it's caused by a merge error in 384b834.  And the
-> change below can remove the problem.
->
-> Shawn
->
-> ---8<----
->
-> diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-> index b1dc7d4..e2de9ec 100644
-> --- a/sound/soc/codecs/wm8962.c
-> +++ b/sound/soc/codecs/wm8962.c
-> @@ -3377,7 +3377,7 @@ static int wm8962_probe(struct snd_soc_codec *codec)
->  {
->         int ret;
->         struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
-> -       struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
-> +       struct wm8962_pdata *pdata = &wm8962->pdata;
->         int i, trigger, irq_pol;
->         bool dmicclk, dmicdat;
->
->
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+
+Please send a patch, and please send mail to this address which is the
+one that's advertised and consistently used...
+
+--RmrLSWhN5mxSx4z6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR1UQgAAoJELSic+t+oim9kOsP/judR/bzHjAQ/WrEz1I0p/N0
+s7JEiH6X4H5fX6qdbaCXySGa14r07HSk4877SAlzPPykLf+llrs8lmpCGqOZ+okP
+OIijPsIXRo5w09MK0oULdW5sMxJ+x1yeJ74TY4bnz4JBqT989JnCqVuAILY2h5cr
+RHGI4cTiePgvLDbYeBkjRolho7Gh2wWo+HF0bf7+6zXQ5WPXmKOa/6ZjJXDxvdJ9
+dtjAiqP0XZhHc03jWFFPHuxWM76NMuIJbuQZNF4VdVeEpQJf8iLekeioHaOhJ2px
+lldQFeZox6ZrRaTz+MoX9S5LwAMdy7ZWfYcfGXvMT6r44MHo/HH/rRhuXFSNjAxK
+DqRhaESF8pFBx5jRbGIL2RjiquQnZBe5VSffQAdS0z7KYUscUzGXHBUX5QyDb/ba
+wc+wo+ZG/opM2UXTbLZ5kYBxzTl5huFhjsQSMBeUey4n6xDxldisrxE9GgnPJ965
+PgRwNji/hEh/mRVm9TosOygRw5nNuSHpisXex6o2kdu65U5N9sf2ZBEjlk3gtU9A
+vknbx7A1rjeAvUAthxt/iL7A3Alvb3doMiKRmt0zEFuUYWMofsoIf8aB2BkLV6bU
+qLGD1mo5T3IKGQC2v845JeeSWGNsEG3DgBlRksQOkA5QR1LHoiMYDnW19+b2pbva
+jPCuad3rCV+Ejcfw3nxm
+=0cch
+-----END PGP SIGNATURE-----
+
+--RmrLSWhN5mxSx4z6--
+
+--===============3840652290711112586==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3840652290711112586==--
