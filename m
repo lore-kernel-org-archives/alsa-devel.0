@@ -1,81 +1,94 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: add ak4554 driver
-Date: Thu, 4 Jul 2013 11:58:36 +0100
-Message-ID: <20130704105836.GX27646@sirena.org.uk>
-References: <87bo6mixuj.wl%kuninori.morimoto.gx@renesas.com>
- <20130702094202.GZ27646@sirena.org.uk>
- <877gh88ls9.wl%kuninori.morimoto.gx@renesas.com>
- <20130703091844.GD27646@sirena.org.uk>
- <877gh70xma.wl%kuninori.morimoto.gx@renesas.com>
+From: Sekhar Nori <nsekhar-l0cyMroinI0@public.gmane.org>
+Subject: Re: [alsa-devel] Query on Audio DMA using DMAEngine
+Date: Thu, 4 Jul 2013 16:29:53 +0530
+Message-ID: <51D555A9.5030500@ti.com>
+References: <083BC63EECB6FD41B8E81CF7FD87CC0F2E4F1488@DLEE08.ent.ti.com>
+	<51D01F31.3010602@metafoo.de> <51D11D64.3070805@topic.nl>
+	<51D24A01.2050709@ti.com> <51D26A18.8040903@topic.nl>
+	<20130702121345.GL27646@sirena.org.uk>
+	<51D3EA42.3040205@metafoo.de>
+	<20130703094307.GE27646@sirena.org.uk>
+	<51D46598.6070005@ti.com> <51D510EA.1030809@topic.nl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6098304074852698337=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 957B926179B
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 12:58:41 +0200 (CEST)
-In-Reply-To: <877gh70xma.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <51D510EA.1030809-Oq418RWZeHk@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Mike Looijmans <mike.looijmans-Oq418RWZeHk@public.gmane.org>
+Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Joel Fernandes <joelf-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On 7/4/2013 11:36 AM, Mike Looijmans wrote:
+> On 07/03/2013 07:55 PM, Joel Fernandes wrote:
+>> Copying some more lists are we're also discussing the DMA controller
+>> in the
+>> SoCs. Thanks.
+>>
+>> On 07/03/2013 04:43 AM, Mark Brown wrote:
+>>> On Wed, Jul 03, 2013 at 11:09:22AM +0200, Lars-Peter Clausen wrote:
+>>>> On 07/02/2013 02:13 PM, Mark Brown wrote:
+>>>
+>>>>> This sort of cyclic thing tends to be best, ideally you don't need
+>>>>> interrupts at all (other than a timer).
+>>>
+>>>> Yes, this is usually how it is done. But I'm wondering maybe the EDMA
+>>>> controller only has a small total amount of slots available.
+>>>
+>>> Well, you don't need particularly many slots so long as you can cope
+>>> with a large period size.
+>>
+>> Hi Mark,
+>>
+>> When would it not be possible to cope with a large period size? Are
+>> there any
+>> guidelines on what to consider when fixing a period size?
+>>
+>> I see tegra and aux1x go upto .period_bytes_min = 1024
+>>
+>> About slots, following are no.of slots on some SoCs with EDMA:
+>>
+>> am1808 - 96 slots available + 32 taken up for channel but can be
+>> reused with
+>> some changes.
+>> am335x - 172 slots available + 64 taken up for channels
+>>
+>> On a slightly different note, about buffer_bytes_max, is there any
+>> drawback to
+>> setting it to a smaller value? Currently 128K is about what is used on
+>> davinci-pcm.
+>> My idea is to map to do the direct mapping to IRAM if the IRAM
+>> transfers are
+>> really what are preventing the under runs, but 128K will be too much
+>> for the
+>> buffer as we don't have that much IRAM infact it is just the boundary
+>> on am33xx
+>> (128K)
+> 
+> In any case, using the IRAM directly might have some use, because you
+> don't have to compete for the DDRRAM with other devices. But I never
+> understood what the ping-ping via IRAM was supposed to accomplish, I
+> don't see why McASP -> IRAM -> DDRRAM (or the other way around) would be
+> better than just McASP -> DDRRAM. Especially since the McASP has a
+> built-in 256 byte FIFO buffer on both channels. In all my measurements,
+> using the IRAM ping-pong only made things worse in terms of overruns and
+> underruns, not better.
+> 
+> Anyone who know why the ping-pong was implemented and what kind of usage
+> it was intended for?
 
---===============6098304074852698337==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gYXIgL6/MA84ylAn"
-Content-Disposition: inline
+McBSP peripheral that was included in the DaVinci devices like DM644x
+dis not come with FIFO. Due to latency of DDR accesses, there were
+channel swaps observed due to lost samples on these devices and IRAM
+implementation helped there.
 
-
---gYXIgL6/MA84ylAn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jul 03, 2013 at 09:15:13PM -0700, Kuninori Morimoto wrote:
-> ak4554 is very simple DA/AD converter which has no setting register.
-> Note that it has hard coded asymmetric data format
-> playback : SND_SOC_DAIFMT_RIGHT_J
-> capture  : SND_SOC_DAIFMT_LEFT_J
-> This driver has single DAI and doesn't have set_fmt.
-
-Applied, thanks.
-
---gYXIgL6/MA84ylAn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR1VVZAAoJELSic+t+oim9yGcP/1YjK+edG3kC4UNlyk2+E+2D
-u+puQSqykmk1TfKf72OhKJ97e5EnYEUOC5nEAWTxXjDwPYz0mwu7jF4+mpLlwy2R
-99EsGHRutcfzf+tFk9ENNdPFOWVoyG5kpqQhfl3eIJsQuXcD24LW2vT8rJ2/UeBN
-b1OZXUCgyhYKhqeoQUgcJpnXUAbqhmki1GdVu49gl9T7kKbz48eE1KeSxzyP/70H
-Jv25WYMpKohYob5Xg3nVRC4WdfMZcFsLt8DTkB48NPiCmjKF8IcH947ixaaQ3jJn
-qjO/yuQbywN7WfHdqHbC/Y9YJqx7pVIPNRYTJdVEcPOXbi/MmhPfxtVFIGhHPAev
-rvHshV0QQfOoxzDjMAiK5vue0NU6N/c9aVf2jeot+sMM+gJdvMjXA+DrE1JPjl0/
-/AVuTJ4bxfMSm3xCVwqneJqWYNYZtuGQvxP3G+NLacLY34RQs92U/UEmJOQFuRkx
-1pVcDWfNOI/1r/SKbNwl+FvH9zAo2TKChKYQV7YXZ5vdZw4icKuifHU7JRnM7S3Z
-86D/O5Nb2abQ4+NSSG0LEKp+WRH7h9P81irERIpo0JVcACpA1k7WdlIzVhHnhgu0
-sCCkuwdFPBWgy8UALXJ1vJk37sKeeMfdZZi0FBxf1r9VnAYIQa0t+T6NT1ClFioz
-QNbKM8tLENqLhWcKTQRl
-=HymY
------END PGP SIGNATURE-----
-
---gYXIgL6/MA84ylAn--
-
---===============6098304074852698337==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6098304074852698337==--
+Thanks,
+Sekhar
