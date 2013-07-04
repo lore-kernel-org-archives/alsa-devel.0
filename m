@@ -1,21 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Query on Audio DMA using DMAEngine
-Date: Thu, 4 Jul 2013 11:53:42 +0100
-Message-ID: <20130704105342.GW27646@sirena.org.uk>
-References: <083BC63EECB6FD41B8E81CF7FD87CC0F2E4F1488@DLEE08.ent.ti.com>
- <51D01F31.3010602@metafoo.de> <51D11D64.3070805@topic.nl>
- <51D24A01.2050709@ti.com> <51D26A18.8040903@topic.nl>
- <20130702121345.GL27646@sirena.org.uk>
- <51D3EA42.3040205@metafoo.de>
- <20130703094307.GE27646@sirena.org.uk> <51D46598.6070005@ti.com>
- <51D510EA.1030809@topic.nl>
+Subject: Re: [PATCH v2] ASoC: add ak4554 driver
+Date: Thu, 4 Jul 2013 11:58:36 +0100
+Message-ID: <20130704105836.GX27646@sirena.org.uk>
+References: <87bo6mixuj.wl%kuninori.morimoto.gx@renesas.com>
+ <20130702094202.GZ27646@sirena.org.uk>
+ <877gh88ls9.wl%kuninori.morimoto.gx@renesas.com>
+ <20130703091844.GD27646@sirena.org.uk>
+ <877gh70xma.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3593270413390286312=="
+Content-Type: multipart/mixed; boundary="===============6098304074852698337=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A033326179B
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 12:53:45 +0200 (CEST)
-In-Reply-To: <51D510EA.1030809@topic.nl>
+ by alsa0.perex.cz (Postfix) with ESMTP id 957B926179B
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 12:58:41 +0200 (CEST)
+In-Reply-To: <877gh70xma.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,71 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mike Looijmans <mike.looijmans@topic.nl>
-Cc: Joel Fernandes <joelf@ti.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, davinci-linux-open-source@linux.davincidsp.com, linux-omap@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3593270413390286312==
+--===============6098304074852698337==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="K5FRBbPSksISZ1JK"
+	protocol="application/pgp-signature"; boundary="gYXIgL6/MA84ylAn"
 Content-Disposition: inline
 
 
---K5FRBbPSksISZ1JK
+--gYXIgL6/MA84ylAn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 04, 2013 at 08:06:34AM +0200, Mike Looijmans wrote:
+On Wed, Jul 03, 2013 at 09:15:13PM -0700, Kuninori Morimoto wrote:
+> ak4554 is very simple DA/AD converter which has no setting register.
+> Note that it has hard coded asymmetric data format
+> playback : SND_SOC_DAIFMT_RIGHT_J
+> capture  : SND_SOC_DAIFMT_LEFT_J
+> This driver has single DAI and doesn't have set_fmt.
 
-> In any case, using the IRAM directly might have some use, because
-> you don't have to compete for the DDRRAM with other devices. But I
-> never understood what the ping-ping via IRAM was supposed to
-> accomplish, I don't see why McASP -> IRAM -> DDRRAM (or the other
-> way around) would be better than just McASP -> DDRRAM. Especially
-> since the McASP has a built-in 256 byte FIFO buffer on both
-> channels. In all my measurements, using the IRAM ping-pong only made
-> things worse in terms of overruns and underruns, not better.
+Applied, thanks.
 
-> Anyone who know why the ping-pong was implemented and what kind of
-> usage it was intended for?
-
-Pushing the audio through some static RAM is normally implemented in
-order to save power - when doing this you can put the dynamic RAM into a
-lower power state for more of the time, only waking it up to burst data
-to or from the static RAM (assuming an otherwise idle system).  This is
-more normally used for playback than for capture but the same idea
-applies in both cases.
-
---K5FRBbPSksISZ1JK
+--gYXIgL6/MA84ylAn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR1VQyAAoJELSic+t+oim9PAIP/1TBJa7sX5UyRVbAy/5Yn9ON
-Nsaa/hRtISemCVnXGbH8L/tWMNgfyOfQmOlFiyRX/7rDGgkKxcd0Ou7/pysGMjIq
-jRPhcNeTqCWnXIZqOMi+8Yd+VsGrPpzXKowJNIAp1etb9RAfoXXZrT8p9J7cY20F
-ZdaercTxyrq31QRH8hLJuhciU8DWEPopNxeNj2L8Zn+jD3XT+DKIcH+nwQNuIUjw
-LoWi4iQgE7qJBuiyehd2mJP0bUaa7Sf4CXAkmCPdlkjbB20ACsd6bgx6iJVBstKB
-WuNDQ6qm697Sat9Vv9uwwd5dX0ImOlguQkkX6hndgKZL2oqSynLOhfF0bjBurxe9
-fgFJqOfRDRj0EzZD7Lxz10mbkZmPrxST3wcUn730GGKb8oESVosAIl8OjaB+tGBU
-Ptd5sKi1BDPDQZ8CI5g4Kh0KsNO5qulT48bEduEETA04fgfeBVP6b1DXTun/YQ2n
-4gP5UvuU1cxMI0HoBAX5AbtK35dceL+LHwuZgxt0vwIzmhIAmFKiczEO6FIGh0xP
-uuD2tF+KqMKaefCaZJJjE2uIXIAvowJB0dpPCu08TS8Q6hopYv96bmuRbNW423+m
-Lbun7aqYQ/Yw0V4oh5UnsKyW8+Qz4hirDpwC00IjjOf72F1xdU8IjkiqRPRLTQUj
-SoHYLHNTItos3AT5s109
-=RqX7
+iQIcBAEBAgAGBQJR1VVZAAoJELSic+t+oim9yGcP/1YjK+edG3kC4UNlyk2+E+2D
+u+puQSqykmk1TfKf72OhKJ97e5EnYEUOC5nEAWTxXjDwPYz0mwu7jF4+mpLlwy2R
+99EsGHRutcfzf+tFk9ENNdPFOWVoyG5kpqQhfl3eIJsQuXcD24LW2vT8rJ2/UeBN
+b1OZXUCgyhYKhqeoQUgcJpnXUAbqhmki1GdVu49gl9T7kKbz48eE1KeSxzyP/70H
+Jv25WYMpKohYob5Xg3nVRC4WdfMZcFsLt8DTkB48NPiCmjKF8IcH947ixaaQ3jJn
+qjO/yuQbywN7WfHdqHbC/Y9YJqx7pVIPNRYTJdVEcPOXbi/MmhPfxtVFIGhHPAev
+rvHshV0QQfOoxzDjMAiK5vue0NU6N/c9aVf2jeot+sMM+gJdvMjXA+DrE1JPjl0/
+/AVuTJ4bxfMSm3xCVwqneJqWYNYZtuGQvxP3G+NLacLY34RQs92U/UEmJOQFuRkx
+1pVcDWfNOI/1r/SKbNwl+FvH9zAo2TKChKYQV7YXZ5vdZw4icKuifHU7JRnM7S3Z
+86D/O5Nb2abQ4+NSSG0LEKp+WRH7h9P81irERIpo0JVcACpA1k7WdlIzVhHnhgu0
+sCCkuwdFPBWgy8UALXJ1vJk37sKeeMfdZZi0FBxf1r9VnAYIQa0t+T6NT1ClFioz
+QNbKM8tLENqLhWcKTQRl
+=HymY
 -----END PGP SIGNATURE-----
 
---K5FRBbPSksISZ1JK--
+--gYXIgL6/MA84ylAn--
 
---===============3593270413390286312==
+--===============6098304074852698337==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3593270413390286312==--
+--===============6098304074852698337==--
