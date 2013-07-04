@@ -1,16 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] [patch 1/1] imx-sgtl5000: return
- E_PROBE_DEFER if ssi/codec not found
-Date: Thu, 4 Jul 2013 15:59:06 +0100
-Message-ID: <20130704145906.GC27646@sirena.org.uk>
-References: <20130620212100.075892857@rtp-net.org>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: [PATCH 07/11] ALSA: hdspm - Refactor
+ ENUMERATED_CTL_INFO into function
+Date: Thu, 4 Jul 2013 17:05:51 +0200
+Message-ID: <20130704150551.GA5601@ltw.loris.tv>
+References: <1372943796-18998-1-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1372943796-18998-2-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1372943796-18998-3-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1372943796-18998-4-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1372943796-18998-5-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1372943796-18998-6-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1372943796-18998-7-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1372943796-18998-8-git-send-email-adi@drcomp.erfurt.thur.de>
+ <s5hwqp6cv3x.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0924584483862955551=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D8DA4261AB4
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 16:59:11 +0200 (CEST)
-In-Reply-To: <20130620212100.075892857@rtp-net.org>
+Received: from ltw.loris.tv (ltw.loris.tv [188.40.101.23])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B4AB265713
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2013 17:05:52 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hwqp6cv3x.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +30,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Patard <arnaud.patard@rtp-net.org>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jul 04, 2013 at 03:28:34PM +0200, Takashi Iwai wrote:
 
---===============0924584483862955551==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ejChHpkz4tWrd0Q0"
-Content-Disposition: inline
+> > ENUMERATED_CTL_INFO is a macro, so the binary code is generated multiple
+> > times. To avoid code duplication, refactor the involved functionality
+> > into a function and make ENUMERATED_CTL_INFO a call to this function.
+> > 
+> > Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+> > 
+> > diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+> > index 15f1e7b..50453f9 100644
+> > --- a/sound/pci/rme9652/hdspm.c
+> > +++ b/sound/pci/rme9652/hdspm.c
+> > @@ -2221,16 +2221,22 @@ static int hdspm_get_s1_sample_rate(struct hdspm *hdspm, unsigned int idx)
+> >  	return (status >> (idx*4)) & 0xF;
+> >  }
+> >  
+> > -#define ENUMERATED_CTL_INFO(info, texts) \
+> > -{ \
+> > -	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED; \
+> > -	uinfo->count = 1; \
+> > -	uinfo->value.enumerated.items = ARRAY_SIZE(texts); \
+> > -	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items) \
+> > -		uinfo->value.enumerated.item =	uinfo->value.enumerated.items - 1; \
+> > -	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]); \
+> > +static void snd_hdspm_set_infotext(struct snd_ctl_elem_info *uinfo,
+> > +		char **texts, const int count)
+> > +{
+> > +	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+> > +	uinfo->count = 1;
+> > +	uinfo->value.enumerated.items = count;
+> > +	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
+> > +		uinfo->value.enumerated.item =
+> > +			uinfo->value.enumerated.items - 1;
+> > +	strcpy(uinfo->value.enumerated.name,
+> > +			texts[uinfo->value.enumerated.item]);
+> >  }
+> >  
+> > +#define ENUMERATED_CTL_INFO(info, texts) \
+> > +	snd_hdspm_set_infotext(info, texts, ARRAY_SIZE(texts));
+> 
+> The semicolon is superfluous (rather dangerous) here.
+> And you can reduce more codes by using the existing
+> snd_ctl_enum_info() helper function.
+> 
+> #define ENUMERATED_CTL_INFO(info, texts) \
+> 	snd_ctl_enum_info(info, 1, texts, ARRAY_SIZE(texts))
+
+OK, looks useful. The exact function signature is a bit different (first
+itemcount, then items).
+
+Suggestion: I'll resend the entire series without the semicolon and add
+another patch to convert all the text arrays from static char *texts[]
+to static const char *const texts[]. In this patch, I'll also drop the
+additional code.
 
 
---ejChHpkz4tWrd0Q0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Cheers
 
-On Thu, Jun 20, 2013 at 11:20:49PM +0200, Arnaud Patard wrote:
-> If the ssi or codec drivers are not loaded (for instance, because spi or i2c
-> bus drivers are not loaded), returning -EINVAL will for people to unload and
-> then reload the module to get sound working. Returning E_PROBE_DEFER will
-> mitigate this.
-
-Applied, thanks.
-
---ejChHpkz4tWrd0Q0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR1Y23AAoJELSic+t+oim9BLIP/0LJNYkxkgYIRnzwnN3x0VFb
-//NNjg+L5n+3cNvRVjAoESDC0fk/v5wongRJcgf4Rb6QKDYMWIcc/2cYdF7/56Lh
-OmHQR0pktuOh7PM7oTKP3elWpM0oWvR+L2cwf0kATdxR0Pkg2rCXpl9CzqI/NaOr
-OwfzFih82Mc/b0PuAMX7eSF999WGriU5avqBIFcF2g+rvDnmGToSUwv1DNpZph1c
-VV7WIjKoLd8JjEpUqFPxzoA0iKnzA+kIt2kf6UaKX2Cv0nC2YEGwnx/N5CMXr32p
-FBFEgYkApHUlEGnQZaP1M2alh4vpHI+qFHFQrtsbtDk9naT7P2JgWRwudND6XHU9
-AaIhJQzJepE93TgN/mAWVB6DqQTtVwVpChu5kOwFJS15iwOnRnwitCGWZG7iZqCk
-Rl57EMNbYrNXi7nXwzL2tHGqE+uH4BhxU3t53O9gyXzpSxiZURC96FiS9js4K44r
-iQU9kts9Ept5NYgyQkIHn6D4gqarlqGdq6aUnHuZDFxXfUmcM2wcPSZHSRmy1qZo
-WGLlVuzl0mIqwehaJzJrSkQC6rRpYVgzH0aX5YGcdo7q/URF4GMmpBLYSbWgpxhv
-Io5ka0S7qoD2k2/RrtpdNVx7kQ/ojwp06jpVRe4ucRD2DoEHmAIhNtJAbQcIWmgc
-BD2Bqe1AG7dnQJrpKzsF
-=FakI
------END PGP SIGNATURE-----
-
---ejChHpkz4tWrd0Q0--
-
---===============0924584483862955551==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0924584483862955551==--
+-- 
+mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
