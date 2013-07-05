@@ -1,8 +1,8 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCHv2 21/31] ALSA: hdspm - AES32: Ignore float/int
-	format bit
-Date: Fri,  5 Jul 2013 11:28:13 +0200
-Message-ID: <1373016503-9474-22-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCHv2 22/31] ALSA: hdspm - AES32: Enable TCO input
+	in hdspm_external_sample_rate()
+Date: Fri,  5 Jul 2013 11:28:14 +0200
+Message-ID: <1373016503-9474-23-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1373016503-9474-1-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-2-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-3-git-send-email-adi@drcomp.erfurt.thur.de>
@@ -24,11 +24,12 @@ References: <1373016503-9474-1-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-19-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-20-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-21-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1373016503-9474-22-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1373016503-9474-21-git-send-email-adi@drcomp.erfurt.thur.de>
+In-Reply-To: <1373016503-9474-22-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -42,33 +43,60 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As mentioned in the comment, the AES32 cards must not set the format
-bit, since it is used to indicate the preferred sync setting instead.
-
-We hence simply skip the corresponding part in the hw_params function.
+This patch adds support to read the TCO sample rate in
+hdspm_external_sample_rate() on RME AES(32) cards.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index c0143cf..a9f4c7c 100644
+index a9f4c7c..80b2247 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -5566,6 +5566,16 @@ static int snd_hdspm_hw_params(struct snd_pcm_substream *substream,
- 	   */
+@@ -1176,17 +1176,36 @@ static int hdspm_external_sample_rate(struct hdspm *hdspm)
+ 		timecode = hdspm_read(hdspm, HDSPM_timecodeRegister);
  
+ 		syncref = hdspm_autosync_ref(hdspm);
++		switch (syncref) {
++		case HDSPM_AES32_AUTOSYNC_FROM_WORD:
++		/* Check WC sync and get sample rate */
++			if (hdspm_wc_sync_check(hdspm))
++				return HDSPM_bit2freq(hdspm_get_wc_sample_rate(hdspm));
++			break;
++
++		case HDSPM_AES32_AUTOSYNC_FROM_AES1:
++		case HDSPM_AES32_AUTOSYNC_FROM_AES2:
++		case HDSPM_AES32_AUTOSYNC_FROM_AES3:
++		case HDSPM_AES32_AUTOSYNC_FROM_AES4:
++		case HDSPM_AES32_AUTOSYNC_FROM_AES5:
++		case HDSPM_AES32_AUTOSYNC_FROM_AES6:
++		case HDSPM_AES32_AUTOSYNC_FROM_AES7:
++		case HDSPM_AES32_AUTOSYNC_FROM_AES8:
++		/* Check AES sync and get sample rate */
++			if (hdspm_aes_sync_check(hdspm, syncref - HDSPM_AES32_AUTOSYNC_FROM_AES1))
++				return HDSPM_bit2freq(hdspm_get_aes_sample_rate(hdspm,
++							syncref - HDSPM_AES32_AUTOSYNC_FROM_AES1));
++			break;
  
-+	/*  For AES cards, the float format bit is the same as the
-+	 *  preferred sync reference. Since we don't want to break
-+	 *  sync settings, we have to skip the remaining part of this
-+	 *  function.
-+	 */
-+	if (hdspm->io_type == AES32) {
-+		return 0;
-+	}
-+
-+
- 	/* Switch to native float format if requested */
- 	if (SNDRV_PCM_FORMAT_FLOAT_LE == params_format(params)) {
- 		if (!(hdspm->control_register & HDSPe_FLOAT_FORMAT))
+-		if (syncref == HDSPM_AES32_AUTOSYNC_FROM_WORD &&
+-				status & HDSPM_AES32_wcLock)
+-			return HDSPM_bit2freq((status >> HDSPM_AES32_wcFreq_bit) & 0xF);
+ 
+-		if (syncref >= HDSPM_AES32_AUTOSYNC_FROM_AES1 &&
+-				syncref <= HDSPM_AES32_AUTOSYNC_FROM_AES8 &&
+-				status2 & (HDSPM_LockAES >>
+-				(syncref - HDSPM_AES32_AUTOSYNC_FROM_AES1)))
+-			return HDSPM_bit2freq((timecode >> (4*(syncref-HDSPM_AES32_AUTOSYNC_FROM_AES1))) & 0xF);
+-		return 0;
++		case HDSPM_AES32_AUTOSYNC_FROM_TCO:
++		/* Check TCO sync and get sample rate */
++			if (hdspm_tco_sync_check(hdspm))
++				return HDSPM_bit2freq(hdspm_get_tco_sample_rate(hdspm));
++			break;
++		default:
++			return 0;
++		} /* end switch(syncref) */
+ 		break;
+ 
+ 	case MADIface:
 -- 
 1.8.3.1
