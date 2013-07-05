@@ -1,8 +1,8 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCHv2 23/31] ALSA: hdspm - AES32: Enable
-	TCO/Sync-In in snd_hdspm_put_sync_ref()
-Date: Fri,  5 Jul 2013 11:28:15 +0200
-Message-ID: <1373016503-9474-24-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCHv2 24/31] ALSA: hdspm - AES32: Include TCO and
+	Sync-In in proc output
+Date: Fri,  5 Jul 2013 11:28:16 +0200
+Message-ID: <1373016503-9474-25-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1373016503-9474-1-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-2-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-3-git-send-email-adi@drcomp.erfurt.thur.de>
@@ -26,11 +26,12 @@ References: <1373016503-9474-1-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-21-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-22-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-23-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1373016503-9474-24-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1373016503-9474-23-git-send-email-adi@drcomp.erfurt.thur.de>
+In-Reply-To: <1373016503-9474-24-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -44,42 +45,32 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch enables the user to select "TCO" and "Sync In" as a preferred
-sync reference on RME AES(32) cards.
+Also report TCO status and Sync-In via /proc/ on AES(32) cards.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 80b2247..73d9626 100644
+index 73d9626..f6e922c 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -2954,19 +2954,20 @@ static int snd_hdspm_put_pref_sync_ref(struct snd_kcontrol *kcontrol,
+@@ -5125,11 +5125,18 @@ snd_hdspm_proc_read_aes32(struct snd_info_entry * entry,
+ 		autosync_ref = "AES7"; break;
+ 	case HDSPM_AES32_AUTOSYNC_FROM_AES8:
+ 		autosync_ref = "AES8"; break;
++	case HDSPM_AES32_AUTOSYNC_FROM_TCO:
++		autosync_ref = "TCO"; break;
++	case HDSPM_AES32_AUTOSYNC_FROM_SYNC_IN:
++		autosync_ref = "Sync In"; break;
+ 	default:
+ 		autosync_ref = "---"; break;
+ 	}
+ 	snd_iprintf(buffer, "AutoSync ref = %s\n", autosync_ref);
  
- static int hdspm_autosync_ref(struct hdspm *hdspm)
- {
-+	/* This looks at the autosync selected sync reference */
- 	if (AES32 == hdspm->io_type) {
++	/* call readout function for TCO specific status */
++	snd_hdspm_proc_read_tco(entry, buffer);
 +
- 		unsigned int status = hdspm_read(hdspm, HDSPM_statusRegister);
--		unsigned int syncref =
--			(status >> HDSPM_AES32_syncref_bit) & 0xF;
--		if (syncref == 0)
--			return HDSPM_AES32_AUTOSYNC_FROM_WORD;
--		if (syncref <= 8)
-+		unsigned int syncref = (status >> HDSPM_AES32_syncref_bit) & 0xF;
-+		if ((syncref >= HDSPM_AES32_AUTOSYNC_FROM_WORD) &&
-+				(syncref <= HDSPM_AES32_AUTOSYNC_FROM_SYNC_IN)) {
- 			return syncref;
-+		}
- 		return HDSPM_AES32_AUTOSYNC_FROM_NONE;
-+
- 	} else if (MADI == hdspm->io_type) {
--		/* This looks at the autosync selected sync reference */
--		unsigned int status2 = hdspm_read(hdspm, HDSPM_statusRegister2);
+ 	snd_iprintf(buffer, "\n");
+ }
  
-+		unsigned int status2 = hdspm_read(hdspm, HDSPM_statusRegister2);
- 		switch (status2 & HDSPM_SelSyncRefMask) {
- 		case HDSPM_SelSyncRef_WORD:
- 			return HDSPM_AUTOSYNC_FROM_WORD;
 -- 
 1.8.3.1
