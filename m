@@ -1,8 +1,7 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCHv2 13/31] ALSA: hdspm - AES32: Fix TCO sync
-	check reporting
-Date: Fri,  5 Jul 2013 11:28:05 +0200
-Message-ID: <1373016503-9474-14-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCHv2 14/31] ALSA: hdspm - Cosmetics, no real change
+Date: Fri,  5 Jul 2013 11:28:06 +0200
+Message-ID: <1373016503-9474-15-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1373016503-9474-1-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-2-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-3-git-send-email-adi@drcomp.erfurt.thur.de>
@@ -16,11 +15,12 @@ References: <1373016503-9474-1-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-11-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-12-git-send-email-adi@drcomp.erfurt.thur.de>
  <1373016503-9474-13-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1373016503-9474-14-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1373016503-9474-13-git-send-email-adi@drcomp.erfurt.thur.de>
+In-Reply-To: <1373016503-9474-14-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,73 +34,55 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-HDSPM_tco_lock and HDSPM_tcoLock were too close, so the previous code
-didn't honour the difference between the two.
-
-Let's be more verbose and use HDSPM_tcoLockMadi for MADI cards,
-HDSPM_tcoLockAes for AES(32) and fix the code that makes use of both.
+This patch does nothing, it's sole intent is to clean up the code.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 58b2104..bdd8c77 100644
+index bdd8c77..d95100e 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -360,11 +360,11 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- #define HDSPM_madiLock           (1<<3)	/* MADI Locked =1, no=0 */
- #define HDSPM_madiSync          (1<<18) /* MADI is in sync */
+@@ -2926,7 +2926,7 @@ static int hdspm_autosync_ref(struct hdspm *hdspm)
+ 		case HDSPM_SelSyncRef_NVALID:
+ 			return HDSPM_AUTOSYNC_FROM_NONE;
+ 		default:
+-			return 0;
++			return HDSPM_AUTOSYNC_FROM_NONE;
+ 		}
  
--#define HDSPM_tcoLock    0x00000020 /* Optional TCO locked status FOR HDSPe MADI! */
--#define HDSPM_tcoSync    0x10000000 /* Optional TCO sync status */
-+#define HDSPM_tcoLockMadi    0x00000020 /* Optional TCO locked status for HDSPe MADI*/
-+#define HDSPM_tcoSync    0x10000000 /* Optional TCO sync status for HDSPe MADI and AES32!*/
+ 	}
+@@ -5260,7 +5260,7 @@ static int snd_hdspm_set_defaults(struct hdspm * hdspm)
  
--#define HDSPM_syncInLock 0x00010000 /* Sync In lock status FOR HDSPe MADI! */
--#define HDSPM_syncInSync 0x00020000 /* Sync In sync status FOR HDSPe MADI! */
-+#define HDSPM_syncInLock 0x00010000 /* Sync In lock status for HDSPe MADI! */
-+#define HDSPM_syncInSync 0x00020000 /* Sync In sync status for HDSPe MADI! */
+ 	case AES32:
+ 		hdspm->control_register =
+-			HDSPM_ClockModeMaster |	/* Master Cloack Mode on */
++			HDSPM_ClockModeMaster |	/* Master Clock Mode on */
+ 			hdspm_encode_latency(7) | /* latency max=8192samples */
+ 			HDSPM_SyncRef0 |	/* AES1 is syncclock */
+ 			HDSPM_LineOut |	/* Analog output in */
+@@ -6737,7 +6737,7 @@ static int snd_hdspm_create(struct snd_card *card,
+ 			if (NULL != hdspm->tco) {
+ 				hdspm_tco_write(hdspm);
+ 			}
+-			snd_printk(KERN_INFO "HDSPM: MADI TCO module found\n");
++			snd_printk(KERN_INFO "HDSPM: MADI/AES TCO module found\n");
+ 		} else {
+ 			hdspm->tco = NULL;
+ 		}
+@@ -6752,10 +6752,12 @@ static int snd_hdspm_create(struct snd_card *card,
+ 	case AES32:
+ 		if (hdspm->tco) {
+ 			hdspm->texts_autosync = texts_autosync_aes_tco;
+-			hdspm->texts_autosync_items = 10;
++			hdspm->texts_autosync_items =
++				ARRAY_SIZE(texts_autosync_aes_tco);
+ 		} else {
+ 			hdspm->texts_autosync = texts_autosync_aes;
+-			hdspm->texts_autosync_items = 9;
++			hdspm->texts_autosync_items =
++				ARRAY_SIZE(texts_autosync_aes);
+ 		}
+ 		break;
  
- #define HDSPM_BufferPositionMask 0x000FFC0 /* Bit 6..15 : h/w buffer pointer */
- 			/* since 64byte accurate, last 6 bits are not used */
-@@ -382,7 +382,7 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- 					 * Interrupt
- 					 */
- #define HDSPM_tco_detect         0x08000000
--#define HDSPM_tco_lock	         0x20000000
-+#define HDSPM_tcoLockAes         0x20000000 /* Optional TCO locked status for HDSPe AES */
- 
- #define HDSPM_s2_tco_detect      0x00000040
- #define HDSPM_s2_AEBO_D          0x00000080
-@@ -480,7 +480,9 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- #define HDSPM_AES32_AUTOSYNC_FROM_AES6 6
- #define HDSPM_AES32_AUTOSYNC_FROM_AES7 7
- #define HDSPM_AES32_AUTOSYNC_FROM_AES8 8
--#define HDSPM_AES32_AUTOSYNC_FROM_NONE 9
-+#define HDSPM_AES32_AUTOSYNC_FROM_TCO 9
-+#define HDSPM_AES32_AUTOSYNC_FROM_SYNC_IN 10
-+#define HDSPM_AES32_AUTOSYNC_FROM_NONE 11
- 
- /*  status2 */
- /* HDSPM_LockAES_bit is given by HDSPM_LockAES >> (AES# - 1) */
-@@ -3868,9 +3870,18 @@ static int hdspm_tco_sync_check(struct hdspm *hdspm)
- 	if (hdspm->tco) {
- 		switch (hdspm->io_type) {
- 		case MADI:
-+			status = hdspm_read(hdspm, HDSPM_statusRegister);
-+			if (status & HDSPM_tcoLockMadi) {
-+				if (status & HDSPM_tcoSync)
-+					return 2;
-+				else
-+					return 1;
-+			}
-+			return 0;
-+			break;
- 		case AES32:
- 			status = hdspm_read(hdspm, HDSPM_statusRegister);
--			if (status & HDSPM_tcoLock) {
-+			if (status & HDSPM_tcoLockAes) {
- 				if (status & HDSPM_tcoSync)
- 					return 2;
- 				else
 -- 
 1.8.3.1
