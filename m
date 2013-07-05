@@ -1,15 +1,11 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ak4554: add DT support
-Date: Fri, 5 Jul 2013 10:17:03 +0100
-Message-ID: <20130705091703.GN27646@sirena.org.uk>
-References: <87wqp5wwuy.wl%kuninori.morimoto.gx@renesas.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: [PATCHv2 00/31] HDSPM: A lot
+Date: Fri,  5 Jul 2013 11:27:52 +0200
+Message-ID: <1373016503-9474-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8375181739836783596=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A9103261ABF
- for <alsa-devel@alsa-project.org>; Fri,  5 Jul 2013 11:17:07 +0200 (CEST)
-In-Reply-To: <87wqp5wwuy.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,55 +15,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: patch@alsa-project.org
+Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi!
 
---===============8375181739836783596==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="E4m3+Q8Mh0lP+1gE"
-Content-Disposition: inline
+Here's a revised series of the two patchsets I've sent earlier this
+week.
 
+Features by card:
 
---E4m3+Q8Mh0lP+1gE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+AIO:
+    - Support Analog Expansion Boards
+    - Support all card settings like gain, coax/optical switching etc.
+    - Fixed S/PDIF Sync status and frequency reporting
 
-On Thu, Jul 04, 2013 at 07:42:49PM -0700, Kuninori Morimoto wrote:
-> Support for loading the ak4554 codec module via devicetree.
+RayDAT:
+    - Controls for S/PDIF and WordClock
 
-Applied, thanks.
+AES(32):
+    - Support for TCO module (originally by Martin Dausel)
 
---E4m3+Q8Mh0lP+1gE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR1o8MAAoJELSic+t+oim9/MEP/1AqzXNkX8+7h7go08ZZs3ex
-SKESniBBflLoH6O3gALbk2/ZuB279TM/Ohlfzmn6zS6NKhffiW9mYyL0+WRE+bRO
-k7hQd8F995b8lSt8Mak4rDJCE4UCMXwPM8nooUVRPFOhWuu2j1vgzVm1hjkalJdz
-XCAwjc00N41tAYS5q+zIPUA/2IRJv/92HS+nl3U50h9vSZLVZk3MUh2qJ52KWnsB
-n9QJi5F/aYVufZ9zI1W1xzNQyAQoZF1bGEbdfKhcjlUlMQeNL3Mfo/TmVjEcdJYf
-/Z3cp6MOKHicfUaN5hMupUojrchKib3Ql1EJP6kvbB4g1wgDsTo+WeexxMpOjp81
-TzUh8gRcPs4thvix7iETWa0h5L6qL9LuoIP0dTJRSJ1jzaQxDNPspoU/e4OUgcTL
-ck/aLqanhrcRuvcBr/vQOwDYlUbfFO/31zlMDM6eSkUfk7rcPRK4jHsxKjsAckBX
-dy1uQNm+lCB5mVzxDEuslPRm1WLEAuDgIDMViDsh8bcGo2grMQHz99UXYwVvf0wU
-lMoEPiWZvZcnB4XdX5Gjx0iNh+apN0H5UulXM4NHStz6xEtAJxFz2ExRAJ/XEhTH
-jGuLtVrr4dVJNtNPuPcz3cd9BWYoryB9IseVOozmjX5CsBSxCNX+csVtPjRR8q8Y
-q5L9URG/1Hc/xbKN0ROE
-=2bXQ
------END PGP SIGNATURE-----
-
---E4m3+Q8Mh0lP+1gE--
-
---===============8375181739836783596==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+All cards:
+    - Code cleanups
+    - Documentation
 
 
---===============8375181739836783596==--
+Takashi: As agreed, I've split the big "TCO patch" into smaller chunks
+to ease reviewing.
+
+
+
+Adrian Knoth (30):
+  ALSA: hdspm - Add missing defines for RME AIO and RayDAT
+  ALSA: hdspm - Introduce hdspm_is_raydat_or_aio()
+  ALSA: hdspm - Augment HDSPM_TOGGLE_SETTING for AIO/RayDAT
+  ALSA: hdspm - Drop duplicate code in hdspm_set_system_clock_mode()
+  ALSA: hdspm - Add S/PDIF and WCK48 controls for RME RayDAT
+  ALSA: hdspm - Add S/PDIF, XLR, WCK48 and ADAT-in controls for RME AIO
+    cards
+  ALSA: hdspm - Refactor ENUMERATED_CTL_INFO into function
+  ALSA: hdspm - Introduce generic AIO tristate control
+  ALSA: hdspm - Enable AD/DA/PH gains and S/PDIF-Input select on AIO
+  ALSA: hdspm - Add support for AEBs on RME AIO
+  ALSA: hdspm - Fix S/PDIF Sync status and frequency on RME AIO
+  ALSA: hdspm - Create TCO readout function
+  ALSA: hdspm - AES32: Fix TCO sync check reporting
+  ALSA: hdspm - Cosmetics, no real change
+  ALSA: hdspm - AIO: Drop superfluous HDSPM_AUTOSYNC_REF
+  ALSA: hdspm - AES32: Add TCO and Sync-In text entries
+  ALSA: hdspm - Introduce hdspm_get_aes_sample_rate()
+  ALSA: hdspm - Add prototype declarations
+  ALSA: hdspm - Enable AES32 in hdspm_get_wc_sample_rate
+  ALSA: hdspm - Enable AES32 in hdspm_get_tco_sample_rate
+  ALSA: hdspm - AES32: Ignore float/int format bit
+  ALSA: hdspm - AES32: Enable TCO input in hdspm_external_sample_rate()
+  ALSA: hdspm - AES32: Enable TCO/Sync-In in snd_hdspm_put_sync_ref()
+  ALSA: hdspm - AES32: Include TCO and Sync-In in proc output
+  ALSA: hdspm - Introduce hdspm_external_rate_to_enum() helper function
+  ALSA: hdspm - AES32: Report external sample rate to userspace
+  ALSA: hdspm - AES32: Enable TCO support
+  ALSA: hdspm - Use snd_ctl_enum_info for most text arrays
+  ALSA: hdspm - Use snd_ctl_enum_info() for texts_autosync
+  ALSA: hdspm - Use snd_ctl_enum_info() in snd_hdspm_info_autosync_ref
+
+Martin Dausel (1):
+  ALSA: hdspm - Added some comments and control register documentation
+
+ sound/pci/rme9652/hdspm.c | 765 ++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 538 insertions(+), 227 deletions(-)
+
+-- 
+1.8.3.1
