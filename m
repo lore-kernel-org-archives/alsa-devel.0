@@ -1,11 +1,14 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCHv2 00/31] HDSPM: A lot
-Date: Fri,  5 Jul 2013 11:27:52 +0200
-Message-ID: <1373016503-9474-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCHv2 01/31] ALSA: hdspm - Add missing defines for
+	RME AIO and RayDAT
+Date: Fri,  5 Jul 2013 11:27:53 +0200
+Message-ID: <1373016503-9474-2-git-send-email-adi@drcomp.erfurt.thur.de>
+References: <1373016503-9474-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1373016503-9474-1-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,72 +22,40 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+The driver did not support all possible configurations. These defines
+will be used by later commits to add the missing functionality.
 
-Here's a revised series of the two patchsets I've sent earlier this
-week.
+Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
-Features by card:
-
-AIO:
-    - Support Analog Expansion Boards
-    - Support all card settings like gain, coax/optical switching etc.
-    - Fixed S/PDIF Sync status and frequency reporting
-
-RayDAT:
-    - Controls for S/PDIF and WordClock
-
-AES(32):
-    - Support for TCO module (originally by Martin Dausel)
-
-All cards:
-    - Code cleanups
-    - Documentation
-
-
-Takashi: As agreed, I've split the big "TCO patch" into smaller chunks
-to ease reviewing.
-
-
-
-Adrian Knoth (30):
-  ALSA: hdspm - Add missing defines for RME AIO and RayDAT
-  ALSA: hdspm - Introduce hdspm_is_raydat_or_aio()
-  ALSA: hdspm - Augment HDSPM_TOGGLE_SETTING for AIO/RayDAT
-  ALSA: hdspm - Drop duplicate code in hdspm_set_system_clock_mode()
-  ALSA: hdspm - Add S/PDIF and WCK48 controls for RME RayDAT
-  ALSA: hdspm - Add S/PDIF, XLR, WCK48 and ADAT-in controls for RME AIO
-    cards
-  ALSA: hdspm - Refactor ENUMERATED_CTL_INFO into function
-  ALSA: hdspm - Introduce generic AIO tristate control
-  ALSA: hdspm - Enable AD/DA/PH gains and S/PDIF-Input select on AIO
-  ALSA: hdspm - Add support for AEBs on RME AIO
-  ALSA: hdspm - Fix S/PDIF Sync status and frequency on RME AIO
-  ALSA: hdspm - Create TCO readout function
-  ALSA: hdspm - AES32: Fix TCO sync check reporting
-  ALSA: hdspm - Cosmetics, no real change
-  ALSA: hdspm - AIO: Drop superfluous HDSPM_AUTOSYNC_REF
-  ALSA: hdspm - AES32: Add TCO and Sync-In text entries
-  ALSA: hdspm - Introduce hdspm_get_aes_sample_rate()
-  ALSA: hdspm - Add prototype declarations
-  ALSA: hdspm - Enable AES32 in hdspm_get_wc_sample_rate
-  ALSA: hdspm - Enable AES32 in hdspm_get_tco_sample_rate
-  ALSA: hdspm - AES32: Ignore float/int format bit
-  ALSA: hdspm - AES32: Enable TCO input in hdspm_external_sample_rate()
-  ALSA: hdspm - AES32: Enable TCO/Sync-In in snd_hdspm_put_sync_ref()
-  ALSA: hdspm - AES32: Include TCO and Sync-In in proc output
-  ALSA: hdspm - Introduce hdspm_external_rate_to_enum() helper function
-  ALSA: hdspm - AES32: Report external sample rate to userspace
-  ALSA: hdspm - AES32: Enable TCO support
-  ALSA: hdspm - Use snd_ctl_enum_info for most text arrays
-  ALSA: hdspm - Use snd_ctl_enum_info() for texts_autosync
-  ALSA: hdspm - Use snd_ctl_enum_info() in snd_hdspm_info_autosync_ref
-
-Martin Dausel (1):
-  ALSA: hdspm - Added some comments and control register documentation
-
- sound/pci/rme9652/hdspm.c | 765 ++++++++++++++++++++++++++++++++--------------
- 1 file changed, 538 insertions(+), 227 deletions(-)
-
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index bd50193..a0fc961 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -258,6 +258,25 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
+ 
+ #define HDSPM_wclk_sel (1<<30)
+ 
++/* additional control register bits for AIO*/
++#define HDSPM_c0_Wck48				0x20 /* also RayDAT */
++#define HDSPM_c0_Input0				0x1000
++#define HDSPM_c0_Input1				0x2000
++#define HDSPM_c0_Spdif_Opt			0x4000
++#define HDSPM_c0_Pro				0x8000
++#define HDSPM_c0_clr_tms			0x10000
++#define HDSPM_c0_AEB1				0x20000
++#define HDSPM_c0_AEB2				0x40000
++#define HDSPM_c0_LineOut			0x80000
++#define HDSPM_c0_AD_GAIN0			0x100000
++#define HDSPM_c0_AD_GAIN1			0x200000
++#define HDSPM_c0_DA_GAIN0			0x400000
++#define HDSPM_c0_DA_GAIN1			0x800000
++#define HDSPM_c0_PH_GAIN0			0x1000000
++#define HDSPM_c0_PH_GAIN1			0x2000000
++#define HDSPM_c0_Sym6db				0x4000000
++
++
+ /* --- bit helper defines */
+ #define HDSPM_LatencyMask    (HDSPM_Latency0|HDSPM_Latency1|HDSPM_Latency2)
+ #define HDSPM_FrequencyMask  (HDSPM_Frequency0|HDSPM_Frequency1|\
 -- 
 1.8.3.1
