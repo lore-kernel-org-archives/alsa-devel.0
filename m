@@ -1,18 +1,18 @@
-From: Adam Williamson <awilliam@redhat.com>
-Subject: Re: No sound with Sony VAIO VPCZ1 (ALC889)
-Date: Fri, 05 Jul 2013 14:38:49 -0700
-Message-ID: <020e0ad5107eb4c2bb333468be58d7d3@www.happyassassin.net>
-References: <51D464A5.6040507@gmail.com> <51D59D60.9020105@gmail.com>
- <51D5FCFC.8010506@gmail.com> <s5hip0pwp49.wl%tiwai@suse.de>
- <51D6B56D.8050909@gmail.com> <s5h1u7dchqh.wl%tiwai@suse.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] ASoC: Allow imx-pcm-{dma,
+	fiq}.c to be modules
+Date: Fri, 5 Jul 2013 23:58:21 +0200
+Message-ID: <201307052358.22068.arnd@arndb.de>
+References: <201307051745.16140.arnd@arndb.de>
+ <201307052255.10765.arnd@arndb.de> <20130705211920.GK27646@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id C99AE2658D4
- for <alsa-devel@alsa-project.org>; Fri,  5 Jul 2013 23:38:52 +0200 (CEST)
-In-Reply-To: <s5h1u7dchqh.wl%tiwai@suse.de>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.8])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC39C2658E5
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jul 2013 23:58:37 +0200 (CEST)
+In-Reply-To: <20130705211920.GK27646@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,36 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Tormen <my.nl.abos@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2013-07-05 5:29, Takashi Iwai wrote:
-
->> This is the debian 3.9.6 kernel + alsa-compile to get "debug=2" for
->> snd.ko module to work as by default the CONFIG_SND_DEBUG is not set in
->> debian kernels.
+On Friday 05 July 2013, Mark Brown wrote:
+> On Fri, Jul 05, 2013 at 10:55:10PM +0200, Arnd Bergmann wrote:
+> > On Friday 05 July 2013, Mark Brown wrote:
 > 
-> OK, looking at two outputs, the difference is that the recent kernel
-> allows the 5.1 output configuration with two mic jacks.  But, this
-> looks rather strange as a laptop.  Does the machine have really two
-> microphone jacks?  The BIOS sets pins 0x18 and 0x19 are mic jacks.
+> > > Is this actually OK with the FIQ APIs?
+> 
+> > I don't know. Why wouldn't it?
+> 
+> It was the only reason I could think of why that'd have been done.
 
-I feel like this was the issue the LAST time it stopped working, too. 
-No, the system does not have two mic jacks - at least, there is only one 
-visible and accessible to the user on the outside of the case, on my 
-model.
+I looked in the log and found this part has been patched a couple
+of times already, going back and forth between "bool" and "tristate",
+always to fix build errors.
 
-> You have three items in "Capture Source", Internal Mic, Mic and Mic 1.
-> Which inputs are working actually?  If one of the last two is bogus,
-> we can disable it, then we can the unused pin.  For example, a patch
-> to disable the pin 0x19 would be like below.
+Please hold back for now, I'll try to reproduce on the bug on
+the current torvalds tree first. I know it was broken in linux-next
+as of a few weeks ago, but something else may have changed in the
+meantime.
 
-I don't have a working kernel on mine at present, but if Tormen can't 
-provide this info soon, I'll track one down and provide it. I expect 
-that one of the latter two inputs must be bogus.
--- 
-Adam Williamson
-Fedora QA Community Monkey
-IRC: adamw | Twitter: AdamW_Fedora | identi.ca: adamwfedora
-http://www.happyassassin.net
+	Arnd
