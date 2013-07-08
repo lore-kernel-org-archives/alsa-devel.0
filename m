@@ -1,16 +1,23 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: add headset detection
-	function
-Date: Mon, 8 Jul 2013 12:26:44 +0100
-Message-ID: <20130708112644.GR27646@sirena.org.uk>
-References: <1373265189-24917-1-git-send-email-bardliao@realtek.com>
+Subject: Re: [PATCH 3/6] ASoC: add Renesas R-Car Generation
+ feature
+Date: Mon, 8 Jul 2013 12:29:37 +0100
+Message-ID: <20130708112937.GS27646@sirena.org.uk>
+References: <87a9m6ixgp.wl%kuninori.morimoto.gx@renesas.com>
+ <8761wuixf1.wl%kuninori.morimoto.gx@renesas.com>
+ <20130703111034.GI27646@sirena.org.uk>
+ <87bo6j1706.wl%kuninori.morimoto.gx@renesas.com>
+ <20130704092636.GM27646@sirena.org.uk>
+ <87y59lx1ci.wl%kuninori.morimoto.gx@renesas.com>
+ <20130705093404.GO27646@sirena.org.uk>
+ <87pputim6o.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3970482551663107567=="
+Content-Type: multipart/mixed; boundary="===============1239812955430199699=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 7833C265345
- for <alsa-devel@alsa-project.org>; Mon,  8 Jul 2013 13:27:12 +0200 (CEST)
-In-Reply-To: <1373265189-24917-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 68309265336
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jul 2013 13:29:52 +0200 (CEST)
+In-Reply-To: <87pputim6o.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +27,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, swarren@wwwdotorg.org, lgirdwood@gmail.com, flove@realtek.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3970482551663107567==
+--===============1239812955430199699==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Pui3hWVk1jPQ/Or6"
+	protocol="application/pgp-signature"; boundary="4WhozBcz+A68xwf9"
 Content-Disposition: inline
 
 
---Pui3hWVk1jPQ/Or6
+--4WhozBcz+A68xwf9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 08, 2013 at 02:33:09PM +0800, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
->=20
-> Add headset detection function to rt5640 codec driver.
+On Sun, Jul 07, 2013 at 11:46:11PM -0700, Kuninori Morimoto wrote:
 
-No, use the standard soc-jack framework for reporting accessories.
+> Can you allow me to replace it in next (?) kernel version,
+> or should I do it on v2 patch ?
+> (using regmap needs big exchange...)
 
---Pui3hWVk1jPQ/Or6
+Should be fine, it was just a question since the code you had looked
+very much like regmap.  Ultimately if you've got something that looks
+too much like standard code that's the issue.
+
+--4WhozBcz+A68xwf9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR2qHxAAoJELSic+t+oim9jlUP/RzyoCZat/3DYt93gXAC0jCs
-OiDaqBtb4z92D8Q1NDxVZiBVoSulSuEMbv+eyGGE/oEaPVqba32hTrCFZMQ/Ehpz
-LVsZ9on5iTMGAmssGS9fFctBWPJeGgxsbA6qFFELOP1X/Pea6GPxfPAs+BwYFKUk
-48Nwvlk0mrQglcOjEwffgECbLWFaT9Ync69Nvql3WIcHgmwDo1pq1t1lK4+MgXtR
-qioKQj21hOh+ZaxoBHNmxgs/+I3f4PMAhBMDU3R9S89p1mJ7hx3fzO4bzSMKVvfP
-S4kgzfNoWyMsZt9r+Ayyu3LPiPthAsg9Ue+p+3vxEd1uOCewPen+4G25PBmM44jO
-PTVwBn3m5rSFkdq26qb47wWe1yi2/usantCcHTbPQAqX20tem6bgnKozsXeogK8V
-EgHuNklEycIT+00KfGCDPLIPGEk2pp0X/07SdY+PRSKQo279NTx+rIeMURFatB1E
-ttpvVVJqOKZUoJvdrXu4nnBFHXhxl6YQFI07ANmF18qxAbCeoa6Q6LEzaKu9qN3w
-Vygn0jxZK05+l5loVeb6Yijshuu8rUC4t0zrblmlMh2XprR0YxhYK6fCR/IdHNQN
-W0uAqk9Qgy3qZhyw0lzDISU9/HdwP5Jv/eX3jZLNTXOvFkL5sdEjop/B1sNyDNci
-o2psbn/F4BcVRGAFwSJ7
-=d2C5
+iQIcBAEBAgAGBQJR2qKeAAoJELSic+t+oim9H6sP/36P4UPad4zrWd7M5NjaP7Fm
+6KdqiUHR77x0g/wwgeBvNrUZUdcs16tg9jTXD8ScHszJCoPdYb1ptuhKncSnaemj
+1Z8RD4gBy+YdAD5/MFAxIL8ko++yUWOc0ZO2vVL5ZSUsfy5R0GDxa0SYfyYbksXE
+TELNf5ClB7NUNb5BUbfG6oq7N47YEHlpeOV8xdZisA0sKwJQ/3Gpv1RfqQcd/ipr
+TEdGKWlX3pggfexGk8xmrRtT72rt19yMm4KJTBDGQMVJZFv580RIbZdmO5INbw0J
+SrmXMk+ef/vNbOiT9QzySOW3u8KwDo5wwGdWRu0SOnnQ3KGKVPVj5LBuBfmWWHtc
+M1hsvqLkrx8iR1xVNPuOEWS2bc5gwUMRouWu/Pp0ORQEI+8JLumAhk/bz6WauYIs
+JRTP1vvB4urIjitcY5YF7ji2hZUFQsx33h19+bSbfnUXJo3D0Ea2dWtgxnp0Fa0+
+RDbdrxRRtD6ABDy46MFczrOjxyg9eNdCeuL7Hnss58UQ30vKSWa/0RhrqHBpDqod
+mOuMwCqpMyKDjcrCwQuA00oAaxkdSQFZZgoAfOtXoRsiRf0deqY2yz8Uu/+Ha6t0
+aG8qoTBwnLj/Zld5qST0WXrCjTfGfabACKdUgxuQnVgXQtKDEpMv83CQxw8ihQo5
+91C1eEleFxm58FaDXdnI
+=jWeY
 -----END PGP SIGNATURE-----
 
---Pui3hWVk1jPQ/Or6--
+--4WhozBcz+A68xwf9--
 
---===============3970482551663107567==
+--===============1239812955430199699==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3970482551663107567==--
+--===============1239812955430199699==--
