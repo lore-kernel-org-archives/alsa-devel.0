@@ -1,18 +1,14 @@
-From: Vishal Thanki <vishalthanki@gmail.com>
-Subject: Digital Mute DAI control
-Date: Mon, 8 Jul 2013 12:02:10 +0530
-Message-ID: <CAC3a_SAvNg04WmkSF8MVcAocr0cN3Of1eEwQRffcvyH98KPiPw@mail.gmail.com>
-Reply-To: vishal.thanki@gmail.com
+From: <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5640: add headset detection function
+Date: Mon, 8 Jul 2013 14:33:09 +0800
+Message-ID: <1373265189-24917-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f49.google.com (mail-oa0-f49.google.com
- [209.85.219.49])
- by alsa0.perex.cz (Postfix) with ESMTP id E3AD5265213
- for <alsa-devel@alsa-project.org>; Mon,  8 Jul 2013 08:32:31 +0200 (CEST)
-Received: by mail-oa0-f49.google.com with SMTP id n9so5787152oag.36
- for <alsa-devel@alsa-project.org>; Sun, 07 Jul 2013 23:32:31 -0700 (PDT)
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5301A265218
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jul 2013 08:34:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,14 +18,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, swarren@wwwdotorg.org, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
+From: Bard Liao <bardliao@realtek.com>
 
-I am new to ALSA development. I want to understand the what is the
-purpose of ".digital_mute" DAI control. Also, why during ".prepare"
-routine, the ".digital_mute" is invoked?
+Add headset detection function to rt5640 codec driver.
 
-Thanks in advance,
-Vishal
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5640.c | 60 +++++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/rt5640.h |  2 ++
+ 2 files changed, 62 insertions(+)
+
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index ce585e3..657efb7 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -1911,6 +1911,66 @@ static int rt5640_resume(struct snd_soc_codec *codec)
+ #define rt5640_resume NULL
+ #endif
+ 
++/**
++ * rt5640_headset_detect - Detect headset.
++ * @codec: SoC audio codec device.
++ * @jack_insert: Jack insert or not.
++ *
++ * Detect whether is headset or not when jack inserted.
++ *
++ * Returns detect status.
++ */
++int rt5640_headset_detect(struct snd_soc_codec *codec, int jack_insert)
++{
++	int jack_type;
++	int sclk_src = 0;
++	int reg63, reg64;
++
++	if (jack_insert) {
++		reg63 = snd_soc_read(codec, RT5640_PWR_ANLG1);
++		reg64 = snd_soc_read(codec, RT5640_PWR_ANLG2);
++		if (SND_SOC_BIAS_OFF == codec->dapm.bias_level) {
++			snd_soc_write(codec, RT5640_PWR_ANLG1, 0xa814);
++			sclk_src = snd_soc_read(codec, RT5640_GLB_CLK) &
++				RT5640_SCLK_SRC_MASK;
++			snd_soc_update_bits(codec, RT5640_GLB_CLK,
++				RT5640_SCLK_SRC_MASK,
++				0x2 << RT5640_SCLK_SRC_SFT);
++		}
++		snd_soc_update_bits(codec, RT5640_PWR_ANLG1,
++			RT5640_PWR_LDO2, RT5640_PWR_LDO2);
++		snd_soc_update_bits(codec, RT5640_PWR_ANLG2,
++			RT5640_PWR_MB1, RT5640_PWR_MB1);
++		snd_soc_update_bits(codec, RT5640_MICBIAS,
++			RT5640_MIC1_OVCD_MASK | RT5640_MIC1_OVTH_MASK |
++			RT5640_PWR_CLK25M_MASK | RT5640_PWR_MB_MASK,
++			RT5640_MIC1_OVCD_EN | RT5640_MIC1_OVTH_600UA |
++			RT5640_PWR_MB_PU | RT5640_PWR_CLK25M_PU);
++		snd_soc_update_bits(codec, RT5640_DUMMY1, 0x1, 0x1);
++		msleep(100);
++		if (snd_soc_read(codec, RT5640_IRQ_CTRL2) & 0x8)
++			jack_type = RT5640_HEADPHO_DET;
++		else
++			jack_type = RT5640_HEADSET_DET;
++		snd_soc_update_bits(codec, RT5640_IRQ_CTRL2,
++			RT5640_MB1_OC_CLR, 0);
++		if (SND_SOC_BIAS_OFF == codec->dapm.bias_level)
++			snd_soc_update_bits(codec, RT5640_GLB_CLK,
++				RT5640_SCLK_SRC_MASK, sclk_src);
++		snd_soc_write(codec, RT5640_PWR_ANLG1, reg63);
++		snd_soc_write(codec, RT5640_PWR_ANLG2, reg64);
++	} else {
++		snd_soc_update_bits(codec, RT5640_MICBIAS,
++			RT5640_MIC1_OVCD_MASK,
++			RT5640_MIC1_OVCD_DIS);
++
++		jack_type = RT5640_NO_JACK;
++	}
++
++	return jack_type;
++}
++EXPORT_SYMBOL_GPL(rt5640_headset_detect);
++
+ #define RT5640_STEREO_RATES SNDRV_PCM_RATE_8000_96000
+ #define RT5640_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
+ 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
+diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+index c48286d..c3856c8 100644
+--- a/sound/soc/codecs/rt5640.h
++++ b/sound/soc/codecs/rt5640.h
+@@ -2089,4 +2089,6 @@ struct rt5640_priv {
+ 	int dmic_en;
+ };
+ 
++int rt5640_headset_detect(struct snd_soc_codec *codec, int jack_insert);
++
+ #endif
+-- 
+1.8.1.1.439.g50a6b54
