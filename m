@@ -1,82 +1,57 @@
-From: Wang xingchao <xingchao.wang@linux.intel.com>
-Subject: Re: [PATCH 0/4 V7] Power-well API implementation for
- Haswell
-Date: Sun, 7 Jul 2013 19:59:33 -0400
-Message-ID: <20130707235707.GA29266@xingchao-harris-beach>
-References: <1369922831-727-1-git-send-email-xingchao.wang@linux.intel.com>
-	<20130606153441.GI7827@phenom.ffwll.local>
-	<CA+gsUGSBf5hit=fmjcrcy=fKJPNaFe02VkkM_=pYkVUwVyvG2Q@mail.gmail.com>
-	<20130704082314.GA2393@wxc-intel>
-	<CA+gsUGR+xOEa5b7XnTWWwRYyyVxO6hNAVv6EJXAvtKUfuabb1w@mail.gmail.com>
-	<20130704131330.GD2393@wxc-intel>
-	<CA+gsUGRVkeArxvFPFH0=MfZH6M6-VTpu8L4fbGkfoTRaB7oX0w@mail.gmail.com>
-	<s5hd2qww6no.wl%tiwai@suse.de>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH v9 08/10] ASoC: Add phycore-ac97-dt driver
+Date: Mon, 8 Jul 2013 09:19:24 +0200
+Message-ID: <20130708071924.GP16871@s25.your-server.de>
+References: <1371734429-6081-1-git-send-email-mpa@pengutronix.de>
+ <1371734429-6081-9-git-send-email-mpa@pengutronix.de>
+ <20130703161727.GS27646@sirena.org.uk>
+ <20130707071949.GH16871@s25.your-server.de>
+ <CAOMZO5CLWfoQE-9srT8e2kLn3A=iHhk-TbXytV+pdZVaaHwoNg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 14110265230
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jul 2013 09:19:42 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hd2qww6no.wl%tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, daniel.vetter@ffwll.ch, intel-gfx@lists.freedesktop.org, liam.r.girdwood@intel.com, david.henningsson@canonical.com
+In-Reply-To: <CAOMZO5CLWfoQE-9srT8e2kLn3A=iHhk-TbXytV+pdZVaaHwoNg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 06, 2013 at 08:20:59AM +0200, Takashi Iwai wrote:
-> > >> >> > drm-intel-next. I'll show up in the next linux-next and I'll forward it to
-> > >> >> > Dave for mergin into drm-next in roughly 2 weeks.
-> > >> >>
-> > >> >> So today I unblacklisted the audio modules on one of my Haswell
-> > >> >> machines and booted it with i915.disable_power_well=1. I only have an
-> > >> >> eDP output (it doesn't have audio) and I see the power well is
-> > >> >> enabled. This is wrong, the power well should be disabled since we
-> > >> >
-> > >> > right, if no application using audio it should be in runtime suspend mode.
-> > >> > And maybe your system didnot enable runtime suspend by default, would you
-> > >> > tell me the output below?
-> > >> > cat /sys/devices/pci0000:00/0000:00:03.0/power/control
-> > >>
-> > >> It says "on".
-> > >
-> > > would you change it to "auto" and test again.
-> > > Runtime power save should be enabled with "auto".
-> > 
-> > Doesn't solve the problem. Should I open a bug report somewhere?
-> > Having the power well enabled prevents some power saving features from
-> > the graphics driver.
-> 
-> Is the HD-audio power-saving itself working?  You can check it via
-> watching /sys/class/hwC*/power_{on|off}_acct files.
+Hi Fabio,
 
-I have two Haswell boards, one with "auto" power-save setting, the other one
-has setting "on". Here's the power_on/off_acct values:
-1) with control setting "auto"
-power_on_acct 14328
-power_off_acct 3231848
-2) with control setting "on"
-power_on_acct 6330528 
-power_off_acct 0
-
-So for the second one, power is always on.
-
-Paulo, would you check with your BIOS version? 
-At least i found BIOS 131 has the default setting "on" while BIOS 128 has
-"auto" setting.
-
-thanks
---xingchao
+On Sun, Jul 07, 2013 at 10:16:30AM -0300, Fabio Estevam wrote:
+> Hi Markus,
 > 
-> power_save option has to be adjusted appropriately.  Note that many
-> DEs change this value dynamically per AC-cable plug/unplug depending
-> on the configuration, and often it's set to 0 (= no power save) when
-> AC-cable is plugged.
+> On Sun, Jul 7, 2013 at 4:19 AM, Markus Pargmann <mpa@pengutronix.de> wrote:
 > 
+> > There are no pinctrl driver for imx27(pca100) or imx35(pcm043). The
 > 
+> For mx35 pinctrl driver is at drivers/pinctrl/pinctrl-imx35.c
+> 
+
+Thank you.
+
+I will create some pinctrl bindings for pcm043. But I am not sure what
+to do with pca100 reset functions.
+
+Regards,
+
+Markus
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
