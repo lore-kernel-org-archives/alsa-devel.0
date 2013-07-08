@@ -1,77 +1,82 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH v2 0/5] Sound support for at91sam9x5-wm8731 based boards
-Date: Mon, 8 Jul 2013 15:53:43 +0200
-Message-ID: <51DAC467.8060504@atmel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 3/5] ARM: AT91: DTS: sam9x5ek: add WM8731
+ codec
+Date: Mon, 8 Jul 2013 15:36:20 +0100
+Message-ID: <20130708143620.GF27646@sirena.org.uk>
 References: <1373290193-25300-1-git-send-email-richard.genoud@gmail.com>
+ <1373290193-25300-4-git-send-email-richard.genoud@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1373290193-25300-1-git-send-email-richard.genoud@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Genoud <richard.genoud@gmail.com>, Mark Brown <broonie@kernel.org>, =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
+Content-Type: multipart/mixed; boundary="===============8098502373260590807=="
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1373290193-25300-4-git-send-email-richard.genoud-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Richard Genoud <richard.genoud-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/07/2013 15:29, Richard Genoud :
-> Hi,
->
-> This patchset add sound on the at91sam9x5ek board.
-> It's based on Nicolas Ferre's work in the 2.6.39 atmel patch for sam9x5:
-> https://github.com/linux4sam/linux-at91/commit/0aa157c9e71ccccf3abc30fa37eb5c95b392978d
->
-> It needs Bo Chen's patchset on the generic dmaengine (topic/atmel branch
-> on Mark's sound tree) and the SSC interrupts disabled (cf
-> http://www.spinics.net/lists/arm-kernel/msg256901.html)
->
->
-> Tested on at91sam9g35ek.
->
-> patches applies on next-20130708
->
-> [I let the original signed-off from Nicolas and Uwe in place, I don't
-> know if I should replace them by something like "originaly-signed-off-by"
-> since the code has been changed.]
 
-I am happy to give my "signed-off" to this patch. I guess that Uwe's one 
-was more an integration signed-off when he imported the code to his git 
-tree.
+--===============8098502373260590807==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vmAJtI3ncFun9MAx"
+Content-Disposition: inline
 
-> [Sorry if it's too late for 3.11]
 
-Do not be sorry. Good work is always appreciated at any time!
+--vmAJtI3ncFun9MAx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Changes from V1-RFC:
->   * drop patches on SSC since Bo Chen already did the work
->   * reorder patches to have the machine driver first
->   * drop code already handled by the ASoC framework
->   * drop unneeded SND_ATMEL_SOC_PDC config selection
->   * use static snd_soc_card and  snd_soc_dai_link structures.
->
-> Best regards,
-> Richard.
->
-> Nicolas Ferre (1):
->    sound: sam9x5_wm8731: machine driver for at91sam9x5 wm8731 boards
->
-> Richard Genoud (4):
->    ARM: AT91: DTS: sam9x5: add SSC DMA parameters
->    ARM: AT91: DTS: sam9x5ek: add WM8731 codec
->    ARM: AT91: DTS: sam9x5ek: add sound configuration
->    ARM: AT91: DTS: sam9x5ek: enable SSC
+On Mon, Jul 08, 2013 at 03:29:51PM +0200, Richard Genoud wrote:
+> The WM8731 codec on sam9x5ek board is on i2c, address 1A
+>=20
+> Signed-off-by: Richard Genoud <richard.genoud-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Maybe we will have to split the series and let these DT patches go with 
-arm-soc.
+Acked-by: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 
->   arch/arm/boot/dts/at91sam9x5.dtsi   |    3 +
->   arch/arm/boot/dts/at91sam9x5ek.dtsi |   27 +++++
->   sound/soc/atmel/Kconfig             |   10 ++
->   sound/soc/atmel/Makefile            |    2 +
->   sound/soc/atmel/sam9x5_wm8731.c     |  206 +++++++++++++++++++++++++++++++++++
->   5 files changed, 248 insertions(+)
->   create mode 100644 sound/soc/atmel/sam9x5_wm8731.c
->
+This should go via arm-soc.
 
-Thanks, bye,
--- 
-Nicolas Ferre
+--vmAJtI3ncFun9MAx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR2s5aAAoJELSic+t+oim9WOMP/2cxxwVEWX3VmRHWRCQooQth
+wGxyk7WVqb4JUschwhgTjxcNexDeg3A6L0GhgKNOyqbFLux9EChTqyp7TMsfgPvQ
+Sf+ZFA1nDMHCjgU/iGHzVd7NZVuXWf9LRwji+IT4anZMPWBO71Xv7XdDTXvGSvbb
+bX3UsqKgiU0p/QUTKCtWgaXUPNmdtpUw8NTGWkBSB97EgU12JtvKUZKi6gOl5ZrC
+kGcrWcgPbcrEqPsHuQZZQB3PChl9LV/xPU76PH2yDGMLb/590/zuVSEqyad/3jC6
+nxs6Ti32EMm+XbWben+MRBLKIZJzM+Uzw6RWOQKXUK8lObPZ+ZyfRY5KG6JpZY6v
+jPAR5R1ScKadF+J7hjIxjpGIqKiOYmH5Ckr3WonXQXlT9ygd5Ji6tzxJIs9f6NYY
+mHFpGjbd/6SzHiXUx244G8bI2oEQuBWfhJag9pltUF6oMZUxGMEwWOd32sBUba59
+4cQvR4Q2lFsXy0kiKtqatxCrrYVspFf4fPrbfJYkxjicZ2cqUXmrXuzYJ3OMmXKM
+2h2lsN3Ao3rBqbzfkSvv6FxQcKXQWIrNFLy2GDsig6qzvcsMINmkbxWL/Ohp7FM2
+HMpMbWVPhJF/8dtK63PMcE5PwXVRpZxqSmXB8Wt5MphXfMEwtEod2ZNWf/iAaPs5
+2IC4nKzY/w/q1Ijnd1Ik
+=yrBV
+-----END PGP SIGNATURE-----
+
+--vmAJtI3ncFun9MAx--
+
+--===============8098502373260590807==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+devicetree-discuss mailing list
+devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+https://lists.ozlabs.org/listinfo/devicetree-discuss
+
+--===============8098502373260590807==--
