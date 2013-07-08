@@ -1,82 +1,77 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: add headset detection
-	function
-Date: Mon, 8 Jul 2013 14:31:12 +0100
-Message-ID: <20130708133112.GE27646@sirena.org.uk>
-References: <1373265189-24917-1-git-send-email-bardliao@realtek.com>
- <20130708112644.GR27646@sirena.org.uk>
- <1121E117AD4ECE49880A389A396215BB8A897A3E83@rtitmbs7.realtek.com.tw>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH v2 0/5] Sound support for at91sam9x5-wm8731 based boards
+Date: Mon, 8 Jul 2013 15:53:43 +0200
+Message-ID: <51DAC467.8060504@atmel.com>
+References: <1373290193-25300-1-git-send-email-richard.genoud@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7545834351667789238=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id ED108265461
- for <alsa-devel@alsa-project.org>; Mon,  8 Jul 2013 15:31:29 +0200 (CEST)
-In-Reply-To: <1121E117AD4ECE49880A389A396215BB8A897A3E83@rtitmbs7.realtek.com.tw>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1373290193-25300-1-git-send-email-richard.genoud@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Genoud <richard.genoud@gmail.com>, Mark Brown <broonie@kernel.org>, =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
+On 08/07/2013 15:29, Richard Genoud :
+> Hi,
+>
+> This patchset add sound on the at91sam9x5ek board.
+> It's based on Nicolas Ferre's work in the 2.6.39 atmel patch for sam9x5:
+> https://github.com/linux4sam/linux-at91/commit/0aa157c9e71ccccf3abc30fa37eb5c95b392978d
+>
+> It needs Bo Chen's patchset on the generic dmaengine (topic/atmel branch
+> on Mark's sound tree) and the SSC interrupts disabled (cf
+> http://www.spinics.net/lists/arm-kernel/msg256901.html)
+>
+>
+> Tested on at91sam9g35ek.
+>
+> patches applies on next-20130708
+>
+> [I let the original signed-off from Nicolas and Uwe in place, I don't
+> know if I should replace them by something like "originaly-signed-off-by"
+> since the code has been changed.]
 
---===============7545834351667789238==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hMqxZgAHHKe5m0zX"
-Content-Disposition: inline
+I am happy to give my "signed-off" to this patch. I guess that Uwe's one 
+was more an integration signed-off when he imported the code to his git 
+tree.
 
+> [Sorry if it's too late for 3.11]
 
---hMqxZgAHHKe5m0zX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Do not be sorry. Good work is always appreciated at any time!
 
-On Mon, Jul 08, 2013 at 09:12:06PM +0800, Bard Liao wrote:
+> Changes from V1-RFC:
+>   * drop patches on SSC since Bo Chen already did the work
+>   * reorder patches to have the machine driver first
+>   * drop code already handled by the ASoC framework
+>   * drop unneeded SND_ATMEL_SOC_PDC config selection
+>   * use static snd_soc_card and  snd_soc_dai_link structures.
+>
+> Best regards,
+> Richard.
+>
+> Nicolas Ferre (1):
+>    sound: sam9x5_wm8731: machine driver for at91sam9x5 wm8731 boards
+>
+> Richard Genoud (4):
+>    ARM: AT91: DTS: sam9x5: add SSC DMA parameters
+>    ARM: AT91: DTS: sam9x5ek: add WM8731 codec
+>    ARM: AT91: DTS: sam9x5ek: add sound configuration
+>    ARM: AT91: DTS: sam9x5ek: enable SSC
 
-> > > Add headset detection function to rt5640 codec driver.
+Maybe we will have to split the series and let these DT patches go with 
+arm-soc.
 
-> > No, use the standard soc-jack framework for reporting accessories.
+>   arch/arm/boot/dts/at91sam9x5.dtsi   |    3 +
+>   arch/arm/boot/dts/at91sam9x5ek.dtsi |   27 +++++
+>   sound/soc/atmel/Kconfig             |   10 ++
+>   sound/soc/atmel/Makefile            |    2 +
+>   sound/soc/atmel/sam9x5_wm8731.c     |  206 +++++++++++++++++++++++++++++++++++
+>   5 files changed, 248 insertions(+)
+>   create mode 100644 sound/soc/atmel/sam9x5_wm8731.c
+>
 
-> Do you mean call snd_soc_jack_report in rt5640_headset_detect to report the jack type?
-
-Yes, with an appropriate way of setting up the jack.  Look at how other
-drivers do this.
-
---hMqxZgAHHKe5m0zX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR2r8dAAoJELSic+t+oim98QYP/j/5K4BcLWrIBHopXyNk/jFH
-Cut+K42yb51R5cuyWb1cRisFXKeR71TKfYYqXKuXZNmqPzbhbVnlru0S5udDH7Uj
-sk/7gNsiv+Pfs8UIIJ4iMsE2OwZewm4mJ/80tdwmuxteuCqWJGPS4dsTJlhDyRvZ
-3/KsdfxqrfQgUYb7fHfl+N90ZS3pEh8pPm5rK50F9a2UTV9kZETPerpAmTZw74UP
-dQf165HaOigf+rkofllqSwVvdTQ5l0aHABlBzMdskEfFR8qq/RT4Xeu+WztJ3Fnb
-HTjo1MxlATU2ySfHgPtlVgq8TQMwcK/bIkkdKFDgRpFBZ2p36Qj43awSui+jRKOy
-zqeRhMTbqACmCFR35nuQrFrq7f2vnoDUuwUKIn5yvN5YIU4/F0EmAqBZ4lAFepzD
-98fTE06BuOa62KnU/tlmrTkSx+3VblEsbZVdipsJ1gCvoIi1qxXtA10Qs2zVxOl7
-g7C0iBwxXP/yEPPFkzqzucbglO4m9hQLscbZJ7N7dCbejubta5r4SY7+6yLEYhO3
-NSU4+pBFZRxdc/dgA2KytSrKE8YjTjrKmepGNv1SdwTyp9stlsVekMa/I8NpnLdw
-WvJjqjm14Lii/CAWbtTRk8FfWNkoWXjFufiNHHPAqNg49gBUi2Lh4OEA+ED8kjJ/
-tLyV4kSeLDeMT6A24l8z
-=dB/X
------END PGP SIGNATURE-----
-
---hMqxZgAHHKe5m0zX--
-
---===============7545834351667789238==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7545834351667789238==--
+Thanks, bye,
+-- 
+Nicolas Ferre
