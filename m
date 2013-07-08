@@ -1,53 +1,97 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH v2 1/5] sound: sam9x5_wm8731: machine driver
- for at91sam9x5 wm8731 boards
-Date: Mon, 08 Jul 2013 16:39:17 +0200
-Message-ID: <51DACF15.9080303@metafoo.de>
-References: <1373290193-25300-1-git-send-email-richard.genoud@gmail.com> <1373290193-25300-2-git-send-email-richard.genoud@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: No sound with Sony VAIO VPCZ1 (ALC889)
+Date: Mon, 8 Jul 2013 23:00:55 +0800
+Message-ID: <CAN8cciZY4Nx_A+yr46=n9mA5_gfLEuVcmCQ5FbOX_mUgPzno=A@mail.gmail.com>
+References: <51D464A5.6040507@gmail.com> <51D59D60.9020105@gmail.com>
+ <51D5FCFC.8010506@gmail.com> <s5hip0pwp49.wl%tiwai@suse.de>
+ <51D6B56D.8050909@gmail.com> <s5h1u7dchqh.wl%tiwai@suse.de>
+ <020e0ad5107eb4c2bb333468be58d7d3@www.happyassassin.net>
+ <51D9F543.2070605@gmail.com>
+ <CAN8ccibmth-sEiXraWTRde-ociD3q5VT-7CuYaE_KQ70JOf2xQ@mail.gmail.com>
+ <51DA9ADD.6080101@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1373290193-25300-2-git-send-email-richard.genoud@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Genoud <richard.genoud@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ie0-f176.google.com (mail-ie0-f176.google.com
+ [209.85.223.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBEA3265351
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jul 2013 17:00:56 +0200 (CEST)
+Received: by mail-ie0-f176.google.com with SMTP id ar20so10055812iec.21
+ for <alsa-devel@alsa-project.org>; Mon, 08 Jul 2013 08:00:55 -0700 (PDT)
+In-Reply-To: <51DA9ADD.6080101@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tormen <my.nl.abos@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/08/2013 03:29 PM, Richard Genoud wrote:
-[...]
-> +/*
-> + * Logic for a wm8731 as connected on a at91sam9x5 based board.
-> + */
-> +static int at91sam9x5ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-[...]
-> +	codec_dai->driver->playback.rates &= SNDRV_PCM_RATE_8000 |
-> +		SNDRV_PCM_RATE_32000 |
-> +		SNDRV_PCM_RATE_48000 |
-> +		SNDRV_PCM_RATE_96000;
-> +	codec_dai->driver->capture.rates &= SNDRV_PCM_RATE_8000 |
-> +		SNDRV_PCM_RATE_32000 |
-> +		SNDRV_PCM_RATE_48000 |
-> +		SNDRV_PCM_RATE_96000;
+>>>
+>>> Actually... there should be three mic channels:
+>>>     The built-in (internal) microphone
+>>>     +
+>>>     One mic jack beside the headphone jack
+>>>     +
+>>>     One other hidden within the headphone jack:
+>>>     (a) the Notebook came with Noise-cancelling headsets, but they are
+small in-ear plugs so there is no place for noise-cancelling logic in the
+plugs
+>>>     (b) I think I remember to have read somewhere that this thingy
+actually needs the windows driver installed to be noise-cancelling!
+>>>     (c) the PLUG of these headphones have another channel (visible
+through another ring on the jack)
+>>>
+>>> This explains the 2nd mic channel :)
+>>
+>>
+>> Try hda-jack-sense-test to find out which node is used by the headset
+mic jack (TRRS) and mic jack.
+>
+>
+> Thanks for the hint.
+>
+> Found and installed: snd-hda-tools_0.20111207_amd64.deb
+> But it gave me:
+>
+> /usr/src %
+hda-jack-sense-test
+$1 #28540 me@seven pts/4
+> Traceback (most recent call last):
+>   File "/usr/bin/hda-jack-sense-test", line 44, in <module>
+>     codec = HDACodec(cardindex, codecindex)
+>   File "/usr/share/snd-hda-tools/hda_codec.py", line 908, in __init__
+>     self.fd = os.open("/dev/snd/hwC%sD%s" % (card, device), os.O_RDWR)
+> OSError: [Errno 13] Permission denied: '/dev/snd/hwC0D0'
 
-That's not right. The driver structure is shared between all instances of
-the codec, a single instance should not modify it. If you need to constrain
-the list of supported rates use snd_pcm_hw_constraint_list().
+You need root privilege and need 0.20130207 hda-tools
 
-> +
-> +	/* set the codec system clock for DAC and ADC */
-> +	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL,
-> +				     MCLK_RATE, SND_SOC_CLOCK_IN);
-> +	if (ret < 0) {
-> +		dev_err(dev, "ASoC: Failed to set WM8731 SYSCLK: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* signal a DAPM event */
-> +	snd_soc_dapm_sync(dapm);
+>
+> /usr/src % sudo
+hda-jack-sense-test
+$1 #28541 me@seven pts/4
+> Traceback (most recent call last):
+>   File "/usr/bin/hda-jack-sense-test", line 44, in <module>
+>     codec = HDACodec(cardindex, codecindex)
+>   File "/usr/share/snd-hda-tools/hda_codec.py", line 921, in __init__
+>     self.parse_proc()
+>   File "/usr/share/snd-hda-tools/hda_codec.py", line 1003, in parse_proc
+>     self.proc_codec = HDACodecProc(self.card, self.device, file)
+>   File "/usr/share/snd-hda-tools/hda_proc.py", line 474, in __init__
+>     self.parse(proc_file)
+>   File "/usr/share/snd-hda-tools/hda_proc.py", line 647, in parse
+>     line, nid = self.decodeintw(line, 'Node ')
+>   File "/usr/share/snd-hda-tools/hda_proc.py", line 140, in decodeintw
+>     self.wrongfile('integer decode %s (%s)' % (repr(str), repr(prefix)))
+>   File "/usr/share/snd-hda-tools/hda_proc.py", line 143, in wrongfile
+>     raise ValueError, "wrong proc file format (%s)" % msg
+> ValueError: wrong proc file format (integer decode 'State of AFG node
+0x01:' ('Node '))
+>
 
-This should not be necessary.
-
-> +	return 0;
-> +}
+http://git.alsa-project.org/?p=alsa.git;a=commitdiff;h=7859cb050f2cbeba54ce46e3f4cac810f60bd523;hp=3630f7817679f29f77f53a6ef75828f4f106c2fd
