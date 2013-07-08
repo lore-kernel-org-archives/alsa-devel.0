@@ -1,15 +1,15 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v9 08/10] ASoC: Add phycore-ac97-dt driver
-Date: Mon, 8 Jul 2013 09:06:22 +0100
-Message-ID: <20130708080622.GN27646@sirena.org.uk>
+Subject: Re: [PATCH v9 04/10] ASoC: fsl-ssi: Add support for imx-pcm-fiq
+Date: Mon, 8 Jul 2013 09:04:37 +0100
+Message-ID: <20130708080437.GM27646@sirena.org.uk>
 References: <1371734429-6081-1-git-send-email-mpa@pengutronix.de>
- <1371734429-6081-9-git-send-email-mpa@pengutronix.de>
- <20130703161727.GS27646@sirena.org.uk>
- <20130707071949.GH16871@s25.your-server.de>
+ <1371734429-6081-5-git-send-email-mpa@pengutronix.de>
+ <20130703160637.GQ27646@sirena.org.uk>
+ <20130706171323.GG16871@s25.your-server.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6451175648783506912=="
+Content-Type: multipart/mixed; boundary="===============4478307312075533739=="
 Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <20130707071949.GH16871-uTtddPNT4wdcDCsr1GFxkoQuADTiUCJX@public.gmane.org>
+In-Reply-To: <20130706171323.GG16871-uTtddPNT4wdcDCsr1GFxkoQuADTiUCJX@public.gmane.org>
 List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
  <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
 List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
@@ -25,64 +25,68 @@ Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6451175648783506912==
+--===============4478307312075533739==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TRTrqq5C0A9KK7Rj"
+	protocol="application/pgp-signature"; boundary="OkGsJQGtcVL5ZVbY"
 Content-Disposition: inline
 
 
---TRTrqq5C0A9KK7Rj
+--OkGsJQGtcVL5ZVbY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Jul 07, 2013 at 09:19:49AM +0200, Markus Pargmann wrote:
-> On Wed, Jul 03, 2013 at 05:17:27PM +0100, Mark Brown wrote:
+On Sat, Jul 06, 2013 at 07:13:23PM +0200, Markus Pargmann wrote:
+> On Wed, Jul 03, 2013 at 05:06:37PM +0100, Mark Brown wrote:
+> > On Thu, Jun 20, 2013 at 03:20:23PM +0200, Markus Pargmann wrote:
 
-> > > +extern void pca100_ac97_cold_reset(struct snd_ac97 *ac97);
-> > > +extern void pca100_ac97_warm_reset(struct snd_ac97 *ac97);
-> > > +#else
-> > > +static void pca100_ac97_cold_reset(struct snd_ac97 *ac97) { }
-> > > +static void pca100_ac97_warm_reset(struct snd_ac97 *ac97) { }
+> > > +	ssi_private->use_dma = !of_property_read_bool(np, "fsl,imx-fiq");
 
-> > These functions have no reason to be anywhere except in the driver and
-> > really you should just be specifying which pins to use there - ideally
-> > via pinctrl but I don't think i.MX has adopted that yet.
+> > This binding should be documented.  I'm not sure it really needs to be
+> > a binding, though - is it not possible for the driver to just figure out
+> > that DMA won't work automatically (for example by looking at the CODEC
+> > in use)?  I'm not sure this is a good name either, it should be saying
+> > why the FIQ is needed rather than saying that we should use the FIQ.
 
-> There are no pinctrl driver for imx27(pca100) or imx35(pcm043). The
-> iomux/pad configure functions are defined inside mach-imx/ including
-> their headers. Both reset functions have to configure iomux/pad before
-> and after using gpio. So I think it's not possible to make the reset
-> based on the gpio pins without the necessary iomux/pad configuration.
+> I think fsl_ssi_startup is the first function in which we know which
+> codec is connected to fsl-ssi. There we have access to the pcm runtime,
+> which stores the codec used. But that is too late for the ssi setup.
 
-That all sounds fixable - either make pinctrl available or make the
-headers usefully visible.  You can see the arch headers in the build
-of the entire kernel...
+> I could use of_find_compatible_node to search for the wm9712 codec, but
+> that would assume that there is only one codec attached to the system.
 
---TRTrqq5C0A9KK7Rj
+If the SSI is doing anything it will be connected to a CODEC.  If it's
+not connected to a CODEC then it doesn't need to be configured at all so
+it doesn't really matter.
+
+> Perhaps "fsl,fiq-filter-codec-stream" is a better name for the binding?
+
+Possibly.
+
+--OkGsJQGtcVL5ZVbY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR2nL7AAoJELSic+t+oim94RQP/3ld7L1+PHAgDmaPM5A0mJXx
-cK0c9p9VqKpKlLC+lzYZhPj3Eav9NWGdbu9Hh4lzgd0MW3bM/6sJ5f6HKQC44yk8
-2VU1+pUCRse7rB5m2coUfEsTkLF35fnh0bMYpG5O3XEnAoYGWfkCmUVXUQlqDKK+
-cfdQ/x++XYtA4cVduqq8TyfnzLggjKhLh6kMhRm+DdxQqCef9gs1X8kTyLBpzZS3
-DVnJpb6oWgFh533FEJ5oBcJlJXLKLvFfaiLtsSjM9FIMBANrTEK1bdC/aQb78m8N
-a0XNrEGU9rYD1Mud2tx5MQX6nu0lHC5phIe3ZS9NDb0+9Z4QDKcR+WK3uLXF7KoX
-QPnCQvaa+s8s58RIuqi402KGvwtVqgiNWluip0ka6vrADtPYd+obhzbdoFdm45ba
-p0OGhuljGB8yHKN7u4JWXVoCxNILV+OIxWLvgtBG+6L/p3JWWdXR9YYl8F37tjZE
-dnWwCQq74PcLOks3DCaqb1eaKgl9ldAWrXvX0I6BA6DxQ2JJBLPceJa0ZU+XMne6
-Y8eSGbXAne1oUFhVe6RFdfLe/N6vWBqC7dw1slb25d2+oOdCqnTQBtoia0Lcz+bN
-KnUq+y8QuKGw3nf/TExh/rhHHUhbLmTGpO0KS80GKCIRCehYC5vDltLs4Vo80i83
-MwNofEqkTB9aELdnrWV+
-=7F/I
+iQIcBAEBAgAGBQJR2nKNAAoJELSic+t+oim9jHMP/jENXwdMQ/xDplGE5yFk1Srf
+XayRrNjFx5bqenhwKKUwA6AHYfAyOWaMv3vV7p8oTZeLfOh5aL+ptKn7KDdJd8B9
+/dpTuaiDKHjuj5pp2oaAUW+iQiqu+dJnfYBdTEquwfmEPR9GPp9I9c4GJgQnjr+h
+sQk4Dq+SAJYy1kNKdm1qLj/rRdkbriyDnNnGfVnng1FGKtH+wHfpbwAzeH18k6B4
+qIX6jVnNeHXqXhIBRVZJf5Zu+QVQpIbgCHsGUHdNBLuC6cZeRUOmLMEeJFfd96W1
+9eoIF75cNgr5IrGwMin5I7IjOdxqYqeG0WSzYRv21IdQ5Nr6sleSKpkym53cIUp8
+GHurx25p01nJ0hQ6KOnaMfKyCrP5ioY+c9Pmf8T7Eb8D8UqX2ssCOEWnegN3CKDh
+d41unF0SsYED/wN1ExbSy6cF6sN2phl74LElZFnkh9mqLwpzBZ5MKppnnRpLuMo5
+d3m1XKmqw+6wNwle1SZOboP5yYVysG//NPVit7wbOQKyAsn98770xIRdu5RM+6T3
+U0AAZ11U8yvN4qNPf/Cejoq+n79370dn5zXhcOfvs9Onh/6/EEHVyGTKjXjQZ1tL
+B86OgxmAa8lnRNS+nhC9d19z5tj/1NjH8vp4yulbii1wXpiQsVHRqYFYFqfG9ncF
+FlzqkLMVgmfvwvnOn61D
+=R3SF
 -----END PGP SIGNATURE-----
 
---TRTrqq5C0A9KK7Rj--
+--OkGsJQGtcVL5ZVbY--
 
---===============6451175648783506912==
+--===============4478307312075533739==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -93,4 +97,4 @@ devicetree-discuss mailing list
 devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 https://lists.ozlabs.org/listinfo/devicetree-discuss
 
---===============6451175648783506912==--
+--===============4478307312075533739==--
