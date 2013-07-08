@@ -1,100 +1,98 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v9 04/10] ASoC: fsl-ssi: Add support for imx-pcm-fiq
-Date: Mon, 8 Jul 2013 09:04:37 +0100
-Message-ID: <20130708080437.GM27646@sirena.org.uk>
-References: <1371734429-6081-1-git-send-email-mpa@pengutronix.de>
- <1371734429-6081-5-git-send-email-mpa@pengutronix.de>
- <20130703160637.GQ27646@sirena.org.uk>
- <20130706171323.GG16871@s25.your-server.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: codecs: da9055: Update driver name
+ to fix breakage due to pmic driver with same name
+Date: Mon, 8 Jul 2013 12:26:13 +0100
+Message-ID: <20130708112613.GQ27646@sirena.org.uk>
+References: <1373024862.3233.63.camel@matrix>
+ <20130705114456.GV27646@sirena.org.uk>
+ <1373031306.3233.131.camel@matrix>
+ <20130705133752.GX27646@sirena.org.uk>
+ <1373270091.11222.12.camel@matrix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4478307312075533739=="
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <20130706171323.GG16871-uTtddPNT4wdcDCsr1GFxkoQuADTiUCJX@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============1574224480914718629=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC673265311
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jul 2013 13:26:28 +0200 (CEST)
+In-Reply-To: <1373270091.11222.12.camel@matrix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, "kiran.padwal" <kiran.padwal@kpitcummins.com>, lrg <lrg@ti.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4478307312075533739==
+--===============1574224480914718629==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OkGsJQGtcVL5ZVbY"
+	protocol="application/pgp-signature"; boundary="UCOOPUdJKgxUwY8X"
 Content-Disposition: inline
 
 
---OkGsJQGtcVL5ZVbY
+--UCOOPUdJKgxUwY8X
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Jul 06, 2013 at 07:13:23PM +0200, Markus Pargmann wrote:
-> On Wed, Jul 03, 2013 at 05:06:37PM +0100, Mark Brown wrote:
-> > On Thu, Jun 20, 2013 at 03:20:23PM +0200, Markus Pargmann wrote:
+On Mon, Jul 08, 2013 at 01:24:51PM +0530, Ashish Chavan wrote:
+> On Fri, 2013-07-05 at 14:37 +0100, Mark Brown wrote:
 
-> > > +	ssi_private->use_dma = !of_property_read_bool(np, "fsl,imx-fiq");
+> > Your testing seems like it's not very good then - you do undersand that
+> > the problem that this is supposed to be fixing is that this is a multi
+> > function device?  Please look at how other MFDs in the kernel work.
 
-> > This binding should be documented.  I'm not sure it really needs to be
-> > a binding, though - is it not possible for the driver to just figure out
-> > that DMA won't work automatically (for example by looking at the CODEC
-> > in use)?  I'm not sure this is a good name either, it should be saying
-> > why the FIQ is needed rather than saying that we should use the FIQ.
+> I feel that some info is missing from your view. DA9055 is CODEC + PMIC
+> but with two different I2C addresses. Actually it is a case of two
+> different chips enclosed in a single die. There is NO interconnection
+> between CODEC and PMIC inside DA9055. To me, this seems enough reason to
+> make two drivers independent from each other and not let one part know
+> about the existence of other. Actually in near future, there may be
+> three variants of this chip,
 
-> I think fsl_ssi_startup is the first function in which we know which
-> codec is connected to fsl-ssi. There we have access to the pcm runtime,
-> which stores the codec used. But that is too late for the ssi setup.
+This is very similar to things like the TI palmas chips - they have
+multiple functions on different I2C addresses.  The chip still gets
+instantiated a single time and then the subdevices are instantiated
+like a MFD by the core device.
 
-> I could use of_find_compatible_node to search for the wm9712 codec, but
-> that would assume that there is only one codec attached to the system.
+> In my opinion, keeping the drivers independent will also help in
+> re-using existing drivers "as it is" for any of the above combination.
 
-If the SSI is doing anything it will be connected to a CODEC.  If it's
-not connected to a CODEC then it doesn't need to be configured at all so
-it doesn't really matter.
+It shouldn't make a huge difference here.
 
-> Perhaps "fsl,fiq-filter-codec-stream" is a better name for the binding?
-
-Possibly.
-
---OkGsJQGtcVL5ZVbY
+--UCOOPUdJKgxUwY8X
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR2nKNAAoJELSic+t+oim9jHMP/jENXwdMQ/xDplGE5yFk1Srf
-XayRrNjFx5bqenhwKKUwA6AHYfAyOWaMv3vV7p8oTZeLfOh5aL+ptKn7KDdJd8B9
-/dpTuaiDKHjuj5pp2oaAUW+iQiqu+dJnfYBdTEquwfmEPR9GPp9I9c4GJgQnjr+h
-sQk4Dq+SAJYy1kNKdm1qLj/rRdkbriyDnNnGfVnng1FGKtH+wHfpbwAzeH18k6B4
-qIX6jVnNeHXqXhIBRVZJf5Zu+QVQpIbgCHsGUHdNBLuC6cZeRUOmLMEeJFfd96W1
-9eoIF75cNgr5IrGwMin5I7IjOdxqYqeG0WSzYRv21IdQ5Nr6sleSKpkym53cIUp8
-GHurx25p01nJ0hQ6KOnaMfKyCrP5ioY+c9Pmf8T7Eb8D8UqX2ssCOEWnegN3CKDh
-d41unF0SsYED/wN1ExbSy6cF6sN2phl74LElZFnkh9mqLwpzBZ5MKppnnRpLuMo5
-d3m1XKmqw+6wNwle1SZOboP5yYVysG//NPVit7wbOQKyAsn98770xIRdu5RM+6T3
-U0AAZ11U8yvN4qNPf/Cejoq+n79370dn5zXhcOfvs9Onh/6/EEHVyGTKjXjQZ1tL
-B86OgxmAa8lnRNS+nhC9d19z5tj/1NjH8vp4yulbii1wXpiQsVHRqYFYFqfG9ncF
-FlzqkLMVgmfvwvnOn61D
-=R3SF
+iQIcBAEBAgAGBQJR2qHOAAoJELSic+t+oim9UugP/iETFOmrj+cKsQgonFmB3r0j
+yhmBGhIZEglRrCnuq4596hNYNyfgx6Jwp7j/HMFc/eEvTdBTL+Nw/0IjRQH20gDE
+oZXteTpklKr/o+q9LIreuLYChsku6YIePVRbtco59Ya5Ie+B5Nj5lq3nAsWmqmlS
+W+g/5s5uewyCikLcQeHzInDhttBFr/MPq7ARctU5lWEApS7sAgxSQypUz+/Tni9w
+FVxN4f2fd5LAnGhivDFiq2PvRvrAwFDc34LlQbNtQNUuteOsfZIJ247WD2cBr4Uy
+QwpVf5SqRsJlOKYVuFSRnAuek4smHDJzl/yZN+Rf+5teKdTz43MGh+Q9MFMXWAx0
+60U9ZL92LrcE2JjewXpJ2CmYVvx/F5TvTgIuz9ZQ58VZ9pmqnWGOqXEZ65nPPtx4
+MVJoYFV/47S/GP4WSsIT930bRj3+KA4qn4D2KuPyCDk8EYZGOPmw56jTQway9/1q
++Adki9xQBsI1HfiL4qBTnS1phg7KM0gHT40XausoPwA45kZIBz8ACP4LRxReFMxn
+8+3i+6c8MU9b6tjmCtOIvmi9W/NxWeM/uFvWH78FK5UYjvAPRqbJCQmEuj5YdxUi
+0BFIvqIZ3UZ/IYirwRVI7IVdn3EGcK7QqPma1l9UWNQz9tZjrkVCNhzZ9VZZT2pC
+pMGVVSPQ3WaAoVP+P2HV
+=S4fV
 -----END PGP SIGNATURE-----
 
---OkGsJQGtcVL5ZVbY--
+--UCOOPUdJKgxUwY8X--
 
---===============4478307312075533739==
+--===============1574224480914718629==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-devicetree-discuss mailing list
-devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-https://lists.ozlabs.org/listinfo/devicetree-discuss
 
---===============4478307312075533739==--
+--===============1574224480914718629==--
