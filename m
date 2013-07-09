@@ -1,46 +1,54 @@
-From: Richard Genoud <richard.genoud-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH v4 4/7] ARM: AT91: DTS: sam9x5: add SSC DMA parameters
-Date: Tue,  9 Jul 2013 16:25:30 +0200
-Message-ID: <1373379933-32749-5-git-send-email-richard.genoud@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 0/7] Sound support for at91sam9x5-wm8731 based boards
+Date: Tue, 9 Jul 2013 15:42:37 +0100
+Message-ID: <20130709144237.GW27646@sirena.org.uk>
 References: <1373372929-17800-1-git-send-email-richard.genoud@gmail.com>
  <1373379933-32749-1-git-send-email-richard.genoud@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1373379933-32749-1-git-send-email-richard.genoud-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Nicolas Ferre <nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Q75f2G+qywaASSYI"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1373379933-32749-1-git-send-email-richard.genoud@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Genoud <richard.genoud@gmail.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Bo Shen <voice.shen@atmel.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Richard Genoud <richard.genoud-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- arch/arm/boot/dts/at91sam9x5.dtsi |    3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm/boot/dts/at91sam9x5.dtsi b/arch/arm/boot/dts/at91sam9x5.dtsi
-index 57d45f5..cf78ac0 100644
---- a/arch/arm/boot/dts/at91sam9x5.dtsi
-+++ b/arch/arm/boot/dts/at91sam9x5.dtsi
-@@ -542,6 +542,9 @@
- 				compatible = "atmel,at91sam9g45-ssc";
- 				reg = <0xf0010000 0x4000>;
- 				interrupts = <28 IRQ_TYPE_LEVEL_HIGH 5>;
-+				dmas = <&dma0 1 AT91_DMA_CFG_PER_ID(13)>,
-+				       <&dma0 1 AT91_DMA_CFG_PER_ID(14)>;
-+				dma-names = "tx", "rx";
- 				pinctrl-names = "default";
- 				pinctrl-0 = <&pinctrl_ssc0_tx &pinctrl_ssc0_rx>;
- 				status = "disabled";
--- 
-1.7.10.4
+--Q75f2G+qywaASSYI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jul 09, 2013 at 04:25:26PM +0200, Richard Genoud wrote:
+> [I've just seen that I forgot to cc Uwe to the cover letter, sorry for that.]
+
+This is the second or third copy of this patch set I've been sent
+*today*.  Worse, everything seems to be being sent in reply to the same
+thread increasing the nesting substantially.  Please slow down, it's
+flooding my mailbox and discouraging me from looking since it seems
+likely that there will just be another resend.
+
+--Q75f2G+qywaASSYI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR3CFaAAoJELSic+t+oim9NPIP/AgWbSl0FRTI1gKARl5PmTFM
++Q36+6LGhvMMMjkKUvXfyOeS833Z3RWs6Wc9rGJtPa7rSyqGOWSD42Mtyr/ZoVQ7
+KeVXEHlnCnCj43+JnUlbIJco+R3DnweFxQD+MnPpLKVWWgUeMOJ2ctHKgiHZR+FK
+ccFNhTl81GiB8uBH/bjWt0q7rTNm5Heusyrj7N7Ta7SYJDBht9EIM7SajDGOX1kx
+5kFYpvKDE6k4ISEgRvsTFft478xcyy1s6+sNpFi5OxSfozohfWK+LieeVm1eh0nK
+fxG1xBHBCgUtupnmH51PENjvAcv0KQVO1lqCIwaYLABBjYGl9XVSvbO+fotiqCOL
+5+PajSXjwtXEwa06CiyaYL14jXHEbDmLSncMXZi+mtA/q3BD/LFNOHnsyzMIKmV0
+7DnqM6o70it9F/fD6WtAsO3kUETCwA5czX3tx92W95rftpj9dXcqEHeR60y36wYR
+0tEsbhD/kS7WatmNESuGcTm9zzjFSkq7qNom4ZADC81l6tu7Mx3Z2Nn0+EayjsvA
+Vi5kgqVrgG5To4gfFZnCzkYc6hjnwAt6UtiIbTHK9Whn2AEYUFtHLF+nhuUpPuXu
+uuLu2cOZkpLfXOrTHljpGcJaqcNgykjS+VCTRgxRLB6PnzxeNb4kMx7U7APEpzmC
+v78YIhmgDASEgX9TlmhU
+=Nzdt
+-----END PGP SIGNATURE-----
+
+--Q75f2G+qywaASSYI--
