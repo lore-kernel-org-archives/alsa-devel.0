@@ -1,12 +1,9 @@
 From: Richard Genoud <richard.genoud@gmail.com>
-Subject: [PATCH v4 1/7] sound: sam9x5_wm8731: machine driver for at91sam9x5 wm8731 boards
-Date: Tue,  9 Jul 2013 16:25:27 +0200
-Message-ID: <1373379933-32749-2-git-send-email-richard.genoud@gmail.com>
+Subject: [PATCH v4 2/7] Documentation: DT: add sam9x5ek-wm8731 machine driver
+Date: Tue,  9 Jul 2013 16:25:28 +0200
+Message-ID: <1373379933-32749-3-git-send-email-richard.genoud@gmail.com>
 References: <1373372929-17800-1-git-send-email-richard.genoud@gmail.com>
  <1373379933-32749-1-git-send-email-richard.genoud@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1373379933-32749-1-git-send-email-richard.genoud@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
@@ -14,315 +11,49 @@ To: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Li
 Cc: Bo Shen <voice.shen@atmel.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Richard Genoud <richard.genoud@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-=46rom: Nicolas Ferre <nicolas.ferre@atmel.com>
+This add the sound DT binding for sam9x5ek-wm8731 machine driver
 
-Description of the Asoc machine driver for an at91sam9x5 based board
-with a wm8731 audio DAC. Wm8731 is clocked by a crystal and used as a
-master on the SSC/I2S interface. Its connections are a headphone jack
-and an Line input jack.
-
-[Richard: this is based on an old patch from Nicolas that I forward
-ported and reworked to use only device tree]
-
-Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
 ---
- sound/soc/atmel/Kconfig         |   10 ++
- sound/soc/atmel/Makefile        |    2 +
- sound/soc/atmel/sam9x5_wm8731.c |  238 +++++++++++++++++++++++++++++++=
-++++++++
- 3 files changed, 250 insertions(+)
- create mode 100644 sound/soc/atmel/sam9x5_wm8731.c
+ .../bindings/sound/atmel-sam9x5-wm8731-audio.txt   |   30 ++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
 
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 1c0b185..9eb8c49 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -33,6 +33,16 @@ config SND_AT91_SOC_SAM9G20_WM8731
- 	  Say Y if you want to add support for SoC audio on WM8731-based
- 	  AT91sam9g20 evaluation board.
-=20
-+config SND_AT91_SOC_SAM9X5_WM8731
-+	tristate "SoC Audio support for WM8731-based at91sam9x5 board"
-+	depends on ATMEL_SSC && SND_ATMEL_SOC && SOC_AT91SAM9X5
-+	select SND_ATMEL_SOC_SSC
-+	select SND_ATMEL_SOC_DMA
-+	select SND_SOC_WM8731
-+	help
-+	  Say Y if you want to add support for audio SoC on an
-+	  at91sam9x5 based board that is using WM8731 codec.
-+
- config SND_AT91_SOC_AFEB9260
- 	tristate "SoC Audio support for AFEB9260 board"
- 	depends on ARCH_AT91 && ATMEL_SSC && ARCH_AT91 && MACH_AFEB9260 && SN=
-D_ATMEL_SOC
-diff --git a/sound/soc/atmel/Makefile b/sound/soc/atmel/Makefile
-index 41967cc..7784c09 100644
---- a/sound/soc/atmel/Makefile
-+++ b/sound/soc/atmel/Makefile
-@@ -11,6 +11,8 @@ obj-$(CONFIG_SND_ATMEL_SOC_SSC) +=3D snd-soc-atmel_ss=
-c_dai.o
-=20
- # AT91 Machine Support
- snd-soc-sam9g20-wm8731-objs :=3D sam9g20_wm8731.o
-+snd-soc-sam9x5-wm8731-objs :=3D sam9x5_wm8731.o
-=20
- obj-$(CONFIG_SND_AT91_SOC_SAM9G20_WM8731) +=3D snd-soc-sam9g20-wm8731.=
-o
-+obj-$(CONFIG_SND_AT91_SOC_SAM9X5_WM8731) +=3D snd-soc-sam9x5-wm8731.o
- obj-$(CONFIG_SND_AT91_SOC_AFEB9260) +=3D snd-soc-afeb9260.o
-diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_w=
-m8731.c
+diff --git a/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt b/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
 new file mode 100644
-index 0000000..c56e36b
+index 0000000..fd03dfd
 --- /dev/null
-+++ b/sound/soc/atmel/sam9x5_wm8731.c
-@@ -0,0 +1,238 @@
-+/*
-+ * sam9x5_wm8731   --	SoC audio for AT91SAM9X5-based boards
-+ *			that are using WM8731 as codec.
-+ *
-+ *  Copyright (C) 2011 Atmel,
-+ *		  Nicolas Ferre <nicolas.ferre@atmel.com>
-+ *
-+ *  Copyright (C) 2013 Paratronic,
-+ *		  Richard Genoud <richard.genoud@gmail.com>
-+ *
-+ * Based on sam9g20_wm8731.c by:
-+ * Sedji Gaouaou <sedji.gaouaou@atmel.com>
-+ *
-+ *  This program is free software; you can redistribute  it and/or mod=
-ify it
-+ *  under  the terms of  the GNU General  Public License as published =
-by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (a=
-t your
-+ *  option) any later version.
-+ *
-+ */
++++ b/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
+@@ -0,0 +1,30 @@
++* Atmel at91sam9x5ek wm8731 audio complex
 +
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/kernel.h>
-+#include <linux/clk.h>
-+#include <linux/timer.h>
-+#include <linux/interrupt.h>
-+#include <linux/platform_device.h>
-+#include <linux/i2c.h>
++Required properties:
++  - compatible: "atmel,at91sam9x5ek-wm8731-audio"
++  - atmel,model: The user-visible name of this sound complex.
++  - atmel,audio-routing: A list of the connections between audio components.
++  - atmel,ssc-controller: The phandle of the SSC controller
++  - atmel,audio-codec: The phandle of the WM8731 audio codec
++  - atmel,format: DAI format. Must be "i2s"
++  - atmel,bitclock-master:  DAI clock master
++  - atmel,frame-master: DAI frame master
 +
-+#include <linux/atmel-ssc.h>
++Example:
++sound {
++	compatible = "atmel,sam9x5-wm8731-audio";
 +
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
++	atmel,model = "wm8731 @ AT91SAM9X5EK";
 +
-+#include <asm/mach-types.h>
-+#include <mach/hardware.h>
-+#include <mach/gpio.h>
++	atmel,audio-routing =
++		"Headphone Jack", "RHPOUT",
++		"Headphone Jack", "LHPOUT",
++		"LLINEIN", "Line In Jack",
++		"RLINEIN", "Line In Jack";
 +
-+#include "../codecs/wm8731.h"
-+#include "atmel-pcm.h"
-+#include "atmel_ssc_dai.h"
-+
-+#define MCLK_RATE 12288000
-+
-+#define DRV_NAME "sam9x5-snd-wm8731"
-+
-+/*
-+ * Authorized rates are:
-+ * Rate =3D MCLK_RATE / (n * 2)
-+ * Where n is in [1..4095]
-+ * (cf register SSC_CMR)
-+ */
-+static unsigned int rates[] =3D {
-+	8000,
-+	16000,
-+	32000,
-+	48000,
-+	64000,
-+	96000,
++	atmel,ssc-controller = <&ssc0>;
++	atmel,audio-codec = <&wm8731>;
++	atmel,format = "i2s";
++	atmel,bitclock-master;
++	atmel,frame-master;
 +};
-+
-+static struct snd_pcm_hw_constraint_list hw_rates =3D {
-+	.count =3D ARRAY_SIZE(rates),
-+	.list =3D rates,
-+};
-+
-+/*
-+ * Logic for a wm8731 as connected on a at91sam9x5 based board.
-+ */
-+static int at91sam9x5ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dai *codec_dai =3D rtd->codec_dai;
-+	struct device *dev =3D rtd->dev;
-+	int ret;
-+
-+	dev_dbg(dev, "ASoC: %s called\n", __func__);
-+
-+	/* set the codec system clock for DAC and ADC */
-+	ret =3D snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL,
-+				     MCLK_RATE, SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		dev_err(dev, "ASoC: Failed to set WM8731 SYSCLK: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sam9x5ek_wm8731_startup(struct snd_pcm_substream *substream=
-)
-+{
-+	struct snd_pcm_runtime *runtime =3D substream->runtime;
-+
-+	runtime->hw.rate_min =3D hw_rates.list[0];
-+	runtime->hw.rate_max =3D hw_rates.list[hw_rates.count - 1];
-+	runtime->hw.rates =3D SNDRV_PCM_RATE_KNOT;
-+
-+	return snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE=
-,
-+					  &hw_rates);
-+}
-+
-+/*
-+ * Audio paths on at91sam9x5ek board:
-+ *
-+ *  |A| ------------> |      | ---R----> Headphone Jack
-+ *  |T| <----\        |  WM  | ---L--/
-+ *  |9| ---> CLK <--> | 8731 | <--R----- Line In Jack
-+ *  |1| <------------ |      | <--L--/
-+ */
-+static const struct snd_soc_dapm_widget at91sam9x5ek_dapm_widgets[] =3D=
- {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_LINE("Line In Jack", NULL),
-+};
-+
-+static struct snd_soc_ops sam9x5ek_wm8731_ops =3D {
-+	.startup =3D sam9x5ek_wm8731_startup,
-+};
-+
-+static struct snd_soc_dai_link at91sam9x5ek_dai =3D {
-+	.name =3D "WM8731",
-+	.stream_name =3D "WM8731 PCM",
-+	.codec_dai_name =3D "wm8731-hifi",
-+	.init =3D at91sam9x5ek_wm8731_init,
-+	.ops =3D &sam9x5ek_wm8731_ops,
-+};
-+
-+static struct snd_soc_card snd_soc_at91sam9x5ek =3D {
-+	.owner =3D THIS_MODULE,
-+	.dai_link =3D &at91sam9x5ek_dai,
-+	.num_links =3D 1,
-+	.dapm_widgets =3D at91sam9x5ek_dapm_widgets,
-+	.num_dapm_widgets =3D ARRAY_SIZE(at91sam9x5ek_dapm_widgets),
-+};
-+
-+static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np =3D pdev->dev.of_node;
-+	struct device_node *codec_np, *cpu_np;
-+	int ret;
-+
-+	if (!np) {
-+		dev_err(&pdev->dev, "No device node supplied\n");
-+		return -EINVAL;
-+	}
-+
-+	ret =3D atmel_ssc_set_audio(0);
-+	if (ret !=3D 0) {
-+		dev_err(&pdev->dev,
-+			"ASoC: Failed to set SSC 0 for audio: %d\n", ret);
-+		return ret;
-+	}
-+
-+	snd_soc_at91sam9x5ek.dev =3D &pdev->dev;
-+
-+	ret =3D snd_soc_of_parse_card_name(&snd_soc_at91sam9x5ek, "atmel,mode=
-l");
-+	if (ret)
-+		goto out;
-+
-+	ret =3D snd_soc_of_parse_audio_routing(&snd_soc_at91sam9x5ek,
-+					     "atmel,audio-routing");
-+	if (ret)
-+		goto out;
-+
-+	codec_np =3D of_parse_phandle(np, "atmel,audio-codec", 0);
-+	if (!codec_np) {
-+		dev_err(&pdev->dev, "codec info missing\n");
-+		ret =3D -EINVAL;
-+		goto out;
-+	}
-+
-+	at91sam9x5ek_dai.codec_of_node =3D codec_np;
-+
-+	cpu_np =3D of_parse_phandle(np, "atmel,ssc-controller", 0);
-+	if (!cpu_np) {
-+		dev_err(&pdev->dev, "ssc controller node missing\n");
-+		ret =3D -EINVAL;
-+		goto out;
-+	}
-+	at91sam9x5ek_dai.cpu_of_node =3D cpu_np;
-+	at91sam9x5ek_dai.platform_of_node =3D cpu_np;
-+
-+	of_node_put(codec_np);
-+	of_node_put(cpu_np);
-+
-+	at91sam9x5ek_dai.dai_fmt =3D snd_soc_of_parse_daifmt(np, "atmel,");
-+
-+	ret =3D snd_soc_register_card(&snd_soc_at91sam9x5ek);
-+	if (ret) {
-+		dev_err(&pdev->dev,
-+			"ASoC: Platform device allocation failed\n");
-+		goto out;
-+	}
-+
-+	platform_set_drvdata(pdev, &snd_soc_at91sam9x5ek);
-+
-+	dev_dbg(&pdev->dev, "ASoC: %s ok\n", __func__);
-+
-+	return ret;
-+
-+out:
-+	atmel_ssc_put_audio(0);
-+	return ret;
-+}
-+
-+static int sam9x5_wm8731_driver_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card =3D platform_get_drvdata(pdev);
-+
-+	snd_soc_unregister_card(card);
-+	atmel_ssc_put_audio(0);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id sam9x5_wm8731_of_match[] =3D {
-+	{ .compatible =3D "atmel,sam9x5-wm8731-audio", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, sam9x5_wm8731_of_match);
-+
-+static struct platform_driver sam9x5_wm8731_driver =3D {
-+	.driver =3D {
-+		.name =3D DRV_NAME,
-+		.owner =3D THIS_MODULE,
-+		.of_match_table =3D of_match_ptr(sam9x5_wm8731_of_match),
-+	},
-+	.probe =3D sam9x5_wm8731_driver_probe,
-+	.remove =3D sam9x5_wm8731_driver_remove,
-+};
-+module_platform_driver(sam9x5_wm8731_driver);
-+
-+/* Module information */
-+MODULE_AUTHOR("Nicolas Ferre <nicolas.ferre@atmel.com>");
-+MODULE_AUTHOR("Richard Genoud <richard.genoud@gmail.com>");
-+MODULE_DESCRIPTION("ALSA SoC machine driver for AT91SAM9x5 - WM8731");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:" DRV_NAME);
---=20
+-- 
 1.7.10.4
