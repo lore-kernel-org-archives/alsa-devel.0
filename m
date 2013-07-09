@@ -1,61 +1,85 @@
 From: Richard Genoud <richard.genoud@gmail.com>
-Subject: Re: [PATCH v3 3/7] Documentation: DT: update atmel SSC with DMA binding
-Date: Tue, 9 Jul 2013 15:31:52 +0200
-Message-ID: <CACQ1gAhr3gm_O1UyYSUdg8mmnGriAU=kjY6zXwMirojc78dOgg@mail.gmail.com>
-References: <1373290193-25300-1-git-send-email-richard.genoud@gmail.com>
- <1373372929-17800-1-git-send-email-richard.genoud@gmail.com>
- <1373372929-17800-4-git-send-email-richard.genoud@gmail.com>
- <CACQ1gAg8WQTaz4XkXJCH+-bNU_U3s_1pgmQYoQR3v-KHOzzBTA@mail.gmail.com> <51DC0E26.7080508@atmel.com>
+Subject: [PATCH v4 0/7] Sound support for at91sam9x5-wm8731 based boards
+Date: Tue,  9 Jul 2013 16:25:26 +0200
+Message-ID: <1373379933-32749-1-git-send-email-richard.genoud@gmail.com>
+References: <1373372929-17800-1-git-send-email-richard.genoud@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <51DC0E26.7080508@atmel.com>
+In-Reply-To: <1373372929-17800-1-git-send-email-richard.genoud@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
+To: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Bo Shen <voice.shen@atmel.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Richard Genoud <richard.genoud@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-2013/7/9 Nicolas Ferre <nicolas.ferre@atmel.com>:
-> On 09/07/2013 15:19, Richard Genoud :
->
->> 2013/7/9 Richard Genoud <richard.genoud@gmail.com>:
->>>
->>> As atmel-ssc can be used with DMA, the documentation should be updated.
->>> Also, a configuration DMA example is given.
->>>
->>> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
->>> ---
->>>   .../devicetree/bindings/misc/atmel-ssc.txt         |   24
->>> ++++++++++++++++++--
->>>   1 file changed, 22 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/misc/atmel-ssc.txt
->>> b/Documentation/devicetree/bindings/misc/atmel-ssc.txt
->>> index 38e51ad..96958ca 100644
->>> --- a/Documentation/devicetree/bindings/misc/atmel-ssc.txt
->>> +++ b/Documentation/devicetree/bindings/misc/atmel-ssc.txt
->>> @@ -6,10 +6,30 @@ Required properties:
->>>          - atmel,at91sam9g45-ssc: support dma transfer
->>>   - reg: Should contain SSC registers location and length
->>>   - interrupts: Should contain SSC interrupt
->>> +For dma transfer:
->>> +- dmas: DMA specifier, consisting of a phandle to DMA controller node,
->>> +  the memory interface and SSC DMA channel ID (for tx and rx).
->>> +  See Documentation/devicetree/bindings/dma/atmel-dma.txt for details.
->>> +- dma-names: Must be "tx", "rx".
->>>
->>> -Example:
->>> +
->>> +Examples:
->>>   ssc0: ssc@fffbc000 {
->>>          compatible = "atmel,at91rm9200-ssc";
->>>          reg = <0xfffbc000 0x4000>;
->>> -       interrupts = <14 4 5>;
->>> +       interrupts = <14 IRQ_TYPE_LEVEL_HIGH 5>;
->>
->> maybe I should not use macro in the documentation (not sure if I should or
->> not).
->
->
-> absolutely.
-ok, thanks, changing that in next version.
+[I've just seen that I forgot to cc Uwe to the cover letter, sorry for that.]
+
+Hi,
+
+This patchset add sound on the at91sam9x5ek board.
+It's based on Nicolas Ferre's work in the 2.6.39 atmel patch for sam9x5:
+https://github.com/linux4sam/linux-at91/commit/0aa157c9e71ccccf3abc30fa37eb5c95b392978d
+
+It needs Bo Chen's patchset on the generic dmaengine (topic/atmel branch
+on Mark's sound tree) and the SSC interrupts disabled (cf
+http://www.spinics.net/lists/arm-kernel/msg256901.html)
+
+Outstanding issue:
+If this machine driver will support more SoCs maybe we should name it differently.
+
+
+It has been tested on at91sam9g35ek, and should work on g15, g25, x25 and x35 also.
+
+patches applies on next-20130708
+
+[I let the original signed-off from Nicolas and Uwe in place, I don't
+know if I should replace them by something like "originaly-signed-off-by"
+since the code has been changed.]
+
+Changes from v3:
+ * Remove the use of macros in device tree documentation.
+
+Changes from v2:
+ * Change atmel,sam9x5-audio-wm8731 to atmel,sam9x5-wm8731-audio for
+consistency with sam9g20 machine driver.
+ * Use the snd_pcm_hw_constraint() API as suggested by Mark and Lars-Peter.
+ * Remove the unnecessary snd_soc_dapm_sync() call as Lars-Peter suggested.
+ * Add documentation for machine driver DT binding.
+ * Update atmel-ssc DT binding documentation.
+ * Add GPL license instead of just the "GPL" word (hope that's ok !)
+
+Changes from v1-RFC:
+ * drop patches on SSC since Bo Chen already did the work
+ * reorder patches to have the machine driver first
+ * drop code already handled by the ASoC framework
+ * drop unneeded SND_ATMEL_SOC_PDC config selection
+ * use static snd_soc_card and  snd_soc_dai_link structures.
+
+Best regards,
+Richard.
+
+Nicolas Ferre (1):
+  sound: sam9x5_wm8731: machine driver for at91sam9x5 wm8731 boards
+
+Richard Genoud (6):
+  Documentation: DT: add sam9x5ek-wm8731 machine driver
+  Documentation: DT: update atmel SSC with DMA binding
+  ARM: AT91: DTS: sam9x5: add SSC DMA parameters
+  ARM: AT91: DTS: sam9x5ek: add WM8731 codec
+  ARM: AT91: DTS: sam9x5ek: add sound configuration
+  ARM: AT91: DTS: sam9x5ek: enable SSC
+
+ .../devicetree/bindings/misc/atmel-ssc.txt         |   20 +-
+ .../bindings/sound/atmel-sam9x5-wm8731-audio.txt   |   30 +++
+ arch/arm/boot/dts/at91sam9x5.dtsi                  |    3 +
+ arch/arm/boot/dts/at91sam9x5ek.dtsi                |   27 +++
+ sound/soc/atmel/Kconfig                            |   10 +
+ sound/soc/atmel/Makefile                           |    2 +
+ sound/soc/atmel/sam9x5_wm8731.c                    |  238 ++++++++++++++++++++
+ 7 files changed, 329 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
+ create mode 100644 sound/soc/atmel/sam9x5_wm8731.c
+
+-- 
+1.7.10.4
