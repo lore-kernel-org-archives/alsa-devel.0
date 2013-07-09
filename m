@@ -1,67 +1,80 @@
 From: Richard Genoud <richard.genoud@gmail.com>
-Subject: Re: [PATCH v2 1/5] sound: sam9x5_wm8731: machine
- driver for at91sam9x5 wm8731 boards
-Date: Tue, 9 Jul 2013 12:27:41 +0200
-Message-ID: <CACQ1gAi6C8A-=sONar7jiXWbJM9_x_MGkFh--wD9fH97bV+YJg@mail.gmail.com>
+Subject: [PATCH v3 0/7] Sound support for at91sam9x5-wm8731 based boards
+Date: Tue,  9 Jul 2013 14:28:42 +0200
+Message-ID: <1373372929-17800-1-git-send-email-richard.genoud@gmail.com>
 References: <1373290193-25300-1-git-send-email-richard.genoud@gmail.com>
- <1373290193-25300-2-git-send-email-richard.genoud@gmail.com>
- <20130708150721.GK27646@sirena.org.uk>
- <CACQ1gAgJyTSdxAKK7uwG-ybE2ddC90podM3+tOAqQwZUspsU8Q@mail.gmail.com>
- <20130709092917.GO27646@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f169.google.com (mail-ie0-f169.google.com
- [209.85.223.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 360402625D8
- for <alsa-devel@alsa-project.org>; Tue,  9 Jul 2013 12:28:02 +0200 (CEST)
-Received: by mail-ie0-f169.google.com with SMTP id 10so12677408ied.0
- for <alsa-devel@alsa-project.org>; Tue, 09 Jul 2013 03:28:01 -0700 (PDT)
-In-Reply-To: <20130709092917.GO27646@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1373290193-25300-1-git-send-email-richard.genoud@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Bo Shen <voice.shen@atmel.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Richard Genoud <richard.genoud@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-2013/7/9 Mark Brown <broonie@kernel.org>:
-> On Tue, Jul 09, 2013 at 10:19:45AM +0200, Richard Genoud wrote:
->> 2013/7/8 Mark Brown <broonie@kernel.org>:
->
->> > The obvious question here is of course if we can use the same driver for
->> > both of them.
->
->> I haven't got a g20 to test that, but that's the goal.
->
-> I think I do somewhere.
->
->> For now, g20 is still non-DT, so I think it's best to have a DT-only
->> driver like this one for the 9x5 family (9g15, 9g25, 9x25, 9g35,
->> 9x25).
->> When the g20 will move to DT completely, we can drop sam9g20_wm8731.c
->> and adjust sam9x5_wm8731.c (mainly master clock and widgets it seems)
->> By the way, maybe g45 could use that also (and SAMA5 ?)
->
-> If this is the goal then this driver needs a more generic name.
-Hum. I guess we could call it atmel-ssc-sound.c, since the ultimate
-goal would be to make it codec agnostic, but there's quite some work
-to achieve that (handle the widgets, mclk and rates by DT).
-But I really don't know if it's better to keep this name as long as
-g20 is not supported, and change it after or have a name that is not
-reflecting what the machine driver is doing right now.
-Maybe Bo or Nicolas can give their feeling on that (since I'm not
-Atmel, I don't know every SoC or what their Big Plan is for sound
-machine drivers)
+Hi,
 
+This patchset add sound on the at91sam9x5ek board.
+It's based on Nicolas Ferre's work in the 2.6.39 atmel patch for sam9x5:
+https://github.com/linux4sam/linux-at91/commit/0aa157c9e71ccccf3abc30fa37eb5c95b392978d
+
+It needs Bo Chen's patchset on the generic dmaengine (topic/atmel branch
+on Mark's sound tree) and the SSC interrupts disabled (cf
+http://www.spinics.net/lists/arm-kernel/msg256901.html)
+
+Outstanding issue:
+If this machine driver will support more SoCs maybe we should name it differently.
+
+
+It has been tested on at91sam9g35ek, and should work on g15, g25, x25 and x35 also.
+
+patches applies on next-20130708
+
+[I let the original signed-off from Nicolas and Uwe in place, I don't
+know if I should replace them by something like "originaly-signed-off-by"
+since the code has been changed.]
+
+Changes from v2:
+ * Change atmel,sam9x5-audio-wm8731 to atmel,sam9x5-wm8731-audio for
+consistency with sam9g20 machine driver.
+ * Use the snd_pcm_hw_constraint() API as suggested by Mark and Lars-Peter.
+ * Remove the unnecessary snd_soc_dapm_sync() call as Lars-Peter suggested.
+ * Add documentation for machine driver DT binding.
+ * Update atmel-ssc DT binding documentation.
+ * Add GPL license instead of just the "GPL" word (hope that's ok !)
+
+Changes from v1-RFC:
+ * drop patches on SSC since Bo Chen already did the work
+ * reorder patches to have the machine driver first
+ * drop code already handled by the ASoC framework
+ * drop unneeded SND_ATMEL_SOC_PDC config selection
+ * use static snd_soc_card and  snd_soc_dai_link structures.
+
+Best regards,
 Richard.
 
+Nicolas Ferre (1):
+  sound: sam9x5_wm8731: machine driver for at91sam9x5 wm8731 boards
+
+Richard Genoud (6):
+  Documentation: DT: add sam9x5ek-wm8731 machine driver
+  Documentation: DT: update atmel SSC with DMA binding
+  ARM: AT91: DTS: sam9x5: add SSC DMA parameters
+  ARM: AT91: DTS: sam9x5ek: add WM8731 codec
+  ARM: AT91: DTS: sam9x5ek: add sound configuration
+  ARM: AT91: DTS: sam9x5ek: enable SSC
+
+ .../devicetree/bindings/misc/atmel-ssc.txt         |   24 +-
+ .../bindings/sound/atmel-sam9x5-wm8731-audio.txt   |   30 +++
+ arch/arm/boot/dts/at91sam9x5.dtsi                  |    3 +
+ arch/arm/boot/dts/at91sam9x5ek.dtsi                |   27 +++
+ sound/soc/atmel/Kconfig                            |   10 +
+ sound/soc/atmel/Makefile                           |    2 +
+ sound/soc/atmel/sam9x5_wm8731.c                    |  238 ++++++++++++++++++++
+ 7 files changed, 332 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
+ create mode 100644 sound/soc/atmel/sam9x5_wm8731.c
+
 -- 
-for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
+1.7.10.4
