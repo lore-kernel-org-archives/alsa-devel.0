@@ -1,18 +1,22 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: [PATCH] ALSA: usb-audio: fix regression for fixed
-	stream quirk
-Date: Tue,  9 Jul 2013 20:36:15 +0200
-Message-ID: <1373394975-1811-1-git-send-email-eldad@fogrefinery.com>
+From: Adam Williamson <awilliam@redhat.com>
+Subject: Re: No sound with Sony VAIO VPCZ1 (ALC889)
+Date: Tue, 09 Jul 2013 11:52:01 -0700
+Message-ID: <e5ca1ccabde8f87ee5d2dd6d83eaf90c@www.happyassassin.net>
+References: <51D464A5.6040507@gmail.com> <51D59D60.9020105@gmail.com>
+ <51D5FCFC.8010506@gmail.com> <s5hip0pwp49.wl%tiwai@suse.de>
+ <51D6B56D.8050909@gmail.com> <s5h1u7dchqh.wl%tiwai@suse.de>
+ <020e0ad5107eb4c2bb333468be58d7d3@www.happyassassin.net>
+ <51D9F543.2070605@gmail.com> <s5hfvvpbhq1.wl%tiwai@suse.de>
+ <91b0aa0dcd8a1402fe547271f7464b25@www.happyassassin.net>
+ <s5hr4f8vp4q.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f45.google.com (mail-bk0-f45.google.com
- [209.85.214.45])
- by alsa0.perex.cz (Postfix) with ESMTP id C808F26559A
- for <alsa-devel@alsa-project.org>; Tue,  9 Jul 2013 20:36:25 +0200 (CEST)
-Received: by mail-bk0-f45.google.com with SMTP id je9so2458106bkc.4
- for <alsa-devel@alsa-project.org>; Tue, 09 Jul 2013 11:36:23 -0700 (PDT)
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id C359726561E
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jul 2013 20:52:08 +0200 (CEST)
+In-Reply-To: <s5hr4f8vp4q.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +26,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Eldad Zack <eldad@fogrefinery.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Tormen <my.nl.abos@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 8f898e92aea2c24c7f379ee265d178f69ebb9c07 removed the redundant
-reads of bInterfaceProtocol from the descriptors, but introduced a
-regression to devices with quirks of type QUIRK_AUDIO_FIXED_ENDPOINT,
-since fp->protocol is not set in setup process.
+On 2013-07-08 12:16, Takashi Iwai wrote:
 
-As a consequence, audio streams would not get initialized, as the
-following logs show:
+>> Typo: "exiting" instead of "existing" near the end.
+> 
+> Thanks, I'll fix it in the final commit.
+> 
+>> I'll test this on my affected system if I can get it to apply against
+>> 3.9 - thanks!
+> 
+> Let me know if it really works.  It seems working on emulator, at
+> least :)
 
-[   48.923043] setting usb interface 3:1
-[   48.923056] Creating new capture data endpoint #81
-[   48.923484] 4:3:1: cannot set freq 48000 to ep 0x81
-
-This patch sets fp->protocol in create_fixed_stream_quirk() and
-resolves the regression.
-
-Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
----
- sound/usb/quirks.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 5b01330..1bc45e7 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -129,6 +129,7 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
- {
- 	struct audioformat *fp;
- 	struct usb_host_interface *alts;
-+	struct usb_interface_descriptor *altsd;
- 	int stream, err;
- 	unsigned *rate_table = NULL;
- 
-@@ -166,6 +167,9 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
- 		return -EINVAL;
- 	}
- 	alts = &iface->altsetting[fp->altset_idx];
-+	altsd = get_iface_desc(alts);
-+	fp->protocol = altsd->bInterfaceProtocol;
-+
- 	if (fp->datainterval == 0)
- 		fp->datainterval = snd_usb_parse_datainterval(chip, alts);
- 	if (fp->maxpacksize == 0)
+Unfortunately it's turning out not to be simple: the patch doesn't apply 
+cleanly against 3.9. It applies fine against 3.10, but I can't use a 
+Rawhide-derived 3.10 kernel on F18 very easily for 
+$BORING_FEDORA_REASONS. I could sort this out, it's just a bit more of a 
+PITA than I want to deal with right ATM. If Tormen can't test soon I'll 
+work around it somehow.
 -- 
-1.8.1.5
+Adam Williamson
+Fedora QA Community Monkey
+IRC: adamw | Twitter: AdamW_Fedora | identi.ca: adamwfedora
+http://www.happyassassin.net
