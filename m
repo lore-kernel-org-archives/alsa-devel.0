@@ -1,62 +1,102 @@
-From: Adam Williamson <awilliam@redhat.com>
-Subject: Re: No sound with Sony VAIO VPCZ1 (ALC889)
-Date: Tue, 09 Jul 2013 11:53:47 -0700
-Message-ID: <46b0590bfa4ffc836dde180f8ffe3c97@www.happyassassin.net>
-References: <51D464A5.6040507@gmail.com> <51D59D60.9020105@gmail.com>
- <51D5FCFC.8010506@gmail.com> <s5hip0pwp49.wl%tiwai@suse.de>
- <51D6B56D.8050909@gmail.com> <s5h1u7dchqh.wl%tiwai@suse.de>
- <020e0ad5107eb4c2bb333468be58d7d3@www.happyassassin.net>
- <51D9F543.2070605@gmail.com>
- <c2cbc2323ce3a8e0df5f52de3ecb276c@www.happyassassin.net>
- <s5hvc4luem4.wl%tiwai@suse.de>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [PATCH v4 1/7] sound: sam9x5_wm8731: machine driver for at91sam9x5
+ wm8731 boards
+Date: Wed, 10 Jul 2013 14:11:48 +0800
+Message-ID: <51DCFB24.4080107@atmel.com>
+References: <1373372929-17800-1-git-send-email-richard.genoud@gmail.com> <1373379933-32749-1-git-send-email-richard.genoud@gmail.com> <1373379933-32749-2-git-send-email-richard.genoud@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id DF88F26559A
- for <alsa-devel@alsa-project.org>; Tue,  9 Jul 2013 20:53:49 +0200 (CEST)
-In-Reply-To: <s5hvc4luem4.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Tormen <my.nl.abos@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1373379933-32749-2-git-send-email-richard.genoud@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Genoud <richard.genoud@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2013-07-08 10:48, Takashi Iwai wrote:
+Hi Richard,
 
->> Ah, yes, I'd forgotten about that little wrinkle. I don't pretend to 
->> be
->> following the exact details of the planned fix here, but just as a
->> high-level remark, this 'extra mic jack' seems very much like an
->> implementation detail for the noise cancellation which Linux does not 
->> do
->> in any case (AFAIK). It wouldn't make sense to me to expose it as a
->> 'normal' mic jack, exactly. It's not like you can plug an actual
->> microphone into this 'mic jack' and use it. How will it be exposed
->> exactly after the patch, tiwai?
-> 
-> Well, Tormen's description sounds like it being a mic for a headset,
-> no?
+On 7/9/2013 22:25, Richard Genoud wrote:
+[snip]
 
-No, at least IIRC - the special headphones that come with the system 
-aren't for voice calling or whatever, they're active noise cancelling 
-earphones. 
-http://forum.notebookreview.com/sony/501220-sony-noise-cancelling-ear-phones-came-vaio-z-3.html is a thread about them, for e.g.
+> +#include <linux/module.h>
+> +#include <linux/moduleparam.h>
+> +#include <linux/kernel.h>
+> +#include <linux/clk.h>
+> +#include <linux/timer.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/i2c.h>
+> +
+> +#include <linux/atmel-ssc.h>
+> +
+> +#include <sound/core.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/soc.h>
+> +
+> +#include <asm/mach-types.h>
+> +#include <mach/hardware.h>
+> +#include <mach/gpio.h>
+> +
+> +#include "../codecs/wm8731.h"
+> +#include "atmel-pcm.h"
+> +#include "atmel_ssc_dai.h"
 
-> If so, it's not for a noise canceling, and we can expose the jack
-> and the control of the secondary mic simply as "Headset Mic".
-> In anyway, this will be a separate fix.
+I think some of the header file include is not needed. I keep them as 
+simple as following:
+---8>---
+#include <linux/clk.h>
+#include <linux/module.h>
+#include <linux/of.h>
+#include <linux/of_device.h>
+#include <linux/pinctrl/consumer.h>
 
--- 
-Adam Williamson
-Fedora QA Community Monkey
-IRC: adamw | Twitter: AdamW_Fedora | identi.ca: adamwfedora
-http://www.happyassassin.net
+#include <sound/soc.h>
+
+#include "../codecs/wm8731.h"
+#include "atmel_ssc_dai.h"
+---<8---
+
+> +#define MCLK_RATE 12288000
+> +
+> +#define DRV_NAME "sam9x5-snd-wm8731"
+> +
+> +/*
+> + * Authorized rates are:
+> + * Rate = MCLK_RATE / (n * 2)
+> + * Where n is in [1..4095]
+> + * (cf register SSC_CMR)
+> + */
+> +static unsigned int rates[] = {
+> +	8000,
+> +	16000,
+> +	32000,
+> +	48000,
+> +	64000,
+> +	96000,
+> +};
+
+This is decided by the codec, while not ssc when ssc in slave mode.
+
+> +static struct snd_pcm_hw_constraint_list hw_rates = {
+> +	.count = ARRAY_SIZE(rates),
+> +	.list = rates,
+> +};
+> +
+
+[snip]
+
+> +
+> +	at91sam9x5ek_dai.dai_fmt = snd_soc_of_parse_daifmt(np, "atmel,");
+
+We can put this into at91sam9x5ek_dai directly, not need to parse it 
+then. example as following:
+---8>---
+.dai_fmt = SND_SOC_DAIFMT_I2S
+                 | SND_SOC_DAIFMT_NB_NF
+                 | SND_SOC_DAIFMT_CBM_CFM,
+---<8---
+
+Best Regards,
+Bo Shen
