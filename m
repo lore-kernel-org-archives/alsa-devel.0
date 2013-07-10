@@ -1,19 +1,27 @@
-From: "Ki'Sak" <kisak42@gmail.com>
-Subject: Re: CA0110 analog mic capture flatline
-Date: Wed, 10 Jul 2013 12:45:35 -0400
-Message-ID: <CAL=yMgWgEeK2ktxH2PLUD4Oo40wgwTPG-584d3DcX99DS8kyWA@mail.gmail.com>
-References: <CAL=yMgVtrL0ZoSAp-=7kChv9vXkKDrALv+fgHAcP655km6WX+A@mail.gmail.com>
+From: Tormen <my.nl.abos@gmail.com>
+Subject: Re: No sound with Sony VAIO VPCZ1 (ALC889)
+Date: Wed, 10 Jul 2013 23:42:18 +0200
+Message-ID: <51DDD53A.8040502@gmail.com>
+References: <51D464A5.6040507@gmail.com> <51D59D60.9020105@gmail.com>
+ <51D5FCFC.8010506@gmail.com> <s5hip0pwp49.wl%tiwai@suse.de>
+ <51D6B56D.8050909@gmail.com> <s5h1u7dchqh.wl%tiwai@suse.de>
+ <020e0ad5107eb4c2bb333468be58d7d3@www.happyassassin.net>
+ <51D9F543.2070605@gmail.com>
+ <c2cbc2323ce3a8e0df5f52de3ecb276c@www.happyassassin.net>
+ <s5hvc4luem4.wl%tiwai@suse.de>
+ <46b0590bfa4ffc836dde180f8ffe3c97@www.happyassassin.net>
+ <s5hwqoycu0y.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f173.google.com (mail-we0-f173.google.com
- [74.125.82.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 19D9B2656E6
- for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2013 18:45:38 +0200 (CEST)
-Received: by mail-we0-f173.google.com with SMTP id x54so6059833wes.18
- for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2013 09:45:35 -0700 (PDT)
-In-Reply-To: <CAL=yMgVtrL0ZoSAp-=7kChv9vXkKDrALv+fgHAcP655km6WX+A@mail.gmail.com>
+Received: from mail-we0-f176.google.com (mail-we0-f176.google.com
+ [74.125.82.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1FB32656F1
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2013 23:42:25 +0200 (CEST)
+Received: by mail-we0-f176.google.com with SMTP id t56so6239563wes.21
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2013 14:42:25 -0700 (PDT)
+In-Reply-To: <s5hwqoycu0y.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,47 +31,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Adam Williamson <awilliam@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-Having received no response in 30 days and with the bug tracker down, I do
-not know how to proceed with troubleshooting this issue.
+On 10/07/13 17:30, Takashi Iwai wrote:
+> At Tue, 09 Jul 2013 11:53:47 -0700,
+> Adam Williamson wrote:
+>> On 2013-07-08 10:48, Takashi Iwai wrote:
+>>
+>>>> Ah, yes, I'd forgotten about that little wrinkle. I don't pretend to
+>>>> be
+>>>> following the exact details of the planned fix here, but just as a
+>>>> high-level remark, this 'extra mic jack' seems very much like an
+>>>> implementation detail for the noise cancellation which Linux does not
+>>>> do
+>>>> in any case (AFAIK). It wouldn't make sense to me to expose it as a
+>>>> 'normal' mic jack, exactly. It's not like you can plug an actual
+>>>> microphone into this 'mic jack' and use it. How will it be exposed
+>>>> exactly after the patch, tiwai?
+>>> Well, Tormen's description sounds like it being a mic for a headset,
+>>> no?
+I did mention though:
+ >     (a) the Notebook came with Noise-cancelling headsets, but they 
+are small in-ear plugs so there is no place for noise-cancelling logic 
+in the plugs ...
 
-I would like to send out the original email for posterity:
+>> No, at least IIRC - the special headphones that come with the system 
+>> aren't for voice calling or whatever, they're active noise cancelling 
+>> earphones. 
+>> http://forum.notebookreview.com/sony/501220-sony-noise-cancelling-ear-phones-came-vaio-z-3.html 
+>> is a thread about them, for e.g. 
+> OK, then it's not suitable to handle it as a headset.
+> I expected it being rather a standard TRRS connector.
+OK, I looked into that and here are my findings:
 
-I have recently acquired a ca0110 card and discovered to my dismay that the
-analog capture feed does not work. Upon further research, there has been a
-regression somewhere between September 2009 and June 2012. The most recent
-report I could find of analog capture working is at
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/63352/comments/93 .
+People reported about two different models of noise cancelling 
+headphones in the context of Sony VAIO VPCZ Notebooks.
+Both are 5-conductor jacks.
 
-I am a Gentoo Linux user running 3.8.13 / alsa 1.0.26. The device works
-fine for playback. While ugly, here is my alsa-info:
-http://www.alsa-project.org/db/?f=cccb2d835cbbe90aaca143e6518c93d17109f720.
-The overall layout is JACK + alsa loopback device with an independent
-voice chat. The ca0110 is not touched by JACK.
+You can see them both here:
+http://attachment.imp3.net/forum/month_1103/11030618490735852e6e2772f8.jpg
+The right side version is better seen here with it's extra "notch" 
+adding the 5th conductor to an otherwise 4.5mm 4-conductor TRRS jack (3 
+black rings + notch)
+     http://pic.yupoo.com/melly/C8LBXQYf/LBWc6.jpg
+The left side version is a 3.5 mm 5-conductor TRRS phone connector (4 
+black rings)
+http://img03.taobaocdn.com/bao/uploaded/i3/T1xd9qXcNbXXaS84UV_020744.jpg
 
-This issue has been reported to the wrong people at
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1093498 and
-http://forums.opensuse.org/english/get-technical-help-here/multimedia/477002-problem-microphone-opensuse-11-3-a.html,
-so it is not limited to my system.
+I do have the LEFT side version (the one with 4 black rings)
+
+Important:
+  * This TRRS headset jack works just fine when you plug a stereo 
+headphones (3-conductor version).
+  * And It seems to also work fine with a 4-conductor version (headphone 
++ mic smartphone headset) - see about "Mic 1" below.
+
+More details about the wiring (from an alsamixer viewpoint in (debian) 
+kernel 3.9.6):
+
++++ "Mic 1" refers to the earplug Stereo mic channel.
+The "Microphone Boost 1" controls nicely this "Mic 1".
+When capturing from "Mic 1" in alsamixer (with 3.9.6 debian kernel 
+without any new patch):
+
+     * plugging a standard 4-conductor TRRS (headset + MONO microphone 
+combination like common for smartphones these days with 3 black rings)
+     -> the microphone comes through on the right microphone channel
+     Unfortunately I don't have a headset + STEREO microphone 
+combination at hand :/
+
+     * plugging the 5-conductor TRRS original noise cancelling headset 
+(model Sony "mdr-nc021")
+     -> the microphone in the /left/ earplug (it says "L" on the plug) 
+comes through on the LEFT microphone channel
+     +  the microphone in the /right/ earplug (it says "R" on the plug) 
+comes through on the RIGHT microphone channel
+
++++ "Mic" refers to the Mic TRRS standard Stereo jack which is beside 
+the headset TRRS jack.
+The "Microphone Boost" controls nicely the "Mic" capture channel.
+
++++ "Internal" refers to the built in Stereo Microphone
+
++++ The "Digital" channel seems to have the exact same effect than the 
+"Capture" channel (controlling the degree of amplification of the 
+currently active capture source)
+There is certainly a deeper sense in the distinguishing both of them, 
+but I don't get it :)
+
+So this does make all perfect sense to me (especially "Mic 1") and I 
+like the idea to further expose this quite /real/ stereo microphone 
+channel "Mic 1".
+
+Here is a small test recording I did using the (model Sony "mdr-nc021") 
+headset:
+https://docs.google.com/file/d/0B9I6C680kzS1RFBOdWtaZXNIY00/edit?usp=sharing
+
+(( maybe rename "Mic" to "Mic jack" and "Mic 1" to "Headphone Mic" ))
 
 
-On Tue, Jun 25, 2013 at 1:11 PM, Ki'Sak <kisak42@gmail.com> wrote:
-
-> Good day alsa-devel,
->
-> I have a "Creative Labs [SB X-Fi Xtreme Audio] CA0110-IBG" which I have
-> been unable to capture any content from the analog mic jack. I am a Gentoo
-> Linux user with the 3.8.13 kernel / alsa 1.0.26. This issue has been filed
-> with the wrong devs over at ubuntu's bugtracker and opensuse's forum. Also,
-> I found a report that analog capture was working on this card as recently
-> as September 2009.
->
-> Thank you for your time,
-> Ki'Sak
->
-> Note: I have already tried to report this issue, this is a resend without
-> urls due to 2 weeks without a response or it reaching the mailing list.
->
+Knuth
