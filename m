@@ -1,23 +1,23 @@
 From: Richard Genoud <richard.genoud@gmail.com>
-Subject: Re: [PATCH v4 1/7] sound: sam9x5_wm8731: machine
- driver for at91sam9x5 wm8731 boards
-Date: Wed, 10 Jul 2013 11:30:24 +0200
-Message-ID: <CACQ1gAjEvrKQ8Amb_fKj-VUJqmbtGuRm6=9zdtVj9MBsVcn18Q@mail.gmail.com>
+Subject: Re: [PATCH v4 2/7] Documentation: DT: add
+	sam9x5ek-wm8731 machine driver
+Date: Wed, 10 Jul 2013 11:32:42 +0200
+Message-ID: <CACQ1gAjxWYVrOM8wvq7emArO7s_bion-ZgnB9tx3DN5htoV2qw@mail.gmail.com>
 References: <1373372929-17800-1-git-send-email-richard.genoud@gmail.com>
  <1373379933-32749-1-git-send-email-richard.genoud@gmail.com>
- <1373379933-32749-2-git-send-email-richard.genoud@gmail.com>
- <51DCFB24.4080107@atmel.com>
+ <1373379933-32749-3-git-send-email-richard.genoud@gmail.com>
+ <20130709150114.GB27646@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f174.google.com (mail-ie0-f174.google.com
- [209.85.223.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 923002656A5
- for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2013 11:30:45 +0200 (CEST)
-Received: by mail-ie0-f174.google.com with SMTP id 9so14552301iec.5
- for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2013 02:30:44 -0700 (PDT)
-In-Reply-To: <51DCFB24.4080107@atmel.com>
+Received: from mail-ie0-f173.google.com (mail-ie0-f173.google.com
+ [209.85.223.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE07F2656A5
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2013 11:33:03 +0200 (CEST)
+Received: by mail-ie0-f173.google.com with SMTP id k13so15088116iea.32
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2013 02:33:03 -0700 (PDT)
+In-Reply-To: <20130709150114.GB27646@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,106 +27,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-2013/7/10 Bo Shen <voice.shen@atmel.com>:
-> Hi Richard,
-Hi !
+2013/7/9 Mark Brown <broonie@kernel.org>:
+> On Tue, Jul 09, 2013 at 04:25:28PM +0200, Richard Genoud wrote:
+>> This add the sound DT binding for sam9x5ek-wm8731 machine driver
+>>
+>> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+>> ---
+>>  .../bindings/sound/atmel-sam9x5-wm8731-audio.txt   |   30 ++++++++++++++++++++
+>
+> Put new binding documents in the same patch that reads them, this makes
+> review easier.
+ok, I'll squash it with patch 1
 
-> On 7/9/2013 22:25, Richard Genoud wrote:
-> [snip]
+>> +  - atmel,audio-routing: A list of the connections between audio components.
 >
+> This needs to be more specific and list the available board specific
+> nodes for routing.  For the CODEC you can just refer to the CODEC
+> binding documentation.
+Ok, I'll do that.
+
+>> +  - atmel,format: DAI format. Must be "i2s"
 >
->> +#include <linux/module.h>
->> +#include <linux/moduleparam.h>
->> +#include <linux/kernel.h>
->> +#include <linux/clk.h>
->> +#include <linux/timer.h>
->> +#include <linux/interrupt.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/i2c.h>
->> +
->> +#include <linux/atmel-ssc.h>
->> +
->> +#include <sound/core.h>
->> +#include <sound/pcm.h>
->> +#include <sound/pcm_params.h>
->> +#include <sound/soc.h>
->> +
->> +#include <asm/mach-types.h>
->> +#include <mach/hardware.h>
->> +#include <mach/gpio.h>
->> +
->> +#include "../codecs/wm8731.h"
->> +#include "atmel-pcm.h"
->> +#include "atmel_ssc_dai.h"
->
->
-> I think some of the header file include is not needed. I keep them as simple
-> as following:
-> ---8>---
-> #include <linux/clk.h>
-> #include <linux/module.h>
-> #include <linux/of.h>
-> #include <linux/of_device.h>
-> #include <linux/pinctrl/consumer.h>
->
-> #include <sound/soc.h>
->
-> #include "../codecs/wm8731.h"
-> #include "atmel_ssc_dai.h"
-> ---<8---
-ooopps ! I forgot to do some cleaning in those after the file rework. Thanks !
+> So why not just omit this then?
+Will be removed.
 
 >
->> +#define MCLK_RATE 12288000
->> +
->> +#define DRV_NAME "sam9x5-snd-wm8731"
->> +
->> +/*
->> + * Authorized rates are:
->> + * Rate = MCLK_RATE / (n * 2)
->> + * Where n is in [1..4095]
->> + * (cf register SSC_CMR)
->> + */
->> +static unsigned int rates[] = {
->> +       8000,
->> +       16000,
->> +       32000,
->> +       48000,
->> +       64000,
->> +       96000,
->> +};
+>> +  - atmel,bitclock-master:  DAI clock master
+>> +  - atmel,frame-master: DAI frame master
 >
->
-> This is decided by the codec, while not ssc when ssc in slave mode.
-yes.
-
->> +static struct snd_pcm_hw_constraint_list hw_rates = {
->> +       .count = ARRAY_SIZE(rates),
->> +       .list = rates,
->> +};
->> +
->
->
-> [snip]
->
->
->> +
->> +       at91sam9x5ek_dai.dai_fmt = snd_soc_of_parse_daifmt(np, "atmel,");
->
->
-> We can put this into at91sam9x5ek_dai directly, not need to parse it then.
-> example as following:
-> ---8>---
-> .dai_fmt = SND_SOC_DAIFMT_I2S
->                 | SND_SOC_DAIFMT_NB_NF
->                 | SND_SOC_DAIFMT_CBM_CFM,
-> ---<8---
-yes, I removed that for the older machine driver, without thinking that much.
-It's better hardcorded like that.
+> The driver isn't handling these and there's no information on how to set
+> them.
+They will also go away.
 
 
-Thanks for your comments !
+Thanks !
