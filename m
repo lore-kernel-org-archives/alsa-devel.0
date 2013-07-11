@@ -1,36 +1,47 @@
-From: Richard Genoud <richard.genoud@gmail.com>
-Subject: [PATCH v5 6/7] ARM: AT91: DTS: sam9x5ek: enable SSC
-Date: Thu, 11 Jul 2013 18:15:58 +0200
-Message-ID: <1373559359-31607-7-git-send-email-richard.genoud@gmail.com>
-References: <1373559359-31607-1-git-send-email-richard.genoud@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1373559359-31607-1-git-send-email-richard.genoud@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Bo Shen <voice.shen@atmel.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Richard Genoud <richard.genoud@gmail.com>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: Re: [PATCH 1/1] ASoC: Samsung: Fix a trivial typo in
+	audss documentation
+Date: Thu, 11 Jul 2013 21:48:34 +0530
+Message-ID: <CAK9yfHyxFEv5t3W-=ciFP7x64mrhh24AgTfKuVCZKQk9iJ=_Hw@mail.gmail.com>
+References: <1373542328-28428-1-git-send-email-sachin.kamat@linaro.org>
+ <20130711125959.GP24508@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f172.google.com (mail-ob0-f172.google.com
+ [209.85.214.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41EEB265096
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 18:18:35 +0200 (CEST)
+Received: by mail-ob0-f172.google.com with SMTP id wo10so10194681obc.31
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 09:18:34 -0700 (PDT)
+In-Reply-To: <20130711125959.GP24508@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Enable the SSC needed for the WM8731 codec
+On 11 July 2013 18:29, Mark Brown <broonie@kernel.org> wrote:
+> On Thu, Jul 11, 2013 at 05:02:08PM +0530, Sachin Kamat wrote:
+>> Fixed a trivial typo.
+>>
+>> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+>> ---
+>>  .../devicetree/bindings/clock/clk-exynos-audss.txt |    2 +-
+>
+> This isn't an ASoC patch, it's a patch for the clock subsystem - you
+> should submit it there.
 
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
----
- arch/arm/boot/dts/at91sam9x5ek.dtsi |    4 ++++
- 1 file changed, 4 insertions(+)
+Fair enough. I will submit it there.
 
-diff --git a/arch/arm/boot/dts/at91sam9x5ek.dtsi b/arch/arm/boot/dts/at91sam9x5ek.dtsi
-index e6fb309..f3e83f7 100644
---- a/arch/arm/boot/dts/at91sam9x5ek.dtsi
-+++ b/arch/arm/boot/dts/at91sam9x5ek.dtsi
-@@ -95,6 +95,10 @@
- 			watchdog@fffffe40 {
- 				status = "okay";
- 			};
-+
-+			ssc0: ssc@f0010000 {
-+				status = "okay";
-+			};
- 		};
- 
- 		usb0: ohci@00600000 {
 -- 
-1.7.10.4
+With warm regards,
+Sachin
