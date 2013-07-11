@@ -1,35 +1,15 @@
-From: Dhiv <s.divya@accelfrontline.com>
-Subject: Re: Problem with MX27 ASoC audio
-Date: Thu, 11 Jul 2013 12:24:44 +0000 (UTC)
-Message-ID: <loom.20130711T142313-372@post.gmane.org>
-References: <AANLkTikAybX=rP-DfWm5z8eVcC1EaujyEofsSoSJQ1M8@mail.gmail.com>
- <20100812125625.GA27749@pengutronix.de>
- <AANLkTinCWxRNBeXxTHRFBDgmgM6vZTqTKgoCubNYSV5u@mail.gmail.com>
- <20100812150145.GC11362@sirena.org.uk>
- <AANLkTiks+PBmKf6UrxwfLR2jGHO47-p4=o10Y-EE0kJw@mail.gmail.com>
- <4C690693.80706@eukrea.com>
- <AANLkTi=Jst17bqqH6H=jdPYZSGdz5G7yiOJQ=aRLm-3x@mail.gmail.com>
- <AANLkTimSMLLcOVzxocQV_nQ57wwxKLUGQUt7wn2wPa2p@mail.gmail.com>
- <20100818084137.GA26804@opensource.wolfsonmicro.com>
- <AANLkTinm96norAT4YQhTqg+eP80gwoeZf13V2QQa0_QV@mail.gmail.com>
- <20100818090223.GD26804@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 0/4] ASoC: Regression fix for OMAP in DT
+	boot (3.11)
+Date: Thu, 11 Jul 2013 14:35:42 +0200
+Message-ID: <1373546146-30271-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 7ADBE2657E7
- for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 14:35:08 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1UxG5Q-0003V9-0f
- for alsa-devel@alsa-project.org; Thu, 11 Jul 2013 14:35:04 +0200
-Received: from ms229.managedbiz.net ([ms229.managedbiz.net])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 14:35:04 +0200
-Received: from s.divya by ms229.managedbiz.net with local (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 14:35:04 +0200
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 239E226583B
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 14:35:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -39,39 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-Mark Brown <broonie <at> opensource.wolfsonmicro.com> writes:
+Changes since v1:
+- Drop the change in dmaengine_pcm.h
+- Use .filter_data to store the DMA channel name
+ - omap-pcm: checks if the DAI is probed via DT and uses decides which method to
+   use to request the DMA channel
+- Dropped the cleanup patch for omap-dmic from the series
+  I will send another series with cleanups later
 
-> 
-> On Wed, Aug 18, 2010 at 04:58:12PM +0800, Randolph Chung wrote:
-> 
-> > The codec (at least the variant of tlv320aic3x that I am using) can
-> > have two pins in the hardware, but it's up to the board whether it's
-> > hooked up that way. The codec driver as currently implemented assumes
-> > the rates are symmetric, but it need not be.
-> 
-> In that case the driver should be setting the symmetric_rates flag
-> anyway since it does have this constraint - if it implements support for
-> asymmetric rates then the flag can be removed then.
-> 
-> > I see that there is a symmetric_rates flag for the dai_link too.
-> 
-> This is still a good idea if your board has a single LRCLK anyway in
-> case someone does do asymmetric rates.
-> 
+I just noticed in mainline kernel (pre 3.11-rc1) that OMAP4 audio is not probing
+anymore. This is because OMAP4 also moved to DT only mode (3.10 DT boot was
+fine).
+The issue underneath is that we can not use platform_get_resource_byname() for
+DMA resources when booted with devicetree.
 
+In case of DT boot we can use the DMA name to request the channel.
 
-Hi experts,
-       We are also working on getting the audio work with the same codec
-tlv320aic3x
-(TLV320AIC3106) with AT91SAMAD34 board. Playback is working fine with the board.
-But we have issues with capture. On "arecord" , nothing is being recorded in
-the file.
-Can you please tell us the TLV320AIC3X register settings that has to be to
-make the capture work.
+Due to technical issues OMAP can not be moved to generic dmaengine pcm as other
+SoCs did.
 
-Thanks in adavnce,
-Dhiv. 
+Mark: can you queue this series for 3.11? Thank you.
+
+Regards,
+Peter
+---
+Peter Ujfalusi (4):
+  ASoC: omap-pcm: Request the DMA channel differently when DT is
+    involved
+  ASoC: omap-mcpdm: Do not use platform_get_resource_byname() for DMA
+  ASoC: omap-dmic: Do not use platform_get_resource_byname() for DMA
+  ASoC: omap-mcbsp: Use different method for DMA request when booted
+    with DT
+
+ sound/soc/omap/mcbsp.c      | 39 ++++++++++++++++++++++-----------------
+ sound/soc/omap/omap-dmic.c  | 11 +----------
+ sound/soc/omap/omap-mcpdm.c | 16 ++--------------
+ sound/soc/omap/omap-pcm.c   | 17 ++++++++++++++---
+ 4 files changed, 39 insertions(+), 44 deletions(-)
+
+-- 
+1.8.2.1
