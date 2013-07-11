@@ -1,73 +1,63 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Samsung: Modify the I2S driver to support I2S on
- Exynos5420
-Date: Thu, 11 Jul 2013 14:01:39 +0100
-Message-ID: <20130711130139.GQ24508@sirena.org.uk>
-References: <1373526505-27115-1-git-send-email-padma.v@samsung.com>
- <29860116.IF545KsGYb@thinkpad>
- <20130711112023.GM24508@sirena.org.uk>
- <2214161.FSfscAvpna@thinkpad>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH 17/50] USB: serial: sierra: spin_lock in complete() cleanup
+Date: Thu, 11 Jul 2013 17:02:03 +0400
+Message-ID: <51DEACCB.4000206@cogentembedded.com>
+References: <1373533573-12272-1-git-send-email-ming.lei@canonical.com> <1373533573-12272-18-git-send-email-ming.lei@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CVXKxAdNG2kQIXaJ"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2214161.FSfscAvpna@thinkpad>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.kvr@gmail.com, sbkim73@samsung.com, kgene.kim@samsung.com, abrestic@chromium.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <1373533573-12272-18-git-send-email-ming.lei@canonical.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Ming Lei <ming.lei@canonical.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Oliver Neukum <oliver@neukum.org>, Alan Stern <stern@rowland.harvard.edu>, linux-input@vger.kernel.org, linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Johan Hovold <jhovold@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hello.
 
---CVXKxAdNG2kQIXaJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 11-07-2013 13:05, Ming Lei wrote:
 
-On Thu, Jul 11, 2013 at 01:41:40PM +0200, Tomasz Figa wrote:
-> On Thursday 11 of July 2013 12:20:23 Mark Brown wrote:
+> Complete() will be run with interrupt enabled, so change to
+> spin_lock_irqsave().
 
-> > This is a bit of a larger project sadly, there was resistance to doing
-> > the DT bindings based on compatible strings using the IP version :(
+> Cc: Johan Hovold <jhovold@gmail.com>
+> Signed-off-by: Ming Lei <ming.lei@canonical.com>
+> ---
+>   drivers/usb/serial/sierra.c |    9 +++++----
+>   1 file changed, 5 insertions(+), 4 deletions(-)
 
-> I'm not sure if this case is related to this problem in any way. I just=
-=20
-> suggested introducing a new include like samsung,exynos5420-i2s, a oppose=
-d to=20
-> using samsung,exynos5250-i2s and adding flags, since the I2S in Exynos542=
-0 is=20
+> diff --git a/drivers/usb/serial/sierra.c b/drivers/usb/serial/sierra.c
+> index de958c5..e79b6ad 100644
+> --- a/drivers/usb/serial/sierra.c
+> +++ b/drivers/usb/serial/sierra.c
+> @@ -433,6 +433,7 @@ static void sierra_outdat_callback(struct urb *urb)
+>   	struct sierra_port_private *portdata = usb_get_serial_port_data(port);
+>   	struct sierra_intf_private *intfdata;
+>   	int status = urb->status;
+> +	unsigned long flags;
+>
+>   	intfdata = port->serial->private;
+>
+> @@ -443,12 +444,12 @@ static void sierra_outdat_callback(struct urb *urb)
+>   		dev_dbg(&port->dev, "%s - nonzero write bulk status "
+>   		    "received: %d\n", __func__, status);
+>
+> -	spin_lock(&portdata->lock);
+> +	spin_lock_irqsave(&portdata->lock, flags);
+>   	--portdata->outstanding_urbs;
+> -	spin_unlock(&portdata->lock);
+> -	spin_lock(&intfdata->susp_lock);
+> +	spin_unlock_irqrestore(&portdata->lock, flags);
+> +	spin_lock_irqsave(&intfdata->susp_lock, flags);
 
-Well, it *should* be samsung,i2s-vN where N is the version number of the
-IP but documentation on the versioning has been patchy hence this whole
-thinng.
+     You are allowing an interrupt enabled window where previously it 
+wasn't possible. Why notleave these 2 lines as is?
 
-> the first one to have this TDM or whatever mode. (I'd still like to hear =
-what=20
-> it is...)
+>   	--intfdata->in_flight;
+> -	spin_unlock(&intfdata->susp_lock);
+> +	spin_unlock_irqrestore(&intfdata->susp_lock, flags);
+>
+>   	usb_serial_port_softint(port);
+>   }
 
-What it *should* be is the option to send more than one audio stream
-down a link using time division multiplexing.
-
---CVXKxAdNG2kQIXaJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR3qywAAoJELSic+t+oim9HdsP/2JgmILg9uAIPS1Z2B9Nzso6
-raM33mslSkN2mRV1eFevocEtzLaoYLSz0nxB3kInUNSKEtOJoxAYIDMxNk1HZQrG
-3NFq3LncbTMi+evgqr1YCFjxKJAlnTXagCROjp4oD37coxtYAmYxAxJk/oTGbnk1
-TvJJ7ZnJrsXmL42VAdAjU8WsbtY99FVxi87CyZjbk4L25UqchCE6TJhoTUmYQPav
-ftxq5FQLtyIADiZ818z+S7Eosp+VFbYen5Hy2lhocse0weMPQb6LDTJzg278CooN
-4JTPoKHhG0WR3GSYomp7eg8jSjVI/OB75HEc0v9kVQzR+2j98GjHI5wpQjDcIs9R
-J7Mrqg4KbrTsGysEDbDJoJ+eybbYYCBoEBmvHDGscqbp2of38gyvcM2y3i2o36Hp
-i6C0pCCzdRbgG+Zaojm1Q9OQYHNlZAZoeuEVb1YG2W46Ya8IETONa7inmZBfMciA
-yhpWr1mb935seLKV6I4r3Ymgpkz44jCUQbJeeYnURmUCB/pn5Pp/qkz/s35OXm3d
-sJqW6tXCO1d4eq27bRWU9J6U6/t1JGbllgpVV2ZghpHdNOlQz2ct7ceTrV8A2Akh
-cHLA+T7LrSAhjphZvax4i45iv670+MR/RbLC8xSFJB9vG+Q1/w0/cSFMCGq291D/
-YYaxq3tcfFlg+jBJdZad
-=8vLd
------END PGP SIGNATURE-----
-
---CVXKxAdNG2kQIXaJ--
+WBR, Sergei
