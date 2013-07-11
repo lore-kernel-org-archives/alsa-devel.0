@@ -1,90 +1,99 @@
-From: Ming Lei <ming.lei@canonical.com>
-Subject: Re: [PATCH 45/50] sound: usb: usx2y: spin_lock in complete() cleanup
-Date: Thu, 11 Jul 2013 22:52:59 +0800
-Message-ID: <CACVXFVNsOAeLZ1zCHmBNsdAWRnqBrDYziK6XDh7G0QEFiw4G5Q@mail.gmail.com>
-References: <1373533573-12272-1-git-send-email-ming.lei@canonical.com>
-	<1373533573-12272-46-git-send-email-ming.lei@canonical.com>
-	<51DEAE4E.90204@cogentembedded.com>
-	<s5hip0hb3y6.wl%tiwai@suse.de>
-	<CACVXFVPuv4VD_xCocP2QVOqUqAXm9gjwgwcRn6y=3qXPntOxCQ@mail.gmail.com>
-	<s5h7ggx413u.wl%tiwai@suse.de>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 0/5 v7][RFC] ASoC: simple-card DT support
+Date: Thu, 11 Jul 2013 16:57:21 +0200
+Message-ID: <51DEC7D1.3060001@gmail.com>
+References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
+ <87vcazyxr1.wl%kuninori.morimoto.gx@renesas.com>
+ <20130127035943.GJ4650@opensource.wolfsonmicro.com>
+ <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
+ <20130129014808.GC4748@opensource.wolfsonmicro.com>
+ <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
+ <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
+ <5107FF97.1070601@wwwdotorg.org>
+ <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
+ <51097F0F.2030501@wwwdotorg.org>
+ <87halw7sij.wl%kuninori.morimoto.gx@renesas.com>
+ <5110349D.3050308@wwwdotorg.org>
+ <87ehgvrs1h.wl%kuninori.morimoto.gx@renesas.com>
+ <87bobzrry6.wl%kuninori.morimoto.gx@renesas.com>
+ <511963F8.5020107@wwwdotorg.org>
+ <87bobqf5yq.wl%kuninori.morimoto.gx@renesas.com>
+ <511C22E2.60701@wwwdotorg.org>
+ <87obfnofsx.wl%kuninori.morimoto.gx@renesas.com>
+ <511C6A1B.9000507@wwwdotorg.org>
+ <874nhfv5mb.wl%kuninori.morimoto.gx@renesas.com>
+ <8738wzuu9g.wl%kuninori.morimoto.gx@renesas.com>
+ <87a9qsg4lp.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <s5h7ggx413u.wl%tiwai@suse.de>
-Sender: linux-media-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Oliver Neukum <oliver@neukum.org>, Alan Stern <stern@rowland.harvard.edu>, linux-input@vger.kernel.org, linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ea0-f178.google.com (mail-ea0-f178.google.com
+ [209.85.215.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9E5C265071
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 16:56:52 +0200 (CEST)
+Received: by mail-ea0-f178.google.com with SMTP id l15so5817974eak.9
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 07:56:52 -0700 (PDT)
+In-Reply-To: <87a9qsg4lp.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 11, 2013 at 10:34 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Thu, 11 Jul 2013 22:13:35 +0800,
-> Ming Lei wrote:
->>
->> On Thu, Jul 11, 2013 at 9:50 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > At Thu, 11 Jul 2013 17:08:30 +0400,
->> > Sergei Shtylyov wrote:
->> >>
->> >> On 11-07-2013 13:06, Ming Lei wrote:
->> >>
->> >> > Complete() will be run with interrupt enabled, so change to
->> >> > spin_lock_irqsave().
->> >>
->> >>     Changelog doesn't match the patch.
->> >
->> > Yep, but moreover...
->> >
->> >> > Cc: Jaroslav Kysela <perex@perex.cz>
->> >> > Cc: Takashi Iwai <tiwai@suse.de>
->> >> > Cc: alsa-devel@alsa-project.org
->> >> > Signed-off-by: Ming Lei <ming.lei@canonical.com>
->> >> > ---
->> >> >   sound/usb/usx2y/usbusx2yaudio.c |    4 ++++
->> >> >   1 file changed, 4 insertions(+)
->> >>
->> >> > diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
->> >> > index 4967fe9..e2ee893 100644
->> >> > --- a/sound/usb/usx2y/usbusx2yaudio.c
->> >> > +++ b/sound/usb/usx2y/usbusx2yaudio.c
->> >> > @@ -273,7 +273,11 @@ static void usX2Y_clients_stop(struct usX2Ydev *usX2Y)
->> >> >             struct snd_usX2Y_substream *subs = usX2Y->subs[s];
->> >> >             if (subs) {
->> >> >                     if (atomic_read(&subs->state) >= state_PRERUNNING) {
->> >> > +                           unsigned long flags;
->> >> > +
->> >> > +                           local_irq_save(flags);
->> >> >                             snd_pcm_stop(subs->pcm_substream, SNDRV_PCM_STATE_XRUN);
->> >> > +                           local_irq_restore(flags);
->> >> >                     }
->> >
->> > ... actually this snd_pcm_stop() call should have been covered by
->> > snd_pcm_stream_lock().  Maybe it'd be enough to have a single patch
->> > together with the change, i.e. wrapping with
->> > snd_pcm_stream_lock_irqsave().
->>
->> Please use snd_pcm_stream_lock_irqsave() so that I can avoid sending
->> out similar patch later, :-)
->>
->> >
->> > I'll prepare the patch for 3.11 independently from your patch series,
->> > so please drop this one.
->>
->> OK, thanks for dealing with that.
->>
->> >
->> >
->> > BTW, the word "cleanup" in the subject is inappropriate.  This is
->> > rather a fix together with the core change.
->>
->> It is a cleanup since the patchset only addresses lock problem which
->> is caused by the tasklet conversion.
->
-> Well, the conversion to irqsave() is needed for the future drop of
-> irq_save() in the caller, right?  Then this isn't a cleanup but a
-> preparation for movement ahead.
+Hi Kuninori,
 
-Sounds more accurate, and I will change the title in next round, :-)
+On 25.02.2013 09:49, Kuninori Morimoto wrote:
+> 
+> Hi Mark, Stephen, Lars
+> 
+> These are v7 of simple-card DT support.
+> I well considered your comments/advices.
+> Then, I noticed that creating snd_soc_register_cpu() is better solution.
+> It is very basic/simple version at this point, and I added [RFC] on these patches.
+> I hope it is accepted by you, and updated to be more useful.
+> Now, snd_soc_codec, and snd_soc_cpu has .of_xlate_dai_name() callback.
+> 
+> Kuninori Morimoto (5):
+>       ASoC: add snd_soc_register_cpu()
+>       ASoC: add .of_xlate_dai_name on snd_soc_cpu_cpu/codec_driver
+>       ASoC: simple-card: add Device Tree support
+>       ASoC: ak4642: add .of_xlate_dai_name support
+>       ASoC: fsi: add .of_xlate_dai_name support
+
+May I ask what happened to this approach and the patch set?
+
 
 Thanks,
---
-Ming Lei
+Daniel
+
+
+> 
+>  Documentation/devicetree/bindings/sound/ak4642.txt |    5 +
+>  .../devicetree/bindings/sound/renesas,fsi.txt      |    9 ++
+>  .../devicetree/bindings/sound/simple-card.txt      |   75 +++++++++++
+>  include/sound/soc.h                                |   33 +++++
+>  sound/soc/codecs/ak4642.c                          |   11 ++
+>  sound/soc/generic/simple-card.c                    |  139 +++++++++++++++++++-
+>  sound/soc/sh/fsi.c                                 |   22 +++-
+>  sound/soc/soc-core.c                               |  118 +++++++++++++++++
+>  8 files changed, 405 insertions(+), 7 deletions(-)
+> 
+> 
+> 
+> 
+> Best regards
+> ---
+> Kuninori Morimoto
+> _______________________________________________
+> devicetree-discuss mailing list
+> devicetree-discuss@lists.ozlabs.org
+> https://lists.ozlabs.org/listinfo/devicetree-discuss
+> 
