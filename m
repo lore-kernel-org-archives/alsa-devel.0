@@ -1,59 +1,90 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Samsung: Set RFS and BFS in slave mode
-Date: Thu, 11 Jul 2013 12:11:44 +0100
-Message-ID: <20130711111144.GL24508@sirena.org.uk>
-References: <1373526505-27115-1-git-send-email-padma.v@samsung.com>
- <1373526505-27115-2-git-send-email-padma.v@samsung.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/6] ASoC: omap-pcm: Request the DMA
+ channel by name when dma_name is set for the dai
+Date: Thu, 11 Jul 2013 13:13:45 +0200
+Message-ID: <51DE9369.7090703@metafoo.de>
+References: <1373537930-10467-1-git-send-email-peter.ujfalusi@ti.com>
+ <1373537930-10467-3-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ai3I8gwHc37+ASRI"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1373526505-27115-2-git-send-email-padma.v@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padmavathi Venna <padma.v@samsung.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.kvr@gmail.com, sbkim73@samsung.com, kgene.kim@samsung.com, abrestic@chromium.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-052.synserver.de (smtp-out-052.synserver.de
+ [212.40.185.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C8F82657DD
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 13:13:07 +0200 (CEST)
+In-Reply-To: <1373537930-10467-3-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 07/11/2013 12:18 PM, Peter Ujfalusi wrote:
+> When booting with DT the platform_get_resource_byname() is not available to
+> get the DMA resource. In this case the DAI drivers will configure the dma_name
+> and omap-pcm can use this name to request the DMA channel.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
---ai3I8gwHc37+ASRI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> ---
+>  sound/soc/omap/omap-pcm.c | 16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+> index c28e042..00168ab 100644
+> --- a/sound/soc/omap/omap-pcm.c
+> +++ b/sound/soc/omap/omap-pcm.c
+> @@ -113,14 +113,24 @@ static int omap_pcm_open(struct snd_pcm_substream *substream)
+>  {
+>  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>  	struct snd_dmaengine_dai_dma_data *dma_data;
+> +	int ret;
+>  
+>  	snd_soc_set_runtime_hwparams(substream, &omap_pcm_hardware);
+>  
+>  	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+>  
+> -	return snd_dmaengine_pcm_open_request_chan(substream,
+> -						   omap_dma_filter_fn,
+> -						   dma_data->filter_data);
+> +	if (dma_data->dma_name) {
 
-On Thu, Jul 11, 2013 at 12:38:25PM +0530, Padmavathi Venna wrote:
-> As per the User Manual, the RFS and BFS should be set in slave mode
-> for correct operation.
+I'd prefer not having to have to add a field for a OMAP specific hack to the
+generic struct. Two options which are  in my opinion better:
 
-Applied, thanks.  Since this is a fix it should have been the first
-patch in the series - this allows fixes to be sent to=20
+1) Just use filter_data in both cases and check rtd->cpu_dai->dev.of_node to
+see whether to use it as the name to dma_request_slave_channel or as
+filter_data for snd_dmaengine_pcm_open_request_chan.
 
-> Reviewed-on: https://gerrit-int.chromium.org/37841
+2) Add a omap_pcm_filter_data struct which looks like this
 
-Including things like this isn't terribly helpful - this is the Chromium
-internal system and nobody in the community can view the review.  A link
-to a public system might be useful but a private one should be omitted.
+struct omap_pcm_filter_data {
+	int req;
+	const char *dma_name;
+}
 
---ai3I8gwHc37+ASRI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+And use that as the filter_data.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR3pLsAAoJELSic+t+oim9Zq0P/1s62NgK/c308aWV/yWLHdy9
-TxFhL0oMRUpu78tPYUgz2jsHNuOhcJ8Y4okrQwPMVdxhUGVxGg7lRZKDOOLRg3NU
-EeJ5LL5di0TFybt6m4pgX7+GPq0Q9LYO0UpR0RKAujZGoE9HnvEaJKAylbLjSaAW
-MbsB8vMTBO2MM9APJonSA6I/baIYRU5h9Webvo0Wb8ljhyFuHRFSgiFzXgwC1DKT
-CYY47adrEOfhRrAAQw9hxz21M5MuonValnvjM2dlXqxZhA1sBPyWMO/cO+89rgl5
-1zqrg3rPqp9Y75jqg+kKMedqU6HZQBlrZCKmCFfrO9DKfBQnjtfEbQ3WyZSg2f02
-MP7UcnxlGoDx70FC5tyJpOSYd7AtWRs7wDpfvOKo9GxXe+j/YWKAPsaiWCl0IP0U
-/MqeDl7csxhXc4/a0krH6Pq/znKLCLkO9zf0vImoHMk8juEKVKSR8TxEDh5RKv5q
-MRttojMswcnrCqI1L5kCKpnrw5KaNfs1F0cgN83lkrq041w8WAtcNn9+LCIE64Jw
-MLBGzNHubdxzUrw3I16l5s52vh3nu5RPhMgQvoJt5ifaE4QVC7w2p8JLOiMBc/FM
-pzj92LvIVNnIH/DClOf8KHGl4r6cwYvO/eYgGQbDISMAAj2ey7PTQYOT2oXN9UVU
-0oYykunRj58rZv6CP5Lu
-=nngr
------END PGP SIGNATURE-----
-
---ai3I8gwHc37+ASRI--
+> +		struct dma_chan *chan;
+> +
+> +		chan = dma_request_slave_channel(rtd->cpu_dai->dev,
+> +						 dma_data->dma_name);
+> +		ret = snd_dmaengine_pcm_open(substream, chan);
+> +	} else {
+> +		ret = snd_dmaengine_pcm_open_request_chan(substream,
+> +							  omap_dma_filter_fn,
+> +							  dma_data->filter_data);
+> +	}
+> +	return ret;
+>  }
+>  
+>  static int omap_pcm_mmap(struct snd_pcm_substream *substream,
