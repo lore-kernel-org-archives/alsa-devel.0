@@ -1,15 +1,15 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 1/4] ASoC: omap-pcm: Request the DMA channel
-	differently when DT is involved
-Date: Thu, 11 Jul 2013 14:35:43 +0200
-Message-ID: <1373546146-30271-2-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 2/4] ASoC: omap-mcpdm: Do not use
+	platform_get_resource_byname() for DMA
+Date: Thu, 11 Jul 2013 14:35:44 +0200
+Message-ID: <1373546146-30271-3-git-send-email-peter.ujfalusi@ti.com>
 References: <1373546146-30271-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EB0826581A
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DBEA265825
  for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 14:35:51 +0200 (CEST)
 In-Reply-To: <1373546146-30271-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,47 +25,49 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-When booting with DT the platform_get_resource_byname() is not available to
-get the DMA resource. In this case the DAI drivers will set the filter_data to
-the name of the DMA and omap-pcm can use this to request the DMA channel.
+The DMA resource no longer available via this API when booting with DT.
+McPDM is only available on OMAP4/5 and both can boot with DT only.
+Set the dma_data.filter_data to the DMA name which will be used by omap-pcm
+to request the DMA channel.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/omap/omap-pcm.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ sound/soc/omap/omap-mcpdm.c | 16 ++--------------
+ 1 file changed, 2 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index c28e042..a11405d 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -113,14 +113,25 @@ static int omap_pcm_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_dmaengine_dai_dma_data *dma_data;
-+	int ret;
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index eb05c7e..a49dc52 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -66,7 +66,6 @@ struct omap_mcpdm {
+ 	bool restart;
  
- 	snd_soc_set_runtime_hwparams(substream, &omap_pcm_hardware);
+ 	struct snd_dmaengine_dai_dma_data dma_data[2];
+-	unsigned int dma_req[2];
+ };
  
- 	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+ /*
+@@ -477,19 +476,8 @@ static int asoc_mcpdm_probe(struct platform_device *pdev)
+ 	mcpdm->dma_data[0].addr = res->start + MCPDM_REG_DN_DATA;
+ 	mcpdm->dma_data[1].addr = res->start + MCPDM_REG_UP_DATA;
  
--	return snd_dmaengine_pcm_open_request_chan(substream,
--						   omap_dma_filter_fn,
--						   dma_data->filter_data);
-+	/* DT boot: filter_data is the DMA name */
-+	if (rtd->cpu_dai->dev->of_node) {
-+		struct dma_chan *chan;
-+
-+		chan = dma_request_slave_channel(rtd->cpu_dai->dev,
-+						 dma_data->filter_data);
-+		ret = snd_dmaengine_pcm_open(substream, chan);
-+	} else {
-+		ret = snd_dmaengine_pcm_open_request_chan(substream,
-+							  omap_dma_filter_fn,
-+							  dma_data->filter_data);
-+	}
-+	return ret;
- }
+-	res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "dn_link");
+-	if (!res)
+-		return -ENODEV;
+-
+-	mcpdm->dma_req[0] = res->start;
+-	mcpdm->dma_data[0].filter_data = &mcpdm->dma_req[0];
+-
+-	res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "up_link");
+-	if (!res)
+-		return -ENODEV;
+-
+-	mcpdm->dma_req[1] = res->start;
+-	mcpdm->dma_data[1].filter_data = &mcpdm->dma_req[1];
++	mcpdm->dma_data[0].filter_data = "dn_link";
++	mcpdm->dma_data[1].filter_data = "up_link";
  
- static int omap_pcm_mmap(struct snd_pcm_substream *substream,
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
+ 	if (res == NULL)
 -- 
 1.8.2.1
