@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
+From: timur@tabi.org
 Subject: Re: [PATCH] ASoC: fsl: Disable SSI in trigger() if
  RE/TE are both cleared
-Date: Thu, 11 Jul 2013 17:54:01 +0100
-Message-ID: <20130711165401.GU24508@sirena.org.uk>
+Date: Thu, 11 Jul 2013 12:14:56 -0500
+Message-ID: <51DEE810.3090304@tabi.org>
 References: <1373453034-21618-1-git-send-email-b42378@freescale.com>
+ <20130711165401.GU24508@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0845875759450597506=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9779E265096
- for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 18:54:06 +0200 (CEST)
-In-Reply-To: <1373453034-21618-1-git-send-email-b42378@freescale.com>
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CEFF26588B
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 19:14:54 +0200 (CEST)
+In-Reply-To: <20130711165401.GU24508@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org, timur@tabi.org
+To: Mark Brown <broonie@kernel.org>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
+On 07/11/2013 11:54 AM, Mark Brown wrote:
+>> > The code enabled SSIEN when triggered by SNDRV_PCM_TRIGGER_START,
+>> > so move the disable code to SNDRV_PCM_TRIGGER_STOP for symmetric.
+> Applied, thanks.
 
---===============0845875759450597506==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xku3GkZTJumTa1rO"
-Content-Disposition: inline
+Don't you need an ACK from the maintainer of the driver before applying
+it?  I haven't had a chance to test it yet.
 
-
---xku3GkZTJumTa1rO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jul 10, 2013 at 06:43:54PM +0800, Nicolin Chen wrote:
-> The code enabled SSIEN when triggered by SNDRV_PCM_TRIGGER_START,
-> so move the disable code to SNDRV_PCM_TRIGGER_STOP for symmetric.
-
-Applied, thanks.
-
---xku3GkZTJumTa1rO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR3uMmAAoJELSic+t+oim9R/8P+wezuSYtszTrk7LS/wgBCP4z
-0nSdKPu+TPZK9AB3w7jqHuz9H6IBdzak40+EYVvJyUQQJi0nwNIe0Uw/Gfdhb9oE
-RJFHpOIhZegdP6NtUTqg9utmRUWBTvBVq23SICvZl6BOFDhwcl4ktUxUL3xRipz9
-x2CXru+RU50Os/X2U8irJVa/YmHk3nSxzYkBXGIzOg3mggFI7WdPt36heNc2ZHYa
-KoMq9wwb5cvqsA4sQ9dxw4qalXMsGN4NfnOaWeFNWfjv6yCkaAKb2rVsIcyq6YIw
-4IUXbz7zaH5hPq7hbliPguMqlDtselZJaebObanbSKT8t8V1C8XhAQ0OMCnaWAn+
-jQsj5yNnASn6EFHqMFXpGEVREsFERji5a5j9KpdZVQ7pDR95kn1khDPyMBw4iB2o
-mmk+CasqW8P6AWoIWVcZtrLclGSwk+txF/3xaGGivW3opn4/OO3q1basmww8zY1D
-EAb7ca7X5nMFnIP/DPbEgnTSE94tMjKXCJc2mhaYYzw9es0RCfXIpw9kPhvaf/5m
-eHMmmHDoSEekeoB4lCw9NuvoE0MAB6zeuypOvc+pbgZHTKa2wBys9OH/mMq4jrfK
-hyLvZOHjB0DIrmXV2fRi1LELp1WdKukkFlSZ8sGued9m/xD9JdzEVPTlBokNeJH5
-VXC6LATsBPrTQpsAd+k+
-=tfSg
------END PGP SIGNATURE-----
-
---xku3GkZTJumTa1rO--
-
---===============0845875759450597506==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0845875759450597506==--
+-- 
+Timur Tabi
