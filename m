@@ -1,60 +1,53 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Samsung: Modify the I2S driver to support I2S on
- Exynos5420
-Date: Thu, 11 Jul 2013 12:20:23 +0100
-Message-ID: <20130711112023.GM24508@sirena.org.uk>
-References: <1373526505-27115-1-git-send-email-padma.v@samsung.com>
- <29860116.IF545KsGYb@thinkpad>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: [PATCH] ASoC: codecs: da9055: Update driver name
+ to fix breakage due to pmic driver with same name
+Date: Thu, 11 Jul 2013 17:06:16 +0530
+Message-ID: <1373542576.9286.101.camel@matrix>
+References: <1373024862.3233.63.camel@matrix>
+ <20130705114456.GV27646@sirena.org.uk> <1373031306.3233.131.camel@matrix>
+ <20130705133752.GX27646@sirena.org.uk> <1373270091.11222.12.camel@matrix>
+ <20130708112613.GQ27646@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JvUS8mwutKMHKosv"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <29860116.IF545KsGYb@thinkpad>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.kvr@gmail.com, sbkim73@samsung.com, kgene.kim@samsung.com, abrestic@chromium.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from db9outboundpool.messaging.microsoft.com
+ (mail-db9lp0251.outbound.messaging.microsoft.com [213.199.154.251])
+ by alsa0.perex.cz (Postfix) with ESMTP id D45352657FF
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 13:21:07 +0200 (CEST)
+In-Reply-To: <20130708112613.GQ27646@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, "kiran.padwal" <kiran.padwal@kpitcummins.com>, lrg <lrg@ti.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---JvUS8mwutKMHKosv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > I feel that some info is missing from your view. DA9055 is CODEC + PMIC
+> > but with two different I2C addresses. Actually it is a case of two
+> > different chips enclosed in a single die. There is NO interconnection
+> > between CODEC and PMIC inside DA9055. To me, this seems enough reason to
+> > make two drivers independent from each other and not let one part know
+> > about the existence of other. Actually in near future, there may be
+> > three variants of this chip,
+> 
+> This is very similar to things like the TI palmas chips - they have
+> multiple functions on different I2C addresses.  The chip still gets
+> instantiated a single time and then the subdevices are instantiated
+> like a MFD by the core device.
 
-On Thu, Jul 11, 2013 at 12:43:22PM +0200, Tomasz Figa wrote:
-> On Thursday 11 of July 2013 12:38:24 Padmavathi Venna wrote:
-
-> > +- samsung,supports-tdm: If the I2S controller supports TDM, then this =
-flag
-> > +  must be enabled.
-
-> I think this should be rather handled by a different compatible value, no=
-t a=20
-
-This is a bit of a larger project sadly, there was resistance to doing
-the DT bindings based on compatible strings using the IP version :(
-
---JvUS8mwutKMHKosv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR3pTzAAoJELSic+t+oim9rlIP/imV0gVhLj8RMlOQYEkOEKmb
-uUAd5koaYG4fR01G27REz81d5Gw+wORrhv6jB1hAmj3v5Xkp80uTFakoDjJxTwpV
-CjsINvSypyR21Olxu3E9PLqdaDqJl7lwrHc9DLypUtm/aI8T/Ek3DOAhZBEX4xzZ
-jzetRxyXTR8IFZLIBFuK8Ag6spJtVuym4XvOMGuYs2/SlLCC/9YXwPAn13RrLe3Q
-BXRamOIP1T1W0PByIFwFgJ6lR1AWb54+z4+oSKqhEN1yE7VXzDSlKDTVRVrA7tga
-9F6qq0JNLXfHd87ovtezUXOcPtXJz6qqHx+bw0/Ac0NHitFNAhehknbTVNMjPwvX
-U3ryb0k93zVVBEn1Ab0nokalwGtycc7HGtLHIRIi2DC39yB/RclNIZu4KblIdN6b
-o0eMFtwDjiFo86xNSmb6Sty7Y4tcaHyj+wpubapG0mQxJZO8wd2Y0zws5nZTExmw
-8FORgxM/0TaIKagXn6Bg7NmIwFGQiHayaYEqPcG4tmVpzAfuxeQxlBnIytd3w0Cc
-savCuqyWQd5mzRcOwB7qH1PSvzku0ZFl7qahDfmYFyXvbtgktpoXkQhm3uEeCE5s
-8X+K48HDQJI9ja8swSvo0HE/AX36Yyi9qa+M230QnoHkrRelEO3+2sMfHXMYukhh
-NGRx9WP1/fyHWrc7uWlU
-=kH1f
------END PGP SIGNATURE-----
-
---JvUS8mwutKMHKosv--
+I have had a look at palmas implementation. It seems to me that a
+significant change to both PMIC and CODEC drivers is required to make
+them inline with palmas structure. It will also need a thorough testing
+cycle for both. I am afraid that we may not have immediate bandwidth to
+accommodate this level of change. Is it possible that in first go we
+just fix the breakage due to name collision so that both drivers remain
+usable. And in second iteration, we restructure both of them as you
+suggested?
