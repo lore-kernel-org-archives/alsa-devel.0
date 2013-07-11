@@ -1,16 +1,15 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/6] ASoC: omap-pcm: Request the DMA channel by
-	name when dma_name is set for the dai
-Date: Thu, 11 Jul 2013 12:18:46 +0200
-Message-ID: <1373537930-10467-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 6/6] ASoC: omap-dmic: Cleanup the probe function
+Date: Thu, 11 Jul 2013 12:18:50 +0200
+Message-ID: <1373537930-10467-7-git-send-email-peter.ujfalusi@ti.com>
 References: <1373537930-10467-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 746112657B0
- for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 12:18:56 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 835CE2657B3
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 12:19:01 +0200 (CEST)
 In-Reply-To: <1373537930-10467-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,46 +24,68 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-When booting with DT the platform_get_resource_byname() is not available to
-get the DMA resource. In this case the DAI drivers will configure the dma_name
-and omap-pcm can use this name to request the DMA channel.
+Move the clk_get later in the function. In this way we do not need to use
+goto in other error cases.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/omap/omap-pcm.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ sound/soc/omap/omap-dmic.c | 24 +++++++++---------------
+ 1 file changed, 9 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index c28e042..00168ab 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -113,14 +113,24 @@ static int omap_pcm_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_dmaengine_dai_dma_data *dma_data;
-+	int ret;
+diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
+index f66b033..1b6c507 100644
+--- a/sound/soc/omap/omap-dmic.c
++++ b/sound/soc/omap/omap-dmic.c
+@@ -463,17 +463,10 @@ static int asoc_dmic_probe(struct platform_device *pdev)
  
- 	snd_soc_set_runtime_hwparams(substream, &omap_pcm_hardware);
+ 	mutex_init(&dmic->mutex);
  
- 	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+-	dmic->fclk = clk_get(dmic->dev, "fck");
+-	if (IS_ERR(dmic->fclk)) {
+-		dev_err(dmic->dev, "cant get fck\n");
+-		return -ENODEV;
+-	}
+-
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dma");
+ 	if (!res) {
+ 		dev_err(dmic->dev, "invalid dma memory resource\n");
+-		ret = -ENODEV;
+-		goto err_put_clk;
++		return -ENODEV;
+ 	}
+ 	dmic->dma_data.addr = res->start + OMAP_DMIC_DATA_REG;
  
--	return snd_dmaengine_pcm_open_request_chan(substream,
--						   omap_dma_filter_fn,
--						   dma_data->filter_data);
-+	if (dma_data->dma_name) {
-+		struct dma_chan *chan;
-+
-+		chan = dma_request_slave_channel(rtd->cpu_dai->dev,
-+						 dma_data->dma_name);
-+		ret = snd_dmaengine_pcm_open(substream, chan);
-+	} else {
-+		ret = snd_dmaengine_pcm_open_request_chan(substream,
-+							  omap_dma_filter_fn,
-+							  dma_data->filter_data);
+@@ -482,23 +475,24 @@ static int asoc_dmic_probe(struct platform_device *pdev)
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
+ 	if (!res) {
+ 		dev_err(dmic->dev, "invalid memory resource\n");
+-		ret = -ENODEV;
+-		goto err_put_clk;
++		return -ENODEV;
+ 	}
+ 
+ 	dmic->io_base = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(dmic->io_base))
+ 		return PTR_ERR(dmic->io_base);
+ 
++	dmic->fclk = clk_get(dmic->dev, "fck");
++	if (IS_ERR(dmic->fclk)) {
++		dev_err(dmic->dev, "cant get fck\n");
++		return -ENODEV;
 +	}
-+	return ret;
++
+ 	ret = snd_soc_register_component(&pdev->dev, &omap_dmic_component,
+ 					 &omap_dmic_dai, 1);
+ 	if (ret)
+-		goto err_put_clk;
+-
+-	return 0;
++		clk_put(dmic->fclk);
+ 
+-err_put_clk:
+-	clk_put(dmic->fclk);
+ 	return ret;
  }
  
- static int omap_pcm_mmap(struct snd_pcm_substream *substream,
 -- 
 1.8.2.1
