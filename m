@@ -1,44 +1,26 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 6/6] ASoC: omap-dmic: Cleanup the probe
-	function
-Date: Thu, 11 Jul 2013 14:31:21 +0200
-Message-ID: <51DEA599.6030205@ti.com>
-References: <1373537930-10467-1-git-send-email-peter.ujfalusi@ti.com>
- <1373537930-10467-7-git-send-email-peter.ujfalusi@ti.com>
- <51DE928A.4090402@metafoo.de>
+From: Oliver Neukum <oliver@neukum.org>
+Subject: Re: [PATCH 08/50] USB: legousbtower: spin_lock in complete() cleanup
+Date: Thu, 11 Jul 2013 14:36:23 +0200
+Message-ID: <3187374.nPY1jDDWKm@linux-5eaq.site>
+References: <1373533573-12272-1-git-send-email-ming.lei@canonical.com> <1373533573-12272-9-git-send-email-ming.lei@canonical.com> <51DEA289.5050509@cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 498952657DD
- for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 14:31:25 +0200 (CEST)
-In-Reply-To: <51DE928A.4090402@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <51DEA289.5050509@cogentembedded.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: Ming Lei <ming.lei@canonical.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>, linux-input@vger.kernel.org, linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Juergen Stuber <starblue@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/11/2013 01:10 PM, Lars-Peter Clausen wrote:
-> On 07/11/2013 12:18 PM, Peter Ujfalusi wrote:
->> Move the clk_get later in the function. In this way we do not need to use
->> goto in other error cases.
->>
->> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> =
+On Thursday 11 July 2013 16:18:17 Sergei Shtylyov wrote:
 
-> How about using devm_clk_get?
+>     I don't think this patch passes checkpatch.pl.
 
-I tend to forgot about the devm_* time to time ;)
+This series is a mechanical replacement in dozens of drivers.
+We cannot demand nice formatting. If you want to do something
+productive, check the locking in the driver.
 
--- =
+	Regards
+		Oliver
 
-P=E9ter
