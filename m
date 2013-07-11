@@ -1,60 +1,52 @@
-From: Sergei Shtylyov <sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH 08/50] USB: legousbtower: spin_lock in complete() cleanup
-Date: Thu, 11 Jul 2013 16:18:17 +0400
-Message-ID: <51DEA289.5050509@cogentembedded.com>
-References: <1373533573-12272-1-git-send-email-ming.lei@canonical.com> <1373533573-12272-9-git-send-email-ming.lei@canonical.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 2/6] ASoC: omap-pcm: Request the DMA
+ channel by name when dma_name is set for the dai
+Date: Thu, 11 Jul 2013 14:30:18 +0200
+Message-ID: <51DEA55A.2060301@ti.com>
+References: <1373537930-10467-1-git-send-email-peter.ujfalusi@ti.com>
+ <1373537930-10467-3-git-send-email-peter.ujfalusi@ti.com>
+ <51DE9369.7090703@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1373533573-12272-9-git-send-email-ming.lei-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Ming Lei <ming.lei-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-Cc: Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Juergen Stuber <starblue-Rn4VEauK+AKRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 242A82657CC
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 14:30:22 +0200 (CEST)
+In-Reply-To: <51DE9369.7090703@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+On 07/11/2013 01:13 PM, Lars-Peter Clausen wrote:
+> I'd prefer not having to have to add a field for a OMAP specific hack to =
+the
+> generic struct.
 
-On 11-07-2013 13:05, Ming Lei wrote:
+I thought that it might be usable for others later, but yeah. It is OMAP
+specific right now.
 
-> Complete() will be run with interrupt enabled, so change to
-> spin_lock_irqsave().
+> Two options which are  in my opinion better:
+> =
 
-> Cc: Juergen Stuber <starblue-Rn4VEauK+AKRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
-> Signed-off-by: Ming Lei <ming.lei-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-> ---
->   drivers/usb/misc/legousbtower.c |    5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
+> 1) Just use filter_data in both cases and check rtd->cpu_dai->dev.of_node=
+ to
+> see whether to use it as the name to dma_request_slave_channel or as
+> filter_data for snd_dmaengine_pcm_open_request_chan.
 
-> diff --git a/drivers/usb/misc/legousbtower.c b/drivers/usb/misc/legousbtower.c
-> index 8089479..4044989 100644
-> --- a/drivers/usb/misc/legousbtower.c
-> +++ b/drivers/usb/misc/legousbtower.c
-> @@ -771,6 +771,7 @@ static void tower_interrupt_in_callback (struct urb *urb)
->   	struct lego_usb_tower *dev = urb->context;
->   	int status = urb->status;
->   	int retval;
-> +	unsigned long flags;
->
->   	dbg(4, "%s: enter, status %d", __func__, status);
->
-> @@ -788,7 +789,7 @@ static void tower_interrupt_in_callback (struct urb *urb)
->   	}
->
->   	if (urb->actual_length > 0) {
-> -		spin_lock (&dev->read_buffer_lock);
-> +		spin_lock_irqsave (&dev->read_buffer_lock, flags);
->   		if (dev->read_buffer_length + urb->actual_length < read_buffer_size) {
->   			memcpy (dev->read_buffer + dev->read_buffer_length,
->   				dev->interrupt_in_buffer,
-> @@ -799,7 +800,7 @@ static void tower_interrupt_in_callback (struct urb *urb)
->   		} else {
->   			printk(KERN_WARNING "%s: read_buffer overflow, %d bytes dropped", __func__, urb->actual_length);
->   		}
-> -		spin_unlock (&dev->read_buffer_lock);
-> +		spin_unlock_irqrestore (&dev->read_buffer_lock, flags);
->   	}
+I'll stick with this one since I do not want to create a header file just f=
+or
+the omap_pcm_filter_data...
+I'll send the v2 in a couple of minutes (I have already tested it).
 
-    I don't think this patch passes checkpatch.pl.
-
-WBR, Sergei
+Thanks,
+P=E9ter
