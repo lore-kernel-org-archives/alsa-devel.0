@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/4] ASoC: pcm3008: Check for platform data
-Date: Wed, 10 Jul 2013 16:54:59 +0100
-Message-ID: <1373471700-24119-3-git-send-email-broonie@kernel.org>
-References: <1373471700-24119-1-git-send-email-broonie@kernel.org>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 1/6] ASoC: dmaengine_pcm: Add dma_name to
+	snd_dmaengine_dai_dma_data
+Date: Thu, 11 Jul 2013 12:18:45 +0200
+Message-ID: <1373537930-10467-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1373537930-10467-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E4EB2657AF
- for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 12:06:05 +0200 (CEST)
-In-Reply-To: <1373471700-24119-1-git-send-email-broonie@kernel.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id BEE76265056
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 12:18:55 +0200 (CEST)
+In-Reply-To: <1373537930-10467-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,32 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+DAI drivers can set the dma_name to the desired one instead of filter_data
+when booting with device tree in order to be able to get the correct DMA
+channel in DT boot.
+When booting with devicetree the platform_get_resource_byname() is not
+available for DMA resources.
 
-The driver will crash if none is provided.
-
-Signed-off-by: Mark Brown <broonie@linaro.org>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/pcm3008.c | 3 +++
- 1 file changed, 3 insertions(+)
+ include/sound/dmaengine_pcm.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/pcm3008.c b/sound/soc/codecs/pcm3008.c
-index 8ab1c03..4fa4ded 100644
---- a/sound/soc/codecs/pcm3008.c
-+++ b/sound/soc/codecs/pcm3008.c
-@@ -92,6 +92,9 @@ static int pcm3008_codec_probe(struct platform_device *pdev)
- 	struct pcm3008_setup_data *setup = pdev->dev.platform_data;
- 	int ret;
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index f11c35c..85a3286 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -68,6 +68,7 @@ struct snd_dmaengine_dai_dma_data {
+ 	u32 maxburst;
+ 	unsigned int slave_id;
+ 	void *filter_data;
++	const char *dma_name;
+ };
  
-+	if (!setup)
-+		return -EINVAL;
-+
- 	/* DEM1  DEM0  DE-EMPHASIS_MODE
- 	 * Low   Low   De-emphasis 44.1 kHz ON
- 	 * Low   High  De-emphasis OFF
+ void snd_dmaengine_pcm_set_config_from_dai_data(
 -- 
-1.8.3.2
+1.8.2.1
