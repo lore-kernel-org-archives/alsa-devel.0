@@ -1,90 +1,60 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 2/6] ASoC: omap-pcm: Request the DMA
- channel by name when dma_name is set for the dai
-Date: Thu, 11 Jul 2013 13:13:45 +0200
-Message-ID: <51DE9369.7090703@metafoo.de>
-References: <1373537930-10467-1-git-send-email-peter.ujfalusi@ti.com>
- <1373537930-10467-3-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Samsung: Modify the I2S driver to support I2S on
+ Exynos5420
+Date: Thu, 11 Jul 2013 12:20:23 +0100
+Message-ID: <20130711112023.GM24508@sirena.org.uk>
+References: <1373526505-27115-1-git-send-email-padma.v@samsung.com>
+ <29860116.IF545KsGYb@thinkpad>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-052.synserver.de (smtp-out-052.synserver.de
- [212.40.185.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C8F82657DD
- for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2013 13:13:07 +0200 (CEST)
-In-Reply-To: <1373537930-10467-3-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JvUS8mwutKMHKosv"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <29860116.IF545KsGYb@thinkpad>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.kvr@gmail.com, sbkim73@samsung.com, kgene.kim@samsung.com, abrestic@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/11/2013 12:18 PM, Peter Ujfalusi wrote:
-> When booting with DT the platform_get_resource_byname() is not available to
-> get the DMA resource. In this case the DAI drivers will configure the dma_name
-> and omap-pcm can use this name to request the DMA channel.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-> ---
->  sound/soc/omap/omap-pcm.c | 16 +++++++++++++---
->  1 file changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-> index c28e042..00168ab 100644
-> --- a/sound/soc/omap/omap-pcm.c
-> +++ b/sound/soc/omap/omap-pcm.c
-> @@ -113,14 +113,24 @@ static int omap_pcm_open(struct snd_pcm_substream *substream)
->  {
->  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->  	struct snd_dmaengine_dai_dma_data *dma_data;
-> +	int ret;
->  
->  	snd_soc_set_runtime_hwparams(substream, &omap_pcm_hardware);
->  
->  	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
->  
-> -	return snd_dmaengine_pcm_open_request_chan(substream,
-> -						   omap_dma_filter_fn,
-> -						   dma_data->filter_data);
-> +	if (dma_data->dma_name) {
+--JvUS8mwutKMHKosv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'd prefer not having to have to add a field for a OMAP specific hack to the
-generic struct. Two options which are  in my opinion better:
+On Thu, Jul 11, 2013 at 12:43:22PM +0200, Tomasz Figa wrote:
+> On Thursday 11 of July 2013 12:38:24 Padmavathi Venna wrote:
 
-1) Just use filter_data in both cases and check rtd->cpu_dai->dev.of_node to
-see whether to use it as the name to dma_request_slave_channel or as
-filter_data for snd_dmaengine_pcm_open_request_chan.
+> > +- samsung,supports-tdm: If the I2S controller supports TDM, then this =
+flag
+> > +  must be enabled.
 
-2) Add a omap_pcm_filter_data struct which looks like this
+> I think this should be rather handled by a different compatible value, no=
+t a=20
 
-struct omap_pcm_filter_data {
-	int req;
-	const char *dma_name;
-}
+This is a bit of a larger project sadly, there was resistance to doing
+the DT bindings based on compatible strings using the IP version :(
 
-And use that as the filter_data.
+--JvUS8mwutKMHKosv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
 
-> +		struct dma_chan *chan;
-> +
-> +		chan = dma_request_slave_channel(rtd->cpu_dai->dev,
-> +						 dma_data->dma_name);
-> +		ret = snd_dmaengine_pcm_open(substream, chan);
-> +	} else {
-> +		ret = snd_dmaengine_pcm_open_request_chan(substream,
-> +							  omap_dma_filter_fn,
-> +							  dma_data->filter_data);
-> +	}
-> +	return ret;
->  }
->  
->  static int omap_pcm_mmap(struct snd_pcm_substream *substream,
+iQIcBAEBAgAGBQJR3pTzAAoJELSic+t+oim9rlIP/imV0gVhLj8RMlOQYEkOEKmb
+uUAd5koaYG4fR01G27REz81d5Gw+wORrhv6jB1hAmj3v5Xkp80uTFakoDjJxTwpV
+CjsINvSypyR21Olxu3E9PLqdaDqJl7lwrHc9DLypUtm/aI8T/Ek3DOAhZBEX4xzZ
+jzetRxyXTR8IFZLIBFuK8Ag6spJtVuym4XvOMGuYs2/SlLCC/9YXwPAn13RrLe3Q
+BXRamOIP1T1W0PByIFwFgJ6lR1AWb54+z4+oSKqhEN1yE7VXzDSlKDTVRVrA7tga
+9F6qq0JNLXfHd87ovtezUXOcPtXJz6qqHx+bw0/Ac0NHitFNAhehknbTVNMjPwvX
+U3ryb0k93zVVBEn1Ab0nokalwGtycc7HGtLHIRIi2DC39yB/RclNIZu4KblIdN6b
+o0eMFtwDjiFo86xNSmb6Sty7Y4tcaHyj+wpubapG0mQxJZO8wd2Y0zws5nZTExmw
+8FORgxM/0TaIKagXn6Bg7NmIwFGQiHayaYEqPcG4tmVpzAfuxeQxlBnIytd3w0Cc
+savCuqyWQd5mzRcOwB7qH1PSvzku0ZFl7qahDfmYFyXvbtgktpoXkQhm3uEeCE5s
+8X+K48HDQJI9ja8swSvo0HE/AX36Yyi9qa+M230QnoHkrRelEO3+2sMfHXMYukhh
+NGRx9WP1/fyHWrc7uWlU
+=kH1f
+-----END PGP SIGNATURE-----
+
+--JvUS8mwutKMHKosv--
