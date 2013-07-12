@@ -1,18 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: omap-abe-twl6040: Remove support for
- pdata (legacy boot)
-Date: Fri, 12 Jul 2013 14:08:12 +0200
-Message-ID: <51DFF1AC.4040103@ti.com>
-References: <1373628835-11439-1-git-send-email-peter.ujfalusi@ti.com>
- <20130712115157.GF24508@sirena.org.uk>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH] ASoC: fsl: Disable SSI in trigger() if
+ RE/TE are both cleared
+Date: Fri, 12 Jul 2013 07:11:35 -0500
+Message-ID: <51DFF277.7020105@tabi.org>
+References: <1373453034-21618-1-git-send-email-b42378@freescale.com>
+ <20130711165401.GU24508@sirena.org.uk> <51DEE810.3090304@tabi.org>
+ <20130712035732.GA27823@MrMyself> <51DF7F4F.90707@tabi.org>
+ <20130712084328.GW24508@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 882D22659C4
- for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 14:08:16 +0200 (CEST)
-In-Reply-To: <20130712115157.GF24508@sirena.org.uk>
+Received: from relay00.pair.com (relay00.pair.com [209.68.5.9])
+ by alsa0.perex.cz (Postfix) with SMTP id 1179A2659C4
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 14:11:39 +0200 (CEST)
+In-Reply-To: <20130712084328.GW24508@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,28 +25,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, linuxppc-dev@lists.ozlabs.org, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/12/2013 01:51 PM, Mark Brown wrote:
-> On Fri, Jul 12, 2013 at 01:33:55PM +0200, Peter Ujfalusi wrote:
-> =
+Mark Brown wrote:
+> Yes, that's why I just went ahead - you'd said recently that you'd be
+> out of action for a while and not able to test anything.
 
->> +/* TODO: This file can be removed in 3.12 since it is no longer needed =
-*/
->> +
-> =
+Yeah, I'd rather you waited until I at least made sure it compiled.  Is 
+there any way you can at least install the Freescale PowerPC SDK and do 
+compile tests?  At least that way you won't have to wait for me for every 
+little thing.
 
-> It's a bit late to do this for v3.11 so may as well just jump straight
-> to the removal?  Having the extra code isn't going to actively break
-> anything so it's just a cleanup.
-
-I know it is late for 3.11, but if I remove it with this commit your for-ne=
-xt
-will not compile if OMAP4 is selected since the board files are still there.
-I prefer to send a separate patch later on to remove the header file after
-your for-next picks up 3.11-rc1
-
--- =
-
-P=E9ter
+-- 
+Timur Tabi
