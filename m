@@ -1,64 +1,43 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [PATCH] ASoC: Samsung: Modify the I2S driver to support I2S on Exynos5420
-Date: Fri, 12 Jul 2013 09:52:35 +0530
-Message-ID: <CAAgF-BdTY3x9Hb9HmTm6WBrpES7QdKO_VbxN_9zu6zf43AaGQA@mail.gmail.com>
-References: <1373526505-27115-1-git-send-email-padma.v@samsung.com>
-	<20130711104804.GK24508@sirena.org.uk>
-	<10406176.2lc5qJ8Oq7@thinkpad>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: Re: [PATCH] ASoC: fsl: Disable SSI in trigger() if
+ RE/TE are both cleared
+Date: Fri, 12 Jul 2013 12:19:45 +0800
+Message-ID: <20130712041944.GA27906@MrMyself>
+References: <1373453034-21618-1-git-send-email-b42378@freescale.com>
+ <20130711165401.GU24508@sirena.org.uk> <51DEE810.3090304@tabi.org>
+ <20130712035732.GA27823@MrMyself> <51DF7F4F.90707@tabi.org>
+ <20130712040930.GB27823@MrMyself> <51DF826C.40208@tabi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <10406176.2lc5qJ8Oq7@thinkpad>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, Kukjin Kim <kgene.kim@samsung.com>, abrestic@chromium.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe004.messaging.microsoft.com [207.46.163.27])
+ by alsa0.perex.cz (Postfix) with ESMTP id B26E626592B
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 06:24:42 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <51DF826C.40208@tabi.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Timur Tabi <timur@tabi.org>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 11, 2013 at 4:37 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
-> On Thursday 11 of July 2013 11:48:04 Mark Brown wrote:
->> On Thu, Jul 11, 2013 at 12:38:24PM +0530, Padmavathi Venna wrote:
->> > -#define MOD_LR_LLOW                (0 << 7)
->> > -#define MOD_LR_RLOW                (1 << 7)
->> > -#define MOD_SDF_IIS                (0 << 5)
->> > -#define MOD_SDF_MSB                (1 << 5)
->> > -#define MOD_SDF_LSB                (2 << 5)
->> > -#define MOD_SDF_MASK               (3 << 5)
->> >
->> > +#define MOD_LR_LLOW                0
->> > +#define MOD_LR_RLOW                1
->> > +#define MOD_SDF_SHIFT              5
->> > +#define MOD_SDF_IIS                0
->> > +#define MOD_SDF_MSB                1
->> > +#define MOD_SDF_LSB                2
->> > +#define MOD_SDF_MASK               3
->>
->> This patch has an awful lot of coding style changes like this which
->> are just coding style changes and not implementing TDM support.  These
->> should be done separately, not as part of the same patch, in order to
->> make the code easier to review.
->>
->> >     case 768:
->> > -           mod |= MOD_RCLK_768FS;
->> > +           mod |= (MOD_RCLK_768FS << rfs_shift);
->> >
->> >             break;
->>
->> This stuff is another example.
->>
->> I think the change itself should be fine but I'm not 100% sure I'm
->> correctly identifying what's a stylistic change and what's a functional
->> change.
->
-> Right. This could be split into two patches, first reworking the style to give
-> more flexibility with operations on registers and another one adding TDM
-> specific changes, like new bitfield definitions and conditional handling of
-> register accesses to account for new bitfield locations.
->
-> Best regards,
-> Tomasz
->
+On Thu, Jul 11, 2013 at 11:13:32PM -0500, Timur Tabi wrote:
+> Have you tested it on PowerPC?
 
-Ok. I will bisect the changes into two patches as suggested.
+Not actually. But I think it won't break the work flow since
+the SSI modules on two platform should be literally identical.
 
-Thanks
-Padma
+But if you still have concern with it, you can ask Mark to wait
+and test it later. I'm okay with your decision.
+
+Thanks,
+Nicolin Chen
