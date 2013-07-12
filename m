@@ -1,52 +1,63 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: ASoC: codec: SPDIF only works with Tx/Rx seperate
-	codec drivers?
-Date: Fri, 12 Jul 2013 16:30:31 +0800
-Message-ID: <20130712083030.GA28555@MrMyself>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Samsung: Modify the I2S driver to support I2S on
+ Exynos5420
+Date: Fri, 12 Jul 2013 09:49:32 +0100
+Message-ID: <20130712084932.GY24508@sirena.org.uk>
+References: <1373526505-27115-1-git-send-email-padma.v@samsung.com>
+ <29860116.IF545KsGYb@thinkpad>
+ <20130711112023.GM24508@sirena.org.uk>
+ <2214161.FSfscAvpna@thinkpad>
+ <20130711130139.GQ24508@sirena.org.uk>
+ <CAAgF-BdM4jw0o4+ELVo_N029tbgMJBBqJxU91e=TgBNiiREyaA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe001.messaging.microsoft.com [207.46.163.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D8E3265109
- for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 10:49:52 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0786ZyFfTSxuegBe"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <CAAgF-BdM4jw0o4+ELVo_N029tbgMJBBqJxU91e=TgBNiiREyaA@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Padma Venkat <padma.kvr@gmail.com>
+Cc: Tomasz Figa <tomasz.figa@gmail.com>, Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, Kukjin Kim <kgene.kim@samsung.com>, abrestic@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-I've a little question about SPDIF codec drivers.
+--0786ZyFfTSxuegBe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I found there're spdif_receiver.c and spdif_transmitter.c, two files,
-in sound/soc/codecs directory. So it looks like SPDIF module would work
-separately as one IN device and one OUT device, for example:
-dts/spear1340.dtsi:		spdif-in@d0100000 {
-dts/spear1340.dtsi:			compatible = "st,spdif-in";
-dts/spear1340.dtsi:		spdif-out@d0000000 {
-dts/spear1340.dtsi:			compatible = "st,spdif-out";
+On Fri, Jul 12, 2013 at 10:07:22AM +0530, Padma Venkat wrote:
 
-But the question is what if a SPDIF module have both Tx and Rx function
-in one simple CPU DAI. Is that okay to add a new codec driver for this
-situation?
+> A new version number is added when a there was some change in the IP
+> like adding a internal mux to the IP, adding multi channel support,
+> adding reset control bit. This was done in the older code with
+> platform device.
+> Same thing is followed here. So as previously done, adding a new
+> compatible name like "samsung,i2s-v6" with new quirk
+> "samsung,supports-tdm" is okey?
 
-Actually I'm gonna prepare some patches to add Freescale SPDIF drivers.
-But this needs to create a brand new dummy SPDIF codec driver, which's
-some kinda same as spdif_receiver/transmitter.c but quite different
-in the supports of SAMPLE_RATE/FORMAT and IN/OUT-in-one integration.
+Yes, this is good but the quirk should just be found by software based
+on the compatible string rather than in the DT.
 
-So I just want to make sure if this'll be okay.
+--0786ZyFfTSxuegBe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Thank you. And looking forward to your reply.
-Nicolin Chen
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR38MTAAoJELSic+t+oim9CUIP/2eBnv3SeQASWChUKiKz/a1t
+7XmEwmzlLDg2O1+VG29JSHI4qhHXL6GsMJ7iSmv1f7cjgmkHL3rIhp1bDt9K5hUr
+r48/uLB7A1CNa0p1CS0xDKSaZxCIOBSUmqMpVqQ+9nqzKE36EMMtfnQpwc7j38dk
+Uh3N+IwwYo0qZijzedmOKXVU/V0NBYP5JIMRLL5THjv7cZuEeIwVpWEbe7Fs2FU6
+CDT/KfVia+0PoroLGV1iT9oaV7h9OrEWdb25F56ZX//HdqnPWIARu33gep8FoOO7
+wZPopkpRO+aFccNJwnakawSObBvnbvvxgJ9QVq5AwG61HQ4Li+yl2yVCsGBftMVX
+boQy474bnwoW8FlOTwayXegBxG2jksU4ple32vCJv7nBPCgcA4LI7vXCUnH8pUOh
+OPrBAlpoStr43jIzmKqDAZuAoz0T41qB5l2TNkdxcL02WDaKVFvQ+cfFgciy3Fbs
+xKmTHtQyiUbcMJreW3Kvch9coLyoa4DJQJtpJ1dOf/7hwc2Rmw02qAaTZSGNM07m
+fd4eml107S6Cny6HISIPAMingRpyIcu89rq5gth/IHa5NsGVLomC7IHBtQc0pv2k
+YjkXLu6XDJfOhhQJXgmFCDXAQTuad5a/hiGc6hlbtlaVHzcH+rOWDh6aveOBlPBw
+8DEKv05l958sQ8UEYvas
+=UftO
+-----END PGP SIGNATURE-----
+
+--0786ZyFfTSxuegBe--
