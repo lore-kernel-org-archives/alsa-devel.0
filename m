@@ -1,19 +1,21 @@
-From: Timur Tabi <timur@tabi.org>
+From: Nicolin Chen <b42378@freescale.com>
 Subject: Re: [PATCH] ASoC: fsl: Disable SSI in trigger() if
  RE/TE are both cleared
-Date: Thu, 11 Jul 2013 23:00:15 -0500
-Message-ID: <51DF7F4F.90707@tabi.org>
+Date: Fri, 12 Jul 2013 12:09:31 +0800
+Message-ID: <20130712040930.GB27823@MrMyself>
 References: <1373453034-21618-1-git-send-email-b42378@freescale.com>
  <20130711165401.GU24508@sirena.org.uk> <51DEE810.3090304@tabi.org>
- <20130712035732.GA27823@MrMyself>
+ <20130712035732.GA27823@MrMyself> <51DF7F4F.90707@tabi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay00.pair.com (relay00.pair.com [209.68.5.9])
- by alsa0.perex.cz (Postfix) with SMTP id 79D72265912
- for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 06:00:20 +0200 (CEST)
-In-Reply-To: <20130712035732.GA27823@MrMyself>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe003.messaging.microsoft.com [216.32.180.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3E79265912
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 06:12:59 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <51DF7F4F.90707@tabi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,24 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
+To: Timur Tabi <timur@tabi.org>
 Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Nicolin Chen wrote:
-> Hi Timur,
->
-> On Thu, Jul 11, 2013 at 12:14:56PM -0500, timur@tabi.org wrote:
->> Don't you need an ACK from the maintainer of the driver before applying
->> it?  I haven't had a chance to test it yet.
-> If I'm not missing some part of branch updating, it looks like Mark hasn't
-> pushed it to the branch yet.
-> Please test it for me. Thank you.
+On Thu, Jul 11, 2013 at 11:00:15PM -0500, Timur Tabi wrote:
+> I definitely want to.  Unfortunately, I'm literally in the middle of
+> moving into a new house, and so everything is packed up.  I won't be
+> able to look at it for another week.
 
-I definitely want to.  Unfortunately, I'm literally in the middle of 
-moving into a new house, and so everything is packed up.  I won't be able 
-to look at it for another week.
+Oh, I see. Actually we've been using this patch for quite a while,
+it should be okay.
+And I still have some patches pending for the fsl_ssi.c, but looks
+like it'll be better for me to wait after you settle down.
 
-
--- 
-Timur Tabi
+Hope everything will run smoothly during your house-moving.
