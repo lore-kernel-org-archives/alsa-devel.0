@@ -1,73 +1,86 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Samsung: Modify the I2S driver to support I2S on
- Exynos5420
-Date: Fri, 12 Jul 2013 12:18:38 +0100
-Message-ID: <20130712111838.GZ24508@sirena.org.uk>
-References: <1373526505-27115-1-git-send-email-padma.v@samsung.com>
- <2214161.FSfscAvpna@thinkpad>
- <20130711130139.GQ24508@sirena.org.uk>
- <2463181.bQfIDO6XJk@thinkpad>
+Subject: Re: Question about WM8904 regcache
+Date: Fri, 12 Jul 2013 12:32:25 +0100
+Message-ID: <20130712113225.GB24508@sirena.org.uk>
+References: <51DFA98A.50900@atmel.com> <20130712084200.GV24508@sirena.org.uk>
+ <51DFD464.1090503@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WeojGOqAOUQyw5FN"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2463181.bQfIDO6XJk@thinkpad>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.kvr@gmail.com, sbkim73@samsung.com, kgene.kim@samsung.com, abrestic@chromium.org
+Content-Type: multipart/mixed; boundary="===============1504822387235439063=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC34E26597F
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 13:32:28 +0200 (CEST)
+In-Reply-To: <51DFD464.1090503@atmel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---WeojGOqAOUQyw5FN
+--===============1504822387235439063==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cJfXB9mphngkt5vq"
+Content-Disposition: inline
+
+
+--cJfXB9mphngkt5vq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 12, 2013 at 12:13:17PM +0200, Tomasz Figa wrote:
-> On Thursday 11 of July 2013 14:01:39 Mark Brown wrote:
+On Fri, Jul 12, 2013 at 06:03:16PM +0800, Bo Shen wrote:
 
-> > Well, it *should* be samsung,i2s-vN where N is the version number of the
-> > IP but documentation on the versioning has been patchy hence this whole
-> > thinng.
+> Do you mean the system boot up the device should be in _BIAS_OFF state?
 
-> Oh, the binding for samsung-i2s uses IP versions. Isn't that slightly bro=
-ken?
+Yes.
 
-> At least with Samsung bindings, I think we happened to agree on a single=
-=20
-> convention of naming compatible values after the first SoC in which such =
-block=20
-> first appeared.
+> I add debug info to set_bias_level function, and don't see this is
+> called when system boot up. When I run aplay command, it call from
+> _STANDBY to _ON, not _OFF, after show the error message, it call
+> from _PREPARE to _OFF.
 
-> I wonder what happened with this i2s binding that made it end up outside =
-this=20
-> convention.
+It's not called on boot, it's just the default state - the probe()
+function is intended to leave things in _OFF.  What you describe sounds
+like it's sitting in _STANDBY, you need to debug why this is happening.
+I can't see anything in current code - snd_soc_register_codec() sets the
+bias level to _OFF by default.
 
-I think it predates that convention, plus it's been quite common to put
-two different I2S blocks in the same SoC (for totally sensible reasons)
-so it's not always been clear that the SoC name is sufficiently unique.
-
---WeojGOqAOUQyw5FN
+--cJfXB9mphngkt5vq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR3+YHAAoJELSic+t+oim9e68P/2v3dCGjkpE+yoWcPDPgMltl
-thzI7yKazDQghKlH2ifJPb1Sd4eZ3DaX3YELNlI/Ej1y60l2b01UZdNuRXVlqi2q
-LiW/9hMbW6oCtVDAGSWCg/7aiXZ+CCQBzu/V6a2oVwfQt045FekfQLEeNUYFfA1D
-h4Q8JQkUrjZwDkPc9NLNvvgLST2Sy7Sp+sAb+/5z+DJ4wi2U2gMnOqPLbt04vZng
-p0iewtLcOac19w8sUtD45o6tMZQ/hcjMQCuVrTdNPdv2dAg4ec4fhhWiabhFgfbD
-BTXv1Sq5Ny2TIIB8BXzh6w80ahvjnbKkfbE+ugtBWiiP9A78+CCfqPTsLrle1hBU
-iG8Cmxs4RGRKIfg4PrPfbDk6i2Jjrh81xu66oOOcvkflubB3eR6Apm1qLjVvvupu
-Yrun0Hzc/jHu8AsY4Vz4EEAcOHQ7+0Cpv/feInYKQM+uTeNhgaw3EcC6otXdEN9z
-ZC5zMCPiv2obY/lgi+BXpW/nj3LftOEbBz3vzFeyuKhyqfgoMfEeMsCQwmfJczFn
-902Mdvn6tB2PNPcF+Q8KFAlVrvDvHRW4h7eADLESrTmtZeNte5qcRplUTXG9M53o
-i09jAIWIaxF05cxwa9con+L6GG3DyIMDpHIKrw7ICy8FkEViS0zug/721JH88NdF
-XAuEeFIsm79Gk0S0hmjk
-=sh+e
+iQIcBAEBAgAGBQJR3+lGAAoJELSic+t+oim9Zq8P/2IzoA8rO13ZsWybAFL0crrS
+1a7Uou13ujYSsOyTUR7q4Br9ONak9+4sBGRG2P3b8St3vSY0OeO3zhDGygcc4BHh
+tZ1ydwt1wQYsMWbnBJnkwOqKlUXG+3a1BchNUJo5wxxNXWXn8ci84gOcspzh+FwH
+Qx6YfWEvv/LcmYdZs9dEouaEwR45elNnyIGP7sLMXcZS1R7ZnhBsxMZboQwcTSOK
+UU0FZg4SSU5gJODY7zne7HTGv2XeWnzvvtZdoi4xNaxAxLjsRrtRaM49PLC4HMLF
+43iQ8gkz9SS0pNQd++GlMFfOuW3CfmLHqe+sys7dO4SVO3Bxs4ikR23508uROsnS
+WXvm+re0djMNX86PgL4V5UXxOue3pFIuNZyS5dhFPG3rIf7B4cz0uxw4zEZhIS0m
+veQuJYa5B+ns97cEo65YUvDmUtNa/4guXG3sLqfPdHo/Uq9t/2fmqEsShbeTxs43
+SdeoVGHMLBauOA8OwEysTl3l9WqFELv+LdjHmTCK60bh9XA9TE89B5mKhV1pX+8K
+1xIVMtgieyE5vjz+FOhm0XliIM8RnBbrT6zkQFBULcg/YBFFvCHFTGfgqLIFm3Si
+RvcBO+navHG4cOKrqeBgmtspS2FWm4gOQcLdv69944kutYASskJrGisS+2eMGDLj
+PPI/ESvHJ4rsjyeqHGT+
+=TTVW
 -----END PGP SIGNATURE-----
 
---WeojGOqAOUQyw5FN--
+--cJfXB9mphngkt5vq--
+
+--===============1504822387235439063==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1504822387235439063==--
