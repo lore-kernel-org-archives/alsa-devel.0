@@ -1,86 +1,107 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: fsl: Disable SSI in trigger() if
- RE/TE are both cleared
-Date: Fri, 12 Jul 2013 09:43:28 +0100
-Message-ID: <20130712084328.GW24508@sirena.org.uk>
-References: <1373453034-21618-1-git-send-email-b42378@freescale.com>
- <20130711165401.GU24508@sirena.org.uk> <51DEE810.3090304@tabi.org>
- <20130712035732.GA27823@MrMyself> <51DF7F4F.90707@tabi.org>
+Subject: Re: Question about WM8904 regcache
+Date: Fri, 12 Jul 2013 09:42:00 +0100
+Message-ID: <20130712084200.GV24508@sirena.org.uk>
+References: <51DFA98A.50900@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7952322725240699460=="
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <51DF7F4F.90707@tabi.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Timur Tabi <timur@tabi.org>
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, linuxppc-dev@lists.ozlabs.org, shawn.guo@linaro.org
+Content-Type: multipart/mixed; boundary="===============1380898698334132934=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id D8423265109
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 11:13:06 +0200 (CEST)
+In-Reply-To: <51DFA98A.50900@atmel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7952322725240699460==
+--===============1380898698334132934==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ulNsWUvGrZAj8PMr"
+	protocol="application/pgp-signature"; boundary="dIV3CY5swYZsO92m"
 Content-Disposition: inline
 
 
---ulNsWUvGrZAj8PMr
+--dIV3CY5swYZsO92m
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 11, 2013 at 11:00:15PM -0500, Timur Tabi wrote:
-> Nicolin Chen wrote:
+On Fri, Jul 12, 2013 at 03:00:26PM +0800, Bo Shen wrote:
 
-> >If I'm not missing some part of branch updating, it looks like Mark hasn't
-> >pushed it to the branch yet.
-> >Please test it for me. Thank you.
+>   I try to add the following two line in wm8904_set_bias_level into
+> "case SND_SOC_BIAS_ON", it doesn't work.
+> ---8>---
+> @@ -1832,9 +1834,12 @@ static int wm8904_set_bias_level(struct
+> snd_soc_codec *codec,
+>=20
+>         switch (level) {
+>         case SND_SOC_BIAS_ON:
+> +               regcache_cache_only(wm8904->regmap, false);
+> +               regcache_sync(wm8904->regmap);
+>                 break;
+> ---<8---
 
-> I definitely want to.  Unfortunately, I'm literally in the middle of
-> moving into a new house, and so everything is packed up.  I won't be
-> able to look at it for another week.
+That's far too late to be doing that, the device is already supposed to
+be powered and running - you can see the device is doing this already in
+the transition from _OFF to _STANDBY which is where it should happen.
 
-Yes, that's why I just went ahead - you'd said recently that you'd be
-out of action for a while and not able to test anything.
+>   However, If I comment the regcache_cache_only(wm8904->regmap,
+> true) as following, then it play OK.
+> ---8>---
+> @@ -2232,7 +2239,7 @@ static int wm8904_i2c_probe(struct i2c_client *i2c,
+>                             WM8904_POBCTRL, 0);
+>=20
+>         /* Can leave the device powered off until we need it */
+> -       regcache_cache_only(wm8904->regmap, true);
+> +       // regcache_cache_only(wm8904->regmap, true);
+> ---<8---
 
---ulNsWUvGrZAj8PMr
+>   So, any clue for this issue?
+
+The device is supposed to be idle_bias_off so sitting in _BIAS_OFF when
+not in use, this should mean a transition to _STANDBY as part of the
+power up sequence which should reenable interaction with the device.
+Check to see why that is not happening - _OFF should be the default bias
+level as well.
+
+--dIV3CY5swYZsO92m
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR38GsAAoJELSic+t+oim9DZUQAJ4WQQUxFZdPT0z37KwgeA+2
-Arnby1rNs0lXX2F/wpjsUsdJItQzrotO+VRSTJvJ4Qs8S3BU2463IqXua6MethyB
-BZf+GeLLVW68vAwCQXqS7YBjmJpqUhVJCjJVZfHpR9/bqE7W2iB7H+OvGNTSy242
-YuVt5YduYesu4iKklVGwBforWwgD/SQScGMaEHdUlMx2EsO4O8jPC81uB3TVUSGw
-ldv6Az4yELP2ImFkKH9j0IblH7OWHKAXCvRlKRsSRBX/7DwCeCODY8foxdeXJl8M
-6IIZw/FgYguz3dWSPP8/eBx13Rx0RrlZ6YP9PbqoP0NkVvyPEuq/xpkolWiVe9T4
-rrr83D1nBzMPIUuJ+HlkBSm1yITGl+rAljek/WDmY6BxiVmrdvqD9NiJiLQu9MMI
-8KbzTqObC+FF80VxrrdxukSytOK/3Q3qevgGeD2L6lNYSRTj26qpCVbLNfVZMW3S
-7NmYHoHn7ugyJFknNzrPtebTbr5HsD8Mk9dMSUaQwClAGdbFKCPn2YeW4c3PCThd
-A3z1ZUdFfsSgkZh8cZMu+AThkAfVuimei3kn2xh2RPNoJ4OwniaUWjnZWhhCfb96
-3TMEOgqr70sdGBxlegqm/QEDdqoxijeiZR62NlXUaS9IT2zF42DgLvfO+cSaDat9
-funGXfHV+7bYWkC2N1zk
-=koiT
+iQIcBAEBAgAGBQJR38FVAAoJELSic+t+oim9QuQP/A7tF7+XYH81/6Mzn+OXQmGW
+zxl90uAa9fKlqwwpLTrwuku9SZP+C4aNh49TKSJ+KNtwdGEOmEjdDA9ZxNPOnXtd
+nhPAXxYeVHEFVfiQ19qUTtA5zuYsYUe5jd6YvwVsLHFiNqzvd8ZUTjfG46kt5I24
+riHeoXcUZALElHorPbtJBvsC1nHNReJ3Rub/PbxvfdkNj1Yq8UOfH1lOdnVl7LBc
+wcvPivN1jkrz9BM9wPgZWmIvNXQqUJgjMkuPN8eeTxByXg4CrBzM9VyFwlqxGzaU
+fcEVNIimMBjhgAA6gHdMoA1zYVfclCRCEjScQEDclFHqF+St7Fq+Toz6dqu7TN1h
+plxgraIbo5A1D3LiMh8yFzGMxDRGSmrMeSI/Gfe9d6LiNkCpPEpg7WLK/PuXUQZA
+zVnpfkf3XUnkfow9CHq4qzO17iUNI/vitSIApRBlHDBtFeyuri39upys3P9BnA2B
+GvJJG2afbyd2A6yIff+//OozQFKn1FoXMgxXYmntjpbLak6r0ssOHkrBj17//2Vt
+RvKl+p2lvl5jhraQaCEAjzb5RyVlm1Jr4Rv6lYbJ4O745vrUa+TsFmIkPZOYLcl9
+YZ4EMYbg0BP3hqCTAZiK5mVNFbPmkXXJuTAZK3cHQIm96sGNUWLRodPO/sLAxGPt
+w1mm00l0l21SITogjsNQ
+=gtE2
 -----END PGP SIGNATURE-----
 
---ulNsWUvGrZAj8PMr--
+--dIV3CY5swYZsO92m--
 
---===============7952322725240699460==
+--===============1380898698334132934==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-Linuxppc-dev mailing list
-Linuxppc-dev@lists.ozlabs.org
-https://lists.ozlabs.org/listinfo/linuxppc-dev
---===============7952322725240699460==--
+
+--===============1380898698334132934==--
