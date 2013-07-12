@@ -1,16 +1,21 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: Question about WM8904 regcache
-Date: Fri, 12 Jul 2013 18:03:16 +0800
-Message-ID: <51DFD464.1090503@atmel.com>
-References: <51DFA98A.50900@atmel.com> <20130712084200.GV24508@sirena.org.uk>
+From: Tomasz Figa <tomasz.figa@gmail.com>
+Subject: Re: [PATCH] ASoC: Samsung: Modify the I2S driver to
+	support I2S on Exynos5420
+Date: Fri, 12 Jul 2013 12:13:17 +0200
+Message-ID: <2463181.bQfIDO6XJk@thinkpad>
+References: <1373526505-27115-1-git-send-email-padma.v@samsung.com>
+ <2214161.FSfscAvpna@thinkpad> <20130711130139.GQ24508@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DVREDG02.corp.atmel.com (nasmtp01.atmel.com [192.199.1.246])
- by alsa0.perex.cz (Postfix) with ESMTP id DD0A8265125
- for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 12:10:50 +0200 (CEST)
-In-Reply-To: <20130712084200.GV24508@sirena.org.uk>
+Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
+ [209.85.212.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2D27265143
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 12:13:24 +0200 (CEST)
+Received: by mail-wi0-f181.google.com with SMTP id hq4so482761wib.2
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 03:13:24 -0700 (PDT)
+In-Reply-To: <20130711130139.GQ24508@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +26,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Padmavathi Venna <padma.v@samsung.com>, sbkim73@samsung.com, abrestic@chromium.org, kgene.kim@samsung.com, padma.kvr@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On Thursday 11 of July 2013 14:01:39 Mark Brown wrote:
+> On Thu, Jul 11, 2013 at 01:41:40PM +0200, Tomasz Figa wrote:
+> > On Thursday 11 of July 2013 12:20:23 Mark Brown wrote:
+> > > This is a bit of a larger project sadly, there was resistance to doing
+> > > the DT bindings based on compatible strings using the IP version :(
+> > 
+> > I'm not sure if this case is related to this problem in any way. I just
+> > suggested introducing a new include like samsung,exynos5420-i2s, a opposed
+> > to using samsung,exynos5250-i2s and adding flags, since the I2S in
+> > Exynos5420 is
+> Well, it *should* be samsung,i2s-vN where N is the version number of the
+> IP but documentation on the versioning has been patchy hence this whole
+> thinng.
 
-On 07/12/2013 04:42 PM, Mark Brown wrote:
-> On Fri, Jul 12, 2013 at 03:00:26PM +0800, Bo Shen wrote:
->
->>    I try to add the following two line in wm8904_set_bias_level into
->> "case SND_SOC_BIAS_ON", it doesn't work.
->> ---8>---
->> @@ -1832,9 +1834,12 @@ static int wm8904_set_bias_level(struct
->> snd_soc_codec *codec,
->>
->>          switch (level) {
->>          case SND_SOC_BIAS_ON:
->> +               regcache_cache_only(wm8904->regmap, false);
->> +               regcache_sync(wm8904->regmap);
->>                  break;
->> ---<8---
->
-> That's far too late to be doing that, the device is already supposed to
-> be powered and running - you can see the device is doing this already in
-> the transition from _OFF to _STANDBY which is where it should happen.
->
->>    However, If I comment the regcache_cache_only(wm8904->regmap,
->> true) as following, then it play OK.
->> ---8>---
->> @@ -2232,7 +2239,7 @@ static int wm8904_i2c_probe(struct i2c_client *i2c,
->>                              WM8904_POBCTRL, 0);
->>
->>          /* Can leave the device powered off until we need it */
->> -       regcache_cache_only(wm8904->regmap, true);
->> +       // regcache_cache_only(wm8904->regmap, true);
->> ---<8---
->
->>    So, any clue for this issue?
->
-> The device is supposed to be idle_bias_off so sitting in _BIAS_OFF when
-> not in use, this should mean a transition to _STANDBY as part of the
-> power up sequence which should reenable interaction with the device.
-> Check to see why that is not happening - _OFF should be the default bias
-> level as well.
->
+Oh, the binding for samsung-i2s uses IP versions. Isn't that slightly broken?
 
-Do you mean the system boot up the device should be in _BIAS_OFF state?
+At least with Samsung bindings, I think we happened to agree on a single 
+convention of naming compatible values after the first SoC in which such block 
+first appeared.
 
-I add debug info to set_bias_level function, and don't see this is 
-called when system boot up. When I run aplay command, it call from 
-_STANDBY to _ON, not _OFF, after show the error message, it call from 
-_PREPARE to _OFF.
+I wonder what happened with this i2s binding that made it end up outside this 
+convention.
 
----8>---
-# aplay 44.1k_16bit_stereo.wav
-Playing WAVE '44.1k_16bit_stereo.wav' : Signed 16 bit Little Endian, 
-Rate 44100 Hz, Stereo
- >>>>>> leve is: 1
- >>>>>> leve is: 2
- >>>>>> leve is: 3
-aplay: pcm_write:1737: write error: Input/output error
-# >>>>>> leve is: 2
- >>>>>> leve is: 1
- >>>>>> leve is: 0
----<8---
+> > the first one to have this TDM or whatever mode. (I'd still like to hear
+> > what it is...)
+> 
+> What it *should* be is the option to send more than one audio stream
+> down a link using time division multiplexing.
 
-Best Regards,
-Bo Shen
+OK.
+
+Best regards,
+Tomasz
