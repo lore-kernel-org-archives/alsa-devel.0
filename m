@@ -1,75 +1,86 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8978: enable symmetric rates
-Date: Fri, 12 Jul 2013 09:45:21 +0100
-Message-ID: <20130712084521.GX24508@sirena.org.uk>
-References: <87zjtsbhjf.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: fsl: Disable SSI in trigger() if
+ RE/TE are both cleared
+Date: Fri, 12 Jul 2013 09:43:28 +0100
+Message-ID: <20130712084328.GW24508@sirena.org.uk>
+References: <1373453034-21618-1-git-send-email-b42378@freescale.com>
+ <20130711165401.GU24508@sirena.org.uk> <51DEE810.3090304@tabi.org>
+ <20130712035732.GA27823@MrMyself> <51DF7F4F.90707@tabi.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4043196436321479504=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A0D73265117
- for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 11:13:07 +0200 (CEST)
-In-Reply-To: <87zjtsbhjf.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Yusuke Goda <yusuke.goda.sx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Content-Type: multipart/mixed; boundary="===============7952322725240699460=="
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <51DF7F4F.90707@tabi.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Timur Tabi <timur@tabi.org>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, linuxppc-dev@lists.ozlabs.org, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4043196436321479504==
+--===============7952322725240699460==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="o/BvujNCPFVhiGON"
+	protocol="application/pgp-signature"; boundary="ulNsWUvGrZAj8PMr"
 Content-Disposition: inline
 
 
---o/BvujNCPFVhiGON
+--ulNsWUvGrZAj8PMr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 11, 2013 at 08:09:43PM -0700, Kuninori Morimoto wrote:
-> wm8978 needs .symmetric_rates = 1.
-> The playback/capture will be strange without this patch
-> when it used asymmetric rate in same time
+On Thu, Jul 11, 2013 at 11:00:15PM -0500, Timur Tabi wrote:
+> Nicolin Chen wrote:
 
-Applied, thanks.
+> >If I'm not missing some part of branch updating, it looks like Mark hasn't
+> >pushed it to the branch yet.
+> >Please test it for me. Thank you.
 
---o/BvujNCPFVhiGON
+> I definitely want to.  Unfortunately, I'm literally in the middle of
+> moving into a new house, and so everything is packed up.  I won't be
+> able to look at it for another week.
+
+Yes, that's why I just went ahead - you'd said recently that you'd be
+out of action for a while and not able to test anything.
+
+--ulNsWUvGrZAj8PMr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR38IeAAoJELSic+t+oim9CoYP/jsgeoCXn7foJH0Xbxur7ukL
-Q5Dk4EYHMgda043U66+9BJlMXsXd2kb4sZJAbyGqQdcqkaKPYNETzs/EuRWDjyG3
-N6ZcwGipOfZhUJj8m3Cz21kUOhfLn6CNVd2RjUC5uCKl/CzTF0ttMtjgtzhebdRc
-63IyVgm9yPISaEc2GAYv/kqwj4fTnePx7SIpp5h0pUi00P7q9l5z5m+5+wB02SJJ
-XrIz/1lOuWwXquBHCtnKn8PIUphAU1utcAXEQS7okNm5cP6jLmVwNJWyBVKUPas1
-LXrIgc6ZgoWinwg73Ncc+zNX93zkJ+m0wFrQzP3GAdnAWahbdPTBmaiF03Mcae8U
-M9NUyuBk5KUabueZG62VLrzda0h0rxVxaH2UsesMQ4vXETvn6YGFUSiK14pQZjQJ
-cqv4N2wWO/czBTkXwe+iF9B5aHqY347Eh1pYjdd5XhBorcc/+otHt1IgWhtohKwb
-bfOyWtH9EuMAbstF2RqnyzTGZhDWJvrXNpMKcPCewa9WRb1Zj5mwUFrnsWSQG26p
-AZ96XBU1dcf8cxcz3uE/D7+eTd0fYhpQEq0zrJCmCVqgNx9R2NybSMQSgLGZrBuG
-o2uBbUEnQBgSuPv7+DhbgVRXN33Fm+Zcaqs5vlkEEF4vuNoyffD//2NXxGh6ek7J
-ODHgntmh3asVzebpDOaN
-=/llY
+iQIcBAEBAgAGBQJR38GsAAoJELSic+t+oim9DZUQAJ4WQQUxFZdPT0z37KwgeA+2
+Arnby1rNs0lXX2F/wpjsUsdJItQzrotO+VRSTJvJ4Qs8S3BU2463IqXua6MethyB
+BZf+GeLLVW68vAwCQXqS7YBjmJpqUhVJCjJVZfHpR9/bqE7W2iB7H+OvGNTSy242
+YuVt5YduYesu4iKklVGwBforWwgD/SQScGMaEHdUlMx2EsO4O8jPC81uB3TVUSGw
+ldv6Az4yELP2ImFkKH9j0IblH7OWHKAXCvRlKRsSRBX/7DwCeCODY8foxdeXJl8M
+6IIZw/FgYguz3dWSPP8/eBx13Rx0RrlZ6YP9PbqoP0NkVvyPEuq/xpkolWiVe9T4
+rrr83D1nBzMPIUuJ+HlkBSm1yITGl+rAljek/WDmY6BxiVmrdvqD9NiJiLQu9MMI
+8KbzTqObC+FF80VxrrdxukSytOK/3Q3qevgGeD2L6lNYSRTj26qpCVbLNfVZMW3S
+7NmYHoHn7ugyJFknNzrPtebTbr5HsD8Mk9dMSUaQwClAGdbFKCPn2YeW4c3PCThd
+A3z1ZUdFfsSgkZh8cZMu+AThkAfVuimei3kn2xh2RPNoJ4OwniaUWjnZWhhCfb96
+3TMEOgqr70sdGBxlegqm/QEDdqoxijeiZR62NlXUaS9IT2zF42DgLvfO+cSaDat9
+funGXfHV+7bYWkC2N1zk
+=koiT
 -----END PGP SIGNATURE-----
 
---o/BvujNCPFVhiGON--
+--ulNsWUvGrZAj8PMr--
 
---===============4043196436321479504==
+--===============7952322725240699460==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-
---===============4043196436321479504==--
+_______________________________________________
+Linuxppc-dev mailing list
+Linuxppc-dev@lists.ozlabs.org
+https://lists.ozlabs.org/listinfo/linuxppc-dev
+--===============7952322725240699460==--
