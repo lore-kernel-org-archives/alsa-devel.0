@@ -1,111 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 2/7] sound: sam9x5_wm8731: machine driver for
- at91sam9x5 wm8731 boards
-Date: Fri, 12 Jul 2013 12:49:26 +0100
-Message-ID: <20130712114926.GE24508@sirena.org.uk>
-References: <1373559359-31607-1-git-send-email-richard.genoud@gmail.com>
- <1373559359-31607-3-git-send-email-richard.genoud@gmail.com>
+Subject: Re: [PATCH] ASoC: omap-abe-twl6040: Remove support for
+ pdata (legacy boot)
+Date: Fri, 12 Jul 2013 12:51:57 +0100
+Message-ID: <20130712115157.GF24508@sirena.org.uk>
+References: <1373628835-11439-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4026600190450522290=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1373559359-31607-3-git-send-email-richard.genoud@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Richard Genoud <richard.genoud@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============2141284202356150478=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 985532659BB
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 13:52:01 +0200 (CEST)
+In-Reply-To: <1373628835-11439-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4026600190450522290==
+--===============2141284202356150478==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Fr7jhMP26BSURKlp"
+	protocol="application/pgp-signature"; boundary="8TMLq6GPUuN4DysL"
 Content-Disposition: inline
 
 
---Fr7jhMP26BSURKlp
+--8TMLq6GPUuN4DysL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 11, 2013 at 06:15:54PM +0200, Richard Genoud wrote:
-> From: Nicolas Ferre <nicolas.ferre@atmel.com>
->=20
-> Description of the Asoc machine driver for an at91sam9x5 based board
+On Fri, Jul 12, 2013 at 01:33:55PM +0200, Peter Ujfalusi wrote:
 
-ASoC.
+> +/* TODO: This file can be removed in 3.12 since it is no longer needed */
+> +
 
-> +sam9x5 pins:
-> + * LOUT
-> + * ROUT
-> + * LHPOUT
-> + * RHPOUT
-> + * LLINEIN
-> + * RLINEIN
-> + * MICIN
+It's a bit late to do this for v3.11 so may as well just jump straight
+to the removal?  Having the extra code isn't going to actively break
+anything so it's just a cleanup.
 
-These aren't pins on the CPU, they're pins on the CODEC, and you should
-be adding this to the binding document for the CODEC and referring to
-that rather than having them in each individual binding document.  This
-also helps if any new variants are added (not that this is likely for
-the WM8731).
-
-> +static struct sam9x5_drvdata sam9x5_priv;
-
-Why is this a global static?
-
-> +	ret =3D snd_soc_register_card(&snd_soc_sam9x5);
-> +	if (ret) {
-> +		dev_err(&pdev->dev,
-> +			"ASoC: Platform device allocation failed\n");
-> +		goto out_put_audio;
-> +	}
-
-> +	platform_set_drvdata(pdev, &snd_soc_sam9x5);
-
-It should be being dynamically allocated and retrieved as driver data
-when needed.
-
---Fr7jhMP26BSURKlp
+--8TMLq6GPUuN4DysL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR3+1DAAoJELSic+t+oim95AsP/3bXnAukXiiPnuv0mi3StyaL
-W8nMl6B317eWWb981owyWrrFJfRGa62wI+S/6Tj00A3Dc8EbZoCGBV1yCwvCj7aD
-hJQJ8JTgVojDPWPAOa/OTtwnatkfguLh/n4jCUAztMDGT4aF3VEJ+Go5X216ECgx
-UMbaXx7VSbK639oVjwI9FrSN/vE/59pB/s/jJ3VpmKVqvYfcnZRo6BH1K7YaF4zK
-n4Vh8H+QQwMdtEA1PwbUR+MMZN7UwxorfPrhiI8DdaGr8HgAUPVBxEzZb7NSuH2G
-kbN/l2Iat+TOTQ3FYb+tPdWXQWYP2R+uRbL8M6YesUlNL8AMfdfSJoiU994Qq2F+
-BHcDKVDpvoiZQEp1nbjJgtx9Vfrf5kTq68oagsfxMYF4TjipB+PxjP+0stcGSfic
-T8ouZ0ABEsggHaZyRcNYbGKQOHpYiYYj66BqRCI6pk8L3LsSw/zKQrV524zFZT2C
-WFe+bzM6pXe+mHFUIVwSCB4FtlLCSPRheuYbR728av65LZVySRM16Zh9Z+qqXkMa
-6KUZ1sMB9FOsaTyM+L1g4LfulfrUVk6TtlO9Lhf8m6NohzuWuyhIPFi4sFgUWrFP
-VsljSXyc2LJsmU9mBBMejSpVjwm+nfoJ3cKMYY773qWLeYVl5nUGZDD/2jKArso9
-msrtfWYlGCLBRhJvzQaM
-=fz1S
+iQIcBAEBAgAGBQJR3+3aAAoJELSic+t+oim9VBwP/Rx2WM1yHTxEq/CtBD/j0ztD
+bnE+ZJoMzh44ipIpAtOR4Peer7qA8zarnDNVU8jgmnbGbvi3sZKjVK+Qcj0oXIYj
+NL0X+IXPKQOAGLqK/A4qKlP+Yp9axr94QtnnqQO+RPtKp/reu8k498eCQ5AOK8f9
+A8En0iqttxQYY77cZpD5nlQGLB/MZqA0zJ4ohvrYY3wZDckDhWxK2uBmONJauEFd
+gFh9VEMCevc+ZyyTi/rRE23K0iqN6TjP4iIctPHYx2YPsf309TnJyTzc9i4WG6Cj
+C41beTUSa1se+UfUUdO1ReCYDS+pCipbMA4Z9uQNcO7z0s4NdnrfeDTKZBhAS0Xr
+Sr0nfT62mYdU5r6e3qmKDHip9zksImzJGTfLDtETCzqZjkaZ0oNUuyf8HrUN6VEA
+drOft/cxMTeC7xLCFU1JOWs5bYVBxqP0S14MSTWF3EVvG2b776Gt+gc3U6ZLlIPb
+4huNV2wpmKVfbmeIt/0a3GipIMLJBbNAGuJ3PfvmzyipkVomXfK4QWEJMLSasnTT
+0zHYqEJENQ0z2MRw/jIdox4Rk+GfdQLlds7Upq3VUoRWrjB+Kuom+TZ5kxMhpUGY
+Lu5Wedy1neA96ATVUbi+z197nkJgV+aAdNh1AKkaPwod2gpSaJus9aBl4o8NEwEO
+f/xlnbRJIGAC5J8a0gaO
+=Aqbm
 -----END PGP SIGNATURE-----
 
---Fr7jhMP26BSURKlp--
+--8TMLq6GPUuN4DysL--
 
-
---===============4026600190450522290==
+--===============2141284202356150478==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============4026600190450522290==--
+--===============2141284202356150478==--
