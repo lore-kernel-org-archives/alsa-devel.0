@@ -1,63 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Samsung: Modify the I2S driver to support I2S on
- Exynos5420
-Date: Fri, 12 Jul 2013 09:49:32 +0100
-Message-ID: <20130712084932.GY24508@sirena.org.uk>
-References: <1373526505-27115-1-git-send-email-padma.v@samsung.com>
- <29860116.IF545KsGYb@thinkpad>
- <20130711112023.GM24508@sirena.org.uk>
- <2214161.FSfscAvpna@thinkpad>
- <20130711130139.GQ24508@sirena.org.uk>
- <CAAgF-BdM4jw0o4+ELVo_N029tbgMJBBqJxU91e=TgBNiiREyaA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: wm8978: enable symmetric rates
+Date: Fri, 12 Jul 2013 09:45:21 +0100
+Message-ID: <20130712084521.GX24508@sirena.org.uk>
+References: <87zjtsbhjf.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0786ZyFfTSxuegBe"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAAgF-BdM4jw0o4+ELVo_N029tbgMJBBqJxU91e=TgBNiiREyaA@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padma Venkat <padma.kvr@gmail.com>
-Cc: Tomasz Figa <tomasz.figa@gmail.com>, Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, Kukjin Kim <kgene.kim@samsung.com>, abrestic@chromium.org
+Content-Type: multipart/mixed; boundary="===============4043196436321479504=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0D73265117
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 11:13:07 +0200 (CEST)
+In-Reply-To: <87zjtsbhjf.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Yusuke Goda <yusuke.goda.sx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---0786ZyFfTSxuegBe
+--===============4043196436321479504==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="o/BvujNCPFVhiGON"
+Content-Disposition: inline
+
+
+--o/BvujNCPFVhiGON
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jul 12, 2013 at 10:07:22AM +0530, Padma Venkat wrote:
+On Thu, Jul 11, 2013 at 08:09:43PM -0700, Kuninori Morimoto wrote:
+> wm8978 needs .symmetric_rates = 1.
+> The playback/capture will be strange without this patch
+> when it used asymmetric rate in same time
 
-> A new version number is added when a there was some change in the IP
-> like adding a internal mux to the IP, adding multi channel support,
-> adding reset control bit. This was done in the older code with
-> platform device.
-> Same thing is followed here. So as previously done, adding a new
-> compatible name like "samsung,i2s-v6" with new quirk
-> "samsung,supports-tdm" is okey?
+Applied, thanks.
 
-Yes, this is good but the quirk should just be found by software based
-on the compatible string rather than in the DT.
-
---0786ZyFfTSxuegBe
+--o/BvujNCPFVhiGON
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR38MTAAoJELSic+t+oim9CUIP/2eBnv3SeQASWChUKiKz/a1t
-7XmEwmzlLDg2O1+VG29JSHI4qhHXL6GsMJ7iSmv1f7cjgmkHL3rIhp1bDt9K5hUr
-r48/uLB7A1CNa0p1CS0xDKSaZxCIOBSUmqMpVqQ+9nqzKE36EMMtfnQpwc7j38dk
-Uh3N+IwwYo0qZijzedmOKXVU/V0NBYP5JIMRLL5THjv7cZuEeIwVpWEbe7Fs2FU6
-CDT/KfVia+0PoroLGV1iT9oaV7h9OrEWdb25F56ZX//HdqnPWIARu33gep8FoOO7
-wZPopkpRO+aFccNJwnakawSObBvnbvvxgJ9QVq5AwG61HQ4Li+yl2yVCsGBftMVX
-boQy474bnwoW8FlOTwayXegBxG2jksU4ple32vCJv7nBPCgcA4LI7vXCUnH8pUOh
-OPrBAlpoStr43jIzmKqDAZuAoz0T41qB5l2TNkdxcL02WDaKVFvQ+cfFgciy3Fbs
-xKmTHtQyiUbcMJreW3Kvch9coLyoa4DJQJtpJ1dOf/7hwc2Rmw02qAaTZSGNM07m
-fd4eml107S6Cny6HISIPAMingRpyIcu89rq5gth/IHa5NsGVLomC7IHBtQc0pv2k
-YjkXLu6XDJfOhhQJXgmFCDXAQTuad5a/hiGc6hlbtlaVHzcH+rOWDh6aveOBlPBw
-8DEKv05l958sQ8UEYvas
-=UftO
+iQIcBAEBAgAGBQJR38IeAAoJELSic+t+oim9CoYP/jsgeoCXn7foJH0Xbxur7ukL
+Q5Dk4EYHMgda043U66+9BJlMXsXd2kb4sZJAbyGqQdcqkaKPYNETzs/EuRWDjyG3
+N6ZcwGipOfZhUJj8m3Cz21kUOhfLn6CNVd2RjUC5uCKl/CzTF0ttMtjgtzhebdRc
+63IyVgm9yPISaEc2GAYv/kqwj4fTnePx7SIpp5h0pUi00P7q9l5z5m+5+wB02SJJ
+XrIz/1lOuWwXquBHCtnKn8PIUphAU1utcAXEQS7okNm5cP6jLmVwNJWyBVKUPas1
+LXrIgc6ZgoWinwg73Ncc+zNX93zkJ+m0wFrQzP3GAdnAWahbdPTBmaiF03Mcae8U
+M9NUyuBk5KUabueZG62VLrzda0h0rxVxaH2UsesMQ4vXETvn6YGFUSiK14pQZjQJ
+cqv4N2wWO/czBTkXwe+iF9B5aHqY347Eh1pYjdd5XhBorcc/+otHt1IgWhtohKwb
+bfOyWtH9EuMAbstF2RqnyzTGZhDWJvrXNpMKcPCewa9WRb1Zj5mwUFrnsWSQG26p
+AZ96XBU1dcf8cxcz3uE/D7+eTd0fYhpQEq0zrJCmCVqgNx9R2NybSMQSgLGZrBuG
+o2uBbUEnQBgSuPv7+DhbgVRXN33Fm+Zcaqs5vlkEEF4vuNoyffD//2NXxGh6ek7J
+ODHgntmh3asVzebpDOaN
+=/llY
 -----END PGP SIGNATURE-----
 
---0786ZyFfTSxuegBe--
+--o/BvujNCPFVhiGON--
+
+--===============4043196436321479504==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4043196436321479504==--
