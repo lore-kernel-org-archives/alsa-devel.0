@@ -1,14 +1,17 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Question about WM8904 regcache
-Date: Fri, 12 Jul 2013 15:00:26 +0800
-Message-ID: <51DFA98A.50900@atmel.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: ASoC: codec: SPDIF only works with Tx/Rx seperate
+	codec drivers?
+Date: Fri, 12 Jul 2013 16:30:31 +0800
+Message-ID: <20130712083030.GA28555@MrMyself>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eusmtp01.atmel.com (eusmtp01.atmel.com [212.144.249.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 60645265119
- for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 09:05:26 +0200 (CEST)
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe001.messaging.microsoft.com [207.46.163.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D8E3265109
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 10:49:52 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,52 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
+To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi Mark,
-   I am sorry to disturb you. On our EK board, it use wm8904 codec. When 
-I enable the audio, and use alsa utils aplay to test, I meet the 
-following issue.
-   The audio can not playback, it show the following error.
----8>---
-#aplay 44.1k_16bit_stereo.wav
-Playing WAVE '44.1k_16bit_stereo.wav' : Signed 16 bit Little Endian, 
-Rate 44100 Hz, Stereo
-aplay: pcm_write:1737: write error: Input/output error
----<8---
 
-   After check the register, they are not be configured correctly. When 
-read from debug file system, found the cache_dirty always Y before 
-playback and also failed playback.
-   I try to add the following two line in wm8904_set_bias_level into 
-"case SND_SOC_BIAS_ON", it doesn't work.
----8>---
-@@ -1832,9 +1834,12 @@ static int wm8904_set_bias_level(struct 
-snd_soc_codec *codec,
+I've a little question about SPDIF codec drivers.
 
-         switch (level) {
-         case SND_SOC_BIAS_ON:
-+               regcache_cache_only(wm8904->regmap, false);
-+               regcache_sync(wm8904->regmap);
-                 break;
----<8---
+I found there're spdif_receiver.c and spdif_transmitter.c, two files,
+in sound/soc/codecs directory. So it looks like SPDIF module would work
+separately as one IN device and one OUT device, for example:
+dts/spear1340.dtsi:		spdif-in@d0100000 {
+dts/spear1340.dtsi:			compatible = "st,spdif-in";
+dts/spear1340.dtsi:		spdif-out@d0000000 {
+dts/spear1340.dtsi:			compatible = "st,spdif-out";
 
-   However, If I comment the regcache_cache_only(wm8904->regmap, true) 
-as following, then it play OK.
----8>---
-@@ -2232,7 +2239,7 @@ static int wm8904_i2c_probe(struct i2c_client *i2c,
-                             WM8904_POBCTRL, 0);
+But the question is what if a SPDIF module have both Tx and Rx function
+in one simple CPU DAI. Is that okay to add a new codec driver for this
+situation?
 
-         /* Can leave the device powered off until we need it */
--       regcache_cache_only(wm8904->regmap, true);
-+       // regcache_cache_only(wm8904->regmap, true);
----<8---
+Actually I'm gonna prepare some patches to add Freescale SPDIF drivers.
+But this needs to create a brand new dummy SPDIF codec driver, which's
+some kinda same as spdif_receiver/transmitter.c but quite different
+in the supports of SAMPLE_RATE/FORMAT and IN/OUT-in-one integration.
 
-   So, any clue for this issue?
+So I just want to make sure if this'll be okay.
 
-   Thanks.
-
-Best Regards,
-Bo Shen
+Thank you. And looking forward to your reply.
+Nicolin Chen
