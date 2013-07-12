@@ -1,43 +1,55 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH] ASoC: fsl: Disable SSI in trigger() if
- RE/TE are both cleared
-Date: Fri, 12 Jul 2013 12:19:45 +0800
-Message-ID: <20130712041944.GA27906@MrMyself>
-References: <1373453034-21618-1-git-send-email-b42378@freescale.com>
- <20130711165401.GU24508@sirena.org.uk> <51DEE810.3090304@tabi.org>
- <20130712035732.GA27823@MrMyself> <51DF7F4F.90707@tabi.org>
- <20130712040930.GB27823@MrMyself> <51DF826C.40208@tabi.org>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [PATCH] ASoC: Samsung: Modify the I2S driver to support I2S on Exynos5420
+Date: Fri, 12 Jul 2013 10:07:22 +0530
+Message-ID: <CAAgF-BdM4jw0o4+ELVo_N029tbgMJBBqJxU91e=TgBNiiREyaA@mail.gmail.com>
+References: <1373526505-27115-1-git-send-email-padma.v@samsung.com>
+	<29860116.IF545KsGYb@thinkpad>
+	<20130711112023.GM24508@sirena.org.uk>
+	<2214161.FSfscAvpna@thinkpad>
+	<20130711130139.GQ24508@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe004.messaging.microsoft.com [207.46.163.27])
- by alsa0.perex.cz (Postfix) with ESMTP id B26E626592B
- for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2013 06:24:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <51DF826C.40208@tabi.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org, shawn.guo@linaro.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20130711130139.GQ24508@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Tomasz Figa <tomasz.figa@gmail.com>, Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, Kukjin Kim <kgene.kim@samsung.com>, abrestic@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 11, 2013 at 11:13:32PM -0500, Timur Tabi wrote:
-> Have you tested it on PowerPC?
+Hi,
 
-Not actually. But I think it won't break the work flow since
-the SSI modules on two platform should be literally identical.
+On Thu, Jul 11, 2013 at 6:31 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Thu, Jul 11, 2013 at 01:41:40PM +0200, Tomasz Figa wrote:
+>> On Thursday 11 of July 2013 12:20:23 Mark Brown wrote:
+>
+>> > This is a bit of a larger project sadly, there was resistance to doing
+>> > the DT bindings based on compatible strings using the IP version :(
+>
+>> I'm not sure if this case is related to this problem in any way. I just
+>> suggested introducing a new include like samsung,exynos5420-i2s, a opposed to
+>> using samsung,exynos5250-i2s and adding flags, since the I2S in Exynos5420 is
+>
+> Well, it *should* be samsung,i2s-vN where N is the version number of the
+> IP but documentation on the versioning has been patchy hence this whole
+> thinng.
+>
 
-But if you still have concern with it, you can ask Mark to wait
-and test it later. I'm okay with your decision.
+A new version number is added when a there was some change in the IP
+like adding a internal mux to the IP, adding multi channel support,
+adding reset control bit. This was done in the older code with
+platform device.
+Same thing is followed here. So as previously done, adding a new
+compatible name like "samsung,i2s-v6" with new quirk
+"samsung,supports-tdm" is okey?
 
-Thanks,
-Nicolin Chen
+I will mention about this versioning info in the Documentation in the
+next patch.
+
+>> the first one to have this TDM or whatever mode. (I'd still like to hear what
+>> it is...)
+>
+> What it *should* be is the option to send more than one audio stream
+> down a link using time division multiplexing.
+
+Thanks
+Padma
