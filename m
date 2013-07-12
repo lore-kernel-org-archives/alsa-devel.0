@@ -1,13 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 1/7] sound: codec: wm8731: add rates constraints
-Date: Fri, 12 Jul 2013 12:45:51 +0100
-Message-ID: <20130712114551.GD24508@sirena.org.uk>
+Subject: Re: [PATCH v5 2/7] sound: sam9x5_wm8731: machine driver for
+ at91sam9x5 wm8731 boards
+Date: Fri, 12 Jul 2013 12:49:26 +0100
+Message-ID: <20130712114926.GE24508@sirena.org.uk>
 References: <1373559359-31607-1-git-send-email-richard.genoud@gmail.com>
- <1373559359-31607-2-git-send-email-richard.genoud@gmail.com>
+ <1373559359-31607-3-git-send-email-richard.genoud@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8099376701255645190=="
+Content-Type: multipart/mixed; boundary="===============4026600190450522290=="
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1373559359-31607-2-git-send-email-richard.genoud@gmail.com>
+In-Reply-To: <1373559359-31607-3-git-send-email-richard.genoud@gmail.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -18,75 +19,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Richard Genoud <richard.genoud@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8099376701255645190==
+--===============4026600190450522290==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sk6NRVTC9kZ6Mrgo"
+	protocol="application/pgp-signature"; boundary="Fr7jhMP26BSURKlp"
 Content-Disposition: inline
 
 
---sk6NRVTC9kZ6Mrgo
+--Fr7jhMP26BSURKlp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 11, 2013 at 06:15:53PM +0200, Richard Genoud wrote:
+On Thu, Jul 11, 2013 at 06:15:54PM +0200, Richard Genoud wrote:
+> From: Nicolas Ferre <nicolas.ferre@atmel.com>
+>=20
+> Description of the Asoc machine driver for an at91sam9x5 based board
 
-Please always try to use commit logs that look like normal commit logs
-for the subsystem.
+ASoC.
 
->  	switch (freq) {
-> -	case 11289600:
->  	case 12000000:
-> +		wm8731->constraints = &wm8731_constraints_12000000;
-> +		break;
->  	case 12288000:
-> -	case 16934400:
->  	case 18432000:
-> -		wm8731->sysclk = freq;
-> +		wm8731->constraints = &wm8731_constraints_12288000_18432000;
-> +		break;
-> +	case 16934400:
-> +	case 11289600:
-> +		wm8731->constraints = &wm8731_constraints_11289600_16934400;
->  		break;
->  	default:
->  		return -EINVAL;
->  	}
+> +sam9x5 pins:
+> + * LOUT
+> + * ROUT
+> + * LHPOUT
+> + * RHPOUT
+> + * LLINEIN
+> + * RLINEIN
+> + * MICIN
 
-This isn't going to work with systems which have a variable clock as the
-input to the CODEC.  If it's imposing constraints the driver needs to
-allow setting the clock to zero as a way of removing constraints (and
-any existing drivers should be updated to do this if needed).
+These aren't pins on the CPU, they're pins on the CODEC, and you should
+be adding this to the binding document for the CODEC and referring to
+that rather than having them in each individual binding document.  This
+also helps if any new variants are added (not that this is likely for
+the WM8731).
 
---sk6NRVTC9kZ6Mrgo
+> +static struct sam9x5_drvdata sam9x5_priv;
+
+Why is this a global static?
+
+> +	ret =3D snd_soc_register_card(&snd_soc_sam9x5);
+> +	if (ret) {
+> +		dev_err(&pdev->dev,
+> +			"ASoC: Platform device allocation failed\n");
+> +		goto out_put_audio;
+> +	}
+
+> +	platform_set_drvdata(pdev, &snd_soc_sam9x5);
+
+It should be being dynamically allocated and retrieved as driver data
+when needed.
+
+--Fr7jhMP26BSURKlp
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR3+xsAAoJELSic+t+oim9p04P/0T8lf/1EpIj0VFoJQC5LNYD
-Pq43japEzv4UhvM0/rrUBE7H5uaNeI1A5vcJNLv42ETeeuTL6/X7GuyzvN3db/IE
-oGZOHq8AUS1J1CxnfXRazCdKtu5vl51CwYOHdJlyH4NeWpFZXLk1JODP5YsLfzE3
-Kl/42XF004Qc0Qnsv95v0fdw4oCh/ymbdSlQ0+cpfFHwJ7XHh1ctYdeH3hf4RvjG
-S35eQphj7y/LW6jbrBOo2kMr0mm8PyJf5l70yGoFvoXkOpjk22Rjp1C+67eDxQui
-ZlwoY/Spxg4zkr2Wc5td8+tOh0d3elM9R01sowpSy4tgn0tY3u2CJz/2yeXgOkNI
-cmTx5Rib9/SJwhG6VvQ5I653D9+cM6SbG9sEOvqoypQR+KzI+ELlg4SPV/Fiv9jX
-91wIusF7t6DZwK2p9OQAy7YkvLGg5exRt8WQXNeWedrf7e7ezyiwxd+kZqJ/BkEc
-5p5jDi7DcST8fINE5wJV70dE+vd0Kmks4FvitwMQf9ypWVIw0zIFe3EGX+WsPf7s
-rNDihtCWUnssUp4UQRW1hMy4a8bLRdFPL0/FmNZjwt5H4ueEab5j/AoM9WIw3ICV
-w0APgcOfCsE52CJ9L+BNJ9k5xWN9EATtBPC7yofsfo4A4EDn96MAuhJB3VFYGk+F
-A1kJpJlKr5oPWdNaRuTC
-=UTvu
+iQIcBAEBAgAGBQJR3+1DAAoJELSic+t+oim95AsP/3bXnAukXiiPnuv0mi3StyaL
+W8nMl6B317eWWb981owyWrrFJfRGa62wI+S/6Tj00A3Dc8EbZoCGBV1yCwvCj7aD
+hJQJ8JTgVojDPWPAOa/OTtwnatkfguLh/n4jCUAztMDGT4aF3VEJ+Go5X216ECgx
+UMbaXx7VSbK639oVjwI9FrSN/vE/59pB/s/jJ3VpmKVqvYfcnZRo6BH1K7YaF4zK
+n4Vh8H+QQwMdtEA1PwbUR+MMZN7UwxorfPrhiI8DdaGr8HgAUPVBxEzZb7NSuH2G
+kbN/l2Iat+TOTQ3FYb+tPdWXQWYP2R+uRbL8M6YesUlNL8AMfdfSJoiU994Qq2F+
+BHcDKVDpvoiZQEp1nbjJgtx9Vfrf5kTq68oagsfxMYF4TjipB+PxjP+0stcGSfic
+T8ouZ0ABEsggHaZyRcNYbGKQOHpYiYYj66BqRCI6pk8L3LsSw/zKQrV524zFZT2C
+WFe+bzM6pXe+mHFUIVwSCB4FtlLCSPRheuYbR728av65LZVySRM16Zh9Z+qqXkMa
+6KUZ1sMB9FOsaTyM+L1g4LfulfrUVk6TtlO9Lhf8m6NohzuWuyhIPFi4sFgUWrFP
+VsljSXyc2LJsmU9mBBMejSpVjwm+nfoJ3cKMYY773qWLeYVl5nUGZDD/2jKArso9
+msrtfWYlGCLBRhJvzQaM
+=fz1S
 -----END PGP SIGNATURE-----
 
---sk6NRVTC9kZ6Mrgo--
+--Fr7jhMP26BSURKlp--
 
 
---===============8099376701255645190==
+--===============4026600190450522290==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -97,4 +108,4 @@ linux-arm-kernel mailing list
 linux-arm-kernel@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============8099376701255645190==--
+--===============4026600190450522290==--
