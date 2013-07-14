@@ -1,51 +1,40 @@
-From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] ALSA: hda - Add new GPU codec ID to snd-hda
-Date: Sat, 13 Jul 2013 21:05:01 -0700
-Message-ID: <20130714040501.GA11088@kroah.com>
-References: <1373652097-4845-1-git-send-email-aplattner@nvidia.com>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: [PATCH] ARM: EXYNOS: remove references to non-DT SoCs
+Date: Sun, 14 Jul 2013 14:26:52 +0200
+Message-ID: <1373804812.1370.23.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1373652097-4845-1-git-send-email-aplattner@nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Aaron Plattner <aplattner@nvidia.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 12, 2013 at 11:01:37AM -0700, Aaron Plattner wrote:
-> Vendor ID 0x10de0060 is used by a yet-to-be-named GPU chip.
-> 
-> Reviewed-by: Andy Ritger <aritger@nvidia.com>
-> Signed-off-by: Aaron Plattner <aplattner@nvidia.com>
-> ---
->  sound/pci/hda/patch_hdmi.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> index e12f7a0..486def7 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -2536,6 +2536,7 @@ static const struct hda_codec_preset snd_hda_preset_hdmi[] = {
->  { .id = 0x10de0043, .name = "GPU 43 HDMI/DP",	.patch = patch_generic_hdmi },
->  { .id = 0x10de0044, .name = "GPU 44 HDMI/DP",	.patch = patch_generic_hdmi },
->  { .id = 0x10de0051, .name = "GPU 51 HDMI/DP",	.patch = patch_generic_hdmi },
-> +{ .id = 0x10de0060, .name = "GPU 60 HDMI/DP",	.patch = patch_generic_hdmi },
->  { .id = 0x10de0067, .name = "MCP67 HDMI",	.patch = patch_nvhdmi_2ch },
->  { .id = 0x10de8001, .name = "MCP73 HDMI",	.patch = patch_nvhdmi_2ch },
->  { .id = 0x11069f80, .name = "VX900 HDMI/DP",	.patch = patch_via_hdmi },
-> @@ -2588,6 +2589,7 @@ MODULE_ALIAS("snd-hda-codec-id:10de0042");
->  MODULE_ALIAS("snd-hda-codec-id:10de0043");
->  MODULE_ALIAS("snd-hda-codec-id:10de0044");
->  MODULE_ALIAS("snd-hda-codec-id:10de0051");
-> +MODULE_ALIAS("snd-hda-codec-id:10de0060");
->  MODULE_ALIAS("snd-hda-codec-id:10de0067");
->  MODULE_ALIAS("snd-hda-codec-id:10de8001");
->  MODULE_ALIAS("snd-hda-codec-id:11069f80");
+Commit 383ffda2fa ("ARM: EXYNOS: no more support non-DT for EXYNOS
+SoCs") removed the Kconfig symbols MACH_SMDKV310 and MACH_SMDKC210.
+Now remove the references to both of these symbols from the Kconfig
+entry for SND_SOC_SAMSUNG_SMDK_WM9713. They're not needed anymore.
 
-Why are these module aliases being created by hand and not automated
-like all other aliases that contain device ids like this are?
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+Untested.
 
-odd,
+ sound/soc/samsung/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 9855dfc..3d76659 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -136,7 +136,7 @@ config SND_SOC_SAMSUNG_RX1950_UDA1380
+ 
+ config SND_SOC_SAMSUNG_SMDK_WM9713
+ 	tristate "SoC AC97 Audio support for SMDK with WM9713"
+-	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310 || MACH_SMDKC210)
++	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110)
+ 	select SND_SOC_WM9713
+ 	select SND_SAMSUNG_AC97
+ 	help
+-- 
+1.8.1.4
