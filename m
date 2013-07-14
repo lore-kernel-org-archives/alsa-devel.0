@@ -1,46 +1,50 @@
-From: =?ISO-8859-15?Q?Ulrich_G=FCnther?= <ulrich.guenther@gmx.at>
-Subject: Alsa USB Audio regression
-Date: Sun, 14 Jul 2013 15:45:40 +0200
-Message-ID: <51E2AB84.9070603@gmx.at>
-References: <51E2AA11.8090500@gmx.at>
+From: Ming Lei <ming.lei@canonical.com>
+Subject: Re: [PATCH 00/50] USB: cleanup spin_lock in URB->complete()
+Date: Sun, 14 Jul 2013 22:33:44 +0800
+Message-ID: <CACVXFVPjkUwpnDCeC+y_eczGuen=qu+g74V__SXFCidPp+QYMw@mail.gmail.com>
+References: <1373533573-12272-1-git-send-email-ming.lei@canonical.com>
+	<1373807844.4998.10.camel@palomino.walls.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A01B264FBB
- for <alsa-devel@alsa-project.org>; Sun, 14 Jul 2013 15:45:43 +0200 (CEST)
-Received: from [192.168.1.100] ([178.112.135.254]) by mail.gmx.com (mrgmx102)
- with ESMTPSA (Nemesis) id 0LtlG5-1U02hn3q8z-011B9F for
- <alsa-devel@alsa-project.org>; Sun, 14 Jul 2013 15:45:43 +0200
-In-Reply-To: <51E2AA11.8090500@gmx.at>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <1373807844.4998.10.camel@palomino.walls.org>
+Sender: linux-input-owner@vger.kernel.org
+To: Andy Walls <awalls@md.metrocast.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Oliver Neukum <oliver@neukum.org>, Alan Stern <stern@rowland.harvard.edu>, linux-input@vger.kernel.org, linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello, i encounterd a possible alsa bug with the "ID 0d8c:0006 C-Media
-Electronics, Inc. Storm HP-USB500 5.1 Headset".
+On Sun, Jul 14, 2013 at 9:17 PM, Andy Walls <awalls@md.metrocast.net> wrote:
+> On Thu, 2013-07-11 at 17:05 +0800, Ming Lei wrote:
+>> Hi,
+>>
+>> As we are going to run URB->complete() in tasklet context[1][2],
+>
+> Hi,
+>
+> Please pardon my naivete, but why was it decided to use tasklets to
+> defer work, as opposed to some other deferred work mechanism?
+>
+> It seems to me that getting rid of tasklets has been an objective for
+> years:
+>
+> http://lwn.net/Articles/239633/
+> http://lwn.net/Articles/520076/
+> http://lwn.net/Articles/240054/
 
-After Ubuntu 10.04 LTS (Ubuntu 10.10 works, Ubuntu 11.04 doesn't work at
-all, Ubuntu 11.10 and newer have the bug), the headset only plays sound
-at maximum volume level if the volume is turned down just a little no
-sound is being played.
+We discussed the problem in the below link previously[1], Steven
+and Thomas suggested to use threaded irq handler, but which
+may degrade USB mass storage performance, so we have to
+take tasklet now until we rewrite transport part of USB mass storage
+driver.
 
-I have filled a Ubuntu bug for 12.04 LTS at:
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1200925 .
-I was advised to contact this mailing list.
+Also the conversion[2] has avoided the tasklet spin lock problem
+already.
 
-AlsaInfo for Ubuntu 12.04 LTS with the bug:
-http://www.alsa-project.org/db/?f=3bde76b15a15f585418a6a4a4703ca67fd4cdf42 .
-AlsaInfo for Ubuntu 10.04 LTS without the bug:
-http://www.alsa-project.org/db/?f=5824e55345c3f7128937405254485a489886b9dc .
 
-Thank You for your help.
+[1], http://marc.info/?t=137079119200001&r=1&w=2
+[2], http://marc.info/?l=linux-usb&m=137286326726326&w=2
+
+
+Thanks,
+--
+Ming Lei
