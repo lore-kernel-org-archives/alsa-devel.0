@@ -1,52 +1,70 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: Re: [PATCH] ARM: EXYNOS: remove references to non-DT SoCs
-Date: Sun, 14 Jul 2013 15:18:16 +0200
-Message-ID: <1373807896.1370.43.camel@x61.thuisdomein>
-References: <1373804812.1370.23.camel@x61.thuisdomein>
-	 <20130714124538.GA11538@sirena.org.uk>
+From: Andy Walls <awalls@md.metrocast.net>
+Subject: Re: [PATCH 00/50] USB: cleanup spin_lock in URB->complete()
+Date: Sun, 14 Jul 2013 09:17:24 -0400
+Message-ID: <1373807844.4998.10.camel@palomino.walls.org>
+References: <1373533573-12272-1-git-send-email-ming.lei@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20130714124538.GA11538@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1373533573-12272-1-git-send-email-ming.lei@canonical.com>
+Sender: netdev-owner@vger.kernel.org
+To: Ming Lei <ming.lei@canonical.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Oliver Neukum <oliver@neukum.org>, Alan Stern <stern@rowland.harvard.edu>, linux-input@vger.kernel.org, linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2013-07-14 at 13:45 +0100, Mark Brown wrote:
-> Look at the code you are editing here:
+On Thu, 2013-07-11 at 17:05 +0800, Ming Lei wrote:
+> Hi,
 > 
-> > -       depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310 || MACH_SMDKC210)
-> > +       depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110)
+> As we are going to run URB->complete() in tasklet context[1][2],
+
+Hi,
+
+Please pardon my naivete, but why was it decided to use tasklets to
+defer work, as opposed to some other deferred work mechanism?
+
+It seems to me that getting rid of tasklets has been an objective for
+years:
+
+http://lwn.net/Articles/239633/
+http://lwn.net/Articles/520076/
+http://lwn.net/Articles/240054/
+
+
+Regards,
+Andy
+
+>  and
+> hard interrupt may be enabled when running URB completion handler[3],
+> so we might need to disable interrupt when acquiring one lock in
+> the completion handler for the below reasons:
 > 
-> Simply removing the dependencies is not going to give the clearly
-> intended effect here.  The dependency on the DT only machine needs to be
-> replaced with something, not just deleted, otherwise the driver can't be
-> enabled in Kconfig.
-
-I interpreted commit 383ffda2fa as a commit that just removed a lot of
-stuff: see its commit explanation and its diffstat (it adds one line and
-deletes over 900 lines). Moreover, after that commit the references to
-MACH_SMDKV310 and MACH_SMDKC210 both are nops. Deleting them can't
-possibly change anything.
-
-But, anyhow, what would be the symbols to use here?
-
-> Also let me again remind you to submit patches with subject lines that
-> are appropriate for the subsystem you're updating.  I very nearly
-> deleted this unread since it looks like a patch for arch/arm with no
-> relationship with audio but in fact it doesn't touch arch/arm at all.
-
-I do try to use subject lines that are used in the sections I touch. I
-seem to remember that you asked me _once_, I think one or two years ago,
-to adjust to the system used for SoC. Since then you've received a
-number of patches from me that, as far as I can remember, always used
-that system.
-
-Besides, this patch was intended as a follow up to commit 383ffda2fa, to
-clean up two references it apparently forgot to remove, and therefor
-basically copied the subject line used in that commit.
-
-
-Paul Bolle
+> - URB->complete() holds a subsystem wide lock which may be acquired
+> in another hard irq context, and the subsystem wide lock is acquired
+> by spin_lock()/read_lock()/write_lock() in complete()
+> 
+> - URB->complete() holds a private lock with spin_lock()/read_lock()/write_lock()
+> but driver may export APIs to make other drivers acquire the same private
+> lock in its interrupt handler.
+> 
+> For the sake of safety and making the change simple, this patch set
+> converts all spin_lock()/read_lock()/write_lock() in completion handler
+> path into their irqsave version mechanically.
+> 
+> But if you are sure the above two cases do not happen in your driver,
+> please let me know and I can drop the unnecessary change.
+> 
+> Also if you find some conversions are missed, also please let me know so
+> that I can add it in the next round.
+> 
+> 
+> [1], http://marc.info/?l=linux-usb&m=137286322526312&w=2
+> [2], http://marc.info/?l=linux-usb&m=137286326726326&w=2
+> [3], http://marc.info/?l=linux-usb&m=137286330626363&w=2
+> 
+[snip]
+> 
+> 
+> Thanks,
+> --
+> Ming Lei
