@@ -1,70 +1,46 @@
-From: Andy Walls <awalls@md.metrocast.net>
-Subject: Re: [PATCH 00/50] USB: cleanup spin_lock in URB->complete()
-Date: Sun, 14 Jul 2013 09:17:24 -0400
-Message-ID: <1373807844.4998.10.camel@palomino.walls.org>
-References: <1373533573-12272-1-git-send-email-ming.lei@canonical.com>
+From: =?ISO-8859-15?Q?Ulrich_G=FCnther?= <ulrich.guenther@gmx.at>
+Subject: Alsa USB Audio regression
+Date: Sun, 14 Jul 2013 15:45:40 +0200
+Message-ID: <51E2AB84.9070603@gmx.at>
+References: <51E2AA11.8090500@gmx.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1373533573-12272-1-git-send-email-ming.lei@canonical.com>
-Sender: netdev-owner@vger.kernel.org
-To: Ming Lei <ming.lei@canonical.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Oliver Neukum <oliver@neukum.org>, Alan Stern <stern@rowland.harvard.edu>, linux-input@vger.kernel.org, linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A01B264FBB
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jul 2013 15:45:43 +0200 (CEST)
+Received: from [192.168.1.100] ([178.112.135.254]) by mail.gmx.com (mrgmx102)
+ with ESMTPSA (Nemesis) id 0LtlG5-1U02hn3q8z-011B9F for
+ <alsa-devel@alsa-project.org>; Sun, 14 Jul 2013 15:45:43 +0200
+In-Reply-To: <51E2AA11.8090500@gmx.at>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2013-07-11 at 17:05 +0800, Ming Lei wrote:
-> Hi,
-> 
-> As we are going to run URB->complete() in tasklet context[1][2],
+Hello, i encounterd a possible alsa bug with the "ID 0d8c:0006 C-Media
+Electronics, Inc. Storm HP-USB500 5.1 Headset".
 
-Hi,
+After Ubuntu 10.04 LTS (Ubuntu 10.10 works, Ubuntu 11.04 doesn't work at
+all, Ubuntu 11.10 and newer have the bug), the headset only plays sound
+at maximum volume level if the volume is turned down just a little no
+sound is being played.
 
-Please pardon my naivete, but why was it decided to use tasklets to
-defer work, as opposed to some other deferred work mechanism?
+I have filled a Ubuntu bug for 12.04 LTS at:
+https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1200925 .
+I was advised to contact this mailing list.
 
-It seems to me that getting rid of tasklets has been an objective for
-years:
+AlsaInfo for Ubuntu 12.04 LTS with the bug:
+http://www.alsa-project.org/db/?f=3bde76b15a15f585418a6a4a4703ca67fd4cdf42 .
+AlsaInfo for Ubuntu 10.04 LTS without the bug:
+http://www.alsa-project.org/db/?f=5824e55345c3f7128937405254485a489886b9dc .
 
-http://lwn.net/Articles/239633/
-http://lwn.net/Articles/520076/
-http://lwn.net/Articles/240054/
-
-
-Regards,
-Andy
-
->  and
-> hard interrupt may be enabled when running URB completion handler[3],
-> so we might need to disable interrupt when acquiring one lock in
-> the completion handler for the below reasons:
-> 
-> - URB->complete() holds a subsystem wide lock which may be acquired
-> in another hard irq context, and the subsystem wide lock is acquired
-> by spin_lock()/read_lock()/write_lock() in complete()
-> 
-> - URB->complete() holds a private lock with spin_lock()/read_lock()/write_lock()
-> but driver may export APIs to make other drivers acquire the same private
-> lock in its interrupt handler.
-> 
-> For the sake of safety and making the change simple, this patch set
-> converts all spin_lock()/read_lock()/write_lock() in completion handler
-> path into their irqsave version mechanically.
-> 
-> But if you are sure the above two cases do not happen in your driver,
-> please let me know and I can drop the unnecessary change.
-> 
-> Also if you find some conversions are missed, also please let me know so
-> that I can add it in the next round.
-> 
-> 
-> [1], http://marc.info/?l=linux-usb&m=137286322526312&w=2
-> [2], http://marc.info/?l=linux-usb&m=137286326726326&w=2
-> [3], http://marc.info/?l=linux-usb&m=137286330626363&w=2
-> 
-[snip]
-> 
-> 
-> Thanks,
-> --
-> Ming Lei
+Thank You for your help.
