@@ -1,18 +1,16 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: [PATCH RESEND] ASoC: max98088 - fix element type of
-	the register cache.
-Date: Mon, 15 Jul 2013 09:38:46 -0700
-Message-ID: <1373906326-18601-1-git-send-email-dgreid@chromium.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [RFC 1/2] ASoC: dmaengine-pcm: Add support for
+	querying DMA capabilities
+Date: Mon, 15 Jul 2013 18:42:10 +0200
+Message-ID: <1373906531-6938-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ye0-f202.google.com (mail-ye0-f202.google.com
- [209.85.213.202])
- by alsa0.perex.cz (Postfix) with ESMTP id 78B58261989
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 18:39:00 +0200 (CEST)
-Received: by mail-ye0-f202.google.com with SMTP id r11so1089525yen.1
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 09:38:59 -0700 (PDT)
+Received: from smtp-out-191.synserver.de (smtp-out-191.synserver.de
+ [212.40.185.191])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1537E261989
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 18:41:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +20,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Chih-Chung Chang <chihchung@chromium.org>, Dylan Reid <dgreid@chromium.org>, broonie@kernel.org, lgirdwood@gmail.com, evan.ragsdale@maxim-ic.com
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Chih-Chung Chang <chihchung@chromium.org>
+Currently each platform making use the the generic dmaengine PCM driver still
+needs to provide a custom snd_pcm_hardware struct which specifies the
+capabilities of the DMA controller, e.g. the maximum period size that can be
+supported. This patch adds code which uses the newly introduced
+dma_get_slave_caps() API to query this information from the dmaengine driver.
+The new code path will only be taken if the 'pcm_hardware' field of the
+snd_dmaengine_pcm_config struct is NULL.
 
-The registers of max98088 are 8 bits, not 16 bits. This bug causes the
-contents of registers to be overwritten with bad values when the codec
-is suspended and then resumed.
+The patch also introduces a new 'fifo_size' field to the
+snd_dmaengine_dai_dma_data struct which is used to initialize the
+snd_pcm_hardware 'fifo_size' field and needs to be set by the DAI driver.
 
-Signed-off-by: Chih-Chung Chang <chihchung@chromium.org>
-Signed-off-by: Dylan Reid <dgreid@chromium.org>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/max98088.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+For review only for now. The dma_get_slave_caps() API has not been merged yet,
+the patch adding support for it can be found here:
+http://permalink.gmane.org/gmane.linux.kernel/1524880
+---
+ include/sound/dmaengine_pcm.h         |  2 ++
+ sound/soc/soc-generic-dmaengine-pcm.c | 46 +++++++++++++++++++++++++++++++++--
+ 2 files changed, 46 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index 3eeada5..566a367 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -1612,7 +1612,7 @@ static int max98088_dai2_digital_mute(struct snd_soc_dai *codec_dai, int mute)
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index f11c35c..83b2c3e 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -61,6 +61,7 @@ struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream)
+  * @slave_id: Slave requester id for the DMA channel.
+  * @filter_data: Custom DMA channel filter data, this will usually be used when
+  * requesting the DMA channel.
++ * @fifo_size: FIFO size of the DAI controller in bytes
+  */
+ struct snd_dmaengine_dai_dma_data {
+ 	dma_addr_t addr;
+@@ -68,6 +69,7 @@ struct snd_dmaengine_dai_dma_data {
+ 	u32 maxburst;
+ 	unsigned int slave_id;
+ 	void *filter_data;
++	unsigned int fifo_size;
+ };
  
- static void max98088_sync_cache(struct snd_soc_codec *codec)
+ void snd_dmaengine_pcm_set_config_from_dai_data(
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index e29ec3c..98044a7 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -92,6 +92,43 @@ static int dmaengine_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+ }
+ 
++static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
++	struct dma_chan *chan = pcm->chan[substream->stream];
++	struct snd_dmaengine_dai_dma_data *dma_data;
++	struct snd_pcm_hardware hw;
++	struct dma_slave_caps dma_caps;
++	int ret;
++
++	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++
++	ret = dma_get_slave_caps(chan, &dma_caps);
++	if (ret)
++		return ret;
++
++	memset(&hw, 0, sizeof(hw));
++	hw.info = SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_INTERLEAVED;
++	hw.periods_min = 2;
++	hw.periods_max = dma_caps.max_sg_nr;
++	hw.period_bytes_min = 16;
++	hw.period_bytes_max = dma_caps.max_sg_len;
++	hw.buffer_bytes_max = SIZE_MAX;
++	hw.fifo_size = dma_data->fifo_size;
++
++	if (hw.periods_max == 0)
++		hw.periods_max = UINT_MAX;
++	if (hw.period_bytes_max == 0)
++		hw.period_bytes_max = SIZE_MAX;
++
++	if (dma_caps.cmd_pause)
++		hw.info |= SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME;
++
++	return snd_soc_set_runtime_hwparams(substream, &hw);
++}
++
+ static int dmaengine_pcm_open(struct snd_pcm_substream *substream)
  {
--       u16 *reg_cache = codec->reg_cache;
-+       u8 *reg_cache = codec->reg_cache;
-        int i;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+@@ -99,8 +136,13 @@ static int dmaengine_pcm_open(struct snd_pcm_substream *substream)
+ 	struct dma_chan *chan = pcm->chan[substream->stream];
+ 	int ret;
  
-        if (!codec->cache_sync)
+-	ret = snd_soc_set_runtime_hwparams(substream,
+-				pcm->config->pcm_hardware);
++	if (pcm->config->pcm_hardware) {
++		ret = snd_soc_set_runtime_hwparams(substream,
++					pcm->config->pcm_hardware);
++	} else {
++		ret = dmaengine_pcm_set_runtime_hwparams(substream);
++	}
++
+ 	if (ret)
+ 		return ret;
+ 
 -- 
-1.8.1.3.605.g02339dd
+1.8.0
