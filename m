@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 07/10] ASoC: atmel: Fix unlocked
+Subject: Re: [PATCH 08/10] ASoC: s6000: Fix unlocked
  snd_pcm_stop() call
-Date: Mon, 15 Jul 2013 17:00:20 +0100
-Message-ID: <20130715160020.GO11538@sirena.org.uk>
+Date: Mon, 15 Jul 2013 17:00:35 +0100
+Message-ID: <20130715160035.GP11538@sirena.org.uk>
 References: <1373893582-17116-1-git-send-email-tiwai@suse.de>
- <1373893582-17116-8-git-send-email-tiwai@suse.de>
+ <1373893582-17116-9-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4721546053719360546=="
+Content-Type: multipart/mixed; boundary="===============2113343805773135321=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 93075261661
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 18:00:23 +0200 (CEST)
-In-Reply-To: <1373893582-17116-8-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E7892618ED
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 18:00:38 +0200 (CEST)
+In-Reply-To: <1373893582-17116-9-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,18 +26,18 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4721546053719360546==
+--===============2113343805773135321==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="96dIhm/ZjrNld+BP"
+	protocol="application/pgp-signature"; boundary="8G1nIWD3RY794FAy"
 Content-Disposition: inline
 
 
---96dIhm/ZjrNld+BP
+--8G1nIWD3RY794FAy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 15, 2013 at 03:06:19PM +0200, Takashi Iwai wrote:
+On Mon, Jul 15, 2013 at 03:06:20PM +0200, Takashi Iwai wrote:
 > snd_pcm_stop() must be called in the PCM substream lock context.
 >=20
 > Cc: <stable@vger.kernel.org>
@@ -45,35 +45,35 @@ On Mon, Jul 15, 2013 at 03:06:19PM +0200, Takashi Iwai wrote:
 
 Acked-by: Mark Brown <broonie@linaro.org>
 
---96dIhm/ZjrNld+BP
+--8G1nIWD3RY794FAy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR5ByRAAoJELSic+t+oim9+pMP/3vrkzEjcS25FVHg9sfGsFoY
-VAhQCpTDjY3h3XgFd8ma9wbkHX5ED62GpdoWVY0TtoZhEmgDYKXHuzuq5500cPGe
-buVpAc/QUcBF6yvzq57RDVyoHWcoibQ8G6yCGej0gAK5zcNFGEPXqgQtbCtxY/fJ
-MqkbfmDd48zZnDCrPgHyJKWFLSswwtCIQwpChKR8CMcHfBLr0tOdppbJRamh80GC
-MkkuZnTV2zSZgXTe1yUsL/jmuC4Q/E2I/ElqvlwJE3ACRWBVSRfb1i8ClAiG91Qf
-vI4p08gkYgxyLQLXYZF6MqaF6uJVN2PY2m3LSoXMaAhz5gx+lNgbWlEuEL9rXJIH
-f47nHdl+tfqwiShhcjLfgE78hU6qvP3GdXSPko4b2M/5j76RdnFBDg4EpWkWRspT
-n8YlqJzAozmaWVumk7rv24pQ8BmtpIuttGLyUFh3EM9YW2K+60JG+/JPCgaMBF5s
-91oHFI1vfhdXuHXZGdMkPhy/5sw2qIRZR10AFP87dmTgqghM6h6YIPM0kmCF0dvh
-a/dM8DXSktrFOny/TH6FGn5sTG1aWzMZQeW71Bpd+AMdEi3w6CtGTpMIFvn5xAFG
-eQeiUgJBwXxO0+BHqJsrvF0t3P+hktE1jGo5TpGe5UT6/6SzpgsWN2lL7UqPWggo
-W3qX39jCLDe9XFxeQO4L
-=fEBX
+iQIcBAEBAgAGBQJR5BygAAoJELSic+t+oim9oVcP/j0oO+H97c8IlN/k43jY7Hho
+iCdzl+BQ8KIF3/EQwzABsAnrRb6qm9Y22uEN1uUU5UqHrO2jgMqi07pEcl9plmK1
+uqdb1RYwKM5SlaN9E/cBsFbjlgTBJFMBRXpxMdghrCm+SQh4Ycob+mubWlihj0EO
+aQnezPeRv7HzXFOCSqk6agb0mBUQQm2EueQHz42DvQZ6gmjyu7OL1SJzpXufDqzL
+BzdQfPymF7WDPl5zY60GjeGpTIkV1VrGI3HmhcH37LDXMi2avNGJ473uGnmqDHTa
+jYKbMQN44PShmUYNQv9a9PwbV2zLw04jBJfy/Z5UnDP4yOYIsZy5syQZZop/npD4
+zmoneqGMRhBWVgxYyY9b9URKSAGJEYTiSPOccJMfw1+QONrxqWiWm5X8ZOBqg4sZ
+A2C6K/oWOY70/lvDlg4h0b+f8yMSKoumT1l/P5v6sEYRQ5Qma6wzJA4dvltUrMAJ
+zwaaUruN8r08lgbqQSguoumih4EN9P4gWU2IUIZte21saS94If83ztxOnreCl1cD
+1nt3tWu59ZnaH4DMNt8yJwj4U4/qmUI+JPnQJir7pzZzlF1DQ4dKc8NPwKutqxww
+EoDV7u/Tg/OJrZgQQqxhD1Jm3gTVKTpCQgq9rw7Tj4U//x8xCqq7Nr+XdIjiDxpz
+ByZS7w4cb/B5QW+4Ldbb
+=We9c
 -----END PGP SIGNATURE-----
 
---96dIhm/ZjrNld+BP--
+--8G1nIWD3RY794FAy--
 
---===============4721546053719360546==
+--===============2113343805773135321==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4721546053719360546==--
+--===============2113343805773135321==--
