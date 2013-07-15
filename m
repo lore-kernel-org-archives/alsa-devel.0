@@ -1,76 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/3] ASoC: kirkwood-i2s: Use devm_clk_get() for
-	extclk
-Date: Mon, 15 Jul 2013 16:42:50 +0100
-Message-ID: <1373902970-935-3-git-send-email-broonie@kernel.org>
-References: <1373902970-935-1-git-send-email-broonie@kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 09603261687
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 17:43:02 +0200 (CEST)
-In-Reply-To: <1373902970-935-1-git-send-email-broonie@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+Subject: [PATCH] ASoC: omap: Enable COMPILE_TEST build for DT platforms
+Date: Mon, 15 Jul 2013 16:57:56 +0100
+Message-ID: <1373903876-26370-1-git-send-email-broonie@kernel.org>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Mark Brown <broonie@linaro.org>
 
+The DT platforms don't have any source dependency on any OMAP stuff so
+allow them to be built when COMPILE_TEST is enabled.
+
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/kirkwood/kirkwood-i2s.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ sound/soc/omap/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index 4c9dad3..44412ea 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -498,10 +498,9 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 	if (err < 0)
- 		return err;
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index 9f5d55e..68dfc0a 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -1,6 +1,6 @@
+ config SND_OMAP_SOC
+ 	tristate "SoC Audio for the Texas Instruments OMAP chips"
+-	depends on ARCH_OMAP && DMA_OMAP
++	depends on (ARCH_OMAP && DMA_OMAP) || COMPILE_TEST
+ 	select SND_SOC_DMAENGINE_PCM
  
--	priv->extclk = clk_get(&pdev->dev, "extclk");
-+	priv->extclk = devm_clk_get(&pdev->dev, "extclk");
- 	if (!IS_ERR(priv->extclk)) {
- 		if (priv->extclk == priv->clk) {
--			clk_put(priv->extclk);
- 			priv->extclk = ERR_PTR(-EINVAL);
- 		} else {
- 			dev_info(&pdev->dev, "found external clock\n");
-@@ -529,10 +528,8 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 		return 0;
- 	dev_err(&pdev->dev, "snd_soc_register_component failed\n");
+ config SND_OMAP_SOC_DMIC
+@@ -26,7 +26,7 @@ config SND_OMAP_SOC_N810
  
--	if (!IS_ERR(priv->extclk)) {
-+	if (!IS_ERR(priv->extclk))
- 		clk_disable_unprepare(priv->extclk);
--		clk_put(priv->extclk);
--	}
- 	clk_disable_unprepare(priv->clk);
+ config SND_OMAP_SOC_RX51
+ 	tristate "SoC Audio support for Nokia RX-51"
+-	depends on SND_OMAP_SOC && MACH_NOKIA_RX51
++	depends on SND_OMAP_SOC && (MACH_NOKIA_RX51 || COMPILE_TEST)
+ 	select SND_OMAP_SOC_MCBSP
+ 	select SND_SOC_TLV320AIC3X
+ 	select SND_SOC_TPA6130A2
+@@ -87,7 +87,7 @@ config SND_OMAP_SOC_OMAP_TWL4030
  
- 	return err;
-@@ -544,10 +541,8 @@ static int kirkwood_i2s_dev_remove(struct platform_device *pdev)
- 
- 	snd_soc_unregister_component(&pdev->dev);
- 
--	if (!IS_ERR(priv->extclk)) {
-+	if (!IS_ERR(priv->extclk))
- 		clk_disable_unprepare(priv->extclk);
--		clk_put(priv->extclk);
--	}
- 	clk_disable_unprepare(priv->clk);
- 
- 	return 0;
+ config SND_OMAP_SOC_OMAP_ABE_TWL6040
+ 	tristate "SoC Audio support for OMAP boards using ABE and twl6040 codec"
+-	depends on TWL6040_CORE && SND_OMAP_SOC && ARCH_OMAP4
++	depends on TWL6040_CORE && SND_OMAP_SOC && (ARCH_OMAP4 || COMPILE_TEST)
+ 	select SND_OMAP_SOC_DMIC
+ 	select SND_OMAP_SOC_MCPDM
+ 	select SND_SOC_TWL6040
 -- 
 1.8.3.2
+
