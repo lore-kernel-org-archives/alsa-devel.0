@@ -1,19 +1,18 @@
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH] ASoC: omap: Enable COMPILE_TEST build for
-	DT platforms
-Date: Mon, 15 Jul 2013 19:32:02 +0300
-Message-ID: <20130715163201.GC7366@arwen.pp.htv.fi>
-References: <1373903876-26370-1-git-send-email-broonie@kernel.org>
- <20130715160045.GG32035@arwen.pp.htv.fi>
- <20130715162605.GS11538@sirena.org.uk>
-Reply-To: balbi@ti.com
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [PATCH RESEND] ASoC: max98088 - fix element type of
+	the register cache.
+Date: Mon, 15 Jul 2013 09:38:46 -0700
+Message-ID: <1373906326-18601-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2082839125152524611=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 34FD826165F
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 18:32:30 +0200 (CEST)
-In-Reply-To: <20130715162605.GS11538@sirena.org.uk>
+Received: from mail-ye0-f202.google.com (mail-ye0-f202.google.com
+ [209.85.213.202])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78B58261989
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 18:39:00 +0200 (CEST)
+Received: by mail-ye0-f202.google.com with SMTP id r11so1089525yen.1
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 09:38:59 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,78 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Felipe Balbi <balbi@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: alsa-devel@alsa-project.org
+Cc: Chih-Chung Chang <chihchung@chromium.org>, Dylan Reid <dgreid@chromium.org>, broonie@kernel.org, lgirdwood@gmail.com, evan.ragsdale@maxim-ic.com
 List-Id: alsa-devel@alsa-project.org
 
---===============2082839125152524611==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="aT9PWwzfKXlsBJM1"
-Content-Disposition: inline
+From: Chih-Chung Chang <chihchung@chromium.org>
 
---aT9PWwzfKXlsBJM1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The registers of max98088 are 8 bits, not 16 bits. This bug causes the
+contents of registers to be overwritten with bad values when the codec
+is suspended and then resumed.
 
-On Mon, Jul 15, 2013 at 05:26:05PM +0100, Mark Brown wrote:
-> On Mon, Jul 15, 2013 at 07:00:45PM +0300, Felipe Balbi wrote:
-> > On Mon, Jul 15, 2013 at 04:57:56PM +0100, Mark Brown wrote:
-> > > @@ -26,7 +26,7 @@ config SND_OMAP_SOC_N810
->=20
-> > >  config SND_OMAP_SOC_RX51
-> > >  	tristate "SoC Audio support for Nokia RX-51"
-> > > -	depends on SND_OMAP_SOC && MACH_NOKIA_RX51
-> > > +	depends on SND_OMAP_SOC && (MACH_NOKIA_RX51 || COMPILE_TEST)
->=20
-> > RX51 is OMAP3, and that's DT at all. This is likely just a case of
-                             ^
-			     not
+Signed-off-by: Chih-Chung Chang <chihchung@chromium.org>
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+ sound/soc/codecs/max98088.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-> > updating commit log.
->=20
-> Sentence parse grammar not.
->=20
-> However...  if you look at the driver it actually does have DT support
-> in there, it checks for the machine type or for compatibility with n900.
-> Probably needs an ARM dependency which I'll add due to the machine type
-> check.
-
-alright.
-
---=20
-balbi
-
---aT9PWwzfKXlsBJM1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR5CQBAAoJEIaOsuA1yqREntAP/RBejmzZvWGQKHR1lqz6aVxN
-sgol0iagfOAOXquHlQ8ZjS3myFB/cDTMuHYXvX+C2IQqRn4xaHcTDmxPOHcnV9rG
-GkIBiz6URQK90uJFHVbWzocEJUYZnzyciQY/xadFnmQdE0cietRMr71WdqT3DmqH
-PiHZbJzgwre1MPz/dlIJX1J6Nn2aCNZEvSBQTQpILElE/WbuS2cYFIGouVMDnGr9
-spArOJ9Wazzet2gGcKUzlW0qfiAPZibSje1zLO5jkUstSNkFuvALyCI78xdzsf+y
-RD95Ab77Ag65qvzWVwoS78T7EALcQLKlCSZV9FLWBLl5jdQhCUwlzibuMbrYQOSi
-kQ1UHIlSj2N7YhOnaEIJ9B4IfI6Y4O3u4PKl+pCtGgpzVzpax4izJl6KZ6TMKtgN
-AMKrN3whE4t3nC9W0IsFmMAR1FmNRGgeQ3eJVtL1ICydmeJRONGBeFbbypi0rYgF
-D/8Dvh5NiZcD7785z/D3SODYoOhyKJ3gLolhgP2CBqc/wv7E3iUCUrUKTIR+Fy1v
-UPCdajLWsYwc+NOlrGXtnyK7VH4SSiZAmoKyVNP1wfNzNDIV2TJ4fQzIWF6hPnug
-WxDy5MOetJMeYZpLkcCJdTww8BRKHMPbgbpvu63naDN0vCDCwUWl4cT47JHWQHQD
-8PLI+SalQ8oQ8+WZjd/i
-=OBTT
------END PGP SIGNATURE-----
-
---aT9PWwzfKXlsBJM1--
-
---===============2082839125152524611==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2082839125152524611==--
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index 3eeada5..566a367 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -1612,7 +1612,7 @@ static int max98088_dai2_digital_mute(struct snd_soc_dai *codec_dai, int mute)
+ 
+ static void max98088_sync_cache(struct snd_soc_codec *codec)
+ {
+-       u16 *reg_cache = codec->reg_cache;
++       u8 *reg_cache = codec->reg_cache;
+        int i;
+ 
+        if (!codec->cache_sync)
+-- 
+1.8.1.3.605.g02339dd
