@@ -1,132 +1,89 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [RFC 2/2] ASoC: dmaengine-pcm: Provide default config
-Date: Mon, 15 Jul 2013 18:42:11 +0200
-Message-ID: <1373906531-6938-2-git-send-email-lars@metafoo.de>
-References: <1373906531-6938-1-git-send-email-lars@metafoo.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1373906531-6938-1-git-send-email-lars@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: omap: Enable COMPILE_TEST build for
+	DT platforms
+Date: Mon, 15 Jul 2013 18:43:46 +0200
+Message-ID: <51E426C2.5060209@ti.com>
+References: <1373903876-26370-1-git-send-email-broonie@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B1C7261698
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 18:43:40 +0200 (CEST)
+In-Reply-To: <1373903876-26370-1-git-send-email-broonie@kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds some default settings for the generic dmaengine PCM driver for
-the case that no config has been supplied. The following defaults are used:
-	* Use snd_dmaengine_pcm_prepare_slave_config for preparing the DMA slave
-	  config.
-	* 256kB for the prealloc buffer size. This value has been chosen based on
-	  'feels about right' and is not backed up by any scientific facts. We
-	  may need to come up with something smarter in the future but it should
-	  work fine for now.
-	* Query the DMA driver for its maximum period size, etc.
+Hi Mark,
 
-With this infrastructure in place we can finally write DAI drivers which are
-independent of the DMA controller they are connected to. This is e.g. useful if
-the DAI IP core is reused across different SoCs, but the SoCs uses different DMA
-controllers.
+On 07/15/2013 05:57 PM, Mark Brown wrote:
+> From: Mark Brown <broonie@linaro.org>
+> =
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-generic-dmaengine-pcm.c | 52 +++++++++++++++++++++++++++++++----
- 1 file changed, 46 insertions(+), 6 deletions(-)
+> The DT platforms don't have any source dependency on any OMAP stuff so
+> allow them to be built when COMPILE_TEST is enabled.
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 98044a7..947365de 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -75,12 +75,19 @@ static int dmaengine_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
- 	struct dma_chan *chan = snd_dmaengine_pcm_get_chan(substream);
-+	int (*prepare_slave_config)(struct snd_pcm_substream *substream,
-+			struct snd_pcm_hw_params *params,
-+			struct dma_slave_config *slave_config);
- 	struct dma_slave_config slave_config;
- 	int ret;
- 
--	if (pcm->config->prepare_slave_config) {
--		ret = pcm->config->prepare_slave_config(substream, params,
--				&slave_config);
-+	if (!pcm->config)
-+		prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config;
-+	else
-+		prepare_slave_config = pcm->config->prepare_slave_config;
-+
-+	if (prepare_slave_config) {
-+		ret = prepare_slave_config(substream, params, &slave_config);
- 		if (ret)
- 			return ret;
- 
-@@ -136,7 +143,7 @@ static int dmaengine_pcm_open(struct snd_pcm_substream *substream)
- 	struct dma_chan *chan = pcm->chan[substream->stream];
- 	int ret;
- 
--	if (pcm->config->pcm_hardware) {
-+	if (pcm->config && pcm->config->pcm_hardware) {
- 		ret = snd_soc_set_runtime_hwparams(substream,
- 					pcm->config->pcm_hardware);
- 	} else {
-@@ -179,14 +186,39 @@ static struct dma_chan *dmaengine_pcm_compat_request_channel(
- 		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream));
- }
- 
-+static size_t dmaengine_pcm_get_max_buffer_size(struct dma_chan *chan)
-+{
-+	struct dma_slave_caps dma_caps;
-+	int ret;
-+
-+	ret = dma_get_slave_caps(chan, &dma_caps);
-+	if (ret)
-+		return 0;
-+
-+	if (dma_caps.max_sg_nr == 0 || dma_caps.max_sg_len == 0)
-+		return SIZE_MAX;
-+
-+	if (SIZE_MAX / dma_caps.max_sg_nr > dma_caps.max_sg_len)
-+		return SIZE_MAX;
-+
-+	return dma_caps.max_sg_nr * dma_caps.max_sg_len;
-+}
-+
- static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
- 	const struct snd_dmaengine_pcm_config *config = pcm->config;
- 	struct snd_pcm_substream *substream;
-+	size_t prealloc_buffer_size;
-+	size_t max_buffer_size;
- 	unsigned int i;
- 	int ret;
- 
-+	if (config && config->prealloc_buffer_size)
-+		prealloc_buffer_size = config->prealloc_buffer_size;
-+	else
-+		prealloc_buffer_size = 256 * 1024;
-+
- 	for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_CAPTURE; i++) {
- 		substream = rtd->pcm->streams[i].substream;
- 		if (!substream)
-@@ -204,11 +236,19 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 			goto err_free;
- 		}
- 
-+		if (config && config->pcm_hardware)
-+			max_buffer_size = config->pcm_hardware->buffer_bytes_max;
-+		else
-+			max_buffer_size = dmaengine_pcm_get_max_buffer_size(pcm->chan[i]);
-+
-+		if (max_buffer_size == 0)
-+			max_buffer_size = prealloc_buffer_size;
-+
- 		ret = snd_pcm_lib_preallocate_pages(substream,
- 				SNDRV_DMA_TYPE_DEV,
- 				dmaengine_dma_dev(pcm, substream),
--				config->prealloc_buffer_size,
--				config->pcm_hardware->buffer_bytes_max);
-+				prealloc_buffer_size,
-+				max_buffer_size);
- 		if (ret)
- 			goto err_free;
- 	}
--- 
-1.8.0
+The OMAP3 generic machine driver could be also included in this patch:
+SND_OMAP_SOC_OMAP_TWL4030
+
+> Signed-off-by: Mark Brown <broonie@linaro.org>
+> ---
+
+Otherwise:
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+>  sound/soc/omap/Kconfig | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> =
+
+> diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+> index 9f5d55e..68dfc0a 100644
+> --- a/sound/soc/omap/Kconfig
+> +++ b/sound/soc/omap/Kconfig
+> @@ -1,6 +1,6 @@
+>  config SND_OMAP_SOC
+>  	tristate "SoC Audio for the Texas Instruments OMAP chips"
+> -	depends on ARCH_OMAP && DMA_OMAP
+> +	depends on (ARCH_OMAP && DMA_OMAP) || COMPILE_TEST
+>  	select SND_SOC_DMAENGINE_PCM
+>  =
+
+>  config SND_OMAP_SOC_DMIC
+> @@ -26,7 +26,7 @@ config SND_OMAP_SOC_N810
+>  =
+
+>  config SND_OMAP_SOC_RX51
+>  	tristate "SoC Audio support for Nokia RX-51"
+> -	depends on SND_OMAP_SOC && MACH_NOKIA_RX51
+> +	depends on SND_OMAP_SOC && (MACH_NOKIA_RX51 || COMPILE_TEST)
+>  	select SND_OMAP_SOC_MCBSP
+>  	select SND_SOC_TLV320AIC3X
+>  	select SND_SOC_TPA6130A2
+> @@ -87,7 +87,7 @@ config SND_OMAP_SOC_OMAP_TWL4030
+>  =
+
+>  config SND_OMAP_SOC_OMAP_ABE_TWL6040
+>  	tristate "SoC Audio support for OMAP boards using ABE and twl6040 codec"
+> -	depends on TWL6040_CORE && SND_OMAP_SOC && ARCH_OMAP4
+> +	depends on TWL6040_CORE && SND_OMAP_SOC && (ARCH_OMAP4 || COMPILE_TEST)
+>  	select SND_OMAP_SOC_DMIC
+>  	select SND_OMAP_SOC_MCPDM
+>  	select SND_SOC_TWL6040
+> =
+
+
+
+-- =
+
+P=E9ter
