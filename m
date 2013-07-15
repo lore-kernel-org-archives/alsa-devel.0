@@ -1,53 +1,79 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: omap: Enable COMPILE_TEST build for DT platforms
-Date: Mon, 15 Jul 2013 16:57:56 +0100
-Message-ID: <1373903876-26370-1-git-send-email-broonie@kernel.org>
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Mark Brown <broonie@linaro.org>
+Subject: Re: [PATCH 06/10] ALSA: pxa2xx: Fix unlocked
+ snd_pcm_stop() call
+Date: Mon, 15 Jul 2013 17:00:05 +0100
+Message-ID: <20130715160005.GN11538@sirena.org.uk>
+References: <1373893582-17116-1-git-send-email-tiwai@suse.de>
+ <1373893582-17116-7-git-send-email-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============0409879340966095134=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id D90AF261616
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 18:00:07 +0200 (CEST)
+In-Reply-To: <1373893582-17116-7-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
 
-The DT platforms don't have any source dependency on any OMAP stuff so
-allow them to be built when COMPILE_TEST is enabled.
+--===============0409879340966095134==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="1HuzLmPZrG5RH6bG"
+Content-Disposition: inline
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/omap/Kconfig | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index 9f5d55e..68dfc0a 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -1,6 +1,6 @@
- config SND_OMAP_SOC
- 	tristate "SoC Audio for the Texas Instruments OMAP chips"
--	depends on ARCH_OMAP && DMA_OMAP
-+	depends on (ARCH_OMAP && DMA_OMAP) || COMPILE_TEST
- 	select SND_SOC_DMAENGINE_PCM
- 
- config SND_OMAP_SOC_DMIC
-@@ -26,7 +26,7 @@ config SND_OMAP_SOC_N810
- 
- config SND_OMAP_SOC_RX51
- 	tristate "SoC Audio support for Nokia RX-51"
--	depends on SND_OMAP_SOC && MACH_NOKIA_RX51
-+	depends on SND_OMAP_SOC && (MACH_NOKIA_RX51 || COMPILE_TEST)
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TLV320AIC3X
- 	select SND_SOC_TPA6130A2
-@@ -87,7 +87,7 @@ config SND_OMAP_SOC_OMAP_TWL4030
- 
- config SND_OMAP_SOC_OMAP_ABE_TWL6040
- 	tristate "SoC Audio support for OMAP boards using ABE and twl6040 codec"
--	depends on TWL6040_CORE && SND_OMAP_SOC && ARCH_OMAP4
-+	depends on TWL6040_CORE && SND_OMAP_SOC && (ARCH_OMAP4 || COMPILE_TEST)
- 	select SND_OMAP_SOC_DMIC
- 	select SND_OMAP_SOC_MCPDM
- 	select SND_SOC_TWL6040
--- 
-1.8.3.2
+--1HuzLmPZrG5RH6bG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jul 15, 2013 at 03:06:18PM +0200, Takashi Iwai wrote:
+> snd_pcm_stop() must be called in the PCM substream lock context.
+>=20
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+
+Acked-by: Mark Brown <broonie@linaro.org>
+
+--1HuzLmPZrG5RH6bG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR5ByCAAoJELSic+t+oim9j94P/1itA1wWS6vcSipa90ubA+6Q
+1nGe+kFYeaQQcYdp6FSIP6smXNjuk0p02wBs1QC9VjfgIV5qVFcvIXCpvU2y0YkC
+lsEQI/vMhDTpzYTC8IQl5cX5+0jhVVKH6A35VcQzCfpAhCqL3CID+zRktPN/L6da
+DfEsPyqRCV3A7VTOwZSABNynISECt4aBmtbM2DU79v/ek8Tf+xzzDRtKKCnOpTHj
+RKdIObRWRxISfkyb+zEeD59xN3rmjerzYcuUBREcVRGFfbXd7Fphjq7uq/LxMOvR
+WHf6h+COLzUO0ZEYY6+di9sR1aGvaimalj02aVahWztmd+ibIUHRY5Zt7tFHjfJ9
+gk8/9xYmrFhrPU8rUl4p5eXH9sR/rjINReiFifiPn+1gtPxrPNTcw0BEjgGIMA6o
+23UpWZ27xIMuhAOW/T3jX6dEvKH6MxidHxl9QEaxK4V3wyYr8LzxOSXmTDIUXcpc
+3rFLFcSUAqt2wWeC/s8rU4ZbBdhAnZFHIOf8eomP+PJnoHeMxC+86V98kl/2cFQh
+6giQhwoZF/AZbw4FIExGHwZnb+7EXxjVTPNObfTFBZYatFy+x9JxHPxNDDyOwoe3
+775EpFPCoQSqlVdOJtGLnPAIeHsp7QLmDXkYXN54LNCfbu5xaiBiAH5X5tbSI/hS
+CHA9U3pFyszGRGSRRrZ8
+=0XY5
+-----END PGP SIGNATURE-----
+
+--1HuzLmPZrG5RH6bG--
+
+--===============0409879340966095134==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0409879340966095134==--
