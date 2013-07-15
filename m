@@ -1,61 +1,55 @@
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH] ASoC: omap: Enable COMPILE_TEST build for DT platforms
-Date: Mon, 15 Jul 2013 19:00:45 +0300
-Message-ID: <20130715160045.GG32035@arwen.pp.htv.fi>
-References: <1373903876-26370-1-git-send-email-broonie@kernel.org>
-Reply-To: <balbi@ti.com>
+From: Daniel =?iso-8859-1?Q?Gl=F6ckner?= <dg@emlix.com>
+Subject: Re: [PATCH 08/10] ASoC: s6000: Fix unlocked
+ snd_pcm_stop() call
+Date: Mon, 15 Jul 2013 18:02:48 +0200
+Message-ID: <20130715160247.GA13522@emlix.com>
+References: <1373893582-17116-1-git-send-email-tiwai@suse.de>
+ <1373893582-17116-9-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nhYGnrYv1PEJ5gA2"
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.emlix.com (mx1.emlix.com [88.198.240.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id D00F12619E8
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 18:02:48 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1373903876-26370-1-git-send-email-broonie@kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Mark Brown <broonie@linaro.org>
+In-Reply-To: <1373893582-17116-9-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---nhYGnrYv1PEJ5gA2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Nack
 
-Hi,
+On Mon, Jul 15, 2013 at 03:06:20PM +0200, Takashi Iwai wrote:
+> --- a/sound/soc/s6000/s6000-pcm.c
+> +++ b/sound/soc/s6000/s6000-pcm.c
+> @@ -128,7 +128,9 @@ static irqreturn_t s6000_pcm_irq(int irq, void *data)
+>  		    substream->runtime &&
+>  		    snd_pcm_running(substream)) {
+>  			dev_dbg(pcm->dev, "xrun\n");
+> +			snd_pcm_stream_lock(substream);
+>  			snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
+> +			snd_pcm_substream_unlock(substream);
 
-On Mon, Jul 15, 2013 at 04:57:56PM +0100, Mark Brown wrote:
-> @@ -26,7 +26,7 @@ config SND_OMAP_SOC_N810
-> =20
->  config SND_OMAP_SOC_RX51
->  	tristate "SoC Audio support for Nokia RX-51"
-> -	depends on SND_OMAP_SOC && MACH_NOKIA_RX51
-> +	depends on SND_OMAP_SOC && (MACH_NOKIA_RX51 || COMPILE_TEST)
+I think this is supposed to be a call to snd_pcm_stream_unlock.
 
-RX51 is OMAP3, and that's DT at all. This is likely just a case of
-updating commit log.
+  Daniel
 
---=20
-balbi
+-- =
 
---nhYGnrYv1PEJ5gA2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Dipl.-Math. Daniel Gl=F6ckner, emlix GmbH, http://www.emlix.com
+Fon +49 551 30664-0, Fax +49 551 30664-11,
+Bertha-von-Suttner-Stra=DFe 9, 37085 G=F6ttingen, Germany
+Sitz der Gesellschaft: G=F6ttingen, Amtsgericht G=F6ttingen HR B 3160
+Gesch=E4ftsf=FChrung: Dr. Uwe Kracke, Ust-IdNr.: DE 205 198 055
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR5BytAAoJEIaOsuA1yqRERxgP/RpQ2lMx9Fks5iFVQ88ZKjK1
-Il58eFN5ez62STSSMXGYLVaSzbpSVUmrlHyPENwgGX9oUXI6i+5AiXvgv1Z0gA9X
-V0PR3ClmkuP9PFZmY+wbcAkQTwDN4uwkojnzz9ow7M705SgDUZCxi32pkd+L23v3
-vG+PwPju92AGf0vi2IVZGJLJ/4lif7uXfArcn3UQ8T/oaFdSMG1T90j37OhMaS3y
-oLuxBCTqQJeRtn4voWVFr6qrQPIfEiDLXCGT9k6FXT8Xq8TAzB9Ib9hqM8Y4zG2c
-H+Ru7sNZEqeqVrU2mwSWCnnajYYyYeHDLWCjjscs91SAAyZcGQpfzajzriTVJ9Fr
-+0KuEcFNV3VdDAb8SJxCAOsoujyejcCPN4Z7NuaqB012Upr40HoDf8OJw1ku0Kvk
-kIMyxpJ7yoaLrBQ3CH1lUHPALpl+VSHPrSwvNih3oKnsUiWgVIVLYF5zr+x+ERQz
-PwhIuUlQ9NmS2ecxljC4Vx071nGfxM3pQEc36h1MW+2pQp2G60+3zONLC+CDTSW5
-xXqN0XHF3peYzMDHqpnTam+tTBv74e10qP0pChmza9Uh5tr/93X3y9UJDBr/orO+
-qtDVdpV3B4pQNsPmHy5NTumTFJKI3MQfWz493KJ2xU06Sc7xa9cmVxVdMyEK4SWF
-+s0omzdhjrJJqC6/9tYh
-=v5xT
------END PGP SIGNATURE-----
-
---nhYGnrYv1PEJ5gA2--
+emlix - your embedded linux partner
