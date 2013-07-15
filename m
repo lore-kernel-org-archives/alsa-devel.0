@@ -1,99 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: kirkwood-i2s: fix a compilation
-	warning
-Date: Mon, 15 Jul 2013 21:08:51 +0100
-Message-ID: <20130715200851.GD11538@sirena.org.uk>
-References: <20130715103644.04e57749@armhf>
- <20130715153101.GK11538@sirena.org.uk>
- <20130715203756.68abbf10@armhf>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH] ASoC: kirkwood-i2s: fix a compilation warning
+Date: Mon, 15 Jul 2013 22:37:27 +0100
+Message-ID: <20130715213727.GW24642@n2100.arm.linux.org.uk>
+References: <20130715103644.04e57749@armhf> <20130715153101.GK11538@sirena.org.uk> <20130715203756.68abbf10@armhf> <20130715200851.GD11538@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1069716983627570748=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 879D8261AEB
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 22:08:55 +0200 (CEST)
-In-Reply-To: <20130715203756.68abbf10@armhf>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Russell King <rmk+kernel@arm.linux.org.uk>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130715200851.GD11538@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jean-Francois Moine <moinejf@free.fr>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jul 15, 2013 at 09:08:51PM +0100, Mark Brown wrote:
+> There's no obvious code that handles anything differently with extclk.
+> Indeed if you think about it for a minute you'll realise there's no way
+> the driver will ever use an extclk - set_rate() is badly implemented,
+> look at how other drivers select between clocks.
 
---===============1069716983627570748==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="h+CsNYkJBPxpZ+B/"
-Content-Disposition: inline
-
-
---h+CsNYkJBPxpZ+B/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jul 15, 2013 at 08:37:56PM +0200, Jean-Francois Moine wrote:
-> Mark Brown <broonie@kernel.org> wrote:
-
-> > I'd really like to see an analysis explaining why this can never happen,
-> > the driver explicitly supports running without extclk being provided.
-> > Simply asserting that we should never get such a rate isn't really
-> > enough detail...
-
-> Russell explained this in the message below dated Wed, 27 Mar 2013
->   (http://www.spinics.net/lists/arm-kernel/msg233819.html)
-
-This is no good, the information needs to be in the commit message.
-Right now the change just looks like a bug supported by wishful
-thinking, you're not providing enough analysis and inspection of the
-code suggests a bug.
-
-> Sebastian is correct in that such a path should _never_ be reached
-> because ALSA will reject anything but 44.1, 48 or 96kHz rates if we
-> don't have an extclk.
-
-There's no obvious code that handles anything differently with extclk.
-Indeed if you think about it for a minute you'll realise there's no way
-the driver will ever use an extclk - set_rate() is badly implemented,
-look at how other drivers select between clocks.
-
-Fixing the driver so it can make use of an extclk would be more
-useful...
-
---h+CsNYkJBPxpZ+B/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR5FbQAAoJELSic+t+oim9YM8P/2iWVdFmrzFFDmPF3q8L45zb
-mTbT95onKjYQpte1o9wlQrfd5pc7YVSRuKkm1rlb9/PUaF3Ac8phTGi/gyz1ip4t
-QLfjNfdX6azITBPQGb4AUa5mpcYQr3HhsmYjKlrHPcM74qtuAxhPtTeALQzXWO2w
-4MhKUVZmyg8DldIOAVRPtREUJ18HuD/G0GYrxgWjorlk9VZtbl//scVatIrVaaOL
-v69LRjqh0MdJdad6TjPbBalVmTRthmqN1wlM3Dqx1q5gf0xcY1dtNl/n6daDv7Oq
-bSck/BjAuOxTKnvZxHc9aJjyWdIJN3xRCGKTElJ9rI8XDDQ0lMYGqPWmTMe+2olF
-h3aa1ngSEdw/L8yu7Z1q4YdU6eU37rYcbUnTNI5+IuD56wDaWVa9J/8oebflW4Si
-fE+yAKtjqqvBTckuknSpl11og7G+aPj/kiD7n4BihKA2apicM41bXrTyQWwbQA6U
-QSeWE/7GcpCZiWtANixXbX8RNyy+7gNlZ639ZqPFTQbVAuGy9ybGTR5s7atCsx17
-0wdcGMIcVfvc6tIINS+HVoCExmBVBDKSkKy8AbXhKfIij3pRQ2S3NmUzsxo+7Mi3
-2nE/7sFYgtt2+k4eRpEpDeNhHk0wWLW1ImpOkLw0lTVpFhFf9EcJHku/Crp9XqD6
-DIFS/y3dExhRuoqs4enT
-=F2Ug
------END PGP SIGNATURE-----
-
---h+CsNYkJBPxpZ+B/--
-
---===============1069716983627570748==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1069716983627570748==--
+I suggest you go back and re-read the driver because it most certainly
+does use extclk.  What makes you think it won't?
