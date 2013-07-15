@@ -1,54 +1,64 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] ASoC: sgtl5000: defer the probe if clock
-	is not found
-Date: Tue, 16 Jul 2013 00:19:43 +0800
-Message-ID: <20130715161941.GD23589@S2101-09.ap.freescale.net>
-References: <1373900110-19929-1-git-send-email-shawn.guo@linaro.org>
- <20130715161250.GR11538@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: omap: Enable COMPILE_TEST build for DT platforms
+Date: Mon, 15 Jul 2013 17:26:05 +0100
+Message-ID: <20130715162605.GS11538@sirena.org.uk>
+References: <1373903876-26370-1-git-send-email-broonie@kernel.org>
+ <20130715160045.GG32035@arwen.pp.htv.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe004.messaging.microsoft.com [216.32.180.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 009992619D1
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 18:19:51 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="dQ2XShfnd5GHxhN7"
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20130715161250.GR11538@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <20130715160045.GG32035@arwen.pp.htv.fi>
+Sender: linux-omap-owner@vger.kernel.org
+To: Felipe Balbi <balbi@ti.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 15, 2013 at 05:12:50PM +0100, Mark Brown wrote:
-> On Mon, Jul 15, 2013 at 10:55:10PM +0800, Shawn Guo wrote:
-> > It's not always the case that clock is already available when sgtl5000
-> > get probed at the first time, e.g. the clock is provided by CPU DAI
-> > which may be probed after sgtl5000.  So let's defer the probe when
-> > devm_clk_get() call fails and give it chance to try later.
-> 
-> My previous comments about this being better handled in the clock core
-> appear to have been ignored and...
 
-I'm not really fond of fixing a regression for -rc with involving clock
-core change.  I think we can do that when that becomes a really common
-pattern.
+--dQ2XShfnd5GHxhN7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> > +		/* Defer the probe to see if the clk will be provided later */
-> > +		return ret == -ENOENT ? -EPROBE_DEFER : ret;
-> 
-> ...please try to avoid the ternery operator, it's not helpful for
-> legibility.
+On Mon, Jul 15, 2013 at 07:00:45PM +0300, Felipe Balbi wrote:
+> On Mon, Jul 15, 2013 at 04:57:56PM +0100, Mark Brown wrote:
+> > @@ -26,7 +26,7 @@ config SND_OMAP_SOC_N810
 
-Okay, will change that to respect your taste.
+> >  config SND_OMAP_SOC_RX51
+> >  	tristate "SoC Audio support for Nokia RX-51"
+> > -	depends on SND_OMAP_SOC && MACH_NOKIA_RX51
+> > +	depends on SND_OMAP_SOC && (MACH_NOKIA_RX51 || COMPILE_TEST)
 
-Shawn
+> RX51 is OMAP3, and that's DT at all. This is likely just a case of
+> updating commit log.
+
+Sentence parse grammar not.
+
+However...  if you look at the driver it actually does have DT support
+in there, it checks for the machine type or for compatibility with n900.
+Probably needs an ARM dependency which I'll add due to the machine type
+check.
+
+--dQ2XShfnd5GHxhN7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR5CKaAAoJELSic+t+oim93HIP/2N6D9X4wyOH+3Rwo29ogyuM
+Rhv0g8UhNFI2GuNcCW8p63qnvY5vLIzSod/RIAvC4MBGYTVF74eAb7uPF2eV3eyk
+UGg99af+ZoPmNQ8IH3TQydtufb2nBPFh/vwz7nNAD9wtnShAu4OHNxUoUn20r583
+v0jaYQuYxlIF2j+8rE0ySBqFq09Tq14EFTRMjjF7CV3nlWCjePdHSahXNsha009d
+kY31xTHppERAjtlqoD3wno6txZsIOLvn0vCaR/0HjqWgRBMVl6EHK3sBOZBN6YUe
+9VlcavFmbMPPuGE/fPOV4Z61wE9/yu3bZ89hFhrjZobgHhqUCwr552WgzxojhLAr
+VZjAn3jcKrgZ7TqRPgZnCQD1IoNA8hPtyznhiBcpZb10KYBQq5JWUYlnx8jUHZcj
+YbPxrJ1DbOUNOxzPV9qH/e0krmuRqRor50O16kfdzKnOi8oq76xP0cebH1AbERi8
+kNhern3StV7Uo9jjZilxt3KEBgeXrTg0kt+Y6AOxxCmwu5qQUHZLqKI22Mcd/naz
+rHhkobk4TpNngfHH6S5f8F2HeuDPhRsqC6i/I0U8iy4WBkUp+UBjPMluiSHY0wc4
+PpwIHNh1B81H6brFIWn3aLNDKziWk4arShJVNqVC/S4q9jpD68RZKWYCsBbGOzM1
+0QiP7OFNprdULLauEWJv
+=3hG3
+-----END PGP SIGNATURE-----
+
+--dQ2XShfnd5GHxhN7--
