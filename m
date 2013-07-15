@@ -1,63 +1,63 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] ASoC: sgtl5000: defer the probe if clock is
-	not found
-Date: Mon, 15 Jul 2013 22:55:10 +0800
-Message-ID: <1373900110-19929-1-git-send-email-shawn.guo@linaro.org>
+From: Richard Genoud <richard.genoud@gmail.com>
+Subject: Re: [PATCH v5 2/7] sound: sam9x5_wm8731: machine driver for
+ at91sam9x5 wm8731 boards
+Date: Mon, 15 Jul 2013 16:59:21 +0200
+Message-ID: <CACQ1gAiJ8ww-gYfcUsux00DmpWUpfqyzzqfxZjWZSaObgsz29g@mail.gmail.com>
+References: <1373559359-31607-1-git-send-email-richard.genoud@gmail.com>
+ <1373559359-31607-3-git-send-email-richard.genoud@gmail.com> <20130712114926.GE24508@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db8outboundpool.messaging.microsoft.com
- (mail-db8lp0184.outbound.messaging.microsoft.com [213.199.154.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B302261616
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 16:55:18 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Shawn Guo <shawn.guo@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20130712114926.GE24508@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-It's not always the case that clock is already available when sgtl5000
-get probed at the first time, e.g. the clock is provided by CPU DAI
-which may be probed after sgtl5000.  So let's defer the probe when
-devm_clk_get() call fails and give it chance to try later.
+2013/7/12 Mark Brown <broonie@kernel.org>:
+> On Thu, Jul 11, 2013 at 06:15:54PM +0200, Richard Genoud wrote:
+>> From: Nicolas Ferre <nicolas.ferre@atmel.com>
+>>
+>> Description of the Asoc machine driver for an at91sam9x5 based board
+>
+> ASoC.
+>
+>> +sam9x5 pins:
+>> + * LOUT
+>> + * ROUT
+>> + * LHPOUT
+>> + * RHPOUT
+>> + * LLINEIN
+>> + * RLINEIN
+>> + * MICIN
+>
+> These aren't pins on the CPU, they're pins on the CODEC, and you should
+> be adding this to the binding document for the CODEC and referring to
+> that rather than having them in each individual binding document.  This
+> also helps if any new variants are added (not that this is likely for
+> the WM8731).
+ok, I'll move that
 
-It fixes the following problem on imx28.
+>
+>> +static struct sam9x5_drvdata sam9x5_priv;
+>
+> Why is this a global static?
+>
+>> +     ret = snd_soc_register_card(&snd_soc_sam9x5);
+>> +     if (ret) {
+>> +             dev_err(&pdev->dev,
+>> +                     "ASoC: Platform device allocation failed\n");
+>> +             goto out_put_audio;
+>> +     }
+>
+>> +     platform_set_drvdata(pdev, &snd_soc_sam9x5);
+>
+> It should be being dynamically allocated and retrieved as driver data
+> when needed.
+ok.
 
-[    1.927637] sgtl5000 0-000a: Failed to get mclock: -2
-[    1.934280] sgtl5000: probe of 0-000a failed with error -2
+Thanks !
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
-Mark,
 
-This is a fix for 3.11.
-
-Shawn
-
- sound/soc/codecs/sgtl5000.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index d441559..7ebf923 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1527,7 +1527,8 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 	if (IS_ERR(sgtl5000->mclk)) {
- 		ret = PTR_ERR(sgtl5000->mclk);
- 		dev_err(&client->dev, "Failed to get mclock: %d\n", ret);
--		return ret;
-+		/* Defer the probe to see if the clk will be provided later */
-+		return ret == -ENOENT ? -EPROBE_DEFER : ret;
- 	}
- 
- 	ret = clk_prepare_enable(sgtl5000->mclk);
 -- 
-1.7.9.5
+for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
