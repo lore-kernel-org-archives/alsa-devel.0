@@ -1,19 +1,15 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 07/10] ASoC: atmel: Fix unlocked snd_pcm_stop()
-	call
-Date: Mon, 15 Jul 2013 15:06:19 +0200
-Message-ID: <1373893582-17116-8-git-send-email-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH 0/10] snd_pcm_stop() lock fixes
+Date: Mon, 15 Jul 2013 15:12:07 +0200
+Message-ID: <51E3F527.60801@perex.cz>
 References: <1373893582-17116-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0EC3F261599
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 15:06:04 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DE37AA52D7
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 15:06:03 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B2AE2610B4
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 15:12:14 +0200 (CEST)
 In-Reply-To: <1373893582-17116-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,30 +20,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-snd_pcm_stop() must be called in the PCM substream lock context.
+Date 15.7.2013 15:06, Takashi Iwai wrote:
+> Hi,
+> 
+> while reviewing another patch series, I stumbled on the snd_pcm_lock()
+> call in an unlocked context.  Then I started looking through the whole
+> tree, and found a bunch of drivers doing it wrong, too.  So here is a
+> patch series to fix them.
+> 
+>  [PATCH 01/10] ALSA: asihpi: Fix unlocked snd_pcm_stop() call
+>  [PATCH 02/10] ALSA: atiixp: Fix unlocked snd_pcm_stop() call
+>  [PATCH 03/10] ALSA: 6fire: Fix unlocked snd_pcm_stop() call
+>  [PATCH 04/10] ALSA: ua101: Fix unlocked snd_pcm_stop() call
+>  [PATCH 05/10] ALSA: usx2y: Fix unlocked snd_pcm_stop() call
+>  [PATCH 06/10] ALSA: pxa2xx: Fix unlocked snd_pcm_stop() call
+>  [PATCH 07/10] ASoC: atmel: Fix unlocked snd_pcm_stop() call
+>  [PATCH 08/10] ASoC: s6000: Fix unlocked snd_pcm_stop() call
+>  [PATCH 09/10] [media] saa7134: Fix unlocked snd_pcm_stop() call
+>  [PATCH 10/10] staging: line6: Fix unlocked snd_pcm_stop() call
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/atmel/atmel-pcm-dma.c | 2 ++
- 1 file changed, 2 insertions(+)
+Probably, it may be better to introduce 'snd_pcm_stop_dolock()' helper
+(inline?) in include/sound/pcm.h .
 
-diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
-index 1d38fd0..d128265 100644
---- a/sound/soc/atmel/atmel-pcm-dma.c
-+++ b/sound/soc/atmel/atmel-pcm-dma.c
-@@ -81,7 +81,9 @@ static void atmel_pcm_dma_irq(u32 ssc_sr,
- 
- 		/* stop RX and capture: will be enabled again at restart */
- 		ssc_writex(prtd->ssc->regs, SSC_CR, prtd->mask->ssc_disable);
-+		snd_pcm_stream_lock(substream);
- 		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
-+		snd_pcm_stream_unlock(substream);
- 
- 		/* now drain RHR and read status to remove xrun condition */
- 		ssc_readx(prtd->ssc->regs, SSC_RHR);
+					Jaroslav
+
 -- 
-1.8.3.1
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
