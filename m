@@ -1,63 +1,72 @@
-From: Richard Genoud <richard.genoud@gmail.com>
-Subject: Re: [PATCH v5 2/7] sound: sam9x5_wm8731: machine driver for
- at91sam9x5 wm8731 boards
-Date: Mon, 15 Jul 2013 16:59:21 +0200
-Message-ID: <CACQ1gAiJ8ww-gYfcUsux00DmpWUpfqyzzqfxZjWZSaObgsz29g@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v5 1/7] sound: codec: wm8731: add rates constraints
+Date: Mon, 15 Jul 2013 16:22:28 +0100
+Message-ID: <20130715152228.GJ11538@sirena.org.uk>
 References: <1373559359-31607-1-git-send-email-richard.genoud@gmail.com>
- <1373559359-31607-3-git-send-email-richard.genoud@gmail.com> <20130712114926.GE24508@sirena.org.uk>
+ <1373559359-31607-2-git-send-email-richard.genoud@gmail.com>
+ <20130712114551.GD24508@sirena.org.uk>
+ <CACQ1gAhmp-i7vzPKuTMxqs9Ytjynz9NTvrQk9R08U9Fo-cVzMg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SBT+cnFS/G3NVgv4"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130712114926.GE24508@sirena.org.uk>
+Content-Disposition: inline
+In-Reply-To: <CACQ1gAhmp-i7vzPKuTMxqs9Ytjynz9NTvrQk9R08U9Fo-cVzMg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Richard Genoud <richard.genoud@gmail.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-2013/7/12 Mark Brown <broonie@kernel.org>:
-> On Thu, Jul 11, 2013 at 06:15:54PM +0200, Richard Genoud wrote:
->> From: Nicolas Ferre <nicolas.ferre@atmel.com>
->>
->> Description of the Asoc machine driver for an at91sam9x5 based board
->
-> ASoC.
->
->> +sam9x5 pins:
->> + * LOUT
->> + * ROUT
->> + * LHPOUT
->> + * RHPOUT
->> + * LLINEIN
->> + * RLINEIN
->> + * MICIN
->
-> These aren't pins on the CPU, they're pins on the CODEC, and you should
-> be adding this to the binding document for the CODEC and referring to
-> that rather than having them in each individual binding document.  This
-> also helps if any new variants are added (not that this is likely for
-> the WM8731).
-ok, I'll move that
 
->
->> +static struct sam9x5_drvdata sam9x5_priv;
->
-> Why is this a global static?
->
->> +     ret = snd_soc_register_card(&snd_soc_sam9x5);
->> +     if (ret) {
->> +             dev_err(&pdev->dev,
->> +                     "ASoC: Platform device allocation failed\n");
->> +             goto out_put_audio;
->> +     }
->
->> +     platform_set_drvdata(pdev, &snd_soc_sam9x5);
->
-> It should be being dynamically allocated and retrieved as driver data
-> when needed.
-ok.
+--SBT+cnFS/G3NVgv4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks !
+On Mon, Jul 15, 2013 at 04:53:46PM +0200, Richard Genoud wrote:
+> 2013/7/12 Mark Brown <broonie@kernel.org>:
 
+> > This isn't going to work with systems which have a variable clock as the
+> > input to the CODEC.  If it's imposing constraints the driver needs to
+> > allow setting the clock to zero as a way of removing constraints (and
+> > any existing drivers should be updated to do this if needed).
 
--- 
-for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
+> Maybe I'm wrong, but I didn't find any system using variable clock
+> with this codec.
+
+The driver should be written with that possibility in mind even if there
+were no users; it only takes a couple of lines of code.
+
+> The sam9g20ek (soc/atmel/sam9g20_wm8731.c) is not using a crystal, but
+> it's using a fixed clock anyway.
+> But there's soc/pxa/corgi.c and soc/pxa/poodle.c that puzzle me.
+> They seems to use a crystal, but they are setting a different sysclk
+> depending on the rate.
+> That seems wrong, but as I'm a newbie in ASoC...
+
+Note that the CPU is clock master for those - it's going to be
+outputting a clock based on the sample rate selected automatically.
+These boards would be broken by your change as it stands.
+
+--SBT+cnFS/G3NVgv4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR5BOxAAoJELSic+t+oim9mKYP/3FqVkMHE7LlCZvs78y1TbuF
+yFKdyZvXODyi/OI6I3Znyb8oNk+zwuaf+GI0dq4L2ON+Zl+Z9xRknjRLocP0nR/D
+QMQjowH6Dt903ENbmYnRTJLyMow3AHp25s2HtM4rTesJPY+Xq8XU9JPU0eL5UVfd
+zQ4VL3ctfJZk3b24NP96i+euTWvZdZ970J+8tNaqFi0+z9aAGN2lkRr/OI0sXtoT
+356PZsfcrxKOmF5KQqB73Zrt7U03JoiZicc8SfOv1RuZAUmr5fpCei6OH7Rxo9+B
+IovW/Vmu9dDV7cfgaGauFIEwcSgjyxA+bXM1WxiEVUfLirCxGyaMYh/c7QHG0c1D
+fi65o+y5uH/OUiWDciFqnCfea2uQDq3imnplMM8nF0DDyeLiz44NCNG8PPl0Dhl4
+VcTwRE0Tdel0XY+Fv1nBtcT8+NviQuizS7n1MfepWjpql9L8JBAoCF9zyzjS/7BN
+ErIqW+HT0mqPEBgq7Arvsdd1n94w3BYpps7g8aV6EJMnN24MYibaZIcrC4MZMB/o
+N6WKIYv5C7Bi00+gedZ4SCkLIesJL9L09oVM8kJFz1LFYHzLpMQoHqpdGvD703TV
+wHCKcDFukTBnyC/wz67qkqgQzy8RcY56sLuTpj44j2kA+LFVRUdaJChZ7OHzoun2
+5dvRqIzZg/hCXtUo8W9G
+=L2ww
+-----END PGP SIGNATURE-----
+
+--SBT+cnFS/G3NVgv4--
