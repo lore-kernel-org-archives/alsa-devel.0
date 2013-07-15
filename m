@@ -1,84 +1,86 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: omap: Enable COMPILE_TEST build for
-	DT platforms
-Date: Mon, 15 Jul 2013 18:03:07 +0100
-Message-ID: <20130715170307.GV11538@sirena.org.uk>
-References: <1373903876-26370-1-git-send-email-broonie@kernel.org>
- <51E426C2.5060209@ti.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3316865185229061215=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B7DAD26165F
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 19:03:12 +0200 (CEST)
-In-Reply-To: <51E426C2.5060209@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: [PATCH] ASoC: samsung: Enable COMPILE_TEST builds
+Date: Mon, 15 Jul 2013 18:11:24 +0100
+Message-ID: <1373908284-14305-1-git-send-email-broonie@kernel.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sangbeom Kim <sbkim73@samsung.com>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+From: Mark Brown <broonie@linaro.org>
 
---===============3316865185229061215==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SidV/bKy1CyabPX8"
-Content-Disposition: inline
+Platform using OF and some others don't have any dependencies on arch/arm
+so can be built on any platform. Enable that for better compile coverage
+when COMPILE_TEST is enabled.
 
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/samsung/Kconfig | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
---SidV/bKy1CyabPX8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jul 15, 2013 at 06:43:46PM +0200, Peter Ujfalusi wrote:
-> On 07/15/2013 05:57 PM, Mark Brown wrote:
-> > From: Mark Brown <broonie@linaro.org>
-
-> > The DT platforms don't have any source dependency on any OMAP stuff so
-> > allow them to be built when COMPILE_TEST is enabled.
-
-> The OMAP3 generic machine driver could be also included in this patch:
-> SND_OMAP_SOC_OMAP_TWL4030
-
-There's no need for that - it has no dependencies other than the TWL4030
-core driver and SND_OMAP_SOC so as soon as SND_OMAP_SOC can be enabled
-it is too.
-
---SidV/bKy1CyabPX8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR5CtIAAoJELSic+t+oim9vskQAJ0sZYIJdIWaWAWYDUPPoSFL
-Qgxrue8lLc/VAdxnsiSAZev7jkgV7nGjmAzZ6Ly+7oeDmJHCdK4IimdLftZkeGV5
-z9gbyvBEeeut+pqufVFD+z/ipK/m1RSvLwhctg5hyzsP25W2GsR923Pfqw/6i/Vd
-BLz5HacdyDWhyPQU78O9lkEEIC9jwUPiaweY4W8KU0+80qQtTzEOKaQkAA7jdLoA
-OUMcnR3vtYMmDBaBPsWnsF89WbbFMC6lD+5LvtaY8oSGfBR9D1B29ByWd9bcQSBA
-6YoX9vs69Bwlwv9km7GlkSgbusBhgJ25SImcibfH2L+6s9FUp+cGLmgGmcLz2l9H
-e/1OiK1gWhA8T4hGm8STa9qBK2wEp/wtg8GtZU+C5Pa8Q/A7XrPilWT9QwJ4jgTW
-MhsHx2/56LUNfQdcLTEAX6krBwkaRnP/DWVC/zeHGSLcOT09JsSvQso2/gs8qM/8
-bFp1zr2Glw5rAYlLoaKhyNXmDG4cE5p8l5IZB/QVlPnjEQk40chw5FlZ4Ejr6T6w
-S9qGTl3Qj88uzGGyyGL0ncJlhAr2l7g2JFVGL2OqekKE3cNzhCUHUhdHPo/CraXy
-fFiFf8Nreem3ih0cBL9QkVOPZco2kq7KBHVHI5urwalpYjrp87qHQHLaZThlEQt/
-otz38gV4sQ1mTjv2uINI
-=ojXs
------END PGP SIGNATURE-----
-
---SidV/bKy1CyabPX8--
-
---===============3316865185229061215==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3316865185229061215==--
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 9855dfc..df28dc8 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -1,6 +1,6 @@
+ config SND_SOC_SAMSUNG
+ 	tristate "ASoC support for Samsung"
+-	depends on PLAT_SAMSUNG
++	depends on PLAT_SAMSUNG || COMPILE_TEST
+ 	select S3C64XX_DMA if ARCH_S3C64XX
+ 	select S3C2410_DMA if ARCH_S3C24XX
+ 	help
+@@ -150,7 +150,7 @@ config SND_SOC_SMARTQ
+ 
+ config SND_SOC_GONI_AQUILA_WM8994
+ 	tristate "SoC I2S Audio support for AQUILA/GONI - WM8994"
+-	depends on SND_SOC_SAMSUNG && (MACH_GONI || MACH_AQUILA)
++	depends on SND_SOC_SAMSUNG && (MACH_GONI || MACH_AQUILA || COMPILE_TEST)
+ 	depends on I2C=y && GENERIC_HARDIRQS
+ 	select SND_SAMSUNG_I2S
+ 	select MFD_WM8994
+@@ -186,7 +186,7 @@ config SND_SOC_SMDK_WM8994_PCM
+ 
+ config SND_SOC_SPEYSIDE
+ 	tristate "Audio support for Wolfson Speyside"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
++	depends on SND_SOC_SAMSUNG && (MACH_WLF_CRAGG_6410 || COMPILE_TEST)
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM8996
+ 	select SND_SOC_WM9081
+@@ -195,13 +195,13 @@ config SND_SOC_SPEYSIDE
+ 
+ config SND_SOC_TOBERMORY
+ 	tristate "Audio support for Wolfson Tobermory"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
++	depends on SND_SOC_SAMSUNG && (MACH_WLF_CRAGG_6410 || COMPILE_TEST)
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM8962
+ 
+ config SND_SOC_BELLS
+ 	tristate "Audio support for Wolfson Bells"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
++	depends on SND_SOC_SAMSUNG && (MACH_WLF_CRAGG_6410 || COMPILE_TEST)
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM5102
+ 	select SND_SOC_WM5110
+@@ -211,14 +211,14 @@ config SND_SOC_BELLS
+ 
+ config SND_SOC_LOWLAND
+ 	tristate "Audio support for Wolfson Lowland"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
++	depends on SND_SOC_SAMSUNG && (MACH_WLF_CRAGG_6410 || COMPILE_TEST)
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM5100
+ 	select SND_SOC_WM9081
+ 
+ config SND_SOC_LITTLEMILL
+ 	tristate "Audio support for Wolfson Littlemill"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
++	depends on SND_SOC_SAMSUNG && (MACH_WLF_CRAGG_6410 || COMPILE_TEST)
+ 	select SND_SAMSUNG_I2S
+ 	select MFD_WM8994
+ 	select SND_SOC_WM8994
+-- 
+1.8.3.2
