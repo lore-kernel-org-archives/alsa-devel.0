@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 06/10] ALSA: pxa2xx: Fix unlocked
+Subject: [PATCH 09/10] [media] saa7134: Fix unlocked
 	snd_pcm_stop() call
-Date: Mon, 15 Jul 2013 15:06:18 +0200
-Message-ID: <1373893582-17116-7-git-send-email-tiwai@suse.de>
+Date: Mon, 15 Jul 2013 15:06:21 +0200
+Message-ID: <1373893582-17116-10-git-send-email-tiwai@suse.de>
 References: <1373893582-17116-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 013C126158C
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 15:06:03 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id CD3ADA52C6
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A70926158D
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 15:06:04 +0200 (CEST)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id DE3E6A52D9
  for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 15:06:03 +0200 (CEST)
 In-Reply-To: <1373893582-17116-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,22 +32,22 @@ snd_pcm_stop() must be called in the PCM substream lock context.
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/arm/pxa2xx-pcm-lib.c | 2 ++
+ drivers/media/pci/saa7134/saa7134-alsa.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
-index 76e0d56..823359e 100644
---- a/sound/arm/pxa2xx-pcm-lib.c
-+++ b/sound/arm/pxa2xx-pcm-lib.c
-@@ -166,7 +166,9 @@ void pxa2xx_pcm_dma_irq(int dma_ch, void *dev_id)
- 	} else {
- 		printk(KERN_ERR "%s: DMA error on channel %d (DCSR=%#x)\n",
- 			rtd->params->name, dma_ch, dcsr);
-+		snd_pcm_stream_lock(substream);
- 		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
-+		snd_pcm_stream_unlock(substream);
+diff --git a/drivers/media/pci/saa7134/saa7134-alsa.c b/drivers/media/pci/saa7134/saa7134-alsa.c
+index 10460fd..dbcdfbf 100644
+--- a/drivers/media/pci/saa7134/saa7134-alsa.c
++++ b/drivers/media/pci/saa7134/saa7134-alsa.c
+@@ -172,7 +172,9 @@ static void saa7134_irq_alsa_done(struct saa7134_dev *dev,
+ 		dprintk("irq: overrun [full=%d/%d] - Blocks in %d\n",dev->dmasound.read_count,
+ 			dev->dmasound.bufsize, dev->dmasound.blocks);
+ 		spin_unlock(&dev->slock);
++		snd_pcm_stream_lock(dev->dmasound.substream);
+ 		snd_pcm_stop(dev->dmasound.substream,SNDRV_PCM_STATE_XRUN);
++		snd_pcm_stream_unlock(dev->dmasound.substream);
+ 		return;
  	}
- }
- EXPORT_SYMBOL(pxa2xx_pcm_dma_irq);
+ 
 -- 
 1.8.3.1
