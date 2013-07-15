@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 10/10] staging: line6: Fix unlocked
-	snd_pcm_stop() call
-Date: Mon, 15 Jul 2013 15:06:22 +0200
-Message-ID: <1373893582-17116-11-git-send-email-tiwai@suse.de>
+Subject: [PATCH 07/10] ASoC: atmel: Fix unlocked snd_pcm_stop()
+	call
+Date: Mon, 15 Jul 2013 15:06:19 +0200
+Message-ID: <1373893582-17116-8-git-send-email-tiwai@suse.de>
 References: <1373893582-17116-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1090826159D
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EC3F261599
  for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 15:06:04 +0200 (CEST)
-Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DE75AA531D
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id DE37AA52D7
  for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 15:06:03 +0200 (CEST)
 In-Reply-To: <1373893582-17116-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,25 +32,22 @@ snd_pcm_stop() must be called in the PCM substream lock context.
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- drivers/staging/line6/pcm.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/atmel/atmel-pcm-dma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/staging/line6/pcm.c b/drivers/staging/line6/pcm.c
-index 02f77d7..a7856ba 100644
---- a/drivers/staging/line6/pcm.c
-+++ b/drivers/staging/line6/pcm.c
-@@ -385,8 +385,11 @@ static int snd_line6_pcm_free(struct snd_device *device)
- */
- static void pcm_disconnect_substream(struct snd_pcm_substream *substream)
- {
--	if (substream->runtime && snd_pcm_running(substream))
-+	if (substream->runtime && snd_pcm_running(substream)) {
-+		snd_pcm_stream_lock_irq(substream);
- 		snd_pcm_stop(substream, SNDRV_PCM_STATE_DISCONNECTED);
-+		snd_pcm_stream_unlock_irq(substream);
-+	}
- }
+diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
+index 1d38fd0..d128265 100644
+--- a/sound/soc/atmel/atmel-pcm-dma.c
++++ b/sound/soc/atmel/atmel-pcm-dma.c
+@@ -81,7 +81,9 @@ static void atmel_pcm_dma_irq(u32 ssc_sr,
  
- /*
+ 		/* stop RX and capture: will be enabled again at restart */
+ 		ssc_writex(prtd->ssc->regs, SSC_CR, prtd->mask->ssc_disable);
++		snd_pcm_stream_lock(substream);
+ 		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
++		snd_pcm_stream_unlock(substream);
+ 
+ 		/* now drain RHR and read status to remove xrun condition */
+ 		ssc_readx(prtd->ssc->regs, SSC_RHR);
 -- 
 1.8.3.1
