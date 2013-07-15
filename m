@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/3] ASoC: kirkwood: Enable build on
-	non-Kirkwood platforms
-Date: Mon, 15 Jul 2013 16:42:49 +0100
-Message-ID: <1373902970-935-2-git-send-email-broonie@kernel.org>
+Subject: [PATCH 3/3] ASoC: kirkwood-i2s: Use devm_clk_get() for
+	extclk
+Date: Mon, 15 Jul 2013 16:42:50 +0100
+Message-ID: <1373902970-935-3-git-send-email-broonie@kernel.org>
 References: <1373902970-935-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 956FF261661
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 17:43:00 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 09603261687
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 17:43:02 +0200 (CEST)
 In-Reply-To: <1373902970-935-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,43 +27,50 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mark Brown <broonie@linaro.org>
 
-Improve build coverage by enabling build on other platforms if COMPILE_TEST
-is enabled.
-
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/kirkwood/Kconfig | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/kirkwood/kirkwood-i2s.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/kirkwood/Kconfig b/sound/soc/kirkwood/Kconfig
-index c62d715..59085ad 100644
---- a/sound/soc/kirkwood/Kconfig
-+++ b/sound/soc/kirkwood/Kconfig
-@@ -1,6 +1,6 @@
- config SND_KIRKWOOD_SOC
- 	tristate "SoC Audio for the Marvell Kirkwood chip"
--	depends on ARCH_KIRKWOOD
-+	depends on ARCH_KIRKWOOD || COMPILE_TEST
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the Kirkwood I2S interface. You will also need to select the
-@@ -11,7 +11,7 @@ config SND_KIRKWOOD_SOC_I2S
+diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
+index 4c9dad3..44412ea 100644
+--- a/sound/soc/kirkwood/kirkwood-i2s.c
++++ b/sound/soc/kirkwood/kirkwood-i2s.c
+@@ -498,10 +498,9 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
+ 	if (err < 0)
+ 		return err;
  
- config SND_KIRKWOOD_SOC_OPENRD
- 	tristate "SoC Audio support for Kirkwood Openrd Client"
--	depends on SND_KIRKWOOD_SOC && (MACH_OPENRD_CLIENT || MACH_OPENRD_ULTIMATE)
-+	depends on SND_KIRKWOOD_SOC && (MACH_OPENRD_CLIENT || MACH_OPENRD_ULTIMATE || COMPILE_TEST)
- 	depends on I2C
- 	select SND_KIRKWOOD_SOC_I2S
- 	select SND_SOC_CS42L51
-@@ -21,7 +21,7 @@ config SND_KIRKWOOD_SOC_OPENRD
+-	priv->extclk = clk_get(&pdev->dev, "extclk");
++	priv->extclk = devm_clk_get(&pdev->dev, "extclk");
+ 	if (!IS_ERR(priv->extclk)) {
+ 		if (priv->extclk == priv->clk) {
+-			clk_put(priv->extclk);
+ 			priv->extclk = ERR_PTR(-EINVAL);
+ 		} else {
+ 			dev_info(&pdev->dev, "found external clock\n");
+@@ -529,10 +528,8 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
+ 		return 0;
+ 	dev_err(&pdev->dev, "snd_soc_register_component failed\n");
  
- config SND_KIRKWOOD_SOC_T5325
- 	tristate "SoC Audio support for HP t5325"
--	depends on SND_KIRKWOOD_SOC && MACH_T5325 && I2C
-+	depends on SND_KIRKWOOD_SOC && (MACH_T5325 || COMPILE_TEST) && I2C
- 	select SND_KIRKWOOD_SOC_I2S
- 	select SND_SOC_ALC5623
- 	help
+-	if (!IS_ERR(priv->extclk)) {
++	if (!IS_ERR(priv->extclk))
+ 		clk_disable_unprepare(priv->extclk);
+-		clk_put(priv->extclk);
+-	}
+ 	clk_disable_unprepare(priv->clk);
+ 
+ 	return err;
+@@ -544,10 +541,8 @@ static int kirkwood_i2s_dev_remove(struct platform_device *pdev)
+ 
+ 	snd_soc_unregister_component(&pdev->dev);
+ 
+-	if (!IS_ERR(priv->extclk)) {
++	if (!IS_ERR(priv->extclk))
+ 		clk_disable_unprepare(priv->extclk);
+-		clk_put(priv->extclk);
+-	}
+ 	clk_disable_unprepare(priv->clk);
+ 
+ 	return 0;
 -- 
 1.8.3.2
