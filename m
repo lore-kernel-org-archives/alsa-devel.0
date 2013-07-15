@@ -1,19 +1,14 @@
-From: Daniel =?iso-8859-1?Q?Gl=F6ckner?= <dg@emlix.com>
-Subject: Re: [PATCH 08/10] ASoC: s6000: Fix unlocked
- snd_pcm_stop() call
-Date: Mon, 15 Jul 2013 18:02:48 +0200
-Message-ID: <20130715160247.GA13522@emlix.com>
-References: <1373893582-17116-1-git-send-email-tiwai@suse.de>
- <1373893582-17116-9-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: imx: Enable COMPILE_TEST builds
+Date: Mon, 15 Jul 2013 17:04:02 +0100
+Message-ID: <1373904242-30250-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.emlix.com (mx1.emlix.com [88.198.240.195])
- by alsa0.perex.cz (Postfix) with ESMTP id D00F12619E8
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 18:02:48 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1373893582-17116-9-git-send-email-tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 616152619DE
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2013 18:04:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +18,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Nack
+From: Mark Brown <broonie@linaro.org>
 
-On Mon, Jul 15, 2013 at 03:06:20PM +0200, Takashi Iwai wrote:
-> --- a/sound/soc/s6000/s6000-pcm.c
-> +++ b/sound/soc/s6000/s6000-pcm.c
-> @@ -128,7 +128,9 @@ static irqreturn_t s6000_pcm_irq(int irq, void *data)
->  		    substream->runtime &&
->  		    snd_pcm_running(substream)) {
->  			dev_dbg(pcm->dev, "xrun\n");
-> +			snd_pcm_stream_lock(substream);
->  			snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
-> +			snd_pcm_substream_unlock(substream);
+Since DT based boards don't have any dependency on arch/arm enable them
+if COMPILE_TEST is enabled.
 
-I think this is supposed to be a call to snd_pcm_stream_unlock.
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/fsl/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  Daniel
-
--- =
-
-Dipl.-Math. Daniel Gl=F6ckner, emlix GmbH, http://www.emlix.com
-Fon +49 551 30664-0, Fax +49 551 30664-11,
-Bertha-von-Suttner-Stra=DFe 9, 37085 G=F6ttingen, Germany
-Sitz der Gesellschaft: G=F6ttingen, Amtsgericht G=F6ttingen HR B 3160
-Gesch=E4ftsf=FChrung: Dr. Uwe Kracke, Ust-IdNr.: DE 205 198 055
-
-emlix - your embedded linux partner
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index aa43854..87e28bc 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -98,7 +98,7 @@ endif # SND_POWERPC_SOC
+ 
+ menuconfig SND_IMX_SOC
+ 	tristate "SoC Audio for Freescale i.MX CPUs"
+-	depends on ARCH_MXC
++	depends on ARCH_MXC || COMPILE_TEST
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the i.MX CPUs.
+-- 
+1.8.3.2
