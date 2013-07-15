@@ -1,72 +1,63 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 1/7] sound: codec: wm8731: add rates constraints
-Date: Mon, 15 Jul 2013 16:22:28 +0100
-Message-ID: <20130715152228.GJ11538@sirena.org.uk>
-References: <1373559359-31607-1-git-send-email-richard.genoud@gmail.com>
- <1373559359-31607-2-git-send-email-richard.genoud@gmail.com>
- <20130712114551.GD24508@sirena.org.uk>
- <CACQ1gAhmp-i7vzPKuTMxqs9Ytjynz9NTvrQk9R08U9Fo-cVzMg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: kirkwood-i2s: fix a compilation warning
+Date: Mon, 15 Jul 2013 16:31:01 +0100
+Message-ID: <20130715153101.GK11538@sirena.org.uk>
+References: <20130715103644.04e57749@armhf>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SBT+cnFS/G3NVgv4"
+	protocol="application/pgp-signature"; boundary="C7Ke/meiCZutM6I/"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CACQ1gAhmp-i7vzPKuTMxqs9Ytjynz9NTvrQk9R08U9Fo-cVzMg@mail.gmail.com>
+In-Reply-To: <20130715103644.04e57749@armhf>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Genoud <richard.genoud@gmail.com>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Russell King <rmk+kernel@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
 
---SBT+cnFS/G3NVgv4
-Content-Type: text/plain; charset=us-ascii
+--C7Ke/meiCZutM6I/
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 15, 2013 at 04:53:46PM +0200, Richard Genoud wrote:
-> 2013/7/12 Mark Brown <broonie@kernel.org>:
+On Mon, Jul 15, 2013 at 10:36:44AM +0200, Jean-Francois Moine wrote:
+> In the function kirkwood_set_rate, when the rate cannot be satisfied
+> by the internal nor by an external clock, the clock source in undefined:
 
-> > This isn't going to work with systems which have a variable clock as the
-> > input to the CODEC.  If it's imposing constraints the driver needs to
-> > allow setting the clock to zero as a way of removing constraints (and
-> > any existing drivers should be updated to do this if needed).
+>  warning: =E2=80=98clks_ctrl=E2=80=99 may be used uninitialized in this f=
+unction
 
-> Maybe I'm wrong, but I didn't find any system using variable clock
-> with this codec.
+> As the ALSA subsystem should never gives such a rate, this patch removes
+> the check of the external clock pointer.
 
-The driver should be written with that possibility in mind even if there
-were no users; it only takes a couple of lines of code.
+> -	} else if (!IS_ERR(priv->extclk)) {
+> +	} else {
 
-> The sam9g20ek (soc/atmel/sam9g20_wm8731.c) is not using a crystal, but
-> it's using a fixed clock anyway.
-> But there's soc/pxa/corgi.c and soc/pxa/poodle.c that puzzle me.
-> They seems to use a crystal, but they are setting a different sysclk
-> depending on the rate.
-> That seems wrong, but as I'm a newbie in ASoC...
+I'd really like to see an analysis explaining why this can never happen,
+the driver explicitly supports running without extclk being provided.
+Simply asserting that we should never get such a rate isn't really
+enough detail...
 
-Note that the CPU is clock master for those - it's going to be
-outputting a clock based on the sample rate selected automatically.
-These boards would be broken by your change as it stands.
-
---SBT+cnFS/G3NVgv4
+--C7Ke/meiCZutM6I/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR5BOxAAoJELSic+t+oim9mKYP/3FqVkMHE7LlCZvs78y1TbuF
-yFKdyZvXODyi/OI6I3Znyb8oNk+zwuaf+GI0dq4L2ON+Zl+Z9xRknjRLocP0nR/D
-QMQjowH6Dt903ENbmYnRTJLyMow3AHp25s2HtM4rTesJPY+Xq8XU9JPU0eL5UVfd
-zQ4VL3ctfJZk3b24NP96i+euTWvZdZ970J+8tNaqFi0+z9aAGN2lkRr/OI0sXtoT
-356PZsfcrxKOmF5KQqB73Zrt7U03JoiZicc8SfOv1RuZAUmr5fpCei6OH7Rxo9+B
-IovW/Vmu9dDV7cfgaGauFIEwcSgjyxA+bXM1WxiEVUfLirCxGyaMYh/c7QHG0c1D
-fi65o+y5uH/OUiWDciFqnCfea2uQDq3imnplMM8nF0DDyeLiz44NCNG8PPl0Dhl4
-VcTwRE0Tdel0XY+Fv1nBtcT8+NviQuizS7n1MfepWjpql9L8JBAoCF9zyzjS/7BN
-ErIqW+HT0mqPEBgq7Arvsdd1n94w3BYpps7g8aV6EJMnN24MYibaZIcrC4MZMB/o
-N6WKIYv5C7Bi00+gedZ4SCkLIesJL9L09oVM8kJFz1LFYHzLpMQoHqpdGvD703TV
-wHCKcDFukTBnyC/wz67qkqgQzy8RcY56sLuTpj44j2kA+LFVRUdaJChZ7OHzoun2
-5dvRqIzZg/hCXtUo8W9G
-=L2ww
+iQIcBAEBAgAGBQJR5BWyAAoJELSic+t+oim9kIYP/1Zb5f5ipqAdT4fmcHCRNsMZ
+bB/yGsK1LGnB62zj96RneZL5UvnVR+WfAzXef0jVrtct0FBjXM3kP5SHhBfRllg4
+djjlAUVI/JNlgJcNQFB+84B/HcRNWrOVB8i+3qusmfpzFxPniwa10QC+3iRqqa17
+NuNtDt4YN3YGje9A8sUYqIlti6MxZZtNdrOMpJ2TzpaEdiSTpCed9f7HLxfbLw3U
+P9h88y6VIeKkVMSTDyRcSArO4OLN7TbpUiZs6eKEcLx3//9fY6InppDOGK/RIedW
+SlBwYU5lHQHIrJqdCB+2KDTck21qIBUod8ZsoNMp3TQKrCVT1r5yzjyqb1oR0uVz
+xiugyjL1fqS1tmncN7eqVEx6xBSXkwin6KpZHPERW8iYaWJ4OSRLcT6FnIHG37CT
+wAt8b6IclsabCs84Nj4uqxUoguMYssWpg34JY0noXA1XmAkFKXviC80sWPFBGEUq
+S079u1r3D1OFTMsjkYV2Yxm/EKULWYCa1eg27YoG6UG5G8Nnt7q8EE7k3UypOIdA
+QwImetc3I4PRgLlaY2Hfy8mU3cbG8st0u9A3LIhHu9OVFCVxRh+LKgwHOTIFh/z4
+xIAkJkjCCsDZgbvYOdo97JmOSsO3z8wHY1LR7bpFhgaGF1STTW/3CDglQ43Nf5qg
+BiOJN5k2NeGCdlAUrwKo
+=NyJd
 -----END PGP SIGNATURE-----
 
---SBT+cnFS/G3NVgv4--
+--C7Ke/meiCZutM6I/--
