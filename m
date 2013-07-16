@@ -1,16 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Headphone mic support for an
-	Asus/Conexant device
-Date: Tue, 16 Jul 2013 11:48:10 +0200
-Message-ID: <1373968090-11266-1-git-send-email-david.henningsson@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 2/2] ASoC: kirkwood-i2s: Inline
+	KIRKWOOD_I2S_RATES
+Date: Tue, 16 Jul 2013 10:55:06 +0100
+Message-ID: <1373968506-22375-2-git-send-email-broonie@kernel.org>
+References: <1373968506-22375-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id C0EF526165C
- for <alsa-devel@alsa-project.org>; Tue, 16 Jul 2013 11:48:11 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80707261B1C
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jul 2013 11:55:12 +0200 (CEST)
+In-Reply-To: <1373968506-22375-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,162 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1198030@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This Conexant codec has a single jack that can be used as either
-headphone or mic (but not headset). The existing hp_mic functionality
-does not apply here, because the mic and the HP are on separate pins.
+From: Mark Brown <broonie@linaro.org>
 
-Hence make a lighter version of what has been earlier done for Realtek
-codecs.
+The addition of extclk support makes this misleading as it's only the
+rates used when there is no extclk so put it in the specific DAI it
+applies to.
 
-BugLink: https://bugs.launchpad.net/bugs/1198030
-Tested-by: Franz Hsieh <franz.hsieh@canonical.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/pci/hda/patch_conexant.c |   79 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 78 insertions(+), 1 deletion(-)
+ sound/soc/kirkwood/kirkwood-i2s.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index de00ce1..4edd2d0 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -66,6 +66,8 @@ struct conexant_spec {
- 	hda_nid_t eapds[4];
- 	bool dynamic_eapd;
+diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
+index becc082..e6027fd 100644
+--- a/sound/soc/kirkwood/kirkwood-i2s.c
++++ b/sound/soc/kirkwood/kirkwood-i2s.c
+@@ -26,9 +26,6 @@
  
-+	unsigned int parse_flags; /* flag for snd_hda_parse_pin_defcfg() */
-+
- #ifdef ENABLE_CXT_STATIC_QUIRKS
- 	const struct snd_kcontrol_new *mixers[5];
- 	int num_mixers;
-@@ -3200,6 +3202,9 @@ static int cx_auto_init(struct hda_codec *codec)
- 	snd_hda_gen_init(codec);
- 	if (!spec->dynamic_eapd)
- 		cx_auto_turn_eapd(codec, spec->num_eapds, spec->eapds, true);
-+
-+	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_INIT);
-+
- 	return 0;
- }
+ #define DRV_NAME	"kirkwood-i2s"
  
-@@ -3224,6 +3229,8 @@ enum {
- 	CXT_PINCFG_LEMOTE_A1205,
- 	CXT_FIXUP_STEREO_DMIC,
- 	CXT_FIXUP_INC_MIC_BOOST,
-+	CXT_FIXUP_HEADPHONE_MIC_PIN,
-+	CXT_FIXUP_HEADPHONE_MIC,
- };
- 
- static void cxt_fixup_stereo_dmic(struct hda_codec *codec,
-@@ -3246,6 +3253,59 @@ static void cxt5066_increase_mic_boost(struct hda_codec *codec,
- 				  (0 << AC_AMPCAP_MUTE_SHIFT));
- }
- 
-+static void cxt_update_headset_mode(struct hda_codec *codec)
-+{
-+	/* The verbs used in this function were tested on a Conexant CX20751/2 codec. */
-+	int i;
-+	bool mic_mode = false;
-+	struct conexant_spec *spec = codec->spec;
-+	struct auto_pin_cfg *cfg = &spec->gen.autocfg;
-+
-+	hda_nid_t mux_pin = spec->gen.imux_pins[spec->gen.cur_mux[0]];
-+
-+	for (i = 0; i < cfg->num_inputs; i++)
-+		if (cfg->inputs[i].pin == mux_pin) {
-+			mic_mode = !!cfg->inputs[i].is_headphone_mic;
-+			break;
-+		}
-+
-+	if (mic_mode) {
-+		snd_hda_codec_write_cache(codec, 0x1c, 0, 0x410, 0x7c); /* enable merged mode for analog int-mic */
-+		spec->gen.hp_jack_present = false;
-+	} else {
-+		snd_hda_codec_write_cache(codec, 0x1c, 0, 0x410, 0x54); /* disable merged mode for analog int-mic */
-+		spec->gen.hp_jack_present = snd_hda_jack_detect(codec, spec->gen.autocfg.hp_pins[0]);
-+	}
-+
-+	snd_hda_gen_update_outputs(codec);
-+}
-+
-+static void cxt_update_headset_mode_hook(struct hda_codec *codec,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	cxt_update_headset_mode(codec);
-+}
-+
-+static void cxt_fixup_headphone_mic(struct hda_codec *codec,
-+				    const struct hda_fixup *fix, int action)
-+{
-+	struct conexant_spec *spec = codec->spec;
-+
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+		spec->parse_flags |= HDA_PINCFG_HEADPHONE_MIC;
-+		break;
-+	case HDA_FIXUP_ACT_PROBE:
-+		spec->gen.cap_sync_hook = cxt_update_headset_mode_hook;
-+		spec->gen.automute_hook = cxt_update_headset_mode;
-+		break;
-+	case HDA_FIXUP_ACT_INIT:
-+		cxt_update_headset_mode(codec);
-+		break;
-+	}
-+}
-+
-+
- /* ThinkPad X200 & co with cxt5051 */
- static const struct hda_pintbl cxt_pincfg_lenovo_x200[] = {
- 	{ 0x16, 0x042140ff }, /* HP (seq# overridden) */
-@@ -3302,6 +3362,19 @@ static const struct hda_fixup cxt_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = cxt5066_increase_mic_boost,
+-#define KIRKWOOD_I2S_RATES \
+-	(SNDRV_PCM_RATE_44100 | \
+-	 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000)
+ #define KIRKWOOD_I2S_FORMATS \
+ 	(SNDRV_PCM_FMTBIT_S16_LE | \
+ 	 SNDRV_PCM_FMTBIT_S24_LE | \
+@@ -411,13 +408,15 @@ static struct snd_soc_dai_driver kirkwood_i2s_dai = {
+ 	.playback = {
+ 		.channels_min = 1,
+ 		.channels_max = 2,
+-		.rates = KIRKWOOD_I2S_RATES,
++		.rates = SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
++				SNDRV_PCM_RATE_96000,
+ 		.formats = KIRKWOOD_I2S_FORMATS,
  	},
-+	[CXT_FIXUP_HEADPHONE_MIC_PIN] = {
-+		.type = HDA_FIXUP_PINS,
-+		.chained = true,
-+		.chain_id = CXT_FIXUP_HEADPHONE_MIC,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x18, 0x03a1913d }, /* use as headphone mic, without its own jack detect */
-+			{ }
-+		}
-+	},
-+	[CXT_FIXUP_HEADPHONE_MIC] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = cxt_fixup_headphone_mic,
-+	},
- };
- 
- static const struct snd_pci_quirk cxt5051_fixups[] = {
-@@ -3311,6 +3384,7 @@ static const struct snd_pci_quirk cxt5051_fixups[] = {
- 
- static const struct snd_pci_quirk cxt5066_fixups[] = {
- 	SND_PCI_QUIRK(0x1025, 0x0543, "Acer Aspire One 522", CXT_FIXUP_STEREO_DMIC),
-+	SND_PCI_QUIRK(0x1043, 0x138d, "Asus", CXT_FIXUP_HEADPHONE_MIC_PIN),
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400", CXT_PINCFG_LENOVO_TP410),
- 	SND_PCI_QUIRK(0x17aa, 0x215e, "Lenovo T410", CXT_PINCFG_LENOVO_TP410),
- 	SND_PCI_QUIRK(0x17aa, 0x215f, "Lenovo T510", CXT_PINCFG_LENOVO_TP410),
-@@ -3395,7 +3469,8 @@ static int patch_conexant_auto(struct hda_codec *codec)
- 
- 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
- 
--	err = snd_hda_parse_pin_defcfg(codec, &spec->gen.autocfg, NULL, 0);
-+	err = snd_hda_parse_pin_defcfg(codec, &spec->gen.autocfg, NULL,
-+				       spec->parse_flags);
- 	if (err < 0)
- 		goto error;
- 
-@@ -3416,6 +3491,8 @@ static int patch_conexant_auto(struct hda_codec *codec)
- 		codec->bus->allow_bus_reset = 1;
- 	}
- 
-+	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
-+
- 	return 0;
- 
-  error:
+ 	.capture = {
+ 		.channels_min = 1,
+ 		.channels_max = 2,
+-		.rates = KIRKWOOD_I2S_RATES,
++		.rates = SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
++				SNDRV_PCM_RATE_96000,
+ 		.formats = KIRKWOOD_I2S_FORMATS,
+ 	},
+ 	.ops = &kirkwood_i2s_dai_ops,
 -- 
-1.7.9.5
+1.8.3.2
