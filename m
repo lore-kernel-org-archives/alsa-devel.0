@@ -1,80 +1,62 @@
-From: Lucas De Marchi <lucas.demarchi-Y3ZbgMPKUGA34EUeqzHoZw@public.gmane.org>
-Subject: Re: [BUG] 3.10.[01] modprobe snd-... hangs
-Date: Tue, 16 Jul 2013 03:42:35 -0300
-Message-ID: <CAMOw1v7AHC3=dFh8vQWTf7dhu1zMbbPwNtJXAtnoqR48YWjtcQ@mail.gmail.com>
-References: <20130715182010.GA4853@pmhahn.de> <87ppujysbk.fsf@rustcorp.com.au>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: [PATCH v2] ASoC: kirkwood-i2s: fix a compilation warning
+Date: Tue, 16 Jul 2013 08:47:47 +0200
+Message-ID: <20130716084747.04625f29@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-modules-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <87ppujysbk.fsf-8n+1lVoiYb80n/F98K4Iww@public.gmane.org>
-Sender: linux-modules-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rusty Russell <rusty-8n+1lVoiYb80n/F98K4Iww@public.gmane.org>
-Cc: Philipp Matthias Hahn <pmhahn-isSyJ6YaLy+zQB+pC5nmwQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-modules <linux-modules-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Russell King <rmk+kernel@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 16, 2013 at 2:41 AM, Rusty Russell <rusty-8n+1lVoiYb80n/F98K4Iww@public.gmane.org> wrote:
-> Philipp Matthias Hahn <pmhahn-isSyJ6YaLy+zQB+pC5nmwQ@public.gmane.org> writes:
->> Hello,
->>
->> My x86_64 systems has some trouble loading some ALSA snd-* modules since
->> the upgrade to 3.10.[01]: Several automatic modprobe calls hang, but
->> loading snd-intel-hda and snd-audio-usb by hand still works.
->
-> Not a known problem to me, at least.  Perhaps it's a dep loop somehow.
+In the function kirkwood_set_rate, when the rate cannot be satisfied
+by the internal nor by an external clock, the clock source in undefined=
+:
 
-First thing to check is the /etc/modprobe.d/*.conf file that contains
-these install commands. Did they change besides the kernel upgrade?
+ warning: =E2=80=98clks_ctrl=E2=80=99 may be used uninitialized in this=
+ function
 
-[
-   Not really related to this, but... people/distros should stop using
-install commands for things like this. By using softdeps kmod is smart
-enough to detect and (possibly) break loops. With  install commands it
-can't because it has no idea what the install command will do.
-]
+The ALSA subsystem should never gives such a rate because:
+- the rates with the internal clock are limited to 44.1, 48 and 96 kHz
+  as specified by the kirkwood_i2s_dai structure,
+- the other rates are proposed in the structure kirkwood_i2s_dai_extclk
+  only when the external clock is present.
 
->
->> ...
->>  1071 ?        S      0:00 sh -c /sbin/modprobe --ignore-install snd && { /sbin/modprobe --quiet snd
->>  1080 ?        D      0:00  \_ /sbin/modprobe --quiet snd-seq
->
-> This was first, and it's waiting.  Which means it must be doing
-> something weird, because snd_seq_oss is loading now:
->
->> snd_seq_oss 33717 1 - Loading 0xffffffffa041b000
+In case of programming error (bad rate for internal clock and no
+external clock), the function will simply cause a backtrace.
 
-Searching kmod's log, I guess Debian still has:
+Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
+---
+v2
+	- add more explanations
+---
+ sound/soc/kirkwood/kirkwood-i2s.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
- install snd_seq modprobe --ignore-install snd-seq $CMDLINE_OPTS && {
-modprobe --quiet snd-seq-midi ; modprobe --quiet snd-seq-oss ; : ; }
-
->
-> Perhaps in the tangle of modprobe install commands somewhere this gets
-> invoked?
->
->> # ps axf
->>   460 ?        S      0:00  \_ [kworker/u8:3]
->>  1087 ?        S      0:00  |   \_ [kworker/u8:3]
->>  1092 ?        S      0:00  |       \_ /sbin/modprobe -q -- snd-seq-client-14
-
-Weird... this is coming from a request_module(). Greping... this
-should only be coming from
-
-git grep request_module | grep snd-seq-client
-sound/core/seq/seq_clientmgr.c: request_module("snd-seq-client-%i",
-
-Philipp, which kernel are you upgrading from?  I don't see anything to
-blame in the changes for the past releases. Any chance a bad entry in
-your .conf was added too? You may want to paste the output of modprobe
--c, at least until "# End of configuration files. Dumping indexes
-now:"
-
->
-> On my systems, that's snd-seq-dummy, which depends on snd_seq.  Which,
-> in fact, is already loaded.
->
-> Lucas, any clues?
-
-I don't think I could help, but we need more data, like the ones above.
-
-
-Lucas De Marchi
+diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kir=
+kwood-i2s.c
+index 4c9dad3..c9daf3b 100644
+--- a/sound/soc/kirkwood/kirkwood-i2s.c
++++ b/sound/soc/kirkwood/kirkwood-i2s.c
+@@ -105,14 +105,16 @@ static void kirkwood_set_rate(struct snd_soc_dai =
+*dai,
+ 	uint32_t clks_ctrl;
+=20
+ 	if (rate =3D=3D 44100 || rate =3D=3D 48000 || rate =3D=3D 96000) {
+-		/* use internal dco for supported rates */
++		/* use internal dco for the supported rates
++		 * defined in kirkwood_i2s_dai */
+ 		dev_dbg(dai->dev, "%s: dco set rate =3D %lu\n",
+ 			__func__, rate);
+ 		kirkwood_set_dco(priv->io, rate);
+=20
+ 		clks_ctrl =3D KIRKWOOD_MCLK_SOURCE_DCO;
+-	} else if (!IS_ERR(priv->extclk)) {
+-		/* use optional external clk for other rates */
++	} else {
++		/* use the external clock for the other rates
++		 * defined in kirkwood_i2s_dai_extclk */
+ 		dev_dbg(dai->dev, "%s: extclk set rate =3D %lu -> %lu\n",
+ 			__func__, rate, 256 * rate);
+ 		clk_set_rate(priv->extclk, 256 * rate);
