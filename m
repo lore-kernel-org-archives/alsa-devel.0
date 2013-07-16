@@ -1,152 +1,250 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: [PATCH] ASoC: tegra: depend on ARCH_TEGRA, not ARCH_TEGRA_*
-Date: Tue, 16 Jul 2013 16:27:47 -0600
-Message-ID: <1374013667-21435-1-git-send-email-swarren@wwwdotorg.org>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Tormen <my.nl.abos@gmail.com>
+Subject: Re: No sound with Sony VAIO VPCZ1 (ALC889)
+Date: Wed, 17 Jul 2013 01:23:29 +0200
+Message-ID: <51E5D5F1.4020101@gmail.com>
+References: <51D464A5.6040507@gmail.com> <51D59D60.9020105@gmail.com>
+ <51D5FCFC.8010506@gmail.com> <s5hip0pwp49.wl%tiwai@suse.de>
+ <51D6B56D.8050909@gmail.com> <s5h1u7dchqh.wl%tiwai@suse.de>
+ <020e0ad5107eb4c2bb333468be58d7d3@www.happyassassin.net>
+ <51D9F543.2070605@gmail.com>
+ <c2cbc2323ce3a8e0df5f52de3ecb276c@www.happyassassin.net>
+ <s5hvc4luem4.wl%tiwai@suse.de>
+ <46b0590bfa4ffc836dde180f8ffe3c97@www.happyassassin.net>
+ <s5hwqoycu0y.wl%tiwai@suse.de> <51DDD53A.8040502@gmail.com>
+ <s5hbo69vf4z.wl%tiwai@suse.de> <51DE7B63.7060708@gmail.com>
+ <s5hfvvlcs4o.wl%tiwai@suse.de> <51DE9D18.6010304@gmail.com>
+ <51E4FD95.2080500@gmail.com> <s5hsizflykp.wl%tiwai@suse.de>
+ <51E4FF18.2050208@gmail.com> <s5hoba2n9ve.wl%tiwai@suse.de>
+ <51E59331.5000200@gmail.com> <s5hehaymho4.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+ [74.125.82.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73EE226525B
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2013 01:23:40 +0200 (CEST)
+Received: by mail-we0-f179.google.com with SMTP id w59so1148392wes.24
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jul 2013 16:23:40 -0700 (PDT)
+In-Reply-To: <s5hehaymho4.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Adam Williamson <awilliam@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Dear Takashi,
 
-I'm planning to remove CONFIG_ARCH_TEGRA_*_SOC, leaving just ARCH_TEGRA.
-This will reduce the number of configurations that need to be supported
-by core Tegra code, e.g. CPU idle, hotplug. As a precursor, we need to
-update Kconfig for all Tegra drivers not to reference ARCH_TEGRA_*_SOC.
+On 16/07/13 21:24, Takashi Iwai wrote:
+> At Tue, 16 Jul 2013 20:37:19 +0200,
+> Tormen wrote:
+>> On 16/07/13 11:15, Takashi Iwai wrote:
+>>> It doesn't look like the driver patched properly.
+>>> Try to put some printk() in the patched code path to confirm that
+>>> you're really testing the patched driver.
+>>>
+>>>
+>>> Takashi
+>> I am not 100% sure if it was or not, because I had applied the patch not
+>> with "quilt"
+>> ... but now I am:
+>> I put in some printk()'s and it still shows speaker_outs=0 :(
+> This doesn't matter at all from the beginning.
+> You see a line "line_outs=1 (type: speaker)" before that.  So, the
+> speaker output is assigned as the primary output there.
+>
+> The problem is, instead, that the primary DAC (thus its selector
+> widget) is assigned to the headphone.  Check whether NID 0x0c is
+> assigned to "Speaker" volume, not for "Headphone".
+> The no_primary_hp flag should have achieved it, but it turned out that
+> 5.1 surround setup blocks it.  That's why you got "Headphone" on NID
+> 0x0c, and 0x0d/0x0e for the rest speaker and possible surrounds.
+>
+> The new flag, no_multi_io prevents the creation of 5.1 setup, so that
+> the speaker will be assigned to NID 0x0c, together with the
+> combination of no_primary_hp.
+>
+>
+>> I was wondering if it's a problem that the speaker_outs=0 is printed way
+>> before all the "fill_and_eval_dacs" changes of yours are executed?
+>>
+>> I attached you my patch so that you can see what output corresponds to
+>> what piece of code.
+>>
+>> alsa-info.sh:
+>> http://www.alsa-project.org/db/?f=c644b65a9e25fd1cef5b4b53d6d806d45526e5b2
+>>
+>> And the complete output of my debug messages:
+>>
+>> FIRST just loading the modules:
+>>       modprobe snd debug=2
+>>       modprobe snd_hda_intel
+>>
+>> [10263.731133] snd_hda_intel 0000:00:1b.0: irq 45 for MSI/MSI-X
+>> [10263.747274] Tormen: alc882_fixup_no_primary_hp: AAA
+>> [10263.750059] Tormen: alc882_fixup_no_primary_hp: BBB ==> set
+>> spec->no_multi_io = 1
+> OK, so far, so good.
+> Check whether NID 0x0c is assigned to "Speaker".
+I would have to look how to do that.
 
-Stop selecting I2S/AC97/SPDIF controller drivers from the machine driver
-config options; this doesn't really work if we don't know which specific
-SoC(s) we're building for. However, set their default values based on
-SND_SOC_TEGRA, since most people will probably want to enable support for
-all SoCs. This also avoids the need to change any defconfig files.
+>
+>> [10263.752896] hda_codec: ALC889: SKU not ready 0x411111f0
+>> [10263.755938] ALSA hda_auto_parser.c:335 autoconfig: line_outs=1
+>> (0x14/0x0/0x0/0x0/0x0) type:speaker
+>> [10263.758707] ALSA hda_auto_parser.c:339    speaker_outs=0
+>> (0x0/0x0/0x0/0x0/0x0)
+>> [10263.761476] ALSA hda_auto_parser.c:343    hp_outs=1
+>> (0x15/0x0/0x0/0x0/0x0)
+>> [10263.764246] ALSA hda_auto_parser.c:344    mono: mono_out=0x0
+>> [10263.767028] ALSA hda_auto_parser.c:348    inputs:
+>> [10263.769908] ALSA hda_auto_parser.c:352      Mic=0x18
+>> [10263.772632] ALSA hda_auto_parser.c:352      Mic=0x19
+>> [10263.775354] ALSA hda_auto_parser.c:352      Internal Mic=0x12
+> And this didn't work?  Did you adjust the mixer element again?
+> Since this changes the mixer configuration, some new mixer element may
+> come up.  Give alsa-info.sh output at this moment, please.
+Sure:
 
-Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
----
- sound/soc/tegra/Kconfig | 36 +++++++++++++++---------------------
- 1 file changed, 15 insertions(+), 21 deletions(-)
+http://www.alsa-project.org/db/?f=c8e8a56c21101322df1f5d847f8d1a37c7d44baf
 
-diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-index 68fd6d0..321a6c9 100644
---- a/sound/soc/tegra/Kconfig
-+++ b/sound/soc/tegra/Kconfig
-@@ -7,8 +7,9 @@ config SND_SOC_TEGRA
- 	  Say Y or M here if you want support for SoC audio on Tegra.
- 
- config SND_SOC_TEGRA20_AC97
--	tristate
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
-+	tristate "Tegra20 AC97 controller"
-+	depends on SND_SOC_TEGRA
-+	default SND_SOC_TEGRA
- 	select SND_SOC_AC97_BUS
- 	select SND_SOC_TEGRA20_DAS
- 	help
-@@ -18,15 +19,16 @@ config SND_SOC_TEGRA20_AC97
- 
- config SND_SOC_TEGRA20_DAS
- 	tristate
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
-+	depends on SND_SOC_TEGRA
- 	help
- 	  Say Y or M if you want to add support for the Tegra20 DAS module.
- 	  You will also need to select the individual machine drivers to
- 	  support below.
- 
- config SND_SOC_TEGRA20_I2S
--	tristate
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
-+	tristate "Tegra20 I2C controller"
-+	depends on SND_SOC_TEGRA
-+	default SND_SOC_TEGRA
- 	select SND_SOC_TEGRA20_DAS
- 	help
- 	  Say Y or M if you want to add support for codecs attached to the
-@@ -34,9 +36,9 @@ config SND_SOC_TEGRA20_I2S
- 	  machine drivers to support below.
- 
- config SND_SOC_TEGRA20_SPDIF
--	tristate
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
--	default m
-+	tristate "Tegra20 SPDIF controller"
-+	default SND_SOC_TEGRA
-+	depends on SND_SOC_TEGRA
- 	help
- 	  Say Y or M if you want to add support for the Tegra20 SPDIF interface.
- 	  You will also need to select the individual machine drivers to support
-@@ -44,15 +46,16 @@ config SND_SOC_TEGRA20_SPDIF
- 
- config SND_SOC_TEGRA30_AHUB
- 	tristate
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
-+	depends on SND_SOC_TEGRA
- 	help
- 	  Say Y or M if you want to add support for the Tegra20 AHUB module.
- 	  You will also need to select the individual machine drivers to
- 	  support below.
- 
- config SND_SOC_TEGRA30_I2S
--	tristate
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
-+	tristate "Tegra30 I2S controller"
-+	depends on SND_SOC_TEGRA
-+	default SND_SOC_TEGRA
- 	select SND_SOC_TEGRA30_AHUB
- 	help
- 	  Say Y or M if you want to add support for codecs attached to the
-@@ -62,8 +65,6 @@ config SND_SOC_TEGRA30_I2S
- config SND_SOC_TEGRA_RT5640
- 	tristate "SoC Audio support for Tegra boards using an RT5640 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
--	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
--	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
- 	select SND_SOC_RT5640
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on Tegra
-@@ -72,8 +73,6 @@ config SND_SOC_TEGRA_RT5640
- config SND_SOC_TEGRA_WM8753
- 	tristate "SoC Audio support for Tegra boards using a WM8753 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
--	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
--	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
- 	select SND_SOC_WM8753
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on Tegra
-@@ -82,8 +81,6 @@ config SND_SOC_TEGRA_WM8753
- config SND_SOC_TEGRA_WM8903
- 	tristate "SoC Audio support for Tegra boards using a WM8903 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
--	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
--	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
- 	select SND_SOC_WM8903
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on Tegra
-@@ -92,8 +89,7 @@ config SND_SOC_TEGRA_WM8903
- 
- config SND_SOC_TEGRA_WM9712
- 	tristate "SoC Audio support for Tegra boards using a WM9712 codec"
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC && GPIOLIB
--	select SND_SOC_TEGRA20_AC97
-+	depends on SND_SOC_TEGRA && GPIOLIB
- 	select SND_SOC_WM9712
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on Tegra
-@@ -102,7 +98,6 @@ config SND_SOC_TEGRA_WM9712
- config SND_SOC_TEGRA_TRIMSLICE
- 	tristate "SoC Audio support for TrimSlice board"
- 	depends on SND_SOC_TEGRA && I2C
--	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
- 	select SND_SOC_TLV320AIC23
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on the
-@@ -111,7 +106,6 @@ config SND_SOC_TEGRA_TRIMSLICE
- config SND_SOC_TEGRA_ALC5632
- 	tristate "SoC Audio support for Tegra boards using an ALC5632 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
--	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
- 	select SND_SOC_ALC5632
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on the
--- 
-1.8.1.5
+      < Master >
+      Headphone
+      Speaker
+      Surround
+      Center
+      LFE
+      Mic
+      Mic Boost
+      Mic 1
+      Mic Boost 1
+      Beep
+      Auto-Mute Mode    Enabled
+      Channel Mode      2ch
+
+echo "multi_io = no" 
+ >/sys/devices/pci0000:00/0000:00:1b.0/sound/card0/hwC0D0/hints
+echo "1" 
+ >/sys/devices/pci0000:00/0000:00:1b.0/sound/card0/hwC0D0/reconfigure
+
+http://www.alsa-project.org/db/?f=8494525c7988dc528a45cc1e45134666f3793d7a
+
+   < Master >
+   Headphone
+   Speaker
+   Mic
+   Mic Boost
+   Mic 1
+   Mic Boost 1
+   Beep
+   Auto-Mute Mode    Enabled
+
+AT THIS POINT IT WORKED !
+
+But not automatically though ?!
+I have to manually put in the hint.
+
+Tormen.
+
+>
+>> [10263.778038] ALSA patch_realtek.c:466 realtek: No valid SSID, checking
+>> pincfg 0x411111f0 for NID 0x1d
+>> [10263.780832] ALSA patch_realtek.c:549 realtek: Enable default setup
+>> for auto mode as fallback
+>> [10263.783693] Tormen: parse_user_hints: val (from 'multi_io') == '-2'
+>> [10263.786078] Tormen: fill_and_eval_dacs: 111 spec->no_multi_io == '0'
+>> [10263.787634] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
+>> [10263.789531] Tormen: fill_and_eval_dacs: DDD
+>> [10263.790957] Tormen: fill_and_eval_dacs: 111 spec->no_multi_io == '0'
+>> [10263.792364] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
+>> [10263.793749] Tormen: fill_and_eval_dacs: DDD
+>> [10263.795150] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
+>> [10263.796546] Tormen: fill_and_eval_dacs: DDD
+>> [10263.797932] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
+>> [10263.799363] Tormen: fill_and_eval_dacs: DDD
+>> [10263.800759] Tormen: fill_and_eval_dacs: 111 spec->no_multi_io == '0'
+>> [10263.802161] Tormen: fill_and_eval_dacs: AAA
+>> [10263.804110] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
+>> [10263.805609] Tormen: fill_and_eval_dacs: BBB
+>> [10263.807265] Tormen: fill_and_eval_dacs: CCC
+>> [10263.810445] input: HDA Digital PCBeep as
+>> /devices/pci0000:00/0000:00:1b.0/input/input25
+>> [10263.812063] Tormen: alc882_fixup_no_primary_hp: AAA
+>> [10263.818856] Tormen: alc882_fixup_no_primary_hp: AAA
+>> [10263.820812] Tormen: alc882_fixup_no_primary_hp: AAA
+>> [10263.822315] input: HDA Intel MID Mic as
+>> /devices/pci0000:00/0000:00:1b.0/sound/card0/input26
+>> [10263.823905] input: HDA Intel MID Mic as
+>> /devices/pci0000:00/0000:00:1b.0/sound/card0/input27
+>> [10263.825607] input: HDA Intel MID Headphone as
+>> /devices/pci0000:00/0000:00:1b.0/sound/card0/input28
+>>
+>> THEN with manual set multi_io = yes:
+> No, you need to set multi_io=no, as mentioned.
+>
+>
+> Takashi
+>
+>> echo "multi_io = yes"
+>>   >/sys/devices/pci0000:00/0000:00:1b.0/sound/card0/hwC0D0/hints
+>> echo "1" >/sys/devices/pci0000:00/0000:00:1b.0/sound/card0/hwC0D0/reconfig
+>>
+>> [10462.452100] ALSA hda_hwdep.c:221 hda-codec: reconfiguring
+>> [10462.614742] Tormen: alc882_fixup_no_primary_hp: AAA
+>> [10462.618508] Tormen: alc882_fixup_no_primary_hp: AAA
+>> [10462.620912] Tormen: alc882_fixup_no_primary_hp: BBB ==> set
+>> spec->no_multi_io = 1
+>> [10462.623365] hda_codec: ALC889: SKU not ready 0x411111f0
+>> [10462.626209] ALSA hda_auto_parser.c:335 autoconfig: line_outs=1
+>> (0x14/0x0/0x0/0x0/0x0) type:speaker
+>> [10462.628736] ALSA hda_auto_parser.c:339    speaker_outs=0
+>> (0x0/0x0/0x0/0x0/0x0)
+>> [10462.631345] ALSA hda_auto_parser.c:343    hp_outs=1
+>> (0x15/0x0/0x0/0x0/0x0)
+>> [10462.633911] ALSA hda_auto_parser.c:344    mono: mono_out=0x0
+>> [10462.636543] ALSA hda_auto_parser.c:348    inputs:
+>> [10462.639122] ALSA hda_auto_parser.c:352      Mic=0x18
+>> [10462.640323] ALSA hda_auto_parser.c:352      Mic=0x19
+>> [10462.641419] ALSA hda_auto_parser.c:352      Internal Mic=0x12
+>> [10462.642554] ALSA patch_realtek.c:466 realtek: No valid SSID, checking
+>> pincfg 0x411111f0 for NID 0x1d
+>> [10462.643700] ALSA patch_realtek.c:549 realtek: Enable default setup
+>> for auto mode as fallback
+>> [10462.644841] Tormen: parse_user_hints: val (from 'multi_io') == '1'
+>> [10462.645988] Tormen: parse_user_hints: spec->no_multi_io == '1'
+>> [10462.647186] Tormen: fill_and_eval_dacs: 111 spec->no_multi_io == '0'
+>> [10462.648520] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
+>> [10462.649847] Tormen: fill_and_eval_dacs: DDD
+>> [10462.651038] Tormen: fill_and_eval_dacs: 111 spec->no_multi_io == '0'
+>> [10462.652201] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
+>> [10462.653352] Tormen: fill_and_eval_dacs: DDD
+>> [10462.654522] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
+>> [10462.655673] Tormen: fill_and_eval_dacs: DDD
+>> [10462.656804] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
+>> [10462.657944] Tormen: fill_and_eval_dacs: DDD
+>> [10462.659122] Tormen: fill_and_eval_dacs: 111 spec->no_multi_io == '0'
+>> [10462.660266] Tormen: fill_and_eval_dacs: AAA
+>> [10462.661392] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
+>> [10462.662576] Tormen: fill_and_eval_dacs: BBB
+>> [10462.664050] Tormen: fill_and_eval_dacs: CCC
+>> [10462.665700] input: HDA Digital PCBeep as
+>> /devices/pci0000:00/0000:00:1b.0/input/input29
+>> [10462.667026] Tormen: alc882_fixup_no_primary_hp: AAA
+>> [10462.673168] Tormen: alc882_fixup_no_primary_hp: AAA
+>> [10462.674864] Tormen: alc882_fixup_no_primary_hp: AAA
+>> [10462.675957] input: HDA Intel MID Mic as
+>> /devices/pci0000:00/0000:00:1b.0/sound/card0/input30
+>> [10462.677133] input: HDA Intel MID Mic as
+>> /devices/pci0000:00/0000:00:1b.0/sound/card0/input31
+>> [10462.678328] input: HDA Intel MID Headphone as
+>> /devices/pci0000:00/0000:00:1b.0/sound/card0/input32
+>>
+>>
+>> Tormen
