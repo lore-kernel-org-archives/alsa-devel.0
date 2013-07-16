@@ -1,95 +1,57 @@
-From: =?UTF-8?B?VWxyaWNoIEfDvG50aGVy?= <ulrich.guenther@gmx.at>
-Subject: Fwd: Re:  Alsa USB Audio regression
-Date: Tue, 16 Jul 2013 21:35:50 +0200
-Message-ID: <51E5A096.1050001@gmx.at>
-References: <51E5745E.2090209@gmx.at>
+From: Philipp Matthias Hahn <pmhahn@pmhahn.de>
+Subject: Re: [alsa-devel] [BUG] 3.10.[01] modprobe snd-... hangs
+Date: Tue, 16 Jul 2013 23:43:32 +0200
+Message-ID: <20130716214332.GA4139@pmhahn.de>
+References: <20130715182010.GA4853@pmhahn.de>
+ <87ppujysbk.fsf@rustcorp.com.au>
+ <s5h38rfngx3.wl%tiwai@suse.de>
+ <201307161028.03315.pmhahn@pmhahn.de>
+ <s5h7ggqyezx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CF7E265230
- for <alsa-devel@alsa-project.org>; Tue, 16 Jul 2013 21:35:53 +0200 (CEST)
-Received: from [5.254.140.113] ([5.254.140.113]) by mail.gmx.com (mrgmx102)
- with ESMTPSA (Nemesis) id 0MCOdh-1Uq4Mr3JKL-00953R for
- <alsa-devel@alsa-project.org>; Tue, 16 Jul 2013 21:35:53 +0200
-In-Reply-To: <51E5745E.2090209@gmx.at>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5h7ggqyezx.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Rusty Russell <rusty@rustcorp.com.au>, alsa-devel@alsa-project.org, Kernel Mailing List <linux-kernel@vger.kernel.org>, Lucas De Marchi <lucas.demarchi@profusion.mobi>
 List-Id: alsa-devel@alsa-project.org
 
-CgoKLS0tLS0tLS0gT3JpZ2luYWwtTmFjaHJpY2h0IC0tLS0tLS0tCkJldHJlZmY6IAlSZTogW2Fs
-c2EtZGV2ZWxdIEFsc2EgVVNCIEF1ZGlvIHJlZ3Jlc3Npb24KRGF0dW06IAlUdWUsIDE2IEp1bCAy
-MDEzIDE4OjI3OjEwICswMjAwClZvbjogCVVscmljaCBHw7xudGhlciA8dWxyaWNoLmd1ZW50aGVy
-QGdteC5hdD4KQW46IAlSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwuY29tPgoK
-CgpBbSAyMDEzLTA3LTE2IDA0OjE0LCBzY2hyaWViIFJheW1vbmQgWWF1Ogo+Cj4KPiA+Pj4KPiA+
-Pj4gQWZ0ZXIgVWJ1bnR1IDEwLjA0IExUUyAoVWJ1bnR1IDEwLjEwIHdvcmtzLCBVYnVudHUgMTEu
-MDQgZG9lc24ndAo+IHdvcmsgYXQKPiA+Pj4gYWxsLCBVYnVudHUgMTEuMTAgYW5kIG5ld2VyIGhh
-dmUgdGhlIGJ1ZyksIHRoZSBoZWFkc2V0IG9ubHkgcGxheXMKPiBzb3VuZAo+ID4+PiBhdCBtYXhp
-bXVtIHZvbHVtZSBsZXZlbCBpZiB0aGUgdm9sdW1lIGlzIHR1cm5lZCBkb3duIGp1c3QgYSBsaXR0
-bGUgbm8KPiA+Pj4gc291bmQgaXMgYmVpbmcgcGxheWVkLgo+ID4+Pgo+ID4+PiBJIGhhdmUgZmls
-bGVkIGEgVWJ1bnR1IGJ1ZyBmb3IgMTIuMDQgTFRTIGF0Ogo+ID4+PiBodHRwczovL2J1Z3MubGF1
-bmNocGFkLm5ldC91YnVudHUvK3NvdXJjZS9hbHNhLWRyaXZlci8rYnVnLzEyMDA5MjUgLgo+ID4+
-PiBJIHdhcyBhZHZpc2VkIHRvIGNvbnRhY3QgdGhpcyBtYWlsaW5nIGxpc3QuCj4gPj4+Cj4gPj4+
-IEFsc2FJbmZvIGZvciBVYnVudHUgMTIuMDQgTFRTIHdpdGggdGhlIGJ1ZzoKPiA+Pj4KPiBodHRw
-Oi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9M2JkZTc2YjE1YTE1ZjU4NTQxOGE2YTRhNDcw
-M2NhNjdmZDRjZGY0Mgo+IC4KPiA+Pj4gQWxzYUluZm8gZm9yIFVidW50dSAxMC4wNCBMVFMgd2l0
-aG91dCB0aGUgYnVnOgo+ID4+Pgo+IGh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj01
-ODI0ZTU1MzQ1YzNmNzEyODkzNzQwNTI1NDQ4NWE0ODk4ODZiOWRjIAo+ID4+Cj4gPj4KPiA+Pgo+
-ID4+IEl0IGlzIHN0cmFuZ2UgdGhhdCBkQiByYW5nZSBvZiB5b3VyIHVzYiBhdWRpbyBpcyAwIHRv
-IDAuMTQgKG9ubHkKPiBzbWFsbCBnYWluIGFuZCBubyBhdHRlbnVhdGlvbikKPiA+Pgo+ID4+IElu
-IDEwLjA0IExUUyBwdWxzZWF1ZGlvIHByb3ZpZGUgc29mdHdhcmUgdm9sdW1lIGNvbnRyb2wKPiA+
-Pgo+ID4+Cj4gPj4gKCAxLjA5NXwgMC4wMDApIEk6IGFsc2Etc2luay5jOiBEcml2ZXIgZG9lcyBu
-b3Qgc3VwcG9ydCBoYXJkd2FyZQo+IHZvbHVtZSBjb250cm9sLCBmYWxsaW5nIGJhY2sgdG8gc29m
-dHdhcmUgdm9sdW1lIGNvbnRyb2wuCj4gPj4KPiA+Pgo+ID4+IGNvbnRyb2wuNiB7Cj4gPj4gY29t
-bWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCj4gPj4gY29tbWVudC50eXBlIElOVEVHRVIKPiA+PiBj
-b21tZW50LmNvdW50IDEgY29tbWVudC5yYW5nZSAnMCAtIDM3Jwo+ID4+IGNvbW1lbnQuZGJtaW4g
-MCBjb21tZW50LmRibWF4IDE0Cj4gPj4gaWZhY2UgTUlYRVIKPiA+PiBuYW1lICdTcGVha2VyIFBs
-YXliYWNrIFZvbHVtZScgdmFsdWUgMzAgfQo+ID4+Cj4gPj4KPiA+PiAgSW4gMTIuMDQgcHVsc2Vh
-dWRpbyBkaWQgbm90IHByb3ZpZGUgc29mdHdhcmUgdm9sdW1lIGF0dGVudWF0aW9uCj4gYW5kIHVz
-ZSB0aGUgc3BlYWtlciBwbGF5YmFjayB2b2x1bWUgY29udHJvbAo+ID4KPiA+Cj4gPiBTbyBkb2Vz
-IHRoYXQgbWVhbiB0aGF0IHRoZSBidWcgaXMgaW4gcHVsc2VhdWRpbywgb3IgY291bGQgaXQgYmUg
-ZXZlbgo+IGRlZXBlciBsaWtlIGluIHRoZSBrZXJuZWwgb3Igc29tZXRoaW5nPwo+Cj4gQXJlIHRo
-ZXJlIGFueSBzaWduaWZpY2FudCBjaGFuZ2UgaW4gdm9sdW1lIHdoZW4geW91IHVzZSAiYWxzYW1p
-eGVyCj4gLWMwIiB0byBjaGFuZ2Ugc3BlYWtlciBwbGF5YmFjayB2b2x1bWUgZnJvbSBtaW4gMGRC
-IHRvIDAuMTRkQiA/Cj4KPiBEaWQgcHVsc2VhdWRpbyBwcm92aWRlIHNvZnR3YXJlIGF0dHVlbnRh
-dGlvbiAtMS42MWRCIHdoZW4gdGhlIHJhbmdlIG9mCj4gaGFyZHdhcmUgdm9sdW1lIGNvbnRyb2wg
-aXMgb25seSAwLjE0ZEIgPwo+Cj4gKiBpbmRleDogMAo+IG5hbWU6IDxhbHNhX291dHB1dC51c2It
-MGQ4Y19VU0JfQXVkaW8tMDAtQXVkaW8uYW5hbG9nLXN1cnJvdW5kLTcxPgo+IGRyaXZlcjogPG1v
-ZHVsZS1hbHNhLWNhcmQuYz4KPiBmbGFnczogSEFSRFdBUkUgSFdfTVVURV9DVFJMIEhXX1ZPTFVN
-RV9DVFJMIERFQ0lCRUxfVk9MVU1FIExBVEVOQ1kKPiBEWU5BTUlDX0xBVEVOQ1kKPiBzdGF0ZTog
-U1VTUEVOREVECj4gc3VzcGVuZCBjYXVzZTogSURMRQo+IHByaW9yaXR5OiA5MDQ5Cj4gdm9sdW1l
-OiAwOiAgOTQlIDE6ICA5NCUgMjogIDk0JSAzOiAgOTQlIDQ6ICA5NCUgNTogIDk0JSA2OiAgOTQl
-IDc6ICA5NCUKPiAgICAgICAgIDA6IC0xLDYxIGRCIDE6IC0xLDYxIGRCIDI6IC0xLDYxIGRCIDM6
-IC0xLDYxIGRCIDQ6IC0xLDYxIGRCIDU6Cj4gLTEsNjEgZEIgNjogLTEsNjEgZEIgNzogLTEsNjEg
-ZEIKPiAgICAgICAgIGJhbGFuY2UgMCwwMAo+IGJhc2Ugdm9sdW1lOiAgOTklCj4gICAgICAgICAg
-ICAgIC0wLDE0IGRCCj4gdm9sdW1lIHN0ZXBzOiA2NTUzNwo+IG11dGVkOiBubwo+Cj4gSXQgaXMg
-c3RyYW5nZSB0aGF0IDUuMSBoZWFkc2V0IG9ubHkgc3VwcG9ydCA4IGNoYW5uZWxzIHBsYXliYWNr
-Cj4KT2theSBpIGRpZCB0cnkgImFsc2FtaXhlciAtYzAiIGluIFVidW50dSAxMi4wNCBMVFMsIGkg
-c2VsZWN0ZWQgdGhlIFVzYgpIZWFkc2V0LCBTcGVha2VyIHdhcyBhdCAwIHVzaW5nIHRoZSByZW1v
-dGUgY29udHJvbCBmcm9tIHRoZSBoZWFkc2V0IGkKY291bGQgYnJpbmcgdGhlIHZhbHVlIHRvIDg2
-LCBzbyBpZiB0aGUgdm9sdW1lIGlzIHR1cm5lZCBkb3duIHRoZSB2YWx1ZQpnb2VzIGltbWlkZWF0
-bHkgdG8gMC4KV2l0aCB0aGUgYWxzYW1peGVyIGkgd2FzIGFibGUgdG8gcmVndWxhdGUgdGhlIHZh
-bHVlIGJldHdlZW4gMCBhbmQgMTAwLApkYi1jaGFuZ2UgaXMgMCwwMSBhdCBsb3dlc3QgYW5kIDAs
-MTQgYXQgaGlnaGVzdC4KSSBjb3VsZCBpbmNyZW1lbnQvZGVjcmVtZW50IHRoZSBkYi1jaGFuZ2Ug
-aW4gc3RlcHMgb2YgMCwwMSAod2l0aCB0aGUKdXAvZG93biBrZXlzIGZyb20gdGhlIGtleWJvYXJk
-KSwgdGhlIHZvbHVtZSBmcm9tIHRoZSBoZWFkc2V0LXNwZWFrZXJzCmZvbGxvd3MgYWNjb3JkaW5n
-bHkuCldoZW4gdXNpbmcgYW55dGhpbmcgYmVzaWRlcyB0aGUgImFsc2FtaXhlciAtYzAiIHRoZSB2
-b2x1bWUgY2FuIG9ubHkgYmUgMApvciA4Ni4KSSB3YXMgYWJsZSB0byBwbGF5IHRoZSB0ZXN0IHNv
-dW5kcyBmb3I6IGZyb250IGNlbnRlciwgZnJvbnQgbGVmdCwgZnJvbnQKcmlnaHQsIHJlYXIgbGVm
-dCxyZWFyIHJpZ2h0IGFuZCBzdWJ3b29mZXIgZXZlcnkgdGhpbmcgY2FtZSBmcm9tIHRoZQpyaWdo
-dCBkaXJlY3Rpb24sIGFzIGV4cGVjdGVkIGZyb20gYSA1LjEgaGVhZHNldC4KSSB3YXMgcmVhbGx5
-IHN1cnByaXNlZCwgIHRoYW5rIHlvdSBmb3IgcG9pbnRpbmcgdGhpcyBvdXQsIGl0IHJlYWxseQpk
-aWRuJ3Qgb2NjdXIgdG8gbWUsIG1heWJlIGkgc2F3IHRoZSBhbHNhbWl4ZXIgc29tZSB5ZWFycyBh
-Z28gYnV0IGkKcmVhbGx5IGNvdWxkbid0IHJlbWVtYmVyIHRoYXQgaXQgd2FzIHRoZXJlLgoKCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hello,
+
+On Tue, Jul 16, 2013 at 12:29:38PM +0200, Takashi Iwai wrote:
+> Could you check the patch below?  It makes the code path involving
+> with request_module asynchronous.
+
+With the patch applied all modules were loaded successfully: no hanging
+modprobe processes anymore.
+
+Thank you for your support.
+
+...
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: seq-oss: Initialize MIDI clients asynchronously
+> 
+> The recent report showed that the initial registration of OSS
+> sequencer clients stuck at loading the sound modules, which involves
+> with request_module() at the init phase.  As a workaround, call the
+> registration part asynchronously.  (And, this is a better approache
+> irrespective of the hang fix.)
+> 
+> Reported-by: Philipp Matthias Hahn <pmhahn@pmhahn.de>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/core/seq/oss/seq_oss_init.c | 16 +++++++++++++---
+>  sound/core/seq/oss/seq_oss_midi.c |  2 +-
+>  2 files changed, 14 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/core/seq/oss/seq_oss_init.c b/sound/core/seq/oss/seq_oss_init.c
+> index e3cb46f..b3f39b5 100644
+
+BYtE
+Philipp
+-- 
+  / /  (_)__  __ ____  __ Philipp Hahn
+ / /__/ / _ \/ // /\ \/ /
+/____/_/_//_/\_,_/ /_/\_\ pmhahn@pmhahn.de
