@@ -1,65 +1,57 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Connecting two Codecs to the same CPU DAI
-Date: Tue, 16 Jul 2013 19:07:33 +0200
-Message-ID: <51E57DD5.5040307@gmail.com>
-References: <51E55925.5080208@gmail.com>
- <20130716162043.GS22506@sirena.org.uk> <51E575E3.3040409@gmail.com>
- <20130716165708.GT22506@sirena.org.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tegra: fix compile warning in AC'97 driver
+Date: Tue, 16 Jul 2013 18:35:44 +0100
+Message-ID: <20130716173544.GV22506@sirena.org.uk>
+References: <1373994044-15068-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f45.google.com (mail-ee0-f45.google.com [74.125.83.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FECB265094
- for <alsa-devel@alsa-project.org>; Tue, 16 Jul 2013 19:07:06 +0200 (CEST)
-Received: by mail-ee0-f45.google.com with SMTP id c1so515263eek.4
- for <alsa-devel@alsa-project.org>; Tue, 16 Jul 2013 10:07:05 -0700 (PDT)
-In-Reply-To: <20130716165708.GT22506@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Rsp728Nwk8twChKq"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1373994044-15068-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 16.07.2013 18:57, Mark Brown wrote:
-> On Tue, Jul 16, 2013 at 06:33:39PM +0200, Daniel Mack wrote:
->> On 16.07.2013 18:20, Mark Brown wrote:
-> 
->>> No, no feature here.  Off the top of my head I'd suggest soc-pcm plus a
->>> virtual DAI for the second link.
-> 
->> That would still require userspace to open and configure both
->> subdevices, right?
-> 
-> Shouldn't.
 
-How so? As each link exposes its own PCM subdevice, how would codec of
-link #1 get a hw_params call if an application just opens PCM subdevice
-#0 for playback? This is the case I want to address.
+--Rsp728Nwk8twChKq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->> Do you think it's a good idea to teach DAI links support for more than
->> one codec? At a glance, it seems quite possible: the modes and rates
->> would be limited down to the intersection of those of each codec, and
->> the PCM callbacks would be relayed to all codecs in the list.
-> 
-> In principal yet but we want better DAPM integration I think - having an
-> unused device on the link probably ought not have any impact on other
-> devices for example.
+On Tue, Jul 16, 2013 at 11:00:44AM -0600, Stephen Warren wrote:
+> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+>=20
+> This fixes the following by deleting dead code:
+>=20
+> sound/soc/tegra/tegra20_ac97.c: In function =E2=80=98tegra20_ac97_platfor=
+m_probe=E2=80=99:
+> sound/soc/tegra/tegra20_ac97.c:435:1: warning: label =E2=80=98err_unregis=
+ter_pcm=E2=80=99 defined but not used [-Wunused-label]
 
-Well, if a link references two codecs, then both would be used in
-parallel, and none of it is unused. But maybe I don't get your point :)
+Applied, thanks.
 
-By naive approach atm would be to just add .codec_names,
-.codec_dai_names and .codec_of_node to snd_soc_dai_link, and make their
-use mutually exclusive to the existing ones. That way, we don't need to
-touch any existing user.
+--Rsp728Nwk8twChKq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
 
-Daniel
+iQIcBAEBAgAGBQJR5YRsAAoJELSic+t+oim9fV4P/3pYp1ozeoQ34r35zb6225cT
+L0w+iNEbFUKGZnq5cGbUznivsUZpfg4HJPnbTP9eNum8HY4UjpZGN/rMPTMWaC+I
+Ct1d2xeadKZnTeFsWq71iqU+OsLR63byvngB5NC7ZFqH3TCLevNBlVaLa0fF/uhE
+QkLLMOF0SWnqBjMIQSkzcSWXirTmOi1WSGqNcJPU3C0A0cBti3OUyJbXa/DHizR+
+J8hHVYsH+Rmpu0sl26+dUu1Cl0ckdgR6Kz8kJ5P2rTNS1JoKS0ehG+i5dLNaYJaA
+4rSD07rxc0aexx4AihlnFcL7Qzhi4O3s3CHf+pkxdr+odFhlss/OlEUluyBrYkar
+G+k/O3F4/v+Ag85hFp7TigxgI3IWBlpPzfhuFzjDhUD76Uz5+hYi29HMeaaZwGrc
+Glo7n7hXLfr//t0ZjkY0BaxQTPXgSuzOA3JB6TtExzlxez8+7NxpZR/XGEkTEIZz
+pKNujls0gGmvyXLasq6x+anFd00gCNR5bzVqkrszClzT84tKkgpa5S40tpkVWYvs
+zMkZSA5XeDiED/CmeVhEXjnmBBiWz9tM1JQ3oY3sEdUhWSmyZxx1IQYJU92hrF0j
+eNbaW/d8CX9SLhAjIx70U2AaV4pYFRUFFhbtgYNXueW2t0MSuXCnqNI05UD/X26x
+rherHcpIViTXazVJxOAG
+=DkIp
+-----END PGP SIGNATURE-----
+
+--Rsp728Nwk8twChKq--
