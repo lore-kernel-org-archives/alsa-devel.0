@@ -1,57 +1,152 @@
-From: Philipp Matthias Hahn <pmhahn@pmhahn.de>
-Subject: Re: [alsa-devel] [BUG] 3.10.[01] modprobe snd-... hangs
-Date: Tue, 16 Jul 2013 23:43:32 +0200
-Message-ID: <20130716214332.GA4139@pmhahn.de>
-References: <20130715182010.GA4853@pmhahn.de>
- <87ppujysbk.fsf@rustcorp.com.au>
- <s5h38rfngx3.wl%tiwai@suse.de>
- <201307161028.03315.pmhahn@pmhahn.de>
- <s5h7ggqyezx.wl%tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h7ggqyezx.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Rusty Russell <rusty@rustcorp.com.au>, alsa-devel@alsa-project.org, Kernel Mailing List <linux-kernel@vger.kernel.org>, Lucas De Marchi <lucas.demarchi@profusion.mobi>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: [PATCH] ASoC: tegra: depend on ARCH_TEGRA, not ARCH_TEGRA_*
+Date: Tue, 16 Jul 2013 16:27:47 -0600
+Message-ID: <1374013667-21435-1-git-send-email-swarren@wwwdotorg.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-On Tue, Jul 16, 2013 at 12:29:38PM +0200, Takashi Iwai wrote:
-> Could you check the patch below?  It makes the code path involving
-> with request_module asynchronous.
+I'm planning to remove CONFIG_ARCH_TEGRA_*_SOC, leaving just ARCH_TEGRA.
+This will reduce the number of configurations that need to be supported
+by core Tegra code, e.g. CPU idle, hotplug. As a precursor, we need to
+update Kconfig for all Tegra drivers not to reference ARCH_TEGRA_*_SOC.
 
-With the patch applied all modules were loaded successfully: no hanging
-modprobe processes anymore.
+Stop selecting I2S/AC97/SPDIF controller drivers from the machine driver
+config options; this doesn't really work if we don't know which specific
+SoC(s) we're building for. However, set their default values based on
+SND_SOC_TEGRA, since most people will probably want to enable support for
+all SoCs. This also avoids the need to change any defconfig files.
 
-Thank you for your support.
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+---
+ sound/soc/tegra/Kconfig | 36 +++++++++++++++---------------------
+ 1 file changed, 15 insertions(+), 21 deletions(-)
 
-...
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: seq-oss: Initialize MIDI clients asynchronously
-> 
-> The recent report showed that the initial registration of OSS
-> sequencer clients stuck at loading the sound modules, which involves
-> with request_module() at the init phase.  As a workaround, call the
-> registration part asynchronously.  (And, this is a better approache
-> irrespective of the hang fix.)
-> 
-> Reported-by: Philipp Matthias Hahn <pmhahn@pmhahn.de>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/core/seq/oss/seq_oss_init.c | 16 +++++++++++++---
->  sound/core/seq/oss/seq_oss_midi.c |  2 +-
->  2 files changed, 14 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/core/seq/oss/seq_oss_init.c b/sound/core/seq/oss/seq_oss_init.c
-> index e3cb46f..b3f39b5 100644
-
-BYtE
-Philipp
+diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
+index 68fd6d0..321a6c9 100644
+--- a/sound/soc/tegra/Kconfig
++++ b/sound/soc/tegra/Kconfig
+@@ -7,8 +7,9 @@ config SND_SOC_TEGRA
+ 	  Say Y or M here if you want support for SoC audio on Tegra.
+ 
+ config SND_SOC_TEGRA20_AC97
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
++	tristate "Tegra20 AC97 controller"
++	depends on SND_SOC_TEGRA
++	default SND_SOC_TEGRA
+ 	select SND_SOC_AC97_BUS
+ 	select SND_SOC_TEGRA20_DAS
+ 	help
+@@ -18,15 +19,16 @@ config SND_SOC_TEGRA20_AC97
+ 
+ config SND_SOC_TEGRA20_DAS
+ 	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
++	depends on SND_SOC_TEGRA
+ 	help
+ 	  Say Y or M if you want to add support for the Tegra20 DAS module.
+ 	  You will also need to select the individual machine drivers to
+ 	  support below.
+ 
+ config SND_SOC_TEGRA20_I2S
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
++	tristate "Tegra20 I2C controller"
++	depends on SND_SOC_TEGRA
++	default SND_SOC_TEGRA
+ 	select SND_SOC_TEGRA20_DAS
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to the
+@@ -34,9 +36,9 @@ config SND_SOC_TEGRA20_I2S
+ 	  machine drivers to support below.
+ 
+ config SND_SOC_TEGRA20_SPDIF
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
+-	default m
++	tristate "Tegra20 SPDIF controller"
++	default SND_SOC_TEGRA
++	depends on SND_SOC_TEGRA
+ 	help
+ 	  Say Y or M if you want to add support for the Tegra20 SPDIF interface.
+ 	  You will also need to select the individual machine drivers to support
+@@ -44,15 +46,16 @@ config SND_SOC_TEGRA20_SPDIF
+ 
+ config SND_SOC_TEGRA30_AHUB
+ 	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
++	depends on SND_SOC_TEGRA
+ 	help
+ 	  Say Y or M if you want to add support for the Tegra20 AHUB module.
+ 	  You will also need to select the individual machine drivers to
+ 	  support below.
+ 
+ config SND_SOC_TEGRA30_I2S
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
++	tristate "Tegra30 I2S controller"
++	depends on SND_SOC_TEGRA
++	default SND_SOC_TEGRA
+ 	select SND_SOC_TEGRA30_AHUB
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to the
+@@ -62,8 +65,6 @@ config SND_SOC_TEGRA30_I2S
+ config SND_SOC_TEGRA_RT5640
+ 	tristate "SoC Audio support for Tegra boards using an RT5640 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_RT5640
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -72,8 +73,6 @@ config SND_SOC_TEGRA_RT5640
+ config SND_SOC_TEGRA_WM8753
+ 	tristate "SoC Audio support for Tegra boards using a WM8753 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_WM8753
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -82,8 +81,6 @@ config SND_SOC_TEGRA_WM8753
+ config SND_SOC_TEGRA_WM8903
+ 	tristate "SoC Audio support for Tegra boards using a WM8903 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_WM8903
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -92,8 +89,7 @@ config SND_SOC_TEGRA_WM8903
+ 
+ config SND_SOC_TEGRA_WM9712
+ 	tristate "SoC Audio support for Tegra boards using a WM9712 codec"
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC && GPIOLIB
+-	select SND_SOC_TEGRA20_AC97
++	depends on SND_SOC_TEGRA && GPIOLIB
+ 	select SND_SOC_WM9712
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -102,7 +98,6 @@ config SND_SOC_TEGRA_WM9712
+ config SND_SOC_TEGRA_TRIMSLICE
+ 	tristate "SoC Audio support for TrimSlice board"
+ 	depends on SND_SOC_TEGRA && I2C
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+ 	select SND_SOC_TLV320AIC23
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on the
+@@ -111,7 +106,6 @@ config SND_SOC_TEGRA_TRIMSLICE
+ config SND_SOC_TEGRA_ALC5632
+ 	tristate "SoC Audio support for Tegra boards using an ALC5632 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+ 	select SND_SOC_ALC5632
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on the
 -- 
-  / /  (_)__  __ ____  __ Philipp Hahn
- / /__/ / _ \/ // /\ \/ /
-/____/_/_//_/\_,_/ /_/\_\ pmhahn@pmhahn.de
+1.8.1.5
