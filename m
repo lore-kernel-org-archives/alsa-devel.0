@@ -1,38 +1,37 @@
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH] ASoC: imx-sgtl5000: fix error return code in imx_sgtl5000_probe()
-Date: Tue, 16 Jul 2013 20:05:07 +0800
-Message-ID: <CAPgLHd-cXmWwMq8DMhXbOhykZvnMzxb4HHZ-5ayNnkPU1fqfQQ@mail.gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH] ASoC: imx: Enable COMPILE_TEST builds
+Date: Tue, 16 Jul 2013 20:12:45 +0800
+Message-ID: <20130716121243.GJ28375@S2101-09.ap.freescale.net>
+References: <1373904242-30250-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, rob.herring@calxeda.com, shawn.guo@linaro.org, fabio.estevam@freescale.com, wfp5p@virginia.edu, LW@KARO-electronics.de
-Cc: yongjun_wei@trendmicro.com.cn, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe005.messaging.microsoft.com [216.32.180.188])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04BB6264F0B
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jul 2013 14:14:05 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1373904242-30250-1-git-send-email-broonie@kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+On Mon, Jul 15, 2013 at 05:04:02PM +0100, Mark Brown wrote:
+> From: Mark Brown <broonie@linaro.org>
+> 
+> Since DT based boards don't have any dependency on arch/arm enable them
+> if COMPILE_TEST is enabled.
+> 
+> Signed-off-by: Mark Brown <broonie@linaro.org>
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
-
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- sound/soc/fsl/imx-sgtl5000.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index 7a8bc12..25f310d 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -129,8 +129,10 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 	}
- 
- 	data->codec_clk = devm_clk_get(&codec_dev->dev, NULL);
--	if (IS_ERR(data->codec_clk))
-+	if (IS_ERR(data->codec_clk)) {
-+		ret = PTR_ERR(data->codec_clk);
- 		goto fail;
-+	}
- 
- 	data->clk_frequency = clk_get_rate(data->codec_clk);
- 
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
