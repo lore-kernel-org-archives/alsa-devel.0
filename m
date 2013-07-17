@@ -1,50 +1,78 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH] ASoC: tegra: depend on ARCH_TEGRA,
-	not ARCH_TEGRA_*
-Date: Wed, 17 Jul 2013 12:23:03 -0600
-Message-ID: <51E6E107.8020300@wwwdotorg.org>
-References: <1374013667-21435-1-git-send-email-swarren@wwwdotorg.org>
- <20130717083003.GA22506@sirena.org.uk> <51E6CDEA.7060003@wwwdotorg.org>
- <20130717175701.GY22506@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 492C82654ED
- for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2013 20:23:08 +0200 (CEST)
-In-Reply-To: <20130717175701.GY22506@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+From: Chris J Arges <christopherarges@gmail.com>
+Subject: [PATCH] ALSA: usb-audio: Add quirk for Focusrite Scarlett 18i8
+Date: Wed, 17 Jul 2013 16:12:12 -0500
+Message-ID: <1374095558-9949-1-git-send-email-christopherarges@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: martin@meltin.net, Chris J Arges <christopherarges@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Eldad Zack <eldad@fogrefinery.com>, Trulan Martin <trulanm@gmail.com>, Damien Zammit <damien@zamaudio.com>, Mark Hills <mark@xwax.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/17/2013 11:57 AM, Mark Brown wrote:
-> On Wed, Jul 17, 2013 at 11:01:30AM -0600, Stephen Warren wrote:
->> On 07/17/2013 02:30 AM, Mark Brown wrote:
-> 
->> -       select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC -
->> select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC +       select
->> SND_SOC_TEGRA20_I2S +       select SND_SOC_TEGRA30_I2S
-> 
->> But then, it won't be possible to disable support for older
->> SoCs, since simply enabling a machine driver that might support
->> Tegra20 would force ASoC support for Tegra20 to be enabled, even
->> if the user only cares about Tegra30.
-> 
-> So how do they disable the core support for the older SoCs with the
-> new model?
+This patch is similar to commit 1762a59d8e8b5e99f6f4a0f292b40f3cacb108ba.
+The same non-standard interface descriptor causes snd_usb_create_mixer()
+to fail for the Focusrite Scarlett 18i8 as well.
 
-They don't; the core support is so small it's not worth having the
-ifdefs in it; just a few K. As such, it seems simpler to just always
-compile in the core support, and remove the need for all the ifdef
-nests in mach-tegra/. The bulk of the differences are different
-drivers for different chips.
+Signed-off-by: Chris J Arges <christopherarges@gmail.com>
+---
+ sound/usb/quirks-table.h |   46 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
+
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 7f1585b..b954ec5 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3232,6 +3232,52 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		}
+ 	}
+ },
++{
++	/*
++	 * Focusrite Scarlett 18i8
++	 *
++	 * Avoid mixer creation similar to the Scarlett 18i6 interface.
++	 */
++	USB_DEVICE(0x1235, 0x8014),
++	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.vendor_name = "Focusrite",
++		.product_name = "Scarlett 18i8",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = & (const struct snd_usb_audio_quirk[]) {
++			{
++				/* InterfaceSubClass 1 (Control Device) */
++				.ifnum = 0,
++				.type = QUIRK_IGNORE_INTERFACE
++			},
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = 2,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				/* InterfaceSubClass 1 (Control Device) */
++				.ifnum = 3,
++				.type = QUIRK_IGNORE_INTERFACE
++			},
++			{
++				.ifnum = 4,
++				.type = QUIRK_MIDI_STANDARD_INTERFACE
++			},
++			{
++				/* InterfaceSubClass 1 (Device Firmware Update) */
++				.ifnum = 5,
++				.type = QUIRK_IGNORE_INTERFACE
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
+ 
+ {
+ 	/*
+-- 
+1.7.9.5
