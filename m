@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/4] firewire-lib: remove unused members and functions
-Date: Wed, 17 Jul 2013 20:50:47 +0900
-Message-ID: <1374061848-5851-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/4] firewire-speakers: add functions to handle payload
+Date: Wed, 17 Jul 2013 20:50:48 +0900
+Message-ID: <1374061848-5851-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1374061848-5851-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,215 +22,148 @@ List-Id: alsa-devel@alsa-project.org
 
 From: sakamocchi <o-takashi@sakamocchi.jp>
 
-With my previous two patches, some member of amdtp_out_stream structure and
-some related functions are obsoleted.
-
-I note that amdtp_out structure losts pcm_channels and midi_ports then each
-driver must keep the number of channels in itself.
+With my previous three patches, each driver can handle payload of AMDTP packet.
+This commit adapts existed firewire-speakers driver to it.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- amdtp.c |  109 ---------------------------------------------------------------
- amdtp.h |   38 ----------------------
- 2 files changed, 147 deletions(-)
+ speakers.c |   94 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 88 insertions(+), 6 deletions(-)
 
-diff --git a/amdtp.c b/amdtp.c
-index e3e055d..1e0e84c 100644
---- a/amdtp.c
-+++ b/amdtp.c
-@@ -129,41 +129,6 @@ unsigned int amdtp_out_stream_get_max_payload(struct amdtp_out_stream *s)
- }
- EXPORT_SYMBOL(amdtp_out_stream_get_max_payload);
+diff --git a/speakers.c b/speakers.c
+index 2c63865..a0b0b14 100644
+--- a/speakers.c
++++ b/speakers.c
+@@ -50,6 +50,7 @@ struct fwspk {
+ 	struct fw_unit *unit;
+ 	const struct device_info *device_info;
+ 	struct snd_pcm_substream *pcm;
++	unsigned int pcm_channels;
+ 	struct mutex mutex;
+ 	struct cmp_connection connection;
+ 	struct amdtp_out_stream stream;
+@@ -147,7 +148,7 @@ static int fwspk_open(struct snd_pcm_substream *substream)
+ 			SNDRV_PCM_INFO_BATCH |
+ 			SNDRV_PCM_INFO_INTERLEAVED |
+ 			SNDRV_PCM_INFO_BLOCK_TRANSFER,
+-		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
++		.formats = SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_S32,
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.buffer_bytes_max = 4 * 1024 * 1024,
+@@ -247,11 +248,10 @@ static int fwspk_hw_params(struct snd_pcm_substream *substream,
+ 	if (err < 0)
+ 		goto error;
  
--static void amdtp_write_s16(struct amdtp_out_stream *s,
--			    struct snd_pcm_substream *pcm,
--			    __be32 *buffer, unsigned int frames);
--static void amdtp_write_s32(struct amdtp_out_stream *s,
--			    struct snd_pcm_substream *pcm,
--			    __be32 *buffer, unsigned int frames);
++	fwspk->pcm_channels = params_channels(hw_params);
+ 	amdtp_out_stream_set_rate(&fwspk->stream, params_rate(hw_params));
+-	amdtp_out_stream_set_pcm(&fwspk->stream, params_channels(hw_params));
 -
--/**
-- * amdtp_out_stream_set_pcm_format - set the PCM format
-- * @s: the AMDTP output stream to configure
-- * @format: the format of the ALSA PCM device
-- *
-- * The sample format must be set before the stream is started, and must not be
-- * changed while the stream is running.
-- */
--void amdtp_out_stream_set_pcm_format(struct amdtp_out_stream *s,
--				     snd_pcm_format_t format)
--{
--	if (WARN_ON(!IS_ERR(s->context)))
--		return;
--
--	switch (format) {
--	default:
--		WARN_ON(1);
--		/* fall through */
--	case SNDRV_PCM_FORMAT_S16:
--		s->transfer_samples = amdtp_write_s16;
--		break;
--	case SNDRV_PCM_FORMAT_S32:
--		s->transfer_samples = amdtp_write_s32;
--		break;
--	}
--}
--EXPORT_SYMBOL(amdtp_out_stream_set_pcm_format);
--
- /**
-  * amdtp_out_stream_pcm_prepare - prepare PCM device for running
-  * @s: the AMDTP output stream
-@@ -255,80 +220,6 @@ static unsigned int calculate_syt(struct amdtp_out_stream *s,
- 	}
+-	amdtp_out_stream_set_pcm_format(&fwspk->stream,
+-					params_format(hw_params));
++	amdtp_out_stream_set_data_block_quadlets(&fwspk->stream,
++						 params_channels(hw_params));
+ 
+ 	err = fwspk_set_rate(fwspk, fwspk->stream.sfc);
+ 	if (err < 0)
+@@ -276,6 +276,87 @@ static int fwspk_hw_free(struct snd_pcm_substream *substream)
+ 	return snd_pcm_lib_free_vmalloc_buffer(substream);
  }
  
--static void amdtp_write_s32(struct amdtp_out_stream *s,
--			    struct snd_pcm_substream *pcm,
--			    __be32 *buffer, unsigned int frames)
--{
--	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, frame_step, i, c;
--	const u32 *src;
--
--	channels = s->pcm_channels;
--	src = (void *)runtime->dma_area +
--			s->pcm_buffer_pointer * (runtime->frame_bits / 8);
--	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--	frame_step = s->data_block_quadlets - channels;
--
--	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src >> 8) | 0x40000000);
--			src++;
--			buffer++;
--		}
--		buffer += frame_step;
--		if (--remaining_frames == 0)
--			src = (void *)runtime->dma_area;
--	}
--}
--
--static void amdtp_write_s16(struct amdtp_out_stream *s,
--			    struct snd_pcm_substream *pcm,
--			    __be32 *buffer, unsigned int frames)
--{
--	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, frame_step, i, c;
--	const u16 *src;
--
--	channels = s->pcm_channels;
--	src = (void *)runtime->dma_area +
--			s->pcm_buffer_pointer * (runtime->frame_bits / 8);
--	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--	frame_step = s->data_block_quadlets - channels;
--
--	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src << 8) | 0x40000000);
--			src++;
--			buffer++;
--		}
--		buffer += frame_step;
--		if (--remaining_frames == 0)
--			src = (void *)runtime->dma_area;
--	}
--}
--
--static void amdtp_fill_pcm_silence(struct amdtp_out_stream *s,
--				   __be32 *buffer, unsigned int frames)
--{
--	unsigned int i, c;
--
--	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < s->pcm_channels; ++c)
--			buffer[c] = cpu_to_be32(0x40000000);
--		buffer += s->data_block_quadlets;
--	}
--}
--
--static void amdtp_fill_midi(struct amdtp_out_stream *s,
--			    __be32 *buffer, unsigned int frames)
--{
--	unsigned int i;
--
--	for (i = 0; i < frames; ++i)
--		buffer[s->pcm_channels + i * s->data_block_quadlets] =
--						cpu_to_be32(0x80000000);
--}
--
- static void queue_out_packet(struct amdtp_out_stream *s, unsigned int cycle)
++static void write_silence(struct amdtp_out_stream *s,
++			  __be32 *buffer, unsigned int data_blocks)
++{
++	struct fwspk *fwspk = container_of(s, struct fwspk, stream);
++	unsigned int i, c;
++
++	for (i = 0; i < data_blocks; i++) {
++		for (c = 0; c < fwspk->pcm_channels; c++)
++			buffer[c] = cpu_to_be32(0x40000000);
++		buffer += s->data_block_quadlets;
++	}
++}
++
++static unsigned int write_s32(struct amdtp_out_stream *s,
++			      struct snd_pcm_runtime *runtime,
++			      __be32 *buffer, unsigned int data_blocks)
++{
++	struct fwspk *fwspk = container_of(s, struct fwspk, stream);
++	unsigned int remaining_frames, frames, i, c;
++	const u32 *src;
++
++	src = (void *)runtime->dma_area +
++			bytes_to_frames(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	frames = 0;
++	for (i = 0; i < data_blocks; i++) {
++		for (c = 0; c < fwspk->pcm_channels; c++) {
++			buffer[c] = cpu_to_be32((*src >> 8) | 0x40000000);
++			src++;
++		}
++		buffer += s->data_block_quadlets;
++		frames++;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
++	}
++	return frames;
++}
++
++static unsigned int write_s16(struct amdtp_out_stream *s,
++			      struct snd_pcm_runtime *runtime,
++			      __be32 *buffer, unsigned int data_blocks)
++{
++	struct fwspk *fwspk = container_of(s, struct fwspk, stream);
++	unsigned int remaining_frames, frames, i, c;
++	const u16 *src;
++
++	src = (void *)runtime->dma_area +
++			bytes_to_frames(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	frames = 0;
++	for (i = 0; i < data_blocks; i++) {
++		for (c = 0; c < fwspk->pcm_channels; c++) {
++			buffer[c] = cpu_to_be32((*src << 8) | 0x400000000);
++			src++;
++		}
++		buffer += s->data_block_quadlets;
++		frames++;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
++	}
++	return frames;
++}
++
++static unsigned int write_payload(struct amdtp_out_stream *s,
++				  struct snd_pcm_substream *pcm,
++				  __be32 *buffer, unsigned int data_blocks)
++{
++	buffer += 2;
++
++	if (!pcm) {
++		write_silence(s, buffer, data_blocks);
++		return 0;
++	} else if ((pcm->runtime->format == SNDRV_PCM_FORMAT_S32_LE) ||
++                   (pcm->runtime->format == SNDRV_PCM_FORMAT_S32_BE))
++		return write_s32(s, pcm->runtime, buffer, data_blocks);
++	else
++		return write_s16(s, pcm->runtime, buffer, data_blocks);
++}
++
+ static int fwspk_prepare(struct snd_pcm_substream *substream)
  {
- 	__be32 *buffer;
-diff --git a/amdtp.h b/amdtp.h
-index 8172ce9..b8b5281 100644
---- a/amdtp.h
-+++ b/amdtp.h
-@@ -29,9 +29,6 @@ enum cip_sfc {
- 	CIP_SFC_192000 = 6,
- };
+ 	struct fwspk *fwspk = substream->private_data;
+@@ -294,7 +375,8 @@ static int fwspk_prepare(struct snd_pcm_substream *substream)
  
--#define AMDTP_OUT_PCM_FORMAT_BITS	(SNDRV_PCM_FMTBIT_S16 | \
--					 SNDRV_PCM_FMTBIT_S32)
--
- struct fw_unit;
- struct fw_iso_context;
- struct snd_pcm_substream;
-@@ -52,12 +49,6 @@ struct amdtp_out_stream {
- 	unsigned int data_block_quadlets;
- 	amdtp_payload_cb_t payload_cb;
+ 		err = amdtp_out_stream_start(&fwspk->stream,
+ 					fwspk->connection.resources.channel,
+-					fwspk->connection.speed);
++					fwspk->connection.speed,
++					write_payload);
+ 		if (err < 0)
+ 			goto err_connection;
  
--	unsigned int pcm_channels;
--	unsigned int midi_ports;
--	void (*transfer_samples)(struct amdtp_out_stream *s,
--				 struct snd_pcm_substream *pcm,
--				 __be32 *buffer, unsigned int frames);
--
- 	unsigned int syt_interval;
- 	unsigned int source_node_id_field;
- 	struct iso_packets_buffer buffer;
-@@ -90,8 +81,6 @@ int amdtp_out_stream_start(struct amdtp_out_stream *s, int channel, int speed,
- void amdtp_out_stream_update(struct amdtp_out_stream *s);
- void amdtp_out_stream_stop(struct amdtp_out_stream *s);
- 
--void amdtp_out_stream_set_pcm_format(struct amdtp_out_stream *s,
--				     snd_pcm_format_t format);
- void amdtp_out_stream_pcm_prepare(struct amdtp_out_stream *s);
- unsigned long amdtp_out_stream_pcm_pointer(struct amdtp_out_stream *s);
- void amdtp_out_stream_pcm_abort(struct amdtp_out_stream *s);
-@@ -111,33 +100,6 @@ amdtp_out_stream_set_data_block_quadlets(struct amdtp_out_stream *s,
- }
- 
- /**
-- * amdtp_out_stream_set_pcm - configure format of PCM samples
-- * @s: the AMDTP output stream to be configured
-- * @pcm_channels: the number of PCM samples in each data block, to be encoded
-- *                as AM824 multi-bit linear audio
-- *
-- * This function must not be called while the stream is running.
-- */
--static inline void amdtp_out_stream_set_pcm(struct amdtp_out_stream *s,
--					    unsigned int pcm_channels)
--{
--	s->pcm_channels = pcm_channels;
--}
--
--/**
-- * amdtp_out_stream_set_midi - configure format of MIDI data
-- * @s: the AMDTP output stream to be configured
-- * @midi_ports: the number of MIDI ports (i.e., MPX-MIDI Data Channels)
-- *
-- * This function must not be called while the stream is running.
-- */
--static inline void amdtp_out_stream_set_midi(struct amdtp_out_stream *s,
--					     unsigned int midi_ports)
--{
--	s->midi_ports = midi_ports;
--}
--
--/**
-  * amdtp_out_streaming_error - check for streaming error
-  * @s: the AMDTP output stream
-  *
 -- 
 1.7.10.4
 
