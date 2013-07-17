@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: hdmi-codec: let the driver
-	support HDMI sink
-Date: Wed, 17 Jul 2013 10:52:22 +0100
-Message-ID: <20130717095222.GF22506@sirena.org.uk>
+Subject: Re: [PATCH 2/3] ASoC: hdmi-codec: enable OF support
+Date: Wed, 17 Jul 2013 10:57:08 +0100
+Message-ID: <20130717095708.GG22506@sirena.org.uk>
 References: <1374041536-27643-1-git-send-email-Baohua.Song@csr.com>
- <1374041536-27643-3-git-send-email-Baohua.Song@csr.com>
+ <1374041536-27643-2-git-send-email-Baohua.Song@csr.com>
+ <20130717084910.GB15981@e106331-lin.cambridge.arm.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8983722090269312914=="
+Content-Type: multipart/mixed; boundary="===============4658362516107577660=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id CB5B9265117
- for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2013 11:52:24 +0200 (CEST)
-In-Reply-To: <1374041536-27643-3-git-send-email-Baohua.Song@csr.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D059265117
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2013 11:57:11 +0200 (CEST)
+In-Reply-To: <20130717084910.GB15981@e106331-lin.cambridge.arm.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +21,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Barry Song <Baohua.Song@csr.com>
-Cc: Rongjun Ying <Rongjun.Ying@csr.com>, alsa-devel@alsa-project.org, Workgroup.Linux@csr.com, linux-arm-kernel@lists.infradead.org
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Rongjun Ying <Rongjun.Ying@csr.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "Workgroup.Linux@csr.com" <Workgroup.Linux@csr.com>, Barry Song <Baohua.Song@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8983722090269312914==
+--===============4658362516107577660==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="w3gPeeaTISh83WAP"
+	protocol="application/pgp-signature"; boundary="slMCvwAS3D50yFKj"
 Content-Disposition: inline
 
 
---w3gPeeaTISh83WAP
+--slMCvwAS3D50yFKj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 17, 2013 at 02:12:16PM +0800, Barry Song wrote:
-> From: Rongjun Ying <Rongjun.Ying@csr.com>
->=20
-> Devices like mobilephones, computers are typically used as
-> HDMI sources, but devices like TV, navigators will be HDMI
-> sinks.
+On Wed, Jul 17, 2013 at 09:49:10AM +0100, Mark Rutland wrote:
+> On Wed, Jul 17, 2013 at 07:12:15AM +0100, Barry Song wrote:
 
-Applied, thanks.
+> > this makes users be able to add a hdmi-codec node in dts instead of
+> > hardcoding a platform device in mach.
 
---w3gPeeaTISh83WAP
+> Similarly to my comment on the first patch, I'm not sure this is the
+> best way to wire this up to devicetree. Can this not be hung off of hdmi
+> controller drivers?
+
+This one is different to the BT case - as you say it's hanging off the
+HDMI controller so the HDMI controller ought to enumerate it either as a
+stub or by actually seeing a device.  The platform device is fine but
+it's not something that should appear in the DT unless it's conveying
+some information about what's connected there (eg, power supplies for
+something soldered down on the board).
+
+--slMCvwAS3D50yFKj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR5mlTAAoJELSic+t+oim9/HEQAIWn+gJU5WCLZf61m2mj2pX9
-yyX0ZMtD8clFFwUWEfWSEG8uf+THisck1IeY8GahCHSJ/ZeoUhWMYfYe+oy6Kr/A
-iuIkV/Pdm8w6b1z8f02vgtvIrPfw79I58U2wRnsiIBmWLghyX9mScv3ErLrQ5Bed
-JEunOKvH4KjbXOW5wh6D+04IY7rKvJpTqmYxyWyFbxmJvIox8aYGJJ6A7pT+G5He
-D0hLJEG8zoNiFQTRl7FgYezDVSQ/0T2sC31a8N/JybB33ToB1v7ykeLf7ETYh0ig
-WQE5bI/wpv2XFqTyhYPFGj0AbMgR+zq30chdxzuD3OR5UbXYW0HLuvnWKesRJL0E
-QE56TL/LHYWRjg3ln+B1eVgLhshZLPeBU9n+aUTWOu6360KGnOK76Rys3zZGv9yY
-Tr5nnqQXj7r6EkZ5HgZED6ECfdM8ISKFTZEEbEerYqmFTirFHEPbtbT1MgCAvwGq
-0yXLA0HjBOtvgq2khfUZGJSdL+ndvQqShkElL7+LnzWmwDaE2ynkX8bVtXfIpilr
-6TZKCIKb2KXV0l8gxTtOaqUL5c4uLfklwiujqGIzjwiY09mdIaiPfIvzpKUOrg4g
-yTAWCNsk2jQcvz/Ybh4jyHTfeDIgwJro/c8NGscrXQMRZ8Ru1kZOQMqXG51T25bP
-G9Z7YXs9HyvHdsYETiEK
-=BHJk
+iQIcBAEBAgAGBQJR5mpxAAoJELSic+t+oim9zLEP/0w3xsSDZjM3nIPv9cDb6mPB
+ltlqMnNg/YbEaXy7njI6x6HhAWxvq+NnPnD11HyPA3PITEL0e1ncphDBOHECVEcI
+4vcXTglMsvkMOmrQuVHmt2peMhjvJvkrHRgIA+q6cJ3zbxYNI3A/+XC/ox9/gqhz
+k5tquuHN/DRvJECy4RVn8VIwfJUkfRtpp95sKo1dTqN7B23GqpSMmZFA19dcLT70
+MBjDRTWutiIu6pwin/ocnnhmL2+fP9sQLFx8YbDwyQLmDzH6V2E4Hcg03EUbKnXG
+iWOPXTGUuYdF0QeScQFPVoAcrQwi/zX2e85qHMGFJ0pjC7JbHn4iAHjT0dkTCJud
+71h0IkSILtc1Ng2ykiS/ANfIjxrS+9m6sDpckggjhuDluzCjUUFhKzBUV480Nwnr
+7tKULPI/qJn5ZU8K1b/pXucQCDAG2Q+0P99DfL0ymQXZ4XLPKDVFoPXDeoqQ2NKm
+LqKSuYRdmD4FGwD5wipPFbdYazvXiidS0b4MBgVRNbbyikTkcAnV+yfbvo0Af2Sw
+lRfJzzDwmTykaNbrpaDQ47uxJAXRzHWXdzceHhdU+zMKFCqQjDb1qL7nf6Mh38IO
+kjM17OgieK4tRMX0kiOvX9ASLp/OS2AohKwvZc274ARyRod70GpH7dI9MoQK5Y/n
+0jYW7Hc+PcA+EGpCDuMs
+=giWT
 -----END PGP SIGNATURE-----
 
---w3gPeeaTISh83WAP--
+--slMCvwAS3D50yFKj--
 
---===============8983722090269312914==
+--===============4658362516107577660==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8983722090269312914==--
+--===============4658362516107577660==--
