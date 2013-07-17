@@ -1,32 +1,18 @@
-From: Tormen <my.nl.abos@gmail.com>
-Subject: Re: No sound with Sony VAIO VPCZ1 (ALC889)
-Date: Wed, 17 Jul 2013 01:23:29 +0200
-Message-ID: <51E5D5F1.4020101@gmail.com>
-References: <51D464A5.6040507@gmail.com> <51D59D60.9020105@gmail.com>
- <51D5FCFC.8010506@gmail.com> <s5hip0pwp49.wl%tiwai@suse.de>
- <51D6B56D.8050909@gmail.com> <s5h1u7dchqh.wl%tiwai@suse.de>
- <020e0ad5107eb4c2bb333468be58d7d3@www.happyassassin.net>
- <51D9F543.2070605@gmail.com>
- <c2cbc2323ce3a8e0df5f52de3ecb276c@www.happyassassin.net>
- <s5hvc4luem4.wl%tiwai@suse.de>
- <46b0590bfa4ffc836dde180f8ffe3c97@www.happyassassin.net>
- <s5hwqoycu0y.wl%tiwai@suse.de> <51DDD53A.8040502@gmail.com>
- <s5hbo69vf4z.wl%tiwai@suse.de> <51DE7B63.7060708@gmail.com>
- <s5hfvvlcs4o.wl%tiwai@suse.de> <51DE9D18.6010304@gmail.com>
- <51E4FD95.2080500@gmail.com> <s5hsizflykp.wl%tiwai@suse.de>
- <51E4FF18.2050208@gmail.com> <s5hoba2n9ve.wl%tiwai@suse.de>
- <51E59331.5000200@gmail.com> <s5hehaymho4.wl%tiwai@suse.de>
+From: Rusty Russell <rusty@rustcorp.com.au>
+Subject: Re: [BUG] 3.10.[01] modprobe snd-... hangs
+Date: Wed, 17 Jul 2013 09:30:21 +0930
+Message-ID: <87hafuys16.fsf@rustcorp.com.au>
+References: <20130715182010.GA4853@pmhahn.de> <87ppujysbk.fsf@rustcorp.com.au>
+ <s5h38rfngx3.wl%tiwai@suse.de> <201307161028.03315.pmhahn@pmhahn.de>
+ <CAKi4VA+XKh5YGV2DJtmZrU-p4gfeQ3XiLW135Sq0Le+k5jLGAg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 73EE226525B
- for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2013 01:23:40 +0200 (CEST)
-Received: by mail-we0-f179.google.com with SMTP id w59so1148392wes.24
- for <alsa-devel@alsa-project.org>; Tue, 16 Jul 2013 16:23:40 -0700 (PDT)
-In-Reply-To: <s5hehaymho4.wl%tiwai@suse.de>
+Received: from ozlabs.org (ozlabs.org [203.10.76.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A4A1265274
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2013 03:03:47 +0200 (CEST)
+In-Reply-To: <CAKi4VA+XKh5YGV2DJtmZrU-p4gfeQ3XiLW135Sq0Le+k5jLGAg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,215 +22,252 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Adam Williamson <awilliam@redhat.com>
+To: Lucas De Marchi <lucas.de.marchi@gmail.com>, Philipp Hahn <pmhahn@pmhahn.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, alsa-devel@alsa-project.org, Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Takashi,
-
-On 16/07/13 21:24, Takashi Iwai wrote:
-> At Tue, 16 Jul 2013 20:37:19 +0200,
-> Tormen wrote:
->> On 16/07/13 11:15, Takashi Iwai wrote:
->>> It doesn't look like the driver patched properly.
->>> Try to put some printk() in the patched code path to confirm that
->>> you're really testing the patched driver.
+Lucas De Marchi <lucas.de.marchi@gmail.com> writes:
+> On Tue, Jul 16, 2013 at 5:28 AM, Philipp Hahn <pmhahn@pmhahn.de> wrote:
+>> Hello,
+>>
+>> Am Dienstag 16 Juli 2013, 08:43:36 schrieb Takashi Iwai:
+>>> At Tue, 16 Jul 2013 15:11:51 +0930, Rusty Russell wrote:
+>>> > Philipp Matthias Hahn <pmhahn@pmhahn.de> writes:
+>>> > > My x86_64 systems has some trouble loading some ALSA snd-* modules since
+>>> > > the upgrade to 3.10.[01]: Several automatic modprobe calls hang, but
+>>> > > loading snd-intel-hda and snd-audio-usb by hand still works.
+>>> >
+>>> > Not a known problem to me, at least.  Perhaps it's a dep loop somehow.
 >>>
+>>> I remember that someone reported it being Debian specific snd-seq-oss
+>>> loading stuff.
+>>
+>> FYI: "oss-compat" is installed.
+>>
+>>> > > ...
+>>> > >  1071 ?        S      0:00 sh -c /sbin/modprobe --ignore-install snd && { /sbin/modprobe --quiet snd
+>>> > >  1080 ?        D      0:00  \_ /sbin/modprobe --quiet snd-seq
+>>> >
+>>> > This was first, and it's waiting.  Which means it must be doing
+>>> > something weird, because snd_seq_oss is loading now:
+>>> >
+>>> > > snd_seq_oss 33717 1 - Loading 0xffffffffa041b000
+>>> >
+>>> > Perhaps in the tangle of modprobe install commands somewhere this gets
+>>> > invoked?
 >>>
->>> Takashi
->> I am not 100% sure if it was or not, because I had applied the patch not
->> with "quilt"
->> ... but now I am:
->> I put in some printk()'s and it still shows speaker_outs=0 :(
-> This doesn't matter at all from the beginning.
-> You see a line "line_outs=1 (type: speaker)" before that.  So, the
-> speaker output is assigned as the primary output there.
->
-> The problem is, instead, that the primary DAC (thus its selector
-> widget) is assigned to the headphone.  Check whether NID 0x0c is
-> assigned to "Speaker" volume, not for "Headphone".
-> The no_primary_hp flag should have achieved it, but it turned out that
-> 5.1 surround setup blocks it.  That's why you got "Headphone" on NID
-> 0x0c, and 0x0d/0x0e for the rest speaker and possible surrounds.
->
-> The new flag, no_multi_io prevents the creation of 5.1 setup, so that
-> the speaker will be assigned to NID 0x0c, together with the
-> combination of no_primary_hp.
->
->
->> I was wondering if it's a problem that the speaker_outs=0 is printed way
->> before all the "fill_and_eval_dacs" changes of yours are executed?
+>>> Likely, but I wonder what triggered a bug suddenly on 3.10.
+>>> There is absolutely no change in sound/core/seq/*, and through a quick
+>>> look, I couldn't find any suspicious change in kernel/module.c that
+>>> may lead to this problem between 3.9 and 3.10.
+>>>
+>>> Philipp, can you get a sysrq-T trace while the stall?
 >>
->> I attached you my patch so that you can see what output corresponds to
->> what piece of code.
+>> I've finally been able to reducte the number of processes to get a full trace; see attached file.
 >>
->> alsa-info.sh:
->> http://www.alsa-project.org/db/?f=c644b65a9e25fd1cef5b4b53d6d806d45526e5b2
+>> Please note that in this case the proprietary "nvidia" module was loaded, since I currently onyl have remove access to the machine.
+>> The original trace from yesterday happend without the nvidia module ever being loaded.
 >>
->> And the complete output of my debug messages:
+>> Am Dienstag 16 Juli 2013, 08:42:35 schrieb Lucas De Marchi:
+>>> On Tue, Jul 16, 2013 at 2:41 AM, Rusty Russell <rusty@rustcorp.com.au> wrote:
+>>> First thing to check is the /etc/modprobe.d/*.conf file that contains
+>>> these install commands. Did they change besides the kernel upgrade?
 >>
->> FIRST just loading the modules:
->>       modprobe snd debug=2
->>       modprobe snd_hda_intel
->>
->> [10263.731133] snd_hda_intel 0000:00:1b.0: irq 45 for MSI/MSI-X
->> [10263.747274] Tormen: alc882_fixup_no_primary_hp: AAA
->> [10263.750059] Tormen: alc882_fixup_no_primary_hp: BBB ==> set
->> spec->no_multi_io = 1
-> OK, so far, so good.
-> Check whether NID 0x0c is assigned to "Speaker".
-I would have to look how to do that.
-
+>> Not that I know of: Booting 3.9.9 works fine, 3.10.x shows the problem.
 >
->> [10263.752896] hda_codec: ALC889: SKU not ready 0x411111f0
->> [10263.755938] ALSA hda_auto_parser.c:335 autoconfig: line_outs=1
->> (0x14/0x0/0x0/0x0/0x0) type:speaker
->> [10263.758707] ALSA hda_auto_parser.c:339    speaker_outs=0
->> (0x0/0x0/0x0/0x0/0x0)
->> [10263.761476] ALSA hda_auto_parser.c:343    hp_outs=1
->> (0x15/0x0/0x0/0x0/0x0)
->> [10263.764246] ALSA hda_auto_parser.c:344    mono: mono_out=0x0
->> [10263.767028] ALSA hda_auto_parser.c:348    inputs:
->> [10263.769908] ALSA hda_auto_parser.c:352      Mic=0x18
->> [10263.772632] ALSA hda_auto_parser.c:352      Mic=0x19
->> [10263.775354] ALSA hda_auto_parser.c:352      Internal Mic=0x12
-> And this didn't work?  Did you adjust the mixer element again?
-> Since this changes the mixer configuration, some new mixer element may
-> come up.  Give alsa-info.sh output at this moment, please.
-Sure:
-
-http://www.alsa-project.org/db/?f=c8e8a56c21101322df1f5d847f8d1a37c7d44baf
-
-      < Master >
-      Headphone
-      Speaker
-      Surround
-      Center
-      LFE
-      Mic
-      Mic Boost
-      Mic 1
-      Mic Boost 1
-      Beep
-      Auto-Mute Mode    Enabled
-      Channel Mode      2ch
-
-echo "multi_io = no" 
- >/sys/devices/pci0000:00/0000:00:1b.0/sound/card0/hwC0D0/hints
-echo "1" 
- >/sys/devices/pci0000:00/0000:00:1b.0/sound/card0/hwC0D0/reconfigure
-
-http://www.alsa-project.org/db/?f=8494525c7988dc528a45cc1e45134666f3793d7a
-
-   < Master >
-   Headphone
-   Speaker
-   Mic
-   Mic Boost
-   Mic 1
-   Mic Boost 1
-   Beep
-   Auto-Mute Mode    Enabled
-
-AT THIS POINT IT WORKED !
-
-But not automatically though ?!
-I have to manually put in the hint.
-
-Tormen.
-
+> Then one possible explanation is that in 3.9.9 you don't have some of
+> the modules causing this problem
 >
->> [10263.778038] ALSA patch_realtek.c:466 realtek: No valid SSID, checking
->> pincfg 0x411111f0 for NID 0x1d
->> [10263.780832] ALSA patch_realtek.c:549 realtek: Enable default setup
->> for auto mode as fallback
->> [10263.783693] Tormen: parse_user_hints: val (from 'multi_io') == '-2'
->> [10263.786078] Tormen: fill_and_eval_dacs: 111 spec->no_multi_io == '0'
->> [10263.787634] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
->> [10263.789531] Tormen: fill_and_eval_dacs: DDD
->> [10263.790957] Tormen: fill_and_eval_dacs: 111 spec->no_multi_io == '0'
->> [10263.792364] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
->> [10263.793749] Tormen: fill_and_eval_dacs: DDD
->> [10263.795150] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
->> [10263.796546] Tormen: fill_and_eval_dacs: DDD
->> [10263.797932] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
->> [10263.799363] Tormen: fill_and_eval_dacs: DDD
->> [10263.800759] Tormen: fill_and_eval_dacs: 111 spec->no_multi_io == '0'
->> [10263.802161] Tormen: fill_and_eval_dacs: AAA
->> [10263.804110] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
->> [10263.805609] Tormen: fill_and_eval_dacs: BBB
->> [10263.807265] Tormen: fill_and_eval_dacs: CCC
->> [10263.810445] input: HDA Digital PCBeep as
->> /devices/pci0000:00/0000:00:1b.0/input/input25
->> [10263.812063] Tormen: alc882_fixup_no_primary_hp: AAA
->> [10263.818856] Tormen: alc882_fixup_no_primary_hp: AAA
->> [10263.820812] Tormen: alc882_fixup_no_primary_hp: AAA
->> [10263.822315] input: HDA Intel MID Mic as
->> /devices/pci0000:00/0000:00:1b.0/sound/card0/input26
->> [10263.823905] input: HDA Intel MID Mic as
->> /devices/pci0000:00/0000:00:1b.0/sound/card0/input27
->> [10263.825607] input: HDA Intel MID Headphone as
->> /devices/pci0000:00/0000:00:1b.0/sound/card0/input28
 >>
->> THEN with manual set multi_io = yes:
-> No, you need to set multi_io=no, as mentioned.
+>> ...
+>>> Philipp, which kernel are you upgrading from?
+>> I just upgraded from 3.9.9 to 3.10.0; also tried 3.10.1 which did not improve the situation.
+>>
+>>> I don't see anything to
+>>> blame in the changes for the past releases. Any chance a bad entry in
+>>> your .conf was added too? You may want to paste the output of modprobe
+>>> -c, at least until "# End of configuration files. Dumping indexes
+>>> now:"
+>>
+>> blacklist snd_pcsp
+>> blacklist arkfb
+>> blacklist aty128fb
+>> blacklist atyfb
+>> blacklist radeonfb
+>> blacklist cirrusfb
+>> blacklist cyber2000fb
+>> blacklist gx1fb
+>> blacklist gxfb
+>> blacklist kyrofb
+>> blacklist matroxfb_base
+>> blacklist mb862xxfb
+>> blacklist neofb
+>> blacklist nvidiafb
+>> blacklist pm2fb
+>> blacklist pm3fb
+>> blacklist s3fb
+>> blacklist savagefb
+>> blacklist sisfb
+>> blacklist tdfxfb
+>> blacklist tridentfb
+>> blacklist viafb
+>> blacklist vt8623fb
+>> blacklist garmin_gps
+>> blacklist nouveau
+>> install binfmt_0000 /bin/true
+>> install sound_slot_0 /sbin/modprobe snd-card-0
+>> install sound_slot_1 /sbin/modprobe snd-card-1
+>> install sound_slot_2 /sbin/modprobe snd-card-2
+>> install sound_slot_3 /sbin/modprobe snd-card-3
+>> install sound_slot_4 /sbin/modprobe snd-card-4
+>> install sound_slot_5 /sbin/modprobe snd-card-5
+>> install sound_slot_6 /sbin/modprobe snd-card-6
+>> install sound_slot_7 /sbin/modprobe snd-card-7
+>> install snd /sbin/modprobe --ignore-install snd && { /sbin/modprobe --quiet snd-ioctl32 ; /sbin/modprobe --quiet snd-seq ; : ; }
+>> install snd_rawmidi /sbin/modprobe --ignore-install snd-rawmidi && { /sbin/modprobe --quiet snd-seq-midi ; : ; }
+>> install snd_emu10k1 /sbin/modprobe --ignore-install snd-emu10k1 && { /sbin/modprobe --quiet snd-emu10k1-synth ; : ; }
+>> alias net_pf_16_proto_1 wire
+>> alias net_pf_16_proto_3 ip_queue
+>> alias net_pf_16_proto_8 scsi_transport_iscsi
+>> alias net_pf_16_proto_9 audit
+>> alias net_pf_16_proto_11 cn
+>> alias net_pf_16_proto_13 ip6_queue
+>> alias binfmt_204 binfmt_aout
+>> alias binfmt_263 binfmt_aout
+>> alias binfmt_264 binfmt_aout
+>> alias binfmt_267 binfmt_aout
+>> alias binfmt_387 binfmt_aout
+>> alias block_major_3_* ide_generic
+>> alias block_major_22_* ide_generic
+>> alias block_major_33_* ide_generic
+>> alias block_major_34_* ide_generic
+>> alias block_major_37_* ide_tape
+>> alias block_major_44_* ftl
+>> alias block_major_46_* pcd
+>> alias block_major_47_* pf
+>> alias block_major_56_* ide_generic
+>> alias block_major_57_* ide_generic
+>> alias block_major_58_* lvm_mod
+>> alias block_major_88_* ide_generic
+>> alias block_major_89_* ide_generic
+>> alias block_major_90_* ide_generic
+>> alias block_major_91_* ide_generic
+>> alias block_major_93_* nftl
+>> alias block_major_97_* pg
+>> alias char_major_10_1 psmouse
+>> alias char_major_10_139 openprom
+>> alias char_major_10_157 applicom
+>> alias char_major_10_181 toshiba
+>> alias char_major_10_183 hw_random
+>> alias char_major_10_187 irnet
+>> alias char_major_10_189 ussp
+>> alias char_major_10_250 hci_vhci
+>> alias char_major_13_0 joydev
+>> alias char_major_13_1 joydev
+>> alias char_major_13_2 joydev
+>> alias char_major_13_3 joydev
+>> alias char_major_13_32 mousedev
+>> alias char_major_13_33 mousedev
+>> alias char_major_13_34 mousedev
+>> alias char_major_13_35 mousedev
+>> alias char_major_13_63 mousedev
+>> alias char_major_13_64 evdev
+>> alias char_major_13_65 evdev
+>> alias char_major_13_66 evdev
+>> alias char_major_13_67 evdev
+>> alias char_major_19_* cyclades
+>> alias char_major_20_* cyclades
+>> alias char_major_22_* pcxx
+>> alias char_major_23_* pcxx
+>> alias char_major_27_* ftape
+>> alias char_major_34_* scc
+>> alias char_major_35_* tclmidi
+>> alias char_major_48_* riscom8
+>> alias char_major_49_* riscom8
+>> alias char_major_57_* esp
+>> alias char_major_58_* esp
+>> alias char_major_63_* kdebug
+>> alias char_major_67_* coda
+>> alias char_major_75_* specialix
+>> alias char_major_76_* specialix
+>> alias char_major_81_* videodev
+>> alias char_major_83_* vtx
+>> alias char_major_89_* i2c_dev
+>> alias char_major_90_* mtdchar
+>> alias char_major_96_* pt
+>> alias char_major_97_* pg
+>> alias char_major_107_* 3dfx
+>> alias char_major_109_* lvm_mod
+>> alias char_major_166_* cdc_acm
+>> alias char_major_171_0 raw1394
+>> alias char_major_171_1 video1394
+>> alias char_major_171_2 dv1394
+>> alias char_major_171_3 amdtp
+>> alias char_major_180_* usbcore
+>> alias char_major_195_* nvidia
+>> alias char_major_200_* vxspec
+>> alias char_major_202_* msr
+>> alias char_major_203_* cpuid
+>> alias char_major_206_* osst
+>> alias char_major_208_* ussp
+>> alias char_major_227_* tub3270
+>> alias bt_proto_7 avdtp
+>> alias cipcb0 cipcb
+>> alias cipcb1 cipcb
+>> alias cipcb2 cipcb
+>> alias cipcb3 cipcb
+>> alias dummy0 dummy
+>> alias dummy1 dummy
+>> alias plip0 plip
+>> alias plip1 plip
+>> alias slip0 slip
+>> alias slip1 slip
+>> alias tunl0 ipip
+>> alias gre0 ip_gre
+>> alias usbdevfs usbcore
+>> alias char_major_195* nvidia
+>> options snd_pcsp index=-2
+>> options snd_usb_audio index=-2
+>> options bt87x index=-2
+>> options cx88_alsa index=-2
+>> options snd_atiixp_modem index=-2
+>> options snd_intel8x0m index=-2
+>> options snd_via82xx_modem index=-2
+>> options snd_hda_intel model=6stack-dig index=0
+>> options snd_usb_audio index=1
+>> options dvb_ttpci adapter_nr=1
+>> options budget_ci adapter_nr=0
+>> options nbd max_part=15
+>> options nvidia NVreg_DeviceFileUID=0 NVreg_DeviceFileGID=44 NVreg_DeviceFileMode=0660
+>> options libata force=noncq
+>> options systemd log_target=kmsg
+>> softdep uhci_hcd pre: ehci-hcd
+>> softdep ohci_hcd pre: ehci-hcd
+>> softdep snd_pcm post: snd-pcm-oss
+>> softdep snd_mixer post: snd-mixer-oss
+>> softdep snd_seq post: snd-seq-midi snd-seq-oss
 >
 >
-> Takashi
+> hum... it looks like a loop between the modprobe calls and the
+> request_module(), done in snd_seq's init. The request_module() call
+> will end up trying to load snd_seq again and it will remain waiting on
+> kernel/module.c:add_unformed_module().
 >
->> echo "multi_io = yes"
->>   >/sys/devices/pci0000:00/0000:00:1b.0/sound/card0/hwC0D0/hints
->> echo "1" >/sys/devices/pci0000:00/0000:00:1b.0/sound/card0/hwC0D0/reconfig
->>
->> [10462.452100] ALSA hda_hwdep.c:221 hda-codec: reconfiguring
->> [10462.614742] Tormen: alc882_fixup_no_primary_hp: AAA
->> [10462.618508] Tormen: alc882_fixup_no_primary_hp: AAA
->> [10462.620912] Tormen: alc882_fixup_no_primary_hp: BBB ==> set
->> spec->no_multi_io = 1
->> [10462.623365] hda_codec: ALC889: SKU not ready 0x411111f0
->> [10462.626209] ALSA hda_auto_parser.c:335 autoconfig: line_outs=1
->> (0x14/0x0/0x0/0x0/0x0) type:speaker
->> [10462.628736] ALSA hda_auto_parser.c:339    speaker_outs=0
->> (0x0/0x0/0x0/0x0/0x0)
->> [10462.631345] ALSA hda_auto_parser.c:343    hp_outs=1
->> (0x15/0x0/0x0/0x0/0x0)
->> [10462.633911] ALSA hda_auto_parser.c:344    mono: mono_out=0x0
->> [10462.636543] ALSA hda_auto_parser.c:348    inputs:
->> [10462.639122] ALSA hda_auto_parser.c:352      Mic=0x18
->> [10462.640323] ALSA hda_auto_parser.c:352      Mic=0x19
->> [10462.641419] ALSA hda_auto_parser.c:352      Internal Mic=0x12
->> [10462.642554] ALSA patch_realtek.c:466 realtek: No valid SSID, checking
->> pincfg 0x411111f0 for NID 0x1d
->> [10462.643700] ALSA patch_realtek.c:549 realtek: Enable default setup
->> for auto mode as fallback
->> [10462.644841] Tormen: parse_user_hints: val (from 'multi_io') == '1'
->> [10462.645988] Tormen: parse_user_hints: spec->no_multi_io == '1'
->> [10462.647186] Tormen: fill_and_eval_dacs: 111 spec->no_multi_io == '0'
->> [10462.648520] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
->> [10462.649847] Tormen: fill_and_eval_dacs: DDD
->> [10462.651038] Tormen: fill_and_eval_dacs: 111 spec->no_multi_io == '0'
->> [10462.652201] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
->> [10462.653352] Tormen: fill_and_eval_dacs: DDD
->> [10462.654522] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
->> [10462.655673] Tormen: fill_and_eval_dacs: DDD
->> [10462.656804] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
->> [10462.657944] Tormen: fill_and_eval_dacs: DDD
->> [10462.659122] Tormen: fill_and_eval_dacs: 111 spec->no_multi_io == '0'
->> [10462.660266] Tormen: fill_and_eval_dacs: AAA
->> [10462.661392] Tormen: fill_and_eval_dacs: 222 spec->no_multi_io == '0'
->> [10462.662576] Tormen: fill_and_eval_dacs: BBB
->> [10462.664050] Tormen: fill_and_eval_dacs: CCC
->> [10462.665700] input: HDA Digital PCBeep as
->> /devices/pci0000:00/0000:00:1b.0/input/input29
->> [10462.667026] Tormen: alc882_fixup_no_primary_hp: AAA
->> [10462.673168] Tormen: alc882_fixup_no_primary_hp: AAA
->> [10462.674864] Tormen: alc882_fixup_no_primary_hp: AAA
->> [10462.675957] input: HDA Intel MID Mic as
->> /devices/pci0000:00/0000:00:1b.0/sound/card0/input30
->> [10462.677133] input: HDA Intel MID Mic as
->> /devices/pci0000:00/0000:00:1b.0/sound/card0/input31
->> [10462.678328] input: HDA Intel MID Headphone as
->> /devices/pci0000:00/0000:00:1b.0/sound/card0/input32
->>
->>
->> Tormen
+> In kmod we don't trust a COMING state on sysfs to avoid calling
+> (f)init_module() because a) the previous call may fail and b) it's
+> racy.
+
+Yes, add_unformed_module makes the same call.  I think the answer is
+simply "don't do that".
+
+> Changing the request_module() in the module to be async would solve
+> the problem (what Takashi Iwai did)... but this has been a
+> little controversial in the past.  Rusty, what do you think? Maybe in
+> kmod we can take the COMING state into consideration for
+> *dependencies*? Or is moving that call to a worker acceptable?
+
+I thought about adding a post_init() call for modules for this kind of
+thing, but it's actually pretty rare.  Open-coding it seems fine.
+
+Cheers,
+Rusty.
