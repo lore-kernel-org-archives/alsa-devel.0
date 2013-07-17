@@ -1,42 +1,82 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: depend on ARCH_TEGRA, not ARCH_TEGRA_*
-Date: Wed, 17 Jul 2013 11:01:30 -0600
-Message-ID: <51E6CDEA.7060003@wwwdotorg.org>
-References: <1374013667-21435-1-git-send-email-swarren@wwwdotorg.org> <20130717083003.GA22506@sirena.org.uk>
+From: Diego Sueiro <diego.sueiro@gmail.com>
+Subject: Re: Sound Card driver for audio codec, mux and dsp.
+Date: Wed, 17 Jul 2013 14:24:09 -0300
+Message-ID: <CAMCfZKHSfaph5OTjx7FM9-sW-_KPFraA531Q4NzG3Ocrd++odg@mail.gmail.com>
+References: <CAMCfZKGJYKvnToaSMp6TEHyOHEa4u5+vwSk4EMQvKiNbzVyT7g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20130717083003.GA22506-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ie0-f175.google.com (mail-ie0-f175.google.com
+ [209.85.223.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 466512654E6
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2013 19:24:31 +0200 (CEST)
+Received: by mail-ie0-f175.google.com with SMTP id a11so4544255iee.6
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2013 10:24:30 -0700 (PDT)
+In-Reply-To: <CAMCfZKGJYKvnToaSMp6TEHyOHEa4u5+vwSk4EMQvKiNbzVyT7g@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/17/2013 02:30 AM, Mark Brown wrote:
-> On Tue, Jul 16, 2013 at 04:27:47PM -0600, Stephen Warren wrote:
-> 
->> Stop selecting I2S/AC97/SPDIF controller drivers from the machine
->> driver config options; this doesn't really work if we don't know
->> which specific SoC(s) we're building for. However, set their
->> default values based on SND_SOC_TEGRA, since most people will
->> probably want to enable support for all SoCs. This also avoids
->> the need to change any defconfig files.
-> 
-> This doesn't seem terribly clever and is definitely not idiomatic
-> for ASoC.  If you want to just select all CPUs that'd be fine but
-> forcing the user to select the individual components isn't the
-> style anything else uses.
+Hi there,
 
-So I think what you're saying is that machine drivers should be
-changed like:
+Looking at documentation and some code I realized that I need to
+follow Alsa SoC layer implementation.
 
--       select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
--       select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
-+       select SND_SOC_TEGRA20_I2S
-+       select SND_SOC_TEGRA30_I2S
+It already has an ASoC driver for sgtl5000 and imx platform.
+So, I want to add more two devices, an audio mux and an audio dsp. How
+can I accomplish this?
 
-But then, it won't be possible to disable support for older SoCs,
-since simply enabling a machine driver that might support Tegra20
-would force ASoC support for Tegra20 to be enabled, even if the user
-only cares about Tegra30.
+
+Abra=E7os,
+
+--
+*dS
+Diego Sueiro
+
+Administrador do Portal Embarcados
+www.embarcados.com.br
+
+Engenheiro de Controle e Automa=E7=E3o
+UNIVERSIDADE FEDERAL DE ITAJUB=C0
+
+/*long live rock 'n roll*/
+
+
+On Wed, Jul 17, 2013 at 10:17 AM, Diego Sueiro <diego.sueiro@gmail.com> wro=
+te:
+> Hi there,
+>
+> I need to develop a solution to expose to userspace a single sound
+> card with mixer controls for:
+>
+> Audio codec : sgtl5000
+> Audio mux: used to select an audio source on sgtl5000 LINE_IN.
+> Audio dsp :sta309a
+>
+> How can I implement this drivers? Should I have to create a sound-card
+> driver which is going to register and control the other drivers
+> (codec, mux, dsp)?
+>
+> Is there some device driver or tutorial guide that I can use as an exampl=
+e?
+>
+> I'm using the kernel 3.0.15 from Freescale [1].
+>
+>
+> [1] - http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/log/?h=
+=3Dimx_3.0.15_android
+>
+> Kind Regards,
+>
+> --
+> *dS
+> Diego Sueiro
