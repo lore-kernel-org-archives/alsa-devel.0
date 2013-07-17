@@ -1,57 +1,91 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: depend on ARCH_TEGRA, not ARCH_TEGRA_*
-Date: Wed, 17 Jul 2013 09:30:03 +0100
-Message-ID: <20130717083003.GA22506@sirena.org.uk>
-References: <1374013667-21435-1-git-send-email-swarren@wwwdotorg.org>
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH 1/3] ASoC: bt-sco: enable OF support
+Date: Wed, 17 Jul 2013 09:40:39 +0100
+Message-ID: <20130717084039.GA15981@e106331-lin.cambridge.arm.com>
+References: <1374041536-27643-1-git-send-email-Baohua.Song@csr.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rwlp4HDnqjg7pxzw"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 Content-Disposition: inline
-In-Reply-To: <1374013667-21435-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+In-Reply-To: <1374041536-27643-1-git-send-email-Baohua.Song@csr.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Barry Song <Baohua.Song@csr.com>
+Cc: Rongjun Ying <Rongjun.Ying@csr.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "Workgroup.Linux@csr.com" <Workgroup.Linux@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Jul 17, 2013 at 07:12:14AM +0100, Barry Song wrote:
+> From: Rongjun Ying <Rongjun.Ying@csr.com>
+> 
+> this makes users be able to add a bt-sco node in dts instead of
+> hardcoding a platform device in mach.
 
---rwlp4HDnqjg7pxzw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm slightly confused by this. The driver doesn't seem to pick up any
+information out of the dts, and the binding doesn't even describe any
+linkage to a piece of hardware. I'm not familiar with bluetooth or ASoC,
+could you give an explanation as to why this is needed?
 
-On Tue, Jul 16, 2013 at 04:27:47PM -0600, Stephen Warren wrote:
+I don't think this should be in the dt as is. Could this not be
+registered based on the presence of a bluetooth controller that supports
+this?
 
-> Stop selecting I2S/AC97/SPDIF controller drivers from the machine driver
-> config options; this doesn't really work if we don't know which specific
-> SoC(s) we're building for. However, set their default values based on
-> SND_SOC_TEGRA, since most people will probably want to enable support for
-> all SoCs. This also avoids the need to change any defconfig files.
+Thanks,
+Mark.
 
-This doesn't seem terribly clever and is definitely not idiomatic for
-ASoC.  If you want to just select all CPUs that'd be fine but forcing
-the user to select the individual components isn't the style anything
-else uses.
-
---rwlp4HDnqjg7pxzw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR5lYIAAoJELSic+t+oim91mUQAIuHSg8UfTu+vcNt1rYjR+VQ
-BkaeU6vblSAfamN60Q19WPWxhw+7Lq+RBZ6KQEuBHA3EHeJdCVqtGMKnDAwQlUKy
-mcDFPrBWApEhoRYvBudBkHSWcy3eepa6ZlR7gYYSTfx4krNJRm0WRqQCOTdcVFpM
-bt8NCtk4/K9VvP1Ud6W17N3ouyc8tKyp4gNGtFmEKTUWI2ZuMpvU9vnovBsGuIBN
-uK4Y23HX8U6JWye4ZnIEmTVerN7m86nYbgi8nc5/gVoJeXFMYsoahvKWaUFQV3lV
-Il9oDbD8ldrIysWoVjlUmzb6zIugJEuB7BnFs/nqwGqUMnlw+MObZI/JwifChYeH
-HrckGAniRx/YgUZjxKkRAt3qi9MZjmXqjEWaLJa5j9SboUlvVawCZmDEmsP+wde3
-ld3U1nDKUFfYSw8+YSI2wY76h9WdGd+baklevIQHE4SORTsfhtWB0VjeM/LeaxO5
-mFpL+EWeOoGmHn+m9aGKuSbUG1jUR59AawutUrFbBQBYaGv1wsMTLRyzZPj87o+A
-fVngtAS2o1H/kOFN89RGEAPXLfxCPviqa8mGnqhMRXc9zxO3VCIaw0jsN9aoWpNI
-iiJOA1Q8OdpGq2jyVp958wQOMniushThv7djIzaZyaJVHbfwHMi+jTi6s2TgZW8z
-M0aO6wtc30JEAOI2TZOy
-=39aj
------END PGP SIGNATURE-----
-
---rwlp4HDnqjg7pxzw--
+> 
+> Signed-off-by: Rongjun Ying <Rongjun.Ying@csr.com>
+> Signed-off-by: Barry Song <Baohua.Song@csr.com>
+> ---
+>  sound/soc/codecs/bt-sco.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/bt-sco.c b/sound/soc/codecs/bt-sco.c
+> index a081d9f..39e7ebe 100644
+> --- a/sound/soc/codecs/bt-sco.c
+> +++ b/sound/soc/codecs/bt-sco.c
+> @@ -46,6 +46,14 @@ static int bt_sco_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_OF
+> +static const struct of_device_id bt_sco_of_match[] = {
+> +	{ .compatible = "bt-sco-codec", },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, bt_sco_of_match);
+> +#endif
+> +
+>  static struct platform_device_id bt_sco_driver_ids[] = {
+>  	{
+>  		.name		= "dfbmcs320",
+> @@ -58,6 +66,9 @@ static struct platform_driver bt_sco_driver = {
+>  	.driver = {
+>  		.name = "bt-sco",
+>  		.owner = THIS_MODULE,
+> +#ifdef CONFIG_OF
+> +		.of_match_table = bt_sco_of_match,
+> +#endif
+>  	},
+>  	.probe = bt_sco_probe,
+>  	.remove = bt_sco_remove,
+> -- 
+> 1.8.2.3
+> 
+> 
+> 
+> Member of the CSR plc group of companies. CSR plc registered in England and Wales, registered number 4187346, registered office Churchill House, Cambridge Business Park, Cowley Road, Cambridge, CB4 0WZ, United Kingdom
+> More information can be found at www.csr.com. Follow CSR on Twitter at http://twitter.com/CSR_PLC and read our blog at www.csr.com/blog
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
