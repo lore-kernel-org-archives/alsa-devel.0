@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Connecting two Codecs to the same CPU DAI
-Date: Wed, 17 Jul 2013 10:31:32 +0100
-Message-ID: <20130717093132.GD22506@sirena.org.uk>
-References: <51E55925.5080208@gmail.com> <20130716162043.GS22506@sirena.org.uk>
- <51E575E3.3040409@gmail.com> <20130716165708.GT22506@sirena.org.uk>
- <51E57DD5.5040307@gmail.com> <20130716174703.GW22506@sirena.org.uk>
- <51E660E6.4010902@gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: bt-sco: enable OF support
+Date: Wed, 17 Jul 2013 10:47:18 +0100
+Message-ID: <20130717094718.GE22506@sirena.org.uk>
+References: <1374041536-27643-1-git-send-email-Baohua.Song@csr.com>
+ <20130717084039.GA15981@e106331-lin.cambridge.arm.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8335443088944432630=="
+Content-Type: multipart/mixed; boundary="===============7908059799945101225=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AD7226511C
- for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2013 11:31:35 +0200 (CEST)
-In-Reply-To: <51E660E6.4010902@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AF16A265119
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2013 11:47:21 +0200 (CEST)
+In-Reply-To: <20130717084039.GA15981@e106331-lin.cambridge.arm.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,85 +20,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Rongjun Ying <Rongjun.Ying@csr.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "Workgroup.Linux@csr.com" <Workgroup.Linux@csr.com>, Barry Song <Baohua.Song@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8335443088944432630==
+--===============7908059799945101225==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gIORF5nGxIt+AP0s"
+	protocol="application/pgp-signature"; boundary="5PPnVwj6ulmYFu5t"
 Content-Disposition: inline
 
 
---gIORF5nGxIt+AP0s
+--5PPnVwj6ulmYFu5t
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jul 17, 2013 at 11:16:22AM +0200, Daniel Mack wrote:
-> On 16.07.2013 19:47, Mark Brown wrote:
+On Wed, Jul 17, 2013 at 09:40:39AM +0100, Mark Rutland wrote:
+> On Wed, Jul 17, 2013 at 07:12:14AM +0100, Barry Song wrote:
 
-> > Half the point of soc-pcm is to decouple the streams seen by the
-> > application layer from the DAIs that the driver sees so I'd expect us to
-> > be able to map a single application layer/memory stream onto multiple
-> > CODEC DAIs.  One front end connected to two back ends.
+> > this makes users be able to add a bt-sco node in dts instead of
+> > hardcoding a platform device in mach.
 
-> You're talking about DPCM, right? Unfortunately, there is no active user
-> of this in mainline, and no documentation either. I'll try and find out
-> how this is supposed to work first ...
+> I'm slightly confused by this. The driver doesn't seem to pick up any
+> information out of the dts, and the binding doesn't even describe any
+> linkage to a piece of hardware. I'm not familiar with bluetooth or ASoC,
+> could you give an explanation as to why this is needed?
 
-Yes, this is a constant complaint.  Hopefully the OMAP4 code will be
-upstreamed at some point but as you will be aware there's issues there.
+> I don't think this should be in the dt as is. Could this not be
+> registered based on the presence of a bluetooth controller that supports
+> this?
 
-> Maybe Liam has some explanation ready?
+Audio devices are linked together by a separate board binding which
+specifies how all the different components in the audio subsystem on the
+board are wired together.  Even where things have no meanignful software
+control (as is the case here and for a lot of simple DACs or ADCs) the
+rest of the system needs information on their capabilites and ideally
+the ability to interchange them with more substantial devices.  If there
+were meaningful control there'd be a control bus here.
 
-The only thing I'm aware of is the out of tree OMAP4 and Qualcomm code
-neither of which I'd hold my breath over.
+There is likely to be a control interface for the BT device hanging off
+a UART but it's not clear there's much more meaningful data for those
+than there is here.
 
-> > May as well bite the bullet and do the refactoring, it should be
-> > automatable.  There's also the fun of handling what happens when you
-> > want to stream from one CODEC to another but I think that's second
-> > stage...
-
-> Looking deeper into this, I'm not sure whether each of those codec
-> instances inside one snd_soc_dai_link should have it own runtime, of if
-> they should rather share one. The latter isn't straight-forward, as
-> current users simply access the codec from their callbacks as
-> rtd->codec_dai. However, open-coding routines to access the correct
-> codec from these callbacks is not nice at all either. Hmm.
-
-Yes, it's not an easy refactoring.  But it's probably one that'll be
-needed for Slimbus at some point.
-
---gIORF5nGxIt+AP0s
+--5PPnVwj6ulmYFu5t
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR5mRxAAoJELSic+t+oim9VLgP/RsZ6Fp3Jz8zV0YYtaZqjH2j
-cUtzNT4VSILrEIw2LHOzSEPVRoLnrc/aWIwq/GJARR4MLB36/pysKbNWqcfPzSRP
-oULgVmgsUq7SYWdcoJyYYKgBTT/DHhxODqDxQtHm5TI3T0TV6Z5ZhB0qoZNz/sU8
-YI5OYJil70BAcCtoLBss21YYZhdYSgMGjr0PVqtClCAhx/1qBJtsukt2PmNkSDu8
-1AemB8glklFzutqiMV/n9+LC+1gQKhX4DOqxPVbwQGQXR16sm0jPF/i10q3dVpzi
-VwKrQu3GUYuDHVEbPA1yrzhv9EEPd6QDOcAQO2n0oewsjyySuZ39qdyXpbHNdxNV
-Ic8nowPR5KhLGy22ZJoLf0GAdJMPEfQn5xK1sTkXkwUHIic/P/5qGAYzhhvVBjOb
-+Euu0TTczkXSH67M7EENPXUsyhplgqcWwFOWnbLa2zpLctJwNAFL/0EElbFkqMUZ
-gmkea6CDavliAOgsO6Wa0vwDtsnO4SGDjgWQy+y25yUvNutiZueAWCjdvLDaHQpw
-tlH7EPlb/W3TT5XMT3Ve64xaeE8xUzXnpnWAsG4YbmYiLyMdC2stRf1+E08qWnP+
-fAuU2gUkfqMAyBXxhaRKKExL+MKPTLLyIoN1cIOENlSHPRKVC07oOkVAmxiUadMQ
-1Vz2snkBg6hjasJS4POH
-=1gM3
+iQIcBAEBAgAGBQJR5mgjAAoJELSic+t+oim9XaQQAJtZnsazaCT70y5F0pWcg1vH
+LG30blvLgXyI895SB/fmR6YFzC2p2d8OletSerplU+GSkEe1WiWokU9w9VPDbBxg
+mB9biG8qAx5yJ7+j+q0z9SEWsBYfs3KH/toloFQb67ew45wjUaHu6uLeuQHNrBPP
+/jBHJdVZCRSRXpCnjz04JqWiK8EmA00cF7Hv6w8eXmthnfNfxFgd9Wr3+Og3ao6I
+KbYRzArIi5+OIdwF9FtOxNapzxHX9j9J3+fjyLjt0fywcUVvnFUJhYiB4l9gtetN
+zDEjMBIx7nau0Au9hI5uApGtx+TF1/Sq/n2Ssj2hpLUc6v369jZ5auAVmDQdYs70
+GdDRu0gJT9r1BNQpYjlSxveRBV0N+5SEPE25AYQAOTaB59kst+uuBKG51GvQFQjK
+LgnVi+J7eTSqu3ke/2I3wvrr6vdjNZ0dmlV7kOZ5XTdAqcqhLMz80CdIH+loCaim
+qAOkUNlIlcty7QnBoIQYJ0atZEaS1XvDMaYyvEtjm1ABAq+dLiAI8VCBv0yF7C9r
+NxNbCumjcTpvhceY+jOa3AH7sF2bgHkqix9nycF/RmYo7kUScA0oAyPxG++l3m1Y
+c6YfA+0C1/wGC3xdfLRGbtOf6IhnNRB9TdZJJOGSuVa7NsJ7CW3zs00jGPy4jT8i
+9Uvkpz5CokWu/XpJT4wh
+=OV39
 -----END PGP SIGNATURE-----
 
---gIORF5nGxIt+AP0s--
+--5PPnVwj6ulmYFu5t--
 
---===============8335443088944432630==
+--===============7908059799945101225==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8335443088944432630==--
+--===============7908059799945101225==--
