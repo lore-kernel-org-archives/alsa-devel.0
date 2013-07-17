@@ -1,29 +1,22 @@
-From: "Wang, Xingchao" <xingchao.wang@intel.com>
-Subject: Re: [PATCH 2/2] ALSA: hda - get realtime ELD info when
- codec suspended
-Date: Wed, 17 Jul 2013 10:15:15 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC48901184DC07@SHSMSX104.ccr.corp.intel.com>
-References: <1372074324-13563-1-git-send-email-xingchao.wang@linux.intel.com>
- <1372074324-13563-2-git-send-email-xingchao.wang@linux.intel.com>
- <s5hmwqfvizc.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC489011833B68@SHSMSX104.ccr.corp.intel.com>
- <s5hk3ljvhu2.wl%tiwai@suse.de> <51C83FC5.3090005@canonical.com>
- <s5h38s7vf2v.wl%tiwai@suse.de> <51C94A80.70709@canonical.com>
- <s5hobauzkse.wl%tiwai@suse.de> <51C95CA3.7000001@canonical.com>
- <46B810F6945F7C4788E11DCE57EC4890118344E1@SHSMSX104.ccr.corp.intel.com>
- <51C96640.2020103@canonical.com>
- <CA+v+29g2RvJfC-rkp-Qbwo1je-s86t+uACUY4k6vgerJHUPKrg@mail.gmail.com>
- <51E37A84.6030909@canonical.com>
- <46B810F6945F7C4788E11DCE57EC48901184C456@SHSMSX104.ccr.corp.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: codecs: da9055: Update driver name
+ to fix breakage due to pmic driver with same name
+Date: Wed, 17 Jul 2013 11:36:51 +0100
+Message-ID: <20130717103651.GP22506@sirena.org.uk>
+References: <1373024862.3233.63.camel@matrix>
+ <20130705114456.GV27646@sirena.org.uk>
+ <1373031306.3233.131.camel@matrix>
+ <20130705133752.GX27646@sirena.org.uk>
+ <1373270091.11222.12.camel@matrix>
+ <20130708112613.GQ27646@sirena.org.uk>
+ <1373542576.9286.101.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2289676716755927921=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 6156426547C
- for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2013 12:15:18 +0200 (CEST)
-In-Reply-To: <46B810F6945F7C4788E11DCE57EC48901184C456@SHSMSX104.ccr.corp.intel.com>
-Content-Language: en-US
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id B626526512F
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2013 12:36:55 +0200 (CEST)
+In-Reply-To: <1373542576.9286.101.camel@matrix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,111 +26,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Wang, Xingchao" <xingchao.wang@intel.com>, David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, "kiran.padwal" <kiran.padwal@kpitcummins.com>, lrg <lrg@ti.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============2289676716755927921==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="N709L9vpgywc1qLv"
+Content-Disposition: inline
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org
-> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Wang, Xingchao
-> Sent: Monday, July 15, 2013 4:54 PM
-> To: David Henningsson; Wang Xingchao
-> Cc: Takashi Iwai; alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] [PATCH 2/2] ALSA: hda - get realtime ELD info when
-> codec suspended
-> 
-> 
-> 
-> > -----Original Message-----
-> > From: David Henningsson [mailto:david.henningsson@canonical.com]
-> > Sent: Monday, July 15, 2013 12:29 PM
-> > To: Wang Xingchao
-> > Cc: Takashi Iwai; Wang, Xingchao; alsa-devel@alsa-project.org
-> > Subject: Re: [alsa-devel] [PATCH 2/2] ALSA: hda - get realtime ELD
-> > info when codec suspended
-> >
-> > On 07/12/2013 08:13 AM, Wang Xingchao wrote:
-> > > Hi David/Takashi,
-> > >
-> > > Here's some update on this topic.
-> > > I used evtest to monitor hotplug input event for Headphone, it
-> > > doesnot report the hotplug event when audio controller/codec in
-> > > runtime suspend mode.
-> > > if it's during audio playback(both controller and codec are active),
-> > > the events could be monitored correctly.
-> > > However even the controller/codec in runtime suspend mode, the
-> > > hotplug event was not missed when waken up from suspend mode. After
-> > > exit from suspend mode, the hotplug event would be reported asap.
-> > > So userspace will not receive the event notification from driver
-> > > when controller/codec in suspend mode, but it will get them once
-> > > audio controller/codec become active.
-> > > I think it's acceptable for audio playback functinality, it will not
-> > > harm audio routing in fact. i'm not sure there's other potential
-> > > risk, i.e. user space will show/hide the devices in UI according to
-> > > the event, in that case , user will never see the Headphone device
-> > > for playback before audio controller/codec was waken up in another way.
-> > >
-> > > Meanwhile i tested attached patch to monitor WAKEEN events, it
-> > > doesnot work well as Spec said. it would not wake up audio
-> > > controller/codec when plug in/out headphone in runtime suspend mode,
-> > > and the status register always be 0.
-> >
-> > Hi Xingchao,
-> >
-> > Maybe you're giving up too easily on the WAKEEN stuff? I can spot a
-> > few places where your patch is incomplete:
-> >
-> >   - First, WAKEEN and STATETS are word registers, you should probably
-> > use azx_writew when you access them
 
-If the controller is active while codec suspended, "evtest" can catch headphone hotplug event.
-I made some changes in azx_runtime_suspend(), which in brief leave interrupt enabled, then "evtest" cannot catch input event.
-Also I added some debug log shows, when controller enter suspend mode, the WAKEEN bits were set(value 0x3), after headphone hotplug,
-Audio controller was not waken up. When audio controller exit, in azx_runtime_resume(), the debug shows WAKEEN bits value no change, STATETS
-has value 0. The controller did not detect changes from codec side, so it donot set the bits in STATETS.
+--N709L9vpgywc1qLv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I read the spec, and found something different:
-- Controller should be in reset state while In D3?(Chapter 4.5.9.2 in  HD-A spec.)
-Azx_runtime-suspend() did not reset the controller.
-- codec will use power state change request on the link to let controller know.
-Not sure it's hardware operation or software layer.
-- codec discovery ( chapter 4.3)
-"When the link is enabled by the assertion of CRST, the codecs will detect the de-assertion of the RESET# signal and request a status change and enumeration by the controller. 
- As the controller hardware detects these requests, it will provide the codecs with their unique addresses and set the controller STATESTS bits
- to indicate that a Status Change event was detected on the appropriate SDATA_INx signals.  "
-I'm afraid something was not configured correctly, i.e. should let controller in reset state when enter runtime suspend mode?
+On Thu, Jul 11, 2013 at 05:06:16PM +0530, Ashish Chavan wrote:
 
-Thanks
---xingchao
-> 
-> Thanks for clarify this. We support 8 codec at most, so I think it's safe to use
-> writeb/readb here.
-> 
-> >
-> >   - Second, and this is definitely a problem, azx_runtime_suspend
-> > calls azx_stop_chip -> azx_int_disable. So we disable interrupts,
-> > that's why we don't get them from the wake events.
-> [Wang, Xingchao]  yes, moreover I think it's not enough only enabling
-> "controller interrupt" bits in this case, PCI interrupt bits must be anbled too.
-> I'm still checking the setting in runtime_suspend.
-> 
-> >
-> >   - Third, first in azx_interrupt, we check for
-> > chip->pci->dev.power.runtime_status - maybe this is no longer true if
-> > the device is in D3?
-> [Wang, Xingchao] yes, it's a risk here. Just move the lines before the "if"
-> condition check.
-> >
-> > Do you know how and if Windows has solved this?
-> >
-> [Wang, Xingchao] I have wrote emails for windows team guys, has no response
-> yet. I will update here when I have update.
-> 
-> thanks
-> --xingchao
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> accommodate this level of change. Is it possible that in first go we
+> just fix the breakage due to name collision so that both drivers remain
+> usable. And in second iteration, we restructure both of them as you
+> suggested?
+
+To be honest I'm really not terribly happy about this - I don't have all
+that much confidence that the second step will happen, the fact that
+this has been broken for a considerable time isn't inspiring here.
+However I guess...
+
+--N709L9vpgywc1qLv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR5nPAAAoJELSic+t+oim90+EP/1ARV4T5aPfB98kWihLAKs4s
+OYVCuerUjkXFtmhps/tYsKggB3BL2XdIue8/a/6lYIFBHwziRy2rEXlXN8Xb0Isz
+V9J+pzxt0kisFD58tkmdp3mXDeLxp4clBdXKg+YEquyxGmItoJyPSujXL0CjCnCh
+1Dp1QulmEpxNUyBX5Zce8a7hp49XJNg75wSQ/rVnebg2wW01h6TfddfiZI+TZeus
+azlS7o58wixSRWcBE6EDCDFtN9n6CsiWx/70AtBLc4Kj1CRufoa5sxjZkwbCqTHo
+zbvl9tX/qCTm8N2PXzIB4VIR7ETVsTJogQUNptAUJvtD3ySH35YbLKSYJUHdSY4x
+hboKhO388o6I/kCVtw2OVFONGkS3iJffECZkVBg/TabFrmb3QHaNtHCdDBlZx3ee
+LZ+3ScF6Clb8UshBx1E6f9Piii7425QTer/7DLQSZfJvpabTKipGyYQgfF0Y0opX
+V/mGlxP3p3J0o01hdPFocLMfi4nHMX3BmXLtKEBGlwY73U3j/GYaadinMn3CrqIV
+Vi/odibXNDaYBxE5jsej/qSqqcrp0wB9q9cwtoe7oCW9onaVv34dsw5+ZPAqf8E0
+pAugVEyjmLX4NMBQX067XWGNW2yW2QR0XJtQvSbXyBkDXEajApL6rsStm+jm22lq
+cJUxvPVr7jKM6ERlFO4t
+=wUT7
+-----END PGP SIGNATURE-----
+
+--N709L9vpgywc1qLv--
+
+--===============2289676716755927921==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2289676716755927921==--
