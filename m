@@ -1,78 +1,67 @@
-From: Chris J Arges <christopherarges@gmail.com>
-Subject: [PATCH] ALSA: usb-audio: Add quirk for Focusrite Scarlett 18i8
-Date: Wed, 17 Jul 2013 16:12:12 -0500
-Message-ID: <1374095558-9949-1-git-send-email-christopherarges@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: martin@meltin.net, Chris J Arges <christopherarges@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Eldad Zack <eldad@fogrefinery.com>, Trulan Martin <trulanm@gmail.com>, Damien Zammit <damien@zamaudio.com>, Mark Hills <mark@xwax.org>, linux-kernel@vger.kernel.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tegra: depend on ARCH_TEGRA, not ARCH_TEGRA_*
+Date: Wed, 17 Jul 2013 23:33:09 +0100
+Message-ID: <20130717223309.GZ22506@sirena.org.uk>
+References: <1374013667-21435-1-git-send-email-swarren@wwwdotorg.org>
+ <20130717083003.GA22506@sirena.org.uk>
+ <51E6CDEA.7060003@wwwdotorg.org>
+ <20130717175701.GY22506@sirena.org.uk>
+ <51E6E107.8020300@wwwdotorg.org>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="OLq6itPlQwcDjwuA"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <51E6E107.8020300-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch is similar to commit 1762a59d8e8b5e99f6f4a0f292b40f3cacb108ba.
-The same non-standard interface descriptor causes snd_usb_create_mixer()
-to fail for the Focusrite Scarlett 18i8 as well.
 
-Signed-off-by: Chris J Arges <christopherarges@gmail.com>
----
- sound/usb/quirks-table.h |   46 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+--OLq6itPlQwcDjwuA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 7f1585b..b954ec5 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3232,6 +3232,52 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		}
- 	}
- },
-+{
-+	/*
-+	 * Focusrite Scarlett 18i8
-+	 *
-+	 * Avoid mixer creation similar to the Scarlett 18i6 interface.
-+	 */
-+	USB_DEVICE(0x1235, 0x8014),
-+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		.vendor_name = "Focusrite",
-+		.product_name = "Scarlett 18i8",
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = & (const struct snd_usb_audio_quirk[]) {
-+			{
-+				/* InterfaceSubClass 1 (Control Device) */
-+				.ifnum = 0,
-+				.type = QUIRK_IGNORE_INTERFACE
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			{
-+				/* InterfaceSubClass 1 (Control Device) */
-+				.ifnum = 3,
-+				.type = QUIRK_IGNORE_INTERFACE
-+			},
-+			{
-+				.ifnum = 4,
-+				.type = QUIRK_MIDI_STANDARD_INTERFACE
-+			},
-+			{
-+				/* InterfaceSubClass 1 (Device Firmware Update) */
-+				.ifnum = 5,
-+				.type = QUIRK_IGNORE_INTERFACE
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
- 
- {
- 	/*
--- 
-1.7.9.5
+On Wed, Jul 17, 2013 at 12:23:03PM -0600, Stephen Warren wrote:
+> On 07/17/2013 11:57 AM, Mark Brown wrote:
+
+> > So how do they disable the core support for the older SoCs with the
+> > new model?
+
+> They don't; the core support is so small it's not worth having the
+> ifdefs in it; just a few K. As such, it seems simpler to just always
+> compile in the core support, and remove the need for all the ifdef
+> nests in mach-tegra/. The bulk of the differences are different
+> drivers for different chips.
+
+So my take on that is that it seems like it's simpler to just have the
+core selection since that's just one option for the user to choose and
+save all the space for whatever device they're not interested in rather
+than having to go through individual drivers disabling the boring SoCs.
+It seems more straightfoward from a UI point of view but perhaps I'm not
+thinking about it from the right angle?
+
+--OLq6itPlQwcDjwuA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR5xuiAAoJELSic+t+oim9Z+sP/3hnU77y1ARLhKHTvkASvQeQ
+WmM35HjJ78k3KAqt38wZSJe9k7JY+OBQZ43Y+gRI6k0QGZCCbCZEcMCRN2aYVGOW
+GRnHgn8LTpaAKDeLKWddBmVplhmnYC/0iXHPsKRErwijv7/RI2gITVzFvZQxcnHt
+UCQ6ckblXSBDqwOlYlesCclWi2p5tbw3PpBPNve6ay45MHk2lrGQpnjwteAtJ4Jy
+UDJ3YzEWC+CWiiRri6UNlcDgU18TdMmLaLp+eKaUWDPUHw7p99l3LM+eJ/eNr7zd
+RW+2f2XMC9HNkqE2BXB6LKDHpSskNwBofBzp2ck+zRuYYY2e+4k0vuWlgx8+OPIp
+GsWwmK62mj7FcDcx8qpp/KgpunqKlTPF5wsj5DeMyW0dTTwzC0rm/DjNmzopjZ21
+uHWkIFbmzflvMcz3k/BGU9TPsyVo183NU3rLhnc2uVL6YLX+DV9n2UeRhdREw4kV
+3K+PKlhxafJZoRD7PUBSbUYi586IHfqJKX4Sstl/+51rUWVEpzIAdbD1aQQAgW2T
+o/AuctxJsKRCJGmFKx5g3Gs7fpsYPHVpQpul64MJI6vc5mb5H2ozbnANvnlG94P/
++D4chNrEDZ9wVibBFkRaKdh5olKWqCzqCr1LBFdr5gePc1qo9pIUwMeA0ovVRN6S
+Kuw4Tfow3ZjYtn/mOi6M
+=Jt7x
+-----END PGP SIGNATURE-----
+
+--OLq6itPlQwcDjwuA--
