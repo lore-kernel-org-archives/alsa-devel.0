@@ -1,387 +1,297 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH] ASoC: atmel: add wm8904 based audio machine
-	driver
-Date: Thu, 18 Jul 2013 15:28:03 +0800
-Message-ID: <1374132483-25375-1-git-send-email-voice.shen@atmel.com>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [alsa-devel] [PATCH 0/4 V7] Power-well API
+ implementation for Haswell
+Date: Thu, 18 Jul 2013 09:23:57 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC48901184E58D@SHSMSX104.ccr.corp.intel.com>
+References: <46B810F6945F7C4788E11DCE57EC48901184D8BF@SHSMSX104.ccr.corp.intel.com>
+	<s5h38rdmyh0.wl%tiwai@suse.de>
+	<46B810F6945F7C4788E11DCE57EC48901184DB13@SHSMSX104.ccr.corp.intel.com>
+	<s5hwqoplhv4.wl%tiwai@suse.de>
+	<46B810F6945F7C4788E11DCE57EC48901184DB3D@SHSMSX104.ccr.corp.intel.com>
+	<CA+gsUGTCimKS35XaX7V+aWXtmGBeHS2ftChU5ndzsray5Aipuw@mail.gmail.com>
+	<s5hwqopthff.wl%tiwai@suse.de> <51E6A4B7.7060605@canonical.com>
+	<s5hsizdtgg8.wl%tiwai@suse.de>
+	<46B810F6945F7C4788E11DCE57EC48901184E3B6@SHSMSX104.ccr.corp.intel.com>
+	<20130718064415.GH4550@phenom.ffwll.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C6D5265547
- for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2013 09:31:54 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <20130718064415.GH4550@phenom.ffwll.local>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+To: Daniel Vetter <daniel@ffwll.ch>, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, Wang xingchao <xingchao.wang@linux.intel.com>, "Girdwood,
+	Liam R" <liam.r.girdwood@intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-add wm8904 based audio machine driver
 
-the following ek board based on it
-  - at91sam9n12ek
-  - sama5d3xek (d31, d33, d34, d35)
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
----
-This patch is only for Atmel SoC with wm8904 codec machine driver only,
-temp no change for dts file, as there are many changes to dts file in
-mailing list for atmel SoC now, so hold on for dts change, after that
-will send the dts file patches
----
- .../devicetree/bindings/sound/atmel-wm8904.txt     |   30 +++
- sound/soc/atmel/Kconfig                            |   10 +
- sound/soc/atmel/Makefile                           |    2 +
- sound/soc/atmel/atmel_wm8904.c                     |  263 ++++++++++++++++++++
- 4 files changed, 305 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/atmel-wm8904.txt
- create mode 100644 sound/soc/atmel/atmel_wm8904.c
+> -----Original Message-----
+> From: Daniel Vetter [mailto:daniel.vetter@ffwll.ch] On Behalf Of Daniel Vetter
+> Sent: Thursday, July 18, 2013 2:44 PM
+> To: Wang, Xingchao
+> Cc: Paulo Zanoni; daniel.vetter@ffwll.ch; alsa-devel@alsa-project.org; Daniel
+> Vetter; intel-gfx@lists.freedesktop.org; Wang xingchao; Girdwood, Liam R; Jin,
+> Gordon; Takashi Iwai; David Henningsson
+> Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7] Power-well API
+> implementation for Haswell
+> 
+> On Thu, Jul 18, 2013 at 01:00:07AM +0000, Wang, Xingchao wrote:
+> > Hi Paulo/Daniel,
+> >
+> > Do you agree to export an API in gfx side for eDP case?
+> > Basically the api will let audio drver know which pipe in use. i.e. in
+> > the eDP only caes, audio driver Will know gfx is not using HDMI/DP and would
+> like to let power-well off.
+> > As there's the conflict when user expect display audio driver always active but
+> gfx need audio driver off.
+> > Audio driver could make decision to release power-well if it knows the eDP
+> only case through the API.
+> >
+> > OTOH, I think audio driver could also export an API for gfx side, if
+> > gfx driver need audio driver release power-well but it's in usage, It will call
+> this API and audio drvier will release power-well accordingly.
+> >
+> > This change make HDMI/DP hotplug handling complicated in audio driver side,
+> if audio driver release power-well, it would enter suspend mode.
+> > Meanwhile the user may expect it's in active mode, this may cause some
+> confuse.
+> 
+> Afaik (and I know very little about audio) the audio side already knows which
+> pipes have audio enabled, since we set the respective bit only when it's needed.
+> And audio will receive the unsolicited even interrupt (or whatever it's called)
+> when this happens.
+> 
+For haswell, Audio driver can get DDI port/Pin usage information according to the unsolicited event, not Pipe info.
+However at this stage, seems only that is enough: if no pin has valid ELD, audio driver can think about that no monitor connected with DDI ports.
+In this case, Audio driver could release power-well and enter suspend mode automatically, this avoid blocking eDP feature enabling. And once gfx dirver
+Detect external monitor connected, it will also wake up audio driver.
 
-diff --git a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
-new file mode 100644
-index 0000000..5990271
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
-@@ -0,0 +1,30 @@
-+Atmel ASoC driver with wm8904 audio codec complex
-+
-+Required properties:
-+  - compatible: "atmel,asoc-wm8904"
-+  - atmel,model: The user-visible name of this sound complex.
-+  - atmel,audio-routing: A list of the connections between audio components.
-+  - atmel,ssc-controller: The phandle of the SSC controller
-+  - atmel,audio-codec: The phandle of the WM8904 audio codec
-+Optional properties:
-+  - pinctrl-names, pinctrl-0: Please refer to pinctrl-bindings.txt
-+
-+Example:
-+sound {
-+	compatible = "atmel,asoc-wm8904";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pck0_as_mck>;
-+
-+	atmel,model = "wm8904 @ AT91SAM9N12EK";
-+
-+	atmel,audio-routing =
-+		"Headphone Jack", "HPOUTL",
-+		"Headphone Jack", "HPOUTR",
-+		"IN2L", "Line In Jack",
-+		"IN2R", "Line In Jack",
-+		"Mic", "MICBIAS",
-+		"IN1L", "Mic";
-+
-+	atmel,ssc-controller = <&ssc0>;
-+	atmel,audio-codec = <&wm8904>;
-+};
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 1c0b185..986323b 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -33,6 +33,16 @@ config SND_AT91_SOC_SAM9G20_WM8731
- 	  Say Y if you want to add support for SoC audio on WM8731-based
- 	  AT91sam9g20 evaluation board.
+Takashi, do you think this solution acceptable?
+
+Thanks
+--xingchao
  
-+config SND_ATMEL_SOC_WM8904
-+	tristate "Atmel ASoC driver for boards using WM8904 codec"
-+	depends on ARCH_AT91 && ATMEL_SSC && SND_ATMEL_SOC
-+	select SND_ATMEL_SOC_SSC
-+	select SND_ATMEL_SOC_DMA
-+	select SND_SOC_WM8904
-+	help
-+	  Say Y if you want to add support for Atmel ASoC driver for boards using
-+	  WM8904 codec.
-+
- config SND_AT91_SOC_AFEB9260
- 	tristate "SoC Audio support for AFEB9260 board"
- 	depends on ARCH_AT91 && ATMEL_SSC && ARCH_AT91 && MACH_AFEB9260 && SND_ATMEL_SOC
-diff --git a/sound/soc/atmel/Makefile b/sound/soc/atmel/Makefile
-index 41967cc..922d4da 100644
---- a/sound/soc/atmel/Makefile
-+++ b/sound/soc/atmel/Makefile
-@@ -11,6 +11,8 @@ obj-$(CONFIG_SND_ATMEL_SOC_SSC) += snd-soc-atmel_ssc_dai.o
- 
- # AT91 Machine Support
- snd-soc-sam9g20-wm8731-objs := sam9g20_wm8731.o
-+snd-atmel-soc-wm8904-objs := atmel_wm8904.o
- 
- obj-$(CONFIG_SND_AT91_SOC_SAM9G20_WM8731) += snd-soc-sam9g20-wm8731.o
-+obj-$(CONFIG_SND_ATMEL_SOC_WM8904) += snd-atmel-soc-wm8904.o
- obj-$(CONFIG_SND_AT91_SOC_AFEB9260) += snd-soc-afeb9260.o
-diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
-new file mode 100644
-index 0000000..e309607
---- /dev/null
-+++ b/sound/soc/atmel/atmel_wm8904.c
-@@ -0,0 +1,263 @@
-+/*
-+ * atmel_wm8904 - Atmel ASoC driver for boards with WM8904 codec.
-+ *
-+ * Copyright (C) 2012 Atmel
-+ *
-+ * Author: Bo Shen <voice.shen@atmel.com>
-+ *
-+ * GPLv2 or later
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/pinctrl/consumer.h>
-+
-+#include <sound/soc.h>
-+
-+#include "../codecs/wm8904.h"
-+#include "atmel_ssc_dai.h"
-+
-+#define MCLK_RATE 32768
-+
-+static struct clk *mclk;
-+
-+static const struct snd_soc_dapm_widget atmel_asoc_wm8904_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Mic", NULL),
-+	SND_SOC_DAPM_LINE("Line In Jack", NULL),
-+};
-+
-+static int atmel_asoc_wm8904_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int ret;
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8904_CLK_FLL,
-+			12000000, SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		pr_err("%s -failed to set wm8904 SYSCLK\n", __func__);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int atmel_asoc_wm8904_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int ret;
-+
-+	ret = snd_soc_dai_set_pll(codec_dai, WM8904_FLL_MCLK, WM8904_FLL_MCLK,
-+		32768, params_rate(params) * 256);
-+	if (ret < 0) {
-+		pr_err("%s - failed to set wm8904 codec PLL.", __func__);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops atmel_asoc_wm8904_ops = {
-+	.hw_params = atmel_asoc_wm8904_params,
-+};
-+
-+static int atmel_set_bias_level(struct snd_soc_card *card,
-+		struct snd_soc_dapm_context *dapm,
-+		enum snd_soc_bias_level level)
-+{
-+	static int mclk_on;
-+	int ret = 0;
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_ON:
-+	case SND_SOC_BIAS_PREPARE:
-+		if (!mclk_on) {
-+			ret = clk_prepare_enable(mclk);
-+			if (ret == 0)
-+				mclk_on = 1;
-+		}
-+		break;
-+	case SND_SOC_BIAS_STANDBY:
-+	case SND_SOC_BIAS_OFF:
-+		if (mclk_on)
-+			clk_disable_unprepare(mclk);
-+		mclk_on = 0;
-+		break;
-+	}
-+
-+	return ret;
-+};
-+
-+static struct snd_soc_dai_link atmel_asoc_wm8904_dailink = {
-+	.name = "WM8904",
-+	.stream_name = "WM8904 PCM",
-+	.codec_dai_name = "wm8904-hifi",
-+	.dai_fmt = SND_SOC_DAIFMT_I2S
-+		| SND_SOC_DAIFMT_NB_NF
-+		| SND_SOC_DAIFMT_CBM_CFM,
-+	.init = atmel_asoc_wm8904_init,
-+	.ops = &atmel_asoc_wm8904_ops,
-+};
-+
-+static struct snd_soc_card atmel_asoc_wm8904_card = {
-+	.name = "atmel_asoc_wm8904",
-+	.owner = THIS_MODULE,
-+	.set_bias_level = atmel_set_bias_level,
-+	.dai_link = &atmel_asoc_wm8904_dailink,
-+	.num_links = 1,
-+	.dapm_widgets = atmel_asoc_wm8904_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(atmel_asoc_wm8904_dapm_widgets),
-+	.fully_routed = true,
-+};
-+
-+static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *codec_np, *cpu_np;
-+	struct snd_soc_card *card = &atmel_asoc_wm8904_card;
-+	struct snd_soc_dai_link *dailink = &atmel_asoc_wm8904_dailink;
-+	int ret;
-+
-+	if (!np)
-+		return -1;
-+
-+	ret = snd_soc_of_parse_card_name(card, "atmel,model");
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to parse card name\n");
-+		return ret;
-+	}
-+
-+	ret = snd_soc_of_parse_audio_routing(card, "atmel,audio-routing");
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to parse audio routing\n");
-+		return ret;
-+	}
-+
-+	cpu_np = of_parse_phandle(np, "atmel,ssc-controller", 0);
-+	if (!cpu_np) {
-+		dev_err(&pdev->dev, "failed to get dai and pcm info\n");
-+		ret = -EINVAL;
-+		return ret;
-+	}
-+	dailink->cpu_of_node = cpu_np;
-+	dailink->platform_of_node = cpu_np;
-+	of_node_put(cpu_np);
-+
-+	codec_np = of_parse_phandle(np, "atmel,audio-codec", 0);
-+	if (!codec_np) {
-+		dev_err(&pdev->dev, "failed to get codec info\n");
-+		ret = -EINVAL;
-+		return ret;
-+	}
-+	dailink->codec_of_node = codec_np;
-+	of_node_put(codec_np);
-+
-+	return 0;
-+}
-+
-+static int atmel_asoc_wm8904_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &atmel_asoc_wm8904_card;
-+	struct snd_soc_dai_link *dailink = &atmel_asoc_wm8904_dailink;
-+	struct clk *clk_src;
-+	struct pinctrl *pinctrl;
-+	int id, ret;
-+
-+	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
-+	if (IS_ERR(pinctrl)) {
-+		dev_err(&pdev->dev, "failed to request pinctrl\n");
-+		return PTR_ERR(pinctrl);
-+	}
-+
-+	card->dev = &pdev->dev;
-+	ret = atmel_asoc_wm8904_dt_init(pdev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to init dt info\n");
-+		goto err_set_audio;
-+	}
-+
-+	id = of_alias_get_id((struct device_node *)dailink->cpu_of_node, "ssc");
-+	ret = atmel_ssc_set_audio(id);
-+	if (ret != 0) {
-+		dev_err(&pdev->dev, "failed to set SSC 0 for audio\n");
-+		return ret;
-+	}
-+
-+	mclk = clk_get(NULL, "pck0");
-+	if (IS_ERR(mclk)) {
-+		dev_err(&pdev->dev, "failed to get pck0\n");
-+		ret = PTR_ERR(mclk);
-+		goto err_set_audio;
-+	}
-+
-+	clk_src = clk_get(NULL, "clk32k");
-+	if (IS_ERR(clk_src)) {
-+		dev_err(&pdev->dev, "failed to get clk32k\n");
-+		ret = PTR_ERR(clk_src);
-+		goto err_set_audio;
-+	}
-+
-+	ret = clk_set_parent(mclk, clk_src);
-+	clk_put(clk_src);
-+	if (ret != 0) {
-+		dev_err(&pdev->dev, "failed to set MCLK parent\n");
-+		goto err_set_audio;
-+	}
-+
-+	dev_info(&pdev->dev, "setting pck0 to %dHz\n", MCLK_RATE);
-+	clk_set_rate(mclk, MCLK_RATE);
-+
-+	ret = snd_soc_register_card(card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card failed\n");
-+		goto err_set_audio;
-+	}
-+
-+	return 0;
-+
-+err_set_audio:
-+	atmel_ssc_put_audio(0);
-+	return ret;
-+}
-+
-+static int atmel_asoc_wm8904_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	struct snd_soc_dai_link *dailink = &atmel_asoc_wm8904_dailink;
-+	int id;
-+
-+	id = of_alias_get_id((struct device_node *)dailink->cpu_of_node, "ssc");
-+
-+	snd_soc_unregister_card(card);
-+	atmel_ssc_put_audio(id);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id atmel_asoc_wm8904_dt_ids[] = {
-+	{ .compatible = "atmel,asoc-wm8904", },
-+	{ }
-+};
-+#endif
-+
-+static struct platform_driver atmel_asoc_wm8904_driver = {
-+	.driver = {
-+		.name = "atmel-wm8904-audio",
-+		.owner = THIS_MODULE,
-+		.of_match_table = of_match_ptr(atmel_asoc_wm8904_dt_ids),
-+	},
-+	.probe = atmel_asoc_wm8904_probe,
-+	.remove = atmel_asoc_wm8904_remove,
-+};
-+
-+module_platform_driver(atmel_asoc_wm8904_driver);
-+
-+/* Module information */
-+MODULE_AUTHOR("Bo Shen <voice.shen@atmel.com>");
-+MODULE_DESCRIPTION("ALSA SoC machine driver for Atmel EK with WM8904 codec");
-+MODULE_LICENSE("GPL");
--- 
-1.7.9.5
+> So I think we already have the means (albeit with that quirky hw interface, but
+> it seems to have been good enough for a long time already) to do that. Or do I
+> miss something?
+> -Daniel
+> 
+> >
+> > Thanks
+> > --xingchao
+> >
+> > > -----Original Message-----
+> > > From: Wang, Xingchao
+> > > Sent: Thursday, July 18, 2013 7:18 AM
+> > > To: 'Takashi Iwai'; David Henningsson; Paulo Zanoni
+> > > Cc: alsa-devel@alsa-project.org; Daniel Vetter;
+> > > daniel.vetter@ffwll.ch; intel-gfx@lists.freedesktop.org; Wang
+> > > xingchao; Girdwood, Liam R; Jin, Gordon
+> > > Subject: RE: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7] Power-well API
+> > > implementation for Haswell
+> > >
+> > >
+> > >
+> > > > -----Original Message-----
+> > > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > Sent: Wednesday, July 17, 2013 10:22 PM
+> > > > To: David Henningsson
+> > > > Cc: Paulo Zanoni; Wang, Xingchao; alsa-devel@alsa-project.org;
+> > > > Daniel Vetter; daniel.vetter@ffwll.ch;
+> > > > intel-gfx@lists.freedesktop.org; Wang xingchao; Girdwood, Liam R;
+> > > > Jin, Gordon
+> > > > Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7] Power-well
+> > > > API implementation for Haswell
+> > > >
+> > > > At Wed, 17 Jul 2013 16:05:43 +0200, David Henningsson wrote:
+> > > > >
+> > > > > On 07/17/2013 04:00 PM, Takashi Iwai wrote:
+> > > > > > At Wed, 17 Jul 2013 10:31:26 -0300, Paulo Zanoni wrote:
+> > > > > >>
+> > > > > >> 2013/7/17 Wang, Xingchao <xingchao.wang@intel.com>:
+> > > > > >>>
+> > > > > >>>
+> > > > > >>>> -----Original Message-----
+> > > > > >>>> From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > > >>>> Sent: Wednesday, July 17, 2013 4:18 PM
+> > > > > >>>> To: Wang, Xingchao
+> > > > > >>>> Cc: Paulo Zanoni; alsa-devel@alsa-project.org; Daniel
+> > > > > >>>> Vetter; daniel.vetter@ffwll.ch;
+> > > > > >>>> intel-gfx@lists.freedesktop.org; Wang xingchao; Girdwood,
+> > > > > >>>> Liam R; david.henningsson@canonical.com
+> > > > > >>>> Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7]
+> > > > > >>>> Power-well API implementation for Haswell
+> > > > > >>>>
+> > > > > >>>> At Wed, 17 Jul 2013 08:03:38 +0000, Wang, Xingchao wrote:
+> > > > > >>>>>
+> > > > > >>>>>
+> > > > > >>>>>
+> > > > > >>>>>> -----Original Message-----
+> > > > > >>>>>> From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > > >>>>>> Sent: Wednesday, July 17, 2013 3:34 PM
+> > > > > >>>>>> To: Wang, Xingchao
+> > > > > >>>>>> Cc: Paulo Zanoni; alsa-devel@alsa-project.org; Daniel
+> > > > > >>>>>> Vetter; daniel.vetter@ffwll.ch;
+> > > > > >>>>>> intel-gfx@lists.freedesktop.org; Wang xingchao; Girdwood,
+> > > > > >>>>>> Liam R; david.henningsson@canonical.com
+> > > > > >>>>>> Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7]
+> > > > > >>>>>> Power-well API implementation for Haswell
+> > > > > >>>>>>
+> > > > > >>>>>> At Wed, 17 Jul 2013 02:52:41 +0000, Wang, Xingchao wrote:
+> > > > > >>>>>>>
+> > > > > >>>>>>> Hi Takashi/Paulo,
+> > > > > >>>>>>>
+> > > > > >>>>>>>>>> would you change it to "auto" and test again.
+> > > > > >>>>>>>>>> Runtime power save should be enabled with "auto".
+> > > > > >>>>>>>>>
+> > > > > >>>>>>>>> Doesn't solve the problem. Should I open a bug report
+> > > > somewhere?
+> > > > > >>>>>>>>> Having the power well enabled prevents some power
+> > > > > >>>>>>>>> saving features from the graphics driver.
+> > > > > >>>>>>>>
+> > > > > >>>>>>>> Is the HD-audio power-saving itself working?  You can
+> > > > > >>>>>>>> check it via watching /sys/class/hwC*/power_{on|off}_acct
+> files.
+> > > > > >>>>>>>>
+> > > > > >>>>>>>> power_save option has to be adjusted appropriately.
+> > > > > >>>>>>>> Note that many DEs change this value dynamically per
+> > > > > >>>>>>>> AC-cable plug/unplug depending on the configuration,
+> > > > > >>>>>>>> and often it's set to 0 (= no power save) when AC-cable is
+> plugged.
+> > > > > >>>>>>>>
+> > > > > >>>>>>> [Wang, Xingchao] Paulo used a new Ultrabook board with
+> > > > > >>>>>>> charger connected,
+> > > > > >>>>>> and see the default parameter "auto=on".
+> > > > > >>>>>>> In such scenario, power-well is always occupied by
+> > > > > >>>>>>> Display audio controller. Moreover, in this board, if no
+> > > > > >>>>>>> external monitors connected, It's
+> > > > > >>>>>> using internal eDP and totally no audio support.
+> > > > > >>>>>> Power-well usage in such case also blocks some eDP features as
+> Paulo told me.
+> > > > > >>>>>>>
+> > > > > >>>>>>> So I think it's not a good idea to break the rule of
+> > > > > >>>>>>> power policy when charger
+> > > > > >>>>>> connected but it's necessary to add support in this particular
+> case.
+> > > > > >>>>>>> Takashi, do you think it's acceptable to let Display
+> > > > > >>>>>>> audio controller/codec
+> > > > > >>>>>> suspend in such case?
+> > > > > >>>>>>
+> > > > > >>>>>> Do you mean the driver enables the powersave forcibly?
+> > > > > >>>>>
+> > > > > >>>>> Yes. I mean call pm_runtime_allow() for the power-well
+> > > > > >>>>> HD-A
+> > > > controller.
+> > > > > >>>>>
+> > > > > >>>>>> Then, no, not in general.
+> > > > > >>>>>>
+> > > > > >>>>>> If the default parameter of autopm is the problem, this
+> > > > > >>>>>> should be changed, instead of forcing the policy in the driver.
+> > > > > >>>>>>
+> > > > > >>>>>> OTOH, the audio codec's powersave policy is governed by
+> > > > > >>>>>> the power_save option and it's set up dynamically by the
+> > > > > >>>>>> desktop
+> > > system.
+> > > > > >>>>>> We shouldn't override it in the driver.
+> > > > > >>>>>>
+> > > > > >>>>>> If the power well *must* be off when only an eDP is used (e.g.
+> > > > > >>>>>> otherwise the hardware doesn't work properly), then it's a
+> > > > > >>>>>> different story.  Is it the case?   And what exactly would be
+> the
+> > > > > >>>>>> problem?
+> > > > > >>>>> In the eDP only case, no audio is needed for the HD-A
+> > > > > >>>>> controller, so it's
+> > > > > >>>> wasting power in current design.
+> > > > > >>>>> I think Paulo or Daniel could explain more details on the impact.
+> > > > > >>>>
+> > > > > >>>> Consuming more power is the expected behavior.  What else?
+> > > > > >>>>
+> > > > > >>>>
+> > > > > >>>>>> If it's the case, controlling the power well based on the
+> > > > > >>>>>> runtime PM is likely a bad design, as it relies on the
+> > > > > >>>>>> parameter user
+> > > > sets.
+> > > > > >>>>>> (And remember that the power-saving of the audio can be
+> > > > > >>>>>> disabled completely via Kconfig, too.)
+> > > > > >>>>>  From audio controller's point of view, if it's asked be
+> > > > > >>>>> active, it needs power
+> > > > > >>>> and should request power-well from gfx side.
+> > > > > >>>>> In above case, audio controller should not be active but
+> > > > > >>>>> user set it be
+> > > > > >>>> "active".
+> > > > > >>>>
+> > > > > >>>> By setting the autopm "on", user expects that no runtime PM
+> > > happens.
+> > > > > >>>> In other words, the audio controller must be kept active as
+> > > > > >>>> long as this parameter is set.  And this is the parameter
+> > > > > >>>> user controls, and not what the driver forcibly sets.
+> > > > > >>>
+> > > > > >>> Okay, become clear now. :)
+> > > > > >>> So I think the conflict for Paulo becomes, in eDP caes, if
+> > > > > >>> audio is active
+> > > > and requested power-well, some eDP feature was under impact?
+> > > > > >>> Paulo, would you clarify this in more details?
+> > > > > >>
+> > > > > >> On our driver we try to disable the power well whenever
+> > > > > >> possible, as soon as possible. We don't change our behavior
+> > > > > >> based on power AC or other user-space modifiable behavior
+> > > > > >> (except the i915.disable_power_well Kernel option). If the
+> > > > > >> power well is not disabled we can't enable some features,
+> > > > > >> like PSR (panel self refresh, and eDP feature) or PC8, which
+> > > > > >> is another power-saving feature. This will also make our QA
+> > > > > >> procedures a lot more complex since when we want to test
+> > > > > >> specific features (e.g., PSR, PC8) we'll have to disconnect
+> > > > > >> the AC adapter or run scripts. So the behavior/predictability
+> > > > > >> of our driver will be based on the Audio driver
+> > > > power management policies.
+> > > > > >
+> > > > > > So all missing feature are about the power saving?
+> > > > > >
+> > > > > >> I am not so experienced with general Linux Power Management
+> > > > > >> code, so maybe the way the Audio driver is behaving is just
+> > > > > >> the usual way, but I have to admit I was expecting the audio
+> > > > > >> driver would only require the power well when it is actually
+> > > > > >> needed, and release it as soon as possible.
+> > > > > >
+> > > > > > It would behave so, if all setups are for power-saving.
+> > > > > >
+> > > > > > But, in your case, the runtime PM control attribute shows
+> > > > > > "on"; it implies that the runtime PM is effectively disabled,
+> > > > > > thus disabling power well is also impossible (because it would
+> > > > > > require turning off the audio controller, too).
+> > > > >
+> > > > > So, if the machine only has an eDP (which has no audio function
+> > > > > in itself, right?) and never HDMI, DP output because there are
+> > > > > no such physical ports, the audio controller has no function.
+> > > > > Maybe we can, before doing anything else, ask the video driver
+> > > > > first if this is the case, and if so, never create the sound
+> > > > > card at all, and just leave things the way the video driver wants?
+> > > >
+> > > > Well, doesn't BIOS mark HDMI/DP audio pins as unused?  Then the
+> > > > audio driver won't create any instances.  Of course, we can
+> > > > optimize such a case, indeed.
+> > >
+> > > As I know, the eDP only case doesnot mean no HDMI/DP support. User
+> > > would plug in HDMI/DP monitor at any time.
+> > > So diable audio controller totoally is not a good idea. :(.
+> > > Paulo, is that correct for you case?
+> > >
+> > > --xingchao
+> > > >
+> > > >
+> > > > Takashi
+> 
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> +41 (0) 79 365 57 48 - http://blog.ffwll.ch
