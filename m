@@ -1,20 +1,32 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Fwd: Re: Alsa USB Audio regression
-Date: Thu, 18 Jul 2013 08:55:18 +0800
-Message-ID: <CAN8cciagY09se1HqdAo1b0Q=+C-a-XBk94-zG-5f+6TDR4yjSw@mail.gmail.com>
-References: <51E5745E.2090209@gmx.at> <51E5A096.1050001@gmx.at>
- <s5hhafttciy.wl%tiwai@suse.de>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [Intel-gfx] [PATCH 0/4 V7] Power-well API
+ implementation for Haswell
+Date: Thu, 18 Jul 2013 01:00:07 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC48901184E3B6@SHSMSX104.ccr.corp.intel.com>
+References: <1369922831-727-1-git-send-email-xingchao.wang@linux.intel.com>
+ <20130606153441.GI7827@phenom.ffwll.local>
+ <CA+gsUGSBf5hit=fmjcrcy=fKJPNaFe02VkkM_=pYkVUwVyvG2Q@mail.gmail.com>
+ <20130704082314.GA2393@wxc-intel>
+ <CA+gsUGR+xOEa5b7XnTWWwRYyyVxO6hNAVv6EJXAvtKUfuabb1w@mail.gmail.com>
+ <20130704131330.GD2393@wxc-intel>
+ <CA+gsUGRVkeArxvFPFH0=MfZH6M6-VTpu8L4fbGkfoTRaB7oX0w@mail.gmail.com>
+ <s5hd2qww6no.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC48901184D8BF@SHSMSX104.ccr.corp.intel.com>
+ <s5h38rdmyh0.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC48901184DB13@SHSMSX104.ccr.corp.intel.com>
+ <s5hwqoplhv4.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC48901184DB3D@SHSMSX104.ccr.corp.intel.com>
+ <CA+gsUGTCimKS35XaX7V+aWXtmGBeHS2ftChU5ndzsray5Aipuw@mail.gmail.com>
+ <s5hwqopthff.wl%tiwai@suse.de>	<51E6A4B7.7060605@canonical.com>
+ <s5hsizdtgg8.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f177.google.com (mail-ie0-f177.google.com
- [209.85.223.177])
- by alsa0.perex.cz (Postfix) with ESMTP id C788826553F
- for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2013 02:55:19 +0200 (CEST)
-Received: by mail-ie0-f177.google.com with SMTP id aq17so5601032iec.36
- for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2013 17:55:18 -0700 (PDT)
-In-Reply-To: <s5hhafttciy.wl%tiwai@suse.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 99D0A26553F
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2013 03:00:12 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,250 +36,215 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, =?UTF-8?Q?Ulrich_G=C3=BCnther?= <ulrich.guenther@gmx.at>, pulseaudio-discuss@lists.freedesktop.org
+To: Paulo Zanoni <przanoni@gmail.com>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, Wang xingchao <xingchao.wang@linux.intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Jin, Gordon" <gordon.jin@intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-> > >>>
+Hi Paulo/Daniel,
 
-> > > >>> After Ubuntu 10.04 LTS (Ubuntu 10.10 works, Ubuntu 11.04 doesn't
-> > > work at
-> > > >>> all, Ubuntu 11.10 and newer have the bug), the headset only plays
-> > > sound
-> > > >>> at maximum volume level if the volume is turned down just a little
-> no
-> > > >>> sound is being played.
-> > > >>>
-> > > >>> I have filled a Ubuntu bug for 12.04 LTS at:
-> > > >>> https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1200925.
-> > > >>>
-> > > >>> AlsaInfo for Ubuntu 12.04 LTS with the bug:
-> > > >>>
+Do you agree to export an API in gfx side for eDP case? 
+Basically the api will let audio drver know which pipe in use. i.e. in the eDP only caes, audio driver
+Will know gfx is not using HDMI/DP and would like to let power-well off. 
+As there's the conflict when user expect display audio driver always active but gfx need audio driver off.
+Audio driver could make decision to release power-well if it knows the eDP only case through the API.
+
+OTOH, I think audio driver could also export an API for gfx side, if gfx driver need audio driver release power-well but it's in usage,
+It will call this API and audio drvier will release power-well accordingly. 
+
+This change make HDMI/DP hotplug handling complicated in audio driver side, if audio driver release power-well, it would enter suspend mode.
+Meanwhile the user may expect it's in active mode, this may cause some confuse.
+
+Thanks
+--xingchao
+
+> -----Original Message-----
+> From: Wang, Xingchao
+> Sent: Thursday, July 18, 2013 7:18 AM
+> To: 'Takashi Iwai'; David Henningsson; Paulo Zanoni
+> Cc: alsa-devel@alsa-project.org; Daniel Vetter; daniel.vetter@ffwll.ch;
+> intel-gfx@lists.freedesktop.org; Wang xingchao; Girdwood, Liam R; Jin, Gordon
+> Subject: RE: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7] Power-well API
+> implementation for Haswell
+> 
+> 
+> 
+> > -----Original Message-----
+> > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > Sent: Wednesday, July 17, 2013 10:22 PM
+> > To: David Henningsson
+> > Cc: Paulo Zanoni; Wang, Xingchao; alsa-devel@alsa-project.org; Daniel
+> > Vetter; daniel.vetter@ffwll.ch; intel-gfx@lists.freedesktop.org; Wang
+> > xingchao; Girdwood, Liam R; Jin, Gordon
+> > Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7] Power-well API
+> > implementation for Haswell
+> >
+> > At Wed, 17 Jul 2013 16:05:43 +0200,
+> > David Henningsson wrote:
 > > >
-> http://www.alsa-project.org/db/?f=3bde76b15a15f585418a6a4a4703ca67fd4cdf42
-> > > .
-> > > >>> AlsaInfo for Ubuntu 10.04 LTS without the bug:
+> > > On 07/17/2013 04:00 PM, Takashi Iwai wrote:
+> > > > At Wed, 17 Jul 2013 10:31:26 -0300, Paulo Zanoni wrote:
+> > > >>
+> > > >> 2013/7/17 Wang, Xingchao <xingchao.wang@intel.com>:
 > > > >>>
-> > >
-> http://www.alsa-project.org/db/?f=5824e55345c3f7128937405254485a489886b9dc
+> > > >>>
+> > > >>>> -----Original Message-----
+> > > >>>> From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > >>>> Sent: Wednesday, July 17, 2013 4:18 PM
+> > > >>>> To: Wang, Xingchao
+> > > >>>> Cc: Paulo Zanoni; alsa-devel@alsa-project.org; Daniel Vetter;
+> > > >>>> daniel.vetter@ffwll.ch; intel-gfx@lists.freedesktop.org; Wang
+> > > >>>> xingchao; Girdwood, Liam R; david.henningsson@canonical.com
+> > > >>>> Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7] Power-well
+> > > >>>> API implementation for Haswell
+> > > >>>>
+> > > >>>> At Wed, 17 Jul 2013 08:03:38 +0000, Wang, Xingchao wrote:
+> > > >>>>>
+> > > >>>>>
+> > > >>>>>
+> > > >>>>>> -----Original Message-----
+> > > >>>>>> From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > >>>>>> Sent: Wednesday, July 17, 2013 3:34 PM
+> > > >>>>>> To: Wang, Xingchao
+> > > >>>>>> Cc: Paulo Zanoni; alsa-devel@alsa-project.org; Daniel Vetter;
+> > > >>>>>> daniel.vetter@ffwll.ch; intel-gfx@lists.freedesktop.org; Wang
+> > > >>>>>> xingchao; Girdwood, Liam R; david.henningsson@canonical.com
+> > > >>>>>> Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7]
+> > > >>>>>> Power-well API implementation for Haswell
+> > > >>>>>>
+> > > >>>>>> At Wed, 17 Jul 2013 02:52:41 +0000, Wang, Xingchao wrote:
+> > > >>>>>>>
+> > > >>>>>>> Hi Takashi/Paulo,
+> > > >>>>>>>
+> > > >>>>>>>>>> would you change it to "auto" and test again.
+> > > >>>>>>>>>> Runtime power save should be enabled with "auto".
+> > > >>>>>>>>>
+> > > >>>>>>>>> Doesn't solve the problem. Should I open a bug report
+> > somewhere?
+> > > >>>>>>>>> Having the power well enabled prevents some power saving
+> > > >>>>>>>>> features from the graphics driver.
+> > > >>>>>>>>
+> > > >>>>>>>> Is the HD-audio power-saving itself working?  You can check
+> > > >>>>>>>> it via watching /sys/class/hwC*/power_{on|off}_acct files.
+> > > >>>>>>>>
+> > > >>>>>>>> power_save option has to be adjusted appropriately.  Note
+> > > >>>>>>>> that many DEs change this value dynamically per AC-cable
+> > > >>>>>>>> plug/unplug depending on the configuration, and often it's
+> > > >>>>>>>> set to 0 (= no power save) when AC-cable is plugged.
+> > > >>>>>>>>
+> > > >>>>>>> [Wang, Xingchao] Paulo used a new Ultrabook board with
+> > > >>>>>>> charger connected,
+> > > >>>>>> and see the default parameter "auto=on".
+> > > >>>>>>> In such scenario, power-well is always occupied by Display
+> > > >>>>>>> audio controller. Moreover, in this board, if no external
+> > > >>>>>>> monitors connected, It's
+> > > >>>>>> using internal eDP and totally no audio support. Power-well
+> > > >>>>>> usage in such case also blocks some eDP features as Paulo told me.
+> > > >>>>>>>
+> > > >>>>>>> So I think it's not a good idea to break the rule of power
+> > > >>>>>>> policy when charger
+> > > >>>>>> connected but it's necessary to add support in this particular case.
+> > > >>>>>>> Takashi, do you think it's acceptable to let Display audio
+> > > >>>>>>> controller/codec
+> > > >>>>>> suspend in such case?
+> > > >>>>>>
+> > > >>>>>> Do you mean the driver enables the powersave forcibly?
+> > > >>>>>
+> > > >>>>> Yes. I mean call pm_runtime_allow() for the power-well HD-A
+> > controller.
+> > > >>>>>
+> > > >>>>>> Then, no, not in general.
+> > > >>>>>>
+> > > >>>>>> If the default parameter of autopm is the problem, this
+> > > >>>>>> should be changed, instead of forcing the policy in the driver.
+> > > >>>>>>
+> > > >>>>>> OTOH, the audio codec's powersave policy is governed by the
+> > > >>>>>> power_save option and it's set up dynamically by the desktop
+> system.
+> > > >>>>>> We shouldn't override it in the driver.
+> > > >>>>>>
+> > > >>>>>> If the power well *must* be off when only an eDP is used (e.g.
+> > > >>>>>> otherwise the hardware doesn't work properly), then it's a
+> > > >>>>>> different story.  Is it the case?   And what exactly would be the
+> > > >>>>>> problem?
+> > > >>>>> In the eDP only case, no audio is needed for the HD-A
+> > > >>>>> controller, so it's
+> > > >>>> wasting power in current design.
+> > > >>>>> I think Paulo or Daniel could explain more details on the impact.
+> > > >>>>
+> > > >>>> Consuming more power is the expected behavior.  What else?
+> > > >>>>
+> > > >>>>
+> > > >>>>>> If it's the case, controlling the power well based on the
+> > > >>>>>> runtime PM is likely a bad design, as it relies on the
+> > > >>>>>> parameter user
+> > sets.
+> > > >>>>>> (And remember that the power-saving of the audio can be
+> > > >>>>>> disabled completely via Kconfig, too.)
+> > > >>>>>  From audio controller's point of view, if it's asked be
+> > > >>>>> active, it needs power
+> > > >>>> and should request power-well from gfx side.
+> > > >>>>> In above case, audio controller should not be active but user
+> > > >>>>> set it be
+> > > >>>> "active".
+> > > >>>>
+> > > >>>> By setting the autopm "on", user expects that no runtime PM
+> happens.
+> > > >>>> In other words, the audio controller must be kept active as
+> > > >>>> long as this parameter is set.  And this is the parameter user
+> > > >>>> controls, and not what the driver forcibly sets.
+> > > >>>
+> > > >>> Okay, become clear now. :)
+> > > >>> So I think the conflict for Paulo becomes, in eDP caes, if audio
+> > > >>> is active
+> > and requested power-well, some eDP feature was under impact?
+> > > >>> Paulo, would you clarify this in more details?
 > > > >>
-> > > >>
-> > > >>
-> > > >> It is strange that dB range of your usb audio is 0 to 0.14 (only
-> > > small gain and no attenuation)
-> > > >>
-> > > >> In 10.04 LTS pulseaudio provide software volume control
-> > > >>
-> > > >>
-> > > >> ( 1.095| 0.000) I: alsa-sink.c: Driver does not support hardware
-> > > volume control, falling back to software volume control.
-> > > >>
-> > > >>
-> > > >> control.6 {
-> > > >> comment.access 'read write'
-> > > >> comment.type INTEGER
-> > > >> comment.count 1 comment.range '0 - 37'
-> > > >> comment.dbmin 0 comment.dbmax 14
-> > > >> iface MIXER
-> > > >> name 'Speaker Playback Volume' value 30 }
-> > > >>
-> > > >>
-> > > >>  In 12.04 pulseaudio did not provide software volume attenuation
-> > > and use the speaker playback volume control
+> > > >> On our driver we try to disable the power well whenever possible,
+> > > >> as soon as possible. We don't change our behavior based on power
+> > > >> AC or other user-space modifiable behavior (except the
+> > > >> i915.disable_power_well Kernel option). If the power well is not
+> > > >> disabled we can't enable some features, like PSR (panel self
+> > > >> refresh, and eDP feature) or PC8, which is another power-saving
+> > > >> feature. This will also make our QA procedures a lot more complex
+> > > >> since when we want to test specific features (e.g., PSR, PC8)
+> > > >> we'll have to disconnect the AC adapter or run scripts. So the
+> > > >> behavior/predictability of our driver will be based on the Audio
+> > > >> driver
+> > power management policies.
 > > > >
+> > > > So all missing feature are about the power saving?
 > > > >
-> > > > So does that mean that the bug is in pulseaudio, or could it be even
-> > > deeper like in the kernel or something?
+> > > >> I am not so experienced with general Linux Power Management code,
+> > > >> so maybe the way the Audio driver is behaving is just the usual
+> > > >> way, but I have to admit I was expecting the audio driver would
+> > > >> only require the power well when it is actually needed, and
+> > > >> release it as soon as possible.
+> > > >
+> > > > It would behave so, if all setups are for power-saving.
+> > > >
+> > > > But, in your case, the runtime PM control attribute shows "on"; it
+> > > > implies that the runtime PM is effectively disabled, thus
+> > > > disabling power well is also impossible (because it would require
+> > > > turning off the audio controller, too).
 > > >
-> > > Are there any significant change in volume when you use "alsamixer
-> > > -c0" to change speaker playback volume from min 0dB to 0.14dB ?
-> > >
-> > > Did pulseaudio provide software attuentation -1.61dB when the range of
-> > > hardware volume control is only 0.14dB ?
-> > >
-> > > * index: 0
-> > > name: <alsa_output.usb-0d8c_USB_Audio-00-Audio.analog-surround-71>
-> > > driver: <module-alsa-card.c>
-> > > flags: HARDWARE HW_MUTE_CTRL HW_VOLUME_CTRL DECIBEL_VOLUME LATENCY
-> > > DYNAMIC_LATENCY
-> > > state: SUSPENDED
-> > > suspend cause: IDLE
-> > > priority: 9049
-> > > volume: 0:  94% 1:  94% 2:  94% 3:  94% 4:  94% 5:  94% 6:  94% 7:  94%
-> > >         0: -1,61 dB 1: -1,61 dB 2: -1,61 dB 3: -1,61 dB 4: -1,61 dB 5:
-> > > -1,61 dB 6: -1,61 dB 7: -1,61 dB
-> > >         balance 0,00
-> > > base volume:  99%
-> > >              -0,14 dB
-> > > volume steps: 65537
-> > > muted: no
-> > >
-> > > It is strange that 5.1 headset only support 8 channels playback
-> > >
-> > Okay i did try "alsamixer -c0" in Ubuntu 12.04 LTS, i selected the Usb
-> > Headset, Speaker was at 0 using the remote control from the headset i
-> > could bring the value to 86, so if the volume is turned down the value
-> > goes immideatly to 0.
-> > With the alsamixer i was able to regulate the value between 0 and 100,
-> > db-change is 0,01 at lowest and 0,14 at highest.
-> > I could increment/decrement the db-change in steps of 0,01 (with the
-> > up/down keys from the keyboard), the volume from the headset-speakers
-> > follows accordingly.
-> > When using anything besides the "alsamixer -c0" the volume can only be 0
-> > or 86.
-> > I was able to play the test sounds for: front center, front left, front
-> > right, rear left,rear right and subwoofer every thing came from the
-> > right direction, as expected from a 5.1 headset.
-> > I was really surprised,  thank you for pointing this out, it really
-> > didn't occur to me, maybe i saw the alsamixer some years ago but i
-> > really couldn't remember that it was there.
->
-> The reason it doesn't work with PulseAudio is that the dB information
-> obtained from the hardware is pretty bogus, thus it confuses the PA
-> mixer which relies purely on dB level.
->
-> Have you tried any newer kernels, 3.9.x or 3.10.x, at least?
-> 3.2.x is really old for debugging such a device-specific problem.
->
->
-   AudioControl Interface Descriptor:
-        bLength 25
-
-
- bDescriptorType 36
-        bDescriptorSubtype 4 (MIXER_UNIT)
-        bUnitID 12
-        bNrInPins 3
-        baSourceID( 0) 1
-        baSourceID( 1) 9
-        baSourceID( 2) 11
-        bNrChannels 8
-        wChannelConfig 0x063f
-          Left Front (L)
-          Right Front (R)
-          Center Front (C)
-          Low Freqency Enhancement (LFE)
-          Left Surround (LS)
-          Right Surround (RS)
-          Side Left (SL)
-          Side Right (SR)
-        iChannelNames 0
-        bmControls 0x00
-        bmControls 0x00
-        bmControls 0x00
-        iMixer 0
-        junk at descriptor end: 00 00 00 00 00 00 00 00 00
-
-( 0.229| 0.000) D: [pulseaudio] alsa-mixer.c: Path analog-output-speaker
-(Speakers), direction=1, priority=100, probed=yes, supported=yes,
-has_mute=yes, has_volume=yes, has_dB=yes, min_volume=0, max_volume=37,
-min_dB=0, max_dB=0.14
-
-( 0.229| 0.000) D: [pulseaudio] alsa-mixer.c: Element Speaker, direction=1,
-switch=1, volume=1, volume_limit=-1, enumeration=0, required=0,
-required_any=4, required_absent=0, mask=0x7ffffffffffff, n_channels=1,
-override_map=yes
-
-( 0.229| 0.000) D: [pulseaudio] alsa-mixer.c: Jack Headphone,
-alsa_name='Headphone Jack', detection unavailable ( 0.229| 0.000) D:
-[pulseaudio] alsa-mixer.c: Jack Front Headphone, alsa_name='Front Headphone
-Jack', detection unavailable
-
-( 0.229| 0.000) D: [pulseaudio] alsa-mixer.c: Jack Speaker Phantom,
-alsa_name='Speaker Phantom Jack', detection unavailable
-
-( 0.229| 0.000) I: [pulseaudio] alsa-sink.c: Successfully enabled
-synchronous volume.
-
-( 0.229| 0.000) I: [pulseaudio] alsa-sink.c: Hardware volume ranges from
-0.00 dB to 0.14 dB.
-
-( 0.230| 0.000) I: [pulseaudio] alsa-sink.c: Fixing base volume to -0.14 dB
-
-( 0.230| 0.000) I: [pulseaudio] alsa-sink.c: Using hardware volume control.
-Hardware dB scale supported.
-
-( 0.230| 0.000) I: [pulseaudio] alsa-sink.c: Using hardware mute control.
-
-
-For your notebook , pulseaudio just add the ranges of softvol PCM, virtual
-master and speaker playback volume to get the hardware volume range
--178.00 dB to 1.00 dB
-
-
-( 0.497| 0.000) D: alsa-mixer.c: Activating path analog-output-speaker
-
-( 0.497| 0.000) D: alsa-mixer.c: Path analog-output-speaker (Analog
-Speakers), direction=1, priority=100, probed=yes, supported=yes,
-has_mute=yes, has_volume=yes, has_dB=yes, min_volume=0, max_volume=64,
-min_dB=-178, max_dB=1
-
-( 0.497| 0.000) D: alsa-mixer.c: Element Master, direction=1, switch=1,
-volume=1, enumeration=0, required=0, required_absent=0,
-mask=0x7ffffffffffff, n_channels=1, override_map=yes
-
-( 0.497| 0.000) D: alsa-mixer.c: Element Headphone, direction=1, switch=1,
-volume=3, enumeration=0, required=0, required_absent=0,
-mask=0x3ff0000000000006, n_channels=2, override_map=no
-
-( 0.497| 0.000) D: alsa-mixer.c: Element Speaker, direction=1, switch=1,
-volume=1, enumeration=0, required=4, required_absent=0,
-mask=0x3ff3600000000f66, n_channels=2, override_map=yes
-
-( 0.498| 0.000) D: alsa-mixer.c: Element PCM, direction=1, switch=0,
-volume=1, enumeration=0, required=0, required_absent=0,
-mask=0x3600000000f66, n_channels=2, override_map=yes
-
-( 0.498| 0.000) I: alsa-sink.c: Hardware volume ranges from -178.00 dB to
-1.00 dB.
-
-( 0.498| 0.000) I: alsa-sink.c: Fixing base volume to -1.00 dB
-
-
-
-control.2 {
-comment.access 'read write'
-comment.type INTEGER
-comment.count 2
-comment.range '0 - 64'
-comment.dbmin -6300
-comment.dbmax 100
-iface MIXER
-name 'Speaker Playback Volume'
-value.0 52 value.1 52 }
-
-control.4 {
-comment.access 'read write'
-comment.type INTEGER
-comment.count 2
-comment.range '0 - 64'
-comment.dbmin -6300
-comment.dbmax 100
-iface MIXER
-name 'Headphone Playback Volume'
-value.0 63 value.1 63 }
-
-control.10 {
-comment.access 'read write'
-comment.type INTEGER
-comment.count 1 comment.range '0 - 64'
-comment.dbmin -6400
-comment.dbmax 0
-iface MIXER
-name 'Master Playback Volume'
-value 52 }
-
-control.12 {
-comment.access 'read write user'
-comment.type INTEGER
-comment.count 2
-comment.range '0 - 255'
-comment.tlv '0000000100000008ffffec1400000014'
-comment.dbmin -5100
-comment.dbmax 0
-iface MIXER
-name 'PCM Playback Volume'
-value.0 255 value.1 255
-
-it is strange that virtual master playback volume have a different dbmin
-and dbmax from the slaves (speaker and headphone)
+> > > So, if the machine only has an eDP (which has no audio function in
+> > > itself, right?) and never HDMI, DP output because there are no such
+> > > physical ports, the audio controller has no function.
+> > > Maybe we can, before doing anything else, ask the video driver first
+> > > if this is the case, and if so, never create the sound card at all,
+> > > and just leave things the way the video driver wants?
+> >
+> > Well, doesn't BIOS mark HDMI/DP audio pins as unused?  Then the audio
+> > driver won't create any instances.  Of course, we can optimize such a
+> > case, indeed.
+> 
+> As I know, the eDP only case doesnot mean no HDMI/DP support. User would
+> plug in HDMI/DP monitor at any time.
+> So diable audio controller totoally is not a good idea. :(.
+> Paulo, is that correct for you case?
+> 
+> --xingchao
+> >
+> >
+> > Takashi
