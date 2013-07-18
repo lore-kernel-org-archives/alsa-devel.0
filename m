@@ -1,64 +1,54 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: depend on ARCH_TEGRA, not ARCH_TEGRA_*
-Date: Thu, 18 Jul 2013 10:58:15 +0100
-Message-ID: <20130718095815.GE22506@sirena.org.uk>
-References: <1374013667-21435-1-git-send-email-swarren@wwwdotorg.org>
- <20130717083003.GA22506@sirena.org.uk>
- <51E6CDEA.7060003@wwwdotorg.org>
- <20130717175701.GY22506@sirena.org.uk>
- <51E6E107.8020300@wwwdotorg.org>
- <20130717223309.GZ22506@sirena.org.uk>
- <51E7203A.2020007@wwwdotorg.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: pcm: Use the power efficient workqueue
+	for delayed powerdown
+Date: Thu, 18 Jul 2013 11:54:27 +0100
+Message-ID: <1374144867-25675-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="m7GK0ytKUM7VScCy"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <51E7203A.2020007-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 823412651AB
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2013 12:54:32 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+From: Mark Brown <broonie@linaro.org>
 
---m7GK0ytKUM7VScCy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+There is no need to use a normal per-CPU workqueue for delayed power downs
+as they're not timing or performance critical and waking up a core for them
+would defeat some of the point.
 
-On Wed, Jul 17, 2013 at 04:52:42PM -0600, Stephen Warren wrote:
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/soc-pcm.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-> The key to enable tegra30_i2s.c should really be ARCH_TEGRA_3x_SOC ||
-> ARCH_TEGRA_114_SOC, which gets a bit unwieldy once you have, say, 4
-> different SoCs in that list and a similar list starts to apply to a
-> lot of different HW-modules/drivers. Even creating an
-> ARCH_TEGRA_30_OR_LATER_SOC will get problematic, since defining "or
-> later" will likely become progressively more complex over time, as we
-> start putting our more SoCs. What are your thoughts on the best way to
-> solve that?
-
-Can't you just say Tegra 20 or later is Tegra 20 plus Tegra 30 or later
-and so on?
-
---m7GK0ytKUM7VScCy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR57w0AAoJELSic+t+oim9/W0P/2GNjzwPymgibdHL3Cy3TF+c
-yWl9xBkyJFju9U3wJqfuCCTYod77wFntdcNzXfOaPwmZlkDiTqWckUBXB7ac2gFn
-aIptUhURla82RxwbAHtRm79skR0nR7wozpRidmYfSUHiBGAF1KMx4stoz9oSQpPr
-eJ/VzjGv/SuayvZrrlC3z1VRUsMMIRuCs/3iH0VuSh4958G5p7fnCG5AhaXTMno0
-xcMmdmRNpYM/CEJxm9SvfT5oGoLR2Y8ujiQXKe16m8Ykd0+cyIk4/td97tikvq0n
-/pS2BR85kHNgAvotNXchEADdZ6PElgqVkXihW4Wrp/2khzPSaIP2FcbAJMoUoVJL
-qAPVwwlaTxGjC0dZLJJgEfFJvR6ivROXhGdYC1C3ooHD+mSaLmeLpGj0EXxTl0Up
-LBcvW6VXDpAfJ8vn4gfWKvBMASYCMzDLs1yyAVYNFTmKVIAgkvZs3G3A8EImq0Qp
-pOj7PHUuIA2iXec7/LBpIyxwrZGyKdb4rWPXgdz8YcT1K1HcFf2Nf3Hyh+3Xx2aa
-m3/zsekgEY/YWVR1ThY9gNM3QToUyUG+5kwhqgKw7ogdwtVNyQZAbJ0yQZ4kBEmV
-4bDQ0wePAMfClGTHs2c6MBvfA/Eg+iFbXoTMotS9UldRyn4ogONped+rr2BJaEOh
-lTmT9DFJ2Oj6RHrbf/oe
-=aMWY
------END PGP SIGNATURE-----
-
---m7GK0ytKUM7VScCy--
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index b6c6403..f4f68cb 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -411,8 +411,9 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ 		} else {
+ 			/* start delayed pop wq here for playback streams */
+ 			rtd->pop_wait = 1;
+-			schedule_delayed_work(&rtd->delayed_work,
+-				msecs_to_jiffies(rtd->pmdown_time));
++			queue_delayed_work(system_power_efficient_wq,
++					   &rtd->delayed_work,
++					   msecs_to_jiffies(rtd->pmdown_time));
+ 		}
+ 	} else {
+ 		/* capture streams can be powered down now */
+-- 
+1.8.3.2
