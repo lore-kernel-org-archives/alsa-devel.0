@@ -1,49 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8904: fix the typo error for LINER Mux
-Date: Thu, 18 Jul 2013 11:55:40 +0100
-Message-ID: <20130718105540.GI22506@sirena.org.uk>
-References: <1374129500-5270-1-git-send-email-voice.shen@atmel.com>
+From: Liam Girdwood <liam.r.girdwood@intel.com>
+Subject: Re: [PATCH] ASoC: pcm: Use the power efficient
+ workqueue for delayed powerdown
+Date: Thu, 18 Jul 2013 12:00:01 +0100
+Message-ID: <1374145201.2422.5.camel@loki>
+References: <1374144867-25675-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="D7Wqbbl3Nd9y+nYG"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1374129500-5270-1-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 832732655B3
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2013 13:00:06 +0200 (CEST)
+In-Reply-To: <1374144867-25675-1-git-send-email-broonie@kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2013-07-18 at 11:54 +0100, Mark Brown wrote:
+> From: Mark Brown <broonie@linaro.org>
+> 
+> There is no need to use a normal per-CPU workqueue for delayed power downs
+> as they're not timing or performance critical and waking up a core for them
+> would defeat some of the point.
+> 
+> Signed-off-by: Mark Brown <broonie@linaro.org>
 
---D7Wqbbl3Nd9y+nYG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Acked-by: Liam Girdwood <liam.r.girdwood@intel.com>
 
-On Thu, Jul 18, 2013 at 02:38:20PM +0800, Bo Shen wrote:
-> fix the typo error, from "LINEL Mux" to "LINER Mux"
+---------------------------------------------------------------------
+Intel Corporation (UK) Limited
+Registered No. 1134945 (England)
+Registered Office: Pipers Way, Swindon SN3 1RJ
+VAT No: 860 2173 47
 
-Applied, thanks.
-
---D7Wqbbl3Nd9y+nYG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR58mpAAoJELSic+t+oim9hSoP/2NRjLY23D1B/KPwqCXzawzX
-3vUDb7JTY5KHmA3wqVCQAj6Vg+EYxw3YFtHhQDBW7pRKMNqyNS1cTXB33focPSfh
-XWGYzIfXIQl4mZXdBFvdqPszZWLTnWp5uUfQbvsXcL4lp4UHlU19c1Sq3PxXYwdL
-25C1HbRd5slCBzL6U84vlXUVpN/fHEm2Bv41TbkW2I6phpgF4kUutamuxLwoEDct
-KRvgottV+QrCWtdK/LH9psMoZf4c8nw+cs4V0OAQO6U+xSgG0bQ758IBYr908d7N
-0LGICoHuTUaqnC1pmpXvWr1cl3dfyDT/yFrYKAIvE4wI0wwb/F4Oiz59zmkYTLi4
-Gx3CS3zWBjufsuhFSo27cLvsJSfuq/8DczJbJ8nPu+4rjgVC1QexMwEXNyzGEnQ6
-Kl2MtU1+VeIjfWIu2sh7Lve/at2DhBHRAGY+R4vE/7XVFAQPcG3MNvJot0g57rSP
-dIyw+WOJOMV4ntR+1r7vVe5LUKJm3b9k7hj4EWTayhPQ5j/huVDRGwilov1TrQlI
-CFP6hB4QnsKGQiytTUjilcWKszPpj3YMPYUzEtlMSuYjP8O/t0FWcThBWgcq4/Ek
-vzDzZ0UFTKyA68iHfIe5OQ/GAess3vjHYundKp2SKn8sG348G0LN2bi9pmP0cc/W
-pxn+TTsDdUOzZ2RIMxNv
-=H6Sj
------END PGP SIGNATURE-----
-
---D7Wqbbl3Nd9y+nYG--
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
