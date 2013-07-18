@@ -1,31 +1,29 @@
 From: "Wang, Xingchao" <xingchao.wang@intel.com>
-Subject: Re: [Intel-gfx] [PATCH 0/4 V7] Power-well API
- implementation for Haswell
-Date: Thu, 18 Jul 2013 01:00:07 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC48901184E3B6@SHSMSX104.ccr.corp.intel.com>
-References: <1369922831-727-1-git-send-email-xingchao.wang@linux.intel.com>
- <20130606153441.GI7827@phenom.ffwll.local>
- <CA+gsUGSBf5hit=fmjcrcy=fKJPNaFe02VkkM_=pYkVUwVyvG2Q@mail.gmail.com>
- <20130704082314.GA2393@wxc-intel>
- <CA+gsUGR+xOEa5b7XnTWWwRYyyVxO6hNAVv6EJXAvtKUfuabb1w@mail.gmail.com>
- <20130704131330.GD2393@wxc-intel>
- <CA+gsUGRVkeArxvFPFH0=MfZH6M6-VTpu8L4fbGkfoTRaB7oX0w@mail.gmail.com>
- <s5hd2qww6no.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC48901184D8BF@SHSMSX104.ccr.corp.intel.com>
- <s5h38rdmyh0.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC48901184DB13@SHSMSX104.ccr.corp.intel.com>
- <s5hwqoplhv4.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC48901184DB3D@SHSMSX104.ccr.corp.intel.com>
- <CA+gsUGTCimKS35XaX7V+aWXtmGBeHS2ftChU5ndzsray5Aipuw@mail.gmail.com>
- <s5hwqopthff.wl%tiwai@suse.de>	<51E6A4B7.7060605@canonical.com>
- <s5hsizdtgg8.wl%tiwai@suse.de>
+Subject: Re: [PATCH 2/2] ALSA: hda - get realtime ELD info when
+ codec suspended
+Date: Thu, 18 Jul 2013 05:47:30 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC48901184E46F@SHSMSX104.ccr.corp.intel.com>
+References: <1372074324-13563-1-git-send-email-xingchao.wang@linux.intel.com>
+ <1372074324-13563-2-git-send-email-xingchao.wang@linux.intel.com>
+ <s5hmwqfvizc.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC489011833B68@SHSMSX104.ccr.corp.intel.com>
+ <s5hk3ljvhu2.wl%tiwai@suse.de> <51C83FC5.3090005@canonical.com>
+ <s5h38s7vf2v.wl%tiwai@suse.de> <51C94A80.70709@canonical.com>
+ <s5hobauzkse.wl%tiwai@suse.de> <51C95CA3.7000001@canonical.com>
+ <46B810F6945F7C4788E11DCE57EC4890118344E1@SHSMSX104.ccr.corp.intel.com>
+ <51C96640.2020103@canonical.com>
+ <CA+v+29g2RvJfC-rkp-Qbwo1je-s86t+uACUY4k6vgerJHUPKrg@mail.gmail.com>
+ <51E37A84.6030909@canonical.com>
+ <46B810F6945F7C4788E11DCE57EC48901184C456@SHSMSX104.ccr.corp.intel.com>
+ <46B810F6945F7C4788E11DCE57EC48901184DC07@SHSMSX104.ccr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 99D0A26553F
- for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2013 03:00:12 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4ABB226553F
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2013 07:47:35 +0200 (CEST)
+In-Reply-To: <46B810F6945F7C4788E11DCE57EC48901184DC07@SHSMSX104.ccr.corp.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -36,215 +34,143 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paulo Zanoni <przanoni@gmail.com>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, Wang xingchao <xingchao.wang@linux.intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Jin, Gordon" <gordon.jin@intel.com>, David Henningsson <david.henningsson@canonical.com>
+To: "Wang, Xingchao" <xingchao.wang@intel.com>, 'David Henningsson' <david.henningsson@canonical.com>
+Cc: 'Takashi Iwai' <tiwai@suse.de>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Paulo/Daniel,
 
-Do you agree to export an API in gfx side for eDP case? 
-Basically the api will let audio drver know which pipe in use. i.e. in the eDP only caes, audio driver
-Will know gfx is not using HDMI/DP and would like to let power-well off. 
-As there's the conflict when user expect display audio driver always active but gfx need audio driver off.
-Audio driver could make decision to release power-well if it knows the eDP only case through the API.
-
-OTOH, I think audio driver could also export an API for gfx side, if gfx driver need audio driver release power-well but it's in usage,
-It will call this API and audio drvier will release power-well accordingly. 
-
-This change make HDMI/DP hotplug handling complicated in audio driver side, if audio driver release power-well, it would enter suspend mode.
-Meanwhile the user may expect it's in active mode, this may cause some confuse.
-
-Thanks
---xingchao
 
 > -----Original Message-----
 > From: Wang, Xingchao
-> Sent: Thursday, July 18, 2013 7:18 AM
-> To: 'Takashi Iwai'; David Henningsson; Paulo Zanoni
-> Cc: alsa-devel@alsa-project.org; Daniel Vetter; daniel.vetter@ffwll.ch;
-> intel-gfx@lists.freedesktop.org; Wang xingchao; Girdwood, Liam R; Jin, Gordon
-> Subject: RE: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7] Power-well API
-> implementation for Haswell
+> Sent: Wednesday, July 17, 2013 6:15 PM
+> To: Wang, Xingchao; David Henningsson
+> Cc: Takashi Iwai; alsa-devel@alsa-project.org
+> Subject: RE: [alsa-devel] [PATCH 2/2] ALSA: hda - get realtime ELD info when
+> codec suspended
 > 
 > 
 > 
 > > -----Original Message-----
-> > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > Sent: Wednesday, July 17, 2013 10:22 PM
-> > To: David Henningsson
-> > Cc: Paulo Zanoni; Wang, Xingchao; alsa-devel@alsa-project.org; Daniel
-> > Vetter; daniel.vetter@ffwll.ch; intel-gfx@lists.freedesktop.org; Wang
-> > xingchao; Girdwood, Liam R; Jin, Gordon
-> > Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7] Power-well API
-> > implementation for Haswell
+> > From: alsa-devel-bounces@alsa-project.org
+> > [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Wang,
+> > Xingchao
+> > Sent: Monday, July 15, 2013 4:54 PM
+> > To: David Henningsson; Wang Xingchao
+> > Cc: Takashi Iwai; alsa-devel@alsa-project.org
+> > Subject: Re: [alsa-devel] [PATCH 2/2] ALSA: hda - get realtime ELD
+> > info when codec suspended
 > >
-> > At Wed, 17 Jul 2013 16:05:43 +0200,
-> > David Henningsson wrote:
-> > >
-> > > On 07/17/2013 04:00 PM, Takashi Iwai wrote:
-> > > > At Wed, 17 Jul 2013 10:31:26 -0300, Paulo Zanoni wrote:
-> > > >>
-> > > >> 2013/7/17 Wang, Xingchao <xingchao.wang@intel.com>:
-> > > >>>
-> > > >>>
-> > > >>>> -----Original Message-----
-> > > >>>> From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > >>>> Sent: Wednesday, July 17, 2013 4:18 PM
-> > > >>>> To: Wang, Xingchao
-> > > >>>> Cc: Paulo Zanoni; alsa-devel@alsa-project.org; Daniel Vetter;
-> > > >>>> daniel.vetter@ffwll.ch; intel-gfx@lists.freedesktop.org; Wang
-> > > >>>> xingchao; Girdwood, Liam R; david.henningsson@canonical.com
-> > > >>>> Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7] Power-well
-> > > >>>> API implementation for Haswell
-> > > >>>>
-> > > >>>> At Wed, 17 Jul 2013 08:03:38 +0000, Wang, Xingchao wrote:
-> > > >>>>>
-> > > >>>>>
-> > > >>>>>
-> > > >>>>>> -----Original Message-----
-> > > >>>>>> From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > >>>>>> Sent: Wednesday, July 17, 2013 3:34 PM
-> > > >>>>>> To: Wang, Xingchao
-> > > >>>>>> Cc: Paulo Zanoni; alsa-devel@alsa-project.org; Daniel Vetter;
-> > > >>>>>> daniel.vetter@ffwll.ch; intel-gfx@lists.freedesktop.org; Wang
-> > > >>>>>> xingchao; Girdwood, Liam R; david.henningsson@canonical.com
-> > > >>>>>> Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7]
-> > > >>>>>> Power-well API implementation for Haswell
-> > > >>>>>>
-> > > >>>>>> At Wed, 17 Jul 2013 02:52:41 +0000, Wang, Xingchao wrote:
-> > > >>>>>>>
-> > > >>>>>>> Hi Takashi/Paulo,
-> > > >>>>>>>
-> > > >>>>>>>>>> would you change it to "auto" and test again.
-> > > >>>>>>>>>> Runtime power save should be enabled with "auto".
-> > > >>>>>>>>>
-> > > >>>>>>>>> Doesn't solve the problem. Should I open a bug report
-> > somewhere?
-> > > >>>>>>>>> Having the power well enabled prevents some power saving
-> > > >>>>>>>>> features from the graphics driver.
-> > > >>>>>>>>
-> > > >>>>>>>> Is the HD-audio power-saving itself working?  You can check
-> > > >>>>>>>> it via watching /sys/class/hwC*/power_{on|off}_acct files.
-> > > >>>>>>>>
-> > > >>>>>>>> power_save option has to be adjusted appropriately.  Note
-> > > >>>>>>>> that many DEs change this value dynamically per AC-cable
-> > > >>>>>>>> plug/unplug depending on the configuration, and often it's
-> > > >>>>>>>> set to 0 (= no power save) when AC-cable is plugged.
-> > > >>>>>>>>
-> > > >>>>>>> [Wang, Xingchao] Paulo used a new Ultrabook board with
-> > > >>>>>>> charger connected,
-> > > >>>>>> and see the default parameter "auto=on".
-> > > >>>>>>> In such scenario, power-well is always occupied by Display
-> > > >>>>>>> audio controller. Moreover, in this board, if no external
-> > > >>>>>>> monitors connected, It's
-> > > >>>>>> using internal eDP and totally no audio support. Power-well
-> > > >>>>>> usage in such case also blocks some eDP features as Paulo told me.
-> > > >>>>>>>
-> > > >>>>>>> So I think it's not a good idea to break the rule of power
-> > > >>>>>>> policy when charger
-> > > >>>>>> connected but it's necessary to add support in this particular case.
-> > > >>>>>>> Takashi, do you think it's acceptable to let Display audio
-> > > >>>>>>> controller/codec
-> > > >>>>>> suspend in such case?
-> > > >>>>>>
-> > > >>>>>> Do you mean the driver enables the powersave forcibly?
-> > > >>>>>
-> > > >>>>> Yes. I mean call pm_runtime_allow() for the power-well HD-A
-> > controller.
-> > > >>>>>
-> > > >>>>>> Then, no, not in general.
-> > > >>>>>>
-> > > >>>>>> If the default parameter of autopm is the problem, this
-> > > >>>>>> should be changed, instead of forcing the policy in the driver.
-> > > >>>>>>
-> > > >>>>>> OTOH, the audio codec's powersave policy is governed by the
-> > > >>>>>> power_save option and it's set up dynamically by the desktop
-> system.
-> > > >>>>>> We shouldn't override it in the driver.
-> > > >>>>>>
-> > > >>>>>> If the power well *must* be off when only an eDP is used (e.g.
-> > > >>>>>> otherwise the hardware doesn't work properly), then it's a
-> > > >>>>>> different story.  Is it the case?   And what exactly would be the
-> > > >>>>>> problem?
-> > > >>>>> In the eDP only case, no audio is needed for the HD-A
-> > > >>>>> controller, so it's
-> > > >>>> wasting power in current design.
-> > > >>>>> I think Paulo or Daniel could explain more details on the impact.
-> > > >>>>
-> > > >>>> Consuming more power is the expected behavior.  What else?
-> > > >>>>
-> > > >>>>
-> > > >>>>>> If it's the case, controlling the power well based on the
-> > > >>>>>> runtime PM is likely a bad design, as it relies on the
-> > > >>>>>> parameter user
-> > sets.
-> > > >>>>>> (And remember that the power-saving of the audio can be
-> > > >>>>>> disabled completely via Kconfig, too.)
-> > > >>>>>  From audio controller's point of view, if it's asked be
-> > > >>>>> active, it needs power
-> > > >>>> and should request power-well from gfx side.
-> > > >>>>> In above case, audio controller should not be active but user
-> > > >>>>> set it be
-> > > >>>> "active".
-> > > >>>>
-> > > >>>> By setting the autopm "on", user expects that no runtime PM
-> happens.
-> > > >>>> In other words, the audio controller must be kept active as
-> > > >>>> long as this parameter is set.  And this is the parameter user
-> > > >>>> controls, and not what the driver forcibly sets.
-> > > >>>
-> > > >>> Okay, become clear now. :)
-> > > >>> So I think the conflict for Paulo becomes, in eDP caes, if audio
-> > > >>> is active
-> > and requested power-well, some eDP feature was under impact?
-> > > >>> Paulo, would you clarify this in more details?
-> > > >>
-> > > >> On our driver we try to disable the power well whenever possible,
-> > > >> as soon as possible. We don't change our behavior based on power
-> > > >> AC or other user-space modifiable behavior (except the
-> > > >> i915.disable_power_well Kernel option). If the power well is not
-> > > >> disabled we can't enable some features, like PSR (panel self
-> > > >> refresh, and eDP feature) or PC8, which is another power-saving
-> > > >> feature. This will also make our QA procedures a lot more complex
-> > > >> since when we want to test specific features (e.g., PSR, PC8)
-> > > >> we'll have to disconnect the AC adapter or run scripts. So the
-> > > >> behavior/predictability of our driver will be based on the Audio
-> > > >> driver
-> > power management policies.
-> > > >
-> > > > So all missing feature are about the power saving?
-> > > >
-> > > >> I am not so experienced with general Linux Power Management code,
-> > > >> so maybe the way the Audio driver is behaving is just the usual
-> > > >> way, but I have to admit I was expecting the audio driver would
-> > > >> only require the power well when it is actually needed, and
-> > > >> release it as soon as possible.
-> > > >
-> > > > It would behave so, if all setups are for power-saving.
-> > > >
-> > > > But, in your case, the runtime PM control attribute shows "on"; it
-> > > > implies that the runtime PM is effectively disabled, thus
-> > > > disabling power well is also impossible (because it would require
-> > > > turning off the audio controller, too).
-> > >
-> > > So, if the machine only has an eDP (which has no audio function in
-> > > itself, right?) and never HDMI, DP output because there are no such
-> > > physical ports, the audio controller has no function.
-> > > Maybe we can, before doing anything else, ask the video driver first
-> > > if this is the case, and if so, never create the sound card at all,
-> > > and just leave things the way the video driver wants?
 > >
-> > Well, doesn't BIOS mark HDMI/DP audio pins as unused?  Then the audio
-> > driver won't create any instances.  Of course, we can optimize such a
-> > case, indeed.
+> >
+> > > -----Original Message-----
+> > > From: David Henningsson [mailto:david.henningsson@canonical.com]
+> > > Sent: Monday, July 15, 2013 12:29 PM
+> > > To: Wang Xingchao
+> > > Cc: Takashi Iwai; Wang, Xingchao; alsa-devel@alsa-project.org
+> > > Subject: Re: [alsa-devel] [PATCH 2/2] ALSA: hda - get realtime ELD
+> > > info when codec suspended
+> > >
+> > > On 07/12/2013 08:13 AM, Wang Xingchao wrote:
+> > > > Hi David/Takashi,
+> > > >
+> > > > Here's some update on this topic.
+> > > > I used evtest to monitor hotplug input event for Headphone, it
+> > > > doesnot report the hotplug event when audio controller/codec in
+> > > > runtime suspend mode.
+> > > > if it's during audio playback(both controller and codec are
+> > > > active), the events could be monitored correctly.
+> > > > However even the controller/codec in runtime suspend mode, the
+> > > > hotplug event was not missed when waken up from suspend mode.
+> > > > After exit from suspend mode, the hotplug event would be reported asap.
+> > > > So userspace will not receive the event notification from driver
+> > > > when controller/codec in suspend mode, but it will get them once
+> > > > audio controller/codec become active.
+> > > > I think it's acceptable for audio playback functinality, it will
+> > > > not harm audio routing in fact. i'm not sure there's other
+> > > > potential risk, i.e. user space will show/hide the devices in UI
+> > > > according to the event, in that case , user will never see the
+> > > > Headphone device for playback before audio controller/codec was waken
+> up in another way.
+> > > >
+> > > > Meanwhile i tested attached patch to monitor WAKEEN events, it
+> > > > doesnot work well as Spec said. it would not wake up audio
+> > > > controller/codec when plug in/out headphone in runtime suspend
+> > > > mode, and the status register always be 0.
+> > >
+> > > Hi Xingchao,
+> > >
+> > > Maybe you're giving up too easily on the WAKEEN stuff? I can spot a
+> > > few places where your patch is incomplete:
+> > >
+> > >   - First, WAKEEN and STATETS are word registers, you should
+> > > probably use azx_writew when you access them
 > 
-> As I know, the eDP only case doesnot mean no HDMI/DP support. User would
-> plug in HDMI/DP monitor at any time.
-> So diable audio controller totoally is not a good idea. :(.
-> Paulo, is that correct for you case?
+> If the controller is active while codec suspended, "evtest" can catch headphone
+> hotplug event.
+> I made some changes in azx_runtime_suspend(), which in brief leave interrupt
+> enabled, then "evtest" cannot catch input event.
+> Also I added some debug log shows, when controller enter suspend mode, the
+> WAKEEN bits were set(value 0x3), after headphone hotplug, Audio controller
+> was not waken up. When audio controller exit, in azx_runtime_resume(), the
+> debug shows WAKEEN bits value no change, STATETS has value 0. The controller
+> did not detect changes from codec side, so it donot set the bits in STATETS.
 > 
+> I read the spec, and found something different:
+> - Controller should be in reset state while In D3?(Chapter 4.5.9.2 in  HD-A
+> spec.)
+> Azx_runtime-suspend() did not reset the controller.
+> - codec will use power state change request on the link to let controller know.
+> Not sure it's hardware operation or software layer.
+> - codec discovery ( chapter 4.3)
+> "When the link is enabled by the assertion of CRST, the codecs will detect the
+> de-assertion of the RESET# signal and request a status change and
+> enumeration by the controller.
+>  As the controller hardware detects these requests, it will provide the codecs
+> with their unique addresses and set the controller STATESTS bits  to indicate
+> that a Status Change event was detected on the appropriate SDATA_INx
+> signals.  "
+> I'm afraid something was not configured correctly, i.e. should let controller in
+> reset state when enter runtime suspend mode?
+
+After some test, I found the controller should be in "reset" state, and CIE interrupt should be enabled,
+Otherwise the wake-up event from codec could not wake up system.
+
+I'm writing a patch to fix this.
+
+--xingchao
+
+
+ 
+> Thanks
 > --xingchao
 > >
+> > Thanks for clarify this. We support 8 codec at most, so I think it's
+> > safe to use writeb/readb here.
 > >
-> > Takashi
+> > >
+> > >   - Second, and this is definitely a problem, azx_runtime_suspend
+> > > calls azx_stop_chip -> azx_int_disable. So we disable interrupts,
+> > > that's why we don't get them from the wake events.
+> > [Wang, Xingchao]  yes, moreover I think it's not enough only enabling
+> > "controller interrupt" bits in this case, PCI interrupt bits must be anbled too.
+> > I'm still checking the setting in runtime_suspend.
+> >
+> > >
+> > >   - Third, first in azx_interrupt, we check for
+> > > chip->pci->dev.power.runtime_status - maybe this is no longer true
+> > > chip->pci->if
+> > > the device is in D3?
+> > [Wang, Xingchao] yes, it's a risk here. Just move the lines before the "if"
+> > condition check.
+> > >
+> > > Do you know how and if Windows has solved this?
+> > >
+> > [Wang, Xingchao] I have wrote emails for windows team guys, has no
+> > response yet. I will update here when I have update.
+> >
+> > thanks
+> > --xingchao
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
