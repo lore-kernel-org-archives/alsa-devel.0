@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: [PATCH] ASoC: jack: Use power efficient workqueue
-Date: Thu, 18 Jul 2013 22:47:43 +0100
-Message-ID: <1374184063-6969-1-git-send-email-broonie@kernel.org>
+Date: Thu, 18 Jul 2013 22:54:13 +0100
+Message-ID: <1374184453-8956-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id DB07E2655EE
- for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2013 23:48:05 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id E49BD2655EE
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2013 23:54:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
