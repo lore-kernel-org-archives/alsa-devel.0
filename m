@@ -1,19 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/6] ASoC: sirf: add sirf platform driver
- which provides DMA
-Date: Fri, 19 Jul 2013 17:08:12 +0200
-Message-ID: <51E9565C.8020308@metafoo.de>
-References: <1374232042-26088-1-git-send-email-Baohua.Song@csr.com>
- <1374232042-26088-2-git-send-email-Baohua.Song@csr.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: hda - Fix EAPD GPIO control for
+	Sigmatel codecs
+Date: Fri, 19 Jul 2013 17:09:01 +0200
+Message-ID: <1374246542-14244-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-224.synserver.de (smtp-out-224.synserver.de
- [212.40.185.224])
- by alsa0.perex.cz (Postfix) with ESMTP id 3120D26572D
- for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 17:07:37 +0200 (CEST)
-In-Reply-To: <1374232042-26088-2-git-send-email-Baohua.Song@csr.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id B54452652E7
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 17:07:48 +0200 (CEST)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 8B7FEA5387
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 17:07:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,106 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Workgroup.Linux@csr.com, Rongjun Ying <Rongjun.Ying@csr.com>, broonie@kernel.org, Barry Song <Baohua.Song@csr.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/19/2013 01:07 PM, Barry Song wrote:
-> From: Rongjun Ying <Rongjun.Ying@csr.com>
-> 
-> this driver uses dmaengine APIs and provides DMA to the CPU DAIs
-> of I2S, USP and SiRF-soc-inner.
-> SiRFSoC has 3 audio DAIs: I2S, USP(Universal Serial Ports) and DAI
-> connected to soc-inner-codec, all of them will use the same DMA
-> driver here.
-> 
+The EAPD GPIO is dynamically turned on/off for some machines with
+Sigmatel codecs, but this didn't work as expected, and it resulted in
+spontaneous lost of speaker outputs per HP plugging or power-saving.
 
-I think the bulk of the code here can be replaced by using the generic
-dmaengine PCM driver. Have a look at e.g. mxs to see how that is done.
+This patch fixes the bug by simply including spec->eapd_mask into
+spec->gpio_mask and spec->gpio_data bits.
 
-[...]
-> +
-> +static int sirf_pcm_open(struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct sirf_pcm_dma_data *dma_data;
-> +	substream->runtime->hw = sirf_pcm_hardware;
-> +	snd_soc_set_runtime_hwparams(substream, &sirf_pcm_hardware);
-> +
-> +	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-> +
-> +	return snd_dmaengine_pcm_open_request_chan(substream,
-> +			(dma_filter_fn)sirfsoc_dma_filter_id,
-> +			(void *)(dma_data->dma_req));
+Reported-and-tested-by: Eric Shattow <lucent@gmail.com>
+Cc: <stable@vger.kernel.org> [v3.9+]
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_sigmatel.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-Since you are using devicetree on this platform use the devicetree to get a
-handle to the DMA channel.
-
-> +}
-> +
-> +static int sirf_pcm_hw_params(struct snd_pcm_substream *substream,
-> +		struct snd_pcm_hw_params *params)
-> +{
-> +	struct snd_pcm_runtime *runtime = substream->runtime;
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct sirf_pcm_dma_data *dma_data;
-> +	struct dma_slave_config config;
-> +	struct dma_chan *chan;
-> +	int err = 0;
-> +
-> +	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-> +
-> +	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
-> +	runtime->dma_bytes = params_buffer_bytes(params);
-> +
-> +	chan = snd_dmaengine_pcm_get_chan(substream);
-> +	if (!chan)
-> +		return -EINVAL;
-> +
-> +	/* fills in addr_width and direction */
-> +	err = snd_hwparams_to_dma_slave_config(substream, params, &config);
-> +	if (err)
-> +		return err;
-> +
-> +	config.dst_addr_width = DMA_SLAVE_BUSWIDTH_8_BYTES;
-> +	config.src_addr_width = DMA_SLAVE_BUSWIDTH_8_BYTES;
-> +
-> +	config.src_addr = runtime->dma_addr;
-> +	config.dst_addr = runtime->dma_addr;
-> +	config.src_maxburst = DMA_SLAVE_BUSWIDTH_8_BYTES;
-> +	config.dst_maxburst = DMA_SLAVE_BUSWIDTH_8_BYTES;
-> +
-> +	return dmaengine_slave_config(chan, &config);
-
-
-Nothing special in here, just use the generic
-snd_dmaengine_pcm_prepare_slave_config().
-
-> +}
-> +
-[...]
-
-static const struct of_device_id sirf_pcm_of_match[] = {
-> +	{ .compatible = "sirf,pcm-audio", },
-> +	{}
-> +};
-
-Since this is not a separate piece of hardware, but just the glue logic
-between the DMA controller and the audio DAI it should not have it's own
-devicetree node. Usually the the PCM device is registered by the DAI driver.
-Again take at other platforms using the generic dmaengine PCM driver for
-examples.
-
-> +MODULE_DEVICE_TABLE(of, sirf_pcm_of_match);
-> +
-> +static struct platform_driver sirf_pcm_driver = {
-> +	.driver = {
-> +		.name = "sirf-pcm-audio",
-> +		.owner = THIS_MODULE,
-> +		.of_match_table = sirf_pcm_of_match,
-> +	},
-> +	.probe = sirf_pcm_probe,
-> +	.remove = sirf_pcm_remove,
-> +};
-> +module_platform_driver(sirf_pcm_driver);
-[...]
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index e2f8359..766e567 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -417,9 +417,11 @@ static void stac_update_outputs(struct hda_codec *codec)
+ 			val &= ~spec->eapd_mask;
+ 		else
+ 			val |= spec->eapd_mask;
+-		if (spec->gpio_data != val)
++		if (spec->gpio_data != val) {
++			spec->gpio_data = val;
+ 			stac_gpio_set(codec, spec->gpio_mask, spec->gpio_dir,
+ 				      val);
++		}
+ 	}
+ }
+ 
+@@ -3612,20 +3614,18 @@ static int stac_parse_auto_config(struct hda_codec *codec)
+ static int stac_init(struct hda_codec *codec)
+ {
+ 	struct sigmatel_spec *spec = codec->spec;
+-	unsigned int gpio;
+ 	int i;
+ 
+ 	/* override some hints */
+ 	stac_store_hints(codec);
+ 
+ 	/* set up GPIO */
+-	gpio = spec->gpio_data;
+ 	/* turn on EAPD statically when spec->eapd_switch isn't set.
+ 	 * otherwise, unsol event will turn it on/off dynamically
+ 	 */
+ 	if (!spec->eapd_switch)
+-		gpio |= spec->eapd_mask;
+-	stac_gpio_set(codec, spec->gpio_mask, spec->gpio_dir, gpio);
++		spec->gpio_data |= spec->eapd_mask;
++	stac_gpio_set(codec, spec->gpio_mask, spec->gpio_dir, spec->gpio_data);
+ 
+ 	snd_hda_gen_init(codec);
+ 
+@@ -3915,6 +3915,7 @@ static void stac_setup_gpio(struct hda_codec *codec)
+ {
+ 	struct sigmatel_spec *spec = codec->spec;
+ 
++	spec->gpio_mask |= spec->eapd_mask;
+ 	if (spec->gpio_led) {
+ 		if (!spec->vref_mute_led_nid) {
+ 			spec->gpio_mask |= spec->gpio_led;
+-- 
+1.8.3.1
