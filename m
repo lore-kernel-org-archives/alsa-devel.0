@@ -1,18 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH 0/4] firewire-lib: add payload
- callback function for each driver
-Date: Fri, 19 Jul 2013 23:13:55 +0900
-Message-ID: <51E949A3.3040401@sakamocchi.jp>
-References: <1374061848-5851-1-git-send-email-o-takashi@sakamocchi.jp>
- <51E82800.80201@ladisch.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Add snd_hda_jack_detect_state()
+	helper function
+Date: Fri, 19 Jul 2013 17:06:37 +0200
+Message-ID: <1374246397-14167-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F4D22652CC
- for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 16:14:04 +0200 (CEST)
-In-Reply-To: <51E82800.80201@ladisch.de>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A7BB2652E4
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 17:05:24 +0200 (CEST)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id D6655A52D9
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 17:05:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,163 +22,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: robert.chamier@googlemail.com, damien@zamaudio.com, linux1394-devel@lists.sourceforge.net, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens,
+snd_hda_jack_detect() function returns a boolean value for a jack
+plugged in or not, but it also returns always true when the
+corresponding pin is phantom (i.e. fixed).  This is OK in most cases,
+but it makes the generic parser misbehaving about the auto-mute or
+auto-mic switching, e.g. when one of headphone pins is a fixed.
+Namely, the driver decides whether to mute the speaker or not, just
+depending on the headphone plug state: if one of the headphone jacks
+is seen as active, then the speaker is muted.  Thus this will result
+always in the muted speaker output.
 
-Thanks for your comments.
+So, the problem is the function returns a boolean, after all, although
+we need to think of "phantom" jack.  Now a new function,
+snd_hda_jack_detect_state() is introduced to return these tristates.
+The generic parser uses this function for checking the headphone or
+mic jack states.
 
- > But Fireworks accepts AM824 labels, and recognizing 0x00 labels is no
- > problem.
+Meanwhile, the behavior of snd_hda_jack_detect() is kept as is, for
+keeping compatibility in other driver codes.
 
-Yes. In our experiences, there may be no problem. But I'm concern about 
-the side effect and want to use no labels if possible.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_generic.c |  8 +++++---
+ sound/pci/hda/hda_jack.c    | 18 ++++++++++++------
+ sound/pci/hda/hda_jack.h    | 13 ++++++++++++-
+ 3 files changed, 29 insertions(+), 10 deletions(-)
 
- > Right now I'm working on merging the playback-only snd-dice driver
- > (without the M-Audio code, which doesn't work) into the kernel,
- > restricted to Weiss devices (they asked for this).
- >
- > (Setting the pcm_quadlets/midi_quadlets arrays for dual-wire mode is
- > to be moved into snd-dice.)
-
-I think Dice has no SYT-Match mode then the driver need to generate syt 
-for out-stream from the value in in-stream. How do you solve this or 
-Weiss devices don't need this synchronization?
-
-By the way, I did most of implements for this mechanism so hope you to 
-review my patches for it when you have enough time.
-
- > I removed S16 because I did not want to duplicate most of the sample
- > writing code, and format conversion should be done in userspace.  This
- > would be a regression for users of the snd-firewire-speakers driver
- > (both of them), so I'm not sure if I should keep this.
- >
- > Do you have a specific reason for wanting S16 support?
-
-I just follow the idea to implement functions which the device has. I 
-have no special reason. But I note that BeBoB supports 20 bit sample, too.
-
- > Why?  Because many device quirks must be handled in amdtp.c?
- >
- > Having separate write_samples() implementations would duplicate most
- > of the code in those loops, which I do not think would be better for
- > maintenance purposes.
-
-I assume bad case in which the amdtp.c has many quirks and the effects 
-generate conflict to each driver and many conditions brought longer time 
-and much complexicy to shared code.
-
- > I don't understand; how is this related with the payload processing?
-
-I'm sorry. It's not related to MIDI stream...
-
-The amdtp_out_stream_set_pcm_format() is used to set the function to 
-write samples. Here can we add condition to set it referring the value 
-of format in PCM runtime instead ot the function. Then function is 
-automatically selected and each driver don't consider it.
-
- > I'm not sure if a separate write_samples() function is appropriate for
- > this; couldn't this be handled by an additional function that is
- > called before or afterwards?
-
-This is better. If I had no idea about this separate write_samples(), I 
-will have applied this way.
-
- > These patches are not self-contained, i.e., the driver does not work
- > if only some of them are applied (this happens, e.g., when bisecting).
-
-I realize it. I follow a idea to keep the size of patch small. Next time 
-I'm OK to make them self-contained. Thanks to indicate it.
-
- > Despite my criticisms above,  if you think that these patches are
- > necessary for your driver(s), I'm not against merging them.
-
-I have no will to do it against your criticisms.
-
-
-Thanks
-
-Takashi Sakamoto
-
-(Jun 19 2013 02:38), Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> Currently snd-firewire-lib handles the contents of data block for AMDTP packet
->> in itself.
->>
->> But to implement drivers for Fireworks(Echo Audio)/BeBoB(BridgeCo), there is an
->> inconvinience. Fireworks don't use AM824 label for PCM data.
->
-> But Fireworks accepts AM824 labels, and recognizing 0x00 labels is no
-> problem.
->
->> BeBoB needs to remap PCM and MIDI channels depending on devices.
->>
->> And Dice(TC Applied Technologies) - I think you understand this than me - needs
->> the mode called as "dual wire".
->> Your snd-firewire-lib in alsa-kprivate.git repository manages to solve these
->> issue.
->
-> Right now I'm working on merging the playback-only snd-dice driver
-> (without the M-Audio code, which doesn't work) into the kernel,
-> restricted to Weiss devices (they asked for this).
->
-> (Setting the pcm_quadlets/midi_quadlets arrays for dual-wire mode is to
-> be moved into snd-dice.)
->
->> But it has restriction about the PCM format (S32 only)
->
-> I removed S16 because I did not want to duplicate most of the sample
-> writing code, and format conversion should be done in userspace.  This
-> would be a regression for users of the snd-firewire-speakers driver
-> (both of them), so I'm not sure if I should keep this.
->
-> Do you have a specific reason for wanting S16 support?
->
->> and for me it seems to be hard to maintain.
->
-> Why?  Because many device quirks must be handled in amdtp.c?
->
-> Having separate write_samples() implementations would duplicate most of
-> the code in those loops, which I do not think would be better for
-> maintenance purposes.
->
->> Additionally to implement full duplex with synchronization, I need to restart
->> streams for MIDI. Then current amdtp_out_stream_set_pcm_format() is not
->> convinient. I want to add condition for PCM format into each drivers.
->
-> I don't understand; how is this related with the payload processing?
->
->> Furthermore, 003Rack(Digidesign) - I don't work for this - has more issue. The
->> differences related to payload are:
->>   - the value of syt field in AMDTP packet is always zero
->
-> This does not affect the driver.
->
->>   - The data in each channel is encoded by its own way
->> The driver needs to refer to and modify the contents of payload.
->
-> I'm not sure if a separate write_samples() function is appropriate for
-> this; couldn't this be handled by an additional function that is called
-> before or afterwards?
->
->> To solve these device-dependent issues, I want to move the processing
->> of contents in payload from firewire-lib to each devices. This series of
->> patches is for this purpose.
->
-> Despite my criticisms above,  if you think that these patches are
-> necessary for your driver(s), I'm not against merging them.
->
->> sakamocchi (4):
->>    firewire-lib: add helper function to set data block size
->>    firewire-lib: add callback function for payload
->>    firewire-lib: remove unused members and functions
->>    firewire-speakers: add functions to handle payload
->
-> These patches are not self-contained, i.e., the driver does not work if
-> only some of them are applied (this happens, e.g., when bisecting).
->
->
-> Regards,
-> Clemens
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 8e77cbb..f5c2d1f 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -3724,7 +3724,8 @@ static int mux_select(struct hda_codec *codec, unsigned int adc_idx,
+ /* check each pin in the given array; returns true if any of them is plugged */
+ static bool detect_jacks(struct hda_codec *codec, int num_pins, hda_nid_t *pins)
+ {
+-	int i, present = 0;
++	int i;
++	bool present = false;
+ 
+ 	for (i = 0; i < num_pins; i++) {
+ 		hda_nid_t nid = pins[i];
+@@ -3733,7 +3734,8 @@ static bool detect_jacks(struct hda_codec *codec, int num_pins, hda_nid_t *pins)
+ 		/* don't detect pins retasked as inputs */
+ 		if (snd_hda_codec_get_pin_target(codec, nid) & AC_PINCTL_IN_EN)
+ 			continue;
+-		present |= snd_hda_jack_detect(codec, nid);
++		if (snd_hda_jack_detect_state(codec, nid) == HDA_JACK_PRESENT)
++			present = true;
+ 	}
+ 	return present;
+ }
+@@ -3887,7 +3889,7 @@ void snd_hda_gen_mic_autoswitch(struct hda_codec *codec, struct hda_jack_tbl *ja
+ 		/* don't detect pins retasked as outputs */
+ 		if (snd_hda_codec_get_pin_target(codec, pin) & AC_PINCTL_OUT_EN)
+ 			continue;
+-		if (snd_hda_jack_detect(codec, pin)) {
++		if (snd_hda_jack_detect_state(codec, pin) == HDA_JACK_PRESENT) {
+ 			mux_select(codec, 0, spec->am_entry[i].idx);
+ 			return;
+ 		}
+diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
+index 3fd2973..dc93761 100644
+--- a/sound/pci/hda/hda_jack.c
++++ b/sound/pci/hda/hda_jack.c
+@@ -194,18 +194,24 @@ u32 snd_hda_pin_sense(struct hda_codec *codec, hda_nid_t nid)
+ EXPORT_SYMBOL_HDA(snd_hda_pin_sense);
+ 
+ /**
+- * snd_hda_jack_detect - query pin Presence Detect status
++ * snd_hda_jack_detect_state - query pin Presence Detect status
+  * @codec: the CODEC to sense
+  * @nid: the pin NID to sense
+  *
+- * Query and return the pin's Presence Detect status.
++ * Query and return the pin's Presence Detect status, as either
++ * HDA_JACK_NOT_PRESENT, HDA_JACK_PRESENT or HDA_JACK_PHANTOM.
+  */
+-int snd_hda_jack_detect(struct hda_codec *codec, hda_nid_t nid)
++int snd_hda_jack_detect_state(struct hda_codec *codec, hda_nid_t nid)
+ {
+-	u32 sense = snd_hda_pin_sense(codec, nid);
+-	return get_jack_plug_state(sense);
++	struct hda_jack_tbl *jack = snd_hda_jack_tbl_get(codec, nid);
++	if (jack && jack->phantom_jack)
++		return HDA_JACK_PHANTOM;
++	else if (snd_hda_pin_sense(codec, nid) & AC_PINSENSE_PRESENCE)
++		return HDA_JACK_PRESENT;
++	else
++		return HDA_JACK_NOT_PRESENT;
+ }
+-EXPORT_SYMBOL_HDA(snd_hda_jack_detect);
++EXPORT_SYMBOL_HDA(snd_hda_jack_detect_state);
+ 
+ /**
+  * snd_hda_jack_detect_enable - enable the jack-detection
+diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
+index ec12abd..379420c 100644
+--- a/sound/pci/hda/hda_jack.h
++++ b/sound/pci/hda/hda_jack.h
+@@ -75,7 +75,18 @@ int snd_hda_jack_set_gating_jack(struct hda_codec *codec, hda_nid_t gated_nid,
+ 				 hda_nid_t gating_nid);
+ 
+ u32 snd_hda_pin_sense(struct hda_codec *codec, hda_nid_t nid);
+-int snd_hda_jack_detect(struct hda_codec *codec, hda_nid_t nid);
++
++/* the jack state returned from snd_hda_jack_detect_state() */
++enum {
++	HDA_JACK_NOT_PRESENT, HDA_JACK_PRESENT, HDA_JACK_PHANTOM,
++};
++
++int snd_hda_jack_detect_state(struct hda_codec *codec, hda_nid_t nid);
++
++static inline bool snd_hda_jack_detect(struct hda_codec *codec, hda_nid_t nid)
++{
++	return snd_hda_jack_detect_state(codec, nid) != HDA_JACK_NOT_PRESENT;
++}
+ 
+ bool is_jack_detectable(struct hda_codec *codec, hda_nid_t nid);
+ 
+-- 
+1.8.3.1
