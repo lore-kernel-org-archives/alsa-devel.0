@@ -1,20 +1,18 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH] ASoC: twl6040: Use power efficient
-	workqueue
-Date: Fri, 19 Jul 2013 09:47:13 +0530
-Message-ID: <CAKohponspo0Rj0y+x3=5y-azgxCQN+WMUNVD7e9Sa8mNrmOdmg@mail.gmail.com>
-References: <1374183911-6814-1-git-send-email-broonie@kernel.org>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: wm8962: No need to call
+	wm8962_configure_bclk() multiple times
+Date: Fri, 19 Jul 2013 02:58:28 -0300
+Message-ID: <1374213508-25617-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f49.google.com (mail-oa0-f49.google.com
- [209.85.219.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 66FB4265650
- for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 06:17:14 +0200 (CEST)
-Received: by mail-oa0-f49.google.com with SMTP id n12so628278oag.8
- for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2013 21:17:13 -0700 (PDT)
-In-Reply-To: <1374183911-6814-1-git-send-email-broonie@kernel.org>
+Received: from mail-ye0-f174.google.com (mail-ye0-f174.google.com
+ [209.85.213.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DEBC26512F
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 07:58:41 +0200 (CEST)
+Received: by mail-ye0-f174.google.com with SMTP id m9so1189163yen.5
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2013 22:58:40 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,20 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, b42378@freescale.com, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On 19 July 2013 03:15, Mark Brown <broonie@kernel.org> wrote:
-> From: Mark Brown <broonie@linaro.org>
->
-> The accessory detect debounce work is not performance sensitive so let
-> the scheduler run it wherever is most efficient rather than in a per CPU
-> workqueue by using the system power efficient workqueue.
->
-> Signed-off-by: Mark Brown <broonie@linaro.org>
-> ---
->  sound/soc/codecs/twl6040.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Currently after playing any audio file, we get the following error message:
+
+$ aplay clarinet.wav 
+Playing WAVE 'clarinet.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+$ wm8962 0-001a: Unsupported sysclk ratio 544
+
+This error message appears about 5 seconds after the audio playback has 
+finished.
+
+There is no need to re-calculate the bit clock after the playback has finished,
+so call wm8962_configure_bclk only once inside wm8962_hw_params(). 
+
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/codecs/wm8962.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 6a5066c..1bf79dc 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -2497,8 +2497,6 @@ static int wm8962_set_bias_level(struct snd_soc_codec *codec,
+ 		/* VMID 2*50k */
+ 		snd_soc_update_bits(codec, WM8962_PWR_MGMT_1,
+ 				    WM8962_VMID_SEL_MASK, 0x80);
+-
+-		wm8962_configure_bclk(codec);
+ 		break;
+ 
+ 	case SND_SOC_BIAS_STANDBY:
+@@ -2621,8 +2619,6 @@ static int wm8962_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 
+ 	wm8962->sysclk_rate = freq;
+ 
+-	wm8962_configure_bclk(codec);
+-
+ 	return 0;
+ }
+ 
+-- 
+1.8.1.2
