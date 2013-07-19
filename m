@@ -1,83 +1,131 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [RFC] ASoC: wm892: Set an initial non-mute volume for
-	the headphones
-Date: Thu, 18 Jul 2013 21:47:18 -0300
-Message-ID: <1374194838-30735-1-git-send-email-festevam@gmail.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [PATCH] ASoC: atmel: add wm8904 based audio machine driver
+Date: Fri, 19 Jul 2013 10:39:43 +0800
+Message-ID: <51E8A6EF.4040608@atmel.com>
+References: <1374132483-25375-1-git-send-email-voice.shen@atmel.com> <20130718111709.GL22506@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f46.google.com (mail-yh0-f46.google.com
- [209.85.213.46])
- by alsa0.perex.cz (Postfix) with ESMTP id CF0AC2655FE
- for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 02:47:33 +0200 (CEST)
-Received: by mail-yh0-f46.google.com with SMTP id i57so1350821yha.19
- for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2013 17:47:32 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, b42378@freescale.com, shawn.guo@linaro.org
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <20130718111709.GL22506@sirena.org.uk>
+Sender: linux-sound-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+Hi Mark,
 
-By default the headphone left/right registers have a volume of zero.
+On 07/18/2013 07:17 PM, Mark Brown wrote:
+> On Thu, Jul 18, 2013 at 03:28:03PM +0800, Bo Shen wrote:
+>> add wm8904 based audio machine driver
+>>
+>> the following ek board based on it
+>>    - at91sam9n12ek
+>>    - sama5d3xek (d31, d33, d34, d35)
+>>
+>> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+>
+> Looks pretty good, a few fairly small issues below.
+>
+> The binding document should be CCed to devicetree-discuss for review.
 
-Instead of having to change the volume via alsamixer in order to be able to hear
-something, let's set an initial value of -20dB, so that audio playback can be 
-heard by default.
+OK, I will cc the devicetree-discuss next version.
 
-Tested on a mx6qsabresd board.
+>> +	atmel,audio-routing =
+>> +		"Headphone Jack", "HPOUTL",
+>> +		"Headphone Jack", "HPOUTR",
+>> +		"IN2L", "Line In Jack",
+>> +		"IN2R", "Line In Jack",
+>> +		"Mic", "MICBIAS",
+>> +		"IN1L", "Mic";
+>
+> The widgets defined by the board should be documented in this binding.
+> Those from the CODEC should be documented in the CODEC binding.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-Mark,
+OK, I will separate this and put need information in this binding document.
 
-I posted it as RFC as I don't know if this is a valid approach.
-Suggestions are welcome.
+>> +#define MCLK_RATE 32768
+>> +
+>> +static struct clk *mclk;
+>
+> This should be in driver data for the board.  Shouldn't the clock be
+> referenced using the clock bindings?
 
-Thanks
+I will try to implement this in next version.
 
- sound/soc/codecs/wm8962.c | 6 ++++++
- sound/soc/codecs/wm8962.h | 2 ++
- 2 files changed, 8 insertions(+)
+>> +static int atmel_asoc_wm8904_init(struct snd_soc_pcm_runtime *rtd)
+>> +{
+>> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+>> +	int ret;
+>> +
+>> +	ret = snd_soc_dai_set_sysclk(codec_dai, WM8904_CLK_FLL,
+>> +			12000000, SND_SOC_CLOCK_IN);
+>> +	if (ret < 0) {
+>> +		pr_err("%s -failed to set wm8904 SYSCLK\n", __func__);
+>> +		return ret;
+>> +	}
+>
+> This is an odd thing to set the clock rate to and limits the sample
+> rates the board can play back.  It would be better to set the clock rate
+> based on the requested sample rate in hw_params - you're using the FLL
+> so may as well take advantage of the ability it offers to support all
+> sample rates.
+>> +static int atmel_asoc_wm8904_params(struct snd_pcm_substream *substream,
+>> +		struct snd_pcm_hw_params *params)
+>> +{
+>> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+>> +	int ret;
+>> +
+>> +	ret = snd_soc_dai_set_pll(codec_dai, WM8904_FLL_MCLK, WM8904_FLL_MCLK,
+>> +		32768, params_rate(params) * 256);
+>
+> Ah, in fact you do actually do that - it'd be clearer to put the
+> set_sysclk() after this.
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index e2de9ec..6a5066c 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3448,6 +3448,12 @@ static int wm8962_probe(struct snd_soc_codec *codec)
- 				    WM8962_MICBIAS_LVL,
- 				    pdata->mic_cfg);
- 
-+	/* set an initial volume for playback of -20 dB */
-+	snd_soc_update_bits(codec, WM8962_HPOUTL_VOLUME,
-+			    WM8962_HPOUTL_VOL_MASK, WM8962_HPOUTx_MINUS_20_DB);
-+	snd_soc_update_bits(codec, WM8962_HPOUTR_VOLUME,
-+			    WM8962_HPOUTR_VOL_MASK, WM8962_HPOUTx_MINUS_20_DB);
-+
- 	/* Latch volume update bits */
- 	snd_soc_update_bits(codec, WM8962_LEFT_INPUT_VOLUME,
- 			    WM8962_IN_VU, WM8962_IN_VU);
-diff --git a/sound/soc/codecs/wm8962.h b/sound/soc/codecs/wm8962.h
-index a1a5d52..5dbe972 100644
---- a/sound/soc/codecs/wm8962.h
-+++ b/sound/soc/codecs/wm8962.h
-@@ -27,6 +27,8 @@
- #define WM8962_FLL_OSC  3
- #define WM8962_FLL_INT  4
- 
-+#define WM8962_HPOUTx_MINUS_20_DB		0x65
-+
- /*
-  * Register values.
-  */
--- 
-1.8.1.2
+OK, I will put set_sysclk here.
+
+>> +	switch (level) {
+>> +	case SND_SOC_BIAS_ON:
+>> +	case SND_SOC_BIAS_PREPARE:
+>> +		if (!mclk_on) {
+>> +			ret = clk_prepare_enable(mclk);
+>> +			if (ret == 0)
+>> +				mclk_on = 1;
+>> +		}
+>> +		break;
+>> +	case SND_SOC_BIAS_STANDBY:
+>> +	case SND_SOC_BIAS_OFF:
+>> +		if (mclk_on)
+>> +			clk_disable_unprepare(mclk);
+>> +		mclk_on = 0;
+>> +		break;
+>> +	}
+>
+> It's better to write this using the previous state than to have the
+> mclk_on flag - you want to enable on the standby->prepare transition and
+> disable on the standby->off transition.
+
+OK, I will implement it in next version.
+
+>> +static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
+>> +{
+>> +	struct device_node *np = pdev->dev.of_node;
+>> +	struct device_node *codec_np, *cpu_np;
+>> +	struct snd_soc_card *card = &atmel_asoc_wm8904_card;
+>> +	struct snd_soc_dai_link *dailink = &atmel_asoc_wm8904_dailink;
+>> +	int ret;
+>> +
+>> +	if (!np)
+>> +		return -1;
+>
+> Return a real error code here.
+
+Sure.
+
+Thanks,
+
+Best Reards,
+Bo Shen
+
+
