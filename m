@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8962: No need to call
- wm8962_configure_bclk() multiple times
-Date: Fri, 19 Jul 2013 11:07:04 +0100
-Message-ID: <20130719100704.GD9858@sirena.org.uk>
-References: <1374213508-25617-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: atmel: add wm8904 based audio
+ machine driver
+Date: Fri, 19 Jul 2013 11:32:32 +0100
+Message-ID: <20130719103232.GH9858@sirena.org.uk>
+References: <1374132483-25375-1-git-send-email-voice.shen@atmel.com>
+ <20130718111709.GL22506@sirena.org.uk> <51E8A6EF.4040608@atmel.com>
+ <51E8D75C.7030707@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8257635129362412117=="
+Content-Type: multipart/mixed; boundary="===============2658948105664879116=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DD6226566A
- for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 12:07:07 +0200 (CEST)
-In-Reply-To: <1374213508-25617-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 128E426566A
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 12:32:36 +0200 (CEST)
+In-Reply-To: <51E8D75C.7030707@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,74 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, b42378@freescale.com, shawn.guo@linaro.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: nicolas.ferre@atmel.com, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8257635129362412117==
+--===============2658948105664879116==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MAH+hnPXVZWQ5cD/"
+	protocol="application/pgp-signature"; boundary="AqCDj3hiknadvR6t"
 Content-Disposition: inline
 
 
---MAH+hnPXVZWQ5cD/
+--AqCDj3hiknadvR6t
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 19, 2013 at 02:58:28AM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> Currently after playing any audio file, we get the following error messag=
-e:
->=20
-> $ aplay clarinet.wav=20
-> Playing WAVE 'clarinet.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,=
- Stereo
-> $ wm8962 0-001a: Unsupported sysclk ratio 544
->=20
-> This error message appears about 5 seconds after the audio playback has=
-=20
-> finished.
->=20
-> There is no need to re-calculate the bit clock after the playback has fin=
-ished,
-> so call wm8962_configure_bclk only once inside wm8962_hw_params().=20
+On Fri, Jul 19, 2013 at 02:06:20PM +0800, Bo Shen wrote:
+> On 07/19/2013 10:39 AM, Bo Shen wrote:
 
-No, you do end up needing to call it in multiple places - there's other
-configuration going on there that is needed by bypass paths which won't
-use the audio interface and hence won't call hw_params().
+> >I will try to implement this in next version.
 
---MAH+hnPXVZWQ5cD/
+> After check the clock implementation, we are on the way to common
+> clock framework, so will do this after we fully transfer to common
+> clock.
+
+OK, that makes sense - just leave things as they are for now.
+
+--AqCDj3hiknadvR6t
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR6Q/FAAoJELSic+t+oim9ogAQAJEDFvc0cRJUvRw2+dYVyghB
-T/Rved8CBdatEySKHKwhQECOBJb0emu5ziYYjDOm/nB2wi8qnMm2KaUGAnH6Z4Hy
-S1ZC94359DJeo+M9H+tssS3CPo8OUXZwt2Xq9dC67kLSZT1ue4b+55Emnr3dSdbB
-o4NYGWSmW2gqSBkYKDrBmT9+dm1W6+v0ebMyH2N2CUeE/OdnZZ4VW9JCbKvDvLrh
-dwCJq9Iy2vECfzR40ImRuohHQw3nqA7YXWVjO7dNuBYLOGttXc4iZV5Oj+mNPFyu
-zmu1EZVS2k12ln9tO26RmbEPWVUBNvreOOx+tb97rmsRWBRR5n8jxBByQ4+ZzswG
-p6qx+D/H0p1bPROqLr/mHr4NpCk+EJhq/atmJUTeSMeG5gnM43WReDEUQYpiJmKU
-SxpnNNir9Gf/aEMUFncq/YyCY9B3T+yUW8AEQ7rXMSVySYSHcykojLfqT68cMIFl
-PviPfx9Y2eYIzUAt88c4M3HOfJ6g5RUt4XW7K6bwvCjUN8yq3UZgE5zQMiLljHFn
-aa5uUZoBxAdUReur5BZ36ND+rlrssfU77R0ZAssnp0VduKtb0hzEI59SuB/WBK8G
-BD5QZTQGrrUyEvy52yXSEyrRyoKYekLcPBTFKTCminIQ9pYYvRb/WOpRiQKurDd9
-dPPPU7fcYMS1tXDIbT5n
-=JWze
+iQIcBAEBAgAGBQJR6RW8AAoJELSic+t+oim9bC4QAIfXVnIQY77JIC5FcnH8OUUK
+a36cY92nKw7e/2pV+utj19DzuqGWU4clJNv9KBIwGwfncPuWvpQEirKabrviWZn0
+zqOfmaXShXuWd8259w52BIQ297N4yITABg7FGEwdBMH7zqisqyjvjvCkjYqCwdqm
+RgG8J6FZ/kElc2ocI6xayu0GsbOOOuljyIFmS4SDVK/nZBDsjZn4GKFDPkOoVLuJ
+8CpxaioX+yLVXXRaa+RcUQIpWoRCjihgpR/QldeAcGPas3oLFirltXZsMleuN2zl
+Gtpx5ev2cpNa7Vzkb+wE5iHfEeOZtgzzgCkyngkUYph26Y8L2T7un9dWv5mZmxkU
+78WB5pxcGM3OBS+sBsfmp+VWVttqnod4n56K0hMWGH2VEDg6pPZmxz6sAbnXyvL2
+yS8eh0bjLAqN+r5nzc5AIPLbMTuXR6eirgNj0CByamVKArsaA/HhFFwf7hItctDG
+Md5dY7d/6oaCP4xKwo7AHiOF9PHX/ZQcZxQMlBkLMAYhhVx6QAmFO92kOHK10Vm6
+azkLWAdyF9AOJOSOao2JRGdG6xF+9mdWrMP1YmKR2I/jUrKek7ujx4sYmAYEsmx2
+5bhOpUfHf37KEqGLxz1qDG7f6wXVqVMIUhdVOZiT/jHDDA5up7y7knyPQrPyHXGA
+lKd966oeuBXDs+1VU1aq
+=uQPM
 -----END PGP SIGNATURE-----
 
---MAH+hnPXVZWQ5cD/--
+--AqCDj3hiknadvR6t--
 
---===============8257635129362412117==
+--===============2658948105664879116==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8257635129362412117==--
+--===============2658948105664879116==--
