@@ -1,16 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] ASoC: wm892: Set an initial non-mute volume
- for the headphones
-Date: Fri, 19 Jul 2013 10:41:20 +0100
-Message-ID: <20130719094120.GB9858@sirena.org.uk>
-References: <1374194838-30735-1-git-send-email-festevam@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] hda-emu: Allow Realtek codecs to access node
+	0x51
+Date: Fri, 19 Jul 2013 11:43:55 +0200
+Message-ID: <1374227035-10370-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2622801083727614013=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C2368265623
- for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 11:41:24 +0200 (CEST)
-In-Reply-To: <1374194838-30735-1-git-send-email-festevam@gmail.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8741265649
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 11:43:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,66 +20,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, b42378@freescale.com, shawn.guo@linaro.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+There is sometimes a secret node 0x51 on Realtek codecs, controlling
+an equally secret DSP.
 
---===============2622801083727614013==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0eh6TmSyL6TZE2Uz"
-Content-Disposition: inline
+At least make sure the automated test suite doesn't fail when trying
+to access this secret node.
 
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ hda-int.c           |    6 ++++++
+ hda-spec.c          |   13 +++++++++++++
+ include/hda-types.h |    1 +
+ 3 files changed, 20 insertions(+)
 
---0eh6TmSyL6TZE2Uz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jul 18, 2013 at 09:47:18PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> By default the headphone left/right registers have a volume of zero.
->=20
-> Instead of having to change the volume via alsamixer in order to be able =
-to hear
-> something, let's set an initial value of -20dB, so that audio playback ca=
-n be=20
-> heard by default.
-
-As a matter of policy we go with the chip defaults on things like this.
-It doesn't make everyone happy since it's typically not actually a
-useful configuration for any use case but it provides a standard.
-
---0eh6TmSyL6TZE2Uz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR6Qm8AAoJELSic+t+oim97DYQAIb9vnlN2DsERth5uEugT3d9
-srgQhyXzxfCix7Y8/mqfhwGH2kOOAv2kk2Z+s5SrpyB+aUvQ+Xm5urX6JwrrgMLn
-qIggKWIBdoGWzI9GifR0ZhNaDFkdg4COfldbkNan7HFxaSrN2OFKMcTHA4rfP4MU
-oj5PRl9aNfUe69svYy71OZGRX40JTJPyftJo5ExjwXNZjVBx3tuB68JWa8hIOAZI
-5CuOOTAipBzt61X2gdAP2NTc0LVcUBG9yLtH0aMKJvHle9iDw7n4/eEHv+70RlVa
-ohkL4gXCncfYWAY8CtVuIg/wxOHY9ass+UFA3mTeItoTW7378KNs9dsEerKXMe/S
-FPsRcMBKKD5B8armThCTjOX9mIU1bGXzOysEc8uqWxVTJNzFs+/RAs5Iir+6KoX6
-z91dJoz6CeJm9xtAhP4S8yAKlO6+nhI5lDnSDwhyjuDrnSC26q62CNaWLgAPnWbs
-kX6qCLr3MtmZwHcsAlIYdN6Cz9VTL73siqTfDwxG8lO9iciB5sA28oLKnRrp8DGU
-9Hjj8RmFM4MF9uvl0wsdUtEPX2ovReISBGsvpSLXyC3zYawwLFDZypn2Fr8GhsuV
-BBZo+83dnY01lbky/RzfCIfhZo4DkMOh5E/IgBS0i8TS3t/YXXFmAsf6l/Ebud2Q
-xfZqimD7zUrUbXvvt4A2
-=enVb
------END PGP SIGNATURE-----
-
---0eh6TmSyL6TZE2Uz--
-
---===============2622801083727614013==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2622801083727614013==--
+diff --git a/hda-int.c b/hda-int.c
+index fbd3cee..ef90fe8 100644
+--- a/hda-int.c
++++ b/hda-int.c
+@@ -1125,6 +1125,12 @@ int hda_cmd(struct xhda_codec *codec, unsigned int cmd)
+ 	unsigned int nid = (cmd >> 20) & 0x7f;
+ 	unsigned int verb = (cmd >> 8) & 0xfff;
+ 
++	if (codec->extended_cmd) {
++		int r = codec->extended_cmd(codec, cmd);
++		if (r != -ENXIO)
++			return r;
++	}
++
+ 	tbl = find_matching_verb(codec, verb);
+ 	if (!tbl)
+ 		return -ENXIO;
+diff --git a/hda-spec.c b/hda-spec.c
+index 8f95914..e4bb547 100644
+--- a/hda-spec.c
++++ b/hda-spec.c
+@@ -354,6 +354,16 @@ static struct verb_ext_list extensions[] = {
+ 	{ }
+ };
+ 
++static int realtek_dsp_cmd(struct xhda_codec *codec, unsigned int cmd)
++{
++	unsigned int nid = (cmd >> 20) & 0x7f;
++	if (nid != 0x51)
++		return -ENXIO;
++	/* There might be a secret DSP connected to node 0x51 */
++	codec->rc = 0;
++	return 0;
++}
++
+ /*
+  * fixups
+  */
+@@ -466,4 +476,7 @@ void add_codec_extensions(struct xhda_codec *codec)
+ 	else if (!strcmp(codec->parsed_name, "Realtek ALC661"))
+ 		hda_set_proc_coef(codec, 0x20, 0x00, 0x8020);
+ 
++	if (!strncmp(codec->parsed_name, "Realtek", strlen("Realtek")))
++		codec->extended_cmd = realtek_dsp_cmd;
++
+ }
+diff --git a/include/hda-types.h b/include/hda-types.h
+index fac5084..fe6b31f 100644
+--- a/include/hda-types.h
++++ b/include/hda-types.h
+@@ -114,6 +114,7 @@ struct xhda_codec {
+ 	unsigned int rc;
+ 	struct xhda_verb_table *extended_verbs;
+ 	struct xhda_verb_table *extended_parameters;
++	int (*extended_cmd) (struct xhda_codec *codec, unsigned int cmd);
+ 	struct xhda_value_cache *value_cache;
+ 	unsigned short pci_vendor, pci_device;
+ 	unsigned short pci_subvendor, pci_subdevice;
+-- 
+1.7.9.5
