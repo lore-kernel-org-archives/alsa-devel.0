@@ -1,19 +1,19 @@
 From: Barry Song <21cnbao@gmail.com>
-Subject: [PATCH 5/6] ASoC: sirf-inner: add mach driver for
-	SiRFSoC internal codec
-Date: Fri, 19 Jul 2013 19:07:21 +0800
-Message-ID: <1374232042-26088-6-git-send-email-Baohua.Song@csr.com>
+Subject: [PATCH 6/6] arm: prima2: defconfig: enable sound
+	components
+Date: Fri, 19 Jul 2013 19:07:22 +0800
+Message-ID: <1374232042-26088-7-git-send-email-Baohua.Song@csr.com>
 References: <1374232042-26088-1-git-send-email-Baohua.Song@csr.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f50.google.com (mail-pa0-f50.google.com
- [209.85.220.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C9412656C2
- for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 13:09:52 +0200 (CEST)
-Received: by mail-pa0-f50.google.com with SMTP id fb1so4278568pad.23
- for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 04:09:51 -0700 (PDT)
+Received: from mail-pb0-f45.google.com (mail-pb0-f45.google.com
+ [209.85.160.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28F552656AF
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 13:09:58 +0200 (CEST)
+Received: by mail-pb0-f45.google.com with SMTP id mc8so4301540pbc.32
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2013 04:09:58 -0700 (PDT)
 In-Reply-To: <1374232042-26088-1-git-send-email-Baohua.Song@csr.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,333 +25,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
-Cc: Rongjun Ying <Rongjun.Ying@csr.com>, Workgroup.Linux@csr.com, linux-arm-kernel@lists.infradead.org, Barry Song <Baohua.Song@csr.com>
+Cc: Workgroup.Linux@csr.com, linux-arm-kernel@lists.infradead.org, Barry Song <Baohua.Song@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Rongjun Ying <Rongjun.Ying@csr.com>
-
-This connects DMA, CPU DAI and Codec DAI together and works
-as a mach driver.
-
-Signed-off-by: Rongjun Ying <Rongjun.Ying@csr.com>
 Signed-off-by: Barry Song <Baohua.Song@csr.com>
 ---
- sound/soc/sirf/Kconfig      |   7 +-
- sound/soc/sirf/Makefile     |   2 +
- sound/soc/sirf/sirf-inner.c | 267 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 275 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/sirf/sirf-inner.c
+ arch/arm/configs/prima2_defconfig | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sirf/Kconfig b/sound/soc/sirf/Kconfig
-index 60b8857..ce3c025 100644
---- a/sound/soc/sirf/Kconfig
-+++ b/sound/soc/sirf/Kconfig
-@@ -2,7 +2,7 @@ config SND_SIRF_SOC
- 	tristate "Platform DMA driver for the SiRF SoC chips"
- 	depends on ARCH_SIRF && SND_SOC
- 	select SND_SOC_DMAENGINE_PCM
--
-+	
- config SND_SOC_SIRF_I2S
- 	tristate
- 
-@@ -11,3 +11,8 @@ config SND_SIRF_SOC_INNER
- 
- config SND_SOC_SIRF_USP
- 	tristate
-+
-+config SND_SIRF_INNER
-+	tristate "SoC Audio support for SiRF inner codec of SiRF EVB"
-+	depends on SND_SIRF_SOC
-+	select SND_SIRF_SOC_INNER
-diff --git a/sound/soc/sirf/Makefile b/sound/soc/sirf/Makefile
-index 8517c67..80abdf6 100644
---- a/sound/soc/sirf/Makefile
-+++ b/sound/soc/sirf/Makefile
-@@ -1,9 +1,11 @@
- snd-soc-sirf-objs := sirf-pcm.o
-+snd-soc-sirf-inner-objs := sirf-inner.o
- snd-soc-sirf-soc-inner-objs := sirf-soc-inner.o
- snd-soc-sirf-i2s-objs := sirf-i2s.o
- snd-soc-sirf-usp-objs := sirf-usp.o
- 
- obj-$(CONFIG_SND_SIRF_SOC) += snd-soc-sirf.o
-+obj-$(CONFIG_SND_SIRF_INNER) += snd-soc-sirf-inner.o
- obj-$(CONFIG_SND_SIRF_SOC_INNER) += snd-soc-sirf-soc-inner.o
- obj-$(CONFIG_SND_SOC_SIRF_I2S) += snd-soc-sirf-i2s.o
- obj-$(CONFIG_SND_SOC_SIRF_USP) += snd-soc-sirf-usp.o
-diff --git a/sound/soc/sirf/sirf-inner.c b/sound/soc/sirf/sirf-inner.c
-new file mode 100644
-index 0000000..a8f2765
---- /dev/null
-+++ b/sound/soc/sirf/sirf-inner.c
-@@ -0,0 +1,267 @@
-+/*
-+ * SiRF inner audio device driver
-+ *
-+ * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
-+ *
-+ * Licensed under GPLv2 or later.
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/gpio.h>
-+#include <linux/of_gpio.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/jack.h>
-+
-+struct sirf_inner_card {
-+	unsigned int            gpio_hp_pa;
-+	unsigned int            gpio_spk_pa;
-+	/*
-+	 * Android platform uses switch gpio instead of jack.
-+	 */
-+#ifndef CONFIG_ANDROID
-+	unsigned int            gpio_hp_detect;
-+	struct snd_soc_jack     hp_jack;
-+#endif
-+};
-+
-+#ifndef CONFIG_ANDROID
-+static int sirf_inner_jack_status_check(void);
-+
-+static struct snd_soc_jack_gpio hp_jack_gpios[] = {
-+	{
-+		.name = "hpdet-gpio",
-+		.report = SND_JACK_HEADPHONE,
-+		.debounce_time = 200,
-+		.jack_status_check = sirf_inner_jack_status_check,
-+	},
-+};
-+
-+static int sirf_inner_jack_status_check(void)
-+{
-+	int spk_out = 0;
-+	struct snd_soc_codec *codec = hp_jack_gpios[0].jack->codec;
-+	struct snd_soc_card *card = codec->card;
-+	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
-+	int hp_report = 0;
-+
-+	if (gpio_is_valid(sinner_card->gpio_hp_detect))
-+		spk_out = gpio_get_value(sinner_card->gpio_hp_detect);
-+
-+	if (gpio_is_valid(sinner_card->gpio_hp_pa))
-+		gpio_direction_output(sinner_card->gpio_hp_pa, !spk_out);
-+
-+	if (gpio_is_valid(sinner_card->gpio_spk_pa))
-+		gpio_direction_output(sinner_card->gpio_spk_pa, spk_out);
-+
-+	if (!spk_out)
-+		hp_report |= SND_JACK_HEADPHONE;
-+
-+	return hp_report;
-+}
-+
-+static int sirf_inner_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_card *card = codec->card;
-+	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
-+	int ret;
-+	hp_jack_gpios[0].gpio = sinner_card->gpio_hp_detect;
-+	ret = snd_soc_jack_new(codec, "Headphone Jack", SND_JACK_HEADPHONE,
-+			&sinner_card->hp_jack);
-+	if (ret)
-+		return ret;
-+	return snd_soc_jack_add_gpios(&sinner_card->hp_jack,
-+			ARRAY_SIZE(hp_jack_gpios),
-+			hp_jack_gpios);
-+}
-+#endif
-+
-+/* Digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link sirf_inner_dai_links[] = {
-+	{
-+		.name = "SiRF inner",
-+		.stream_name = "SiRF inner",
-+		.codec_dai_name = "sirf-soc-inner",
-+#ifndef CONFIG_ANDROID
-+		.init = sirf_inner_init,
-+#endif
-+	},
-+};
-+
-+static int sirf_inner_headphone_out_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	int hp_out = 0;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_card *card = codec->card;
-+	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
-+
-+	if (gpio_is_valid(sinner_card->gpio_hp_pa))
-+		hp_out = gpio_get_value(sinner_card->gpio_hp_pa);
-+
-+	*ucontrol->value.integer.value = hp_out;
-+	return 0;
-+}
-+
-+static int sirf_inner_headphone_out_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	int is_hp_out = ucontrol->value.integer.value[0];
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_card *card = codec->card;
-+	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
-+
-+	if (gpio_is_valid(sinner_card->gpio_hp_pa))
-+		gpio_direction_output(sinner_card->gpio_hp_pa, is_hp_out);
-+
-+	return 0;
-+}
-+
-+static int sirf_inner_speaker_out_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	int spk_out = 0;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_card *card = codec->card;
-+	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
-+
-+	if (gpio_is_valid(sinner_card->gpio_spk_pa))
-+		spk_out = gpio_get_value(sinner_card->gpio_spk_pa);
-+
-+	*ucontrol->value.integer.value = spk_out;
-+	return 0;
-+}
-+
-+static int sirf_inner_speaker_out_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	int is_spk_out = ucontrol->value.integer.value[0];
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_card *card = codec->card;
-+	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
-+
-+	if (gpio_is_valid(sinner_card->gpio_spk_pa))
-+		gpio_direction_output(sinner_card->gpio_spk_pa, is_spk_out);
-+	return 0;
-+}
-+
-+static int sirf_inner_speaker_out_info(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_info *uinfo)
-+{
-+	return 0;
-+}
-+
-+static int sirf_inner_headphone_out_info(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_info *uinfo)
-+{
-+	return 0;
-+}
-+
-+static struct snd_kcontrol_new snd_sirf_inner_out_route_controls[] = {
-+	{
-+		.iface          =       SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name           =       "Speaker Out",
-+		.index          =       0,
-+		.access         =       SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+		.info           =	sirf_inner_speaker_out_info,
-+		.get            =       sirf_inner_speaker_out_get,
-+		.put            =       sirf_inner_speaker_out_put,
-+	}, {
-+		.iface          =       SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name           =       "Headphone Out",
-+		.index          =       0,
-+		.access         =       SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+		.info           =	sirf_inner_headphone_out_info,
-+		.get            =       sirf_inner_headphone_out_get,
-+		.put            =       sirf_inner_headphone_out_put,
-+	},
-+};
-+
-+/* Audio machine driver */
-+static struct snd_soc_card snd_soc_sirf_inner_card = {
-+	.name = "SiRF inner",
-+	.owner = THIS_MODULE,
-+	.dai_link = sirf_inner_dai_links,
-+	.num_links = ARRAY_SIZE(sirf_inner_dai_links),
-+	.controls = snd_sirf_inner_out_route_controls,
-+	.num_controls = ARRAY_SIZE(snd_sirf_inner_out_route_controls),
-+};
-+
-+static int sirf_inner_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &snd_soc_sirf_inner_card;
-+	struct sirf_inner_card *sinner_card;
-+	sinner_card = devm_kzalloc(&pdev->dev, sizeof(struct sirf_inner_card),
-+			GFP_KERNEL);
-+	if (sinner_card == NULL)
-+		return -ENOMEM;
-+
-+	sirf_inner_dai_links[0].platform_of_node =
-+		of_find_compatible_node(NULL, NULL, "sirf,pcm-audio");
-+	sirf_inner_dai_links[0].cpu_of_node =
-+		of_parse_phandle(pdev->dev.of_node, "sirf,inner-platform", 0);
-+	sirf_inner_dai_links[0].codec_of_node =
-+		of_parse_phandle(pdev->dev.of_node, "sirf,inner-codec", 0);
-+	sinner_card->gpio_spk_pa = of_get_named_gpio(pdev->dev.of_node,
-+			"spk-pa-gpios", 0);
-+	sinner_card->gpio_hp_pa =  of_get_named_gpio(pdev->dev.of_node,
-+			"hp-pa-gpios", 0);
-+#ifndef CONFIG_ANDROID
-+	sinner_card->gpio_hp_detect = of_get_named_gpio(pdev->dev.of_node,
-+			"hp-switch-gpios", 0);
-+#endif
-+	if (gpio_is_valid(sinner_card->gpio_spk_pa))
-+		gpio_request(sinner_card->gpio_spk_pa, "SPA_PA_SD");
-+	if (gpio_is_valid(sinner_card->gpio_hp_pa))
-+		gpio_request(sinner_card->gpio_hp_pa, "HP_PA_SD");
-+
-+	card->dev = &pdev->dev;
-+	snd_soc_card_set_drvdata(card, sinner_card);
-+	platform_set_drvdata(pdev, card);
-+	if (gpio_is_valid(sinner_card->gpio_hp_pa))
-+		gpio_direction_output(sinner_card->gpio_hp_pa, 0);
-+	if (gpio_is_valid(sinner_card->gpio_spk_pa))
-+		gpio_direction_output(sinner_card->gpio_spk_pa, 0);
-+
-+	return snd_soc_register_card(card);
-+}
-+
-+static int sirf_inner_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
-+
-+	if (gpio_is_valid(sinner_card->gpio_hp_pa))
-+		gpio_free(sinner_card->gpio_hp_pa);
-+	if (gpio_is_valid(sinner_card->gpio_spk_pa))
-+		gpio_free(sinner_card->gpio_spk_pa);
-+
-+	snd_soc_unregister_card(card);
-+	return 0;
-+}
-+
-+static const struct of_device_id sirf_inner_of_match[] = {
-+	{.compatible = "sirf,sirf-inner-audio", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, sirf_inner_of_match);
-+
-+static struct platform_driver sirf_inner_driver = {
-+	.driver = {
-+		.name = "sirf-inner-audio",
-+		.owner = THIS_MODULE,
-+		.of_match_table = sirf_inner_of_match,
-+	},
-+	.probe = sirf_inner_probe,
-+	.remove = sirf_inner_remove,
-+};
-+module_platform_driver(sirf_inner_driver);
-+
-+MODULE_AUTHOR("RongJun Ying <RongJun.Ying@csr.com>");
-+MODULE_DESCRIPTION("ALSA SoC SIRF inner AUDIO driver");
-+MODULE_LICENSE("GPL v2");
+diff --git a/arch/arm/configs/prima2_defconfig b/arch/arm/configs/prima2_defconfig
+index 002a1ce..07a87c8 100644
+--- a/arch/arm/configs/prima2_defconfig
++++ b/arch/arm/configs/prima2_defconfig
+@@ -1,4 +1,3 @@
+-CONFIG_EXPERIMENTAL=y
+ CONFIG_NO_HZ=y
+ CONFIG_HIGH_RES_TIMERS=y
+ CONFIG_RELAY=y
+@@ -39,6 +38,11 @@ CONFIG_SPI=y
+ CONFIG_SPI_SIRF=y
+ CONFIG_SPI_SPIDEV=y
+ # CONFIG_HWMON is not set
++CONFIG_SOUND=y
++CONFIG_SND=y
++CONFIG_SND_SOC=y
++CONFIG_SND_SIRF_SOC=y
++CONFIG_SND_SIRF_INNER=y
+ CONFIG_USB_GADGET=y
+ CONFIG_USB_MASS_STORAGE=m
+ CONFIG_MMC=y
+@@ -59,12 +63,12 @@ CONFIG_ROMFS_FS=y
+ CONFIG_NLS_CODEPAGE_437=y
+ CONFIG_NLS_ASCII=y
+ CONFIG_NLS_ISO8859_1=y
+-CONFIG_MAGIC_SYSRQ=y
++CONFIG_DEBUG_INFO=y
+ CONFIG_DEBUG_SECTION_MISMATCH=y
++CONFIG_MAGIC_SYSRQ=y
+ CONFIG_DEBUG_KERNEL=y
+ # CONFIG_DEBUG_PREEMPT is not set
+ CONFIG_DEBUG_RT_MUTEXES=y
+ CONFIG_DEBUG_SPINLOCK=y
+ CONFIG_DEBUG_MUTEXES=y
+-CONFIG_DEBUG_INFO=y
+ CONFIG_CRC_CCITT=y
 -- 
 1.8.2.3
