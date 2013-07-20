@@ -1,62 +1,216 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: Re: [PATCH RFC 09/10] ALSA: usb-audio: clarify
- implicit fb quirk for Roland
-Date: Sat, 20 Jul 2013 18:54:13 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1307201852120.1001@xoschi>
-References: <1374258210-14486-1-git-send-email-eldad@fogrefinery.com>
- <1374258210-14486-10-git-send-email-eldad@fogrefinery.com>
- <51EA9102.1040500@ladisch.de>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: [PATCH] ASoC: generic: add simple card with devicetree support
+Date: Sat, 20 Jul 2013 19:25:54 +0200
+Message-ID: <20130720192554.79b7061b@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f50.google.com (mail-ee0-f50.google.com [74.125.83.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C9BB260857
- for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2013 18:54:20 +0200 (CEST)
-Received: by mail-ee0-f50.google.com with SMTP id d49so2912539eek.23
- for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2013 09:54:19 -0700 (PDT)
-In-Reply-To: <51EA9102.1040500@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Grant Likely <grant.likely@linaro.org>, Rob Herring <rob.herring@calxeda.com>, Rob Landley <rob@landley.net>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This generic simple card driver uses DT values to instanciate an audio
+system in which the real work is done by the subdrivers (audio
+controller, audio codec and pcm/dma controller).
 
+Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
+---
+ Documentation/devicetree/bindings/sound/simple-dt-card.txt |  18 ++++
+ sound/soc/generic/Kconfig                                 |   7 ++
+ sound/soc/generic/Makefile                                |   2 +
+ sound/soc/generic/simple-dt-card.c                        | 137 ++++++++++++++++++++++++
+ 4 files changed, 163 insertions(+)
 
-On Sat, 20 Jul 2013, Clemens Ladisch wrote:
-
-> Eldad Zack wrote:
-> > Move the vendor ID check to the outside and also propogate
-> > the error code.
-> 
-> > -	if (...
-> > -         search_roland_implicit_fb(subs->dev, altsd->bInterfaceNumber + 1,
-> > -				      altsd->bAlternateSetting,
-> > -				      &alts, &ep) >= 0) {
-> > -		goto add_sync_ep;
-> 
-> > +			int err = search_roland_implicit_fb(subs->dev, altsd->bInterfaceNumber + 1,
-> > +							altsd->bAlternateSetting,
-> > +						        &alts, &ep);
-> > +			if (err < 0)
-> > +				return err;
-> > +
-> > +			goto add_sync_ep;
-> 
-> The error code change is not a refactoring, but a logic change.
-> 
-> In this case, a nonexistent feedback endpoint should not be considered a fatal error.
-
-Right, thanks!
-I'll change it to return 0.
-
-Cheers,
-Eldad
+diff --git a/Documentation/devicetree/bindings/sound/simple-dt-card.txt b/Documentation/devicetree/bindings/sound/simple-dt-card.txt
+new file mode 100644
+index 0000000..45f41cc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/simple-dt-card.txt
+@@ -0,0 +1,18 @@
++Device-Tree bindings for simple DT audio card
++
++Required properties:
++  - compatible: should be "linux,simple-dt-audio".
++  - audio-controller: phandle of the audio controller
++  - audio-codec: phandle of the audio codec
++  - platform-pcm-dma: phandle of the PCM/DMA controller
++  - codec-dai-name: name of the codec dai
++
++Example node:
++
++	sound {
++		compatible = "linux,simple-dt-audio";
++		audio-controller = <&i2s1>;
++		audio-codec = <&spdif>;
++		platform-pcm-dma = <&pcm>;
++		codec-dai-name = "dit-hifi";
++	};
+diff --git a/sound/soc/generic/Kconfig b/sound/soc/generic/Kconfig
+index 610f612..e593224 100644
+--- a/sound/soc/generic/Kconfig
++++ b/sound/soc/generic/Kconfig
+@@ -2,3 +2,10 @@ config SND_SIMPLE_CARD
+ 	tristate "ASoC Simple sound card support"
+ 	help
+ 	  This option enables generic simple sound card support
++
++config SND_SIMPLE_DT_CARD
++	tristate "ASoC Simple sound card support (Flattened Device Tree)"
++	depends on OF
++	help
++	  This option enables generic simple sound card support
++	  using flattened device tree.
+diff --git a/sound/soc/generic/Makefile b/sound/soc/generic/Makefile
+index 9c3b246..65ddd3e 100644
+--- a/sound/soc/generic/Makefile
++++ b/sound/soc/generic/Makefile
+@@ -1,3 +1,5 @@
+ snd-soc-simple-card-objs	:= simple-card.o
++snd-soc-simple-dt-card-objs	:= simple-dt-card.o
+ 
+ obj-$(CONFIG_SND_SIMPLE_CARD)	+= snd-soc-simple-card.o
++obj-$(CONFIG_SND_SIMPLE_DT_CARD) += snd-soc-simple-dt-card.o
+diff --git a/sound/soc/generic/simple-dt-card.c b/sound/soc/generic/simple-dt-card.c
+new file mode 100644
+index 0000000..d373d68
+--- /dev/null
++++ b/sound/soc/generic/simple-dt-card.c
+@@ -0,0 +1,137 @@
++/*
++ * Simple DT defined sound card support
++ *
++ * Copyright (C) 2013 Jean-Francois Moine <moinejf@free.fr>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published by
++ * the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License along with
++ * this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <sound/soc.h>
++#include <linux/of.h>
++
++static int simple_dt_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	struct snd_soc_dai_link *link;
++
++	snd_soc_unregister_card(card);
++	link = card->dai_link;
++	if (link) {
++		of_node_put((struct device_node *) link->platform_of_node);
++		of_node_put((struct device_node *) link->codec_of_node);
++		of_node_put((struct device_node *) link->cpu_of_node);
++		kfree(link);
++	}
++	kfree(card);
++	return 0;
++}
++
++static int simple_dt_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct device_node *np = dev->of_node;
++	struct snd_soc_card *card;
++	struct snd_soc_dai_link *link;
++	int ret;
++
++	if (!np) {
++		dev_err(dev, "no device-tree\n");
++		return -ENXIO;
++	}
++
++	card = kzalloc(sizeof *card, GFP_KERNEL);
++	if (!card) {
++		dev_err(dev, "unable to allocate soc card\n");
++		return -ENOMEM;
++	}
++	card->name = "Simple DT audio card";
++	card->owner = THIS_MODULE;
++	card->dev = dev;
++	platform_set_drvdata(pdev, card);
++
++	link = kzalloc(sizeof *link, GFP_KERNEL);
++	if (!link) {
++		dev_err(dev, "unable to allocate soc link\n");
++		ret = -ENOMEM;
++		goto err;
++	}
++	card->dai_link = link;
++	card->num_links = 1;
++
++	link->name = "Simple audio";
++	link->stream_name = "Playback";
++
++	link->cpu_of_node = of_parse_phandle(np, "audio-controller", 0);
++	if (!link->cpu_of_node) {
++		dev_err(dev, "no 'audio-controller' in DT\n");
++		ret = -EINVAL;
++		goto err;
++	}
++
++	link->codec_of_node = of_parse_phandle(np, "audio-codec", 0);
++	if (!link->codec_of_node) {
++		dev_err(dev, "no 'audio-codec' in DT\n");
++		ret = -EINVAL;
++		goto err;
++	}
++
++	link->platform_of_node = of_parse_phandle(np, "platform-pcm-dma", 0);
++	if (!link->platform_of_node) {
++		dev_err(dev, "no 'platform-pcm-dma' in DT\n");
++		ret = -EINVAL;
++		goto err;
++	}
++
++	ret = of_property_read_string(np, "codec-dai-name",
++					 &link->codec_dai_name);
++	if (ret) {
++		dev_err(dev, "no 'codec-dai-name' in DT\n");
++		ret = -EINVAL;
++		goto err;
++	}
++
++	ret = snd_soc_register_card(card);
++	if (ret) {
++		if (ret != -EPROBE_DEFER)
++			dev_err(dev, "register card err %d\n", ret);
++		goto err;
++	}
++	return 0;
++
++err:
++	simple_dt_remove(pdev);
++	return ret;
++}
++
++static struct of_device_id simple_dt_of_match[] = {
++	{ .compatible = "linux,simple-dt-audio" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, simple_dt_of_match);
++
++static struct platform_driver simple_dt_driver = {
++	.driver		= {
++		.name	= "simple-dt-audio",
++		.owner	= THIS_MODULE,
++		.of_match_table = simple_dt_of_match,
++	},
++	.probe		= simple_dt_probe,
++	.remove		= simple_dt_remove,
++};
++module_platform_driver(simple_dt_driver);
++
++MODULE_AUTHOR("Jean-Francois Moine <moinejf@free.fr>");
++MODULE_DESCRIPTION("ALSA SoC simple DT driver");
++MODULE_LICENSE("GPL");
