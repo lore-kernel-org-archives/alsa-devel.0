@@ -1,17 +1,19 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 1/3] ASoC: fsl: fsl_ssi: Add MODULE_ALIAS
-Date: Sat, 20 Jul 2013 16:16:01 -0300
-Message-ID: <1374347763-18261-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH 2/3] ASoC: sgtl5000: Add MODULE_ALIAS
+Date: Sat, 20 Jul 2013 16:16:02 -0300
+Message-ID: <1374347763-18261-2-git-send-email-festevam@gmail.com>
+References: <1374347763-18261-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gh0-f171.google.com (mail-gh0-f171.google.com
- [209.85.160.171])
- by alsa0.perex.cz (Postfix) with ESMTP id ECFD42608CA
- for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2013 21:16:10 +0200 (CEST)
-Received: by mail-gh0-f171.google.com with SMTP id f15so1676164ghb.30
- for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2013 12:16:10 -0700 (PDT)
+Received: from mail-ye0-f179.google.com (mail-ye0-f179.google.com
+ [209.85.213.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6EF142608D6
+ for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2013 21:16:12 +0200 (CEST)
+Received: by mail-ye0-f179.google.com with SMTP id r3so1684167yen.10
+ for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2013 12:16:11 -0700 (PDT)
+In-Reply-To: <1374347763-18261-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,20 +33,20 @@ Add MODULE_ALIAS, so that auto module loading can work.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/fsl/fsl_ssi.c | 1 +
+ sound/soc/codecs/sgtl5000.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index c9974a4..429fbfd 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -900,6 +900,7 @@ static struct platform_driver fsl_ssi_driver = {
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index c8b9090..58b1b30 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1608,6 +1608,7 @@ static struct i2c_driver sgtl5000_i2c_driver = {
  
- module_platform_driver(fsl_ssi_driver);
+ module_i2c_driver(sgtl5000_i2c_driver);
  
-+MODULE_ALIAS("platform:fsl-ssi-dai");
- MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
- MODULE_DESCRIPTION("Freescale Synchronous Serial Interface (SSI) ASoC Driver");
- MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:sgtl5000");
+ MODULE_DESCRIPTION("Freescale SGTL5000 ALSA SoC Codec Driver");
+ MODULE_AUTHOR("Zeng Zhaoming <zengzm.kernel@gmail.com>");
+ MODULE_LICENSE("GPL");
 -- 
 1.8.1.2
