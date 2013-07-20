@@ -1,216 +1,161 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH] ASoC: generic: add simple card with devicetree support
-Date: Sat, 20 Jul 2013 19:25:54 +0200
-Message-ID: <20130720192554.79b7061b@armhf>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - Add
+ snd_hda_jack_detect_state() helper function
+Date: Sat, 20 Jul 2013 20:39:56 +0200
+Message-ID: <51EAD97C.8000807@canonical.com>
+References: <1374246397-14167-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Grant Likely <grant.likely@linaro.org>, Rob Herring <rob.herring@calxeda.com>, Rob Landley <rob@landley.net>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33FD12608B7
+ for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2013 20:39:57 +0200 (CEST)
+In-Reply-To: <1374246397-14167-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This generic simple card driver uses DT values to instanciate an audio
-system in which the real work is done by the subdrivers (audio
-controller, audio codec and pcm/dma controller).
+On 07/19/2013 05:06 PM, Takashi Iwai wrote:
+> snd_hda_jack_detect() function returns a boolean value for a jack
+> plugged in or not, but it also returns always true when the
+> corresponding pin is phantom (i.e. fixed).  This is OK in most cases,
+> but it makes the generic parser misbehaving about the auto-mute or
+> auto-mic switching, e.g. when one of headphone pins is a fixed.
+> Namely, the driver decides whether to mute the speaker or not, just
+> depending on the headphone plug state: if one of the headphone jacks
+> is seen as active, then the speaker is muted.  Thus this will result
+> always in the muted speaker output.
+>
+> So, the problem is the function returns a boolean, after all, although
+> we need to think of "phantom" jack.  Now a new function,
+> snd_hda_jack_detect_state() is introduced to return these tristates.
+> The generic parser uses this function for checking the headphone or
+> mic jack states.
+>
+> Meanwhile, the behavior of snd_hda_jack_detect() is kept as is, for
+> keeping compatibility in other driver codes.
+>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
- Documentation/devicetree/bindings/sound/simple-dt-card.txt |  18 ++++
- sound/soc/generic/Kconfig                                 |   7 ++
- sound/soc/generic/Makefile                                |   2 +
- sound/soc/generic/simple-dt-card.c                        | 137 ++++++++++++++++++++++++
- 4 files changed, 163 insertions(+)
+Acked-by: David Henningsson <david.henningsson@canonical.com>
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-dt-card.txt b/Documentation/devicetree/bindings/sound/simple-dt-card.txt
-new file mode 100644
-index 0000000..45f41cc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/simple-dt-card.txt
-@@ -0,0 +1,18 @@
-+Device-Tree bindings for simple DT audio card
-+
-+Required properties:
-+  - compatible: should be "linux,simple-dt-audio".
-+  - audio-controller: phandle of the audio controller
-+  - audio-codec: phandle of the audio codec
-+  - platform-pcm-dma: phandle of the PCM/DMA controller
-+  - codec-dai-name: name of the codec dai
-+
-+Example node:
-+
-+	sound {
-+		compatible = "linux,simple-dt-audio";
-+		audio-controller = <&i2s1>;
-+		audio-codec = <&spdif>;
-+		platform-pcm-dma = <&pcm>;
-+		codec-dai-name = "dit-hifi";
-+	};
-diff --git a/sound/soc/generic/Kconfig b/sound/soc/generic/Kconfig
-index 610f612..e593224 100644
---- a/sound/soc/generic/Kconfig
-+++ b/sound/soc/generic/Kconfig
-@@ -2,3 +2,10 @@ config SND_SIMPLE_CARD
- 	tristate "ASoC Simple sound card support"
- 	help
- 	  This option enables generic simple sound card support
-+
-+config SND_SIMPLE_DT_CARD
-+	tristate "ASoC Simple sound card support (Flattened Device Tree)"
-+	depends on OF
-+	help
-+	  This option enables generic simple sound card support
-+	  using flattened device tree.
-diff --git a/sound/soc/generic/Makefile b/sound/soc/generic/Makefile
-index 9c3b246..65ddd3e 100644
---- a/sound/soc/generic/Makefile
-+++ b/sound/soc/generic/Makefile
-@@ -1,3 +1,5 @@
- snd-soc-simple-card-objs	:= simple-card.o
-+snd-soc-simple-dt-card-objs	:= simple-dt-card.o
- 
- obj-$(CONFIG_SND_SIMPLE_CARD)	+= snd-soc-simple-card.o
-+obj-$(CONFIG_SND_SIMPLE_DT_CARD) += snd-soc-simple-dt-card.o
-diff --git a/sound/soc/generic/simple-dt-card.c b/sound/soc/generic/simple-dt-card.c
-new file mode 100644
-index 0000000..d373d68
---- /dev/null
-+++ b/sound/soc/generic/simple-dt-card.c
-@@ -0,0 +1,137 @@
-+/*
-+ * Simple DT defined sound card support
-+ *
-+ * Copyright (C) 2013 Jean-Francois Moine <moinejf@free.fr>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published by
-+ * the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License along with
-+ * this program.  If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <sound/soc.h>
-+#include <linux/of.h>
-+
-+static int simple_dt_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	struct snd_soc_dai_link *link;
-+
-+	snd_soc_unregister_card(card);
-+	link = card->dai_link;
-+	if (link) {
-+		of_node_put((struct device_node *) link->platform_of_node);
-+		of_node_put((struct device_node *) link->codec_of_node);
-+		of_node_put((struct device_node *) link->cpu_of_node);
-+		kfree(link);
-+	}
-+	kfree(card);
-+	return 0;
-+}
-+
-+static int simple_dt_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->of_node;
-+	struct snd_soc_card *card;
-+	struct snd_soc_dai_link *link;
-+	int ret;
-+
-+	if (!np) {
-+		dev_err(dev, "no device-tree\n");
-+		return -ENXIO;
-+	}
-+
-+	card = kzalloc(sizeof *card, GFP_KERNEL);
-+	if (!card) {
-+		dev_err(dev, "unable to allocate soc card\n");
-+		return -ENOMEM;
-+	}
-+	card->name = "Simple DT audio card";
-+	card->owner = THIS_MODULE;
-+	card->dev = dev;
-+	platform_set_drvdata(pdev, card);
-+
-+	link = kzalloc(sizeof *link, GFP_KERNEL);
-+	if (!link) {
-+		dev_err(dev, "unable to allocate soc link\n");
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+	card->dai_link = link;
-+	card->num_links = 1;
-+
-+	link->name = "Simple audio";
-+	link->stream_name = "Playback";
-+
-+	link->cpu_of_node = of_parse_phandle(np, "audio-controller", 0);
-+	if (!link->cpu_of_node) {
-+		dev_err(dev, "no 'audio-controller' in DT\n");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	link->codec_of_node = of_parse_phandle(np, "audio-codec", 0);
-+	if (!link->codec_of_node) {
-+		dev_err(dev, "no 'audio-codec' in DT\n");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	link->platform_of_node = of_parse_phandle(np, "platform-pcm-dma", 0);
-+	if (!link->platform_of_node) {
-+		dev_err(dev, "no 'platform-pcm-dma' in DT\n");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	ret = of_property_read_string(np, "codec-dai-name",
-+					 &link->codec_dai_name);
-+	if (ret) {
-+		dev_err(dev, "no 'codec-dai-name' in DT\n");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	ret = snd_soc_register_card(card);
-+	if (ret) {
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "register card err %d\n", ret);
-+		goto err;
-+	}
-+	return 0;
-+
-+err:
-+	simple_dt_remove(pdev);
-+	return ret;
-+}
-+
-+static struct of_device_id simple_dt_of_match[] = {
-+	{ .compatible = "linux,simple-dt-audio" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, simple_dt_of_match);
-+
-+static struct platform_driver simple_dt_driver = {
-+	.driver		= {
-+		.name	= "simple-dt-audio",
-+		.owner	= THIS_MODULE,
-+		.of_match_table = simple_dt_of_match,
-+	},
-+	.probe		= simple_dt_probe,
-+	.remove		= simple_dt_remove,
-+};
-+module_platform_driver(simple_dt_driver);
-+
-+MODULE_AUTHOR("Jean-Francois Moine <moinejf@free.fr>");
-+MODULE_DESCRIPTION("ALSA SoC simple DT driver");
-+MODULE_LICENSE("GPL");
+Although I doubt this is needed on the input side. If we have more than 
+one input source that is fixed/phantom, we should always have a capture 
+switch rather than auto-mic switch, right?
+
+> ---
+>   sound/pci/hda/hda_generic.c |  8 +++++---
+>   sound/pci/hda/hda_jack.c    | 18 ++++++++++++------
+>   sound/pci/hda/hda_jack.h    | 13 ++++++++++++-
+>   3 files changed, 29 insertions(+), 10 deletions(-)
+>
+> diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+> index 8e77cbb..f5c2d1f 100644
+> --- a/sound/pci/hda/hda_generic.c
+> +++ b/sound/pci/hda/hda_generic.c
+> @@ -3724,7 +3724,8 @@ static int mux_select(struct hda_codec *codec, unsigned int adc_idx,
+>   /* check each pin in the given array; returns true if any of them is plugged */
+>   static bool detect_jacks(struct hda_codec *codec, int num_pins, hda_nid_t *pins)
+>   {
+> -	int i, present = 0;
+> +	int i;
+> +	bool present = false;
+>
+>   	for (i = 0; i < num_pins; i++) {
+>   		hda_nid_t nid = pins[i];
+> @@ -3733,7 +3734,8 @@ static bool detect_jacks(struct hda_codec *codec, int num_pins, hda_nid_t *pins)
+>   		/* don't detect pins retasked as inputs */
+>   		if (snd_hda_codec_get_pin_target(codec, nid) & AC_PINCTL_IN_EN)
+>   			continue;
+> -		present |= snd_hda_jack_detect(codec, nid);
+> +		if (snd_hda_jack_detect_state(codec, nid) == HDA_JACK_PRESENT)
+> +			present = true;
+>   	}
+>   	return present;
+>   }
+> @@ -3887,7 +3889,7 @@ void snd_hda_gen_mic_autoswitch(struct hda_codec *codec, struct hda_jack_tbl *ja
+>   		/* don't detect pins retasked as outputs */
+>   		if (snd_hda_codec_get_pin_target(codec, pin) & AC_PINCTL_OUT_EN)
+>   			continue;
+> -		if (snd_hda_jack_detect(codec, pin)) {
+> +		if (snd_hda_jack_detect_state(codec, pin) == HDA_JACK_PRESENT) {
+>   			mux_select(codec, 0, spec->am_entry[i].idx);
+>   			return;
+>   		}
+> diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
+> index 3fd2973..dc93761 100644
+> --- a/sound/pci/hda/hda_jack.c
+> +++ b/sound/pci/hda/hda_jack.c
+> @@ -194,18 +194,24 @@ u32 snd_hda_pin_sense(struct hda_codec *codec, hda_nid_t nid)
+>   EXPORT_SYMBOL_HDA(snd_hda_pin_sense);
+>
+>   /**
+> - * snd_hda_jack_detect - query pin Presence Detect status
+> + * snd_hda_jack_detect_state - query pin Presence Detect status
+>    * @codec: the CODEC to sense
+>    * @nid: the pin NID to sense
+>    *
+> - * Query and return the pin's Presence Detect status.
+> + * Query and return the pin's Presence Detect status, as either
+> + * HDA_JACK_NOT_PRESENT, HDA_JACK_PRESENT or HDA_JACK_PHANTOM.
+>    */
+> -int snd_hda_jack_detect(struct hda_codec *codec, hda_nid_t nid)
+> +int snd_hda_jack_detect_state(struct hda_codec *codec, hda_nid_t nid)
+>   {
+> -	u32 sense = snd_hda_pin_sense(codec, nid);
+> -	return get_jack_plug_state(sense);
+> +	struct hda_jack_tbl *jack = snd_hda_jack_tbl_get(codec, nid);
+> +	if (jack && jack->phantom_jack)
+> +		return HDA_JACK_PHANTOM;
+> +	else if (snd_hda_pin_sense(codec, nid) & AC_PINSENSE_PRESENCE)
+> +		return HDA_JACK_PRESENT;
+> +	else
+> +		return HDA_JACK_NOT_PRESENT;
+>   }
+> -EXPORT_SYMBOL_HDA(snd_hda_jack_detect);
+> +EXPORT_SYMBOL_HDA(snd_hda_jack_detect_state);
+>
+>   /**
+>    * snd_hda_jack_detect_enable - enable the jack-detection
+> diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
+> index ec12abd..379420c 100644
+> --- a/sound/pci/hda/hda_jack.h
+> +++ b/sound/pci/hda/hda_jack.h
+> @@ -75,7 +75,18 @@ int snd_hda_jack_set_gating_jack(struct hda_codec *codec, hda_nid_t gated_nid,
+>   				 hda_nid_t gating_nid);
+>
+>   u32 snd_hda_pin_sense(struct hda_codec *codec, hda_nid_t nid);
+> -int snd_hda_jack_detect(struct hda_codec *codec, hda_nid_t nid);
+> +
+> +/* the jack state returned from snd_hda_jack_detect_state() */
+> +enum {
+> +	HDA_JACK_NOT_PRESENT, HDA_JACK_PRESENT, HDA_JACK_PHANTOM,
+> +};
+> +
+> +int snd_hda_jack_detect_state(struct hda_codec *codec, hda_nid_t nid);
+> +
+> +static inline bool snd_hda_jack_detect(struct hda_codec *codec, hda_nid_t nid)
+> +{
+> +	return snd_hda_jack_detect_state(codec, nid) != HDA_JACK_NOT_PRESENT;
+> +}
+>
+>   bool is_jack_detectable(struct hda_codec *codec, hda_nid_t nid);
+>
+>
+
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
