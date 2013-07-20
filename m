@@ -1,35 +1,52 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: twl6040: Use power efficient
-	workqueue
-Date: Sat, 20 Jul 2013 11:12:29 +0200
-Message-ID: <51EA547D.9030709@ti.com>
-References: <1374183911-6814-1-git-send-email-broonie@kernel.org>
+From: Julien Claassen <julien@mail.upb.de>
+Subject: Re: Garbage at end of playback: ecasound or alsa broken?
+Date: Sat, 20 Jul 2013 11:57:32 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1307201153310.1184@flower.world.net>
+References: <51EA4CDE.2010503@t-online.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id EA06B26036A
- for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2013 11:12:20 +0200 (CEST)
-In-Reply-To: <1374183911-6814-1-git-send-email-broonie@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
+Return-path: <ecasound-list-bounces@lists.sourceforge.net>
+In-Reply-To: <51EA4CDE.2010503@t-online.de>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ecasound-list>,
+	<mailto:ecasound-list-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=ecasound-list>
+List-Post: <mailto:ecasound-list@lists.sourceforge.net>
+List-Help: <mailto:ecasound-list-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ecasound-list>,
+	<mailto:ecasound-list-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: ecasound-list-bounces@lists.sourceforge.net
+To: Knut Petersen <Knut_Petersen@t-online.de>
+Cc: alsa-devel@alsa-project.org, ecasound-list@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 07/18/2013 11:45 PM, Mark Brown wrote:
-> From: Mark Brown <broonie@linaro.org>
-> 
-> The accessory detect debounce work is not performance sensitive so let
-> the scheduler run it wherever is most efficient rather than in a per CPU
-> workqueue by using the system power efficient workqueue.
+Hello Knut!
+   No idea yet, who's to blame. but have you tried repeating the experiment 
+with another tool. You can use audacity, so you can use the GUI. There are 
+other recording applications. Or you might even try with the alsa utilities 
+aplay and arecord. this will require two console or terminals.
+   You might also try the same experiment with JACK, if you're not averse to 
+it.
+   I have two soundcards and use them both via JACK. But I've also used two 
+sound devices in ALSA together with Ecasound and didn't experience such 
+problems. My ecasound call was something like:
+ecasound -f:16,2,44100 -c -i alsa,tape -o alsa,default
+   I did digitise a few tapes and prelistened to the volume and audio quality. 
+So it's not a problem in general.
+   Warm regards
+         Julien
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+----------------------------------------
+http://juliencoder.de/nama/music.html
+
+------------------------------------------------------------------------------
+See everything from the browser to the database with AppDynamics
+Get end-to-end visibility with application monitoring from AppDynamics
+Isolate bottlenecks and diagnose root cause in seconds.
+Start your free trial of AppDynamics Pro today!
+http://pubads.g.doubleclick.net/gampad/clk?id=48808831&iu=/4140/ostg.clktrk
+_______________________________________________
+Ecasound-list mailing list
+Ecasound-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ecasound-list
