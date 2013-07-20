@@ -1,14 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] compress: fix the typo is get rates
-Date: Sat, 20 Jul 2013 12:19:02 +0530
-Message-ID: <1374302942-2779-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2] compress: fix the typo in
+	compress_get_alsa_rate()
+Date: Sat, 20 Jul 2013 12:21:18 +0530
+Message-ID: <1374303078-2951-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id F1BD0260310
- for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2013 09:27:42 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26857260310
+ for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2013 09:29:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
