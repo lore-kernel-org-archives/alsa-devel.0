@@ -1,52 +1,65 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH] ASoC: generic: add simple card with
-	devicetree support
-Date: Sun, 21 Jul 2013 13:30:41 +0200
-Message-ID: <51EBC661.1080104@gmail.com>
-References: <20130720192554.79b7061b@armhf> <51EAF1C8.2070009@gmail.com>
- <20130721132405.5de01d32@armhf>
+From: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tegra: correct playback_dma_data setup
+Date: Sun, 21 Jul 2013 15:02:29 +0200
+Message-ID: <1374411749.1633.1.camel@tellur>
+References: <1374374049-30732-1-git-send-email-rizhao@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
- [209.85.214.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 53F0626158D
- for <alsa-devel@alsa-project.org>; Sun, 21 Jul 2013 13:30:16 +0200 (CEST)
-Received: by mail-bk0-f48.google.com with SMTP id jf17so2139429bkc.35
- for <alsa-devel@alsa-project.org>; Sun, 21 Jul 2013 04:30:16 -0700 (PDT)
-In-Reply-To: <20130721132405.5de01d32@armhf>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>, Rob Landley <rob@landley.net>, Grant Likely <grant.likely@linaro.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1374374049-30732-1-git-send-email-rizhao-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Richard Zhao <rizhao-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, stable-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 21.07.2013 13:24, Jean-Francois Moine wrote:
-> On Sat, 20 Jul 2013 22:23:36 +0200
-> Daniel Mack <zonque@gmail.com> wrote:
+Am Sonntag, den 21.07.2013, 10:34 +0800 schrieb Richard Zhao:
+> The errors were caused by copy/paste mistake in below commit
+> since v3.10:
+> 3489d50 ASoC: tegra: Use common DAI DMA data struct
 > 
->> There is a simple-card driver in the tree already, and there were
->> several attempts to add DT bindings for it in the past - have you seen
->> that? Search for "ASoC: add simple-card DT support" in the archives ...
+> It also corrects slave_id initialization in tegra20_ac97 driver.
 > 
-> Hi Daniel,
-> 
-> Thanks, that is what I was searching.
-> 
-> I will wait for Kuninori.
+> Signed-off-by: Richard Zhao <rizhao-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+> Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+> Cc: <stable-u79uwXL29TY76Z2rM5mHXA@public.gmane.org> # 3.10
 
-Well, Kuninori recently stated he's currently too busy to continue.
-Given his permission, it might be an option to pick up where he left off
-and finish the open topics. Depends on how urgent your need is I guess.
+Acked-by: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
 
-
-Thanks,
-Daniel
+> ---
+>  sound/soc/tegra/tegra20_ac97.c  | 6 +++---
+>  sound/soc/tegra/tegra20_spdif.c | 4 ++--
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
+> index e58233f..6c48662 100644
+> --- a/sound/soc/tegra/tegra20_ac97.c
+> +++ b/sound/soc/tegra/tegra20_ac97.c
+> @@ -389,9 +389,9 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+>  	ac97->capture_dma_data.slave_id = of_dma[1];
+>  
+>  	ac97->playback_dma_data.addr = mem->start + TEGRA20_AC97_FIFO_TX1;
+> -	ac97->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> -	ac97->capture_dma_data.maxburst = 4;
+> -	ac97->capture_dma_data.slave_id = of_dma[0];
+> +	ac97->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> +	ac97->playback_dma_data.maxburst = 4;
+> +	ac97->playback_dma_data.slave_id = of_dma[1];
+>  
+>  	ret = tegra_asoc_utils_init(&ac97->util_data, &pdev->dev);
+>  	if (ret)
+> diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
+> index 5eaa12c..551b3c9 100644
+> --- a/sound/soc/tegra/tegra20_spdif.c
+> +++ b/sound/soc/tegra/tegra20_spdif.c
+> @@ -323,8 +323,8 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	spdif->playback_dma_data.addr = mem->start + TEGRA20_SPDIF_DATA_OUT;
+> -	spdif->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> -	spdif->capture_dma_data.maxburst = 4;
+> +	spdif->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> +	spdif->playback_dma_data.maxburst = 4;
+>  	spdif->playback_dma_data.slave_id = dmareq->start;
+>  
+>  	pm_runtime_enable(&pdev->dev);
