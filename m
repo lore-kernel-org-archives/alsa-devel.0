@@ -1,76 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tegra: correct playback_dma_data
-	setup
-Date: Mon, 22 Jul 2013 00:57:08 +0100
-Message-ID: <20130721235708.GF9858@sirena.org.uk>
-References: <1374374049-30732-1-git-send-email-rizhao@nvidia.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Support SND_SOC_DAIFMT_CBM_CFS for
+ omap3/4
+Date: Mon, 22 Jul 2013 00:58:06 +0100
+Message-ID: <20130721235806.GG9858@sirena.org.uk>
+References: <20130721162400.GA17491@panicking>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8342678663186895762=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C630261661
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2013 01:57:18 +0200 (CEST)
-In-Reply-To: <1374374049-30732-1-git-send-email-rizhao@nvidia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Zhao <rizhao@nvidia.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, swarren@wwwdotorg.org, tiwai@suse.de, lgirdwood@gmail.com, stable@vger.kernel.org, thierry.reding@gmail.com, linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/zLL6W406Aotuby1"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130721162400.GA17491@panicking>
+Sender: linux-omap-owner@vger.kernel.org
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8342678663186895762==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jk/5KjyVsvxWSMIA"
-Content-Disposition: inline
-
-
---jk/5KjyVsvxWSMIA
+--/zLL6W406Aotuby1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Jul 21, 2013 at 10:34:09AM +0800, Richard Zhao wrote:
-> The errors were caused by copy/paste mistake in below commit
-> since v3.10:
-> 3489d50 ASoC: tegra: Use common DAI DMA data struct
+On Sun, Jul 21, 2013 at 06:24:01PM +0200, Michael Trimarchi wrote:
+> Add SND_SOC_DAIFMT_CBM_CFS support for omap3/omap4. The patch was tested on
+> a pandaboard-es board connected to the pcm1792a codec. mcbspx_fsx must
+> configured as output and mcbspx_clkx must be configured as input.
 
 Applied, thanks.
 
---jk/5KjyVsvxWSMIA
+--/zLL6W406Aotuby1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR7HVRAAoJELSic+t+oim9nBUP/1I/JJRLwLPRn9m31DUBPUIz
-97m7wJcd6PwdeWBVPejfB3z0k2muFY+n7fuzac2T4Rxj+j4ukpl4GBPzZ23Jm+2n
-aa8OC4ZI+uJY7Z3rnLcFHJ6a0sU3emzlXPVKpGBtlz45ofduE1kR2EjAea+hbB+o
-JmUDSycl8Q+wvps+C8zCCzbsLCywzXtpuOIOb/c04nYZEklRpdBlsqhxYr5vyKgK
-UrxmMfcgWIHRopvUZiHUZmUNQ8PR51jM/LPBHUxgFnYq5iCPa1g/ysv92WAY0/Fh
-eNfT4Is7HJRjsdRYeEYTwOnK89tSMG/Qq1nFsoXItJUX5mq+R9NINBo4a7Wm8+ao
-Lv5JHVtPrfcFCei2fwkwIj+3m9M1EovP12MYNBzAMvNVurioYhAnd9w0IITeaE3F
-04OVPvafdvLBKCuPACp898TGrWX4u6NGfIC7AC20sK4yMCc6cu0wCVFyOjJ7ugWO
-vpFq7gv0LwwM0a/Uhtn9EcMBvcx5KmKhT6w6xsLaVpOcQXVdrsf6aw2SFNJm5iI4
-7776QcWUgWWY+xA4BpXXFqbrstgLrnGSe7j9amLRuIKn0txVGtm9NCNr6mobpa5q
-dTH73xTATpRHftyvz4U7pFtGAjYqF4i84vVJ5rbD+eRP/2PVF6VVXE1e29e3HanY
-a827qClwXqfsSqQ1Fjk5
-=mvcU
+iQIcBAEBAgAGBQJR7HWLAAoJELSic+t+oim9LDwP/AmyV2334ewOCP13QqWyJTGN
+CEVzqp8Z+nj9xcvWAjRZ7BVAtXB3CEzl0OmAgHKEQwvMdDgTU7xDuWgbBZAfvgs4
+1Rl0/gBy/BllTHUIwqr9vLu/EhKQb6MKELsomhY4dU6jMiRQVbf2RcTtnK+bny4A
+hENLNN1mjiwneifTf//AbDhpa3PtaBXg6bvF76IeqJ9+YlndCTBK4uOKVIqCIkjb
+UUlpK6TfC4A7mjElghD/I5LNKCR64qOn9Vu9Hl2lpdOjHbLip9sbxNWT9fbjhO7h
+MPUsxU2YsTbQ+Ss+fGhYOl2sVJDxnWRh2Aq5Mg5HPRghA6inPQWuw3weVXICjU6Q
+cG8a9bT2mnq8VKh2HMofTLC5ee2NiEsUXmklrVNCbMQm+dPI6uVEhHgyyP/YZ+Eu
+szkyW/WDbyylfGp2VnrlHdh+xbt1sl0Ll9nywZHp6xLosx8aOmzUPCVOf3J789Lb
+rHjaDKfXiU3uprVsQ/C3hIH9j1TwUC4xvaQ1RkomVZclYGengL8h0OqxEaDe6nsH
+EI8vMWHqGEswEh78eGyYzjCuOX5f3UH0fsLiKOGwqruKvLevN+gQ2rfuV8+iYRRZ
+4IZ2fWC2SykfjhRZgc4sWCA2AlKHuqjoCbxp24q5tTMEKTqKM5+asQj7CVHi5Ygx
+QDycFNb8DYH7H/5Eaun1
+=yd0A
 -----END PGP SIGNATURE-----
 
---jk/5KjyVsvxWSMIA--
-
---===============8342678663186895762==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8342678663186895762==--
+--/zLL6W406Aotuby1--
