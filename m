@@ -1,67 +1,75 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Support
- SND_SOC_DAIFMT_CBM_CFS for omap3/4
-Date: Sun, 21 Jul 2013 19:25:06 +0200
-Message-ID: <51EC1972.8020602@ti.com>
-References: <20130721162400.GA17491@panicking>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C7E026087C
- for <alsa-devel@alsa-project.org>; Sun, 21 Jul 2013 19:24:58 +0200 (CEST)
-In-Reply-To: <20130721162400.GA17491@panicking>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Michael Trimarchi <michael@amarulasolutions.com>
-Cc: linux-omap@vger.kernel.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+From: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Subject: [PATCH 1/4] ASOC: tegra: move AC97 clock defines to the controller node
+Date: Sun, 21 Jul 2013 23:28:49 +0200
+Message-ID: <1374442132-24040-2-git-send-email-dev@lynxeye.de>
+References: <1374442132-24040-1-git-send-email-dev@lynxeye.de>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1374442132-24040-1-git-send-email-dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/21/2013 06:24 PM, Michael Trimarchi wrote:
-> Add SND_SOC_DAIFMT_CBM_CFS support for omap3/omap4. The patch was tested =
-on
-> a pandaboard-es board connected to the pcm1792a codec. mcbspx_fsx must
-> configured as output and mcbspx_clkx must be configured as input.
+Different from other Tegra sound controllers drivers, the AC97
+controller driver uses the tegra asoc utils directly to request the
+needed clocks, as they are needed at AC97 init time. Move the DT clock
+defines to the right place.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+---
+CC: <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+CC: <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+---
+ arch/arm/boot/dts/tegra20-colibri-512.dtsi | 5 -----
+ arch/arm/boot/dts/tegra20.dtsi             | 6 +++++-
+ sound/soc/tegra/tegra20_ac97.c             | 2 +-
+ 3 files changed, 6 insertions(+), 7 deletions(-)
 
-> =
-
-> Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
-> ---
->  sound/soc/omap/omap-mcbsp.c |    5 +++++
->  1 file changed, 5 insertions(+)
-> =
-
-> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-> index 7483efb..6c19bba 100644
-> --- a/sound/soc/omap/omap-mcbsp.c
-> +++ b/sound/soc/omap/omap-mcbsp.c
-> @@ -433,6 +433,11 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc=
-_dai *cpu_dai,
->  		/* Sample rate generator drives the FS */
->  		regs->srgr2	|=3D FSGM;
->  		break;
-> +	case SND_SOC_DAIFMT_CBM_CFS:
-> +		/* McBSP slave. FS clock as output */
-> +		regs->srgr2	|=3D FSGM;
-> +		regs->pcr0	|=3D FSXM;
-> +		break;
->  	case SND_SOC_DAIFMT_CBM_CFM:
->  		/* McBSP slave */
->  		break;
-> =
-
-
-
--- =
-
-P=E9ter
+diff --git a/arch/arm/boot/dts/tegra20-colibri-512.dtsi b/arch/arm/boot/dts/tegra20-colibri-512.dtsi
+index 2fcb3f2..fbb52e0 100644
+--- a/arch/arm/boot/dts/tegra20-colibri-512.dtsi
++++ b/arch/arm/boot/dts/tegra20-colibri-512.dtsi
+@@ -491,11 +491,6 @@
+ 			"Mic", "MIC1";
+ 
+ 		nvidia,ac97-controller = <&ac97>;
+-
+-		clocks = <&tegra_car TEGRA20_CLK_PLL_A>,
+-			 <&tegra_car TEGRA20_CLK_PLL_A_OUT0>,
+-			 <&tegra_car TEGRA20_CLK_CDEV1>;
+-		clock-names = "pll_a", "pll_a_out0", "mclk";
+ 	};
+ 
+ 	regulators {
+diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
+index 9653fd8..ad13f57 100644
+--- a/arch/arm/boot/dts/tegra20.dtsi
++++ b/arch/arm/boot/dts/tegra20.dtsi
+@@ -223,7 +223,11 @@
+ 		reg = <0x70002000 0x200>;
+ 		interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
+ 		nvidia,dma-request-selector = <&apbdma 12>;
+-		clocks = <&tegra_car TEGRA20_CLK_AC97>;
++		clocks = <&tegra_car TEGRA20_CLK_PLL_A>,
++			 <&tegra_car TEGRA20_CLK_PLL_A_OUT0>,
++			 <&tegra_car TEGRA20_CLK_CDEV1>,
++			 <&tegra_car TEGRA20_CLK_AC97>;
++		clock-names = "pll_a", "pll_a_out0", "mclk", "ac97";
+ 		status = "disabled";
+ 	};
+ 
+diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
+index 6c48662..6bbffd1 100644
+--- a/sound/soc/tegra/tegra20_ac97.c
++++ b/sound/soc/tegra/tegra20_ac97.c
+@@ -326,7 +326,7 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	}
+ 	dev_set_drvdata(&pdev->dev, ac97);
+ 
+-	ac97->clk_ac97 = devm_clk_get(&pdev->dev, NULL);
++	ac97->clk_ac97 = devm_clk_get(&pdev->dev, "ac97");
+ 	if (IS_ERR(ac97->clk_ac97)) {
+ 		dev_err(&pdev->dev, "Can't retrieve ac97 clock\n");
+ 		ret = PTR_ERR(ac97->clk_ac97);
+-- 
+1.8.3.1
