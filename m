@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASOC: tegra: move AC97 clock defines
- to the controller node
-Date: Mon, 22 Jul 2013 00:36:51 +0100
-Message-ID: <20130721233651.GZ9858@sirena.org.uk>
-References: <1374442132-24040-1-git-send-email-dev@lynxeye.de>
- <1374442132-24040-2-git-send-email-dev@lynxeye.de>
+Subject: Re: [PATCH 2/3] ASoC: sgtl5000: Add MODULE_ALIAS
+Date: Mon, 22 Jul 2013 00:53:48 +0100
+Message-ID: <20130721235348.GC9858@sirena.org.uk>
+References: <1374347763-18261-1-git-send-email-festevam@gmail.com>
+ <1374347763-18261-2-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4874319888583621358=="
+Content-Type: multipart/mixed; boundary="===============3393295808009183025=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B791261661
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2013 01:36:58 +0200 (CEST)
-In-Reply-To: <1374442132-24040-2-git-send-email-dev@lynxeye.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id B1207261661
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2013 01:53:52 +0200 (CEST)
+In-Reply-To: <1374347763-18261-2-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lucas Stach <dev@lynxeye.de>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4874319888583621358==
+--===============3393295808009183025==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+vcRm3WFmV0Q/ShD"
+	protocol="application/pgp-signature"; boundary="zsz/KTM5+kqAkz1u"
 Content-Disposition: inline
 
 
---+vcRm3WFmV0Q/ShD
+--zsz/KTM5+kqAkz1u
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jul 21, 2013 at 11:28:49PM +0200, Lucas Stach wrote:
-> Different from other Tegra sound controllers drivers, the AC97
-> controller driver uses the tegra asoc utils directly to request the
-> needed clocks, as they are needed at AC97 init time. Move the DT clock
-> defines to the right place.
+On Sat, Jul 20, 2013 at 04:16:02PM -0300, Fabio Estevam wrote:
 
-I'm sorry but I just don't understand what this change is supposed to do
-- what is the current place, what is wrong with it and what is the
-correct place?
+>  module_i2c_driver(sgtl5000_i2c_driver);
+> =20
+> +MODULE_ALIAS("platform:sgtl5000");
 
---+vcRm3WFmV0Q/ShD
+This shouldn't do anything useful for an I2C device?
+
+--zsz/KTM5+kqAkz1u
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR7HCQAAoJELSic+t+oim9EqYP/jA+8bI5VbwcrnAlP9EswNiI
-flYoTObJnrztAUvpB42AbN5cKsCNropXcXOOcE1upqZ7fJ1DPEXRmakYtSrxc/0U
-94CDzZXydbk7GuSLFbUUIP0YES3OPMaa6CY/IzOk5nKznB4QDgWn6PVpHKp5VDLO
-z8D8a5S484jh1LtBh0N/HMPgRoSZq9T9TSUnzINLSN0/9isYCrDh/y+YWNudNd7i
-E65egOjZ8II7mKnj8K9dBF5H+BIAusywELrDzRwFn8GlXYI1p+q8KGu7vn3x4zvP
-CCHknDIdq4yWlHtj2JD1rmM3A0SmnFF2Qfi2eElBkYarJBBZolRyk6U1c3KgmeGQ
-3NgU070BwdJmjEGS4ACbKKQf2mvOW4Wp3WFJiNmio7owrVLmH3oRKYwaTcFe2bw/
-bqA9jKcSQZRNdSNHhDngo4UrNdmFPf5TWZ+6UktBPvO05XmpnYvPbKTsQ+D1Xs7C
-O2WMIAZqVkUw6Ca3HTM7rz2qzeDYby2BWbMlbxTfQ9h0pQ0tLn5sPG8DNQ7qOMkz
-vDLlyPP1CnUlhDmWU1+57ntrruPpHLpL7Zg5HLDzbILV7ArFIIJFypSBz43ftGUY
-g9U1mmLZOxxAJ9357Qg+lwga2IQfqM9osWCdaEuuJxqGRHIb4oYMsA2driIA5bSh
-wWpHqGxpyE3GB+6AtyIy
-=mVXe
+iQIcBAEBAgAGBQJR7HSJAAoJELSic+t+oim94iwP/1ccBCCogp3IArRG+Iq1lul1
+nuBMLBShpAiG9OYCyW5QjGSbwWlEKcZuknbCUiJ/qU3WWr+EVxl4haFIFpUK9OjQ
+73uHVMh4vieCyYrMwZxo9GwaQtlcXNiGy2uZpEeHYDlztCknvpKnClba3F9VKoTx
+qL/VPuF9Z0Taj96M057N/YrN8qONUOxVyXkFXOxJJXk4FVYa8GTVHaRW4Cfxxz8U
++hc1zrWKHBeB9a+3n4Gb9/qN8elWGyUHEcaC51ZHp3UTI4gexni2QsLDgpD6iVNF
+58equCbtEMyXqlAv9+JZ39k3nG5tR8oPBbMI/9M6u2NH1mftwpQdIL6YeRQlf8Mk
+1IUun4VlPV1ObRE5NIv/FtjCF8o413G/ZwSre42rhGbkryY85E79O8sxzAAfEsCK
+SysNlyi4UP7Dp19A8/MQNc4F3faZOujVxwLwfioSajqZeljs6M6K88n1EF+FsZ7b
+Or1TSeL7CJrmfW4zYwEPbAZKpmk8b2YUk6eOt/TlMaEstRcEQBy58c7QT2fcg7wI
+OomQGTnvYQ5CNINEEuXAX/v6ald/49SKyxcJCt4hGXcymt/5Lfo73IAd1W9HzkpG
+gHdbYysuW+C9snDIvPuuIYdwN0hGZ8ITjYSHbJqyt5qdGrCL+Wfhx/KRQ60f9WcR
+hUjud1YBUQoPhbADUZRD
+=7b5N
 -----END PGP SIGNATURE-----
 
---+vcRm3WFmV0Q/ShD--
+--zsz/KTM5+kqAkz1u--
 
---===============4874319888583621358==
+--===============3393295808009183025==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4874319888583621358==--
+--===============3393295808009183025==--
