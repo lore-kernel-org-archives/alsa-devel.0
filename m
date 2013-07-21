@@ -1,40 +1,81 @@
-From: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
-Subject: [PATCH 2/4] ASOC: tegra: fix matching of AC97 components
-Date: Sun, 21 Jul 2013 23:28:50 +0200
-Message-ID: <1374442132-24040-3-git-send-email-dev@lynxeye.de>
-References: <1374442132-24040-1-git-send-email-dev@lynxeye.de>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1374442132-24040-1-git-send-email-dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: generic: add simple card with
+	devicetree support
+Date: Mon, 22 Jul 2013 00:32:15 +0100
+Message-ID: <20130721233215.GX9858@sirena.org.uk>
+References: <20130720192554.79b7061b@armhf>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============0267239442731583638=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id A140126165E
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2013 01:32:27 +0200 (CEST)
+In-Reply-To: <20130720192554.79b7061b@armhf>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Rob Landley <rob@landley.net>, Grant Likely <grant.likely@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Matching works completely based on the cpu of_node.
 
-Signed-off-by: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
----
-This got broken some time ago. No cc stable as it's not really a
-regression, as I can't remember a single point in time when everything
-AC97 related would have been in place and working.
+--===============0267239442731583638==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="QQ0dNM4HnH4+xgqD"
+Content-Disposition: inline
 
-CC: <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
-CC: <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
----
- sound/soc/tegra/tegra_wm9712.c | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/tegra/tegra_wm9712.c b/sound/soc/tegra/tegra_wm9712.c
-index 5e11963..45b5789 100644
---- a/sound/soc/tegra/tegra_wm9712.c
-+++ b/sound/soc/tegra/tegra_wm9712.c
-@@ -55,7 +55,6 @@ static int tegra_wm9712_init(struct snd_soc_pcm_runtime *rtd)
- static struct snd_soc_dai_link tegra_wm9712_dai = {
- 	.name = "AC97 HiFi",
- 	.stream_name = "AC97 HiFi",
--	.cpu_dai_name = "tegra20-ac97",
- 	.codec_dai_name = "wm9712-hifi",
- 	.codec_name = "wm9712-codec",
- 	.init = tegra_wm9712_init,
--- 
-1.8.3.1
+--QQ0dNM4HnH4+xgqD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Jul 20, 2013 at 07:25:54PM +0200, Jean-Francois Moine wrote:
+
+>  Documentation/devicetree/bindings/sound/simple-dt-card.txt |  18 ++++
+>  sound/soc/generic/Kconfig                                 |   7 ++
+>  sound/soc/generic/Makefile                                |   2 +
+>  sound/soc/generic/simple-dt-card.c                        | 137 ++++++++++++++++++++++++
+>  4 files changed, 163 insertions(+)
+
+The obvious question here is why is this a separate driver to the
+existing simple card driver rather than DT bindings for that?  I don't
+see that mentioned here.
+
+--QQ0dNM4HnH4+xgqD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR7G98AAoJELSic+t+oim9rFEP/Rw/J+Hu8kr9ImLi7n1C3+93
+gYBEcKGYmKQRofeh2c/sxnGdG1a4Vl6hUwnQdneHfGsddjDG/fm+jTS8pAto86nt
+gnujTelG0VOqMzhq+sLzjVnKFbxpbhNcXDTLA5cYtN1pKF5p4LkFfzRXLxqk1bUA
+0VgwfT7iG0jPDa41jCqzr/DqsdRcnIzwzn025tTvv0NsAhs6XgPxlBLeVL5rrzCM
+76tvkCGFcNdqktS2dqL84VKb9E4qV2798xZIYOUJRSm0r4Q0mLGdo2I0ikVCUGus
+xg//9wSlilLZscLnikN5VEfEWShJsUh5nERn8nGDtnv8uZu04jUoCmnBX71rkkdc
+iPwk6T99a1VkW3+YpCJtE1b2pDliDUT+X76InrPxT14DRM4pC3XJDkjirXTPhN8A
+e2l68nOHlVg64n8V8vp95z9IpDkR4vAqwv5EaLS1XFviSfqSpa0qGKsf4dM28m7/
+xcBv/7c2RrN0aT6kGIwXIQ/L2BMEOJz1zkjofd41SLGTHl92mmVPVXOjVNq3+Wpv
+d/p69WcoIfKHjtKne64kA3MlIBk0lX8Fed1PqwQFHiYvhi5VvSt+GoMhh6HmUODx
+l5tjINTBWtSFW4/Wb4VKebHQ2xxoyHyJS5PK0271bpJCMlVkZw0kgFOXoqWALC29
+ob5x7L2JAXuREvR2ZxYp
+=mLpA
+-----END PGP SIGNATURE-----
+
+--QQ0dNM4HnH4+xgqD--
+
+--===============0267239442731583638==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0267239442731583638==--
