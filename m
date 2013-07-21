@@ -1,36 +1,26 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH] ASoC: generic: add simple card with
-	devicetree support
-Date: Sat, 20 Jul 2013 21:14:50 -0600
-Message-ID: <51EB522A.8060203@wwwdotorg.org>
-References: <20130720192554.79b7061b@armhf>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tegra: correct playback_dma_data setup
+Date: Sat, 20 Jul 2013 21:55:26 -0600
+Message-ID: <51EB5BAE.2070306@wwwdotorg.org>
+References: <1374374049-30732-1-git-send-email-rizhao@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id AF9B12610A1
- for <alsa-devel@alsa-project.org>; Sun, 21 Jul 2013 05:14:52 +0200 (CEST)
-In-Reply-To: <20130720192554.79b7061b@armhf>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>, Rob Landley <rob@landley.net>, Grant Likely <grant.likely@linaro.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1374374049-30732-1-git-send-email-rizhao-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Richard Zhao <rizhao-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, stable-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/20/2013 11:25 AM, Jean-Francois Moine wrote:
-> This generic simple card driver uses DT values to instanciate an audio
-> system in which the real work is done by the subdrivers (audio
-> controller, audio codec and pcm/dma controller).
+On 07/20/2013 08:34 PM, Richard Zhao wrote:
+> The errors were caused by copy/paste mistake in below commit
+> since v3.10:
+> 3489d50 ASoC: tegra: Use common DAI DMA data struct
+> 
+> It also corrects slave_id initialization in tegra20_ac97 driver.
 
-New DT bindings should be sent to devicetree@vger.kernel.org for review.
-Note that's a branch new list (it moved from a different server), so it
-might be best to wait a few days for people to subscribe before sending
-mail to it.
+Acked-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+
+Hmm, that's what I get for only testing I2S and not SPDIF or AC'97 (not
+that I can test the latter).
