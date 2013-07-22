@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl: imx-audmux: Check the return
- value from clk_prepare_enable()
-Date: Mon, 22 Jul 2013 00:58:51 +0100
-Message-ID: <20130721235851.GH9858@sirena.org.uk>
-References: <1374424748-4438-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH] ALSA: SoC: Added jack detection kcontrol
+	support
+Date: Mon, 22 Jul 2013 01:01:58 +0100
+Message-ID: <20130722000157.GI9858@sirena.org.uk>
+References: <1374281962-3786-1-git-send-email-eu@felipetonello.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1925420652252950177=="
+Content-Type: multipart/mixed; boundary="===============1982961553578936308=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 48693261696
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2013 01:58:54 +0200 (CEST)
-In-Reply-To: <1374424748-4438-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D3F7D261661
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2013 02:02:00 +0200 (CEST)
+In-Reply-To: <1374281962-3786-1-git-send-email-eu@felipetonello.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +20,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: "Felipe F. Tonello" <eu@felipetonello.com>
+Cc: alsa-devel@alsa-project.org, LiamGirdwoodlgirdwood@gmail.com, "Felipe F. Tonello" <ftonello@cercacor.com>, TakashiIwaitiwai@suse.de, linux-kernel@vger.kernel.org, JaroslavKyselaperex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1925420652252950177==
+--===============1982961553578936308==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mMdCh5/a0q2ATNCM"
+	protocol="application/pgp-signature"; boundary="/T+UM55GOh1Yge7W"
 Content-Disposition: inline
 
 
---mMdCh5/a0q2ATNCM
+--/T+UM55GOh1Yge7W
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jul 21, 2013 at 01:39:08PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
+On Fri, Jul 19, 2013 at 05:59:22PM -0700, Felipe F. Tonello wrote:
+> From: "Felipe F. Tonello" <ftonello@cercacor.com>
 >=20
-> clk_prepare_enable() may fail, so let's check its return value and propag=
-ate it
-> in the case of error.
+> It adds soc jack support for alsa kcontrol.
+>=20
+> This support is necessary since the new kcontrol is used by user-space
+> daemons, such as PulseAudio(>=3D2.0), to do jack detection.
+>=20
+> Signed-off-by: Felipe F. Tonello <ftonello@cercacor.com>
+> ---
+>  include/sound/soc.h  |  1 +
+>  sound/soc/Kconfig    |  1 +
+>  sound/soc/soc-jack.c | 22 ++++++++++++++++++++++
+>  3 files changed, 24 insertions(+)
 
-Applied, thanks.
+No, this makes no sense at all as an ASoC specific feature - it should
+be a standard feature of ALSA jacks.  The whole point of having ALSA
+core infrastructure for jacks is to avoid having to go round doing make
+work stuff like this.
 
---mMdCh5/a0q2ATNCM
+The fact that the kcontrols were introduced as a HDA-specific feature at
+all is of course a problem here...
+
+--/T+UM55GOh1Yge7W
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR7HW4AAoJELSic+t+oim93zYP/j1YJupQTmXaUduvUrJPswnw
-bYexfT4L7W7ejoU7zwVDyLRbtbkPUQ6No/eljcNOrO1CTPsVNjmiHySsqjvibiiC
-SFqOxzfTOWQeESWnEmZW7it49QbLPV4veUw1m9FzFr54meZdTtILh0vl6OC23rAm
-+nXS4uiuQZ5mqIty2+MaBf7+3PxI+f8W7ApWtZjjIA1RaIsfCD9ZJWcu43+I8Ve2
-ksR4bBZfPGFcu/uGobtYW87g+GdYNI475w3RNSAxcyPxA2ruvgLx+YNeU7HWtbws
-HbWPLhyKnnM7uBLX9wL3PlroPORQ/YEBPC8yGr0hnZHNvll7TO54zajrqlgQxcVk
-HQx9ZaF8Lvwzls5ddtPIajvPu3lgiXIqymhELyqXxCdXMNcriPBb5uZy/8JYlGjM
-9cM3hYYY3G11Ko8zvDzNxhUaSVdqkMb/ztqGAoVF/RpPlIM5TD169ATjGrGPGyTE
-SvM6yggW31rZNocXAq1UDRVUh2ro6OHXyAoaxg5h40u20xK1P0Ga8iWWM5iGeLr1
-faLPxp689x1XuuOlwH0FNMMkDX2DjyelPSgAUY9D2QLDH1Mq3sBc3KtLAjXUZ0NA
-R08DRFh0WNTNdTxiZVa7xeU3gl9kq9HeSDDaFnA9BiYTBktfuT0/oncA1kk7VM8y
-vLRL0rL6ippw/O1wWFNC
-=Z0vJ
+iQIcBAEBAgAGBQJR7HZyAAoJELSic+t+oim9p64QAIk6TzGC5VjswvUl4yH1c7DT
+XmJlJ4xAIyDBNcQp528rnVv8tYKwGNbJRg7JVhEsx1FRBmosHj/UU0be/geLHLj9
+RROiBu9AhPw8blQAXfh6UKfu3HA+74uk/rdNxX33FMsGQvHdbtcbAt0C5fa7fY9I
+FCSAAzUEEr3+cBWmuHYIkM6dCHMC3Sgj1U57kUkDTTMiI+cDfrWazm6e4fgu+Cto
+CxIVAgpRMKwKZHIfilMDts4MlfNBdUNyKNiJb1hJbVFvWl4a3YqB5xuWdlMPiKvy
+zOfkiQZv4WXxEyIly6JU+GJFxH3IZIkPG8kKM74wWfuBvyfOdCLEFbqQEQCuiK/0
+YGhZ/drhcOSUKX+6HgMVY/cYC14lyqyDDtUoPUtTIFoYG10PNSvkSwkKdki++G/F
+mXBiLVd9DIOPkiniD1be7UVyw9BAZngMIqKgioUBqyK3aNLDyLjJh3cr/KYMQuU4
+H3qlKpJ7fLUpsOjPWhpcMK0Fwb5Q4bQ4nHH8SJwqgmzwZSq6CsWIMm3K6eu+HJR9
+wwqor5KqNSoXvxH6UMTgMLBj1Ebz8/06FPt0hrHira0FfQLwhhCiITsykchISYae
+ncHppJpPsunEEeVB+2SihS5EbeLncnB6gKd7eCtiD1tm6HnTVLlXLl3m0Lc0WYHH
+HrqcLVJuimsRvdmCrfjy
+=4ZRK
 -----END PGP SIGNATURE-----
 
---mMdCh5/a0q2ATNCM--
+--/T+UM55GOh1Yge7W--
 
---===============1925420652252950177==
+--===============1982961553578936308==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1925420652252950177==--
+--===============1982961553578936308==--
