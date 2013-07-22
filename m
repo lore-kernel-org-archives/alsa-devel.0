@@ -1,36 +1,51 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] ALSA: usb-audio: hiface: return correct
- XRUN indication
-Date: Mon, 22 Jul 2013 22:09:58 +0200
-Message-ID: <51ED9196.5000507@ladisch.de>
-References: <1374514704-4211-1-git-send-email-eldad@fogrefinery.com>
+From: Felipe Tonello <eu@felipetonello.com>
+Subject: Re: [PATCH] ALSA: SoC: Added jack detection kcontrol support
+Date: Mon, 22 Jul 2013 14:11:44 -0700
+Message-ID: <CAGrhNMyAofsnwKYMk+60GyvpaW9pMtoJf_2Q_Tc82G8QCFOiFA@mail.gmail.com>
+References: <1374281962-3786-1-git-send-email-eu@felipetonello.com>
+	<20130722000157.GI9858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id E9E45261A50
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2013 22:10:14 +0200 (CEST)
-In-Reply-To: <1374514704-4211-1-git-send-email-eldad@fogrefinery.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Eldad Zack <eldad@fogrefinery.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20130722000157.GI9858@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, LiamGirdwoodlgirdwood@gmail.com, JaroslavKyselaperex@perex.cz, TakashiIwaitiwai@suse.de, linux-kernel@vger.kernel.org, "Felipe F. Tonello" <ftonello@cercacor.com>
 List-Id: alsa-devel@alsa-project.org
 
-Eldad Zack wrote:
-> Return SNDRV_PCM_POS_XRUN (snd_pcm_uframes_t) instead of
-> SNDRV_PCM_STATE_XRUN (snd_pcm_state_t) from the pointer
-> function of 6fire, as expected by snd_pcm_update_hw_ptr0().
-              ^^^^^
-              ???
+Hi Mark,
+
+On Sun, Jul 21, 2013 at 5:01 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Jul 19, 2013 at 05:59:22PM -0700, Felipe F. Tonello wrote:
+>> From: "Felipe F. Tonello" <ftonello@cercacor.com>
+>>
+>> It adds soc jack support for alsa kcontrol.
+>>
+>> This support is necessary since the new kcontrol is used by user-space
+>> daemons, such as PulseAudio(>=2.0), to do jack detection.
+>>
+>> Signed-off-by: Felipe F. Tonello <ftonello@cercacor.com>
+>> ---
+>>  include/sound/soc.h  |  1 +
+>>  sound/soc/Kconfig    |  1 +
+>>  sound/soc/soc-jack.c | 22 ++++++++++++++++++++++
+>>  3 files changed, 24 insertions(+)
+>
+> No, this makes no sense at all as an ASoC specific feature - it should
+> be a standard feature of ALSA jacks.  The whole point of having ALSA
+> core infrastructure for jacks is to avoid having to go round doing make
+> work stuff like this.
+
+I agree. I added as a ASoC feature because I followed the example of
+HDA implementation.
+
+My question is: Why ALSA Jack support uses evdev input events to
+notify user-space? Is there any user-space relying on that? If no, I
+would like to change ALSA Jack implementation to only use KControl and
+remove specific implementations.
+
+At least the only daemon that I know that supports jack detection,
+which is PulseAudio, uses this new ALSA KControl for Jacks.
 
 Regards,
-Clemens
+Felipe Tonello
