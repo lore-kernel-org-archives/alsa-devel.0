@@ -1,54 +1,60 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: [PATCH] ALSA: usb-audio: hiface: return correct XRUN
-	indication
-Date: Mon, 22 Jul 2013 19:38:24 +0200
-Message-ID: <1374514704-4211-1-git-send-email-eldad@fogrefinery.com>
+From: Mike Turquette <mturquette@linaro.org>
+Subject: Re: [PATCH 2/4] clk: exynos-audss: allow input clocks to be specified in
+ device tree
+Date: Mon, 22 Jul 2013 11:15:30 -0700
+Message-ID: <20130722181530.7598.73318@quantum>
+References: <1373458313-18970-1-git-send-email-padma.v@samsung.com>
+ <1373458313-18970-3-git-send-email-padma.v@samsung.com>
+ <1610421.OFFn8rqlxt@amdc1227>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f169.google.com (mail-ea0-f169.google.com
- [209.85.215.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 499E9261A56
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2013 19:38:30 +0200 (CEST)
-Received: by mail-ea0-f169.google.com with SMTP id h15so4010438eak.0
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2013 10:38:30 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Eldad Zack <eldad@fogrefinery.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1610421.OFFn8rqlxt@amdc1227>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Tomasz Figa <t.figa@samsung.com>, Padmavathi Venna <padma.v@samsung.com>
+Cc: linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.kvr@gmail.com, sbkim73@samsung.com, broonie@kernel.org, kgene.kim@samsung.com, dianders@chromium.org, abrestic@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-Return SNDRV_PCM_POS_XRUN (snd_pcm_uframes_t) instead of
-SNDRV_PCM_STATE_XRUN (snd_pcm_state_t) from the pointer
-function of 6fire, as expected by snd_pcm_update_hw_ptr0().
+Quoting Tomasz Figa (2013-07-22 09:28:47)
+> Hi Padmavathi, Andrew,
+> 
+> On Wednesday 10 of July 2013 17:41:51 Padmavathi Venna wrote:
+> > From: Andrew Bresticker <abrestic@chromium.org>
+> > 
+> > This allows the input clocks to the Exynos AudioSS block to be specified
+> > via device-tree bindings.  Default names will be used when an input clock
+> > is not given.  This will be useful when adding support for the
+> > Exynos5420 where the audio bus clock is called "sclk_maudio0" instead of
+> > "sclk_audio0".
+> > 
+> > Signed-off-by: Andrew Bresticker <abrestic@chromium.org>
+> > Reviewed-on: https://gerrit.chromium.org/gerrit/57833
+> > Reviewed-by: Simon Glass <sjg@chromium.org>
+> > ---
+> >  .../devicetree/bindings/clock/clk-exynos-audss.txt |   31
+> > ++++++++++++++++++- drivers/clk/samsung/clk-exynos-audss.c             |
+> >   28 +++++++++++++++-- 2 files changed, 53 insertions(+), 6 deletions(-)
+> 
+> Well, this is basically how it should be done, but in current state of 
+> clock core I can see a problem: can we really rely on the order of clock 
+> initialization? I mean, we can't defer initialization of particular clock 
+> controller until all external clocks it needs are available, because there 
+> is no probing involved here.
 
-Caught by sparse.
+The clock core allows registering clocks even if their parents are not
+yet registered. I test this path with some dummy clocks every so often
+to make sure the re-parenting operation are completed successfully after
+the parents eventually are registered.
 
-Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
----
- sound/usb/hiface/pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This feature was not used in practice until recently with the advent of
+multiple clock controllers getting registered and DT description of
+clocks / clock controllers that may be "out of order". If you find any
+bugs please let me know ;-)
 
-diff --git a/sound/usb/hiface/pcm.c b/sound/usb/hiface/pcm.c
-index 6430ed2..c21a3df 100644
---- a/sound/usb/hiface/pcm.c
-+++ b/sound/usb/hiface/pcm.c
-@@ -503,7 +503,7 @@ static snd_pcm_uframes_t hiface_pcm_pointer(struct snd_pcm_substream *alsa_sub)
- 	snd_pcm_uframes_t dma_offset;
- 
- 	if (rt->panic || !sub)
--		return SNDRV_PCM_STATE_XRUN;
-+		return SNDRV_PCM_POS_XRUN;
- 
- 	spin_lock_irqsave(&sub->lock, flags);
- 	dma_offset = sub->dma_off;
--- 
-1.8.1.5
+Regards,
+Mike
+
+> 
+> Best regards,
+> Tomasz
