@@ -1,65 +1,75 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/4] ASOC: tegra: move AC97 clock defines to the
- controller node
-Date: Mon, 22 Jul 2013 10:46:27 +0100
-Message-ID: <20130722094627.GK9858@sirena.org.uk>
-References: <1374442132-24040-1-git-send-email-dev@lynxeye.de>
- <1374442132-24040-2-git-send-email-dev@lynxeye.de>
- <20130721233651.GZ9858@sirena.org.uk>
- <1374476927.1644.4.camel@tellur>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [patch] ASoC: core: double free in
+	snd_soc_add_platform()
+Date: Mon, 22 Jul 2013 11:00:18 +0100
+Message-ID: <20130722100018.GN9858@sirena.org.uk>
+References: <20130722065654.GC14617@longonot.mountain>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ai6NJizWfpRUKxSm"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1374476927.1644.4.camel@tellur>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
-Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============3018151216132972195=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52AD8261A36
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2013 12:00:24 +0200 (CEST)
+In-Reply-To: <20130722065654.GC14617@longonot.mountain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, devicetree-discuss@lists.ozlabs.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---Ai6NJizWfpRUKxSm
+--===============3018151216132972195==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="p5BJhDJf0owydRUK"
+Content-Disposition: inline
+
+
+--p5BJhDJf0owydRUK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jul 22, 2013 at 09:08:47AM +0200, Lucas Stach wrote:
-> Am Montag, den 22.07.2013, 00:36 +0100 schrieb Mark Brown:
+On Mon, Jul 22, 2013 at 09:56:54AM +0300, Dan Carpenter wrote:
+> There are three callers for this function, and none of them want it to
+> free platform for them.  It leads to a double free.
 
-> > I'm sorry but I just don't understand what this change is supposed to do
-> > - what is the current place, what is wrong with it and what is the
-> > correct place?
+Applied, thanks.
 
-> The clocks used by the Tegra ASoC utils were defined in the machine
-> driver DT node for all boards, as this is were they get requested by the
-> I2C and SPDIF Tegra audio drivers. Differently from those two the AC97
-> driver has to request those clocks in the controller drivers, as they
-> are needed at this point for proper initialisation.
-> So the patch moves the clocks from the machine driver node to the AC97
-> controller DT node, so they can be requested in the right driver.
-
-Why is the way the other devices are doing this sensible?
-
---Ai6NJizWfpRUKxSm
+--p5BJhDJf0owydRUK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR7P9wAAoJELSic+t+oim9V+gP/irqFIQHL9zFNHVOuKthlKT4
-jMayz5ImfTLW5HzzcDUiJcWwgP44JHgVkbCm9d+DNkvyyFQ5Pom2Md21tKtKNaWR
-xuzUq9Y4s4YdG3V7DBkIJ4JwZaBLOKm8f5IM2vwAQ5VQA3lDdU18nvDnKjX7X+N6
-Uh0ZhG71y4S5agihX8o6SAr/Wptbm5keKUKXO94x0xBjy5W+2LVOySJqjEDznubR
-esIAn5XnmId1+HxbDEUHGIEBACroUmX/sjCohBAbxiuZ/9e50gLKupUGV3kd9cGx
-9zrBKcLl4nu8CN7yQdRWxqEKhz/PwumwNdKVe7N8Nm4uzygc4sZdheY8t8Y742zm
-3E+9SpgDc98CTQxj6Ck6bfWycd+jdPXsVSqzgx0iDOyEfFTfD1SX8PFPcwYCY7fT
-Y2/8nWzv3fcK+OEr7zXOveRmjyZm9fcEF1JTSYlLUbSAsYKyFS66Hs66Z/KyLbtA
-a8zV2Ib/ZTrfpoHXSDP2z2OL5U+X3f89avGDu8fS2veoOr+FezuEFJw0d10Yavw7
-0Smg7odqEu2L/CMXThvwe+aGTMXtBT8jMqhem8obFH2FjpEFaMN2GrtFB3niM04n
-xvOyQkIICHh2vSf9PCa+ZUDqpICWTbTng6mTOjqRGIqoH+wzmAFkActWn9ju6vN8
-SwVksuIQ3lgGS0po4gYm
-=7vWf
+iQIcBAEBAgAGBQJR7QKvAAoJELSic+t+oim9woUP/A/YBClxti83BTcOQrmDTVIy
+vfyJ9Ora0Pzi57ohvA0y+5QyMhng3chYPzf3lONWnO7qmAoV3lt565Z2/6UNJU43
+HFye2yhm5KH44+ondrwmXkEf2hoKwzLl2uTW1sSZhNZ5XxkSJ+zKsj4PlZ7ZsnVt
+fbgPLU1OrFmi6Z1e9ZPwVLIKn7O/4OqR3Fl6H+749dBa2nd0uVS3C32raOdYzift
+xjmOP6j+Av0n6a0qxq5S0JfwvPKmYiD4lh6hbTYORq70+kYXQyme98HSuP5oxCSK
+f1ma3se/o3FLbiZbZqVEJz7t4aiHoX724ydATuSTL2q4Y2Zb0m67HHiwXhDcTSqe
+BGNhVspe1fv2JXRS1bdtSW774ol2Hjsn8KDd4Ci9A2ibNkKy/v5eVgQe+6nGy0EG
+y5U/cbw2cPZDXHWZwLZ8s9vHZ9fFnQeqtPo0Eupi7auBL0/9AiZH2hZhXzA2NfW9
+gyZEtS1z8SFhUQXuOrXQRvVFoJyE62J61ZfunUOyzxiXuiLMwVJ0CQO+DDumWN2o
+TM87oDy3jEuuSBeXpS6VCQT5ZdEIELqIaVgYOZY53Mst7opIdFQTQupKyETvTDDG
+KkXM061GqGyvQpaiBTc1PKV6nASaCmnQcbjSa4OqNo8QGCsQhURa8cR/3ebvfRBL
+m57+cRDCYwGO3ovJJoEM
+=QA6p
 -----END PGP SIGNATURE-----
 
---Ai6NJizWfpRUKxSm--
+--p5BJhDJf0owydRUK--
+
+--===============3018151216132972195==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3018151216132972195==--
