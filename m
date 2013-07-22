@@ -1,51 +1,43 @@
-From: Felipe Tonello <eu@felipetonello.com>
-Subject: Re: [PATCH] ALSA: SoC: Added jack detection kcontrol support
-Date: Mon, 22 Jul 2013 14:11:44 -0700
-Message-ID: <CAGrhNMyAofsnwKYMk+60GyvpaW9pMtoJf_2Q_Tc82G8QCFOiFA@mail.gmail.com>
-References: <1374281962-3786-1-git-send-email-eu@felipetonello.com>
-	<20130722000157.GI9858@sirena.org.uk>
+From: Kevin Groeneveld <kgroeneveld@gmail.com>
+Subject: alsa-lib 1.0.27 incorrect definition of __kernel_off_t?
+Date: Mon, 22 Jul 2013 17:22:12 -0400
+Message-ID: <CABF+-6UXCFt5Oq0yiOkrfiN3kxWtae8zbOkqrdTFmDMm3h07Pw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130722000157.GI9858@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, LiamGirdwoodlgirdwood@gmail.com, JaroslavKyselaperex@perex.cz, TakashiIwaitiwai@suse.de, linux-kernel@vger.kernel.org, "Felipe F. Tonello" <ftonello@cercacor.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+ [209.85.212.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 08234261A99
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2013 23:22:13 +0200 (CEST)
+Received: by mail-wi0-f173.google.com with SMTP id hq4so2396796wib.0
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2013 14:22:12 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+I tried doing a cross compile of alsa-lib 1.0.27.2 today and ended up with
+the following error:
 
-On Sun, Jul 21, 2013 at 5:01 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Jul 19, 2013 at 05:59:22PM -0700, Felipe F. Tonello wrote:
->> From: "Felipe F. Tonello" <ftonello@cercacor.com>
->>
->> It adds soc jack support for alsa kcontrol.
->>
->> This support is necessary since the new kcontrol is used by user-space
->> daemons, such as PulseAudio(>=2.0), to do jack detection.
->>
->> Signed-off-by: Felipe F. Tonello <ftonello@cercacor.com>
->> ---
->>  include/sound/soc.h  |  1 +
->>  sound/soc/Kconfig    |  1 +
->>  sound/soc/soc-jack.c | 22 ++++++++++++++++++++++
->>  3 files changed, 24 insertions(+)
->
-> No, this makes no sense at all as an ASoC specific feature - it should
-> be a standard feature of ALSA jacks.  The whole point of having ALSA
-> core infrastructure for jacks is to avoid having to go round doing make
-> work stuff like this.
+error: conflicting types for 'off_t'
 
-I agree. I added as a ASoC feature because I followed the example of
-HDA implementation.
+Commit 9b5beef1 adds the following line to local.h:
 
-My question is: Why ALSA Jack support uses evdev input events to
-notify user-space? Is there any user-space relying on that? If no, I
-would like to change ALSA Jack implementation to only use KControl and
-remove specific implementations.
+#define __kernel_off_t        off_t
 
-At least the only daemon that I know that supports jack detection,
-which is PulseAudio, uses this new ALSA KControl for Jacks.
+Not only is __kernel_off_t already defined elsewhere in my header files,
+the above line tries to define __kernel_off_t (which I think should be 32
+bit on my platform) to off_t which is 64 bit.
 
-Regards,
-Felipe Tonello
+I just deleted the line and everything seems to be working so far.
+
+
+Kevin
