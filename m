@@ -1,19 +1,16 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v3] ARM: kirkwood: extend the kirkwood i2s
- driver for	DT usage
-Date: Tue, 23 Jul 2013 11:08:20 +0200
-Message-ID: <20130723090820.GN9434@pengutronix.de>
-References: <20130723104615.3696f1a9@armhf>
- <20130723085346.GQ24642@n2100.arm.linux.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: Remove unused dapm_get_snd_card() and
+	dapm_get_soc_card()
+Date: Tue, 23 Jul 2013 11:12:25 +0200
+Message-ID: <1374570745-32224-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 2275C261B0C
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 11:08:23 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130723085346.GQ24642@n2100.arm.linux.org.uk>
+Received: from smtp-out-088.synserver.de (smtp-out-088.synserver.de
+ [212.40.185.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA018261B0C
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 11:11:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,40 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>, Liam Girdwood <lgirdwood@gmail.com>, devicetree-discuss@vger.kernel.org, Mark Brown <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 23, 2013 at 09:53:46AM +0100, Russell King - ARM Linux wrote:
-> On Tue, Jul 23, 2013 at 10:46:15AM +0200, Jean-Francois Moine wrote:
-> > The kirkwood i2s driver is used without DT in the Kirkwood machine.
-> > This patch adds a DT compatible definition for use in other Marvell
-> > machines as the Armada 88AP510 (Dove).
-> 
-> Yet again, this illustrates why converting to DT causes backwards
-> steps in drivers: the conversion of devm_clk_get() to of_clk_get()
-> necessitates a clk_put().
-> 
-> Can someone please provide a devm_of_clk_get() function before we
-> accept any more patches doing this kind of thing?
+These two functions were added two years ago in commit 4805608 ("ASoC: dapm -
+Add methods to retrieve snd_card and soc_card from dapm context.") but have
+remained unused so far. Considering that the dapm context actually has a direct
+pointer to the card the functions also seem to be unnecessary. E.g. the
+expressions 'dapm_get_soc_card(dapm)' and 'dapm->card' yield the same result.
 
-The question is why isn't regular [devm_]clk_get used here? I don't know
-what the Marvell stuff is doing here, but if the clk stuff is
-implemented correctly then
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/soc-dapm.c | 30 ------------------------------
+ 1 file changed, 30 deletions(-)
 
-	np = pdev->dev.of_node;
-	priv->clk = of_clk_get(np, 0);
-
-and
-
-	devm_clk_get(&pdev->dev, "label");
-
-should both work
-
-Sascha
-
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 346ac91..deb1b3d 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -174,36 +174,6 @@ static inline struct snd_soc_dapm_widget *dapm_cnew_widget(
+ 	return kmemdup(_widget, sizeof(*_widget), GFP_KERNEL);
+ }
+ 
+-/* get snd_card from DAPM context */
+-static inline struct snd_card *dapm_get_snd_card(
+-	struct snd_soc_dapm_context *dapm)
+-{
+-	if (dapm->codec)
+-		return dapm->codec->card->snd_card;
+-	else if (dapm->platform)
+-		return dapm->platform->card->snd_card;
+-	else
+-		BUG();
+-
+-	/* unreachable */
+-	return NULL;
+-}
+-
+-/* get soc_card from DAPM context */
+-static inline struct snd_soc_card *dapm_get_soc_card(
+-		struct snd_soc_dapm_context *dapm)
+-{
+-	if (dapm->codec)
+-		return dapm->codec->card;
+-	else if (dapm->platform)
+-		return dapm->platform->card;
+-	else
+-		BUG();
+-
+-	/* unreachable */
+-	return NULL;
+-}
+-
+ static void dapm_reset(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_dapm_widget *w;
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.8.0
