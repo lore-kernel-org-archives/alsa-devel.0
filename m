@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: add headset detection
-	function
-Date: Tue, 23 Jul 2013 14:00:16 +0100
-Message-ID: <20130723130016.GA9858@sirena.org.uk>
-References: <1374562469-5190-1-git-send-email-bardliao@realtek.com>
+Subject: Re: [PATCH] ARM: kirkwood: enable S/PDIF
+Date: Tue, 23 Jul 2013 14:06:22 +0100
+Message-ID: <20130723130622.GB9858@sirena.org.uk>
+References: <20130723102320.56bc4555@armhf>
+ <20130723084347.GP24642@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1674459070736564055=="
+Content-Type: multipart/mixed; boundary="===============4551824427071194265=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E6FED265041
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 15:00:19 +0200 (CEST)
-In-Reply-To: <1374562469-5190-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 52CCE262626
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 15:06:27 +0200 (CEST)
+In-Reply-To: <20130723084347.GP24642@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,68 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1674459070736564055==
+--===============4551824427071194265==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SwLo357mIESq0V3a"
+	protocol="application/pgp-signature"; boundary="vMk55pD2JuhdWiRw"
 Content-Disposition: inline
 
 
---SwLo357mIESq0V3a
+--vMk55pD2JuhdWiRw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 23, 2013 at 02:54:29PM +0800, bardliao@realtek.com wrote:
+On Tue, Jul 23, 2013 at 09:43:47AM +0100, Russell King - ARM Linux wrote:
+> On Tue, Jul 23, 2013 at 10:23:20AM +0200, Jean-Francois Moine wrote:
+> > This patch enables S/PDIF.
 
-> + * @codec: SoC audio codec device.
-> + * @jack_insert: Jack insert or not.
-> + *
-> + * Detect whether is headset or not when jack inserted.
-> + *
-> + * Returns detect status.
-> + */
-> +int rt5640_headset_detect(struct snd_soc_codec *codec,
-> +				struct snd_soc_jack *jack, int jack_insert)
+> > Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
 
-This doesn't look like it implements jack detection, it looks like it's
-some sort of callback.  I'd expect to see some sort of interrupt for
-example...
+> I'm not submitting my patch to do this because:
 
-What's going on here?
+> (a) we don't know what effect this has on other hardware.
 
---SwLo357mIESq0V3a
+This patch will do absolutely nothing unless it's used in a machine
+driver which connects a S/PDIF CODEC to it.  I see no reason not to
+apply it, someone with hardware with more complex needs can always build
+on it later.
+
+--vMk55pD2JuhdWiRw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR7n5dAAoJELSic+t+oim9TUoP/1KeHa9QLrVSgqnna2YLPMaM
-UJ2m7F75zlpToW51D9gB5sVlKoarfe1VeHF4xvNoe6yGIQBry+cmpIhWAYX+GZBr
-lACleaabHwXFA0qxmXAA5nR73TuTWGORFIjRdXecufkMVWMpqJc86H+ffgvfN1Zc
-oYx5+BnmUup6HbYPGilkzAElgdrwXJ86s68IzYxtjcy2iydaQrL9LAr/EDYC8xky
-5NceEW++HUTy4ko8dAuyzhDWx5AwSx8vtyqtM2INvYQoX0xofWe/xAylc9uyfOa4
-IIe+QCR3haq4zwdSIeREIt9P/8o4OsbtYrYZavdeevMqN7U1fLMnxYPkrTHF74wK
-qM6LUmb4vjlnaNa7X8O8DM1an529MWtVPUipQUJBxbdVc25ynlkDtBIyCuZK8fyR
-vTUSLhKv7WksyJFWAizDHH7uOjTPwJ+cLIMDQXMDuU3CFgOFvNfcE+3/gTPLklOc
-TOb8FySV5Ajp971Ld2OD7NhStoY0lR4srleH+1kYOly48eF33k/YNg909V/WvFq9
-nn4fUnrSkJsV6MtYVLKUwaN1QXCuiznuADihx+4UdvSpPjrHQALhWd8DTtexh3rI
-HTIz4KtiscS4+1xZESYUbbYoJQGKX9BANJjOPUVzvywz8HzylqiIC8xKvfcMaLYY
-vRiHOe+OvBvQ9zJKdAAe
-=OCV1
+iQIcBAEBAgAGBQJR7n/LAAoJELSic+t+oim9PzsP/jbV3YimL/rOUX/iyP019vZz
+oH0D60cGVHpPCQtt0BLcsiL3BJynSc4klMnJgvd5dMeCd/nALwIiBULP4EX8k3yd
+JIClfVKikWOzf+MndetEoEIxfl+YbbYGO0uNrYExWOSNM4zu7EEsYe1ClVS3dMXA
+yh+cAAZKTlashlfGTnoaqVX30B5ZeqX9hi/wAXzPCpcKt3gsBUQLsRZIlI1BQZrl
+2n5s9/fIffvwbfafM/ObmNkUY/qa7+tCHMecuGTRT+vMaUJi4yl0ZaXNP48+gzUy
+2DkwaT60QJIyywzoHC5f8tvVHsl2dURWSZ+jKD1KuKYsPNvScWiDqNs5gH5yYnbo
+op9jRO5MJ2kRaQ7LSPSp14yo7bDWDmvCcPCuLjTkwUdlSPZXO4tF8EsOtLUgqQZ7
+eNJ/oaEsmUR9ohmjT4dPKfwMAQIs2Yf50yHpJ2RTltz0RJRSJugKd+RawEXA/LVU
+CbbWtVj01sfEcQwhEOGuM/jPqRekPWWlbvrg+t04KV+cfQC+/leFMFbFWpWLKopC
+i4nEy91DRSJ/rYU9b92d3BoDb7MtVyCXqFd76zQDSUKJWMJgoYjvf35CDnlpPW22
+Pk451LRo8XhQZ5WudAiNr1pY4NV+z0105E90cRGVkpTwxGTELsMPZJG5rlBuhrTR
+2GwvtBwWBRYtG2+RkdAW
+=cK4x
 -----END PGP SIGNATURE-----
 
---SwLo357mIESq0V3a--
+--vMk55pD2JuhdWiRw--
 
---===============1674459070736564055==
+--===============4551824427071194265==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1674459070736564055==--
+--===============4551824427071194265==--
