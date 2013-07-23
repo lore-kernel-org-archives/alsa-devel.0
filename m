@@ -1,78 +1,60 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Remove unused dapm_get_snd_card()
- and dapm_get_soc_card()
-Date: Tue, 23 Jul 2013 13:56:19 +0100
-Message-ID: <20130723125619.GY9858@sirena.org.uk>
-References: <1374570745-32224-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ARM: kirkwood: extend the kirkwood pcm/dma driver for DT
+ usage
+Date: Tue, 23 Jul 2013 13:57:56 +0100
+Message-ID: <20130723125756.GZ9858@sirena.org.uk>
+References: <20130723104641.6ee0b9ec@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0026988938594756296=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B0E51264FFB
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 14:56:27 +0200 (CEST)
-In-Reply-To: <1374570745-32224-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="B5JjOzmn0Nsc+m1x"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130723104641.6ee0b9ec@armhf>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree-discuss@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0026988938594756296==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3h0UNLyY10zL13pE"
-Content-Disposition: inline
-
-
---3h0UNLyY10zL13pE
+--B5JjOzmn0Nsc+m1x
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 23, 2013 at 11:12:25AM +0200, Lars-Peter Clausen wrote:
-> These two functions were added two years ago in commit 4805608 ("ASoC: dapm -
-> Add methods to retrieve snd_card and soc_card from dapm context.") but have
-> remained unused so far. Considering that the dapm context actually has a direct
-> pointer to the card the functions also seem to be unnecessary. E.g. the
-> expressions 'dapm_get_soc_card(dapm)' and 'dapm->card' yield the same result.
+On Tue, Jul 23, 2013 at 10:46:41AM +0200, Jean-Francois Moine wrote:
 
-Applied, thanks.
+> +- compatible: "marvell,mvebu-pcm-audio"
+> +
+> +Example:
+> +
+> +pcm: pcm {
+> +	compatible = "marvell,mvebu-pcm-audio";
+> +};
 
---3h0UNLyY10zL13pE
+This device has no registers or other hardware - this looks like a stub
+device which shouldn't be visible in DT but should instead be created by
+the I2S driver - look at how most of the other DT platforms using
+dmaengine work.
+
+--B5JjOzmn0Nsc+m1x
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR7n1wAAoJELSic+t+oim98HgP/iKPnK7767gq+OV0VFsEzqsw
-j6ipPfgwFh1qn6Xx6NNTN80nqfXRWXANcvHWO2Wy0NgYitb4wi2xE6RZsDooausa
-CIzbqgGPkzb2LBn83wnTlNxvFQOqvR3rG6TQhPeFa5kKH3tODjQLdRqAjPQ4vfOd
-II/TKW87yh3M1LYUflYikres8wU7doiT66ilvqfojGeLFBy0C91kdMkg7wq6mgFw
-xn08+/IX0UqsPPNS0vmj1UWaTAxDcAAwvv9eIudr8JaAIN2lQEg0AshvS8VT9f6l
-gqrM31QPmJuryHj8/TZ3lmOGLfhlVtNgDEOCCCJ6p9mtRAlpQH4sYAAP417pmZgV
-6H1gXKNxppy5Soy9U/I/1RmggE3T6fmLNaUxqvCzdtllPC77nv4qVP8ai2ut/sk1
-ZzNf5MuuHWf3iRdMP/sOBsE7ug0C9seIfG0iaVQ28dmpDHi38UoF2JCLb6sEbEF9
-jsZvh0Z2E3jQIUFELQ8QDbZsp9Xf8TgIujVkM5ho2aitP8QE1Na3b8y1zxyG0qaC
-+KkAYBbJsZmgdotAICmMynLZ8jknfL7XBvQqT8lNQ+/5NW9tFRKVjSODyK4f0Nsp
-uNN7oRfJ42S4fUfSzeF1BvzaEvV68VIM3MM4s2OLS7nN1y4OzJGGADMLlOSXo4lg
-wJFR4ZBiZ864CcKVc76F
-=vft4
+iQIcBAEBAgAGBQJR7n3RAAoJELSic+t+oim9dNUP/3IjP2kD7nXYhF3Q+lf0c6yP
+s82/82I90Meg63GFu5XbnLEDrWxzkRC0OivNLNuQ3sOZ4U1szve8bA2mqtNMPY8K
+CHVTV8U73mf1YrbeDr1MvfR7VqzQ5gBwCejOweX+7ufJ/0n9wibVyJziPohqGAU8
+Y6JNHakNpeK3QxjikMwoysl0WnkES6qRumMmq4Z+S+dgn91Th9WKU6ioBZY49Lzv
+W2gJ9HHMB2IKxkBd/KxFCSxqZfZepLOFPCJZ46uSzeL7Z8tBY7kf1nsmZWZcKeWY
+QE00jpFl7Ccn0bhYMg+Cli6oJzQ5b32aWvTCSpU07AsmDXqLZDDRvJJMCcSvwkd6
+21/mAyDJGNaNNULaYK6rm9XdAqzV2K6w0AFsyCl3VM7TQuVancA74+JoIcyBk5DC
+UWoDS4Oi4Ya4Cjudp/wBvV+HgjNWlbvn40NcoOa+2gjPLp++d4SP3APmeHMMUi3/
+w2OXJxgL9mmOrfeCfG6B+1Ab7xuCH+0y+KG+MALpqQrbZqqGP81fPzzNsN8gB3I6
+YqXunumiH/9GhKttzlDpT282dMm63abv1VNF1qH/bvL+VPYZrDFOIt9uOdXp3Cav
+bPF6Ey6JOEG/iNItBKuYkz41tMsay2aBn0c0eJRtEcG1n0y7PtL3Q6cD/OjIqCPG
+qA/4F9rH7LpxqJuUXmKZ
+=EhT2
 -----END PGP SIGNATURE-----
 
---3h0UNLyY10zL13pE--
-
---===============0026988938594756296==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0026988938594756296==--
+--B5JjOzmn0Nsc+m1x--
