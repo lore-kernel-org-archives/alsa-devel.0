@@ -1,61 +1,63 @@
-From: Mark Brown <broonie@kernel.org>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Subject: Re: [PATCH] ARM: kirkwood: enable S/PDIF
-Date: Tue, 23 Jul 2013 14:31:19 +0100
-Message-ID: <20130723133119.GG9858@sirena.org.uk>
+Date: Tue, 23 Jul 2013 14:36:55 +0100
+Message-ID: <20130723133655.GV24642@n2100.arm.linux.org.uk>
 References: <20130723102320.56bc4555@armhf>
  <20130723084347.GP24642@n2100.arm.linux.org.uk>
- <20130723130622.GB9858@sirena.org.uk>
- <20130723132104.GT24642@n2100.arm.linux.org.uk>
+ <20130723130622.GB9858@sirena.org.uk> <51EE8158.4050300@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vZRzFRtr9HMcP32e"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 65333264FEE
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 15:37:08 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20130723132104.GT24642@n2100.arm.linux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Jean-Francois Moine <moinejf@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org
+In-Reply-To: <51EE8158.4050300@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jul 23, 2013 at 03:12:56PM +0200, Sebastian Hesselbarth wrote:
+> On 07/23/13 15:06, Mark Brown wrote:
+>> On Tue, Jul 23, 2013 at 09:43:47AM +0100, Russell King - ARM Linux wrote:
+>>> On Tue, Jul 23, 2013 at 10:23:20AM +0200, Jean-Francois Moine wrote:
+>>>> This patch enables S/PDIF.
+>>
+>>>> Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
+>>
+>>> I'm not submitting my patch to do this because:
+>>
+>>> (a) we don't know what effect this has on other hardware.
+>>
+>> This patch will do absolutely nothing unless it's used in a machine
+>> driver which connects a S/PDIF CODEC to it.  I see no reason not to
+>> apply it, someone with hardware with more complex needs can always build
+>> on it later.
+>>
+>
+> Mark,
+>
+> the mask that is changed in the patch is what will be written
+> into i2s controller's registers. So, if there is no S/PDIF in that  
+> specific controller that bit can possibly have a different meaning.
+> Also, enabling both I2S playback and SPDIF playback can cause the
+> controller to behave differently.
 
---vZRzFRtr9HMcP32e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Right, so the SPDIF output on Dove isn't multiplexed, so I was wrong on
+that _for_ _dove_, but that may not necessarily be the case for the
+Kirkwood SoCs - the pin may be multiplexed there.
 
-On Tue, Jul 23, 2013 at 02:21:04PM +0100, Russell King - ARM Linux wrote:
-> On Tue, Jul 23, 2013 at 02:06:22PM +0100, Mark Brown wrote:
-
-> > This patch will do absolutely nothing unless it's used in a machine
-> > driver which connects a S/PDIF CODEC to it.  I see no reason not to
-> > apply it, someone with hardware with more complex needs can always build
-> > on it later.
-
-> So... what if setting this bit causes the SoC to start wiggling a pin
-> with the SPDIF signal which has been used for a different purpose?
-
-Right, yup - didn't read it fully.  Like I say doing it conditional on
-the DAI format should be fine though.
-
---vZRzFRtr9HMcP32e
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR7oWkAAoJELSic+t+oim9EIMP/0M2rod+o4SXCcLwDdQii7et
-V2aahoI7DMNl7adfP6Ctbkhluq4Znf/WoDmff9H5azDrQ4ObndXY0Xlah4uYnRyi
-5mONoLO54O+flc+Xb2yzsQr7hUm8D7qliFEefxSaxttNDHo/UctHi23IwiU9ekiR
-MGBL05DX/JlR8Ft7GEuqoAyROiUo4Av3qXjrk1/C4Zr2wafnX+Gmi/hoBxEcYuID
-at0ojCIdDWIc848Je3dclf8Z1pAFPqWyRm4hcqqijpIOq1GQNsJkLhHa18oU7+PE
-PIehljhQnHzzKOEAKMh6OYn6Wlf/dwuoPfw4TUw81jbxzYdpmNDtF2eXqYN0bE68
-6sz+287VQELUrH3+3aN/9kneibjbWxqUP5q90LwekHuC78o1PrFyN/xZ+zkTX28q
-1dNXGnR/P0kfdp5wWfh3BrG9mrLw4wsz3laC98fi7i3OJiBETxDAGsPhrZoa23lf
-RRwDK6XN15t8h1f9htrIx6tIBPTDDPBS4U7hWDRMuYCqM2QN9IJzkhdBMwZzwJcn
-Zn9uKbrKkiO7/ydFwiUzQtrS9Zh6/kvigM3+aBAd17pCmaJoygkrIoD5jAtGyfSA
-O5sqerQF3PtjRkMz8787WbE+SOvWz13h9qwew/u1BKrhRnLUp4fCNXMtcfZ0iT5q
-3ZX0WVydScoHhx9/viQH
-=iQoc
------END PGP SIGNATURE-----
-
---vZRzFRtr9HMcP32e--
+However, Dove does have two I2S/SPDIF controllers which are otherwise
+identical, apart from one having SPDIF support and the other not.
+Setting the SPDIF enable bit on the one without is unspecified what
+the behaviour would be, so it should not be set.
