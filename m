@@ -1,54 +1,43 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: Remove unused dapm_get_snd_card()
- and dapm_get_soc_card()
-Date: Tue, 23 Jul 2013 21:47:58 +0200
-Message-ID: <51EEDDEE.9030701@metafoo.de>
-References: <1374570745-32224-1-git-send-email-lars@metafoo.de>
- <1374583782.2475.26.camel@loki> <20130723173646.GL9858@sirena.org.uk>
- <51EEC3FB.9050701@metafoo.de> <20130723193204.GQ9858@sirena.org.uk>
+From: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Subject: Re: [PATCH 1/4] ASOC: tegra: move AC97 clock defines to the
+ controller node
+Date: Tue, 23 Jul 2013 22:37:47 +0200
+Message-ID: <1374611867.1712.8.camel@tellur>
+References: <1374442132-24040-1-git-send-email-dev@lynxeye.de>
+	 <1374442132-24040-2-git-send-email-dev@lynxeye.de>
+	 <51EEB3A6.1060507@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A5B0265192
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 21:47:59 +0200 (CEST)
-In-Reply-To: <20130723193204.GQ9858@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <51EEB3A6.1060507-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/23/2013 09:32 PM, Mark Brown wrote:
-> On Tue, Jul 23, 2013 at 07:57:15PM +0200, Lars-Peter Clausen wrote:
->> On 07/23/2013 07:36 PM, Mark Brown wrote:
->
->>> We can always add them back in later if they get a user.
->
->> If there are any out of tree users they should just use dapm->card
->> instead. It's much more simpler than this 'if (dapm->codec) return
->> dapm->codec->card; else if (dapm->platform) return
->> dapm->platform->card;' and at the same time more robust since it
->> also works for dapm contexts which don't belong to a codec or
->> platform.
->
-> Right, though my thought looking at the code was that the intention was
-> to also do a transition so that dapm->card isn't there any more.
+Am Dienstag, den 23.07.2013, 09:47 -0700 schrieb Stephen Warren:
+> On 07/21/2013 02:28 PM, Lucas Stach wrote:
+> > Different from other Tegra sound controllers drivers, the AC97
+> > controller driver uses the tegra asoc utils directly to request the
+> > needed clocks, as they are needed at AC97 init time. Move the DT clock
+> > defines to the right place.
+> 
+> I'm not convinced this is the correct approach.
+> 
+> The machine driver needs to manage these clocks, so that it can
+> co-ordinate between different audio paths. For example, consider a
+> system that supports two different I2S paths. In HW, if both are active
+> at once, these need to both run at a derivative of 48KHz or both run at
+> a derivative of 44.1KHz. The machine driver is the central place that
+> enforces that, and should eventually automatically place constraints on
+> one stream when another is configured for a specific sample rate. By the
+> same argument, AC'97 can't be a special case here, in case there's some
+> system with both AC'97 and I2S hooked up.
 
-In a sense the dapm context is like a common base class to both platforms and 
-codecs. So it's probably better to remove 'card' from the codec and platform 
-structs. codec->dapm.card is as expensive as codec->card while looking up the 
-card for the dapm context by either going through the platform or codec is more 
-expensive than using the direct pointer. But hopefully the component stuff will 
-fix that all.
+I find it highly unlikely to find any Tegra 20 board with such a
+configuration. But as your argument is technically correct, I'll try to
+fix things up the right way and see how big the impact is.
 
-- Lars
+Regards,
+Lucas
