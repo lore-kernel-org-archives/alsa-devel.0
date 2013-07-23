@@ -1,46 +1,120 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [PATCH] ASoC: Samsung: Modify the I2S driver to support I2S on Exynos5420
-Date: Tue, 23 Jul 2013 09:38:00 +0530
-Message-ID: <CAAgF-BfdfuhoFDH+SeZogXh1wju34hGp-T9N7_+mnapHfc2yww@mail.gmail.com>
-References: <1373526505-27115-1-git-send-email-padma.v@samsung.com>
-	<29860116.IF545KsGYb@thinkpad>
-	<20130711112023.GM24508@sirena.org.uk>
-	<2214161.FSfscAvpna@thinkpad>
-	<20130711130139.GQ24508@sirena.org.uk>
-	<CAAgF-BdM4jw0o4+ELVo_N029tbgMJBBqJxU91e=TgBNiiREyaA@mail.gmail.com>
-	<20130712084932.GY24508@sirena.org.uk>
+From: <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5640: add headset detection function
+Date: Tue, 23 Jul 2013 14:54:29 +0800
+Message-ID: <1374562469-5190-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20130712084932.GY24508@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Tomasz Figa <tomasz.figa@gmail.com>, Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, Kukjin Kim <kgene.kim@samsung.com>, abrestic@chromium.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A638261AAF
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 08:55:44 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+From: Bard Liao <bardliao@realtek.com>
 
-On Fri, Jul 12, 2013 at 2:19 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Jul 12, 2013 at 10:07:22AM +0530, Padma Venkat wrote:
->
->> A new version number is added when a there was some change in the IP
->> like adding a internal mux to the IP, adding multi channel support,
->> adding reset control bit. This was done in the older code with
->> platform device.
->> Same thing is followed here. So as previously done, adding a new
->> compatible name like "samsung,i2s-v6" with new quirk
->> "samsung,supports-tdm" is okey?
->
-> Yes, this is good but the quirk should just be found by software based
-> on the compatible string rather than in the DT.
+Add headset detection function to rt5640 codec driver.
 
-You mean I just need to initialize the quirks in the driver based on
-the compatible string?
-So what about the quirks that I added previously on 5250? Should I
-also follow the same thing for other quirks?
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5640.c | 61 +++++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/rt5640.h |  3 +++
+ 2 files changed, 64 insertions(+)
 
-Or it need to be passed via driver data as it is done in spi driver?
-Please clarify me.
-
-Thanks
-Padma
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index ce585e3..dc0d063 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -1911,6 +1911,67 @@ static int rt5640_resume(struct snd_soc_codec *codec)
+ #define rt5640_resume NULL
+ #endif
+ 
++/**
++ * rt5640_headset_detect - Detect headset.
++ * @codec: SoC audio codec device.
++ * @jack_insert: Jack insert or not.
++ *
++ * Detect whether is headset or not when jack inserted.
++ *
++ * Returns detect status.
++ */
++int rt5640_headset_detect(struct snd_soc_codec *codec,
++				struct snd_soc_jack *jack, int jack_insert)
++{
++	int jack_type = 0;
++	int sclk_src = 0;
++	int reg63, reg64;
++
++	if (jack_insert) {
++		reg63 = snd_soc_read(codec, RT5640_PWR_ANLG1);
++		reg64 = snd_soc_read(codec, RT5640_PWR_ANLG2);
++		if (SND_SOC_BIAS_OFF == codec->dapm.bias_level) {
++			snd_soc_write(codec, RT5640_PWR_ANLG1, 0xa814);
++			sclk_src = snd_soc_read(codec, RT5640_GLB_CLK) &
++				RT5640_SCLK_SRC_MASK;
++			snd_soc_update_bits(codec, RT5640_GLB_CLK,
++				RT5640_SCLK_SRC_MASK,
++				0x2 << RT5640_SCLK_SRC_SFT);
++		}
++		snd_soc_update_bits(codec, RT5640_PWR_ANLG1,
++			RT5640_PWR_LDO2, RT5640_PWR_LDO2);
++		snd_soc_update_bits(codec, RT5640_PWR_ANLG2,
++			RT5640_PWR_MB1, RT5640_PWR_MB1);
++		snd_soc_update_bits(codec, RT5640_MICBIAS,
++			RT5640_MIC1_OVCD_MASK | RT5640_MIC1_OVTH_MASK |
++			RT5640_PWR_CLK25M_MASK | RT5640_PWR_MB_MASK,
++			RT5640_MIC1_OVCD_EN | RT5640_MIC1_OVTH_600UA |
++			RT5640_PWR_MB_PU | RT5640_PWR_CLK25M_PU);
++		snd_soc_update_bits(codec, RT5640_DUMMY1, 0x1, 0x1);
++		msleep(100);
++		if (snd_soc_read(codec, RT5640_IRQ_CTRL2) & 0x8)
++			jack_type = SND_JACK_HEADPHONE;
++		else
++			jack_type = SND_JACK_HEADSET;
++		snd_soc_update_bits(codec, RT5640_IRQ_CTRL2,
++			RT5640_MB1_OC_CLR, 0);
++		if (SND_SOC_BIAS_OFF == codec->dapm.bias_level)
++			snd_soc_update_bits(codec, RT5640_GLB_CLK,
++				RT5640_SCLK_SRC_MASK, sclk_src);
++		snd_soc_write(codec, RT5640_PWR_ANLG1, reg63);
++		snd_soc_write(codec, RT5640_PWR_ANLG2, reg64);
++		snd_soc_jack_report(jack, jack_type, SND_JACK_HEADSET);
++	} else {
++		snd_soc_update_bits(codec, RT5640_MICBIAS,
++			RT5640_MIC1_OVCD_MASK,
++			RT5640_MIC1_OVCD_DIS);
++		snd_soc_jack_report(jack, 0, jack->jack->type);
++	}
++
++	return jack_type;
++}
++EXPORT_SYMBOL_GPL(rt5640_headset_detect);
++
+ #define RT5640_STEREO_RATES SNDRV_PCM_RATE_8000_96000
+ #define RT5640_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
+ 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
+diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+index c48286d..263615b 100644
+--- a/sound/soc/codecs/rt5640.h
++++ b/sound/soc/codecs/rt5640.h
+@@ -2089,4 +2089,7 @@ struct rt5640_priv {
+ 	int dmic_en;
+ };
+ 
++int rt5640_headset_detect(struct snd_soc_codec *codec,
++				struct snd_soc_jack *jack, int jack_insert);
++
+ #endif
+-- 
+1.8.1.1.439.g50a6b54
