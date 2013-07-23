@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ALSA: SoC: Added jack detection kcontrol
-	support
-Date: Tue, 23 Jul 2013 13:40:23 +0100
-Message-ID: <20130723124023.GX9858@sirena.org.uk>
-References: <1374281962-3786-1-git-send-email-eu@felipetonello.com>
- <20130722000157.GI9858@sirena.org.uk>
- <CAGrhNMyAofsnwKYMk+60GyvpaW9pMtoJf_2Q_Tc82G8QCFOiFA@mail.gmail.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: Ambiguous DAPM widget names and DPCM
+Date: Tue, 23 Jul 2013 13:48:23 +0100
+Message-ID: <1374583703.2475.25.camel@loki>
+References: <51EE3F18.3030207@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8381585843396947932=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 46060264EFF
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 14:40:27 +0200 (CEST)
-In-Reply-To: <CAGrhNMyAofsnwKYMk+60GyvpaW9pMtoJf_2Q_Tc82G8QCFOiFA@mail.gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 590B7264E9F
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 14:48:29 +0200 (CEST)
+In-Reply-To: <51EE3F18.3030207@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +20,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Felipe Tonello <eu@felipetonello.com>
-Cc: alsa-devel@alsa-project.org, LiamGirdwoodlgirdwood@gmail.com, "Felipe F. Tonello" <ftonello@cercacor.com>, TakashiIwaitiwai@suse.de, linux-kernel@vger.kernel.org, JaroslavKyselaperex@perex.cz
+To: Daniel Mack <zonque@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2013-07-23 at 10:30 +0200, Daniel Mack wrote:
+> Hi Mark,
+> Hi Liam,
+> 
+> I spent some hours reverse-engineering the DPCM code, and I plan to
+> prepare a patch to add some documentation once I've assembled a fully
+> working setup. However, I have a general question regarding DAPM widget
+> names.
+> 
+> DPCM uses DAPM widgets and routes in order to determine the FE <-> BE
+> connections at runtime. The problem with this is that widget names are
+> very ambiguous, as the automatically created widgets for DAIs are named
+> after their stream_name properties, which contain "Playback" or
+> "Capture" for all components in my case. Hence, the code which walks the
+> connections (snd_soc_dapm_dai_get_connected_widgets()) will most likely
+> match the wrong one (which has empty sound/sink lists), which results in
+> a failure like this:
+> 
+> [   16.606268]  fe: ASoC: fe no valid playback route
+> 
+> I hacked the names of all components so they are unique, but even then,
+> the problem is that snd_soc_dapm_new_dai_widgets() is called twice for
+> the CPU DAI, once from soc_probe_platform(), and later from
+> soc_probe_link_dais(), and both calls would create DAPM widgets with
+> identical names, resulting in the same problem as described above.
+> 
+> I don't know how to handle this, but I believe that nobody was really
+> hit by this issue yet, as DPCM doesn't seem to be used widely, at least
+> not by any machine code in mainline.
 
---===============8381585843396947932==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OGBBnVs4XFPv5LQD"
-Content-Disposition: inline
+You might be the first to hit this as I never hit it with OMAP4 or the
+Haswell DSP code (but it's possible everything just worked for me).
 
+Fwiw, the Haswell audio DSP code can be found here :-
 
---OGBBnVs4XFPv5LQD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+https://git.kernel.org/cgit/linux/kernel/git/lrg/asoc.git/log/?h=intel/haswell-audio-dsp
 
-On Mon, Jul 22, 2013 at 02:11:44PM -0700, Felipe Tonello wrote:
+Dynamic Compressed audio support is now in this branch too.
 
-> My question is: Why ALSA Jack support uses evdev input events to
-> notify user-space? Is there any user-space relying on that? If no, I
-> would like to change ALSA Jack implementation to only use KControl and
-> remove specific implementations.
+> 
+> One idea would be to change the automatically generated names of DAI
+> widgets in order to make them unique, or re-factor the lookup routines.
+> 
+> Any opinion on that? Do I miss a general consideration here?
+> 
 
-This was the existing kernel API at the time that the code was added -
-I beleive people had been doing that for simple switches that detect the
-physical presence of a jack since it looks exactly like a button from a
-hardware point of view.  See the original commit adding the code.
+I did initially have something like that for OMAP that based the DAI
+widget name on the DAI device name, but this also needed something that
+would work for codecs with multiple DAI's. In the end it wasn't required
+for OMAP, but it sounds like something like a unique name is required
+now. 
 
---OGBBnVs4XFPv5LQD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> With more hacks in place, the setup somehow succeeds, but when the
+> stream is opened, we'll hit a BUG() in sound/core/pcm_memory.c, because
+> the FE device's DMA type is undefined. But that's another topic I'll
+> address later.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+Hmm, it looks like your FE is being treated as a regular static PCM in
+this case.
 
-iQIcBAEBAgAGBQJR7nm0AAoJELSic+t+oim9PRkP/22oRPWQG+XHKy0GHH7lSILu
-hTulnGK9WyS/db0Y0u+XLOycL8FtEejfy9khf5p2D5fGAHH4CbCirgQNzwR6rpS7
-wCTSyW3cGGhUVcH7ZwtBHbk6VjfNQJYWU7/ZZG13Jhv+aQwe4adnk4Tz1llnNC3e
-NbFl3kqgzkgCLsTJ1OxIu7LXoiMqOGnnonEPHA3jSZLFoDjf+VZpYqXYn1qv1T0p
-rajtUPXOE6SFt706xu0fJBGTvc2eRUWTbnrAEYKvbSj+VLRlDlIH7sNUQ8EgGcmT
-TR2hnlB31NhwuTVwH1oyaxjkdg8XMz1SwXJMS9LbJlmKVeeBAygPxXetxrVRttw4
-fl5CMJJhPHHtFgYzplRqdUlQvl1szJOjM6Ua6VAWBsmjX8XHI86REz6N6Q7eHMeJ
-XbzXkQ5rDseYElA8tcUktnfEvCfn6+vPgH/6zShJUVBSylHvB8WpzM8Bw54RdJV+
-hMSzNA/A2zRJTsqWWJ+as1r7Pk8e0vTtA0IwIiaj0xrvU+LFSg2eCIvDKS5DZyI+
-RhFm+/HuUjug7H+l99dvXgKOq4kIWliC4876ZYGEOQ8MGwlnWJlFKBVl7RsByp6W
-O6vEl/IC2wIAB39Bj6INGLlAFy+KTmOFlplrj2W6Rv8rJ0ddTtDOm40f+8bu1hIv
-BrTVxNC27QJ1AdsEs1ae
-=WAKP
------END PGP SIGNATURE-----
-
---OGBBnVs4XFPv5LQD--
-
---===============8381585843396947932==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8381585843396947932==--
+Liam
