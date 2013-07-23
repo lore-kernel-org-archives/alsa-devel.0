@@ -1,17 +1,13 @@
-From: Antonio Ospite <ospite@studenti.unina.it>
-Subject: Re: [PATCH] ALSA: usb-audio: hiface: return correct
- XRUN indication
-Date: Mon, 22 Jul 2013 23:47:07 +0200
-Message-ID: <20130722234707.0338af00f49527a271fbef07@studenti.unina.it>
-References: <1374514704-4211-1-git-send-email-eldad@fogrefinery.com>
+From: John Spencer <maillist-alsa@barfooze.de>
+Subject: [PATCH] alsa-utils: fix wrong alias for signal.h
+Date: Tue, 23 Jul 2013 03:57:54 +0200
+Message-ID: <51EDE322.8040407@barfooze.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------030105060009000007010001"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp208.alice.it (smtp208.alice.it [82.57.200.104])
- by alsa0.perex.cz (Postfix) with ESMTP id F11AD261AA5
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2013 23:47:11 +0200 (CEST)
-In-Reply-To: <1374514704-4211-1-git-send-email-eldad@fogrefinery.com>
+Received: from furnace.wzff.de (furnace.wzff.de [176.9.216.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF797261A9E
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 04:02:41 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,33 +17,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Eldad Zack <eldad@fogrefinery.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 22 Jul 2013 19:38:24 +0200
-Eldad Zack <eldad@fogrefinery.com> wrote:
+This is a multi-part message in MIME format.
+--------------030105060009000007010001
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> Return SNDRV_PCM_POS_XRUN (snd_pcm_uframes_t) instead of
-> SNDRV_PCM_STATE_XRUN (snd_pcm_state_t) from the pointer
-> function of 6fire, as expected by snd_pcm_update_hw_ptr0().
-> 
-> Caught by sparse.
-> 
-> Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
+in POSIX, there is no <sys/signal.h>.
 
-I too was going to send this one, I verified that the fix is OK, thanks
-Eldad for anticipating me.
+it's merely a legacy alias used by glibc, and the header does nothing 
+else than including <signal.h>.
 
-Would you please fix the commit message as Clemens pointed out?
+so let's do the right thing and use the right name, which works everywhere.
 
-Regards,
-   Antonio
+Signed-Off-By: John Spencer <maillist-alsa@barfooze.de>
 
--- 
-Antonio Ospite
-http://ao2.it
+--------------030105060009000007010001
+Content-Type: text/x-patch;
+ name="alsa-utils_signal_h.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="alsa-utils_signal_h.patch"
 
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+--- alsa-utils-1.0.27.2.org/alsaloop/alsaloop.c	2013-07-23 01:48:03.592000003 +0000
++++ alsa-utils-1.0.27.2/alsaloop/alsaloop.c	2013-07-23 01:49:12.786000003 +0000
+@@ -31,7 +31,7 @@
+ #include <math.h>
+ #include <pthread.h>
+ #include <syslog.h>
+-#include <sys/signal.h>
++#include <signal.h>
+ #include "alsaloop.h"
+ 
+ struct loopback_thread {
+
+--------------030105060009000007010001
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------030105060009000007010001--
