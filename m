@@ -1,47 +1,65 @@
-From: Kevin Groeneveld <kgroeneveld@gmail.com>
-Subject: Re: alsa-lib 1.0.27 incorrect definition of
-	__kernel_off_t?
-Date: Tue, 23 Jul 2013 10:58:24 -0400
-Message-ID: <CABF+-6WWOAJzH1KX9474tBE6apFhfsZx_cg97pY37cVFtKRukQ@mail.gmail.com>
-References: <CABF+-6UXCFt5Oq0yiOkrfiN3kxWtae8zbOkqrdTFmDMm3h07Pw@mail.gmail.com>
- <51EE7D4F.6040204@perex.cz>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v3] ARM: kirkwood: extend the kirkwood i2s
+ driver for DT usage
+Date: Tue, 23 Jul 2013 16:01:50 +0100
+Message-ID: <20130723150150.GH9858@sirena.org.uk>
+References: <20130723104615.3696f1a9@armhf>
+ <20130723123444.GW9858@sirena.org.uk>
+ <51EE7E1A.3040301@gmail.com>
+ <20130723132016.GC9858@sirena.org.uk>
+ <51EE8591.7060005@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f172.google.com (mail-we0-f172.google.com
- [74.125.82.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 31F97264FEE
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 16:58:28 +0200 (CEST)
-Received: by mail-we0-f172.google.com with SMTP id t61so2271724wes.31
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 07:58:24 -0700 (PDT)
-In-Reply-To: <51EE7D4F.6040204@perex.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lvzXnIqIiPbDUI27"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <51EE8591.7060005@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, devicetree-discuss@vger.kernel.org, Russell King <rmk+kernel@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 23, 2013 at 8:55 AM, Jaroslav Kysela <perex@perex.cz> wrote:
 
-> I tried to fix this issue using <linux/types.h>. Please, check:
->
->
-> http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=b3b53a1bec47aaa2baef724cc9e79adadd603caf
->
->
-Yes, that patch fixes the compile error I was getting.  Thanks for looking
-into this.
+--lvzXnIqIiPbDUI27
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-You don't actually need to include <linux/types.h> in local.h.  local.h
-includes asound.h which already includes <linux/types.h>.  This is how I
-just got away with deleting the #define __kernel_off_t line.
+On Tue, Jul 23, 2013 at 03:30:57PM +0200, Sebastian Hesselbarth wrote:
+> On 07/23/13 15:20, Mark Brown wrote:
 
+> >Why would this be required?  The driver is already asking for multiple
+> >clocks...
 
-Kevin
+> The driver is asking for multiple *DT based* clocks. Legacy
+> platform_data has never been updated to reflect that. Mainly because
+> multiple clocks are only supported on Dove, which has no active non-DT
+> board in mainline.
+
+Why would platform data have anything to do with this?  To repeat again
+the way the clocks are mapped should be totally transparent to the
+driver requesting them, if it isn't then the driver is not using the API
+properly.
+
+--lvzXnIqIiPbDUI27
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR7prbAAoJELSic+t+oim94yEQAI8Lxb6zeff+wXWxZsZuHv+Y
+Y7U0ls8+Gx4xPE2DwvyPCj49v3rJIJBhZc916VfM3TbTjqDJiZedCkff7rm2Df8T
+WoKoLbZuagN5MVWy/6VS2tKNKtGzCEfg5eekpR7LZ4n74/Hua9r083w4ztohSnjn
+paUN+d8385eVdXVkd/HS6M0NRFAssk9Fq4e5H1pznQjBEFyQDSYLBSjjVbO1yJiw
+2hTjx+3Oe0FTB7pjULQX9e/X47bqFBDpBLfoIwgxMTerRxyTxsIv1E3aotHKRg0Y
+E/nDe5fIY915t8Sjro6E8PNJ7QWMGTC02W9L0o1d7PgDaISdyBBlLlcGj+u/T+x3
+/N5aa/mlat1tv9ffR6Lt9JFYZQZ2u9cqQfuDELZynU5uJnn5HtEZuHJoZCmdJEMl
+lVvJUAZxvZrWKWqxNnoHJ4AIVCHjt8jbHPwHvIGtmki/RuPsNOMw8iJQXuzczzcd
+weOewZ3Mb56jzYJ2qgZb4fllg9qhJiDvhFpBtFCnNhhb0jCD0qoswzgPTUtoX6yz
+9eRfP96OmT1lPtyi+xeZbj+xzNL2gEDSsGExXPBNOk3zIhZqdwVsneFizxGkKeUj
+RY8vN8gi4OF6FWElLxHs6G6uN+epw+T55JhFHmco5vEmeTQVnxMlcCOFTtFkD+tC
+YGK8Q0Q2+H+WxRdRvhJb
+=0T+r
+-----END PGP SIGNATURE-----
+
+--lvzXnIqIiPbDUI27--
