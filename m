@@ -1,63 +1,46 @@
-From: John Spencer <maillist-alsa@barfooze.de>
-Subject: [PATCH] alsa-utils: fix wrong alias for signal.h
-Date: Tue, 23 Jul 2013 03:57:54 +0200
-Message-ID: <51EDE322.8040407@barfooze.de>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [PATCH] ASoC: Samsung: Modify the I2S driver to support I2S on Exynos5420
+Date: Tue, 23 Jul 2013 09:38:00 +0530
+Message-ID: <CAAgF-BfdfuhoFDH+SeZogXh1wju34hGp-T9N7_+mnapHfc2yww@mail.gmail.com>
+References: <1373526505-27115-1-git-send-email-padma.v@samsung.com>
+	<29860116.IF545KsGYb@thinkpad>
+	<20130711112023.GM24508@sirena.org.uk>
+	<2214161.FSfscAvpna@thinkpad>
+	<20130711130139.GQ24508@sirena.org.uk>
+	<CAAgF-BdM4jw0o4+ELVo_N029tbgMJBBqJxU91e=TgBNiiREyaA@mail.gmail.com>
+	<20130712084932.GY24508@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------030105060009000007010001"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from furnace.wzff.de (furnace.wzff.de [176.9.216.40])
- by alsa0.perex.cz (Postfix) with ESMTP id BF797261A9E
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 04:02:41 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20130712084932.GY24508@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Tomasz Figa <tomasz.figa@gmail.com>, Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, Kukjin Kim <kgene.kim@samsung.com>, abrestic@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------030105060009000007010001
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi Mark,
 
-in POSIX, there is no <sys/signal.h>.
+On Fri, Jul 12, 2013 at 2:19 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Jul 12, 2013 at 10:07:22AM +0530, Padma Venkat wrote:
+>
+>> A new version number is added when a there was some change in the IP
+>> like adding a internal mux to the IP, adding multi channel support,
+>> adding reset control bit. This was done in the older code with
+>> platform device.
+>> Same thing is followed here. So as previously done, adding a new
+>> compatible name like "samsung,i2s-v6" with new quirk
+>> "samsung,supports-tdm" is okey?
+>
+> Yes, this is good but the quirk should just be found by software based
+> on the compatible string rather than in the DT.
 
-it's merely a legacy alias used by glibc, and the header does nothing 
-else than including <signal.h>.
+You mean I just need to initialize the quirks in the driver based on
+the compatible string?
+So what about the quirks that I added previously on 5250? Should I
+also follow the same thing for other quirks?
 
-so let's do the right thing and use the right name, which works everywhere.
+Or it need to be passed via driver data as it is done in spi driver?
+Please clarify me.
 
-Signed-Off-By: John Spencer <maillist-alsa@barfooze.de>
-
---------------030105060009000007010001
-Content-Type: text/x-patch;
- name="alsa-utils_signal_h.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="alsa-utils_signal_h.patch"
-
---- alsa-utils-1.0.27.2.org/alsaloop/alsaloop.c	2013-07-23 01:48:03.592000003 +0000
-+++ alsa-utils-1.0.27.2/alsaloop/alsaloop.c	2013-07-23 01:49:12.786000003 +0000
-@@ -31,7 +31,7 @@
- #include <math.h>
- #include <pthread.h>
- #include <syslog.h>
--#include <sys/signal.h>
-+#include <signal.h>
- #include "alsaloop.h"
- 
- struct loopback_thread {
-
---------------030105060009000007010001
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------030105060009000007010001--
+Thanks
+Padma
