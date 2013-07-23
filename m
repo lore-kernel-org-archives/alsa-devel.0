@@ -1,19 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 2/3] ALSA: hda - WAKEEN feature enabling
-	for runtime pm
-Date: Tue, 23 Jul 2013 09:36:30 +0200
-Message-ID: <51EE327E.1070407@canonical.com>
-References: <1374477558-14074-1-git-send-email-xingchao.wang@linux.intel.com>
- <1374477558-14074-2-git-send-email-xingchao.wang@linux.intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH 2/2] ALSA: hda - Remove NO_PRESENCE bit
+ override for Dell 1420n Laptop
+Date: Tue, 23 Jul 2013 15:50:29 +0800
+Message-ID: <CAN8cciZZQCLiGj4TTd8Vmfo9hYEL62dKqHGCRRE13o6FXn+0Ug@mail.gmail.com>
+References: <1374246542-14244-1-git-send-email-tiwai@suse.de>
+ <1374246542-14244-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E216261AC6
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 09:36:33 +0200 (CEST)
-In-Reply-To: <1374477558-14074-2-git-send-email-xingchao.wang@linux.intel.com>
+Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
+ [209.85.214.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86651261AD6
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 09:50:30 +0200 (CEST)
+Received: by mail-ob0-f173.google.com with SMTP id er7so888072obc.32
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 00:50:29 -0700 (PDT)
+In-Reply-To: <1374246542-14244-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,99 +25,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wang Xingchao <xingchao.wang@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, xingchao.wang@intel.com, liam.r.girdwood@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/22/2013 09:19 AM, Wang Xingchao wrote:
-> With runtime power save feature enabled, Headphone hotplug
-> event will not be detected while controller/codec in D3. HDA has
-> feature WAKEEN to let codec wake up system if controller is in D3 or
-> system in S3.(HDA Spec 4.5.9.2/3). Codec can send out INT or wake up
-> controller depending on whether CIE or GIE enabled.(Figure 4, Interupt
-> structure).
-
-Oh, so you actually got it working? Nice! :-)
-
-> The controller must be in RESET mode after enter runtime-suspend, otherwise
-> it will not be waken up even if codec send out wake-up event. And STATESTS
-> will be cleared after controller brought out of RESET mode.
-
-There seems to be nothing in this patch that sets the controller in 
-RESET mode, is this something done in a later patch, or is that code 
-already present today, or...?
-
-> This patch only enable WAKEEN for runtime-suspend(Controller D3) mode,
-> not for system S3 mode. with tool "evtest", Headphone hotplug events
-> could be cought and reported successfully.
-
->
-> Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
-> ---
->   sound/pci/hda/hda_intel.c | 25 +++++++++++++++++++++++++
->   1 file changed, 25 insertions(+)
->
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 8860dd5..a7ac7fd 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -2970,6 +2970,11 @@ static int azx_runtime_suspend(struct device *dev)
->   {
->   	struct snd_card *card = dev_get_drvdata(dev);
->   	struct azx *chip = card->private_data;
-> +	int status;
-> +
-> +	/* enable controller wake up event */
-> +	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
-> +		  STATESTS_INT_MASK);
->
->   	azx_stop_chip(chip);
->   	azx_enter_link_reset(chip);
-> @@ -2983,11 +2988,31 @@ static int azx_runtime_resume(struct device *dev)
->   {
->   	struct snd_card *card = dev_get_drvdata(dev);
->   	struct azx *chip = card->private_data;
-> +	struct hda_bus *bus;
-> +	struct hda_codec *codec;
-> +	int status;
->
->   	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
->   		hda_display_power(true);
-> +
-> +	/* Read STATESTS before controller reset */
-> +	status = azx_readw(chip, STATESTS);
-> +
->   	azx_init_pci(chip);
->   	azx_init_chip(chip, 1);
-> +
-> +	bus = chip->bus;
-> +	if (status && bus) {
-> +		list_for_each_entry(codec, &bus->codec_list, list)
-> +			if (status & (1 << codec->addr))
-> +				queue_delayed_work(codec->bus->workq,
-> +						   &codec->jackpoll_work, codec->jackpoll_interval);
-
-Is there a reason you want to move the jack detection to a delayed work, 
-i e, why can't we just call:
-
-  	snd_hda_jack_set_dirty_all(codec);
-  	snd_hda_jack_poll_all(codec);
-
-...from here?
-
-> +	}
-> +
-> +	/* disable controller Wake Up event*/
-> +	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
-> +			~STATESTS_INT_MASK);
-> +
->   	return 0;
->   }
->
->
-
-
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+PiBUaGUgcXVpcmsgZm9yIERlbGwgbGFwdG9wcyB3aXRoIFNUQUM5MjI4IG92ZXJyaWRlcyB0aGUg
+cGluIGRlZmF1bHQKPiBjb25maWcgb2YgTklEIDB4MGYgdG8gdGhlIHZhbHVlIHdpdGggQUNfREVG
+Q0ZHX01JU0NfTk9fUFJFU0VOQ0UgYml0Cj4gb24uICBJJ20gbm90IHF1aXRlIHN1cmUgd2h5IHRo
+aXMgd2FzIGRvbmUgc28sIGJ1dCBjYW4gZ3Vlc3MgdGhhdCB0aGlzCj4gd2FzIGludHJvZHVjZWQg
+Zm9yIGF2b2lkaW5nIHRoaXMgdG8gYmUgbXV0ZWQgYnkgYW5vdGhlciBoZWFkcGhvbmUKPiBwbHVn
+LiAgTm93LCBhZnRlciB0cmFuc2l0aW9uIHRvIHRoZSBnZW5lcmljIHBhcnNlciwgdGhpcyB3b3Jr
+YXJvdW5kCj4gcmF0aGVyIGNhdXNlcyBhIHByb2JsZW0gKG5vdGFibHkgYXMgdW5leHBlY3RlZCBz
+cGVha2VyIG11dGVzKSBiZWNhdXNlCj4gdGhlIHBpbiBpcyBzZWVuIGFzIGlmIGl0J3MgYWx3YXlz
+IHBsdWdnZWQgaW4uCj4KCgpJcyB0aGVyZSBhbnkgc2lkZSBlZmZlY3Qgd2hlbiB0aGUgZHJpdmVy
+IHBlcmZvcm0gcGluIGZpeHVwIG9uIGxpbmUgb3V0IHBpbgpjb21wbGV4IHdoaWNoIHBpbmNhcCBk
+b2VzIG5vdCBzdXBwb3J0IEhQIHRvIGhlYWRwaG9uZSBwaG9uZSBjb21wbGV4CgpSZWZlciB0byBT
+VEFDOTIyOCBkYXRhc2hlZXQgLCBwb3J0IEYgZG9lcyBub3Qgc3VwcG9ydCBoZWFkcGhvbmUgb3V0
+CgoK4oCiIFBvcnRzIEEsIEIsIGFuZCBEIHN1cHBvcnQK4oCiIEhlYWRwaG9uZSBPdXQK4oCiIExp
+bmUgT3V0CuKAoiBMaW5lIEluCuKAoiBNaWNyb3Bob25lIHdpdGgKCgpOb2RlIDB4MGYgW1BpbiBD
+b21wbGV4XSB3Y2FwcyAweDQwMDE4MTogU3RlcmVvCiAgQ29udHJvbDogbmFtZT0iRnJvbnQgSGVh
+ZHBob25lIEZyb250IFBoYW50b20gSmFjayIsIGluZGV4PTAsIGRldmljZT0wCiAgUGluY2FwIDB4
+MDAwMDE3Mzc6IElOIE9VVCBEZXRlY3QgVHJpZ2dlciBJbXBTZW5zZQogICAgVnJlZiBjYXBzOiBI
+SVogNTAgR1JEIDgwCiAgUGluIERlZmF1bHQgMHgwMjAxMTAyMDogW0phY2tdIExpbmUgT3V0IGF0
+IEV4dCBGcm9udAogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawogICAgRGVmQXNzb2NpYXRp
+b24gPSAweDIsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4NDA6IE9VVCBWUkVGX0hJWgog
+IFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAogIENvbm5lY3Rpb246IDEKICAgICAweDA1
+MAoKCiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCmIvc291bmQv
+cGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCgo+IGluZGV4IDc2NmU1NjcuLjkyYjliNDMgMTAwNjQ0
+Cj4gLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCj4gKysrIGIvc291bmQvcGNp
+L2hkYS9wYXRjaF9zaWdtYXRlbC5jCj4gQEAgLTMyMzMsNyArMzIzMyw3IEBAIHN0YXRpYyBjb25z
+dCBzdHJ1Y3QgaGRhX2ZpeHVwIHN0YWM5Mjd4X2ZpeHVwc1tdID0gewo+ICAgICAgICAgICAgICAg
+ICAgICAgICAgIC8qIGNvbmZpZ3VyZSB0aGUgYW5hbG9nIG1pY3JvcGhvbmUgb24gc29tZSBsYXB0
+b3BzCj4gKi8KPiAgICAgICAgICAgICAgICAgICAgICAgICB7IDB4MGMsIDB4OTBhNzkxMzAgfSwK
+PiAgICAgICAgICAgICAgICAgICAgICAgICAvKiBjb3JyZWN0IHRoZSBmcm9udCBvdXRwdXQgamFj
+ayBhcyBhIGhwIG91dCAqLwo+IC0gICAgICAgICAgICAgICAgICAgICAgIHsgMHgwZiwgMHgwMjI3
+MDExZiB9LAo+ICsgICAgICAgICAgICAgICAgICAgICAgIHsgMHgwZiwgMHgwMjIxMTAxZiB9LAo+
+ICAgICAgICAgICAgICAgICAgICAgICAgIC8qIGNvcnJlY3QgdGhlIGZyb250IGlucHV0IGphY2sg
+YXMgYSBtaWMgKi8KPiAgICAgICAgICAgICAgICAgICAgICAgICB7IDB4MGUsIDB4MDJhNzkxMzAg
+fSwKPiAgICAgICAgICAgICAgICAgICAgICAgICB7fQo+Cj4KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
