@@ -1,17 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Remove unused dapm_get_snd_card()
- and dapm_get_soc_card()
-Date: Tue, 23 Jul 2013 13:49:42 +0100
-Message-ID: <1374583782.2475.26.camel@loki>
-References: <1374570745-32224-1-git-send-email-lars@metafoo.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: alsa-lib 1.0.27 incorrect definition of
+	__kernel_off_t?
+Date: Tue, 23 Jul 2013 14:55:43 +0200
+Message-ID: <51EE7D4F.6040204@perex.cz>
+References: <CABF+-6UXCFt5Oq0yiOkrfiN3kxWtae8zbOkqrdTFmDMm3h07Pw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FA80262626
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 14:49:45 +0200 (CEST)
-In-Reply-To: <1374570745-32224-1-git-send-email-lars@metafoo.de>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2519264E9F
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 14:55:46 +0200 (CEST)
+In-Reply-To: <CABF+-6UXCFt5Oq0yiOkrfiN3kxWtae8zbOkqrdTFmDMm3h07Pw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,20 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Kevin Groeneveld <kgroeneveld@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2013-07-23 at 11:12 +0200, Lars-Peter Clausen wrote:
-> These two functions were added two years ago in commit 4805608 ("ASoC: dapm -
-> Add methods to retrieve snd_card and soc_card from dapm context.") but have
-> remained unused so far. Considering that the dapm context actually has a direct
-> pointer to the card the functions also seem to be unnecessary. E.g. the
-> expressions 'dapm_get_soc_card(dapm)' and 'dapm->card' yield the same result.
+Date 22.7.2013 23:22, Kevin Groeneveld wrote:
+> I tried doing a cross compile of alsa-lib 1.0.27.2 today and ended up with
+> the following error:
 > 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
+> error: conflicting types for 'off_t'
+> 
+> Commit 9b5beef1 adds the following line to local.h:
+> 
+> #define __kernel_off_t        off_t
+> 
+> Not only is __kernel_off_t already defined elsewhere in my header files,
+> the above line tries to define __kernel_off_t (which I think should be 32
+> bit on my platform) to off_t which is 64 bit.
+> 
+> I just deleted the line and everything seems to be working so far.
 
-Peter may have a user for these, but maybe not ?
+I tried to fix this issue using <linux/types.h>. Please, check:
 
-Liam
+http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=b3b53a1bec47aaa2baef724cc9e79adadd603caf
+
+					Jaroslav
+
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
