@@ -1,16 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: Remove unused dapm_get_snd_card() and
-	dapm_get_soc_card()
-Date: Tue, 23 Jul 2013 11:12:25 +0200
-Message-ID: <1374570745-32224-1-git-send-email-lars@metafoo.de>
+From: Eldad Zack <eldad@fogrefinery.com>
+Subject: Re: [PATCH] ALSA: usb-audio: hiface: return correct
+ XRUN indication
+Date: Tue, 23 Jul 2013 11:11:44 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1307231109330.1025@xoschi>
+References: <1374514704-4211-1-git-send-email-eldad@fogrefinery.com>
+ <20130722234707.0338af00f49527a271fbef07@studenti.unina.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-088.synserver.de (smtp-out-088.synserver.de
- [212.40.185.88])
- by alsa0.perex.cz (Postfix) with ESMTP id EA018261B0C
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 11:11:39 +0200 (CEST)
+Received: from mail-bk0-f46.google.com (mail-bk0-f46.google.com
+ [209.85.214.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 805D6261B1F
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 11:11:50 +0200 (CEST)
+Received: by mail-bk0-f46.google.com with SMTP id na10so2852183bkb.33
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2013 02:11:50 -0700 (PDT)
+In-Reply-To: <20130722234707.0338af00f49527a271fbef07@studenti.unina.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Antonio Ospite <ospite@studenti.unina.it>, Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-These two functions were added two years ago in commit 4805608 ("ASoC: dapm -
-Add methods to retrieve snd_card and soc_card from dapm context.") but have
-remained unused so far. Considering that the dapm context actually has a direct
-pointer to the card the functions also seem to be unnecessary. E.g. the
-expressions 'dapm_get_soc_card(dapm)' and 'dapm->card' yield the same result.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-dapm.c | 30 ------------------------------
- 1 file changed, 30 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 346ac91..deb1b3d 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -174,36 +174,6 @@ static inline struct snd_soc_dapm_widget *dapm_cnew_widget(
- 	return kmemdup(_widget, sizeof(*_widget), GFP_KERNEL);
- }
- 
--/* get snd_card from DAPM context */
--static inline struct snd_card *dapm_get_snd_card(
--	struct snd_soc_dapm_context *dapm)
--{
--	if (dapm->codec)
--		return dapm->codec->card->snd_card;
--	else if (dapm->platform)
--		return dapm->platform->card->snd_card;
--	else
--		BUG();
--
--	/* unreachable */
--	return NULL;
--}
--
--/* get soc_card from DAPM context */
--static inline struct snd_soc_card *dapm_get_soc_card(
--		struct snd_soc_dapm_context *dapm)
--{
--	if (dapm->codec)
--		return dapm->codec->card;
--	else if (dapm->platform)
--		return dapm->platform->card;
--	else
--		BUG();
--
--	/* unreachable */
--	return NULL;
--}
--
- static void dapm_reset(struct snd_soc_card *card)
- {
- 	struct snd_soc_dapm_widget *w;
--- 
-1.8.0
+On Mon, 22 Jul 2013, Antonio Ospite wrote:
+
+> On Mon, 22 Jul 2013 19:38:24 +0200
+> Eldad Zack <eldad@fogrefinery.com> wrote:
+> 
+> > Return SNDRV_PCM_POS_XRUN (snd_pcm_uframes_t) instead of
+> > SNDRV_PCM_STATE_XRUN (snd_pcm_state_t) from the pointer
+> > function of 6fire, as expected by snd_pcm_update_hw_ptr0().
+> > 
+> > Caught by sparse.
+> > 
+> > Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
+> 
+> I too was going to send this one, I verified that the fix is OK, thanks
+> Eldad for anticipating me.
+> 
+> Would you please fix the commit message as Clemens pointed out?
+
+Oops - sure, will send it out corrected in a moment.
+
+Cheers,
+Eldad
