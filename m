@@ -1,68 +1,45 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: Buffer size for ALSA USB PCM audio
-Date: Wed, 24 Jul 2013 11:43:58 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1307241138180.1313-100000@iolanthe.rowland.org>
-References: <s5hob9skmgs.wl%tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: PCM extra attributes
+Date: Wed, 24 Jul 2013 22:39:19 +0530
+Message-ID: <20130724170919.GD18642@intel.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <s5hob9skmgs.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C4B42652E7
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 19:48:07 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, "Vinnakota,
+ Lakshmi N <lakshmi.n.vinnakota@intel.com>"@vkoul-udesk3.iind.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 24 Jul 2013, Takashi Iwai wrote:
+Hey Takashi,
 
-> > I don't understand.  Consider a simple playback example.  Suppose the
-> > user wants to keep the latency low, so he requests 2 periods per
-> > buffer.  snd-usb-audio ignores this value and decides to use 10 URBs,
-> > which is equivalent to setting the buffer size to 10 periods.
-> 
-> You don't have to fill all 10 URBs to start the stream...
+We were looking to find the substream index in the userspace for the device
+opened (in case we support multiple substreams and mix them). Since we also
+wanted to have some specific alsa controls for each substream the problem of not
+knowing substream in usermode make stuff interesting!
 
-Maybe you don't have to, but it looks the driver does just that.  From
-snd_usb_endpoint_start():
+I was pointed to an old RFC of yours [1] and it fits my needs. I can get the
+substream index using this and program the alsa controls.
 
-	if (snd_usb_endpoint_implicit_feedback_sink(ep)) {
-		for (i = 0; i < ep->nurbs; i++) {
-			struct snd_urb_ctx *ctx = ep->urb + i;
-			list_add_tail(&ctx->ready_list, &ep->ready_playback_urbs);
-		}
+Now reading the archive looks like it was note merged. Would be okay to do so
+for above case. I can resurrect the patchset if you would like...
 
-		return 0;
-	}
+Thanks
+~Vinod
 
-	for (i = 0; i < ep->nurbs; i++) {
-		struct urb *urb = ep->urb[i].urb;
+[1]: http://mailman.alsa-project.org/pipermail/alsa-devel/2009-June/018651.html
 
-		if (snd_BUG_ON(!urb))
-			goto __error;
-
-		if (usb_pipeout(ep->pipe)) {
-			prepare_outbound_urb(ep, urb->context);
-		} else {
-			prepare_inbound_urb(ep, urb->context);
-		}
-
-		err = usb_submit_urb(urb, GFP_ATOMIC);
-		if (err < 0) {
-			snd_printk(KERN_ERR "cannot submit urb %d, error %d: %s\n",
-				   i, err, usb_error_string(err));
-			goto __error;
-		}
-		set_bit(i, &ep->active_mask);
-	}
-
-In this case, I'm particularly considering what happens when 
-snd_usb_endpoint_implicit_feedback_sink(ep) is false.
-
-Besides, what's the reason for allocating 10 URBs if you're not going 
-to submit more than 2 of them at a time?
-
-Alan Stern
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
