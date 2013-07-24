@@ -1,19 +1,32 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Questions about virtual ALSA driver (dummy),
-	PortAudio and full-duplex drops
-Date: Wed, 24 Jul 2013 14:03:28 +0100
-Message-ID: <201307241403.28873.gineera@aspect135.co.uk>
-References: <51EF41C8.2040701@imi.aau.dk>
+From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [Intel-gfx] [PATCH 0/4 V7] Power-well API
+ implementation for Haswell
+Date: Wed, 24 Jul 2013 15:14:31 +0200
+Message-ID: <51EFD337.1060301@intel.com>
+References: <46B810F6945F7C4788E11DCE57EC48901184D8BF@SHSMSX104.ccr.corp.intel.com>
+ <s5h38rdmyh0.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC48901184DB13@SHSMSX104.ccr.corp.intel.com>
+ <s5hwqoplhv4.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC48901184DB3D@SHSMSX104.ccr.corp.intel.com>
+ <CA+gsUGTCimKS35XaX7V+aWXtmGBeHS2ftChU5ndzsray5Aipuw@mail.gmail.com>
+ <s5hwqopthff.wl%tiwai@suse.de>	<51E6A4B7.7060605@canonical.com>
+ <s5hsizdtgg8.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC48901184E3B6@SHSMSX104.ccr.corp.intel.com>
+ <20130718064415.GH4550@phenom.ffwll.local>
+ <46B810F6945F7C4788E11DCE57EC48901184E58D@SHSMSX104.ccr.corp.intel.com>
+ <s5h61w8tdnb.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC489011851134@SHSMSX104.ccr.corp.intel.com>
+ <s5h38r4p6fc.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC4890118511BE@SHSMSX104.ccr.corp.intel.com>
+ <51EFC143.2090603@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.ip07ir2.opaltelecom.net (out1.ip07ir2.opaltelecom.net
- [62.24.128.243])
- by alsa0.perex.cz (Postfix) with ESMTP id 118F4265317
- for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 15:01:59 +0200 (CEST)
-In-Reply-To: <51EF41C8.2040701@imi.aau.dk>
-Content-Disposition: inline
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id B9720265336
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 15:14:36 +0200 (CEST)
+In-Reply-To: <51EFC143.2090603@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +36,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: portaudio@music.columbia.edu, audacity-devel@lists.sourceforge.net, Smilen Dimitrov <sd@imi.aau.dk>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, Takashi Iwai <tiwai@suse.de>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Wang,
+ Xingchao" <xingchao.wang@intel.com>, Paulo Zanoni <przanoni@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, "Jin, Gordon" <gordon.jin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Smilen,
-
-Some comments below, since I am (probably the only person) on Alsa, Portaudio 
-and Audacity lists (but no expert).  Evidently you have gone to some lengths 
-on this.
-
-On Wednesday 24 July 2013 03:54, Smilen Dimitrov wrote:
-> Apologies in advance for the longish exposition - however, I have bumped
-> into a problem with ALSA driver development, which raised some questions
-> that I cannot really understand at the moment. I find it especially
-> frustrating that I cannot formulate a simple question, but instead I have
-> to resort to test code, captures and plots, to discuss my (mis)conceptions
-> through those - so I hope at least someone will bear with this wall of text
-> (some 23KB plaintext), and I'll be able to get some help with this.
+On 7/24/2013 1:57 PM, David Henningsson wrote:
+> On 07/24/2013 01:33 PM, Wang, Xingchao wrote:
+>> Yes, I agree. I'm debugging this issue on Ubuntu, not sure it happens 
+>> on other distribution too.
+>> If it's related to Ubuntu, maybe need check Ubuntu power policy. Does 
+>> anyone know the Ubuntu power-policy on laptop?
+>> i.e. when charger connected, will Ubuntu make decision to disable 
+>> power-save feature for audio subsystem?
 >
-> I originally started working on a 16-bit, 44.1 kHz stereo ALSA driver for a
-> device; and came to a point where I could achieve (what I thought was)
-> full-duplex by running `arecord` and `aplay`, in separate shells, without
-> any problems. However, if I tried to do the same from `audacity` - that is,
-> have "record" running, while another track plays on the same card, with
-> "Audacity Preferences/Recording/Overdub: Play other tracks while recording
-> new one" enabled - then I'd experience some strange drops in the capture,
-> which were not reported by any debug messages, even after I rebuilt and
-> used PortAudio with debug messages on (my eventual goal is to have this
-> experiment running in Audacity without drops).
+> I'm not a power management expert, but I got a pointer from my team 
+> mate to pm-utils:
+>
+> http://cgit.freedesktop.org/pm-utils/tree/pm/power.d/intel-audio-powersave 
+>
+>
+> If I understand correctly, The scripts in power.d are executed when 
+> battery / AC-power is changed.
+>
 
-I think there are too many areas embroiled in this, and they need to be 
-separated out.  If you have issues writing an Alsa driver, don't rely on 
-Portaudio for testing, but use a range of audio players, or other means, and 
-enlist help just from Alsa-devel, describing the hardware and ideally 
-presenting your driver code.  Have you read Takashi Iwai's notes:
+To me, this sounds like a user space issue.  It requested power on and 
+the kernel delivered.
 
-	http://www.alsa-project.org/~tiwai/writing-an-alsa-driver/index.html ?
+Trying to modify the kernel to work around that would be insane.
 
-I suspect the 'dummy device' may not be a good model and you are not correctly 
-reporting the number of samples transferred to the hardware?
+Thanks,
+Rafael
 
-It is probably reasonable to consider Audacity not a focus of concern, since 
-it simply uses Portaudio.  If you think there is a problem with Portaudio, 
-run tests with standard sound hardware such as on-board, PCI or USB units 
-known to work with Alsa, and take the focus off your own driver (since others 
-will not be able to reproduce your custom results anyway).  There are few 
-within Portaudio who are familiar with the Alsa code but we will try to 
-assist if needed (I think that list has a 20K size limit IIRC).  Note that 
-Audacity does not utilise the latest Portaudio code available, so consider 
-getting a more recent version.
+---------------------------------------------------------------------
+Intel Technology Poland sp. z o.o.
+z siedziba w Gdansku
+ul. Slowackiego 173
+80-298 Gdansk
 
-Hope this can help to move your problem forward.
+Sad Rejonowy Gdansk Polnoc w Gdansku, 
+VII Wydzial Gospodarczy Krajowego Rejestru Sadowego, 
+numer KRS 101882
 
-Regards
+NIP 957-07-52-316
+Kapital zakladowy 200.000 zl
 
-Alan
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
