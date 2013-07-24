@@ -1,32 +1,18 @@
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [Intel-gfx] [PATCH 0/4 V7] Power-well API
- implementation for Haswell
-Date: Wed, 24 Jul 2013 15:14:31 +0200
-Message-ID: <51EFD337.1060301@intel.com>
-References: <46B810F6945F7C4788E11DCE57EC48901184D8BF@SHSMSX104.ccr.corp.intel.com>
- <s5h38rdmyh0.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC48901184DB13@SHSMSX104.ccr.corp.intel.com>
- <s5hwqoplhv4.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC48901184DB3D@SHSMSX104.ccr.corp.intel.com>
- <CA+gsUGTCimKS35XaX7V+aWXtmGBeHS2ftChU5ndzsray5Aipuw@mail.gmail.com>
- <s5hwqopthff.wl%tiwai@suse.de>	<51E6A4B7.7060605@canonical.com>
- <s5hsizdtgg8.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC48901184E3B6@SHSMSX104.ccr.corp.intel.com>
- <20130718064415.GH4550@phenom.ffwll.local>
- <46B810F6945F7C4788E11DCE57EC48901184E58D@SHSMSX104.ccr.corp.intel.com>
- <s5h61w8tdnb.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC489011851134@SHSMSX104.ccr.corp.intel.com>
- <s5h38r4p6fc.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC4890118511BE@SHSMSX104.ccr.corp.intel.com>
- <51EFC143.2090603@canonical.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 2/5] ASoC: dapm: Pass snd_soc_card directly to
+	soc_dpcm_runtime_update()
+Date: Wed, 24 Jul 2013 15:27:36 +0200
+Message-ID: <1374672459-5202-2-git-send-email-lars@metafoo.de>
+References: <1374672459-5202-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B9720265336
- for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 15:14:36 +0200 (CEST)
-In-Reply-To: <51EFC143.2090603@canonical.com>
+Received: from smtp-out-127.synserver.de (smtp-out-127.synserver.de
+ [212.40.185.127])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94A4026535D
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 15:26:55 +0200 (CEST)
+In-Reply-To: <1374672459-5202-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,53 +22,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, Takashi Iwai <tiwai@suse.de>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Wang,
- Xingchao" <xingchao.wang@intel.com>, Paulo Zanoni <przanoni@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, "Jin, Gordon" <gordon.jin@intel.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <Andreas.Irestal@axis.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, Hebbar Gururaja <gururaja.hebbar@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/24/2013 1:57 PM, David Henningsson wrote:
-> On 07/24/2013 01:33 PM, Wang, Xingchao wrote:
->> Yes, I agree. I'm debugging this issue on Ubuntu, not sure it happens 
->> on other distribution too.
->> If it's related to Ubuntu, maybe need check Ubuntu power policy. Does 
->> anyone know the Ubuntu power-policy on laptop?
->> i.e. when charger connected, will Ubuntu make decision to disable 
->> power-save feature for audio subsystem?
->
-> I'm not a power management expert, but I got a pointer from my team 
-> mate to pm-utils:
->
-> http://cgit.freedesktop.org/pm-utils/tree/pm/power.d/intel-audio-powersave 
->
->
-> If I understand correctly, The scripts in power.d are executed when 
-> battery / AC-power is changed.
->
+soc_dpcm_runtime_update() operates on a ASoC card as a whole. Currently it takes
+a snd_soc_dapm_widget as its only parameter though. The widget is then used to
+look up the card and is otherwise unused. This patch changes the function to
+take a pointer to the card directly. This makes it possible to to call
+soc_dpcm_runtime_update() for updates which are not related to one specific
+widget.
 
-To me, this sounds like a user space issue.  It requested power on and 
-the kernel delivered.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ include/sound/soc-dpcm.h |  2 +-
+ sound/soc/soc-dapm.c     |  4 ++--
+ sound/soc/soc-pcm.c      | 10 +---------
+ 3 files changed, 4 insertions(+), 12 deletions(-)
 
-Trying to modify the kernel to work around that would be insane.
-
-Thanks,
-Rafael
-
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-z siedziba w Gdansku
-ul. Slowackiego 173
-80-298 Gdansk
-
-Sad Rejonowy Gdansk Polnoc w Gdansku, 
-VII Wydzial Gospodarczy Krajowego Rejestru Sadowego, 
-numer KRS 101882
-
-NIP 957-07-52-316
-Kapital zakladowy 200.000 zl
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
+index 04598f1..047d657 100644
+--- a/include/sound/soc-dpcm.h
++++ b/include/sound/soc-dpcm.h
+@@ -133,6 +133,6 @@ void snd_soc_dpcm_be_set_state(struct snd_soc_pcm_runtime *be, int stream,
+ /* internal use only */
+ int soc_dpcm_be_digital_mute(struct snd_soc_pcm_runtime *fe, int mute);
+ int soc_dpcm_debugfs_add(struct snd_soc_pcm_runtime *rtd);
+-int soc_dpcm_runtime_update(struct snd_soc_dapm_widget *);
++int soc_dpcm_runtime_update(struct snd_soc_card *);
+ 
+ #endif
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 4097a55..db531f9 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1956,7 +1956,7 @@ int snd_soc_dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
+ 	ret = soc_dapm_mux_update_power(widget, kcontrol, mux, e);
+ 	mutex_unlock(&card->dapm_mutex);
+ 	if (ret > 0)
+-		soc_dpcm_runtime_update(widget);
++		soc_dpcm_runtime_update(card);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_mux_update_power);
+@@ -2002,7 +2002,7 @@ int snd_soc_dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
+ 	ret = soc_dapm_mixer_update_power(widget, kcontrol, connect);
+ 	mutex_unlock(&card->dapm_mutex);
+ 	if (ret > 0)
+-		soc_dpcm_runtime_update(widget);
++		soc_dpcm_runtime_update(card);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_mixer_update_power);
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index f4f68cb..fb70fbe 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1833,18 +1833,10 @@ static int dpcm_run_old_update(struct snd_soc_pcm_runtime *fe, int stream)
+ /* Called by DAPM mixer/mux changes to update audio routing between PCMs and
+  * any DAI links.
+  */
+-int soc_dpcm_runtime_update(struct snd_soc_dapm_widget *widget)
++int soc_dpcm_runtime_update(struct snd_soc_card *card)
+ {
+-	struct snd_soc_card *card;
+ 	int i, old, new, paths;
+ 
+-	if (widget->codec)
+-		card = widget->codec->card;
+-	else if (widget->platform)
+-		card = widget->platform->card;
+-	else
+-		return -EINVAL;
+-
+ 	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
+ 	for (i = 0; i < card->num_rtd; i++) {
+ 		struct snd_soc_dapm_widget_list *list;
+-- 
+1.8.0
