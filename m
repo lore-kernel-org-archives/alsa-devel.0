@@ -1,134 +1,56 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 2/3] ALSA: hda - WAKEEN feature enabling
-	for runtime pm
-Date: Wed, 24 Jul 2013 13:36:32 +0200
-Message-ID: <51EFBC40.5040403@canonical.com>
-References: <1374477558-14074-1-git-send-email-xingchao.wang@linux.intel.com>
- <1374477558-14074-2-git-send-email-xingchao.wang@linux.intel.com>
- <51EE327E.1070407@canonical.com>
- <46B810F6945F7C4788E11DCE57EC489011850663@SHSMSX104.ccr.corp.intel.com>
- <s5h4nbkp71n.wl%tiwai@suse.de>
+Subject: Re: [alsa-devel] [PATCH 0/4 V7] Power-well API
+ implementation for Haswell
+Date: Wed, 24 Jul 2013 13:57:55 +0200
+Message-ID: <51EFC143.2090603@canonical.com>
+References: <46B810F6945F7C4788E11DCE57EC48901184D8BF@SHSMSX104.ccr.corp.intel.com>
+	<s5h38rdmyh0.wl%tiwai@suse.de>
+	<46B810F6945F7C4788E11DCE57EC48901184DB13@SHSMSX104.ccr.corp.intel.com>
+	<s5hwqoplhv4.wl%tiwai@suse.de>
+	<46B810F6945F7C4788E11DCE57EC48901184DB3D@SHSMSX104.ccr.corp.intel.com>
+	<CA+gsUGTCimKS35XaX7V+aWXtmGBeHS2ftChU5ndzsray5Aipuw@mail.gmail.com>
+	<s5hwqopthff.wl%tiwai@suse.de>	<51E6A4B7.7060605@canonical.com>
+	<s5hsizdtgg8.wl%tiwai@suse.de>
+	<46B810F6945F7C4788E11DCE57EC48901184E3B6@SHSMSX104.ccr.corp.intel.com>
+	<20130718064415.GH4550@phenom.ffwll.local>
+	<46B810F6945F7C4788E11DCE57EC48901184E58D@SHSMSX104.ccr.corp.intel.com>
+	<s5h61w8tdnb.wl%tiwai@suse.de>
+	<46B810F6945F7C4788E11DCE57EC489011851134@SHSMSX104.ccr.corp.intel.com>
+	<s5h38r4p6fc.wl%tiwai@suse.de>
+	<46B810F6945F7C4788E11DCE57EC4890118511BE@SHSMSX104.ccr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 762942652C6
- for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 13:36:35 +0200 (CEST)
-In-Reply-To: <s5h4nbkp71n.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Wang,
- Xingchao" <xingchao.wang@intel.com>
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <46B810F6945F7C4788E11DCE57EC4890118511BE@SHSMSX104.ccr.corp.intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+To: "Wang, Xingchao" <xingchao.wang@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+	Liam R" <liam.r.girdwood@intel.com>, Takashi Iwai <tiwai@suse.de>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/24/2013 12:48 PM, Takashi Iwai wrote:
-> At Tue, 23 Jul 2013 08:09:02 +0000,
-> Wang, Xingchao wrote:
->>
->>>>
->>>> Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
->>>> ---
->>>>    sound/pci/hda/hda_intel.c | 25 +++++++++++++++++++++++++
->>>>    1 file changed, 25 insertions(+)
->>>>
->>>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->>>> index 8860dd5..a7ac7fd 100644
->>>> --- a/sound/pci/hda/hda_intel.c
->>>> +++ b/sound/pci/hda/hda_intel.c
->>>> @@ -2970,6 +2970,11 @@ static int azx_runtime_suspend(struct device
->>> *dev)
->>>>    {
->>>>    	struct snd_card *card = dev_get_drvdata(dev);
->>>>    	struct azx *chip = card->private_data;
->>>> +	int status;
->>>> +
->>>> +	/* enable controller wake up event */
->>>> +	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
->>>> +		  STATESTS_INT_MASK);
->>>>
->>>>    	azx_stop_chip(chip);
->>>>    	azx_enter_link_reset(chip);
->>>> @@ -2983,11 +2988,31 @@ static int azx_runtime_resume(struct device
->>> *dev)
->>>>    {
->>>>    	struct snd_card *card = dev_get_drvdata(dev);
->>>>    	struct azx *chip = card->private_data;
->>>> +	struct hda_bus *bus;
->>>> +	struct hda_codec *codec;
->>>> +	int status;
->>>>
->>>>    	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
->>>>    		hda_display_power(true);
->>>> +
->>>> +	/* Read STATESTS before controller reset */
->>>> +	status = azx_readw(chip, STATESTS);
->>>> +
->>>>    	azx_init_pci(chip);
->>>>    	azx_init_chip(chip, 1);
->>>> +
->>>> +	bus = chip->bus;
->>>> +	if (status && bus) {
->>>> +		list_for_each_entry(codec, &bus->codec_list, list)
->>>> +			if (status & (1 << codec->addr))
->>>> +				queue_delayed_work(codec->bus->workq,
->>>> +						   &codec->jackpoll_work,
->>> codec->jackpoll_interval);
->>>
->>> Is there a reason you want to move the jack detection to a delayed work, i e,
->>> why can't we just call:
->>>
->>>    	snd_hda_jack_set_dirty_all(codec);
->>>    	snd_hda_jack_poll_all(codec);
->>>
->>> ...from here?
->>
->> In fact it doesnot work for me, It will again call runtime_resume() and caused dead loop.
->
-> It means that the power refcount is messed up by this way.
->
-> When a verb is executed, the codec goes to a full resume mode, which
-> turns up the controller, eventually calling azx_power_notify().
-> In azx_power_notify(), pm_runtime_{get|put}_sync() is called
-> accordingly, which again goes to runtime resume.  A quick fix would be
-> to add a flag or something to avoid reentrace.
->
-> But, calling the jackpoll in the resume is basically superfluous.
-> As already mentioned, issuing a verb itself triggers the full resume,
-> and this already includes the update of the whole jack status.
-> Thus, executing jackpoll at that place means to perform the jack
-> polling twice.
->
-> In other words, what's we need to achieve is just to call
-> snd_hda_resume() appropriately in the runtime resume case.
-> Of course, this will need more fixes for avoiding reentrance, etc.
->
-> But, it leads to another question: do we need a full resume just for
-> jack detection and user-space notification?  Just reading the pin
-> detect state should be able to run even in D3 (for chips that are
-> capable of it), and the notification itself doesn't need any audio
-> hardware action.
+On 07/24/2013 01:33 PM, Wang, Xingchao wrote:
+> Yes, I agree. I'm debugging this issue on Ubuntu, not sure it happens on other distribution too.
+> If it's related to Ubuntu, maybe need check Ubuntu power policy. Does anyone know the Ubuntu power-policy on laptop?
+> i.e. when charger connected, will Ubuntu make decision to disable power-save feature for audio subsystem?
 
-The STATESTS register only indicates which codec requested wakeup, not 
-which pin. So you need to issue the get_pin_sense verb for all pins on 
-the codec, which means that the codec - controller link must be powered up.
+I'm not a power management expert, but I got a pointer from my team mate 
+to pm-utils:
 
-So that's half of the resume procedure already. Are you proposing we 
-introduce some kind of "half-resumed" mode that we would be in when we 
-wait for the response from get_pin_sense? It sounds like additional 
-complexity for very little gain in power.
+http://cgit.freedesktop.org/pm-utils/tree/pm/power.d/intel-audio-powersave
 
-Or am I missing something here?
+If I understand correctly, The scripts in power.d are executed when 
+battery / AC-power is changed.
+
+Takashi, does SUSE also use pm-utils?
 
 
 -- 
