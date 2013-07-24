@@ -1,24 +1,17 @@
-From: "Wang, Xingchao" <xingchao.wang@intel.com>
-Subject: Re: [PATCH 2/3] ALSA: hda - WAKEEN feature enabling
-	for runtime pm
-Date: Wed, 24 Jul 2013 14:06:43 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC489011851492@SHSMSX104.ccr.corp.intel.com>
-References: <1374477558-14074-1-git-send-email-xingchao.wang@linux.intel.com>
- <1374477558-14074-2-git-send-email-xingchao.wang@linux.intel.com>
- <51EE327E.1070407@canonical.com>
- <46B810F6945F7C4788E11DCE57EC489011850663@SHSMSX104.ccr.corp.intel.com>
- <s5h4nbkp71n.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC4890118513D2@SHSMSX104.ccr.corp.intel.com>
- <s5hbo5snjzj.wl%tiwai@suse.de> <s5h61w0njil.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 21/27] sound/soc/au1x: don't check resource
+ with devm_ioremap_resource
+Date: Wed, 24 Jul 2013 15:31:50 +0100
+Message-ID: <20130724143150.GD9858@sirena.org.uk>
+References: <1374602524-3398-1-git-send-email-wsa@the-dreams.de>
+ <1374602524-3398-22-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4419419030330340732=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 917E6265369
- for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 16:06:50 +0200 (CEST)
-In-Reply-To: <s5h61w0njil.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 694872652E9
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 16:32:03 +0200 (CEST)
+In-Reply-To: <1374602524-3398-22-git-send-email-wsa@the-dreams.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,143 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, David Henningsson <david.henningsson@canonical.com>
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============4419419030330340732==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7/Z1yz1L7BOCEubH"
+Content-Disposition: inline
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Wednesday, July 24, 2013 10:02 PM
-> To: Wang, Xingchao
-> Cc: David Henningsson; Wang Xingchao; alsa-devel@alsa-project.org;
-> Girdwood, Liam R
-> Subject: Re: [PATCH 2/3] ALSA: hda - WAKEEN feature enabling for runtime pm
-> 
-> At Wed, 24 Jul 2013 15:52:16 +0200,
-> Takashi Iwai wrote:
-> >
-> > At Wed, 24 Jul 2013 13:40:15 +0000,
-> > Wang, Xingchao wrote:
-> > >
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > Sent: Wednesday, July 24, 2013 6:49 PM
-> > > > To: Wang, Xingchao
-> > > > Cc: David Henningsson; Wang Xingchao; alsa-devel@alsa-project.org;
-> > > > Girdwood, Liam R
-> > > > Subject: Re: [PATCH 2/3] ALSA: hda - WAKEEN feature enabling for
-> > > > runtime pm
-> > > >
-> > > > At Tue, 23 Jul 2013 08:09:02 +0000, Wang, Xingchao wrote:
-> > > > >
-> > > > > > >
-> > > > > > > Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
-> > > > > > > ---
-> > > > > > >   sound/pci/hda/hda_intel.c | 25 +++++++++++++++++++++++++
-> > > > > > >   1 file changed, 25 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/sound/pci/hda/hda_intel.c
-> > > > > > > b/sound/pci/hda/hda_intel.c index 8860dd5..a7ac7fd 100644
-> > > > > > > --- a/sound/pci/hda/hda_intel.c
-> > > > > > > +++ b/sound/pci/hda/hda_intel.c
-> > > > > > > @@ -2970,6 +2970,11 @@ static int azx_runtime_suspend(struct
-> > > > > > > device
-> > > > > > *dev)
-> > > > > > >   {
-> > > > > > >   	struct snd_card *card = dev_get_drvdata(dev);
-> > > > > > >   	struct azx *chip = card->private_data;
-> > > > > > > +	int status;
-> > > > > > > +
-> > > > > > > +	/* enable controller wake up event */
-> > > > > > > +	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
-> > > > > > > +		  STATESTS_INT_MASK);
-> > > > > > >
-> > > > > > >   	azx_stop_chip(chip);
-> > > > > > >   	azx_enter_link_reset(chip); @@ -2983,11 +2988,31 @@
-> > > > > > > static int azx_runtime_resume(struct device
-> > > > > > *dev)
-> > > > > > >   {
-> > > > > > >   	struct snd_card *card = dev_get_drvdata(dev);
-> > > > > > >   	struct azx *chip = card->private_data;
-> > > > > > > +	struct hda_bus *bus;
-> > > > > > > +	struct hda_codec *codec;
-> > > > > > > +	int status;
-> > > > > > >
-> > > > > > >   	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
-> > > > > > >   		hda_display_power(true);
-> > > > > > > +
-> > > > > > > +	/* Read STATESTS before controller reset */
-> > > > > > > +	status = azx_readw(chip, STATESTS);
-> > > > > > > +
-> > > > > > >   	azx_init_pci(chip);
-> > > > > > >   	azx_init_chip(chip, 1);
-> > > > > > > +
-> > > > > > > +	bus = chip->bus;
-> > > > > > > +	if (status && bus) {
-> > > > > > > +		list_for_each_entry(codec, &bus->codec_list, list)
-> > > > > > > +			if (status & (1 << codec->addr))
-> > > > > > > +				queue_delayed_work(codec->bus->workq,
-> > > > > > > +						   &codec->jackpoll_work,
-> > > > > > codec->jackpoll_interval);
-> > > > > >
-> > > > > > Is there a reason you want to move the jack detection to a
-> > > > > > delayed work, i e, why can't we just call:
-> > > > > >
-> > > > > >   	snd_hda_jack_set_dirty_all(codec);
-> > > > > >   	snd_hda_jack_poll_all(codec);
-> > > > > >
-> > > > > > ...from here?
-> > > > >
-> > > > > In fact it doesnot work for me, It will again call
-> > > > > runtime_resume() and caused
-> > > > dead loop.
-> > > >
-> > > > It means that the power refcount is messed up by this way.
-> > > >
-> > > > When a verb is executed, the codec goes to a full resume mode,
-> > > > which turns up the controller, eventually calling azx_power_notify().
-> > > > In azx_power_notify(), pm_runtime_{get|put}_sync() is called
-> > > > accordingly, which again goes to runtime resume.  A quick fix
-> > > > would be to add a flag or something to avoid reentrace.
-> > > >
-> > > > But, calling the jackpoll in the resume is basically superfluous.
-> > > > As already mentioned, issuing a verb itself triggers the full
-> > > > resume, and this already includes the update of the whole jack status.
-> > > > Thus, executing jackpoll at that place means to perform the jack polling
-> twice.
-> > > >
-> > > > In other words, what's we need to achieve is just to call
-> > > > snd_hda_resume() appropriately in the runtime resume case.
-> > > > Of course, this will need more fixes for avoiding reentrance, etc.
-> > >
-> > > Thanks for clarification on the internal logic, Takashi.
-> > > I will modify the patch and do some test tormorrow when I'm at office.
-> >
-> > Well, it might be that reusing the jackpoll would be simpler in the
-> > end.  But, even if it's so, give a better description in the first
-> > patch.  It doesn't clarify _why_ it's needed.  And need to clarify
-> > that it doesn't give any ill-effect, too.
-> >
-> > (And actually there will be an impact by that change; patch_via.c
-> > changes the jackpoll_interval dynamically, and the work will be still
-> > pending with jackpoll_interval=0.  This code should be modified
-> > before your patch, i.e. clearing the jackpoll_interval before
-> >  cancel_work_sync().)
-> 
-> BTW, one thing I'm not sure after reading the patch is how the runtime power
-> refcount is managed after this wakeup is handled.  That is, the device goes
-> down to the runtime suspend properly again after the pin detection and
-> notification is done?
-> 
-Yes, once Jack event reported to userspace, audio driver enter runtime_suspend quickly.
-But I did not track the power refcount changing in the test.
 
-thanks
---xingchao
-> 
-> Takashi
+--7/Z1yz1L7BOCEubH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jul 23, 2013 at 08:01:54PM +0200, Wolfram Sang wrote:
+> devm_ioremap_resource does sanity checks on the given resource. No need to
+> duplicate this in the driver.
+
+Appiled, thanks.
+
+--7/Z1yz1L7BOCEubH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR7+VTAAoJELSic+t+oim98ZgP/iZ1yY4fAHzjOiPOeUuZ7n1Y
+QeoIbAZpZfwBPRyMyKafrUNy8LLXxYNHOrbEGGiFLpelFBTX5Jttl1mTQEB17S/7
+j8x35gAGWz7B/FgsiY9faaDIdjfS7ofvMLtFd+XAK9coz5Zb0ohI+FwzeN8T6Vo4
+bkjgAI5U5eVYhPMo09PvDHcT/dAXOA65UoBrRz2J3XOhVEflMVXReNkj35FsgpQA
+5y6xf8f8D76vJhIJa0tBEstCMOGJR3RErPg5rR7y2KsTdrA4h0Cn2hnMjHUAKrrr
+3mM/E8Sim3B9X4IMj/ynYY/yp+uWPPIgAQcylDmeKJpBKQHpEhRNvxeCtues/cBg
+E5Z4+RKUVKVQRazrmp6BxkA1ZzqFlpG0EXkpyz2XNikX+7sQcURHx9Rx/J6/gWPj
+UQsewfva30+ua/sHZixNdwYTmnZUeNdKleMWM93qjUtZe8uBUpHHJeTEr7VEMSqH
+UDZV3zuDjips3y4n+vJVm0AdQd9CC+UNkQTC0L13GJZUJXl9sC6cYylz+f6/5dPA
+ujEJ6S60nfYfk7pIqcICcrzwxm4HZpIMmWMzToiEQ31pZTN8dhbEEg5UG+m97rrH
+A0pfqpX+d/cAuQpQck7aZ8b1imfN9R9UdKdh47sMO2okwKD5/MxhrdF7t27MhGbn
+7EJ2X0+j3BIAiFbhLe4Q
+=cAsn
+-----END PGP SIGNATURE-----
+
+--7/Z1yz1L7BOCEubH--
+
+--===============4419419030330340732==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4419419030330340732==--
