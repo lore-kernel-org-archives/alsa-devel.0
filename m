@@ -1,18 +1,33 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 4/5] ASoC: dapm: Add a update parameter to
-	snd_soc_dapm_{mux, mixer}_update_power
-Date: Wed, 24 Jul 2013 15:27:38 +0200
-Message-ID: <1374672459-5202-4-git-send-email-lars@metafoo.de>
-References: <1374672459-5202-1-git-send-email-lars@metafoo.de>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [Intel-gfx] [PATCH 0/4 V7] Power-well API
+ implementation for Haswell
+Date: Wed, 24 Jul 2013 13:30:16 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC4890118513A5@SHSMSX104.ccr.corp.intel.com>
+References: <46B810F6945F7C4788E11DCE57EC48901184D8BF@SHSMSX104.ccr.corp.intel.com>
+ <s5h38rdmyh0.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC48901184DB13@SHSMSX104.ccr.corp.intel.com>
+ <s5hwqoplhv4.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC48901184DB3D@SHSMSX104.ccr.corp.intel.com>
+ <CA+gsUGTCimKS35XaX7V+aWXtmGBeHS2ftChU5ndzsray5Aipuw@mail.gmail.com>
+ <s5hwqopthff.wl%tiwai@suse.de>	<51E6A4B7.7060605@canonical.com>
+ <s5hsizdtgg8.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC48901184E3B6@SHSMSX104.ccr.corp.intel.com>
+ <20130718064415.GH4550@phenom.ffwll.local>
+ <46B810F6945F7C4788E11DCE57EC48901184E58D@SHSMSX104.ccr.corp.intel.com>
+ <s5h61w8tdnb.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC489011851134@SHSMSX104.ccr.corp.intel.com>
+ <s5h38r4p6fc.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC4890118511BE@SHSMSX104.ccr.corp.intel.com>
+ <51EFC143.2090603@canonical.com> <51EFD337.1060301@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-127.synserver.de (smtp-out-127.synserver.de
- [212.40.185.127])
- by alsa0.perex.cz (Postfix) with ESMTP id 85975265370
- for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 15:26:57 +0200 (CEST)
-In-Reply-To: <1374672459-5202-1-git-send-email-lars@metafoo.de>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89E8E26535D
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 15:30:30 +0200 (CEST)
+In-Reply-To: <51EFD337.1060301@intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,88 +37,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <Andreas.Irestal@axis.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, Hebbar Gururaja <gururaja.hebbar@ti.com>
+To: "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, David Henningsson <david.henningsson@canonical.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, Takashi Iwai <tiwai@suse.de>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, Paulo Zanoni <przanoni@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, "Jin, Gordon" <gordon.jin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-In order to avoid race conditions the assignment of dapm->update should happen
-while card->dapm_mutex is being held. To allow CODEC drivers to run a register
-update when using snd_soc_dapm_mux_update_power() or
-snd_soc_dapm_mixer_update_power() add a update parameter to these two functions.
-The update parameter will be assigned to dapm->update while card->dapm_mutex is
-locked.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- include/sound/soc-dapm.h |  7 +++++--
- sound/soc/soc-dapm.c     | 10 ++++++++--
- 2 files changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 3717ad0..e77c6f5 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -333,6 +333,7 @@ struct snd_soc_dapm_route;
- struct snd_soc_dapm_context;
- struct regulator;
- struct snd_soc_dapm_widget_list;
-+struct snd_soc_dapm_update;
- 
- int dapm_reg_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event);
-@@ -392,9 +393,11 @@ void snd_soc_dapm_shutdown(struct snd_soc_card *card);
- 
- /* external DAPM widget events */
- int snd_soc_dapm_mixer_update_power(struct snd_soc_dapm_context *dapm,
--		struct snd_kcontrol *kcontrol, int connect);
-+		struct snd_kcontrol *kcontrol, int connect,
-+		struct snd_soc_dapm_update *update);
- int snd_soc_dapm_mux_update_power(struct snd_soc_dapm_context *dapm,
--		struct snd_kcontrol *kcontrol, int mux, struct soc_enum *e);
-+		struct snd_kcontrol *kcontrol, int mux, struct soc_enum *e,
-+		struct snd_soc_dapm_update *update);
- 
- /* dapm sys fs - used by the core */
- int snd_soc_dapm_sys_add(struct device *dev);
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index d511217..366daef 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1952,13 +1952,16 @@ static int soc_dapm_mux_update_power(struct snd_soc_dapm_context *dapm,
- }
- 
- int snd_soc_dapm_mux_update_power(struct snd_soc_dapm_context *dapm,
--	struct snd_kcontrol *kcontrol, int mux, struct soc_enum *e)
-+	struct snd_kcontrol *kcontrol, int mux, struct soc_enum *e,
-+	struct snd_soc_dapm_update *update)
- {
- 	struct snd_soc_card *card = dapm->card;
- 	int ret;
- 
- 	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-+	dapm->update = update;
- 	ret = soc_dapm_mux_update_power(dapm, kcontrol, mux, e);
-+	dapm->update = NULL;
- 	mutex_unlock(&card->dapm_mutex);
- 	if (ret > 0)
- 		soc_dpcm_runtime_update(card);
-@@ -1992,13 +1995,16 @@ static int soc_dapm_mixer_update_power(struct snd_soc_dapm_context *dapm,
- }
- 
- int snd_soc_dapm_mixer_update_power(struct snd_soc_dapm_context *dapm,
--	struct snd_kcontrol *kcontrol, int connect)
-+	struct snd_kcontrol *kcontrol, int connect,
-+	struct snd_soc_dapm_update *update)
- {
- 	struct snd_soc_card *card = dapm->card;
- 	int ret;
- 
- 	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-+	dapm->update = update;
- 	ret = soc_dapm_mixer_update_power(dapm, kcontrol, connect);
-+	dapm->update = NULL;
- 	mutex_unlock(&card->dapm_mutex);
- 	if (ret > 0)
- 		soc_dpcm_runtime_update(card);
--- 
-1.8.0
+> -----Original Message-----
+> From: Wysocki, Rafael J
+> Sent: Wednesday, July 24, 2013 9:15 PM
+> To: David Henningsson
+> Cc: Wang, Xingchao; Takashi Iwai; Paulo Zanoni; Daniel Vetter;
+> daniel.vetter@ffwll.ch; alsa-devel@alsa-project.org;
+> intel-gfx@lists.freedesktop.org; Girdwood, Liam R; Jin, Gordon
+> Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7] Power-well API
+> implementation for Haswell
+> 
+> On 7/24/2013 1:57 PM, David Henningsson wrote:
+> > On 07/24/2013 01:33 PM, Wang, Xingchao wrote:
+> >> Yes, I agree. I'm debugging this issue on Ubuntu, not sure it happens
+> >> on other distribution too.
+> >> If it's related to Ubuntu, maybe need check Ubuntu power policy. Does
+> >> anyone know the Ubuntu power-policy on laptop?
+> >> i.e. when charger connected, will Ubuntu make decision to disable
+> >> power-save feature for audio subsystem?
+> >
+> > I'm not a power management expert, but I got a pointer from my team
+> > mate to pm-utils:
+> >
+> > http://cgit.freedesktop.org/pm-utils/tree/pm/power.d/intel-audio-power
+> > save
+> >
+> >
+> > If I understand correctly, The scripts in power.d are executed when
+> > battery / AC-power is changed.
+> >
+> 
+> To me, this sounds like a user space issue.  It requested power on and the
+> kernel delivered.
+
+Do you know which user-space application will touch below two flags?
+- /sys/devices/pci0000\:00/0000\:00\:03.0/power/control
+- /sys/module/snd_hda_intel/parameters/power_save
+
+Thanks
+--xingchao
+> 
+> Trying to modify the kernel to work around that would be insane.
+> 
+> Thanks,
+> Rafael
