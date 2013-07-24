@@ -1,43 +1,45 @@
-From: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
-Subject: Re: [PATCH 1/4] ASOC: tegra: move AC97 clock defines to the
- controller node
-Date: Tue, 23 Jul 2013 22:37:47 +0200
-Message-ID: <1374611867.1712.8.camel@tellur>
-References: <1374442132-24040-1-git-send-email-dev@lynxeye.de>
-	 <1374442132-24040-2-git-send-email-dev@lynxeye.de>
-	 <51EEB3A6.1060507@wwwdotorg.org>
+From: Felipe Tonello <eu@felipetonello.com>
+Subject: Re: [PATCH] ALSA: SoC: Added jack detection kcontrol support
+Date: Tue, 23 Jul 2013 17:10:29 -0700
+Message-ID: <CAGrhNMyWXGcDUHxexgvQ2rusKTSbSjEbcEToKZZUudtP-pYxsA@mail.gmail.com>
+References: <1374281962-3786-1-git-send-email-eu@felipetonello.com>
+	<20130722000157.GI9858@sirena.org.uk>
+	<CAGrhNMyAofsnwKYMk+60GyvpaW9pMtoJf_2Q_Tc82G8QCFOiFA@mail.gmail.com>
+	<20130723124023.GX9858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <51EEB3A6.1060507-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20130723124023.GX9858@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, LiamGirdwoodlgirdwood@gmail.com, JaroslavKyselaperex@perex.cz, TakashiIwaitiwai@suse.de, linux-kernel@vger.kernel.org, "Felipe F. Tonello" <ftonello@cercacor.com>
 List-Id: alsa-devel@alsa-project.org
 
-Am Dienstag, den 23.07.2013, 09:47 -0700 schrieb Stephen Warren:
-> On 07/21/2013 02:28 PM, Lucas Stach wrote:
-> > Different from other Tegra sound controllers drivers, the AC97
-> > controller driver uses the tegra asoc utils directly to request the
-> > needed clocks, as they are needed at AC97 init time. Move the DT clock
-> > defines to the right place.
-> 
-> I'm not convinced this is the correct approach.
-> 
-> The machine driver needs to manage these clocks, so that it can
-> co-ordinate between different audio paths. For example, consider a
-> system that supports two different I2S paths. In HW, if both are active
-> at once, these need to both run at a derivative of 48KHz or both run at
-> a derivative of 44.1KHz. The machine driver is the central place that
-> enforces that, and should eventually automatically place constraints on
-> one stream when another is configured for a specific sample rate. By the
-> same argument, AC'97 can't be a special case here, in case there's some
-> system with both AC'97 and I2S hooked up.
+Hi Mark,
 
-I find it highly unlikely to find any Tegra 20 board with such a
-configuration. But as your argument is technically correct, I'll try to
-fix things up the right way and see how big the impact is.
+On Tue, Jul 23, 2013 at 5:40 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Jul 22, 2013 at 02:11:44PM -0700, Felipe Tonello wrote:
+>
+>> My question is: Why ALSA Jack support uses evdev input events to
+>> notify user-space? Is there any user-space relying on that? If no, I
+>> would like to change ALSA Jack implementation to only use KControl and
+>> remove specific implementations.
+>
+> This was the existing kernel API at the time that the code was added -
+> I beleive people had been doing that for simple switches that detect the
+> physical presence of a jack since it looks exactly like a button from a
+> hardware point of view.  See the original commit adding the code.
+
+I saw it. I don't know what you think is the best way to go. I'm not
+sure if someone is using this input event API, since even PulseAudio
+even declined that implementation due KControl implementation.
+
+I'm thinking in re-implement core/jack.c using only kcontrol for
+reporting status and leaving input events only for keys (which is
+already implemented). This will break compatibility if any user-space
+checks for jack status using input events, but again, is anyone using
+this?
 
 Regards,
-Lucas
+
+Felipe Tonello
