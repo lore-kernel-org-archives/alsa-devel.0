@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/5] ASoC: dapm: Fix return value of
-	snd_soc_dapm_put_{volsw, enum_virt}()
-Date: Wed, 24 Jul 2013 15:27:35 +0200
-Message-ID: <1374672459-5202-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 5/5] ASoC: tlv320aic3x: Use
+	snd_soc_dapm_mixer_update_power
+Date: Wed, 24 Jul 2013 15:27:39 +0200
+Message-ID: <1374672459-5202-5-git-send-email-lars@metafoo.de>
+References: <1374672459-5202-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-127.synserver.de (smtp-out-127.synserver.de
  [212.40.185.127])
- by alsa0.perex.cz (Postfix) with ESMTP id 92704265354
- for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 15:26:55 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 64486265373
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 15:26:59 +0200 (CEST)
+In-Reply-To: <1374672459-5202-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,46 +26,87 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <Andreas.Irestal@axis.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, Hebbar Gururaja <gururaja.hebbar@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The ALSA core expect the put callback of a control to return 1 if the value of
-the control changed and 0 if it did not. Both snd_soc_dapm_put_volsw() and
-snd_soc_dapm_put_enum_virt() currently always returns 0. For both functions we
-already have a 'change' variable which either contains 1 or 0 depending on
-whether the value has changed or not, so just return that.
+Use snd_soc_dapm_mixer_update_power() instead of reimplementing its
+functionality.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/soc-dapm.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/tlv320aic3x.c | 49 ++++++++++++++----------------------------
+ 1 file changed, 16 insertions(+), 33 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index deb1b3d..4097a55 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2703,7 +2703,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index cad4fb1..d3417c8 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -147,10 +147,9 @@ static int snd_soc_dapm_put_volsw_aic3x(struct snd_kcontrol *kcontrol,
+ 	int max = mc->max;
+ 	unsigned int mask = (1 << fls(max)) - 1;
+ 	unsigned int invert = mc->invert;
+-	unsigned short val, val_mask;
+-	int ret;
+-	struct snd_soc_dapm_path *path;
+-	int found = 0;
++	unsigned short val;
++	struct snd_soc_dapm_update update;
++	int connect, change;
+ 
+ 	val = (ucontrol->value.integer.value[0] & mask);
+ 
+@@ -158,42 +157,26 @@ static int snd_soc_dapm_put_volsw_aic3x(struct snd_kcontrol *kcontrol,
+ 	if (val)
+ 		val = mask;
+ 
++	connect = !!val;
++
+ 	if (invert)
+ 		val = mask - val;
+-	val_mask = mask << shift;
+-	val = val << shift;
+-
+-	mutex_lock(&widget->codec->mutex);
+ 
+-	if (snd_soc_test_bits(widget->codec, reg, val_mask, val)) {
+-		/* find dapm widget path assoc with kcontrol */
+-		list_for_each_entry(path, &widget->dapm->card->paths, list) {
+-			if (path->kcontrol != kcontrol)
+-				continue;
++	mask <<= shift;
++	val <<= shift;
+ 
+-			/* found, now check type */
+-			found = 1;
+-			if (val)
+-				/* new connection */
+-				path->connect = invert ? 0 : 1;
+-			else
+-				/* old connection must be powered down */
+-				path->connect = invert ? 1 : 0;
++	change = snd_soc_test_bits(widget->codec, val, mask, reg);
++	if (change) {
++		update.kcontrol = kcontrol;
++		update.reg = reg;
++		update.mask = mask;
++		update.val = val;
+ 
+-			dapm_mark_dirty(path->source, "tlv320aic3x source");
+-			dapm_mark_dirty(path->sink, "tlv320aic3x sink");
+-
+-			break;
+-		}
++		snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol, connect,
++			&update);
  	}
  
- 	mutex_unlock(&card->dapm_mutex);
--	return 0;
-+	return change;
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_put_volsw);
- 
-@@ -2831,7 +2831,6 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
- 	struct soc_enum *e =
- 		(struct soc_enum *)kcontrol->private_value;
- 	int change;
--	int ret = 0;
- 	int wi;
- 
- 	if (ucontrol->value.enumerated.item[0] >= e->max)
-@@ -2851,7 +2850,7 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
- 	}
- 
- 	mutex_unlock(&card->dapm_mutex);
+-	mutex_unlock(&widget->codec->mutex);
+-
+-	if (found)
+-		snd_soc_dapm_sync(widget->dapm);
+-
+-	ret = snd_soc_update_bits_locked(widget->codec, reg, val_mask, val);
 -	return ret;
 +	return change;
  }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_virt);
  
+ /*
 -- 
 1.8.0
