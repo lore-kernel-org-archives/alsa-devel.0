@@ -1,112 +1,57 @@
-From: Richard Zhao <rizhao@nvidia.com>
-Subject: [PATCH 4/9] spi: tegra20-slink: move to generic dma DT binding
-Date: Wed, 24 Jul 2013 12:09:57 +0800
-Message-ID: <1374639002-16753-5-git-send-email-rizhao@nvidia.com>
-References: <1374639002-16753-1-git-send-email-rizhao@nvidia.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: SoC: Added jack detection kcontrol
+ support
+Date: Wed, 24 Jul 2013 08:16:57 +0200
+Message-ID: <51EF7159.8030409@canonical.com>
+References: <1374281962-3786-1-git-send-email-eu@felipetonello.com>
+ <20130722000157.GI9858@sirena.org.uk>
+ <CAGrhNMyAofsnwKYMk+60GyvpaW9pMtoJf_2Q_Tc82G8QCFOiFA@mail.gmail.com>
+ <20130723124023.GX9858@sirena.org.uk>
+ <CAGrhNMyWXGcDUHxexgvQ2rusKTSbSjEbcEToKZZUudtP-pYxsA@mail.gmail.com>
+ <20130724001332.GW9858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1374639002-16753-1-git-send-email-rizhao@nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: devicetree-discuss@lists.ozlabs.org, linux-doc@vger.kernel.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org, linux-serial@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: grant.likely@linaro.org, rob.herring@calxeda.com, rob@landley.net, swarren@wwwdotorg.org, vinod.koul@intel.com, djbw@fb.com, broonie@kernel.org, gregkh@linuxfoundation.org, lgirdwood@gmail.com, rizhao@nvidia.com, linuxzsc@gmail.com, ldewangan@nvidia.com, dev@lynxeye.de
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id C78C2260863
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 08:17:01 +0200 (CEST)
+In-Reply-To: <20130724001332.GW9858@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Felipe Tonello <eu@felipetonello.com>, "Felipe F. Tonello" <ftonello@cercacor.com>, TakashiIwaitiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, JaroslavKyselaperex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-- driver: remove use of nvidia,dma-request-selector
-	  use dma_request_slave_channel to request channel
-- if dmas/dma-names are missing, it still supports cpu based transfer
-- update binding doc and specify dmas/dma-names properties as optional
+On 07/24/2013 02:13 AM, Mark Brown wrote:
+> On Tue, Jul 23, 2013 at 05:10:29PM -0700, Felipe Tonello wrote:
+>> On Tue, Jul 23, 2013 at 5:40 AM, Mark Brown <broonie@kernel.org> wrote:
+>
+>>> This was the existing kernel API at the time that the code was added -
+>>> I beleive people had been doing that for simple switches that detect the
+>>> physical presence of a jack since it looks exactly like a button from a
+>>> hardware point of view.  See the original commit adding the code.
+>
+>> I saw it. I don't know what you think is the best way to go. I'm not
+>> sure if someone is using this input event API, since even PulseAudio
+>> even declined that implementation due KControl implementation.
+>
+> It's used quite a bit in embedded systems, there are actually patches
+> for PulseAudio which were deployed for a while- I guess they might have
+> been removed or something.
 
-Signed-off-by: Richard Zhao <rizhao@nvidia.com>
----
- .../devicetree/bindings/spi/nvidia,tegra20-slink.txt     | 10 +++++++---
- drivers/spi/spi-tegra20-slink.c                          | 16 +++++-----------
- 2 files changed, 12 insertions(+), 14 deletions(-)
+The input event implementation was only in Ubuntu (for a release or 
+two), and was never merged in upstream PA. (I guess one could find them 
+by looking in the Ubuntu archives.)
 
-diff --git a/Documentation/devicetree/bindings/spi/nvidia,tegra20-slink.txt b/Documentation/devicetree/bindings/spi/nvidia,tegra20-slink.txt
-index eefe15e..ae43bd1 100644
---- a/Documentation/devicetree/bindings/spi/nvidia,tegra20-slink.txt
-+++ b/Documentation/devicetree/bindings/spi/nvidia,tegra20-slink.txt
-@@ -4,8 +4,11 @@ Required properties:
- - compatible : should be "nvidia,tegra20-slink", "nvidia,tegra30-slink".
- - reg: Should contain SLINK registers location and length.
- - interrupts: Should contain SLINK interrupts.
--- nvidia,dma-request-selector : The Tegra DMA controller's phandle and
--  request selector for this SLINK controller.
-+
-+Optional properties:
-+- dmas : The Tegra DMA controller's phandle and request selector for
-+  this SLINK controller.
-+- dma-names : Should be "rx-tx".
- 
- Recommended properties:
- - spi-max-frequency: Definition as per
-@@ -17,7 +20,8 @@ spi@7000d600 {
- 	compatible = "nvidia,tegra20-slink";
- 	reg = <0x7000d600 0x200>;
- 	interrupts = <0 82 0x04>;
--	nvidia,dma-request-selector = <&apbdma 16>;
-+	dmas = <&apbdma 16>;
-+	dma-names = "rx-tx";
- 	spi-max-frequency = <25000000>;
- 	#address-cells = <1>;
- 	#size-cells = <0>;
-diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
-index 80490cc..278fb04 100644
---- a/drivers/spi/spi-tegra20-slink.c
-+++ b/drivers/spi/spi-tegra20-slink.c
-@@ -170,7 +170,7 @@ struct tegra_slink_data {
- 	void __iomem				*base;
- 	phys_addr_t				phys;
- 	unsigned				irq;
--	int					dma_req_sel;
-+	bool					use_dma;
- 	u32					spi_max_frequency;
- 	u32					cur_speed;
- 
-@@ -629,11 +629,8 @@ static int tegra_slink_init_dma_param(struct tegra_slink_data *tspi,
- 	dma_addr_t dma_phys;
- 	int ret;
- 	struct dma_slave_config dma_sconfig;
--	dma_cap_mask_t mask;
- 
--	dma_cap_zero(mask);
--	dma_cap_set(DMA_SLAVE, mask);
--	dma_chan = dma_request_channel(mask, NULL, NULL);
-+	dma_chan = dma_request_slave_channel(tspi->dev, "rx-tx");
- 	if (!dma_chan) {
- 		dev_err(tspi->dev,
- 			"Dma channel is not available, will try later\n");
-@@ -648,7 +645,6 @@ static int tegra_slink_init_dma_param(struct tegra_slink_data *tspi,
- 		return -ENOMEM;
- 	}
- 
--	dma_sconfig.slave_id = tspi->dma_req_sel;
- 	if (dma_to_memory) {
- 		dma_sconfig.src_addr = tspi->phys + SLINK_RX_FIFO;
- 		dma_sconfig.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-@@ -1034,11 +1030,9 @@ static irqreturn_t tegra_slink_isr(int irq, void *context_data)
- static void tegra_slink_parse_dt(struct tegra_slink_data *tspi)
- {
- 	struct device_node *np = tspi->dev->of_node;
--	u32 of_dma[2];
- 
--	if (of_property_read_u32_array(np, "nvidia,dma-request-selector",
--				of_dma, 2) >= 0)
--		tspi->dma_req_sel = of_dma[1];
-+	if (of_find_property(np, "dmas", NULL))
-+		tspi->use_dma = true;
- 
- 	if (of_property_read_u32(np, "spi-max-frequency",
- 					&tspi->spi_max_frequency))
-@@ -1132,7 +1126,7 @@ static int tegra_slink_probe(struct platform_device *pdev)
- 	tspi->max_buf_size = SLINK_FIFO_DEPTH << 2;
- 	tspi->dma_buf_size = DEFAULT_SPI_DMA_BUF_LEN;
- 
--	if (tspi->dma_req_sel) {
-+	if (tspi->use_dma) {
- 		ret = tegra_slink_init_dma_param(tspi, true);
- 		if (ret < 0) {
- 			dev_err(&pdev->dev, "RxDma Init failed, err %d\n", ret);
 -- 
-1.8.1.5
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
