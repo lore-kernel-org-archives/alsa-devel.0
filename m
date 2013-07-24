@@ -1,31 +1,22 @@
-From: "Wang, Xingchao" <xingchao.wang@intel.com>
-Subject: Re: [Intel-gfx] [PATCH 0/4 V7] Power-well API
- implementation for Haswell
-Date: Wed, 24 Jul 2013 11:33:43 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC4890118511BE@SHSMSX104.ccr.corp.intel.com>
-References: <46B810F6945F7C4788E11DCE57EC48901184D8BF@SHSMSX104.ccr.corp.intel.com>
- <s5h38rdmyh0.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC48901184DB13@SHSMSX104.ccr.corp.intel.com>
- <s5hwqoplhv4.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC48901184DB3D@SHSMSX104.ccr.corp.intel.com>
- <CA+gsUGTCimKS35XaX7V+aWXtmGBeHS2ftChU5ndzsray5Aipuw@mail.gmail.com>
- <s5hwqopthff.wl%tiwai@suse.de>	<51E6A4B7.7060605@canonical.com>
- <s5hsizdtgg8.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC48901184E3B6@SHSMSX104.ccr.corp.intel.com>
- <20130718064415.GH4550@phenom.ffwll.local>
- <46B810F6945F7C4788E11DCE57EC48901184E58D@SHSMSX104.ccr.corp.intel.com>
- <s5h61w8tdnb.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC489011851134@SHSMSX104.ccr.corp.intel.com>
- <s5h38r4p6fc.wl%tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 2/3] ALSA: hda - WAKEEN feature enabling
+	for runtime pm
+Date: Wed, 24 Jul 2013 13:36:32 +0200
+Message-ID: <51EFBC40.5040403@canonical.com>
+References: <1374477558-14074-1-git-send-email-xingchao.wang@linux.intel.com>
+ <1374477558-14074-2-git-send-email-xingchao.wang@linux.intel.com>
+ <51EE327E.1070407@canonical.com>
+ <46B810F6945F7C4788E11DCE57EC489011850663@SHSMSX104.ccr.corp.intel.com>
+ <s5h4nbkp71n.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id A16BE265251
- for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 13:33:52 +0200 (CEST)
-In-Reply-To: <s5h38r4p6fc.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 762942652C6
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 13:36:35 +0200 (CEST)
+In-Reply-To: <s5h4nbkp71n.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,449 +26,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Daniel Vetter <daniel@ffwll.ch>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, Paulo Zanoni <przanoni@gmail.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Jin, Gordon" <gordon.jin@intel.com>, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Wang,
+ Xingchao" <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-+Rafael.
-
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Wednesday, July 24, 2013 7:02 PM
-> To: Wang, Xingchao
-> Cc: Paulo Zanoni; Daniel Vetter; daniel.vetter@ffwll.ch;
-> alsa-devel@alsa-project.org; intel-gfx@lists.freedesktop.org; Girdwood, Liam
-> R; Jin, Gordon; David Henningsson
-> Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7] Power-well API
-> implementation for Haswell
-> 
-> At Wed, 24 Jul 2013 10:31:22 +0000,
+On 07/24/2013 12:48 PM, Takashi Iwai wrote:
+> At Tue, 23 Jul 2013 08:09:02 +0000,
 > Wang, Xingchao wrote:
-> >
-> > Hi Paulo,
-> >
-> > Would you help verify attached patch to fix this issue for you?
-> >
-> > The patch is based on Takashi's tree, the last commit is:
-> > commit 9b298cfe296c0f8e088b9ed9a670783a06005e6b
-> > I think it should be safe to merge into your tree. :)
-> >
-> > I tested the patch on Harris Beach, it would let audio driver release
-> power-well even with charger connected.
-> >
-> > Please note maybe this is not the final solution for this issue as it breaks some
-> rule from user's point of view.
-> 
-> Well, this patch is NACK from my side.
-> Sorry, but this is a wrong approach.
-> 
-> 
-> > Some background of this issue:
-> > This patch intended to fix power-well regression on Haswell.
-> >
-> > On Harris Beach(Ultrabook with battery), there's only eDP panel connected
-> by default, no HDMI/DP.
-> > And gfx driver needs enable some HW feature for eDP, power-well *must*
-> > be disabled in this scenario.
-> > - Witout charger connected, power-well feature is perfect
-> > - with charger connected, audio never release power-well.
-> >
-> > Basically, power-well should be release if audio driver doesnot use
-> > it, that's why we enabled runtime power-save feature.
-> >
-> > In second case above, with charger connected, the parameter under
-> > "/sys/devices/../power/control" become "on" always.
-> 
-> Why this is set to "on" *always*, even if the device can be actually controlled
-> via runtime PM?
+>>
+>>>>
+>>>> Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+>>>> ---
+>>>>    sound/pci/hda/hda_intel.c | 25 +++++++++++++++++++++++++
+>>>>    1 file changed, 25 insertions(+)
+>>>>
+>>>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>>>> index 8860dd5..a7ac7fd 100644
+>>>> --- a/sound/pci/hda/hda_intel.c
+>>>> +++ b/sound/pci/hda/hda_intel.c
+>>>> @@ -2970,6 +2970,11 @@ static int azx_runtime_suspend(struct device
+>>> *dev)
+>>>>    {
+>>>>    	struct snd_card *card = dev_get_drvdata(dev);
+>>>>    	struct azx *chip = card->private_data;
+>>>> +	int status;
+>>>> +
+>>>> +	/* enable controller wake up event */
+>>>> +	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
+>>>> +		  STATESTS_INT_MASK);
+>>>>
+>>>>    	azx_stop_chip(chip);
+>>>>    	azx_enter_link_reset(chip);
+>>>> @@ -2983,11 +2988,31 @@ static int azx_runtime_resume(struct device
+>>> *dev)
+>>>>    {
+>>>>    	struct snd_card *card = dev_get_drvdata(dev);
+>>>>    	struct azx *chip = card->private_data;
+>>>> +	struct hda_bus *bus;
+>>>> +	struct hda_codec *codec;
+>>>> +	int status;
+>>>>
+>>>>    	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
+>>>>    		hda_display_power(true);
+>>>> +
+>>>> +	/* Read STATESTS before controller reset */
+>>>> +	status = azx_readw(chip, STATESTS);
+>>>> +
+>>>>    	azx_init_pci(chip);
+>>>>    	azx_init_chip(chip, 1);
+>>>> +
+>>>> +	bus = chip->bus;
+>>>> +	if (status && bus) {
+>>>> +		list_for_each_entry(codec, &bus->codec_list, list)
+>>>> +			if (status & (1 << codec->addr))
+>>>> +				queue_delayed_work(codec->bus->workq,
+>>>> +						   &codec->jackpoll_work,
+>>> codec->jackpoll_interval);
+>>>
+>>> Is there a reason you want to move the jack detection to a delayed work, i e,
+>>> why can't we just call:
+>>>
+>>>    	snd_hda_jack_set_dirty_all(codec);
+>>>    	snd_hda_jack_poll_all(codec);
+>>>
+>>> ...from here?
+>>
+>> In fact it doesnot work for me, It will again call runtime_resume() and caused dead loop.
+>
+> It means that the power refcount is messed up by this way.
+>
+> When a verb is executed, the codec goes to a full resume mode, which
+> turns up the controller, eventually calling azx_power_notify().
+> In azx_power_notify(), pm_runtime_{get|put}_sync() is called
+> accordingly, which again goes to runtime resume.  A quick fix would be
+> to add a flag or something to avoid reentrace.
+>
+> But, calling the jackpoll in the resume is basically superfluous.
+> As already mentioned, issuing a verb itself triggers the full resume,
+> and this already includes the update of the whole jack status.
+> Thus, executing jackpoll at that place means to perform the jack
+> polling twice.
+>
+> In other words, what's we need to achieve is just to call
+> snd_hda_resume() appropriately in the runtime resume case.
+> Of course, this will need more fixes for avoiding reentrance, etc.
+>
+> But, it leads to another question: do we need a full resume just for
+> jack detection and user-space notification?  Just reading the pin
+> detect state should be able to run even in D3 (for chips that are
+> capable of it), and the notification itself doesn't need any audio
+> hardware action.
 
-Yes, seems it was changed by App through sysfs. I donot' know much about the user space power manager policy, could Rafael share some information?
+The STATESTS register only indicates which codec requested wakeup, not 
+which pin. So you need to issue the get_pin_sense verb for all pins on 
+the codec, which means that the codec - controller link must be powered up.
 
-> 
-> > In audio driver side, power_save was set to "0", which disable
-> > power_down the codecs and controller, thus never release
-> power->usage_count.
-> 
-> Why it is set to zero at all?
+So that's half of the resume procedure already. Are you proposing we 
+introduce some kind of "half-resumed" mode that we would be in when we 
+wait for the response from get_pin_sense? It sounds like additional 
+complexity for very little gain in power.
 
-I will continue looking into this change.
-> 
-> > And this blocks audio driver release power-well.
-> >
-> > In the second case, if audio driver detect hdmi pins are free and no
-> > Apps opened device, it will eanble runtime power-save feature as an
-> exception.
-> >
-> > I test this patch on Harris beach with charger connected, the
-> > power-well could be released as expected.
-> 
-> The primary problem is that these flags are set.
+Or am I missing something here?
 
-Yes, I agree. I'm debugging this issue on Ubuntu, not sure it happens on other distribution too.
-If it's related to Ubuntu, maybe need check Ubuntu power policy. Does anyone know the Ubuntu power-policy on laptop?
-i.e. when charger connected, will Ubuntu make decision to disable power-save feature for audio subsystem?
 
-> 
-> You're trying to implement an "ignore stop-signs on the street if no other cars
-> are running around you" feature in a new auto-cruise system.  It would work,
-> but it's not what's accepted in general.
-> (And it makes things complicated and fragile.)
-> 
-> The real question is why there are two useless STOP signs there.
-
-Thanks for clarify this. I also think it's not a good solution to make changes inside audio dirver. :(
-Donot worry, I will continue to investigate this.
-
-Thanks
---xingchao
-
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
-> > Thanks
-> > --xingchao
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Thursday, July 18, 2013 5:35 PM
-> > > To: Wang, Xingchao
-> > > Cc: Daniel Vetter; Paulo Zanoni; daniel.vetter@ffwll.ch;
-> > > alsa-devel@alsa-project.org; intel-gfx@lists.freedesktop.org; Wang
-> > > xingchao; Girdwood, Liam R; Jin, Gordon; David Henningsson
-> > > Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7] Power-well API
-> > > implementation for Haswell
-> > >
-> > > At Thu, 18 Jul 2013 09:23:57 +0000,
-> > > Wang, Xingchao wrote:
-> > > >
-> > > >
-> > > >
-> > > > > -----Original Message-----
-> > > > > From: Daniel Vetter [mailto:daniel.vetter@ffwll.ch] On Behalf Of
-> > > > > Daniel Vetter
-> > > > > Sent: Thursday, July 18, 2013 2:44 PM
-> > > > > To: Wang, Xingchao
-> > > > > Cc: Paulo Zanoni; daniel.vetter@ffwll.ch;
-> > > > > alsa-devel@alsa-project.org; Daniel Vetter;
-> > > > > intel-gfx@lists.freedesktop.org; Wang xingchao; Girdwood, Liam
-> > > > > R; Jin, Gordon; Takashi Iwai; David Henningsson
-> > > > > Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7] Power-well
-> > > > > API implementation for Haswell
-> > > > >
-> > > > > On Thu, Jul 18, 2013 at 01:00:07AM +0000, Wang, Xingchao wrote:
-> > > > > > Hi Paulo/Daniel,
-> > > > > >
-> > > > > > Do you agree to export an API in gfx side for eDP case?
-> > > > > > Basically the api will let audio drver know which pipe in use.
-> > > > > > i.e. in the eDP only caes, audio driver Will know gfx is not
-> > > > > > using HDMI/DP and would
-> > > > > like to let power-well off.
-> > > > > > As there's the conflict when user expect display audio driver
-> > > > > > always active but
-> > > > > gfx need audio driver off.
-> > > > > > Audio driver could make decision to release power-well if it
-> > > > > > knows the eDP
-> > > > > only case through the API.
-> > > > > >
-> > > > > > OTOH, I think audio driver could also export an API for gfx
-> > > > > > side, if gfx driver need audio driver release power-well but
-> > > > > > it's in usage, It will call
-> > > > > this API and audio drvier will release power-well accordingly.
-> > > > > >
-> > > > > > This change make HDMI/DP hotplug handling complicated in audio
-> > > > > > driver side,
-> > > > > if audio driver release power-well, it would enter suspend mode.
-> > > > > > Meanwhile the user may expect it's in active mode, this may
-> > > > > > cause some
-> > > > > confuse.
-> > > > >
-> > > > > Afaik (and I know very little about audio) the audio side
-> > > > > already knows which pipes have audio enabled, since we set the
-> > > > > respective bit only
-> > > when it's needed.
-> > > > > And audio will receive the unsolicited even interrupt (or
-> > > > > whatever it's called) when this happens.
-> > > > >
-> > > > For haswell, Audio driver can get DDI port/Pin usage information
-> > > > according to
-> > > the unsolicited event, not Pipe info.
-> > > > However at this stage, seems only that is enough: if no pin has
-> > > > valid ELD,
-> > > audio driver can think about that no monitor connected with DDI ports.
-> > > > In this case, Audio driver could release power-well and enter
-> > > > suspend mode automatically, this avoid blocking eDP feature
-> > > > enabling. And once gfx
-> > > dirver Detect external monitor connected, it will also wake up audio driver.
-> > > >
-> > > > Takashi, do you think this solution acceptable?
-> > >
-> > > It's the current situation, isn't it?  So the question is only
-> > > whether this works _as expected_.
-> > >
-> > > Basically system/user needs to set up two parameters for the audio
-> > > power-saving.  If both are set well, but it still doesn't work, we need to
-> debug.
-> > >
-> > > Of course, we can improve things, for example, the default runtime PM
-> setup.
-> > > (Note that this is about the default value, not the value force to
-> > > set.)
-> > >
-> > >
-> > > Takashi
-> > >
-> > > >
-> > > > Thanks
-> > > > --xingchao
-> > > >
-> > > > > So I think we already have the means (albeit with that quirky hw
-> > > > > interface, but it seems to have been good enough for a long time
-> > > > > already) to do that. Or do I miss something?
-> > > > > -Daniel
-> > > > >
-> > > > > >
-> > > > > > Thanks
-> > > > > > --xingchao
-> > > > > >
-> > > > > > > -----Original Message-----
-> > > > > > > From: Wang, Xingchao
-> > > > > > > Sent: Thursday, July 18, 2013 7:18 AM
-> > > > > > > To: 'Takashi Iwai'; David Henningsson; Paulo Zanoni
-> > > > > > > Cc: alsa-devel@alsa-project.org; Daniel Vetter;
-> > > > > > > daniel.vetter@ffwll.ch; intel-gfx@lists.freedesktop.org;
-> > > > > > > Wang xingchao; Girdwood, Liam R; Jin, Gordon
-> > > > > > > Subject: RE: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7]
-> > > > > > > Power-well API implementation for Haswell
-> > > > > > >
-> > > > > > >
-> > > > > > >
-> > > > > > > > -----Original Message-----
-> > > > > > > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > > > > > Sent: Wednesday, July 17, 2013 10:22 PM
-> > > > > > > > To: David Henningsson
-> > > > > > > > Cc: Paulo Zanoni; Wang, Xingchao;
-> > > > > > > > alsa-devel@alsa-project.org; Daniel Vetter;
-> > > > > > > > daniel.vetter@ffwll.ch; intel-gfx@lists.freedesktop.org;
-> > > > > > > > Wang xingchao; Girdwood, Liam R; Jin, Gordon
-> > > > > > > > Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4 V7]
-> > > > > > > > Power-well API implementation for Haswell
-> > > > > > > >
-> > > > > > > > At Wed, 17 Jul 2013 16:05:43 +0200, David Henningsson wrote:
-> > > > > > > > >
-> > > > > > > > > On 07/17/2013 04:00 PM, Takashi Iwai wrote:
-> > > > > > > > > > At Wed, 17 Jul 2013 10:31:26 -0300, Paulo Zanoni wrote:
-> > > > > > > > > >>
-> > > > > > > > > >> 2013/7/17 Wang, Xingchao <xingchao.wang@intel.com>:
-> > > > > > > > > >>>
-> > > > > > > > > >>>
-> > > > > > > > > >>>> -----Original Message-----
-> > > > > > > > > >>>> From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > > > > > > >>>> Sent: Wednesday, July 17, 2013 4:18 PM
-> > > > > > > > > >>>> To: Wang, Xingchao
-> > > > > > > > > >>>> Cc: Paulo Zanoni; alsa-devel@alsa-project.org;
-> > > > > > > > > >>>> Daniel Vetter; daniel.vetter@ffwll.ch;
-> > > > > > > > > >>>> intel-gfx@lists.freedesktop.org; Wang xingchao;
-> > > > > > > > > >>>> Girdwood, Liam R; david.henningsson@canonical.com
-> > > > > > > > > >>>> Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4
-> > > > > > > > > >>>> V7] Power-well API implementation for Haswell
-> > > > > > > > > >>>>
-> > > > > > > > > >>>> At Wed, 17 Jul 2013 08:03:38 +0000, Wang, Xingchao
-> wrote:
-> > > > > > > > > >>>>>
-> > > > > > > > > >>>>>
-> > > > > > > > > >>>>>
-> > > > > > > > > >>>>>> -----Original Message-----
-> > > > > > > > > >>>>>> From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > > > > > > >>>>>> Sent: Wednesday, July 17, 2013 3:34 PM
-> > > > > > > > > >>>>>> To: Wang, Xingchao
-> > > > > > > > > >>>>>> Cc: Paulo Zanoni; alsa-devel@alsa-project.org;
-> > > > > > > > > >>>>>> Daniel Vetter; daniel.vetter@ffwll.ch;
-> > > > > > > > > >>>>>> intel-gfx@lists.freedesktop.org; Wang xingchao;
-> > > > > > > > > >>>>>> Girdwood, Liam R; david.henningsson@canonical.com
-> > > > > > > > > >>>>>> Subject: Re: [alsa-devel] [Intel-gfx] [PATCH 0/4
-> > > > > > > > > >>>>>> V7] Power-well API implementation for Haswell
-> > > > > > > > > >>>>>>
-> > > > > > > > > >>>>>> At Wed, 17 Jul 2013 02:52:41 +0000, Wang, Xingchao
-> wrote:
-> > > > > > > > > >>>>>>>
-> > > > > > > > > >>>>>>> Hi Takashi/Paulo,
-> > > > > > > > > >>>>>>>
-> > > > > > > > > >>>>>>>>>> would you change it to "auto" and test again.
-> > > > > > > > > >>>>>>>>>> Runtime power save should be enabled with "auto".
-> > > > > > > > > >>>>>>>>>
-> > > > > > > > > >>>>>>>>> Doesn't solve the problem. Should I open a bug
-> > > > > > > > > >>>>>>>>> report
-> > > > > > > > somewhere?
-> > > > > > > > > >>>>>>>>> Having the power well enabled prevents some
-> > > > > > > > > >>>>>>>>> power saving features from the graphics driver.
-> > > > > > > > > >>>>>>>>
-> > > > > > > > > >>>>>>>> Is the HD-audio power-saving itself working?
-> > > > > > > > > >>>>>>>> You can check it via watching
-> > > > > > > > > >>>>>>>> /sys/class/hwC*/power_{on|off}_acct
-> > > > > files.
-> > > > > > > > > >>>>>>>>
-> > > > > > > > > >>>>>>>> power_save option has to be adjusted appropriately.
-> > > > > > > > > >>>>>>>> Note that many DEs change this value
-> > > > > > > > > >>>>>>>> dynamically per AC-cable plug/unplug depending
-> > > > > > > > > >>>>>>>> on the configuration, and often it's set to 0
-> > > > > > > > > >>>>>>>> (= no power
-> > > > > > > > > >>>>>>>> save) when AC-cable is
-> > > > > plugged.
-> > > > > > > > > >>>>>>>>
-> > > > > > > > > >>>>>>> [Wang, Xingchao] Paulo used a new Ultrabook
-> > > > > > > > > >>>>>>> board with charger connected,
-> > > > > > > > > >>>>>> and see the default parameter "auto=on".
-> > > > > > > > > >>>>>>> In such scenario, power-well is always occupied
-> > > > > > > > > >>>>>>> by Display audio controller. Moreover, in this
-> > > > > > > > > >>>>>>> board, if no external monitors connected, It's
-> > > > > > > > > >>>>>> using internal eDP and totally no audio support.
-> > > > > > > > > >>>>>> Power-well usage in such case also blocks some
-> > > > > > > > > >>>>>> eDP features as
-> > > > > Paulo told me.
-> > > > > > > > > >>>>>>>
-> > > > > > > > > >>>>>>> So I think it's not a good idea to break the
-> > > > > > > > > >>>>>>> rule of power policy when charger
-> > > > > > > > > >>>>>> connected but it's necessary to add support in
-> > > > > > > > > >>>>>> this particular
-> > > > > case.
-> > > > > > > > > >>>>>>> Takashi, do you think it's acceptable to let
-> > > > > > > > > >>>>>>> Display audio controller/codec
-> > > > > > > > > >>>>>> suspend in such case?
-> > > > > > > > > >>>>>>
-> > > > > > > > > >>>>>> Do you mean the driver enables the powersave forcibly?
-> > > > > > > > > >>>>>
-> > > > > > > > > >>>>> Yes. I mean call pm_runtime_allow() for the
-> > > > > > > > > >>>>> power-well HD-A
-> > > > > > > > controller.
-> > > > > > > > > >>>>>
-> > > > > > > > > >>>>>> Then, no, not in general.
-> > > > > > > > > >>>>>>
-> > > > > > > > > >>>>>> If the default parameter of autopm is the
-> > > > > > > > > >>>>>> problem, this should be changed, instead of
-> > > > > > > > > >>>>>> forcing the policy in the
-> > > driver.
-> > > > > > > > > >>>>>>
-> > > > > > > > > >>>>>> OTOH, the audio codec's powersave policy is
-> > > > > > > > > >>>>>> governed by the power_save option and it's set up
-> > > > > > > > > >>>>>> dynamically by the desktop
-> > > > > > > system.
-> > > > > > > > > >>>>>> We shouldn't override it in the driver.
-> > > > > > > > > >>>>>>
-> > > > > > > > > >>>>>> If the power well *must* be off when only an eDP
-> > > > > > > > > >>>>>> is used
-> > > (e.g.
-> > > > > > > > > >>>>>> otherwise the hardware doesn't work properly), then it's
-> a
-> > > > > > > > > >>>>>> different story.  Is it the case?   And what exactly
-> would
-> > > be
-> > > > > the
-> > > > > > > > > >>>>>> problem?
-> > > > > > > > > >>>>> In the eDP only case, no audio is needed for the
-> > > > > > > > > >>>>> HD-A controller, so it's
-> > > > > > > > > >>>> wasting power in current design.
-> > > > > > > > > >>>>> I think Paulo or Daniel could explain more details
-> > > > > > > > > >>>>> on the
-> > > impact.
-> > > > > > > > > >>>>
-> > > > > > > > > >>>> Consuming more power is the expected behavior.  What
-> else?
-> > > > > > > > > >>>>
-> > > > > > > > > >>>>
-> > > > > > > > > >>>>>> If it's the case, controlling the power well
-> > > > > > > > > >>>>>> based on the runtime PM is likely a bad design,
-> > > > > > > > > >>>>>> as it relies on the parameter user
-> > > > > > > > sets.
-> > > > > > > > > >>>>>> (And remember that the power-saving of the audio
-> > > > > > > > > >>>>>> can be disabled completely via Kconfig, too.)
-> > > > > > > > > >>>>>  From audio controller's point of view, if it's
-> > > > > > > > > >>>>> asked be active, it needs power
-> > > > > > > > > >>>> and should request power-well from gfx side.
-> > > > > > > > > >>>>> In above case, audio controller should not be
-> > > > > > > > > >>>>> active but user set it be
-> > > > > > > > > >>>> "active".
-> > > > > > > > > >>>>
-> > > > > > > > > >>>> By setting the autopm "on", user expects that no
-> > > > > > > > > >>>> runtime PM
-> > > > > > > happens.
-> > > > > > > > > >>>> In other words, the audio controller must be kept
-> > > > > > > > > >>>> active as long as this parameter is set.  And this
-> > > > > > > > > >>>> is the parameter user controls, and not what the
-> > > > > > > > > >>>> driver forcibly
-> > > sets.
-> > > > > > > > > >>>
-> > > > > > > > > >>> Okay, become clear now. :) So I think the conflict
-> > > > > > > > > >>> for Paulo becomes, in eDP caes, if audio is active
-> > > > > > > > and requested power-well, some eDP feature was under impact?
-> > > > > > > > > >>> Paulo, would you clarify this in more details?
-> > > > > > > > > >>
-> > > > > > > > > >> On our driver we try to disable the power well
-> > > > > > > > > >> whenever possible, as soon as possible. We don't
-> > > > > > > > > >> change our behavior based on power AC or other
-> > > > > > > > > >> user-space modifiable behavior (except the
-> > > > > > > > > >> i915.disable_power_well Kernel option). If the power
-> > > > > > > > > >> well is not disabled we can't enable some features,
-> > > > > > > > > >> like PSR (panel self refresh, and eDP feature) or
-> > > > > > > > > >> PC8, which is another power-saving feature. This will
-> > > > > > > > > >> also make our QA procedures a lot more complex since
-> > > > > > > > > >> when we want to test specific features (e.g., PSR,
-> > > > > > > > > >> PC8) we'll have to disconnect the AC adapter or run
-> > > > > > > > > >> scripts. So the behavior/predictability of our driver
-> > > > > > > > > >> will be based on the Audio driver
-> > > > > > > > power management policies.
-> > > > > > > > > >
-> > > > > > > > > > So all missing feature are about the power saving?
-> > > > > > > > > >
-> > > > > > > > > >> I am not so experienced with general Linux Power
-> > > > > > > > > >> Management code, so maybe the way the Audio driver is
-> > > > > > > > > >> behaving is just the usual way, but I have to admit I
-> > > > > > > > > >> was expecting the audio driver would only require the
-> > > > > > > > > >> power well when it is actually needed, and release it as soon
-> as possible.
-> > > > > > > > > >
-> > > > > > > > > > It would behave so, if all setups are for power-saving.
-> > > > > > > > > >
-> > > > > > > > > > But, in your case, the runtime PM control attribute
-> > > > > > > > > > shows "on"; it implies that the runtime PM is
-> > > > > > > > > > effectively disabled, thus disabling power well is
-> > > > > > > > > > also impossible (because it would require turning off the audio
-> controller, too).
-> > > > > > > > >
-> > > > > > > > > So, if the machine only has an eDP (which has no audio
-> > > > > > > > > function in itself, right?) and never HDMI, DP output
-> > > > > > > > > because there are no such physical ports, the audio
-> > > > > > > > > controller has no
-> > > function.
-> > > > > > > > > Maybe we can, before doing anything else, ask the video
-> > > > > > > > > driver first if this is the case, and if so, never
-> > > > > > > > > create the sound card at all, and just leave things the
-> > > > > > > > > way the video driver
-> > > wants?
-> > > > > > > >
-> > > > > > > > Well, doesn't BIOS mark HDMI/DP audio pins as unused?
-> > > > > > > > Then the audio driver won't create any instances.  Of
-> > > > > > > > course, we can optimize such a case, indeed.
-> > > > > > >
-> > > > > > > As I know, the eDP only case doesnot mean no HDMI/DP support.
-> > > > > > > User would plug in HDMI/DP monitor at any time.
-> > > > > > > So diable audio controller totoally is not a good idea. :(.
-> > > > > > > Paulo, is that correct for you case?
-> > > > > > >
-> > > > > > > --xingchao
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > Takashi
-> > > > >
-> > > > > --
-> > > > > Daniel Vetter
-> > > > > Software Engineer, Intel Corporation
-> > > > > +41 (0) 79 365 57 48 - http://blog.ffwll.ch
-> > > >
-> > [2 0001-ALSA-hda-Change-power-save-policy-for-power-well-reg.patch
-> > <application/octet-stream (base64)>]
-> >
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
