@@ -1,57 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/4] ASoc: kirkwood: simplify probe error
-Date: Thu, 25 Jul 2013 20:10:59 +0100
-Message-ID: <20130725191059.GO9858@sirena.org.uk>
-References: <20130725111357.7c976963@armhf>
+Subject: Re: [PATCH] ASoC: fsl: Set sdma peripheral type
+	directly
+Date: Thu, 25 Jul 2013 20:11:48 +0100
+Message-ID: <20130725191148.GP9858@sirena.org.uk>
+References: <1374745301-29508-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="R/XXzwRD6iKUjf7i"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20130725111357.7c976963@armhf>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4073202823465751613=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A68E265652
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 21:11:55 +0200 (CEST)
+In-Reply-To: <1374745301-29508-1-git-send-email-b42378@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
 
---R/XXzwRD6iKUjf7i
+--===============4073202823465751613==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/iFx7UFBKvQAxELg"
+Content-Disposition: inline
+
+
+--/iFx7UFBKvQAxELg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 25, 2013 at 11:13:57AM +0200, Jean-Francois Moine wrote:
-> The function kirkwood_i2s_dev_remove() may be used when probe fails.
+On Thu, Jul 25, 2013 at 05:41:41PM +0800, Nicolin Chen wrote:
+> Let CPU DAI drivers set SDMA periperal type directly to support more
+> dma types(SPDIF, ESAI) other than only two for SSI.
+> This will easily allow some non-SSI drivers to use the imx-pcm-dma
+> as well.
 
-This seems fine but doesn't apply against current code but otherwise
-seems fine.
+Applied, thanks.
 
-> +	if (!IS_ERR(priv->extclk)) {
-> +		clk_disable_unprepare(priv->extclk);
-> +		clk_put(priv->extclk);
-> +	}
-
-Could use devm_clk_get() for extclk.
-
---R/XXzwRD6iKUjf7i
+--/iFx7UFBKvQAxELg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR8XhAAAoJELSic+t+oim9KYYP/j95q2OJ5ln4rd8L3tjyAzfM
-rWsJN/Z5ZzCPd2jYY72gO1dzZoe8iQ/HS+BB+UkP5zFIPi3qveR7GN5rAQYawDEK
-G7DeZwgZfEONfa0YRA97j++pRpW2GLhi6eY1gxpSGPnRNkFElZ+Y86C3c0oBkjmf
-1JGCpGwAj0Y89zcUDcBve8FlLM9M8l6qaXjB6UWPwenFPPaKGvfIoWyIGpt3Q1kd
-FIGWRxG4MjkZMIPDnFIW5t75F0nequfZrElQmbfcqfuUAl5d1dqoyZdyjHEN5O5H
-hQ2LJmqkxCi+2kGMr9a81RedKPcy+y/BkwwSY6NytAtXfYrADrebfiYuU2VY17wL
-dz2P6TctSkdDv6cAKYlBDT2Ds2QnyrdjEyE+iqRzdyFqMCuQO8x/FAERugUWEGTN
-b0p9HBysGpBzqjrDygBkUcsS/4Sd48SAM0rm5OfwmFmiD9c0ArRvga43b60wB3dA
-NjtKSaNhDSudn2NIksflX13qTSo9QgcxJ/Tqszo96X7dFO7lTyjPx5q/CYTgBgDG
-Pm09m3+728k66oAh3X70xmofYAIoxywkaaKqzH6/zm+uSGCy7CY8F99ihQdf2ule
-yBQhybcxJ8ptD+6D+l4OyURVIg27nsVtu7FbfHFJN17+ydt6cB7JLs2lKabdSWZg
-aUu8MUZ5nlyy93+0l1dB
-=IVlb
+iQIcBAEBAgAGBQJR8XhxAAoJELSic+t+oim9I4wP/0gVqoqMaLeA75LA/ggwrtpL
+iBbJdmVE4vPeYLmpYGgHvES1BDMpmgA/EXalVulhdoaCUa/V5MjQiMrU97sw8YQs
+GpUEg6pcVFB+iBZdnt43Tr5rQusZ2OAalURhW5atAGKFqEn3/2sbQtMbU57/B3Qz
+vZOiBS2hx7eIlN35wbcbFox70MB351fVolmD7NdLzYx08P5XNfss4B4lJ3OrblV/
+eEBSBwTiBftAkSMnb3KyQniACxHV2jKAyp7GDymHL+yl1/qQ5jFDurz/5co3BvzL
++FufAU4/VA8i+jbHpmaep8NzW7xVWGYq+1nRNRvZ64/1TWFaSXV+3Idk61hHYLdh
+H49SnUfNOLhgLyMg6wCZ6xTIafOVnrccEU04zk/8WtxS4kHDGF8JN+Osq5nXLZJu
+/QQSVBkjVgH6/4eJ4cX1HFkgTHU5bncvjp+uz/ks1+o6MITyvbgAU+pYotzR/BiI
+/BPYPO91xfuqFkPVw15f0NTpj8a6wsy72yO+rcKOH+92AfYmRo1eOdTq41mj1ERz
+H8DoDml2yvtlnnucN0NgmqHBc0ayhAZXaTVVgG/xJFrLzLWu8qyeCM+NgbRZXn/G
+QAQQUKi7H7PUv4gflByhCS21EfmgnKzZX5nxF6PYxXyb/tELQUn3m8xOrl5Q8sMM
+bQPG1gFmMqL1/vDOKhzy
+=ygfU
 -----END PGP SIGNATURE-----
 
---R/XXzwRD6iKUjf7i--
+--/iFx7UFBKvQAxELg--
+
+--===============4073202823465751613==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4073202823465751613==--
