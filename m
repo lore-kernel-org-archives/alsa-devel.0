@@ -1,69 +1,214 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH 3/6] ASoC: usp-pcm: add CPU DAI driver for PCM simulated
- from USP
-Date: Thu, 25 Jul 2013 17:32:12 +0800
-Message-ID: <CAGsJ_4xNdxFWyN6NUEL36W9n+4Cj=01+QGi+xaeODm9u8pdP9A@mail.gmail.com>
-References: <1374232042-26088-1-git-send-email-Baohua.Song@csr.com>
- <1374232042-26088-4-git-send-email-Baohua.Song@csr.com>
- <20130719181313.GT9858@sirena.org.uk>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 1/4] ASoc: kirkwood: change the pcm/dma
+	stream data	pointer
+Date: Thu, 25 Jul 2013 10:38:55 +0100
+Message-ID: <20130725093855.GB24642@n2100.arm.linux.org.uk>
+References: <20130725111314.66b811bc@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20130719181313.GT9858@sirena.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Workgroup.Linux@csr.com, Rongjun Ying <Rongjun.Ying@csr.com>, Barry Song <Baohua.Song@csr.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 56034260864
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 11:39:21 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130725111314.66b811bc@armhf>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMy83LzIwIE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz46Cj4gT24gRnJpLCBKdWwg
-MTksIDIwMTMgYXQgMDc6MDc6MTlQTSArMDgwMCwgQmFycnkgU29uZyB3cm90ZToKPgo+PiArc3Rh
-dGljIGludCBzaXJmX3VzcF9wY21fZGl2aWRlcihzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSwgaW50
-IGRpdl9pZCwgaW50IHJhdGUpCj4+ICt7Cj4+ICsgICAgIHN0cnVjdCBzaXJmX3VzcCAqc3VzcCA9
-IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRhKGRhaSk7Cj4+ICsKPj4gKyAgICAgdTMyIGNsa19yYXRl
-ID0gY2xrX2dldF9yYXRlKHN1c3AtPmNsayk7Cj4+ICsgICAgIHUzMiBjbGtfZGl2ID0gKGNsa19y
-YXRlLygyKnJhdGUpKSAtIDE7Cj4+ICsgICAgIHUzMiBjbGtfZGl2X2hpID0gKGNsa19kaXYgJiAw
-eEMwMCk+PjEwOwo+PiArICAgICB1MzIgY2xrX2Rpdl9sbyA9IChjbGtfZGl2ICYgMHgzRkYpOwo+
-PiArCj4+ICsgICAgIHdyaXRlbCgoY2xrX2Rpdl9sbzw8MjEpIHwgcmVhZGwoc3VzcC0+YmFzZSAr
-IFVTUF9NT0RFMiksCj4+ICsgICAgICAgICAgICAgc3VzcC0+YmFzZSArIFVTUF9NT0RFMik7Cj4+
-ICsgICAgIHdyaXRlbCgoY2xrX2Rpdl9oaTw8MzApIHwgcmVhZGwoc3VzcC0+YmFzZSArIFVTUF9U
-WF9GUkFNRV9DVFJMKSwKPj4gKyAgICAgICAgICAgICBzdXNwLT5iYXNlICsgVVNQX1RYX0ZSQU1F
-X0NUUkwpOwo+PiArCj4+ICsgICAgIHJldHVybiAwOwo+PiArfQo+Cj4gSSdkIGJlIGhhcHBpZXIg
-aWYgdGhpcyBkaWQgc29tZSB2YWxpZGF0aW9uIG9uIHRoZSBzdXBwbGllZCByYXRlIChmb3IKPiBl
-eGFtcGxlLCBjaGVja2luZyB0aGF0IGl0J3MgbGVzcyB0aGFuIHRoZSBtYXN0ZXIgcmF0ZSkgYW5k
-IGhhZCBhcmd1bWVudHMKPiBzcGVjaWZ5aW5nIHdoaWNoIGNsb2NrIHdhcyBiZWluZyBhZmZlY3Rl
-ZCAoaW4gY2FzZSB0aGVyZSdzIG1vcmUgaW4KPiBmdXR1cmUgcmV2aXNpb25zKS4KCnNvdW5kcyBn
-b29kLgoKPgo+IEFsc28gd2hhdCBleGFjdGx5IGlzIHRoZSByYXRlIGJlaW5nIHNldCAtIGNhbiB0
-aGUgZHJpdmVyIGp1c3QgZmlndXJlCj4gdGhpcyBvdXQgYXV0b21hdGljYWxseSBmcm9tIHRoZSBz
-YW1wbGUgcmF0ZT8KCmhlcmUgaXQgaXMgZ2VuZXJhdGluZyB0aGUgcmlnaHQgcGNtIGNsb2NrIGJ5
-IGFuIGludGVybmFsIERJVklTT1IgaW4gVVNQIG1vZHVsZS4KCkZvciBVU1BfTU9ERTI6CjMwOjIx
-IChSL1cpIFVTUF9DTEtfRElWSVNPUiAxMOKAmWgwIFVTUCBzZXJpYWwgY2xvY2sgZGl2aWRlcgoK
-Rm9yIFVTUF9UWF9GUkFNRV9DVFJMOgozMTozMCAoUi9XKSBVU1BfQ0xLX0RJVklTT1IgMuKAmWgw
-IFRoaXMgaXMgdGhlIHR3byBiaXQgWzExOjEwXSBvZgpVU1BfQ0xLX0RJVklTT1IgaW4gVVNQX01P
-REUyCgpmb3IgZmlndXJpbmcgdGhpcyBvdXQgYXV0b21hdGljYWxseSBmcm9tIHRoZSBzYW1wbGUg
-cmF0ZSwgZG8geW91IG1lYW4KYSBsb29rdXAgdGFibGUgZm9yIGNvbW1vbiBzYW1wbGUgcmF0ZT8K
-Cj4KPj4gKyNpZmRlZiBDT05GSUdfUE0KPj4gK3N0YXRpYyBpbnQgc2lyZl91c3BfcGNtX3N1c3Bl
-bmQoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiwKPj4gKyAgICAgcG1fbWVzc2FnZV90IHN0
-YXRlKQo+PiArewo+PiArICAgICBzdHJ1Y3Qgc2lyZl91c3AgKnN1c3AgPSBwbGF0Zm9ybV9nZXRf
-ZHJ2ZGF0YShwZGV2KTsKPj4gKwo+PiArICAgICBzdXNwLT5tb2RlMV9yZWcgPSByZWFkbChzdXNw
-LT5iYXNlICsgVVNQX01PREUxKTsKPj4gKyAgICAgc3VzcC0+bW9kZTJfcmVnID0gcmVhZGwoc3Vz
-cC0+YmFzZSArIFVTUF9NT0RFMik7Cj4+ICsgICAgIHNpcmZfdXNwX2NvbnRyb2xsZXJfdW5pbml0
-KHN1c3ApOwo+PiArICAgICBjbGtfZGlzYWJsZV91bnByZXBhcmUoc3VzcC0+Y2xrKTsKPj4gKwo+
-PiArICAgICByZXR1cm4gMDsKPj4gK30KPgo+IENhbiB0aGlzIGJlIGRvbmUgYXMgcnVudGltZSBQ
-TSBhcyB3ZWxsPyAgU2VlbXMgbGlrZSBpdCdkIHNhdmUgcG93ZXIuCgphZ3JlZS4KCj4KPj4gKyAg
-ICAgc3VzcC0+Y2xrID0gY2xrX2dldCgmcGRldi0+ZGV2LCBOVUxMKTsKPj4gKyAgICAgaWYgKElT
-X0VSUihzdXNwLT5jbGspKSB7Cj4+ICsgICAgICAgICAgICAgZGV2X2VycigmcGRldi0+ZGV2LCAi
-R2V0IGNsb2NrIGZhaWxlZC5cbiIpOwo+PiArICAgICAgICAgICAgIHJldHVybiBQVFJfRVJSKHN1
-c3AtPmNsayk7Cj4+ICsgICAgIH0KPgo+IGRldm1fY2xrX2dldCgpLgoKYWdyZWUuIG1pc3NlZCB0
-aGlzIG9uZS4KCi1iYXJyeQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KbGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJtLWtlcm5lbEBs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtYXJtLWtlcm5lbAo=
+On Thu, Jul 25, 2013 at 11:13:14AM +0200, Jean-Francois Moine wrote:
+> In the kirkwood pcm/dma driver, the private stream related data pointer
+> was hold in the platform drvdata.
+> As this pointer may be used by other parts of the audio subsystem,
+> this patch uses the substream runtime private data pointer instead.
+
+There's a much better solution to this, which is to get rid of
+kirkwood_dma_priv entirely:
+
+diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+index d3d4bdc..112c262 100644
+--- a/sound/soc/kirkwood/kirkwood-dma.c
++++ b/sound/soc/kirkwood/kirkwood-dma.c
+@@ -33,11 +33,11 @@
+ 	 SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE | \
+ 	 SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE)
+ 
+-struct kirkwood_dma_priv {
+-	struct snd_pcm_substream *play_stream;
+-	struct snd_pcm_substream *rec_stream;
+-	struct kirkwood_dma_data *data;
+-};
++static struct kirkwood_dma_data *kirkwood_priv(struct snd_pcm_substream *subs)
++{
++	struct snd_soc_pcm_runtime *soc_runtime = subs->private_data;
++	return snd_soc_dai_get_drvdata(soc_runtime->cpu_dai);
++}
+ 
+ static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
+ 	.info = (SNDRV_PCM_INFO_INTERLEAVED |
+@@ -63,8 +63,7 @@ static u64 kirkwood_dma_dmamask = DMA_BIT_MASK(32);
+ 
+ static irqreturn_t kirkwood_dma_irq(int irq, void *dev_id)
+ {
+-	struct kirkwood_dma_priv *prdata = dev_id;
+-	struct kirkwood_dma_data *priv = prdata->data;
++	struct kirkwood_dma_data *priv = dev_id;
+ 	unsigned long mask, status, cause;
+ 
+ 	mask = readl(priv->io + KIRKWOOD_INT_MASK);
+@@ -89,10 +88,10 @@ static irqreturn_t kirkwood_dma_irq(int irq, void *dev_id)
+ 	writel(status, priv->io + KIRKWOOD_INT_CAUSE);
+ 
+ 	if (status & KIRKWOOD_INT_CAUSE_PLAY_BYTES)
+-		snd_pcm_period_elapsed(prdata->play_stream);
++		snd_pcm_period_elapsed(priv->substream_play);
+ 
+ 	if (status & KIRKWOOD_INT_CAUSE_REC_BYTES)
+-		snd_pcm_period_elapsed(prdata->rec_stream);
++		snd_pcm_period_elapsed(priv->substream_rec);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -126,15 +125,10 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ {
+ 	int err;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+-	struct snd_soc_platform *platform = soc_runtime->platform;
+-	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
+-	struct kirkwood_dma_data *priv;
+-	struct kirkwood_dma_priv *prdata = snd_soc_platform_get_drvdata(platform);
++	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+ 	const struct mbus_dram_target_info *dram;
+ 	unsigned long addr;
+ 
+-	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
+ 	snd_soc_set_runtime_hwparams(substream, &kirkwood_dma_snd_hw);
+ 
+ 	/* Ensure that all constraints linked to dma burst are fulfilled */
+@@ -157,21 +151,11 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ 	if (err < 0)
+ 		return err;
+ 
+-	if (prdata == NULL) {
+-		prdata = kzalloc(sizeof(struct kirkwood_dma_priv), GFP_KERNEL);
+-		if (prdata == NULL)
+-			return -ENOMEM;
+-
+-		prdata->data = priv;
+-
++	if (!priv->substream_play && !priv->substream_rec) {
+ 		err = request_irq(priv->irq, kirkwood_dma_irq, IRQF_SHARED,
+-				  "kirkwood-i2s", prdata);
+-		if (err) {
+-			kfree(prdata);
++				  "kirkwood-i2s", priv);
++		if (err)
+ 			return -EBUSY;
+-		}
+-
+-		snd_soc_platform_set_drvdata(platform, prdata);
+ 
+ 		/*
+ 		 * Enable Error interrupts. We're only ack'ing them but
+@@ -183,11 +167,11 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ 	dram = mv_mbus_dram_info();
+ 	addr = substream->dma_buffer.addr;
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		prdata->play_stream = substream;
++		priv->substream_play = substream;
+ 		kirkwood_dma_conf_mbus_windows(priv->io,
+ 			KIRKWOOD_PLAYBACK_WIN, addr, dram);
+ 	} else {
+-		prdata->rec_stream = substream;
++		priv->substream_rec = substream;
+ 		kirkwood_dma_conf_mbus_windows(priv->io,
+ 			KIRKWOOD_RECORD_WIN, addr, dram);
+ 	}
+@@ -197,27 +181,19 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ 
+ static int kirkwood_dma_close(struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
+-	struct snd_soc_platform *platform = soc_runtime->platform;
+-	struct kirkwood_dma_priv *prdata = snd_soc_platform_get_drvdata(platform);
+-	struct kirkwood_dma_data *priv;
+-
+-	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
++	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+ 
+-	if (!prdata || !priv)
++	if (!priv)
+ 		return 0;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		prdata->play_stream = NULL;
++		priv->substream_play = NULL;
+ 	else
+-		prdata->rec_stream = NULL;
++		priv->substream_rec = NULL;
+ 
+-	if (!prdata->play_stream && !prdata->rec_stream) {
++	if (!priv->substream_play && !priv->substream_rec) {
+ 		writel(0, priv->io + KIRKWOOD_ERR_MASK);
+-		free_irq(priv->irq, prdata);
+-		kfree(prdata);
+-		snd_soc_platform_set_drvdata(platform, NULL);
++		free_irq(priv->irq, priv);
+ 	}
+ 
+ 	return 0;
+@@ -243,13 +219,9 @@ static int kirkwood_dma_hw_free(struct snd_pcm_substream *substream)
+ static int kirkwood_dma_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
+-	struct kirkwood_dma_data *priv;
++	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+ 	unsigned long size, count;
+ 
+-	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
+-
+ 	/* compute buffer size in term of "words" as requested in specs */
+ 	size = frames_to_bytes(runtime, runtime->buffer_size);
+ 	size = (size>>2)-1;
+@@ -272,13 +244,9 @@ static int kirkwood_dma_prepare(struct snd_pcm_substream *substream)
+ static snd_pcm_uframes_t kirkwood_dma_pointer(struct snd_pcm_substream
+ 						*substream)
+ {
+-	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
+-	struct kirkwood_dma_data *priv;
++	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+ 	snd_pcm_uframes_t count;
+ 
+-	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
+-
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		count = bytes_to_frames(substream->runtime,
+ 			readl(priv->io + KIRKWOOD_PLAY_BYTE_COUNT));
+diff --git a/sound/soc/kirkwood/kirkwood.h b/sound/soc/kirkwood/kirkwood.h
+index 4d92637..10a3aaa 100644
+--- a/sound/soc/kirkwood/kirkwood.h
++++ b/sound/soc/kirkwood/kirkwood.h
+@@ -129,6 +129,8 @@ struct kirkwood_dma_data {
+ 	struct clk *extclk;
+ 	uint32_t ctl_play;
+ 	uint32_t ctl_rec;
++	struct snd_pcm_substream *substream_play;
++	struct snd_pcm_substream *substream_rec;
+ 	int irq;
+ 	int burst;
+ };
