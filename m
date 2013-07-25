@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] ASoc: kirkwood: add DT support
-Date: Thu, 25 Jul 2013 20:19:05 +0100
-Message-ID: <20130725191905.GR9858@sirena.org.uk>
-References: <20130725111459.145a4aa4@armhf>
+Subject: Re: RFC: support for 12 & 24Khz
+Date: Thu, 25 Jul 2013 20:36:44 +0100
+Message-ID: <20130725193643.GT9858@sirena.org.uk>
+References: <20130724172640.GE18642@intel.com> <51F0CAC0.9090702@ladisch.de>
+ <20130725154501.GN18642@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0638191429360560569=="
+Content-Type: multipart/mixed; boundary="===============7454481208429747692=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F35726109B
- for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 21:19:09 +0200 (CEST)
-In-Reply-To: <20130725111459.145a4aa4@armhf>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A0D926109B
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 21:36:53 +0200 (CEST)
+In-Reply-To: <20130725154501.GN18642@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,77 +20,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, pierre-louis.bossart@linux.jf.intel.com, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0638191429360560569==
+--===============7454481208429747692==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ljwjD4eUwP//fgul"
+	protocol="application/pgp-signature"; boundary="ivrUthVTr0Ce7KDI"
 Content-Disposition: inline
 
 
---ljwjD4eUwP//fgul
+--ivrUthVTr0Ce7KDI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 25, 2013 at 11:14:59AM +0200, Jean-Francois Moine wrote:
+On Thu, Jul 25, 2013 at 09:15:01PM +0530, Vinod Koul wrote:
+> On Thu, Jul 25, 2013 at 08:50:40AM +0200, Clemens Ladisch wrote:
 
-> +	if (np) {
-> +		priv->burst = 128;		/* might be 32 or 128 */
-> +	} else if (data) {
+> > > For compressed audio we also need to support the PCM rates of 12 and 24KHz.
 
-When you posted this before I queried how and why the value might vary -
-I see the code is the same and I don't recall a reply.
+> > > Looking at pcm.h these are not defined
 
-> -	priv->clk = devm_clk_get(&pdev->dev, NULL);
-> +	priv->clk = devm_clk_get(&pdev->dev, "internal");
->  	if (IS_ERR(priv->clk)) {
-> -		dev_err(&pdev->dev, "no clock\n");
-> +		dev_err(&pdev->dev, "no internal clock\n");
->  		return PTR_ERR(priv->clk);
->  	}
+> > You don't need such symbols to use a rate.  These symbols are intended
+> > for often-used rates.  As long as only one or two drivers use a rate,
+> > they can just set KNOT and install a constraint.
 
-Does the code providing it already name the clock?  If not are updates
-needed to do that?
+> okay so how exactly is the rate passed to driver and converted and sent to
+> drivers?
 
-> -	priv->extclk = clk_get(&pdev->dev, "extclk");
-> +	priv->extclk = clk_get(&pdev->dev, "external");
+Having said that 24kHz sounds awfully familiar...
 
-Is the clock actually called extclk in the datasheet and so on?  If so
-it seems better to stick with that name.  Do any boards need updates for
-the new name?
-
---ljwjD4eUwP//fgul
+--ivrUthVTr0Ce7KDI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR8XolAAoJELSic+t+oim9V58P/1UNcnn+z1B+jlsAmpiBFQ09
-f70LNDBBcE99XhF5Bn6Kl1pgtuZhnS4JIGkM3MI8yay5/S6L7KXcgmZEhX1zgnWG
-pQf9nN94kGCHy7TExzTzFLXWGMa4MeT7DEczvsdMzJOQSQ24WRcXSoEacmjdresX
-Jkq50zMl11ozYR9PlAvlHPA88jqKBBTaLVMp9f681c9c0kwHAKEuqDL8x9L+zDkR
-Mwkg3+5XhqB+TbEFnQ2A+dXvglvtDiEQLtJXp04Ds0t+mfoJPKftfy7gAkJyKMr+
-6xalKd+iABVFnytHw/Sq6DI/bBXyYtRCi5+NlDQodaIohxTb+QD3nO1AYNmSfOcZ
-CgB692c8lsIMAv1jCdK2DYMnm59cgiE/xPNnTfNNrxDHJs8H8aMBF1DJQIb/7SbZ
-aGmYV31TylBQEgyYQIGR6gQIpwHW0c1bEAcWrr9KfG8WTTDGinlaCcdXnJR5nVtq
-7w4XbWCraXB9vU48YBYXyz21GcxKBRfe4EWoLp++OlllPJnFN9YuBhqZXi45p8dc
-rBt89L8oFXwteSRLXcoMNzV4aXt2m+MOPEb9YQJysF7dwMeG423c0tSeGLy8TNrj
-XVyp0lbCgbFFjwCGLfmJWGZ7Drzx0Ugrg3HrEIzCufw4KO2PZHh6cVuxb+K7VsF6
-wbsnADjmiNspjLUv7AGY
-=uKcT
+iQIcBAEBAgAGBQJR8X5IAAoJELSic+t+oim9pfsQAJ4PP340T3qdcoot3n+9oVMY
+Hc2ijriotlHj/DDVKztgHwmHdM2NbMEgUutOgh2c6G1ylbqb5MSd539gIwI9087u
+eveiG5cfFX5zYmybt2GjvMI9ljmimBRbv6ooajcxNh6D1lsRc5wQOdawvTFemBv+
+mTLBlo338zAGKp7ug6Jul8Es6GaviBmzOJX6AGg+SKC4SPpTeeNgJNMVEM02AXuR
+H5wHWgPYbnjZFe8GTwUxtVVQ7xXv/g4IxJr/WgUeT2hMi34YPwZqpVkTsHtubT6T
+xFDwb+w0z3ksi245MMKuaJKEi6xfCAWYTDyiCYha6TgLjFPjPOn2M3FOLHyDTcCU
+90bR24SrH4yIB4zpPpdWbLzv6AYV7DU/bnjWJ2aXpKLsDPnfuuTREFEkUaepLiGr
+7Vz2TQg7B4OA1jR+wR1WQ4b4kFl0Bjh2FH/8hshVxpA0WCJhjsx9LqWZ/YwQoK85
+TL/UbmJdUGvv8xW75D3GeODIuK7rpL7ZhhaAHmurOMsG6AHPO7Oq/kVHx3EaGxrK
+OFVyT2TwEJJcQ2BTg5mIylUBtjD+e8Y5EtAoi7VqitJeu/g1EUk4DYJ/UJnBYTB1
+OAYeqsYEvc3g85PGnWN0mW91l2De6r4p6V1dSYzHWmV7Uc38lMv9rwWEvYx2vC07
+Xwf6Tsvd8QwOWX/i0gPk
+=cXYC
 -----END PGP SIGNATURE-----
 
---ljwjD4eUwP//fgul--
+--ivrUthVTr0Ce7KDI--
 
---===============0638191429360560569==
+--===============7454481208429747692==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0638191429360560569==--
+--===============7454481208429747692==--
