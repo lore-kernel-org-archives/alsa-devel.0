@@ -1,176 +1,120 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH 4/4 v2] ASoc: kirkwood: add DT support
-Date: Thu, 25 Jul 2013 20:40:37 +0200
-Message-ID: <20130725204037.6ffc62d5@armhf>
+From: Joe Perches <joe@perches.com>
+Subject: [trivial PATCH] treewide: Fix printks with 0x%#
+Date: Thu, 25 Jul 2013 11:53:25 -0700
+Message-ID: <1374778405.1957.21.camel@joe-AO722>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <owner-linux-mm@kvack.org>
+Sender: owner-linux-mm@kvack.org
+To: Jiri Kosina <trivial@kernel.org>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, John Stultz <john.stultz@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Daniele Venzano <venza@brownhat.org>, Andi Kleen <andi@firstfloor.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-mm@kvack.org, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The kirkwood audio driver is used without DT in the Kirkwood machine.
-This patch adds a DT compatible definition for use in other Marvell
-machines as the Armada 88AP510 (Dove).
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
-v2
-	fix compilation error
----
- Documentation/devicetree/bindings/sound/kirkwood-i2s.txt | 29 ++++++++=
-++++++++++
- sound/soc/kirkwood/kirkwood-i2s.c                        | 35 ++++++++=
-+++++++-------
- 2 files changed, 53 insertions(+), 11 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/kirkwood-i2=
-s.txt
+Using 0x%# emits 0x0x.  Only one is necessary.
 
-diff --git a/Documentation/devicetree/bindings/sound/kirkwood-i2s.txt b=
-/Documentation/devicetree/bindings/sound/kirkwood-i2s.txt
-new file mode 100644
-index 0000000..015a769
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/kirkwood-i2s.txt
-@@ -0,0 +1,29 @@
-+* mvebu (Kirkwood, Dove, Armada 370) I2S controller
-+
-+Required properties:
-+
-+- compatible: "marvell,mvebu-i2s"
-+
-+- reg: physical base address of the controller and length of memory ma=
-pped
-+  region.
-+
-+- interrupts: list of two irq numbers.
-+  The first irq is used for data flow and the second one is used for e=
-rrors.
-+
-+- clocks: one or two phandles.
-+  The first one is mandatory and defines the internal clock.
-+  The second one is optional and defines an external clock.
-+
-+- clock-names: names associated to the clocks:
-+	"internal" for the internal clock
-+	"external" for the external clock
-+
-+Example:
-+
-+i2s1: audio-controller@b4000 {
-+	compatible =3D "marvell,mvebu-i2s";
-+	reg =3D <0xb4000 0x2210>;
-+	interrupts =3D <21>, <22>;
-+	clocks =3D <&gate_clk 13>;
-+	clock-names =3D "internal";
-+};
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/home/jef/kernel/sound/=
-soc/kirkwood/kirkwood-i2s.c.new
-index a1037e2..26c2f74 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/home/jef/kernel/sound/soc/kirkwood/kirkwood-i2s.c.new
-@@ -12,7 +12,6 @@
-=20
- #include <linux/init.h>
- #include <linux/module.h>
--#include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/slab.h>
- #include <linux/mbus.h>
-@@ -22,6 +21,8 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <linux/platform_data/asoc-kirkwood.h>
-+#include <linux/of.h>
-+
- #include "kirkwood.h"
-=20
- #define DRV_NAME	"kirkwood-i2s"
-@@ -477,6 +478,7 @@ static int kirkwood_i2s_dev_probe(struct platform_d=
-evice *pdev)
- 	struct snd_soc_dai_driver *soc_dai =3D &kirkwood_i2s_dai;
- 	struct kirkwood_dma_data *priv;
- 	struct resource *mem;
-+	struct device_node *np =3D pdev->dev.of_node;
- 	int err;
-=20
- 	priv =3D devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-@@ -497,16 +499,18 @@ static int kirkwood_i2s_dev_probe(struct platform=
-_device *pdev)
- 		return -ENXIO;
- 	}
-=20
--	if (!data) {
--		dev_err(&pdev->dev, "no platform data ?!\n");
--		return -EINVAL;
--	}
--
--	priv->burst =3D data->burst;
-+	if (np) {
-+		priv->burst =3D 128;		/* might be 32 or 128 */
-+	} else if (data) {
-+		priv->burst =3D data->burst;
-+	} else {
-+		dev_err(&pdev->dev, "no DT nor platform data ?!\n");
-+ 		return -EINVAL;
-+ 	}
-=20
--	priv->clk =3D devm_clk_get(&pdev->dev, NULL);
-+	priv->clk =3D devm_clk_get(&pdev->dev, "internal");
- 	if (IS_ERR(priv->clk)) {
--		dev_err(&pdev->dev, "no clock\n");
-+		dev_err(&pdev->dev, "no internal clock\n");
- 		return PTR_ERR(priv->clk);
- 	}
-=20
-@@ -514,7 +518,7 @@ static int kirkwood_i2s_dev_probe(struct platform_d=
-evice *pdev)
- 	if (err < 0)
- 		return err;
-=20
--	priv->extclk =3D clk_get(&pdev->dev, "extclk");
-+	priv->extclk =3D clk_get(&pdev->dev, "external");
- 	if (!IS_ERR(priv->extclk)) {
- 		if (priv->extclk =3D=3D priv->clk) {
- 			clk_put(priv->extclk);
-@@ -531,7 +535,7 @@ static int kirkwood_i2s_dev_probe(struct platform_d=
-evice *pdev)
- 	priv->ctl_rec =3D KIRKWOOD_RECCTL_SIZE_24;
-=20
- 	/* Select the burst size */
--	if (data->burst =3D=3D 32) {
-+	if (priv->burst =3D=3D 32) {
- 		priv->ctl_play |=3D KIRKWOOD_PLAYCTL_BURST_32;
- 		priv->ctl_rec |=3D KIRKWOOD_RECCTL_BURST_32;
- 	} else {
-@@ -557,12 +561,21 @@ fail:
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ arch/parisc/kernel/signal.c       | 2 +-
+ drivers/clocksource/acpi_pm.c     | 4 ++--
+ drivers/net/ethernet/sis/sis900.c | 2 +-
+ mm/memory-failure.c               | 2 +-
+ sound/pci/ens1370.c               | 2 +-
+ sound/pci/via82xx.c               | 2 +-
+ 6 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
+index 940188d..35c5bf1 100644
+--- a/arch/parisc/kernel/signal.c
++++ b/arch/parisc/kernel/signal.c
+@@ -85,7 +85,7 @@ restore_sigcontext(struct sigcontext __user *sc, struct pt_regs *regs)
+ 	err |= __copy_from_user(regs->iaoq, sc->sc_iaoq, sizeof(regs->iaoq));
+ 	err |= __copy_from_user(regs->iasq, sc->sc_iasq, sizeof(regs->iasq));
+ 	err |= __get_user(regs->sar, &sc->sc_sar);
+-	DBG(2,"restore_sigcontext: iaoq is 0x%#lx / 0x%#lx\n", 
++	DBG(2,"restore_sigcontext: iaoq is %#lx / %#lx\n",
+ 			regs->iaoq[0],regs->iaoq[1]);
+ 	DBG(2,"restore_sigcontext: r28 is %ld\n", regs->gr[28]);
  	return err;
- }
-=20
-+#ifdef CONFIG_OF
-+static struct of_device_id kirkwood_i2s_of_match[] =3D {
-+	{ .compatible =3D "marvell,mvebu-i2s" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, kirkwood_i2s_of_match);
-+#endif
-+
- static struct platform_driver kirkwood_i2s_driver =3D {
- 	.probe  =3D kirkwood_i2s_dev_probe,
- 	.remove =3D kirkwood_i2s_dev_remove,
- 	.driver =3D {
- 		.name =3D DRV_NAME,
- 		.owner =3D THIS_MODULE,
-+		.of_match_table =3D of_match_ptr(kirkwood_i2s_of_match),
- 	},
- };
-=20
---=20
-1.8.3.2
+diff --git a/drivers/clocksource/acpi_pm.c b/drivers/clocksource/acpi_pm.c
+index 6efe4d1..6eab889 100644
+--- a/drivers/clocksource/acpi_pm.c
++++ b/drivers/clocksource/acpi_pm.c
+@@ -200,14 +200,14 @@ static int __init init_acpi_pm_clocksource(void)
+ 			if ((value2 < value1) && ((value2) < 0xFFF))
+ 				break;
+ 			printk(KERN_INFO "PM-Timer had inconsistent results:"
+-			       " 0x%#llx, 0x%#llx - aborting.\n",
++			       " %#llx, %#llx - aborting.\n",
+ 			       value1, value2);
+ 			pmtmr_ioport = 0;
+ 			return -EINVAL;
+ 		}
+ 		if (i == ACPI_PM_READ_CHECKS) {
+ 			printk(KERN_INFO "PM-Timer failed consistency check "
+-			       " (0x%#llx) - aborting.\n", value1);
++			       " (%#llx) - aborting.\n", value1);
+ 			pmtmr_ioport = 0;
+ 			return -ENODEV;
+ 		}
+diff --git a/drivers/net/ethernet/sis/sis900.c b/drivers/net/ethernet/sis/sis900.c
+index eb4aea3..6c1e34c 100644
+--- a/drivers/net/ethernet/sis/sis900.c
++++ b/drivers/net/ethernet/sis/sis900.c
+@@ -1723,7 +1723,7 @@ static irqreturn_t sis900_interrupt(int irq, void *dev_instance)
+ 
+ 	if(netif_msg_intr(sis_priv))
+ 		printk(KERN_DEBUG "%s: exiting interrupt, "
+-		       "interrupt status = 0x%#8.8x.\n",
++		       "interrupt status = %#8.8x\n",
+ 		       net_dev->name, sr32(isr));
+ 
+ 	spin_unlock (&sis_priv->lock);
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 09ae111..29d3f38 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1267,7 +1267,7 @@ void memory_failure_queue(unsigned long pfn, int trapno, int flags)
+ 	if (kfifo_put(&mf_cpu->fifo, &entry))
+ 		schedule_work_on(smp_processor_id(), &mf_cpu->work);
+ 	else
+-		pr_err("Memory failure: buffer overflow when queuing memory failure at 0x%#lx\n",
++		pr_err("Memory failure: buffer overflow when queuing memory failure at %#lx\n",
+ 		       pfn);
+ 	spin_unlock_irqrestore(&mf_cpu->lock, proc_flags);
+ 	put_cpu_var(memory_failure_cpu);
+diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
+index ca8929b..61262f3 100644
+--- a/sound/pci/ens1370.c
++++ b/sound/pci/ens1370.c
+@@ -1842,7 +1842,7 @@ static int snd_ensoniq_create_gameport(struct ensoniq *ensoniq, int dev)
+ 
+ 	default:
+ 		if (!request_region(io_port, 8, "ens137x: gameport")) {
+-			printk(KERN_WARNING "ens137x: gameport io port 0x%#x in use\n",
++			printk(KERN_WARNING "ens137x: gameport io port %#x in use\n",
+ 			       io_port);
+ 			return -EBUSY;
+ 		}
+diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
+index 3c511d0..5ae6f04 100644
+--- a/sound/pci/via82xx.c
++++ b/sound/pci/via82xx.c
+@@ -1940,7 +1940,7 @@ static int snd_via686_create_gameport(struct via82xx *chip, unsigned char *legac
+ 
+ 	r = request_region(JOYSTICK_ADDR, 8, "VIA686 gameport");
+ 	if (!r) {
+-		printk(KERN_WARNING "via82xx: cannot reserve joystick port 0x%#x\n",
++		printk(KERN_WARNING "via82xx: cannot reserve joystick port %#x\n",
+ 		       JOYSTICK_ADDR);
+ 		return -EBUSY;
+ 	}
 
 
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
