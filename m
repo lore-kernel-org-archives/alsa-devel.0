@@ -1,72 +1,165 @@
 From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH 5/6] ASoC: sirf-inner: add mach driver for
- SiRFSoC internal codec
-Date: Thu, 25 Jul 2013 16:57:22 +0800
-Message-ID: <CAGsJ_4w5G3ppgWdFYJ0-cMLbuvDMdy+dJneMshkeYz5MR6RW+Q@mail.gmail.com>
+Subject: Re: [PATCH 4/6] ASoC: sirf-soc-inner: add drivers for both CPU and
+ Codec DAIs
+Date: Thu, 25 Jul 2013 17:11:50 +0800
+Message-ID: <CAGsJ_4xvGBj393rKPvDhumgDppe9k+K6Nbcef0KwGiYaHdhkxQ@mail.gmail.com>
 References: <1374232042-26088-1-git-send-email-Baohua.Song@csr.com>
- <1374232042-26088-6-git-send-email-Baohua.Song@csr.com>
- <20130719185101.GV9858@sirena.org.uk>
+ <1374232042-26088-5-git-send-email-Baohua.Song@csr.com>
+ <20130719183503.GU9858@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f47.google.com (mail-qa0-f47.google.com
- [209.85.216.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E48926030F
- for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 10:57:43 +0200 (CEST)
-Received: by mail-qa0-f47.google.com with SMTP id o19so2032184qap.13
- for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 01:57:42 -0700 (PDT)
-In-Reply-To: <20130719185101.GV9858@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20130719183503.GU9858@sirena.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Workgroup.Linux@csr.com, Rongjun Ying <Rongjun.Ying@csr.com>, Barry Song <Baohua.Song@csr.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 2013/7/20 Mark Brown <broonie@kernel.org>:
-> On Fri, Jul 19, 2013 at 07:07:21PM +0800, Barry Song wrote:
+> On Fri, Jul 19, 2013 at 07:07:20PM +0800, Barry Song wrote:
 >
->> +#ifndef CONFIG_ANDROID
->> +     unsigned int            gpio_hp_detect;
->> +     struct snd_soc_jack     hp_jack;
->> +#endif
+>> there is an internal codec embedded in the SiRF SoC. this is not
+>> a typical user scenerios of ASoC. but we can still get benefit by
+>> sharing platform DMA codes instead of implementing a pure ALSA
+>> driver.
+>> This driver adds DAI drivers for this internal codec.
 >
-> Not for mainline.  I'd suggest setting it up for extcon anyway
-> especially if it's just a simple accessory, that should work for both
-> Android and mainline.
+> To be honest this shouldn't be too exciting from an ASoC point of view -
+> just a normal CODEC driver with some stub DAIs.  It looks like it might
+> benefit from regmap-mmio and DAPM.
 
-sounds good as if CONFIG_ANDROID is enabled without
-CONFIG_ANDROID_SWITCH, /sys/class/switch/* will be symbolically linked
-to /sys/class/extcon/, so that they are still compatible with legacy
-userspace processes.
+the driver was a legacy pure alsa driver as it is not soc+external
+codec+mach framework.
+so it has many legacy codes. i agree we can move to regmap-mmio and asoc dapm.
 
 >
->> +static int sirf_inner_speaker_out_put(struct snd_kcontrol *kcontrol,
->> +             struct snd_ctl_elem_value *ucontrol)
+>> +static int sirf_inner_control(struct snd_kcontrol *kcontrol,
+>> +             struct snd_ctl_elem_value *ucontrol,
+>> +             int get, char *name)
 >> +{
->> +     int is_spk_out = ucontrol->value.integer.value[0];
 >> +     struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
 >> +     struct snd_soc_card *card = codec->card;
->> +     struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
->> +
->> +     if (gpio_is_valid(sinner_card->gpio_spk_pa))
->> +             gpio_direction_output(sinner_card->gpio_spk_pa, is_spk_out);
+>> +     int i;
+>> +     for (i = 0; i < card->num_controls; i++) {
+>> +             if (!strcmp(card->controls[i].name, name)) {
+>> +                     if (card->controls[i].get && get)
+>> +                             return card->controls[i].get(kcontrol, ucontrol);
+>> +                     else if (card->controls[i].put && !get)
+>> +                             return card->controls[i].put(kcontrol, ucontrol);
+>> +             }
+>> +     }
 >> +     return 0;
 >> +}
 >
-> Oh, right.  If this is doing what I think this is doing you want to use
-> DAPM within the CODEC then this can just become a pin switch or you can
-> hook in directly if you continue to use soc-jack - it has DAPM
-> integration.
+> What is all this about?  I don't quite understand what the goal is and
+> there's no comments.
 
-ok. here it is more of machine stuff than codec stuff, so i think we
-move to snd_soc_jack_gpio.
+it is a common kcontrol get/set function which will be called by all
+of sirf_inner_snd_speaker_set, sirf_inner_snd_headphone_get,
+sirf_inner_snd_headphone_set, sirf_inner_snd_speaker_get. after we
+move to DAPM, it should be useless.
+
+>
+>> +static int sirf_inner_snd_speaker_set(struct snd_kcontrol *kcontrol,
+>> +             struct snd_ctl_elem_value *ucontrol)
+>> +{
+>> +     struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+>> +     struct sirf_soc_inner_audio *sinner_audio = dev_get_drvdata(codec->dev);
+>> +
+>> +     spin_lock(&sinner_audio->lock);
+>> +     sirf_inner_control(kcontrol, ucontrol, 0, "Speaker Out");
+>> +
+>> +     if (ucontrol->value.integer.value[0]) {
+>> +             writel(readl(sinner_audio->base + AUDIO_IC_CODEC_CTRL0)
+>> +                             | IC_RDACEN | IC_SPSELR,
+>> +                             sinner_audio->base + AUDIO_IC_CODEC_CTRL0);
+>> +
+>> +             writel(readl(sinner_audio->base + AUDIO_IC_CODEC_CTRL1) |
+>> +                             (1 << sinner_audio->reg_bits->firdac_lout_en_bits),
+>> +                             sinner_audio->base + AUDIO_IC_CODEC_CTRL1);
+>> +
+>> +             writel((readl(sinner_audio->base + AUDIO_IC_CODEC_CTRL0) |
+>> +                                     IC_SPEN), sinner_audio->base + AUDIO_IC_CODEC_CTRL0);
+>
+> Is this possibly some supplies plus a power bit?
+>
+>> +static int sirf_inner_codec_startup(struct snd_pcm_substream *substream,
+>> +             struct snd_soc_dai *dai)
+>> +{
+>> +     struct sirf_soc_inner_audio *sinner_audio = snd_soc_dai_get_drvdata(dai);
+>> +     u32 adc_gain_mask = sinner_audio->reg_bits->adc_gain_mask;
+>> +     u32 adc_left_gain_shift = sinner_audio->reg_bits->adc_left_gain_shift;
+>> +     u32 adc_right_gain_shift = sinner_audio->reg_bits->adc_right_gain_shift;
+>> +     u32 mic_max_gain = sinner_audio->reg_bits->mic_max_gain;
+>
+> Would regmap_field help here?
+>
+>> +             writel(readl(sinner_audio->base + AUDIO_IC_CODEC_CTRL1) |
+>> +                     (1 << sinner_audio->reg_bits->codec_clk_en_bits) |
+>> +                     (1 << sinner_audio->reg_bits->por_bits),
+>> +                     sinner_audio->base + AUDIO_IC_CODEC_CTRL1);
+>> +             msleep(50);
+>> +
+>> +             writel(readl(sinner_audio->base + AUDIO_IC_CODEC_PWR) |
+>> +                     MICBIASEN, sinner_audio->base + AUDIO_IC_CODEC_PWR);
+>> +             usleep_range(300, 1000);
+>
+> This all looks a lot like a normal CODEC power up sequence that's been
+> open coded but could use DAPM?
+>
+>> +static void sirf_inner_codec_shutdown(struct snd_pcm_substream *substream,
+>> +             struct snd_soc_dai *dai)
+>> +{
+>> +}
+>> +
+>> +static int sirf_inner_codec_hw_params(struct snd_pcm_substream *substream,
+>> +             struct snd_pcm_hw_params *params,
+>> +             struct snd_soc_dai *dai)
+>> +{
+>> +     return 0;
+>> +}
+>
+> Remove empty functions.
+
+ok.
+
+>
+>> +static int sirf_soc_inner_resume(struct platform_device *pdev)
+>> +{
+>> +     struct sirf_soc_inner_audio *sinner_audio = platform_get_drvdata(pdev);
+>> +
+>> +     clk_prepare_enable(sinner_audio->clk);
+>> +
+>> +     writel((readl(sinner_audio->base + AUDIO_IC_CODEC_CTRL1)
+>> +             | (1 << sinner_audio->reg_bits->codec_clk_en_bits)),
+>> +             sinner_audio->base + AUDIO_IC_CODEC_CTRL1);
+>> +     writel((readl(sinner_audio->base + AUDIO_IC_CODEC_CTRL1)
+>> +             | (1 << sinner_audio->reg_bits->adc14b_12_bits)),
+>> +             sinner_audio->base + AUDIO_IC_CODEC_CTRL1);
+>> +     writel(readl(sinner_audio->base + AUDIO_IC_CODEC_CTRL0) | IC_CPFREQ,
+>> +             sinner_audio->base + AUDIO_IC_CODEC_CTRL0);
+>> +     writel(readl(sinner_audio->base + AUDIO_IC_CODEC_CTRL0) | IC_CPEN,
+>> +             sinner_audio->base + AUDIO_IC_CODEC_CTRL0);
+>> +     return 0;
+>> +}
+>> +#else
+>> +#define sirf_soc_inner_suspend NULL
+>> +#define sirf_soc_inner_resume NULL
+>> +#endif
+>
+> Standard runtime PM question and this definitely does look like
+> regmap-mmio will help - you've essentially open coded some of it.
+
+we can use runtime PM to handle clock disable/enable here. audio path
+widgets, codec and speaker widgets will be handled by DAPM.
 
 -barry
