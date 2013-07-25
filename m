@@ -1,7 +1,7 @@
 From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH 1/4] ASoc: kirkwood: change the pcm/dma stream data pointer
-Date: Thu, 25 Jul 2013 11:13:14 +0200
-Message-ID: <20130725111314.66b811bc@armhf>
+Subject: [PATCH 2/4] ASoc: kirkwood: simplify probe error
+Date: Thu, 25 Jul 2013 11:13:57 +0200
+Message-ID: <20130725111357.7c976963@armhf>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
@@ -10,68 +10,85 @@ Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In the kirkwood pcm/dma driver, the private stream related data pointer
-was hold in the platform drvdata.
-As this pointer may be used by other parts of the audio subsystem,
-this patch uses the substream runtime private data pointer instead.
+The function kirkwood_i2s_dev_remove() may be used when probe fails.
 
 Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
 ---
- sound/soc/kirkwood/kirkwood-dma.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/kirkwood/kirkwood-i2s.c | 44 +++++++++++++++++++------------=
+--------
+ 1 file changed, 21 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kir=
-kwood-dma.c
-index a9f1453..cef5277 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -127,10 +127,9 @@ static int kirkwood_dma_open(struct snd_pcm_substr=
-eam *substream)
- 	int err;
- 	struct snd_pcm_runtime *runtime =3D substream->runtime;
- 	struct snd_soc_pcm_runtime *soc_runtime =3D substream->private_data;
--	struct snd_soc_platform *platform =3D soc_runtime->platform;
- 	struct snd_soc_dai *cpu_dai =3D soc_runtime->cpu_dai;
- 	struct kirkwood_dma_data *priv;
--	struct kirkwood_dma_priv *prdata =3D snd_soc_platform_get_drvdata(pla=
-tform);
-+	struct kirkwood_dma_priv *prdata =3D runtime->private_data;
- 	const struct mbus_dram_target_info *dram;
- 	unsigned long addr;
+diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kir=
+kwood-i2s.c
+index 4c9dad3..d3e50af 100644
+--- a/sound/soc/kirkwood/kirkwood-i2s.c
++++ b/sound/soc/kirkwood/kirkwood-i2s.c
+@@ -455,6 +455,21 @@ static const struct snd_soc_component_driver kirkw=
+ood_i2s_component =3D {
+ 	.name		=3D DRV_NAME,
+ };
 =20
-@@ -171,7 +170,7 @@ static int kirkwood_dma_open(struct snd_pcm_substre=
-am *substream)
- 			return -EBUSY;
- 		}
-=20
--		snd_soc_platform_set_drvdata(platform, prdata);
-+		runtime->private_data =3D prdata;
-=20
- 		/*
- 		 * Enable Error interrupts. We're only ack'ing them but
-@@ -199,8 +198,7 @@ static int kirkwood_dma_close(struct snd_pcm_substr=
-eam *substream)
++static int kirkwood_i2s_dev_remove(struct platform_device *pdev)
++{
++	struct kirkwood_dma_data *priv =3D dev_get_drvdata(&pdev->dev);
++
++	snd_soc_unregister_component(&pdev->dev);
++
++	if (!IS_ERR(priv->extclk)) {
++		clk_disable_unprepare(priv->extclk);
++		clk_put(priv->extclk);
++	}
++	clk_disable_unprepare(priv->clk);
++
++	return 0;
++}
++
+ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
  {
- 	struct snd_soc_pcm_runtime *soc_runtime =3D substream->private_data;
- 	struct snd_soc_dai *cpu_dai =3D soc_runtime->cpu_dai;
--	struct snd_soc_platform *platform =3D soc_runtime->platform;
--	struct kirkwood_dma_priv *prdata =3D snd_soc_platform_get_drvdata(pla=
-tform);
-+	struct kirkwood_dma_priv *prdata =3D substream->runtime->private_data=
-;
- 	struct kirkwood_dma_data *priv;
+ 	struct kirkwood_asoc_platform_data *data =3D pdev->dev.platform_data;
+@@ -525,34 +540,17 @@ static int kirkwood_i2s_dev_probe(struct platform=
+_device *pdev)
 =20
- 	priv =3D snd_soc_dai_get_dma_data(cpu_dai, substream);
-@@ -217,7 +215,7 @@ static int kirkwood_dma_close(struct snd_pcm_substr=
-eam *substream)
- 		writel(0, priv->io + KIRKWOOD_ERR_MASK);
- 		free_irq(priv->irq, prdata);
- 		kfree(prdata);
--		snd_soc_platform_set_drvdata(platform, NULL);
-+		substream->runtime->private_data =3D NULL;
+ 	err =3D snd_soc_register_component(&pdev->dev, &kirkwood_i2s_componen=
+t,
+ 					 soc_dai, 1);
+-	if (!err)
+-		return 0;
+-	dev_err(&pdev->dev, "snd_soc_register_component failed\n");
+-
+-	if (!IS_ERR(priv->extclk)) {
+-		clk_disable_unprepare(priv->extclk);
+-		clk_put(priv->extclk);
++	if (err) {
++		dev_err(&pdev->dev, "snd_soc_register_component failed\n");
++		goto fail;
  	}
+-	clk_disable_unprepare(priv->clk);
++	return 0;
 =20
- 	return 0;
++fail:
++	kirkwood_i2s_dev_remove(pdev);
+ 	return err;
+ }
+=20
+-static int kirkwood_i2s_dev_remove(struct platform_device *pdev)
+-{
+-	struct kirkwood_dma_data *priv =3D dev_get_drvdata(&pdev->dev);
+-
+-	snd_soc_unregister_component(&pdev->dev);
+-
+-	if (!IS_ERR(priv->extclk)) {
+-		clk_disable_unprepare(priv->extclk);
+-		clk_put(priv->extclk);
+-	}
+-	clk_disable_unprepare(priv->clk);
+-
+-	return 0;
+-}
+-
+ static struct platform_driver kirkwood_i2s_driver =3D {
+ 	.probe  =3D kirkwood_i2s_dev_probe,
+ 	.remove =3D kirkwood_i2s_dev_remove,
 --=20
 1.8.3.2
 
