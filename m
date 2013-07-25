@@ -1,99 +1,69 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH] ASoC: fsl: Set sdma peripheral type directly
-Date: Thu, 25 Jul 2013 17:41:41 +0800
-Message-ID: <1374745301-29508-1-git-send-email-b42378@freescale.com>
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: [PATCH 3/6] ASoC: usp-pcm: add CPU DAI driver for PCM simulated
+ from USP
+Date: Thu, 25 Jul 2013 17:32:12 +0800
+Message-ID: <CAGsJ_4xNdxFWyN6NUEL36W9n+4Cj=01+QGi+xaeODm9u8pdP9A@mail.gmail.com>
+References: <1374232042-26088-1-git-send-email-Baohua.Song@csr.com>
+ <1374232042-26088-4-git-send-email-Baohua.Song@csr.com>
+ <20130719181313.GT9858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
- by alsa0.perex.cz (Postfix) with ESMTP id E3871260729
- for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 11:32:24 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: shawn.guo@linaro.org, broonie@kernel.org, timur@tabi.org
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20130719181313.GT9858@sirena.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Workgroup.Linux@csr.com, Rongjun Ying <Rongjun.Ying@csr.com>, Barry Song <Baohua.Song@csr.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Let CPU DAI drivers set SDMA periperal type directly to support more
-dma types(SPDIF, ESAI) other than only two for SSI.
-This will easily allow some non-SSI drivers to use the imx-pcm-dma
-as well.
-
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
-@Timur
-Compile-passed with mpc85xx_defconfig by using gcc-4.6.3-nolibc_powerpc-linux.
----
- sound/soc/fsl/fsl_ssi.c |    4 ++--
- sound/soc/fsl/imx-pcm.h |    7 ++-----
- sound/soc/fsl/imx-ssi.c |    4 ++--
- 3 files changed, 6 insertions(+), 9 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 11469fe..4d78df7 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -775,9 +775,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 			    "fsl,spba-bus");
- 
- 		imx_pcm_dma_params_init_data(&ssi_private->filter_data_tx,
--			dma_events[0], shared);
-+			dma_events[0], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
- 		imx_pcm_dma_params_init_data(&ssi_private->filter_data_rx,
--			dma_events[1], shared);
-+			dma_events[1], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
- 	}
- 
- 	/* Initialize the the device_attribute structure */
-diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
-index fd56cad..9136625 100644
---- a/sound/soc/fsl/imx-pcm.h
-+++ b/sound/soc/fsl/imx-pcm.h
-@@ -22,14 +22,11 @@
- 
- static inline void
- imx_pcm_dma_params_init_data(struct imx_dma_data *dma_data,
--	int dma, bool shared)
-+	int dma, enum sdma_peripheral_type peripheral_type)
- {
- 	dma_data->dma_request = dma;
- 	dma_data->priority = DMA_PRIO_HIGH;
--	if (shared)
--		dma_data->peripheral_type = IMX_DMATYPE_SSI_SP;
--	else
--		dma_data->peripheral_type = IMX_DMATYPE_SSI;
-+	dma_data->peripheral_type = peripheral_type;
- }
- 
- struct imx_pcm_fiq_params {
-diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-index f029e27..f58bcd8 100644
---- a/sound/soc/fsl/imx-ssi.c
-+++ b/sound/soc/fsl/imx-ssi.c
-@@ -571,13 +571,13 @@ static int imx_ssi_probe(struct platform_device *pdev)
- 	res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "tx0");
- 	if (res) {
- 		imx_pcm_dma_params_init_data(&ssi->filter_data_tx, res->start,
--			false);
-+			IMX_DMATYPE_SSI);
- 	}
- 
- 	res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "rx0");
- 	if (res) {
- 		imx_pcm_dma_params_init_data(&ssi->filter_data_rx, res->start,
--			false);
-+			IMX_DMATYPE_SSI);
- 	}
- 
- 	platform_set_drvdata(pdev, ssi);
--- 
-1.7.1
+MjAxMy83LzIwIE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz46Cj4gT24gRnJpLCBKdWwg
+MTksIDIwMTMgYXQgMDc6MDc6MTlQTSArMDgwMCwgQmFycnkgU29uZyB3cm90ZToKPgo+PiArc3Rh
+dGljIGludCBzaXJmX3VzcF9wY21fZGl2aWRlcihzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSwgaW50
+IGRpdl9pZCwgaW50IHJhdGUpCj4+ICt7Cj4+ICsgICAgIHN0cnVjdCBzaXJmX3VzcCAqc3VzcCA9
+IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRhKGRhaSk7Cj4+ICsKPj4gKyAgICAgdTMyIGNsa19yYXRl
+ID0gY2xrX2dldF9yYXRlKHN1c3AtPmNsayk7Cj4+ICsgICAgIHUzMiBjbGtfZGl2ID0gKGNsa19y
+YXRlLygyKnJhdGUpKSAtIDE7Cj4+ICsgICAgIHUzMiBjbGtfZGl2X2hpID0gKGNsa19kaXYgJiAw
+eEMwMCk+PjEwOwo+PiArICAgICB1MzIgY2xrX2Rpdl9sbyA9IChjbGtfZGl2ICYgMHgzRkYpOwo+
+PiArCj4+ICsgICAgIHdyaXRlbCgoY2xrX2Rpdl9sbzw8MjEpIHwgcmVhZGwoc3VzcC0+YmFzZSAr
+IFVTUF9NT0RFMiksCj4+ICsgICAgICAgICAgICAgc3VzcC0+YmFzZSArIFVTUF9NT0RFMik7Cj4+
+ICsgICAgIHdyaXRlbCgoY2xrX2Rpdl9oaTw8MzApIHwgcmVhZGwoc3VzcC0+YmFzZSArIFVTUF9U
+WF9GUkFNRV9DVFJMKSwKPj4gKyAgICAgICAgICAgICBzdXNwLT5iYXNlICsgVVNQX1RYX0ZSQU1F
+X0NUUkwpOwo+PiArCj4+ICsgICAgIHJldHVybiAwOwo+PiArfQo+Cj4gSSdkIGJlIGhhcHBpZXIg
+aWYgdGhpcyBkaWQgc29tZSB2YWxpZGF0aW9uIG9uIHRoZSBzdXBwbGllZCByYXRlIChmb3IKPiBl
+eGFtcGxlLCBjaGVja2luZyB0aGF0IGl0J3MgbGVzcyB0aGFuIHRoZSBtYXN0ZXIgcmF0ZSkgYW5k
+IGhhZCBhcmd1bWVudHMKPiBzcGVjaWZ5aW5nIHdoaWNoIGNsb2NrIHdhcyBiZWluZyBhZmZlY3Rl
+ZCAoaW4gY2FzZSB0aGVyZSdzIG1vcmUgaW4KPiBmdXR1cmUgcmV2aXNpb25zKS4KCnNvdW5kcyBn
+b29kLgoKPgo+IEFsc28gd2hhdCBleGFjdGx5IGlzIHRoZSByYXRlIGJlaW5nIHNldCAtIGNhbiB0
+aGUgZHJpdmVyIGp1c3QgZmlndXJlCj4gdGhpcyBvdXQgYXV0b21hdGljYWxseSBmcm9tIHRoZSBz
+YW1wbGUgcmF0ZT8KCmhlcmUgaXQgaXMgZ2VuZXJhdGluZyB0aGUgcmlnaHQgcGNtIGNsb2NrIGJ5
+IGFuIGludGVybmFsIERJVklTT1IgaW4gVVNQIG1vZHVsZS4KCkZvciBVU1BfTU9ERTI6CjMwOjIx
+IChSL1cpIFVTUF9DTEtfRElWSVNPUiAxMOKAmWgwIFVTUCBzZXJpYWwgY2xvY2sgZGl2aWRlcgoK
+Rm9yIFVTUF9UWF9GUkFNRV9DVFJMOgozMTozMCAoUi9XKSBVU1BfQ0xLX0RJVklTT1IgMuKAmWgw
+IFRoaXMgaXMgdGhlIHR3byBiaXQgWzExOjEwXSBvZgpVU1BfQ0xLX0RJVklTT1IgaW4gVVNQX01P
+REUyCgpmb3IgZmlndXJpbmcgdGhpcyBvdXQgYXV0b21hdGljYWxseSBmcm9tIHRoZSBzYW1wbGUg
+cmF0ZSwgZG8geW91IG1lYW4KYSBsb29rdXAgdGFibGUgZm9yIGNvbW1vbiBzYW1wbGUgcmF0ZT8K
+Cj4KPj4gKyNpZmRlZiBDT05GSUdfUE0KPj4gK3N0YXRpYyBpbnQgc2lyZl91c3BfcGNtX3N1c3Bl
+bmQoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiwKPj4gKyAgICAgcG1fbWVzc2FnZV90IHN0
+YXRlKQo+PiArewo+PiArICAgICBzdHJ1Y3Qgc2lyZl91c3AgKnN1c3AgPSBwbGF0Zm9ybV9nZXRf
+ZHJ2ZGF0YShwZGV2KTsKPj4gKwo+PiArICAgICBzdXNwLT5tb2RlMV9yZWcgPSByZWFkbChzdXNw
+LT5iYXNlICsgVVNQX01PREUxKTsKPj4gKyAgICAgc3VzcC0+bW9kZTJfcmVnID0gcmVhZGwoc3Vz
+cC0+YmFzZSArIFVTUF9NT0RFMik7Cj4+ICsgICAgIHNpcmZfdXNwX2NvbnRyb2xsZXJfdW5pbml0
+KHN1c3ApOwo+PiArICAgICBjbGtfZGlzYWJsZV91bnByZXBhcmUoc3VzcC0+Y2xrKTsKPj4gKwo+
+PiArICAgICByZXR1cm4gMDsKPj4gK30KPgo+IENhbiB0aGlzIGJlIGRvbmUgYXMgcnVudGltZSBQ
+TSBhcyB3ZWxsPyAgU2VlbXMgbGlrZSBpdCdkIHNhdmUgcG93ZXIuCgphZ3JlZS4KCj4KPj4gKyAg
+ICAgc3VzcC0+Y2xrID0gY2xrX2dldCgmcGRldi0+ZGV2LCBOVUxMKTsKPj4gKyAgICAgaWYgKElT
+X0VSUihzdXNwLT5jbGspKSB7Cj4+ICsgICAgICAgICAgICAgZGV2X2VycigmcGRldi0+ZGV2LCAi
+R2V0IGNsb2NrIGZhaWxlZC5cbiIpOwo+PiArICAgICAgICAgICAgIHJldHVybiBQVFJfRVJSKHN1
+c3AtPmNsayk7Cj4+ICsgICAgIH0KPgo+IGRldm1fY2xrX2dldCgpLgoKYWdyZWUuIG1pc3NlZCB0
+aGlzIG9uZS4KCi1iYXJyeQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KbGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJtLWtlcm5lbEBs
+aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtYXJtLWtlcm5lbAo=
