@@ -1,120 +1,57 @@
-From: Joe Perches <joe@perches.com>
-Subject: [trivial PATCH] treewide: Fix printks with 0x%#
-Date: Thu, 25 Jul 2013 11:53:25 -0700
-Message-ID: <1374778405.1957.21.camel@joe-AO722>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/4] ASoc: kirkwood: simplify probe error
+Date: Thu, 25 Jul 2013 20:10:59 +0100
+Message-ID: <20130725191059.GO9858@sirena.org.uk>
+References: <20130725111357.7c976963@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <owner-linux-mm@kvack.org>
-Sender: owner-linux-mm@kvack.org
-To: Jiri Kosina <trivial@kernel.org>
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, John Stultz <john.stultz@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Daniele Venzano <venza@brownhat.org>, Andi Kleen <andi@firstfloor.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-mm@kvack.org, alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="R/XXzwRD6iKUjf7i"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130725111357.7c976963@armhf>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Using 0x%# emits 0x0x.  Only one is necessary.
+--R/XXzwRD6iKUjf7i
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- arch/parisc/kernel/signal.c       | 2 +-
- drivers/clocksource/acpi_pm.c     | 4 ++--
- drivers/net/ethernet/sis/sis900.c | 2 +-
- mm/memory-failure.c               | 2 +-
- sound/pci/ens1370.c               | 2 +-
- sound/pci/via82xx.c               | 2 +-
- 6 files changed, 7 insertions(+), 7 deletions(-)
+On Thu, Jul 25, 2013 at 11:13:57AM +0200, Jean-Francois Moine wrote:
+> The function kirkwood_i2s_dev_remove() may be used when probe fails.
 
-diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
-index 940188d..35c5bf1 100644
---- a/arch/parisc/kernel/signal.c
-+++ b/arch/parisc/kernel/signal.c
-@@ -85,7 +85,7 @@ restore_sigcontext(struct sigcontext __user *sc, struct pt_regs *regs)
- 	err |= __copy_from_user(regs->iaoq, sc->sc_iaoq, sizeof(regs->iaoq));
- 	err |= __copy_from_user(regs->iasq, sc->sc_iasq, sizeof(regs->iasq));
- 	err |= __get_user(regs->sar, &sc->sc_sar);
--	DBG(2,"restore_sigcontext: iaoq is 0x%#lx / 0x%#lx\n", 
-+	DBG(2,"restore_sigcontext: iaoq is %#lx / %#lx\n",
- 			regs->iaoq[0],regs->iaoq[1]);
- 	DBG(2,"restore_sigcontext: r28 is %ld\n", regs->gr[28]);
- 	return err;
-diff --git a/drivers/clocksource/acpi_pm.c b/drivers/clocksource/acpi_pm.c
-index 6efe4d1..6eab889 100644
---- a/drivers/clocksource/acpi_pm.c
-+++ b/drivers/clocksource/acpi_pm.c
-@@ -200,14 +200,14 @@ static int __init init_acpi_pm_clocksource(void)
- 			if ((value2 < value1) && ((value2) < 0xFFF))
- 				break;
- 			printk(KERN_INFO "PM-Timer had inconsistent results:"
--			       " 0x%#llx, 0x%#llx - aborting.\n",
-+			       " %#llx, %#llx - aborting.\n",
- 			       value1, value2);
- 			pmtmr_ioport = 0;
- 			return -EINVAL;
- 		}
- 		if (i == ACPI_PM_READ_CHECKS) {
- 			printk(KERN_INFO "PM-Timer failed consistency check "
--			       " (0x%#llx) - aborting.\n", value1);
-+			       " (%#llx) - aborting.\n", value1);
- 			pmtmr_ioport = 0;
- 			return -ENODEV;
- 		}
-diff --git a/drivers/net/ethernet/sis/sis900.c b/drivers/net/ethernet/sis/sis900.c
-index eb4aea3..6c1e34c 100644
---- a/drivers/net/ethernet/sis/sis900.c
-+++ b/drivers/net/ethernet/sis/sis900.c
-@@ -1723,7 +1723,7 @@ static irqreturn_t sis900_interrupt(int irq, void *dev_instance)
- 
- 	if(netif_msg_intr(sis_priv))
- 		printk(KERN_DEBUG "%s: exiting interrupt, "
--		       "interrupt status = 0x%#8.8x.\n",
-+		       "interrupt status = %#8.8x\n",
- 		       net_dev->name, sr32(isr));
- 
- 	spin_unlock (&sis_priv->lock);
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 09ae111..29d3f38 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1267,7 +1267,7 @@ void memory_failure_queue(unsigned long pfn, int trapno, int flags)
- 	if (kfifo_put(&mf_cpu->fifo, &entry))
- 		schedule_work_on(smp_processor_id(), &mf_cpu->work);
- 	else
--		pr_err("Memory failure: buffer overflow when queuing memory failure at 0x%#lx\n",
-+		pr_err("Memory failure: buffer overflow when queuing memory failure at %#lx\n",
- 		       pfn);
- 	spin_unlock_irqrestore(&mf_cpu->lock, proc_flags);
- 	put_cpu_var(memory_failure_cpu);
-diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
-index ca8929b..61262f3 100644
---- a/sound/pci/ens1370.c
-+++ b/sound/pci/ens1370.c
-@@ -1842,7 +1842,7 @@ static int snd_ensoniq_create_gameport(struct ensoniq *ensoniq, int dev)
- 
- 	default:
- 		if (!request_region(io_port, 8, "ens137x: gameport")) {
--			printk(KERN_WARNING "ens137x: gameport io port 0x%#x in use\n",
-+			printk(KERN_WARNING "ens137x: gameport io port %#x in use\n",
- 			       io_port);
- 			return -EBUSY;
- 		}
-diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
-index 3c511d0..5ae6f04 100644
---- a/sound/pci/via82xx.c
-+++ b/sound/pci/via82xx.c
-@@ -1940,7 +1940,7 @@ static int snd_via686_create_gameport(struct via82xx *chip, unsigned char *legac
- 
- 	r = request_region(JOYSTICK_ADDR, 8, "VIA686 gameport");
- 	if (!r) {
--		printk(KERN_WARNING "via82xx: cannot reserve joystick port 0x%#x\n",
-+		printk(KERN_WARNING "via82xx: cannot reserve joystick port %#x\n",
- 		       JOYSTICK_ADDR);
- 		return -EBUSY;
- 	}
+This seems fine but doesn't apply against current code but otherwise
+seems fine.
 
+> +	if (!IS_ERR(priv->extclk)) {
+> +		clk_disable_unprepare(priv->extclk);
+> +		clk_put(priv->extclk);
+> +	}
 
+Could use devm_clk_get() for extclk.
 
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+--R/XXzwRD6iKUjf7i
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR8XhAAAoJELSic+t+oim9KYYP/j95q2OJ5ln4rd8L3tjyAzfM
+rWsJN/Z5ZzCPd2jYY72gO1dzZoe8iQ/HS+BB+UkP5zFIPi3qveR7GN5rAQYawDEK
+G7DeZwgZfEONfa0YRA97j++pRpW2GLhi6eY1gxpSGPnRNkFElZ+Y86C3c0oBkjmf
+1JGCpGwAj0Y89zcUDcBve8FlLM9M8l6qaXjB6UWPwenFPPaKGvfIoWyIGpt3Q1kd
+FIGWRxG4MjkZMIPDnFIW5t75F0nequfZrElQmbfcqfuUAl5d1dqoyZdyjHEN5O5H
+hQ2LJmqkxCi+2kGMr9a81RedKPcy+y/BkwwSY6NytAtXfYrADrebfiYuU2VY17wL
+dz2P6TctSkdDv6cAKYlBDT2Ds2QnyrdjEyE+iqRzdyFqMCuQO8x/FAERugUWEGTN
+b0p9HBysGpBzqjrDygBkUcsS/4Sd48SAM0rm5OfwmFmiD9c0ArRvga43b60wB3dA
+NjtKSaNhDSudn2NIksflX13qTSo9QgcxJ/Tqszo96X7dFO7lTyjPx5q/CYTgBgDG
+Pm09m3+728k66oAh3X70xmofYAIoxywkaaKqzH6/zm+uSGCy7CY8F99ihQdf2ule
+yBQhybcxJ8ptD+6D+l4OyURVIg27nsVtu7FbfHFJN17+ydt6cB7JLs2lKabdSWZg
+aUu8MUZ5nlyy93+0l1dB
+=IVlb
+-----END PGP SIGNATURE-----
+
+--R/XXzwRD6iKUjf7i--
