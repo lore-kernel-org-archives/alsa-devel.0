@@ -1,164 +1,80 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH 4/4] ASoc: kirkwood: add DT support
-Date: Thu, 25 Jul 2013 11:14:59 +0200
-Message-ID: <20130725111459.145a4aa4@armhf>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5640: add headset detection
+	function
+Date: Thu, 25 Jul 2013 10:15:47 +0100
+Message-ID: <20130725091547.GS9858@sirena.org.uk>
+References: <1374562469-5190-1-git-send-email-bardliao@realtek.com>
+ <20130723130016.GA9858@sirena.org.uk>
+ <1121E117AD4ECE49880A389A396215BB935C48A2B2@rtitmbs7.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============2757692678943536376=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 67BA22610A8
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 11:15:53 +0200 (CEST)
+In-Reply-To: <1121E117AD4ECE49880A389A396215BB935C48A2B2@rtitmbs7.realtek.com.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The kirkwood audio driver is used without DT in the Kirkwood machine.
-This patch adds a DT compatible definition for use in other Marvell
-machines as the Armada 88AP510 (Dove).
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
- .../devicetree/bindings/sound/kirkwood-i2s.txt     | 29 ++++++++++++++=
-++++
- sound/soc/kirkwood/kirkwood-i2s.c                  | 34 ++++++++++++++=
-+-------
- 2 files changed, 52 insertions(+), 11 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/kirkwood-i2=
-s.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/kirkwood-i2s.txt b=
-/Documentation/devicetree/bindings/sound/kirkwood-i2s.txt
-new file mode 100644
-index 0000000..015a769
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/kirkwood-i2s.txt
-@@ -0,0 +1,29 @@
-+* mvebu (Kirkwood, Dove, Armada 370) I2S controller
-+
-+Required properties:
-+
-+- compatible: "marvell,mvebu-i2s"
-+
-+- reg: physical base address of the controller and length of memory ma=
-pped
-+  region.
-+
-+- interrupts: list of two irq numbers.
-+  The first irq is used for data flow and the second one is used for e=
-rrors.
-+
-+- clocks: one or two phandles.
-+  The first one is mandatory and defines the internal clock.
-+  The second one is optional and defines an external clock.
-+
-+- clock-names: names associated to the clocks:
-+	"internal" for the internal clock
-+	"external" for the external clock
-+
-+Example:
-+
-+i2s1: audio-controller@b4000 {
-+	compatible =3D "marvell,mvebu-i2s";
-+	reg =3D <0xb4000 0x2210>;
-+	interrupts =3D <21>, <22>;
-+	clocks =3D <&gate_clk 13>;
-+	clock-names =3D "internal";
-+};
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kir=
-kwood-i2s.c
-index 3517784..fbe5150 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -12,7 +12,6 @@
-=20
- #include <linux/init.h>
- #include <linux/module.h>
--#include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/slab.h>
- #include <linux/mbus.h>
-@@ -22,6 +21,8 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <linux/platform_data/asoc-kirkwood.h>
-+#include <linux/of.h>
-+
- #include "kirkwood.h"
-=20
- #define DRV_NAME	"kirkwood-i2s"
-@@ -497,16 +498,18 @@ static int kirkwood_i2s_dev_probe(struct platform=
-_device *pdev)
- 		return -ENXIO;
- 	}
-=20
--	if (!data) {
--		dev_err(&pdev->dev, "no platform data ?!\n");
--		return -EINVAL;
--	}
--
--	priv->burst =3D data->burst;
-+	if (np) {
-+		priv->burst =3D 128;		/* might be 32 or 128 */
-+	} else if (data) {
-+		priv->burst =3D data->burst;
-+	} else {
-+		dev_err(&pdev->dev, "no DT nor platform data ?!\n");
-+ 		return -EINVAL;
-+ 	}
-=20
--	priv->clk =3D devm_clk_get(&pdev->dev, NULL);
-+	priv->clk =3D devm_clk_get(&pdev->dev, "internal");
- 	if (IS_ERR(priv->clk)) {
--		dev_err(&pdev->dev, "no clock\n");
-+		dev_err(&pdev->dev, "no internal clock\n");
- 		return PTR_ERR(priv->clk);
- 	}
-=20
-@@ -514,7 +517,7 @@ static int kirkwood_i2s_dev_probe(struct platform_d=
-evice *pdev)
- 	if (err < 0)
- 		return err;
-=20
--	priv->extclk =3D clk_get(&pdev->dev, "extclk");
-+	priv->extclk =3D clk_get(&pdev->dev, "external");
- 	if (!IS_ERR(priv->extclk)) {
- 		if (priv->extclk =3D=3D priv->clk) {
- 			clk_put(priv->extclk);
-@@ -531,7 +534,7 @@ static int kirkwood_i2s_dev_probe(struct platform_d=
-evice *pdev)
- 	priv->ctl_rec =3D KIRKWOOD_RECCTL_SIZE_24;
-=20
- 	/* Select the burst size */
--	if (data->burst =3D=3D 32) {
-+	if (priv->burst =3D=3D 32) {
- 		priv->ctl_play |=3D KIRKWOOD_PLAYCTL_BURST_32;
- 		priv->ctl_rec |=3D KIRKWOOD_RECCTL_BURST_32;
- 	} else {
-@@ -556,12 +559,21 @@ fail:
- 	return err;
- }
-=20
-+#ifdef CONFIG_OF
-+static struct of_device_id kirkwood_i2s_of_match[] =3D {
-+	{ .compatible =3D "marvell,mvebu-i2s" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, kirkwood_i2s_of_match);
-+#endif
-+
- static struct platform_driver kirkwood_i2s_driver =3D {
- 	.probe  =3D kirkwood_i2s_dev_probe,
- 	.remove =3D kirkwood_i2s_dev_remove,
- 	.driver =3D {
- 		.name =3D DRV_NAME,
- 		.owner =3D THIS_MODULE,
-+		.of_match_table =3D of_match_ptr(kirkwood_i2s_of_match),
- 	},
- };
-=20
---=20
-1.8.3.2
+--===============2757692678943536376==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="42UPFa7uQ4wfpYoB"
+Content-Disposition: inline
 
 
+--42UPFa7uQ4wfpYoB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+On Thu, Jul 25, 2013 at 11:36:42AM +0800, Bard Liao wrote:
+
+> Usually, our customers use cpu's gpio as the interrupt pin of jack insert/remove.
+> So we assume they will handle the interrupt event in machine driver.
+> When machine driver get a jack insert/remove event, it will call this function to know the jack type(headset or headphone).
+> Should I handle the interrupt event in codec driver?
+
+Yes, of course.  Interrupts are just interrupts on Linux.
+
+--42UPFa7uQ4wfpYoB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR8OzAAAoJELSic+t+oim9Z6wP/23Z3MLzphQ/eW0XAb5o4Gyv
+IzDLbmr2FjeDm++i4Sxl+G3ROK8i33tm3WawKaYTCwBiG/POxmcsVVsSR9NBpn9B
+asud4O0PphixEVOcn7etP8ZebNw9edP/fYvPRjoctA/uNkSc2qJTVh8xn5HFDtad
+NH8jlWrni/abUaQ8h3gyoD5D1wgc88vAJL6+AZnYoYUWZCmAYfxGh4hkum2AJkNK
+QibgrSPHl2EkYHuLZ9qBMu7NmZj5/0dSQPOw/F1JR9JygaBpxe8nENt592bzArnx
+5teiov6kVUAAx5LYazRoy8sWRdKxYLn2Lv75fWiBHj44d1cJu1cKxzgcEOpyJX9K
+BPnH5Jqrmbb//9GosRXDIfkEygylhF/KzojhlE0pOr36wNGzXdiULRMMfALn42FG
+qLPs6qb5NkS3cho+qc/j4PjgddRqlX8Erj9HaNq5HSwu+F+BoEPyd32HyslZN3fX
++AnJvwpx9A5BJ8hgkUHgU461qap+L6fWNcTBBvwp94I7b+stOT8KSP2ZKbzVbLD1
+AWeDrjGgJr3zY+tZyxA5tEdInfMDlkD9UuPzleS0RThBzUC+8iSULMHKI2D17D+f
+OZB1r8sYrJgKT/+wYkKheiN23cXJ64uMuZYAMAWRNsGSr4Mzxnve6m7QF5lGHp1w
+sy2uqQJVS5x7Z/cqzdPr
+=9l1/
+-----END PGP SIGNATURE-----
+
+--42UPFa7uQ4wfpYoB--
+
+--===============2757692678943536376==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2757692678943536376==--
