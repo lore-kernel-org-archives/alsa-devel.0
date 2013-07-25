@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/6] ASoC: usp-pcm: add CPU DAI driver for
- PCM simulated from USP
-Date: Thu, 25 Jul 2013 11:24:53 +0100
-Message-ID: <20130725102453.GZ9858@sirena.org.uk>
-References: <1374232042-26088-1-git-send-email-Baohua.Song@csr.com>
- <1374232042-26088-4-git-send-email-Baohua.Song@csr.com>
- <20130719181313.GT9858@sirena.org.uk>
- <CAGsJ_4xNdxFWyN6NUEL36W9n+4Cj=01+QGi+xaeODm9u8pdP9A@mail.gmail.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: Ambiguous DAPM widget names and DPCM
+Date: Thu, 25 Jul 2013 14:24:54 +0200
+Message-ID: <51F11916.1080002@gmail.com>
+References: <51EE3F18.3030207@gmail.com> <20130723123017.GV9858@sirena.org.uk>
+ <51EEA2A3.8030106@gmail.com> <20130723183038.GO9858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5004329116008014452=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 37FF0260783
- for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 12:24:56 +0200 (CEST)
-In-Reply-To: <CAGsJ_4xNdxFWyN6NUEL36W9n+4Cj=01+QGi+xaeODm9u8pdP9A@mail.gmail.com>
+Received: from mail-bk0-f44.google.com (mail-bk0-f44.google.com
+ [209.85.214.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 756A6260840
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 14:25:04 +0200 (CEST)
+Received: by mail-bk0-f44.google.com with SMTP id 6so662850bkj.17
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 05:25:01 -0700 (PDT)
+In-Reply-To: <20130723183038.GO9858@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,74 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Workgroup.Linux@csr.com, Rongjun Ying <Rongjun.Ying@csr.com>, Barry Song <Baohua.Song@csr.com>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 23.07.2013 20:30, Mark Brown wrote:
+> On Tue, Jul 23, 2013 at 05:34:59PM +0200, Daniel Mack wrote:
 
---===============5004329116008014452==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0w3sVzSwLDVzzp/e"
-Content-Disposition: inline
+>> With printk() in snd_soc_dapm_new_control(), I see the following widgets
+>> being created during boot (one pair for each Codec, and two pairs for
+>> the platform dai):
+> 
+> OK, so the issue here is probably that you're overloading the single
+> McASP object rather than anything else
 
+Hmm, I'm not following. Isn't that the way things are supposed to work
+with DPCM?
 
---0w3sVzSwLDVzzp/e
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Lookups are done first in the local DAPM context so so long as the thing
+> that's setting up the links is doing so in the same context everything
+> should be OK.  This is needed so you can have two of the same device in
+> a system.
 
-On Thu, Jul 25, 2013 at 05:32:12PM +0800, Barry Song wrote:
-> 2013/7/20 Mark Brown <broonie@kernel.org>:
+Hmm, but DPCM does not have such a local context, and just tries to look
+up the widgets by name globally.
 
-> > Also what exactly is the rate being set - can the driver just figure
-> > this out automatically from the sample rate?
+> The prefix mechanism is intended to address this; however it's only
+> currently supported for CODECs.  If we move the prefixes to components
+> then they should be usable for CPU DAIs.
 
-> here it is generating the right pcm clock by an internal DIVISOR in USP m=
-odule.
+But that's a static string as well. How can we distiguish between two
+Codecs of the same type, or two McASP instances?
 
-> For USP_MODE2:
-> 30:21 (R/W) USP_CLK_DIVISOR 10=E2=80=99h0 USP serial clock divider
+All of that might not have been a big issue so far maybe, but with DPMC,
+we need to make the names unique, and add a way to uniquely identify
+each widget along with its device identifier.
 
-> For USP_TX_FRAME_CTRL:
-> 31:30 (R/W) USP_CLK_DIVISOR 2=E2=80=99h0 This is the two bit [11:10] of
-> USP_CLK_DIVISOR in USP_MODE2
-
-> for figuring this out automatically from the sample rate, do you mean
-> a lookup table for common sample rate?
-
-That or just calculating it - if you know the input rate and know the
-output rate you need then for a simple divisor it should be possible to
-calculate the required value.
-
---0w3sVzSwLDVzzp/e
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR8PzxAAoJELSic+t+oim9H0oQAJtoLPxFDBNRGzuqpmPn2lO8
-lSeMZj5N/qWYXwexS9vHvehefgTtMe14lgwOLf2OQpu3UI7Qy5My35/NtIOKGXXj
-NCOBwOBR+3YpwCn7vu3BzNAo1UZOQorU0ZstcJK7uHt9ufuJ9ysRCtJsnb5fZRsy
-YojM9A8a8JcSZKlU2qefg06ALkss2mTwOvthyjQBK8sFmFkVGd6nAA5ZDusKefHV
-uOV/ZyBzgonwBUANpCbIho9CuFzF/iUvFoNQgyUNp8ePlUdrG20+50iMKVC7TEhm
-uwC6c4BfcjIPDdVkcPXM9hOX9w7gSvQRUc9GOeeVk+AOwqEhtdFvl1jtX+UVpiHE
-iJderTKia4Xv97N8/AcCGV4BbNmmU5lhGIZ94r6Eq/J2RE2fGaMCN0sCduxJfnVS
-7NkqVFktDAc+ByIWpUlJyi8NNxFO4kfo2MUgak6njla68FXCRSD9TvgrAeoMcN4Q
-IVGaOhBlizb6zBdfP0gmieHKqlmsNQJiErpvidU/rNzBKOwFhSTE58043QkoAQYf
-05EXNgwkingfRYI9epHBTxj5EDxKrNK2n1o9XHBbO4QkgImI0lhCpOyV8WC9mGW5
-xcEoXE105fz1p8xoicLzgeq86xOiCMLCdYMkiHkDA9wGL/YJcGTNh0fl4zzbkn8B
-PyhS9AE/Vt2dNEDLUUqJ
-=e/jK
------END PGP SIGNATURE-----
-
---0w3sVzSwLDVzzp/e--
-
---===============5004329116008014452==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Liam, could you explain what you think makes sense here?
 
 
---===============5004329116008014452==--
+Thanks,
+Daniel
