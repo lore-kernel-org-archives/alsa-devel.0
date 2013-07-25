@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/4] ASoc: kirkwood: merge kirkwood-i2c and
-	kirkwood-dma
-Date: Thu, 25 Jul 2013 20:16:04 +0100
-Message-ID: <20130725191604.GQ9858@sirena.org.uk>
-References: <20130725111428.419ee278@armhf>
+Subject: Re: [PATCH 4/4] ASoc: kirkwood: add DT support
+Date: Thu, 25 Jul 2013 20:19:05 +0100
+Message-ID: <20130725191905.GR9858@sirena.org.uk>
+References: <20130725111459.145a4aa4@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2334479028937024094=="
+Content-Type: multipart/mixed; boundary="===============0638191429360560569=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E6F92608D9
- for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 21:16:10 +0200 (CEST)
-In-Reply-To: <20130725111428.419ee278@armhf>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F35726109B
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 21:19:09 +0200 (CEST)
+In-Reply-To: <20130725111459.145a4aa4@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,61 +24,72 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2334479028937024094==
+--===============0638191429360560569==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="uXqDGoDRqNOsF677"
+	protocol="application/pgp-signature"; boundary="ljwjD4eUwP//fgul"
 Content-Disposition: inline
 
 
---uXqDGoDRqNOsF677
+--ljwjD4eUwP//fgul
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 25, 2013 at 11:14:28AM +0200, Jean-Francois Moine wrote:
-> To avoid the declaration of a 'kirkwood-pcm-audio' device in the DT,
-> this patch merges the kirkwood-i2c and kirkwood-dma drivers into one
-> module.
+On Thu, Jul 25, 2013 at 11:14:59AM +0200, Jean-Francois Moine wrote:
 
-This seems mostly fine, though it may be best to keep kirkwood-dma as a
-separate module for the benefit of the S/PDIF support when it gets added
-- I had a look at the implementation Russell has and it looks like it
-can be added as a separate interface.
+> +	if (np) {
+> +		priv->burst = 128;		/* might be 32 or 128 */
+> +	} else if (data) {
 
-> -	.platform_name = "kirkwood-pcm-audio",
-> +	.platform_name = "kirkwood-i2s",
+When you posted this before I queried how and why the value might vary -
+I see the code is the same and I don't recall a reply.
 
-Should the name be done as dev_name() for the interface (I don't know if
-there is ever more than one)?
+> -	priv->clk = devm_clk_get(&pdev->dev, NULL);
+> +	priv->clk = devm_clk_get(&pdev->dev, "internal");
+>  	if (IS_ERR(priv->clk)) {
+> -		dev_err(&pdev->dev, "no clock\n");
+> +		dev_err(&pdev->dev, "no internal clock\n");
+>  		return PTR_ERR(priv->clk);
+>  	}
 
---uXqDGoDRqNOsF677
+Does the code providing it already name the clock?  If not are updates
+needed to do that?
+
+> -	priv->extclk = clk_get(&pdev->dev, "extclk");
+> +	priv->extclk = clk_get(&pdev->dev, "external");
+
+Is the clock actually called extclk in the datasheet and so on?  If so
+it seems better to stick with that name.  Do any boards need updates for
+the new name?
+
+--ljwjD4eUwP//fgul
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR8XlxAAoJELSic+t+oim96KkQAI1ZCIRwUCURAg2+SoDxHgqq
-rLrcVNf2D7a9yMw1z3muobdHvvIkXaFnQBaszyOP/eHjEfoZap7ilyCU+SB0Ho6o
-5BzPG8HKGrBiiDovAxmVvqwJgLpi34mMhKd01Ay+z+Y2GvQdx7hiUpcGL05F8yKg
-Yi9JxORKtAWp/NGDGzlZ3EKGE/vHudX28WeNYwrecC5sJOssW2Qov/mYgBvBWdyH
-z8Geb9778/FpVaDmOh9e5YdnSy6fEL3fOXn0DfptKySEwKvkfC5tkOoKb8ikh1ad
-SoFW/xpjMNHb5HaLuV6ta4cUQ8QK3JlZhlZOKcOSKcGPhrAOAnEb4FVa0KbNME2j
-5xwXFe6CAVkqy+FPxD6b5YE2pmDrw7LJwYXXf89rZJ3EiF4Ldapfk1NVa5tKRN4m
-2D3wfX7eVWGJNJC/N8sIpQRrIv0uMqfH4spuu0IDgxiCNBrvhrxGNZbwCswCatf9
-i2VFe6bbKh4eT8iep7gWL3QHk6Z0JonV54duulaYLf5ZX2eSjh+JXJeGyydkacII
-ir3R1q+ERGBcXZvtHz9L8P4uxq1jYfg2s0N7g3c6qVO12hbiOBN2UScuVv8/rqxa
-01KK7td9OxzDcLForwe09qU1p1eCmfKgLeTGCctof15LAMkQX7Gq1ZSQqbh+rNO6
-+rDMcuBTCpdO/zsrqkFt
-=UvGR
+iQIcBAEBAgAGBQJR8XolAAoJELSic+t+oim9V58P/1UNcnn+z1B+jlsAmpiBFQ09
+f70LNDBBcE99XhF5Bn6Kl1pgtuZhnS4JIGkM3MI8yay5/S6L7KXcgmZEhX1zgnWG
+pQf9nN94kGCHy7TExzTzFLXWGMa4MeT7DEczvsdMzJOQSQ24WRcXSoEacmjdresX
+Jkq50zMl11ozYR9PlAvlHPA88jqKBBTaLVMp9f681c9c0kwHAKEuqDL8x9L+zDkR
+Mwkg3+5XhqB+TbEFnQ2A+dXvglvtDiEQLtJXp04Ds0t+mfoJPKftfy7gAkJyKMr+
+6xalKd+iABVFnytHw/Sq6DI/bBXyYtRCi5+NlDQodaIohxTb+QD3nO1AYNmSfOcZ
+CgB692c8lsIMAv1jCdK2DYMnm59cgiE/xPNnTfNNrxDHJs8H8aMBF1DJQIb/7SbZ
+aGmYV31TylBQEgyYQIGR6gQIpwHW0c1bEAcWrr9KfG8WTTDGinlaCcdXnJR5nVtq
+7w4XbWCraXB9vU48YBYXyz21GcxKBRfe4EWoLp++OlllPJnFN9YuBhqZXi45p8dc
+rBt89L8oFXwteSRLXcoMNzV4aXt2m+MOPEb9YQJysF7dwMeG423c0tSeGLy8TNrj
+XVyp0lbCgbFFjwCGLfmJWGZ7Drzx0Ugrg3HrEIzCufw4KO2PZHh6cVuxb+K7VsF6
+wbsnADjmiNspjLUv7AGY
+=uKcT
 -----END PGP SIGNATURE-----
 
---uXqDGoDRqNOsF677--
+--ljwjD4eUwP//fgul--
 
---===============2334479028937024094==
+--===============0638191429360560569==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2334479028937024094==--
+--===============0638191429360560569==--
