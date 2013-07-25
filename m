@@ -1,19 +1,19 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH] ASoC: rt5640: add headset detection
-	function
-Date: Thu, 25 Jul 2013 11:36:42 +0800
-Message-ID: <1121E117AD4ECE49880A389A396215BB935C48A2B2@rtitmbs7.realtek.com.tw>
-References: <1374562469-5190-1-git-send-email-bardliao@realtek.com>
- <20130723130016.GA9858@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: PCM extra attributes
+Date: Thu, 25 Jul 2013 11:54:28 +0800
+Message-ID: <CAN8ccia2_3b9Ua5Ze49ZMxx38GreYvaKXWYsdb1EnqyfL6LZGQ@mail.gmail.com>
+References: <20130724170919.GD18642@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 87DD8265578
- for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 05:36:48 +0200 (CEST)
-In-Reply-To: <20130723130016.GA9858@sirena.org.uk>
-Content-Language: zh-TW
+Received: from mail-oa0-f44.google.com (mail-oa0-f44.google.com
+ [209.85.219.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3917265578
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2013 05:54:29 +0200 (CEST)
+Received: by mail-oa0-f44.google.com with SMTP id l10so3137581oag.31
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2013 20:54:28 -0700 (PDT)
+In-Reply-To: <20130724170919.GD18642@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "Vinnakota,
+ Lakshmi N <lakshmi.n.vinnakota@intel.com>"@vkoul-udesk3.iind.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Tuesday, July 23, 2013 9:00 PM
-> To: Bard Liao
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Flove; Oder Chiou
-> Subject: Re: [PATCH] ASoC: rt5640: add headset detection function
-> 
-> On Tue, Jul 23, 2013 at 02:54:29PM +0800, bardliao@realtek.com wrote:
-> 
-> > + * @codec: SoC audio codec device.
-> > + * @jack_insert: Jack insert or not.
-> > + *
-> > + * Detect whether is headset or not when jack inserted.
-> > + *
-> > + * Returns detect status.
-> > + */
-> > +int rt5640_headset_detect(struct snd_soc_codec *codec,
-> > +				struct snd_soc_jack *jack, int jack_insert)
-> 
-> This doesn't look like it implements jack detection, it looks like it's some sort of
-> callback.  I'd expect to see some sort of interrupt for example...
-> 
-> What's going on here?
-
-Usually, our customers use cpu's gpio as the interrupt pin of jack insert/remove.
-So we assume they will handle the interrupt event in machine driver.
-When machine driver get a jack insert/remove event, it will call this function to know the jack type(headset or headphone).
-Should I handle the interrupt event in codec driver?
+>
+> We were looking to find the substream index in the userspace for the device
+> opened (in case we support multiple substreams and mix them).
 
 
-> 
-> ------Please consider the environment before printing this e-mail.
+http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___info.html
+
+snd_pcm_info_get_subdevice() - Get subdevice from a PCM info container
+
+snd_pcm_info_get_subdevice_name() - Get subdevice name from a PCM info
+container
+
+snd_pcm_info_get_subdevice_count() - Get subdevices count from a PCM info
+container
+
+snd_pcm_info_get_subdevice_avail() - Get avail subdevices count from a PCM
+info container
+
+snd_pcm_info_set_subdevice - Set wanted subdevice inside a PCM info
+container
+
+
+>
+> Since we also wanted to have some specific alsa controls for each
+> substream the problem of not knowing substream in usermode make stuff
+> interesting!
+>
+
+The subdevices of a device need to same format , rate , channels, period
+and buffer constraints
+
+
+http://git.alsa-project.org/?p=alsa-tools.git;a=tree;f=hwmixvolume
