@@ -1,24 +1,21 @@
-From: Felipe Tonello <eu@felipetonello.com>
-Subject: Re: [PATCH 1/4] ALSA: Added jack detection kcontrol
-	support
-Date: Fri, 26 Jul 2013 16:13:40 -0700
-Message-ID: <CAGrhNMwGdMwhd5L2gGxQ=N=8nFk4L5txYmhEtLBVcFj-Etphnw@mail.gmail.com>
-References: <1374863133-6745-1-git-send-email-eu@felipetonello.com>
- <1374863133-6745-2-git-send-email-eu@felipetonello.com>
- <20130726185458.GX9858@sirena.org.uk>
- <CAGrhNMy7qZ8CbAjFX5Gv8OqYkit+Eqzr2zZTYXeQ-cNO22+pTQ@mail.gmail.com>
- <20130726224813.GB9858@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Decibel Levels for Storm Medusa 5.1 USB Headset
+Date: Sat, 27 Jul 2013 07:30:13 +0800
+Message-ID: <CAN8cciY11fHgBhtR79BoY7R_1SLxpVQbYEzfM8Rm0s++QCfLdQ@mail.gmail.com>
+References: <51ED907A.1070305@uni-jena.de> <s5h61vzkp61.wl%tiwai@suse.de>
+ <CAN8cciZu_RitTng1PH8E_b3S8aM5pSrCs9=rr8wTaEBpV0eTbw@mail.gmail.com>
+ <51F2954C.3010202@gmx.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 493F92658CC
- for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2013 01:13:41 +0200 (CEST)
-Received: by mail-we0-f179.google.com with SMTP id t57so2354935wes.38
- for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 16:13:41 -0700 (PDT)
-In-Reply-To: <20130726224813.GB9858@sirena.org.uk>
+Received: from mail-oa0-f54.google.com (mail-oa0-f54.google.com
+ [209.85.219.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C21C2658CC
+ for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2013 01:30:15 +0200 (CEST)
+Received: by mail-oa0-f54.google.com with SMTP id o6so8940218oag.13
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 16:30:14 -0700 (PDT)
+In-Reply-To: <51F2954C.3010202@gmx.at>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,56 +25,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Wang Xingchao <xingchao.wang@linux.intel.com>, linux-kernel@vger.kernel.org, David Henningsson <david.henningsson@canonical.com>
+To: =?UTF-8?Q?Ulrich_G=C3=BCnther?= <ulrich.guenther@gmx.at>, alsa-devel@alsa-project.org, tiwai@suse.de, alexander.blinne@uni-jena.de
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
-
-On Fri, Jul 26, 2013 at 3:48 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Jul 26, 2013 at 12:10:27PM -0700, Felipe Tonello wrote:
->> On Fri, Jul 26, 2013 at 11:54 AM, Mark Brown <broonie@kernel.org> wrote:
->
->> > This isn't ideal for multi-function jacks like headsets - it will report
->> > a single boolean value for the jack regardless of what's plugged in
->> > meaning userpace can't do things like figure out if a headset or
->> > headphone is present.  It's probably OK for any realistic input button
->> > since you're not going to get an input button without other things being
->> > present.
->
->> The KControl for Jack is boolean anyway. You can check it with "amixer
->> contents". user-space can figure out based on the control name. At
->> least PulseAudio does that way.
->
-> No, it can't do that for headset jacks - these will be created with a
-> single jack reporting multiple states, there's a state for headphone and
-> a state for microphone.  The system can generally distinguish between
-> having a headset or just plain headphones inserted and act accordingly
-> (for example, recording from the built in microphone on a phone when
-> used with normal headpones).
->
->> > What I'd expect to happen here is that for multi function jacks we
->> > create a control per function if the controls are valid.
-
-Ok, so the idea is just to change the control to type integer instead
-of boolean, right?
-Because as you say, the user will be able to check the type of jack
-based on the status value, right?
-
->
->> Do you mean based on snd_jack_types?
->
-> Yes.  If there's only one function supported the current code is fine
-> but for multiple functions it's going to discard useful information.
-
-So, what do you suggest to do that? I'm not sure if I understand what
-you are saying.
-When you mean function, do you mean the SND_JACK_BTN_n or the the jack
-types, such as SND_JACK_HEADPHONE, and so on?
-
-If a codec creates a jack type SND_JACK_HEADSET (= SND_JACK_HEADPHONE
-| SND_JACK_MICROPHONE). It should be created two controls, name +
-"Headphone Jack" and name + "Microphone Jack"? If so, what about the
-status to report? How to know which control to report?
-
-Felipe Tonello
+PiA+Pj4gSSBob3BlIHRoaXMgSW5mb3JtYXRpb24gaGVscHMuIEkgaGF2ZSB0aGUgU3Rvcm0gTWVk
+dXNhIDUuMSBVU0IgSGVhZHNldAo+ID4+PiB3aGljaCByZXBvcnRzIHdyb25nIGRlY2liZWwgbGV2
+ZWxzIHRvIHB1bHNlYXVkaW8uIE15IEFsc2EtSW5mbyBhcmUKPiA+Pj4gbG9jYXRlZCBhdAo+ID4+
+Pgo+ID4+Pgo+ID4KaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPWE4ODJmM2RiNjc2
+OWM1ZGZjZTgzYzI2Njk0NmVmZjUyZDFkNTUzNDkKPiA+Pj4gVGhlIEhlYWRzZXQgaXMgY2FyZDIg
+aW4gdGhlIGFib3ZlIGR1bXAuCj4gPj4+Cj4gPj4+IE15IGRlY2liZWwgbGV2ZWxzLWZpeAo+ID4+
+Pgo+ID4+PiBbRGVjaWJlbEZpeCBTcGVha2VyXQo+ID4+PiBkYi12YWx1ZXMgPSAxOi0zMCAzNzoz
+Cj4gPj4gSG93IGRpZCB5b3UgZGVmaW5lIHRoZXNlIHZhbHVlcz8KPiA+Cmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAwNy1Ob3ZlbWJlci8wMDM4
+NjcuaHRtbAo+ID4KPiA+IElmIHlvdXIgaGVhZHNldCBoYXZlIHdpbmRvd3MgZHJpdmVyLCBuZWVk
+IHRvIGZpbmQgb3V0IHdoaWNoIFVTQiBjaGlwIGFuZAo+ID4gbG9vayBhdCB0aGUgZGF0YXNoZWV0
+IG9mIHRoZSBjaGlwCj4gPgo+ID4gZS5nLiBjbTEwNmwg4oCZcyBkYXRhc2hlZXQgY29udGFpbiBh
+IHRhYmxlIG9mICBkYWMgdm9sdW1lIGNvcnRvbAoKPiBPayBsb29rcyBsaWtlIGNtNjIwNiBpcyBv
+bmx5IGluIG5ld2VyIHZlcnNpb25zIG9mIHRoZSBoZWFkc2V0IGluIG9sZGVyCj4gKGxpa2UgbWlu
+ZSkgdGhlcmUgaXMgY20xMDZsICwgbWF5YmUgdGhlcmUgYXJlIG90aGVyIGNoaXBzIGFzIHdlbGwg
+YnV0IGkKPiBkb24ndCBrbm93LgoKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBl
+cm1haWwvYWxzYS1kZXZlbC8yMDA3LU5vdmVtYmVyLzAwMzg3Ny5odG1sCgpTZWVtIHNhbWUgVVNC
+IGF1ZGlvIGlkCgppZFZlbmRvciAgICAgICAgICAgMHgwZDhjIEMtTWVkaWEgRWxlY3Ryb25pY3Ms
+IEluYy4KaWRQcm9kdWN0ICAgICAgICAgIDB4MDAwNgoKRG8geW91IGZpbmQgb3V0IHRoZSBhdWRp
+byBjaGlwIGZyb20gcHJvZHVjdCBzcGVjLCB1c2VyIG1hbnVhbCBvciB3aW5kb3dzCmRyaXZlciA/
+CgpNYXN0ZXIgdm9sdW1lIGNvbnRyb2wgYnkgZGVmYXVsdDsgcGVyLWNoYW5uZWwgdm9sdW1lIGNv
+bnRyb2wgYnkgQy1NZWRpYQpkcml2ZXIKClJlZmVyIHRvIHRoZSBmdW5jdGlvbiBibG9jayBkaWFn
+cmFtICwgZGFjIHdpdGggdm9sdW1lIGNvbnRyb2xzIDAgdG8gLTQ1ZEIKClRoZXJlIGlzIGEgdGFi
+bGUgb2YgZGFjIHZvbHVtZSBjb250cm9sIGluIGxpbmVhciBzY2FsZQpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
