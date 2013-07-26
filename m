@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ALSA: Added jack detection kcontrol
-	support
-Date: Fri, 26 Jul 2013 19:54:58 +0100
-Message-ID: <20130726185458.GX9858@sirena.org.uk>
+Subject: Re: [PATCH 4/4] ALSA: oxygen: Updating jack
+ implementation according new ALSA Jacks
+Date: Fri, 26 Jul 2013 19:56:09 +0100
+Message-ID: <20130726185609.GY9858@sirena.org.uk>
 References: <1374863133-6745-1-git-send-email-eu@felipetonello.com>
- <1374863133-6745-2-git-send-email-eu@felipetonello.com>
+ <1374863133-6745-5-git-send-email-eu@felipetonello.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7930183470744519990=="
+Content-Type: multipart/mixed; boundary="===============6042894606620833919=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 55C012610D3
- for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 20:55:00 +0200 (CEST)
-In-Reply-To: <1374863133-6745-2-git-send-email-eu@felipetonello.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1360E2610D3
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 20:56:12 +0200 (CEST)
+In-Reply-To: <1374863133-6745-5-git-send-email-eu@felipetonello.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,61 +26,63 @@ Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Wang Xingchao <xi
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7930183470744519990==
+--===============6042894606620833919==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="svy5HJxpvdo0k1Cs"
+	protocol="application/pgp-signature"; boundary="yeHj6vyFcpxC+65j"
 Content-Disposition: inline
 
 
---svy5HJxpvdo0k1Cs
+--yeHj6vyFcpxC+65j
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 26, 2013 at 11:25:30AM -0700, Felipe F. Tonello wrote:
+On Fri, Jul 26, 2013 at 11:25:33AM -0700, Felipe F. Tonello wrote:
+> From: "Felipe F. Tonello" <eu@felipetonello.com>
+>=20
+> ALSA standard jacks already are implemented using ALSA KControl.
+> So there is no need implement that itself or to use snd_jack
+> for input events only.
 
-> +
-> +	/* Update ALSA KControl interface */
-> +	snd_kctl_jack_report((struct snd_card *)jack->kctl->private_data, jack->kctl, !!status);
+Similar changlog comment as on the ASoC patch and...
 
-This isn't ideal for multi-function jacks like headsets - it will report
-a single boolean value for the jack regardless of what's plugged in
-meaning userpace can't do things like figure out if a headset or
-headphone is present.  It's probably OK for any realistic input button
-since you're not going to get an input button without other things being
-present.
+>  	snd_jack_new(chip->card, "Headphone",
+> -		     SND_JACK_HEADPHONE, &data->hp_jack);
+> +	             SND_JACK_HEADPHONE, 0, &data->hp_jack);
+>  	xonar_ds_handle_hp_jack(chip);
 
-What I'd expect to happen here is that for multi function jacks we
-create a control per function if the controls are valid.
+=2E..this really ought to be done as part of the commit that adds the
+parameter since it breaks the build until this patch is applied.
 
---svy5HJxpvdo0k1Cs
+--yeHj6vyFcpxC+65j
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR8sX+AAoJELSic+t+oim9KUcP/iNSWmpjKTxpVfCXLzTil5Tg
-WYjTUec5Zn8OduXslLr71ZVMzUyQSJxx63EJ8UIY4EUFkDVyFRS6l8zCF4J1zf+6
-n96tPamPsEI2IWHZbV6FV/MJI74LukK/kP/00La9fFJ5cp9VYt/yspzEcuoktRkH
-6KiCrVPq4f3eK9hIeRtFr8IUt6EwPXTrJpzrTl9USOaFzjG9ntbzOLYn8+9O8Fzd
-/950B4Ns5ncEgmWqe+VUx+CmTnu9w0OqVsVoFe67E5/jp/5N5RiakocOXnrS5v9I
-d1YFpslogmK3lsyzJh5ZoFMY0/byA6UZPrBj27D/Tdu0Mrs8/M48H57Dw3TtTnEu
-Y9j7cgEI3WtNAeiOf6difpJ9h/xzr9fzKdje/60/b5cBDoHg5xjvlu6MqFQ3PLbo
-DO8hdpY18jcoh2l4NSlF4R/rHdlCH6fSQ5Ja33VcERV7C2L27VkMFAP/7nUe2vkt
-jKp3rujbWhZBvPpPGljJu1wb1hlo7OiW4HwdmH5O7dkGT1TImKKHd/Bkr5DVAoB1
-aZk8ob42gXy8yt6XLrxOEOiQiz3/45rJQYu+5bnMfBgi2AMw76+48W5Py+/rUGiO
-nOK7yaLQjQ23Jksb1H30gedVunWY4TAXc3McqO+jV0l5mN/GG8I0Kx5UUjQsXaFC
-w9sR++ePBhuScSurVSWN
-=nuA7
+iQIcBAEBAgAGBQJR8sZGAAoJELSic+t+oim9vh4P/jlvew18ahVcBJTWRcPFq2Za
+EtvX0IiAe9IDKAobeV+q4Vf68KJDZ9wTfkaq8QQJHu1gCAmoPK5WtVXOsIuuwGWx
+NBIc4gF+0+i7AzsWWpu93qN47/1HC15PQoMQxsebR2jSAthaQ89E2yZovYVpPCqe
+fbuJxsnuDzSjNiWfRGozz23/mNgkTsx5HmsVIkXluW5S4LNV1EqgKrv8m/Zh0NDv
+lHnzWfYggfDh06XEeDXRmDmaoT0q99S/izpJ2I02lNjkCfkLt/gpzsIQsidzIXBK
+S4AMWDIlflHHOiL7eBDFquUU2gGnONmrVY+8ViL5bNSQdm5kX8ESYQdUDlPfR6W4
+F1dtIbeDtIayFkt1jsa571tTGyt2ztv1npgDOlxeA9nIdeiYvWz3TxBLjkMXj8V7
+oBEDDmNQYsgWND8gmn7NK5TMFKEW4oUTU0Pj3fG28rqvTRGZf5yHLIh81lcjxiR3
+hUAO/ka2hk8SG7jxFoiAx7aZoONlJWMOVNsSsWtP4CktAhNiFCM9QVLJqN7Mr31n
+iXGUwAT76R7hYEXYpKJw6l/JGLjH4u5uHDPTRvURo+KBNdvxPFUXQ4oKaWidbGcQ
+x2b/Xm2i9WPNPRLy14cr5Imc1gdAi3WnqAKksB4xVH4ux9Mw8p99LeBIEwrD5+3/
+Fw5yQ55rAMyjqXKqNhug
+=0QtY
 -----END PGP SIGNATURE-----
 
---svy5HJxpvdo0k1Cs--
+--yeHj6vyFcpxC+65j--
 
---===============7930183470744519990==
+--===============6042894606620833919==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7930183470744519990==--
+--===============6042894606620833919==--
