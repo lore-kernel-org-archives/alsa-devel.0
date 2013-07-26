@@ -1,56 +1,83 @@
 From: Felipe Tonello <eu@felipetonello.com>
-Subject: Re: [PATCH 4/4] ALSA: oxygen: Updating jack implementation according
- new ALSA Jacks
-Date: Fri, 26 Jul 2013 15:48:52 -0700
-Message-ID: <CAGrhNMxb2-o9LFpdbsSgL5hLhLBxcm6cBR8nBypWj2UEaJv9hA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ALSA: Added jack detection kcontrol
+	support
+Date: Fri, 26 Jul 2013 16:13:40 -0700
+Message-ID: <CAGrhNMwGdMwhd5L2gGxQ=N=8nFk4L5txYmhEtLBVcFj-Etphnw@mail.gmail.com>
 References: <1374863133-6745-1-git-send-email-eu@felipetonello.com>
-	<1374863133-6745-5-git-send-email-eu@felipetonello.com>
-	<20130726185609.GY9858@sirena.org.uk>
-	<CAGrhNMzaBcUb4GHLXr5uR2g4YNSD60vcDpDKQO=S9H2jAx6pgA@mail.gmail.com>
-	<20130726224526.GA9858@sirena.org.uk>
+ <1374863133-6745-2-git-send-email-eu@felipetonello.com>
+ <20130726185458.GX9858@sirena.org.uk>
+ <CAGrhNMy7qZ8CbAjFX5Gv8OqYkit+Eqzr2zZTYXeQ-cNO22+pTQ@mail.gmail.com>
+ <20130726224813.GB9858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130726224526.GA9858@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+ [74.125.82.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 493F92658CC
+ for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2013 01:13:41 +0200 (CEST)
+Received: by mail-we0-f179.google.com with SMTP id t57so2354935wes.38
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 16:13:41 -0700 (PDT)
+In-Reply-To: <20130726224813.GB9858@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Wang Xingchao <xingchao.wang@linux.intel.com>, linux-kernel@vger.kernel.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
 Mark,
 
-On Fri, Jul 26, 2013 at 3:45 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Jul 26, 2013 at 12:02:51PM -0700, Felipe Tonello wrote:
->> On Fri, Jul 26, 2013 at 11:56 AM, Mark Brown <broonie@kernel.org> wrote:
+On Fri, Jul 26, 2013 at 3:48 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Jul 26, 2013 at 12:10:27PM -0700, Felipe Tonello wrote:
+>> On Fri, Jul 26, 2013 at 11:54 AM, Mark Brown <broonie@kernel.org> wrote:
 >
->> >>       snd_jack_new(chip->card, "Headphone",
->> >> -                  SND_JACK_HEADPHONE, &data->hp_jack);
->> >> +                  SND_JACK_HEADPHONE, 0, &data->hp_jack);
->> >>       xonar_ds_handle_hp_jack(chip);
+>> > This isn't ideal for multi-function jacks like headsets - it will report
+>> > a single boolean value for the jack regardless of what's plugged in
+>> > meaning userpace can't do things like figure out if a headset or
+>> > headphone is present.  It's probably OK for any realistic input button
+>> > since you're not going to get an input button without other things being
+>> > present.
 >
->> > ...this really ought to be done as part of the commit that adds the
->> > parameter since it breaks the build until this patch is applied.
+>> The KControl for Jack is boolean anyway. You can check it with "amixer
+>> contents". user-space can figure out based on the control name. At
+>> least PulseAudio does that way.
 >
->> But that's why is a patch series. But as you say, are you suggesting
->> me to propose this changes in one patch only?
+> No, it can't do that for headset jacks - these will be created with a
+> single jack reporting multiple states, there's a state for headphone and
+> a state for microphone.  The system can generally distinguish between
+> having a headset or just plain headphones inserted and act accordingly
+> (for example, recording from the built in microphone on a phone when
+> used with normal headpones).
 >
-> This one should be squashed in, as should the part of the ASoC change
-> that adjusts for the call into the core API.  The general idea with a
-> patch series is to split things into smaller chunks so they're easier to
-> understand and review but still keep things working with each change so
-> that things like git bisect continue to be usable.
+>> > What I'd expect to happen here is that for multi function jacks we
+>> > create a control per function if the controls are valid.
 
-Sure.
+Ok, so the idea is just to change the control to type integer instead
+of boolean, right?
+Because as you say, the user will be able to check the type of jack
+based on the status value, right?
 
 >
-> So I guess something like one patch that changes the core jack API to
-> add the index and support jack creation, one to remove the HDA custom
-> implementation and one to add support for specifying the index to the
-> ASoC API and adjust all its users.
+>> Do you mean based on snd_jack_types?
+>
+> Yes.  If there's only one function supported the current code is fine
+> but for multiple functions it's going to discard useful information.
 
-I squashed into the HDA one. Perhaps I should send it again?
+So, what do you suggest to do that? I'm not sure if I understand what
+you are saying.
+When you mean function, do you mean the SND_JACK_BTN_n or the the jack
+types, such as SND_JACK_HEADPHONE, and so on?
 
-I don't know why, but my gmail is messing with the thread. If you
-think it's better I can send a v3 with no --in-reply-to option.
+If a codec creates a jack type SND_JACK_HEADSET (= SND_JACK_HEADPHONE
+| SND_JACK_MICROPHONE). It should be created two controls, name +
+"Headphone Jack" and name + "Microphone Jack"? If so, what about the
+status to report? How to know which control to report?
 
 Felipe Tonello
