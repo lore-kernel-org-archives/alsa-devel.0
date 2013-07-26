@@ -1,79 +1,186 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: Broken headphone and speaker amplifier supplies
- for the rt5640 driver
-Date: Fri, 26 Jul 2013 10:57:53 -0600
-Message-ID: <51F2AA91.1010400@wwwdotorg.org>
-References: <51F29064.8080003@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 58E3A26088F
- for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 18:57:57 +0200 (CEST)
-In-Reply-To: <51F29064.8080003@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Bard Liao <bardliao@realtek.com>, Linux-ALSA <alsa-devel@alsa-project.org>
+From: "Felipe F. Tonello" <eu@felipetonello.com>
+Subject: [PATCH 1/4] ALSA: Added jack detection kcontrol support
+Date: Fri, 26 Jul 2013 11:25:30 -0700
+Message-ID: <1374863133-6745-2-git-send-email-eu@felipetonello.com>
+References: <1374863133-6745-1-git-send-email-eu@felipetonello.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1374863133-6745-1-git-send-email-eu@felipetonello.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, David Henningsson <david.henningsson@canonical.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, "Felipe F. Tonello" <eu@felipetonello.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/26/2013 09:06 AM, Lars-Peter Clausen wrote:
-> Hi,
-> 
-> The rt5640 driver sets for both the headphone and speaker amplifier widget
-> the shift to SND_SOC_NOPM, which is -1. This doesn't make much sense and
-> breaks compilation with some changes I've made.
-> 
-> I guess for the heaphone amplifier the right fix is to set the shift to
-> RT5640_PWR_HA_BIT ...
+From: "Felipe F. Tonello" <eu@felipetonello.com>
 
-If I make those changes (see below for the exact patch I tried), then
-both headphones and speakers do appear to still work fine. Bard will
-have to comment on whether the changes are actually correct though:-)
+This patch adds jack support for alsa kcontrol.
 
-> diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-> index ce585e3..e3ab0b2 100644
-> --- a/sound/soc/codecs/rt5640.c
-> +++ b/sound/soc/codecs/rt5640.c
-> @@ -899,8 +899,6 @@ static int spk_event(struct snd_soc_dapm_widget *w,
->  
->  	switch (event) {
->  	case SND_SOC_DAPM_POST_PMU:
-> -		regmap_update_bits(rt5640->regmap, RT5640_PWR_DIG1,
-> -					0x0001, 0x0001);
->  		regmap_update_bits(rt5640->regmap, RT5640_PR_BASE + 0x1c,
->  					0xf000, 0xf000);
->  		break;
-> @@ -908,8 +906,6 @@ static int spk_event(struct snd_soc_dapm_widget *w,
->  	case SND_SOC_DAPM_PRE_PMD:
->  		regmap_update_bits(rt5640->regmap, RT5640_PR_BASE + 0x1c,
->  					0xf000, 0x0000);
-> -		regmap_update_bits(rt5640->regmap, RT5640_PWR_DIG1,
-> -					0x0001, 0x0000);
->  		break;
->  
->  	default:
-> @@ -1159,13 +1155,13 @@ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
->  	SND_SOC_DAPM_SUPPLY("Improve MONO Amp Drv", RT5640_PWR_ANLG1,
->  		RT5640_PWR_MA_BIT, 0, NULL, 0),
->  	SND_SOC_DAPM_SUPPLY("Improve HP Amp Drv", RT5640_PWR_ANLG1,
-> -		SND_SOC_NOPM, 0, NULL, 0),
-> +		RT5640_PWR_HA_BIT, 0, NULL, 0),
->  	SND_SOC_DAPM_PGA("HP L Amp", RT5640_PWR_ANLG1,
->  		RT5640_PWR_HP_L_BIT, 0, NULL, 0),
->  	SND_SOC_DAPM_PGA("HP R Amp", RT5640_PWR_ANLG1,
->  		RT5640_PWR_HP_R_BIT, 0, NULL, 0),
->  	SND_SOC_DAPM_SUPPLY("Improve SPK Amp Drv", RT5640_PWR_DIG1,
-> -		SND_SOC_NOPM, 0, spk_event,
-> +		RT5640_PWR_CLS_D_BIT, 0, spk_event,
->  		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
->  	/* Output Lines */
->  	SND_SOC_DAPM_OUTPUT("SPOLP"),
+This support is necessary since the new kcontrol is used by user-space
+daemons, such as PulseAudio(>=2.0), to do jack detection.)
+
+Signed-off-by: Felipe F. Tonello <eu@felipetonello.com>
+---
+ include/sound/jack.h |  6 ++++--
+ sound/core/Kconfig   |  1 +
+ sound/core/ctljack.c |  3 ++-
+ sound/core/jack.c    | 29 +++++++++++++++++++++++++++--
+ 4 files changed, 34 insertions(+), 5 deletions(-)
+
+diff --git a/include/sound/jack.h b/include/sound/jack.h
+index 5891657..dc62b74 100644
+--- a/include/sound/jack.h
++++ b/include/sound/jack.h
+@@ -26,6 +26,7 @@
+ #include <sound/core.h>
+ 
+ struct input_dev;
++struct snd_kcontrol;
+ 
+ /**
+  * Jack types which can be reported.  These values are used as a
+@@ -58,6 +59,7 @@ enum snd_jack_types {
+ 
+ struct snd_jack {
+ 	struct input_dev *input_dev;
++	struct snd_kcontrol *kctl;
+ 	int registered;
+ 	int type;
+ 	const char *id;
+@@ -70,7 +72,7 @@ struct snd_jack {
+ #ifdef CONFIG_SND_JACK
+ 
+ int snd_jack_new(struct snd_card *card, const char *id, int type,
+-		 struct snd_jack **jack);
++                 int idx, struct snd_jack **jack);
+ void snd_jack_set_parent(struct snd_jack *jack, struct device *parent);
+ int snd_jack_set_key(struct snd_jack *jack, enum snd_jack_types type,
+ 		     int keytype);
+@@ -80,7 +82,7 @@ void snd_jack_report(struct snd_jack *jack, int status);
+ #else
+ 
+ static inline int snd_jack_new(struct snd_card *card, const char *id, int type,
+-			       struct snd_jack **jack)
++                               int idx, struct snd_jack **jack)
+ {
+ 	return 0;
+ }
+diff --git a/sound/core/Kconfig b/sound/core/Kconfig
+index c0c2f57..8167615 100644
+--- a/sound/core/Kconfig
++++ b/sound/core/Kconfig
+@@ -20,6 +20,7 @@ config SND_COMPRESS_OFFLOAD
+ # to avoid having to force INPUT on.
+ config SND_JACK
+ 	bool
++	select SND_KCTL_JACK
+ 
+ config SND_SEQUENCER
+ 	tristate "Sequencer support"
+diff --git a/sound/core/ctljack.c b/sound/core/ctljack.c
+index e4b38fb..59aa6d0 100644
+--- a/sound/core/ctljack.c
++++ b/sound/core/ctljack.c
+@@ -38,7 +38,8 @@ snd_kctl_jack_new(const char *name, int idx, void *private_data)
+ 	kctl = snd_ctl_new1(&jack_detect_kctl, private_data);
+ 	if (!kctl)
+ 		return NULL;
+-	snprintf(kctl->id.name, sizeof(kctl->id.name), "%s Jack", name);
++
++	strlcpy(kctl->id.name, name, sizeof(kctl->id.name));
+ 	kctl->id.index = idx;
+ 	kctl->private_value = 0;
+ 	return kctl;
+diff --git a/sound/core/jack.c b/sound/core/jack.c
+index b35fe73..b2757b1 100644
+--- a/sound/core/jack.c
++++ b/sound/core/jack.c
+@@ -24,6 +24,7 @@
+ #include <linux/module.h>
+ #include <sound/jack.h>
+ #include <sound/core.h>
++#include <sound/control.h>
+ 
+ static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
+ 	SW_HEADPHONE_INSERT,
+@@ -48,6 +49,7 @@ static int snd_jack_dev_free(struct snd_device *device)
+ 	else
+ 		input_free_device(jack->input_dev);
+ 
++	snd_ctl_remove(device->card, jack->kctl);
+ 	kfree(jack->id);
+ 	kfree(jack);
+ 
+@@ -85,26 +87,36 @@ static int snd_jack_dev_register(struct snd_device *device)
+ 	if (err == 0)
+ 		jack->registered = 1;
+ 
++	/* We don't need to free the control, it's freed by snd_ctl_add itself
++	   if an error occur */
++	err = snd_ctl_add(card, jack->kctl);
++
+ 	return err;
+ }
+ 
+ /**
+  * snd_jack_new - Create a new jack
+  * @card:  the card instance
+- * @id:    an identifying string for this jack
++ * @id:    an identifying string for this jack, " Jack" is appended to the
++ *         string
+  * @type:  a bitmask of enum snd_jack_type values that can be detected by
+  *         this jack
++ * @idx:   index of this control item
+  * @jjack: Used to provide the allocated jack object to the caller.
+  *
+  * Creates a new jack object.
+  *
++ * This function creates a Jack Kcontrol, which is exported to user space via
++ * ALSA Controls.
++ *
+  * Return: Zero if successful, or a negative error code on failure.
+  * On success @jjack will be initialised.
+  */
+ int snd_jack_new(struct snd_card *card, const char *id, int type,
+-		 struct snd_jack **jjack)
++                 int idx, struct snd_jack **jjack)
+ {
+ 	struct snd_jack *jack;
++	struct snd_kcontrol *kctl;
+ 	int err;
+ 	int i;
+ 	static struct snd_device_ops ops = {
+@@ -117,6 +129,7 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 		return -ENOMEM;
+ 
+ 	jack->id = kstrdup(id, GFP_KERNEL);
++	sprintf((char *)jack->id, "%s Jack", jack->id);
+ 
+ 	jack->input_dev = input_allocate_device();
+ 	if (jack->input_dev == NULL) {
+@@ -137,6 +150,15 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 	if (err < 0)
+ 		goto fail_input;
+ 
++	/* card is the private_data */
++	kctl = snd_kctl_jack_new(jack->id, idx, card);
++	if (!kctl) {
++		err = -ENOMEM;
++		goto fail_input;
++	}
++
++	jack->kctl = kctl;
++
+ 	*jjack = jack;
+ 
+ 	return 0;
+@@ -239,6 +261,9 @@ void snd_jack_report(struct snd_jack *jack, int status)
+ 	}
+ 
+ 	input_sync(jack->input_dev);
++
++	/* Update ALSA KControl interface */
++	snd_kctl_jack_report((struct snd_card *)jack->kctl->private_data, jack->kctl, !!status);
+ }
+ EXPORT_SYMBOL(snd_jack_report);
+ 
+-- 
+1.8.1.4
