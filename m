@@ -1,10 +1,8 @@
 From: "Felipe F. Tonello" <eu@felipetonello.com>
-Subject: [PATCH 4/4] ALSA: oxygen: Updating jack implementation according new ALSA Jacks
-Date: Fri, 26 Jul 2013 11:25:33 -0700
-Message-ID: <1374863133-6745-5-git-send-email-eu@felipetonello.com>
-References: <1374863133-6745-1-git-send-email-eu@felipetonello.com>
+Subject: [PATCH 0/4] ALSA: Implement core jack support for kcontrol
+Date: Fri, 26 Jul 2013 11:25:29 -0700
+Message-ID: <1374863133-6745-1-git-send-email-eu@felipetonello.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1374863133-6745-1-git-send-email-eu@felipetonello.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, David Henningsson <david.henningsson@canonical.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, "Felipe F. Tonello" <eu@felipetonello.com>
@@ -12,27 +10,58 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Felipe F. Tonello" <eu@felipetonello.com>
 
-ALSA standard jacks already are implemented using ALSA KControl.
-So there is no need implement that itself or to use snd_jack
-for input events only.
+This patch series enable KControl support for core Jack and update current
+codecs. This will will enable moderns user-space daemons, such as
+PulseAudio(>=2.0), to have jack detection support via newer ALSA KControl
+interface.
 
-Signed-off-by: Felipe F. Tonello <eu@felipetonello.com>
----
- sound/pci/oxygen/xonar_wm87x6.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Patch 1: Actually implementation using KControl.
 
-diff --git a/sound/pci/oxygen/xonar_wm87x6.c b/sound/pci/oxygen/xonar_wm87x6.c
-index 6ce6860..d3816b1 100644
---- a/sound/pci/oxygen/xonar_wm87x6.c
-+++ b/sound/pci/oxygen/xonar_wm87x6.c
-@@ -286,7 +286,7 @@ static void xonar_ds_init(struct oxygen *chip)
- 	xonar_enable_output(chip);
- 
- 	snd_jack_new(chip->card, "Headphone",
--		     SND_JACK_HEADPHONE, &data->hp_jack);
-+	             SND_JACK_HEADPHONE, 0, &data->hp_jack);
- 	xonar_ds_handle_hp_jack(chip);
- 
- 	snd_component_add(chip->card, "WM8776");
+Patch 2: It also ensures HDA drivers to use properly this new ALSA Jack
+implementation.
+
+Patches 3-4: This patch makes sure that all users of ALSA Jack uses this
+new standard way to report detections to user-space.
+
+Felipe F. Tonello (4):
+  ALSA: Added jack detection kcontrol support
+  ALSA: HDA: Updating jack implementation according new ALSA Jacks
+  ALSA: SoC: Updating jack implementation according new ALSA Jacks
+  ALSA: oxygen: Updating jack implementation according new ALSA Jacks
+
+ include/sound/jack.h               |  6 ++++--
+ include/sound/soc.h                |  2 +-
+ sound/core/Kconfig                 |  1 +
+ sound/core/ctljack.c               |  3 ++-
+ sound/core/jack.c                  | 29 +++++++++++++++++++++++++++--
+ sound/pci/hda/Kconfig              |  8 --------
+ sound/pci/hda/hda_codec.h          |  2 --
+ sound/pci/hda/hda_jack.c           | 38 +++++++++++++++++---------------------
+ sound/pci/hda/hda_jack.h           |  4 +---
+ sound/pci/oxygen/xonar_wm87x6.c    |  2 +-
+ sound/soc/fsl/wm1133-ev1.c         |  4 ++--
+ sound/soc/mid-x86/mfld_machine.c   |  6 +++---
+ sound/soc/omap/ams-delta.c         |  2 +-
+ sound/soc/omap/omap-abe-twl6040.c  |  4 ++--
+ sound/soc/omap/omap-twl4030.c      |  4 ++--
+ sound/soc/omap/rx51.c              |  6 +++---
+ sound/soc/pxa/hx4700.c             |  4 ++--
+ sound/soc/pxa/palm27x.c            |  4 ++--
+ sound/soc/pxa/ttc-dkb.c            |  8 ++++----
+ sound/soc/pxa/z2.c                 |  4 ++--
+ sound/soc/samsung/goni_wm8994.c    |  4 ++--
+ sound/soc/samsung/h1940_uda1380.c  |  4 ++--
+ sound/soc/samsung/littlemill.c     | 10 +++++-----
+ sound/soc/samsung/lowland.c        |  6 +++---
+ sound/soc/samsung/rx1950_uda1380.c |  4 ++--
+ sound/soc/samsung/smartq_wm8987.c  |  4 ++--
+ sound/soc/samsung/speyside.c       |  6 +++---
+ sound/soc/samsung/tobermory.c      |  4 ++--
+ sound/soc/soc-jack.c               |  4 ++--
+ sound/soc/tegra/tegra_alc5632.c    |  4 ++--
+ sound/soc/tegra/tegra_rt5640.c     |  2 +-
+ sound/soc/tegra/tegra_wm8903.c     |  8 ++++----
+ 32 files changed, 107 insertions(+), 94 deletions(-)
+
 -- 
 1.8.1.4
