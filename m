@@ -1,47 +1,53 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [alsa-devel] [patch] ASoC: adau1701: type bug with ADAU1707_CLKDIV_UNSET
-Date: Fri, 26 Jul 2013 17:54:02 +0200
-Message-ID: <51F29B9A.5080103@gmail.com>
-References: <20130725164016.GA4027@elgon.mountain>
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] ASoC: wm8994: Add clock bindings to the
+	device tree
+Date: Fri, 26 Jul 2013 16:54:09 +0100
+Message-ID: <20130726155409.GC3528@e106331-lin.cambridge.arm.com>
+References: <1374762668-5037-1-git-send-email-broonie@kernel.org>
+ <20130725154627.GA22291@e106331-lin.cambridge.arm.com>
+ <20130725175642.GJ9858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20130725164016.GA4027@elgon.mountain>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>, device-drivers-devel@blackfin.uclinux.org, Grant Likely <grant.likely@linaro.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
+ [217.140.96.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52FB8265785
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 17:54:11 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130725175642.GJ9858@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <Pawel.Moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 25.07.2013 18:40, Dan Carpenter wrote:
-> ADAU1707_CLKDIV_UNSET is always compared against an unsigned int and
-> not an unsigned long.  The current tests are always false.
-
-Well, in my case, sizeof(unsigned int) equals sizeof(unsigned long), so
-it didn't hit me. But it should be fixed of course, thanks for catching.
-
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-Acked-by: Daniel Mack <zonque@gmail.com>
-
-
+On Thu, Jul 25, 2013 at 06:56:42PM +0100, Mark Brown wrote:
+> On Thu, Jul 25, 2013 at 04:46:27PM +0100, Mark Rutland wrote:
 > 
-> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-> index 44d8a95..2c10252 100644
-> --- a/sound/soc/codecs/adau1701.c
-> +++ b/sound/soc/codecs/adau1701.c
-> @@ -91,7 +91,7 @@
->  #define ADAU1701_OSCIPOW_OPD		0x04
->  #define ADAU1701_DACSET_DACINIT		1
->  
-> -#define ADAU1707_CLKDIV_UNSET		(-1UL)
-> +#define ADAU1707_CLKDIV_UNSET		(-1U)
->  
->  #define ADAU1701_FIRMWARE "adau1701.bin"
->  
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > Do these two clock inputs exist for all of wm1811, wm8994, and wm8958?
 > 
+> Yes.
+> 
+> > If I've read the context correctly, these are optional. Does this mean
+> > that if not listed that an OS can assume they are already configured and
+> > active? It would be nice to document that.
+> 
+> The clocks are both optional but even if they were assumed to be present
+> they aren't usable without knowing the rate which can vary widely.  It
+> is possible that the system may be able to infer their presence and
+> rates from other information such as the audio system integration
+> compatible string but that's out of scope for this and doesn't seem like
+> a particularly good idea to encorage anyway.
 
+Ok, that sounds sensible.
+
+Thanks,
+Mark.
