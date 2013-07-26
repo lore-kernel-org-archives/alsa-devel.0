@@ -1,50 +1,79 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [patch] ASoC: adau1701: type bug with ADAU1707_CLKDIV_UNSET
-Date: Fri, 26 Jul 2013 17:02:53 +0100
-Message-ID: <20130726160253.GQ9858@sirena.org.uk>
-References: <20130725164016.GA4027@elgon.mountain>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: Broken headphone and speaker amplifier supplies
+ for the rt5640 driver
+Date: Fri, 26 Jul 2013 10:57:53 -0600
+Message-ID: <51F2AA91.1010400@wwwdotorg.org>
+References: <51F29064.8080003@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cgcPEDKc2RK7mT+z"
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20130725164016.GA4027@elgon.mountain>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Grant Likely <grant.likely@linaro.org>, Rob Herring <rob.herring@calxeda.com>, device-drivers-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58E3A26088F
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 18:57:57 +0200 (CEST)
+In-Reply-To: <51F29064.8080003@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Bard Liao <bardliao@realtek.com>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 07/26/2013 09:06 AM, Lars-Peter Clausen wrote:
+> Hi,
+> 
+> The rt5640 driver sets for both the headphone and speaker amplifier widget
+> the shift to SND_SOC_NOPM, which is -1. This doesn't make much sense and
+> breaks compilation with some changes I've made.
+> 
+> I guess for the heaphone amplifier the right fix is to set the shift to
+> RT5640_PWR_HA_BIT ...
 
---cgcPEDKc2RK7mT+z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+If I make those changes (see below for the exact patch I tried), then
+both headphones and speakers do appear to still work fine. Bard will
+have to comment on whether the changes are actually correct though:-)
 
-On Thu, Jul 25, 2013 at 07:40:17PM +0300, Dan Carpenter wrote:
-> ADAU1707_CLKDIV_UNSET is always compared against an unsigned int and
-> not an unsigned long.  The current tests are always false.
-
-Applied, thanks.
-
---cgcPEDKc2RK7mT+z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR8p2qAAoJELSic+t+oim9IXwP/1+9FOHIzan33tzY8IeACcaw
-JkVUzc1oa2ZuQ/UXECm/wyS0MU1CeZVIKNIk+FFsGlu+0oBuySv87Z41/wH68mGG
-iWcg7LbKLmQeUM95yr3Gpjwodu1XwnPcSG4grdtMx/uyHpbiSfem32GT3uMupntc
-sXCrHgryTLhngJ1OwvZTQ1fmEApP6WHGdPFsI4VaosW2rzDa737GCn6JpRaEq7Gx
-CN6d2Y2xBWDV9rS67d9Y0Htv5DSmiqW1MaikgCT0eIemxuLedM9RYWWExMaUmiMx
-4oVOd5BMeQTMUsx2brjrh9LqSIq5p8iaz7CyhMpwWKLmW9PzhVsNR/hM8JUVAwLn
-rynFS6t5jQWXmWPnhQkHyDlt6FS7lidOuLqpypatLCwTql1IU2hTI7pnij7AcCoF
-C7CZS0cmwAVCJEmOL5pynJRKSGiMbpqJwM/TMrJPan8sxR4L7u7lhC1RFD5MioAT
-zNebnGjfnRvlphnYSP9kOEfKc8UirkVfjlytPciKOL870+zwkp655MQxCEzBRvCk
-XpPPsFoessOKAwRb6WU8FIuZcR8q6kbfz7IhNTnzsS+CiqezWZdW1K234XpM/Hjl
-pTcIBw/SbC17c3enolL6KkFa1debq96Wy3d70rDfcOGPFxe6KJhjU3CL+awHdEgP
-PxaV3HCGuwh9KCjlj47O
-=cikR
------END PGP SIGNATURE-----
-
---cgcPEDKc2RK7mT+z--
+> diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+> index ce585e3..e3ab0b2 100644
+> --- a/sound/soc/codecs/rt5640.c
+> +++ b/sound/soc/codecs/rt5640.c
+> @@ -899,8 +899,6 @@ static int spk_event(struct snd_soc_dapm_widget *w,
+>  
+>  	switch (event) {
+>  	case SND_SOC_DAPM_POST_PMU:
+> -		regmap_update_bits(rt5640->regmap, RT5640_PWR_DIG1,
+> -					0x0001, 0x0001);
+>  		regmap_update_bits(rt5640->regmap, RT5640_PR_BASE + 0x1c,
+>  					0xf000, 0xf000);
+>  		break;
+> @@ -908,8 +906,6 @@ static int spk_event(struct snd_soc_dapm_widget *w,
+>  	case SND_SOC_DAPM_PRE_PMD:
+>  		regmap_update_bits(rt5640->regmap, RT5640_PR_BASE + 0x1c,
+>  					0xf000, 0x0000);
+> -		regmap_update_bits(rt5640->regmap, RT5640_PWR_DIG1,
+> -					0x0001, 0x0000);
+>  		break;
+>  
+>  	default:
+> @@ -1159,13 +1155,13 @@ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
+>  	SND_SOC_DAPM_SUPPLY("Improve MONO Amp Drv", RT5640_PWR_ANLG1,
+>  		RT5640_PWR_MA_BIT, 0, NULL, 0),
+>  	SND_SOC_DAPM_SUPPLY("Improve HP Amp Drv", RT5640_PWR_ANLG1,
+> -		SND_SOC_NOPM, 0, NULL, 0),
+> +		RT5640_PWR_HA_BIT, 0, NULL, 0),
+>  	SND_SOC_DAPM_PGA("HP L Amp", RT5640_PWR_ANLG1,
+>  		RT5640_PWR_HP_L_BIT, 0, NULL, 0),
+>  	SND_SOC_DAPM_PGA("HP R Amp", RT5640_PWR_ANLG1,
+>  		RT5640_PWR_HP_R_BIT, 0, NULL, 0),
+>  	SND_SOC_DAPM_SUPPLY("Improve SPK Amp Drv", RT5640_PWR_DIG1,
+> -		SND_SOC_NOPM, 0, spk_event,
+> +		RT5640_PWR_CLS_D_BIT, 0, spk_event,
+>  		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
+>  	/* Output Lines */
+>  	SND_SOC_DAPM_OUTPUT("SPOLP"),
