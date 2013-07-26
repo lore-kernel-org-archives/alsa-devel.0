@@ -1,61 +1,85 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ALSA: Added jack detection kcontrol support
-Date: Fri, 26 Jul 2013 19:46:44 +0100
-Message-ID: <20130726184644.GV9858@sirena.org.uk>
+Subject: Re: [PATCH 3/4] ALSA: SoC: Updating jack
+ implementation according new ALSA Jacks
+Date: Fri, 26 Jul 2013 19:50:23 +0100
+Message-ID: <20130726185023.GW9858@sirena.org.uk>
 References: <1374863133-6745-1-git-send-email-eu@felipetonello.com>
- <1374863133-6745-2-git-send-email-eu@felipetonello.com>
+ <1374863133-6745-4-git-send-email-eu@felipetonello.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0OwzF8Z6mNSRrgR5"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1374863133-6745-2-git-send-email-eu@felipetonello.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0267290613172657012=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFFE22610D2
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 20:50:26 +0200 (CEST)
+In-Reply-To: <1374863133-6745-4-git-send-email-eu@felipetonello.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: "Felipe F. Tonello" <eu@felipetonello.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Wang Xingchao <xingchao.wang@linux.intel.com>, linux-kernel@vger.kernel.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---0OwzF8Z6mNSRrgR5
-Content-Type: text/plain; charset=us-ascii
+--===============0267290613172657012==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lLYmlcOQv78n9rhj"
 Content-Disposition: inline
 
-On Fri, Jul 26, 2013 at 11:25:30AM -0700, Felipe F. Tonello wrote:
 
-> -	snprintf(kctl->id.name, sizeof(kctl->id.name), "%s Jack", name);
-> +
-> +	strlcpy(kctl->id.name, name, sizeof(kctl->id.name));
+--lLYmlcOQv78n9rhj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This looks like it'd break existing users unless they are updated to
-remove the "Jack" from their calls?
+On Fri, Jul 26, 2013 at 11:25:32AM -0700, Felipe F. Tonello wrote:
+> From: "Felipe F. Tonello" <eu@felipetonello.com>
+>=20
+> ALSA standard jacks already are implemented using ALSA KControl.
+> So there is no need implement that itself or to use snd_jack for input
+> events only.
 
->   * @type:  a bitmask of enum snd_jack_type values that can be detected by
->   *         this jack
-> + * @idx:   index of this control item
->   * @jjack: Used to provide the allocated jack object to the caller.
+This changelog doesn't correspond to the code change - what this is
+doing is updating the ASoC jack support to add the ability to specify a
+jack index when creating a jack.  There's nothing to do with removing
+duplicate kcontrol creation here at all.
 
-"The index of the ALSA control created to represent the jack.
+The change itself seems fine but it's not accurately described.
 
---0OwzF8Z6mNSRrgR5
+--lLYmlcOQv78n9rhj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR8sQRAAoJELSic+t+oim9Qj4P/2UWJakMQok4rDbjsSMeZYpV
-PdT/qiGagpvBDu7vZ4qgzSs0ryTw+TOby/9oGCw/XmQb867MFyvgxcvZN4ai/Dqk
-YeK5GNGPdZRII7Zlt8rKr+Y14mlSAy4bgqjPJ9HaDMZdHICpLBvqGf0sY7US2wuS
-VzbItTcZiEjRVfjb4IgTPReriQ67/8tq17WL4qiEK0jyUmPn0gFwbpWTRxOrujYr
-FZm3/XEH3l1avkC4iy4pDwVQM+FlkPMU2051qHWYjoLa8mUUiB+NFZDB212ZLgIT
-F76EoNB/aAfJDRnQJtPKm2fY1SyYTqHdwG760wEKtGUQIhEtBsgkCZKvfRwIRGBU
-1pJNtFyW8QO4QqM93VkXpRusKkwHQRinYkL0cU8z43dsPqhOtknkVRQNvRSTUBn2
-q/n8uTqbZmMMFXo7JSz+r0K0prJB07H9KOOgTGWJrxNcql+VGS4X+t32Kx5UGCc6
-WhH12fD4mKIBllpqnocwfgeJNwG+KkxhMybInjw3PIf/YE/oUlCG3MbxIfRK9YzN
-yGsi0mFXCGLGa1DVYJbG9HAP/cD5O4ngO0WyT1x53lXpXB9C9Hx8bFVUjEWBg0EF
-d5EeT+I+cDSHQ+Mz/8o63+hA+UHYx1ul/6meJosPR4LjFg4K/aIy1x75d4q0gWDr
-Dg8vi8rgALqiiIdJyX48
-=LS6V
+iQIcBAEBAgAGBQJR8sTrAAoJELSic+t+oim9jnAP/iG+7C8fHAL1I61ptK2dL8P4
+4WjyK101T3gfaHOn2ApBFqH5WKT/7HaQ0/d4nEwUoxs1I3DsWkQxqydjRtcT/6O+
+4qhqAONAWc4B0yyGZPRDwRAeuOC76+tMYQ7OpmiDP4tqFbzJtEHD1wmzg1+PxeLD
+jGXJ1MyTtO1u+/U8jMyx86oODqQz5GVVAsg7ti+Wz4D28+s8EBVQwl5+9MprvGu/
+1nZsrE1V2c3uvclKiJZ2qlYDs6RKckCRHQZBXwuRp63U7QAhJjJ0/UeiJ1v5paBh
+KHdsiQwM7Grsqm3/7BmbOMYh9Pxj/IPGSePDvFncSaYJQzOZXA2kEwJKjmujAQhf
+tVmkP+uDJOZMMYD+BoPrrHBhlOAjSfrYR3065MoCDac2XAN3uqvw2zZZc0nucDC6
+ig0RXgAt0IcoNOcw5hd6iR/a0JLLq3ySZK67IcAayCVHUrH19XP+vGErSWT06tw4
+qkqDjSmjSwOLmHy7/i8XT9Z2fNHGxiE4NM1RV2xBPaxhGsUxgCk/omJaVwD2R/eV
+MPtzUJN3pl52L3FYCR+Wj5WFSvoQSKrKSaVXF50rGFzOOVqFgITsUJNNEloTaGg0
+ftGWJn7IFf3PG/cKXdn/oapO1nkBPrr4aWPLsMt03cp6NMarAdSxJ6Vcnb2TBts0
+Ju9j7meG4Ysnaui5Yc7R
+=afiq
 -----END PGP SIGNATURE-----
 
---0OwzF8Z6mNSRrgR5--
+--lLYmlcOQv78n9rhj--
+
+--===============0267290613172657012==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0267290613172657012==--
