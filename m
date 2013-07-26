@@ -1,16 +1,16 @@
 From: Wang Xingchao <xingchao.wang@linux.intel.com>
-Subject: [PATCH 3/3 V2] ALSA: hda - WAKEEN feature enabling for
-	runtime pm
-Date: Thu, 25 Jul 2013 23:34:46 -0400
-Message-ID: <1374809686-3886-3-git-send-email-xingchao.wang@linux.intel.com>
+Subject: [PATCH 2/3 V2] ALSA: hda - jack poll once if
+	jackpoll_interval==0
+Date: Thu, 25 Jul 2013 23:34:45 -0400
+Message-ID: <1374809686-3886-2-git-send-email-xingchao.wang@linux.intel.com>
 References: <1374809686-3886-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 9593D261281
- for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 04:59:48 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8FC2C2610AF
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 04:59:47 +0200 (CEST)
 In-Reply-To: <1374809686-3886-1-git-send-email-xingchao.wang@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,73 +25,39 @@ To: tiwai@suse.de
 Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Wang Xingchao <xingchao.wang@linux.intel.com>, david.henningsson@canonical.com, xingchao.wang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-With runtime power save feature enabled, Headphone hotplug
-event will not be detected while controller/codec in D3. HDA has
-feature WAKEEN to let codec wake up system if controller is in D3 or
-system in S3.(HDA Spec 4.5.9.2/3). Codec can send out INT or wake up
-controller depending on whether CIE or GIE enabled.(Figure 4, Interupt
-structure).
+With jackpoll_interval != 0, it's used to poll jack event periodically
+in a delayed work. if it's 0, give the caller chance to probe jack status
+but will not restart the delayed work.
 
-The controller must be in RESET mode after enter runtime-suspend, otherwise
-it will not be waken up even if codec send out wake-up event. And STATESTS
-will be cleared after controller brought out of RESET mode.
-
-This patch only enable WAKEEN for runtime-suspend(Controller D3) mode,
-not for system S3 mode. with tool "evtest", Headphone hotplug events
-could be cought and reported successfully.
+In the next patch which enable WAKEEN feature, HDA controller was able to wake
+up system when it's in D3, it's useful to detect Jack hotplug event and notify
+userspace. By default the jackpoll_interval=0, this patch let jack poll once
+without starting the delayed work.
 
 Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
 ---
- sound/pci/hda/hda_intel.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ sound/pci/hda/hda_codec.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 8860dd5..a7ac7fd 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2970,6 +2970,11 @@ static int azx_runtime_suspend(struct device *dev)
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 8a005f0..fdbb09a 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -1216,11 +1216,13 @@ static void hda_jackpoll_work(struct work_struct *work)
  {
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip = card->private_data;
-+	int status;
-+
-+	/* enable controller wake up event */
-+	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
-+		  STATESTS_INT_MASK);
+ 	struct hda_codec *codec =
+ 		container_of(work, struct hda_codec, jackpoll_work.work);
+-	if (!codec->jackpoll_interval)
+-		return;
  
- 	azx_stop_chip(chip);
- 	azx_enter_link_reset(chip);
-@@ -2983,11 +2988,31 @@ static int azx_runtime_resume(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip = card->private_data;
-+	struct hda_bus *bus;
-+	struct hda_codec *codec;
-+	int status;
- 
- 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
- 		hda_display_power(true);
+ 	snd_hda_jack_set_dirty_all(codec);
+ 	snd_hda_jack_poll_all(codec);
 +
-+	/* Read STATESTS before controller reset */
-+	status = azx_readw(chip, STATESTS);
++	if (!codec->jackpoll_interval)
++		return;
 +
- 	azx_init_pci(chip);
- 	azx_init_chip(chip, 1);
-+
-+	bus = chip->bus;
-+	if (status && bus) {
-+		list_for_each_entry(codec, &bus->codec_list, list)
-+			if (status & (1 << codec->addr))
-+				queue_delayed_work(codec->bus->workq,
-+						   &codec->jackpoll_work, codec->jackpoll_interval);
-+	}
-+
-+	/* disable controller Wake Up event*/
-+	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
-+			~STATESTS_INT_MASK);
-+
- 	return 0;
+ 	queue_delayed_work(codec->bus->workq, &codec->jackpoll_work,
+ 			   codec->jackpoll_interval);
  }
- 
 -- 
 1.8.3.2
