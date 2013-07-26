@@ -1,41 +1,54 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Broken headphone and speaker amplifier supplies for
-	the rt5640 driver
-Date: Fri, 26 Jul 2013 17:06:12 +0200
-Message-ID: <51F29064.8080003@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V2 4/8] ASoC: Samsung: I2S: Modify driver to give more
+ flexibility
+Date: Fri, 26 Jul 2013 16:05:48 +0100
+Message-ID: <20130726150548.GK9858@sirena.org.uk>
+References: <1374845812-7803-1-git-send-email-padma.v@samsung.com>
+ <1374845812-7803-5-git-send-email-padma.v@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-220.synserver.de (smtp-out-220.synserver.de
- [212.40.185.220])
- by alsa0.perex.cz (Postfix) with ESMTP id E6BED265708
- for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 17:05:16 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>, Bard Liao <bardliao@realtek.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+zVSMEdzMm6UsnvJ"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1374845812-7803-5-git-send-email-padma.v@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Padmavathi Venna <padma.v@samsung.com>
+Cc: linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.kvr@gmail.com, kgene.kim@samsung.com, abrestic@chromium.org, tomasz.figa@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-The rt5640 driver sets for both the headphone and speaker amplifier widget
-the shift to SND_SOC_NOPM, which is -1. This doesn't make much sense and
-breaks compilation with some changes I've made.
+--+zVSMEdzMm6UsnvJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I guess for the heaphone amplifier the right fix is to set the shift to
-RT5640_PWR_HA_BIT. For the speaker amplifier I'd assume that the right bit
-is RT5640_PWR_CLS_D_BIT. But the speaker amplifier widget also as an event
-callback in which it already seems to set/clear the bit. I think the right
-fix is to remove the register change from the event callback and set the
-shift to RT5640_PWR_CLS_D_BIT. But I neither have the hardware nor the
-datasheet, so this is all just an educated guess.
+On Fri, Jul 26, 2013 at 07:06:48PM +0530, Padmavathi Venna wrote:
+> This patch modifies the i2s driver to give flexibility towards register
+> handling. This is a pre requirement for enabling i2s support on Exynos5420.
+> This patch modifies only the required registers as a pre-requirement to
+> support on Exynos5420.
 
-- Lars
+Applied, thanks.
+
+--+zVSMEdzMm6UsnvJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR8pBJAAoJELSic+t+oim9aegP/0EMhuj3n21gH2LOqE668qGh
+G2Lo4OJhjL4vF8/ijTp4mje7hdHxX7OhVnQK5bRKoseVZudQLtydS4Cc44rNFJJ8
+zodfnRx+HYfFjM3HGIiJvjLjJuW+/gERJ7ORBHGJtCiQ067PNuvCy/gjHfD//D0t
+RjOhuTpPC+j4YLdR/BJwcDdISM6oARee4+terCYFt+KSV53kfFhK07j7qKy5DkGl
+fUPD6CGbKbVo/WDrgA8x0X/zM3PYPP7G2tMTjjgknT8m41+Ld1L9+5JGacbRo7Yo
+JA1pGbEO69PSURD8yQzahLYFxUvAOFukEfkqN/9f5G5F21jTQr5Ytw7MKV6XRpPD
+THuUb/9HZAU1oKrnXlYPhxz5imvoBaBcv8tb4xnOlgT16e0O6s3fWkS8nJCfzStQ
+v9hEjJrN/kdIB9zDFbENwfoo95P7sfOoeT9GLzqYb1uM17Zfj11llklAx6+Z+Qg2
+nJaqrAvTeAYoW3U/SrL4ZMVg87TbTRyB1AFpk+3SWytYbZYQoR9AK3JLJhAmnODc
+ng3UeJQkUJ4l6wqTA1R1mO7wcKnaRw2+zs9Gix/K8pOjgKtqV9J7alFNfWDKPvAI
+4UOU7g7/GVU9hToUi0dUQH38GVVI4D2jLBNy1gj+IXfz4M/yH192hfVAm4q7+b4U
+wwqjIv7NWJ1OUERamwj5
+=4Glt
+-----END PGP SIGNATURE-----
+
+--+zVSMEdzMm6UsnvJ--
