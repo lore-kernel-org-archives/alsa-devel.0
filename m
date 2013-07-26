@@ -1,36 +1,47 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH] ASoC: wm8994: Add clock bindings to the
-	device tree
-Date: Fri, 26 Jul 2013 09:41:52 -0600
-Message-ID: <51F298C0.1090801@wwwdotorg.org>
-References: <1374762668-5037-1-git-send-email-broonie@kernel.org>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [alsa-devel] [patch] ASoC: adau1701: type bug with ADAU1707_CLKDIV_UNSET
+Date: Fri, 26 Jul 2013 17:54:02 +0200
+Message-ID: <51F29B9A.5080103@gmail.com>
+References: <20130725164016.GA4027@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 974A0265769
- for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 17:41:56 +0200 (CEST)
-In-Reply-To: <1374762668-5037-1-git-send-email-broonie@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <pawel.moll@arm.com>, Mark Brown <broonie@linaro.org>, patches@opensource.wolfsonmicro.com, Rob Herring <rob.herring@calxeda.com>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <20130725164016.GA4027@elgon.mountain>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>, device-drivers-devel@blackfin.uclinux.org, Grant Likely <grant.likely@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/25/2013 08:31 AM, Mark Brown wrote:
-> From: Mark Brown <broonie@linaro.org>
-> 
-> Due to the variable availability of the clock API there is no code in the
-> driver to use these at present, for the time being the machine drivers
-> will need to handle requesting clocks.
+On 25.07.2013 18:40, Dan Carpenter wrote:
+> ADAU1707_CLKDIV_UNSET is always compared against an unsigned int and
+> not an unsigned long.  The current tests are always false.
 
-Presumably before considering any/most CODEC bindings complete, we need
-to make a similar change?
+Well, in my case, sizeof(unsigned int) equals sizeof(unsigned long), so
+it didn't hit me. But it should be fixed of course, thanks for catching.
+
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+Acked-by: Daniel Mack <zonque@gmail.com>
+
+
+> 
+> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+> index 44d8a95..2c10252 100644
+> --- a/sound/soc/codecs/adau1701.c
+> +++ b/sound/soc/codecs/adau1701.c
+> @@ -91,7 +91,7 @@
+>  #define ADAU1701_OSCIPOW_OPD		0x04
+>  #define ADAU1701_DACSET_DACINIT		1
+>  
+> -#define ADAU1707_CLKDIV_UNSET		(-1UL)
+> +#define ADAU1707_CLKDIV_UNSET		(-1U)
+>  
+>  #define ADAU1701_FIRMWARE "adau1701.bin"
+>  
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+
