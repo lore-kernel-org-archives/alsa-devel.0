@@ -1,51 +1,165 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH V2 2/8] ASoC: Samsung: I2S: Add quirks as driver data in
-	I2S
-Date: Fri, 26 Jul 2013 15:27:22 +0100
-Message-ID: <20130726142722.GS24642@n2100.arm.linux.org.uk>
-References: <1374845812-7803-1-git-send-email-padma.v@samsung.com> <1374845812-7803-3-git-send-email-padma.v@samsung.com> <20130726140618.GP24642@n2100.arm.linux.org.uk> <1479924.YVrWxe87Mh@amdc1227>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH 35/50] media: usb: cx231xx: spin_lock in complete() cleanup
+Date: Fri, 26 Jul 2013 16:28:30 +0200
+Message-ID: <51F2878E.90705@xs4all.nl>
+References: <1373533573-12272-1-git-send-email-ming.lei@canonical.com> <1373533573-12272-36-git-send-email-ming.lei@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1479924.YVrWxe87Mh@amdc1227>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tomasz Figa <t.figa@samsung.com>, Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.kvr@gmail.com, abrestic@chromium.org, kgene.kim@samsung.com, broonie@kernel.org, tomasz.figa@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1373533573-12272-36-git-send-email-ming.lei@canonical.com>
+Sender: netdev-owner@vger.kernel.org
+To: Ming Lei <ming.lei@canonical.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Oliver Neukum <oliver@neukum.org>, Alan Stern <stern@rowland.harvard.edu>, linux-input@vger.kernel.org, linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Mauro Carvalho Chehab <mchehab@redhat.com>, Hans Verkuil <hans.verkuil@cisco.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 26, 2013 at 04:21:16PM +0200, Tomasz Figa wrote:
-> Hi Russell,
-> 
-> On Friday 26 of July 2013 15:06:18 Russell King - ARM Linux wrote:
-> > On Fri, Jul 26, 2013 at 07:06:46PM +0530, Padmavathi Venna wrote:
-> > > -- compatible : "samsung,i2s-v5"
-> > > +- compatible : should be one of the following.
-> > > +   - samsung,s3c6410-i2s: for 8/16/24bit stereo I2S. Previous versions
-> > > +     has only 8/16bit support.
-> > > +   - samsung,s3c6410-i2sv4: for 8/16/24bit multichannel(5.1 channel)
-> > > I2S. +     Introduced in s3c6410. This also applicable for s5p64x0
-> > > platforms. +   - samsung,s5pc100-i2s: for 8/16/24bit multichannel(5.1
-> > > channel) I2S +     with secondary fifo and s/w reset control.
-> > > +   - samsung,s5pv210-i2s: for 8/16/24bit multichannel(5.1) I2S with
-> > > +     secondary fifo, s/w reset control and internal mux for root clk
-> > > src. +
-> > 
-> > So what happens with your changes to everyone who is using a DT file with
-> > the "samsung,i2s-v5" compatible string?
-> 
-> AFAIK we decided that current bindings, if broken, can be redone correctly, 
-> without caring for compatibility with old DTBs and only then, after 
-> reviewing these new bindings by DT people, they can be stabilized.
-> 
-> Other issue, though, is that this patch breaks things until they get fixed 
-> by patch 3. Support for new bindings should be added first, then users fixed 
-> and only then old bindings can be removed.
 
-So, these bindings were merged in the v3.9 merge window, using the
-"samsung,i2s-v5" compatible string, and now for the v3.12 merge window,
-you're proposing to break the audio description in any DT file which has
-been used with v3.9..v3.11 inclusive?
 
-The way you should be doing this is to keep the existing stuff working
-and supplement it with the new method of describing the hardware.
+On 07/11/2013 11:05 AM, Ming Lei wrote:
+> Complete() will be run with interrupt enabled, so change to
+> spin_lock_irqsave().
+> 
+> Cc: Mauro Carvalho Chehab <mchehab@redhat.com>
+> Cc: Hans Verkuil <hans.verkuil@cisco.com>
+> Cc: linux-media@vger.kernel.org
+> Signed-off-by: Ming Lei <ming.lei@canonical.com>
+> ---
+>  drivers/media/usb/cx231xx/cx231xx-audio.c |    6 ++++++
+>  drivers/media/usb/cx231xx/cx231xx-core.c  |   10 ++++++----
+>  drivers/media/usb/cx231xx/cx231xx-vbi.c   |    5 +++--
+>  3 files changed, 15 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/usb/cx231xx/cx231xx-audio.c b/drivers/media/usb/cx231xx/cx231xx-audio.c
+> index 81a1d97..58c1b5c 100644
+> --- a/drivers/media/usb/cx231xx/cx231xx-audio.c
+> +++ b/drivers/media/usb/cx231xx/cx231xx-audio.c
+> @@ -136,6 +136,7 @@ static void cx231xx_audio_isocirq(struct urb *urb)
+>  		stride = runtime->frame_bits >> 3;
+>  
+>  		for (i = 0; i < urb->number_of_packets; i++) {
+> +			unsigned long flags;
+>  			int length = urb->iso_frame_desc[i].actual_length /
+>  				     stride;
+>  			cp = (unsigned char *)urb->transfer_buffer +
+> @@ -158,6 +159,7 @@ static void cx231xx_audio_isocirq(struct urb *urb)
+>  				       length * stride);
+>  			}
+>  
+> +			local_irq_save(flags);
+>  			snd_pcm_stream_lock(substream);
+
+Can't you use snd_pcm_stream_lock_irqsave here?
+
+Ditto for the other media drivers where this happens: em28xx and tlg2300.
+
+I've reviewed the media driver changes and they look OK to me, so if
+my comment above is fixed, then I can merge them for 3.12. Or are these
+changes required for 3.11?
+
+Regards,
+
+	Hans
+
+>  
+>  			dev->adev.hwptr_done_capture += length;
+> @@ -174,6 +176,7 @@ static void cx231xx_audio_isocirq(struct urb *urb)
+>  				period_elapsed = 1;
+>  			}
+>  			snd_pcm_stream_unlock(substream);
+> +			local_irq_restore(flags);
+>  		}
+>  		if (period_elapsed)
+>  			snd_pcm_period_elapsed(substream);
+> @@ -224,6 +227,7 @@ static void cx231xx_audio_bulkirq(struct urb *urb)
+>  		stride = runtime->frame_bits >> 3;
+>  
+>  		if (1) {
+> +			unsigned long flags;
+>  			int length = urb->actual_length /
+>  				     stride;
+>  			cp = (unsigned char *)urb->transfer_buffer;
+> @@ -242,6 +246,7 @@ static void cx231xx_audio_bulkirq(struct urb *urb)
+>  				       length * stride);
+>  			}
+>  
+> +			local_irq_save(flags);
+>  			snd_pcm_stream_lock(substream);
+>  
+>  			dev->adev.hwptr_done_capture += length;
+> @@ -258,6 +263,7 @@ static void cx231xx_audio_bulkirq(struct urb *urb)
+>  				period_elapsed = 1;
+>  			}
+>  			snd_pcm_stream_unlock(substream);
+> +			local_irq_restore(flags);
+>  		}
+>  		if (period_elapsed)
+>  			snd_pcm_period_elapsed(substream);
+> diff --git a/drivers/media/usb/cx231xx/cx231xx-core.c b/drivers/media/usb/cx231xx/cx231xx-core.c
+> index 4ba3ce0..593b397 100644
+> --- a/drivers/media/usb/cx231xx/cx231xx-core.c
+> +++ b/drivers/media/usb/cx231xx/cx231xx-core.c
+> @@ -798,6 +798,7 @@ static void cx231xx_isoc_irq_callback(struct urb *urb)
+>  	    container_of(dma_q, struct cx231xx_video_mode, vidq);
+>  	struct cx231xx *dev = container_of(vmode, struct cx231xx, video_mode);
+>  	int i;
+> +	unsigned long flags;
+>  
+>  	switch (urb->status) {
+>  	case 0:		/* success */
+> @@ -813,9 +814,9 @@ static void cx231xx_isoc_irq_callback(struct urb *urb)
+>  	}
+>  
+>  	/* Copy data from URB */
+> -	spin_lock(&dev->video_mode.slock);
+> +	spin_lock_irqsave(&dev->video_mode.slock, flags);
+>  	dev->video_mode.isoc_ctl.isoc_copy(dev, urb);
+> -	spin_unlock(&dev->video_mode.slock);
+> +	spin_unlock_irqrestore(&dev->video_mode.slock, flags);
+>  
+>  	/* Reset urb buffers */
+>  	for (i = 0; i < urb->number_of_packets; i++) {
+> @@ -842,6 +843,7 @@ static void cx231xx_bulk_irq_callback(struct urb *urb)
+>  	struct cx231xx_video_mode *vmode =
+>  	    container_of(dma_q, struct cx231xx_video_mode, vidq);
+>  	struct cx231xx *dev = container_of(vmode, struct cx231xx, video_mode);
+> +	unsigned long flags;
+>  
+>  	switch (urb->status) {
+>  	case 0:		/* success */
+> @@ -857,9 +859,9 @@ static void cx231xx_bulk_irq_callback(struct urb *urb)
+>  	}
+>  
+>  	/* Copy data from URB */
+> -	spin_lock(&dev->video_mode.slock);
+> +	spin_lock_irqsave(&dev->video_mode.slock, flags);
+>  	dev->video_mode.bulk_ctl.bulk_copy(dev, urb);
+> -	spin_unlock(&dev->video_mode.slock);
+> +	spin_unlock_irqrestore(&dev->video_mode.slock, flags);
+>  
+>  	/* Reset urb buffers */
+>  	urb->status = usb_submit_urb(urb, GFP_ATOMIC);
+> diff --git a/drivers/media/usb/cx231xx/cx231xx-vbi.c b/drivers/media/usb/cx231xx/cx231xx-vbi.c
+> index c027942..38e78f8 100644
+> --- a/drivers/media/usb/cx231xx/cx231xx-vbi.c
+> +++ b/drivers/media/usb/cx231xx/cx231xx-vbi.c
+> @@ -306,6 +306,7 @@ static void cx231xx_irq_vbi_callback(struct urb *urb)
+>  	struct cx231xx_video_mode *vmode =
+>  	    container_of(dma_q, struct cx231xx_video_mode, vidq);
+>  	struct cx231xx *dev = container_of(vmode, struct cx231xx, vbi_mode);
+> +	unsigned long flags;
+>  
+>  	switch (urb->status) {
+>  	case 0:		/* success */
+> @@ -322,9 +323,9 @@ static void cx231xx_irq_vbi_callback(struct urb *urb)
+>  	}
+>  
+>  	/* Copy data from URB */
+> -	spin_lock(&dev->vbi_mode.slock);
+> +	spin_lock_irqsave(&dev->vbi_mode.slock, flags);
+>  	dev->vbi_mode.bulk_ctl.bulk_copy(dev, urb);
+> -	spin_unlock(&dev->vbi_mode.slock);
+> +	spin_unlock_irqrestore(&dev->vbi_mode.slock, flags);
+>  
+>  	/* Reset status */
+>  	urb->status = 0;
+> 
