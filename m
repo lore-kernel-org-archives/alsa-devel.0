@@ -1,69 +1,58 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH 4/4] ASoc: kirkwood: add DT support
-Date: Fri, 26 Jul 2013 11:09:13 +0200
-Message-ID: <20130726110913.0a193918@armhf>
-References: <20130725111459.145a4aa4@armhf>
-	<20130725191905.GR9858@sirena.org.uk>
-	<20130725230533.GH24642@n2100.arm.linux.org.uk>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: Ambiguous DAPM widget names and DPCM
+Date: Fri, 26 Jul 2013 11:13:17 +0200
+Message-ID: <51F23DAD.70305@ti.com>
+References: <51EE3F18.3030207@gmail.com> <20130723123017.GV9858@sirena.org.uk>
+ <51EEA2A3.8030106@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130725230533.GH24642@n2100.arm.linux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87108265698
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 11:13:20 +0200 (CEST)
+In-Reply-To: <51EEA2A3.8030106@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 26 Jul 2013 00:05:33 +0100
-Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
+On 07/23/2013 05:34 PM, Daniel Mack wrote:
+> With printk() in snd_soc_dapm_new_control(), I see the following widgets
+> being created during boot (one pair for each Codec, and two pairs for
+> the platform dai):
+> =
 
-> On Thu, Jul 25, 2013 at 08:19:05PM +0100, Mark Brown wrote:
-> > On Thu, Jul 25, 2013 at 11:14:59AM +0200, Jean-Francois Moine wrote=
-:
-	[snip]
-> > > -	priv->clk =3D devm_clk_get(&pdev->dev, NULL);
-> > > +	priv->clk =3D devm_clk_get(&pdev->dev, "internal");
-> > >  	if (IS_ERR(priv->clk)) {
-> > > -		dev_err(&pdev->dev, "no clock\n");
-> > > +		dev_err(&pdev->dev, "no internal clock\n");
-> > >  		return PTR_ERR(priv->clk);
-> > >  	}
-> >=20
-> > Does the code providing it already name the clock?  If not are upda=
-tes
-> > needed to do that?
+> [    1.963501]  snd_soc_dapm_new_control() ceb6b680 name Playback
+> [    1.971739]  snd_soc_dapm_new_control() ceb6b5c0 name Capture
+> [    1.996001]  snd_soc_dapm_new_control() ceb6b500 name Playback
+> [    2.004354]  snd_soc_dapm_new_control() ceb6b440 name Capture
+> [    2.019684]  snd_soc_dapm_new_control() ceb6b380 name Playback
+> [    2.028053]  snd_soc_dapm_new_control() ceb6b2c0 name Capture
+> [    2.047526]  snd_soc_dapm_new_control() ceb6b200 name Playback
+> [    2.055846]  snd_soc_dapm_new_control() ceb6b140 name Capture
+> [    2.071168]  snd_soc_dapm_new_control() ceb6b080 name Playback
+> [    2.079461]  snd_soc_dapm_new_control() ceb8ff00 name Capture
 
-I don't know. I will reset the clock name to NULL when no DT, so it
-will be compatible.
+Can you print these with dev_err(dapm->dev, ...); so we can see the context
+where it is going to be added?
+It might worth asking the core to prefix the codecs DAPM, so you avoid name
+duplication on the same context.
+Both cs4271 and ak4101 have 'Playback'/'Capture' names for the streams.
 
-> > > -	priv->extclk =3D clk_get(&pdev->dev, "extclk");
-> > > +	priv->extclk =3D clk_get(&pdev->dev, "external");
-> >=20
-> > Is the clock actually called extclk in the datasheet and so on?  If=
- so
-> > it seems better to stick with that name.  Do any boards need update=
-s for
-> > the new name?
->=20
-> "AU_EXTCLK" is the exact name (pasted out of the documentation).
-> I don't see any purpose to this name changing.
+BTW: do you see error messages about name duplication ("widget %s already
+exists for context\n")? Or warning about already existing debugfs entries f=
+rom
+DAPM?
 
-On Tue, Jul 23, 2013 at 02:59:06PM +0200, Sebastian Hesselbarth wrote:
-> As Sascha Hauer pointed out, clocks should be distinguished by names
-> (clock-names property) instead of position and then use
-> devm_clk_get(&pdev->dev, "internal") and
-> devm_clk_get(&pdev->dev, "external") respectively. =20
->=20
-> This will possibly also require to update platform_data and legacy
-> users of kirkwood-i2s or have different setup functions for non-DT
-> and DT. =20
+-- =
 
-The A510 documentation uses the names "DCO PLL" for the internal clock
-and "AU_EXTCLK" for the external clock. So, what about "dcopll" and
-"extclk"?
-
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+P=E9ter
