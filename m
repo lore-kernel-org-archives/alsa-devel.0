@@ -1,63 +1,72 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [PATCH V2 7/8] ARM: dts: wm8994: Add wm8994 support on smdk5420
-Date: Sat, 27 Jul 2013 06:46:40 +0530
-Message-ID: <CAAgF-Be8SNxTZv1yFCwH6yJ-O_3R4reh=3y+pSCLJYW7S9TkUg@mail.gmail.com>
-References: <1374845812-7803-1-git-send-email-padma.v@samsung.com>
-	<1374845812-7803-8-git-send-email-padma.v@samsung.com>
-	<20130726151902.GL9858@sirena.org.uk>
+From: Ming Lei <ming.lei@canonical.com>
+Subject: Re: [PATCH 35/50] media: usb: cx231xx: spin_lock in complete() cleanup
+Date: Sat, 27 Jul 2013 17:34:07 +0800
+Message-ID: <CACVXFVMHecbxaGWe6-EeF-sDXRx0GnPHb4shRYOQxUXPbRMyGg@mail.gmail.com>
+References: <1373533573-12272-1-git-send-email-ming.lei@canonical.com>
+	<1373533573-12272-36-git-send-email-ming.lei@canonical.com>
+	<51F2878E.90705@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20130726151902.GL9858@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, abrestic@chromium.org, Tomasz Figa <tomasz.figa@gmail.com>
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <51F2878E.90705@xs4all.nl>
+Sender: linux-input-owner@vger.kernel.org
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Oliver Neukum <oliver@neukum.org>, Alan Stern <stern@rowland.harvard.edu>, linux-input@vger.kernel.org, linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Mauro Carvalho Chehab <mchehab@redhat.com>, Hans Verkuil <hans.verkuil@cisco.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
-
-On Fri, Jul 26, 2013 at 8:49 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Jul 26, 2013 at 07:06:51PM +0530, Padmavathi Venna wrote:
->> This patch adds wm8994 codec node on i2c bus1 and the required
->> regulator supplies and properties on smdk5420 board.
+On Fri, Jul 26, 2013 at 10:28 PM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
 >
-> This isn't a device tree patch for WM8994, it's a patch for the
-> SMDK5420.
+>
+> On 07/11/2013 11:05 AM, Ming Lei wrote:
+>> Complete() will be run with interrupt enabled, so change to
+>> spin_lock_irqsave().
+>>
+>> Cc: Mauro Carvalho Chehab <mchehab@redhat.com>
+>> Cc: Hans Verkuil <hans.verkuil@cisco.com>
+>> Cc: linux-media@vger.kernel.org
+>> Signed-off-by: Ming Lei <ming.lei@canonical.com>
+>> ---
+>>  drivers/media/usb/cx231xx/cx231xx-audio.c |    6 ++++++
+>>  drivers/media/usb/cx231xx/cx231xx-core.c  |   10 ++++++----
+>>  drivers/media/usb/cx231xx/cx231xx-vbi.c   |    5 +++--
+>>  3 files changed, 15 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/media/usb/cx231xx/cx231xx-audio.c b/drivers/media/usb/cx231xx/cx231xx-audio.c
+>> index 81a1d97..58c1b5c 100644
+>> --- a/drivers/media/usb/cx231xx/cx231xx-audio.c
+>> +++ b/drivers/media/usb/cx231xx/cx231xx-audio.c
+>> @@ -136,6 +136,7 @@ static void cx231xx_audio_isocirq(struct urb *urb)
+>>               stride = runtime->frame_bits >> 3;
+>>
+>>               for (i = 0; i < urb->number_of_packets; i++) {
+>> +                     unsigned long flags;
+>>                       int length = urb->iso_frame_desc[i].actual_length /
+>>                                    stride;
+>>                       cp = (unsigned char *)urb->transfer_buffer +
+>> @@ -158,6 +159,7 @@ static void cx231xx_audio_isocirq(struct urb *urb)
+>>                                      length * stride);
+>>                       }
+>>
+>> +                     local_irq_save(flags);
+>>                       snd_pcm_stream_lock(substream);
+>
+> Can't you use snd_pcm_stream_lock_irqsave here?
 
-Yes. I will correct the subject.
+Sure, that is already in my mind, :-)
+
+> Ditto for the other media drivers where this happens: em28xx and tlg2300.
+
+Yes.
 
 >
->> +     vdd: fixed-regulator@0 {
->> +             compatible = "regulator-fixed";
->> +             regulator-name = "vdd-supply";
->
-> These names look wrong - they should reflect the names in the schematic
-> as they're for human comprehensibility.  This may just be a case of
-> dropping the -supply.
+> I've reviewed the media driver changes and they look OK to me, so if
+> my comment above is fixed, then I can merge them for 3.12. Or are these
+> changes required for 3.11?
 
-OK.
+These are for 3.12.
 
->
->> +             wm8994: wm8994@1a {
->> +                     compatible = "wlf,wm8994";
->> +                     reg = <0x1a>;
->> +
->> +                     gpio-controller;
->> +                     #gpio-cells = <2>;
->> +
->> +                     AVDD2-supply = <&vdd>;
->> +                     CPVDD-supply = <&vdd>;
->> +                     DBVDD-supply = <&dbvdd>;
->> +                     SPKVDD1-supply = <&spkvdd>;
->> +                     SPKVDD2-supply = <&spkvdd>;
->> +             };
->
-> It would be helpful to also add a clock binding (I posted a binding
-> documentation update the other day, it's in my tree now) but it's not
-> essential and I suspect it needs some work on the clock driver side
-> still.
+I will send out v2 next week, and thanks for your review.
 
-OK. I will check this.
-
-Thanks
-Padma
+Thanks,
+--
+Ming Lei
