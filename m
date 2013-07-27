@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v10 2/7] ASoC: codec: wm9712 simple DT
-	bindings
-Date: Sat, 27 Jul 2013 15:21:21 +0100
-Message-ID: <20130727142121.GI9858@sirena.org.uk>
-References: <1374924716-23475-1-git-send-email-mpa@pengutronix.de>
- <1374924716-23475-3-git-send-email-mpa@pengutronix.de>
- <20130727115950.GF9858@sirena.org.uk>
- <20130727134452.GF16871@s25.your-server.de>
+Subject: Re: Broken headphone and speaker amplifier supplies
+ for the rt5640 driver
+Date: Sat, 27 Jul 2013 18:35:09 +0100
+Message-ID: <20130727173509.GJ9858@sirena.org.uk>
+References: <51F29064.8080003@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6683573185085360555=="
+Content-Type: multipart/mixed; boundary="===============3613825686418038278=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A7DA26072A
- for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2013 16:21:33 +0200 (CEST)
-In-Reply-To: <20130727134452.GF16871@s25.your-server.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 591FF26167A
+ for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2013 19:35:16 +0200 (CEST)
+In-Reply-To: <51F29064.8080003@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +20,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Bard Liao <bardliao@realtek.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6683573185085360555==
+--===============3613825686418038278==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lMeYSPNN/8081OSC"
+	protocol="application/pgp-signature"; boundary="Ad7a2iuroXS7l5SC"
 Content-Disposition: inline
 
 
---lMeYSPNN/8081OSC
+--Ad7a2iuroXS7l5SC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Jul 27, 2013 at 03:44:52PM +0200, Markus Pargmann wrote:
-> On Sat, Jul 27, 2013 at 12:59:50PM +0100, Mark Brown wrote:
+On Fri, Jul 26, 2013 at 05:06:12PM +0200, Lars-Peter Clausen wrote:
 
-> > AC'97 is an enumerable bus, we shouldn't need this...
+> I guess for the heaphone amplifier the right fix is to set the shift to
+> RT5640_PWR_HA_BIT. For the speaker amplifier I'd assume that the right bit
+> is RT5640_PWR_CLS_D_BIT. But the speaker amplifier widget also as an event
+> callback in which it already seems to set/clear the bit. I think the right
+> fix is to remove the register change from the event callback and set the
+> shift to RT5640_PWR_CLS_D_BIT. But I neither have the hardware nor the
+> datasheet, so this is all just an educated guess.
 
-> What do you mean exactly? Is there a way to automaticaly discover
-> connected codecs and register them?
+Or set the register to SND_SOC_NOPM allowing the manual sequencing which
+is (I presume) needed?  If we're going to need an event to do the
+sequencing we may as well have it do both writes.
 
-Yes, of coure - just read the ID registers.  Look at how the non-ASoC
-AC'97 code works.
-
---lMeYSPNN/8081OSC
+--Ad7a2iuroXS7l5SC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR89ddAAoJELSic+t+oim9OJEQAJv+I65+NrGS5WtwIP9aHKIS
-uKWzLgMqhECBkrvnyxl2hmzjrceQwfya6H5Yjh70uuQkahP+8RjzbFtpYwMXX81L
-CaU0kt44g8ed7OEpnomJEV9G+h2e69gF0LyiUEJsPjpYnUs+liS3ol6lsyopqy/W
-mk8zdzTa4tgeqnoht0/6PNmccVLJQco98s9IYKq4KIOvt/ajg76ykZ9/PztlEBWK
-tJldBKvT4iiUwfklFNYicKGqog0wTX7G2Jbzkb2Gts/d+WOzqMiapGWXa0/+w9vT
-H/MbYymDOV7GoHJzy3ddkr2z6nKgCG/Fn8Su8m8NigxsChkebJNKfCagDCbvkQ89
-tiNDPx1ZZIrp4UfljzN3iROCRTSULThJzlbrZnYXmOiX7bKfhEmyzwkWG4w0PKyp
-2zNW2mSzFi+mMV2uvzAgbA4FjFGqqY38fBbGmrX4ckIkk40M6Xw7CyS2E+m4qxEK
-iyz1+SA1NTLAiTwqNkDQWo2JJX1NTFdp+fmObUn0yJBzQ2BHlODleEiHyYDzSt0f
-ocC09WxKaZCpLaZdTmPtuvQ8zTsMXyioJLBhwJ2tF250n5k0Q9MIUCSNFAumDG+9
-UyKSFjcMAJHkC22vlu+aBeF9/If6GJlf+diLyB/raa4UBm3crVbHskxgkwPBldMK
-NIIh7iW93qjKzUVvCOag
-=ylTF
+iQIcBAEBAgAGBQJR9ATJAAoJELSic+t+oim9uOsP/3bChCp2UxXKTX/GW1LN6zes
+frPcmJf57u50iY16f5Hp2u6oMSvTLn1QWJXiH+hefIEKu4ZwnA9cnI4C5RYsjVII
+NHeHeYBX1uDEZ8q0N/BJL0t/yfoWWTIXOyfPfQsPNe+HSK8iqF0yYcCePvNS5dH/
+BnmB5QxjiKsYiVs2Xy22o90USHIRwe7ZVJB4iiPMk2bqUBD/I3T9ncu/Ym4n/UA5
+dlYfn6z+6ZWvyzqGFXqE/3KIKbXHAtjaitYn1cod+C1x9SA9K+A74kVWg2ujA/xm
+/eIPcCJ7vbZ0oMQ58h4LHyrWMgSKYaT06v5duUOAjhFmOB7xb0GEMYMnaMQ+Enzz
+U/Ccf0X784OyCip/yvSvAO1til3xZs9LuQFGmGiZY5jZhpy6nRjhAEsbHJXrA9cS
+SPE4nkigg+Dn9NVdgLWV2nBRc3oKEP3SXBY4szhVwlvEEIUdziHa2s9b7f/pTAA+
+m+TXAAWZuppexcBve5XhM2mVj4jLONCqpLTvANfrXeDTjOEINO6Q2sL8p4txHhCl
+07JKhaskJVNBtW7Hm9yI4UvyWpRRc0fJJ2R/x3GrPfOJ7IuS+ShIbrQrG2/r9Agu
+ydMfc/ChBLRQOuSXlUkXhJVshRci0YL3jPX2tonOOWISX4+7TrDZ4gwsihaE9SYc
+w4mo8S628khZZARuTe3m
+=KG9R
 -----END PGP SIGNATURE-----
 
---lMeYSPNN/8081OSC--
+--Ad7a2iuroXS7l5SC--
 
---===============6683573185085360555==
+--===============3613825686418038278==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6683573185085360555==--
+--===============3613825686418038278==--
