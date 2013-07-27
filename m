@@ -1,45 +1,93 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [PATCH V2 2/8] ASoC: Samsung: I2S: Add quirks as driver data in I2S
-Date: Sat, 27 Jul 2013 13:56:43 +0200
-Message-ID: <2425397.IIfnern1kk@flatron>
-References: <1374845812-7803-1-git-send-email-padma.v@samsung.com> <1417636.4d7IlsSAyI@amdc1227> <20130726152551.GM9858@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v10 2/7] ASoC: codec: wm9712 simple DT bindings
+Date: Sat, 27 Jul 2013 12:59:50 +0100
+Message-ID: <20130727115950.GF9858@sirena.org.uk>
+References: <1374924716-23475-1-git-send-email-mpa@pengutronix.de>
+ <1374924716-23475-3-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20130726152551.GM9858@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Tomasz Figa <t.figa@samsung.com>, Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.kvr@gmail.com, kgene.kim@samsung.com, abrestic@chromium.org
+Content-Type: multipart/mixed; boundary="===============0288759095491653159=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1374924716-23475-3-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 26 of July 2013 16:25:51 Mark Brown wrote:
-> On Fri, Jul 26, 2013 at 05:02:46PM +0200, Tomasz Figa wrote:
-> > IMHO this SoC-based identification looks much better, especially
-> > considering the fact that IP version isn't something easily
-> > determinable, as even the documentation can sometimes be not really
-> > clear about that.
-> 
-> Yeah, it's not terribly clever either way.  We've been using the version
-> numbers in audio for a long time partly because it is documented
-> sometimes and partly because most of the SoCs tend to have one fully
-> featured controller and a bunch of secondary controllers on older IP
-> revisions.
-> 
-> > However the s3c6410-i2sv4 string looks a bit unfortunate. AFAIK there
-> > were two types of I2S IPs on S3C6410 - normal I2S and I2S
-> > multichannel. What about having a compatible like s3c6410-i2s-multi?
-> 
-> It was explicitly identified as I2Sv4 in the S3C6410 datasheet so no
-> real issue there.
 
-Well, the datasheet I have calls it either "I2S V40" or "IIS MULTI AUDIO 
-INTERFACE". I like the latter much more, because it actually says what's 
-the difference compared to previous I2S IPs.
+--===============0288759095491653159==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="9TayrSCGl6Stf3M8"
+Content-Disposition: inline
 
-I'm not strongly against using the v4 suffix, but since we decided to use 
-more meaningful compatible values elsewhere, I think this way would be 
-better for sound drivers as well.
 
-Best regards,
-Tomasz
+--9TayrSCGl6Stf3M8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Jul 27, 2013 at 01:31:51PM +0200, Markus Pargmann wrote:
+
+> +static const struct of_device_id wm9712_codec_of_dev_id[] =3D {
+> +	{
+> +		.compatible =3D "wlf,wm9712",
+> +	}, {
+> +		/* sentinel */
+> +	}
+> +};
+> +
+>  static struct platform_driver wm9712_codec_driver =3D {
+>  	.driver =3D {
+>  		.name =3D "wm9712-codec",
+>  		.owner =3D THIS_MODULE,
+> +		.of_match_table =3D wm9712_codec_of_dev_id,
+>  	},
+> =20
+>  	.probe =3D wm9712_probe,
+
+AC'97 is an enumerable bus, we shouldn't need this...
+
+--9TayrSCGl6Stf3M8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR87YzAAoJELSic+t+oim9/EAP/2EVuDDr1ao50mKua2irOEW8
+V0MJFv6N2o17rBJ8lGadPjRKrRocKnY9QcOHh9z1l5Pkq5CmbGGsym/DO/TAOAf8
+nSZV7MtB4NY2xVyrBbAuzjPUVyv8KlK3A8vK+y1Ff5UHwwk6vqk8Uh/o9nNtnjO6
+aRA/xfVv2voHMvmfQvSFrDIFbUnSDicsDGG7Lgj3K40HH9PiqI64PZWy4E+950Ei
+v6LDf7gg8uyDhwJ5MO0bzHdQKZhQISSPip1DYnLtoNlRtUV8q2m+TTGmY0xfAajR
+3/I+P30Gs/NJMfTEKHis7vwS34tR/Yn/m1n7b7XZ1KmWYo4Ekq60rf6D8Ix5KfbY
+UyykLdhNowTZm0wrHi6KSihgLoFRaNvWw0ouTC2v6LCbaml/2OL49mYexRTuIWx0
+tI39PRGrtvYeZB7tRUrYO1O6jXKCpw6Tky5UphPjHAjmbiV2ZO+WGKaW9r8/4ntD
+xzJu6jdhDE+l20z+B1KgjQ9W8V5SQg9kXEgMn2DUXtRdfMoLYL/A6RdR9IYXJp0A
+gMRDWNc69Wkq32KdPUrcnBG76r2OaeRvBn6FX/BaVoyKBrrdLA849EIkj/LQ+orC
+JnApnXSPreh2LJ/TNEHujem2JB8R2wa4mnCHca4vVt6CCM/9LP7GpVODBQNLHbIg
+6aqStMxynRu6O3OyfUyj
+=Y9hf
+-----END PGP SIGNATURE-----
+
+--9TayrSCGl6Stf3M8--
+
+
+--===============0288759095491653159==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============0288759095491653159==--
