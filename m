@@ -1,57 +1,69 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Decibel Levels for Storm Medusa 5.1 USB Headset
-Date: Sat, 27 Jul 2013 07:30:13 +0800
-Message-ID: <CAN8cciY11fHgBhtR79BoY7R_1SLxpVQbYEzfM8Rm0s++QCfLdQ@mail.gmail.com>
-References: <51ED907A.1070305@uni-jena.de> <s5h61vzkp61.wl%tiwai@suse.de>
- <CAN8cciZu_RitTng1PH8E_b3S8aM5pSrCs9=rr8wTaEBpV0eTbw@mail.gmail.com>
- <51F2954C.3010202@gmx.at>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [PATCH V2 2/8] ASoC: Samsung: I2S: Add quirks as driver data in I2S
+Date: Sat, 27 Jul 2013 06:38:02 +0530
+Message-ID: <CAAgF-BerOfvhPJemVf0HBK5L4edw7pgm9bgwKGL+XSMpoaR3vw@mail.gmail.com>
+References: <1374845812-7803-1-git-send-email-padma.v@samsung.com>
+	<1374845812-7803-3-git-send-email-padma.v@samsung.com>
+	<20130726145319.GI9858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f54.google.com (mail-oa0-f54.google.com
- [209.85.219.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C21C2658CC
- for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2013 01:30:15 +0200 (CEST)
-Received: by mail-oa0-f54.google.com with SMTP id o6so8940218oag.13
- for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2013 16:30:14 -0700 (PDT)
-In-Reply-To: <51F2954C.3010202@gmx.at>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Ulrich_G=C3=BCnther?= <ulrich.guenther@gmx.at>, alsa-devel@alsa-project.org, tiwai@suse.de, alexander.blinne@uni-jena.de
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20130726145319.GI9858@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, abrestic@chromium.org, Tomasz Figa <tomasz.figa@gmail.com>, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-PiA+Pj4gSSBob3BlIHRoaXMgSW5mb3JtYXRpb24gaGVscHMuIEkgaGF2ZSB0aGUgU3Rvcm0gTWVk
-dXNhIDUuMSBVU0IgSGVhZHNldAo+ID4+PiB3aGljaCByZXBvcnRzIHdyb25nIGRlY2liZWwgbGV2
-ZWxzIHRvIHB1bHNlYXVkaW8uIE15IEFsc2EtSW5mbyBhcmUKPiA+Pj4gbG9jYXRlZCBhdAo+ID4+
-Pgo+ID4+Pgo+ID4KaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPWE4ODJmM2RiNjc2
-OWM1ZGZjZTgzYzI2Njk0NmVmZjUyZDFkNTUzNDkKPiA+Pj4gVGhlIEhlYWRzZXQgaXMgY2FyZDIg
-aW4gdGhlIGFib3ZlIGR1bXAuCj4gPj4+Cj4gPj4+IE15IGRlY2liZWwgbGV2ZWxzLWZpeAo+ID4+
-Pgo+ID4+PiBbRGVjaWJlbEZpeCBTcGVha2VyXQo+ID4+PiBkYi12YWx1ZXMgPSAxOi0zMCAzNzoz
-Cj4gPj4gSG93IGRpZCB5b3UgZGVmaW5lIHRoZXNlIHZhbHVlcz8KPiA+Cmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAwNy1Ob3ZlbWJlci8wMDM4
-NjcuaHRtbAo+ID4KPiA+IElmIHlvdXIgaGVhZHNldCBoYXZlIHdpbmRvd3MgZHJpdmVyLCBuZWVk
-IHRvIGZpbmQgb3V0IHdoaWNoIFVTQiBjaGlwIGFuZAo+ID4gbG9vayBhdCB0aGUgZGF0YXNoZWV0
-IG9mIHRoZSBjaGlwCj4gPgo+ID4gZS5nLiBjbTEwNmwg4oCZcyBkYXRhc2hlZXQgY29udGFpbiBh
-IHRhYmxlIG9mICBkYWMgdm9sdW1lIGNvcnRvbAoKPiBPayBsb29rcyBsaWtlIGNtNjIwNiBpcyBv
-bmx5IGluIG5ld2VyIHZlcnNpb25zIG9mIHRoZSBoZWFkc2V0IGluIG9sZGVyCj4gKGxpa2UgbWlu
-ZSkgdGhlcmUgaXMgY20xMDZsICwgbWF5YmUgdGhlcmUgYXJlIG90aGVyIGNoaXBzIGFzIHdlbGwg
-YnV0IGkKPiBkb24ndCBrbm93LgoKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBl
-cm1haWwvYWxzYS1kZXZlbC8yMDA3LU5vdmVtYmVyLzAwMzg3Ny5odG1sCgpTZWVtIHNhbWUgVVNC
-IGF1ZGlvIGlkCgppZFZlbmRvciAgICAgICAgICAgMHgwZDhjIEMtTWVkaWEgRWxlY3Ryb25pY3Ms
-IEluYy4KaWRQcm9kdWN0ICAgICAgICAgIDB4MDAwNgoKRG8geW91IGZpbmQgb3V0IHRoZSBhdWRp
-byBjaGlwIGZyb20gcHJvZHVjdCBzcGVjLCB1c2VyIG1hbnVhbCBvciB3aW5kb3dzCmRyaXZlciA/
-CgpNYXN0ZXIgdm9sdW1lIGNvbnRyb2wgYnkgZGVmYXVsdDsgcGVyLWNoYW5uZWwgdm9sdW1lIGNv
-bnRyb2wgYnkgQy1NZWRpYQpkcml2ZXIKClJlZmVyIHRvIHRoZSBmdW5jdGlvbiBibG9jayBkaWFn
-cmFtICwgZGFjIHdpdGggdm9sdW1lIGNvbnRyb2xzIDAgdG8gLTQ1ZEIKClRoZXJlIGlzIGEgdGFi
-bGUgb2YgZGFjIHZvbHVtZSBjb250cm9sIGluIGxpbmVhciBzY2FsZQpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Mark,
+
+On Fri, Jul 26, 2013 at 8:23 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Jul 26, 2013 at 07:06:46PM +0530, Padmavathi Venna wrote:
+>> Samsung has different versions of I2S introduced in different
+>> platforms. Each version has some new support added for multichannel,
+>> secondary fifo, s/w reset control and internal mux for rclk src clk.
+>> Each newly added change has a quirk. So this patch adds all the
+>> required quirks as driver data and based on compatible string from
+>> dtsi fetches the quirks.
+>
+> As Russell indicated you should really keep the old name around, though
+> marking them as deprecated is OK.  However I'm not sure anyone will have
+> deployed this so I'm not sure how much it matters - every downstream
+> kernel I've seen was still using board files anyway.
+
+
+This is there only on exynos5250.dtsi, so changing this file alone is
+enough. patch3 in
+this series have the same.
+
+>
+> The actual meat of the patch changing to a quirk scheme does look good,
+> though.
+>
+>> -- compatible : "samsung,i2s-v5"
+>> +- compatible : should be one of the following.
+>> +   - samsung,s3c6410-i2s: for 8/16/24bit stereo I2S. Previous versions
+>> +     has only 8/16bit support.
+>> +   - samsung,s3c6410-i2sv4: for 8/16/24bit multichannel(5.1 channel) I2S.
+>> +     Introduced in s3c6410. This also applicable for s5p64x0 platforms.
+>> +   - samsung,s5pc100-i2s: for 8/16/24bit multichannel(5.1 channel) I2S
+>> +     with secondary fifo and s/w reset control.
+>> +   - samsung,s5pv210-i2s: for 8/16/24bit multichannel(5.1) I2S with
+>> +     secondary fifo, s/w reset control and internal mux for root clk src.
+>> +
+>
+> I think the -vN naming scheme was fine - I see where this came from but
+> the main point was about having things identified by a string not
+> switching the naming scheme.  As you can see from the s3c6410 stuff the
+> SoC isn't that helpful as a naming scheme as multiple IP versions appear
+> on the same SoC.
+
+Having only the version info is confusing. When I posted my previous version of
+patches I was clear which version introduced in which platform and
+again if I come
+back today and see I again had to search each SoC datasheet. So I think this
+patch now clearly explains what new support introduced in which
+version of IP and which
+SoC platform.
+
+Thanks
+Padma
