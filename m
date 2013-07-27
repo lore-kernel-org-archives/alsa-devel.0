@@ -1,13 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v10 2/7] ASoC: codec: wm9712 simple DT bindings
-Date: Sat, 27 Jul 2013 12:59:50 +0100
-Message-ID: <20130727115950.GF9858@sirena.org.uk>
+Subject: Re: [PATCH v10 1/7] ASoC: core: Generic ac97 link reset functions
+Date: Sat, 27 Jul 2013 13:05:22 +0100
+Message-ID: <20130727120522.GG9858@sirena.org.uk>
 References: <1374924716-23475-1-git-send-email-mpa@pengutronix.de>
- <1374924716-23475-3-git-send-email-mpa@pengutronix.de>
+ <1374924716-23475-2-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0288759095491653159=="
+Content-Type: multipart/mixed; boundary="===============7001182633894755317=="
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1374924716-23475-3-git-send-email-mpa@pengutronix.de>
+In-Reply-To: <1374924716-23475-2-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -18,68 +18,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0288759095491653159==
+--===============7001182633894755317==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9TayrSCGl6Stf3M8"
+	protocol="application/pgp-signature"; boundary="a8INrDZLky+thZCA"
 Content-Disposition: inline
 
 
---9TayrSCGl6Stf3M8
+--a8INrDZLky+thZCA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jul 27, 2013 at 01:31:51PM +0200, Markus Pargmann wrote:
+On Sat, Jul 27, 2013 at 01:31:50PM +0200, Markus Pargmann wrote:
 
-> +static const struct of_device_id wm9712_codec_of_dev_id[] =3D {
-> +	{
-> +		.compatible =3D "wlf,wm9712",
-> +	}, {
-> +		/* sentinel */
-> +	}
-> +};
+This is a really nice approach to the problem, just one thing I'd like
+to see changed in the bindings:
+
+> +ssi {
+> +	...
 > +
->  static struct platform_driver wm9712_codec_driver =3D {
->  	.driver =3D {
->  		.name =3D "wm9712-codec",
->  		.owner =3D THIS_MODULE,
-> +		.of_match_table =3D wm9712_codec_of_dev_id,
->  	},
-> =20
->  	.probe =3D wm9712_probe,
+> +	pinctrl-names = "default", "ac97-running", "ac97-reset", "ac97-warm-reset";
 
-AC'97 is an enumerable bus, we shouldn't need this...
+I'd like to see some documentation of this "default" state - I'd expect
+this corresponds to the bus being idle and waiting for a wakeup from the
+CODEC which is definitely a useful state to have for power optimisation
+so it'd be good to bake it into the bindings.
 
---9TayrSCGl6Stf3M8
+Alternatively it could be the bus being totally idle with no possibility
+of wakeup in which case it'd be good to say that too then someone can
+add the waiting for wakeup state later.
+
+Please also note the new list devicetree@vger.kernel.org.
+
+--a8INrDZLky+thZCA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR87YzAAoJELSic+t+oim9/EAP/2EVuDDr1ao50mKua2irOEW8
-V0MJFv6N2o17rBJ8lGadPjRKrRocKnY9QcOHh9z1l5Pkq5CmbGGsym/DO/TAOAf8
-nSZV7MtB4NY2xVyrBbAuzjPUVyv8KlK3A8vK+y1Ff5UHwwk6vqk8Uh/o9nNtnjO6
-aRA/xfVv2voHMvmfQvSFrDIFbUnSDicsDGG7Lgj3K40HH9PiqI64PZWy4E+950Ei
-v6LDf7gg8uyDhwJ5MO0bzHdQKZhQISSPip1DYnLtoNlRtUV8q2m+TTGmY0xfAajR
-3/I+P30Gs/NJMfTEKHis7vwS34tR/Yn/m1n7b7XZ1KmWYo4Ekq60rf6D8Ix5KfbY
-UyykLdhNowTZm0wrHi6KSihgLoFRaNvWw0ouTC2v6LCbaml/2OL49mYexRTuIWx0
-tI39PRGrtvYeZB7tRUrYO1O6jXKCpw6Tky5UphPjHAjmbiV2ZO+WGKaW9r8/4ntD
-xzJu6jdhDE+l20z+B1KgjQ9W8V5SQg9kXEgMn2DUXtRdfMoLYL/A6RdR9IYXJp0A
-gMRDWNc69Wkq32KdPUrcnBG76r2OaeRvBn6FX/BaVoyKBrrdLA849EIkj/LQ+orC
-JnApnXSPreh2LJ/TNEHujem2JB8R2wa4mnCHca4vVt6CCM/9LP7GpVODBQNLHbIg
-6aqStMxynRu6O3OyfUyj
-=Y9hf
+iQIcBAEBAgAGBQJR87d/AAoJELSic+t+oim9CuIP/AjvwaCXdZ72ahko7jbxpPu1
+Q9eGX925N0THH6Sv2TgAKcqduFSVi50pzfHXVdjyUdLUFvO6P4kukXxGvhkLjngg
+zY9gu7gHQ4PtYr9P8KE8vJS/GH/L5Glq86fQ4GWHU6BJiHoeVXyGccn4jiNeK80S
+/WJDDLCazencxUpN+XPG0zRHc+2p9wBoSsD9oC7RJc6B4fgkf6nbMXv0RPLkw7Sy
+PcRPKC+sCmp5YS6K3FTpVAzO0bEexJMOPW3zzbSVD1PHGRkxV/t6ZgnZNYcN4fKN
+U3HWbx8ah5SDvc2h5EFpSoPTsK+orveoP6Ntu3ckSQUt2OYSbB9HgFA1riiKSPAY
+kJXYefgtOTQcjiKHMhJddCXR+Z3SideQMHb/oKvRmy8sHzidVqbTiCP2XIfg6pQv
+F/k83KXtSPTfM+96inFFLHFuhcndKsXWDjx1pc9hc3r/GWOTiRET4FiOaI1xH2Zs
+ppD8vjvl4vFt1agRhN0NKbznv58aD49rbsLdIlqOoCerALGox32bArkMYx2YSw7u
+hJjGNMMRULNdGl0Vd2SLbxl4+syoJUtM/59BY81MPhJBXvebyx43BdzyI+/Q/HAb
+HRavhEjp5Fcw2dPPV0uVrqtnTh83hIHSO4C0tyziopxw6y04+e0CxOyioQULKlrH
+aH71WKawbSlAx1DP+R7i
+=dXMY
 -----END PGP SIGNATURE-----
 
---9TayrSCGl6Stf3M8--
+--a8INrDZLky+thZCA--
 
 
---===============0288759095491653159==
+--===============7001182633894755317==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -90,4 +89,4 @@ linux-arm-kernel mailing list
 linux-arm-kernel@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============0288759095491653159==--
+--===============7001182633894755317==--
