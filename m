@@ -1,278 +1,100 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v10 7/7] ASoC: Add phycore-ac97-dt driver
-Date: Sat, 27 Jul 2013 13:31:56 +0200
-Message-ID: <1374924716-23475-8-git-send-email-mpa@pengutronix.de>
-References: <1374924716-23475-1-git-send-email-mpa@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V2 2/8] ASoC: Samsung: I2S: Add quirks as
+ driver data in I2S
+Date: Sat, 27 Jul 2013 12:50:22 +0100
+Message-ID: <20130727115022.GE9858@sirena.org.uk>
+References: <1374845812-7803-1-git-send-email-padma.v@samsung.com>
+ <1374845812-7803-3-git-send-email-padma.v@samsung.com>
+ <20130726145319.GI9858@sirena.org.uk>
+ <CAAgF-BerOfvhPJemVf0HBK5L4edw7pgm9bgwKGL+XSMpoaR3vw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1374924716-23475-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+Content-Type: multipart/mixed; boundary="===============8342411192740199332=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id B9CAE260305
+ for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2013 13:50:27 +0200 (CEST)
+In-Reply-To: <CAAgF-BerOfvhPJemVf0HBK5L4edw7pgm9bgwKGL+XSMpoaR3vw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Padma Venkat <padma.kvr@gmail.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Padmavathi Venna <padma.v@samsung.com>, abrestic@chromium.org, Tomasz Figa <tomasz.figa@gmail.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add devicetree support for phycore-ac97 driver in a seperated driver for
-DT loading. The seperation reduces the confusion with the old style
-initialization of this driver via late_initcall. Also this driver is
-using fsl-ssi instead of imx-ssi.
 
-platform_of_node and cpu_of_node are set according to the fsl,audmux
-phandle.
+--===============8342411192740199332==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="QZ8yv+eHGPXxF0+s"
+Content-Disposition: inline
 
-This patch adds handling of ac97 reset functions according to fsl ac97
-support. They are setup from here to avoid board specific code in the
-generic fsl-ssi driver.
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-Tested-by: Shawn Guo <shawn.guo@linaro.org>
----
- .../bindings/sound/phytec,phycore-ac97.txt         |  16 +++
- sound/soc/fsl/Kconfig                              |  15 ++-
- sound/soc/fsl/Makefile                             |   2 +
- sound/soc/fsl/phycore-ac97-dt.c                    | 124 +++++++++++++++++++++
- sound/soc/fsl/phycore-ac97.c                       |  13 +--
- 5 files changed, 156 insertions(+), 14 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/phytec,phycore-ac97.txt
- create mode 100644 sound/soc/fsl/phycore-ac97-dt.c
+--QZ8yv+eHGPXxF0+s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/Documentation/devicetree/bindings/sound/phytec,phycore-ac97.txt b/Documentation/devicetree/bindings/sound/phytec,phycore-ac97.txt
-new file mode 100644
-index 0000000..b3ce9cb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/phytec,phycore-ac97.txt
-@@ -0,0 +1,16 @@
-+Phytec phycore AC97
-+
-+Required properties:
-+- compatible: "phytec,phycore-ac97"
-+- phytec,ssi: A phandle to the ssi device that is connected to ac97.
-+- phytec,audmux: A phandle to the audmux device.
-+- audio-codec: phandle to the codec device node.
-+
-+Example:
-+
-+sound {
-+	compatible = "phytec,phycore-ac97";
-+	phytec,ssi = <&ssi1>;
-+	phytec,audmux = <&audmux>;
-+	audio-codec = <&codec>;
-+};
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 3a79d01..5f992b3 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -142,8 +142,8 @@ config SND_SOC_MX27VIS_AIC32X4
- 	  board with TLV320AIC32X4 codec.
- 
- config SND_SOC_PHYCORE_AC97
--	tristate "SoC Audio support for Phytec phyCORE (and phyCARD) boards"
--	depends on MACH_PCM043 || MACH_PCA100
-+	tristate "SoC Audio support for Phytec phyCORE boards"
-+	depends on MACH_PCM043
- 	select SND_SOC_AC97_BUS
- 	select SND_SOC_WM9712
- 	select SND_SOC_IMX_PCM_FIQ
-@@ -153,6 +153,17 @@ config SND_SOC_PHYCORE_AC97
- 	  Say Y if you want to add support for SoC audio on Phytec phyCORE
- 	  and phyCARD boards in AC97 mode
- 
-+config SND_SOC_PHYCORE_AC97_DT
-+	tristate "SoC Audio support for Phytec phyCORE (and phyCARD) boards (devicetree only)"
-+	select SND_SOC_AC97_BUS
-+	select SND_SOC_WM9712
-+	select SND_SOC_IMX_PCM_FIQ
-+	select SND_SOC_IMX_AUDMUX
-+	select SND_SOC_FSL_SSI
-+	help
-+	  Say Y if you want to add support for SoC audio on Phytec phyCORE
-+	  and phyCARD boards in AC97 mode when using devicetree.
-+
- config SND_SOC_EUKREA_TLV320
- 	tristate "Eukrea TLV320"
- 	depends on MACH_EUKREA_MBIMX27_BASEBOARD \
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index d4b4aa8..31bdd69 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -39,6 +39,7 @@ obj-$(CONFIG_SND_SOC_IMX_PCM_DMA) += imx-pcm-dma.o
- # i.MX Machine Support
- snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
- snd-soc-phycore-ac97-objs := phycore-ac97.o
-+snd-soc-phycore-ac97-dt-objs := phycore-ac97-dt.o
- snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
- snd-soc-wm1133-ev1-objs := wm1133-ev1.o
- snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
-@@ -47,6 +48,7 @@ snd-soc-imx-mc13783-objs := imx-mc13783.o
- 
- obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
- obj-$(CONFIG_SND_SOC_PHYCORE_AC97) += snd-soc-phycore-ac97.o
-+obj-$(CONFIG_SND_SOC_PHYCORE_AC97_DT) += snd-soc-phycore-ac97-dt.o
- obj-$(CONFIG_SND_SOC_MX27VIS_AIC32X4) += snd-soc-mx27vis-aic32x4.o
- obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) += snd-soc-wm1133-ev1.o
- obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
-diff --git a/sound/soc/fsl/phycore-ac97-dt.c b/sound/soc/fsl/phycore-ac97-dt.c
-new file mode 100644
-index 0000000..46b3423
---- /dev/null
-+++ b/sound/soc/fsl/phycore-ac97-dt.c
-@@ -0,0 +1,124 @@
-+/*
-+ * phycore-ac97-dt.c  --  SoC audio for imx_phycore in AC97 mode
-+ *
-+ * Copyright 2013 Markus Pargmann, Pengutronix <mpa@pengutronix.de>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/of.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+
-+#include "imx-audmux.h"
-+#include "fsl_ssi.h"
-+
-+#define DRV_NAME "phycore-ac97-dt-driver"
-+
-+struct phycore_ac97_data {
-+	struct snd_soc_card card;
-+	struct device_node *cpu_np;
-+	struct device_node *codec_np;
-+};
-+
-+static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
-+	{
-+		.name		= "HiFi",
-+		.stream_name	= "HiFi",
-+		.codec_dai_name	= "wm9712-hifi",
-+	},
-+};
-+
-+static struct snd_soc_card imx_phycore = {
-+	.name		= "PhyCORE-ac97-audio",
-+	.owner		= THIS_MODULE,
-+	.dai_link	= imx_phycore_dai_ac97,
-+	.num_links	= ARRAY_SIZE(imx_phycore_dai_ac97),
-+};
-+
-+static const struct of_device_id imx_phycore_ac97_of_dev_id[] = {
-+	{
-+		.compatible = "phytec,phycore-ac97",
-+	}, {
-+		/* sentinel */
-+	}
-+};
-+MODULE_DEVICE_TABLE(of, imx_phycore_ac97_of_dev_id);
-+
-+static int imx_phycore_ac97_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+	struct phycore_ac97_data *priv;
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	imx_phycore.dev = &pdev->dev;
-+
-+	priv->cpu_np = of_parse_phandle(pdev->dev.of_node, "phytec,ssi", 0);
-+	if (!priv->cpu_np) {
-+		dev_err(&pdev->dev, "No valid ssi phandle found\n");
-+		return -EINVAL;
-+	}
-+
-+	priv->codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
-+	if (!priv->codec_np) {
-+		dev_err(&pdev->dev, "No valid codec phandle found\n");
-+		of_node_put(priv->cpu_np);
-+		return -EINVAL;
-+	}
-+
-+	imx_phycore_dai_ac97[0].cpu_of_node = priv->cpu_np;
-+	imx_phycore_dai_ac97[0].platform_of_node = priv->cpu_np;
-+	imx_phycore_dai_ac97[0].codec_of_node = priv->codec_np;
-+
-+	ret = snd_soc_register_card(&imx_phycore);
-+	if (ret) {
-+		dev_err(&pdev->dev, "ASoC: soc card registration failed\n");
-+		of_node_put(priv->cpu_np);
-+		of_node_put(priv->codec_np);
-+		return ret;
-+	}
-+
-+	dev_set_drvdata(&pdev->dev, priv);
-+
-+	return ret;
-+}
-+
-+static int imx_phycore_ac97_remove(struct platform_device *pdev)
-+{
-+	struct phycore_ac97_data *priv = dev_get_drvdata(&pdev->dev);
-+
-+	snd_soc_unregister_card(&imx_phycore);
-+
-+	of_node_put(priv->cpu_np);
-+	of_node_put(priv->codec_np);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver imx_phycore_ac97_driver = {
-+	.probe		= imx_phycore_ac97_probe,
-+	.remove		= imx_phycore_ac97_remove,
-+	.driver		= {
-+		.name	= DRV_NAME,
-+		.owner	= THIS_MODULE,
-+		.of_match_table = imx_phycore_ac97_of_dev_id,
-+	},
-+};
-+
-+module_platform_driver(imx_phycore_ac97_driver);
-+
-+MODULE_AUTHOR("Markus Pargmann <mpa@pengutronix.de>");
-+MODULE_DESCRIPTION(DRV_NAME ": PhyCORE ALSA SoC DT driver");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/fsl/phycore-ac97.c b/sound/soc/fsl/phycore-ac97.c
-index ae403c2..4126edc 100644
---- a/sound/soc/fsl/phycore-ac97.c
-+++ b/sound/soc/fsl/phycore-ac97.c
-@@ -52,18 +52,7 @@ static int __init imx_phycore_init(void)
- {
- 	int ret;
- 
--	if (machine_is_pca100()) {
--		imx_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
--			IMX_AUDMUX_V1_PCR_SYN | /* 4wire mode */
--			IMX_AUDMUX_V1_PCR_TFCSEL(3) |
--			IMX_AUDMUX_V1_PCR_TCLKDIR | /* clock is output */
--			IMX_AUDMUX_V1_PCR_RXDSEL(3));
--		imx_audmux_v1_configure_port(3,
--			IMX_AUDMUX_V1_PCR_SYN | /* 4wire mode */
--			IMX_AUDMUX_V1_PCR_TFCSEL(0) |
--			IMX_AUDMUX_V1_PCR_TFSDIR |
--			IMX_AUDMUX_V1_PCR_RXDSEL(0));
--	} else if (machine_is_pcm043()) {
-+	if (machine_is_pcm043()) {
- 		imx_audmux_v2_configure_port(3,
- 			IMX_AUDMUX_V2_PTCR_SYN | /* 4wire mode */
- 			IMX_AUDMUX_V2_PTCR_TFSEL(0) |
--- 
-1.8.3.2
+On Sat, Jul 27, 2013 at 06:38:02AM +0530, Padma Venkat wrote:
+> On Fri, Jul 26, 2013 at 8:23 PM, Mark Brown <broonie@kernel.org> wrote:
+
+> > As Russell indicated you should really keep the old name around, though
+> > marking them as deprecated is OK.  However I'm not sure anyone will have
+> > deployed this so I'm not sure how much it matters - every downstream
+> > kernel I've seen was still using board files anyway.
+
+> This is there only on exynos5250.dtsi, so changing this file alone is
+> enough. patch3 in
+> this series have the same.
+
+The idea with DT is that you can bake the DT into a board firmware and
+then upgrade the kernel without upgrading the DT.
+
+> Having only the version info is confusing. When I posted my previous version of
+> patches I was clear which version introduced in which platform and
+> again if I come
+> back today and see I again had to search each SoC datasheet. So I think this
+> patch now clearly explains what new support introduced in which
+> version of IP and which
+> SoC platform.
+
+Like I keep saying the problem we've always had is that there's never
+been a 1:1 mapping between SoCs and IIS IPs, and of course nobody can
+get the documentation on the older SoCs outside of Samsung so...  If it
+were a linear march forward in terms of IP it'd be a lot easier :(
+
+--QZ8yv+eHGPXxF0+s
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR87P7AAoJELSic+t+oim9xacP/2c0kC0QgdAhzxnVdXnhqOuf
+Ni4sktspOZWb+ajOSXcM7kk/rtNUGLdzjwr41cl6K5c9nwCRHCuk52NmYo1aHr1p
+apwhBUNm+ulhfVIap9f+SUZ8N6Tnpoz/Azcgl6DSLtDc6AnjcPU+AnxHgRNyYF1T
+va+y37Xs7hI/n2ISBfJjdudNhTMJpiUHpSy3TNucFGD7Z1C+qdJJ63v2x0/Yon+Z
+WW27e/8tRsR495a9XyJ4ewY+8ahu3xmRI8d9pnkj/6K9Jfxtgg0Ru/CAwehMhVYt
+QzBIhEiJ39uUTRmlsU+zGaipzQ18B/xOV23UeHudEzOp24TCUV6okoNNXiitjNx5
+Lsl84SDz3Fxt09UKQDYB25OX51ZdFoH7JpdB6FzT0sAeXanl1v4YfEBYuAAeafy/
+J7/yBgngD3aM9vl8ANxhoccyGfp3Ow6+T+xh8cFmO1hphGyUosOmcX8D3mrAM2rK
+w26MeQ9151LUQfQagUWBD0TT6Bvx41WyhMV1Se+0ljqyrsA4yUFMHL4BdkxPS70V
+rNtAJt1KjOTmwJPWkjsW1YAIMwVIPKAWGep6lwRyetBW90QOh0QfGI+YzAwSj/iu
+USy5vNwc2Ensf4tE2b3gVgNzJdpyBUPAv/G9och5kHfcO5bTpCjCDxfNN9hmzb6a
+W43SRLQitWD80EH2lfBY
+=8G4N
+-----END PGP SIGNATURE-----
+
+--QZ8yv+eHGPXxF0+s--
+
+--===============8342411192740199332==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8342411192740199332==--
