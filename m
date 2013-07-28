@@ -1,19 +1,19 @@
-From: Kai Vehmanen <kvlists@nosignal.fi>
-Subject: Re: [ecasound] Garbage at end of playback: ecasound or
- alsa broken?
-Date: Sun, 28 Jul 2013 04:29:12 +0300 (EEST)
-Message-ID: <alpine.DEB.2.00.1307280249470.2634@ecabase.localdomain>
-References: <51EA4CDE.2010503@t-online.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: RFC: support for 12 & 24Khz
+Date: Sun, 28 Jul 2013 17:54:07 +0530
+Message-ID: <20130728122407.GC1986@intel.com>
+References: <20130724172640.GE18642@intel.com> <51F0CAC0.9090702@ladisch.de>
+ <20130725154501.GN18642@intel.com> <s5h1u6mk3dm.wl%tiwai@suse.de>
+ <20130726060908.GA1986@intel.com> <s5hob9p7q7e.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
- [83.102.40.134])
- by alsa0.perex.cz (Postfix) with ESMTP id E9C1C26165C
- for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2013 19:37:32 +0200 (CEST)
-In-Reply-To: <51EA4CDE.2010503@t-online.de>
-Content-ID: <alpine.DEB.2.00.1307280410251.2634@ecabase.localdomain>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2C45261736
+ for <alsa-devel@alsa-project.org>; Sun, 28 Jul 2013 15:02:59 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hob9p7q7e.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,23 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Knut Petersen <Knut_Petersen@t-online.de>
-Cc: alsa-devel@alsa-project.org, ecasound-list@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: pierre-louis.bossart@linux.jf.intel.com, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, Jul 26, 2013 at 09:09:09AM +0200, Takashi Iwai wrote:
+> Relying only on SNDRV_PCM_RATE_* bits doesn't scale.
+> What if more other rates are needed at the next time?
+Agreed, this is my thinking as well. Remove the usage of macro and use raw rate
+values...
 
-On Sat, 20 Jul 2013, Knut Petersen wrote:
-
-> Summary: A very short period (about 45ms) garbage is played at the end of every playback.
-[...]
-> Setup soundcards and cabling, execute
-> "ecasound -t 2 -f:16,2,44100 -a:1 -i testin.wav -o alsahw,0,0  -a:2 -i alsahw,0,0 -o testout.wav"
-
-this usage triggers multitrack recording mode in ecasound (ecasound will 
-try to align recording of testin.wav to playout of testout.wav), and the 
-symptoms sound like an issue with this mechanism.
-
-I couldn't reproduce this with my setup (ice1712), so could you retry the 
-test with "-z:notintbuf"? If the problem still persists, can you send me 
-(may be large, so please send offline) logs when run with "-dd"?
+~Vinod
+-- 
