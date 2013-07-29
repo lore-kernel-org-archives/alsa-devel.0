@@ -1,18 +1,17 @@
-From: Bard Liao <bardliao@realtek.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: Broken headphone and speaker amplifier
-	suppliesforthe rt5640 driver
-Date: Mon, 29 Jul 2013 11:04:46 +0800
-Message-ID: <1121E117AD4ECE49880A389A396215BB935C48A592@rtitmbs7.realtek.com.tw>
+ suppliesforthe rt5640 driver
+Date: Mon, 29 Jul 2013 07:07:16 +0100
+Message-ID: <20130729060716.GQ9858@sirena.org.uk>
 References: <51F29064.8080003@metafoo.de> <20130727173509.GJ9858@sirena.org.uk>
+ <1121E117AD4ECE49880A389A396215BB935C48A592@rtitmbs7.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1406145308501449635=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 79379261A0B
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 05:04:53 +0200 (CEST)
-In-Reply-To: <20130727173509.GJ9858@sirena.org.uk>
-Content-Language: zh-TW
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id C3F28261A24
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 08:07:23 +0200 (CEST)
+In-Reply-To: <1121E117AD4ECE49880A389A396215BB935C48A592@rtitmbs7.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Stephen Warren <swarren@wwwdotorg.org>
+To: Bard Liao <bardliao@realtek.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Sunday, July 28, 2013 1:35 AM
-> To: Lars-Peter Clausen
-> Cc: Stephen Warren; Bard Liao; Linux-ALSA
-> Subject: Re: [alsa-devel] Broken headphone and speaker amplifier supplies
-> forthe rt5640 driver
-> 
-> On Fri, Jul 26, 2013 at 05:06:12PM +0200, Lars-Peter Clausen wrote:
-> 
-> > I guess for the heaphone amplifier the right fix is to set the shift
-> > to RT5640_PWR_HA_BIT. For the speaker amplifier I'd assume that the
-> > right bit is RT5640_PWR_CLS_D_BIT. But the speaker amplifier widget
-> > also as an event callback in which it already seems to set/clear the
-> > bit. I think the right fix is to remove the register change from the
-> > event callback and set the shift to RT5640_PWR_CLS_D_BIT. But I
-> > neither have the hardware nor the datasheet, so this is all just an educated
-> guess.
-> 
-> Or set the register to SND_SOC_NOPM allowing the manual sequencing which
-> is (I presume) needed?  If we're going to need an event to do the sequencing
-> we may as well have it do both writes.
 
-We do need a sequence for headphone depop.
-Another question about it.
-Can I do mute/unmute in the widget event?
-The mute/unmute control is written in rt5640_snd_controls[] now.
-It allows user to unmute speaker or headphone before dapm power on the related power.
-And it will bring a pop noise.
-So I prefer to do the unmute/mute step in the widget event.
-Is that ok?
+--===============1406145308501449635==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lul0a8V/L6PD/aW+"
+Content-Disposition: inline
 
-> 
-> ------Please consider the environment before printing this e-mail.
+
+--lul0a8V/L6PD/aW+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jul 29, 2013 at 11:04:46AM +0800, Bard Liao wrote:
+
+> The mute/unmute control is written in rt5640_snd_controls[] now.
+> It allows user to unmute speaker or headphone before dapm power on the related power.
+> And it will bring a pop noise.
+> So I prefer to do the unmute/mute step in the widget event.
+> Is that ok?
+
+If you need to do that you should really still present the mute control
+to the user; store the current state in a variable in the private data
+so that the user always sees the control and then only write the value
+out while the widget is powered.  Mute is expected to be fast and some
+userspaces like to be able to mute individual outputs.
+
+Ideally the core would be able to do this.
+
+--lul0a8V/L6PD/aW+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR9gaRAAoJELSic+t+oim9qugQAISwXNVWukRFZJPXoB4a44hi
+r3d7VQPJgeBMJiTRL4B3kOhir9mjvFwRZw/ozk83ZSDOefd5wAC9XM9hmIXK4jr9
+ef6g/E83W3XprNdWu/n8fGLjQwWaQKTjYneAdKjosq6LQNbAifFNSytmJXWaM03R
+/a+Wiu9XRVeBXmoj175NkFMhBa1q3CjrnMLVl+5PBRMb+g4z1+pWpR6aTjzhEBbR
+FCuXp39KoJFqJ/xW2IbW3jQsptouqfQ/yNoHsDBI7EwKFErzUFqn+Hz2q1Kwv5H9
+cTXD/VkW7pJthhScHuIfSNKE5+tlHbNbT5Qosud1SV1Gjqbu/lKgdcRD2UBn3Uuw
+g+d2ekJI3rVGl/LV5RnlMqInxFQvYQg01WWciYbe0HvZatb6b80XlrdxxabS3EG/
+P9SSg9g7s7Xbg6IeEktNUo75+aqWItb7V0fOrCVfTi5DiaC4UUApfvo2iYNvF7EJ
+I9V9VXEDTzkE0Yxe1K5ppYzEjkBKX5E295KZDLOzjaFwrCaxWjxtaD4jVJxqszlY
+/BmvkDo4QZsfjetX0bMidqvAEhCXApQyfiP4MGKPBh/xm4gE7A2wzzT328arLk3K
+mR9NVbcx6nUpgdUf38DGcZ/XrYXDa5V8DOyAREnYMpfV1NWA344d+r4Q2TqoktOj
+LFC83SpwnuUNM+owRHGI
+=YYG0
+-----END PGP SIGNATURE-----
+
+--lul0a8V/L6PD/aW+--
+
+--===============1406145308501449635==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1406145308501449635==--
