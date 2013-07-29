@@ -1,58 +1,89 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: Buffer size for ALSA USB PCM audio
-Date: Mon, 29 Jul 2013 14:20:03 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1307291400450.1479-100000@iolanthe.rowland.org>
-References: <51F6A262.6010800@ladisch.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Alsa bug/bugtracker
+Date: Mon, 29 Jul 2013 19:23:48 +0100
+Message-ID: <20130729182348.GD9858@sirena.org.uk>
+References: <51F2F5F5.20509@gmail.com>
+ <s5hwqo9g04r.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <51F6A262.6010800-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Cc: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============0485637687315254472=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA294264EED
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 20:23:51 +0200 (CEST)
+In-Reply-To: <s5hwqo9g04r.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mattia Bertoni <mattia.b89@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 29 Jul 2013, Clemens Ladisch wrote:
 
-> Alan Stern wrote:
-> > Clemens remarked some time ago that keeping the queue full would be
-> > trivial, if only he knew how full it needed to be.  The answer to that
-> > is given above.  I have been trying to make the appropriate changes,
-> > but I'm not finding it "trivial".
-> 
-> What I meant was that it would be trivial to change the lower bound of
-> the period size (from which many queueing parameters are derived).
+--===============0485637687315254472==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SN/e2lall73C69B1"
+Content-Disposition: inline
 
-I doubt that would help.  What really matters here is the relation
-between urb_packs (the maximum number of packets in an URB) and the
-number of packets in a period (which can vary as the device's clock
-frequency drifts).
 
-For a bizarre example of sort of thing that can happen, suppose 
-urb_packs is 8 and and a period always consists of 8 packets.  Then to 
-occupy 10 uframes requires two URBs (assuming one packet per uframe).
+--SN/e2lall73C69B1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But now suppose a period might need 9 packets (say because the device's 
-clock frequency is a little low, so it consumes samples less quickly 
-and therefore a fixed number of samples takes more time).  Then to 
-occupy 10 uframes, two URBs would no longer be enough, because the 
-numbers of packets in successive URBs could be 8, 1, 8, etc.  Two 
-URBs would occupy only 9 uframes.
+On Mon, Jul 29, 2013 at 11:56:36AM +0200, Takashi Iwai wrote:
+> Mattia Bertoni wrote:
 
-> > The current driver seems to assume that endpoints with an _implicit_
-> > feedback endpoint won't have variable-length packets.
-> 
-> That's likely to be a bug.
+> > under Mark Brown directions I submit to you my problem:
+> > recently I've gotten a crash on my machine running Archlinux x86_64 the=
+=20
+> > log suggest me to report it in the Alsa bugtracker but the link on the=
+=20
+> > official project (https://bugtrack.alsa-project.org/alsa-bug/) is down.=
+=2E..
 
-data_ep_set_params() checks snd_usb_endpoint_implicit_feedback_sink() 
-in three places.  It looks like only the second place is correct.
+> > how can I do ???
 
-Can you verify whether the other two are right, and explain to me if 
-they are?
+> Please subscribe to alsa-devel ML and discuss there instead.
 
-Alan Stern
+He is doing that (I told him to CC you when he mailed the list).
+Mattia, you should provide details of the crash in your e-mail like you
+would in a bug report to a bug tracker.
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--SN/e2lall73C69B1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR9rMwAAoJELSic+t+oim9EbIQAIEr5pxWzCodQbCWzvA21tMM
+LXJsUFFcPiQPHN4XoWs9tW6w3YltLywmljRyMG1UCqldZ6uS3UWuGS/iCZgGpblt
+PVN4PP8na2HY6kjXWeEUDDOGrucaeC95KOm6jvnZHMP5756hMIyjZOcSrEsMKZRq
+DM2wkK3CFAA4FlfYTT8IOKfzqPJ9EEgQWTEPTxikGKSSi3igBPkM2LnQ50YRxjZf
+ewlLvYgyQmwSVw18RZK5YFP4vN0Bk2m3/JIzWnBVYLYabL5xtlshhwR9VnmjWNqY
+GoSGxFQ0epZ4uhZ3A+NU3/PWw2wBOOC1uHrNC7HFcwfBXJXAKSmpAVXP7F1Egoaa
+iQbTK0EurFfrjxiRDn9EfgNrBXh46PQ8YsNaWhCMq6rcMW2ooghMzrG19McA9AGS
+/EZQSssiwbbFVqfsmrA1pOeOMt/p3TvcLPj9D2CQtyWOQOPU/RHkiZmFUhD3cIkC
+/vE58liJi7cPLnlt+KAa0Pbcz1IfaCk0aZauiS/8wDrnX1YnwA0aIwMlVyRODrBn
+vZOeKJn/WFYNDT2bFNO8UtCG1A9fGKpvccFHyT1db2ANH6b1BpA+WaLg7CPRMJ3c
+QKy3+r5nuh2B6qhw3tkuscakAfPH+4P8oYLabyOTGPXkMQLCCWCfRt2bUFlMCodI
+0qgib4RcM+puGOSHi+VP
+=eOxi
+-----END PGP SIGNATURE-----
+
+--SN/e2lall73C69B1--
+
+--===============0485637687315254472==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0485637687315254472==--
