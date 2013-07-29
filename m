@@ -1,39 +1,45 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: Buffer size for ALSA USB PCM audio
-Date: Mon, 29 Jul 2013 15:38:45 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1307291537490.1479-100000@iolanthe.rowland.org>
-References: <51F6C123.7020407@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: snd_seq_system_info_get_cur_ports function
+Date: Mon, 29 Jul 2013 21:52:49 +0200
+Message-ID: <51F6C811.4070501@ladisch.de>
+References: <51F4A6C0.1060505@yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <51F6C123.7020407-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id E6448264F10
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 21:52:54 +0200 (CEST)
+In-Reply-To: <51F4A6C0.1060505@yahoo.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jose B <jose.cuerv0@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 29 Jul 2013, Daniel Mack wrote:
+Jose B wrote:
+> Shouldnt there be a function for getting the current port count as seen below?
+>
+> snd_seq_system_info_get_cur_ports(const snd_seq_system_info_t *info)
 
-> On 29.07.2013 20:20, Alan Stern wrote:
-> > data_ep_set_params() checks snd_usb_endpoint_implicit_feedback_sink() 
-> > in three places.  It looks like only the second place is correct.
-> > 
-> > Can you verify whether the other two are right, and explain to me if 
-> > they are?
-> 
-> Which version are you looking at? Eldad Zack recently posted work in
-> that area, but I can't seem to find them anywhere yet in the sound tree.
+There is no such value:
+<https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/include/uapi/sound/asequencer.h#n308>
 
-I'm working with Linus's 3.11-rc3 kernel.
+> I was writing a function to quickly check if any new ports were registered
+> on the sequencer after the application using the wrapper starts up.
 
-> Takashi?
-> 
-> Eldad, as you're likely more into the detail right now - any oppinion on
-> Alan's findings?
+The number of ports is not helpful for detecting all changes.
 
-Alan Stern
+Subscribe to port 0:1 (SND_SEQ_CLIENT_SYSTEM:SND_SEQ_PORT_SYSTEM_ANNOUNCE) to
+receive events for any changes.
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+Regards,
+Clemens
