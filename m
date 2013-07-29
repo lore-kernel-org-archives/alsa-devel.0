@@ -1,36 +1,77 @@
-From: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Subject: Re: Buffer size for ALSA USB PCM audio
-Date: Mon, 29 Jul 2013 19:12:02 +0200
-Message-ID: <51F6A262.6010800@ladisch.de>
-References: <Pine.LNX.4.44L0.1307291041410.1479-100000@iolanthe.rowland.org>
+From: Ian Dawes <madeallup.gen@gmail.com>
+Subject: [PATCH - Preliminary support for Xonar Xense
+	(resubmitAdded support for Xonar Xense. Only speaker out and
+	mic in working.
+Date: Mon, 29 Jul 2013 18:45:09 +0100
+Message-ID: <1375119909-24454-1-git-send-email-madeallup.gen@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <Pine.LNX.4.44L0.1307291041410.1479-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Cc: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Ian Dawes <madeallup.gen@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Alan Stern wrote:
-> Clemens remarked some time ago that keeping the queue full would be
-> trivial, if only he knew how full it needed to be.  The answer to that
-> is given above.  I have been trying to make the appropriate changes,
-> but I'm not finding it "trivial".
 
-What I meant was that it would be trivial to change the lower bound of
-the period size (from which many queueing parameters are derived).
+Signed-off-by: Ian Dawes <madeallup.gen@gmail.com>
 
-> The current driver seems to assume that endpoints with an _implicit_
-> feedback endpoint won't have variable-length packets.
-
-That's likely to be a bug.
-
-
-Regards,
-Clemens
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/pci/oxygen/virtuoso.c b/sound/pci/oxygen/virtuoso.c
+index 64b9fda..df99ec9 100644
+--- a/sound/pci/oxygen/virtuoso.c
++++ b/sound/pci/oxygen/virtuoso.c
+@@ -52,6 +52,7 @@ static DEFINE_PCI_DEVICE_TABLE(xonar_ids) = {
+ 	{ OXYGEN_PCI_SUBID(0x1043, 0x835d) },
+ 	{ OXYGEN_PCI_SUBID(0x1043, 0x835e) },
+ 	{ OXYGEN_PCI_SUBID(0x1043, 0x838e) },
++	{ OXYGEN_PCI_SUBID(0x1043, 0x8428) },
+ 	{ OXYGEN_PCI_SUBID(0x1043, 0x8522) },
+ 	{ OXYGEN_PCI_SUBID_BROKEN_EEPROM },
+ 	{ }
+diff --git a/sound/pci/oxygen/xonar_pcm179x.c b/sound/pci/oxygen/xonar_pcm179x.c
+index c8c7f2c..2567810 100644
+--- a/sound/pci/oxygen/xonar_pcm179x.c
++++ b/sound/pci/oxygen/xonar_pcm179x.c
+@@ -499,6 +499,17 @@ static void xonar_stx_init(struct oxygen *chip)
+ 	xonar_st_init_common(chip);
+ }
+ 
++static void xonar_xense_init(struct oxygen *chip)
++{
++	struct xonar_pcm179x *data = chip->model_data;
++
++	data->generic.ext_power_reg = OXYGEN_GPI_DATA;
++	data->generic.ext_power_int_reg = OXYGEN_GPI_INTERRUPT_MASK;
++	data->generic.ext_power_bit = GPI_EXT_POWER;
++	xonar_init_ext_power(chip);
++	xonar_st_init(chip);
++}
++
+ static void xonar_d2_cleanup(struct oxygen *chip)
+ {
+ 	xonar_disable_output(chip);
+@@ -1138,6 +1149,14 @@ int get_xonar_pcm179x_model(struct oxygen *chip,
+ 		chip->model.resume = xonar_stx_resume;
+ 		chip->model.set_dac_params = set_pcm1796_params;
+ 		break;
++	case 0x8428:
++		chip->model = model_xonar_st;
++		chip->model.shortname = "Xonar Xense";
++		chip->model.chip = "AV100";
++		chip->model.init = xonar_xense_init;
++		chip->model.dac_channels_pcm = 8;
++		chip->model.dac_channels_mixer = 8;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+1.8.1.2
