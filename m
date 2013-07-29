@@ -1,15 +1,18 @@
-From: Jose B <jose.cuerv0@yahoo.com>
-Subject: Re: snd_seq_system_info_get_cur_ports function
-Date: Sun, 28 Jul 2013 01:06:08 -0400
-Message-ID: <51F4A6C0.1060505@yahoo.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: hda/realtek - Selectively call
+	snd_hda_shutup_pins()
+Date: Mon, 29 Jul 2013 11:47:40 +0200
+Message-ID: <1375091261-18274-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm20-vm3.bullet.mail.ne1.yahoo.com
- (nm20-vm3.bullet.mail.ne1.yahoo.com [98.138.91.150])
- by alsa0.perex.cz (Postfix) with ESMTP id 370F3261724
- for <alsa-devel@alsa-project.org>; Sun, 28 Jul 2013 07:06:12 +0200 (CEST)
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8260260202
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 11:46:12 +0200 (CEST)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 419EAA41E0
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 11:46:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,28 +25,54 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Devs,
+Instead of calling snd_hda_shutup_pins() unconditionally, allow it be
+called in spec->shutup callback.  In this way, we can avoid calling
+this function if it causes a problem like we see in the next patch
+following this.
 
-I've been working on a wrapper to oversimplify using the alsa midi 
-sequencer, and for it I was writing a function to quickly check if any 
-new ports were registered on the sequencer after the application using 
-the wrapper starts up. I noticed there is no function for getting the 
-current port count but there is one for getting the current number of 
-sequencer clients :
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-snd_seq_system_info_get_cur_clients(const snd_seq_system_info_t *info)
-
-Shouldnt there be a corresponding function for getting the current port 
-count as seen below? Or is it just missing from the documentation?
-
-snd_seq_system_info_get_cur_ports(const snd_seq_system_info_t *info)
-
-    -- It doesn't show in code::blocks' autocomplete so i'm guessing it
-    wasn't written yet.
-
-Is anyone willing to check this out please? It would be really handy to 
-have this func.
-
-Thanks, and happy dev-ing
-
-Jose'
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8bd2261..dbd59df 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -282,6 +282,7 @@ static void alc_eapd_shutup(struct hda_codec *codec)
+ {
+ 	alc_auto_setup_eapd(codec, false);
+ 	msleep(200);
++	snd_hda_shutup_pins(codec);
+ }
+ 
+ /* generic EAPD initialization */
+@@ -826,7 +827,8 @@ static inline void alc_shutup(struct hda_codec *codec)
+ 
+ 	if (spec && spec->shutup)
+ 		spec->shutup(codec);
+-	snd_hda_shutup_pins(codec);
++	else
++		snd_hda_shutup_pins(codec);
+ }
+ 
+ #define alc_free	snd_hda_gen_free
+@@ -2573,15 +2575,13 @@ static void alc269_shutup(struct hda_codec *codec)
+ {
+ 	struct alc_spec *spec = codec->spec;
+ 
+-	if (spec->codec_variant != ALC269_TYPE_ALC269VB)
+-		return;
+-
+ 	if (spec->codec_variant == ALC269_TYPE_ALC269VB)
+ 		alc269vb_toggle_power_output(codec, 0);
+ 	if (spec->codec_variant == ALC269_TYPE_ALC269VB &&
+ 			(alc_get_coef0(codec) & 0x00ff) == 0x018) {
+ 		msleep(150);
+ 	}
++	snd_hda_shutup_pins(codec);
+ }
+ 
+ static void alc5505_coef_set(struct hda_codec *codec, unsigned int index_reg,
+-- 
+1.8.3.1
