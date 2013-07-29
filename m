@@ -1,68 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: codecs: da9055: Update driver name to
- fix breakage due to pmic driver with same name
-Date: Mon, 29 Jul 2013 17:01:57 +0100
-Message-ID: <20130729160157.GZ9858@sirena.org.uk>
-References: <20130705114456.GV27646@sirena.org.uk>
- <1373031306.3233.131.camel@matrix>
- <20130705133752.GX27646@sirena.org.uk>
- <1373270091.11222.12.camel@matrix>
- <20130708112613.GQ27646@sirena.org.uk>
- <1373542576.9286.101.camel@matrix>
- <20130717103651.GP22506@sirena.org.uk>
- <1374482594.13726.11.camel@matrix>
- <20130722100211.GP9858@sirena.org.uk>
- <1375110386.21326.6.camel@matrix>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: bfin-ac97: Fix prototype error
+ following AC'97 refactoring
+Date: Mon, 29 Jul 2013 18:55:11 +0200
+Message-ID: <51F69E6F.8040205@metafoo.de>
+References: <1375084417-29437-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5dN7yJDGW7BLmQKo"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1375110386.21326.6.camel@matrix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, linux-kernel <linux-kernel@vger.kernel.org>, "kiran.padwal" <kiran.padwal@kpitcummins.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-143.synserver.de (smtp-out-144.synserver.de
+ [212.40.185.144])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45D5B2625FE
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 18:54:21 +0200 (CEST)
+In-Reply-To: <1375084417-29437-1-git-send-email-broonie@kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 07/29/2013 09:53 AM, Mark Brown wrote:
+> From: Mark Brown <broonie@linaro.org>
+> 
+> As part of the multiplatform refactoring for AC'97 the AC'97 bus ops were
+> staticised meaning that the prototype (which was never needed) conflicts
+> with the declaration causing build failures.
+> 
+> Signed-off-by: Mark Brown <broonie@linaro.org>
 
---5dN7yJDGW7BLmQKo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 
-On Mon, Jul 29, 2013 at 08:36:26PM +0530, Ashish Chavan wrote:
-
-> produced as a standalone codec device soon, and we hope the driver can
-> be re-used directly without changes. Is this the reason why we see only
-> a handful examples of suggested implementation in kernel?
-
-Well, it's a very unusual hardware design choice to have multiple I2C
-endpoints in a single physical chip.
-
-With regmap it should be very straightforward to reuse the same driver
-for both standalone and non-standalone versions, just a small amount of
-glue code in the CODEC driver I'd expect.  Usually the bus level code is
-tiny.
-
---5dN7yJDGW7BLmQKo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR9pHyAAoJELSic+t+oim9xFYP/1p3PQhPfBq50DZQEQzcIQ13
-gNMjDh1XmkrysHQt0uumKEyJE7jyoWC1T1TydIiGXKn8X4fx6oLp9HJ0kpiUeXoa
-xMaeZOt0Sq1pXvRBDXXBDjlCTopQbI1NwoKd73Td/wD+a1W6XsuverMGrjDmncnm
-nXVKAGaBEkhXkeNDrRuFieh1pVYoTdrsOOqhWwwL//SNIfYixvvPZg/hlPC+28fO
-vt3zYVCKmB88towYJgUOsKIXjyOAEzLILTOBSzdRZPcw/CuN4ZRGpAhNVHC1BslV
-Gw4QygGIibDReoSJTVy/ReLBYNibPEkHk6X09mwMvbTkPYckzErsCuRHwk6alGRE
-f53FuZRxBgnuTYJ9vrePBjGlSzDJ02CnUCGPZ+58SrU38RFL4EJrb6uoPipeunp9
-PGdoYbApMsaPdbjw15Rtketk7vJqe4eiv4vSqx5+IHGLx+ck93A2Ion+swLdZseC
-29v0T6IBYYcbP1LbuStPMnfIzSZAx2KIm8TssQPlQhVWRzUAg5mAN13NeqHrB6s6
-I003nElUEwjGg6uLIIgjPceUgTg3SZaABt0dOaSX3Eqc7oPN3PsyMLEMNEstFxFw
-zlXK4TltEypAIiJobtCSVPXJs1+TKyHvjG10WIZiVMcaxAIqfcQcEOPPBNfNGn3N
-jT4yfs1aYIw2aSEYPmVn
-=t8ME
------END PGP SIGNATURE-----
-
---5dN7yJDGW7BLmQKo--
+> ---
+>  sound/soc/blackfin/bf5xx-ac97.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/sound/soc/blackfin/bf5xx-ac97.h b/sound/soc/blackfin/bf5xx-ac97.h
+> index 15c635e..0c3e22d 100644
+> --- a/sound/soc/blackfin/bf5xx-ac97.h
+> +++ b/sound/soc/blackfin/bf5xx-ac97.h
+> @@ -9,7 +9,6 @@
+>  #ifndef _BF5XX_AC97_H
+>  #define _BF5XX_AC97_H
+>  
+> -extern struct snd_ac97_bus_ops bf5xx_ac97_ops;
+>  extern struct snd_ac97 *ac97;
+>  /* Frame format in memory, only support stereo currently */
+>  struct ac97_frame {
+> 
