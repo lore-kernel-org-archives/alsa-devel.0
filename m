@@ -1,16 +1,15 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd_seq_system_info_get_cur_ports function
-Date: Mon, 29 Jul 2013 21:52:49 +0200
-Message-ID: <51F6C811.4070501@ladisch.de>
-References: <51F4A6C0.1060505@yahoo.com>
+Subject: Re: [PATCH - Preliminary support for Xonar Xense
+ (resubmitAdded support for Xonar Xense. Only speaker out and mic in
+ working.
+Date: Mon, 29 Jul 2013 21:58:33 +0200
+Message-ID: <51F6C969.7050504@ladisch.de>
+References: <1375119909-24454-1-git-send-email-madeallup.gen@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id E6448264F10
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 21:52:54 +0200 (CEST)
-In-Reply-To: <51F4A6C0.1060505@yahoo.com>
+In-Reply-To: <1375119909-24454-1-git-send-email-madeallup.gen@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,25 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jose B <jose.cuerv0@yahoo.com>
-Cc: alsa-devel@alsa-project.org
+To: Ian Dawes <madeallup.gen@gmail.com>
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jose B wrote:
-> Shouldnt there be a function for getting the current port count as seen below?
+Ian Dawes wrote:
 >
-> snd_seq_system_info_get_cur_ports(const snd_seq_system_info_t *info)
+> Signed-off-by: Ian Dawes <madeallup.gen@gmail.com>
 
-There is no such value:
-<https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/include/uapi/sound/asequencer.h#n308>
+The commit message was squashed into the subject line.  There's probably
+an empty line missing between them.
 
-> I was writing a function to quickly check if any new ports were registered
-> on the sequencer after the application using the wrapper starts up.
+> +++ b/sound/pci/oxygen/xonar_pcm179x.c
+> +static void xonar_xense_init(struct oxygen *chip)
+> +{
+> +	struct xonar_pcm179x *data = chip->model_data;
+> +
+> +	data->generic.ext_power_reg = OXYGEN_GPI_DATA;
+> +	data->generic.ext_power_int_reg = OXYGEN_GPI_INTERRUPT_MASK;
+> +	data->generic.ext_power_bit = GPI_EXT_POWER;
+> +	xonar_init_ext_power(chip);
+> +	xonar_st_init(chip);
+> +}
 
-The number of ports is not helpful for detecting all changes.
+How much of this is guesswork?  :-)
 
-Subscribe to port 0:1 (SND_SEQ_CLIENT_SYSTEM:SND_SEQ_PORT_SYSTEM_ANNOUNCE) to
-receive events for any changes.
+Shouldn't you rather use xonar_stx_init(), which does not try to
+configure the nonexistent CS2000 chip?
+
+> +	case 0x8428:
+> +		chip->model = model_xonar_st;
+> +		chip->model.shortname = "Xonar Xense";
+> +		chip->model.chip = "AV100";
+> +		chip->model.init = xonar_xense_init;
+> +		chip->model.dac_channels_pcm = 8;
+> +		chip->model.dac_channels_mixer = 8;
+
+When only two channels work, why declaring more?
 
 
 Regards,
