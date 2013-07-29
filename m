@@ -1,16 +1,25 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Alsa bug/bugtracker
-Date: Mon, 29 Jul 2013 19:23:48 +0100
-Message-ID: <20130729182348.GD9858@sirena.org.uk>
-References: <51F2F5F5.20509@gmail.com>
- <s5hwqo9g04r.wl%tiwai@suse.de>
+From: Przemek Rudy <prudy1@o2.pl>
+Subject: Re: [PATCH - microII 1/1] conf/cards: add Audio
+ Advantage Micro II
+Date: Mon, 29 Jul 2013 20:29:50 +0200
+Message-ID: <51F6B49E.5010202@o2.pl>
+References: <1372369954-32403-1-git-send-email-prudy1@o2.pl>
+ <1372369954-32403-2-git-send-email-prudy1@o2.pl>
+ <s5hvc4ymtoi.wl%tiwai@suse.de> <51CD6FE2.5080200@o2.pl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0485637687315254472=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id BA294264EED
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 20:23:51 +0200 (CEST)
-In-Reply-To: <s5hwqo9g04r.wl%tiwai@suse.de>
+Received: from moh3-ve1.go2.pl (moh3-ve2.go2.pl [193.17.41.86])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24023264ED5
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 20:29:54 +0200 (CEST)
+Received: from moh3-ve1.go2.pl (unknown [10.0.0.157])
+ by moh3-ve1.go2.pl (Postfix) with ESMTP id 8D5AAAF6975
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 20:29:52 +0200 (CEST)
+Received: from unknown (unknown [10.0.0.142])
+ by moh3-ve1.go2.pl (Postfix) with SMTP
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 20:29:52 +0200 (CEST)
+In-Reply-To: <51CD6FE2.5080200@o2.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,69 +30,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mattia Bertoni <mattia.b89@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============0485637687315254472==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SN/e2lall73C69B1"
-Content-Disposition: inline
-
-
---SN/e2lall73C69B1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jul 29, 2013 at 11:56:36AM +0200, Takashi Iwai wrote:
-> Mattia Bertoni wrote:
-
-> > under Mark Brown directions I submit to you my problem:
-> > recently I've gotten a crash on my machine running Archlinux x86_64 the=
-=20
-> > log suggest me to report it in the Alsa bugtracker but the link on the=
-=20
-> > official project (https://bugtrack.alsa-project.org/alsa-bug/) is down.=
-=2E..
-
-> > how can I do ???
-
-> Please subscribe to alsa-devel ML and discuss there instead.
-
-He is doing that (I told him to CC you when he mailed the list).
-Mattia, you should provide details of the crash in your e-mail like you
-would in a bug report to a bug tracker.
-
---SN/e2lall73C69B1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR9rMwAAoJELSic+t+oim9EbIQAIEr5pxWzCodQbCWzvA21tMM
-LXJsUFFcPiQPHN4XoWs9tW6w3YltLywmljRyMG1UCqldZ6uS3UWuGS/iCZgGpblt
-PVN4PP8na2HY6kjXWeEUDDOGrucaeC95KOm6jvnZHMP5756hMIyjZOcSrEsMKZRq
-DM2wkK3CFAA4FlfYTT8IOKfzqPJ9EEgQWTEPTxikGKSSi3igBPkM2LnQ50YRxjZf
-ewlLvYgyQmwSVw18RZK5YFP4vN0Bk2m3/JIzWnBVYLYabL5xtlshhwR9VnmjWNqY
-GoSGxFQ0epZ4uhZ3A+NU3/PWw2wBOOC1uHrNC7HFcwfBXJXAKSmpAVXP7F1Egoaa
-iQbTK0EurFfrjxiRDn9EfgNrBXh46PQ8YsNaWhCMq6rcMW2ooghMzrG19McA9AGS
-/EZQSssiwbbFVqfsmrA1pOeOMt/p3TvcLPj9D2CQtyWOQOPU/RHkiZmFUhD3cIkC
-/vE58liJi7cPLnlt+KAa0Pbcz1IfaCk0aZauiS/8wDrnX1YnwA0aIwMlVyRODrBn
-vZOeKJn/WFYNDT2bFNO8UtCG1A9fGKpvccFHyT1db2ANH6b1BpA+WaLg7CPRMJ3c
-QKy3+r5nuh2B6qhw3tkuscakAfPH+4P8oYLabyOTGPXkMQLCCWCfRt2bUFlMCodI
-0qgib4RcM+puGOSHi+VP
-=eOxi
------END PGP SIGNATURE-----
-
---SN/e2lall73C69B1--
-
---===============0485637687315254472==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0485637687315254472==--
+QW55IGNoYW5jZXMgdG8gbWVyZ2UgdGhpcyBvbmU/CkkgYmVsaWV2ZSBpdCBzaW1wbHkgZ290IGxv
+c3QgYW1vbmcgb3RoZXJzLi4uCgpUaGFua3MgOikKUHJ6ZW1lawoKT24gMDYvMjgvMjAxMyAwMTox
+MyBQTSwgUHJ6ZW15c8WCYXcgUnVkeSB3cm90ZToKPiBQbGVhc2UgZmluZCB0aGUgZm9sbG93aW5n
+IGRlc2NyaXB0aW9uOgo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLQo+IFRoaXMgcGF0Y2ggaXMgYWRk
+aW5nIGV4dGVuc2l2ZSBzdXBwb3J0IChiZXNpZGUgc3RhbmRhcmQgdXNiIGF1ZGlvIGNsYXNzKQo+
+IGZvciBBdWRpbyBBZHZhbnRhZ2UgTWljcm8gSUkgdXNiIHNvdW5kIGNhcmQuIFRoaXMgcGF0Y2gg
+ZGVwZW5kcyBvbgo+IHJlbGF0ZWQga2VybmVsIHBhdGNoLgo+IEZlYXR1cmVzIGluY2x1ZGVkOgo+
+IC0gQWRkIEFFUyBiaXRzIGNvbnRyb2xzIChzbyB0aGV5IGNhbiBiZSBhY2Nlc3NpYmxlIHZpYSBk
+ZXZpY2Ugc3VmZml4Cj4gQUVTbj0gYXMgd2VsbCBhcyB2aWEgdG9vbHMgbGlrZSBpZWNzZXQpLgo+
+IC0gU1BESUYgc3dpdGNoIGNvbnRyb2wgYWRkZWQgdG8gdHVybiBvbi9vZmYgdGhlIG9wdGljYWwg
+dHJhbnNtaXR0ZXIKPiAoYWNjZXNzaWJsZSBlLmcuIHZpYSBhbHNhbWl4ZXIgdG9vbCkKPiAtLS0t
+LS0tLS0tLS0tLS0tLS0KPiAKPiBCZXN0LAo+IFByemVtZWsKPiAKPiBPbiAyMDEzLTA2LTI4IDEy
+OjExLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+IEF0IFRodSwgMjcgSnVuIDIwMTMgMjM6NTI6MzQg
+KzAyMDAsCj4+IFByemVtZWsgUnVkeSB3cm90ZToKPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBQcnpl
+bWVrIFJ1ZHkgPHBydWR5MUBvMi5wbD4KPj4KPj4gRGl0dG8gbGlrZSB0aGUga2VybmVsIHBhdGNo
+LiAgVGhlIHBhdGNoIGRlc2NyaXB0aW9uIGlzIG9uZSBvZiB0aGUgbW9zdAo+PiBpbXBvcnRhbnQg
+dGhpbmdzLiAgUGxlYXNlIGdpdmUgaXQgbW9yZS4KPj4KPj4KPj4gdGhhbmtzLAo+Pgo+PiBUYWth
+c2hpCj4+Cj4+Pgo+Pj4gZGlmZiAtLWdpdCBhL3NyYy9jb25mL2NhcmRzL1VTQi1BdWRpby5jb25m
+IGIvc3JjL2NvbmYvY2FyZHMvVVNCLUF1ZGlvLmNvbmYKPj4+IGluZGV4IDBkOTMxNzUuLjhhNmQ5
+Y2EgMTAwNjQ0Cj4+PiAtLS0gYS9zcmMvY29uZi9jYXJkcy9VU0ItQXVkaW8uY29uZgo+Pj4gKysr
+IGIvc3JjL2NvbmYvY2FyZHMvVVNCLUF1ZGlvLmNvbmYKPj4+IEBAIC0xMDEsNiArMTAxLDQxIEBA
+IFVTQi1BdWRpby4iQXVkaW9waGlsZSBVU0IgKHRtKSIucGNtLmllYzk1OCB7Cj4+PiAgCX0KPj4+
+ICB9Cj4+PiAgCj4+PiArIyBGb3IgdGhpcyBjYXJkIHdlIGNhbiAoYW5kIG11c3QgdG8gZ2V0IElF
+QzYxOTM3KSBzZXQgQUVTIGJpdHMKPj4+ICtVU0ItQXVkaW8uIk1pY3JvSUkiLnBjbS5pZWM5NTgg
+ImNhcmRzLlVTQi1BdWRpby5BdWRpbyBBZHZhbnRhZ2UgTWljcm9JSS5wY20uaWVjOTU4Igo+Pj4g
+K1VTQi1BdWRpby4iQXVkaW8gQWR2YW50YWdlIE1pY3JvSUkiLnBjbS5pZWM5NTggewo+Pj4gKwlA
+YXJncyBbIENBUkQgQUVTMCBBRVMxIEFFUzIgQUVTMyBdCj4+PiArCUBhcmdzLkNBUkQgeyB0eXBl
+IHN0cmluZyB9Cj4+PiArCUBhcmdzLkFFUzAgeyB0eXBlIGludGVnZXIgfQo+Pj4gKwlAYXJncy5B
+RVMxIHsgdHlwZSBpbnRlZ2VyIH0KPj4+ICsJQGFyZ3MuQUVTMiB7IHR5cGUgaW50ZWdlciB9Cj4+
+PiArCUBhcmdzLkFFUzMgeyB0eXBlIGludGVnZXIgfQo+Pj4gKwo+Pj4gKyAgICB0eXBlIGhvb2tz
+Cj4+PiArICAgIHNsYXZlLnBjbSB7Cj4+PiArCQl0eXBlIGh3Cj4+PiArCQljYXJkICRDQVJECj4+
+PiArICAgIH0KPj4+ICsKPj4+ICsgICAgaG9va3MuMCB7Cj4+PiArCQl0eXBlIGN0bF9lbGVtcwo+
+Pj4gKwkJaG9va19hcmdzIFsKPj4+ICsJCQl7Cj4+PiArCQkJCWludGVyZmFjZSBQQ00KPj4+ICsJ
+CQkJbmFtZSAiSUVDOTU4IFBsYXliYWNrIERlZmF1bHQiCj4+PiArCQkJCXByZXNlcnZlIHRydWUK
+Pj4+ICsJCQkJb3B0aW9uYWwgdHJ1ZQo+Pj4gKwkJCQl2YWx1ZSBbICRBRVMwICRBRVMxICRBRVMy
+ICRBRVMzIF0KPj4+ICsJCQl9Cj4+PiArCQkJewo+Pj4gKwkJCQluYW1lICJJRUM5NTggUGxheWJh
+Y2sgU3dpdGNoIgo+Pj4gKwkJCQlsb2NrIHRydWUKPj4+ICsJCQkJcHJlc2VydmUgdHJ1ZQo+Pj4g
+KwkJCQl2YWx1ZSAxCj4+PiArCQkJfQo+Pj4gKwkJXQo+Pj4gKwl9Cj4+PiArfQo+Pj4gIAo+Pj4g
+ICMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCj4+PiAgCj4+PiAtLSAKPj4+IDEuOC4xLjQKPj4+Cj4+
+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IEFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0Cj4+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiBodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+
+Pgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+
+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
