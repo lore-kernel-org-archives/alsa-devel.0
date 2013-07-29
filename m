@@ -1,84 +1,37 @@
-From: Przemek Rudy <prudy1@o2.pl>
-Subject: Re: [PATCH - microII 1/1] conf/cards: add Audio
- Advantage Micro II
-Date: Mon, 29 Jul 2013 20:29:50 +0200
-Message-ID: <51F6B49E.5010202@o2.pl>
-References: <1372369954-32403-1-git-send-email-prudy1@o2.pl>
- <1372369954-32403-2-git-send-email-prudy1@o2.pl>
- <s5hvc4ymtoi.wl%tiwai@suse.de> <51CD6FE2.5080200@o2.pl>
+From: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: Buffer size for ALSA USB PCM audio
+Date: Mon, 29 Jul 2013 21:23:15 +0200
+Message-ID: <51F6C123.7020407@gmail.com>
+References: <Pine.LNX.4.44L0.1307291400450.1479-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moh3-ve1.go2.pl (moh3-ve2.go2.pl [193.17.41.86])
- by alsa0.perex.cz (Postfix) with ESMTP id 24023264ED5
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 20:29:54 +0200 (CEST)
-Received: from moh3-ve1.go2.pl (unknown [10.0.0.157])
- by moh3-ve1.go2.pl (Postfix) with ESMTP id 8D5AAAF6975
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 20:29:52 +0200 (CEST)
-Received: from unknown (unknown [10.0.0.142])
- by moh3-ve1.go2.pl (Postfix) with SMTP
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 20:29:52 +0200 (CEST)
-In-Reply-To: <51CD6FE2.5080200@o2.pl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <Pine.LNX.4.44L0.1307291400450.1479-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-QW55IGNoYW5jZXMgdG8gbWVyZ2UgdGhpcyBvbmU/CkkgYmVsaWV2ZSBpdCBzaW1wbHkgZ290IGxv
-c3QgYW1vbmcgb3RoZXJzLi4uCgpUaGFua3MgOikKUHJ6ZW1lawoKT24gMDYvMjgvMjAxMyAwMTox
-MyBQTSwgUHJ6ZW15c8WCYXcgUnVkeSB3cm90ZToKPiBQbGVhc2UgZmluZCB0aGUgZm9sbG93aW5n
-IGRlc2NyaXB0aW9uOgo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLQo+IFRoaXMgcGF0Y2ggaXMgYWRk
-aW5nIGV4dGVuc2l2ZSBzdXBwb3J0IChiZXNpZGUgc3RhbmRhcmQgdXNiIGF1ZGlvIGNsYXNzKQo+
-IGZvciBBdWRpbyBBZHZhbnRhZ2UgTWljcm8gSUkgdXNiIHNvdW5kIGNhcmQuIFRoaXMgcGF0Y2gg
-ZGVwZW5kcyBvbgo+IHJlbGF0ZWQga2VybmVsIHBhdGNoLgo+IEZlYXR1cmVzIGluY2x1ZGVkOgo+
-IC0gQWRkIEFFUyBiaXRzIGNvbnRyb2xzIChzbyB0aGV5IGNhbiBiZSBhY2Nlc3NpYmxlIHZpYSBk
-ZXZpY2Ugc3VmZml4Cj4gQUVTbj0gYXMgd2VsbCBhcyB2aWEgdG9vbHMgbGlrZSBpZWNzZXQpLgo+
-IC0gU1BESUYgc3dpdGNoIGNvbnRyb2wgYWRkZWQgdG8gdHVybiBvbi9vZmYgdGhlIG9wdGljYWwg
-dHJhbnNtaXR0ZXIKPiAoYWNjZXNzaWJsZSBlLmcuIHZpYSBhbHNhbWl4ZXIgdG9vbCkKPiAtLS0t
-LS0tLS0tLS0tLS0tLS0KPiAKPiBCZXN0LAo+IFByemVtZWsKPiAKPiBPbiAyMDEzLTA2LTI4IDEy
-OjExLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+IEF0IFRodSwgMjcgSnVuIDIwMTMgMjM6NTI6MzQg
-KzAyMDAsCj4+IFByemVtZWsgUnVkeSB3cm90ZToKPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBQcnpl
-bWVrIFJ1ZHkgPHBydWR5MUBvMi5wbD4KPj4KPj4gRGl0dG8gbGlrZSB0aGUga2VybmVsIHBhdGNo
-LiAgVGhlIHBhdGNoIGRlc2NyaXB0aW9uIGlzIG9uZSBvZiB0aGUgbW9zdAo+PiBpbXBvcnRhbnQg
-dGhpbmdzLiAgUGxlYXNlIGdpdmUgaXQgbW9yZS4KPj4KPj4KPj4gdGhhbmtzLAo+Pgo+PiBUYWth
-c2hpCj4+Cj4+Pgo+Pj4gZGlmZiAtLWdpdCBhL3NyYy9jb25mL2NhcmRzL1VTQi1BdWRpby5jb25m
-IGIvc3JjL2NvbmYvY2FyZHMvVVNCLUF1ZGlvLmNvbmYKPj4+IGluZGV4IDBkOTMxNzUuLjhhNmQ5
-Y2EgMTAwNjQ0Cj4+PiAtLS0gYS9zcmMvY29uZi9jYXJkcy9VU0ItQXVkaW8uY29uZgo+Pj4gKysr
-IGIvc3JjL2NvbmYvY2FyZHMvVVNCLUF1ZGlvLmNvbmYKPj4+IEBAIC0xMDEsNiArMTAxLDQxIEBA
-IFVTQi1BdWRpby4iQXVkaW9waGlsZSBVU0IgKHRtKSIucGNtLmllYzk1OCB7Cj4+PiAgCX0KPj4+
-ICB9Cj4+PiAgCj4+PiArIyBGb3IgdGhpcyBjYXJkIHdlIGNhbiAoYW5kIG11c3QgdG8gZ2V0IElF
-QzYxOTM3KSBzZXQgQUVTIGJpdHMKPj4+ICtVU0ItQXVkaW8uIk1pY3JvSUkiLnBjbS5pZWM5NTgg
-ImNhcmRzLlVTQi1BdWRpby5BdWRpbyBBZHZhbnRhZ2UgTWljcm9JSS5wY20uaWVjOTU4Igo+Pj4g
-K1VTQi1BdWRpby4iQXVkaW8gQWR2YW50YWdlIE1pY3JvSUkiLnBjbS5pZWM5NTggewo+Pj4gKwlA
-YXJncyBbIENBUkQgQUVTMCBBRVMxIEFFUzIgQUVTMyBdCj4+PiArCUBhcmdzLkNBUkQgeyB0eXBl
-IHN0cmluZyB9Cj4+PiArCUBhcmdzLkFFUzAgeyB0eXBlIGludGVnZXIgfQo+Pj4gKwlAYXJncy5B
-RVMxIHsgdHlwZSBpbnRlZ2VyIH0KPj4+ICsJQGFyZ3MuQUVTMiB7IHR5cGUgaW50ZWdlciB9Cj4+
-PiArCUBhcmdzLkFFUzMgeyB0eXBlIGludGVnZXIgfQo+Pj4gKwo+Pj4gKyAgICB0eXBlIGhvb2tz
-Cj4+PiArICAgIHNsYXZlLnBjbSB7Cj4+PiArCQl0eXBlIGh3Cj4+PiArCQljYXJkICRDQVJECj4+
-PiArICAgIH0KPj4+ICsKPj4+ICsgICAgaG9va3MuMCB7Cj4+PiArCQl0eXBlIGN0bF9lbGVtcwo+
-Pj4gKwkJaG9va19hcmdzIFsKPj4+ICsJCQl7Cj4+PiArCQkJCWludGVyZmFjZSBQQ00KPj4+ICsJ
-CQkJbmFtZSAiSUVDOTU4IFBsYXliYWNrIERlZmF1bHQiCj4+PiArCQkJCXByZXNlcnZlIHRydWUK
-Pj4+ICsJCQkJb3B0aW9uYWwgdHJ1ZQo+Pj4gKwkJCQl2YWx1ZSBbICRBRVMwICRBRVMxICRBRVMy
-ICRBRVMzIF0KPj4+ICsJCQl9Cj4+PiArCQkJewo+Pj4gKwkJCQluYW1lICJJRUM5NTggUGxheWJh
-Y2sgU3dpdGNoIgo+Pj4gKwkJCQlsb2NrIHRydWUKPj4+ICsJCQkJcHJlc2VydmUgdHJ1ZQo+Pj4g
-KwkJCQl2YWx1ZSAxCj4+PiArCQkJfQo+Pj4gKwkJXQo+Pj4gKwl9Cj4+PiArfQo+Pj4gIAo+Pj4g
-ICMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCj4+PiAgCj4+PiAtLSAKPj4+IDEuOC4xLjQKPj4+Cj4+
-IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IEFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0Cj4+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiBodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+
-Pgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+
-IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 29.07.2013 20:20, Alan Stern wrote:
+> data_ep_set_params() checks snd_usb_endpoint_implicit_feedback_sink() 
+> in three places.  It looks like only the second place is correct.
+> 
+> Can you verify whether the other two are right, and explain to me if 
+> they are?
+
+Which version are you looking at? Eldad Zack recently posted work in
+that area, but I can't seem to find them anywhere yet in the sound tree.
+Takashi?
+
+Eldad, as you're likely more into the detail right now - any oppinion on
+Alan's findings?
+
+
+Thanks,
+Daniel
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
