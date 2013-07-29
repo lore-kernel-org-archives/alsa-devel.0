@@ -1,86 +1,58 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 08/10] ASoC: dapm: Add
- snd_soc_dapm_add_path() helper function
-Date: Mon, 29 Jul 2013 18:45:17 +0100
-Message-ID: <20130729174517.GA9858@sirena.org.uk>
-References: <1375110845-8069-1-git-send-email-lars@metafoo.de>
- <1375110845-8069-8-git-send-email-lars@metafoo.de>
+From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Subject: Re: Buffer size for ALSA USB PCM audio
+Date: Mon, 29 Jul 2013 14:20:03 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1307291400450.1479-100000@iolanthe.rowland.org>
+References: <51F6A262.6010800@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7220562936105066746=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id EC5BC264EFA
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2013 19:45:21 +0200 (CEST)
-In-Reply-To: <1375110845-8069-8-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <51F6A262.6010800-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Cc: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 29 Jul 2013, Clemens Ladisch wrote:
 
---===============7220562936105066746==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cZrq4fZnoGmrTPgK"
-Content-Disposition: inline
+> Alan Stern wrote:
+> > Clemens remarked some time ago that keeping the queue full would be
+> > trivial, if only he knew how full it needed to be.  The answer to that
+> > is given above.  I have been trying to make the appropriate changes,
+> > but I'm not finding it "trivial".
+> 
+> What I meant was that it would be trivial to change the lower bound of
+> the period size (from which many queueing parameters are derived).
 
+I doubt that would help.  What really matters here is the relation
+between urb_packs (the maximum number of packets in an URB) and the
+number of packets in a period (which can vary as the device's clock
+frequency drifts).
 
---cZrq4fZnoGmrTPgK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For a bizarre example of sort of thing that can happen, suppose 
+urb_packs is 8 and and a period always consists of 8 packets.  Then to 
+occupy 10 uframes requires two URBs (assuming one packet per uframe).
 
-On Mon, Jul 29, 2013 at 05:14:02PM +0200, Lars-Peter Clausen wrote:
-> snd_soc_dapm_add_path() is similar to snd_soc_dapm_add_route() except that it
-> expects the pointer to the source and sink widgets instead of their names. This
-> allows us to simplify the case where we already have a pointer to widgets. (E.g.
-> as we have in snd_soc_dapm_link_dai_widgets()). snd_soc_dapm_add_route() will be
-> updated to just look up the widget and then use snd_soc_dapm_add_path() to
-> handle everything else.
+But now suppose a period might need 9 packets (say because the device's 
+clock frequency is a little low, so it consumes samples less quickly 
+and therefore a fixed number of samples takes more time).  Then to 
+occupy 10 uframes, two URBs would no longer be enough, because the 
+numbers of packets in successive URBs could be 8, 1, 8, etc.  Two 
+URBs would occupy only 9 uframes.
 
-I've applied everything up to patch 9, this is all really good stuff.
-This one would've been a bit easier to review if the refactoring were
-split out from the changes to the users (who could've continued to use
-add_route() for the time being).
+> > The current driver seems to assume that endpoints with an _implicit_
+> > feedback endpoint won't have variable-length packets.
+> 
+> That's likely to be a bug.
 
-Patch 10 I want to have a bit more of a think about and probably try
-using it in something.
+data_ep_set_params() checks snd_usb_endpoint_implicit_feedback_sink() 
+in three places.  It looks like only the second place is correct.
 
---cZrq4fZnoGmrTPgK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Can you verify whether the other two are right, and explain to me if 
+they are?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+Alan Stern
 
-iQIcBAEBAgAGBQJR9qopAAoJELSic+t+oim9BgQP/2Gi1Wkv25yurjvYHkD9Zxwq
-EGD7RyfuJlrcgX/aQ7JTD8V8ezblBKO2eXwk3VNi2cbLBcnCGy01OCydXEUnR5YO
-2KgxRzNUMVdZcNe+c6QPGU49hB9CJL7KX30djLO5METV0IDE06ueTD1ezQzVNkiz
-CkQ9dac00ydJCvcJC0y6ma77owO4QXxkjFP6fQNTIzd3IZe5hHMroFbyJBZiHpQR
-jTPmcLIQ17P23fXTsaHG1Z0zcDyOR+OBZU7L/iHuPAg/pr5Am+mmAiXPcqi7Exy5
-MLp6MbhFSbl4RoI0vX/oe2C9651b3kwv0PBbNiOp38+/DTFJZ1DXh5G/Qmevwc9x
-o0viTWJVRVWJCgA9I5QMPHl2w6AZVfbIJuekZjubBgIEJjdyS6pZ9VzdDMhRWkAG
-UV2TZNTiibFJXeWQxdgbqWrYgwRvruTWNReFZB7sZayVtM1I7xGgovgk1O8kCw/i
-4gfXfzx5hrpeaTFdO4mOD6U3JZlsVH8S2G1d7+kSEJtqRCyGn01HKMGKX3nUc9C2
-HSQAKcvPbtRI1Q4mxecSphpARseGCbx+Dm4P8B7+Xw7eRUeFIWt9SHWmkiSQOoea
-V6+OLNvblaYrHwEcVWgblVZoLMgprRw0k/5bt2HxisV5PQQ4+BeAYXHnurgOUaAL
-ldDZ+C+bWdJiC8WnVMeI
-=2Wy8
------END PGP SIGNATURE-----
-
---cZrq4fZnoGmrTPgK--
-
---===============7220562936105066746==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7220562936105066746==--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
