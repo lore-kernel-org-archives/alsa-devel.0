@@ -1,190 +1,123 @@
-From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH] ALSA: ASoC: uda134x: fix codec driver
-Date: Tue, 30 Jul 2013 11:18:52 +0100
-Message-ID: <E1V4712-0007sg-Dw@rmk-PC.arm.linux.org.uk>
+From: Richard Genoud <richard.genoud@gmail.com>
+Subject: [PATCH v6 0/8] Sound support for at91sam9x5-wm8731
+	based boards
+Date: Tue, 30 Jul 2013 12:32:01 +0200
+Message-ID: <1375180329-4860-1-git-send-email-richard.genoud@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
+ [209.85.212.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62E5E260864
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 12:32:26 +0200 (CEST)
+Received: by mail-wi0-f169.google.com with SMTP id f14so1917347wiw.0
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 03:32:26 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Richard Genoud <richard.genoud@gmail.com>, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-For some reason, the DAC/ADCs are not being powered up when I try and
-use the UDA1341 driver; this used to work.  Looking back in the git
-history, I don't see anything obvious which would cause this
-regression.
+Hi,
 
-However, from dumping the register writes, it seems that the codec is
-powered down, and nothing calls set_bias_level to wake the codec up.
+This patchset add sound on the at91sam9x5ek board.
+It's based on Nicolas Ferre's work in the 2.6.39 atmel patch for sam9x5:
+https://github.com/linux4sam/linux-at91/commit/0aa157c9e71ccccf3abc30fa37eb5c95b392978d
 
-Moreover, this driver hasn't had DAPM support added to it, which
-prevents platform drivers from taking advantage of DAPMs facilities.
-So, let's add DAPM support to the driver.
+It needs Bo Chen's patchset on the generic dmaengine (topic/atmel branch
+on Mark's sound tree) and the SSC interrupts disabled (cf
+http://www.spinics.net/lists/arm-kernel/msg256901.html)
 
-As we move the power control for the DAC/ADC into DAPM, we no longer
-need it in set_bias_level() - this function just becomes a way to
-manipulate the power control and sync the register cache with the
-hardware at the appropriate point.
+As the at91 chips are on their way to the common clock framework, I thought
+it may be better to retrieve the codec MCLK via this framework.
+So it needs Boris Brezillon patch set "ARM: at91: move to common clk framework"
+I've separated this patch because I don't know what is better:
+ * applying the patchset with a hard coded clock, and once at91 has moved to common
+clock framework, update the code and change the DT binding.
+ * wait for the common clock framework.
 
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
----
-I noticed this while checking the Assabet audio, which uses the UDA1341.
-I've also added the corresponding support to my Assabet audio driver.
-If this looks like the correct thing to do to fix this, please apply.
+Outstanding issue:
+If this machine driver will support more SoCs maybe we should name it differently.
+Maybe atmel_wm8731.c ? Since it could be merged with sam9g20_wm8731.c
+when the g20 is DT only (There will be some more work though).
 
- sound/soc/codecs/uda134x.c |   88 ++++++++++++++++++++++++++-----------------
- 1 files changed, 53 insertions(+), 35 deletions(-)
+It has been tested on at91sam9g35ek, and should work on g15, g25, x25 and x35 also.
 
-diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
-index 6d0aa44..c94d4c1 100644
---- a/sound/soc/codecs/uda134x.c
-+++ b/sound/soc/codecs/uda134x.c
-@@ -325,7 +325,6 @@ static int uda134x_set_dai_fmt(struct snd_soc_dai *codec_dai,
- static int uda134x_set_bias_level(struct snd_soc_codec *codec,
- 				  enum snd_soc_bias_level level)
- {
--	u8 reg;
- 	struct uda134x_platform_data *pd = codec->control_data;
- 	int i;
- 	u8 *cache = codec->reg_cache;
-@@ -334,23 +333,6 @@ static int uda134x_set_bias_level(struct snd_soc_codec *codec,
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
--		/* ADC, DAC on */
--		switch (pd->model) {
--		case UDA134X_UDA1340:
--		case UDA134X_UDA1344:
--		case UDA134X_UDA1345:
--			reg = uda134x_read_reg_cache(codec, UDA134X_DATA011);
--			uda134x_write(codec, UDA134X_DATA011, reg | 0x03);
--			break;
--		case UDA134X_UDA1341:
--			reg = uda134x_read_reg_cache(codec, UDA134X_STATUS1);
--			uda134x_write(codec, UDA134X_STATUS1, reg | 0x03);
--			break;
--		default:
--			printk(KERN_ERR "UDA134X SoC codec: "
--			       "unsupported model %d\n", pd->model);
--			return -EINVAL;
--		}
- 		break;
- 	case SND_SOC_BIAS_PREPARE:
- 		/* power on */
-@@ -362,23 +344,6 @@ static int uda134x_set_bias_level(struct snd_soc_codec *codec,
- 		}
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
--		/* ADC, DAC power off */
--		switch (pd->model) {
--		case UDA134X_UDA1340:
--		case UDA134X_UDA1344:
--		case UDA134X_UDA1345:
--			reg = uda134x_read_reg_cache(codec, UDA134X_DATA011);
--			uda134x_write(codec, UDA134X_DATA011, reg & ~(0x03));
--			break;
--		case UDA134X_UDA1341:
--			reg = uda134x_read_reg_cache(codec, UDA134X_STATUS1);
--			uda134x_write(codec, UDA134X_STATUS1, reg & ~(0x03));
--			break;
--		default:
--			printk(KERN_ERR "UDA134X SoC codec: "
--			       "unsupported model %d\n", pd->model);
--			return -EINVAL;
--		}
- 		break;
- 	case SND_SOC_BIAS_OFF:
- 		/* power off */
-@@ -450,6 +415,37 @@ SOC_ENUM("PCM Playback De-emphasis", uda134x_mixer_enum[1]),
- SOC_SINGLE("DC Filter Enable Switch", UDA134X_STATUS0, 0, 1, 0),
- };
- 
-+/* UDA1341 has the DAC/ADC power down in STATUS1 */
-+static const struct snd_soc_dapm_widget uda1341_dapm_widgets[] = {
-+	SND_SOC_DAPM_DAC("DAC", "Playback", UDA134X_STATUS1, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC", "Capture", UDA134X_STATUS1, 1, 0),
-+};
-+
-+/* UDA1340/4/5 has the DAC/ADC pwoer down in DATA0 11 */
-+static const struct snd_soc_dapm_widget uda1340_dapm_widgets[] = {
-+	SND_SOC_DAPM_DAC("DAC", "Playback", UDA134X_DATA011, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC", "Capture", UDA134X_DATA011, 1, 0),
-+};
-+
-+/* Common DAPM widgets */
-+static const struct snd_soc_dapm_widget uda134x_dapm_widgets[] = {
-+	SND_SOC_DAPM_INPUT("VINL1"),
-+	SND_SOC_DAPM_INPUT("VINR1"),
-+	SND_SOC_DAPM_INPUT("VINL2"),
-+	SND_SOC_DAPM_INPUT("VINR2"),
-+	SND_SOC_DAPM_OUTPUT("VOUTL"),
-+	SND_SOC_DAPM_OUTPUT("VOUTR"),
-+};
-+
-+static const struct snd_soc_dapm_route uda134x_dapm_routes[] = {
-+	{ "ADC", NULL, "VINL1" },
-+	{ "ADC", NULL, "VINR1" },
-+	{ "ADC", NULL, "VINL2" },
-+	{ "ADC", NULL, "VINR2" },
-+	{ "VOUTL", NULL, "DAC" },
-+	{ "VOUTR", NULL, "DAC" },
-+};
-+
- static const struct snd_soc_dai_ops uda134x_dai_ops = {
- 	.startup	= uda134x_startup,
- 	.shutdown	= uda134x_shutdown,
-@@ -485,6 +481,8 @@ static int uda134x_soc_probe(struct snd_soc_codec *codec)
- {
- 	struct uda134x_priv *uda134x;
- 	struct uda134x_platform_data *pd = codec->card->dev->platform_data;
-+	const struct snd_soc_dapm_widget *widgets;
-+	unsigned num_widgets;
- 
- 	int ret;
- 
-@@ -526,6 +524,22 @@ static int uda134x_soc_probe(struct snd_soc_codec *codec)
- 	else
- 		uda134x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
-+	if (pd->model == UDA134X_UDA1341) {
-+		widgets = uda1341_dapm_widgets;
-+		num_widgets = ARRAY_SIZE(uda1341_dapm_widgets);
-+	} else {
-+		widgets = uda1340_dapm_widgets;
-+		num_widgets = ARRAY_SIZE(uda1340_dapm_widgets);
-+	}
-+
-+	ret = snd_soc_dapm_new_controls(&codec->dapm, widgets, num_widgets);
-+	if (ret) {
-+		printk(KERN_ERR "%s failed to register dapm controls: %d",
-+			__func__, ret);
-+		kfree(uda134x);
-+		return ret;
-+	}
-+
- 	switch (pd->model) {
- 	case UDA134X_UDA1340:
- 	case UDA134X_UDA1344:
-@@ -599,6 +613,10 @@ static struct snd_soc_codec_driver soc_codec_dev_uda134x = {
- 	.read = uda134x_read_reg_cache,
- 	.write = uda134x_write,
- 	.set_bias_level = uda134x_set_bias_level,
-+	.dapm_widgets = uda134x_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(uda134x_dapm_widgets),
-+	.dapm_routes = uda134x_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(uda134x_dapm_routes),
- };
- 
- static int uda134x_codec_probe(struct platform_device *pdev)
+patches applies on next-20130729 + "ARM: at91: move to common clk framework"
+
+Changes from v5:
+ * Update the wm8731 DT binding documentation with available audio endpoints.
+ * Remove Uwe's signed-off since it seems to be "an integration signed-off"
+ * Remove rate constrains if freq==0 in wm8731.
+ * Allocate dynamically card, dai and private structures.
+ * Add a separate patch to set the oscillator value via DT.
+NB: this last patch needs Boris Brezillon patch set "ARM: at91: move to common clk framework"
+
+
+Changes from v4:
+ * Move the rates constraints into the codec
+ * Hard code the DAI format since it cannot be changed anyway (and
+remove the DT bindings accordingly)
+ * Add some consistency in the functions naming (sam9x5ek/at91sam9x5ek/sam9x5)
+ * Retrieve the SSC id from the SSC controller phandle
+ * Clarify the atmel-ssc.txt documentation
+ * Develop audio-routing documentation
+ * Tidy up the includes in the machine driver
+
+Changes from v3:
+ * Remove the use of macros in device tree documentation.
+
+Changes from v2:
+ * Change atmel,sam9x5-audio-wm8731 to atmel,sam9x5-wm8731-audio for
+consistency with sam9g20 machine driver.
+ * Use the snd_pcm_hw_constraint() API as suggested by Mark and Lars-Peter.
+ * Remove the unnecessary snd_soc_dapm_sync() call as Lars-Peter suggested.
+ * Add documentation for machine driver DT binding.
+ * Update atmel-ssc DT binding documentation.
+ * Add GPL license instead of just the "GPL" word (hope that's ok !)
+
+Changes from v1-RFC:
+ * drop patches on SSC since Bo Chen already did the work
+ * reorder patches to have the machine driver first
+ * drop code already handled by the ASoC framework
+ * drop unneeded SND_ATMEL_SOC_PDC config selection
+ * use static snd_soc_card and snd_soc_dai_link structures.
+
+Best regards,
+Richard.
+
+Nicolas Ferre (1):
+  ASoC: atmel: machine driver for at91sam9x5-wm8731 boards
+
+Richard Genoud (7):
+  ASoC: wm8731: add rates constraints
+  Documentation: DT: update atmel SSC with DMA binding
+  ARM: AT91: DTS: sam9x5: add SSC DMA parameters
+  ARM: AT91: DTS: sam9x5ek: add WM8731 codec
+  ARM: AT91: DTS: sam9x5ek: enable SSC
+  ARM: AT91: DTS: sam9x5ek: add sound configuration
+  ASoC: sam9x5: get codec MCLK via device tree
+
+ .../devicetree/bindings/misc/atmel-ssc.txt         |   23 ++-
+ .../bindings/sound/atmel-sam9x5-wm8731-audio.txt   |   39 ++++
+ Documentation/devicetree/bindings/sound/wm8731.txt |    9 +
+ arch/arm/boot/dts/at91sam9x5.dtsi                  |    3 +
+ arch/arm/boot/dts/at91sam9x5ek.dtsi                |   32 +++
+ sound/soc/atmel/Kconfig                            |   10 +
+ sound/soc/atmel/Makefile                           |    2 +
+ sound/soc/atmel/sam9x5_wm8731.c                    |  218 ++++++++++++++++++++
+ sound/soc/codecs/wm8731.c                          |   60 +++++-
+ 9 files changed, 392 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
+ create mode 100644 sound/soc/atmel/sam9x5_wm8731.c
+
 -- 
-1.7.4.4
+1.7.10.4
