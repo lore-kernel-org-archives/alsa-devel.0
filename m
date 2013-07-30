@@ -1,20 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 08/10] ASoC: dapm: Add
- snd_soc_dapm_add_path() helper function
-Date: Tue, 30 Jul 2013 13:35:02 +0200
-Message-ID: <51F7A4E6.3030708@metafoo.de>
-References: <1375110845-8069-1-git-send-email-lars@metafoo.de>
- <1375110845-8069-8-git-send-email-lars@metafoo.de>
- <20130729174517.GA9858@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: bf5xx-ac97: Remove unused extern
+	declaration
+Date: Tue, 30 Jul 2013 12:50:25 +0100
+Message-ID: <20130730115025.GR9858@sirena.org.uk>
+References: <1375184050-21514-1-git-send-email-lars@metafoo.de>
+ <1375184050-21514-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7452666390389861967=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-226.synserver.de (smtp-out-230.synserver.de
- [212.40.185.230])
- by alsa0.perex.cz (Postfix) with ESMTP id C7D052652A2
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 13:34:01 +0200 (CEST)
-In-Reply-To: <20130729174517.GA9858@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB308260729
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 13:50:28 +0200 (CEST)
+In-Reply-To: <1375184050-21514-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,29 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/29/2013 07:45 PM, Mark Brown wrote:
-> On Mon, Jul 29, 2013 at 05:14:02PM +0200, Lars-Peter Clausen wrote:
->> snd_soc_dapm_add_path() is similar to snd_soc_dapm_add_route() except that it
->> expects the pointer to the source and sink widgets instead of their names. This
->> allows us to simplify the case where we already have a pointer to widgets. (E.g.
->> as we have in snd_soc_dapm_link_dai_widgets()). snd_soc_dapm_add_route() will be
->> updated to just look up the widget and then use snd_soc_dapm_add_path() to
->> handle everything else.
-> 
-> I've applied everything up to patch 9, this is all really good stuff.
-> This one would've been a bit easier to review if the refactoring were
-> split out from the changes to the users (who could've continued to use
-> add_route() for the time being).
-> 
-> Patch 10 I want to have a bit more of a think about and probably try
-> using it in something.
 
-I do have a driver that uses the auto-disable feature. The plan is to submit
-the driver soonish. I can resend patch 10 as part of the patch series that
-adds the driver if necessary.
+--===============7452666390389861967==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YHJaAPTstyQT18gF"
+Content-Disposition: inline
 
-- Lars
+
+--YHJaAPTstyQT18gF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jul 30, 2013 at 01:34:10PM +0200, Lars-Peter Clausen wrote:
+> The blackfin ac97 driver never defines nor uses a global ac97 struct. So remove
+> the extern declaration for it.
+
+This is a duplicate of my patch from yesterday...
+
+--YHJaAPTstyQT18gF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR96h+AAoJELSic+t+oim9GBIP/Azuu+3z72mAIgNS9ocHx0RC
+ULXtU9n1WmKEF2WPHAdO55KrQOaleEe68r6tj3YQIguWaYn538nyvQug4dm975u+
+U+ynxVpYTIFRsO18KFv9tHenAz7kREKHKcunjmSf+G+rQKsHM5KVuH2kHe6CdEF0
+zZFXhQmqua+hTM0SQNsi/sglr56bMui8FJaFJeahpK13SrOXPoAmHRAh80S0HOSS
+d8jc2kr7sWEIRQIBQ92WkMzYI3UwbOpaMpISQnVEqN3ityOYOhN9KkSp3VnDAHMA
+i5Mp2gv4NrkoQDAU+xnVHoBDrx1jjgaKTIrKbzrmFEElcRHA1NR5RZ/ibgOzwIDe
+g5oboYGzSk7uyA9gSgWaYiGPja+gND+vlCYKv4FZM8P4Akb66tO0ijW9wjdSOMZW
+Bb5210j9PSYK8VmlO+yE9gm1ft215QXOpwBJNKr0KOwGOoWdc3oop9E1/+wtsNdH
+xZ7iV80YcksPIWlINbJ3yRrcX6AzxtkAX1ECvUEoV5kgoyNYh8hISpqTELo0swxc
+hjveuSCU7l5p+OqqkZdXAHFY9pcoPkELoWaUTfmYjgW6GvaFYRoQvNhWzQ8P8iFb
+TiLrFd/C54lDf/hFZHL7YTUJWrB2ZlvfmJruOxwgtfA0tWwoP4ArcZvIGK5aVeI+
+ndICq/fwThUTS2O+VwzB
+=7YWJ
+-----END PGP SIGNATURE-----
+
+--YHJaAPTstyQT18gF--
+
+--===============7452666390389861967==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7452666390389861967==--
