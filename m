@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: bf5xx-ac97: Remove unused extern
-	declaration
-Date: Tue, 30 Jul 2013 12:50:25 +0100
-Message-ID: <20130730115025.GR9858@sirena.org.uk>
+Subject: Re: [PATCH 1/2] ASoC: bf5xx-ac97: Fix compile error
+Date: Tue, 30 Jul 2013 12:51:36 +0100
+Message-ID: <20130730115136.GS9858@sirena.org.uk>
 References: <1375184050-21514-1-git-send-email-lars@metafoo.de>
- <1375184050-21514-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7452666390389861967=="
+Content-Type: multipart/mixed; boundary="===============1182503046619405154=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id DB308260729
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 13:50:28 +0200 (CEST)
-In-Reply-To: <1375184050-21514-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 15CCE260729
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 13:51:38 +0200 (CEST)
+In-Reply-To: <1375184050-21514-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +24,51 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7452666390389861967==
+--===============1182503046619405154==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YHJaAPTstyQT18gF"
+	protocol="application/pgp-signature"; boundary="4A+5qYZ+/KToxHVl"
 Content-Disposition: inline
 
 
---YHJaAPTstyQT18gF
+--4A+5qYZ+/KToxHVl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 30, 2013 at 01:34:10PM +0200, Lars-Peter Clausen wrote:
-> The blackfin ac97 driver never defines nor uses a global ac97 struct. So remove
-> the extern declaration for it.
+On Tue, Jul 30, 2013 at 01:34:09PM +0200, Lars-Peter Clausen wrote:
+> If CONFIG_SND_BF5XX_HAVE_COLD_RESET is enabled building the blackfin ac97 driver
+> fails with the following compile error:
 
-This is a duplicate of my patch from yesterday...
+Applied, thanks.
 
---YHJaAPTstyQT18gF
+--4A+5qYZ+/KToxHVl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR96h+AAoJELSic+t+oim9GBIP/Azuu+3z72mAIgNS9ocHx0RC
-ULXtU9n1WmKEF2WPHAdO55KrQOaleEe68r6tj3YQIguWaYn538nyvQug4dm975u+
-U+ynxVpYTIFRsO18KFv9tHenAz7kREKHKcunjmSf+G+rQKsHM5KVuH2kHe6CdEF0
-zZFXhQmqua+hTM0SQNsi/sglr56bMui8FJaFJeahpK13SrOXPoAmHRAh80S0HOSS
-d8jc2kr7sWEIRQIBQ92WkMzYI3UwbOpaMpISQnVEqN3ityOYOhN9KkSp3VnDAHMA
-i5Mp2gv4NrkoQDAU+xnVHoBDrx1jjgaKTIrKbzrmFEElcRHA1NR5RZ/ibgOzwIDe
-g5oboYGzSk7uyA9gSgWaYiGPja+gND+vlCYKv4FZM8P4Akb66tO0ijW9wjdSOMZW
-Bb5210j9PSYK8VmlO+yE9gm1ft215QXOpwBJNKr0KOwGOoWdc3oop9E1/+wtsNdH
-xZ7iV80YcksPIWlINbJ3yRrcX6AzxtkAX1ECvUEoV5kgoyNYh8hISpqTELo0swxc
-hjveuSCU7l5p+OqqkZdXAHFY9pcoPkELoWaUTfmYjgW6GvaFYRoQvNhWzQ8P8iFb
-TiLrFd/C54lDf/hFZHL7YTUJWrB2ZlvfmJruOxwgtfA0tWwoP4ArcZvIGK5aVeI+
-ndICq/fwThUTS2O+VwzB
-=7YWJ
+iQIcBAEBAgAGBQJR96jEAAoJELSic+t+oim98ncP/2Xt+UrIPEZIVk/i1wFOfc0m
+t0amBF8ys8HkozTMuGwJWap/70q3xz2mTAntgfInJ70ZUB2PvafZjFaBrH+Hegpt
+vUwP0hal69BPguILQFpaYwkH2Ie3EjDwLNtofrhAA7eK9gPwFEeEDFqrMhT/ECsu
+L2VPwgDZl1uwkZWyMuKh7C5LJaMLGjmPPIpC4DEDVjttyXwmtqpIibfuRa7+TRB9
+6ybQUhNul90sgjcTVj3CpapgfkZvO3D/S/m+du61frq9JKZY97oOim1Hy72nF+I7
+hwhrzV6yxJlNneBzEQZiHLMXvGArl7rNszIl4Vu9Bp0WDlbpyg/GtEHQystZ7iml
+PnFYqGKSod+/RDGRNNvGdAbcaJoQmNrPx0mDedV3ngxcUk7NJFxYkzorVwMCz3p8
++Zl6W3pq0spQNVE2Q4ISbiXhGO6uaJ9uly42hmt2w+kSLBJ4h7i3bhA/ZX0u86GM
+ETCKPqR2uesc7QUr64LDfJ8zpBQfOCEUYnn87WIuvg5tJbkATfF3qHt35MsUBtf9
+CoFlF/25+thDIX7eEP7bbo5nbpPk6WJA65kOV/4XUGezim9oE8TT9UtERcTM5Mjv
+lMZjfFIneolQ5xHMjqWEfSRD+BFs/EvNnRtRKQwZPOJzlEWO+5PF68MeO9UTQdVY
+lf70RWIlM3nMkoMWkWT3
+=eUyj
 -----END PGP SIGNATURE-----
 
---YHJaAPTstyQT18gF--
+--4A+5qYZ+/KToxHVl--
 
---===============7452666390389861967==
+--===============1182503046619405154==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7452666390389861967==--
+--===============1182503046619405154==--
