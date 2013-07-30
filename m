@@ -1,147 +1,136 @@
 From: Richard Genoud <richard.genoud@gmail.com>
-Subject: [PATCH v6 1/8] ASoC: wm8731: add rates constraints
-Date: Tue, 30 Jul 2013 12:32:02 +0200
-Message-ID: <1375180329-4860-2-git-send-email-richard.genoud@gmail.com>
+Subject: [PATCH v6 8/8] ASoC: sam9x5: get codec MCLK via device tree
+Date: Tue, 30 Jul 2013 12:32:09 +0200
+Message-ID: <1375180329-4860-9-git-send-email-richard.genoud@gmail.com>
 References: <1375180329-4860-1-git-send-email-richard.genoud@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
- [209.85.212.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 476BB260890
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 12:32:29 +0200 (CEST)
-Received: by mail-wi0-f179.google.com with SMTP id hr7so2441630wib.0
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 03:32:29 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1375180329-4860-1-git-send-email-richard.genoud@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Richard Genoud <richard.genoud@gmail.com>, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
+Cc: Bo Shen <voice.shen@atmel.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, patches@opensource.wolfsonmicro.com, Richard Genoud <richard.genoud@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Depending on the mclk (or crystal) selected, the wm8731 codec have some
-constraints on its data sampling rates:
-e.g. with a 12.288MHz or 18.432MHz crystal, the authorized rates are
-8KHz, 32KHz, 48KHz and 96KHz.
+Instead of having the clock rate hard coded, and thus, only compatible
+with one board, we can make it compatible with other implementations.
 
 Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
 ---
- sound/soc/codecs/wm8731.c |   60 ++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 57 insertions(+), 3 deletions(-)
+ .../bindings/sound/atmel-sam9x5-wm8731-audio.txt     |    4 ++++
+ arch/arm/boot/dts/at91sam9x5ek.dtsi                  |    8 ++++++++
+ sound/soc/atmel/sam9x5_wm8731.c                      |   18 ++++++++++++++----
+ 3 files changed, 26 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 5276062..456bb8c 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -45,6 +45,7 @@ static const char *wm8731_supply_names[WM8731_NUM_SUPPLIES] = {
- struct wm8731_priv {
- 	struct regmap *regmap;
- 	struct regulator_bulk_data supplies[WM8731_NUM_SUPPLIES];
-+	const struct snd_pcm_hw_constraint_list *constraints;
- 	unsigned int sysclk;
- 	int sysclk_type;
- 	int playback_fs;
-@@ -290,6 +291,36 @@ static const struct _coeff_div coeff_div[] = {
- 	{12000000, 88200, 136, 0xf, 0x1, 0x1},
+diff --git a/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt b/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
+index 0720857..114a4c5 100644
+--- a/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
++++ b/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
+@@ -8,6 +8,8 @@ Required properties:
+   - atmel,audio-routing: A list of the connections between audio components.
+     Each entry is a pair of strings, the first being the connection's sink,
+     the second being the connection's source.
++  - clocks: Must contain an entry for the codec master clock.
++  - clock-names : Must be "mclk" (clock that feeds the codec master clock)
+ 
+ Available audio endpoints for the audio-routing table:
+ 
+@@ -32,4 +34,6 @@ sound {
+ 
+ 	atmel,ssc-controller = <&ssc0>;
+ 	atmel,audio-codec = <&wm8731>;
++	clocks = <&sound_crystal 0>;
++	clock-names = "mclk";
+ };
+diff --git a/arch/arm/boot/dts/at91sam9x5ek.dtsi b/arch/arm/boot/dts/at91sam9x5ek.dtsi
+index 9afe15b..b5ff17c 100644
+--- a/arch/arm/boot/dts/at91sam9x5ek.dtsi
++++ b/arch/arm/boot/dts/at91sam9x5ek.dtsi
+@@ -114,6 +114,12 @@
+ 		};
+ 	};
+ 
++	sound_crystal: osc@0 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency  = <12288000>;
++	};
++
+ 	sound {
+ 		compatible = "atmel,sam9x5-wm8731-audio";
+ 
+@@ -127,5 +133,7 @@
+ 
+ 		atmel,ssc-controller = <&ssc0>;
+ 		atmel,audio-codec = <&wm8731>;
++		clocks = <&sound_crystal 0>;
++		clock-names = "mclk";
+ 	};
+ };
+diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
+index 992ae38..f33c181 100644
+--- a/sound/soc/atmel/sam9x5_wm8731.c
++++ b/sound/soc/atmel/sam9x5_wm8731.c
+@@ -23,6 +23,8 @@
+ #include <linux/mod_devicetable.h>
+ #include <linux/platform_device.h>
+ #include <linux/device.h>
++#include <linux/err.h>
++#include <linux/clk.h>
+ 
+ #include <sound/soc.h>
+ #include <sound/soc-dai.h>
+@@ -31,12 +33,10 @@
+ #include "../codecs/wm8731.h"
+ #include "atmel_ssc_dai.h"
+ 
+-
+-#define MCLK_RATE 12288000
+-
+ #define DRV_NAME "sam9x5-snd-wm8731"
+ 
+ struct sam9x5_drvdata {
++	struct clk *mclk;
+ 	int ssc_id;
  };
  
-+/* rates constraints */
-+static const unsigned int wm8731_rates_12000000[] = {
-+	8000, 32000, 44100, 48000, 96000, 88200,
-+};
-+
-+static const unsigned int wm8731_rates_12288000_18432000[] = {
-+	8000, 32000, 48000, 96000,
-+};
-+
-+static const unsigned int wm8731_rates_11289600_16934400[] = {
-+	8000, 44100, 88200,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list wm8731_constraints_12000000 = {
-+	.list = wm8731_rates_12000000,
-+	.count = ARRAY_SIZE(wm8731_rates_12000000),
-+};
-+
-+static const
-+struct snd_pcm_hw_constraint_list wm8731_constraints_12288000_18432000 = {
-+	.list = wm8731_rates_12288000_18432000,
-+	.count = ARRAY_SIZE(wm8731_rates_12288000_18432000),
-+};
-+
-+static const
-+struct snd_pcm_hw_constraint_list wm8731_constraints_11289600_16934400 = {
-+	.list = wm8731_rates_11289600_16934400,
-+	.count = ARRAY_SIZE(wm8731_rates_11289600_16934400),
-+};
-+
- static inline int get_coeff(int mclk, int rate)
+@@ -46,6 +46,7 @@ struct sam9x5_drvdata {
+ static int sam9x5_wm8731_init(struct snd_soc_pcm_runtime *rtd)
  {
- 	int i;
-@@ -362,17 +393,26 @@ static int wm8731_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	}
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct sam9x5_drvdata *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct device *dev = rtd->dev;
+ 	int ret;
  
- 	switch (freq) {
--	case 11289600:
-+	case 0:
-+		wm8731->constraints = NULL;
-+		break;
- 	case 12000000:
-+		wm8731->constraints = &wm8731_constraints_12000000;
-+		break;
- 	case 12288000:
--	case 16934400:
- 	case 18432000:
--		wm8731->sysclk = freq;
-+		wm8731->constraints = &wm8731_constraints_12288000_18432000;
-+		break;
-+	case 16934400:
-+	case 11289600:
-+		wm8731->constraints = &wm8731_constraints_11289600_16934400;
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
+@@ -53,7 +54,8 @@ static int sam9x5_wm8731_init(struct snd_soc_pcm_runtime *rtd)
  
-+	wm8731->sysclk = freq;
+ 	/* set the codec system clock for DAC and ADC */
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL,
+-				     MCLK_RATE, SND_SOC_CLOCK_IN);
++				     clk_get_rate(priv->mclk),
++				     SND_SOC_CLOCK_IN);
+ 	if (ret < 0) {
+ 		dev_err(dev, "ASoC: Failed to set WM8731 SYSCLK: %d\n", ret);
+ 		return ret;
+@@ -142,6 +144,13 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+ 
+ 	priv->ssc_id = of_alias_get_id(cpu_np, "ssc");
+ 
++	priv->mclk = devm_clk_get(&pdev->dev, "mclk");
++	if (IS_ERR(priv->mclk)) {
++		ret = PTR_ERR(priv->mclk);
++		dev_err(&pdev->dev, "Failed to get MCLK: %d\n", ret);
++		goto out;
++	}
 +
- 	snd_soc_dapm_sync(&codec->dapm);
+ 	ret = atmel_ssc_set_audio(priv->ssc_id);
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev,
+@@ -153,6 +162,7 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+ 	of_node_put(codec_np);
+ 	of_node_put(cpu_np);
  
- 	return 0;
-@@ -475,12 +515,26 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
- 	return 0;
- }
++	snd_soc_card_set_drvdata(card, priv);
+ 	platform_set_drvdata(pdev, card);
  
-+static int wm8731_startup(struct snd_pcm_substream *substream,
-+	struct snd_soc_dai *dai)
-+{
-+	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(dai->codec);
-+
-+	if (wm8731->constraints)
-+		snd_pcm_hw_constraint_list(substream->runtime, 0,
-+					   SNDRV_PCM_HW_PARAM_RATE,
-+					   wm8731->constraints);
-+
-+	return 0;
-+}
-+
- #define WM8731_RATES SNDRV_PCM_RATE_8000_96000
- 
- #define WM8731_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
- 	SNDRV_PCM_FMTBIT_S24_LE)
- 
- static const struct snd_soc_dai_ops wm8731_dai_ops = {
-+	.startup	= wm8731_startup,
- 	.hw_params	= wm8731_hw_params,
- 	.digital_mute	= wm8731_mute,
- 	.set_sysclk	= wm8731_set_dai_sysclk,
+ 	ret = snd_soc_register_card(card);
 -- 
 1.7.10.4
