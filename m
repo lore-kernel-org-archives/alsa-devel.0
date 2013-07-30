@@ -1,44 +1,79 @@
-From: Richard Genoud <richard.genoud@gmail.com>
-Subject: [PATCH v6 4/8] ARM: AT91: DTS: sam9x5: add SSC DMA parameters
-Date: Tue, 30 Jul 2013 12:32:05 +0200
-Message-ID: <1375180329-4860-5-git-send-email-richard.genoud@gmail.com>
-References: <1375180329-4860-1-git-send-email-richard.genoud@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ALSA: ASoC: uda134x: fix codec driver
+Date: Tue, 30 Jul 2013 12:17:02 +0100
+Message-ID: <20130730111701.GN9858@sirena.org.uk>
+References: <E1V4712-0007sg-Dw@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1375180329-4860-1-git-send-email-richard.genoud@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Richard Genoud <richard.genoud@gmail.com>, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============1643347191287913624=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45E71260729
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 13:17:15 +0200 (CEST)
+In-Reply-To: <E1V4712-0007sg-Dw@rmk-PC.arm.linux.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
----
- arch/arm/boot/dts/at91sam9x5.dtsi |    3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm/boot/dts/at91sam9x5.dtsi b/arch/arm/boot/dts/at91sam9x5.dtsi
-index 20b6423..d6c9895 100644
---- a/arch/arm/boot/dts/at91sam9x5.dtsi
-+++ b/arch/arm/boot/dts/at91sam9x5.dtsi
-@@ -716,6 +716,9 @@
- 				compatible = "atmel,at91sam9g45-ssc";
- 				reg = <0xf0010000 0x4000>;
- 				interrupts = <28 IRQ_TYPE_LEVEL_HIGH 5>;
-+				dmas = <&dma0 1 AT91_DMA_CFG_PER_ID(13)>,
-+				       <&dma0 1 AT91_DMA_CFG_PER_ID(14)>;
-+				dma-names = "tx", "rx";
- 				pinctrl-names = "default";
- 				pinctrl-0 = <&pinctrl_ssc0_tx &pinctrl_ssc0_rx>;
- 				clocks = <&periph 28>;
--- 
-1.7.10.4
+--===============1643347191287913624==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="nrMdRvlEwnI0AOsB"
+Content-Disposition: inline
+
+
+--nrMdRvlEwnI0AOsB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jul 30, 2013 at 11:18:52AM +0100, Russell King wrote:
+> For some reason, the DAC/ADCs are not being powered up when I try and
+> use the UDA1341 driver; this used to work.  Looking back in the git
+> history, I don't see anything obvious which would cause this
+> regression.
+
+Applied, thanks.  I've applied it for v3.12 for now rather than v3.11
+since it's a relatively large change but obviously it's a fix and the
+driver doesn't work anyway without it so I'm likely to pull it over for
+v3.11.
+
+--nrMdRvlEwnI0AOsB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR96CqAAoJELSic+t+oim9FRQP+wXWHW+3rWaBWYinLOs5usMM
+UL+AKh3IEOZK1dZ0HiAmN4wZjY2xp2TOk13GWcEC3/HGasp0GtXfoGTXnO8c4JTR
+npHoZCMgJYDSUFo6AiY5y6p+bmgaqHd7KgnFUtQ7kvWzMgmy+zHwzDONRe9pWudp
+nJ4AuH1Fpqqo+mvfae9uBJrDxTbi5nDlirvt7rcKJudqPRNzqfl3CpoColhgVVJu
+BHD/4av+ZDxiBL+8g9JI2ugQO4YC2zLIc5SP/xzvddQMmQzbfLiy5QBPxkJ0ICXb
+LImrBIQimXgDju8+QTfcA3iioKZJSuPIWD2kd236zDwLih1fyVNN+xfDaD6xcYtG
+QdRIvt3sa1QhvQBJqAGh3v5zhY1Nx2MFe270148gAowFqq4TvY/nBJ02Y8D0GD8/
+ZK64tFUsvw6sakL95dhVncKfSPU5nr6Wb5CK0X98d/PIiciPk7aC/90O69sJQM4x
+HXobT9sqA3wzQ4v0F3V9iJiqam/l0ejRyyhZ5xcZg7NiyRcC7CTuSr1XivBTNyWw
+aRa6VBpOU+7zGaVBC2xBFtGJKyI5tVSUoPhKbt2BGGFUjJVLH2wT97xyxUYXC2Zz
+5MQfP8FXvXPPkbhhijm4ZrhUoGRK5Fq9WbWiZJodiAv5o6oT7kFNAAGaZoLShFP0
+4R6D66ob/Su16RC99gLG
+=Y4Du
+-----END PGP SIGNATURE-----
+
+--nrMdRvlEwnI0AOsB--
+
+--===============1643347191287913624==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1643347191287913624==--
