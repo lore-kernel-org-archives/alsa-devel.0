@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 1/8] ASoC: wm8731: add rates constraints
-Date: Tue, 30 Jul 2013 12:29:49 +0100
-Message-ID: <20130730112949.GP9858@sirena.org.uk>
-References: <1375180329-4860-1-git-send-email-richard.genoud@gmail.com>
- <1375180329-4860-2-git-send-email-richard.genoud@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/2] ASoC: bf5xx-ac97: Fix compile error
+Date: Tue, 30 Jul 2013 13:34:09 +0200
+Message-ID: <1375184050-21514-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1374867270969735201=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E97202651DB
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 13:29:53 +0200 (CEST)
-In-Reply-To: <1375180329-4860-2-git-send-email-richard.genoud@gmail.com>
+Received: from smtp-out-226.synserver.de (smtp-out-230.synserver.de
+ [212.40.185.230])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD127261981
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 13:33:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Genoud <richard.genoud@gmail.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>, patches@opensource.wolfsonmicro.com, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1374867270969735201==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mdlWJHP8WUkO1oOu"
-Content-Disposition: inline
-
-
---mdlWJHP8WUkO1oOu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jul 30, 2013 at 12:32:02PM +0200, Richard Genoud wrote:
-> Depending on the mclk (or crystal) selected, the wm8731 codec have some
-> constraints on its data sampling rates:
-> e.g. with a 12.288MHz or 18.432MHz crystal, the authorized rates are
-> 8KHz, 32KHz, 48KHz and 96KHz.
-
-Applied, thanks.
-
---mdlWJHP8WUkO1oOu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR96OpAAoJELSic+t+oim9KD8P/jufnid8JfAwCFurbaWmciex
-ASQ2UuNfKZxhunDX0IdQ0byCdXA56HRgJap9zhWlE9YrlAflPhcseAO8SkhPaDoB
-Bcxgtc3Qhwq4HhJz7sux8fjijsDfiFqSL+ZaJG5GGJTW6tNCu+SnhtGcj8zztYyw
-hseY5H9Us/fKmMbXcWqg4U9KpPVCi8V1U6oEMlGTCLHBKAJGtLYq//LaC8Gdenc2
-xW8568EeylLF9rOPiB8xtvDEO4arbd+xIWQLJLG742iERJyI8r0yx7NKkQ4+m5ek
-0mDOG1ZpwArGuMztzrXDIw0RO8TKB570pq1Z4xz1eMWqOluONEY+BXVBP466DmEN
-ORryiBQcSXhfQzgIZHduTqWPlKUapwsYuwif3ODvPmKTxagzFt1gQe9zrgKES2mG
-Lx/6TfDjVlW3u64L/5sK6dSEE9HeX4My5ehr8oxoNSaZpLat+S+bPWdi2YZnbYGE
-1E55WN9UMH01FtxBsAsdCdDBVZJm1FNvqGwfgi6lQYE8b9RHNYIuHB0kLu2Hsmia
-s9r0awsUtdjGreC1nD3XHiB24PlFGF3rm6koMF2cH39DBF35aTc6r9bXQ1veP4qy
-gNnUs0uiVKWG1de1bc/QM+zWTRu33pgAZm29hvWvbMIeezdDcx9/w+oTOFhLDDFd
-+bdN/0oqyy76wTWOGkKq
-=urka
------END PGP SIGNATURE-----
-
---mdlWJHP8WUkO1oOu--
-
---===============1374867270969735201==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1374867270969735201==--
+SWYgQ09ORklHX1NORF9CRjVYWF9IQVZFX0NPTERfUkVTRVQgaXMgZW5hYmxlZCBidWlsZGluZyB0
+aGUgYmxhY2tmaW4gYWM5NyBkcml2ZXIKZmFpbHMgd2l0aCB0aGUgZm9sbG93aW5nIGNvbXBpbGUg
+ZXJyb3I6Cglzb3VuZC9zb2MvYmxhY2tmaW4vYmY1eHgtYWM5Ny5jOiBJbiBmdW5jdGlvbiDigJhh
+c29jX2JmaW5fYWM5N19wcm9iZeKAmToKCXNvdW5kL3NvYy9ibGFja2Zpbi9iZjV4eC1hYzk3LmM6
+Mjk3OiBlcnJvcjogZXhwZWN0ZWQg4oCYO+KAmSBiZWZvcmUg4oCYe+KAmSB0b2tlbgoJc291bmQv
+c29jL2JsYWNrZmluL2JmNXh4LWFjOTcuYzozMDI6IGVycm9yOiBsYWJlbCDigJhncGlvX2VycuKA
+mSB1c2VkIGJ1dCBub3QgZGVmaW5lZAoKVGhlIGlzc3VlIHdhcyBpbnRyb2R1Y2VkIGluIGNvbW1p
+dCA2ZGFiMmZkNyAoIkFTb0M6IGJmNXh4LWFjOTc6IENvbnZlcnQgdG8KZGV2bV9ncGlvX3JlcXVl
+c3Rfb25lKCkiKS4KClNpZ25lZC1vZmYtYnk6IExhcnMtUGV0ZXIgQ2xhdXNlbiA8bGFyc0BtZXRh
+Zm9vLmRlPgotLS0KIHNvdW5kL3NvYy9ibGFja2Zpbi9iZjV4eC1hYzk3LmMgfCA1ICsrKy0tCiAx
+IGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
+dCBhL3NvdW5kL3NvYy9ibGFja2Zpbi9iZjV4eC1hYzk3LmMgYi9zb3VuZC9zb2MvYmxhY2tmaW4v
+YmY1eHgtYWM5Ny5jCmluZGV4IGVmYjFkYWUuLmU4MmViMzcgMTAwNjQ0Ci0tLSBhL3NvdW5kL3Nv
+Yy9ibGFja2Zpbi9iZjV4eC1hYzk3LmMKKysrIGIvc291bmQvc29jL2JsYWNrZmluL2JmNXh4LWFj
+OTcuYwpAQCAtMjk0LDExICsyOTQsMTIgQEAgc3RhdGljIGludCBhc29jX2JmaW5fYWM5N19wcm9i
+ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQogCS8qIFJlcXVlc3QgUEIzIGFzIHJlc2V0
+IHBpbiAqLwogCXJldCA9IGRldm1fZ3Bpb19yZXF1ZXN0X29uZSgmcGRldi0+ZGV2LAogCQkJCSAg
+ICBDT05GSUdfU05EX0JGNVhYX1JFU0VUX0dQSU9fTlVNLAotCQkJCSAgICBHUElPRl9PVVRfSU5J
+VF9ISUdILCAiU05EX0FEMTk4eCBSRVNFVCIpIHsKKwkJCQkgICAgR1BJT0ZfT1VUX0lOSVRfSElH
+SCwgIlNORF9BRDE5OHggUkVTRVQiKTsKKwlpZiAocmV0KSB7CiAJCWRldl9lcnIoJnBkZXYtPmRl
+diwKIAkJCSJGYWlsZWQgdG8gcmVxdWVzdCBHUElPXyVkIGZvciByZXNldDogJWRcbiIsCiAJCQlD
+T05GSUdfU05EX0JGNVhYX1JFU0VUX0dQSU9fTlVNLCByZXQpOwotCQlnb3RvIGdwaW9fZXJyOwor
+CQlyZXR1cm4gcmV0OwogCX0KICNlbmRpZgogCi0tIAoxLjguMAoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
