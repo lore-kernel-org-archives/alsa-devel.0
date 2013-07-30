@@ -1,20 +1,18 @@
-From: Przemek Rudy <prudy1@o2.pl>
-Subject: [PATCH 1/1] conf/cards: add Audio Advantage Micro II
-Date: Tue, 30 Jul 2013 22:31:44 +0200
-Message-ID: <1375216304-8758-1-git-send-email-prudy1@o2.pl>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6 2/8] ASoC: atmel: machine driver for
+ at91sam9x5-wm8731 boards
+Date: Tue, 30 Jul 2013 21:45:11 +0100
+Message-ID: <20130730204511.GX9858@sirena.org.uk>
+References: <1375180329-4860-1-git-send-email-richard.genoud@gmail.com>
+ <1375180329-4860-3-git-send-email-richard.genoud@gmail.com>
+ <51F7FBA8.6080400@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7749713310473947907=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moh2-ve3.go2.pl (moh2-ve3.go2.pl [193.17.41.208])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A9292608D2
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 22:32:18 +0200 (CEST)
-Received: from moh2-ve3.go2.pl (unknown [10.0.0.208])
- by moh2-ve3.go2.pl (Postfix) with ESMTP id 475FA37060D
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 22:32:18 +0200 (CEST)
-Received: from unknown (unknown [10.0.0.108])
- by moh2-ve3.go2.pl (Postfix) with SMTP
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 22:32:18 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDF412608D2
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2013 22:45:19 +0200 (CEST)
+In-Reply-To: <51F7FBA8.6080400@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,61 +22,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Przemek Rudy <prudy1@o2.pl>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Richard Genoud <richard.genoud@gmail.com>, patches@opensource.wolfsonmicro.com, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-With related kernel chnages add extended suport for:
-- AES bits controls (via device suffix AESn= or tools like iecset)
-- SPDIF switch control, turning on/off the optical transmitter (via alsamixer tool)
 
-Signed-off-by: Przemek Rudy <prudy1@o2.pl>
+--===============7749713310473947907==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="o9CSdzDyaZ/W953l"
+Content-Disposition: inline
 
-diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
-index 0d93175..8a6d9ca 100644
---- a/src/conf/cards/USB-Audio.conf
-+++ b/src/conf/cards/USB-Audio.conf
-@@ -101,6 +101,41 @@ USB-Audio."Audiophile USB (tm)".pcm.iec958 {
- 	}
- }
- 
-+# For this card we can (and must to get IEC61937) set AES bits
-+USB-Audio."MicroII".pcm.iec958 "cards.USB-Audio.Audio Advantage MicroII.pcm.iec958"
-+USB-Audio."Audio Advantage MicroII".pcm.iec958 {
-+	@args [ CARD AES0 AES1 AES2 AES3 ]
-+	@args.CARD { type string }
-+	@args.AES0 { type integer }
-+	@args.AES1 { type integer }
-+	@args.AES2 { type integer }
-+	@args.AES3 { type integer }
-+
-+    type hooks
-+    slave.pcm {
-+		type hw
-+		card $CARD
-+    }
-+
-+    hooks.0 {
-+		type ctl_elems
-+		hook_args [
-+			{
-+				interface PCM
-+				name "IEC958 Playback Default"
-+				preserve true
-+				optional true
-+				value [ $AES0 $AES1 $AES2 $AES3 ]
-+			}
-+			{
-+				name "IEC958 Playback Switch"
-+				lock true
-+				preserve true
-+				value 1
-+			}
-+		]
-+	}
-+}
- 
- ################################################################################
- 
--- 
-1.8.3.1
+
+--o9CSdzDyaZ/W953l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jul 30, 2013 at 11:45:12AM -0600, Stephen Warren wrote:
+> On 07/30/2013 04:32 AM, Richard Genoud wrote:
+
+> > +wm8731 pins:
+> > +cf Documentation/devicetree/bindings/sound/wm8731.txt
+
+> In the Tegra bindings, I deliberately put the list of CODEC pins into
+> the audio complex binding rather than the CODEC binding. That's because
+
+You really shouldn't do this, it's not accomplishing much.
+
+> I'm not sure that in the long-term we want to use strings to identify
+> the CODEC pins, rather than using integers. By putting the list orf
+> CODEC pins in the audio complex binding rather than the CODEC binding, I
+> didn't lumber the CODEC binding with a list of strings that it had to
+> support forever.
+
+How would you create the numbers - you can't use the pin numbers since
+BGA type packages have alphanumeric ball identifiers?  Even with
+numerical pin numbering ou'd need to specify some defines for this not
+to be totally awful at which point you may as well have the strings
+documented since you'd end up writing a table in the binding document
+that's basically a mapping of pin names to numbers,
+
+> One reason that strings are problematic is because they can't be mixed
+> with integers/phandles in the same property, so if we ever end up with
+> more generic audio bindings where the routing table is expressed more like:
+
+> audio-routes = <&component_a $a_pin &component_b $b_pin>;
+
+> ... in order to allow completely arbitrary and fully name-spaced routing
+> specification[1], then $a_pin and $b_pin need to be integers not strings.
+
+The above is going to be legibility challenged without defines at which
+point the strings end up appearing in the binding document anyway.
+
+Besides, you're stuck with the names you picked anyway so you may as
+well put them in the CODEC driver binding document so that anyone else
+using the same CODEC can reuse that bit of work.
+
+> [1] and perhaps we can get rid of properties like
+> audio-codec/ssc-controller, and automatically deduce which components
+> are needed simply by finding all phandles in the audio-routes property.
+
+> Perhaps the solution here is to allow mixing phandles/integers/strings
+> in one property, but that's potentially quite a large change to the DTB
+> format; we'd need to introduce type fields into the property data, and
+> other data format changes.
+
+I really do think this is a DT failure which ought to be addressed
+there; people are working around this with things like parallel arrays
+with names and phandles which aren't awesome once the arrays get to be
+any size.
+
+One option that seems sensible is to introduce syntactic sugar which
+will do the parallel arrays trick automatically - the actual DT that
+gets output could still be two arrays with indexes that match up (so no
+impact on parsers) but the DT author would be able to write an array of
+(phandle, string) tuples or something instead of having to line up two
+arrays.
+
+--o9CSdzDyaZ/W953l
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR+CXTAAoJELSic+t+oim9LH4QAJV5p0kISb3fr7KlQSJdGr3p
+qWas0NliPSCsfKHlPkHM7gG313DhQygLX0ObB4gG9aWfGxHwzlCux4SfzaK4MStF
+dwU3NOXyY7Pu/p/vLK7zISRWLHqwBVT47ZXZJqQSFT6mw2wrIu+n1oR0yZ7iWRNu
+GIqf9QBzwOkuztonOdBhL6pssGkCruN6g2U/6MCbthNrqYweyAnJw9g22wjGFCWP
+aS1JBtJGHqTa6mmkgi7NwE0m2c5MzrfaZLNaSZYfcF2EslNMg6oDehjZRrIm8c6n
+ZDOR8md9GT/NdR+WELWIyL1THDc1mQ7Ez/T3fTJiCgP4WK0yztoprGeounB3vMv7
+WqfOv0RspOv3ndWWoBEbjHgNbw9yBm5IZETEiBAREtmLVk82DYykvWqN0Tm0QOUT
+dIJMTw1pyxJKFiZIX38BdEK1qPZmOBKcEsbPAOzztf98P6YgrB/JVaWkI87ZFdTM
+5zGXikai/Bxptdj0RtYEReySDtHY76qyy1FkGMiUnckvMMvL/+x+hTpLuqjKOgRQ
+dMJHNcUu/rxXIrPZ2KW08m0+OBcj5R4rBrUTY7Rrx/hhM2ZezRnQaLYx67xw1aAv
+nPogz0zeEMuVjJVf3cyWRBi6htz/zXtwRuxeJcA3I2KxND9PnSSxKOnx4CKRaJ+4
+wJvIipG/9uGELfsIloRO
+=CEfL
+-----END PGP SIGNATURE-----
+
+--o9CSdzDyaZ/W953l--
+
+--===============7749713310473947907==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7749713310473947907==--
