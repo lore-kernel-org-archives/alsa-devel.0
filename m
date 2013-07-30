@@ -1,100 +1,190 @@
-From: Richard Zhao <rizhao-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH 7/9] ASoC: tegra: move to generic DMA DT binding
-Date: Tue, 30 Jul 2013 18:12:23 +0800
-Message-ID: <20130730101221.GO15855@rizhao-lap>
-References: <1374639002-16753-1-git-send-email-rizhao@nvidia.com>
- <1374639002-16753-8-git-send-email-rizhao@nvidia.com>
- <51F2D4DD.9060308@wwwdotorg.org>
+From: Russell King <rmk+kernel@arm.linux.org.uk>
+Subject: [PATCH] ALSA: ASoC: uda134x: fix codec driver
+Date: Tue, 30 Jul 2013 11:18:52 +0100
+Message-ID: <E1V4712-0007sg-Dw@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <51F2D4DD.9060308-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Content-Disposition: inline
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 27, 2013 at 03:58:21AM +0800, Stephen Warren wrote:
-> On 07/23/2013 10:10 PM, Richard Zhao wrote:
-> > - add tegra_dma_filter_data to specify dma info
-> >   DMA DT binding needs the device that raise dma request and dma name
-> >   to request a dma channel. tegra30_i2s is a special case. It should be ahub
-> >   device and it also has dma name that cannot handled by ASoC dmaengine code.
-> >   So we pass the info using filter data in snd_dmaengine_dai_dma_data.
-> > - change i2s/ac97 drivers to use generic DT binding
-> > - tegra30_i2s: alloc ahub tx/rx fifo at driver probe time
-> 
-> > diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-> 
-> I don't understand why the FIFO alloc/free had to move from
-> startup()/shutdown() to probe()/remove().
+For some reason, the DAC/ADCs are not being powered up when I try and
+use the UDA1341 driver; this used to work.  Looking back in the git
+history, I don't see anything obvious which would cause this
+regression.
 
-The call path is:
-[<c0520e38>] (dump_stack+0x78/0xbc) from [<c03bb854>] (tegra_pcm_request_chan+0x10/0x34)
-[<c03bb854>] (tegra_pcm_request_chan+0x10/0x34) from [<c03b6c2c>] (dmaengine_pcm_new+0xe0/0x134)
-[<c03b6c2c>] (dmaengine_pcm_new+0xe0/0x134) from [<c03b5824>] (soc_new_pcm+0x2f0/0x3cc)
-[<c03b5824>] (soc_new_pcm+0x2f0/0x3cc) from [<c03aa1a0>] (soc_probe_link_dais+0x358/0x39c)
-[<c03aa1a0>] (soc_probe_link_dais+0x358/0x39c) from [<c03ab334>] (snd_soc_instantiate_card+0x35c/0x7a0)
-[<c03ab334>] (snd_soc_instantiate_card+0x35c/0x7a0) from [<c03ab9dc>] (snd_soc_register_card+0x264/0x330)
-[<c03ab9dc>] (snd_soc_register_card+0x264/0x330) from [<c03be350>] (tegra_rt5640_probe+0xf4/0x17c)
-[<c03be350>] (tegra_rt5640_probe+0xf4/0x17c) from [<c0294290>] (platform_drv_probe+0x18/0x1c)
+However, from dumping the register writes, it seems that the codec is
+powered down, and nothing calls set_bias_level to wake the codec up.
 
-So I need to request dma channel at probe time.
+Moreover, this driver hasn't had DAPM support added to it, which
+prevents platform drivers from taking advantage of DAPMs facilities.
+So, let's add DAPM support to the driver.
 
-> This will prevent later
-> changes from making the connectivity between the AHUB FIFOs and I2S
-> modules more dynamic, which is kind of the whole point of the AHUB HW
-> module.
+As we move the power control for the DAC/ADC into DAPM, we no longer
+need it in set_bias_level() - this function just becomes a way to
+manipulate the power control and sync the register cache with the
+hardware at the appropriate point.
 
-That's because it's i2s driver to register pcm device rather not ahub.
-Ideally dma channel is only bound to ahub.
-> 
-> > diff --git a/sound/soc/tegra/tegra_pcm.h b/sound/soc/tegra/tegra_pcm.h
-> 
-> > +#define TEGRA_DMA_NAME_MAX_LEN	10
-> > +
-> > +/*
-> > + * Generic DMA DT binding needs the device that raise dma request and dma name
-> > + * to request a dma channel. tegra30_i2s is a special case. It should be ahub
-> > + * device and it also has dma name that cannot handled by ASoC dmaengine code.
-> > + * So we pass the info using filter data in snd_dmaengine_dai_dma_data.
-> > + */
-> > +struct tegra_dma_filter_data {
-> > +	struct device *dma_dev;
-> > +	char dma_name[TEGRA_DMA_NAME_MAX_LEN];
-> > +};
-> 
-> I agree with Lars-Peter's comment that it'd be better to enhance the
-> ASoC dmaengine support to allow the channel name to be specified so we
-> don't need to much custom code.
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+I noticed this while checking the Assabet audio, which uses the UDA1341.
+I've also added the corresponding support to my Assabet audio driver.
+If this looks like the correct thing to do to fix this, please apply.
 
-Not only dma-name but also dma client device for this case.
+ sound/soc/codecs/uda134x.c |   88 ++++++++++++++++++++++++++-----------------
+ 1 files changed, 53 insertions(+), 35 deletions(-)
 
-> And that should use "char *" not a
-> fixed-length array.
-Ok, then there' two solutions.
-
-struct tegra30_i2s {
-...
-        struct snd_dmaengine_dai_dma_data capture_dma_data;
-        char dma_rx_name[10];
-        struct tegra_dma_filter_data filter_data_rx;
-...
-        struct snd_dmaengine_dai_dma_data playback_dma_data;
-        char dma_tx_name[10];
-        struct tegra_dma_filter_data filter_data_tx;
-};
-
-probe: i2s->filter_data_rx.dma_name = i2s.dma_rx_name
-
-or
-
-probe: i2s->filter_data_rx.dma_name = kasprintf(GFP_KERNEL, "channel%d" ...);
-remove: kfree(i2s->filter_data_rx.dma.name)
-
-Which one do you like?
-
-
-Thanks for review!
-Richard
+diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
+index 6d0aa44..c94d4c1 100644
+--- a/sound/soc/codecs/uda134x.c
++++ b/sound/soc/codecs/uda134x.c
+@@ -325,7 +325,6 @@ static int uda134x_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ static int uda134x_set_bias_level(struct snd_soc_codec *codec,
+ 				  enum snd_soc_bias_level level)
+ {
+-	u8 reg;
+ 	struct uda134x_platform_data *pd = codec->control_data;
+ 	int i;
+ 	u8 *cache = codec->reg_cache;
+@@ -334,23 +333,6 @@ static int uda134x_set_bias_level(struct snd_soc_codec *codec,
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+-		/* ADC, DAC on */
+-		switch (pd->model) {
+-		case UDA134X_UDA1340:
+-		case UDA134X_UDA1344:
+-		case UDA134X_UDA1345:
+-			reg = uda134x_read_reg_cache(codec, UDA134X_DATA011);
+-			uda134x_write(codec, UDA134X_DATA011, reg | 0x03);
+-			break;
+-		case UDA134X_UDA1341:
+-			reg = uda134x_read_reg_cache(codec, UDA134X_STATUS1);
+-			uda134x_write(codec, UDA134X_STATUS1, reg | 0x03);
+-			break;
+-		default:
+-			printk(KERN_ERR "UDA134X SoC codec: "
+-			       "unsupported model %d\n", pd->model);
+-			return -EINVAL;
+-		}
+ 		break;
+ 	case SND_SOC_BIAS_PREPARE:
+ 		/* power on */
+@@ -362,23 +344,6 @@ static int uda134x_set_bias_level(struct snd_soc_codec *codec,
+ 		}
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		/* ADC, DAC power off */
+-		switch (pd->model) {
+-		case UDA134X_UDA1340:
+-		case UDA134X_UDA1344:
+-		case UDA134X_UDA1345:
+-			reg = uda134x_read_reg_cache(codec, UDA134X_DATA011);
+-			uda134x_write(codec, UDA134X_DATA011, reg & ~(0x03));
+-			break;
+-		case UDA134X_UDA1341:
+-			reg = uda134x_read_reg_cache(codec, UDA134X_STATUS1);
+-			uda134x_write(codec, UDA134X_STATUS1, reg & ~(0x03));
+-			break;
+-		default:
+-			printk(KERN_ERR "UDA134X SoC codec: "
+-			       "unsupported model %d\n", pd->model);
+-			return -EINVAL;
+-		}
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+ 		/* power off */
+@@ -450,6 +415,37 @@ SOC_ENUM("PCM Playback De-emphasis", uda134x_mixer_enum[1]),
+ SOC_SINGLE("DC Filter Enable Switch", UDA134X_STATUS0, 0, 1, 0),
+ };
+ 
++/* UDA1341 has the DAC/ADC power down in STATUS1 */
++static const struct snd_soc_dapm_widget uda1341_dapm_widgets[] = {
++	SND_SOC_DAPM_DAC("DAC", "Playback", UDA134X_STATUS1, 0, 0),
++	SND_SOC_DAPM_ADC("ADC", "Capture", UDA134X_STATUS1, 1, 0),
++};
++
++/* UDA1340/4/5 has the DAC/ADC pwoer down in DATA0 11 */
++static const struct snd_soc_dapm_widget uda1340_dapm_widgets[] = {
++	SND_SOC_DAPM_DAC("DAC", "Playback", UDA134X_DATA011, 0, 0),
++	SND_SOC_DAPM_ADC("ADC", "Capture", UDA134X_DATA011, 1, 0),
++};
++
++/* Common DAPM widgets */
++static const struct snd_soc_dapm_widget uda134x_dapm_widgets[] = {
++	SND_SOC_DAPM_INPUT("VINL1"),
++	SND_SOC_DAPM_INPUT("VINR1"),
++	SND_SOC_DAPM_INPUT("VINL2"),
++	SND_SOC_DAPM_INPUT("VINR2"),
++	SND_SOC_DAPM_OUTPUT("VOUTL"),
++	SND_SOC_DAPM_OUTPUT("VOUTR"),
++};
++
++static const struct snd_soc_dapm_route uda134x_dapm_routes[] = {
++	{ "ADC", NULL, "VINL1" },
++	{ "ADC", NULL, "VINR1" },
++	{ "ADC", NULL, "VINL2" },
++	{ "ADC", NULL, "VINR2" },
++	{ "VOUTL", NULL, "DAC" },
++	{ "VOUTR", NULL, "DAC" },
++};
++
+ static const struct snd_soc_dai_ops uda134x_dai_ops = {
+ 	.startup	= uda134x_startup,
+ 	.shutdown	= uda134x_shutdown,
+@@ -485,6 +481,8 @@ static int uda134x_soc_probe(struct snd_soc_codec *codec)
+ {
+ 	struct uda134x_priv *uda134x;
+ 	struct uda134x_platform_data *pd = codec->card->dev->platform_data;
++	const struct snd_soc_dapm_widget *widgets;
++	unsigned num_widgets;
+ 
+ 	int ret;
+ 
+@@ -526,6 +524,22 @@ static int uda134x_soc_probe(struct snd_soc_codec *codec)
+ 	else
+ 		uda134x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
++	if (pd->model == UDA134X_UDA1341) {
++		widgets = uda1341_dapm_widgets;
++		num_widgets = ARRAY_SIZE(uda1341_dapm_widgets);
++	} else {
++		widgets = uda1340_dapm_widgets;
++		num_widgets = ARRAY_SIZE(uda1340_dapm_widgets);
++	}
++
++	ret = snd_soc_dapm_new_controls(&codec->dapm, widgets, num_widgets);
++	if (ret) {
++		printk(KERN_ERR "%s failed to register dapm controls: %d",
++			__func__, ret);
++		kfree(uda134x);
++		return ret;
++	}
++
+ 	switch (pd->model) {
+ 	case UDA134X_UDA1340:
+ 	case UDA134X_UDA1344:
+@@ -599,6 +613,10 @@ static struct snd_soc_codec_driver soc_codec_dev_uda134x = {
+ 	.read = uda134x_read_reg_cache,
+ 	.write = uda134x_write,
+ 	.set_bias_level = uda134x_set_bias_level,
++	.dapm_widgets = uda134x_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(uda134x_dapm_widgets),
++	.dapm_routes = uda134x_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(uda134x_dapm_routes),
+ };
+ 
+ static int uda134x_codec_probe(struct platform_device *pdev)
+-- 
+1.7.4.4
