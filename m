@@ -1,16 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: end of playback ... design question
-Date: Wed, 31 Jul 2013 16:07:48 +0200
-Message-ID: <51F91A34.5070302@perex.cz>
-References: <51F9144F.9080807@t-online.de>
+From: Chen Guangyu-B42378 <B42378@freescale.com>
+Subject: Re: [PATCH 1/3] ASoC: codec: spdif: Add S20_3LE and
+ S24_LE support for dummy codec drivers
+Date: Wed, 31 Jul 2013 14:10:02 +0000
+Message-ID: <E31481825E4C03459FC878EE97CB2EFD0CC2D09A@039-SN2MPN1-023.039d.mgd.msft.net>
+References: <cover.1375271745.git.b42378@freescale.com>
+ <ad8f9d8812c1823ae6f9e4a0d1e6d3c76b26a285.1375271745.git.b42378@freescale.com>,
+ <20130731132849.GR9858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 257852615F2
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 16:07:50 +0200 (CEST)
-In-Reply-To: <51F9144F.9080807@t-online.de>
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe002.messaging.microsoft.com [207.46.163.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 483562615F2
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 16:10:09 +0200 (CEST)
+In-Reply-To: <20130731132849.GR9858@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +25,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Knut Petersen <Knut_Petersen@t-online.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Kai Vehmanen <kvehmanen@nosignal.fi>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "timur@tabi.org" <timur@tabi.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>
 List-Id: alsa-devel@alsa-project.org
 
-RGF0ZSAzMS43LjIwMTMgMTU6NDIsIEtudXQgUGV0ZXJzZW4gd3JvdGU6Cj4gSGkgZXZlcnlib2R5
-IQo+IAo+IEFsdGhvdWdoIEkgbG9va2VkIGF0IHF1aXRlIGEgYml0IG9mIHNvdXJjZSBjb2RlIGFu
-ZCBkb2N1bWVudGF0aW9uIEkgaGF2ZQo+IHRvIGFkbWl0IHRoYXQgSSBhbSBjb25mdXNlZCBhYm91
-dCBvbmUgcXVlc3Rpb246Cj4gCj4gSG93IHNob3VsZCBhbHNhIHBsYXliYWNrIGJlIHN0b3BwZWQg
-aW4gYSB3YXkgdGhhdCBfZ3VhcmFudGVlc18gdGhhdCBubwo+IGFydGlmYWN0cyByZW1haW5pbmcg
-aW4gdGhlIGRyaXZlcnMgcmluZ2J1ZmZlciBhcmUgcGxheWVkIGJhY2sgYWdhaW4/Cj4gCj4gTGV0
-wrRzIGFzc3VtZSB3ZSBwbGF5IHN0ZXJlbyAxNmJpdCBhdWRpbyBkYXRhIHVzaW5nIHRoZSBybWU5
-NiBkcml2ZXIsIHBlcmlvZCBzaXplIHNldCB0byAweDgwMCBmcmFtZXMuCj4gCj4gQXQgdGhlIGVu
-ZCBvZiB0aGUgcGVudWx0aW1hdGUgZnJhbWUgcGxheWluZyB3aWxsIG5vdCBiZSBzdG9wcGVkIGV2
-ZW4gaWYgdGhlcmUgaXMgb25seSBvbmUgZnJhbWUKPiBvZiBhdWRpbyBkYXRhIHJlbWFpbmluZy4g
-T2J2aW91c2x5IHRoYXQgbWVhbnMgMHg3ZmYgZnJhbWVzIG9mIGFscmVhZHkgcGxheWVkIGRhdGEg
-aXMgcGxheWVkIGFnYWluCj4gYWZ0ZXIgdGhhdCBvbmUgdmFsaWQgZnJhbWUsIHBsdXMgcG9zc2li
-bHkgYSBmZXcgdGhhdCBhcmUgcGxheWVkIGR1cmluZyB0aGUgc2hvcnQgdGltZSBmcm9tIGludGVy
-cnVwdCByZXF1ZXN0IHRvCj4gdGhlIHJlYWwgc3RvcCBvZiB0aGUgcGxheWJhY2sgaGFyZHdhcmUg
-KGFib3V0IDUgZnJhbWVzIG9uIGFuIG9sZCBQZW50aXVtLU0gMS4yR0h6KS4KPiAKPiBOb3cgdGhh
-dCBjb3VsZCBiZSBmaXhlZCBpbiBkaWZmZXJlbnQgd2F5czoKPiAKPiBBOiBBbHdheXMgZW5zdXJl
-IHRoYXQgdGhlcmUgaXMgYSBiaXQgb2Ygc2lsZW5jZSAoYXQgbGVhc3QgaGFyZHdhcmUgYnVmZmVy
-IHNpemUgcGx1cyBhIGZldyBmcmFtZXMpIGF0IHRoZSBlbmQgb2YgYWxsIGF1ZGlvIGRhdGEuCj4g
-Cj4gICAgICAgRWFzeSBmb3IgdGhlIHVzZXIgLCBidXQgb25seSBhIHdvcmthcm91bmQuCj4gCj4g
-QjogQXQgdGhlIHJtZTk2IGRyaXZlciBsZXZlbCB0aGF0IGNvbmRpdGlvbiBjYW4gYmUgZGV0ZWN0
-ZWQgYW5kIHRoZSByZWxldmFudCBwYXJ0IG9mIHRoZSBidWZmZXIKPiAgICAgICBjYW4gYmUgZmls
-bGVkIHdpdGggemVyb3MuCj4gCj4gICAgICAgSSBkaWQgdGhhdCBpbiBhbiBleHBlcmltZW50YWwg
-Y2hhbmdlLiBJdCBkb2VzIHdvcmssIGJ1dCBpdMK0cyBkZWZpbml0ZWx5IG9ubHkgYSBoYWNrIGFz
-IGl0IGZpeGVzCj4gICAgICAgdGhlIHByb2JsZW0gZm9yIG9ubHkgb25lIGRldmljZS4KPiAKPiBD
-OiBUaGUgYXBwbGljYXRpb24gcGxheWluZyBhdWRpbyBkYXRhIGNvdWxkIHBhZCBhbGwgYXVkaW8g
-ZGF0YSB0byB0aGUgcGVyaW9kIHNpemUgd2l0aCB6ZXJvcy4KPiAKPiAgICAgIFRoYXQgd291bGQg
-cHJldmVudCBwbGF5YmFjayBvZiB0aGF0IG1heCAweDdmZiBmcmFtZXMgb2YgZ2FyYmFnZSwgYnV0
-IHRoZSBmZXcgc2FtcGxlcyB0aGF0IGFyZSBwbGF5ZWQKPiAgICAgICBkdXJpbmcgdGhlIHRpbWUg
-ZnJvbSBpbnRlcnJ1cHQgcmVxdWVzdCB0byB0aGUgZXhlY3V0aW9uIG9mIHRoZSBzdG9wIHRyaWdn
-ZXIgZG8gZXNjYXBlCj4gCj4gRDogRG9uwrR0IHRyeSB0byBkcmFpbiB0aGUgYnVmZmVyIGJ1dCBw
-YWQgd2l0aCB6ZXJvcyBhbmQgc2V0IGEgc3RvcCB0aHJlc2hvbGQuCj4gCj4gICAgICAgV29ya2Fy
-b3VuZCBmb3IgYXBwbGljYXRpb25zICBzaG91bGQgYWxzbyB3b3JrIHdpdGggb2xkZXIga2VybmVs
-cy4KCkFwcGxpY2F0aW9ucyBtYXkgYWxzbyBzaWxlbmNlIHRoZSB3aG9sZSByaW5nIGJ1ZmZlciBv
-ciBmZXcgcGVyaW9kcyBhbmQKcmV3aW5kIHRoZSBhY3R1YWwgc3RyZWFtIHBvc2l0aW9uIGJhY2sg
-KGlmIHBvc3NpYmxlKS4KCj4gRTogVGhlIGFsc2EgY29yZSBjb3VsZCBkZXRlY3QgdGhhdCBjb25k
-aXRpb24gYW5kIHNvbHZlIGl0IGVxdWl2YWxlbnQgdG8gc29sdXRpb24gRAo+IAo+ICAgICAgIEkg
-dGhpbmsgdGhhdMK0cyB0aGUgcHJvcGVyIHNvbHV0aW9uLgo+IAo+IERpZCBJIG1pc3Mgc29tZXRo
-aW5nIG9yIGRvIHlvdSBhZ3JlZT8KClBsZWFzZSwgc2VlIHNuZF9wY21fc3dfcGFyYW1zX3NldF9z
-aWxlbmNlX3RocmVzaG9sZCgpIC8Kc25kX3BjbV9zd19wYXJhbXNfc2V0X3NpbGVuY2Vfc2l6ZSgp
-IC4KClRoZSBxdWVzdGlvbiB3aGF0IHRvIGRvIGF0IHRoZSBlbmQgb2Ygc3RyZWFtaW5nIGlzIHJl
-bGV2YW50IHRvIHRoZQpxdWVzdGlvbiB3aGF0IHRvIGRvIHdoZW4gYW4geHJ1biBjb21lcyB0byBh
-biBhY3Rpb24uCgpUaGVzZSB0eXBlcyBvZiBzaWxlbmNlIHNldHRpbmdzIHNob3VsZCBiZSBjb25m
-aWd1cmFibGUuIEFwcGxpY2F0aW9ucwpzaG91bGQgc2VsZWN0IHdoYXQncyBiZXN0LgoKCQkJCQkJ
-SmFyb3NsYXYKCi0tIApKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PgpMaW51eCBLZXJu
-ZWwgU291bmQgTWFpbnRhaW5lcgpBTFNBIFByb2plY3Q7IFJlZCBIYXQsIEluYy4KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Wed, Jul 31, 2013, Mark Brown wrote:
+> Applied, thanks.  Please check the mailing lists you're posting to -
+> you've got the DT list wrong here and you shouldn't post non-binding
+> reviews there anyway.
+
+Sorry that I forgot to update the DT list addr but using an old one.
+I'll pay attention to it next time. Thank you.
