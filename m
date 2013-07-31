@@ -1,100 +1,67 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: New dapm panic on beaver with next-20130730
-Date: Wed, 31 Jul 2013 08:35:49 +0200
-Message-ID: <51F8B045.8030303@metafoo.de>
-References: <CAOesGMig6jry1GJLoTnOqxom1KjtBTUtZz-_-SiZLpGTc3VkqA@mail.gmail.com>
- <51F8A933.4080708@metafoo.de>
- <CAOesGMjqyF7zPoGsW6oBRFey7Bc_umnoGob7oQ=_c3n7oevuaQ@mail.gmail.com>
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: [PATCH] SOUND: au1x: Fix build
+Date: Wed, 31 Jul 2013 10:15:19 +0200
+Message-ID: <20130731081519.GA18756@linux-mips.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DE4D265453
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 08:35:50 +0200 (CEST)
-In-Reply-To: <CAOesGMjqyF7zPoGsW6oBRFey7Bc_umnoGob7oQ=_c3n7oevuaQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Olof Johansson <olof@lixom.net>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Stephen Warren <swarren@wwwdotorg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-mips-bounce@linux-mips.org>
+Content-Disposition: inline
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Manuel Lauss <manuel.lauss@gmail.com>, Mark Brown <broonie@linaro.org>, linux-mips@linux-mips.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/31/2013 08:13 AM, Olof Johansson wrote:
-> On Tue, Jul 30, 2013 at 11:05 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
->> On 07/31/2013 07:36 AM, Olof Johansson wrote:
->>>
->>> Hi Mark, Lars-Peter,
->>>
->>> I noticed the below panic on beaver (Tegra30). Seems like seaboard
->>> (Tegra20) is fine. This is with next-20130730, tegra_defconfig.
->>
->>
->> Hi,
->>
->> So the same machine driver with the same codec works on tegra2, but not on
->> tegra3? The crash doesn't seem to be directly related to the patch, but the
->> patch changed the memory layout. Is it possible that you still have a
->> outdated module that's being loaded on your tegra3 board?
->
-> Sorry, I should have been cleared on that. Not at all the same codec,
-> seaboard uses wm8903, beaver rt5640.
->
->> Can you add a few debugging printks and run the test again and paste the
->> last few lines before the crash:
->
-> [beaver          00:18] [    4.045897] dapm_generic_check_power: IF2 ADC L
-> [beaver          00:18] [    4.050417] dapm_clear_walk_output 1: ee3a7bc0
-> [beaver          00:18] [    4.054845] dapm_generic_check_power: IF2 DAC
-> [beaver          00:18] [    4.059193] dapm_clear_walk_output 1: ee3a8240
-> [beaver          00:18] [    4.063621] dapm_clear_walk_output 1: ee3a8280
-> [beaver          00:18] [    4.068048] dapm_generic_check_power: IF1 ADC R
-> [beaver          00:18] [    4.072661] dapm_clear_walk_output 1: ee3a7c40
-> [beaver          00:18] [    4.077091] dapm_generic_check_power: IF1 ADC L
-> [beaver          00:18] [    4.081616] dapm_clear_walk_output 1: ee3a7c80
-> [beaver          00:18] [    4.086045] dapm_generic_check_power: IF1 DAC
-> [beaver          00:18] [    4.090394] dapm_clear_walk_output 1: ee3a82c0
-> [beaver          00:18] [    4.094821] dapm_clear_walk_output 1: ee3a8300
-> [beaver          00:18] [    4.099256] dapm_generic_check_power: INR Mux
-> [beaver          00:18] [    4.103599] dapm_clear_walk_output 1: ee3af670
-> [beaver          00:18] [    4.108026] dapm_generic_check_power: INL Mux
-> [beaver          00:18] [    4.112375] dapm_clear_walk_output 1: ee3af5f0
-> [beaver          00:18] [    4.116802] dapm_clear_walk_output 2: 6b6b6b6b
+d8b51c11ff5a70244753ba60abfd47088cf4dcd4 [ASoC: ac97c: Use
+module_platform_driver()] broke the build:
 
-0x6b6b6b6b is poisoned freed memory. According to the source neither the INR 
-Mux nor the INL Mux widget should have any sinks. Can you add a couple more 
-printks:
+ CC      sound/soc/au1x/ac97c.o
+/home/ralf/src/linux/upstream-sfr/sound/soc/au1x/ac97c.c:344:1: error: =
+expected identifier or =E2=80=98(=E2=80=99 before =E2=80=98&=E2=80=99 t=
+oken
+/home/ralf/src/linux/upstream-sfr/sound/soc/au1x/ac97c.c:344:1: error: =
+pasting "__initcall_" and "&" does not give a valid preprocessing token
+/home/ralf/src/linux/upstream-sfr/sound/soc/au1x/ac97c.c:344:1: error: =
+expected =E2=80=98=3D=E2=80=99, =E2=80=98,=E2=80=99, =E2=80=98;=E2=80=99=
+, =E2=80=98asm=E2=80=99 or =E2=80=98__attribute__=E2=80=99 before =E2=80=
+=98&=E2=80=99 token
+/home/ralf/src/linux/upstream-sfr/sound/soc/au1x/ac97c.c:344:1: error: =
+expected identifier or =E2=80=98(=E2=80=99 before =E2=80=98&=E2=80=99 t=
+oken
+/home/ralf/src/linux/upstream-sfr/sound/soc/au1x/ac97c.c:344:1: error: =
+pasting "__exitcall_" and "&" does not give a valid preprocessing token
+/home/ralf/src/linux/upstream-sfr/sound/soc/au1x/ac97c.c:344:1: error: =
+expected =E2=80=98=3D=E2=80=99, =E2=80=98,=E2=80=99, =E2=80=98;=E2=80=99=
+, =E2=80=98asm=E2=80=99 or =E2=80=98__attribute__=E2=80=99 before =E2=80=
+=98&=E2=80=99 token
+/home/ralf/src/linux/upstream-sfr/sound/soc/au1x/ac97c.c:334:31: warnin=
+g: =E2=80=98au1xac97c_driver=E2=80=99 defined but not used [-Wunused-va=
+riable]
+make[5]: *** [sound/soc/au1x/ac97c.o] Error 1
+make[4]: *** [sound/soc/au1x] Error 2
+make[3]: *** [sound/soc] Error 2
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b779d36..1a82e75 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -774,8 +774,13 @@
-  	struct snd_soc_dapm_path *p;
+Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
 
-  	list_for_each_entry(p, sink, list_source) {
-+		printk("dapm_clear_walk_output 1: %p\n", p);
-  		if (p->walked) {
-  			p->walked = 0;
-+			printk("dapm_clear_walk_output 1: %p\n", p->source);
-+			printk("dapm_clear_walk_output 2: %p\n", p->sink);
-+			printk("dapm_clear_walk_output 3: %s\n",
-+				p->sink->name);
-  			dapm_clear_walk_output(dapm, &p->sink->sinks);
-  		}
-  	}
-@@ -1189,6 +1194,8 @@
-  	DAPM_UPDATE_STAT(w, power_checks);
-
-+	printk("dapm_generic_check_power: %p %s\n", w, w->name);
-+
-  	in = is_connected_input_ep(w, NULL);
-  	dapm_clear_walk_input(w->dapm, &w->sources);
-  	out = is_connected_output_ep(w, NULL);
+diff --git a/sound/soc/au1x/ac97c.c b/sound/soc/au1x/ac97c.c
+index d6f7694..c8a2de1 100644
+--- a/sound/soc/au1x/ac97c.c
++++ b/sound/soc/au1x/ac97c.c
+@@ -341,7 +341,7 @@ static struct platform_driver au1xac97c_driver =3D =
+{
+ 	.remove		=3D au1xac97c_drvremove,
+ };
+=20
+-module_platform_driver(&au1xac97c_driver);
++module_platform_driver(au1xac97c_driver);
+=20
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Au1000/1500/1100 AC97C ASoC driver");
