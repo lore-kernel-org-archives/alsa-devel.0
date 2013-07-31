@@ -1,14 +1,16 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH v2] ASoC: wm0010: Fix resource leak
-Date: Wed, 31 Jul 2013 13:28:52 +0100
-Message-ID: <1375273732-17492-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: core: init delayed_work for codec-codec
+	links
+Date: Wed, 31 Jul 2013 14:16:44 +0100
+Message-ID: <20130731131627.GA32631@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5F26C2615F7
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 14:28:53 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ED5D526160E
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 15:16:50 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,73 +20,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-If kzalloc() fails for `img' then we are going to leak the memory
-for `out'.  We are freeing the memory of all the tx/rx transfers
-but the tx/rx buf pointers will be NULL if we drop out earlier.
+If soc_probe_link_dais() finds a codec-codec link it
+skips creating a compress or pcm stream and links the
+DAIs together. But it must also init the delayed_work
+otherwise shutting down the DAI chain will fault when
+calling flush_delayed_work_sync() on the linked DAI.
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Pointing it to a dummy work callback is cleaner than taking
+special cases in the code to bypass the flush_delayed_work_sync().
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm0010.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ sound/soc/soc-core.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-index f5e8356..10adc41 100644
---- a/sound/soc/codecs/wm0010.c
-+++ b/sound/soc/codecs/wm0010.c
-@@ -410,6 +410,16 @@ static int wm0010_firmware_load(const char *name, struct snd_soc_codec *codec)
- 			rec->command, rec->length);
- 		len = rec->length + 8;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 4489c5b..bbe136c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -199,6 +199,10 @@ static ssize_t pmdown_time_set(struct device *dev,
+ 	return count;
+ }
  
-+		xfer = kzalloc(sizeof(*xfer), GFP_KERNEL);
-+		if (!xfer) {
-+			dev_err(codec->dev, "Failed to allocate xfer\n");
-+			ret = -ENOMEM;
-+			goto abort;
-+		}
++static void dummy_delayed_work(struct work_struct *work)
++{
++}
 +
-+		xfer->codec = codec;
-+		list_add_tail(&xfer->list, &xfer_list);
+ static DEVICE_ATTR(pmdown_time, 0644, pmdown_time_show, pmdown_time_set);
+ 
+ #ifdef CONFIG_DEBUG_FS
+@@ -1428,6 +1432,8 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
+ 				return ret;
+ 			}
+ 		} else {
++			INIT_DELAYED_WORK(&rtd->delayed_work, dummy_delayed_work);
 +
- 		out = kzalloc(len, GFP_KERNEL);
- 		if (!out) {
- 			dev_err(codec->dev,
-@@ -417,6 +427,7 @@ static int wm0010_firmware_load(const char *name, struct snd_soc_codec *codec)
- 			ret = -ENOMEM;
- 			goto abort1;
- 		}
-+		xfer->t.rx_buf = out;
- 
- 		img = kzalloc(len, GFP_KERNEL);
- 		if (!img) {
-@@ -425,24 +436,13 @@ static int wm0010_firmware_load(const char *name, struct snd_soc_codec *codec)
- 			ret = -ENOMEM;
- 			goto abort1;
- 		}
-+		xfer->t.tx_buf = img;
- 
- 		byte_swap_64((u64 *)&rec->command, img, len);
- 
--		xfer = kzalloc(sizeof(*xfer), GFP_KERNEL);
--		if (!xfer) {
--			dev_err(codec->dev, "Failed to allocate xfer\n");
--			ret = -ENOMEM;
--			goto abort1;
--		}
--
--		xfer->codec = codec;
--		list_add_tail(&xfer->list, &xfer_list);
--
- 		spi_message_init(&xfer->m);
- 		xfer->m.complete = wm0010_boot_xfer_complete;
- 		xfer->m.context = xfer;
--		xfer->t.tx_buf = img;
--		xfer->t.rx_buf = out;
- 		xfer->t.len = len;
- 		xfer->t.bits_per_word = 8;
- 
+ 			/* link the DAI widgets */
+ 			play_w = codec_dai->playback_widget;
+ 			capture_w = cpu_dai->capture_widget;
 -- 
-1.8.3.4
+1.7.2.5
