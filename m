@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: core: No need to use strncmp()
-Date: Wed, 31 Jul 2013 12:01:47 +0100
-Message-ID: <20130731110147.GI9858@sirena.org.uk>
-References: <1375260253-23376-1-git-send-email-dp@opensource.wolfsonmicro.com>
- <20130731090726.GF9858@sirena.org.uk>
- <20130731094814.GA7231@opensource.wolfsonmicro.com>
+Subject: Re: [patch] ASoC: dapm: using freed pointer in
+ dapm_kcontrol_add_widget()
+Date: Wed, 31 Jul 2013 12:19:35 +0100
+Message-ID: <20130731111935.GK9858@sirena.org.uk>
+References: <20130731085244.GB8210@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7643178277854674447=="
+Content-Type: multipart/mixed; boundary="===============4458553299283117022=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B7412615DD
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 13:01:50 +0200 (CEST)
-In-Reply-To: <20130731094814.GA7231@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BD6426158C
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 13:19:41 +0200 (CEST)
+In-Reply-To: <20130731085244.GB8210@elgon.mountain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7643178277854674447==
+--===============4458553299283117022==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="omsRjDKoe2J0/37r"
+	protocol="application/pgp-signature"; boundary="y4KgtkKhApPt9pfM"
 Content-Disposition: inline
 
 
---omsRjDKoe2J0/37r
+--y4KgtkKhApPt9pfM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jul 31, 2013 at 10:48:14AM +0100, Dimitris Papastamos wrote:
-> On Wed, Jul 31, 2013 at 10:07:26AM +0100, Mark Brown wrote:
-> > On Wed, Jul 31, 2013 at 09:44:13AM +0100, Dimitris Papastamos wrote:
-> > > Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+On Wed, Jul 31, 2013 at 11:52:44AM +0300, Dan Carpenter wrote:
+> There is a typo here so we end up using the old freed pointer instead of
+> the newly allocated one.  (If the "n" is zero then the code works,
+> obviously).
 
-> > Why?
+Applied, thanks.
 
-> Hm, strncmp() suggests that we might not care about the entire string.
-> Although trivial, I thought strcmp() is clearer in this context.
-
-One of the reasons we use strncmp() here is to avoid going beyond the
-end of the fixed size buffer.
-
---omsRjDKoe2J0/37r
+--y4KgtkKhApPt9pfM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR+O6YAAoJELSic+t+oim98ccP/1MhO0NCdi0KEOc/SqD2S/oe
-af7Z3paJijImdNKk1h6zu+uxON2iFFfRYDH1TNXb+9gX5WfYzWHjcyX1WLfAAx41
-HKu5sKesXDyzv3WEzPxuEEfeHQx3NcJMO6AfTMMxy/Qs9ggvj4Ix14vtgDenFvoC
-4gbCvR3H8LOsQFr8rJM4XN88FF7bi7rPJ3s2JyBsKx+IAhIiPYQTf9p0ja71X5NL
-+CU5mBg8lQHAnSeULJH6McJBt92WAW9g8qMrxHlVTxLbT9EteqsF0ndmQwGpm09J
-4a6/fQaBjo20y2i3iEjIis5jVmuFMGZ/YLtrB6Of6RN9FUh9WSodv8peut9nyi8E
-BslbPGmApRHwExS8VQiTIwwYZ6t0JLcSFFff0SfKxv8N2A7Dr2Hp73iXpG7AESvo
-A9tOsLSxkRBZakhuyPPr5Y9P0wiblXywOETVB08d40q7dHNxB9IE0ekx8KGGNcrc
-gtqfXkLO18H1XZRNzNBkh1Nune40FcPFbNzN9FcBEkn7nH5GD2H2wyJje2l7p2jt
-zyhf0qh8AadoS8fozfApDjFW8g9MbWOnRCn7aGeqG6BCpdNvZTwxoNib6mvMZCUK
-KuqPo0XwIII1lhN3g1+9dTQr3dcHDgIEcs8uMsEsej1u9JsuBp0Ji9zZnnzYMAQl
-v510mi8xZYP0elu0LiEp
-=HgXv
+iQIcBAEBAgAGBQJR+PLEAAoJELSic+t+oim9xBoP/RW1oSQ9HtqITt4hbTPk1Eni
+RfvCYtbogJMP5vPbA2R8EHYRfFUV2duv0WpbVnTSKVCyXTQOXqfYl2FukIN/tTih
+cNILCDBUStJBprrtc1/Kba87Nadh0+nWchLIgP1vKds+Iy/qhYiHUJUsAgohk0GE
+aYbJ5YH9xm2pk3UJ9/aMS1RUIwNVTXrXm+9WnHcT+dIXSr/aU8gTQhAcN9poSzDU
+AMoABr+oFLgKsuQ5JxGQYJMTg7MctbFvq4K8Tm0/IvE7SAyl9kijEZlyGx8Anznf
+eWDTTAVGSfWIgRUd30vDbUScU+kc1nfYTTtJgB/se/P3hFRfAumjdNE3vO4dn5yg
+Kp7oG+VORUxCenYle1tirx1xe06fY9D34U+TChvNKncGueP0lQ8uMEfANDmRb8eL
+xVMHd2wa4DKA7oGsZyJncSg/jQA3K5IGS1wvBIRw2/bq7boCg03Di83UScTvrwUD
+m6dhbOsKiA1CmbccvI4R+J39Bi3JKC0ze+HKAsErf0B2kYC6HK2dS+4pUBKpTj4G
+llesg6hLs2LwYnTI4P58eDM3Sa9/Bb4nSkaYELHXVuRBLLGLru91JyhrYqYfT01/
+93Hem9p/jCz24Xriz2xE/OIzLOHJEqoZN95yOhGofrYBcCuOOwfX8xn+g5eqAXwV
+YqnbG2gD/AOecj60am5s
+=+qvf
 -----END PGP SIGNATURE-----
 
---omsRjDKoe2J0/37r--
+--y4KgtkKhApPt9pfM--
 
---===============7643178277854674447==
+--===============4458553299283117022==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7643178277854674447==--
+--===============4458553299283117022==--
