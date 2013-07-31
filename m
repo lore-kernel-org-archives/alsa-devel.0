@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: core: No need to use strncmp()
-Date: Wed, 31 Jul 2013 14:23:02 +0100
-Message-ID: <20130731132302.GO9858@sirena.org.uk>
-References: <1375260253-23376-1-git-send-email-dp@opensource.wolfsonmicro.com>
- <20130731090726.GF9858@sirena.org.uk>
- <20130731094814.GA7231@opensource.wolfsonmicro.com>
- <20130731110147.GI9858@sirena.org.uk>
- <20130731115929.GA26438@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: core: init delayed_work for
+	codec-codec links
+Date: Wed, 31 Jul 2013 14:25:22 +0100
+Message-ID: <20130731132522.GP9858@sirena.org.uk>
+References: <20130731131627.GA32631@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4686015043568101781=="
+Content-Type: multipart/mixed; boundary="===============3168852311659972187=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D1772615F7
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 15:23:04 +0200 (CEST)
-In-Reply-To: <20130731115929.GA26438@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 703CD2615F2
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 15:25:26 +0200 (CEST)
+In-Reply-To: <20130731131627.GA32631@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: tiwai@suse.de, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4686015043568101781==
+--===============3168852311659972187==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4WSCzoh9u01IUsAL"
+	protocol="application/pgp-signature"; boundary="zCmrFqZYZ3TEjivu"
 Content-Disposition: inline
 
 
---4WSCzoh9u01IUsAL
+--zCmrFqZYZ3TEjivu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jul 31, 2013 at 12:59:29PM +0100, Dimitris Papastamos wrote:
-> On Wed, Jul 31, 2013 at 12:01:47PM +0100, Mark Brown wrote:
+On Wed, Jul 31, 2013 at 02:16:44PM +0100, Richard Fitzgerald wrote:
 
-> > One of the reasons we use strncmp() here is to avoid going beyond the
-> > end of the fixed size buffer.
+> Pointing it to a dummy work callback is cleaner than taking
+> special cases in the code to bypass the flush_delayed_work_sync().
 
-> Right, surely though the kcontrol names are always null terminated?
-> In any case, looks more safe to strncmp().
+Why is this better than pointing at the normal work that you'd expect to
+be used there?
 
-They probably should be but it's easy to get it wrong and hit exactly
-the array size.
-
---4WSCzoh9u01IUsAL
+--zCmrFqZYZ3TEjivu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR+Q+zAAoJELSic+t+oim9YbkP/2bqCDXFv0DH2rhdfsmB8YJ0
-OL8hl0BzF3U6jOvkJAPiDM48V491KRNOUvCIw5FZw6SDrvTtPbHAmClEBDAryL5j
-ZUuGMYOKjtIibg6w4kBxDVBc6ZlQNn6qsm1Z2IfI1qQDDPb1VpSuQNMz7eGcOLU9
-qNmZwU1xjfxC5Q2SJ0fSxevXrpPowRE2sh3sCUO8WEDFv4XMbAuLR+t441utXco1
-0MOQWjZZBu7P0mig2x50osLET1uB1S2uMRLeyhpSCZu+Qw65mDC9J+NgmbwtArV2
-jnZQsacqtfjeWXOPs1BXCzTcKwo0Xpz9ZipqWM5Fxxlo2sJt31tBaGatozPc1pXW
-A0PrTB9qawR6qRwgFpPQaRHj8rON1rmAQ4O34SBD89+cUlOiThm3OCHC1EHll61g
-FOLQasFld6FJHDD9uR04s7Mlt9cVrhDOrlj/3lt5NtDYOjT4M3F4U+Fde2q/PGCr
-07q7MrhMyOiIJ7vuY3dU6mXMKmGI8zrKn+gwMj5oKzTH/qHGDYINy8zt+RAygIFJ
-PVa6Dx3Z8coxGlMhV7eyqdNq1D52q1NBW3Mub9Rs7hd0psnnOm+ZxHJ2sUClHxTF
-GjiVqOTr50caS5XK0aHw0BqqwR7H1Wom7u+H/YVne4F+MoacNqzpkNKXpW4ttv6y
-sABNLn/XwBOwtUYEett6
-=hDZR
+iQIcBAEBAgAGBQJR+RA/AAoJELSic+t+oim9lwwQAJM7l2LppIEkQiAFMZwzq+Wp
+zyKBucwlPeHoJcga6OFWpkctS2dBVtrgU+GTxw2uZp9kAzHJSPgV8YriJP6ckbVh
+tAh692dWPZpdTOCHzCS0zjnf6jp/BCw/NKwSH+X/9CzSUqCtMYxkTQFxF2BDpQRT
+tDqxeuoujQ48mAT5cJCFgaUb/cP9UIuJ9IYMlUtOpe1VS8ByXb6K0Jo2HODuIirp
+KnCxmowH+09BH6K1any/+zoYLAoSHCLWosllO5Jv1UGD2GcOV9EIGGcok64ICklB
+wv7Jl+YLJ7iVsJnfCSvvsnA9+hikmhv69zvxTm0CWrhWDQdjbhoDOUEj/AxKMVMq
+9WoiiVam+QntiOcXg+M+WvtHxOz9u5RTWm7xUMfHrNYmk+cAdFQZ2mXiZ9iJ71Kr
+cCGVwXjGxl4nEI8hTa80kj4ar2Gtz0YCNveBiG4s8hwXE+Sq4KtT+U4yquwSwHNU
+0h1w2RP5IxnK108ZBGl42I2JkNV+0mcmRfFoQfSYB+sF+mZ6X03RUQjO0E6j41b7
+9Bykx8sdmcpbwFyoHLeJ5liBexvcFmsrhmBFPSRfDeJCIlorWmRDSf45AicZbMRO
+OHJrSxZcsEwxjYh9cs4KN4pfZkI06eGFN9/7o/upyYdxiS/G5rgmceeLkjxcbQ3f
+gIoXG7261MccVecfTgrs
+=CIQD
 -----END PGP SIGNATURE-----
 
---4WSCzoh9u01IUsAL--
+--zCmrFqZYZ3TEjivu--
 
---===============4686015043568101781==
+--===============3168852311659972187==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4686015043568101781==--
+--===============3168852311659972187==--
