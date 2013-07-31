@@ -1,16 +1,19 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: core: init delayed_work for codec-codec
-	links
-Date: Wed, 31 Jul 2013 14:16:44 +0100
-Message-ID: <20130731131627.GA32631@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: core: No need to use strncmp()
+Date: Wed, 31 Jul 2013 14:23:02 +0100
+Message-ID: <20130731132302.GO9858@sirena.org.uk>
+References: <1375260253-23376-1-git-send-email-dp@opensource.wolfsonmicro.com>
+ <20130731090726.GF9858@sirena.org.uk>
+ <20130731094814.GA7231@opensource.wolfsonmicro.com>
+ <20130731110147.GI9858@sirena.org.uk>
+ <20130731115929.GA26438@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4686015043568101781=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ED5D526160E
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 15:16:50 +0200 (CEST)
-Content-Disposition: inline
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D1772615F7
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 15:23:04 +0200 (CEST)
+In-Reply-To: <20130731115929.GA26438@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,47 +23,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-If soc_probe_link_dais() finds a codec-codec link it
-skips creating a compress or pcm stream and links the
-DAIs together. But it must also init the delayed_work
-otherwise shutting down the DAI chain will fault when
-calling flush_delayed_work_sync() on the linked DAI.
 
-Pointing it to a dummy work callback is cleaner than taking
-special cases in the code to bypass the flush_delayed_work_sync().
+--===============4686015043568101781==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4WSCzoh9u01IUsAL"
+Content-Disposition: inline
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
----
- sound/soc/soc-core.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4489c5b..bbe136c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -199,6 +199,10 @@ static ssize_t pmdown_time_set(struct device *dev,
- 	return count;
- }
- 
-+static void dummy_delayed_work(struct work_struct *work)
-+{
-+}
-+
- static DEVICE_ATTR(pmdown_time, 0644, pmdown_time_show, pmdown_time_set);
- 
- #ifdef CONFIG_DEBUG_FS
-@@ -1428,6 +1432,8 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
- 				return ret;
- 			}
- 		} else {
-+			INIT_DELAYED_WORK(&rtd->delayed_work, dummy_delayed_work);
-+
- 			/* link the DAI widgets */
- 			play_w = codec_dai->playback_widget;
- 			capture_w = cpu_dai->capture_widget;
--- 
-1.7.2.5
+--4WSCzoh9u01IUsAL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jul 31, 2013 at 12:59:29PM +0100, Dimitris Papastamos wrote:
+> On Wed, Jul 31, 2013 at 12:01:47PM +0100, Mark Brown wrote:
+
+> > One of the reasons we use strncmp() here is to avoid going beyond the
+> > end of the fixed size buffer.
+
+> Right, surely though the kcontrol names are always null terminated?
+> In any case, looks more safe to strncmp().
+
+They probably should be but it's easy to get it wrong and hit exactly
+the array size.
+
+--4WSCzoh9u01IUsAL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR+Q+zAAoJELSic+t+oim9YbkP/2bqCDXFv0DH2rhdfsmB8YJ0
+OL8hl0BzF3U6jOvkJAPiDM48V491KRNOUvCIw5FZw6SDrvTtPbHAmClEBDAryL5j
+ZUuGMYOKjtIibg6w4kBxDVBc6ZlQNn6qsm1Z2IfI1qQDDPb1VpSuQNMz7eGcOLU9
+qNmZwU1xjfxC5Q2SJ0fSxevXrpPowRE2sh3sCUO8WEDFv4XMbAuLR+t441utXco1
+0MOQWjZZBu7P0mig2x50osLET1uB1S2uMRLeyhpSCZu+Qw65mDC9J+NgmbwtArV2
+jnZQsacqtfjeWXOPs1BXCzTcKwo0Xpz9ZipqWM5Fxxlo2sJt31tBaGatozPc1pXW
+A0PrTB9qawR6qRwgFpPQaRHj8rON1rmAQ4O34SBD89+cUlOiThm3OCHC1EHll61g
+FOLQasFld6FJHDD9uR04s7Mlt9cVrhDOrlj/3lt5NtDYOjT4M3F4U+Fde2q/PGCr
+07q7MrhMyOiIJ7vuY3dU6mXMKmGI8zrKn+gwMj5oKzTH/qHGDYINy8zt+RAygIFJ
+PVa6Dx3Z8coxGlMhV7eyqdNq1D52q1NBW3Mub9Rs7hd0psnnOm+ZxHJ2sUClHxTF
+GjiVqOTr50caS5XK0aHw0BqqwR7H1Wom7u+H/YVne4F+MoacNqzpkNKXpW4ttv6y
+sABNLn/XwBOwtUYEett6
+=hDZR
+-----END PGP SIGNATURE-----
+
+--4WSCzoh9u01IUsAL--
+
+--===============4686015043568101781==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4686015043568101781==--
