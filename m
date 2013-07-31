@@ -1,20 +1,18 @@
-From: Chen Guangyu-B42378 <B42378@freescale.com>
-Subject: Re: [PATCH 2/3] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Wed, 31 Jul 2013 14:12:18 +0000
-Message-ID: <E31481825E4C03459FC878EE97CB2EFD0CC2E0AA@039-SN2MPN1-023.039d.mgd.msft.net>
-References: <cover.1375271745.git.b42378@freescale.com>
- <30e7b0fec9e813b8765514e48296ebecc6ca1039.1375271745.git.b42378@freescale.com>,
- <51F9001B.6070203@metafoo.de>
+From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+Subject: [PATCH 3/3] ASoC: mxs: add some error messages to help
+	identifying problems
+Date: Wed, 31 Jul 2013 16:44:31 +0200
+Message-ID: <1375281871-28128-3-git-send-email-LW@KARO-electronics.de>
+References: <1375281871-28128-1-git-send-email-LW@KARO-electronics.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe005.messaging.microsoft.com [207.46.163.28])
- by alsa0.perex.cz (Postfix) with ESMTP id ACB472615F2
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 16:12:22 +0200 (CEST)
-In-Reply-To: <51F9001B.6070203@metafoo.de>
-Content-Language: en-US
+Received: from mail.karo-electronics.de (mail.karo-electronics.de
+ [81.173.242.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B8AF265510
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 16:44:34 +0200 (CEST)
+In-Reply-To: <1375281871-28128-1-git-send-email-LW@KARO-electronics.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,78 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "timur@tabi.org" <timur@tabi.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "broonie@kernel.org" <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: alsa-devel@alsa-project.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Mark Brown <broonie@kernel.org>, =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>, Liam Girdwood <lgirdwood@gmail.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars
-
-Thank you for the sage advices.
-
-I'll revise the patch and send the v2.
-________________________________________
-From: Lars-Peter Clausen [lars@metafoo.de]
-Sent: Wednesday, July 31, 2013 8:16 PM
-To: Chen Guangyu-B42378
-Cc: broonie@kernel.org; timur@tabi.org; alsa-devel@alsa-project.org; linuxppc-dev@lists.ozlabs.org; devicetree-discuss@lists.ozlabs.org; rob.herring@calxeda.com
-Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: fsl: Add S/PDIF CPU DAI driver
-
-[...]
-a/Documentation/devicetree/bindings/sound/fsl,spdif.txt
-b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
-> new file mode 100644
-> index 0000000..a655800
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
-> @@ -0,0 +1,63 @@
-> +Freescale Sony/Philips Digital Interface Format (S/PDIF) Controller
-> +
-> +The Freescale S/PDIF audio block is a stereo transceiver that allows the
-> +processor to receive and transmit digital audio via an coaxial cable or
-> +a fibre cable.
-> +
-> +Required properties:
-> +
-> +  - compatible : Compatible list, contains "fsl,spdif".
-
-That's not what the driver says though.
-
-> +
-> +  - reg : Offset and length of the register set for the device.
-> +
-> +  - interrupts : <a b> where a is the interrupt number and b is a field that
-> +    represents an encoding of the sense and level information for the interrupt.
-> +    This should be encoded based on the information in section 2) depending on
-> +    the type of interrupt controller you have.
-
-The exact layout of the cell depends on the parent interrupt controller, so
-you probably shouldn't describe it here.
-
-> +
-> +  - clocks : The phandle for the clock ID number registered in clock tree.
-> +
-> +  - fsl,spdif-dma-events: The dma event ID numbers for Tx and Rx.
-> +
-
-Use the generic DMA bindings.
-
-> +Optional properties:
-> +
-> +  - rx-clk-source : The clock cource for Rx. Need to set this source according
-> +  to the SoC datasheet in SPDIF_SRPC section. If absent, the default source is
-> +  value 0x0 - if (DPLL Locked) SPDIF_RxClk else extal.
-> +
-> +  - tx-clk-source : The clock cources for Tx. There're three sources, each for
-> +  different supported sample rate, sequentially 32000Hz, 44100Hz and 48000Hz.
-> +  Need to set this source according to the SoC datasheet in SPDIF_STC section.
-> +  If absent, the default source is value 0x1 - CCM spdif0_clk_root input.
-> +
-> +  - tx-clk-div : The clock divider factor for Tx clock. There're three values,
-> +  each for different supported sample rate, sequentially 32000Hz 44100Hz 48000Hz.
-> +  Need to set this source according to the clock rate from the clock source.
-> +  If absent, the default divider factor is <37 23 37> by using spdif0_clk source.
-
-Can't the driver figure out the divider values on its own based on the input
-clock rate?
-
-- Lars
+ClNpZ25lZC1vZmYtYnk6IExvdGhhciBXYcOfbWFubiA8TFdAS0FSTy1lbGVjdHJvbmljcy5kZT4K
+LS0tCiBzb3VuZC9zb2MvbXhzL214cy1zZ3RsNTAwMC5jIHwgICAyOCArKysrKysrKysrKysrKysr
+KysrKysrLS0tLS0tCiAxIGZpbGVzIGNoYW5nZWQsIDIyIGluc2VydGlvbnMoKyksIDYgZGVsZXRp
+b25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL214cy9teHMtc2d0bDUwMDAuYyBiL3NvdW5k
+L3NvYy9teHMvbXhzLXNndGw1MDAwLmMKaW5kZXggYjJlMzcyZC4uY2RkMzliNSAxMDA2NDQKLS0t
+IGEvc291bmQvc29jL214cy9teHMtc2d0bDUwMDAuYworKysgYi9zb3VuZC9zb2MvbXhzL214cy1z
+Z3RsNTAwMC5jCkBAIC01MCwxOCArNTAsMjYgQEAgc3RhdGljIGludCBteHNfc2d0bDUwMDBfaHdf
+cGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCX0KIAogCS8qIFNn
+dGw1MDAwIHN5c2NsayBzaG91bGQgYmUgPj0gOE1IeiBhbmQgPD0gMjdNICovCi0JaWYgKG1jbGsg
+PCA4MDAwMDAwIHx8IG1jbGsgPiAyNzAwMDAwMCkKKwlpZiAobWNsayA8IDgwMDAwMDAgfHwgbWNs
+ayA+IDI3MDAwMDAwKSB7CisJCWRldl9lcnIoY29kZWNfZGFpLT5kZXYsICJpbnZhbGlkIG1jbGs6
+ICV1XG4iLCBtY2xrKTsKIAkJcmV0dXJuIC1FSU5WQUw7CisJfQogCiAJLyogU2V0IFNHVEw1MDAw
+J3MgU1lTQ0xLIChwcm92aWRlZCBieSBTQUlGIE1DTEspICovCiAJcmV0ID0gc25kX3NvY19kYWlf
+c2V0X3N5c2Nsayhjb2RlY19kYWksIFNHVEw1MDAwX1NZU0NMSywgbWNsaywgMCk7Ci0JaWYgKHJl
+dCkKKwlpZiAocmV0KSB7CisJCWRldl9lcnIoY29kZWNfZGFpLT5kZXYsICJGYWlsZWQgdG8gc2V0
+IHN5c2NsayB0byAldSBrSHpcbiIsCisJCQltY2xrIC8gMTAwMCk7CiAJCXJldHVybiByZXQ7CisJ
+fQogCiAJLyogVGhlIFNBSUYgTUNMSyBzaG91bGQgYmUgdGhlIHNhbWUgYXMgU0dUTDUwMDBfU1lT
+Q0xLICovCiAJcmV0ID0gc25kX3NvY19kYWlfc2V0X3N5c2NsayhjcHVfZGFpLCBNWFNfU0FJRl9N
+Q0xLLCBtY2xrLCAwKTsKLQlpZiAocmV0KQorCWlmIChyZXQpIHsKKwkJZGV2X2VycihjcHVfZGFp
+LT5kZXYsICJGYWlsZWQgdG8gc2V0IHN5c2NsayB0byAldSBrSHpcbiIsCisJCQltY2xrIC8gMTAw
+MCk7CiAJCXJldHVybiByZXQ7CisJfQogCiAJLyogc2V0IGNvZGVjIHRvIHNsYXZlIG1vZGUgKi8K
+IAlkYWlfZm9ybWF0ID0gU05EX1NPQ19EQUlGTVRfSTJTIHwgU05EX1NPQ19EQUlGTVRfTkJfTkYg
+fApAQCAtNjksMTMgKzc3LDE5IEBAIHN0YXRpYyBpbnQgbXhzX3NndGw1MDAwX2h3X3BhcmFtcyhz
+dHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAogCS8qIHNldCBjb2RlYyBEQUkg
+Y29uZmlndXJhdGlvbiAqLwogCXJldCA9IHNuZF9zb2NfZGFpX3NldF9mbXQoY29kZWNfZGFpLCBk
+YWlfZm9ybWF0KTsKLQlpZiAocmV0KQorCWlmIChyZXQpIHsKKwkJZGV2X2Vycihjb2RlY19kYWkt
+PmRldiwgIkZhaWxlZCB0byBzZXQgZGFpIGZvcm1hdCB0byAlMDh4XG4iLAorCQkJZGFpX2Zvcm1h
+dCk7CiAJCXJldHVybiByZXQ7CisJfQogCiAJLyogc2V0IGNwdSBEQUkgY29uZmlndXJhdGlvbiAq
+LwogCXJldCA9IHNuZF9zb2NfZGFpX3NldF9mbXQoY3B1X2RhaSwgZGFpX2Zvcm1hdCk7Ci0JaWYg
+KHJldCkKKwlpZiAocmV0KSB7CisJCWRldl9lcnIoY3B1X2RhaS0+ZGV2LCAiRmFpbGVkIHRvIHNl
+dCBkYWkgZm9ybWF0IHRvICUwOHhcbiIsCisJCQlkYWlfZm9ybWF0KTsKIAkJcmV0dXJuIHJldDsK
+Kwl9CiAKIAlyZXR1cm4gMDsKIH0KQEAgLTE1Myw4ICsxNjcsMTAgQEAgc3RhdGljIGludCBteHNf
+c2d0bDUwMDBfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIAkgKiBzaG91bGQg
+YmUgPj0gOE1IeiBhbmQgPD0gMjdNLgogCSAqLwogCXJldCA9IG14c19zYWlmX2dldF9tY2xrKDAs
+IDQ0MTAwICogMjU2LCA0NDEwMCk7Ci0JaWYgKHJldCkKKwlpZiAocmV0KSB7CisJCWRldl9lcnIo
+JnBkZXYtPmRldiwgImZhaWxlZCB0byBnZXQgbWNsa1xuIik7CiAJCXJldHVybiByZXQ7CisJfQog
+CiAJY2FyZC0+ZGV2ID0gJnBkZXYtPmRldjsKIAlwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShwZGV2LCBj
+YXJkKTsKLS0gCjEuNy4yLjUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
