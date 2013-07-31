@@ -1,15 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: core: No need to use strncmp()
-Date: Wed, 31 Jul 2013 10:07:26 +0100
-Message-ID: <20130731090726.GF9858@sirena.org.uk>
-References: <1375260253-23376-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm0010: Fix resource leak
+Date: Wed, 31 Jul 2013 10:15:18 +0100
+Message-ID: <1375262118-9183-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5627980265246944953=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E5061265495
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 11:07:29 +0200 (CEST)
-In-Reply-To: <1375260253-23376-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 04A97265475
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 11:15:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,55 +18,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+This fixes "https://bugzilla.kernel.org/show_bug.cgi?id=60650".
 
---===============5627980265246944953==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="deWCKnVkgvhiviNn"
-Content-Disposition: inline
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm0010.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-
---deWCKnVkgvhiviNn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jul 31, 2013 at 09:44:13AM +0100, Dimitris Papastamos wrote:
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-
-Why?
-
---deWCKnVkgvhiviNn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR+NPLAAoJELSic+t+oim95WMP/2iMamTLHGjYei/s0KbGfKFA
-SyXd8wy7Re33hkZWPbfHaub9tBwpnbd/LhMPnJl6Pw4px8lA/HHCLZkPhMYeUXxp
-ZveLQENvs9jxYT0WMonw9+tI8ruVXPXqA8wYhjIJEiWGr5qNghvtms0XuXhIJdS2
-urcGBP5E9UIFCLsZUzSNM4MiEujzkuW6XWjZ3MGth0wmKq3iPWg7U4nNxjRbmtgu
-efcFQlmfK+wZqF92wvLl97Jm/K1TLDj39byL3lVCMsM+UMsQ/iJvuRv0KEPyvgqQ
-Fhyc0AK8Unxf3/psXVwrY6GNh09/147WOFpJIZC5ojGY14seiZg2SIHj5oI6uSGz
-kmzqvsc6OSUFC4dEQxM/5NMl4k2AcFegLvyrCKU7zEldCD+8h2MdlLoUXMQItXIL
-6d09dOhrKByXj+OXPian/ZB6u2sy3jco873PIuibO1F4yhZop55bXa+SutbNLdD+
-FoMoGnSZq42LaYQUPKt08wiYlctE9SCXx8U/ZEb1KqNGigmG6fUNHukOVexLfdQ4
-RYXqcXFGrQ6hjVFQ0S7HyPBSxSd/uis+OYxi6j2U4GE7QCOB8lyRGhFDVoMPRh1w
-qiAjN1VYTMEEQHzkVlfefyDTQObxjQQZfbMt7RNi3jo3KyxpxdxF4QxcG9Q5vd+5
-LPahgitm1LotNvYdlSEc
-=V/qV
------END PGP SIGNATURE-----
-
---deWCKnVkgvhiviNn--
-
---===============5627980265246944953==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5627980265246944953==--
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index f5e8356..285026c 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -410,6 +410,13 @@ static int wm0010_firmware_load(const char *name, struct snd_soc_codec *codec)
+ 			rec->command, rec->length);
+ 		len = rec->length + 8;
+ 
++		xfer = kzalloc(sizeof(*xfer), GFP_KERNEL | GFP_DMA);
++		if (!xfer) {
++			dev_err(codec->dev, "Failed to allocate xfer\n");
++			ret = -ENOMEM;
++			goto abort1;
++		}
++
+ 		out = kzalloc(len, GFP_KERNEL);
+ 		if (!out) {
+ 			dev_err(codec->dev,
+@@ -417,6 +424,7 @@ static int wm0010_firmware_load(const char *name, struct snd_soc_codec *codec)
+ 			ret = -ENOMEM;
+ 			goto abort1;
+ 		}
++		xfer->t.rx_buf = out;
+ 
+ 		img = kzalloc(len, GFP_KERNEL);
+ 		if (!img) {
+@@ -425,24 +433,16 @@ static int wm0010_firmware_load(const char *name, struct snd_soc_codec *codec)
+ 			ret = -ENOMEM;
+ 			goto abort1;
+ 		}
++		xfer->t.tx_buf = img;
+ 
+ 		byte_swap_64((u64 *)&rec->command, img, len);
+ 
+-		xfer = kzalloc(sizeof(*xfer), GFP_KERNEL);
+-		if (!xfer) {
+-			dev_err(codec->dev, "Failed to allocate xfer\n");
+-			ret = -ENOMEM;
+-			goto abort1;
+-		}
+-
+ 		xfer->codec = codec;
+ 		list_add_tail(&xfer->list, &xfer_list);
+ 
+ 		spi_message_init(&xfer->m);
+ 		xfer->m.complete = wm0010_boot_xfer_complete;
+ 		xfer->m.context = xfer;
+-		xfer->t.tx_buf = img;
+-		xfer->t.rx_buf = out;
+ 		xfer->t.len = len;
+ 		xfer->t.bits_per_word = 8;
+ 
+-- 
+1.8.3.4
