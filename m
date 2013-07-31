@@ -1,16 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH -next] ASoC: rcar: fix return value check
- in rsnd_gen1_probe()
-Date: Wed, 31 Jul 2013 15:00:11 +0100
-Message-ID: <20130731140011.GV9858@sirena.org.uk>
-References: <CAPgLHd_0p56XkKjmtaD8J8OtTxPg-XY9xQRepsZYNtH-tY6uFw@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: end of playback ... design question
+Date: Wed, 31 Jul 2013 16:07:48 +0200
+Message-ID: <51F91A34.5070302@perex.cz>
+References: <51F9144F.9080807@t-online.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8005958820988792834=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D9C97265516
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 16:00:18 +0200 (CEST)
-In-Reply-To: <CAPgLHd_0p56XkKjmtaD8J8OtTxPg-XY9xQRepsZYNtH-tY6uFw@mail.gmail.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 257852615F2
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 16:07:50 +0200 (CEST)
+In-Reply-To: <51F9144F.9080807@t-online.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,62 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, yongjun_wei@trendmicro.com.cn
+To: Knut Petersen <Knut_Petersen@t-online.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Kai Vehmanen <kvehmanen@nosignal.fi>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8005958820988792834==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="diiB1pV/0M5IS+GS"
-Content-Disposition: inline
-
-
---diiB1pV/0M5IS+GS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jul 30, 2013 at 07:51:37AM +0800, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->=20
-> In case of error, the function devm_ioremap_resource() returns ERR_PTR()
-> and never returns NULL. The NULL test in the return value check should be
-> replaced with IS_ERR(), and also remove the dev_err call to avoid redunda=
-nt
-> error message.
-
-Applied, thanks.
-
---diiB1pV/0M5IS+GS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR+RhoAAoJELSic+t+oim9JywQAISdmHcMOHn44JaTu9HRgGXo
-dpDck6jttaHOGx42i27DfNUlqopufcK4p5O6scqJZS54r/Rf0N83m5RoAF1VL4Bf
-h58PlyQOtlao+YMyWmVrDA8L3iEALwUMOCw7WlPgfqYOK3cTD1ekQxrT2IXP1cKf
-It7r7YUNf9rTJ3/Z/eocNkL0C0hI0Kgqqwx2NO1GB6OAvKhU1mJ8KT8TfNck6qq3
-6tFNewf/JD6m4DuucuNmo82Yf6MRbjFqU1MuWjYiBNp/cKUZtRSyEGvcG4FDE4gn
-ARUNhrB5d/b0XEMOWlw6HplWIXSGoEgfMStTy9vtSqy4wbQ5jf1pUOc+f60uBRlB
-tiSscnrfcxhIxOSIj6lmFU2Ro9kS+KNVu2bc/A8vDZ2g4o88PB0Aqau7o0/Fyw1E
-4uy1t2yjThPtl+jquEeYK6rhAk5QawTuceIlDYe8u0Fkxu+wEpf63KEv5+Px/pTm
-yrN0bP+4ZZMK7RcjGbyj6jnI3Pm0lL0YNUI6F1Ms5D6i6gSeG9hpnCLbhtiaR2Sm
-hetUkwXZN93uS8DA9yBIF2C9AqRmEcd/K+bNcPYcbkYSQLUnvdEFXt+kT3o8iej9
-X6pF7NPhUbZGjNvUOqsOf3GcGGTrbxmTx9sclYNZudy2W9uldWxX1zfQDPaL5OIq
-SPL6tKskx32qefTWs7bS
-=Q9FQ
------END PGP SIGNATURE-----
-
---diiB1pV/0M5IS+GS--
-
---===============8005958820988792834==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8005958820988792834==--
+RGF0ZSAzMS43LjIwMTMgMTU6NDIsIEtudXQgUGV0ZXJzZW4gd3JvdGU6Cj4gSGkgZXZlcnlib2R5
+IQo+IAo+IEFsdGhvdWdoIEkgbG9va2VkIGF0IHF1aXRlIGEgYml0IG9mIHNvdXJjZSBjb2RlIGFu
+ZCBkb2N1bWVudGF0aW9uIEkgaGF2ZQo+IHRvIGFkbWl0IHRoYXQgSSBhbSBjb25mdXNlZCBhYm91
+dCBvbmUgcXVlc3Rpb246Cj4gCj4gSG93IHNob3VsZCBhbHNhIHBsYXliYWNrIGJlIHN0b3BwZWQg
+aW4gYSB3YXkgdGhhdCBfZ3VhcmFudGVlc18gdGhhdCBubwo+IGFydGlmYWN0cyByZW1haW5pbmcg
+aW4gdGhlIGRyaXZlcnMgcmluZ2J1ZmZlciBhcmUgcGxheWVkIGJhY2sgYWdhaW4/Cj4gCj4gTGV0
+wrRzIGFzc3VtZSB3ZSBwbGF5IHN0ZXJlbyAxNmJpdCBhdWRpbyBkYXRhIHVzaW5nIHRoZSBybWU5
+NiBkcml2ZXIsIHBlcmlvZCBzaXplIHNldCB0byAweDgwMCBmcmFtZXMuCj4gCj4gQXQgdGhlIGVu
+ZCBvZiB0aGUgcGVudWx0aW1hdGUgZnJhbWUgcGxheWluZyB3aWxsIG5vdCBiZSBzdG9wcGVkIGV2
+ZW4gaWYgdGhlcmUgaXMgb25seSBvbmUgZnJhbWUKPiBvZiBhdWRpbyBkYXRhIHJlbWFpbmluZy4g
+T2J2aW91c2x5IHRoYXQgbWVhbnMgMHg3ZmYgZnJhbWVzIG9mIGFscmVhZHkgcGxheWVkIGRhdGEg
+aXMgcGxheWVkIGFnYWluCj4gYWZ0ZXIgdGhhdCBvbmUgdmFsaWQgZnJhbWUsIHBsdXMgcG9zc2li
+bHkgYSBmZXcgdGhhdCBhcmUgcGxheWVkIGR1cmluZyB0aGUgc2hvcnQgdGltZSBmcm9tIGludGVy
+cnVwdCByZXF1ZXN0IHRvCj4gdGhlIHJlYWwgc3RvcCBvZiB0aGUgcGxheWJhY2sgaGFyZHdhcmUg
+KGFib3V0IDUgZnJhbWVzIG9uIGFuIG9sZCBQZW50aXVtLU0gMS4yR0h6KS4KPiAKPiBOb3cgdGhh
+dCBjb3VsZCBiZSBmaXhlZCBpbiBkaWZmZXJlbnQgd2F5czoKPiAKPiBBOiBBbHdheXMgZW5zdXJl
+IHRoYXQgdGhlcmUgaXMgYSBiaXQgb2Ygc2lsZW5jZSAoYXQgbGVhc3QgaGFyZHdhcmUgYnVmZmVy
+IHNpemUgcGx1cyBhIGZldyBmcmFtZXMpIGF0IHRoZSBlbmQgb2YgYWxsIGF1ZGlvIGRhdGEuCj4g
+Cj4gICAgICAgRWFzeSBmb3IgdGhlIHVzZXIgLCBidXQgb25seSBhIHdvcmthcm91bmQuCj4gCj4g
+QjogQXQgdGhlIHJtZTk2IGRyaXZlciBsZXZlbCB0aGF0IGNvbmRpdGlvbiBjYW4gYmUgZGV0ZWN0
+ZWQgYW5kIHRoZSByZWxldmFudCBwYXJ0IG9mIHRoZSBidWZmZXIKPiAgICAgICBjYW4gYmUgZmls
+bGVkIHdpdGggemVyb3MuCj4gCj4gICAgICAgSSBkaWQgdGhhdCBpbiBhbiBleHBlcmltZW50YWwg
+Y2hhbmdlLiBJdCBkb2VzIHdvcmssIGJ1dCBpdMK0cyBkZWZpbml0ZWx5IG9ubHkgYSBoYWNrIGFz
+IGl0IGZpeGVzCj4gICAgICAgdGhlIHByb2JsZW0gZm9yIG9ubHkgb25lIGRldmljZS4KPiAKPiBD
+OiBUaGUgYXBwbGljYXRpb24gcGxheWluZyBhdWRpbyBkYXRhIGNvdWxkIHBhZCBhbGwgYXVkaW8g
+ZGF0YSB0byB0aGUgcGVyaW9kIHNpemUgd2l0aCB6ZXJvcy4KPiAKPiAgICAgIFRoYXQgd291bGQg
+cHJldmVudCBwbGF5YmFjayBvZiB0aGF0IG1heCAweDdmZiBmcmFtZXMgb2YgZ2FyYmFnZSwgYnV0
+IHRoZSBmZXcgc2FtcGxlcyB0aGF0IGFyZSBwbGF5ZWQKPiAgICAgICBkdXJpbmcgdGhlIHRpbWUg
+ZnJvbSBpbnRlcnJ1cHQgcmVxdWVzdCB0byB0aGUgZXhlY3V0aW9uIG9mIHRoZSBzdG9wIHRyaWdn
+ZXIgZG8gZXNjYXBlCj4gCj4gRDogRG9uwrR0IHRyeSB0byBkcmFpbiB0aGUgYnVmZmVyIGJ1dCBw
+YWQgd2l0aCB6ZXJvcyBhbmQgc2V0IGEgc3RvcCB0aHJlc2hvbGQuCj4gCj4gICAgICAgV29ya2Fy
+b3VuZCBmb3IgYXBwbGljYXRpb25zICBzaG91bGQgYWxzbyB3b3JrIHdpdGggb2xkZXIga2VybmVs
+cy4KCkFwcGxpY2F0aW9ucyBtYXkgYWxzbyBzaWxlbmNlIHRoZSB3aG9sZSByaW5nIGJ1ZmZlciBv
+ciBmZXcgcGVyaW9kcyBhbmQKcmV3aW5kIHRoZSBhY3R1YWwgc3RyZWFtIHBvc2l0aW9uIGJhY2sg
+KGlmIHBvc3NpYmxlKS4KCj4gRTogVGhlIGFsc2EgY29yZSBjb3VsZCBkZXRlY3QgdGhhdCBjb25k
+aXRpb24gYW5kIHNvbHZlIGl0IGVxdWl2YWxlbnQgdG8gc29sdXRpb24gRAo+IAo+ICAgICAgIEkg
+dGhpbmsgdGhhdMK0cyB0aGUgcHJvcGVyIHNvbHV0aW9uLgo+IAo+IERpZCBJIG1pc3Mgc29tZXRo
+aW5nIG9yIGRvIHlvdSBhZ3JlZT8KClBsZWFzZSwgc2VlIHNuZF9wY21fc3dfcGFyYW1zX3NldF9z
+aWxlbmNlX3RocmVzaG9sZCgpIC8Kc25kX3BjbV9zd19wYXJhbXNfc2V0X3NpbGVuY2Vfc2l6ZSgp
+IC4KClRoZSBxdWVzdGlvbiB3aGF0IHRvIGRvIGF0IHRoZSBlbmQgb2Ygc3RyZWFtaW5nIGlzIHJl
+bGV2YW50IHRvIHRoZQpxdWVzdGlvbiB3aGF0IHRvIGRvIHdoZW4gYW4geHJ1biBjb21lcyB0byBh
+biBhY3Rpb24uCgpUaGVzZSB0eXBlcyBvZiBzaWxlbmNlIHNldHRpbmdzIHNob3VsZCBiZSBjb25m
+aWd1cmFibGUuIEFwcGxpY2F0aW9ucwpzaG91bGQgc2VsZWN0IHdoYXQncyBiZXN0LgoKCQkJCQkJ
+SmFyb3NsYXYKCi0tIApKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PgpMaW51eCBLZXJu
+ZWwgU291bmQgTWFpbnRhaW5lcgpBTFNBIFByb2plY3Q7IFJlZCBIYXQsIEluYy4KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
