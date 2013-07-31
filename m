@@ -1,17 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: codec: spdif: Add S20_3LE and
- S24_LE support for dummy codec drivers
-Date: Wed, 31 Jul 2013 14:28:49 +0100
-Message-ID: <20130731132849.GR9858@sirena.org.uk>
-References: <cover.1375271745.git.b42378@freescale.com>
- <ad8f9d8812c1823ae6f9e4a0d1e6d3c76b26a285.1375271745.git.b42378@freescale.com>
+From: Knut Petersen <Knut_Petersen@t-online.de>
+Subject: end of playback ... design question
+Date: Wed, 31 Jul 2013 15:42:39 +0200
+Message-ID: <51F9144F.9080807@t-online.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4542507982251571308=="
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E826261645
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 15:28:57 +0200 (CEST)
-In-Reply-To: <ad8f9d8812c1823ae6f9e4a0d1e6d3c76b26a285.1375271745.git.b42378@freescale.com>
+Received: from mailout05.t-online.de (mailout05.t-online.de [194.25.134.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50E1426158C
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 15:42:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +18,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, timur@tabi.org, rob.herring@calxeda.com
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Kai Vehmanen <kvehmanen@nosignal.fi>
 List-Id: alsa-devel@alsa-project.org
 
+Hi everybody!
 
---===============4542507982251571308==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6R6uZ1KJeew1pu/D"
-Content-Disposition: inline
+Although I looked at quite a bit of source code and documentation I have
+to admit that I am confused about one question:
 
+How should alsa playback be stopped in a way that _guarantees_ that no
+artifacts remaining in the drivers ringbuffer are played back again?
 
---6R6uZ1KJeew1pu/D
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Let=B4s assume we play stereo 16bit audio data using the rme96 driver, peri=
+od size set to 0x800 frames.
 
-On Wed, Jul 31, 2013 at 08:07:05PM +0800, Nicolin Chen wrote:
-> Generally, S/PDIF supports 20bit and optional 24bit samples. Thus add these
-> two formats for the dummy codec drivers.
+At the end of the penultimate frame playing will not be stopped even if the=
+re is only one frame
+of audio data remaining. Obviously that means 0x7ff frames of already playe=
+d data is played again
+after that one valid frame, plus possibly a few that are played during the =
+short time from interrupt request to
+the real stop of the playback hardware (about 5 frames on an old Pentium-M =
+1.2GHz).
 
-Applied, thanks.  Please check the mailing lists you're posting to -
-you've got the DT list wrong here and you shouldn't post non-binding
-reviews there anyway.
+Now that could be fixed in different ways:
 
---6R6uZ1KJeew1pu/D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+A: Always ensure that there is a bit of silence (at least hardware buffer s=
+ize plus a few frames) at the end of all audio data.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+      Easy for the user , but only a workaround.
 
-iQIcBAEBAgAGBQJR+REOAAoJELSic+t+oim9MNgQAJsRCS7pizBIQ9QClY8auT3L
-VvimYRxFA3PvpfUmRVHfv+a+RmWIftPRLQzWGIjoxjgs9CZzybEqP/cWRmiGSFWO
-jsoFnqs+JjXfd6nLRDLgI36POP7gRFTT3+lHAcmdWeG/mxRpDTphlLKQhEL7MHvA
-JyFSLL4N8p2jgy7Owg/7ayM4e9EDEMOPjB6Zc6bn4FZiGoiP3Feu60V81fdd3qiA
-UphTSDPd+rgq599yyyFqYKIKdtqKCOATU1zhcO/fhamSkrJc11PM3wnJ2cYXqRvA
-y9qQ31NJc8e/pjJJUCubaiYtCx6pxD21vY6BJdqW0itnc+Vbd0Xu8Dky4r8iTNY+
-DnGSaA8Gr1Ufjms9JJaBKqen+cvY5A1ijkOte19OnHLZ5XmiLCei7r3wNaRnP+5k
-qvHSy1anpz8dg+WvM52p4I8OcHZ8+dY9R7YS/AnHHwl734MUZEG+ewHH0wVK2xWm
-HXXiKphZ0/xayo6/L6xL/fVOaz7aLC5N2swUHG0WauIBwIBrZSyJsTG4iV3zTfAt
-joAH6l5WeL14Gpad90y1w5mbzRleQdAJb+rwY3oUJ0Ho/CgeYolu0zmjCCeZICs2
-mbXRLE2fzrnvU2MGvX+ZuENl5c2b8nKNBMkXFOmyY4wZL9U8K/NRbEHDom97P/yd
-tCkao/P5zLmWen4susBa
-=6vr8
------END PGP SIGNATURE-----
+B: At the rme96 driver level that condition can be detected and the relevan=
+t part of the buffer
+      can be filled with zeros.
 
---6R6uZ1KJeew1pu/D--
+      I did that in an experimental change. It does work, but it=B4s defini=
+tely only a hack as it fixes
+      the problem for only one device.
 
---===============4542507982251571308==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+C: The application playing audio data could pad all audio data to the perio=
+d size with zeros.
 
+     That would prevent playback of that max 0x7ff frames of garbage, but t=
+he few samples that are played
+      during the time from interrupt request to the execution of the stop t=
+rigger do escape
 
---===============4542507982251571308==--
+D: Don=B4t try to drain the buffer but pad with zeros and set a stop thresh=
+old.
+
+      Workaround for applications  should also work with older kernels.
+
+E: The alsa core could detect that condition and solve it equivalent to sol=
+ution D
+
+      I think that=B4s the proper solution.
+
+Did I miss something or do you agree?
+
+cu,
+  Knut
