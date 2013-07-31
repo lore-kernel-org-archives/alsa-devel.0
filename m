@@ -1,147 +1,100 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v3 4/4] ASoC: kirkwood: change kirkwood-i2s to
- mvebu-pcm-audio and DT doc
-Date: Wed, 31 Jul 2013 08:18:58 +0200
-Message-ID: <20130731081858.53413597@armhf>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: New dapm panic on beaver with next-20130730
+Date: Wed, 31 Jul 2013 08:35:49 +0200
+Message-ID: <51F8B045.8030303@metafoo.de>
+References: <CAOesGMig6jry1GJLoTnOqxom1KjtBTUtZz-_-SiZLpGTc3VkqA@mail.gmail.com>
+ <51F8A933.4080708@metafoo.de>
+ <CAOesGMjqyF7zPoGsW6oBRFey7Bc_umnoGob7oQ=_c3n7oevuaQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailhost.informatik.uni-hamburg.de
+ (mailhost.informatik.uni-hamburg.de [134.100.9.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DE4D265453
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 08:35:50 +0200 (CEST)
+In-Reply-To: <CAOesGMjqyF7zPoGsW6oBRFey7Bc_umnoGob7oQ=_c3n7oevuaQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Olof Johansson <olof@lixom.net>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
-As the kirkwood audio system may be used in other Marvell machines
-(mvebu), this patch changes the name of the audio driver to
-'mvebu-pcm-audio' and also contains the associated DT documentation.
+On 07/31/2013 08:13 AM, Olof Johansson wrote:
+> On Tue, Jul 30, 2013 at 11:05 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+>> On 07/31/2013 07:36 AM, Olof Johansson wrote:
+>>>
+>>> Hi Mark, Lars-Peter,
+>>>
+>>> I noticed the below panic on beaver (Tegra30). Seems like seaboard
+>>> (Tegra20) is fine. This is with next-20130730, tegra_defconfig.
+>>
+>>
+>> Hi,
+>>
+>> So the same machine driver with the same codec works on tegra2, but not on
+>> tegra3? The crash doesn't seem to be directly related to the patch, but the
+>> patch changed the memory layout. Is it possible that you still have a
+>> outdated module that's being loaded on your tegra3 board?
+>
+> Sorry, I should have been cleared on that. Not at all the same codec,
+> seaboard uses wm8903, beaver rt5640.
+>
+>> Can you add a few debugging printks and run the test again and paste the
+>> last few lines before the crash:
+>
+> [beaver          00:18] [    4.045897] dapm_generic_check_power: IF2 ADC L
+> [beaver          00:18] [    4.050417] dapm_clear_walk_output 1: ee3a7bc0
+> [beaver          00:18] [    4.054845] dapm_generic_check_power: IF2 DAC
+> [beaver          00:18] [    4.059193] dapm_clear_walk_output 1: ee3a8240
+> [beaver          00:18] [    4.063621] dapm_clear_walk_output 1: ee3a8280
+> [beaver          00:18] [    4.068048] dapm_generic_check_power: IF1 ADC R
+> [beaver          00:18] [    4.072661] dapm_clear_walk_output 1: ee3a7c40
+> [beaver          00:18] [    4.077091] dapm_generic_check_power: IF1 ADC L
+> [beaver          00:18] [    4.081616] dapm_clear_walk_output 1: ee3a7c80
+> [beaver          00:18] [    4.086045] dapm_generic_check_power: IF1 DAC
+> [beaver          00:18] [    4.090394] dapm_clear_walk_output 1: ee3a82c0
+> [beaver          00:18] [    4.094821] dapm_clear_walk_output 1: ee3a8300
+> [beaver          00:18] [    4.099256] dapm_generic_check_power: INR Mux
+> [beaver          00:18] [    4.103599] dapm_clear_walk_output 1: ee3af670
+> [beaver          00:18] [    4.108026] dapm_generic_check_power: INL Mux
+> [beaver          00:18] [    4.112375] dapm_clear_walk_output 1: ee3af5f0
+> [beaver          00:18] [    4.116802] dapm_clear_walk_output 2: 6b6b6b6b
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
- .../devicetree/bindings/sound/mvebu-pcm-audio.txt | 29 +++++++++++++++=
-+++++++
- sound/soc/kirkwood/kirkwood-dma.c                 |  2 +-
- sound/soc/kirkwood/kirkwood-i2s.c                 |  6 +++---
- sound/soc/kirkwood/kirkwood-openrd.c              |  4 ++--
- sound/soc/kirkwood/kirkwood-t5325.c               |  4 ++--
- 5 files changed, 37 insertions(+), 8 deletions(-)
+0x6b6b6b6b is poisoned freed memory. According to the source neither the INR 
+Mux nor the INL Mux widget should have any sinks. Can you add a couple more 
+printks:
 
-diff --git a/Documentation/devicetree/bindings/sound/mvebu-pcm-audio.tx=
-t b/Documentation/devicetree/bindings/sound/mvebu-pcm-audio.txt
-new file mode 100644
-index 0000000..0995ebc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mvebu-pcm-audio.txt
-@@ -0,0 +1,29 @@
-+* mvebu (Kirkwood, Dove, Armada 370) i2s controller
-+
-+Required properties:
-+
-+- compatible: "marvell,mvebu-pcm-audio"
-+
-+- reg: physical base address of the controller and length of memory ma=
-pped
-+  region.
-+
-+- interrupts: list of two irq numbers.
-+  The first irq is used for data flow and the second one is used for e=
-rrors.
-+
-+- clocks: one or two phandles.
-+  The first one is mandatory and defines the internal clock.
-+  The second one is optional and defines an external clock.
-+
-+- clock-names: names associated to the clocks:
-+	"internal" for the internal clock
-+	"extclk" for the external clock
-+
-+Example:
-+
-+i2s1: audio-controller@b4000 {
-+	compatible =3D "marvell,mvebu-pcm-audio";
-+	reg =3D <0xb4000 0x2210>;
-+	interrupts =3D <21>, <22>;
-+	clocks =3D <&gate_clk 13>;
-+	clock-names =3D "internal";
-+};
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kir=
-kwood-dma.c
-index f735501..e9802f1 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -165,7 +165,7 @@ static int kirkwood_dma_open(struct snd_pcm_substre=
-am *substream)
- 		prdata->data =3D priv;
-=20
- 		err =3D request_irq(priv->irq, kirkwood_dma_irq, IRQF_SHARED,
--				  "kirkwood-i2s", prdata);
-+				  "mvebu-pcm-audio", prdata);
- 		if (err) {
- 			kfree(prdata);
- 			return -EBUSY;
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kir=
-kwood-i2s.c
-index 9844010..4f817a2 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -25,7 +25,7 @@
-=20
- #include "kirkwood.h"
-=20
--#define DRV_NAME	"kirkwood-i2s"
-+#define DRV_NAME	"mvebu-pcm-audio"
-=20
- #define KIRKWOOD_I2S_FORMATS \
- 	(SNDRV_PCM_FMTBIT_S16_LE | \
-@@ -555,7 +555,7 @@ fail:
-=20
- #ifdef CONFIG_OF
- static struct of_device_id kirkwood_i2s_of_match[] =3D {
--	{ .compatible =3D "marvell,kirkwood-i2s" },
-+	{ .compatible =3D "marvell,mvebu-pcm-audio" },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, kirkwood_i2s_of_match);
-@@ -577,4 +577,4 @@ module_platform_driver(kirkwood_i2s_driver);
- MODULE_AUTHOR("Arnaud Patard, <arnaud.patard@rtp-net.org>");
- MODULE_DESCRIPTION("Kirkwood I2S SoC Interface");
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:kirkwood-i2s");
-+MODULE_ALIAS("platform:mvebu-pcm-audio");
-diff --git a/sound/soc/kirkwood/kirkwood-openrd.c b/sound/soc/kirkwood/=
-kirkwood-openrd.c
-index df565d2..532843a 100644
---- a/sound/soc/kirkwood/kirkwood-openrd.c
-+++ b/sound/soc/kirkwood/kirkwood-openrd.c
-@@ -52,8 +52,8 @@ static struct snd_soc_dai_link openrd_client_dai[] =3D=
- {
- {
- 	.name =3D "CS42L51",
- 	.stream_name =3D "CS42L51 HiFi",
--	.cpu_dai_name =3D "kirkwood-i2s",
--	.platform_name =3D "kirkwood-i2s",
-+	.cpu_dai_name =3D "mvebu-pcm-audio",
-+	.platform_name =3D "mvebu-pcm-audio",
- 	.codec_dai_name =3D "cs42l51-hifi",
- 	.codec_name =3D "cs42l51-codec.0-004a",
- 	.dai_fmt =3D SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS,
-diff --git a/sound/soc/kirkwood/kirkwood-t5325.c b/sound/soc/kirkwood/k=
-irkwood-t5325.c
-index b4647ba..d31a0f1 100644
---- a/sound/soc/kirkwood/kirkwood-t5325.c
-+++ b/sound/soc/kirkwood/kirkwood-t5325.c
-@@ -68,8 +68,8 @@ static struct snd_soc_dai_link t5325_dai[] =3D {
- {
- 	.name =3D "ALC5621",
- 	.stream_name =3D "ALC5621 HiFi",
--	.cpu_dai_name =3D "kirkwood-i2s",
--	.platform_name =3D "kirkwood-i2s",
-+	.cpu_dai_name =3D "mvebu-pcm-audio",
-+	.platform_name =3D "mvebu-pcm-audio",
- 	.codec_dai_name =3D "alc5621-hifi",
- 	.codec_name =3D "alc562x-codec.0-001a",
- 	.dai_fmt =3D SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS,
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index b779d36..1a82e75 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -774,8 +774,13 @@
+  	struct snd_soc_dapm_path *p;
 
+  	list_for_each_entry(p, sink, list_source) {
++		printk("dapm_clear_walk_output 1: %p\n", p);
+  		if (p->walked) {
+  			p->walked = 0;
++			printk("dapm_clear_walk_output 1: %p\n", p->source);
++			printk("dapm_clear_walk_output 2: %p\n", p->sink);
++			printk("dapm_clear_walk_output 3: %s\n",
++				p->sink->name);
+  			dapm_clear_walk_output(dapm, &p->sink->sinks);
+  		}
+  	}
+@@ -1189,6 +1194,8 @@
+  	DAPM_UPDATE_STAT(w, power_checks);
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
++	printk("dapm_generic_check_power: %p %s\n", w, w->name);
++
+  	in = is_connected_input_ep(w, NULL);
+  	dapm_clear_walk_input(w->dapm, &w->sources);
+  	out = is_connected_output_ep(w, NULL);
