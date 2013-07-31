@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: wm0010: Fix resource leak
-Date: Wed, 31 Jul 2013 14:51:00 +0100
-Message-ID: <20130731135100.GS9858@sirena.org.uk>
-References: <1375273732-17492-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: fsl: Fix module build
+Date: Wed, 31 Jul 2013 14:59:25 +0100
+Message-ID: <20130731135925.GU9858@sirena.org.uk>
+References: <1375133852-15248-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7899834548368488584=="
+Content-Type: multipart/mixed; boundary="===============6068297398208230785=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C43BD2654CD
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 15:51:03 +0200 (CEST)
-In-Reply-To: <1375273732-17492-1-git-send-email-dp@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 88B1D2615F2
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 15:59:32 +0200 (CEST)
+In-Reply-To: <1375133852-15248-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,57 +19,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, g.liakhovetski@gmx.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7899834548368488584==
+--===============6068297398208230785==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ycxYX4IAELFb+cE1"
+	protocol="application/pgp-signature"; boundary="tQK5n1rKJ9fMEY1c"
 Content-Disposition: inline
 
 
---ycxYX4IAELFb+cE1
+--tQK5n1rKJ9fMEY1c
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 31, 2013 at 01:28:52PM +0100, Dimitris Papastamos wrote:
-> If kzalloc() fails for `img' then we are going to leak the memory
-> for `out'.  We are freeing the memory of all the tx/rx transfers
-> but the tx/rx buf pointers will be NULL if we drop out earlier.
+On Mon, Jul 29, 2013 at 06:37:32PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> Building imx_v6_v7_defconfig with all audio drivers as modules results in
+> the folowing build error:
 
 Applied, thanks.
 
---ycxYX4IAELFb+cE1
+--tQK5n1rKJ9fMEY1c
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR+RZBAAoJELSic+t+oim9G1cP+wduGoUOagBYgVga8xujGGp3
-KUtFRrXjf+2jwusZGYB3cb6eDq9AgAjhS++pENQhz5Ketx/A48zyizlKa5iH2PX8
-gIKa1vgZbOpdjPB9P0qMfAfu1ZzamD4FNLCpkB82PSoEXQTeRw4lkih+3jRugJIW
-+m9Fmd6Ebc1SC/UYK90ljvb1NxL8U965Mk56pOVq0u4v5V3gePpQ0ioTJft03g1F
-rn5tK0Ytiz6pL4LgPvt4yWybX5WgSgjebVAh6I4dCigNjOWBb3l/XYmyOTyaXhLR
-BGGwuP1bltoP86yUvEZfSWhwyc55Frg47z3aYJLITe4JJAyDOsPf2KBVyVcsR1v6
-3x/cO34RFjpKtuFEoP1uSeGN1Qsg14nIJPO1H3vebkXs5WxhdMM+SRNOsWcgu5Sx
-NPwJw6wU2bCs+doUh1YpynnyX43TgmPw4qQpU/bChE6KzDvCFEslmiETEG+zi6AP
-jOXu4ib3tgR12wW8pfa5xcFy6shdaKVtFCX2OOpX2cwpfQf4CaO6ctZcmQHghMCV
-jsTEZ5RcnGxgmBRft+kinvHWQoHYMxFowIqaPZ9THfTo8Z+Ephgyo9YWOtAGxcpk
-iBGNVGalK/oGUeQ0VBxeomsujCxKurBgqVaWxcd8+8aonenM+x5S9DoF6/q9Xs7y
-B4DzwFNgTsMTNWPCvSgZ
-=2qac
+iQIcBAEBAgAGBQJR+Rg6AAoJELSic+t+oim9UQMQAJFqW1g0FXM39UmsjFZxhIo+
+16ZkwR8fo7sZSJYNWksZ0cFwkbrnfmB8SJEIiK6aX8GfFTdPcE+cqG/qc1ntFgH/
+sAbV6Y77X1Hv4a8mSKiEE6f1hGG3rSh6fGUzbA5tVE7SmkrBkeYRrOEjRGHxFs+w
+gB/mWSagoYfKgerhR0T7lTLnOwV0NeNXFLDiE7fFmfBJOXSavMpl//yhMwNg4MKZ
+5v4ZRwbCbBoi2qkMnDw6MRcjsE04vKla/uaYM0aV6Em+2Zk/6sgMp+IoCQLEEkvk
+EUzRwn7IyDWa/geyjCtSxCmJJ5mD+QooOIpeUwHuvwYHcUC8hM36LWPiGEka/1Ce
+U9Z46rWzjIfPlxfqdCTFmWDRJvTHVXWGAmv9PZqHAI6h3v7Dpr85WSQuJowA12tb
+fHpmEGCGOYv/OVoh5cIZF4Odp8f5AdpKL595b99cSwfv8K4/k8n1nL2Hs9xZReLJ
+gdw109FkeipPjAcnn5OjwMi3u4by+uLydxcymw9nasMeP4l1vANT0jPEdhxcu9TI
+s3Te6Z2r+QK18q3JKUsXwUrC5Q37DKQGRvCkaY7RgrpUrHcMru4FO6TRTct/8G47
+tFUmIoKNOoE2idr0eWot1ZlvvGizdTvtZm70Oj+IXxmUgU5QYNl0NhU8kZw9sof1
+TWamg8dEKL33ANewpw/F
+=eDdP
 -----END PGP SIGNATURE-----
 
---ycxYX4IAELFb+cE1--
+--tQK5n1rKJ9fMEY1c--
 
---===============7899834548368488584==
+--===============6068297398208230785==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7899834548368488584==--
+--===============6068297398208230785==--
