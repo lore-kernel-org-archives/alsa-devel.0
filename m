@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl: Fix module build
-Date: Wed, 31 Jul 2013 14:59:25 +0100
-Message-ID: <20130731135925.GU9858@sirena.org.uk>
-References: <1375133852-15248-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH -next] ASoC: rcar: fix return value check
+ in rsnd_gen1_probe()
+Date: Wed, 31 Jul 2013 15:00:11 +0100
+Message-ID: <20130731140011.GV9858@sirena.org.uk>
+References: <CAPgLHd_0p56XkKjmtaD8J8OtTxPg-XY9xQRepsZYNtH-tY6uFw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6068297398208230785=="
+Content-Type: multipart/mixed; boundary="===============8005958820988792834=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 88B1D2615F2
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 15:59:32 +0200 (CEST)
-In-Reply-To: <1375133852-15248-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D9C97265516
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 16:00:18 +0200 (CEST)
+In-Reply-To: <CAPgLHd_0p56XkKjmtaD8J8OtTxPg-XY9xQRepsZYNtH-tY6uFw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,59 +20,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, g.liakhovetski@gmx.de, kernel@pengutronix.de
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, yongjun_wei@trendmicro.com.cn
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6068297398208230785==
+--===============8005958820988792834==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tQK5n1rKJ9fMEY1c"
+	protocol="application/pgp-signature"; boundary="diiB1pV/0M5IS+GS"
 Content-Disposition: inline
 
 
---tQK5n1rKJ9fMEY1c
+--diiB1pV/0M5IS+GS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 29, 2013 at 06:37:32PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
+On Tue, Jul 30, 2013 at 07:51:37AM +0800, Wei Yongjun wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 >=20
-> Building imx_v6_v7_defconfig with all audio drivers as modules results in
-> the folowing build error:
+> In case of error, the function devm_ioremap_resource() returns ERR_PTR()
+> and never returns NULL. The NULL test in the return value check should be
+> replaced with IS_ERR(), and also remove the dev_err call to avoid redunda=
+nt
+> error message.
 
 Applied, thanks.
 
---tQK5n1rKJ9fMEY1c
+--diiB1pV/0M5IS+GS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR+Rg6AAoJELSic+t+oim9UQMQAJFqW1g0FXM39UmsjFZxhIo+
-16ZkwR8fo7sZSJYNWksZ0cFwkbrnfmB8SJEIiK6aX8GfFTdPcE+cqG/qc1ntFgH/
-sAbV6Y77X1Hv4a8mSKiEE6f1hGG3rSh6fGUzbA5tVE7SmkrBkeYRrOEjRGHxFs+w
-gB/mWSagoYfKgerhR0T7lTLnOwV0NeNXFLDiE7fFmfBJOXSavMpl//yhMwNg4MKZ
-5v4ZRwbCbBoi2qkMnDw6MRcjsE04vKla/uaYM0aV6Em+2Zk/6sgMp+IoCQLEEkvk
-EUzRwn7IyDWa/geyjCtSxCmJJ5mD+QooOIpeUwHuvwYHcUC8hM36LWPiGEka/1Ce
-U9Z46rWzjIfPlxfqdCTFmWDRJvTHVXWGAmv9PZqHAI6h3v7Dpr85WSQuJowA12tb
-fHpmEGCGOYv/OVoh5cIZF4Odp8f5AdpKL595b99cSwfv8K4/k8n1nL2Hs9xZReLJ
-gdw109FkeipPjAcnn5OjwMi3u4by+uLydxcymw9nasMeP4l1vANT0jPEdhxcu9TI
-s3Te6Z2r+QK18q3JKUsXwUrC5Q37DKQGRvCkaY7RgrpUrHcMru4FO6TRTct/8G47
-tFUmIoKNOoE2idr0eWot1ZlvvGizdTvtZm70Oj+IXxmUgU5QYNl0NhU8kZw9sof1
-TWamg8dEKL33ANewpw/F
-=eDdP
+iQIcBAEBAgAGBQJR+RhoAAoJELSic+t+oim9JywQAISdmHcMOHn44JaTu9HRgGXo
+dpDck6jttaHOGx42i27DfNUlqopufcK4p5O6scqJZS54r/Rf0N83m5RoAF1VL4Bf
+h58PlyQOtlao+YMyWmVrDA8L3iEALwUMOCw7WlPgfqYOK3cTD1ekQxrT2IXP1cKf
+It7r7YUNf9rTJ3/Z/eocNkL0C0hI0Kgqqwx2NO1GB6OAvKhU1mJ8KT8TfNck6qq3
+6tFNewf/JD6m4DuucuNmo82Yf6MRbjFqU1MuWjYiBNp/cKUZtRSyEGvcG4FDE4gn
+ARUNhrB5d/b0XEMOWlw6HplWIXSGoEgfMStTy9vtSqy4wbQ5jf1pUOc+f60uBRlB
+tiSscnrfcxhIxOSIj6lmFU2Ro9kS+KNVu2bc/A8vDZ2g4o88PB0Aqau7o0/Fyw1E
+4uy1t2yjThPtl+jquEeYK6rhAk5QawTuceIlDYe8u0Fkxu+wEpf63KEv5+Px/pTm
+yrN0bP+4ZZMK7RcjGbyj6jnI3Pm0lL0YNUI6F1Ms5D6i6gSeG9hpnCLbhtiaR2Sm
+hetUkwXZN93uS8DA9yBIF2C9AqRmEcd/K+bNcPYcbkYSQLUnvdEFXt+kT3o8iej9
+X6pF7NPhUbZGjNvUOqsOf3GcGGTrbxmTx9sclYNZudy2W9uldWxX1zfQDPaL5OIq
+SPL6tKskx32qefTWs7bS
+=Q9FQ
 -----END PGP SIGNATURE-----
 
---tQK5n1rKJ9fMEY1c--
+--diiB1pV/0M5IS+GS--
 
---===============6068297398208230785==
+--===============8005958820988792834==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6068297398208230785==--
+--===============8005958820988792834==--
