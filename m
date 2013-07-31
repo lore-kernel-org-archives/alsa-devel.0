@@ -1,15 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm0010: Fix resource leak
-Date: Wed, 31 Jul 2013 12:23:31 +0100
-Message-ID: <20130731112331.GL9858@sirena.org.uk>
-References: <1375262118-9183-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH 0/3] ASoC: Add Freescale i.MX S/PDIF controller
+	driver
+Date: Wed, 31 Jul 2013 20:07:04 +0800
+Message-ID: <cover.1375271745.git.b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4046889437802258067=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B12B2615E7
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 13:23:33 +0200 (CEST)
-In-Reply-To: <1375262118-9183-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe006.messaging.microsoft.com [213.199.154.209])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F5ED2615E7
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2013 13:57:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,66 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: broonie@kernel.org, timur@tabi.org
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, devicetree-discuss@lists.ozlabs.org, rob.herring@calxeda.com
 List-Id: alsa-devel@alsa-project.org
 
+* This series of patches add i.MX S/PDIF drivers, including CPU DAI, machine.
+* It also add two missing sample rates support for spdif dummy codec drivers
 
---===============4046889437802258067==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3lXfO+92YUB+uPVX"
-Content-Disposition: inline
+Nicolin Chen (3):
+  ASoC: codec: spdif: Add S20_3LE and S24_LE support for dummy codec
+    drivers
+  ASoC: fsl: Add S/PDIF CPU DAI driver
+  ASoC: fsl: Add S/PDIF machine driver
 
-
---3lXfO+92YUB+uPVX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jul 31, 2013 at 10:15:18AM +0100, Dimitris Papastamos wrote:
-
-> +		xfer = kzalloc(sizeof(*xfer), GFP_KERNEL | GFP_DMA);
-> +		if (!xfer) {
-> +			dev_err(codec->dev, "Failed to allocate xfer\n");
-> +			ret = -ENOMEM;
-> +			goto abort1;
-> +		}
-> +
-
-Why is this being allocated with GFP_DMA?  It's an internal data
-structure, it's not going to be DMAed from.
-
-Please also provide a changelog, a link to some address on the web isn't
-a useful description.
-
---3lXfO+92YUB+uPVX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR+POwAAoJELSic+t+oim9pVgP/3yLantWW4M53SbRsrdUaHHR
-U6RHAj+NDwPY2L62K+pqPSCy955sJiJkeU4gXf1nr3T6nC7m4bCzascUvHQ73P5M
-vQBSedhQjN1zDYYB2yNAoVxWlTCeWCqBwgFAoIYkeK1n85Ya8rTIHVWlGg66SnzP
-5xMST60uVmLOUFKP9pLBgymOLwDN7HvJKrVgXqCsvjnC1MLJND2Eh9RzbvPkwbcI
-ypu7gYIgn+1skPCaIx1KTIwWrJQULMqwePotOnLYYW6l/Fob7ZmbDVGZm330U5/n
-U4svNV3I7SWkKyg57FS1t3f2/ZSKRuqC1XwCfgeHqRAKQS3lhU2wwJdJnZWlyc6f
-lr8xvYyDKQBgvw2veJol8f0SpALkJeHiykrcBvhzPhWF4bS50KoU/PKIVKvRQQca
-U8Ppss+S5JoAj391cmWlIabyYB41LFO4L4a0afRAAf3QOP/NQNfBLxvxLMImzr9a
-4Ot0izuZXRzfXJ8otVf1vJrqEJ3oTgnOfwLCCdy6wiQDycQT45tITjI3FtnDZkkR
-60JiUBbl75PRuvvkPxT+puLPkhXznEVdiN/5R04kfI0qi09xqhoGeynyI29odb0V
-jRgLqs4hCKht1+btYOWlrTEioLLNCvBL0SRe2AwFzXLZktrw+hFymnErqKsTsZ2M
-+ra5+7An1vE8YgO7JwR3
-=0+Rn
------END PGP SIGNATURE-----
-
---3lXfO+92YUB+uPVX--
-
---===============4046889437802258067==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4046889437802258067==--
+ .../devicetree/bindings/sound/fsl,spdif.txt        |   63 +
+ .../devicetree/bindings/sound/imx-audio-spdif.txt  |   29 +
+ sound/soc/codecs/spdif_receiver.c                  |    2 +
+ sound/soc/codecs/spdif_transmitter.c               |    5 +-
+ sound/soc/fsl/Kconfig                              |   14 +
+ sound/soc/fsl/Makefile                             |    4 +
+ sound/soc/fsl/fsl_spdif.c                          | 1276 ++++++++++++++++++++
+ sound/soc/fsl/fsl_spdif.h                          |  233 ++++
+ sound/soc/fsl/imx-spdif.c                          |  134 ++
+ 9 files changed, 1758 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,spdif.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+ create mode 100644 sound/soc/fsl/fsl_spdif.c
+ create mode 100644 sound/soc/fsl/fsl_spdif.h
+ create mode 100644 sound/soc/fsl/imx-spdif.c
