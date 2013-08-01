@@ -1,55 +1,41 @@
-From: Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>
-Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
-Date: Thu, 1 Aug 2013 19:11:48 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1308011847560.1029@xoschi>
-References: <Pine.LNX.4.44L0.1307291400450.1479-100000@iolanthe.rowland.org> <51F6C123.7020407@gmail.com> <s5hob9k5z0b.wl%tiwai@suse.de>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH] ASoC: dapm: Fix empty list check in
+	dapm_new_mux()
+Date: Thu, 01 Aug 2013 11:20:34 -0600
+Message-ID: <51FA98E2.6050701@wwwdotorg.org>
+References: <1375374638-28305-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <s5hob9k5z0b.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B225261619
+ for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 19:20:39 +0200 (CEST)
+In-Reply-To: <1375374638-28305-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Olof Johansson <olof@lixom.net>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On Tue, 30 Jul 2013, Takashi Iwai wrote:
-
-> At Mon, 29 Jul 2013 21:23:15 +0200,
-> Daniel Mack wrote:
-> > 
-> > On 29.07.2013 20:20, Alan Stern wrote:
-> > > data_ep_set_params() checks snd_usb_endpoint_implicit_feedback_sink() 
-> > > in three places.  It looks like only the second place is correct.
-> > > 
-> > > Can you verify whether the other two are right, and explain to me if 
-> > > they are?
-> > 
-> > Which version are you looking at? Eldad Zack recently posted work in
-> > that area, but I can't seem to find them anywhere yet in the sound tree.
-> > Takashi?
+On 08/01/2013 10:30 AM, Lars-Peter Clausen wrote:
+> list_first_entry() will always return a valid pointer, even if the list is
+> empty. So the check whether path is NULL will always be false. So we end up
+> calling dapm_create_or_share_mixmux_kcontrol() with a path struct that points
+> right in the middle of the widget struct and by trying to modify the path the
+> widgets memory will become corrupted. Fix this by using list_emtpy() to check if
+> the widget doesn't have any paths.
 > 
-> I'm waiting for the revised patchset (for the issue in patch 9/10
-> Clemens pointed).
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> 
+> ---
+> This is the real fix for the rt5640 crash.
 
-Sorry for the delayed responses - I'm working on my free time, and that 
-can be very sporadic.
-
-I'll get around to that patchset on the weekend.
-
-> > Eldad, as you're likely more into the detail right now - any oppinion on
-> > Alan's findings?
-
-Unfortunately I haven't read too deeply into that part of the code.
-FWIW, I will take a closer look at the weekend.
-
-Alan, let me know if you plan to post the patch as-is, I'll happily test 
-it. 
-
-Cheers,
-Eldad
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Tested-by: Stephen Warren <swarren@nvidia.com>
