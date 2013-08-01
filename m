@@ -1,15 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm_adsp: Sanitize parameter passing
-Date: Thu, 1 Aug 2013 11:59:09 +0100
-Message-ID: <20130801105909.GP9858@sirena.org.uk>
-References: <1375351888-24877-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5640: remove unused mux
+Date: Thu, 1 Aug 2013 19:29:22 +0800
+Message-ID: <1375356562-28151-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8036998736422813044=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 45CE02655D5
- for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 12:59:11 +0200 (CEST)
-In-Reply-To: <1375351888-24877-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id D63012655FD
+ for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 13:29:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,57 +18,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, swarren@wwwdotorg.org, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Bard Liao <bardliao@realtek.com>
 
---===============8036998736422813044==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KZSH4Lhcrs6JdLru"
-Content-Disposition: inline
+Remove unused "INL Mux" and "INR Mux".
 
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+I meet a kernel panic issue if I don't remove the unused widget and modify something in rt5640_dapm_widgets[] and/or rt5640_dapm_routes[].
+The message is "Unable to handle kernel paging request at virtual address 6b6b6bd3".
+PC is at dapm_clear_walk_output+0x18/0x7c
+LR is at dapm_clear_walk_output+0x18/0x7c
+If I remove those unused widget, ie. not appear in rt5640_dapm_routes[], everything is fine.
+So I think they should be removed.
+---
+ sound/soc/codecs/rt5640.c | 26 --------------------------
+ 1 file changed, 26 deletions(-)
 
---KZSH4Lhcrs6JdLru
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 01, 2013 at 11:11:28AM +0100, Dimitris Papastamos wrote:
-> No need to hold on to the `codec' pointer.  We can use the `dsp'
-> pointer and grab all the information we need from there.  This
-> makes the parameters for the functions a bit more sane and idiomatic.
-
-Applied, thanks
-
---KZSH4Lhcrs6JdLru
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR+j95AAoJELSic+t+oim97s0P/2y6i55iWz0+V+js79f2h0QH
-uog0wP7LmcWP7cGQ76fXqm6jnK1cY9u3Bp5lRxookngOwYDc5S1EYE6Lc7/AZdtc
-YU3sohKSDA+A1NY8dLTZMunn2B//5SiIy5X8wEPrRoYT+5NI4xeVexWyNczSiq3x
-FECsHQEat17d/ZSMHo6KHKjPrD+QmjFuNCPmMer+Y6ZwS3pK8PNbbIlxjziVYGdZ
-Y34BN1Q3ia5qZ9Do5XEfNC7Cg1u6mL4hveF9MAyzRo264yQM3CKFbH4wm8KdfAL7
-5+CJ96kXWorT2s1Ik3A5iltV9SFNWvbQ27+na4wT608KUbccmwwgtSlKNRj0BGG0
-ZY+LawbTapakGSkWdfIr6tyJ1VE4QhAHOFnGq/6kGyfgVW7At2UAjnfxjzILwTuv
-TFc5UoMYP9NdYj6X6bFO7cpMNBYKpn6ljE959ZGnwzghCrLXkhRaJqBGCv+sTMWs
-kItQ6ld/qg607yylyePtNkER2aDxFm1zFA3YAu8JqL7SQ3PZsvaRQGh8knvYcpca
-fej3uFgtjpydUZRRitkNBRd3aD66A9/qaGhE2eaAeev5mTwoHnDoGbZxsmqjmd2N
-kV61GU2LAfBDnYmprviA7OSv0RVdHJTAEjDkypJVtbMlpNHnJYjqnC7I4NUUfkLJ
-IRzlb0jMVli0l4U4/zsz
-=1nmU
------END PGP SIGNATURE-----
-
---KZSH4Lhcrs6JdLru--
-
---===============8036998736422813044==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8036998736422813044==--
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index ce585e3..4db7314 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -737,29 +737,6 @@ static const struct snd_kcontrol_new rt5640_mono_mix[] = {
+ 			RT5640_M_BST1_MM_SFT, 1, 1),
+ };
+ 
+-/* INL/R source */
+-static const char * const rt5640_inl_src[] = {
+-	"IN2P", "MONOP"
+-};
+-
+-static const SOC_ENUM_SINGLE_DECL(
+-	rt5640_inl_enum, RT5640_INL_INR_VOL,
+-	RT5640_INL_SEL_SFT, rt5640_inl_src);
+-
+-static const struct snd_kcontrol_new rt5640_inl_mux =
+-	SOC_DAPM_ENUM("INL source", rt5640_inl_enum);
+-
+-static const char * const rt5640_inr_src[] = {
+-	"IN2N", "MONON"
+-};
+-
+-static const SOC_ENUM_SINGLE_DECL(
+-	rt5640_inr_enum, RT5640_INL_INR_VOL,
+-	RT5640_INR_SEL_SFT, rt5640_inr_src);
+-
+-static const struct snd_kcontrol_new rt5640_inr_mux =
+-	SOC_DAPM_ENUM("INR source", rt5640_inr_enum);
+-
+ /* Stereo ADC source */
+ static const char * const rt5640_stereo_adc1_src[] = {
+ 	"DIG MIX", "ADC"
+@@ -1005,9 +982,6 @@ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
+ 		RT5640_PWR_IN_L_BIT, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("INR VOL", RT5640_PWR_VOL,
+ 		RT5640_PWR_IN_R_BIT, 0, NULL, 0),
+-	/* IN Mux */
+-	SND_SOC_DAPM_MUX("INL Mux", SND_SOC_NOPM, 0, 0, &rt5640_inl_mux),
+-	SND_SOC_DAPM_MUX("INR Mux", SND_SOC_NOPM, 0, 0, &rt5640_inr_mux),
+ 	/* REC Mixer */
+ 	SND_SOC_DAPM_MIXER("RECMIXL", RT5640_PWR_MIXER, RT5640_PWR_RM_L_BIT, 0,
+ 			rt5640_rec_l_mix, ARRAY_SIZE(rt5640_rec_l_mix)),
+-- 
+1.8.1.1.439.g50a6b54
