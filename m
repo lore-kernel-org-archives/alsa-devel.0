@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Fix empty list check in
-	dapm_new_mux()
-Date: Thu, 1 Aug 2013 19:44:27 +0100
-Message-ID: <20130801184427.GX9858@sirena.org.uk>
-References: <1375374638-28305-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 2/2] ASoC: dapm: Fix kcontrol path list
+	corruption
+Date: Thu, 1 Aug 2013 19:45:11 +0100
+Message-ID: <20130801184511.GY9858@sirena.org.uk>
+References: <1375358887-9160-1-git-send-email-lars@metafoo.de>
+ <1375358887-9160-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7957418414754568685=="
+Content-Type: multipart/mixed; boundary="===============5666155658520623106=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B292726166B
- for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 20:44:36 +0200 (CEST)
-In-Reply-To: <1375374638-28305-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id A4094261698
+ for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 20:45:18 +0200 (CEST)
+In-Reply-To: <1375358887-9160-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,56 +26,54 @@ Cc: Olof Johansson <olof@lixom.net>, Bard Liao <bardliao@realtek.com>, alsa-deve
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7957418414754568685==
+--===============5666155658520623106==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0dy43O7bf9gvZbBV"
+	protocol="application/pgp-signature"; boundary="uwsFMdwXu6g/remW"
 Content-Disposition: inline
 
 
---0dy43O7bf9gvZbBV
+--uwsFMdwXu6g/remW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Aug 01, 2013 at 06:30:38PM +0200, Lars-Peter Clausen wrote:
-> list_first_entry() will always return a valid pointer, even if the list is
-> empty. So the check whether path is NULL will always be false. So we end up
-> calling dapm_create_or_share_mixmux_kcontrol() with a path struct that points
-> right in the middle of the widget struct and by trying to modify the path the
-> widgets memory will become corrupted. Fix this by using list_emtpy() to check if
-> the widget doesn't have any paths.
+On Thu, Aug 01, 2013 at 02:08:07PM +0200, Lars-Peter Clausen wrote:
+> When calling krealloc for the kcontrol data the items in the path list that
+> point back to the head of the list will now point to freed memory, which causes
+> the list to become corrupted. To fix this, instead of resizing the whole data
+> struct, only resize the widget list.
 
-Applied, thanks - looking at this I'm surprised we've not been running
-into problems before.
+Applied, thanks - in conjunction with your fix for the list_empty()
+check this now boots fine for me.
 
---0dy43O7bf9gvZbBV
+--uwsFMdwXu6g/remW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR+qyIAAoJELSic+t+oim9saEQAIxAoC4UoCQkcrg35W+9FUp9
-BBHpg8Ae11hP+5FBLzs8Wm0rFdyc8rIgI8qd/KTBdOAPyR9srbl88khPWT5Y12wr
-ohxkZUS3iJ7jvRidrEguf37l9Ao5+lfO7M9OpXdMBD0kLB8A7LLC+Y1aEF1Wc/Vg
-YeqZDoIwBgQgWj/FrT1XXU/7FZr3ZnFRmsRXrN1zl38A5WBBdoxPd9ACkh5Cb8uv
-QWIVgprsk1tjZ9lm7TLt6cWdwdhVmeN7lqMexckOdNQx+/OQGTruF3aU0vXWZpQs
-N+odgJzTHYEC55g2Gtjjg4S3q2xYj72ZXRAXG3y3kfF0i4n3nQgky1UvnH/9E6nz
-4bE/U+oFTcXc/qsL+HF3PLW+qL+k+Kz3oVkMCMBLU73Zbu4YHITTQrG4CQBWN2E/
-g6kI760O44XzS7Gn3j7Tf/2kbk/+c9PcioFxNHJmvuXtBJFUYaY+x1zn+v9juJKL
-C8fo7IV3FNTOJsDggFWJ/P2T74sIPVQcvc4ohIlKMThey604VaXZ/fy/JcLSgcSG
-NPIhP36dkQ1WXNTlhfkF1LVRw0ONjAohYuXbhIS90eEKw8PhxaqYfOdn7Eohw65C
-MZVyaBbNQUwsf1tXYtyDJOWYC+udLTeQnOCPG1cj7RuXWKGoCKZuavFyt3D+hKcj
-WJ5FHIp4DyezZaibMirx
-=bmkq
+iQIcBAEBAgAGBQJR+qy0AAoJELSic+t+oim9fXIP/3xQbuwSKigIDvT7uIpgsXaJ
+oEWclrxJ5CyAoxGBxeBlhkDe7Sm3PZxzBFk43DXq3y0FStt8+2QW90ieRoNaIM3R
+T8LR8t0c+MdNbp1HIbOZkvZ/l9HiQ1ak1PvPw4Urtjln9tQK7DYXV5NAnwx1MY37
+xUFWcn1MFftNDhtcmEcJsjosYCSe4+isPBIMHGNukyFxMabgibMqKmE+ChIKSxxI
+4RIOihufgZzXTZjl3dwLm+FVUUly/PmGv44GPTwCMxvTaxmA56uaQKGxMSJ7Wl4i
+TcH1JIS00k734BJcJzGTYJTloudLqlepQr6O/XK8BARwSZJdrdkt+OlgwiYMLn1q
+q2fbKbNVbP0kKDhNsp3zPjaF7dV5miTW0BOsHQ/lxaPQ1pXtjvyKjp0Jc/Skdeev
+987XRLcXrieLRAYMzb9m8t7mx7nyP4JsKtzj3fBHVGZw4XLS+ooXmQhw6dO3xG7+
+JoMOEvf6YPHgUC67W1BwnfeuWbyR70n0SAq3iEmNx7JGdhOVraaQvlAMKvpGHdhY
+LP03l1xv50nvQ5fbUbJmSwHlon7HQRZmT9Uc08LeZIPf5WMfJav7Mb5dqb7TpFIr
+yd9VkkYTY5DixY8XKl3EiXjfhG6YJth03XKFykpJwrADh3RyZP8ih1oJ+ftBQP+y
+E39YcwTLb/4750XAH+in
+=7Y2p
 -----END PGP SIGNATURE-----
 
---0dy43O7bf9gvZbBV--
+--uwsFMdwXu6g/remW--
 
---===============7957418414754568685==
+--===============5666155658520623106==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7957418414754568685==--
+--===============5666155658520623106==--
