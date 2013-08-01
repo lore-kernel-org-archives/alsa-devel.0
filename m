@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: mxs: add some error messages to
- help identifying problems
-Date: Thu, 1 Aug 2013 11:22:19 +0100
-Message-ID: <20130801102219.GN9858@sirena.org.uk>
-References: <1375281871-28128-1-git-send-email-LW@KARO-electronics.de>
- <1375281871-28128-3-git-send-email-LW@KARO-electronics.de>
- <CAOMZO5BeFq+PxDtJ12H=d8Y=qu8Gyd4wAn=7+mzbx+_OyaUg2g@mail.gmail.com>
+Subject: Re: [PATCH 10/10] ASoC: dapm: Implement mixer input
+	auto-disable
+Date: Thu, 1 Aug 2013 11:48:00 +0100
+Message-ID: <20130801104800.GO9858@sirena.org.uk>
+References: <1375110845-8069-1-git-send-email-lars@metafoo.de>
+ <1375110845-8069-10-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1287104178025036356=="
+Content-Type: multipart/mixed; boundary="===============8231248014296555326=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id ADE6D260309
- for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 12:22:22 +0200 (CEST)
-In-Reply-To: <CAOMZO5BeFq+PxDtJ12H=d8Y=qu8Gyd4wAn=7+mzbx+_OyaUg2g@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BD2B62602F2
+ for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 12:48:04 +0200 (CEST)
+In-Reply-To: <1375110845-8069-10-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +21,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@karo-electronics.de>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1287104178025036356==
+--===============8231248014296555326==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VCtV4SxmcRQdPlhI"
+	protocol="application/pgp-signature"; boundary="n4X4T9aR8SDBX+0N"
 Content-Disposition: inline
 
 
---VCtV4SxmcRQdPlhI
-Content-Type: text/plain; charset=iso-8859-1
+--n4X4T9aR8SDBX+0N
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 31, 2013 at 07:11:48PM -0300, Fabio Estevam wrote:
-> On Wed, Jul 31, 2013 at 11:44 AM, Lothar Wa=DFmann <LW@karo-electronics.d=
-e> wrote:
+On Mon, Jul 29, 2013 at 05:14:04PM +0200, Lars-Peter Clausen wrote:
 
-> >         /* Set SGTL5000's SYSCLK (provided by SAIF MCLK) */
-> >         ret =3D snd_soc_dai_set_sysclk(codec_dai, SGTL5000_SYSCLK, mclk=
-, 0);
-> > -       if (ret)
-> > +       if (ret) {
-> > +               dev_err(codec_dai->dev, "Failed to set sysclk to %u kHz=
-\n",
-> > +                       mclk / 1000);
+> -	ucontrol->value.integer.value[0] =3D
+> -		(snd_soc_read(codec, reg) >> shift) & mask;
+> +	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+> +	if (dapm_kcontrol_is_powered(kcontrol))
+> +		val =3D (snd_soc_read(codec, reg) >> shift) & mask;
+> +	else
+> +		val =3D dapm_kcontrol_get_value(kcontrol);
+> +	mutex_unlock(&card->dapm_mutex);
+> +
 
-> Wouldn't it make more sense to express it in MHz instead of kHz?
+My first thought looking at this is that I would expect this to be
+encapsulated in kcntrol_get_value(), though at the minute it's actually
+only returning the virtual value which makes sense for the existing use. =
+=20
 
-Well, ideally it'd be fractional MHz (ie, 24.576MHz).  I'd either leave
-it as Hz or do the proper pretty print.  Also if we're nitpicking the
-format then there's usually no space between the number and units.
+Equally well I'd expect the value to always be a functioning cache of
+the real value so I think what I'm really saying here is that I don't
+think we should really be checking if the control is powered at all.  We
+do need the I/O path but the power isn't the reason for it, the fact
+that we have the value stashed locally is.
 
-Personally I think the bike shed would be most attractive if it were
-pink with yellow spots.
+Another thing that's bothering me here is that this only works for mono
+controls but many of the uses are stereo mutes and/or volumes.  We'd
+need to add back the support for those.
 
---VCtV4SxmcRQdPlhI
+--n4X4T9aR8SDBX+0N
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR+jbXAAoJELSic+t+oim9cdkP/AtA1qKUrXIxAnBDFjlyePVN
-EKY+NKvbcS8ZguqylWhP65JucEQl3Y8CBvPWbx4wLSIc3wImeKt+/tq8dMp3sn2i
-YDG4192yVEDXYafMJJ3ODGlG31fCh92H1ChM7aM1/ULbc1dZuIOITOxbBC/99vnq
-50XMy4RW4l5clCpCzmNyeGCXHFtFALjiKhYQWAHw99irnYK7tp6fplo9I+bCpzME
-GOnBeicuD5REhv5Z0HjPYJ4zi3ItWAjfKjm2YwDn69gN9ZWJIw43/yNAb7LeoIM6
-HnDbtOF13qkmnbD6GLml8i7tH2PkseintnNo8qkK8bkOWgvFs3dHtTM39Ixyi2n3
-ufVaLKFHfudRQi8K1PK0qt6L1jEreEDzzp8eNYFyT1toTQPnYBUzhOmyxo7gP18C
-OiCFYoOW05fx+VVmybMc5nkQExyxNQyqthB1erK8teznoCPe3Y9oJdg2KlibJK0D
-4XCqARL2NVKg5lYkxeaV1y+F+tRiM71ysqkSh6teiI3Ci24p033JpHAaKoTL58ob
-2SGbr5ptslnPNtlAWcm78wrB+e1fs9YfCFb6OX5KypQ0oXyiP1b61XA+oEij7uvA
-YJDOyOix5cdu0Z+BK17bBpQ+a2KjZOXp6BalFJt+r6UXjsBuzaZE1SxIvWy+yGw2
-eoDIM5Jh/0jcL3N2jEFf
-=xajV
+iQIcBAEBAgAGBQJR+jzdAAoJELSic+t+oim91uQQAIzJxg7pTHacdzScHstwCEpR
+BpBVvR/onGe/Nfk7ImOR959/GY/xuJSXyo+lNznEfSt15QFggGP4dwupSGGXY2Rd
+gjpzB8mcveGc0tGItD1hTAoHs2PYBx4kQtvyO5QsB8PKA4fOC8C0+hjLZcrDRPsz
+GbpchUIbOhf0wdtLkQQNbbng4kgTXLfTIUMLLLTQUL3d5zmgTXmcfIrTCWRjO9V0
+61daJ1b9KeVMMTkOlh6bUpLx90+w2rFnS/dp50SlUAcXtsGQ0/BB/moNTIuzHiWv
+7aWSb22E69FoKk8ezDVMeP34i8+I/I4nVrK7m95FV7tBDmMHtHv+cLxRJQzJz6/2
+frtWuC2hcL80zYVp0qyPl9T87f3oSFk3zMIaqmtJFPK793+b/ATU/q0c/lGmNds3
+xcgTFz77P5TLviw56VnHfIJqvh5b7kUBxUz0XxioRz7CAfPq/+wbIy6jT+RTGa4w
+9pbCsbNSwHtmA2qF1o4bfGJicMi1rCqgYLEykRwuNywg1up83bQn90wen6SnsP2p
+wV20YNrV7J+R6YSw8kut0GxPD3cFjeqmKZDs7XUpF50iBn7EqL+XEVkaLW+1xbaE
+IWDckPXSJAj7LODwQEypzAsQMnyHkOOV8tT6zraPpATe8aD3T/iiFM8xgokGMfPi
+yV2SAMwRIGlU8wTIaZQX
+=vUp5
 -----END PGP SIGNATURE-----
 
---VCtV4SxmcRQdPlhI--
+--n4X4T9aR8SDBX+0N--
 
---===============1287104178025036356==
+--===============8231248014296555326==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1287104178025036356==--
+--===============8231248014296555326==--
