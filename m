@@ -1,107 +1,55 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: HBR audio with intel HDA
-Date: Thu, 01 Aug 2013 19:37:48 +0300
-Message-ID: <51FA8EDC.5040601@iki.fi>
-References: <a7c323b2e500302c67f527c6b3b819e3@free.fr>
+From: Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>
+Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
+Date: Thu, 1 Aug 2013 19:11:48 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1308011847560.1029@xoschi>
+References: <Pine.LNX.4.44L0.1307291400450.1479-100000@iolanthe.rowland.org> <51F6C123.7020407@gmail.com> <s5hob9k5z0b.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
- [83.102.40.133])
- by alsa0.perex.cz (Postfix) with ESMTP id AD4352615CC
- for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 18:38:01 +0200 (CEST)
-In-Reply-To: <a7c323b2e500302c67f527c6b3b819e3@free.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: ashecrow42@free.fr
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, xingchao.wang@intel.com
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <s5hob9k5z0b.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-01.08.2013 19:29, ashecrow42@free.fr kirjoitti:
-> Hi there,
-
-Hi!
-
-> I have troubles using HBR audio (DTS-HD and Dolby TrueHD). With every 
-> test, I get no signal in the AV receiver. I have tested using a dts-hd 
-> encapsulated in spdif sample file (found there 
-> http://samples.mplayerhq.hu/hdmi/) and commands bellow
-> 
-> - aplay -D hdmi devices
-> - aplay -D hw devices
-> - aplay -D plughw devices
-
-You need to set the non-pcm bit in AES0. Use e.g. "-D hdmi:AES0=0x06".
-
-> Note that I use ubuntu raring with 3.8 kernel that includes Xingchao's 
-> HBR kernel patches.
-> 
-> 
-> A. Configurations I have tested:
-> 
-> 
-> - hda driver upgrade (alsa devel ubuntu team daily builds)
-> 
-> - upgrade alsa-lib & alsa-utils (alsa-testing launchpad)
-> 
-> - kernel upgrade to 3.9
-
-IIRC 3.9 (or newer) may indeed be needed since you have both hdmi and spdif.
-
-> - snd_hda_codec_realtek module backlist (to try to disable SPDIF) 
-> /etc/modprobe.d/blacklist.conf
-> 
-> - snd_hda_codec_realtek index = -2 in /etc/modprobe.d/alsa-base.conf
-> 
-> - fresh new ubuntu raring install with no modifications at all: still 
-> no signal
-> 
-> B. Info:
-> 
-> cat /proc/asound/card0/codec* | grep Codec
-> Codec: Realtek ALC892
-> Codec: Intel CougarPoint HDMI
-> 
-> I use zotac ZBOX ID82 (intel HM65 chipset with hdmi and spdif)
-> 
-> with alsa debug and alsa debug verbose enabled in kernel I got the 
-> alsa-info.txt attached file produced on raring with no modification 
-> while playing dts-hd sample file with command:
-> 
-> 
-> aplay -D hdmi:CARD=PCH,DEV=0 -c8 -fs16_le -r192000 dts.spdif
-
-As per above you need to use
-aplay -D hdmi:CARD=PCH,DEV=0,AES0=0x06 -c8 -fs16_le -r192000 dts.spdif
-
-> 
-> C. I add that:
-> 
-> - In every test I have non HD audio protocols (DTS and dolby) working 
-> well in the same configuration
-> 
-> - I have tried with windows just to see if my hardware is broken and I 
-> get DTS-HD audio with no problem
-> 
-> - Takashi, I've read your HD-Audio.txt file and as far as I see, I have 
-> no known error message in kernel log
-> 
-> 
-> => I and Wingchao Wang have conclued that it is driver or codec 
-> related. Can you help me please?
-> 
-> Thanks a lot
-> PS: sorry if you receive this email twice, I have sent it again as I 
-> was not member of the list the first time.
 
 
--- 
-Anssi Hannula
+On Tue, 30 Jul 2013, Takashi Iwai wrote:
+
+> At Mon, 29 Jul 2013 21:23:15 +0200,
+> Daniel Mack wrote:
+> > 
+> > On 29.07.2013 20:20, Alan Stern wrote:
+> > > data_ep_set_params() checks snd_usb_endpoint_implicit_feedback_sink() 
+> > > in three places.  It looks like only the second place is correct.
+> > > 
+> > > Can you verify whether the other two are right, and explain to me if 
+> > > they are?
+> > 
+> > Which version are you looking at? Eldad Zack recently posted work in
+> > that area, but I can't seem to find them anywhere yet in the sound tree.
+> > Takashi?
+> 
+> I'm waiting for the revised patchset (for the issue in patch 9/10
+> Clemens pointed).
+
+Sorry for the delayed responses - I'm working on my free time, and that 
+can be very sporadic.
+
+I'll get around to that patchset on the weekend.
+
+> > Eldad, as you're likely more into the detail right now - any oppinion on
+> > Alan's findings?
+
+Unfortunately I haven't read too deeply into that part of the code.
+FWIW, I will take a closer look at the weekend.
+
+Alan, let me know if you plan to post the patch as-is, I'll happily test 
+it. 
+
+Cheers,
+Eldad
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
