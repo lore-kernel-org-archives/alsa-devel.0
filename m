@@ -1,18 +1,20 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH] ASoC: rt5640: remove unused mux
-Date: Thu, 1 Aug 2013 20:22:35 +0800
-Message-ID: <1121E117AD4ECE49880A389A396215BB935C48AB55@rtitmbs7.realtek.com.tw>
-References: <1375356562-28151-1-git-send-email-bardliao@realtek.com>
- <51FA4EDF.4020809@metafoo.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: sgtl5000: prevent playback to be
+ muted when terminating concurrent capture
+Date: Thu, 1 Aug 2013 10:06:40 -0300
+Message-ID: <CAOMZO5DMdHrbk8vd0Zb3SRfdW9zhERzN=cfWiJxhbezD3umKag@mail.gmail.com>
+References: <1375281871-28128-1-git-send-email-LW@KARO-electronics.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 48CAB260305
- for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 14:22:47 +0200 (CEST)
-In-Reply-To: <51FA4EDF.4020809@metafoo.de>
-Content-Language: zh-TW
+Received: from mail-vb0-f48.google.com (mail-vb0-f48.google.com
+ [209.85.212.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id A107526030E
+ for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 15:06:42 +0200 (CEST)
+Received: by mail-vb0-f48.google.com with SMTP id w16so2021682vbf.7
+ for <alsa-devel@alsa-project.org>; Thu, 01 Aug 2013 06:06:40 -0700 (PDT)
+In-Reply-To: <1375281871-28128-1-git-send-email-LW@KARO-electronics.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, Flove <flove@realtek.com>
+To: =?UTF-8?Q?Lothar_Wa=C3=9Fmann?= <LW@karo-electronics.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
-> Sent: Thursday, August 01, 2013 8:05 PM
-> To: Bard Liao
-> Cc: broonie@kernel.org; lgirdwood@gmail.com; Oder Chiou;
-> alsa-devel@alsa-project.org; swarren@nvidia.com; swarren@wwwdotorg.org;
-> Flove
-> Subject: Re: [alsa-devel] [PATCH] ASoC: rt5640: remove unused mux
-> 
-> On 08/01/2013 01:29 PM, bardliao@realtek.com wrote:
-> > From: Bard Liao <bardliao@realtek.com>
-> >
-> > Remove unused "INL Mux" and "INR Mux".
-> >
-> > Signed-off-by: Bard Liao <bardliao@realtek.com>
-> > ---
-> > I meet a kernel panic issue if I don't remove the unused widget and modify
-> something in rt5640_dapm_widgets[] and/or rt5640_dapm_routes[].
-> > The message is "Unable to handle kernel paging request at virtual address
-> 6b6b6bd3".
-> > PC is at dapm_clear_walk_output+0x18/0x7c LR is at
-> > dapm_clear_walk_output+0x18/0x7c If I remove those unused widget, ie.
-> > not appear in rt5640_dapm_routes[], everything is fine.
-> > So I think they should be removed.
-> 
-> The kernel panic is my fault. I introduced a memory corruption bug in the
-> ASoC DAPM core. It's not specific to this drivers, I'll send the fix in a minute.
-
-Thanks for your clarification.
-However, I think those two widgets should be removed still.
-Because there is no those MUXs in RT5640 codec in fact.
-
-> 
-> - Lars
-> 
-> ------Please consider the environment before printing this e-mail.
+T24gV2VkLCBKdWwgMzEsIDIwMTMgYXQgMTE6NDQgQU0sIExvdGhhciBXYcOfbWFubiA8TFdAa2Fy
+by1lbGVjdHJvbmljcy5kZT4gd3JvdGU6Cj4gV2hlbiBhIHNvdW5kIGNhcHR1cmUvcGxheWJhY2sg
+aXMgdGVybWluYXRlZCB3aGlsZSBhIHBsYXliYWNrL2NhcHR1cmUKPiBpcyBydW5uaW5nLCBwb3dl
+cl92YWdfZXZlbnQoKSB3aWxsIGNsZWFyIFNHVEw1MDAwX0NISVBfQU5BX1BPV0VSIGluCj4gdGhl
+IFNORF9TT0NfREFQTV9QUkVfUE1EIGV2ZW50LCB0aHVzIG11dGluZyB0aGUgcmVzcGVjdGl2ZSBv
+dGhlcgo+IGNoYW5uZWwuCj4KPiBEb24ndCBjbGVhciBTR1RMNTAwMF9DSElQX0FOQV9QT1dFUiB3
+aGVuIGJvdGggREFDIGFuZCBBREMgYXJlIGFjdGl2ZQo+IHRvIHByZXZlbnQgdGhpcy4KPgo+IFNp
+Z25lZC1vZmYtYnk6IExvdGhhciBXYcOfbWFubiA8TFdAS0FSTy1lbGVjdHJvbmljcy5kZT4KClJl
+dmlld2VkLWJ5OiBGYWJpbyBFc3RldmFtIDxmYWJpby5lc3RldmFtQGZyZWVzY2FsZS5jb20+Cl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
