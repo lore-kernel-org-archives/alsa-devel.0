@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: dapm: Check return value of
-	snd_soc_cnew()
-Date: Thu, 1 Aug 2013 14:37:16 +0100
-Message-ID: <20130801133715.GS9858@sirena.org.uk>
-References: <1375358887-9160-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: rt5640: remove unused mux
+Date: Thu, 1 Aug 2013 14:45:39 +0100
+Message-ID: <20130801134539.GT9858@sirena.org.uk>
+References: <1375356562-28151-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9217727757568246927=="
+Content-Type: multipart/mixed; boundary="===============6628193951957991198=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2072C260818
- for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 15:37:23 +0200 (CEST)
-In-Reply-To: <1375358887-9160-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id AC98826084D
+ for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 15:45:45 +0200 (CEST)
+In-Reply-To: <1375356562-28151-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Olof Johansson <olof@lixom.net>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
+To: bardliao@realtek.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, swarren@wwwdotorg.org, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9217727757568246927==
+--===============6628193951957991198==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0P9TaaCeWEe02mc8"
+	protocol="application/pgp-signature"; boundary="ZLrJ8r6slTsjmg4w"
 Content-Disposition: inline
 
 
---0P9TaaCeWEe02mc8
+--ZLrJ8r6slTsjmg4w
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 01, 2013 at 02:08:06PM +0200, Lars-Peter Clausen wrote:
-> snd_soc_cnew() can return NULL, so we should check the result before trying to
-> use it.
+On Thu, Aug 01, 2013 at 07:29:22PM +0800, bardliao@realtek.com wrote:
+> From: Bard Liao <bardliao@realtek.com>
+>=20
+> Remove unused "INL Mux" and "INR Mux".
 
 Applied, thanks.
 
---0P9TaaCeWEe02mc8
+--ZLrJ8r6slTsjmg4w
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR+mSIAAoJELSic+t+oim9EvYP/RoKeKSBWQqtRjLK4qrU9MW2
-ZcH1IG3DSEyHkbQ5HQs0XbBixMQvZLsQjoTQUF8gz/cRM1fxAs8MjTgTVpiGY0yZ
-VOHUBwElT9L33m8oVw0B1QXoXRYt/RTdxrHSYCPjbMsizBaBdX40KsnuTLKhq3tG
-z8XnLzlqhvGFYyXGKQHbzZaBrOuXTfInyr6d9pzgOKS5bV71tRuJq8YbGsTbqlus
-mXqcCrS3fWRYtffPIO/kI/ZmOEqQ0Q9Vlgu0+uyTDS8IwlsG0KDF6llgacpWBfqC
-pOeJRy+aopMxEZ8piGck2zoDUkk7+0p2wyWBLzt9IzrIfODJQ39VkQO2nqczDzwY
-yhp3MQVw1RIZgtI0iWBDnLf+WwGfbEZr6FMr6ReFB/S9o9v3MsYfkCHXkBhd0BkM
-oXZ/U0rI5VhbnW7mMwxL82O2QwPJxRfEJb4k8j8tIQA9GFguzP1czGcKFws6ibuN
-xIwzMtCFAvyDuUiRTXiVj4zkn/tWwIjhfpT4N1VSzxgz+A5XnTS/nZYQZmmLblZs
-bWquP+B2HpA2ssgebbNw9UpBVtZADfgSvqjGI+V4UqEhDXioBrMB3bK5JuS5LmS+
-FtX9jlnrfqiyDSj+SE8mw3SPY06gUKSBhoyfmJj9gAG1BLJbeYIAbeYDTKboXaum
-Kd7n/DaML0/5qre4NY9T
-=vBWx
+iQIcBAEBAgAGBQJR+maAAAoJELSic+t+oim99+AP/2BXNEQH9Xama+q6XIGhYnmp
+KmTZWEujY/Q2Rb7a2atC4Cnsk/edllcH1rVXLB/KH1dPsK7+U9h0drxU6OYL39lZ
+/TVeKOy9ghGXCCswLV9NmeUF6U3zFZKsXkK8OtfhvCOcv5qJYUoZcj+cSmQjMvno
+4KppESBSG/njCUr9Z2D+uc63Lcfs0xgurN2UT3bbXLsVP/9DOzu4/pnWdkQN9BZD
+ssYivp/lC5HkU2g4jDRVHOv/BJcyuu5TaeJB7aFVG4cr6W6EpQhO8IEiRQQTZ+xb
+1n8k3PT7K2JYhl+848Ov4Qfg1uPlgrjErf4ojvm/eBflA47Bz1y9q+1wZOfkVDIi
+a3/xq9+3qWDivYFt3YdBTrdd+916WpmFp8pkDP0O2GKzTml6l1eP9T/1muStu5Dy
+BeT9iC9hADj4w00F5JcWCjrKUlvRqZGySIb9ZwxQSCVoCwWWwWSjgJyvly0g56fD
+ebpbDtX8Oz97FQOtdXjs+DmRnKzAscu6QdAHkZ9tU5UxFOVyC5AoNGj2noThXmUU
+gUB7ulkFf5VfGZZfhbSAr0Dd9HeVMKAXhA3LzkP5ioHJcMpWbRrkssvtyKrW7Z74
+nznechg4qre2RTGBNItMG9oty10VPbINUu3ACaADUuFiIH92/qvAQmGr7tsPf+zX
+L//XYhWpDwC6u6Cd39iN
+=FV+5
 -----END PGP SIGNATURE-----
 
---0P9TaaCeWEe02mc8--
+--ZLrJ8r6slTsjmg4w--
 
---===============9217727757568246927==
+--===============6628193951957991198==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9217727757568246927==--
+--===============6628193951957991198==--
