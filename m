@@ -1,79 +1,58 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: dapm: Fix kcontrol path list
-	corruption
-Date: Thu, 1 Aug 2013 19:45:11 +0100
-Message-ID: <20130801184511.GY9858@sirena.org.uk>
-References: <1375358887-9160-1-git-send-email-lars@metafoo.de>
- <1375358887-9160-2-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: core: init delayed_work for codec-codec links
+Date: Thu, 1 Aug 2013 19:47:03 +0100
+Message-ID: <20130801184703.GZ9858@sirena.org.uk>
+References: <20130731131627.GA32631@opensource.wolfsonmicro.com>
+ <20130731132522.GP9858@sirena.org.uk>
+ <20130801151336.GA1112@opensource.wolfsonmicro.com>
+ <20130801152356.GW9858@sirena.org.uk>
+ <20130801155056.GA3996@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5666155658520623106=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A4094261698
- for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 20:45:18 +0200 (CEST)
-In-Reply-To: <1375358887-9160-2-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Olof Johansson <olof@lixom.net>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Z8BTbqcYO9MpMRm3"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130801155056.GA3996@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5666155658520623106==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="uwsFMdwXu6g/remW"
-Content-Disposition: inline
-
-
---uwsFMdwXu6g/remW
+--Z8BTbqcYO9MpMRm3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Aug 01, 2013 at 02:08:07PM +0200, Lars-Peter Clausen wrote:
-> When calling krealloc for the kcontrol data the items in the path list that
-> point back to the head of the list will now point to freed memory, which causes
-> the list to become corrupted. To fix this, instead of resizing the whole data
-> struct, only resize the widget list.
+On Thu, Aug 01, 2013 at 04:50:56PM +0100, Richard Fitzgerald wrote:
 
-Applied, thanks - in conjunction with your fix for the list_empty()
-check this now boots fine for me.
+> Yeah, I think the problem is more one of bad naming. I should define that
+> function as the delayed work for codec-2-codec links, it just happens
+> that we don't currently have to do anything for them. The only thing
+> the pcm close_delayed_work() does is to send a SND_SOC_DAPM_STREAM_STOP
+> but for c2c links we never send a start anyway.
 
---uwsFMdwXu6g/remW
+That makes sense, yes.
+
+--Z8BTbqcYO9MpMRm3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR+qy0AAoJELSic+t+oim9fXIP/3xQbuwSKigIDvT7uIpgsXaJ
-oEWclrxJ5CyAoxGBxeBlhkDe7Sm3PZxzBFk43DXq3y0FStt8+2QW90ieRoNaIM3R
-T8LR8t0c+MdNbp1HIbOZkvZ/l9HiQ1ak1PvPw4Urtjln9tQK7DYXV5NAnwx1MY37
-xUFWcn1MFftNDhtcmEcJsjosYCSe4+isPBIMHGNukyFxMabgibMqKmE+ChIKSxxI
-4RIOihufgZzXTZjl3dwLm+FVUUly/PmGv44GPTwCMxvTaxmA56uaQKGxMSJ7Wl4i
-TcH1JIS00k734BJcJzGTYJTloudLqlepQr6O/XK8BARwSZJdrdkt+OlgwiYMLn1q
-q2fbKbNVbP0kKDhNsp3zPjaF7dV5miTW0BOsHQ/lxaPQ1pXtjvyKjp0Jc/Skdeev
-987XRLcXrieLRAYMzb9m8t7mx7nyP4JsKtzj3fBHVGZw4XLS+ooXmQhw6dO3xG7+
-JoMOEvf6YPHgUC67W1BwnfeuWbyR70n0SAq3iEmNx7JGdhOVraaQvlAMKvpGHdhY
-LP03l1xv50nvQ5fbUbJmSwHlon7HQRZmT9Uc08LeZIPf5WMfJav7Mb5dqb7TpFIr
-yd9VkkYTY5DixY8XKl3EiXjfhG6YJth03XKFykpJwrADh3RyZP8ih1oJ+ftBQP+y
-E39YcwTLb/4750XAH+in
-=7Y2p
+iQIcBAEBAgAGBQJR+q0kAAoJELSic+t+oim9qa4P/jZktsjkX9y7DrQmGcfk1yWy
+dKOsbKB18dPRxz5izXd90e2lQ3/6Vwj7X66WQj09Z0CNAbHwkK/r1D/xQB9Rf6XI
+ivx0+IVtXyX0rLvxgzskZlT7zaURchpE/yhxXE6vultYM1QQGwl/dwWykV1XnSlW
+mi2UHauj6JkorFrrfSkYb8ofRxFssXpkyxPHnCOnd6uXdI0bWc43622KGE8sNQCo
+6nfthhkmFRSIZPYPCLBTxu9BDc1wJYjaekW0sUJym16OlZOGzKe9k3I7fQU4buv1
+HQyxdDM8pHMUUI9P/4IN+BxY7W3Ci1sC9aWhk/tX90EEZH+2t68UZNosmxrLKdeV
+3Bho/ZML4h8P4QpwpqyV2x8Du2q0poOEoMGiJsf8WWycnVsdeGZgBuwEcqtXWMXr
+0aAm3BAfTP45115Bw/7VsxrQCoU3VknJY8otLHnwQsAPiynhr0sXIUeA+PBNYykc
+RCltkqf4cZbp7XebtUcWdXm4DQSjQOKpkC3+BQtimrF9d/sSLcO0/S9Ufkid+Rsd
+TSBCf8YSo4cjAzzoOICCuLxyuoOjo8twb1xVBrhB9KyZ4YJz57XFPfVjKgUmnq5W
+vJnWQGOvmWi2qMM+xIwMJ4PF/HhzgAaP5P6E2FnGRFS+N6S9LQVcIs70kOB3awl9
+wzkhUTGXURi+LxFwY5zv
+=KzRg
 -----END PGP SIGNATURE-----
 
---uwsFMdwXu6g/remW--
-
---===============5666155658520623106==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5666155658520623106==--
+--Z8BTbqcYO9MpMRm3--
