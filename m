@@ -1,59 +1,88 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: Add PCM1681 codec driver.
-Date: Thu, 1 Aug 2013 10:42:25 +0100
-Message-ID: <20130801094225.GJ9858@sirena.org.uk>
-References: <1375348498-2941-1-git-send-email-marek.belisko@streamunlimited.com>
+Subject: Re: [PATCH v6 2/8] ASoC: atmel: machine driver for
+ at91sam9x5-wm8731 boards
+Date: Thu, 1 Aug 2013 10:53:38 +0100
+Message-ID: <20130801095338.GK9858@sirena.org.uk>
+References: <1375180329-4860-1-git-send-email-richard.genoud@gmail.com>
+ <1375180329-4860-3-git-send-email-richard.genoud@gmail.com>
+ <51F7FBA8.6080400@wwwdotorg.org>
+ <20130730204511.GX9858@sirena.org.uk> <51F8302D.406@wwwdotorg.org>
+ <20130730225845.GB9858@sirena.org.uk>
+ <51F98CBC.6000302@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NlM66YnIYV0xathf"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1375348498-2941-1-git-send-email-marek.belisko@streamunlimited.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Marek Belisko <marek.belisko@gmail.com>
-Cc: perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, rob.herring@calxeda.com, lgirdwood@gmail.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, zonque@gmail.com, Marek Belisko <marek.belisko@streamunlimited.com>
+Content-Type: multipart/mixed; boundary="===============5503675945799607053=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id D28EF2616CB
+ for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 11:53:44 +0200 (CEST)
+In-Reply-To: <51F98CBC.6000302@wwwdotorg.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Richard Genoud <richard.genoud@gmail.com>, patches@opensource.wolfsonmicro.com, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---NlM66YnIYV0xathf
+--===============5503675945799607053==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fZWh67R7a8iXbUAa"
+Content-Disposition: inline
+
+
+--fZWh67R7a8iXbUAa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Aug 01, 2013 at 11:14:58AM +0200, Marek Belisko wrote:
-> PCM1681 can be controlled via I2C, SPI or in bootstrap mode (no control mode). This code add
-> support only for I2C mode.
+On Wed, Jul 31, 2013 at 04:16:28PM -0600, Stephen Warren wrote:
+> On 07/30/2013 04:58 PM, Mark Brown wrote:
 
-Applied, thanks.  One thing:
+> > You seem to be assuming that the strings are a bad thing.  I'm not
+> > sure that this is the case modulo the tooling issues...
 
-> +	if (val != -1) {
-> +		regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
-> +					PCM1681_DEEMPH_RATE_MASK, val);
-> +		enable = 1;
-> +	} else
-> +		enable = 0;
+> I do tend to think that using strings is pretty evil...
 
-The style is to have braces on both sides of the else if it's one one.
+Well, they do avoid the legibility issues that tend to plague device
+tree - I don't really mind if they're in the property names (as with
+regulator supply properties) or in the data but having something that is
+directly legible is a substantial win.  Constants deal with this in the
+source but they make runtime debugging more painful which isn't ideal.
 
---NlM66YnIYV0xathf
+--fZWh67R7a8iXbUAa
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR+i1+AAoJELSic+t+oim9/+kQAIuMRwNqlRDr/MLyfbQVoFUl
-Ups4ZAs8mblqDuWYIogYvkQdzWQKQhdoNoi73pXrkcUlcZ4DlJ4LGH+PI2HvH6ZH
-5Eia9NBnsxIOv11w6EtcD7P2Ob87AzljcRn0yrnPeLQb4aA8+ic0qkfGRSsob075
-+iSYv5ziHLL8jxQ/RTMEF3w6VwaNwpHxxUtgiiBe83jHG+fmL5/BvEN+HSjTMYhn
-BU4vIMEQ4UG6LZfe9Sl+MTqvkFoTh6DLjtBZuju2cDkXdmHVjsAQ9hW2+ottAXAk
-0kjJP9kXf4ZumNtlKDyvjhd76gzqbnzYLYAZiUkISjNJG7T3KhHddnIn6JgG54yP
-oULn1ou/21ogASqhqbqA1X784mK2RTIDnDtPHAwbFp9ixxc62JjYwN1Y6LZU8Wlc
-JrOiMOI1LU3G5DrsMGKf/ACNoIp9b04QIl5PA/DMubBU+KG0D+Ao8KVPuWQia0jr
-HQRQ6IwTGY9FDwAgGU0cMJPlqjOXsXYTbB0qNC3D+BBgpZIBNpIsixoAzHAkchLR
-Rs9bvWpnDcKRpMJnlyVZGGiC6RG92sLzy66QTO4rcC70AsoNClYOwQdZ2R186xY8
-Z9Uh6fIg9ChfuKsHKRey8AkAm6qKNfV8wMBD20Xp7LuEX99iZTnnDS2OpNRHLjcs
-51yUiZ7JE9LkzFTMNkrw
-=yObF
+iQIcBAEBAgAGBQJR+jAeAAoJELSic+t+oim94zkQAJ5lTteMeiZBwkZyS6hAsF7t
+o+V3EHASmYxcw8dj+OgXRx2RlmSzN/eSPYk0S3TW1hxBvi93tJGrw417rjmrYN7M
+sciDjwGaR7w79+/a1dZYkHMzVAdNf3krK8cCq2lh1rRhQD1H/+6BWsT+9ObrMbM3
+Fy98Ed6h1IN7aKC+BKGl3PHQlCWDumz8dIEEjKIodARQvZWdLwzjzkgDrAUZoMeR
+C82CfkPm+Se1PLuPLArqX/2vYZGHFHORHrJKWew8VYQ/cxQ7x/BIG4zHU9ejcWS/
+0C+g6pmC85fCnzeOLNqKTxPPQe61XGukezYkVm+/m7vkr/YzrdsxcYOXadBHZjoG
+FF0ryXyYh/CXUDDHo3sjOGTIYxliRgCxlAgWQIJura+gGIV5nwuqDQem1OAM/622
+CaQ6Kfc/P4LZ/Qo5AlYB35DpeSfuUI9ILfapgxWtVqLOYcjyu3AR2waiV/e0Vc+4
+pxmn/qKasaxvDLycZ8l/SsgoEbsO1iiyci42YGZuiWkcNlbu4FC1u6PchD9xEVoH
+2mS4zR/qbqC2puhvLuuvu6mTFcezWtSjUf+3DNTqlt/WZtLAVg875xL2fFBY5Wym
+L9qgyyrOhkB/wUa1Ie6TH1dXB/US6hiLmB5R1nrdSPUaqLnPnsV0ezDVRo3P0BJh
+LmsQsRCwDgXriZXbgip2
+=pB8f
 -----END PGP SIGNATURE-----
 
---NlM66YnIYV0xathf--
+--fZWh67R7a8iXbUAa--
+
+--===============5503675945799607053==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5503675945799607053==--
