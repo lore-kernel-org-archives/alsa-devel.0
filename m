@@ -1,19 +1,15 @@
-From: Richard Genoud <richard.genoud@gmail.com>
-Subject: Re: How do I get this patch?
-Date: Thu, 1 Aug 2013 11:57:09 +0200
-Message-ID: <CACQ1gAiuND+Mg34MOt4ajUWmFpbFm4v+OOXqxwQWpprnveVHFQ@mail.gmail.com>
-References: <loom.20130801T032024-741@post.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: samsung: Make secondary I2S DAI device a
+	child of primary
+Date: Thu,  1 Aug 2013 11:04:24 +0100
+Message-ID: <1375351464-32618-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f51.google.com (mail-oa0-f51.google.com
- [209.85.219.51])
- by alsa0.perex.cz (Postfix) with ESMTP id AA4D32616CB
- for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 11:57:30 +0200 (CEST)
-Received: by mail-oa0-f51.google.com with SMTP id h1so942121oag.10
- for <alsa-devel@alsa-project.org>; Thu, 01 Aug 2013 02:57:29 -0700 (PDT)
-In-Reply-To: <loom.20130801T032024-741@post.gmane.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0544A2655B1
+ for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 12:04:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,34 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Christian Winger Nyman <christianwn@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-2013/8/1 Christian Winger Nyman <christianwn@gmail.com>:
-> I have the VB-99, so this patch would be fantastic. But I don't understand,
-> will it be implemented in the Linux 3.10 kernel or what would be the easiest
-> way for me to get it? I run Ubuntu Studio 13.04. Thanks for any guidance.
->
-> http://comments.gmane.org/gmane.linux.alsa.devel/109660
+From: Mark Brown <broonie@linaro.org>
 
-The 3.10 is already out since some weeks now.
-The patch you're interested in has been included in 3.11-rc1:
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=aafe77cc45a595ca1d4536f2412ddf671ea9108c
+More for neatness than for any great utility. Really we shouldn't be
+creating the child device at all, refactoring will follow.
 
-you can check it via:
-git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-git tag --contains aafe77cc45a595ca1d4536f2412ddf671ea9108c
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/samsung/i2s.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-So, 3 solutions for you :
-- either you or the ubuntu kernel team will backport this patch to the
-kernel used in ubuntu 13.04
-- you wait for ubuntu 13.10
-- you compile the 3.11-rc3 to use on your distro. (it maybe unstable
-for now. The 3.11 will be out in september)
-the last one may not be easy since ubuntu studio has the prempt-rt patch.
-But maybe there's some 3rd party packages that contains the very last
-kernel for ubuntu studio. You may have an answer to that on an ubuntu
-ML.
-
-Richard.
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index a3e4b49..47e08dd 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1019,6 +1019,8 @@ static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
+ 		if (IS_ERR(i2s->pdev))
+ 			return NULL;
+ 
++		i2s->pdev->dev.parent = &pdev->dev;
++
+ 		platform_set_drvdata(i2s->pdev, i2s);
+ 		ret = platform_device_add(i2s->pdev);
+ 		if (ret < 0)
+-- 
+1.8.3.2
