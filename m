@@ -1,16 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: dapm: Fix empty list check in
-	dapm_new_mux()
-Date: Thu,  1 Aug 2013 18:30:38 +0200
-Message-ID: <1375374638-28305-1-git-send-email-lars@metafoo.de>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: HBR audio with intel HDA
+Date: Thu, 01 Aug 2013 19:37:48 +0300
+Message-ID: <51FA8EDC.5040601@iki.fi>
+References: <a7c323b2e500302c67f527c6b3b819e3@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-139.synserver.de (smtp-out-139.synserver.de
- [212.40.185.139])
- by alsa0.perex.cz (Postfix) with ESMTP id 07C2D260895
- for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 18:29:47 +0200 (CEST)
+Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
+ [83.102.40.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD4352615CC
+ for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2013 18:38:01 +0200 (CEST)
+In-Reply-To: <a7c323b2e500302c67f527c6b3b819e3@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,46 +21,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Olof Johansson <olof@lixom.net>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>
+To: ashecrow42@free.fr
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, xingchao.wang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-list_first_entry() will always return a valid pointer, even if the list is
-empty. So the check whether path is NULL will always be false. So we end up
-calling dapm_create_or_share_mixmux_kcontrol() with a path struct that points
-right in the middle of the widget struct and by trying to modify the path the
-widgets memory will become corrupted. Fix this by using list_emtpy() to check if
-the widget doesn't have any paths.
+01.08.2013 19:29, ashecrow42@free.fr kirjoitti:
+> Hi there,
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Hi!
 
----
-This is the real fix for the rt5640 crash.
----
- sound/soc/soc-dapm.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+> I have troubles using HBR audio (DTS-HD and Dolby TrueHD). With every 
+> test, I get no signal in the AV receiver. I have tested using a dts-hd 
+> encapsulated in spdif sample file (found there 
+> http://samples.mplayerhq.hu/hdmi/) and commands bellow
+> 
+> - aplay -D hdmi devices
+> - aplay -D hw devices
+> - aplay -D plughw devices
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 5f64c16..196cea7 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -747,13 +747,14 @@ static int dapm_new_mux(struct snd_soc_dapm_widget *w)
- 		return -EINVAL;
- 	}
- 
--	path = list_first_entry(&w->sources, struct snd_soc_dapm_path,
--				list_sink);
--	if (!path) {
-+	if (list_empty(&w->sources)) {
- 		dev_err(dapm->dev, "ASoC: mux %s has no paths\n", w->name);
- 		return -EINVAL;
- 	}
- 
-+	path = list_first_entry(&w->sources, struct snd_soc_dapm_path,
-+				list_sink);
-+
- 	ret = dapm_create_or_share_mixmux_kcontrol(w, 0, path);
- 	if (ret < 0)
- 		return ret;
+You need to set the non-pcm bit in AES0. Use e.g. "-D hdmi:AES0=0x06".
+
+> Note that I use ubuntu raring with 3.8 kernel that includes Xingchao's 
+> HBR kernel patches.
+> 
+> 
+> A. Configurations I have tested:
+> 
+> 
+> - hda driver upgrade (alsa devel ubuntu team daily builds)
+> 
+> - upgrade alsa-lib & alsa-utils (alsa-testing launchpad)
+> 
+> - kernel upgrade to 3.9
+
+IIRC 3.9 (or newer) may indeed be needed since you have both hdmi and spdif.
+
+> - snd_hda_codec_realtek module backlist (to try to disable SPDIF) 
+> /etc/modprobe.d/blacklist.conf
+> 
+> - snd_hda_codec_realtek index = -2 in /etc/modprobe.d/alsa-base.conf
+> 
+> - fresh new ubuntu raring install with no modifications at all: still 
+> no signal
+> 
+> B. Info:
+> 
+> cat /proc/asound/card0/codec* | grep Codec
+> Codec: Realtek ALC892
+> Codec: Intel CougarPoint HDMI
+> 
+> I use zotac ZBOX ID82 (intel HM65 chipset with hdmi and spdif)
+> 
+> with alsa debug and alsa debug verbose enabled in kernel I got the 
+> alsa-info.txt attached file produced on raring with no modification 
+> while playing dts-hd sample file with command:
+> 
+> 
+> aplay -D hdmi:CARD=PCH,DEV=0 -c8 -fs16_le -r192000 dts.spdif
+
+As per above you need to use
+aplay -D hdmi:CARD=PCH,DEV=0,AES0=0x06 -c8 -fs16_le -r192000 dts.spdif
+
+> 
+> C. I add that:
+> 
+> - In every test I have non HD audio protocols (DTS and dolby) working 
+> well in the same configuration
+> 
+> - I have tried with windows just to see if my hardware is broken and I 
+> get DTS-HD audio with no problem
+> 
+> - Takashi, I've read your HD-Audio.txt file and as far as I see, I have 
+> no known error message in kernel log
+> 
+> 
+> => I and Wingchao Wang have conclued that it is driver or codec 
+> related. Can you help me please?
+> 
+> Thanks a lot
+> PS: sorry if you receive this email twice, I have sent it again as I 
+> was not member of the list the first time.
+
+
 -- 
-1.8.0
+Anssi Hannula
