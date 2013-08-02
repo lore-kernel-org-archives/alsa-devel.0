@@ -1,77 +1,77 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 10/10] ASoC: dapm: Implement mixer input
-	auto-disable
-Date: Fri, 2 Aug 2013 11:22:02 +0100
-Message-ID: <20130802102202.GB15416@sirena.org.uk>
-References: <1375110845-8069-1-git-send-email-lars@metafoo.de>
- <1375110845-8069-10-git-send-email-lars@metafoo.de>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [PATCH V2 7/8] ARM: dts: wm8994: Add wm8994 support on smdk5420
+Date: Fri, 2 Aug 2013 16:15:28 +0530
+Message-ID: <CAAgF-BcPT24LcQe5SUyOP3qHThXqZ1mVts=_cnww3EAUYEYikw@mail.gmail.com>
+References: <1374845812-7803-1-git-send-email-padma.v@samsung.com>
+	<1374845812-7803-8-git-send-email-padma.v@samsung.com>
+	<20130726151902.GL9858@sirena.org.uk>
+	<CAAgF-Be8SNxTZv1yFCwH6yJ-O_3R4reh=3y+pSCLJYW7S9TkUg@mail.gmail.com>
+	<CAAgF-Bexp_fGT8KV+TQ0_kZLJBtq7UK=TG4eYRA6qpTSL+scxg@mail.gmail.com>
+	<20130729134311.GX9858@sirena.org.uk>
+	<CAAgF-BeDYm1jNJpkyfTeS5HjpEuaHiumFq+D_PNs=QYG6-Px+w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0899873696422722939=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E560F26173C
- for <alsa-devel@alsa-project.org>; Fri,  2 Aug 2013 12:22:07 +0200 (CEST)
-In-Reply-To: <1375110845-8069-10-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <CAAgF-BeDYm1jNJpkyfTeS5HjpEuaHiumFq+D_PNs=QYG6-Px+w@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, abrestic@chromium.org, Tomasz Figa <tomasz.figa@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---===============0899873696422722939==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1LKvkjL3sHcu1TtY"
-Content-Disposition: inline
+On Tue, Jul 30, 2013 at 8:58 AM, Padma Venkat <padma.kvr@gmail.com> wrote:
+> Hi Mark,
+>
+> On Mon, Jul 29, 2013 at 7:13 PM, Mark Brown <broonie@kernel.org> wrote:
+>> On Mon, Jul 29, 2013 at 05:31:16PM +0530, Padma Venkat wrote:
+>>> On Sat, Jul 27, 2013 at 6:46 AM, Padma Venkat <padma.kvr@gmail.com> wrote:
+>>
+>>> >>> +     vdd: fixed-regulator@0 {
+>>> >>> +             compatible = "regulator-fixed";
+>>> >>> +             regulator-name = "vdd-supply";
+>>
+>>> >> These names look wrong - they should reflect the names in the schematic
+>>> >> as they're for human comprehensibility.  This may just be a case of
+>>> >> dropping the -supply.
+>>
+>>> When I posted the same patch for smdk5250, you asked me to club all
+>>> the same supply regulators. So I clubbed AVDD2 and CPVDD. So any other
+>>> better name for representing both supplies?
+>>
+>> No, I'd have told you to combine things taht come from the same supply
+>> on the board - things like the speaker supplies for example aren't going
+>> to be coming from separate places.  The names should reflect whatever
+>> the names on the schemaric are, like I say that's probably just removing
+>> the -supply.
+>>
+>>> >> documentation update the other day, it's in my tree now) but it's not
+>>> >> essential and I suspect it needs some work on the clock driver side
+>>> >> still.
+>>
+>>> > OK. I will check this.
+>>
+>>> As per schemata, input clock to MCLK1 is an oscillator clock with
+>>> 16.9MHz and MCLK2 not showing any input clock. So here I need to add a
+>>> fixed rate clock with 16.9MHz as MCLK1 in the smdk board file.
+>>
+>>> Is it correct?
+>>
+>> Yes, in the DTS (or to XCLKOUT on the AP?).
+>
+> On smdk boards(atleast on smdk5250 and smdk5420) there is no XCLKOUT
+> funda. Codec MCLK can get clock from oscillator clock in codec master
+> mode or i2scdclk in codec slave mode. XCLKOUT is there in some other
+> variants of 5250 and 5420 where it is using other codecs than wm8994.
+> But the mux and divider of XCLKOUT is out of CMU. As Sylwester told it
+> is there in PMU registers.
 
+Sorry for giving some what wrong info here. I verified the schemata.
+There is a switch on the board which can be used to select the input
+clock of codec MCLK1. We can either select oscillator clock which is
+16.9MHz which is on the board or XCLKOUT which is from PMU or
+i2scdclk(codec slave mode). Right now we are using oscillator clock as
+input clock to MCLK1.
 
---1LKvkjL3sHcu1TtY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jul 29, 2013 at 05:14:04PM +0200, Lars-Peter Clausen wrote:
-> Some devices have the problem that if a internal audio signal source is disabled
-> the output of the source becomes undefined or goes to a undesired state (E.g.
-
-I was about to apply this but it looks like it needs refreshing after
-the bug fixes - can you check and resend please?
-
---1LKvkjL3sHcu1TtY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR+4hHAAoJELSic+t+oim9MJkP/0HeLJwPMK7+oCs3AgrzOR2F
-rklvjscqlT4FopkS++5biBRR7RBCEkwRRZWBOTB8wnyw2sJ2Q+MmjvzN3qucHyJr
-pu8Zzb2WrNkzasSuaxcL09O510V8ZkvOljWmw6H0HYpEmbgGgYTPH1LU1d09ncZs
-EVA9g4HFiCflTA/WZag6IArbzs2peE4B0jEmeefF1GihXhEhXa7IojhwH12/U9se
-bEAsegoREAiM1+mclmJbp/QWQoFYVb1Mxdpv2NCf6KqNroeJ1gbz1n/dqkf2nd/I
-/UHuDW5O2tF00vzvR/Vx5mJSiap1IVXS3QoltlQo6Pxg+tPnF5m8EzYpliOCaQag
-X2BLgKXRH+9vKrf1D+3/ORt+TWgpz6se99sznLfQoNpMbonrZwa086xY6fki3NQP
-Lp6slKQuAnl9m2+4lsSLLzCLwEqP+ItY3D5cCt/pom9Q1jUdo50UV+IM9SbWqjJ4
-KL65YCKCgCuwtjLI4AqZW0ZFyIDCw3OhKklZwMT0cZuMt2wqfIj2N+qAKE4An5J6
-SuIQkmmCfGKvHpwLCLTcAPbxrNvmJF/6PRVVb8L02VSqifaxRy6GHqhKodY2ULMx
-ElLvmE9+4xo1KFg3t2zIvHHNlDp0VOLFeaJaHWsB2ZE3Pdkrtw0XIkyqh9HlBBqN
-wL+sQNM+gcvd6dAiTkvH
-=AujX
------END PGP SIGNATURE-----
-
---1LKvkjL3sHcu1TtY--
-
---===============0899873696422722939==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0899873696422722939==--
+Thanks
+Padma
