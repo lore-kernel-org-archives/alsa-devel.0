@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: core: init delayed_work for
-	codec-codec links
-Date: Fri, 2 Aug 2013 11:14:54 +0100
-Message-ID: <20130802101454.GI9858@sirena.org.uk>
-References: <20130731131627.GA32631@opensource.wolfsonmicro.com>
- <20130802100108.GA17936@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 10/10] ASoC: dapm: Implement mixer input
+	auto-disable
+Date: Fri, 2 Aug 2013 11:22:02 +0100
+Message-ID: <20130802102202.GB15416@sirena.org.uk>
+References: <1375110845-8069-1-git-send-email-lars@metafoo.de>
+ <1375110845-8069-10-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5990253107177774356=="
+Content-Type: multipart/mixed; boundary="===============0899873696422722939=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BBEA265646
- for <alsa-devel@alsa-project.org>; Fri,  2 Aug 2013 12:14:57 +0200 (CEST)
-In-Reply-To: <20130802100108.GA17936@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E560F26173C
+ for <alsa-devel@alsa-project.org>; Fri,  2 Aug 2013 12:22:07 +0200 (CEST)
+In-Reply-To: <1375110845-8069-10-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,69 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5990253107177774356==
+--===============0899873696422722939==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VcQ2MTg63lIaL1+E"
+	protocol="application/pgp-signature"; boundary="1LKvkjL3sHcu1TtY"
 Content-Disposition: inline
 
 
---VcQ2MTg63lIaL1+E
+--1LKvkjL3sHcu1TtY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Aug 02, 2013 at 11:01:08AM +0100, Richard Fitzgerald wrote:
+On Mon, Jul 29, 2013 at 05:14:04PM +0200, Lars-Peter Clausen wrote:
+> Some devices have the problem that if a internal audio signal source is disabled
+> the output of the source becomes undefined or goes to a undesired state (E.g.
 
-> +static void codec2codec_close_delayed_work(struct work_struct *work)
-> +{
-> +	/* No action required.
-> +	 * C2C links only represent a hardware connection and currently
-> +	 * we assume that we don't have to explicitly start or stop them
-> +	 */
-> +}
+I was about to apply this but it looks like it needs refreshing after
+the bug fixes - can you check and resend please?
 
-That's not the reason - what's happening with the stream events is that
-since these links are not on the edge of the DAPM graph we don't need to
-interface with the outside world.  Further since we're not dealing with
-the application layer there is no need to delay the power down, the
-reason that's there is to stop us powering the link down if there's just
-a small gap between tracks so we don't get pops, clicks and extra gaps
-if the application layer is closing the device at the end of every track
-(which is quite a common pattern).
-
---VcQ2MTg63lIaL1+E
+--1LKvkjL3sHcu1TtY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR+4aaAAoJELSic+t+oim9vcoP/05uOUSkkRVN7l50GoGKgDUz
-p/h1s6J/I+EpSYp+5f3wFgrJkriY0BTt+fdQjCUJlNO/x3EscvbcFCJBO5YAHH3R
-xWCZ+otMRRX8K2pi7gXpC0obKyvR9ODsgjpNYmmfg9yhk2YUM+47vbtDU5Ms8zqs
-3aoZbpIPATX8XMNrzwAJSYEM9Zyg5CwC/crR6O9HO3slQy/KRtrdYJQjVBVtfajC
-gZDGXemJlGazIT++L01qU8ul/nHhPYuxD5kQ6/0F/JD1OznOkHqFUhGzKr8bWWip
-eti313mEDDvcs7s6bzB6TloMyYYVFKhdJhltK6kI6xxZnGgBjHLxC7mOLTnWkBW+
-ydTQBg4Ch3tvBEouWaT3sBexG5eBM9+W1P5fL1ZVa+qdJsHhehsfnUFHVJI4U4cQ
-S9Fcy9wrClvgtmymKJhBwkN/iidKRA+E2YAYikgkBOnzo+cy5LAQ9ADCUysTDCEj
-idjDg9k2Y8UACsQbisIl/GnXS9HN53CojlcXqeGG1KVbJScHZowNK8X70h02EJ6+
-72Jdk1knCVmswrSqR6JWrUTjg79b35NwzaXnCy5NZbz1fRigQg95ciEWD+5wEeQ/
-ZOtxs+bsPj/dPS/ZuY2VFDo5Cgl4UEBgkosPJqh9i3EHRDYItHTMPO/ehf09161f
-ji9vrqA3ow8K4eA/eanV
-=CyIX
+iQIcBAEBAgAGBQJR+4hHAAoJELSic+t+oim9MJkP/0HeLJwPMK7+oCs3AgrzOR2F
+rklvjscqlT4FopkS++5biBRR7RBCEkwRRZWBOTB8wnyw2sJ2Q+MmjvzN3qucHyJr
+pu8Zzb2WrNkzasSuaxcL09O510V8ZkvOljWmw6H0HYpEmbgGgYTPH1LU1d09ncZs
+EVA9g4HFiCflTA/WZag6IArbzs2peE4B0jEmeefF1GihXhEhXa7IojhwH12/U9se
+bEAsegoREAiM1+mclmJbp/QWQoFYVb1Mxdpv2NCf6KqNroeJ1gbz1n/dqkf2nd/I
+/UHuDW5O2tF00vzvR/Vx5mJSiap1IVXS3QoltlQo6Pxg+tPnF5m8EzYpliOCaQag
+X2BLgKXRH+9vKrf1D+3/ORt+TWgpz6se99sznLfQoNpMbonrZwa086xY6fki3NQP
+Lp6slKQuAnl9m2+4lsSLLzCLwEqP+ItY3D5cCt/pom9Q1jUdo50UV+IM9SbWqjJ4
+KL65YCKCgCuwtjLI4AqZW0ZFyIDCw3OhKklZwMT0cZuMt2wqfIj2N+qAKE4An5J6
+SuIQkmmCfGKvHpwLCLTcAPbxrNvmJF/6PRVVb8L02VSqifaxRy6GHqhKodY2ULMx
+ElLvmE9+4xo1KFg3t2zIvHHNlDp0VOLFeaJaHWsB2ZE3Pdkrtw0XIkyqh9HlBBqN
+wL+sQNM+gcvd6dAiTkvH
+=AujX
 -----END PGP SIGNATURE-----
 
---VcQ2MTg63lIaL1+E--
+--1LKvkjL3sHcu1TtY--
 
---===============5990253107177774356==
+--===============0899873696422722939==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5990253107177774356==--
+--===============0899873696422722939==--
