@@ -1,249 +1,136 @@
-From: "Felipe F. Tonello" <eu@felipetonello.com>
-Subject: [PATCH v2 2/2] ALSA: SoC: Fix jack names according new API
-Date: Fri,  2 Aug 2013 00:59:25 -0700
-Message-ID: <1375430365-13232-3-git-send-email-eu@felipetonello.com>
-References: <1375430365-13232-1-git-send-email-eu@felipetonello.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1375430365-13232-1-git-send-email-eu@felipetonello.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: "Felipe F. Tonello" <eu@felipetonello.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+From: ebiederm@xmission.com (Eric W. Biederman)
+Subject: Re: [PATCH trivial] include: uapi: standard all files' macro prefix
+	and suffix, excluding "linux/" sub-directory
+Date: Fri, 02 Aug 2013 01:13:34 -0700
+Message-ID: <87iozoqzm9.fsf@tw-ebiederman.twitter.com>
+References: <51FB6216.6010008@asianux.com> <51FB634F.5070401@asianux.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <virtualization-bounces@lists.linux-foundation.org>
+In-Reply-To: <51FB634F.5070401@asianux.com> (Chen Gang's message of "Fri, 02
+	Aug 2013 15:44:15 +0800")
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/virtualization>,
+	<mailto:virtualization-request@lists.linux-foundation.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/virtualization/>
+List-Post: <mailto:virtualization@lists.linux-foundation.org>
+List-Help: <mailto:virtualization-request@lists.linux-foundation.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/virtualization>,
+	<mailto:virtualization-request@lists.linux-foundation.org?subject=subscribe>
+Sender: virtualization-bounces@lists.linux-foundation.org
+Errors-To: virtualization-bounces@lists.linux-foundation.org
+To: Chen Gang <gang.chen@asianux.com>
+Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie, daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, perex@perex.cz, "dhowells@redhat.com" <dhowells@redhat.com>, thierry.reding@gmail.com, linux-mtd@lists.infradead.org, sean.hefty@intel.com, virtualization@lists.linux-foundation.org, Linux-Arch <linux-arch@vger.kernel.org>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com, jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, roland@purestorage.com, Takashi Iwai <tiwai@suse.de>, Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com, fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>, "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>, swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com, linux-samsun
 List-Id: alsa-devel@alsa-project.org
 
-From: "Felipe F. Tonello" <eu@felipetonello.com>
+Chen Gang <gang.chen@asianux.com> writes:
 
-The new ALSA jack API ensures that " Jack" is appended by default.
+> It is a trivial patch for "include/uapi", exclude "linux" sub-directory.
+>
+> If it is useful, I will send another patch for "linux" sub-directory.
+>
+> BTW: it is really big mail addresses from
+> "./scripts/get_maintainers.pl"
 
-It's also good practice that all codecs name jacks based on its type.
+What is the point?  Is there a bug that this fixes?
 
-Signed-off-by: Felipe F. Tonello <eu@felipetonello.com>
----
- sound/soc/mid-x86/mfld_machine.c   | 2 +-
- sound/soc/omap/omap-abe-twl6040.c  | 2 +-
- sound/soc/omap/omap-twl4030.c      | 2 +-
- sound/soc/omap/rx51.c              | 2 +-
- sound/soc/pxa/hx4700.c             | 2 +-
- sound/soc/pxa/palm27x.c            | 2 +-
- sound/soc/pxa/ttc-dkb.c            | 4 ++--
- sound/soc/pxa/z2.c                 | 2 +-
- sound/soc/samsung/goni_wm8994.c    | 2 +-
- sound/soc/samsung/h1940_uda1380.c  | 2 +-
- sound/soc/samsung/rx1950_uda1380.c | 2 +-
- sound/soc/samsung/smartq_wm8987.c  | 2 +-
- sound/soc/tegra/tegra_alc5632.c    | 2 +-
- sound/soc/tegra/tegra_rt5640.c     | 2 +-
- sound/soc/tegra/tegra_wm8903.c     | 4 ++--
- 15 files changed, 17 insertions(+), 17 deletions(-)
+These files are not used with api in their path in userspace so I
+suspect your change just makes things strange and confusing.
 
-diff --git a/sound/soc/mid-x86/mfld_machine.c b/sound/soc/mid-x86/mfld_machine.c
-index e52c836..e2c7978 100644
---- a/sound/soc/mid-x86/mfld_machine.c
-+++ b/sound/soc/mid-x86/mfld_machine.c
-@@ -253,7 +253,7 @@ static int mfld_init(struct snd_soc_pcm_runtime *runtime)
- 	snd_soc_dapm_disable_pin(dapm, "LINEINR");
- 
- 	/* Headset and button jack detection */
--	ret_val = snd_soc_jack_new(codec, "Intel(R) MID Audio Jack",
-+	ret_val = snd_soc_jack_new(codec, "Intel(R) MID Audio",
- 	                           SND_JACK_HEADSET | SND_JACK_BTN_0 |
- 	                           SND_JACK_BTN_1, 0, &mfld_jack);
- 	if (ret_val) {
-diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-twl6040.c
-index a63038b..45ff3bc 100644
---- a/sound/soc/omap/omap-abe-twl6040.c
-+++ b/sound/soc/omap/omap-abe-twl6040.c
-@@ -193,7 +193,7 @@ static int omap_abe_twl6040_init(struct snd_soc_pcm_runtime *rtd)
- 
- 	/* Headset jack detection only if it is supported */
- 	if (priv->jack_detection) {
--		ret = snd_soc_jack_new(codec, "Headset Jack",
-+		ret = snd_soc_jack_new(codec, "Headset",
- 		                       SND_JACK_HEADSET, 0, &hs_jack);
- 		if (ret)
- 			return ret;
-diff --git a/sound/soc/omap/omap-twl4030.c b/sound/soc/omap/omap-twl4030.c
-index 07ba4d3..0619ecb 100644
---- a/sound/soc/omap/omap-twl4030.c
-+++ b/sound/soc/omap/omap-twl4030.c
-@@ -189,7 +189,7 @@ static int omap_twl4030_init(struct snd_soc_pcm_runtime *rtd)
- 	if (priv->jack_detect > 0) {
- 		hs_jack_gpios[0].gpio = priv->jack_detect;
- 
--		ret = snd_soc_jack_new(codec, "Headset Jack", SND_JACK_HEADSET,
-+		ret = snd_soc_jack_new(codec, "Headset", SND_JACK_HEADSET,
- 		                       0, &priv->hs_jack);
- 		if (ret)
- 			return ret;
-diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
-index 2cec19a..46fe697 100644
---- a/sound/soc/omap/rx51.c
-+++ b/sound/soc/omap/rx51.c
-@@ -317,7 +317,7 @@ static int rx51_aic34_init(struct snd_soc_pcm_runtime *rtd)
- 		return err;
- 
- 	/* AV jack detection */
--	err = snd_soc_jack_new(codec, "AV Jack",
-+	err = snd_soc_jack_new(codec, "AV",
- 	                       SND_JACK_HEADSET | SND_JACK_VIDEOOUT,
- 	                       0, &rx51_av_jack);
- 	if (err)
-diff --git a/sound/soc/pxa/hx4700.c b/sound/soc/pxa/hx4700.c
-index 82fd557..3ffe48b 100644
---- a/sound/soc/pxa/hx4700.c
-+++ b/sound/soc/pxa/hx4700.c
-@@ -137,7 +137,7 @@ static int hx4700_ak4641_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_nc_pin(dapm, "AUX");
- 
- 	/* Jack detection API stuff */
--	err = snd_soc_jack_new(codec, "Headphone Jack",
-+	err = snd_soc_jack_new(codec, "Headphone",
- 	                       SND_JACK_HEADPHONE, 0, &hs_jack);
- 	if (err)
- 		return err;
-diff --git a/sound/soc/pxa/palm27x.c b/sound/soc/pxa/palm27x.c
-index 264be5e..7caba46 100644
---- a/sound/soc/pxa/palm27x.c
-+++ b/sound/soc/pxa/palm27x.c
-@@ -97,7 +97,7 @@ static int palm27x_ac97_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_nc_pin(dapm, "MIC2");
- 
- 	/* Jack detection API stuff */
--	err = snd_soc_jack_new(codec, "Headphone Jack",
-+	err = snd_soc_jack_new(codec, "Headphone",
- 	                       SND_JACK_HEADPHONE, 0, &hs_jack);
- 	if (err)
- 		return err;
-diff --git a/sound/soc/pxa/ttc-dkb.c b/sound/soc/pxa/ttc-dkb.c
-index 1a462cb..880c01f 100644
---- a/sound/soc/pxa/ttc-dkb.c
-+++ b/sound/soc/pxa/ttc-dkb.c
-@@ -86,12 +86,12 @@ static int ttc_pm860x_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_disable_pin(dapm, "Headset Stereophone");
- 
- 	/* Headset jack detection */
--	snd_soc_jack_new(codec, "Headphone Jack", SND_JACK_HEADPHONE
-+	snd_soc_jack_new(codec, "Headphone", SND_JACK_HEADPHONE
- 	                 | SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2,
- 	                 0, &hs_jack);
- 	snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
- 			      hs_jack_pins);
--	snd_soc_jack_new(codec, "Microphone Jack", SND_JACK_MICROPHONE,
-+	snd_soc_jack_new(codec, "Microphone", SND_JACK_MICROPHONE,
- 	                 0, &mic_jack);
- 	snd_soc_jack_add_pins(&mic_jack, ARRAY_SIZE(mic_jack_pins),
- 			      mic_jack_pins);
-diff --git a/sound/soc/pxa/z2.c b/sound/soc/pxa/z2.c
-index 082fd24..2bbb2de 100644
---- a/sound/soc/pxa/z2.c
-+++ b/sound/soc/pxa/z2.c
-@@ -143,7 +143,7 @@ static int z2_wm8750_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_disable_pin(dapm, "MONO1");
- 
- 	/* Jack detection API stuff */
--	ret = snd_soc_jack_new(codec, "Headset Jack", SND_JACK_HEADSET,
-+	ret = snd_soc_jack_new(codec, "Headset", SND_JACK_HEADSET,
- 	                       0, &hs_jack);
- 	if (ret)
- 		goto err;
-diff --git a/sound/soc/samsung/goni_wm8994.c b/sound/soc/samsung/goni_wm8994.c
-index bdd70a9..2bfa4c9 100644
---- a/sound/soc/samsung/goni_wm8994.c
-+++ b/sound/soc/samsung/goni_wm8994.c
-@@ -114,7 +114,7 @@ static int goni_wm8994_init(struct snd_soc_pcm_runtime *rtd)
- 	}
- 
- 	/* Headset jack detection */
--	ret = snd_soc_jack_new(codec, "Headset Jack",
-+	ret = snd_soc_jack_new(codec, "Headset",
- 	                       SND_JACK_HEADSET | SND_JACK_MECHANICAL |
- 	                       SND_JACK_AVOUT,
- 	                       0, &jack);
-diff --git a/sound/soc/samsung/h1940_uda1380.c b/sound/soc/samsung/h1940_uda1380.c
-index 66b5a33..f8cf0cf 100644
---- a/sound/soc/samsung/h1940_uda1380.c
-+++ b/sound/soc/samsung/h1940_uda1380.c
-@@ -186,7 +186,7 @@ static int h1940_uda1380_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_enable_pin(dapm, "Speaker");
- 	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
- 
--	snd_soc_jack_new(codec, "Headphone Jack", SND_JACK_HEADPHONE,
-+	snd_soc_jack_new(codec, "Headphone", SND_JACK_HEADPHONE,
- 	                 0, &hp_jack);
- 
- 	snd_soc_jack_add_pins(&hp_jack, ARRAY_SIZE(hp_jack_pins),
-diff --git a/sound/soc/samsung/rx1950_uda1380.c b/sound/soc/samsung/rx1950_uda1380.c
-index 588ad72..f62b845 100644
---- a/sound/soc/samsung/rx1950_uda1380.c
-+++ b/sound/soc/samsung/rx1950_uda1380.c
-@@ -231,7 +231,7 @@ static int rx1950_uda1380_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_enable_pin(dapm, "Speaker");
- 	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
- 
--	snd_soc_jack_new(codec, "Headphone Jack", SND_JACK_HEADPHONE,
-+	snd_soc_jack_new(codec, "Headphone", SND_JACK_HEADPHONE,
- 	                 0, &hp_jack);
- 
- 	snd_soc_jack_add_pins(&hp_jack, ARRAY_SIZE(hp_jack_pins),
-diff --git a/sound/soc/samsung/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
-index 71a17a5..053ceea 100644
---- a/sound/soc/samsung/smartq_wm8987.c
-+++ b/sound/soc/samsung/smartq_wm8987.c
-@@ -166,7 +166,7 @@ static int smartq_wm8987_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
- 
- 	/* Headphone jack detection */
--	err = snd_soc_jack_new(codec, "Headphone Jack",
-+	err = snd_soc_jack_new(codec, "Headphone",
- 	                       SND_JACK_HEADPHONE, 0, &smartq_jack);
- 	if (err)
- 		return err;
-diff --git a/sound/soc/tegra/tegra_alc5632.c b/sound/soc/tegra/tegra_alc5632.c
-index 1a44af9..cfacc27 100644
---- a/sound/soc/tegra/tegra_alc5632.c
-+++ b/sound/soc/tegra/tegra_alc5632.c
-@@ -109,7 +109,7 @@ static int tegra_alc5632_asoc_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	struct tegra_alc5632 *machine = snd_soc_card_get_drvdata(codec->card);
- 
--	snd_soc_jack_new(codec, "Headset Jack", SND_JACK_HEADSET,
-+	snd_soc_jack_new(codec, "Headset", SND_JACK_HEADSET,
- 	                 0, &tegra_alc5632_hs_jack);
- 	snd_soc_jack_add_pins(&tegra_alc5632_hs_jack,
- 			ARRAY_SIZE(tegra_alc5632_hs_jack_pins),
-diff --git a/sound/soc/tegra/tegra_rt5640.c b/sound/soc/tegra/tegra_rt5640.c
-index aad20f2..149b12c 100644
---- a/sound/soc/tegra/tegra_rt5640.c
-+++ b/sound/soc/tegra/tegra_rt5640.c
-@@ -111,7 +111,7 @@ static int tegra_rt5640_asoc_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_codec *codec = codec_dai->codec;
- 	struct tegra_rt5640 *machine = snd_soc_card_get_drvdata(codec->card);
- 
--	snd_soc_jack_new(codec, "Headphones", SND_JACK_HEADPHONE,
-+	snd_soc_jack_new(codec, "Headphone", SND_JACK_HEADPHONE,
- 	                 0, &tegra_rt5640_hp_jack);
- 	snd_soc_jack_add_pins(&tegra_rt5640_hp_jack,
- 			ARRAY_SIZE(tegra_rt5640_hp_jack_pins),
-diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
-index 3f38d31..cd297f5 100644
---- a/sound/soc/tegra/tegra_wm8903.c
-+++ b/sound/soc/tegra/tegra_wm8903.c
-@@ -178,7 +178,7 @@ static int tegra_wm8903_init(struct snd_soc_pcm_runtime *rtd)
- 
- 	if (gpio_is_valid(machine->gpio_hp_det)) {
- 		tegra_wm8903_hp_jack_gpio.gpio = machine->gpio_hp_det;
--		snd_soc_jack_new(codec, "Headphone Jack", SND_JACK_HEADPHONE,
-+		snd_soc_jack_new(codec, "Headphone", SND_JACK_HEADPHONE,
- 		                 0, &tegra_wm8903_hp_jack);
- 		snd_soc_jack_add_pins(&tegra_wm8903_hp_jack,
- 					ARRAY_SIZE(tegra_wm8903_hp_jack_pins),
-@@ -188,7 +188,7 @@ static int tegra_wm8903_init(struct snd_soc_pcm_runtime *rtd)
- 					&tegra_wm8903_hp_jack_gpio);
- 	}
- 
--	snd_soc_jack_new(codec, "Mic Jack", SND_JACK_MICROPHONE,
-+	snd_soc_jack_new(codec, "Mic", SND_JACK_MICROPHONE,
- 	                 0, &tegra_wm8903_mic_jack);
- 	snd_soc_jack_add_pins(&tegra_wm8903_mic_jack,
- 			      ARRAY_SIZE(tegra_wm8903_mic_jack_pins),
--- 
-1.8.3.1
+Eric
+
+> Thanks.
+>
+> On 08/02/2013 03:39 PM, Chen Gang wrote:
+>> For "include/uapi/*", excluding "linux/" sub-directory, let all files'
+>> macro prefix match the standard format, and give related stand comments
+>> for their macro suffix.
+>> 
+>> The related standard format is:
+>> 
+>>   "_SUBDIRNAME_SUBDIRNAME[_SUBDIRNAME]_FILENAME" (1st _SUBDIRNAME is _UAPI), and use '_' instead of '.' and '-'.
+>> 
+>> 
+>> Signed-off-by: Chen Gang <gang.chen@asianux.com>
+>> ---
+>>  include/uapi/asm-generic/auxvec.h      |    6 +++---
+>>  include/uapi/asm-generic/bitsperlong.h |    6 +++---
+>>  include/uapi/asm-generic/errno-base.h  |    6 +++---
+>>  include/uapi/asm-generic/errno.h       |    6 +++---
+>>  include/uapi/asm-generic/fcntl.h       |    6 +++---
+>>  include/uapi/asm-generic/ioctls.h      |    6 +++---
+>>  include/uapi/asm-generic/ipcbuf.h      |    6 +++---
+>>  include/uapi/asm-generic/kvm_para.h    |    5 +++++
+>>  include/uapi/asm-generic/mman-common.h |    6 +++---
+>>  include/uapi/asm-generic/mman.h        |    6 +++---
+>>  include/uapi/asm-generic/msgbuf.h      |    6 +++---
+>>  include/uapi/asm-generic/param.h       |    6 +++---
+>>  include/uapi/asm-generic/poll.h        |    6 +++---
+>>  include/uapi/asm-generic/posix_types.h |    6 +++---
+>>  include/uapi/asm-generic/sembuf.h      |    6 +++---
+>>  include/uapi/asm-generic/setup.h       |    6 +++---
+>>  include/uapi/asm-generic/shmbuf.h      |    6 +++---
+>>  include/uapi/asm-generic/shmparam.h    |    6 +++---
+>>  include/uapi/asm-generic/signal-defs.h |    6 +++---
+>>  include/uapi/asm-generic/signal.h      |    6 +++---
+>>  include/uapi/asm-generic/socket.h      |    6 +++---
+>>  include/uapi/asm-generic/sockios.h     |    6 +++---
+>>  include/uapi/asm-generic/stat.h        |    6 +++---
+>>  include/uapi/asm-generic/statfs.h      |    6 +++---
+>>  include/uapi/asm-generic/swab.h        |    6 +++---
+>>  include/uapi/asm-generic/termbits.h    |    6 +++---
+>>  include/uapi/asm-generic/types.h       |    6 +++---
+>>  include/uapi/asm-generic/ucontext.h    |    6 +++---
+>>  include/uapi/asm-generic/unistd.h      |    5 +++++
+>>  include/uapi/drm/drm.h                 |    6 +++---
+>>  include/uapi/drm/drm_fourcc.h          |    6 +++---
+>>  include/uapi/drm/drm_mode.h            |    6 +++---
+>>  include/uapi/drm/drm_sarea.h           |    6 +++---
+>>  include/uapi/drm/exynos_drm.h          |    6 +++---
+>>  include/uapi/drm/i810_drm.h            |    6 +++---
+>>  include/uapi/drm/i915_drm.h            |    6 +++---
+>>  include/uapi/drm/mga_drm.h             |    6 +++---
+>>  include/uapi/drm/nouveau_drm.h         |    6 +++---
+>>  include/uapi/drm/omap_drm.h            |    6 +++---
+>>  include/uapi/drm/qxl_drm.h             |    6 +++---
+>>  include/uapi/drm/r128_drm.h            |    6 +++---
+>>  include/uapi/drm/radeon_drm.h          |    6 +++---
+>>  include/uapi/drm/savage_drm.h          |    6 +++---
+>>  include/uapi/drm/sis_drm.h             |    6 +++---
+>>  include/uapi/drm/tegra_drm.h           |    6 +++---
+>>  include/uapi/drm/via_drm.h             |    6 +++---
+>>  include/uapi/drm/vmwgfx_drm.h          |    6 +++---
+>>  include/uapi/mtd/inftl-user.h          |    6 +++---
+>>  include/uapi/mtd/mtd-abi.h             |    6 +++---
+>>  include/uapi/mtd/mtd-user.h            |    6 +++---
+>>  include/uapi/mtd/nftl-user.h           |    6 +++---
+>>  include/uapi/mtd/ubi-user.h            |    6 +++---
+>>  include/uapi/rdma/ib_user_cm.h         |    6 +++---
+>>  include/uapi/rdma/ib_user_mad.h        |    6 +++---
+>>  include/uapi/rdma/ib_user_sa.h         |    6 +++---
+>>  include/uapi/rdma/ib_user_verbs.h      |    6 +++---
+>>  include/uapi/rdma/rdma_netlink.h       |    6 +++---
+>>  include/uapi/rdma/rdma_user_cm.h       |    6 +++---
+>>  include/uapi/scsi/fc/fc_els.h          |    6 +++---
+>>  include/uapi/scsi/fc/fc_fs.h           |    6 +++---
+>>  include/uapi/scsi/fc/fc_gs.h           |    6 +++---
+>>  include/uapi/scsi/fc/fc_ns.h           |    6 +++---
+>>  include/uapi/scsi/scsi_bsg_fc.h        |    7 +++----
+>>  include/uapi/scsi/scsi_netlink.h       |    7 +++----
+>>  include/uapi/scsi/scsi_netlink_fc.h    |    7 +++----
+>>  include/uapi/sound/asequencer.h        |    6 +++---
+>>  include/uapi/sound/asound.h            |    6 +++---
+>>  include/uapi/sound/asound_fm.h         |    6 +++---
+>>  include/uapi/sound/compress_offload.h  |    6 +++---
+>>  include/uapi/sound/compress_params.h   |    6 +++---
+>>  include/uapi/sound/emu10k1.h           |    6 +++---
+>>  include/uapi/sound/hdsp.h              |    6 +++---
+>>  include/uapi/sound/hdspm.h             |    6 +++---
+>>  include/uapi/sound/sb16_csp.h          |    6 +++---
+>>  include/uapi/sound/sfnt_info.h         |    6 +++---
+>>  include/uapi/video/edid.h              |    6 +++---
+>>  include/uapi/video/sisfb.h             |    6 +++---
+>>  include/uapi/video/uvesafb.h           |    6 +++---
+>>  include/uapi/xen/evtchn.h              |    6 +++---
+>>  include/uapi/xen/privcmd.h             |    6 +++---
+>>  80 files changed, 244 insertions(+), 237 deletions(-)
