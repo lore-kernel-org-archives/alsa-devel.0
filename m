@@ -1,89 +1,158 @@
-From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-Subject: [PATCH v2] ASoC: mxs: add some error messages to help
-	identifying problems
-Date: Fri,  2 Aug 2013 10:30:15 +0200
-Message-ID: <1375432215-26624-1-git-send-email-LW@KARO-electronics.de>
-References: <1375281871-28128-1-git-send-email-LW@KARO-electronics.de>
- <1375281871-28128-3-git-send-email-LW@KARO-electronics.de>
- <CAOMZO5BeFq+PxDtJ12H=d8Y=qu8Gyd4wAn=7+mzbx+_OyaUg2g@mail.gmail.com>
+From: Chen Gang <gang.chen@asianux.com>
+Subject: Re: [PATCH trivial] include: uapi: standard all files' macro prefix
+ and suffix, excluding "linux/" sub-directory
+Date: Fri, 02 Aug 2013 16:31:59 +0800
+Message-ID: <51FB6E7F.2050506@asianux.com>
+References: <51FB6216.6010008@asianux.com> <51FB634F.5070401@asianux.com>
+ <87iozoqzm9.fsf@tw-ebiederman.twitter.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.karo-electronics.de (mail.karo-electronics.de
- [81.173.242.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 1190B265636
- for <alsa-devel@alsa-project.org>; Fri,  2 Aug 2013 10:30:19 +0200 (CEST)
-In-Reply-To: <20130801102219.GN9858@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Mark Brown <broonie@kernel.org>, =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>, Liam Girdwood <lgirdwood@gmail.com>, Shawn Guo <shawn.guo@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <87iozoqzm9.fsf@tw-ebiederman.twitter.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie, daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, perex@perex.cz, "dhowells@redhat.com" <dhowells@redhat.com>, thierry.reding@gmail.com, linux-mtd@lists.infradead.org, sean.hefty@intel.com, virtualization@lists.linux-foundation.org, Linux-Arch <linux-arch@vger.kernel.org>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com, jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, roland@purestorage.com, Takashi Iwai <tiwai@suse.de>, Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com, fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>, "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>, swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com, linux-samsung-
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAxIEF1ZyAyMDEzIDExOjIyOjE5ICswMTAwLCBNYXJrIEJyb3duIHdyb3RlOgo+IE9u
-IFdlZCwgSnVsIDMxLCAyMDEzIGF0IDA3OjExOjQ4UE0gLTAzMDAsIEZhYmlvIEVzdGV2YW0gd3Jv
-dGU6Cj4+IE9uIFdlZCwgSnVsIDMxLCAyMDEzIGF0IDExOjQ0IEFNLCBMb3RoYXIgV2HDn21hbm4g
-PExXQGthcm8tZWxlY3Ryb25pY3MuZGU+IHdyb3RlOgoKPj4gPiAgICAgICAgIC8qIFNldCBTR1RM
-NTAwMCdzIFNZU0NMSyAocHJvdmlkZWQgYnkgU0FJRiBNQ0xLKSAqLwo+PiA+ICAgICAgICAgcmV0
-ID0gc25kX3NvY19kYWlfc2V0X3N5c2Nsayhjb2RlY19kYWksIFNHVEw1MDAwX1NZU0NMSywgbWNs
-aywgMCk7Cj4+ID4gLSAgICAgICBpZiAocmV0KQo+PiA+ICsgICAgICAgaWYgKHJldCkgewo+PiA+
-ICsgICAgICAgICAgICAgICBkZXZfZXJyKGNvZGVjX2RhaS0+ZGV2LCAiRmFpbGVkIHRvIHNldCBz
-eXNjbGsgdG8gJXUga0h6XG4iLAo+PiA+ICsgICAgICAgICAgICAgICAgICAgICAgIG1jbGsgLyAx
-MDAwKTsKPgo+PiBXb3VsZG4ndCBpdCBtYWtlIG1vcmUgc2Vuc2UgdG8gZXhwcmVzcyBpdCBpbiBN
-SHogaW5zdGVhZCBvZiBrSHo/Cj4KPiBXZWxsLCBpZGVhbGx5IGl0J2QgYmUgZnJhY3Rpb25hbCBN
-SHogKGllLCAyNC41NzZNSHopLiAgSSdkIGVpdGhlciBsZWF2ZQo+IGl0IGFzIEh6IG9yIGRvIHRo
-ZSBwcm9wZXIgcHJldHR5IHByaW50LiAgQWxzbyBpZiB3ZSdyZSBuaXRwaWNraW5nIHRoZQo+IGZv
-cm1hdCB0aGVuIHRoZXJlJ3MgdXN1YWxseSBubyBzcGFjZSBiZXR3ZWVuIHRoZSBudW1iZXIgYW5k
-IHVuaXRzLgo+Cj4gUGVyc29uYWxseSBJIHRoaW5rIHRoZSBiaWtlIHNoZWQgd291bGQgYmUgbW9z
-dCBhdHRyYWN0aXZlIGlmIGl0IHdlcmUKPiBwaW5rIHdpdGggeWVsbG93IHNwb3RzLgo+Ck5vdyBw
-aW5rIHdpdGggeWVsbG93IHNwb3RzLiA7KQoKU2lnbmVkLW9mZi1ieTogTG90aGFyIFdhw59tYW5u
-IDxMV0BLQVJPLWVsZWN0cm9uaWNzLmRlPgotLS0KIHNvdW5kL3NvYy9teHMvbXhzLXNndGw1MDAw
-LmMgfCAgIDI5ICsrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tCiAxIGZpbGVzIGNoYW5nZWQs
-IDIzIGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29j
-L214cy9teHMtc2d0bDUwMDAuYyBiL3NvdW5kL3NvYy9teHMvbXhzLXNndGw1MDAwLmMKaW5kZXgg
-YjJlMzcyZC4uY2UwODRlYiAxMDA2NDQKLS0tIGEvc291bmQvc29jL214cy9teHMtc2d0bDUwMDAu
-YworKysgYi9zb3VuZC9zb2MvbXhzL214cy1zZ3RsNTAwMC5jCkBAIC01MCwxOCArNTAsMjcgQEAg
-c3RhdGljIGludCBteHNfc2d0bDUwMDBfaHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVh
-bSAqc3Vic3RyZWFtLAogCX0KIAogCS8qIFNndGw1MDAwIHN5c2NsayBzaG91bGQgYmUgPj0gOE1I
-eiBhbmQgPD0gMjdNICovCi0JaWYgKG1jbGsgPCA4MDAwMDAwIHx8IG1jbGsgPiAyNzAwMDAwMCkK
-KwlpZiAobWNsayA8IDgwMDAwMDAgfHwgbWNsayA+IDI3MDAwMDAwKSB7CisJCWRldl9lcnIoY29k
-ZWNfZGFpLT5kZXYsICJJbnZhbGlkIG1jbGsgZnJlcXVlbmN5OiAldS4lMDN1TUh6XG4iLAorCQkJ
-bWNsayAvIDEwMDAwMDAsIG1jbGsgLyAxMDAwICUgMTAwMCk7CiAJCXJldHVybiAtRUlOVkFMOwor
-CX0KIAogCS8qIFNldCBTR1RMNTAwMCdzIFNZU0NMSyAocHJvdmlkZWQgYnkgU0FJRiBNQ0xLKSAq
-LwogCXJldCA9IHNuZF9zb2NfZGFpX3NldF9zeXNjbGsoY29kZWNfZGFpLCBTR1RMNTAwMF9TWVND
-TEssIG1jbGssIDApOwotCWlmIChyZXQpCisJaWYgKHJldCkgeworCQlkZXZfZXJyKGNvZGVjX2Rh
-aS0+ZGV2LCAiRmFpbGVkIHRvIHNldCBzeXNjbGsgdG8gJXUuJTAzdU1IelxuIiwKKwkJCW1jbGsg
-LyAxMDAwMDAwLCBtY2xrIC8gMTAwMCAlIDEwMDApOwogCQlyZXR1cm4gcmV0OworCX0KIAogCS8q
-IFRoZSBTQUlGIE1DTEsgc2hvdWxkIGJlIHRoZSBzYW1lIGFzIFNHVEw1MDAwX1NZU0NMSyAqLwog
-CXJldCA9IHNuZF9zb2NfZGFpX3NldF9zeXNjbGsoY3B1X2RhaSwgTVhTX1NBSUZfTUNMSywgbWNs
-aywgMCk7Ci0JaWYgKHJldCkKKwlpZiAocmV0KSB7CisJCWRldl9lcnIoY3B1X2RhaS0+ZGV2LCAi
-RmFpbGVkIHRvIHNldCBzeXNjbGsgdG8gJXUuJTAzdU1IelxuIiwKKwkJCW1jbGsgLyAxMDAwMDAw
-LCBtY2xrIC8gMTAwMCAlIDEwMDApOwogCQlyZXR1cm4gcmV0OworCX0KIAogCS8qIHNldCBjb2Rl
-YyB0byBzbGF2ZSBtb2RlICovCiAJZGFpX2Zvcm1hdCA9IFNORF9TT0NfREFJRk1UX0kyUyB8IFNO
-RF9TT0NfREFJRk1UX05CX05GIHwKQEAgLTY5LDEzICs3OCwxOSBAQCBzdGF0aWMgaW50IG14c19z
-Z3RsNTAwMF9od19wYXJhbXMoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCiAK
-IAkvKiBzZXQgY29kZWMgREFJIGNvbmZpZ3VyYXRpb24gKi8KIAlyZXQgPSBzbmRfc29jX2RhaV9z
-ZXRfZm10KGNvZGVjX2RhaSwgZGFpX2Zvcm1hdCk7Ci0JaWYgKHJldCkKKwlpZiAocmV0KSB7CisJ
-CWRldl9lcnIoY29kZWNfZGFpLT5kZXYsICJGYWlsZWQgdG8gc2V0IGRhaSBmb3JtYXQgdG8gJTA4
-eFxuIiwKKwkJCWRhaV9mb3JtYXQpOwogCQlyZXR1cm4gcmV0OworCX0KIAogCS8qIHNldCBjcHUg
-REFJIGNvbmZpZ3VyYXRpb24gKi8KIAlyZXQgPSBzbmRfc29jX2RhaV9zZXRfZm10KGNwdV9kYWks
-IGRhaV9mb3JtYXQpOwotCWlmIChyZXQpCisJaWYgKHJldCkgeworCQlkZXZfZXJyKGNwdV9kYWkt
-PmRldiwgIkZhaWxlZCB0byBzZXQgZGFpIGZvcm1hdCB0byAlMDh4XG4iLAorCQkJZGFpX2Zvcm1h
-dCk7CiAJCXJldHVybiByZXQ7CisJfQogCiAJcmV0dXJuIDA7CiB9CkBAIC0xNTMsOCArMTY4LDEw
-IEBAIHN0YXRpYyBpbnQgbXhzX3NndGw1MDAwX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2Ug
-KnBkZXYpCiAJICogc2hvdWxkIGJlID49IDhNSHogYW5kIDw9IDI3TS4KIAkgKi8KIAlyZXQgPSBt
-eHNfc2FpZl9nZXRfbWNsaygwLCA0NDEwMCAqIDI1NiwgNDQxMDApOwotCWlmIChyZXQpCisJaWYg
-KHJldCkgeworCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJmYWlsZWQgdG8gZ2V0IG1jbGtcbiIpOwog
-CQlyZXR1cm4gcmV0OworCX0KIAogCWNhcmQtPmRldiA9ICZwZGV2LT5kZXY7CiAJcGxhdGZvcm1f
-c2V0X2RydmRhdGEocGRldiwgY2FyZCk7Ci0tIAoxLjcuMi41CgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 08/02/2013 04:13 PM, Eric W. Biederman wrote:
+> Chen Gang <gang.chen@asianux.com> writes:
+> 
+>> It is a trivial patch for "include/uapi", exclude "linux" sub-directory.
+>>
+>> If it is useful, I will send another patch for "linux" sub-directory.
+>>
+>> BTW: it is really big mail addresses from
+>> "./scripts/get_maintainers.pl"
+> 
+> What is the point?  Is there a bug that this fixes?
+> 
+
+It is a trivial patch, it is not for bug fix.
+
+> These files are not used with api in their path in userspace so I
+> suspect your change just makes things strange and confusing.
+> 
+
+Hmm... they are in "include/uapi" which means they may be shared with
+user space, is it correct ? (or Universal API ? ... excuse me, I don't
+know the definition of "include/uapi").
+
+If some of them are really never shared with user space (or not
+'Universal' enough to multiple OS), I recommend to move them from
+"include/uapi/" to another more suitable places.
+
+
+Thanks.
+
+> Eric
+> 
+>> Thanks.
+>>
+>> On 08/02/2013 03:39 PM, Chen Gang wrote:
+>>> For "include/uapi/*", excluding "linux/" sub-directory, let all files'
+>>> macro prefix match the standard format, and give related stand comments
+>>> for their macro suffix.
+>>>
+>>> The related standard format is:
+>>>
+>>>   "_SUBDIRNAME_SUBDIRNAME[_SUBDIRNAME]_FILENAME" (1st _SUBDIRNAME is _UAPI), and use '_' instead of '.' and '-'.
+>>>
+>>>
+>>> Signed-off-by: Chen Gang <gang.chen@asianux.com>
+>>> ---
+>>>  include/uapi/asm-generic/auxvec.h      |    6 +++---
+>>>  include/uapi/asm-generic/bitsperlong.h |    6 +++---
+>>>  include/uapi/asm-generic/errno-base.h  |    6 +++---
+>>>  include/uapi/asm-generic/errno.h       |    6 +++---
+>>>  include/uapi/asm-generic/fcntl.h       |    6 +++---
+>>>  include/uapi/asm-generic/ioctls.h      |    6 +++---
+>>>  include/uapi/asm-generic/ipcbuf.h      |    6 +++---
+>>>  include/uapi/asm-generic/kvm_para.h    |    5 +++++
+>>>  include/uapi/asm-generic/mman-common.h |    6 +++---
+>>>  include/uapi/asm-generic/mman.h        |    6 +++---
+>>>  include/uapi/asm-generic/msgbuf.h      |    6 +++---
+>>>  include/uapi/asm-generic/param.h       |    6 +++---
+>>>  include/uapi/asm-generic/poll.h        |    6 +++---
+>>>  include/uapi/asm-generic/posix_types.h |    6 +++---
+>>>  include/uapi/asm-generic/sembuf.h      |    6 +++---
+>>>  include/uapi/asm-generic/setup.h       |    6 +++---
+>>>  include/uapi/asm-generic/shmbuf.h      |    6 +++---
+>>>  include/uapi/asm-generic/shmparam.h    |    6 +++---
+>>>  include/uapi/asm-generic/signal-defs.h |    6 +++---
+>>>  include/uapi/asm-generic/signal.h      |    6 +++---
+>>>  include/uapi/asm-generic/socket.h      |    6 +++---
+>>>  include/uapi/asm-generic/sockios.h     |    6 +++---
+>>>  include/uapi/asm-generic/stat.h        |    6 +++---
+>>>  include/uapi/asm-generic/statfs.h      |    6 +++---
+>>>  include/uapi/asm-generic/swab.h        |    6 +++---
+>>>  include/uapi/asm-generic/termbits.h    |    6 +++---
+>>>  include/uapi/asm-generic/types.h       |    6 +++---
+>>>  include/uapi/asm-generic/ucontext.h    |    6 +++---
+>>>  include/uapi/asm-generic/unistd.h      |    5 +++++
+>>>  include/uapi/drm/drm.h                 |    6 +++---
+>>>  include/uapi/drm/drm_fourcc.h          |    6 +++---
+>>>  include/uapi/drm/drm_mode.h            |    6 +++---
+>>>  include/uapi/drm/drm_sarea.h           |    6 +++---
+>>>  include/uapi/drm/exynos_drm.h          |    6 +++---
+>>>  include/uapi/drm/i810_drm.h            |    6 +++---
+>>>  include/uapi/drm/i915_drm.h            |    6 +++---
+>>>  include/uapi/drm/mga_drm.h             |    6 +++---
+>>>  include/uapi/drm/nouveau_drm.h         |    6 +++---
+>>>  include/uapi/drm/omap_drm.h            |    6 +++---
+>>>  include/uapi/drm/qxl_drm.h             |    6 +++---
+>>>  include/uapi/drm/r128_drm.h            |    6 +++---
+>>>  include/uapi/drm/radeon_drm.h          |    6 +++---
+>>>  include/uapi/drm/savage_drm.h          |    6 +++---
+>>>  include/uapi/drm/sis_drm.h             |    6 +++---
+>>>  include/uapi/drm/tegra_drm.h           |    6 +++---
+>>>  include/uapi/drm/via_drm.h             |    6 +++---
+>>>  include/uapi/drm/vmwgfx_drm.h          |    6 +++---
+>>>  include/uapi/mtd/inftl-user.h          |    6 +++---
+>>>  include/uapi/mtd/mtd-abi.h             |    6 +++---
+>>>  include/uapi/mtd/mtd-user.h            |    6 +++---
+>>>  include/uapi/mtd/nftl-user.h           |    6 +++---
+>>>  include/uapi/mtd/ubi-user.h            |    6 +++---
+>>>  include/uapi/rdma/ib_user_cm.h         |    6 +++---
+>>>  include/uapi/rdma/ib_user_mad.h        |    6 +++---
+>>>  include/uapi/rdma/ib_user_sa.h         |    6 +++---
+>>>  include/uapi/rdma/ib_user_verbs.h      |    6 +++---
+>>>  include/uapi/rdma/rdma_netlink.h       |    6 +++---
+>>>  include/uapi/rdma/rdma_user_cm.h       |    6 +++---
+>>>  include/uapi/scsi/fc/fc_els.h          |    6 +++---
+>>>  include/uapi/scsi/fc/fc_fs.h           |    6 +++---
+>>>  include/uapi/scsi/fc/fc_gs.h           |    6 +++---
+>>>  include/uapi/scsi/fc/fc_ns.h           |    6 +++---
+>>>  include/uapi/scsi/scsi_bsg_fc.h        |    7 +++----
+>>>  include/uapi/scsi/scsi_netlink.h       |    7 +++----
+>>>  include/uapi/scsi/scsi_netlink_fc.h    |    7 +++----
+>>>  include/uapi/sound/asequencer.h        |    6 +++---
+>>>  include/uapi/sound/asound.h            |    6 +++---
+>>>  include/uapi/sound/asound_fm.h         |    6 +++---
+>>>  include/uapi/sound/compress_offload.h  |    6 +++---
+>>>  include/uapi/sound/compress_params.h   |    6 +++---
+>>>  include/uapi/sound/emu10k1.h           |    6 +++---
+>>>  include/uapi/sound/hdsp.h              |    6 +++---
+>>>  include/uapi/sound/hdspm.h             |    6 +++---
+>>>  include/uapi/sound/sb16_csp.h          |    6 +++---
+>>>  include/uapi/sound/sfnt_info.h         |    6 +++---
+>>>  include/uapi/video/edid.h              |    6 +++---
+>>>  include/uapi/video/sisfb.h             |    6 +++---
+>>>  include/uapi/video/uvesafb.h           |    6 +++---
+>>>  include/uapi/xen/evtchn.h              |    6 +++---
+>>>  include/uapi/xen/privcmd.h             |    6 +++---
+>>>  80 files changed, 244 insertions(+), 237 deletions(-)
+> 
+> 
+
+
+-- 
+Chen Gang
