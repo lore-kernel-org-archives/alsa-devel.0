@@ -1,47 +1,119 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH v3 1/4] ASoc: kirkwood: simplify probe error
-Date: Sat, 3 Aug 2013 18:52:55 +0200
-Message-ID: <20130803185255.1b1932c4@armhf>
-References: <20130731081739.76aae84c@armhf>
-	<20130803124652.GY23006@n2100.arm.linux.org.uk>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH v3 2/4] ASoc: kirkwood: merge kirkwood-i2c
+	and	kirkwood-dma
+Date: Sat, 3 Aug 2013 23:23:33 +0100
+Message-ID: <20130803222332.GE23006@n2100.arm.linux.org.uk>
+References: <20130731081806.244752d4@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130803124652.GY23006@n2100.arm.linux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 89ACB261A2F
+ for <alsa-devel@alsa-project.org>; Sun,  4 Aug 2013 00:23:51 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130731081806.244752d4@armhf>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 3 Aug 2013 13:46:52 +0100
-Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
+On Wed, Jul 31, 2013 at 08:18:06AM +0200, Jean-Francois Moine wrote:
+> To avoid the declaration of a 'kirkwood-pcm-audio' device in the DT,
+> this patch merges the kirkwood-i2c and kirkwood-dma drivers into one
+> module associated with 'kirkwood-i2s'. 
 
-> On Wed, Jul 31, 2013 at 08:17:39AM +0200, Jean-Francois Moine wrote:
-> > The function kirkwood_i2s_dev_remove() may be used when probe fails=
-=2E
->=20
-> Looking at this deeper, I'm not happy with this.
-	[snip]
-> What this means is that if snd_soc_register_component() fails, we end
-> up calling snd_soc_unregister_component().  This may be fine with the
-> way snd_soc_unregister_component() is currently implemented, but you'=
-re
-> making the assumption that it's fine to call snd_soc_unregister_compo=
-nent()
-> for a device which hasn't been registered.  Technically, this is a
-> layering violation, which makes this change fragile if the behaviour
-> of snd_soc_unregister_component() changes in the future.
->=20
-> For the sake of two calls in the error path, I don't think the benefi=
-ts
-> of this patch outweigh the risk.
+I suggest holding off on this stuff at the moment.  I think Mark and Liam
+(who now have a whole raft of emails from me today) have some work to do
+to fix ASoC to work how they're saying it should work, because to me
+ASoC seems to contradict what they're telling me.  To put it another way,
+it must be buggy.
 
-You are right, but if snd_soc_unregister_component() could be
-officially used safely with no previous call to
-snd_soc_register_component(), this would simplify error handling in
-other drivers too...
+The DAPM stuff seems to be the worst thing since mouldy bread.  I'm
+chasing what seems to be multiple bugs through this stuff, and many of
+them are not particularly nice.
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+For example - we register multiple copies of DAPM widgets for the same
+set of declarations if both a CPU DAI and a platform share the same
+struct device, and thereby end up overwriting some pointers in the DAI
+structure.  It seems that CPU DAIs themselves aren't supposed to have
+DAPM widgets, but the core creates some... but there's no explicit
+cleanup of them unlike the other DAPMs, and there's no debugfs for them.
+
+The bias levels are stuck at off/standby all the time, which makes any
+kind of PM with spdif-dit impossible - or even any routing between
+stream input and output.
+
+Basically, I'm tearing my hair out today looking at this stuff and getting
+nowhere fast - all I'm doing is finding more and more problems.
+
+For example, where a codec has no input/output widgets declared, it used
+to be powered up automatically by ASoC as a matter of course.  Things
+like UDA134x and other things.  Things like spdif-dit.  That "mysteriously"
+stopped happening.
+
+	ASoC: dapm: Treat DAI widgets like AIF widgets for power
+
+seems to be the cause, this results in such setups having zero connected
+inputs/outputs reported, which causes them to remain powered down - because
+what used to happen before was the DAI links would report their powered
+state depending on whether they were active, and they are set active
+in soc_dapm_stream_event().
+
+Now, when playback widget for the Codec and CPU DAIs get marked as active.
+The playback widget is created as a snd_soc_dapm_dai_in.  It's power
+check function is set to dapm_dac_check_power.  Since this widget is
+active, it checks for connected outputs via is_connected_output_ep().
+
+We drop through to the second switch statement (why do we have two there?
+They're both switching on the same damned variable and its not like a
+widget can change its ID.)  This is where the different behaviour has
+appeared - when these were just a simple snd_soc_dapm_dai, we used to
+just do the snd_soc_dapm_suspend_check() here, but we don't anymore.
+This is a snd_soc_dapm_dai_in type of widget, so we fall through this
+switch statement now and start searching the paths.
+
+As these codecs have no paths, this ultimately ends up returning no
+connections.  Hence why these codecs with no DAPM widgets declared but
+have PM support via the bias level stuff have stopped working.
+
+Now, about the spdif-dit, if we're going to have to add "pin" widgets
+to it, what the output of a SPDIF in terms of DAPM widgets?  At a guess,
+it's a "codec pin" despite there being no codec and no "pin" on that
+codec in reality, and that "pin" is always active.
+
+With that "fixed" (rather, altered to a state where it behaves the
+same way as it used to before the above commit) if I set up a DAPM route
+between the CPU DAI playback stream, an AIF (for spdif output) and the
+spdif-dit playback stream, I see the playback streams marked active and
+powered up, but the AIF stream remains powered down:
+
+spdif-dit/dapm/Playback:Playback: On  in 1 out 1
+spdif-dit/dapm/Playback: stream Playback active
+spdif-dit/dapm/Playback: in  "static" "spdif-playback"
+spdif-dit/dapm/bias_level:On
+
+kirkwood-audio.1/dapm/spdif-playback:spdif-playback: Off  in 1 out 0
+kirkwood-audio.1/dapm/spdif-playback: in  "static" "dma-playback"
+kirkwood-audio.1/dapm/spdif-playback: out "static" "Playback"
+
+kirkwood-audio.1/dapm/dma-playback:dma-playback: On  in 1 out 1
+kirkwood-audio.1/dapm/dma-playback: stream dma-playback active
+kirkwood-audio.1/dapm/dma-playback: out "static" "spdif-playback"
+kirkwood-audio.1/dapm/dma-playback: out "static" "i2s-playback"
+
+It looks to me like the DAPM stuff is - in one plain and simple word -
+buggered.
+
+I've no idea what the right fixes are in this area.  It needs someone
+like Mark or Liam who supposedly understand this to spend time checking
+that it actually operates as they _think_ it should operate, because
+at the moment it plainly doesn't.
