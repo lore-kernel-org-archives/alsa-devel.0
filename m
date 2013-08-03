@@ -1,33 +1,46 @@
 From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v3 2/4] ASoc: kirkwood: merge kirkwood-i2c and
-	kirkwood-dma
-Date: Sat, 3 Aug 2013 12:46:21 +0100
-Message-ID: <20130803114621.GA19632@n2100.arm.linux.org.uk>
-References: <20130731081806.244752d4@armhf> <20130803114321.GW23006@n2100.arm.linux.org.uk>
+Subject: Re: [PATCH v3 1/4] ASoc: kirkwood: simplify probe error
+Date: Sat, 3 Aug 2013 13:39:54 +0100
+Message-ID: <20130803123954.GX23006@n2100.arm.linux.org.uk>
+References: <20130731081739.76aae84c@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id C0529260202
+ for <alsa-devel@alsa-project.org>; Sat,  3 Aug 2013 14:40:10 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20130803114321.GW23006@n2100.arm.linux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <20130731081739.76aae84c@armhf>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 03, 2013 at 12:43:21PM +0100, Russell King - ARM Linux wrote:
-> On Wed, Jul 31, 2013 at 08:18:06AM +0200, Jean-Francois Moine wrote:
-> > To avoid the declaration of a 'kirkwood-pcm-audio' device in the DT,
-> > this patch merges the kirkwood-i2c and kirkwood-dma drivers into one
-> > module associated with 'kirkwood-i2s'. 
-> 
-> This is broken unless you use my patch.  You can't just stick the
-> two drivers together because they both make use of the platform
-> device's driver data field for two incompatible uses.  I've already
-> explained that, and I've even sent you a patch to fix that, but you
-> seem to ignore anything that you didn't write.
-> 
-> So... I'm going to work on this issue this weekend and merge the two
-> drivers myself, and send Mark my own patches to do this.
+On Wed, Jul 31, 2013 at 08:17:39AM +0200, Jean-Francois Moine wrote:
+> @@ -519,30 +532,17 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
+>  
+>  	err = snd_soc_register_component(&pdev->dev, &kirkwood_i2s_component,
+>  					 soc_dai, 1);
+> -	if (!err)
+> -		return 0;
+> -	dev_err(&pdev->dev, "snd_soc_register_component failed\n");
+> -
+> -	if (!IS_ERR(priv->extclk))
+> -		clk_disable_unprepare(priv->extclk);
+> -	clk_disable_unprepare(priv->clk);
+> +	if (err) {
+> +		dev_err(&pdev->dev, "snd_soc_register_component failed\n");
+> +		goto fail;
+> +	}
+> +	return 0;
 
-Sorry, I take that back, your cover email does say that this depends on
-my patch.  I'll give your patches a go this weekend instead then.  Thanks.
+This doesn't apply to mainline as there's a clk_put() there.
