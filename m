@@ -1,20 +1,18 @@
 From: Eldad Zack <eldad@fogrefinery.com>
 Subject: [PATCH v2 7/9] ALSA: usb-audio: remove is_playback
 	from implicit feedback quirks
-Date: Sat,  3 Aug 2013 10:50:21 +0200
-Message-ID: <1375519823-25718-8-git-send-email-eldad@fogrefinery.com>
-References: <1375519823-25718-1-git-send-email-eldad@fogrefinery.com>
+Date: Sat,  3 Aug 2013 10:51:13 +0200
+Message-ID: <1375519875-25774-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f53.google.com (mail-bk0-f53.google.com
- [209.85.214.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B8372619EF
- for <alsa-devel@alsa-project.org>; Sat,  3 Aug 2013 10:50:51 +0200 (CEST)
-Received: by mail-bk0-f53.google.com with SMTP id d7so451154bkh.12
- for <alsa-devel@alsa-project.org>; Sat, 03 Aug 2013 01:50:51 -0700 (PDT)
-In-Reply-To: <1375519823-25718-1-git-send-email-eldad@fogrefinery.com>
+Received: from mail-bk0-f41.google.com (mail-bk0-f41.google.com
+ [209.85.214.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id C202F2619D6
+ for <alsa-devel@alsa-project.org>; Sat,  3 Aug 2013 10:51:20 +0200 (CEST)
+Received: by mail-bk0-f41.google.com with SMTP id jc10so454015bkc.0
+ for <alsa-devel@alsa-project.org>; Sat, 03 Aug 2013 01:51:20 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
