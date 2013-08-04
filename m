@@ -1,201 +1,92 @@
-From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH RFC 13/13] ASoC: kirkwood: add IEC958 channel status support
-Date: Sun, 04 Aug 2013 20:34:04 +0100
-Message-ID: <E1V6444-0004m8-Od@rmk-PC.arm.linux.org.uk>
-References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 4/4] ASoC: kirkwood: change kirkwood-i2s
+ to mvebu-pcm-audio and DT doc
+Date: Sun, 4 Aug 2013 20:40:53 +0100
+Message-ID: <20130804194053.GV9858@sirena.org.uk>
+References: <20130731081858.53413597@armhf>
+ <20130803134855.GZ23006@n2100.arm.linux.org.uk>
+ <20130803182636.012cccb2@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20130804192136.GK23006@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>
+Content-Type: multipart/mixed; boundary="===============1288912100325973462=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id CAFDE261A91
+ for <alsa-devel@alsa-project.org>; Sun,  4 Aug 2013 21:40:58 +0200 (CEST)
+In-Reply-To: <20130803182636.012cccb2@armhf>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add support for userspace setting the IEC958 channel status data
-for the SPDIF interface.
 
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
----
- sound/soc/kirkwood/kirkwood-i2s.c |   93 +++++++++++++++++++++++++++++++++++++
- sound/soc/kirkwood/kirkwood.h     |   33 +++++++++++++
- 2 files changed, 126 insertions(+), 0 deletions(-)
+--===============1288912100325973462==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="isYHVKADKR45LecX"
+Content-Disposition: inline
 
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index 236b0b2..c6599eb 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -18,6 +18,7 @@
- #include <linux/mbus.h>
- #include <linux/delay.h>
- #include <linux/clk.h>
-+#include <sound/asoundef.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -29,11 +30,94 @@
- #define KIRKWOOD_I2S_RATES \
- 	(SNDRV_PCM_RATE_44100 | \
- 	 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000)
-+
- #define KIRKWOOD_I2S_FORMATS \
- 	(SNDRV_PCM_FMTBIT_S16_LE | \
- 	 SNDRV_PCM_FMTBIT_S24_LE | \
- 	 SNDRV_PCM_FMTBIT_S32_LE)
- 
-+static int kirkwood_iec958_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
-+	uinfo->count = 1;
-+
-+	return 0;
-+}
-+
-+static int kirkwood_iec958_mask_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	memset(ucontrol->value.iec958.status, 0,
-+	       sizeof(ucontrol->value.iec958.status));
-+	memset(ucontrol->value.iec958.status, 0xff, 4);
-+	return 0;
-+}
-+
-+static int kirkwood_iec958_dflt_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
-+	struct kirkwood_dma_data *priv = snd_soc_dai_get_drvdata(cpu_dai);
-+	u32 reg;
-+
-+	reg = readl_relaxed(priv->io + KIRKWOOD_SPDIF_STATUS0_L);
-+	ucontrol->value.iec958.status[3] = reg >> 24;
-+	ucontrol->value.iec958.status[2] = reg >> 16;
-+	ucontrol->value.iec958.status[1] = reg >>  8;
-+	ucontrol->value.iec958.status[0] = reg;
-+
-+	return 0;
-+}
-+
-+static int kirkwood_iec958_dflt_put(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
-+	struct kirkwood_dma_data *priv = snd_soc_dai_get_drvdata(cpu_dai);
-+	u32 val, nval;
-+
-+	val  = readl_relaxed(priv->io + KIRKWOOD_SPDIF_PLAYCTL);
-+	nval = val & ~(KIRKWOOD_SPDIF_NON_PCM | KIRKWOOD_SPDIF_REG_VALIDITY);
-+	if (ucontrol->value.iec958.status[0] & IEC958_AES0_NONAUDIO)
-+		nval |= KIRKWOOD_SPDIF_NON_PCM | KIRKWOOD_SPDIF_REG_VALIDITY;
-+	writel_relaxed(nval, priv->io + KIRKWOOD_SPDIF_PLAYCTL);
-+
-+	val = readl_relaxed(priv->io + KIRKWOOD_SPDIF_STATUS0_L);
-+	nval = ucontrol->value.iec958.status[3] << 24 |
-+	       ucontrol->value.iec958.status[2] << 16 |
-+	       ucontrol->value.iec958.status[1] << 8 |
-+	       ucontrol->value.iec958.status[0];
-+	writel_relaxed(nval, priv->io + KIRKWOOD_SPDIF_STATUS0_L);
-+	writel_relaxed(nval, priv->io + KIRKWOOD_SPDIF_STATUS0_R);
-+
-+	return nval != val;
-+}
-+
-+static const struct snd_kcontrol_new kirkwood_i2s_iec958_controls[] = {
-+	{
-+		.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name	= SNDRV_CTL_NAME_IEC958("", PLAYBACK, CON_MASK),
-+		.access	= SNDRV_CTL_ELEM_ACCESS_READ,
-+		.info	= kirkwood_iec958_info,
-+		.get	= kirkwood_iec958_mask_get,
-+	}, {
-+		.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name	= SNDRV_CTL_NAME_IEC958("", PLAYBACK, PRO_MASK),
-+		.access	= SNDRV_CTL_ELEM_ACCESS_READ,
-+		.info	= kirkwood_iec958_info,
-+		.get	= kirkwood_iec958_mask_get,
-+	}, {
-+		.iface	= SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name	= SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
-+		.access	= SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info	= kirkwood_iec958_info,
-+		.get	= kirkwood_iec958_dflt_get,
-+		.put	= kirkwood_iec958_dflt_put,
-+	},
-+};
-+
- static int kirkwood_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		unsigned int fmt)
- {
-@@ -408,6 +492,15 @@ static int kirkwood_i2s_probe(struct snd_soc_dai *dai)
- 	struct kirkwood_dma_data *priv = snd_soc_dai_get_drvdata(dai);
- 	unsigned long value;
- 	unsigned int reg_data;
-+	int ret;
-+
-+	ret = snd_soc_add_dai_controls(dai, kirkwood_i2s_iec958_controls,
-+				ARRAY_SIZE(kirkwood_i2s_iec958_controls));
-+	if (ret) {
-+		dev_err(dai->dev,
-+			"unable to add soc card controls: %d\n", ret);
-+		return ret;
-+	}
- 
- 	/* It appears that these can't be attached to the CPU DAI */
- 	snd_soc_dapm_new_controls(&dai->platform->dapm,
-diff --git a/sound/soc/kirkwood/kirkwood.h b/sound/soc/kirkwood/kirkwood.h
-index 3b70876..17b48a6 100644
---- a/sound/soc/kirkwood/kirkwood.h
-+++ b/sound/soc/kirkwood/kirkwood.h
-@@ -105,6 +105,39 @@
- #define KIRKWOOD_PLAY_BYTE_INT_COUNT		0x1314
- #define KIRKWOOD_BYTE_INT_COUNT_MASK		0xffffff
- 
-+#define KIRKWOOD_SPDIF_PLAYCTL			0x2204
-+#define KIRKWOOD_SPDIF_NON_PCM			(1<<17)
-+#define KIRKWOOD_SPDIF_REG_VALIDITY		(1<<16)
-+#define KIRKWOOD_SPDIF_FORCE_PARERR		(1<<4)
-+#define KIRKWOOD_SPDIF_MEM_USER_EN		(1<<2)
-+#define KIRKWOOD_SPDIF_MEM_VALIDITY_EN		(1<<1)
-+#define KIRKWOOD_SPDIF_BLOCK_START_MODE		(1<<0)
-+
-+#define KIRKWOOD_SPDIF_STATUS0_L		0x2280
-+#define KIRKWOOD_SPDIF_STATUS1_L		0x2284
-+#define KIRKWOOD_SPDIF_STATUS2_L		0x2288
-+#define KIRKWOOD_SPDIF_STATUS3_L		0x228c
-+#define KIRKWOOD_SPDIF_STATUS4_L		0x2290
-+#define KIRKWOOD_SPDIF_STATUS5_L		0x2294
-+#define KIRKWOOD_SPDIF_STATUS0_R		0x22a0
-+#define KIRKWOOD_SPDIF_STATUS1_R		0x22a4
-+#define KIRKWOOD_SPDIF_STATUS2_R		0x22a8
-+#define KIRKWOOD_SPDIF_STATUS3_R		0x22ac
-+#define KIRKWOOD_SPDIF_STATUS4_R		0x22b0
-+#define KIRKWOOD_SPDIF_STATUS5_R		0x22b4
-+#define KIRKWOOD_SPDIF_USER0_L			0x22c0
-+#define KIRKWOOD_SPDIF_USER1_L			0x22c4
-+#define KIRKWOOD_SPDIF_USER2_L			0x22c8
-+#define KIRKWOOD_SPDIF_USER3_L			0x22cc
-+#define KIRKWOOD_SPDIF_USER4_L			0x22d0
-+#define KIRKWOOD_SPDIF_USER5_L			0x22d4
-+#define KIRKWOOD_SPDIF_USER0_R			0x22e0
-+#define KIRKWOOD_SPDIF_USER1_R			0x22e4
-+#define KIRKWOOD_SPDIF_USER2_R			0x22e8
-+#define KIRKWOOD_SPDIF_USER3_R			0x22ec
-+#define KIRKWOOD_SPDIF_USER4_R			0x22f0
-+#define KIRKWOOD_SPDIF_USER5_R			0x22f4
-+
- #define KIRKWOOD_I2S_PLAYCTL			0x2508
- #define KIRKWOOD_I2S_RECCTL			0x2408
- #define KIRKWOOD_I2S_CTL_JUST_MASK		(0xf<<26)
--- 
-1.7.4.4
+
+--isYHVKADKR45LecX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Aug 03, 2013 at 06:26:36PM +0200, Jean-Francois Moine wrote:
+> Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
+
+> > >  static struct of_device_id kirkwood_i2s_of_match[] =3D {
+> > > -	{ .compatible =3D "marvell,kirkwood-i2s" },
+> > > +	{ .compatible =3D "marvell,mvebu-pcm-audio" }, =20
+
+> > You've only just introduced "marvell,kirkwood-i2s" in the previous patc=
+h.
+> > Why introduce something and then immediately change its name?  This mak=
+es
+> > no sense what so ever.
+
+> 2 patches for 2 different purposes. The first one just adds the DT
+> support. It is enough for DT based kernels. But some people wanted the
+> device name to be changed to 'mvebu'. So, the second patch.
+
+There is no need for the DT name to be connected to the Linux internal
+platform device name, just use the final name to start with.
+
+--isYHVKADKR45LecX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR/q5CAAoJELSic+t+oim92rYP/A9m6JvaQfFjiPOE8C/mZLxv
+yIu9Nzg8IEs2+HLgSVYYEQtf3Z/wBHyk69UGuWfWYLmJ9lGaDznQ6SKgPk4sq3zY
+BixiFv2U1Gt1A6kwSJ3SyhHU+kpEwIqCWQtfw25Q7jKzaoFrB71yfYNU2lN2htEl
+8xd+pWSPu9xqQSg24fgq9mRyqA8+CTc2PJUSz+/99FdOL3cFgGLR41v9ZUxmZGmC
+Fw//SxrIetx3R/iKHpCK6lxeDoqYyS4NvOWI+Hn2xHMvDLC/19R+PQfULlU6gb4X
+bJBU1vXkXjXtrBEdNPLy42SoGl5glLIzzAG34bUu9M1g4LcMKHqp2FLgXlnw6gyM
+EsU+6iQGtpBa46McVOyCuVwEFbb6zF8xsHnPGTe0R0VyhU2mValfMLz1Ab515rOg
+SDnQiLwOvuBh64IWofsyiyVhA/iJ4mU1iFGW7YO3bGznMC8w+2TBAYyXchF7U52W
+x/3AL9BmcJvrC1OUDo88HLu2GRHhiBIb2aF9V3rJTxyJVNVo+Uh8bL0KUep5zdrh
+mLLKqP6ji3CSh6IlnboEeze8jFxZNNBcvXRkO1lE8DOBkrzpZJ6M3tNcgNtRGFBg
+iox2x698YVD75q3BB0HStBoqJD9nb/5xpnOxfLbsYq5GVbP1a7ho50fsWyLjgjiA
+JCrt3nM8ieAkNv4l1c99
+=NnIB
+-----END PGP SIGNATURE-----
+
+--isYHVKADKR45LecX--
+
+--===============1288912100325973462==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1288912100325973462==--
