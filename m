@@ -1,12 +1,14 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: [PATCH RFC 00/13] Adding SPDIF support to kirkwood-i2s
-Date: Sun, 4 Aug 2013 20:21:37 +0100
-Message-ID: <20130804192136.GK23006@n2100.arm.linux.org.uk>
+From: Russell King <rmk+kernel@arm.linux.org.uk>
+Subject: [PATCH RFC 01/13] ASoC: kirkwood: merge struct kirkwood_dma_priv
+ with struct kirkwood_dma_data
+Date: Sun, 04 Aug 2013 20:22:03 +0100
+Message-ID: <E1V63sR-0004lC-0g@rmk-PC.arm.linux.org.uk>
+References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
+In-Reply-To: <20130804192136.GK23006@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -17,88 +19,200 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
-Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-This is only a RFC at present due to the need to test on Kirkwood and
-fix at least one bug in ASoC core code.
+Merge these two structures together; nothing other than the I2S and
+DMA driver makes use of struct kirkwood_dma_data, and it's not like
+struct kirkwood_dma_data is really just used to convey DMA specific
+data to the backend; it's more a general shared structure between the
+two halves.
 
-I can't say that this stuff is fully tested, because I don't have any
-Kirkwood platforms, but I do have one Dove platform, which as I've
-said in the past doesn't run mainline.  I don't run DT on it, so these
-patches also don't contain anything DT related.
+This will later allow kirkwood-dma.c and kirkwood-i2s.c to be merged
+together.
 
-However, this patch set is aimed at sorting out the SPDIF on Dove and
-Kirkwood, which the Dove-based Cubox uses.
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+ sound/soc/kirkwood/kirkwood-dma.c |   76 +++++++++++--------------------------
+ sound/soc/kirkwood/kirkwood.h     |    2 +
+ 2 files changed, 24 insertions(+), 54 deletions(-)
 
-The first patch in the series I've already sent, and I think Mark may
-have already picked up.  The second is my implementation of what I
-think Mark committed to use the devm_* APIs for the external clock.
-
-Patches 3 and 4 fix problems which I've found with the ASoC core code,
-which prevent these patches from working correctly.  Patch 3 I've
-already discussed with Mark over the weekend, and I think that's
-pretty much settled, but patch 4 is a definite hack.
-
-Patch 4 addresses an issue where we end up registering the CPU DAIs
-stream widgets twice - once against the codec DAPM context and again
-against the platform DAPM context.  When these are registered, pointers
-to these widgets are saved into the CPU DAI structure, so one set of
-these widgets gets overwritten by the other set.  The set which wins
-(normally the ones in the CPU DAPM context) ends up being the set
-which are made active.  However, the platform ones remain on the DAI
-list, and these can end up being bound to by routes.  ASoC people
-need to fix this problem as a pre-requisit to the following patches
-working.
-
-Patches 5 and 6 are just cleanups - I decided it was easier to do my
-own version of merging the I2S and DMA files rather than using Jean-F's
-patch (sorry, I just wanted something that worked...)
-
-Patch 7 is based on some changes in Rabeeh's kernel - I will have a
-following patch at some point to adjust these parameters to something
-a little saner.  This just gets mainline closer to the tree which I
-can test.
-
-Patch 8 adds the I2S widgets to kirkwood-i2s and uses them.  With this
-patch applied, kirkwood-i2s will be silent unless at least one of the
-output widgets is "powered up" - in the case of this patch, that's the
-"i2sdo" widget - naming following what's in the functional spec.
-
-Patch 9 and 10 add the DAPM routes to connect the I2S inputs/outputs
-to the codec streams, restoring audio output on these platforms.  As
-I don't have these platforms, this should be tested by someone who has.
-
-Patch 11, again, discussed with Mark, this adds an always enabled output
-pin for the SPDIF transceiver, so that the output is powered up by DAPM.
-Without this, the SPDIF output stream goes into "active" mode during
-playback, but is never powered up.  This results in any connected
-source widgets also not being powered up.
-
-Patch 12 adds the SPDIF output widget to kirkwood-i2s, called "spdifdo",
-again a name derived from the functional spec.  The actual pin is called
-"AU_SPDIFDO".
-
-Patch 13 adds the IEC958 channel status data to patch 12, allowing the
-channel status to be set by applications using an appropriate ALSA
-library configuration file via the standard methods.
-
-What I haven't included is the board file (like the openrd and t5325
-ones already present) for SPDIF support on Dove, as that's based on the
-pre-DT setups, and I'm not sure anyone in mainline is interested in
-that.  So the above provides the components necessary, hopefully someone
-with ASoC & DT knowledge can bind these components together via
-appropriate DT bindings.  For reference, the DAI link looks like this:
-
-                .name = "S/PDIF1",
-                .stream_name = "IEC958 Playback",
-                .platform_name = "mvebu-audio.1",
-                .cpu_dai_name = "mvebu-audio.1",
-                .codec_dai_name = "dit-hifi",
-                .codec_name = "spdif-dit",
-
-and the required route:
-
-static const struct snd_soc_dapm_route routes[] = {
-        { "Playback", NULL, "spdifdo" },
-};
+diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+index d3d4bdc..112c262 100644
+--- a/sound/soc/kirkwood/kirkwood-dma.c
++++ b/sound/soc/kirkwood/kirkwood-dma.c
+@@ -33,11 +33,11 @@
+ 	 SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE | \
+ 	 SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE)
+ 
+-struct kirkwood_dma_priv {
+-	struct snd_pcm_substream *play_stream;
+-	struct snd_pcm_substream *rec_stream;
+-	struct kirkwood_dma_data *data;
+-};
++static struct kirkwood_dma_data *kirkwood_priv(struct snd_pcm_substream *subs)
++{
++	struct snd_soc_pcm_runtime *soc_runtime = subs->private_data;
++	return snd_soc_dai_get_drvdata(soc_runtime->cpu_dai);
++}
+ 
+ static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
+ 	.info = (SNDRV_PCM_INFO_INTERLEAVED |
+@@ -63,8 +63,7 @@ static u64 kirkwood_dma_dmamask = DMA_BIT_MASK(32);
+ 
+ static irqreturn_t kirkwood_dma_irq(int irq, void *dev_id)
+ {
+-	struct kirkwood_dma_priv *prdata = dev_id;
+-	struct kirkwood_dma_data *priv = prdata->data;
++	struct kirkwood_dma_data *priv = dev_id;
+ 	unsigned long mask, status, cause;
+ 
+ 	mask = readl(priv->io + KIRKWOOD_INT_MASK);
+@@ -89,10 +88,10 @@ static irqreturn_t kirkwood_dma_irq(int irq, void *dev_id)
+ 	writel(status, priv->io + KIRKWOOD_INT_CAUSE);
+ 
+ 	if (status & KIRKWOOD_INT_CAUSE_PLAY_BYTES)
+-		snd_pcm_period_elapsed(prdata->play_stream);
++		snd_pcm_period_elapsed(priv->substream_play);
+ 
+ 	if (status & KIRKWOOD_INT_CAUSE_REC_BYTES)
+-		snd_pcm_period_elapsed(prdata->rec_stream);
++		snd_pcm_period_elapsed(priv->substream_rec);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -126,15 +125,10 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ {
+ 	int err;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+-	struct snd_soc_platform *platform = soc_runtime->platform;
+-	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
+-	struct kirkwood_dma_data *priv;
+-	struct kirkwood_dma_priv *prdata = snd_soc_platform_get_drvdata(platform);
++	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+ 	const struct mbus_dram_target_info *dram;
+ 	unsigned long addr;
+ 
+-	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
+ 	snd_soc_set_runtime_hwparams(substream, &kirkwood_dma_snd_hw);
+ 
+ 	/* Ensure that all constraints linked to dma burst are fulfilled */
+@@ -157,21 +151,11 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ 	if (err < 0)
+ 		return err;
+ 
+-	if (prdata == NULL) {
+-		prdata = kzalloc(sizeof(struct kirkwood_dma_priv), GFP_KERNEL);
+-		if (prdata == NULL)
+-			return -ENOMEM;
+-
+-		prdata->data = priv;
+-
++	if (!priv->substream_play && !priv->substream_rec) {
+ 		err = request_irq(priv->irq, kirkwood_dma_irq, IRQF_SHARED,
+-				  "kirkwood-i2s", prdata);
+-		if (err) {
+-			kfree(prdata);
++				  "kirkwood-i2s", priv);
++		if (err)
+ 			return -EBUSY;
+-		}
+-
+-		snd_soc_platform_set_drvdata(platform, prdata);
+ 
+ 		/*
+ 		 * Enable Error interrupts. We're only ack'ing them but
+@@ -183,11 +167,11 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ 	dram = mv_mbus_dram_info();
+ 	addr = substream->dma_buffer.addr;
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		prdata->play_stream = substream;
++		priv->substream_play = substream;
+ 		kirkwood_dma_conf_mbus_windows(priv->io,
+ 			KIRKWOOD_PLAYBACK_WIN, addr, dram);
+ 	} else {
+-		prdata->rec_stream = substream;
++		priv->substream_rec = substream;
+ 		kirkwood_dma_conf_mbus_windows(priv->io,
+ 			KIRKWOOD_RECORD_WIN, addr, dram);
+ 	}
+@@ -197,27 +181,19 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ 
+ static int kirkwood_dma_close(struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
+-	struct snd_soc_platform *platform = soc_runtime->platform;
+-	struct kirkwood_dma_priv *prdata = snd_soc_platform_get_drvdata(platform);
+-	struct kirkwood_dma_data *priv;
+-
+-	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
++	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+ 
+-	if (!prdata || !priv)
++	if (!priv)
+ 		return 0;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		prdata->play_stream = NULL;
++		priv->substream_play = NULL;
+ 	else
+-		prdata->rec_stream = NULL;
++		priv->substream_rec = NULL;
+ 
+-	if (!prdata->play_stream && !prdata->rec_stream) {
++	if (!priv->substream_play && !priv->substream_rec) {
+ 		writel(0, priv->io + KIRKWOOD_ERR_MASK);
+-		free_irq(priv->irq, prdata);
+-		kfree(prdata);
+-		snd_soc_platform_set_drvdata(platform, NULL);
++		free_irq(priv->irq, priv);
+ 	}
+ 
+ 	return 0;
+@@ -243,13 +219,9 @@ static int kirkwood_dma_hw_free(struct snd_pcm_substream *substream)
+ static int kirkwood_dma_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
+-	struct kirkwood_dma_data *priv;
++	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+ 	unsigned long size, count;
+ 
+-	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
+-
+ 	/* compute buffer size in term of "words" as requested in specs */
+ 	size = frames_to_bytes(runtime, runtime->buffer_size);
+ 	size = (size>>2)-1;
+@@ -272,13 +244,9 @@ static int kirkwood_dma_prepare(struct snd_pcm_substream *substream)
+ static snd_pcm_uframes_t kirkwood_dma_pointer(struct snd_pcm_substream
+ 						*substream)
+ {
+-	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
+-	struct kirkwood_dma_data *priv;
++	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+ 	snd_pcm_uframes_t count;
+ 
+-	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
+-
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		count = bytes_to_frames(substream->runtime,
+ 			readl(priv->io + KIRKWOOD_PLAY_BYTE_COUNT));
+diff --git a/sound/soc/kirkwood/kirkwood.h b/sound/soc/kirkwood/kirkwood.h
+index 4d92637..10a3aaa 100644
+--- a/sound/soc/kirkwood/kirkwood.h
++++ b/sound/soc/kirkwood/kirkwood.h
+@@ -129,6 +129,8 @@ struct kirkwood_dma_data {
+ 	struct clk *extclk;
+ 	uint32_t ctl_play;
+ 	uint32_t ctl_rec;
++	struct snd_pcm_substream *substream_play;
++	struct snd_pcm_substream *substream_rec;
+ 	int irq;
+ 	int burst;
+ };
+-- 
+1.7.4.4
