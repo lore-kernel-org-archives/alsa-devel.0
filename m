@@ -1,64 +1,104 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2 7/8] ARM: dts: wm8994: Add wm8994 support on smdk5420
-Date: Sun, 4 Aug 2013 18:22:05 +0100
-Message-ID: <20130804172205.GT9858@sirena.org.uk>
-References: <1374845812-7803-1-git-send-email-padma.v@samsung.com>
- <1374845812-7803-8-git-send-email-padma.v@samsung.com>
- <20130726151902.GL9858@sirena.org.uk>
- <CAAgF-Be8SNxTZv1yFCwH6yJ-O_3R4reh=3y+pSCLJYW7S9TkUg@mail.gmail.com>
- <CAAgF-Bexp_fGT8KV+TQ0_kZLJBtq7UK=TG4eYRA6qpTSL+scxg@mail.gmail.com>
- <20130729134311.GX9858@sirena.org.uk>
- <CAAgF-BeDYm1jNJpkyfTeS5HjpEuaHiumFq+D_PNs=QYG6-Px+w@mail.gmail.com>
- <CAAgF-BcPT24LcQe5SUyOP3qHThXqZ1mVts=_cnww3EAUYEYikw@mail.gmail.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: [PATCH RFC 00/13] Adding SPDIF support to kirkwood-i2s
+Date: Sun, 4 Aug 2013 20:21:37 +0100
+Message-ID: <20130804192136.GK23006@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="b0cBboSxZFnoy/DE"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 Content-Disposition: inline
-In-Reply-To: <CAAgF-BcPT24LcQe5SUyOP3qHThXqZ1mVts=_cnww3EAUYEYikw@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padma Venkat <padma.kvr@gmail.com>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, abrestic@chromium.org, Tomasz Figa <tomasz.figa@gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is only a RFC at present due to the need to test on Kirkwood and
+fix at least one bug in ASoC core code.
 
---b0cBboSxZFnoy/DE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I can't say that this stuff is fully tested, because I don't have any
+Kirkwood platforms, but I do have one Dove platform, which as I've
+said in the past doesn't run mainline.  I don't run DT on it, so these
+patches also don't contain anything DT related.
 
-On Fri, Aug 02, 2013 at 04:15:28PM +0530, Padma Venkat wrote:
+However, this patch set is aimed at sorting out the SPDIF on Dove and
+Kirkwood, which the Dove-based Cubox uses.
 
-> Sorry for giving some what wrong info here. I verified the schemata.
-> There is a switch on the board which can be used to select the input
-> clock of codec MCLK1. We can either select oscillator clock which is
-> 16.9MHz which is on the board or XCLKOUT which is from PMU or
-> i2scdclk(codec slave mode). Right now we are using oscillator clock as
-> input clock to MCLK1.
+The first patch in the series I've already sent, and I think Mark may
+have already picked up.  The second is my implementation of what I
+think Mark committed to use the devm_* APIs for the external clock.
 
-I agree that going with whatever the board ships with as default seems
-sensible.  Might be worth putting in a comment with the XCLKOUT option
-saying how it maps into the control on the board.
+Patches 3 and 4 fix problems which I've found with the ASoC core code,
+which prevent these patches from working correctly.  Patch 3 I've
+already discussed with Mark over the weekend, and I think that's
+pretty much settled, but patch 4 is a definite hack.
 
---b0cBboSxZFnoy/DE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Patch 4 addresses an issue where we end up registering the CPU DAIs
+stream widgets twice - once against the codec DAPM context and again
+against the platform DAPM context.  When these are registered, pointers
+to these widgets are saved into the CPU DAI structure, so one set of
+these widgets gets overwritten by the other set.  The set which wins
+(normally the ones in the CPU DAPM context) ends up being the set
+which are made active.  However, the platform ones remain on the DAI
+list, and these can end up being bound to by routes.  ASoC people
+need to fix this problem as a pre-requisit to the following patches
+working.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+Patches 5 and 6 are just cleanups - I decided it was easier to do my
+own version of merging the I2S and DMA files rather than using Jean-F's
+patch (sorry, I just wanted something that worked...)
 
-iQIcBAEBAgAGBQJR/o26AAoJELSic+t+oim9BUwP/2su3IKsZ2CtanNIMmfN0C5N
-y1ZtRbpJ9Asecsnvugtb3geZXTjPVLz5FHVc8/p2SbU+qxGObPbyH0GNi3pHJjgG
-fIxFhmIO2qPUBetKdgpJjD+LInI+yRK5oOrTnE6ObfCzaHedM1xehAeTM5APwHLf
-TuHkUnNxie/LnTaNP/uQwLQ8yOH43IA6oAu5QdppbvLLMipTN1aILc8DpEfEhGq7
-f/IlJWY+aBE1i8lhsizHQvl8XeRadMqXpjuvAzJ2RNjjy38EJ28LzEHhAQrRtMPt
-TyjSaB77qfxlW7Ry10UDHf6g4wQwl66doZ1z30du9oAOL00jmDc2wg1175TAlbFr
-0aOT4beEMamjZ4PmeoHhlh7Ow1Ml8r6Ya9IFy/bX7OCHjR1Ru6dIcs88PNIrdH+U
-+JeRqI9T72Alw68m1wS9BOfJUZh5kF2PVpEFN1XQAL4ea0WpZKGcSdHj9rlozMag
-TtYotc84440h+x6WSa7KzkgPztxYWdiF+k7WKOJTYdUrOd3Q4GK9+p12Cdz09rRf
-1pRt/j41pr7SupnxnE1itSLcAiIq06ndPysRFIjLEhUHX10/QQelCCxDdnaRIJ+W
-omOBBC6KpZ31awaYYXrEFyWmPd7Zq/+41umAX9Ypibh0cz3p2ZN7AwSo4Rpkcrhm
-u2UjfpAVDsmLzrpXWvIw
-=UCbp
------END PGP SIGNATURE-----
+Patch 7 is based on some changes in Rabeeh's kernel - I will have a
+following patch at some point to adjust these parameters to something
+a little saner.  This just gets mainline closer to the tree which I
+can test.
 
---b0cBboSxZFnoy/DE--
+Patch 8 adds the I2S widgets to kirkwood-i2s and uses them.  With this
+patch applied, kirkwood-i2s will be silent unless at least one of the
+output widgets is "powered up" - in the case of this patch, that's the
+"i2sdo" widget - naming following what's in the functional spec.
+
+Patch 9 and 10 add the DAPM routes to connect the I2S inputs/outputs
+to the codec streams, restoring audio output on these platforms.  As
+I don't have these platforms, this should be tested by someone who has.
+
+Patch 11, again, discussed with Mark, this adds an always enabled output
+pin for the SPDIF transceiver, so that the output is powered up by DAPM.
+Without this, the SPDIF output stream goes into "active" mode during
+playback, but is never powered up.  This results in any connected
+source widgets also not being powered up.
+
+Patch 12 adds the SPDIF output widget to kirkwood-i2s, called "spdifdo",
+again a name derived from the functional spec.  The actual pin is called
+"AU_SPDIFDO".
+
+Patch 13 adds the IEC958 channel status data to patch 12, allowing the
+channel status to be set by applications using an appropriate ALSA
+library configuration file via the standard methods.
+
+What I haven't included is the board file (like the openrd and t5325
+ones already present) for SPDIF support on Dove, as that's based on the
+pre-DT setups, and I'm not sure anyone in mainline is interested in
+that.  So the above provides the components necessary, hopefully someone
+with ASoC & DT knowledge can bind these components together via
+appropriate DT bindings.  For reference, the DAI link looks like this:
+
+                .name = "S/PDIF1",
+                .stream_name = "IEC958 Playback",
+                .platform_name = "mvebu-audio.1",
+                .cpu_dai_name = "mvebu-audio.1",
+                .codec_dai_name = "dit-hifi",
+                .codec_name = "spdif-dit",
+
+and the required route:
+
+static const struct snd_soc_dapm_route routes[] = {
+        { "Playback", NULL, "spdifdo" },
+};
