@@ -1,18 +1,22 @@
-From: Chih-Chung Chang <chihchung@chromium.org>
-Subject: [PATCH 1/1] ALSA: hda - Fix jack gating when
-	auto_{mute, mic} is suppressed.
-Date: Mon,  5 Aug 2013 12:09:21 +0800
-Message-ID: <1375675761-32289-1-git-send-email-chihchung@chromium.org>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: hda: sink info in case of AMD Radeon GPU card (no
+	ELD?)
+Date: Mon, 5 Aug 2013 07:27:45 +0200
+Message-ID: <CACna6rwA4Nhxevuwq706rw8VKdSr8xPhvKsLCLkaj8Ad-99+Dg@mail.gmail.com>
+References: <CACna6rymTWUCcaibDzV8tXN509xmRTXh31SYb7C89cQX=5RJcg@mail.gmail.com>
+ <CACna6ryydHmaJW+-j2sxkZTHDn69QG0EPZue13zn-qaw0ybB0Q@mail.gmail.com>
+ <20130803170247.70e7825f@mjolnir.ossman.eu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gh0-f201.google.com (mail-gh0-f201.google.com
- [209.85.160.201])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D0FF2615EC
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 06:11:59 +0200 (CEST)
-Received: by mail-gh0-f201.google.com with SMTP id r14so284998ghr.0
- for <alsa-devel@alsa-project.org>; Sun, 04 Aug 2013 21:11:58 -0700 (PDT)
+Received: from mail-oa0-f43.google.com (mail-oa0-f43.google.com
+ [209.85.219.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BEC1261ABD
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 07:27:47 +0200 (CEST)
+Received: by mail-oa0-f43.google.com with SMTP id i10so5234409oag.2
+ for <alsa-devel@alsa-project.org>; Sun, 04 Aug 2013 22:27:46 -0700 (PDT)
+In-Reply-To: <20130803170247.70e7825f@mjolnir.ossman.eu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +26,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: tiwai@suse.de, chihchung@chromium.org, alsa-devel@alsa-project.org, kailang@realtek.com.tw, dgreid@chromium.org
+To: Pierre Ossman <pierre@ossman.eu>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The snd_hda_jack_set_gating_jack() call didn't work when
-auto_{mute,mic} is suppressed because (1) am_entry is
-not filled with nid of the mic pin. (2) The jacks are not
-created (by snd_hda_jack_detect_enable_callback) before the
-snd_hda_jack_set_gating_jack call.
-
-Now we use the first input pin nid directly, and create the jack if it
-doesn't exist yet.
-
-Signed-off-by: Chih-Chung Chang <chihchung@chromium.org>
-
-diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
-index 3fd2973..aa02c0f 100644
---- a/sound/pci/hda/hda_jack.c
-+++ b/sound/pci/hda/hda_jack.c
-@@ -247,8 +247,8 @@ EXPORT_SYMBOL_HDA(snd_hda_jack_detect_enable);
- int snd_hda_jack_set_gating_jack(struct hda_codec *codec, hda_nid_t gated_nid,
- 				 hda_nid_t gating_nid)
- {
--	struct hda_jack_tbl *gated = snd_hda_jack_tbl_get(codec, gated_nid);
--	struct hda_jack_tbl *gating = snd_hda_jack_tbl_get(codec, gating_nid);
-+	struct hda_jack_tbl *gated = snd_hda_jack_tbl_new(codec, gated_nid);
-+	struct hda_jack_tbl *gating = snd_hda_jack_tbl_new(codec, gating_nid);
- 
- 	if (!gated || !gating)
- 		return -EINVAL;
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 8bd2261..2b64de5 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3258,11 +3258,12 @@ static void alc271_hp_gate_mic_jack(struct hda_codec *codec,
- 	struct alc_spec *spec = codec->spec;
- 
- 	if (action == HDA_FIXUP_ACT_PROBE) {
--		if (snd_BUG_ON(!spec->gen.am_entry[1].pin ||
--			       !spec->gen.autocfg.hp_pins[0]))
-+		int mic_pin = spec->gen.autocfg.inputs[0].pin;
-+		int hp_pin = spec->gen.autocfg.hp_pins[0];
-+
-+		if (snd_BUG_ON(!mic_pin || !hp_pin))
- 			return;
--		snd_hda_jack_set_gating_jack(codec, spec->gen.am_entry[1].pin,
--					     spec->gen.autocfg.hp_pins[0]);
-+		snd_hda_jack_set_gating_jack(codec, mic_pin, hp_pin);
- 	}
- }
- 
--- 
-1.8.3
+MjAxMy84LzMgUGllcnJlIE9zc21hbiA8cGllcnJlQG9zc21hbi5ldT46Cj4gT24gV2VkLCAxNyBB
+cHIgMjAxMyAxNDowNDowMCArMDIwMAo+IFJhZmHFgiBNacWCZWNraSA8emFqZWM1QGdtYWlsLmNv
+bT4gd3JvdGU6Cj4KPj4KPj4gSSB0cmllZCBoYWNraW5nIHRoaXMgc2luayBpbmZvIHByb2JsZW0g
+YWdhaW4uIEkndmUgaW5zdGFsbGVkICJmZ2xyeCIKPj4gb24gbXkgQU1EIFJhZGVvbiBIRCA2OTcw
+TSAoQkFSVFMgPT0gRENFNSkgYW5kIHZlcmlmaWVkIGl0IHNldHMgU0FECj4+IHJlZ2lzdGVyczoK
+Pgo+IEFueSBwcm9ncmVzcyBvbiB0aGlzPwo+Cj4gSSBmaWRkbGVkIGFyb3VuZCB3aXRoIHByb3Zp
+ZGluZyB0aGUgRUxEIHN0dWZmIG91dC1vZi1iYW5kLCBidXQgdGhhdCdzCj4gYXBwYXJlbnRseSBu
+b3Qgc3VmZmljaWVudC4gSSBndWVzcyB0aGUgd2lkZ2V0IGNhcGFiaWxpdGllcyBwcm9wZXJ0eQo+
+IGFsc28gbmVlZHMgdG8gY2hhbmdlLiBEaWQgeW91IGNoZWNrIHRvIHNlZSBpZiB0aGF0IGhhcHBl
+bmVkIHdpdGggZmdscng/CgpJIHdhc24ndCB3b3JraW5nIG9uIHRoYXQsIG5vIG5ld3MgOigKCi0t
+IApSYWZhxYIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
