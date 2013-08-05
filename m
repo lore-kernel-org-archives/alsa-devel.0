@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: change widget sequence for
- depop
-Date: Mon, 5 Aug 2013 18:58:04 +0100
-Message-ID: <20130805175804.GY9858@sirena.org.uk>
-References: <1375676343-13891-1-git-send-email-bardliao@realtek.com>
- <20130805144808.GG9858@sirena.org.uk> <51FFDF11.5020106@metafoo.de>
+Subject: Re: [PATCH v2] ASoC: mxs: add some error messages to
+ help identifying problems
+Date: Mon, 5 Aug 2013 19:04:33 +0100
+Message-ID: <20130805180433.GA9858@sirena.org.uk>
+References: <1375281871-28128-1-git-send-email-LW@KARO-electronics.de>
+ <1375281871-28128-3-git-send-email-LW@KARO-electronics.de>
+ <CAOMZO5BeFq+PxDtJ12H=d8Y=qu8Gyd4wAn=7+mzbx+_OyaUg2g@mail.gmail.com>
+ <1375432215-26624-1-git-send-email-LW@KARO-electronics.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8985473258627294253=="
+Content-Type: multipart/mixed; boundary="===============0773092992587237881=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A6A6265146
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 19:58:09 +0200 (CEST)
-In-Reply-To: <51FFDF11.5020106@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 92D8E265172
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 20:04:36 +0200 (CEST)
+In-Reply-To: <1375432215-26624-1-git-send-email-LW@KARO-electronics.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,65 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, swarren@wwwdotorg.org, lgirdwood@gmail.com, bardliao@realtek.com, flove@realtek.com
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8985473258627294253==
+--===============0773092992587237881==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dvMBd3vrkFFfaYcy"
+	protocol="application/pgp-signature"; boundary="d0kcqLy8viw0/kfq"
 Content-Disposition: inline
 
 
---dvMBd3vrkFFfaYcy
-Content-Type: text/plain; charset=us-ascii
+--d0kcqLy8viw0/kfq
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 05, 2013 at 07:21:21PM +0200, Lars-Peter Clausen wrote:
-> On 08/05/2013 04:48 PM, Mark Brown wrote:
+On Fri, Aug 02, 2013 at 10:30:15AM +0200, Lothar Wa=DFmann wrote:
+> On Thu, 1 Aug 2013 11:22:19 +0100, Mark Brown wrote:
+> > On Wed, Jul 31, 2013 at 07:11:48PM -0300, Fabio Estevam wrote:
+> >> On Wed, Jul 31, 2013 at 11:44 AM, Lothar Wa=DFmann <LW@karo-electronic=
+s.de> wrote:
 
-> > This looks like you should be using Lars-Peter's patch for controls that
-> > are disabled while a widget isn't powered - as far as I can tell from a
-> > quick read through all this does is keep the speaker/headphone muted
-> > while the outputs are powered down.
+Applied, but please *always* submit patches as covered in
+SubmittingPatches - if they won't apply properly with git am that's not
+good.
 
-> The driver is using stereo controls though. So either support for stereo
-> controls needs to be added to DAPM (which shouldn't be too hard) or the
-> control needs to be split into two mono controls.
-
-Yes, I think we should get the stereo support done - this sort of thing
-is the main use case I can see for it.
-
---dvMBd3vrkFFfaYcy
+--d0kcqLy8viw0/kfq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR/+epAAoJELSic+t+oim9G+EQAJ2UHhya0XKjlsZVczAm/k/q
-7f9XknoYF56RE5pRmcLk/qiuH9G/PKxQrM/7/CPHMdFGgceENgRgmSl9hQOifFM8
-e/jDeiWyQoxaY0/YuNrfTk3ov2w4mSz1PqFiXLfXH7LYboAF+XSdHOL/DUEBrMCb
-pS3+PEHr+YMgoxuZmDy7jSkdw34KVY82GSpmB8xyk01E4FYZsFKqAK0oJz7M0UmZ
-kM2HJE6v1RXn/vfrZaLT4doKAn2K4f1K3oBrFSiJm9EpW2hg8+4qOxO10DuEHLmv
-nP7Tee9yAfhdi/xduMh0BImkAR1inQiCJiXXyauSjnTnRTQBH0fIeGWn2Ash6vn6
-5Oa/TlYD4f9315UzYfzzXIwRuQR006IVnR6tsV9xQDc2o8+uRqA+/EViUUxozlMz
-XJOAizPojOz1j9GiWER6+GsT152uCbzAI3qPmk3YAVV6NnNePjnMiKbn7sQlQDJx
-PgZy6Ij3G/fJ0EHU1KvHnhWMROco4BYxf2KUeflbOj/O+0s2BLRgvEKONucY9Xhi
-fPsM5rbm9tBM2RC4XLwCeN47dSYPA0Kv1Igc9u0PHL55AY+g7PwxFkBXB9IJIy2B
-qabBWGV0ztgJr4jyI6ds27BnYUffQcnjg+JC15UW1XinvdhY01YLIHPe0ijIlOkw
-uCZdvM+XOI8vkZv3BcoE
-=WuR1
+iQIcBAEBAgAGBQJR/+kuAAoJELSic+t+oim9AcUP/RekuaRJmee7p8B5T4NqceD4
+3t+smdN+Mjq4GZt6qTfToH5lE8YlUHWexvGRNlLpmGYtdPmmilAFRZU16Js46hFL
+4JoSkvdynq28BYHX0369fYQHANqx3VaPvz5GEFOKi0k9OHbWu30X4QoDjIYi1n9w
+LwHOyoExWFviIcGnp/9DK84e046kiIcFQSmoD7HmjMO0JvZKTBervV68sl8un3Zk
+Ovr3B2OEr6WcBZWtyyXwV3cSmb+mXZVrmckvLipao+ot58IHlJhsccfz5z/sU6Ga
+dw1N8HJc2vNjlhzaQtHbSS4QRa4FaxNP0kGbmtS4CaAfjxZqX6U9huueahgmCkcB
+IgtYcOeYhZPiU5GDTR8WwTf4taj5PFBn7HJcc2kdspHu3H3FV6BrXNK0FqHQSjl0
+fYR5OlR0krJKShBg98tv2hzHcf9ACTl/Jc7XInSIr7ATUZy/+J26aNdLwZpsCVJS
+lfYMMgko6wcwjh99LrF1l5u3sgaoNu0w3eR3ocSyKQrTt5sTKfekWJ7FFJkMszXK
+5nnaZmCQChe99vM6B4dUf18WOtk9pN87cmiM2fbLA9ydoBMFpl00ZUirgOB5FIFZ
+ndXv404F+1auFKYVDzqVu6sK4jfnsoy9yZtlqq6YH7m2HDtKuqk30EF9AEkJ0rBK
+wlVG9ZxIcVx8ed5nTeVe
+=8iad
 -----END PGP SIGNATURE-----
 
---dvMBd3vrkFFfaYcy--
+--d0kcqLy8viw0/kfq--
 
---===============8985473258627294253==
+--===============0773092992587237881==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8985473258627294253==--
+--===============0773092992587237881==--
