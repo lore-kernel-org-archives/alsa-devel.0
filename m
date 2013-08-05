@@ -1,58 +1,75 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v3] ASoC: core: init delayed_work for
- codec-codec links
-Date: Mon, 5 Aug 2013 11:33:07 +0100
-Message-ID: <20130805103307.GW9858@sirena.org.uk>
-References: <20130731131627.GA32631@opensource.wolfsonmicro.com>
- <20130802105156.GA20577@opensource.wolfsonmicro.com>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: ASoC: omap-mcbsp 192000 freq
+Date: Mon, 5 Aug 2013 12:40:58 +0200
+Message-ID: <20130805104058.GB8787@panicking>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8l0epyP1oK4ZrwYy"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ea0-f171.google.com (mail-ea0-f171.google.com
+ [209.85.215.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18E322625D8
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 12:41:03 +0200 (CEST)
+Received: by mail-ea0-f171.google.com with SMTP id n15so1517363ead.16
+ for <alsa-devel@alsa-project.org>; Mon, 05 Aug 2013 03:41:02 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <20130802105156.GA20577@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@linaro.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
---8l0epyP1oK4ZrwYy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm working on having pcm1792a and omap platform. Right
+now I have already sent and rfc for the codec and I have
+a local build that change this file too to support
+192000. What I don't understand is the meaning of:
 
-On Fri, Aug 02, 2013 at 11:51:56AM +0100, Richard Fitzgerald wrote:
+.period_bytes_min       = 32,
 
-> +static void codec2codec_close_delayed_work(struct work_struct *work)
-> +{
-> +}
-> +
+What is the relation between fifo_size and period_bytes_min?
+because at this frequency 32 bytes are not so much and the fifo
+of the port are >= 512 bytes. Is it possible to increase
+the period_bytes_min without violating the hw constraints?
 
-Having a commment here was a really good idea since this is the sort of
-thing I'd expect someone to come along and try to clean up otherwise.
-I'd also expect just passing NULL to INIT_DELAYED_WORK() (with a big
-comment attached) to do the right thing, though perhaps it doesn't.
+Michael
 
---8l0epyP1oK4ZrwYy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+.period_bytes_max       = 64 * 1024,
+.periods_min            = 2,
+.periods_max            = 255,
+.buffer_bytes_max       = 128 * 1024,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR/39gAAoJELSic+t+oim9XTYP/iYabC+/qgKHpA4n52P0m7ri
-4HVGeTK3A+6Ecfm5IUUyRwEZplZmsLXyfefXwDX6S1vilM39VmXvLJyDwV0/YMOB
-AWXncqXfijqTtcVtsB6L4I4s9rAHFxlI7Dt6TjRnbwGfeWFJPKxGkYwG/ndSAWXW
-gtNfekQIyLdEPQ/JBndoyZf5hcEm/+Kw1aeAZkoc9XgFrq7VEOs3tsKo5nN8rJaR
-JNBF/tai/BFK14SDFkj2kiGIID1wnSOR1BqBxfrNeU6TLQzNjstfKRY/J3XRGkAF
-SUxWWkacQllYaUsLD1vV8kfIKgA9A7j/4iovBsvMIBiJDNrMCsKZkXlTKeUIDdq2
-VrsHeB+idGeetWUCxd/FUQzhniwB3+MniztN9JJTPkSMF+adQMx8VQZvnPRluRnd
-5cWLZwByUTrwjHrctwV3FWAuXVM/HCcPnr+xytgRU2s5X0ZlCyDKv1Bj50/S4Lpx
-o9RFwf4cyCm19SPprNq5AhQWTWv0zzWj2xW1PdlTofmWhDnzIz0bHjiJyhHaLz0b
-0LV27GXnmGjnt6kPXyJKux1aEkZ/MbN5WLD5b7amIYu/iMIKDk/xFDrm0Z0NTtl1
-Dh4wBC3Wqv7QdkcIeVaijmo0B7hSbj8WrsldgdVJqng/ClwDdGAtoQ82pBXYheKn
-TDmcR8/7YLVYqq2kmuO8
-=AGmS
------END PGP SIGNATURE-----
+>From f1e6fcfd81e6642ba5695c848ac6aa729e7467aa Mon Sep 17 00:00:00 2001
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Date: Mon, 5 Aug 2013 12:26:35 +0200
+Subject: [PATCH] OMAP MCBSP can support 192000 frame rate.
 
---8l0epyP1oK4ZrwYy--
+Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+---
+ sound/soc/omap/omap-mcbsp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 7483efb..d285ddd 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -39,7 +39,7 @@
+ #include "mcbsp.h"
+ #include "omap-mcbsp.h"
+ 
+-#define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_96000)
++#define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_192000)
+ 
+ #define OMAP_MCBSP_SOC_SINGLE_S16_EXT(xname, xmin, xmax, \
+ 	xhandler_get, xhandler_put) \
+-- 
+1.7.9.5
