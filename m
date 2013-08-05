@@ -1,19 +1,19 @@
-From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Subject: Re: [PATCH RFC 00/13] Adding SPDIF support to
-	kirkwood-i2s
-Date: Sun, 04 Aug 2013 23:45:30 +0200
-Message-ID: <51FECB7A.6010208@gmail.com>
-References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5640: change widget sequence for
+	depop
+Date: Mon, 5 Aug 2013 11:34:18 +0800
+Message-ID: <1121E117AD4ECE49880A389A396215BB935C48AD46@rtitmbs7.realtek.com.tw>
+References: <1375411082-7780-1-git-send-email-bardliao@realtek.com>
+ <51FBD607.4000306@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f53.google.com (mail-ee0-f53.google.com [74.125.83.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 140E32610B3
- for <alsa-devel@alsa-project.org>; Sun,  4 Aug 2013 23:45:37 +0200 (CEST)
-Received: by mail-ee0-f53.google.com with SMTP id b15so1289094eek.12
- for <alsa-devel@alsa-project.org>; Sun, 04 Aug 2013 14:45:36 -0700 (PDT)
-In-Reply-To: <20130804192136.GK23006@n2100.arm.linux.org.uk>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E2582610CA
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 05:34:31 +0200 (CEST)
+In-Reply-To: <51FBD607.4000306@wwwdotorg.org>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,77 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/04/2013 09:21 PM, Russell King - ARM Linux wrote:
-> This is only a RFC at present due to the need to test on Kirkwood and
-> fix at least one bug in ASoC core code.
->
-> I can't say that this stuff is fully tested, because I don't have any
-> Kirkwood platforms, but I do have one Dove platform, which as I've
-> said in the past doesn't run mainline.  I don't run DT on it, so these
-> patches also don't contain anything DT related.
+> -----Original Message-----
+> From: Stephen Warren [mailto:swarren@wwwdotorg.org]
+> Sent: Friday, August 02, 2013 11:54 PM
+> To: Bard Liao
+> Cc: broonie@kernel.org; lgirdwood@gmail.com; alsa-devel@alsa-project.org;
+> Flove; Oder Chiou; swarren@nvidia.com
+> Subject: Re: [PATCH] ASoC: rt5640: change widget sequence for depop
+> 
+> On 08/01/2013 08:38 PM, bardliao@realtek.com wrote:
+> > From: Bard Liao <bardliao@realtek.com>
+> >
+> > Add mute/unmute control in widget event and modify the power on/off
+> sequence to avoid pop noise.
+> 
+> So, this does seem to improve (remove) pop noise on headphones. However, it
+> also completely prevents speakers from working. Do you know what the
+> problem is there?
 
-Added Thomas Petazzoni to Cc, IIRC he has access to a T5325. I'll add
-DT support as I already did for Jean-Francois' patches. But as currently
-DT maintainers are very busy, I suggest to have a separate patch set for
-those and take these in earlier.
+I am sorry about that.
+I tested it without a physical speaker connected but only checked the reg values.
+Now, I have a speaker connected on my T40 board.
+I will update the patch in a short time.
 
-> However, this patch set is aimed at sorting out the SPDIF on Dove and
-> Kirkwood, which the Dove-based Cubox uses.
+Thanks.
 
-[...]
-
-> What I haven't included is the board file (like the openrd and t5325
-> ones already present) for SPDIF support on Dove, as that's based on the
-> pre-DT setups, and I'm not sure anyone in mainline is interested in
-> that.  So the above provides the components necessary, hopefully someone
-> with ASoC & DT knowledge can bind these components together via
-> appropriate DT bindings.  For reference, the DAI link looks like this:
->
->                  .name = "S/PDIF1",
->                  .stream_name = "IEC958 Playback",
->                  .platform_name = "mvebu-audio.1",
->                  .cpu_dai_name = "mvebu-audio.1",
->                  .codec_dai_name = "dit-hifi",
->                  .codec_name = "spdif-dit",
-
-Not a big deal for DT. I suggest to have a "audio-codecs" property that
-link CPU DAI to codec(s). One thing, I have noticed is that currently
-you need to supply both codec_name (or DT node) _and_ codec_dai_name.
-For that it would be helpful, if ASoC supplies helpers to get the DAI
-by index and use phandle with args here.
-
-As an example, the nodes could look like:
-
-spdif: spdif-transmitter {
-	compatible = "linux,spdif-dit";
-};
-
-i2s1: audio-controller@b0000 {
-	compatible = "marvell,dove-i2s";
-	reg = <0xb0000 0x2345>;
-	audio-codecs = <&spdif 0>;
-};
-
-ASoC then should resolve DT node and index to codec_dai and
-codec_dai_name. (Or have child nodes for each dai? Will also look
-through other drivers first).
-
-Also, the compatibles for mvebu-audio driver should be
-marvell,dove-i2s, marvell,kirkwood-i2s, and marvell,armada-370-i2s
-(if supported). With those, we can distinguish the controller features 
-easily.
-
-> and the required route:
->
-> static const struct snd_soc_dapm_route routes[] = {
->          { "Playback", NULL, "spdifdo" },
-> };
-
-I am not sure about how to represent DAPM in DT but I guess there are
-already drivers that make use of it.
-
-Sebastian
+> 
+> ------Please consider the environment before printing this e-mail.
