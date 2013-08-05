@@ -1,17 +1,18 @@
-From: Pierre Ossman <pierre@ossman.eu>
-Subject: Re: hda: sink info in case of AMD Radeon GPU card (no
-	ELD?)
-Date: Sat, 3 Aug 2013 17:02:47 +0200
-Message-ID: <20130803170247.70e7825f@mjolnir.ossman.eu>
-References: <CACna6rymTWUCcaibDzV8tXN509xmRTXh31SYb7C89cQX=5RJcg@mail.gmail.com>
- <CACna6ryydHmaJW+-j2sxkZTHDn69QG0EPZue13zn-qaw0ybB0Q@mail.gmail.com>
+From: Chih-Chung Chang <chihchung@chromium.org>
+Subject: [PATCH 1/1] ALSA: hda - Fix jack gating when
+	auto_{mute, mic} is suppressed.
+Date: Mon,  5 Aug 2013 12:09:21 +0800
+Message-ID: <1375675761-32289-1-git-send-email-chihchung@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0691090775615545262=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-relay.ossman.eu (saehrimnir.ossman.eu [193.12.253.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 74A82261647
- for <alsa-devel@alsa-project.org>; Sat,  3 Aug 2013 17:02:55 +0200 (CEST)
-In-Reply-To: <CACna6ryydHmaJW+-j2sxkZTHDn69QG0EPZue13zn-qaw0ybB0Q@mail.gmail.com>
+Received: from mail-gh0-f201.google.com (mail-gh0-f201.google.com
+ [209.85.160.201])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D0FF2615EC
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 06:11:59 +0200 (CEST)
+Received: by mail-gh0-f201.google.com with SMTP id r14so284998ghr.0
+ for <alsa-devel@alsa-project.org>; Sun, 04 Aug 2013 21:11:58 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,66 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: tiwai@suse.de, chihchung@chromium.org, alsa-devel@alsa-project.org, kailang@realtek.com.tw, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+The snd_hda_jack_set_gating_jack() call didn't work when
+auto_{mute,mic} is suppressed because (1) am_entry is
+not filled with nid of the mic pin. (2) The jacks are not
+created (by snd_hda_jack_detect_enable_callback) before the
+snd_hda_jack_set_gating_jack call.
 
---===============0691090775615545262==
-Content-Type: multipart/signed; micalg=PGP-SHA256; protocol="application/pgp-signature"; boundary="=_freyr.ossman.eu-30004-1375542171-0001-2"
+Now we use the first input pin nid directly, and create the jack if it
+doesn't exist yet.
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+Signed-off-by: Chih-Chung Chang <chihchung@chromium.org>
 
---=_freyr.ossman.eu-30004-1375542171-0001-2
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 17 Apr 2013 14:04:00 +0200
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
-
->=20
-> I tried hacking this sink info problem again. I've installed "fglrx"
-> on my AMD Radeon HD 6970M (BARTS =3D=3D DCE5) and verified it sets SAD
-> registers:
-
-Any progress on this?
-
-I fiddled around with providing the ELD stuff out-of-band, but that's
-apparently not sufficient. I guess the widget capabilities property
-also needs to change. Did you check to see if that happened with fglrx?
-
-Rgds
---=20
-     -- Pierre Ossman
-
-  WARNING: This correspondence is being monitored by FRA, a
-  Swedish intelligence agency. Make sure your server uses
-  encryption for SMTP traffic and consider using PGP for
-  end-to-end encryption.
-
---=_freyr.ossman.eu-30004-1375542171-0001-2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iF4EAREIAAYFAlH9G5sACgkQopDLsoqlmEISHAEAoEg/N+OAWkR5E6HDEG54ffYo
-cl2ZP9Twn9sIT4UlcrABAMmeogOLP0x8gyyz9GUYbN4pKJMnuzTgd4MOKoGp+Cyh
-=o4u/
------END PGP SIGNATURE-----
-
---=_freyr.ossman.eu-30004-1375542171-0001-2--
-
---===============0691090775615545262==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0691090775615545262==--
+diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
+index 3fd2973..aa02c0f 100644
+--- a/sound/pci/hda/hda_jack.c
++++ b/sound/pci/hda/hda_jack.c
+@@ -247,8 +247,8 @@ EXPORT_SYMBOL_HDA(snd_hda_jack_detect_enable);
+ int snd_hda_jack_set_gating_jack(struct hda_codec *codec, hda_nid_t gated_nid,
+ 				 hda_nid_t gating_nid)
+ {
+-	struct hda_jack_tbl *gated = snd_hda_jack_tbl_get(codec, gated_nid);
+-	struct hda_jack_tbl *gating = snd_hda_jack_tbl_get(codec, gating_nid);
++	struct hda_jack_tbl *gated = snd_hda_jack_tbl_new(codec, gated_nid);
++	struct hda_jack_tbl *gating = snd_hda_jack_tbl_new(codec, gating_nid);
+ 
+ 	if (!gated || !gating)
+ 		return -EINVAL;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8bd2261..2b64de5 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3258,11 +3258,12 @@ static void alc271_hp_gate_mic_jack(struct hda_codec *codec,
+ 	struct alc_spec *spec = codec->spec;
+ 
+ 	if (action == HDA_FIXUP_ACT_PROBE) {
+-		if (snd_BUG_ON(!spec->gen.am_entry[1].pin ||
+-			       !spec->gen.autocfg.hp_pins[0]))
++		int mic_pin = spec->gen.autocfg.inputs[0].pin;
++		int hp_pin = spec->gen.autocfg.hp_pins[0];
++
++		if (snd_BUG_ON(!mic_pin || !hp_pin))
+ 			return;
+-		snd_hda_jack_set_gating_jack(codec, spec->gen.am_entry[1].pin,
+-					     spec->gen.autocfg.hp_pins[0]);
++		snd_hda_jack_set_gating_jack(codec, mic_pin, hp_pin);
+ 	}
+ }
+ 
+-- 
+1.8.3
