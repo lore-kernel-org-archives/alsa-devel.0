@@ -1,19 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: mxs: add some error messages to
- help identifying problems
-Date: Mon, 5 Aug 2013 19:04:33 +0100
-Message-ID: <20130805180433.GA9858@sirena.org.uk>
-References: <1375281871-28128-1-git-send-email-LW@KARO-electronics.de>
- <1375281871-28128-3-git-send-email-LW@KARO-electronics.de>
- <CAOMZO5BeFq+PxDtJ12H=d8Y=qu8Gyd4wAn=7+mzbx+_OyaUg2g@mail.gmail.com>
- <1375432215-26624-1-git-send-email-LW@KARO-electronics.de>
+From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH RFC 00/13] Adding SPDIF support to
+	kirkwood-i2s
+Date: Mon, 05 Aug 2013 20:14:47 +0200
+Message-ID: <51FFEB97.30004@gmail.com>
+References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
+ <51FECB7A.6010208@gmail.com> <20130805115947.GA9858@sirena.org.uk>
+ <51FFA348.2010503@gmail.com> <20130805140729.GC9858@sirena.org.uk>
+ <51FFBF03.1000507@gmail.com> <20130805165957.GT9858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0773092992587237881=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 92D8E265172
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 20:04:36 +0200 (CEST)
-In-Reply-To: <1375432215-26624-1-git-send-email-LW@KARO-electronics.de>
+Received: from mail-bk0-f41.google.com (mail-bk0-f41.google.com
+ [209.85.214.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CD2F265197
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 20:14:51 +0200 (CEST)
+Received: by mail-bk0-f41.google.com with SMTP id jc10so1102880bkc.14
+ for <alsa-devel@alsa-project.org>; Mon, 05 Aug 2013 11:14:51 -0700 (PDT)
+In-Reply-To: <20130805165957.GT9858@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +27,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On 08/05/2013 06:59 PM, Mark Brown wrote:
+> On Mon, Aug 05, 2013 at 05:04:35PM +0200, Sebastian Hesselbarth wrote:
+>
+>> I cannot follow you on the clocking arrangements. The binding
+>> proposal was for audio controller <-> CODEC connections. For clocks
+>> there are common properties ("clocks", "clock-names", "clock-frequency")
+>> to pass them to drivers - for "sound cards" in general there are not.
+>
+> The clocking arrangements are an example of why the boards can get
+> interesting enough to describe for themselves.
 
---===============0773092992587237881==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="d0kcqLy8viw0/kfq"
-Content-Disposition: inline
+I understand there are complex arrangements, I still don't think that
+you need a global super-node to describe them. Anyway, I am not voting
+against a super-node.
 
+>> So, having a look at the node in question:
+>
+>> sound {
+>>    compatible = "nvidia,tegra-audio-rt5640-beaver",
+>>                 "nvidia,tegra-audio-rt5640";
+>>    nvidia,model = "NVIDIA Tegra Beaver";
+>>
+>>    nvidia,audio-routing = "Headphones", "HPOR",
+>>                           "Headphones", "HPOL";
+>>
+>>    nvidia,i2s-controller = <&tegra_i2s1>;
+>>    nvidia,audio-codec = <&rt5640>;
+>>
+>>    nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_HIGH>;
+>>
+>>    clocks = <&tegra_car TEGRA30_CLK_PLL_A>,
+>>             <&tegra_car TEGRA30_CLK_PLL_A_OUT0>,
+>>             <&tegra_car TEGRA30_CLK_EXTERN1>;
+>>    clock-names = "pll_a", "pll_a_out0", "mclk";
+>> };
+>>
+>> all those "nvidia," prefixed properties are not nvidia-specific at all.
+>
+> This is all because you have to add a prefix for DT.
 
---d0kcqLy8viw0/kfq
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Right, like we have on all the other non-standard properties like
+"pinctrl-0", "bla-gpios", "clocks", ... come on, just make them generic
+enough and you can omit the vendor prefix.
 
-On Fri, Aug 02, 2013 at 10:30:15AM +0200, Lothar Wa=DFmann wrote:
-> On Thu, 1 Aug 2013 11:22:19 +0100, Mark Brown wrote:
-> > On Wed, Jul 31, 2013 at 07:11:48PM -0300, Fabio Estevam wrote:
-> >> On Wed, Jul 31, 2013 at 11:44 AM, Lothar Wa=DFmann <LW@karo-electronic=
-s.de> wrote:
+>> Also, all those "nvidia," properties would have fit very well into the
+>> i2s controller node
+>
+> No, almost none of them have any place there.  For example, the audio
+> routing contains only connections to the CODEC so the I2S controller
+> isn't in play, the headphone detection is connected to the AP but isn't
+> connected to the I2S port.
 
-Applied, but please *always* submit patches as covered in
-SubmittingPatches - if they won't apply properly with git am that's not
-good.
+ From a quick look in tegra30_hub.h, I can see configuration registers
+i2s formatting. I assume that i2s controller on Tegra can therefore
+directly connected to a I2S codec, can't it? Then, with an existing i2s
+node and an existing codec node - why is there no place to link both?
 
---d0kcqLy8viw0/kfq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I can think of use cases that are hard to describe in a link-to-link
+way, but none of them really requires a super-node nor special
+board-specific compatible strings. With that we can just have the root
+DT node be compatible with Beaver above and register all the old
+platform_device way.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+[...]
+>> I learned to never match "device nodes" with "drivers" as there
+>> is simply no relation between them.
+>
+> That's clearly a thinko for device node.
 
-iQIcBAEBAgAGBQJR/+kuAAoJELSic+t+oim9AcUP/RekuaRJmee7p8B5T4NqceD4
-3t+smdN+Mjq4GZt6qTfToH5lE8YlUHWexvGRNlLpmGYtdPmmilAFRZU16Js46hFL
-4JoSkvdynq28BYHX0369fYQHANqx3VaPvz5GEFOKi0k9OHbWu30X4QoDjIYi1n9w
-LwHOyoExWFviIcGnp/9DK84e046kiIcFQSmoD7HmjMO0JvZKTBervV68sl8un3Zk
-Ovr3B2OEr6WcBZWtyyXwV3cSmb+mXZVrmckvLipao+ot58IHlJhsccfz5z/sU6Ga
-dw1N8HJc2vNjlhzaQtHbSS4QRa4FaxNP0kGbmtS4CaAfjxZqX6U9huueahgmCkcB
-IgtYcOeYhZPiU5GDTR8WwTf4taj5PFBn7HJcc2kdspHu3H3FV6BrXNK0FqHQSjl0
-fYR5OlR0krJKShBg98tv2hzHcf9ACTl/Jc7XInSIr7ATUZy/+J26aNdLwZpsCVJS
-lfYMMgko6wcwjh99LrF1l5u3sgaoNu0w3eR3ocSyKQrTt5sTKfekWJ7FFJkMszXK
-5nnaZmCQChe99vM6B4dUf18WOtk9pN87cmiM2fbLA9ydoBMFpl00ZUirgOB5FIFZ
-ndXv404F+1auFKYVDzqVu6sK4jfnsoy9yZtlqq6YH7m2HDtKuqk30EF9AEkJ0rBK
-wlVG9ZxIcVx8ed5nTeVe
-=8iad
------END PGP SIGNATURE-----
+I assume with "thinko" you mean "thought wrong" - IMHO the above 
+statement is very true. If it wouldn't, why not just have a node for
+kirkwood-dma and kirkwood-i2s instead of merging the drivers?
+You think that will also be accepted by DT maintainers?
 
---d0kcqLy8viw0/kfq--
+>> So, back to my original node proposal, can you tell me what is so
+>> different, except that I am not using "marvell,audio-codec(s)" but
+>> "audio-codecs"; and hook the one available codec output by using
+>> phandle/args instead of a new compatible string?
+>
+>  From my point of view I'd rather not be shoving vendor prefixes on all
+> the properties, this is coming from DT convention requiring vendor
+> prefixes on bindings.
 
---===============0773092992587237881==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I understand that those vendor prefixes are part of the helper
+functions of ASoC. But no other subsystem has a similar approach but
+though of properties generic enough to help drivers find what they
+need to know. Either ASoC is mis-interpreting the vendor-prefix
+requirement - or all other subsystems are.
 
-
---===============0773092992587237881==--
+Sebastian
