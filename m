@@ -1,16 +1,16 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: [PATCH] ASoC: cs42l52: Fixes for Beep Volume kcontrol
-	(fwd)
-Date: Mon, 5 Aug 2013 10:53:31 -0500
-Message-ID: <alpine.DEB.2.10.1308051050270.5288@heelrod.ad.cirrus.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] sound/sgtl5000: fix codec clock source
+ transition to avoid clockless moment
+Date: Mon, 5 Aug 2013 17:07:43 +0100
+Message-ID: <20130805160743.GN9858@sirena.org.uk>
+References: <1375688163-1935-1-git-send-email-oskar@scara.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5771322581078747086=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db8outboundpool.messaging.microsoft.com
- (mail-db8lp0186.outbound.messaging.microsoft.com [213.199.154.186])
- by alsa0.perex.cz (Postfix) with ESMTP id B0D8A265096
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 17:53:12 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 603C1265020
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 18:07:48 +0200 (CEST)
+In-Reply-To: <1375688163-1935-1-git-send-email-oskar@scara.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,41 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, lars@metafoo.de, lgirdwood@gmail.com
+To: Oskar Schirmer <oskar@scara.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Zeng Zhaoming <zengzm.kernel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch reorders the min/max values for BEEP Volume.
-Also changes SOC_SINGLE_TLV to SOC_SINGLE_SX_TLV
-Add DB_SCALE beep_tlv for volume control
 
-Signed-off-by: Brian Austin <brian.austin@cirrus.com>
----
-  sound/soc/codecs/cs42l52.c |    5 ++++-
-  1 file changed, 4 insertions(+), 1 deletion(-)
+--===============5771322581078747086==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pg9nAr2jDD6ER3CP"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index 0f6f481..66d1e42 100644
---- a/sound/soc/codecs/cs42l52.c
-+++ b/sound/soc/codecs/cs42l52.c
-@@ -193,6 +193,8 @@ static DECLARE_TLV_DB_SCALE(mic_tlv, 1600, 100, 0);
 
-  static DECLARE_TLV_DB_SCALE(pga_tlv, -600, 50, 0);
+--pg9nAr2jDD6ER3CP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-+static DECLARE_TLV_DB_SCALE(beep_tlv, -5600, 200, 0);
-+
-  static const unsigned int limiter_tlv[] = {
-  	TLV_DB_RANGE_HEAD(2),
-  	0, 2, TLV_DB_SCALE_ITEM(-3000, 600, 0),
-@@ -449,7 +451,8 @@ static const struct snd_kcontrol_new cs42l52_snd_controls[] = {
-  	SOC_ENUM("Beep Pitch", beep_pitch_enum),
-  	SOC_ENUM("Beep on Time", beep_ontime_enum),
-  	SOC_ENUM("Beep off Time", beep_offtime_enum),
--	SOC_SINGLE_TLV("Beep Volume", CS42L52_BEEP_VOL, 0, 0x1f, 0x07, hl_tlv),
-+	SOC_SINGLE_SX_TLV("Beep Volume",
-+		       CS42L52_BEEP_VOL, 0, 0x07, 0x1f, beep_tlv),
-  	SOC_SINGLE("Beep Mixer Switch", CS42L52_BEEP_TONE_CTL, 5, 1, 1),
-  	SOC_ENUM("Beep Treble Corner Freq", beep_treble_enum),
-  	SOC_ENUM("Beep Bass Corner Freq", beep_bass_enum),
--- 
-1.7.10.4
+On Mon, Aug 05, 2013 at 07:36:02AM +0000, Oskar Schirmer wrote:
+> Powering down PLL before switching to a mode that does not use it
+> is a bad idea. It would cause the SGTL5000 be without internal
+> clock supply, especially on the I2C interface, which would make
+> subsequent access to it fail.
+
+Applied, thanks.  Please do use subject lines corresponding to the
+subsystem.
+
+--pg9nAr2jDD6ER3CP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR/83MAAoJELSic+t+oim90gwP/05OSKqmA64Edt7u1o+G5SPN
+VnxcvE1cjDGatdqc/dcAZXiG3IXDAxgpaItnZ2ZkgRlXCL1TktBIOf6bwnLjC1Po
+unSasjx8IIYVXKb86w+39BRx5MbWYP3+nWsbv2WY0u7C25iLwElWpOASrJvTfnUk
+K9kcRmO2aGu5kSz07a2+WXiviWu524gcyIs+3Zt8Z8i6T30E5rx3nc+vWGajAWaM
+486eS2Y+s+ArroHNm1NG8PwND3oOg0EYx3FQ23/IE0aTsYt1YYyFhEQjddgtx0ZP
+8vpZxAFO3FDuDZr40xj+mhdqfFeqk3GJJKAJWX0x0arTLkLS8ulHNXW8wW2sYFrt
+Crrm37MCuNG0FeFlGaMZZx02QuHCbYiruAGu4FGI7Iv8gpQISdUkNBUiv7fUbaSC
+Z5/oNq2crdG5GiOu8VtrTytd8fic7g3Ks6KLEUngSbyepvfgDUi9q5b401d98DmY
+b6aOrYB0vc1X8bZicafqaV+ZEzFo14g3MG+J2KRH0/4mNJrpPrNE/nGOToOrtH4n
+YLU0j16xkVd+07i4xRB5b4T0z1/7xN9hUWMVmn+7nXNpulfpOUelgmuUWfo3dJK9
+ntASXl/S6DzIrD62YdYzQIqMykd9HJaEupuwiedKIWNDWvw33qLiRWJwwbagifmg
+CAcO0VuIJubPA2Y6+i5I
+=vjiF
+-----END PGP SIGNATURE-----
+
+--pg9nAr2jDD6ER3CP--
+
+--===============5771322581078747086==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5771322581078747086==--
