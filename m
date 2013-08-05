@@ -1,20 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH RFC 00/13] Adding SPDIF support to
-	kirkwood-i2s
-Date: Mon, 05 Aug 2013 16:10:47 +0200
-Message-ID: <51FFB267.3030107@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add DAPM
+ links between codec and cpu DAI
+Date: Mon, 5 Aug 2013 15:40:54 +0100
+Message-ID: <20130805144054.GE9858@sirena.org.uk>
 References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
- <51FECB7A.6010208@gmail.com> <20130805115947.GA9858@sirena.org.uk>
- <51FFA348.2010503@gmail.com>
+ <E1V641A-0004lv-DM@rmk-PC.arm.linux.org.uk>
+ <20130805112733.GY9858@sirena.org.uk>
+ <20130805113310.GU23006@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5239058689637610274=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-187.synserver.de (smtp-out-187.synserver.de
- [212.40.185.187])
- by alsa0.perex.cz (Postfix) with ESMTP id ADF66264FEE
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 16:09:42 +0200 (CEST)
-In-Reply-To: <51FFA348.2010503@gmail.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 890AE2615F2
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 16:40:59 +0200 (CEST)
+In-Reply-To: <20130805113310.GU23006@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,68 +23,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Jason Cooper <jason@lakedaemon.net>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/05/2013 03:06 PM, Sebastian Hesselbarth wrote:
-> On 08/05/13 13:59, Mark Brown wrote:
->> On Sun, Aug 04, 2013 at 11:45:30PM +0200, Sebastian Hesselbarth wrote:
->>> On 08/04/2013 09:21 PM, Russell King - ARM Linux wrote:
->>
->>>>                  .name = "S/PDIF1",
->>>>                  .stream_name = "IEC958 Playback",
->>>>                  .platform_name = "mvebu-audio.1",
->>>>                  .cpu_dai_name = "mvebu-audio.1",
->>>>                  .codec_dai_name = "dit-hifi",
->>>>                  .codec_name = "spdif-dit",
->>
->>> Not a big deal for DT. I suggest to have a "audio-codecs" property that
->>> link CPU DAI to codec(s). One thing, I have noticed is that currently
->>> you need to supply both codec_name (or DT node) _and_ codec_dai_name.
->>> For that it would be helpful, if ASoC supplies helpers to get the DAI
->>> by index and use phandle with args here.
->>
->> This should follow the same pattern as the other board bindings.
-> 
-> Mark,
-> 
-> looking at e.g. nvidia,tegra-audio-*.txt bindings, I guess you are
-> proposing to have a new binding for every SoC/codec/board combination?
-> Also, you should have seen "ASoC: fsl: Add S/PDIF machine driver", which
-> is - again - proposing a new binding for fsl with spdif "codec".
-> 
-> You really want me to go the same way or is there any "other board
-> binding" I should follow?
-> 
 
-In my opinion having different bindings for each board is not a good idea.
-Having a common set of property names will allow us to factor out the
-parsing to the ASoC core instead of doing this by hand for each board driver.
+--===============5239058689637610274==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RNP6oKA3AwjrAnw/"
+Content-Disposition: inline
 
->>> i2s1: audio-controller@b0000 {
->>>     compatible = "marvell,dove-i2s";
->>>     reg = <0xb0000 0x2345>;
->>>     audio-codecs = <&spdif 0>;
->>> };
->>
->> No, things are glued together using the machine driver - again, look at
->> how all the other systems work.  The wiring on the board can get
->> interesting enough to need a binding of its own, for very simple
->> bindings that should just be pointing to a generic driver.
-> 
-> And that is what will be true for almost all codecs we hook up on
-> Marvell SoCs. The audio controller is very simple with only mute
-> control available. We need to connect either i2s or spdif or both to
-> any codec and the codecs output. The codecs is determined by phandle
-> and the output (codec_dai_name) could be determined by the phandle's
-> arg, e.g. 0 for the first codec_dai provided.
 
-Kuninori Morimoto started working on a xlate callback for CODECs and DAIs
-some time ago[1]. If nobody else is going to pick this up I'm probably going
-to continue his work on this.
+--RNP6oKA3AwjrAnw/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-- Lars
+On Mon, Aug 05, 2013 at 12:33:10PM +0100, Russell King - ARM Linux wrote:
+> On Mon, Aug 05, 2013 at 12:27:33PM +0100, Mark Brown wrote:
 
-[1]
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-February/059788.html
+> > This doesn't look good - this is adding DAPM routes which should
+> > correspond to the DAI link that's already been configured.
+
+> No, you're wrong there:
+
+> CPU DAI:				Codec DAI
+> dma-playback	--->	i2sdo	--->	Playback
+> 		`-->	spdifdo -> not connected
+> dma-capture	<---	i2sdi	<---	Capture
+
+> And the intermediate level is needed to determine which outputs from
+> the chip are wired up.
+
+Right, and that's exactly what the dai_links are doing - they're showing
+what's hanging off each of the DAIs.
+
+> And don't even say "use dpcm" - if you say that, I want _you_ to write
+> it because dpcm is totally and utterly unusable as it currently stands -
+> as you can see from all the emails I've sent over the weekend.
+
+I'm going to tell you to work with the framework rather than around it;
+adding routes that link the CODEC and CPU together in parallel with the
+links set up for the DAIs is not something that seems like it's going to
+continue to work sensibly going forwards.  If this were done at a
+framework level that should be fine but having it as a special case in
+some specific boards isn't good.
+
+Since I don't have Kirkwood hardware or any particular use for it I've
+no real intention of working on the hardware directly, sorry.
+
+--RNP6oKA3AwjrAnw/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR/7lzAAoJELSic+t+oim9kawQAJG5GnIvqKoidO+G+TjKJx1l
+kZ2QpNtkdh1kQczkG3mrwJagLLWBRo0+6ScoiqgOAF+d9S9bJX5kZd5uqUIktMr0
+ML+JhGIxUHQaNzwNGFtoWclWjUuvYblwP75zDS5V/tX2vhM50kf4wtncaZ7stQlU
+oLvDUdiTEtvOHrHOKb9RHm1tc/PLevEezYfErzIdSFlPM3T80ItOc0r+gndmR5Ge
+vlmfzlKZPu4S3nzU+OpyQ/fbpHR7A4xvJ5qI1E7MZiAyRsc/pTMST/4IBwWIgRq9
+VVw6lC4JCskyeUYXLwh7cxDitSOsDlCjS3Vi8kB6Ae2Y9Sxj1YFRVebqiQEoHYXj
+yycLeOyrdEwNKXiO7Vt8sGHjfUrjB6NI66RWv2AgPUpgs5illM8GmKv/pg4s/uly
+tsVB3c71DchF4IXQNK15nzDjWheDNt6eJ1L5NgsYPNFgr9T+q9CuBAsZ1zxSQBSN
+cfTbh1FFxq0yYwOd+J/pZXa+HUxWS1eUeHGk6bj6iaFp0985dFmiy4sQQY73wyJ6
+l5SGjkQS9DbYiq/UyUcsmFGucJRUJrM0A2zALWByAGdCs3R8GVqRlyGCCogcVtGB
+vVx5bBoAfEMjtjBRdBv6aiE7+llgOPT6Hg2LDiOcOQO7ErzsL3d/304YfYIEbo4M
+m4tFDkAOIfUi/2QDHOnv
+=WN0L
+-----END PGP SIGNATURE-----
+
+--RNP6oKA3AwjrAnw/--
+
+--===============5239058689637610274==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5239058689637610274==--
