@@ -1,19 +1,25 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add DAPM
- links between codec and cpu DAI
-Date: Mon, 5 Aug 2013 15:40:54 +0100
-Message-ID: <20130805144054.GE9858@sirena.org.uk>
-References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
- <E1V641A-0004lv-DM@rmk-PC.arm.linux.org.uk>
- <20130805112733.GY9858@sirena.org.uk>
- <20130805113310.GU23006@n2100.arm.linux.org.uk>
+Subject: Re: [PATCH] ASoC: codecs: da9055: Update driver name
+ to fix breakage due to pmic driver with same name
+Date: Mon, 5 Aug 2013 15:42:01 +0100
+Message-ID: <20130805144201.GF9858@sirena.org.uk>
+References: <20130705133752.GX27646@sirena.org.uk>
+ <1373270091.11222.12.camel@matrix>
+ <20130708112613.GQ27646@sirena.org.uk>
+ <1373542576.9286.101.camel@matrix>
+ <20130717103651.GP22506@sirena.org.uk>
+ <1374482594.13726.11.camel@matrix>
+ <20130722100211.GP9858@sirena.org.uk>
+ <1375110386.21326.6.camel@matrix>
+ <20130729160157.GZ9858@sirena.org.uk>
+ <1375689331.28910.5.camel@matrix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5239058689637610274=="
+Content-Type: multipart/mixed; boundary="===============2239679732611317151=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 890AE2615F2
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 16:40:59 +0200 (CEST)
-In-Reply-To: <20130805113310.GU23006@n2100.arm.linux.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E32426160D
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 16:42:05 +0200 (CEST)
+In-Reply-To: <1375689331.28910.5.camel@matrix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,83 +29,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, "kiran.padwal" <kiran.padwal@kpitcummins.com>, lrg <lrg@ti.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5239058689637610274==
+--===============2239679732611317151==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RNP6oKA3AwjrAnw/"
+	protocol="application/pgp-signature"; boundary="Nx36dz0OaUKPu+g+"
 Content-Disposition: inline
 
 
---RNP6oKA3AwjrAnw/
+--Nx36dz0OaUKPu+g+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Aug 05, 2013 at 12:33:10PM +0100, Russell King - ARM Linux wrote:
-> On Mon, Aug 05, 2013 at 12:27:33PM +0100, Mark Brown wrote:
+On Mon, Aug 05, 2013 at 01:25:31PM +0530, Ashish Chavan wrote:
+> On Mon, 2013-07-29 at 17:01 +0100, Mark Brown wrote:
 
-> > This doesn't look good - this is adding DAPM routes which should
-> > correspond to the DAI link that's already been configured.
+> > Well, it's a very unusual hardware design choice to have multiple I2C
+> > endpoints in a single physical chip.
 
-> No, you're wrong there:
+> I hope to see more of such devices in near future.
 
-> CPU DAI:				Codec DAI
-> dma-playback	--->	i2sdo	--->	Playback
-> 		`-->	spdifdo -> not connected
-> dma-capture	<---	i2sdi	<---	Capture
+There's probably a reason why it's not a common hardware design...
 
-> And the intermediate level is needed to determine which outputs from
-> the chip are wired up.
+> > With regmap it should be very straightforward to reuse the same driver
+> > for both standalone and non-standalone versions, just a small amount of
+> > glue code in the CODEC driver I'd expect.  Usually the bus level code is
+> > tiny.
 
-Right, and that's exactly what the dai_links are doing - they're showing
-what's hanging off each of the DAIs.
+> The glue code that you are talking about is for the same virtual MFD
+> component that you proposed initially, right? I mean the glue code in
+> CODEC will help it to get attached to the MFD. In this case, in addition
+> to the glue code inside CODEC we will also need additional MFD
+> component. Or I am completely misinterpreting you here?
 
-> And don't even say "use dpcm" - if you say that, I want _you_ to write
-> it because dpcm is totally and utterly unusable as it currently stands -
-> as you can see from all the emails I've sent over the weekend.
+No, I'm talking about the same thing I was talking about originally.
 
-I'm going to tell you to work with the framework rather than around it;
-adding routes that link the CODEC and CPU together in parallel with the
-links set up for the DAIs is not something that seems like it's going to
-continue to work sensibly going forwards.  If this were done at a
-framework level that should be fine but having it as a special case in
-some specific boards isn't good.
-
-Since I don't have Kirkwood hardware or any particular use for it I've
-no real intention of working on the hardware directly, sorry.
-
---RNP6oKA3AwjrAnw/
+--Nx36dz0OaUKPu+g+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR/7lzAAoJELSic+t+oim9kawQAJG5GnIvqKoidO+G+TjKJx1l
-kZ2QpNtkdh1kQczkG3mrwJagLLWBRo0+6ScoiqgOAF+d9S9bJX5kZd5uqUIktMr0
-ML+JhGIxUHQaNzwNGFtoWclWjUuvYblwP75zDS5V/tX2vhM50kf4wtncaZ7stQlU
-oLvDUdiTEtvOHrHOKb9RHm1tc/PLevEezYfErzIdSFlPM3T80ItOc0r+gndmR5Ge
-vlmfzlKZPu4S3nzU+OpyQ/fbpHR7A4xvJ5qI1E7MZiAyRsc/pTMST/4IBwWIgRq9
-VVw6lC4JCskyeUYXLwh7cxDitSOsDlCjS3Vi8kB6Ae2Y9Sxj1YFRVebqiQEoHYXj
-yycLeOyrdEwNKXiO7Vt8sGHjfUrjB6NI66RWv2AgPUpgs5illM8GmKv/pg4s/uly
-tsVB3c71DchF4IXQNK15nzDjWheDNt6eJ1L5NgsYPNFgr9T+q9CuBAsZ1zxSQBSN
-cfTbh1FFxq0yYwOd+J/pZXa+HUxWS1eUeHGk6bj6iaFp0985dFmiy4sQQY73wyJ6
-l5SGjkQS9DbYiq/UyUcsmFGucJRUJrM0A2zALWByAGdCs3R8GVqRlyGCCogcVtGB
-vVx5bBoAfEMjtjBRdBv6aiE7+llgOPT6Hg2LDiOcOQO7ErzsL3d/304YfYIEbo4M
-m4tFDkAOIfUi/2QDHOnv
-=WN0L
+iQIcBAEBAgAGBQJR/7m2AAoJELSic+t+oim9vToP/0Q3LNX2WgJ1ACaUXleWetNB
+yFvA6uBlDykm3JY+aaSU7w2HEcllhVeN29KoXyEk2Lpeok3anwNiS3udpUfLgq5z
+unsXrsAdJ0rm9nPP2Yc5bxIE3QupfVIIm/XPSWD5T3aEvyUf6AOTTfMcceejz0zi
+oR69Orp9u7opw6XSOLOSb6kuPg+LnckelMJPtBgXcfqypOni015IRLlQjAjeEPjs
+tsNtrna5jXuwwuqqmLo0elRWLw99A7/R8xm15RfRu9iVDvHPcbBqBHDtbVwmCCbb
+DIbkFCHIb1IRhPg/DHCn8u3sDfvWKl/7Gg1/DTdw+JwpDL73McY1N8PzWNe18p+z
+LL7YCk7h1is/wtczreCfjBNFv/z7emBuzPBEYUP7WxisvWPTHfR24TQSi4mKXz/w
+aGF+BV7Ysc1E26GDoQh2kI+6a1I6AKeabWKPC3pCESQOhIqU8N9PJ51Kh9TUFmUo
+kcYpPQE3jPwPuTEOhEm6CA1f2MWcIuuEehv+X22KDpJq/GGF2LCx8GptaEOMguiz
+rYmV/Y9s/E/L6NIqUOEUxjj9XXrNS0HJI2CnQlZJAArViljgQsHx6qdRon57c67U
+JNYJ73Mg/e7HPxcMXMxJZ/Ak9WbzX+52fOQKi/hpSblTvT8znDQrMhXumxRpZRcA
+CLyHMMTWz05H/cjviDCd
+=aPKU
 -----END PGP SIGNATURE-----
 
---RNP6oKA3AwjrAnw/--
+--Nx36dz0OaUKPu+g+--
 
---===============5239058689637610274==
+--===============2239679732611317151==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5239058689637610274==--
+--===============2239679732611317151==--
