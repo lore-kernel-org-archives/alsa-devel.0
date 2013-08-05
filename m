@@ -1,19 +1,16 @@
 From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add DAPM links between
- codec and cpu DAI
-Date: Mon, 5 Aug 2013 15:56:44 +0100
-Message-ID: <20130805145644.GV23006@n2100.arm.linux.org.uk>
+Subject: Re: [PATCH RFC 00/13] Adding SPDIF support to kirkwood-i2s
+Date: Mon, 5 Aug 2013 15:59:56 +0100
+Message-ID: <20130805145955.GW23006@n2100.arm.linux.org.uk>
 References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
- <E1V641A-0004lv-DM@rmk-PC.arm.linux.org.uk>
- <20130805112733.GY9858@sirena.org.uk>
- <20130805113310.GU23006@n2100.arm.linux.org.uk>
- <20130805144054.GE9858@sirena.org.uk>
+ <51FECB7A.6010208@gmail.com> <20130805115947.GA9858@sirena.org.uk>
+ <51FFA348.2010503@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 Content-Disposition: inline
-In-Reply-To: <20130805144054.GE9858@sirena.org.uk>
+In-Reply-To: <51FFA348.2010503@gmail.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -23,53 +20,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 05, 2013 at 03:40:54PM +0100, Mark Brown wrote:
-> On Mon, Aug 05, 2013 at 12:33:10PM +0100, Russell King - ARM Linux wrote:
-> > On Mon, Aug 05, 2013 at 12:27:33PM +0100, Mark Brown wrote:
-> 
-> > > This doesn't look good - this is adding DAPM routes which should
-> > > correspond to the DAI link that's already been configured.
-> 
-> > No, you're wrong there:
-> 
-> > CPU DAI:				Codec DAI
-> > dma-playback	--->	i2sdo	--->	Playback
-> > 		`-->	spdifdo -> not connected
-> > dma-capture	<---	i2sdi	<---	Capture
-> 
-> > And the intermediate level is needed to determine which outputs from
-> > the chip are wired up.
-> 
-> Right, and that's exactly what the dai_links are doing - they're showing
-> what's hanging off each of the DAIs.
-> 
-> > And don't even say "use dpcm" - if you say that, I want _you_ to write
-> > it because dpcm is totally and utterly unusable as it currently stands -
-> > as you can see from all the emails I've sent over the weekend.
-> 
-> I'm going to tell you to work with the framework rather than around it;
+On Mon, Aug 05, 2013 at 03:06:16PM +0200, Sebastian Hesselbarth wrote:
+> And that is what will be true for almost all codecs we hook up on
+> Marvell SoCs. The audio controller is very simple with only mute
+> control available. We need to connect either i2s or spdif or both to
+> any codec and the codecs output. The codecs is determined by phandle
+> and the output (codec_dai_name) could be determined by the phandle's
+> arg, e.g. 0 for the first codec_dai provided.
 
-Work with the fscking undocumented framework.  If you want that, then
-sodding well document this pile of crap.  If not, stop telling people
-to "work around it".
+Sebastian,
 
-> adding routes that link the CODEC and CPU together in parallel with the
-> links set up for the DAIs is not something that seems like it's going to
-> continue to work sensibly going forwards.
+I suggest just not fucking bothering with this.  Mark has no intention
+to listen to what we need to make SPDIF and I2S work on this hardware,
+so persuing getting this stuff into mainline is just a total and utter
+waste of time.
 
-So you're *TOTALLY* missing why I've had to do that.  Tell me, how can
-the CPU DAI detect which of its frigging outputs are connected to the
-codec without doing the above?  Show me how your crappy subsystem is
-supposed to work.  Document the sodding thing.
+Maybe when Mark stops being an arsehole and starts trying to understand
+what people need from ASoC, and he starts documenting this stuff, it
+might be possible to resurect this, but quite frankly with his attitude
+towards people trying to use his code, I think we're probably far better
+off dumping ASoC and going in at the ALSA level instead.
 
-If you don't do this, don't expect people to understand it.  Don't
-expect people not to find "other solutions" around the utter shite that
-I've had to deal with ALL FRIGGING WEEKEND.
-
-These patches stay as they are until you get a clue about what's required
-to drive this hardware and start providing some sensible assistance with
-your undocumented code.
+I've had enough of ASoC crap.
