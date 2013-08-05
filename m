@@ -1,20 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC 00/13] Adding SPDIF support to
-	kirkwood-i2s
-Date: Mon, 5 Aug 2013 19:59:22 +0100
-Message-ID: <20130805185922.GC9858@sirena.org.uk>
-References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
- <51FECB7A.6010208@gmail.com> <20130805115947.GA9858@sirena.org.uk>
- <51FFA348.2010503@gmail.com> <20130805140729.GC9858@sirena.org.uk>
- <51FFBF03.1000507@gmail.com> <20130805165957.GT9858@sirena.org.uk>
- <51FFEB97.30004@gmail.com>
+Subject: Re: [PATCH] ASoC: cs42l52: Fixes for Beep Volume
+	kcontrol (fwd)
+Date: Mon, 5 Aug 2013 20:37:04 +0100
+Message-ID: <20130805193704.GB13052@sirena.org.uk>
+References: <alpine.DEB.2.10.1308051050270.5288@heelrod.ad.cirrus.com>
+ <20130805162016.GR9858@sirena.org.uk>
+ <alpine.DEB.2.10.1308051318580.5288@heelrod.ad.cirrus.com>
+ <20130805184233.GB9858@sirena.org.uk>
+ <alpine.DEB.2.10.1308051346270.5288@heelrod.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3357179589364149217=="
+Content-Type: multipart/mixed; boundary="===============6222886007034643645=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B601E2651BE
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 20:59:28 +0200 (CEST)
-In-Reply-To: <51FFEB97.30004@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 674832651BC
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 21:37:08 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.10.1308051346270.5288@heelrod.ad.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,121 +24,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3357179589364149217==
+--===============6222886007034643645==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+IlIDFNqYHJ7+fQx"
+	protocol="application/pgp-signature"; boundary="qcHopEYAB45HaUaB"
 Content-Disposition: inline
 
 
---+IlIDFNqYHJ7+fQx
+--qcHopEYAB45HaUaB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Aug 05, 2013 at 08:14:47PM +0200, Sebastian Hesselbarth wrote:
-> On 08/05/2013 06:59 PM, Mark Brown wrote:
+On Mon, Aug 05, 2013 at 01:47:13PM -0500, Brian Austin wrote:
 
-> >The clocking arrangements are an example of why the boards can get
-> >interesting enough to describe for themselves.
+> OK. I sent them to alsa-devel. Is there somewhere else I should send them?
+> It looks better in a series though.
 
-> I understand there are complex arrangements, I still don't think that
-> you need a global super-node to describe them. Anyway, I am not voting
-> against a super-node.
+I'm not seeing them?  Just sending them as normal patches is enough,
+stable picks them up from git.
 
-Please look back through the list archives, we've been round this loop
-repeatedly.
-
-> >>Also, all those "nvidia," properties would have fit very well into the
-> >>i2s controller node
-
-> >No, almost none of them have any place there.  For example, the audio
-> >routing contains only connections to the CODEC so the I2S controller
-> >isn't in play, the headphone detection is connected to the AP but isn't
-> >connected to the I2S port.
-
-> From a quick look in tegra30_hub.h, I can see configuration registers
-> i2s formatting. I assume that i2s controller on Tegra can therefore
-> directly connected to a I2S codec, can't it? Then, with an existing i2s
-> node and an existing codec node - why is there no place to link both?
-
-At a minimum we'd need to figure out which end of the link to put it on
-and what to do about multi-drop links or links which share some or all
-of the clocks but have split data lines.
-
-> I can think of use cases that are hard to describe in a link-to-link
-> way, but none of them really requires a super-node nor special
-> board-specific compatible strings. With that we can just have the root
-> DT node be compatible with Beaver above and register all the old
-> platform_device way.
-
-It's just plain good practice to have some way to figure out which board
-we're running on.
-
-> [...]
-> >>I learned to never match "device nodes" with "drivers" as there
-> >>is simply no relation between them.
-
-> >That's clearly a thinko for device node.
-
-> I assume with "thinko" you mean "thought wrong" - IMHO the above
-> statement is very true. If it wouldn't, why not just have a node for
-> kirkwood-dma and kirkwood-i2s instead of merging the drivers?
-> You think that will also be accepted by DT maintainers?
-
-We don't have a node for the DMA driver because it's just a software
-wrapper for the DMA controller.  We do have a node for the board because
-it's an actual physical thing that we can point at, the board driver is
-representing the audio subsystem schematic.
-
-> > From my point of view I'd rather not be shoving vendor prefixes on all
-> >the properties, this is coming from DT convention requiring vendor
-> >prefixes on bindings.
-
-> I understand that those vendor prefixes are part of the helper
-> functions of ASoC. But no other subsystem has a similar approach but
-
-No?  I can't parse what you're saying here at all.
-
-> though of properties generic enough to help drivers find what they
-> need to know. Either ASoC is mis-interpreting the vendor-prefix
-> requirement - or all other subsystems are.
-
-This isn't me, this is people like Stephen (who's one of the DT
-guys...).
-
---+IlIDFNqYHJ7+fQx
+--qcHopEYAB45HaUaB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR//YGAAoJELSic+t+oim9vuoP/1PJzU2NuQLlbVr3jojLlXwu
-exCilG6wMaezKCEA6CRwEGbqU7Zr9G89n3vCW5Mne/vUvO5WE6pwBlWSqnGQZ335
-f/R/L8Bpt/iqjGNi7yXEB/iweRkluFCFmtRTY+eWbPQsQP9f0ON9JLrrbpe0Nvjb
-F/UHvDBlKtIm5IK90GW0LTiutbYVQk/hzabhPqYx62YKF3Rt7b9zEUtpgXBmKPDk
-jmdK3qv+h3ouyqhATy+Pk2ecB/pF11S7i61tLQIlrNSDLRGW7nljGv4Kg6tn1NLu
-6JI2NjtACn5572AE/MYmYgMIYvApW26JWkXcsqHjsDtmUo+YkzPt48iRF5kAPv8K
-cSaklhekPLKqghbL5i9UaQUuuZPXjqg8Q2v6+rSA9zNWhWueiH+haSQ4lgKMCsJ+
-Yl9y2Uz30n2XXLlt95ZSmoGWdtfUTjfREW56246M0CUBNEJ8jDbm9twG2crq69tC
-Yn2B9C7Ehoq62+2vwAu1pKoLUStcIYiwm/dIFnfLtE4KxxU1Vw2xYAmVhzfNNmGF
-SvqSfyg+hmfbB5bCukfej55el5iXM5gU4N0AjMAdJ4GZtsbU69ca1rUhzxs/HQsG
-jlJhLEdLF1Ky63GQYVpivo2aKbjrcXbcIRLYNFwf4p2E9EgyydQFu++A6xyYtLwW
-DkAMLhHiaYjDVVgYjE6e
-=nsj9
+iQIcBAEBAgAGBQJR//7dAAoJELSic+t+oim9Pd4P/0mv1EBwXTP90h+E0tE7qcu+
+D6FFC1+0zX7Cb7z+N8LDAESp0tP6/aUtXr9lkQin/CKdOWG7G8POmIOyq9ZKtbft
+p6t4675vsBSAa/1F2HBW4IK84yi/6QI9PF6kapmduT+UgeuuomoGUDdtPoemyHm1
+67+diURT735x8eBQBc3E+ZvVWWOYneB5euDeU+rzEFZD5iozcuzPOyGQ5i4jDUUV
+tFPYOyoBVnX1tUHarFMw5zy3fngeU0OmranBZRRMb53fFdNUf8PTGlrur4261r7T
+Hsfj9JXwCuobdERx79GIoBJHZLJIxTedXbIkF4tJZI6A4qgiackvSe6mgQ/Uek4M
+YvvTU6GFZSuOnEuM4KLiSyvx6ZqPybhSyAj5qt/weQx5HW1+J4byUg1eYzlOMq7g
+cycH0nnEVoK4m9lruLVvgQKEWulurS6XgdOxXlqHNmFgXQSrBZqQhJ+t/THvj3+6
+j4HrLX3jYUhS2d0WPu4YcdIaN50W8AuJYIpfhIt+MBstBaxAv1rZHnFN0+TZ4e2P
+EDeNnpaoWxmIx6lPC8VuQwNlgxNv4eZIzklpYfvYG/d7NxvZXfYyj8KaoiD7pBez
+E0IAdaD1NgHyRMYRROFivW7Fn20OxAlrvxfHWBakhxPYNdBwRJiGu7YpKyTCH4zy
+yLhqGgkFhLc7QW9fBHPl
+=lz1L
 -----END PGP SIGNATURE-----
 
---+IlIDFNqYHJ7+fQx--
+--qcHopEYAB45HaUaB--
 
---===============3357179589364149217==
+--===============6222886007034643645==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3357179589364149217==--
+--===============6222886007034643645==--
