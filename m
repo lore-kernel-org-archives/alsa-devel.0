@@ -1,14 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: wm8994: Fix class W controls
-Date: Mon,  5 Aug 2013 21:03:14 +0100
-Message-ID: <1375732994-19029-1-git-send-email-broonie@kernel.org>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: [PATCH 1/2] ASoC: cs42l52: Reorder Min/Max and update
+ to SX_TLV for Beep Volume
+Date: Mon, 5 Aug 2013 15:08:47 -0500
+Message-ID: <alpine.DEB.2.10.1308051508140.5288@heelrod.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FE212651BE
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 22:03:20 +0200 (CEST)
+Received: from tx2outboundpool.messaging.microsoft.com
+ (tx2ehsobe005.messaging.microsoft.com [65.55.88.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD0B42651BE
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 22:08:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,37 +20,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@linaro.org>
+To: alsa-devel@alsa-project.org
+Cc: brian.austin@cirrus.com, broonie@kernel.org, lgirdwood@gmail.com, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+Beep Volume Min/Max was backwards.
+Change to SOC_SONGLE_SX_TLV for correct volume representation
 
-Commit 6e0650 (ASoC: wm8994: Use SOC_SINGLE_EXT() instead of open-coding
-it) went too far and converted a DAPM control to use SOC_SINGLE_EXT()
-which crashes.  Revert that portion of the patch.
-
-Signed-off-by: Mark Brown <broonie@linaro.org>
+Signed-off-by: Brian Austin <brian.austin@cirrus.com>
 ---
- sound/soc/codecs/wm8994.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+  sound/soc/codecs/cs42l52.c |    2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index d76b056..f32998a 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -1432,8 +1432,10 @@ SOC_DAPM_SINGLE("AIF1.1 Switch", WM8994_DAC2_RIGHT_MIXER_ROUTING,
- };
- 
- #define WM8994_CLASS_W_SWITCH(xname, reg, shift, max, invert) \
--	SOC_SINGLE_EXT(xname, reg, shift, max, invert, \
--		snd_soc_get_volsw, wm8994_put_class_w)
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-+	.info = snd_soc_info_volsw, \
-+	.get = snd_soc_dapm_get_volsw, .put = wm8994_put_class_w, \
-+	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert, 0) }
- 
- static int wm8994_put_class_w(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
+diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
+index 987f728..ee25f32 100644
+--- a/sound/soc/codecs/cs42l52.c
++++ b/sound/soc/codecs/cs42l52.c
+@@ -451,7 +451,7 @@ static const struct snd_kcontrol_new cs42l52_snd_controls[] = {
+  	SOC_ENUM("Beep Pitch", beep_pitch_enum),
+  	SOC_ENUM("Beep on Time", beep_ontime_enum),
+  	SOC_ENUM("Beep off Time", beep_offtime_enum),
+-	SOC_SINGLE_TLV("Beep Volume", CS42L52_BEEP_VOL, 0, 0x1f, 0x07, hl_tlv),
++	SOC_SINGLE_SX_TLV("Beep Volume", CS42L52_BEEP_VOL, 0, 0x07, 0x1f, hl_tlv),
+  	SOC_SINGLE("Beep Mixer Switch", CS42L52_BEEP_TONE_CTL, 5, 1, 1),
+  	SOC_ENUM("Beep Treble Corner Freq", beep_treble_enum),
+  	SOC_ENUM("Beep Bass Corner Freq", beep_bass_enum),
 -- 
-1.8.4.rc0
+1.7.10.4
