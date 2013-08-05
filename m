@@ -1,19 +1,23 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: cs42l52: Reorder Min/Max and
- update to SX_TLV for Beep Volume
-Date: Mon, 5 Aug 2013 15:31:26 -0500
-Message-ID: <alpine.DEB.2.10.1308051529100.5288@heelrod.ad.cirrus.com>
-References: <alpine.DEB.2.10.1308051508140.5288@heelrod.ad.cirrus.com>
- <20130805202439.GA30764@sirena.org.uk>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add DAPM
+	links between	codec and cpu DAI
+Date: Mon, 5 Aug 2013 21:32:02 +0100
+Message-ID: <20130805203202.GX23006@n2100.arm.linux.org.uk>
+References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
+ <E1V641A-0004lv-DM@rmk-PC.arm.linux.org.uk>
+ <20130805112733.GY9858@sirena.org.uk>
+ <20130805113310.GU23006@n2100.arm.linux.org.uk>
+ <20130805144054.GE9858@sirena.org.uk>
+ <20130805145644.GV23006@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
- by alsa0.perex.cz (Postfix) with ESMTP id 33B32265206
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 22:31:01 +0200 (CEST)
-In-Reply-To: <20130805202439.GA30764@sirena.org.uk>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 37A98265206
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 22:32:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130805145644.GV23006@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,18 +28,132 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, lars@metafoo.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 5 Aug 2013, Mark Brown wrote:
+On Mon, Aug 05, 2013 at 03:56:44PM +0100, Russell King - ARM Linux wrote:
+> On Mon, Aug 05, 2013 at 03:40:54PM +0100, Mark Brown wrote:
+> > On Mon, Aug 05, 2013 at 12:33:10PM +0100, Russell King - ARM Linux wrote:
+> > > On Mon, Aug 05, 2013 at 12:27:33PM +0100, Mark Brown wrote:
+> > 
+> > > > This doesn't look good - this is adding DAPM routes which should
+> > > > correspond to the DAI link that's already been configured.
+> > 
+> > > No, you're wrong there:
+> > 
+> > > CPU DAI:				Codec DAI
+> > > dma-playback	--->	i2sdo	--->	Playback
+> > > 		`-->	spdifdo -> not connected
+> > > dma-capture	<---	i2sdi	<---	Capture
 
-> On Mon, Aug 05, 2013 at 03:08:47PM -0500, Brian Austin wrote:
->> Beep Volume Min/Max was backwards.
->> Change to SOC_SONGLE_SX_TLV for correct volume representation
->
-> This doesn't apply against v3.11-rc4 - can you check what's going on
-> there please?  I don't see any obvious issues by eye which is
-> worrying...
->
-huh,  I just did a fresh pull of for-next and applied and it did fine...
-It is SINGLE instead of SONGLE though :) But that wasn't the patch itself
+Well, having followed your suggestions and re-analysed Liam's driver, it
+basically does not work, because none of the widgets get powered up.
+
+Liam's DAPM driver does this:
+
+==== Frontend ====
+DAI drivers:    DAI stream names
+System Pin      System Playback
+Offload0 Pin    Offload0 Playback
+Offload1 Pin    Offload1 Playback
+Loopback Pin    Loopback Capture
+Capture Pin     Analog Capture
+
+Routing:
+[s]System Playback   --------v           .----> [aif]SSP0 CODEC OUT
+[s]Offload0 Playback ---> [w]Playback VMixer
+[s]Offload1 Playback --------^           `----> [s]Loopback Capture
+
+[aif]SSP0 CODEC IN ---> [s]Analog Capture
+
+==== Platform ====
+Routing:
+[aif]SSP0 CODEC OUT ---> [s]AIF1 Playback
+...
+
+==== Codec ====
+DAI drivers:    DAI stream names
+rt5640-aif1     AIF1 Playback --> AIF1RX --> DAI1 RX Mux --> IF1 DAC -->...
+                AIF1 Capture ...
+
+
+And what I have already in kirkwood-i2s is:
+
+CPU DAI:
+[s]dma-playback	---> [aif]i2sdo
+		`--> [aif]spdifdo
+[s]dma-capture	<--- [aif]i2sdi
+
+So that follows exactly what Liam's driver does.  So no changes are
+required there.
+
+I've changed the DAI links to this in kirkwood-spdif.c:
+
+static struct snd_soc_dai_link kirkwood_spdif_dai1[] = {
+        {
+                .name = "S/PDIF1",
+                .stream_name = "IEC958 Playback",
+                .platform_name = "mvebu-audio.1",
+                .cpu_dai_name = "mvebu-audio.1",
+		.dynamic = 1,
+                .codec_name = "snd-soc-dummy",
+                .codec_dai_name = "snd-soc-dummy-dai",
+        }, {
+                .name = "Codec",
+                .cpu_dai_name = "snd-soc-dummy-dai",
+                .platform_name = "snd-soc-dummy",
+                .no_pcm = 1,
+                .codec_dai_name = "dit-hifi",
+                .codec_name = "spdif-dit",
+                .ops = &kirkwood_spdif_ops,
+        },
+};
+
+which is similar to what's in Liam's driver.  However, There is no
+.dpcm_playback member in mainline ASoC.
+
+However, when trying to play something:
+
+bash# grep . /sys/kernel/debug/asoc/Kirkwood\ SPDIF/*/dapm/* | \
+sed 's,/sys/kernel/debug/asoc/Kirkwood SPDIF/,,'
+mvebu-audio.1/dapm/bias_level:Off
+mvebu-audio.1/dapm/i2sdi:i2sdi: Off  in 0 out 0
+mvebu-audio.1/dapm/i2sdi: stream dma-rx inactive
+mvebu-audio.1/dapm/i2sdo:i2sdo: Off  in 0 out 0
+mvebu-audio.1/dapm/i2sdo: stream dma-tx inactive
+mvebu-audio.1/dapm/spdifdo:spdifdo: Off  in 0 out 0
+mvebu-audio.1/dapm/spdifdo: stream dma-tx inactive
+mvebu-audio.1/dapm/spdifdo: out "static" "Playback"
+snd-soc-dummy/dapm/Capture:Capture: Off  in 0 out 0
+snd-soc-dummy/dapm/Capture: stream Capture inactive
+snd-soc-dummy/dapm/Playback:Playback: Off  in 0 out 0
+snd-soc-dummy/dapm/Playback: stream Playback inactive
+snd-soc-dummy/dapm/Playback: in  "static" "spdifdo"
+snd-soc-dummy/dapm/bias_level:Standby
+spdif-dit/dapm/Playback:Playback: Off  in 0 out 1
+spdif-dit/dapm/Playback: stream Playback inactive
+spdif-dit/dapm/Playback: out "static" "spdif-out"
+spdif-dit/dapm/bias_level:Standby
+spdif-dit/dapm/spdif-out:spdif-out: Off  in 0 out 1
+spdif-dit/dapm/spdif-out: in  "static" "Playback"
+
+Nothing gets powered up.  This is hardly surprising, because of how
+ASoC connects the widgets.
+
+So, let's summarise this.  You're saying that I'm doing it all wrong in
+my driver creating those widgets and paths.  Yet, the widgets and paths
+are exactly what Liam creates in his driver.
+
+Not only that, but we have even more duplicated widgets created with this
+method, even with the hack from this patch set.
+
+snd_soc_dapm_new_dai_widgets: creating playback widget Playback:Playback
+  for dai d81247c0 dapm d8263f10 (playback_widget  was   (null), new c05ab080)
+snd_soc_dapm_new_dai_widgets: creating playback widget Playback:Playback
+  for dai d81247c0 dapm d8263c70 (playback_widget was c05ab080, new d8fe2b40)
+
+It seems Liam's commit needs to be reverted to fix that.  Whether that's
+correct or not, I've no idea.
+
+Plus, when I try to set things up as Liam has, the result doesn't work,
+because of the widget naming scheme having no disambiguation.
