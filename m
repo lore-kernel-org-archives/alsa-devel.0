@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC 01/13] ASoC: kirkwood: merge struct
- kirkwood_dma_priv with struct kirkwood_dma_data
-Date: Mon, 5 Aug 2013 15:49:50 +0100
-Message-ID: <20130805144950.GH9858@sirena.org.uk>
-References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
- <E1V63sR-0004lC-0g@rmk-PC.arm.linux.org.uk>
+Subject: Re: [PATCH v2] ASoC: dapm: Implement mixer input
+	auto-disable
+Date: Mon, 5 Aug 2013 15:50:44 +0100
+Message-ID: <20130805145044.GI9858@sirena.org.uk>
+References: <1375694851-13303-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4664692688193968343=="
+Content-Type: multipart/mixed; boundary="===============1742335116275982060=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 942C726160D
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 16:49:53 +0200 (CEST)
-In-Reply-To: <E1V63sR-0004lC-0g@rmk-PC.arm.linux.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 28BC926500C
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 16:50:48 +0200 (CEST)
+In-Reply-To: <1375694851-13303-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King <rmk+kernel@arm.linux.org.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4664692688193968343==
+--===============1742335116275982060==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DFTwFFacoTaWDCuy"
+	protocol="application/pgp-signature"; boundary="qd931lRzp2WpGIxm"
 Content-Disposition: inline
 
 
---DFTwFFacoTaWDCuy
+--qd931lRzp2WpGIxm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Aug 04, 2013 at 08:22:03PM +0100, Russell King wrote:
-> Merge these two structures together; nothing other than the I2S and
-> DMA driver makes use of struct kirkwood_dma_data, and it's not like
-> struct kirkwood_dma_data is really just used to convey DMA specific
-> data to the backend; it's more a general shared structure between the
-> two halves.
+On Mon, Aug 05, 2013 at 11:27:31AM +0200, Lars-Peter Clausen wrote:
+> Some devices have the problem that if a internal audio signal source is disabled
+> the output of the source becomes undefined or goes to a undesired state (E.g.
 
 Applied, thanks.
 
---DFTwFFacoTaWDCuy
+--qd931lRzp2WpGIxm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR/7uLAAoJELSic+t+oim9xd0P/0uuHU9zdeWszUE/H5N5j2PD
-kWxqyz/qV262a8sAtc9o4at6VgG/i7MsDjNF8xjV8CLXBKCuMLEQ998gPxalgKvj
-E6kcz/gXfgmEeFe3qwgdpH/Eqmfnb0vSRUWO2IAjSNv7OhFE2nAHYNT1EW7VXQHJ
-NtKSfFor+KL7CMyqZw1ijwgm0PbQIEmNjBrAH5mFimf5lT9I0kPU5e9o+8CwRLMp
-ZIjETyRyEFiUH1iTlztlwh3SzPZntZf7mXXtPYL+gZfzXvfFwrpXDcSmBIVm/y9c
-cm5H0EEFQe/fVCkoLFskROTCZRHbERij/6aZMZ6xFFQV0tQ8bE872wsStKmAfTWK
-EEn4mFMGxbKuadkB8GIJX+xLFPvQygqhrSk6iZvpBSBLRTtyftfb1yVgQEzA84Hc
-qKCDBk1jOZy2nCGmP1zYvdVNWrAXo1moxFoWx2VNedY8YASPfHutJj3qkT/ce+Cn
-EzpT2uqCoPvPTb4ciYUr++x5eVg6Eb4sVgkwz4w4ZVcFnpDPhCRghBDSOCXmsCYw
-YDnXww0G4DfZfcVDTzjMcOqgPN13dCcny2Z92IaAER8f/06vFIUEBnZhUrEzPhw7
-KW3QJquUuPATosFpIkc3iImNf6cZJNyKrwSIexZGkptDxOSe9X8b35gySoR906/0
-4m77u6MwbK81nXw8XZdx
-=17gp
+iQIcBAEBAgAGBQJR/7vBAAoJELSic+t+oim91HUP/2AJ8inz/dKoNnQ8UTk6fWnn
+KkMr3zj43qPt6odbZMnHyRNbALloNVvCpbiBgf2Dc4I6ZDh2bm5g7UyhosM58Op4
+Z3sZI1hsp+9SwSZ8tKfJfn0bVsdGO7DT12P6e51uROzvYcV3TK8MrtIhRusmcOo1
+NVkvSgsYNualtzfJLrj60dCnWxfVxgc9WJpAyzRHvgFQQs2+mZLhPGhFId2HGdrd
+33k7b16PxXcw2X42iEFKNUG5UKkhFntS+1YqrDz4nxLRUAxgyUF91eO/c1CsoQd2
+ea7PrqM3CZ/jLHezNeErQ7aLvyJ+R+WMl++31dJ4jDD8IicIkB4L+g42L6+7eGrl
+LLfHkpxBdhpZ1vgE9AncS0JXTk45H4sVczcl78dtIEolGWYPspEroPj7lVRwQMHy
+jOoKiZCuSLZ/ulofk6E90fkSK67rk6p9tres1DY4mCe5hMU/XVW+kk/aHeNMy3Ky
+lJHvyGUGMfnQaWm3JQ2hoaQaGyPjc+A6qv/AazE1u2vpPuq3tnACYL7LLSqOiXjx
+BElHnbt5k3oJrcEdv7kWC4qX7igE0OPZoPE4pFHbie0VHILAc8tWhgD6yqZWfHHQ
+roHhUQjj2uYVFT/qAtJMicZfBFRiQrF6IboBB2roBw4zwOBbaTaseq8I5iOmQ1ZA
+qIvvLysNByzp4Nk5DlJd
+=i1If
 -----END PGP SIGNATURE-----
 
---DFTwFFacoTaWDCuy--
+--qd931lRzp2WpGIxm--
 
---===============4664692688193968343==
+--===============1742335116275982060==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4664692688193968343==--
+--===============1742335116275982060==--
