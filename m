@@ -1,23 +1,14 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH] ASoC: cs42l52: Fixes for Beep Volume
-	kcontrol (fwd)
-Date: Mon, 5 Aug 2013 15:01:23 -0500
-Message-ID: <alpine.DEB.2.10.1308051500500.5288@heelrod.ad.cirrus.com>
-References: <alpine.DEB.2.10.1308051050270.5288@heelrod.ad.cirrus.com>
- <20130805162016.GR9858@sirena.org.uk>
- <alpine.DEB.2.10.1308051318580.5288@heelrod.ad.cirrus.com>
- <20130805184233.GB9858@sirena.org.uk>
- <alpine.DEB.2.10.1308051346270.5288@heelrod.ad.cirrus.com>
- <20130805193704.GB13052@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: wm8994: Fix class W controls
+Date: Mon,  5 Aug 2013 21:03:14 +0100
+Message-ID: <1375732994-19029-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db8outboundpool.messaging.microsoft.com
- (mail-db8lp0185.outbound.messaging.microsoft.com [213.199.154.185])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F6DA2651BE
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 22:01:00 +0200 (CEST)
-In-Reply-To: <20130805193704.GB13052@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FE212651BE
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 22:03:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,15 +18,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, lars@metafoo.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
->> OK. I sent them to alsa-devel. Is there somewhere else I should send them?
->> It looks better in a series though.
->
-> I'm not seeing them?  Just sending them as normal patches is enough,
-> stable picks them up from git.
->
-I guess my git mailer is broke for some reason...
-I'll just forward these
+From: Mark Brown <broonie@linaro.org>
+
+Commit 6e0650 (ASoC: wm8994: Use SOC_SINGLE_EXT() instead of open-coding
+it) went too far and converted a DAPM control to use SOC_SINGLE_EXT()
+which crashes.  Revert that portion of the patch.
+
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/wm8994.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index d76b056..f32998a 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -1432,8 +1432,10 @@ SOC_DAPM_SINGLE("AIF1.1 Switch", WM8994_DAC2_RIGHT_MIXER_ROUTING,
+ };
+ 
+ #define WM8994_CLASS_W_SWITCH(xname, reg, shift, max, invert) \
+-	SOC_SINGLE_EXT(xname, reg, shift, max, invert, \
+-		snd_soc_get_volsw, wm8994_put_class_w)
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.info = snd_soc_info_volsw, \
++	.get = snd_soc_dapm_get_volsw, .put = wm8994_put_class_w, \
++	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert, 0) }
+ 
+ static int wm8994_put_class_w(struct snd_kcontrol *kcontrol,
+ 			      struct snd_ctl_elem_value *ucontrol)
+-- 
+1.8.4.rc0
