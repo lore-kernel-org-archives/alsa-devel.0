@@ -1,19 +1,14 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: rt5640: change widget sequence for
- depop
-Date: Mon, 05 Aug 2013 19:21:21 +0200
-Message-ID: <51FFDF11.5020106@metafoo.de>
-References: <1375676343-13891-1-git-send-email-bardliao@realtek.com>
- <20130805144808.GG9858@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: pcm1792a: Fix build with !OF
+Date: Mon,  5 Aug 2013 18:22:18 +0100
+Message-ID: <1375723338-19057-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-190.synserver.de (smtp-out-190.synserver.de
- [212.40.185.190])
- by alsa0.perex.cz (Postfix) with ESMTP id 473B226508F
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 19:20:18 +0200 (CEST)
-In-Reply-To: <20130805144808.GG9858@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id D8021265144
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 19:22:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,23 +18,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, swarren@wwwdotorg.org, lgirdwood@gmail.com, bardliao@realtek.com, flove@realtek.com
+To: Michael Trimarchi <michael@amarulasolutions.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/05/2013 04:48 PM, Mark Brown wrote:
-> On Mon, Aug 05, 2013 at 12:19:03PM +0800, bardliao@realtek.com wrote:
->> From: Bard Liao <bardliao@realtek.com>
->>
->> Add mute/unmute control in widget event and modify the power on/off sequence to avoid pop noise.
-> 
-> This looks like you should be using Lars-Peter's patch for controls that
-> are disabled while a widget isn't powered - as far as I can tell from a
-> quick read through all this does is keep the speaker/headphone muted
-> while the outputs are powered down.
+From: Mark Brown <broonie@linaro.org>
 
-The driver is using stereo controls though. So either support for stereo
-controls needs to be added to DAPM (which shouldn't be too hard) or the
-control needs to be split into two mono controls.
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/pcm1792a.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-- Lars
+diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm1792a.c
+index 3f83bf9..72cf835 100644
+--- a/sound/soc/codecs/pcm1792a.c
++++ b/sound/soc/codecs/pcm1792a.c
+@@ -169,13 +169,11 @@ static struct snd_soc_dai_driver pcm1792a_dai = {
+ 	.ops = &pcm1792a_dai_ops,
+ };
+ 
+-#ifdef CONFIG_OF
+ static const struct of_device_id pcm1792a_of_match[] = {
+ 	{ .compatible = "ti,pcm1792a", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, pcm1792a_of_match);
+-#endif
+ 
+ static const struct regmap_config pcm1792a_regmap = {
+ 	.reg_bits		= 8,
+@@ -231,7 +229,7 @@ static struct spi_driver pcm1792a_codec_driver = {
+ 	.driver = {
+ 		.name = "pcm1792a",
+ 		.owner = THIS_MODULE,
+-		.of_match_table = pcm1792a_of_match,
++		.of_match_table = of_match_ptr(pcm1792a_of_match),
+ 	},
+ 	.id_table = pcm1792a_spi_ids,
+ 	.probe = pcm1792a_spi_probe,
+-- 
+1.8.4.rc0
