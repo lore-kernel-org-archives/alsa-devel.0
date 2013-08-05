@@ -1,75 +1,75 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: dapm: Implement mixer input
-	auto-disable
-Date: Mon, 5 Aug 2013 15:50:44 +0100
-Message-ID: <20130805145044.GI9858@sirena.org.uk>
-References: <1375694851-13303-1-git-send-email-lars@metafoo.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add DAPM links between
+ codec and cpu DAI
+Date: Mon, 5 Aug 2013 15:56:44 +0100
+Message-ID: <20130805145644.GV23006@n2100.arm.linux.org.uk>
+References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
+ <E1V641A-0004lv-DM@rmk-PC.arm.linux.org.uk>
+ <20130805112733.GY9858@sirena.org.uk>
+ <20130805113310.GU23006@n2100.arm.linux.org.uk>
+ <20130805144054.GE9858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1742335116275982060=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 28BC926500C
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 16:50:48 +0200 (CEST)
-In-Reply-To: <1375694851-13303-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20130805144054.GE9858@sirena.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Aug 05, 2013 at 03:40:54PM +0100, Mark Brown wrote:
+> On Mon, Aug 05, 2013 at 12:33:10PM +0100, Russell King - ARM Linux wrote:
+> > On Mon, Aug 05, 2013 at 12:27:33PM +0100, Mark Brown wrote:
+> 
+> > > This doesn't look good - this is adding DAPM routes which should
+> > > correspond to the DAI link that's already been configured.
+> 
+> > No, you're wrong there:
+> 
+> > CPU DAI:				Codec DAI
+> > dma-playback	--->	i2sdo	--->	Playback
+> > 		`-->	spdifdo -> not connected
+> > dma-capture	<---	i2sdi	<---	Capture
+> 
+> > And the intermediate level is needed to determine which outputs from
+> > the chip are wired up.
+> 
+> Right, and that's exactly what the dai_links are doing - they're showing
+> what's hanging off each of the DAIs.
+> 
+> > And don't even say "use dpcm" - if you say that, I want _you_ to write
+> > it because dpcm is totally and utterly unusable as it currently stands -
+> > as you can see from all the emails I've sent over the weekend.
+> 
+> I'm going to tell you to work with the framework rather than around it;
 
---===============1742335116275982060==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qd931lRzp2WpGIxm"
-Content-Disposition: inline
+Work with the fscking undocumented framework.  If you want that, then
+sodding well document this pile of crap.  If not, stop telling people
+to "work around it".
 
+> adding routes that link the CODEC and CPU together in parallel with the
+> links set up for the DAIs is not something that seems like it's going to
+> continue to work sensibly going forwards.
 
---qd931lRzp2WpGIxm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So you're *TOTALLY* missing why I've had to do that.  Tell me, how can
+the CPU DAI detect which of its frigging outputs are connected to the
+codec without doing the above?  Show me how your crappy subsystem is
+supposed to work.  Document the sodding thing.
 
-On Mon, Aug 05, 2013 at 11:27:31AM +0200, Lars-Peter Clausen wrote:
-> Some devices have the problem that if a internal audio signal source is disabled
-> the output of the source becomes undefined or goes to a undesired state (E.g.
+If you don't do this, don't expect people to understand it.  Don't
+expect people not to find "other solutions" around the utter shite that
+I've had to deal with ALL FRIGGING WEEKEND.
 
-Applied, thanks.
-
---qd931lRzp2WpGIxm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR/7vBAAoJELSic+t+oim91HUP/2AJ8inz/dKoNnQ8UTk6fWnn
-KkMr3zj43qPt6odbZMnHyRNbALloNVvCpbiBgf2Dc4I6ZDh2bm5g7UyhosM58Op4
-Z3sZI1hsp+9SwSZ8tKfJfn0bVsdGO7DT12P6e51uROzvYcV3TK8MrtIhRusmcOo1
-NVkvSgsYNualtzfJLrj60dCnWxfVxgc9WJpAyzRHvgFQQs2+mZLhPGhFId2HGdrd
-33k7b16PxXcw2X42iEFKNUG5UKkhFntS+1YqrDz4nxLRUAxgyUF91eO/c1CsoQd2
-ea7PrqM3CZ/jLHezNeErQ7aLvyJ+R+WMl++31dJ4jDD8IicIkB4L+g42L6+7eGrl
-LLfHkpxBdhpZ1vgE9AncS0JXTk45H4sVczcl78dtIEolGWYPspEroPj7lVRwQMHy
-jOoKiZCuSLZ/ulofk6E90fkSK67rk6p9tres1DY4mCe5hMU/XVW+kk/aHeNMy3Ky
-lJHvyGUGMfnQaWm3JQ2hoaQaGyPjc+A6qv/AazE1u2vpPuq3tnACYL7LLSqOiXjx
-BElHnbt5k3oJrcEdv7kWC4qX7igE0OPZoPE4pFHbie0VHILAc8tWhgD6yqZWfHHQ
-roHhUQjj2uYVFT/qAtJMicZfBFRiQrF6IboBB2roBw4zwOBbaTaseq8I5iOmQ1ZA
-qIvvLysNByzp4Nk5DlJd
-=i1If
------END PGP SIGNATURE-----
-
---qd931lRzp2WpGIxm--
-
---===============1742335116275982060==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1742335116275982060==--
+These patches stay as they are until you get a clue about what's required
+to drive this hardware and start providing some sensible assistance with
+your undocumented code.
