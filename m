@@ -1,20 +1,22 @@
-From: John Spencer <maillist-alsa@barfooze.de>
-Subject: horribly wrong code when --with-versioned is active
-Date: Mon, 05 Aug 2013 23:46:09 +0200
-Message-ID: <52001D21.6060203@barfooze.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add DAPM
+ links between codec and cpu DAI
+Date: Mon, 5 Aug 2013 23:06:39 +0100
+Message-ID: <20130805220639.GB26637@sirena.org.uk>
+References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
+ <E1V641A-0004lv-DM@rmk-PC.arm.linux.org.uk>
+ <20130805112733.GY9858@sirena.org.uk>
+ <20130805113310.GU23006@n2100.arm.linux.org.uk>
+ <20130805144054.GE9858@sirena.org.uk>
+ <20130805145644.GV23006@n2100.arm.linux.org.uk>
+ <20130805203202.GX23006@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4942481060806263138=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from furnace.wzff.de (furnace.wzff.de [176.9.216.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 27794265274
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 23:52:05 +0200 (CEST)
-Received: from xdsl-188-155-204-150.adslplus.ch ([188.155.204.150]
- helo=[10.1.1.4])
- by furnace.wzff.de with esmtpsa (TLSv1:DHE-RSA-CAMELLIA256-SHA:256)
- (Exim 4.80.1 (FreeBSD)) (envelope-from <maillist-alsa@barfooze.de>)
- id 1V6ShA-000BH2-H9
- for alsa-devel@alsa-project.org; Mon, 05 Aug 2013 23:52:04 +0200
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id E65A626526D
+ for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 00:07:02 +0200 (CEST)
+In-Reply-To: <20130805203202.GX23006@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,89 +26,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-if --with-versioned is active (default), a couple of macros in pcm.c
-start generating some completely broken, __old-prefixed wrapper 
-functions, which then are getting used whenever the actual function is 
-called.
 
-for example:
-snd_pcm_hw_params_set_buffer_time_near
-
-__OLD_NEAR1(snd_pcm_hw_params_set_buffer_time_near, unsigned int);
-
-->
-
-#define __OLD_NEAR1(name, ret_type) __P_OLD_NEAR1(__old_, name, ret_type)
-
-->
-
-#define __P_OLD_NEAR1(pfx, name, ret_type) \
-ret_type pfx##name(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, ret_type 
-val, int *dir) \
-{ \
-         if (INTERNAL(name)(pcm, params, &val, dir) < 0) \
-                 return 0; \
-         return (ret_type)val; \
-}
-
-this will lead to generating a function 
-__old_snd_pcm_hw_params_set_buffer_time_near which expands to
-
-unsigned int __old_snd_pcm_hw_params_set_buffer_time_near(snd_pcm_t 
-*pcm, snd_pcm_hw_params_t *params, ret_type val, int *dir)
-{
-         if snd1_pcm_hw_params_set_buffer_time_near(pcm, params, &val, 
-dir) < 0)
-                 return 0;
-         return (ret_type)val;
-}
-
-there 2 bugs in there,
-1) the real function gets passed a pointer to a pointer of unsigned, 
-which is then happily dereferenced and the original pointer used as an 
-int, and
-2) the return type logic is wrong, in case of a non-error, the original 
-pointer will be returned instead of 0 to indicate success.
-
-the right fix would look something like this:
-
-@@ -7190,19 +7192,15 @@
-  __OLD_GET1(snd_pcm_hw_params_get_tick_time_max, unsigned int, unsigned 
-int);
-
-  #define __P_OLD_NEAR(pfx, name, ret_type) \
--ret_type pfx##name(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, 
-ret_type val) \
-+ret_type pfx##name(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, 
-ret_type *val) \
-  { \
--	if (INTERNAL(name)(pcm, params, &val) < 0) \
--		return 0; \
--	return (ret_type)val; \
-+	return(INTERNAL(name)(pcm, params, val)); \
-  }
-
-  #define __P_OLD_NEAR1(pfx, name, ret_type) \
--ret_type pfx##name(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, 
-ret_type val, int *dir) \
-+ret_type pfx##name(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, 
-ret_type *val, int *dir) \
-  { \
--	if (INTERNAL(name)(pcm, params, &val, dir) < 0) \
--		return 0; \
--	return (ret_type)val; \
-+	return (INTERNAL(name)(pcm, params, val, dir) < 0); \
-  }
-
-  #define __OLD_NEAR(name, ret_type) __P_OLD_NEAR(__old_, name, ret_type)
+--===============4942481060806263138==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oC1+HKm2/end4ao3"
+Content-Disposition: inline
 
 
-this is only half of the fix though, the "old" getter functions seem to 
-misbehave as well. the misbehaviour can be inspected by using a small 
-openal-soft (version 1.14) example code, and breaking on 
-alsa_reset_playback and single stepping through the invocation of 
-CHECK(snd_pcm_hw_params_set_buffer_time_near(data->pcmHandle, hp, 
-&bufferLen, NULL));
+--oC1+HKm2/end4ao3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Aug 05, 2013 at 09:32:02PM +0100, Russell King - ARM Linux wrote:
+
+> which is similar to what's in Liam's driver.  However, There is no
+> .dpcm_playback member in mainline ASoC.
+
+OK, that's interesting...  presumably there's some other framework
+changes need upstreaming here, I've really not been paying attention to
+any out of tree code here.
+
+> So, let's summarise this.  You're saying that I'm doing it all wrong in
+> my driver creating those widgets and paths.  Yet, the widgets and paths
+> are exactly what Liam creates in his driver.
+
+Including the CPU<->CODEC paths?  Huh, so it seems.  That wasn't
+required in any of the previous out of tree DPCM systems I've worked on
+in the past.  Something's changed somewhere along the line here...
+
+If those are required they really should be created by the framework in
+the same way as we do for CODEC<->CODEC links, it's not at all sensible
+to have to supply them twice and like I say it's just asking for problems.
+
+> Not only that, but we have even more duplicated widgets created with this
+> method, even with the hack from this patch set.
+
+> snd_soc_dapm_new_dai_widgets: creating playback widget Playback:Playback
+>   for dai d81247c0 dapm d8263f10 (playback_widget  was   (null), new c05a=
+b080)
+> snd_soc_dapm_new_dai_widgets: creating playback widget Playback:Playback
+>   for dai d81247c0 dapm d8263c70 (playback_widget was c05ab080, new d8fe2=
+b40)
+
+OK, that's not good. =20
+
+> It seems Liam's commit needs to be reverted to fix that.  Whether that's
+> correct or not, I've no idea.
+
+Needs a closer look I think.
+
+> Plus, when I try to set things up as Liam has, the result doesn't work,
+> because of the widget naming scheme having no disambiguation.
+
+That's easy enough to sidestep for now.
+
+--oC1+HKm2/end4ao3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSACHsAAoJELSic+t+oim9wCwP/iEyriCdYVJwiEbafIh1bkhE
+k4KTCu/Dc+8hJ4oqnctS4NWy+pfL1PZ/zNZqEVPvkLQcu3trNdHu7UJM7joFycvy
+yl2XFrSv27xNi7myYGWwRbNEBoi2tvKO5xusJMw4TXvGbXRz5+cR+glbipAiZeyA
+trjY8Qs1dBAvw+wNfRbZ8SZbvX+ThXDgslvpDMQLuNkVshW9oU4POQlxergAhro6
+tYq1A6r+dw5GuiOnoAxK6AvoSbcA5Ue0A7MG2t/gXrq4jJ28lkzC0qX/OTwr9xaf
+1cJzfdSidGRPBKwBzbzzhdleWyJ73m9D0W4uLe6urYzguv+uAmZfS8ScrQ6DqpV6
+x9DqujTmZy5ik8WIEgE0x6Jn8JvSu4cos+tYzSGCMqhp6n8wc89wTunos+MeqnVl
+PP8ItvWvo4EB63q34DKKsQNFh2Tws8Uz++/IJDf827Ai1fyT2iFd+VckWw0MG+oG
+7hGxS01rxLxn/JJd0mzvTZu3wUHQdGWFP5G3jmNFMyUNhZ94vZqtaZlEU5cNO8ae
+fIX8Pw+fim8PbESTa4C4DqU6aAySBuB8QAilDUUFpKmdui+qfeeUWHJyLpmxsNB2
+75L8pdwDcuoTisbJxvOyYwlrOrMQqgTcY5oJ37PWqGR2x4ki15A11Ab4YiA2Uvmg
+Do9JzhMEN7i7WODOx4Kz
+=KF+7
+-----END PGP SIGNATURE-----
+
+--oC1+HKm2/end4ao3--
+
+--===============4942481060806263138==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4942481060806263138==--
