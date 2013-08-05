@@ -1,98 +1,91 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC 00/13] Adding SPDIF support to kirkwood-i2s
-Date: Mon, 5 Aug 2013 15:07:29 +0100
-Message-ID: <20130805140729.GC9858@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH RFC 00/13] Adding SPDIF support to
+	kirkwood-i2s
+Date: Mon, 05 Aug 2013 16:10:47 +0200
+Message-ID: <51FFB267.3030107@metafoo.de>
 References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
  <51FECB7A.6010208@gmail.com> <20130805115947.GA9858@sirena.org.uk>
  <51FFA348.2010503@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4648647801791873102=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-187.synserver.de (smtp-out-187.synserver.de
+ [212.40.185.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id ADF66264FEE
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 16:09:42 +0200 (CEST)
 In-Reply-To: <51FFA348.2010503@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Jason Cooper <jason@lakedaemon.net>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4648647801791873102==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WaWVzWcmZYO3Beyi"
-Content-Disposition: inline
-
-
---WaWVzWcmZYO3Beyi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Aug 05, 2013 at 03:06:16PM +0200, Sebastian Hesselbarth wrote:
-
+On 08/05/2013 03:06 PM, Sebastian Hesselbarth wrote:
+> On 08/05/13 13:59, Mark Brown wrote:
+>> On Sun, Aug 04, 2013 at 11:45:30PM +0200, Sebastian Hesselbarth wrote:
+>>> On 08/04/2013 09:21 PM, Russell King - ARM Linux wrote:
+>>
+>>>>                  .name = "S/PDIF1",
+>>>>                  .stream_name = "IEC958 Playback",
+>>>>                  .platform_name = "mvebu-audio.1",
+>>>>                  .cpu_dai_name = "mvebu-audio.1",
+>>>>                  .codec_dai_name = "dit-hifi",
+>>>>                  .codec_name = "spdif-dit",
+>>
+>>> Not a big deal for DT. I suggest to have a "audio-codecs" property that
+>>> link CPU DAI to codec(s). One thing, I have noticed is that currently
+>>> you need to supply both codec_name (or DT node) _and_ codec_dai_name.
+>>> For that it would be helpful, if ASoC supplies helpers to get the DAI
+>>> by index and use phandle with args here.
+>>
+>> This should follow the same pattern as the other board bindings.
+> 
+> Mark,
+> 
 > looking at e.g. nvidia,tegra-audio-*.txt bindings, I guess you are
 > proposing to have a new binding for every SoC/codec/board combination?
 > Also, you should have seen "ASoC: fsl: Add S/PDIF machine driver", which
 > is - again - proposing a new binding for fsl with spdif "codec".
-
+> 
 > You really want me to go the same way or is there any "other board
 > binding" I should follow?
+> 
 
-Yes, go that way.  There is the simple-card driver which should be able
-to grow to consume most of these things for simple stereo CODECs, having
-the common clock API more widely available so we can create a hard
-requirement that clocks be described using the clock API would help a
-lot with that.
+In my opinion having different bindings for each board is not a good idea.
+Having a common set of property names will allow us to factor out the
+parsing to the ASoC core instead of doing this by hand for each board driver.
 
-> That will be one machine driver for possibly all Marvell boards, not
-> what e.g. tegra is doing with one machine driver for each board they
-> can find. I understand that the exact wiring on each board may get
-> complicated, but I don't see why a (well thought) binding should not
-> be able to describe it?
+>>> i2s1: audio-controller@b0000 {
+>>>     compatible = "marvell,dove-i2s";
+>>>     reg = <0xb0000 0x2345>;
+>>>     audio-codecs = <&spdif 0>;
+>>> };
+>>
+>> No, things are glued together using the machine driver - again, look at
+>> how all the other systems work.  The wiring on the board can get
+>> interesting enough to need a binding of its own, for very simple
+>> bindings that should just be pointing to a generic driver.
+> 
+> And that is what will be true for almost all codecs we hook up on
+> Marvell SoCs. The audio controller is very simple with only mute
+> control available. We need to connect either i2s or spdif or both to
+> any codec and the codecs output. The codecs is determined by phandle
+> and the output (codec_dai_name) could be determined by the phandle's
+> arg, e.g. 0 for the first codec_dai provided.
 
-The clocking arrangements for a smartphone are not that trivial and we
-need to be able to cope with things like having more than two devices on
-the bus.
+Kuninori Morimoto started working on a xlate callback for CODECs and DAIs
+some time ago[1]. If nobody else is going to pick this up I'm probably going
+to continue his work on this.
 
---WaWVzWcmZYO3Beyi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+- Lars
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR/7GdAAoJELSic+t+oim9ZrIP/RyRNe7/jzlSD5qiGaLxR/wf
-A4X4Ue7bYsa9+7ZM5cfn0cUDc8ATDBqQuI9ICxwK7lKi+ENizy4tsQxlKS5x4OM3
-aAKMI8iqzi5jOiMAoxEeSXQJRxPeCBGdzK09UP0NkYnyLEiQQwaAa3mzY7eq7zO0
-9ZgY+6iDD7lrgphVBE7RKvK76+TfZoyjD3nxnepn3DCRkrT9oePDub0WX36LpWqo
-umj2P7yJ4s3qBQReRLOpsoGoRxIPazLdpqMQMAbQvOJZuHer/nDacXpTU6RDHYfe
-C44/vXSK2PimKhigTXqopWNWOGtcN/HOpN8cVqHZxRsDdzUuBoXmrOeS8Vbn5XI0
-fgdMKdZ5qeLkkxN5+oxMJ2tk9W2/oLgR1t8+0OT5vzSW9cDFu0/VRUk9TK/uFm6W
-GL5in+jjMj3x3opl/vLzFGTcRT0wONDlxynDCvqMfZJoU2PB+yvgmM5fBMRoq6xR
-/g7xJ8CbP0Z8TaaMdoPDOs7Fc13XwSZapqv/6v55z/yhISicc+7SWCMRa2D7q8A8
-1dQYMWZ6WIxQL3AuprLxAtmcwuNDnbDK4ODo1nW5NQSf4cUFrmYVz2EfalSh9Ggm
-yeBQYHEjlvYvRUEfNugEYUeCEf6TQQEx8/8C5eTg+TrMZ5Bnpx0Ywr8NLzndLnPI
-WinxQMRG8o8IGJwSzlQk
-=S1sC
------END PGP SIGNATURE-----
-
---WaWVzWcmZYO3Beyi--
-
-
---===============4648647801791873102==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============4648647801791873102==--
+[1]
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-February/059788.html
