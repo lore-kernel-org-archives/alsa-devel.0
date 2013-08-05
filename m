@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH] ASoC: Add PCM1792A spi mode codec
-	support
-Date: Mon, 5 Aug 2013 18:02:44 +0100
-Message-ID: <20130805170244.GU9858@sirena.org.uk>
-References: <20130803142043.GA13830@panicking>
+Subject: Re: [PATCH RFC 05/13] ASoC: kirkwood: provide
+ KIRKWOOD_PLAYCTL_ENABLE_MASK
+Date: Mon, 5 Aug 2013 18:03:42 +0100
+Message-ID: <20130805170342.GV9858@sirena.org.uk>
+References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
+ <E1V63wJ-0004lV-FZ@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5632900813752978999=="
+Content-Type: multipart/mixed; boundary="===============6548080560973058256=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 324B126508F
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 19:02:47 +0200 (CEST)
-In-Reply-To: <20130803142043.GA13830@panicking>
+ by alsa0.perex.cz (Postfix) with ESMTP id 35F2126510F
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 19:03:45 +0200 (CEST)
+In-Reply-To: <E1V63wJ-0004lV-FZ@rmk-PC.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Michael Trimarchi <michael@amarulasolutions.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5632900813752978999==
+--===============6548080560973058256==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="y+HvVzgSYPr8J+Me"
+	protocol="application/pgp-signature"; boundary="2O5I9rX0uDw9eITt"
 Content-Disposition: inline
 
 
---y+HvVzgSYPr8J+Me
+--2O5I9rX0uDw9eITt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Aug 03, 2013 at 04:20:43PM +0200, Michael Trimarchi wrote:
-> Add PCM1792A spi mode codec support. This version implements only
-> a subset of functionalities. Tested connect to a pandaboard ES
-> device and based on recently pcm1681 codec.
+On Sun, Aug 04, 2013 at 08:26:03PM +0100, Russell King wrote:
+> Provide a helper macro which includes the sum of all enable bits in
+> the playback control register.  This simplifies the code a little.
 
-Applied, thanks (having sorted the Kconfig and Makefile entries).
+Applied, thanks.
 
---y+HvVzgSYPr8J+Me
+--2O5I9rX0uDw9eITt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR/9qxAAoJELSic+t+oim9Mk8P/0YsJvdz16aqErZr+p83QGXE
-G9L4pEaP4giSS7uY+X6Sy+a+QhoMpAcYCbNQ37nEx1G97irNbk9VYjL+5xedMBXF
-8DWCWo2jlu0UpYT9E89f66rjWSadkMwQEYs1T6kkcCPJL2A82adcgG+j4Z6d5OkL
-nOlXIddJvjf5mPmoUWzMHExWN1EXCpWT2GKGCwYkBH1tvu4fg49XZyMyhaGsXRTw
-aDnAkG0GxSeOG9Su7s1rblNb9cor7zmEm8/ssqcbS/HeWqqadSMlnL/D5LrdH6qs
-HkHTnYZXLY8VqXvahpbqrlI7oTNPlxPRKQuE5TAEwytEFpZT9ukZPZzKml9kOtfX
-Q5zrPxY/AakqBqvvU9GVK/WJ6QDPCJ/cKjDhqQy28A0pNSc2u8ZG4K6AV+S/D7o7
-gYDUNlDhnAmIKiDqUGsEnXJ8KN0qtwOSrWWTfH7lxSXHAgX54f/OOtebE6yV/vLR
-Ln5rOFg9cwvMcv80yRjuuwzwS0QJacVZKf0AStBRvJzBhXP7HB3hxT/PuRmjchgX
-XR2ISgM+EN3qD4mPKEtVOL3iE/kByy5I/34ETrufx7VcCTb7cdaXDn1PwEMPNoEG
-dNEChLXOcGkUMSPm9xNNRVEeEaPo8Mee5sMqQV8EFTPdrnxPiHvCqnnTCZPeUqC2
-8l8yh1EF+GAIrkHVEvvp
-=wfGH
+iQIcBAEBAgAGBQJR/9rqAAoJELSic+t+oim9Xg4P/0xECX/O+AeyIaQV4voQdcyX
+qLVWnXnpvbdJ8VpPBAj60N1XuIs9d/yC6dJfu8kIxQxJ5PsHYy98mDUExHRtSe/9
+wVA+IqHE/k93h4aYt8IaUS0fDTyL0IIcxZLuo6kadrMAeScWVHqc/5ou5fPBUP0C
+N56HPpreqFj6vo4wqmt4coldi49GsX69lB8uNtqKQKTHM7zUw1TzJZLG3nxGI8NE
+jCpX2h5/zH/KbcqGc8i+5XTKCuCu+BREe2N42seSfJM3KS1DVowzrCjAS7iIy4DN
+2hya58o0TS6w5ElnXfkYJsH/HMAoah2eKdaIyejYDZbz5xJYZNF5FvayuIX85Pp0
+whjgnxrCSO36iSdfFQ0L82qFwX2OQx0xq0HVJ7yJKJ9ivDeXVtRjqG25JIuS2vZC
+PDFdOkB0SJ0JQwlZtU+zN7DgJoBBCJuDCVbHb+H8bqTBNafvod47OxXHpSkMWpIC
+fKbrjgENglksxR4J7ffiUy7Y+eVkf/eXSq+NMRKt/Wq8h522akczS5d/xyABZaJp
+1Tk0UCxWpTc4K+X3FHL+gyqaWgAYpQ3hpBKNF5pM1R5//ZKVfk4dJQ6tQMYFiJUK
+a2L4vWQk7SdUf729oD78Rm9/fQboA7ENTqFxXThr2ljVU8mr8GUy0I5+ibU6GE9l
+wjdpN58eZWvpwRPO+uau
+=4yLj
 -----END PGP SIGNATURE-----
 
---y+HvVzgSYPr8J+Me--
+--2O5I9rX0uDw9eITt--
 
---===============5632900813752978999==
+--===============6548080560973058256==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5632900813752978999==--
+--===============6548080560973058256==--
