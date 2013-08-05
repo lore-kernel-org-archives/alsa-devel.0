@@ -1,16 +1,15 @@
 From: Brian Austin <brian.austin@cirrus.com>
-Subject: [PATCH 1/2] ASoC: cs42l52: Reorder Min/Max and update
- to SX_TLV for Beep Volume
-Date: Mon, 5 Aug 2013 15:08:47 -0500
-Message-ID: <alpine.DEB.2.10.1308051508140.5288@heelrod.ad.cirrus.com>
+Subject: [PATCH 2/2] ASoC: cs42l52: Add new TLV for Beep Volume
+Date: Mon, 5 Aug 2013 15:09:39 -0500
+Message-ID: <alpine.DEB.2.10.1308051508590.5288@heelrod.ad.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe005.messaging.microsoft.com [65.55.88.15])
- by alsa0.perex.cz (Postfix) with ESMTP id AD0B42651BE
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 22:08:31 +0200 (CEST)
+Received: from db9outboundpool.messaging.microsoft.com
+ (mail-db9lp0253.outbound.messaging.microsoft.com [213.199.154.253])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B07F2651D6
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 22:09:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,24 +23,33 @@ To: alsa-devel@alsa-project.org
 Cc: brian.austin@cirrus.com, broonie@kernel.org, lgirdwood@gmail.com, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
-Beep Volume Min/Max was backwards.
-Change to SOC_SONGLE_SX_TLV for correct volume representation
+CS42L52 Beep control uses 2dB scale from -56dB
 
 Signed-off-by: Brian Austin <brian.austin@cirrus.com>
 ---
-  sound/soc/codecs/cs42l52.c |    2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+  sound/soc/codecs/cs42l52.c |    5 ++++-
+  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index 987f728..ee25f32 100644
+index ee25f32..1e7d03f 100644
 --- a/sound/soc/codecs/cs42l52.c
 +++ b/sound/soc/codecs/cs42l52.c
-@@ -451,7 +451,7 @@ static const struct snd_kcontrol_new cs42l52_snd_controls[] = {
+@@ -195,6 +195,8 @@ static DECLARE_TLV_DB_SCALE(pga_tlv, -600, 50, 0);
+
+  static DECLARE_TLV_DB_SCALE(mix_tlv, -50, 50, 0);
+
++static DECLARE_TLV_DB_SCALE(beep_tlv, -56, 200, 0);
++
+  static const unsigned int limiter_tlv[] = {
+  	TLV_DB_RANGE_HEAD(2),
+  	0, 2, TLV_DB_SCALE_ITEM(-3000, 600, 0),
+@@ -451,7 +453,8 @@ static const struct snd_kcontrol_new cs42l52_snd_controls[] = {
   	SOC_ENUM("Beep Pitch", beep_pitch_enum),
   	SOC_ENUM("Beep on Time", beep_ontime_enum),
   	SOC_ENUM("Beep off Time", beep_offtime_enum),
--	SOC_SINGLE_TLV("Beep Volume", CS42L52_BEEP_VOL, 0, 0x1f, 0x07, hl_tlv),
-+	SOC_SINGLE_SX_TLV("Beep Volume", CS42L52_BEEP_VOL, 0, 0x07, 0x1f, hl_tlv),
+-	SOC_SINGLE_SX_TLV("Beep Volume", CS42L52_BEEP_VOL, 0, 0x07, 0x1f, hl_tlv),
++	SOC_SINGLE_SX_TLV("Beep Volume", CS42L52_BEEP_VOL,
++			0, 0x07, 0x1f, beep_tlv),
   	SOC_SINGLE("Beep Mixer Switch", CS42L52_BEEP_TONE_CTL, 5, 1, 1),
   	SOC_ENUM("Beep Treble Corner Freq", beep_treble_enum),
   	SOC_ENUM("Beep Bass Corner Freq", beep_bass_enum),
