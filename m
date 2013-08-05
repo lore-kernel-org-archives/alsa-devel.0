@@ -1,18 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
+From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 Subject: Re: [PATCH RFC 00/13] Adding SPDIF support to
- kirkwood-i2s
-Date: Mon, 5 Aug 2013 16:03:09 +0100
-Message-ID: <20130805150309.GM9858@sirena.org.uk>
+	kirkwood-i2s
+Date: Mon, 05 Aug 2013 17:04:35 +0200
+Message-ID: <51FFBF03.1000507@gmail.com>
 References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
  <51FECB7A.6010208@gmail.com> <20130805115947.GA9858@sirena.org.uk>
- <51FFA348.2010503@gmail.com> <51FFB267.3030107@metafoo.de>
+ <51FFA348.2010503@gmail.com> <20130805140729.GC9858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6018556900844301716=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AFE0265020
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 17:03:14 +0200 (CEST)
-In-Reply-To: <51FFB267.3030107@metafoo.de>
+Received: from mail-bk0-f54.google.com (mail-bk0-f54.google.com
+ [209.85.214.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71B77265020
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 17:04:39 +0200 (CEST)
+Received: by mail-bk0-f54.google.com with SMTP id it19so1022164bkc.13
+ for <alsa-devel@alsa-project.org>; Mon, 05 Aug 2013 08:04:39 -0700 (PDT)
+In-Reply-To: <20130805140729.GC9858@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,60 +26,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Jason Cooper <jason@lakedaemon.net>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On 08/05/13 16:07, Mark Brown wrote:
+> On Mon, Aug 05, 2013 at 03:06:16PM +0200, Sebastian Hesselbarth wrote:
+>
+>> looking at e.g. nvidia,tegra-audio-*.txt bindings, I guess you are
+>> proposing to have a new binding for every SoC/codec/board combination?
+>> Also, you should have seen "ASoC: fsl: Add S/PDIF machine driver", which
+>> is - again - proposing a new binding for fsl with spdif "codec".
+>
+>> You really want me to go the same way or is there any "other board
+>> binding" I should follow?
+>
+> Yes, go that way.  There is the simple-card driver which should be able
+> to grow to consume most of these things for simple stereo CODECs, having
+> the common clock API more widely available so we can create a hard
+> requirement that clocks be described using the clock API would help a
+> lot with that.
+>
+>> That will be one machine driver for possibly all Marvell boards, not
+>> what e.g. tegra is doing with one machine driver for each board they
+>> can find. I understand that the exact wiring on each board may get
+>> complicated, but I don't see why a (well thought) binding should not
+>> be able to describe it?
+>
+> The clocking arrangements for a smartphone are not that trivial and we
+> need to be able to cope with things like having more than two devices on
+> the bus.
+>
 
---===============6018556900844301716==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4VAqhKxW7H0hfWX4"
-Content-Disposition: inline
+Mark,
 
+I cannot follow you on the clocking arrangements. The binding
+proposal was for audio controller <-> CODEC connections. For clocks
+there are common properties ("clocks", "clock-names", "clock-frequency")
+to pass them to drivers - for "sound cards" in general there are not.
 
---4VAqhKxW7H0hfWX4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I am not referring to ASoC or ALSA here, but describing device 
+inter-connection. And that can be done in a generic way to allow all those
+SoC/codec/board specific DT bindings to become very obsolete. The
+device nodes in question can still contain clocks properties of course,
+but you do not need a special compatible for e.g.
+"nvidia,tegra-audio-rt5640-beaver".
 
-On Mon, Aug 05, 2013 at 04:10:47PM +0200, Lars-Peter Clausen wrote:
+So, having a look at the node in question:
 
-> In my opinion having different bindings for each board is not a good idea.
-> Having a common set of property names will allow us to factor out the
-> parsing to the ASoC core instead of doing this by hand for each board driver.
+sound {
+   compatible = "nvidia,tegra-audio-rt5640-beaver",
+                "nvidia,tegra-audio-rt5640";
+   nvidia,model = "NVIDIA Tegra Beaver";
 
-Yeah, that's the idea - right now there's blanks that need filling in by
-the machine drivers so we do have them but once those get dealt with the
-compatible strings can just be moved over into a generic binding.
+   nvidia,audio-routing = "Headphones", "HPOR",
+                          "Headphones", "HPOL";
 
---4VAqhKxW7H0hfWX4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+   nvidia,i2s-controller = <&tegra_i2s1>;
+   nvidia,audio-codec = <&rt5640>;
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+   nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_HIGH>;
 
-iQIcBAEBAgAGBQJR/76qAAoJELSic+t+oim9fQEP/j515o08FqlhMh3LvYsyFpr5
-AtozILb2/9rrm82kT4bTJE4lCCF1VBQeTKjhecVERzm8W5oe2Qu6H0g1NnF4zJUP
-71a3LH2pT3ks4hEfKPRYnKmh5Bed/5faSm3m0xeozOgVY1Yviae6rhneKZSLsDaV
-T2dZFIf0ZS6AO+VRv67ui55T3PfwwaCZwPjRaMtButZENzyEYBdxeJSqu5fksUsj
-qXQfnnfK3vySvdWA6wJMj7l2uN7PkTa5H9/UWwyBNdPitQwx7/1tb2YT5PfyrvaR
-DM1JCd4wAHUJI6PPguXKkIi2WBzduw5rJ4Bryo/GHYX2WHM3en1Ps/fiTvFopGGO
-0eJgKa1n0WdkcBTgWM9pxbFj+FocUKEdvyMlyi76lo6Mo8ggr+lDeaNloe9h2gna
-4tpbA97r/9DuYt6/nIY4zkO3v6U3Hy4FsUrhqurjNttYFlOhFrQzZFotoExrk481
-ouiCmGRfFgGTLIR7BuKpH1VNNN1oHWdzeASSftKDUvFDu2o+Y0Sbpe9loGHxXuvh
-hZhYrlLgHs7nm4Nd1dvagygsJ1IwwNc4vrme0AfAUks4eNYX5AXU2Zg6XNud032z
-e/X/9dAgixNlUdtQzMKUHLVsCA6s0dpHbsh+cNvncBG/WI42NGNKmSREyBQ580Sq
-WTK+Fy3HUruFxucMBlXb
-=P8Ey
------END PGP SIGNATURE-----
+   clocks = <&tegra_car TEGRA30_CLK_PLL_A>,
+            <&tegra_car TEGRA30_CLK_PLL_A_OUT0>,
+            <&tegra_car TEGRA30_CLK_EXTERN1>;
+   clock-names = "pll_a", "pll_a_out0", "mclk";
+};
 
---4VAqhKxW7H0hfWX4--
+all those "nvidia," prefixed properties are not nvidia-specific at all.
+Also, all those "nvidia," properties would have fit very well into the
+i2s controller node - there may be more complex SoCs requiring an extra
+"sound card" node, Tegra is not.
 
---===============6018556900844301716==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Even those foo-gpios properties can be generalized and moved to ASoC;
+have a look at MMC drivers using one common "cd-gpios" property for
+very different drivers. What is so special with Tegra and this gpio
+that it needs a vendor-specific property?
 
+I was asking for generalizing those exact properties to generic ones
+and them move support for them to the ASoC/ALSA framework. With all
+that DT binding re-review coming up, I doubt that the tegra binding
+will be accepted again anyway.
 
---===============6018556900844301716==--
+ >> i2s1: audio-controller@b0000 {
+ >> 	compatible = "marvell,dove-i2s";
+ >> 	reg = <0xb0000 0x2345>;
+ >> 	audio-codecs = <&spdif 0>;
+ >> };
+ > No, things are glued together using the machine driver - again, look at
+ > how all the other systems work.  The wiring on the board can get
+ > interesting enough to need a binding of its own, for very simple
+ > bindings that should just be pointing to a generic driver.
+
+I learned to never match "device nodes" with "drivers" as there
+is simply no relation between them.
+
+So, back to my original node proposal, can you tell me what is so
+different, except that I am not using "marvell,audio-codec(s)" but
+"audio-codecs"; and hook the one available codec output by using
+phandle/args instead of a new compatible string?
+
+Sebastian
+
+(Note: The above i2s1 node will contains "clocks" for sure, but that is
+not related to sound-specific properties.)
