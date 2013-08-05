@@ -1,77 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cs42l52: Fixes for Beep Volume
-	kcontrol (fwd)
-Date: Mon, 5 Aug 2013 17:20:16 +0100
-Message-ID: <20130805162016.GR9858@sirena.org.uk>
-References: <alpine.DEB.2.10.1308051050270.5288@heelrod.ad.cirrus.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: codecs: da9055: Update driver name to
+ fix breakage due to pmic driver with same name
+Date: Mon, 5 Aug 2013 17:23:42 +0100
+Message-ID: <20130805162342.GS9858@sirena.org.uk>
+References: <20130708112613.GQ27646@sirena.org.uk>
+ <1373542576.9286.101.camel@matrix>
+ <20130717103651.GP22506@sirena.org.uk>
+ <1374482594.13726.11.camel@matrix>
+ <20130722100211.GP9858@sirena.org.uk>
+ <1375110386.21326.6.camel@matrix>
+ <20130729160157.GZ9858@sirena.org.uk>
+ <1375689331.28910.5.camel@matrix>
+ <20130805144201.GF9858@sirena.org.uk>
+ <1375717898.29528.23.camel@matrix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6407925501272220772=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C56126510F
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 18:20:19 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.10.1308051050270.5288@heelrod.ad.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eLzwy7sDwuTm2pX7"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1375717898.29528.23.camel@matrix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, linux-kernel <linux-kernel@vger.kernel.org>, "kiran.padwal" <kiran.padwal@kpitcummins.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6407925501272220772==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="h/c57Cr0Q5sgaFFl"
-Content-Disposition: inline
-
-
---h/c57Cr0Q5sgaFFl
+--eLzwy7sDwuTm2pX7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Aug 05, 2013 at 10:53:31AM -0500, Brian Austin wrote:
-> This patch reorders the min/max values for BEEP Volume.
-> Also changes SOC_SINGLE_TLV to SOC_SINGLE_SX_TLV
-> Add DB_SCALE beep_tlv for volume control
+On Mon, Aug 05, 2013 at 09:21:37PM +0530, Ashish Chavan wrote:
+> On Mon, 2013-08-05 at 15:42 +0100, Mark Brown wrote:
 
-Can you split this into two paches please?  The reordering is a bug fix
-which should go to the stable kernels but the new TLV isn't.
+> > No, I'm talking about the same thing I was talking about originally.
 
---h/c57Cr0Q5sgaFFl
+> Thanks for confirming it. From our view point, we still feel that it's
+> not a good design which requires an additional MFD component even to
+> support a stand alone CODEC chip. The way we look at it is, there are so
+
+What makes you say that a MFD is required for a standalone CODEC?
+
+> many stand alone CODEC drivers in kernel and most of them are fine
+> without the MFD stub. We wish that our DA9055 CODEC driver should also
+> be treated in the same way. Just placing it in a different hardware
+> package (together with PMIC, in this case) shouldn't necessitate any
+> changes in software. e.g. whether any chip is produced as a BGA
+> component or through hole component, has no effect on it's software.
+
+You only need to write the glue once, it'd probably take you less time
+than writing these e-mails...  Once you've handed the regmap to the ASoC
+core the code is identical.
+
+--eLzwy7sDwuTm2pX7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR/9C9AAoJELSic+t+oim9AjYP/2aZpWFLRDEoLsxTJ+on3IT1
-Bl83AyCyLTE7Ew2quQCKeEHeOZS46mJYQlN2xHJwQ9Nm19wFyAKEO3OyUUwjS15X
-sjtIVIkQ6TyRrqR6ae3jYZWnS4Eq4ytNTIWcaxnSFSbH9iJGFaGTFavqhfwe+dpx
-s2W2y7T5zO50maUwIRz8niTrM1IKO0F7JDe5iUHIeCmE2Jm6ZzzqZ+zCEKcKGesS
-g2OXqoA9qQyY2goU6P+k9uiqtViN8GoiSvFhnwrE82D05tiMfXLIdQfHwrwLiQ08
-74TyfK5l70q421nrv4DADWB3kYazXOAhFaVAtleUTzBBJl1HOfa4Sj9ImnUsaVeN
-nDaQL8eUHMkh4S0Nr6/SeZXqwfcuwo8P8IHtiuNsVCJ22RW8AjunVxtJYqzm01lS
-0vdXPZYvJnI3txumjFwTyzhD24QYoExf1vKw8HsX/7BLdJVUYPGSA9DIllIm+c3y
-6U1p0hMUxT5kbVt4sdX+kWPTAunS2Dme2aoRmcXeJoHyoFgDCTUV0pzzALHw/BfM
-VejhdsvLFNxHSmJSSTkL6kgwC5OWhhYvht/2kmeP3J0P4+YoGHFb/wU+nEpS2REU
-lVMgkBBWQuOqos2DKoTOx275ZR97CLg+NMQGuvbWz6SQ/qlJs6hVmJAO2KWje/48
-Pn/Y3wOYZGbhyGff0Hdq
-=TmU+
+iQIcBAEBAgAGBQJR/9GLAAoJELSic+t+oim9OSgP/i0wQv6HLLKZ9dS5BeKMOee8
+NKLNTje/vYpHaW1qJATgw95OMDZFl42A/dRdpSY4CxZcQtIOTozwSBVO9lHIJMoL
+LTsfuUIdFUUIlTvlHDWIObquRdqren8ktmkBrTsvVISrj+6Gm9M/MErMMKwiQw3a
+jLAHvh7Q0biugfkCHFiVimvoIpSNVhMmnpce0U03Ry19m3YanFOf5s9qASC6BthO
+oi+Xr77dBDqT22CN/b/GyZ82TqlV4mxEac8PNQ0q55t3igeI5L8eSKaWfx8PrXUH
+XV4ZU+oG0e1S+navzcBItln6nEEsWpXiIrALEOVvVEaZknzfP5VEloyeMAAmZezc
+yWhSnAAVjAgQ9j61OXy8ZzxWg96cqiTkY8MNMGNVrW+MStKnyGzXsm6NQ0RfoOBT
+h2W3tdD0GvYTnlf6gTJ7xOXi2yXPYh0DKNPx3KSDO6YpHieBpjCilMCE+upsTuLf
+UZr7N01V0bsHJYRxyr7qD+Y5HrVH9sujnYOYVxpINuMx9gGlf4E+5fNRwBvW6z7m
+C9fFpoHyA5hQ+pPmP8ozuEWJZ7ciC8Afpw0EcGA9R7f/E74omMMqu8VVDITzywAd
+5UPYMmOdFuZz0JFwPLXVGuWiJf5RiD3XkEEGx8cl3A5KKKs90RW4YWXvE6PXx05E
+4y0WySPVGtWclrcJ0N6q
+=zP8W
 -----END PGP SIGNATURE-----
 
---h/c57Cr0Q5sgaFFl--
-
---===============6407925501272220772==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6407925501272220772==--
+--eLzwy7sDwuTm2pX7--
