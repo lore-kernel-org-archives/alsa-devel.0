@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC 02/13] ASoC: kirkwood: use
- devm_clk_get() for the external clock
-Date: Mon, 5 Aug 2013 17:16:04 +0100
-Message-ID: <20130805161604.GP9858@sirena.org.uk>
+Subject: Re: [PATCH RFC 03/13] ASoC: avoid duplicated DAI routes
+Date: Mon, 5 Aug 2013 17:18:39 +0100
+Message-ID: <20130805161839.GQ9858@sirena.org.uk>
 References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
- <E1V63tP-0004lH-4Q@rmk-PC.arm.linux.org.uk>
+ <E1V63uN-0004lL-7q@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0341627998178025200=="
+Content-Type: multipart/mixed; boundary="===============0486438258386324391=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F537265020
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 18:16:08 +0200 (CEST)
-In-Reply-To: <E1V63tP-0004lH-4Q@rmk-PC.arm.linux.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8800E265020
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 18:18:43 +0200 (CEST)
+In-Reply-To: <E1V63uN-0004lL-7q@rmk-PC.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,52 +25,55 @@ Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lg
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0341627998178025200==
+--===============0486438258386324391==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jr/iWW7oJeDTI5E+"
+	protocol="application/pgp-signature"; boundary="bW5yMaABVFayrz/W"
 Content-Disposition: inline
 
 
---jr/iWW7oJeDTI5E+
+--bW5yMaABVFayrz/W
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Aug 04, 2013 at 08:23:03PM +0100, Russell King wrote:
-> Use devm_clk_get() to simplify the error path for the external clock.
+On Sun, Aug 04, 2013 at 08:24:03PM +0100, Russell King wrote:
+> ASoC automatically creates snd_soc_dapm_dai_in and snd_soc_dapm_dai_out
+> widgets for DAI drivers, and adds them to the list.  Later on, ASoC
+> creates automatic routes between these widgets and a widget with a
+> stream name.
 
-I've applied the diff that remains from the existing upstream code
-(which frees extclk if it's just the internal clock) with a reworded
-commit message, thanks.
+Applied, thanks.  It's possible to do this a bit more neatly for example
+by checking the direction of the link but this works and fixes the
+problem, we can always improve it further later.
 
---jr/iWW7oJeDTI5E+
+--bW5yMaABVFayrz/W
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJR/8/AAAoJELSic+t+oim9T/wP/iV+Js5Y9VQDxAVuXYolBC1S
-/O90Ha8fYV1CNrFSQ01USV9BPqT38QvGOnGu9r/OxrYOTv08T4386JND/B7XQwMO
-7LyPhLK/dEiMb/D9syHsyOYOs6Yse3WfF/WhiOlBO+2BKn81+64i2bNpK2kQFfyP
-toOo8c3nlRgk1o+CFyPyBeJTNhPNrmpqiiHdNEBrv5YvvHREM/FaK1fhe0NwG0iW
-oNemtjHCQAYVzq+fffQSAcaGK6ddZAYA9LxO6/NHv4+OVRwVkRwlDwxZwH8NME5O
-Icb2Tofz6X0UupnN211R5Z3clKBu2dSIeaQmsiJoGz/T722TYAO4XbHvk0MuOPNQ
-xVXKsLwrwkpZQodsd2vXISRwBhZhX5wM3zaa9lCGUrX8+XAhJI0GJGCutHDXdJhP
-M8bCJqxrMpLRNYgAizD4aAEVs0FlvXamE9AfJw7ijA0VeElWJpnimuF6pNbvsIuG
-o/RTMH0IzNdcbfXU66r8MCTOf+EWsKd0XqncVOrosXGyMtwNr/n/kPmiB2EJGyKD
-Lu/o2X+zKGfvtLX5IqjvxtSCvGJOXE5txMzYX4xdDx3rxX1tSnIPGcHmDWxjknbr
-DhgrXeFiMwRghwiJtLXcXHmiASn/Yerlj2vPgUM4Dccsr9fa3+g04PGH++GJWDN/
-8NXzELwf+44yN+CBAR9z
-=P4Bi
+iQIcBAEBAgAGBQJR/9BcAAoJELSic+t+oim9rPoP/jg3RwfViQLQgu7v+1ntDLDN
+2+VfrzC7GRaF8ImVdmrktqmIej9zGpK/nMz4jBJUi1CB0T+p4o0b4dKrUZTiroge
+oHToscoZSVWfiZjgCnTtj+xglnnanqfw6hHHtczR3JG8DePjJxRUiwDklpqEZhGt
+L3DK6b0XS+SqaGMx/NJVD7VO9hvNRndZ3Tw96V0bEz6gg8OvPU40+BGJeBhOKEkP
+Dtsp9tAd4noer3HrHbRtaLg3HIUFSa17d/ris/1HN0Z1PDKyvcrFKaGLOhBU/8XK
+sDLlmDrMO2sHR9xHhLEIEBQSUB7O/RbUduk2Ogz1bjaPhfFxAsfBtG+HKuVXF5W+
+LKWcCMkpyy8DNBieKcxyC0DMSN6zdmvvrnLaV04OdbJ4zpYs/kAcgjjb4G7vUEH7
+M1pV23l68F3mbIx9Q8K3alpL+KCyQOGk21cLjOEua4qWobqUG+iVjUpD6GLvlmSO
+9fnjJalH1EpCktV+w2O0mhegorcaVdHnvG9duNJJ/cn3inxq1/8+57pmM0MqwLwi
+fD6OWxNrnuW2DCdwnhAVeLU0b/1eQPvuhTJyvUoJP9oTY4YJg+38Jenxz9qsty70
+6L5wTJBHGAxTD5dRaWpQ7RSNWtTvzkiwW3R0si3nVCZ0OhoSNfjofun9teT1uDnO
+91XN7Q4KX8rVk1wDJ1h5
+=yc2P
 -----END PGP SIGNATURE-----
 
---jr/iWW7oJeDTI5E+--
+--bW5yMaABVFayrz/W--
 
---===============0341627998178025200==
+--===============0486438258386324391==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0341627998178025200==--
+--===============0486438258386324391==--
