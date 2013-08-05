@@ -1,14 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: wm8994: Fix class W controls
-Date: Mon,  5 Aug 2013 23:35:07 +0100
-Message-ID: <1375742107-7583-1-git-send-email-broonie@kernel.org>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH RFC 00/13] Adding SPDIF support to
+	kirkwood-i2s
+Date: Mon, 05 Aug 2013 16:47:12 -0600
+Message-ID: <52002B70.5050109@wwwdotorg.org>
+References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
+ <51FECB7A.6010208@gmail.com> <20130805115947.GA9858@sirena.org.uk>
+ <51FFA348.2010503@gmail.com> <20130805140729.GC9858@sirena.org.uk>
+ <51FFBF03.1000507@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A7D0226526D
- for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 00:35:13 +0200 (CEST)
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B3B626526D
+ for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 00:47:17 +0200 (CEST)
+In-Reply-To: <51FFBF03.1000507@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,35 +24,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@linaro.org>
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On 08/05/2013 09:04 AM, Sebastian Hesselbarth wrote:
+...
+> So, having a look at the node in question:
+> 
+> sound {
+>   compatible = "nvidia,tegra-audio-rt5640-beaver",
+>                "nvidia,tegra-audio-rt5640";
+>   nvidia,model = "NVIDIA Tegra Beaver";
+> 
+>   nvidia,audio-routing = "Headphones", "HPOR",
+>                          "Headphones", "HPOL";
+> 
+>   nvidia,i2s-controller = <&tegra_i2s1>;
+>   nvidia,audio-codec = <&rt5640>;
+> 
+>   nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_HIGH>;
+> 
+>   clocks = <&tegra_car TEGRA30_CLK_PLL_A>,
+>            <&tegra_car TEGRA30_CLK_PLL_A_OUT0>,
+>            <&tegra_car TEGRA30_CLK_EXTERN1>;
+>   clock-names = "pll_a", "pll_a_out0", "mclk";
+> };
+> 
+> all those "nvidia," prefixed properties are not nvidia-specific at all.
 
-Commit 6e0650 (ASoC: wm8994: Use SOC_SINGLE_EXT() instead of open-coding
-it) went too far and converted a DAPM control to use SOC_SINGLE_EXT()
-which crashes.  Revert that portion of the patch.
+Indeed. I do still have a desire to do a more encompassing generic
+binding that could use generic property names. However, I'm pulled in
+many directions and never manage to get around to that:-( Months or even
+years ago I did get as far as posting a binding with my ideas, but it
+needs a lot more work to correctly separate out what can be generic and
+what still needs to be SoC-/board-specific, how to represent it all in
+DT, and how to code stuff up into useful utility code that ASoC machine
+drivers will find useful, since custom machine drivers will almost
+certainly be required to do the last pieces of integration of
+SoC-specific control, even with a relatively complete generic DT
+representation (unless you start putting Forth into DT for the last bits!)
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/codecs/wm8994.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> Also, all those "nvidia," properties would have fit very well into the
+> i2s controller node - there may be more complex SoCs requiring an extra
+> "sound card" node, Tegra is not.
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index d76b056..29ad480 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -1432,8 +1432,8 @@ SOC_DAPM_SINGLE("AIF1.1 Switch", WM8994_DAC2_RIGHT_MIXER_ROUTING,
- };
- 
- #define WM8994_CLASS_W_SWITCH(xname, reg, shift, max, invert) \
--	SOC_SINGLE_EXT(xname, reg, shift, max, invert, \
--		snd_soc_get_volsw, wm8994_put_class_w)
-+	SOC_SINGLE_EXT(xname, reg, shift, 1, 0, \
-+		snd_soc_dapm_get_volsw, wm8994_put_class_w)
- 
- static int wm8994_put_class_w(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
--- 
-1.8.4.rc0
+That's certainly not true. It only looks like that because the DTs we
+currently have upstream expose only a subset of the whole functionality
+of the system. It's certainly not possible to move all the properties
+into e.g. the I2S controller node in general, because the audio system
+as a whole spans far more devices than just a single I2S controller.
+
+> Even those foo-gpios properties can be generalized and moved to ASoC;
+> have a look at MMC drivers using one common "cd-gpios" property for
+> very different drivers. What is so special with Tegra and this gpio
+> that it needs a vendor-specific property?
+> 
+> I was asking for generalizing those exact properties to generic ones
+> and them move support for them to the ASoC/ALSA framework. With all
+> that DT binding re-review coming up, I doubt that the tegra binding
+> will be accepted again anyway.
+
+I don't agree. It's not *generic*, but I don't see any requirement to
+only accept completely generic bindings. If there was such a
+requirement, we'd probably never get any more bindings for
+embedded-style audio HW... The only thing that might change is removing
+some of the prefixes from the property names.
