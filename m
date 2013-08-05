@@ -1,21 +1,16 @@
-From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Subject: Re: [PATCH RFC 00/13] Adding SPDIF support to
-	kirkwood-i2s
-Date: Mon, 05 Aug 2013 15:06:16 +0200
-Message-ID: <51FFA348.2010503@gmail.com>
-References: <20130804192136.GK23006@n2100.arm.linux.org.uk>
- <51FECB7A.6010208@gmail.com> <20130805115947.GA9858@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] rme96 synchronization support
+Date: Mon, 05 Aug 2013 15:18:59 +0200
+Message-ID: <51FFA643.7060504@ladisch.de>
+References: <51FF9C55.80701@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f41.google.com (mail-bk0-f41.google.com
- [209.85.214.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E125261603
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 15:06:22 +0200 (CEST)
-Received: by mail-bk0-f41.google.com with SMTP id jc10so976143bkc.28
- for <alsa-devel@alsa-project.org>; Mon, 05 Aug 2013 06:06:21 -0700 (PDT)
-In-Reply-To: <20130805115947.GA9858@sirena.org.uk>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 804F2261603
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2013 15:19:04 +0200 (CEST)
+In-Reply-To: <51FF9C55.80701@t-online.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,61 +20,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Knut Petersen <Knut_Petersen@t-online.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/05/13 13:59, Mark Brown wrote:
-> On Sun, Aug 04, 2013 at 11:45:30PM +0200, Sebastian Hesselbarth wrote:
->> On 08/04/2013 09:21 PM, Russell King - ARM Linux wrote:
+Knut Petersen wrote:
+>  			      SNDRV_PCM_INFO_MMAP_VALID |
+> +                              SNDRV_PCM_INFO_SYNC_START |
+
+Please use tabs like in other similar parts of the file.
+
+>  static void
+> -snd_rme96_playback_start(struct rme96 *rme96,
+> +snd_rme96_playcap_start(struct rme96 *rme96,
+>  			 int from_pause)
+>  {
+>  	if (!from_pause) {
+>  		writel(0, rme96->iobase + RME96_IO_RESET_PLAY_POS);
+> +		writel(0, rme96->iobase + RME96_IO_RESET_REC_POS);
+>  	}
+> -
+> -	rme96->wcreg |= RME96_WCR_START;
+> +	rme96->wcreg |= (RME96_WCR_START | RME96_WCR_START_2);
+>  	writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
+>  }
 >
->>>                  .name = "S/PDIF1",
->>>                  .stream_name = "IEC958 Playback",
->>>                  .platform_name = "mvebu-audio.1",
->>>                  .cpu_dai_name = "mvebu-audio.1",
->>>                  .codec_dai_name = "dit-hifi",
->>>                  .codec_name = "spdif-dit",
->
->> Not a big deal for DT. I suggest to have a "audio-codecs" property that
->> link CPU DAI to codec(s). One thing, I have noticed is that currently
->> you need to supply both codec_name (or DT node) _and_ codec_dai_name.
->> For that it would be helpful, if ASoC supplies helpers to get the DAI
->> by index and use phandle with args here.
->
-> This should follow the same pattern as the other board bindings.
+>  static void
+> +snd_rme96_playback_start(struct rme96 *rme96,
+> +			 int from_pause)
+> +{
+> +	if ((rme96->playback_substream && rme96->capture_substream) &&
+> +	    (rme96->playback_substream->group == rme96->capture_substream->group)) {
+> +		snd_rme96_playcap_start(rme96,from_pause);
+> +	} else {
+> +		if (!from_pause) {
+> +			writel(0, rme96->iobase + RME96_IO_RESET_PLAY_POS);
+> +		}
+> +		rme96->wcreg |= RME96_WCR_START;
+> +		writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
+> +	}
+> +}
 
-Mark,
+This is hard to maintain because there is duplicated code.
 
-looking at e.g. nvidia,tegra-audio-*.txt bindings, I guess you are
-proposing to have a new binding for every SoC/codec/board combination?
-Also, you should have seen "ASoC: fsl: Add S/PDIF machine driver", which
-is - again - proposing a new binding for fsl with spdif "codec".
+The proper way to write a synchronized start/stop trigger is to collect
+the needed register bits first, and then apply them at once to the
+register; this works for both single and grouped usage:
 
-You really want me to go the same way or is there any "other board
-binding" I should follow?
+trigger_start()
+{
+	unsigned int wc_bits = 0;
 
->> i2s1: audio-controller@b0000 {
->> 	compatible = "marvell,dove-i2s";
->> 	reg = <0xb0000 0x2345>;
->> 	audio-codecs = <&spdif 0>;
->> };
->
-> No, things are glued together using the machine driver - again, look at
-> how all the other systems work.  The wiring on the board can get
-> interesting enough to need a binding of its own, for very simple
-> bindings that should just be pointing to a generic driver.
+	snd_pcm_group_for_each_entry(s, substream) {
+		if (s == playback_substream) {
+			bits |= RME96_WCR_START;
+			snd_pcm_trigger_done(s, substream);
+		} else if (s == capture_substream) {
+			bits |= RME96_WCR_START_2;
+			snd_pcm_trigger_done(s, substream);
+		}
+	}
+	rme96->wcreg |= bits;
+	writel(rme96->wcreg, ...);
+}
 
-And that is what will be true for almost all codecs we hook up on
-Marvell SoCs. The audio controller is very simple with only mute
-control available. We need to connect either i2s or spdif or both to
-any codec and the codecs output. The codecs is determined by phandle
-and the output (codec_dai_name) could be determined by the phandle's
-arg, e.g. 0 for the first codec_dai provided.
+> -	
+> +
 
-That will be one machine driver for possibly all Marvell boards, not
-what e.g. tegra is doing with one machine driver for each board they
-can find. I understand that the exact wiring on each board may get
-complicated, but I don't see why a (well thought) binding should not
-be able to describe it?
+Are these whitespace changes deliberate?
 
-Sebastian
+
+Regards,
+Clemens
