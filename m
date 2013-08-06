@@ -1,78 +1,73 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 3/8] Documentation: DT: update atmel SSC with DMA
- binding
-Date: Tue, 6 Aug 2013 18:12:25 +0100
-Message-ID: <20130806171225.GO6427@sirena.org.uk>
-References: <1375180329-4860-1-git-send-email-richard.genoud@gmail.com>
- <1375180329-4860-4-git-send-email-richard.genoud@gmail.com>
+From: Knut Petersen <Knut_Petersen@t-online.de>
+Subject: Re: [PATCH] rme96 synchronization support
+Date: Tue, 06 Aug 2013 19:42:17 +0200
+Message-ID: <52013579.7020304@t-online.de>
+References: <51FF9C55.80701@t-online.de> <51FFA643.7060504@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8561422094252275958=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1375180329-4860-4-git-send-email-richard.genoud@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Richard Genoud <richard.genoud@gmail.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>, patches@opensource.wolfsonmicro.com, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout05.t-online.de (mailout05.t-online.de [194.25.134.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D63B261673
+ for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 19:42:28 +0200 (CEST)
+In-Reply-To: <51FFA643.7060504@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 05.08.2013 15:18, Clemens Ladisch wrote:
+> Knut Petersen wrote:
+>>   			      SNDRV_PCM_INFO_MMAP_VALID |
+>> +                              SNDRV_PCM_INFO_SYNC_START |
+> Please use tabs like in other similar parts of the file.
 
---===============8561422094252275958==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NT59pYSnj1ZLVgEN"
-Content-Disposition: inline
+ack
 
+>>   static void
+>> +snd_rme96_playback_start(struct rme96 *rme96,
+>> +			 int from_pause)
+>> +{
+>> +	if ((rme96->playback_substream && rme96->capture_substream) &&
+>> +	    (rme96->playback_substream->group =3D=3D rme96->capture_substream-=
+>group)) {
+>> +		snd_rme96_playcap_start(rme96,from_pause);
+>> +	} else {
+>> +		if (!from_pause) {
+>> +			writel(0, rme96->iobase + RME96_IO_RESET_PLAY_POS);
+>> +		}
+>> +		rme96->wcreg |=3D RME96_WCR_START;
+>> +		writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
+>> +	}
+>> +}
+> This is hard to maintain because there is duplicated code.
+>
+> The proper way to write a synchronized start/stop trigger is to collect
+> the needed register bits first, and then apply them at once to the
+> register; this works for both single and grouped usage:
 
---NT59pYSnj1ZLVgEN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes, there is duplicated code ... I=B4ll remove that in a V2 of the patch.
+But I do not think that it is less readable/maintainable if bit masks are
+prepared at the place of use ...
 
-On Tue, Jul 30, 2013 at 12:32:04PM +0200, Richard Genoud wrote:
-> As atmel-ssc can be used with DMA, the documentation should be updated.
-> Also, a configuration DMA example is given.
+>> -	=
 
-Applied, thanks.
+>> +
+> Are these whitespace changes deliberate?
 
---NT59pYSnj1ZLVgEN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+No, they are artifacts of inserting/removing debug code at a place
+where originally a line with nothing but a tabulator is present.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+Your comments were all about coding style. Have you had a look
+at the content of the code?
 
-iQIcBAEBAgAGBQJSAS52AAoJELSic+t+oim9o7IP/2l5DpHxEiREhyWrhzMgiZGR
-bu1ekyn9KFV6YIhhjn7xyVAFHsunFkrDeuV//mWvViaUJ2p0/3M5TOcLi/8nwX4I
-KODjZfuoY445OPahqa7qmzbnJu06PIiEIAFxlxnY7aPiSi3Px4LxQEF+gDXd0cNJ
-p61ImLuuGv7IAr3G86fMUjib90vZJkcnS5M9weRYx35+v2eyZxKJA9R7BL02YMAa
-XpXvGDMRSHkARtqh/sOoUnEzqmfolFKlQ78UPvRO3pjCe6kYiuHCZG5WVOegcfHc
-jB1qP8DGodEoI8Oy9KdEiXX3jsNmLJkq9CjPfywTq022mTv/imK4SrGeJppita8z
-rXHa4bWfVDXhQE3XP4alKvoCpp3Duk7ZBgFGBGZM2aMBFw5WbEa3vuPYzhVIUAMF
-dVxq5nyw8sJR8D67FmMoQJS68iVydL3cpI6OAmNeEtY4PkWtXda2SSKcL/JBueoA
-HGUDTdVfuZB/jRui7rxTABUbS7QDIdmQWN5Jg5GdsugXC+ATAbsTp+YXwHauPDRp
-jsJucGE9+IHExxJ4iL9HEsQxBRrgzEJMhtwYDIXfN/hcfN9GZYrOKr7+h6hZBnIF
-DSJIHW9QyDMWLGzrY9Z5Hy3YXdQvrWsJ/XcuaKYVWvqn+00EH7ekivUTVgFcRomH
-touF61WdERxnUFO533PQ
-=N+0/
------END PGP SIGNATURE-----
-
---NT59pYSnj1ZLVgEN--
-
-
---===============8561422094252275958==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============8561422094252275958==--
+cu,
+  Knut
