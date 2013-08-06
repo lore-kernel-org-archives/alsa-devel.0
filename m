@@ -1,123 +1,55 @@
-From: Jussi Kivilinna <jussi.kivilinna-X3B1VOXEql0@public.gmane.org>
-Subject: [PATCH] 6fire: fix DMA issues with URB transfer_buffer usage
-Date: Tue, 06 Aug 2013 14:53:24 +0300
-Message-ID: <20130806115324.23908.18291.stgit@localhost6.localdomain6>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Questions about virtual ALSA driver (dummy),
+ PortAudio and full-duplex drops
+Date: Tue, 06 Aug 2013 15:04:13 +0200
+Message-ID: <5200F44D.4070104@ladisch.de>
+References: <51EF41C8.2040701@imi.aau.dk>
+ <201307241403.28873.gineera@aspect135.co.uk> <51F07150.1060004@imi.aau.dk>
+ <51F0E3C5.4020400@ladisch.de> <51FD9AB6.4050408@imi.aau.dk>
+ <5200D712.2040800@ladisch.de> <5200E0FE.1000205@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 933BC260308
+ for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 15:04:23 +0200 (CEST)
+In-Reply-To: <5200E0FE.1000205@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org, Smilen Dimitrov <sd@imi.aau.dk>
 List-Id: alsa-devel@alsa-project.org
 
-Patch fixes 6fire not to use stack as URB transfer_buffer. URB buffers need to
-be DMA-able, which stack is not. Furthermore, transfer_buffer should not be
-allocated as part of larger device structure because DMA coherency issues and
-patch fixes this issue too.
+David Henningsson wrote:
+> On 08/06/2013 12:59 PM, Clemens Ladisch wrote:
+>>> On 2013-07-25 10:37, Clemens Ladisch wrote:
+>>>> Your driver's .pointer callback must report the *actual* position at
+>>>> which the hardware has finished reading from the buffer
+>>
+>> ... for a playback stream, or finished reading, for a capture stream.
+>
+> What if the pointer granularity is very coarse? E g, some hardware might
+> only be able what period you're in (IIRC, I've seen this on the Tegra
+> platform), rather than the actual sample. Would you recommend to report
+> the latest period boundary in that case, or interpolating it with timers?
 
-Patch is only compile tested.
+By reporting position x, the driver guarantees that the device has
+finished reading (for a playback stream) before x, and that the
+application is allowed to overwrite the buffer before x with new sample
+data.
 
-Cc: stable-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Signed-off-by: Jussi Kivilinna <jussi.kivilinna-X3B1VOXEql0@public.gmane.org>
----
- sound/usb/6fire/comm.c |   38 +++++++++++++++++++++++++++++++++-----
- sound/usb/6fire/comm.h |    2 +-
- 2 files changed, 34 insertions(+), 6 deletions(-)
+When the driver does not know the current position of the DMA
+controller, it must report the last known 'safe' position (and set
+SNDRV_PCM_INFO_BLOCK_TRANSFER).
 
-diff --git a/sound/usb/6fire/comm.c b/sound/usb/6fire/comm.c
-index 9e6e3ff..23452ee 100644
---- a/sound/usb/6fire/comm.c
-+++ b/sound/usb/6fire/comm.c
-@@ -110,19 +110,37 @@ static int usb6fire_comm_send_buffer(u8 *buffer, struct usb_device *dev)
- static int usb6fire_comm_write8(struct comm_runtime *rt, u8 request,
- 		u8 reg, u8 value)
- {
--	u8 buffer[13]; /* 13: maximum length of message */
-+	u8 *buffer;
-+	int ret;
-+
-+	/* 13: maximum length of message */
-+	buffer = kmalloc(13, GFP_KERNEL);
-+	if (!buffer)
-+		return -ENOMEM;
- 
- 	usb6fire_comm_init_buffer(buffer, 0x00, request, reg, value, 0x00);
--	return usb6fire_comm_send_buffer(buffer, rt->chip->dev);
-+	ret = usb6fire_comm_send_buffer(buffer, rt->chip->dev);
-+
-+	kfree(buffer);
-+	return ret;
- }
- 
- static int usb6fire_comm_write16(struct comm_runtime *rt, u8 request,
- 		u8 reg, u8 vl, u8 vh)
- {
--	u8 buffer[13]; /* 13: maximum length of message */
-+	u8 *buffer;
-+	int ret;
-+
-+	/* 13: maximum length of message */
-+	buffer = kmalloc(13, GFP_KERNEL);
-+	if (!buffer)
-+		return -ENOMEM;
- 
- 	usb6fire_comm_init_buffer(buffer, 0x00, request, reg, vl, vh);
--	return usb6fire_comm_send_buffer(buffer, rt->chip->dev);
-+	ret = usb6fire_comm_send_buffer(buffer, rt->chip->dev);
-+
-+	kfree(buffer);
-+	return ret;
- }
- 
- int usb6fire_comm_init(struct sfire_chip *chip)
-@@ -135,6 +153,12 @@ int usb6fire_comm_init(struct sfire_chip *chip)
- 	if (!rt)
- 		return -ENOMEM;
- 
-+	rt->receiver_buffer = kzalloc(COMM_RECEIVER_BUFSIZE, GFP_KERNEL);
-+	if (!rt->receiver_buffer) {
-+		kfree(rt);
-+		return -ENOMEM;
-+	}
-+
- 	urb = &rt->receiver;
- 	rt->serial = 1;
- 	rt->chip = chip;
-@@ -153,6 +177,7 @@ int usb6fire_comm_init(struct sfire_chip *chip)
- 	urb->interval = 1;
- 	ret = usb_submit_urb(urb, GFP_KERNEL);
- 	if (ret < 0) {
-+		kfree(rt->receiver_buffer);
- 		kfree(rt);
- 		snd_printk(KERN_ERR PREFIX "cannot create comm data receiver.");
- 		return ret;
-@@ -171,6 +196,9 @@ void usb6fire_comm_abort(struct sfire_chip *chip)
- 
- void usb6fire_comm_destroy(struct sfire_chip *chip)
- {
--	kfree(chip->comm);
-+	struct comm_runtime *rt = chip->comm;
-+
-+	kfree(rt->receiver_buffer);
-+	kfree(rt);
- 	chip->comm = NULL;
- }
-diff --git a/sound/usb/6fire/comm.h b/sound/usb/6fire/comm.h
-index 6a0840b..780d5ed 100644
---- a/sound/usb/6fire/comm.h
-+++ b/sound/usb/6fire/comm.h
-@@ -24,7 +24,7 @@ struct comm_runtime {
- 	struct sfire_chip *chip;
- 
- 	struct urb receiver;
--	u8 receiver_buffer[COMM_RECEIVER_BUFSIZE];
-+	u8 *receiver_buffer;
- 
- 	u8 serial; /* urb serial */
- 
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Regards,
+Clemens
