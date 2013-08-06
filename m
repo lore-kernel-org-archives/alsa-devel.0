@@ -1,85 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: bt-sco: enable OF support
-Date: Tue, 6 Aug 2013 18:04:30 +0100
-Message-ID: <20130806170430.GL6427@sirena.org.uk>
-References: <1374041536-27643-1-git-send-email-Baohua.Song@csr.com>
- <20130717084039.GA15981@e106331-lin.cambridge.arm.com>
- <20130717094718.GE22506@sirena.org.uk>
- <CAGsJ_4w3fS=vzZmeJOxhKO1TdL9d6pgbrjtzfPugOSOprLV+nw@mail.gmail.com>
+Subject: Re: [PATCH v6 2/8] ASoC: atmel: machine driver for at91sam9x5-wm8731
+ boards
+Date: Tue, 6 Aug 2013 18:11:56 +0100
+Message-ID: <20130806171156.GN6427@sirena.org.uk>
+References: <1375180329-4860-1-git-send-email-richard.genoud@gmail.com>
+ <1375180329-4860-3-git-send-email-richard.genoud@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8263947325290679628=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 034632616FE
- for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 19:04:34 +0200 (CEST)
-In-Reply-To: <CAGsJ_4w3fS=vzZmeJOxhKO1TdL9d6pgbrjtzfPugOSOprLV+nw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Workgroup.Linux@csr.com" <Workgroup.Linux@csr.com>, Rongjun Ying <Rongjun.Ying@csr.com>, Barry Song <Baohua.Song@csr.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/mixed; boundary="===============1120917458341433714=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1375180329-4860-3-git-send-email-richard.genoud@gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Richard Genoud <richard.genoud@gmail.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>, patches@opensource.wolfsonmicro.com, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8263947325290679628==
+--===============1120917458341433714==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+278g007AL/ykmV8"
+	protocol="application/pgp-signature"; boundary="lBqJz4CGKwlWe7/k"
 Content-Disposition: inline
 
 
---+278g007AL/ykmV8
+--lBqJz4CGKwlWe7/k
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 06, 2013 at 08:09:18AM +0800, Barry Song wrote:
-> 2013/7/17 Mark Brown <broonie@kernel.org>:
+On Tue, Jul 30, 2013 at 12:32:03PM +0200, Richard Genoud wrote:
+> From: Nicolas Ferre <nicolas.ferre@atmel.com>
+>=20
+> Description of the Asoc machine driver for an at91sam9x5 based board
+> with a wm8731 audio DAC. Wm8731 is clocked by a crystal and used as a
+> master on the SSC/I2S interface. Its connections are a headphone jack
+> and an Line input jack.
 
-> > There is likely to be a control interface for the BT device hanging off
-> > a UART but it's not clear there's much more meaningful data for those
-> > than there is here.
+Applied, thanks.  We should really be able to merge this with the
+sam9g20ek driver that's here already but we can do that later.
 
-> so the idea is that we don't add codec platform device in uart, and we
-> add a dt node for it as we are doing here?
-
-Well, I think it's more OK to add a node like this one (possibly with a
-link to the UART) but if you can add it based on it hanging off the UART
-that's even better.
-
---+278g007AL/ykmV8
+--lBqJz4CGKwlWe7/k
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSASybAAoJELSic+t+oim9q8kP/0wo1JY4mrWOps9Rwj/MTBqs
-t40xs1kWcnjs2mPA6PG7gY5HSAjbgNzbHQJz2+AjGVTtZxdUQKeDpTKcy7Rx2P/C
-FHp+pjgK9nlCUyfha1cSmFTcGO5+EbDjbET4YovSya9LyQt+U6VAcLXTynVXrey9
-HUdeehpaJvPZutmGNdKnNzB2vhpVtyHcAb2g38JwktO4O6AcP8Mm1onxpXD3USh3
-Wlc+9zoPEBvQcDd6grG/uBxZ94Sf6ddTRE9axWMdgbF+jKN8s0AQ9e8jDF7DWBLh
-ZASTnuj+0TB6eD/iu/3iXy90AgYxEIEMxEDG/KMi8uMpMOOAq6CvGKyhg8zbq3cC
-CTHXtC4BvBRbsMhjC4Ooni/bFKdcpDnYn0067R9ImW8O4wANbwwQLIv6hYSPud4X
-dXEqvp33+rBN+nvLOtaQqHSALw4FGuDqn3YW9Z2tiG1iUrXaPtkxHtzyQ/4irzu9
-l781e3we5QbwtwpZNcsbF3WgPyvhuO9Q6jtt3uaeDVAoa5ci3sFo2+Q4QZA2NWGf
-FERz+jagP6GezJ9Njaj+N71FG7yzzgg4BDV0OTLqK8vohE87lU7+YtyMZeETM65v
-yTQ96Qy58w341zJJJUbMaTCFbSHUjopXed9OmOKGZD2sTLw+TuUSlJfjm+J4hXjS
-D4Qox0KggiVCkC5IFxa6
-=wMc4
+iQIcBAEBAgAGBQJSAS5ZAAoJELSic+t+oim9wsoP/iymoohS2yx71cDisVCXBgS7
+JOFFy5h4Teps6KexuM191oDdahBeJf+OpI0JeIwiPsph+F/2TXhzLL6yibR9mu6K
+wutal63C29RyBCkf0NObc7xl3IqHY4aaNBv1IForUmvE4se9eoDEvWxy2FythqEx
+aG8MET96AZgLb9Y70aoe5q3aR0SJEBa2HcR8MI7EA/qdIivFnVCdYjwhwpMXzQdz
+1u6tV3I7cIWFjpbKN0WRAoFFqc1xzT9gqQ5phYVCmiFbt2b+4jyC7Ptj/hSzarlx
+vUOn+SRTc9cW0YiuZWqgmafAFcdIcMMTLq4FfW0WWT+jxILDd5CfDEDwjEmoEy+V
+6dR46QL2jyZRTpzZQcPmvQqE/RTzhZfEmokf5OPFsgAI618SSHUw7D2iUIZ3Bo8m
+QACAPm7L9loyTceCbCVNT36M6kWtVI2iIbxdqmncYMtrEb8K7+iccO+O+f9fIj//
+Xr2BcI1vewX5ovr1r4aLEFF8cSUOkL8hw1WxlP3Ym8G7aPFTDi59ITzXuWMcE2/R
+muh8XEzj+x/0aWC5gpsec+YjSUgXTxSNz4pEdSk8BW10VRn1Z/5xxc3L2XtiGijx
+P5IgN4uvdDMbUgX/F2pLi36HjoiFBxHJk+7c3nKgSySiFUTQuD23M8Q6ztAJ06Hi
+YkKeXv59wf3YpanhWQI4
+=WTVc
 -----END PGP SIGNATURE-----
 
---+278g007AL/ykmV8--
+--lBqJz4CGKwlWe7/k--
 
---===============8263947325290679628==
+
+--===============1120917458341433714==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============8263947325290679628==--
+--===============1120917458341433714==--
