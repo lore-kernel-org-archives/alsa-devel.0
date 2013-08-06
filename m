@@ -1,14 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v10 3/7] ASoC: imx-audmux: Read default configuration
- from devicetree
-Date: Tue, 6 Aug 2013 17:57:46 +0100
-Message-ID: <20130806165746.GH6427@sirena.org.uk>
+Subject: Re: [PATCH v10 4/7] ASoC: fsl-ssi: Add support for imx-pcm-fiq
+Date: Tue, 6 Aug 2013 17:59:02 +0100
+Message-ID: <20130806165902.GI6427@sirena.org.uk>
 References: <1374924716-23475-1-git-send-email-mpa@pengutronix.de>
- <1374924716-23475-4-git-send-email-mpa@pengutronix.de>
+ <1374924716-23475-5-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5763189466981972423=="
+Content-Type: multipart/mixed; boundary="===============4045837212536054041=="
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1374924716-23475-4-git-send-email-mpa@pengutronix.de>
+In-Reply-To: <1374924716-23475-5-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -23,47 +22,50 @@ Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, La
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5763189466981972423==
+--===============4045837212536054041==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9sSKoi6Rw660DLir"
+	protocol="application/pgp-signature"; boundary="HkMjoL2LAeBLhbFV"
 Content-Disposition: inline
 
 
---9sSKoi6Rw660DLir
+--HkMjoL2LAeBLhbFV
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Jul 27, 2013 at 01:31:52PM +0200, Markus Pargmann wrote:
-> Adds a function to parse a default port configuration from devicetree.
+On Sat, Jul 27, 2013 at 01:31:53PM +0200, Markus Pargmann wrote:
+> Add support for non-dma pcm for imx platforms with imx-pcm-fiq support.
+> Instead of imx-pcm-audio, in this case imx-pcm-fiq-audio device is added
+> and the SIER flags are set differently.
 
-Applied, thanks - this is a really nice improvement.
+Applied, thanks.  Ideally we'd have a quirk infrastructure to figure out
+if this is required but it really doesn't seem worth it.
 
---9sSKoi6Rw660DLir
+--HkMjoL2LAeBLhbFV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSASsHAAoJELSic+t+oim9Ck4P/AvD7X1AptXwioR39Fjh492u
-lbBntoHJ215qfWXO3XkO6Wji/QYyczdr7WBqo684mFzhV92VPeX3dPnJXO1r2Re8
-mMFFcOZvPdKLgklm3hjxxsJbpLM0mLLJaDNaQCizJ5J8gSYIiGaSyyQTPwhrpZGz
-FdU4egVFRkBlHVGMKMzbC1pvetX5xDXyrNuhLh1LwCgWsSkYOwVcY577xxqCuiLa
-fgnjkLq/qBam5ZRHi9uH0xRt6lBiWZ+5jaCmSamvXR0Wrr1eUsKmKOrI2Hem5oiw
-LG14FV9+4xmmwXzN8t2jmdT3of5lG6yzOvNzX1+Tr49lwkNTKd7qVqth+c5aSpwP
-a7rg33uJvLw+JFvJX+TPQOEOcUzlfH+GM82XAjXl+NVdKB8fKBDDTrwgYKJjeuvA
-FFxrSIfO7VNjZjznyQ+aYH5/IEDqLlgn46/HC7/UK9k3nhmDWwDZ+jJ2pEbiOhGc
-Yt9/39a7nS4uXQbDVijdBSZe8wVY7YTcRz/yY955iF0Wc+t6qKr3551OT7tNm/d/
-OV6ceSQCjdoxSrZLij0iNctXV/A0kw1Ycqs35UbcJsdelBNTL56g8t8H2CnUJkvc
-2GcgkP/Sis+3WCd9iT7Ugx8rukXZVywvruNmwKiH98hQjwawVzu7KVOWYT88u/7I
-E4Ft21Co7RUKlS14WMHs
-=2sQ8
+iQIcBAEBAgAGBQJSAStTAAoJELSic+t+oim90NEP/iejTLJ0utMaxJuTm/fENJ2C
+SbQDPJleYw90NzBJOTpaRdyju5vX+lg4+CJpYGI6DR+EkDCc36kioaDLpRi1b22N
+TOUGXaV4n1ORiMgtg4bYgRLUKJo8Z2GNCLU6xO5C7eBgPZcJCT0Z2KwqQsd1oxir
+XjVBGstfEUzQJzu9cC6ObyPk/TlPmikvlxbGdA6eenlSEd/VliS3ZhQVdqObjUI6
+53aXlB5UOMwvjdS2tCeVSioZB6m89sLdRjvbROgLNAY8mlHcm/TyAGQRAT9Cef0e
+Xy2LW0vFq41dHoUGmTclVM59CM2LZ60HtpQVkINoiUTkq8psLtXcU0XL2zKKOQvp
+3c5g5B0mo6LMQKEggmRuThcS/HPP5Fcwyz1TGgXGBuHayTk4t8x39MwYz+AzFWQg
+fR7os46+0HvambM6DpJLmCRUIosA7Q4u/fo2eqZfB+IG2NAQh6ryeWo/OC37lamD
+5CcJRNn6NexwOtOZCcb+UVkxt7Bcsi/9d4ddCJ1kQDTEA9579kyqM5juzjXVF8xc
+B0I+rks5kZhB3Lr6csu2Yx+TuqoB9YbBee6WSrNZDiXLoLRFLXCgVNhDxlpwjuYZ
+2ImLP7zWZgllC6flebEiU6cUFZg6ov3IqayDL3SnTt6LjZh78PdcI9OKvT44X7dm
+aJcud+vBe2gVYuzMYtsC
+=wjg/
 -----END PGP SIGNATURE-----
 
---9sSKoi6Rw660DLir--
+--HkMjoL2LAeBLhbFV--
 
 
---===============5763189466981972423==
+--===============4045837212536054041==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -74,4 +76,4 @@ linux-arm-kernel mailing list
 linux-arm-kernel@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============5763189466981972423==--
+--===============4045837212536054041==--
