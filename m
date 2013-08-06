@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm5110: Correct input OSR bits for
-	wm5110
-Date: Tue, 6 Aug 2013 17:41:49 +0100
-Message-ID: <20130806164149.GD6427@sirena.org.uk>
-References: <1375805035-22463-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] ASoC: twl4030: Remove embedded
+ snd_soc_codec structs from private data structs
+Date: Tue, 6 Aug 2013 17:42:05 +0100
+Message-ID: <20130806164205.GE6427@sirena.org.uk>
+References: <1375789171-12098-1-git-send-email-lars@metafoo.de>
+ <1375789171-12098-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5466781709765361614=="
+Content-Type: multipart/mixed; boundary="===============4510464551349015890=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 0074C26087E
- for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 18:41:54 +0200 (CEST)
-In-Reply-To: <1375805035-22463-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0773026087E
+ for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 18:42:08 +0200 (CEST)
+In-Reply-To: <1375789171-12098-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5466781709765361614==
+--===============4510464551349015890==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IDYEmSnFhs3mNXr+"
+	protocol="application/pgp-signature"; boundary="XuV1QlJbYrcVoo+x"
 Content-Disposition: inline
 
 
---IDYEmSnFhs3mNXr+
+--XuV1QlJbYrcVoo+x
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Aug 06, 2013 at 05:03:55PM +0100, Charles Keepax wrote:
-> The input OSR bits are specified differently for wm5110 than for current
-> revs of wm5102. This patch corrects support for this on wm5110.
+On Tue, Aug 06, 2013 at 01:39:30PM +0200, Lars-Peter Clausen wrote:
+> It is unused and a leftover of the pre multi-component era.
 
 Applied, thanks.
 
---IDYEmSnFhs3mNXr+
+--XuV1QlJbYrcVoo+x
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSASdKAAoJELSic+t+oim9Vm4P/iDyVuZ+1Rdd6x7Vx4NTa5/q
-tCNMH8RSU8fkjWwrnwmcaOFZDJ1k0tkaAg4DjnRLOF6IVOFotm1+68Yc+yFCL6Ff
-dr/4M1GD04IYoSsNA0cDKB29E8qeIMHB0NClRbl9nYQLPBzGgysanpRoCpMpR/o0
-YEvVi/OkdDZ+ZVtNe+Wt5tuQlvhbbzy3qPWq7yVgM9bxsjBcTQSfZVeEXMQ4Igrx
-a9KlhkEIEmOGK7HPV5RyZpxV9Qyo0VLvT8I9lFqUc2rsvDaOWT83XFl1CsUKcstW
-NAMPmd1M7ap0iHzDJNy9AODzgWxQ8FzsIxJT2J6vE6hvWOsfsRWAa6T6L9jIbOkK
-YOjVxkNWbeD7QZpdivJjZHu0J4rR6PwmVAoeO7HPSDEjAbAzPHwhDB43xxCAG4TU
-oODir64zOVdQOhvyeomjPLOBX1aexHPebaavUKG6xDZY/zPtwR/uid92LDNW1odV
-59BT6lIZZE9bnXsb0lt9nUdL8OifytLTGUz6Kj6Mn4Txiu8oFbN1grAHFIlbML9U
-RnHSlGbanGFYGK8HQu+YEhqsS7dgPjvJuY23Zj/YTXjwY6LBT9HO1QjFVqTvwFI4
-Rd1pP4nw8wsGFWih/Wx3GduTTS/K3MJUXFy2qXKRe54fSl3vHF5u/WJ4qi3wlGPu
-uDVb57i0Igwd5yaSbG4m
-=OA1t
+iQIcBAEBAgAGBQJSASdZAAoJELSic+t+oim9vi0P/R73gDAzp2+lqPl7BtS6uoA9
+szkHd3T5NSaUUwZlX2bRxgM7IFf0rGxBS20lLRpZg00QC8gRieX7Bulm/g+wqF7B
+16tlZK55j46uT187s7HkWb8Lrc1AxwnezdLBhfpC0+EO6GjHc6z8KrgyFcg1wkvA
+O0Xp/G1ZcxJxxsnhher2O7wGzYKQjy90LYyeI3y1lRCBzMsoZfO8OiVSeM64W4ac
+jTE0ZgLQR/qJDtH3wv0CfOeyMGn0euaJg1XvTY9BEGdiEbU0iOeGjD6ai1KE/Dll
+iyx/S2LA5m/Wl4bDtyU7q7WzXHYeMTFbMBGbjc5YJz+bPzxAXw4MSyWB0nQ+wJIr
+5mjLJcIYeS7D0HrSZAiJx4eE68w2h26ASFQmXDqh0slxhYHWHNIhynT0Ijy2l7n4
+wHkacpX3ZgmV2TBTug7u6oxCyP1vndJmGnTt7Cy9cwONHSyC1aW6TvdIpyDbFGqo
+vICJj/XXjBEKjUMjBR10HkbrCqwIvHiiCmJvDDdWDPQj7V57WLHfpBqChoOOuLT5
+RqL5UQuCBSREcBbGhgx8tNWuvJIs0yZeAiDeJWaoLf1SGXYs1+xSbc5qT5sUv7pG
+uRJ/Cbjpn/K1LmUTlXZkbmgGB4CroPSTy4vs12oVeKlqEOg7zBIWRsOym1wAha7R
+t2tmGXYe1RKuU4WstiZ3
+=z+bT
 -----END PGP SIGNATURE-----
 
---IDYEmSnFhs3mNXr+--
+--XuV1QlJbYrcVoo+x--
 
---===============5466781709765361614==
+--===============4510464551349015890==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5466781709765361614==--
+--===============4510464551349015890==--
