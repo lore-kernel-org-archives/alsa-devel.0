@@ -1,20 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Questions about virtual ALSA driver (dummy),
- PortAudio and full-duplex drops
-Date: Tue, 06 Aug 2013 15:04:13 +0200
-Message-ID: <5200F44D.4070104@ladisch.de>
-References: <51EF41C8.2040701@imi.aau.dk>
- <201307241403.28873.gineera@aspect135.co.uk> <51F07150.1060004@imi.aau.dk>
- <51F0E3C5.4020400@ladisch.de> <51FD9AB6.4050408@imi.aau.dk>
- <5200D712.2040800@ladisch.de> <5200E0FE.1000205@canonical.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 2/3] ASoC: twl4030: Remove embedded
+ snd_soc_codec structs from private data structs
+Date: Tue, 6 Aug 2013 16:20:41 +0300
+Message-ID: <5200F829.9070209@ti.com>
+References: <1375789171-12098-1-git-send-email-lars@metafoo.de>
+ <1375789171-12098-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 933BC260308
- for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 15:04:23 +0200 (CEST)
-In-Reply-To: <5200E0FE.1000205@canonical.com>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4B03260896
+ for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 15:20:13 +0200 (CEST)
+In-Reply-To: <1375789171-12098-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org, Smilen Dimitrov <sd@imi.aau.dk>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-David Henningsson wrote:
-> On 08/06/2013 12:59 PM, Clemens Ladisch wrote:
->>> On 2013-07-25 10:37, Clemens Ladisch wrote:
->>>> Your driver's .pointer callback must report the *actual* position at
->>>> which the hardware has finished reading from the buffer
->>
->> ... for a playback stream, or finished reading, for a capture stream.
->
-> What if the pointer granularity is very coarse? E g, some hardware might
-> only be able what period you're in (IIRC, I've seen this on the Tegra
-> platform), rather than the actual sample. Would you recommend to report
-> the latest period boundary in that case, or interpolating it with timers?
+On 08/06/2013 02:39 PM, Lars-Peter Clausen wrote:
+> It is unused and a leftover of the pre multi-component era.
+> =
 
-By reporting position x, the driver guarantees that the device has
-finished reading (for a playback stream) before x, and that the
-application is allowed to overwrite the buffer before x with new sample
-data.
+> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-When the driver does not know the current position of the DMA
-controller, it must report the last known 'safe' position (and set
-SNDRV_PCM_INFO_BLOCK_TRANSFER).
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+> ---
+>  sound/soc/codecs/twl4030.c | 2 --
+>  1 file changed, 2 deletions(-)
+> =
+
+> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+> index 8e6e5b0..1e3884d 100644
+> --- a/sound/soc/codecs/twl4030.c
+> +++ b/sound/soc/codecs/twl4030.c
+> @@ -137,8 +137,6 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] =3D {
+>  =
+
+>  /* codec private data */
+>  struct twl4030_priv {
+> -	struct snd_soc_codec codec;
+> -
+>  	unsigned int codec_powered;
+>  =
+
+>  	/* reference counts of AIF/APLL users */
+> =
 
 
-Regards,
-Clemens
+
+-- =
+
+P=E9ter
