@@ -1,18 +1,14 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: imx-mc13783: Make SND_SOC_IMX_MC13783
-	visible again
-Date: Tue,  6 Aug 2013 18:03:07 -0300
-Message-ID: <1375822987-12830-1-git-send-email-festevam@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: ad1980: Provide stub DAPM support
+Date: Tue,  6 Aug 2013 23:51:41 +0100
+Message-ID: <1375829501-14223-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gh0-f180.google.com (mail-gh0-f180.google.com
- [209.85.160.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 350092616E9
- for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 23:03:19 +0200 (CEST)
-Received: by mail-gh0-f180.google.com with SMTP id f18so277468ghb.39
- for <alsa-devel@alsa-project.org>; Tue, 06 Aug 2013 14:03:18 -0700 (PDT)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id A97492616FF
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 00:51:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,36 +18,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+From: Mark Brown <broonie@linaro.org>
 
-Commit 02502da45 (ASoC: imx-mc13783: Depend on ARCH_ARM) introduced 'ARCH_ARM' 
-as a dependency for SND_SOC_IMX_MC13783, but this is a non-existent symbol.
+Since non-DAPM devices are not going to be supported provide DAPM input
+and output widgets and hook them up to the DAIs.
 
-This makes the selection of SND_SOC_IMX_MC13783 to be impossible.
-
-Use the correct 'ARM' symbol instead.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/fsl/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/ad1980.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index c26449b..e15f771 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -194,7 +194,7 @@ config SND_SOC_IMX_SGTL5000
+diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
+index 89fcf7d..7257a88 100644
+--- a/sound/soc/codecs/ad1980.c
++++ b/sound/soc/codecs/ad1980.c
+@@ -96,6 +96,44 @@ SOC_ENUM("Capture Source", ad1980_cap_src),
+ SOC_SINGLE("Mic Boost Switch", AC97_MIC, 6, 1, 0),
+ };
  
- config SND_SOC_IMX_MC13783
- 	tristate "SoC Audio support for I.MX boards with mc13783"
--	depends on MFD_MC13783 && ARCH_ARM
-+	depends on MFD_MC13783 && ARM
- 	select SND_SOC_IMX_SSI
- 	select SND_SOC_IMX_AUDMUX
- 	select SND_SOC_MC13783
++static const struct snd_soc_dapm_widget ad1980_dapm_widgets[] = {
++SND_SOC_DAPM_INPUT("MIC1"),
++SND_SOC_DAPM_INPUT("MIC2"),
++SND_SOC_DAPM_INPUT("CD_L"),
++SND_SOC_DAPM_INPUT("CD_R"),
++SND_SOC_DAPM_INPUT("AUX_L"),
++SND_SOC_DAPM_INPUT("AUX_R"),
++SND_SOC_DAPM_INPUT("LINE_IN_L"),
++SND_SOC_DAPM_INPUT("LINE_IN_R"),
++
++SND_SOC_DAPM_OUTPUT("LFE_OUT"),
++SND_SOC_DAPM_OUTPUT("CENTER_OUT"),
++SND_SOC_DAPM_OUTPUT("LINE_OUT_L"),
++SND_SOC_DAPM_OUTPUT("LINE_OUT_R"),
++SND_SOC_DAPM_OUTPUT("MONO_OUT"),
++SND_SOC_DAPM_OUTPUT("HP_OUT_L"),
++SND_SOC_DAPM_OUTPUT("HP_OUT_R"),
++};
++
++static const struct snd_soc_dapm_route ad1980_dapm_routes[] = {
++	{ "Capture", NULL, "MIC1" },
++	{ "Capture", NULL, "MIC2" },
++	{ "Capture", NULL, "CD_L" },
++	{ "Capture", NULL, "CD_R" },
++	{ "Capture", NULL, "AUX_L" },
++	{ "Capture", NULL, "AUX_R" },
++	{ "Capture", NULL, "LINE_IN_L" },
++	{ "Capture", NULL, "LINE_IN_R" },
++
++	{ "LFE_OUT", NULL, "Playback" },
++	{ "CENTER_OUT", NULL, "Playback" },
++	{ "LINE_OUT_L", NULL, "Playback" },
++	{ "LINE_OUT_R", NULL, "Playback" },
++	{ "MONO_OUT", NULL, "Playback" },
++	{ "HP_OUT_L", NULL, "Playback" },
++	{ "HP_OUT_R", NULL, "Playback" },
++};
++
+ static unsigned int ac97_read(struct snd_soc_codec *codec,
+ 	unsigned int reg)
+ {
+@@ -253,6 +291,11 @@ static struct snd_soc_codec_driver soc_codec_dev_ad1980 = {
+ 	.reg_cache_step = 2,
+ 	.write = ac97_write,
+ 	.read = ac97_read,
++
++	.dapm_widgets = ad1980_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(ad1980_dapm_widgets),
++	.dapm_routes = ad1980_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(ad1980_dapm_routes),
+ };
+ 
+ static int ad1980_probe(struct platform_device *pdev)
 -- 
-1.8.1.2
+1.8.4.rc1
