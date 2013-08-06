@@ -1,75 +1,123 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: mc13783: Remove embedded
- snd_soc_codec structs from private data structs
-Date: Tue, 6 Aug 2013 12:42:51 +0100
-Message-ID: <20130806114251.GB29078@sirena.org.uk>
-References: <1375789171-12098-1-git-send-email-lars@metafoo.de>
- <1375789171-12098-3-git-send-email-lars@metafoo.de>
+From: Jussi Kivilinna <jussi.kivilinna-X3B1VOXEql0@public.gmane.org>
+Subject: [PATCH] 6fire: fix DMA issues with URB transfer_buffer usage
+Date: Tue, 06 Aug 2013 14:53:24 +0300
+Message-ID: <20130806115324.23908.18291.stgit@localhost6.localdomain6>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2129146715020284817=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B23B626545B
- for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 13:42:54 +0200 (CEST)
-In-Reply-To: <1375789171-12098-3-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Patch fixes 6fire not to use stack as URB transfer_buffer. URB buffers need to
+be DMA-able, which stack is not. Furthermore, transfer_buffer should not be
+allocated as part of larger device structure because DMA coherency issues and
+patch fixes this issue too.
 
---===============2129146715020284817==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hQiwHBbRI9kgIhsi"
-Content-Disposition: inline
+Patch is only compile tested.
 
+Cc: stable-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Signed-off-by: Jussi Kivilinna <jussi.kivilinna-X3B1VOXEql0@public.gmane.org>
+---
+ sound/usb/6fire/comm.c |   38 +++++++++++++++++++++++++++++++++-----
+ sound/usb/6fire/comm.h |    2 +-
+ 2 files changed, 34 insertions(+), 6 deletions(-)
 
---hQiwHBbRI9kgIhsi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+diff --git a/sound/usb/6fire/comm.c b/sound/usb/6fire/comm.c
+index 9e6e3ff..23452ee 100644
+--- a/sound/usb/6fire/comm.c
++++ b/sound/usb/6fire/comm.c
+@@ -110,19 +110,37 @@ static int usb6fire_comm_send_buffer(u8 *buffer, struct usb_device *dev)
+ static int usb6fire_comm_write8(struct comm_runtime *rt, u8 request,
+ 		u8 reg, u8 value)
+ {
+-	u8 buffer[13]; /* 13: maximum length of message */
++	u8 *buffer;
++	int ret;
++
++	/* 13: maximum length of message */
++	buffer = kmalloc(13, GFP_KERNEL);
++	if (!buffer)
++		return -ENOMEM;
+ 
+ 	usb6fire_comm_init_buffer(buffer, 0x00, request, reg, value, 0x00);
+-	return usb6fire_comm_send_buffer(buffer, rt->chip->dev);
++	ret = usb6fire_comm_send_buffer(buffer, rt->chip->dev);
++
++	kfree(buffer);
++	return ret;
+ }
+ 
+ static int usb6fire_comm_write16(struct comm_runtime *rt, u8 request,
+ 		u8 reg, u8 vl, u8 vh)
+ {
+-	u8 buffer[13]; /* 13: maximum length of message */
++	u8 *buffer;
++	int ret;
++
++	/* 13: maximum length of message */
++	buffer = kmalloc(13, GFP_KERNEL);
++	if (!buffer)
++		return -ENOMEM;
+ 
+ 	usb6fire_comm_init_buffer(buffer, 0x00, request, reg, vl, vh);
+-	return usb6fire_comm_send_buffer(buffer, rt->chip->dev);
++	ret = usb6fire_comm_send_buffer(buffer, rt->chip->dev);
++
++	kfree(buffer);
++	return ret;
+ }
+ 
+ int usb6fire_comm_init(struct sfire_chip *chip)
+@@ -135,6 +153,12 @@ int usb6fire_comm_init(struct sfire_chip *chip)
+ 	if (!rt)
+ 		return -ENOMEM;
+ 
++	rt->receiver_buffer = kzalloc(COMM_RECEIVER_BUFSIZE, GFP_KERNEL);
++	if (!rt->receiver_buffer) {
++		kfree(rt);
++		return -ENOMEM;
++	}
++
+ 	urb = &rt->receiver;
+ 	rt->serial = 1;
+ 	rt->chip = chip;
+@@ -153,6 +177,7 @@ int usb6fire_comm_init(struct sfire_chip *chip)
+ 	urb->interval = 1;
+ 	ret = usb_submit_urb(urb, GFP_KERNEL);
+ 	if (ret < 0) {
++		kfree(rt->receiver_buffer);
+ 		kfree(rt);
+ 		snd_printk(KERN_ERR PREFIX "cannot create comm data receiver.");
+ 		return ret;
+@@ -171,6 +196,9 @@ void usb6fire_comm_abort(struct sfire_chip *chip)
+ 
+ void usb6fire_comm_destroy(struct sfire_chip *chip)
+ {
+-	kfree(chip->comm);
++	struct comm_runtime *rt = chip->comm;
++
++	kfree(rt->receiver_buffer);
++	kfree(rt);
+ 	chip->comm = NULL;
+ }
+diff --git a/sound/usb/6fire/comm.h b/sound/usb/6fire/comm.h
+index 6a0840b..780d5ed 100644
+--- a/sound/usb/6fire/comm.h
++++ b/sound/usb/6fire/comm.h
+@@ -24,7 +24,7 @@ struct comm_runtime {
+ 	struct sfire_chip *chip;
+ 
+ 	struct urb receiver;
+-	u8 receiver_buffer[COMM_RECEIVER_BUFSIZE];
++	u8 *receiver_buffer;
+ 
+ 	u8 serial; /* urb serial */
+ 
 
-On Tue, Aug 06, 2013 at 01:39:31PM +0200, Lars-Peter Clausen wrote:
-> It is unused and a leftover of the pre multi-component era.
-
-Applied, thanks.
-
---hQiwHBbRI9kgIhsi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSAOE4AAoJELSic+t+oim9Gm8P/i3A56Fi/ZFqqlGsr2yHp1ts
-BcjpWG64ZsyrSR9VKK6ZgBrfoziOMlUynKxB+EQyewNhVABDVvfC6XzyiSL3YT3c
-bDMJEJEmbeR7eOzOx+9SDelIGG9mf1/ukjWVUZlS4dVAMuvA5gAVRN8Pip/eXDRG
-P/U3Ah8XlcOCbQxcJizYKd+Vw00KLzTMk2bTqBNN54nHg1LOMzSfJ2cgHLRJOqJo
-40o2/IEiAfEbNiLppEqB77/h9hcNmYymka4PFEZr2lfjWYnJadthRUxhtY/dZhs4
-4a9XlfHUhMYhFK70+6OsazjjR1SyCPDzaaWH9Kw9MLekR/x2yV9638rF5kbMPOR2
-FJGdywWH+3qCbs9PWFM1EHNRa/7gJR4fFlU2JRXsnVPbBVp2KD0g2DU/JBGbUBL7
-6UKG0oc7trBhMaLkYn2ZzmTBa5YxGyzehIMhOdQ1UteHL1tZ3LfYpIwmeZKot/Fh
-+vmfjXWGO3gRfSz6rL6GGN5K7ZRwkDv55x5jjdYQasPlFuIdY5SnmeeHshg5WGGD
-SO9zfODrhx1ZXW0EYIkhVR7J1EVl0zOMuWsgOLUglhtLarLr0KqIXl7GKNHTR2Yy
-kvZyLrVT2TfoouiKUOIKHXmDwj8vVtEfsR4g9vRGeHqQuE/nOU+Q26M3YGoA1Old
-R20EU+fAb1DPMXS+BP7j
-=0sIi
------END PGP SIGNATURE-----
-
---hQiwHBbRI9kgIhsi--
-
---===============2129146715020284817==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2129146715020284817==--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
