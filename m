@@ -1,23 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: rt5640: change widgetsequencefordepop
-Date: Tue, 06 Aug 2013 12:16:45 +0200
-Message-ID: <5200CD0D.7030007@metafoo.de>
-References: <1375676343-13891-1-git-send-email-bardliao@realtek.com>
- <20130805144808.GG9858@sirena.org.uk> <51FFDF11.5020106@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692E0E@rtitmbs7.realtek.com.tw>
- <5200B7B5.7050506@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692E40@rtitmbs7.realtek.com.tw>
- <5200C369.6050607@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692E62@rtitmbs7.realtek.com.tw>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Questions about virtual ALSA driver (dummy),
+ PortAudio and full-duplex drops
+Date: Tue, 06 Aug 2013 12:59:30 +0200
+Message-ID: <5200D712.2040800@ladisch.de>
+References: <51EF41C8.2040701@imi.aau.dk>
+ <201307241403.28873.gineera@aspect135.co.uk> <51F07150.1060004@imi.aau.dk>
+ <51F0E3C5.4020400@ladisch.de> <51FD9AB6.4050408@imi.aau.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id CF3692616CB
- for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 12:16:29 +0200 (CEST)
-In-Reply-To: <1121E117AD4ECE49880A389A396215BB935C692E62@rtitmbs7.realtek.com.tw>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id C28032616E1
+ for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2013 12:59:35 +0200 (CEST)
+In-Reply-To: <51FD9AB6.4050408@imi.aau.dk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,74 +23,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Flove <flove@realtek.com>
+To: Smilen Dimitrov <sd@imi.aau.dk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/06/2013 12:07 PM, Bard Liao wrote:
->> -----Original Message-----
->> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
->> Sent: Tuesday, August 06, 2013 5:36 PM
->> To: Bard Liao
->> Cc: Mark Brown; Oder Chiou; alsa-devel@alsa-project.org;
->> swarren@nvidia.com; swarren@wwwdotorg.org; lgirdwood@gmail.com; Flove
->> Subject: Re: [alsa-devel] [PATCH] ASoC: rt5640: change
->> widgetsequencefordepop
->>
->> On 08/06/2013 11:13 AM, Bard Liao wrote:
->>>>> I think I need to use SND_SOC_DAPM_SWITCH with
->>>> SOC_DAPM_SINGLE_AUTODISABLE for this control.
->>>>> Am I right?
->>>>> I am trying to do that, but meet a problem.
->>>>> If I set speaker switch unmute before playing music, dapm will mute
->>>>> it
->>>> automatically in power on sequence.
->>>>> The only way I can unmute speaker is set speaker switch unmute while
->>>> playing music.
->>>>
->>>> DAPM should unmute the switch on power up and mute it on power down.
->>>> The Speaker Channel Switch control has the invert flag set did you
->>>> also set the invert flag for the new autodisable control?
->>>
->>> Yes, the related code is as below.
->>> static const struct snd_kcontrol_new spk_l_enable_control =
->>> 	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5640_SPK_VOL,
->>> 		RT5640_L_MUTE_SFT, 1, 1);
->>>
->>> static const struct snd_kcontrol_new spk_r_enable_control =
->>> 	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5640_SPK_VOL,
->>> 		RT5640_R_MUTE_SFT, 1, 1);
->>>
->>> 	SND_SOC_DAPM_SWITCH("Speaker L Playback", SND_SOC_NOPM, 0, 0,
->>> 			&spk_l_enable_control),
->>> 	SND_SOC_DAPM_SWITCH("Speaker R Playback", SND_SOC_NOPM, 0, 0,
->>> 			&spk_r_enable_control),
->>
->> Looks good. Maybe I got the invert = 1 case wrong somewhere. Can you add a
->> couple of printks and send me the result?
->
-> The result is as below.
->
-> [    9.418738] new control: Speaker R Playback Switch 1
-> [    9.423949] new control: Speaker L Playback Switch 1
->
-> root@tegra-ubuntu:/home/ubuntu# amixer cset name="Speaker L Playback Switch" 0
-> numid=25,iface=MIXER,name='Speaker L Playback Switch'
->    ; type=BOOLEAN,access=rw------,values=1
->    : values=off
-> root@tegra-ubuntu:/home/ubuntu# dmesg -c
-> [  163.717158] Speaker L Playback Switch->on_val = 1
-> root@tegra-ubuntu:/home/ubuntu#
-> root@tegra-ubuntu:/home/ubuntu# amixer cset name="Speaker L Playback Switch" 1
-> numid=25,iface=MIXER,name='Speaker L Playback Switch'
->    ; type=BOOLEAN,access=rw------,values=1
->    : values=on
-> root@tegra-ubuntu:/home/ubuntu#
-> root@tegra-ubuntu:/home/ubuntu# dmesg -c
-> [  174.482833] Speaker L Playback Switch->on_val = 0
+Smilen Dimitrov wrote:
+> On 2013-07-25 10:37, Clemens Ladisch wrote:
+>> Your driver's .pointer callback must report the *actual* position at
+>> which the hardware has finished reading from the buffer
 
-That looks right, right? on_val is what is going to be written to the control's 
-register. And in your case this needs to be 0 for unmute and 1 for mute. So why 
-would DAPM mute the control on power-up?
+... for a playback stream, or finished reading, for a capture stream.
 
-- Lars
+> I'm interested in the operation of a virtual (platform) driver,
+> which talks to _no_ soundcard hardware
+
+And what does this driver do?  What is your goal?
+
+> I'm assuming that the card has it's own intern capture buffer memory
+> on board;
+
+No modern card has this.  All data is immediately read from/written to
+main memory.
+
+> and ALSA manages the equivalent of `substream->runtime->dma_area`
+> as capture buffer memory in RAM. The main purpose of the ALSA driver,
+> then, is to manage the copying the data from the intern card capture
+> buffer, to the `dma_area` capture buffer in RAM of the PC;
+
+This is handled by the hardware's DMA.
+
+> once the data is in the `dma_area`, the rest of the ALSA engine will
+> make sure that data ends up in `audiobuf` in user-space, upon a call
+> to `snd_pcm_readi` as given above.
+
+Yes.  (When using snd_pcm_mmap_*, the dma_area is mapped to userspace,
+and ALSA itself will never access the contents of the buffer.)
+
+> [...] where the `azx_interrupt` handler has been called (since it's
+> also possible to capture interrupt entries for power, for instance);
+
+The stream's SD_STS register tells whether this is an interrupt because
+a period boundary has been crossed.
+
+> On the PC side, the driver's .pointer callback can be triggered both
+> by userspace call to `snd_pcm_readi`, and (apparently) independently
+> of it - but (surprising for me) it is not necessarily periodic!
+
+The .pointer callback is triggered by snd_pcm_period_elapsed() (because
+some more data, or even another period, might have been transferred in
+the meantime), whenever userspace writes or reads samples, or whenever
+userspace feels like asking for the current position.
+
+> when I see "wall clock" referred to in code, does that refer to
+> this, which I've called "Real Time"?
+
+It's called "wall clock" because Intel named the register this way;
+actually, it's the device's sample clock.
+
+> And herein lies the crux of my inquiery: given there is no hardware
+> targetted with a virtual driver, I can in principle return whatever I
+> want as a .pointer position.
+
+If you are actually transferring sample from/to somewhere, you must
+return the status of these transfers.
+
+> I should be able to simulate a proper operation to userspace, just by
+> increasing this .pointer value properly. However, even if I do that,
+> I still manage to somehow trigger a full-duplex drop in the PortAudio
+> userspace layer
+
+A buffer length of about 1 ms is very likely to result in over/underruns,
+regardless of what your .pointer callback does.
+
+Better try with a 32000-frame buffer first.
+
+> The card then, uses it's own clock, which is not burdened with
+> anything else but filling buffers, meaning we can expect tight timing
+> here; and when it generates an IRQ, it is handled by kernel with
+> highest priority - ergo, not so much jitter. Timer functions, on the
+> other hand, run in softIRQ context - meaning they (and their
+> scheduling) could be preempted by the hardware IRQ of any other device
+> on the system; ergo, more jitter. Is this reasonable to assume?
+
+Yes, but other hardware interrupts interfere only if other devices are
+used at the same time.
+
+
+Regards,
+Clemens
