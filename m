@@ -1,55 +1,43 @@
-From: Sergei Shtylyov <sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH] Fix invalid volume resolution for Logitech HD Webcam
- C525
-Date: Wed, 07 Aug 2013 23:40:31 +0400
-Message-ID: <5202A2AF.60900@cogentembedded.com>
-References: <80181375903486@web11g.yandex.ru>
+From: Felipe Tonello <eu@felipetonello.com>
+Subject: Re: [PATCH v2 1/2] ALSA: Added jack detection KControl support
+Date: Wed, 7 Aug 2013 16:06:27 -0700
+Message-ID: <CAGrhNMxTu6R07Wgp8TY4Aw5a2wA83L5-f7rYF5XbT=sE886SXA@mail.gmail.com>
+References: <1375430365-13232-1-git-send-email-eu@felipetonello.com>
+	<1375430365-13232-2-git-send-email-eu@felipetonello.com>
+	<20130807164509.GO6427@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <80181375903486-HW/GO1vs6rtxpj1cXAZ9Bg@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: =?UTF-8?B?0JHQvtC50LrQviDQnNCw0LrRgdC40Lw=?= <maksboyko-o+MxOtu4lMCHXe+LvDLADg@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, stable-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20130807164509.GO6427@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+Hi Mark,
 
-On 08/07/2013 11:24 PM, =D0=91=D0=BE=D0=B9=D0=BA=D0=BE =D0=9C=D0=B0=D0=BA=
-=D1=81=D0=B8=D0=BC wrote:
+On Wed, Aug 7, 2013 at 9:45 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Aug 02, 2013 at 12:59:24AM -0700, Felipe F. Tonello wrote:
+>
+>> +int jack_ctl_integer_info(struct snd_kcontrol *kcontrol,
+>> +                          struct snd_ctl_elem_info *uinfo)
+>> +{
+>> +     uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+>> +     uinfo->count = 0x10000U;
+>> +     uinfo->value.integer.min = 0;
+>> +     uinfo->value.integer.max = 0xffff;
+>> +     return 0;
+>> +}
+>
+> I'd expected to see us creating multiple boolean controls here.  I don't
+> have a great problem with doing things this way but it's surprising and
+> I worry about confusing existing userspace, Takashi?
 
-> From: Maksim Boyko <maksim.a.boyko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Yes, it makes more sense. I got confused with another talk we had
+previously, that's why I end up doing as an int.
 
-> Add the volume control quirk for avoiding the kernel warning for Logi=
-tech HD Webcam C525.
-> The similar patch was previously reported for Logitech HD Webcam C310=
- (see 36691e1be6ec551eef4a5225f126a281f8c051c2).
+I will wait for more comments about these patches and will submit a v3.
 
-    Please also specif that commit's summary line in parens.
-And wrap your changelog lines at 80 columns at least.
+Thanks,
 
-> --- linux-3.10.5-orig/sound/usb/mixer.c	2013-08-04 12:51:49.000000000=
- +0400
-> +++ linux-3.10.5/sound/usb/mixer.c	2013-08-06 21:12:42.274197287 +040=
-0
-> @@ -888,6 +888,7 @@
->           case USB_ID(0x046d, 0x081b): /* HD Webcam c310 */
->           case USB_ID(0x046d, 0x081d): /* HD Webcam c510 */
->           case USB_ID(0x046d, 0x0825): /* HD Webcam c270 */
-> +	case USB_ID(0x046d, 0x0826): /* HD Webcam c525 */
->           case USB_ID(0x046d, 0x0991):
->           /* Most audio usb devices lie about volume resolution.
->            * Most Logitech webcams have res =3D 384.
-
-    Hm, the file has bad indentation (your added line is fine unless it=
-'s out=20
-of sync with the surrounding ones).
-
-WBR, Sergei
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Felipe Tonello
