@@ -1,23 +1,14 @@
-From: Mattia Bertoni <mattia.b89@gmail.com>
-Subject: bug
-Date: Wed, 07 Aug 2013 19:14:40 +0200
-Message-ID: <52028080.4090608@gmail.com>
-References: <520268D8.3000807@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: ads711x: Add DAPM support
+Date: Wed,  7 Aug 2013 18:26:20 +0100
+Message-ID: <1375896380-10497-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f53.google.com (mail-wg0-f53.google.com [74.125.82.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 240052617A6
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 19:14:46 +0200 (CEST)
-Received: by mail-wg0-f53.google.com with SMTP id c11so1788684wgh.32
- for <alsa-devel@alsa-project.org>; Wed, 07 Aug 2013 10:14:45 -0700 (PDT)
-Received: from [10.32.212.74] (93-34-185-64.ip51.fastwebnet.it. [93.34.185.64])
- by mx.google.com with ESMTPSA id fd3sm13558231wic.10.2013.08.07.10.14.43
- for <alsa-devel@alsa-project.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Wed, 07 Aug 2013 10:14:45 -0700 (PDT)
-In-Reply-To: <520268D8.3000807@gmail.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C286261793
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 19:26:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,121 +18,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Graeme Gregory <gg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-finally I can report a bug which I encountered some time ago; I send you 
-the important part of the entire log, which is to much big to be posted:
+From: Mark Brown <broonie@linaro.org>
 
-Jun 15 18:18:00 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c: snd_pcm_avail() returned a value that is exceptionally 
-large: 420736 bytes (2191 ms).
-Jun 15 18:18:00 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c: Most likely this is a bug in the ALSA driver 
-'snd_intel8x0'. Please report this issue to the ALSA developers.
-Jun 15 18:18:00 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c: snd_pcm_dump():
-Jun 15 18:18:00 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c: Hardware PCM card 0 'NVidia CK804' device 0 subdevice 0
-Jun 15 18:18:00 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c: Its setup is:
-Jun 15 18:18:00 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   stream       : PLAYBACK
-Jun 15 18:18:00 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   access       : MMAP_INTERLEAVED
-Jun 15 18:18:00 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   format       : S16_LE
-Jun 15 18:18:00 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   subformat    : STD
-Jun 15 18:18:00 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   channels     : 2
-Jun 15 18:18:00 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   rate         : 48000
-Jun 15 18:18:00 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   exact rate   : 48000 (48000/1)
-Jun 15 18:18:03 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   msbits       : 16
-Jun 15 18:18:03 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   buffer_size  : 16384
-Jun 15 18:18:03 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   period_size  : 16384
-Jun 15 18:18:03 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   period_time  : 341333
-Jun 15 18:18:03 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   tstamp_mode  : ENABLE
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   period_step  : 1
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   avail_min    : 16384
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   period_event : 0
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   start_threshold  : -1
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   stop_threshold   : 4611686018427387904
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   silence_threshold: 0
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   silence_size : 0
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   boundary     : 4611686018427387904
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   appl_ptr     : 26406104
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   hw_ptr       : 26494904
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c: snd_pcm_delay() returned a value that is exceptionally 
-large: -465056 bytes (-2422 ms).
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c: Most likely this is a bug in the ALSA driver 
-'snd_intel8x0'. Please report this issue to the ALSA developers.
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c: snd_pcm_dump():
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c: Hardware PCM card 0 'NVidia CK804' device 0 subdevice 0
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c: Its setup is:
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   stream       : PLAYBACK
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   access       : MMAP_INTERLEAVED
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   format       : S16_LE
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   subformat    : STD
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   channels     : 2
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   rate         : 48000
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   exact rate   : 48000 (48000/1)
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   msbits       : 16
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   buffer_size  : 16384
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   period_size  : 16384
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   period_time  : 341333
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   tstamp_mode  : ENABLE
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   period_step  : 1
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   avail_min    : 16384
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   period_event : 0
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   start_threshold  : -1
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   stop_threshold   : 4611686018427387904
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   silence_threshold: 0
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   silence_size : 0
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   boundary     : 4611686018427387904
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   appl_ptr     : 26569944
-Jun 15 18:18:04 arch-dekstop pulseaudio[776]: [alsa-sink-Intel ICH] 
-alsa-util.c:   hw_ptr       : 26686208
+This makes it easier to hook into boards and ensures the driver continues
+to work with support for non-DAPM CODECs removed.
+
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/ads117x.c | 29 ++++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/ads117x.c b/sound/soc/codecs/ads117x.c
+index 506d474..8f388ed 100644
+--- a/sound/soc/codecs/ads117x.c
++++ b/sound/soc/codecs/ads117x.c
+@@ -23,6 +23,28 @@
+ #define ADS117X_RATES (SNDRV_PCM_RATE_8000_48000)
+ #define ADS117X_FORMATS (SNDRV_PCM_FMTBIT_S16_LE)
+ 
++static const struct snd_soc_dapm_widget ads117x_dapm_widgets[] = {
++SND_SOC_DAPM_INPUT("Input1"),
++SND_SOC_DAPM_INPUT("Input2"),
++SND_SOC_DAPM_INPUT("Input3"),
++SND_SOC_DAPM_INPUT("Input4"),
++SND_SOC_DAPM_INPUT("Input5"),
++SND_SOC_DAPM_INPUT("Input6"),
++SND_SOC_DAPM_INPUT("Input7"),
++SND_SOC_DAPM_INPUT("Input8"),
++};
++
++static const struct snd_soc_dapm_route ads117x_dapm_routes[] = {
++	{ "Capture", NULL, "Input1" },
++	{ "Capture", NULL, "Input2" },
++	{ "Capture", NULL, "Input3" },
++	{ "Capture", NULL, "Input4" },
++	{ "Capture", NULL, "Input5" },
++	{ "Capture", NULL, "Input6" },
++	{ "Capture", NULL, "Input7" },
++	{ "Capture", NULL, "Input8" },
++};
++
+ static struct snd_soc_dai_driver ads117x_dai = {
+ /* ADC */
+ 	.name = "ads117x-hifi",
+@@ -34,7 +56,12 @@ static struct snd_soc_dai_driver ads117x_dai = {
+ 		.formats = ADS117X_FORMATS,},
+ };
+ 
+-static struct snd_soc_codec_driver soc_codec_dev_ads117x;
++static struct snd_soc_codec_driver soc_codec_dev_ads117x = {
++	.dapm_widgets = ads117x_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(ads117x_dapm_widgets),
++	.dapm_routes = ads117x_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(ads117x_dapm_routes),
++};
+ 
+ static int ads117x_probe(struct platform_device *pdev)
+ {
+-- 
+1.8.4.rc1
