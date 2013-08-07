@@ -1,23 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: change widgetsequencefordepop
-Date: Wed, 7 Aug 2013 14:05:40 +0100
-Message-ID: <20130807130540.GZ6427@sirena.org.uk>
-References: <1121E117AD4ECE49880A389A396215BB935C692E62@rtitmbs7.realtek.com.tw>
- <5200CD0D.7030007@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692E81@rtitmbs7.realtek.com.tw>
- <5200DE78.5060409@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692F72@rtitmbs7.realtek.com.tw>
- <5201FB09.1080105@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692FD9@rtitmbs7.realtek.com.tw>
- <520204BB.9080603@metafoo.de> <20130807093629.GU6427@sirena.org.uk>
- <520225B4.5050208@metafoo.de>
+From: Torsten Schenk <torsten.schenk@zoho.com>
+Subject: Re: [PATCH] 6fire: fix DMA issues with URB
+ transfer_buffer usage
+Date: Wed, 7 Aug 2013 15:59:07 +0200
+Message-ID: <20130807155907.dfea021b3b73fcac33e4323d@zoho.com>
+References: <20130806115324.23908.18291.stgit@localhost6.localdomain6>
+ <s5h7gfx7jsw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8678219367290775574=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 3051D265491
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 15:05:46 +0200 (CEST)
-In-Reply-To: <520225B4.5050208@metafoo.de>
+Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D4CC265491
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 15:59:18 +0200 (CEST)
+In-Reply-To: <s5h7gfx7jsw.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,80 +22,159 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jussi Kivilinna <jussi.kivilinna@iki.fi>, alsa-devel@alsa-project.org, Torsten Schenk <torsten.schenk@zoho.com>, linux-usb@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 07 Aug 2013 14:43:43 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
---===============8678219367290775574==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6ysXqiu0yoUmUNJB"
-Content-Disposition: inline
+> At Tue, 06 Aug 2013 14:53:24 +0300,
+> Jussi Kivilinna wrote:
+> > 
+> > Patch fixes 6fire not to use stack as URB transfer_buffer. URB
+> > buffers need to be DMA-able, which stack is not. Furthermore,
+> > transfer_buffer should not be allocated as part of larger device
+> > structure because DMA coherency issues and patch fixes this issue
+> > too.
 
+Thanks for the information. There is another section where this applies
+in midi.c/midi.h. I can post a patch later.
 
---6ysXqiu0yoUmUNJB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > 
+> > Patch is only compile tested.
+> 
+> The changes look OK, but I'd like to let it checked with a real
+> hardware before putting to stable kernel.
+> 
+> Torsten, could you check this?
 
-On Wed, Aug 07, 2013 at 12:47:16PM +0200, Lars-Peter Clausen wrote:
-> On 08/07/2013 11:36 AM, Mark Brown wrote:
+The patch works nicely.
 
-> >Adding an event callback shouldn't be hard?
+I'm just wondering if instead of calling kmalloc() every time it'd be
+better to put a global sender_buffer and a mutex into the comm_runtime
+struct and lock it every time a writeX is performed. This also would
+have the advantage that message blocks would never overlap which
+currently is possible.
 
-> But tricky. The widget of course can have a event callback, but
-> since the widget is created by the DAPM layer and not the codec
-> driver there is currently no way to setup the callback. And then
-> there is of course the question when do you want to run the
-> callback, only if DAPM unmutes the control, if the user unmutes the
-> control or both.
+I can prepare a patch on top of this one and send it later, if you
+agree.
 
-I'd expect to run any time we actually interact with the hardware.
+Thanks,
+Torsten
 
-> One thing that could work is to setup SND_SOC_DAPM_{PRE,POST}_REG
-> events for the SWITCH widget. This callback gets called whenever
-> user changes the control (and it is not disabled by DAPM). The next
-> step then would be to set up an internal event callback for kcontrol
-> widgets which then again calls the event callbacks for the
-> kcontrol's widgets like we do in dapm_widget_update(). But I'm not
-> convinced that this is the best way to solve this. I think it makes
-> things more complicated than they need to be. I think having a
-> OUTDRV widget along the path that runs the mute and unmute sequence
-> might be a better option. And then have virtual switch control to
-> let userspace disconnect the path, so that it is still possbile to
-> manually mute it.
-
-This only works for mute and unmute, it won't work for things like fun
-sequences to do volume changes.
-
---6ysXqiu0yoUmUNJB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSAkYgAAoJELSic+t+oim9kC0P/1znXzXx2k6J+LGbwlcUZ0uQ
-/42iUIgQw6vnQNRfwdGyuBxfN0E1EpGpMOq0oxxnP0++wKrcTfs8m+DmZ2zM6xlW
-58DA4fWS1E+iRcs6PJKCu3rhmiP1tqP3BF5iprIQokVvYJq73R4sO9MX33ZSWG2W
-VcAJ9J1DH7Z+7zpThnR+B+bzK+Ola4OpQP838p2f9zyKY4sUZU2s2Syfu861bPTB
-fjcxi/oZZxGXxde7RJSRIbVgNQx9yQHj3jI9lOyx/ibpM5dJNiMKe8JtY/XcvXCD
-wP7euX+sDZdr8eRMSwVvncDnVXgXFg9H51tOmlwSLpB24vzXfEmQNkMvKqvsLIhp
-jKDNnQiFxo8CLcJsfRbSVrIWKShrRLWa8aEyq5YXaWmqOns59KLjTEBJLwtnPh3y
-DfvaZS298QVG1H4ucvCPe/nDEArtvhLL/5F9cXUZz7Ba0r36xAGgWSCfpVhaVRXD
-j5ig104AAfPcpD+SZ/KFTE8MkzXYfrnhENXWyjEKVtXCYqcLUgf2nHSyejnBvcLS
-lI2eMahtklJbjBolNqaCTcm12hNpnKGfhvNccrK0bTTuGGw9viwPx3fvajyV6yop
-CdXw4It7i71F8ANxnriU2/YzBCm2JENsfg7ngV0+bTG4um4eP6ktLDkp+Nm2rIVR
-s6lT6Nw0dDOZZ64WpZfs
-=rqBm
------END PGP SIGNATURE-----
-
---6ysXqiu0yoUmUNJB--
-
---===============8678219367290775574==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8678219367290775574==--
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > 
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Jussi Kivilinna <jussi.kivilinna@iki.fi>
+> > ---
+> >  sound/usb/6fire/comm.c |   38 ++++++++++++++++++++++++++++++++
+> > +----- sound/usb/6fire/comm.h |    2 +-
+> >  2 files changed, 34 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/sound/usb/6fire/comm.c b/sound/usb/6fire/comm.c
+> > index 9e6e3ff..23452ee 100644
+> > --- a/sound/usb/6fire/comm.c
+> > +++ b/sound/usb/6fire/comm.c
+> > @@ -110,19 +110,37 @@ static int usb6fire_comm_send_buffer(u8
+> > *buffer, struct usb_device *dev) static int usb6fire_comm_write8
+> > (struct comm_runtime *rt, u8 request, u8 reg, u8 value)
+> >  {
+> > -	u8 buffer[13]; /* 13: maximum length of message */
+> > +	u8 *buffer;
+> > +	int ret;
+> > +
+> > +	/* 13: maximum length of message */
+> > +	buffer = kmalloc(13, GFP_KERNEL);
+> > +	if (!buffer)
+> > +		return -ENOMEM;
+> >  
+> >  	usb6fire_comm_init_buffer(buffer, 0x00, request, reg,
+> > value, 0x00);
+> > -	return usb6fire_comm_send_buffer(buffer, rt->chip->dev);
+> > +	ret = usb6fire_comm_send_buffer(buffer, rt->chip->dev);
+> > +
+> > +	kfree(buffer);
+> > +	return ret;
+> >  }
+> >  
+> >  static int usb6fire_comm_write16(struct comm_runtime *rt, u8
+> > request, u8 reg, u8 vl, u8 vh)
+> >  {
+> > -	u8 buffer[13]; /* 13: maximum length of message */
+> > +	u8 *buffer;
+> > +	int ret;
+> > +
+> > +	/* 13: maximum length of message */
+> > +	buffer = kmalloc(13, GFP_KERNEL);
+> > +	if (!buffer)
+> > +		return -ENOMEM;
+> >  
+> >  	usb6fire_comm_init_buffer(buffer, 0x00, request, reg, vl,
+> > vh);
+> > -	return usb6fire_comm_send_buffer(buffer, rt->chip->dev);
+> > +	ret = usb6fire_comm_send_buffer(buffer, rt->chip->dev);
+> > +
+> > +	kfree(buffer);
+> > +	return ret;
+> >  }
+> >  
+> >  int usb6fire_comm_init(struct sfire_chip *chip)
+> > @@ -135,6 +153,12 @@ int usb6fire_comm_init(struct sfire_chip *chip)
+> >  	if (!rt)
+> >  		return -ENOMEM;
+> >  
+> > +	rt->receiver_buffer = kzalloc(COMM_RECEIVER_BUFSIZE,
+> > GFP_KERNEL);
+> > +	if (!rt->receiver_buffer) {
+> > +		kfree(rt);
+> > +		return -ENOMEM;
+> > +	}
+> > +
+> >  	urb = &rt->receiver;
+> >  	rt->serial = 1;
+> >  	rt->chip = chip;
+> > @@ -153,6 +177,7 @@ int usb6fire_comm_init(struct sfire_chip *chip)
+> >  	urb->interval = 1;
+> >  	ret = usb_submit_urb(urb, GFP_KERNEL);
+> >  	if (ret < 0) {
+> > +		kfree(rt->receiver_buffer);
+> >  		kfree(rt);
+> >  		snd_printk(KERN_ERR PREFIX "cannot create comm
+> > data receiver."); return ret;
+> > @@ -171,6 +196,9 @@ void usb6fire_comm_abort(struct sfire_chip
+> > *chip) 
+> >  void usb6fire_comm_destroy(struct sfire_chip *chip)
+> >  {
+> > -	kfree(chip->comm);
+> > +	struct comm_runtime *rt = chip->comm;
+> > +
+> > +	kfree(rt->receiver_buffer);
+> > +	kfree(rt);
+> >  	chip->comm = NULL;
+> >  }
+> > diff --git a/sound/usb/6fire/comm.h b/sound/usb/6fire/comm.h
+> > index 6a0840b..780d5ed 100644
+> > --- a/sound/usb/6fire/comm.h
+> > +++ b/sound/usb/6fire/comm.h
+> > @@ -24,7 +24,7 @@ struct comm_runtime {
+> >  	struct sfire_chip *chip;
+> >  
+> >  	struct urb receiver;
+> > -	u8 receiver_buffer[COMM_RECEIVER_BUFSIZE];
+> > +	u8 *receiver_buffer;
+> >  
+> >  	u8 serial; /* urb serial */
+> >  
+> > 
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
+> 
