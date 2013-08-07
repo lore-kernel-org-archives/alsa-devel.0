@@ -1,21 +1,15 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH RESEND] mfd: arizona: Move regulator
- disable to after marking cache only
-Date: Wed, 7 Aug 2013 09:34:37 +0100
-Message-ID: <20130807083437.GJ5100@lee--X1>
-References: <1375805915-24009-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] switch: arizona: Clear trig_sts bits on all
+	paths
+Date: Wed,  7 Aug 2013 09:28:42 +0100
+Message-ID: <1375864122-6615-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f175.google.com (mail-ea0-f175.google.com
- [209.85.215.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A79326084D
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 10:34:43 +0200 (CEST)
-Received: by mail-ea0-f175.google.com with SMTP id m14so686783eaj.34
- for <alsa-devel@alsa-project.org>; Wed, 07 Aug 2013 01:34:43 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1375805915-24009-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BCAD5261618
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 10:37:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,19 +19,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com
+To: myungjoo.ham@samsung.com, cw00.choi@samsung.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAwNiBBdWcgMjAxMywgQ2hhcmxlcyBLZWVwYXggd3JvdGU6Cgo+IElmIHdlIGRpc2Fi
-bGUgRENWREQgYmVmb3JlIHdlIG1hcmsgdGhlIGNhY2hlIGFzIGNhY2hlIG9ubHksIHdlIG1pZ2h0
-Cj4gYXR0ZW1wdCB0byB3cml0ZSB0byB0aGUgY2hpcCB3aGlsc3QgaXQgaXMgcG93ZXJlZCBkb3du
-IGFuZCBsb3NlIGEgd3JpdGUuCj4gCj4gU2lnbmVkLW9mZi1ieTogQ2hhcmxlcyBLZWVwYXggPGNr
-ZWVwYXhAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tPgo+IC0tLQo+ICBkcml2ZXJzL21mZC9h
-cml6b25hLWNvcmUuYyB8ICAgIDIgKy0KPiAgMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMo
-KyksIDEgZGVsZXRpb25zKC0pCgpBcHBsaWVkLCB0aGFua3MuCgotLSAKTGVlIEpvbmVzCkxpbmFy
-byBTVC1Fcmljc3NvbiBMYW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJj
-ZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVy
-IHwgQmxvZwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+We want the trig_sts bits to be cleared in all cases where we consider
+the jack detection interrupt to have been handled. Specifically, if a
+duplicate detection event was suppressed these bits were not cleared
+causing the CODEC to not enter a low power state. This patch clears the
+bits on the duplicate detection code path.
+
+Reported-by: Ryo Tsutsui <ryo.tsutsui@wolfsonmicro.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ drivers/extcon/extcon-arizona.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
+index 7a1b4a7..4df68de 100644
+--- a/drivers/extcon/extcon-arizona.c
++++ b/drivers/extcon/extcon-arizona.c
+@@ -1034,6 +1034,7 @@ static irqreturn_t arizona_jackdet(int irq, void *data)
+ 	else
+ 		info->micd_timeout = DEFAULT_MICD_TIMEOUT;
+ 
++out:
+ 	/* Clear trig_sts to make sure DCVDD is not forced up */
+ 	regmap_write(arizona->regmap, ARIZONA_AOD_WKUP_AND_TRIG,
+ 		     ARIZONA_MICD_CLAMP_FALL_TRIG_STS |
+@@ -1041,7 +1042,6 @@ static irqreturn_t arizona_jackdet(int irq, void *data)
+ 		     ARIZONA_JD1_FALL_TRIG_STS |
+ 		     ARIZONA_JD1_RISE_TRIG_STS);
+ 
+-out:
+ 	mutex_unlock(&info->lock);
+ 
+ 	pm_runtime_mark_last_busy(info->dev);
+-- 
+1.7.2.5
