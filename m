@@ -1,27 +1,17 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: rt5640: change widgetsequencefordepop
-Date: Wed, 07 Aug 2013 09:45:13 +0200
-Message-ID: <5201FB09.1080105@metafoo.de>
-References: <1375676343-13891-1-git-send-email-bardliao@realtek.com>
- <20130805144808.GG9858@sirena.org.uk> <51FFDF11.5020106@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692E0E@rtitmbs7.realtek.com.tw>
- <5200B7B5.7050506@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692E40@rtitmbs7.realtek.com.tw>
- <5200C369.6050607@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692E62@rtitmbs7.realtek.com.tw>
- <5200CD0D.7030007@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692E81@rtitmbs7.realtek.com.tw>
- <5200DE78.5060409@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692F72@rtitmbs7.realtek.com.tw>
+Subject: Re: [PATCH] ASoC: ad1980: Provide stub DAPM support
+Date: Wed, 07 Aug 2013 09:53:02 +0200
+Message-ID: <5201FCDE.2070100@metafoo.de>
+References: <1375829501-14223-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-104.synserver.de (smtp-out-110.synserver.de
  [212.40.185.110])
- by alsa0.perex.cz (Postfix) with ESMTP id 321BA260305
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 09:51:51 +0200 (CEST)
-In-Reply-To: <1121E117AD4ECE49880A389A396215BB935C692F72@rtitmbs7.realtek.com.tw>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D8AC260305
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 09:52:04 +0200 (CEST)
+In-Reply-To: <1375829501-14223-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,20 +21,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Flove <flove@realtek.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/07/2013 07:40 AM, Bard Liao wrote:
-> Is there any way to run an event when power up/down a snd_soc_dapm_kcontrol type widgt?
-> Because we need to do something with mute/unmute headphone.
-> e.g.
-> rt5640_pmu_depop is what we need when unmute headphone.
-> We need to set something before and after set the hp mute bit.
+On 08/07/2013 12:51 AM, Mark Brown wrote:
+> From: Mark Brown <broonie@linaro.org>
 > 
-> If there is an event to do that, it will be easier to implement that.
+> Since non-DAPM devices are not going to be supported provide DAPM input
+> and output widgets and hook them up to the DAIs.
+> 
+> Signed-off-by: Mark Brown <broonie@linaro.org>
 
-You can setup a event for the SND_SOC_DAPM_SWITCH, but this will run after
-setting the mute bit and before clearing the mute bit.
+I unfortunately can't test this at the moment, but looks good, thanks.
 
-- Lars
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+
+> ---
+>  sound/soc/codecs/ad1980.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
+> index 89fcf7d..7257a88 100644
+> --- a/sound/soc/codecs/ad1980.c
+> +++ b/sound/soc/codecs/ad1980.c
+> @@ -96,6 +96,44 @@ SOC_ENUM("Capture Source", ad1980_cap_src),
+>  SOC_SINGLE("Mic Boost Switch", AC97_MIC, 6, 1, 0),
+>  };
+>  
+> +static const struct snd_soc_dapm_widget ad1980_dapm_widgets[] = {
+> +SND_SOC_DAPM_INPUT("MIC1"),
+> +SND_SOC_DAPM_INPUT("MIC2"),
+> +SND_SOC_DAPM_INPUT("CD_L"),
+> +SND_SOC_DAPM_INPUT("CD_R"),
+> +SND_SOC_DAPM_INPUT("AUX_L"),
+> +SND_SOC_DAPM_INPUT("AUX_R"),
+> +SND_SOC_DAPM_INPUT("LINE_IN_L"),
+> +SND_SOC_DAPM_INPUT("LINE_IN_R"),
+> +
+> +SND_SOC_DAPM_OUTPUT("LFE_OUT"),
+> +SND_SOC_DAPM_OUTPUT("CENTER_OUT"),
+> +SND_SOC_DAPM_OUTPUT("LINE_OUT_L"),
+> +SND_SOC_DAPM_OUTPUT("LINE_OUT_R"),
+> +SND_SOC_DAPM_OUTPUT("MONO_OUT"),
+> +SND_SOC_DAPM_OUTPUT("HP_OUT_L"),
+> +SND_SOC_DAPM_OUTPUT("HP_OUT_R"),
+> +};
+> +
+> +static const struct snd_soc_dapm_route ad1980_dapm_routes[] = {
+> +	{ "Capture", NULL, "MIC1" },
+> +	{ "Capture", NULL, "MIC2" },
+> +	{ "Capture", NULL, "CD_L" },
+> +	{ "Capture", NULL, "CD_R" },
+> +	{ "Capture", NULL, "AUX_L" },
+> +	{ "Capture", NULL, "AUX_R" },
+> +	{ "Capture", NULL, "LINE_IN_L" },
+> +	{ "Capture", NULL, "LINE_IN_R" },
+> +
+> +	{ "LFE_OUT", NULL, "Playback" },
+> +	{ "CENTER_OUT", NULL, "Playback" },
+> +	{ "LINE_OUT_L", NULL, "Playback" },
+> +	{ "LINE_OUT_R", NULL, "Playback" },
+> +	{ "MONO_OUT", NULL, "Playback" },
+> +	{ "HP_OUT_L", NULL, "Playback" },
+> +	{ "HP_OUT_R", NULL, "Playback" },
+> +};
+> +
+>  static unsigned int ac97_read(struct snd_soc_codec *codec,
+>  	unsigned int reg)
+>  {
+> @@ -253,6 +291,11 @@ static struct snd_soc_codec_driver soc_codec_dev_ad1980 = {
+>  	.reg_cache_step = 2,
+>  	.write = ac97_write,
+>  	.read = ac97_read,
+> +
+> +	.dapm_widgets = ad1980_dapm_widgets,
+> +	.num_dapm_widgets = ARRAY_SIZE(ad1980_dapm_widgets),
+> +	.dapm_routes = ad1980_dapm_routes,
+> +	.num_dapm_routes = ARRAY_SIZE(ad1980_dapm_routes),
+>  };
+>  
+>  static int ad1980_probe(struct platform_device *pdev)
+> 
