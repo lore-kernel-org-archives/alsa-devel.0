@@ -1,7 +1,7 @@
 From: Tomasz Figa <t.figa@samsung.com>
 Subject: Re: [PATCH V3 2/3] ASoC: Samsung: I2S: Add quirks as driver data in I2S
-Date: Wed, 07 Aug 2013 13:02:43 +0200
-Message-ID: <2149257.I47GXnTNnE@amdc1227>
+Date: Wed, 07 Aug 2013 13:13:12 +0200
+Message-ID: <2116389.OxrlCQ9LXd@amdc1227>
 References: <1375865122-5258-1-git-send-email-padma.v@samsung.com>
  <1375865122-5258-3-git-send-email-padma.v@samsung.com>
 Mime-Version: 1.0
@@ -11,18 +11,10 @@ Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 In-reply-to: <1375865122-5258-3-git-send-email-padma.v@samsung.com>
 Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Padmavathi Venna <padma.v@samsung.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, padma.kvr@gmail.com, broonie@kernel.org, kgene.kim@samsung.com, tomasz.figa@gmail.com, abrestic@chromium.org, swarren@wwwdotorg.org, mark.rutland@arm.com, pawel.moll@arm.com, ian.campbell@citrix.com, rob.herring@calxeda.com
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, padma.kvr@gmail.com, broonie@kernel.org, kgene.kim@samsung.com, tomasz.figa@gmail.com, abrestic@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Padmavathi,
-
-[Ccing DT maintainers with a little comment about contents of this patch 
-for them:
-
-This is a rework of Samsung i2s bindings to make them more reasonable than 
-they are at the moment. I know this was supposed to be stable, fixed, ABI, 
-etc., but as we discussed a lot the whole topic of DT bindings, we need to 
-sanitize existing bindings and this patch is a part of this work.]
+Ahh, one more thing inline.
 
 On Wednesday 07 of August 2013 14:15:21 Padmavathi Venna wrote:
 > Samsung has different versions of I2S introduced in different
@@ -51,12 +43,6 @@ On Wednesday 07 of August 2013 14:15:21 Padmavathi Venna wrote:
 > +- compatible : should be one of the following.
 > +   - samsung,s3c6410-i2s: for 8/16/24bit stereo I2S. Previous versions
 > +     has only 8/16bit support.
-
-The comment about previous versions seems a bit enigmatic.
-
-If there is another variant supported by this driver that supports only 
-8/16bit audio data, then it should have a separate compatible value.
-
 > +   - samsung,s3c6410-i2sv4: for 8/16/24bit multichannel(5.1 channel)
 > I2S. +     Introduced in s3c6410. This also applicable for s5p64x0
 > platforms. +   - samsung,s5pc100-i2s: for 8/16/24bit multichannel(5.1
@@ -82,10 +68,6 @@ If there is another variant supported by this driver that supports only
 >    sub system(used in secondary sound source).
 >  - pinctrl-0: Should specify pin control groups used for this controller.
 > @@ -46,9 +48,6 @@ i2s0: i2s@03830000 {
-
-The example has also a compatible value set to "samsung,i2s-v5". I don't 
-think this is compliant to the new bindings.
-
 >  		<&clock_audss EXYNOS_I2S_BUS>,
 >  		<&clock_audss EXYNOS_SCLK_I2S>;
 >  	clock-names = "iis", "i2s_opclk0", "i2s_opclk1";
@@ -102,9 +84,6 @@ think this is compliant to the new bindings.
 > @@ -40,6 +40,7 @@ enum samsung_dai_type {
 > 
 >  struct samsung_i2s_dai_data {
-
-const struct samsung_i2s_dai_data
-
 >  	int dai_type;
 > +	u32 quirks;
 >  };
@@ -128,9 +107,6 @@ const struct samsung_i2s_dai_data
 > -		data = (struct samsung_i2s_dai_data *) match->data;
 > -		return data->dai_type;
 > +		return (struct samsung_i2s_dai_data *) match->data;
-
-If you make the dai_data const this cast will be no longer necessary.
-
 >  	} else
 >  #endif
 > -		return platform_get_device_id(pdev)->driver_data;
@@ -145,9 +121,6 @@ If you make the dai_data const this cast will be no longer necessary.
 >  	struct device_node *np = pdev->dev.of_node;
 > -	enum samsung_dai_type samsung_dai_type;
 > +	struct samsung_i2s_dai_data *i2s_dai_data;
-
-const
-
 >  	int ret = 0;
 > 
 >  	/* Call during Seconday interface registration */
@@ -181,42 +154,27 @@ const
 >  }
 > 
 > +static struct samsung_i2s_dai_data i2sv3_dai_type = {
-
-const
-
 > +	.dai_type = TYPE_PRI,
 > +	.quirks = QUIRK_NO_MUXPSR,
 > +};
 > +
 > +static struct samsung_i2s_dai_data i2sv4_dai_type = {
-
-ditto
-
 > +	.dai_type = TYPE_PRI,
 > +	.quirks = QUIRK_PRI_6CHAN | QUIRK_NO_MUXPSR,
 > +};
 > +
 > +static struct samsung_i2s_dai_data i2sv5_c100_dai_type = {
-
-ditto
-
 > +	.dai_type = TYPE_PRI,
 > +	.quirks = QUIRK_PRI_6CHAN | QUIRK_NO_MUXPSR | QUIRK_SEC_DAI |
 > +			QUIRK_NEED_RSTCLR,
 > +};
 > +
 > +static struct samsung_i2s_dai_data i2sv5_dai_type = {
-
-ditto
-
 > +	.dai_type = TYPE_PRI,
 > +	.quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI | QUIRK_NEED_RSTCLR,
 > +};
 > +
 > +static struct samsung_i2s_dai_data samsung_dai_type_sec = {
-
-ditto
-
 > +	.dai_type = TYPE_SEC,
 > +};
 > +
@@ -240,30 +198,15 @@ ditto
 > +	}, {
 > +		.name		= "samsung-i2s-sec",
 > +		.driver_data	= (kernel_ulong_t)&samsung_dai_type_sec,
->  	},
->  	{},
->  };
->  MODULE_DEVICE_TABLE(platform, samsung_i2s_driver_ids);
-> 
->  #ifdef CONFIG_OF
-> -static struct samsung_i2s_dai_data samsung_i2s_dai_data_array[] = {
-> -	[TYPE_PRI] = { TYPE_PRI },
-> -	[TYPE_SEC] = { TYPE_SEC },
-> -};
-> -
->  static const struct of_device_id exynos_i2s_match[] = {
-> -	{ .compatible = "samsung,i2s-v5",
-> -	  .data = &samsung_i2s_dai_data_array[TYPE_PRI],
-> +	{
-> +		.compatible = "samsung,s3c6410-i2s",
-> +		.data = &i2sv3_dai_type,
-> +	}, {
-> +		.compatible = "samsung,s5pv210-i2s",
-> +		.data = &i2sv5_dai_type,
 
-Hmm, documentation mentions 4 compatible values (and possibly one is 
-missing there), but this patch adds only 2 of them. I don't think this is 
-correct, especially that the driver already supports handling all of them.
+I don't think you need to change the legacy platform IDs at all.
+
+IMHO it would be better to keep the old way of quirk retrieval from 
+platform_data (which I think this patch does anyway, because the probe path 
+without DT is unchanged), as it will be dropped in some point in time 
+anyway.
+
+This would also eliminate the need for patch 1.
 
 Best regards,
 Tomasz
