@@ -1,46 +1,54 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 1/4] mfd: wm5110: Mark register containing
- FLL gains as readable
-Date: Wed, 7 Aug 2013 09:43:14 +0100
-Message-ID: <20130807084314.GB18668@lee--X1>
-References: <1375803750-22116-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f174.google.com (mail-ea0-f174.google.com
- [209.85.215.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FAFA261618
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 10:43:18 +0200 (CEST)
-Received: by mail-ea0-f174.google.com with SMTP id z15so692429ead.5
- for <alsa-devel@alsa-project.org>; Wed, 07 Aug 2013 01:43:18 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1375803750-22116-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com
+From: Padmavathi Venna <padma.v@samsung.com>
+Subject: [PATCH V3 0/3] Add audio support on smdk5420
+Date: Wed, 07 Aug 2013 14:15:19 +0530
+Message-ID: <1375865122-5258-1-git-send-email-padma.v@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, padma.v@samsung.com, padma.kvr@gmail.com
+Cc: broonie@kernel.org, kgene.kim@samsung.com, tomasz.figa@gmail.com, abrestic@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAwNiBBdWcgMjAxMywgQ2hhcmxlcyBLZWVwYXggd3JvdGU6Cgo+IFRoZSBGTEwgZ2Fp
-bnMgYXJlIHByZXNlbnQgb24gYWxsIGRldmljZXMgYW5kIGNvbnRyb2xsZWQgZnJvbSBjb21tb24g
-Y29kZQo+IHNoYXJlZCBiZXR3ZWVuIHRoZW0uIFRoaXMgcGF0Y2ggYWRkcyB0aGVzZSByZWdpc3Rl
-cnMgaW50byBkZWZhdWx0cyBsaXN0Cj4gZm9yIHdtNTExMCBhbmQgbWFya3MgdGhlbSBhcyByZWFk
-YWJsZS4KPiAKPiBSZXBvcnRlZC1ieTogRC5KLiBCYXJyb3cgPGRiYXJyb3dAd29sZnNvbm1pY3Jv
-LmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBDaGFybGVzIEtlZXBheCA8Y2tlZXBheEBvcGVuc291cmNl
-LndvbGZzb25taWNyby5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvbWZkL3dtNTExMC10YWJsZXMuYyB8
-ICAgIDggKysrKysrKysKPiAgMSBmaWxlcyBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDAgZGVs
-ZXRpb25zKC0pCgpBbGwgNCBwYXRjaGVzIGFwcGxpZWQsIHRoYW5rcy4KCi0tIApMZWUgSm9uZXMK
-TGluYXJvIFNULUVyaWNzc29uIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4g
-c291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3
-aXR0ZXIgfCBCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+Samsung has different versions of I2S introduced in different
+platforms. Each version has some new support added for multichannel,
+secondary fifo, s/w reset control, internal mux for rclk src clk and
+tdm support. Each newly added change has a quirk. So this patch adds
+all the required quirks as driver data and based on compatible string
+from dtsi fetches the quirks. This also adds i2s support on exynos5420.
+
+Changes since V2:
+        - Seperated out driver side changes and dts changes in two
+          patch sets.
+        - Replaced samsung,s3c6410-i2s-v4 with samsung,s3c6410-i2s-multi
+          for more clarity as suggested by Tomasz Figa.
+
+Changes since V1:
+        - Pass quirks as driver data and fetch the quirks based on
+          compatible string from dtsi file as suggested by
+          Tomasz Figa and Mark Brown
+        - Make the I2S driver more flexible with respect to register
+          access as suggested by Tomasz Figa and Mark Brown
+        - Add 5420 support in the driver.
+        - Modify the dtsi files with the corresponding compatible
+          strings and removed the i2s quirks from 5250 dtsi file.
+        - Updated the i2s Documentation with relevent changes and
+          i2s versioning info.
+        - Add i2s nodes on exynos5420.dtsi
+        - Enable sound support on smdk5420
+
+This patch set is made based on Mark Brown for-next branch on sound.git.
+
+Padmavathi Venna (3):
+  platform: Increase platform name size
+  ASoC: Samsung: I2S: Add quirks as driver data in I2S
+  ASoC: Samsung: I2S: Modify the I2S driver to support I2S on
+    Exynos5420
+
+ .../devicetree/bindings/sound/samsung-i2s.txt      |   25 ++--
+ include/linux/mod_devicetable.h                    |    2 +-
+ include/linux/platform_data/asoc-s3c.h             |    1 +
+ sound/soc/samsung/i2s-regs.h                       |   15 ++
+ sound/soc/samsung/i2s.c                            |  163 +++++++++++++++-----
+ 5 files changed, 158 insertions(+), 48 deletions(-)
+
+-- 
+1.7.4.4
