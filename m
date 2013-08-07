@@ -1,7 +1,7 @@
 From: Bard Liao <bardliao@realtek.com>
 Subject: Re: [PATCH] ASoC: rt5640: change widgetsequencefordepop
-Date: Wed, 7 Aug 2013 09:32:08 +0800
-Message-ID: <1121E117AD4ECE49880A389A396215BB935C692EE6@rtitmbs7.realtek.com.tw>
+Date: Wed, 7 Aug 2013 13:40:09 +0800
+Message-ID: <1121E117AD4ECE49880A389A396215BB935C692F72@rtitmbs7.realtek.com.tw>
 References: <1375676343-13891-1-git-send-email-bardliao@realtek.com>
  <20130805144808.GG9858@sirena.org.uk> <51FFDF11.5020106@metafoo.de>
  <1121E117AD4ECE49880A389A396215BB935C692E0E@rtitmbs7.realtek.com.tw>
@@ -17,8 +17,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E1402616FF
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 03:32:17 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D8B2826552D
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 07:40:16 +0200 (CEST)
 In-Reply-To: <5200DE78.5060409@metafoo.de>
 Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -34,23 +34,12 @@ To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-> Makes sense. So this should fix it, I guess:
-> 
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -229,6 +229,8 @@ static int dapm_kcontrol_data_alloc(struct
->   			template.id = snd_soc_dapm_kcontrol;
->   			template.name = kcontrol->id.name;
-> 
-> +			data->value = template.on_val;
-> +
->   			data->widget = snd_soc_dapm_new_control(widget->dapm,
->   				&template);
->   			if (!data->widget) {
-> 
+Is there any way to run an event when power up/down a snd_soc_dapm_kcontrol type widgt?
+Because we need to do something with mute/unmute headphone.
+e.g.
+rt5640_pmu_depop is what we need when unmute headphone.
+We need to set something before and after set the hp mute bit.
 
-It works. Thanks.
+If there is an event to do that, it will be easier to implement that.
 
-> 
-> 
-> ------Please consider the environment before printing this e-mail.
+Thanks.
