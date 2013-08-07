@@ -1,17 +1,17 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH] ASoC: dt: Move WM8903 pin list from Tegra
- board binding to CODEC binding
-Date: Wed, 07 Aug 2013 12:48:06 -0600
-Message-ID: <52029666.90701@wwwdotorg.org>
-References: <1375899380-17714-1-git-send-email-broonie@kernel.org>
+From: Laurentiu Nicola <grayshade@gmail.com>
+Subject: snd_pcm_set_params typo patch
+Date: Wed, 7 Aug 2013 22:23:30 +0300
+Message-ID: <CA+uadsMViXKngUbmTeVx+za6v+OvOmO_E4_eYWMGydY+SiH87g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 2716B2655EA
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 20:48:13 +0200 (CEST)
-In-Reply-To: <1375899380-17714-1-git-send-email-broonie@kernel.org>
+Received: from mail-qe0-f46.google.com (mail-qe0-f46.google.com
+ [209.85.128.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id E09382619D3
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 21:23:46 +0200 (CEST)
+Received: by mail-qe0-f46.google.com with SMTP id i11so1231759qej.33
+ for <alsa-devel@alsa-project.org>; Wed, 07 Aug 2013 12:23:46 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,89 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <Mark.Rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <pawel.moll@arm.com>, Mark Brown <broonie@linaro.org>, Liam Girdwod <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/07/2013 12:16 PM, Mark Brown wrote:
-> From: Mark Brown <broonie@linaro.org>
-> 
-> The pin list is the same for any board using the CODEC.
+Please, somebody apply this one. I lost quite a bit of time because of it
+:).
 
-Acked-by: Stephen Warren <swarren@nvidia.com>
+Also, is there anything wrong with the bug tracker? It doesn't load for me.
 
-(CC'ing the other DT binding maintainers)
+diff -urpN alsa-lib-1.0.27.2/src/pcm/pcm.c
+alsa-lib-1.0.27.2-mine/src/pcm/pcm.c
+--- alsa-lib-1.0.27.2/src/pcm/pcm.c    2013-07-08 15:31:36.000000000 +0300
++++ alsa-lib-1.0.27.2-mine/src/pcm/pcm.c    2013-08-07 22:17:14.908673700
++0300
+@@ -7932,7 +7932,7 @@ int snd_pcm_set_params(snd_pcm_t *pcm,
+         return err;
+     }
+     if (rrate != rate) {
+-        SNDERR("Rate doesn't match (requested %iHz, get %iHz)", rate, err);
++        SNDERR("Rate doesn't match (requested %iHz, got %iHz)", rate,
+rrate);
+         return -EINVAL;
+     }
+     /* set the buffer time */
 
-> 
-> Signed-off-by: Mark Brown <broonie@linaro.org>
-> ---
->  .../bindings/sound/nvidia,tegra-audio-wm8903.txt   | 24 ++--------------------
->  Documentation/devicetree/bindings/sound/wm8903.txt | 19 +++++++++++++++++
->  2 files changed, 21 insertions(+), 22 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-wm8903.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-wm8903.txt
-> index 3bf722d..4b44dfb 100644
-> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-wm8903.txt
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-wm8903.txt
-> @@ -11,28 +11,8 @@ Required properties:
->  - nvidia,audio-routing : A list of the connections between audio components.
->    Each entry is a pair of strings, the first being the connection's sink,
->    the second being the connection's source. Valid names for sources and
-> -  sinks are the WM8903's pins, and the jacks on the board:
-> -
-> -  WM8903 pins:
-> -
-> -  * IN1L
-> -  * IN1R
-> -  * IN2L
-> -  * IN2R
-> -  * IN3L
-> -  * IN3R
-> -  * DMICDAT
-> -  * HPOUTL
-> -  * HPOUTR
-> -  * LINEOUTL
-> -  * LINEOUTR
-> -  * LOP
-> -  * LON
-> -  * ROP
-> -  * RON
-> -  * MICBIAS
-> -
-> -  Board connectors:
-> +  sinks are the WM8903's pins (documented in the WM8903 binding document),
-> +  and the jacks on the board:
->  
->    * Headphone Jack
->    * Int Spk
-> diff --git a/Documentation/devicetree/bindings/sound/wm8903.txt b/Documentation/devicetree/bindings/sound/wm8903.txt
-> index f102cbc..94ec32c 100644
-> --- a/Documentation/devicetree/bindings/sound/wm8903.txt
-> +++ b/Documentation/devicetree/bindings/sound/wm8903.txt
-> @@ -28,6 +28,25 @@ Optional properties:
->      performed. If any entry has the value 0xffffffff, that GPIO's
->      configuration will not be modified.
->  
-> +Pins on the device (for linking into audio routes):
-> +
-> +  * IN1L
-> +  * IN1R
-> +  * IN2L
-> +  * IN2R
-> +  * IN3L
-> +  * IN3R
-> +  * DMICDAT
-> +  * HPOUTL
-> +  * HPOUTR
-> +  * LINEOUTL
-> +  * LINEOUTR
-> +  * LOP
-> +  * LON
-> +  * ROP
-> +  * RON
-> +  * MICBIAS
-> +
->  Example:
->  
->  codec: wm8903@1a {
-> 
+
+-- 
+Because there are many ways to skin a cat, but you only get to choose one.
