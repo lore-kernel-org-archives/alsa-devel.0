@@ -1,83 +1,49 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: ads711x: Add DAPM support
-Date: Wed,  7 Aug 2013 18:26:20 +0100
-Message-ID: <1375896380-10497-1-git-send-email-broonie@kernel.org>
+From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Subject: Re: [PATCH] 6fire: fix URB transfer buffer for midi output
+Date: Wed, 7 Aug 2013 13:38:20 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1308071334590.886-100000@iolanthe.rowland.org>
+References: <s5hli4d5uj7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C286261793
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 19:26:25 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Graeme Gregory <gg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <s5hli4d5uj7.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Torsten Schenk <torsten.schenk-ytc+IHgoah0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On Wed, 7 Aug 2013, Takashi Iwai wrote:
 
-This makes it easier to hook into boards and ensures the driver continues
-to work with support for non-DAPM CODECs removed.
+> [Cc'ed to linux-usb ML]
+> 
+> At Wed, 7 Aug 2013 16:51:49 +0200,
+> Torsten Schenk wrote:
+> > 
+> > Patch fixes URB transfer buffer allocation for midi output to be DMA-able.
+> 
+> Is this really needed?
+> That is, can't a transfer buffer be at middle of kmalloc'ed space, but
+> must be always the head of the kmalloc'ed space?
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/codecs/ads117x.c | 29 ++++++++++++++++++++++++++++-
- 1 file changed, 28 insertions(+), 1 deletion(-)
+A buffer _can_ be in the middle of a kmalloc'ed space, but the CPU must
+not access any of the fields around it that might occupy the same cache
+line while the buffer is being used for DMA.  In general, it's safest
+not to put any other data in the same kmalloc'ed region with a DMA
+buffer.
 
-diff --git a/sound/soc/codecs/ads117x.c b/sound/soc/codecs/ads117x.c
-index 506d474..8f388ed 100644
---- a/sound/soc/codecs/ads117x.c
-+++ b/sound/soc/codecs/ads117x.c
-@@ -23,6 +23,28 @@
- #define ADS117X_RATES (SNDRV_PCM_RATE_8000_48000)
- #define ADS117X_FORMATS (SNDRV_PCM_FMTBIT_S16_LE)
- 
-+static const struct snd_soc_dapm_widget ads117x_dapm_widgets[] = {
-+SND_SOC_DAPM_INPUT("Input1"),
-+SND_SOC_DAPM_INPUT("Input2"),
-+SND_SOC_DAPM_INPUT("Input3"),
-+SND_SOC_DAPM_INPUT("Input4"),
-+SND_SOC_DAPM_INPUT("Input5"),
-+SND_SOC_DAPM_INPUT("Input6"),
-+SND_SOC_DAPM_INPUT("Input7"),
-+SND_SOC_DAPM_INPUT("Input8"),
-+};
-+
-+static const struct snd_soc_dapm_route ads117x_dapm_routes[] = {
-+	{ "Capture", NULL, "Input1" },
-+	{ "Capture", NULL, "Input2" },
-+	{ "Capture", NULL, "Input3" },
-+	{ "Capture", NULL, "Input4" },
-+	{ "Capture", NULL, "Input5" },
-+	{ "Capture", NULL, "Input6" },
-+	{ "Capture", NULL, "Input7" },
-+	{ "Capture", NULL, "Input8" },
-+};
-+
- static struct snd_soc_dai_driver ads117x_dai = {
- /* ADC */
- 	.name = "ads117x-hifi",
-@@ -34,7 +56,12 @@ static struct snd_soc_dai_driver ads117x_dai = {
- 		.formats = ADS117X_FORMATS,},
- };
- 
--static struct snd_soc_codec_driver soc_codec_dev_ads117x;
-+static struct snd_soc_codec_driver soc_codec_dev_ads117x = {
-+	.dapm_widgets = ads117x_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(ads117x_dapm_widgets),
-+	.dapm_routes = ads117x_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(ads117x_dapm_routes),
-+};
- 
- static int ads117x_probe(struct platform_device *pdev)
- {
--- 
-1.8.4.rc1
+> > @@ -32,7 +28,7 @@
+> >  	struct snd_rawmidi_substream *out;
+> >  	struct urb out_urb;
+> >  	u8 out_serial; /* serial number of out packet */
+> > -	u8 out_buffer[MIDI_BUFSIZE];
+> > +	u8 *out_buffer;
+> >  	int buffer_offset;
+
+In this case, the CPU would access out_urb while out_buffer was in use.
+
+Alan Stern
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
