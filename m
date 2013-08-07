@@ -1,14 +1,15 @@
-From: Torsten Schenk <torsten.schenk@zoho.com>
-Subject: [PATCH] 6fire: fix URB transfer buffer for midi output
-Date: Wed, 7 Aug 2013 16:51:49 +0200
-Message-ID: <20130807165149.188c4b16297be52c0630a18f@zoho.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH] ALSA: don't push static constants on stack for
+	%*ph
+Date: Wed,  7 Aug 2013 17:55:14 +0300
+Message-ID: <1375887314-15567-1-git-send-email-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
- by alsa0.perex.cz (Postfix) with ESMTP id A9C8B26555D
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 16:51:54 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82FCD26552E
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 16:55:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,80 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Patch fixes URB transfer buffer allocation for midi output to be DMA-able.
+There is no need to pass constants via stack. The width may be explicitly
+specified in the format.
 
-Signed-off-by: Torsten Schenk <torsten.schenk@zoho.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-diff -Nur a/sound/usb/6fire/midi.c b/sound/usb/6fire/midi.c
---- a/sound/usb/6fire/midi.c	2013-08-07 16:32:10.579639391 +0200
-+++ b/sound/usb/6fire/midi.c	2013-08-07 16:32:31.363378104 +0200
-@@ -19,6 +19,10 @@
- #include "chip.h"
- #include "comm.h"
+ sound/isa/gus/interwave.c  | 3 +--
+ sound/usb/6fire/firmware.c | 4 ++--
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/sound/isa/gus/interwave.c b/sound/isa/gus/interwave.c
+index 9942691..afef0d7 100644
+--- a/sound/isa/gus/interwave.c
++++ b/sound/isa/gus/interwave.c
+@@ -443,8 +443,7 @@ static void snd_interwave_detect_memory(struct snd_gus_card *gus)
+ 		for (i = 0; i < 8; ++i)
+ 			iwave[i] = snd_gf1_peek(gus, bank_pos + i);
+ #ifdef CONFIG_SND_DEBUG_ROM
+-		printk(KERN_DEBUG "ROM at 0x%06x = %*phC\n", bank_pos,
+-				  8, iwave);
++		printk(KERN_DEBUG "ROM at 0x%06x = %8phC\n", bank_pos, iwave);
+ #endif
+ 		if (strncmp(iwave, "INTRWAVE", 8))
+ 			continue;	/* first check */
+diff --git a/sound/usb/6fire/firmware.c b/sound/usb/6fire/firmware.c
+index b9defcd..780bf3f 100644
+--- a/sound/usb/6fire/firmware.c
++++ b/sound/usb/6fire/firmware.c
+@@ -346,10 +346,10 @@ static int usb6fire_fw_check(u8 *version)
+ 		if (!memcmp(version, known_fw_versions + i, 2))
+ 			return 0;
  
-+enum {
-+	MIDI_BUFSIZE = 64
-+};
-+
- static void usb6fire_midi_out_handler(struct urb *urb)
- {
- 	struct midi_runtime *rt = urb->context;
-@@ -156,6 +160,12 @@
- 	if (!rt)
- 		return -ENOMEM;
- 
-+	rt->out_buffer = kzalloc(MIDI_BUFSIZE, GFP_KERNEL);
-+	if (!rt->out_buffer) {
-+		kfree(rt);
-+		return -ENOMEM;
-+	}
-+
- 	rt->chip = chip;
- 	rt->in_received = usb6fire_midi_in_received;
- 	rt->out_buffer[0] = 0x80; /* 'send midi' command */
-@@ -169,6 +179,7 @@
- 
- 	ret = snd_rawmidi_new(chip->card, "6FireUSB", 0, 1, 1, &rt->instance);
- 	if (ret < 0) {
-+		kfree(rt->out_buffer);
- 		kfree(rt);
- 		snd_printk(KERN_ERR PREFIX "unable to create midi.\n");
- 		return ret;
-@@ -197,6 +208,9 @@
- 
- void usb6fire_midi_destroy(struct sfire_chip *chip)
- {
--	kfree(chip->midi);
-+	struct midi_runtime *rt = chip->midi;
-+
-+	kfree(rt->out_buffer);
-+	kfree(rt);
- 	chip->midi = NULL;
+-	snd_printk(KERN_ERR PREFIX "invalid fimware version in device: %*ph. "
++	snd_printk(KERN_ERR PREFIX "invalid fimware version in device: %4ph. "
+ 			"please reconnect to power. if this failure "
+ 			"still happens, check your firmware installation.",
+-			4, version);
++			version);
+ 	return -EINVAL;
  }
-diff -Nur a/sound/usb/6fire/midi.h b/sound/usb/6fire/midi.h
---- a/sound/usb/6fire/midi.h	2013-08-07 16:32:10.579639391 +0200
-+++ b/sound/usb/6fire/midi.h	2013-08-07 16:32:31.363378104 +0200
-@@ -16,10 +16,6 @@
  
- #include "common.h"
- 
--enum {
--	MIDI_BUFSIZE = 64
--};
--
- struct midi_runtime {
- 	struct sfire_chip *chip;
- 	struct snd_rawmidi *instance;
-@@ -32,7 +28,7 @@
- 	struct snd_rawmidi_substream *out;
- 	struct urb out_urb;
- 	u8 out_serial; /* serial number of out packet */
--	u8 out_buffer[MIDI_BUFSIZE];
-+	u8 *out_buffer;
- 	int buffer_offset;
- 
- 	void (*in_received)(struct midi_runtime *rt, u8 *data, int length);
+-- 
+1.8.4.rc1
