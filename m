@@ -1,23 +1,28 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: bt-sco: enable OF support
-Date: Wed, 7 Aug 2013 15:59:46 +0800
-Message-ID: <CAGsJ_4xhkdNTKr6KBPMMPVfi7+NP+WHq2+_V545An6J+c6E7ug@mail.gmail.com>
-References: <1374041536-27643-1-git-send-email-Baohua.Song@csr.com>
- <20130717084039.GA15981@e106331-lin.cambridge.arm.com>
- <20130717094718.GE22506@sirena.org.uk>
- <CAGsJ_4w3fS=vzZmeJOxhKO1TdL9d6pgbrjtzfPugOSOprLV+nw@mail.gmail.com>
- <20130806170430.GL6427@sirena.org.uk>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5640: change widgetsequencefordepop
+Date: Wed, 7 Aug 2013 16:03:32 +0800
+Message-ID: <1121E117AD4ECE49880A389A396215BB935C692FD9@rtitmbs7.realtek.com.tw>
+References: <1375676343-13891-1-git-send-email-bardliao@realtek.com>
+ <20130805144808.GG9858@sirena.org.uk> <51FFDF11.5020106@metafoo.de>
+ <1121E117AD4ECE49880A389A396215BB935C692E0E@rtitmbs7.realtek.com.tw>
+ <5200B7B5.7050506@metafoo.de>
+ <1121E117AD4ECE49880A389A396215BB935C692E40@rtitmbs7.realtek.com.tw>
+ <5200C369.6050607@metafoo.de>
+ <1121E117AD4ECE49880A389A396215BB935C692E62@rtitmbs7.realtek.com.tw>
+ <5200CD0D.7030007@metafoo.de>
+ <1121E117AD4ECE49880A389A396215BB935C692E81@rtitmbs7.realtek.com.tw>
+ <5200DE78.5060409@metafoo.de>
+ <1121E117AD4ECE49880A389A396215BB935C692F72@rtitmbs7.realtek.com.tw>
+ <5201FB09.1080105@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qe0-f47.google.com (mail-qe0-f47.google.com
- [209.85.128.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FB2026084D
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 10:00:09 +0200 (CEST)
-Received: by mail-qe0-f47.google.com with SMTP id b10so807242qen.20
- for <alsa-devel@alsa-project.org>; Wed, 07 Aug 2013 01:00:06 -0700 (PDT)
-In-Reply-To: <20130806170430.GL6427@sirena.org.uk>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC7E826084D
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 10:03:39 +0200 (CEST)
+In-Reply-To: <5201FB09.1080105@metafoo.de>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,31 +32,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Workgroup.Linux@csr.com" <Workgroup.Linux@csr.com>, Rongjun Ying <Rongjun.Ying@csr.com>, Barry Song <Baohua.Song@csr.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-2013/8/7 Mark Brown <broonie@kernel.org>:
-> On Tue, Aug 06, 2013 at 08:09:18AM +0800, Barry Song wrote:
->> 2013/7/17 Mark Brown <broonie@kernel.org>:
->
->> > There is likely to be a control interface for the BT device hanging off
->> > a UART but it's not clear there's much more meaningful data for those
->> > than there is here.
->
->> so the idea is that we don't add codec platform device in uart, and we
->> add a dt node for it as we are doing here?
->
-> Well, I think it's more OK to add a node like this one (possibly with a
-> link to the UART) but if you can add it based on it hanging off the UART
-> that's even better.
+> -----Original Message-----
+> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
+> Sent: Wednesday, August 07, 2013 3:45 PM
+> To: Bard Liao
+> Cc: Mark Brown; Oder Chiou; alsa-devel@alsa-project.org;
+> swarren@nvidia.com; swarren@wwwdotorg.org; lgirdwood@gmail.com; Flove
+> Subject: Re: [alsa-devel] [PATCH] ASoC: rt5640: change
+> widgetsequencefordepop
+> 
+> On 08/07/2013 07:40 AM, Bard Liao wrote:
+> > Is there any way to run an event when power up/down a
+> snd_soc_dapm_kcontrol type widgt?
+> > Because we need to do something with mute/unmute headphone.
+> > e.g.
+> > rt5640_pmu_depop is what we need when unmute headphone.
+> > We need to set something before and after set the hp mute bit.
+> >
+> > If there is an event to do that, it will be easier to implement that.
+> 
+> You can setup a event for the SND_SOC_DAPM_SWITCH, but this will run after
+> setting the mute bit and before clearing the mute bit.
 
-For 1, what kind of codes will have in the codec driver if adding a
-link to UART in codec dts node? UART is very generic to transfer path.
-it even doesn't know bluetooth is running on top of it.
+It seems not to be suitable for me.
+For me, It is better to run before setting the mute bit and after clearing the mute bit, too.
 
-For 2, if the case is that we add codec subnode in UART node,  the
-UART driver will need to walk child nodes and extend platform device
-for them, it seems it is not uart driver likes.
-
--barry
+> 
+> - Lars
+> 
+> 
+> ------Please consider the environment before printing this e-mail.
