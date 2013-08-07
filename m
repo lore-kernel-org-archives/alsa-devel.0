@@ -1,17 +1,26 @@
-From: =?koi8-r?B?4s/Ky88g7cHL08nN?= <maksboyko@yandex.ru>
-Subject: Re: Linux 3.10.4 and Logitech HD Webcam C525/C310
-Date: Wed, 07 Aug 2013 14:37:11 +0400
-Message-ID: <800141375871831@web3e.yandex.ru>
-References: <36731375776759@web15h.yandex.ru>
- <Pine.LNX.4.44L0.1308060958070.1154-100000@iolanthe.rowland.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: rt5640: change widgetsequencefordepop
+Date: Wed, 07 Aug 2013 12:47:16 +0200
+Message-ID: <520225B4.5050208@metafoo.de>
+References: <1121E117AD4ECE49880A389A396215BB935C692E40@rtitmbs7.realtek.com.tw>
+ <5200C369.6050607@metafoo.de>
+ <1121E117AD4ECE49880A389A396215BB935C692E62@rtitmbs7.realtek.com.tw>
+ <5200CD0D.7030007@metafoo.de>
+ <1121E117AD4ECE49880A389A396215BB935C692E81@rtitmbs7.realtek.com.tw>
+ <5200DE78.5060409@metafoo.de>
+ <1121E117AD4ECE49880A389A396215BB935C692F72@rtitmbs7.realtek.com.tw>
+ <5201FB09.1080105@metafoo.de>
+ <1121E117AD4ECE49880A389A396215BB935C692FD9@rtitmbs7.realtek.com.tw>
+ <520204BB.9080603@metafoo.de> <20130807093629.GU6427@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward9.mail.yandex.net (forward9.mail.yandex.net
- [77.88.61.48]) by alsa0.perex.cz (Postfix) with ESMTP id 50458261B11
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 12:37:14 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.44L0.1308060958070.1154-100000@iolanthe.rowland.org>
+Received: from mailhost.informatik.uni-hamburg.de
+ (mailhost.informatik.uni-hamburg.de [134.100.9.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2D14261B11
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 12:47:03 +0200 (CEST)
+In-Reply-To: <20130807093629.GU6427@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,26 +30,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Alan,
+On 08/07/2013 11:36 AM, Mark Brown wrote:
+> On Wed, Aug 07, 2013 at 10:26:35AM +0200, Lars-Peter Clausen wrote:
+>
+>> That isn't really supported right now. If muting and unmuting the control is
+>> such a complex sequence maybe it is better to stay with you previous
+>> solution, without autodisable.
+>
+> Adding an event callback shouldn't be hard?
+>
 
-Thank you very much for  quick response and the patch. The patch fixed the mic on both cameras.
+But tricky. The widget of course can have a event callback, but since the 
+widget is created by the DAPM layer and not the codec driver there is currently 
+no way to setup the callback. And then there is of course the question when do 
+you want to run the callback, only if DAPM unmutes the control, if the user 
+unmutes the control or both.
 
-I have also added the following patch (see https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=36691e1be6ec551eef4a5225f126a281f8c051c2) for avoiding the kernel warning.
+One thing that could work is to setup SND_SOC_DAPM_{PRE,POST}_REG events for 
+the SWITCH widget. This callback gets called whenever user changes the control 
+(and it is not disabled by DAPM). The next step then would be to set up an 
+internal event callback for kcontrol widgets which then again calls the event 
+callbacks for the kcontrol's widgets like we do in dapm_widget_update(). But 
+I'm not convinced that this is the best way to solve this. I think it makes 
+things more complicated than they need to be. I think having a OUTDRV widget 
+along the path that runs the mute and unmute sequence might be a better option. 
+And then have virtual switch control to let userspace disconnect the path, so 
+that it is still possbile to manually mute it.
 
---- linux-3.10.5-orig/sound/usb/mixer.c	2013-08-04 12:51:49.000000000 +0400
-+++ linux-3.10.5/sound/usb/mixer.c	2013-08-06 21:12:42.274197287 +0400
-@@ -888,6 +888,7 @@
- 	case USB_ID(0x046d, 0x081b): /* HD Webcam c310 */
- 	case USB_ID(0x046d, 0x081d): /* HD Webcam c510 */
- 	case USB_ID(0x046d, 0x0825): /* HD Webcam c270 */
-+	case USB_ID(0x046d, 0x0826): /* HD Webcam c525 */
- 	case USB_ID(0x046d, 0x0991):
- 	/* Most audio usb devices lie about volume resolution.
- 	 * Most Logitech webcams have res = 384.
-
---
-Maksim Boyko
+- Lars
