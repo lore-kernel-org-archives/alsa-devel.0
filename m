@@ -1,30 +1,21 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH] ASoC: rt5640: change widgetsequencefordepop
-Date: Wed, 7 Aug 2013 16:31:04 +0800
-Message-ID: <1121E117AD4ECE49880A389A396215BB935C692FEC@rtitmbs7.realtek.com.tw>
-References: <1375676343-13891-1-git-send-email-bardliao@realtek.com>
- <20130805144808.GG9858@sirena.org.uk> <51FFDF11.5020106@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692E0E@rtitmbs7.realtek.com.tw>
- <5200B7B5.7050506@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692E40@rtitmbs7.realtek.com.tw>
- <5200C369.6050607@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692E62@rtitmbs7.realtek.com.tw>
- <5200CD0D.7030007@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692E81@rtitmbs7.realtek.com.tw>
- <5200DE78.5060409@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692F72@rtitmbs7.realtek.com.tw>
- <5201FB09.1080105@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692FD9@rtitmbs7.realtek.com.tw>
- <520204BB.9080603@metafoo.de>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH RESEND] mfd: arizona: Move regulator
+ disable to after marking cache only
+Date: Wed, 7 Aug 2013 09:34:37 +0100
+Message-ID: <20130807083437.GJ5100@lee--X1>
+References: <1375805915-24009-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id AFDEB26084D
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 10:31:15 +0200 (CEST)
-In-Reply-To: <520204BB.9080603@metafoo.de>
-Content-Language: zh-TW
+Received: from mail-ea0-f175.google.com (mail-ea0-f175.google.com
+ [209.85.215.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A79326084D
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 10:34:43 +0200 (CEST)
+Received: by mail-ea0-f175.google.com with SMTP id m14so686783eaj.34
+ for <alsa-devel@alsa-project.org>; Wed, 07 Aug 2013 01:34:43 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1375805915-24009-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,58 +25,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Flove <flove@realtek.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
-> Sent: Wednesday, August 07, 2013 4:27 PM
-> To: Bard Liao
-> Cc: Mark Brown; Oder Chiou; alsa-devel@alsa-project.org;
-> swarren@nvidia.com; swarren@wwwdotorg.org; lgirdwood@gmail.com; Flove
-> Subject: Re: [alsa-devel] [PATCH] ASoC: rt5640: change
-> widgetsequencefordepop
-> 
-> On 08/07/2013 10:03 AM, Bard Liao wrote:
-> >> -----Original Message-----
-> >> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
-> >> Sent: Wednesday, August 07, 2013 3:45 PM
-> >> To: Bard Liao
-> >> Cc: Mark Brown; Oder Chiou; alsa-devel@alsa-project.org;
-> >> swarren@nvidia.com; swarren@wwwdotorg.org; lgirdwood@gmail.com;
-> Flove
-> >> Subject: Re: [alsa-devel] [PATCH] ASoC: rt5640: change
-> >> widgetsequencefordepop
-> >>
-> >> On 08/07/2013 07:40 AM, Bard Liao wrote:
-> >>> Is there any way to run an event when power up/down a
-> >> snd_soc_dapm_kcontrol type widgt?
-> >>> Because we need to do something with mute/unmute headphone.
-> >>> e.g.
-> >>> rt5640_pmu_depop is what we need when unmute headphone.
-> >>> We need to set something before and after set the hp mute bit.
-> >>>
-> >>> If there is an event to do that, it will be easier to implement that.
-> >>
-> >> You can setup a event for the SND_SOC_DAPM_SWITCH, but this will run
-> >> after setting the mute bit and before clearing the mute bit.
-> >
-> > It seems not to be suitable for me.
-> > For me, It is better to run before setting the mute bit and after clearing the
-> mute bit, too.
-> 
-> That isn't really supported right now. If muting and unmuting the control is
-> such a complex sequence maybe it is better to stay with you previous solution,
-> without autodisable.
-
-That's fine.
-I will check with our HW engineer to see if there is a simple sequence for headphone muting and unmuting.
-
-Thanks.
-
-> 
-> - Lars
-> 
-> 
-> ------Please consider the environment before printing this e-mail.
+T24gVHVlLCAwNiBBdWcgMjAxMywgQ2hhcmxlcyBLZWVwYXggd3JvdGU6Cgo+IElmIHdlIGRpc2Fi
+bGUgRENWREQgYmVmb3JlIHdlIG1hcmsgdGhlIGNhY2hlIGFzIGNhY2hlIG9ubHksIHdlIG1pZ2h0
+Cj4gYXR0ZW1wdCB0byB3cml0ZSB0byB0aGUgY2hpcCB3aGlsc3QgaXQgaXMgcG93ZXJlZCBkb3du
+IGFuZCBsb3NlIGEgd3JpdGUuCj4gCj4gU2lnbmVkLW9mZi1ieTogQ2hhcmxlcyBLZWVwYXggPGNr
+ZWVwYXhAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tPgo+IC0tLQo+ICBkcml2ZXJzL21mZC9h
+cml6b25hLWNvcmUuYyB8ICAgIDIgKy0KPiAgMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMo
+KyksIDEgZGVsZXRpb25zKC0pCgpBcHBsaWVkLCB0aGFua3MuCgotLSAKTGVlIEpvbmVzCkxpbmFy
+byBTVC1Fcmljc3NvbiBMYW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJj
+ZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVy
+IHwgQmxvZwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
