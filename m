@@ -1,66 +1,97 @@
-From: Jussi Kivilinna <jussi.kivilinna-X3B1VOXEql0@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH] 6fire: fix DMA issues with URB transfer_buffer
- usage
-Date: Wed, 07 Aug 2013 17:50:25 +0300
-Message-ID: <52025EB1.6090605@iki.fi>
-References: <20130806115324.23908.18291.stgit@localhost6.localdomain6> <s5h7gfx7jsw.wl%tiwai@suse.de> <20130807155907.dfea021b3b73fcac33e4323d@zoho.com>
+From: Torsten Schenk <torsten.schenk@zoho.com>
+Subject: [PATCH] 6fire: fix URB transfer buffer for midi output
+Date: Wed, 7 Aug 2013 16:51:49 +0200
+Message-ID: <20130807165149.188c4b16297be52c0630a18f@zoho.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20130807155907.dfea021b3b73fcac33e4323d-ytc+IHgoah0@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Torsten Schenk <torsten.schenk-ytc+IHgoah0@public.gmane.org>
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9C8B26555D
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 16:51:54 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On 07.08.2013 16:59, Torsten Schenk wrote:
-> On Wed, 07 Aug 2013 14:43:43 +0200
-> Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org> wrote:
-> 
->> At Tue, 06 Aug 2013 14:53:24 +0300,
->> Jussi Kivilinna wrote:
->>>
->>> Patch fixes 6fire not to use stack as URB transfer_buffer. URB
->>> buffers need to be DMA-able, which stack is not. Furthermore,
->>> transfer_buffer should not be allocated as part of larger device
->>> structure because DMA coherency issues and patch fixes this issue
->>> too.
-> 
-> Thanks for the information. There is another section where this applies
-> in midi.c/midi.h. I can post a patch later.
+Patch fixes URB transfer buffer allocation for midi output to be DMA-able.
 
-Appearently in pcm.c/pcm.h too:
- http://lxr.free-electrons.com/source/sound/usb/6fire/pcm.c#L571
- http://lxr.free-electrons.com/source/sound/usb/6fire/pcm.h#L35
-
--Jussi
-
-> 
->>>
->>> Patch is only compile tested.
->>
->> The changes look OK, but I'd like to let it checked with a real
->> hardware before putting to stable kernel.
->>
->> Torsten, could you check this?
-> 
-> The patch works nicely.
-> 
-> I'm just wondering if instead of calling kmalloc() every time it'd be
-> better to put a global sender_buffer and a mutex into the comm_runtime
-> struct and lock it every time a writeX is performed. This also would
-> have the advantage that message blocks would never overlap which
-> currently is possible.
-> 
-> I can prepare a patch on top of this one and send it later, if you
-> agree.
-> 
-> Thanks,
-> Torsten
-> 
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Torsten Schenk <torsten.schenk@zoho.com>
+---
+diff -Nur a/sound/usb/6fire/midi.c b/sound/usb/6fire/midi.c
+--- a/sound/usb/6fire/midi.c	2013-08-07 16:32:10.579639391 +0200
++++ b/sound/usb/6fire/midi.c	2013-08-07 16:32:31.363378104 +0200
+@@ -19,6 +19,10 @@
+ #include "chip.h"
+ #include "comm.h"
+ 
++enum {
++	MIDI_BUFSIZE = 64
++};
++
+ static void usb6fire_midi_out_handler(struct urb *urb)
+ {
+ 	struct midi_runtime *rt = urb->context;
+@@ -156,6 +160,12 @@
+ 	if (!rt)
+ 		return -ENOMEM;
+ 
++	rt->out_buffer = kzalloc(MIDI_BUFSIZE, GFP_KERNEL);
++	if (!rt->out_buffer) {
++		kfree(rt);
++		return -ENOMEM;
++	}
++
+ 	rt->chip = chip;
+ 	rt->in_received = usb6fire_midi_in_received;
+ 	rt->out_buffer[0] = 0x80; /* 'send midi' command */
+@@ -169,6 +179,7 @@
+ 
+ 	ret = snd_rawmidi_new(chip->card, "6FireUSB", 0, 1, 1, &rt->instance);
+ 	if (ret < 0) {
++		kfree(rt->out_buffer);
+ 		kfree(rt);
+ 		snd_printk(KERN_ERR PREFIX "unable to create midi.\n");
+ 		return ret;
+@@ -197,6 +208,9 @@
+ 
+ void usb6fire_midi_destroy(struct sfire_chip *chip)
+ {
+-	kfree(chip->midi);
++	struct midi_runtime *rt = chip->midi;
++
++	kfree(rt->out_buffer);
++	kfree(rt);
+ 	chip->midi = NULL;
+ }
+diff -Nur a/sound/usb/6fire/midi.h b/sound/usb/6fire/midi.h
+--- a/sound/usb/6fire/midi.h	2013-08-07 16:32:10.579639391 +0200
++++ b/sound/usb/6fire/midi.h	2013-08-07 16:32:31.363378104 +0200
+@@ -16,10 +16,6 @@
+ 
+ #include "common.h"
+ 
+-enum {
+-	MIDI_BUFSIZE = 64
+-};
+-
+ struct midi_runtime {
+ 	struct sfire_chip *chip;
+ 	struct snd_rawmidi *instance;
+@@ -32,7 +28,7 @@
+ 	struct snd_rawmidi_substream *out;
+ 	struct urb out_urb;
+ 	u8 out_serial; /* serial number of out packet */
+-	u8 out_buffer[MIDI_BUFSIZE];
++	u8 *out_buffer;
+ 	int buffer_offset;
+ 
+ 	void (*in_received)(struct midi_runtime *rt, u8 *data, int length);
