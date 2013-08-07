@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] switch: arizona: Clear trig_sts bits on
-	all paths
-Date: Wed, 7 Aug 2013 11:03:13 +0100
-Message-ID: <20130807100313.GW6427@sirena.org.uk>
-References: <1375864122-6615-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: =?koi8-r?B?4s/Ky88g7cHL08nN?= <maksboyko@yandex.ru>
+Subject: Re: Linux 3.10.4 and Logitech HD Webcam C525/C310
+Date: Wed, 07 Aug 2013 14:37:11 +0400
+Message-ID: <800141375871831@web3e.yandex.ru>
+References: <36731375776759@web15h.yandex.ru>
+ <Pine.LNX.4.44L0.1308060958070.1154-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8571976123317664182=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CA37261B35
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 12:03:17 +0200 (CEST)
-In-Reply-To: <1375864122-6615-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from forward9.mail.yandex.net (forward9.mail.yandex.net
+ [77.88.61.48]) by alsa0.perex.cz (Postfix) with ESMTP id 50458261B11
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2013 12:37:14 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.44L0.1308060958070.1154-100000@iolanthe.rowland.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: cw00.choi@samsung.com, alsa-devel@alsa-project.org, myungjoo.ham@samsung.com, patches@opensource.wolfsonmicro.com
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Alan,
 
---===============8571976123317664182==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="S5Rg6oz6PtEXgjQf"
-Content-Disposition: inline
+Thank you very much for  quick response and the patch. The patch fixed the mic on both cameras.
 
+I have also added the following patch (see https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=36691e1be6ec551eef4a5225f126a281f8c051c2) for avoiding the kernel warning.
 
---S5Rg6oz6PtEXgjQf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--- linux-3.10.5-orig/sound/usb/mixer.c	2013-08-04 12:51:49.000000000 +0400
++++ linux-3.10.5/sound/usb/mixer.c	2013-08-06 21:12:42.274197287 +0400
+@@ -888,6 +888,7 @@
+ 	case USB_ID(0x046d, 0x081b): /* HD Webcam c310 */
+ 	case USB_ID(0x046d, 0x081d): /* HD Webcam c510 */
+ 	case USB_ID(0x046d, 0x0825): /* HD Webcam c270 */
++	case USB_ID(0x046d, 0x0826): /* HD Webcam c525 */
+ 	case USB_ID(0x046d, 0x0991):
+ 	/* Most audio usb devices lie about volume resolution.
+ 	 * Most Logitech webcams have res = 384.
 
-On Wed, Aug 07, 2013 at 09:28:42AM +0100, Charles Keepax wrote:
-> We want the trig_sts bits to be cleared in all cases where we consider
-> the jack detection interrupt to have been handled. Specifically, if a
-> duplicate detection event was suppressed these bits were not cleared
-> causing the CODEC to not enter a low power state. This patch clears the
-> bits on the duplicate detection code path.
-
-This isn't an ASoC patch, it should be CCed to lkml.  Might want to
-update the subject line too.
-
---S5Rg6oz6PtEXgjQf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSAhteAAoJELSic+t+oim9ZmsQAIn2NqUYP8wE8Ze235ftng04
-W9LjrpR7QsQewee5MGL7HXZoChvvAvYo4j6VCiqpuVHuDyvE2TfdOKmSECwewgYf
-gbReaTGc+GM7mhqZDhhrw8Ir9iRdI4sJdlyy/kTDmfwH0+fdVFB3G89TMUUQz1o6
-mxnd/g54AB/7I3WSoPkTTIMX2cZk3rx6U+TgccT8PQ/DgMtFeaugDpIbI+mmG/pb
-QkCFxwGKA7NVjJu6dWW4NYCfuckzkJ4FnVd1sNntEu7DuPKvza9+DkzBtfhspQf/
-U2f4PsZEzJAVmYztnzAk652nipZyLz+MVFfusU4cV5fmACCdi+ZQSa3MCHGwldM+
-EUCK6Zmu/o4LKSz1YfsKkIAzoEWE3Dmzb6G1jTQY8k+YL6N+YEKn/g2IZB2X/n+5
-vNZy8gZouJWiSVqkvne7u3BYkXguP4dD5fhyVCcHhpUvUmotl9VGvSK+5Bl/cS8Q
-s21WNj3ubNgdhfb9e0P4AL9f2yQtIW/VADKm1gzs6lZTtVsXS6dpEMCIBK3tftI7
-X+exKqkrZx/7Drbt/YPEKbfZhQ4zfsnWSg7awQCoLUGmR1oK1Mph21xycEbHIm2g
-iGQotR644dOCQ+EaKQJsl5wK+XEyKW1ios46wtnnh9Ki+WEqjdOURixzvPgGHd2m
-Kjh0dfFmZ/Ck22akWXQo
-=IYe1
------END PGP SIGNATURE-----
-
---S5Rg6oz6PtEXgjQf--
-
---===============8571976123317664182==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8571976123317664182==--
+--
+Maksim Boyko
