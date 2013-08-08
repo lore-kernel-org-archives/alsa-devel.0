@@ -1,16 +1,21 @@
-From: Knut Petersen <Knut_Petersen@t-online.de>
-Subject: Re: [PATCH] rme96 synchronization support
-Date: Thu, 08 Aug 2013 12:52:20 +0200
-Message-ID: <52037864.9000205@t-online.de>
-References: <51FF9C55.80701@t-online.de> <51FFA643.7060504@ladisch.de>
- <52013579.7020304@t-online.de> <s5h4nb2asg5.wl%tiwai@suse.de>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: [RFC PATCH] ASoC: omap-mcbsp: Add support for
+ highter rate up to 384000
+Date: Thu, 8 Aug 2013 13:04:10 +0200
+Message-ID: <20130808110410.GA11288@panicking>
+References: <20130807182841.GA7823@panicking>
+ <5203782D.1080008@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080504010104060907000005"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout05.t-online.de (mailout05.t-online.de [194.25.134.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CF272619F6
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 12:52:30 +0200 (CEST)
-In-Reply-To: <s5h4nb2asg5.wl%tiwai@suse.de>
+Received: from mail-ee0-f44.google.com (mail-ee0-f44.google.com [74.125.83.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 500EC2619DC
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 13:04:34 +0200 (CEST)
+Received: by mail-ee0-f44.google.com with SMTP id b47so1432137eek.17
+ for <alsa-devel@alsa-project.org>; Thu, 08 Aug 2013 04:04:32 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <5203782D.1080008@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,383 +25,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080504010104060907000005
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi
 
-Hi everybody!
+On Thu, Aug 08, 2013 at 01:51:25PM +0300, Peter Ujfalusi wrote:
+> On 08/07/2013 09:28 PM, Michael Trimarchi wrote:
+> > Add support for highter rate up to 384000Khz. There are codecs in the
+> > market that can play up to this frequency.
+> > Test was done just with:
+> > =
 
-Version 2 of the patch adding pcm stream synchronization support
-to the rme96 driver.
+> > #define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_192000)
+> > =
 
-cu,
-  Knut
+> > playing wav file 32bit/192000Khz stereo. Some glitch has observed
+> > but this should depend on the selected min buffer bytes that was
+> > left untouched in aplay and in the omap-pcm driver.
+> > =
 
---------------080504010104060907000005
-Content-Type: text/x-patch;
- name="0001-alsa-rme96-Add-support-for-synchronized-start-pause-.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-alsa-rme96-Add-support-for-synchronized-start-pause-.pa";
- filename*1="tch"
+> > Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+> > ---
+> >  sound/soc/omap/omap-mcbsp.c |    8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > =
 
->From 015bc7f9ebcbf01ce209a4f859bbfa9c31885483 Mon Sep 17 00:00:00 2001
-From: Knut Petersen <Knut_Petersen@t-online.de>
-Date: Thu, 8 Aug 2013 11:59:27 +0200
-Subject: [PATCH] alsa/rme96: Add support for synchronized start/pause/stop of
- pcm streams to the rme96 driver. 2nd version.
+> > diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+> > index 7483efb..1e95f6a 100644
+> > --- a/sound/soc/omap/omap-mcbsp.c
+> > +++ b/sound/soc/omap/omap-mcbsp.c
+> > @@ -39,7 +39,9 @@
+> >  #include "mcbsp.h"
+> >  #include "omap-mcbsp.h"
+> >  =
 
-Signed-off-by: Knut Petersen <Knut_Petersen@t-online.de>
----
- sound/pci/rme96.c | 145 +++++++++++++++++++++++++++++++++---------------------
- 1 file changed, 90 insertions(+), 55 deletions(-)
+> > -#define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_96000)
+> > +#define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_192000 |		\
+> =
 
-diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
-index 5fb88ac..35651c5 100644
---- a/sound/pci/rme96.c
-+++ b/sound/pci/rme96.c
-@@ -198,6 +198,24 @@ MODULE_PARM_DESC(enable, "Enable RME Digi96 soundcard.");
- #define RME96_AD1852_VOL_BITS 14
- #define RME96_AD1855_VOL_BITS 10
- 
-+/* Defines for snd_rme96_trigger */
-+#define RME96_TB_START_PLAYBACK 1
-+#define RME96_TB_START_CAPTURE 2
-+#define RME96_TB_STOP_PLAYBACK 4
-+#define RME96_TB_STOP_CAPTURE 8
-+#define RME96_TB_RESET_PLAYPOS 16
-+#define RME96_TB_RESET_CAPTUREPOS 32
-+#define RME96_TB_CLEAR_PLAYBACK_IRQ 64
-+#define RME96_TB_CLEAR_CAPTURE_IRQ 128
-+#define RME96_RESUME_PLAYBACK (RME96_TB_START_PLAYBACK)
-+#define RME96_RESUME_CAPTURE  (RME96_TB_START_CAPTURE)
-+#define RME96_RESUME_BOTH     (RME96_RESUME_PLAYBACK   | RME96_RESUME_CAPTURE)
-+#define RME96_START_PLAYBACK  (RME96_TB_START_PLAYBACK | RME96_TB_RESET_PLAYPOS)
-+#define RME96_START_CAPTURE   (RME96_TB_START_CAPTURE  | RME96_TB_RESET_CAPTUREPOS)
-+#define RME96_START_BOTH      (RME96_START_PLAYBACK    | RME96_START_CAPTURE)
-+#define RME96_STOP_PLAYBACK   (RME96_TB_STOP_PLAYBACK  | RME96_TB_CLEAR_PLAYBACK_IRQ)
-+#define RME96_STOP_CAPTURE    (RME96_TB_STOP_CAPTURE   | RME96_TB_CLEAR_CAPTURE_IRQ)
-+#define RME96_STOP_BOTH       (RME96_STOP_PLAYBACK     | RME96_STOP_CAPTURE)
- 
- struct rme96 {
- 	spinlock_t    lock;
-@@ -344,6 +362,7 @@ static struct snd_pcm_hardware snd_rme96_playback_spdif_info =
- {
- 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
- 			      SNDRV_PCM_INFO_MMAP_VALID |
-+			      SNDRV_PCM_INFO_SYNC_START |
- 			      SNDRV_PCM_INFO_INTERLEAVED |
- 			      SNDRV_PCM_INFO_PAUSE),
- 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
-@@ -373,6 +392,7 @@ static struct snd_pcm_hardware snd_rme96_capture_spdif_info =
- {
- 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
- 			      SNDRV_PCM_INFO_MMAP_VALID |
-+			      SNDRV_PCM_INFO_SYNC_START |
- 			      SNDRV_PCM_INFO_INTERLEAVED |
- 			      SNDRV_PCM_INFO_PAUSE),
- 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
-@@ -402,6 +422,7 @@ static struct snd_pcm_hardware snd_rme96_playback_adat_info =
- {
- 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
- 			      SNDRV_PCM_INFO_MMAP_VALID |
-+			      SNDRV_PCM_INFO_SYNC_START |
- 			      SNDRV_PCM_INFO_INTERLEAVED |
- 			      SNDRV_PCM_INFO_PAUSE),
- 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
-@@ -427,6 +448,7 @@ static struct snd_pcm_hardware snd_rme96_capture_adat_info =
- {
- 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
- 			      SNDRV_PCM_INFO_MMAP_VALID |
-+			      SNDRV_PCM_INFO_SYNC_START |
- 			      SNDRV_PCM_INFO_INTERLEAVED |
- 			      SNDRV_PCM_INFO_PAUSE),
- 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
-@@ -1045,54 +1067,43 @@ snd_rme96_capture_hw_params(struct snd_pcm_substream *substream,
- }
- 
- static void
--snd_rme96_playback_start(struct rme96 *rme96,
--			 int from_pause)
-+snd_rme96_trigger(struct rme96 *rme96,
-+		  int op)
- {
--	if (!from_pause) {
-+	if (op & RME96_TB_RESET_PLAYPOS) {
- 		writel(0, rme96->iobase + RME96_IO_RESET_PLAY_POS);
- 	}
--
--	rme96->wcreg |= RME96_WCR_START;
--	writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
--}
--
--static void
--snd_rme96_capture_start(struct rme96 *rme96,
--			int from_pause)
--{
--	if (!from_pause) {
-+	if (op & RME96_TB_RESET_CAPTUREPOS) {
- 		writel(0, rme96->iobase + RME96_IO_RESET_REC_POS);
- 	}
--
--	rme96->wcreg |= RME96_WCR_START_2;
-+	if(op & RME96_TB_CLEAR_PLAYBACK_IRQ) {
-+		rme96->rcreg = readl(rme96->iobase + RME96_IO_CONTROL_REGISTER);
-+		if (rme96->rcreg & RME96_RCR_IRQ) {
-+			writel(0, rme96->iobase + RME96_IO_CONFIRM_PLAY_IRQ);
-+		}
-+	}
-+	if(op & RME96_TB_CLEAR_CAPTURE_IRQ) {
-+		rme96->rcreg = readl(rme96->iobase + RME96_IO_CONTROL_REGISTER);
-+		if (rme96->rcreg & RME96_RCR_IRQ_2) {
-+			writel(0, rme96->iobase + RME96_IO_CONFIRM_REC_IRQ);
-+		}
-+	}
-+	if (op & RME96_TB_START_PLAYBACK) {
-+		rme96->wcreg |= RME96_WCR_START;
-+	}
-+	if (op & RME96_TB_STOP_PLAYBACK) {
-+		rme96->wcreg &= ~RME96_WCR_START;
-+	}
-+	if (op & RME96_TB_START_CAPTURE) {
-+		rme96->wcreg |= RME96_WCR_START_2;
-+	}
-+	if (op & RME96_TB_STOP_CAPTURE) {
-+		rme96->wcreg &= ~RME96_WCR_START_2;
-+	}
- 	writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
- }
- 
--static void
--snd_rme96_playback_stop(struct rme96 *rme96)
--{
--	/*
--	 * Check if there is an unconfirmed IRQ, if so confirm it, or else
--	 * the hardware will not stop generating interrupts
--	 */
--	rme96->rcreg = readl(rme96->iobase + RME96_IO_CONTROL_REGISTER);
--	if (rme96->rcreg & RME96_RCR_IRQ) {
--		writel(0, rme96->iobase + RME96_IO_CONFIRM_PLAY_IRQ);
--	}	
--	rme96->wcreg &= ~RME96_WCR_START;
--	writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
--}
- 
--static void
--snd_rme96_capture_stop(struct rme96 *rme96)
--{
--	rme96->rcreg = readl(rme96->iobase + RME96_IO_CONTROL_REGISTER);
--	if (rme96->rcreg & RME96_RCR_IRQ_2) {
--		writel(0, rme96->iobase + RME96_IO_CONFIRM_REC_IRQ);
--	}	
--	rme96->wcreg &= ~RME96_WCR_START_2;
--	writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
--}
- 
- static irqreturn_t
- snd_rme96_interrupt(int irq,
-@@ -1155,6 +1166,7 @@ snd_rme96_playback_spdif_open(struct snd_pcm_substream *substream)
- 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 
-+	snd_pcm_set_sync(substream);
- 	spin_lock_irq(&rme96->lock);	
-         if (rme96->playback_substream != NULL) {
- 		spin_unlock_irq(&rme96->lock);
-@@ -1191,6 +1203,7 @@ snd_rme96_capture_spdif_open(struct snd_pcm_substream *substream)
- 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 
-+	snd_pcm_set_sync(substream);
- 	runtime->hw = snd_rme96_capture_spdif_info;
-         if (snd_rme96_getinputtype(rme96) != RME96_INPUT_ANALOG &&
-             (rate = snd_rme96_capture_getrate(rme96, &isadat)) > 0)
-@@ -1222,6 +1235,7 @@ snd_rme96_playback_adat_open(struct snd_pcm_substream *substream)
- 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;        
- 	
-+	snd_pcm_set_sync(substream);
- 	spin_lock_irq(&rme96->lock);	
-         if (rme96->playback_substream != NULL) {
- 		spin_unlock_irq(&rme96->lock);
-@@ -1253,6 +1267,7 @@ snd_rme96_capture_adat_open(struct snd_pcm_substream *substream)
- 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 
-+	snd_pcm_set_sync(substream);
- 	runtime->hw = snd_rme96_capture_adat_info;
-         if (snd_rme96_getinputtype(rme96) == RME96_INPUT_ANALOG) {
-                 /* makes no sense to use analog input. Note that analog
-@@ -1288,7 +1303,7 @@ snd_rme96_playback_close(struct snd_pcm_substream *substream)
- 
- 	spin_lock_irq(&rme96->lock);	
- 	if (RME96_ISPLAYING(rme96)) {
--		snd_rme96_playback_stop(rme96);
-+		snd_rme96_trigger(rme96,RME96_STOP_PLAYBACK);
- 	}
- 	rme96->playback_substream = NULL;
- 	rme96->playback_periodsize = 0;
-@@ -1309,7 +1324,7 @@ snd_rme96_capture_close(struct snd_pcm_substream *substream)
- 	
- 	spin_lock_irq(&rme96->lock);	
- 	if (RME96_ISRECORDING(rme96)) {
--		snd_rme96_capture_stop(rme96);
-+		snd_rme96_trigger(rme96,RME96_STOP_CAPTURE);
- 	}
- 	rme96->capture_substream = NULL;
- 	rme96->capture_periodsize = 0;
-@@ -1324,7 +1339,7 @@ snd_rme96_playback_prepare(struct snd_pcm_substream *substream)
- 	
- 	spin_lock_irq(&rme96->lock);	
- 	if (RME96_ISPLAYING(rme96)) {
--		snd_rme96_playback_stop(rme96);
-+		snd_rme96_trigger(rme96,RME96_STOP_PLAYBACK);
- 	}
- 	writel(0, rme96->iobase + RME96_IO_RESET_PLAY_POS);
- 	spin_unlock_irq(&rme96->lock);
-@@ -1338,7 +1353,7 @@ snd_rme96_capture_prepare(struct snd_pcm_substream *substream)
- 	
- 	spin_lock_irq(&rme96->lock);	
- 	if (RME96_ISRECORDING(rme96)) {
--		snd_rme96_capture_stop(rme96);
-+		snd_rme96_trigger(rme96,RME96_STOP_CAPTURE);
- 	}
- 	writel(0, rme96->iobase + RME96_IO_RESET_REC_POS);
- 	spin_unlock_irq(&rme96->lock);
-@@ -1350,6 +1365,17 @@ snd_rme96_playback_trigger(struct snd_pcm_substream *substream,
- 			   int cmd)
- {
- 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
-+	struct snd_pcm_substream *s;
-+	bool sync;
-+
-+	snd_pcm_group_for_each_entry(s, substream) {
-+		if (snd_pcm_substream_chip(s) == rme96) {
-+			snd_pcm_trigger_done(s, substream);
-+		}
-+	}
-+
-+	sync = (rme96->playback_substream && rme96->capture_substream) &&
-+	       (rme96->playback_substream->group == rme96->capture_substream->group);
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -1357,7 +1383,7 @@ snd_rme96_playback_trigger(struct snd_pcm_substream *substream,
- 			if (substream != rme96->playback_substream) {
- 				return -EBUSY;
- 			}
--			snd_rme96_playback_start(rme96, 0);
-+			snd_rme96_trigger(rme96, sync ? RME96_START_BOTH : RME96_START_PLAYBACK);
- 		}
- 		break;
- 
-@@ -1366,19 +1392,19 @@ snd_rme96_playback_trigger(struct snd_pcm_substream *substream,
- 			if (substream != rme96->playback_substream) {
- 				return -EBUSY;
- 			}
--			snd_rme96_playback_stop(rme96);
-+			snd_rme96_trigger(rme96, sync ? RME96_STOP_BOTH :  RME96_STOP_PLAYBACK);
- 		}
- 		break;
- 
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		if (RME96_ISPLAYING(rme96)) {
--			snd_rme96_playback_stop(rme96);
-+			snd_rme96_trigger(rme96, sync ? RME96_STOP_BOTH : RME96_STOP_PLAYBACK);
- 		}
- 		break;
- 
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		if (!RME96_ISPLAYING(rme96)) {
--			snd_rme96_playback_start(rme96, 1);
-+			snd_rme96_trigger(rme96, sync ? RME96_RESUME_BOTH : RME96_RESUME_PLAYBACK);
- 		}
- 		break;
- 		
-@@ -1393,6 +1419,17 @@ snd_rme96_capture_trigger(struct snd_pcm_substream *substream,
- 			  int cmd)
- {
- 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
-+	struct snd_pcm_substream *s;
-+	bool sync;
-+
-+	snd_pcm_group_for_each_entry(s, substream) {
-+		if (snd_pcm_substream_chip(s) == rme96) {
-+			snd_pcm_trigger_done(s, substream);
-+		}
-+	}
-+
-+	sync = (rme96->playback_substream && rme96->capture_substream) &&
-+	       (rme96->playback_substream->group == rme96->capture_substream->group);
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -1400,7 +1437,7 @@ snd_rme96_capture_trigger(struct snd_pcm_substream *substream,
- 			if (substream != rme96->capture_substream) {
- 				return -EBUSY;
- 			}
--			snd_rme96_capture_start(rme96, 0);
-+			snd_rme96_trigger(rme96, sync ? RME96_START_BOTH : RME96_START_CAPTURE);
- 		}
- 		break;
- 
-@@ -1409,19 +1446,19 @@ snd_rme96_capture_trigger(struct snd_pcm_substream *substream,
- 			if (substream != rme96->capture_substream) {
- 				return -EBUSY;
- 			}
--			snd_rme96_capture_stop(rme96);
-+			snd_rme96_trigger(rme96, sync ? RME96_STOP_BOTH : RME96_STOP_CAPTURE);
- 		}
- 		break;
- 
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		if (RME96_ISRECORDING(rme96)) {
--			snd_rme96_capture_stop(rme96);
-+			snd_rme96_trigger(rme96, sync ? RME96_STOP_BOTH : RME96_STOP_CAPTURE);
- 		}
- 		break;
- 
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		if (!RME96_ISRECORDING(rme96)) {
--			snd_rme96_capture_start(rme96, 1);
-+			snd_rme96_trigger(rme96, sync ? RME96_RESUME_BOTH : RME96_RESUME_CAPTURE);
- 		}
- 		break;
- 		
-@@ -1505,8 +1542,7 @@ snd_rme96_free(void *private_data)
- 	        return;
- 	}
- 	if (rme96->irq >= 0) {
--		snd_rme96_playback_stop(rme96);
--		snd_rme96_capture_stop(rme96);
-+		snd_rme96_trigger(rme96,RME96_STOP_BOTH);
- 		rme96->areg &= ~RME96_AR_DAC_EN;
- 		writel(rme96->areg, rme96->iobase + RME96_IO_ADDITIONAL_REG);
- 		free_irq(rme96->irq, (void *)rme96);
-@@ -1606,8 +1642,7 @@ snd_rme96_create(struct rme96 *rme96)
- 	rme96->capture_periodsize = 0;
- 	
- 	/* make sure playback/capture is stopped, if by some reason active */
--	snd_rme96_playback_stop(rme96);
--	snd_rme96_capture_stop(rme96);
-+	snd_rme96_trigger(rme96,RME96_STOP_BOTH);
- 	
- 	/* set default values in registers */
- 	rme96->wcreg =
--- 
-1.8.1.4
+> I think only this change is enough for what you want to achieve.
+> =
+
+> > +				 SNDRV_PCM_RATE_CONTINUOUS |		\
+> > +				 SNDRV_PCM_RATE_KNOT)
+> =
+
+> The _KNOT is for sure not needed and I would not set the CONTINUOUS eithe=
+r.
+
+pcm5102pw is a codec that support 384000 rate so I think that PCM_RATE_KNOT
+is requested for such rate. Correct?
+
+> =
+
+> >  =
+
+> >  #define OMAP_MCBSP_SOC_SINGLE_S16_EXT(xname, xmin, xmax, \
+> >  	xhandler_get, xhandler_put) \
+> > @@ -574,11 +576,15 @@ static struct snd_soc_dai_driver omap_mcbsp_dai =
+=3D {
+> >  		.channels_max =3D 16,
+> >  		.rates =3D OMAP_MCBSP_RATES,
+> >  		.formats =3D SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
+> > +		.rate_min =3D 8000,
+> > +		.rate_max =3D 384000,
+> =
+
+> Why you want to limit the rates here?
+> =
 
 
---------------080504010104060907000005
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I didn't find in the market somenthing up to 384000.
 
+Michael
 
---------------080504010104060907000005--
+> >  	},
+> >  	.capture =3D {
+> >  		.channels_min =3D 1,
+> >  		.channels_max =3D 16,
+> >  		.rates =3D OMAP_MCBSP_RATES,
+> > +		.rate_min =3D 8000,
+> > +		.rate_max =3D 384000,
+> =
+
+> Same here, do not set these.
+> =
+
+> >  		.formats =3D SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
+> >  	},
+> >  	.ops =3D &mcbsp_dai_ops,
+> > =
+
+> =
+
+> =
+
+> -- =
+
+> P=E9ter
