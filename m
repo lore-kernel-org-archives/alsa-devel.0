@@ -1,17 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [RFC PATCH] ASoC: omap-mcbsp: Add support for
- highter rate up to 384000
-Date: Thu, 8 Aug 2013 13:51:25 +0300
-Message-ID: <5203782D.1080008@ti.com>
-References: <20130807182841.GA7823@panicking>
+From: Knut Petersen <Knut_Petersen@t-online.de>
+Subject: Re: [PATCH] rme96 synchronization support
+Date: Thu, 08 Aug 2013 12:52:20 +0200
+Message-ID: <52037864.9000205@t-online.de>
+References: <51FF9C55.80701@t-online.de> <51FFA643.7060504@ladisch.de>
+ <52013579.7020304@t-online.de> <s5h4nb2asg5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="------------080504010104060907000005"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 9816F2619D4
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 12:50:58 +0200 (CEST)
-In-Reply-To: <20130807182841.GA7823@panicking>
+Received: from mailout05.t-online.de (mailout05.t-online.de [194.25.134.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CF272619F6
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 12:52:30 +0200 (CEST)
+In-Reply-To: <s5h4nb2asg5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,43 +20,383 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Michael Trimarchi <michael@amarulasolutions.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDgvMDcvMjAxMyAwOToyOCBQTSwgTWljaGFlbCBUcmltYXJjaGkgd3JvdGU6Cj4gQWRkIHN1
-cHBvcnQgZm9yIGhpZ2h0ZXIgcmF0ZSB1cCB0byAzODQwMDBLaHouIFRoZXJlIGFyZSBjb2RlY3Mg
-aW4gdGhlCj4gbWFya2V0IHRoYXQgY2FuIHBsYXkgdXAgdG8gdGhpcyBmcmVxdWVuY3kuCj4gVGVz
-dCB3YXMgZG9uZSBqdXN0IHdpdGg6Cj4gCj4gI2RlZmluZSBPTUFQX01DQlNQX1JBVEVTCShTTkRS
-Vl9QQ01fUkFURV84MDAwXzE5MjAwMCkKPiAKPiBwbGF5aW5nIHdhdiBmaWxlIDMyYml0LzE5MjAw
-MEtoeiBzdGVyZW8uIFNvbWUgZ2xpdGNoIGhhcyBvYnNlcnZlZAo+IGJ1dCB0aGlzIHNob3VsZCBk
-ZXBlbmQgb24gdGhlIHNlbGVjdGVkIG1pbiBidWZmZXIgYnl0ZXMgdGhhdCB3YXMKPiBsZWZ0IHVu
-dG91Y2hlZCBpbiBhcGxheSBhbmQgaW4gdGhlIG9tYXAtcGNtIGRyaXZlci4KPiAKPiBTaWduZWQt
-b2ZmLWJ5OiBNaWNoYWVsIFRyaW1hcmNoaSA8bWljaGFlbEBhbWFydWxhc29sdXRpb25zLmNvbT4K
-PiAtLS0KPiAgc291bmQvc29jL29tYXAvb21hcC1tY2JzcC5jIHwgICAgOCArKysrKysrLQo+ICAx
-IGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4gCj4gZGlmZiAt
-LWdpdCBhL3NvdW5kL3NvYy9vbWFwL29tYXAtbWNic3AuYyBiL3NvdW5kL3NvYy9vbWFwL29tYXAt
-bWNic3AuYwo+IGluZGV4IDc0ODNlZmIuLjFlOTVmNmEgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29j
-L29tYXAvb21hcC1tY2JzcC5jCj4gKysrIGIvc291bmQvc29jL29tYXAvb21hcC1tY2JzcC5jCj4g
-QEAgLTM5LDcgKzM5LDkgQEAKPiAgI2luY2x1ZGUgIm1jYnNwLmgiCj4gICNpbmNsdWRlICJvbWFw
-LW1jYnNwLmgiCj4gIAo+IC0jZGVmaW5lIE9NQVBfTUNCU1BfUkFURVMJKFNORFJWX1BDTV9SQVRF
-XzgwMDBfOTYwMDApCj4gKyNkZWZpbmUgT01BUF9NQ0JTUF9SQVRFUwkoU05EUlZfUENNX1JBVEVf
-ODAwMF8xOTIwMDAgfAkJXAoKSSB0aGluayBvbmx5IHRoaXMgY2hhbmdlIGlzIGVub3VnaCBmb3Ig
-d2hhdCB5b3Ugd2FudCB0byBhY2hpZXZlLgoKPiArCQkJCSBTTkRSVl9QQ01fUkFURV9DT05USU5V
-T1VTIHwJCVwKPiArCQkJCSBTTkRSVl9QQ01fUkFURV9LTk9UKQoKVGhlIF9LTk9UIGlzIGZvciBz
-dXJlIG5vdCBuZWVkZWQgYW5kIEkgd291bGQgbm90IHNldCB0aGUgQ09OVElOVU9VUyBlaXRoZXIu
-Cgo+ICAKPiAgI2RlZmluZSBPTUFQX01DQlNQX1NPQ19TSU5HTEVfUzE2X0VYVCh4bmFtZSwgeG1p
-biwgeG1heCwgXAo+ICAJeGhhbmRsZXJfZ2V0LCB4aGFuZGxlcl9wdXQpIFwKPiBAQCAtNTc0LDEx
-ICs1NzYsMTUgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIgb21hcF9tY2JzcF9k
-YWkgPSB7Cj4gIAkJLmNoYW5uZWxzX21heCA9IDE2LAo+ICAJCS5yYXRlcyA9IE9NQVBfTUNCU1Bf
-UkFURVMsCj4gIAkJLmZvcm1hdHMgPSBTTkRSVl9QQ01fRk1UQklUX1MxNl9MRSB8IFNORFJWX1BD
-TV9GTVRCSVRfUzMyX0xFLAo+ICsJCS5yYXRlX21pbiA9IDgwMDAsCj4gKwkJLnJhdGVfbWF4ID0g
-Mzg0MDAwLAoKV2h5IHlvdSB3YW50IHRvIGxpbWl0IHRoZSByYXRlcyBoZXJlPwoKPiAgCX0sCj4g
-IAkuY2FwdHVyZSA9IHsKPiAgCQkuY2hhbm5lbHNfbWluID0gMSwKPiAgCQkuY2hhbm5lbHNfbWF4
-ID0gMTYsCj4gIAkJLnJhdGVzID0gT01BUF9NQ0JTUF9SQVRFUywKPiArCQkucmF0ZV9taW4gPSA4
-MDAwLAo+ICsJCS5yYXRlX21heCA9IDM4NDAwMCwKClNhbWUgaGVyZSwgZG8gbm90IHNldCB0aGVz
-ZS4KCj4gIAkJLmZvcm1hdHMgPSBTTkRSVl9QQ01fRk1UQklUX1MxNl9MRSB8IFNORFJWX1BDTV9G
-TVRCSVRfUzMyX0xFLAo+ICAJfSwKPiAgCS5vcHMgPSAmbWNic3BfZGFpX29wcywKPiAKCgotLSAK
-UMOpdGVyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This is a multi-part message in MIME format.
+--------------080504010104060907000005
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hi everybody!
+
+Version 2 of the patch adding pcm stream synchronization support
+to the rme96 driver.
+
+cu,
+  Knut
+
+--------------080504010104060907000005
+Content-Type: text/x-patch;
+ name="0001-alsa-rme96-Add-support-for-synchronized-start-pause-.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-alsa-rme96-Add-support-for-synchronized-start-pause-.pa";
+ filename*1="tch"
+
+>From 015bc7f9ebcbf01ce209a4f859bbfa9c31885483 Mon Sep 17 00:00:00 2001
+From: Knut Petersen <Knut_Petersen@t-online.de>
+Date: Thu, 8 Aug 2013 11:59:27 +0200
+Subject: [PATCH] alsa/rme96: Add support for synchronized start/pause/stop of
+ pcm streams to the rme96 driver. 2nd version.
+
+Signed-off-by: Knut Petersen <Knut_Petersen@t-online.de>
+---
+ sound/pci/rme96.c | 145 +++++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 90 insertions(+), 55 deletions(-)
+
+diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
+index 5fb88ac..35651c5 100644
+--- a/sound/pci/rme96.c
++++ b/sound/pci/rme96.c
+@@ -198,6 +198,24 @@ MODULE_PARM_DESC(enable, "Enable RME Digi96 soundcard.");
+ #define RME96_AD1852_VOL_BITS 14
+ #define RME96_AD1855_VOL_BITS 10
+ 
++/* Defines for snd_rme96_trigger */
++#define RME96_TB_START_PLAYBACK 1
++#define RME96_TB_START_CAPTURE 2
++#define RME96_TB_STOP_PLAYBACK 4
++#define RME96_TB_STOP_CAPTURE 8
++#define RME96_TB_RESET_PLAYPOS 16
++#define RME96_TB_RESET_CAPTUREPOS 32
++#define RME96_TB_CLEAR_PLAYBACK_IRQ 64
++#define RME96_TB_CLEAR_CAPTURE_IRQ 128
++#define RME96_RESUME_PLAYBACK (RME96_TB_START_PLAYBACK)
++#define RME96_RESUME_CAPTURE  (RME96_TB_START_CAPTURE)
++#define RME96_RESUME_BOTH     (RME96_RESUME_PLAYBACK   | RME96_RESUME_CAPTURE)
++#define RME96_START_PLAYBACK  (RME96_TB_START_PLAYBACK | RME96_TB_RESET_PLAYPOS)
++#define RME96_START_CAPTURE   (RME96_TB_START_CAPTURE  | RME96_TB_RESET_CAPTUREPOS)
++#define RME96_START_BOTH      (RME96_START_PLAYBACK    | RME96_START_CAPTURE)
++#define RME96_STOP_PLAYBACK   (RME96_TB_STOP_PLAYBACK  | RME96_TB_CLEAR_PLAYBACK_IRQ)
++#define RME96_STOP_CAPTURE    (RME96_TB_STOP_CAPTURE   | RME96_TB_CLEAR_CAPTURE_IRQ)
++#define RME96_STOP_BOTH       (RME96_STOP_PLAYBACK     | RME96_STOP_CAPTURE)
+ 
+ struct rme96 {
+ 	spinlock_t    lock;
+@@ -344,6 +362,7 @@ static struct snd_pcm_hardware snd_rme96_playback_spdif_info =
+ {
+ 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
+ 			      SNDRV_PCM_INFO_MMAP_VALID |
++			      SNDRV_PCM_INFO_SYNC_START |
+ 			      SNDRV_PCM_INFO_INTERLEAVED |
+ 			      SNDRV_PCM_INFO_PAUSE),
+ 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
+@@ -373,6 +392,7 @@ static struct snd_pcm_hardware snd_rme96_capture_spdif_info =
+ {
+ 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
+ 			      SNDRV_PCM_INFO_MMAP_VALID |
++			      SNDRV_PCM_INFO_SYNC_START |
+ 			      SNDRV_PCM_INFO_INTERLEAVED |
+ 			      SNDRV_PCM_INFO_PAUSE),
+ 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
+@@ -402,6 +422,7 @@ static struct snd_pcm_hardware snd_rme96_playback_adat_info =
+ {
+ 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
+ 			      SNDRV_PCM_INFO_MMAP_VALID |
++			      SNDRV_PCM_INFO_SYNC_START |
+ 			      SNDRV_PCM_INFO_INTERLEAVED |
+ 			      SNDRV_PCM_INFO_PAUSE),
+ 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
+@@ -427,6 +448,7 @@ static struct snd_pcm_hardware snd_rme96_capture_adat_info =
+ {
+ 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
+ 			      SNDRV_PCM_INFO_MMAP_VALID |
++			      SNDRV_PCM_INFO_SYNC_START |
+ 			      SNDRV_PCM_INFO_INTERLEAVED |
+ 			      SNDRV_PCM_INFO_PAUSE),
+ 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
+@@ -1045,54 +1067,43 @@ snd_rme96_capture_hw_params(struct snd_pcm_substream *substream,
+ }
+ 
+ static void
+-snd_rme96_playback_start(struct rme96 *rme96,
+-			 int from_pause)
++snd_rme96_trigger(struct rme96 *rme96,
++		  int op)
+ {
+-	if (!from_pause) {
++	if (op & RME96_TB_RESET_PLAYPOS) {
+ 		writel(0, rme96->iobase + RME96_IO_RESET_PLAY_POS);
+ 	}
+-
+-	rme96->wcreg |= RME96_WCR_START;
+-	writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
+-}
+-
+-static void
+-snd_rme96_capture_start(struct rme96 *rme96,
+-			int from_pause)
+-{
+-	if (!from_pause) {
++	if (op & RME96_TB_RESET_CAPTUREPOS) {
+ 		writel(0, rme96->iobase + RME96_IO_RESET_REC_POS);
+ 	}
+-
+-	rme96->wcreg |= RME96_WCR_START_2;
++	if(op & RME96_TB_CLEAR_PLAYBACK_IRQ) {
++		rme96->rcreg = readl(rme96->iobase + RME96_IO_CONTROL_REGISTER);
++		if (rme96->rcreg & RME96_RCR_IRQ) {
++			writel(0, rme96->iobase + RME96_IO_CONFIRM_PLAY_IRQ);
++		}
++	}
++	if(op & RME96_TB_CLEAR_CAPTURE_IRQ) {
++		rme96->rcreg = readl(rme96->iobase + RME96_IO_CONTROL_REGISTER);
++		if (rme96->rcreg & RME96_RCR_IRQ_2) {
++			writel(0, rme96->iobase + RME96_IO_CONFIRM_REC_IRQ);
++		}
++	}
++	if (op & RME96_TB_START_PLAYBACK) {
++		rme96->wcreg |= RME96_WCR_START;
++	}
++	if (op & RME96_TB_STOP_PLAYBACK) {
++		rme96->wcreg &= ~RME96_WCR_START;
++	}
++	if (op & RME96_TB_START_CAPTURE) {
++		rme96->wcreg |= RME96_WCR_START_2;
++	}
++	if (op & RME96_TB_STOP_CAPTURE) {
++		rme96->wcreg &= ~RME96_WCR_START_2;
++	}
+ 	writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
+ }
+ 
+-static void
+-snd_rme96_playback_stop(struct rme96 *rme96)
+-{
+-	/*
+-	 * Check if there is an unconfirmed IRQ, if so confirm it, or else
+-	 * the hardware will not stop generating interrupts
+-	 */
+-	rme96->rcreg = readl(rme96->iobase + RME96_IO_CONTROL_REGISTER);
+-	if (rme96->rcreg & RME96_RCR_IRQ) {
+-		writel(0, rme96->iobase + RME96_IO_CONFIRM_PLAY_IRQ);
+-	}	
+-	rme96->wcreg &= ~RME96_WCR_START;
+-	writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
+-}
+ 
+-static void
+-snd_rme96_capture_stop(struct rme96 *rme96)
+-{
+-	rme96->rcreg = readl(rme96->iobase + RME96_IO_CONTROL_REGISTER);
+-	if (rme96->rcreg & RME96_RCR_IRQ_2) {
+-		writel(0, rme96->iobase + RME96_IO_CONFIRM_REC_IRQ);
+-	}	
+-	rme96->wcreg &= ~RME96_WCR_START_2;
+-	writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
+-}
+ 
+ static irqreturn_t
+ snd_rme96_interrupt(int irq,
+@@ -1155,6 +1166,7 @@ snd_rme96_playback_spdif_open(struct snd_pcm_substream *substream)
+ 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 
++	snd_pcm_set_sync(substream);
+ 	spin_lock_irq(&rme96->lock);	
+         if (rme96->playback_substream != NULL) {
+ 		spin_unlock_irq(&rme96->lock);
+@@ -1191,6 +1203,7 @@ snd_rme96_capture_spdif_open(struct snd_pcm_substream *substream)
+ 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 
++	snd_pcm_set_sync(substream);
+ 	runtime->hw = snd_rme96_capture_spdif_info;
+         if (snd_rme96_getinputtype(rme96) != RME96_INPUT_ANALOG &&
+             (rate = snd_rme96_capture_getrate(rme96, &isadat)) > 0)
+@@ -1222,6 +1235,7 @@ snd_rme96_playback_adat_open(struct snd_pcm_substream *substream)
+ 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;        
+ 	
++	snd_pcm_set_sync(substream);
+ 	spin_lock_irq(&rme96->lock);	
+         if (rme96->playback_substream != NULL) {
+ 		spin_unlock_irq(&rme96->lock);
+@@ -1253,6 +1267,7 @@ snd_rme96_capture_adat_open(struct snd_pcm_substream *substream)
+ 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 
++	snd_pcm_set_sync(substream);
+ 	runtime->hw = snd_rme96_capture_adat_info;
+         if (snd_rme96_getinputtype(rme96) == RME96_INPUT_ANALOG) {
+                 /* makes no sense to use analog input. Note that analog
+@@ -1288,7 +1303,7 @@ snd_rme96_playback_close(struct snd_pcm_substream *substream)
+ 
+ 	spin_lock_irq(&rme96->lock);	
+ 	if (RME96_ISPLAYING(rme96)) {
+-		snd_rme96_playback_stop(rme96);
++		snd_rme96_trigger(rme96,RME96_STOP_PLAYBACK);
+ 	}
+ 	rme96->playback_substream = NULL;
+ 	rme96->playback_periodsize = 0;
+@@ -1309,7 +1324,7 @@ snd_rme96_capture_close(struct snd_pcm_substream *substream)
+ 	
+ 	spin_lock_irq(&rme96->lock);	
+ 	if (RME96_ISRECORDING(rme96)) {
+-		snd_rme96_capture_stop(rme96);
++		snd_rme96_trigger(rme96,RME96_STOP_CAPTURE);
+ 	}
+ 	rme96->capture_substream = NULL;
+ 	rme96->capture_periodsize = 0;
+@@ -1324,7 +1339,7 @@ snd_rme96_playback_prepare(struct snd_pcm_substream *substream)
+ 	
+ 	spin_lock_irq(&rme96->lock);	
+ 	if (RME96_ISPLAYING(rme96)) {
+-		snd_rme96_playback_stop(rme96);
++		snd_rme96_trigger(rme96,RME96_STOP_PLAYBACK);
+ 	}
+ 	writel(0, rme96->iobase + RME96_IO_RESET_PLAY_POS);
+ 	spin_unlock_irq(&rme96->lock);
+@@ -1338,7 +1353,7 @@ snd_rme96_capture_prepare(struct snd_pcm_substream *substream)
+ 	
+ 	spin_lock_irq(&rme96->lock);	
+ 	if (RME96_ISRECORDING(rme96)) {
+-		snd_rme96_capture_stop(rme96);
++		snd_rme96_trigger(rme96,RME96_STOP_CAPTURE);
+ 	}
+ 	writel(0, rme96->iobase + RME96_IO_RESET_REC_POS);
+ 	spin_unlock_irq(&rme96->lock);
+@@ -1350,6 +1365,17 @@ snd_rme96_playback_trigger(struct snd_pcm_substream *substream,
+ 			   int cmd)
+ {
+ 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
++	struct snd_pcm_substream *s;
++	bool sync;
++
++	snd_pcm_group_for_each_entry(s, substream) {
++		if (snd_pcm_substream_chip(s) == rme96) {
++			snd_pcm_trigger_done(s, substream);
++		}
++	}
++
++	sync = (rme96->playback_substream && rme96->capture_substream) &&
++	       (rme96->playback_substream->group == rme96->capture_substream->group);
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -1357,7 +1383,7 @@ snd_rme96_playback_trigger(struct snd_pcm_substream *substream,
+ 			if (substream != rme96->playback_substream) {
+ 				return -EBUSY;
+ 			}
+-			snd_rme96_playback_start(rme96, 0);
++			snd_rme96_trigger(rme96, sync ? RME96_START_BOTH : RME96_START_PLAYBACK);
+ 		}
+ 		break;
+ 
+@@ -1366,19 +1392,19 @@ snd_rme96_playback_trigger(struct snd_pcm_substream *substream,
+ 			if (substream != rme96->playback_substream) {
+ 				return -EBUSY;
+ 			}
+-			snd_rme96_playback_stop(rme96);
++			snd_rme96_trigger(rme96, sync ? RME96_STOP_BOTH :  RME96_STOP_PLAYBACK);
+ 		}
+ 		break;
+ 
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		if (RME96_ISPLAYING(rme96)) {
+-			snd_rme96_playback_stop(rme96);
++			snd_rme96_trigger(rme96, sync ? RME96_STOP_BOTH : RME96_STOP_PLAYBACK);
+ 		}
+ 		break;
+ 
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		if (!RME96_ISPLAYING(rme96)) {
+-			snd_rme96_playback_start(rme96, 1);
++			snd_rme96_trigger(rme96, sync ? RME96_RESUME_BOTH : RME96_RESUME_PLAYBACK);
+ 		}
+ 		break;
+ 		
+@@ -1393,6 +1419,17 @@ snd_rme96_capture_trigger(struct snd_pcm_substream *substream,
+ 			  int cmd)
+ {
+ 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
++	struct snd_pcm_substream *s;
++	bool sync;
++
++	snd_pcm_group_for_each_entry(s, substream) {
++		if (snd_pcm_substream_chip(s) == rme96) {
++			snd_pcm_trigger_done(s, substream);
++		}
++	}
++
++	sync = (rme96->playback_substream && rme96->capture_substream) &&
++	       (rme96->playback_substream->group == rme96->capture_substream->group);
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -1400,7 +1437,7 @@ snd_rme96_capture_trigger(struct snd_pcm_substream *substream,
+ 			if (substream != rme96->capture_substream) {
+ 				return -EBUSY;
+ 			}
+-			snd_rme96_capture_start(rme96, 0);
++			snd_rme96_trigger(rme96, sync ? RME96_START_BOTH : RME96_START_CAPTURE);
+ 		}
+ 		break;
+ 
+@@ -1409,19 +1446,19 @@ snd_rme96_capture_trigger(struct snd_pcm_substream *substream,
+ 			if (substream != rme96->capture_substream) {
+ 				return -EBUSY;
+ 			}
+-			snd_rme96_capture_stop(rme96);
++			snd_rme96_trigger(rme96, sync ? RME96_STOP_BOTH : RME96_STOP_CAPTURE);
+ 		}
+ 		break;
+ 
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		if (RME96_ISRECORDING(rme96)) {
+-			snd_rme96_capture_stop(rme96);
++			snd_rme96_trigger(rme96, sync ? RME96_STOP_BOTH : RME96_STOP_CAPTURE);
+ 		}
+ 		break;
+ 
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		if (!RME96_ISRECORDING(rme96)) {
+-			snd_rme96_capture_start(rme96, 1);
++			snd_rme96_trigger(rme96, sync ? RME96_RESUME_BOTH : RME96_RESUME_CAPTURE);
+ 		}
+ 		break;
+ 		
+@@ -1505,8 +1542,7 @@ snd_rme96_free(void *private_data)
+ 	        return;
+ 	}
+ 	if (rme96->irq >= 0) {
+-		snd_rme96_playback_stop(rme96);
+-		snd_rme96_capture_stop(rme96);
++		snd_rme96_trigger(rme96,RME96_STOP_BOTH);
+ 		rme96->areg &= ~RME96_AR_DAC_EN;
+ 		writel(rme96->areg, rme96->iobase + RME96_IO_ADDITIONAL_REG);
+ 		free_irq(rme96->irq, (void *)rme96);
+@@ -1606,8 +1642,7 @@ snd_rme96_create(struct rme96 *rme96)
+ 	rme96->capture_periodsize = 0;
+ 	
+ 	/* make sure playback/capture is stopped, if by some reason active */
+-	snd_rme96_playback_stop(rme96);
+-	snd_rme96_capture_stop(rme96);
++	snd_rme96_trigger(rme96,RME96_STOP_BOTH);
+ 	
+ 	/* set default values in registers */
+ 	rme96->wcreg =
+-- 
+1.8.1.4
+
+
+--------------080504010104060907000005
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------080504010104060907000005--
