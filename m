@@ -1,75 +1,93 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix missing mute controls for
-	CX5051
-Date: Thu,  8 Aug 2013 09:32:37 +0200
-Message-ID: <1375947157-17611-1-git-send-email-tiwai@suse.de>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [PATCH V3 2/3] ASoC: Samsung: I2S: Add quirks as driver data in I2S
+Date: Thu, 8 Aug 2013 13:13:02 +0530
+Message-ID: <CAAgF-BdpsgQk8myq7OOk5zJ8Zxy+J6LUPb3-d40+iE2aNwdwDw@mail.gmail.com>
+References: <1375865122-5258-1-git-send-email-padma.v@samsung.com>
+	<1375865122-5258-3-git-send-email-padma.v@samsung.com>
+	<2116389.OxrlCQ9LXd@amdc1227>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 39219265653
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 09:31:08 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 19CABA51B7
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 09:31:08 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <2116389.OxrlCQ9LXd@amdc1227>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Tomasz Figa <t.figa@samsung.com>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, "broonie@kernel.org" <broonie@kernel.org>, Kukjin Kim <kgene.kim@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, abrestic@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-We've added a fake mute control (setting the amp volume to zero) for
-CX5051 at commit [3868137e: ALSA: hda - Add a fake mute feature], but
-this feature was overlooked in the generic parser implementation.  Now
-the driver lacks of mute controls on these codecs.
+Hi Tomasz,
 
-The fix is just to check both AC_AMPCAP_MUTE and AC_AMPCAP_MIN_MUTE
-bits in each place checking the amp capabilities.
+On Wed, Aug 7, 2013 at 4:43 PM, Tomasz Figa <t.figa@samsung.com> wrote:
+> Ahh, one more thing inline.
+>
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=59001
-Cc: <stable@vger.kernel.org> [v3.9+]
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_generic.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+[snip]
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 8e77cbb..e3c7ba8 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -522,7 +522,7 @@ static bool same_amp_caps(struct hda_codec *codec, hda_nid_t nid1,
- }
- 
- #define nid_has_mute(codec, nid, dir) \
--	check_amp_caps(codec, nid, dir, AC_AMPCAP_MUTE)
-+	check_amp_caps(codec, nid, dir, (AC_AMPCAP_MUTE | AC_AMPCAP_MIN_MUTE))
- #define nid_has_volume(codec, nid, dir) \
- 	check_amp_caps(codec, nid, dir, AC_AMPCAP_NUM_STEPS)
- 
-@@ -624,7 +624,7 @@ static int get_amp_val_to_activate(struct hda_codec *codec, hda_nid_t nid,
- 		if (enable)
- 			val = (caps & AC_AMPCAP_OFFSET) >> AC_AMPCAP_OFFSET_SHIFT;
- 	}
--	if (caps & AC_AMPCAP_MUTE) {
-+	if (caps & (AC_AMPCAP_MUTE | AC_AMPCAP_MIN_MUTE)) {
- 		if (!enable)
- 			val |= HDA_AMP_MUTE;
- 	}
-@@ -648,7 +648,7 @@ static unsigned int get_amp_mask_to_modify(struct hda_codec *codec,
- {
- 	unsigned int mask = 0xff;
- 
--	if (caps & AC_AMPCAP_MUTE) {
-+	if (caps & (AC_AMPCAP_MUTE | AC_AMPCAP_MIN_MUTE)) {
- 		if (is_ctl_associated(codec, nid, dir, idx, NID_PATH_MUTE_CTL))
- 			mask &= ~0x80;
- 	}
--- 
-1.8.3.1
+>>
+>> +static struct samsung_i2s_dai_data i2sv3_dai_type = {
+>> +     .dai_type = TYPE_PRI,
+>> +     .quirks = QUIRK_NO_MUXPSR,
+>> +};
+>> +
+>> +static struct samsung_i2s_dai_data i2sv4_dai_type = {
+>> +     .dai_type = TYPE_PRI,
+>> +     .quirks = QUIRK_PRI_6CHAN | QUIRK_NO_MUXPSR,
+>> +};
+>> +
+>> +static struct samsung_i2s_dai_data i2sv5_c100_dai_type = {
+>> +     .dai_type = TYPE_PRI,
+>> +     .quirks = QUIRK_PRI_6CHAN | QUIRK_NO_MUXPSR | QUIRK_SEC_DAI |
+>> +                     QUIRK_NEED_RSTCLR,
+>> +};
+>> +
+>> +static struct samsung_i2s_dai_data i2sv5_dai_type = {
+>> +     .dai_type = TYPE_PRI,
+>> +     .quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI | QUIRK_NEED_RSTCLR,
+>> +};
+>> +
+>> +static struct samsung_i2s_dai_data samsung_dai_type_sec = {
+>> +     .dai_type = TYPE_SEC,
+>> +};
+>> +
+>>  static struct platform_device_id samsung_i2s_driver_ids[] = {
+>>       {
+>> -             .name           = "samsung-i2s",
+>> -             .driver_data    = TYPE_PRI,
+>> +             .name           = "samsung,s3c6410-i2s",
+>> +             .driver_data    = (kernel_ulong_t)&i2sv3_dai_type,
+>> +     }, {
+>> +             .name           = "samsung,s3c6410-i2s-multi",
+>> +             .driver_data    = (kernel_ulong_t)&i2sv4_dai_type,
+>> +     }, {
+>> +             .name           = "samsung,s5pc100-i2s",
+>> +             .driver_data    = (kernel_ulong_t)&i2sv5_c100_dai_type,
+>>       }, {
+>> -             .name           = "samsung-i2s-sec",
+>> -             .driver_data    = TYPE_SEC,
+>> +             .name           = "samsung,s5pv210-i2s",
+>> +             .driver_data    = (kernel_ulong_t)&i2sv5_dai_type,
+>> +     }, {
+>> +             .name           = "samsung-i2s-sec",
+>> +             .driver_data    = (kernel_ulong_t)&samsung_dai_type_sec,
+>
+> I don't think you need to change the legacy platform IDs at all.
+
+If legacy platforms not required to change then I need to introduce a
+new samsung_i2s_dai_data structure which holds only dai_type for
+non-dt platforms. If I change legacy platforms it breaks the older
+platforms now. Is it okay adding a samsung_i2s_dai_data structure for
+non-dt platforms which will be removed later?
+
+>
+> IMHO it would be better to keep the old way of quirk retrieval from
+> platform_data (which I think this patch does anyway, because the probe path
+> without DT is unchanged), as it will be dropped in some point in time
+> anyway.
+>
+> This would also eliminate the need for patch 1.
+>
+> Best regards,
+> Tomasz
+>
+
+Thanks
+Padma
