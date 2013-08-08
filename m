@@ -1,18 +1,17 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 1/1] ASoC: s6105-ipcam: Fix incorrect placement
-	of __initdata
-Date: Thu,  8 Aug 2013 16:52:18 +0530
-Message-ID: <1375960938-29005-1-git-send-email-sachin.kamat@linaro.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/2] ASoC: ad73311: Add DAPM support
+Date: Thu, 08 Aug 2013 13:55:59 +0200
+Message-ID: <5203874F.8050106@metafoo.de>
+References: <1375894913-8608-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
- [209.85.220.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 5379C2656B7
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 13:39:08 +0200 (CEST)
-Received: by mail-pa0-f45.google.com with SMTP id bg4so3306334pad.32
- for <alsa-devel@alsa-project.org>; Thu, 08 Aug 2013 04:39:07 -0700 (PDT)
+Received: from mailhost.informatik.uni-hamburg.de
+ (mailhost.informatik.uni-hamburg.de [134.100.9.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1087A2656CC
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 13:55:46 +0200 (CEST)
+In-Reply-To: <1375894913-8608-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sachin.kamat@linaro.org, broonie@kernel.org, Daniel Gloeckner <dg@emlix.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-__initdata should be placed between the variable name and equal
-sign for the variable to be placed in the intended section.
+On 08/07/2013 07:01 PM, Mark Brown wrote:
+> From: Mark Brown <broonie@linaro.org>
+>
+> This makes it possible to hook up other devices in boards and is required
+> by removal of support for non-DAPM CODECs in the core.
+>
+> Signed-off-by: Mark Brown <broonie@linaro.org>
 
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: Daniel Gloeckner <dg@emlix.com>
----
- sound/soc/s6000/s6105-ipcam.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 
-diff --git a/sound/soc/s6000/s6105-ipcam.c b/sound/soc/s6000/s6105-ipcam.c
-index 58cfb1e..945e8ab 100644
---- a/sound/soc/s6000/s6105-ipcam.c
-+++ b/sound/soc/s6000/s6105-ipcam.c
-@@ -192,7 +192,7 @@ static struct snd_soc_card snd_soc_card_s6105 = {
- 	.num_links = 1,
- };
- 
--static struct s6000_snd_platform_data __initdata s6105_snd_data = {
-+static struct s6000_snd_platform_data s6105_snd_data __initdata = {
- 	.wide		= 0,
- 	.channel_in	= 0,
- 	.channel_out	= 1,
--- 
-1.7.9.5
+Thanks.
