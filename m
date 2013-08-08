@@ -1,23 +1,19 @@
-From: Joonas Saarinen <jonskunator@gmail.com>
-Subject: LG LW25 pin fix
-Date: Thu, 08 Aug 2013 22:46:47 +0300
-Message-ID: <5203F5A7.5010004@gmail.com>
+From: Felipe Tonello <eu@felipetonello.com>
+Subject: Re: Found a typo
+Date: Thu, 8 Aug 2013 15:14:23 -0700
+Message-ID: <CAGrhNMxAxss+=OR1daOdgsnFmuc2g=TyXew-sKVHg-5tcQB3KQ@mail.gmail.com>
+References: <520388D8.2010203@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f44.google.com (mail-bk0-f44.google.com
- [209.85.214.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A74F2610CF
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 21:46:49 +0200 (CEST)
-Received: by mail-bk0-f44.google.com with SMTP id mz10so1157146bkb.17
- for <alsa-devel@alsa-project.org>; Thu, 08 Aug 2013 12:46:48 -0700 (PDT)
-Received: from [172.20.0.36] (dsl-espbrasgw1-50dfb6-224.dhcp.inet.fi.
- [80.223.182.224])
- by mx.google.com with ESMTPSA id cb7sm2931126bkb.16.2013.08.08.12.46.47
- for <alsa-devel@alsa-project.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Thu, 08 Aug 2013 12:46:48 -0700 (PDT)
+Received: from mail-we0-f181.google.com (mail-we0-f181.google.com
+ [74.125.82.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B87726163C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 00:14:23 +0200 (CEST)
+Received: by mail-we0-f181.google.com with SMTP id p58so2973821wes.40
+ for <alsa-devel@alsa-project.org>; Thu, 08 Aug 2013 15:14:23 -0700 (PDT)
+In-Reply-To: <520388D8.2010203@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,38 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Torino <torinobuntu@gmx.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello, I discovered that the LG LW25 laptop needs a small fix to its pin 
-mapping. The functions of blue and green jacks simply have to be 
-interchanged. The rest of the configuration is correct. Can this fix be 
-made permanent in the driver?
+Hi Torino,
 
-The fixed mappings are:
+On Thu, Aug 8, 2013 at 5:02 AM, Torino <torinobuntu@gmx.de> wrote:
+> Dear Alsa developers,
+>
+> within Saucy (13.10), "alsa-utils", string nr. 124 it says
+>
+> "Channel %d doesn't match with hw_parmas"
+>
+> whereas in other strings like nr. 84 or 126 it says "hw_params".
+>
+> I hope it was correct informing you via this mailing list.
+>
 
-0x1a 0x0181344f
-0x1b 0x0321403f
+You can always send a patch to fix it.
 
-Here's the full correct map:
+BR
 
-[codec]
-0x10ec0880 0x00001854 0
-
-[pincfg]
-0x14 0xb7031110
-0x15 0x411111f0
-0x16 0x411111f0
-0x17 0x411111f0
-0x18 0x01a19c22
-0x19 0xb7a31120
-0x1a 0x0181344f
-0x1b 0x0321403f
-0x1c 0x411111f0
-0x1d 0x411111f0
-0x1e 0x0145311e
-0x1f 0x411111f0
-
-
-Thanks,
-Joonas
+Felipe Tonello
