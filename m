@@ -1,22 +1,20 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [PATCH V3 2/3] ASoC: Samsung: I2S: Add quirks as
-	driver data in I2S
-Date: Thu, 08 Aug 2013 10:10:27 +0200
-Message-ID: <3759902.V2gf68Lg3g@flatron>
-References: <1375865122-5258-1-git-send-email-padma.v@samsung.com>
- <2116389.OxrlCQ9LXd@amdc1227>
- <CAAgF-BdpsgQk8myq7OOk5zJ8Zxy+J6LUPb3-d40+iE2aNwdwDw@mail.gmail.com>
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] ASoC: dt: Move WM8903 pin list from Tegra
+ board binding to CODEC binding
+Date: Thu, 8 Aug 2013 09:30:34 +0100
+Message-ID: <20130808083034.GB14648@e106331-lin.cambridge.arm.com>
+References: <1375899380-17714-1-git-send-email-broonie@kernel.org>
+ <52029666.90701@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f47.google.com (mail-bk0-f47.google.com
- [209.85.214.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 663E526566E
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 10:10:34 +0200 (CEST)
-Received: by mail-bk0-f47.google.com with SMTP id mx12so562361bkb.34
- for <alsa-devel@alsa-project.org>; Thu, 08 Aug 2013 01:10:34 -0700 (PDT)
-In-Reply-To: <CAAgF-BdpsgQk8myq7OOk5zJ8Zxy+J6LUPb3-d40+iE2aNwdwDw@mail.gmail.com>
+Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
+ [217.140.96.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id B922A265677
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 10:30:35 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <52029666.90701@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,103 +24,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Padma Venkat <padma.kvr@gmail.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Padmavathi Venna <padma.v@samsung.com>, abrestic@chromium.org, Tomasz Figa <t.figa@samsung.com>, "broonie@kernel.org" <broonie@kernel.org>, Kukjin Kim <kgene.kim@samsung.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <Pawel.Moll@arm.com>, Mark Brown <broonie@linaro.org>, Liam Girdwod <lgirdwood@gmail.com>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 08 of August 2013 13:13:02 Padma Venkat wrote:
-> Hi Tomasz,
-> 
-> On Wed, Aug 7, 2013 at 4:43 PM, Tomasz Figa <t.figa@samsung.com> wrote:
-> > Ahh, one more thing inline.
-> 
-> [snip]
-> 
-> >> +static struct samsung_i2s_dai_data i2sv3_dai_type = {
-> >> +     .dai_type = TYPE_PRI,
-> >> +     .quirks = QUIRK_NO_MUXPSR,
-> >> +};
-> >> +
-> >> +static struct samsung_i2s_dai_data i2sv4_dai_type = {
-> >> +     .dai_type = TYPE_PRI,
-> >> +     .quirks = QUIRK_PRI_6CHAN | QUIRK_NO_MUXPSR,
-> >> +};
-> >> +
-> >> +static struct samsung_i2s_dai_data i2sv5_c100_dai_type = {
-> >> +     .dai_type = TYPE_PRI,
-> >> +     .quirks = QUIRK_PRI_6CHAN | QUIRK_NO_MUXPSR | QUIRK_SEC_DAI |
-> >> +                     QUIRK_NEED_RSTCLR,
-> >> +};
-> >> +
-> >> +static struct samsung_i2s_dai_data i2sv5_dai_type = {
-> >> +     .dai_type = TYPE_PRI,
-> >> +     .quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI | QUIRK_NEED_RSTCLR,
-> >> +};
-> >> +
-> >> +static struct samsung_i2s_dai_data samsung_dai_type_sec = {
-> >> +     .dai_type = TYPE_SEC,
-> >> +};
-> >> +
-> >> 
-> >>  static struct platform_device_id samsung_i2s_driver_ids[] = {
-> >>  
-> >>       {
-> >> 
-> >> -             .name           = "samsung-i2s",
-> >> -             .driver_data    = TYPE_PRI,
-> >> +             .name           = "samsung,s3c6410-i2s",
-> >> +             .driver_data    = (kernel_ulong_t)&i2sv3_dai_type,
-> >> +     }, {
-> >> +             .name           = "samsung,s3c6410-i2s-multi",
-> >> +             .driver_data    = (kernel_ulong_t)&i2sv4_dai_type,
-> >> +     }, {
-> >> +             .name           = "samsung,s5pc100-i2s",
-> >> +             .driver_data    = (kernel_ulong_t)&i2sv5_c100_dai_type,
-> >> 
-> >>       }, {
-> >> 
-> >> -             .name           = "samsung-i2s-sec",
-> >> -             .driver_data    = TYPE_SEC,
-> >> +             .name           = "samsung,s5pv210-i2s",
-> >> +             .driver_data    = (kernel_ulong_t)&i2sv5_dai_type,
-> >> +     }, {
-> >> +             .name           = "samsung-i2s-sec",
-> >> +             .driver_data    =
-> >> (kernel_ulong_t)&samsung_dai_type_sec,
+On Wed, Aug 07, 2013 at 07:48:06PM +0100, Stephen Warren wrote:
+> On 08/07/2013 12:16 PM, Mark Brown wrote:
+> > From: Mark Brown <broonie@linaro.org>
 > > 
-> > I don't think you need to change the legacy platform IDs at all.
+> > The pin list is the same for any board using the CODEC.
 > 
-> If legacy platforms not required to change then I need to introduce a
-> new samsung_i2s_dai_data structure which holds only dai_type for
-> non-dt platforms. If I change legacy platforms it breaks the older
-> platforms now. Is it okay adding a samsung_i2s_dai_data structure for
-> non-dt platforms which will be removed later?
-
-Sorry, I don't understand the problem here.
-
-Original contents of samsung_i2s_driver_ids[] array already conveyed 
-information about dai type inside driver_data field of each 
-platform_device_id entry.
-
-If you really need to have samsung_i2s_dai_data struct for both DT and 
-non-DT cases you can create dummy dai_data for both platform ID entries, 
-which would have only dai type field initialized. This would be fine, 
-because the non-DT probe path takes anything else from platform_data and 
-would not need samsung_i2s_dai_data struct in any other way than getting 
-dai_type in probe.
-
-Best regards,
-Tomasz
-
-> > IMHO it would be better to keep the old way of quirk retrieval from
-> > platform_data (which I think this patch does anyway, because the probe
-> > path without DT is unchanged), as it will be dropped in some point in
-> > time anyway.
-> > 
-> > This would also eliminate the need for patch 1.
-> > 
-> > Best regards,
-> > Tomasz
+> Acked-by: Stephen Warren <swarren@nvidia.com>
 > 
-> Thanks
-> Padma
+> (CC'ing the other DT binding maintainers)
+
+Fine by me also.
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+> 
+> > 
+> > Signed-off-by: Mark Brown <broonie@linaro.org>
+> > ---
+> >  .../bindings/sound/nvidia,tegra-audio-wm8903.txt   | 24 ++--------------------
+> >  Documentation/devicetree/bindings/sound/wm8903.txt | 19 +++++++++++++++++
+> >  2 files changed, 21 insertions(+), 22 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-wm8903.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-wm8903.txt
+> > index 3bf722d..4b44dfb 100644
+> > --- a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-wm8903.txt
+> > +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-wm8903.txt
+> > @@ -11,28 +11,8 @@ Required properties:
+> >  - nvidia,audio-routing : A list of the connections between audio components.
+> >    Each entry is a pair of strings, the first being the connection's sink,
+> >    the second being the connection's source. Valid names for sources and
+> > -  sinks are the WM8903's pins, and the jacks on the board:
+> > -
+> > -  WM8903 pins:
+> > -
+> > -  * IN1L
+> > -  * IN1R
+> > -  * IN2L
+> > -  * IN2R
+> > -  * IN3L
+> > -  * IN3R
+> > -  * DMICDAT
+> > -  * HPOUTL
+> > -  * HPOUTR
+> > -  * LINEOUTL
+> > -  * LINEOUTR
+> > -  * LOP
+> > -  * LON
+> > -  * ROP
+> > -  * RON
+> > -  * MICBIAS
+> > -
+> > -  Board connectors:
+> > +  sinks are the WM8903's pins (documented in the WM8903 binding document),
+> > +  and the jacks on the board:
+> >  
+> >    * Headphone Jack
+> >    * Int Spk
+> > diff --git a/Documentation/devicetree/bindings/sound/wm8903.txt b/Documentation/devicetree/bindings/sound/wm8903.txt
+> > index f102cbc..94ec32c 100644
+> > --- a/Documentation/devicetree/bindings/sound/wm8903.txt
+> > +++ b/Documentation/devicetree/bindings/sound/wm8903.txt
+> > @@ -28,6 +28,25 @@ Optional properties:
+> >      performed. If any entry has the value 0xffffffff, that GPIO's
+> >      configuration will not be modified.
+> >  
+> > +Pins on the device (for linking into audio routes):
+> > +
+> > +  * IN1L
+> > +  * IN1R
+> > +  * IN2L
+> > +  * IN2R
+> > +  * IN3L
+> > +  * IN3R
+> > +  * DMICDAT
+> > +  * HPOUTL
+> > +  * HPOUTR
+> > +  * LINEOUTL
+> > +  * LINEOUTR
+> > +  * LOP
+> > +  * LON
+> > +  * ROP
+> > +  * RON
+> > +  * MICBIAS
+> > +
+> >  Example:
+> >  
+> >  codec: wm8903@1a {
+> > 
+> 
+> 
