@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V3 2/3] ASoC: Samsung: I2S: Add quirks as
- driver data in I2S
-Date: Thu, 8 Aug 2013 11:31:24 +0100
-Message-ID: <20130808103124.GU6427@sirena.org.uk>
-References: <1375865122-5258-1-git-send-email-padma.v@samsung.com>
- <1375865122-5258-3-git-send-email-padma.v@samsung.com>
- <2116389.OxrlCQ9LXd@amdc1227>
- <CAAgF-BdpsgQk8myq7OOk5zJ8Zxy+J6LUPb3-d40+iE2aNwdwDw@mail.gmail.com>
+From: Mattia Bertoni <mattia.b89@gmail.com>
+Subject: Re: bug
+Date: Thu, 08 Aug 2013 12:44:24 +0200
+Message-ID: <52037688.4000906@gmail.com>
+References: <520268D8.3000807@gmail.com> <52028080.4090608@gmail.com>
+ <s5hk3jwa75k.wl%tiwai@suse.de> <52036B26.10906@gmail.com>
+ <s5h8v0c5w4u.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8126326205863901185=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E3BC82619D1
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 12:31:28 +0200 (CEST)
-In-Reply-To: <CAAgF-BdpsgQk8myq7OOk5zJ8Zxy+J6LUPb3-d40+iE2aNwdwDw@mail.gmail.com>
+Received: from mail-wg0-f45.google.com (mail-wg0-f45.google.com [74.125.82.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 832252619DC
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 12:44:27 +0200 (CEST)
+Received: by mail-wg0-f45.google.com with SMTP id x12so2479746wgg.24
+ for <alsa-devel@alsa-project.org>; Thu, 08 Aug 2013 03:44:27 -0700 (PDT)
+In-Reply-To: <s5h8v0c5w4u.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,63 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Padma Venkat <padma.kvr@gmail.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Padmavathi Venna <padma.v@samsung.com>, abrestic@chromium.org, Tomasz Figa <t.figa@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+user-side there is no problem
 
---===============8126326205863901185==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PseDLKNfj4uXA+Je"
-Content-Disposition: inline
+because alsa logs this issue I report it....
 
 
---PseDLKNfj4uXA+Je
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 08, 2013 at 01:13:02PM +0530, Padma Venkat wrote:
-
-> If legacy platforms not required to change then I need to introduce a
-> new samsung_i2s_dai_data structure which holds only dai_type for
-> non-dt platforms. If I change legacy platforms it breaks the older
-> platforms now. Is it okay adding a samsung_i2s_dai_data structure for
-> non-dt platforms which will be removed later?
-
-This is totally fine and looks much nicer - you're not creating DT style
-names in the platform bus, nor making names that are so long that we
-need to expand the maximum length of a plaform device name (which isn't
-awesome).
-
---PseDLKNfj4uXA+Je
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSA3N5AAoJELSic+t+oim9fmwP/isaw453TfVvVkNp3dVAZ0DD
-X9g+vk/u45d4BK992PsY9jaPo5Ae6jPkDeOJU74/9GmmJH8n3pucT05/FJXk6G0B
-SJwMMJ148M74kjdZ2OPOHE0Htg9dXuqsM8MS0ZfCgRL7rsDHsb3meqSbNDP1Qr3D
-HovqOFWEeeC9Ykrm9TeqNoDn9Gq02fXKiwJAcAvn3YIpQo0/WUMCLSWyXYfNdld4
-RAmigD3+kVuGSTxJej4oDmVKr27mFZqP5XE3sMsvNOgaoQg9TO/TIV8LWciNuDGX
-7e18WPxwr0RSh5H4053n+cdu/+wpwCRFdiV3RVFjjjWDWGmVL0OqaiIw0Abi13EB
-ZuS5a7SBwoOqxQyw45MOZBr0rKD4Nf3BUritUrJnEW9em5hlh1WpVxoauiyuy7/z
-mrTIK6zNwRjxpNgBHHR3wL/Jet8OwzBt7Wr3jXwsP+xJpg8nuz5NYYDWEfH9CF3G
-HowkDVkDNbZSBX9G0Q8m4zdtFFHVJdTnpw62i6zXKJKfXHvkLUCWV9Ln8EZsYWVN
-PbocLSk7ntuhKI0MyJhPi7nIbB1Kz0HJi1if5ts2Hx6BI1Mv+IBQCEq4gAWfbWuO
-wAisJ7I8QBPrF42Bm2Zz9usmXREanjfNyKZCE+9ukcxuWSwLoT7+Uo1cBajOdT3A
-9cT3X66YKZMHpC/Cfqgs
-=v3eL
------END PGP SIGNATURE-----
-
---PseDLKNfj4uXA+Je--
-
---===============8126326205863901185==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 
---===============8126326205863901185==--
+On 08/08/13 12:12, Takashi Iwai wrote:
+> At Thu, 08 Aug 2013 11:55:50 +0200,
+> Mattia Bertoni wrote:
+>> fortunately I have had this problem only once and more than one month
+>> ago (15 Jun)
+>> but unfortunately I can't reproduce it because it appeared casually
+> I have no idea *what* problem you're talking about.  (And your mail
+> subject says only "bug".  Yes, there must be lots of bugs in the
+> world, virtually and really...)
+>
+> Please begin with describing what's the problem at first.
+>
+>
+> Takashi
