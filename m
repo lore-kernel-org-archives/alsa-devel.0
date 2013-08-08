@@ -1,14 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: pcm1681: Staticise DAI driver
-Date: Thu,  8 Aug 2013 12:26:32 +0100
-Message-ID: <1375961192-14610-1-git-send-email-broonie@kernel.org>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 1/1] ASoC: s6105-ipcam: Fix incorrect placement
+	of __initdata
+Date: Thu,  8 Aug 2013 16:52:18 +0530
+Message-ID: <1375960938-29005-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 71C50261A6A
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 13:26:38 +0200 (CEST)
+Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
+ [209.85.220.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5379C2656B7
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2013 13:39:08 +0200 (CEST)
+Received: by mail-pa0-f45.google.com with SMTP id bg4so3306334pad.32
+ for <alsa-devel@alsa-project.org>; Thu, 08 Aug 2013 04:39:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,32 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marek Belisko <marek.belisko@streamunlimited.com>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
+To: alsa-devel@alsa-project.org
+Cc: sachin.kamat@linaro.org, broonie@kernel.org, Daniel Gloeckner <dg@emlix.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+__initdata should be placed between the variable name and equal
+sign for the variable to be placed in the intended section.
 
-It is not exported so doesn't need to be in the global namespace and
-sparse warns on this.
-
-Signed-off-by: Mark Brown <broonie@linaro.org>
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: Daniel Gloeckner <dg@emlix.com>
 ---
- sound/soc/codecs/pcm1681.c | 2 +-
+ sound/soc/s6000/s6105-ipcam.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
-index 27da41b..51b1866 100644
---- a/sound/soc/codecs/pcm1681.c
-+++ b/sound/soc/codecs/pcm1681.c
-@@ -225,7 +225,7 @@ static const struct snd_kcontrol_new pcm1681_controls[] = {
- 			    pcm1681_get_deemph, pcm1681_put_deemph),
+diff --git a/sound/soc/s6000/s6105-ipcam.c b/sound/soc/s6000/s6105-ipcam.c
+index 58cfb1e..945e8ab 100644
+--- a/sound/soc/s6000/s6105-ipcam.c
++++ b/sound/soc/s6000/s6105-ipcam.c
+@@ -192,7 +192,7 @@ static struct snd_soc_card snd_soc_card_s6105 = {
+ 	.num_links = 1,
  };
  
--struct snd_soc_dai_driver pcm1681_dai = {
-+static struct snd_soc_dai_driver pcm1681_dai = {
- 	.name = "pcm1681-hifi",
- 	.playback = {
- 		.stream_name = "Playback",
+-static struct s6000_snd_platform_data __initdata s6105_snd_data = {
++static struct s6000_snd_platform_data s6105_snd_data __initdata = {
+ 	.wide		= 0,
+ 	.channel_in	= 0,
+ 	.channel_out	= 1,
 -- 
-1.8.4.rc1
+1.7.9.5
