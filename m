@@ -1,115 +1,76 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to the mvebu audio
- subsystem
-Date: Fri, 9 Aug 2013 20:44:34 +0100
-Message-ID: <20130809194434.GP6427@sirena.org.uk>
-References: <20130808132201.2610aef3@armhf>
- <5204A716.6070507@gmail.com>
- <20130809091953.GO6427@sirena.org.uk>
- <5204B7A6.9050907@gmail.com>
- <20130809094340.GO23006@n2100.arm.linux.org.uk>
- <5204CC04.4000401@gmail.com>
- <20130809113940.GY6427@sirena.org.uk>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to
+	the mvebu	audio subsystem
+Date: Fri, 9 Aug 2013 21:38:47 +0100
+Message-ID: <20130809203847.GU23006@n2100.arm.linux.org.uk>
+References: <5204A716.6070507@gmail.com> <20130809091953.GO6427@sirena.org.uk>
+ <5204B7A6.9050907@gmail.com> <20130809094340.GO23006@n2100.arm.linux.org.uk>
+ <5204CC04.4000401@gmail.com> <20130809113940.GY6427@sirena.org.uk>
  <20130809130932.GS23006@n2100.arm.linux.org.uk>
  <20130809180058.GM6427@sirena.org.uk>
  <20130809182516.GT23006@n2100.arm.linux.org.uk>
+ <20130809194434.GP6427@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+PRXPAOP3MYWro6n"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id AA41F260886
+ for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 22:39:06 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20130809182516.GT23006@n2100.arm.linux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Jean-Francois Moine <moinejf@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20130809194434.GP6427@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Aug 09, 2013 at 08:44:34PM +0100, Mark Brown wrote:
+> If someone wants to it should also be possible to convert the existing
+> platforms without S/PDIF support over to DT, providing you don't mind
+> changing the code once the DPCM and S/PDIF support is added and a bit of
+> thought is put into where the S/PDIF output will fit into the bindings.
 
---+PRXPAOP3MYWro6n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Okay, so you're thinking that the I2S output will be enabled in the
+absence of DPCM?  If so, that tells me that you don't understand my
+patches, and this is getting *really* tiresome.
 
-On Fri, Aug 09, 2013 at 07:25:16PM +0100, Russell King - ARM Linux wrote:
+One more time:
+- There are two outputs from the FIFO.
+- There is an I2S output, and there is a SPDIF output.
+- All hardware has an I2S output.
+- Some hardware also has the SPDIF output.
+- Each output is individually enable-able via separate bits.
+- When both outputs are used, both must be enabled simultaneously.
+- Otherwise, only one output must be enabled at any one time.
+- At least one output must be enabled for there to be any activity
+  from the unit at all (that's obvious!)
 
-> Sigh, you completely miss the point.
+So, what I'm doing is providing _two_ AIF connection points, one for I2S
+and one for SPDIF.  The appropriate AIF connection point must be attached
+to for the appropriate output to be enabled.
 
-> What all three of us are ultimately after is a DT description for the
-> kirkwood stuff which covers all its use cases.  The use case which all
-> three of us have in common is the Cubox, which is the one which needs
-> the spdif stuff to work.
+That means that if you want to use the SPDIF output, the SPDIF AIF must
+be linked to the codec.  If you want to use the I2S output, the I2S AIF
+must be linked to the codec.
 
-I think I get what needs to be done well enough, I'm not sure that
-matches up with what people are wanting the results to look like but
-that's another story.
+Without this, there's no way for the CPU DAI to know which output(s) are
+in use, and therefore which should be enabled.
 
-> Now, what you've said to date is:
+What this means is that the conventional setup where you have _one_ DAI
+link connecting the codec DAI to the CPU DAI won't work on Kirkwood
+anymore, because there is no way to know which of the two outputs
+should be enabled.  I avoided that in my patches, but you've objected
+to that saying that it must use DPCM.  That makes the whole of kirkwood
+entirely DPCM only, whether or not you have a single codec to connect.
 
-> 1. you want kirkwood to use DPCM.
-
-Yes.
-
-> 2. you want kirkwood using people to use the simple card stuff with the
->    kirkwood driver you want to use DPCM.
-
-No.  What I'm saying is that if your end goal is a binding for cards
-that works for absolutely anything then it should be handled by the
-simple card driver since that's what it's there for.   There's no
-requirement to do things that way though, certainly not in a first pass.
-
-> To make it work with DPCM, we first need to know what DPCM requires,
-> which means we either have to have the knowledge of DPCM and/or have a
-> working implementation.  We don't have either of those yet.
-
-> So, I again state plainly that what you're asking is for people to come
-> up with a DT description for a DPCM implementation when we haven't yet
-> got a working DPCM implementation, even without DT.
-
-> It is this which I assert is a completely rediculous request at this
-> moment in time for the reasons stated in my previous email and repeated
-> in this email.
-
-I'm not sure I said that anyone need do anything right this very minute? =
-=20
-
-In any case since the binding that pulls everything together into the
-audio subsystem is supposed to be separate to the bindings for the
-bindings for individual components it should be possible to proceed with
-those if someone wants to do that (as in the patch under discussion) and
-add the bits to tie things together later.
-
-If someone wants to it should also be possible to convert the existing
-platforms without S/PDIF support over to DT, providing you don't mind
-changing the code once the DPCM and S/PDIF support is added and a bit of
-thought is put into where the S/PDIF output will fit into the bindings.
-Since DPCM is a Linux internal thing it shouldn't have any impact on the
-bindings.
-
-But like I say there's no need to do anything in particular immediately.
-The patch under discussion seems basically fine for what it covers,
-modulo the fairly minor things Sebastian identified, and can be built on
-later.
-
---+PRXPAOP3MYWro6n
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSBUafAAoJELSic+t+oim91DsP/3koMr70cjpnMXMU8eO1U2Mh
-3DovvF9PkYKt1CPB9nNwubE833ezqr+yGbRvHtIal/A5GaoL1ySwPkY0yP9H8Er2
-JV8OPkBErhV9v7PeV9NfUh5/Z8Bi/AXNLebnDJoC/1wLoEP4Zrr5PJ1KYOREjxXo
-eOH937uevv/sgxCyDVniL1T2wkr5iLUMu0CqOEPGfoPpnbB7KqRzXRSE9t1Q/0Ua
-GusV7MrghYROL0COZ1L1QnfAjD5+IkSCY/jgwpuMnYZWIkCAAtpOOYxvz3pU/aLM
-hXWeXLQ94Ydn21H5nx0YrTb1H4xBDOfu4gsVowx3XpS/7xwIXy8+rgqV59szNhYg
-D6vgUgAW6VR0aFrqDmQWV8mKDs0wNWRrcq/grJi7wVnMCwKllu41aDQCYTIEvkPy
-GXKgRy64qozchzwcRLAgyoJmq1abF8KyL/fBH2VzLqkWmSYws+do1RCKri0NBxFH
-A5Fap2DGI6LCOhAKAvuw+YYQrRmO+8svApD40FdbRaBdzqfzJzh7joi3WBp/OiRL
-l7R0d9BH6qEUuha2EKvoZ+qXKmfNQzGt/hADpBT1LPdOfmA3WyZgT4KZ1OWc9w3f
-fc2u2TDze6JwDWH59nPtd54h8gf1imGSCIj/4REekdt1QKxgWqcOWlAfhM/uUDK0
-cY+ExFLMWQzqBA/Dj5AM
-=MPuB
------END PGP SIGNATURE-----
-
---+PRXPAOP3MYWro6n--
+Surely you realise this, because you must have read the patches properly
+before you commented on them, and realised that one of spdifdo or i2sdo
+must be powered up to set either enable bit?
