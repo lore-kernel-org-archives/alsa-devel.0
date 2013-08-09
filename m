@@ -1,23 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: change widgetsequencefordepop
-Date: Fri, 9 Aug 2013 15:58:46 +0100
-Message-ID: <20130809145846.GD6427@sirena.org.uk>
-References: <1121E117AD4ECE49880A389A396215BB935C692E81@rtitmbs7.realtek.com.tw>
- <5200DE78.5060409@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692F72@rtitmbs7.realtek.com.tw>
- <5201FB09.1080105@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C692FD9@rtitmbs7.realtek.com.tw>
- <520204BB.9080603@metafoo.de> <20130807093629.GU6427@sirena.org.uk>
- <520225B4.5050208@metafoo.de>
- <1121E117AD4ECE49880A389A396215BB935C6932CF@rtitmbs7.realtek.com.tw>
- <5204F0AA.1070209@metafoo.de>
+From: "Keith A. Milner" <maillist@superlative.org>
+Subject: Re: [git pull] [PATCH 0/7] add support for many Roland
+	and Yamaha devices
+Date: Fri, 09 Aug 2013 16:02:02 +0100
+Message-ID: <4161390.DqJ0fEoIrV@kamdesktop>
+References: <51CC9D8B.7060601@ladisch.de> <1670669.usJAXLJcqQ@kamdesktop>
+ <5204EBD4.2040504@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8885004181721255396=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B3F22657B8
- for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 16:58:52 +0200 (CEST)
-In-Reply-To: <5204F0AA.1070209@metafoo.de>
+Received: from mail-ee0-f50.google.com (mail-ee0-f50.google.com [74.125.83.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35D1B2657B8
+ for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 17:02:04 +0200 (CEST)
+Received: by mail-ee0-f50.google.com with SMTP id d51so2140309eek.23
+ for <alsa-devel@alsa-project.org>; Fri, 09 Aug 2013 08:02:04 -0700 (PDT)
+In-Reply-To: <5204EBD4.2040504@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,60 +24,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Friday 09 Aug 2013 15:17:08 Clemens Ladisch wrote:
+> Keith A. Milner wrote:
+> > I will mention, if it is of any importance, that I get the following when
+> > the driver is loaded:
+> > 
+> > [ 3340.089613] snd-usb-audio: probe of 1-6.2:1.2 failed with error -5
+> 
+> That looks like the MIDI interface.
+> Do you have the MIDI ports (see "amidi -l")?
 
---===============8885004181721255396==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3l764Q7zY5HuAgsB"
-Content-Disposition: inline
+No MIDI ports show up. Nor are there any on the device or any that I'm aware 
+of that are "internal" to the device.
 
+I will note that on the Boss BR-80 there is an "internal" MIDI port which can 
+be used as a drum synth. There appears to be nothing similar on the JS-8.
 
---3l764Q7zY5HuAgsB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+My original quirk actually had an bug as it included a MIDI endpoint 
+definition. This originally worked without error, but in later versions it 
+started to error in a similar way, I believe because of later changes to snd-
+usb.
 
-On Fri, Aug 09, 2013 at 03:37:46PM +0200, Lars-Peter Clausen wrote:
-> On 08/09/2013 11:05 AM, Bard Liao wrote:
+>From what I can tell, the JS-8 announces a MIDI-like interface, but doesn't 
+actually have one.
 
-> > Does "virtual switch control" mean a switch control which will not touch the codec's register actually?
+> Is there any error message in the system log?
 
-> Yes. But Mark seems to prefer the solution using {PRE,POST}_REG events.
+Not really. It's pretty uch the same as in dmesg:
 
-I don't mind that much, neither way should be a problem for the
-framework.
+Aug  9 15:52:18 KAMDesktop kernel: [ 6374.238016] usb 1-6.2: new high-speed 
+USB device number 7 using ehci-pci
+Aug  9 15:52:18 KAMDesktop kernel: [ 6374.332853] snd-usb-audio: probe of 
+1-6.2:1.2 failed with error -5
+Aug  9 15:52:18 KAMDesktop mtp-probe: checking bus 1, device 7: 
+"/sys/devices/pci0000:00/0000:00:1a.7/usb1/1-6/1-6.2"
+Aug  9 15:52:18 KAMDesktop mtp-probe: bus: 1, device: 7 was not an MTP device
+Aug  9 15:52:18 KAMDesktop kernel: [ 6374.365928] Unable to change format on 
+ep #84: already in use
+Aug  9 15:52:18 KAMDesktop kernel: [ 6374.365944] Unable to change format on 
+ep #84: already in use
+Aug  9 15:52:18 KAMDesktop kernel: [ 6374.365965] Unable to change format on 
+ep #84: already in use
+Aug  9 15:52:18 KAMDesktop kernel: [ 6374.366109] Unable to change format on 
+ep #84: already in use
 
---3l764Q7zY5HuAgsB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Cheers,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSBQOjAAoJELSic+t+oim9aeYP/j0Aor513ym5191LQ4NU8zs0
-4Lc3fJXHbiv7mJNBNNZ87bfDLM+SmeAKwmD4N6DlZac4Jd0sf8IREJSajKWxp9Ns
-nXioosWuk2G4TgquIUe1QZX28Aq90KiiOVVI+pkFdGfL4k0HyQfRHlu9sz6ed+e9
-4fWnmOoQxEVihYYxEyVV/Xky3UuFsE850VyTY7HiIBXcjcGOLGD5UulvUh58ThaQ
-S/FqCtwjpksR49cN3ZlgHY3KlMA00Qc+IwW197j41HdrkGeZK0dPBghqeFTgaeiV
-CTefe18VbpII9KgsgWBTBjPvCl+73Vval8uWEJRy0KTiox/a8ew+enIpGoPkrFxI
-znyP5EBnCO6Im48kd3/3O1WdKzIuP8g4xjfHHbBwcG2W/EQO4uXzTtU/RfKYTSdw
-NL2KZ59CqibFv9hGr+wrwC3pVC+8SoC/mdZPq+6r2Ta3bh4lF2bw6vVjdykFAsNr
-RcVjZM93l0u0i1jJBMoQ9ZDVGh/UX7EZNa1v/ZyhE/VxWCoQlfVW+3pfbn4aYSVC
-Qyy3btcKJDINdESrlNu6qWvKMxcIxxybDVyLJ1d5UDbdV1C3GknXuD5m1ndiPmda
-25CaYlz3wlOgIgTrbpbVYeK80cIj6WljeFllvHk7IymBVlAWQhgdiqN2Ryntrzg7
-TVswq4/113ZroP/xB71v
-=GRyi
------END PGP SIGNATURE-----
-
---3l764Q7zY5HuAgsB--
-
---===============8885004181721255396==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8885004181721255396==--
+Keith
