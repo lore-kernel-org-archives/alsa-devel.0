@@ -1,25 +1,23 @@
-From: Joonas Saarinen <jonskunator@gmail.com>
-Subject: Re: LG LW25 pin fix
-Date: Sat, 10 Aug 2013 02:01:36 +0300
-Message-ID: <520574D0.3010102@gmail.com>
-References: <5203F5A7.5010004@gmail.com> <s5h7gfv9yji.wl%tiwai@suse.de>
- <5204B205.5040906@gmail.com> <s5hk3jv2lpx.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to
+ the mvebu audio subsystem
+Date: Sat, 10 Aug 2013 00:42:09 +0100
+Message-ID: <20130809234209.GQ6427@sirena.org.uk>
+References: <20130809091953.GO6427@sirena.org.uk> <5204B7A6.9050907@gmail.com>
+ <20130809094340.GO23006@n2100.arm.linux.org.uk>
+ <5204CC04.4000401@gmail.com> <20130809113940.GY6427@sirena.org.uk>
+ <20130809130932.GS23006@n2100.arm.linux.org.uk>
+ <20130809180058.GM6427@sirena.org.uk>
+ <20130809182516.GT23006@n2100.arm.linux.org.uk>
+ <20130809194434.GP6427@sirena.org.uk>
+ <20130809203847.GU23006@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2508167715755607057=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f47.google.com (mail-ee0-f47.google.com [74.125.83.47])
- by alsa0.perex.cz (Postfix) with ESMTP id A48842608EE
- for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2013 01:01:39 +0200 (CEST)
-Received: by mail-ee0-f47.google.com with SMTP id d49so2344141eek.6
- for <alsa-devel@alsa-project.org>; Fri, 09 Aug 2013 16:01:39 -0700 (PDT)
-Received: from [172.20.0.36] (dsl-espbrasgw1-50dfb6-224.dhcp.inet.fi.
- [80.223.182.224])
- by mx.google.com with ESMTPSA id k3sm32970425een.16.2013.08.09.16.01.37
- for <alsa-devel@alsa-project.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Fri, 09 Aug 2013 16:01:38 -0700 (PDT)
-In-Reply-To: <s5hk3jv2lpx.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3CE82610B3
+ for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2013 01:42:17 +0200 (CEST)
+In-Reply-To: <20130809203847.GU23006@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,76 +27,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Yup, works as expected. Thank you!
 
-Joonas
+--===============2508167715755607057==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="hqTXfEuqfuBCci/z"
+Content-Disposition: inline
 
-On 09.08.2013 13:38, Takashi Iwai wrote:
-> At Fri, 09 Aug 2013 12:10:29 +0300,
-> Joonas Saarinen wrote:
->> upload=true&script=true&cardinfo=
->> !!################################
->> !!ALSA Information Script v 0.4.62
->> !!################################
-> At the next time, please use the attachment, since your MUA breaks the
-> spaces, and I had to fix them manually.
->
-> In anyway, below is the fix patch.  Give it a try.
->
->
-> thanks,
->
-> Takashi
->
-> ---
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: hda - Add pinfix for LG LW25 laptop
->
-> Correct the pins for a line-in and a headphone on LG LW25 laptop with
-> ALC880 codec.  Other pins seem fine.
->
-> Reported-by: Joonas Saarinen <jonskunator@gmail.com>
-> Cc: <stable@vger.kernel.org> [v3.9+]
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->   sound/pci/hda/patch_realtek.c | 10 ++++++++++
->   1 file changed, 10 insertions(+)
->
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 8bd2261..5b22bf9 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -1031,6 +1031,7 @@ enum {
->   	ALC880_FIXUP_GPIO2,
->   	ALC880_FIXUP_MEDION_RIM,
->   	ALC880_FIXUP_LG,
-> +	ALC880_FIXUP_LG_LW25,
->   	ALC880_FIXUP_W810,
->   	ALC880_FIXUP_EAPD_COEF,
->   	ALC880_FIXUP_TCL_S700,
-> @@ -1089,6 +1090,14 @@ static const struct hda_fixup alc880_fixups[] = {
->   			{ }
->   		}
->   	},
-> +	[ALC880_FIXUP_LG_LW25] = {
-> +		.type = HDA_FIXUP_PINS,
-> +		.v.pins = (const struct hda_pintbl[]) {
-> +			{ 0x1a, 0x0181344f }, /* line-in */
-> +			{ 0x1b, 0x0321403f }, /* headphone */
-> +			{ }
-> +		}
-> +	},
->   	[ALC880_FIXUP_W810] = {
->   		.type = HDA_FIXUP_PINS,
->   		.v.pins = (const struct hda_pintbl[]) {
-> @@ -1341,6 +1350,7 @@ static const struct snd_pci_quirk alc880_fixup_tbl[] = {
->   	SND_PCI_QUIRK(0x1854, 0x003b, "LG", ALC880_FIXUP_LG),
->   	SND_PCI_QUIRK(0x1854, 0x005f, "LG P1 Express", ALC880_FIXUP_LG),
->   	SND_PCI_QUIRK(0x1854, 0x0068, "LG w1", ALC880_FIXUP_LG),
-> +	SND_PCI_QUIRK(0x1854, 0x0077, "LG LW25", ALC880_FIXUP_LG_LW25),
->   	SND_PCI_QUIRK(0x19db, 0x4188, "TCL S700", ALC880_FIXUP_TCL_S700),
->   
->   	/* Below is the copied entries from alc880_quirks.c.
+
+--hqTXfEuqfuBCci/z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Aug 09, 2013 at 09:38:47PM +0100, Russell King - ARM Linux wrote:
+> On Fri, Aug 09, 2013 at 08:44:34PM +0100, Mark Brown wrote:
+
+> > If someone wants to it should also be possible to convert the existing
+> > platforms without S/PDIF support over to DT, providing you don't mind
+> > changing the code once the DPCM and S/PDIF support is added and a bit of
+> > thought is put into where the S/PDIF output will fit into the bindings.
+
+> Okay, so you're thinking that the I2S output will be enabled in the
+> absence of DPCM?  If so, that tells me that you don't understand my
+
+When I say that it should be possible to convert the existing machines
+over to DT I'm talking about the machines that are supported with the
+drivers currently in mainline.  These machines presumably work just fine
+with the existing drivers which support the I2S only subset of the
+possible functionality in the hardware without using DCPM.  These are
+the the machines that could have DT added now without implementing the
+driver improvements to enable the extra hardware functionality.
+
+When I say that they will need changing once DPCM and S/PDIF support is
+added what I mean is that those changes to the CPU side drivers should,
+as you correctly say, require all Kirkwood machine drivers to use DPCM
+even if only due to the handling of simultaneous startup of the S/PDIF
+and I2S interfaces.
+
+The "you" in the above quote was intended to refer to people working on
+Kirkwood in general, not you personally unless you want to.
+
+> What this means is that the conventional setup where you have _one_ DAI
+> link connecting the codec DAI to the CPU DAI won't work on Kirkwood
+> anymore, because there is no way to know which of the two outputs
+> should be enabled.  I avoided that in my patches, but you've objected
+> to that saying that it must use DPCM.  That makes the whole of kirkwood
+> entirely DPCM only, whether or not you have a single codec to connect.
+
+Right, that's where the drivers should end up.  In terms of the device
+tree I would expect that it should be the case that there are distinct
+I2S and S/PDIF interfaces visible, or at least that there's some way to
+identify which interface on the SoC is being referred to - this is the
+thought about where the S/PDIF output will fit into the bindings that I
+mentioned being required.
+
+So long as only I2S is used in the system (or at least any S/PDIF that
+is present is ignored at runtime) it should be possible to continue
+using the existing driver infrastructure until S/PDIF and DPCM support
+is added and then transition the existing drivers (both non-DT and any
+DT ones that get added or converted) over to that as part of the
+conversion.
+
+In other words I was talking about a possible intermediate state where
+people are working with the DT bindings but the driver support for
+systems with S/PDIF in use is not there yet.  That's not required but it
+should be possible if there's interest in progressing the DT bindings
+while the driver is as it stands.
+
+--hqTXfEuqfuBCci/z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSBX5OAAoJELSic+t+oim9+tkP/2rbUVERjwqCRanBLwqpQdvV
+JV/UpXLa3+ujaMX9Y9ZgxY7rO/5aJmMGnHKgccuEjlo8VcEXhWXoMQ0c3cSxXvDs
+UdxNeFVa+6Q3J/Yd6Dp+ETgylYizuXdajrbZ6KsFKe7NtieB2BXDTWth/+mRKW1f
+zL4RrbaTuiVvKtbr3Zv5qn/d96dqrgedTIEn0XT4wNI9jJUr9br4Zq+agAON+yJf
+fPaRAifhe3CxyXLHc6a/iqCd2n25HI3/rgD55SLszChbKru6VxCv1MIZijoRJWEc
+rRyCwS3Q8vyaa+czjncxglA81jlMoAkHi8Y62ukE3x6oz0yUyKgugt0Cwj/JbniQ
+fQPpWkKHew8NCsvpnlw8iS/WIWlCYtDDL6UK2uK1NY+Xahfer4WQ4KVYsnzjI5iQ
+z2HpfSN+roYEKhoVfrnRNgcrCg4ZBxSmhxtqs3ejFGZYWnrL1zw+f4dI011uyQlK
+yFIvFnHtxKNm7hwZ3w/bLWY/9VQNLtfMF6OmN1scSAbAJi5h3C5+ocVuBkT299Vs
+q7BkVVz3FwM7p3haFboVdA+vY1dxVbVIB/xC9g2EmU8MhJ4KK8B6k5BiVPEC3YOB
+DsaiMFjMHeSNMuRY1kjTDJSsoQ0xXopMRYy188xQl0Iexcbg/iJ+Wu1Zvp/C2oEH
++OdkSH5xJIYIJ1zoskDI
+=JVZp
+-----END PGP SIGNATURE-----
+
+--hqTXfEuqfuBCci/z--
+
+--===============2508167715755607057==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2508167715755607057==--
