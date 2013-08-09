@@ -1,246 +1,132 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [PATCH V3 3/3] ASoC: Samsung: I2S: Modify the I2S driver to support I2S on Exynos5420
-Date: Fri, 09 Aug 2013 01:05:46 +0200
-Message-ID: <2802930.EccX991DZW@flatron>
-References: <1375865122-5258-1-git-send-email-padma.v@samsung.com> <1375865122-5258-4-git-send-email-padma.v@samsung.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [RFC PATCH] ASoC: omap-mcbsp: Add support for
+ highter rate up to 384000
+Date: Fri, 9 Aug 2013 08:18:23 +0300
+Message-ID: <52047B9F.7040607@ti.com>
+References: <20130807182841.GA7823@panicking> <5203782D.1080008@ti.com>
+ <20130808110410.GA11288@panicking>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1375865122-5258-4-git-send-email-padma.v@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padmavathi Venna <padma.v@samsung.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, padma.kvr@gmail.com, broonie@kernel.org, kgene.kim@samsung.com, abrestic@chromium.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B5572619E1
+ for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 07:17:54 +0200 (CEST)
+In-Reply-To: <20130808110410.GA11288@panicking>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Padmavathi,
+On 08/08/2013 02:04 PM, Michael Trimarchi wrote:
+> On Thu, Aug 08, 2013 at 01:51:25PM +0300, Peter Ujfalusi wrote:
+>> On 08/07/2013 09:28 PM, Michael Trimarchi wrote:
+>>> Add support for highter rate up to 384000Khz. There are codecs in the
+>>> market that can play up to this frequency.
+>>> Test was done just with:
+>>>
+>>> #define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_192000)
+>>>
+>>> playing wav file 32bit/192000Khz stereo. Some glitch has observed
+>>> but this should depend on the selected min buffer bytes that was
+>>> left untouched in aplay and in the omap-pcm driver.
+>>>
+>>> Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+>>> ---
+>>>  sound/soc/omap/omap-mcbsp.c |    8 +++++++-
+>>>  1 file changed, 7 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+>>> index 7483efb..1e95f6a 100644
+>>> --- a/sound/soc/omap/omap-mcbsp.c
+>>> +++ b/sound/soc/omap/omap-mcbsp.c
+>>> @@ -39,7 +39,9 @@
+>>>  #include "mcbsp.h"
+>>>  #include "omap-mcbsp.h"
+>>>  =
 
-On Wednesday 07 of August 2013 14:15:22 Padmavathi Venna wrote:
-> Exynos5420 added support for I2S TDM mode. For this, there are some
-> register changes in the I2S controller. This patch adds the relevant
-> register changes to support I2S in normal mode. This patch adds a
-> quirk for TDM mode and if TDM mode is present all the relevent changes
-> will be applied.
-> 
-> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
-> ---
->  .../devicetree/bindings/sound/samsung-i2s.txt      |    4 +
->  include/linux/platform_data/asoc-s3c.h             |    1 +
->  sound/soc/samsung/i2s-regs.h                       |   15 ++++
->  sound/soc/samsung/i2s.c                            |   81
-> ++++++++++++++++++-- 4 files changed, 93 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-> b/Documentation/devicetree/bindings/sound/samsung-i2s.txt index
-> b3f6443..9b5c892 100644
-> --- a/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-> +++ b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-> @@ -11,6 +11,10 @@ Required SoC Specific Properties:
->       with secondary fifo and s/w reset control.
->     - samsung,s5pv210-i2s: for 8/16/24bit multichannel(5.1) I2S with
->       secondary fifo, s/w reset control and internal mux for root clk
-> src. +   - samsung,exynos5420-i2s: for 8/16/24bit multichannel(7.1) I2S
-> with +     secondary fifo, s/w reset control, internal mux for root clk
-> src and +     TDM support. TDM (Time division multiplexing) is to allow
-> transfer of +     multiple channel audio data on single data line.
-> 
->  - reg: physical base address of the controller and length of memory
-> mapped region.
-> diff --git a/include/linux/platform_data/asoc-s3c.h
-> b/include/linux/platform_data/asoc-s3c.h index 8827259..9efc04d 100644
-> --- a/include/linux/platform_data/asoc-s3c.h
-> +++ b/include/linux/platform_data/asoc-s3c.h
-> @@ -36,6 +36,7 @@ struct samsung_i2s {
->   */
->  #define QUIRK_NO_MUXPSR		(1 << 2)
->  #define QUIRK_NEED_RSTCLR	(1 << 3)
-> +#define QUIRK_SUPPORTS_TDM	(1 << 4)
->  	/* Quirks of the I2S controller */
->  	u32 quirks;
->  	dma_addr_t idma_addr;
-> diff --git a/sound/soc/samsung/i2s-regs.h b/sound/soc/samsung/i2s-regs.h
-> index 30513b7..821a502 100644
-> --- a/sound/soc/samsung/i2s-regs.h
-> +++ b/sound/soc/samsung/i2s-regs.h
-> @@ -31,6 +31,10 @@
->  #define I2SLVL1ADDR	0x34
->  #define I2SLVL2ADDR	0x38
->  #define I2SLVL3ADDR	0x3c
-> +#define I2SSTR1		0x40
-> +#define I2SVER		0x44
-> +#define I2SFIC2		0x48
-> +#define I2STDM		0x4c
-> 
->  #define CON_RSTCLR		(1 << 31)
->  #define CON_FRXOFSTATUS		(1 << 26)
-> @@ -117,6 +121,17 @@
->  #define MOD_BCLK_MASK		3
->  #define MOD_8BIT		(1 << 0)
-> 
-> +#define EXYNOS5420_MOD_LRP_SHIFT	15
-> +#define EXYNOS5420_MOD_SDF_SHIFT	6
-> +#define EXYNOS5420_MOD_RCLK_SHIFT	4
-> +#define EXYNOS5420_MOD_BCLK_SHIFT	0
-> +#define EXYNOS5420_MOD_BCLK_64FS	4
-> +#define EXYNOS5420_MOD_BCLK_96FS	5
-> +#define EXYNOS5420_MOD_BCLK_128FS	6
-> +#define EXYNOS5420_MOD_BCLK_192FS	7
-> +#define EXYNOS5420_MOD_BCLK_256FS	8
-> +#define EXYNOS5420_MOD_BCLK_MASK	0xf
-> +
->  #define MOD_CDCLKCON		(1 << 12)
-> 
->  #define PSR_PSREN		(1 << 15)
-> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-> index 8a5504c..6964672 100644
-> --- a/sound/soc/samsung/i2s.c
-> +++ b/sound/soc/samsung/i2s.c
-> @@ -199,7 +199,12 @@ static inline bool is_manager(struct i2s_dai *i2s)
->  /* Read RCLK of I2S (in multiples of LRCLK) */
->  static inline unsigned get_rfs(struct i2s_dai *i2s)
->  {
-> -	u32 rfs = (readl(i2s->addr + I2SMOD) >> MOD_RCLK_SHIFT);
-> +	u32 rfs;
-> +
-> +	if (i2s->quirks & QUIRK_SUPPORTS_TDM)
-> +		rfs = readl(i2s->addr + I2SMOD) >> 
-EXYNOS5420_MOD_RCLK_SHIFT;
-> +	else
-> +		rfs = (readl(i2s->addr + I2SMOD) >> MOD_RCLK_SHIFT);
->  	rfs &= MOD_RCLK_MASK;
-> 
->  	switch (rfs) {
-> @@ -214,8 +219,12 @@ static inline unsigned get_rfs(struct i2s_dai *i2s)
-> static inline void set_rfs(struct i2s_dai *i2s, unsigned rfs) {
->  	u32 mod = readl(i2s->addr + I2SMOD);
-> -	int rfs_shift =  MOD_RCLK_SHIFT;
-> +	int rfs_shift;
-> 
-> +	if (i2s->quirks & QUIRK_SUPPORTS_TDM)
-> +		rfs_shift = EXYNOS5420_MOD_RCLK_SHIFT;
-> +	else
-> +		rfs_shift = MOD_RCLK_SHIFT;
->  	mod &= ~(MOD_RCLK_MASK << rfs_shift);
-> 
->  	switch (rfs) {
-> @@ -239,10 +248,22 @@ static inline void set_rfs(struct i2s_dai *i2s,
-> unsigned rfs) /* Read Bit-Clock of I2S (in multiples of LRCLK) */
->  static inline unsigned get_bfs(struct i2s_dai *i2s)
->  {
-> -	u32 bfs =  readl(i2s->addr + I2SMOD) >> MOD_BCLK_SHIFT;
-> -	bfs &= MOD_BCLK_MASK;
-> +	u32 bfs;
-> +
-> +	if (i2s->quirks & QUIRK_SUPPORTS_TDM) {
-> +		bfs = readl(i2s->addr + I2SMOD) >> 
-EXYNOS5420_MOD_BCLK_SHIFT;
-> +		bfs &= EXYNOS5420_MOD_BCLK_MASK;
-> +	} else {
-> +		bfs =  readl(i2s->addr + I2SMOD) >> MOD_BCLK_SHIFT;
-> +		bfs &= MOD_BCLK_MASK;
-> +	}
-> 
->  	switch (bfs) {
-> +	case 8: return 256;
-> +	case 7: return 192;
-> +	case 6: return 128;
-> +	case 5: return 96;
-> +	case 4: return 64;
->  	case 3: return 24;
->  	case 2: return 16;
->  	case 1:	return 48;
-> @@ -254,9 +275,22 @@ static inline unsigned get_bfs(struct i2s_dai *i2s)
-> static inline void set_bfs(struct i2s_dai *i2s, unsigned bfs) {
->  	u32 mod = readl(i2s->addr + I2SMOD);
-> -	int bfs_shift = MOD_BCLK_SHIFT;
-> +	int bfs_shift;
-> +	int tdm = i2s->quirks & QUIRK_SUPPORTS_TDM;
-> 
-> -	mod &= ~(MOD_BCLK_MASK << bfs_shift);
-> +	if (i2s->quirks & QUIRK_SUPPORTS_TDM) {
-> +		bfs_shift = EXYNOS5420_MOD_BCLK_SHIFT;
-> +		mod &= ~(EXYNOS5420_MOD_BCLK_MASK << bfs_shift);
-> +	} else {
-> +		bfs_shift = MOD_BCLK_SHIFT;
-> +		mod &= ~(MOD_BCLK_MASK << bfs_shift);
-> +	}
-> +
-> +	/* Non-TDM I2S controllers do not support BCLK > 48 * FS */
-> +	if (!tdm && bfs > 48) {
-> +		dev_err(&i2s->pdev->dev, "Unsupported BCLK divider\n");
-> +		return;
-> +	}
-> 
->  	switch (bfs) {
->  	case 48:
-> @@ -271,6 +305,21 @@ static inline void set_bfs(struct i2s_dai *i2s,
-> unsigned bfs) case 16:
->  		mod |= (MOD_BCLK_16FS << bfs_shift);
->  		break;
-> +	case 64:
-> +		mod |= (EXYNOS5420_MOD_BCLK_64FS << bfs_shift);
-> +		break;
-> +	case 96:
-> +		mod |= (EXYNOS5420_MOD_BCLK_96FS << bfs_shift);
-> +		break;
-> +	case 128:
-> +		mod |= (EXYNOS5420_MOD_BCLK_128FS << bfs_shift);
-> +		break;
-> +	case 192:
-> +		mod |= (EXYNOS5420_MOD_BCLK_192FS << bfs_shift);
-> +		break;
-> +	case 256:
-> +		mod |= (EXYNOS5420_MOD_BCLK_256FS << bfs_shift);
-> +		break;
->  	default:
->  		dev_err(&i2s->pdev->dev, "Wrong BCLK Divider!\n");
->  		return;
-> @@ -496,10 +545,17 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
->  {
->  	struct i2s_dai *i2s = to_info(dai);
->  	u32 mod = readl(i2s->addr + I2SMOD);
-> -	int lrp_shift = MOD_LRP_SHIFT, sdf_shift = MOD_SDF_SHIFT;
-> -	int sdf_mask, lrp_rlow;
-> +	int lrp_shift, sdf_shift, sdf_mask, lrp_rlow;
->  	u32 tmp = 0;
-> 
-> +	if (i2s->quirks & QUIRK_SUPPORTS_TDM) {
-> +		lrp_shift = EXYNOS5420_MOD_LRP_SHIFT;
-> +		sdf_shift = EXYNOS5420_MOD_SDF_SHIFT;
-> +	} else {
-> +		lrp_shift = MOD_LRP_SHIFT;
-> +		sdf_shift = MOD_SDF_SHIFT;
-> +	}
-> +
->  	sdf_mask = MOD_SDF_MASK << sdf_shift;
->  	lrp_rlow = MOD_LR_RLOW << lrp_shift;
-> 
-> @@ -1264,6 +1320,12 @@ static struct samsung_i2s_dai_data i2sv5_dai_type
-> = { .quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI | QUIRK_NEED_RSTCLR, };
-> 
-> +static struct samsung_i2s_dai_data i2sv6_dai_type = {
-> +	.dai_type = TYPE_PRI,
-> +	.quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI | QUIRK_NEED_RSTCLR |
-> +			QUIRK_SUPPORTS_TDM,
-> +};
-> +
->  static struct samsung_i2s_dai_data samsung_dai_type_sec = {
->  	.dai_type = TYPE_SEC,
->  };
-> @@ -1297,6 +1359,9 @@ static const struct of_device_id
-> exynos_i2s_match[] = { }, {
->  		.compatible = "samsung,s5pv210-i2s",
->  		.data = &i2sv5_dai_type,
-> +	}, {
-> +		.compatible = "samsung,exynos5420-i2s",
-> +		.data = &i2sv6_dai_type,
->  	},
->  	{},
->  };
+>>> -#define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_96000)
+>>> +#define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_192000 |		\
+>>
+>> I think only this change is enough for what you want to achieve.
+>>
+>>> +				 SNDRV_PCM_RATE_CONTINUOUS |		\
+>>> +				 SNDRV_PCM_RATE_KNOT)
+>>
+>> The _KNOT is for sure not needed and I would not set the CONTINUOUS eith=
+er.
+> =
 
-This one looks good to me.
+> pcm5102pw is a codec that support 384000 rate so I think that PCM_RATE_KN=
+OT
+> is requested for such rate. Correct?
 
-Reviewed-by: Tomasz Figa <t.figa@samsung.com>
+Yes, looks that way. I had overlooked the 384000 KHz...
 
-Best regards,
-Tomasz
+>>
+>>>  =
+
+>>>  #define OMAP_MCBSP_SOC_SINGLE_S16_EXT(xname, xmin, xmax, \
+>>>  	xhandler_get, xhandler_put) \
+>>> @@ -574,11 +576,15 @@ static struct snd_soc_dai_driver omap_mcbsp_dai =
+=3D {
+>>>  		.channels_max =3D 16,
+>>>  		.rates =3D OMAP_MCBSP_RATES,
+>>>  		.formats =3D SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
+>>> +		.rate_min =3D 8000,
+>>> +		.rate_max =3D 384000,
+>>
+>> Why you want to limit the rates here?
+>>
+> =
+
+> I didn't find in the market somenthing up to 384000.
+
+Sure, but it is not correct to say that McBSP supports rates up to 384000.
+McBSP have constraint on the BCLK speed up to 48MHz. So while
+32bit/stereo/384000 is OK, 32bit/4channel/384000 is not, but
+16bit/4channel/384000 is again good.
+When McBSP is master we have a check for the clock speed. We might need to
+have similar for McBSP slave mode, but I don't think we are going to hit the
+48MHz limit anyways.
+
+
+> =
+
+> Michael
+> =
+
+>>>  	},
+>>>  	.capture =3D {
+>>>  		.channels_min =3D 1,
+>>>  		.channels_max =3D 16,
+>>>  		.rates =3D OMAP_MCBSP_RATES,
+>>> +		.rate_min =3D 8000,
+>>> +		.rate_max =3D 384000,
+>>
+>> Same here, do not set these.
+>>
+>>>  		.formats =3D SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
+>>>  	},
+>>>  	.ops =3D &mcbsp_dai_ops,
+>>>
+>>
+>>
+>> -- =
+
+>> P=E9ter
+> =
+
+
+
+-- =
+
+P=E9ter
