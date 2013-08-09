@@ -1,44 +1,136 @@
-From: Maxim Boyko <boyko@pcqnt1.phys.spbu.ru>
-Subject: [PATCH] usb-audio: Fix invalid volume resolution for Logitech HD
- Webcam C525
-Date: Fri, 9 Aug 2013 12:28:35 +0400 (MSK)
-Message-ID: <alpine.LNX.2.02.1308091225250.26535@pcqnt1.phys.spbu.ru>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to the mvebu
+ audio subsystem
+Date: Fri, 9 Aug 2013 11:06:23 +0200
+Message-ID: <20130809110623.7bb3e7ad@armhf>
+References: <20130808132201.2610aef3@armhf>
+	<5204A716.6070507@gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
-Cc: stable@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5204A716.6070507@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 09 Aug 2013 10:23:50 +0200
+Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com> wrote:
 
-Add the volume control quirk for avoiding the kernel warning
-for the Logitech HD Webcam C525
-as in the similar commit 36691e1be6ec551eef4a5225f126a281f8c051c2
-for the Logitech HD Webcam C310.
+> On 08/08/2013 01:22 PM, Jean-Francois Moine wrote:
+> > This patch adds DT support to the audio subsystem of the mvebu fami=
+ly
+> > (Kirkwood, Dove, Armada 370).
+> >
+> > Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
+> > ---
+> >   .../devicetree/bindings/sound/mvebu-audio.txt      | 29 +++++++++=
++++++++++++++
+> >   sound/soc/kirkwood/kirkwood-i2s.c                  | 26 +++++++++=
+++++++++-----
+> >   2 files changed, 49 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/sound/mvebu-audio.tx=
+t b/Documentation/devicetree/bindings/sound/mvebu-audio.txt
+> > new file mode 100644
+> > index 0000000..7e5fd37
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/sound/mvebu-audio.txt
+> > @@ -0,0 +1,29 @@
+> > +* mvebu (Kirkwood, Dove, Armada 370) audio controller
+> > +
+> > +Required properties:
+> > +
+> > +- compatible: "mrvl,mvebu-audio"
+>=20
+> Jean-Francois,
+>=20
+> we need at least two more compatibles for the audio controller found =
+on
+> Dove and Kirkwood respectively. This is how we are going to distingui=
+sh
+> those two, e.g. Kirkwood has SPDIF in which Dove hasn't.
 
-Reported-by: Maksim Boyko <maksim.a.boyko@gmail.com>
-Tested-by: Maksim Boyko <maksim.a.boyko@gmail.com>
-Cc: <stable@vger.kernel.org> # 3.10.5+
-Signed-off-by: Maksim Boyko <maksim.a.boyko@gmail.com>
---
-  sound/usb/mixer.c |    1 +
-  1 file changed, 1 insertion(+)
+Sebastian,
 
---- linux-3.10.5-orig/sound/usb/mixer.c 2013-08-04 12:51:49.000000000 
-+0400
-+++ linux-3.10.5/sound/usb/mixer.c      2013-08-06 21:12:42.274197287 
-+0400
-@@ -888,6 +888,7 @@ static void volume_control_quirks(struct
-         case USB_ID(0x046d, 0x081b): /* HD Webcam c310 */
-         case USB_ID(0x046d, 0x081d): /* HD Webcam c510 */
-         case USB_ID(0x046d, 0x0825): /* HD Webcam c270 */
-+       case USB_ID(0x046d, 0x0826): /* HD Webcam c525 */
-         case USB_ID(0x046d, 0x0991):
-         /* Most audio usb devices lie about volume resolution.
-          * Most Logitech webcams have res = 384.
+s/has/hasn't & s/hasn't/has
 
+Are 2 compatibles enough, i.e. "mvebu-audio" and "mbevu-audio-spdif"?
 
+> Also, we have used "marvell" as prefix for a long time. I know there =
+has
+> been discussion about the stock ticker appreviation, has there been a=
+ny
+> decision on that already?
 
---
-WBR, Maksim Boyko
+Don't know, but, sure, there are still a lot of "mrvl".
+
+> > +- reg: physical base address of the controller and length of memor=
+y mapped
+> > +  region.
+> > +
+> > +- interrupts: list of two irq numbers.
+> > +  The first irq is used for data flow and the second one is used f=
+or errors.
+> > +
+> > +- clocks: one or two phandles.
+> > +  The first one is mandatory and defines the internal clock.
+> > +  The second one is optional and defines an external clock.
+> > +
+> > +- clock-names: names associated to the clocks:
+> > +	"internal" for the internal clock
+>=20
+> s/internal/dcoclk/
+
+Once, I got this message:
+
+On Fri, 26 Jul 2013 10:21:56 +0100 Russell King - ARM Linux <linux@arm.=
+linux.org.uk> wrote:
+> On Fri, Jul 26, 2013 at 11:09:13AM +0200, Jean-Francois Moine wrote:
+> > The A510 documentation uses the names "DCO PLL" for the internal cl=
+ock
+> > and "AU_EXTCLK" for the external clock. So, what about "dcopll" and
+> > "extclk"?
+>=20
+> Stop naming them according to their source.  Their _consumer_ names
+> not _source_ names.
+
+But Russell did not tell clearly which name could be the best.
+
+BTW, as we are naming the clocks, the 'clk' in "xxxclk" seems redondant=
+=2E..
+
+> > +	"extclk" for the external clock
+> > +
+> > +Example:
+> > +
+> > +i2s1: audio-controller@b4000 {
+> > +	compatible =3D "mrvl,mvebu-audio";
+> > +	reg =3D <0xb4000 0x2210>;
+> > +	interrupts =3D <21>, <22>;
+> > +	clocks =3D <&gate_clk 13>;
+> > +	clock-names =3D "internal";
+> > +};
+>=20
+> Also we will need some phandle reference to the audio codec here. As
+> this property is ongoing work in ASoC core, I suggest we wait for it
+> and propose a binding afterwards.
+
+I don't think that we need any reference to the codec here. The glue is
+done by the audio device. For example, using the (soon?) extended
+simple audio card:
+
+	spdif: spdif {
+		compatible =3D "linux,spdif-dit";
+	};
+	sound {
+		compatible =3D "linux,simple-audio";
+		audio-controller =3D <&i2s1>;
+		audio-codec =3D <&spdif>;
+		codec-dai-name =3D "dit-hifi";
+	};
+
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
