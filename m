@@ -1,77 +1,73 @@
-From: "Keith A. Milner" <maillist@superlative.org>
-Subject: Re: [git pull] [PATCH 0/7] add support for many Roland
-	and Yamaha devices
-Date: Fri, 09 Aug 2013 16:02:02 +0100
-Message-ID: <4161390.DqJ0fEoIrV@kamdesktop>
-References: <51CC9D8B.7060601@ladisch.de> <1670669.usJAXLJcqQ@kamdesktop>
- <5204EBD4.2040504@ladisch.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 1/2] ALSA: Added jack detection KControl support
+Date: Fri, 9 Aug 2013 17:39:47 +0100
+Message-ID: <20130809163947.GK6427@sirena.org.uk>
+References: <1375430365-13232-2-git-send-email-eu@felipetonello.com>
+ <1376029315-3217-1-git-send-email-eu@felipetonello.com>
+ <s5h38qj2cqj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f50.google.com (mail-ee0-f50.google.com [74.125.83.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 35D1B2657B8
- for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 17:02:04 +0200 (CEST)
-Received: by mail-ee0-f50.google.com with SMTP id d51so2140309eek.23
- for <alsa-devel@alsa-project.org>; Fri, 09 Aug 2013 08:02:04 -0700 (PDT)
-In-Reply-To: <5204EBD4.2040504@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="uCT+dex/jsWOzqWN"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5h38qj2cqj.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Felipe F. Tonello" <eu@felipetonello.com>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 09 Aug 2013 15:17:08 Clemens Ladisch wrote:
-> Keith A. Milner wrote:
-> > I will mention, if it is of any importance, that I get the following when
-> > the driver is loaded:
-> > 
-> > [ 3340.089613] snd-usb-audio: probe of 1-6.2:1.2 failed with error -5
-> 
-> That looks like the MIDI interface.
-> Do you have the MIDI ports (see "amidi -l")?
 
-No MIDI ports show up. Nor are there any on the device or any that I'm aware 
-of that are "internal" to the device.
+--uCT+dex/jsWOzqWN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I will note that on the Boss BR-80 there is an "internal" MIDI port which can 
-be used as a drum synth. There appears to be nothing similar on the JS-8.
+On Fri, Aug 09, 2013 at 03:52:04PM +0200, Takashi Iwai wrote:
 
-My original quirk actually had an bug as it included a MIDI endpoint 
-definition. This originally worked without error, but in later versions it 
-started to error in a similar way, I believe because of later changes to snd-
-usb.
+> Above all, the multiple indices don't work anyway with the snd_jack
+> stuff in the current form.  The index was introduced only for kjack,
+> and for HD-audio, snd_jack is provided just for a compatibility
+> reason, thus it doesn't matter much even if the multiple indices don't
+> work with it.=20
 
->From what I can tell, the JS-8 announces a MIDI-like interface, but doesn't 
-actually have one.
+> That being said, before going further, we need to consider how to
+> handle the input jack stuff with multiple indices.
 
-> Is there any error message in the system log?
+What's the big problem with indexes and input (hopefully also extcon...)
+reporting?
 
-Not really. It's pretty uch the same as in dmesg:
+> > -	snprintf(jack->name, sizeof(jack->name), "%s %s",
+> > +	snprintf(jack->name, sizeof(jack->name), "%s %s Jack",
+> >  		 card->shortname, jack->id);
 
-Aug  9 15:52:18 KAMDesktop kernel: [ 6374.238016] usb 1-6.2: new high-speed 
-USB device number 7 using ehci-pci
-Aug  9 15:52:18 KAMDesktop kernel: [ 6374.332853] snd-usb-audio: probe of 
-1-6.2:1.2 failed with error -5
-Aug  9 15:52:18 KAMDesktop mtp-probe: checking bus 1, device 7: 
-"/sys/devices/pci0000:00/0000:00:1a.7/usb1/1-6/1-6.2"
-Aug  9 15:52:18 KAMDesktop mtp-probe: bus: 1, device: 7 was not an MTP device
-Aug  9 15:52:18 KAMDesktop kernel: [ 6374.365928] Unable to change format on 
-ep #84: already in use
-Aug  9 15:52:18 KAMDesktop kernel: [ 6374.365944] Unable to change format on 
-ep #84: already in use
-Aug  9 15:52:18 KAMDesktop kernel: [ 6374.365965] Unable to change format on 
-ep #84: already in use
-Aug  9 15:52:18 KAMDesktop kernel: [ 6374.366109] Unable to change format on 
-ep #84: already in use
+> This breaks the compatibility with the existing code.
+> You must not change the name of the existing input jack element.
+> Some drivers create "Headphone" and some do "Headphone Jack", yes.
+> It's bad, but too late to change.
 
-Cheers,
+We can probably do something cheap like just check if there's a "Jack"
+already in the name?
 
-Keith
+--uCT+dex/jsWOzqWN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSBRtQAAoJELSic+t+oim92csP/1/rAohIUaj4FQEE21UNF+0Z
+ybPhiFETggXUWadf/szk2eOSzDywEZzoO4xSIgJ2cLw9sW/vHA5G894Rj8LoOdpq
+DEAFV2Rz34yR6IUDRuTyCH7P2PMOQV/RJHelNGSztQmNbof+Ig1AR3jDf9MRH12C
+m9OrAmUIXOn2k7z252uYAA03V4Tr5V7X5W9r+QKpENqga3vZjAzaWjEezTm9awGW
+1rk+SszkxketSpfqYXN6IIn0Rp5yK5uCWo966m3p24SjWIj08rr4IEcslJ2n3CFl
+yyWqVqDYr7D5/wqeS3/vgCGUrgbN3ps5Yx6cmPzHYP2DTB6SPZHxMEWDhbbdfFh9
+ZpIsiMmtSx3F/CLX4vxa6apITW52/rdlpTVqCdhIhAeGX9XFpPnDvCqT4oOPHa6f
+PJDT0rga8aXqF7t/OrjX9Sa0IZDlUy/thRe6Evsgyz//hCMnTr3p9fYaatJxsOgi
+AS3eJb/QK4EJOOR66+s1yTwx7j85KxDzVgS7cQEETvQyqlaa6T0tYiK+/a+kXNtK
+pSjp35zAm3JXFsryh1GQ3e8WJtOUMNywA4DggvBD8J1P6ZfBsGdLxLR4nJwPjaP7
+NeZVayKwZHdmFWiOHbK1I/U36wSvcnoe0I9cm4MsiZTG4vZPXL+3Bz6O/LqtjSUj
+9D72qtot2ywUHqi7hUjI
+=HvW9
+-----END PGP SIGNATURE-----
+
+--uCT+dex/jsWOzqWN--
