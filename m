@@ -1,82 +1,69 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to the mvebu
-	audio subsystem
-Date: Fri, 9 Aug 2013 10:30:32 +0100
-Message-ID: <20130809093032.GM23006@n2100.arm.linux.org.uk>
-References: <20130808132201.2610aef3@armhf> <5204A716.6070507@gmail.com> <20130809110623.7bb3e7ad@armhf>
+From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to
+ the mvebu audio subsystem
+Date: Fri, 09 Aug 2013 11:34:30 +0200
+Message-ID: <5204B7A6.9050907@gmail.com>
+References: <20130808132201.2610aef3@armhf> <5204A716.6070507@gmail.com>
+ <20130809091953.GO6427@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20130809110623.7bb3e7ad@armhf>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ee0-f48.google.com (mail-ee0-f48.google.com [74.125.83.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4CCED265717
+ for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 11:34:35 +0200 (CEST)
+Received: by mail-ee0-f48.google.com with SMTP id l10so1976102eei.21
+ for <alsa-devel@alsa-project.org>; Fri, 09 Aug 2013 02:34:35 -0700 (PDT)
+In-Reply-To: <20130809091953.GO6427@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 09, 2013 at 11:06:23AM +0200, Jean-Francois Moine wrote:
-> On Fri, 09 Aug 2013 10:23:50 +0200
-> Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com> wrote:
-> > we need at least two more compatibles for the audio controller found on
-> > Dove and Kirkwood respectively. This is how we are going to distinguish
-> > those two, e.g. Kirkwood has SPDIF in which Dove hasn't.
-> 
-> Sebastian,
-> 
-> s/has/hasn't & s/hasn't/has
+On 08/09/13 11:19, Mark Brown wrote:
+> On Fri, Aug 09, 2013 at 10:23:50AM +0200, Sebastian Hesselbarth wrote:
+>> On 08/08/2013 01:22 PM, Jean-Francois Moine wrote:
+>
+>>> +i2s1: audio-controller@b4000 {
+>>> +	compatible = "mrvl,mvebu-audio";
+>>> +	reg = <0xb4000 0x2210>;
+>>> +	interrupts = <21>, <22>;
+>>> +	clocks = <&gate_clk 13>;
+>>> +	clock-names = "internal";
+>>> +};
+>
+>> Also we will need some phandle reference to the audio codec here. As
+>> this property is ongoing work in ASoC core, I suggest we wait for it
+>> and propose a binding afterwards.
+>
+> No, as discussed this should be in the binding for the audio subsystem
+> not in the binding for an individual component in that subsystem.
+>
 
-No, you're both wrong.
+Mark,
 
-Some Kirkwood has SPDIF recording and playback.  There are those audio
-blocks which have just I2S capture and playback.  There are those which
-have I2S capture and playback, and SPDIF playback.  There are those which
-have both I2S and SPDIF for both capture and playback.  The only one I
-haven't yet seen is SPDIF capture without playback.
+I do understand there may be SoCs requiring sophisticated extra audio
+nodes, but Marvell SoCs don't. I prefer having a single node for the
+i2s controller *and* exploit the audio subsystem properties from that.
 
-> On Fri, 26 Jul 2013 10:21:56 +0100 Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
-> > On Fri, Jul 26, 2013 at 11:09:13AM +0200, Jean-Francois Moine wrote:
-> > > The A510 documentation uses the names "DCO PLL" for the internal clock
-> > > and "AU_EXTCLK" for the external clock. So, what about "dcopll" and
-> > > "extclk"?
-> > 
-> > Stop naming them according to their source.  Their _consumer_ names
-> > not _source_ names.
-> 
-> But Russell did not tell clearly which name could be the best.
-> 
-> BTW, as we are naming the clocks, the 'clk' in "xxxclk" seems redondant...
+For Marvell audio, we only need a single node for all three ASoC
+drivers. No other subsystem _requires_ you to have extra nodes for
+it's needs. If you can provide interrupts, just have an interrupt-
+controller property. If you can provide clocks, you can link to that
+very node - no virtual device node required. Even for media they
+do not insist on a virtual node but they do have generic properties
+you can exploit.
 
-"extclk" follows what's in the data sheet - the exact name of it is
-"AU_EXTCLK".  Since we already know that this is the audio unit from
-the struct device, the "AU_" part is redundant.  The input name for
-the internal clock is not given, instead they talk about where it
-comes from (it's producer) so your choice of "internal" is fine.
+If you insist on creating a virtual sound card node just because
+ASoC wants it that way - okay, your call. But I don't see any value
+in that.
 
-Take a moment to think about it: if you call it "dcoclk" then what
-happens on a future SoC if it's not connected to the dcoclk anymore?
-
-> I don't think that we need any reference to the codec here. The glue is
-> done by the audio device. For example, using the (soon?) extended
-> simple audio card:
-> 
-> 	spdif: spdif {
-> 		compatible = "linux,spdif-dit";
-> 	};
-> 	sound {
-> 		compatible = "linux,simple-audio";
-> 		audio-controller = <&i2s1>;
-> 		audio-codec = <&spdif>;
-> 		codec-dai-name = "dit-hifi";
-> 	};
-
-As I understand the way DPCM works, that isn't going to work for this
-case.  For DPCM as per Liam's example, it's going to require the audio
-controller to be bound to the dummy codec, and a dummy platform/dai
-bound to the SPDIF codec.  You then use DAPM routing to connect the
-SPDIF codec to the appropriate CPU DAI output stream.
-
-So the above "simple" implementation won't do - it can't be used to
-specify two DAI links, and it can't specify the DAPM routing between
-them.
-
-This will be another challenge to solve in DT!
+Sebastian
