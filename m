@@ -1,88 +1,82 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to
- the mvebu audio subsystem
-Date: Fri, 9 Aug 2013 10:19:53 +0100
-Message-ID: <20130809091953.GO6427@sirena.org.uk>
-References: <20130808132201.2610aef3@armhf>
- <5204A716.6070507@gmail.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to the mvebu
+	audio subsystem
+Date: Fri, 9 Aug 2013 10:30:32 +0100
+Message-ID: <20130809093032.GM23006@n2100.arm.linux.org.uk>
+References: <20130808132201.2610aef3@armhf> <5204A716.6070507@gmail.com> <20130809110623.7bb3e7ad@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3683784393920978123=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 102C6265714
- for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 11:20:03 +0200 (CEST)
-In-Reply-To: <5204A716.6070507@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130809110623.7bb3e7ad@armhf>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Aug 09, 2013 at 11:06:23AM +0200, Jean-Francois Moine wrote:
+> On Fri, 09 Aug 2013 10:23:50 +0200
+> Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com> wrote:
+> > we need at least two more compatibles for the audio controller found on
+> > Dove and Kirkwood respectively. This is how we are going to distinguish
+> > those two, e.g. Kirkwood has SPDIF in which Dove hasn't.
+> 
+> Sebastian,
+> 
+> s/has/hasn't & s/hasn't/has
 
---===============3683784393920978123==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8EQYc9s3Q1iGemBq"
-Content-Disposition: inline
+No, you're both wrong.
 
+Some Kirkwood has SPDIF recording and playback.  There are those audio
+blocks which have just I2S capture and playback.  There are those which
+have I2S capture and playback, and SPDIF playback.  There are those which
+have both I2S and SPDIF for both capture and playback.  The only one I
+haven't yet seen is SPDIF capture without playback.
 
---8EQYc9s3Q1iGemBq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On Fri, 26 Jul 2013 10:21:56 +0100 Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
+> > On Fri, Jul 26, 2013 at 11:09:13AM +0200, Jean-Francois Moine wrote:
+> > > The A510 documentation uses the names "DCO PLL" for the internal clock
+> > > and "AU_EXTCLK" for the external clock. So, what about "dcopll" and
+> > > "extclk"?
+> > 
+> > Stop naming them according to their source.  Their _consumer_ names
+> > not _source_ names.
+> 
+> But Russell did not tell clearly which name could be the best.
+> 
+> BTW, as we are naming the clocks, the 'clk' in "xxxclk" seems redondant...
 
-On Fri, Aug 09, 2013 at 10:23:50AM +0200, Sebastian Hesselbarth wrote:
-> On 08/08/2013 01:22 PM, Jean-Francois Moine wrote:
+"extclk" follows what's in the data sheet - the exact name of it is
+"AU_EXTCLK".  Since we already know that this is the audio unit from
+the struct device, the "AU_" part is redundant.  The input name for
+the internal clock is not given, instead they talk about where it
+comes from (it's producer) so your choice of "internal" is fine.
 
-> >+i2s1: audio-controller@b4000 {
-> >+	compatible = "mrvl,mvebu-audio";
-> >+	reg = <0xb4000 0x2210>;
-> >+	interrupts = <21>, <22>;
-> >+	clocks = <&gate_clk 13>;
-> >+	clock-names = "internal";
-> >+};
+Take a moment to think about it: if you call it "dcoclk" then what
+happens on a future SoC if it's not connected to the dcoclk anymore?
 
-> Also we will need some phandle reference to the audio codec here. As
-> this property is ongoing work in ASoC core, I suggest we wait for it
-> and propose a binding afterwards.
+> I don't think that we need any reference to the codec here. The glue is
+> done by the audio device. For example, using the (soon?) extended
+> simple audio card:
+> 
+> 	spdif: spdif {
+> 		compatible = "linux,spdif-dit";
+> 	};
+> 	sound {
+> 		compatible = "linux,simple-audio";
+> 		audio-controller = <&i2s1>;
+> 		audio-codec = <&spdif>;
+> 		codec-dai-name = "dit-hifi";
+> 	};
 
-No, as discussed this should be in the binding for the audio subsystem
-not in the binding for an individual component in that subsystem.
+As I understand the way DPCM works, that isn't going to work for this
+case.  For DPCM as per Liam's example, it's going to require the audio
+controller to be bound to the dummy codec, and a dummy platform/dai
+bound to the SPDIF codec.  You then use DAPM routing to connect the
+SPDIF codec to the appropriate CPU DAI output stream.
 
---8EQYc9s3Q1iGemBq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+So the above "simple" implementation won't do - it can't be used to
+specify two DAI links, and it can't specify the DAPM routing between
+them.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSBLQ2AAoJELSic+t+oim9LhAP/jttBFTOP8e5FYXk21c6cFjU
-98zvR2dIUyag1WNph451NVk8P7gb6ew72h8GoCTghH0TCqbsX3/ZsXxSskP5aMTd
-6KYgXRrC7vPmRK6eBI6bT01PeOPMl8x9UHLhyMR7J/u8iFW/5WZU/+hxIZ7aVbWa
-ivsCqVJo1fBtMxV+RDQIktfGLiiSt/Dw/g0Ci/+Q9Q2+FMsl0oHEBLDjtNxmGIhC
-9fETb755dKMxZ7SLU+TdU7UA5vJRJLOgRwjJUm6pogS7K5fFMdjZRpj5pMpR2Okl
-/J2dcypMt57Ug3TYtkUaZHeLDkSy5OTIpqsub86V3AaR6dogjgo/BdZgyzEzP2Ss
-voCYhf+Wr051EgFJllasn4N8xdf9cQUN5VchtkO6lTbkeIyV1dChWI0ZNQ2m7Mne
-nppPqx4Gn0Pj0SO7prkCD1ZDqJAedPDPEEUZ4ihc84wy8AKQ2X0rbRZCObQJahvv
-bZfBTKM7JgKGzpoN5Fcy0xcLBkHhMTS1Xv6oJINTX3+kokoShCA/12hQ4U58nlPo
-ztMYbOqJCkepWg/HRW64dSRpnq6qTDpg+tEpWxISGGP1RSXX8HtNTPQrE2wL0isc
-Ilp484d5H4IiI9NfjJHn6lTIqZO3uipAhr15jyU+eGAS4YE9vLKkHngSwyOggapA
-ycgNdtH3NA5PW1v2PNmB
-=tO8Z
------END PGP SIGNATURE-----
-
---8EQYc9s3Q1iGemBq--
-
---===============3683784393920978123==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3683784393920978123==--
+This will be another challenge to solve in DT!
