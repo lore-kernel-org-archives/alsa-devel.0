@@ -1,24 +1,25 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to
-	the mvebu	audio subsystem
-Date: Fri, 9 Aug 2013 21:38:47 +0100
-Message-ID: <20130809203847.GU23006@n2100.arm.linux.org.uk>
-References: <5204A716.6070507@gmail.com> <20130809091953.GO6427@sirena.org.uk>
- <5204B7A6.9050907@gmail.com> <20130809094340.GO23006@n2100.arm.linux.org.uk>
- <5204CC04.4000401@gmail.com> <20130809113940.GY6427@sirena.org.uk>
- <20130809130932.GS23006@n2100.arm.linux.org.uk>
- <20130809180058.GM6427@sirena.org.uk>
- <20130809182516.GT23006@n2100.arm.linux.org.uk>
- <20130809194434.GP6427@sirena.org.uk>
+From: Joonas Saarinen <jonskunator@gmail.com>
+Subject: Re: LG LW25 pin fix
+Date: Sat, 10 Aug 2013 02:01:36 +0300
+Message-ID: <520574D0.3010102@gmail.com>
+References: <5203F5A7.5010004@gmail.com> <s5h7gfv9yji.wl%tiwai@suse.de>
+ <5204B205.5040906@gmail.com> <s5hk3jv2lpx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id AA41F260886
- for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 22:39:06 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130809194434.GP6427@sirena.org.uk>
+Received: from mail-ee0-f47.google.com (mail-ee0-f47.google.com [74.125.83.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id A48842608EE
+ for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2013 01:01:39 +0200 (CEST)
+Received: by mail-ee0-f47.google.com with SMTP id d49so2344141eek.6
+ for <alsa-devel@alsa-project.org>; Fri, 09 Aug 2013 16:01:39 -0700 (PDT)
+Received: from [172.20.0.36] (dsl-espbrasgw1-50dfb6-224.dhcp.inet.fi.
+ [80.223.182.224])
+ by mx.google.com with ESMTPSA id k3sm32970425een.16.2013.08.09.16.01.37
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Fri, 09 Aug 2013 16:01:38 -0700 (PDT)
+In-Reply-To: <s5hk3jv2lpx.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,49 +29,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 09, 2013 at 08:44:34PM +0100, Mark Brown wrote:
-> If someone wants to it should also be possible to convert the existing
-> platforms without S/PDIF support over to DT, providing you don't mind
-> changing the code once the DPCM and S/PDIF support is added and a bit of
-> thought is put into where the S/PDIF output will fit into the bindings.
+Yup, works as expected. Thank you!
 
-Okay, so you're thinking that the I2S output will be enabled in the
-absence of DPCM?  If so, that tells me that you don't understand my
-patches, and this is getting *really* tiresome.
+Joonas
 
-One more time:
-- There are two outputs from the FIFO.
-- There is an I2S output, and there is a SPDIF output.
-- All hardware has an I2S output.
-- Some hardware also has the SPDIF output.
-- Each output is individually enable-able via separate bits.
-- When both outputs are used, both must be enabled simultaneously.
-- Otherwise, only one output must be enabled at any one time.
-- At least one output must be enabled for there to be any activity
-  from the unit at all (that's obvious!)
-
-So, what I'm doing is providing _two_ AIF connection points, one for I2S
-and one for SPDIF.  The appropriate AIF connection point must be attached
-to for the appropriate output to be enabled.
-
-That means that if you want to use the SPDIF output, the SPDIF AIF must
-be linked to the codec.  If you want to use the I2S output, the I2S AIF
-must be linked to the codec.
-
-Without this, there's no way for the CPU DAI to know which output(s) are
-in use, and therefore which should be enabled.
-
-What this means is that the conventional setup where you have _one_ DAI
-link connecting the codec DAI to the CPU DAI won't work on Kirkwood
-anymore, because there is no way to know which of the two outputs
-should be enabled.  I avoided that in my patches, but you've objected
-to that saying that it must use DPCM.  That makes the whole of kirkwood
-entirely DPCM only, whether or not you have a single codec to connect.
-
-Surely you realise this, because you must have read the patches properly
-before you commented on them, and realised that one of spdifdo or i2sdo
-must be powered up to set either enable bit?
+On 09.08.2013 13:38, Takashi Iwai wrote:
+> At Fri, 09 Aug 2013 12:10:29 +0300,
+> Joonas Saarinen wrote:
+>> upload=true&script=true&cardinfo=
+>> !!################################
+>> !!ALSA Information Script v 0.4.62
+>> !!################################
+> At the next time, please use the attachment, since your MUA breaks the
+> spaces, and I had to fix them manually.
+>
+> In anyway, below is the fix patch.  Give it a try.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: hda - Add pinfix for LG LW25 laptop
+>
+> Correct the pins for a line-in and a headphone on LG LW25 laptop with
+> ALC880 codec.  Other pins seem fine.
+>
+> Reported-by: Joonas Saarinen <jonskunator@gmail.com>
+> Cc: <stable@vger.kernel.org> [v3.9+]
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>   sound/pci/hda/patch_realtek.c | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
+>
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 8bd2261..5b22bf9 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -1031,6 +1031,7 @@ enum {
+>   	ALC880_FIXUP_GPIO2,
+>   	ALC880_FIXUP_MEDION_RIM,
+>   	ALC880_FIXUP_LG,
+> +	ALC880_FIXUP_LG_LW25,
+>   	ALC880_FIXUP_W810,
+>   	ALC880_FIXUP_EAPD_COEF,
+>   	ALC880_FIXUP_TCL_S700,
+> @@ -1089,6 +1090,14 @@ static const struct hda_fixup alc880_fixups[] = {
+>   			{ }
+>   		}
+>   	},
+> +	[ALC880_FIXUP_LG_LW25] = {
+> +		.type = HDA_FIXUP_PINS,
+> +		.v.pins = (const struct hda_pintbl[]) {
+> +			{ 0x1a, 0x0181344f }, /* line-in */
+> +			{ 0x1b, 0x0321403f }, /* headphone */
+> +			{ }
+> +		}
+> +	},
+>   	[ALC880_FIXUP_W810] = {
+>   		.type = HDA_FIXUP_PINS,
+>   		.v.pins = (const struct hda_pintbl[]) {
+> @@ -1341,6 +1350,7 @@ static const struct snd_pci_quirk alc880_fixup_tbl[] = {
+>   	SND_PCI_QUIRK(0x1854, 0x003b, "LG", ALC880_FIXUP_LG),
+>   	SND_PCI_QUIRK(0x1854, 0x005f, "LG P1 Express", ALC880_FIXUP_LG),
+>   	SND_PCI_QUIRK(0x1854, 0x0068, "LG w1", ALC880_FIXUP_LG),
+> +	SND_PCI_QUIRK(0x1854, 0x0077, "LG LW25", ALC880_FIXUP_LG_LW25),
+>   	SND_PCI_QUIRK(0x19db, 0x4188, "TCL S700", ALC880_FIXUP_TCL_S700),
+>   
+>   	/* Below is the copied entries from alc880_quirks.c.
