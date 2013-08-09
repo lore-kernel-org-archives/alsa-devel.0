@@ -1,21 +1,19 @@
-From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to
  the mvebu audio subsystem
-Date: Fri, 09 Aug 2013 13:01:24 +0200
-Message-ID: <5204CC04.4000401@gmail.com>
+Date: Fri, 9 Aug 2013 12:39:40 +0100
+Message-ID: <20130809113940.GY6427@sirena.org.uk>
 References: <20130808132201.2610aef3@armhf> <5204A716.6070507@gmail.com>
  <20130809091953.GO6427@sirena.org.uk> <5204B7A6.9050907@gmail.com>
  <20130809094340.GO23006@n2100.arm.linux.org.uk>
+ <5204CC04.4000401@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4174754369311139056=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f50.google.com (mail-ee0-f50.google.com [74.125.83.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F1B8265714
- for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 13:01:29 +0200 (CEST)
-Received: by mail-ee0-f50.google.com with SMTP id d51so2021477eek.37
- for <alsa-devel@alsa-project.org>; Fri, 09 Aug 2013 04:01:29 -0700 (PDT)
-In-Reply-To: <20130809094340.GO23006@n2100.arm.linux.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70F0926577D
+ for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 13:39:47 +0200 (CEST)
+In-Reply-To: <5204CC04.4000401@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,74 +23,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, devicetree@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/09/13 11:43, Russell King - ARM Linux wrote:
-> On Fri, Aug 09, 2013 at 11:34:30AM +0200, Sebastian Hesselbarth wrote:
->> I do understand there may be SoCs requiring sophisticated extra audio
->> nodes, but Marvell SoCs don't. I prefer having a single node for the
->> i2s controller *and* exploit the audio subsystem properties from that.
->>
->> For Marvell audio, we only need a single node for all three ASoC
->> drivers. No other subsystem _requires_ you to have extra nodes for
->> it's needs. If you can provide interrupts, just have an interrupt-
->> controller property. If you can provide clocks, you can link to that
->> very node - no virtual device node required. Even for media they
->> do not insist on a virtual node but they do have generic properties
->> you can exploit.
->
-> Certainly from the "DT is a hardware description" you are completely
-> correct.  The audio controller _should_ link directly to the codec,
-> because that's how the hardware is wired.  Remember though that there
-> are two outputs from the audio controller (please, call it audio
-> controller, not I2S controller) so you need to specify which of those
-> two outputs the "codec" is connected to.
 
-Exactly, we can solve that with multiple phandle/args audio-codecs
-property and audio-codec-names (or whatever property names are more
-appropriate). That is the common set of properties, I am talking about.
-But the properties are totally unrelated to what nodes you put them
-into.
+--===============4174754369311139056==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Ce6hu2nuSYv2TQrx"
+Content-Disposition: inline
 
-> I would say that's required irrespective of whether or not we have a
-> virtual node to aggregate the stuff together for ASoC's purposes (which
-> should not be part of the DT hardware description - it can be part of
-> the "software" configuration though.)
 
-And that is *the only thing* that keeps bugging me in Mark's replies -
-he *insists* on having that virtual audio nodes. I have nothing against
-it, except it should be *required* for every DT we have. DRM doesn't
-_need_ it, media doesn't _need_ it, but audio is so very special that it
-_requires_ you to have it described in DT?
+--Ce6hu2nuSYv2TQrx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I understand that it may be required on some boards, especially if you
-create different sound-cards out of the IP available. Just like the
-DRM discussion we had - have a virtual node if there is no other sane
-way to describe it, but there is no strict requirement.
+On Fri, Aug 09, 2013 at 01:01:24PM +0200, Sebastian Hesselbarth wrote:
 
-Anyway, Mark keeps insisting on it, I'll obey.
+> And that is *the only thing* that keeps bugging me in Mark's replies -
+> he *insists* on having that virtual audio nodes. I have nothing against
+> it, except it should be *required* for every DT we have. DRM doesn't
+> _need_ it, media doesn't _need_ it, but audio is so very special that it
+> _requires_ you to have it described in DT?
 
-> We may be able to have kirkwood-i2s.c (which I plan to rename to
-> mvebu-audio.c) automatically generate the snd_soc_card stuff from the
-> audio controller node.  Given that we need a more complex description
-> than the "simple" thing for DPCM, that might be overall the best
-> solution in any case (maybe calling out to a library which can be
-> shared between CPU DAI drivers to do this.)
+> I understand that it may be required on some boards, especially if you
+> create different sound-cards out of the IP available. Just like the
+> DRM discussion we had - have a virtual node if there is no other sane
+> way to describe it, but there is no strict requirement.
 
-That is what I am doing on top of the audio-controller node and except
-that there is no helper to determine the names, yet. If ASoC would
-provide a snd_soc_simple_card_register_from_dt(...,device_node *), I
-wouldn't even have to parse the properties myself.
+The problem here is that the extra effort comes from the board, not from
+the individual components - any component would have to optionally
+support having a card binding hanging off it (or the properties for a
+simple link) so it's more consistent just to say we link everything from
+a board node all the time.  By the time you start adding all the things
+like jacks and connected pins I'd expect you'd find you'd want to have
+at least a sub node to organise everything.
 
-> Note that we do have another case not yet in tree, which is DRM, but
-> this case is different from that, because ASoC can cope with components
-> with independent initialisation.
+Even things like buses aren't that clear - an I2S link can be a
+fairly simple point to point link but it can also be a multi-master bus
+or share some signals with other links.  Things like DRM generally have
+interconnects which are much more regular and less open to interesting
+board design decisions, though even for media the last time I looked at
+the bindings the individual links were getting DT nodes which is another
+way to try to deal with things.
 
-True, and those should also probe themselves independent of the
-corresponding lcd driver. Now that we have the discussion on ASoC, that
-will also allow us to have an audio codec driver for the TDA998x audio
-part. We need that anyway to create correct AIF packets someday.
+Let me once more renew my request that you go and read the previous
+discussions on this stuff, we've been through this loop repeatedly.
 
-Sebastian
+> That is what I am doing on top of the audio-controller node and except
+> that there is no helper to determine the names, yet. If ASoC would
+> provide a snd_soc_simple_card_register_from_dt(...,device_node *), I
+> wouldn't even have to parse the properties myself.
+
+So extend Morimoto-san's work on the simple card for this - that's what
+it's there for, it's doing exactly this job for non-DT systems but it
+just didn't get DT support added yet.  All the trivial cards should end
+up using this.
+
+--Ce6hu2nuSYv2TQrx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSBNT5AAoJELSic+t+oim9MOQQAI7AD+z8t+CRIVckyn/1+eR/
+VYx+gdeoWkV0FJYL/UwvndD1fCmSbtS73vK4x0fJG+mrDoeoWZ4nVl0JGEjZDRqc
+OTHMGX8z1DhEGwD7BgMeEMezs61MCoq1W/OW0X5McVfJ/aOig/iL8KQ7CnYW04jq
+6yqYqmqbv1EjwTwkUE+HkS7atpIDf/5u0xVj9tGWZLuBr72x5O9oTxQQMPmn2Kce
+mQGnNCaHu/DzqJ1ajvnWkPt2L0fC1TWTwPNkVy4KRDh1AAikAr8Ai/EN814fQp4x
+AQ+xAR8c110FJ1OzJPyjTypGFPgETiugoaDG96fdp91b3BDzo/XbLTz7l0FD4iLv
+PUAffB3QgjsnCDY5m8uTtMUI/nX5bXH9qIMJ6MVVODc2IcnLn43Iv/+ZYx+xHeqf
+W/lbcv6UnhBCGEn7eD8biV9mUpVp7V/BlQNUSaQqaaovKpwV/II+ji58SMHNP703
+HdT5kYFKpmRYSE2MG3cfJjp8v1sBfY1oWgQNfyqdcIEvhnuz8mxdE9BqE4tNsD06
+PHhsGZeAiTnXoBSEdgTzjQKOlW5WKUjaljaG/eyQaD0ZaL/RY3qZ4O3yiWtWWDJ0
+TxUnQIda06WSB68p+CgkfBd0uxTx7i9w91Kp1j93zS5ysemTtpIDRj12P8GbXa+8
+TxxcVPxLnchh1oRCiam1
+=P+up
+-----END PGP SIGNATURE-----
+
+--Ce6hu2nuSYv2TQrx--
+
+--===============4174754369311139056==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4174754369311139056==--
