@@ -1,22 +1,20 @@
-From: Felipe Tonello <eu@felipetonello.com>
-Subject: Re: [PATCH v3 1/2] ALSA: Added jack detection KControl
-	support
-Date: Fri, 9 Aug 2013 10:36:04 -0700
-Message-ID: <CAGrhNMxj++uJ5HnhhcfOOxhu9u77WMBRP+H5ar5wATi=kHJYKg@mail.gmail.com>
-References: <1375430365-13232-2-git-send-email-eu@felipetonello.com>
- <1376029315-3217-1-git-send-email-eu@felipetonello.com>
- <s5h38qj2cqj.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to
+ the mvebu audio subsystem
+Date: Fri, 9 Aug 2013 19:00:58 +0100
+Message-ID: <20130809180058.GM6427@sirena.org.uk>
+References: <20130808132201.2610aef3@armhf> <5204A716.6070507@gmail.com>
+ <20130809091953.GO6427@sirena.org.uk> <5204B7A6.9050907@gmail.com>
+ <20130809094340.GO23006@n2100.arm.linux.org.uk>
+ <5204CC04.4000401@gmail.com> <20130809113940.GY6427@sirena.org.uk>
+ <20130809130932.GS23006@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3386653728428842729=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f180.google.com (mail-we0-f180.google.com
- [74.125.82.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 4730A2657FB
- for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 19:36:06 +0200 (CEST)
-Received: by mail-we0-f180.google.com with SMTP id p61so3692446wes.25
- for <alsa-devel@alsa-project.org>; Fri, 09 Aug 2013 10:36:04 -0700 (PDT)
-In-Reply-To: <s5h38qj2cqj.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 321562610CC
+ for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 20:01:05 +0200 (CEST)
+In-Reply-To: <20130809130932.GS23006@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,280 +24,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-On Fri, Aug 9, 2013 at 6:52 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Thu,  8 Aug 2013 23:21:55 -0700,
-> Felipe F. Tonello wrote:
->>
->> From: "Felipe F. Tonello" <eu@felipetonello.com>
->>
->> This patch adds jack support for ALSA KControl.
->>
->> This support is necessary since the new kcontrol is used by user-space
->> daemons, such as PulseAudio(>=2.0), to do jack detection.)
->>
->> Also, HDA's CONFIG_SND_HDA_INPUT_JACK is disabled because it causes to use standard
->> snd_jack_new() to create jacks. This can cause conflict since this codec creates
->> jack controls directly.
->>
->> It makes sure that all codecs using ALSA jack API are updated to use the new
->> API.
->
-> Well, while this is a good move forward, this patch is a bit too
-> intrusive as a single patch.  It breaks way too many.  "Break then
-> fix" is no good attitude, especially when it's just something for
-> future.
+--===============3386653728428842729==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CinbraM2ncepWOqm"
+Content-Disposition: inline
 
-I agree with you, but unfortunately I had to do that due the
-non-standard way that jacks are been handled in the kernel and
-reported to user-space.
 
-I believe this is a classic case where we need a well defined kernel
-API to user-space. I'm not necessarily saying about internal kernel
-API/ABI, but the one which is exported to user-space. And to be
-honest, it's kind common to see internal API's been changed.
+--CinbraM2ncepWOqm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-And that's the reason jack detection only work, out of the box, with
-Intel's HD-audio. Which I think it's pretty bad in the stage we are.
-More and more embedded running PulseAudio and other core user-space
-daemons.
+On Fri, Aug 09, 2013 at 02:09:32PM +0100, Russell King - ARM Linux wrote:
+> On Fri, Aug 09, 2013 at 12:39:40PM +0100, Mark Brown wrote:
 
-[...]
+> > So extend Morimoto-san's work on the simple card for this - that's what
+> > it's there for, it's doing exactly this job for non-DT systems but it
+> > just didn't get DT support added yet.  All the trivial cards should end
+> > up using this.
 
->> diff --git a/include/sound/control.h b/include/sound/control.h
->> index 5358892..ffeb6b6 100644
->> --- a/include/sound/control.h
->> +++ b/include/sound/control.h
->> @@ -242,6 +242,6 @@ void snd_ctl_sync_vmaster(struct snd_kcontrol *kctl, bool hook_only);
->>  struct snd_kcontrol *
->>  snd_kctl_jack_new(const char *name, int idx, void *private_data);
->>  void snd_kctl_jack_report(struct snd_card *card,
->> -                       struct snd_kcontrol *kctl, bool status);
->> +                          struct snd_kcontrol *kctl, bool status);
->
-> Please don't include space or coding-fix changes.
+> It's quite rediculous to request that the simple card stuff is expanded at
+> this time, when you're also telling us that we must use DPCM for Kirkwood,
 
-True. I changed back to bool instead of checking out the source file :P
+That's the place to put the sort of shared infrastructure for trivial
+cards that Sebastian said he wanted to see - if you guys are saying that
+the machines should all be able to use a trivial binding with shared
+code that's where that code should be.
 
->
->
->>
->>  #endif       /* __SOUND_CONTROL_H */
->> diff --git a/include/sound/jack.h b/include/sound/jack.h
->> index 5891657..0d36f20 100644
->> --- a/include/sound/jack.h
->> +++ b/include/sound/jack.h
->> @@ -26,6 +26,7 @@
->>  #include <sound/core.h>
->>
->>  struct input_dev;
->> +struct snd_kcontrol;
->>
->>  /**
->>   * Jack types which can be reported.  These values are used as a
->> @@ -58,11 +59,12 @@ enum snd_jack_types {
->>
->>  struct snd_jack {
->>       struct input_dev *input_dev;
->> +     struct snd_kcontrol *kctl[SND_JACK_SWITCH_TYPES]; /* control for each key */
->>       int registered;
->>       int type;
->>       const char *id;
->>       char name[100];
->> -     unsigned int key[6];   /* Keep in sync with definitions above */
->> +     unsigned int key[SND_JACK_SWITCH_TYPES];   /* Keep in sync with definitions above */
->>       void *private_data;
->>       void (*private_free)(struct snd_jack *);
->>  };
->> @@ -70,7 +72,7 @@ struct snd_jack {
->>  #ifdef CONFIG_SND_JACK
->>
->>  int snd_jack_new(struct snd_card *card, const char *id, int type,
->> -              struct snd_jack **jack);
->> +                 int idx, struct snd_jack **jack);
->
-> The biggest point here is that the patch changes the API function,
-> from both API and behavioral POV.  That's why you need to modify so
-> many patches in a single patch.
->
-> Try to create a new function doing this and keep the old API and
-> behavior as is.  Then adapt / replace with the new API gradually.
-> And in the last step, you can obsolete the former API.
->
-> Or, at least keep snd_sock_jack_new() as is without additional index
-> but just use idx=0.  Then a half of the whole patch can be reduced.
->
-> Above all, the multiple indices don't work anyway with the snd_jack
-> stuff in the current form.  The index was introduced only for kjack,
-> and for HD-audio, snd_jack is provided just for a compatibility
-> reason, thus it doesn't matter much even if the multiple indices don't
-> work with it.
->
-> That being said, before going further, we need to consider how to
-> handle the input jack stuff with multiple indices.
->
->
+--CinbraM2ncepWOqm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-[...]
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
 
->> diff --git a/sound/core/ctljack.c b/sound/core/ctljack.c
->> index e4b38fb..441158d 100644
->> --- a/sound/core/ctljack.c
->> +++ b/sound/core/ctljack.c
->> @@ -14,7 +14,7 @@
->>  #include <sound/core.h>
->>  #include <sound/control.h>
->>
->> -#define jack_detect_kctl_info        snd_ctl_boolean_mono_info
->> +#define      jack_detect_kctl_info   snd_ctl_boolean_mono_info
->>
->>  static int jack_detect_kctl_get(struct snd_kcontrol *kcontrol,
->>                               struct snd_ctl_elem_value *ucontrol)
->> @@ -38,6 +38,7 @@ snd_kctl_jack_new(const char *name, int idx, void *private_data)
->>       kctl = snd_ctl_new1(&jack_detect_kctl, private_data);
->>       if (!kctl)
->>               return NULL;
->> +
->>       snprintf(kctl->id.name, sizeof(kctl->id.name), "%s Jack", name);
->>       kctl->id.index = idx;
->>       kctl->private_value = 0;
->
-> No unnecessary space changes please.
+iQIcBAEBAgAGBQJSBS5XAAoJELSic+t+oim96n4P/14jD71UpJ3qtuZbFQlvgFMP
+u1+6lS5ONC/BpRSJWt/+2BZJ7wyIX/3BkCkCfntIPAtlwsZ54iax/ZNhQtkq+Kw9
+cqc0KgJh7m3OXoyLbnSyog/KlH7kB/kKdmwhO8q2mcd+KVaNkjz5TBmGBXQHjo2w
+ywySeetNrBtQG7hUp6mimy5fDqaWuLJ9cBaG9Tfi+QeYwLA5za4kJ68RwdmboiB0
+XKWCvcefpb/y28QSqDgW/SwRCIEKvKR2mf4/dBbFiiUTwSIgeZGg3WXFOyKpL0le
+cS2tnpnbGa6epAAlDfZjjRQQdNSscNd2xtLmqXhafQL+25ZLfOcRNCavZqnUx1V9
+/izsw+Pqk9fq1lOPBSVVWrpL5uJ3rABSc/rZCgS/UT+sNI26/GzQcHBoEH8oSjNR
+uw30Qmlpux97pF/+xJ/Tv2saczFTS+W9vFIOKGgD1tNpuUQR3eYy6ooX2FoGLnlK
+17uMeKJb5GaM88sx+2aHbeZFZp8KIsxQpvoUyKP7nnBuIaC2QBkaRcrVMJeRPjQ/
+FdCUXeErGmJT+sQO70XCYNoMXkr8MdiriLLxBgyrqJusJLEXF7eSTmj80swXKxBC
+br3CdT1yrCn0SLnYjL9ys5eILGk5cLhmhHLFODWiB0NSDrwD1Yky86FP8F4Vrv+0
+jLsIyiFC/yL+CxpQZgQG
+=JNhp
+-----END PGP SIGNATURE-----
 
-Ok.
+--CinbraM2ncepWOqm--
 
->
->
->> diff --git a/sound/core/jack.c b/sound/core/jack.c
->> index b35fe73..128154b 100644
->> --- a/sound/core/jack.c
->> +++ b/sound/core/jack.c
+--===============3386653728428842729==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-[...]
 
->>
->> +const char * jack_get_name_by_key(const char *name, int key)
->> +{
->> +     char *jack_name;
->> +     size_t jack_name_size;
->> +     const char *key_name;
->> +
->> +     switch(key) {
->> +     case SW_HEADPHONE_INSERT: key_name = "Headphone"; break;
->> +     case SW_MICROPHONE_INSERT: key_name = "Mic"; break;
->> +     case SW_LINEOUT_INSERT: key_name = "Line Out"; break;
->> +     case SW_JACK_PHYSICAL_INSERT: key_name = "Mechanical"; break;
->> +     case SW_VIDEOOUT_INSERT: key_name = "Video Out"; break;
->> +     case SW_LINEIN_INSERT: key_name = "Line In"; break;
->> +     default: key_name = "Unknown";
->> +     }
->> +
->> +     /* Avoid duplicate name in KControl */
->> +     if (strcmp(name, key_name) != 0) {
->
-> Better to check via strstr() or such.
-> The name can be like "Front Headphone".
-
-Ok.
-
->
->> +             /* allocate necessary memory space only */
->> +             jack_name_size = strlen(name) + strlen(key_name) + 4;
->> +             jack_name = kmalloc(jack_name_size, GFP_KERNEL);
->
-> This leads to a memory leak.  Make this function to put a string on
-> the given buffer instead of returning a string pointer.
->
->> +
->> +             snprintf(jack_name, jack_name_size, "%s (%s)", name, key_name);
->> +     } else {
->> +             jack_name = (char *)name;
->> +     }
->> +
->> +     return jack_name;
->> +}
->> +
->>  static int snd_jack_dev_register(struct snd_device *device)
->>  {
->>       struct snd_jack *jack = device->device_data;
->>       struct snd_card *card = device->card;
->>       int err, i;
->>
->> -     snprintf(jack->name, sizeof(jack->name), "%s %s",
->> +     snprintf(jack->name, sizeof(jack->name), "%s %s Jack",
->>                card->shortname, jack->id);
->
-> This breaks the compatibility with the existing code.
-> You must not change the name of the existing input jack element.
-> Some drivers create "Headphone" and some do "Headphone Jack", yes.
-> It's bad, but too late to change.
-
-Why? Can't we just fix those names in those codecs? As You see in my
-second patch, only few of them are using weird names.
-I know that this will potentially break user-space, but the trade off
-is not to standardize the Jack API. What do you think?
-
-[...]
-
->> @@ -232,10 +305,15 @@ void snd_jack_report(struct snd_jack *jack, int status)
->>
->>       for (i = 0; i < ARRAY_SIZE(jack_switch_types); i++) {
->>               int testbit = 1 << i;
->> -             if (jack->type & testbit)
->> +             if (jack->type & testbit) {
->>                       input_report_switch(jack->input_dev,
->>                                           jack_switch_types[i],
->>                                           status & testbit);
->> +
->> +                     /* Update ALSA KControl interface */
->> +                     snd_kctl_jack_report((struct snd_card *)jack->kctl[i]->private_data,
->> +                                          jack->kctl[i], status & testbit);
->
-> Better to do a NULL check.
-> In this patch, snd_ctl_add() error isn't handled as a fatal error,
-> thus jack->kctl[i] can be NULL.
-
-True.
-
->
->
->> +             }
->>       }
->>
->>       input_sync(jack->input_dev);
->> diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
->> index 59c5e9c..561abc7 100644
->> --- a/sound/pci/hda/Kconfig
->> +++ b/sound/pci/hda/Kconfig
->> @@ -65,14 +65,6 @@ config SND_HDA_INPUT_BEEP_MODE
->>         Set 1 to always enable the digital beep interface for HD-audio by
->>         default.
->>
->> -config SND_HDA_INPUT_JACK
->> -     bool "Support jack plugging notification via input layer"
->> -     depends on INPUT=y || INPUT=SND
->> -     select SND_JACK
->> -     help
->> -       Say Y here to enable the jack plugging notification via
->> -       input layer.
->> -
->
-> I understand why you remove this Kconfig.  But by this action, you
-> introduced an obvious regression, i.e. the input jack control is no
-> longer created for HD-audio.
-
-I did this just to see what some HD-audio developers whould say.
-Because what I would like to see is HD-audio codec also using snd_jack
-and not export those kct jack functions anymore.
-
-BTW, who uses these input events anyway? Woudn't be better just to
-have standard way (ALSA KControl) to report it?
-
-Thanks for the comments,
-
-Felipe Tonello
+--===============3386653728428842729==--
