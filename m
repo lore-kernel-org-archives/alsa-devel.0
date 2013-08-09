@@ -1,89 +1,45 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] alsa-info: Run without lspci (if there is no
-	pci bus)
-Date: Fri,  9 Aug 2013 14:47:49 +0200
-Message-ID: <1376052469-6022-1-git-send-email-david.henningsson@canonical.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to the mvebu
+	audio subsystem
+Date: Fri, 9 Aug 2013 14:09:32 +0100
+Message-ID: <20130809130932.GS23006@n2100.arm.linux.org.uk>
+References: <20130808132201.2610aef3@armhf> <5204A716.6070507@gmail.com> <20130809091953.GO6427@sirena.org.uk> <5204B7A6.9050907@gmail.com> <20130809094340.GO23006@n2100.arm.linux.org.uk> <5204CC04.4000401@gmail.com> <20130809113940.GY6427@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id D519526577F
- for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2013 14:47:50 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130809113940.GY6427@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Jean-Francois Moine <moinejf@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On some embedded ARM hardware, there is no pci bus. In that case,
-do not require lspci so we can still get as much info as we can.
+On Fri, Aug 09, 2013 at 12:39:40PM +0100, Mark Brown wrote:
+> So extend Morimoto-san's work on the simple card for this - that's what
+> it's there for, it's doing exactly this job for non-DT systems but it
+> just didn't get DT support added yet.  All the trivial cards should end
+> up using this.
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- alsa/utils/alsa-info.sh |   13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+It's quite rediculous to request that the simple card stuff is expanded at
+this time, when you're also telling us that we must use DPCM for Kirkwood,
+but DPCM is not yet in a working state in mainline.  We don't yet know
+whether that's because of something the core is doing wrong or whether
+that's because something that I'm doing wrong.  The reason we don't know
+that is because the _only_ person who knows anything about this is Liam,
+and as you have said, Liam is away on vacation.
 
-diff --git a/alsa/utils/alsa-info.sh b/alsa/utils/alsa-info.sh
-index 9d996aa..2280af5 100755
---- a/alsa/utils/alsa-info.sh
-+++ b/alsa/utils/alsa-info.sh
-@@ -393,8 +393,10 @@ trap cleanup 0
- if [ "$PROCEED" = "yes" ]; then
- 
- if [ -z "$LSPCI" ]; then
--	echo "This script requires lspci. Please install it, and re-run this script."
--	exit 0
-+	if [ -d /sys/bus/pci ]; then
-+		echo "This script requires lspci. Please install it, and re-run this script."
-+		exit 0
-+	fi
- fi
- 
- #Fetch the info and store in temp files/variables
-@@ -407,8 +409,6 @@ KERNEL_OS=`uname -o`
- ALSA_DRIVER_VERSION=`cat /proc/asound/version |head -n1|awk {'print $7'} |sed 's/\.$//'`
- get_alsa_library_version
- ALSA_UTILS_VERSION=`amixer -v |awk {'print $3'}`
--VENDOR_ID=`lspci -vn | grep 040[1-3] | awk -F':' '{print $3}'| awk {'print substr($0, 2);}' >$TEMPDIR/vendor_id.tmp`
--DEVICE_ID=`lspci -vn | grep 040[1-3] | awk -F':' '{print $4}'| awk {'print $1'} >$TEMPDIR/device_id.tmp`
- LAST_CARD=$((`grep "]: " /proc/asound/cards | wc -l` - 1 ))
- 
- ESDINST=$(which esd 2>/dev/null| sed 's|^[^/]*||' 2>/dev/null)
-@@ -434,7 +434,9 @@ fi
- 
- cat /proc/asound/modules 2>/dev/null|awk {'print $2'}>$TEMPDIR/alsamodules.tmp
- cat /proc/asound/cards >$TEMPDIR/alsacards.tmp
-+if [[ ! -z "$LSPCI" ]]; then
- lspci |grep -i "multi\|audio">$TEMPDIR/lspci.tmp
-+fi
- 
- #Check for HDA-Intel cards codec#*
- cat /proc/asound/card*/codec\#* > $TEMPDIR/alsa-hda-intel.tmp 2> /dev/null
-@@ -547,6 +549,8 @@ echo "" >> $FILE
- cat $TEMPDIR/alsacards.tmp >> $FILE
- echo "" >> $FILE
- echo "" >> $FILE
-+
-+if [[ ! -z "$LSPCI" ]]; then
- echo "!!PCI Soundcards installed in the system" >> $FILE
- echo "!!--------------------------------------" >> $FILE
- echo "" >> $FILE
-@@ -559,6 +563,7 @@ echo "" >> $FILE
- lspci -vvn |grep -A1 040[1-3] >> $FILE
- echo "" >> $FILE
- echo "" >> $FILE
-+fi
- 
- if [ "$SNDOPTIONS" ]
- then
--- 
-1.7.9.5
+All that we presently know is that DPCM is supposed to be "something like
+this".  However, when we do that, it doesn't work, which means we can't
+be certain what the end result is supposed to look like.  It may be that
+Liam has changed some of the design decisions with DPCM.
+
+We know that various things are missing - like the .pcm_playback member in
+the DAI link.  That points to Liam having additional patches to the core
+code in his tree to make DPCM work.  That could impact our scenario here,
+and how the "simple" card should be implemented.
+
+So, what you're asking is for us to extend the design of something in a
+way that we know very little about how to make work.
+
+To that I say: No.  Let's wait for Liam to return from vacation so that
+this can be sorted out properly with someone who knows this code.
