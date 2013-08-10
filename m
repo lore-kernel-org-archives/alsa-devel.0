@@ -1,24 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to
- the mvebu audio subsystem
-Date: Sat, 10 Aug 2013 12:12:31 +0100
-Message-ID: <20130810111231.GR6427@sirena.org.uk>
-References: <20130809094340.GO23006@n2100.arm.linux.org.uk>
- <5204CC04.4000401@gmail.com> <20130809113940.GY6427@sirena.org.uk>
- <20130809130932.GS23006@n2100.arm.linux.org.uk>
- <20130809180058.GM6427@sirena.org.uk>
- <20130809182516.GT23006@n2100.arm.linux.org.uk>
- <20130809194434.GP6427@sirena.org.uk>
- <20130809203847.GU23006@n2100.arm.linux.org.uk>
- <20130809234209.GQ6427@sirena.org.uk>
- <20130810093137.GV23006@n2100.arm.linux.org.uk>
+Subject: Re: [PATCH] ASoC: Remove unused soc_pm_waitq
+Date: Sat, 10 Aug 2013 12:13:10 +0100
+Message-ID: <20130810111310.GS6427@sirena.org.uk>
+References: <1376121194-21269-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1489140715570031884=="
+Content-Type: multipart/mixed; boundary="===============5449420544751028767=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 74FB12615CD
- for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2013 13:12:44 +0200 (CEST)
-In-Reply-To: <20130810093137.GV23006@n2100.arm.linux.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 62747261ABE
+ for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2013 13:13:13 +0200 (CEST)
+In-Reply-To: <1376121194-21269-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,69 +19,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1489140715570031884==
+--===============5449420544751028767==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9BaxaTZrvsRxcpDQ"
+	protocol="application/pgp-signature"; boundary="WaS+u6fw8ZDKobou"
 Content-Disposition: inline
 
 
---9BaxaTZrvsRxcpDQ
+--WaS+u6fw8ZDKobou
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Aug 10, 2013 at 10:31:37AM +0100, Russell King - ARM Linux wrote:
+On Sat, Aug 10, 2013 at 09:53:14AM +0200, Lars-Peter Clausen wrote:
+> The soc_pm_waitq waitqueue has been around as long as the ASoC framework
+> existed, but has never been used so far, so remove it.
 
-> Right, so what you're proposing is to come up with a DT description for
-> the existing stuff, and then have to change (or at the very least augment)
-> that description later when the DPCM stuff goes in.
+Applied, thanks.
 
-> What should be done is to sort out DPCM, get that working and then sort out
-> the DT side of it, so that everyone gets only one transition to DT, not a
-> transition to a half-baked stop-gap DT and then have to go through another
-> round of DT changes.  "Because we can" is not a good enough reason not to
-> get this sorted properly.
-
-Since we know what the hardware physically looks like we should be able
-to write a DT binding which can be stable for both before and after the
-DPCM transition.  The bindings would have to be truly awful to require a
-rewrite here and as with all the DMA wrapper drivers if parts of DPCM
-that don't reflect actual hardware are appearing in the DT we're doing
-something wrong.
-
---9BaxaTZrvsRxcpDQ
+--WaS+u6fw8ZDKobou
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSBiAcAAoJELSic+t+oim9WnEP/2EmtbNkMH2GxOdeF/Q6xkOd
-r3wE2UjWADwHB00CWKFh24P8jxDRGGGOmSRIeIrxSlKta6No7pwA04ld3z08ykSa
-ZbsML0QQZl9Dn94F5PNc4LQg66SUgTSIGaNAhKOI7CEcafTIxIftQDYZtQTiqsiC
-lgfCeXVqNJk4427SH7xTuQNvKrAlSrDJJnTdhM9XmdvZd3jbj377LNH3WCgRC0q9
-FGGxBdd/o8jGZJmy2+smMEgK7bcbDLbmb6JBwsHUokyOrIxsfSLnJLBOy6vabiAe
-xrHcj75we/olH50m7yVYizU3Dgq+vvAjiJOI3Msc/iQhv1EHBQ4eD3sGvSjc5vUU
-z58K4PyjHmJG9W5bFIQ6VYlTcRMlTg4fTbn8R/hhRepq7bHVAzZ000vpbNmgbWG6
-KdEx+XQ5jD3F0TihGMxo9Zon8XE8i2KiHJaqWh+Jgyrcf1LSkNSZaQtB/P21bv9X
-XQwB8lnPBPAfnpXJw2mUF/mMmd6DysupI5ilOSuook7zrOkkcQbXiVMSgcSf8qAI
-7BNjSisOvP5NVroxJ4vHvPhItzGLGcp8oBEvonpfX/rZ9SoZoaoePdPr5KK3pMuE
-PEaXPKi1N3151RZjmll9JPaVG8xOQ2GJPnLdEWEPhtP2sz/kRar2PuHgBNjCad8+
-44tuuLROHoHmiJiS9oQu
-=KqIZ
+iQIcBAEBAgAGBQJSBiBDAAoJELSic+t+oim9N5UP/2o/5D+/9zP/JC8KiX8itOhM
+cNAiygBP1DGul/1pck2qWlRf9zzwpcrCKeFHQM+mdXiD96QiSaSUlDd2VyubqqFT
+0+6MRh3vTtvYW7C9JK59813XIvxgXf3R6vL3GpDGWe0LjJrSq9u165aUzGvkKJOi
+q/q39d/q3bEdcKbeKyvay45NpcfsdbpE/Jz2KQDWxZySbVDohGxy+o2GKcQ+yxKQ
+Eb+LKeL/GrJvScBwecEjs0hRa8KLLbOD7P3MzWX+ueyfHTi5GRUnYYp+AEV+77pQ
+La8PZh/FW+qw1maXgx41WifgohwX/bXasLcEUdZT/V4bG6WwVkWQHAv6cYmFzCdA
+eH29MgQ+gKfDWKPAWUj9DRxdqf7xQmku5YuEFAzChhZi6d8gq20wHvD7NJKOIzP2
+KV/MsOLqWN/co4/MM5EE+21mloM87TfLY2O3p+5ywkZfbRzkuEIC9V8lMxweTpzz
+RyZHliPTeDVdJB6pccyE56cfQ/OzDak7u1C/OgxkZA6Mdxrju60vmbz3OnNqsaVj
+Ki8al4kZA6FvgLhKpmca33HLvwPgGvRIg73R/cN5MvZg9IarcwdFmfR9Uw3qUz0p
+XdA3Zy6n/gHrdiep6pL/ooaB3puqUVK0CkjxWU91v9sTtKY1wbk1u26Hb8I8ft4R
+qjGBSEFf8AgBINqz7aeX
+=NC4i
 -----END PGP SIGNATURE-----
 
---9BaxaTZrvsRxcpDQ--
+--WaS+u6fw8ZDKobou--
 
---===============1489140715570031884==
+--===============5449420544751028767==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1489140715570031884==--
+--===============5449420544751028767==--
