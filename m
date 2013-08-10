@@ -1,59 +1,81 @@
-From: "Maksim A. Boyko" <maksboyko@yandex.ru>
-Subject: [PATCH] usb-audio: Fix invalid volume resolution for
- Logitech HD Webcam C525
-Date: Sat, 10 Aug 2013 12:20:02 +0400
-Message-ID: <5205F7B2.7030505@yandex.ru>
-References: <alpine.LNX.2.02.1308091232400.26590@pcqnt1.phys.spbu.ru>
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to the mvebu
+ audio subsystem
+Date: Sat, 10 Aug 2013 11:16:19 +0200
+Message-ID: <20130810111619.3444fda5@skate>
+References: <20130808132201.2610aef3@armhf> <5204A716.6070507@gmail.com>
+ <20130809110623.7bb3e7ad@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward9l.mail.yandex.net (forward9l.mail.yandex.net
- [84.201.143.142])
- by alsa0.perex.cz (Postfix) with ESMTP id 26DD626158B
- for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2013 10:20:10 +0200 (CEST)
-In-Reply-To: <alpine.LNX.2.02.1308091232400.26590@pcqnt1.phys.spbu.ru>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
-Cc: maksim.a.boyko@gmail.com, stable@vger.kernel.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20130809110623.7bb3e7ad@armhf>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Russell King <rmk+kernel@arm.linux.org.uk>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add the volume control quirk for avoiding the kernel warning
-for the Logitech HD Webcam C525
-as in the similar commit 36691e1be6ec551eef4a5225f126a281f8c051c2
-for the Logitech HD Webcam C310.
+Dear Jean-Francois Moine,
 
-Reported-by: Maksim Boyko <maksim.a.boyko@gmail.com>
-Tested-by: Maksim Boyko <maksim.a.boyko@gmail.com>
-Cc: <stable@vger.kernel.org> # 3.10.5+
-Signed-off-by: Maksim Boyko <maksim.a.boyko@gmail.com>
---
-  sound/usb/mixer.c |    1 +
-  1 file changed, 1 insertion(+)
+On Fri, 9 Aug 2013 11:06:23 +0200, Jean-Francois Moine wrote:
 
---- linux-3.10.5-orig/sound/usb/mixer.c	2013-08-04 12:51:49.000000000
-+0400
-+++ linux-3.10.5/sound/usb/mixer.c	2013-08-06 21:12:42.274197287
-+0400
-@@ -888,6 +888,7 @@ static void volume_control_quirks(struct
-  	case USB_ID(0x046d, 0x081b): /* HD Webcam c310 */
-  	case USB_ID(0x046d, 0x081d): /* HD Webcam c510 */
-  	case USB_ID(0x046d, 0x0825): /* HD Webcam c270 */
-+	case USB_ID(0x046d, 0x0826): /* HD Webcam c525 */
-  	case USB_ID(0x046d, 0x0991):
-  	/* Most audio usb devices lie about volume resolution.
-  	 * Most Logitech webcams have res = 384.
+> > we need at least two more compatibles for the audio controller found on
+> > Dove and Kirkwood respectively. This is how we are going to distinguish
+> > those two, e.g. Kirkwood has SPDIF in which Dove hasn't.
+> 
+> Sebastian,
+> 
+> s/has/hasn't & s/hasn't/has
+> 
+> Are 2 compatibles enough, i.e. "mvebu-audio" and "mbevu-audio-spdif"?
+
+Or:
+
+	marvell,kirkwood-audio
+	marvell,dove-audio
+
+> > Also, we have used "marvell" as prefix for a long time. I know there has
+> > been discussion about the stock ticker appreviation, has there been any
+> > decision on that already?
+> 
+> Don't know, but, sure, there are still a lot of "mrvl".
+
+Yes, but they are being converted over to 'marvell', I've seen some
+patches posted. Also, as per
+Documentation/devicetree/bindings/vendor-prefixes.txt, 'marvell' is the
+right prefix for Marvell compatible strings.
 
 
---
-WBR, Maksim
+> > Also we will need some phandle reference to the audio codec here. As
+> > this property is ongoing work in ASoC core, I suggest we wait for it
+> > and propose a binding afterwards.
+> 
+> I don't think that we need any reference to the codec here. The glue is
+> done by the audio device. For example, using the (soon?) extended
+> simple audio card:
 
-P.S. Please, use this patch due to it should have correct tab symbols.
+Have you looked at the Samsung DT bindings for audio:
+
+        sound {
+                compatible = "samsung,smdk-wm8994";
+
+                samsung,i2s-controller = <&i2s0>;
+                samsung,audio-codec = <&wm8994>;
+        };
+
+it definitely has a codec phandle reference here.
+
+Thomas
+-- 
+Thomas Petazzoni, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
