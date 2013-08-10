@@ -1,26 +1,24 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH v4 1/1] ASoc: kirkwood: add DT support to
-	the mvebu	audio subsystem
-Date: Sat, 10 Aug 2013 10:31:37 +0100
-Message-ID: <20130810093137.GV23006@n2100.arm.linux.org.uk>
-References: <5204B7A6.9050907@gmail.com>
- <20130809094340.GO23006@n2100.arm.linux.org.uk> <5204CC04.4000401@gmail.com>
- <20130809113940.GY6427@sirena.org.uk>
+ the mvebu audio subsystem
+Date: Sat, 10 Aug 2013 12:12:31 +0100
+Message-ID: <20130810111231.GR6427@sirena.org.uk>
+References: <20130809094340.GO23006@n2100.arm.linux.org.uk>
+ <5204CC04.4000401@gmail.com> <20130809113940.GY6427@sirena.org.uk>
  <20130809130932.GS23006@n2100.arm.linux.org.uk>
  <20130809180058.GM6427@sirena.org.uk>
  <20130809182516.GT23006@n2100.arm.linux.org.uk>
  <20130809194434.GP6427@sirena.org.uk>
  <20130809203847.GU23006@n2100.arm.linux.org.uk>
  <20130809234209.GQ6427@sirena.org.uk>
+ <20130810093137.GV23006@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1489140715570031884=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id D89AD2615F5
- for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2013 11:31:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130809234209.GQ6427@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 74FB12615CD
+ for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2013 13:12:44 +0200 (CEST)
+In-Reply-To: <20130810093137.GV23006@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,72 +28,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 10, 2013 at 12:42:09AM +0100, Mark Brown wrote:
-> On Fri, Aug 09, 2013 at 09:38:47PM +0100, Russell King - ARM Linux wrote:
-> > On Fri, Aug 09, 2013 at 08:44:34PM +0100, Mark Brown wrote:
-> 
-> > > If someone wants to it should also be possible to convert the existing
-> > > platforms without S/PDIF support over to DT, providing you don't mind
-> > > changing the code once the DPCM and S/PDIF support is added and a bit of
-> > > thought is put into where the S/PDIF output will fit into the bindings.
-> 
-> > Okay, so you're thinking that the I2S output will be enabled in the
-> > absence of DPCM?  If so, that tells me that you don't understand my
-> 
-> When I say that it should be possible to convert the existing machines
-> over to DT I'm talking about the machines that are supported with the
-> drivers currently in mainline.  These machines presumably work just fine
-> with the existing drivers which support the I2S only subset of the
-> possible functionality in the hardware without using DCPM.  These are
-> the the machines that could have DT added now without implementing the
-> driver improvements to enable the extra hardware functionality.
-> 
-> When I say that they will need changing once DPCM and S/PDIF support is
-> added what I mean is that those changes to the CPU side drivers should,
-> as you correctly say, require all Kirkwood machine drivers to use DPCM
-> even if only due to the handling of simultaneous startup of the S/PDIF
-> and I2S interfaces.
-> 
-> The "you" in the above quote was intended to refer to people working on
-> Kirkwood in general, not you personally unless you want to.
-> 
-> > What this means is that the conventional setup where you have _one_ DAI
-> > link connecting the codec DAI to the CPU DAI won't work on Kirkwood
-> > anymore, because there is no way to know which of the two outputs
-> > should be enabled.  I avoided that in my patches, but you've objected
-> > to that saying that it must use DPCM.  That makes the whole of kirkwood
-> > entirely DPCM only, whether or not you have a single codec to connect.
-> 
-> Right, that's where the drivers should end up.  In terms of the device
-> tree I would expect that it should be the case that there are distinct
-> I2S and S/PDIF interfaces visible, or at least that there's some way to
-> identify which interface on the SoC is being referred to - this is the
-> thought about where the S/PDIF output will fit into the bindings that I
-> mentioned being required.
-> 
-> So long as only I2S is used in the system (or at least any S/PDIF that
-> is present is ignored at runtime) it should be possible to continue
-> using the existing driver infrastructure until S/PDIF and DPCM support
-> is added and then transition the existing drivers (both non-DT and any
-> DT ones that get added or converted) over to that as part of the
-> conversion.
-> 
-> In other words I was talking about a possible intermediate state where
-> people are working with the DT bindings but the driver support for
-> systems with S/PDIF in use is not there yet.  That's not required but it
-> should be possible if there's interest in progressing the DT bindings
-> while the driver is as it stands.
 
-Right, so what you're proposing is to come up with a DT description for
-the existing stuff, and then have to change (or at the very least augment)
-that description later when the DPCM stuff goes in.
+--===============1489140715570031884==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="9BaxaTZrvsRxcpDQ"
+Content-Disposition: inline
 
-What should be done is to sort out DPCM, get that working and then sort out
-the DT side of it, so that everyone gets only one transition to DT, not a
-transition to a half-baked stop-gap DT and then have to go through another
-round of DT changes.  "Because we can" is not a good enough reason not to
-get this sorted properly.
+
+--9BaxaTZrvsRxcpDQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Aug 10, 2013 at 10:31:37AM +0100, Russell King - ARM Linux wrote:
+
+> Right, so what you're proposing is to come up with a DT description for
+> the existing stuff, and then have to change (or at the very least augment)
+> that description later when the DPCM stuff goes in.
+
+> What should be done is to sort out DPCM, get that working and then sort out
+> the DT side of it, so that everyone gets only one transition to DT, not a
+> transition to a half-baked stop-gap DT and then have to go through another
+> round of DT changes.  "Because we can" is not a good enough reason not to
+> get this sorted properly.
+
+Since we know what the hardware physically looks like we should be able
+to write a DT binding which can be stable for both before and after the
+DPCM transition.  The bindings would have to be truly awful to require a
+rewrite here and as with all the DMA wrapper drivers if parts of DPCM
+that don't reflect actual hardware are appearing in the DT we're doing
+something wrong.
+
+--9BaxaTZrvsRxcpDQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSBiAcAAoJELSic+t+oim9WnEP/2EmtbNkMH2GxOdeF/Q6xkOd
+r3wE2UjWADwHB00CWKFh24P8jxDRGGGOmSRIeIrxSlKta6No7pwA04ld3z08ykSa
+ZbsML0QQZl9Dn94F5PNc4LQg66SUgTSIGaNAhKOI7CEcafTIxIftQDYZtQTiqsiC
+lgfCeXVqNJk4427SH7xTuQNvKrAlSrDJJnTdhM9XmdvZd3jbj377LNH3WCgRC0q9
+FGGxBdd/o8jGZJmy2+smMEgK7bcbDLbmb6JBwsHUokyOrIxsfSLnJLBOy6vabiAe
+xrHcj75we/olH50m7yVYizU3Dgq+vvAjiJOI3Msc/iQhv1EHBQ4eD3sGvSjc5vUU
+z58K4PyjHmJG9W5bFIQ6VYlTcRMlTg4fTbn8R/hhRepq7bHVAzZ000vpbNmgbWG6
+KdEx+XQ5jD3F0TihGMxo9Zon8XE8i2KiHJaqWh+Jgyrcf1LSkNSZaQtB/P21bv9X
+XQwB8lnPBPAfnpXJw2mUF/mMmd6DysupI5ilOSuook7zrOkkcQbXiVMSgcSf8qAI
+7BNjSisOvP5NVroxJ4vHvPhItzGLGcp8oBEvonpfX/rZ9SoZoaoePdPr5KK3pMuE
+PEaXPKi1N3151RZjmll9JPaVG8xOQ2GJPnLdEWEPhtP2sz/kRar2PuHgBNjCad8+
+44tuuLROHoHmiJiS9oQu
+=KqIZ
+-----END PGP SIGNATURE-----
+
+--9BaxaTZrvsRxcpDQ--
+
+--===============1489140715570031884==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1489140715570031884==--
