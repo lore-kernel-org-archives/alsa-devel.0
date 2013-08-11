@@ -1,17 +1,25 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 17/18] spi: s3c64xx: Always select
- S3C64XX_PL080 when ARCH_S3C64XX is enabled
-Date: Sun, 11 Aug 2013 20:11:40 +0100
-Message-ID: <20130811191140.GI6427@sirena.org.uk>
-References: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com>
- <1376243970-6489-18-git-send-email-tomasz.figa@gmail.com>
+From: Michael Jordan <mjordan1@catamount.wcu.edu> (by way of Michael Jordan
+ <jordan.mymail@gmail.com>)
+Subject: Hello
+Date: Sun, 11 Aug 2013 15:37:16 -0400
+Message-ID: <20130811153716.0cebf7d3@mach1>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8856684857399187515=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D91B2608A1
- for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 21:11:46 +0200 (CEST)
-In-Reply-To: <1376243970-6489-18-git-send-email-tomasz.figa@gmail.com>
+Received: from mail-qc0-f174.google.com (mail-qc0-f174.google.com
+ [209.85.216.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id B109A2608CF
+ for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 21:39:10 +0200 (CEST)
+Received: by mail-qc0-f174.google.com with SMTP id c1so3019633qcz.19
+ for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 12:39:09 -0700 (PDT)
+Received: from mach1 ([24.246.150.10])
+ by mx.google.com with ESMTPSA id h4sm33447889qai.6.2013.08.11.12.39.08
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1.2 cipher=RC4-SHA bits=128/128);
+ Sun, 11 Aug 2013 12:39:09 -0700 (PDT)
+Resent-Message-ID: <20130811153906.384ad23e@mach1>
+Resent-To: <alsa-devel@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +29,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Mike Turquette <mturquette@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, Vinod Koul <vinod.koul@intel.com>, Linus Walleij <linus.walleij@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Kukjin Kim <kgene.kim@samsung.com>, Dan Williams <djbw@fb.com>, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello all,
 
---===============8856684857399187515==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9LzbfKVJ2kwORFXX"
-Content-Disposition: inline
+I am involved in a university project using a TI OMAPL138 EXPKIT
+(Logic PD Zoom Board) to create a sound processing box. I am tasked with
+developing the code to replace the TLV320AIC3106 with a PCM3168A due to
+the greater ADC/DAC count. We have already accomplished the hardware
+end, and I have been exercising my linux skills at trying
+to put this together. I found this list and subscribed, and I am glad I
+sat and listened for a bit before I said anything. 457 patches in the
+last 10 days! My fingers would fall off!
 
+I will get together what I have been working on (2 files
+pcm3168a.c and pcm3168a.h) and post them. I have some questions,
+obviously, but I will follow up with them in a bit. If someone could
+help me along it would be greatly appreciated. Or if I can just provide
+some relevant information, I would be happy to do that as well.
 
---9LzbfKVJ2kwORFXX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks,
 
-On Sun, Aug 11, 2013 at 07:59:29PM +0200, Tomasz Figa wrote:
-
-> @@ -366,7 +366,7 @@ config SPI_S3C24XX_FIQ
->  config SPI_S3C64XX
->  	tristate "Samsung S3C64XX series type SPI"
->  	depends on (ARCH_S3C24XX || ARCH_S3C64XX || ARCH_S5P64X0 || ARCH_EXYNOS)
-> -	select S3C64XX_DMA if ARCH_S3C64XX && !S3C64XX_PL080
-> +	select S3C64XX_PL080 if ARCH_S3C64XX
->  	help
->  	  SPI driver for Samsung S3C64XX and newer SoCs.
-
-Do we need the select here (or should we have other selects for the
-Exynos SoCs)?
-
---9LzbfKVJ2kwORFXX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSB+HoAAoJELSic+t+oim9AfoP/2P8URy5sIDCmqf1TOgeSMZr
-soLanB71RJUnJ/XhqRkJT4fyNExwv/fpmD8KtTNWyFvZWItCKJCba1JxWY07X4PF
-gLgaB4AjW9TxqnG9tvHmnjLnoxjeyHUiwYwPBKb0ye7/2moFrGc2kmY29wLePzL4
-iDEKpI5jSIxQe0uBSaHhje4nUDu5zHkzCVSXGfw6nSWOcZkmv5PLKyCSH7gI0KbX
-oYYznHGTPt2DHjq6t5GVKZ6dWS+v6cF6SHF4FgP6qHlq8NYgujN5H+dxK7Kst3n9
-nOObUiaS7ym96ft+x+UIVkhqaLIU4DpIwJGfVJ7Tmx9zyGGRIIMVRqIPrZZ+Zrd2
-brDmSs/+ErB+lZd1fpyNbVD9iOLfAw/Q+L+ZfEfSBwK4+YOKwmZ4HeEnVp3mHLYC
-dcREWYdCO5wKkJEi4Uw+BQgS+OzZFo1T57kubWUejHLSYTkpY3II3HP4biuTbnrt
-VYgXB7lU70sfE3EN47hTDlpfnzWXe7BwiDyhIfZ7Ofb0mv++IjhGEpNgkglezxBb
-Hguw7/pdcLkOKBxbXqcDwc/1jhRuPUb7WrSZCXK4p0mjHXl/laky2/oP26KlES9M
-VGvpqDjhqNWMuiIikukU9xBTY2uHA9o1Ydx2ThF5jiXy47Gf89gxRCiKUXKR+F6y
-/E0b0IFZ8cuB8y5onPl9
-=D9G+
------END PGP SIGNATURE-----
-
---9LzbfKVJ2kwORFXX--
-
---===============8856684857399187515==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8856684857399187515==--
+Michael
