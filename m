@@ -1,16 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: Remove unused
-	snd_soc_info_volsw_ext()
-Date: Sun, 11 Aug 2013 12:00:41 +0100
-Message-ID: <20130811110041.GV6427@sirena.org.uk>
-References: <1376163190-25039-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 1/3] ASoC: bt-sco: enable OF support
+Date: Sun, 11 Aug 2013 12:05:40 +0100
+Message-ID: <20130811110540.GW6427@sirena.org.uk>
+References: <1374041536-27643-1-git-send-email-Baohua.Song@csr.com>
+ <20130717084039.GA15981@e106331-lin.cambridge.arm.com>
+ <20130717094718.GE22506@sirena.org.uk>
+ <CAGsJ_4w3fS=vzZmeJOxhKO1TdL9d6pgbrjtzfPugOSOprLV+nw@mail.gmail.com>
+ <20130806170430.GL6427@sirena.org.uk>
+ <CAGsJ_4xhkdNTKr6KBPMMPVfi7+NP+WHq2+_V545An6J+c6E7ug@mail.gmail.com>
+ <20130807144628.GC6427@sirena.org.uk>
+ <CAGsJ_4y1JoPtXinAvaohDQF_4+DizNYh1jy+iYymypgeZfapKA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0964292526902624599=="
+Content-Type: multipart/mixed; boundary="===============3587182675921333318=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 046722625CE
- for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 13:00:44 +0200 (CEST)
-In-Reply-To: <1376163190-25039-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id D532A2616B9
+ for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 13:05:43 +0200 (CEST)
+In-Reply-To: <CAGsJ_4y1JoPtXinAvaohDQF_4+DizNYh1jy+iYymypgeZfapKA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +26,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Barry Song <21cnbao@gmail.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Workgroup.Linux@csr.com" <Workgroup.Linux@csr.com>, Rongjun Ying <Rongjun.Ying@csr.com>, Barry Song <Baohua.Song@csr.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0964292526902624599==
+--===============3587182675921333318==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="56jnwYyHVsKJlmXZ"
+	protocol="application/pgp-signature"; boundary="NGFy4aho5lLhScak"
 Content-Disposition: inline
 
 
---56jnwYyHVsKJlmXZ
+--NGFy4aho5lLhScak
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Aug 10, 2013 at 09:33:09PM +0200, Lars-Peter Clausen wrote:
-> The SOC_SINGLE_EXT control has been using snd_soc_info_volsw() for its info
-> callback since commit 1c433fb ("[ALSA] soc - 0.13 ASoC headers"). The
-> snd_soc_info_volsw_ext() function has been unused ever since then, so remove it.
+On Fri, Aug 09, 2013 at 04:41:57PM +0800, Barry Song wrote:
 
-Applied both, thanks.
+> it is fine. but it seems we are not easy to achieve this goal as we
+> actually want to do that at uart or tty core instead of specific uart
+> driver instance.
 
---56jnwYyHVsKJlmXZ
+Yes, this is one of the problems with DT - it forces things to be solved
+in a full and complete fashion since it defines ABI.
+
+--NGFy4aho5lLhScak
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSB27WAAoJELSic+t+oim97yQP/Am3DJ/K7i8fAp0dlmovRo8K
-4qyo1U0bRYp8ELhSa6GWfWaU3z6jXoDMkioxDqMmfggggst2I+hIooQyxL6xMH25
-YGxru3xBnfOgb/afZsYDMVak3f+v0mMMGGpPnvL2EINqKBfO/W+X/KFYyjOgXS27
-BRw5OzdqNxU8YCxCi6t7rHTUOJjbV8u4vDmzvG37TKhMrPpFvlET0TaOQKMYfM66
-Q27pH1OZ1V9MSoSG7AeMRcA615+Wwq7dPvCj+dNZqMtqxZz6I1OjI/wyr87TA5NE
-BXtkCJWi2FqL1EkqhddqjEkd21ORtfPzflp7OufYDSIlw17fU0VnCQgcf5rhfR8+
-xsFb92eAOv7HlV7PEmGPUlQdVOvAxxt22l2vZgns1FTx2eEiVcagvacH/KFBVrzT
-JZSz1aNZwRmuwFrRQBB9Xu11gGB3wmb9w39gR/rOz/0o59zaSsokO+hnb1qJ7Mr9
-RoxhQIThODqPOiZFUufce6/+cs84LZI8+dtb1hjmzwIickjZhqBFYLRlPucWYriZ
-a3d7I07tH8xRefmcFTzAd/Wc+zdu5MQfnnHBCGmMs2io3BamYTyyaYquWg6ewOrC
-YejSqrGIjKFB4er3WF41aqFqqisGlJi1S65UiOYDvnhnvXaNFtW42NL0tDmc2WPg
-nhwAuWdfH6ZCB3tTq39f
-=wxfl
+iQIcBAEBAgAGBQJSB3ABAAoJELSic+t+oim9mOMP/ApAsGeWvHU4FP+wkMPiiCa0
+1/QXOmn78DVYSDzjdFWm5gmDbMvDUFUlNwFZyNhMdFRpbo0Y49km+Tiw1gr5ugJs
+PVjmB/AR6/fTJK6EiceJ4eWsAGNdZgYMJL8cFQqO6uFkGC1R4IlJWnboX0wchV1R
+F6zZ9HPUd4m7ddxrKZLdtONYfEFAf1rn3M6AaE9xxN5ZDRY1assZ3ns5+zN6wED8
+N8KyflqMFqWKidJp2+ahCIK9wbs0o1+OXCI+C6ORZknuEi3V5zVl6w+LpzZvtnIs
+0uc4jV0YNaYBJXdOpOMDIiTzVmR/WuCOGGFz0i6/z1iXp5/XXaeDmdELWkJiYHDq
+dJIKMCe3uNb2IUD+vuw/x0DrPs1EslW04EB1xj49kEf55rNVzbB8DkFaC3xwoLIj
+m5oJE1OlTGYW46EoBcT+Mf8lFYnCLDGf1z60M6ScTRH20smYmjgcpQXZMfZDdwyr
+TsmlzBrvfAtuGZahHiFbfy8oV8RGbmLyPstqEWCQKOb5+Q0TbhYw8RPfPuFT1LcN
+8DAJQC54NJqCUeQ7qodNdOUdPBff/yZF12+1/ayBYiPYxzYRFmQbuJdrF5bvwykA
+s8UQn2OjG1S6cMocdX3H2ITqJTkNwKiR0iWYfjgzib8LaeVqKbkwUko2Ww7WXKkY
+MAniRHttpeBaOV0cMqGU
+=b/mw
 -----END PGP SIGNATURE-----
 
---56jnwYyHVsKJlmXZ--
+--NGFy4aho5lLhScak--
 
---===============0964292526902624599==
+--===============3587182675921333318==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0964292526902624599==--
+--===============3587182675921333318==--
