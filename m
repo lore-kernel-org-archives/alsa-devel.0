@@ -1,77 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: imx-audmux: default configuration parser fixups
-Date: Sun, 11 Aug 2013 11:59:55 +0100
-Message-ID: <20130811105955.GU6427@sirena.org.uk>
-References: <20130809123712.GD13664@s25.your-server.de>
- <1376139357-21089-1-git-send-email-mpa@pengutronix.de>
+Subject: Re: [PATCH 1/2] ASoC: Remove unused
+	snd_soc_info_volsw_ext()
+Date: Sun, 11 Aug 2013 12:00:41 +0100
+Message-ID: <20130811110041.GV6427@sirena.org.uk>
+References: <1376163190-25039-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5935612877407137354=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1376139357-21089-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============0964292526902624599=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 046722625CE
+ for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 13:00:44 +0200 (CEST)
+In-Reply-To: <1376163190-25039-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5935612877407137354==
+--===============0964292526902624599==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+Ccw6gpuJ1V99M/T"
+	protocol="application/pgp-signature"; boundary="56jnwYyHVsKJlmXZ"
 Content-Disposition: inline
 
 
---+Ccw6gpuJ1V99M/T
+--56jnwYyHVsKJlmXZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Aug 10, 2013 at 02:55:57PM +0200, Markus Pargmann wrote:
-> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+On Sat, Aug 10, 2013 at 09:33:09PM +0200, Lars-Peter Clausen wrote:
+> The SOC_SINGLE_EXT control has been using snd_soc_info_volsw() for its info
+> callback since commit 1c433fb ("[ALSA] soc - 0.13 ASoC headers"). The
+> snd_soc_info_volsw_ext() function has been unused ever since then, so remove it.
 
-Applied, thanks.  This is two changes so would've been better as two
-patches.
+Applied both, thanks.
 
---+Ccw6gpuJ1V99M/T
+--56jnwYyHVsKJlmXZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSB26oAAoJELSic+t+oim9FqAP/j48bLTF+ulpdXauhGIrKYJi
-fIfqpxCt4d+4IkPC/AQxh3OvHG8vSloAj6TNngHdM9t/zb+0GaPn4vu4CGxBIrE5
-f6P4ueV91EVRJQMDF/v20zp5YsfN6bA+dpWOlLzwskJ3GLMXjORa7/HQS3z0yPGe
-YVzYadvVg4/XsuKaeR620IS43eUjqhGTwWzOLNeavBsmqQgD7g/RkgHTC9MGTVbh
-Iu28Kj6yA8JRhJKQXqmNV4DMvXLWVNZj/wLzW9Wvcwt+LE3dTpUW7LaTwbFeACGS
-tlaL1OQaMS1w/AsY2V43eNH4/4rVhqbNiFONochpPCqzVJ+SAokRSClWLZc/zUBU
-hopLs4pkRwLQd8jvVRK5VQzdC53X8/Qjrgk6pGRgfxOEwQkNILKcXA1RotQXsVF2
-6936Iend9cCwrci82elyBqE4+PkOZ6cH3EsTSOadTiq/NhjiPjddEew7P3yNYCwL
-hPmfFyHb+o0k3kc/LStDnI+uwPQ9zIMPTP3Qf8cxqYh54sTWM8hXZzR65W5ySPGN
-oJEh19JS1Q2/EFajX5+ebwXzoHU8BVqWkLf6UVX0zmWtCgbU4ZhXEnapJqCxI089
-K+bS48P2LC/VlVwDuwQR+izeu/FDuJfal9wdPWMXKDxCWVuiQnFxoUBrZfLt14I3
-/M6jZw35rJSsolA9tAuI
-=JHtH
+iQIcBAEBAgAGBQJSB27WAAoJELSic+t+oim97yQP/Am3DJ/K7i8fAp0dlmovRo8K
+4qyo1U0bRYp8ELhSa6GWfWaU3z6jXoDMkioxDqMmfggggst2I+hIooQyxL6xMH25
+YGxru3xBnfOgb/afZsYDMVak3f+v0mMMGGpPnvL2EINqKBfO/W+X/KFYyjOgXS27
+BRw5OzdqNxU8YCxCi6t7rHTUOJjbV8u4vDmzvG37TKhMrPpFvlET0TaOQKMYfM66
+Q27pH1OZ1V9MSoSG7AeMRcA615+Wwq7dPvCj+dNZqMtqxZz6I1OjI/wyr87TA5NE
+BXtkCJWi2FqL1EkqhddqjEkd21ORtfPzflp7OufYDSIlw17fU0VnCQgcf5rhfR8+
+xsFb92eAOv7HlV7PEmGPUlQdVOvAxxt22l2vZgns1FTx2eEiVcagvacH/KFBVrzT
+JZSz1aNZwRmuwFrRQBB9Xu11gGB3wmb9w39gR/rOz/0o59zaSsokO+hnb1qJ7Mr9
+RoxhQIThODqPOiZFUufce6/+cs84LZI8+dtb1hjmzwIickjZhqBFYLRlPucWYriZ
+a3d7I07tH8xRefmcFTzAd/Wc+zdu5MQfnnHBCGmMs2io3BamYTyyaYquWg6ewOrC
+YejSqrGIjKFB4er3WF41aqFqqisGlJi1S65UiOYDvnhnvXaNFtW42NL0tDmc2WPg
+nhwAuWdfH6ZCB3tTq39f
+=wxfl
 -----END PGP SIGNATURE-----
 
---+Ccw6gpuJ1V99M/T--
+--56jnwYyHVsKJlmXZ--
 
-
---===============5935612877407137354==
+--===============0964292526902624599==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============5935612877407137354==--
+--===============0964292526902624599==--
