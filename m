@@ -1,97 +1,77 @@
-From: Torsten Schenk <torsten.schenk@zoho.com>
-Subject: [PATCH 2/2] 6fire: make buffers DMA-able (midi)
-Date: Sun, 11 Aug 2013 11:11:35 +0200
-Message-ID: <20130811111135.1b75074b7b9c83c711f5ae74@zoho.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: imx-audmux: default configuration parser fixups
+Date: Sun, 11 Aug 2013 11:59:55 +0100
+Message-ID: <20130811105955.GU6427@sirena.org.uk>
+References: <20130809123712.GD13664@s25.your-server.de>
+ <1376139357-21089-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D690261688
- for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 11:11:39 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+Content-Type: multipart/mixed; boundary="===============5935612877407137354=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1376139357-21089-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Patch makes midi output buffer DMA-able by allocating it separately.
 
-Signed-off-by: Torsten Schenk <torsten.schenk@zoho.com>
----
-diff -Nur a/sound/6fire/midi.c b/sound/6fire/midi.c
---- a/sound/6fire/midi.c	2013-08-04 22:46:46.000000000 +0200
-+++ b/sound/6fire/midi.c	2013-08-11 10:51:05.682482388 +0200
-@@ -19,6 +19,10 @@
- #include "chip.h"
- #include "comm.h"
- 
-+enum {
-+	MIDI_BUFSIZE = 64
-+};
-+
- static void usb6fire_midi_out_handler(struct urb *urb)
- {
- 	struct midi_runtime *rt = urb->context;
-@@ -156,6 +160,12 @@
- 	if (!rt)
- 		return -ENOMEM;
- 
-+	rt->out_buffer = kzalloc(MIDI_BUFSIZE, GFP_KERNEL);
-+	if (!rt->out_buffer) {
-+		kfree(rt);
-+		return -ENOMEM;
-+	}
-+
- 	rt->chip = chip;
- 	rt->in_received = usb6fire_midi_in_received;
- 	rt->out_buffer[0] = 0x80; /* 'send midi' command */
-@@ -169,6 +179,7 @@
- 
- 	ret = snd_rawmidi_new(chip->card, "6FireUSB", 0, 1, 1, &rt->instance);
- 	if (ret < 0) {
-+		kfree(rt->out_buffer);
- 		kfree(rt);
- 		snd_printk(KERN_ERR PREFIX "unable to create midi.\n");
- 		return ret;
-@@ -197,6 +208,9 @@
- 
- void usb6fire_midi_destroy(struct sfire_chip *chip)
- {
--	kfree(chip->midi);
-+	struct midi_runtime *rt = chip->midi;
-+
-+	kfree(rt->out_buffer);
-+	kfree(rt);
- 	chip->midi = NULL;
- }
-diff -Nur a/sound/6fire/midi.h b/sound/6fire/midi.h
---- a/sound/6fire/midi.h	2013-08-04 22:46:46.000000000 +0200
-+++ b/sound/6fire/midi.h	2013-08-11 10:51:05.682482388 +0200
-@@ -16,10 +16,6 @@
- 
- #include "common.h"
- 
--enum {
--	MIDI_BUFSIZE = 64
--};
--
- struct midi_runtime {
- 	struct sfire_chip *chip;
- 	struct snd_rawmidi *instance;
-@@ -32,7 +28,7 @@
- 	struct snd_rawmidi_substream *out;
- 	struct urb out_urb;
- 	u8 out_serial; /* serial number of out packet */
--	u8 out_buffer[MIDI_BUFSIZE];
-+	u8 *out_buffer;
- 	int buffer_offset;
- 
- 	void (*in_received)(struct midi_runtime *rt, u8 *data, int length);
+--===============5935612877407137354==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+Ccw6gpuJ1V99M/T"
+Content-Disposition: inline
+
+
+--+Ccw6gpuJ1V99M/T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Aug 10, 2013 at 02:55:57PM +0200, Markus Pargmann wrote:
+> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+
+Applied, thanks.  This is two changes so would've been better as two
+patches.
+
+--+Ccw6gpuJ1V99M/T
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSB26oAAoJELSic+t+oim9FqAP/j48bLTF+ulpdXauhGIrKYJi
+fIfqpxCt4d+4IkPC/AQxh3OvHG8vSloAj6TNngHdM9t/zb+0GaPn4vu4CGxBIrE5
+f6P4ueV91EVRJQMDF/v20zp5YsfN6bA+dpWOlLzwskJ3GLMXjORa7/HQS3z0yPGe
+YVzYadvVg4/XsuKaeR620IS43eUjqhGTwWzOLNeavBsmqQgD7g/RkgHTC9MGTVbh
+Iu28Kj6yA8JRhJKQXqmNV4DMvXLWVNZj/wLzW9Wvcwt+LE3dTpUW7LaTwbFeACGS
+tlaL1OQaMS1w/AsY2V43eNH4/4rVhqbNiFONochpPCqzVJ+SAokRSClWLZc/zUBU
+hopLs4pkRwLQd8jvVRK5VQzdC53X8/Qjrgk6pGRgfxOEwQkNILKcXA1RotQXsVF2
+6936Iend9cCwrci82elyBqE4+PkOZ6cH3EsTSOadTiq/NhjiPjddEew7P3yNYCwL
+hPmfFyHb+o0k3kc/LStDnI+uwPQ9zIMPTP3Qf8cxqYh54sTWM8hXZzR65W5ySPGN
+oJEh19JS1Q2/EFajX5+ebwXzoHU8BVqWkLf6UVX0zmWtCgbU4ZhXEnapJqCxI089
+K+bS48P2LC/VlVwDuwQR+izeu/FDuJfal9wdPWMXKDxCWVuiQnFxoUBrZfLt14I3
+/M6jZw35rJSsolA9tAuI
+=JHtH
+-----END PGP SIGNATURE-----
+
+--+Ccw6gpuJ1V99M/T--
+
+
+--===============5935612877407137354==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============5935612877407137354==--
