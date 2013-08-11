@@ -1,18 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [git pull] [PATCH 0/7] add support for many Roland
- and Yamaha devices
-Date: Sun, 11 Aug 2013 14:15:32 +0200
-Message-ID: <52078064.3090409@ladisch.de>
-References: <51CC9D8B.7060601@ladisch.de> <4161390.DqJ0fEoIrV@kamdesktop>
- <52053269.2050706@ladisch.de> <2663331.bA47oXYmkZ@kamdesktop>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/2] ASoC: cs4271: Convert to table based
+	control init
+Date: Sun, 11 Aug 2013 13:16:16 +0100
+Message-ID: <1376223377-23047-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 5F43E2616E1
- for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 14:15:55 +0200 (CEST)
-In-Reply-To: <2663331.bA47oXYmkZ@kamdesktop>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41C14264FEB
+ for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 14:16:27 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,21 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Keith A. Milner" <maillist@superlative.org>
-Cc: alsa-devel@alsa-project.org
+To: Alexander Sverdlin <subaparts@yandex.ru>, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Keith A. Milner wrote:
-> $ aplay -Dhw:3 -fS16_LE -c2 -r44100 Test.wav
+From: Mark Brown <broonie@linaro.org>
 
-aplay reads the format/channels/rate settings from the .wav file and
-ignores your parameters.
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/cs4271.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> Playing WAVE 'Test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Mono
-> aplay: set_params:1081: Sample format not available
-
-Use "plughw" instead of "hw" to get automatic format conversion.
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 03036b3..65ad56c 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -576,8 +576,7 @@ static int cs4271_probe(struct snd_soc_codec *codec)
+ 				   CS4271_MODE2_MUTECAEQUB,
+ 				   CS4271_MODE2_MUTECAEQUB);
+ 
+-	return snd_soc_add_codec_controls(codec, cs4271_snd_controls,
+-		ARRAY_SIZE(cs4271_snd_controls));
++	return 0;
+ }
+ 
+ static int cs4271_remove(struct snd_soc_codec *codec)
+@@ -596,6 +595,9 @@ static struct snd_soc_codec_driver soc_codec_dev_cs4271 = {
+ 	.remove			= cs4271_remove,
+ 	.suspend		= cs4271_soc_suspend,
+ 	.resume			= cs4271_soc_resume,
++
++	.controls		= cs4271_snd_controls,
++	.num_controls		= ARRAY_SIZE(cs4271_snd_controls),
+ };
+ 
+ #if defined(CONFIG_SPI_MASTER)
+-- 
+1.8.4.rc1
