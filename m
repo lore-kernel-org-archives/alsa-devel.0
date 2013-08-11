@@ -1,18 +1,14 @@
 From: Torsten Schenk <torsten.schenk@zoho.com>
-Subject: [PATCH 1/2] 6fire: make buffers DMA-able (pcm)
-Date: Sun, 11 Aug 2013 11:11:19 +0200
-Message-ID: <20130811111119.fdcc2d884cb4ca71a08d56b3@zoho.com>
-References: <s5hli4d5uj7.wl%tiwai@suse.de>
- <Pine.LNX.4.44L0.1308071334590.886-100000@iolanthe.rowland.org>
- <s5hy58cafd0.wl%tiwai@suse.de>
+Subject: [PATCH 2/2] 6fire: make buffers DMA-able (midi)
+Date: Sun, 11 Aug 2013 11:11:35 +0200
+Message-ID: <20130811111135.1b75074b7b9c83c711f5ae74@zoho.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
- by alsa0.perex.cz (Postfix) with ESMTP id 73EE1261688
- for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 11:11:26 +0200 (CEST)
-In-Reply-To: <s5hy58cafd0.wl%tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D690261688
+ for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 11:11:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,97 +22,76 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Patch makes pcm buffers DMA-able by allocating each one separately.
+Patch makes midi output buffer DMA-able by allocating it separately.
 
 Signed-off-by: Torsten Schenk <torsten.schenk@zoho.com>
 ---
-diff -Nur a/sound/usb/6fire/pcm.c b/sound/usb/6fire/pcm.c
---- a/sound/usb/6fire/pcm.c	2013-08-04 22:46:46.000000000 +0200
-+++ b/sound/usb/6fire/pcm.c	2013-08-11 11:02:38.305774934 +0200
-@@ -582,6 +582,33 @@
- 	urb->instance.number_of_packets = PCM_N_PACKETS_PER_URB;
- }
+diff -Nur a/sound/6fire/midi.c b/sound/6fire/midi.c
+--- a/sound/6fire/midi.c	2013-08-04 22:46:46.000000000 +0200
++++ b/sound/6fire/midi.c	2013-08-11 10:51:05.682482388 +0200
+@@ -19,6 +19,10 @@
+ #include "chip.h"
+ #include "comm.h"
  
-+static int usb6fire_pcm_buffers_init(struct pcm_runtime *rt)
-+{
-+	int i;
++enum {
++	MIDI_BUFSIZE = 64
++};
 +
-+	for (i = 0; i < PCM_N_URBS; i++) {
-+		rt->out_urbs[i].buffer = kzalloc(PCM_N_PACKETS_PER_URB
-+				* PCM_MAX_PACKET_SIZE, GFP_KERNEL);
-+		if (!rt->out_urbs[i].buffer)
-+			return -ENOMEM;
-+		rt->in_urbs[i].buffer = kzalloc(PCM_N_PACKETS_PER_URB
-+				* PCM_MAX_PACKET_SIZE, GFP_KERNEL);
-+		if (!rt->in_urbs[i].buffer)
-+			return -ENOMEM;
-+	}
-+	return 0;
-+}
-+
-+static void usb6fire_pcm_buffers_destroy(struct pcm_runtime *rt)
-+{
-+	int i;
-+
-+	for (i = 0; i < PCM_N_URBS; i++) {
-+		kfree(rt->out_urbs[i].buffer);
-+		kfree(rt->in_urbs[i].buffer);
-+	}
-+}
-+
- int usb6fire_pcm_init(struct sfire_chip *chip)
+ static void usb6fire_midi_out_handler(struct urb *urb)
  {
- 	int i;
-@@ -593,6 +620,13 @@
+ 	struct midi_runtime *rt = urb->context;
+@@ -156,6 +160,12 @@
  	if (!rt)
  		return -ENOMEM;
  
-+	ret = usb6fire_pcm_buffers_init(rt);
-+	if (ret) {
-+		usb6fire_pcm_buffers_destroy(rt);
++	rt->out_buffer = kzalloc(MIDI_BUFSIZE, GFP_KERNEL);
++	if (!rt->out_buffer) {
 +		kfree(rt);
-+		return ret;
++		return -ENOMEM;
 +	}
 +
  	rt->chip = chip;
- 	rt->stream_state = STREAM_DISABLED;
- 	rt->rate = ARRAY_SIZE(rates);
-@@ -614,6 +648,7 @@
+ 	rt->in_received = usb6fire_midi_in_received;
+ 	rt->out_buffer[0] = 0x80; /* 'send midi' command */
+@@ -169,6 +179,7 @@
  
- 	ret = snd_pcm_new(chip->card, "DMX6FireUSB", 0, 1, 1, &pcm);
+ 	ret = snd_rawmidi_new(chip->card, "6FireUSB", 0, 1, 1, &rt->instance);
  	if (ret < 0) {
-+		usb6fire_pcm_buffers_destroy(rt);
++		kfree(rt->out_buffer);
  		kfree(rt);
- 		snd_printk(KERN_ERR PREFIX "cannot create pcm instance.\n");
+ 		snd_printk(KERN_ERR PREFIX "unable to create midi.\n");
  		return ret;
-@@ -625,6 +660,7 @@
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_ops);
+@@ -197,6 +208,9 @@
  
- 	if (ret) {
-+		usb6fire_pcm_buffers_destroy(rt);
- 		kfree(rt);
- 		snd_printk(KERN_ERR PREFIX
- 				"error preallocating pcm buffers.\n");
-@@ -669,6 +705,9 @@
- 
- void usb6fire_pcm_destroy(struct sfire_chip *chip)
+ void usb6fire_midi_destroy(struct sfire_chip *chip)
  {
--	kfree(chip->pcm);
-+	struct pcm_runtime *rt = chip->pcm;
+-	kfree(chip->midi);
++	struct midi_runtime *rt = chip->midi;
 +
-+	usb6fire_pcm_buffers_destroy(rt);
++	kfree(rt->out_buffer);
 +	kfree(rt);
- 	chip->pcm = NULL;
+ 	chip->midi = NULL;
  }
-diff -Nur a/sound/usb/6fire/pcm.h b/sound/usb/6fire/pcm.h
---- a/sound/usb/6fire/pcm.h	2013-08-04 22:46:46.000000000 +0200
-+++ b/sound/usb/6fire/pcm.h	2013-08-11 10:49:28.779700620 +0200
-@@ -32,7 +32,7 @@
- 	struct urb instance;
- 	struct usb_iso_packet_descriptor packets[PCM_N_PACKETS_PER_URB];
- 	/* END DO NOT SEPARATE */
--	u8 buffer[PCM_N_PACKETS_PER_URB * PCM_MAX_PACKET_SIZE];
-+	u8 *buffer;
+diff -Nur a/sound/6fire/midi.h b/sound/6fire/midi.h
+--- a/sound/6fire/midi.h	2013-08-04 22:46:46.000000000 +0200
++++ b/sound/6fire/midi.h	2013-08-11 10:51:05.682482388 +0200
+@@ -16,10 +16,6 @@
  
- 	struct pcm_urb *peer;
- };
+ #include "common.h"
+ 
+-enum {
+-	MIDI_BUFSIZE = 64
+-};
+-
+ struct midi_runtime {
+ 	struct sfire_chip *chip;
+ 	struct snd_rawmidi *instance;
+@@ -32,7 +28,7 @@
+ 	struct snd_rawmidi_substream *out;
+ 	struct urb out_urb;
+ 	u8 out_serial; /* serial number of out packet */
+-	u8 out_buffer[MIDI_BUFSIZE];
++	u8 *out_buffer;
+ 	int buffer_offset;
+ 
+ 	void (*in_received)(struct midi_runtime *rt, u8 *data, int length);
