@@ -1,73 +1,39 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 1/16] sound/soc/pxa/mioa701_wm9713.c: Avoid
-	using ARRAY_AND_SIZE(e) as a function argument
-Date: Sun, 11 Aug 2013 18:51:42 +0200
-Message-ID: <1376239917-15594-2-git-send-email-Julia.Lawall@lip6.fr>
-References: <1376239917-15594-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Sergei Shtylyov <sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH] usb-audio: Fix invalid volume resolution for Logitech
+ HD Webcam C525
+Date: Sun, 11 Aug 2013 21:23:32 +0400
+Message-ID: <5207C894.9040507@cogentembedded.com>
+References: <52074DBB.7040504@yandex.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3-relais-sop.national.inria.fr
- (mail3-relais-sop.national.inria.fr [192.134.164.104])
- by alsa0.perex.cz (Postfix) with ESMTP id 7338B260315
- for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 18:52:01 +0200 (CEST)
-In-Reply-To: <1376239917-15594-1-git-send-email-Julia.Lawall@lip6.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <52074DBB.7040504-o+MxOtu4lMCHXe+LvDLADg@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Maksim A. Boyko" <maksboyko-o+MxOtu4lMCHXe+LvDLADg@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, stable-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, maksim.a.boyko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <Julia.Lawall@lip6.fr>
+Hello.
 
-Replace ARRAY_AND_SIZE(e) in function argument position to avoid hiding the
-arity of the called function.
+On 08/11/2013 12:39 PM, Maksim A. Boyko wrote:
 
-The semantic match that makes this change is as follows:
-(http://coccinelle.lip6.fr/)
+> Add the volume control quirk for avoiding the kernel warning for the Logitech HD
+> Webcam C525 as in the similar commit 36691e1be6ec551eef4a5225f126a281f8c051c2
+> (ALSA: usb-audio: Fix invalid volume resolution for Logitech HD Webcam c310) for
+> the Logitech HD Webcam C310.
 
-// <smpl>
-@@
-expression e,f;
-@@
+> Reported-by: Maksim Boyko <maksim.a.boyko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> Tested-by: Maksim Boyko <maksim.a.boyko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> Cc: <stable-u79uwXL29TY76Z2rM5mHXA@public.gmane.org> # 3.10.5+
+> Signed-off-by: Maksim Boyko <maksim.a.boyko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-f(...,
-- ARRAY_AND_SIZE(e)
-+ e,ARRAY_SIZE(e)
-  ,...)
-// </smpl>
+    Strange, now all the surrounding lines are indented with spaces, only the 
+line you're adding looks normal.
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+WBR, Sergei
 
----
-Not compiled.
-
- sound/soc/pxa/mioa701_wm9713.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
-index 97b711e..20fdce6 100644
---- a/sound/soc/pxa/mioa701_wm9713.c
-+++ b/sound/soc/pxa/mioa701_wm9713.c
-@@ -133,10 +133,11 @@ static int mioa701_wm9713_init(struct snd_soc_pcm_runtime *rtd)
- 	unsigned short reg;
- 
- 	/* Add mioa701 specific widgets */
--	snd_soc_dapm_new_controls(dapm, ARRAY_AND_SIZE(mioa701_dapm_widgets));
-+	snd_soc_dapm_new_controls(dapm, mioa701_dapm_widgets,
-+				  ARRAY_SIZE(mioa701_dapm_widgets));
- 
- 	/* Set up mioa701 specific audio path audio_mapnects */
--	snd_soc_dapm_add_routes(dapm, ARRAY_AND_SIZE(audio_map));
-+	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
- 
- 	/* Prepare GPIO8 for rear speaker amplifier */
- 	reg = codec->driver->read(codec, AC97_GPIO_CFG);
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
