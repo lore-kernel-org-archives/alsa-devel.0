@@ -1,87 +1,88 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: [PATCH 09/18] ASoC: Samsung: Do not queue cyclic buffers multiple times
-Date: Sun, 11 Aug 2013 19:59:21 +0200
-Message-ID: <1376243970-6489-10-git-send-email-tomasz.figa@gmail.com>
-References: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-samsung-soc@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, Dan Williams <djbw@fb.com>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Mark Brown <broonie@kernel.org>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Tomasz Figa <tomasz.figa@gmail.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: [PATCH 1/3] ASoC: dt: Move ALC5632 pin list from Tegra board binding to CODEC binding
+Date: Sun, 11 Aug 2013 19:02:39 +0100
+Message-ID: <1376244161-24206-1-git-send-email-broonie@kernel.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The legacy S3C-DMA API required every period of a cyclic buffer to be
-queued separately. After conversion of Samsung ASoC to Samsung DMA
-wrappers somebody made an assumption that the same is needed for DMA
-engine API, which is not true.
+From: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 
-In effect, Samsung ASoC DMA code was queuing the whole cyclic buffer
-multiple times with a shift of one period per iteration, leading to:
-  a) severe memory waste - up to 13x times more DMA transfer descriptors
-     are allocated than needed,
-  b) possible memory corruption, because further cyclic buffers were out
-     of the original buffers, due to the offset.
+The pin list is the same for any board using the CODEC.
 
-This patch fixes this problem by making the legacy S3C-DMA API use the
-same semantics as DMA engine (the whole cyclic buffer is enqueued at
-once) and modifying users of Samsung DMA wrappers in cyclic mode to
-behave appropriately.
-
-Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 ---
- arch/arm/plat-samsung/s3c-dma-ops.c | 13 +++++++++++--
- sound/soc/samsung/dma.c             |  7 +++++++
- 2 files changed, 18 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/sound/alc5632.txt          | 20 ++++++++++++++++++
+ .../bindings/sound/nvidia,tegra-audio-alc5632.txt  | 24 ++--------------------
+ 2 files changed, 22 insertions(+), 22 deletions(-)
 
-diff --git a/arch/arm/plat-samsung/s3c-dma-ops.c b/arch/arm/plat-samsung/s3c-dma-ops.c
-index 0cc40ae..98b10ba 100644
---- a/arch/arm/plat-samsung/s3c-dma-ops.c
-+++ b/arch/arm/plat-samsung/s3c-dma-ops.c
-@@ -82,7 +82,8 @@ static int s3c_dma_config(unsigned ch, struct samsung_dma_config *param)
- static int s3c_dma_prepare(unsigned ch, struct samsung_dma_prep *param)
- {
- 	struct cb_data *data;
--	int len = (param->cap == DMA_CYCLIC) ? param->period : param->len;
-+	dma_addr_t pos = param->buf;
-+	dma_addr_t end = param->buf + param->len;
+diff --git a/Documentation/devicetree/bindings/sound/alc5632.txt b/Documentation/devicetree/bindings/sound/alc5632.txt
+index 8608f74..b913b74 100644
+--- a/Documentation/devicetree/bindings/sound/alc5632.txt
++++ b/Documentation/devicetree/bindings/sound/alc5632.txt
+@@ -13,6 +13,26 @@ Required properties:
+   - #gpio-cells : Should be two. The first cell is the pin number and the
+     second cell is used to specify optional parameters (currently unused).
  
- 	list_for_each_entry(data, &dma_list, node)
- 		if (data->ch == ch)
-@@ -94,7 +95,15 @@ static int s3c_dma_prepare(unsigned ch, struct samsung_dma_prep *param)
- 		data->fp_param = param->fp_param;
- 	}
- 
--	s3c2410_dma_enqueue(ch, (void *)data, param->buf, len);
-+	if (param->cap != DMA_CYCLIC) {
-+		s3c2410_dma_enqueue(ch, (void *)data, param->buf, param->len);
-+		return 0;
-+	}
++Pins on the device (for linking into audio routes):
 +
-+	while (pos < end) {
-+		s3c2410_dma_enqueue(ch, (void *)data, pos, param->period);
-+		pos += param->period;
-+	}
- 
- 	return 0;
- }
-diff --git a/sound/soc/samsung/dma.c b/sound/soc/samsung/dma.c
-index 21b7926..6e2b2b4 100644
---- a/sound/soc/samsung/dma.c
-+++ b/sound/soc/samsung/dma.c
-@@ -90,6 +90,13 @@ static void dma_enqueue(struct snd_pcm_substream *substream)
- 	dma_info.period = prtd->dma_period;
- 	dma_info.len = prtd->dma_period*limit;
- 
-+	if (dma_info.cap == DMA_CYCLIC) {
-+		dma_info.buf = pos;
-+		prtd->params->ops->prepare(prtd->params->ch, &dma_info);
-+		prtd->dma_loaded += limit;
-+		return;
-+	}
++  * SPK_OUTP
++  * SPK_OUTN
++  * HP_OUT_L
++  * HP_OUT_R
++  * AUX_OUT_P
++  * AUX_OUT_N
++  * LINE_IN_L
++  * LINE_IN_R
++  * PHONE_P
++  * PHONE_N
++  * MIC1_P
++  * MIC1_N
++  * MIC2_P
++  * MIC2_N
++  * MICBIAS1
++  * DMICDAT
 +
- 	while (prtd->dma_loaded < limit) {
- 		pr_debug("dma_loaded: %d\n", prtd->dma_loaded);
++
+ Example:
  
+ alc5632: alc5632@1e {
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-alc5632.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-alc5632.txt
+index 05ffecb..8b8903e 100644
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-alc5632.txt
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-alc5632.txt
+@@ -11,28 +11,8 @@ Required properties:
+ - nvidia,audio-routing : A list of the connections between audio components.
+   Each entry is a pair of strings, the first being the connection's sink,
+   the second being the connection's source. Valid names for sources and
+-  sinks are the ALC5632's pins:
+-
+-  ALC5632 pins:
+-
+-  * SPK_OUTP
+-  * SPK_OUTN
+-  * HP_OUT_L
+-  * HP_OUT_R
+-  * AUX_OUT_P
+-  * AUX_OUT_N
+-  * LINE_IN_L
+-  * LINE_IN_R
+-  * PHONE_P
+-  * PHONE_N
+-  * MIC1_P
+-  * MIC1_N
+-  * MIC2_P
+-  * MIC2_N
+-  * MICBIAS1
+-  * DMICDAT
+-
+-  Board connectors:
++  sinks are the ALC5632's pins as documented in the binding for the device
++  and:
+ 
+   * Headset Stereophone
+   * Int Spk
 -- 
-1.8.3.2
+1.8.4.rc1
