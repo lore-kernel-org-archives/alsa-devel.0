@@ -1,14 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: adau1701: Use gpio_set_value_cansleep()
-Date: Sun, 11 Aug 2013 15:15:58 +0100
-Message-ID: <1376230558-16248-1-git-send-email-broonie@kernel.org>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: cs4271: Add DAPM support
+Date: Sun, 11 Aug 2013 18:02:42 +0200
+Message-ID: <5207B5A2.2060203@gmail.com>
+References: <1376223377-23047-1-git-send-email-broonie@kernel.org>
+ <1376223377-23047-2-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FCDE2607B7
- for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 16:16:10 +0200 (CEST)
+Received: from mail-ea0-f179.google.com (mail-ea0-f179.google.com
+ [209.85.215.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3833726080B
+ for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 18:02:46 +0200 (CEST)
+Received: by mail-ea0-f179.google.com with SMTP id b10so3015571eae.10
+ for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 09:02:44 -0700 (PDT)
+In-Reply-To: <1376223377-23047-2-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,67 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, device-drivers-devel@blackfin.uclinux.org, Mark Brown <broonie@linaro.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Alexander Sverdlin <subaparts@yandex.ru>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On 11.08.2013 14:16, Mark Brown wrote:
+> +static const struct snd_soc_dapm_widget cs4271_dapm_widgets[] = {
+> +SND_SOC_DAPM_INPUT("AINA"),
+> +SND_SOC_DAPM_INPUT("AINB"),
+> +
+> +SND_SOC_DAPM_OUTPUT("AOUTA+"),
+> +SND_SOC_DAPM_OUTPUT("AOUTA-"),
+> +SND_SOC_DAPM_OUTPUT("AOUTB+"),
+> +SND_SOC_DAPM_OUTPUT("AOUTB-"),
+> +};
+> +
+> +static const struct snd_soc_dapm_route cs4271_dapm_routes[] = {
+> +	{ "Capture", NULL, "AINL" },
+> +	{ "Capture", NULL, "AINR" },
 
-The GPIO manipulation done by this driver is never in atomic context so
-we can use gpio_set_value_cansleep() and support GPIOs that can't be set
-from atomic context.
+Here you call the widgets "AINL"/"AINR", while above it's "AINA"/"AINB".
+ According to the datasheet, the latter is
+correct.
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/codecs/adau1701.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-index 2c10252..ebff112 100644
---- a/sound/soc/codecs/adau1701.c
-+++ b/sound/soc/codecs/adau1701.c
-@@ -247,21 +247,21 @@ static int adau1701_reset(struct snd_soc_codec *codec, unsigned int clkdiv)
- 	    gpio_is_valid(adau1701->gpio_pll_mode[1])) {
- 		switch (clkdiv) {
- 		case 64:
--			gpio_set_value(adau1701->gpio_pll_mode[0], 0);
--			gpio_set_value(adau1701->gpio_pll_mode[1], 0);
-+			gpio_set_value_cansleep(adau1701->gpio_pll_mode[0], 0);
-+			gpio_set_value_cansleep(adau1701->gpio_pll_mode[1], 0);
- 			break;
- 		case 256:
--			gpio_set_value(adau1701->gpio_pll_mode[0], 0);
--			gpio_set_value(adau1701->gpio_pll_mode[1], 1);
-+			gpio_set_value_cansleep(adau1701->gpio_pll_mode[0], 0);
-+			gpio_set_value_cansleep(adau1701->gpio_pll_mode[1], 1);
- 			break;
- 		case 384:
--			gpio_set_value(adau1701->gpio_pll_mode[0], 1);
--			gpio_set_value(adau1701->gpio_pll_mode[1], 0);
-+			gpio_set_value_cansleep(adau1701->gpio_pll_mode[0], 1);
-+			gpio_set_value_cansleep(adau1701->gpio_pll_mode[1], 0);
- 			break;
- 		case 0:	/* fallback */
- 		case 512:
--			gpio_set_value(adau1701->gpio_pll_mode[0], 1);
--			gpio_set_value(adau1701->gpio_pll_mode[1], 1);
-+			gpio_set_value_cansleep(adau1701->gpio_pll_mode[0], 1);
-+			gpio_set_value_cansleep(adau1701->gpio_pll_mode[1], 1);
- 			break;
- 		}
- 	}
-@@ -269,10 +269,10 @@ static int adau1701_reset(struct snd_soc_codec *codec, unsigned int clkdiv)
- 	adau1701->pll_clkdiv = clkdiv;
- 
- 	if (gpio_is_valid(adau1701->gpio_nreset)) {
--		gpio_set_value(adau1701->gpio_nreset, 0);
-+		gpio_set_value_cansleep(adau1701->gpio_nreset, 0);
- 		/* minimum reset time is 20ns */
- 		udelay(1);
--		gpio_set_value(adau1701->gpio_nreset, 1);
-+		gpio_set_value_cansleep(adau1701->gpio_nreset, 1);
- 		/* power-up time may be as long as 85ms */
- 		mdelay(85);
- 	}
--- 
-1.8.4.rc1
+Daniel
