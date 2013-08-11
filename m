@@ -1,20 +1,15 @@
-From: Jesus R <sonorejr@gmail.com>
-Subject: [PATCH v3 5/5] ALSA: snd-usb: add quirks handler for
-	DSD streams
-Date: Sun, 11 Aug 2013 14:20:51 -0400
-Message-ID: <CANNq7Hhyu2zpvDv3TRcqfH=jStpzjqp5yW61W9rbJCa0tPtpuA@mail.gmail.com>
-References: <CANNq7HhLg=1p4ASYzRdN4igexQX11NhwdbiKF2eS=avnyU1ykA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: doc: Add documentation to MAINTAINERS
+	patterns
+Date: Sun, 11 Aug 2013 19:37:09 +0100
+Message-ID: <1376246229-27297-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f48.google.com (mail-oa0-f48.google.com
- [209.85.219.48])
- by alsa0.perex.cz (Postfix) with ESMTP id BC53F265253
- for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 20:20:52 +0200 (CEST)
-Received: by mail-oa0-f48.google.com with SMTP id o17so8832049oag.35
- for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 11:20:51 -0700 (PDT)
-In-Reply-To: <CANNq7HhLg=1p4ASYzRdN4igexQX11NhwdbiKF2eS=avnyU1ykA@mail.gmail.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31AC32650AB
+ for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 20:37:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,16 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Daniel/team, I have access to a few DSD devices and or USB based devices. I
-can provide any information you need to help with allowing ALSA to identify
-the device's capabilities. Just let me know how to get the information you
-need from command line:)
+From: Mark Brown <broonie@linaro.org>
 
-I also have a list of known DSD/DoP devices in Google Drive that may be
-helpful. Let me know if it's okay to post the link.
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-Jesus R
-sonore.us
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 427a930..07e2bc8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7710,6 +7710,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ W:	http://alsa-project.org/main/index.php/ASoC
+ S:	Supported
++F:	Documentation/sound/alsa/soc/
+ F:	sound/soc/
+ F:	include/sound/soc*
+ 
+-- 
+1.8.4.rc1
