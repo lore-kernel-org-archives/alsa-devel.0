@@ -1,20 +1,19 @@
 From: "Keith A. Milner" <maillist@superlative.org>
 Subject: Re: [PATCH] ALSA: usb-audio: fix automatic
 	Roland/Yamaha MIDI detection
-Date: Mon, 12 Aug 2013 23:00:07 +0100
-Message-ID: <3133270.FSXLdSxQFT@kamdesktop>
+Date: Mon, 12 Aug 2013 23:38:22 +0100
+Message-ID: <1662775.3qSRSFOsFp@kamdesktop>
 References: <51CC9D8B.7060601@ladisch.de> <2663331.bA47oXYmkZ@kamdesktop>
  <52077FD9.6060404@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f170.google.com (mail-ea0-f170.google.com
- [209.85.215.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 24160265019
- for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 00:00:10 +0200 (CEST)
-Received: by mail-ea0-f170.google.com with SMTP id h14so3815227eak.1
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 15:00:09 -0700 (PDT)
+Received: from mail-ee0-f49.google.com (mail-ee0-f49.google.com [74.125.83.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id C279B2650B3
+ for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 00:38:24 +0200 (CEST)
+Received: by mail-ee0-f49.google.com with SMTP id d41so3759246eek.8
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 15:38:24 -0700 (PDT)
 In-Reply-To: <52077FD9.6060404@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,652 +28,557 @@ To: Clemens Ladisch <clemens@ladisch.de>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 11 Aug 2013 14:13:13 Clemens Ladisch wrote:
-> Commit aafe77cc45a5 (ALSA: usb-audio: add support for many Roland/Yamaha
-> devices) had several logic errors that prevented create_auto_midi_quirk
-> from enumerating any MIDI ports.
-> 
-> Reported-by: Keith A. Milner <maillist@superlative.org>
-> Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
-
-I've just got around for testing this. Debug logfile at the bottom.
-
-Playback and record interfaces are correctly listed:
-
-$ aplay -l
-...
-card 3: JS8 [JS-8], device 0: USB Audio [USB Audio]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-$ arecord -l
-...
-card 3: JS8 [JS-8], device 0: USB Audio [USB Audio]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-This time, the MIDI interfaces are also listed:
-
-$ amidi -l
-Dir Device    Name
-IO  hw:3,0,0  JS-8 MIDI 1
-IO  hw:3,0,1  JS-8 MIDI 2
-
-(By the way, I still have no idea what these MIDI ports do, if anything. there 
-seems to be no ooutput from the JS-8 MIDI, and it doesn't seem to respond to 
-any of the MIDI events I have tried sending to it. It's possible it's used for 
-some sort of Sysex, or maybe it's vestigial.)
-
-I tested it with simultaneous playback and record using Ardour3 and it works 
-great.
-
-Cheers,
-
-Keith
-
-(Debug log below)
-
-Aug 12 22:35:42 KAMDesktop kernel: [  259.081313] usb 1-6.2: new high-speed 
-USB device number 7 using ehci-pci
-Aug 12 22:35:42 KAMDesktop mtp-probe: checking bus 1, device 7: 
-"/sys/devices/pci0000:00/0000:00:1a.7/usb1/1-6/1-6.2"
-Aug 12 22:35:42 KAMDesktop kernel: [  259.174567] 7:0:1: add audio endpoint 
-0x5
-Aug 12 22:35:42 KAMDesktop kernel: [  259.174948] 7:1:1: add audio endpoint 
-0x84
-Aug 12 22:35:42 KAMDesktop kernel: [  259.175191] switching to altsetting 1 
-with int ep
-Aug 12 22:35:42 KAMDesktop kernel: [  259.175322] created 2 output and 2 input 
-ports
-Aug 12 22:35:42 KAMDesktop mtp-probe: bus: 1, device: 7 was not an MTP device
-Aug 12 22:35:42 KAMDesktop kernel: [  259.191386] setting usb interface 0:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.191389] Creating new playback data 
-endpoint #5
-Aug 12 22:35:42 KAMDesktop kernel: [  259.191392] Creating new capture data 
-endpoint #84
-Aug 12 22:35:42 KAMDesktop kernel: [  259.191549] Setting params for ep #5 
-(type 0, 8 urbs), ret=0
-Aug 12 22:35:42 KAMDesktop kernel: [  259.191551] match_endpoint_audioformats: 
-(fmt @ffff8802ea269080) score 2
-Aug 12 22:35:42 KAMDesktop kernel: [  259.191556] Setting params for ep #84 
-(type 0, 8 urbs), ret=0
-Aug 12 22:35:42 KAMDesktop kernel: [  259.191557] Starting data EP 
-@ffff8802d3760000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.191722] Starting sync EP 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.204108] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.204110] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.204118] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.204135] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.204136] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.204150] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.204298] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.204493] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.204496] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.204581] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.204710] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.205367] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.205369] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.205374] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.205385] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.205387] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.205400] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.205541] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.205668] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.205671] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.205760] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.205793] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.206369] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.206371] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.206376] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.206395] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.206397] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.206437] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.206574] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.206863] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.206865] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.206978] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.207152] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.207870] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.207872] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.207880] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.207908] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.207912] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.207964] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.208108] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.208354] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.208360] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.208480] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.208623] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.209269] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.209272] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.209280] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.209293] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.209295] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.209307] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.209337] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.209433] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.209435] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.209524] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.209556] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.210124] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.210126] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.210131] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.210143] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.210145] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.210158] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.210332] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.210546] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.210548] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.210633] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.210774] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.211375] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.211377] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.211382] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.211400] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.211402] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.211459] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.211601] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.211843] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.211845] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.211953] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.212091] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.212752] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.212753] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.212761] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.212788] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.212793] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.212844] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.212988] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.213165] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.213170] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.213300] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.213312] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.213879] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.213880] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.213885] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.213895] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.213897] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.213909] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.214037] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.214241] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.214243] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.214328] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.214537] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.215255] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.215257] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.215261] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.215272] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.215274] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.215286] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.215494] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.215775] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.215777] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.215861] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.216067] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.217008] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.217010] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.217015] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.217033] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.217035] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.217075] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.217148] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.217297] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.217300] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.217412] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.217464] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.218260] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.218261] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.218269] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.218297] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.218301] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.218353] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.218495] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.218742] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.218747] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.218866] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.219008] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.232782] setting usb interface 0:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.232784] Re-using EP 5 in iface 0,1 
-@ffff8802d3760000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.232786] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.232828] Setting params for ep #5 
-(type 0, 8 urbs), ret=0
-Aug 12 22:35:42 KAMDesktop kernel: [  259.232829] match_endpoint_audioformats: 
-(fmt @ffff8802ea269080) score 2
-Aug 12 22:35:42 KAMDesktop kernel: [  259.232832] Setting params for ep #84 
-(type 0, 8 urbs), ret=0
-Aug 12 22:35:42 KAMDesktop kernel: [  259.232833] Starting data EP 
-@ffff8802d3760000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.233028] Starting sync EP 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.245961] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.245963] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.245970] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.245985] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.245988] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.246004] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.246013] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.246129] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.246131] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.246231] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.246237] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.246832] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.246834] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.246840] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.246854] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.246857] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.246872] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.246956] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.247134] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.247137] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.247225] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.247361] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.248051] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.248053] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.248058] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.248076] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.248078] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.248118] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.248262] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.248400] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.248402] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.248509] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.248516] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249052] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249054] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249063] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249090] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249095] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249146] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249155] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249270] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249276] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249404] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249415] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249929] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249930] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249935] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249945] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249947] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.249959] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250007] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250091] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250093] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250178] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250215] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250679] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250681] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250685] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250696] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250697] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250709] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250743] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250822] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250825] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250908] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.250942] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.251431] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.251432] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.251437] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.251455] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.251457] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.251497] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.251532] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.251668] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.251671] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.251779] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.251815] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.252432] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.252434] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.252441] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.252469] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.252473] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.252524] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.252565] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.252709] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.252714] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.252835] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.252872] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.253464] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.253466] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.253472] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.253485] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.253487] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.253500] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.253643] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.253743] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.253745] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.253835] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.253979] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.254708] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.254712] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.254720] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.254738] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.254742] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.254759] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.254896] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.255110] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.255112] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.255196] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.255302] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.255948] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.255950] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.255955] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.255975] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.255977] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.256017] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.256023] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.256148] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.256153] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.256288] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.256296] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.257065] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.257067] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.257076] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.257106] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.257110] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.257162] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.257171] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.257284] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.257289] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.257421] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.257430] Unable to change format on 
-ep #84: already in use
-Aug 12 22:35:42 KAMDesktop kernel: [  259.258692] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.258693] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.258733] Setting params for ep #84 
-(type 0, 8 urbs), ret=0
-Aug 12 22:35:42 KAMDesktop kernel: [  259.260569] setting usb interface 1:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.260570] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.260612] Setting params for ep #84 
-(type 0, 8 urbs), ret=0
-Aug 12 22:35:42 KAMDesktop kernel: [  259.261947] setting usb interface 0:1
-Aug 12 22:35:42 KAMDesktop kernel: [  259.261948] Re-using EP 5 in iface 0,1 
-@ffff8802d3760000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.261949] Re-using EP 84 in iface 1,1 
-@ffff8802ce9d0000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.261993] Setting params for ep #5 
-(type 0, 8 urbs), ret=0
-Aug 12 22:35:42 KAMDesktop kernel: [  259.261994] match_endpoint_audioformats: 
-(fmt @ffff8802ea269080) score 2
-Aug 12 22:35:42 KAMDesktop kernel: [  259.261996] Setting params for ep #84 
-(type 0, 8 urbs), ret=0
-Aug 12 22:35:42 KAMDesktop kernel: [  259.261997] Starting data EP 
-@ffff8802d3760000
-Aug 12 22:35:42 KAMDesktop kernel: [  259.262194] Starting sync EP 
-@ffff8802ce9d0000
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645061] hda-intel 0000:00:1b.0: 
-azx_pcm_prepare: bufsize=0x10000, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645121] hda_codec_setup_stream: 
-NID=0x10, stream=0x8, channel=0, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645122] hda_codec_setup_stream: 
-NID=0x6, stream=0x8, channel=0, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645123] hda_codec_setup_stream: 
-NID=0x2, stream=0x8, channel=0, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645124] hda_codec_setup_stream: 
-NID=0x25, stream=0x8, channel=0, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645125] hda_codec_setup_stream: 
-NID=0x3, stream=0x8, channel=0, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645125] hda_codec_setup_stream: 
-NID=0x4, stream=0x8, channel=0, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645126] hda_codec_setup_stream: 
-NID=0x5, stream=0x8, channel=0, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645137] hda-intel 0000:00:1b.0: 
-azx_pcm_prepare: bufsize=0x10000, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645183] hda_codec_setup_stream: 
-NID=0x10, stream=0x8, channel=0, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645184] hda_codec_setup_stream: 
-NID=0x6, stream=0x8, channel=0, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645184] hda_codec_setup_stream: 
-NID=0x2, stream=0x8, channel=0, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645185] hda_codec_setup_stream: 
-NID=0x25, stream=0x8, channel=0, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645186] hda_codec_setup_stream: 
-NID=0x3, stream=0x8, channel=0, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645187] hda_codec_setup_stream: 
-NID=0x4, stream=0x8, channel=0, format=0x31
-Aug 12 22:35:55 KAMDesktop kernel: [  272.645187] hda_codec_setup_stream: 
-NID=0x5, stream=0x8, channel=0, format=0x31
+T24gU3VuZGF5IDExIEF1ZyAyMDEzIDE0OjEzOjEzIENsZW1lbnMgTGFkaXNjaCB3cm90ZToKPiBD
+b21taXQgYWFmZTc3Y2M0NWE1IChBTFNBOiB1c2ItYXVkaW86IGFkZCBzdXBwb3J0IGZvciBtYW55
+IFJvbGFuZC9ZYW1haGEKPiBkZXZpY2VzKSBoYWQgc2V2ZXJhbCBsb2dpYyBlcnJvcnMgdGhhdCBw
+cmV2ZW50ZWQgY3JlYXRlX2F1dG9fbWlkaV9xdWlyawo+IGZyb20gZW51bWVyYXRpbmcgYW55IE1J
+REkgcG9ydHMuCj4gCj4gUmVwb3J0ZWQtYnk6IEtlaXRoIEEuIE1pbG5lciA8bWFpbGxpc3RAc3Vw
+ZXJsYXRpdmUub3JnPgo+IFNpZ25lZC1vZmYtYnk6IENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVuc0Bs
+YWRpc2NoLmRlPgo+IC0tLQoKSSB0ZXN0ZWQgdGhpcyB3aXRoIHRoZSBCUi04MC4gTG9nZmlsZSBh
+dCB0aGUgZW5kLgoKSXQgbGlzdHMgdGhlIGRldmljZXMgT0s6CgokIGFwbGF5IC1sCioqKiogTGlz
+dCBvZiBQTEFZQkFDSyBIYXJkd2FyZSBEZXZpY2VzICoqKioKLi4uCmNhcmQgMzogQlI4MEFVRElP
+IFtCUi04MChBVURJTyldLCBkZXZpY2UgMDogVVNCIEF1ZGlvIFtVU0IgQXVkaW9dCiAgU3ViZGV2
+aWNlczogMS8xCiAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKCgokIGFyZWNvcmQgLWwKKioq
+KiBMaXN0IG9mIENBUFRVUkUgSGFyZHdhcmUgRGV2aWNlcyAqKioqCi4uLgpjYXJkIDM6IEJSODBB
+VURJTyBbQlItODAoQVVESU8pXSwgZGV2aWNlIDA6IFVTQiBBdWRpbyBbVVNCIEF1ZGlvXQogIFN1
+YmRldmljZXM6IDEvMQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCgoKJCBhbWlkaSAtbApE
+aXIgRGV2aWNlICAgIE5hbWUKSU8gIGh3OjMsMCwwICBCUi04MChBVURJTykgTUlESSAxCgoKVGhl
+IGJhZCBuZXdzIEkgY2FuJ3QgZ2V0IGVpdGhlciB0aGUgc291bmQgb3V0cHV0IG9yIGlucHV0IHRv
+IHdvcms6CgokIGFwbGF5IC1EcGx1Z2h3OjMgdGVzdHRvbmUud2F2IApQbGF5aW5nIFdBVkUgJ3Rl
+c3R0b25lLndhdicgOiBTaWduZWQgMTYgYml0IExpdHRsZSBFbmRpYW4sIFJhdGUgNDQxMDAgSHos
+IE1vbm8KClRoaXMgZG9lc24ndCBkbyBhbnl0aGluZyBhbmQgSSBoYXZlIHRvIENUUkwtQyB0byBl
+eGl0CgokIGFyZWNvcmQgLURwbHVnaHc6MwpSZWNvcmRpbmcgV0FWRSAnc3RkaW4nIDogVW5zaWdu
+ZWQgOCBiaXQsIFJhdGUgODAwMCBIeiwgTW9ubwpSSUZGJO+/vVdBVkVmbXQgQGRhdGHvv70KClRo
+YXQgZG9lc24ndCBkbyBhbnl0aGluZyBmdXJ0aGVyLgoKSSBhbHNvIGNhbm5vdCBnZXQgamFjayB0
+byBjb25uZWN0IHRvIGl0IHdpdGggYW55IG5vcm1hbCBzZXR0aW5nczoKCk1vbiBBdWcgMTIgMjM6
+Mzc6MDYgMjAxMzogU3RhcnRpbmcgamFjayBzZXJ2ZXIuLi4KTW9uIEF1ZyAxMiAyMzozNzowNiAy
+MDEzOiBKQUNLIHNlcnZlciBzdGFydGluZyBpbiByZWFsdGltZSBtb2RlIHdpdGggcHJpb3JpdHkg
+CjEwCk1vbiBBdWcgMTIgMjM6Mzc6MDYgMjAxMzogY29udHJvbCBkZXZpY2UgaHc6MwpNb24gQXVn
+IDEyIDIzOjM3OjA2IDIwMTM6IGNvbnRyb2wgZGV2aWNlIGh3OjMKTW9uIEF1ZyAxMiAyMzozNzow
+NiAyMDEzOiAbWzFtG1szMW1FUlJPUjogRmFpbGVkIHRvIGFjcXVpcmUgZGV2aWNlIG5hbWUgOiAK
+QXVkaW8zIGVycm9yIDogQ2Fubm90IGFsbG9jYXRlIG1lbW9yeRtbMG0KTW9uIEF1ZyAxMiAyMzoz
+NzowNiAyMDEzOiAbWzFtG1szMW1FUlJPUjogQXVkaW8gZGV2aWNlIGh3OjMgY2Fubm90IGJlIAph
+Y3F1aXJlZC4uLhtbMG0KTW9uIEF1ZyAxMiAyMzozNzowNiAyMDEzOiAbWzFtG1szMW1FUlJPUjog
+Q2Fubm90IGluaXRpYWxpemUgZHJpdmVyG1swbQpNb24gQXVnIDEyIDIzOjM3OjA2IDIwMTM6IBtb
+MW0bWzMxbUVSUk9SOiBKYWNrU2VydmVyOjpPcGVuKCkgZmFpbGVkIHdpdGggCi0xG1swbQpNb24g
+QXVnIDEyIDIzOjM3OjA2IDIwMTM6IBtbMW0bWzMxbUVSUk9SOiBGYWlsZWQgdG8gb3BlbiBzZXJ2
+ZXIbWzBtCk1vbiBBdWcgMTIgMjM6Mzc6MDcgMjAxMzogU2F2aW5nIHNldHRpbmdzIHRvICIuY29u
+ZmlnL2phY2svY29uZi54bWwiIC4uLgoyMzozNzowOC45MDIgQ291bGQgbm90IGNvbm5lY3QgdG8g
+SkFDSyBzZXJ2ZXIgYXMgY2xpZW50LiAtIE92ZXJhbGwgb3BlcmF0aW9uIApmYWlsZWQuIC0gVW5h
+YmxlIHRvIGNvbm5lY3QgdG8gc2VydmVyLiBQbGVhc2UgY2hlY2sgdGhlIG1lc3NhZ2VzIHdpbmRv
+dyBmb3IgCm1vcmUgaW5mby4KQ2Fubm90IGNvbm5lY3QgdG8gc2VydmVyIHNvY2tldCBlcnIgPSBO
+byBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5CkNhbm5vdCBjb25uZWN0IHRvIHNlcnZlciBzb2NrZXQK
+amFjayBzZXJ2ZXIgaXMgbm90IHJ1bm5pbmcgb3IgY2Fubm90IGJlIHN0YXJ0ZWQKCkkgZG8gd29u
+ZGVyIHdoZXRoZXIgYSBxdWlyayBpcyBzdGlsbCBuZWVkZWQgZm9yIHRoaXMgZGV2aWNlLiBJdCBz
+ZWVtcyB0byBiZSAKcmVwb3J0aW5nIGFzIGEgMzItYml0IGludGVyZmFjZSB3aGVuIGl0J3MgYWN0
+dWFsbHkgb25seSAxNi1iaXQsIGFuZCBJIHN1c3BlY3QgCnRoaXMgbWlnaHQgYmUgdXBzZXR0aW5n
+IHRoaW5ncy4KCgpDaGVlcnMsCgpLZWl0aAoKTE9HRklMRToKCkF1ZyAxMiAyMzozMDowMiBLQU1E
+ZXNrdG9wIGtlcm5lbDogWyAgODU3Ljg2OTUzNF0gdXNiIDEtMTogbmV3IGhpZ2gtc3BlZWQgVVNC
+IApkZXZpY2UgbnVtYmVyIDggdXNpbmcgZWhjaS1wY2kKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0
+b3Aga2VybmVsOiBbICA4NTguMDA0NzM3XSBzbmQtdXNiLWF1ZGlvOiBwcm9iZSBvZiAKMS0xOjEu
+MCBmYWlsZWQgd2l0aCBlcnJvciAtNQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6
+IFsgIDg1OC4wMDUzNjFdIDg6MToxOiBhZGQgYXVkaW8gZW5kcG9pbnQgCjB4ZApBdWcgMTIgMjM6
+MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wMDU2MTZdIDg6MjoxOiBhZGQgYXVkaW8g
+ZW5kcG9pbnQgCjB4OGUKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3AgbXRwLXByb2JlOiBjaGVj
+a2luZyBidXMgMSwgZGV2aWNlIDg6IAoiL3N5cy9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDox
+YS43L3VzYjEvMS0xIgpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBtdHAtcHJvYmU6IGJ1czog
+MSwgZGV2aWNlOiA4IHdhcyBub3QgYW4gTVRQIGRldmljZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVz
+a3RvcCBrZXJuZWw6IFsgIDg1OC4wMDU4NzRdIHN3aXRjaGluZyB0byBhbHRzZXR0aW5nIDEgCndp
+dGggaW50IGVwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjAwNTk5
+MV0gY3JlYXRlZCAxIG91dHB1dCBhbmQgMSBpbnB1dCAKcG9ydHMKQXVnIDEyIDIzOjMwOjAyIEtB
+TURlc2t0b3Aga2VybmVsOiBbICA4NTguMDI0NjU2XSBzZXR0aW5nIHVzYiBpbnRlcmZhY2UgMTox
+CkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjAyNDY1OV0gQ3JlYXRp
+bmcgbmV3IHBsYXliYWNrIGRhdGEgCmVuZHBvaW50ICNkCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNr
+dG9wIGtlcm5lbDogWyAgODU4LjAyNDY2Ml0gQ3JlYXRpbmcgbmV3IGNhcHR1cmUgZGF0YSAKZW5k
+cG9pbnQgIzhlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjAyNDgx
+MV0gU2V0dGluZyBwYXJhbXMgZm9yIGVwICNkIAoodHlwZSAwLCA4IHVyYnMpLCByZXQ9MApBdWcg
+MTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wMjQ4MTJdIG1hdGNoX2VuZHBv
+aW50X2F1ZGlvZm9ybWF0czogCihmbXQgQGZmZmY4ODAyOWJiYjgwMDApIHNjb3JlIDIKQXVnIDEy
+IDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDI0ODE0XSBTZXR0aW5nIHBhcmFt
+cyBmb3IgZXAgIzhlIAoodHlwZSAwLCA4IHVyYnMpLCByZXQ9MApBdWcgMTIgMjM6MzA6MDIgS0FN
+RGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wMjQ4MTVdIFN0YXJ0aW5nIGRhdGEgRVAgCkBmZmZmODgw
+MmY0ZmQwMDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjAyNDkw
+MF0gU3RhcnRpbmcgc3luYyBFUCAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtB
+TURlc2t0b3Aga2VybmVsOiBbICA4NTguMDM3NDEwXSBzZXR0aW5nIHVzYiBpbnRlcmZhY2UgMjox
+CkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjAzNzQxMl0gUmUtdXNp
+bmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIg
+S0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wMzc0MThdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0
+IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtl
+cm5lbDogWyAgODU4LjAzNzQzM10gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4
+MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wMzc0
+MzZdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1
+ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjAzNzQ1MV0gUmUtdXNpbmcg
+RVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FN
+RGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wMzc1NDNdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9u
+IAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5l
+bDogWyAgODU4LjAzNzY2OV0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5
+YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wMzc2NzFd
+IFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAx
+MiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjAzNzgzMl0gUmUtdXNpbmcgRVAg
+OGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVz
+a3RvcCBrZXJuZWw6IFsgIDg1OC4wMzc4NDBdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIApl
+cCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDog
+WyAgODU4LjAzODI3Nl0gc2V0dGluZyB1c2IgaW50ZXJmYWNlIDI6MQpBdWcgMTIgMjM6MzA6MDIg
+S0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wMzgyNzhdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNl
+IDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVs
+OiBbICA4NTguMDM4Mjg0XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJl
+YWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wMzgy
+OTddIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEy
+IDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDM4MzAwXSBVbmFibGUgdG8gY2hh
+bmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FN
+RGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wMzgzMTRdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIs
+MSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBb
+ICA4NTguMDM4NDQ4XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5
+IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wMzg1MzFd
+IFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIz
+OjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDM4NTMzXSBVbmFibGUgdG8gY2hhbmdl
+IGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVz
+a3RvcCBrZXJuZWw6IFsgIDg1OC4wMzg2MThdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAK
+QGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4
+NTguMDM4NzUyXSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGlu
+IHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wMzk0MTVdIHNl
+dHRpbmcgdXNiIGludGVyZmFjZSAyOjEKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVs
+OiBbICA4NTguMDM5NDE3XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlh
+ZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjAzOTQyM10g
+VW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEy
+IDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDM5NDQ1XSBSZS11c2luZyBFUCA4
+ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNr
+dG9wIGtlcm5lbDogWyAgODU4LjAzOTQ0OF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVw
+ICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBb
+ICA4NTguMDM5NDg4XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0
+MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjAzOTYyOF0gVW5h
+YmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIz
+OjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDM5ODY4XSBSZS11c2luZyBFUCA4ZSBp
+biBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9w
+IGtlcm5lbDogWyAgODU4LjAzOTg3MF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4
+ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4
+NTguMDQwMDA1XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAw
+CkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0MDE0N10gVW5hYmxl
+IHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMw
+OjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQwNzkyXSBzZXR0aW5nIHVzYiBpbnRlcmZh
+Y2UgMjoxCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0MDc5NF0g
+UmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6
+MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDA4MDVdIFVuYWJsZSB0byBjaGFuZ2Ug
+Zm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNr
+dG9wIGtlcm5lbDogWyAgODU4LjA0MDgzN10gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApA
+ZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1
+OC4wNDA4NDNdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4g
+dXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0MDg5NV0gUmUt
+dXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6
+MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDEwMzNdIFVuYWJsZSB0byBjaGFuZ2UgZm9y
+bWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9w
+IGtlcm5lbDogWyAgODU4LjA0MTI3N10gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZm
+Zjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4w
+NDEyODJdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNl
+CkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0MTQwMV0gUmUtdXNp
+bmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIg
+S0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDE1MzhdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0
+IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtl
+cm5lbDogWyAgODU4LjA0MjA0NF0gc2V0dGluZyB1c2IgaW50ZXJmYWNlIDI6MQpBdWcgMTIgMjM6
+MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDIwNDddIFJlLXVzaW5nIEVQIDhlIGlu
+IGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Ag
+a2VybmVsOiBbICA4NTguMDQyMDUzXSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhl
+OiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1
+OC4wNDIwNzBdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAK
+QXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQyMDczXSBVbmFibGUg
+dG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6
+MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDIwOTJdIFJlLXVzaW5nIEVQIDhlIGluIGlm
+YWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2Vy
+bmVsOiBbICA4NTguMDQyMTI5XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBh
+bHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4w
+NDIyNDZdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVn
+IDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQyMjUwXSBVbmFibGUgdG8g
+Y2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIg
+S0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDIzNDRdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNl
+IDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVs
+OiBbICA4NTguMDQyMzc1XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJl
+YWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDI3
+OTVdIHNldHRpbmcgdXNiIGludGVyZmFjZSAyOjEKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Ag
+a2VybmVsOiBbICA4NTguMDQyNzk3XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZm
+ODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0
+MjgwMl0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UK
+QXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQyODE2XSBSZS11c2lu
+ZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBL
+QU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0MjgxOF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQg
+b24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2Vy
+bmVsOiBbICA4NTguMDQyODMzXSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgw
+MjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0Mjk2
+OF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVn
+IDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQzMjE3XSBSZS11c2luZyBF
+UCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1E
+ZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0MzIyMF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24g
+CmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVs
+OiBbICA4NTguMDQzMzA3XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlh
+ZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0MzQ0NV0g
+VW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEy
+IDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ0MDQ1XSBzZXR0aW5nIHVzYiBp
+bnRlcmZhY2UgMjoxCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0
+NDA0Nl0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcg
+MTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDQwNTJdIFVuYWJsZSB0byBj
+aGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBL
+QU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0NDA3NF0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2Ug
+MiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6
+IFsgIDg1OC4wNDQwNzZdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVh
+ZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0NDEx
+N10gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIg
+MjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDQxODddIFVuYWJsZSB0byBjaGFu
+Z2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1E
+ZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0NDMyNF0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwx
+IApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsg
+IDg1OC4wNDQzMjddIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkg
+aW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0NDQzNV0g
+UmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6
+MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDQ1NzNdIFVuYWJsZSB0byBjaGFuZ2Ug
+Zm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNr
+dG9wIGtlcm5lbDogWyAgODU4LjA0NTA1NF0gc2V0dGluZyB1c2IgaW50ZXJmYWNlIDI6MQpBdWcg
+MTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDUwNTZdIFJlLXVzaW5nIEVQ
+IDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURl
+c2t0b3Aga2VybmVsOiBbICA4NTguMDQ1MDY2XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAK
+ZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6
+IFsgIDg1OC4wNDUwOThdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFl
+NjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ1MTA0XSBV
+bmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIg
+MjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDUxNTVdIFJlLXVzaW5nIEVQIDhl
+IGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0
+b3Aga2VybmVsOiBbICA4NTguMDQ1MjI2XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAg
+IzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsg
+IDg1OC4wNDUzNzFdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQw
+MDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ1Mzc3XSBVbmFi
+bGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6
+MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDU0OTZdIFJlLXVzaW5nIEVQIDhlIGlu
+IGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Ag
+a2VybmVsOiBbICA4NTguMDQ1NjAyXSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhl
+OiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1
+OC4wNDYxNDVdIHNldHRpbmcgdXNiIGludGVyZmFjZSAyOjEKQXVnIDEyIDIzOjMwOjAyIEtBTURl
+c2t0b3Aga2VybmVsOiBbICA4NTguMDQ2MTQ3XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEg
+CkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAg
+ODU4LjA0NjE1Ml0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBp
+biB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ2MTYyXSBS
+ZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzoz
+MDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0NjE2NF0gVW5hYmxlIHRvIGNoYW5nZSBm
+b3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0
+b3Aga2VybmVsOiBbICA4NTguMDQ2MTc3XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBm
+ZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4
+LjA0NjIxMF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1
+c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ2MjkzXSBSZS11
+c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDow
+MiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0NjI5NV0gVW5hYmxlIHRvIGNoYW5nZSBmb3Jt
+YXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Ag
+a2VybmVsOiBbICA4NTguMDQ2MzgyXSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZm
+ODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0
+NjM5MV0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UK
+QXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ2OTIzXSBzZXR0aW5n
+IHVzYiBpbnRlcmZhY2UgMjoxCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAg
+ODU4LjA0NjkyNV0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAw
+MApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDY5MzBdIFVuYWJs
+ZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzoz
+MDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0Njk0NF0gUmUtdXNpbmcgRVAgOGUgaW4g
+aWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBr
+ZXJuZWw6IFsgIDg1OC4wNDY5NDZdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6
+IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4
+LjA0Njk2MV0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApB
+dWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDcwOTddIFVuYWJsZSB0
+byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDow
+MiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0NzMwNF0gUmUtdXNpbmcgRVAgOGUgaW4gaWZh
+Y2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJu
+ZWw6IFsgIDg1OC4wNDczMDZdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFs
+cmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0
+NzM5Ml0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcg
+MTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDc0NjJdIFVuYWJsZSB0byBj
+aGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBL
+QU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0ODAyM10gc2V0dGluZyB1c2IgaW50ZXJmYWNlIDI6
+MQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDgwMjRdIFJlLXVz
+aW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAy
+IEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ4MDI5XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1h
+dCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBr
+ZXJuZWw6IFsgIDg1OC4wNDgwNDhdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4
+ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ4
+MDUwXSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpB
+dWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDgwODldIFJlLXVzaW5n
+IEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtB
+TURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ4MjI2XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBv
+biAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJu
+ZWw6IFsgIDg1OC4wNDg0NjJdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAy
+OWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ4NDY1
+XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcg
+MTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNDg1OTldIFJlLXVzaW5nIEVQ
+IDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURl
+c2t0b3Aga2VybmVsOiBbICA4NTguMDQ4NzQwXSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAK
+ZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6
+IFsgIDg1OC4wNDk0MDBdIHNldHRpbmcgdXNiIGludGVyZmFjZSAyOjEKQXVnIDEyIDIzOjMwOjAy
+IEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ5NDAxXSBSZS11c2luZyBFUCA4ZSBpbiBpZmFj
+ZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5l
+bDogWyAgODU4LjA0OTQwOV0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxy
+ZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ5
+NDM2XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAx
+MiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0OTQ0MF0gVW5hYmxlIHRvIGNo
+YW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtB
+TURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ5NDkxXSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAy
+LDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDog
+WyAgODU4LjA0OTU2MV0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFk
+eSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDQ5NzI2
+XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAy
+MzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA0OTczMl0gVW5hYmxlIHRvIGNoYW5n
+ZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURl
+c2t0b3Aga2VybmVsOiBbICA4NTguMDQ5ODkzXSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEg
+CkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAg
+ODU4LjA0OTkwNl0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBp
+biB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDYzNzI1XSBz
+ZXR0aW5nIHVzYiBpbnRlcmZhY2UgMToxCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5l
+bDogWyAgODU4LjA2MzcyN10gUmUtdXNpbmcgRVAgZCBpbiBpZmFjZSAxLDEgCkBmZmZmODgwMmY0
+ZmQwMDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA2MzcyOF0g
+UmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6
+MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNjM3NDZdIFNldHRpbmcgcGFyYW1zIGZv
+ciBlcCAjZCAKKHR5cGUgMCwgOCB1cmJzKSwgcmV0PTAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0
+b3Aga2VybmVsOiBbICA4NTguMDYzNzQ4XSBtYXRjaF9lbmRwb2ludF9hdWRpb2Zvcm1hdHM6IAoo
+Zm10IEBmZmZmODgwMjliYmI4MDAwKSBzY29yZSAyCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9w
+IGtlcm5lbDogWyAgODU4LjA2Mzc1Ml0gU2V0dGluZyBwYXJhbXMgZm9yIGVwICM4ZSAKKHR5cGUg
+MCwgOCB1cmJzKSwgcmV0PTAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4
+NTguMDYzNzUzXSBTdGFydGluZyBkYXRhIEVQIApAZmZmZjg4MDJmNGZkMDAwMApBdWcgMTIgMjM6
+MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNjM3OTZdIFN0YXJ0aW5nIHN5bmMgRVAg
+CkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAg
+ODU4LjA3ODQ1N10gc2V0dGluZyB1c2IgaW50ZXJmYWNlIDI6MQpBdWcgMTIgMjM6MzA6MDIgS0FN
+RGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNzg0NjBdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIs
+MSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBb
+ICA4NTguMDc4NDY2XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5
+IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNzg0ODFd
+IFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIz
+OjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDc4NDg0XSBVbmFibGUgdG8gY2hhbmdl
+IGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVz
+a3RvcCBrZXJuZWw6IFsgIDg1OC4wNzg1MDBdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAK
+QGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4
+NTguMDc4NjM3XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGlu
+IHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNzg4MDRdIFJl
+LXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMw
+OjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDc4ODA2XSBVbmFibGUgdG8gY2hhbmdlIGZv
+cm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3Rv
+cCBrZXJuZWw6IFsgIDg1OC4wNzg4OTBdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZm
+ZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTgu
+MDc5MDI5XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVz
+ZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wNzk0NzJdIHNldHRp
+bmcgdXNiIGludGVyZmFjZSAyOjEKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBb
+ICA4NTguMDc5NDc0XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0
+MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA3OTQ4MF0gVW5h
+YmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIz
+OjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDc5NDkzXSBSZS11c2luZyBFUCA4ZSBp
+biBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9w
+IGtlcm5lbDogWyAgODU4LjA3OTQ5Nl0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4
+ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4
+NTguMDc5NTExXSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAw
+CkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA3OTU2Ml0gVW5hYmxl
+IHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMw
+OjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDc5NjU4XSBSZS11c2luZyBFUCA4ZSBpbiBp
+ZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtl
+cm5lbDogWyAgODU4LjA3OTY2MF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTog
+YWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTgu
+MDc5NzQxXSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1
+ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA3OTc5MV0gVW5hYmxlIHRv
+IGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAy
+IEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDgwMzQ5XSBzZXR0aW5nIHVzYiBpbnRlcmZhY2Ug
+MjoxCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4MDM1MV0gUmUt
+dXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6
+MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODAzNTddIFVuYWJsZSB0byBjaGFuZ2UgZm9y
+bWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9w
+IGtlcm5lbDogWyAgODU4LjA4MDM3OV0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZm
+Zjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4w
+ODAzODFdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNl
+CkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4MDQyMl0gUmUtdXNp
+bmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIg
+S0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODA1NjFdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0
+IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtl
+cm5lbDogWyAgODU4LjA4MDgwMV0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4
+MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODA4
+MDRdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1
+ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4MDkxMV0gUmUtdXNpbmcg
+RVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FN
+RGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODEwNDZdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9u
+IAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5l
+bDogWyAgODU4LjA4MTU5N10gc2V0dGluZyB1c2IgaW50ZXJmYWNlIDI6MQpBdWcgMTIgMjM6MzA6
+MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODE1OTldIFJlLXVzaW5nIEVQIDhlIGluIGlm
+YWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2Vy
+bmVsOiBbICA4NTguMDgxNjEwXSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBh
+bHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4w
+ODE2NDJdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVn
+IDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDgxNjQ3XSBVbmFibGUgdG8g
+Y2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIg
+S0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODE2OTldIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNl
+IDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVs
+OiBbICA4NTguMDgxOTExXSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJl
+YWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODIw
+MzddIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEy
+IDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDgyMDQzXSBVbmFibGUgdG8gY2hh
+bmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FN
+RGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODIxNjddIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIs
+MSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBb
+ICA4NTguMDgyMjE1XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5
+IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODI1NzBd
+IHNldHRpbmcgdXNiIGludGVyZmFjZSAyOjEKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2Vy
+bmVsOiBbICA4NTguMDgyNTcyXSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgw
+MjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4MjU3
+N10gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVn
+IDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDgyNTg3XSBSZS11c2luZyBF
+UCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1E
+ZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4MjU4OV0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24g
+CmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVs
+OiBbICA4NTguMDgyNjAxXSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlh
+ZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4MjYzNV0g
+VW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEy
+IDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDgyNzIxXSBSZS11c2luZyBFUCA4
+ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNr
+dG9wIGtlcm5lbDogWyAgODU4LjA4MjcyNF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVw
+ICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBb
+ICA4NTguMDgyODA5XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0
+MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4Mjk0N10gVW5h
+YmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIz
+OjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDgzMzY3XSBzZXR0aW5nIHVzYiBpbnRl
+cmZhY2UgMjoxCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4MzM2
+OV0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIg
+MjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODMzNzRdIFVuYWJsZSB0byBjaGFu
+Z2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1E
+ZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4MzM4NV0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwx
+IApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsg
+IDg1OC4wODMzODddIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkg
+aW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4MzM5OV0g
+UmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6
+MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODM1NDFdIFVuYWJsZSB0byBjaGFuZ2Ug
+Zm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNr
+dG9wIGtlcm5lbDogWyAgODU4LjA4Mzc1MV0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApA
+ZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1
+OC4wODM3NTRdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4g
+dXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4MzgzOV0gUmUt
+dXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6
+MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODM5NzhdIFVuYWJsZSB0byBjaGFuZ2UgZm9y
+bWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9w
+IGtlcm5lbDogWyAgODU4LjA4NDQ1OV0gc2V0dGluZyB1c2IgaW50ZXJmYWNlIDI6MQpBdWcgMTIg
+MjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODQ0NjBdIFJlLXVzaW5nIEVQIDhl
+IGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0
+b3Aga2VybmVsOiBbICA4NTguMDg0NDY1XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAg
+IzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsg
+IDg1OC4wODQ0ODRdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQw
+MDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDg0NDg2XSBVbmFi
+bGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6
+MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODQ1MjVdIFJlLXVzaW5nIEVQIDhlIGlu
+IGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Ag
+a2VybmVsOiBbICA4NTguMDg0NTYwXSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhl
+OiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1
+OC4wODQ2OTVdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAK
+QXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDg0Njk4XSBVbmFibGUg
+dG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6
+MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODQ4MDVdIFJlLXVzaW5nIEVQIDhlIGluIGlm
+YWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2Vy
+bmVsOiBbICA4NTguMDg0ODM5XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBh
+bHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4w
+ODUyMjhdIHNldHRpbmcgdXNiIGludGVyZmFjZSAyOjEKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0
+b3Aga2VybmVsOiBbICA4NTguMDg1MjMwXSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBm
+ZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4
+LjA4NTI0MF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1
+c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDg1MjcyXSBSZS11
+c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDow
+MiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4NTI3N10gVW5hYmxlIHRvIGNoYW5nZSBmb3Jt
+YXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Ag
+a2VybmVsOiBbICA4NTguMDg1MzI5XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZm
+ODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4
+NTM2NF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UK
+QXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDg1NDc5XSBSZS11c2lu
+ZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBL
+QU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4NTQ4NF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQg
+b24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2Vy
+bmVsOiBbICA4NTguMDg1NjA2XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgw
+MjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4NTY0
+NF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVn
+IDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDg2MzU2XSBzZXR0aW5nIHVz
+YiBpbnRlcmZhY2UgMjoxCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4
+LjA4NjM1OF0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApB
+dWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODYzNjRdIFVuYWJsZSB0
+byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDow
+MiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4NjM3OV0gUmUtdXNpbmcgRVAgOGUgaW4gaWZh
+Y2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJu
+ZWw6IFsgIDg1OC4wODYzODJdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFs
+cmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4
+NjM5OF0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcg
+MTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODY0MzFdIFVuYWJsZSB0byBj
+aGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBL
+QU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4NjUxNF0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2Ug
+MiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6
+IFsgIDg1OC4wODY1MTZdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVh
+ZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4NjYw
+OF0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIg
+MjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODY2MzhdIFVuYWJsZSB0byBjaGFu
+Z2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1E
+ZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4NzA3OF0gc2V0dGluZyB1c2IgaW50ZXJmYWNlIDI6MQpB
+dWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODcwNzldIFJlLXVzaW5n
+IEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtB
+TURlc2t0b3Aga2VybmVsOiBbICA4NTguMDg3MDg0XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBv
+biAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJu
+ZWw6IFsgIDg1OC4wODcwOTRdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAy
+OWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDg3MDk2
+XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcg
+MTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODcxMDhdIFJlLXVzaW5nIEVQ
+IDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURl
+c2t0b3Aga2VybmVsOiBbICA4NTguMDg3MTQxXSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAK
+ZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6
+IFsgIDg1OC4wODcyMjFdIFJlLXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFl
+NjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDg3MjIzXSBV
+bmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAgIzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIg
+MjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODczMTBdIFJlLXVzaW5nIEVQIDhl
+IGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0
+b3Aga2VybmVsOiBbICA4NTguMDg3MzQ0XSBVbmFibGUgdG8gY2hhbmdlIGZvcm1hdCBvbiAKZXAg
+IzhlOiBhbHJlYWR5IGluIHVzZQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsg
+IDg1OC4wODc4MjldIHNldHRpbmcgdXNiIGludGVyZmFjZSAyOjEKQXVnIDEyIDIzOjMwOjAyIEtB
+TURlc2t0b3Aga2VybmVsOiBbICA4NTguMDg3ODMwXSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAy
+LDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDog
+WyAgODU4LjA4NzgzNV0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFk
+eSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDg3ODU0
+XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAy
+MzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4Nzg1Nl0gVW5hYmxlIHRvIGNoYW5n
+ZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURl
+c2t0b3Aga2VybmVsOiBbICA4NTguMDg3ODk1XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEg
+CkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAg
+ODU4LjA4NzkzMF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBp
+biB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDg4MDY0XSBS
+ZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzoz
+MDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4ODA2Nl0gVW5hYmxlIHRvIGNoYW5nZSBm
+b3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0
+b3Aga2VybmVsOiBbICA4NTguMDg4MTc1XSBSZS11c2luZyBFUCA4ZSBpbiBpZmFjZSAyLDEgCkBm
+ZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4
+LjA4ODIxMF0gVW5hYmxlIHRvIGNoYW5nZSBmb3JtYXQgb24gCmVwICM4ZTogYWxyZWFkeSBpbiB1
+c2UKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDg4NzE2XSBzZXR0
+aW5nIHVzYiBpbnRlcmZhY2UgMjoxCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDog
+WyAgODU4LjA4ODcxN10gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2
+NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODg3MjVdIFVu
+YWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAy
+MzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4ODc1Ml0gUmUtdXNpbmcgRVAgOGUg
+aW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3Rv
+cCBrZXJuZWw6IFsgIDg1OC4wODg3NTZdIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAj
+OGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAg
+ODU4LjA4ODgwN10gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAw
+MApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODg4NDBdIFVuYWJs
+ZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzoz
+MDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA4ODk4Ml0gUmUtdXNpbmcgRVAgOGUgaW4g
+aWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBr
+ZXJuZWw6IFsgIDg1OC4wODg5ODddIFVuYWJsZSB0byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6
+IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4
+LjA4OTEwN10gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2UgMiwxIApAZmZmZjg4MDI5YWU2NDAwMApB
+dWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wODkxNDNdIFVuYWJsZSB0
+byBjaGFuZ2UgZm9ybWF0IG9uIAplcCAjOGU6IGFscmVhZHkgaW4gdXNlCkF1ZyAxMiAyMzozMDow
+MiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA5MDQ1N10gc2V0dGluZyB1c2IgaW50ZXJmYWNl
+IDI6MQpBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6IFsgIDg1OC4wOTA0NTldIFJl
+LXVzaW5nIEVQIDhlIGluIGlmYWNlIDIsMSAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMw
+OjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDkwNDk1XSBTZXR0aW5nIHBhcmFtcyBmb3Ig
+ZXAgIzhlIAoodHlwZSAwLCA4IHVyYnMpLCByZXQ9MApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3Rv
+cCBrZXJuZWw6IFsgIDg1OC4wOTIzNjJdIHNldHRpbmcgdXNiIGludGVyZmFjZSAyOjEKQXVnIDEy
+IDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBbICA4NTguMDkyMzY0XSBSZS11c2luZyBFUCA4
+ZSBpbiBpZmFjZSAyLDEgCkBmZmZmODgwMjlhZTY0MDAwCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNr
+dG9wIGtlcm5lbDogWyAgODU4LjA5MjUxMF0gU2V0dGluZyBwYXJhbXMgZm9yIGVwICM4ZSAKKHR5
+cGUgMCwgOCB1cmJzKSwgcmV0PTAKQXVnIDEyIDIzOjMwOjAyIEtBTURlc2t0b3Aga2VybmVsOiBb
+ICA4NTguMDkzNzEyXSBzZXR0aW5nIHVzYiBpbnRlcmZhY2UgMjoxCkF1ZyAxMiAyMzozMDowMiBL
+QU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA5MzcxNF0gUmUtdXNpbmcgRVAgOGUgaW4gaWZhY2Ug
+MiwxIApAZmZmZjg4MDI5YWU2NDAwMApBdWcgMTIgMjM6MzA6MDIgS0FNRGVza3RvcCBrZXJuZWw6
+IFsgIDg1OC4wOTM4MjldIFNldHRpbmcgcGFyYW1zIGZvciBlcCAjOGUgCih0eXBlIDAsIDggdXJi
+cyksIHJldD0wCkF1ZyAxMiAyMzozMDowMiBLQU1EZXNrdG9wIGtlcm5lbDogWyAgODU4LjA5NDE1
+Nl0gU3RhcnRpbmcgZGF0YSBFUCAKQGZmZmY4ODAyOWFlNjQwMDAKQXVnIDEyIDIzOjMwOjExIEtB
+TURlc2t0b3Aga2VybmVsOiBbICA4NjcuMTMwMDgyXSB1c2IgMS0xOiBVU0IgZGlzY29ubmVjdCwg
+CmRldmljZSBudW1iZXIgOAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
