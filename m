@@ -1,20 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/2] ALSA: Added jack detection KControl
-	support
-Date: Mon, 12 Aug 2013 11:54:47 +0100
-Message-ID: <20130812105447.GQ6427@sirena.org.uk>
-References: <1375430365-13232-2-git-send-email-eu@felipetonello.com>
- <1376029315-3217-1-git-send-email-eu@felipetonello.com>
- <s5h38qj2cqj.wl%tiwai@suse.de>
- <CAGrhNMxj++uJ5HnhhcfOOxhu9u77WMBRP+H5ar5wATi=kHJYKg@mail.gmail.com>
- <s5hli47yz01.wl%tiwai@suse.de>
+Subject: Re: [PATCH] ASoC: arizona: Add widget<->mux route into
+ mux route macro
+Date: Mon, 12 Aug 2013 11:56:48 +0100
+Message-ID: <20130812105648.GR6427@sirena.org.uk>
+References: <1376303612-28203-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7396447186327336024=="
+Content-Type: multipart/mixed; boundary="===============1722668825471264476=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 717042616F6
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 12:54:51 +0200 (CEST)
-In-Reply-To: <s5hli47yz01.wl%tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FAFC26168D
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 12:56:51 +0200 (CEST)
+In-Reply-To: <1376303612-28203-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,71 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Felipe Tonello <eu@felipetonello.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7396447186327336024==
+--===============1722668825471264476==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8lV4/+ewWCwXF+0e"
+	protocol="application/pgp-signature"; boundary="L6apqy8gW/Oj6VEa"
 Content-Disposition: inline
 
 
---8lV4/+ewWCwXF+0e
+--L6apqy8gW/Oj6VEa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Aug 12, 2013 at 12:39:10PM +0200, Takashi Iwai wrote:
+On Mon, Aug 12, 2013 at 11:33:32AM +0100, Charles Keepax wrote:
+> The routes linking the widget and the input mux were being added
+> manually, rather than by the ARIZONA_MUX_ROUTES macro. This patchs adds
+> the routes to the macro.
 
-> But, don't get me wrong: I'm not against the action itself, the
-> removal of input jack support in HD-audio.  I myself did propose this
-> once ago.  Again,  what's missing in your approach is the proper
-> process.
+Applied, thanks.  You probably don't need to directly CC Takashi and
+Jaroslav on every ASoC patch...
 
-> - Think whether removal of input-jack support is really needed for
->   HD-audio;
->   for example, if you integrate snd_jack stuff to support both
->   input-jack and kctl jack, HD-audio driver can use it solely instead
->   of calling snd_kctl stuff.  Then both input and kctl jacks will be
->   supported automagically.
-
-I think this is the best approach - just get everything using jack.c for
-all types of jack and deal with things there.  We've also got extcon
-based reporting to consider, having a single place where all the
-userspace interfaces are implemented will mean we can just add that.
-
-This is why I put everything in jack.c in the first place :(
-
---8lV4/+ewWCwXF+0e
+--L6apqy8gW/Oj6VEa
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSCL7zAAoJELSic+t+oim9qd4P/i8PFAPVUQe4sOWqndyUjCUg
-hc0Nt/cS3bLmlx2Nf+y5BC/ejqelZ+8KL0pNcG3mOVselB3DYD/lEnL6Egie3dWV
-Q1CaSsX73rEGZrkJGrEJKeck5eF5GTHzGUmWEhiL6LIVaj0gTKO1U467kiO6nXTw
-7nP5Q0AbKceg3sehzZaL10yg0Woia2F6kzVQeN29moPjpNIsS64xO9FE53Hdxser
-WrbRBIm8NPXpVLi8AdkUXV5bpV1YVsAFmGjwYufEp5edzuMwb5qjqlHZqK59OUM+
-P72ogtArBwefaCeiSOe6na5mvO1eo8e0jDST63PVHrpIjuaIYmrHgdUbmNvoqAuK
-G2se41+C/TTDn8mmp2FsPWkKHDLwJArZ6FnmYM03eo3NH5fLnPU+fIJH9Lwm6QLE
-JAdA0m4hg3RnKRS0J2sGtGpjkQrIWbTE6s6cAcn4GZNNUantb7ku+Nn7kcP4IRMb
-Ijh/nH1HJ7gOpdINrTsukvNl7UG6YVzUjAAh862llb7bwyxAIcoWw8bOkJqNvt9d
-Px4Jgt0C9pZ5vHk4aJr0UeEdf2cVGoNnhKbn/Pbed3GPI2slcuBcJMJ2glL/geYq
-ND/n9rs+dz9+s/NCCSsuBY3+RfIUXXU2aGWxTcOU8fwIAB/otV2Qa0JEW8UtTf5g
-PeUiFzTOJ0E5sW3wXKzM
-=cep3
+iQIcBAEBAgAGBQJSCL9tAAoJELSic+t+oim9vDgP/2L7YInUPSHbQRBp/4iXYn1+
+a0Ex2bfJLZMBFE1dSRAbGdivOKJTHN/+ksrxdAMWnVOFH59ixw+ra0CmVNXdfiXb
+vXyt2TM2lfVYY39ARUnpPzZG2+848NHwoMWnS2Z0I6TTvc3fBdqILe1332hCrjcJ
+nTD/OUiLzcsBxAE8ubSvKNNGWVkxcnBuT6rXl3dxltXYWEAFbF2//XwwkgoEFCBl
+or0OslMXhrcYMP8P1f1fn+q6//cehtf1T2Fy9j1h8ywFK3AD+fSExx9rITazof8g
+yjP6f3Cy6JnLAoknPcR2HRl10A8oIFPVsdlxwzgGVOVbvNADHZ9YsnALuLrJtH4/
+Q93mkHho7o62yXVavtmz2z3Ee96OPV6z1cCGsWhv9NY99NgyZ5q5hWLF3+grFyWj
+NON7SC0RVZAVbLL0V9ub+wb23UTLFykeNVZ0De8O5IwXp4xA0Nt94PaUA2bh7d6E
+75Q3SDVuQ7nLY/OhEGqVyrqjXgFCnW4EVjyPWjzON6myQvJQa6Da7wyDXkrO0GKa
+unrwuoWk51W86Mn69iQ/W6KZZNgSt5CDF3gP8MCg1t/Oc7J4WfrVP93Qvh2uAJHi
+30vlm05H54FejIdxQDchARZmoaVJgBDl8QtdNvhOm5YzlEBxIXN0D2YPiHjueCDv
+WcM4GbcvNYukCGH2eNhG
+=wl8T
 -----END PGP SIGNATURE-----
 
---8lV4/+ewWCwXF+0e--
+--L6apqy8gW/Oj6VEa--
 
---===============7396447186327336024==
+--===============1722668825471264476==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7396447186327336024==--
+--===============1722668825471264476==--
