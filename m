@@ -1,106 +1,253 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH v3 5/5] ALSA: snd-usb: add quirks handler
- for DSD streams
-Date: Mon, 12 Aug 2013 13:43:26 +0200
-Message-ID: <5208CA5E.8040604@gmail.com>
-References: <CANNq7HhLg=1p4ASYzRdN4igexQX11NhwdbiKF2eS=avnyU1ykA@mail.gmail.com>
- <5208A24D.5000400@gmail.com>
- <CANNq7HjgbBvJLRPpewWZKF1LSYmDaSndQnmaXV9XSLj7rvPeHA@mail.gmail.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH v4 2/2] ASoC: fsl: Add S/PDIF machine driver
+Date: Mon, 12 Aug 2013 20:01:10 +0800
+Message-ID: <1376308870-14232-3-git-send-email-b42378@freescale.com>
+References: <1376308870-14232-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
- [209.85.214.48])
- by alsa0.perex.cz (Postfix) with ESMTP id C0DC226168D
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 13:43:28 +0200 (CEST)
-Received: by mail-bk0-f48.google.com with SMTP id my13so1777260bkb.21
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 04:43:28 -0700 (PDT)
-In-Reply-To: <CANNq7HjgbBvJLRPpewWZKF1LSYmDaSndQnmaXV9XSLj7rvPeHA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jesus R <sonorejr@gmail.com>, ALSA development <alsa-devel@alsa-project.org>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <1376308870-14232-1-git-send-email-b42378@freescale.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: broonie@kernel.org, lars@metafoo.de, p.zabel@pengutronix.de
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, timur@tabi.org, rob.herring@calxeda.com
 List-Id: alsa-devel@alsa-project.org
 
-[please never drop people from the Cc: list but always use 'reply to all'!]
+Add S/PDIF machine driver for Freescale i.MX series SoC.
 
-On 12.08.2013 13:27, Jesus R wrote:
-> On Mon, Aug 12, 2013 at 4:52 AM, Daniel Mack <zonque@gmail.com
-> <mailto:zonque@gmail.com>> wrote:
+Signed-off-by: Nicolin Chen <b42378@freescale.com>
+---
+ .../devicetree/bindings/sound/imx-audio-spdif.txt  |   29 +++++
+ sound/soc/fsl/Kconfig                              |   11 ++
+ sound/soc/fsl/Makefile                             |    2 +
+ sound/soc/fsl/imx-spdif.c                          |  134 ++++++++++++++++++++
+ 4 files changed, 176 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+ create mode 100644 sound/soc/fsl/imx-spdif.c
 
->     Given than none of devices have a chance to report their capabilities to
->     the host, finding out which modes to use is a trial-and-error game,
->     unless you have access to the firmware sources.    
-> 
-> 
->     Hence, please just look up the USB IDs and alternate interface settings
->     of your connected device with lsusb, and then augment the code in
->     snd_usb_interface_dsd_format_quirks() (file sound/usb/quirks.c) and play
->     around with different possibilities (bitreverse on/off, DSD_U8 vs
->     DSD_U16 etc). Follow the example that I provided in that function.
-> 
-> Right now MPD supports DSD/DoP with one selectable on/off option. On
-> equals DoP output and off equals conversion to PCM. I'm not aware of any
-> case where it does not work. I would seem to me that there is one
-> predominant format?
-
-It's more complicated than that. Applications were always free to use a
-usual PCM stream and stuff it with DOP/DSD samples. This is the whole
-idea of DOP: allow applications to transport DSD samples via regular
-audio streams. The downside of this is that applications are in charge
-of adding the DOP markers manually, and information about bit-reversing
-and marker format (8 bit vs. 16 bit) is up to the application, which is
-not the right place for it.
-
-The patch series I brought in addressed this in a way that all that
-information about device-specific details is now known to the kernel,
-which can hence offer a standard compliant interface to userspace.
-
-[There's yet one more level of confusion as some file formats store the
-samples bit-reversed, but there's nothing we can do about that from
-kernel space except for defining a stable interface application have to
-obey to in order to be compatible. That is, samples are expected to
-always carry the oldest bit in the most significant bit of a byte.]
-
-So my question is: are you 100% sure that MPD uses the newly introduces
-ALSA formats, or are they doing the DOP conversion in manually in their
-own software layers?
-
->     You have to recompile and rmmod/insmod the snd-usb driver every time you
->     make a change, and then you need some sort of userspace tool to test it.
->     I published one here:
-> 
-> This may be more than I can do. Can you add the options (bitreverse
-> on/off, DSD_U8 vs
-> DSD_U16 etc) to the alas-dsd-player? This would allow me to quickly test
-> the devices.    
-
-There are #if0'ed blocks that you can opt-in for bit reversal, but as
-the marker format is different for 8 and 16 bits, and up to the kernel
-space now, the dsd player does not know about them. That was the entire
-intention of bringing that logic to kernel space in the first place.
-
-> Take a look at the DSD database so you can see what we are up against. I
-> could even add the tests results to the database.
-> https://docs.google.com/spreadsheet/ccc?key=0AgVhKcl_3lHfdFVyenBBNjNpQ2lieG81WGpqQTNfVUE#gid=0
-
-Nice list. Only devics with USB interface are interesting at this point,
-but that's a good start.
-
-As I said: you need to add the quirks for the devices to the quirks
-list. Other than that, there's no chance to test them.
-
-Copy'n pasting code inside that function and recompiling the kernel is
-really not as hard as you might think it is. Just search the internet
-for "compile kernel git <your-distribution-here>" and follow the links.
-
-
-Thanks,
-Daniel
+diff --git a/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt b/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+new file mode 100644
+index 0000000..9a3fa26
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+@@ -0,0 +1,29 @@
++Freescale i.MX audio complex with S/PDIF transceiver
++
++Required properties:
++
++  - compatible : "fsl,imx-audio-spdif"
++
++  - model : The user-visible name of this sound complex
++
++  - spdif-controller : The phandle of the i.MX S/PDIF controller
++
++
++Optional properties:
++
++  - spdif-transmitter : The phandle of the spdif-transmitter dummy codec
++
++  - spdif-receiver : The phandle of the spdif-receiver dummy codec
++
++* Note: At least one of these two properties should be set in the DT binding.
++
++
++Example:
++
++sound-spdif {
++	compatible = "fsl,imx-audio-spdif";
++	model = "imx-spdif";
++	spdif-controller = <&spdif>;
++	spdif-transmitter = <&spdif_tx_codec>;
++	spdif-receiver = <&spdif_rx_codec>;
++};
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 2c518db..4cc118c 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -195,6 +195,17 @@ config SND_SOC_IMX_SGTL5000
+ 	  Say Y if you want to add support for SoC audio on an i.MX board with
+ 	  a sgtl5000 codec.
+ 
++config SND_SOC_IMX_SPDIF
++	tristate "SoC Audio support for i.MX boards with S/PDIF"
++	select SND_SOC_IMX_PCM_DMA
++	select SND_SOC_FSL_SPDIF
++	select SND_SOC_FSL_UTILS
++	select SND_SOC_SPDIF
++	help
++	  SoC Audio support for i.MX boards with S/PDIF
++	  Say Y if you want to add support for SoC audio on an i.MX board with
++	  a S/DPDIF.
++
+ config SND_SOC_IMX_MC13783
+ 	tristate "SoC Audio support for I.MX boards with mc13783"
+ 	depends on MFD_MC13783 && ARM
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index 4b5970e..e2aaff7 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -45,6 +45,7 @@ snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
+ snd-soc-wm1133-ev1-objs := wm1133-ev1.o
+ snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
+ snd-soc-imx-wm8962-objs := imx-wm8962.o
++snd-soc-imx-spdif-objs :=imx-spdif.o
+ snd-soc-imx-mc13783-objs := imx-mc13783.o
+ 
+ obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
+@@ -53,4 +54,5 @@ obj-$(CONFIG_SND_SOC_MX27VIS_AIC32X4) += snd-soc-mx27vis-aic32x4.o
+ obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) += snd-soc-wm1133-ev1.o
+ obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
+ obj-$(CONFIG_SND_SOC_IMX_WM8962) += snd-soc-imx-wm8962.o
++obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
+ obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
+diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
+new file mode 100644
+index 0000000..893f3d1
+--- /dev/null
++++ b/sound/soc/fsl/imx-spdif.c
+@@ -0,0 +1,134 @@
++/*
++ * Copyright (C) 2013 Freescale Semiconductor, Inc.
++ *
++ * The code contained herein is licensed under the GNU General Public
++ * License. You may obtain a copy of the GNU General Public License
++ * Version 2 or later at the following locations:
++ *
++ * http://www.opensource.org/licenses/gpl-license.html
++ * http://www.gnu.org/copyleft/gpl.html
++ */
++
++#include <linux/module.h>
++#include <linux/of_platform.h>
++#include <sound/soc.h>
++
++struct imx_spdif_data {
++	struct snd_soc_dai_link dai[2];
++	struct snd_soc_card card;
++};
++
++static int imx_spdif_audio_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *spdif_np, *codec_tx_np, *codec_rx_np;
++	struct platform_device *spdif_pdev;
++	struct imx_spdif_data *data;
++	int ret = 0, num_links = 0;
++
++	spdif_np = of_parse_phandle(np, "spdif-controller", 0);
++	if (!spdif_np) {
++		dev_err(&pdev->dev, "failed to find spdif-controller\n");
++		ret = -EINVAL;
++		goto fail;
++	}
++
++	spdif_pdev = of_find_device_by_node(spdif_np);
++	if (!spdif_pdev) {
++		dev_err(&pdev->dev, "failed to find S/PDIF device\n");
++		ret = -EINVAL;
++		goto fail;
++	}
++
++	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
++	if (!data) {
++		dev_err(&pdev->dev, "failed to allocate memory\n");
++		ret = -ENOMEM;
++		goto fail;
++	}
++
++	codec_tx_np = of_parse_phandle(np, "spdif-transmitter", 0);
++	if (codec_tx_np) {
++		data->dai[num_links].name = "S/PDIF TX";
++		data->dai[num_links].stream_name = "S/PDIF PCM Playback";
++		data->dai[num_links].codec_dai_name = "dit-hifi";
++		data->dai[num_links].codec_of_node = codec_tx_np;
++		data->dai[num_links].cpu_of_node = spdif_np;
++		data->dai[num_links].platform_of_node = spdif_np;
++		num_links++;
++	}
++
++	codec_rx_np = of_parse_phandle(np, "spdif-receiver", 0);
++	if (codec_rx_np) {
++		data->dai[num_links].name = "S/PDIF RX";
++		data->dai[num_links].stream_name = "S/PDIF PCM Capture";
++		data->dai[num_links].codec_dai_name = "dir-hifi";
++		data->dai[num_links].codec_of_node = codec_rx_np;
++		data->dai[num_links].cpu_of_node = spdif_np;
++		data->dai[num_links].platform_of_node = spdif_np;
++		num_links++;
++	}
++
++	if (!num_links) {
++		dev_err(&pdev->dev, "no enabled S/PDIF DAI link\n");
++		goto fail;
++	}
++
++	data->card.dev = &pdev->dev;
++	data->card.num_links = num_links;
++	data->card.dai_link = data->dai;
++
++	ret = snd_soc_of_parse_card_name(&data->card, "model");
++	if (ret)
++		goto fail;
++
++	ret = snd_soc_register_card(&data->card);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
++		goto fail;
++	}
++
++	platform_set_drvdata(pdev, data);
++
++fail:
++	if (codec_tx_np)
++		of_node_put(codec_tx_np);
++	if (codec_rx_np)
++		of_node_put(codec_rx_np);
++	if (spdif_np)
++		of_node_put(spdif_np);
++
++	return ret;
++}
++
++static int imx_spdif_audio_remove(struct platform_device *pdev)
++{
++	struct imx_spdif_data *data = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(&data->card);
++
++	return 0;
++}
++
++static const struct of_device_id imx_spdif_dt_ids[] = {
++	{ .compatible = "fsl,imx-audio-spdif", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, imx_spdif_dt_ids);
++
++static struct platform_driver imx_spdif_driver = {
++	.driver = {
++		.name = "imx-spdif",
++		.owner = THIS_MODULE,
++		.of_match_table = imx_spdif_dt_ids,
++	},
++	.probe = imx_spdif_audio_probe,
++	.remove = imx_spdif_audio_remove,
++};
++
++module_platform_driver(imx_spdif_driver);
++
++MODULE_AUTHOR("Freescale Semiconductor, Inc.");
++MODULE_DESCRIPTION("Freescale i.MX S/PDIF machine driver");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:imx-spdif");
+-- 
+1.7.1
