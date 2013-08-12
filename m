@@ -1,7 +1,7 @@
 From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH v4 0/2] Add freescale S/PDIF CPU DAI and machine drivers
-Date: Mon, 12 Aug 2013 20:01:08 +0800
-Message-ID: <1376308870-14232-1-git-send-email-b42378@freescale.com>
+Subject: [PATCH v4 resent 0/2] Add freescale S/PDIF CPU DAI and machine drivers
+Date: Mon, 12 Aug 2013 20:05:26 +0800
+Message-ID: <cover.1376309076.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
