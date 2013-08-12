@@ -1,22 +1,13 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: [RFC PATCH] ASoC: omap-mcbsp: Add support for
- highter rate up to 384000
-Date: Mon, 12 Aug 2013 17:57:17 +0200
-Message-ID: <520905DD.4050109@amarulasolutions.com>
-References: <20130807182841.GA7823@panicking> <5203782D.1080008@ti.com>
- <20130808110410.GA11288@panicking> <52047B9F.7040607@ti.com>
- <20130810075325.GA12316@panicking> <520900F0.9080600@ti.com>
+From: Knut Petersen <Knut_Petersen@t-online.de>
+Subject: [PATCH] Add PM support to the rme96 driver
+Date: Mon, 12 Aug 2013 18:29:44 +0200
+Message-ID: <52090D78.70601@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------070100030508000303060409"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f175.google.com (mail-ea0-f175.google.com
- [209.85.215.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 84886261ABE
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 17:57:30 +0200 (CEST)
-Received: by mail-ea0-f175.google.com with SMTP id m14so912111eaj.6
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 08:57:30 -0700 (PDT)
-In-Reply-To: <520900F0.9080600@ti.com>
+Received: from mailout07.t-online.de (mailout07.t-online.de [194.25.134.83])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5185A2617B8
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 18:29:58 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,127 +17,276 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+This is a multi-part message in MIME format.
+--------------070100030508000303060409
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 08/12/2013 05:36 PM, Peter Ujfalusi wrote:
-> On 08/10/2013 10:53 AM, Michael Trimarchi wrote:
->> I found some time but I can't not test this patch now ;) too far from
->> my office. The idea is to check with MAX_BCLK. There are two points
->> that should cover slave and master mode. Is it the right direction?
->> BTW Do you think that is better to have at soc level as a new constraint?
-> =
+Hi everybody!
 
-> I would not bother with the bclk check for now. We did not had issues so =
-far
-> and 48MHz is quite high anyways for our users so far.
+The attached patch adds PM support to the rme96 driver,
+it should be applied after v2 of the patch adding pcm stream
+synchronization support posted on 2013-08-08.
 
-Right now I'm working on 2 device that they need to support
-384Khz 32bit stereo playback/recording and next dsd512, but we can skip thi=
-s test.
-Check is only for consistency anyway and it doesn't cost so much in time. I=
- will prepare
-a new patch and send without it.
+It does work perfectly here on an RME Digi96/8 PAD:
 
-Michael
+After connecting analog output and analog input executing
+
+     #! /bin/sh
+     #
+     arecord  -D hw:0,0 -d 62 testout.wav  &
+     aplay  -D hw:0,0 -d 60 testin.wav
+
+produces an almost perfect recording even
+when the test machine is suspended / hibernated
+and resumed several times.
+
+cu,
+  Knut
+
+--------------070100030508000303060409
+Content-Type: text/x-patch;
+ name="0001-alsa-rme96-Add-PM-support-to-the-rme96-driver.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-alsa-rme96-Add-PM-support-to-the-rme96-driver.patch"
+
+>From 7305b056cbb4de562018483b91cf90c677df317f Mon Sep 17 00:00:00 2001
+From: Knut Petersen <Knut_Petersen@t-online.de>
+Date: Mon, 12 Aug 2013 18:00:30 +0200
+Subject: [PATCH] alsa/rme96: Add PM support to the rme96 driver
+
+Signed-off-by: Knut Petersen <Knut_Petersen@t-online.de>
+---
+ sound/pci/rme96.c | 118 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 118 insertions(+)
+
+diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
+index 35651c5..6e0a6e1 100644
+--- a/sound/pci/rme96.c
++++ b/sound/pci/rme96.c
+@@ -232,6 +232,13 @@ struct rme96 {
+ 
+ 	u8 rev; /* card revision number */
+ 
++#ifdef CONFIG_PM
++	u32 playback_pointer;
++	u32 capture_pointer;
++	void *playback_suspend_buffer;
++	void *capture_suspend_buffer;
++#endif
++
+ 	struct snd_pcm_substream *playback_substream;
+ 	struct snd_pcm_substream *capture_substream;
+ 
+@@ -363,6 +370,9 @@ static struct snd_pcm_hardware snd_rme96_playback_spdif_info =
+ 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
+ 			      SNDRV_PCM_INFO_MMAP_VALID |
+ 			      SNDRV_PCM_INFO_SYNC_START |
++#ifdef CONFIG_PM
++			      SNDRV_PCM_INFO_RESUME |
++#endif
+ 			      SNDRV_PCM_INFO_INTERLEAVED |
+ 			      SNDRV_PCM_INFO_PAUSE),
+ 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
+@@ -393,6 +403,9 @@ static struct snd_pcm_hardware snd_rme96_capture_spdif_info =
+ 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
+ 			      SNDRV_PCM_INFO_MMAP_VALID |
+ 			      SNDRV_PCM_INFO_SYNC_START |
++#ifdef CONFIG_PM
++			      SNDRV_PCM_INFO_RESUME |
++#endif
+ 			      SNDRV_PCM_INFO_INTERLEAVED |
+ 			      SNDRV_PCM_INFO_PAUSE),
+ 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
+@@ -423,6 +436,9 @@ static struct snd_pcm_hardware snd_rme96_playback_adat_info =
+ 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
+ 			      SNDRV_PCM_INFO_MMAP_VALID |
+ 			      SNDRV_PCM_INFO_SYNC_START |
++#ifdef CONFIG_PM
++			      SNDRV_PCM_INFO_RESUME |
++#endif
+ 			      SNDRV_PCM_INFO_INTERLEAVED |
+ 			      SNDRV_PCM_INFO_PAUSE),
+ 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
+@@ -449,6 +465,9 @@ static struct snd_pcm_hardware snd_rme96_capture_adat_info =
+ 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
+ 			      SNDRV_PCM_INFO_MMAP_VALID |
+ 			      SNDRV_PCM_INFO_SYNC_START |
++#ifdef CONFIG_PM
++			      SNDRV_PCM_INFO_RESUME |
++#endif
+ 			      SNDRV_PCM_INFO_INTERLEAVED |
+ 			      SNDRV_PCM_INFO_PAUSE),
+ 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
+@@ -1387,6 +1406,7 @@ snd_rme96_playback_trigger(struct snd_pcm_substream *substream,
+ 		}
+ 		break;
+ 
++	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		if (RME96_ISPLAYING(rme96)) {
+ 			if (substream != rme96->playback_substream) {
+@@ -1402,6 +1422,7 @@ snd_rme96_playback_trigger(struct snd_pcm_substream *substream,
+ 		}
+ 		break;
+ 
++	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		if (!RME96_ISPLAYING(rme96)) {
+ 			snd_rme96_trigger(rme96, sync ? RME96_RESUME_BOTH : RME96_RESUME_PLAYBACK);
+@@ -1441,6 +1462,7 @@ snd_rme96_capture_trigger(struct snd_pcm_substream *substream,
+ 		}
+ 		break;
+ 
++	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		if (RME96_ISRECORDING(rme96)) {
+ 			if (substream != rme96->capture_substream) {
+@@ -1456,6 +1478,7 @@ snd_rme96_capture_trigger(struct snd_pcm_substream *substream,
+ 		}
+ 		break;
+ 
++	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		if (!RME96_ISRECORDING(rme96)) {
+ 			snd_rme96_trigger(rme96, sync ? RME96_RESUME_BOTH : RME96_RESUME_CAPTURE);
+@@ -1556,6 +1579,14 @@ snd_rme96_free(void *private_data)
+ 		pci_release_regions(rme96->pci);
+ 		rme96->port = 0;
+ 	}
++#ifdef CONFIG_PM
++	if (rme96->playback_suspend_buffer) {  
++		kfree(rme96->playback_suspend_buffer);
++	}
++	if (rme96->capture_suspend_buffer) {  
++		kfree(rme96->capture_suspend_buffer);
++	}
++#endif
+ 	pci_disable_device(rme96->pci);
+ }
+ 
+@@ -2354,6 +2385,76 @@ snd_rme96_create_switches(struct snd_card *card,
+  * Card initialisation
+  */
+ 
++#ifdef CONFIG_PM
++
++static int
++snd_rme96_suspend(struct pci_dev *pci,
++		  pm_message_t state)
++{
++	struct snd_card *card = pci_get_drvdata(pci);
++	struct rme96 *rme96 = card->private_data;
++
++	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
++	snd_pcm_suspend(rme96->playback_substream);
++	snd_pcm_suspend(rme96->capture_substream);
++
++	/* save capture & playback pointers */
++	rme96->playback_pointer = readl(rme96->iobase + RME96_IO_GET_PLAY_POS) & RME96_RCR_AUDIO_ADDR_MASK;
++	rme96->capture_pointer = readl(rme96->iobase + RME96_IO_GET_REC_POS) & RME96_RCR_AUDIO_ADDR_MASK;
++
++	/* save playback and capture buffers */
++	memcpy_fromio(rme96->playback_suspend_buffer,rme96->iobase + RME96_IO_PLAY_BUFFER,RME96_BUFFER_SIZE);
++	memcpy_fromio(rme96->capture_suspend_buffer,rme96->iobase + RME96_IO_REC_BUFFER,RME96_BUFFER_SIZE);
++ 
++	/* disable the DAC  */
++	rme96->areg &= ~RME96_AR_DAC_EN;
++	writel(rme96->areg, rme96->iobase + RME96_IO_ADDITIONAL_REG);
++
++	pci_disable_device(pci);
++	pci_save_state(pci);
++
++	return 0;
++}
++
++static int
++snd_rme96_resume(struct pci_dev *pci)
++{
++	struct snd_card *card = pci_get_drvdata(pci);
++	struct rme96 *rme96 = card->private_data;
++
++	pci_restore_state(pci);
++	pci_enable_device(pci);
++
++	/* reset playback and record buffer pointers */
++	writel(0, rme96->iobase + RME96_IO_SET_PLAY_POS + rme96->playback_pointer);
++	writel(0, rme96->iobase + RME96_IO_SET_REC_POS + rme96->capture_pointer);
++
++	/* restore playback and capture buffers */
++	memcpy_toio(rme96->iobase + RME96_IO_PLAY_BUFFER,rme96->playback_suspend_buffer,RME96_BUFFER_SIZE);
++	memcpy_toio(rme96->iobase + RME96_IO_REC_BUFFER,rme96->capture_suspend_buffer,RME96_BUFFER_SIZE);
++
++	/* reset the ADC */
++	writel(rme96->areg | RME96_AR_PD2,
++	       rme96->iobase + RME96_IO_ADDITIONAL_REG);
++	writel(rme96->areg, rme96->iobase + RME96_IO_ADDITIONAL_REG);	
++
++	/* reset and enable DAC, restore analog volume */
++	snd_rme96_reset_dac(rme96);
++	rme96->areg |= RME96_AR_DAC_EN;
++	writel(rme96->areg, rme96->iobase + RME96_IO_ADDITIONAL_REG);
++	if (RME96_HAS_ANALOG_OUT(rme96)) {
++		/* msleep(1) is the  documented AD1852 minimum */
++		msleep(3);
++		snd_rme96_apply_dac_volume(rme96);
++	}
++
++	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
++
++	return 0;
++}
++
++#endif
++
+ static void snd_rme96_card_free(struct snd_card *card)
+ {
+ 	snd_rme96_free(card->private_data);
+@@ -2390,6 +2491,19 @@ snd_rme96_probe(struct pci_dev *pci,
+ 		return err;
+ 	}
+ 	
++#ifdef CONFIG_PM
++	rme96->playback_suspend_buffer = kmalloc(RME96_BUFFER_SIZE, GFP_KERNEL);
++	if (!rme96->playback_suspend_buffer) {
++	snd_printk(KERN_ERR "Failed to allocate playback suspend buffer!\n");
++		return -ENOMEM;
++	}
++	rme96->capture_suspend_buffer = kmalloc(RME96_BUFFER_SIZE, GFP_KERNEL);
++	if (!rme96->capture_suspend_buffer) {
++		snd_printk(KERN_ERR "Failed to allocate capture suspend buffer!\n");
++	return -ENOMEM;
++	}
++#endif
++
+ 	strcpy(card->driver, "Digi96");
+ 	switch (rme96->pci->device) {
+ 	case PCI_DEVICE_ID_RME_DIGI96:
+@@ -2433,6 +2547,10 @@ static struct pci_driver rme96_driver = {
+ 	.id_table = snd_rme96_ids,
+ 	.probe = snd_rme96_probe,
+ 	.remove = snd_rme96_remove,
++#ifdef CONFIG_PM
++	.suspend = snd_rme96_suspend,
++	.resume = snd_rme96_resume,
++#endif
+ };
+ 
+ module_pci_driver(rme96_driver);
+-- 
+1.8.1.4
 
 
-> =
+--------------070100030508000303060409
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
->>
->> Michael
->>
->> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
->> index 7483efb..ea95ad2 100644
->> --- a/sound/soc/omap/omap-mcbsp.c
->> +++ b/sound/soc/omap/omap-mcbsp.c
->> @@ -39,7 +39,9 @@
->>  #include "mcbsp.h"
->>  #include "omap-mcbsp.h"
->>  =
 
->> -#define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_96000)
->> +#define OMAP_MCBSP_MAX_BCLK	48000000
->> +#define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_192000 |		\
->> +				 SNDRV_PCM_RATE_KNOT)
->>  =
-
->>  #define OMAP_MCBSP_SOC_SINGLE_S16_EXT(xname, xmin, xmax, \
->>  	xhandler_get, xhandler_put) \
->> @@ -225,10 +227,14 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm=
-_substream *substream,
->>  	struct omap_mcbsp *mcbsp =3D snd_soc_dai_get_drvdata(cpu_dai);
->>  	struct omap_mcbsp_reg_cfg *regs =3D &mcbsp->cfg_regs;
->>  	struct snd_dmaengine_dai_dma_data *dma_data;
->> -	int wlen, channels, wpf;
->> +	int wlen, channels, wpf, bclk;
->>  	int pkt_size =3D 0;
->>  	unsigned int format, div, framesize, master;
->>  =
-
->> +	bclk =3D snd_soc_params_to_bclk(params);
->> +	if (bclk < 0 || bclk > OMAP_MCBSP_MAX_BCLK)
->> +		return -EINVAL;
->> +
->>  	dma_data =3D snd_soc_dai_get_dma_data(cpu_dai, substream);
->>  	channels =3D params_channels(params);
->>  =
-
->> @@ -326,7 +332,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_s=
-ubstream *substream,
->>  	/* In McBSP master modes, FRAME (i.e. sample rate) is generated
->>  	 * by _counting_ BCLKs. Calculate frame size in BCLKs */
->>  	master =3D mcbsp->fmt & SND_SOC_DAIFMT_MASTER_MASK;
->> -	if (master =3D=3D	SND_SOC_DAIFMT_CBS_CFS) {
->> +	if (master =3D=3D SND_SOC_DAIFMT_CBS_CFS) {
->>  		div =3D mcbsp->clk_div ? mcbsp->clk_div : 1;
->>  		framesize =3D (mcbsp->in_freq / div) / params_rate(params);
->>  =
-
->> @@ -500,6 +506,9 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_=
-soc_dai *cpu_dai,
->>  			return -EBUSY;
->>  	}
->>  =
-
->> +	if (freq > OMAP_MCBSP_MAX_BCLK)
->> +		return -EINVAL;
->> +
->>  	mcbsp->in_freq =3D freq;
->>  	regs->srgr2 &=3D ~CLKSM;
->>  	regs->pcr0 &=3D ~SCLKME;
->>>
->>>>
->>>> Michael
->>>>
->>>>>>  	},
->>>>>>  	.capture =3D {
->>>>>>  		.channels_min =3D 1,
->>>>>>  		.channels_max =3D 16,
->>>>>>  		.rates =3D OMAP_MCBSP_RATES,
->>>>>> +		.rate_min =3D 8000,
->>>>>> +		.rate_max =3D 384000,
->>>>>
->>>>> Same here, do not set these.
->>>>>
->>>>>>  		.formats =3D SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
->>>>>>  	},
->>>>>>  	.ops =3D &mcbsp_dai_ops,
->>>>>>
->>>>>
->>>>>
->>>>> -- =
-
->>>>> P=E9ter
->>>>
->>>
->>>
->>> -- =
-
->>> P=E9ter
-> =
-
-> =
+--------------070100030508000303060409--
