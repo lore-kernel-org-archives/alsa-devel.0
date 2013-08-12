@@ -1,217 +1,138 @@
-From: Tomasz Figa <t.figa@samsung.com>
-Subject: Re: [PATCH V4 1/4] ASoC: Samsung: I2S: Add quirks as driver data in I2S
-Date: Mon, 12 Aug 2013 14:06:12 +0200
-Message-ID: <3259838.mmaXBCtGoE@amdc1227>
-References: <1376300994-1679-1-git-send-email-padma.v@samsung.com>
- <1376300994-1679-2-git-send-email-padma.v@samsung.com>
+From: Jesus R <sonorejr@gmail.com>
+Subject: Re: [PATCH v3 5/5] ALSA: snd-usb: add quirks handler
+ for DSD streams
+Date: Mon, 12 Aug 2013 08:17:31 -0400
+Message-ID: <CANNq7HjCERQxLLBe_43Px6eYc1Dhgh3xCW+8L-H2wk2RnE88fw@mail.gmail.com>
+References: <CANNq7HhLg=1p4ASYzRdN4igexQX11NhwdbiKF2eS=avnyU1ykA@mail.gmail.com>
+ <5208A24D.5000400@gmail.com>
+ <CANNq7HjgbBvJLRPpewWZKF1LSYmDaSndQnmaXV9XSLj7rvPeHA@mail.gmail.com>
+ <5208CA5E.8040604@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1376300994-1679-2-git-send-email-padma.v@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padmavathi Venna <padma.v@samsung.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, padma.kvr@gmail.com, broonie@kernel.org, kgene.kim@samsung.com, tomasz.figa@gmail.com, abrestic@chromium.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f175.google.com (mail-ob0-f175.google.com
+ [209.85.214.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0500726163E
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 14:17:33 +0200 (CEST)
+Received: by mail-ob0-f175.google.com with SMTP id xn12so7179218obc.20
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 05:17:33 -0700 (PDT)
+In-Reply-To: <5208CA5E.8040604@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Padmavathi,
+On Mon, Aug 12, 2013 at 7:43 AM, Daniel Mack <zonque@gmail.com> wrote:
 
-On Monday 12 of August 2013 15:19:51 Padmavathi Venna wrote:
-> Samsung has different versions of I2S introduced in different
-> platforms. Each version has some new support added for multichannel,
-> secondary fifo, s/w reset control and internal mux for rclk src clk.
-> Each newly added change has a quirk. So this patch adds all the
-> required quirks as driver data and based on compatible string from
-> dtsi fetches the quirks.
-> 
-> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
-> ---
->  .../devicetree/bindings/sound/samsung-i2s.txt      |   18 ++----
->  sound/soc/samsung/i2s.c                            |   62
-> +++++++++++-------- 2 files changed, 42 insertions(+), 38 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-> b/Documentation/devicetree/bindings/sound/samsung-i2s.txt index
-> 025e66b..25a0024 100644
-> --- a/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-> +++ b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-> @@ -2,7 +2,11 @@
-> 
->  Required SoC Specific Properties:
-> 
-> -- compatible : "samsung,i2s-v5"
-> +- compatible : should be one of the following.
-> +   - samsung,s3c6410-i2s: for 8/16/24bit stereo I2S.
-> +   - samsung,s5pv210-i2s: for 8/16/24bit multichannel(5.1) I2S with
-> +     secondary fifo, s/w reset control and internal mux for root clk
-> src. +
->  - reg: physical base address of the controller and length of memory
-> mapped region.
->  - dmas: list of DMA controller phandle and DMA request line ordered
-> pairs. @@ -21,13 +25,6 @@ Required SoC Specific Properties:
-> 
->  Optional SoC Specific Properties:
-> 
-> -- samsung,supports-6ch: If the I2S Primary sound source has 5.1 Channel
-> -  support, this flag is enabled.
-> -- samsung,supports-rstclr: This flag should be set if I2S software reset
-> bit -  control is required. When this flag is set I2S software reset bit
-> will be -  enabled or disabled based on need.
-> -- samsung,supports-secdai:If I2S block has a secondary FIFO and internal
-> DMA, -  then this flag is enabled.
->  - samsung,idma-addr: Internal DMA register base address of the audio
->    sub system(used in secondary sound source).
->  - pinctrl-0: Should specify pin control groups used for this controller.
-> @@ -36,7 +33,7 @@ Optional SoC Specific Properties:
->  Example:
-> 
->  i2s0: i2s@03830000 {
-> -	compatible = "samsung,i2s-v5";
-> +	compatible = "samsung,s5pv210-i2s";
->  	reg = <0x03830000 0x100>;
->  	dmas = <&pdma0 10
->  		&pdma0 9
-> @@ -46,9 +43,6 @@ i2s0: i2s@03830000 {
->  		<&clock_audss EXYNOS_I2S_BUS>,
->  		<&clock_audss EXYNOS_SCLK_I2S>;
->  	clock-names = "iis", "i2s_opclk0", "i2s_opclk1";
-> -	samsung,supports-6ch;
-> -	samsung,supports-rstclr;
-> -	samsung,supports-secdai;
->  	samsung,idma-addr = <0x03000000>;
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&i2s0_bus>;
-> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-> index 47e08dd..1671d9b 100644
-> --- a/sound/soc/samsung/i2s.c
-> +++ b/sound/soc/samsung/i2s.c
-> @@ -40,6 +40,7 @@ enum samsung_dai_type {
-> 
->  struct samsung_i2s_dai_data {
->  	int dai_type;
-> +	u32 quirks;
->  };
-> 
->  struct i2s_dai {
-> @@ -1032,18 +1033,18 @@ static struct i2s_dai *i2s_alloc_dai(struct
-> platform_device *pdev, bool sec)
-> 
->  static const struct of_device_id exynos_i2s_match[];
-> 
-> -static inline int samsung_i2s_get_driver_data(struct platform_device
-> *pdev) +static inline const struct samsung_i2s_dai_data
-> *samsung_i2s_get_driver_data( +						struct platform_device 
-*pdev)
->  {
->  #ifdef CONFIG_OF
-> -	struct samsung_i2s_dai_data *data;
->  	if (pdev->dev.of_node) {
->  		const struct of_device_id *match;
->  		match = of_match_node(exynos_i2s_match, pdev->dev.of_node);
-> -		data = (struct samsung_i2s_dai_data *) match->data;
-> -		return data->dai_type;
-> +		return match->data;
->  	} else
->  #endif
-> -		return platform_get_device_id(pdev)->driver_data;
-> +		return (struct samsung_i2s_dai_data *)
-> +				platform_get_device_id(pdev)->driver_data;
->  }
-> 
->  #ifdef CONFIG_PM_RUNTIME
-> @@ -1074,13 +1075,13 @@ static int samsung_i2s_probe(struct
-> platform_device *pdev) struct resource *res;
->  	u32 regs_base, quirks = 0, idma_addr = 0;
->  	struct device_node *np = pdev->dev.of_node;
-> -	enum samsung_dai_type samsung_dai_type;
-> +	const struct samsung_i2s_dai_data *i2s_dai_data;
->  	int ret = 0;
-> 
->  	/* Call during Seconday interface registration */
-> -	samsung_dai_type = samsung_i2s_get_driver_data(pdev);
-> +	i2s_dai_data = samsung_i2s_get_driver_data(pdev);
-> 
-> -	if (samsung_dai_type == TYPE_SEC) {
-> +	if (i2s_dai_data->dai_type == TYPE_SEC) {
->  		sec_dai = dev_get_drvdata(&pdev->dev);
->  		if (!sec_dai) {
->  			dev_err(&pdev->dev, "Unable to get drvdata\n");
-> @@ -1129,15 +1130,7 @@ static int samsung_i2s_probe(struct
-> platform_device *pdev) idma_addr = i2s_cfg->idma_addr;
->  		}
->  	} else {
-> -		if (of_find_property(np, "samsung,supports-6ch", NULL))
-> -			quirks |= QUIRK_PRI_6CHAN;
-> -
-> -		if (of_find_property(np, "samsung,supports-secdai", NULL))
-> -			quirks |= QUIRK_SEC_DAI;
-> -
-> -		if (of_find_property(np, "samsung,supports-rstclr", NULL))
-> -			quirks |= QUIRK_NEED_RSTCLR;
-> -
-> +		quirks = i2s_dai_data->quirks;
->  		if (of_property_read_u32(np, "samsung,idma-addr",
->  					 &idma_addr)) {
->  			if (quirks & QUIRK_SEC_DAI) {
-> @@ -1250,27 +1243,44 @@ static int samsung_i2s_remove(struct
-> platform_device *pdev) return 0;
->  }
-> 
-> +static const struct samsung_i2s_dai_data i2sv3_dai_type = {
-> +	.dai_type = TYPE_PRI,
-> +	.quirks = QUIRK_NO_MUXPSR,
-> +};
-> +
-> +static const struct samsung_i2s_dai_data i2sv5_dai_type = {
-> +	.dai_type = TYPE_PRI,
-> +	.quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI | QUIRK_NEED_RSTCLR,
-> +};
-> +
-> +static const struct samsung_i2s_dai_data samsung_dai_type_pri = {
-> +	.dai_type = TYPE_PRI,
-> +};
-> +
-> +static const struct samsung_i2s_dai_data samsung_dai_type_sec = {
-> +	.dai_type = TYPE_SEC,
-> +};
-> +
->  static struct platform_device_id samsung_i2s_driver_ids[] = {
->  	{
->  		.name           = "samsung-i2s",
-> -		.driver_data	= TYPE_PRI,
-> +		.driver_data    = (kernel_ulong_t)&samsung_dai_type_pri,
->  	}, {
->  		.name           = "samsung-i2s-sec",
-> -		.driver_data	= TYPE_SEC,
-> +		.driver_data    = (kernel_ulong_t)&samsung_dai_type_sec,
->  	},
->  	{},
->  };
->  MODULE_DEVICE_TABLE(platform, samsung_i2s_driver_ids);
-> 
->  #ifdef CONFIG_OF
-> -static struct samsung_i2s_dai_data samsung_i2s_dai_data_array[] = {
-> -	[TYPE_PRI] = { TYPE_PRI },
-> -	[TYPE_SEC] = { TYPE_SEC },
-> -};
-> -
->  static const struct of_device_id exynos_i2s_match[] = {
-> -	{ .compatible = "samsung,i2s-v5",
-> -	  .data = &samsung_i2s_dai_data_array[TYPE_PRI],
-> +	{
-> +		.compatible = "samsung,s3c6410-i2s",
-> +		.data = &i2sv3_dai_type,
-> +	}, {
-> +		.compatible = "samsung,s5pv210-i2s",
-> +		.data = &i2sv5_dai_type,
+> [please never drop people from the Cc: list but always use 'reply to all'!]
+>
+sorry I didn't notice..
 
-There is still a hole in this series, between patch 1/4 and 4/4, where 
-existing platforms are broken. This will break bisects.
+>
+> On 12.08.2013 13:27, Jesus R wrote:
+> > On Mon, Aug 12, 2013 at 4:52 AM, Daniel Mack <zonque@gmail.com
+> > <mailto:zonque@gmail.com>> wrote:
+>
+> >     Given than none of devices have a chance to report their
+> capabilities to
+> >     the host, finding out which modes to use is a trial-and-error game,
+> >     unless you have access to the firmware sources.
+> >
+> >
+> >     Hence, please just look up the USB IDs and alternate interface
+> settings
+> >     of your connected device with lsusb, and then augment the code in
+> >     snd_usb_interface_dsd_format_quirks() (file sound/usb/quirks.c) and
+> play
+> >     around with different possibilities (bitreverse on/off, DSD_U8 vs
+> >     DSD_U16 etc). Follow the example that I provided in that function.
+> >
+> > Right now MPD supports DSD/DoP with one selectable on/off option. On
+> > equals DoP output and off equals conversion to PCM. I'm not aware of any
+> > case where it does not work. I would seem to me that there is one
+> > predominant format?
+>
+> It's more complicated than that. Applications were always free to use a
+> usual PCM stream and stuff it with DOP/DSD samples. This is the whole
+> idea of DOP: allow applications to transport DSD samples via regular
+> audio streams. The downside of this is that applications are in charge
+> of adding the DOP markers manually, and information about bit-reversing
+> and marker format (8 bit vs. 16 bit) is up to the application, which is
+> not the right place for it.
+>
+The majority of devices only support up to 192K. These only support DSD64
+via DoP using 176.4K and you can automatically assume 16 bit. The remaining
+devices support up to 384K. These support DSD64 via DoP using 176.4K
+and DSD128 via DoP using 384K. Again you have to assume 16 bit. I'm not
+aware of any devices that support 705.6K that also support DSD/DoP, but
+someone will do it.
 
-I have commented on this in previous version of this series and suggested 
-two possible solutions, one preferred and one low-effort.
+>
+> The patch series I brought in addressed this in a way that all that
+> information about device-specific details is now known to the kernel,
+> which can hence offer a standard compliant interface to userspace.
+>
+> [There's yet one more level of confusion as some file formats store the
+> samples bit-reversed, but there's nothing we can do about that from
+> kernel space except for defining a stable interface application have to
+> obey to in order to be compatible. That is, samples are expected to
+> always carry the oldest bit in the most significant bit of a byte.]
+>
+> So my question is: are you 100% sure that MPD uses the newly introduces
+> ALSA formats, or are they doing the DOP conversion in manually in their
+> own software layers?
+>
+MPD is doing the DoP conversion.
 
-Otherwise looks good.
+>
+> >     You have to recompile and rmmod/insmod the snd-usb driver every time
+> you
+> >     make a change, and then you need some sort of userspace tool to test
+> it.
+> >     I published one here:
+> >
+> > This may be more than I can do. Can you add the options (bitreverse
+> > on/off, DSD_U8 vs
+> > DSD_U16 etc) to the alas-dsd-player? This would allow me to quickly test
+> > the devices.
+>
+> There are #if0'ed blocks that you can opt-in for bit reversal, but as
+> the marker format is different for 8 and 16 bits, and up to the kernel
+> space now, the dsd player does not know about them. That was the entire
+> intention of bringing that logic to kernel space in the first place.
+>
+> > Take a look at the DSD database so you can see what we are up against. I
+> > could even add the tests results to the database.
+> >
+> https://docs.google.com/spreadsheet/ccc?key=0AgVhKcl_3lHfdFVyenBBNjNpQ2lieG81WGpqQTNfVUE#gid=0
+>
+> Nice list. Only devics with USB interface are interesting at this point,
+> but that's a good start.
+>
+Understood.
 
-Best regards,
-Tomasz
+>
+> As I said: you need to add the quirks for the devices to the quirks
+> list. Other than that, there's no chance to test them.
+>
+> Copy'n pasting code inside that function and recompiling the kernel is
+> really not as hard as you might think it is. Just search the internet
+> for "compile kernel git <your-distribution-here>" and follow the links.
+>
+I can compile something with luck on my side, but I'm not coder.
+
+>
+>
+> Thanks,
+> Daniel
+>
+>
