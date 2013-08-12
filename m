@@ -1,25 +1,18 @@
-From: Michael Jordan <mjordan1@catamount.wcu.edu> (by way of Michael Jordan
- <jordan.mymail@gmail.com>)
-Subject: BeagleBoard driver development (PCM3168)
-Date: Sun, 11 Aug 2013 20:51:14 -0400
-Message-ID: <20130811205114.0b7c21e1@mach1>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: compress: Use power efficient
+	workqueue
+Date: Mon, 12 Aug 2013 09:26:38 +0530
+Message-ID: <20130812035638.GT29095@intel.com>
+References: <1376068931-15520-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f174.google.com (mail-qc0-f174.google.com
- [209.85.216.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 217C92602AD
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 02:52:29 +0200 (CEST)
-Received: by mail-qc0-f174.google.com with SMTP id c1so3087765qcz.19
- for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 17:52:28 -0700 (PDT)
-Received: from mach1 ([24.246.150.10])
- by mx.google.com with ESMTPSA id m8sm9445252qay.0.2013.08.11.17.52.27
- for <alsa-devel@alsa-project.org>
- (version=TLSv1.2 cipher=RC4-SHA bits=128/128);
- Sun, 11 Aug 2013 17:52:27 -0700 (PDT)
-Resent-Message-ID: <20130811205224.5d28c8cc@mach1>
-Resent-To: <alsa-devel@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id D794E2602C6
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 06:38:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1376068931-15520-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,21 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Okay, before I went too far I thought to download archives and found
-that Klimann has been working on this, but last post I see is April
-2013. I picked through and got what I think are the last discussed of
-the 3 files omap-pcm3168.c pcm3168.c and pcm3168.h. I did not mean to
-cross paths with anybody. I will compare these to what I have worked up
-and see what I can contribute.
+On Fri, Aug 09, 2013 at 06:22:11PM +0100, Mark Brown wrote:
+> From: Mark Brown <broonie@linaro.org>
+> 
+> There is no need for the power down work to be done on a per CPU workqueue
+> especially considering the fairly long delay before powerdown.
+> 
+> Signed-off-by: Mark Brown <broonie@linaro.org>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
-I am a bit confused about one thing though. When I began this (before I
-knew I might be stepping on somebody else's work) I downloaded 3.10
-sources from kernel.org. I have previously and again grepped through
-the sources and I find no mention of pcm3168. Has this project just not
-made it that far? And do I have the latest versions (plucked from the
-text archives, or are they in a git somewhere that I don't know about?
+Thanks
+~Vinod
+> ---
+>  sound/soc/soc-compress.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+> index d220150..53c9ecd 100644
+> --- a/sound/soc/soc-compress.c
+> +++ b/sound/soc/soc-compress.c
+> @@ -149,8 +149,9 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+>  					SND_SOC_DAPM_STREAM_STOP);
+>  		} else {
+>  			rtd->pop_wait = 1;
+> -			schedule_delayed_work(&rtd->delayed_work,
+> -				msecs_to_jiffies(rtd->pmdown_time));
+> +			queue_delayed_work(system_power_efficient_wq,
+> +					   &rtd->delayed_work,
+> +					   msecs_to_jiffies(rtd->pmdown_time));
+>  		}
+>  	} else {
+>  		/* capture streams can be powered down now */
+> -- 
+> 1.8.4.rc1
+> 
 
-Michael
+-- 
