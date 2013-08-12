@@ -1,57 +1,92 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 4/5] ASoC: pxa: pxa-ssp: set dma filter data from startup hook
-Date: Mon, 12 Aug 2013 10:42:40 +0200
-Message-ID: <1376296961-20564-5-git-send-email-zonque@gmail.com>
+Subject: [PATCH 5/5] ASoC: pxa: add DT bindings for pxa2xx-pcm
+Date: Mon, 12 Aug 2013 10:42:41 +0200
+Message-ID: <1376296961-20564-6-git-send-email-zonque@gmail.com>
 References: <1376296961-20564-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2E67260845
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 10:42:53 +0200 (CEST)
 In-Reply-To: <1376296961-20564-1-git-send-email-zonque@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
 Cc: devicetree@vger.kernel.org, eric.y.miao@gmail.com, arnd@arndb.de, s.neumann@raumfeld.com, Daniel Mack <zonque@gmail.com>, haojian.zhuang@linaro.org, rmk+kernel@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-With the new dmaengine implementation, the filter_data parameter has
-to be set earlier, from pxa_ssp_startup().
+The bindings do not carry any resources, as the module only registers
+the ASoC platform driver.
 
 Signed-off-by: Daniel Mack <zonque@gmail.com>
-Acked-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/pxa/pxa-ssp.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/sound/mrvl,pxa2xx-pcm.txt         | 15 +++++++++++++++
+ sound/soc/pxa/pxa2xx-pcm.c                                | 13 +++++++++++--
+ 2 files changed, 26 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/mrvl,pxa2xx-pcm.txt
 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index c0dcc35..a3119a0 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -84,7 +84,6 @@ static void pxa_ssp_disable(struct ssp_device *ssp)
- static void pxa_ssp_set_dma_params(struct ssp_device *ssp, int width4,
- 			int out, struct snd_dmaengine_dai_dma_data *dma)
- {
--	dma->filter_data = out ? &ssp->drcmr_tx : &ssp->drcmr_rx;
- 	dma->addr_width = width4 ? DMA_SLAVE_BUSWIDTH_4_BYTES :
- 				   DMA_SLAVE_BUSWIDTH_2_BYTES;
- 	dma->maxburst = 16;
-@@ -107,6 +106,10 @@ static int pxa_ssp_startup(struct snd_pcm_substream *substream,
- 	dma = kzalloc(sizeof(struct snd_dmaengine_dai_dma_data), GFP_KERNEL);
- 	if (!dma)
- 		return -ENOMEM;
+diff --git a/Documentation/devicetree/bindings/sound/mrvl,pxa2xx-pcm.txt b/Documentation/devicetree/bindings/sound/mrvl,pxa2xx-pcm.txt
+new file mode 100644
+index 0000000..551fbb8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mrvl,pxa2xx-pcm.txt
+@@ -0,0 +1,15 @@
++DT bindings for ARM PXA2xx PCM platform driver
 +
-+	dma->filter_data = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
-+				&ssp->drcmr_tx : &ssp->drcmr_rx;
++This is just a dummy driver that registers the PXA ASoC platform driver.
++It does not have any resources assigned.
 +
- 	snd_soc_dai_set_dma_data(cpu_dai, substream, dma);
++Required properties:
++
++	- compatible		'mrvl,pxa-pcm-audio'
++
++Example:
++
++	pxa_pcm_audio: snd_soc_pxa_audio {
++		compatible = "mrvl,pxa-pcm-audio";
++	};
++
+diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
+index 0aa2d69..806da27 100644
+--- a/sound/soc/pxa/pxa2xx-pcm.c
++++ b/sound/soc/pxa/pxa2xx-pcm.c
+@@ -13,6 +13,7 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/module.h>
+ #include <linux/dmaengine.h>
++#include <linux/of.h>
  
- 	return ret;
+ #include <sound/core.h>
+ #include <sound/soc.h>
+@@ -133,10 +134,18 @@ static int pxa2xx_soc_platform_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_OF
++static const struct of_device_id snd_soc_pxa_audio_match[] = {
++	{ .compatible   = "mrvl,pxa-pcm-audio" },
++	{ }
++};
++#endif
++
+ static struct platform_driver pxa_pcm_driver = {
+ 	.driver = {
+-			.name = "pxa-pcm-audio",
+-			.owner = THIS_MODULE,
++		.name = "pxa-pcm-audio",
++		.owner = THIS_MODULE,
++		.of_match_table = of_match_ptr(snd_soc_pxa_audio_match),
+ 	},
+ 
+ 	.probe = pxa2xx_soc_platform_probe,
 -- 
 1.8.3.1
