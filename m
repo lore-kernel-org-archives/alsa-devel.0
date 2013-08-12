@@ -1,15 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: dapm: Don't create routes when creating
-	kcontrols
-Date: Mon, 12 Aug 2013 23:38:28 +0100
-Message-ID: <1376347108-23482-1-git-send-email-broonie@kernel.org>
+From: "Keith A. Milner" <maillist@superlative.org>
+Subject: Re: [PATCH] ALSA: usb-audio: fix automatic
+	Roland/Yamaha MIDI detection
+Date: Mon, 12 Aug 2013 23:42:20 +0100
+Message-ID: <13112595.4hqtLUMLO6@kamdesktop>
+References: <51CC9D8B.7060601@ladisch.de> <52077FD9.6060404@ladisch.de>
+ <1662775.3qSRSFOsFp@kamdesktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1535B265019
- for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 00:38:32 +0200 (CEST)
+Received: from mail-ea0-f173.google.com (mail-ea0-f173.google.com
+ [209.85.215.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id B9988265019
+ for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 00:42:25 +0200 (CEST)
+Received: by mail-ea0-f173.google.com with SMTP id g10so3734849eak.32
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 15:42:25 -0700 (PDT)
+In-Reply-To: <1662775.3qSRSFOsFp@kamdesktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,64 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On Monday 12 Aug 2013 23:38:22 Keith A. Milner wrote:
+> On Sunday 11 Aug 2013 14:13:13 Clemens Ladisch wrote:
+> > Commit aafe77cc45a5 (ALSA: usb-audio: add support for many Roland/Yamaha
+> > devices) had several logic errors that prevented create_auto_midi_quirk
+> > from enumerating any MIDI ports.
+> > 
+> > Reported-by: Keith A. Milner <maillist@superlative.org>
+> > Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+> > ---
+> 
+> I tested this with the BR-80. Logfile at the end.
 
-Attempting to create the route as part of adding a mux control causes us
-to attempt to add the same route twice since we loop over all sources
-for the mux after creating the control. Instead do the addition in the
-callers.
+I forgot to mention MIDI works well on this device. Sending notes to Ch 10 
+plays the onboard drum synth.
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/soc-dapm.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Cheers,
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 662a904..b78eaa1 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -665,7 +665,7 @@ static int dapm_is_shared_kcontrol(struct snd_soc_dapm_context *dapm,
-  * create it. Either way, add the widget into the control's widget list
-  */
- static int dapm_create_or_share_mixmux_kcontrol(struct snd_soc_dapm_widget *w,
--	int kci, struct snd_soc_dapm_path *path)
-+	int kci)
- {
- 	struct snd_soc_dapm_context *dapm = w->dapm;
- 	struct snd_card *card = dapm->card->snd_card;
-@@ -766,7 +766,6 @@ static int dapm_create_or_share_mixmux_kcontrol(struct snd_soc_dapm_widget *w,
- 		return ret;
- 
- 	w->kcontrols[kci] = kcontrol;
--	dapm_kcontrol_add_path(kcontrol, path);
- 
- 	return 0;
- }
-@@ -790,9 +789,11 @@ static int dapm_new_mixer(struct snd_soc_dapm_widget *w)
- 				continue;
- 			}
- 
--			ret = dapm_create_or_share_mixmux_kcontrol(w, i, path);
-+			ret = dapm_create_or_share_mixmux_kcontrol(w, i);
- 			if (ret < 0)
- 				return ret;
-+
-+			dapm_kcontrol_add_path(w->kcontrols[i], path);
- 		}
- 	}
- 
-@@ -821,7 +822,7 @@ static int dapm_new_mux(struct snd_soc_dapm_widget *w)
- 	path = list_first_entry(&w->sources, struct snd_soc_dapm_path,
- 				list_sink);
- 
--	ret = dapm_create_or_share_mixmux_kcontrol(w, 0, path);
-+	ret = dapm_create_or_share_mixmux_kcontrol(w, 0);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-1.8.4.rc1
+Keith
