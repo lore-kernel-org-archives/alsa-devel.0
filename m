@@ -1,45 +1,65 @@
-From: Mike Turquette <mturquette@linaro.org>
-Subject: Re: [PATCH 16/18] clk: samsung: s3c64xx: Remove clock aliases of old DMA
- driver
-Date: Mon, 12 Aug 2013 12:45:42 -0700
-Message-ID: <20130812194542.5348.7468@quantum>
-References: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com>
- <1376243970-6489-17-git-send-email-tomasz.figa@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH 1/16 v2] sound/soc/pxa/mioa701_wm9713.c: Avoid using ARRAY_AND_SIZE(e) as a function argument
+Date: Mon, 12 Aug 2013 22:49:24 +0200
+Message-ID: <1376340564-7975-1-git-send-email-Julia.Lawall@lip6.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1376243970-6489-17-git-send-email-tomasz.figa@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-samsung-soc@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, Dan Williams <djbw@fb.com>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Mark Brown <broonie@kernel.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Tomasz Figa <tomasz.figa@gmail.com>
+To: Eric Miao <eric.y.miao@gmail.com>, robert.jarzmik@free.fr
+Cc: kernel-janitors@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Tomasz Figa (2013-08-11 10:59:28)
-> Since the old DMA driver got removed, these aliases are no longer
-> necessary.
-> 
-> Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
+From: Julia Lawall <Julia.Lawall@lip6.fr>
 
-Acked-by: Mike Turquette <mturquette@linaro.org>
+Replace ARRAY_AND_SIZE(e) in function argument position to avoid hiding the
+arity of the called function.
 
-> ---
->  drivers/clk/samsung/clk-s3c64xx.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/clk/samsung/clk-s3c64xx.c b/drivers/clk/samsung/clk-s3c64xx.c
-> index 79ee9a6..dd47a83 100644
-> --- a/drivers/clk/samsung/clk-s3c64xx.c
-> +++ b/drivers/clk/samsung/clk-s3c64xx.c
-> @@ -331,9 +331,7 @@ static struct samsung_clock_alias s3c64xx_clock_aliases[] = {
->         ALIAS(HCLK_HSMMC1, "s3c-sdhci.1", "mmc_busclk.0"),
->         ALIAS(HCLK_HSMMC0, "s3c-sdhci.0", "hsmmc"),
->         ALIAS(HCLK_HSMMC0, "s3c-sdhci.0", "mmc_busclk.0"),
-> -       ALIAS(HCLK_DMA1, NULL, "dma1"),
->         ALIAS(HCLK_DMA1, "dma-pl080s.1", "apb_pclk"),
-> -       ALIAS(HCLK_DMA0, NULL, "dma0"),
->         ALIAS(HCLK_DMA0, "dma-pl080s.0", "apb_pclk"),
->         ALIAS(HCLK_CAMIF, "s3c-camif", "camif"),
->         ALIAS(HCLK_LCD, "s3c-fb", "lcd"),
-> -- 
-> 1.8.3.2
+At the suggestion of Robert Jarzmik, this additionally removes the
+definition of ARRAY_AND_SIZE, which is not used elsewhere in the file.
+
+The semantic match that makes this change is as follows:
+(http://coccinelle.lip6.fr/)
+
+// <smpl>
+@@
+expression e,f;
+@@
+
+f(...,
+- ARRAY_AND_SIZE(e)
++ e,ARRAY_SIZE(e)
+  ,...)
+// </smpl>
+
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+
+---
+Not compiled.
+v2 removes the definition of ARRAY_AND_SIZE.
+
+diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
+index 97b711e..bbea778 100644
+--- a/sound/soc/pxa/mioa701_wm9713.c
++++ b/sound/soc/pxa/mioa701_wm9713.c
+@@ -56,8 +56,6 @@
+ #include "pxa2xx-ac97.h"
+ #include "../codecs/wm9713.h"
+ 
+-#define ARRAY_AND_SIZE(x)	(x), ARRAY_SIZE(x)
+-
+ #define AC97_GPIO_PULL		0x58
+ 
+ /* Use GPIO8 for rear speaker amplifier */
+@@ -133,10 +131,11 @@ static int mioa701_wm9713_init(struct snd_soc_pcm_runtime *rtd)
+ 	unsigned short reg;
+ 
+ 	/* Add mioa701 specific widgets */
+-	snd_soc_dapm_new_controls(dapm, ARRAY_AND_SIZE(mioa701_dapm_widgets));
++	snd_soc_dapm_new_controls(dapm, mioa701_dapm_widgets,
++				  ARRAY_SIZE(mioa701_dapm_widgets));
+ 
+ 	/* Set up mioa701 specific audio path audio_mapnects */
+-	snd_soc_dapm_add_routes(dapm, ARRAY_AND_SIZE(audio_map));
++	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+ 
+ 	/* Prepare GPIO8 for rear speaker amplifier */
+ 	reg = codec->driver->read(codec, AC97_GPIO_CFG);
