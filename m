@@ -1,92 +1,44 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V4 1/4] ASoC: Samsung: I2S: Add quirks as
- driver data in I2S
-Date: Tue, 13 Aug 2013 00:46:03 +0100
-Message-ID: <20130812234603.GM6427@sirena.org.uk>
-References: <1376300994-1679-1-git-send-email-padma.v@samsung.com>
- <1376300994-1679-2-git-send-email-padma.v@samsung.com>
- <52096871.4030703@wwwdotorg.org>
- <20130812231327.GK6427@sirena.org.uk>
- <52096D4A.5070903@wwwdotorg.org>
+From: Tomasz Figa <tomasz.figa@gmail.com>
+Subject: Re: [PATCH 10/18] spi: s3c64xx: Do not require legacy DMA API in case of S3C64XX
+Date: Tue, 13 Aug 2013 01:49:53 +0200
+Message-ID: <2472314.6b8DcBdcjO@flatron>
+References: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com> <1376243970-6489-11-git-send-email-tomasz.figa@gmail.com> <20130812233641.GL6427@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2625783359098949804=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E8A3D26510F
- for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 01:46:09 +0200 (CEST)
-In-Reply-To: <52096D4A.5070903@wwwdotorg.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Mark Rutland <Mark.Rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <pawel.moll@arm.com>, Padmavathi Venna <padma.v@samsung.com>, abrestic@chromium.org, tomasz.figa@gmail.com, Rob Herring <rob.herring@calxeda.com>, kgene.kim@samsung.com, Kumar Gala <galak@codeaurora.org>, padma.kvr@gmail.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20130812233641.GL6427@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, Dan Williams <djbw@fb.com>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tuesday 13 of August 2013 00:36:41 Mark Brown wrote:
+> On Sun, Aug 11, 2013 at 07:59:22PM +0200, Tomasz Figa wrote:
+> > With support for amba-pl08x driver, on S3C64xx the generic DMA engine
+> > API can be used instead of the private s3c-dma interface.
+> 
+> I'm still getting issues for SPI with this:
+> 
+> [   50.952845] s3c64xx-spi s3c6410-spi.0: Failed to get RX DMA channel
+> [   50.953520] spi_master spi0: failed to prepare transfer hardware
+> 
+> when I test (with -next with this series applied on top), this is from
+> the first transfer that tries to DMA - there's actually no RX data.  No
+> errors are reported by the DMA controller itself.  I'm also getting
+> crashes setting up the audio DMA while derferencecing the channel.
+> 
+> This is without DT - are there any hookups missing because of that?
 
---===============2625783359098949804==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="X0jFZ9B+Xs9PGREg"
-Content-Disposition: inline
+Hmm, strange.
 
+I've been testing this without any significant patches, like PWM, CCF or 
+DT support, just everything from the branch I pointed to and some board-
+specific patches to help in debugging.
 
---X0jFZ9B+Xs9PGREg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Anyway, this is the exact branch I've been using:
 
-On Mon, Aug 12, 2013 at 05:18:34PM -0600, Stephen Warren wrote:
-> On 08/12/2013 05:13 PM, Mark Brown wrote:
+git://github.com/tom3q/linux.git v3.12-pl080-devel
 
-> >> (although I dare say that at least samsung,supports-rstclr should
-> >> be modified to use the new reset controller bindings)
-
-> > Really?  That doesn't seem terribly sane - I had thought that was
-> > for bodging resets on the side of things that don't normally have
-> > them or need board specific logic.  Also note that this is actually
-> > a magic register write done to reset the IP on some specific IPs.
-
-> I believe that's exactly what the reset subsystem and associated DT
-> bindings were designed for.
-
-That seems...  interesting.  It seems like this is fairly core device
-functionality I'd expect the driver to just be able to understand;  the
-main thing this property was doing was deciding if the reset was needed.
-I'm not sure I see the benefit here?
-
---X0jFZ9B+Xs9PGREg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSCXO4AAoJELSic+t+oim9WzcP/is9ByUR8vY3cN3SRv7JRCqz
-K5bzWSFb7z0xFlNTFY+Z93RtilBbisI+FHo8CDgSI3Ycs8KN+sM1bpgoC3gYIRGS
-it9bzSoeMvQBNnxuhzOS0jDbznohQ+xiTX2gkISVX8X4mxDpGPLMtx2cqVZpCXh/
-E9cSs0QcEu1/5VsxDO61UncBn/Jt53qIoj9hfziFzruUXoxLHOiMIzdhviST8/zc
-AWm/0RIsHzXhgusVc/hNZ9Q6AVwWdJ2437taGPuuzaByWuKDp5I4Ohk2jTLn28P0
-0YeV8/5qn8hQYlGiu6ru39ZyDnFmbObmO5z4ZBiM/r2D2IOv+1GPBTwCHerQezEU
-gUDPcwAOOUXXR2kpvyXG5n9U5QTj3NX1LxTD4cPR5NG15J+bYPDZLoUgCRIw327E
-pNmiL+77JbJNQAL4pQp42PdEkUYxAqSc1B0IgSLaDcNzhI8PQH8WtCUUnqhWkCh7
-qKUFftwBK62CT/klCiNi5XYjGiMGGzRdwoRPqfRpyni67a531/G+tlukS3NYlbqv
-iExrUdDW9rn/mSODgw4KglRLvXYzwwgoxBdqjPeLTdmSS6nQNB18VE2mlXR7TklM
-/kSsQbbKSZWJ+gHDlMyKMgG0jS6Mx/dHmad7hus6rwnDwt5e1u+KO/rfitKgr1Fq
-BxBSdKizLJjW5NkwV42f
-=+4Rk
------END PGP SIGNATURE-----
-
---X0jFZ9B+Xs9PGREg--
-
---===============2625783359098949804==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2625783359098949804==--
+Best regards,
+Tomasz
