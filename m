@@ -1,62 +1,86 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/3] ASoC: wm8997: Add inputs for noise and mic
-	mixers
-Date: Mon, 12 Aug 2013 23:59:50 +0100
-Message-ID: <1376348390-6550-3-git-send-email-broonie@kernel.org>
-References: <1376348390-6550-1-git-send-email-broonie@kernel.org>
+Subject: Re: [PATCH V4 1/4] ASoC: Samsung: I2S: Add quirks as driver data in
+ I2S
+Date: Tue, 13 Aug 2013 00:13:27 +0100
+Message-ID: <20130812231327.GK6427@sirena.org.uk>
+References: <1376300994-1679-1-git-send-email-padma.v@samsung.com>
+ <1376300994-1679-2-git-send-email-padma.v@samsung.com>
+ <52096871.4030703@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 212252650F5
- for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 00:59:57 +0200 (CEST)
-In-Reply-To: <1376348390-6550-1-git-send-email-broonie@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mnamcX5BDF+ZiagH"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <52096871.4030703@wwwdotorg.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, padma.kvr@gmail.com, kgene.kim@samsung.com, tomasz.figa@gmail.com, abrestic@chromium.org, Mark Rutland <Mark.Rutland@arm.com>, Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <rob.herring@calxeda.com>, Kumar Gala <galak@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
 
-The noise and mic mixer inputs were not connected, do so.
+--mnamcX5BDF+ZiagH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/codecs/wm8997.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On Mon, Aug 12, 2013 at 04:57:53PM -0600, Stephen Warren wrote:
+> On 08/12/2013 03:49 AM, Padmavathi Venna wrote:
 
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index 0a43bac..6ec3de3 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -774,9 +774,6 @@ static const struct snd_soc_dapm_route wm8997_dapm_routes[] = {
- 	{ "Tone Generator 1", NULL, "TONE" },
- 	{ "Tone Generator 2", NULL, "TONE" },
- 
--	{ "Mic Mute Mixer", NULL, "Noise Mixer" },
--	{ "Mic Mute Mixer", NULL, "Mic Mixer" },
--
- 	{ "AIF1 Capture", NULL, "AIF1TX1" },
- 	{ "AIF1 Capture", NULL, "AIF1TX2" },
- 	{ "AIF1 Capture", NULL, "AIF1TX3" },
-@@ -886,6 +883,9 @@ static const struct snd_soc_dapm_route wm8997_dapm_routes[] = {
- 	ARIZONA_MIXER_ROUTES("LHPF3", "LHPF3"),
- 	ARIZONA_MIXER_ROUTES("LHPF4", "LHPF4"),
- 
-+	ARIZONA_MIXER_ROUTES("Mic Mute Mixer", "Noise"),
-+	ARIZONA_MIXER_ROUTES("Mic Mute Mixer", "Mic"),
-+
- 	ARIZONA_MUX_ROUTES("ISRC1INT1", "ISRC1INT1"),
- 	ARIZONA_MUX_ROUTES("ISRC1INT2", "ISRC2INT2"),
- 
--- 
-1.8.4.rc1
+> > +- compatible : should be one of the following.
+> > +   - samsung,s3c6410-i2s: for 8/16/24bit stereo I2S.
+> > +   - samsung,s5pv210-i2s: for 8/16/24bit multichannel(5.1) I2S with
+> > +     secondary fifo, s/w reset control and internal mux for root clk src.
+
+> Those descriptions seem a little odd. If I have an SoC that isn't
+> s5pv210, yet supports "8/16/24bit multichannel(5.1) I2S with secondary
+> fifo, s/w reset control and internal mux for root clk src", will
+> compatible="samsung,s5pv210-i2s" work for my HW?
+
+> I wonder if you should instead include the IP block version in the
+> compatible value?
+
+We've been round this loop several times, I'd prefer the IP block
+versions too but they're at best patchily documented and so as a general
+policy the Samsung bindings use the name of the SoC an IP first appeared
+in as the version.
+
+> In other words, I don't think we have an answer to the question: Should
+> differences between similar HW blocks be encoded into DT properties, or
+> should the driver encode them into some table, and look them up from
+> compatible value?
+
+For usability it seems better to just be able to say which IP you've
+got, this also makes it easier to implement support for new IP features
+later on without having to go back and add new properties which would be
+sad.
+
+> (although I dare say that at least samsung,supports-rstclr should be
+> modified to use the new reset controller bindings)
+
+Really?  That doesn't seem terribly sane - I had thought that was for
+bodging resets on the side of things that don't normally have them or
+need board specific logic.  Also note that this is actually a magic
+register write done to reset the IP on some specific IPs.
+
+--mnamcX5BDF+ZiagH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSCWwUAAoJELSic+t+oim9IpwP/j6BFQ9pehqkC2FoC/04+Rvx
+HIyv4VtwYLWC8TsfSXuPUnABF/ZM4fyjZCjIaHfpCNO9lwl+WsOHuRp16pVoc2st
+O+F7dGcth1ie9X0hdIn13R/z96EIo3ZWSXegrd+SwsMt6sewlRi7A8ZcyXy1PuH3
+sJJmHnXN52smpAs4hHayp+Yvd7x9cF+UaOxepz50wpey16LaAPXgI7ntsmJegTrA
+UaPLnlmQ05It6VKEkEWIPD5rje5PmB4OMll6ztWYwfPUKIVvoyoLhwIyFaZ0gYed
+LbB8DORxtwBgadXaF/Ph7KNNaTjryYMIlerOFo6e7PKZka7YQroZBQKtHWVWUriG
+rK7S8nY5ONAqJ4oTclq5jq15CY8OBkiOi7SrrNxgH8C7iQSIpsK1ZNRv/1iHmYeE
+I6qgd0zBBu+LsCuxECtsM+Y5KOiJVAzECFrLgkS2uNUBUdQJtj9F8cZvtZ598bmr
+O7I2YSZL3Z0NpMWKvlCkDEl5AfUOEUENUqKhQ8h08eBfOYD70l5kPx1m63yL4Ejc
+fEbhb0w80T66OLtnCnMRWVhsrgAvOBXcPIXtXM6zrrUYcODp+deRH5aQyjDqgrz1
+BUetyq7i5lonP4yK4ACvLq76XEStZOxLbM/w0kT/KPqXXF8jVG705wd6BeVAiDRz
+nl3V1JEt3WL5EarCIqoB
+=aveP
+-----END PGP SIGNATURE-----
+
+--mnamcX5BDF+ZiagH--
