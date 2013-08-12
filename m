@@ -1,48 +1,62 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: dapm: Ensure kcontrol list is initialised
-Date: Tue, 13 Aug 2013 00:21:11 +0100
-Message-ID: <1376349671-27655-1-git-send-email-broonie@kernel.org>
+Subject: Re: [PATCH 10/18] spi: s3c64xx: Do not require legacy DMA API in
+ case of S3C64XX
+Date: Tue, 13 Aug 2013 00:36:41 +0100
+Message-ID: <20130812233641.GL6427@sirena.org.uk>
+References: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com>
+ <1376243970-6489-11-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C1E6726510F
- for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 01:21:22 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="aVF5wPVC5Z7LhB4n"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1376243970-6489-11-git-send-email-tomasz.figa@gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, Dan Williams <djbw@fb.com>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
 
-Ensure that the recently added path kcontrol list is initialised otherwise
-we may crash trying to delete routes that don't have kcontrols.
+--aVF5wPVC5Z7LhB4n
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/soc-dapm.c | 1 +
- 1 file changed, 1 insertion(+)
+On Sun, Aug 11, 2013 at 07:59:22PM +0200, Tomasz Figa wrote:
+> With support for amba-pl08x driver, on S3C64xx the generic DMA engine
+> API can be used instead of the private s3c-dma interface.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b78eaa1..1e0e4ce 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2357,6 +2357,7 @@ static int snd_soc_dapm_add_path(struct snd_soc_dapm_context *dapm,
- 	path->sink = wsink;
- 	path->connected = connected;
- 	INIT_LIST_HEAD(&path->list);
-+	INIT_LIST_HEAD(&path->list_kcontrol);
- 	INIT_LIST_HEAD(&path->list_source);
- 	INIT_LIST_HEAD(&path->list_sink);
- 
--- 
-1.8.4.rc1
+I'm still getting issues for SPI with this:
+
+[   50.952845] s3c64xx-spi s3c6410-spi.0: Failed to get RX DMA channel
+[   50.953520] spi_master spi0: failed to prepare transfer hardware
+
+when I test (with -next with this series applied on top), this is from
+the first transfer that tries to DMA - there's actually no RX data.  No
+errors are reported by the DMA controller itself.  I'm also getting
+crashes setting up the audio DMA while derferencecing the channel.
+
+This is without DT - are there any hookups missing because of that?
+
+--aVF5wPVC5Z7LhB4n
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSCXGGAAoJELSic+t+oim9XdEP/jjU2+VNZYOHerrBv1kvn4ru
+4Y/cKtRQSgnvuhubIWr0eEiHa5gOYz7I27efZlbas90no+x7PkrQ9lHrJyzSXRGm
+w3rSHitDX3D+m18jam6Rl2Ok4Kaz1NkRhaiR4HXFj7hmsIzqjNBegEpHxTcAOJIp
+d5hslTMzUB+3uwAoVuIuS2lSyGKeTnT0WXeaB+qjmvamYDx8fU3YNDVX1Lf/3qBg
+0aIreTf5HqhyA7XYpaDotUQh4IcbkLJzUKCNyPQtph9H0e6+gvPpmjSPQqWd3VoO
+2Cfw9XXuIpDonW9PTflCPIxuOTbh7eEFtuYR0ZGcvhDWrax5dm82txJKy/6JQE/9
+pwsSyYZQWIcZ+UU2knj/wAfG4/wJQfOe81D6nANID3loWfpl6jEE9ooLF0Y8FcVw
+8+OrcD3RDLo3Xo/1HsHG6sxTYMlthh4HkA9EVjHp+lks8xm+VjSbj+oifoh6XfOI
+sdUW4c/Qt/etsB/p/VceNcb/cHpmGBaM9S5uMSkSj1jBEGIFdF1yxxk4GGzvDCX7
+PFfPFqfEHiBbmanBRTP/tbOwYknVhpCRvwprjUEW9oaakL+AoGXAG7uG2pKZT5/i
+dCuU4F9Gul4EbiG2HPYXPlOlCdSdWatPlG4YdpfX16J8UBduo07dgnqKhURPxwCg
+AbKwZ+IOADF6htqXUWtp
+=Vh+Z
+-----END PGP SIGNATURE-----
+
+--aVF5wPVC5Z7LhB4n--
