@@ -1,63 +1,48 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH V4 1/4] ASoC: Samsung: I2S: Add quirks as driver data
- in I2S
-Date: Mon, 12 Aug 2013 17:18:34 -0600
-Message-ID: <52096D4A.5070903@wwwdotorg.org>
-References: <1376300994-1679-1-git-send-email-padma.v@samsung.com> <1376300994-1679-2-git-send-email-padma.v@samsung.com> <52096871.4030703@wwwdotorg.org> <20130812231327.GK6427@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: dapm: Ensure kcontrol list is initialised
+Date: Tue, 13 Aug 2013 00:21:11 +0100
+Message-ID: <1376349671-27655-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20130812231327.GK6427@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, padma.kvr@gmail.com, kgene.kim@samsung.com, tomasz.figa@gmail.com, abrestic@chromium.org, Mark Rutland <Mark.Rutland@arm.com>, Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <rob.herring@calxeda.com>, Kumar Gala <galak@codeaurora.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1E6726510F
+ for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 01:21:22 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/12/2013 05:13 PM, Mark Brown wrote:
-> On Mon, Aug 12, 2013 at 04:57:53PM -0600, Stephen Warren wrote:
->> On 08/12/2013 03:49 AM, Padmavathi Venna wrote:
-> 
->>> +- compatible : should be one of the following. +   -
->>> samsung,s3c6410-i2s: for 8/16/24bit stereo I2S. +   -
->>> samsung,s5pv210-i2s: for 8/16/24bit multichannel(5.1) I2S with 
->>> +     secondary fifo, s/w reset control and internal mux for
->>> root clk src.
-> 
->> Those descriptions seem a little odd. If I have an SoC that
->> isn't s5pv210, yet supports "8/16/24bit multichannel(5.1) I2S
->> with secondary fifo, s/w reset control and internal mux for root
->> clk src", will compatible="samsung,s5pv210-i2s" work for my HW?
-> 
->> I wonder if you should instead include the IP block version in
->> the compatible value?
-> 
-> We've been round this loop several times, I'd prefer the IP block 
-> versions too but they're at best patchily documented and so as a
-> general policy the Samsung bindings use the name of the SoC an IP
-> first appeared in as the version.
-> 
->> In other words, I don't think we have an answer to the question:
->> Should differences between similar HW blocks be encoded into DT
->> properties, or should the driver encode them into some table, and
->> look them up from compatible value?
-> 
-> For usability it seems better to just be able to say which IP
-> you've got, this also makes it easier to implement support for new
-> IP features later on without having to go back and add new
-> properties which would be sad.
+From: Mark Brown <broonie@linaro.org>
 
-That seems quite reasonable, but I don't think everyone involved in DT
-has come out and agreed on that. I'm quite happy with the approach of
-looking up everything based on compatible.
+Ensure that the recently added path kcontrol list is initialised otherwise
+we may crash trying to delete routes that don't have kcontrols.
 
->> (although I dare say that at least samsung,supports-rstclr should
->> be modified to use the new reset controller bindings)
-> 
-> Really?  That doesn't seem terribly sane - I had thought that was
-> for bodging resets on the side of things that don't normally have
-> them or need board specific logic.  Also note that this is actually
-> a magic register write done to reset the IP on some specific IPs.
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/soc-dapm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I believe that's exactly what the reset subsystem and associated DT
-bindings were designed for.
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index b78eaa1..1e0e4ce 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2357,6 +2357,7 @@ static int snd_soc_dapm_add_path(struct snd_soc_dapm_context *dapm,
+ 	path->sink = wsink;
+ 	path->connected = connected;
+ 	INIT_LIST_HEAD(&path->list);
++	INIT_LIST_HEAD(&path->list_kcontrol);
+ 	INIT_LIST_HEAD(&path->list_source);
+ 	INIT_LIST_HEAD(&path->list_sink);
+ 
+-- 
+1.8.4.rc1
