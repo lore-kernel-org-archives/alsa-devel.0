@@ -1,21 +1,25 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [PATCH 17/18] spi: s3c64xx: Always select
-	S3C64XX_PL080 when ARCH_S3C64XX is enabled
-Date: Mon, 12 Aug 2013 01:03:19 +0200
-Message-ID: <2033369.1oHkX7kdGa@flatron>
-References: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com>
- <1376243970-6489-18-git-send-email-tomasz.figa@gmail.com>
- <20130811191140.GI6427@sirena.org.uk>
+From: Michael Jordan <mjordan1@catamount.wcu.edu> (by way of Michael Jordan
+ <jordan.mymail@gmail.com>)
+Subject: BeagleBoard driver development (PCM3168)
+Date: Sun, 11 Aug 2013 20:51:14 -0400
+Message-ID: <20130811205114.0b7c21e1@mach1>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f47.google.com (mail-ee0-f47.google.com [74.125.83.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 30140260202
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 01:03:24 +0200 (CEST)
-Received: by mail-ee0-f47.google.com with SMTP id d49so3150102eek.34
- for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 16:03:23 -0700 (PDT)
-In-Reply-To: <20130811191140.GI6427@sirena.org.uk>
+Received: from mail-qc0-f174.google.com (mail-qc0-f174.google.com
+ [209.85.216.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 217C92602AD
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 02:52:29 +0200 (CEST)
+Received: by mail-qc0-f174.google.com with SMTP id c1so3087765qcz.19
+ for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2013 17:52:28 -0700 (PDT)
+Received: from mach1 ([24.246.150.10])
+ by mx.google.com with ESMTPSA id m8sm9445252qay.0.2013.08.11.17.52.27
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1.2 cipher=RC4-SHA bits=128/128);
+ Sun, 11 Aug 2013 17:52:27 -0700 (PDT)
+Resent-Message-ID: <20130811205224.5d28c8cc@mach1>
+Resent-To: <alsa-devel@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,38 +29,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Mike Turquette <mturquette@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, Vinod Koul <vinod.koul@intel.com>, Linus Walleij <linus.walleij@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Kukjin Kim <kgene.kim@samsung.com>, Dan Williams <djbw@fb.com>, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Okay, before I went too far I thought to download archives and found
+that Klimann has been working on this, but last post I see is April
+2013. I picked through and got what I think are the last discussed of
+the 3 files omap-pcm3168.c pcm3168.c and pcm3168.h. I did not mean to
+cross paths with anybody. I will compare these to what I have worked up
+and see what I can contribute.
 
-On Sunday 11 of August 2013 20:11:40 Mark Brown wrote:
-> On Sun, Aug 11, 2013 at 07:59:29PM +0200, Tomasz Figa wrote:
-> > @@ -366,7 +366,7 @@ config SPI_S3C24XX_FIQ
-> > 
-> >  config SPI_S3C64XX
-> >  
-> >  	tristate "Samsung S3C64XX series type SPI"
-> >  	depends on (ARCH_S3C24XX || ARCH_S3C64XX || ARCH_S5P64X0 ||
-> >  	ARCH_EXYNOS)> 
-> > -	select S3C64XX_DMA if ARCH_S3C64XX && !S3C64XX_PL080
-> > +	select S3C64XX_PL080 if ARCH_S3C64XX
-> > 
-> >  	help
-> >  	
-> >  	  SPI driver for Samsung S3C64XX and newer SoCs.
-> 
-> Do we need the select here (or should we have other selects for the
-> Exynos SoCs)?
+I am a bit confused about one thing though. When I began this (before I
+knew I might be stepping on somebody else's work) I downloaded 3.10
+sources from kernel.org. I have previously and again grepped through
+the sources and I find no mention of pcm3168. Has this project just not
+made it that far? And do I have the latest versions (plucked from the
+text archives, or are they in a git somewhere that I don't know about?
 
-The driver would build fine without this symbol selected, but since it 
-relies on availability of DMA, it doesn't make too much sense to build it 
-this way. This kind of selects makes kernel configuration more user 
-friendly IMHO.
-
-Possibly adding appropriate selects (PL330) for s5p* and exynos could make 
-sense.
-
-Best regards,
-Tomasz
+Michael
