@@ -1,87 +1,108 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3 v2] ASoC: wm8997: Initial CODEC driver
-Date: Mon, 12 Aug 2013 23:44:25 +0100
-Message-ID: <20130812224425.GJ6427@sirena.org.uk>
-References: <1371113011-11918-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1371113011-11918-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20130613174702.GC1403@sirena.org.uk>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH V4 1/4] ASoC: Samsung: I2S: Add quirks as driver data
+ in I2S
+Date: Mon, 12 Aug 2013 16:57:53 -0600
+Message-ID: <52096871.4030703@wwwdotorg.org>
+References: <1376300994-1679-1-git-send-email-padma.v@samsung.com> <1376300994-1679-2-git-send-email-padma.v@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7001443017978255313=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FBE22650B3
- for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 00:44:28 +0200 (CEST)
-In-Reply-To: <20130613174702.GC1403@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1376300994-1679-2-git-send-email-padma.v@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Padmavathi Venna <padma.v@samsung.com>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, padma.kvr@gmail.com, broonie@kernel.org, kgene.kim@samsung.com, tomasz.figa@gmail.com, abrestic@chromium.org, Mark Rutland <Mark.Rutland@arm.com>, Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <rob.herring@calxeda.com>, Kumar Gala <galak@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
+(CCing DT maintainers...)
 
---===============7001443017978255313==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1l41tKZdfcKQM/aP"
-Content-Disposition: inline
+On 08/12/2013 03:49 AM, Padmavathi Venna wrote:
+> Samsung has different versions of I2S introduced in different
+> platforms. Each version has some new support added for multichannel,
+> secondary fifo, s/w reset control and internal mux for rclk src clk.
+> Each newly added change has a quirk. So this patch adds all the
+> required quirks as driver data and based on compatible string from
+> dtsi fetches the quirks.
 
+> diff --git a/Documentation/devicetree/bindings/sound/samsung-i2s.txt b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
+> index 025e66b..25a0024 100644
+> --- a/Documentation/devicetree/bindings/sound/samsung-i2s.txt
+> +++ b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
+> @@ -2,7 +2,11 @@
+>  
+>  Required SoC Specific Properties:
+>  
+> -- compatible : "samsung,i2s-v5"
+> +- compatible : should be one of the following.
+> +   - samsung,s3c6410-i2s: for 8/16/24bit stereo I2S.
+> +   - samsung,s5pv210-i2s: for 8/16/24bit multichannel(5.1) I2S with
+> +     secondary fifo, s/w reset control and internal mux for root clk src.
 
---1l41tKZdfcKQM/aP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Those descriptions seem a little odd. If I have an SoC that isn't
+s5pv210, yet supports "8/16/24bit multichannel(5.1) I2S with secondary
+fifo, s/w reset control and internal mux for root clk src", will
+compatible="samsung,s5pv210-i2s" work for my HW?
 
-On Thu, Jun 13, 2013 at 06:47:02PM +0100, Mark Brown wrote:
-> On Thu, Jun 13, 2013 at 09:43:30AM +0100, Charles Keepax wrote:
-> > The wm8997 is a compact, high-performance audio hub CODEC with SLIMbus
-> > interfacing, for smartphones, tablets and other portable audio devices
-> > based on the Arizona platform.
-> >=20
-> > This patch adds the wm8997 CODEC driver.
->=20
-> Acked-by: Mark Brown <broonie@linaro.org>
->=20
-> Or I can apply the lot to the ASoC tree.
+I wonder if you should instead include the IP block version in the
+compatible value?
 
-I applied this since it didn't get applied to the mfd tree as I had been
-expecting; Charles, you ought to keep track to make sure things are
-getting applied.  The same thing has happened to the GPIO driver.
+Alternatively, perhaps simply removing the description of the
+capabilities of each SoC would make the binding document more typical.
 
---1l41tKZdfcKQM/aP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Although all that said, given the semantic meaning of compatible; to
+describe which specific SW-visible interface is available (which include
+the feature-set), I feel my comments are a little odd:-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+>  - reg: physical base address of the controller and length of memory mapped
+>    region.
+>  - dmas: list of DMA controller phandle and DMA request line ordered pairs.
+> @@ -21,13 +25,6 @@ Required SoC Specific Properties:
+>  
+>  Optional SoC Specific Properties:
+>  
+> -- samsung,supports-6ch: If the I2S Primary sound source has 5.1 Channel
+> -  support, this flag is enabled.
+> -- samsung,supports-rstclr: This flag should be set if I2S software reset bit
+> -  control is required. When this flag is set I2S software reset bit will be
+> -  enabled or disabled based on need.
+> -- samsung,supports-secdai:If I2S block has a secondary FIFO and internal DMA,
+> -  then this flag is enabled.
+>  - samsung,idma-addr: Internal DMA register base address of the audio
+>    sub system(used in secondary sound source).
 
-iQIcBAEBAgAGBQJSCWVGAAoJELSic+t+oim9kxEP/2uRpg2vB1p/TNdJY8QGaRdX
-0YUarFYg3ZWEFtMw0hX4lY6kuMFlvILZN43EKlsG8hcMHIdh0bqVuqj0ZWc0DJ7h
-MVNUL9CXiVqT3EgI9qLt8l8DMS4+y4neUpCoHZ/SCB/Q0jKqnkvOMmPgq9gepY4o
-fXcGm9OSTX4nMVCa/JL9nbcxcl/mg7CtupPKILjjYYkEWMWoA4FzcTH35SBGk/f8
-eRL4KgFNZdnL/CLZ3KT/Sq2+t7Yg1pmJCoQbMu8WEcg+OrjhVazHW+Cn06K/5VCI
-pdrPEjS9rD4Zm5OSXPwL2rScB433a9W36yjl1F1i+gj5/kVHUJQWcAltrQzAzcpg
-E+1cVJGmcO0T0ZJaBIA3siXGBZ4YYMiD4t8YZRhaFGrGr4I5NTN+5trDv39JG6Dp
-L9Z/T8mImW1vXz6a64gx3BzOv8o/Lenmq2fBtV4jyebxbmK4wdywQLf5nYtd2lNS
-YH75DVQ0KMgy+7mRmGLD3s4YTQfGFsugSbvgBUZpOB7gSnfvJk++2hjj4ssisDDu
-CF/eKbj+x89Nf9QeInV5ftOUH9GAML5+weZraU861GnRso6RzHfu9u0hvg+yBYoX
-ky37RYDORZtXZ90y2f4parYWnLJ+OobfItIOLCZLsRHF769Ay3xvdBbUefitX7K5
-s1SWLhifsU0c8EEycqRV
-=0B0X
------END PGP SIGNATURE-----
+Is it likely that a driver that fully implements those properties can
+run on future HW without modification, perhaps adding some extra
+properties to enable any new features?
 
---1l41tKZdfcKQM/aP--
+In other words, I don't think we have an answer to the question: Should
+differences between similar HW blocks be encoded into DT properties, or
+should the driver encode them into some table, and look them up from
+compatible value?
 
---===============7001443017978255313==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This patch changes between those two options. I'm not sure if there's
+consensus that one option is better than the other, and hence whether
+this patch is actually necessary or useful.
 
+(although I dare say that at least samsung,supports-rstclr should be
+modified to use the new reset controller bindings)
 
---===============7001443017978255313==--
+>  - pinctrl-0: Should specify pin control groups used for this controller.
+> @@ -36,7 +33,7 @@ Optional SoC Specific Properties:
+>  Example:
+>  
+>  i2s0: i2s@03830000 {
+> -	compatible = "samsung,i2s-v5";
+> +	compatible = "samsung,s5pv210-i2s";
+>  	reg = <0x03830000 0x100>;
+>  	dmas = <&pdma0 10
+>  		&pdma0 9
+> @@ -46,9 +43,6 @@ i2s0: i2s@03830000 {
+>  		<&clock_audss EXYNOS_I2S_BUS>,
+>  		<&clock_audss EXYNOS_SCLK_I2S>;
+>  	clock-names = "iis", "i2s_opclk0", "i2s_opclk1";
+> -	samsung,supports-6ch;
+> -	samsung,supports-rstclr;
+> -	samsung,supports-secdai;
+>  	samsung,idma-addr = <0x03000000>;
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&i2s0_bus>;
