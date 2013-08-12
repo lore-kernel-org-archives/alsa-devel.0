@@ -1,14 +1,25 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] ALSA: compress: update the MAINTAINER entry
-Date: Mon, 12 Aug 2013 11:15:27 +0530
-Message-ID: <1376286327-17460-1-git-send-email-vinod.koul@intel.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5640: change widgetsequencefordepop
+Date: Mon, 12 Aug 2013 15:27:49 +0800
+Message-ID: <1121E117AD4ECE49880A389A396215BB935C693433@rtitmbs7.realtek.com.tw>
+References: <1121E117AD4ECE49880A389A396215BB935C692E81@rtitmbs7.realtek.com.tw>
+ <5200DE78.5060409@metafoo.de>
+ <1121E117AD4ECE49880A389A396215BB935C692F72@rtitmbs7.realtek.com.tw>
+ <5201FB09.1080105@metafoo.de>
+ <1121E117AD4ECE49880A389A396215BB935C692FD9@rtitmbs7.realtek.com.tw>
+ <520204BB.9080603@metafoo.de> <20130807093629.GU6427@sirena.org.uk>
+ <520225B4.5050208@metafoo.de>
+ <1121E117AD4ECE49880A389A396215BB935C6932CF@rtitmbs7.realtek.com.tw>
+ <5204F0AA.1070209@metafoo.de> <20130809145846.GD6427@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 61ADD2602F2
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 08:27:20 +0200 (CEST)
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id AE817260304
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 09:28:00 +0200 (CEST)
+In-Reply-To: <20130809145846.GD6427@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,30 +29,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
+To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-add missing uapi/ headers and Documentation files
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Friday, August 09, 2013 10:59 PM
+> To: Lars-Peter Clausen
+> Cc: Bard Liao; Oder Chiou; alsa-devel@alsa-project.org; swarren@nvidia.com;
+> swarren@wwwdotorg.org; lgirdwood@gmail.com; Flove
+> Subject: Re: [alsa-devel] [PATCH] ASoC: rt5640: change
+> widgetsequencefordepop
+> 
+> On Fri, Aug 09, 2013 at 03:37:46PM +0200, Lars-Peter Clausen wrote:
+> > On 08/09/2013 11:05 AM, Bard Liao wrote:
+> 
+> > > Does "virtual switch control" mean a switch control which will not touch
+> the codec's register actually?
+> 
+> > Yes. But Mark seems to prefer the solution using {PRE,POST}_REG events.
+> 
+> I don't mind that much, neither way should be a problem for the framework.
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- MAINTAINERS |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Does SOC_DAPM_SINGLE_AUTODISABLE support SND_SOC_DAPM_{PRE,POST}_REG event?
+It seems SND_SOC_DAPM_{PRE,POST}_REG event is supported in SOC_DAPM_SINGLE but not in SOC_DAPM_SINGLE_AUTODISABLE.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 38a870e..a40e393 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7667,7 +7667,9 @@ M:	Vinod Koul <vinod.koul@intel.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
- S:	Supported
-+F:	Documentation/sound/alsa/compress_offload.txt
- F:	include/sound/compress_driver.h
-+F:	include/uapi/sound/compress_*
- F:	sound/core/compress_offload.c
- F:	sound/soc/soc-compress.c
- 
--- 
-1.7.0.4
+> 
+> ------Please consider the environment before printing this e-mail.
