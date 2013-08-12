@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/3] ASoC: wm5110: Add inputs for noise and mic
+Subject: [PATCH 3/3] ASoC: wm8997: Add inputs for noise and mic
 	mixers
-Date: Mon, 12 Aug 2013 23:59:49 +0100
-Message-ID: <1376348390-6550-2-git-send-email-broonie@kernel.org>
+Date: Mon, 12 Aug 2013 23:59:50 +0100
+Message-ID: <1376348390-6550-3-git-send-email-broonie@kernel.org>
 References: <1376348390-6550-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A6B8F2650C1
- for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 00:59:55 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 212252650F5
+ for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 00:59:57 +0200 (CEST)
 In-Reply-To: <1376348390-6550-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,14 +31,14 @@ The noise and mic mixer inputs were not connected, do so.
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/wm5110.c | 6 +++---
+ sound/soc/codecs/wm8997.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 38e50c8..bbd6438 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -841,9 +841,6 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
+diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
+index 0a43bac..6ec3de3 100644
+--- a/sound/soc/codecs/wm8997.c
++++ b/sound/soc/codecs/wm8997.c
+@@ -774,9 +774,6 @@ static const struct snd_soc_dapm_route wm8997_dapm_routes[] = {
  	{ "Tone Generator 1", NULL, "TONE" },
  	{ "Tone Generator 2", NULL, "TONE" },
  
@@ -48,15 +48,15 @@ index 38e50c8..bbd6438 100644
  	{ "AIF1 Capture", NULL, "AIF1TX1" },
  	{ "AIF1 Capture", NULL, "AIF1TX2" },
  	{ "AIF1 Capture", NULL, "AIF1TX3" },
-@@ -978,6 +975,9 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
+@@ -886,6 +883,9 @@ static const struct snd_soc_dapm_route wm8997_dapm_routes[] = {
  	ARIZONA_MIXER_ROUTES("LHPF3", "LHPF3"),
  	ARIZONA_MIXER_ROUTES("LHPF4", "LHPF4"),
  
 +	ARIZONA_MIXER_ROUTES("Mic Mute Mixer", "Noise"),
 +	ARIZONA_MIXER_ROUTES("Mic Mute Mixer", "Mic"),
 +
- 	ARIZONA_MUX_ROUTES("ASRC1L", "ASRC1L"),
- 	ARIZONA_MUX_ROUTES("ASRC1R", "ASRC1R"),
- 	ARIZONA_MUX_ROUTES("ASRC2L", "ASRC2L"),
+ 	ARIZONA_MUX_ROUTES("ISRC1INT1", "ISRC1INT1"),
+ 	ARIZONA_MUX_ROUTES("ISRC1INT2", "ISRC2INT2"),
+ 
 -- 
 1.8.4.rc1
