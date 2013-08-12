@@ -1,292 +1,396 @@
-From: Knut Petersen <Knut_Petersen@t-online.de>
-Subject: [PATCH] Add PM support to the rme96 driver
-Date: Mon, 12 Aug 2013 18:29:44 +0200
-Message-ID: <52090D78.70601@t-online.de>
+From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
+Date: Mon, 12 Aug 2013 12:50:30 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1308121218590.1489-100000@iolanthe.rowland.org>
+References: <s5hvc3bx85c.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070100030508000303060409"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout07.t-online.de (mailout07.t-online.de [194.25.134.83])
- by alsa0.perex.cz (Postfix) with ESMTP id 5185A2617B8
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2013 18:29:58 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <s5hvc3bx85c.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070100030508000303060409
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On Mon, 12 Aug 2013, Takashi Iwai wrote:
 
-Hi everybody!
+> So... Clemens, Daniel, Eldad, could you guys review the latest version
+> of Alan's patch?  I'd love to sort this out for 3.12.
 
-The attached patch adds PM support to the rme96 driver,
-it should be applied after v2 of the patch adding pcm stream
-synchronization support posted on 2013-08-08.
+Here's a revised version of the patch (still untested).  The difference
+is that this version tries always to keep a period's worth of bytes in
+the USB hardware queue.  This will provide better protection against
+underruns when the period is larger than the queue's minimum
+requirement.
 
-It does work perfectly here on an RME Digi96/8 PAD:
+Alan Stern
 
-After connecting analog output and analog input executing
 
-     #! /bin/sh
-     #
-     arecord  -D hw:0,0 -d 62 testout.wav  &
-     aplay  -D hw:0,0 -d 60 testin.wav
+ sound/usb/card.h     |    9 ++
+ sound/usb/endpoint.c |  200 ++++++++++++++++++++++++++++++---------------------
+ sound/usb/pcm.c      |    4 -
+ 3 files changed, 132 insertions(+), 81 deletions(-)
 
-produces an almost perfect recording even
-when the test machine is suspended / hibernated
-and resumed several times.
-
-cu,
-  Knut
-
---------------070100030508000303060409
-Content-Type: text/x-patch;
- name="0001-alsa-rme96-Add-PM-support-to-the-rme96-driver.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-alsa-rme96-Add-PM-support-to-the-rme96-driver.patch"
-
->From 7305b056cbb4de562018483b91cf90c677df317f Mon Sep 17 00:00:00 2001
-From: Knut Petersen <Knut_Petersen@t-online.de>
-Date: Mon, 12 Aug 2013 18:00:30 +0200
-Subject: [PATCH] alsa/rme96: Add PM support to the rme96 driver
-
-Signed-off-by: Knut Petersen <Knut_Petersen@t-online.de>
----
- sound/pci/rme96.c | 118 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 118 insertions(+)
-
-diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
-index 35651c5..6e0a6e1 100644
---- a/sound/pci/rme96.c
-+++ b/sound/pci/rme96.c
-@@ -232,6 +232,13 @@ struct rme96 {
+Index: usb-3.11/sound/usb/card.h
+===================================================================
+--- usb-3.11.orig/sound/usb/card.h
++++ usb-3.11/sound/usb/card.h
+@@ -4,7 +4,7 @@
+ #define MAX_NR_RATES	1024
+ #define MAX_PACKS	20
+ #define MAX_PACKS_HS	(MAX_PACKS * 8)	/* in high speed mode */
+-#define MAX_URBS	8
++#define MAX_URBS	11
+ #define SYNC_URBS	4	/* always four urbs for sync */
+ #define MAX_QUEUE	24	/* try not to exceed this queue length, in ms */
  
- 	u8 rev; /* card revision number */
+@@ -43,6 +43,8 @@ struct snd_urb_ctx {
+ 	struct snd_usb_endpoint *ep;
+ 	int index;	/* index for urb array */
+ 	int packets;	/* number of packets per urb */
++	int data_packets;		/* current number of data packets */
++	int data_frames;		/* current number of data frames */
+ 	int packet_size[MAX_PACKS_HS]; /* size of packets for next submission */
+ 	struct list_head ready_list;
+ };
+@@ -99,6 +101,11 @@ struct snd_usb_endpoint {
+ 	int skip_packets;		/* quirks for devices to ignore the first n packets
+ 					   in a stream */
  
-+#ifdef CONFIG_PM
-+	u32 playback_pointer;
-+	u32 capture_pointer;
-+	void *playback_suspend_buffer;
-+	void *capture_suspend_buffer;
-+#endif
-+
- 	struct snd_pcm_substream *playback_substream;
- 	struct snd_pcm_substream *capture_substream;
++	unsigned int min_queued_packs;	/* USB hardware queue requirement */
++	unsigned int queued_packs;	/* number of packets on the queue */
++	unsigned int queued_urbs;	/* number of URBs on the queue */
++	unsigned int queued_frames;	/* number of data frames on the queue */
++	int next_urb;			/* next to submit */
+ 	spinlock_t lock;
+ 	struct list_head list;
+ };
+Index: usb-3.11/sound/usb/pcm.c
+===================================================================
+--- usb-3.11.orig/sound/usb/pcm.c
++++ usb-3.11/sound/usb/pcm.c
+@@ -1328,7 +1328,7 @@ static void prepare_playback_urb(struct
+ 	stride = runtime->frame_bits >> 3;
  
-@@ -363,6 +370,9 @@ static struct snd_pcm_hardware snd_rme96_playback_spdif_info =
- 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
- 			      SNDRV_PCM_INFO_MMAP_VALID |
- 			      SNDRV_PCM_INFO_SYNC_START |
-+#ifdef CONFIG_PM
-+			      SNDRV_PCM_INFO_RESUME |
-+#endif
- 			      SNDRV_PCM_INFO_INTERLEAVED |
- 			      SNDRV_PCM_INFO_PAUSE),
- 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
-@@ -393,6 +403,9 @@ static struct snd_pcm_hardware snd_rme96_capture_spdif_info =
- 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
- 			      SNDRV_PCM_INFO_MMAP_VALID |
- 			      SNDRV_PCM_INFO_SYNC_START |
-+#ifdef CONFIG_PM
-+			      SNDRV_PCM_INFO_RESUME |
-+#endif
- 			      SNDRV_PCM_INFO_INTERLEAVED |
- 			      SNDRV_PCM_INFO_PAUSE),
- 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
-@@ -423,6 +436,9 @@ static struct snd_pcm_hardware snd_rme96_playback_adat_info =
- 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
- 			      SNDRV_PCM_INFO_MMAP_VALID |
- 			      SNDRV_PCM_INFO_SYNC_START |
-+#ifdef CONFIG_PM
-+			      SNDRV_PCM_INFO_RESUME |
-+#endif
- 			      SNDRV_PCM_INFO_INTERLEAVED |
- 			      SNDRV_PCM_INFO_PAUSE),
- 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
-@@ -449,6 +465,9 @@ static struct snd_pcm_hardware snd_rme96_capture_adat_info =
- 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
- 			      SNDRV_PCM_INFO_MMAP_VALID |
- 			      SNDRV_PCM_INFO_SYNC_START |
-+#ifdef CONFIG_PM
-+			      SNDRV_PCM_INFO_RESUME |
-+#endif
- 			      SNDRV_PCM_INFO_INTERLEAVED |
- 			      SNDRV_PCM_INFO_PAUSE),
- 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
-@@ -1387,6 +1406,7 @@ snd_rme96_playback_trigger(struct snd_pcm_substream *substream,
- 		}
- 		break;
- 
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		if (RME96_ISPLAYING(rme96)) {
- 			if (substream != rme96->playback_substream) {
-@@ -1402,6 +1422,7 @@ snd_rme96_playback_trigger(struct snd_pcm_substream *substream,
- 		}
- 		break;
- 
-+	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		if (!RME96_ISPLAYING(rme96)) {
- 			snd_rme96_trigger(rme96, sync ? RME96_RESUME_BOTH : RME96_RESUME_PLAYBACK);
-@@ -1441,6 +1462,7 @@ snd_rme96_capture_trigger(struct snd_pcm_substream *substream,
- 		}
- 		break;
- 
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		if (RME96_ISRECORDING(rme96)) {
- 			if (substream != rme96->capture_substream) {
-@@ -1456,6 +1478,7 @@ snd_rme96_capture_trigger(struct snd_pcm_substream *substream,
- 		}
- 		break;
- 
-+	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		if (!RME96_ISRECORDING(rme96)) {
- 			snd_rme96_trigger(rme96, sync ? RME96_RESUME_BOTH : RME96_RESUME_CAPTURE);
-@@ -1556,6 +1579,14 @@ snd_rme96_free(void *private_data)
- 		pci_release_regions(rme96->pci);
- 		rme96->port = 0;
+ 	frames = 0;
+-	urb->number_of_packets = 0;
++	ctx->data_packets = urb->number_of_packets = 0;
+ 	spin_lock_irqsave(&subs->lock, flags);
+ 	for (i = 0; i < ctx->packets; i++) {
+ 		if (ctx->packet_size[i])
+@@ -1341,6 +1341,7 @@ static void prepare_playback_urb(struct
+ 		urb->iso_frame_desc[i].length = counts * ep->stride;
+ 		frames += counts;
+ 		urb->number_of_packets++;
++		ctx->data_packets++;
+ 		subs->transfer_done += counts;
+ 		if (subs->transfer_done >= runtime->period_size) {
+ 			subs->transfer_done -= runtime->period_size;
+@@ -1370,6 +1371,7 @@ static void prepare_playback_urb(struct
+ 		    !snd_usb_endpoint_implicit_feedback_sink(subs->data_endpoint)) /* finish at the period boundary */
+ 			break;
  	}
-+#ifdef CONFIG_PM
-+	if (rme96->playback_suspend_buffer) {  
-+		kfree(rme96->playback_suspend_buffer);
-+	}
-+	if (rme96->capture_suspend_buffer) {  
-+		kfree(rme96->capture_suspend_buffer);
-+	}
-+#endif
- 	pci_disable_device(rme96->pci);
++	ctx->data_frames = frames;
+ 	bytes = frames * ep->stride;
+ 
+ 	if (unlikely(subs->pcm_format == SNDRV_PCM_FORMAT_DSD_U16_LE &&
+Index: usb-3.11/sound/usb/endpoint.c
+===================================================================
+--- usb-3.11.orig/sound/usb/endpoint.c
++++ usb-3.11/sound/usb/endpoint.c
+@@ -203,6 +203,7 @@ static void prepare_outbound_urb(struct
+ 		} else {
+ 			/* no data provider, so send silence */
+ 			unsigned int offs = 0;
++
+ 			for (i = 0; i < ctx->packets; ++i) {
+ 				int counts;
+ 
+@@ -217,6 +218,8 @@ static void prepare_outbound_urb(struct
+ 			}
+ 
+ 			urb->number_of_packets = ctx->packets;
++			ctx->data_packets = ctx->packets;
++			ctx->data_frames = offs;
+ 			urb->transfer_buffer_length = offs * ep->stride;
+ 			memset(urb->transfer_buffer, ep->silence_value,
+ 			       offs * ep->stride);
+@@ -273,6 +276,7 @@ static inline void prepare_inbound_urb(s
+ 
+ 		urb->transfer_buffer_length = offs;
+ 		urb->number_of_packets = urb_ctx->packets;
++		urb_ctx->data_packets = urb_ctx->packets;
+ 		break;
+ 
+ 	case SND_USB_ENDPOINT_TYPE_SYNC:
+@@ -341,6 +345,55 @@ static void queue_pending_output_urbs(st
+ 	}
  }
  
-@@ -2354,6 +2385,76 @@ snd_rme96_create_switches(struct snd_card *card,
-  * Card initialisation
++/**
++ * snd_submit_urbs: Submit data URBs for endpoints without implicit feedback
++ *
++ * @ep: The endpoint to use
++ * @ctx: Context for the first URB on the queue (or to be queued)
++ *
++ * Submit enough URBs so that when the next one completes, the hardware queue
++ * will still contain sufficiently many packets.
++ *
++ * Note: If the hardware queue is empty (and @ctx refers to the next URB to be
++ * submitted), then ctx->data_packets must be equal to 0.
++ */
++static int snd_submit_urbs(struct snd_usb_endpoint *ep, struct snd_urb_ctx *ctx)
++{
++	int err = 0;
++	unsigned int period_size = ep->data_subs->pcm_substream->runtime->
++			period_size;
++
++	while (ep->queued_urbs < ep->nurbs) {
++		struct snd_urb_ctx *u;
++
++		if (ep->queued_frames >= period_size &&
++				ep->queued_packs - ctx->data_packets >=
++					ep->min_queued_packs)
++			break;
++
++		u = &ep->urb[ep->next_urb];
++		if (usb_pipeout(ep->pipe))
++			prepare_outbound_urb(ep, u);
++		else
++			prepare_inbound_urb(ep, u);
++
++		err = usb_submit_urb(u->urb, GFP_ATOMIC);
++		if (err) {
++			snd_printk(KERN_ERR "cannot submit urb (err = %d: %s)\n",
++					err, usb_error_string(err));
++			break;
++		}
++		set_bit(ep->next_urb, &ep->active_mask);
++		ep->queued_packs += u->data_packets;
++		++ep->queued_urbs;
++		ep->queued_frames += u->data_frames;
++
++		if (++ep->next_urb >= ep->nurbs)
++			ep->next_urb = 0;
++	}
++	return err;
++}
++
+ /*
+  * complete callback for urbs
   */
- 
-+#ifdef CONFIG_PM
-+
-+static int
-+snd_rme96_suspend(struct pci_dev *pci,
-+		  pm_message_t state)
-+{
-+	struct snd_card *card = pci_get_drvdata(pci);
-+	struct rme96 *rme96 = card->private_data;
-+
-+	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
-+	snd_pcm_suspend(rme96->playback_substream);
-+	snd_pcm_suspend(rme96->capture_substream);
-+
-+	/* save capture & playback pointers */
-+	rme96->playback_pointer = readl(rme96->iobase + RME96_IO_GET_PLAY_POS) & RME96_RCR_AUDIO_ADDR_MASK;
-+	rme96->capture_pointer = readl(rme96->iobase + RME96_IO_GET_REC_POS) & RME96_RCR_AUDIO_ADDR_MASK;
-+
-+	/* save playback and capture buffers */
-+	memcpy_fromio(rme96->playback_suspend_buffer,rme96->iobase + RME96_IO_PLAY_BUFFER,RME96_BUFFER_SIZE);
-+	memcpy_fromio(rme96->capture_suspend_buffer,rme96->iobase + RME96_IO_REC_BUFFER,RME96_BUFFER_SIZE);
-+ 
-+	/* disable the DAC  */
-+	rme96->areg &= ~RME96_AR_DAC_EN;
-+	writel(rme96->areg, rme96->iobase + RME96_IO_ADDITIONAL_REG);
-+
-+	pci_disable_device(pci);
-+	pci_save_state(pci);
-+
-+	return 0;
-+}
-+
-+static int
-+snd_rme96_resume(struct pci_dev *pci)
-+{
-+	struct snd_card *card = pci_get_drvdata(pci);
-+	struct rme96 *rme96 = card->private_data;
-+
-+	pci_restore_state(pci);
-+	pci_enable_device(pci);
-+
-+	/* reset playback and record buffer pointers */
-+	writel(0, rme96->iobase + RME96_IO_SET_PLAY_POS + rme96->playback_pointer);
-+	writel(0, rme96->iobase + RME96_IO_SET_REC_POS + rme96->capture_pointer);
-+
-+	/* restore playback and capture buffers */
-+	memcpy_toio(rme96->iobase + RME96_IO_PLAY_BUFFER,rme96->playback_suspend_buffer,RME96_BUFFER_SIZE);
-+	memcpy_toio(rme96->iobase + RME96_IO_REC_BUFFER,rme96->capture_suspend_buffer,RME96_BUFFER_SIZE);
-+
-+	/* reset the ADC */
-+	writel(rme96->areg | RME96_AR_PD2,
-+	       rme96->iobase + RME96_IO_ADDITIONAL_REG);
-+	writel(rme96->areg, rme96->iobase + RME96_IO_ADDITIONAL_REG);	
-+
-+	/* reset and enable DAC, restore analog volume */
-+	snd_rme96_reset_dac(rme96);
-+	rme96->areg |= RME96_AR_DAC_EN;
-+	writel(rme96->areg, rme96->iobase + RME96_IO_ADDITIONAL_REG);
-+	if (RME96_HAS_ANALOG_OUT(rme96)) {
-+		/* msleep(1) is the  documented AD1852 minimum */
-+		msleep(3);
-+		snd_rme96_apply_dac_volume(rme96);
-+	}
-+
-+	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
-+
-+	return 0;
-+}
-+
-+#endif
-+
- static void snd_rme96_card_free(struct snd_card *card)
+@@ -348,20 +401,24 @@ static void snd_complete_urb(struct urb
  {
- 	snd_rme96_free(card->private_data);
-@@ -2390,6 +2491,19 @@ snd_rme96_probe(struct pci_dev *pci,
- 		return err;
- 	}
- 	
-+#ifdef CONFIG_PM
-+	rme96->playback_suspend_buffer = kmalloc(RME96_BUFFER_SIZE, GFP_KERNEL);
-+	if (!rme96->playback_suspend_buffer) {
-+	snd_printk(KERN_ERR "Failed to allocate playback suspend buffer!\n");
-+		return -ENOMEM;
-+	}
-+	rme96->capture_suspend_buffer = kmalloc(RME96_BUFFER_SIZE, GFP_KERNEL);
-+	if (!rme96->capture_suspend_buffer) {
-+		snd_printk(KERN_ERR "Failed to allocate capture suspend buffer!\n");
-+	return -ENOMEM;
-+	}
-+#endif
+ 	struct snd_urb_ctx *ctx = urb->context;
+ 	struct snd_usb_endpoint *ep = ctx->ep;
+-	int err;
 +
- 	strcpy(card->driver, "Digi96");
- 	switch (rme96->pci->device) {
- 	case PCI_DEVICE_ID_RME_DIGI96:
-@@ -2433,6 +2547,10 @@ static struct pci_driver rme96_driver = {
- 	.id_table = snd_rme96_ids,
- 	.probe = snd_rme96_probe,
- 	.remove = snd_rme96_remove,
-+#ifdef CONFIG_PM
-+	.suspend = snd_rme96_suspend,
-+	.resume = snd_rme96_resume,
-+#endif
- };
++	clear_bit(ctx->index, &ep->active_mask);
++	ep->queued_packs -= ctx->data_packets;
++	--ep->queued_urbs;
++	ep->queued_frames -= ctx->data_frames;
  
- module_pci_driver(rme96_driver);
--- 
-1.8.1.4
-
-
---------------070100030508000303060409
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------070100030508000303060409--
+ 	if (unlikely(urb->status == -ENOENT ||		/* unlinked */
+ 		     urb->status == -ENODEV ||		/* device removed */
+ 		     urb->status == -ECONNRESET ||	/* unlinked */
+ 		     urb->status == -ESHUTDOWN ||	/* device disabled */
+ 		     ep->chip->shutdown))		/* device disconnected */
+-		goto exit_clear;
++		return;
+ 
+ 	if (usb_pipeout(ep->pipe)) {
+ 		retire_outbound_urb(ep, ctx);
+ 		/* can be stopped during retire callback */
+ 		if (unlikely(!test_bit(EP_FLAG_RUNNING, &ep->flags)))
+-			goto exit_clear;
++			return;
+ 
+ 		if (snd_usb_endpoint_implicit_feedback_sink(ep)) {
+ 			unsigned long flags;
+@@ -371,28 +428,24 @@ static void snd_complete_urb(struct urb
+ 			spin_unlock_irqrestore(&ep->lock, flags);
+ 			queue_pending_output_urbs(ep);
+ 
+-			goto exit_clear;
++			return;
+ 		}
+ 
+-		prepare_outbound_urb(ep, ctx);
+ 	} else {
+ 		retire_inbound_urb(ep, ctx);
+ 		/* can be stopped during retire callback */
+ 		if (unlikely(!test_bit(EP_FLAG_RUNNING, &ep->flags)))
+-			goto exit_clear;
+-
+-		prepare_inbound_urb(ep, ctx);
++			return;
+ 	}
+ 
+-	err = usb_submit_urb(urb, GFP_ATOMIC);
+-	if (err == 0)
+-		return;
++	ctx->data_packets = 0;
++	++ctx;
++	if (ctx >= ep->urb + ep->nurbs)
++		ctx = &ep->urb[0];
+ 
+-	snd_printk(KERN_ERR "cannot submit urb (err = %d)\n", err);
++	if (snd_submit_urbs(ep, ctx) == 0)
++		return;
+ 	//snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
+-
+-exit_clear:
+-	clear_bit(ctx->index, &ep->active_mask);
+ }
+ 
+ /**
+@@ -574,7 +627,7 @@ static int data_ep_set_params(struct snd
+ 			      struct audioformat *fmt,
+ 			      struct snd_usb_endpoint *sync_ep)
+ {
+-	unsigned int maxsize, i, urb_packs, total_packs, packs_per_ms;
++	unsigned int maxsize, i, urb_packs, max_packs, packs_per_ms;
+ 	int is_playback = usb_pipeout(ep->pipe);
+ 	int frame_bits = snd_pcm_format_physical_width(pcm_format) * channels;
+ 
+@@ -593,8 +646,8 @@ static int data_ep_set_params(struct snd
+ 
+ 	/* assume max. frequency is 25% higher than nominal */
+ 	ep->freqmax = ep->freqn + (ep->freqn >> 2);
+-	maxsize = ((ep->freqmax + 0xffff) * (frame_bits >> 3))
+-				>> (16 - ep->datainterval);
++	maxsize = ((ep->freqmax + 0xffff) >> (16 - ep->datainterval))
++			* (frame_bits >> 3);
+ 	/* but wMaxPacketSize might reduce this */
+ 	if (ep->maxpacksize && ep->maxpacksize < maxsize) {
+ 		/* whatever fits into a max. size packet */
+@@ -608,11 +661,21 @@ static int data_ep_set_params(struct snd
+ 	else
+ 		ep->curpacksize = maxsize;
+ 
+-	if (snd_usb_get_speed(ep->chip->dev) != USB_SPEED_FULL)
++	if (snd_usb_get_speed(ep->chip->dev) != USB_SPEED_FULL) {
+ 		packs_per_ms = 8 >> ep->datainterval;
+-	else
++
++		/* high speed needs 10 USB uframes on the queue at all times */
++		ep->min_queued_packs = DIV_ROUND_UP(10, 8 / packs_per_ms);
++		max_packs = MAX_PACKS_HS;
++	} else {
+ 		packs_per_ms = 1;
+ 
++		/* full speed needs one USB frame on the queue at all times */
++		ep->min_queued_packs = 1;
++		max_packs = MAX_PACKS;
++	}
++	max_packs = min(max_packs, MAX_QUEUE * packs_per_ms);
++
+ 	if (is_playback && !snd_usb_endpoint_implicit_feedback_sink(ep)) {
+ 		urb_packs = max(ep->chip->nrpacks, 1);
+ 		urb_packs = min(urb_packs, (unsigned int) MAX_PACKS);
+@@ -625,41 +688,36 @@ static int data_ep_set_params(struct snd
+ 	if (sync_ep && !snd_usb_endpoint_implicit_feedback_sink(ep))
+ 		urb_packs = min(urb_packs, 1U << sync_ep->syncinterval);
+ 
+-	/* decide how many packets to be used */
+-	if (is_playback && !snd_usb_endpoint_implicit_feedback_sink(ep)) {
+-		unsigned int minsize, maxpacks;
+-		/* determine how small a packet can be */
+-		minsize = (ep->freqn >> (16 - ep->datainterval))
+-			  * (frame_bits >> 3);
+-		/* with sync from device, assume it can be 12% lower */
+-		if (sync_ep)
+-			minsize -= minsize >> 3;
+-		minsize = max(minsize, 1u);
+-		total_packs = (period_bytes + minsize - 1) / minsize;
+-		/* we need at least two URBs for queueing */
+-		if (total_packs < 2) {
+-			total_packs = 2;
+-		} else {
+-			/* and we don't want too long a queue either */
+-			maxpacks = max(MAX_QUEUE * packs_per_ms, urb_packs * 2);
+-			total_packs = min(total_packs, maxpacks);
+-		}
+-	} else {
+-		while (urb_packs > 1 && urb_packs * maxsize >= period_bytes)
+-			urb_packs >>= 1;
+-		total_packs = MAX_URBS * urb_packs;
+-	}
++	/* no point having an URB much longer than one period */
++	urb_packs = min(urb_packs, 1 + period_bytes / maxsize);
+ 
+-	ep->nurbs = (total_packs + urb_packs - 1) / urb_packs;
+-	if (ep->nurbs > MAX_URBS) {
+-		/* too much... */
+-		ep->nurbs = MAX_URBS;
+-		total_packs = MAX_URBS * urb_packs;
+-	} else if (ep->nurbs < 2) {
+-		/* too little - we need at least two packets
+-		 * to ensure contiguous playback/capture
+-		 */
+-		ep->nurbs = 2;
++	/*
++	 * We can't tell in advance how many URBs are needed to fill the
++	 * USB hardware queue, because the number of packets per URB is
++	 * variable (it depends on the period size and the device's clock
++	 * frequency).  Instead, get a worst-case overestimate by assuming
++	 * the number of packets alternates between 1 and urb_packs.
++	 *
++	 * The total number of URBs needed is one higher than this, because
++	 * the hardware queue must remain full even while one URB is
++	 * completing (and therefore not on the queue).
++	 *
++	 * Recording endpoints with no sync always use the same number of
++	 * packets per URB, so we can get a better estimate for them.
++	 */
++	if (is_playback || sync_ep)
++		ep->nurbs = 1 + 2 * DIV_ROUND_UP(ep->min_queued_packs,
++				urb_packs + 1);
++	else
++		ep->nurbs = 1 + DIV_ROUND_UP(ep->min_queued_packs, urb_packs);
++
++	/* at least enough URBs to last an entire period */
++	ep->nurbs = max(ep->nurbs, period_bytes / (urb_packs * maxsize));
++	ep->nurbs = min(ep->nurbs, (unsigned) MAX_URBS);
++
++	if (ep->nurbs * urb_packs > max_packs) {
++		/* too much -- URBs have too many packets */
++		urb_packs = max_packs / ep->nurbs;
+ 	}
+ 
+ 	/* allocate and initialize data urbs */
+@@ -667,8 +725,8 @@ static int data_ep_set_params(struct snd
+ 		struct snd_urb_ctx *u = &ep->urb[i];
+ 		u->index = i;
+ 		u->ep = ep;
+-		u->packets = (i + 1) * total_packs / ep->nurbs
+-			- i * total_packs / ep->nurbs;
++		u->packets = urb_packs;
++		u->data_packets = 0;
+ 		u->buffer_size = maxsize * u->packets;
+ 
+ 		if (fmt->fmt_type == UAC_FORMAT_TYPE_II)
+@@ -861,30 +919,14 @@ int snd_usb_endpoint_start(struct snd_us
+ 		return 0;
+ 	}
+ 
+-	for (i = 0; i < ep->nurbs; i++) {
+-		struct urb *urb = ep->urb[i].urb;
+-
+-		if (snd_BUG_ON(!urb))
+-			goto __error;
+-
+-		if (usb_pipeout(ep->pipe)) {
+-			prepare_outbound_urb(ep, urb->context);
+-		} else {
+-			prepare_inbound_urb(ep, urb->context);
+-		}
+-
+-		err = usb_submit_urb(urb, GFP_ATOMIC);
+-		if (err < 0) {
+-			snd_printk(KERN_ERR "cannot submit urb %d, error %d: %s\n",
+-				   i, err, usb_error_string(err));
+-			goto __error;
+-		}
+-		set_bit(i, &ep->active_mask);
+-	}
