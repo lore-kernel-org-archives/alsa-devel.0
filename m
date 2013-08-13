@@ -1,93 +1,56 @@
-From: Knut Petersen <Knut_Petersen@t-online.de>
-Subject: Re: [PATCH] Add PM support to the rme96 driver
-Date: Tue, 13 Aug 2013 11:02:53 +0200
-Message-ID: <5209F63D.5020903@t-online.de>
-References: <52090D78.70601@t-online.de> <s5h4naucat1.wl%tiwai@suse.de>
+From: Chanwoo Choi <cw00.choi@samsung.com>
+Subject: Re: [PATCH v2] extcon: arizona: Clear trig_sts bits on all paths
+Date: Tue, 13 Aug 2013 19:05:56 +0900
+Message-ID: <520A0504.6060203@samsung.com>
+References: <1375874234-30549-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout07.t-online.de (mailout07.t-online.de [194.25.134.83])
- by alsa0.perex.cz (Postfix) with ESMTP id 130BE26517A
- for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 11:03:07 +0200 (CEST)
-In-Reply-To: <s5h4naucat1.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <1375874234-30549-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: myungjoo.ham@samsung.com, broonie@kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 13.08.2013 09:24, Takashi Iwai wrote:
-> At Mon, 12 Aug 2013 18:29:44 +0200,
-> Knut Petersen wrote:
->> >From 7305b056cbb4de562018483b91cf90c677df317f Mon Sep 17 00:00:00 2001
->> From: Knut Petersen <Knut_Petersen@t-online.de>
->> Date: Mon, 12 Aug 2013 18:00:30 +0200
->> Subject: [PATCH] alsa/rme96: Add PM support to the rme96 driver
-> Isn't there any other information you'd like to add?
-> Put it here.
+Hi Charles,
 
-Ok, I`ll try to be a bit more verbose. Without the hardware reinitialization added,
-the first use of this card anytime after a suspend / resume cycle will start with
-distortions.
+On 08/07/2013 08:17 PM, Charles Keepax wrote:
+> We want the trig_sts bits to be cleared in all cases where we consider
+> the jack detection interrupt to have been handled. Specifically, if a
+> duplicate detection event was suppressed these bits were not cleared
+> causing the CODEC to not enter a low power state. This patch clears the
+> bits on the duplicate detection code path.
+> 
+> Reported-by: Ryo Tsutsui <ryo.tsutsui@wolfsonmicro.com>
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> ---
+>  drivers/extcon/extcon-arizona.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
+> index 7a1b4a7..4df68de 100644
+> --- a/drivers/extcon/extcon-arizona.c
+> +++ b/drivers/extcon/extcon-arizona.c
+> @@ -1034,6 +1034,7 @@ static irqreturn_t arizona_jackdet(int irq, void *data)
+>  	else
+>  		info->micd_timeout = DEFAULT_MICD_TIMEOUT;
+>  
+> +out:
+>  	/* Clear trig_sts to make sure DCVDD is not forced up */
+>  	regmap_write(arizona->regmap, ARIZONA_AOD_WKUP_AND_TRIG,
+>  		     ARIZONA_MICD_CLAMP_FALL_TRIG_STS |
+> @@ -1041,7 +1042,6 @@ static irqreturn_t arizona_jackdet(int irq, void *data)
+>  		     ARIZONA_JD1_FALL_TRIG_STS |
+>  		     ARIZONA_JD1_RISE_TRIG_STS);
+>  
+> -out:
+>  	mutex_unlock(&info->lock);
+>  
+>  	pm_runtime_mark_last_busy(info->dev);
+> 
 
->   			      SNDRV_PCM_INFO_SYNC_START |
-> +#ifdef CONFIG_PM
-> +			      SNDRV_PCM_INFO_RESUME |
-> +#endif
-> No need for ifdef.
+Applied it.
 
-ACK.
-
-
-> +static int
-> +snd_rme96_suspend(struct pci_dev *pci,
-> +		  pm_message_t state)
-> +{
-> +	struct snd_card *card = pci_get_drvdata(pci);
-> +	struct rme96 *rme96 = card->private_data;
-> +
-> +	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
-[...]
-> +
-> +	pci_disable_device(pci);
-> +	pci_save_state(pci);
-> Doesn't it go to PCI D3 state?
-
-lspci -vv
-
-05:04.0 Multimedia audio controller: Xilinx Corporation RME Digi96/8 Pad (rev 04)
-         Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
-         Status: Cap- 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-         Interrupt: pin A routed to IRQ 16
-         Region 0: Memory at d0000000 (32-bit, non-prefetchable) [size=16M]
-         Kernel driver in use: snd_rme96
-
-This is pretty old hardware, the Digi96 series was introduced to the market in October 1998.
-There is no support for any power management, and the Digi96 cards do not act as bus master.
-No, the hardware will definitely not enter PCI D3 state.
-
->> +#ifdef CONFIG_PM
->> +	rme96->playback_suspend_buffer = kmalloc(RME96_BUFFER_SIZE, GFP_KERNEL);
->> +	if (!rme96->playback_suspend_buffer) {
->> +	snd_printk(KERN_ERR "Failed to allocate playback suspend buffer!\n");
->> +		return -ENOMEM;
->> +	}
->> +	rme96->capture_suspend_buffer = kmalloc(RME96_BUFFER_SIZE, GFP_KERNEL);
->> +	if (!rme96->capture_suspend_buffer) {
->> +		snd_printk(KERN_ERR "Failed to allocate capture suspend buffer!\n");
->> +	return -ENOMEM;
-> Better to use vmalloc() for 64k buffer.
-ACK
-
-> Other than the above, please fix the coding-style issues.
-
-ok, cu,
-  knut
+Thanks.
+Chanwoo Choi
