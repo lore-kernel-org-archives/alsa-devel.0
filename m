@@ -1,41 +1,41 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH V4 1/4] ASoC: Samsung: I2S: Add quirks as driver data
- in I2S
-Date: Tue, 13 Aug 2013 09:42:28 -0600
-Message-ID: <520A53E4.309@wwwdotorg.org>
-References: <1376300994-1679-1-git-send-email-padma.v@samsung.com> <1376300994-1679-2-git-send-email-padma.v@samsung.com> <52096871.4030703@wwwdotorg.org> <20130812231327.GK6427@sirena.org.uk> <52096D4A.5070903@wwwdotorg.org> <20130812234603.GM6427@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3 v2] ASoC: wm8997: Initial CODEC driver
+Date: Tue, 13 Aug 2013 18:02:30 +0100
+Message-ID: <20130813170230.GW1302@opensource.wolfsonmicro.com>
+References: <1371113011-11918-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1371113011-11918-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20130613174702.GC1403@sirena.org.uk> <20130812224425.GJ6427@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20130812234603.GM6427@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 66871261A09
+ for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 19:02:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130812224425.GJ6427@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, padma.kvr@gmail.com, kgene.kim@samsung.com, tomasz.figa@gmail.com, abrestic@chromium.org, Mark Rutland <Mark.Rutland@arm.com>, Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <rob.herring@calxeda.com>, Kumar Gala <galak@codeaurora.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 08/12/2013 05:46 PM, Mark Brown wrote:
-> On Mon, Aug 12, 2013 at 05:18:34PM -0600, Stephen Warren wrote:
->> On 08/12/2013 05:13 PM, Mark Brown wrote:
-> 
->>>> (although I dare say that at least samsung,supports-rstclr
->>>> should be modified to use the new reset controller bindings)
-> 
->>> Really?  That doesn't seem terribly sane - I had thought that
->>> was for bodging resets on the side of things that don't
->>> normally have them or need board specific logic.  Also note
->>> that this is actually a magic register write done to reset the
->>> IP on some specific IPs.
-> 
->> I believe that's exactly what the reset subsystem and associated
->> DT bindings were designed for.
-> 
-> That seems...  interesting.  It seems like this is fairly core
-> device functionality I'd expect the driver to just be able to
-> understand;  the main thing this property was doing was deciding if
-> the reset was needed. I'm not sure I see the benefit here?
+On Mon, Aug 12, 2013 at 11:44:25PM +0100, Mark Brown wrote:
+> I applied this since it didn't get applied to the mfd tree as I had been
+> expecting; Charles, you ought to keep track to make sure things are
+> getting applied.  The same thing has happened to the GPIO driver.
 
-Sorry, I'm confused here. In this case, the reset is something
-internal to the IP module, not sourced by an external reset
-controller, so there's no need to involve the reset controller
-bindings or subsystem.
+Thanks for that. Sending this out again has been on the todo list
+for a little while, apologies for not getting around to it. I
+will check what is going on the GPIO part of it and resend that
+if necessary.
+
+Thanks,
+Charles
