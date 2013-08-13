@@ -1,15 +1,27 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V4 0/4] Add i2s support on smdk5420
-Date: Tue, 13 Aug 2013 13:44:40 +0100
-Message-ID: <20130813124440.GX6427@sirena.org.uk>
-References: <1376300994-1679-1-git-send-email-padma.v@samsung.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add DAPM
+ links between codec and cpu DAI
+Date: Tue, 13 Aug 2013 15:59:12 +0100
+Message-ID: <1376405952.2617.101.camel@loki>
+References: <20130805113310.GU23006@n2100.arm.linux.org.uk>
+ <20130805144054.GE9858@sirena.org.uk>
+ <20130805145644.GV23006@n2100.arm.linux.org.uk>
+ <20130805203202.GX23006@n2100.arm.linux.org.uk>
+ <20130805220639.GB26637@sirena.org.uk>
+ <20130805233015.GY23006@n2100.arm.linux.org.uk>
+ <20130806133206.GA6427@sirena.org.uk>
+ <20130810161123.GW23006@n2100.arm.linux.org.uk>
+ <20130810211342.GX23006@n2100.arm.linux.org.uk>
+ <1376293215.2385.32.camel@loki>
+ <20130812082837.GB23006@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3570972419390641962=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C59A22610A5
- for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 14:44:43 +0200 (CEST)
-In-Reply-To: <1376300994-1679-1-git-send-email-padma.v@samsung.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4383526084B
+ for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 16:59:19 +0200 (CEST)
+In-Reply-To: <20130812082837.GB23006@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,60 +31,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Padmavathi Venna <padma.v@samsung.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, abrestic@chromium.org, tomasz.figa@gmail.com, kgene.kim@samsung.com, padma.kvr@gmail.com, linux-arm-kernel@lists.infradead.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2013-08-12 at 09:28 +0100, Russell King - ARM Linux wrote:
+> On Mon, Aug 12, 2013 at 08:40:15AM +0100, Liam Girdwood wrote:
+> > Russell, I'm just back from holiday now and have done a quick re test on
+> > Haswell. I can see the correct DAPM path and DPCM state as expected for
+> > Haswell, but let me get through my Inbox today and I'll see where we
+> > have some differences tomorrow.
+> 
+> Liam, welcome back.
+> 
+> Looking at this last night, I notice this:
+> 
+>  * Creates a new internal PCM instance with no userspace device or procfs
+>  * entries. This is used by ASoC Back End PCMs in order to create a PCM that
+>  * will only be used internally by kernel drivers. i.e. it cannot be opened
+>  * by userspace. It provides existing ASoC components drivers with a substream
+>  * and access to any private data.
+>  *
+>  * The pcm operators have to be set afterwards to the new instance
+>  * via snd_pcm_set_ops().
+> 
+> Note the final paragraph.  So, soc-pcm.c does this:
+> 
+>         /* create the PCM */
+>         if (rtd->dai_link->no_pcm) {
+>                 snprintf(new_name, sizeof(new_name), "(%s)",
+>                         rtd->dai_link->stream_name);
+> 
+>                 ret = snd_pcm_new_internal(rtd->card->snd_card, new_name, num,
+>                                 playback, capture, &pcm);
+>         } else {
+> ...
+>         if (rtd->dai_link->no_pcm) {
+>                 if (playback)
+>                         pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->private_data = rtd;
+>                 if (capture)
+>                         pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream->private_data = rtd;
+>                 goto out;
+>         }
+> ...
+>         if (playback)
+>                 snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &rtd->ops);
+> 
+>         if (capture)
+>                 snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &rtd->ops);
+> ...
+> out:
+>         dev_info(rtd->card->dev, " %s <-> %s mapping ok\n", codec_dai->name,
+>                 cpu_dai->name);
+>         return ret;
+> 
+> Hence, soc-pcm.c never sets the ops for the 'internal' stream, which,
+> because it uses the dummy DAI, has both a playback and a capture
+> stream.
+> 
+> The above is the only place where the ops are set on the ALSA stream(s)
+> by ASoC, which means there's no way that the internal streams can ever
+> have a non-NULL ops pointer, and suggests a possible reason why I get
+> this oops.
 
---===============3570972419390641962==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BuJNKmHfbt8dxFpC"
-Content-Disposition: inline
+Ah, Ok. The OMAP4 ABE driver always had ops so never hit this (probably
+true for Qualcomm driver too). I think we need a check at some point so
+that we don't dereference this if no ops are set.
 
+Iiuc, there should be no harm in setting the ops (since ASoC checks for
+NULL) for either playback or capture as a workaround in the short term
+until the fix is upstream.   
 
---BuJNKmHfbt8dxFpC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Aug 12, 2013 at 03:19:50PM +0530, Padmavathi Venna wrote:
-> Samsung has different versions of I2S introduced in different
-> platforms. Each version has some new support added for multichannel,
-> secondary fifo, s/w reset control, internal mux for rclk src clk and
-> tdm support. Each newly added change has a quirk. So this patch adds
-> all the required quirks as driver data and based on compatible string
-> from dtsi fetches the quirks. This also adds i2s support on exynos5420.
-
-Applied all these, thanks.
-
---BuJNKmHfbt8dxFpC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSCio1AAoJELSic+t+oim9ZVAQAJqqNtPRzZ4J9znXd2zzhfeO
-ILyeXz+JDWlbCQBaqWSAVC2r0HIabzdfo0wXMWgd1EC4JDexm5ttuFl+IoXFRpRI
-KB8ZqSE5ZarJDXNrd5OPwwgYGaVX3GK3eXvaVDzB7NDiWqIlxzLJhdyNp8pkVtIK
-bqF7qq9ghHJhMr3TBzV+zp3d4kpEXMWMz8KiBOgKoSb14odeknbVWqTClnJ+IEKG
-f82hUFB9ebJ5tUTc26S46J3WtGJzudPArYPC+7hu4lxwTmt5YXqPIezaMsOanyLJ
-k1G4X3jQoP2HuM/lliQXf5J6oFQNsos2mO1fGvrTB5gYGgvTNVd122We+FSMXFZ4
-EcGAln3SLYM1q33o14LJADFSxStLQU/njMLzJrZ9r/RO100+EVCUPJx3Gj9XwAsv
-8aOZ87dPl8ccj03EjOPjFDSd4zpAgvsCsDsw6YXdLN/w7DGh6IbadojQxsEA5swm
-pwa1/MZcdTyJONyyJyqSPy5YuVdsf/rWatCO1ll5Ul8DDVpTVGpYEYojuDHBf6Ul
-1qrcAzf78EfJ3yuQUZIrnCrBnPASOYfKNjyoYn+0XLXmTzyQS3WUqj6Iqg1Ywki5
-UNcbyJool+z1o5auxcdAqtmToW5eCSWV3Em6IGCI/8mesGPwlr6PpuPnTgPiNIF3
-MCZQGwbc3MWqJUSEOuBL
-=7JDg
------END PGP SIGNATURE-----
-
---BuJNKmHfbt8dxFpC--
-
---===============3570972419390641962==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3570972419390641962==--
+Liam
