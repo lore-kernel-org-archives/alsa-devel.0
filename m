@@ -1,45 +1,50 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
-Date: Tue, 13 Aug 2013 17:06:38 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1308131659320.897-100000@iolanthe.rowland.org>
-References: <Pine.LNX.4.44L0.1308121218590.1489-100000@iolanthe.rowland.org>
+From: Tomasz Figa <tomasz.figa@gmail.com>
+Subject: Re: [PATCH 12/18] ARM: s3c64xx: Add support for DMA using generic amba-pl08x driver
+Date: Tue, 13 Aug 2013 23:11:25 +0200
+Message-ID: <7183441.XhIsgkmB55@flatron>
+References: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com> <4262768.VLqddFvVic@flatron> <20130813203536.GI6427@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <Pine.LNX.4.44L0.1308121218590.1489-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20130813203536.GI6427@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, Dan Williams <djbw@fb.com>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 12 Aug 2013, Alan Stern wrote:
+On Tuesday 13 of August 2013 21:35:36 Mark Brown wrote:
+> On Tue, Aug 13, 2013 at 01:10:02PM -0700, Tomasz Figa wrote:
+> > On Tuesday 13 of August 2013 18:52:51 Mark Brown wrote:
+> > > On Sun, Aug 11, 2013 at 07:59:24PM +0200, Tomasz Figa wrote:
+> > > > +#define pl330_filter pl08x_filter_id
+> > > 
+> > > So, this is pretty fun and probably not going to play too nicely for
+> > > multiplatform kernels...
+> > 
+> > Yes, this is really funny and only shows the brokenness of current
+> > channel filtering mechanism used in DMA engine subsystem. Fortunately
+> > this is quite irrelevant to multiplatform kernels, because no users
+> > of it will be compiled in, since it's used only for legacy (non-DT)
+> > channel filtering.
+> Well, the thing here is more about the fact that the match function is
+> silently being hijacked - it should be possible to do this in the device
+> registrations.  I'd expect you could get a non-DT kernel which was
+> affected, but you'd probably have to try.
 
-> On Mon, 12 Aug 2013, Takashi Iwai wrote:
+Let me see what I can do to improve things for now.
+
+> > Anyway, I would happily redesign and rewrite the DMA engine channel
+> > matching completely to make it much more sane, but I guess I would
+> > need an ack from Vinod and Dan to do it.
 > 
-> > So... Clemens, Daniel, Eldad, could you guys review the latest version
-> > of Alan's patch?  I'd love to sort this out for 3.12.
-> 
-> Here's a revised version of the patch (still untested).  The difference
-> is that this version tries always to keep a period's worth of bytes in
-> the USB hardware queue.  This will provide better protection against
-> underruns when the period is larger than the queue's minimum
-> requirement.
+> I'd be really keen to get this code merged sooner rather than later for
+> ASoC development so if there's a way to do it separately to fixing the
+> filtering that'd be good.
 
-After more thought, I decided that patch does too much.  It's not 
-necessary to keep track of the number of packets.  Instead, the driver 
-should always try to keep as much data in the USB hardware queue as it 
-is allowed to.
+I fully agree on this. I still have other things to work on, so the 
+possible redesign of channel filtering would not probably happen before 
+3.12 merge window closes.
 
-In other words, there should be enough URBs so that an entire ALSA 
-buffer can be queued at any time, subject only to the limit on the 
-maximum number of URBs and packets.  It doesn't make sense to allocate 
-just enough URBs to cover a single period.
-
-Does this seem reasonable?
-
-Alan Stern
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Best regards,
+Tomasz
