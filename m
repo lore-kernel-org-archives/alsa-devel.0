@@ -1,105 +1,41 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add DAPM
- links between codec and cpu DAI
-Date: Tue, 13 Aug 2013 15:59:12 +0100
-Message-ID: <1376405952.2617.101.camel@loki>
-References: <20130805113310.GU23006@n2100.arm.linux.org.uk>
- <20130805144054.GE9858@sirena.org.uk>
- <20130805145644.GV23006@n2100.arm.linux.org.uk>
- <20130805203202.GX23006@n2100.arm.linux.org.uk>
- <20130805220639.GB26637@sirena.org.uk>
- <20130805233015.GY23006@n2100.arm.linux.org.uk>
- <20130806133206.GA6427@sirena.org.uk>
- <20130810161123.GW23006@n2100.arm.linux.org.uk>
- <20130810211342.GX23006@n2100.arm.linux.org.uk>
- <1376293215.2385.32.camel@loki>
- <20130812082837.GB23006@n2100.arm.linux.org.uk>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH V4 1/4] ASoC: Samsung: I2S: Add quirks as driver data
+ in I2S
+Date: Tue, 13 Aug 2013 09:42:28 -0600
+Message-ID: <520A53E4.309@wwwdotorg.org>
+References: <1376300994-1679-1-git-send-email-padma.v@samsung.com> <1376300994-1679-2-git-send-email-padma.v@samsung.com> <52096871.4030703@wwwdotorg.org> <20130812231327.GK6427@sirena.org.uk> <52096D4A.5070903@wwwdotorg.org> <20130812234603.GM6427@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 4383526084B
- for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2013 16:59:19 +0200 (CEST)
-In-Reply-To: <20130812082837.GB23006@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20130812234603.GM6427@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, padma.kvr@gmail.com, kgene.kim@samsung.com, tomasz.figa@gmail.com, abrestic@chromium.org, Mark Rutland <Mark.Rutland@arm.com>, Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <rob.herring@calxeda.com>, Kumar Gala <galak@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2013-08-12 at 09:28 +0100, Russell King - ARM Linux wrote:
-> On Mon, Aug 12, 2013 at 08:40:15AM +0100, Liam Girdwood wrote:
-> > Russell, I'm just back from holiday now and have done a quick re test on
-> > Haswell. I can see the correct DAPM path and DPCM state as expected for
-> > Haswell, but let me get through my Inbox today and I'll see where we
-> > have some differences tomorrow.
+On 08/12/2013 05:46 PM, Mark Brown wrote:
+> On Mon, Aug 12, 2013 at 05:18:34PM -0600, Stephen Warren wrote:
+>> On 08/12/2013 05:13 PM, Mark Brown wrote:
 > 
-> Liam, welcome back.
+>>>> (although I dare say that at least samsung,supports-rstclr
+>>>> should be modified to use the new reset controller bindings)
 > 
-> Looking at this last night, I notice this:
+>>> Really?  That doesn't seem terribly sane - I had thought that
+>>> was for bodging resets on the side of things that don't
+>>> normally have them or need board specific logic.  Also note
+>>> that this is actually a magic register write done to reset the
+>>> IP on some specific IPs.
 > 
->  * Creates a new internal PCM instance with no userspace device or procfs
->  * entries. This is used by ASoC Back End PCMs in order to create a PCM that
->  * will only be used internally by kernel drivers. i.e. it cannot be opened
->  * by userspace. It provides existing ASoC components drivers with a substream
->  * and access to any private data.
->  *
->  * The pcm operators have to be set afterwards to the new instance
->  * via snd_pcm_set_ops().
+>> I believe that's exactly what the reset subsystem and associated
+>> DT bindings were designed for.
 > 
-> Note the final paragraph.  So, soc-pcm.c does this:
-> 
->         /* create the PCM */
->         if (rtd->dai_link->no_pcm) {
->                 snprintf(new_name, sizeof(new_name), "(%s)",
->                         rtd->dai_link->stream_name);
-> 
->                 ret = snd_pcm_new_internal(rtd->card->snd_card, new_name, num,
->                                 playback, capture, &pcm);
->         } else {
-> ...
->         if (rtd->dai_link->no_pcm) {
->                 if (playback)
->                         pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->private_data = rtd;
->                 if (capture)
->                         pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream->private_data = rtd;
->                 goto out;
->         }
-> ...
->         if (playback)
->                 snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &rtd->ops);
-> 
->         if (capture)
->                 snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &rtd->ops);
-> ...
-> out:
->         dev_info(rtd->card->dev, " %s <-> %s mapping ok\n", codec_dai->name,
->                 cpu_dai->name);
->         return ret;
-> 
-> Hence, soc-pcm.c never sets the ops for the 'internal' stream, which,
-> because it uses the dummy DAI, has both a playback and a capture
-> stream.
-> 
-> The above is the only place where the ops are set on the ALSA stream(s)
-> by ASoC, which means there's no way that the internal streams can ever
-> have a non-NULL ops pointer, and suggests a possible reason why I get
-> this oops.
+> That seems...  interesting.  It seems like this is fairly core
+> device functionality I'd expect the driver to just be able to
+> understand;  the main thing this property was doing was deciding if
+> the reset was needed. I'm not sure I see the benefit here?
 
-Ah, Ok. The OMAP4 ABE driver always had ops so never hit this (probably
-true for Qualcomm driver too). I think we need a check at some point so
-that we don't dereference this if no ops are set.
-
-Iiuc, there should be no harm in setting the ops (since ASoC checks for
-NULL) for either playback or capture as a workaround in the short term
-until the fix is upstream.   
-
-Liam
+Sorry, I'm confused here. In this case, the reset is something
+internal to the IP module, not sourced by an external reset
+controller, so there's no need to involve the reset controller
+bindings or subsystem.
