@@ -1,44 +1,30 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [PATCH 10/18] spi: s3c64xx: Do not require legacy DMA API in case of S3C64XX
-Date: Tue, 13 Aug 2013 01:49:53 +0200
-Message-ID: <2472314.6b8DcBdcjO@flatron>
-References: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com> <1376243970-6489-11-git-send-email-tomasz.figa@gmail.com> <20130812233641.GL6427@sirena.org.uk>
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [PATCH 1/16 v2] sound/soc/pxa/mioa701_wm9713.c: Avoid using
+ ARRAY_AND_SIZE(e) as a function argument
+Date: Tue, 13 Aug 2013 06:52:56 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1308130652080.1997@localhost6.localdomain6>
+References: <1376340564-7975-1-git-send-email-Julia.Lawall@lip6.fr> <20130812214050.GI6427@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130812233641.GL6427@sirena.org.uk>
+In-Reply-To: <20130812214050.GI6427@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, Dan Williams <djbw@fb.com>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>
+Cc: Julia Lawall <Julia.Lawall@lip6.fr>, Eric Miao <eric.y.miao@gmail.com>, robert.jarzmik@free.fr, kernel-janitors@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 13 of August 2013 00:36:41 Mark Brown wrote:
-> On Sun, Aug 11, 2013 at 07:59:22PM +0200, Tomasz Figa wrote:
-> > With support for amba-pl08x driver, on S3C64xx the generic DMA engine
-> > API can be used instead of the private s3c-dma interface.
+On Mon, 12 Aug 2013, Mark Brown wrote:
+
+> On Mon, Aug 12, 2013 at 10:49:24PM +0200, Julia Lawall wrote:
+> > From: Julia Lawall <Julia.Lawall@lip6.fr>
+> > 
+> > Replace ARRAY_AND_SIZE(e) in function argument position to avoid hiding the
+> > arity of the called function.
 > 
-> I'm still getting issues for SPI with this:
-> 
-> [   50.952845] s3c64xx-spi s3c6410-spi.0: Failed to get RX DMA channel
-> [   50.953520] spi_master spi0: failed to prepare transfer hardware
-> 
-> when I test (with -next with this series applied on top), this is from
-> the first transfer that tries to DMA - there's actually no RX data.  No
-> errors are reported by the DMA controller itself.  I'm also getting
-> crashes setting up the audio DMA while derferencecing the channel.
-> 
-> This is without DT - are there any hookups missing because of that?
+> What is the difference between this and the patch I applied the other
+> day?
 
-Hmm, strange.
+Sorry, it should have also removed the local definition of ARRAY_AND_SIZE?  
+I thought that was in the commit message.
 
-I've been testing this without any significant patches, like PWM, CCF or 
-DT support, just everything from the branch I pointed to and some board-
-specific patches to help in debugging.
-
-Anyway, this is the exact branch I've been using:
-
-git://github.com/tom3q/linux.git v3.12-pl080-devel
-
-Best regards,
-Tomasz
+julia
