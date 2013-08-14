@@ -1,74 +1,116 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 0/2] add sysfs for acpi interfaces of thinkpad hardware
- mute
-Date: Wed, 14 Aug 2013 09:43:13 +0200
-Message-ID: <520B3511.7020604@canonical.com>
-References: <1376458802-11923-1-git-send-email-alex.hung@canonical.com> <1376458937.30031.1.camel@x230> <CAJ=jqua8STZQideGbQTDh2W8iHcF4J9OJAC5tw-bkdBLLzsP2A@mail.gmail.com> <1376459647.30031.2.camel@x230> <CAJ=jqub1sRSzBRv_R6soDVAydRL+5nmA9-pMC4E+sgXhP6tbPw@mail.gmail.com> <1376460872.30031.4.camel@x230> <CAJ=jquaCHpBPKVYHKKCyMoih3NVCL8VmyiiN5Vy0UmTTTrwKjQ@mail.gmail.com> <1376463610.30031.6.camel@x230> <CAJ=jqubPzq+pwY9F4tMEFRHr6rG+-1Hxm++5L45AbpR6mfFeJw@mail.gmail.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v4 resent 1/2] ASoC: fsl: Add S/PDIF CPU
+	DAI driver
+Date: Wed, 14 Aug 2013 09:50:17 +0200
+Message-ID: <20130814075017.GE2324@pengutronix.de>
+References: <cover.1376309076.git.b42378@freescale.com>
+ <51808310dd97d2a35a28766ed7309f269521cafd.1376309076.git.b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
-In-Reply-To: <CAJ=jqubPzq+pwY9F4tMEFRHr6rG+-1Hxm++5L45AbpR6mfFeJw@mail.gmail.com>
-Sender: platform-driver-x86-owner@vger.kernel.org
-To: Alex Hung <alex.hung@canonical.com>
-Cc: Matthew Garrett <matthew.garrett@nebula.com>, Tim Chen <tim.chen119@canonical.com>, "ibm-acpi@hmh.eng.br" <ibm-acpi@hmh.eng.br>, "ibm-acpi-devel@lists.sourceforge.net" <ibm-acpi-devel@lists.sourceforge.net>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, YK <yk@canonical.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4A411261A42
+ for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 09:50:26 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <51808310dd97d2a35a28766ed7309f269521cafd.1376309076.git.b42378@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-(Added alsa-devel to CC)
-
-On 08/14/2013 09:16 AM, Alex Hung wrote:
-> Added in David and Tim who also has some ideas to share.
+On Mon, Aug 12, 2013 at 08:05:27PM +0800, Nicolin Chen wrote:
+> This patch add S/PDIF controller driver for Freescale SoC.
 > 
-> On Wed, Aug 14, 2013 at 3:00 PM, Matthew Garrett
-> <matthew.garrett@nebula.com> wrote:
->> On Wed, 2013-08-14 at 14:41 +0800, Alex Hung wrote:
->>> Hi Matthew,
->>>
->>> The problem is that thinkpad-acpi does not aware of mute is changed by
->>> either hotkey presses or in desktop.
->>
->> Ok, how about this. Register the LED with the kernel LED subsystem. Add
->> a new LED trigger for volume-mute. Have the HDA driver call that trigger
->> whenever the mute state changes.
->>
->> --
->> Matthew Garrett <matthew.garrett@nebula.com>
-> 
-> 
-> 
+> Signed-off-by: Nicolin Chen <b42378@freescale.com>
+> +
+> +Required properties:
+> +
+> +  - compatible : Compatible list, contains "fsl,<chip>-spdif". Using general
+> +  "fsl,fsl-spdif" will get the default SoC type -- imx6q-spdif.
+> +
+> +  - reg : Offset and length of the register set for the device.
+> +
+> +  - interrupts : Contains spdif interrupt.
+> +
+> +  - dmas : Generic dma devicetree binding as described in
+> +  Documentation/devicetree/bindings/dma/dma.txt.
+> +
+> +  - dma-names : Two dmas have to be defined, "tx" and "rx".
+> +
+> +  - clocks : Contains an entry for each entry in clock-names.
+> +
+> +  - clock-names : Includes the following entries:
+> +	name		type		comments
+> +	"core"		Required	The core clock of spdif controller
+> +	"rx"		Optional	Rx clock source for spdif record.
+> +					If absent, will use core clock.
+> +	"tx"		Optional	Tx clock source for spdif playback.
+> +					If absent, will use core clock.
+> +	"tx-32000"	Optional	Tx clock source for 32000Hz sample rate
+> +					playback. If absent, will use tx clock.
+> +	"tx-44100"	Optional	Tx clock source for 44100Hz sample rate
+> +					playback. If absent, will use tx clock.
+> +	"tx-48000"	Optional	Tx clock source for 48000Hz sample rate
+> +					playback. If absent, will use tx clock.
+> +
+> +  - tx-clksrc-names : The names for all available clock sources for tx, which
+> +  is also being listed in SoC reference manual, ClkSrc_Sel bit of SPDIF_SRPC.
+> +  And the name list would be different between different SoC. Use 'null' for
+> +  those unlisted names, and the max number of tx-clksrc-names should be 8.
+> +
+> +  - rx-clksrc-names : The names for all available clock sources for rx, which
+> +  is also being listed in SoC reference manual, TxClk_Source bit of SPDIF_STC.
+> +  And the name list would be different between different SoC. Use 'null' for
+> +  those unlisted names, and the max number of rx-clksrc-names should be 16.
+> +
+> +Optional properties:
+> +
+> +  - rx-clksrc-lock: This is a boolean property. If present, ClkSrc_Sel bit
+> +  of SPDIF_SRPC would be set a clock source that cares DPLL locked condition.
+> +
+> +Example1:
+> +
+> +spdif: spdif@02004000 {
+> +	compatible = "fsl,imx6q-spdif";
+> +	reg = <0x02004000 0x4000>;
+> +	interrupts = <0 52 0x04>;
+> +	dmas = <&sdma 14 18 0>,
+> +	       <&sdma 15 18 0>;
+> +	dma-names = "rx", "tx";
+> +
+> +	clocks = <&clks 197>;
+> +	clock-names = "core";
+> +	rx-clksrc-lock;
+> +	rx-clksrc-names =
+> +		"lock.ext", "lock.spdif", "lock.asrc",
+> +		"lock.spdif_ext", "lock.esai", "ext",
+> +		"spdif", "asrc", "spdif_ext", "esai",
+> +		"lock.mlb", "lock.mlb_phy", "mlb",
+> +		"mlb_phy";
+> +	tx-clksrc-names =
+> +		"xtal", "spdif", "asrc", "spdif_ext",
+> +		"esai", "ipg", "mlb", "mlb_phy";
 
-So, to take a wider grip on this issue.
+I had a hard time understanding what you are doing here.
 
-First, the hardware mute. Because this is directly connected to the
-internal speaker (and headphones?), it needs to turn into a ALSA
-kcontrol on the sound card that controls speaker and/or headphones. And
-it needs to named accordingly, e g "Speaker Playback Switch" if it
-controls the speaker only.
-Exactly how this is going to work out given the arbitrary module load
-order of snd-hda-intel and thinkpad-acpi, I'm not sure, but the way of
-creating another sound card (which I've seen on some thinkpads) just
-isn't working out for userspace.
+With this the clk names in arch/arm/mach-imx/clk-imx6q.c become an API
+between the Kernel and the devicetree. Don't do that.
 
-Second, about the mute LEDs and mic-mute LEDs, we currently have several
-interfaces to choose from:
- a) HP LEDs currently uses a ALSA kcontrol to control them. For Mute LED
-there is also a limited automatic control of this LED from kernel space
-(by default), so it follows the status of "Master Playback Switch" IIRC.
- b) thinkpad-acpi currently uses custom sysfs nodes to control the LEDs.
- c) and we also have the /sys/class/leds interface.
-There might be even more solutions.
+There is a standardized devicetree binding for clocks. Use it.
 
-It's important we get a consistent interfaces towards userspace for the
-LEDs. And we should also make sure we don't have a permissions problem:
-if we want the mute/mic-mute LED to follow the status of the currently
-selected sound card in PulseAudio, which IMO should be our goal, writes
-cannot be root-only.
-To have the HDA driver call into the LED subsystem is better than
-nothing, but in the end we would want the LEDs to follow whatever sound
-input/output the user currently uses, whether that is bluetooth, USB,
-HDMI, or internal audio.
-
+Sascha
 
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
