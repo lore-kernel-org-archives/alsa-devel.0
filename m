@@ -1,61 +1,63 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v4 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Wed, 14 Aug 2013 16:14:47 +0800
-Message-ID: <20130814081445.GC31141@S2101-09.ap.freescale.net>
-References: <1376308870-14232-1-git-send-email-b42378@freescale.com>
- <1376308870-14232-2-git-send-email-b42378@freescale.com>
- <CAOMZO5A7noEb98yuCPY6o2mf-FikFcMYiDLpg3huPKHMO7Fwdw@mail.gmail.com>
- <20130814032658.GA16915@S2101-09.ap.freescale.net>
- <20130814053016.GF31651@MrMyself>
- <20130814063931.GB31141@S2101-09.ap.freescale.net>
- <20130814063444.GG31651@MrMyself>
+From: Tomasz Figa <tomasz.figa@gmail.com>
+Subject: Re: [PATCH V4 0/4] Add i2s support on smdk5420
+Date: Wed, 14 Aug 2013 10:25:27 +0200
+Message-ID: <6538092.D4LPomiMyc@flatron>
+References: <1376300994-1679-1-git-send-email-padma.v@samsung.com> <20130813124440.GX6427@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe001.messaging.microsoft.com [213.199.154.204])
- by alsa0.perex.cz (Postfix) with ESMTP id 6060C261A42
- for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 10:14:43 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130814063444.GG31651@MrMyself>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, linuxppc-dev@lists.ozlabs.org, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, Fabio Estevam <festevam@gmail.com>
+Content-Type: multipart/signed; boundary="nextPart1928965.jBuVOadR8z"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20130813124440.GX6427@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, padma.kvr@gmail.com, kgene.kim@samsung.com, abrestic@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 14, 2013 at 02:34:45PM +0800, Nicolin Chen wrote:
-> On Wed, Aug 14, 2013 at 02:39:33PM +0800, Shawn Guo wrote:
-> > We only need to maintain those versions that require different
-> > programming model in the list.  For example, if S/PDIF on Vybrid
-> > is completely compatible with imx6q one and uses the exactly same
-> > programming model, we do not need to maintain a compatible string
-> > for Vybrid S/PDIF at all.  Instead, we only need to have something
-> > like below in Vybrid dts file, and S/PDIF driver will just work for it.
-> > 
-> > 	compatible = "fsl,vf600-spdif", "fsl,imx6q-spdif";
-> > 
-> > Shawn
-> 
-> Clear. Thank you for the explain.
-> 
-> Then I think I can merely remain "fsl,imx6q-spdif" here,
-> because all other cases should be completely compatible
-> with this one. They are only different in the clock source
-> names list, which's already being specified in dts file.
-> 
-> Please correct me if you think this still isn't proper.
 
-And we generally prefer to use the soc that firstly integrates the IP to
-name the compatible.  For IMX series, I think imx35 is the one, so we
-would name it "fsl,imx35-spdif".
+--nextPart1928965.jBuVOadR8z
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Shawn
+On Tuesday 13 of August 2013 13:44:40 Mark Brown wrote:
+> On Mon, Aug 12, 2013 at 03:19:50PM +0530, Padmavathi Venna wrote:
+> > Samsung has different versions of I2S introduced in different
+> > platforms. Each version has some new support added for multichannel,
+> > secondary fifo, s/w reset control, internal mux for rclk src clk and
+> > tdm support. Each newly added change has a quirk. So this patch adds
+> > all the required quirks as driver data and based on compatible string
+> > from dtsi fetches the quirks. This also adds i2s support on
+> > exynos5420.
+> 
+> Applied all these, thanks.
+
+Hmm, this series looks good to me too, except one thing. What about the 
+bisection breakage introduced by the hole between patches 1/4 and 4/4 
+(after the list of supported compatible changes in the driver and before 
+respective dts files are updated)?
+
+Best regards,
+Tomasz
+
+--nextPart1928965.jBuVOadR8z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAABAgAGBQJSCz8CAAoJEIv3Hb8G/XrudrAQAKPWQgcEj0XNAb5DViZzf93G
+8nNzFMDBfPAbzxdC1vgcmVsrIUZCYjWAcKelMHMsE/YLnywekzBz/ZvA45xsQmXG
+pli8hukdgaIP5uF7Q5MEsLMITKP+tplaiBDy2oRuhJV/fJ5kM4sPAQAcNYUYWoAH
+ay8L3hjBxrm+GUVdVHcnNF2tncDZ+zofdPKX1D0ZSCrdysKxrK8A00EiYbxhwsPj
+Dz6jrkOnYSqzbQjFPonkagGfdYrjnXbNlYQSB25vh79o+Egk9eOL59rT4SqGxhAA
+8FRjKlBXchUJEfl1z9ZWsTqXarwJaNB9pKFEAU1veTj42qVM5JpnevZ6kWuYC4T0
+IZ44ZC3H41BB0YE70ob+h4Mjugt2pxsoeIWe3YJ3Emim/E7VOd2NoMb9QDm3Rjje
+j4Y2KCLu9Iw+kT1uGip0MszVdcotlArEsHRMKEw3czgDIu+rYz8retDkz1fzgQZe
+0tvqDlyXjqhc52DMG5Whm1NtQ3mMkt8CxxJQnjTdZMGqJ1RcMojoSOThPi8jqA0g
+TbTYU3kZaCM/323abceQW1knqCvj0MVmatD0/5yoiTrtflGe33KBX5FTIqfUzP9P
+YNX1ERkEXf7jbcbGo5vgS6IhGzptPDuaEYDNm4qDa2fMCumfh7/i1IRTbRVsnqx8
+oClnBI5HN2moVAJ7Oad0
+=MABX
+-----END PGP SIGNATURE-----
+
+--nextPart1928965.jBuVOadR8z--
