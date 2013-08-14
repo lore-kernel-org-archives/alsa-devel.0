@@ -1,34 +1,42 @@
-From: Andrew Bresticker <abrestic@chromium.org>
-Subject: Re: [PATCH 2/4] clk: exynos-audss: allow input clocks to be specified
- in device tree
-Date: Wed, 14 Aug 2013 13:11:18 -0700
-Message-ID: <CAL1qeaFZH+3D26Vis4rUqCKK6Un-eHBv1wckYpPR-fac_gz6qA@mail.gmail.com>
-References: <1373458313-18970-1-git-send-email-padma.v@samsung.com>
-	<1373458313-18970-3-git-send-email-padma.v@samsung.com>
-	<1610421.OFFn8rqlxt@amdc1227>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1610421.OFFn8rqlxt@amdc1227>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tomasz Figa <t.figa@samsung.com>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, Padma Venkat <padma.kvr@gmail.com>, sbkim73@samsung.com, "broonie@kernel.org" <broonie@kernel.org>, Kukjin Kim <kgene.kim@samsung.com>, Mike Turquette <mturquette@linaro.org>, Doug Anderson <dianders@chromium.org>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: [PATCH] ASoC: tegra: fix Tegra30 I2S capture parameter setup
+Date: Wed, 14 Aug 2013 14:24:16 -0600
+Message-ID: <1376511856-28044-1-git-send-email-swarren@wwwdotorg.org>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, Stephen Warren <swarren@nvidia.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Tomasz,
+From: Stephen Warren <swarren@nvidia.com>
 
-> Well, this is basically how it should be done, but in current state of
-> clock core I can see a problem: can we really rely on the order of clock
-> initialization? I mean, we can't defer initialization of particular clock
-> controller until all external clocks it needs are available, because there
-> is no probing involved here.
+The Tegra30 I2S driver was writing the AHUB interface parameters to the
+playback path register rather than the capture path register. This
+caused the capture parameters not to be configured at all, so if
+capturing using non-HW-default parameters (e.g. 16-bit stereo rather
+than 8-bit mono) the audio would be corrupted.
 
-Right, we can't.  The reason I added the device-tree lookup of input
-clocks was because Exynos5420 has different names for several of the
-input clocks to the audio block.  We already need a separate
-compatibility string because of the ADMA clock, so we could just use
-that to determine the parent clock names.  It's not ideal, but it's a
-workaround for the initialization order issue.  Thoughts?
+With this fixed, audio capture from an analog microphone works correctly
+on the Cardhu board.
 
-Thanks,
-Andrew
+Cc: stable@vger.kernel.org
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+---
+ sound/soc/tegra/tegra30_i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index d04146c..47565fd04 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -228,7 +228,7 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		reg = TEGRA30_I2S_CIF_RX_CTRL;
+ 	} else {
+ 		val |= TEGRA30_AUDIOCIF_CTRL_DIRECTION_TX;
+-		reg = TEGRA30_I2S_CIF_RX_CTRL;
++		reg = TEGRA30_I2S_CIF_TX_CTRL;
+ 	}
+ 
+ 	regmap_write(i2s->regmap, reg, val);
+-- 
+1.8.1.5
