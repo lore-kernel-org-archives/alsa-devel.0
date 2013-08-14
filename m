@@ -1,73 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: wm8960: Fix ADC volume bits
-Date: Wed, 14 Aug 2013 19:19:14 +0100
-Message-ID: <20130814181914.GI2401@sirena.org.uk>
-References: <1376442946-2803-1-git-send-email-mahaijuns@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: wm8960: Fix shared LRCLK support
+Date: Wed, 14 Aug 2013 19:22:12 +0100
+Message-ID: <20130814182212.GJ2401@sirena.org.uk>
+References: <1376442946-2803-2-git-send-email-mahaijuns@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5631915769564348033=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B60D6261A73
- for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 20:19:17 +0200 (CEST)
-In-Reply-To: <1376442946-2803-1-git-send-email-mahaijuns@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="P7Tqkd/m/Jnohiaz"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1376442946-2803-2-git-send-email-mahaijuns@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Ma Haijun <mahaijuns@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5631915769564348033==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ah9ph+G2cWRpKogL"
-Content-Disposition: inline
-
-
---Ah9ph+G2cWRpKogL
+--P7Tqkd/m/Jnohiaz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Aug 14, 2013 at 09:15:38AM +0800, Ma Haijun wrote:
-> Signed-off-by: Ma Haijun <mahaijuns@gmail.com>
+On Wed, Aug 14, 2013 at 09:15:39AM +0800, Ma Haijun wrote:
+> Shared LRCLK initialization does not survive wm8960_reset,
+> so place it after the reset.
 
-Applied, thanks.
+This is a bit odd - why is it a good idea to be doing a reset and
+shouldn't there be a register cache sync to restore the setting anyway?
+I'm not sure this is the right fix for the prolem, it could just be
+fixing one aspect of a wider issue.
 
---Ah9ph+G2cWRpKogL
+--P7Tqkd/m/Jnohiaz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSC8ofAAoJELSic+t+oim9ioEP+gKDMBW6H57ZZ1skQuga/udU
-/o0FyzT0fgEsF2wnT7t6oUCe4ekDRgr6GV7sQxL29lCnt/ukAPjqpOXmNSmGjPDp
-3W0gHu3b3YG0RbXshrSCAnPv1U3wYYdSquURMcOy63ASuxY8GIVOHdfe1s+FzLrV
-WrEsa8RvgOizSSWYYkT7MS2lp0gB/DJkRDlfyILbfCdHbcLeKiVLrIueh+5jAjCl
-ahUNotem9iRvfzAQ5hUG8kI48S7hu1HPPJeVWl5/VxZbT5Je2TMC4FwKzmYR01pH
-bMrkVQLxonVm18X2ljGB7MaU1eRlDpzM3Z1T0GTs07/a2J9780b1xxG9EKBudAcx
-cepLUo+QkBAAsRtBrZWCPm1j9cRTkQY9o5+0AHFJEBsCoSh5SMem1v9TmxAf4kp+
-zdRJYhEptJy+dggC7sbblUIBfueZq/pi3BRjLNCDIrGroQxMT3k367leaMLaYj0D
-R5flYR296XDZUo5lgw9Lh+uNLjo31lCHHNB3df7OxUHfNGi7Dl/LCKVG0wrrPPHb
-z49ZIIADYzPGWEc3isRReH9PNcPPVkaTzew3v3DF3HO4nj+1Le5W4a1nesdguCfM
-k5h+QlC0jvHi3AhuAFR6+Czcy3MV/9v5Qip8HBEOE+6ZTXHHN3l217EF1eNpFhG7
-IPz7F/fa8N/P11yN19wH
-=SyBa
+iQIcBAEBAgAGBQJSC8rRAAoJELSic+t+oim9d7AQAIOAmPIcYY1dIdJU2Cm2T4Ef
+vLFcFXFROEZKgYKqF+vzOID9WGtnu5Hqai0Pp77HOz1zWjGmSyTSlxivxj0l2tO7
+8UiN/8A6TmnMEkNc5/JTk5qgQLhU3iEUx23FjMF4r9Vh5KnE54VOU+cFRMH95Jo2
+HRtrVEvWf2P4YL2JmSkos4QzuvyIZspjE0FZ3CnPFdkLNDuTzzvM4yA5Ddx4iehh
+ytPjS4QY5icOz9qVCsRYVT8R46aZmvCIvGlmvlnYJtuN2eMONgjk5QYOucb7DYDO
+lh5azMBfbJ5HXV7acDCSkofuFQ11vnsVUnvoRvrv3GX8GSMhnfkXJEk5YboN1Agx
+yI5nC6Vkm3fptRaNUU25M7vCpFa/Qjm3g32vXZ1+/h1hEl4y5+EogRAtEKVtUnZB
+XW6q4ghf9FGuKg9u5Ygps41a+gE2ztc1v2+sC7W84hgt3Ua/51W3/XI7euYDI8q4
+/Yf7OtdyWe/aXlWtTRfx+NML+YFcoNJErndKSNabHMPTcTvXeIa5ogErQz/kAlgj
+SMloc8ADbIg7X1PMId3ZIxgQomgqUgUAIRRL9STaOwqMAET+CIsBZ9GbrzZVDm1i
+bGh7FG5jgtKE1S3kugQNlaOz2dbbxTmWFjDZpQJaNhJ3alJZhxhqYJIVT79AKbIi
+cXmqZaIG5LkvVDVpyeZg
+=JfD7
 -----END PGP SIGNATURE-----
 
---Ah9ph+G2cWRpKogL--
-
---===============5631915769564348033==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5631915769564348033==--
+--P7Tqkd/m/Jnohiaz--
