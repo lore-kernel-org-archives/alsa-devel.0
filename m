@@ -1,58 +1,63 @@
-From: Ma Haijun <mahaijuns@gmail.com>
-Subject: [PATCH 2/2] ASoC: wm8960: Fix shared LRCLK support
-Date: Wed, 14 Aug 2013 09:15:39 +0800
-Message-ID: <1376442946-2803-2-git-send-email-mahaijuns@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Joel Fernandes <joelf@ti.com>
+Subject: Re: Query on Audio DMA using DMAEngine
+Date: Tue, 13 Aug 2013 23:30:54 -0500
+Message-ID: <520B07FE.6060006@ti.com>
+References: <083BC63EECB6FD41B8E81CF7FD87CC0F2E4F1488@DLEE08.ent.ti.com>
+ <51D01F31.3010602@metafoo.de> <51D11D64.3070805@topic.nl>
+ <51D24A01.2050709@ti.com> <51D26A18.8040903@topic.nl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8B41265383
+ for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 06:47:39 +0200 (CEST)
+In-Reply-To: <51D26A18.8040903@topic.nl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mike Looijmans <mike.looijmans@topic.nl>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
-Shared LRCLK initialization does not survive wm8960_reset,
-so place it after the reset.
+Hi Mike,
 
-Signed-off-by: Ma Haijun <mahaijuns@gmail.com>
----
- sound/soc/codecs/wm8960.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+On 07/02/2013 12:50 AM, Mike Looijmans wrote:
+[..]
+> 
+>> Either way I'm sure your multi-slot approach is superior, but I don't
+>> see how
+>> you can get away with not updating the DMA addresses on every IRQ with
+>> the
+>> current davinci-pcm or EDMA controller (Unless you use a complicated
+>> mechanism
+>> like ping-pong where the address updates take care of itself). If you
+>> are using
+>> a set of chained slots, you only have so many slots so you have to
+>> continuously
+>> change addresses of the slots at some point or the other for a large
+>> transfer.
+> 
+> I use a chain like this:
+> 
+> DMA1 -> DMA2 -> DMA... -> DMA1
+> 
+> This meant I had to use a DMA PARAM slot for every "period". The OMAP
+> L138 has 128 of those slots, so it's no problem to use a bunch of them.
+> Because the chain is cyclic, there is no need to update any DMA
+> parameter while running. All that ALSA needs to do is empty the buffer
+> before the cycle completes and the current position gets overwritten.
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 368d39f..b606dd3 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -990,6 +990,9 @@ static int wm8960_probe(struct snd_soc_codec *codec)
- 
- 	wm8960->set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
-+	if (pdata && pdata->shared_lrclk)
-+		snd_soc_update_bits(codec, WM8960_ADDCTL2, 0x4, 0x4);
-+
- 	/* Latch the update bits */
- 	snd_soc_update_bits(codec, WM8960_LINVOL, 0x100, 0x100);
- 	snd_soc_update_bits(codec, WM8960_RINVOL, 0x100, 0x100);
-@@ -1041,7 +1044,6 @@ static const struct regmap_config wm8960_regmap = {
- static int wm8960_i2c_probe(struct i2c_client *i2c,
- 			    const struct i2c_device_id *id)
- {
--	struct wm8960_data *pdata = dev_get_platdata(&i2c->dev);
- 	struct wm8960_priv *wm8960;
- 	int ret;
- 
-@@ -1054,16 +1056,6 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
- 	if (IS_ERR(wm8960->regmap))
- 		return PTR_ERR(wm8960->regmap);
- 
--	if (pdata && pdata->shared_lrclk) {
--		ret = regmap_update_bits(wm8960->regmap, WM8960_ADDCTL2,
--					 0x4, 0x4);
--		if (ret != 0) {
--			dev_err(&i2c->dev, "Failed to enable LRCM: %d\n",
--				ret);
--			return ret;
--		}
--	}
--
- 	i2c_set_clientdata(i2c, wm8960);
- 
- 	ret = snd_soc_register_codec(&i2c->dev,
--- 
-1.8.1.2
+Replying to this thread after a long time but just wondering, how do you
+guarantee in your implementation that DMA will not empty the buffer
+faster than it is filled?
+
+Thanks,
+
+-Joel
