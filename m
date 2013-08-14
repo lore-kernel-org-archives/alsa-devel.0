@@ -1,81 +1,143 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Query on Audio DMA using DMAEngine
-Date: Wed, 14 Aug 2013 13:06:24 +0100
-Message-ID: <20130814120624.GQ6427@sirena.org.uk>
-References: <083BC63EECB6FD41B8E81CF7FD87CC0F2E4F1488@DLEE08.ent.ti.com>
- <51D01F31.3010602@metafoo.de> <51D11D64.3070805@topic.nl>
- <51D24A01.2050709@ti.com> <51D26A18.8040903@topic.nl>
- <520B07FE.6060006@ti.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH v4 resent 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
+Date: Wed, 14 Aug 2013 14:06:24 +0200
+Message-ID: <1376481984.3994.20.camel@pizza.hi.pengutronix.de>
+References: <cover.1376309076.git.b42378@freescale.com>
+ <51808310dd97d2a35a28766ed7309f269521cafd.1376309076.git.b42378@freescale.com>
+ <20130814075017.GE2324@pengutronix.de> <20130814084801.GH31651@MrMyself>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8471702504642973587=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 37905265493
- for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 14:06:30 +0200 (CEST)
-In-Reply-To: <520B07FE.6060006@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Joel Fernandes <joelf@ti.com>
-Cc: Mike Looijmans <mike.looijmans@topic.nl>, alsa-devel@alsa-project.org, lars@metafoo.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <20130814084801.GH31651@MrMyself>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Nicolin Chen <b42378@freescale.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, Sascha Hauer <s.hauer@pengutronix.de>, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
+Am Mittwoch, den 14.08.2013, 16:48 +0800 schrieb Nicolin Chen:
+> Hi Sascha,
+> 
+> On Wed, Aug 14, 2013 at 09:50:17AM +0200, Sascha Hauer wrote:
+> > > +  - tx-clksrc-names : The names for all available clock sources for tx, which
+> > > +  is also being listed in SoC reference manual, ClkSrc_Sel bit of SPDIF_SRPC.
+> > > +  And the name list would be different between different SoC. Use 'null' for
+> > > +  those unlisted names, and the max number of tx-clksrc-names should be 8.
+> > > +
+> > > +  - rx-clksrc-names : The names for all available clock sources for rx, which
+> > > +  is also being listed in SoC reference manual, TxClk_Source bit of SPDIF_STC.
+> > > +  And the name list would be different between different SoC. Use 'null' for
+> > > +  those unlisted names, and the max number of rx-clksrc-names should be 16.
+> > > +
+> > > +Optional properties:
+> > > +
+> > > +  - rx-clksrc-lock: This is a boolean property. If present, ClkSrc_Sel bit
+> > > +  of SPDIF_SRPC would be set a clock source that cares DPLL locked condition.
+> > > +
+> > > +Example1:
+> > > +
+> > > +spdif: spdif@02004000 {
+> > > +	clocks = <&clks 197>;
+> > > +	clock-names = "core";
+> > > +	rx-clksrc-lock;
+> > > +	rx-clksrc-names =
+> > > +		"lock.ext", "lock.spdif", "lock.asrc",
+> > > +		"lock.spdif_ext", "lock.esai", "ext",
+> > > +		"spdif", "asrc", "spdif_ext", "esai",
+> > > +		"lock.mlb", "lock.mlb_phy", "mlb",
+> > > +		"mlb_phy";
+> > > +	tx-clksrc-names =
+> > > +		"xtal", "spdif", "asrc", "spdif_ext",
+> > > +		"esai", "ipg", "mlb", "mlb_phy";
+> > 
+> > I had a hard time understanding what you are doing here.
+> > 
+> > With this the clk names in arch/arm/mach-imx/clk-imx6q.c become an API
+> > between the Kernel and the devicetree. Don't do that.
+> > 
+> > There is a standardized devicetree binding for clocks. Use it.
+>  
+> I think I should first explain to you what this part is doing:
+> The driver needs to set Clk_source bit for TX/RX to select the 
+> clock from a clock mux. The names listed above are those of the 
+> clocks connecting to the mux, while they are not only internal 
+> clocks which're included in clk-imx6q.c but also external ones,
+> an on-board external osc for example.
+> 
+> The driver does get the clock by using the standard DT binding,
+> see the 'clocks = <&clks 197>' above, and then compare this
+> obtained clock->name with the name list to decide which value
+> should be set to the Clk_source bit.
+> 
+> ==================================================================
+> ClkSrc_Sel from i.MX6Q reference manual:
+> 
+> Clock source selection, all other settings not shown are reserved:
+> 0000 if (DPLL Locked) SPDIF_RxClk else extal
+> 0001 if (DPLL Locked) SPDIF_RxClk else spdif_clk
+> 0010 if (DPLL Locked) SPDIF_RxClk else asrc_clk
+> 0011 if (DPLL Locked) SPDIF_RxClk else spdif_extclk
+> 0100 if (DPLL Locked) SPDIF_Rxclk else esai_hckt
+> 0101 extal_clk
+> 0110 spdif_clk
+> 0111 asrc_clk
+> 1000 spdif_extclk
+> 1001 esai_hckt
+> 1010 if (DPLL Locked) SPDIF_RxClk else mlb_clk
+> ==================================================================
 
---===============8471702504642973587==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JOUqYYSeXsqzCnuM"
-Content-Disposition: inline
+==================================================================
+>From i.MX53 reference manual:
 
+0000 if (DPLL Locked) SPDIF_RxClk else extal
+0001 if (DPLL Locked) SPDIF_RxClk else spdif_clk
+0011 if (DPLL Locked) SPDIF_RxClk else asrc_clk
+0100 if (DPLL Locked) SPDIF_Rxclk else esai_hckt
+0101 extal_clk
+0110 spdif_clk
+1000 asrc_clk
+1001 esai_hckt
+1010 if (DPLL Locked) SPDIF_RxClk else mlb_clk
+1011 if (DPLL Locked) SPDIF_RxClk else camp_clk
+1100 mkb_clk
+1101 camp_clk
+==================================================================
 
---JOUqYYSeXsqzCnuM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+To me this looks like the device tree should just contain the list of
+unique clock inputs using phandles.
+	/* for i.MX6Q: */
+	clocks = <&...>;
+	clock-names = "xtal", "spdif", "asrc",
+	              "spdif_ext", "esai", "mlb";
 
-On Tue, Aug 13, 2013 at 11:30:54PM -0500, Joel Fernandes wrote:
+	/* for i.MX53: */
+	clocks = <&...>;
+	clock-names = "xtal", "spdif", "asrc",
+	              "esai", "mlb", "camp";
 
-> Replying to this thread after a long time but just wondering, how do you
-> guarantee in your implementation that DMA will not empty the buffer
-> faster than it is filled?
+The driver could contain this list of named inputs to the multiplexer
+and the DPLL locking information for each SoC version. The per-clock
+DPLL locking bit shouldn't be in the device tree at all.
 
-Userspace is ultimately responsible for supplying data - if the
-application can't keep up then the application should get an underrun
-reported and restart.
+> So the name list here basically is not being used to obtain a
+> clock like what standardized DT binding does but to provide the
+> driver a full list to look up which value should be exactly used
+> according to the obtained clock.
+> 
+> I think I should revise the binding doc for these two lists. It 
+> might be hard to explain within that kinda short paragraph. 
+> 
+> Surely, if I misunderstand your point, please correct me. And
+> if you have any sage idea, please guide me.
 
---JOUqYYSeXsqzCnuM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSC3K9AAoJELSic+t+oim9NHwP/1kK9scKXmxQOQb/HOTCVcWu
-/r0hV4vLELCm9dbzhQ1ScbsDZ+rFX7Z84N0ugoSwV2cBf8McpsqJysKlhCs381oZ
-21znzriePnj1/EJ3qZd6hfYaFGsLaM0rewaPQ/mpJH2wM8RhFvOQmZCNy8aIhpD2
-8R8ac8/9gnkZ1PnmpuUEnd4f7HYxK5WU43yM33esu9OtvxgeI7yrQjck1Et9YBjp
-gDhnporz2pCgAAGIlgJZgifi4ek6sIOlN2BSYxk2tuExeDn+f4BV0j6MPTVzVKqf
-e1QjPYAP6Xjk5ynvUAEYBL3yLHVvG/ukgyzJTQ28QVlRRGvePCR/ndtERvw4LJBY
-f+J8paFYUU3qivnr4rwmzxzXarg0MAEnNle/TmEFPYaSNTpOoNQcsNrryyENccug
-Ewm/DS5zK7J7UH/4OWTGYfwlKWNu2PiRoFDhYed1nlLHTaQqkD1d6ZaUJq5gXo4x
-QzZowlVxZHrl5bPLNrmj0gPSf6YUnOaRBctHHSeh7sz9xMXiGg68HdwG/wivOhHn
-9uuyR03Uh7B8fPNkpdiieUfVAgIJUrltC1IBxqIKzj0CMcOJB1+X8JCmM3eYqeWs
-yA5HiZozcXD1LufPUADLIYWZoBVRAR/HMapeVkNh7Mk7cL3rSY+9QdfSB3GogNOe
-m/HmKDJNVwUCjdFOKoHv
-=gkPq
------END PGP SIGNATURE-----
-
---JOUqYYSeXsqzCnuM--
-
---===============8471702504642973587==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8471702504642973587==--
+regards
+Philipp
