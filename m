@@ -1,147 +1,106 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v5 1/1] ASoc: kirkwood: add DT support to the mvebu audio
- subsystem
-Date: Wed, 14 Aug 2013 12:27:33 +0200
-Message-ID: <20130814122733.5c0fd2cb@armhf>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: Re: [PATCH v4 resent 1/2] ASoC: fsl: Add S/PDIF CPU
+ DAI driver
+Date: Wed, 14 Aug 2013 18:23:46 +0800
+Message-ID: <20130814102346.GK31651@MrMyself>
+References: <cover.1376309076.git.b42378@freescale.com>
+ <51808310dd97d2a35a28766ed7309f269521cafd.1376309076.git.b42378@freescale.com>
+ <20130814075017.GE2324@pengutronix.de>
+ <20130814084801.GH31651@MrMyself>
+ <20130814095652.GX26614@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from db8outboundpool.messaging.microsoft.com
+ (mail-db8lp0184.outbound.messaging.microsoft.com [213.199.154.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A8E226546E
+ for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 12:39:44 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130814095652.GX26614@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds DT support to the audio subsystem of the mvebu family
-(Kirkwood, Dove, Armada 370).
+Hi,
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
-This patch does not add any new function as S/PDIF or DPCM support.
----
- .../devicetree/bindings/sound/mvebu-audio.txt      | 29 ++++++++++++++=
-++++++++
- sound/soc/kirkwood/kirkwood-i2s.c                  | 26 ++++++++++++++=
-+++-----
- 2 files changed, 49 insertions(+), 6 deletions(-)
+On Wed, Aug 14, 2013 at 11:56:52AM +0200, Sascha Hauer wrote:
+> > I think I should first explain to you what this part is doing:
+> > The driver needs to set Clk_source bit for TX/RX to select the 
+> > clock from a clock mux. The names listed above are those of the 
+> > clocks connecting to the mux, while they are not only internal 
+> > clocks which're included in clk-imx6q.c but also external ones,
+> > an on-board external osc for example.
+> > 
+> > The driver does get the clock by using the standard DT binding,
+> > see the 'clocks = <&clks 197>' above, and then compare this
+> > obtained clock->name with the name list to decide which value
+> > should be set to the Clk_source bit.
+> > 
+> > ==================================================================
+> > ClkSrc_Sel from i.MX6Q reference manual:
+> > 
+> > Clock source selection, all other settings not shown are reserved:
+> > 0000 if (DPLL Locked) SPDIF_RxClk else extal
+> > 0001 if (DPLL Locked) SPDIF_RxClk else spdif_clk
+> > 0010 if (DPLL Locked) SPDIF_RxClk else asrc_clk
+> > 0011 if (DPLL Locked) SPDIF_RxClk else spdif_extclk
+> > 0100 if (DPLL Locked) SPDIF_Rxclk else esai_hckt
+> > 0101 extal_clk
+> > 0110 spdif_clk
+> > 0111 asrc_clk
+> > 1000 spdif_extclk
+> > 1001 esai_hckt
+> > 1010 if (DPLL Locked) SPDIF_RxClk else mlb_clk
+> > ==================================================================
+> > 
+> > So the name list here basically is not being used to obtain a
+> > clock like what standardized DT binding does but to provide the
+> > driver a full list to look up which value should be exactly used
+> > according to the obtained clock.
+> > 
+> > I think I should revise the binding doc for these two lists. It 
+> > might be hard to explain within that kinda short paragraph. 
+> > 
+> > Surely, if I misunderstand your point, please correct me. And
+> > if you have any sage idea, please guide me.
+> 
+> Something like this:
+> 
+> clocks = <&clks 197>, <&clks 3>, <&clks 197>, <&clks 107>, <&clks SPDIF_EXT>,
+>          <&clks 118>, <&clks 62>, <&clks 139>, <&clks MLB_PHY>
+> clock-names = "core", "rxtx0", "rxtx1", "rxtx2", "rxtx3", "rxtx4", "rxtx5", "rxtx6", "rxtx7"
+> 
+> This describes the different input clocks to the spdif core and also
+> gives a hint to the array index (rxtx_n_) to use.
 
-diff --git a/Documentation/devicetree/bindings/sound/mvebu-audio.txt b/=
-Documentation/devicetree/bindings/sound/mvebu-audio.txt
-new file mode 100644
-index 0000000..7e5fd37
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mvebu-audio.txt
-@@ -0,0 +1,29 @@
-+* mvebu (Kirkwood, Dove, Armada 370) audio controller
-+
-+Required properties:
-+
-+- compatible: "marvell,mvebu-audio"
-+
-+- reg: physical base address of the controller and length of memory ma=
-pped
-+  region.
-+
-+- interrupts: list of two irq numbers.
-+  The first irq is used for data flow and the second one is used for e=
-rrors.
-+
-+- clocks: one or two phandles.
-+  The first one is mandatory and defines the internal clock.
-+  The second one is optional and defines an external clock.
-+
-+- clock-names: names associated to the clocks:
-+	"internal" for the internal clock
-+	"extclk" for the external clock
-+
-+Example:
-+
-+i2s1: audio-controller@b4000 {
-+	compatible =3D "marvell,mvebu-audio";
-+	reg =3D <0xb4000 0x2210>;
-+	interrupts =3D <21>, <22>;
-+	clocks =3D <&gate_clk 13>;
-+	clock-names =3D "internal";
-+};
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c.next b/sound/soc/kirkwoo=
-d/kirkwood-i2s.c
-index e5f3f7a..a4170b4 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c.next
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -22,6 +22,8 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <linux/platform_data/asoc-kirkwood.h>
-+#include <linux/of.h>
-+
- #include "kirkwood.h"
-=20
- #define DRV_NAME	"mvebu-audio"
-@@ -453,6 +455,7 @@ static int kirkwood_i2s_dev_probe(struct platform_d=
-evice *pdev)
- 	struct snd_soc_dai_driver *soc_dai =3D &kirkwood_i2s_dai;
- 	struct kirkwood_dma_data *priv;
- 	struct resource *mem;
-+	struct device_node *np =3D pdev->dev.of_node;
- 	int err;
-=20
- 	priv =3D devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-@@ -473,14 +476,16 @@ static int kirkwood_i2s_dev_probe(struct platform=
-_device *pdev)
- 		return -ENXIO;
- 	}
-=20
--	if (!data) {
--		dev_err(&pdev->dev, "no platform data ?!\n");
-+	if (np) {
-+		priv->burst =3D 128;		/* might be 32 or 128 */
-+	} else if (data) {
-+		priv->burst =3D data->burst;
-+	} else {
-+		dev_err(&pdev->dev, "no DT nor platform data ?!\n");
- 		return -EINVAL;
- 	}
-=20
--	priv->burst =3D data->burst;
--
--	priv->clk =3D devm_clk_get(&pdev->dev, NULL);
-+	priv->clk =3D devm_clk_get(&pdev->dev, np ? "internal" : NULL);
- 	if (IS_ERR(priv->clk)) {
- 		dev_err(&pdev->dev, "no clock\n");
- 		return PTR_ERR(priv->clk);
-@@ -507,7 +512,7 @@ static int kirkwood_i2s_dev_probe(struct platform_d=
-evice *pdev)
- 	priv->ctl_rec =3D KIRKWOOD_RECCTL_SIZE_24;
-=20
- 	/* Select the burst size */
--	if (data->burst =3D=3D 32) {
-+	if (priv->burst =3D=3D 32) {
- 		priv->ctl_play |=3D KIRKWOOD_PLAYCTL_BURST_32;
- 		priv->ctl_rec |=3D KIRKWOOD_RECCTL_BURST_32;
- 	} else {
-@@ -552,12 +557,21 @@ static int kirkwood_i2s_dev_remove(struct platfor=
-m_device *pdev)
- 	return 0;
- }
-=20
-+#ifdef CONFIG_OF
-+static struct of_device_id mvebu_audio_of_match[] =3D {
-+	{ .compatible =3D "marvell,mvebu-audio" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, mvebu_audio_of_match);
-+#endif
-+
- static struct platform_driver kirkwood_i2s_driver =3D {
- 	.probe  =3D kirkwood_i2s_dev_probe,
- 	.remove =3D kirkwood_i2s_dev_remove,
- 	.driver =3D {
- 		.name =3D DRV_NAME,
- 		.owner =3D THIS_MODULE,
-+		.of_match_table =3D of_match_ptr(mvebu_audio_of_match),
- 	},
- };
-=20
+Thank you for the idea, and..hmm..I'm a bit confused.. Is this really
+a nicer way?
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+Actually the rx clock list and tx clock list are totally different.
+So doing this I have to list, in the maximum case, 24 (8 + 16) clock
+phandles for these two lists. And plussing another 6 I've listed in
+this binding doc -- thus there are totally 30 clock phanldes. But
+the 24 of 30 are only used to get two indexes.
+
+I think I need a little help here to understand why this is better.
+It looks more complicated to me.
+
+Creating the two name lists just because I can describe them in the 
+dtsi of SoC, since they are totally fixed and identical to the SoC
+reference manual, while the clocks area can be remained for users
+to select the actual clocks (core/rx/tx/tx-32000/tx-44100/tx-48000),
+so they can configure these clocks in dts file of a specific board,
+and they don't need to touch the name lists any more.
+
+Thank you,
+Nicolin Chen
