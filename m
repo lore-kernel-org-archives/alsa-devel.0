@@ -1,49 +1,70 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: [PATCH] ASoC: tegra: support a Mic Jack in the Tegra+RT5640 machine driver
-Date: Wed, 14 Aug 2013 14:26:29 -0600
-Message-ID: <1376511989-28187-1-git-send-email-swarren@wwwdotorg.org>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ian.campbell-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 0/2] add sysfs for acpi interfaces of thinkpad hardware
+ mute
+Date: Wed, 14 Aug 2013 22:36:34 +0200
+Message-ID: <520BEA52.5030705@canonical.com>
+References: <1376458802-11923-1-git-send-email-alex.hung@canonical.com>  <1376458937.30031.1.camel@x230>  <CAJ=jqua8STZQideGbQTDh2W8iHcF4J9OJAC5tw-bkdBLLzsP2A@mail.gmail.com>  <1376459647.30031.2.camel@x230>  <CAJ=jqub1sRSzBRv_R6soDVAydRL+5nmA9-pMC4E+sgXhP6tbPw@mail.gmail.com>  <1376460872.30031.4.camel@x230>  <CAJ=jquaCHpBPKVYHKKCyMoih3NVCL8VmyiiN5Vy0UmTTTrwKjQ@mail.gmail.com>  <1376463610.30031.6.camel@x230>  <CAJ=jqubPzq+pwY9F4tMEFRHr6rG+-1Hxm++5L45AbpR6mfFeJw@mail.gmail.com>  <520B3511.7020604@canonical.com> <1376466691.30031.14.camel@x230>  <520B4D71.6070109@canonical.com> <1376492217.28002.1.camel@x230.lan>  <520BE01F.9090402@canonical.com> <1376510744.28002.6.camel@x230.lan>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+In-Reply-To: <1376510744.28002.6.camel@x230.lan>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: Matthew Garrett <matthew.garrett@nebula.com>
+Cc: Alex Hung <alex.hung@canonical.com>, Tim Chen <tim.chen119@canonical.com>, "ibm-acpi@hmh.eng.br" <ibm-acpi@hmh.eng.br>, "ibm-acpi-devel@lists.sourceforge.net" <ibm-acpi-devel@lists.sourceforge.net>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, YK <yk@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+On 08/14/2013 10:05 PM, Matthew Garrett wrote:
+> On Wed, 2013-08-14 at 21:53 +0200, David Henningsson wrote:
+>> On 08/14/2013 04:57 PM, Matthew Garrett wrote:
+>>> On Wed, 2013-08-14 at 11:27 +0200, David Henningsson wrote:
+>>>
+>>>> The privacy issue is interesting, but I don't see a practical way of
+>>>> implementing things that would protect us against compromised userspaces.
+>>>
+>>> That's pretty easy - just tie the LED control to the HDA device in-kernel.
+>>>
+>>
+>> Well, my point was that the compromised userspace could still record
+>> from other possibly connected microphones (such as USB or bluetooth
+>> headsets).
+> 
+> Ok, true. It'd need to be at a higher level than HDA to make this
+> consistent. But in theory, this is something that could be tied to the
+> full set of input sources.
 
-Add a Mic Jack widget to the Tegra+RT5640 machine driver, and document
-this in the DT binding. This enables the DT to include the Mic Jack in
-the audio routing table, and hence enables capture of audio, in addition
-to the previously-working playback.
+In theory perhaps, but in practice, I doubt it. USB audio perhaps,
+because that's at least ALSA. Bluetooth uses its own stack (it's not
+even ALSA), and I'm not sure how much of that stack is in the kernel.
 
-Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
----
- Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5640.txt | 1 +
- sound/soc/tegra/tegra_rt5640.c                                        | 1 +
- 2 files changed, 2 insertions(+)
+And then we haven't considered other oddities such as FFADO, network
+connected devices and what not...but perhaps we could leave those out?
 
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5640.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5640.txt
-index cba4f88..dc62249 100644
---- a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5640.txt
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5640.txt
-@@ -16,6 +16,7 @@ Required properties:
- 
-   * Headphones
-   * Speakers
-+  * Mic Jack
- 
- - nvidia,i2s-controller : The phandle of the Tegra I2S controller that's
-   connected to the CODEC.
-diff --git a/sound/soc/tegra/tegra_rt5640.c b/sound/soc/tegra/tegra_rt5640.c
-index 08794f9..4511c5a 100644
---- a/sound/soc/tegra/tegra_rt5640.c
-+++ b/sound/soc/tegra/tegra_rt5640.c
-@@ -99,6 +99,7 @@ static struct snd_soc_jack_gpio tegra_rt5640_hp_jack_gpio = {
- static const struct snd_soc_dapm_widget tegra_rt5640_dapm_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphones", NULL),
- 	SND_SOC_DAPM_SPK("Speakers", NULL),
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
- };
- 
- static const struct snd_kcontrol_new tegra_rt5640_controls[] = {
+>> But I guess one compromise could be to refuse userspace turn the mic
+>> mute LED on, if the internal mic is unmuted.
+>> Userspace would still be able to turn the mic mute LED off, to indicate
+>> that recording can happen from other sources. It will be slightly more
+>> complex for userspace though.
+> 
+> Like I said, I don't think there's any reason for this to be in
+> userspace. If it's only going to represent the internal device, that's
+> trivial. If it's going to represent the global state of audio devices,
+> that's more complicated but doable. The only policy aspect is "What if I
+> want it to track the state of the currently selected audio device",
+> which just doesn't seem like a useful thing for it to do.
+
+I say it's the *most* useful thing for it to do.
+
+Imagine you're a non-technical user, who has never heard the words
+"compromised userspace". You connect your headset where it fits (or
+cordless), and then select the headset in sound settings (if it didn't
+get selected for you when you plugged it in). You're on a VOIP call and
+press the mic mute hotkey. Which mic did you expect to mute? The
+selected one. On the mic mute hotkey button, there is also a LED. You
+expect it to lit, because you muted the mic that you currently care
+about, i e, the selected one.
+
+
 -- 
-1.8.1.5
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
