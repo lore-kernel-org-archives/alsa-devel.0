@@ -1,69 +1,55 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Buffer size for ALSA USB PCM audio
-Date: Wed, 14 Aug 2013 20:34:36 +0200
-Message-ID: <520BCDBC.2060507@ladisch.de>
-References: <Pine.LNX.4.44L0.1308131659320.897-100000@iolanthe.rowland.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/16 v2] sound/soc/pxa/mioa701_wm9713.c: Avoid using
+ ARRAY_AND_SIZE(e) as a function argument
+Date: Wed, 14 Aug 2013 20:10:28 +0100
+Message-ID: <20130814191028.GP2401@sirena.org.uk>
+References: <1376340564-7975-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 1C5C5261AE8
- for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 20:35:09 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.44L0.1308131659320.897-100000@iolanthe.rowland.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: Takashi Iwai <tiwai@suse.de>, Eldad Zack <eldad@fogrefinery.com>, USB list <linux-usb@vger.kernel.org>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="D8QxnvyRlKGQJxl7"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1376340564-7975-1-git-send-email-Julia.Lawall@lip6.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Eric Miao <eric.y.miao@gmail.com>, robert.jarzmik@free.fr, kernel-janitors@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Alan Stern wrote:
-> On Mon, 12 Aug 2013, Alan Stern wrote:
->> Here's a revised version of the patch (still untested).  The difference
->> is that this version tries always to keep a period's worth of bytes in
->> the USB hardware queue.  This will provide better protection against
->> underruns when the period is larger than the queue's minimum
->> requirement.
->
-> After more thought, I decided that patch does too much.  It's not
-> necessary to keep track of the number of packets.  Instead, the driver
-> should always try to keep as much data in the USB hardware queue as it
-> is allowed to.
 
-This is what the current code does (i.e., re-submitting all URBs in
-their completion handler).
+--D8QxnvyRlKGQJxl7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> In other words, there should be enough URBs so that an entire ALSA
-> buffer can be queued at any time, subject only to the limit on the
-> maximum number of URBs and packets.
+On Mon, Aug 12, 2013 at 10:49:24PM +0200, Julia Lawall wrote:
+> From: Julia Lawall <Julia.Lawall@lip6.fr>
+>=20
+> Replace ARRAY_AND_SIZE(e) in function argument position to avoid hiding t=
+he
+> arity of the called function.
 
-The URB queue adds latency, so it should never be made too big, even
-for big ALSA buffers.  Once we have reached a queue length that is
-practically guaranteed to be safe from underruns, more URBs do not make
-sense.  (The current limit of 24 ms is somewhat arbitrary.)
+Applied the incremental bit of this, thanks.
 
-> It doesn't make sense to allocate just enough URBs to cover a single
-> period.
+--D8QxnvyRlKGQJxl7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Indeed.  I've used two periods in my recent patch, but I don't really
-know how I would justify this choice in the commit message.  ;-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
 
-What doesn't make sense either is the current algorithm that computes
-a specific value for the total number of packets (total_packs) and then
-takes great care to allocate the URBs so that this number is reached,
-even if this means that the number of packets per URBs varies.
+iQIcBAEBAgAGBQJSC9YhAAoJELSic+t+oim9ymEP+wSn7S9g6F/pfcebCIbtMVpb
+VbbfHhzp2OMv+o3ukEblE9BP+HT07QgQomhTBUUFSrhTu9owcDVePbzr6boG5XMh
+UN5AZOvPR0wEMdnYEtOXnJoi1Cr0nDMXigZjg5OHL2jwa7hJiV2hKQCMXQsZqcWY
+nthplxPqPgaot1c4L18LvTfS1hiiH6+mSUv7gDbe+VOQYYTt6uFv4I3JLQL0v3Wg
+qtJL4YsZM7gfMsCwuED8fkLTYJlOBRgYuQrdkgvO667fX7GdZTEJEPeClh1XFRRy
+TBL8Jc35FqvbBIW07xP3++QvagbL5Eh2ohz0LzXftbXpjI5QAvT2sQmjJT3agfRU
+9lgZ3GSGcM/D5oBJxGOdKRLz6Ul0hTHcpHhTfSgyuAosi38h+GhvioIqIPyx48GW
+jOR0+MfSyFsUZUktTVw3H+SRZWhoMVAOYdEyDX/OhfxOHR76sA97yB2qfYNmN/CZ
+XdVGL7HzcqhJkGlGLcyW9sHila6nqdcrhigTnjkvoOqBk09/Q2F28tQVnT30LxO6
+IkydCSjJ0704jD4VAnJG5MFx7mGnlvk3nE/TyX0R7zh7CRwWjR76g8CpHCtNvSNO
+prbAPsFEHWPevoW+O0Cb+oVnH/HSJM7GifBtjHIdILangYPXMDMgojqIsnVAVMCj
+ip/gyyc37ghppezt0S+T
+=55Gx
+-----END PGP SIGNATURE-----
 
-And while we're at it: the default number of packets per URB was chosen
-before the driver had the ability to estimate the delay from the current
-frame number; it should now be quite safe to increase it.
-
-
-Regards,
-Clemens
+--D8QxnvyRlKGQJxl7--
