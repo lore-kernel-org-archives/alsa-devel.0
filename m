@@ -1,23 +1,18 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH v4 resent 1/2] ASoC: fsl: Add S/PDIF CPU
- DAI driver
-Date: Wed, 14 Aug 2013 18:23:46 +0800
-Message-ID: <20130814102346.GK31651@MrMyself>
-References: <cover.1376309076.git.b42378@freescale.com>
- <51808310dd97d2a35a28766ed7309f269521cafd.1376309076.git.b42378@freescale.com>
- <20130814075017.GE2324@pengutronix.de>
- <20130814084801.GH31651@MrMyself>
- <20130814095652.GX26614@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Query on Audio DMA using DMAEngine
+Date: Wed, 14 Aug 2013 13:06:24 +0100
+Message-ID: <20130814120624.GQ6427@sirena.org.uk>
+References: <083BC63EECB6FD41B8E81CF7FD87CC0F2E4F1488@DLEE08.ent.ti.com>
+ <51D01F31.3010602@metafoo.de> <51D11D64.3070805@topic.nl>
+ <51D24A01.2050709@ti.com> <51D26A18.8040903@topic.nl>
+ <520B07FE.6060006@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8471702504642973587=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db8outboundpool.messaging.microsoft.com
- (mail-db8lp0184.outbound.messaging.microsoft.com [213.199.154.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A8E226546E
- for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 12:39:44 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130814095652.GX26614@pengutronix.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37905265493
+ for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 14:06:30 +0200 (CEST)
+In-Reply-To: <520B07FE.6060006@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,80 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+To: Joel Fernandes <joelf@ti.com>
+Cc: Mike Looijmans <mike.looijmans@topic.nl>, alsa-devel@alsa-project.org, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Wed, Aug 14, 2013 at 11:56:52AM +0200, Sascha Hauer wrote:
-> > I think I should first explain to you what this part is doing:
-> > The driver needs to set Clk_source bit for TX/RX to select the 
-> > clock from a clock mux. The names listed above are those of the 
-> > clocks connecting to the mux, while they are not only internal 
-> > clocks which're included in clk-imx6q.c but also external ones,
-> > an on-board external osc for example.
-> > 
-> > The driver does get the clock by using the standard DT binding,
-> > see the 'clocks = <&clks 197>' above, and then compare this
-> > obtained clock->name with the name list to decide which value
-> > should be set to the Clk_source bit.
-> > 
-> > ==================================================================
-> > ClkSrc_Sel from i.MX6Q reference manual:
-> > 
-> > Clock source selection, all other settings not shown are reserved:
-> > 0000 if (DPLL Locked) SPDIF_RxClk else extal
-> > 0001 if (DPLL Locked) SPDIF_RxClk else spdif_clk
-> > 0010 if (DPLL Locked) SPDIF_RxClk else asrc_clk
-> > 0011 if (DPLL Locked) SPDIF_RxClk else spdif_extclk
-> > 0100 if (DPLL Locked) SPDIF_Rxclk else esai_hckt
-> > 0101 extal_clk
-> > 0110 spdif_clk
-> > 0111 asrc_clk
-> > 1000 spdif_extclk
-> > 1001 esai_hckt
-> > 1010 if (DPLL Locked) SPDIF_RxClk else mlb_clk
-> > ==================================================================
-> > 
-> > So the name list here basically is not being used to obtain a
-> > clock like what standardized DT binding does but to provide the
-> > driver a full list to look up which value should be exactly used
-> > according to the obtained clock.
-> > 
-> > I think I should revise the binding doc for these two lists. It 
-> > might be hard to explain within that kinda short paragraph. 
-> > 
-> > Surely, if I misunderstand your point, please correct me. And
-> > if you have any sage idea, please guide me.
-> 
-> Something like this:
-> 
-> clocks = <&clks 197>, <&clks 3>, <&clks 197>, <&clks 107>, <&clks SPDIF_EXT>,
->          <&clks 118>, <&clks 62>, <&clks 139>, <&clks MLB_PHY>
-> clock-names = "core", "rxtx0", "rxtx1", "rxtx2", "rxtx3", "rxtx4", "rxtx5", "rxtx6", "rxtx7"
-> 
-> This describes the different input clocks to the spdif core and also
-> gives a hint to the array index (rxtx_n_) to use.
+--===============8471702504642973587==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JOUqYYSeXsqzCnuM"
+Content-Disposition: inline
 
-Thank you for the idea, and..hmm..I'm a bit confused.. Is this really
-a nicer way?
 
-Actually the rx clock list and tx clock list are totally different.
-So doing this I have to list, in the maximum case, 24 (8 + 16) clock
-phandles for these two lists. And plussing another 6 I've listed in
-this binding doc -- thus there are totally 30 clock phanldes. But
-the 24 of 30 are only used to get two indexes.
+--JOUqYYSeXsqzCnuM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I think I need a little help here to understand why this is better.
-It looks more complicated to me.
+On Tue, Aug 13, 2013 at 11:30:54PM -0500, Joel Fernandes wrote:
 
-Creating the two name lists just because I can describe them in the 
-dtsi of SoC, since they are totally fixed and identical to the SoC
-reference manual, while the clocks area can be remained for users
-to select the actual clocks (core/rx/tx/tx-32000/tx-44100/tx-48000),
-so they can configure these clocks in dts file of a specific board,
-and they don't need to touch the name lists any more.
+> Replying to this thread after a long time but just wondering, how do you
+> guarantee in your implementation that DMA will not empty the buffer
+> faster than it is filled?
 
-Thank you,
-Nicolin Chen
+Userspace is ultimately responsible for supplying data - if the
+application can't keep up then the application should get an underrun
+reported and restart.
+
+--JOUqYYSeXsqzCnuM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSC3K9AAoJELSic+t+oim9NHwP/1kK9scKXmxQOQb/HOTCVcWu
+/r0hV4vLELCm9dbzhQ1ScbsDZ+rFX7Z84N0ugoSwV2cBf8McpsqJysKlhCs381oZ
+21znzriePnj1/EJ3qZd6hfYaFGsLaM0rewaPQ/mpJH2wM8RhFvOQmZCNy8aIhpD2
+8R8ac8/9gnkZ1PnmpuUEnd4f7HYxK5WU43yM33esu9OtvxgeI7yrQjck1Et9YBjp
+gDhnporz2pCgAAGIlgJZgifi4ek6sIOlN2BSYxk2tuExeDn+f4BV0j6MPTVzVKqf
+e1QjPYAP6Xjk5ynvUAEYBL3yLHVvG/ukgyzJTQ28QVlRRGvePCR/ndtERvw4LJBY
+f+J8paFYUU3qivnr4rwmzxzXarg0MAEnNle/TmEFPYaSNTpOoNQcsNrryyENccug
+Ewm/DS5zK7J7UH/4OWTGYfwlKWNu2PiRoFDhYed1nlLHTaQqkD1d6ZaUJq5gXo4x
+QzZowlVxZHrl5bPLNrmj0gPSf6YUnOaRBctHHSeh7sz9xMXiGg68HdwG/wivOhHn
+9uuyR03Uh7B8fPNkpdiieUfVAgIJUrltC1IBxqIKzj0CMcOJB1+X8JCmM3eYqeWs
+yA5HiZozcXD1LufPUADLIYWZoBVRAR/HMapeVkNh7Mk7cL3rSY+9QdfSB3GogNOe
+m/HmKDJNVwUCjdFOKoHv
+=gkPq
+-----END PGP SIGNATURE-----
+
+--JOUqYYSeXsqzCnuM--
+
+--===============8471702504642973587==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8471702504642973587==--
