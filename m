@@ -1,107 +1,129 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 0/2] add sysfs for acpi interfaces of thinkpad hardware
- mute
-Date: Wed, 14 Aug 2013 11:27:13 +0200
-Message-ID: <520B4D71.6070109@canonical.com>
-References: <1376458802-11923-1-git-send-email-alex.hung@canonical.com>  <1376458937.30031.1.camel@x230>  <CAJ=jqua8STZQideGbQTDh2W8iHcF4J9OJAC5tw-bkdBLLzsP2A@mail.gmail.com>  <1376459647.30031.2.camel@x230>  <CAJ=jqub1sRSzBRv_R6soDVAydRL+5nmA9-pMC4E+sgXhP6tbPw@mail.gmail.com>  <1376460872.30031.4.camel@x230>  <CAJ=jquaCHpBPKVYHKKCyMoih3NVCL8VmyiiN5Vy0UmTTTrwKjQ@mail.gmail.com>  <1376463610.30031.6.camel@x230>  <CAJ=jqubPzq+pwY9F4tMEFRHr6rG+-1Hxm++5L45AbpR6mfFeJw@mail.gmail.com>  <520B3511.7020604@canonical.com> <1376466691.30031.14.camel@x230>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v4 resent 1/2] ASoC: fsl: Add S/PDIF CPU
+ DAI driver
+Date: Wed, 14 Aug 2013 11:56:52 +0200
+Message-ID: <20130814095652.GX26614@pengutronix.de>
+References: <cover.1376309076.git.b42378@freescale.com>
+ <51808310dd97d2a35a28766ed7309f269521cafd.1376309076.git.b42378@freescale.com>
+ <20130814075017.GE2324@pengutronix.de>
+ <20130814084801.GH31651@MrMyself>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
-In-Reply-To: <1376466691.30031.14.camel@x230>
-Sender: platform-driver-x86-owner@vger.kernel.org
-To: Matthew Garrett <matthew.garrett@nebula.com>
-Cc: Alex Hung <alex.hung@canonical.com>, Tim Chen <tim.chen119@canonical.com>, "ibm-acpi@hmh.eng.br" <ibm-acpi@hmh.eng.br>, "ibm-acpi-devel@lists.sourceforge.net" <ibm-acpi-devel@lists.sourceforge.net>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, YK <yk@canonical.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 6662B26546E
+ for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 11:57:00 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130814084801.GH31651@MrMyself>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/14/2013 09:51 AM, Matthew Garrett wrote:
-> On Wed, 2013-08-14 at 09:43 +0200, David Henningsson wrote:
+On Wed, Aug 14, 2013 at 04:48:02PM +0800, Nicolin Chen wrote:
+> Hi Sascha,
 > 
->> First, the hardware mute. Because this is directly connected to the
->> internal speaker (and headphones?), it needs to turn into a ALSA
->> kcontrol on the sound card that controls speaker and/or headphones. And
->> it needs to named accordingly, e g "Speaker Playback Switch" if it
->> controls the speaker only.
->> Exactly how this is going to work out given the arbitrary module load
->> order of snd-hda-intel and thinkpad-acpi, I'm not sure, but the way of
->> creating another sound card (which I've seen on some thinkpads) just
->> isn't working out for userspace.
+> On Wed, Aug 14, 2013 at 09:50:17AM +0200, Sascha Hauer wrote:
+> > > +  - tx-clksrc-names : The names for all available clock sources for tx, which
+> > > +  is also being listed in SoC reference manual, ClkSrc_Sel bit of SPDIF_SRPC.
+> > > +  And the name list would be different between different SoC. Use 'null' for
+> > > +  those unlisted names, and the max number of tx-clksrc-names should be 8.
+> > > +
+> > > +  - rx-clksrc-names : The names for all available clock sources for rx, which
+> > > +  is also being listed in SoC reference manual, TxClk_Source bit of SPDIF_STC.
+> > > +  And the name list would be different between different SoC. Use 'null' for
+> > > +  those unlisted names, and the max number of rx-clksrc-names should be 16.
+> > > +
+> > > +Optional properties:
+> > > +
+> > > +  - rx-clksrc-lock: This is a boolean property. If present, ClkSrc_Sel bit
+> > > +  of SPDIF_SRPC would be set a clock source that cares DPLL locked condition.
+> > > +
+> > > +Example1:
+> > > +
+> > > +spdif: spdif@02004000 {
+> > > +	clocks = <&clks 197>;
+> > > +	clock-names = "core";
+> > > +	rx-clksrc-lock;
+> > > +	rx-clksrc-names =
+> > > +		"lock.ext", "lock.spdif", "lock.asrc",
+> > > +		"lock.spdif_ext", "lock.esai", "ext",
+> > > +		"spdif", "asrc", "spdif_ext", "esai",
+> > > +		"lock.mlb", "lock.mlb_phy", "mlb",
+> > > +		"mlb_phy";
+> > > +	tx-clksrc-names =
+> > > +		"xtal", "spdif", "asrc", "spdif_ext",
+> > > +		"esai", "ipg", "mlb", "mlb_phy";
+> > 
+> > I had a hard time understanding what you are doing here.
+> > 
+> > With this the clk names in arch/arm/mach-imx/clk-imx6q.c become an API
+> > between the Kernel and the devicetree. Don't do that.
+> > 
+> > There is a standardized devicetree binding for clocks. Use it.
+>  
+> I think I should first explain to you what this part is doing:
+> The driver needs to set Clk_source bit for TX/RX to select the 
+> clock from a clock mux. The names listed above are those of the 
+> clocks connecting to the mux, while they are not only internal 
+> clocks which're included in clk-imx6q.c but also external ones,
+> an on-board external osc for example.
 > 
-> Sure. There was arguably a benefit in exposing the hardware mixer back
-> in the *40 and earlier machines, since volume was also under hardware
-> control back then. The mute support is somewhat vestigial, and I don't
-> think trying to tie into it is going to make things better.
-
-You seem to know the history better than I do, but if there are
-significant power savings or some faint noise removed (e g by turning an
-amplifier off or so) by using the hardware mute, then it could still be
-worth pursuing.
-
->> Second, about the mute LEDs and mic-mute LEDs, we currently have several
->> interfaces to choose from:
->>  a) HP LEDs currently uses a ALSA kcontrol to control them. For Mute LED
->> there is also a limited automatic control of this LED from kernel space
->> (by default), so it follows the status of "Master Playback Switch" IIRC.
+> The driver does get the clock by using the standard DT binding,
+> see the 'clocks = <&clks 197>' above, and then compare this
+> obtained clock->name with the name list to decide which value
+> should be set to the Clk_source bit.
 > 
-> HDA has support for mute LEDs that are tied to GPIO lines on the codec -
-> is this the extent of it?
-
-Yes, essentially. HDA has support for GPIOs, and HP on IDT codecs use
-that to control LEDs. HP on Realtek codecs (not as common) use VREF
-outputs on unused mic pins.
-
->>  b) thinkpad-acpi currently uses custom sysfs nodes to control the LEDs.
+> ==================================================================
+> ClkSrc_Sel from i.MX6Q reference manual:
 > 
-> Right.
+> Clock source selection, all other settings not shown are reserved:
+> 0000 if (DPLL Locked) SPDIF_RxClk else extal
+> 0001 if (DPLL Locked) SPDIF_RxClk else spdif_clk
+> 0010 if (DPLL Locked) SPDIF_RxClk else asrc_clk
+> 0011 if (DPLL Locked) SPDIF_RxClk else spdif_extclk
+> 0100 if (DPLL Locked) SPDIF_Rxclk else esai_hckt
+> 0101 extal_clk
+> 0110 spdif_clk
+> 0111 asrc_clk
+> 1000 spdif_extclk
+> 1001 esai_hckt
+> 1010 if (DPLL Locked) SPDIF_RxClk else mlb_clk
+> ==================================================================
 > 
->>  c) and we also have the /sys/class/leds interface.
+> So the name list here basically is not being used to obtain a
+> clock like what standardized DT binding does but to provide the
+> driver a full list to look up which value should be exactly used
+> according to the obtained clock.
 > 
-> Yeah.
+> I think I should revise the binding doc for these two lists. It 
+> might be hard to explain within that kinda short paragraph. 
 > 
->> It's important we get a consistent interfaces towards userspace for the
->> LEDs. And we should also make sure we don't have a permissions problem:
->> if we want the mute/mic-mute LED to follow the status of the currently
->> selected sound card in PulseAudio, which IMO should be our goal, writes
->> cannot be root-only.
-> 
-> I'm not convinced that should be our goal - if the mic mute light is on,
-> I'd expect *all* mics to be muted, since the point of the light there is
-> something of a privacy guard. 
+> Surely, if I misunderstand your point, please correct me. And
+> if you have any sage idea, please guide me.
 
-I see your point, but the question is what is more of a privacy guard
-here. Do you expect USB mics and Bluetooth mics/headsets to be muted too?
+Something like this:
 
-If so, are you expecting some kind of kernel-wide block of recording,
-including bluetooth, USB, and other sound cards? It does not sound like
-a practical approach to me.
+clocks = <&clks 197>, <&clks 3>, <&clks 197>, <&clks 107>, <&clks SPDIF_EXT>,
+         <&clks 118>, <&clks 62>, <&clks 139>, <&clks MLB_PHY>
+clock-names = "core", "rxtx0", "rxtx1", "rxtx2", "rxtx3", "rxtx4", "rxtx5", "rxtx6", "rxtx7"
 
-And if not, where do you draw the line and why?
+This describes the different input clocks to the spdif core and also
+gives a hint to the array index (rxtx_n_) to use.
 
-> It's not quite as clear that I'd expect
-> the mute LED to bind to everything. However, given a single "currently
-> selected sound card", there's no obviously user-visible difference
-> between muting the current device and muting all devices.
-> 
-> Given the privacy concerns around the microphone LED, I think any
-> exposed LED would have to be either under kernel control. Having a
-> compromised component of a user session be able to record audio while
-> leaving the LED lit would be a problem.
-
-To decide what the LEDs bind to is a design issue. I was thinking that
-by giving control to userspace would give different
-implementations/distros/etc the most freedom to do what design they wanted.
-
-However, since, the hotkeys and the mutes are often very closely related
-physically (e g the mute LED is physically located on the mute button),
-I would expect them to follow each other. And the mute hotkey mutes the
-current default PulseAudio output, so I'd expect the mic mute hotkey to
-mute the current default PulseAudio input, and the LEDs to update
-according to those mute states.
-
-The privacy issue is interesting, but I don't see a practical way of
-implementing things that would protect us against compromised userspaces.
-
+Sascha
 
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
