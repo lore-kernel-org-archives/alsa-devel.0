@@ -1,23 +1,20 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v4 resent 1/2] ASoC: fsl: Add S/PDIF CPU
- DAI driver
-Date: Wed, 14 Aug 2013 14:19:37 +0200
-Message-ID: <20130814121937.GY26614@pengutronix.de>
-References: <cover.1376309076.git.b42378@freescale.com>
- <51808310dd97d2a35a28766ed7309f269521cafd.1376309076.git.b42378@freescale.com>
- <20130814075017.GE2324@pengutronix.de>
- <20130814084801.GH31651@MrMyself>
- <20130814095652.GX26614@pengutronix.de>
- <20130814102346.GK31651@MrMyself>
+From: Mike Looijmans <mike.looijmans@topic.nl>
+Subject: Re: Query on Audio DMA using DMAEngine
+Date: Wed, 14 Aug 2013 16:10:19 +0200
+Message-ID: <520B8FCB.2080608@topic.nl>
+References: <083BC63EECB6FD41B8E81CF7FD87CC0F2E4F1488@DLEE08.ent.ti.com>
+ <51D01F31.3010602@metafoo.de> <51D11D64.3070805@topic.nl>
+ <51D24A01.2050709@ti.com> <51D26A18.8040903@topic.nl>
+ <520B07FE.6060006@ti.com> <520B0D5F.2040909@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id A52B3265494
- for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 14:19:47 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130814102346.GK31651@MrMyself>
+Received: from smtp102.mer-nm.internl.net (smtp102.mer-nm.internl.net
+ [217.149.192.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A8A72654BD
+ for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 16:10:22 +0200 (CEST)
+In-Reply-To: <520B0D5F.2040909@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,78 +24,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+To: Joel Fernandes <joelf@ti.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 14, 2013 at 06:23:46PM +0800, Nicolin Chen wrote:
-> Hi,
-> 
-> > > Surely, if I misunderstand your point, please correct me. And
-> > > if you have any sage idea, please guide me.
-> > 
-> > Something like this:
-> > 
-> > clocks = <&clks 197>, <&clks 3>, <&clks 197>, <&clks 107>, <&clks SPDIF_EXT>,
-> >          <&clks 118>, <&clks 62>, <&clks 139>, <&clks MLB_PHY>
-> > clock-names = "core", "rxtx0", "rxtx1", "rxtx2", "rxtx3", "rxtx4", "rxtx5", "rxtx6", "rxtx7"
-> > 
-> > This describes the different input clocks to the spdif core and also
-> > gives a hint to the array index (rxtx_n_) to use.
-> 
-> Thank you for the idea, and..hmm..I'm a bit confused.. Is this really
-> a nicer way?
-
-Yes, since the clk names are not an API. Exposing them to the devicetree
-is not an option. The fact that the names are defined in
-arch/arm/mach-imx/clk-imx6q.c and are used in the spdif driver makes
-this really clear.
-
-> 
-> Actually the rx clock list and tx clock list are totally different.
-> So doing this I have to list, in the maximum case, 24 (8 + 16) clock
-> phandles for these two lists. And plussing another 6 I've listed in
-> this binding doc -- thus there are totally 30 clock phanldes. But
-> the 24 of 30 are only used to get two indexes.
-
-The spdif core has 8 input clocks which have to be described in the
-devicetree. Nobody says the mapping which clock name corresponds to
-which bit combination has to be in the devicetree.
-
-Look at the possible clocks:
-
-0000 if (DPLL Locked) SPDIF_RxClk else extal
-0001 if (DPLL Locked) SPDIF_RxClk else spdif_clk
-0010 if (DPLL Locked) SPDIF_RxClk else asrc_clk
-0011 if (DPLL Locked) SPDIF_RxClk else spdif_extclk
-0100 if (DPLL Locked) SPDIF_Rxclk else esai_hckt
-0101 extal_clk
-0110 spdif_clk
-0111 asrc_clk
-1000 spdif_extclk
-1001 esai_hckt
-1010 if (DPLL Locked) SPDIF_RxClk else mlb_clk
-1011 if (DPLL Locked) SPDIF_RxClk else mlb_phy_clk
-1100 mkb_clk
-1101 mlb_phy_clk
-
-Only half of them actually are clocks. "if (DPLL Locked) SPDIF_RxClk
-else ..." is not a clock. Every sane hardware developer would have
-introduced a mux with 8 entries and an additional "Use DPLL if possible"
-bit. Now this is not the case here so we have to live with it and
-maintain the above table in the driver. And another one for the i.MX35
-and still another one for i.MX53.
-
-> 
-> I think I need a little help here to understand why this is better.
-
-As said, the clock names are not an API. Nobody changing clk-imx6q.c
-expects to break devicetree bindings.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+77u/T24gMDgvMTQvMjAxMyAwNjo1MyBBTSwgSm9lbCBGZXJuYW5kZXMgd3JvdGU6Cj4gT24gMDgv
+MTMvMjAxMyAxMTozMCBQTSwgSm9lbCBGZXJuYW5kZXMgd3JvdGU6Cj4+IEhpIE1pa2UsCj4+Cj4+
+IE9uIDA3LzAyLzIwMTMgMTI6NTAgQU0sIE1pa2UgTG9vaWptYW5zIHdyb3RlOgo+PiBbLi5dCj4+
+Pgo+Pj4+IEVpdGhlciB3YXkgSSdtIHN1cmUgeW91ciBtdWx0aS1zbG90IGFwcHJvYWNoIGlzIHN1
+cGVyaW9yLCBidXQgSSBkb24ndAo+Pj4+IHNlZSBob3cKPj4+PiB5b3UgY2FuIGdldCBhd2F5IHdp
+dGggbm90IHVwZGF0aW5nIHRoZSBETUEgYWRkcmVzc2VzIG9uIGV2ZXJ5IElSUSB3aXRoCj4+Pj4g
+dGhlCj4+Pj4gY3VycmVudCBkYXZpbmNpLXBjbSBvciBFRE1BIGNvbnRyb2xsZXIgKFVubGVzcyB5
+b3UgdXNlIGEgY29tcGxpY2F0ZWQKPj4+PiBtZWNoYW5pc20KPj4+PiBsaWtlIHBpbmctcG9uZyB3
+aGVyZSB0aGUgYWRkcmVzcyB1cGRhdGVzIHRha2UgY2FyZSBvZiBpdHNlbGYpLiBJZiB5b3UKPj4+
+PiBhcmUgdXNpbmcKPj4+PiBhIHNldCBvZiBjaGFpbmVkIHNsb3RzLCB5b3Ugb25seSBoYXZlIHNv
+IG1hbnkgc2xvdHMgc28geW91IGhhdmUgdG8KPj4+PiBjb250aW51b3VzbHkKPj4+PiBjaGFuZ2Ug
+YWRkcmVzc2VzIG9mIHRoZSBzbG90cyBhdCBzb21lIHBvaW50IG9yIHRoZSBvdGhlciBmb3IgYSBs
+YXJnZQo+Pj4+IHRyYW5zZmVyLgo+Pj4KPj4+IEkgdXNlIGEgY2hhaW4gbGlrZSB0aGlzOgo+Pj4K
+Pj4+IERNQTEgLT4gRE1BMiAtPiBETUEuLi4gLT4gRE1BMQo+Pj4KPj4+IFRoaXMgbWVhbnQgSSBo
+YWQgdG8gdXNlIGEgRE1BIFBBUkFNIHNsb3QgZm9yIGV2ZXJ5ICJwZXJpb2QiLiBUaGUgT01BUAo+
+Pj4gTDEzOCBoYXMgMTI4IG9mIHRob3NlIHNsb3RzLCBzbyBpdCdzIG5vIHByb2JsZW0gdG8gdXNl
+IGEgYnVuY2ggb2YgdGhlbS4KPj4+IEJlY2F1c2UgdGhlIGNoYWluIGlzIGN5Y2xpYywgdGhlcmUg
+aXMgbm8gbmVlZCB0byB1cGRhdGUgYW55IERNQQo+Pj4gcGFyYW1ldGVyIHdoaWxlIHJ1bm5pbmcu
+IEFsbCB0aGF0IEFMU0EgbmVlZHMgdG8gZG8gaXMgZW1wdHkgdGhlIGJ1ZmZlcgo+Pj4gYmVmb3Jl
+IHRoZSBjeWNsZSBjb21wbGV0ZXMgYW5kIHRoZSBjdXJyZW50IHBvc2l0aW9uIGdldHMgb3Zlcndy
+aXR0ZW4uCj4+Cj4+IFtKb2VsXSBSZXBseWluZyB0byB0aGlzIHRocmVhZCBhZnRlciBhIGxvbmcg
+dGltZSBidXQganVzdCB3b25kZXJpbmcsIGhvdyBkbyB5b3UKPj4gZ3VhcmFudGVlIGluIHlvdXIg
+aW1wbGVtZW50YXRpb24gdGhhdCBETUEgd2lsbCBub3QgZW1wdHkgdGhlIGJ1ZmZlcgo+PiBmYXN0
+ZXIgdGhhbiBpdCBpcyBmaWxsZWQ/Cj4KPiBJIGd1ZXNzIHRoaXMgaXMgYWxzbyB3aGF0IHlvdSd2
+ZSBjYWxsZWQgaW4gc29tZSB0aHJlYWRzIGFzIHRoZSBvdmVycnVuCj4gY29uZGl0aW9uLgoKSW5k
+ZWVkLiBBbHNhIG1vbml0b3JzIHRoZSAicG9zaXRpb24iIG9mIHRoZSByaW5nLCBhbmQgd2hlbiB0
+aGUgRE1BIApwYXNzZXMgdGhlIGFwcGxpY2F0aW9uJ3MgImN1cnNvciIsIGl0IHJlcG9ydHMgYW4g
+dW5kZXJydW4gb3Igb3ZlcnJ1biAKKGRlcGVuZGluZyBvbiB3aGV0aGVyIGl0J3MgY2FwdHVyZSBv
+ciBwbGF5YmFjaykuCgpUaGVyZSBpcyBubyBndWFyYW50ZWUgLSBvbmx5IHZlcmlmaWNhdGlvbi4g
+VGhlIHVzZXIncyBhcHBsaWNhdGlvbiBtdXN0IAprZWVwIHVwLCBvciBzdWZmZXIgdGhlIGNvbnNl
+cXVlbnNlcy4gTXkgY3VzdG9tZXIgaGFzIGJlZW4gdXNpbmcgdGhlIAptb2RpZmllZCBkcml2ZXIg
+dG8gY2FwdHVyZSAxNiBjaGFubmVscyBvZiAzMi1iaXQgZGF0YSBhdCA1MGtIeiBmb3IgcXVpdGUg
+CmEgd2hpbGUgbm93LiBCZWZvcmUgdGhlIG1vZGlmaWNhdGlvbiwgaXQgd2Fzbid0IGV2ZW4gcG9z
+c2libGUgdG8gCnJlbGlhYmx5IGNhcHR1cmUgbW9yZSB0aGFuIDQgY2hhbm5lbHMuCgpNaWtlLgoK
+Ck1ldCB2cmllbmRlbGlqa2UgZ3JvZXQgLyBraW5kIHJlZ2FyZHMsCgpNaWtlIExvb2lqbWFucwoK
+VE9QSUMgRW1iZWRkZWQgU3lzdGVtcwpFaW5kaG92ZW5zZXdlZyAzMi1DLCBOTC01NjgzIEtIIEJl
+c3QKUG9zdGJ1cyA0NDAsIE5MLTU2ODAgQUsgQmVzdApUZWxlZm9vbjogKCszMSkg4oCTICgwKTQ5
+OSAtIDMzLjY5Ljc5ClRlbGVmYXg6ICgrMzEpIC0gKDApNDk5IC0gMzMuNjkuNzAKRS1tYWlsOiBt
+aWtlLmxvb2lqbWFuc0B0b3BpYy5ubApXZWJzaXRlOiB3d3cudG9waWMubmwKCkRpdCBlLW1haWwg
+YmVyaWNodCBlbiBkZSBldmVudHVlZWwgZGFhcmJpaiBiZWhvcmVuZGUgYmlqbGFnZW4gemlqbiB1
+aXRzbHVpdGVuZCBiZXN0ZW1kIHZvb3IgZGUgZ2VhZHJlc3NlZXJkZSwgem9hbHMgZGllIGJsaWpr
+dCB1aXQgaGV0IGUtbWFpbCBiZXJpY2h0IGVuL29mIGRlIGJpamxhZ2VuLiBFciBrdW5uZW4gZ2Vn
+ZXZlbnMgbWV0IGJldHJla2tpbmcgdG90IGVlbiBkZXJkZSBpbnN0YWFuLiBJbmRpZW4gdSBhbHMg
+bmlldC1nZWFkcmVzc2VlcmRlIGRpdCBiZXJpY2h0IGVuIGRlIGJpamxhZ2VuIG9udHZhbmd0LCB0
+ZXJ3aWpsIHUgbmlldCBiZXZvZWdkIG9mIGdlbWFjaHRpZ2QgYmVudCBvbSBkaXQgYmVyaWNodCBu
+YW1lbnMgZGUgZ2VhZHJlc3NlZXJkZSB0ZSBvbnR2YW5nZW4sIHdvcmR0IHUgdmVyem9jaHQgZGUg
+YWZ6ZW5kZXIgaGllcm92ZXIgZGlyZWN0IHRlIGluZm9ybWVyZW4gZW4gaGV0IGUtbWFpbCBiZXJp
+Y2h0IG1ldCBkZSBiaWpsYWdlbiB0ZSB2ZXJuaWV0aWdlbi4gSWVkZXIgZ2VicnVpayB2YW4gZGUg
+aW5ob3VkIHZhbiBoZXQgZS1tYWlsIGJlcmljaHQsIHdhYXJvbmRlciBkZSBkYWFyYmlqIGJlaG9y
+ZW5kZSBiaWpsYWdlbiwgZG9vciBlZW4gYW5kZXIgZGFuIGRlIGdlYWRyZXNzZWVyZGUgaXMgb25y
+ZWNodG1hdGlnIGplZ2VucyBvbnMgZGFuIHdlbCBkZSBldmVudHVlZWwgaW4gaGV0IGUtbWFpbCBi
+ZXJpY2h0IG9mIGRlIGJpamxhZ2VuIHZvb3Jrb21lbmRlIGFuZGVyZSBwZXJzb25lbi4gVE9QSUMg
+RW1iZWRkZWQgU3lzdGVtcyBpcyBuaWV0IGFhbnNwcmFrZWxpamsgdm9vciBlbmlnZXJsZWkgc2No
+YWRlIHZvb3J0dmxvZWllbmQgdWl0IGhldCBnZWJydWlrIGVuL29mIGFjY2VwdGF0aWUgdmFuIGRp
+dCBlLW1haWwgYmVyaWNodCBvZiBkZSBkYWFyYmlqIGJlaG9yZW5kZSBiaWpsYWdlbi4KClRoZSBj
+b250ZW50cyBvZiB0aGlzIG1lc3NhZ2UsIGFzIHdlbGwgYXMgYW55IGVuY2xvc3VyZXMsIGFyZSBh
+ZGRyZXNzZWQgcGVyc29uYWxseSB0bywgYW5kIHRodXMgc29sZWx5IGludGVuZGVkIGZvciB0aGUg
+YWRkcmVzc2VlLiBUaGV5IG1heSBjb250YWluIGluZm9ybWF0aW9uIHJlZ2FyZGluZyBhIHRoaXJk
+IHBhcnR5LiBBIHJlY2lwaWVudCB3aG8gaXMgbmVpdGhlciB0aGUgYWRkcmVzc2VlLCBub3IgZW1w
+b3dlcmVkIHRvIHJlY2VpdmUgdGhpcyBtZXNzYWdlIG9uIGJlaGFsZiBvZiB0aGUgYWRkcmVzc2Vl
+LCBpcyBraW5kbHkgcmVxdWVzdGVkIHRvIGltbWVkaWF0ZWx5IGluZm9ybSB0aGUgc2VuZGVyIG9m
+IHJlY2VpcHQsIGFuZCB0byBkZXN0cm95IHRoZSBtZXNzYWdlIGFuZCB0aGUgZW5jbG9zdXJlcy4g
+QW55IHVzZSBvZiB0aGUgY29udGVudHMgb2YgdGhpcyBtZXNzYWdlIGFuZC9vciB0aGUgZW5jbG9z
+dXJlcyBieSBhbnkgb3RoZXIgcGVyc29uIHRoYW4gdGhlIGFkZHJlc3NlZSBvciBwZXJzb24gd2hv
+IGlzIGVtcG93ZXJlZCB0byByZWNlaXZlIHRoaXMgbWVzc2FnZSwgaXMgaWxsZWdhbCB0b3dhcmRz
+IHRoZSBzZW5kZXIgYW5kL29yIHRoZSBhZm9yZW1lbnRpb25lZCB0aGlyZCBwYXJ0eS4gVE9QSUMg
+RW1iZWRkZWQgU3lzdGVtcyBpcyBub3QgIGxpYWJsZSBmb3IgYW55IGRhbWFnZSBhcyBhIHJlc3Vs
+dCBvZiB0aGUgdXNlIGFuZC9vciBhY2NlcHRhbmNlIG9mIHRoaXMgbWVzc2FnZSBhbmQgYXMgd2Vs
+bCBhcyBhbnkgZW5jbG9zdXJlcy4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
