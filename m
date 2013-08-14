@@ -1,59 +1,39 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V4 0/4] Add i2s support on smdk5420
-Date: Wed, 14 Aug 2013 11:03:14 +0100
-Message-ID: <20130814100314.GN6427@sirena.org.uk>
-References: <1376300994-1679-1-git-send-email-padma.v@samsung.com>
- <20130813124440.GX6427@sirena.org.uk>
- <6538092.D4LPomiMyc@flatron>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: [PATCH v5 0/1] ASoc: kirkwood: extend the kirkwood
+ audio subsystem for DT usage
+Date: Wed, 14 Aug 2013 12:27:15 +0200
+Message-ID: <20130814122715.45c2d9ad@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="86KltPKNp6kAaMsY"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <6538092.D4LPomiMyc@flatron>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, padma.kvr@gmail.com, kgene.kim@samsung.com, abrestic@chromium.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp3-g21.free.fr (smtp3-g21.free.fr [212.27.42.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4A5126546E
+ for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 12:25:52 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
---86KltPKNp6kAaMsY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Aug 14, 2013 at 10:25:27AM +0200, Tomasz Figa wrote:
-
-> Hmm, this series looks good to me too, except one thing. What about the=
-=20
-> bisection breakage introduced by the hole between patches 1/4 and 4/4=20
-> (after the list of supported compatible changes in the driver and before=
-=20
-> respective dts files are updated)?
-
-It's annoying but relatively localised and obvious rather than the cross
-tree stuff that happens so frequently with these platforms.
-
---86KltPKNp6kAaMsY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSC1XfAAoJELSic+t+oim9HigP/3U0AAYx96EfIyyY2RZMP54U
-rb68TaV2TTOxrLn+odRbmsRbUGJC2D8W4LheOxenJ6biqG7dMD5TEwR/5ddyDmZI
-rFCgBvGRy8ylZabbRScMZP3TQkPoMmXW4EAwOJJ5nynqjgeeUpHkft6mzyLo6bXK
-6oKw3FDO7v9Ty3HPsWDAQ81WZ8p8ULjHZ+6cKdt2EKL+IhhIRqejmrDPQ0zZeL9c
-ltM9Jufg4/XgWXdkRlLev5hrNQUggMY6sygw272Jgav0PA20z8ppgzHL6vysHJfj
-3fSuakT4HO9hh9nbV+CuWEqk8ZjXWDRKO0BS1qSnSlXTOta6bo9vAIPn4eD5kr0O
-GSW5HFhyIZoDXBUmqXlBbqA/OiiGx0iD7D8xJWEytIra82ZXA/5H4ScyoeUSLqZs
-8uzQegDRcmkl0vWDih/iXr/TdvYWToveX/VNMDu6JmCDqNOLxuW0nQDriykxW8CQ
-QHMlwudzvOqieTKv0JE5M75aMNZx02HuAmkxagUVVTQi7EUtzHi0oC2AACPJ1kAr
-UnLNXVO66ZcuS3NC9Di8IL7t5duP41dsX3qXEOre/165BKwizM3C8fM5rK5PktA4
-Pf7eVNCAWYWu3OETbCAnAAK/ZBj2uxqF4JSWVog3MPPAE7DrkUKUGgEpm52R9U2w
-NJshjqfA6FqExHFWn/bv
-=cd85
------END PGP SIGNATURE-----
-
---86KltPKNp6kAaMsY--
+VGhpcyBwYXRjaCBzZXJpZXMgYWRkcyBEVCBzdXBwb3J0IHRvIHRoZSBraXJrd29vZC9tdmVidSBh
+dWRpbyBzdWJzeXN0ZW0uCgpIaXN0b3J5CnY1CgktIGNoYW5nZSB0aGUgRFQgbmFtZSB0byAibWFy
+dmVsbCxtdmVidS1hdWRpbyIKdjQKCS0gY2hhbmdlIHRoZSBEVCBuYW1lIHRvICJtcnZsLG12ZWJ1
+LWF1ZGlvIgoJLSByZW1vdmUgcHJldmlvdXMgcGF0Y2hlcyAxLi4zIHdoaWNoIGhhdmUgYmVlbiBh
+cHBsaWVkIGJ5IFJ1c3NlbGwgS2luZwp2MwoJLSBjaGFuZ2UgdGhlIERUIG5hbWUgZnJvbSAia2ly
+a3dvb2QtaTJzIiB0byAibXZlYnUtcGNtLWF1ZGlvIgoJLSBhcHBseSB0byBsaW51eC1uZXh0Cgkt
+IGxldCBOVUxMIGFzIHRoZSBpbnRlcm5hbCBpMnMgY2xvY2sgZm9yIGNvbXBhdGliaWxpdHkKCS0g
+Y2hhbmdlIGkycyBleHRlcm5hbCBjbG9jayBuYW1lIHRvICJleHRjbGsiIGluc3RlYWQgb2YgImV4
+dGVybmFsIgoJLSBjYW5jZWwgcHJldmlvdXMgcGF0Y2ggMS80LiBSdXNzZWxsJ3MgcGF0Y2ggc2hv
+dWxkIGJlIGFwcGxpZWQgaW5zdGVhZC4KdjIKCS0gZml4IGNvbXBpbGF0aW9uIGVycm9ycwoKLS0g
+CktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVm
+CQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
