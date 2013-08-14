@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 12/29] sound/soc/samsung/ac97.c: simplify
- use of devm_ioremap_resource
-Date: Wed, 14 Aug 2013 19:14:55 +0100
-Message-ID: <20130814181455.GH2401@sirena.org.uk>
-References: <1376471493-22215-1-git-send-email-Julia.Lawall@lip6.fr>
- <1376471493-22215-13-git-send-email-Julia.Lawall@lip6.fr>
+Subject: Re: [PATCH 1/2] ASoC: wm8960: Fix ADC volume bits
+Date: Wed, 14 Aug 2013 19:19:14 +0100
+Message-ID: <20130814181914.GI2401@sirena.org.uk>
+References: <1376442946-2803-1-git-send-email-mahaijuns@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5353562975579062397=="
+Content-Type: multipart/mixed; boundary="===============5631915769564348033=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B654E261AD6
- for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 20:15:10 +0200 (CEST)
-In-Reply-To: <1376471493-22215-13-git-send-email-Julia.Lawall@lip6.fr>
+ by alsa0.perex.cz (Postfix) with ESMTP id B60D6261A73
+ for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 20:19:17 +0200 (CEST)
+In-Reply-To: <1376442946-2803-1-git-send-email-mahaijuns@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +19,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-samsung-soc@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel@lists.infradead.org
+To: Ma Haijun <mahaijuns@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5353562975579062397==
+--===============5631915769564348033==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FK65GREB+Evh/hTL"
+	protocol="application/pgp-signature"; boundary="Ah9ph+G2cWRpKogL"
 Content-Disposition: inline
 
 
---FK65GREB+Evh/hTL
+--Ah9ph+G2cWRpKogL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 14, 2013 at 11:11:16AM +0200, Julia Lawall wrote:
-> From: Julia Lawall <Julia.Lawall@lip6.fr>
->=20
-> Remove unneeded error handling on the result of a call to
-> platform_get_resource when the value is passed to devm_ioremap_resource.
+On Wed, Aug 14, 2013 at 09:15:38AM +0800, Ma Haijun wrote:
+> Signed-off-by: Ma Haijun <mahaijuns@gmail.com>
 
 Applied, thanks.
 
---FK65GREB+Evh/hTL
+--Ah9ph+G2cWRpKogL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSC8kcAAoJELSic+t+oim9VPoP/2AtXDR4sUam3Yv71XQ8x5Yc
-Wj2NqbV2IewRM4CLzfouBfaOiKM9DrquVSNy3/QTXiQ1aCtt1vWqnkoxffoW62cj
-NUwTJfAgZ2xb5lidFYnQzkBOXMlIEcxgDh4nLODwFSvrdRHVBoZZlxWNjK60bJcq
-mOdwe/iYONf6iu2vz3Lbire4lQZXlz7H553EeeZ+xdk+xxuOW7jI2lCdpfZ5qm8c
-vxUzv3v4CtGNJf6oT8czFN8kIILZlzR7q3XI2s8gJNMKR9pNURd1O0kTHEl9wXGK
-4geOMZ2Th0K+fCR2Fo3ekEbs5MGlXipqgg3RI5IfHdnOXkpO6W6Ifca1M9g3TcRB
-JjdKyeoF1CKbMyJrd2kBccMoOspZaLBLQmgGhtQSULsGAgf8zaLrW44ayZsyoBRd
-IKmCE3OKRrXAJ5IDLFoBteYVnMT7HbzyjbZekPAzUFnkTg2Z+ncLIsxg9L+TvXZR
-5hZgbWsS70nR3xKvuAD0nyemRPq9bnuE8KVcVbpGjIknU89rDG4vA9GKhaOEdEXU
-VrUHvH8OWFq/6lsMPefpWEBuG9Il3BtiZD7Rx9MWua6A6+MMRHZRrBuZiZZJhg3w
-r8h44z87huOfnYomNR2fDgLaoCNoqLoF8bymhsB5SANdTC8D2I3hvUWEfHvZP7El
-7kO+8Fk+B+1CcR3UgzR3
-=DU1Y
+iQIcBAEBAgAGBQJSC8ofAAoJELSic+t+oim9ioEP+gKDMBW6H57ZZ1skQuga/udU
+/o0FyzT0fgEsF2wnT7t6oUCe4ekDRgr6GV7sQxL29lCnt/ukAPjqpOXmNSmGjPDp
+3W0gHu3b3YG0RbXshrSCAnPv1U3wYYdSquURMcOy63ASuxY8GIVOHdfe1s+FzLrV
+WrEsa8RvgOizSSWYYkT7MS2lp0gB/DJkRDlfyILbfCdHbcLeKiVLrIueh+5jAjCl
+ahUNotem9iRvfzAQ5hUG8kI48S7hu1HPPJeVWl5/VxZbT5Je2TMC4FwKzmYR01pH
+bMrkVQLxonVm18X2ljGB7MaU1eRlDpzM3Z1T0GTs07/a2J9780b1xxG9EKBudAcx
+cepLUo+QkBAAsRtBrZWCPm1j9cRTkQY9o5+0AHFJEBsCoSh5SMem1v9TmxAf4kp+
+zdRJYhEptJy+dggC7sbblUIBfueZq/pi3BRjLNCDIrGroQxMT3k367leaMLaYj0D
+R5flYR296XDZUo5lgw9Lh+uNLjo31lCHHNB3df7OxUHfNGi7Dl/LCKVG0wrrPPHb
+z49ZIIADYzPGWEc3isRReH9PNcPPVkaTzew3v3DF3HO4nj+1Le5W4a1nesdguCfM
+k5h+QlC0jvHi3AhuAFR6+Czcy3MV/9v5Qip8HBEOE+6ZTXHHN3l217EF1eNpFhG7
+IPz7F/fa8N/P11yN19wH
+=SyBa
 -----END PGP SIGNATURE-----
 
---FK65GREB+Evh/hTL--
+--Ah9ph+G2cWRpKogL--
 
---===============5353562975579062397==
+--===============5631915769564348033==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5353562975579062397==--
+--===============5631915769564348033==--
