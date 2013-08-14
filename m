@@ -1,72 +1,61 @@
-From: Matthew Garrett <matthew.garrett@nebula.com>
-Subject: Re: [PATCH 0/2] add sysfs for acpi interfaces of thinkpad hardware
- mute
-Date: Wed, 14 Aug 2013 07:51:31 +0000
-Message-ID: <1376466691.30031.14.camel@x230>
-References: <1376458802-11923-1-git-send-email-alex.hung@canonical.com>
-	 <1376458937.30031.1.camel@x230>
-	 <CAJ=jqua8STZQideGbQTDh2W8iHcF4J9OJAC5tw-bkdBLLzsP2A@mail.gmail.com>
-	 <1376459647.30031.2.camel@x230>
-	 <CAJ=jqub1sRSzBRv_R6soDVAydRL+5nmA9-pMC4E+sgXhP6tbPw@mail.gmail.com>
-	 <1376460872.30031.4.camel@x230>
-	 <CAJ=jquaCHpBPKVYHKKCyMoih3NVCL8VmyiiN5Vy0UmTTTrwKjQ@mail.gmail.com>
-	 <1376463610.30031.6.camel@x230>
-	 <CAJ=jqubPzq+pwY9F4tMEFRHr6rG+-1Hxm++5L45AbpR6mfFeJw@mail.gmail.com>
-	 <520B3511.7020604@canonical.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v4 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
+Date: Wed, 14 Aug 2013 16:14:47 +0800
+Message-ID: <20130814081445.GC31141@S2101-09.ap.freescale.net>
+References: <1376308870-14232-1-git-send-email-b42378@freescale.com>
+ <1376308870-14232-2-git-send-email-b42378@freescale.com>
+ <CAOMZO5A7noEb98yuCPY6o2mf-FikFcMYiDLpg3huPKHMO7Fwdw@mail.gmail.com>
+ <20130814032658.GA16915@S2101-09.ap.freescale.net>
+ <20130814053016.GF31651@MrMyself>
+ <20130814063931.GB31141@S2101-09.ap.freescale.net>
+ <20130814063444.GG31651@MrMyself>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
-In-Reply-To: <520B3511.7020604@canonical.com>
-Content-Language: en-US
-Content-ID: <6F44D557034FDD4685C6381C53BDF43E@namprd05.prod.outlook.com>
-Sender: platform-driver-x86-owner@vger.kernel.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Alex Hung <alex.hung@canonical.com>, Tim Chen <tim.chen119@canonical.com>, "ibm-acpi@hmh.eng.br" <ibm-acpi@hmh.eng.br>, "ibm-acpi-devel@lists.sourceforge.net" <ibm-acpi-devel@lists.sourceforge.net>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, YK <yk@canonical.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe001.messaging.microsoft.com [213.199.154.204])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6060C261A42
+ for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 10:14:43 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130814063444.GG31651@MrMyself>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, linuxppc-dev@lists.ozlabs.org, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAyMDEzLTA4LTE0IGF0IDA5OjQzICswMjAwLCBEYXZpZCBIZW5uaW5nc3NvbiB3cm90
-ZToNCg0KPiBGaXJzdCwgdGhlIGhhcmR3YXJlIG11dGUuIEJlY2F1c2UgdGhpcyBpcyBkaXJlY3Rs
-eSBjb25uZWN0ZWQgdG8gdGhlDQo+IGludGVybmFsIHNwZWFrZXIgKGFuZCBoZWFkcGhvbmVzPyks
-IGl0IG5lZWRzIHRvIHR1cm4gaW50byBhIEFMU0ENCj4ga2NvbnRyb2wgb24gdGhlIHNvdW5kIGNh
-cmQgdGhhdCBjb250cm9scyBzcGVha2VyIGFuZC9vciBoZWFkcGhvbmVzLiBBbmQNCj4gaXQgbmVl
-ZHMgdG8gbmFtZWQgYWNjb3JkaW5nbHksIGUgZyAiU3BlYWtlciBQbGF5YmFjayBTd2l0Y2giIGlm
-IGl0DQo+IGNvbnRyb2xzIHRoZSBzcGVha2VyIG9ubHkuDQo+IEV4YWN0bHkgaG93IHRoaXMgaXMg
-Z29pbmcgdG8gd29yayBvdXQgZ2l2ZW4gdGhlIGFyYml0cmFyeSBtb2R1bGUgbG9hZA0KPiBvcmRl
-ciBvZiBzbmQtaGRhLWludGVsIGFuZCB0aGlua3BhZC1hY3BpLCBJJ20gbm90IHN1cmUsIGJ1dCB0
-aGUgd2F5IG9mDQo+IGNyZWF0aW5nIGFub3RoZXIgc291bmQgY2FyZCAod2hpY2ggSSd2ZSBzZWVu
-IG9uIHNvbWUgdGhpbmtwYWRzKSBqdXN0DQo+IGlzbid0IHdvcmtpbmcgb3V0IGZvciB1c2Vyc3Bh
-Y2UuDQoNClN1cmUuIFRoZXJlIHdhcyBhcmd1YWJseSBhIGJlbmVmaXQgaW4gZXhwb3NpbmcgdGhl
-IGhhcmR3YXJlIG1peGVyIGJhY2sNCmluIHRoZSAqNDAgYW5kIGVhcmxpZXIgbWFjaGluZXMsIHNp
-bmNlIHZvbHVtZSB3YXMgYWxzbyB1bmRlciBoYXJkd2FyZQ0KY29udHJvbCBiYWNrIHRoZW4uIFRo
-ZSBtdXRlIHN1cHBvcnQgaXMgc29tZXdoYXQgdmVzdGlnaWFsLCBhbmQgSSBkb24ndA0KdGhpbmsg
-dHJ5aW5nIHRvIHRpZSBpbnRvIGl0IGlzIGdvaW5nIHRvIG1ha2UgdGhpbmdzIGJldHRlci4NCg0K
-PiBTZWNvbmQsIGFib3V0IHRoZSBtdXRlIExFRHMgYW5kIG1pYy1tdXRlIExFRHMsIHdlIGN1cnJl
-bnRseSBoYXZlIHNldmVyYWwNCj4gaW50ZXJmYWNlcyB0byBjaG9vc2UgZnJvbToNCj4gIGEpIEhQ
-IExFRHMgY3VycmVudGx5IHVzZXMgYSBBTFNBIGtjb250cm9sIHRvIGNvbnRyb2wgdGhlbS4gRm9y
-IE11dGUgTEVEDQo+IHRoZXJlIGlzIGFsc28gYSBsaW1pdGVkIGF1dG9tYXRpYyBjb250cm9sIG9m
-IHRoaXMgTEVEIGZyb20ga2VybmVsIHNwYWNlDQo+IChieSBkZWZhdWx0KSwgc28gaXQgZm9sbG93
-cyB0aGUgc3RhdHVzIG9mICJNYXN0ZXIgUGxheWJhY2sgU3dpdGNoIiBJSVJDLg0KDQpIREEgaGFz
-IHN1cHBvcnQgZm9yIG11dGUgTEVEcyB0aGF0IGFyZSB0aWVkIHRvIEdQSU8gbGluZXMgb24gdGhl
-IGNvZGVjIC0NCmlzIHRoaXMgdGhlIGV4dGVudCBvZiBpdD8NCg0KPiAgYikgdGhpbmtwYWQtYWNw
-aSBjdXJyZW50bHkgdXNlcyBjdXN0b20gc3lzZnMgbm9kZXMgdG8gY29udHJvbCB0aGUgTEVEcy4N
-Cg0KUmlnaHQuDQoNCj4gIGMpIGFuZCB3ZSBhbHNvIGhhdmUgdGhlIC9zeXMvY2xhc3MvbGVkcyBp
-bnRlcmZhY2UuDQoNClllYWguDQoNCj4gSXQncyBpbXBvcnRhbnQgd2UgZ2V0IGEgY29uc2lzdGVu
-dCBpbnRlcmZhY2VzIHRvd2FyZHMgdXNlcnNwYWNlIGZvciB0aGUNCj4gTEVEcy4gQW5kIHdlIHNo
-b3VsZCBhbHNvIG1ha2Ugc3VyZSB3ZSBkb24ndCBoYXZlIGEgcGVybWlzc2lvbnMgcHJvYmxlbToN
-Cj4gaWYgd2Ugd2FudCB0aGUgbXV0ZS9taWMtbXV0ZSBMRUQgdG8gZm9sbG93IHRoZSBzdGF0dXMg
-b2YgdGhlIGN1cnJlbnRseQ0KPiBzZWxlY3RlZCBzb3VuZCBjYXJkIGluIFB1bHNlQXVkaW8sIHdo
-aWNoIElNTyBzaG91bGQgYmUgb3VyIGdvYWwsIHdyaXRlcw0KPiBjYW5ub3QgYmUgcm9vdC1vbmx5
-Lg0KDQpJJ20gbm90IGNvbnZpbmNlZCB0aGF0IHNob3VsZCBiZSBvdXIgZ29hbCAtIGlmIHRoZSBt
-aWMgbXV0ZSBsaWdodCBpcyBvbiwNCkknZCBleHBlY3QgKmFsbCogbWljcyB0byBiZSBtdXRlZCwg
-c2luY2UgdGhlIHBvaW50IG9mIHRoZSBsaWdodCB0aGVyZSBpcw0Kc29tZXRoaW5nIG9mIGEgcHJp
-dmFjeSBndWFyZC4gSXQncyBub3QgcXVpdGUgYXMgY2xlYXIgdGhhdCBJJ2QgZXhwZWN0DQp0aGUg
-bXV0ZSBMRUQgdG8gYmluZCB0byBldmVyeXRoaW5nLiBIb3dldmVyLCBnaXZlbiBhIHNpbmdsZSAi
-Y3VycmVudGx5DQpzZWxlY3RlZCBzb3VuZCBjYXJkIiwgdGhlcmUncyBubyBvYnZpb3VzbHkgdXNl
-ci12aXNpYmxlIGRpZmZlcmVuY2UNCmJldHdlZW4gbXV0aW5nIHRoZSBjdXJyZW50IGRldmljZSBh
-bmQgbXV0aW5nIGFsbCBkZXZpY2VzLg0KDQpHaXZlbiB0aGUgcHJpdmFjeSBjb25jZXJucyBhcm91
-bmQgdGhlIG1pY3JvcGhvbmUgTEVELCBJIHRoaW5rIGFueQ0KZXhwb3NlZCBMRUQgd291bGQgaGF2
-ZSB0byBiZSBlaXRoZXIgdW5kZXIga2VybmVsIGNvbnRyb2wuIEhhdmluZyBhDQpjb21wcm9taXNl
-ZCBjb21wb25lbnQgb2YgYSB1c2VyIHNlc3Npb24gYmUgYWJsZSB0byByZWNvcmQgYXVkaW8gd2hp
-bGUNCmxlYXZpbmcgdGhlIExFRCBsaXQgd291bGQgYmUgYSBwcm9ibGVtLg0KDQotLSANCk1hdHRo
-ZXcgR2FycmV0dCA8bWF0dGhldy5nYXJyZXR0QG5lYnVsYS5jb20+DQo=
+On Wed, Aug 14, 2013 at 02:34:45PM +0800, Nicolin Chen wrote:
+> On Wed, Aug 14, 2013 at 02:39:33PM +0800, Shawn Guo wrote:
+> > We only need to maintain those versions that require different
+> > programming model in the list.  For example, if S/PDIF on Vybrid
+> > is completely compatible with imx6q one and uses the exactly same
+> > programming model, we do not need to maintain a compatible string
+> > for Vybrid S/PDIF at all.  Instead, we only need to have something
+> > like below in Vybrid dts file, and S/PDIF driver will just work for it.
+> > 
+> > 	compatible = "fsl,vf600-spdif", "fsl,imx6q-spdif";
+> > 
+> > Shawn
+> 
+> Clear. Thank you for the explain.
+> 
+> Then I think I can merely remain "fsl,imx6q-spdif" here,
+> because all other cases should be completely compatible
+> with this one. They are only different in the clock source
+> names list, which's already being specified in dts file.
+> 
+> Please correct me if you think this still isn't proper.
+
+And we generally prefer to use the soc that firstly integrates the IP to
+name the compatible.  For IMX series, I think imx35 is the one, so we
+would name it "fsl,imx35-spdif".
+
+Shawn
