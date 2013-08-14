@@ -1,21 +1,18 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH v4 resent 1/2] ASoC: fsl: Add S/PDIF CPU
-	DAI driver
-Date: Wed, 14 Aug 2013 16:48:02 +0800
-Message-ID: <20130814084801.GH31651@MrMyself>
-References: <cover.1376309076.git.b42378@freescale.com>
- <51808310dd97d2a35a28766ed7309f269521cafd.1376309076.git.b42378@freescale.com>
- <20130814075017.GE2324@pengutronix.de>
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH 12/29] sound/soc/samsung/ac97.c: simplify use
+	of devm_ioremap_resource
+Date: Wed, 14 Aug 2013 11:11:16 +0200
+Message-ID: <1376471493-22215-13-git-send-email-Julia.Lawall@lip6.fr>
+References: <1376471493-22215-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db9outboundpool.messaging.microsoft.com
- (mail-db9lp0252.outbound.messaging.microsoft.com [213.199.154.252])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C63A261A4B
- for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 10:56:37 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130814075017.GE2324@pengutronix.de>
+Received: from mail3-relais-sop.national.inria.fr
+ (mail3-relais-sop.national.inria.fr [192.134.164.104])
+ by alsa0.perex.cz (Postfix) with ESMTP id 343DE265476
+ for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2013 11:11:38 +0200 (CEST)
+In-Reply-To: <1376471493-22215-1-git-send-email-Julia.Lawall@lip6.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,90 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, linuxppc-dev@lists.ozlabs.org
+To: Ben Dooks <ben-linux@fluff.org>
+Cc: linux-samsung-soc@vger.kernel.org, Kukjin Kim <kgene.kim@samsung.com>, alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sascha,
+From: Julia Lawall <Julia.Lawall@lip6.fr>
 
-On Wed, Aug 14, 2013 at 09:50:17AM +0200, Sascha Hauer wrote:
-> > +  - tx-clksrc-names : The names for all available clock sources for tx, which
-> > +  is also being listed in SoC reference manual, ClkSrc_Sel bit of SPDIF_SRPC.
-> > +  And the name list would be different between different SoC. Use 'null' for
-> > +  those unlisted names, and the max number of tx-clksrc-names should be 8.
-> > +
-> > +  - rx-clksrc-names : The names for all available clock sources for rx, which
-> > +  is also being listed in SoC reference manual, TxClk_Source bit of SPDIF_STC.
-> > +  And the name list would be different between different SoC. Use 'null' for
-> > +  those unlisted names, and the max number of rx-clksrc-names should be 16.
-> > +
-> > +Optional properties:
-> > +
-> > +  - rx-clksrc-lock: This is a boolean property. If present, ClkSrc_Sel bit
-> > +  of SPDIF_SRPC would be set a clock source that cares DPLL locked condition.
-> > +
-> > +Example1:
-> > +
-> > +spdif: spdif@02004000 {
-> > +	clocks = <&clks 197>;
-> > +	clock-names = "core";
-> > +	rx-clksrc-lock;
-> > +	rx-clksrc-names =
-> > +		"lock.ext", "lock.spdif", "lock.asrc",
-> > +		"lock.spdif_ext", "lock.esai", "ext",
-> > +		"spdif", "asrc", "spdif_ext", "esai",
-> > +		"lock.mlb", "lock.mlb_phy", "mlb",
-> > +		"mlb_phy";
-> > +	tx-clksrc-names =
-> > +		"xtal", "spdif", "asrc", "spdif_ext",
-> > +		"esai", "ipg", "mlb", "mlb_phy";
-> 
-> I had a hard time understanding what you are doing here.
-> 
-> With this the clk names in arch/arm/mach-imx/clk-imx6q.c become an API
-> between the Kernel and the devicetree. Don't do that.
-> 
-> There is a standardized devicetree binding for clocks. Use it.
+Remove unneeded error handling on the result of a call to
+platform_get_resource when the value is passed to devm_ioremap_resource.
+
+Move the call to platform_get_resource adjacent to the call to
+devm_ioremap_resource to make the connection between them more clear.
+
+A simplified version of the semantic patch that makes this change is as
+follows: (http://coccinelle.lip6.fr/)
+
+// <smpl>
+@@
+expression pdev,res,n,e,e1;
+expression ret != 0;
+identifier l;
+@@
+
+- res = platform_get_resource(pdev, IORESOURCE_MEM, n);
+  ... when != res
+- if (res == NULL) { ... \(goto l;\|return ret;\) }
+  ... when != res
++ res = platform_get_resource(pdev, IORESOURCE_MEM, n);
+  e = devm_ioremap_resource(e1, res);
+// </smpl>
+
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+
+---
+ sound/soc/samsung/ac97.c |    7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/sound/soc/samsung/ac97.c b/sound/soc/samsung/ac97.c
+index 2dd623f..c732df9 100644
+--- a/sound/soc/samsung/ac97.c
++++ b/sound/soc/samsung/ac97.c
+@@ -404,18 +404,13 @@ static int s3c_ac97_probe(struct platform_device *pdev)
+ 		return -ENXIO;
+ 	}
  
-I think I should first explain to you what this part is doing:
-The driver needs to set Clk_source bit for TX/RX to select the 
-clock from a clock mux. The names listed above are those of the 
-clocks connecting to the mux, while they are not only internal 
-clocks which're included in clk-imx6q.c but also external ones,
-an on-board external osc for example.
-
-The driver does get the clock by using the standard DT binding,
-see the 'clocks = <&clks 197>' above, and then compare this
-obtained clock->name with the name list to decide which value
-should be set to the Clk_source bit.
-
-==================================================================
-ClkSrc_Sel from i.MX6Q reference manual:
-
-Clock source selection, all other settings not shown are reserved:
-0000 if (DPLL Locked) SPDIF_RxClk else extal
-0001 if (DPLL Locked) SPDIF_RxClk else spdif_clk
-0010 if (DPLL Locked) SPDIF_RxClk else asrc_clk
-0011 if (DPLL Locked) SPDIF_RxClk else spdif_extclk
-0100 if (DPLL Locked) SPDIF_Rxclk else esai_hckt
-0101 extal_clk
-0110 spdif_clk
-0111 asrc_clk
-1000 spdif_extclk
-1001 esai_hckt
-1010 if (DPLL Locked) SPDIF_RxClk else mlb_clk
-==================================================================
-
-So the name list here basically is not being used to obtain a
-clock like what standardized DT binding does but to provide the
-driver a full list to look up which value should be exactly used
-according to the obtained clock.
-
-I think I should revise the binding doc for these two lists. It 
-might be hard to explain within that kinda short paragraph. 
-
-Surely, if I misunderstand your point, please correct me. And
-if you have any sage idea, please guide me.
-
-Thank you,
-Nicolin Chen
+-	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!mem_res) {
+-		dev_err(&pdev->dev, "Unable to get register resource\n");
+-		return -ENXIO;
+-	}
+-
+ 	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+ 	if (!irq_res) {
+ 		dev_err(&pdev->dev, "AC97 IRQ not provided!\n");
+ 		return -ENXIO;
+ 	}
+ 
++	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	s3c_ac97.regs = devm_ioremap_resource(&pdev->dev, mem_res);
+ 	if (IS_ERR(s3c_ac97.regs))
+ 		return PTR_ERR(s3c_ac97.regs);
