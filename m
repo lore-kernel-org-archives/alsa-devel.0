@@ -1,22 +1,26 @@
-From: jiashuo.kang@gmail.com
-Subject: [PATCH] Update iatomic.h functions definitions for mips
-Date: Thu, 15 Aug 2013 17:17:19 +0800
-Message-ID: <1376558239-21720-1-git-send-email-jiashuo.kang@gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v4 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
+Date: Thu, 15 Aug 2013 17:24:30 +0800
+Message-ID: <20130815092428.GI16915@S2101-09.ap.freescale.net>
+References: <1376308870-14232-1-git-send-email-b42378@freescale.com>
+ <1376308870-14232-2-git-send-email-b42378@freescale.com>
+ <CAOMZO5A7noEb98yuCPY6o2mf-FikFcMYiDLpg3huPKHMO7Fwdw@mail.gmail.com>
+ <20130814032658.GA16915@S2101-09.ap.freescale.net>
+ <20130814053016.GF31651@MrMyself>
+ <20130814063931.GB31141@S2101-09.ap.freescale.net>
+ <20130814063444.GG31651@MrMyself>
+ <20130814081445.GC31141@S2101-09.ap.freescale.net>
+ <520BA687.4030905@wwwdotorg.org> <20130815021823.GA1846@MrMyself>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f67.google.com (mail-pa0-f67.google.com
- [209.85.220.67])
- by alsa0.perex.cz (Postfix) with ESMTP id B4342261281
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2013 11:17:42 +0200 (CEST)
-Received: by mail-pa0-f67.google.com with SMTP id bg4so315949pad.6
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2013 02:17:40 -0700 (PDT)
-Received: from pek-kkang-d1.wrs.com ([1.202.252.122])
- by mx.google.com with ESMTPSA id dg3sm55709282pbc.24.2013.08.15.02.17.37
- for <alsa-devel@alsa-project.org>
- (version=TLSv1.1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Thu, 15 Aug 2013 02:17:39 -0700 (PDT)
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1031261599
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2013 11:24:19 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130815021823.GA1846@MrMyself>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,65 +30,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, Stephen Warren <swarren@wwwdotorg.org>, linuxppc-dev@lists.ozlabs.org, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Kai Kang <jiashuo.kang at gmail.com>
+On Thu, Aug 15, 2013 at 10:18:23AM +0800, Nicolin Chen wrote:
+> Hi Stephen,
+> 
+> On Wed, Aug 14, 2013 at 09:47:19AM -0600, Stephen Warren wrote:
+> > If the clock source name list is different, then it needs a different
+> > compatible value, so that each compatible value can specify which clock
+> > names are required.
+> > 
+> > Also, the compatible value itself should always include the exact HW
+> > that's present (most specific HW version), as well as any other HW it's
+> > compatible with.
+>  
+> Thank you for the comments. Yes, I did so in v1-v3, but after rethinking
+> about the situation (Actually both the HW version and the clock mux itself
+> are same, just the clock sources connecting to the mux might be different),
+> so I decided to do this by abstracting the driver from those source info
+> and letting DT binding to pass such information. Because I think putting 
+> the clock sources into the driver differed by compatible value would make
+> the driver more like SoC-specified, not the ideal way -- SoC-independent,
+> since the clock sources are based on SoC design, not on itself.
 
-Functions atomic_add(s) and atomic_sub(s) are defined with 'extern
-__inline__' that may cause compile fails when cross compile for mips.
-The error message looks like:
++1
 
-| pcm/.libs/libpcm.a(pcm_meter.o): In function `snd_pcm_meter_update_scope':
-| .../alsa-lib-1.0.27.2/src/pcm/pcm_meter.c:139: undefined reference to `atomic_sub'
+It's pretty much the differences at SoC integration level not the IP
+itself, and it just happens to be handled in a register of the IP.
 
-Replace the 'extern __inline__' with 'static __inline__' to fix this
-issue.
-
-Signed-off-by: Kai Kang <jiashuo.kang at gmail.com>
----
- include/iatomic.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/include/iatomic.h b/include/iatomic.h
-index 5711fe8..2393297 100644
---- a/include/iatomic.h
-+++ b/include/iatomic.h
-@@ -720,7 +720,7 @@ typedef struct { volatile int counter; } atomic_t;
-  * Atomically adds @i to @v.  Note that the guaranteed useful range
-  * of an atomic_t is only 24 bits.
-  */
--extern __inline__ void atomic_add(int i, atomic_t * v)
-+static __inline__ void atomic_add(int i, atomic_t * v)
- {
- 	unsigned long temp;
- 
-@@ -744,7 +744,7 @@ extern __inline__ void atomic_add(int i, atomic_t * v)
-  * Atomically subtracts @i from @v.  Note that the guaranteed
-  * useful range of an atomic_t is only 24 bits.
-  */
--extern __inline__ void atomic_sub(int i, atomic_t * v)
-+static __inline__ void atomic_sub(int i, atomic_t * v)
- {
- 	unsigned long temp;
- 
-@@ -763,7 +763,7 @@ extern __inline__ void atomic_sub(int i, atomic_t * v)
- /*
-  * Same as above, but return the result value
-  */
--extern __inline__ int atomic_add_return(int i, atomic_t * v)
-+static __inline__ int atomic_add_return(int i, atomic_t * v)
- {
- 	unsigned long temp, result;
- 
-@@ -784,7 +784,7 @@ extern __inline__ int atomic_add_return(int i, atomic_t * v)
- 	return result;
- }
- 
--extern __inline__ int atomic_sub_return(int i, atomic_t * v)
-+static __inline__ int atomic_sub_return(int i, atomic_t * v)
- {
- 	unsigned long temp, result;
- 
--- 
-1.8.1.2
+Shawn
