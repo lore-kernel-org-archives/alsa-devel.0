@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ALSA: move dmaengine implementation
- from ASoC to ALSA core
-Date: Thu, 15 Aug 2013 11:18:49 +0100
-Message-ID: <20130815101849.GX2401@sirena.org.uk>
+Subject: Re: [PATCH 2/5] ASoC: pxa: pxa-ssp: add DT bindings
+Date: Thu, 15 Aug 2013 11:33:58 +0100
+Message-ID: <20130815103358.GY2401@sirena.org.uk>
 References: <1376296961-20564-1-git-send-email-zonque@gmail.com>
- <1376296961-20564-2-git-send-email-zonque@gmail.com>
+ <1376296961-20564-3-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8895232532445002622=="
+Content-Type: multipart/mixed; boundary="===============7852648203913884482=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 844BE2615D1
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2013 12:18:55 +0200 (CEST)
-In-Reply-To: <1376296961-20564-2-git-send-email-zonque@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 258CE2615D1
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2013 12:34:01 +0200 (CEST)
+In-Reply-To: <1376296961-20564-3-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,53 +25,53 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, eric.y.miao@gmail.c
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8895232532445002622==
+--===============7852648203913884482==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4YatIo8qwOC8yTX3"
+	protocol="application/pgp-signature"; boundary="ZGDvG9BNY5+B3nxW"
 Content-Disposition: inline
 
 
---4YatIo8qwOC8yTX3
+--ZGDvG9BNY5+B3nxW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Aug 12, 2013 at 10:42:37AM +0200, Daniel Mack wrote:
-> For the PXA DMA rework, we need the generic dmaengine implementation
-> that currently lives in sound/soc for standalone (non-ASoC) AC'97
-> support.
+On Mon, Aug 12, 2013 at 10:42:38AM +0200, Daniel Mack wrote:
+> The pxa ssp DAI acts as a user of a pxa ssp port, and needs an
+> appropriate 'port' phandle in DT to reference the upstream.
 
-Applied, thanks.  Remember to use git format-patch -M for moves and
-renames.
+I've applied this and the rest of the series though I'm not really that
+happy about having a binding for the DAI in the DT since there's at best
+tenouous hardware there.
 
---4YatIo8qwOC8yTX3
+--ZGDvG9BNY5+B3nxW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSDKsFAAoJELSic+t+oim9V6QQAILSQLka4zrG1rnQJoAcbZ6I
-mi8mBaq5/jhPZBFDN4oTbeaqQnMaGj7Hj064jFB6VuRHrh+n+Jv6SJDqnuHKrzxl
-RyfhwTvXoMCFkEMWBhDD3Ua/nUy3oK5qjb3tXFT5ntcTsF6FJngSCZIU10tGIXai
-EtzC90Lvls9QcOjE/EQov3Q82Q9Yi24VLbHMylgbbWnkuGYUGGqvsIdwAxNLY/3O
-3bVDyOExi1wJuCX6qj8MaiUyTkN9v0XdibJA1JfV4TByVh9Lpih6bvywLXmjNWDT
-NTWoCarxyhiert83UisBtN/yj1wck0/F78U+nrxoqiqddgZWTJqUjXSgdbVsfLrb
-5YUuZk905AS0XDdahBYt1/JajU7oe1MQxBJNEfzZvrezjgcu7G2sLG/fMNNmBCjU
-BKhCpJLG7WWhFhlDWIMtmE1zOGzyf72wYLWfgHBNG7EGPw4Mp6LMcCGGJX62R5v9
-+vYwi/vy87k8fmT6ZYLdffSCwutMyON7PfF2y8zGeX++eZmIle7/r4cRGA2F34SS
-MUVmSdh1GzRC/X8WjDHbAC7rLEE/ShbCRxaRylBiNe6oYy8TVAiverkA7WFqGz0a
-Oaoq+nniF5fHwgncL6q3wHp3HjWHRMG1vvT/qP+1iU8Pl5wuUK4IQK+yQZW7X0UF
-AMRpZh+wfw8uhWwtBZJO
-=QKoc
+iQIcBAEBAgAGBQJSDK6TAAoJELSic+t+oim9thYP/jTfq+XfVyT2VN8Q2RyB6mMU
+gFMn4cBoChwCpxmdsIYbScfJbgKKOC0GtO3tfL4E6Octm3M72wMjL1eOqjD0fDv2
+jF1/YmFtmH204CPnzkcL7S9WVg1+swjrlGA+MARLXbfchSUPYGjQ2k+XcV3OS2+0
+OwFRKjYnGIyhpmoNylUx6MMHCIvClZLJHZplWIOBQtRHGb5tHrgDrLIEPHBfwD8B
+7ZteSvSEfG4i/f7BP4Con7ztrD/f6GR2tIQSly+qCRI+oDV7eqdv1F7kd0GfnQOO
+XysVHC1MRCuJ8F5uL4eJwMyJB4kIO6EZF9dJIoHhGghLF2ARhaIrZd0qgnqBU6+J
+EI2PGZoiRFvb3e7/IdW6Dr3a1+b88YmcL/Dt8IKsrShXtJTpvr8YJE8wlPBae64Q
+68yT1kmeDNsVR+yBcOWPWQgjMCOU2956xJE5qSRfULNaEIkDKijXkdDBdaSnwtMh
+CmZxyzt0Xe9OiJaLV0onvFByQobZSYVXg+wUopjp9XfHglBgqTdnZObODkHks5mm
+ntDbTcopd8VMdtdjmLte6pGKa/nFOnW/kiXpRkQecXZa5iw2oeeMz2kqPTFh5SmW
+Yn/euUU8G57KyKFxMbiZePVu+Bdp2xOQPVzYQ5j067DPJt6Qca7POl7a2vUNTG/v
+SwrVKWTo4/Men4SngxMy
+=Cysg
 -----END PGP SIGNATURE-----
 
---4YatIo8qwOC8yTX3--
+--ZGDvG9BNY5+B3nxW--
 
---===============8895232532445002622==
+--===============7852648203913884482==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8895232532445002622==--
+--===============7852648203913884482==--
