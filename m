@@ -1,59 +1,55 @@
-From: Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>
-Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
-Date: Wed, 14 Aug 2013 22:50:29 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1308142245430.1309@heraclitus>
-References: <Pine.LNX.4.44L0.1308131659320.897-100000@iolanthe.rowland.org> <520AA657.5010704@gmail.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: Re: [alsa-devel] [PATCH v4 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
+Date: Thu, 15 Aug 2013 10:18:23 +0800
+Message-ID: <20130815021823.GA1846@MrMyself>
+References: <1376308870-14232-1-git-send-email-b42378@freescale.com>
+ <1376308870-14232-2-git-send-email-b42378@freescale.com>
+ <CAOMZO5A7noEb98yuCPY6o2mf-FikFcMYiDLpg3huPKHMO7Fwdw@mail.gmail.com>
+ <20130814032658.GA16915@S2101-09.ap.freescale.net>
+ <20130814053016.GF31651@MrMyself>
+ <20130814063931.GB31141@S2101-09.ap.freescale.net>
+ <20130814063444.GG31651@MrMyself>
+ <20130814081445.GC31141@S2101-09.ap.freescale.net>
+ <520BA687.4030905@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <520AA657.5010704-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Cc: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Content-Disposition: inline
+In-Reply-To: <520BA687.4030905@wwwdotorg.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, linuxppc-dev@lists.ozlabs.org, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Stephen,
 
-
-On Tue, 13 Aug 2013, Daniel Mack wrote:
-
-> Hi Alan,
+On Wed, Aug 14, 2013 at 09:47:19AM -0600, Stephen Warren wrote:
+> If the clock source name list is different, then it needs a different
+> compatible value, so that each compatible value can specify which clock
+> names are required.
 > 
-> On 13.08.2013 23:06, Alan Stern wrote:
-> > On Mon, 12 Aug 2013, Alan Stern wrote:
-> >> On Mon, 12 Aug 2013, Takashi Iwai wrote:
-> >>
-> >>> So... Clemens, Daniel, Eldad, could you guys review the latest version
-> >>> of Alan's patch?  I'd love to sort this out for 3.12.
-> >>
-> >> Here's a revised version of the patch (still untested).  The difference
-> >> is that this version tries always to keep a period's worth of bytes in
-> >> the USB hardware queue.  This will provide better protection against
-> >> underruns when the period is larger than the queue's minimum
-> >> requirement.
-> > 
-> > After more thought, I decided that patch does too much.  It's not 
-> > necessary to keep track of the number of packets.  Instead, the driver 
-> > should always try to keep as much data in the USB hardware queue as it 
-> > is allowed to.
-> > 
-> > In other words, there should be enough URBs so that an entire ALSA 
-> > buffer can be queued at any time, subject only to the limit on the 
-> > maximum number of URBs and packets.  It doesn't make sense to allocate 
-> > just enough URBs to cover a single period.
-> > 
-> > Does this seem reasonable?
-> 
-> I think so, yes. But I'd like to comment on the actual patch, and also
-> give it a try first of course. It took me some days to gather my setup
-> again, but if you send a revised version, I hope to be able to test it
-> in the next days.
+> Also, the compatible value itself should always include the exact HW
+> that's present (most specific HW version), as well as any other HW it's
+> compatible with.
+ 
+Thank you for the comments. Yes, I did so in v1-v3, but after rethinking
+about the situation (Actually both the HW version and the clock mux itself
+are same, just the clock sources connecting to the mux might be different),
+so I decided to do this by abstracting the driver from those source info
+and letting DT binding to pass such information. Because I think putting 
+the clock sources into the driver differed by compatible value would make
+the driver more like SoC-specified, not the ideal way -- SoC-independent,
+since the clock sources are based on SoC design, not on itself.
 
-I can also test the revised patch on the weekend. My device uses 
-implicit feedback though.
-
-Cheers,
-Eldad
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thank you,
+Nicolin Chen
