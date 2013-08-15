@@ -1,63 +1,56 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v4 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Thu, 15 Aug 2013 17:24:30 +0800
-Message-ID: <20130815092428.GI16915@S2101-09.ap.freescale.net>
-References: <1376308870-14232-1-git-send-email-b42378@freescale.com>
- <1376308870-14232-2-git-send-email-b42378@freescale.com>
- <CAOMZO5A7noEb98yuCPY6o2mf-FikFcMYiDLpg3huPKHMO7Fwdw@mail.gmail.com>
- <20130814032658.GA16915@S2101-09.ap.freescale.net>
- <20130814053016.GF31651@MrMyself>
- <20130814063931.GB31141@S2101-09.ap.freescale.net>
- <20130814063444.GG31651@MrMyself>
- <20130814081445.GC31141@S2101-09.ap.freescale.net>
- <520BA687.4030905@wwwdotorg.org> <20130815021823.GA1846@MrMyself>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: tegra: fix Tegra30 I2S capture parameter setup
+Date: Thu, 15 Aug 2013 11:08:06 +0100
+Message-ID: <20130815100806.GV2401@sirena.org.uk>
+References: <1376511856-28044-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
- by alsa0.perex.cz (Postfix) with ESMTP id F1031261599
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2013 11:24:19 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="K5z5w9fsx/Hrkgg3"
+Return-path: <stable-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20130815021823.GA1846@MrMyself>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, Stephen Warren <swarren@wwwdotorg.org>, linuxppc-dev@lists.ozlabs.org, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, Fabio Estevam <festevam@gmail.com>
+In-Reply-To: <1376511856-28044-1-git-send-email-swarren@wwwdotorg.org>
+Sender: stable-owner@vger.kernel.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, Stephen Warren <swarren@nvidia.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 15, 2013 at 10:18:23AM +0800, Nicolin Chen wrote:
-> Hi Stephen,
-> 
-> On Wed, Aug 14, 2013 at 09:47:19AM -0600, Stephen Warren wrote:
-> > If the clock source name list is different, then it needs a different
-> > compatible value, so that each compatible value can specify which clock
-> > names are required.
-> > 
-> > Also, the compatible value itself should always include the exact HW
-> > that's present (most specific HW version), as well as any other HW it's
-> > compatible with.
->  
-> Thank you for the comments. Yes, I did so in v1-v3, but after rethinking
-> about the situation (Actually both the HW version and the clock mux itself
-> are same, just the clock sources connecting to the mux might be different),
-> so I decided to do this by abstracting the driver from those source info
-> and letting DT binding to pass such information. Because I think putting 
-> the clock sources into the driver differed by compatible value would make
-> the driver more like SoC-specified, not the ideal way -- SoC-independent,
-> since the clock sources are based on SoC design, not on itself.
 
-+1
+--K5z5w9fsx/Hrkgg3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It's pretty much the differences at SoC integration level not the IP
-itself, and it just happens to be handled in a register of the IP.
+On Wed, Aug 14, 2013 at 02:24:16PM -0600, Stephen Warren wrote:
+> From: Stephen Warren <swarren@nvidia.com>
+>=20
+> The Tegra30 I2S driver was writing the AHUB interface parameters to the
+> playback path register rather than the capture path register. This
+> caused the capture parameters not to be configured at all, so if
+> capturing using non-HW-default parameters (e.g. 16-bit stereo rather
+> than 8-bit mono) the audio would be corrupted.
 
-Shawn
+Applied, thanks.
+
+--K5z5w9fsx/Hrkgg3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSDKiDAAoJELSic+t+oim9yaAP/iwHm4f05BvzHCu+q2Lmiewe
+hpQDLtxFaeQjHbSHsJvvjkvJ1JxSh37RBFnqTsCi5VM/RC5Te8OX/o7DrMnM4Y8m
+ytvVJYr3dd17YkM/l8oMwBjRTzhqO5NEd13AdLfwQG4Ko8Q1A6B2QAgWlDRFT58s
+8R8xR2d6wvCvc++HGFhtH36dBlkcu7mCqukPJZzyzbV1nwBnr0lGVza2kB3/WQyC
+gJ8J5Ec+SoRy+gAslXj1CyYDIJj+FfL15h4WtqSnlSS/NlEF5H6ThDzDOx63yZxY
+VK13GUocTR2X73KRd5aPuK+mqoQdK437+X1LMxvqKtLjs0u0u9p4YFFZtMRGwCfX
+1GdeQxNl1n5tt9rDGPNu/nLK3sTTE1BhslOs6HFzsFSgHofbGULZkT+YdMUb+1pL
+4QrAkWwJ0YblsNf+iA87+lHG/BiwflY/75G4PDNmMTzYL/KJCDbbdyP1O3agVbz/
+ue5cu1SjEWzF+tiZP+GwodtXSrUtdBnK/L8PjYt8FWrRPF4NJWu4qLt58QrSQ1FK
+y8Rc2DjnLAPbZ2jQxM/GDK11b9W4yt7iAEOSDTZKU9i+kEfa71Nzj6GdxHabz39v
+jOZHYLjQRwyofgvqvw9UtjcezfYjuYjudPh+aH1nm/kQ3Ct/gfTC+oajc4XaNxoo
+t+o3iB5OekU/q947nV3z
+=mQp6
+-----END PGP SIGNATURE-----
+
+--K5z5w9fsx/Hrkgg3--
