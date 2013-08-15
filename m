@@ -1,55 +1,80 @@
 From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [alsa-devel] [PATCH v4 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Thu, 15 Aug 2013 10:18:23 +0800
-Message-ID: <20130815021823.GA1846@MrMyself>
-References: <1376308870-14232-1-git-send-email-b42378@freescale.com>
- <1376308870-14232-2-git-send-email-b42378@freescale.com>
- <CAOMZO5A7noEb98yuCPY6o2mf-FikFcMYiDLpg3huPKHMO7Fwdw@mail.gmail.com>
- <20130814032658.GA16915@S2101-09.ap.freescale.net>
- <20130814053016.GF31651@MrMyself>
- <20130814063931.GB31141@S2101-09.ap.freescale.net>
- <20130814063444.GG31651@MrMyself>
- <20130814081445.GC31141@S2101-09.ap.freescale.net>
- <520BA687.4030905@wwwdotorg.org>
+Subject: Re: [PATCH v4 resent 1/2] ASoC: fsl: Add S/PDIF CPU
+	DAI driver
+Date: Thu, 15 Aug 2013 10:28:14 +0800
+Message-ID: <20130815022814.GB1846@MrMyself>
+References: <cover.1376309076.git.b42378@freescale.com>
+ <51808310dd97d2a35a28766ed7309f269521cafd.1376309076.git.b42378@freescale.com>
+ <20130814075017.GE2324@pengutronix.de>
+ <20130814084801.GH31651@MrMyself>
+ <1376481984.3994.20.camel@pizza.hi.pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6511261A0D
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2013 04:38:08 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <520BA687.4030905@wwwdotorg.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, linuxppc-dev@lists.ozlabs.org, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
+In-Reply-To: <1376481984.3994.20.camel@pizza.hi.pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, Sascha Hauer <s.hauer@pengutronix.de>, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Stephen,
+Hi Philipp,
 
-On Wed, Aug 14, 2013 at 09:47:19AM -0600, Stephen Warren wrote:
-> If the clock source name list is different, then it needs a different
-> compatible value, so that each compatible value can specify which clock
-> names are required.
+   Thank again for the comments.
+
+On Wed, Aug 14, 2013 at 02:06:24PM +0200, Philipp Zabel wrote:
+> ==================================================================
+> From i.MX53 reference manual:
 > 
-> Also, the compatible value itself should always include the exact HW
-> that's present (most specific HW version), as well as any other HW it's
-> compatible with.
- 
-Thank you for the comments. Yes, I did so in v1-v3, but after rethinking
-about the situation (Actually both the HW version and the clock mux itself
-are same, just the clock sources connecting to the mux might be different),
-so I decided to do this by abstracting the driver from those source info
-and letting DT binding to pass such information. Because I think putting 
-the clock sources into the driver differed by compatible value would make
-the driver more like SoC-specified, not the ideal way -- SoC-independent,
-since the clock sources are based on SoC design, not on itself.
+> 0000 if (DPLL Locked) SPDIF_RxClk else extal
+> 0001 if (DPLL Locked) SPDIF_RxClk else spdif_clk
+> 0011 if (DPLL Locked) SPDIF_RxClk else asrc_clk
+> 0100 if (DPLL Locked) SPDIF_Rxclk else esai_hckt
+> 0101 extal_clk
+> 0110 spdif_clk
+> 1000 asrc_clk
+> 1001 esai_hckt
+> 1010 if (DPLL Locked) SPDIF_RxClk else mlb_clk
+> 1011 if (DPLL Locked) SPDIF_RxClk else camp_clk
+> 1100 mkb_clk
+> 1101 camp_clk
+> ==================================================================
+> 
+> To me this looks like the device tree should just contain the list of
+> unique clock inputs using phandles.
+> 	/* for i.MX6Q: */
+> 	clocks = <&...>;
+> 	clock-names = "xtal", "spdif", "asrc",
+> 	              "spdif_ext", "esai", "mlb";
+> 
+> 	/* for i.MX53: */
+> 	clocks = <&...>;
+> 	clock-names = "xtal", "spdif", "asrc",
+> 	              "esai", "mlb", "camp";
+> 
+> The driver could contain this list of named inputs to the multiplexer
+> and the DPLL locking information for each SoC version. The per-clock
+> DPLL locking bit shouldn't be in the device tree at all.
+
+I understand your point. I'll put the DPLL-locking info to the driver.
+And I just found that the DPLL-lock condition seems to be fixed within
+the range -- {0x0 ~ 0x4, 0xa ~ 0xb} (I checked i.MX6Q/6SL/53/35, all
+of them are in such pattern.) So I don't need to put them into DT.
+
+I'll revise it in next ver.
 
 Thank you,
 Nicolin Chen
