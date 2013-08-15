@@ -1,253 +1,207 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH v5 2/2] ASoC: fsl: Add S/PDIF machine driver
-Date: Thu, 15 Aug 2013 19:26:40 +0800
-Message-ID: <55cc246d553e2fa5230d601e55f5e758b1a0f1fa.1376565456.git.b42378@freescale.com>
-References: <cover.1376565456.git.b42378@freescale.com>
+From: Tomasz Figa <tomasz.figa@gmail.com>
+Subject: Re: [PATCH 00/18] ARM: s3c64xx: Let amba-pl08x driver handle DMA
+Date: Thu, 15 Aug 2013 13:50:43 +0200
+Message-ID: <59851253.P5uJVeRAXe@flatron>
+References: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <cover.1376565456.git.b42378@freescale.com>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: broonie@kernel.org, lars@metafoo.de, p.zabel@pengutronix.de, s.hauer@pengutronix.de
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, festevam@gmail.com, timur@tabi.org, rob.herring@calxeda.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: multipart/signed; boundary="nextPart12514744.ftxC8f7FXa"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-samsung-soc@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, Dan Williams <djbw@fb.com>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Mark Brown <broonie@kernel.org>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Roland Stigge <stigge@antcom.de>, Viresh Kumar <viresh.linux@gmail.com>, Shiraz Hashim <shiraz.hashim@st.com>, Rob Herring <rob.herring@calxeda.com>, H Hartley Sweeten <hsweeten@visionengravers.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add S/PDIF machine driver for Freescale i.MX series SoC.
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
- .../devicetree/bindings/sound/imx-audio-spdif.txt  |   29 +++++
- sound/soc/fsl/Kconfig                              |   11 ++
- sound/soc/fsl/Makefile                             |    2 +
- sound/soc/fsl/imx-spdif.c                          |  134 ++++++++++++++++++++
- 4 files changed, 176 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
- create mode 100644 sound/soc/fsl/imx-spdif.c
+--nextPart12514744.ftxC8f7FXa
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-diff --git a/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt b/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
-new file mode 100644
-index 0000000..9a3fa26
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
-@@ -0,0 +1,29 @@
-+Freescale i.MX audio complex with S/PDIF transceiver
-+
-+Required properties:
-+
-+  - compatible : "fsl,imx-audio-spdif"
-+
-+  - model : The user-visible name of this sound complex
-+
-+  - spdif-controller : The phandle of the i.MX S/PDIF controller
-+
-+
-+Optional properties:
-+
-+  - spdif-transmitter : The phandle of the spdif-transmitter dummy codec
-+
-+  - spdif-receiver : The phandle of the spdif-receiver dummy codec
-+
-+* Note: At least one of these two properties should be set in the DT binding.
-+
-+
-+Example:
-+
-+sound-spdif {
-+	compatible = "fsl,imx-audio-spdif";
-+	model = "imx-spdif";
-+	spdif-controller = <&spdif>;
-+	spdif-transmitter = <&spdif_tx_codec>;
-+	spdif-receiver = <&spdif_rx_codec>;
-+};
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 2c518db..4cc118c 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -195,6 +195,17 @@ config SND_SOC_IMX_SGTL5000
- 	  Say Y if you want to add support for SoC audio on an i.MX board with
- 	  a sgtl5000 codec.
- 
-+config SND_SOC_IMX_SPDIF
-+	tristate "SoC Audio support for i.MX boards with S/PDIF"
-+	select SND_SOC_IMX_PCM_DMA
-+	select SND_SOC_FSL_SPDIF
-+	select SND_SOC_FSL_UTILS
-+	select SND_SOC_SPDIF
-+	help
-+	  SoC Audio support for i.MX boards with S/PDIF
-+	  Say Y if you want to add support for SoC audio on an i.MX board with
-+	  a S/DPDIF.
-+
- config SND_SOC_IMX_MC13783
- 	tristate "SoC Audio support for I.MX boards with mc13783"
- 	depends on MFD_MC13783 && ARM
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index 4b5970e..e2aaff7 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -45,6 +45,7 @@ snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
- snd-soc-wm1133-ev1-objs := wm1133-ev1.o
- snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
- snd-soc-imx-wm8962-objs := imx-wm8962.o
-+snd-soc-imx-spdif-objs :=imx-spdif.o
- snd-soc-imx-mc13783-objs := imx-mc13783.o
- 
- obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
-@@ -53,4 +54,5 @@ obj-$(CONFIG_SND_SOC_MX27VIS_AIC32X4) += snd-soc-mx27vis-aic32x4.o
- obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) += snd-soc-wm1133-ev1.o
- obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
- obj-$(CONFIG_SND_SOC_IMX_WM8962) += snd-soc-imx-wm8962.o
-+obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
- obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
-diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
-new file mode 100644
-index 0000000..893f3d1
---- /dev/null
-+++ b/sound/soc/fsl/imx-spdif.c
-@@ -0,0 +1,134 @@
-+/*
-+ * Copyright (C) 2013 Freescale Semiconductor, Inc.
-+ *
-+ * The code contained herein is licensed under the GNU General Public
-+ * License. You may obtain a copy of the GNU General Public License
-+ * Version 2 or later at the following locations:
-+ *
-+ * http://www.opensource.org/licenses/gpl-license.html
-+ * http://www.gnu.org/copyleft/gpl.html
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <sound/soc.h>
-+
-+struct imx_spdif_data {
-+	struct snd_soc_dai_link dai[2];
-+	struct snd_soc_card card;
-+};
-+
-+static int imx_spdif_audio_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *spdif_np, *codec_tx_np, *codec_rx_np;
-+	struct platform_device *spdif_pdev;
-+	struct imx_spdif_data *data;
-+	int ret = 0, num_links = 0;
-+
-+	spdif_np = of_parse_phandle(np, "spdif-controller", 0);
-+	if (!spdif_np) {
-+		dev_err(&pdev->dev, "failed to find spdif-controller\n");
-+		ret = -EINVAL;
-+		goto fail;
-+	}
-+
-+	spdif_pdev = of_find_device_by_node(spdif_np);
-+	if (!spdif_pdev) {
-+		dev_err(&pdev->dev, "failed to find S/PDIF device\n");
-+		ret = -EINVAL;
-+		goto fail;
-+	}
-+
-+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data) {
-+		dev_err(&pdev->dev, "failed to allocate memory\n");
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
-+
-+	codec_tx_np = of_parse_phandle(np, "spdif-transmitter", 0);
-+	if (codec_tx_np) {
-+		data->dai[num_links].name = "S/PDIF TX";
-+		data->dai[num_links].stream_name = "S/PDIF PCM Playback";
-+		data->dai[num_links].codec_dai_name = "dit-hifi";
-+		data->dai[num_links].codec_of_node = codec_tx_np;
-+		data->dai[num_links].cpu_of_node = spdif_np;
-+		data->dai[num_links].platform_of_node = spdif_np;
-+		num_links++;
-+	}
-+
-+	codec_rx_np = of_parse_phandle(np, "spdif-receiver", 0);
-+	if (codec_rx_np) {
-+		data->dai[num_links].name = "S/PDIF RX";
-+		data->dai[num_links].stream_name = "S/PDIF PCM Capture";
-+		data->dai[num_links].codec_dai_name = "dir-hifi";
-+		data->dai[num_links].codec_of_node = codec_rx_np;
-+		data->dai[num_links].cpu_of_node = spdif_np;
-+		data->dai[num_links].platform_of_node = spdif_np;
-+		num_links++;
-+	}
-+
-+	if (!num_links) {
-+		dev_err(&pdev->dev, "no enabled S/PDIF DAI link\n");
-+		goto fail;
-+	}
-+
-+	data->card.dev = &pdev->dev;
-+	data->card.num_links = num_links;
-+	data->card.dai_link = data->dai;
-+
-+	ret = snd_soc_of_parse_card_name(&data->card, "model");
-+	if (ret)
-+		goto fail;
-+
-+	ret = snd_soc_register_card(&data->card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+		goto fail;
-+	}
-+
-+	platform_set_drvdata(pdev, data);
-+
-+fail:
-+	if (codec_tx_np)
-+		of_node_put(codec_tx_np);
-+	if (codec_rx_np)
-+		of_node_put(codec_rx_np);
-+	if (spdif_np)
-+		of_node_put(spdif_np);
-+
-+	return ret;
-+}
-+
-+static int imx_spdif_audio_remove(struct platform_device *pdev)
-+{
-+	struct imx_spdif_data *data = platform_get_drvdata(pdev);
-+
-+	snd_soc_unregister_card(&data->card);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id imx_spdif_dt_ids[] = {
-+	{ .compatible = "fsl,imx-audio-spdif", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, imx_spdif_dt_ids);
-+
-+static struct platform_driver imx_spdif_driver = {
-+	.driver = {
-+		.name = "imx-spdif",
-+		.owner = THIS_MODULE,
-+		.of_match_table = imx_spdif_dt_ids,
-+	},
-+	.probe = imx_spdif_audio_probe,
-+	.remove = imx_spdif_audio_remove,
-+};
-+
-+module_platform_driver(imx_spdif_driver);
-+
-+MODULE_AUTHOR("Freescale Semiconductor, Inc.");
-+MODULE_DESCRIPTION("Freescale i.MX S/PDIF machine driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:imx-spdif");
--- 
-1.7.1
+Hi,
+
+[Ccing maintainers and other people responsible for spear, lpc32xx and 
+versatile platforms]
+
+On Sunday 11 of August 2013 19:59:12 Tomasz Figa wrote:
+> This is first non-RFC version of my patches extending support of
+> amba-pl08x DMA engine driver to PL080S DMA engine (PL080 modified by
+> Samsung) found in Samsung S3C64xx SoCs.
+> 
+> Due to changes scattered across different areas of kernel, patches are
+> based on merged 3 branches:
+>  - for-next of Kgene's Samsung tree,
+>  - clk-next of Mike's clock tree,
+>  - next of Vinod's slave DMA tree.
+> 
+> To ease testing I have prepared a branch in my private tree for anyone
+> willing to check the patches out:
+> 	git://github.com/tom3q/linux.git v3.12-pl080
+> 
+> Dependencies (already applied in my branch):
+>  - for patches 14 and 16 - CCF-based clock driver for s3c64xx.
+> 
+> Some of the patches not related to the amba-pl08x driver itself
+> can be likely applied into appropriate trees separately, namely:
+>  - 09/18 - ASoC: Samsung: Do not queue cyclic buffers multiple times,
+>  - 14/18 - clk: samsung: s3c64xx: Add aliases for DMA clocks.
+> 
+> After patch 14/18, both old and new DMA drivers can be supported on
+> S3C64xx, depending on Kconfig options. Patches 15-18 remove the old
+> driver leaving support only for the generic pl08x driver. Feel free to
+> drop those patches for now if we want more testing, but I don't suspect
+> any problems.
+> 
+> On S3C64xx-based Mini6410 and SMDK6410 boards, with I2S audio
+> playback and capture (including full duplex operation) and also SPI
+> using spidev:
+> 
+> Tested-by: Tomasz Figa <tomasz.figa@gmail.com>
+
+It would be nice if patches from this series touching the PL08x driver 
+(01-08) could be tested on other platforms that have this DMA controller 
+as well, to make sure I did not break anything. Unfortunately I do not 
+have any board based on any of them.
+
+Best regards,
+Tomasz
+
+> Changes since RFC v2:
+>  - Added clkdev lookups to old clock driver.
+>  - Added patches removing the old DMA driver and any remaining code
+>    needed by it.
+>  - Fixed DMA support for SPI.
+>  - Added a word about PL080S to amba-pl08x.c file header.
+>  - Changed definition of LLI words from enums to macros.
+>  - Extended debugging messages to handle PL080S variant as well.
+>  - Little cleanup of LLI dumping code.
+>  - Added check for peripheral flow control, which is unsupported by
+>    PL080S to dma_set_runtime_config.
+>  - Corrected transfer size mask of PL080S.
+> 
+> Changes since RFC v1:
+>  - Returned to original way of storing quirks as booleans, as suggested
+>    by Russell, Linus and Arnd.
+>  - Added reg_config field to pl08x_phy_chan struct, which stores
+>    variant-specific address of channel config register, as suggested
+>    by Russell.
+>  - Simplified handling of extended maximum transfer size of PL080S
+>    (no more conditional passing of 0 as length to pl08x_cctl_bits()).
+>  - Reworked LLI handling in the driver to stop casting arbitrary memory
+>    to a struct and allow different word count of LLI entry, as suggested
+> by Linus.
+>  - Removed AMBA ID override from S3C64xx PL080 initialization code.
+>  - Fixed brokenness of Samsung DMA wrapper API, which caused cyclic
+> buffers to be queued multiple times when DMA engine is used.
+>  - Included patch adding clock aliases for DMA engines (depends on
+>    Common Clock Framework driver for S3C64xx).
+>  - Fixed several minor stylistic issues.
+> 
+> For reference, here is the original description of the series:
+> 
+> One of the biggest roadblocks on the way of S3C64xx to DeviceTree
+> support is its DMA driver, which is completely platform-specific and
+> provides private API (s3c-dma), not even saying that its design is
+> completely against multiplatform-awareness.
+> 
+> The DMA controller present on this SoC series is a custom variant
+> of ARM PrimeCell PL080 modified by Samsung to add some extra features.
+> It is mostly compatible with original PL080, except:
+>  - CH_CONTROL2 register is added between CH_CONTROL and CH_CONFIG,
+>  - offset of CH_CONFIG register is different,
+>  - transfer size field is moved from CH_CONTROL to CH_CONTROL2,
+>  - transfer size field is extended to 24 bits, allowing much bigger
+>      single transfer,
+>  - LLI consists of one more word, to account for CH_CONTROL2 register.
+> 
+> Since all the rest is fully compatible with standard PL080 there is no
+> point in having separate driver just for this single variant, so I
+> decided to look into adding support for it to the amba-pl08x driver.
+> 
+> There was already some attempt to achieve this before, but this was
+> before Russel's big rework of the driver to use virtual channels,
+> making the old patches being not much of use.
+> 
+> This RFC series is a proof of concept that I managed to make during last
+> days of hacking. Except one patch adding clkdev lookup to clock driver
+> (which is being replaced with a CCF-compliant driver ATM), this is
+> enough to get memcpy and slave transfers to work on S3C64xx.
+> 
+> I have tested this on Mini6410 and SMDK6410 boards using dmatest for
+> memcpy and Samsung I2S with madplay/aplay for slave transfers.
+> Unfortunately I do not have access to other platforms with PL08x so
+> I could not test for any regressions introduced on them.
+> 
+> Credits for two patches go to Alban Bedel, who made a series fixing this
+> driver to make it usable with audio drivers. I rebased his patches on
+> top of mine and corrected coding style a bit.
+> 
+> OK, that's all. Any comments are welcome. Feel free to start throwing
+> eggs and tomatoes if you find this awful, but I won't be upset if I get
+> some Tested-by or Acked-by as well. ;)
+> 
+> Alban Bedel (2):
+>   dmaengine: PL08x: Fix reading the byte count in cctl
+>   dmaengine: PL08x: Add cyclic transfer support
+> 
+> Tomasz Figa (16):
+>   dmaengine: PL08x: Refactor pl08x_getbytes_chan() to lower indentation
+>   dmaengine: PL08x: Add support for different offset of CONFIG register
+>   dmaengine: PL08x: Rework LLI handling to be less fragile
+>   dmaengine: PL08x: Move LLI dumping code into separate function
+>   dmaengine: PL08x: Add support for PL080S variant
+>   dmaengine: PL08x: Add support for different maximum transfer size
+>   ASoC: Samsung: Do not queue cyclic buffers multiple times
+>   spi: s3c64xx: Do not require legacy DMA API in case of S3C64XX
+>   ASoC: Samsung: Do not require legacy DMA API in case of S3C64XX
+>   ARM: s3c64xx: Add support for DMA using generic amba-pl08x driver
+>   ARM: s3c64xx: clock: Add clkdev lookup for DMA clocks
+>   clk: samsung: s3c64xx: Add aliases for DMA clocks
+>   ARM: s3c64xx: Remove legacy DMA driver
+>   clk: samsung: s3c64xx: Remove clock aliases of old DMA driver
+>   spi: s3c64xx: Always select S3C64XX_PL080 when ARCH_S3C64XX is enabled
+> ASoC: Samsung: Always select S3C64XX_PL080 when ARCH_S3C64XX is enabled
+> 
+>  arch/arm/Kconfig                         |   1 +
+>  arch/arm/mach-s3c64xx/Kconfig            |   7 +-
+>  arch/arm/mach-s3c64xx/Makefile           |   2 +-
+>  arch/arm/mach-s3c64xx/clock.c            |  28 +-
+>  arch/arm/mach-s3c64xx/common.h           |   5 +
+>  arch/arm/mach-s3c64xx/dma.c              | 753
+> -------------------------------
+> arch/arm/mach-s3c64xx/include/mach/dma.h | 144 ++----
+>  arch/arm/mach-s3c64xx/pl080.c            | 244 ++++++++++
+>  arch/arm/plat-samsung/devs.c             |   6 +-
+>  arch/arm/plat-samsung/s3c-dma-ops.c      |  13 +-
+>  drivers/clk/samsung/clk-s3c64xx.c        |   4 +-
+>  drivers/dma/amba-pl08x.c                 | 501 ++++++++++++++------
+>  drivers/spi/Kconfig                      |   2 +-
+>  include/linux/amba/pl080.h               |   1 +
+>  sound/soc/samsung/Kconfig                |   2 +-
+>  sound/soc/samsung/dma.c                  |   7 +
+>  16 files changed, 705 insertions(+), 1015 deletions(-)
+>  delete mode 100644 arch/arm/mach-s3c64xx/dma.c
+>  create mode 100644 arch/arm/mach-s3c64xx/pl080.c
+--nextPart12514744.ftxC8f7FXa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAABAgAGBQJSDMCXAAoJEIv3Hb8G/XruurEQAI5MZZZOXGQLios4lb3lAT3p
+Y3GQLErlJmozSQNzgdlGsiI2Ot+7J8w9aFR1jud6YF6yU8oU+xWoqfDwANxrKHXr
+dWEhXaK2K2rtAJKFwK8ezG2FgBprDEmMPOI8LIc8m3IuocMwtqxyBaILr8YEe20z
+HrzrEPGNdIEHUmYQgP/K6SLJ8HUZ2IJP5Lf6JTRGQD83SOy21uhcASgIg5h6+JY7
+3XNJpNg6TC+nxlZHhJMVbDbblLtAiMpq08UqQwQpdGugWGuuYhOavhhpmM2d/gZm
+YBha93AdkvGAGOdoom0luvqbpEvsiKyD7mYape8b0uhy58hDdR1MbQEITLhPkV8e
+8s+pffZh3owWjmRc513MZi28rXNF5BsJ64KMAM5NnMIMqj5Ez6RfIAeUZ3pQAGzH
+lwWnXbGzDC0LXNDxI2M3az3odWQcuCwWodfOeX2VXgjAXQJOzV8g9QVqP/PMDIaS
+ZD/2fDcv5j3MX2J4bQL7umEIYQG/xvmjYJXYYOFBNBby4GzEIUHjE7gY7BtkWhXx
+FTWZ+yEgmSpri5VImftIP2Z4X87khS36bGVeK6DgpRRTWOLdLImXxwilPLPjaPse
+Y26CZGOCFOCKfcgFjpO+668c6ZntlL488BuKFm467tCqVA9NlJZOJVubHFUPNxRK
+HKNmER3pxfdCSvYNkFr+
+=oYwl
+-----END PGP SIGNATURE-----
+
+--nextPart12514744.ftxC8f7FXa--
