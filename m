@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tegra: support a Mic Jack in the
- Tegra+RT5640 machine driver
-Date: Thu, 15 Aug 2013 11:08:44 +0100
-Message-ID: <20130815100844.GW2401@sirena.org.uk>
-References: <1376511989-28187-1-git-send-email-swarren@wwwdotorg.org>
+Subject: Re: [PATCH 1/5] ALSA: move dmaengine implementation
+ from ASoC to ALSA core
+Date: Thu, 15 Aug 2013 11:18:49 +0100
+Message-ID: <20130815101849.GX2401@sirena.org.uk>
+References: <1376296961-20564-1-git-send-email-zonque@gmail.com>
+ <1376296961-20564-2-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8979461654543251955=="
+Content-Type: multipart/mixed; boundary="===============8895232532445002622=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 02F1A2655AD
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2013 12:08:48 +0200 (CEST)
-In-Reply-To: <1376511989-28187-1-git-send-email-swarren@wwwdotorg.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 844BE2615D1
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2013 12:18:55 +0200 (CEST)
+In-Reply-To: <1376296961-20564-2-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <pawel.moll@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, linux-tegra@vger.kernel.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, eric.y.miao@gmail.com, arnd@arndb.de, s.neumann@raumfeld.com, haojian.zhuang@linaro.org, rmk+kernel@arm.linux.org.uk, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8979461654543251955==
+--===============8895232532445002622==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="W1uEbMXJ1Mj4g6TI"
+	protocol="application/pgp-signature"; boundary="4YatIo8qwOC8yTX3"
 Content-Disposition: inline
 
 
---W1uEbMXJ1Mj4g6TI
+--4YatIo8qwOC8yTX3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 14, 2013 at 02:26:29PM -0600, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
->=20
-> Add a Mic Jack widget to the Tegra+RT5640 machine driver, and document
-> this in the DT binding. This enables the DT to include the Mic Jack in
-> the audio routing table, and hence enables capture of audio, in addition
-> to the previously-working playback.
+On Mon, Aug 12, 2013 at 10:42:37AM +0200, Daniel Mack wrote:
+> For the PXA DMA rework, we need the generic dmaengine implementation
+> that currently lives in sound/soc for standalone (non-ASoC) AC'97
+> support.
 
-Applied, thanks.
+Applied, thanks.  Remember to use git format-patch -M for moves and
+renames.
 
---W1uEbMXJ1Mj4g6TI
+--4YatIo8qwOC8yTX3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSDKipAAoJELSic+t+oim9GdwQAIEWQKsjWjiLLlorg06uhL4H
-r37wuL1pCosg3IrNe7BNZ3oKxRDEwK92XU8LWKpLt7KVdYs7mIoSNPadoJxJWsPB
-iGHDeXxKR4+kfE9D7SsVdhM7ZbYyJnkR08LjTLzVBqIhJzsZq7+JLRa68U0fIIJW
-QK66befmUlyHzqIFeU0f6KjYCSsUemm91a+hYwbEixtYJ4Azve8wf/dAifHKESzM
-oFayPGNj+YVj5bdq+o1i6IaD+PodL+u99nQcY2FcQlsOOUf7c9zcUuJ0DMJT4Dv1
-F/eYfP2KqQMGIhhclaTsLTXEiQWcSaeHGpnocDkzC4PWnmXkfY0w+RV6ERqRb88I
-doWBErxmMVsxiwvgA0la61jgTv2phL+IrtCF9X6SG2rKmE3WuJOPQ4wuelYRH6Fr
-0pJiGH1yKGrPYCKW+OqPWYN+9iKiq7h9Ej4OSzGLQTsvXdpow1w57OkHuOeoVUoE
-Du0oeDIEHs0EoUuSIhfN74FWL5bDOXsjSw2MUIx+bswEqmP8IoEwpLnPW+4iW0f6
-OH68zy0d75n6PKMNRWSbFQvd4BzkObATJJ+4fYAaTvjaI5HsYFscWR1NaNCiY7y9
-vok3qDVi4Ynij2U4ACJbVFIT//9psAJfZ6vW2p4rPvbvTjf10q5kBcoMajx0ZnYs
-uYbawE7xa+pMIofFDKnp
-=I1np
+iQIcBAEBAgAGBQJSDKsFAAoJELSic+t+oim9V6QQAILSQLka4zrG1rnQJoAcbZ6I
+mi8mBaq5/jhPZBFDN4oTbeaqQnMaGj7Hj064jFB6VuRHrh+n+Jv6SJDqnuHKrzxl
+RyfhwTvXoMCFkEMWBhDD3Ua/nUy3oK5qjb3tXFT5ntcTsF6FJngSCZIU10tGIXai
+EtzC90Lvls9QcOjE/EQov3Q82Q9Yi24VLbHMylgbbWnkuGYUGGqvsIdwAxNLY/3O
+3bVDyOExi1wJuCX6qj8MaiUyTkN9v0XdibJA1JfV4TByVh9Lpih6bvywLXmjNWDT
+NTWoCarxyhiert83UisBtN/yj1wck0/F78U+nrxoqiqddgZWTJqUjXSgdbVsfLrb
+5YUuZk905AS0XDdahBYt1/JajU7oe1MQxBJNEfzZvrezjgcu7G2sLG/fMNNmBCjU
+BKhCpJLG7WWhFhlDWIMtmE1zOGzyf72wYLWfgHBNG7EGPw4Mp6LMcCGGJX62R5v9
++vYwi/vy87k8fmT6ZYLdffSCwutMyON7PfF2y8zGeX++eZmIle7/r4cRGA2F34SS
+MUVmSdh1GzRC/X8WjDHbAC7rLEE/ShbCRxaRylBiNe6oYy8TVAiverkA7WFqGz0a
+Oaoq+nniF5fHwgncL6q3wHp3HjWHRMG1vvT/qP+1iU8Pl5wuUK4IQK+yQZW7X0UF
+AMRpZh+wfw8uhWwtBZJO
+=QKoc
 -----END PGP SIGNATURE-----
 
---W1uEbMXJ1Mj4g6TI--
+--4YatIo8qwOC8yTX3--
 
---===============8979461654543251955==
+--===============8895232532445002622==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8979461654543251955==--
+--===============8895232532445002622==--
