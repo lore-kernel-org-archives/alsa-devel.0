@@ -1,7 +1,7 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
+From: Nicolin Chen <b42378@freescale.com>
 Subject: Re: [PATCH v5 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Fri, 16 Aug 2013 12:11:51 +0200
-Message-ID: <20130816101151.GQ26614@pengutronix.de>
+Date: Fri, 16 Aug 2013 18:16:18 +0800
+Message-ID: <20130816101617.GB4694@MrMyself>
 References: <cover.1376565456.git.b42378@freescale.com>
  <4eb991fafc171305ebc71847fecb7bdae0ede927.1376565456.git.b42378@freescale.com>
  <2188999.03O3zirCAO@flatron> <20130816044330.GD1846@MrMyself>
@@ -9,15 +9,17 @@ References: <cover.1376565456.git.b42378@freescale.com>
  <20130816080124.GE1846@MrMyself>
  <20130816085632.GO26614@pengutronix.de>
  <20130816095357.GA4694@MrMyself>
+ <20130816101151.GQ26614@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 030E7261B28
- for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 12:12:10 +0200 (CEST)
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe002.messaging.microsoft.com [216.32.180.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 53800261694
+ for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 12:18:27 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20130816095357.GA4694@MrMyself>
+In-Reply-To: <20130816101151.GQ26614@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,89 +29,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, ian.campbell@citrix.com, pawel.moll@arm.com, swarren@wwwdotorg.org, festevam@gmail.com, Tomasz Figa <tomasz.figa@gmail.com>, rob.herring@calxeda.com, timur@tabi.org, broonie@kernel.org, p.zabel@pengutronix.de, galak@codeaurora.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 16, 2013 at 05:53:58PM +0800, Nicolin Chen wrote:
-> On Fri, Aug 16, 2013 at 10:56:32AM +0200, Sascha Hauer wrote:
-> > > "tx<0-8>"	Optional	Tx clock source for spdif playback.
-> > > 				If absent, will use core clock.
-> > > 				The index from 0 to 8 is identical
-> > > 				to the clock source list described
-> > > 				in TxClk_Source bit of register STC.
-> > > 				Multiple clock source are allowed
-> > > 				for this tx clock source. The driver
-> > > 				will select one source from them for
-> > > 				each supported sample rate according
-> > > 				to the clock rates of these provided
-> > > 				clock sources.
-> > 
-> > You mean tx<0-7>
+On Fri, Aug 16, 2013 at 12:11:51PM +0200, Sascha Hauer wrote:
+> > Some clocks are not from CCM and we haven't defined in imx6q-clk.txt,
+> > so in most cases we can't provide a phandle for them, eg: spdif_ext.
+> > I think it's a bit hard to force it to be 'required'. An 'optional'
+> > looks more flexible to me and a default one is ensured even if it's
+> > missing.
 > 
-> Yes. Thank you.
+> <&clks 0> is the dummy clock. This can be used for all input clocks not
+> defined by the SoC.
+
+That's feasible, thank you.
+
+> spdif_ext would be a fixed clock on boards which provide it, but wiring
+> this up would be the job of the board maintainer.
+
+Understood.
+
+> Look, it's really simple. Define the binding in a way that describes the
+> hardware. Then use some sensible default in the driver for which clock
+> to use. This doesn't have to cover all possible usecases, it only has
+> to work. This is all that is necessary to get this driver mainline and
+> will make most users happy. Then, later, someone might come along who
+> needs more fine grained control over the clocks, but this guy is then
+> able to justify *why* more control is needed.
 > 
-> > Also I would make this option required. Use a dummy clock for mux inputs
-> > that are grounded for a specific SoC.
-> 
-> Some clocks are not from CCM and we haven't defined in imx6q-clk.txt,
-> so in most cases we can't provide a phandle for them, eg: spdif_ext.
-> I think it's a bit hard to force it to be 'required'. An 'optional'
-> looks more flexible to me and a default one is ensured even if it's
-> missing.
+> This is not about getting a full featured driver into mainline. Get
+> a basic driver into mainline and improve it later. You'll make it
+> easier for us all.
 
-<&clks 0> is the dummy clock. This can be used for all input clocks not
-defined by the SoC.
+Thank you for explain all these to the despicable me.
+I'll try to make myself more comfortable with rules here.
 
-spdif_ext would be a fixed clock on boards which provide it, but wiring
-this up would be the job of the board maintainer.
-
-> > Again, describe the input clocks *to* *the* *S/PDIF* *core* in the
-> > devicetree. Nothing more, nothing less. We've already been at the point
-> > where we realized that half of the above clocks only describe the
-> > 'PDLL locked' condition. Also the tx clocks are from what I see identical
-> > to the rx clocks. The following are the clocks:
-> > 
-> > clock-names: "core", "rxtx<0-7>" Required. The S/PDIF core has a core
-> > clock and 8 clocks which are muxed internally to provide input/output
-> > sample clocks.
-> 
-> I know the reason why you suggest to combine two into 'rxtx<0-7>'
-> is because the clock mux is defined so. And the previous suggestion
-> 'the option required' is also because of it. But actually the rxclk 
-> itself, can be not only routed from the clock mux but also derived
-> from DPLL of SPDIF Rx BLOCK as well. So, IMHO, it's more likely to
-> be a fact that rxclk actually has 9 clock source, 8 from mux and
-> 1 from DPLL. But why we here have to exclude it?
-
-Because this is configuration, not hardware description.
-
-> 
-> WELL anyway, I know my opinion might not be concerned so much. So
-> I would like to follow the suggestion as an expediency because I
-> still wish this patch could be finally applied and merged into
-> mainline :(
-> 
-> But I still don't get why we need to be so obsessed to make this
-> impenetrable rule of devicetree that we here have to sacrifice
-> something we could have reasonably done.
-
-Look, it's really simple. Define the binding in a way that describes the
-hardware. Then use some sensible default in the driver for which clock
-to use. This doesn't have to cover all possible usecases, it only has
-to work. This is all that is necessary to get this driver mainline and
-will make most users happy. Then, later, someone might come along who
-needs more fine grained control over the clocks, but this guy is then
-able to justify *why* more control is needed.
-
-This is not about getting a full featured driver into mainline. Get
-a basic driver into mainline and improve it later. You'll make it
-easier for us all.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Best regards,
+Nicolin Chen
