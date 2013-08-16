@@ -1,100 +1,67 @@
-From: "Nathanael D. Noblet" <nathanael@gnat.ca>
-Subject: Re: RealTek Inverted Mic Patch
-Date: Fri, 16 Aug 2013 09:28:40 -0600
-Message-ID: <520E4528.7020002@gnat.ca>
-References: <520D399B.6020607@gnat.ca> <s5hvc36ma1m.wl%tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060706030203010406020903"
+From: Tim Gardner <tim.gardner@canonical.com>
+Subject: [PATCH 3.11-rc5 1/2] ALSA: pcm: Add snd_printd_ratelimit()
+Date: Fri, 16 Aug 2013 11:18:59 -0600
+Message-ID: <1376673540-2201-1-git-send-email-tim.gardner@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hvc36ma1m.wl%tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, David Henningsson <david.henningsson@canonical.com>, Kailang Yang <kailang@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Tim Gardner <tim.gardner@canonical.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Yacine Belkadi <yacine.belkadi.1@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------060706030203010406020903
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Direct calls to printk_limit() will emit log noise even when CONFIG_SND_DEBUG is not
+defined. Add a wrapper macro around printk_limit() that is conditionally defined by
+CONFIG_SND_DEBUG.
 
-Hello,
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Yacine Belkadi <yacine.belkadi.1@gmail.com>
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+---
 
-   Thanks for applying it - there is one more piece of hardware that 
-needs the same type of fix. Here's an updated patch...
-just the addition of
+checkpatch is moaning about the use of printk_ratelimit(), but
+printk_ratelimited() seems like overkill for a debug feature.
 
-SND_PCI_QUIRK(0x1025, 0x022f, "Acer Aspire One", ALC662_FIXUP_INV_DMIC),
+WARNING: Prefer printk_ratelimited or pr_<level>_ratelimited to printk_ratelimit
+#38: FILE: include/sound/core.h:382:
++#define snd_printd_ratelimit() printk_ratelimit()
 
-over and above what was already in the last patch..
+ include/sound/core.h |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-On 08/16/2013 12:20 AM, Takashi Iwai wrote:
-> At Thu, 15 Aug 2013 14:27:07 -0600,
-> Nathanael D. Noblet wrote:
->>
->> Hello,
->>
->>     I have hardware that suffers from an internal phase inverted mic that
->> isn't properly detected. Below is a patch that fixes the issue for my
->> particular hardware.
->>
->> Pre patch alsa-info:
->>
->> http://www.alsa-project.org/db/?f=a922c77ddf473a8f478ec334fa9dca684f213b59
->>
->> Post patch alsa-info:
->> http://www.alsa-project.org/db/?f=14cd25b323d3bbb02fabbac78e62851569893c3f
->>
->> Incase you care. The patch is small. I don't know if you need any kind
->> of signed off/written by etc for something so small. In any case there
->> is no intellectual property in this at all. Feel free to do as you wish
->> with it. However including it in the kernel would make my life easier.
->
-> Thanks, I fixed it in sound git tree now.
->
->
-> Takashi
->
->>
->> Thanks,
->> --
->> Nathanael d. Noblet
->> t 403.875.4613
->> [2 alsa-realtek-inverted-mic.patch <text/x-patch (7bit)>]
->> --- a/sound/pci/hda/patch_realtek.c.org	2013-08-15 13:17:49.804492932 -0600
->> +++ b/sound/pci/hda/patch_realtek.c	2013-08-15 13:18:40.582364931 -0600
->> @@ -4208,6 +4208,7 @@
->>   	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Ideapad Y550", ALC662_FIXUP_IDEAPAD),
->>   	SND_PCI_QUIRK(0x19da, 0xa130, "Zotac Z68", ALC662_FIXUP_ZOTAC_Z68),
->>   	SND_PCI_QUIRK(0x1b35, 0x2206, "CZC P10T", ALC662_FIXUP_CZC_P10T),
->> +    SND_PCI_QUIRK(0x1025, 0x034a, "Gateway LT27", ALC662_FIXUP_INV_DMIC),
->>
->>   #if 0
->>   	/* Below is a quirk table taken from the old code.
->
-
-
--- 
-Nathanael d. Noblet
-t 403.875.4613
-
---------------060706030203010406020903
-Content-Type: text/x-patch;
- name="alsa-realtek-inverted-mic.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="alsa-realtek-inverted-mic.patch"
-
---- a/sound/pci/hda/patch_realtek.c	2013-08-15 13:17:49.804492932 -0600
-+++ b/sound/pci/hda/patch_realtek.c	2013-08-15 15:17:46.390273328 -0600
-@@ -4208,6 +4208,8 @@
- 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Ideapad Y550", ALC662_FIXUP_IDEAPAD),
- 	SND_PCI_QUIRK(0x19da, 0xa130, "Zotac Z68", ALC662_FIXUP_ZOTAC_Z68),
- 	SND_PCI_QUIRK(0x1b35, 0x2206, "CZC P10T", ALC662_FIXUP_CZC_P10T),
-+	SND_PCI_QUIRK(0x1025, 0x034a, "Gateway LT27", ALC662_FIXUP_INV_DMIC),
-+	SND_PCI_QUIRK(0x1025, 0x022f, "Acer Aspire One", ALC662_FIXUP_INV_DMIC),
+diff --git a/include/sound/core.h b/include/sound/core.h
+index c586617..2a14f1f 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -27,6 +27,7 @@
+ #include <linux/rwsem.h>		/* struct rw_semaphore */
+ #include <linux/pm.h>			/* pm_message_t */
+ #include <linux/stringify.h>
++#include <linux/printk.h>
  
- #if 0
- 	/* Below is a quirk table taken from the old code.
-
---------------060706030203010406020903--
+ /* number of supported soundcards */
+ #ifdef CONFIG_SND_DYNAMIC_MINORS
+@@ -376,6 +377,11 @@ void __snd_printk(unsigned int level, const char *file, int line,
+ #define snd_BUG()		WARN(1, "BUG?\n")
+ 
+ /**
++ * Suppress high rates of output when CONFIG_SND_DEBUG is enabled.
++ */
++#define snd_printd_ratelimit() printk_ratelimit()
++
++/**
+  * snd_BUG_ON - debugging check macro
+  * @cond: condition to evaluate
+  *
+@@ -398,6 +404,8 @@ static inline void _snd_printd(int level, const char *format, ...) {}
+ 	unlikely(__ret_warn_on); \
+ })
+ 
++static inline bool snd_printd_ratelimit(void) { return false; }
++
+ #endif /* CONFIG_SND_DEBUG */
+ 
+ #ifdef CONFIG_SND_DEBUG_VERBOSE
+-- 
+1.7.9.5
