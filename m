@@ -1,57 +1,52 @@
-From: Tim Gardner <tim.gardner@canonical.com>
-Subject: [PATCH 3.11-rc5 2/2] ALSA: pcm: Use snd_printd_ratelimit()
-Date: Fri, 16 Aug 2013 11:19:00 -0600
-Message-ID: <1376673540-2201-2-git-send-email-tim.gardner@canonical.com>
-References: <1376673540-2201-1-git-send-email-tim.gardner@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1376673540-2201-1-git-send-email-tim.gardner@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Tim Gardner <tim.gardner@canonical.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Yacine Belkadi <yacine.belkadi.1@gmail.com>
+From: Mike Dyer <mike.dyer@md-soft.co.uk>
+Subject: [PATCH 1/1] ASoC: wm8960: Fix PLL register writes
+Date: Fri, 16 Aug 2013 18:36:28 +0100
+Message-ID: <1376674588-14454-1-git-send-email-mike.dyer@md-soft.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f48.google.com (mail-wg0-f48.google.com [74.125.82.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id D52D826087C
+ for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 19:37:11 +0200 (CEST)
+Received: by mail-wg0-f48.google.com with SMTP id f12so1781684wgh.27
+ for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 10:37:11 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: mike.dyer@md-soft.co.uk, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The use of snd_printd_ratelimit() supresses superfluous output from
-printk_ratelimit() when CONFIG_SND_DEBUG is not defined. For example,
+Bit 9 of PLL2,3 and 4 is reserved as '0'. The 24bit fractional part should be split across each register in 8bit chunks.
 
-[   43.753692] snd_pcm_update_hw_ptr0: 26 callbacks suppressed
-[   48.822131] snd_pcm_update_hw_ptr0: 25 callbacks suppressed
-[   53.894953] snd_pcm_update_hw_ptr0: 25 callbacks suppressed
-[   58.997761] snd_pcm_update_hw_ptr0: 25 callbacks suppressed
-[   64.100952] snd_pcm_update_hw_ptr0: 25 callbacks suppressed
-
-fills the log even when no debug output is actually produced.
-
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Yacine Belkadi <yacine.belkadi.1@gmail.com>
-Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+Signed-off-by: Mike Dyer <mike.dyer@md-soft.co.uk>
 ---
- sound/core/pcm_lib.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8960.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 82bb029..6e03b46 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -184,7 +184,7 @@ static void xrun(struct snd_pcm_substream *substream)
- 	do {								\
- 		if (xrun_debug(substream, XRUN_DEBUG_BASIC)) {		\
- 			xrun_log_show(substream);			\
--			if (printk_ratelimit()) {			\
-+			if (snd_printd_ratelimit()) {			\
- 				snd_printd("PCM: " fmt, ##args);	\
- 			}						\
- 			dump_stack_on_xrun(substream);			\
-@@ -342,7 +342,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 		return -EPIPE;
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 0a4ffdd..5e5af89 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -857,9 +857,9 @@ static int wm8960_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ 	if (pll_div.k) {
+ 		reg |= 0x20;
+ 
+-		snd_soc_write(codec, WM8960_PLL2, (pll_div.k >> 18) & 0x3f);
+-		snd_soc_write(codec, WM8960_PLL3, (pll_div.k >> 9) & 0x1ff);
+-		snd_soc_write(codec, WM8960_PLL4, pll_div.k & 0x1ff);
++		snd_soc_write(codec, WM8960_PLL2, (pll_div.k >> 16) & 0xff);
++		snd_soc_write(codec, WM8960_PLL3, (pll_div.k >> 8) & 0xff);
++		snd_soc_write(codec, WM8960_PLL4, pll_div.k & 0xff);
  	}
- 	if (pos >= runtime->buffer_size) {
--		if (printk_ratelimit()) {
-+		if (snd_printd_ratelimit()) {
- 			char name[16];
- 			snd_pcm_debug_name(substream, name, sizeof(name));
- 			xrun_log_show(substream);
+ 	snd_soc_write(codec, WM8960_PLL1, reg);
+ 
 -- 
-1.7.9.5
+1.8.3.1
