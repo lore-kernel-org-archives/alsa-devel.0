@@ -1,15 +1,23 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH] ASoC: imx-audmux: Move definitions to
-	dt-bindings
-Date: Fri, 16 Aug 2013 11:45:33 +0200
-Message-ID: <1376646333-20463-1-git-send-email-mpa@pengutronix.de>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: Re: [PATCH v5 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
+Date: Fri, 16 Aug 2013 17:53:58 +0800
+Message-ID: <20130816095357.GA4694@MrMyself>
+References: <cover.1376565456.git.b42378@freescale.com>
+ <4eb991fafc171305ebc71847fecb7bdae0ede927.1376565456.git.b42378@freescale.com>
+ <2188999.03O3zirCAO@flatron> <20130816044330.GD1846@MrMyself>
+ <20130816070818.GM26614@pengutronix.de>
+ <20130816080124.GE1846@MrMyself>
+ <20130816085632.GO26614@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 2BED9261B24
- for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 11:45:51 +0200 (CEST)
+Received: from db9outboundpool.messaging.microsoft.com
+ (mail-db9lp0248.outbound.messaging.microsoft.com [213.199.154.248])
+ by alsa0.perex.cz (Postfix) with ESMTP id B72E7261B24
+ for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 11:56:23 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130816085632.GO26614@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,144 +27,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, ian.campbell@citrix.com, pawel.moll@arm.com, swarren@wwwdotorg.org, festevam@gmail.com, Tomasz Figa <tomasz.figa@gmail.com>, rob.herring@calxeda.com, timur@tabi.org, broonie@kernel.org, p.zabel@pengutronix.de, galak@codeaurora.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Move imx-audmux macro definitions to include/dt-bindings, so they can be
-used for devicetree.
+On Fri, Aug 16, 2013 at 10:56:32AM +0200, Sascha Hauer wrote:
+> > "tx<0-8>"	Optional	Tx clock source for spdif playback.
+> > 				If absent, will use core clock.
+> > 				The index from 0 to 8 is identical
+> > 				to the clock source list described
+> > 				in TxClk_Source bit of register STC.
+> > 				Multiple clock source are allowed
+> > 				for this tx clock source. The driver
+> > 				will select one source from them for
+> > 				each supported sample rate according
+> > 				to the clock rates of these provided
+> > 				clock sources.
+> 
+> You mean tx<0-7>
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
----
- include/dt-bindings/sound/fsl-imx-audmux.h | 56 ++++++++++++++++++++++++++++++
- sound/soc/fsl/imx-audmux.h                 | 52 +--------------------------
- 2 files changed, 57 insertions(+), 51 deletions(-)
- create mode 100644 include/dt-bindings/sound/fsl-imx-audmux.h
+Yes. Thank you.
 
-diff --git a/include/dt-bindings/sound/fsl-imx-audmux.h b/include/dt-bindings/sound/fsl-imx-audmux.h
-new file mode 100644
-index 0000000..50b09e9
---- /dev/null
-+++ b/include/dt-bindings/sound/fsl-imx-audmux.h
-@@ -0,0 +1,56 @@
-+#ifndef __DT_FSL_IMX_AUDMUX_H
-+#define __DT_FSL_IMX_AUDMUX_H
-+
-+#define MX27_AUDMUX_HPCR1_SSI0		0
-+#define MX27_AUDMUX_HPCR2_SSI1		1
-+#define MX27_AUDMUX_HPCR3_SSI_PINS_4	2
-+#define MX27_AUDMUX_PPCR1_SSI_PINS_1	3
-+#define MX27_AUDMUX_PPCR2_SSI_PINS_2	4
-+#define MX27_AUDMUX_PPCR3_SSI_PINS_3	5
-+
-+#define MX31_AUDMUX_PORT1_SSI0		0
-+#define MX31_AUDMUX_PORT2_SSI1		1
-+#define MX31_AUDMUX_PORT3_SSI_PINS_3	2
-+#define MX31_AUDMUX_PORT4_SSI_PINS_4	3
-+#define MX31_AUDMUX_PORT5_SSI_PINS_5	4
-+#define MX31_AUDMUX_PORT6_SSI_PINS_6	5
-+#define MX31_AUDMUX_PORT7_SSI_PINS_7	6
-+
-+#define MX51_AUDMUX_PORT1_SSI0		0
-+#define MX51_AUDMUX_PORT2_SSI1		1
-+#define MX51_AUDMUX_PORT3		2
-+#define MX51_AUDMUX_PORT4		3
-+#define MX51_AUDMUX_PORT5		4
-+#define MX51_AUDMUX_PORT6		5
-+#define MX51_AUDMUX_PORT7		6
-+
-+/* Register definitions for the i.MX21/27 Digital Audio Multiplexer */
-+#define IMX_AUDMUX_V1_PCR_INMMASK(x)	((x) & 0xff)
-+#define IMX_AUDMUX_V1_PCR_INMEN		(1 << 8)
-+#define IMX_AUDMUX_V1_PCR_TXRXEN	(1 << 10)
-+#define IMX_AUDMUX_V1_PCR_SYN		(1 << 12)
-+#define IMX_AUDMUX_V1_PCR_RXDSEL(x)	(((x) & 0x7) << 13)
-+#define IMX_AUDMUX_V1_PCR_RFCSEL(x)	(((x) & 0xf) << 20)
-+#define IMX_AUDMUX_V1_PCR_RCLKDIR	(1 << 24)
-+#define IMX_AUDMUX_V1_PCR_RFSDIR	(1 << 25)
-+#define IMX_AUDMUX_V1_PCR_TFCSEL(x)	(((x) & 0xf) << 26)
-+#define IMX_AUDMUX_V1_PCR_TCLKDIR	(1 << 30)
-+#define IMX_AUDMUX_V1_PCR_TFSDIR	(1 << 31)
-+
-+/* Register definitions for the i.MX25/31/35/51 Digital Audio Multiplexer */
-+#define IMX_AUDMUX_V2_PTCR_TFSDIR	(1 << 31)
-+#define IMX_AUDMUX_V2_PTCR_TFSEL(x)	(((x) & 0xf) << 27)
-+#define IMX_AUDMUX_V2_PTCR_TCLKDIR	(1 << 26)
-+#define IMX_AUDMUX_V2_PTCR_TCSEL(x)	(((x) & 0xf) << 22)
-+#define IMX_AUDMUX_V2_PTCR_RFSDIR	(1 << 21)
-+#define IMX_AUDMUX_V2_PTCR_RFSEL(x)	(((x) & 0xf) << 17)
-+#define IMX_AUDMUX_V2_PTCR_RCLKDIR	(1 << 16)
-+#define IMX_AUDMUX_V2_PTCR_RCSEL(x)	(((x) & 0xf) << 12)
-+#define IMX_AUDMUX_V2_PTCR_SYN		(1 << 11)
-+
-+#define IMX_AUDMUX_V2_PDCR_RXDSEL(x)	(((x) & 0x7) << 13)
-+#define IMX_AUDMUX_V2_PDCR_TXRXEN	(1 << 12)
-+#define IMX_AUDMUX_V2_PDCR_MODE(x)	(((x) & 0x3) << 8)
-+#define IMX_AUDMUX_V2_PDCR_INMMASK(x)	((x) & 0xff)
-+
-+#endif /* __DT_FSL_IMX_AUDMUX_H */
-diff --git a/sound/soc/fsl/imx-audmux.h b/sound/soc/fsl/imx-audmux.h
-index b8ff44b..38a4209 100644
---- a/sound/soc/fsl/imx-audmux.h
-+++ b/sound/soc/fsl/imx-audmux.h
-@@ -1,57 +1,7 @@
- #ifndef __IMX_AUDMUX_H
- #define __IMX_AUDMUX_H
- 
--#define MX27_AUDMUX_HPCR1_SSI0		0
--#define MX27_AUDMUX_HPCR2_SSI1		1
--#define MX27_AUDMUX_HPCR3_SSI_PINS_4	2
--#define MX27_AUDMUX_PPCR1_SSI_PINS_1	3
--#define MX27_AUDMUX_PPCR2_SSI_PINS_2	4
--#define MX27_AUDMUX_PPCR3_SSI_PINS_3	5
--
--#define MX31_AUDMUX_PORT1_SSI0		0
--#define MX31_AUDMUX_PORT2_SSI1		1
--#define MX31_AUDMUX_PORT3_SSI_PINS_3	2
--#define MX31_AUDMUX_PORT4_SSI_PINS_4	3
--#define MX31_AUDMUX_PORT5_SSI_PINS_5	4
--#define MX31_AUDMUX_PORT6_SSI_PINS_6	5
--#define MX31_AUDMUX_PORT7_SSI_PINS_7	6
--
--#define MX51_AUDMUX_PORT1_SSI0		0
--#define MX51_AUDMUX_PORT2_SSI1		1
--#define MX51_AUDMUX_PORT3		2
--#define MX51_AUDMUX_PORT4		3
--#define MX51_AUDMUX_PORT5		4
--#define MX51_AUDMUX_PORT6		5
--#define MX51_AUDMUX_PORT7		6
--
--/* Register definitions for the i.MX21/27 Digital Audio Multiplexer */
--#define IMX_AUDMUX_V1_PCR_INMMASK(x)	((x) & 0xff)
--#define IMX_AUDMUX_V1_PCR_INMEN		(1 << 8)
--#define IMX_AUDMUX_V1_PCR_TXRXEN	(1 << 10)
--#define IMX_AUDMUX_V1_PCR_SYN		(1 << 12)
--#define IMX_AUDMUX_V1_PCR_RXDSEL(x)	(((x) & 0x7) << 13)
--#define IMX_AUDMUX_V1_PCR_RFCSEL(x)	(((x) & 0xf) << 20)
--#define IMX_AUDMUX_V1_PCR_RCLKDIR	(1 << 24)
--#define IMX_AUDMUX_V1_PCR_RFSDIR	(1 << 25)
--#define IMX_AUDMUX_V1_PCR_TFCSEL(x)	(((x) & 0xf) << 26)
--#define IMX_AUDMUX_V1_PCR_TCLKDIR	(1 << 30)
--#define IMX_AUDMUX_V1_PCR_TFSDIR	(1 << 31)
--
--/* Register definitions for the i.MX25/31/35/51 Digital Audio Multiplexer */
--#define IMX_AUDMUX_V2_PTCR_TFSDIR	(1 << 31)
--#define IMX_AUDMUX_V2_PTCR_TFSEL(x)	(((x) & 0xf) << 27)
--#define IMX_AUDMUX_V2_PTCR_TCLKDIR	(1 << 26)
--#define IMX_AUDMUX_V2_PTCR_TCSEL(x)	(((x) & 0xf) << 22)
--#define IMX_AUDMUX_V2_PTCR_RFSDIR	(1 << 21)
--#define IMX_AUDMUX_V2_PTCR_RFSEL(x)	(((x) & 0xf) << 17)
--#define IMX_AUDMUX_V2_PTCR_RCLKDIR	(1 << 16)
--#define IMX_AUDMUX_V2_PTCR_RCSEL(x)	(((x) & 0xf) << 12)
--#define IMX_AUDMUX_V2_PTCR_SYN		(1 << 11)
--
--#define IMX_AUDMUX_V2_PDCR_RXDSEL(x)	(((x) & 0x7) << 13)
--#define IMX_AUDMUX_V2_PDCR_TXRXEN	(1 << 12)
--#define IMX_AUDMUX_V2_PDCR_MODE(x)	(((x) & 0x3) << 8)
--#define IMX_AUDMUX_V2_PDCR_INMMASK(x)	((x) & 0xff)
-+#include <dt-bindings/sound/fsl-imx-audmux.h>
- 
- int imx_audmux_v1_configure_port(unsigned int port, unsigned int pcr);
- 
--- 
-1.8.3.2
+> Also I would make this option required. Use a dummy clock for mux inputs
+> that are grounded for a specific SoC.
+
+Some clocks are not from CCM and we haven't defined in imx6q-clk.txt,
+so in most cases we can't provide a phandle for them, eg: spdif_ext.
+I think it's a bit hard to force it to be 'required'. An 'optional'
+looks more flexible to me and a default one is ensured even if it's
+missing.
+
+> > "rx<0-16>"	Optional	Rx clock source for spdif record.
+> > 				If absent, will use core clock.
+> > 				The index from 0 to 16 is identical
+> > 				to the clock source list described
+> > 				in ClkSrc_Sel bit of register SRPC.
+> > 				If the index provided contains an
+> > 				"if (DPLL Locked)" condition in its
+> > 				source, the correspond clock phandle
+> > 				should be the one in "else" path.
+> > 				Only one rx clock source should be
+> > 				defined here.
+> 
+> Again, describe the input clocks *to* *the* *S/PDIF* *core* in the
+> devicetree. Nothing more, nothing less. We've already been at the point
+> where we realized that half of the above clocks only describe the
+> 'PDLL locked' condition. Also the tx clocks are from what I see identical
+> to the rx clocks. The following are the clocks:
+> 
+> clock-names: "core", "rxtx<0-7>" Required. The S/PDIF core has a core
+> clock and 8 clocks which are muxed internally to provide input/output
+> sample clocks.
+
+I know the reason why you suggest to combine two into 'rxtx<0-7>'
+is because the clock mux is defined so. And the previous suggestion
+'the option required' is also because of it. But actually the rxclk 
+itself, can be not only routed from the clock mux but also derived
+from DPLL of SPDIF Rx BLOCK as well. So, IMHO, it's more likely to
+be a fact that rxclk actually has 9 clock source, 8 from mux and
+1 from DPLL. But why we here have to exclude it?
+
+
+WELL anyway, I know my opinion might not be concerned so much. So
+I would like to follow the suggestion as an expediency because I
+still wish this patch could be finally applied and merged into
+mainline :(
+
+But I still don't get why we need to be so obsessed to make this
+impenetrable rule of devicetree that we here have to sacrifice
+something we could have reasonably done.
+
+And thank you for the comments again, Sascha.
+Nicolin Chen
