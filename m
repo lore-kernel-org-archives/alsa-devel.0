@@ -1,23 +1,16 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH v5 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Fri, 16 Aug 2013 17:53:58 +0800
-Message-ID: <20130816095357.GA4694@MrMyself>
-References: <cover.1376565456.git.b42378@freescale.com>
- <4eb991fafc171305ebc71847fecb7bdae0ede927.1376565456.git.b42378@freescale.com>
- <2188999.03O3zirCAO@flatron> <20130816044330.GD1846@MrMyself>
- <20130816070818.GM26614@pengutronix.de>
- <20130816080124.GE1846@MrMyself>
- <20130816085632.GO26614@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: imx-audmux: Move definitions to
+	dt-bindings
+Date: Fri, 16 Aug 2013 11:05:33 +0100
+Message-ID: <20130816100533.GL30073@sirena.org.uk>
+References: <1376646333-20463-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7214409542669986232=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db9outboundpool.messaging.microsoft.com
- (mail-db9lp0248.outbound.messaging.microsoft.com [213.199.154.248])
- by alsa0.perex.cz (Postfix) with ESMTP id B72E7261B24
- for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 11:56:23 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130816085632.GO26614@pengutronix.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 207BB261B28
+ for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 12:05:36 +0200 (CEST)
+In-Reply-To: <1376646333-20463-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,75 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, ian.campbell@citrix.com, pawel.moll@arm.com, swarren@wwwdotorg.org, festevam@gmail.com, Tomasz Figa <tomasz.figa@gmail.com>, rob.herring@calxeda.com, timur@tabi.org, broonie@kernel.org, p.zabel@pengutronix.de, galak@codeaurora.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: kernel@pengutronix.de, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 16, 2013 at 10:56:32AM +0200, Sascha Hauer wrote:
-> > "tx<0-8>"	Optional	Tx clock source for spdif playback.
-> > 				If absent, will use core clock.
-> > 				The index from 0 to 8 is identical
-> > 				to the clock source list described
-> > 				in TxClk_Source bit of register STC.
-> > 				Multiple clock source are allowed
-> > 				for this tx clock source. The driver
-> > 				will select one source from them for
-> > 				each supported sample rate according
-> > 				to the clock rates of these provided
-> > 				clock sources.
-> 
-> You mean tx<0-7>
 
-Yes. Thank you.
-
-> Also I would make this option required. Use a dummy clock for mux inputs
-> that are grounded for a specific SoC.
-
-Some clocks are not from CCM and we haven't defined in imx6q-clk.txt,
-so in most cases we can't provide a phandle for them, eg: spdif_ext.
-I think it's a bit hard to force it to be 'required'. An 'optional'
-looks more flexible to me and a default one is ensured even if it's
-missing.
-
-> > "rx<0-16>"	Optional	Rx clock source for spdif record.
-> > 				If absent, will use core clock.
-> > 				The index from 0 to 16 is identical
-> > 				to the clock source list described
-> > 				in ClkSrc_Sel bit of register SRPC.
-> > 				If the index provided contains an
-> > 				"if (DPLL Locked)" condition in its
-> > 				source, the correspond clock phandle
-> > 				should be the one in "else" path.
-> > 				Only one rx clock source should be
-> > 				defined here.
-> 
-> Again, describe the input clocks *to* *the* *S/PDIF* *core* in the
-> devicetree. Nothing more, nothing less. We've already been at the point
-> where we realized that half of the above clocks only describe the
-> 'PDLL locked' condition. Also the tx clocks are from what I see identical
-> to the rx clocks. The following are the clocks:
-> 
-> clock-names: "core", "rxtx<0-7>" Required. The S/PDIF core has a core
-> clock and 8 clocks which are muxed internally to provide input/output
-> sample clocks.
-
-I know the reason why you suggest to combine two into 'rxtx<0-7>'
-is because the clock mux is defined so. And the previous suggestion
-'the option required' is also because of it. But actually the rxclk 
-itself, can be not only routed from the clock mux but also derived
-from DPLL of SPDIF Rx BLOCK as well. So, IMHO, it's more likely to
-be a fact that rxclk actually has 9 clock source, 8 from mux and
-1 from DPLL. But why we here have to exclude it?
+--===============7214409542669986232==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2EnvhqpWJq810sZn"
+Content-Disposition: inline
 
 
-WELL anyway, I know my opinion might not be concerned so much. So
-I would like to follow the suggestion as an expediency because I
-still wish this patch could be finally applied and merged into
-mainline :(
+--2EnvhqpWJq810sZn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-But I still don't get why we need to be so obsessed to make this
-impenetrable rule of devicetree that we here have to sacrifice
-something we could have reasonably done.
+On Fri, Aug 16, 2013 at 11:45:33AM +0200, Markus Pargmann wrote:
+> Move imx-audmux macro definitions to include/dt-bindings, so they can be
+> used for devicetree.
 
-And thank you for the comments again, Sascha.
-Nicolin Chen
+Applied, thanks.
+
+--2EnvhqpWJq810sZn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSDflpAAoJELSic+t+oim9megP/1BBlHrP9xPCF/j5R/e9xwiD
+AhVEDBHO0+d6dkeIHMGVrGc3W06xN8peXrMHiyI1I2qSWqnxmijcRrChWPNdYgQo
+gUSxw6Vz319kevkebIdiCm/Rc6QbcDcv56/iPt1mRJrVt1ihHezuoq7GmExzrucB
+1oGg4EZ1kGn2LdM90JsKybWfAYLBY1T8MsjSlYsC89DACIAynGdTU1Jt+pbIPCXi
+ZpyBDZkxDhXSi2T2fGQZ5wd1GBfNbZkuVJbbSxwxUooQFk/ZhHbcRv8DSdLuwdQU
+C9dImkBpeGvrrMtZrrf3voI2R4fLOniobI+7LbiWBSBPogPKbUwtMlbku/5NTvl7
+qwAHUjk3pE7SWQT/ga89JKbVjUsoS6/etix9QEzVB+VNtFJnBC/szSvnlNm/6IUf
+Q37FtxqeIeu//x8C4cEdubJZShtYBJSpUuUNLCNB/OVVGghxJIkhjoz2R82o6Hc5
+298suyxBE1+03L98iQ46mx+8V5prmbHGsT5NH3ATJo4v6oHbzKRs2947hSgqClyq
+oQ5Oc6+dUGu/BuAJP2gcZAs3N4n4jeNBdrAVL+edapn9g6p2meXOlNpbp1y8K3+e
+eFgWKVV+QpwOcZ+Qx5TMQzUj6t1i599IvC1S7bO4vup+VixuCh5T1r46hkydNDV4
+hIfI/qjszw8I94AE6BqH
+=8naz
+-----END PGP SIGNATURE-----
+
+--2EnvhqpWJq810sZn--
+
+--===============7214409542669986232==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7214409542669986232==--
