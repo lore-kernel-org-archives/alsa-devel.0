@@ -1,18 +1,16 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/2] ALSA: hda - Fix the order of a quirk table
-	(janitorial)
-Date: Fri, 16 Aug 2013 14:09:02 +0200
-Message-ID: <1376654942-4951-2-git-send-email-david.henningsson@canonical.com>
-References: <1376654942-4951-1-git-send-email-david.henningsson@canonical.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH v6 0/2] Add freescale S/PDIF CPU DAI and
+	machine drivers
+Date: Fri, 16 Aug 2013 20:56:46 +0800
+Message-ID: <cover.1376657643.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 52557261B25
- for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 14:09:07 +0200 (CEST)
-In-Reply-To: <1376654942-4951-1-git-send-email-david.henningsson@canonical.com>
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe010.messaging.microsoft.com [216.32.180.30])
+ by alsa0.perex.cz (Postfix) with ESMTP id D121E261B25
+ for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 14:46:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,54 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1213055@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
+To: broonie@kernel.org, lars@metafoo.de, p.zabel@pengutronix.de, s.hauer@pengutronix.de
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, swarren@wwwdotorg.org, festevam@gmail.com, timur@tabi.org, rob.herring@calxeda.com, tomasz.figa@gmail.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-This just cleans up the table, no functional changes.
+Changelog:
+v5->v6:
+ * Sorted out rxtx clk source in DT binding.
+ * Use devm_xxxx() functions.
+ * Use platform_get_resource() instead.
+v4->v5:
+ * Dropped rx/tx-clksrc-names DT bindings.
+ * Use standard clock binding instead to pass the clock source list.
+ * Update the compatible list by using "imx35", the first SoC that has spdif.
+v3->v4:
+ * Use regmap for CPU DAI driver.
+ * Use individual clock source for 32KHz, 44KHz, 48KHz playback.
+ * Determine clock source configuration from 'clocks' entry.
+ * Added imx53 to compatible list, merged imx6q and imx6dl in the list.
+ * Improve the algorism of reverse_bits().
+ * Dropped the unneeded clk_put().
+v2->v3:
+ * Removed a wrong tag from the commit of patch-1.
+v1->v2:
+ * Dropped one applied patch for spdif dummy codec drivers.
+ * Use generic DMA DT binding.
+ * Let spdif controller driver calculate the clock div.
+ * Added one optional clock source for spdif tx.
+ * Reivsed documentation accordingly.
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Nicolin Chen (2):
+  ASoC: fsl: Add S/PDIF CPU DAI driver
+  ASoC: fsl: Add S/PDIF machine driver
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 6ec96f9..434d6837 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3632,6 +3632,11 @@ static const struct hda_fixup alc269_fixups[] = {
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x029b, "Acer 1810TZ", ALC269_FIXUP_INV_DMIC),
- 	SND_PCI_QUIRK(0x1025, 0x0349, "Acer AOD260", ALC269_FIXUP_INV_DMIC),
-+	SND_PCI_QUIRK(0x1025, 0x047c, "Acer AC700", ALC269_FIXUP_ACER_AC700),
-+	SND_PCI_QUIRK(0x1025, 0x0740, "Acer AO725", ALC271_FIXUP_HP_GATE_MIC_JACK),
-+	SND_PCI_QUIRK(0x1025, 0x0742, "Acer AO756", ALC271_FIXUP_HP_GATE_MIC_JACK),
-+	SND_PCI_QUIRK_VENDOR(0x1025, "Acer Aspire", ALC271_FIXUP_DMIC),
-+	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
- 	SND_PCI_QUIRK(0x1028, 0x05bd, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05be, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05c4, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-@@ -3687,11 +3692,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x104d, 0x907b, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
- 	SND_PCI_QUIRK(0x104d, 0x9084, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
- 	SND_PCI_QUIRK_VENDOR(0x104d, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
--	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
--	SND_PCI_QUIRK(0x1025, 0x047c, "Acer AC700", ALC269_FIXUP_ACER_AC700),
--	SND_PCI_QUIRK(0x1025, 0x0740, "Acer AO725", ALC271_FIXUP_HP_GATE_MIC_JACK),
--	SND_PCI_QUIRK(0x1025, 0x0742, "Acer AO756", ALC271_FIXUP_HP_GATE_MIC_JACK),
--	SND_PCI_QUIRK_VENDOR(0x1025, "Acer Aspire", ALC271_FIXUP_DMIC),
- 	SND_PCI_QUIRK(0x10cf, 0x1475, "Lifebook", ALC269_FIXUP_LIFEBOOK),
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Thinkpad SL410/510", ALC269_FIXUP_SKU_IGNORE),
- 	SND_PCI_QUIRK(0x17aa, 0x215e, "Thinkpad L512", ALC269_FIXUP_SKU_IGNORE),
-@@ -3702,8 +3702,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x21fa, "Thinkpad X230", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x21f3, "Thinkpad T430", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x21fb, "Thinkpad T430s", ALC269_FIXUP_LENOVO_DOCK),
--	SND_PCI_QUIRK(0x17aa, 0x2208, "Thinkpad T431s", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2203, "Thinkpad X230 Tablet", ALC269_FIXUP_LENOVO_DOCK),
-+	SND_PCI_QUIRK(0x17aa, 0x2208, "Thinkpad T431s", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
--- 
-1.7.9.5
+ .../devicetree/bindings/sound/fsl,spdif.txt        |   56 +
+ .../devicetree/bindings/sound/imx-audio-spdif.txt  |   29 +
+ sound/soc/fsl/Kconfig                              |   14 +
+ sound/soc/fsl/Makefile                             |    4 +
+ sound/soc/fsl/fsl_spdif.c                          | 1272 ++++++++++++++++++++
+ sound/soc/fsl/fsl_spdif.h                          |  224 ++++
+ sound/soc/fsl/imx-spdif.c                          |  134 ++
+ 7 files changed, 1733 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,spdif.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+ create mode 100644 sound/soc/fsl/fsl_spdif.c
+ create mode 100644 sound/soc/fsl/fsl_spdif.h
+ create mode 100644 sound/soc/fsl/imx-spdif.c
