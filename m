@@ -1,20 +1,16 @@
-From: "Keith A. Milner" <maillist@superlative.org>
-Subject: Re: [PATCH] ALSA: usb-audio: fix automatic
-	Roland/Yamaha MIDI detection
-Date: Fri, 16 Aug 2013 13:06:03 +0100
-Message-ID: <1611840.QS8IH2v0gO@kamdesktop>
-References: <51CC9D8B.7060601@ladisch.de> <52077FD9.6060404@ladisch.de>
- <1662775.3qSRSFOsFp@kamdesktop>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 1/2] ALSA: hda - Fix internal mic boost on
+	three Thinkpad machines
+Date: Fri, 16 Aug 2013 14:09:01 +0200
+Message-ID: <1376654942-4951-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f49.google.com (mail-wg0-f49.google.com [74.125.82.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 4ECD9261692
- for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 14:06:05 +0200 (CEST)
-Received: by mail-wg0-f49.google.com with SMTP id y10so1456509wgg.28
- for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 05:06:05 -0700 (PDT)
-In-Reply-To: <1662775.3qSRSFOsFp@kamdesktop>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 505FE261692
+ for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 14:09:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,35 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: 1213055@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 12 Aug 2013 23:38:22 Keith A. Milner wrote:
-> On Sunday 11 Aug 2013 14:13:13 Clemens Ladisch wrote:
-> > Commit aafe77cc45a5 (ALSA: usb-audio: add support for many Roland/Yamaha
-> > devices) had several logic errors that prevented create_auto_midi_quirk
-> > from enumerating any MIDI ports.
-> > 
-> > Reported-by: Keith A. Milner <maillist@superlative.org>
-> > Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
-> > ---
-> 
-> I tested this with the BR-80. Logfile at the end.
-> 
+The internal mic boost is so noisy on boosts 2 and 3 so they are
+unusable in practice.
 
-<SNIP>
+BugLink: https://bugs.launchpad.net/bugs/1213055
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-> I do wonder whether a quirk is still needed for this device. It seems to be
-> reporting as a 32-bit interface when it's actually only 16-bit, and I
-> suspect this might be upsetting things.
-
-With this in mind, I with a kernel where I had inserted the original BR-80 
-quirk back into quirks-table.h.
-
-This still didn't work, so there seems to be some other problem, unrelated to 
-this patch.
-
-Cheers,
-
-Keith
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6ae9504..6ec96f9 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3704,6 +3704,9 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x21fb, "Thinkpad T430s", ALC269_FIXUP_LENOVO_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2208, "Thinkpad T431s", ALC269_FIXUP_LENOVO_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2203, "Thinkpad X230 Tablet", ALC269_FIXUP_LENOVO_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
++	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
++	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+ 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
+ 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
+-- 
+1.7.9.5
