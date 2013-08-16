@@ -1,21 +1,21 @@
-From: Nicolin Chen <b42378@freescale.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
 Subject: Re: [PATCH v5 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Fri, 16 Aug 2013 16:01:25 +0800
-Message-ID: <20130816080124.GE1846@MrMyself>
+Date: Fri, 16 Aug 2013 10:56:32 +0200
+Message-ID: <20130816085632.GO26614@pengutronix.de>
 References: <cover.1376565456.git.b42378@freescale.com>
  <4eb991fafc171305ebc71847fecb7bdae0ede927.1376565456.git.b42378@freescale.com>
  <2188999.03O3zirCAO@flatron> <20130816044330.GD1846@MrMyself>
  <20130816070818.GM26614@pengutronix.de>
+ <20130816080124.GE1846@MrMyself>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe001.messaging.microsoft.com [213.199.154.204])
- by alsa0.perex.cz (Postfix) with ESMTP id 26040265641
- for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 10:03:54 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id D2ECC26564F
+ for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2013 10:56:46 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20130816070818.GM26614@pengutronix.de>
+In-Reply-To: <20130816080124.GE1846@MrMyself>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,83 +25,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
+To: Nicolin Chen <b42378@freescale.com>
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, ian.campbell@citrix.com, pawel.moll@arm.com, swarren@wwwdotorg.org, festevam@gmail.com, Tomasz Figa <tomasz.figa@gmail.com>, rob.herring@calxeda.com, timur@tabi.org, broonie@kernel.org, p.zabel@pengutronix.de, galak@codeaurora.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sascha,
-
-   Thank you for the detailed comments.
-
-On Fri, Aug 16, 2013 at 09:08:18AM +0200, Sascha Hauer wrote:
-> Which of them the driver should use is configuration and thus normally
-> should *not* be described in the devicetree. However, there may be no
-> good way for the driver to know which clock to use in which case. There
-> may be additional board requirements which are unknown to the driver. So
-> in this case it might be valid to put the information which clock to use
-> into the devicetree. But be aware that from the moment you put this
-> information into the devicetree the driver is no longer free to chose
-> the best clock, even if in future we find a good way to automatically
-> guess the best clock. Do you have some insights in which case I would
-> use which input clock? Is this only about which clock has the best
-> suitable input frequency or is this also about synchronization of the
-> audio signal with some other unit?
-
-I understand. What I'm thinking now is to let the driver find the best
-clock source for tx clock and a correspond divisor like this:
-
-"tx<0-8>"	Optional	Tx clock source for spdif playback.
-				If absent, will use core clock.
-				The index from 0 to 8 is identical
-				to the clock source list described
-				in TxClk_Source bit of register STC.
-				Multiple clock source are allowed
-				for this tx clock source. The driver
-				will select one source from them for
-				each supported sample rate according
-				to the clock rates of these provided
-				clock sources.
-
-Please review this idea.
-
-
-And likewise for rx:
-
-"rx<0-16>"	Optional	Rx clock source for spdif record.
-				If absent, will use core clock.
-				The index from 0 to 16 is identical
-				to the clock source list described
-				in ClkSrc_Sel bit of register SRPC.
-				If the index provided contains an
-				"if (DPLL Locked)" condition in its
-				source, the correspond clock phandle
-				should be the one in "else" path.
-				Only one rx clock source should be
-				defined here.
-
-> Likewise with the rx-clksrc-lock property. what are the reasons to
-> enable/disable this property? Is this an option you want to change
-> during runtime? Is it an option you always want to use when it's
-> available?
+On Fri, Aug 16, 2013 at 04:01:25PM +0800, Nicolin Chen wrote:
+> Hi Sascha,
 > 
-> If you don't know the answer then it might be a good option to just let
-> the driver pick a sane default. If someone feels the need to change the
-> default he probably comes up with a good reason why this is necessary.
-> And then we can discuss again whether we want to have the option in the
-> devicetree or some sysfs entry or whatever else.
+>    Thank you for the detailed comments.
+> 
+> On Fri, Aug 16, 2013 at 09:08:18AM +0200, Sascha Hauer wrote:
+> > Which of them the driver should use is configuration and thus normally
+> > should *not* be described in the devicetree. However, there may be no
+> > good way for the driver to know which clock to use in which case. There
+> > may be additional board requirements which are unknown to the driver. So
+> > in this case it might be valid to put the information which clock to use
+> > into the devicetree. But be aware that from the moment you put this
+> > information into the devicetree the driver is no longer free to chose
+> > the best clock, even if in future we find a good way to automatically
+> > guess the best clock. Do you have some insights in which case I would
+> > use which input clock? Is this only about which clock has the best
+> > suitable input frequency or is this also about synchronization of the
+> > audio signal with some other unit?
+> 
+> I understand. What I'm thinking now is to let the driver find the best
+> clock source for tx clock and a correspond divisor like this:
+> 
+> "tx<0-8>"	Optional	Tx clock source for spdif playback.
+> 				If absent, will use core clock.
+> 				The index from 0 to 8 is identical
+> 				to the clock source list described
+> 				in TxClk_Source bit of register STC.
+> 				Multiple clock source are allowed
+> 				for this tx clock source. The driver
+> 				will select one source from them for
+> 				each supported sample rate according
+> 				to the clock rates of these provided
+> 				clock sources.
 
-The answer is, SPDIF controller actually doesn't care about which rx
-clock source being chosen or even whether it has the "if (DPLL Locked)"
-condition or not. It can measure its input clock sample rate by measuring
-the signal source, from a spdif transmitter via coaxial cable or optical
-line. However, the rxclk will be sent to other IP, ASRC on i.MX6Q for
-example. Quoting from the i.MX6Q reference manual that "Both the Rx clock
-and Tx clock are sent to the ASRC".
+You mean tx<0-7>.
 
-Therefore, if 'rx-clksrc-lock' is present, that means ASRC will get a
-clock source indirectly from coaxial cable that contains the sample rate
-information. So it can know what input sample rate is and do his own
-procedure accordingly.
+Also I would make this option required. Use a dummy clock for mux inputs
+that are grounded for a specific SoC.
 
-Thank you,
-Nicolin Chen
+> 
+> Please review this idea.
+> 
+> 
+> And likewise for rx:
+> 
+> "rx<0-16>"	Optional	Rx clock source for spdif record.
+> 				If absent, will use core clock.
+> 				The index from 0 to 16 is identical
+> 				to the clock source list described
+> 				in ClkSrc_Sel bit of register SRPC.
+> 				If the index provided contains an
+> 				"if (DPLL Locked)" condition in its
+> 				source, the correspond clock phandle
+> 				should be the one in "else" path.
+> 				Only one rx clock source should be
+> 				defined here.
+
+Again, describe the input clocks *to* *the* *S/PDIF* *core* in the
+devicetree. Nothing more, nothing less. We've already been at the point
+where we realized that half of the above clocks only describe the
+'PDLL locked' condition. Also the tx clocks are from what I see identical
+to the rx clocks. The following are the clocks:
+
+clock-names: "core", "rxtx<0-7>" Required. The S/PDIF core has a core
+clock and 8 clocks which are muxed internally to provide input/output
+sample clocks.
+
+This is all binding that is needed for now.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
