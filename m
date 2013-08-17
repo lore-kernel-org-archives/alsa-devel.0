@@ -1,98 +1,120 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [PATCH v5 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Sat, 17 Aug 2013 17:38:13 +0200
-Message-ID: <4160853.4nuiPWXiMi@flatron>
-References: <cover.1376565456.git.b42378@freescale.com>
- <2362958.X2QCBUPAyI@flatron> <20130817151409.GW26614@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
- [209.85.214.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 37F132607BB
- for <alsa-devel@alsa-project.org>; Sat, 17 Aug 2013 17:38:18 +0200 (CEST)
-Received: by mail-bk0-f48.google.com with SMTP id my13so958475bkb.35
- for <alsa-devel@alsa-project.org>; Sat, 17 Aug 2013 08:38:17 -0700 (PDT)
-In-Reply-To: <20130817151409.GW26614@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, ian.campbell@citrix.com, pawel.moll@arm.com, swarren@wwwdotorg.org, festevam@gmail.com, Nicolin Chen <b42378@freescale.com>, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, galak@codeaurora.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+From: Ming Lei <ming.lei@canonical.com>
+Subject: [PATCH v1 00/49] USB: prepare for enabling irq in complete()
+Date: Sun, 18 Aug 2013 00:24:25 +0800
+Message-ID: <1376756714-25479-1-git-send-email-ming.lei@canonical.com>
+Return-path: <linux-input-owner@vger.kernel.org>
+Sender: linux-input-owner@vger.kernel.org
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org, Oliver Neukum <oliver@neukum.org>, Alan Stern <stern@rowland.harvard.edu>, linux-input@vger.kernel.org, linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 17 of August 2013 17:14:09 Sascha Hauer wrote:
-> On Sat, Aug 17, 2013 at 02:56:11PM +0200, Tomasz Figa wrote:
-> > Hi Nicolin,
-> > 
-> > > First, you are right that all the properties you just commented are
-> > > software configurations. And I got the point that device tree now
-> > > can't allow any software configuration even if the actual hardware
-> > > connection will depend on it.
-> > > 
-> > > If so, I would like to remove those abused clocks and also drop the
-> > > unused clocks in src<0-7>, then just remain those needed clocks src.
-> > > I think that can be plausible because there'll be no more clock
-> > > abuse
-> > > and the driver will be able to get the source index from the name
-> > > 'src<num>'.
-> > 
-> > OK.
-> > 
-> > > And you are right about the 9 clock inputs, just there're not only 9
-> > > inputs but also an extra external clock from S/PDIF transmitter via
-> > > coaxial cable or optical fiber -- RxCLK. Please check the following
-> > > list:
-> > > 
-> > > 0000 if (DPLL Locked) SPDIF_RxClk else extal
-> > > 0001 if (DPLL Locked) SPDIF_RxClk else spdif_clk
-> > > 0010 if (DPLL Locked) SPDIF_RxClk else asrc_clk
-> > > 0011 if (DPLL Locked) SPDIF_RxClk else spdif_extclk
-> > > 0100 if (DPLL Locked) SPDIF_Rxclk else esai_hckt
-> > > 0101 extal_clk
-> > > 0110 spdif_clk
-> > > 0111 asrc_clk
-> > > 1000 spdif_extclk
-> > > 1001 esai_hckt
-> > > 1010 if (DPLL Locked) SPDIF_RxClk else mlb_clk
-> > > 1011 if (DPLL Locked) SPDIF_RxClk else mlb_phy_clk
-> > > 1100 mkb_clk
-> > > 1101 mlb_phy_clk
-> > 
-> > Could you explain what the above values are? If they are values
-> > written to a 4-bit mux that selects RX clock source, then all the 16
-> > clocks should be specified from device tree, even if they are
-> > duplicated.
-> 
-> The S/PDIF core can recover the clock for the tx signal from the rx
-> signal. So if you have an S/PDIF input signal, then the DPLL will be
-> locked and the SPDIF_RxClk can be used for tx. So the above are really 8
-> clocks and one "If DPLL locked, use it" bit.
+Hi,
 
-Yes, I'm aware of this and the solution you proposed is fully acceptable, 
-but it complicates the driver a bit.
+As we are going to run URB->complete() in tasklet context[1][2], and
+hard interrupt may be enabled when running URB completion handler[3],
+so we might need to disable interrupt when acquiring one lock in
+the completion handler for the below reasons:
 
-If you look at the mux inputs above, you can see that there is no single 
-bit that specifies "if DPLL locked, use it" mode. Instead the conditional 
-clock sources are mixed with fixed clock sources, without a linear 
-translation to 0-7 range, which would have to be hardcoded in the driver.
+- URB->complete() holds a subsystem wide lock which may be acquired
+in another hard irq context, and the subsystem wide lock is acquired
+by spin_lock()/read_lock()/write_lock() in complete()
 
-I guess it's a matter of preference, but if the IP has a RX clock 
-selection mux that has 16 inputs, the natural representation in device 
-tree that comes to my mind is 16 clocks - one for each input of the mux. 
-One might choose to abstract this as 8 clocks, though, since each clock is 
-duplicated.
+- URB->complete() holds a private lock with spin_lock()/read_lock()/write_lock()
+but driver may export APIs to make other drivers acquire the same private
+lock in its interrupt handler.
 
-In this particular case, the driver would have to know which mux inputs 
-can use DPLL anyway, so some hardcoding in the driver is still going to 
-take place, so I guess both solutions are equally right.
+For the sake of safety and making the change simple, this patch set
+converts all spin_lock()/read_lock()/write_lock() in completion handler
+path into their irqsave version mechanically.
 
-Best regards,
-Tomasz
+But if you are sure the above two cases do not happen in your driver,
+please let me know and I can drop the unnecessary change.
+
+Also if you find some conversions are missed, also please let me know so
+that I can add it in the next round.
+
+
+[1], USB: URB documentation: claim complete() will be run with IRQs enabled
+https://git.kernel.org/cgit/linux/kernel/git/gregkh/usb.git/commit/?h=usb-next&id=85721d45261c4be684730c7509a59daa6cda30d8
+
+[2], USB: HCD: support giveback of URB in tasklet context
+https://git.kernel.org/cgit/linux/kernel/git/gregkh/usb.git/commit/?h=usb-next&id=94dfd7edfd5c9b605caf7b562de7a813d216e011
+
+[3], http://marc.info/?l=linux-usb&m=137286330626363&w=2
+
+V1:
+	- rename patchset title
+	- add missed changes on 'usb_skeleon and usb sg lib'
+	- remove several sound usb drivers which have been done via sound tree
+	- some patch style fix
+	- replace snd_pcm_stream_lock with snd_pcm_stream_lock_irqsave for related
+	a/v drivers
+
+Cc: linux-input@vger.kernel.org
+Cc: linux-bluetooth@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+
+ drivers/bluetooth/bfusb.c                     |   12 ++++----
+ drivers/bluetooth/btusb.c                     |    5 ++--
+ drivers/hid/usbhid/hid-core.c                 |    5 ++--
+ drivers/input/misc/cm109.c                    |   10 ++++---
+ drivers/isdn/hardware/mISDN/hfcsusb.c         |   36 ++++++++++++-----------
+ drivers/media/dvb-core/dvb_demux.c            |   17 +++++++----
+ drivers/media/usb/cx231xx/cx231xx-audio.c     |   10 ++++---
+ drivers/media/usb/cx231xx/cx231xx-core.c      |   10 ++++---
+ drivers/media/usb/cx231xx/cx231xx-vbi.c       |    5 ++--
+ drivers/media/usb/em28xx/em28xx-audio.c       |    5 ++--
+ drivers/media/usb/em28xx/em28xx-core.c        |    5 ++--
+ drivers/media/usb/sn9c102/sn9c102_core.c      |    7 +++--
+ drivers/media/usb/tlg2300/pd-alsa.c           |    5 ++--
+ drivers/media/usb/tlg2300/pd-video.c          |    5 ++--
+ drivers/media/usb/tm6000/tm6000-video.c       |    5 ++--
+ drivers/net/usb/cdc-phonet.c                  |    5 ++--
+ drivers/net/usb/hso.c                         |   38 ++++++++++++++-----------
+ drivers/net/usb/kaweth.c                      |    7 +++--
+ drivers/net/usb/rtl8150.c                     |    5 ++--
+ drivers/net/wireless/ath/ath9k/hif_usb.c      |   29 ++++++++++---------
+ drivers/net/wireless/ath/ath9k/htc_drv_txrx.c |    9 +++---
+ drivers/net/wireless/ath/ath9k/wmi.c          |   11 +++----
+ drivers/net/wireless/ath/carl9170/rx.c        |    5 ++--
+ drivers/net/wireless/libertas/if_usb.c        |    5 ++--
+ drivers/net/wireless/libertas_tf/if_usb.c     |    6 ++--
+ drivers/net/wireless/zd1211rw/zd_usb.c        |   21 ++++++++------
+ drivers/staging/bcm/InterfaceRx.c             |    5 ++--
+ drivers/staging/btmtk_usb/btmtk_usb.c         |    5 ++--
+ drivers/staging/ced1401/usb1401.c             |   35 ++++++++++++-----------
+ drivers/staging/vt6656/usbpipe.c              |    9 +++---
+ drivers/usb/class/cdc-wdm.c                   |   16 +++++++----
+ drivers/usb/class/usblp.c                     |   10 ++++---
+ drivers/usb/core/devio.c                      |    5 ++--
+ drivers/usb/core/message.c                    |    5 ++--
+ drivers/usb/misc/adutux.c                     |   10 ++++---
+ drivers/usb/misc/iowarrior.c                  |    5 ++--
+ drivers/usb/misc/ldusb.c                      |    7 +++--
+ drivers/usb/misc/legousbtower.c               |    6 ++--
+ drivers/usb/misc/usbtest.c                    |   10 ++++---
+ drivers/usb/misc/uss720.c                     |    7 ++++-
+ drivers/usb/serial/cyberjack.c                |   15 ++++++----
+ drivers/usb/serial/digi_acceleport.c          |   23 ++++++++-------
+ drivers/usb/serial/io_edgeport.c              |   14 +++++----
+ drivers/usb/serial/io_ti.c                    |    5 ++--
+ drivers/usb/serial/mos7720.c                  |    5 ++--
+ drivers/usb/serial/mos7840.c                  |    5 ++--
+ drivers/usb/serial/quatech2.c                 |    5 ++--
+ drivers/usb/serial/sierra.c                   |    9 +++---
+ drivers/usb/serial/symbolserial.c             |    5 ++--
+ drivers/usb/serial/ti_usb_3410_5052.c         |    9 +++---
+ drivers/usb/serial/usb_wwan.c                 |    5 ++--
+ drivers/usb/usb-skeleton.c                    |   11 ++++---
+ sound/usb/caiaq/audio.c                       |    5 ++--
+ sound/usb/midi.c                              |    5 ++--
+ 54 files changed, 318 insertions(+), 221 deletions(-)
+
+
+Thanks,
+--
+Ming Lei
+
