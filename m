@@ -1,49 +1,60 @@
-From: Ming Lei <ming.lei-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-Subject: [PATCH v1 45/49] sound: usb: caiaq: prepare for enabling irq in complete()
-Date: Sun, 18 Aug 2013 00:25:10 +0800
-Message-ID: <1376756714-25479-46-git-send-email-ming.lei@canonical.com>
-References: <1376756714-25479-1-git-send-email-ming.lei@canonical.com>
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1376756714-25479-1-git-send-email-ming.lei-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
-Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, Ming Lei <ming.lei-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl: Drop SND_SOC_FSL_UTILS from i.mx
+	machine code
+Date: Sat, 17 Aug 2013 16:38:12 -0300
+Message-ID: <1376768292-852-1-git-send-email-festevam@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gh0-f171.google.com (mail-gh0-f171.google.com
+ [209.85.160.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 692822610CB
+ for <alsa-devel@alsa-project.org>; Sat, 17 Aug 2013 21:38:23 +0200 (CEST)
+Received: by mail-gh0-f171.google.com with SMTP id f15so577457ghb.16
+ for <alsa-devel@alsa-project.org>; Sat, 17 Aug 2013 12:38:22 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Complete() will be run with interrupt enabled, so change to
-spin_lock_irqsave().
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Acked-by: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Signed-off-by: Ming Lei <ming.lei-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
+SND_SOC_FSL_UTILS is only used by PowerPC machines, so let's drop it in the
+i.mx case.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/usb/caiaq/audio.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/fsl/Kconfig | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
-index 7103b09..e5675ab 100644
---- a/sound/usb/caiaq/audio.c
-+++ b/sound/usb/caiaq/audio.c
-@@ -672,10 +672,11 @@ static void read_completed(struct urb *urb)
- 		offset += len;
- 
- 		if (len > 0) {
--			spin_lock(&cdev->spinlock);
-+			unsigned long flags;
-+			spin_lock_irqsave(&cdev->spinlock, flags);
- 			fill_out_urb(cdev, out, &out->iso_frame_desc[outframe]);
- 			read_in_urb(cdev, urb, &urb->iso_frame_desc[frame]);
--			spin_unlock(&cdev->spinlock);
-+			spin_unlock_irqrestore(&cdev->spinlock, flags);
- 			check_for_elapsed_periods(cdev, cdev->sub_playback);
- 			check_for_elapsed_periods(cdev, cdev->sub_capture);
- 			send_it = 1;
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index e15f771..3a4808d 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -175,7 +175,6 @@ config SND_SOC_IMX_WM8962
+ 	select SND_SOC_IMX_PCM_DMA
+ 	select SND_SOC_IMX_AUDMUX
+ 	select SND_SOC_FSL_SSI
+-	select SND_SOC_FSL_UTILS
+ 	help
+ 	  Say Y if you want to add support for SoC audio on an i.MX board with
+ 	  a wm8962 codec.
+@@ -187,7 +186,6 @@ config SND_SOC_IMX_SGTL5000
+ 	select SND_SOC_IMX_PCM_DMA
+ 	select SND_SOC_IMX_AUDMUX
+ 	select SND_SOC_FSL_SSI
+-	select SND_SOC_FSL_UTILS
+ 	help
+ 	  Say Y if you want to add support for SoC audio on an i.MX board with
+ 	  a sgtl5000 codec.
 -- 
-1.7.9.5
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.8.1.2
