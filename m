@@ -1,64 +1,65 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
+From: Tomasz Figa <tomasz.figa@gmail.com>
 Subject: Re: [PATCH v5 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Sat, 17 Aug 2013 17:14:43 +0200
-Message-ID: <20130817151443.GX26614@pengutronix.de>
+Date: Sat, 17 Aug 2013 17:17:18 +0200
+Message-ID: <8770601.066pCcRnTh@flatron>
 References: <cover.1376565456.git.b42378@freescale.com>
- <137675716.iLf1T1CVZo@flatron>
- <20130817150002.GU26614@pengutronix.de>
- <2782793.dUculLxO6S@flatron>
+ <2805432.jMVhHxhr1m@flatron> <20130817145316.GT26614@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Content-Disposition: inline
-In-Reply-To: <2782793.dUculLxO6S@flatron>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, ian.campbell@citrix.com, pawel.moll@arm.com, swarren@wwwdotorg.org, festevam@gmail.com, Nicolin Chen <b42378@freescale.com>, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, galak@codeaurora.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f46.google.com (mail-bk0-f46.google.com
+ [209.85.214.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8AFB2607BB
+ for <alsa-devel@alsa-project.org>; Sat, 17 Aug 2013 17:17:22 +0200 (CEST)
+Received: by mail-bk0-f46.google.com with SMTP id 6so949934bkj.5
+ for <alsa-devel@alsa-project.org>; Sat, 17 Aug 2013 08:17:22 -0700 (PDT)
+In-Reply-To: <20130817145316.GT26614@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, mturquette@linaro.org, ian.campbell@citrix.com, pawel.moll@arm.com, swarren@wwwdotorg.org, festevam@gmail.com, Nicolin Chen <b42378@freescale.com>, timur@tabi.org, rob.herring@calxeda.com, broonie@kernel.org, p.zabel@pengutronix.de, galak@codeaurora.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 17, 2013 at 05:13:20PM +0200, Tomasz Figa wrote:
-> On Saturday 17 of August 2013 17:00:02 Sascha Hauer wrote:
-> > On Sat, Aug 17, 2013 at 02:26:40PM +0200, Tomasz Figa wrote:
-> > > > You mean tx<0-7>.
+On Saturday 17 of August 2013 16:53:16 Sascha Hauer wrote:
+> On Sat, Aug 17, 2013 at 02:28:04PM +0200, Tomasz Figa wrote:
+> > > > > Also I would make this option required. Use a dummy clock for
+> > > > > mux
+> > > > > inputs that are grounded for a specific SoC.
 > > > > 
-> > > > Also I would make this option required. Use a dummy clock for mux
-> > > > inputs that are grounded for a specific SoC.
+> > > > Some clocks are not from CCM and we haven't defined in
+> > > > imx6q-clk.txt,
+> > > > so in most cases we can't provide a phandle for them, eg:
+> > > > spdif_ext.
+> > > > I think it's a bit hard to force it to be 'required'. An
+> > > > 'optional'
+> > > > looks more flexible to me and a default one is ensured even if
+> > > > it's
+> > > > missing.
 > > > 
-> > > Why do you need a dummy clock?
-> > > 
-> > > The driver can simply try to grab all the possible clocks and discard
-> > > those that failed, so you can just keep those grounded clocks
-> > > unspecified.
-> > We don't need dummy clocks. My motivation saying this that I was afraid
-> > people try to configure the driver by skipping the clocks they don't
-> > want from the devicetree.
+> > > <&clks 0> is the dummy clock. This can be used for all input clocks
+> > > not
+> > > defined by the SoC.
+> > 
+> > Where does this assumption come from? Is it documented anywhere?
 > 
-> I'm not really sure if the same abuse couldn't be easily achieved by 
-> putting dummy clocks in place of those skipped clocks.
+> This is how all i.MX clock bindings currently are. See
+> Documentation/devicetree/bindings/clock/imx*-clock.txt
 
-That's right, yes.
+OK, thanks.
 
-> 
-> Adding a note in binding documentation that says that all clocks that are 
-> fed to the IP shall be specified should be fine IMHO.
+I guess we need some discussion on dummy clocks vs skipped clocks. I think 
+we want some consistency on this, don't we?
 
-ok.
+If we really need a dummy clock, then we might also want a generic way to 
+specify it.
 
-Sascha
-
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Best regards,
+Tomasz
