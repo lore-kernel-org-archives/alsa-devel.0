@@ -1,120 +1,54 @@
-From: Ming Lei <ming.lei@canonical.com>
-Subject: [PATCH v1 00/49] USB: prepare for enabling irq in complete()
-Date: Sun, 18 Aug 2013 00:24:25 +0800
-Message-ID: <1376756714-25479-1-git-send-email-ming.lei@canonical.com>
-Return-path: <linux-input-owner@vger.kernel.org>
-Sender: linux-input-owner@vger.kernel.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org, Oliver Neukum <oliver@neukum.org>, Alan Stern <stern@rowland.harvard.edu>, linux-input@vger.kernel.org, linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+From: Ming Lei <ming.lei-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
+Subject: [PATCH v1 44/49] sound: usb: midi: prepare for enabling irq in complete()
+Date: Sun, 18 Aug 2013 00:25:09 +0800
+Message-ID: <1376756714-25479-45-git-send-email-ming.lei@canonical.com>
+References: <1376756714-25479-1-git-send-email-ming.lei@canonical.com>
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1376756714-25479-1-git-send-email-ming.lei-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
+Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, Ming Lei <ming.lei-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Complete() will be run with interrupt enabled, so change to
+spin_lock_irqsave().
 
-As we are going to run URB->complete() in tasklet context[1][2], and
-hard interrupt may be enabled when running URB completion handler[3],
-so we might need to disable interrupt when acquiring one lock in
-the completion handler for the below reasons:
+Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Signed-off-by: Ming Lei <ming.lei-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
+---
+ sound/usb/midi.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-- URB->complete() holds a subsystem wide lock which may be acquired
-in another hard irq context, and the subsystem wide lock is acquired
-by spin_lock()/read_lock()/write_lock() in complete()
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index b901f46..86af276 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -279,15 +279,16 @@ static void snd_usbmidi_out_urb_complete(struct urb* urb)
+ 	struct out_urb_context *context = urb->context;
+ 	struct snd_usb_midi_out_endpoint* ep = context->ep;
+ 	unsigned int urb_index;
++	unsigned long flags;
+ 
+-	spin_lock(&ep->buffer_lock);
++	spin_lock_irqsave(&ep->buffer_lock, flags);
+ 	urb_index = context - ep->urbs;
+ 	ep->active_urbs &= ~(1 << urb_index);
+ 	if (unlikely(ep->drain_urbs)) {
+ 		ep->drain_urbs &= ~(1 << urb_index);
+ 		wake_up(&ep->drain_wait);
+ 	}
+-	spin_unlock(&ep->buffer_lock);
++	spin_unlock_irqrestore(&ep->buffer_lock, flags);
+ 	if (urb->status < 0) {
+ 		int err = snd_usbmidi_urb_error(urb->status);
+ 		if (err < 0) {
+-- 
+1.7.9.5
 
-- URB->complete() holds a private lock with spin_lock()/read_lock()/write_lock()
-but driver may export APIs to make other drivers acquire the same private
-lock in its interrupt handler.
-
-For the sake of safety and making the change simple, this patch set
-converts all spin_lock()/read_lock()/write_lock() in completion handler
-path into their irqsave version mechanically.
-
-But if you are sure the above two cases do not happen in your driver,
-please let me know and I can drop the unnecessary change.
-
-Also if you find some conversions are missed, also please let me know so
-that I can add it in the next round.
-
-
-[1], USB: URB documentation: claim complete() will be run with IRQs enabled
-https://git.kernel.org/cgit/linux/kernel/git/gregkh/usb.git/commit/?h=usb-next&id=85721d45261c4be684730c7509a59daa6cda30d8
-
-[2], USB: HCD: support giveback of URB in tasklet context
-https://git.kernel.org/cgit/linux/kernel/git/gregkh/usb.git/commit/?h=usb-next&id=94dfd7edfd5c9b605caf7b562de7a813d216e011
-
-[3], http://marc.info/?l=linux-usb&m=137286330626363&w=2
-
-V1:
-	- rename patchset title
-	- add missed changes on 'usb_skeleon and usb sg lib'
-	- remove several sound usb drivers which have been done via sound tree
-	- some patch style fix
-	- replace snd_pcm_stream_lock with snd_pcm_stream_lock_irqsave for related
-	a/v drivers
-
-Cc: linux-input@vger.kernel.org
-Cc: linux-bluetooth@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: linux-wireless@vger.kernel.org
-Cc: linux-media@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
-
- drivers/bluetooth/bfusb.c                     |   12 ++++----
- drivers/bluetooth/btusb.c                     |    5 ++--
- drivers/hid/usbhid/hid-core.c                 |    5 ++--
- drivers/input/misc/cm109.c                    |   10 ++++---
- drivers/isdn/hardware/mISDN/hfcsusb.c         |   36 ++++++++++++-----------
- drivers/media/dvb-core/dvb_demux.c            |   17 +++++++----
- drivers/media/usb/cx231xx/cx231xx-audio.c     |   10 ++++---
- drivers/media/usb/cx231xx/cx231xx-core.c      |   10 ++++---
- drivers/media/usb/cx231xx/cx231xx-vbi.c       |    5 ++--
- drivers/media/usb/em28xx/em28xx-audio.c       |    5 ++--
- drivers/media/usb/em28xx/em28xx-core.c        |    5 ++--
- drivers/media/usb/sn9c102/sn9c102_core.c      |    7 +++--
- drivers/media/usb/tlg2300/pd-alsa.c           |    5 ++--
- drivers/media/usb/tlg2300/pd-video.c          |    5 ++--
- drivers/media/usb/tm6000/tm6000-video.c       |    5 ++--
- drivers/net/usb/cdc-phonet.c                  |    5 ++--
- drivers/net/usb/hso.c                         |   38 ++++++++++++++-----------
- drivers/net/usb/kaweth.c                      |    7 +++--
- drivers/net/usb/rtl8150.c                     |    5 ++--
- drivers/net/wireless/ath/ath9k/hif_usb.c      |   29 ++++++++++---------
- drivers/net/wireless/ath/ath9k/htc_drv_txrx.c |    9 +++---
- drivers/net/wireless/ath/ath9k/wmi.c          |   11 +++----
- drivers/net/wireless/ath/carl9170/rx.c        |    5 ++--
- drivers/net/wireless/libertas/if_usb.c        |    5 ++--
- drivers/net/wireless/libertas_tf/if_usb.c     |    6 ++--
- drivers/net/wireless/zd1211rw/zd_usb.c        |   21 ++++++++------
- drivers/staging/bcm/InterfaceRx.c             |    5 ++--
- drivers/staging/btmtk_usb/btmtk_usb.c         |    5 ++--
- drivers/staging/ced1401/usb1401.c             |   35 ++++++++++++-----------
- drivers/staging/vt6656/usbpipe.c              |    9 +++---
- drivers/usb/class/cdc-wdm.c                   |   16 +++++++----
- drivers/usb/class/usblp.c                     |   10 ++++---
- drivers/usb/core/devio.c                      |    5 ++--
- drivers/usb/core/message.c                    |    5 ++--
- drivers/usb/misc/adutux.c                     |   10 ++++---
- drivers/usb/misc/iowarrior.c                  |    5 ++--
- drivers/usb/misc/ldusb.c                      |    7 +++--
- drivers/usb/misc/legousbtower.c               |    6 ++--
- drivers/usb/misc/usbtest.c                    |   10 ++++---
- drivers/usb/misc/uss720.c                     |    7 ++++-
- drivers/usb/serial/cyberjack.c                |   15 ++++++----
- drivers/usb/serial/digi_acceleport.c          |   23 ++++++++-------
- drivers/usb/serial/io_edgeport.c              |   14 +++++----
- drivers/usb/serial/io_ti.c                    |    5 ++--
- drivers/usb/serial/mos7720.c                  |    5 ++--
- drivers/usb/serial/mos7840.c                  |    5 ++--
- drivers/usb/serial/quatech2.c                 |    5 ++--
- drivers/usb/serial/sierra.c                   |    9 +++---
- drivers/usb/serial/symbolserial.c             |    5 ++--
- drivers/usb/serial/ti_usb_3410_5052.c         |    9 +++---
- drivers/usb/serial/usb_wwan.c                 |    5 ++--
- drivers/usb/usb-skeleton.c                    |   11 ++++---
- sound/usb/caiaq/audio.c                       |    5 ++--
- sound/usb/midi.c                              |    5 ++--
- 54 files changed, 318 insertions(+), 221 deletions(-)
-
-
-Thanks,
 --
-Ming Lei
-
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
