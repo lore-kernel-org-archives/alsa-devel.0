@@ -1,72 +1,40 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: wm8782: Add DAPM support
-Date: Sun, 18 Aug 2013 18:39:02 +0100
-Message-ID: <1376847542-21551-1-git-send-email-broonie@kernel.org>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: Re: [PATCH 3/4] ARM: dts: Correct the /include entry on exynos5420
+ dtsi file
+Date: Mon, 19 Aug 2013 04:54:06 +0900
+Message-ID: <5211265E.7030808@samsung.com>
+References: <1373458313-18970-1-git-send-email-padma.v@samsung.com> <1373458313-18970-4-git-send-email-padma.v@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C11672615C5
- for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2013 19:39:05 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@linaro.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1373458313-18970-4-git-send-email-padma.v@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Padmavathi Venna <padma.v@samsung.com>
+Cc: linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.kvr@gmail.com, sbkim73@samsung.com, broonie@kernel.org, kgene.kim@samsung.com, mturquette@linaro.org, dianders@chromium.org, abrestic@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On 07/10/13 21:11, Padmavathi Venna wrote:
+> This patch corrects the /include to #include on exynos5420
+>
+> Signed-off-by: Padmavathi Venna<padma.v@samsung.com>
+> ---
+>   arch/arm/boot/dts/exynos5420.dtsi |    2 +-
+>   1 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/exynos5420.dtsi b/arch/arm/boot/dts/exynos5420.dtsi
+> index 8c54c4b..da55160 100644
+> --- a/arch/arm/boot/dts/exynos5420.dtsi
+> +++ b/arch/arm/boot/dts/exynos5420.dtsi
+> @@ -14,7 +14,7 @@
+>    */
+>
+>   #include "exynos5.dtsi"
+> -/include/ "exynos5420-pinctrl.dtsi"
+> +#include "exynos5420-pinctrl.dtsi"
+>   / {
+>   	compatible = "samsung,exynos5420";
+>
+Applied, thanks.
 
-In order to make the device easier to hook up to external components in
-system designs and ensure operation when DAPM support becomes mandatory
-add DAPM support.
-
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/codecs/wm8782.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/wm8782.c b/sound/soc/codecs/wm8782.c
-index f1fdbf6..8092495 100644
---- a/sound/soc/codecs/wm8782.c
-+++ b/sound/soc/codecs/wm8782.c
-@@ -26,6 +26,16 @@
- #include <sound/initval.h>
- #include <sound/soc.h>
- 
-+static const struct snd_soc_dapm_widget wm8782_dapm_widgets[] = {
-+SND_SOC_DAPM_INPUT("AINL"),
-+SND_SOC_DAPM_INPUT("AINR"),
-+};
-+
-+static const struct snd_soc_dapm_route wm8782_dapm_routes[] = {
-+	{ "Capture", NULL, "AINL" },
-+	{ "Capture", NULL, "AINR" },
-+};
-+
- static struct snd_soc_dai_driver wm8782_dai = {
- 	.name = "wm8782",
- 	.capture = {
-@@ -40,7 +50,12 @@ static struct snd_soc_dai_driver wm8782_dai = {
- 	},
- };
- 
--static struct snd_soc_codec_driver soc_codec_dev_wm8782;
-+static struct snd_soc_codec_driver soc_codec_dev_wm8782 = {
-+	.dapm_widgets = wm8782_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(wm8782_dapm_widgets),
-+	.dapm_routes = wm8782_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(wm8782_dapm_routes),
-+};
- 
- static int wm8782_probe(struct platform_device *pdev)
- {
--- 
-1.8.4.rc3
+- Kukjin
