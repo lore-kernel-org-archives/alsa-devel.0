@@ -1,66 +1,74 @@
-From: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
-Date: Sun, 18 Aug 2013 18:56:14 +0200
-Message-ID: <5210FCAE.3090103@ladisch.de>
-References: <Pine.LNX.4.44L0.1308151136180.905-100000@iolanthe.rowland.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: wl1273: Add stub DAPM support
+Date: Sun, 18 Aug 2013 18:26:39 +0100
+Message-ID: <1376846799-6298-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <Pine.LNX.4.44L0.1308151136180.905-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Cc: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0226E2608EE
+ for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2013 19:26:44 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Alan Stern wrote:
-> On Tue, 13 Aug 2013, Clemens Ladisch wrote:
->>> The difference is that this version tries always to keep a period's
->>> worth of bytes in the USB hardware queue.
->>
->> Having truncated URBs is possible only when URBs are shorter than one
->> period,
->
-> No.  URBs are truncated when a full-sized URB would extend at least one
-> packet beyond the end of a frame.
+From: Mark Brown <broonie@linaro.org>
 
-This thought was in the context of avoiding too-short queues.  When
-there are multiple URBs per period, the queue is long enough anyway.
+In order to ensure that the device continues to work with DAPM support
+being mandatory provide stub DAPM widgets and routes.
 
->> so I think that a queue length of at least two periods, together
->> with a minimum period size, should ensure the isochrounous scheduling
->> threshold.
->
-> This depends on how long a period is.
+Note that the public information on the device appears to make no
+mention of the FM support the driver appears to have.
 
-In that patch, a period is guaranteed to be no smaller than the IST.
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/wl1273.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
->> And while we're at it: the default number of packets per URB was chosen
->> before the driver had the ability to estimate the delay from the current
->> frame number; it should now be quite safe to increase it.
->
-> I don't understand how this delay estimation is supposed to work, or
-> what it is meant to accomplish.  Can you explain?
-
-The "delay" is the difference between the time when a sample is written
-by the application and when that sample is actually played, and is
-important for things like A/V synchronization.  It depends on
-1) the amount of samples already in the ring buffer;
-2) any processing done by the driver; and
-3) any processing done by the hardware.
-
-Most drivers don't do any processing, and most of the hardware has very
-low delays, so it is common for drivers to pretend 2) and 3) are zero.
-
-snd-usb-audio computes 2) from the current number of packets in the
-queue, with the progress estimated based on the current frame.  Without
-this computation, it was desirable to have short URBs because the delay
-would jump by a large amount whenever a URB was completed.
-
-
-Regards,
-Clemens
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
+index 54cd3da..b7ab2ef 100644
+--- a/sound/soc/codecs/wl1273.c
++++ b/sound/soc/codecs/wl1273.c
+@@ -290,6 +290,18 @@ static const struct snd_kcontrol_new wl1273_controls[] = {
+ 		       snd_wl1273_fm_volume_get, snd_wl1273_fm_volume_put),
+ };
+ 
++static const struct snd_soc_dapm_widget wl1273_dapm_widgets[] = {
++	SND_SOC_DAPM_INPUT("RX"),
++
++	SND_SOC_DAPM_OUTPUT("TX"),
++};
++
++static const struct snd_soc_dapm_route wl1273_dapm_routes[] = {
++	{ "Capture", NULL, "RX" },
++
++	{ "TX", NULL, "Playback" },
++};
++
+ static int wl1273_startup(struct snd_pcm_substream *substream,
+ 			  struct snd_soc_dai *dai)
+ {
+@@ -483,6 +495,11 @@ static int wl1273_remove(struct snd_soc_codec *codec)
+ static struct snd_soc_codec_driver soc_codec_dev_wl1273 = {
+ 	.probe = wl1273_probe,
+ 	.remove = wl1273_remove,
++
++	.dapm_widgets = wl1273_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(wl1273_dapm_widgets),
++	.dapm_routes = wl1273_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(wl1273_dapm_routes),
+ };
+ 
+ static int wl1273_platform_probe(struct platform_device *pdev)
+-- 
+1.8.4.rc3
