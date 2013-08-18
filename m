@@ -1,19 +1,19 @@
 From: Eldad Zack <eldad@fogrefinery.com>
-Subject: [PATCH RFC 2/9] ALSA: usb-audio: remove
-	deactivate_endpoints()
-Date: Sun, 18 Aug 2013 22:22:36 +0200
-Message-ID: <1376857363-1116-3-git-send-email-eldad@fogrefinery.com>
+Subject: [PATCH RFC 3/9] ALSA: usb-audio: prevent NULL
+	dereference on stop trigger
+Date: Sun, 18 Aug 2013 22:22:37 +0200
+Message-ID: <1376857363-1116-4-git-send-email-eldad@fogrefinery.com>
 References: <1376857363-1116-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f54.google.com (mail-bk0-f54.google.com
- [209.85.214.54])
- by alsa0.perex.cz (Postfix) with ESMTP id CC53C26109D
- for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2013 22:23:03 +0200 (CEST)
-Received: by mail-bk0-f54.google.com with SMTP id mz12so1153511bkb.41
- for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2013 13:23:03 -0700 (PDT)
+Received: from mail-bk0-f53.google.com (mail-bk0-f53.google.com
+ [209.85.214.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8FFC0261616
+ for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2013 22:23:07 +0200 (CEST)
+Received: by mail-bk0-f53.google.com with SMTP id d7so1217887bkh.12
+ for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2013 13:23:07 -0700 (PDT)
 In-Reply-To: <1376857363-1116-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,53 +28,51 @@ To: Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>, Takash
 Cc: alsa-devel@alsa-project.org, Eldad Zack <eldad@fogrefinery.com>
 List-Id: alsa-devel@alsa-project.org
 
-The only call site for deactivate_endpoints() at snd_usb_hw_free().
-The return value is not checked there, as it is irrelevant if it
-fails on hw_free.
-This patch moves the deactivation of the endpoints directly into
-snd_usb_hw_free().
+If an endpoint uses another endpoint for synchronization, and the
+other endpoint is stopped, an oops will occur on NULL dereference.
+Clearing the prepare/retire callbacks solves this issue.
 
 Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
+
 ---
- sound/usb/pcm.c | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
+Note sure if the oops happens because of pcm_stream is NULLified, or
+somewhere else. Needs a closer look.
+
+I suspect this condition does not happen in practice since the call to
+snd_usb_endpoint_deactivate() will unconditionally deactivate the URBs.
+---
+ sound/usb/pcm.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 15b151e..f612c4e 100644
+index f612c4e..aa1e21f 100644
 --- a/sound/usb/pcm.c
 +++ b/sound/usb/pcm.c
-@@ -282,22 +282,6 @@ static void stop_endpoints(struct snd_usb_substream *subs, bool wait)
+@@ -1166,6 +1166,8 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream, int direction)
+ 		subs->interface = -1;
  	}
- }
  
--static int deactivate_endpoints(struct snd_usb_substream *subs)
--{
--	int reta, retb;
--
--	reta = snd_usb_endpoint_deactivate(subs->sync_endpoint);
--	retb = snd_usb_endpoint_deactivate(subs->data_endpoint);
--
--	if (reta < 0)
--		return reta;
--
--	if (retb < 0)
--		return retb;
--
--	return 0;
--}
--
- static int search_roland_implicit_fb(struct usb_device *dev, int ifnum,
- 				     unsigned int altsetting,
- 				     struct usb_host_interface **alts,
-@@ -697,7 +681,8 @@ static int snd_usb_hw_free(struct snd_pcm_substream *substream)
- 	down_read(&subs->stream->chip->shutdown_rwsem);
- 	if (!subs->stream->chip->shutdown) {
- 		stop_endpoints(subs, true);
--		deactivate_endpoints(subs);
-+		snd_usb_endpoint_deactivate(subs->sync_endpoint);
-+		snd_usb_endpoint_deactivate(subs->data_endpoint);
- 	}
- 	up_read(&subs->stream->chip->shutdown_rwsem);
- 	return snd_pcm_lib_free_vmalloc_buffer(substream);
++	subs->data_endpoint->prepare_data_urb = NULL;
++	subs->data_endpoint->retire_data_urb = NULL;
+ 	subs->pcm_substream = NULL;
+ 	snd_usb_autosuspend(subs->stream->chip);
+ 
+@@ -1492,6 +1494,8 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
+ 		subs->running = 1;
+ 		return 0;
+ 	case SNDRV_PCM_TRIGGER_STOP:
++		subs->data_endpoint->prepare_data_urb = NULL;
++		subs->data_endpoint->retire_data_urb = NULL;
+ 		stop_endpoints(subs, false);
+ 		subs->running = 0;
+ 		return 0;
+@@ -1522,6 +1526,7 @@ static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
+ 		subs->running = 1;
+ 		return 0;
+ 	case SNDRV_PCM_TRIGGER_STOP:
++		subs->data_endpoint->retire_data_urb = NULL;
+ 		stop_endpoints(subs, false);
+ 		subs->running = 0;
+ 		return 0;
 -- 
 1.8.1.5
