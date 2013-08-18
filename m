@@ -1,74 +1,66 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: wm8960: Fix PLL register writes
-Date: Sun, 18 Aug 2013 16:37:21 +0100
-Message-ID: <20130818153721.GY30073@sirena.org.uk>
-References: <1376674588-14454-1-git-send-email-mike.dyer@md-soft.co.uk>
+From: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
+Date: Sun, 18 Aug 2013 18:56:14 +0200
+Message-ID: <5210FCAE.3090103@ladisch.de>
+References: <Pine.LNX.4.44L0.1308151136180.905-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0534749770138162941=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id F18122608D1
- for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2013 17:37:23 +0200 (CEST)
-In-Reply-To: <1376674588-14454-1-git-send-email-mike.dyer@md-soft.co.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mike Dyer <mike.dyer@md-soft.co.uk>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <Pine.LNX.4.44L0.1308151136180.905-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Cc: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Alan Stern wrote:
+> On Tue, 13 Aug 2013, Clemens Ladisch wrote:
+>>> The difference is that this version tries always to keep a period's
+>>> worth of bytes in the USB hardware queue.
+>>
+>> Having truncated URBs is possible only when URBs are shorter than one
+>> period,
+>
+> No.  URBs are truncated when a full-sized URB would extend at least one
+> packet beyond the end of a frame.
 
---===============0534749770138162941==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="w+MAdceOglSEzbpc"
-Content-Disposition: inline
+This thought was in the context of avoiding too-short queues.  When
+there are multiple URBs per period, the queue is long enough anyway.
 
+>> so I think that a queue length of at least two periods, together
+>> with a minimum period size, should ensure the isochrounous scheduling
+>> threshold.
+>
+> This depends on how long a period is.
 
---w+MAdceOglSEzbpc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In that patch, a period is guaranteed to be no smaller than the IST.
 
-On Fri, Aug 16, 2013 at 06:36:28PM +0100, Mike Dyer wrote:
-> Bit 9 of PLL2,3 and 4 is reserved as '0'. The 24bit fractional part should be split across each register in 8bit chunks.
+>> And while we're at it: the default number of packets per URB was chosen
+>> before the driver had the ability to estimate the delay from the current
+>> frame number; it should now be quite safe to increase it.
+>
+> I don't understand how this delay estimation is supposed to work, or
+> what it is meant to accomplish.  Can you explain?
 
-Applied, thanks.  Please remember to word wrap your commit messages
-within paragraphs.
+The "delay" is the difference between the time when a sample is written
+by the application and when that sample is actually played, and is
+important for things like A/V synchronization.  It depends on
+1) the amount of samples already in the ring buffer;
+2) any processing done by the driver; and
+3) any processing done by the hardware.
 
---w+MAdceOglSEzbpc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Most drivers don't do any processing, and most of the hardware has very
+low delays, so it is common for drivers to pretend 2) and 3) are zero.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSEOouAAoJELSic+t+oim9wnEP+wf6uCG0vjLxzy5hUbzoRSkx
-OAfL6QfkvLdNWRkg7Dym8+izxmIw2Nvz7lpN1j/t6CCvtyy4LF/gKpKYrwJw0ClL
-RnPIC6ir+ORZAOeXkBgAV+EE7D9xfcST+Awtzc7pgw2jNtE4kO/HRKNzKk43nNFm
-QVqwXseDYdsreBixBLe6E56zrOX5CQApsBdI72IyyVpVom7KqAaqz5T2EBAnj5vZ
-jN3IFo2tApOd/r8ePUxoC8+DgwcJCmAdqhMbhU5alDQkBfHXpptAi9LSXzN3RLa6
-UnGaeFkNMxu8aVBWb3YIfI/s5fwDiBEspjMfB4TFp0wpmVjpbS/irjniqL+eFIeD
-XwQ6dgOVLAjTEumHRV8SbEAD/g1A+2IOIegQnYfEmyh9znqr8eu2xjnt8mwEu+44
-GhpzWhtIGOPz/r35vxjt8sOD7YeJIA/0jMo5yf0nv8wSAaKfMFzDjCz7aCJ6Jg/V
-QRL0KSh99JmUinNBeb6Apg7VIETXCN+2gSFwQHmsNH/fMgAOXEkO66CF7SGWifLB
-sDaEN0zDugbKV73wDy9t5sAGlf32KJBxvN2gVIffeTKycijjhN1OZL2tw7EfbIKg
-DSMCKNGYqZMbReRXrXKRIWDstlu5kjhZue+wTGWcvYISNBio0plE1i+HGK08gAY+
-ueyBvtiyT0MMOEbRP3pF
-=CGNg
------END PGP SIGNATURE-----
-
---w+MAdceOglSEzbpc--
-
---===============0534749770138162941==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+snd-usb-audio computes 2) from the current number of packets in the
+queue, with the progress estimated based on the current frame.  Without
+this computation, it was desirable to have short URBs because the delay
+would jump by a large amount whenever a URB was completed.
 
 
---===============0534749770138162941==--
+Regards,
+Clemens
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
