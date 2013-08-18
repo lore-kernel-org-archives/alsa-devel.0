@@ -1,18 +1,19 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: fsl: fsl_ssi: Fix the order of resources
-	removal
-Date: Sat, 17 Aug 2013 18:13:00 -0300
-Message-ID: <1376773980-16240-1-git-send-email-festevam@gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH] ASoC: fsl: Drop SND_SOC_FSL_UTILS from
+	i.mx machine code
+Date: Sun, 18 Aug 2013 13:23:16 +0800
+Message-ID: <20130818052314.GB1545@S2101-09.ap.freescale.net>
+References: <1376768292-852-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gh0-f169.google.com (mail-gh0-f169.google.com
- [209.85.160.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C6FD2610CB
- for <alsa-devel@alsa-project.org>; Sat, 17 Aug 2013 23:13:19 +0200 (CEST)
-Received: by mail-gh0-f169.google.com with SMTP id r1so604249ghr.28
- for <alsa-devel@alsa-project.org>; Sat, 17 Aug 2013 14:13:18 -0700 (PDT)
+Received: from db8outboundpool.messaging.microsoft.com
+ (mail-db8lp0188.outbound.messaging.microsoft.com [213.199.154.188])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7723B260319
+ for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2013 07:22:41 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1376768292-852-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+On Sat, Aug 17, 2013 at 04:38:12PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+> 
+> SND_SOC_FSL_UTILS is only used by PowerPC machines, so let's drop it in the
+> i.mx case.
 
-In fsl_ssi_remove() we need to remove the resources in the opposite order that
-they were acquired in probe.
+Yes, that's true since commit 8f549d7 (ASoC: fsl: remove helper
+fsl_asoc_get_codec_dev_name), so,
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/fsl/fsl_ssi.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 0c072ff..c8aee4e 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -928,14 +928,14 @@ static int fsl_ssi_remove(struct platform_device *pdev)
- 
- 	if (!ssi_private->new_binding)
- 		platform_device_unregister(ssi_private->pdev);
--	if (ssi_private->ssi_on_imx) {
-+	if (ssi_private->ssi_on_imx)
- 		imx_pcm_dma_exit(pdev);
--		clk_disable_unprepare(ssi_private->clk);
--	}
- 	snd_soc_unregister_component(&pdev->dev);
--	device_remove_file(&pdev->dev, &ssi_private->dev_attr);
--	irq_dispose_mapping(ssi_private->irq);
- 	dev_set_drvdata(&pdev->dev, NULL);
-+	device_remove_file(&pdev->dev, &ssi_private->dev_attr);
-+	if (ssi_private->ssi_on_imx)
-+		clk_disable_unprepare(ssi_private->clk);
-+	irq_dispose_mapping(ssi_private->irq);
- 
- 	return 0;
- }
--- 
-1.8.1.2
+> 
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+>  sound/soc/fsl/Kconfig | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+> index e15f771..3a4808d 100644
+> --- a/sound/soc/fsl/Kconfig
+> +++ b/sound/soc/fsl/Kconfig
+> @@ -175,7 +175,6 @@ config SND_SOC_IMX_WM8962
+>  	select SND_SOC_IMX_PCM_DMA
+>  	select SND_SOC_IMX_AUDMUX
+>  	select SND_SOC_FSL_SSI
+> -	select SND_SOC_FSL_UTILS
+>  	help
+>  	  Say Y if you want to add support for SoC audio on an i.MX board with
+>  	  a wm8962 codec.
+> @@ -187,7 +186,6 @@ config SND_SOC_IMX_SGTL5000
+>  	select SND_SOC_IMX_PCM_DMA
+>  	select SND_SOC_IMX_AUDMUX
+>  	select SND_SOC_FSL_SSI
+> -	select SND_SOC_FSL_UTILS
+>  	help
+>  	  Say Y if you want to add support for SoC audio on an i.MX board with
+>  	  a sgtl5000 codec.
+> -- 
+> 1.8.1.2
+> 
