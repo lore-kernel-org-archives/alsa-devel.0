@@ -1,77 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v11 1/8] ASoC: imx-pcm-dma: Add missing include
-Date: Mon, 19 Aug 2013 17:42:31 +0100
-Message-ID: <20130819164231.GE30073@sirena.org.uk>
-References: <1376924761-4054-1-git-send-email-mpa@pengutronix.de>
- <1376924761-4054-2-git-send-email-mpa@pengutronix.de>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH] ASoC: rt5640: change widget sequence for
+	depop
+Date: Mon, 19 Aug 2013 11:29:32 -0600
+Message-ID: <521255FC.4000003@wwwdotorg.org>
+References: <1376914682-3606-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1481499822601070383=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1376924761-4054-2-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05F612617A6
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 19:29:37 +0200 (CEST)
+In-Reply-To: <1376914682-3606-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: bardliao@realtek.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, lgirdwood@gmail.com, broonie@kernel.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+On 08/19/2013 06:18 AM, bardliao@realtek.com wrote:
+> From: Bard Liao <bardliao@realtek.com>
+> 
+> Add mute/unmute control in widget event and modify the power on/off sequence to avoid pop noise.
 
---===============1481499822601070383==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BtLpl2nkGUzqmEOn"
-Content-Disposition: inline
+This version breaks both headphone and speaker output. I see the
+following issues:
 
+1)
 
---BtLpl2nkGUzqmEOn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+After a reboot, if all of "{HP,Speaker} [LR] Playback Switch" are
+on/unmuted, and I start playback, then something sets all those controls
+to off/muted. I suspect this is related to function rt5640_hp_event()
+twiddling the same RT5640_[LR]_MUTE bits that the hp_[lr]_enable_control
+controls twiddle.
 
-On Mon, Aug 19, 2013 at 05:05:54PM +0200, Markus Pargmann wrote:
-> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> ---
+2)
 
-This is there in the current code.
+If playback is running, and (1) has caused all output to be muted, and I
+then run alsamixer and enable/unmute "HP L Playback Switch", I hear
+sound on both the L and R headphone channels for a very brief time, then
+output switches to the L channel only. Similar happens if I unmute "HP R
+Playback Switch" first. Unmuting both switches does produce stereo sound
+as expected.
 
---BtLpl2nkGUzqmEOn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSEkr0AAoJELSic+t+oim9GcEQAIFVmTSCBJO4fDHdNcUws51O
-pYHXub3PNzYE2nhVe+wlsljvns+hQbWnaO62TQua5Q3RxD/2/67YoSju8i8E0kEF
-GBVK11DfKFaDnys+OPnGlcSvtZcT09RKx+rdZUQe8yExEVzgxtSMa11hAEs1bSq7
-MbBR/xF57hp5asVkqMJ1MNURfb7NCdsSfwkDz7BuV/LhqoV1vAC9vPbwYPGBYFiA
-HRH0umGa0kRnQmdKDeJt6+7DhSPwvynEssxRmUd7JotLSt2kFTniJu/RWRlIz8bI
-Hu5zOHvl+xEX0YuXFx7VrQYfUjTOFCHFHHwk/Nx8ZXmCV/psj8cHiLTfP87VoN/g
-cj2YIu91VcH3Xsi2J3T06Q8t+YzA+SCx9bcRLEcTGVoxC5kLiBED0NRtZZl+8ZtW
-05Lv9eZx/C7d36aVb5vxzykeBtjJKZ7vlgPQlxRerbKix4sBOeSerCCSwfFdZWI8
-X/99r3bWWLEjtWca2T3s5kCzI18yd2NyOIlSAtlTomNjW+wGeDhvMyC9Fjl3n8l0
-xPGl/r6Xw2oGTbhoDm8nR3+bK41Xj7rzK7QGulU+JBL2bP8Bx7SFmSzh1giyuf5s
-pFKiF95+oAVTjvNcvOBhb4rch1jU8o73WBpEyLj4jsxebK0qlvL1ckuIN7nVU84i
-S6gbz6MaaINjTw3yh0xP
-=rfSI
------END PGP SIGNATURE-----
-
---BtLpl2nkGUzqmEOn--
-
-
---===============1481499822601070383==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============1481499822601070383==--
+I don't know if this also happens for the speaker output, since the
+board is too far away from me to easily tell which speakers are playing.
