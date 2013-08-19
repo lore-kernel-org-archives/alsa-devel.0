@@ -1,11 +1,15 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 0/3] HDSPM: Fix LTC ioctl
-Date: Mon, 19 Aug 2013 17:20:29 +0200
-Message-ID: <1376925632-5831-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 3/3] ALSA: hdspm - Fix SNDRV_HDSPM_IOCTL_GET_LTC
+Date: Mon, 19 Aug 2013 17:20:32 +0200
+Message-ID: <1376925632-5831-4-git-send-email-adi@drcomp.erfurt.thur.de>
+References: <1376925632-5831-1-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1376925632-5831-2-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1376925632-5831-3-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1376925632-5831-3-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,27 +23,26 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+Use struct hdspm_ltc to query the LTC, using a mixer struct is just
+plain wrong.
 
-This series fixes the broken LTC ioctl to query the TCO. Apparently,
-nobody ever attempted to use the code, otherwise, this rather obvious
-problem would have been spotted way earlier. This is maybe because not
-too many people happen to have a TV studio around to make use of this
-feature. ;)
+Due to the wrong struct, this ioctl was never working, so we're free to
+fix it without breaking userspace compatibility.
 
-I'll also send a patch to fix alsa-lib.
+Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
-
-Cheers
-
-Adrian Knoth (3):
-  ALSA: hdspm - Fix default value in SNDRV_HDSPM_IOCTL_GET_LTC
-  ALSA: hdspm - Use enums in hdspm_tco_ltc_frames()
-  ALSA: hdspm - Fix SNDRV_HDSPM_IOCTL_GET_LTC
-
- include/uapi/sound/hdspm.h |  2 +-
- sound/pci/rme9652/hdspm.c  | 12 ++++++------
- 2 files changed, 7 insertions(+), 7 deletions(-)
-
+diff --git a/include/uapi/sound/hdspm.h b/include/uapi/sound/hdspm.h
+index 1f59ea2..d956c35 100644
+--- a/include/uapi/sound/hdspm.h
++++ b/include/uapi/sound/hdspm.h
+@@ -111,7 +111,7 @@ struct hdspm_ltc {
+ 	enum hdspm_ltc_input_format input_format;
+ };
+ 
+-#define SNDRV_HDSPM_IOCTL_GET_LTC _IOR('H', 0x46, struct hdspm_mixer_ioctl)
++#define SNDRV_HDSPM_IOCTL_GET_LTC _IOR('H', 0x46, struct hdspm_ltc)
+ 
+ /**
+  * The status data reflects the device's current state
 -- 
 1.8.3.2
