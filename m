@@ -1,17 +1,14 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH v8 2/2] ASoC: fsl: Add S/PDIF machine driver
-Date: Mon, 19 Aug 2013 20:08:49 +0800
-Message-ID: <ca3061d70ab8bf59afc59031fa7befcfaed26d51.1376912873.git.b42378@freescale.com>
-References: <cover.1376912873.git.b42378@freescale.com>
+From: <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5640: change widget sequence for depop
+Date: Mon, 19 Aug 2013 20:18:02 +0800
+Message-ID: <1376914682-3606-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe004.messaging.microsoft.com [207.46.163.27])
- by alsa0.perex.cz (Postfix) with ESMTP id 4586C261ACE
- for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 13:57:59 +0200 (CEST)
-In-Reply-To: <cover.1376912873.git.b42378@freescale.com>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFA37261A99
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 14:18:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,238 +18,354 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lars@metafoo.de, p.zabel@pengutronix.de, s.hauer@pengutronix.de
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, swarren@wwwdotorg.org, festevam@gmail.com, timur@tabi.org, rob.herring@calxeda.com, tomasz.figa@gmail.com, R65777@freescale.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, swarren@wwwdotorg.org, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch implements a device-tree-only machine driver for Freescale
-i.MX series Soc. It works with spdif_transmitter/spdif_receiver and
-fsl_spdif.c drivers.
+From: Bard Liao <bardliao@realtek.com>
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
+Add mute/unmute control in widget event and modify the power on/off sequence to avoid pop noise.
+
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- .../devicetree/bindings/sound/imx-audio-spdif.txt  |   29 +++++
- sound/soc/fsl/Kconfig                              |   11 ++
- sound/soc/fsl/Makefile                             |    2 +
- sound/soc/fsl/imx-spdif.c                          |  134 ++++++++++++++++++++
- 4 files changed, 176 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
- create mode 100644 sound/soc/fsl/imx-spdif.c
+ sound/soc/codecs/rt5640.c | 200 +++++++++++++++++++++++++++++++++-------------
+ sound/soc/codecs/rt5640.h |  11 +++
+ 2 files changed, 157 insertions(+), 54 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt b/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
-new file mode 100644
-index 0000000..9a3fa26
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
-@@ -0,0 +1,29 @@
-+Freescale i.MX audio complex with S/PDIF transceiver
-+
-+Required properties:
-+
-+  - compatible : "fsl,imx-audio-spdif"
-+
-+  - model : The user-visible name of this sound complex
-+
-+  - spdif-controller : The phandle of the i.MX S/PDIF controller
-+
-+
-+Optional properties:
-+
-+  - spdif-transmitter : The phandle of the spdif-transmitter dummy codec
-+
-+  - spdif-receiver : The phandle of the spdif-receiver dummy codec
-+
-+* Note: At least one of these two properties should be set in the DT binding.
-+
-+
-+Example:
-+
-+sound-spdif {
-+	compatible = "fsl,imx-audio-spdif";
-+	model = "imx-spdif";
-+	spdif-controller = <&spdif>;
-+	spdif-transmitter = <&spdif_tx_codec>;
-+	spdif-receiver = <&spdif_rx_codec>;
-+};
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index cd088cc..a708380 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -193,6 +193,17 @@ config SND_SOC_IMX_SGTL5000
- 	  Say Y if you want to add support for SoC audio on an i.MX board with
- 	  a sgtl5000 codec.
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 4db7314..218aae2 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -50,8 +50,6 @@ static const struct regmap_range_cfg rt5640_ranges[] = {
  
-+config SND_SOC_IMX_SPDIF
-+	tristate "SoC Audio support for i.MX boards with S/PDIF"
-+	select SND_SOC_IMX_PCM_DMA
-+	select SND_SOC_FSL_SPDIF
-+	select SND_SOC_FSL_UTILS
-+	select SND_SOC_SPDIF
-+	help
-+	  SoC Audio support for i.MX boards with S/PDIF
-+	  Say Y if you want to add support for SoC audio on an i.MX board with
-+	  a S/DPDIF.
-+
- config SND_SOC_IMX_MC13783
- 	tristate "SoC Audio support for I.MX boards with mc13783"
- 	depends on MFD_MC13783 && ARM
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index 4b5970e..e2aaff7 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -45,6 +45,7 @@ snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
- snd-soc-wm1133-ev1-objs := wm1133-ev1.o
- snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
- snd-soc-imx-wm8962-objs := imx-wm8962.o
-+snd-soc-imx-spdif-objs :=imx-spdif.o
- snd-soc-imx-mc13783-objs := imx-mc13783.o
+ static struct reg_default init_list[] = {
+ 	{RT5640_PR_BASE + 0x3d,	0x3600},
+-	{RT5640_PR_BASE + 0x1c,	0x0D21},
+-	{RT5640_PR_BASE + 0x1b,	0x0000},
+ 	{RT5640_PR_BASE + 0x12,	0x0aa8},
+ 	{RT5640_PR_BASE + 0x14,	0x0aaa},
+ 	{RT5640_PR_BASE + 0x20,	0x6110},
+@@ -384,15 +382,11 @@ static const SOC_ENUM_SINGLE_DECL(
  
- obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
-@@ -53,4 +54,5 @@ obj-$(CONFIG_SND_SOC_MX27VIS_AIC32X4) += snd-soc-mx27vis-aic32x4.o
- obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) += snd-soc-wm1133-ev1.o
- obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
- obj-$(CONFIG_SND_SOC_IMX_WM8962) += snd-soc-imx-wm8962.o
-+obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
- obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
-diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
-new file mode 100644
-index 0000000..893f3d1
---- /dev/null
-+++ b/sound/soc/fsl/imx-spdif.c
-@@ -0,0 +1,134 @@
-+/*
-+ * Copyright (C) 2013 Freescale Semiconductor, Inc.
-+ *
-+ * The code contained herein is licensed under the GNU General Public
-+ * License. You may obtain a copy of the GNU General Public License
-+ * Version 2 or later at the following locations:
-+ *
-+ * http://www.opensource.org/licenses/gpl-license.html
-+ * http://www.gnu.org/copyleft/gpl.html
-+ */
+ static const struct snd_kcontrol_new rt5640_snd_controls[] = {
+ 	/* Speaker Output Volume */
+-	SOC_DOUBLE("Speaker Playback Switch", RT5640_SPK_VOL,
+-		RT5640_L_MUTE_SFT, RT5640_R_MUTE_SFT, 1, 1),
+ 	SOC_DOUBLE("Speaker Channel Switch", RT5640_SPK_VOL,
+ 		RT5640_VOL_L_SFT, RT5640_VOL_R_SFT, 1, 1),
+ 	SOC_DOUBLE_TLV("Speaker Playback Volume", RT5640_SPK_VOL,
+ 		RT5640_L_VOL_SFT, RT5640_R_VOL_SFT, 39, 1, out_vol_tlv),
+ 	/* Headphone Output Volume */
+-	SOC_DOUBLE("HP Playback Switch", RT5640_HP_VOL,
+-		RT5640_L_MUTE_SFT, RT5640_R_MUTE_SFT, 1, 1),
+ 	SOC_DOUBLE("HP Channel Switch", RT5640_HP_VOL,
+ 		RT5640_VOL_L_SFT, RT5640_VOL_R_SFT, 1, 1),
+ 	SOC_DOUBLE_TLV("HP Playback Volume", RT5640_HP_VOL,
+@@ -737,6 +731,22 @@ static const struct snd_kcontrol_new rt5640_mono_mix[] = {
+ 			RT5640_M_BST1_MM_SFT, 1, 1),
+ };
+ 
++static const struct snd_kcontrol_new spk_l_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5640_SPK_VOL,
++		RT5640_L_MUTE_SFT, 1, 1);
 +
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <sound/soc.h>
++static const struct snd_kcontrol_new spk_r_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5640_SPK_VOL,
++		RT5640_R_MUTE_SFT, 1, 1);
 +
-+struct imx_spdif_data {
-+	struct snd_soc_dai_link dai[2];
-+	struct snd_soc_card card;
-+};
++static const struct snd_kcontrol_new hp_l_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5640_HP_VOL,
++		RT5640_L_MUTE_SFT, 1, 1);
 +
-+static int imx_spdif_audio_probe(struct platform_device *pdev)
++static const struct snd_kcontrol_new hp_r_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5640_HP_VOL,
++		RT5640_R_MUTE_SFT, 1, 1);
++
+ /* Stereo ADC source */
+ static const char * const rt5640_stereo_adc1_src[] = {
+ 	"DIG MIX", "ADC"
+@@ -868,33 +878,6 @@ static const SOC_ENUM_SINGLE_DECL(
+ static const struct snd_kcontrol_new rt5640_sdi_mux =
+ 	SOC_DAPM_ENUM("SDI select", rt5640_sdi_sel_enum);
+ 
+-static int spk_event(struct snd_soc_dapm_widget *w,
+-	struct snd_kcontrol *kcontrol, int event)
+-{
+-	struct snd_soc_codec *codec = w->codec;
+-	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
+-
+-	switch (event) {
+-	case SND_SOC_DAPM_POST_PMU:
+-		regmap_update_bits(rt5640->regmap, RT5640_PWR_DIG1,
+-					0x0001, 0x0001);
+-		regmap_update_bits(rt5640->regmap, RT5640_PR_BASE + 0x1c,
+-					0xf000, 0xf000);
+-		break;
+-
+-	case SND_SOC_DAPM_PRE_PMD:
+-		regmap_update_bits(rt5640->regmap, RT5640_PR_BASE + 0x1c,
+-					0xf000, 0x0000);
+-		regmap_update_bits(rt5640->regmap, RT5640_PWR_DIG1,
+-					0x0001, 0x0000);
+-		break;
+-
+-	default:
+-		return 0;
+-	}
+-	return 0;
+-}
+-
+ static int rt5640_set_dmic1_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -943,6 +926,103 @@ static int rt5640_set_dmic2_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
++void hp_amp_power_on(struct snd_soc_codec *codec)
 +{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *spdif_np, *codec_tx_np, *codec_rx_np;
-+	struct platform_device *spdif_pdev;
-+	struct imx_spdif_data *data;
-+	int ret = 0, num_links = 0;
++	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
 +
-+	spdif_np = of_parse_phandle(np, "spdif-controller", 0);
-+	if (!spdif_np) {
-+		dev_err(&pdev->dev, "failed to find spdif-controller\n");
-+		ret = -EINVAL;
-+		goto fail;
-+	}
-+
-+	spdif_pdev = of_find_device_by_node(spdif_np);
-+	if (!spdif_pdev) {
-+		dev_err(&pdev->dev, "failed to find S/PDIF device\n");
-+		ret = -EINVAL;
-+		goto fail;
-+	}
-+
-+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data) {
-+		dev_err(&pdev->dev, "failed to allocate memory\n");
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
-+
-+	codec_tx_np = of_parse_phandle(np, "spdif-transmitter", 0);
-+	if (codec_tx_np) {
-+		data->dai[num_links].name = "S/PDIF TX";
-+		data->dai[num_links].stream_name = "S/PDIF PCM Playback";
-+		data->dai[num_links].codec_dai_name = "dit-hifi";
-+		data->dai[num_links].codec_of_node = codec_tx_np;
-+		data->dai[num_links].cpu_of_node = spdif_np;
-+		data->dai[num_links].platform_of_node = spdif_np;
-+		num_links++;
-+	}
-+
-+	codec_rx_np = of_parse_phandle(np, "spdif-receiver", 0);
-+	if (codec_rx_np) {
-+		data->dai[num_links].name = "S/PDIF RX";
-+		data->dai[num_links].stream_name = "S/PDIF PCM Capture";
-+		data->dai[num_links].codec_dai_name = "dir-hifi";
-+		data->dai[num_links].codec_of_node = codec_rx_np;
-+		data->dai[num_links].cpu_of_node = spdif_np;
-+		data->dai[num_links].platform_of_node = spdif_np;
-+		num_links++;
-+	}
-+
-+	if (!num_links) {
-+		dev_err(&pdev->dev, "no enabled S/PDIF DAI link\n");
-+		goto fail;
-+	}
-+
-+	data->card.dev = &pdev->dev;
-+	data->card.num_links = num_links;
-+	data->card.dai_link = data->dai;
-+
-+	ret = snd_soc_of_parse_card_name(&data->card, "model");
-+	if (ret)
-+		goto fail;
-+
-+	ret = snd_soc_register_card(&data->card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+		goto fail;
-+	}
-+
-+	platform_set_drvdata(pdev, data);
-+
-+fail:
-+	if (codec_tx_np)
-+		of_node_put(codec_tx_np);
-+	if (codec_rx_np)
-+		of_node_put(codec_rx_np);
-+	if (spdif_np)
-+		of_node_put(spdif_np);
-+
-+	return ret;
++	/* depop parameters */
++	regmap_update_bits(rt5640->regmap, RT5640_PR_BASE +
++		RT5640_CHPUMP_INT_REG1, 0x0700, 0x0200);
++	regmap_update_bits(rt5640->regmap, RT5640_DEPOP_M2,
++		RT5640_DEPOP_MASK, RT5640_DEPOP_MAN);
++	regmap_update_bits(rt5640->regmap, RT5640_DEPOP_M1,
++		RT5640_HP_CP_MASK | RT5640_HP_SG_MASK | RT5640_HP_CB_MASK,
++		RT5640_HP_CP_PU | RT5640_HP_SG_DIS | RT5640_HP_CB_PU);
++	regmap_write(rt5640->regmap, RT5640_PR_BASE + RT5640_HP_DCC_INT1,
++			   0x9f00);
++	/* headphone amp power on */
++	regmap_update_bits(rt5640->regmap, RT5640_PWR_ANLG1,
++		RT5640_PWR_FV1 | RT5640_PWR_FV2, 0);
++	regmap_update_bits(rt5640->regmap, RT5640_PWR_ANLG1,
++		RT5640_PWR_HA,
++		RT5640_PWR_HA);
++	usleep_range(30000, 35000);
++	regmap_update_bits(rt5640->regmap, RT5640_PWR_ANLG1,
++		RT5640_PWR_FV1 | RT5640_PWR_FV2 ,
++		RT5640_PWR_FV1 | RT5640_PWR_FV2);
 +}
 +
-+static int imx_spdif_audio_remove(struct platform_device *pdev)
++static void rt5640_pmu_depop(struct snd_soc_codec *codec)
 +{
-+	struct imx_spdif_data *data = platform_get_drvdata(pdev);
++	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
 +
-+	snd_soc_unregister_card(&data->card);
++	regmap_update_bits(rt5640->regmap, RT5640_DEPOP_M2,
++		RT5640_DEPOP_MASK | RT5640_DIG_DP_MASK,
++		RT5640_DEPOP_AUTO | RT5640_DIG_DP_EN);
++	regmap_update_bits(rt5640->regmap, RT5640_CHARGE_PUMP,
++		RT5640_PM_HP_MASK, RT5640_PM_HP_HV);
++
++	regmap_update_bits(rt5640->regmap, RT5640_DEPOP_M3,
++		RT5640_CP_FQ1_MASK | RT5640_CP_FQ2_MASK | RT5640_CP_FQ3_MASK,
++		(RT5640_CP_FQ_192_KHZ << RT5640_CP_FQ1_SFT) |
++		(RT5640_CP_FQ_12_KHZ << RT5640_CP_FQ2_SFT) |
++		(RT5640_CP_FQ_192_KHZ << RT5640_CP_FQ3_SFT));
++
++	regmap_write(rt5640->regmap, RT5640_PR_BASE +
++		RT5640_MAMP_INT_REG2, 0x1c00);
++	regmap_update_bits(rt5640->regmap, RT5640_DEPOP_M1,
++		RT5640_HP_CP_MASK | RT5640_HP_SG_MASK,
++		RT5640_HP_CP_PD | RT5640_HP_SG_EN);
++	regmap_update_bits(rt5640->regmap, RT5640_PR_BASE +
++		RT5640_CHPUMP_INT_REG1, 0x0700, 0x0400);
++}
++
++static int rt5640_hp_event(struct snd_soc_dapm_widget *w,
++			   struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++	unsigned int val = 0, pow;
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		rt5640_pmu_depop(codec);
++		pow = snd_soc_read(codec,  RT5640_PWR_ANLG1);
++		if (!(pow & RT5640_PWR_HP_L))
++			val |= RT5640_L_MUTE;
++		if (!(pow & RT5640_PWR_HP_R))
++			val |= RT5640_R_MUTE;
++		snd_soc_update_bits(codec, RT5640_HP_VOL,
++			RT5640_L_MUTE | RT5640_R_MUTE, val);
++		usleep_range(35000, 40000);
++		break;
++
++	case SND_SOC_DAPM_PRE_PMD:
++		usleep_range(70000, 75000);
++		break;
++
++	default:
++		return 0;
++	}
 +
 +	return 0;
 +}
 +
-+static const struct of_device_id imx_spdif_dt_ids[] = {
-+	{ .compatible = "fsl,imx-audio-spdif", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, imx_spdif_dt_ids);
++static int rt5640_hp_power_event(struct snd_soc_dapm_widget *w,
++			   struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
 +
-+static struct platform_driver imx_spdif_driver = {
-+	.driver = {
-+		.name = "imx-spdif",
-+		.owner = THIS_MODULE,
-+		.of_match_table = imx_spdif_dt_ids,
-+	},
-+	.probe = imx_spdif_audio_probe,
-+	.remove = imx_spdif_audio_remove,
-+};
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		hp_amp_power_on(codec);
++		break;
++	default:
++		return 0;
++	}
 +
-+module_platform_driver(imx_spdif_driver);
++	return 0;
++}
 +
-+MODULE_AUTHOR("Freescale Semiconductor, Inc.");
-+MODULE_DESCRIPTION("Freescale i.MX S/PDIF machine driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:imx-spdif");
+ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("PLL1", RT5640_PWR_ANLG2,
+ 			RT5640_PWR_PLL_BIT, 0, NULL, 0),
+@@ -1132,15 +1212,27 @@ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
+ 		rt5640_mono_mix, ARRAY_SIZE(rt5640_mono_mix)),
+ 	SND_SOC_DAPM_SUPPLY("Improve MONO Amp Drv", RT5640_PWR_ANLG1,
+ 		RT5640_PWR_MA_BIT, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("Improve HP Amp Drv", RT5640_PWR_ANLG1,
+-		SND_SOC_NOPM, 0, NULL, 0),
+-	SND_SOC_DAPM_PGA("HP L Amp", RT5640_PWR_ANLG1,
++	SND_SOC_DAPM_SUPPLY_S("Improve HP Amp Drv", 1, SND_SOC_NOPM,
++		0, 0, rt5640_hp_power_event, SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_PGA_S("HP Amp", 1, SND_SOC_NOPM, 0, 0,
++		rt5640_hp_event,
++		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_SUPPLY("HP L Amp", RT5640_PWR_ANLG1,
+ 		RT5640_PWR_HP_L_BIT, 0, NULL, 0),
+-	SND_SOC_DAPM_PGA("HP R Amp", RT5640_PWR_ANLG1,
++	SND_SOC_DAPM_SUPPLY("HP R Amp", RT5640_PWR_ANLG1,
+ 		RT5640_PWR_HP_R_BIT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("Improve SPK Amp Drv", RT5640_PWR_DIG1,
+-		SND_SOC_NOPM, 0, spk_event,
+-		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
++		RT5640_PWR_CLS_D_BIT, 0, NULL, 0),
++
++	/* Output Switch */
++	SND_SOC_DAPM_SWITCH("Speaker L Playback", SND_SOC_NOPM, 0, 0,
++			&spk_l_enable_control),
++	SND_SOC_DAPM_SWITCH("Speaker R Playback", SND_SOC_NOPM, 0, 0,
++			&spk_r_enable_control),
++	SND_SOC_DAPM_SWITCH("HP L Playback", SND_SOC_NOPM, 0, 0,
++			&hp_l_enable_control),
++	SND_SOC_DAPM_SWITCH("HP R Playback", SND_SOC_NOPM, 0, 0,
++			&hp_r_enable_control),
+ 	/* Output Lines */
+ 	SND_SOC_DAPM_OUTPUT("SPOLP"),
+ 	SND_SOC_DAPM_OUTPUT("SPOLN"),
+@@ -1381,9 +1473,11 @@ static const struct snd_soc_dapm_route rt5640_dapm_routes[] = {
+ 	{"HPO MIX L", "HPO MIX DAC2 Switch", "DAC L2"},
+ 	{"HPO MIX L", "HPO MIX DAC1 Switch", "DAC L1"},
+ 	{"HPO MIX L", "HPO MIX HPVOL Switch", "HPOVOL L"},
++	{"HPO MIX L", NULL, "HP L Amp"},
+ 	{"HPO MIX R", "HPO MIX DAC2 Switch", "DAC R2"},
+ 	{"HPO MIX R", "HPO MIX DAC1 Switch", "DAC R1"},
+ 	{"HPO MIX R", "HPO MIX HPVOL Switch", "HPOVOL R"},
++	{"HPO MIX R", NULL, "HP R Amp"},
+ 
+ 	{"LOUT MIX", "DAC L1 Switch", "DAC L1"},
+ 	{"LOUT MIX", "DAC R1 Switch", "DAC R1"},
+@@ -1396,13 +1490,15 @@ static const struct snd_soc_dapm_route rt5640_dapm_routes[] = {
+ 	{"Mono MIX", "OUTVOL L Switch", "OUTVOL L"},
+ 	{"Mono MIX", "BST1 Switch", "BST1"},
+ 
+-	{"HP L Amp", NULL, "HPO MIX L"},
+-	{"HP R Amp", NULL, "HPO MIX R"},
++	{"HP Amp", NULL, "HPO MIX L"},
++	{"HP Amp", NULL, "HPO MIX R"},
+ 
+-	{"SPOLP", NULL, "SPOL MIX"},
+-	{"SPOLN", NULL, "SPOL MIX"},
+-	{"SPORP", NULL, "SPOR MIX"},
+-	{"SPORN", NULL, "SPOR MIX"},
++	{"Speaker L Playback", "Switch", "SPOL MIX"},
++	{"Speaker R Playback", "Switch", "SPOR MIX"},
++	{"SPOLP", NULL, "Speaker L Playback"},
++	{"SPOLN", NULL, "Speaker L Playback"},
++	{"SPORP", NULL, "Speaker R Playback"},
++	{"SPORN", NULL, "Speaker R Playback"},
+ 
+ 	{"SPOLP", NULL, "Improve SPK Amp Drv"},
+ 	{"SPOLN", NULL, "Improve SPK Amp Drv"},
+@@ -1412,8 +1508,10 @@ static const struct snd_soc_dapm_route rt5640_dapm_routes[] = {
+ 	{"HPOL", NULL, "Improve HP Amp Drv"},
+ 	{"HPOR", NULL, "Improve HP Amp Drv"},
+ 
+-	{"HPOL", NULL, "HP L Amp"},
+-	{"HPOR", NULL, "HP R Amp"},
++	{"HP L Playback", "Switch", "HP Amp"},
++	{"HP R Playback", "Switch", "HP Amp"},
++	{"HPOL", NULL, "HP L Playback"},
++	{"HPOR", NULL, "HP R Playback"},
+ 	{"LOUTL", NULL, "LOUT MIX"},
+ 	{"LOUTR", NULL, "LOUT MIX"},
+ 	{"MONOP", NULL, "Mono MIX"},
+@@ -1792,17 +1890,13 @@ static int rt5640_set_bias_level(struct snd_soc_codec *codec,
+ 				RT5640_PWR_BG | RT5640_PWR_VREF2,
+ 				RT5640_PWR_VREF1 | RT5640_PWR_MB |
+ 				RT5640_PWR_BG | RT5640_PWR_VREF2);
+-			mdelay(10);
++			usleep_range(15000, 20000);
+ 			snd_soc_update_bits(codec, RT5640_PWR_ANLG1,
+ 				RT5640_PWR_FV1 | RT5640_PWR_FV2,
+ 				RT5640_PWR_FV1 | RT5640_PWR_FV2);
+ 			regcache_sync(rt5640->regmap);
+ 			snd_soc_update_bits(codec, RT5640_DUMMY1,
+ 						0x0301, 0x0301);
+-			snd_soc_update_bits(codec, RT5640_DEPOP_M1,
+-						0x001d, 0x0019);
+-			snd_soc_update_bits(codec, RT5640_DEPOP_M2,
+-						0x2000, 0x2000);
+ 			snd_soc_update_bits(codec, RT5640_MICBIAS,
+ 						0x0030, 0x0030);
+ 		}
+@@ -1846,8 +1940,6 @@ static int rt5640_probe(struct snd_soc_codec *codec)
+ 	rt5640_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 
+ 	snd_soc_update_bits(codec, RT5640_DUMMY1, 0x0301, 0x0301);
+-	snd_soc_update_bits(codec, RT5640_DEPOP_M1, 0x001d, 0x0019);
+-	snd_soc_update_bits(codec, RT5640_DEPOP_M2, 0x2000, 0x2000);
+ 	snd_soc_update_bits(codec, RT5640_MICBIAS, 0x0030, 0x0030);
+ 	snd_soc_update_bits(codec, RT5640_DSP_PATH2, 0xfc00, 0x0c00);
+ 
+diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+index c48286d..4d2cfe7 100644
+--- a/sound/soc/codecs/rt5640.h
++++ b/sound/soc/codecs/rt5640.h
+@@ -145,6 +145,8 @@
+ 
+ 
+ /* Index of Codec Private Register definition */
++#define RT5640_CHPUMP_INT_REG1			0x24
++#define RT5640_MAMP_INT_REG2			0x37
+ #define RT5640_3D_SPK				0x63
+ #define RT5640_WND_1				0x6c
+ #define RT5640_WND_2				0x6d
+@@ -153,6 +155,7 @@
+ #define RT5640_WND_5				0x70
+ #define RT5640_WND_8				0x73
+ #define RT5640_DIP_SPK_INF			0x75
++#define RT5640_HP_DCC_INT1			0x77
+ #define RT5640_EQ_BW_LOP			0xa0
+ #define RT5640_EQ_GN_LOP			0xa1
+ #define RT5640_EQ_FC_BP1			0xa2
+@@ -1201,6 +1204,14 @@
+ #define RT5640_CP_FQ2_SFT			4
+ #define RT5640_CP_FQ3_MASK			(0x7)
+ #define RT5640_CP_FQ3_SFT			0
++#define RT5640_CP_FQ_1_5_KHZ			0
++#define RT5640_CP_FQ_3_KHZ			1
++#define RT5640_CP_FQ_6_KHZ			2
++#define RT5640_CP_FQ_12_KHZ			3
++#define RT5640_CP_FQ_24_KHZ			4
++#define RT5640_CP_FQ_48_KHZ			5
++#define RT5640_CP_FQ_96_KHZ			6
++#define RT5640_CP_FQ_192_KHZ			7
+ 
+ /* HPOUT charge pump (0x91) */
+ #define RT5640_OSW_L_MASK			(0x1 << 11)
 -- 
-1.7.1
+1.8.1.1.439.g50a6b54
