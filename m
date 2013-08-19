@@ -1,73 +1,69 @@
-From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v5 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Mon, 19 Aug 2013 10:35:43 +0100
-Message-ID: <20130819093543.GF3719@e106331-lin.cambridge.arm.com>
-References: <cover.1376565456.git.b42378@freescale.com>
- <2805432.jMVhHxhr1m@flatron>
- <20130817145316.GT26614@pengutronix.de>
- <8770601.066pCcRnTh@flatron>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: Re: [PATCH v7 2/2] ASoC: fsl: Add S/PDIF machine driver
+Date: Mon, 19 Aug 2013 17:50:43 +0800
+Message-ID: <20130819095042.GA11402@MrMyself>
+References: <cover.1376901081.git.b42378@freescale.com>
+ <e7ceef74714bb4ead624b333ee3969225b4c5cb5.1376901081.git.b42378@freescale.com>
+ <20130819092458.GE3719@e106331-lin.cambridge.arm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe001.messaging.microsoft.com [216.32.180.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83CC026172D
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 11:52:26 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <8770601.066pCcRnTh@flatron>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "mturquette@linaro.org" <mturquette@linaro.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, Pawel Moll <Pawel.Moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "festevam@gmail.com" <festevam@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>, Nicolin Chen <b42378@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "galak@codeaurora.org" <galak@codeaurora.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+In-Reply-To: <20130819092458.GE3719@e106331-lin.cambridge.arm.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "festevam@gmail.com" <festevam@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "timur@tabi.org" <timur@tabi.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "tomasz.figa@gmail.com" <tomasz.figa@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "R65777@freescale.com" <R65777@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 17, 2013 at 04:17:18PM +0100, Tomasz Figa wrote:
-> On Saturday 17 of August 2013 16:53:16 Sascha Hauer wrote:
-> > On Sat, Aug 17, 2013 at 02:28:04PM +0200, Tomasz Figa wrote:
-> > > > > > Also I would make this option required. Use a dummy clock for
-> > > > > > mux
-> > > > > > inputs that are grounded for a specific SoC.
-> > > > > 
-> > > > > Some clocks are not from CCM and we haven't defined in
-> > > > > imx6q-clk.txt,
-> > > > > so in most cases we can't provide a phandle for them, eg:
-> > > > > spdif_ext.
-> > > > > I think it's a bit hard to force it to be 'required'. An
-> > > > > 'optional'
-> > > > > looks more flexible to me and a default one is ensured even if
-> > > > > it's
-> > > > > missing.
-> > > > 
-> > > > <&clks 0> is the dummy clock. This can be used for all input clocks
-> > > > not
-> > > > defined by the SoC.
-> > > 
-> > > Where does this assumption come from? Is it documented anywhere?
-> > 
-> > This is how all i.MX clock bindings currently are. See
-> > Documentation/devicetree/bindings/clock/imx*-clock.txt
-> 
-> OK, thanks.
-> 
-> I guess we need some discussion on dummy clocks vs skipped clocks. I think 
-> we want some consistency on this, don't we?
-> 
-> If we really need a dummy clock, then we might also want a generic way to 
-> specify it.
+Hi,
 
-What do we actually mean by a "dummy clock"? We already have bindings
-for "fixed-clock" and co friends describe relatively simple
-preconfigured clocks.
+On Mon, Aug 19, 2013 at 10:24:58AM +0100, Mark Rutland wrote:
+> Is this used semantically, or is it a completely arbitrary string?  In
+> either case I don't see why the compatible string doesn't give the
+> driver enough to have a sensible value.
+> 
+> I'm confused as to why we need this. The phrase "user-visible" in a
+> device description seems very odd.
 
-If a clock isn't actually wired, we shouldn't describe it at all, or
-we're describing what Linux wants to think rather than what the hardware
-actually is. That can easily be handled with clock-names.
+The string would be in the ALSA device list:
+ALSA device list:
+  #0: imx-spdif
 
-Thanks,
-Mark.
+I think it can be a sort of arbitrary as long as users know which this 
+device exactly is when they catch the name by 'aplay -l' or 'arecord -l'
+
+The phrase "user-visible" is being used in many current docs, I don't 
+dare to change it unless a sage gives me a suggestion.
+
+> > +
+> > +  - spdif-controller : The phandle of the i.MX S/PDIF controller
+> > +
+> > +
+> > +Optional properties:
+> > +
+> > +  - spdif-transmitter : The phandle of the spdif-transmitter dummy codec
+> > +
+> > +  - spdif-receiver : The phandle of the spdif-receiver dummy codec
+> > +
+> > +* Note: At least one of these two properties should be set in the DT binding.
+> 
+> Are all four units (comlpex,controller,transmitter,receiver) really
+> separate blocks?
+
+At least they are separate drivers as I mentioned in the commit comments.
+
+Thank you,
+Nicolin
