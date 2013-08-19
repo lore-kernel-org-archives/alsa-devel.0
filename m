@@ -1,14 +1,17 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 1/3] ALSA: hdspm - Fix default value in
-	SNDRV_HDSPM_IOCTL_GET_LTC
-Date: Mon, 19 Aug 2013 17:20:30 +0200
-Message-ID: <1376925632-5831-2-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1376925632-5831-1-git-send-email-adi@drcomp.erfurt.thur.de>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: [PING!] Re: HDMI audio is not working on my new desktop
+Date: Mon, 19 Aug 2013 21:22:22 +0600
+Message-ID: <CAN_LGv1eGP=Krg_zRXhLhLVPv12dpybKj_fy+r=oS4nSnXRGCg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1376925632-5831-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from mail-qe0-f46.google.com (mail-qe0-f46.google.com
+ [209.85.128.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 836F02650F5
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 17:22:23 +0200 (CEST)
+Received: by mail-qe0-f46.google.com with SMTP id f6so2689019qej.5
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 08:22:22 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,31 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use enum hdspm_ltc_format's fps_30 (corresponds to 4) instead of 30,
-Other case branches return 1, 2 or 3 respectively, so 30 obviously is
-wrong.
+2013/8/14 Alexander E. Patrakov <patrakov@gmail.com>:
+> Hello.
+>
+> I built a new desktop PC based on the Gigabyte H87N-WIFI motherboard.
+> It has one DVI and two HDMI outputs. However, I cannot get any sound
+> over HDMI. The same OS image works perfectly on my laptop that also
+> has an HDMI output.
+>
+> This is not a pulseaudio problem, as I don't get any sound even if I
+> test with this command:
+>
+> pasuspender -- speaker-test -c2 -D hdmi:0,2  # or, for that matter, 0,0 or 0,1
+>
+> Alsa-info.sh has uploaded its output to
+> http://www.alsa-project.org/db/?f=1ad7192a15ff4a70b5ddb2579476dbb98adbd929
+>
+> Please note this error in dmesg, it may be relevant:
+>
+> [    1.803595] hda_codec: invalid CONNECT_LIST verb 5[1]:0
+> [    1.803719] hda_codec: invalid CONNECT_LIST verb 7[1]:0
 
-Since SNDRV_HDSPM_IOCTL_GET_LTC had never been working due to a
-copy&paste error in hdspm.h, this change doesn't break userspace.
+As nobody replied, I have converted this into a formal bug report:
+https://bugzilla.kernel.org/show_bug.cgi?id=60769
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Haswell people, _please_ comment on the bug.
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index ec6335e..e4d76a6 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -6311,7 +6311,7 @@ static int snd_hdspm_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
- 				ltc.format = fps_2997;
- 				break;
- 			default:
--				ltc.format = 30;
-+				ltc.format = fps_30;
- 				break;
- 			}
- 			if (i & HDSPM_TCO1_set_drop_frame_flag) {
 -- 
-1.8.3.2
+Alexander E. Patrakov
