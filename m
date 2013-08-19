@@ -1,17 +1,18 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH] ASoC: rt5640: change widget sequence for
-	depop
-Date: Mon, 19 Aug 2013 11:29:32 -0600
-Message-ID: <521255FC.4000003@wwwdotorg.org>
-References: <1376914682-3606-1-git-send-email-bardliao@realtek.com>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH 1/6] ASoC: omap: simplify
+	platform_get_resource_byname/devm_ioremap_resource
+Date: Mon, 19 Aug 2013 21:02:33 +0300
+Message-ID: <52125DB9.7040405@bitmer.com>
+References: <1376902316-18520-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1376902316-18520-2-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 05F612617A6
- for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 19:29:37 +0200 (CEST)
-In-Reply-To: <1376914682-3606-1-git-send-email-bardliao@realtek.com>
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54FD0264F0D
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 20:03:37 +0200 (CEST)
+In-Reply-To: <1376902316-18520-2-git-send-email-Julia.Lawall@lip6.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,34 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, lgirdwood@gmail.com, broonie@kernel.org, flove@realtek.com
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/19/2013 06:18 AM, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
+Hi
+
+On 08/19/2013 11:51 AM, Julia Lawall wrote:
+> From: Julia Lawall <Julia.Lawall@lip6.fr>
 > 
-> Add mute/unmute control in widget event and modify the power on/off sequence to avoid pop noise.
+> Remove unneeded error handling on the result of a call to
+> platform_get_resource_byname when the value is passed to devm_ioremap_resource.
+> 
+> In the case of omap-dmic.c, the error-handling code of
+> devm_ioremap_resource is also corrected to include releasing the clock.
+> 
+> A simplified version of the semantic patch that makes this change is as
+> follows: (http://coccinelle.lip6.fr/)
+> 
+> // <smpl>
+> @@
+> expression pdev,res,e,e1;
+> expression ret != 0;
+> identifier l;
+> @@
+> 
+>   res = platform_get_resource_byname(...);
+> - if (res == NULL) { ... \(goto l;\|return ret;\) }
+>   e = devm_ioremap_resource(e1, res);
+> // </smpl>
+> 
+> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+> 
+> ---
+>  sound/soc/omap/omap-dmic.c  |    9 +++------
+>  sound/soc/omap/omap-mcpdm.c |    3 ---
+>  2 files changed, 3 insertions(+), 9 deletions(-)
+> 
+To the patch and catch of missing clock release in omap-dmic.c in case
+of failing devm_ioremap_resource:
 
-This version breaks both headphone and speaker output. I see the
-following issues:
-
-1)
-
-After a reboot, if all of "{HP,Speaker} [LR] Playback Switch" are
-on/unmuted, and I start playback, then something sets all those controls
-to off/muted. I suspect this is related to function rt5640_hp_event()
-twiddling the same RT5640_[LR]_MUTE bits that the hp_[lr]_enable_control
-controls twiddle.
-
-2)
-
-If playback is running, and (1) has caused all output to be muted, and I
-then run alsamixer and enable/unmute "HP L Playback Switch", I hear
-sound on both the L and R headphone channels for a very brief time, then
-output switches to the L channel only. Similar happens if I unmute "HP R
-Playback Switch" first. Unmuting both switches does produce stereo sound
-as expected.
-
-I don't know if this also happens for the speaker output, since the
-board is too far away from me to easily tell which speakers are playing.
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
