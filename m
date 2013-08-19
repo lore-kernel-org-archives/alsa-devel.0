@@ -1,16 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH v2] ALSA: hda - Limit internal mic boost for a
-	few more Thinkpad machines
-Date: Mon, 19 Aug 2013 12:22:33 +0200
-Message-ID: <1376907754-4000-1-git-send-email-david.henningsson@canonical.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH v7 2/2] ASoC: fsl: Add S/PDIF machine driver
+Date: Mon, 19 Aug 2013 12:27:28 +0200
+Message-ID: <1376908048.4081.43.camel@pizza.hi.pengutronix.de>
+References: <cover.1376901081.git.b42378@freescale.com>
+ <e7ceef74714bb4ead624b333ee3969225b4c5cb5.1376901081.git.b42378@freescale.com>
+ <20130819092458.GE3719@e106331-lin.cambridge.arm.com>
+ <20130819095042.GA11402@MrMyself>
+ <20130819100143.GH3719@e106331-lin.cambridge.arm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 257122617B8
- for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 12:22:35 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 2AB3E261A0F
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 12:28:34 +0200 (CEST)
+In-Reply-To: <20130819100143.GH3719@e106331-lin.cambridge.arm.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,37 +24,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1213820@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "festevam@gmail.com" <festevam@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, Nicolin Chen <b42378@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "tomasz.figa@gmail.com" <tomasz.figa@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "R65777@freescale.com" <R65777@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-The higher mic boosts (on internal mic) are so noisy they're unusable
-in practice.
+Am Montag, den 19.08.2013, 11:01 +0100 schrieb Mark Rutland:
+> On Mon, Aug 19, 2013 at 10:50:43AM +0100, Nicolin Chen wrote:
+> > Hi,
+> > 
+> > On Mon, Aug 19, 2013 at 10:24:58AM +0100, Mark Rutland wrote:
+> > > Is this used semantically, or is it a completely arbitrary string?  In
+> > > either case I don't see why the compatible string doesn't give the
+> > > driver enough to have a sensible value.
+> > > 
+> > > I'm confused as to why we need this. The phrase "user-visible" in a
+> > > device description seems very odd.
+> > 
+> > The string would be in the ALSA device list:
+> > ALSA device list:
+> >   #0: imx-spdif
+> > 
+> > I think it can be a sort of arbitrary as long as users know which this 
+> > device exactly is when they catch the name by 'aplay -l' or 'arecord -l'
+> > 
+> > The phrase "user-visible" is being used in many current docs, I don't 
+> > dare to change it unless a sage gives me a suggestion.
+> 
+> I can see that there is entrenched usage, but this really seems to be
+> embedding Linux-specific implementation details into the dt. I don't see
+> why the driver cannot select a sensible name, but perhaps I'm missing
+> something.
+> 
+> Mark, is there any reason we need to handle the user-visible name of the
+> device this way?
+> 
+> > 
+> > > > +
+> > > > +  - spdif-controller : The phandle of the i.MX S/PDIF controller
+> > > > +
+> > > > +
+> > > > +Optional properties:
+> > > > +
+> > > > +  - spdif-transmitter : The phandle of the spdif-transmitter dummy codec
+> > > > +
+> > > > +  - spdif-receiver : The phandle of the spdif-receiver dummy codec
+> > > > +
+> > > > +* Note: At least one of these two properties should be set in the DT binding.
+> > > 
+> > > Are all four units (comlpex,controller,transmitter,receiver) really
+> > > separate blocks?
+> > 
+> > At least they are separate drivers as I mentioned in the commit comments.
+> 
+> I'm not sure that the boundary of Linux drivers should necessarily
+> determine the way we carve up the description of IP blocks, though
+> presumably it's a pretty sensible way of carving it up or we wouldn't
+> have done it.
 
-BugLink: https://bugs.launchpad.net/bugs/1213820
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    5 +++++
- 1 file changed, 5 insertions(+)
+The transmitter and receiver can be real external codec devices with
+S/PDIF input or output pads connected to the i.MX S/PDIF. One example
+would be the Analog Devices ADV7612 HDMI receiver, which can output
+audio taken from HDMI input via S/PDIF (just as via I2S).
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d67a48c..00d00b3 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3704,9 +3704,14 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x21fb, "Thinkpad T430s", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2203, "Thinkpad X230 Tablet", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2208, "Thinkpad T431s", ALC269_FIXUP_LENOVO_DOCK),
-+	SND_PCI_QUIRK(0x17aa, 0x220c, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-+	SND_PCI_QUIRK(0x17aa, 0x2212, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-+	SND_PCI_QUIRK(0x17aa, 0x501a, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-+	SND_PCI_QUIRK(0x17aa, 0x5026, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-+	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
- 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
- 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
--- 
-1.7.9.5
+The dummy codec devices are just needed if the S/PDIF pads are directly
+routed to externally accessible connectors.
+
+regards
+Philipp
