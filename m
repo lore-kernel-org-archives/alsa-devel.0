@@ -1,12 +1,13 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH v11 0/7] ASoC: fsl-ssi: ac97-slave support
-Date: Mon, 19 Aug 2013 17:13:33 +0200
-Message-ID: <5212361D.80405@pengutronix.de>
+Date: Mon, 19 Aug 2013 17:13:57 +0200
+Message-ID: <52123635.1080908@pengutronix.de>
 References: <1376924761-4054-1-git-send-email-mpa@pengutronix.de>
+ <5212361D.80405@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8915949580907999662=="
+Content-Type: multipart/mixed; boundary="===============4201585017926705693=="
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1376924761-4054-1-git-send-email-mpa@pengutronix.de>
+In-Reply-To: <5212361D.80405@pengutronix.de>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -21,25 +22,27 @@ Cc: Fabio Estevam <fabio.estevam@freescale.com>, devicetree@vger.kernel.org, als
 List-Id: alsa-devel@alsa-project.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============8915949580907999662==
+--===============4201585017926705693==
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="IW1I0rsuVljoIeWHEWDIbNDtR543SS1I7"
+ boundary="07UvOCx0QtNTS9pPsQUbW4Wt3DT6nBoFe"
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---IW1I0rsuVljoIeWHEWDIbNDtR543SS1I7
+--07UvOCx0QtNTS9pPsQUbW4Wt3DT6nBoFe
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 08/19/2013 05:05 PM, Markus Pargmann wrote:
-> Michael Grzeschik (2):
->       ASoC: fsl-ssi: imx-pcm-fiq bugfix
->       ASoC: fsl: disable ssi irq for imx
+On 08/19/2013 05:13 PM, Marc Kleine-Budde wrote:
+> On 08/19/2013 05:05 PM, Markus Pargmann wrote:
+>> Michael Grzeschik (2):
+>>       ASoC: fsl-ssi: imx-pcm-fiq bugfix
+>>       ASoC: fsl: disable ssi irq for imx
+>>
+>> Steffen Trumtrar (1):
+>>       ASoC: fsl-ssi: add SSIEN errata work around
 >=20
-> Steffen Trumtrar (1):
->       ASoC: fsl-ssi: add SSIEN errata work around
-
-You should add you S-o-b to patches from other develops.
+> You should add you S-o-b to patches from other develops.
+developers
 
 Marc
 --=20
@@ -49,7 +52,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---IW1I0rsuVljoIeWHEWDIbNDtR543SS1I7
+--07UvOCx0QtNTS9pPsQUbW4Wt3DT6nBoFe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -58,15 +61,15 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.14 (GNU/Linux)
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlISNh0ACgkQjTAFq1RaXHM7LACfXNZnxKVM+piOU2H5dn48RmNv
-yNoAoJNmIiF3kMYDRsCQp4+YVq4yyo7O
-=EwQg
+iEYEARECAAYFAlISNjUACgkQjTAFq1RaXHO3MgCfb8M+/3aDsrQLt5x3S/nhaOKc
+B+kAniCrzuOU4VjOh0+WJSGhYqs8qkEB
+=4yPP
 -----END PGP SIGNATURE-----
 
---IW1I0rsuVljoIeWHEWDIbNDtR543SS1I7--
+--07UvOCx0QtNTS9pPsQUbW4Wt3DT6nBoFe--
 
 
---===============8915949580907999662==
+--===============4201585017926705693==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -77,4 +80,4 @@ linux-arm-kernel mailing list
 linux-arm-kernel@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============8915949580907999662==--
+--===============4201585017926705693==--
