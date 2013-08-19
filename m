@@ -1,14 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: ac97: Provide stub DAPM integration
-Date: Mon, 19 Aug 2013 12:18:20 +0100
-Message-ID: <1376911100-16426-1-git-send-email-broonie@kernel.org>
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v7 2/2] ASoC: fsl: Add S/PDIF machine driver
+Date: Mon, 19 Aug 2013 12:31:21 +0100
+Message-ID: <20130819113121.GL3719@e106331-lin.cambridge.arm.com>
+References: <cover.1376901081.git.b42378@freescale.com>
+ <e7ceef74714bb4ead624b333ee3969225b4c5cb5.1376901081.git.b42378@freescale.com>
+ <20130819092458.GE3719@e106331-lin.cambridge.arm.com>
+ <20130819095042.GA11402@MrMyself>
+ <20130819100143.GH3719@e106331-lin.cambridge.arm.com>
+ <20130819105201.GB30073@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AFF5261A9A
- for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 13:18:24 +0200 (CEST)
+Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
+ [217.140.96.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA9B02619E0
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 13:31:52 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130819105201.GB30073@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,51 +27,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "festevam@gmail.com" <festevam@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, Nicolin Chen <b42378@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "tomasz.figa@gmail.com" <tomasz.figa@gmail.com>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "R65777@freescale.com" <R65777@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On Mon, Aug 19, 2013 at 11:52:01AM +0100, Mark Brown wrote:
+> On Mon, Aug 19, 2013 at 11:01:43AM +0100, Mark Rutland wrote:
+> > On Mon, Aug 19, 2013 at 10:50:43AM +0100, Nicolin Chen wrote:
+> 
+> > > The phrase "user-visible" is being used in many current docs, I don't 
+> > > dare to change it unless a sage gives me a suggestion.
+> 
+> > I can see that there is entrenched usage, but this really seems to be
+> > embedding Linux-specific implementation details into the dt. I don't see
+> > why the driver cannot select a sensible name, but perhaps I'm missing
+> > something.
+> 
+> > Mark, is there any reason we need to handle the user-visible name of the
+> > device this way?
+> 
+> This is intended to allow userspace to distinguish between systems that
+> are electrically identical but physically distinct, for example when
+> multiple systems are derived from the same reference design.
 
-Ensure continued operation with DAPM being mandatory.
+I see. Surely if there's some meaning imparted to userspace by the model
+name, there's a contract there that we should document (the set of valid
+model names and what they correspond to)?
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/codecs/ac97.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+I'm not sure I understand why userspace needs to know what the system is
+if we've adequately described how it's wired and what its capabilities
+are. However, I'm not at all familiar with the way we handle audio, so
+please forgive my naivety there :)
 
-diff --git a/sound/soc/codecs/ac97.c b/sound/soc/codecs/ac97.c
-index ec73518..8d9ba4ba 100644
---- a/sound/soc/codecs/ac97.c
-+++ b/sound/soc/codecs/ac97.c
-@@ -23,6 +23,16 @@
- #include <sound/initval.h>
- #include <sound/soc.h>
- 
-+static const struct snd_soc_dapm_widget ac97_widgets[] = {
-+	SND_SOC_DAPM_INPUT("RX"),
-+	SND_SOC_DAPM_OUTPUT("TX"),
-+};
-+
-+static const struct snd_soc_dapm_route ac97_routes[] = {
-+	{ "AC97 Capture", NULL, "RX" },
-+	{ "TX", NULL, "AC97 Playback" },
-+};
-+
- static int ac97_prepare(struct snd_pcm_substream *substream,
- 			struct snd_soc_dai *dai)
- {
-@@ -117,6 +127,11 @@ static struct snd_soc_codec_driver soc_codec_dev_ac97 = {
- 	.probe = 	ac97_soc_probe,
- 	.suspend =	ac97_soc_suspend,
- 	.resume =	ac97_soc_resume,
-+
-+	.dapm_widgets = ac97_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(ac97_widgets),
-+	.dapm_routes = ac97_routes,
-+	.num_dapm_routes = ARRAY_SIZE(ac97_routes),
- };
- 
- static int ac97_probe(struct platform_device *pdev)
--- 
-1.8.4.rc3
+Thanks,
+Mark.
