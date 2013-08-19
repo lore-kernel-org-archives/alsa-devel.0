@@ -1,17 +1,18 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: [PING!] Re: HDMI audio is not working on my new desktop
-Date: Mon, 19 Aug 2013 21:22:22 +0600
-Message-ID: <CAN_LGv1eGP=Krg_zRXhLhLVPv12dpybKj_fy+r=oS4nSnXRGCg@mail.gmail.com>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH v11 0/7] ASoC: fsl-ssi: ac97-slave support
+Date: Mon, 19 Aug 2013 17:29:42 +0200
+Message-ID: <20130819152942.GB24669@s25.your-server.de>
+References: <1376924761-4054-1-git-send-email-mpa@pengutronix.de>
+ <5212361D.80405@pengutronix.de> <52123635.1080908@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qe0-f46.google.com (mail-qe0-f46.google.com
- [209.85.128.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 836F02650F5
- for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 17:22:23 +0200 (CEST)
-Received: by mail-qe0-f46.google.com with SMTP id f6so2689019qej.5
- for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 08:22:22 -0700 (PDT)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 314AB260309
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 17:29:57 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <52123635.1080908@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,34 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-2013/8/14 Alexander E. Patrakov <patrakov@gmail.com>:
-> Hello.
->
-> I built a new desktop PC based on the Gigabyte H87N-WIFI motherboard.
-> It has one DVI and two HDMI outputs. However, I cannot get any sound
-> over HDMI. The same OS image works perfectly on my laptop that also
-> has an HDMI output.
->
-> This is not a pulseaudio problem, as I don't get any sound even if I
-> test with this command:
->
-> pasuspender -- speaker-test -c2 -D hdmi:0,2  # or, for that matter, 0,0 or 0,1
->
-> Alsa-info.sh has uploaded its output to
-> http://www.alsa-project.org/db/?f=1ad7192a15ff4a70b5ddb2579476dbb98adbd929
->
-> Please note this error in dmesg, it may be relevant:
->
-> [    1.803595] hda_codec: invalid CONNECT_LIST verb 5[1]:0
-> [    1.803719] hda_codec: invalid CONNECT_LIST verb 7[1]:0
+On Mon, Aug 19, 2013 at 05:13:57PM +0200, Marc Kleine-Budde wrote:
+> On 08/19/2013 05:13 PM, Marc Kleine-Budde wrote:
+> > On 08/19/2013 05:05 PM, Markus Pargmann wrote:
+> >> Michael Grzeschik (2):
+> >>       ASoC: fsl-ssi: imx-pcm-fiq bugfix
+> >>       ASoC: fsl: disable ssi irq for imx
+> >>
+> >> Steffen Trumtrar (1):
+> >>       ASoC: fsl-ssi: add SSIEN errata work around
+> > 
+> > You should add you S-o-b to patches from other develops.
+> developers
+yes, I forgot that, thanks
 
-As nobody replied, I have converted this into a formal bug report:
-https://bugzilla.kernel.org/show_bug.cgi?id=60769
+Markus
 
-Haswell people, _please_ comment on the bug.
 
 -- 
-Alexander E. Patrakov
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
