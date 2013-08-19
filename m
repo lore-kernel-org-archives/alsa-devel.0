@@ -1,95 +1,162 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 1/6] ASoC: omap: simplify
-	platform_get_resource_byname/devm_ioremap_resource
-Date: Mon, 19 Aug 2013 10:51:51 +0200
-Message-ID: <1376902316-18520-2-git-send-email-Julia.Lawall@lip6.fr>
-References: <1376902316-18520-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v7 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
+Date: Mon, 19 Aug 2013 10:18:09 +0100
+Message-ID: <20130819091809.GD3719@e106331-lin.cambridge.arm.com>
+References: <cover.1376901081.git.b42378@freescale.com>
+ <43416f3617951161b6e779277b4719438f844e49.1376901081.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2-relais-roc.national.inria.fr
- (mail2-relais-roc.national.inria.fr [192.134.164.83])
- by alsa0.perex.cz (Postfix) with ESMTP id D424626172D
- for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 10:51:58 +0200 (CEST)
-In-Reply-To: <1376902316-18520-1-git-send-email-Julia.Lawall@lip6.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Content-Disposition: inline
+In-Reply-To: <43416f3617951161b6e779277b4719438f844e49.1376901081.git.b42378@freescale.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Nicolin Chen <b42378@freescale.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "festevam@gmail.com" <festevam@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "timur@tabi.org" <timur@tabi.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "tomasz.figa@gmail.com" <tomasz.figa@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "R65777@freescale.com" <R65777@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <Julia.Lawall@lip6.fr>
+On Mon, Aug 19, 2013 at 09:35:21AM +0100, Nicolin Chen wrote:
+> This patch implements a device-tree-only CPU DAI driver for Freescale
+> S/PDIF controller that supports stereo playback and record feature.
+> 
+> Signed-off-by: Nicolin Chen <b42378@freescale.com>
+> ---
+>  .../devicetree/bindings/sound/fsl,spdif.txt        |   56 +
+>  sound/soc/fsl/Kconfig                              |    3 +
+>  sound/soc/fsl/Makefile                             |    2 +
+>  sound/soc/fsl/fsl_spdif.c                          | 1277 ++++++++++++++++++++
+>  sound/soc/fsl/fsl_spdif.h                          |  224 ++++
+>  5 files changed, 1562 insertions(+), 0 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/fsl,spdif.txt
+>  create mode 100644 sound/soc/fsl/fsl_spdif.c
+>  create mode 100644 sound/soc/fsl/fsl_spdif.h
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.txt b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
+> new file mode 100644
+> index 0000000..e9caf1c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
+> @@ -0,0 +1,56 @@
+> +Freescale Sony/Philips Digital Interface Format (S/PDIF) Controller
+> +
+> +The Freescale S/PDIF audio block is a stereo transceiver that allows the
+> +processor to receive and transmit digital audio via an coaxial cable or
+> +a fibre cable.
+> +
+> +Required properties:
+> +
+> +  - compatible : Compatible list, contains "fsl,<chip>-spdif".
 
-Remove unneeded error handling on the result of a call to
-platform_get_resource_byname when the value is passed to devm_ioremap_resource.
+What are valid values for <chip>? The binding should mention this. There
+are bindings that don't, but they need to be fixed. Undocumented ABIs
+are a bad idea.
 
-In the case of omap-dmic.c, the error-handling code of
-devm_ioremap_resource is also corrected to include releasing the clock.
+> +
+> +  - reg : Offset and length of the register set for the device.
+> +
+> +  - interrupts : Contains spdif interrupt.
 
-A simplified version of the semantic patch that makes this change is as
-follows: (http://coccinelle.lip6.fr/)
+Is that the only interrupt the device generates?
 
-// <smpl>
-@@
-expression pdev,res,e,e1;
-expression ret != 0;
-identifier l;
-@@
+> +
+> +  - dmas : Generic dma devicetree binding as described in
+> +  Documentation/devicetree/bindings/dma/dma.txt.
+> +
+> +  - dma-names : Two dmas have to be defined, "tx" and "rx".
+> +
+> +  - clocks : Contains an entry for each entry in clock-names.
+> +
+> +  - clock-names : Includes the following entries:
+> +       name            description
 
-  res = platform_get_resource_byname(...);
-- if (res == NULL) { ... \(goto l;\|return ret;\) }
-  e = devm_ioremap_resource(e1, res);
-// </smpl>
+I don't think you need this line, it's obvious enough without it.
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+> +       "core"          The core clock of spdif controller
+> +       "rxtx<0-7>"     Clock source list for tx and rx clock.
+> +                       This clock list should be identical to
+> +                       the source list connecting to the spdif
+> +                       clock mux in "SPDIF Transceiver Clock
+> +                       Diagram" of SoC reference manual. It
+> +                       can also be referred to TxClk_Source
+> +                       bit of register SPDIF_STC.
 
----
- sound/soc/omap/omap-dmic.c  |    9 +++------
- sound/soc/omap/omap-mcpdm.c |    3 ---
- 2 files changed, 3 insertions(+), 9 deletions(-)
+Could you elaborate on the last sentence? I'm not sure exactly what you
+meant.
 
-diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
-index 4db1f8e..12e566b 100644
---- a/sound/soc/omap/omap-dmic.c
-+++ b/sound/soc/omap/omap-dmic.c
-@@ -480,15 +480,12 @@ static int asoc_dmic_probe(struct platform_device *pdev)
- 	dmic->dma_data.filter_data = "up_link";
- 
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
--	if (!res) {
--		dev_err(dmic->dev, "invalid memory resource\n");
--		ret = -ENODEV;
-+	dmic->io_base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(dmic->io_base)) {
-+		ret = PTR_ERR(dmic->io_base);
- 		goto err_put_clk;
- 	}
- 
--	dmic->io_base = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(dmic->io_base))
--		return PTR_ERR(dmic->io_base);
- 
- 	ret = snd_soc_register_component(&pdev->dev, &omap_dmic_component,
- 					 &omap_dmic_dai, 1);
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index a49dc52..90d2a7c 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -480,9 +480,6 @@ static int asoc_mcpdm_probe(struct platform_device *pdev)
- 	mcpdm->dma_data[1].filter_data = "up_link";
- 
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
--	if (res == NULL)
--		return -ENOMEM;
--
- 	mcpdm->io_base = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(mcpdm->io_base))
- 		return PTR_ERR(mcpdm->io_base);
+> +
+> +Example:
+> +
+> +spdif: spdif@02004000 {
+> +       compatible = "fsl,imx6q-spdif",
+> +               "fsl,imx35-spdif";
+
+Is "fsl,imx35-spdif" necessary in the list, or is it not the case all
+"fsl,<chip>-spdif" variants are compatible with it?
+
+That should be mentioned along with the list of valid compatible
+strings.
+
+> +       reg = <0x02004000 0x4000>;
+> +       interrupts = <0 52 0x04>;
+> +       dmas = <&sdma 14 18 0>,
+> +              <&sdma 15 18 0>;
+> +       dma-names = "rx", "tx";
+> +
+> +       clocks = <&clks 197>, <&clks 3>,
+> +              <&clks 197>, <&clks 107>,
+> +              <&clks 0>, <&clks 118>,
+> +              <&clks 62>, <&clks 139>,
+> +              <&clks 0>;
+> +       clock-names = "core", "rxtx0",
+> +               "rxtx1", "rxtx2",
+> +               "rxtx3", "rxtx4",
+> +               "rxtx5", "rxtx6",
+> +               "rxtx7";
+> +
+> +       status = "okay";
+> +};
+
+[...]
+
+> +static int spdif_clk_set_rate(struct clk *clk, unsigned long rate)
+> +{
+> +       unsigned long rate_actual;
+> +
+> +       rate_actual = clk_round_rate(clk, rate);
+> +       clk_set_rate(clk, rate_actual);
+> +
+> +       return 0;
+> +}
+
+Can't clk_set_rate fail?
+
+[...]
+
+> +       /* Select clock source for rx/tx clock */
+> +       spdif_priv->rxclk = devm_clk_get(&pdev->dev, "rxtx1");
+> +       if (IS_ERR(spdif_priv->rxclk)) {
+> +               dev_err(&pdev->dev, "no rxtx1 property in devicetree\n");
+
+Saying "no rxtx1 clock in devicetree" would be clearer.
+
+[...]
+
+> +static const struct of_device_id fsl_spdif_dt_ids[] = {
+> +       { .compatible = "fsl,imx35-spdif", },
+> +       {}
+> +};
+
+So "fsl,imx35-spdif" *must* be in the compatible list. The binding
+should mention this.
+
+Thanks,
+Mark.
