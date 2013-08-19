@@ -1,21 +1,18 @@
-From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v7 2/2] ASoC: fsl: Add S/PDIF machine driver
-Date: Mon, 19 Aug 2013 11:01:43 +0100
-Message-ID: <20130819100143.GH3719@e106331-lin.cambridge.arm.com>
-References: <cover.1376901081.git.b42378@freescale.com>
- <e7ceef74714bb4ead624b333ee3969225b4c5cb5.1376901081.git.b42378@freescale.com>
- <20130819092458.GE3719@e106331-lin.cambridge.arm.com>
- <20130819095042.GA11402@MrMyself>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH RFC 7/9] ALSA: usb-audio: conditional
+ interface altsetting
+Date: Mon, 19 Aug 2013 12:08:38 +0200
+Message-ID: <5211EEA6.6080809@ladisch.de>
+References: <1376857363-1116-1-git-send-email-eldad@fogrefinery.com>
+ <1376857363-1116-8-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
- [217.140.96.50])
- by alsa0.perex.cz (Postfix) with ESMTP id AFD602618EE
- for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 12:02:11 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130819095042.GA11402@MrMyself>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 32A442617B8
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 12:08:43 +0200 (CEST)
+In-Reply-To: <1376857363-1116-8-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,63 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>, "broonie@kernel.org" <broonie@kernel.org>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "festevam@gmail.com" <festevam@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "timur@tabi.org" <timur@tabi.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "tomasz.figa@gmail.com" <tomasz.figa@gmail.com>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "R65777@freescale.com" <R65777@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: Eldad Zack <eldad@fogrefinery.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 19, 2013 at 10:50:43AM +0100, Nicolin Chen wrote:
-> Hi,
-> 
-> On Mon, Aug 19, 2013 at 10:24:58AM +0100, Mark Rutland wrote:
-> > Is this used semantically, or is it a completely arbitrary string?  In
-> > either case I don't see why the compatible string doesn't give the
-> > driver enough to have a sensible value.
-> > 
-> > I'm confused as to why we need this. The phrase "user-visible" in a
-> > device description seems very odd.
-> 
-> The string would be in the ALSA device list:
-> ALSA device list:
->   #0: imx-spdif
-> 
-> I think it can be a sort of arbitrary as long as users know which this 
-> device exactly is when they catch the name by 'aplay -l' or 'arecord -l'
-> 
-> The phrase "user-visible" is being used in many current docs, I don't 
-> dare to change it unless a sage gives me a suggestion.
+Eldad Zack wrote:
+> On some devices, if the endpoint for the other direction is in use,
+> setting one interface will shutdown the other (in use) endpoint.
 
-I can see that there is entrenched usage, but this really seems to be
-embedding Linux-specific implementation details into the dt. I don't see
-why the driver cannot select a sensible name, but perhaps I'm missing
-something.
+There are (non-UAC) devices where both endpoints are in the same
+interface.
 
-Mark, is there any reason we need to handle the user-visible name of the
-device this way?
+> This patch needs revising. It adds a get_interface function, which
+> should not be neccesary (possibly unreliable on some devices?).
 
-> 
-> > > +
-> > > +  - spdif-controller : The phandle of the i.MX S/PDIF controller
-> > > +
-> > > +
-> > > +Optional properties:
-> > > +
-> > > +  - spdif-transmitter : The phandle of the spdif-transmitter dummy codec
-> > > +
-> > > +  - spdif-receiver : The phandle of the spdif-receiver dummy codec
-> > > +
-> > > +* Note: At least one of these two properties should be set in the DT binding.
-> > 
-> > Are all four units (comlpex,controller,transmitter,receiver) really
-> > separate blocks?
-> 
-> At least they are separate drivers as I mentioned in the commit comments.
+struct usb_interface has cur_altsetting.
 
-I'm not sure that the boundary of Linux drivers should necessarily
-determine the way we carve up the description of IP blocks, though
-presumably it's a pretty sensible way of carving it up or we wouldn't
-have done it.
 
-Is there any public documentation on the i.MX S/PDIF hardware block(s)?
-
-Thanks,
-Mark.
+Regards,
+Clemens
