@@ -1,23 +1,16 @@
-From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v7 2/2] ASoC: fsl: Add S/PDIF machine driver
-Date: Mon, 19 Aug 2013 12:31:21 +0100
-Message-ID: <20130819113121.GL3719@e106331-lin.cambridge.arm.com>
-References: <cover.1376901081.git.b42378@freescale.com>
- <e7ceef74714bb4ead624b333ee3969225b4c5cb5.1376901081.git.b42378@freescale.com>
- <20130819092458.GE3719@e106331-lin.cambridge.arm.com>
- <20130819095042.GA11402@MrMyself>
- <20130819100143.GH3719@e106331-lin.cambridge.arm.com>
- <20130819105201.GB30073@sirena.org.uk>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Try to allow haswell HDMI audio
+	even without powerwell
+Date: Mon, 19 Aug 2013 13:32:30 +0200
+Message-ID: <1376911950-4386-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
- [217.140.96.50])
- by alsa0.perex.cz (Postfix) with ESMTP id CA9B02619E0
- for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 13:31:52 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130819105201.GB30073@sirena.org.uk>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4551E2619E0
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2013 13:33:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,37 +20,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "festevam@gmail.com" <festevam@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, Nicolin Chen <b42378@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "tomasz.figa@gmail.com" <tomasz.figa@gmail.com>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "R65777@freescale.com" <R65777@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: tiwai@suse.de, alsa-devel@alsa-project.org, mengdong.lin@intel.com, xingchao.wang@intel.com
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 19, 2013 at 11:52:01AM +0100, Mark Brown wrote:
-> On Mon, Aug 19, 2013 at 11:01:43AM +0100, Mark Rutland wrote:
-> > On Mon, Aug 19, 2013 at 10:50:43AM +0100, Nicolin Chen wrote:
-> 
-> > > The phrase "user-visible" is being used in many current docs, I don't 
-> > > dare to change it unless a sage gives me a suggestion.
-> 
-> > I can see that there is entrenched usage, but this really seems to be
-> > embedding Linux-specific implementation details into the dt. I don't see
-> > why the driver cannot select a sensible name, but perhaps I'm missing
-> > something.
-> 
-> > Mark, is there any reason we need to handle the user-visible name of the
-> > device this way?
-> 
-> This is intended to allow userspace to distinguish between systems that
-> are electrically identical but physically distinct, for example when
-> multiple systems are derived from the same reference design.
+If compiled without CONFIG_SND_HDA_I915, the audio driver cannot
+request power well. However, if the power well is on for other
+reasons, maybe audio can still work. Therefore, do not skip the
+card completely if compiled without CONFIG_SND_HDA_I915.
 
-I see. Surely if there's some meaning imparted to userspace by the model
-name, there's a contract there that we should document (the set of valid
-model names and what they correspond to)?
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_intel.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-I'm not sure I understand why userspace needs to know what the system is
-if we've adequately described how it's wired and what its capabilities
-are. However, I'm not at all familiar with the way we handle audio, so
-please forgive my naivety there :)
+I'm going to apply this on my local DKMS tree, it's important for our backports
+as we combine different versions of the kernel with backports for haswell etc.
+I'm not sure if this is beneficial to have on 3.11+ kernels as well, but I guess
+it could be. At least it shouldn't harm.
 
-Thanks,
-Mark.
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 7f9e406..c6c9829 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -3855,11 +3855,13 @@ static int azx_probe_continue(struct azx *chip)
+ 
+ 	/* Request power well for Haswell HDA controller and codec */
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
++#ifdef CONFIG_SND_HDA_I915
+ 		err = hda_i915_init();
+ 		if (err < 0) {
+ 			snd_printk(KERN_ERR SFX "Error request power-well from i915\n");
+ 			goto out_free;
+ 		}
++#endif
+ 		hda_display_power(true);
+ 	}
+ 
+-- 
+1.7.9.5
