@@ -1,60 +1,91 @@
 From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH v8 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Tue, 20 Aug 2013 09:49:40 -0600
-Message-ID: <52139014.6000504@wwwdotorg.org>
-References: <cover.1376912873.git.b42378@freescale.com>
- <a5b34243c0323e7692fab6a52a7adf4e3e8a5844.1376912873.git.b42378@freescale.com>
- <52128FBE.4080103@wwwdotorg.org> <20130820022858.GB13169@MrMyself>
+Subject: Re: [PATCH] ASoC: rt5640: change widget sequence for
+	depop
+Date: Tue, 20 Aug 2013 10:15:22 -0600
+Message-ID: <5213961A.4070604@wwwdotorg.org>
+References: <1376914682-3606-1-git-send-email-bardliao@realtek.com>
+ <521255FC.4000003@wwwdotorg.org>
+ <1121E117AD4ECE49880A389A396215BB935C7406C9@rtitmbs7.realtek.com.tw>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20130820022858.GB13169@MrMyself>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Nicolin Chen <b42378@freescale.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, Pawel Moll <pawel.moll@arm.com>, festevam@gmail.com, s.hauer@pengutronix.de, Kumar Gala <galak@codeaurora.org>, timur@tabi.org, rob.herring@calxeda.com, tomasz.figa@gmail.com, broonie@kernel.org, p.zabel@pengutronix.de, R65777@freescale.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8702261ADA
+ for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2013 18:15:27 +0200 (CEST)
+In-Reply-To: <1121E117AD4ECE49880A389A396215BB935C7406C9@rtitmbs7.realtek.com.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "swarren@nvidia.com" <swarren@nvidia.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/19/2013 08:28 PM, Nicolin Chen wrote:
-> On Mon, Aug 19, 2013 at 03:35:58PM -0600, Stephen Warren wrote:
->>> +	"core"		The core clock of spdif controller
->>> +	"rxtx<0-7>"	Clock source list for tx and rx clock.
->>> +			This clock list should be identical to
->>> +			the source list connecting to the spdif
->>> +			clock mux in "SPDIF Transceiver Clock
->>> +			Diagram" of SoC reference manual. It
->>> +			can also be referred to TxClk_Source
->>> +			bit of register SPDIF_STC.
+On 08/19/2013 08:36 PM, Bard Liao wrote:
+>> -----Original Message-----
+>> From: Stephen Warren [mailto:swarren@wwwdotorg.org]
+>> Sent: Tuesday, August 20, 2013 1:30 AM
+>> To: Bard Liao
+>> Cc: broonie@kernel.org; lgirdwood@gmail.com; alsa-devel@alsa-project.org;
+>> Flove; Oder Chiou; swarren@nvidia.com
+>> Subject: Re: [PATCH] ASoC: rt5640: change widget sequence for depop
 >>
->> So, the HW block has 1 clock input, yet there's a mux somewhere else in
->> the SoC which has 8 inputs?
+>> On 08/19/2013 06:18 AM, bardliao@realtek.com wrote:
+>>> From: Bard Liao <bardliao@realtek.com>
+>>>
+>>> Add mute/unmute control in widget event and modify the power on/off
+>> sequence to avoid pop noise.
 >>
->> If so, I'm not completely sure it's correct to reference anything other
->> than the "core" clock in this binding. I think the other clocks would be
->> more suitably represented in the system-level "sound card" binding that
->> I guess patch 2/2 (which I haven't read yet) adds, since I assume those
->> clock are more to do with system-level clock tree setup decisions, and
->> might not even exist in some other SoC that included this IP block.
+>> This version breaks both headphone and speaker output. I see the following
+>> issues:
 >>
->> What do others think, assuming I'm correct about my HW design assumptions?
+>> 1)
+>>
+>> After a reboot, if all of "{HP,Speaker} [LR] Playback Switch" are on/unmuted,
+>> and I start playback, then something sets all those controls to off/muted. I
+>> suspect this is related to function rt5640_hp_event() twiddling the same
+>> RT5640_[LR]_MUTE bits that the hp_[lr]_enable_control controls twiddle.
+>>
+>> 2)
+>>
+>> If playback is running, and (1) has caused all output to be muted, and I then
+>> run alsamixer and enable/unmute "HP L Playback Switch", I hear sound on
+>> both the L and R headphone channels for a very brief time, then output
+>> switches to the L channel only. Similar happens if I unmute "HP R Playback
+>> Switch" first. Unmuting both switches does produce stereo sound as expected.
+>>
+>> I don't know if this also happens for the speaker output, since the board is too
+>> far away from me to easily tell which speakers are playing.
 > 
-> The core clock is being only needed when accessing registers of this IP.
-> Thus, in the driver, I let regmap handle it.
+> I think you didn't apply Lars-Peter's patch as below.
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -229,6 +229,8 @@ static int dapm_kcontrol_data_alloc(struct
+>   			template.id = snd_soc_dapm_kcontrol;
+>   			template.name = kcontrol->id.name;
 > 
-> While the other 8 clocks are actual reference clocks for Tx. Tx clock needs
-> to select one of them that can easily derive a child clock matching the tx
-> sample rate. This is essential for the IP, so I don't think it's nicer to 
-> put into machine driver.
+> +			data->value = template.on_val;
+> +
+>   			data->widget = snd_soc_dapm_new_control(widget->dapm,
+>   				&template);
+>   			if (!data->widget) {
+> 
+> It should be able to solve this issue.
+> If I remove this patch I can reproduce the issue.
+> Sorry for not informing you about that.
 
-So just to be clear, the S/PDIF IP block truly has 8 rxtx clock input
-signals, and the mux between them is internal to the S/PDIF block? If
-so, then this aspect of the binding is fine.
+As far as I can tell, Lars-Peter hasn't actually sent such a patch to
+the list; he simply mentioned this change inline in the middle of a
+thread following an earlier version of this patch.
+
+Lars-Peter, are you planning on sending the change above as a patch for
+Mark to apply?
+
+With that patch also applied, symptom (1) I mentioned above is indeed
+fixed. However, symptom is still observed.
