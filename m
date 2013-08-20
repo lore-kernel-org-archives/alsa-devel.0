@@ -1,68 +1,74 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH v7 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Tue, 20 Aug 2013 10:28:34 -0600
-Message-ID: <52139932.2050402@wwwdotorg.org>
-References: <cover.1376901081.git.b42378@freescale.com>
- <43416f3617951161b6e779277b4719438f844e49.1376901081.git.b42378@freescale.com>
- <20130819091809.GD3719@e106331-lin.cambridge.arm.com>
- <20130819093423.GB10950@MrMyself>
- <20130819095433.GG3719@e106331-lin.cambridge.arm.com>
- <20130820051947.GB29114@S2101-09.ap.freescale.net>
+From: Nicole Otsuka <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH v9 2/2] ASoC: fsl: Add S/PDIF machine driver
+Date: Wed, 21 Aug 2013 00:54:55 +0800
+Message-ID: <CAGoOwPQ_7F1-3AetKBF35pwO_-LNY6yUtx_r8Mn+HZia_WqyoA@mail.gmail.com>
+References: <cover.1376972170.git.b42378@freescale.com>
+ <ede222d17047e863da34a78069ceead2668bd5d2.1376972170.git.b42378@freescale.com>
+ <52139680.1010800@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20130820051947.GB29114@S2101-09.ap.freescale.net>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "festevam@gmail.com" <festevam@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, Nicolin Chen <b42378@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "tomasz.figa@gmail.com" <tomasz.figa@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "R65777@freescale.com" <R65777@freescale.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f46.google.com (mail-bk0-f46.google.com
+ [209.85.214.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8A022651A9
+ for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2013 18:54:55 +0200 (CEST)
+Received: by mail-bk0-f46.google.com with SMTP id 6so249151bkj.5
+ for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2013 09:54:55 -0700 (PDT)
+In-Reply-To: <52139680.1010800@wwwdotorg.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, linuxppc-dev@lists.ozlabs.org, s.hauer@pengutronix.de, Nicolin Chen <b42378@freescale.com>, timur@tabi.org, rob.herring@calxeda.com, tomasz.figa@gmail.com, broonie@kernel.org, p.zabel@pengutronix.de, R65777@freescale.com, shawn.guo@linaro.org, festevam@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 08/19/2013 11:19 PM, Shawn Guo wrote:
-> On Mon, Aug 19, 2013 at 10:54:33AM +0100, Mark Rutland wrote:
->>> I guess it's better to drop the 'imx6q-spdif' here?
->>
->> That depends:
->>
->> * If the two IP blocks are identical, only the "imx35-spdif" name is
->>   necessary, and we can forget about "fsl,imx6q-spdif".
->>
->> * If "fsl,imx6q-spdif" is a strict superset of "fsl,imx35-spdif", having
->>   both names documented and in a compatible list for a "fsl,imx6q-spdif"
->>   device makes sense.
-> 
-> Practically, I found it's very useful to have "fsl,<soc>-<ip>" in the
-> device compatible property in <soc>.dtsi, even when device driver does
-> not match it right now.  For this example, I still prefer to have the
-> following line for spdif device in imx6q.dtsi.
-> 
-> 	compatible = "fsl,imx6q-spdif", "fsl,imx35-spdif";
-> 
-> The reason for that is we usually do not see all the differences of an
-> IP block from one SoC to another when we firstly define the bindings
-> for the device by looking at hardware reference manual.  Some
-> programming model differences are only identified when we're actually
-> programming.  That said, if some day we find there is difference between
-> imx6q-spdif and imx35-spdif to be handled when we add something new to
-> the driver, we only need to add "fsl,imx6q-spdif" as a new compatible
-> into device driver and bindings document.  The existing device tree
-> would need no update to work with the new kernel driver.
+Hi Stephen,
 
-Yes, we should definitely include the specific SoC model in the
-compatible property even in the case where we've done exhaustive
-research and validated that the two IP blocks are indeed 100% identical.
+I have a whole changelist in the cover letter (PATCH 0/2). Please take a
+look at it.
 
-This enables us to retro-actively enable and bug workarounds or quirks
-which are required for one SoC but not the other. If the compatible
-value is already there in DT, we just need a code-change. If the
-compatible value isn't already there in DT, we need to change the DT as
-well, which means only new DTs will work correctly with new kernels.
+And about the codec dummy things.. I do that only because the codec
+driver's doc say so.
+
+Thank you,
+Nicolin
+
+
+On Wed, Aug 21, 2013 at 12:17 AM, Stephen Warren <swarren@wwwdotorg.org>wrote:
+
+> On 08/19/2013 10:32 PM, Nicolin Chen wrote:
+> > This patch implements a device-tree-only machine driver for Freescale
+> > i.MX series Soc. It works with spdif_transmitter/spdif_receiver and
+> > fsl_spdif.c drivers.
+> >
+> > Signed-off-by: Nicolin Chen <b42378@freescale.com>
+> > ---
+> >  .../devicetree/bindings/sound/imx-audio-spdif.txt  |   29 +++++
+>
+> What changed between v8 and v9?
+>
+> > diff --git a/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+> b/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+>
+> > +Optional properties:
+> > +
+> > +  - spdif-transmitter : The phandle of the spdif-transmitter dummy codec
+> > +
+> > +  - spdif-receiver : The phandle of the spdif-receiver dummy codec
+> > +
+> > +* Note: At least one of these two properties should be set in the DT
+> binding.
+>
+> I still don't think "dummy CODEC" is an appropriate thing to have in DT.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
