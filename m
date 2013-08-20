@@ -1,20 +1,19 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH v8 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Tue, 20 Aug 2013 10:21:35 +0800
-Message-ID: <20130820022134.GA13169@MrMyself>
-References: <cover.1376912873.git.b42378@freescale.com>
- <a5b34243c0323e7692fab6a52a7adf4e3e8a5844.1376912873.git.b42378@freescale.com>
- <20130819123449.GE31036@pengutronix.de>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5640: change widget sequence for
+	depop
+Date: Tue, 20 Aug 2013 10:36:01 +0800
+Message-ID: <1121E117AD4ECE49880A389A396215BB935C7406C9@rtitmbs7.realtek.com.tw>
+References: <1376914682-3606-1-git-send-email-bardliao@realtek.com>
+ <521255FC.4000003@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe002.messaging.microsoft.com [207.46.163.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 31B34265174
- for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2013 04:32:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130819123449.GE31036@pengutronix.de>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22BFA265175
+ for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2013 04:36:06 +0200 (CEST)
+In-Reply-To: <521255FC.4000003@wwwdotorg.org>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,160 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, swarren@wwwdotorg.org, festevam@gmail.com, timur@tabi.org, rob.herring@calxeda.com, tomasz.figa@gmail.com, broonie@kernel.org, p.zabel@pengutronix.de, R65777@freescale.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thank you Sascha, I'll revise them all in v9
+> -----Original Message-----
+> From: Stephen Warren [mailto:swarren@wwwdotorg.org]
+> Sent: Tuesday, August 20, 2013 1:30 AM
+> To: Bard Liao
+> Cc: broonie@kernel.org; lgirdwood@gmail.com; alsa-devel@alsa-project.org;
+> Flove; Oder Chiou; swarren@nvidia.com
+> Subject: Re: [PATCH] ASoC: rt5640: change widget sequence for depop
+> 
+> On 08/19/2013 06:18 AM, bardliao@realtek.com wrote:
+> > From: Bard Liao <bardliao@realtek.com>
+> >
+> > Add mute/unmute control in widget event and modify the power on/off
+> sequence to avoid pop noise.
+> 
+> This version breaks both headphone and speaker output. I see the following
+> issues:
+> 
+> 1)
+> 
+> After a reboot, if all of "{HP,Speaker} [LR] Playback Switch" are on/unmuted,
+> and I start playback, then something sets all those controls to off/muted. I
+> suspect this is related to function rt5640_hp_event() twiddling the same
+> RT5640_[LR]_MUTE bits that the hp_[lr]_enable_control controls twiddle.
+> 
+> 2)
+> 
+> If playback is running, and (1) has caused all output to be muted, and I then
+> run alsamixer and enable/unmute "HP L Playback Switch", I hear sound on
+> both the L and R headphone channels for a very brief time, then output
+> switches to the L channel only. Similar happens if I unmute "HP R Playback
+> Switch" first. Unmuting both switches does produce stereo sound as expected.
+> 
+> I don't know if this also happens for the speaker output, since the board is too
+> far away from me to easily tell which speakers are playing.
 
-On Mon, Aug 19, 2013 at 02:34:49PM +0200, Sascha Hauer wrote:
-> Hi Nicolas,
+I think you didn't apply Lars-Peter's patch as below.
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -229,6 +229,8 @@ static int dapm_kcontrol_data_alloc(struct
+  			template.id = snd_soc_dapm_kcontrol;
+  			template.name = kcontrol->id.name;
+
++			data->value = template.on_val;
++
+  			data->widget = snd_soc_dapm_new_control(widget->dapm,
+  				&template);
+  			if (!data->widget) {
+
+It should be able to solve this issue.
+If I remove this patch I can reproduce the issue.
+Sorry for not informing you about that.
+
 > 
-> Some misc other comments inline.
-> 
-> On Mon, Aug 19, 2013 at 08:08:48PM +0800, Nicolin Chen wrote:
-> > This patch implements a device-tree-only CPU DAI driver for Freescale
-> > +
-> > +struct fsl_spdif_priv {
-> > +	struct spdif_mixer_control fsl_spdif_control;
-> > +	struct snd_soc_dai_driver cpu_dai_drv;
-> > +	struct platform_device *pdev;
-> > +	struct regmap *regmap;
-> > +	atomic_t dpll_locked;
-> 
-> You don't need an atomic_t to track a bool variable. Use a plain bool or
-> int instead.
-> 
-> > +	u8 txclk_div[SPDIF_TXRATE_MAX];
-> > +	u8 txclk_src[SPDIF_TXRATE_MAX];
-> > +	u8 rxclk_src;
-> > +	struct clk *txclk[SPDIF_TXRATE_MAX];
-> > +	struct clk *rxclk;
-> > +	struct snd_dmaengine_dai_dma_data dma_params_tx;
-> > +	struct snd_dmaengine_dai_dma_data dma_params_rx;
-> > +
-> > +	/* The name space will be allocated dynamically */
-> > +	char name[0];
-> > +};
-> > +
-> > +
-> > +#ifdef DEBUG
-> > +static void dumpregs(struct fsl_spdif_priv *spdif_priv)
-> > +{
-> > +	struct regmap *regmap = spdif_priv->regmap;
-> > +	struct platform_device *pdev = spdif_priv->pdev;
-> > +	u32 val, i;
-> > +	int ret;
-> > +
-> > +	/* Valid address set of SPDIF is {[0x0-0x38], 0x44, 0x50} */
-> > +	for (i = 0 ; i <= REG_SPDIF_STC; i += 4) {
-> > +		ret = regmap_read(regmap, REG_SPDIF_SCR + i, &val);
-> > +		if (!ret)
-> > +			dev_dbg(&pdev->dev, "REG 0x%02x = 0x%06x\n", i, val);
-> > +	}
-> > +}
-> > +#else
-> > +static void dumpregs(struct fsl_spdif_priv *spdif_priv) {}
-> > +#endif
-> 
-> Is this needed? regmap provides a register dump in debugfs.
-> 
-> > +
-> > +static int spdif_clk_set_rate(struct clk *clk, unsigned long rate)
-> > +{
-> > +	unsigned long rate_actual;
-> > +
-> > +	rate_actual = clk_round_rate(clk, rate);
-> > +	return clk_set_rate(clk, rate_actual);
-> > +}
-> 
-> clk_round_rate returns the rate which clk_set_rate would set if called
-> with the same rate. The clk_round_rate() is unnecessary.
-> 
-> > +
-> > +	dev_dbg(&pdev->dev, "expected clock rate = %d\n",
-> > +			(int)(64 * sample_rate * div));
-> > +	dev_dbg(&pdev->dev, "acutal clock rate = %d\n",
-> > +			(int)clk_get_rate(spdif_priv->txclk[rate]));
-> 
-> s/acutal/actual/
-> 
-> Also please use %ld instead of casting the unsigned long to int.
-> 
-> > +
-> > +	dev_dbg(&pdev->dev, "FreqMeas: %d\n", (int)freqmeas);
-> > +	dev_dbg(&pdev->dev, "BusclkFreq: %d\n", (int)busclk_freq);
-> > +	dev_dbg(&pdev->dev, "RxRate: %d\n", (int)tmpval64);
-> 
-> Get rid of the casts
-> 
-> > +
-> > +	spdif_priv = devm_kzalloc(&pdev->dev,
-> > +			sizeof(struct fsl_spdif_priv) + strlen(np->name) + 1, GFP_KERNEL);
-> > +	if (!spdif_priv) {
-> > +		dev_err(&pdev->dev, "could not allocate DAI object\n");
-> 
-> Please drop this message. You'll never see it.
-> 
-> > +
-> > +	for (i = 0; i < SPDIF_TXRATE_MAX; i++) {
-> > +		ret = fsl_spdif_probe_txclk(spdif_priv, i);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> > +
-> > +	/* Prepare rx/tx clock */
-> > +	clk_prepare(spdif_priv->rxclk);
-> > +	for (i = 0; i < SPDIF_TXRATE_MAX; i++)
-> > +		clk_prepare(spdif_priv->txclk[i]);
-> 
-> Why do you prepare all clocks instead of the one you actually use? Also,
-> no need to do this here. You can use clk_prepare_enable instead where
-> you have clk_enable now.
-> 
-> > +
-> > +/* SPDIF rx clock source */
-> > +enum spdif_rxclk_src {
-> > +	SRPC_CLKSRC_0 = 0,
-> > +	SRPC_CLKSRC_1,
-> > +	SRPC_CLKSRC_2,
-> > +	SRPC_CLKSRC_3,
-> > +	SRPC_CLKSRC_4,
-> > +	SRPC_CLKSRC_5,
-> > +	SRPC_CLKSRC_6,
-> > +	SRPC_CLKSRC_7,
-> > +	SRPC_CLKSRC_8,
-> > +	SRPC_CLKSRC_9,
-> > +	SRPC_CLKSRC_10,
-> > +	SRPC_CLKSRC_11,
-> > +	SRPC_CLKSRC_12,
-> > +	SRPC_CLKSRC_13,
-> > +	SRPC_CLKSRC_14,
-> > +	SRPC_CLKSRC_15,
-> > +};
-> 
-> These are unused and look unnecessary.
-> 
-> > +
-> > +/* SPDIF tx clksrc */
-> > +enum spdif_txclk_src {
-> > +	STC_TXCLK_SRC_0 = 0,
-> > +	STC_TXCLK_SRC_1,
-> > +	STC_TXCLK_SRC_2,
-> > +	STC_TXCLK_SRC_3,
-> > +	STC_TXCLK_SRC_4,
-> > +	STC_TXCLK_SRC_5,
-> > +	STC_TXCLK_SRC_6,
-> > +	STC_TXCLK_SRC_7,
-> > +};
-> 
-> Also unused.
-> 
-> Sascha
-> 
-> -- 
-> Pengutronix e.K.                           |                             |
-> Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-> 
+> ------Please consider the environment before printing this e-mail.
