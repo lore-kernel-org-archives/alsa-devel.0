@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v9 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Tue, 20 Aug 2013 20:11:13 +0100
-Message-ID: <20130820191113.GS30073@sirena.org.uk>
-References: <cover.1376972170.git.b42378@freescale.com>
- <03182ed7464c156ec6345194d3f7ec920f753c2f.1376972170.git.b42378@freescale.com>
- <5213965C.6010908@wwwdotorg.org>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH v8 2/2] ASoC: fsl: Add S/PDIF machine driver
+Date: Tue, 20 Aug 2013 13:53:49 -0600
+Message-ID: <5213C94D.7050304@wwwdotorg.org>
+References: <cover.1376912873.git.b42378@freescale.com>
+ <ca3061d70ab8bf59afc59031fa7befcfaed26d51.1376912873.git.b42378@freescale.com>
+ <5212908E.6050104@wwwdotorg.org> <20130820001858.GF30073@sirena.org.uk>
+ <52138FDE.3080007@wwwdotorg.org> <20130820190701.GR30073@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4959274926127001357=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B983F26521D
- for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2013 21:11:18 +0200 (CEST)
-In-Reply-To: <5213965C.6010908@wwwdotorg.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 536DC265283
+ for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2013 21:53:54 +0200 (CEST)
+In-Reply-To: <20130820190701.GR30073@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,65 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
+To: Mark Brown <broonie@kernel.org>
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, festevam@gmail.com, s.hauer@pengutronix.de, Nicolin Chen <b42378@freescale.com>, timur@tabi.org, rob.herring@calxeda.com, tomasz.figa@gmail.com, p.zabel@pengutronix.de, R65777@freescale.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
+On 08/20/2013 01:07 PM, Mark Brown wrote:
+> On Tue, Aug 20, 2013 at 09:48:46AM -0600, Stephen Warren wrote:
+>> On 08/19/2013 06:18 PM, Mark Brown wrote:
+> 
+>>> S/PDIF is also sometimes used as an interconnect between
+>>> devices - some CODECs have S/PDIF I/O (more normally used as an
+>>> external connector on the box).  This is most frequently seen
+>>> as a way to
+> 
+>> That's not a good argument for an incorrect binding.
+> 
+> The point is that it might turn into a more correct binding
+> depending on what the S/PDIF device actually is.
 
---===============4959274926127001357==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="EVTdUHOLdMfS4dQd"
-Content-Disposition: inline
-
-
---EVTdUHOLdMfS4dQd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Aug 20, 2013 at 10:16:28AM -0600, Stephen Warren wrote:
-
-> What changed between v8 and v9?
-
-There was a changelog in the cover mail for the series:
-
-| Changelog:
-| v8->v9:
-|  * Use bool instead of atomic_t.
-|  * Use clk_prepare_enable() instead.
-|  * Dropped dumpregs().
-|  * Dropped unnecessary clk_round_rate().
-|  * Dropped unused clock source enum.
-|  * Revised dev_err() message.
-
---EVTdUHOLdMfS4dQd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSE79OAAoJELSic+t+oim9Zj4P/iv7P0ItS1nWDA76esXebshD
-y8ShZbwbuW4amp83+SrqM8LoMBMjwG+/25EoRjGsSDxwhcvC9h/+i8OAcr6lgaap
-vxx67HwSrHGS0VJsGAAcm5GfehNhI/aa0Np5iDm2cB5BwayJ2HhR6IsecFwu8VcM
-NtX95Dca2zwbNyyA+EPNDaXahqi/x62YO2ElO0qOZKj5XdLvg2f/BRrqY8nAlnSZ
-C8c5BYE5/xThfFoZFGzqzJSiPLJkgwLVwV9iyiF0s+x76U2xAHurE9No8mmHiKyw
-ep1ZN//T05GrXVslc50bhOArHoGnN32xvGQO0OJwNJ6S1zTUmoQhKDZtA+Wkghiv
-ORDiKx5HpktgaqfM4V13h4IsziigWE8cBIZKjs+C3CQ9wuld7L2pG51Jx3PSqGpo
-5cz3nTNiWN+ggvKykqB+Yzz8TF9nc+76vcgP2h5gLsASulnjJO4ck2Yy/mWigneE
-8/cgHzT29/dXLzhOEgjFtR9nG44KW67slSnqA+qB8v6od1v1Obn8Ph+7I6W864eh
-lX6tDh8uMWvyaXO+922uquvHOzdupj4BOMxxFj/PfEyXPudKuYVXyxHENrd07yW7
-x7u0UFLZR0TXKDkvWNWM7Xvcza77ywMSPnF4qYY/UUpN858exHvhp+4emXXRUhSz
-SUVpB6nstm8eBGbarPbh
-=TEzj
------END PGP SIGNATURE-----
-
---EVTdUHOLdMfS4dQd--
-
---===============4959274926127001357==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4959274926127001357==--
+There's *never* an object on the board called a "dummy codec".
