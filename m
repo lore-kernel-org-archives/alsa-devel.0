@@ -1,27 +1,18 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add
-	DAPM	links between codec and cpu DAI
-Date: Tue, 20 Aug 2013 14:31:43 +0100
-Message-ID: <20130820133143.GC23006@n2100.arm.linux.org.uk>
-References: <20130805233015.GY23006@n2100.arm.linux.org.uk>
- <20130806133206.GA6427@sirena.org.uk>
- <20130810161123.GW23006@n2100.arm.linux.org.uk>
- <20130810211342.GX23006@n2100.arm.linux.org.uk>
- <1376293215.2385.32.camel@loki>
- <20130812082837.GB23006@n2100.arm.linux.org.uk>
- <1376405952.2617.101.camel@loki>
- <20130820102555.GZ23006@n2100.arm.linux.org.uk>
- <20130820114421.GN30073@sirena.org.uk>
- <20130820114949.GB23006@n2100.arm.linux.org.uk>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH v8 2/2] ASoC: fsl: Add S/PDIF machine driver
+Date: Tue, 20 Aug 2013 09:48:46 -0600
+Message-ID: <52138FDE.3080007@wwwdotorg.org>
+References: <cover.1376912873.git.b42378@freescale.com>
+ <ca3061d70ab8bf59afc59031fa7befcfaed26d51.1376912873.git.b42378@freescale.com>
+ <5212908E.6050104@wwwdotorg.org> <20130820001858.GF30073@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 4D6E2261AA7
- for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2013 15:32:09 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130820114949.GB23006@n2100.arm.linux.org.uk>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DF6A261ABC
+ for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2013 17:48:51 +0200 (CEST)
+In-Reply-To: <20130820001858.GF30073@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,43 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, festevam@gmail.com, s.hauer@pengutronix.de, Nicolin Chen <b42378@freescale.com>, timur@tabi.org, rob.herring@calxeda.com, tomasz.figa@gmail.com, p.zabel@pengutronix.de, R65777@freescale.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 20, 2013 at 12:49:49PM +0100, Russell King - ARM Linux wrote:
-> On Tue, Aug 20, 2013 at 12:44:21PM +0100, Mark Brown wrote:
-> > On Tue, Aug 20, 2013 at 11:25:55AM +0100, Russell King - ARM Linux wrote:
-> > 
-> > > Mark is adamant that the Kirkwood-i2s with SPDIF support _will_ use DPCM
-> > > and refuses to take patches which don't.
-> > 
-> > No, that's for simultaneous use of I2S and S/PDIF.  Using one or the
-> > other shouldn't be a problem, that's just a single DAI and a single PCM
-> > which has always been supported.
-> > 
-> > > So, until DPCM gets fixed, I can't proceed with getting SPDIF for kirkwood
-> > > into mainline.
-> > 
-> > I would suggest getting the either/or support merged first.
+On 08/19/2013 06:18 PM, Mark Brown wrote:
+> On Mon, Aug 19, 2013 at 03:39:26PM -0600, Stephen Warren wrote:
+>> On 08/19/2013 06:08 AM, Nicolin Chen wrote:
+>>> This patch implements a device-tree-only machine driver for
+>>> Freescale i.MX series Soc. It works with
+>>> spdif_transmitter/spdif_receiver and fsl_spdif.c drivers.
+>> 
+>>> diff --git
+>>> a/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+>>> b/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
 > 
-> Sorry, I don't know how to do that.
+>>> +Optional properties:
+> 
+>>> +  - spdif-transmitter : The phandle of the spdif-transmitter
+>>> dummy codec +  - spdif-receiver : The phandle of the
+>>> spdif-receiver dummy codec
+> 
+>>> +* Note: At least one of these two properties should be set in
+>>> the DT binding.
+> 
+>> Those object truly don't exist in HW and only exist due to
+>> internal details of Linux's ASoC subsystem.
+> 
+> They will physically exist if they're usefully present on the board
+> (in the sense that they're there and can be pointed at) - there
+> will be either a TOSLINK optical connector or (less commonly) an
+> electrical connector breaking the signal out to go elsewhere though
+> they don't have any interaction with software usually which is more
+> what you mean here.
 
-Let's be a little more clear about that: I don't know how to do that
-because that's the approach taken by _these_ very patches which you've
-rejected for "abusing the ASoC core".  That's why I'm asking Liam
-directly to effectively overrule you, because I believe your position
-to be wrong on these patches, and based on an incorrect understanding
-about DPCM - as I've already evidenced earlier in this thread by
-illustrating that the DAPM setup I create in the CPU DAI part of these
-patches is exactly the same as Liam creates in his Haswell driver.
+Sure, the S/PDIF signal is connected to something, but it is not a
+"dummy CODEC"; a "dummy CODEC" is purely something internal to ASoC
+and absolutely nothing to do with HW.
 
-Moreover, I believe these patches to be _almost_ correct to what Liam
-suggests is required, so there's really no reason not to take them.
-(The only thing difference is that the AIF widgets should be registered
-against the CPU DAI DAPM context when DPCM becomes usable.)
+>> Or, to map the properties more directly to HW, perhaps name the
+>> property "spdif-tx-jack-exists", or even "spdif-tx-jack" and make
+>> it a phandle to a node that represents the actual S/PDIF
+>> connector?
+> 
+> S/PDIF is also sometimes used as an interconnect between devices -
+> some CODECs have S/PDIF I/O (more normally used as an external
+> connector on the box).  This is most frequently seen as a way to
+> plumb HDMI in since some HDMI devices seem to provide this as a
+> legacy interconnect, though it can get used just for regular CODECs
+> as well.  Using this machine driver would probably be a bit of an
+> abuse for some applications, though with things like the HDMI one
+> the goal of the hardware is to be dropped into a driver like this
+> so perhaps it makes sense and is useful anyway.
+> 
+> Equally well it'd be good to get this stuff actually merged, it
+> seems to have been surprisingly time consuming thus far...
 
-Since you continue to refuse to take the patches, but haven't given any
-further reasons why, and I've shown your original objections to be
-provably false, you leave me no other options but to try and bypass
-you, especially when you have plainly stated that you don't care about
-Kirkwood stuff.
+That's not a good argument for an incorrect binding.
