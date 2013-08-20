@@ -1,79 +1,56 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl: fsl_ssi: Fix the order of
-	resources removal
-Date: Tue, 20 Aug 2013 11:47:21 +0100
-Message-ID: <20130820104721.GK30073@sirena.org.uk>
-References: <1376773980-16240-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH 1/6] ASoC: omap: simplify
+ platform_get_resource_byname/devm_ioremap_resource
+Date: Tue, 20 Aug 2013 11:51:39 +0100
+Message-ID: <20130820105139.GL30073@sirena.org.uk>
+References: <1376902316-18520-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1376902316-18520-2-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1810025313768192993=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 443D6261A98
- for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2013 12:47:26 +0200 (CEST)
-In-Reply-To: <1376773980-16240-1-git-send-email-festevam@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KjG/elEj40fDqMBW"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1376902316-18520-2-git-send-email-Julia.Lawall@lip6.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, kernel-janitors@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1810025313768192993==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1z3GODAf0autvy/P"
-Content-Disposition: inline
-
-
---1z3GODAf0autvy/P
+--KjG/elEj40fDqMBW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Aug 17, 2013 at 06:13:00PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
+On Mon, Aug 19, 2013 at 10:51:51AM +0200, Julia Lawall wrote:
+> From: Julia Lawall <Julia.Lawall@lip6.fr>
 >=20
-> In fsl_ssi_remove() we need to remove the resources in the opposite order=
- that
-> they were acquired in probe.
+> Remove unneeded error handling on the result of a call to
+> platform_get_resource_byname when the value is passed to devm_ioremap_res=
+ource.
 
 Applied, thanks.
 
---1z3GODAf0autvy/P
+--KjG/elEj40fDqMBW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSE0k1AAoJELSic+t+oim9onIQAJpFxxeKkJVHdkgbHUJaNzEL
-sYcXMh9qHnG0W8saRbrqqiTKrk20btor4qcvHC6puEOkOpQgcZAy3RPq1TrgOmdW
-xuISMAKARjdTatxZkV81iicmU4lvD757f3mZ4M/vu/M2JCwBuC+Pbjs10sv3r8Lt
-iEJEKAZdfZ0DmqfqjR/N7Mjrdaiwctwe+Z4/qz1H3HryOY1abYj9NheCyMhnWCoV
-eMu2sDNI5+Z86RwN1h/5eoYnP10wpvcyYlQNieg27wqLTIWT5hZe7ptFmqjOsLuU
-DxwwP+PV+pmZHqNkVCTRpwUUNRXlTEr0qWy8KMB3QXFcQ1xrHiW2qjQt7Gs2o4A9
-dSGL4tgCpmsEmJrKgSCVeqS2qvqDeIEO8Qcdd2NDPzpti9Yq+3CktTmxdHUIgaV+
-jAPpFgyAuk1obgr28RZ6eQIvMobdaX+I39QiUV4Hbk+2HEtnBMzOoPVeoA1B4WFA
-FJSKzZs3bjfjQl/FgeKIdWvBMJCx/GhvliBIdu2Qg/Xn0s2fnGCQ7vQlmzHdEQ0Y
-kbiWIE5adwAnlE09iq/hujMuE/CI1QAR2R+KPraCJTWLBTAzTIrJTzNlgkl64Nt2
-YoMwYD+ET82GEvDJPZNDMkjpVG2k8DnRTfDGYeedSw2yh2Cn8aKL0vmVpk/ZSOi/
-W2MMAVL9aWFHHcalij/0
-=KWT9
+iQIcBAEBAgAGBQJSE0o4AAoJELSic+t+oim946UP/2FUpnHZ4XPlWCG8ipTV91x/
+sr/qCKcgLUZpuRe+xxXWn5Atk/5CYkwPtRiy471ah+QVLNN070vAh6I/fyOdDaLc
++X4AR898rv3mDfwoWQFPmiETM/jmqHfRuSjjNCvWljsCNOlYYPQ+lgpOJwcUQPae
+gFCECXEd+t61AyYOhWstNUcEvq/I4Fj1FSbr08ThTHKGp6BHfcgbYUad/Yc0a1Ky
+rXNyKToj7g9PBu/6VdFrakYJg4X1ygJQLvDKEu9hPYBSQjWpiQCYM6OTljeEuzCB
+pNPvf4CdqPCOEW1ThPsRIuvQhCzysc5jjeqcxIxQ4tQc7wEULYQKeEP2x7ajHTk1
+fIiBWjjaHZXHMdfhkZZt6zYe5YuJO2Yx5I1vJ9llY90OXMfiEIBu4fKr6Cc6TxOd
+NVrsTvH08dS0BE8tIzokxQqzX0AbPuuZ0gnCVekoo20J6IJmPhJ2AGVMpMbqXgJk
+S4U94frGXZw5Ws3JsHioaJnomWOB28QMkvH4O93U+9MRIIqBUXaxPxwGN36i3zQA
+w5T9S4JNQ4wf3kigk8k5nSh7ZSelw51zg+sxDMdHu5+b2xBegs25mqnZbG+CGTex
+Bgj5udIFzHhnNfcUewFpjatOEGCH9idQ5EmwJlHqPpOOfvSy+LQ5HOnyeDC/gtP0
+OBrFsZYJgCsItMvacK4x
+=Fgtl
 -----END PGP SIGNATURE-----
 
---1z3GODAf0autvy/P--
-
---===============1810025313768192993==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1810025313768192993==--
+--KjG/elEj40fDqMBW--
