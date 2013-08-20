@@ -1,19 +1,27 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH v8 2/2] ASoC: fsl: Add S/PDIF machine driver
-Date: Tue, 20 Aug 2013 13:53:49 -0600
-Message-ID: <5213C94D.7050304@wwwdotorg.org>
-References: <cover.1376912873.git.b42378@freescale.com>
- <ca3061d70ab8bf59afc59031fa7befcfaed26d51.1376912873.git.b42378@freescale.com>
- <5212908E.6050104@wwwdotorg.org> <20130820001858.GF30073@sirena.org.uk>
- <52138FDE.3080007@wwwdotorg.org> <20130820190701.GR30073@sirena.org.uk>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add
+	DAPM	links between codec and cpu DAI
+Date: Tue, 20 Aug 2013 21:18:24 +0100
+Message-ID: <20130820201824.GA17845@n2100.arm.linux.org.uk>
+References: <20130810161123.GW23006@n2100.arm.linux.org.uk>
+ <20130810211342.GX23006@n2100.arm.linux.org.uk>
+ <1376293215.2385.32.camel@loki>
+ <20130812082837.GB23006@n2100.arm.linux.org.uk>
+ <1376405952.2617.101.camel@loki>
+ <20130820102555.GZ23006@n2100.arm.linux.org.uk>
+ <20130820114421.GN30073@sirena.org.uk>
+ <20130820114949.GB23006@n2100.arm.linux.org.uk>
+ <20130820133143.GC23006@n2100.arm.linux.org.uk>
+ <20130820185019.GP30073@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 536DC265283
- for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2013 21:53:54 +0200 (CEST)
-In-Reply-To: <20130820190701.GR30073@sirena.org.uk>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id E8BBD26527F
+ for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2013 22:18:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130820185019.GP30073@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,21 +32,175 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, festevam@gmail.com, s.hauer@pengutronix.de, Nicolin Chen <b42378@freescale.com>, timur@tabi.org, rob.herring@calxeda.com, tomasz.figa@gmail.com, p.zabel@pengutronix.de, R65777@freescale.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/20/2013 01:07 PM, Mark Brown wrote:
-> On Tue, Aug 20, 2013 at 09:48:46AM -0600, Stephen Warren wrote:
->> On 08/19/2013 06:18 PM, Mark Brown wrote:
+On Tue, Aug 20, 2013 at 07:50:19PM +0100, Mark Brown wrote:
+> On Tue, Aug 20, 2013 at 02:31:43PM +0100, Russell King - ARM Linux wrote:
 > 
->>> S/PDIF is also sometimes used as an interconnect between
->>> devices - some CODECs have S/PDIF I/O (more normally used as an
->>> external connector on the box).  This is most frequently seen
->>> as a way to
+> > Let's be a little more clear about that: I don't know how to do that
+> > because that's the approach taken by _these_ very patches which you've
+> > rejected for "abusing the ASoC core".  That's why I'm asking Liam
 > 
->> That's not a good argument for an incorrect binding.
-> 
-> The point is that it might turn into a more correct binding
-> depending on what the S/PDIF device actually is.
+> The patches I can recall seeing recently have all had some workarounds
+> in the core which would need to be resolved differently, though it's
+> possible I missed that being done in some version in your mails as there
+> have generally also been a lot of modifications adding debug statements
+> in the core.
 
-There's *never* an object on the board called a "dummy codec".
+The "workarounds in the core" are because there's bugs in the core that
+I have no idea how to solve.  You are allegedly the maintainer for the
+core code, and so you should understand that code, so you are best placed
+to say how the core code should be fixed.  I'm willing to do the patch
+generation to fix them but *you* need to give some guidance here -
+something that you seem incapable to do.  At the moment, the only fix I
+can see being workable is to comment out the broken bit in the core code.
+
+If the problem is that you don't understand the issue, then you could try
+replying with some questions about it.
+
+If the problem is that you don't understand the code, well... there's not
+much point in continuing this discussion until you've had time to study
+and understand that code.
+
+> If you've got code you think is in a good state to submit then please do
+> send it as a normal patch series, the last one I've got here has "ASoC:
+> HACK: avoid creating duplicated widgets" as part of it for example.
+
+That patch still hasn't gone away, and is still required, because there
+has been no guidance or comments about the problem.  Let's explain it
+yet again...
+
+You have said "there is no problem registering the platform and the CPU
+dai from the same device structure".  Let's assume that's a fact and see
+what happens in the core code:
+
+static int soc_probe_platform(struct snd_soc_card *card,
+                           struct snd_soc_platform *platform)
+{
+        /* Create DAPM widgets for each DAI stream */
+        list_for_each_entry(dai, &dai_list, list) {
+                if (dai->dev != platform->dev)
+                        continue;
+
+                snd_soc_dapm_new_dai_widgets(&platform->dapm, dai);
+        }
+}
+
+static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
+{
+        if (!cpu_dai->probed &&
+                        cpu_dai->driver->probe_order == order) {
+                if (!cpu_dai->codec) {
+                        cpu_dai->dapm.card = card;
+                        if (!try_module_get(cpu_dai->dev->driver->owner))
+                                return -ENODEV;
+
+                        list_add(&cpu_dai->dapm.list, &card->dapm_list);
+                        snd_soc_dapm_new_dai_widgets(&cpu_dai->dapm, cpu_dai);
+                }
+
+Now, the CPU DAI is added to the dai_list (it has to be there to be found
+so the DAI link can bind it, and so soc_probe_link_dais() can be called.)
+
+Think about what happens with the above code if platform->dev is the same
+as the device used for the CPU DAI (dai->dev) - which can happen when the
+platform and CPU DAI are registered from the same platform_device, which
+you claim is legal with ASoC.
+
+Now, look at snd_soc_dapm_new_dai_widgets():
+
+int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
+                                 struct snd_soc_dai *dai)
+{
+        if (dai->driver->playback.stream_name) {
+...
+                dai->playback_widget = w;
+        }
+        if (dai->driver->capture.stream_name) {
+...
+                dai->capture_widget = w;
+        }
+
+What happens if the widgets which are bound to are the first set that
+are created, but they're overwritten when the second set get created?
+(And that _does_ happen.)  The second set are the ones activated when
+the audio device is opened, not the first set.
+
+Now, there's nothing new in the above, I've already explained all the
+above to you several times.  I've had nothing of any help what so ever
+back from you on this.  I've asked you how to solve this.  I've had
+absolutely nothing back.  So what am I supposed to do here?  Stuff
+doesn't work with the core code how it is, so I took the only solution
+_you_ left me by your silence, which is to hack the core code.
+
+At this point, you leave me with no other conclusion but to assume
+that the reason you are being so unhelpful is that you don't understand
+this code, and that you don't know what the right solution is.  I dare
+you to tell me I'm wrong: and the only thing that will convince me that
+I'm wrong is if you tell me how you'd like the above issue to be solved.
+
+> Just to be clear when I say either/or I'm talking about a DAI driver
+> that can either run in S/PDIF mode or run in I2S mode in a given machine
+> but not support both being hooked up in the same machine.  Obviously
+> this isn't the end goal but it might be a useful intermediate step if
+> you find you are are blocked. 
+
+Well, it doesn't take much to realise that the CPU DAI needs to know
+whether the _single_ attached codec is SPDIF or I2S.  How it does that
+is via which AIFs are bound - and as DPCM doesn't work at the moment,
+you can only do that by having _one_ DAI link specified, and DAPM
+routes between the AIFs and the codecs streams.
+
+If you know a better way, you could try saying what that is, because
+at the moment what I've presented in these patches is the best that I
+can do with the limited knowledge of ASoC.
+
+I'm not going to litter the driver with #ifdef's to work around this
+when there's a perfectly good way to work around it at runtime - which
+I've proven can work if the core code issue I point out above gets fixed.
+
+> > Since you continue to refuse to take the patches, but haven't given any
+> > further reasons why, and I've shown your original objections to be
+> > provably false, you leave me no other options but to try and bypass
+> 
+> To reiterate please submit patches if you believe everything is OK now
+> and then let's go through and review them.
+
+You mean like your poor review attempt on the first round where you
+completely ignored the issue with the core code (the HACK patch)?
+
+You mean like your poor review stating that the DAPM infrastructure I
+added in the CPU level code was all wrong, but it turns out that it's
+exactly the same as Liam's DPCM setup.
+
+Why should I submit a new round of patches which haven't changed in any
+meaningful way (which I've already stated) for another review by someone
+who seems not to know what they're talking about?  Can't you go back and
+look at the existing set again and provide a better quality of review,
+maybe providing some suggestions on the core issue which I keep pointing
+out?
+
+This is precisely why I've called for Liam to look at them instead; I
+feel that I will get a much better quality of review from Liam, and
+maybe even some helpful suggestions about how to solve some of the
+remaining issues - something which has been totally lacking in every
+response from you.
+
+> > you, especially when you have plainly stated that you don't care about
+> > Kirkwood stuff.
+> 
+> I think you'll find that anything I've said along those lines has been
+> in relation to your strongly worded requests for me to make changes for
+> you.
+
+No, my strongly worded emails are directed at you not to ask you to make
+changes for me, but because you are being obstructive, uncooperative,
+and unhelpful.  Apart from "use DPCM" and "DAPM is just a graph walk"
+I've had nothing of any real use what so ever back from you.  Much of
+my effort has been based around my own interpretations and debugging of
+the ASoC code inspite of you, which may or may not be correct.
+
+However, one thing I do know is that I've pointed out the bug above
+multiple times to you and there's still no movement on it - which
+just confirms my conclusion that you are just being plain obstructive.
