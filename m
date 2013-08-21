@@ -1,19 +1,19 @@
 From: Eldad Zack <eldad@fogrefinery.com>
-Subject: [PATCH v2 09/10] ALSA: usb-audio: conditional
-	concurrent usage of endpoint
-Date: Wed, 21 Aug 2013 23:38:04 +0200
-Message-ID: <1377121085-20563-10-git-send-email-eldad@fogrefinery.com>
+Subject: [PATCH v2 10/10] ALSA: usb-audio: remove altset_idx
+	from snd_usb_substream
+Date: Wed, 21 Aug 2013 23:38:05 +0200
+Message-ID: <1377121085-20563-11-git-send-email-eldad@fogrefinery.com>
 References: <1377121085-20563-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f50.google.com (mail-bk0-f50.google.com
- [209.85.214.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 6364126533C
- for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2013 23:39:06 +0200 (CEST)
-Received: by mail-bk0-f50.google.com with SMTP id mz11so401931bkb.9
- for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2013 14:39:06 -0700 (PDT)
+Received: from mail-bk0-f43.google.com (mail-bk0-f43.google.com
+ [209.85.214.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28E36265340
+ for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2013 23:39:11 +0200 (CEST)
+Received: by mail-bk0-f43.google.com with SMTP id mz13so394170bkb.16
+ for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2013 14:39:10 -0700 (PDT)
 In-Reply-To: <1377121085-20563-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,226 +28,111 @@ To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Daniel M
 Cc: alsa-devel@alsa-project.org, Eldad Zack <eldad@fogrefinery.com>
 List-Id: alsa-devel@alsa-project.org
 
-If the current endpoint is in use, check if the hardware parameters
-match. If they do, allow the usage.
-This also requires setting the parameters in case an data endpoint
-is used as a synchornization source, and it is first set by its
-sink endpoint.
-
-Add the same check to hw_params, to prevent overwriting the
-current params.
-Clear the hardware parameteres on hw_free only if the other endpoint
-is not in use.
-
-No change for sync endpoints (explicit feedback).
+We only need to check the current altsetting in one place, so there's no
+benefit from tracking it.
+This patch replaces that one check with get_cur_altset_idx() added in
+a previous patch and in the proc substream dump routine.
+This allows removing altset_idx from snd_usb_substream.
 
 Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 ---
-v2: Fixed logic error in the concurrent usage check
-(snd_usb_endpoint_set_params)
+ sound/usb/card.h | 1 -
+ sound/usb/pcm.c  | 7 ++-----
+ sound/usb/pcm.h  | 2 ++
+ sound/usb/proc.c | 4 +++-
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
----
- sound/usb/endpoint.c | 46 ++++++++++++++++++++++++++++++++++++++++++----
- sound/usb/endpoint.h |  9 ++++++++-
- sound/usb/pcm.c      | 51 +++++++++++++++++++++++++++++++++++++++++----------
- 3 files changed, 91 insertions(+), 15 deletions(-)
-
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 6ff36f5..7e04ebb 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -742,6 +742,34 @@ out_of_memory:
- 	return -ENOMEM;
- }
- 
-+bool snd_usb_endpoint_may_set_params(struct snd_usb_substream *subs,
-+				     snd_pcm_format_t pcm_format,
-+				     unsigned int channels,
-+				     unsigned int period_bytes,
-+				     unsigned int rate)
-+{
-+	/* no associated substream */
-+	if (!subs)
-+		return true;
-+
-+	/* data_endpoint not yet initialized */
-+	if (!subs->data_endpoint)
-+		return true;
-+
-+	if (subs->data_endpoint->use_count == 0)
-+		return true;
-+
-+	if (subs->pcm_format != pcm_format ||
-+	    subs->channels != channels ||
-+	    subs->period_bytes != period_bytes ||
-+	    subs->cur_rate != rate)
-+		return false;
-+
-+	snd_printdd(KERN_INFO "ep #%x in use, parameters match\n",
-+		    subs->data_endpoint->ep_num);
-+	return true;
-+}
-+
- /**
-  * snd_usb_endpoint_set_params: configure an snd_usb_endpoint
-  *
-@@ -752,6 +780,7 @@ out_of_memory:
-  * @rate: the frame rate.
-  * @fmt: the USB audio format information
-  * @sync_ep: the sync endpoint to use, if any
-+ * @subs: the substream that uses this endpoint as data endpoint
-  *
-  * Determine the number of URBs to be used on this endpoint.
-  * An endpoint must be configured before it can be started.
-@@ -763,14 +792,23 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
- 				unsigned int period_bytes,
- 				unsigned int rate,
- 				struct audioformat *fmt,
--				struct snd_usb_endpoint *sync_ep)
-+				struct snd_usb_endpoint *sync_ep,
-+				struct snd_usb_substream *subs)
- {
- 	int err;
- 
- 	if (ep->param_set || ep->use_count != 0) {
--		snd_printk(KERN_WARNING "Unable to change format on ep #%x: already in use\n",
--			   ep->ep_num);
--		return -EBUSY;
-+		if (!subs ||
-+		    !snd_usb_endpoint_may_set_params(subs, pcm_format,
-+						     channels, period_bytes,
-+						     rate)) {
-+			snd_printk(KERN_WARNING
-+				   "Unable to change format on ep #%x: already in use\n",
-+				   ep->ep_num);
-+			return -EBUSY;
-+		}
-+		/* Endpoint already set with the same parameters */
-+		return 0;
- 	}
- 	ep->param_set = true;
- 
-diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
-index c928e0c..64f2b08 100644
---- a/sound/usb/endpoint.h
-+++ b/sound/usb/endpoint.h
-@@ -14,7 +14,8 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
- 				unsigned int period_bytes,
- 				unsigned int rate,
- 				struct audioformat *fmt,
--				struct snd_usb_endpoint *sync_ep);
-+				struct snd_usb_endpoint *sync_ep,
-+				struct snd_usb_substream *subs);
- 
- int  snd_usb_endpoint_start(struct snd_usb_endpoint *ep, bool can_sleep);
- void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep);
-@@ -30,4 +31,10 @@ void snd_usb_handle_sync_urb(struct snd_usb_endpoint *ep,
- 			     struct snd_usb_endpoint *sender,
- 			     const struct urb *urb);
- 
-+bool snd_usb_endpoint_may_set_params(struct snd_usb_substream *subs,
-+				     snd_pcm_format_t pcm_format,
-+				     unsigned int channels,
-+				     unsigned int period_bytes,
-+				     unsigned int rate);
-+
- #endif /* __USBAUDIO_ENDPOINT_H */
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 4061ee1..0fd3f8b 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -117,7 +117,6 @@ struct snd_usb_substream {
+ 	unsigned int channels_max;	/* max channels in the all audiofmts */
+ 	unsigned int cur_rate;		/* current rate (for hw_params callback) */
+ 	unsigned int period_bytes;	/* current period bytes (for hw_params callback) */
+-	unsigned int altset_idx;     /* USB data format: index of alternate setting */
+ 	unsigned int txfr_quirk:1;	/* allow sub-frame alignment */
+ 	unsigned int fmt_type;		/* USB audio format type (1-3) */
+ 	unsigned int pkt_offset_adj;	/* Bytes to drop from beginning of packets (for non-compliant devices) */
 diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 140e2e4..a72f755 100644
+index a72f755..8cdc064 100644
 --- a/sound/usb/pcm.c
 +++ b/sound/usb/pcm.c
-@@ -644,6 +644,7 @@ static int configure_sync_endpoint(struct snd_usb_substream *subs)
- 						   subs->period_bytes,
- 						   subs->cur_rate,
- 						   subs->cur_audiofmt,
-+						   NULL,
- 						   NULL);
- 
- 	/* Try to find the best matching audioformat. */
-@@ -680,9 +681,18 @@ static int configure_sync_endpoint(struct snd_usb_substream *subs)
- 					  sync_period_bytes,
- 					  subs->cur_rate,
- 					  sync_fp,
--					  NULL);
-+					  NULL,
-+					  sync_subs);
-+	if (ret < 0)
-+		return ret;
- 
--	return ret;
-+	sync_subs->pcm_format = subs->pcm_format;
-+	sync_subs->period_bytes = sync_period_bytes;
-+	sync_subs->channels = sync_fp->channels;
-+	sync_subs->cur_rate = subs->cur_rate;
-+	sync_subs->data_endpoint = subs->sync_endpoint;
-+
-+	return 0;
+@@ -216,7 +216,7 @@ int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
+ 	}
  }
  
- /*
-@@ -702,7 +712,8 @@ static int configure_endpoint(struct snd_usb_substream *subs)
- 					  subs->period_bytes,
- 					  subs->cur_rate,
- 					  subs->cur_audiofmt,
--					  subs->sync_endpoint);
-+					  subs->sync_endpoint,
-+					  subs);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -728,16 +739,32 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_usb_substream *subs = substream->runtime->private_data;
- 	struct audioformat *fmt;
- 	int ret;
-+	snd_pcm_format_t pcm_format;
-+	unsigned int channels;
-+	unsigned int period_bytes;
-+	unsigned int rate;
- 
- 	ret = snd_pcm_lib_alloc_vmalloc_buffer(substream,
- 					       params_buffer_bytes(hw_params));
- 	if (ret < 0)
- 		return ret;
- 
--	subs->pcm_format = params_format(hw_params);
--	subs->period_bytes = params_period_bytes(hw_params);
--	subs->channels = params_channels(hw_params);
--	subs->cur_rate = params_rate(hw_params);
-+	pcm_format = params_format(hw_params);
-+	period_bytes = params_period_bytes(hw_params);
-+	channels = params_channels(hw_params);
-+	rate = params_rate(hw_params);
-+
-+	if (!snd_usb_endpoint_may_set_params(subs, pcm_format, channels,
-+					     period_bytes, rate)) {
-+		snd_printk(KERN_WARNING "Unable to set hw_params on substream (dir: %d), data EP in use\n",
-+			   subs->direction);
-+		return -EBUSY;
-+	}
-+
-+	subs->pcm_format = pcm_format;
-+	subs->period_bytes = period_bytes;
-+	subs->channels = channels;
-+	subs->cur_rate = rate;
- 
- 	fmt = find_format(subs);
- 	if (!fmt) {
-@@ -771,9 +798,13 @@ static int snd_usb_hw_free(struct snd_pcm_substream *substream)
+-static int get_cur_altset_idx(struct usb_device *dev, int ifnum)
++int get_cur_altset_idx(struct usb_device *dev, int ifnum)
  {
- 	struct snd_usb_substream *subs = substream->runtime->private_data;
+ 	struct usb_interface *iface;
+ 	struct usb_interface_descriptor *altsd;
+@@ -266,7 +266,6 @@ static int subs_set_interface(struct snd_usb_substream *subs, int ifnum,
+ 		return err;
  
--	subs->cur_audiofmt = NULL;
--	subs->cur_rate = 0;
--	subs->period_bytes = 0;
-+	if (!subs->data_endpoint || subs->data_endpoint->use_count == 0) {
-+		subs->cur_audiofmt = NULL;
-+		subs->cur_rate = 0;
-+		subs->period_bytes = 0;
-+		subs->channels = 0;
-+	}
+ 	subs->interface = altset_idx == 0 ? -1 : ifnum;
+-	subs->altset_idx = altset_idx;
+ 
+ 	return 0;
+ }
+@@ -543,7 +542,7 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
+ 
+ 	/* set interface */
+ 	if (subs->interface != fmt->iface ||
+-	    subs->altset_idx != fmt->altset_idx) {
++	    get_cur_altset_idx(subs->dev, subs->interface) != fmt->altset_idx) {
+ 		err = snd_usb_set_interface(subs, fmt->iface, fmt->altsetting);
+ 		if (err < 0) {
+ 			snd_printk(KERN_ERR "%d:%d:%d: usb_set_interface failed (%d)\n",
+@@ -783,7 +782,6 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 
+ 	subs->interface = fmt->iface;
+-	subs->altset_idx = fmt->altset_idx;
+ 	subs->need_setup_ep = true;
+ 
+ 	return 0;
+@@ -1267,7 +1265,6 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream, int direction)
+ 	struct snd_usb_substream *subs = &as->substream[direction];
+ 
+ 	subs->interface = -1;
+-	subs->altset_idx = 0;
+ 	runtime->hw = snd_usb_hardware;
+ 	runtime->private_data = subs;
+ 	subs->pcm_substream = substream;
+diff --git a/sound/usb/pcm.h b/sound/usb/pcm.h
+index df7a003..3270e11 100644
+--- a/sound/usb/pcm.h
++++ b/sound/usb/pcm.h
+@@ -10,5 +10,7 @@ int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
+ 		       struct usb_host_interface *alts,
+ 		       struct audioformat *fmt);
+ 
++int get_cur_altset_idx(struct usb_device *dev, int ifnum);
 +
- 	down_read(&subs->stream->chip->shutdown_rwsem);
- 	if (!subs->stream->chip->shutdown) {
- 		stop_endpoints(subs, true);
+ 
+ #endif /* __USBAUDIO_PCM_H */
+diff --git a/sound/usb/proc.c b/sound/usb/proc.c
+index 5f761ab..44080dd 100644
+--- a/sound/usb/proc.c
++++ b/sound/usb/proc.c
+@@ -27,6 +27,7 @@
+ #include "card.h"
+ #include "endpoint.h"
+ #include "proc.h"
++#include "pcm.h"
+ 
+ /* convert our full speed USB rate into sampling rate in Hz */
+ static inline unsigned get_full_speed_hz(unsigned int usb_rate)
+@@ -140,7 +141,8 @@ static void proc_dump_substream_status(struct snd_usb_substream *subs, struct sn
+ 	if (subs->running) {
+ 		snd_iprintf(buffer, "  Status: Running\n");
+ 		snd_iprintf(buffer, "    Interface = %d\n", subs->interface);
+-		snd_iprintf(buffer, "    Altset = %d\n", subs->altset_idx);
++		snd_iprintf(buffer, "    Altset = %d\n",
++			    get_cur_altset_idx(subs->dev, subs->interface));
+ 		proc_dump_ep_status(subs, subs->data_endpoint, subs->sync_endpoint, buffer);
+ 	} else {
+ 		snd_iprintf(buffer, "  Status: Stop\n");
 -- 
 1.8.1.5
