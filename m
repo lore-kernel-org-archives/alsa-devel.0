@@ -1,39 +1,120 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: rt5640: change widget sequence for
-	depop
-Date: Wed, 21 Aug 2013 21:56:01 +0200
-Message-ID: <52151B51.5000801@metafoo.de>
-References: <1376914682-3606-1-git-send-email-bardliao@realtek.com>
- <521255FC.4000003@wwwdotorg.org>
- <1121E117AD4ECE49880A389A396215BB935C7406C9@rtitmbs7.realtek.com.tw>
- <5213961A.4070604@wwwdotorg.org>
+From: "H.J. Lu" <hjl.tools@gmail.com>
+Subject: [PATCH 1/2] Add __compat_aligned_s64 and __compat_aligned_u64
+Date: Wed, 21 Aug 2013 13:20:48 -0700
+Message-ID: <CAMe9rOoM5DDs+vVNA1Z4DnL8zUnm2ZZ8wN-1a8EJyyRo9w7uSw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id A0C9226262D
- for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2013 21:55:39 +0200 (CEST)
-In-Reply-To: <5213961A.4070604@wwwdotorg.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+Content-Type: multipart/mixed; boundary=001a11c303f2bd256e04e47ae8d3
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, tiwai@suse.de, perex@perex.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/20/2013 06:15 PM, Stephen Warren wrote:
-[...]
-> Lars-Peter, are you planning on sending the change above as a patch for
-> Mark to apply?
+--001a11c303f2bd256e04e47ae8d3
+Content-Type: text/plain; charset=ISO-8859-1
 
-I will send the patch next week, once I'm back from vacation.
+X32 uses the 32-bit compat layer for 32-bit kernel interface, which is
+also used by ia32.  But long long is 4-byte aligned for ia32 and 8-byte
+aligned for x32.  When the long long field in a system call struct has
+different offsets between ia32 and x32 due to alignment padding, like
+struct snd_ctl_elem_value in include/uapi/sound/asound.h, we need to
+either add a special case for x32 or we can use 4-byte aligned long
+long in the system call struct so that x32 can share the same compat
+system cal with ia32.  This patch adds __compat_aligned_s64 and
+__compat_aligned_u64 to include/uapi/asm-generic/int-ll64.h.  By
+default, they are the same as __s64/__u64.  It does the following
+things:
 
-- Lars
+1. Add default __compat_aligned_s64/__compat_aligned_u64 to
+include/uapi/asm-generic/int-ll64.h.
+2. Add arch/x86/include/asm/types.h for kernel internal use, which is the
+same as before, i.e., <asm-generic/types.h>.
+3. Change arch/x86/include/uapi/asm/types.h not to use the default
+include/uapi/asm-generic/int-ll64.h.  Instead, it has a modified copy
+of include/uapi/asm-generic/int-ll64.h with 4-byte aligned
+__compat_aligned_s64 and __compat_aligned_u64 for x32 and ia32.
+
+When building x86 kernel, nothing is changed.  The difference is
+x32 can use 4-byte aligned long long for system calls so that it
+can share the same 32-bit compat system call with ia32.
+
+
+-- 
+H.J.
+
+--001a11c303f2bd256e04e47ae8d3
+Content-Type: application/octet-stream;
+	name="0001-Add-__compat_aligned_s64-and-__compat_aligned_u64.patch"
+Content-Disposition: attachment;
+	filename="0001-Add-__compat_aligned_s64-and-__compat_aligned_u64.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hkmzi3d20
+
+RnJvbSBkNjRmYTYxMzE5OGM1Zjg3ZmE2YjliODljYTVhZTY2OWQxNmVjZTJjIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiAiSC5KLiBMdSIgPGhqbC50b29sc0BnbWFpbC5jb20+CkRhdGU6
+IFdlZCwgMjEgQXVnIDIwMTMgMTI6MzU6NTYgLTA3MDAKU3ViamVjdDogW1BBVENIIDEvMl0gQWRk
+IF9fY29tcGF0X2FsaWduZWRfczY0IGFuZCBfX2NvbXBhdF9hbGlnbmVkX3U2NAoKWDMyIHVzZXMg
+dGhlIDMyLWJpdCBjb21wYXQgbGF5ZXIgZm9yIDMyLWJpdCBrZXJuZWwgaW50ZXJmYWNlLCB3aGlj
+aCBpcwphbHNvIHVzZWQgYnkgaWEzMi4gIEJ1dCBsb25nIGxvbmcgaXMgNC1ieXRlIGFsaWduZWQg
+Zm9yIGlhMzIgYW5kIDgtYnl0ZQphbGlnbmVkIGZvciB4MzIuICBXaGVuIHRoZSBsb25nIGxvbmcg
+ZmllbGQgaW4gYSBzeXN0ZW0gY2FsbCBzdHJ1Y3QgaGFzCmRpZmZlcmVudCBvZmZzZXRzIGJldHdl
+ZW4gaWEzMiBhbmQgeDMyIGR1ZSB0byBhbGlnbm1lbnQgcGFkZGluZywgbGlrZQpzdHJ1Y3Qgc25k
+X2N0bF9lbGVtX3ZhbHVlIGluIGluY2x1ZGUvdWFwaS9zb3VuZC9hc291bmQuaCwgd2UgbmVlZCB0
+bwplaXRoZXIgYWRkIGEgc3BlY2lhbCBjYXNlIGZvciB4MzIgb3Igd2UgY2FuIHVzZSA0LWJ5dGUg
+YWxpZ25lZCBsb25nCmxvbmcgaW4gdGhlIHN5c3RlbSBjYWxsIHN0cnVjdCBzbyB0aGF0IHgzMiBj
+YW4gc2hhcmUgdGhlIHNhbWUgY29tcGF0CnN5c3RlbSBjYWwgd2l0aCBpYTMyLiAgVGhpcyBwYXRj
+aCBhZGRzIF9fY29tcGF0X2FsaWduZWRfczY0IGFuZApfX2NvbXBhdF9hbGlnbmVkX3U2NCB0byBp
+bmNsdWRlL3VhcGkvYXNtLWdlbmVyaWMvaW50LWxsNjQuaC4gIEJ5CmRlZmF1bHQsIHRoZXkgYXJl
+IHRoZSBzYW1lIGFzIF9fczY0L19fdTY0LiAgSXQgZG9lcyB0aGUgZm9sbG93aW5nCnRoaW5nczoK
+CjEuIEFkZCBkZWZhdWx0IF9fY29tcGF0X2FsaWduZWRfczY0L19fY29tcGF0X2FsaWduZWRfdTY0
+IHRvCmluY2x1ZGUvdWFwaS9hc20tZ2VuZXJpYy9pbnQtbGw2NC5oLgoyLiBBZGQgYXJjaC94ODYv
+aW5jbHVkZS9hc20vdHlwZXMuaCBmb3Iga2VybmVsIGludGVybmFsIHVzZSwgd2hpY2ggaXMgdGhl
+CnNhbWUgYXMgYmVmb3JlLCBpLmUuLCA8YXNtLWdlbmVyaWMvdHlwZXMuaD4uCjMuIENoYW5nZSBh
+cmNoL3g4Ni9pbmNsdWRlL3VhcGkvYXNtL3R5cGVzLmggbm90IHRvIHVzZSB0aGUgZGVmYXVsdApp
+bmNsdWRlL3VhcGkvYXNtLWdlbmVyaWMvaW50LWxsNjQuaC4gIEluc3RlYWQsIGl0IGhhcyBhIG1v
+ZGlmaWVkIGNvcHkKb2YgaW5jbHVkZS91YXBpL2FzbS1nZW5lcmljL2ludC1sbDY0Lmggd2l0aCA0
+LWJ5dGUgYWxpZ25lZApfX2NvbXBhdF9hbGlnbmVkX3M2NCBhbmQgX19jb21wYXRfYWxpZ25lZF91
+NjQgZm9yIHgzMiBhbmQgaWEzMi4KCldoZW4gYnVpbGRpbmcgeDg2IGtlcm5lbCwgbm90aGluZyBp
+cyBjaGFuZ2VkLiAgVGhlIGRpZmZlcmVuY2UgaXMKeDMyIGNhbiB1c2UgNC1ieXRlIGFsaWduZWQg
+bG9uZyBsb25nIGZvciBzeXN0ZW0gY2FsbHMgc28gdGhhdCBpdApjYW4gc2hhcmUgdGhlIHNhbWUg
+MzItYml0IGNvbXBhdCBzeXN0ZW0gY2FsbCB3aXRoIGlhMzIuCgpTaWduZWQtb2ZmLWJ5OiBILkou
+IEx1IDxoamwudG9vbHNAZ21haWwuY29tPgotLS0KIGFyY2gveDg2L2luY2x1ZGUvYXNtL3R5cGVz
+LmggICAgICAgIHwgIDYgKysrKysrCiBhcmNoL3g4Ni9pbmNsdWRlL3VhcGkvYXNtL3R5cGVzLmgg
+ICB8IDM1ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystCiBpbmNsdWRlL3VhcGkv
+YXNtLWdlbmVyaWMvaW50LWxsNjQuaCB8ICAzICsrKwogMyBmaWxlcyBjaGFuZ2VkLCA0MyBpbnNl
+cnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgYXJjaC94ODYvaW5j
+bHVkZS9hc20vdHlwZXMuaAoKZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3R5cGVz
+LmggYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS90eXBlcy5oCm5ldyBmaWxlIG1vZGUgMTAwNjQ0Cmlu
+ZGV4IDAwMDAwMDAuLjhlOGMyM2YKLS0tIC9kZXYvbnVsbAorKysgYi9hcmNoL3g4Ni9pbmNsdWRl
+L2FzbS90eXBlcy5oCkBAIC0wLDAgKzEsNiBAQAorI2lmbmRlZiBfQVNNX1g4Nl9UWVBFU19ICisj
+ZGVmaW5lIF9BU01fWDg2X1RZUEVTX0gKKworI2luY2x1ZGUgPGFzbS1nZW5lcmljL3R5cGVzLmg+
+CisKKyNlbmRpZiAvKiBfQVNNX1g4Nl9UWVBFU19IICovCmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9p
+bmNsdWRlL3VhcGkvYXNtL3R5cGVzLmggYi9hcmNoL3g4Ni9pbmNsdWRlL3VhcGkvYXNtL3R5cGVz
+LmgKaW5kZXggOGU4YzIzZi4uN2RhYzI4YiAxMDA2NDQKLS0tIGEvYXJjaC94ODYvaW5jbHVkZS91
+YXBpL2FzbS90eXBlcy5oCisrKyBiL2FyY2gveDg2L2luY2x1ZGUvdWFwaS9hc20vdHlwZXMuaApA
+QCAtMSw2ICsxLDM5IEBACiAjaWZuZGVmIF9BU01fWDg2X1RZUEVTX0gKICNkZWZpbmUgX0FTTV9Y
+ODZfVFlQRVNfSAogCi0jaW5jbHVkZSA8YXNtLWdlbmVyaWMvdHlwZXMuaD4KKyNpbmNsdWRlIDxh
+c20vYml0c3BlcmxvbmcuaD4KKworI2lmbmRlZiBfX0FTU0VNQkxZX18KKy8qCisgKiBfX3h4IGlz
+IG9rOiBpdCBkb2Vzbid0IHBvbGx1dGUgdGhlIFBPU0lYIG5hbWVzcGFjZS4gVXNlIHRoZXNlIGlu
+IHRoZQorICogaGVhZGVyIGZpbGVzIGV4cG9ydGVkIHRvIHVzZXIgc3BhY2UKKyAqLworCit0eXBl
+ZGVmIF9fc2lnbmVkX18gY2hhciBfX3M4OwordHlwZWRlZiB1bnNpZ25lZCBjaGFyIF9fdTg7CisK
+K3R5cGVkZWYgX19zaWduZWRfXyBzaG9ydCBfX3MxNjsKK3R5cGVkZWYgdW5zaWduZWQgc2hvcnQg
+X191MTY7CisKK3R5cGVkZWYgX19zaWduZWRfXyBpbnQgX19zMzI7Cit0eXBlZGVmIHVuc2lnbmVk
+IGludCBfX3UzMjsKKworI2lmZGVmIF9fR05VQ19fCitfX2V4dGVuc2lvbl9fIHR5cGVkZWYgX19z
+aWduZWRfXyBsb25nIGxvbmcgX19zNjQ7CitfX2V4dGVuc2lvbl9fIHR5cGVkZWYgdW5zaWduZWQg
+bG9uZyBsb25nIF9fdTY0OworI2Vsc2UKK3R5cGVkZWYgX19zaWduZWRfXyBsb25nIGxvbmcgX19z
+NjQ7Cit0eXBlZGVmIHVuc2lnbmVkIGxvbmcgbG9uZyBfX3U2NDsKKyNlbmRpZgorCisjaWYgZGVm
+aW5lZChfX2kzODZfXykgfHwgZGVmaW5lZChfX0lMUDMyX18pCit0eXBlZGVmIHM2NCBfX2F0dHJp
+YnV0ZV9fKChhbGlnbmVkKDQpKSkgX19jb21wYXRfYWxpZ25lZF9zNjQ7Cit0eXBlZGVmIHU2NCBf
+X2F0dHJpYnV0ZV9fKChhbGlnbmVkKDQpKSkgX19jb21wYXRfYWxpZ25lZF91NjQ7CisjZWxzZQor
+dHlwZWRlZiBfX3M2NCBfX2NvbXBhdF9hbGlnbmVkX3M2NDsKK3R5cGVkZWYgX191NjQgX19jb21w
+YXRfYWxpZ25lZF91NjQ7CisjZW5kaWYKKworI2VuZGlmIC8qIF9fQVNTRU1CTFlfXyAqLwogCiAj
+ZW5kaWYgLyogX0FTTV9YODZfVFlQRVNfSCAqLwpkaWZmIC0tZ2l0IGEvaW5jbHVkZS91YXBpL2Fz
+bS1nZW5lcmljL2ludC1sbDY0LmggYi9pbmNsdWRlL3VhcGkvYXNtLWdlbmVyaWMvaW50LWxsNjQu
+aAppbmRleCBhODY1OGIyLi4zMzA2OTE3IDEwMDY0NAotLS0gYS9pbmNsdWRlL3VhcGkvYXNtLWdl
+bmVyaWMvaW50LWxsNjQuaAorKysgYi9pbmNsdWRlL3VhcGkvYXNtLWdlbmVyaWMvaW50LWxsNjQu
+aApAQCAtMzMsNiArMzMsOSBAQCB0eXBlZGVmIF9fc2lnbmVkX18gbG9uZyBsb25nIF9fczY0Owog
+dHlwZWRlZiB1bnNpZ25lZCBsb25nIGxvbmcgX191NjQ7CiAjZW5kaWYKIAordHlwZWRlZiBfX3M2
+NCBfX2NvbXBhdF9hbGlnbmVkX3M2NDsKK3R5cGVkZWYgX191NjQgX19jb21wYXRfYWxpZ25lZF91
+NjQ7CisKICNlbmRpZiAvKiBfX0FTU0VNQkxZX18gKi8KIAogCi0tIAoxLjguMS40Cgo=
+--001a11c303f2bd256e04e47ae8d3--
