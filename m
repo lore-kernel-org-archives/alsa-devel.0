@@ -1,19 +1,27 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v10 2/2] ASoC: fsl: Add S/PDIF machine
-	driver
-Date: Thu, 22 Aug 2013 21:05:58 +0100
-Message-ID: <20130822200558.GV26118@sirena.org.uk>
-References: <cover.1377054540.git.b42378@freescale.com>
- <e9cf5e37f858dea78319720f007f66c8c063885f.1377054540.git.b42378@freescale.com>
- <52150763.8020707@wwwdotorg.org> <20130822114027.GA4258@MrMyself>
- <52166CF0.9080402@wwwdotorg.org>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add
+	DAPM	links between codec and cpu DAI
+Date: Thu, 22 Aug 2013 21:16:58 +0100
+Message-ID: <20130822201658.GK6617@n2100.arm.linux.org.uk>
+References: <1376293215.2385.32.camel@loki>
+ <20130812082837.GB23006@n2100.arm.linux.org.uk>
+ <1376405952.2617.101.camel@loki>
+ <20130820102555.GZ23006@n2100.arm.linux.org.uk>
+ <20130820114421.GN30073@sirena.org.uk>
+ <20130820114949.GB23006@n2100.arm.linux.org.uk>
+ <20130820133143.GC23006@n2100.arm.linux.org.uk>
+ <20130820185019.GP30073@sirena.org.uk>
+ <20130820201824.GA17845@n2100.arm.linux.org.uk>
+ <1377199370.2618.99.camel@loki>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8908766943130578022=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 18395261095
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 22:06:04 +0200 (CEST)
-In-Reply-To: <52166CF0.9080402@wwwdotorg.org>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 34EDB261095
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 22:17:15 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1377199370.2618.99.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,71 +31,135 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, festevam@gmail.com, s.hauer@pengutronix.de, Nicolin Chen <b42378@freescale.com>, timur@tabi.org, rob.herring@calxeda.com, tomasz.figa@gmail.com, p.zabel@pengutronix.de, R65777@freescale.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Aug 22, 2013 at 08:22:50PM +0100, Liam Girdwood wrote:
+> On Tue, 2013-08-20 at 21:18 +0100, Russell King - ARM Linux wrote:
+> > On Tue, Aug 20, 2013 at 07:50:19PM +0100, Mark Brown wrote:
+> > > On Tue, Aug 20, 2013 at 02:31:43PM +0100, Russell King - ARM Linux wrote:
+> > > 
+> > > > Let's be a little more clear about that: I don't know how to do that
+> > > > because that's the approach taken by _these_ very patches which you've
+> > > > rejected for "abusing the ASoC core".  That's why I'm asking Liam
+> > > 
+> > > The patches I can recall seeing recently have all had some workarounds
+> > > in the core which would need to be resolved differently, though it's
+> > > possible I missed that being done in some version in your mails as there
+> > > have generally also been a lot of modifications adding debug statements
+> > > in the core.
+> > 
+> > The "workarounds in the core" are because there's bugs in the core that
+> > I have no idea how to solve.  You are allegedly the maintainer for the
+> > core code, and so you should understand that code, so you are best placed
+> > to say how the core code should be fixed.  I'm willing to do the patch
+> > generation to fix them but *you* need to give some guidance here -
+> > something that you seem incapable to do.  At the moment, the only fix I
+> > can see being workable is to comment out the broken bit in the core code.
+> > 
+> 
+> I'll fix this issue as I've replied privately, but you know it's not
+> appropriate to just comment stuff out in core code (especially if you
+> don't fully understand it). I'm sure you would complain loudly to me if
+> I tried to do a similar HACK in the ARM core.
 
---===============8908766943130578022==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1MV0VfA6Y2yiVCnw"
-Content-Disposition: inline
+Hang on, tell me exactly *where* I've asked for the hack to be merged.  The
+answer is: I haven't.  What I've been asking for all along is how this
+should be solved, and getting nowhere - whether I ask in a reasonable and
+calm manner or have to take it to extremes like I have done now.
 
+> > If the problem is that you don't understand the issue, then you could try
+> > replying with some questions about it.
+> > 
+> > If the problem is that you don't understand the code, well... there's not
+> > much point in continuing this discussion until you've had time to study
+> > and understand that code.
+> > 
+> > > If you've got code you think is in a good state to submit then please do
+> > > send it as a normal patch series, the last one I've got here has "ASoC:
+> > > HACK: avoid creating duplicated widgets" as part of it for example.
+> > 
+> > That patch still hasn't gone away, and is still required, because there
+> > has been no guidance or comments about the problem.  Let's explain it
+> > yet again...
+> > 
+> > You have said "there is no problem registering the platform and the CPU
+> > dai from the same device structure".  Let's assume that's a fact and see
+> > what happens in the core code:
+> > 
+> > static int soc_probe_platform(struct snd_soc_card *card,
+> >                            struct snd_soc_platform *platform)
+> > {
+> >         /* Create DAPM widgets for each DAI stream */
+> >         list_for_each_entry(dai, &dai_list, list) {
+> >                 if (dai->dev != platform->dev)
+> >                         continue;
+> > 
+> >                 snd_soc_dapm_new_dai_widgets(&platform->dapm, dai);
+> >         }
+> > }
+> > 
+> > static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
+> > {
+> >         if (!cpu_dai->probed &&
+> >                         cpu_dai->driver->probe_order == order) {
+> >                 if (!cpu_dai->codec) {
+> >                         cpu_dai->dapm.card = card;
+> >                         if (!try_module_get(cpu_dai->dev->driver->owner))
+> >                                 return -ENODEV;
+> > 
+> >                         list_add(&cpu_dai->dapm.list, &card->dapm_list);
+> >                         snd_soc_dapm_new_dai_widgets(&cpu_dai->dapm, cpu_dai);
+> >                 }
+> > 
+> > Now, the CPU DAI is added to the dai_list (it has to be there to be found
+> > so the DAI link can bind it, and so soc_probe_link_dais() can be called.)
+> > 
+> > Think about what happens with the above code if platform->dev is the same
+> > as the device used for the CPU DAI (dai->dev) - which can happen when the
+> > platform and CPU DAI are registered from the same platform_device, which
+> > you claim is legal with ASoC.
+> > 
+> > Now, look at snd_soc_dapm_new_dai_widgets():
+> > 
+> > int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
+> >                                  struct snd_soc_dai *dai)
+> > {
+> >         if (dai->driver->playback.stream_name) {
+> > ...
+> >                 dai->playback_widget = w;
+> >         }
+> >         if (dai->driver->capture.stream_name) {
+> > ...
+> >                 dai->capture_widget = w;
+> >         }
+> > 
+> > What happens if the widgets which are bound to are the first set that
+> > are created, but they're overwritten when the second set get created?
+> > (And that _does_ happen.)  The second set are the ones activated when
+> > the audio device is opened, not the first set.
+> > 
+> > Now, there's nothing new in the above, I've already explained all the
+> > above to you several times.  I've had nothing of any help what so ever
+> > back from you on this.  I've asked you how to solve this.  I've had
+> > absolutely nothing back.  So what am I supposed to do here?  Stuff
+> > doesn't work with the core code how it is, so I took the only solution
+> > _you_ left me by your silence, which is to hack the core code.
+> > 
+> 
+> It does seem that your configuration is different to the configurations
+> that work well on Haswell, OMAP4 and Qualcomm and that's probably why
+> you are the only person reporting this atm. I also think the tight
+> coupling between the I2S and SPDIF HW made your problem far more complex
+> and therefore more difficult (for me at least) to follow when the
+> signal to noise ratio of this and related threads started to
+> deteriorate.
 
---1MV0VfA6Y2yiVCnw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Erm, you have completely the wrong end of the stick here.  This has
+nothing to do with I2S and SPDIF at all.
 
-On Thu, Aug 22, 2013 at 01:56:32PM -0600, Stephen Warren wrote:
-> On 08/22/2013 05:40 AM, Nicolin Chen wrote:
-
-> > Documentation/devicetree/bindings/sound/spdif-receiver.txt
-> > If I understand correctly, this doc for the dummy codec should be invalid?
-
-> Yes, I'm not convinced that binding is a good idea; it describes
-> something that often doesn't actually exist in HW. (Sometimes there's a
-> real S/PDIF receiving device on board, but sometimes there's nothing
-> except a jack/connector).
-
-> It'd be useful if other DT binding maintainers could weigh in on this to
-> confirm/deny my thoughts.
-
-I think the binding should be changed to replace the word "dummy" with
-"generic" and perhaps some verbiage about not requiring software
-configuration.  I think given the unidirectional nature of S/PDIF it's
-reasonable to represent a jack like this - the hardware can't generally
-tell if there's anything at the other end of the link anyway, for all
-pratical purposes the transmit end just has to blindly send.
-
---1MV0VfA6Y2yiVCnw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSFm8iAAoJELSic+t+oim9XT8P/jmtdNchB0XJLs8+fq1fdxS1
-I1YqGnJD4wnRuDGeIkfwz8YR0bd1a+aoiHZTp9CUDWG8tw7awihtZNo74socvriy
-MY9RImLETAGmrsyghYuziU1oV3qvc3hDoH9J66LRRgMEEJIS36KVReyZJ0wh9vpr
-TM8K6WaPkxa8Dr0MxYjrMi0hLTm6TiPPfPZs68H3eIl9wrHcpAFWY96T2OX84XOM
-IbqY6cCEsjNCRbMhEhtj1r6Di5h7AfPsuOf8rXPYVX1nYinpj1ybIY6q1YGgP8xl
-MlaSPUyW6p3jQtgmt/v/Wt5qZOUOVhl/5sp4t65KuoCKnlQ3PB0sC+tBLcmM8URH
-hZ+PDFBKdWumuF7cPrULBBzBsIfCHiTQ2kFCwW4e+Nxg3s1YqYBcwpDA18u7xPLC
-3CLDPsMvAgXQjG0n6/PRAvlaR0bIaoueWi+kKQYu2od6ix+iTYz3UquOTfx801h4
-sabUZDiF3lRQaLhsJNAlzugIcxK8B7UC5uOFRDI0/r26o6MWP4uoGb7Cbx1RDuuP
-wHSLkoW1wmftH+vqXOYPRa9lVFd891VT/Rgdj6DNX3jVp+1lhF/EZ4Iph6xJZlHa
-hqOFDHfvSI+6plyypppJR1tc1yrHZ14echmmEsUDdXDY//HlvFsBjNvjZISlMMoR
-fDNNnuFqdskrYYDtloc6
-=HclX
------END PGP SIGNATURE-----
-
---1MV0VfA6Y2yiVCnw--
-
---===============8908766943130578022==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8908766943130578022==--
+It's about having the _same_ struct device assocated with both the
+platform/DMA backend, registered by snd_soc_register_platform() and
+the CPU DAI registered via snd_soc_register_component().  SPDIF or
+I2S doesn't come into this bug.
