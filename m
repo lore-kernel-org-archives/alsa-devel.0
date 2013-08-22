@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v10 1/2] ASoC: fsl: Add S/PDIF CPU DAI
-	driver
-Date: Thu, 22 Aug 2013 10:45:44 +0100
-Message-ID: <20130822094544.GN26118@sirena.org.uk>
-References: <cover.1377054540.git.b42378@freescale.com>
- <03182ed7464c156ec6345194d3f7ec920f753c2f.1377054540.git.b42378@freescale.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 2/2] ALSA: hda - Add workarounds for
+ pop-noise on Chromebook with ALC283
+Date: Thu, 22 Aug 2013 11:45:57 +0200
+Message-ID: <5215DDD5.6080507@canonical.com>
+References: <1377159669-32767-1-git-send-email-tiwai@suse.de>
+ <1377159669-32767-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7043115622386094512=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 377C726545A
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 11:45:52 +0200 (CEST)
-In-Reply-To: <03182ed7464c156ec6345194d3f7ec920f753c2f.1377054540.git.b42378@freescale.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF9B1265459
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 11:45:58 +0200 (CEST)
+In-Reply-To: <1377159669-32767-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +23,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, swarren@wwwdotorg.org, festevam@gmail.com, s.hauer@pengutronix.de, timur@tabi.org, rob.herring@calxeda.com, tomasz.figa@gmail.com, p.zabel@pengutronix.de, R65777@freescale.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 08/22/2013 10:21 AM, Takashi Iwai wrote:
+> From: Kailang Yang <kailang@realtek.com>
+> 
+> The headphone automute on this machine triggers annoying pop noises.
+> It seems that only the first DAC can be used, the secondary DAC always
+> results in this problem.  This patch disables the secondary DAC with
+> a few additional workarounds.
 
---===============7043115622386094512==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ncX6roZrNNHXnAbh"
-Content-Disposition: inline
+Interesting. I have not heard of any such problems on the ALC283
+machines we have been dealing with. But a secondary DAC problem does
+sound like something codec specific rather than machine specific...
+
+Also a nitpick: It's probably Chromebook, not ChromeBook or Chrome_book.
+
+> 
+> Signed-off-by: Kailang Yang <kailang@realtek.com>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/patch_realtek.c | 45 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 4bdccd1..a97dbba 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -3394,6 +3394,45 @@ static void alc269_fixup_limit_int_mic_boost(struct hda_codec *codec,
+>  	}
+>  }
+>  
+> +static void alc283_hp_automute_hook(struct hda_codec *codec,
+> +				    struct hda_jack_tbl *jack)
+> +{
+> +	struct alc_spec *spec = codec->spec;
+> +	int vref;
+> +
+> +	msleep(200);
+> +	snd_hda_gen_hp_automute(codec, jack);
+> +
+> +	vref = spec->gen.hp_jack_present ? PIN_VREF80 : 0;
+> +
+> +	msleep(600);
+> +	snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL,
+> +			    vref);
+> +}
+> +
+> +static void alc283_chromebook_caps(struct hda_codec *codec)
+> +{
+> +	snd_hda_override_wcaps(codec, 0x03, 0);
+> +}
+> +
+> +static void alc283_fixup_chromebook(struct hda_codec *codec,
+> +				    const struct hda_fixup *fix, int action)
+> +{
+> +	struct alc_spec *spec = codec->spec;
+> +	int val;
+> +
+> +	switch (action) {
+> +	case HDA_FIXUP_ACT_PRE_PROBE:
+> +		alc283_chromebook_caps(codec);
+> +		spec->gen.hp_automute_hook = alc283_hp_automute_hook;
+> +		/* MIC2-VREF control */
+> +		/* Set to manual mode */
+> +		val = alc_read_coef_idx(codec, 0x06);
+> +		alc_write_coef_idx(codec, 0x06, val & ~0x000c);
+> +		break;
+> +	}
+> +}
+> +
+>  enum {
+>  	ALC269_FIXUP_SONY_VAIO,
+>  	ALC275_FIXUP_SONY_VAIO_GPIO2,
+> @@ -3430,6 +3469,7 @@ enum {
+>  	ALC269_FIXUP_ACER_AC700,
+>  	ALC269_FIXUP_LIMIT_INT_MIC_BOOST,
+>  	ALC269VB_FIXUP_ORDISSIMO_EVE2,
+> +	ALC283_FIXUP_CHROME_BOOK,
+>  };
+>  
+>  static const struct hda_fixup alc269_fixups[] = {
+> @@ -3681,6 +3721,10 @@ static const struct hda_fixup alc269_fixups[] = {
+>  			{ }
+>  		},
+>  	},
+> +	[ALC283_FIXUP_CHROME_BOOK] = {
+> +		.type = HDA_FIXUP_FUNC,
+> +		.v.func = alc283_fixup_chromebook,
+> +	},
+>  };
+>  
+>  static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+> @@ -3729,6 +3773,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>  	SND_PCI_QUIRK(0x103c, 0x1973, "HP Pavilion", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+>  	SND_PCI_QUIRK(0x103c, 0x1983, "HP Pavilion", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+>  	SND_PCI_QUIRK_VENDOR(0x103c, "HP", ALC269_FIXUP_HP_MUTE_LED),
+> +	SND_PCI_QUIRK(0x103c, 0x21ed, "HP Falco ChromeBook", ALC283_FIXUP_CHROME_BOOK),
+>  	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+>  	SND_PCI_QUIRK(0x1043, 0x115d, "Asus 1015E", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+>  	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_DMIC),
+> 
 
 
---ncX6roZrNNHXnAbh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Aug 21, 2013 at 11:13:16AM +0800, Nicolin Chen wrote:
-> This patch implements a device-tree-only CPU DAI driver for Freescale
-> S/PDIF controller that supports stereo playback and record feature.
-
-Applied, thanks.
-
---ncX6roZrNNHXnAbh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSFd3FAAoJELSic+t+oim9kQgP/jDdirjb2Fn6NIfXMXDpTmjT
-Lk2cjI5V6CIT5bhAwMhyStETq4vabJZkqNrURenq7y8yxd7dIcTzI8lDcdMR2iFS
-DgifVBvOnhvpo2JYhbgcPiM4q/rwXgveN/j/0mmsyx92VzA+7AMoAGrJ9Bzy6paF
-WEJ6cGv2ccLSMbIlJyYzjVhASZhZe98KFvQg6c+qU0I+muu1f6x2gk/7YsXhpEAy
-kPhGesXZW6JDrXa76FjzyPi92VksvtFrIsTy6w4qD/g+O2DjE1Acp4MMLSHPAmZo
-YvUjEzJhwL1FC7d/rRkEiS2PJHpvYIaIWL6XMJDGv5ARet7xGwOPKxz2tSCG8kPg
-I0/DvhTYWFHs4gPQGWLHM1uNrhdeWJXbQPS6XXgFh9FbTaai80JqWIjnTKfWntpr
-+Z3UJy5BQ6z6mCUSspAPo9J7diVRe9gmZRHgWzrv000n483qpGufVmCEIRKBf0gR
-+cWfkgXUwXxsUrILWuc1gNlENm67y1a8azsQDo6DLnQoXhZZ0NkQQzs8XeyAZlqQ
-tjal+J2FggpRu0ZBkZhhuEvPEcOBxIxjmQw9qOGdQ6jN7KE7D8RZpd4yoWMtjWer
-vfvwV1Z9ulKyL+YfwEwpIitzCUeMp59RQltV4FPc+ji3L3vWrrYIKZ8Kxvy+SeBm
-2NUR8bPu+Gtqgqu5S/sS
-=n3i2
------END PGP SIGNATURE-----
-
---ncX6roZrNNHXnAbh--
-
---===============7043115622386094512==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7043115622386094512==--
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
