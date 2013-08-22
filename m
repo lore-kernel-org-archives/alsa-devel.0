@@ -1,19 +1,16 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 2/2] ALSA: hda - Add workarounds for
- pop-noise on Chromebook with ALC283
-Date: Thu, 22 Aug 2013 11:45:57 +0200
-Message-ID: <5215DDD5.6080507@canonical.com>
-References: <1377159669-32767-1-git-send-email-tiwai@suse.de>
- <1377159669-32767-2-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH -next] ASoC: mmp-pcm: remove duplicated
+ include from mmp-pcm.c
+Date: Thu, 22 Aug 2013 10:50:25 +0100
+Message-ID: <20130822095025.GR26118@sirena.org.uk>
+References: <CAPgLHd9Eey5pbDjQmSquHvJY4zpDBDtp9brzWn-s5P6kaKmvpQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5738191835523830233=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id BF9B1265459
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 11:45:58 +0200 (CEST)
-In-Reply-To: <1377159669-32767-2-git-send-email-tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 60AAE26538B
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 11:50:38 +0200 (CEST)
+In-Reply-To: <CAPgLHd9Eey5pbDjQmSquHvJY4zpDBDtp9brzWn-s5P6kaKmvpQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,112 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux@arm.linux.org.uk, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, haojian.zhuang@gmail.com, yongjun_wei@trendmicro.com.cn, eric.y.miao@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/22/2013 10:21 AM, Takashi Iwai wrote:
-> From: Kailang Yang <kailang@realtek.com>
-> 
-> The headphone automute on this machine triggers annoying pop noises.
-> It seems that only the first DAC can be used, the secondary DAC always
-> results in this problem.  This patch disables the secondary DAC with
-> a few additional workarounds.
 
-Interesting. I have not heard of any such problems on the ALC283
-machines we have been dealing with. But a secondary DAC problem does
-sound like something codec specific rather than machine specific...
-
-Also a nitpick: It's probably Chromebook, not ChromeBook or Chrome_book.
-
-> 
-> Signed-off-by: Kailang Yang <kailang@realtek.com>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/pci/hda/patch_realtek.c | 45 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 4bdccd1..a97dbba 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -3394,6 +3394,45 @@ static void alc269_fixup_limit_int_mic_boost(struct hda_codec *codec,
->  	}
->  }
->  
-> +static void alc283_hp_automute_hook(struct hda_codec *codec,
-> +				    struct hda_jack_tbl *jack)
-> +{
-> +	struct alc_spec *spec = codec->spec;
-> +	int vref;
-> +
-> +	msleep(200);
-> +	snd_hda_gen_hp_automute(codec, jack);
-> +
-> +	vref = spec->gen.hp_jack_present ? PIN_VREF80 : 0;
-> +
-> +	msleep(600);
-> +	snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL,
-> +			    vref);
-> +}
-> +
-> +static void alc283_chromebook_caps(struct hda_codec *codec)
-> +{
-> +	snd_hda_override_wcaps(codec, 0x03, 0);
-> +}
-> +
-> +static void alc283_fixup_chromebook(struct hda_codec *codec,
-> +				    const struct hda_fixup *fix, int action)
-> +{
-> +	struct alc_spec *spec = codec->spec;
-> +	int val;
-> +
-> +	switch (action) {
-> +	case HDA_FIXUP_ACT_PRE_PROBE:
-> +		alc283_chromebook_caps(codec);
-> +		spec->gen.hp_automute_hook = alc283_hp_automute_hook;
-> +		/* MIC2-VREF control */
-> +		/* Set to manual mode */
-> +		val = alc_read_coef_idx(codec, 0x06);
-> +		alc_write_coef_idx(codec, 0x06, val & ~0x000c);
-> +		break;
-> +	}
-> +}
-> +
->  enum {
->  	ALC269_FIXUP_SONY_VAIO,
->  	ALC275_FIXUP_SONY_VAIO_GPIO2,
-> @@ -3430,6 +3469,7 @@ enum {
->  	ALC269_FIXUP_ACER_AC700,
->  	ALC269_FIXUP_LIMIT_INT_MIC_BOOST,
->  	ALC269VB_FIXUP_ORDISSIMO_EVE2,
-> +	ALC283_FIXUP_CHROME_BOOK,
->  };
->  
->  static const struct hda_fixup alc269_fixups[] = {
-> @@ -3681,6 +3721,10 @@ static const struct hda_fixup alc269_fixups[] = {
->  			{ }
->  		},
->  	},
-> +	[ALC283_FIXUP_CHROME_BOOK] = {
-> +		.type = HDA_FIXUP_FUNC,
-> +		.v.func = alc283_fixup_chromebook,
-> +	},
->  };
->  
->  static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-> @@ -3729,6 +3773,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0x103c, 0x1973, "HP Pavilion", ALC269_FIXUP_HP_MUTE_LED_MIC1),
->  	SND_PCI_QUIRK(0x103c, 0x1983, "HP Pavilion", ALC269_FIXUP_HP_MUTE_LED_MIC1),
->  	SND_PCI_QUIRK_VENDOR(0x103c, "HP", ALC269_FIXUP_HP_MUTE_LED),
-> +	SND_PCI_QUIRK(0x103c, 0x21ed, "HP Falco ChromeBook", ALC283_FIXUP_CHROME_BOOK),
->  	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
->  	SND_PCI_QUIRK(0x1043, 0x115d, "Asus 1015E", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
->  	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_DMIC),
-> 
+--===============5738191835523830233==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HywJcj55HbA57jnN"
+Content-Disposition: inline
 
 
+--HywJcj55HbA57jnN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+On Thu, Aug 22, 2013 at 10:37:20AM +0800, Wei Yongjun wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>=20
+> Remove duplicated include.
+
+Sorry, I already applied a patch for this which I saw first (though
+yours was actually sent sooner).  Thanks.
+
+--HywJcj55HbA57jnN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSFd7eAAoJELSic+t+oim9/IUP/A4srfKOEgUtfhcfDKlV/nGj
++ztlHqVM0Dw9HalcqT30hhhwaI4D57xbntxY8Qxvj3HmvvtUXoEij7DA1/IjUsXm
+nC5j/7ymDLv+p6tnvkBrP3QSmTR5ndfFj+DILDZ4b9MbEbfitzNWMyV51BctCaX9
+3ldXg+XeoN+geO+aKlz3u9l7KrAlrBz663MOhLjug4pHjhhtfhv5kJyB5z1fWviW
+Ooyywn90kZdOyoCNuzPdByhOS2LYqHdNKZLZDk+r75f+a+38eDZZJfJQ6X+arXmP
+ak/ZnFSOl4XoX3G80QM490hvnyKemMoXSH62upCvDqOjyCvsT/QMBIrLRz6710pI
+y4MaCjv/I1WKHQqpyWSlRTL2uAcFQ8vRtWUN+kOxjd13CiYCkwXZUXd0YOiKIJNe
+OQ8aI6IdOj7Als19tqcz14YIcXcsGIddynN6Cy2Z7jR87D+9H+TFfsChSUGQf1hN
+RHVmIJhcf8DRAuYl1/t2/2wJPFQYUtmEa5RTS4dwItLs1kqo0Zr6wJmDaCQ4O2F5
+Eq7BbYLyTs/9MWvkHiKY29pRjSDyOHsuvqWWGYdxqDl2KijTZriK/+PjwF4vJgb9
+aSML7NImdSRq0Q1PplyY4c2Gtw49jICWy3vtXL26YlVOKED9bSNHlhUKAHUk6fXt
+lvNWmoEi4i5FoZ208r2u
+=bcH2
+-----END PGP SIGNATURE-----
+
+--HywJcj55HbA57jnN--
+
+--===============5738191835523830233==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5738191835523830233==--
