@@ -1,27 +1,21 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add DAPM
- links between codec and cpu DAI
-Date: Thu, 22 Aug 2013 20:22:50 +0100
-Message-ID: <1377199370.2618.99.camel@loki>
-References: <20130810161123.GW23006@n2100.arm.linux.org.uk>
- <20130810211342.GX23006@n2100.arm.linux.org.uk>
- <1376293215.2385.32.camel@loki>
- <20130812082837.GB23006@n2100.arm.linux.org.uk>
- <1376405952.2617.101.camel@loki>
- <20130820102555.GZ23006@n2100.arm.linux.org.uk>
- <20130820114421.GN30073@sirena.org.uk>
- <20130820114949.GB23006@n2100.arm.linux.org.uk>
- <20130820133143.GC23006@n2100.arm.linux.org.uk>
- <20130820185019.GP30073@sirena.org.uk>
- <20130820201824.GA17845@n2100.arm.linux.org.uk>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH v2 00/10] ALSA: usb-audio: fix
+ playback/capture concurrent usage
+Date: Thu, 22 Aug 2013 21:36:52 +0200
+Message-ID: <52166854.2040208@gmail.com>
+References: <1377121085-20563-1-git-send-email-eldad@fogrefinery.com>
+ <5215AB8D.8020001@gmail.com> <alpine.LNX.2.00.1308221932490.1343@heraclitus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id EB6CB2608D2
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 21:22:54 +0200 (CEST)
-In-Reply-To: <20130820201824.GA17845@n2100.arm.linux.org.uk>
+Received: from mail-ea0-f179.google.com (mail-ea0-f179.google.com
+ [209.85.215.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 21A6A2608E9
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 21:36:56 +0200 (CEST)
+Received: by mail-ea0-f179.google.com with SMTP id b10so1095279eae.10
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 12:36:55 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1308221932490.1343@heraclitus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,135 +25,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Eldad Zack <eldad@fogrefinery.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2013-08-20 at 21:18 +0100, Russell King - ARM Linux wrote:
-> On Tue, Aug 20, 2013 at 07:50:19PM +0100, Mark Brown wrote:
-> > On Tue, Aug 20, 2013 at 02:31:43PM +0100, Russell King - ARM Linux wrote:
-> > 
-> > > Let's be a little more clear about that: I don't know how to do that
-> > > because that's the approach taken by _these_ very patches which you've
-> > > rejected for "abusing the ASoC core".  That's why I'm asking Liam
-> > 
-> > The patches I can recall seeing recently have all had some workarounds
-> > in the core which would need to be resolved differently, though it's
-> > possible I missed that being done in some version in your mails as there
-> > have generally also been a lot of modifications adding debug statements
-> > in the core.
+On 22.08.2013 19:43, Eldad Zack wrote:
+> On Thu, 22 Aug 2013, Daniel Mack wrote:
+>> On 21.08.2013 23:37, Eldad Zack wrote:
+>>> Hi,
+>>>
+>>> This patch series attempts to fix a long starting problem with the concurrent
+>>> usage of playback and capture on implicit feedback devices.
+>>>
+>>> Applies against current for-next (HEAD b43dd416be21bc8ad60984e13def032f01aaaa18 ).
+>>
+>> Thanks a lot for working on this! I'll give that series a test run tonight.
 > 
-> The "workarounds in the core" are because there's bugs in the core that
-> I have no idea how to solve.  You are allegedly the maintainer for the
-> core code, and so you should understand that code, so you are best placed
-> to say how the core code should be fixed.  I'm willing to do the patch
-> generation to fix them but *you* need to give some guidance here -
-> something that you seem incapable to do.  At the moment, the only fix I
-> can see being workable is to comment out the broken bit in the core code.
-> 
+> That's great, thanks!
 
-I'll fix this issue as I've replied privately, but you know it's not
-appropriate to just comment stuff out in core code (especially if you
-don't fully understand it). I'm sure you would complain loudly to me if
-I tried to do a similar HACK in the ARM core.
+So, with your patches applied, I'm getting the NULL pointer Oops below
+just by plugging in a UAC2 sound card.
 
-> If the problem is that you don't understand the issue, then you could try
-> replying with some questions about it.
-> 
-> If the problem is that you don't understand the code, well... there's not
-> much point in continuing this discussion until you've had time to study
-> and understand that code.
-> 
-> > If you've got code you think is in a good state to submit then please do
-> > send it as a normal patch series, the last one I've got here has "ASoC:
-> > HACK: avoid creating duplicated widgets" as part of it for example.
-> 
-> That patch still hasn't gone away, and is still required, because there
-> has been no guidance or comments about the problem.  Let's explain it
-> yet again...
-> 
-> You have said "there is no problem registering the platform and the CPU
-> dai from the same device structure".  Let's assume that's a fact and see
-> what happens in the core code:
-> 
-> static int soc_probe_platform(struct snd_soc_card *card,
->                            struct snd_soc_platform *platform)
-> {
->         /* Create DAPM widgets for each DAI stream */
->         list_for_each_entry(dai, &dai_list, list) {
->                 if (dai->dev != platform->dev)
->                         continue;
-> 
->                 snd_soc_dapm_new_dai_widgets(&platform->dapm, dai);
->         }
-> }
-> 
-> static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
-> {
->         if (!cpu_dai->probed &&
->                         cpu_dai->driver->probe_order == order) {
->                 if (!cpu_dai->codec) {
->                         cpu_dai->dapm.card = card;
->                         if (!try_module_get(cpu_dai->dev->driver->owner))
->                                 return -ENODEV;
-> 
->                         list_add(&cpu_dai->dapm.list, &card->dapm_list);
->                         snd_soc_dapm_new_dai_widgets(&cpu_dai->dapm, cpu_dai);
->                 }
-> 
-> Now, the CPU DAI is added to the dai_list (it has to be there to be found
-> so the DAI link can bind it, and so soc_probe_link_dais() can be called.)
-> 
-> Think about what happens with the above code if platform->dev is the same
-> as the device used for the CPU DAI (dai->dev) - which can happen when the
-> platform and CPU DAI are registered from the same platform_device, which
-> you claim is legal with ASoC.
-> 
-> Now, look at snd_soc_dapm_new_dai_widgets():
-> 
-> int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
->                                  struct snd_soc_dai *dai)
-> {
->         if (dai->driver->playback.stream_name) {
-> ...
->                 dai->playback_widget = w;
->         }
->         if (dai->driver->capture.stream_name) {
-> ...
->                 dai->capture_widget = w;
->         }
-> 
-> What happens if the widgets which are bound to are the first set that
-> are created, but they're overwritten when the second set get created?
-> (And that _does_ happen.)  The second set are the ones activated when
-> the audio device is opened, not the first set.
-> 
-> Now, there's nothing new in the above, I've already explained all the
-> above to you several times.  I've had nothing of any help what so ever
-> back from you on this.  I've asked you how to solve this.  I've had
-> absolutely nothing back.  So what am I supposed to do here?  Stuff
-> doesn't work with the core code how it is, so I took the only solution
-> _you_ left me by your silence, which is to hack the core code.
-> 
+Note that on this system, pulseaudio is running and grabs the new card
+immediately, then closes it again. That might be different on your machine.
 
-It does seem that your configuration is different to the configurations
-that work well on Haswell, OMAP4 and Qualcomm and that's probably why
-you are the only person reporting this atm. I also think the tight
-coupling between the I2S and SPDIF HW made your problem far more complex
-and therefore more difficult (for me at least) to follow when the
-signal to noise ratio of this and related threads started to
-deteriorate.
+Do you want me to dig deeper or do you have an idea already?
 
-Both Mark and are are happy to fix things, but please remember that we
-can't just jump and schedule this work in as top priority, we have to
-prioritise work on severity and impact alongside that of our employers
-and customers. I'm sure if things were the other way around (e.g the
-problem was in the ARM core) then Mark would have to wait for you to
-respond and fix the issue in your time frame. I'm also certain Mark
-would not start making the conversation personal either.
 
-As I've said, I'll do a proper fix for patch 4 and CC you on the
-submission. The rest of the series looked ok and then I'm sure Mark will
-take it.
+Best regards,
+Daniel
 
-Liam 
+
+(sorry for the broken formatting):
+
+Aug 23 03:32:46 glossy kernel: [  511.728348] BUG: unable to handle
+kernel NULL pointer dereference at 00000018
+Aug 23 03:32:46 glossy kernel: [  511.728559] IP: [<f90631a2>]
+snd_usb_pcm_close.isra.13+0x42/0x70 [snd_usb_audio]
+Aug 23 03:32:46 glossy kernel: [  511.728773] *pde = 00000000
+Aug 23 03:32:46 glossy kernel: [  511.728859] Oops: 0002 [#1] SMP
+Aug 23 03:32:46 glossy kernel: [  511.728959] Modules linked in:
+snd_usb_audio snd_usbmidi_lib arc4 brcmsmac mac80211 bcma brcmutil
+cfg80211 cordic rfcomm bnep parport_pc ppdev snd_hda_codec_realtek
+snd_hda_intel snd_hda_codec snd_hwdep snd_pcm snd_seq_midi snd_rawmidi
+snd_seq_midi_event snd_seq snd_timer joydev snd_seq_device btusb
+bluetooth snd i915 soundcore snd_page_alloc samsung_laptop psmouse
+mac_hid serio_raw drm_kms_helper drm i2c_algo_bit video binfmt_misc lp
+parport sky2
+Aug 23 03:32:46 glossy kernel: [  511.730307] CPU: 1 PID: 1673 Comm:
+pulseaudio Tainted: G        W    3.11.0-rc5-custom+ #22
+Aug 23 03:32:46 glossy kernel: [  511.730510] Hardware name: SAMSUNG
+ELECTRONICS CO., LTD. N150P/N210P/N220P          /N150P/N210P/N220P
+     , BIOS 01KY.M008.20100430.RHU 04/30/2010
+Aug 23 03:32:46 glossy kernel: [  511.730844] task: f50772c0 ti:
+f4d92000 task.ti: f4d92000
+Aug 23 03:32:46 glossy kernel: [  511.730980] EIP: 0060:[<f90631a2>]
+EFLAGS: 00010286 CPU: 1
+Aug 23 03:32:46 glossy kernel: [  511.731134] EIP is at
+snd_usb_pcm_close.isra.13+0x42/0x70 [snd_usb_audio]
+Aug 23 03:32:46 glossy kernel: [  511.731307] EAX: 00000000 EBX:
+f6b64e10 ECX: f9061fc0 EDX: ffffffff
+Aug 23 03:32:46 glossy kernel: [  511.731461] ESI: f6b64e00 EDI:
+d97a0540 EBP: f4d93f18 ESP: f4d93f10
+Aug 23 03:32:46 glossy kernel: [  511.731619]  DS: 007b ES: 007b FS:
+00d8 GS: 00e0 SS: 0068
+Aug 23 03:32:46 glossy kernel: [  511.731760] CR0: 80050033 CR2:
+00000018 CR3: 34fc4000 CR4: 000007d0
+Aug 23 03:32:46 glossy kernel: [  511.731918] Stack:
+Aug 23 03:32:46 glossy kernel: [  511.731977]  ecf13e00 ecf13e00
+f4d93f20 f9063202 f4d93f30 f8426fcc f6b64800 ecf13e00
+Aug 23 03:32:46 glossy kernel: [  511.732025]  f4d93f50 f842705b
+00000000 d9623d50 f6b648e8 d97a0540 00000008 f4f1f7a4
+Aug 23 03:32:46 glossy kernel: [  511.732025]  f4d93f80 c11463b6
+00000001 00000000 00000000 d97a0548 f60c8d90 d43b3900
+Aug 23 03:32:46 glossy kernel: [  511.732025] Call Trace:
+Aug 23 03:32:46 glossy kernel: [  511.732025]  [<f9063202>]
+snd_usb_playback_close+0x12/0x20 [snd_usb_audio]
+Aug 23 03:32:46 glossy kernel: [  511.732025]  [<f8426fcc>]
+snd_pcm_release_substream+0x5c/0xb0 [snd_pcm]
+Aug 23 03:32:46 glossy kernel: [  511.732025]  [<f842705b>]
+snd_pcm_release+0x3b/0xa0 [snd_pcm]
+Aug 23 03:32:46 glossy kernel: [  511.732025]  [<c11463b6>]
+__fput+0xc6/0x1f0
+Aug 23 03:32:46 glossy kernel: [  511.732025]  [<c114651d>]
+____fput+0xd/0x10
+Aug 23 03:32:46 glossy kernel: [  511.732025]  [<c1059fa1>]
+task_work_run+0x81/0xa0
+Aug 23 03:32:46 glossy kernel: [  511.732025]  [<c1002189>]
+do_notify_resume+0x49/0x70
+Aug 23 03:32:46 glossy kernel: [  511.732025]  [<c159b113>]
+work_notifysig+0x24/0x29
