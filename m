@@ -1,27 +1,22 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add
-	DAPM	links between codec and cpu DAI
-Date: Thu, 22 Aug 2013 21:16:58 +0100
-Message-ID: <20130822201658.GK6617@n2100.arm.linux.org.uk>
-References: <1376293215.2385.32.camel@loki>
- <20130812082837.GB23006@n2100.arm.linux.org.uk>
- <1376405952.2617.101.camel@loki>
- <20130820102555.GZ23006@n2100.arm.linux.org.uk>
- <20130820114421.GN30073@sirena.org.uk>
- <20130820114949.GB23006@n2100.arm.linux.org.uk>
- <20130820133143.GC23006@n2100.arm.linux.org.uk>
- <20130820185019.GP30073@sirena.org.uk>
- <20130820201824.GA17845@n2100.arm.linux.org.uk>
- <1377199370.2618.99.camel@loki>
+From: Eldad Zack <eldad@fogrefinery.com>
+Subject: Re: [PATCH v2 00/10] ALSA: usb-audio: fix
+ playback/capture concurrent usage
+Date: Thu, 22 Aug 2013 22:48:34 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1308222240130.6085@heraclitus>
+References: <1377121085-20563-1-git-send-email-eldad@fogrefinery.com>
+ <5215AB8D.8020001@gmail.com> <alpine.LNX.2.00.1308221932490.1343@heraclitus>
+ <52166854.2040208@gmail.com> <alpine.LNX.2.00.1308222144100.20668@heraclitus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 34EDB261095
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 22:17:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1377199370.2618.99.camel@loki>
+Received: from mail-bk0-f47.google.com (mail-bk0-f47.google.com
+ [209.85.214.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A0C72610C5
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 22:48:45 +0200 (CEST)
+Received: by mail-bk0-f47.google.com with SMTP id mx12so890157bkb.34
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 13:48:44 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1308222144100.20668@heraclitus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,135 +26,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 22, 2013 at 08:22:50PM +0100, Liam Girdwood wrote:
-> On Tue, 2013-08-20 at 21:18 +0100, Russell King - ARM Linux wrote:
-> > On Tue, Aug 20, 2013 at 07:50:19PM +0100, Mark Brown wrote:
-> > > On Tue, Aug 20, 2013 at 02:31:43PM +0100, Russell King - ARM Linux wrote:
+
+
+On Thu, 22 Aug 2013, Eldad Zack wrote:
+> On Thu, 22 Aug 2013, Daniel Mack wrote:
+> > On 22.08.2013 19:43, Eldad Zack wrote:
+> > > On Thu, 22 Aug 2013, Daniel Mack wrote:
+> > >> On 21.08.2013 23:37, Eldad Zack wrote:
+> > >>> Hi,
+> > >>>
+> > >>> This patch series attempts to fix a long starting problem with the concurrent
+> > >>> usage of playback and capture on implicit feedback devices.
+> > >>>
+> > >>> Applies against current for-next (HEAD b43dd416be21bc8ad60984e13def032f01aaaa18 ).
+> > >>
+> > >> Thanks a lot for working on this! I'll give that series a test run tonight.
 > > > 
-> > > > Let's be a little more clear about that: I don't know how to do that
-> > > > because that's the approach taken by _these_ very patches which you've
-> > > > rejected for "abusing the ASoC core".  That's why I'm asking Liam
-> > > 
-> > > The patches I can recall seeing recently have all had some workarounds
-> > > in the core which would need to be resolved differently, though it's
-> > > possible I missed that being done in some version in your mails as there
-> > > have generally also been a lot of modifications adding debug statements
-> > > in the core.
+> > > That's great, thanks!
 > > 
-> > The "workarounds in the core" are because there's bugs in the core that
-> > I have no idea how to solve.  You are allegedly the maintainer for the
-> > core code, and so you should understand that code, so you are best placed
-> > to say how the core code should be fixed.  I'm willing to do the patch
-> > generation to fix them but *you* need to give some guidance here -
-> > something that you seem incapable to do.  At the moment, the only fix I
-> > can see being workable is to comment out the broken bit in the core code.
+> > So, with your patches applied, I'm getting the NULL pointer Oops below
+> > just by plugging in a UAC2 sound card.
 > > 
+> > Note that on this system, pulseaudio is running and grabs the new card
+> > immediately, then closes it again. That might be different on your machine.
+> > 
+> > Do you want me to dig deeper or do you have an idea already?
 > 
-> I'll fix this issue as I've replied privately, but you know it's not
-> appropriate to just comment stuff out in core code (especially if you
-> don't fully understand it). I'm sure you would complain loudly to me if
-> I tried to do a similar HACK in the ARM core.
-
-Hang on, tell me exactly *where* I've asked for the hack to be merged.  The
-answer is: I haven't.  What I've been asking for all along is how this
-should be solved, and getting nowhere - whether I ask in a reasonable and
-calm manner or have to take it to extremes like I have done now.
-
-> > If the problem is that you don't understand the issue, then you could try
-> > replying with some questions about it.
-> > 
-> > If the problem is that you don't understand the code, well... there's not
-> > much point in continuing this discussion until you've had time to study
-> > and understand that code.
-> > 
-> > > If you've got code you think is in a good state to submit then please do
-> > > send it as a normal patch series, the last one I've got here has "ASoC:
-> > > HACK: avoid creating duplicated widgets" as part of it for example.
-> > 
-> > That patch still hasn't gone away, and is still required, because there
-> > has been no guidance or comments about the problem.  Let's explain it
-> > yet again...
-> > 
-> > You have said "there is no problem registering the platform and the CPU
-> > dai from the same device structure".  Let's assume that's a fact and see
-> > what happens in the core code:
-> > 
-> > static int soc_probe_platform(struct snd_soc_card *card,
-> >                            struct snd_soc_platform *platform)
-> > {
-> >         /* Create DAPM widgets for each DAI stream */
-> >         list_for_each_entry(dai, &dai_list, list) {
-> >                 if (dai->dev != platform->dev)
-> >                         continue;
-> > 
-> >                 snd_soc_dapm_new_dai_widgets(&platform->dapm, dai);
-> >         }
-> > }
-> > 
-> > static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
-> > {
-> >         if (!cpu_dai->probed &&
-> >                         cpu_dai->driver->probe_order == order) {
-> >                 if (!cpu_dai->codec) {
-> >                         cpu_dai->dapm.card = card;
-> >                         if (!try_module_get(cpu_dai->dev->driver->owner))
-> >                                 return -ENODEV;
-> > 
-> >                         list_add(&cpu_dai->dapm.list, &card->dapm_list);
-> >                         snd_soc_dapm_new_dai_widgets(&cpu_dai->dapm, cpu_dai);
-> >                 }
-> > 
-> > Now, the CPU DAI is added to the dai_list (it has to be there to be found
-> > so the DAI link can bind it, and so soc_probe_link_dais() can be called.)
-> > 
-> > Think about what happens with the above code if platform->dev is the same
-> > as the device used for the CPU DAI (dai->dev) - which can happen when the
-> > platform and CPU DAI are registered from the same platform_device, which
-> > you claim is legal with ASoC.
-> > 
-> > Now, look at snd_soc_dapm_new_dai_widgets():
-> > 
-> > int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
-> >                                  struct snd_soc_dai *dai)
-> > {
-> >         if (dai->driver->playback.stream_name) {
-> > ...
-> >                 dai->playback_widget = w;
-> >         }
-> >         if (dai->driver->capture.stream_name) {
-> > ...
-> >                 dai->capture_widget = w;
-> >         }
-> > 
-> > What happens if the widgets which are bound to are the first set that
-> > are created, but they're overwritten when the second set get created?
-> > (And that _does_ happen.)  The second set are the ones activated when
-> > the audio device is opened, not the first set.
-> > 
-> > Now, there's nothing new in the above, I've already explained all the
-> > above to you several times.  I've had nothing of any help what so ever
-> > back from you on this.  I've asked you how to solve this.  I've had
-> > absolutely nothing back.  So what am I supposed to do here?  Stuff
-> > doesn't work with the core code how it is, so I took the only solution
-> > _you_ left me by your silence, which is to hack the core code.
-> > 
+> Oh, I think that data_endpoint just doesn't get initialized yet, 
+> because it opens and closes immediately.
 > 
-> It does seem that your configuration is different to the configurations
-> that work well on Haswell, OMAP4 and Qualcomm and that's probably why
-> you are the only person reporting this atm. I also think the tight
-> coupling between the I2S and SPDIF HW made your problem far more complex
-> and therefore more difficult (for me at least) to follow when the
-> signal to noise ratio of this and related threads started to
-> deteriorate.
+> Does this fix it?
 
-Erm, you have completely the wrong end of the stick here.  This has
-nothing to do with I2S and SPDIF at all.
+OK, I could easily reproduce this, though I don't have pulseaudio 
+installed. Luckily I started working on a regression tester, so I 
+modified it to just open and close (it's trivial, but if anyone is 
+interested, I can post it). 
+This fixes it for me.
 
-It's about having the _same_ struct device assocated with both the
-platform/DMA backend, registered by snd_soc_register_platform() and
-the CPU DAI registered via snd_soc_register_component().  SPDIF or
-I2S doesn't come into this bug.
+Sorry about the oops and thank you very much for testing!
+
+I also need to fix an error in the code (the altset_idx/altsetting issue 
+Clemens pointed out), so you might want to wait until I post a revised 
+patchset.
+
+Cheers,
+Eldad
