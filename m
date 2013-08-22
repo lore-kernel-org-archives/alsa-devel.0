@@ -1,130 +1,112 @@
-From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v5 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Thu, 22 Aug 2013 13:09:31 +0100
-Message-ID: <20130822120930.GD9799@e106331-lin.cambridge.arm.com>
-References: <cover.1376565456.git.b42378@freescale.com>
- <20130820000625.4443.23018@quantum>
- <20130821085015.GY3719@e106331-lin.cambridge.arm.com>
- <2207416.NJhrdSqkEZ@flatron> <20130822071910.8231.47324@quantum>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Content-Disposition: inline
-In-Reply-To: <20130822071910.8231.47324@quantum>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Mike Turquette <mturquette@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, Pawel Moll <Pawel.Moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "festevam@gmail.com" <festevam@gmail.com>, Nicolin Chen <b42378@freescale.com>, Tomasz Figa <tomasz.figa@gmail.com>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "timur@tabi.org" <timur@tabi.org>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "galak@codeaurora.org" <galak@codeaurora.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: [PATCH] ASoC: samsung: Fix build error with dma function rename
+Date: Thu, 22 Aug 2013 18:15:02 +0530
+Message-ID: <1377175502-6169-1-git-send-email-tushar.behera@linaro.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
+Cc: broonie@kernel.org, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 22, 2013 at 08:19:10AM +0100, Mike Turquette wrote:
-> Quoting Tomasz Figa (2013-08-21 14:34:55)
-> > On Wednesday 21 of August 2013 09:50:15 Mark Rutland wrote:
-> > > On Tue, Aug 20, 2013 at 01:06:25AM +0100, Mike Turquette wrote:
-> > > > Quoting Mark Rutland (2013-08-19 02:35:43)
-> > > > 
-> > > > > On Sat, Aug 17, 2013 at 04:17:18PM +0100, Tomasz Figa wrote:
-> > > > > > On Saturday 17 of August 2013 16:53:16 Sascha Hauer wrote:
-> > > > > > > On Sat, Aug 17, 2013 at 02:28:04PM +0200, Tomasz Figa wrote:
-> > > > > > > > > > > Also I would make this option required. Use a dummy
-> > > > > > > > > > > clock for
-> > > > > > > > > > > mux
-> > > > > > > > > > > inputs that are grounded for a specific SoC.
-> > > > > > > > > > 
-> > > > > > > > > > Some clocks are not from CCM and we haven't defined in
-> > > > > > > > > > imx6q-clk.txt,
-> > > > > > > > > > so in most cases we can't provide a phandle for them, eg:
-> > > > > > > > > > spdif_ext.
-> > > > > > > > > > I think it's a bit hard to force it to be 'required'. An
-> > > > > > > > > > 'optional'
-> > > > > > > > > > looks more flexible to me and a default one is ensured
-> > > > > > > > > > even if
-> > > > > > > > > > it's
-> > > > > > > > > > missing.
-> > > > > > > > > 
-> > > > > > > > > <&clks 0> is the dummy clock. This can be used for all input
-> > > > > > > > > clocks
-> > > > > > > > > not
-> > > > > > > > > defined by the SoC.
-> > > > > > > > 
-> > > > > > > > Where does this assumption come from? Is it documented
-> > > > > > > > anywhere?
-> > > > > > > 
-> > > > > > > This is how all i.MX clock bindings currently are. See
-> > > > > > > Documentation/devicetree/bindings/clock/imx*-clock.txt
-> > > > > > 
-> > > > > > OK, thanks.
-> > > > > > 
-> > > > > > I guess we need some discussion on dummy clocks vs skipped clocks.
-> > > > > > I think we want some consistency on this, don't we?
-> > > > > > 
-> > > > > > If we really need a dummy clock, then we might also want a generic
-> > > > > > way to specify it.
-> > > > > 
-> > > > > What do we actually mean by a "dummy clock"? We already have
-> > > > > bindings
-> > > > > for "fixed-clock" and co friends describe relatively simple
-> > > > > preconfigured clocks.
-> > > > 
-> > > > Some platforms have a fake clock which defines noops callbacks and
-> > > > basically doesn't do anything. This is analogous to the dummy
-> > > > regulator
-> > > > implementation. A central one could be registered by the clock core,
-> > > > as
-> > > > is done by the regulator core.
-> > > 
-> > > When you say some platforms, you presumably mean the platform code in
-> > > Linux? A dummy clock sounds like a completely Linux-specific abstraction
-> > > rather than a description of the hardware, and I don't see why we need
-> > > that in the DT:
-> > > 
-> > > * If a clock is wired up and running (as presumably the dummy clock is),
-> > > then surely it's a fixed-clock (it's running, we and we have no control
-> > > over it, but we presumably know its rate) and can be described as such?
-> > > 
-> > > * If no clock is wired up, then we should be able to describe that. If a
-> > > driver believes that a clock is required when it isn't (for some level
-> > > of functionality), then that driver should be fixed up to support the
-> > > clock as being optional.
-> > > 
-> > > Am I missing something?
-> > 
-> > I second that.
-> > 
-> > Moreover, I don't think that device tree should deal with dummy anything. 
-> > It should be able to describe hardware that is available on given system, 
-> > not list what hardware is not available.
-> 
-> I wasn't clear. The dummy clock IS a completely Linux-specific
-> abstraction.
-> 
-> I'm not advocating a dummy clock in DT. I am advocating consolidation of
-> the implementation of a clock that does nothing into the clock core.
-> This code could easily live in drivers/clk/clk.c instead of having
-> everyone open-code it.
-> 
-> As far as specifying a dummy clock in DT? I dunno. DT should describe
-> real hardware so there isn't much use for a dummy clock.
+commit 85ff3c29d720 ("ASoC: samsung: Rename DMA platform registration
+functions") renames the DMA registration functions. Fix the places where
+it was left out.
 
+Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
+---
+ sound/soc/samsung/pcm.c         |    4 ++--
+ sound/soc/samsung/s3c2412-i2s.c |    4 ++--
+ sound/soc/samsung/s3c24xx-i2s.c |    4 ++--
+ sound/soc/samsung/spdif.c       |    4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-Sorry, I misunderstood. Good to hear we're on the same page :)
-
-> 
-> I'm guessing one of the reasons for such a clock are drivers do not
-> honor the clk.h api and they freak out when clk_get gives them a NULL
-> pointer?
-
-I'm not sure. Sascha, could you shed some light on the matter?
-
-Thanks,
-Mark.
+diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
+index 1566afe..e54256f 100644
+--- a/sound/soc/samsung/pcm.c
++++ b/sound/soc/samsung/pcm.c
+@@ -594,7 +594,7 @@ static int s3c_pcm_dev_probe(struct platform_device *pdev)
+ 		goto err5;
+ 	}
+ 
+-	ret = asoc_dma_platform_register(&pdev->dev);
++	ret = samsung_asoc_dma_platform_register(&pdev->dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to get register DMA: %d\n", ret);
+ 		goto err6;
+@@ -623,7 +623,7 @@ static int s3c_pcm_dev_remove(struct platform_device *pdev)
+ 	struct s3c_pcm_info *pcm = &s3c_pcm[pdev->id];
+ 	struct resource *mem_res;
+ 
+-	asoc_dma_platform_unregister(&pdev->dev);
++	samsung_asoc_dma_platform_unregister(&pdev->dev);
+ 	snd_soc_unregister_component(&pdev->dev);
+ 
+ 	pm_runtime_disable(&pdev->dev);
+diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+index 47e2386..ea885cb 100644
+--- a/sound/soc/samsung/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -176,7 +176,7 @@ static int s3c2412_iis_dev_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	ret = asoc_dma_platform_register(&pdev->dev);
++	ret = samsung_asoc_dma_platform_register(&pdev->dev);
+ 	if (ret) {
+ 		pr_err("failed to register the DMA: %d\n", ret);
+ 		goto err;
+@@ -190,7 +190,7 @@ err:
+ 
+ static int s3c2412_iis_dev_remove(struct platform_device *pdev)
+ {
+-	asoc_dma_platform_unregister(&pdev->dev);
++	samsung_asoc_dma_platform_unregister(&pdev->dev);
+ 	snd_soc_unregister_component(&pdev->dev);
+ 	return 0;
+ }
+diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+index 8b34145..9c8ebd8 100644
+--- a/sound/soc/samsung/s3c24xx-i2s.c
++++ b/sound/soc/samsung/s3c24xx-i2s.c
+@@ -480,7 +480,7 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	ret = asoc_dma_platform_register(&pdev->dev);
++	ret = samsung_asoc_dma_platform_register(&pdev->dev);
+ 	if (ret) {
+ 		pr_err("failed to register the dma: %d\n", ret);
+ 		goto err;
+@@ -494,7 +494,7 @@ err:
+ 
+ static int s3c24xx_iis_dev_remove(struct platform_device *pdev)
+ {
+-	asoc_dma_platform_unregister(&pdev->dev);
++	samsung_asoc_dma_platform_unregister(&pdev->dev);
+ 	snd_soc_unregister_component(&pdev->dev);
+ 	return 0;
+ }
+diff --git a/sound/soc/samsung/spdif.c b/sound/soc/samsung/spdif.c
+index 5ea70ab..28487dc 100644
+--- a/sound/soc/samsung/spdif.c
++++ b/sound/soc/samsung/spdif.c
+@@ -442,7 +442,7 @@ static int spdif_probe(struct platform_device *pdev)
+ 
+ 	spdif->dma_playback = &spdif_stereo_out;
+ 
+-	ret = asoc_dma_platform_register(&pdev->dev);
++	ret = samsung_asoc_dma_platform_register(&pdev->dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to register DMA: %d\n", ret);
+ 		goto err5;
+@@ -468,7 +468,7 @@ static int spdif_remove(struct platform_device *pdev)
+ 	struct samsung_spdif_info *spdif = &spdif_info;
+ 	struct resource *mem_res;
+ 
+-	asoc_dma_platform_unregister(&pdev->dev);
++	samsung_asoc_dma_platform_unregister(&pdev->dev);
+ 	snd_soc_unregister_component(&pdev->dev);
+ 
+ 	iounmap(spdif->regs);
+-- 
+1.7.9.5
