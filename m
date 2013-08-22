@@ -1,16 +1,27 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 1/1] ASoc: kirkwood: add DT support to
- the mvebu audio subsystem
-Date: Thu, 22 Aug 2013 20:03:04 +0100
-Message-ID: <20130822190304.GT26118@sirena.org.uk>
-References: <20130814122733.5c0fd2cb@armhf>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add DAPM
+ links between codec and cpu DAI
+Date: Thu, 22 Aug 2013 20:22:50 +0100
+Message-ID: <1377199370.2618.99.camel@loki>
+References: <20130810161123.GW23006@n2100.arm.linux.org.uk>
+ <20130810211342.GX23006@n2100.arm.linux.org.uk>
+ <1376293215.2385.32.camel@loki>
+ <20130812082837.GB23006@n2100.arm.linux.org.uk>
+ <1376405952.2617.101.camel@loki>
+ <20130820102555.GZ23006@n2100.arm.linux.org.uk>
+ <20130820114421.GN30073@sirena.org.uk>
+ <20130820114949.GB23006@n2100.arm.linux.org.uk>
+ <20130820133143.GC23006@n2100.arm.linux.org.uk>
+ <20130820185019.GP30073@sirena.org.uk>
+ <20130820201824.GA17845@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4609611162726111984=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CABF260866
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 21:03:11 +0200 (CEST)
-In-Reply-To: <20130814122733.5c0fd2cb@armhf>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB6CB2608D2
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 21:22:54 +0200 (CEST)
+In-Reply-To: <20130820201824.GA17845@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +31,135 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2013-08-20 at 21:18 +0100, Russell King - ARM Linux wrote:
+> On Tue, Aug 20, 2013 at 07:50:19PM +0100, Mark Brown wrote:
+> > On Tue, Aug 20, 2013 at 02:31:43PM +0100, Russell King - ARM Linux wrote:
+> > 
+> > > Let's be a little more clear about that: I don't know how to do that
+> > > because that's the approach taken by _these_ very patches which you've
+> > > rejected for "abusing the ASoC core".  That's why I'm asking Liam
+> > 
+> > The patches I can recall seeing recently have all had some workarounds
+> > in the core which would need to be resolved differently, though it's
+> > possible I missed that being done in some version in your mails as there
+> > have generally also been a lot of modifications adding debug statements
+> > in the core.
+> 
+> The "workarounds in the core" are because there's bugs in the core that
+> I have no idea how to solve.  You are allegedly the maintainer for the
+> core code, and so you should understand that code, so you are best placed
+> to say how the core code should be fixed.  I'm willing to do the patch
+> generation to fix them but *you* need to give some guidance here -
+> something that you seem incapable to do.  At the moment, the only fix I
+> can see being workable is to comment out the broken bit in the core code.
+> 
 
---===============4609611162726111984==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="p19/OaUkOQckSefz"
-Content-Disposition: inline
+I'll fix this issue as I've replied privately, but you know it's not
+appropriate to just comment stuff out in core code (especially if you
+don't fully understand it). I'm sure you would complain loudly to me if
+I tried to do a similar HACK in the ARM core.
 
+> If the problem is that you don't understand the issue, then you could try
+> replying with some questions about it.
+> 
+> If the problem is that you don't understand the code, well... there's not
+> much point in continuing this discussion until you've had time to study
+> and understand that code.
+> 
+> > If you've got code you think is in a good state to submit then please do
+> > send it as a normal patch series, the last one I've got here has "ASoC:
+> > HACK: avoid creating duplicated widgets" as part of it for example.
+> 
+> That patch still hasn't gone away, and is still required, because there
+> has been no guidance or comments about the problem.  Let's explain it
+> yet again...
+> 
+> You have said "there is no problem registering the platform and the CPU
+> dai from the same device structure".  Let's assume that's a fact and see
+> what happens in the core code:
+> 
+> static int soc_probe_platform(struct snd_soc_card *card,
+>                            struct snd_soc_platform *platform)
+> {
+>         /* Create DAPM widgets for each DAI stream */
+>         list_for_each_entry(dai, &dai_list, list) {
+>                 if (dai->dev != platform->dev)
+>                         continue;
+> 
+>                 snd_soc_dapm_new_dai_widgets(&platform->dapm, dai);
+>         }
+> }
+> 
+> static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
+> {
+>         if (!cpu_dai->probed &&
+>                         cpu_dai->driver->probe_order == order) {
+>                 if (!cpu_dai->codec) {
+>                         cpu_dai->dapm.card = card;
+>                         if (!try_module_get(cpu_dai->dev->driver->owner))
+>                                 return -ENODEV;
+> 
+>                         list_add(&cpu_dai->dapm.list, &card->dapm_list);
+>                         snd_soc_dapm_new_dai_widgets(&cpu_dai->dapm, cpu_dai);
+>                 }
+> 
+> Now, the CPU DAI is added to the dai_list (it has to be there to be found
+> so the DAI link can bind it, and so soc_probe_link_dais() can be called.)
+> 
+> Think about what happens with the above code if platform->dev is the same
+> as the device used for the CPU DAI (dai->dev) - which can happen when the
+> platform and CPU DAI are registered from the same platform_device, which
+> you claim is legal with ASoC.
+> 
+> Now, look at snd_soc_dapm_new_dai_widgets():
+> 
+> int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
+>                                  struct snd_soc_dai *dai)
+> {
+>         if (dai->driver->playback.stream_name) {
+> ...
+>                 dai->playback_widget = w;
+>         }
+>         if (dai->driver->capture.stream_name) {
+> ...
+>                 dai->capture_widget = w;
+>         }
+> 
+> What happens if the widgets which are bound to are the first set that
+> are created, but they're overwritten when the second set get created?
+> (And that _does_ happen.)  The second set are the ones activated when
+> the audio device is opened, not the first set.
+> 
+> Now, there's nothing new in the above, I've already explained all the
+> above to you several times.  I've had nothing of any help what so ever
+> back from you on this.  I've asked you how to solve this.  I've had
+> absolutely nothing back.  So what am I supposed to do here?  Stuff
+> doesn't work with the core code how it is, so I took the only solution
+> _you_ left me by your silence, which is to hack the core code.
+> 
 
---p19/OaUkOQckSefz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It does seem that your configuration is different to the configurations
+that work well on Haswell, OMAP4 and Qualcomm and that's probably why
+you are the only person reporting this atm. I also think the tight
+coupling between the I2S and SPDIF HW made your problem far more complex
+and therefore more difficult (for me at least) to follow when the
+signal to noise ratio of this and related threads started to
+deteriorate.
 
-On Wed, Aug 14, 2013 at 12:27:33PM +0200, Jean-Francois Moine wrote:
-> This patch adds DT support to the audio subsystem of the mvebu family
-> (Kirkwood, Dove, Armada 370).
+Both Mark and are are happy to fix things, but please remember that we
+can't just jump and schedule this work in as top priority, we have to
+prioritise work on severity and impact alongside that of our employers
+and customers. I'm sure if things were the other way around (e.g the
+problem was in the ARM core) then Mark would have to wait for you to
+respond and fix the issue in your time frame. I'm also certain Mark
+would not start making the conversation personal either.
 
-Applied, thanks.
+As I've said, I'll do a proper fix for patch 4 and CC you on the
+submission. The rest of the series looked ok and then I'm sure Mark will
+take it.
 
---p19/OaUkOQckSefz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSFmBlAAoJELSic+t+oim9CYEP/1I5sRXqymn8qD/wqTd67Mvw
-cH/3Y4FGqLiEZfgOMRdgcgsN76SzA38cKRtUXR+8ykNyndsU9dNWdruybTq09I6u
-EA6rbf5yV+h2NxbzvidKKxYRtD5gtkxTTpv22sK5kkbaGQ4+ejAXhEfkyU11BN/T
-thUIkExkI1TQUjvZEwFJQF+6e3VayhwQhfFyQ5XfgIFhybDjvtOpAfill9UzZbyE
-oAGN3xWFH7L4I5WYaBskEqDUy3lOcRTxguv6xs49J1yZvHRoD+lSxNgMdQsrHnos
-M3RZKLYpU0a8kpRI2H3LRRgXswLUDE6oUNlzkpq9tKJ+yH9PKxWLm7RKzMqVr5Mt
-nqJ8sJfDi3SM92tGh45hZKUUBzLA0waCcAsvAd9aN3cWZT6FS9whgjJDmsCVX/+6
-nqXRU1XIINZfJ9gd78/shiwM/+0KFagmlEz04Y3ybxqOvgE1g348dXPGdEsBRaaf
-B1JJXwO1n2HpPWyzEHgrZRC58ODAKYJ8aejtOHo6HBZkqkvFDFiou9RtMYaPPGCA
-UgFn2ESaneuDPIMXeNKbaMK2DMVvQEP0V2x5o/0VE64e4NqJ60Ax6KVQeXauf04i
-QkD7C2u/1ofqYe2VlObSgcBR/k3jPhi32RrlviMGxEKPr7aKdkN0VHl89vOFr6lO
-c1/nC/o8EXuwWJWo2J+P
-=eMS4
------END PGP SIGNATURE-----
-
---p19/OaUkOQckSefz--
-
---===============4609611162726111984==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4609611162726111984==--
+Liam 
