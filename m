@@ -1,19 +1,21 @@
-From: Tommi Uimonen <tee.uimonen@gmail.com>
-Subject: Re: ice1712 suspend/resume for M-Audio Audiophile 2496
-Date: Thu, 22 Aug 2013 13:11:22 +0300
-Message-ID: <CA+Z4o-oX04YwhSA_AwVvH+oR+6G1X8X9AwarUUYDAOD_Ak78fA@mail.gmail.com>
-References: <CA+Z4o-rKcFYAcq_ug8gpt80bMiJn71bbHkzXz1cjbj2tsHtbOQ@mail.gmail.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: Re: [PATCH v10 2/2] ASoC: fsl: Add S/PDIF machine
+	driver
+Date: Thu, 22 Aug 2013 19:40:28 +0800
+Message-ID: <20130822114027.GA4258@MrMyself>
+References: <cover.1377054540.git.b42378@freescale.com>
+ <e9cf5e37f858dea78319720f007f66c8c063885f.1377054540.git.b42378@freescale.com>
+ <52150763.8020707@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f42.google.com (mail-qa0-f42.google.com
- [209.85.216.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 81C0A2654BD
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 12:11:23 +0200 (CEST)
-Received: by mail-qa0-f42.google.com with SMTP id bv4so209062qab.1
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 03:11:22 -0700 (PDT)
-In-Reply-To: <CA+Z4o-rKcFYAcq_ug8gpt80bMiJn71bbHkzXz1cjbj2tsHtbOQ@mail.gmail.com>
+Received: from db9outboundpool.messaging.microsoft.com
+ (mail-db9lp0248.outbound.messaging.microsoft.com [213.199.154.248])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5087B26536B
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 13:41:00 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <52150763.8020707@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,85 +25,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, festevam@gmail.com, s.hauer@pengutronix.de, timur@tabi.org, rob.herring@calxeda.com, tomasz.figa@gmail.com, broonie@kernel.org, p.zabel@pengutronix.de, R65777@freescale.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello. I tried implementing suspend for ice1712, and at least it now
-calls snd_ice1712_suspend during suspend, but I have no idea what data
-I should send to the card to make it suspend properly.
+Hi Stephen,
 
-static int snd_ice1712_suspend(struct pci_dev *pci, pm_message_t state)
-{
-        struct snd_card *card = pci_get_drvdata(pci);
-        struct snd_ice1712 *ice = card->private_data;
-        //      printk(KERN_INFO "snd_ice1712_suspend starts\n");
+On Wed, Aug 21, 2013 at 12:30:59PM -0600, Stephen Warren wrote:
+> I still don't think those two properties are correct.
+> 
+> Exactly what node will those phandles point at?
+> 
+> There definitely should not be a DT node for any "dummy CODEC",
+> irrespective of whether this binding calls the other node a "CODEC" or a
+> "dummy CODEC".
+> 
+> If these properties are to contain phandles, it would be acceptable for
+> the referenced node to be:
+> 
+> * A node representing the physical connector/jack on the board.
+> 
+> * A node representing some other IP block on the board, such as an HDMI
+> encoder/display-controller
+> 
+> I think those options are unlikely in general, so I think instead these
+> properties should just be Boolean indicating that "something" is
+> connector to the S/PDIF RX/TX, without specifying what that "something"
+> is. It doesn't matter what at least in the connector/jack case, although
+> perhaps it does in the HDMI encoder/display-controller?
 
-        if (!ice->pm_suspend_enabled)
-          {
-            printk(KERN_INFO "snd_ice1712_suspend disabled\n");
-                return 0;
-          }
+Documentation/devicetree/bindings/sound/spdif-receiver.txt
+If I understand correctly, this doc for the dummy codec should be invalid?
 
-        snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
-        snd_pcm_suspend_all(ice->pcm);
-        snd_pcm_suspend_all(ice->pcm_pro);
-        snd_pcm_suspend_all(ice->pcm_ds);
-        snd_ac97_suspend(ice->ac97);
+But this patch, the spdif machine driver, is based on this codec driver,
+pls check the following code:
 
-        spin_lock_irq(&ice->reg_lock);
-        //      ice->pm_saved_is_spdif_master = ice->is_spdif_master(ice);
-        //      ice->pm_saved_spdif_ctrl = inw(ICEMT(ice, SPDIF_CTRL));
-        //      ice->pm_saved_spdif_cfg = inb(ICEREG(ice, SPDIF_CFG));
-        ice->pm_saved_route = inl(ICEMT(ice, MONITOR_ROUTECTRL));
-        spin_unlock_irq(&ice->reg_lock);
+164 +       codec_rx_np = of_parse_phandle(np, "spdif-receiver", 0);
+165 +       if (codec_rx_np) {
+169 +               data->dai[num_links].codec_of_node = codec_rx_np;
+173 +       }
 
-        if (ice->pm_suspend)
-                ice->pm_suspend(ice);
+Accordingly, the binding I planned to add in DT:
 
-        pci_disable_device(pci);
-        pci_save_state(pci);
-        pci_set_power_state(pci, pci_choose_state(pci, state));
-        return 0;
-}
+27 +       spdif_rx_codec: spdif-receiver {
+28 +               compatible = "linux,spdif-dir";
+29 +       };
+30 +
+31 +       sound-spdif {
+32 +               compatible = "fsl,imx-audio-spdif",
+33 +                          "fsl,imx-sabreauto-spdif";
+34 +               model = "imx-spdif";
+35 +               spdif-controller = <&spdif>;
+37 +               spdif-receiver = <&spdif_rx_codec>;
+38 +       };
 
 
-ice->pm_suspend(ice) seems to hang the whole system. Commenting it out
-makes system usable, but no sound after resume (rmmod & modprobe cycle
-needed)
+So if the DT can't allow me to include this codec node, how could I
+handle it in the current baseline.
 
-Does the card even support suspending properly? Am I wasting my time
-here and should I just add 'fuser -k /dev/snd && rmmod' to the suspend
-script and modprobe to the resume (ugly workaround that does not fix
-the real problem)
+Could you please directly provide me a nicer means? Or maybe just an
+eclectic way for everyone, since it doesn't look like we have a perfect
+solution right now.
 
-Tommi
-
-
-2013/7/13 Tommi Uimonen <tee.uimonen@gmail.com>:
-> Hello, the lack of suspend/resume support for ice1712 driver has been
-> bugging me a lot, and I was wondering if it's possible to implement it
-> by following how it's done in 1724.c?
->
-> I don't really know much about the driver, but after some comparison
-> between 1712.c and 1724.c it seems doable.
->
-> At least the suspend part seems straightforward, just changing
-> ICEMT1724 with ICEMT and ICEREG1724 with ICEREG. To resume, I should
-> add some new functions like snd_ice1712_chip_reset (I guess it follows
-> the same logic as in 1724.c, just use ICE1712_RESET instead) and maybe
-> some spdif stuff but I think the 1724 has different spdif options. I
-> don't have any 1724 cards so can't be sure, but 1712 does not have
-> spdif rate. Maybe it will work without those, at least for me since I
-> don't use spdif.
->
-> And then add this to the pci_driver ice1712_driver struct:
->
-> .driver = {
-> .pm = SND_ICE1712_PM_OPS,
-> }
->
-> and define the SIMPLE_DEV_PM_OPS accordingly.
->
-> Or is this already under work by someone?
->
-> Tommi
+Thank you so much.
+Nicolin
