@@ -1,13 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v11 5/8] ASoC: fsl-ssi: ac97-slave support
-Date: Thu, 22 Aug 2013 11:09:34 +0100
-Message-ID: <20130822100934.GV26118@sirena.org.uk>
+Subject: Re: [PATCH v11 6/8] ASoC: fsl-ssi: add SSIEN errata work around
+Date: Thu, 22 Aug 2013 11:10:09 +0100
+Message-ID: <20130822101009.GW26118@sirena.org.uk>
 References: <1376924761-4054-1-git-send-email-mpa@pengutronix.de>
- <1376924761-4054-6-git-send-email-mpa@pengutronix.de>
+ <1376924761-4054-7-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4061971159960841270=="
+Content-Type: multipart/mixed; boundary="===============0202099689779134884=="
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1376924761-4054-6-git-send-email-mpa@pengutronix.de>
+In-Reply-To: <1376924761-4054-7-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -18,57 +18,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4061971159960841270==
+--===============0202099689779134884==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sBvc846/5FzkyDmz"
+	protocol="application/pgp-signature"; boundary="H7DA0n3a+SnB4bJ2"
 Content-Disposition: inline
 
 
---sBvc846/5FzkyDmz
+--H7DA0n3a+SnB4bJ2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 19, 2013 at 05:05:58PM +0200, Markus Pargmann wrote:
-> This patch adds ac97-slave support.
+On Mon, Aug 19, 2013 at 05:05:59PM +0200, Markus Pargmann wrote:
+> From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
 >=20
-> For ac97, the registers have to be setup earlier than for other ssi
-> modes because there is some communication with the external device
-> before streaming. So this patch introduces a fsl_ssi_setup function to
-> setup the registers for different ssi operation modes seperately.
+> The chip errata for the i.MX35, Rev.2 has the following errata:
 
 Applied, thanks.
 
---sBvc846/5FzkyDmz
+--H7DA0n3a+SnB4bJ2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSFeNaAAoJELSic+t+oim9a50QAISGiy6NOYwXQ6xoZuLw+2Bc
-om3HR6iiV+jWNEFd6KztAA9Ln0k2/9tTtdj+wB2jADO5aRM4cBlm7cY2gL7CRgfq
-5DQwuDHLqc0xdOrrTWdGSbDn0UZUUJE7xIeT1lOJARMOT5FazhKkXY/Xf4M7xy4N
-D8AMYUJI6sagKcHv43C8Flkw2F5SiXQPRV5qnwHbYAuQA5LJj9D0HpKgcoffHXbT
-oQkL+Us/q1hgj0TBlIYqxA+15qW36QCK7ZWt9gQKq9/gC2EyUNOLK56T5+YS3Vbn
-M1KeNVQzTAnV5Cbiph5nvmzpeDmXhyYsziCgPAjoCxizbJWfCq89tXkhnwwEzJ9D
-6n8ZwgqwG3EZJ83mBY+OwJvfyi4ucnbAhw28j/5okjrd3DSxNVQwfWjOlwKczqHF
-JkITECxXcOs5CiyUAAdbCA7IhVS+7iegfG2TZ2CDwXCg+DEHXT3EFmhi9K3svPSl
-nvX4g1qJeMgxSm/ktach0rFuHl6+3kyJm6SpkDrWgHVrFnWmejXuiiTdaIY1QtNT
-AngM/d/Lsy0TF2dz6ScLuefI53vudSHAul7S/yShvFhe0NoFcdQWfYgwwf0fU9fl
-ZrOOE2B1CeCuD06Aq58jNFgcth6ECeOYft+Xo8I6SVocJwQqNbaa11WS2XrGW6Wm
-xYl0PW+StPImwYO4f9PC
-=q1/P
+iQIcBAEBAgAGBQJSFeN+AAoJELSic+t+oim9v+cP+wens3JzSePSqbiiQCjZRPK5
+9e4EviP/LOUSyg4Dnk25Dy6YeK5WISTxS/mO9dV8nh/lSHOcmgRElit+FnJJ8YuK
+nA58/a6j99cn5L0juhLyLnQVZLkxxOm/Sz2fEG61eOSTz27sbkkgmjoECCWaOSXi
+2an0TFoY9Zf3nYDJeF85+wLWQVRlF6c6jT2zaStLH28afQTvxIUhqDpHIVd855lK
+LW5lI/opZxaDWf6tX03CecwFytVBOCrA3+fAlZAyUmbPqhN+zYfJiUmES2YGeHr4
+ec6oSSSISMYEUkdaIbO/WJ/KhwCXFeP2A3gZciEP/z1DmMDIwG3F//nJtM/iQcw+
+jPvXYSx7PTnOv9SWrF40d0+uNWO6l1zhk0W+6wPDBSso3/fcUnOG9yD2HO0fip31
+MtlGak4BZg78b5iZc2/mLCUU7RzDWFveR4UYR1l34IYs3813KFgs4ksTNReP4p2O
+njBIvLedpc0a/WnAT6K3qdgbspLfkfzcwlX5zoIjw45oSK8dvhWtm2QJdhCuHcFy
+ceRkSYCL/gGpKpw7w+fDMtMDjSjrOIVL7Qoze7HNxqlb9OkUWfyBzqbqK8vVyL2A
+Xli2t6nDL331XYBqvxVFqbp3vlW73mylNz+jRMIU71ENJE8wdIFFONKIh8Hw0Esj
+JIXaJgyo9eGmVS3P7mbr
+=SwaM
 -----END PGP SIGNATURE-----
 
---sBvc846/5FzkyDmz--
+--H7DA0n3a+SnB4bJ2--
 
 
---===============4061971159960841270==
+--===============0202099689779134884==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -79,4 +76,4 @@ linux-arm-kernel mailing list
 linux-arm-kernel@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============4061971159960841270==--
+--===============0202099689779134884==--
