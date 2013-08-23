@@ -1,20 +1,15 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [PATCH v5 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Fri, 23 Aug 2013 00:49:19 +0200
-Message-ID: <34430785.ApIqfgatMc@flatron>
-References: <cover.1376565456.git.b42378@freescale.com>
- <20130822210035.GB31036@pengutronix.de> <20130822224331.8231.75743@quantum>
+From: <bardliao@realtek.com>
+Subject: [PATCH V3] ASoC: rt5640: change widget sequence for
+	depop
+Date: Fri, 23 Aug 2013 10:29:26 +0800
+Message-ID: <1377224966-27426-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f44.google.com (mail-bk0-f44.google.com
- [209.85.214.44])
- by alsa0.perex.cz (Postfix) with ESMTP id E7E8B2615D2
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 00:49:25 +0200 (CEST)
-Received: by mail-bk0-f44.google.com with SMTP id mz10so939533bkb.3
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2013 15:49:25 -0700 (PDT)
-In-Reply-To: <20130822224331.8231.75743@quantum>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id A6844265532
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 04:30:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,182 +19,399 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mike Turquette <mturquette@linaro.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, Pawel Moll <Pawel.Moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "festevam@gmail.com" <festevam@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>, Nicolin Chen <b42378@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "galak@codeaurora.org" <galak@codeaurora.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, swarren@wwwdotorg.org, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 22 of August 2013 15:43:31 Mike Turquette wrote:
-> Quoting Sascha Hauer (2013-08-22 14:00:35)
-> 
-> > On Thu, Aug 22, 2013 at 01:09:31PM +0100, Mark Rutland wrote:
-> > > On Thu, Aug 22, 2013 at 08:19:10AM +0100, Mike Turquette wrote:
-> > > > Quoting Tomasz Figa (2013-08-21 14:34:55)
-> > > > 
-> > > > > On Wednesday 21 of August 2013 09:50:15 Mark Rutland wrote:
-> > > > > > On Tue, Aug 20, 2013 at 01:06:25AM +0100, Mike Turquette 
-wrote:
-> > > > > > > Quoting Mark Rutland (2013-08-19 02:35:43)
-> > > > > > > 
-> > > > > > > > On Sat, Aug 17, 2013 at 04:17:18PM +0100, Tomasz Figa 
-wrote:
-> > > > > > > > > On Saturday 17 of August 2013 16:53:16 Sascha Hauer 
-wrote:
-> > > > > > > > > > On Sat, Aug 17, 2013 at 02:28:04PM +0200, Tomasz Figa 
-wrote:
-> > > > > > > > > > > > > > Also I would make this option required. Use a
-> > > > > > > > > > > > > > dummy
-> > > > > > > > > > > > > > clock for
-> > > > > > > > > > > > > > mux
-> > > > > > > > > > > > > > inputs that are grounded for a specific SoC.
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > Some clocks are not from CCM and we haven't
-> > > > > > > > > > > > > defined in
-> > > > > > > > > > > > > imx6q-clk.txt,
-> > > > > > > > > > > > > so in most cases we can't provide a phandle for
-> > > > > > > > > > > > > them, eg:
-> > > > > > > > > > > > > spdif_ext.
-> > > > > > > > > > > > > I think it's a bit hard to force it to be
-> > > > > > > > > > > > > 'required'. An
-> > > > > > > > > > > > > 'optional'
-> > > > > > > > > > > > > looks more flexible to me and a default one is
-> > > > > > > > > > > > > ensured
-> > > > > > > > > > > > > even if
-> > > > > > > > > > > > > it's
-> > > > > > > > > > > > > missing.
-> > > > > > > > > > > > 
-> > > > > > > > > > > > <&clks 0> is the dummy clock. This can be used for
-> > > > > > > > > > > > all input
-> > > > > > > > > > > > clocks
-> > > > > > > > > > > > not
-> > > > > > > > > > > > defined by the SoC.
-> > > > > > > > > > > 
-> > > > > > > > > > > Where does this assumption come from? Is it
-> > > > > > > > > > > documented
-> > > > > > > > > > > anywhere?
-> > > > > > > > > > 
-> > > > > > > > > > This is how all i.MX clock bindings currently are. See
-> > > > > > > > > > Documentation/devicetree/bindings/clock/imx*-clock.txt
-> > > > > > > > > 
-> > > > > > > > > OK, thanks.
-> > > > > > > > > 
-> > > > > > > > > I guess we need some discussion on dummy clocks vs
-> > > > > > > > > skipped clocks.
-> > > > > > > > > I think we want some consistency on this, don't we?
-> > > > > > > > > 
-> > > > > > > > > If we really need a dummy clock, then we might also want
-> > > > > > > > > a generic
-> > > > > > > > > way to specify it.
-> > > > > > > > 
-> > > > > > > > What do we actually mean by a "dummy clock"? We already
-> > > > > > > > have
-> > > > > > > > bindings
-> > > > > > > > for "fixed-clock" and co friends describe relatively
-> > > > > > > > simple
-> > > > > > > > preconfigured clocks.
-> > > > > > > 
-> > > > > > > Some platforms have a fake clock which defines noops
-> > > > > > > callbacks and
-> > > > > > > basically doesn't do anything. This is analogous to the
-> > > > > > > dummy
-> > > > > > > regulator
-> > > > > > > implementation. A central one could be registered by the
-> > > > > > > clock core,
-> > > > > > > as
-> > > > > > > is done by the regulator core.
-> > > > > > 
-> > > > > > When you say some platforms, you presumably mean the platform
-> > > > > > code in
-> > > > > > Linux? A dummy clock sounds like a completely Linux-specific
-> > > > > > abstraction rather than a description of the hardware, and I
-> > > > > > don't see why we need that in the DT:
-> > > > > > 
-> > > > > > * If a clock is wired up and running (as presumably the dummy
-> > > > > > clock is), then surely it's a fixed-clock (it's running, we
-> > > > > > and we have no control over it, but we presumably know its
-> > > > > > rate) and can be described as such?
-> > > > > > 
-> > > > > > * If no clock is wired up, then we should be able to describe
-> > > > > > that. If a driver believes that a clock is required when it
-> > > > > > isn't (for some level of functionality), then that driver
-> > > > > > should be fixed up to support the clock as being optional.
-> > > > > > 
-> > > > > > Am I missing something?
-> > > > > 
-> > > > > I second that.
-> > > > > 
-> > > > > Moreover, I don't think that device tree should deal with dummy
-> > > > > anything. It should be able to describe hardware that is
-> > > > > available on given system, not list what hardware is not
-> > > > > available.
-> > > > 
-> > > > I wasn't clear. The dummy clock IS a completely Linux-specific
-> > > > abstraction.
-> > > > 
-> > > > I'm not advocating a dummy clock in DT. I am advocating
-> > > > consolidation of the implementation of a clock that does nothing
-> > > > into the clock core. This code could easily live in
-> > > > drivers/clk/clk.c instead of having everyone open-code it.
-> > > > 
-> > > > As far as specifying a dummy clock in DT? I dunno. DT should
-> > > > describe
-> > > > real hardware so there isn't much use for a dummy clock.
-> > > 
-> > > Sorry, I misunderstood. Good to hear we're on the same page :)
-> > > 
-> > > > I'm guessing one of the reasons for such a clock are drivers do
-> > > > not
-> > > > honor the clk.h api and they freak out when clk_get gives them a
-> > > > NULL
-> > > > pointer?
-> > > 
-> > > I'm not sure. Sascha, could you shed some light on the matter?
-> > 
-> > The original reason introducing the dummy clocks in the i.MX dtbs
-> > was to provide devices a clock which the driver requests but is
-> > not software controllable. We often have the case where the same
-> > devices are on several SoCs, but not on all of them all clocks have
-> > a bit to en/disable them.
-> > 
-> > Anyway, to accomplish this we don't need dummy clocks. We can just
-> > describe the real clocks.
-> 
-> You could use a dummy clk for the Linux implementation, but the downside
-> is that a dummy clock has a rate of 0 always and a your clocks likely
-> have non-zero rates.
-> 
-> It is probably better for you define a clock which only implements the
-> .recalc_rate callback. If the rate of this clock changes without Linux
-> having knowledge of it you can use the CLK_GET_RATE_NOCACHE flag.
+From: Bard Liao <bardliao@realtek.com>
 
-I doubt that rate of a dummy clock could ever change... unless it is a 
-rather smart dummy.
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
 
-> > BTW with the S/PDIF core on which not all mux inputs are connected
-> > to actual clocks we could also describe the unconnected inputs as
-> > ground clocks with rate 0. This way we describe something which
-> > is really there instead of dummy clocks ;)
-> 
-> Again you could use a dummy clock for this OR a fixed-rate clock with a
-> rate of zero from the perspective of the Linux implementation.
-> 
-> Do you think it worthwhile to have a DT binding for a grounded clock?
-> That is not an entirely uncommon case.
+I removed RT5640_[LR]_MUTE bits control in rt5640_hp_event.
+And moved the required delay for hp depop to rt5640_hp_post_event.
+This delay time is for waitting for the codec finish the depop process.
+You will not haer anything if you play a very short sound without this delay.
+So I put it in post_event.
+And I think it is fine if hp is unmute during playback without this delay.
+I use rt5640->hp_mute to record the "HP Amp"'s status.
+However, I think it is better to use a dapm API for that purpose.
+But I don't know if there is a suitable API for it.
+Can anyone give me some advice?
 
-Well, how would that differ from skipping a clock from clocks list, i.e. 
-not specifying it in clock-names and clocks properties?
+Thanks in advance.
 
-> > Background to why it might be a good idea to connect a ground clock
-> > to the unconnected input pins is that a driver has a chance to
-> > successfully grab all clocks. Otherwise how does the driver
-> > distinguish
-> > between an unconnected and an erroneous clock?
-> 
-> Sorry, I don't follow this last question. Do you mean how to distinguish
-> based on the value returned from clk_get?
+---
+ sound/soc/codecs/rt5640.c | 217 ++++++++++++++++++++++++++++++++++------------
+ sound/soc/codecs/rt5640.h |  12 +++
+ 2 files changed, 175 insertions(+), 54 deletions(-)
 
-Hmm, in theory, a driver could want to distinguish an error case (e.g. 
-clock specified, but there is a problem with it) from no clock (e.g. clock 
-not specified in DT, because it is not available on particular board).
-
-Best regards,
-Tomasz
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 4db7314..c26a8f8 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -50,8 +50,6 @@ static const struct regmap_range_cfg rt5640_ranges[] = {
+ 
+ static struct reg_default init_list[] = {
+ 	{RT5640_PR_BASE + 0x3d,	0x3600},
+-	{RT5640_PR_BASE + 0x1c,	0x0D21},
+-	{RT5640_PR_BASE + 0x1b,	0x0000},
+ 	{RT5640_PR_BASE + 0x12,	0x0aa8},
+ 	{RT5640_PR_BASE + 0x14,	0x0aaa},
+ 	{RT5640_PR_BASE + 0x20,	0x6110},
+@@ -384,15 +382,11 @@ static const SOC_ENUM_SINGLE_DECL(
+ 
+ static const struct snd_kcontrol_new rt5640_snd_controls[] = {
+ 	/* Speaker Output Volume */
+-	SOC_DOUBLE("Speaker Playback Switch", RT5640_SPK_VOL,
+-		RT5640_L_MUTE_SFT, RT5640_R_MUTE_SFT, 1, 1),
+ 	SOC_DOUBLE("Speaker Channel Switch", RT5640_SPK_VOL,
+ 		RT5640_VOL_L_SFT, RT5640_VOL_R_SFT, 1, 1),
+ 	SOC_DOUBLE_TLV("Speaker Playback Volume", RT5640_SPK_VOL,
+ 		RT5640_L_VOL_SFT, RT5640_R_VOL_SFT, 39, 1, out_vol_tlv),
+ 	/* Headphone Output Volume */
+-	SOC_DOUBLE("HP Playback Switch", RT5640_HP_VOL,
+-		RT5640_L_MUTE_SFT, RT5640_R_MUTE_SFT, 1, 1),
+ 	SOC_DOUBLE("HP Channel Switch", RT5640_HP_VOL,
+ 		RT5640_VOL_L_SFT, RT5640_VOL_R_SFT, 1, 1),
+ 	SOC_DOUBLE_TLV("HP Playback Volume", RT5640_HP_VOL,
+@@ -737,6 +731,22 @@ static const struct snd_kcontrol_new rt5640_mono_mix[] = {
+ 			RT5640_M_BST1_MM_SFT, 1, 1),
+ };
+ 
++static const struct snd_kcontrol_new spk_l_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5640_SPK_VOL,
++		RT5640_L_MUTE_SFT, 1, 1);
++
++static const struct snd_kcontrol_new spk_r_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5640_SPK_VOL,
++		RT5640_R_MUTE_SFT, 1, 1);
++
++static const struct snd_kcontrol_new hp_l_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5640_HP_VOL,
++		RT5640_L_MUTE_SFT, 1, 1);
++
++static const struct snd_kcontrol_new hp_r_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5640_HP_VOL,
++		RT5640_R_MUTE_SFT, 1, 1);
++
+ /* Stereo ADC source */
+ static const char * const rt5640_stereo_adc1_src[] = {
+ 	"DIG MIX", "ADC"
+@@ -868,33 +878,6 @@ static const SOC_ENUM_SINGLE_DECL(
+ static const struct snd_kcontrol_new rt5640_sdi_mux =
+ 	SOC_DAPM_ENUM("SDI select", rt5640_sdi_sel_enum);
+ 
+-static int spk_event(struct snd_soc_dapm_widget *w,
+-	struct snd_kcontrol *kcontrol, int event)
+-{
+-	struct snd_soc_codec *codec = w->codec;
+-	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
+-
+-	switch (event) {
+-	case SND_SOC_DAPM_POST_PMU:
+-		regmap_update_bits(rt5640->regmap, RT5640_PWR_DIG1,
+-					0x0001, 0x0001);
+-		regmap_update_bits(rt5640->regmap, RT5640_PR_BASE + 0x1c,
+-					0xf000, 0xf000);
+-		break;
+-
+-	case SND_SOC_DAPM_PRE_PMD:
+-		regmap_update_bits(rt5640->regmap, RT5640_PR_BASE + 0x1c,
+-					0xf000, 0x0000);
+-		regmap_update_bits(rt5640->regmap, RT5640_PWR_DIG1,
+-					0x0001, 0x0000);
+-		break;
+-
+-	default:
+-		return 0;
+-	}
+-	return 0;
+-}
+-
+ static int rt5640_set_dmic1_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -943,6 +926,117 @@ static int rt5640_set_dmic2_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
++void hp_amp_power_on(struct snd_soc_codec *codec)
++{
++	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
++
++	/* depop parameters */
++	regmap_update_bits(rt5640->regmap, RT5640_PR_BASE +
++		RT5640_CHPUMP_INT_REG1, 0x0700, 0x0200);
++	regmap_update_bits(rt5640->regmap, RT5640_DEPOP_M2,
++		RT5640_DEPOP_MASK, RT5640_DEPOP_MAN);
++	regmap_update_bits(rt5640->regmap, RT5640_DEPOP_M1,
++		RT5640_HP_CP_MASK | RT5640_HP_SG_MASK | RT5640_HP_CB_MASK,
++		RT5640_HP_CP_PU | RT5640_HP_SG_DIS | RT5640_HP_CB_PU);
++	regmap_write(rt5640->regmap, RT5640_PR_BASE + RT5640_HP_DCC_INT1,
++			   0x9f00);
++	/* headphone amp power on */
++	regmap_update_bits(rt5640->regmap, RT5640_PWR_ANLG1,
++		RT5640_PWR_FV1 | RT5640_PWR_FV2, 0);
++	regmap_update_bits(rt5640->regmap, RT5640_PWR_ANLG1,
++		RT5640_PWR_HA,
++		RT5640_PWR_HA);
++	usleep_range(10000, 15000);
++	regmap_update_bits(rt5640->regmap, RT5640_PWR_ANLG1,
++		RT5640_PWR_FV1 | RT5640_PWR_FV2 ,
++		RT5640_PWR_FV1 | RT5640_PWR_FV2);
++}
++
++static void rt5640_pmu_depop(struct snd_soc_codec *codec)
++{
++	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
++
++	regmap_update_bits(rt5640->regmap, RT5640_DEPOP_M2,
++		RT5640_DEPOP_MASK | RT5640_DIG_DP_MASK,
++		RT5640_DEPOP_AUTO | RT5640_DIG_DP_EN);
++	regmap_update_bits(rt5640->regmap, RT5640_CHARGE_PUMP,
++		RT5640_PM_HP_MASK, RT5640_PM_HP_HV);
++
++	regmap_update_bits(rt5640->regmap, RT5640_DEPOP_M3,
++		RT5640_CP_FQ1_MASK | RT5640_CP_FQ2_MASK | RT5640_CP_FQ3_MASK,
++		(RT5640_CP_FQ_192_KHZ << RT5640_CP_FQ1_SFT) |
++		(RT5640_CP_FQ_12_KHZ << RT5640_CP_FQ2_SFT) |
++		(RT5640_CP_FQ_192_KHZ << RT5640_CP_FQ3_SFT));
++
++	regmap_write(rt5640->regmap, RT5640_PR_BASE +
++		RT5640_MAMP_INT_REG2, 0x1c00);
++	regmap_update_bits(rt5640->regmap, RT5640_DEPOP_M1,
++		RT5640_HP_CP_MASK | RT5640_HP_SG_MASK,
++		RT5640_HP_CP_PD | RT5640_HP_SG_EN);
++	regmap_update_bits(rt5640->regmap, RT5640_PR_BASE +
++		RT5640_CHPUMP_INT_REG1, 0x0700, 0x0400);
++}
++
++static int rt5640_hp_event(struct snd_soc_dapm_widget *w,
++			   struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		rt5640_pmu_depop(codec);
++		rt5640->hp_mute = 0;
++		break;
++
++	case SND_SOC_DAPM_PRE_PMD:
++		rt5640->hp_mute = 1;
++		usleep_range(70000, 75000);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static int rt5640_hp_power_event(struct snd_soc_dapm_widget *w,
++			   struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		hp_amp_power_on(codec);
++		break;
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static int rt5640_hp_post_event(struct snd_soc_dapm_widget *w,
++			   struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		if (!rt5640->hp_mute)
++			usleep_range(80000, 85000);
++
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
+ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("PLL1", RT5640_PWR_ANLG2,
+ 			RT5640_PWR_PLL_BIT, 0, NULL, 0),
+@@ -1132,15 +1226,28 @@ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
+ 		rt5640_mono_mix, ARRAY_SIZE(rt5640_mono_mix)),
+ 	SND_SOC_DAPM_SUPPLY("Improve MONO Amp Drv", RT5640_PWR_ANLG1,
+ 		RT5640_PWR_MA_BIT, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("Improve HP Amp Drv", RT5640_PWR_ANLG1,
+-		SND_SOC_NOPM, 0, NULL, 0),
+-	SND_SOC_DAPM_PGA("HP L Amp", RT5640_PWR_ANLG1,
++	SND_SOC_DAPM_SUPPLY_S("Improve HP Amp Drv", 1, SND_SOC_NOPM,
++		0, 0, rt5640_hp_power_event, SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_PGA_S("HP Amp", 1, SND_SOC_NOPM, 0, 0,
++		rt5640_hp_event,
++		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_SUPPLY("HP L Amp", RT5640_PWR_ANLG1,
+ 		RT5640_PWR_HP_L_BIT, 0, NULL, 0),
+-	SND_SOC_DAPM_PGA("HP R Amp", RT5640_PWR_ANLG1,
++	SND_SOC_DAPM_SUPPLY("HP R Amp", RT5640_PWR_ANLG1,
+ 		RT5640_PWR_HP_R_BIT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("Improve SPK Amp Drv", RT5640_PWR_DIG1,
+-		SND_SOC_NOPM, 0, spk_event,
+-		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
++		RT5640_PWR_CLS_D_BIT, 0, NULL, 0),
++
++	/* Output Switch */
++	SND_SOC_DAPM_SWITCH("Speaker L Playback", SND_SOC_NOPM, 0, 0,
++			&spk_l_enable_control),
++	SND_SOC_DAPM_SWITCH("Speaker R Playback", SND_SOC_NOPM, 0, 0,
++			&spk_r_enable_control),
++	SND_SOC_DAPM_SWITCH("HP L Playback", SND_SOC_NOPM, 0, 0,
++			&hp_l_enable_control),
++	SND_SOC_DAPM_SWITCH("HP R Playback", SND_SOC_NOPM, 0, 0,
++			&hp_r_enable_control),
++	SND_SOC_DAPM_POST("HP Post", rt5640_hp_post_event),
+ 	/* Output Lines */
+ 	SND_SOC_DAPM_OUTPUT("SPOLP"),
+ 	SND_SOC_DAPM_OUTPUT("SPOLN"),
+@@ -1381,9 +1488,11 @@ static const struct snd_soc_dapm_route rt5640_dapm_routes[] = {
+ 	{"HPO MIX L", "HPO MIX DAC2 Switch", "DAC L2"},
+ 	{"HPO MIX L", "HPO MIX DAC1 Switch", "DAC L1"},
+ 	{"HPO MIX L", "HPO MIX HPVOL Switch", "HPOVOL L"},
++	{"HPO MIX L", NULL, "HP L Amp"},
+ 	{"HPO MIX R", "HPO MIX DAC2 Switch", "DAC R2"},
+ 	{"HPO MIX R", "HPO MIX DAC1 Switch", "DAC R1"},
+ 	{"HPO MIX R", "HPO MIX HPVOL Switch", "HPOVOL R"},
++	{"HPO MIX R", NULL, "HP R Amp"},
+ 
+ 	{"LOUT MIX", "DAC L1 Switch", "DAC L1"},
+ 	{"LOUT MIX", "DAC R1 Switch", "DAC R1"},
+@@ -1396,13 +1505,15 @@ static const struct snd_soc_dapm_route rt5640_dapm_routes[] = {
+ 	{"Mono MIX", "OUTVOL L Switch", "OUTVOL L"},
+ 	{"Mono MIX", "BST1 Switch", "BST1"},
+ 
+-	{"HP L Amp", NULL, "HPO MIX L"},
+-	{"HP R Amp", NULL, "HPO MIX R"},
++	{"HP Amp", NULL, "HPO MIX L"},
++	{"HP Amp", NULL, "HPO MIX R"},
+ 
+-	{"SPOLP", NULL, "SPOL MIX"},
+-	{"SPOLN", NULL, "SPOL MIX"},
+-	{"SPORP", NULL, "SPOR MIX"},
+-	{"SPORN", NULL, "SPOR MIX"},
++	{"Speaker L Playback", "Switch", "SPOL MIX"},
++	{"Speaker R Playback", "Switch", "SPOR MIX"},
++	{"SPOLP", NULL, "Speaker L Playback"},
++	{"SPOLN", NULL, "Speaker L Playback"},
++	{"SPORP", NULL, "Speaker R Playback"},
++	{"SPORN", NULL, "Speaker R Playback"},
+ 
+ 	{"SPOLP", NULL, "Improve SPK Amp Drv"},
+ 	{"SPOLN", NULL, "Improve SPK Amp Drv"},
+@@ -1412,8 +1523,10 @@ static const struct snd_soc_dapm_route rt5640_dapm_routes[] = {
+ 	{"HPOL", NULL, "Improve HP Amp Drv"},
+ 	{"HPOR", NULL, "Improve HP Amp Drv"},
+ 
+-	{"HPOL", NULL, "HP L Amp"},
+-	{"HPOR", NULL, "HP R Amp"},
++	{"HP L Playback", "Switch", "HP Amp"},
++	{"HP R Playback", "Switch", "HP Amp"},
++	{"HPOL", NULL, "HP L Playback"},
++	{"HPOR", NULL, "HP R Playback"},
+ 	{"LOUTL", NULL, "LOUT MIX"},
+ 	{"LOUTR", NULL, "LOUT MIX"},
+ 	{"MONOP", NULL, "Mono MIX"},
+@@ -1792,17 +1905,13 @@ static int rt5640_set_bias_level(struct snd_soc_codec *codec,
+ 				RT5640_PWR_BG | RT5640_PWR_VREF2,
+ 				RT5640_PWR_VREF1 | RT5640_PWR_MB |
+ 				RT5640_PWR_BG | RT5640_PWR_VREF2);
+-			mdelay(10);
++			usleep_range(10000, 15000);
+ 			snd_soc_update_bits(codec, RT5640_PWR_ANLG1,
+ 				RT5640_PWR_FV1 | RT5640_PWR_FV2,
+ 				RT5640_PWR_FV1 | RT5640_PWR_FV2);
+ 			regcache_sync(rt5640->regmap);
+ 			snd_soc_update_bits(codec, RT5640_DUMMY1,
+ 						0x0301, 0x0301);
+-			snd_soc_update_bits(codec, RT5640_DEPOP_M1,
+-						0x001d, 0x0019);
+-			snd_soc_update_bits(codec, RT5640_DEPOP_M2,
+-						0x2000, 0x2000);
+ 			snd_soc_update_bits(codec, RT5640_MICBIAS,
+ 						0x0030, 0x0030);
+ 		}
+@@ -1846,8 +1955,6 @@ static int rt5640_probe(struct snd_soc_codec *codec)
+ 	rt5640_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 
+ 	snd_soc_update_bits(codec, RT5640_DUMMY1, 0x0301, 0x0301);
+-	snd_soc_update_bits(codec, RT5640_DEPOP_M1, 0x001d, 0x0019);
+-	snd_soc_update_bits(codec, RT5640_DEPOP_M2, 0x2000, 0x2000);
+ 	snd_soc_update_bits(codec, RT5640_MICBIAS, 0x0030, 0x0030);
+ 	snd_soc_update_bits(codec, RT5640_DSP_PATH2, 0xfc00, 0x0c00);
+ 
+@@ -2069,6 +2176,8 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
+ 		regmap_update_bits(rt5640->regmap, RT5640_IN3_IN4,
+ 					RT5640_IN_DF2, RT5640_IN_DF2);
+ 
++	rt5640->hp_mute = 1;
++
+ 	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5640,
+ 			rt5640_dai, ARRAY_SIZE(rt5640_dai));
+ 	if (ret < 0)
+diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+index c48286d..5e8df25a 100644
+--- a/sound/soc/codecs/rt5640.h
++++ b/sound/soc/codecs/rt5640.h
+@@ -145,6 +145,8 @@
+ 
+ 
+ /* Index of Codec Private Register definition */
++#define RT5640_CHPUMP_INT_REG1			0x24
++#define RT5640_MAMP_INT_REG2			0x37
+ #define RT5640_3D_SPK				0x63
+ #define RT5640_WND_1				0x6c
+ #define RT5640_WND_2				0x6d
+@@ -153,6 +155,7 @@
+ #define RT5640_WND_5				0x70
+ #define RT5640_WND_8				0x73
+ #define RT5640_DIP_SPK_INF			0x75
++#define RT5640_HP_DCC_INT1			0x77
+ #define RT5640_EQ_BW_LOP			0xa0
+ #define RT5640_EQ_GN_LOP			0xa1
+ #define RT5640_EQ_FC_BP1			0xa2
+@@ -1201,6 +1204,14 @@
+ #define RT5640_CP_FQ2_SFT			4
+ #define RT5640_CP_FQ3_MASK			(0x7)
+ #define RT5640_CP_FQ3_SFT			0
++#define RT5640_CP_FQ_1_5_KHZ			0
++#define RT5640_CP_FQ_3_KHZ			1
++#define RT5640_CP_FQ_6_KHZ			2
++#define RT5640_CP_FQ_12_KHZ			3
++#define RT5640_CP_FQ_24_KHZ			4
++#define RT5640_CP_FQ_48_KHZ			5
++#define RT5640_CP_FQ_96_KHZ			6
++#define RT5640_CP_FQ_192_KHZ			7
+ 
+ /* HPOUT charge pump (0x91) */
+ #define RT5640_OSW_L_MASK			(0x1 << 11)
+@@ -2087,6 +2098,7 @@ struct rt5640_priv {
+ 	int pll_out;
+ 
+ 	int dmic_en;
++	bool hp_mute;
+ };
+ 
+ #endif
+-- 
+1.8.1.1.439.g50a6b54
