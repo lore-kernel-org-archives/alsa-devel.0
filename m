@@ -1,15 +1,15 @@
 From: mengdong.lin@intel.com
-Subject: [RFC PATCH 1/3] ALSA: hda - add flags and routines to
-	get devices selection info for DP1.2 MST
-Date: Fri, 23 Aug 2013 00:56:36 -0400
-Message-ID: <1377233796-10095-1-git-send-email-mengdong.lin@intel.com>
+Subject: [RFC PATCH 3/3] ALSA: hda - Haswell codec exposes
+	device list/select info on pins
+Date: Fri, 23 Aug 2013 00:56:57 -0400
+Message-ID: <1377233817-10175-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 2ED0126556B
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 13:55:43 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 003B926556C
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 13:56:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,152 +25,29 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@intel.com>
 
-This patch adds flags and routines to get device list & selection info on
-a pin.
+This patch is only to allow codec proc file to expose devices list/select info
+for Haswell codec pins.
 
-To support Display Port 1.2 multi-stream transport (MST) over single DP port,
-a pin can support multiple devices. Please refer to HD-A spec Document Change
-Notificaton HDA040-A.
-
-A display audio codec can set flag "dp_mst" in its patch, indicating its pins
-can support MST. But at runtime, a pin may not be multi-streaming capable and
-report the device list is empty, depending on Gfx driver configuration.
+Since Haswell Gfx driver cannot support DP1.2 MST now, so all pins' device list
+is empty, meaning no pin is multi-streaming capaple.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index fdbb09a..fb58291 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -666,6 +666,63 @@ int snd_hda_get_conn_index(struct hda_codec *codec, hda_nid_t mux,
- }
- EXPORT_SYMBOL_HDA(snd_hda_get_conn_index);
- 
-+
-+/* return DEVLIST_LEN parameter of the given widget */
-+static unsigned int get_num_devices(struct hda_codec *codec, hda_nid_t nid)
-+{
-+	unsigned int wcaps = get_wcaps(codec, nid);
-+	unsigned int parm;
-+
-+	if (!codec->dp_mst || !(wcaps & AC_WCAP_DIGITAL) ||
-+	    get_wcaps_type(wcaps) != AC_WID_PIN)
-+		return 0;
-+
-+	parm = snd_hda_param_read(codec, nid, AC_PAR_DEVLIST_LEN);
-+	if (parm == -1 && codec->bus->rirb_error)
-+		parm = 0;
-+	return parm & AC_DEVLIST_LEN;
-+}
-+
-+/**
-+ * snd_hda_get_devices - copy device list without cache
-+ * @codec: the HDA codec
-+ * @nid: NID of the pin to parse
-+ * @dev_list: device list array
-+ * @max_devices: max. number of devices to store
-+ *
-+ * Copy the device list. This info is dynamic and so not cached.
-+ * Currently called only from hda_proc.c, so not exported.
-+ */
-+int snd_hda_get_devices(struct hda_codec *codec, hda_nid_t nid,
-+			union hda_devlist_entry *dev_list, int max_devices)
-+{
-+	unsigned int parm;
-+	int i, dev_len, devices;
-+
-+	parm = get_num_devices(codec, nid);
-+	if (!parm)	/* not multi-stream capable */
-+		return 0;
-+
-+	dev_len = parm + 1;
-+	devices = 0;
-+
-+	while (devices < dev_len) {
-+		parm = snd_hda_codec_read(codec, nid, 0,
-+					  AC_VERB_GET_DEVICE_LIST, devices);
-+		if (parm == -1 && codec->bus->rirb_error)
-+			break;
-+
-+		for (i = 0; i < 8; i++) {
-+			dev_list[devices].value = parm & 0x7;
-+			parm >>= 4;
-+			devices++;
-+			if (devices >= dev_len)
-+				break;
-+		}
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 030ca86..87ca984 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1989,8 +1989,10 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 		return -EINVAL;
+ 	}
+ 	codec->patch_ops = generic_hdmi_patch_ops;
+-	if (codec->vendor_id == 0x80862807)
++	if (codec->vendor_id == 0x80862807) {
+ 		codec->patch_ops.set_power_state = haswell_set_power_state;
++		codec->dp_mst = true;
 +	}
-+	return devices;
-+}
-+
- /**
-  * snd_hda_queue_unsol_event - add an unsolicited event to queue
-  * @bus: the BUS
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 701c2e0..736b55a 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -94,6 +94,8 @@ enum {
- #define AC_VERB_GET_HDMI_DIP_XMIT		0x0f32
- #define AC_VERB_GET_HDMI_CP_CTRL		0x0f33
- #define AC_VERB_GET_HDMI_CHAN_SLOT		0x0f34
-+#define AC_VERB_GET_DEVICE_SEL			0xf35
-+#define AC_VERB_GET_DEVICE_LIST			0xf36
  
- /*
-  * SET verbs
-@@ -133,6 +135,7 @@ enum {
- #define AC_VERB_SET_HDMI_DIP_XMIT		0x732
- #define AC_VERB_SET_HDMI_CP_CTRL		0x733
- #define AC_VERB_SET_HDMI_CHAN_SLOT		0x734
-+#define AC_VERB_SET_DEVICE_SEL			0x735
- 
- /*
-  * Parameter IDs
-@@ -154,6 +157,7 @@ enum {
- #define AC_PAR_GPIO_CAP			0x11
- #define AC_PAR_AMP_OUT_CAP		0x12
- #define AC_PAR_VOL_KNB_CAP		0x13
-+#define AC_PAR_DEVLIST_LEN		0x15
- #define AC_PAR_HDMI_LPCM_CAP		0x20
- 
- /*
-@@ -795,6 +799,19 @@ struct hda_pcm {
- 	bool own_chmap;		/* codec driver provides own channel maps */
- };
- 
-+/* display pin's device list entry */
-+union  hda_devlist_entry {
-+	unsigned int value;
-+	struct  {
-+		unsigned int present_detect:1;
-+		unsigned int eld_valid:1;
-+		unsigned int inactive:1;
-+	} bits;
-+};
-+
-+#define AC_MAX_DEVLIST_LEN	64
-+#define AC_DEVLIST_LEN		0x3f
-+
- /* codec information */
- struct hda_codec {
- 	struct hda_bus *bus;
-@@ -885,6 +902,7 @@ struct hda_codec {
- 	unsigned int pcm_format_first:1; /* PCM format must be set first */
- 	unsigned int epss:1;		/* supporting EPSS? */
- 	unsigned int cached_write:1;	/* write only to caches */
-+	unsigned int dp_mst:1; /* support DP1.2 Multi-stream transport */
- #ifdef CONFIG_PM
- 	unsigned int power_on :1;	/* current (global) power-state */
- 	unsigned int d3_stop_clk:1;	/* support D3 operation without BCLK */
-@@ -972,6 +990,8 @@ int snd_hda_override_conn_list(struct hda_codec *codec, hda_nid_t nid, int nums,
- 			  const hda_nid_t *list);
- int snd_hda_get_conn_index(struct hda_codec *codec, hda_nid_t mux,
- 			   hda_nid_t nid, int recursive);
-+int snd_hda_get_devices(struct hda_codec *codec, hda_nid_t nid,
-+			union hda_devlist_entry *dev_list, int max_devices);
- int snd_hda_query_supported_pcm(struct hda_codec *codec, hda_nid_t nid,
- 				u32 *ratesp, u64 *formatsp, unsigned int *bpsp);
+ 	generic_hdmi_init_per_pins(codec);
  
 -- 
 1.8.1.2
