@@ -1,19 +1,15 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v5 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Fri, 23 Aug 2013 08:34:21 +0200
-Message-ID: <20130823063421.GF31036@pengutronix.de>
-References: <cover.1376565456.git.b42378@freescale.com>
- <20130822210035.GB31036@pengutronix.de>
- <20130822224331.8231.75743@quantum> <34430785.ApIqfgatMc@flatron>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH v11] ASoC: fsl: Add S/PDIF machine driver
+Date: Fri, 23 Aug 2013 16:04:43 +0800
+Message-ID: <fac39ed91818630e03f81a5f0cf9ddde0e6a3c3a.1377244995.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 0BCA1260818
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 08:34:47 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <34430785.ApIqfgatMc@flatron>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe006.messaging.microsoft.com [216.32.180.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id 796C7261098
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 09:53:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,209 +19,266 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, Mike Turquette <mturquette@linaro.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, Pawel Moll <Pawel.Moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "festevam@gmail.com" <festevam@gmail.com>, Nicolin Chen <b42378@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "galak@codeaurora.org" <galak@codeaurora.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: broonie@kernel.org, s.hauer@pengutronix.de, swarren@wwwdotorg.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, tomasz.figa@gmail.com, rob.herring@calxeda.com, p.zabel@pengutronix.de, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 23, 2013 at 12:49:19AM +0200, Tomasz Figa wrote:
-> On Thursday 22 of August 2013 15:43:31 Mike Turquette wrote:
-> > Quoting Sascha Hauer (2013-08-22 14:00:35)
-> > 
-> > > On Thu, Aug 22, 2013 at 01:09:31PM +0100, Mark Rutland wrote:
-> > > > On Thu, Aug 22, 2013 at 08:19:10AM +0100, Mike Turquette wrote:
-> > > > > Quoting Tomasz Figa (2013-08-21 14:34:55)
-> > > > > 
-> > > > > > On Wednesday 21 of August 2013 09:50:15 Mark Rutland wrote:
-> > > > > > > On Tue, Aug 20, 2013 at 01:06:25AM +0100, Mike Turquette 
-> wrote:
-> > > > > > > > Quoting Mark Rutland (2013-08-19 02:35:43)
-> > > > > > > > 
-> > > > > > > > > On Sat, Aug 17, 2013 at 04:17:18PM +0100, Tomasz Figa 
-> wrote:
-> > > > > > > > > > On Saturday 17 of August 2013 16:53:16 Sascha Hauer 
-> wrote:
-> > > > > > > > > > > On Sat, Aug 17, 2013 at 02:28:04PM +0200, Tomasz Figa 
-> wrote:
-> > > > > > > > > > > > > > > Also I would make this option required. Use a
-> > > > > > > > > > > > > > > dummy
-> > > > > > > > > > > > > > > clock for
-> > > > > > > > > > > > > > > mux
-> > > > > > > > > > > > > > > inputs that are grounded for a specific SoC.
-> > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > Some clocks are not from CCM and we haven't
-> > > > > > > > > > > > > > defined in
-> > > > > > > > > > > > > > imx6q-clk.txt,
-> > > > > > > > > > > > > > so in most cases we can't provide a phandle for
-> > > > > > > > > > > > > > them, eg:
-> > > > > > > > > > > > > > spdif_ext.
-> > > > > > > > > > > > > > I think it's a bit hard to force it to be
-> > > > > > > > > > > > > > 'required'. An
-> > > > > > > > > > > > > > 'optional'
-> > > > > > > > > > > > > > looks more flexible to me and a default one is
-> > > > > > > > > > > > > > ensured
-> > > > > > > > > > > > > > even if
-> > > > > > > > > > > > > > it's
-> > > > > > > > > > > > > > missing.
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > <&clks 0> is the dummy clock. This can be used for
-> > > > > > > > > > > > > all input
-> > > > > > > > > > > > > clocks
-> > > > > > > > > > > > > not
-> > > > > > > > > > > > > defined by the SoC.
-> > > > > > > > > > > > 
-> > > > > > > > > > > > Where does this assumption come from? Is it
-> > > > > > > > > > > > documented
-> > > > > > > > > > > > anywhere?
-> > > > > > > > > > > 
-> > > > > > > > > > > This is how all i.MX clock bindings currently are. See
-> > > > > > > > > > > Documentation/devicetree/bindings/clock/imx*-clock.txt
-> > > > > > > > > > 
-> > > > > > > > > > OK, thanks.
-> > > > > > > > > > 
-> > > > > > > > > > I guess we need some discussion on dummy clocks vs
-> > > > > > > > > > skipped clocks.
-> > > > > > > > > > I think we want some consistency on this, don't we?
-> > > > > > > > > > 
-> > > > > > > > > > If we really need a dummy clock, then we might also want
-> > > > > > > > > > a generic
-> > > > > > > > > > way to specify it.
-> > > > > > > > > 
-> > > > > > > > > What do we actually mean by a "dummy clock"? We already
-> > > > > > > > > have
-> > > > > > > > > bindings
-> > > > > > > > > for "fixed-clock" and co friends describe relatively
-> > > > > > > > > simple
-> > > > > > > > > preconfigured clocks.
-> > > > > > > > 
-> > > > > > > > Some platforms have a fake clock which defines noops
-> > > > > > > > callbacks and
-> > > > > > > > basically doesn't do anything. This is analogous to the
-> > > > > > > > dummy
-> > > > > > > > regulator
-> > > > > > > > implementation. A central one could be registered by the
-> > > > > > > > clock core,
-> > > > > > > > as
-> > > > > > > > is done by the regulator core.
-> > > > > > > 
-> > > > > > > When you say some platforms, you presumably mean the platform
-> > > > > > > code in
-> > > > > > > Linux? A dummy clock sounds like a completely Linux-specific
-> > > > > > > abstraction rather than a description of the hardware, and I
-> > > > > > > don't see why we need that in the DT:
-> > > > > > > 
-> > > > > > > * If a clock is wired up and running (as presumably the dummy
-> > > > > > > clock is), then surely it's a fixed-clock (it's running, we
-> > > > > > > and we have no control over it, but we presumably know its
-> > > > > > > rate) and can be described as such?
-> > > > > > > 
-> > > > > > > * If no clock is wired up, then we should be able to describe
-> > > > > > > that. If a driver believes that a clock is required when it
-> > > > > > > isn't (for some level of functionality), then that driver
-> > > > > > > should be fixed up to support the clock as being optional.
-> > > > > > > 
-> > > > > > > Am I missing something?
-> > > > > > 
-> > > > > > I second that.
-> > > > > > 
-> > > > > > Moreover, I don't think that device tree should deal with dummy
-> > > > > > anything. It should be able to describe hardware that is
-> > > > > > available on given system, not list what hardware is not
-> > > > > > available.
-> > > > > 
-> > > > > I wasn't clear. The dummy clock IS a completely Linux-specific
-> > > > > abstraction.
-> > > > > 
-> > > > > I'm not advocating a dummy clock in DT. I am advocating
-> > > > > consolidation of the implementation of a clock that does nothing
-> > > > > into the clock core. This code could easily live in
-> > > > > drivers/clk/clk.c instead of having everyone open-code it.
-> > > > > 
-> > > > > As far as specifying a dummy clock in DT? I dunno. DT should
-> > > > > describe
-> > > > > real hardware so there isn't much use for a dummy clock.
-> > > > 
-> > > > Sorry, I misunderstood. Good to hear we're on the same page :)
-> > > > 
-> > > > > I'm guessing one of the reasons for such a clock are drivers do
-> > > > > not
-> > > > > honor the clk.h api and they freak out when clk_get gives them a
-> > > > > NULL
-> > > > > pointer?
-> > > > 
-> > > > I'm not sure. Sascha, could you shed some light on the matter?
-> > > 
-> > > The original reason introducing the dummy clocks in the i.MX dtbs
-> > > was to provide devices a clock which the driver requests but is
-> > > not software controllable. We often have the case where the same
-> > > devices are on several SoCs, but not on all of them all clocks have
-> > > a bit to en/disable them.
-> > > 
-> > > Anyway, to accomplish this we don't need dummy clocks. We can just
-> > > describe the real clocks.
-> > 
-> > You could use a dummy clk for the Linux implementation, but the downside
-> > is that a dummy clock has a rate of 0 always and a your clocks likely
-> > have non-zero rates.
-> > 
-> > It is probably better for you define a clock which only implements the
-> > .recalc_rate callback. If the rate of this clock changes without Linux
-> > having knowledge of it you can use the CLK_GET_RATE_NOCACHE flag.
-> 
-> I doubt that rate of a dummy clock could ever change... unless it is a 
-> rather smart dummy.
-> 
-> > > BTW with the S/PDIF core on which not all mux inputs are connected
-> > > to actual clocks we could also describe the unconnected inputs as
-> > > ground clocks with rate 0. This way we describe something which
-> > > is really there instead of dummy clocks ;)
-> > 
-> > Again you could use a dummy clock for this OR a fixed-rate clock with a
-> > rate of zero from the perspective of the Linux implementation.
-> > 
-> > Do you think it worthwhile to have a DT binding for a grounded clock?
-> > That is not an entirely uncommon case.
-> 
-> Well, how would that differ from skipping a clock from clocks list, i.e. 
-> not specifying it in clock-names and clocks properties?
+This patch implements a device-tree-only machine driver for Freescale
+i.MX series Soc. It works with spdif_transmitter/spdif_receiver and
+fsl_spdif.c drivers.
 
-The difference is that you can successfully grab it in your driver.
+Signed-off-by: Nicolin Chen <b42378@freescale.com>
+---
+Changelog
+v10->v11:
+ * Use boolean properties for spdif-out/in switch instead of codec phandles.
+ * Accordingly create dummy codec driver in probe() instead of DT nodes.
 
-> 
-> > > Background to why it might be a good idea to connect a ground clock
-> > > to the unconnected input pins is that a driver has a chance to
-> > > successfully grab all clocks. Otherwise how does the driver
-> > > distinguish
-> > > between an unconnected and an erroneous clock?
-> > 
-> > Sorry, I don't follow this last question. Do you mean how to distinguish
-> > based on the value returned from clk_get?
-> 
-> Hmm, in theory, a driver could want to distinguish an error case (e.g. 
-> clock specified, but there is a problem with it) from no clock (e.g. clock 
-> not specified in DT, because it is not available on particular board).
+ .../devicetree/bindings/sound/imx-audio-spdif.txt  |   34 +++++
+ sound/soc/fsl/Kconfig                              |   11 ++
+ sound/soc/fsl/Makefile                             |    2 +
+ sound/soc/fsl/imx-spdif.c                          |  152 ++++++++++++++++++++
+ 4 files changed, 199 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+ create mode 100644 sound/soc/fsl/imx-spdif.c
 
-Yes, that's what I meant. To illustrate the problem for this driver:
-
-	for (i = 0; i < STC_TXCLK_SRC_MAX; i++) {
-		sprintf(tmp, "rxtx%d", i);
-		clk = devm_clk_get(&pdev->dev, tmp);
-		if (IS_ERR(clk)) {
-			/*
-			 * This can either mean this clock is not wired
-			 * up (skipped in the devicetree, *or* it is wired
-			 * up, but there went something wrong requesting it.
-			 * We can only ignore this error.
-			 */
-		}
-	}
-
-This could be solved by always specifying all input clocks in the
-devicetree.
-
-Sascha
-
+diff --git a/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt b/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+new file mode 100644
+index 0000000..7d13479
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+@@ -0,0 +1,34 @@
++Freescale i.MX audio complex with S/PDIF transceiver
++
++Required properties:
++
++  - compatible : "fsl,imx-audio-spdif"
++
++  - model : The user-visible name of this sound complex
++
++  - spdif-controller : The phandle of the i.MX S/PDIF controller
++
++
++Optional properties:
++
++  - spdif-out : This is a boolean property. If present, the transmitting
++    function of S/PDIF will be enabled, indicating there's a physical
++    S/PDIF out connector/jack on the board or it's connecting to some
++    other IP block, such as an HDMI encoder/display-controller.
++
++  - spdif-in : This is a boolean property. If present, the receiving
++    function of S/PDIF will be enabled, indicating there's a physical
++    S/PDIF in connector/jack on the board.
++
++* Note: At least one of these two properties should be set in the DT binding.
++
++
++Example:
++
++sound-spdif {
++	compatible = "fsl,imx-audio-spdif";
++	model = "imx-spdif";
++	spdif-controller = <&spdif>;
++	spdif-out;
++	spdif-in;
++};
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index cd088cc..a708380 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -193,6 +193,17 @@ config SND_SOC_IMX_SGTL5000
+ 	  Say Y if you want to add support for SoC audio on an i.MX board with
+ 	  a sgtl5000 codec.
+ 
++config SND_SOC_IMX_SPDIF
++	tristate "SoC Audio support for i.MX boards with S/PDIF"
++	select SND_SOC_IMX_PCM_DMA
++	select SND_SOC_FSL_SPDIF
++	select SND_SOC_FSL_UTILS
++	select SND_SOC_SPDIF
++	help
++	  SoC Audio support for i.MX boards with S/PDIF
++	  Say Y if you want to add support for SoC audio on an i.MX board with
++	  a S/DPDIF.
++
+ config SND_SOC_IMX_MC13783
+ 	tristate "SoC Audio support for I.MX boards with mc13783"
+ 	depends on MFD_MC13783 && ARM
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index 4b5970e..e2aaff7 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -45,6 +45,7 @@ snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
+ snd-soc-wm1133-ev1-objs := wm1133-ev1.o
+ snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
+ snd-soc-imx-wm8962-objs := imx-wm8962.o
++snd-soc-imx-spdif-objs :=imx-spdif.o
+ snd-soc-imx-mc13783-objs := imx-mc13783.o
+ 
+ obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
+@@ -53,4 +54,5 @@ obj-$(CONFIG_SND_SOC_MX27VIS_AIC32X4) += snd-soc-mx27vis-aic32x4.o
+ obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) += snd-soc-wm1133-ev1.o
+ obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
+ obj-$(CONFIG_SND_SOC_IMX_WM8962) += snd-soc-imx-wm8962.o
++obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
+ obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
+diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
+new file mode 100644
+index 0000000..af5b553
+--- /dev/null
++++ b/sound/soc/fsl/imx-spdif.c
+@@ -0,0 +1,152 @@
++/*
++ * Copyright (C) 2013 Freescale Semiconductor, Inc.
++ *
++ * The code contained herein is licensed under the GNU General Public
++ * License. You may obtain a copy of the GNU General Public License
++ * Version 2 or later at the following locations:
++ *
++ * http://www.opensource.org/licenses/gpl-license.html
++ * http://www.gnu.org/copyleft/gpl.html
++ */
++
++#include <linux/module.h>
++#include <linux/of_platform.h>
++#include <sound/soc.h>
++
++struct imx_spdif_data {
++	struct snd_soc_dai_link dai[2];
++	struct snd_soc_card card;
++	struct platform_device *txdev;
++	struct platform_device *rxdev;
++};
++
++static int imx_spdif_audio_probe(struct platform_device *pdev)
++{
++	struct device_node *spdif_np, *np = pdev->dev.of_node;
++	struct platform_device *spdif_pdev;
++	struct imx_spdif_data *data;
++	int ret = 0, num_links = 0;
++
++	spdif_np = of_parse_phandle(np, "spdif-controller", 0);
++	if (!spdif_np) {
++		dev_err(&pdev->dev, "failed to find spdif-controller\n");
++		ret = -EINVAL;
++		goto end;
++	}
++
++	spdif_pdev = of_find_device_by_node(spdif_np);
++	if (!spdif_pdev) {
++		dev_err(&pdev->dev, "failed to find S/PDIF device\n");
++		ret = -EINVAL;
++		goto end;
++	}
++
++	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
++	if (!data) {
++		dev_err(&pdev->dev, "failed to allocate memory\n");
++		ret = -ENOMEM;
++		goto end;
++	}
++
++	if (of_property_read_bool(np, "spdif-out")) {
++		data->dai[num_links].name = "S/PDIF TX";
++		data->dai[num_links].stream_name = "S/PDIF PCM Playback";
++		data->dai[num_links].codec_dai_name = "dit-hifi";
++		data->dai[num_links].codec_name = "spdif-dit";
++		data->dai[num_links].cpu_of_node = spdif_np;
++		data->dai[num_links].platform_of_node = spdif_np;
++		num_links++;
++	}
++
++	if (of_property_read_bool(np, "spdif-in")) {
++		data->dai[num_links].name = "S/PDIF RX";
++		data->dai[num_links].stream_name = "S/PDIF PCM Capture";
++		data->dai[num_links].codec_dai_name = "dir-hifi";
++		data->dai[num_links].codec_name = "spdif-dir";
++		data->dai[num_links].cpu_of_node = spdif_np;
++		data->dai[num_links].platform_of_node = spdif_np;
++		num_links++;
++	}
++
++	if (!num_links) {
++		dev_err(&pdev->dev, "no enabled S/PDIF DAI link\n");
++		goto end;
++	}
++
++	data->card.dev = &pdev->dev;
++	data->card.num_links = num_links;
++	data->card.dai_link = data->dai;
++
++	ret = snd_soc_of_parse_card_name(&data->card, "model");
++	if (ret)
++		goto end;
++
++	data->txdev = platform_device_register_simple("spdif-dit", -1, NULL, 0);
++	if (IS_ERR(data->txdev)) {
++		ret = PTR_ERR(data->txdev);
++		dev_err(&pdev->dev, "register spdif-dit failed (%d)\n", ret);
++		goto end;
++	}
++
++	data->rxdev = platform_device_register_simple("spdif-dir", -1, NULL, 0);
++	if (IS_ERR(data->rxdev)) {
++		ret = PTR_ERR(data->rxdev);
++		dev_err(&pdev->dev, "register spdif-dir failed (%d)\n", ret);
++		goto error_dit;
++	}
++
++	ret = snd_soc_register_card(&data->card);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
++		goto error_dir;
++	}
++
++	platform_set_drvdata(pdev, data);
++
++	goto end;
++
++error_dir:
++	platform_device_unregister(data->rxdev);
++error_dit:
++	platform_device_unregister(data->txdev);
++end:
++	if (spdif_np)
++		of_node_put(spdif_np);
++
++	return ret;
++}
++
++static int imx_spdif_audio_remove(struct platform_device *pdev)
++{
++	struct imx_spdif_data *data = platform_get_drvdata(pdev);
++
++	platform_device_unregister(data->rxdev);
++	platform_device_unregister(data->txdev);
++
++	snd_soc_unregister_card(&data->card);
++
++	return 0;
++}
++
++static const struct of_device_id imx_spdif_dt_ids[] = {
++	{ .compatible = "fsl,imx-audio-spdif", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, imx_spdif_dt_ids);
++
++static struct platform_driver imx_spdif_driver = {
++	.driver = {
++		.name = "imx-spdif",
++		.owner = THIS_MODULE,
++		.of_match_table = imx_spdif_dt_ids,
++	},
++	.probe = imx_spdif_audio_probe,
++	.remove = imx_spdif_audio_remove,
++};
++
++module_platform_driver(imx_spdif_driver);
++
++MODULE_AUTHOR("Freescale Semiconductor, Inc.");
++MODULE_DESCRIPTION("Freescale i.MX S/PDIF machine driver");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:imx-spdif");
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.7.1
