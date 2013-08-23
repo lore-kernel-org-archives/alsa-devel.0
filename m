@@ -1,60 +1,79 @@
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [PATCH V3] i2c: move of helpers into the core
-Date: Fri, 23 Aug 2013 10:52:03 +0200
-Message-ID: <20130823085203.GC3035@katana>
-References: <1377187217-31820-1-git-send-email-wsa@the-dreams.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v11 3/8] ASoC: generic: simple DT sound card
+Date: Fri, 23 Aug 2013 10:58:16 +0100
+Message-ID: <20130823095816.GF25263@sirena.org.uk>
+References: <1376924761-4054-1-git-send-email-mpa@pengutronix.de>
+ <1376924761-4054-4-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bAmEntskrkuBymla"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1377187217-31820-1-git-send-email-wsa@the-dreams.de>
-Sender: linux-doc-owner@vger.kernel.org
-To: linux-i2c@vger.kernel.org
-Cc: linux-acpi@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============7192188151197915355=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20678265561
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 11:58:33 +0200 (CEST)
+In-Reply-To: <1376924761-4054-4-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---bAmEntskrkuBymla
+--===============7192188151197915355==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7mxbaLlpDEyR1+x6"
+Content-Disposition: inline
+
+
+--7mxbaLlpDEyR1+x6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 22, 2013 at 06:00:14PM +0200, Wolfram Sang wrote:
-> I2C of helpers used to live in of_i2c.c but experience (from SPI) shows
-> that it is much cleaner to have this in the core. This also removes a
-> circular dependency between the helpers and the core, and so we can
-> finally register child nodes in the core instead of doing this manually
-> in each driver. So, fix the drivers and documentation, too.
->=20
-> Acked-by: Rob Herring <rob.herring@calxeda.com>
-> Reviewed-by: Felipe Balbi <balbi@ti.com>
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Tested-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
+On Mon, Aug 19, 2013 at 05:05:56PM +0200, Markus Pargmann wrote:
+> Simple sound card initialized using DT. When used with AC97, ac97-codec
+> is used to automatically discover the used codec.
 
-Applied to for-next!
+I've held back a bit on this one.  The reason is that it's adding a
+separate card to the generic card which doesn't seem like the obvious
+thing to do - obviously they have very similar goals, it's just that one
+is for DT usage and the other isn't.  What's the reason for not adding
+DT support to the generic card?
 
---bAmEntskrkuBymla
+--7mxbaLlpDEyR1+x6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSFyKzAAoJEBQN5MwUoCm2bI0QAK5awQ507hl+3+q76tlv3bM/
-+m1YNlqdEye7K3+XmB48MpCUi65bGtoITuOg+DaWYxw3+A7RhoJgwkFyMZ0gpesj
-aHkFe51yVYiU4Zx1MVSpIDo5ufAmp+8FRM3TF++IgAq62/7fLtwhTJlU2qgzShzs
-rw8UbmXg9+VjWFRfw1tAl+Vz3sWb9+vH2fmNiwXyPMglOdpClKe28rXrABJ78Gqc
-cxqgatPqfBCxyob57z/hGShtPUZkRWdpMU/hjbfemsPrysbLQzmqVyVS2idFP1ad
-T3mJ3xbKXcyJNO4NjGWazxPnpZ74RfNIJQ5nerZfqralO2gdVW8EFwCYaEy9k8YF
-/EpBpMQkHz3Pb3eb4tZJa50cVCygjuikpPoxq9Mtao6T8VG0aVNj8NuE9ros2WS8
-YWkRaVRDN8fjW98vuw7HmNuHCfFZV7QQ8uCcDtrl9k7X+fLQIvxPAVgrDs7Qmugm
-9nzR9AchLDuHuBNRM42bz/t+cILX2ExwIMC5k1YouF0Inuvfrh3LSrEyaJSD8IEF
-VeRGJPNSEP+Ww2+bGexV56ziz8JeMNLaj5rghDw9h9Jz5D4nMRjqhsRAbSfjrlMb
-YfyMTzS/tmJgt2NPj2bc2DvK4JLfrS/SR5YsdWSgR6VQ0WUvPSLJL/rY8Gn/UJ2j
-gfliuM4Sj6/OhS+bbMX3
-=pGc6
+iQIcBAEBAgAGBQJSFzI1AAoJELSic+t+oim9n04P/RDZPAt8rib/e5RC19ypfk/i
+j6nndIs1w4uWDBHMxfutqRSK0nkP8VmR785G5DEujmZK4JQxD7rKpNVd/LQG7C7H
+NUTTCP1w+ZqaWp3c5A5ShP9UooAj45/w36CcqwkMCosVIPammZ7jdmyoqqkuSFpx
+dMr6mVeH3dN9jdthu/7Td4Kel2+iXEo09ABPUIcLWdZLBULt5yi9GvM4IttagILA
+T4GDBnAq53cSJ1cs5wMK5rzfIP6q1c/tnnL1CYV1ba72kEac7+rA6DFCkJHFf7bO
+xG4MM/2m1VZ4i5d74Dkb3QP5cgyzRcDMpcHxXaIRSGep5j8CVT7HhoX51P01dwnK
+wk4GlksnEaIEcMzafdDjSFe2ycgSI5Vn7OpjkJFYY0Tq4WeeHTS8nd+rXwzgqvax
+jrVtQ92Il1+qzkfJKRIMuSLh1KyHX0w9LpRkkwTKZAWQwvNb20xZaYxlh01fw1YJ
+vG1OP39OBrbnAGjd+LSPUzmexQcMQQ6tZsq/ORunsftqyEpbqklznLBjfLMZIXfN
+aZvTUE+yvzINVDlaoaLSkyKMiit73h3HVr2itmGBGxdqSo+sj+Gf3f8qA7hvNq0N
+KVHSKB3a8VbISj46Tzzb3icnXpEcnR05uMD6bPlfsAE/ZftK6oXRze/blt1/EFkP
+OYFJNHjVFQVApZmMFnwk
+=27jK
 -----END PGP SIGNATURE-----
 
---bAmEntskrkuBymla--
+--7mxbaLlpDEyR1+x6--
+
+--===============7192188151197915355==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7192188151197915355==--
