@@ -1,19 +1,17 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [RFC PATCH 1/3] ALSA: hda - add flags and routines
- to get devices selection info for DP1.2 MST
-Date: Fri, 23 Aug 2013 15:24:54 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801321BDD@SHSMSX101.ccr.corp.intel.com>
-References: <1377233796-10095-1-git-send-email-mengdong.lin@intel.com>
- <s5hli3siomt.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: pcm1792a: Add DAPM support
+Date: Fri, 23 Aug 2013 16:36:06 +0100
+Message-ID: <20130823153606.GA28838@sirena.org.uk>
+References: <1376415048-6029-1-git-send-email-broonie@kernel.org>
+ <1376415048-6029-2-git-send-email-broonie@kernel.org>
+ <20130823151648.GA32473@panicking>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3363984412660794647=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 7EBDD26559C
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 17:24:58 +0200 (CEST)
-In-Reply-To: <s5hli3siomt.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42AF72655BD
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 17:36:25 +0200 (CEST)
+In-Reply-To: <20130823151648.GA32473@panicking>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,107 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Friday, August 23, 2013 8:22 PM
-> > +/**
-> > + * snd_hda_get_devices - copy device list without cache
-> > + * @codec: the HDA codec
-> > + * @nid: NID of the pin to parse
-> > + * @dev_list: device list array
-> > + * @max_devices: max. number of devices to store
-> > + *
-> > + * Copy the device list. This info is dynamic and so not cached.
-> > + * Currently called only from hda_proc.c, so not exported.
-> > + */
-> > +int snd_hda_get_devices(struct hda_codec *codec, hda_nid_t nid,
-> > +			union hda_devlist_entry *dev_list, int max_devices) {
-> > +	unsigned int parm;
-> > +	int i, dev_len, devices;
-> > +
-> > +	parm = get_num_devices(codec, nid);
-> > +	if (!parm)	/* not multi-stream capable */
-> > +		return 0;
-> > +
-> > +	dev_len = parm + 1;
-> 
-> Check dev_len with max_devices here.
 
-Will fix it. Sorry, I forgot to check.
+--===============3363984412660794647==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
+Content-Disposition: inline
 
-> 
-> > +	devices = 0;
-> > +
-> > +	while (devices < dev_len) {
-> > +		parm = snd_hda_codec_read(codec, nid, 0,
-> > +					  AC_VERB_GET_DEVICE_LIST, devices);
-> > +		if (parm == -1 && codec->bus->rirb_error)
-> > +			break;
-> > +
-> > +		for (i = 0; i < 8; i++) {
-> > +			dev_list[devices].value = parm & 0x7;
-> > +			parm >>= 4;
-> > +			devices++;
-> > +			if (devices >= dev_len)
-> > +				break;
-> > +		}
-> > +	}
-> > +	return devices;
-> > +}
-> > +
-> >  /**
-> >   * snd_hda_queue_unsol_event - add an unsolicited event to queue
-> >   * @bus: the BUS
-> > diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-> > index 701c2e0..736b55a 100644
-> > --- a/sound/pci/hda/hda_codec.h
-> > +++ b/sound/pci/hda/hda_codec.h
-> > @@ -94,6 +94,8 @@ enum {
-> >  #define AC_VERB_GET_HDMI_DIP_XMIT		0x0f32
-> >  #define AC_VERB_GET_HDMI_CP_CTRL		0x0f33
-> >  #define AC_VERB_GET_HDMI_CHAN_SLOT		0x0f34
-> > +#define AC_VERB_GET_DEVICE_SEL			0xf35
-> > +#define AC_VERB_GET_DEVICE_LIST			0xf36
-> >
-> >  /*
-> >   * SET verbs
-> > @@ -133,6 +135,7 @@ enum {
-> >  #define AC_VERB_SET_HDMI_DIP_XMIT		0x732
-> >  #define AC_VERB_SET_HDMI_CP_CTRL		0x733
-> >  #define AC_VERB_SET_HDMI_CHAN_SLOT		0x734
-> > +#define AC_VERB_SET_DEVICE_SEL			0x735
-> >
-> >  /*
-> >   * Parameter IDs
-> > @@ -154,6 +157,7 @@ enum {
-> >  #define AC_PAR_GPIO_CAP			0x11
-> >  #define AC_PAR_AMP_OUT_CAP		0x12
-> >  #define AC_PAR_VOL_KNB_CAP		0x13
-> > +#define AC_PAR_DEVLIST_LEN		0x15
-> >  #define AC_PAR_HDMI_LPCM_CAP		0x20
-> >
-> >  /*
-> > @@ -795,6 +799,19 @@ struct hda_pcm {
-> >  	bool own_chmap;		/* codec driver provides own channel maps */
-> >  };
-> >
-> > +/* display pin's device list entry */ union  hda_devlist_entry {
-> > +	unsigned int value;
-> > +	struct  {
-> > +		unsigned int present_detect:1;
-> > +		unsigned int eld_valid:1;
-> > +		unsigned int inactive:1;
-> > +	} bits;
-> > +};
-> 
-> The bit fields are not really portable.
-> Please use the explicit bit operation instead.
 
-You're right. It's compiler-dependent. I'll revise and verify the patch next Monday.
+--Qxx1br4bt0+wmkIi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks for the review!
-Mengdong
+On Fri, Aug 23, 2013 at 05:16:48PM +0200, Michael Trimarchi wrote:
+
+> I'm working on support pcm1795 and pcm1796 too. They are registers compatible
+> but different sample rate support. So the idea is three patches?
+
+> - rename pcm1792a to pcm179x (is it possible?)
+> - add three different dai for pcm1792a, pcm1795 and pcm1796
+> - use of_device_id data pointer to select the correct dai
+
+Yes, that seems like a good approach - no problem with the rename, just
+make sure the existing users are updated.
+
+--Qxx1br4bt0+wmkIi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSF4FXAAoJELSic+t+oim9444P/iBDOfDYKmQW/jP8L5EW+Ekv
+A244OTly6eQJZ1T74Wa5eZuhNVNkwH0NvRP1t53u+3u+QUyJs9kBlilsE8niXvQh
+F1576x4PfaPCXgPwqtzojIsoh4ghpicVk7L+e0vKbOJrZWRRRWok3QrPk/S/t3mw
+vCGdDemHlrysOKpTBdwM13ycaTypCHe7LPxORderqrkPaRBG1lumsulTpp+hVPMZ
+bg/zouy6bkXE81FyTb4NXuf/T+E5ug/r7KS2tXSJFJGgKI8XDl2xS9iignYBuI2C
+0+6nMp7rI1IRG1De4Igxk7jSb3T3YMEfZBbIsQLGXF4wdRi3ElBbvoSapJgSy4xI
+7zWEru9y+K4uv3K+3BFpDcPd/sVZKTJynZpgJGr3pbTMXIeBpdvFbVizE+gDqpEq
+1wjycDgZxqXQJJ8Pxu1LIpqDSSBViG1x3Dx1a55KEKafTGUjJs/JzKskGXSlcY5F
+fEZ8g3cVypfJB7SRMdRxePId3OyUYhJ+UY+8T6paW2+jvLIIOKhRVYmtBUm2yINN
+cSZkeGClZyrdnTwXxhNyU37x/ympB/HXHoF5r0oxgiXVgE1t+g5J12FOmEhD6E0G
+3OVmYgvbOKWT1IkEPHzhTtscelNduGRnNjPWz9Kko225+sP3d9QnvFHZ8DrJCSDj
+IHl6GGKBRnUZVR4g63M2
+=HBYr
+-----END PGP SIGNATURE-----
+
+--Qxx1br4bt0+wmkIi--
+
+--===============3363984412660794647==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3363984412660794647==--
