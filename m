@@ -1,21 +1,19 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: [PATCH 2/2] ASoC: pcm1792a: Add DAPM support
-Date: Fri, 23 Aug 2013 17:16:48 +0200
-Message-ID: <20130823151648.GA32473@panicking>
-References: <1376415048-6029-1-git-send-email-broonie@kernel.org>
- <1376415048-6029-2-git-send-email-broonie@kernel.org>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [RFC PATCH 1/3] ALSA: hda - add flags and routines
+ to get devices selection info for DP1.2 MST
+Date: Fri, 23 Aug 2013 15:24:54 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801321BDD@SHSMSX101.ccr.corp.intel.com>
+References: <1377233796-10095-1-git-send-email-mengdong.lin@intel.com>
+ <s5hli3siomt.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
- [209.85.212.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 868CB26559C
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 17:16:53 +0200 (CEST)
-Received: by mail-wi0-f180.google.com with SMTP id l12so624047wiv.13
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 08:16:53 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1376415048-6029-2-git-send-email-broonie@kernel.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EBDD26559C
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 17:24:58 +0200 (CEST)
+In-Reply-To: <s5hli3siomt.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,69 +23,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark
-
-On Tue, Aug 13, 2013 at 06:30:48PM +0100, Mark Brown wrote:
-> From: Mark Brown <broonie@linaro.org>
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Friday, August 23, 2013 8:22 PM
+> > +/**
+> > + * snd_hda_get_devices - copy device list without cache
+> > + * @codec: the HDA codec
+> > + * @nid: NID of the pin to parse
+> > + * @dev_list: device list array
+> > + * @max_devices: max. number of devices to store
+> > + *
+> > + * Copy the device list. This info is dynamic and so not cached.
+> > + * Currently called only from hda_proc.c, so not exported.
+> > + */
+> > +int snd_hda_get_devices(struct hda_codec *codec, hda_nid_t nid,
+> > +			union hda_devlist_entry *dev_list, int max_devices) {
+> > +	unsigned int parm;
+> > +	int i, dev_len, devices;
+> > +
+> > +	parm = get_num_devices(codec, nid);
+> > +	if (!parm)	/* not multi-stream capable */
+> > +		return 0;
+> > +
+> > +	dev_len = parm + 1;
 > 
-> Provide DAPM for the device, ensuring operation with DAPM required by the
-> core and making it easier to hook up external hardware to it.
+> Check dev_len with max_devices here.
+
+Will fix it. Sorry, I forgot to check.
+
 > 
-> Signed-off-by: Mark Brown <broonie@linaro.org>
-> ---
->  sound/soc/codecs/pcm1792a.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+> > +	devices = 0;
+> > +
+> > +	while (devices < dev_len) {
+> > +		parm = snd_hda_codec_read(codec, nid, 0,
+> > +					  AC_VERB_GET_DEVICE_LIST, devices);
+> > +		if (parm == -1 && codec->bus->rirb_error)
+> > +			break;
+> > +
+> > +		for (i = 0; i < 8; i++) {
+> > +			dev_list[devices].value = parm & 0x7;
+> > +			parm >>= 4;
+> > +			devices++;
+> > +			if (devices >= dev_len)
+> > +				break;
+> > +		}
+> > +	}
+> > +	return devices;
+> > +}
+> > +
+> >  /**
+> >   * snd_hda_queue_unsol_event - add an unsolicited event to queue
+> >   * @bus: the BUS
+> > diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+> > index 701c2e0..736b55a 100644
+> > --- a/sound/pci/hda/hda_codec.h
+> > +++ b/sound/pci/hda/hda_codec.h
+> > @@ -94,6 +94,8 @@ enum {
+> >  #define AC_VERB_GET_HDMI_DIP_XMIT		0x0f32
+> >  #define AC_VERB_GET_HDMI_CP_CTRL		0x0f33
+> >  #define AC_VERB_GET_HDMI_CHAN_SLOT		0x0f34
+> > +#define AC_VERB_GET_DEVICE_SEL			0xf35
+> > +#define AC_VERB_GET_DEVICE_LIST			0xf36
+> >
+> >  /*
+> >   * SET verbs
+> > @@ -133,6 +135,7 @@ enum {
+> >  #define AC_VERB_SET_HDMI_DIP_XMIT		0x732
+> >  #define AC_VERB_SET_HDMI_CP_CTRL		0x733
+> >  #define AC_VERB_SET_HDMI_CHAN_SLOT		0x734
+> > +#define AC_VERB_SET_DEVICE_SEL			0x735
+> >
+> >  /*
+> >   * Parameter IDs
+> > @@ -154,6 +157,7 @@ enum {
+> >  #define AC_PAR_GPIO_CAP			0x11
+> >  #define AC_PAR_AMP_OUT_CAP		0x12
+> >  #define AC_PAR_VOL_KNB_CAP		0x13
+> > +#define AC_PAR_DEVLIST_LEN		0x15
+> >  #define AC_PAR_HDMI_LPCM_CAP		0x20
+> >
+> >  /*
+> > @@ -795,6 +799,19 @@ struct hda_pcm {
+> >  	bool own_chmap;		/* codec driver provides own channel maps */
+> >  };
+> >
+> > +/* display pin's device list entry */ union  hda_devlist_entry {
+> > +	unsigned int value;
+> > +	struct  {
+> > +		unsigned int present_detect:1;
+> > +		unsigned int eld_valid:1;
+> > +		unsigned int inactive:1;
+> > +	} bits;
+> > +};
 > 
-> diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm1792a.c
-> index c57d3a5..2a8eccf 100644
-> --- a/sound/soc/codecs/pcm1792a.c
-> +++ b/sound/soc/codecs/pcm1792a.c
-> @@ -154,6 +154,20 @@ static const struct snd_kcontrol_new pcm1792a_controls[] = {
->  			 pcm1792a_dac_tlv),
->  };
->  
-> +static const struct snd_soc_dapm_widget pcm1792a_dapm_widgets[] = {
-> +SND_SOC_DAPM_OUTPUT("IOUTL+"),
-> +SND_SOC_DAPM_OUTPUT("IOUTL-"),
-> +SND_SOC_DAPM_OUTPUT("IOUTR+"),
-> +SND_SOC_DAPM_OUTPUT("IOUTR-"),
-> +};
-> +
+> The bit fields are not really portable.
+> Please use the explicit bit operation instead.
 
-I'm working on support pcm1795 and pcm1796 too. They are registers compatible
-but different sample rate support. So the idea is three patches?
+You're right. It's compiler-dependent. I'll revise and verify the patch next Monday.
 
-- rename pcm1792a to pcm179x (is it possible?)
-- add three different dai for pcm1792a, pcm1795 and pcm1796
-- use of_device_id data pointer to select the correct dai
-
-Michael
-
-> +static const struct snd_soc_dapm_route pcm1792a_dapm_routes[] = {
-> +	{ "IOUTL+", NULL, "Playback" },
-> +	{ "IOUTL-", NULL, "Playback" },
-> +	{ "IOUTR+", NULL, "Playback" },
-> +	{ "IOUTR-", NULL, "Playback" },
-> +};
-> +
->  static struct snd_soc_dai_driver pcm1792a_dai = {
->  	.name = "pcm1792a-hifi",
->  	.playback = {
-> @@ -184,6 +198,10 @@ static const struct regmap_config pcm1792a_regmap = {
->  static struct snd_soc_codec_driver soc_codec_dev_pcm1792a = {
->  	.controls		= pcm1792a_controls,
->  	.num_controls		= ARRAY_SIZE(pcm1792a_controls),
-> +	.dapm_widgets		= pcm1792a_dapm_widgets,
-> +	.num_dapm_widgets	= ARRAY_SIZE(pcm1792a_dapm_widgets),
-> +	.dapm_routes		= pcm1792a_dapm_routes,
-> +	.num_dapm_routes	= ARRAY_SIZE(pcm1792a_dapm_routes),
->  };
->  
->  static int pcm1792a_spi_probe(struct spi_device *spi)
-> -- 
-> 1.8.4.rc2
-> 
+Thanks for the review!
+Mengdong
