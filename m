@@ -1,21 +1,27 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v5 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Fri, 23 Aug 2013 16:01:28 +0200
-Message-ID: <20130823140128.GI31036@pengutronix.de>
-References: <cover.1376565456.git.b42378@freescale.com>
- <20130822210035.GB31036@pengutronix.de>
- <20130822224331.8231.75743@quantum> <34430785.ApIqfgatMc@flatron>
- <20130823063421.GF31036@pengutronix.de>
- <20130823125815.GG25856@e106331-lin.cambridge.arm.com>
+From: Andreas Pretzsch <apr@cn-eng.de>
+Subject: [PATCH] ASoC: fsl: imx-wm8962: Fix missing audmux
+	external port setup check
+Date: Fri, 23 Aug 2013 16:37:51 +0200
+Message-ID: <1377268671-678-1-git-send-email-apr@cn-eng.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id CF84E265578
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 16:01:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130823125815.GG25856@e106331-lin.cambridge.arm.com>
+Received: from mail.mars-solutions.de (mail.mars-solutions.de
+ [213.239.212.107])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58A11265587
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 16:38:19 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by mail.mars-solutions.de (Postfix) with ESMTP id B450A2A409D
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 16:37:50 +0200 (CEST)
+Received: from mail.mars-solutions.de ([127.0.0.1])
+ by localhost (mars-solutions.de [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id JiQMvpj3AAaK for <alsa-devel@alsa-project.org>;
+ Fri, 23 Aug 2013 16:37:50 +0200 (CEST)
+Received: from ws-apr.office.loc
+ (HSI-KBW-109-193-024-214.hsi7.kabel-badenwuerttemberg.de [109.193.24.214])
+ by mail.mars-solutions.de (Postfix) with ESMTP id 1143C2A409D
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 16:37:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,238 +31,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, Mike Turquette <mturquette@linaro.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, Pawel Moll <Pawel.Moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Nicolin Chen <b42378@freescale.com>, Tomasz Figa <tomasz.figa@gmail.com>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "timur@tabi.org" <timur@tabi.org>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "galak@codeaurora.org" <galak@codeaurora.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "festevam@gmail.com" <festevam@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 23, 2013 at 01:58:15PM +0100, Mark Rutland wrote:
-> On Fri, Aug 23, 2013 at 07:34:21AM +0100, Sascha Hauer wrote:
-> > On Fri, Aug 23, 2013 at 12:49:19AM +0200, Tomasz Figa wrote:
-> > > On Thursday 22 of August 2013 15:43:31 Mike Turquette wrote:
-> > > > Quoting Sascha Hauer (2013-08-22 14:00:35)
-> > > > 
-> > > > > On Thu, Aug 22, 2013 at 01:09:31PM +0100, Mark Rutland wrote:
-> > > > > > On Thu, Aug 22, 2013 at 08:19:10AM +0100, Mike Turquette wrote:
-> > > > > > > Quoting Tomasz Figa (2013-08-21 14:34:55)
-> > > > > > > 
-> > > > > > > > On Wednesday 21 of August 2013 09:50:15 Mark Rutland wrote:
-> > > > > > > > > On Tue, Aug 20, 2013 at 01:06:25AM +0100, Mike Turquette 
-> > > wrote:
-> > > > > > > > > > Quoting Mark Rutland (2013-08-19 02:35:43)
-> > > > > > > > > > 
-> > > > > > > > > > > On Sat, Aug 17, 2013 at 04:17:18PM +0100, Tomasz Figa 
-> > > wrote:
-> > > > > > > > > > > > On Saturday 17 of August 2013 16:53:16 Sascha Hauer 
-> > > wrote:
-> > > > > > > > > > > > > On Sat, Aug 17, 2013 at 02:28:04PM +0200, Tomasz Figa 
-> > > wrote:
-> > > > > > > > > > > > > > > > > Also I would make this option required. Use a
-> > > > > > > > > > > > > > > > > dummy
-> > > > > > > > > > > > > > > > > clock for
-> > > > > > > > > > > > > > > > > mux
-> > > > > > > > > > > > > > > > > inputs that are grounded for a specific SoC.
-> > > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > > Some clocks are not from CCM and we haven't
-> > > > > > > > > > > > > > > > defined in
-> > > > > > > > > > > > > > > > imx6q-clk.txt,
-> > > > > > > > > > > > > > > > so in most cases we can't provide a phandle for
-> > > > > > > > > > > > > > > > them, eg:
-> > > > > > > > > > > > > > > > spdif_ext.
-> > > > > > > > > > > > > > > > I think it's a bit hard to force it to be
-> > > > > > > > > > > > > > > > 'required'. An
-> > > > > > > > > > > > > > > > 'optional'
-> > > > > > > > > > > > > > > > looks more flexible to me and a default one is
-> > > > > > > > > > > > > > > > ensured
-> > > > > > > > > > > > > > > > even if
-> > > > > > > > > > > > > > > > it's
-> > > > > > > > > > > > > > > > missing.
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > <&clks 0> is the dummy clock. This can be used for
-> > > > > > > > > > > > > > > all input
-> > > > > > > > > > > > > > > clocks
-> > > > > > > > > > > > > > > not
-> > > > > > > > > > > > > > > defined by the SoC.
-> > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > Where does this assumption come from? Is it
-> > > > > > > > > > > > > > documented
-> > > > > > > > > > > > > > anywhere?
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > This is how all i.MX clock bindings currently are. See
-> > > > > > > > > > > > > Documentation/devicetree/bindings/clock/imx*-clock.txt
-> > > > > > > > > > > > 
-> > > > > > > > > > > > OK, thanks.
-> > > > > > > > > > > > 
-> > > > > > > > > > > > I guess we need some discussion on dummy clocks vs
-> > > > > > > > > > > > skipped clocks.
-> > > > > > > > > > > > I think we want some consistency on this, don't we?
-> > > > > > > > > > > > 
-> > > > > > > > > > > > If we really need a dummy clock, then we might also want
-> > > > > > > > > > > > a generic
-> > > > > > > > > > > > way to specify it.
-> > > > > > > > > > > 
-> > > > > > > > > > > What do we actually mean by a "dummy clock"? We already
-> > > > > > > > > > > have
-> > > > > > > > > > > bindings
-> > > > > > > > > > > for "fixed-clock" and co friends describe relatively
-> > > > > > > > > > > simple
-> > > > > > > > > > > preconfigured clocks.
-> > > > > > > > > > 
-> > > > > > > > > > Some platforms have a fake clock which defines noops
-> > > > > > > > > > callbacks and
-> > > > > > > > > > basically doesn't do anything. This is analogous to the
-> > > > > > > > > > dummy
-> > > > > > > > > > regulator
-> > > > > > > > > > implementation. A central one could be registered by the
-> > > > > > > > > > clock core,
-> > > > > > > > > > as
-> > > > > > > > > > is done by the regulator core.
-> > > > > > > > > 
-> > > > > > > > > When you say some platforms, you presumably mean the platform
-> > > > > > > > > code in
-> > > > > > > > > Linux? A dummy clock sounds like a completely Linux-specific
-> > > > > > > > > abstraction rather than a description of the hardware, and I
-> > > > > > > > > don't see why we need that in the DT:
-> > > > > > > > > 
-> > > > > > > > > * If a clock is wired up and running (as presumably the dummy
-> > > > > > > > > clock is), then surely it's a fixed-clock (it's running, we
-> > > > > > > > > and we have no control over it, but we presumably know its
-> > > > > > > > > rate) and can be described as such?
-> > > > > > > > > 
-> > > > > > > > > * If no clock is wired up, then we should be able to describe
-> > > > > > > > > that. If a driver believes that a clock is required when it
-> > > > > > > > > isn't (for some level of functionality), then that driver
-> > > > > > > > > should be fixed up to support the clock as being optional.
-> > > > > > > > > 
-> > > > > > > > > Am I missing something?
-> > > > > > > > 
-> > > > > > > > I second that.
-> > > > > > > > 
-> > > > > > > > Moreover, I don't think that device tree should deal with dummy
-> > > > > > > > anything. It should be able to describe hardware that is
-> > > > > > > > available on given system, not list what hardware is not
-> > > > > > > > available.
-> > > > > > > 
-> > > > > > > I wasn't clear. The dummy clock IS a completely Linux-specific
-> > > > > > > abstraction.
-> > > > > > > 
-> > > > > > > I'm not advocating a dummy clock in DT. I am advocating
-> > > > > > > consolidation of the implementation of a clock that does nothing
-> > > > > > > into the clock core. This code could easily live in
-> > > > > > > drivers/clk/clk.c instead of having everyone open-code it.
-> > > > > > > 
-> > > > > > > As far as specifying a dummy clock in DT? I dunno. DT should
-> > > > > > > describe
-> > > > > > > real hardware so there isn't much use for a dummy clock.
-> > > > > > 
-> > > > > > Sorry, I misunderstood. Good to hear we're on the same page :)
-> > > > > > 
-> > > > > > > I'm guessing one of the reasons for such a clock are drivers do
-> > > > > > > not
-> > > > > > > honor the clk.h api and they freak out when clk_get gives them a
-> > > > > > > NULL
-> > > > > > > pointer?
-> > > > > > 
-> > > > > > I'm not sure. Sascha, could you shed some light on the matter?
-> > > > > 
-> > > > > The original reason introducing the dummy clocks in the i.MX dtbs
-> > > > > was to provide devices a clock which the driver requests but is
-> > > > > not software controllable. We often have the case where the same
-> > > > > devices are on several SoCs, but not on all of them all clocks have
-> > > > > a bit to en/disable them.
-> > > > > 
-> > > > > Anyway, to accomplish this we don't need dummy clocks. We can just
-> > > > > describe the real clocks.
-> > > > 
-> > > > You could use a dummy clk for the Linux implementation, but the downside
-> > > > is that a dummy clock has a rate of 0 always and a your clocks likely
-> > > > have non-zero rates.
-> > > > 
-> > > > It is probably better for you define a clock which only implements the
-> > > > .recalc_rate callback. If the rate of this clock changes without Linux
-> > > > having knowledge of it you can use the CLK_GET_RATE_NOCACHE flag.
-> > > 
-> > > I doubt that rate of a dummy clock could ever change... unless it is a 
-> > > rather smart dummy.
-> > > 
-> > > > > BTW with the S/PDIF core on which not all mux inputs are connected
-> > > > > to actual clocks we could also describe the unconnected inputs as
-> > > > > ground clocks with rate 0. This way we describe something which
-> > > > > is really there instead of dummy clocks ;)
-> > > > 
-> > > > Again you could use a dummy clock for this OR a fixed-rate clock with a
-> > > > rate of zero from the perspective of the Linux implementation.
-> > > > 
-> > > > Do you think it worthwhile to have a DT binding for a grounded clock?
-> > > > That is not an entirely uncommon case.
-> > > 
-> > > Well, how would that differ from skipping a clock from clocks list, i.e. 
-> > > not specifying it in clock-names and clocks properties?
-> > 
-> > The difference is that you can successfully grab it in your driver.
-> 
-> That's a driver-specific issue. The driver knows best which clocks it
-> can live without (if it's poking only a subset of the hardware, it may
-> not need some just yet, but could for extended functionality in future
-> when support is extended), and could assign a dummy to those clocks it
-> knows it doesn't need that aren't described. That doesn't need to be in
-> the dt, and shouldn't be, because it's OS and driver specific.
-> 
-> > 
-> > > 
-> > > > > Background to why it might be a good idea to connect a ground clock
-> > > > > to the unconnected input pins is that a driver has a chance to
-> > > > > successfully grab all clocks. Otherwise how does the driver
-> > > > > distinguish
-> > > > > between an unconnected and an erroneous clock?
-> > > > 
-> > > > Sorry, I don't follow this last question. Do you mean how to distinguish
-> > > > based on the value returned from clk_get?
-> > > 
-> > > Hmm, in theory, a driver could want to distinguish an error case (e.g. 
-> > > clock specified, but there is a problem with it) from no clock (e.g. clock 
-> > > not specified in DT, because it is not available on particular board).
-> > 
-> > Yes, that's what I meant. To illustrate the problem for this driver:
-> > 
-> > 	for (i = 0; i < STC_TXCLK_SRC_MAX; i++) {
-> > 		sprintf(tmp, "rxtx%d", i);
-> > 		clk = devm_clk_get(&pdev->dev, tmp);
-> > 		if (IS_ERR(clk)) {
-> 
-> 		[...]
-> 
-> 			/*
-> 			 * ERR_PTR(-ENOENT) returned when clock not
-> 			 * present in the dt (i.e. not wired up). We can
-> 			 * live without this clock, so assign a dummy
-> 			 * (NULL) to simplify the rest of the code. If
-> 			 * the clock is present but something else went
-> 			 * wrong, we'll get a different ERR_PTR value
-> 			 * and actually fail.
-> 			 */
-> 			if (clk == ERR_PTR(-ENOENT)
-> 				clk = NULL;
-> 
-> > 		}
-> > 	}
-> > 
-> > This could be solved by always specifying all input clocks in the
-> > devicetree.
-> 
-> As far as I can see, the above is sufficient, and leaves the knowledge
-> of skippable clocks in the driver, where I believe it should be.
+Return value of imx_audmux_v2_configure_port(ext_port, ...) was not
+assigned. Following check tested the preceding call (int_port).
 
-You miss my point. Once a clock is specified in the devicetree it is no
-longer optional. The driver currently can't find out whether a clock
-hasn't been specified (and it's ok that it's not there) or a clock has
-been specified, but some error prevents actually grabbing the clock (in
-which case the driver should bail out)
+Signed-off-by: Andreas Pretzsch <apr@cn-eng.de>
+---
+Fix not tested (no matching hardware), only noticed during code reading.
 
-Sascha
+Patch against
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/wm8962
 
+ sound/soc/fsl/imx-wm8962.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
+index 52a36a9..e018632 100644
+--- a/sound/soc/fsl/imx-wm8962.c
++++ b/sound/soc/fsl/imx-wm8962.c
+@@ -192,7 +192,7 @@ static int imx_wm8962_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "audmux internal port setup failed\n");
+ 		return ret;
+ 	}
+-	imx_audmux_v2_configure_port(ext_port,
++	ret = imx_audmux_v2_configure_port(ext_port,
+ 			IMX_AUDMUX_V2_PTCR_SYN,
+ 			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
+ 	if (ret) {
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.7.10.4
