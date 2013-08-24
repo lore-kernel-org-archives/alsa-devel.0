@@ -1,1230 +1,565 @@
-From: Mauro Carvalho Chehab <m.chehab@samsung.com>
-Subject: Re: [PATCH V3] i2c: move of helpers into the core
-Date: Sat, 24 Aug 2013 08:10:44 -0300
-Message-ID: <20130824081044.1053b993@samsung.com>
-References: <1377187217-31820-1-git-send-email-wsa@the-dreams.de>
+From: Ian Munsie <darkstarsword@gmail.com>
+Subject: No sound from internal speaker on 2013 Macbook Air 6, 1
+Date: Sat, 24 Aug 2013 23:25:34 +1000
+Message-ID: <CAH4=b6KOs-WJ+_KVGiQ4LRC9-3J_A_xK64UcrMq6NZFxyycS_w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-reply-to: <1377187217-31820-1-git-send-email-wsa@the-dreams.de>
-Sender: linux-doc-owner@vger.kernel.org
-To: Wolfram Sang <wsa@the-dreams.de>
-Cc: linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary=047d7b34386a8b9b7004e4b1767e
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ea0-f171.google.com (mail-ea0-f171.google.com
+ [209.85.215.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 51DE1261693
+ for <alsa-devel@alsa-project.org>; Sat, 24 Aug 2013 15:25:56 +0200 (CEST)
+Received: by mail-ea0-f171.google.com with SMTP id n15so760117ead.2
+ for <alsa-devel@alsa-project.org>; Sat, 24 Aug 2013 06:25:56 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Em Thu, 22 Aug 2013 18:00:14 +0200
-Wolfram Sang <wsa@the-dreams.de> escreveu:
+--047d7b34386a8b9b7004e4b1767e
+Content-Type: text/plain; charset=ISO-8859-1
 
-> I2C of helpers used to live in of_i2c.c but experience (from SPI) shows
-> that it is much cleaner to have this in the core. This also removes a
-> circular dependency between the helpers and the core, and so we can
-> finally register child nodes in the core instead of doing this manually
-> in each driver. So, fix the drivers and documentation, too.
-> 
-> Acked-by: Rob Herring <rob.herring@calxeda.com>
-> Reviewed-by: Felipe Balbi <balbi@ti.com>
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Tested-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
+Hey all,
 
-Acked-by: Mauro Carvalho Chehab <m.chehab@samsung.com>
+I'm trying to get sound working on my new mid 2013 Macbook Air 6,1.
+Sound works via the headphone jack, but I haven't managed to get the
+internal speaker to work.
 
-> ---
-> 
-> V2->V3: Was trying to be too smart by only fixing includes needed.
-> 	Took a more general approach this time, converting of_i2c.h
-> 	to i2c.h in case i2c.h was not already there. Otherwise
-> 	remove it. Improved my build scripts and no build failures,
-> 	no complaints from buildbot as well.
-> 
-> 
->  Documentation/acpi/enumeration.txt              |    1 -
->  arch/powerpc/platforms/44x/warp.c               |    1 -
->  drivers/gpu/drm/tilcdc/tilcdc_slave.c           |    1 -
->  drivers/gpu/drm/tilcdc/tilcdc_tfp410.c          |    1 -
->  drivers/gpu/host1x/drm/output.c                 |    2 +-
->  drivers/i2c/busses/i2c-at91.c                   |    3 -
->  drivers/i2c/busses/i2c-cpm.c                    |    6 --
->  drivers/i2c/busses/i2c-davinci.c                |    2 -
->  drivers/i2c/busses/i2c-designware-platdrv.c     |    2 -
->  drivers/i2c/busses/i2c-gpio.c                   |    3 -
->  drivers/i2c/busses/i2c-i801.c                   |    2 -
->  drivers/i2c/busses/i2c-ibm_iic.c                |    4 -
->  drivers/i2c/busses/i2c-imx.c                    |    3 -
->  drivers/i2c/busses/i2c-mpc.c                    |    2 -
->  drivers/i2c/busses/i2c-mv64xxx.c                |    3 -
->  drivers/i2c/busses/i2c-mxs.c                    |    3 -
->  drivers/i2c/busses/i2c-nomadik.c                |    3 -
->  drivers/i2c/busses/i2c-ocores.c                 |    3 -
->  drivers/i2c/busses/i2c-octeon.c                 |    3 -
->  drivers/i2c/busses/i2c-omap.c                   |    3 -
->  drivers/i2c/busses/i2c-pnx.c                    |    3 -
->  drivers/i2c/busses/i2c-powermac.c               |    9 +-
->  drivers/i2c/busses/i2c-pxa.c                    |    2 -
->  drivers/i2c/busses/i2c-s3c2410.c                |    2 -
->  drivers/i2c/busses/i2c-sh_mobile.c              |    2 -
->  drivers/i2c/busses/i2c-sirf.c                   |    3 -
->  drivers/i2c/busses/i2c-stu300.c                 |    2 -
->  drivers/i2c/busses/i2c-tegra.c                  |    3 -
->  drivers/i2c/busses/i2c-versatile.c              |    2 -
->  drivers/i2c/busses/i2c-wmt.c                    |    3 -
->  drivers/i2c/busses/i2c-xiic.c                   |    3 -
->  drivers/i2c/i2c-core.c                          |  109 +++++++++++++++++++++-
->  drivers/i2c/i2c-mux.c                           |    3 -
->  drivers/i2c/muxes/i2c-arb-gpio-challenge.c      |    1 -
->  drivers/i2c/muxes/i2c-mux-gpio.c                |    1 -
->  drivers/i2c/muxes/i2c-mux-pinctrl.c             |    1 -
->  drivers/media/platform/exynos4-is/fimc-is-i2c.c |    4 +-
->  drivers/media/platform/exynos4-is/fimc-is.c     |    2 +-
->  drivers/media/platform/exynos4-is/media-dev.c   |    1 -
->  drivers/of/Kconfig                              |    6 --
->  drivers/of/Makefile                             |    1 -
->  drivers/of/of_i2c.c                             |  114 -----------------------
->  drivers/staging/imx-drm/imx-tve.c               |    2 +-
->  include/linux/i2c.h                             |   20 ++++
->  include/linux/of_i2c.h                          |   46 ---------
->  sound/soc/fsl/imx-sgtl5000.c                    |    2 +-
->  sound/soc/fsl/imx-wm8962.c                      |    2 +-
->  47 files changed, 138 insertions(+), 262 deletions(-)
->  delete mode 100644 drivers/of/of_i2c.c
->  delete mode 100644 include/linux/of_i2c.h
-> 
-> diff --git a/Documentation/acpi/enumeration.txt b/Documentation/acpi/enumeration.txt
-> index d9be7a9..958266e 100644
-> --- a/Documentation/acpi/enumeration.txt
-> +++ b/Documentation/acpi/enumeration.txt
-> @@ -238,7 +238,6 @@ An I2C bus (controller) driver does:
->  	if (ret)
->  		/* handle error */
->  
-> -	of_i2c_register_devices(adapter);
->  	/* Enumerate the slave devices behind this bus via ACPI */
->  	acpi_i2c_register_devices(adapter);
->  
-> diff --git a/arch/powerpc/platforms/44x/warp.c b/arch/powerpc/platforms/44x/warp.c
-> index 4cfa499..534574a 100644
-> --- a/arch/powerpc/platforms/44x/warp.c
-> +++ b/arch/powerpc/platforms/44x/warp.c
-> @@ -16,7 +16,6 @@
->  #include <linux/interrupt.h>
->  #include <linux/delay.h>
->  #include <linux/of_gpio.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/slab.h>
->  #include <linux/export.h>
->  
-> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_slave.c b/drivers/gpu/drm/tilcdc/tilcdc_slave.c
-> index dfffaf0..a19f657 100644
-> --- a/drivers/gpu/drm/tilcdc/tilcdc_slave.c
-> +++ b/drivers/gpu/drm/tilcdc/tilcdc_slave.c
-> @@ -16,7 +16,6 @@
->   */
->  
->  #include <linux/i2c.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/pinctrl/pinmux.h>
->  #include <linux/pinctrl/consumer.h>
->  #include <drm/drm_encoder_slave.h>
-> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_tfp410.c b/drivers/gpu/drm/tilcdc/tilcdc_tfp410.c
-> index 925c7cd..c38b56b 100644
-> --- a/drivers/gpu/drm/tilcdc/tilcdc_tfp410.c
-> +++ b/drivers/gpu/drm/tilcdc/tilcdc_tfp410.c
-> @@ -16,7 +16,6 @@
->   */
->  
->  #include <linux/i2c.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/gpio.h>
->  #include <linux/of_gpio.h>
->  #include <linux/pinctrl/pinmux.h>
-> diff --git a/drivers/gpu/host1x/drm/output.c b/drivers/gpu/host1x/drm/output.c
-> index 8140fc6..137ae81 100644
-> --- a/drivers/gpu/host1x/drm/output.c
-> +++ b/drivers/gpu/host1x/drm/output.c
-> @@ -9,7 +9,7 @@
->  
->  #include <linux/module.h>
->  #include <linux/of_gpio.h>
-> -#include <linux/of_i2c.h>
-> +#include <linux/i2c.h>
->  
->  #include "drm.h"
->  
-> diff --git a/drivers/i2c/busses/i2c-at91.c b/drivers/i2c/busses/i2c-at91.c
-> index 6bb839b..fd05930 100644
-> --- a/drivers/i2c/busses/i2c-at91.c
-> +++ b/drivers/i2c/busses/i2c-at91.c
-> @@ -28,7 +28,6 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
->  #include <linux/platform_data/dma-atmel.h>
-> @@ -775,8 +774,6 @@ static int at91_twi_probe(struct platform_device *pdev)
->  		return rc;
->  	}
->  
-> -	of_i2c_register_devices(&dev->adapter);
-> -
->  	dev_info(dev->dev, "AT91 i2c bus driver.\n");
->  	return 0;
->  }
-> diff --git a/drivers/i2c/busses/i2c-cpm.c b/drivers/i2c/busses/i2c-cpm.c
-> index 2e1f7eb..b2b8aa9 100644
-> --- a/drivers/i2c/busses/i2c-cpm.c
-> +++ b/drivers/i2c/busses/i2c-cpm.c
-> @@ -42,7 +42,6 @@
->  #include <linux/dma-mapping.h>
->  #include <linux/of_device.h>
->  #include <linux/of_platform.h>
-> -#include <linux/of_i2c.h>
->  #include <sysdev/fsl_soc.h>
->  #include <asm/cpm.h>
->  
-> @@ -681,11 +680,6 @@ static int cpm_i2c_probe(struct platform_device *ofdev)
->  	dev_dbg(&ofdev->dev, "hw routines for %s registered.\n",
->  		cpm->adap.name);
->  
-> -	/*
-> -	 * register OF I2C devices
-> -	 */
-> -	of_i2c_register_devices(&cpm->adap);
-> -
->  	return 0;
->  out_shut:
->  	cpm_i2c_shutdown(cpm);
-> diff --git a/drivers/i2c/busses/i2c-davinci.c b/drivers/i2c/busses/i2c-davinci.c
-> index fa55605..62be3b3 100644
-> --- a/drivers/i2c/busses/i2c-davinci.c
-> +++ b/drivers/i2c/busses/i2c-davinci.c
-> @@ -38,7 +38,6 @@
->  #include <linux/slab.h>
->  #include <linux/cpufreq.h>
->  #include <linux/gpio.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/of_device.h>
->  
->  #include <mach/hardware.h>
-> @@ -728,7 +727,6 @@ static int davinci_i2c_probe(struct platform_device *pdev)
->  		dev_err(&pdev->dev, "failure adding adapter\n");
->  		goto err_unuse_clocks;
->  	}
-> -	of_i2c_register_devices(adap);
->  
->  	return 0;
->  
-> diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-> index 4c5fada..27ea436 100644
-> --- a/drivers/i2c/busses/i2c-designware-platdrv.c
-> +++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-> @@ -35,7 +35,6 @@
->  #include <linux/err.h>
->  #include <linux/interrupt.h>
->  #include <linux/of.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm.h>
->  #include <linux/pm_runtime.h>
-> @@ -172,7 +171,6 @@ static int dw_i2c_probe(struct platform_device *pdev)
->  		dev_err(&pdev->dev, "failure adding adapter\n");
->  		return r;
->  	}
-> -	of_i2c_register_devices(adap);
->  	acpi_i2c_register_devices(adap);
->  
->  	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
-> diff --git a/drivers/i2c/busses/i2c-gpio.c b/drivers/i2c/busses/i2c-gpio.c
-> index bc6e139..e5da9fe 100644
-> --- a/drivers/i2c/busses/i2c-gpio.c
-> +++ b/drivers/i2c/busses/i2c-gpio.c
-> @@ -16,7 +16,6 @@
->  #include <linux/platform_device.h>
->  #include <linux/gpio.h>
->  #include <linux/of_gpio.h>
-> -#include <linux/of_i2c.h>
->  
->  struct i2c_gpio_private_data {
->  	struct i2c_adapter adap;
-> @@ -224,8 +223,6 @@ static int i2c_gpio_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto err_add_bus;
->  
-> -	of_i2c_register_devices(adap);
-> -
->  	platform_set_drvdata(pdev, priv);
->  
->  	dev_info(&pdev->dev, "using pins %u (SDA) and %u (SCL%s)\n",
-> diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
-> index 4ebceed..4296d17 100644
-> --- a/drivers/i2c/busses/i2c-i801.c
-> +++ b/drivers/i2c/busses/i2c-i801.c
-> @@ -87,7 +87,6 @@
->  #include <linux/slab.h>
->  #include <linux/wait.h>
->  #include <linux/err.h>
-> -#include <linux/of_i2c.h>
->  
->  #if (defined CONFIG_I2C_MUX_GPIO || defined CONFIG_I2C_MUX_GPIO_MODULE) && \
->  		defined CONFIG_DMI
-> @@ -1230,7 +1229,6 @@ static int i801_probe(struct pci_dev *dev, const struct pci_device_id *id)
->  		goto exit_free_irq;
->  	}
->  
-> -	of_i2c_register_devices(&priv->adapter);
->  	i801_probe_optional_slaves(priv);
->  	/* We ignore errors - multiplexing is optional */
->  	i801_add_mux(priv);
-> diff --git a/drivers/i2c/busses/i2c-ibm_iic.c b/drivers/i2c/busses/i2c-ibm_iic.c
-> index 973f516..ff3caa0 100644
-> --- a/drivers/i2c/busses/i2c-ibm_iic.c
-> +++ b/drivers/i2c/busses/i2c-ibm_iic.c
-> @@ -42,7 +42,6 @@
->  #include <linux/io.h>
->  #include <linux/i2c.h>
->  #include <linux/of_platform.h>
-> -#include <linux/of_i2c.h>
->  
->  #include "i2c-ibm_iic.h"
->  
-> @@ -759,9 +758,6 @@ static int iic_probe(struct platform_device *ofdev)
->  	dev_info(&ofdev->dev, "using %s mode\n",
->  		 dev->fast_mode ? "fast (400 kHz)" : "standard (100 kHz)");
->  
-> -	/* Now register all the child nodes */
-> -	of_i2c_register_devices(adap);
-> -
->  	return 0;
->  
->  error_cleanup:
-> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-> index e242797..bbbea6b 100644
-> --- a/drivers/i2c/busses/i2c-imx.c
-> +++ b/drivers/i2c/busses/i2c-imx.c
-> @@ -50,7 +50,6 @@
->  #include <linux/slab.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/platform_data/i2c-imx.h>
->  
->  /** Defines ********************************************************************
-> @@ -570,8 +569,6 @@ static int __init i2c_imx_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> -	of_i2c_register_devices(&i2c_imx->adapter);
-> -
->  	/* Set up platform driver data */
->  	platform_set_drvdata(pdev, i2c_imx);
->  
-> diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
-> index 7607dc0..9f2513d 100644
-> --- a/drivers/i2c/busses/i2c-mpc.c
-> +++ b/drivers/i2c/busses/i2c-mpc.c
-> @@ -18,7 +18,6 @@
->  #include <linux/sched.h>
->  #include <linux/init.h>
->  #include <linux/of_platform.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/slab.h>
->  
->  #include <linux/io.h>
-> @@ -691,7 +690,6 @@ static int fsl_i2c_probe(struct platform_device *op)
->  		dev_err(i2c->dev, "failed to add adapter\n");
->  		goto fail_add;
->  	}
-> -	of_i2c_register_devices(&i2c->adap);
->  
->  	return result;
->  
-> diff --git a/drivers/i2c/busses/i2c-mv64xxx.c b/drivers/i2c/busses/i2c-mv64xxx.c
-> index b1f42bf..8220322 100644
-> --- a/drivers/i2c/busses/i2c-mv64xxx.c
-> +++ b/drivers/i2c/busses/i2c-mv64xxx.c
-> @@ -21,7 +21,6 @@
->  #include <linux/of.h>
->  #include <linux/of_device.h>
->  #include <linux/of_irq.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/clk.h>
->  #include <linux/err.h>
->  
-> @@ -689,8 +688,6 @@ mv64xxx_i2c_probe(struct platform_device *pd)
->  		goto exit_free_irq;
->  	}
->  
-> -	of_i2c_register_devices(&drv_data->adapter);
-> -
->  	return 0;
->  
->  exit_free_irq:
-> diff --git a/drivers/i2c/busses/i2c-mxs.c b/drivers/i2c/busses/i2c-mxs.c
-> index df8ff5a..62ed07d 100644
-> --- a/drivers/i2c/busses/i2c-mxs.c
-> +++ b/drivers/i2c/busses/i2c-mxs.c
-> @@ -27,7 +27,6 @@
->  #include <linux/stmp_device.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/dmaengine.h>
->  
-> @@ -701,8 +700,6 @@ static int mxs_i2c_probe(struct platform_device *pdev)
->  		return err;
->  	}
->  
-> -	of_i2c_register_devices(adap);
-> -
->  	return 0;
->  }
->  
-> diff --git a/drivers/i2c/busses/i2c-nomadik.c b/drivers/i2c/busses/i2c-nomadik.c
-> index 512dfe6..519df17 100644
-> --- a/drivers/i2c/busses/i2c-nomadik.c
-> +++ b/drivers/i2c/busses/i2c-nomadik.c
-> @@ -24,7 +24,6 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/platform_data/i2c-nomadik.h>
->  #include <linux/of.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/pinctrl/consumer.h>
->  
->  #define DRIVER_NAME "nmk-i2c"
-> @@ -1045,8 +1044,6 @@ static int nmk_i2c_probe(struct amba_device *adev, const struct amba_id *id)
->  		goto err_add_adap;
->  	}
->  
-> -	of_i2c_register_devices(adap);
-> -
->  	pm_runtime_put(&adev->dev);
->  
->  	return 0;
-> diff --git a/drivers/i2c/busses/i2c-ocores.c b/drivers/i2c/busses/i2c-ocores.c
-> index 0e1f824..0a52b78 100644
-> --- a/drivers/i2c/busses/i2c-ocores.c
-> +++ b/drivers/i2c/busses/i2c-ocores.c
-> @@ -24,7 +24,6 @@
->  #include <linux/i2c-ocores.h>
->  #include <linux/slab.h>
->  #include <linux/io.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/log2.h>
->  
->  struct ocores_i2c {
-> @@ -435,8 +434,6 @@ static int ocores_i2c_probe(struct platform_device *pdev)
->  	if (pdata) {
->  		for (i = 0; i < pdata->num_devices; i++)
->  			i2c_new_device(&i2c->adap, pdata->devices + i);
-> -	} else {
-> -		of_i2c_register_devices(&i2c->adap);
->  	}
->  
->  	return 0;
-> diff --git a/drivers/i2c/busses/i2c-octeon.c b/drivers/i2c/busses/i2c-octeon.c
-> index 956fe32..b929ba2 100644
-> --- a/drivers/i2c/busses/i2c-octeon.c
-> +++ b/drivers/i2c/busses/i2c-octeon.c
-> @@ -15,7 +15,6 @@
->  #include <linux/interrupt.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/delay.h>
->  #include <linux/sched.h>
->  #include <linux/slab.h>
-> @@ -599,8 +598,6 @@ static int octeon_i2c_probe(struct platform_device *pdev)
->  	}
->  	dev_info(i2c->dev, "version %s\n", DRV_VERSION);
->  
-> -	of_i2c_register_devices(&i2c->adap);
-> -
->  	return 0;
->  
->  out:
-> diff --git a/drivers/i2c/busses/i2c-omap.c b/drivers/i2c/busses/i2c-omap.c
-> index 142b694d..a9f0f80 100644
-> --- a/drivers/i2c/busses/i2c-omap.c
-> +++ b/drivers/i2c/busses/i2c-omap.c
-> @@ -38,7 +38,6 @@
->  #include <linux/clk.h>
->  #include <linux/io.h>
->  #include <linux/of.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/of_device.h>
->  #include <linux/slab.h>
->  #include <linux/i2c-omap.h>
-> @@ -1245,8 +1244,6 @@ omap_i2c_probe(struct platform_device *pdev)
->  	dev_info(dev->dev, "bus %d rev%d.%d at %d kHz\n", adap->nr,
->  		 major, minor, dev->speed);
->  
-> -	of_i2c_register_devices(adap);
-> -
->  	pm_runtime_mark_last_busy(dev->dev);
->  	pm_runtime_put_autosuspend(dev->dev);
->  
-> diff --git a/drivers/i2c/busses/i2c-pnx.c b/drivers/i2c/busses/i2c-pnx.c
-> index 5f39c6d..7b57d67 100644
-> --- a/drivers/i2c/busses/i2c-pnx.c
-> +++ b/drivers/i2c/busses/i2c-pnx.c
-> @@ -23,7 +23,6 @@
->  #include <linux/err.h>
->  #include <linux/clk.h>
->  #include <linux/slab.h>
-> -#include <linux/of_i2c.h>
->  
->  #define I2C_PNX_TIMEOUT_DEFAULT		10 /* msec */
->  #define I2C_PNX_SPEED_KHZ_DEFAULT	100
-> @@ -741,8 +740,6 @@ static int i2c_pnx_probe(struct platform_device *pdev)
->  		goto out_irq;
->  	}
->  
-> -	of_i2c_register_devices(&alg_data->adapter);
-> -
->  	dev_dbg(&pdev->dev, "%s: Master at %#8x, irq %d.\n",
->  		alg_data->adapter.name, res->start, alg_data->irq);
->  
-> diff --git a/drivers/i2c/busses/i2c-powermac.c b/drivers/i2c/busses/i2c-powermac.c
-> index 8dc90da..1010f2e 100644
-> --- a/drivers/i2c/busses/i2c-powermac.c
-> +++ b/drivers/i2c/busses/i2c-powermac.c
-> @@ -440,7 +440,9 @@ static int i2c_powermac_probe(struct platform_device *dev)
->  	adapter->algo = &i2c_powermac_algorithm;
->  	i2c_set_adapdata(adapter, bus);
->  	adapter->dev.parent = &dev->dev;
-> -	adapter->dev.of_node = dev->dev.of_node;
-> +
-> +	/* Clear of_node to skip automatic registration of i2c child nodes */
-> +	adapter->dev.of_node = NULL;
->  	rc = i2c_add_adapter(adapter);
->  	if (rc) {
->  		printk(KERN_ERR "i2c-powermac: Adapter %s registration "
-> @@ -450,9 +452,8 @@ static int i2c_powermac_probe(struct platform_device *dev)
->  
->  	printk(KERN_INFO "PowerMac i2c bus %s registered\n", adapter->name);
->  
-> -	/* Cannot use of_i2c_register_devices() due to Apple device-tree
-> -	 * funkyness
-> -	 */
-> +	/* Use custom child registration due to Apple device-tree funkyness */
-> +	adapter->dev.of_node = dev->dev.of_node;
->  	i2c_powermac_register_devices(adapter, bus);
->  
->  	return rc;
-> diff --git a/drivers/i2c/busses/i2c-pxa.c b/drivers/i2c/busses/i2c-pxa.c
-> index fbafed2..bc65014 100644
-> --- a/drivers/i2c/busses/i2c-pxa.c
-> +++ b/drivers/i2c/busses/i2c-pxa.c
-> @@ -31,7 +31,6 @@
->  #include <linux/i2c-pxa.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/platform_device.h>
->  #include <linux/err.h>
->  #include <linux/clk.h>
-> @@ -1185,7 +1184,6 @@ static int i2c_pxa_probe(struct platform_device *dev)
->  		printk(KERN_INFO "I2C: Failed to add bus\n");
->  		goto eadapt;
->  	}
-> -	of_i2c_register_devices(&i2c->adap);
->  
->  	platform_set_drvdata(dev, i2c);
->  
-> diff --git a/drivers/i2c/busses/i2c-s3c2410.c b/drivers/i2c/busses/i2c-s3c2410.c
-> index cab1c91..643426e 100644
-> --- a/drivers/i2c/busses/i2c-s3c2410.c
-> +++ b/drivers/i2c/busses/i2c-s3c2410.c
-> @@ -36,7 +36,6 @@
->  #include <linux/cpufreq.h>
->  #include <linux/slab.h>
->  #include <linux/io.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/of_gpio.h>
->  #include <linux/pinctrl/consumer.h>
->  
-> @@ -1154,7 +1153,6 @@ static int s3c24xx_i2c_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> -	of_i2c_register_devices(&i2c->adap);
->  	platform_set_drvdata(pdev, i2c);
->  
->  	pm_runtime_enable(&pdev->dev);
-> diff --git a/drivers/i2c/busses/i2c-sh_mobile.c b/drivers/i2c/busses/i2c-sh_mobile.c
-> index debf745..aa1268f 100644
-> --- a/drivers/i2c/busses/i2c-sh_mobile.c
-> +++ b/drivers/i2c/busses/i2c-sh_mobile.c
-> @@ -27,7 +27,6 @@
->  #include <linux/platform_device.h>
->  #include <linux/interrupt.h>
->  #include <linux/i2c.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/err.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/clk.h>
-> @@ -758,7 +757,6 @@ static int sh_mobile_i2c_probe(struct platform_device *dev)
->  		 "I2C adapter %d with bus speed %lu Hz (L/H=%x/%x)\n",
->  		 adap->nr, pd->bus_speed, pd->iccl, pd->icch);
->  
-> -	of_i2c_register_devices(adap);
->  	return 0;
->  
->   err_all:
-> diff --git a/drivers/i2c/busses/i2c-sirf.c b/drivers/i2c/busses/i2c-sirf.c
-> index a63c7d5..0ff22e2 100644
-> --- a/drivers/i2c/busses/i2c-sirf.c
-> +++ b/drivers/i2c/busses/i2c-sirf.c
-> @@ -12,7 +12,6 @@
->  #include <linux/slab.h>
->  #include <linux/platform_device.h>
->  #include <linux/i2c.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/clk.h>
->  #include <linux/err.h>
->  #include <linux/io.h>
-> @@ -366,8 +365,6 @@ static int i2c_sirfsoc_probe(struct platform_device *pdev)
->  
->  	clk_disable(clk);
->  
-> -	of_i2c_register_devices(adap);
-> -
->  	dev_info(&pdev->dev, " I2C adapter ready to operate\n");
->  
->  	return 0;
-> diff --git a/drivers/i2c/busses/i2c-stu300.c b/drivers/i2c/busses/i2c-stu300.c
-> index d1a6b20..047546c 100644
-> --- a/drivers/i2c/busses/i2c-stu300.c
-> +++ b/drivers/i2c/busses/i2c-stu300.c
-> @@ -17,7 +17,6 @@
->  #include <linux/clk.h>
->  #include <linux/io.h>
->  #include <linux/slab.h>
-> -#include <linux/of_i2c.h>
->  
->  /* the name of this kernel module */
->  #define NAME "stu300"
-> @@ -936,7 +935,6 @@ stu300_probe(struct platform_device *pdev)
->  	platform_set_drvdata(pdev, dev);
->  	dev_info(&pdev->dev, "ST DDC I2C @ %p, irq %d\n",
->  		 dev->virtbase, dev->irq);
-> -	of_i2c_register_devices(adap);
->  
->  	return 0;
->  }
-> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
-> index 9aa1b60..c457cb4 100644
-> --- a/drivers/i2c/busses/i2c-tegra.c
-> +++ b/drivers/i2c/busses/i2c-tegra.c
-> @@ -25,7 +25,6 @@
->  #include <linux/interrupt.h>
->  #include <linux/delay.h>
->  #include <linux/slab.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/of_device.h>
->  #include <linux/module.h>
->  #include <linux/clk/tegra.h>
-> @@ -802,8 +801,6 @@ static int tegra_i2c_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> -	of_i2c_register_devices(&i2c_dev->adapter);
-> -
->  	return 0;
->  }
->  
-> diff --git a/drivers/i2c/busses/i2c-versatile.c b/drivers/i2c/busses/i2c-versatile.c
-> index f3a8790..6bb3a89 100644
-> --- a/drivers/i2c/busses/i2c-versatile.c
-> +++ b/drivers/i2c/busses/i2c-versatile.c
-> @@ -16,7 +16,6 @@
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
->  #include <linux/io.h>
-> -#include <linux/of_i2c.h>
->  
->  #define I2C_CONTROL	0x00
->  #define I2C_CONTROLS	0x00
-> @@ -108,7 +107,6 @@ static int i2c_versatile_probe(struct platform_device *dev)
->  	ret = i2c_bit_add_numbered_bus(&i2c->adap);
->  	if (ret >= 0) {
->  		platform_set_drvdata(dev, i2c);
-> -		of_i2c_register_devices(&i2c->adap);
->  		return 0;
->  	}
->  
-> diff --git a/drivers/i2c/busses/i2c-wmt.c b/drivers/i2c/busses/i2c-wmt.c
-> index baaa7d1..c65da3d 100644
-> --- a/drivers/i2c/busses/i2c-wmt.c
-> +++ b/drivers/i2c/busses/i2c-wmt.c
-> @@ -21,7 +21,6 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/of_address.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/of_irq.h>
->  #include <linux/platform_device.h>
->  
-> @@ -439,8 +438,6 @@ static int wmt_i2c_probe(struct platform_device *pdev)
->  
->  	platform_set_drvdata(pdev, i2c_dev);
->  
-> -	of_i2c_register_devices(adap);
-> -
->  	return 0;
->  }
->  
-> diff --git a/drivers/i2c/busses/i2c-xiic.c b/drivers/i2c/busses/i2c-xiic.c
-> index 3d0f052..8823db7 100644
-> --- a/drivers/i2c/busses/i2c-xiic.c
-> +++ b/drivers/i2c/busses/i2c-xiic.c
-> @@ -40,7 +40,6 @@
->  #include <linux/i2c-xiic.h>
->  #include <linux/io.h>
->  #include <linux/slab.h>
-> -#include <linux/of_i2c.h>
->  
->  #define DRIVER_NAME "xiic-i2c"
->  
-> @@ -752,8 +751,6 @@ static int xiic_i2c_probe(struct platform_device *pdev)
->  			i2c_new_device(&i2c->adap, pdata->devices + i);
->  	}
->  
-> -	of_i2c_register_devices(&i2c->adap);
-> -
->  	return 0;
->  
->  add_adapter_failed:
-> diff --git a/drivers/i2c/i2c-core.c b/drivers/i2c/i2c-core.c
-> index f32ca29..08ebd78 100644
-> --- a/drivers/i2c/i2c-core.c
-> +++ b/drivers/i2c/i2c-core.c
-> @@ -23,7 +23,11 @@
->     SMBus 2.0 support by Mark Studebaker <mdsxyz123@yahoo.com> and
->     Jean Delvare <khali@linux-fr.org>
->     Mux support by Rodolfo Giometti <giometti@enneenne.com> and
-> -   Michael Lawnick <michael.lawnick.ext@nsn.com> */
-> +   Michael Lawnick <michael.lawnick.ext@nsn.com>
-> +   OF support is copyright (c) 2008 Jochen Friedrich <jochen@scram.de>
-> +   (based on a previous patch from Jon Smirl <jonsmirl@gmail.com>) and
-> +   (c) 2013  Wolfram Sang <wsa@the-dreams.de>
-> + */
->  
->  #include <linux/module.h>
->  #include <linux/kernel.h>
-> @@ -35,7 +39,9 @@
->  #include <linux/init.h>
->  #include <linux/idr.h>
->  #include <linux/mutex.h>
-> +#include <linux/of.h>
->  #include <linux/of_device.h>
-> +#include <linux/of_irq.h>
->  #include <linux/completion.h>
->  #include <linux/hardirq.h>
->  #include <linux/irqflags.h>
-> @@ -954,6 +960,104 @@ static void i2c_scan_static_board_info(struct i2c_adapter *adapter)
->  	up_read(&__i2c_board_lock);
->  }
->  
-> +/* OF support code */
-> +
-> +#if IS_ENABLED(CONFIG_OF)
-> +static void of_i2c_register_devices(struct i2c_adapter *adap)
-> +{
-> +	void *result;
-> +	struct device_node *node;
-> +
-> +	/* Only register child devices if the adapter has a node pointer set */
-> +	if (!adap->dev.of_node)
-> +		return;
-> +
-> +	dev_dbg(&adap->dev, "of_i2c: walking child nodes\n");
-> +
-> +	for_each_available_child_of_node(adap->dev.of_node, node) {
-> +		struct i2c_board_info info = {};
-> +		struct dev_archdata dev_ad = {};
-> +		const __be32 *addr;
-> +		int len;
-> +
-> +		dev_dbg(&adap->dev, "of_i2c: register %s\n", node->full_name);
-> +
-> +		if (of_modalias_node(node, info.type, sizeof(info.type)) < 0) {
-> +			dev_err(&adap->dev, "of_i2c: modalias failure on %s\n",
-> +				node->full_name);
-> +			continue;
-> +		}
-> +
-> +		addr = of_get_property(node, "reg", &len);
-> +		if (!addr || (len < sizeof(int))) {
-> +			dev_err(&adap->dev, "of_i2c: invalid reg on %s\n",
-> +				node->full_name);
-> +			continue;
-> +		}
-> +
-> +		info.addr = be32_to_cpup(addr);
-> +		if (info.addr > (1 << 10) - 1) {
-> +			dev_err(&adap->dev, "of_i2c: invalid addr=%x on %s\n",
-> +				info.addr, node->full_name);
-> +			continue;
-> +		}
-> +
-> +		info.irq = irq_of_parse_and_map(node, 0);
-> +		info.of_node = of_node_get(node);
-> +		info.archdata = &dev_ad;
-> +
-> +		if (of_get_property(node, "wakeup-source", NULL))
-> +			info.flags |= I2C_CLIENT_WAKE;
-> +
-> +		request_module("%s%s", I2C_MODULE_PREFIX, info.type);
-> +
-> +		result = i2c_new_device(adap, &info);
-> +		if (result == NULL) {
-> +			dev_err(&adap->dev, "of_i2c: Failure registering %s\n",
-> +				node->full_name);
-> +			of_node_put(node);
-> +			irq_dispose_mapping(info.irq);
-> +			continue;
-> +		}
-> +	}
-> +}
-> +
-> +static int of_dev_node_match(struct device *dev, void *data)
-> +{
-> +	return dev->of_node == data;
-> +}
-> +
-> +/* must call put_device() when done with returned i2c_client device */
-> +struct i2c_client *of_find_i2c_device_by_node(struct device_node *node)
-> +{
-> +	struct device *dev;
-> +
-> +	dev = bus_find_device(&i2c_bus_type, NULL, node,
-> +					 of_dev_node_match);
-> +	if (!dev)
-> +		return NULL;
-> +
-> +	return i2c_verify_client(dev);
-> +}
-> +EXPORT_SYMBOL(of_find_i2c_device_by_node);
-> +
-> +/* must call put_device() when done with returned i2c_adapter device */
-> +struct i2c_adapter *of_find_i2c_adapter_by_node(struct device_node *node)
-> +{
-> +	struct device *dev;
-> +
-> +	dev = bus_find_device(&i2c_bus_type, NULL, node,
-> +					 of_dev_node_match);
-> +	if (!dev)
-> +		return NULL;
-> +
-> +	return i2c_verify_adapter(dev);
-> +}
-> +EXPORT_SYMBOL(of_find_i2c_adapter_by_node);
-> +#else
-> +static void of_i2c_register_devices(struct i2c_adapter *adap) { }
-> +#endif /* CONFIG_OF */
-> +
->  static int i2c_do_add_adapter(struct i2c_driver *driver,
->  			      struct i2c_adapter *adap)
->  {
-> @@ -1058,6 +1162,8 @@ static int i2c_register_adapter(struct i2c_adapter *adap)
->  
->  exit_recovery:
->  	/* create pre-declared device nodes */
-> +	of_i2c_register_devices(adap);
-> +
->  	if (adap->nr < __i2c_first_dynamic_bus_num)
->  		i2c_scan_static_board_info(adap);
->  
-> @@ -1282,7 +1388,6 @@ void i2c_del_adapter(struct i2c_adapter *adap)
->  }
->  EXPORT_SYMBOL(i2c_del_adapter);
->  
-> -
->  /* ------------------------------------------------------------------------- */
->  
->  int i2c_for_each_dev(void *data, int (*fn)(struct device *, void *))
-> diff --git a/drivers/i2c/i2c-mux.c b/drivers/i2c/i2c-mux.c
-> index 7409ebb..797e311 100644
-> --- a/drivers/i2c/i2c-mux.c
-> +++ b/drivers/i2c/i2c-mux.c
-> @@ -25,7 +25,6 @@
->  #include <linux/i2c.h>
->  #include <linux/i2c-mux.h>
->  #include <linux/of.h>
-> -#include <linux/of_i2c.h>
->  
->  /* multiplexer per channel data */
->  struct i2c_mux_priv {
-> @@ -185,8 +184,6 @@ struct i2c_adapter *i2c_add_mux_adapter(struct i2c_adapter *parent,
->  	dev_info(&parent->dev, "Added multiplexed i2c bus %d\n",
->  		 i2c_adapter_id(&priv->adap));
->  
-> -	of_i2c_register_devices(&priv->adap);
-> -
->  	return &priv->adap;
->  }
->  EXPORT_SYMBOL_GPL(i2c_add_mux_adapter);
-> diff --git a/drivers/i2c/muxes/i2c-arb-gpio-challenge.c b/drivers/i2c/muxes/i2c-arb-gpio-challenge.c
-> index 210b6f7..b901638 100644
-> --- a/drivers/i2c/muxes/i2c-arb-gpio-challenge.c
-> +++ b/drivers/i2c/muxes/i2c-arb-gpio-challenge.c
-> @@ -21,7 +21,6 @@
->  #include <linux/i2c-mux.h>
->  #include <linux/init.h>
->  #include <linux/module.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/of_gpio.h>
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
-> diff --git a/drivers/i2c/muxes/i2c-mux-gpio.c b/drivers/i2c/muxes/i2c-mux-gpio.c
-> index 5a0ce00..128a981 100644
-> --- a/drivers/i2c/muxes/i2c-mux-gpio.c
-> +++ b/drivers/i2c/muxes/i2c-mux-gpio.c
-> @@ -16,7 +16,6 @@
->  #include <linux/module.h>
->  #include <linux/slab.h>
->  #include <linux/gpio.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/of_gpio.h>
->  
->  struct gpiomux {
-> diff --git a/drivers/i2c/muxes/i2c-mux-pinctrl.c b/drivers/i2c/muxes/i2c-mux-pinctrl.c
-> index a43c0ce..859a6d2 100644
-> --- a/drivers/i2c/muxes/i2c-mux-pinctrl.c
-> +++ b/drivers/i2c/muxes/i2c-mux-pinctrl.c
-> @@ -20,7 +20,6 @@
->  #include <linux/i2c-mux.h>
->  #include <linux/init.h>
->  #include <linux/module.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/pinctrl/consumer.h>
->  #include <linux/i2c-mux-pinctrl.h>
->  #include <linux/platform_device.h>
-> diff --git a/drivers/media/platform/exynos4-is/fimc-is-i2c.c b/drivers/media/platform/exynos4-is/fimc-is-i2c.c
-> index 617a798..9930556 100644
-> --- a/drivers/media/platform/exynos4-is/fimc-is-i2c.c
-> +++ b/drivers/media/platform/exynos4-is/fimc-is-i2c.c
-> @@ -12,7 +12,7 @@
->  
->  #include <linux/clk.h>
->  #include <linux/module.h>
-> -#include <linux/of_i2c.h>
-> +#include <linux/i2c.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/slab.h>
-> @@ -67,8 +67,6 @@ static int fimc_is_i2c_probe(struct platform_device *pdev)
->  	pm_runtime_enable(&pdev->dev);
->  	pm_runtime_enable(&i2c_adap->dev);
->  
-> -	of_i2c_register_devices(i2c_adap);
-> -
->  	return 0;
->  }
->  
-> diff --git a/drivers/media/platform/exynos4-is/fimc-is.c b/drivers/media/platform/exynos4-is/fimc-is.c
-> index 967f6a9..2276fdc 100644
-> --- a/drivers/media/platform/exynos4-is/fimc-is.c
-> +++ b/drivers/media/platform/exynos4-is/fimc-is.c
-> @@ -21,7 +21,7 @@
->  #include <linux/interrupt.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> -#include <linux/of_i2c.h>
-> +#include <linux/i2c.h>
->  #include <linux/of_irq.h>
->  #include <linux/of_address.h>
->  #include <linux/of_platform.h>
-> diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
-> index 19f556c..f8c66b4 100644
-> --- a/drivers/media/platform/exynos4-is/media-dev.c
-> +++ b/drivers/media/platform/exynos4-is/media-dev.c
-> @@ -20,7 +20,6 @@
->  #include <linux/of.h>
->  #include <linux/of_platform.h>
->  #include <linux/of_device.h>
-> -#include <linux/of_i2c.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/types.h>
-> diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
-> index 80e5c13..78cc760 100644
-> --- a/drivers/of/Kconfig
-> +++ b/drivers/of/Kconfig
-> @@ -48,12 +48,6 @@ config OF_IRQ
->  	def_bool y
->  	depends on !SPARC
->  
-> -config OF_I2C
-> -	def_tristate I2C
-> -	depends on I2C
-> -	help
-> -	  OpenFirmware I2C accessors
-> -
->  config OF_NET
->  	depends on NETDEVICES
->  	def_bool y
-> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
-> index 1f9c0c4..efd0510 100644
-> --- a/drivers/of/Makefile
-> +++ b/drivers/of/Makefile
-> @@ -3,7 +3,6 @@ obj-$(CONFIG_OF_FLATTREE) += fdt.o
->  obj-$(CONFIG_OF_PROMTREE) += pdt.o
->  obj-$(CONFIG_OF_ADDRESS)  += address.o
->  obj-$(CONFIG_OF_IRQ)    += irq.o
-> -obj-$(CONFIG_OF_I2C)	+= of_i2c.o
->  obj-$(CONFIG_OF_NET)	+= of_net.o
->  obj-$(CONFIG_OF_SELFTEST) += selftest.o
->  obj-$(CONFIG_OF_MDIO)	+= of_mdio.o
-> diff --git a/drivers/of/of_i2c.c b/drivers/of/of_i2c.c
-> deleted file mode 100644
-> index b667264..0000000
-> --- a/drivers/of/of_i2c.c
-> +++ /dev/null
-> @@ -1,114 +0,0 @@
-> -/*
-> - * OF helpers for the I2C API
-> - *
-> - * Copyright (c) 2008 Jochen Friedrich <jochen@scram.de>
-> - *
-> - * Based on a previous patch from Jon Smirl <jonsmirl@gmail.com>
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
-> - */
-> -
-> -#include <linux/i2c.h>
-> -#include <linux/irq.h>
-> -#include <linux/of.h>
-> -#include <linux/of_i2c.h>
-> -#include <linux/of_irq.h>
-> -#include <linux/module.h>
-> -
-> -void of_i2c_register_devices(struct i2c_adapter *adap)
-> -{
-> -	void *result;
-> -	struct device_node *node;
-> -
-> -	/* Only register child devices if the adapter has a node pointer set */
-> -	if (!adap->dev.of_node)
-> -		return;
-> -
-> -	dev_dbg(&adap->dev, "of_i2c: walking child nodes\n");
-> -
-> -	for_each_available_child_of_node(adap->dev.of_node, node) {
-> -		struct i2c_board_info info = {};
-> -		struct dev_archdata dev_ad = {};
-> -		const __be32 *addr;
-> -		int len;
-> -
-> -		dev_dbg(&adap->dev, "of_i2c: register %s\n", node->full_name);
-> -
-> -		if (of_modalias_node(node, info.type, sizeof(info.type)) < 0) {
-> -			dev_err(&adap->dev, "of_i2c: modalias failure on %s\n",
-> -				node->full_name);
-> -			continue;
-> -		}
-> -
-> -		addr = of_get_property(node, "reg", &len);
-> -		if (!addr || (len < sizeof(int))) {
-> -			dev_err(&adap->dev, "of_i2c: invalid reg on %s\n",
-> -				node->full_name);
-> -			continue;
-> -		}
-> -
-> -		info.addr = be32_to_cpup(addr);
-> -		if (info.addr > (1 << 10) - 1) {
-> -			dev_err(&adap->dev, "of_i2c: invalid addr=%x on %s\n",
-> -				info.addr, node->full_name);
-> -			continue;
-> -		}
-> -
-> -		info.irq = irq_of_parse_and_map(node, 0);
-> -		info.of_node = of_node_get(node);
-> -		info.archdata = &dev_ad;
-> -
-> -		if (of_get_property(node, "wakeup-source", NULL))
-> -			info.flags |= I2C_CLIENT_WAKE;
-> -
-> -		request_module("%s%s", I2C_MODULE_PREFIX, info.type);
-> -
-> -		result = i2c_new_device(adap, &info);
-> -		if (result == NULL) {
-> -			dev_err(&adap->dev, "of_i2c: Failure registering %s\n",
-> -			        node->full_name);
-> -			of_node_put(node);
-> -			irq_dispose_mapping(info.irq);
-> -			continue;
-> -		}
-> -	}
-> -}
-> -EXPORT_SYMBOL(of_i2c_register_devices);
-> -
-> -static int of_dev_node_match(struct device *dev, void *data)
-> -{
-> -        return dev->of_node == data;
-> -}
-> -
-> -/* must call put_device() when done with returned i2c_client device */
-> -struct i2c_client *of_find_i2c_device_by_node(struct device_node *node)
-> -{
-> -	struct device *dev;
-> -
-> -	dev = bus_find_device(&i2c_bus_type, NULL, node,
-> -					 of_dev_node_match);
-> -	if (!dev)
-> -		return NULL;
-> -
-> -	return i2c_verify_client(dev);
-> -}
-> -EXPORT_SYMBOL(of_find_i2c_device_by_node);
-> -
-> -/* must call put_device() when done with returned i2c_adapter device */
-> -struct i2c_adapter *of_find_i2c_adapter_by_node(struct device_node *node)
-> -{
-> -	struct device *dev;
-> -
-> -	dev = bus_find_device(&i2c_bus_type, NULL, node,
-> -					 of_dev_node_match);
-> -	if (!dev)
-> -		return NULL;
-> -
-> -	return i2c_verify_adapter(dev);
-> -}
-> -EXPORT_SYMBOL(of_find_i2c_adapter_by_node);
-> -
-> -MODULE_LICENSE("GPL");
-> diff --git a/drivers/staging/imx-drm/imx-tve.c b/drivers/staging/imx-drm/imx-tve.c
-> index a56797d..2d76fd4 100644
-> --- a/drivers/staging/imx-drm/imx-tve.c
-> +++ b/drivers/staging/imx-drm/imx-tve.c
-> @@ -21,7 +21,7 @@
->  #include <linux/clk.h>
->  #include <linux/clk-provider.h>
->  #include <linux/module.h>
-> -#include <linux/of_i2c.h>
-> +#include <linux/i2c.h>
->  #include <linux/regmap.h>
->  #include <linux/regulator/consumer.h>
->  #include <linux/spinlock.h>
-> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-> index e988fa9..2189189 100644
-> --- a/include/linux/i2c.h
-> +++ b/include/linux/i2c.h
-> @@ -542,6 +542,26 @@ static inline int i2c_adapter_id(struct i2c_adapter *adap)
->  
->  #endif /* I2C */
->  
-> +#if IS_ENABLED(CONFIG_OF)
-> +/* must call put_device() when done with returned i2c_client device */
-> +extern struct i2c_client *of_find_i2c_device_by_node(struct device_node *node);
-> +
-> +/* must call put_device() when done with returned i2c_adapter device */
-> +extern struct i2c_adapter *of_find_i2c_adapter_by_node(struct device_node *node);
-> +
-> +#else
-> +
-> +static inline struct i2c_client *of_find_i2c_device_by_node(struct device_node *node)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline struct i2c_adapter *of_find_i2c_adapter_by_node(struct device_node *node)
-> +{
-> +	return NULL;
-> +}
-> +#endif /* CONFIG_OF */
-> +
->  #if IS_ENABLED(CONFIG_ACPI_I2C)
->  extern void acpi_i2c_register_devices(struct i2c_adapter *adap);
->  #else
-> diff --git a/include/linux/of_i2c.h b/include/linux/of_i2c.h
-> deleted file mode 100644
-> index cfb545c..0000000
-> --- a/include/linux/of_i2c.h
-> +++ /dev/null
-> @@ -1,46 +0,0 @@
-> -/*
-> - * Generic I2C API implementation for PowerPC.
-> - *
-> - * Copyright (c) 2008 Jochen Friedrich <jochen@scram.de>
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
-> - */
-> -
-> -#ifndef __LINUX_OF_I2C_H
-> -#define __LINUX_OF_I2C_H
-> -
-> -#if defined(CONFIG_OF_I2C) || defined(CONFIG_OF_I2C_MODULE)
-> -#include <linux/i2c.h>
-> -
-> -extern void of_i2c_register_devices(struct i2c_adapter *adap);
-> -
-> -/* must call put_device() when done with returned i2c_client device */
-> -extern struct i2c_client *of_find_i2c_device_by_node(struct device_node *node);
-> -
-> -/* must call put_device() when done with returned i2c_adapter device */
-> -extern struct i2c_adapter *of_find_i2c_adapter_by_node(
-> -						struct device_node *node);
-> -
-> -#else
-> -static inline void of_i2c_register_devices(struct i2c_adapter *adap)
-> -{
-> -	return;
-> -}
-> -
-> -static inline struct i2c_client *of_find_i2c_device_by_node(struct device_node *node)
-> -{
-> -	return NULL;
-> -}
-> -
-> -/* must call put_device() when done with returned i2c_adapter device */
-> -static inline struct i2c_adapter *of_find_i2c_adapter_by_node(
-> -						struct device_node *node)
-> -{
-> -	return NULL;
-> -}
-> -#endif /* CONFIG_OF_I2C */
-> -
-> -#endif /* __LINUX_OF_I2C_H */
-> diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-> index 3f726e4..f2fbde9 100644
-> --- a/sound/soc/fsl/imx-sgtl5000.c
-> +++ b/sound/soc/fsl/imx-sgtl5000.c
-> @@ -13,7 +13,7 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/of_platform.h>
-> -#include <linux/of_i2c.h>
-> +#include <linux/i2c.h>
->  #include <linux/clk.h>
->  #include <sound/soc.h>
->  
-> diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
-> index 52a36a9..9fd7a65 100644
-> --- a/sound/soc/fsl/imx-wm8962.c
-> +++ b/sound/soc/fsl/imx-wm8962.c
-> @@ -15,7 +15,7 @@
->  
->  #include <linux/module.h>
->  #include <linux/of_platform.h>
-> -#include <linux/of_i2c.h>
-> +#include <linux/i2c.h>
->  #include <linux/slab.h>
->  #include <linux/clk.h>
->  #include <sound/soc.h>
+I've checked all the controls in the mixer, tried a few different mac
+related model= options to snd-hda-intel and even tried tweaking things
+with hda_analyzer to no avail. I've uninstalled pulseaudio (for now)
+to get rid of it's ALSA hook, but had the same result both with and
+without it.
 
+I'm running on a 3.11-rc6+ built today (had a few other fixes to make
+for this machine) - I didn't bother including the hda i915 driver as I
+don't need sound via the display port, but the hda driver does print a
+warning about that missing module. The speaker wasn't working on the
+3.10 kernel from Debian either which included that module.
 
--- 
+Any help would be appreciated - I've attached my alsa-info output
+taken after a reboot.
 
 Cheers,
-Mauro
+-Ian
+
+-- 
+http://sites.google.com/site/DarkStarJunkSpace
+--
+http://darkstarshout.blogspot.com/
+--
+Please avoid sending me Word or PowerPoint attachments.
+See http://www.gnu.org/philosophy/no-word-attachments.html
+
+--047d7b34386a8b9b7004e4b1767e
+Content-Type: application/octet-stream; name="alsa-info.txt.MTy10O6HhS"
+Content-Disposition: attachment; filename="alsa-info.txt.MTy10O6HhS"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hkquhjru0
+
+dXBsb2FkPXRydWUmc2NyaXB0PXRydWUmY2FyZGluZm89CiEhIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMKISFBTFNBIEluZm9ybWF0aW9uIFNjcmlwdCB2IDAuNC42MgohISMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCgohIVNjcmlwdCByYW4gb246IFNhdCBBdWcgMjQgMTE6
+NTI6NTAgVVRDIDIwMTMKCgohIUxpbnV4IERpc3RyaWJ1dGlvbgohIS0tLS0tLS0tLS0tLS0tLS0t
+LQoKRGViaWFuIEdOVS9MaW51eCBqZXNzaWUvc2lkIFxuIFxsIFBSRVRUWV9OQU1FPSJEZWJpYW4g
+R05VL0xpbnV4IGplc3NpZS9zaWQiIE5BTUU9IkRlYmlhbiBHTlUvTGludXgiIElEPWRlYmlhbiBI
+T01FX1VSTD0iaHR0cDovL3d3dy5kZWJpYW4ub3JnLyIgU1VQUE9SVF9VUkw9Imh0dHA6Ly93d3cu
+ZGViaWFuLm9yZy9zdXBwb3J0LyIgQlVHX1JFUE9SVF9VUkw9Imh0dHA6Ly9idWdzLmRlYmlhbi5v
+cmcvIgoKCiEhRE1JIEluZm9ybWF0aW9uCiEhLS0tLS0tLS0tLS0tLS0tCgpNYW51ZmFjdHVyZXI6
+ICAgICAgQXBwbGUgSW5jLgpQcm9kdWN0IE5hbWU6ICAgICAgTWFjQm9va0FpcjYsMQpQcm9kdWN0
+IFZlcnNpb246ICAgMS4wCkZpcm13YXJlIFZlcnNpb246ICBNQkE2MS44OFouMDA5OS5CMDAuMTMw
+NTI0MTUyOQoKCiEhS2VybmVsIEluZm9ybWF0aW9uCiEhLS0tLS0tLS0tLS0tLS0tLS0tCgpLZXJu
+ZWwgcmVsZWFzZTogICAgMy4xMS4wLXJjNisKT3BlcmF0aW5nIFN5c3RlbTogIEdOVS9MaW51eApB
+cmNoaXRlY3R1cmU6ICAgICAgeDg2XzY0ClByb2Nlc3NvcjogICAgICAgICB1bmtub3duClNNUCBF
+bmFibGVkOiAgICAgICBZZXMKCgohIUFMU0EgVmVyc2lvbgohIS0tLS0tLS0tLS0tLQoKRHJpdmVy
+IHZlcnNpb246ICAgICBrMy4xMS4wLXJjNisKTGlicmFyeSB2ZXJzaW9uOiAgICAxLjAuMjcuMgpV
+dGlsaXRpZXMgdmVyc2lvbjogIDEuMC4yNy4xCgoKISFMb2FkZWQgQUxTQSBtb2R1bGVzCiEhLS0t
+LS0tLS0tLS0tLS0tLS0tLQoKc25kX2hkYV9pbnRlbAoKCiEhU291bmQgU2VydmVycyBvbiB0aGlz
+IHN5c3RlbQohIS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCk5vIHNvdW5kIHNlcnZlcnMg
+Zm91bmQuCgoKISFTb3VuZGNhcmRzIHJlY29nbmlzZWQgYnkgQUxTQQohIS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tCgogMCBbUENIICAgICAgICAgICAgXTogSERBLUludGVsIC0gSERBIElu
+dGVsIFBDSAogICAgICAgICAgICAgICAgICAgICAgSERBIEludGVsIFBDSCBhdCAweGIwYTE0MDAw
+IGlycSA2NgoKCiEhUENJIFNvdW5kY2FyZHMgaW5zdGFsbGVkIGluIHRoZSBzeXN0ZW0KISEtLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKMDA6MDMuMCBBdWRpbyBkZXZpY2U6
+IEludGVsIENvcnBvcmF0aW9uIERldmljZSAwYTBjIChyZXYgMDkpCjAwOjFiLjAgQXVkaW8gZGV2
+aWNlOiBJbnRlbCBDb3Jwb3JhdGlvbiBMeW54IFBvaW50LUxQIEhEIEF1ZGlvIENvbnRyb2xsZXIg
+KHJldiAwNCkKMDI6MDAuMCBNdWx0aW1lZGlhIGNvbnRyb2xsZXI6IEJyb2FkY29tIENvcnBvcmF0
+aW9uIERldmljZSAxNTcwCgoKISFBZHZhbmNlZCBpbmZvcm1hdGlvbiAtIFBDSSBWZW5kb3IvRGV2
+aWNlL1N1YnN5c3RlbSBJRCdzCiEhLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQoKMDA6MDMuMCAwNDAzOiA4MDg2OjBhMGMgKHJldiAwOSkKCVN1
+YnN5c3RlbTogMTA2YjowMTFhCi0tCjAwOjFiLjAgMDQwMzogODA4Njo5YzIwIChyZXYgMDQpCglT
+dWJzeXN0ZW06IDgwODY6NzI3MAoKCiEhTW9kcHJvYmUgb3B0aW9ucyAoU291bmQgcmVsYXRlZCkK
+ISEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKc25kX3Bjc3A6IGluZGV4PS0yCnNu
+ZF91c2JfYXVkaW86IGluZGV4PS0yCnNuZF9hdGlpeHBfbW9kZW06IGluZGV4PS0yCnNuZF9pbnRl
+bDh4MG06IGluZGV4PS0yCnNuZF92aWE4Mnh4X21vZGVtOiBpbmRleD0tMgoKCiEhTG9hZGVkIHNv
+dW5kIG1vZHVsZSBvcHRpb25zCiEhLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgohIU1vZHVs
+ZTogc25kX2hkYV9pbnRlbAoJYWxpZ25fYnVmZmVyX3NpemUgOiAtMQoJYmRsX3Bvc19hZGogOiAz
+MiwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMQoJYmVlcF9tb2RlIDogWSxZLFks
+WSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZ
+CgllbmFibGUgOiBZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFks
+WSxZLFksWSxZLFksWSxZLFkKCWVuYWJsZV9tc2kgOiAtMQoJaWQgOiAobnVsbCksKG51bGwpLChu
+dWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51
+bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
+bCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxs
+KSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpCglpbmRleCA6IC0xLC0xLC0xLC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xCglqYWNrcG9sbF9tcyA6IDAsMCwwLDAsMCwwLDAs
+MCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMAoJbW9kZWwg
+OiAobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwp
+LChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCks
+KG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwo
+bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpCglw
+YXRjaCA6IChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwo
+bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChu
+dWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51
+bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
+bCkKCXBvc2l0aW9uX2ZpeCA6IC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
+Cglwb3dlcl9zYXZlIDogMAoJcG93ZXJfc2F2ZV9jb250cm9sbGVyIDogWQoJcHJvYmVfbWFzayA6
+IC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xCglwcm9iZV9vbmx5IDogMCww
+LDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAs
+MCwwCglzaW5nbGVfY21kIDogTgoJc25vb3AgOiBZCgoKISFIREEtSW50ZWwgQ29kZWMgaW5mb3Jt
+YXRpb24KISEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KLS1zdGFydGNvbGxhcHNlLS0KCkNv
+ZGVjOiBDaXJydXMgTG9naWMgSUQgNDIwOApBZGRyZXNzOiAwCkFGRyBGdW5jdGlvbiBJZDogMHgx
+ICh1bnNvbCAxKQpWZW5kb3IgSWQ6IDB4MTAxMzQyMDgKU3Vic3lzdGVtIElkOiAweDEwNmI3MTAw
+ClJldmlzaW9uIElkOiAweDEwMDMwMApObyBNb2RlbSBGdW5jdGlvbiBHcm91cCBmb3VuZApEZWZh
+dWx0IFBDTToKICAgIHJhdGVzIFsweDBdOgogICAgYml0cyBbMHgwXToKICAgIGZvcm1hdHMgWzB4
+MF06CkRlZmF1bHQgQW1wLUluIGNhcHM6IE4vQQpEZWZhdWx0IEFtcC1PdXQgY2FwczogTi9BClN0
+YXRlIG9mIEFGRyBub2RlIDB4MDE6CiAgUG93ZXIgc3RhdGVzOiAgRDAgRDMgRDNjb2xkIFMzRDNj
+b2xkIENMS1NUT1AgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKR1BJTzogaW89
+Niwgbz0yLCBpPTAsIHVuc29saWNpdGVkPTEsIHdha2U9MQogIElPWzBdOiBlbmFibGU9MSwgZGly
+PTEsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5zb2w9MAogIElPWzFdOiBlbmFibGU9MCwg
+ZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5zb2w9MAogIElPWzJdOiBlbmFibGU9
+MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5zb2w9MAogIElPWzNdOiBlbmFi
+bGU9MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5zb2w9MAogIElPWzRdOiBl
+bmFibGU9MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5zb2w9MAogIElPWzVd
+OiBlbmFibGU9MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5zb2w9MApOb2Rl
+IDB4MDIgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHhkMDQzZDogU3RlcmVvIEFtcC1PdXQgU3RyaXBl
+CiAgRGV2aWNlOiBuYW1lPSJJRCA0MjA4IEFuYWxvZyIsIHR5cGU9IkF1ZGlvIiwgZGV2aWNlPTAK
+ICBBbXAtT3V0IGNhcHM6IG9mcz0weDdmLCBuc3RlcHM9MHg3Ziwgc3RlcHNpemU9MHgwMSwgbXV0
+ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4N2YgMHg3Zl0KICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBj
+aGFubmVsPTAKICBQQ006CiAgICByYXRlcyBbMHg3ZjBdOiAzMjAwMCA0NDEwMCA0ODAwMCA4ODIw
+MCA5NjAwMCAxNzY0MDAgMTkyMDAwCiAgICBiaXRzIFsweDFlXTogMTYgMjAgMjQgMzIKICAgIGZv
+cm1hdHMgWzB4M106IFBDTSBGTE9BVAogIFBvd2VyIHN0YXRlczogIEQwIEQzIEVQU1MKICBQb3dl
+cjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgRGVsYXk6IDEzIHNhbXBsZXMKTm9kZSAweDAzIFtB
+dWRpbyBPdXRwdXRdIHdjYXBzIDB4ZDA0M2Q6IFN0ZXJlbyBBbXAtT3V0IFN0cmlwZQogIENvbnRy
+b2w6IG5hbWU9IlNwZWFrZXIgUGxheWJhY2sgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAg
+IENvbnRyb2xBbXA6IGNocz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKICBDb250cm9sOiBuYW1l
+PSJTcGVha2VyIFBsYXliYWNrIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9s
+QW1wOiBjaHM9MywgZGlyPU91dCwgaWR4PTAsIG9mcz0wCiAgQW1wLU91dCBjYXBzOiBvZnM9MHg3
+ZiwgbnN0ZXBzPTB4N2YsIHN0ZXBzaXplPTB4MDEsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsw
+eDZiIDB4NmJdCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgUENNOgogICAgcmF0
+ZXMgWzB4N2YwXTogMzIwMDAgNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAgMTc2NDAwIDE5MjAwMAog
+ICAgYml0cyBbMHgxZV06IDE2IDIwIDI0IDMyCiAgICBmb3JtYXRzIFsweDNdOiBQQ00gRkxPQVQK
+ICBQb3dlciBzdGF0ZXM6ICBEMCBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1E
+MAogIERlbGF5OiAxMyBzYW1wbGVzCk5vZGUgMHgwNCBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweGQw
+NDNkOiBTdGVyZW8gQW1wLU91dCBTdHJpcGUKICBBbXAtT3V0IGNhcHM6IG9mcz0weDdmLCBuc3Rl
+cHM9MHg3Ziwgc3RlcHNpemU9MHgwMSwgbXV0ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4ZmYgMHhm
+Zl0KICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBQQ006CiAgICByYXRlcyBbMHg3
+ZjBdOiAzMjAwMCA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMCAxNzY0MDAgMTkyMDAwCiAgICBiaXRz
+IFsweDFlXTogMTYgMjAgMjQgMzIKICAgIGZvcm1hdHMgWzB4M106IFBDTSBGTE9BVAogIFBvd2Vy
+IHN0YXRlczogIEQwIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgRGVs
+YXk6IDEzIHNhbXBsZXMKTm9kZSAweDA1IFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4ZDA0M2Q6IFN0
+ZXJlbyBBbXAtT3V0IFN0cmlwZQogIEFtcC1PdXQgY2Fwczogb2ZzPTB4N2YsIG5zdGVwcz0weDdm
+LCBzdGVwc2l6ZT0weDAxLCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6ICBbMHhmZiAweGZmXQogIENv
+bnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIFBDTToKICAgIHJhdGVzIFsweDdmMF06IDMy
+MDAwIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3NjQwMCAxOTIwMDAKICAgIGJpdHMgWzB4MWVd
+OiAxNiAyMCAyNCAzMgogICAgZm9ybWF0cyBbMHgzXTogUENNIEZMT0FUCiAgUG93ZXIgc3RhdGVz
+OiAgRDAgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBEZWxheTogMTMg
+c2FtcGxlcwpOb2RlIDB4MDYgW0F1ZGlvIElucHV0XSB3Y2FwcyAweDE4MDUxYjogU3RlcmVvIEFt
+cC1JbgogIERldmljZTogbmFtZT0iSUQgNDIwOCBBbmFsb2ciLCB0eXBlPSJBdWRpbyIsIGRldmlj
+ZT0wCiAgQW1wLUluIGNhcHM6IG9mcz0weDMzLCBuc3RlcHM9MHgzZiwgc3RlcHNpemU9MHgwMywg
+bXV0ZT0xCiAgQW1wLUluIHZhbHM6ICBbMHhiMyAweGIzXSBbMHhiMyAweGIzXSBbMHhiMyAweGIz
+XQogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIFNESS1TZWxlY3Q6IDAKICBQQ006
+CiAgICByYXRlcyBbMHgxZjVdOiA4MDAwIDE2MDAwIDMyMDAwIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2
+MDAwCiAgICBiaXRzIFsweDFlXTogMTYgMjAgMjQgMzIKICAgIGZvcm1hdHMgWzB4M106IFBDTSBG
+TE9BVAogIFBvd2VyIHN0YXRlczogIEQwIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0
+dWFsPUQwCiAgRGVsYXk6IDggc2FtcGxlcwogIENvbm5lY3Rpb246IDMKICAgICAweDE1KiAweDE3
+IDB4MTkKTm9kZSAweDA3IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxODA1MWI6IFN0ZXJlbyBBbXAt
+SW4KICBBbXAtSW4gY2Fwczogb2ZzPTB4MzMsIG5zdGVwcz0weDNmLCBzdGVwc2l6ZT0weDAzLCBt
+dXRlPTEKICBBbXAtSW4gdmFsczogIFsweDNmIDB4M2ZdIFsweDNmIDB4M2ZdIFsweDNmIDB4M2Zd
+CiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgU0RJLVNlbGVjdDogMAogIFBDTToK
+ICAgIHJhdGVzIFsweDFmNV06IDgwMDAgMTYwMDAgMzIwMDAgNDQxMDAgNDgwMDAgODgyMDAgOTYw
+MDAKICAgIGJpdHMgWzB4MWVdOiAxNiAyMCAyNCAzMgogICAgZm9ybWF0cyBbMHgzXTogUENNIEZM
+T0FUCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1
+YWw9RDAKICBEZWxheTogOCBzYW1wbGVzCiAgQ29ubmVjdGlvbjogMwogICAgIDB4MTYqIDB4MTgg
+MHgxYQpOb2RlIDB4MDggW0F1ZGlvIElucHV0XSB3Y2FwcyAweDE4MDUxYjogU3RlcmVvIEFtcC1J
+bgogIEFtcC1JbiBjYXBzOiBvZnM9MHgzMywgbnN0ZXBzPTB4M2YsIHN0ZXBzaXplPTB4MDMsIG11
+dGU9MQogIEFtcC1JbiB2YWxzOiAgWzB4YjMgMHhiM10KICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBj
+aGFubmVsPTAKICBTREktU2VsZWN0OiAwCiAgUENNOgogICAgcmF0ZXMgWzB4MWY1XTogODAwMCAx
+NjAwMCAzMjAwMCA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMAogICAgYml0cyBbMHgxZV06IDE2IDIw
+IDI0IDMyCiAgICBmb3JtYXRzIFsweDNdOiBQQ00gRkxPQVQKICBQb3dlciBzdGF0ZXM6ICBEMCBE
+MyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIERlbGF5OiA4IHNhbXBsZXMK
+ICBDb25uZWN0aW9uOiAxCiAgICAgMHgxYgpOb2RlIDB4MDkgW0F1ZGlvIElucHV0XSB3Y2FwcyAw
+eDE4MDUxYjogU3RlcmVvIEFtcC1JbgogIENvbnRyb2w6IG5hbWU9IkNhcHR1cmUgVm9sdW1lIiwg
+aW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0xLCBv
+ZnM9MAogIENvbnRyb2w6IG5hbWU9IkNhcHR1cmUgU3dpdGNoIiwgaW5kZXg9MCwgZGV2aWNlPTAK
+ICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0xLCBvZnM9MAogIEFtcC1JbiBjYXBz
+OiBvZnM9MHgzMywgbnN0ZXBzPTB4M2YsIHN0ZXBzaXplPTB4MDMsIG11dGU9MQogIEFtcC1JbiB2
+YWxzOiAgWzB4M2YgMHgzZl0KICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBTREkt
+U2VsZWN0OiAwCiAgUENNOgogICAgcmF0ZXMgWzB4MWY1XTogODAwMCAxNjAwMCAzMjAwMCA0NDEw
+MCA0ODAwMCA4ODIwMCA5NjAwMAogICAgYml0cyBbMHgxZV06IDE2IDIwIDI0IDMyCiAgICBmb3Jt
+YXRzIFsweDNdOiBQQ00gRkxPQVQKICBQb3dlciBzdGF0ZXM6ICBEMCBEMyBFUFNTCiAgUG93ZXI6
+IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIERlbGF5OiA4IHNhbXBsZXMKICBDb25uZWN0aW9uOiAx
+CiAgICAgMHgxYwpOb2RlIDB4MGEgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0NjYzMTogOC1DaGFu
+bmVscyBEaWdpdGFsIFN0cmlwZQogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIERp
+Z2l0YWw6CiAgRGlnaXRhbCBjYXRlZ29yeTogMHgwCiAgSUVDIENvZGluZyBUeXBlOiAweDAKICBQ
+Q006CiAgICByYXRlcyBbMHg2MF06IDQ0MTAwIDQ4MDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAy
+NAogICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDMgRVBTUwogIFBv
+d2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBEZWxheTogNCBzYW1wbGVzCk5vZGUgMHgwYiBb
+QXVkaW8gT3V0cHV0XSB3Y2FwcyAweDQ2NjMxOiA4LUNoYW5uZWxzIERpZ2l0YWwgU3RyaXBlCiAg
+Q29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgRGlnaXRhbDoKICBEaWdpdGFsIGNhdGVn
+b3J5OiAweDAKICBJRUMgQ29kaW5nIFR5cGU6IDB4MAogIFBDTToKICAgIHJhdGVzIFsweDYwXTog
+NDQxMDAgNDgwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQ
+Q00KICBQb3dlciBzdGF0ZXM6ICBEMCBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVh
+bD1EMAogIERlbGF5OiA0IHNhbXBsZXMKTm9kZSAweDBjIFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgx
+MzY3MTE6IDgtQ2hhbm5lbHMgRGlnaXRhbAogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9
+MAogIFNESS1TZWxlY3Q6IDAKICBEaWdpdGFsOgogIERpZ2l0YWwgY2F0ZWdvcnk6IDB4MAogIElF
+QyBDb2RpbmcgVHlwZTogMHgwCiAgUENNOgogICAgcmF0ZXMgWzB4NjBdOiA0NDEwMCA0ODAwMAog
+ICAgYml0cyBbMHgxZV06IDE2IDIwIDI0IDMyCiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQb3dl
+ciBzdGF0ZXM6ICBEMCBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIERl
+bGF5OiAzIHNhbXBsZXMKICBDb25uZWN0aW9uOiAxCiAgICAgMHgxZgpOb2RlIDB4MGQgW0F1ZGlv
+IElucHV0XSB3Y2FwcyAweDEzNjcxMTogOC1DaGFubmVscyBEaWdpdGFsCiAgQ29udmVydGVyOiBz
+dHJlYW09MCwgY2hhbm5lbD0wCiAgU0RJLVNlbGVjdDogMAogIERpZ2l0YWw6CiAgRGlnaXRhbCBj
+YXRlZ29yeTogMHgwCiAgSUVDIENvZGluZyBUeXBlOiAweDAKICBQQ006CiAgICByYXRlcyBbMHg2
+MF06IDQ0MTAwIDQ4MDAwCiAgICBiaXRzIFsweDFlXTogMTYgMjAgMjQgMzIKICAgIGZvcm1hdHMg
+WzB4MV06IFBDTQogIFBvd2VyIHN0YXRlczogIEQwIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1E
+MCwgYWN0dWFsPUQwCiAgRGVsYXk6IDMgc2FtcGxlcwogIENvbm5lY3Rpb246IDEKICAgICAweDIw
+Ck5vZGUgMHgwZSBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDQwNjMxOiBTdGVyZW8gRGlnaXRhbCBT
+dHJpcGUKICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBEaWdpdGFsOgogIERpZ2l0
+YWwgY2F0ZWdvcnk6IDB4MAogIElFQyBDb2RpbmcgVHlwZTogMHgwCiAgUENNOgogICAgcmF0ZXMg
+WzB4N2YwXTogMzIwMDAgNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAgMTc2NDAwIDE5MjAwMAogICAg
+Yml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4NV06IFBDTSBBQzMKICBQb3dlciBz
+dGF0ZXM6ICBEMCBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIERlbGF5
+OiA0IHNhbXBsZXMKTm9kZSAweDBmIFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxYjA3OTE6IFN0ZXJl
+byBEaWdpdGFsCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgU0RJLVNlbGVjdDog
+MAogIERpZ2l0YWw6CiAgRGlnaXRhbCBjYXRlZ29yeTogMHgwCiAgSUVDIENvZGluZyBUeXBlOiAw
+eDAKICBQQ006CiAgICByYXRlcyBbMHg1ZjBdOiAzMjAwMCA0NDEwMCA0ODAwMCA4ODIwMCA5NjAw
+MCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDVdOiBQQ00g
+QUMzCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMCwgZW5hYmxlZD0wCiAgUG93ZXIgc3RhdGVzOiAgRDAg
+RDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBEZWxheTogMTEgc2FtcGxl
+cwogIENvbm5lY3Rpb246IDEKICAgICAweDIyCk5vZGUgMHgxMCBbUGluIENvbXBsZXhdIHdjYXBz
+IDB4NDAwNThkOiBTdGVyZW8gQW1wLU91dAogIENvbnRyb2w6IG5hbWU9IkhlYWRwaG9uZSBQbGF5
+YmFjayBWb2x1bWUiLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRp
+cj1PdXQsIGlkeD0wLCBvZnM9MAogIENvbnRyb2w6IG5hbWU9IkhlYWRwaG9uZSBQbGF5YmFjayBT
+d2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1PdXQs
+IGlkeD0wLCBvZnM9MAogIENvbnRyb2w6IG5hbWU9IkhlYWRwaG9uZSBKYWNrIiwgaW5kZXg9MCwg
+ZGV2aWNlPTAKICBBbXAtT3V0IGNhcHM6IG9mcz0weDQyLCBuc3RlcHM9MHg0Miwgc3RlcHNpemU9
+MHgwMywgbXV0ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4MmUgMHgyZV0KICBQaW5jYXAgMHgwMDAw
+MDAxYzogT1VUIEhQIERldGVjdAogIFBpbiBEZWZhdWx0IDB4MDAyYjQwMjA6IFtKYWNrXSBIUCBP
+dXQgYXQgRXh0IE4vQQogICAgQ29ubiA9IENvbWIsIENvbG9yID0gR3JlZW4KICAgIERlZkFzc29j
+aWF0aW9uID0gMHgyLCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1jdGxzOiAweGMwOiBPVVQgSFAKICBV
+bnNvbGljaXRlZDogdGFnPTAxLCBlbmFibGVkPTEKICBQb3dlciBzdGF0ZXM6ICBEMCBEMyBFUFNT
+CiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAgICAweDAy
+Ck5vZGUgMHgxMSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNTgxOiBTdGVyZW8KICBQaW5jYXAg
+MHgwMDAwMDA1NDogT1VUIERldGVjdCBCYWxhbmNlZAogIFBpbiBEZWZhdWx0IDB4NDAwMDAwZjA6
+IFtOL0FdIExpbmUgT3V0IGF0IEV4dCBOL0EKICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9IFVu
+a25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1jdGxz
+OiAweDAwOgogIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAogIFBvd2VyIHN0YXRlczog
+IEQwIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjog
+MQogICAgIDB4MDIKTm9kZSAweDEyIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA1MDE6IFN0ZXJl
+bwogIENvbnRyb2w6IG5hbWU9IlNwZWFrZXIgUGhhbnRvbSBKYWNrIiwgaW5kZXg9MCwgZGV2aWNl
+PTAKICBQaW5jYXAgMHgwMDAwMDA1MDogT1VUIEJhbGFuY2VkCiAgUGluIERlZmF1bHQgMHg5MDEw
+MDExMDogW0ZpeGVkXSBTcGVha2VyIGF0IEludCBOL0EKICAgIENvbm4gPSBVbmtub3duLCBDb2xv
+ciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHgxLCBTZXF1ZW5jZSA9IDB4MAogICAg
+TWlzYyA9IE5PX1BSRVNFTkNFCiAgUGluLWN0bHM6IDB4NDA6IE9VVAogIFBvd2VyIHN0YXRlczog
+IEQwIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjog
+MQogICAgIDB4MDMKTm9kZSAweDEzIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA1MDE6IFN0ZXJl
+bwogIFBpbmNhcCAweDAwMDAwMDUwOiBPVVQgQmFsYW5jZWQKICBQaW4gRGVmYXVsdCAweDQwMDAw
+MGYwOiBbTi9BXSBMaW5lIE91dCBhdCBFeHQgTi9BCiAgICBDb25uID0gVW5rbm93biwgQ29sb3Ig
+PSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAweDAKICBQaW4t
+Y3RsczogMHgwMDoKICBQb3dlciBzdGF0ZXM6ICBEMCBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9
+RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAgICAweDA0Ck5vZGUgMHgxNCBbUGluIENv
+bXBsZXhdIHdjYXBzIDB4NDAwNTAxOiBTdGVyZW8KICBQaW5jYXAgMHgwMDAwMDA1MDogT1VUIEJh
+bGFuY2VkCiAgUGluIERlZmF1bHQgMHg0MDAwMDBmMDogW04vQV0gTGluZSBPdXQgYXQgRXh0IE4v
+QQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24g
+PSAweGYsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4MDA6CiAgUG93ZXIgc3RhdGVzOiAg
+RDAgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAx
+CiAgICAgMHgwNQpOb2RlIDB4MTUgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDQwYjogU3RlcmVv
+IEFtcC1JbgogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDMsIHN0ZXBzaXplPTB4
+MjcsIG11dGU9MAogIEFtcC1JbiB2YWxzOiAgWzB4MDAgMHgwMF0KICBQaW5jYXAgMHgwMDAwMTcy
+MDogSU4KICAgIFZyZWYgY2FwczogSElaIDUwIEdSRCA4MAogIFBpbiBEZWZhdWx0IDB4NDAwMDAw
+ZjA6IFtOL0FdIExpbmUgT3V0IGF0IEV4dCBOL0EKICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9
+IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1j
+dGxzOiAweDAwOiBWUkVGX0hJWgogIFBvd2VyIHN0YXRlczogIEQwIEQzIEVQU1MKICBQb3dlcjog
+c2V0dGluZz1EMCwgYWN0dWFsPUQwCk5vZGUgMHgxNiBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAw
+NDBiOiBTdGVyZW8gQW1wLUluCiAgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMywg
+c3RlcHNpemU9MHgyNywgbXV0ZT0wCiAgQW1wLUluIHZhbHM6ICBbMHgwMCAweDAwXQogIFBpbmNh
+cCAweDAwMDAxNzIwOiBJTgogICAgVnJlZiBjYXBzOiBISVogNTAgR1JEIDgwCiAgUGluIERlZmF1
+bHQgMHg0MDAwMDBmMDogW04vQV0gTGluZSBPdXQgYXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25v
+d24sIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0g
+MHgwCiAgUGluLWN0bHM6IDB4MDA6IFZSRUZfSElaCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDMgRVBT
+UwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKTm9kZSAweDE3IFtQaW4gQ29tcGxleF0g
+d2NhcHMgMHg0MDA0OGI6IFN0ZXJlbyBBbXAtSW4KICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5z
+dGVwcz0weDAzLCBzdGVwc2l6ZT0weDI3LCBtdXRlPTAKICBBbXAtSW4gdmFsczogIFsweDAwIDB4
+MDBdCiAgUGluY2FwIDB4MDAwMDAwMjQ6IElOIERldGVjdAogIFBpbiBEZWZhdWx0IDB4NDAwMDAw
+ZjA6IFtOL0FdIExpbmUgT3V0IGF0IEV4dCBOL0EKICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9
+IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1j
+dGxzOiAweDAwOgogIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAogIFBvd2VyIHN0YXRl
+czogIEQwIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCk5vZGUgMHgxOCBb
+UGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNDhhOiBNb25vIEFtcC1JbgogIENvbnRyb2w6IG5hbWU9
+Ik1pYyBCb29zdCBWb2x1bWUiLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hz
+PTMsIGRpcj1JbiwgaWR4PTAsIG9mcz0wCiAgQ29udHJvbDogbmFtZT0iTWljIEphY2siLCBpbmRl
+eD0wLCBkZXZpY2U9MAogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDMsIHN0ZXBz
+aXplPTB4MjcsIG11dGU9MAogIEFtcC1JbiB2YWxzOiAgWzB4MDBdCiAgUGluY2FwIDB4MDAwMDE3
+MjQ6IElOIERldGVjdAogICAgVnJlZiBjYXBzOiBISVogNTAgR1JEIDgwCiAgUGluIERlZmF1bHQg
+MHgwMGFiOTAzMDogW0phY2tdIE1pYyBhdCBFeHQgTi9BCiAgICBDb25uID0gQ29tYiwgQ29sb3Ig
+PSBQaW5rCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MywgU2VxdWVuY2UgPSAweDAKICBQaW4tY3Rs
+czogMHgyNDogSU4gVlJFRl84MAogIFVuc29saWNpdGVkOiB0YWc9MDIsIGVuYWJsZWQ9MQogIFBv
+d2VyIHN0YXRlczogIEQwIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCk5v
+ZGUgMHgxOSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMDBiOiBTdGVyZW8gQW1wLUluCiAgQW1w
+LUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMiwgc3RlcHNpemU9MHgyNywgbXV0ZT0wCiAg
+QW1wLUluIHZhbHM6ICBbMHgwMCAweDAwXQogIFBpbmNhcCAweDAwMDAwMDIwOiBJTgogIFBpbiBE
+ZWZhdWx0IDB4NDAwMDAwZjA6IFtOL0FdIExpbmUgT3V0IGF0IEV4dCBOL0EKICAgIENvbm4gPSBV
+bmtub3duLCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5j
+ZSA9IDB4MAogIFBpbi1jdGxzOiAweDAwOgpOb2RlIDB4MWEgW1BpbiBDb21wbGV4XSB3Y2FwcyAw
+eDQwMDAwYjogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4
+MDIsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAogIEFtcC1JbiB2YWxzOiAgWzB4MDAgMHgwMF0KICBQ
+aW5jYXAgMHgwMDAwMDAyMDogSU4KICBQaW4gRGVmYXVsdCAweDQwMDAwMGYwOiBbTi9BXSBMaW5l
+IE91dCBhdCBFeHQgTi9BCiAgICBDb25uID0gVW5rbm93biwgQ29sb3IgPSBVbmtub3duCiAgICBE
+ZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAweDAKICBQaW4tY3RsczogMHgwMDoKTm9k
+ZSAweDFiIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAwMGI6IFN0ZXJlbyBBbXAtSW4KICBBbXAt
+SW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAyLCBzdGVwc2l6ZT0weDI3LCBtdXRlPTAKICBB
+bXAtSW4gdmFsczogIFsweDAwIDB4MDBdCiAgUGluY2FwIDB4MDAwMDAwMjA6IElOCiAgUGluIERl
+ZmF1bHQgMHg0MDAwMDBmMDogW04vQV0gTGluZSBPdXQgYXQgRXh0IE4vQQogICAgQ29ubiA9IFVu
+a25vd24sIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNl
+ID0gMHgwCiAgUGluLWN0bHM6IDB4MDA6Ck5vZGUgMHgxYyBbUGluIENvbXBsZXhdIHdjYXBzIDB4
+NDAwMDBiOiBTdGVyZW8gQW1wLUluCiAgQ29udHJvbDogbmFtZT0iSW50ZXJuYWwgTWljIEJvb3N0
+IFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUlu
+LCBpZHg9MCwgb2ZzPTAKICBDb250cm9sOiBuYW1lPSJJbnRlcm5hbCBNaWMgUGhhbnRvbSBKYWNr
+IiwgaW5kZXg9MCwgZGV2aWNlPTAKICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAy
+LCBzdGVwc2l6ZT0weDI3LCBtdXRlPTAKICBBbXAtSW4gdmFsczogIFsweDAwIDB4MDBdCiAgUGlu
+Y2FwIDB4MDAwMDAwMjA6IElOCiAgUGluIERlZmF1bHQgMHg5MGE2MDEwMDogW0ZpeGVkXSBNaWMg
+YXQgSW50IE4vQQogICAgQ29ubiA9IERpZ2l0YWwsIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNz
+b2NpYXRpb24gPSAweDAsIFNlcXVlbmNlID0gMHgwCiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQ
+aW4tY3RsczogMHgyMDogSU4KTm9kZSAweDFkIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDYzMDE6
+IDgtQ2hhbm5lbHMgRGlnaXRhbAogIFBpbmNhcCAweDAwMDAwMDEwOiBPVVQKICBQaW4gRGVmYXVs
+dCAweDQwMDAwMGYwOiBbTi9BXSBMaW5lIE91dCBhdCBFeHQgTi9BCiAgICBDb25uID0gVW5rbm93
+biwgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAw
+eDAKICBQaW4tY3RsczogMHgwMDoKICBDb25uZWN0aW9uOiAxCiAgICAgMHgwYQpOb2RlIDB4MWUg
+W1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwNjMwMTogOC1DaGFubmVscyBEaWdpdGFsCiAgUGluY2Fw
+IDB4MDAwMDAwMTA6IE9VVAogIFBpbiBEZWZhdWx0IDB4NDAwMDAwZjA6IFtOL0FdIExpbmUgT3V0
+IGF0IEV4dCBOL0EKICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9IFVua25vd24KICAgIERlZkFz
+c29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1jdGxzOiAweDAwOgogIENvbm5l
+Y3Rpb246IDEKICAgICAweDBiCk5vZGUgMHgxZiBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDA2MjAx
+OiA4LUNoYW5uZWxzIERpZ2l0YWwKICBQaW5jYXAgMHgwMDAwMDAyMDogSU4KICBQaW4gRGVmYXVs
+dCAweDQwMDAwMGYwOiBbTi9BXSBMaW5lIE91dCBhdCBFeHQgTi9BCiAgICBDb25uID0gVW5rbm93
+biwgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAw
+eDAKICBQaW4tY3RsczogMHgwMDoKTm9kZSAweDIwIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDYy
+MDE6IDgtQ2hhbm5lbHMgRGlnaXRhbAogIFBpbmNhcCAweDAwMDAwMDIwOiBJTgogIFBpbiBEZWZh
+dWx0IDB4NDAwMDAwZjA6IFtOL0FdIExpbmUgT3V0IGF0IEV4dCBOL0EKICAgIENvbm4gPSBVbmtu
+b3duLCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9
+IDB4MAogIFBpbi1jdGxzOiAweDAwOgpOb2RlIDB4MjEgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQw
+MDM4MTogU3RlcmVvIERpZ2l0YWwKICBQaW5jYXAgMHgwMDAwMDAxNDogT1VUIERldGVjdAogIFBp
+biBEZWZhdWx0IDB4NDAwMDAwZjA6IFtOL0FdIExpbmUgT3V0IGF0IEV4dCBOL0EKICAgIENvbm4g
+PSBVbmtub3duLCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1
+ZW5jZSA9IDB4MAogIFBpbi1jdGxzOiAweDAwOgogIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJs
+ZWQ9MAogIENvbm5lY3Rpb246IDEKICAgICAweDBlCk5vZGUgMHgyMiBbUGluIENvbXBsZXhdIHdj
+YXBzIDB4NDAwMjgxOiBTdGVyZW8gRGlnaXRhbAogIFBpbmNhcCAweDAwMDAwMDI0OiBJTiBEZXRl
+Y3QKICBQaW4gRGVmYXVsdCAweDQwMDAwMGYwOiBbTi9BXSBMaW5lIE91dCBhdCBFeHQgTi9BCiAg
+ICBDb25uID0gVW5rbm93biwgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4
+ZiwgU2VxdWVuY2UgPSAweDAKICBQaW4tY3RsczogMHgwMDoKICBVbnNvbGljaXRlZDogdGFnPTAw
+LCBlbmFibGVkPTAKTm9kZSAweDIzIFtCZWVwIEdlbmVyYXRvciBXaWRnZXRdIHdjYXBzIDB4NzAw
+MjAwOiBNb25vIERpZ2l0YWwKTm9kZSAweDI0IFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBz
+IDB4ZjBlMmMxOiAxNi1DaGFubmVscyBEaWdpdGFsCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMCwgZW5h
+YmxlZD0wCiAgUHJvY2Vzc2luZyBjYXBzOiBiZW5pZ249MCwgbmNvZWZmPTEyOAotLWVuZGNvbGxh
+cHNlLS0KCgohIUFMU0EgRGV2aWNlIG5vZGVzCiEhLS0tLS0tLS0tLS0tLS0tLS0KCmNydy1ydy0t
+LVQrIDEgcm9vdCBhdWRpbyAxMTYsICA1IEF1ZyAyNCAyMTo1MiAvZGV2L3NuZC9jb250cm9sQzAK
+Y3J3LXJ3LS0tVCsgMSByb290IGF1ZGlvIDExNiwgIDQgQXVnIDI0IDIxOjUyIC9kZXYvc25kL2h3
+QzBEMApjcnctcnctLS1UKyAxIHJvb3QgYXVkaW8gMTE2LCAgMyBBdWcgMjQgMjE6NTIgL2Rldi9z
+bmQvcGNtQzBEMGMKY3J3LXJ3LS0tVCsgMSByb290IGF1ZGlvIDExNiwgIDIgQXVnIDI0IDIxOjUy
+IC9kZXYvc25kL3BjbUMwRDBwCmNydy1ydy0tLVQrIDEgcm9vdCBhdWRpbyAxMTYsICAxIEF1ZyAy
+NCAyMTo0OSAvZGV2L3NuZC9zZXEKY3J3LXJ3LS0tVCsgMSByb290IGF1ZGlvIDExNiwgMzMgQXVn
+IDI0IDIxOjQ5IC9kZXYvc25kL3RpbWVyCgovZGV2L3NuZC9ieS1wYXRoOgp0b3RhbCAwCmRyd3hy
+LXhyLXggMiByb290IHJvb3QgIDYwIEF1ZyAyNCAyMTo1MiAuCmRyd3hyLXhyLXggMyByb290IHJv
+b3QgMTgwIEF1ZyAyNCAyMTo1MiAuLgpscnd4cnd4cnd4IDEgcm9vdCByb290ICAxMiBBdWcgMjQg
+MjE6NTIgcGNpLTAwMDA6MDA6MWIuMCAtPiAuLi9jb250cm9sQzAKCgohIUFwbGF5L0FyZWNvcmQg
+b3V0cHV0CiEhLS0tLS0tLS0tLS0tLS0tLS0tLS0KCkFQTEFZCgoqKioqIExpc3Qgb2YgUExBWUJB
+Q0sgSGFyZHdhcmUgRGV2aWNlcyAqKioqCmNhcmQgMDogUENIIFtIREEgSW50ZWwgUENIXSwgZGV2
+aWNlIDA6IElEIDQyMDggQW5hbG9nIFtJRCA0MjA4IEFuYWxvZ10KICBTdWJkZXZpY2VzOiAxLzEK
+ICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMAoKQVJFQ09SRAoKKioqKiBMaXN0IG9mIENBUFRV
+UkUgSGFyZHdhcmUgRGV2aWNlcyAqKioqCmNhcmQgMDogUENIIFtIREEgSW50ZWwgUENIXSwgZGV2
+aWNlIDA6IElEIDQyMDggQW5hbG9nIFtJRCA0MjA4IEFuYWxvZ10KICBTdWJkZXZpY2VzOiAxLzEK
+ICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMAoKISFBbWl4ZXIgb3V0cHV0CiEhLS0tLS0tLS0t
+LS0tLQoKISEtLS0tLS0tTWl4ZXIgY29udHJvbHMgZm9yIGNhcmQgMCBbUENIXQoKQ2FyZCBodzow
+ICdQQ0gnLydIREEgSW50ZWwgUENIIGF0IDB4YjBhMTQwMDAgaXJxIDY2JwogIE1peGVyIG5hbWUJ
+OiAnQ2lycnVzIExvZ2ljIElEIDQyMDgnCiAgQ29tcG9uZW50cwk6ICdIREE6MTAxMzQyMDgsMTA2
+YjcxMDAsMDAxMDAzMDAnCiAgQ29udHJvbHMgICAgICA6IDE4CiAgU2ltcGxlIGN0cmxzICA6IDgK
+U2ltcGxlIG1peGVyIGNvbnRyb2wgJ01hc3RlcicsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBw
+dm9sdW1lLWpvaW5lZCBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6
+IE1vbm8KICBMaW1pdHM6IFBsYXliYWNrIDAgLSA2NgogIE1vbm86IFBsYXliYWNrIDQ2IFs3MCVd
+IFstMjAuMDBkQl0gW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSGVhZHBob25lJywwCiAgQ2Fw
+YWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQgTGVm
+dCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFjayAwIC0gNjYKICBNb25vOgogIEZyb250
+IExlZnQ6IFBsYXliYWNrIDY2IFsxMDAlXSBbMC4wMGRCXSBbb25dCiAgRnJvbnQgUmlnaHQ6IFBs
+YXliYWNrIDY2IFsxMDAlXSBbMC4wMGRCXSBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdTcGVh
+a2VyJywwCiAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKICBQbGF5YmFjayBjaGFubmVs
+czogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFjayAwIC0gMTI3CiAg
+TW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5YmFjayAxMjcgWzEwMCVdIFswLjAwZEJdIFtvbl0KICBG
+cm9udCBSaWdodDogUGxheWJhY2sgMTI3IFsxMDAlXSBbMC4wMGRCXSBbb25dClNpbXBsZSBtaXhl
+ciBjb250cm9sICdQQ00nLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUKICBQbGF5YmFjayBjaGFu
+bmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFjayAwIC0gMjU1
+CiAgTW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5YmFjayAyNTUgWzEwMCVdIFswLjAwZEJdCiAgRnJv
+bnQgUmlnaHQ6IFBsYXliYWNrIDI1NSBbMTAwJV0gWzAuMDBkQl0KU2ltcGxlIG1peGVyIGNvbnRy
+b2wgJ01pYyBCb29zdCcsMAogIENhcGFiaWxpdGllczogdm9sdW1lCiAgUGxheWJhY2sgY2hhbm5l
+bHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExl
+ZnQgLSBGcm9udCBSaWdodAogIExpbWl0czogMCAtIDMKICBGcm9udCBMZWZ0OiAwIFswJV0gWzAu
+MDBkQl0KICBGcm9udCBSaWdodDogMCBbMCVdIFswLjAwZEJdClNpbXBsZSBtaXhlciBjb250cm9s
+ICdDYXB0dXJlJywwCiAgQ2FwYWJpbGl0aWVzOiBjdm9sdW1lIGNzd2l0Y2gKICBDYXB0dXJlIGNo
+YW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IENhcHR1cmUgMCAtIDYz
+CiAgRnJvbnQgTGVmdDogQ2FwdHVyZSA2MyBbMTAwJV0gWzEyLjAwZEJdIFtvbl0KICBGcm9udCBS
+aWdodDogQ2FwdHVyZSA2MyBbMTAwJV0gWzEyLjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRy
+b2wgJ0F1dG8tTXV0ZSBNb2RlJywwCiAgQ2FwYWJpbGl0aWVzOiBlbnVtCiAgSXRlbXM6ICdEaXNh
+YmxlZCcgJ0VuYWJsZWQnCiAgSXRlbTA6ICdFbmFibGVkJwpTaW1wbGUgbWl4ZXIgY29udHJvbCAn
+SW50ZXJuYWwgTWljIEJvb3N0JywwCiAgQ2FwYWJpbGl0aWVzOiB2b2x1bWUKICBQbGF5YmFjayBj
+aGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgQ2FwdHVyZSBjaGFubmVsczogRnJv
+bnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiAwIC0gMgogIEZyb250IExlZnQ6IDAgWzAl
+XSBbMC4wMGRCXQogIEZyb250IFJpZ2h0OiAwIFswJV0gWzAuMDBkQl0KCgohIUFsc2FjdGwgb3V0
+cHV0CiEhLS0tLS0tLS0tLS0tLS0KCi0tc3RhcnRjb2xsYXBzZS0tCnN0YXRlLlBDSCB7Cgljb250
+cm9sLjEgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSGVhZHBob25lIFBsYXliYWNrIFZvbHVtZScK
+CQl2YWx1ZS4wIDY2CgkJdmFsdWUuMSA2NgoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3Jp
+dGUnCgkJCXR5cGUgSU5URUdFUgoJCQljb3VudCAyCgkJCXJhbmdlICcwIC0gNjYnCgkJCWRibWlu
+IC02NjAwCgkJCWRibWF4IDAKCQkJZGJ2YWx1ZS4wIDAKCQkJZGJ2YWx1ZS4xIDAKCQl9Cgl9Cglj
+b250cm9sLjIgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSGVhZHBob25lIFBsYXliYWNrIFN3aXRj
+aCcKCQl2YWx1ZS4wIHRydWUKCQl2YWx1ZS4xIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNzICdy
+ZWFkIHdyaXRlJwoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMgoJCX0KCX0KCWNvbnRyb2wuMyB7
+CgkJaWZhY2UgTUlYRVIKCQluYW1lICdTcGVha2VyIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZS4w
+IDEyNwoJCXZhbHVlLjEgMTI3CgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJ
+dHlwZSBJTlRFR0VSCgkJCWNvdW50IDIKCQkJcmFuZ2UgJzAgLSAxMjcnCgkJCWRibWluIC02MzUw
+CgkJCWRibWF4IDAKCQkJZGJ2YWx1ZS4wIDAKCQkJZGJ2YWx1ZS4xIDAKCQl9Cgl9Cgljb250cm9s
+LjQgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnU3BlYWtlciBQbGF5YmFjayBTd2l0Y2gnCgkJdmFs
+dWUuMCB0cnVlCgkJdmFsdWUuMSB0cnVlCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0
+ZScKCQkJdHlwZSBCT09MRUFOCgkJCWNvdW50IDIKCQl9Cgl9Cgljb250cm9sLjUgewoJCWlmYWNl
+IE1JWEVSCgkJbmFtZSAnQXV0by1NdXRlIE1vZGUnCgkJdmFsdWUgRW5hYmxlZAoJCWNvbW1lbnQg
+ewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgRU5VTUVSQVRFRAoJCQljb3VudCAxCgkJ
+CWl0ZW0uMCBEaXNhYmxlZAoJCQlpdGVtLjEgRW5hYmxlZAoJCX0KCX0KCWNvbnRyb2wuNiB7CgkJ
+aWZhY2UgTUlYRVIKCQluYW1lICdDYXB0dXJlIFZvbHVtZScKCQl2YWx1ZS4wIDYzCgkJdmFsdWUu
+MSA2MwoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdFUgoJ
+CQljb3VudCAyCgkJCXJhbmdlICcwIC0gNjMnCgkJCWRibWluIC01MTAwCgkJCWRibWF4IDEyMDAK
+CQkJZGJ2YWx1ZS4wIDEyMDAKCQkJZGJ2YWx1ZS4xIDEyMDAKCQl9Cgl9Cgljb250cm9sLjcgewoJ
+CWlmYWNlIE1JWEVSCgkJbmFtZSAnQ2FwdHVyZSBTd2l0Y2gnCgkJdmFsdWUuMCB0cnVlCgkJdmFs
+dWUuMSB0cnVlCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlwZSBCT09M
+RUFOCgkJCWNvdW50IDIKCQl9Cgl9Cgljb250cm9sLjggewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAn
+SW50ZXJuYWwgTWljIEJvb3N0IFZvbHVtZScKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQljb21t
+ZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQgMgoJ
+CQlyYW5nZSAnMCAtIDInCgkJCWRibWluIDAKCQkJZGJtYXggMjAwMAoJCQlkYnZhbHVlLjAgMAoJ
+CQlkYnZhbHVlLjEgMAoJCX0KCX0KCWNvbnRyb2wuOSB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdN
+aWMgQm9vc3QgVm9sdW1lJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJCWNvbW1lbnQgewoJCQlh
+Y2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdFUgoJCQljb3VudCAyCgkJCXJhbmdlICcw
+IC0gMycKCQkJZGJtaW4gMAoJCQlkYm1heCAzMDAwCgkJCWRidmFsdWUuMCAwCgkJCWRidmFsdWUu
+MSAwCgkJfQoJfQoJY29udHJvbC4xMCB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdNYXN0ZXIgUGxh
+eWJhY2sgVm9sdW1lJwoJCXZhbHVlIDQ2CgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0
+ZScKCQkJdHlwZSBJTlRFR0VSCgkJCWNvdW50IDEKCQkJcmFuZ2UgJzAgLSA2NicKCQkJZGJtaW4g
+LTY2MDAKCQkJZGJtYXggMAoJCQlkYnZhbHVlLjAgLTIwMDAKCQl9Cgl9Cgljb250cm9sLjExIHsK
+CQlpZmFjZSBNSVhFUgoJCW5hbWUgJ01hc3RlciBQbGF5YmFjayBTd2l0Y2gnCgkJdmFsdWUgdHJ1
+ZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgQk9PTEVBTgoJCQlj
+b3VudCAxCgkJfQoJfQoJY29udHJvbC4xMiB7CgkJaWZhY2UgQ0FSRAoJCW5hbWUgJ0ludGVybmFs
+IE1pYyBQaGFudG9tIEphY2snCgkJdmFsdWUgdHJ1ZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgcmVh
+ZAoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMTMgewoJCWlmYWNl
+IENBUkQKCQluYW1lICdNaWMgSmFjaycKCQl2YWx1ZSBmYWxzZQoJCWNvbW1lbnQgewoJCQlhY2Nl
+c3MgcmVhZAoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMTQgewoJ
+CWlmYWNlIENBUkQKCQluYW1lICdIZWFkcGhvbmUgSmFjaycKCQl2YWx1ZSBmYWxzZQoJCWNvbW1l
+bnQgewoJCQlhY2Nlc3MgcmVhZAoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNv
+bnRyb2wuMTUgewoJCWlmYWNlIENBUkQKCQluYW1lICdTcGVha2VyIFBoYW50b20gSmFjaycKCQl2
+YWx1ZSB0cnVlCgkJY29tbWVudCB7CgkJCWFjY2VzcyByZWFkCgkJCXR5cGUgQk9PTEVBTgoJCQlj
+b3VudCAxCgkJfQoJfQoJY29udHJvbC4xNiB7CgkJaWZhY2UgUENNCgkJbmFtZSAnUGxheWJhY2sg
+Q2hhbm5lbCBNYXAnCgkJdmFsdWUuMCAwCgkJdmFsdWUuMSAwCgkJY29tbWVudCB7CgkJCWFjY2Vz
+cyByZWFkCgkJCXR5cGUgSU5URUdFUgoJCQljb3VudCAyCgkJCXJhbmdlICcwIC0gMzYnCgkJfQoJ
+fQoJY29udHJvbC4xNyB7CgkJaWZhY2UgUENNCgkJbmFtZSAnQ2FwdHVyZSBDaGFubmVsIE1hcCcK
+CQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlw
+ZSBJTlRFR0VSCgkJCWNvdW50IDIKCQkJcmFuZ2UgJzAgLSAzNicKCQl9Cgl9Cgljb250cm9sLjE4
+IHsKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ1BDTSBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAy
+NTUKCQl2YWx1ZS4xIDI1NQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUgdXNlcicK
+CQkJdHlwZSBJTlRFR0VSCgkJCWNvdW50IDIKCQkJcmFuZ2UgJzAgLSAyNTUnCgkJCXRsdiAnMDAw
+MDAwMDEwMDAwMDAwOGZmZmZlYzE0MDAwMDAwMTQnCgkJCWRibWluIC01MTAwCgkJCWRibWF4IDAK
+CQkJZGJ2YWx1ZS4wIDAKCQkJZGJ2YWx1ZS4xIDAKCQl9Cgl9Cn0KLS1lbmRjb2xsYXBzZS0tCgoK
+ISFBbGwgTG9hZGVkIE1vZHVsZXMKISEtLS0tLS0tLS0tLS0tLS0tLS0KCk1vZHVsZQpzbmRfaGRh
+X2ludGVsCnNuZF9oZGFfY29kZWMKc25kX2h3ZGVwCnNuZF9wY20Kc25kX3BhZ2VfYWxsb2MKcmZj
+b21tCmJuZXAKYmluZm10X21pc2MKaGZzcGx1cwpubHNfdXRmOApubHNfY3A0MzcKdmZhdApmYXQK
+bG9vcApmdXNlCmRtX2NyeXB0CmRtX21vZApjb3JldGVtcAprdm1faW50ZWwKa3ZtCmhpZF9nZW5l
+cmljCmJ0dXNiCmhpZF9hcHBsZQpibHVldG9vdGgKYmNtNTk3NAppOTE1CmlUQ09fd2R0CmlUQ09f
+dmVuZG9yX3N1cHBvcnQKbGliODAyMTFfY3J5cHRfdGtpcAp1c2JoaWQKZXZkZXYKYXBwbGVzbWMK
+aGlkCmlucHV0X3BvbGxkZXYKaTJjX2FsZ29fYml0CmRybV9rbXNfaGVscGVyCndsCmRybQp2aWRl
+bwpzbmRfc2VxCmNmZzgwMjExCm1pY3JvY29kZQpzbmRfc2VxX2RldmljZQpzbmRfdGltZXIKYmF0
+dGVyeQphYwpscGNfaWNoCmFwcGxlX2JsCnBjc3BrcgppMmNfaTgwMQptZmRfY29yZQpidXR0b24K
+c25kCmFjcGlfY3B1ZnJlcQptcGVyZgptZWlfbWUKcHJvY2Vzc29yCnJma2lsbAppMmNfY29yZQpt
+ZWkKdGhlcm1hbF9zeXMKbGliODAyMTEKc291bmRjb3JlCmV4dDQKY3JjMTYKamJkMgptYmNhY2hl
+CnNnCnNkX21vZApjcmNfdDEwZGlmCmNyYzMyY19pbnRlbApnaGFzaF9jbG11bG5pX2ludGVsCmFo
+Y2kKYWVzbmlfaW50ZWwKeGhjaV9oY2QKbGliYWhjaQpsaWJhdGEKYWVzX3g4Nl82NApnbHVlX2hl
+bHBlcgpzY3NpX21vZApscncKZ2YxMjhtdWwKYWJsa19oZWxwZXIKY3J5cHRkCnVzYmNvcmUKdXNi
+X2NvbW1vbgoKCiEhU3lzZnMgRmlsZXMKISEtLS0tLS0tLS0tLQoKL3N5cy9jbGFzcy9zb3VuZC9o
+d0MwRDAvaW5pdF9waW5fY29uZmlnczoKMHgxMCAweDAwMmI0MDIwCjB4MTEgMHg0MDAwMDBmMAow
+eDEyIDB4OTAxMDAxMTAKMHgxMyAweDQwMDAwMGYwCjB4MTQgMHg0MDAwMDBmMAoweDE1IDB4NDAw
+MDAwZjAKMHgxNiAweDQwMDAwMGYwCjB4MTcgMHg0MDAwMDBmMAoweDE4IDB4MDBhYjkwMzAKMHgx
+OSAweDQwMDAwMGYwCjB4MWEgMHg0MDAwMDBmMAoweDFiIDB4NDAwMDAwZjAKMHgxYyAweDkwYTYw
+MTAwCjB4MWQgMHg0MDAwMDBmMAoweDFlIDB4NDAwMDAwZjAKMHgxZiAweDQwMDAwMGYwCjB4MjAg
+MHg0MDAwMDBmMAoweDIxIDB4NDAwMDAwZjAKMHgyMiAweDQwMDAwMGYwCgovc3lzL2NsYXNzL3Nv
+dW5kL2h3QzBEMC9kcml2ZXJfcGluX2NvbmZpZ3M6Cgovc3lzL2NsYXNzL3NvdW5kL2h3QzBEMC91
+c2VyX3Bpbl9jb25maWdzOgoKL3N5cy9jbGFzcy9zb3VuZC9od0MwRDAvaW5pdF92ZXJiczoKCi9z
+eXMvY2xhc3Mvc291bmQvaHdDMEQwL2hpbnRzOgoKCiEhQUxTQS9IREEgZG1lc2cKISEtLS0tLS0t
+LS0tLS0tLQoKWyAgICA2LjEzOTMwOV0gd2wgMDAwMDowMzowMC4wOiBlbmFibGluZyBkZXZpY2Ug
+KDAwMDAgLT4gMDAwMikKWyAgICA2LjE2MzgzNF0gaGRhLWludGVsIEhhc3dlbGwgbXVzdCBidWls
+ZCBpbiBDT05GSUdfU05EX0hEQV9JOTE1ClsgICAgNi4xNjM5MTZdIGhkYS1pbnRlbCBFcnJvciBy
+ZXF1ZXN0IHBvd2VyLXdlbGwgZnJvbSBpOTE1ClsgICAgNi4xNjQzODZdIHNuZF9oZGFfaW50ZWwg
+MDAwMDowMDoxYi4wOiBpcnEgNjYgZm9yIE1TSS9NU0ktWApbICAgIDYuMTY2Mjk0XSAgZmVtY3Ry
+bCBmcm9tIG52cmFtIG5vdCBlbmFibGVkLiByZXR1cm5pbmcgZnJvbSBoZXJlIAotLQpbICAgMjIu
+OTIxMjY1XSBXQVJOSU5HOiBDUFU6IDMgUElEOiAyOTgwIGF0IG5ldC93aXJlbGVzcy9zbWUuYzo5
+MjIgY2ZnODAyMTFfY29ubmVjdCsweDNiLzB4Mzg1IFtjZmc4MDIxMV0oKQpbICAgMjIuOTIxMjY4
+XSBNb2R1bGVzIGxpbmtlZCBpbjogcmZjb21tIGJuZXAgYmluZm10X21pc2MgaGZzcGx1cyBubHNf
+dXRmOCBubHNfY3A0MzcgdmZhdCBmYXQgbG9vcCBmdXNlIGRtX2NyeXB0IGRtX21vZCBjb3JldGVt
+cCBrdm1faW50ZWwga3ZtIGhpZF9nZW5lcmljIGJ0dXNiIGhpZF9hcHBsZSBibHVldG9vdGggYmNt
+NTk3NCBpOTE1IGlUQ09fd2R0IGlUQ09fdmVuZG9yX3N1cHBvcnQgbGliODAyMTFfY3J5cHRfdGtp
+cCB1c2JoaWQgZXZkZXYgYXBwbGVzbWMgaGlkIHNuZF9oZGFfaW50ZWwgaW5wdXRfcG9sbGRldiBz
+bmRfaGRhX2NvZGVjIGkyY19hbGdvX2JpdCBkcm1fa21zX2hlbHBlciB3bChQTykgc25kX2h3ZGVw
+IHNuZF9wY20gZHJtIHNuZF9wYWdlX2FsbG9jIHZpZGVvIHNuZF9zZXEgY2ZnODAyMTEgbWljcm9j
+b2RlIHNuZF9zZXFfZGV2aWNlIHNuZF90aW1lciBiYXR0ZXJ5IGFjIGxwY19pY2ggYXBwbGVfYmwg
+cGNzcGtyIGkyY19pODAxIG1mZF9jb3JlIGJ1dHRvbiBzbmQgYWNwaV9jcHVmcmVxIG1wZXJmIG1l
+aV9tZSBwcm9jZXNzb3IgcmZraWxsIGkyY19jb3JlIG1laSB0aGVybWFsX3N5cyBsaWI4MDIxMSBz
+b3VuZGNvcmUgZXh0NCBjcmMxNiBqYmQyIG1iY2FjaGUgc2cgc2RfbW9kIGNyY190MTBkaWYgY3Jj
+MzJjX2ludGVsIGdoYXNoX2NsbXVsbmlfaW50ZWwgYWhjaSBhZXNuaV9pbnRlbCB4aGNpX2hjZCBs
+aWJhaGNpIGxpYmF0YSBhZXNfeDg2XzY0IGdsdWVfaGVscGVyIHNjc2lfbW9kIGxydyBnZjEyOG11
+bCBhYmxrX2hlbHBlciBjcnlwdGQgdXNiY29yZSB1c2JfY29tbW9uClsgICAyMi45MjEzMzRdIENQ
+VTogMyBQSUQ6IDI5ODAgQ29tbTogaXdjb25maWcgVGFpbnRlZDogUCAgICAgICAgICAgTyAzLjEx
+LjAtcmM2KyAjMTAKLS0KWyAgIDIyLjkyNzg1OV0gV0FSTklORzogQ1BVOiAzIFBJRDogMjk4MSBh
+dCBuZXQvd2lyZWxlc3Mvc21lLmM6OTIyIGNmZzgwMjExX2Nvbm5lY3QrMHgzYi8weDM4NSBbY2Zn
+ODAyMTFdKCkKWyAgIDIyLjkyNzg2M10gTW9kdWxlcyBsaW5rZWQgaW46IHJmY29tbSBibmVwIGJp
+bmZtdF9taXNjIGhmc3BsdXMgbmxzX3V0ZjggbmxzX2NwNDM3IHZmYXQgZmF0IGxvb3AgZnVzZSBk
+bV9jcnlwdCBkbV9tb2QgY29yZXRlbXAga3ZtX2ludGVsIGt2bSBoaWRfZ2VuZXJpYyBidHVzYiBo
+aWRfYXBwbGUgYmx1ZXRvb3RoIGJjbTU5NzQgaTkxNSBpVENPX3dkdCBpVENPX3ZlbmRvcl9zdXBw
+b3J0IGxpYjgwMjExX2NyeXB0X3RraXAgdXNiaGlkIGV2ZGV2IGFwcGxlc21jIGhpZCBzbmRfaGRh
+X2ludGVsIGlucHV0X3BvbGxkZXYgc25kX2hkYV9jb2RlYyBpMmNfYWxnb19iaXQgZHJtX2ttc19o
+ZWxwZXIgd2woUE8pIHNuZF9od2RlcCBzbmRfcGNtIGRybSBzbmRfcGFnZV9hbGxvYyB2aWRlbyBz
+bmRfc2VxIGNmZzgwMjExIG1pY3JvY29kZSBzbmRfc2VxX2RldmljZSBzbmRfdGltZXIgYmF0dGVy
+eSBhYyBscGNfaWNoIGFwcGxlX2JsIHBjc3BrciBpMmNfaTgwMSBtZmRfY29yZSBidXR0b24gc25k
+IGFjcGlfY3B1ZnJlcSBtcGVyZiBtZWlfbWUgcHJvY2Vzc29yIHJma2lsbCBpMmNfY29yZSBtZWkg
+dGhlcm1hbF9zeXMgbGliODAyMTEgc291bmRjb3JlIGV4dDQgY3JjMTYgamJkMiBtYmNhY2hlIHNn
+IHNkX21vZCBjcmNfdDEwZGlmIGNyYzMyY19pbnRlbCBnaGFzaF9jbG11bG5pX2ludGVsIGFoY2kg
+YWVzbmlfaW50ZWwgeGhjaV9oY2QgbGliYWhjaSBsaWJhdGEgYWVzX3g4Nl82NCBnbHVlX2hlbHBl
+ciBzY3NpX21vZCBscncgZ2YxMjhtdWwgYWJsa19oZWxwZXIgY3J5cHRkIHVzYmNvcmUgdXNiX2Nv
+bW1vbgpbICAgMjIuOTI3OTcwXSBDUFU6IDMgUElEOiAyOTgxIENvbW06IGl3Y29uZmlnIFRhaW50
+ZWQ6IFAgICAgICAgIFcgIE8gMy4xMS4wLXJjNisgIzEwCi0tClsgICAyMi45MjgyMDhdIC0tLVsg
+ZW5kIHRyYWNlIGFiZDQ5YzQ0YWIzNzhjMDcgXS0tLQpbICAxOTEuODkxMjg4XSBoZGEtaW50ZWwg
+SGFzd2VsbCBtdXN0IGJ1aWxkIGluIENPTkZJR19TTkRfSERBX0k5MTUKWyAgMTkxLjg5MTI5NF0g
+aGRhLWludGVsIEVycm9yIHJlcXVlc3QgcG93ZXItd2VsbCBmcm9tIGk5MTUKWyAgMTkxLjg5MTU1
+N10gc25kX2hkYV9pbnRlbCAwMDAwOjAwOjFiLjA6IGlycSA2NiBmb3IgTVNJL01TSS1YClsgIDE5
+MS45MDcyODddIGlucHV0OiBIREEgSW50ZWwgUENIIEhlYWRwaG9uZSBhcyAvZGV2aWNlcy9wY2kw
+MDAwOjAwLzAwMDA6MDA6MWIuMC9zb3VuZC9jYXJkMC9pbnB1dDEwClsgIDE5MS45MDc1NzRdIGlu
+cHV0OiBIREEgSW50ZWwgUENIIE1pYyBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIu
+MC9zb3VuZC9jYXJkMC9pbnB1dDExCgoK
+--047d7b34386a8b9b7004e4b1767e
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--047d7b34386a8b9b7004e4b1767e--
