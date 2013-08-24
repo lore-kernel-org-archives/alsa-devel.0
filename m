@@ -1,273 +1,497 @@
-From: Mike Turquette <mturquette@linaro.org>
-Subject: Re: [PATCH v5 1/2] ASoC: fsl: Add S/PDIF CPU DAI driver
-Date: Fri, 23 Aug 2013 14:41:44 -0700
-Message-ID: <20130823214144.8231.2039@quantum>
-References: <cover.1376565456.git.b42378@freescale.com>
- <20130822210035.GB31036@pengutronix.de> <20130822224331.8231.75743@quantum>
- <34430785.ApIqfgatMc@flatron> <20130823063421.GF31036@pengutronix.de>
- <20130823125815.GG25856@e106331-lin.cambridge.arm.com>
- <20130823140128.GI31036@pengutronix.de>
+From: Tomasz Figa <tomasz.figa@gmail.com>
+Subject: [PATCH v2 12/18] ARM: s3c64xx: Add support for DMA using generic amba-pl08x driver
+Date: Sat, 24 Aug 2013 02:17:46 +0200
+Message-ID: <1735130.krsoNtKQQV@flatron>
+References: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com> <1376243970-6489-13-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f46.google.com (mail-pb0-f46.google.com
- [209.85.160.46])
- by alsa0.perex.cz (Postfix) with ESMTP id A9E3E2615F2
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 23:41:49 +0200 (CEST)
-Received: by mail-pb0-f46.google.com with SMTP id rq2so1148376pbb.19
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2013 14:41:48 -0700 (PDT)
-In-Reply-To: <20130823140128.GI31036@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, Pawel Moll <Pawel.Moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Nicolin Chen <b42378@freescale.com>, Tomasz Figa <tomasz.figa@gmail.com>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "timur@tabi.org" <timur@tabi.org>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "galak@codeaurora.org" <galak@codeaurora.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "festevam@gmail.com" <festevam@gmail.com>
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1376243970-6489-13-git-send-email-tomasz.figa@gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-samsung-soc@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, Dan Williams <djbw@fb.com>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Mark Brown <broonie@kernel.org>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Sascha Hauer (2013-08-23 07:01:28)
-> On Fri, Aug 23, 2013 at 01:58:15PM +0100, Mark Rutland wrote:
-> > On Fri, Aug 23, 2013 at 07:34:21AM +0100, Sascha Hauer wrote:
-> > > On Fri, Aug 23, 2013 at 12:49:19AM +0200, Tomasz Figa wrote:
-> > > > On Thursday 22 of August 2013 15:43:31 Mike Turquette wrote:
-> > > > > Quoting Sascha Hauer (2013-08-22 14:00:35)
-> > > > > 
-> > > > > > On Thu, Aug 22, 2013 at 01:09:31PM +0100, Mark Rutland wrote:
-> > > > > > > On Thu, Aug 22, 2013 at 08:19:10AM +0100, Mike Turquette wrote:
-> > > > > > > > Quoting Tomasz Figa (2013-08-21 14:34:55)
-> > > > > > > > 
-> > > > > > > > > On Wednesday 21 of August 2013 09:50:15 Mark Rutland wrote:
-> > > > > > > > > > On Tue, Aug 20, 2013 at 01:06:25AM +0100, Mike Turquette 
-> > > > wrote:
-> > > > > > > > > > > Quoting Mark Rutland (2013-08-19 02:35:43)
-> > > > > > > > > > > 
-> > > > > > > > > > > > On Sat, Aug 17, 2013 at 04:17:18PM +0100, Tomasz Figa 
-> > > > wrote:
-> > > > > > > > > > > > > On Saturday 17 of August 2013 16:53:16 Sascha Hauer 
-> > > > wrote:
-> > > > > > > > > > > > > > On Sat, Aug 17, 2013 at 02:28:04PM +0200, Tomasz Figa 
-> > > > wrote:
-> > > > > > > > > > > > > > > > > > Also I would make this option required. Use a
-> > > > > > > > > > > > > > > > > > dummy
-> > > > > > > > > > > > > > > > > > clock for
-> > > > > > > > > > > > > > > > > > mux
-> > > > > > > > > > > > > > > > > > inputs that are grounded for a specific SoC.
-> > > > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > > > Some clocks are not from CCM and we haven't
-> > > > > > > > > > > > > > > > > defined in
-> > > > > > > > > > > > > > > > > imx6q-clk.txt,
-> > > > > > > > > > > > > > > > > so in most cases we can't provide a phandle for
-> > > > > > > > > > > > > > > > > them, eg:
-> > > > > > > > > > > > > > > > > spdif_ext.
-> > > > > > > > > > > > > > > > > I think it's a bit hard to force it to be
-> > > > > > > > > > > > > > > > > 'required'. An
-> > > > > > > > > > > > > > > > > 'optional'
-> > > > > > > > > > > > > > > > > looks more flexible to me and a default one is
-> > > > > > > > > > > > > > > > > ensured
-> > > > > > > > > > > > > > > > > even if
-> > > > > > > > > > > > > > > > > it's
-> > > > > > > > > > > > > > > > > missing.
-> > > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > > <&clks 0> is the dummy clock. This can be used for
-> > > > > > > > > > > > > > > > all input
-> > > > > > > > > > > > > > > > clocks
-> > > > > > > > > > > > > > > > not
-> > > > > > > > > > > > > > > > defined by the SoC.
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > Where does this assumption come from? Is it
-> > > > > > > > > > > > > > > documented
-> > > > > > > > > > > > > > > anywhere?
-> > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > This is how all i.MX clock bindings currently are. See
-> > > > > > > > > > > > > > Documentation/devicetree/bindings/clock/imx*-clock.txt
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > OK, thanks.
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > I guess we need some discussion on dummy clocks vs
-> > > > > > > > > > > > > skipped clocks.
-> > > > > > > > > > > > > I think we want some consistency on this, don't we?
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > If we really need a dummy clock, then we might also want
-> > > > > > > > > > > > > a generic
-> > > > > > > > > > > > > way to specify it.
-> > > > > > > > > > > > 
-> > > > > > > > > > > > What do we actually mean by a "dummy clock"? We already
-> > > > > > > > > > > > have
-> > > > > > > > > > > > bindings
-> > > > > > > > > > > > for "fixed-clock" and co friends describe relatively
-> > > > > > > > > > > > simple
-> > > > > > > > > > > > preconfigured clocks.
-> > > > > > > > > > > 
-> > > > > > > > > > > Some platforms have a fake clock which defines noops
-> > > > > > > > > > > callbacks and
-> > > > > > > > > > > basically doesn't do anything. This is analogous to the
-> > > > > > > > > > > dummy
-> > > > > > > > > > > regulator
-> > > > > > > > > > > implementation. A central one could be registered by the
-> > > > > > > > > > > clock core,
-> > > > > > > > > > > as
-> > > > > > > > > > > is done by the regulator core.
-> > > > > > > > > > 
-> > > > > > > > > > When you say some platforms, you presumably mean the platform
-> > > > > > > > > > code in
-> > > > > > > > > > Linux? A dummy clock sounds like a completely Linux-specific
-> > > > > > > > > > abstraction rather than a description of the hardware, and I
-> > > > > > > > > > don't see why we need that in the DT:
-> > > > > > > > > > 
-> > > > > > > > > > * If a clock is wired up and running (as presumably the dummy
-> > > > > > > > > > clock is), then surely it's a fixed-clock (it's running, we
-> > > > > > > > > > and we have no control over it, but we presumably know its
-> > > > > > > > > > rate) and can be described as such?
-> > > > > > > > > > 
-> > > > > > > > > > * If no clock is wired up, then we should be able to describe
-> > > > > > > > > > that. If a driver believes that a clock is required when it
-> > > > > > > > > > isn't (for some level of functionality), then that driver
-> > > > > > > > > > should be fixed up to support the clock as being optional.
-> > > > > > > > > > 
-> > > > > > > > > > Am I missing something?
-> > > > > > > > > 
-> > > > > > > > > I second that.
-> > > > > > > > > 
-> > > > > > > > > Moreover, I don't think that device tree should deal with dummy
-> > > > > > > > > anything. It should be able to describe hardware that is
-> > > > > > > > > available on given system, not list what hardware is not
-> > > > > > > > > available.
-> > > > > > > > 
-> > > > > > > > I wasn't clear. The dummy clock IS a completely Linux-specific
-> > > > > > > > abstraction.
-> > > > > > > > 
-> > > > > > > > I'm not advocating a dummy clock in DT. I am advocating
-> > > > > > > > consolidation of the implementation of a clock that does nothing
-> > > > > > > > into the clock core. This code could easily live in
-> > > > > > > > drivers/clk/clk.c instead of having everyone open-code it.
-> > > > > > > > 
-> > > > > > > > As far as specifying a dummy clock in DT? I dunno. DT should
-> > > > > > > > describe
-> > > > > > > > real hardware so there isn't much use for a dummy clock.
-> > > > > > > 
-> > > > > > > Sorry, I misunderstood. Good to hear we're on the same page :)
-> > > > > > > 
-> > > > > > > > I'm guessing one of the reasons for such a clock are drivers do
-> > > > > > > > not
-> > > > > > > > honor the clk.h api and they freak out when clk_get gives them a
-> > > > > > > > NULL
-> > > > > > > > pointer?
-> > > > > > > 
-> > > > > > > I'm not sure. Sascha, could you shed some light on the matter?
-> > > > > > 
-> > > > > > The original reason introducing the dummy clocks in the i.MX dtbs
-> > > > > > was to provide devices a clock which the driver requests but is
-> > > > > > not software controllable. We often have the case where the same
-> > > > > > devices are on several SoCs, but not on all of them all clocks have
-> > > > > > a bit to en/disable them.
-> > > > > > 
-> > > > > > Anyway, to accomplish this we don't need dummy clocks. We can just
-> > > > > > describe the real clocks.
-> > > > > 
-> > > > > You could use a dummy clk for the Linux implementation, but the downside
-> > > > > is that a dummy clock has a rate of 0 always and a your clocks likely
-> > > > > have non-zero rates.
-> > > > > 
-> > > > > It is probably better for you define a clock which only implements the
-> > > > > .recalc_rate callback. If the rate of this clock changes without Linux
-> > > > > having knowledge of it you can use the CLK_GET_RATE_NOCACHE flag.
-> > > > 
-> > > > I doubt that rate of a dummy clock could ever change... unless it is a 
-> > > > rather smart dummy.
-> > > > 
-> > > > > > BTW with the S/PDIF core on which not all mux inputs are connected
-> > > > > > to actual clocks we could also describe the unconnected inputs as
-> > > > > > ground clocks with rate 0. This way we describe something which
-> > > > > > is really there instead of dummy clocks ;)
-> > > > > 
-> > > > > Again you could use a dummy clock for this OR a fixed-rate clock with a
-> > > > > rate of zero from the perspective of the Linux implementation.
-> > > > > 
-> > > > > Do you think it worthwhile to have a DT binding for a grounded clock?
-> > > > > That is not an entirely uncommon case.
-> > > > 
-> > > > Well, how would that differ from skipping a clock from clocks list, i.e. 
-> > > > not specifying it in clock-names and clocks properties?
-> > > 
-> > > The difference is that you can successfully grab it in your driver.
-> > 
-> > That's a driver-specific issue. The driver knows best which clocks it
-> > can live without (if it's poking only a subset of the hardware, it may
-> > not need some just yet, but could for extended functionality in future
-> > when support is extended), and could assign a dummy to those clocks it
-> > knows it doesn't need that aren't described. That doesn't need to be in
-> > the dt, and shouldn't be, because it's OS and driver specific.
-> > 
-> > > 
-> > > > 
-> > > > > > Background to why it might be a good idea to connect a ground clock
-> > > > > > to the unconnected input pins is that a driver has a chance to
-> > > > > > successfully grab all clocks. Otherwise how does the driver
-> > > > > > distinguish
-> > > > > > between an unconnected and an erroneous clock?
-> > > > > 
-> > > > > Sorry, I don't follow this last question. Do you mean how to distinguish
-> > > > > based on the value returned from clk_get?
-> > > > 
-> > > > Hmm, in theory, a driver could want to distinguish an error case (e.g. 
-> > > > clock specified, but there is a problem with it) from no clock (e.g. clock 
-> > > > not specified in DT, because it is not available on particular board).
-> > > 
-> > > Yes, that's what I meant. To illustrate the problem for this driver:
-> > > 
-> > >     for (i = 0; i < STC_TXCLK_SRC_MAX; i++) {
-> > >             sprintf(tmp, "rxtx%d", i);
-> > >             clk = devm_clk_get(&pdev->dev, tmp);
-> > >             if (IS_ERR(clk)) {
-> > 
-> >               [...]
-> > 
-> >                       /*
-> >                        * ERR_PTR(-ENOENT) returned when clock not
-> >                        * present in the dt (i.e. not wired up). We can
-> >                        * live without this clock, so assign a dummy
-> >                        * (NULL) to simplify the rest of the code. If
-> >                        * the clock is present but something else went
-> >                        * wrong, we'll get a different ERR_PTR value
-> >                        * and actually fail.
-> >                        */
-> >                       if (clk == ERR_PTR(-ENOENT)
-> >                               clk = NULL;
-> > 
-> > >             }
-> > >     }
-> > > 
-> > > This could be solved by always specifying all input clocks in the
-> > > devicetree.
-> > 
-> > As far as I can see, the above is sufficient, and leaves the knowledge
-> > of skippable clocks in the driver, where I believe it should be.
-> 
-> You miss my point. Once a clock is specified in the devicetree it is no
-> longer optional. The driver currently can't find out whether a clock
-> hasn't been specified (and it's ok that it's not there) or a clock has
-> been specified, but some error prevents actually grabbing the clock (in
-> which case the driver should bail out)
+This patch adds all required platform-specific data and initialization
+code to support the generic amba-pl08x driver on S3C64xx SoCs.
 
-Seems like the regulator framework is solving this with the new
-regulator_get_optional() call. This leaves the
-optional-versus-not-optional logic up to the driver.
+Also some compatibility definitions are added to make the transition
+from legacy API to DMA engine easier. The biggest hack here is passing
+const char * pointers through DMA resource, casted to unsigned long,
+but this is how Samsung DMA wrappers (used to support both s3c-dma and
+DMA engine in drivers) are designed.
 
-Regards,
-Mike
+Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
+---
+ arch/arm/Kconfig                         |   1 +
+ arch/arm/mach-s3c64xx/Kconfig            |   8 +-
+ arch/arm/mach-s3c64xx/Makefile           |   1 +
+ arch/arm/mach-s3c64xx/common.h           |   5 +
+ arch/arm/mach-s3c64xx/include/mach/dma.h |  63 ++++++++
+ arch/arm/mach-s3c64xx/pl080.c            | 244 +++++++++++++++++++++++++++++++
+ arch/arm/plat-samsung/devs.c             |  12 +-
+ arch/arm/plat-samsung/dma-ops.c          |   8 +-
+ 8 files changed, 337 insertions(+), 5 deletions(-)
+ create mode 100644 arch/arm/mach-s3c64xx/pl080.c
 
-> 
-> Sascha
-> 
-> 
-> -- 
-> Pengutronix e.K.                           |                             |
-> Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Changes since v1:
+ - Stopped hijacking pl330_filter() symbol to plug pl08_filter_id()
+   as channel filtering callback on S3C64xx.
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 43594d5..7e0e1b6 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -721,6 +721,7 @@ config ARCH_S3C64XX
+ 	bool "Samsung S3C64XX"
+ 	select ARCH_HAS_CPUFREQ
+ 	select ARCH_REQUIRE_GPIOLIB
++	select ARM_AMBA
+ 	select ARM_VIC
+ 	select CLKDEV_LOOKUP
+ 	select CLKSRC_MMIO
+diff --git a/arch/arm/mach-s3c64xx/Kconfig b/arch/arm/mach-s3c64xx/Kconfig
+index 2057853..704c5e4 100644
+--- a/arch/arm/mach-s3c64xx/Kconfig
++++ b/arch/arm/mach-s3c64xx/Kconfig
+@@ -28,9 +28,15 @@ config CPU_S3C6410
+ 	help
+ 	  Enable S3C6410 CPU support
+ 
++config S3C64XX_PL080
++	bool "S3C64XX DMA using generic PL08x driver"
++	select AMBA_PL08X
++	select SAMSUNG_DMADEV
++
+ config S3C64XX_DMA
+-	bool "S3C64XX DMA"
++	bool "S3C64XX DMA using legacy S3C DMA API"
+ 	select S3C_DMA
++	depends on !S3C64XX_PL080
+ 
+ config S3C64XX_SETUP_SDHCI
+ 	bool
+diff --git a/arch/arm/mach-s3c64xx/Makefile b/arch/arm/mach-s3c64xx/Makefile
+index 31d0c91..4e3326a 100644
+--- a/arch/arm/mach-s3c64xx/Makefile
++++ b/arch/arm/mach-s3c64xx/Makefile
+@@ -27,6 +27,7 @@ obj-$(CONFIG_CPU_IDLE)		+= cpuidle.o
+ # DMA support
+ 
+ obj-$(CONFIG_S3C64XX_DMA)	+= dma.o
++obj-$(CONFIG_S3C64XX_PL080)	+= pl080.o
+ 
+ # Device support
+ 
+diff --git a/arch/arm/mach-s3c64xx/common.h b/arch/arm/mach-s3c64xx/common.h
+index e8f990b..4e84617 100644
+--- a/arch/arm/mach-s3c64xx/common.h
++++ b/arch/arm/mach-s3c64xx/common.h
+@@ -60,4 +60,9 @@ int __init s3c64xx_pm_late_initcall(void);
+ static inline int s3c64xx_pm_late_initcall(void) { return 0; }
+ #endif
+ 
++#ifdef CONFIG_S3C64XX_PL080
++extern struct pl08x_platform_data s3c64xx_dma0_plat_data;
++extern struct pl08x_platform_data s3c64xx_dma1_plat_data;
++#endif
++
+ #endif /* __ARCH_ARM_MACH_S3C64XX_COMMON_H */
+diff --git a/arch/arm/mach-s3c64xx/include/mach/dma.h b/arch/arm/mach-s3c64xx/include/mach/dma.h
+index fe1a98c..26a6bc3 100644
+--- a/arch/arm/mach-s3c64xx/include/mach/dma.h
++++ b/arch/arm/mach-s3c64xx/include/mach/dma.h
+@@ -11,6 +11,8 @@
+ #ifndef __ASM_ARCH_DMA_H
+ #define __ASM_ARCH_DMA_H __FILE__
+ 
++#ifdef CONFIG_S3C64XX_DMA
++
+ #define S3C_DMA_CHANNELS	(16)
+ 
+ /* see mach-s3c2410/dma.h for notes on dma channel numbers */
+@@ -128,4 +130,65 @@ struct s3c2410_dma_chan {
+ 
+ #include <plat/dma-core.h>
+ 
++#else
++
++#define S3C64XX_DMA_CHAN(name)		((unsigned long)(name))
++
++/* DMA0/SDMA0 */
++#define DMACH_UART0		S3C64XX_DMA_CHAN("uart0_tx")
++#define DMACH_UART0_SRC2	S3C64XX_DMA_CHAN("uart0_rx")
++#define DMACH_UART1		S3C64XX_DMA_CHAN("uart1_tx")
++#define DMACH_UART1_SRC2	S3C64XX_DMA_CHAN("uart1_rx")
++#define DMACH_UART2		S3C64XX_DMA_CHAN("uart2_tx")
++#define DMACH_UART2_SRC2	S3C64XX_DMA_CHAN("uart2_rx")
++#define DMACH_UART3		S3C64XX_DMA_CHAN("uart3_tx")
++#define DMACH_UART3_SRC2	S3C64XX_DMA_CHAN("uart3_rx")
++#define DMACH_PCM0_TX		S3C64XX_DMA_CHAN("pcm0_tx")
++#define DMACH_PCM0_RX		S3C64XX_DMA_CHAN("pcm0_rx")
++#define DMACH_I2S0_OUT		S3C64XX_DMA_CHAN("i2s0_tx")
++#define DMACH_I2S0_IN		S3C64XX_DMA_CHAN("i2s0_rx")
++#define DMACH_SPI0_TX		S3C64XX_DMA_CHAN("spi0_tx")
++#define DMACH_SPI0_RX		S3C64XX_DMA_CHAN("spi0_rx")
++#define DMACH_HSI_I2SV40_TX	S3C64XX_DMA_CHAN("i2s2_tx")
++#define DMACH_HSI_I2SV40_RX	S3C64XX_DMA_CHAN("i2s2_rx")
++
++/* DMA1/SDMA1 */
++#define DMACH_PCM1_TX		S3C64XX_DMA_CHAN("pcm1_tx")
++#define DMACH_PCM1_RX		S3C64XX_DMA_CHAN("pcm1_rx")
++#define DMACH_I2S1_OUT		S3C64XX_DMA_CHAN("i2s1_tx")
++#define DMACH_I2S1_IN		S3C64XX_DMA_CHAN("i2s1_rx")
++#define DMACH_SPI1_TX		S3C64XX_DMA_CHAN("spi1_tx")
++#define DMACH_SPI1_RX		S3C64XX_DMA_CHAN("spi1_rx")
++#define DMACH_AC97_PCMOUT	S3C64XX_DMA_CHAN("ac97_out")
++#define DMACH_AC97_PCMIN	S3C64XX_DMA_CHAN("ac97_in")
++#define DMACH_AC97_MICIN	S3C64XX_DMA_CHAN("ac97_mic")
++#define DMACH_PWM		S3C64XX_DMA_CHAN("pwm")
++#define DMACH_IRDA		S3C64XX_DMA_CHAN("irda")
++#define DMACH_EXTERNAL		S3C64XX_DMA_CHAN("external")
++#define DMACH_SECURITY_RX	S3C64XX_DMA_CHAN("sec_rx")
++#define DMACH_SECURITY_TX	S3C64XX_DMA_CHAN("sec_tx")
++
++enum dma_ch {
++	DMACH_MAX = 32
++};
++
++struct s3c2410_dma_client {
++	char	*name;
++};
++
++static inline bool samsung_dma_has_circular(void)
++{
++	return true;
++}
++
++static inline bool samsung_dma_is_dmadev(void)
++{
++	return true;
++}
++
++#include <linux/amba/pl08x.h>
++#include <plat/dma-ops.h>
++
++#endif
++
+ #endif /* __ASM_ARCH_IRQ_H */
+diff --git a/arch/arm/mach-s3c64xx/pl080.c b/arch/arm/mach-s3c64xx/pl080.c
+new file mode 100644
+index 0000000..901a984
+--- /dev/null
++++ b/arch/arm/mach-s3c64xx/pl080.c
+@@ -0,0 +1,244 @@
++/*
++ * Samsung's S3C64XX generic DMA support using amba-pl08x driver.
++ *
++ * Copyright (c) 2013 Tomasz Figa <tomasz.figa@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/kernel.h>
++#include <linux/amba/bus.h>
++#include <linux/amba/pl080.h>
++#include <linux/amba/pl08x.h>
++#include <linux/of.h>
++
++#include <mach/irqs.h>
++#include <mach/map.h>
++
++#include "regs-sys.h"
++
++static int pl08x_get_xfer_signal(const struct pl08x_channel_data *cd)
++{
++	return cd->min_signal;
++}
++
++static void pl08x_put_xfer_signal(const struct pl08x_channel_data *cd, int ch)
++{
++}
++
++/*
++ * DMA0
++ */
++
++static struct pl08x_channel_data s3c64xx_dma0_info[] = {
++	{
++		.bus_id = "uart0_tx",
++		.min_signal = 0,
++		.max_signal = 0,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "uart0_rx",
++		.min_signal = 1,
++		.max_signal = 1,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "uart1_tx",
++		.min_signal = 2,
++		.max_signal = 2,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "uart1_rx",
++		.min_signal = 3,
++		.max_signal = 3,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "uart2_tx",
++		.min_signal = 4,
++		.max_signal = 4,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "uart2_rx",
++		.min_signal = 5,
++		.max_signal = 5,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "uart3_tx",
++		.min_signal = 6,
++		.max_signal = 6,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "uart3_rx",
++		.min_signal = 7,
++		.max_signal = 7,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "pcm0_tx",
++		.min_signal = 8,
++		.max_signal = 8,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "pcm0_rx",
++		.min_signal = 9,
++		.max_signal = 9,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "i2s0_tx",
++		.min_signal = 10,
++		.max_signal = 10,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "i2s0_rx",
++		.min_signal = 11,
++		.max_signal = 11,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "spi0_tx",
++		.min_signal = 12,
++		.max_signal = 12,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "spi0_rx",
++		.min_signal = 13,
++		.max_signal = 13,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "i2s2_tx",
++		.min_signal = 14,
++		.max_signal = 14,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "i2s2_rx",
++		.min_signal = 15,
++		.max_signal = 15,
++		.periph_buses = PL08X_AHB2,
++	}
++};
++
++struct pl08x_platform_data s3c64xx_dma0_plat_data = {
++	.memcpy_channel = {
++		.bus_id = "memcpy",
++		.cctl_memcpy =
++			(PL080_BSIZE_4 << PL080_CONTROL_SB_SIZE_SHIFT |
++			PL080_BSIZE_4 << PL080_CONTROL_DB_SIZE_SHIFT |
++			PL080_WIDTH_32BIT << PL080_CONTROL_SWIDTH_SHIFT |
++			PL080_WIDTH_32BIT << PL080_CONTROL_DWIDTH_SHIFT |
++			PL080_CONTROL_PROT_BUFF | PL080_CONTROL_PROT_CACHE |
++			PL080_CONTROL_PROT_SYS),
++	},
++	.lli_buses = PL08X_AHB1,
++	.mem_buses = PL08X_AHB1,
++	.get_xfer_signal = pl08x_get_xfer_signal,
++	.put_xfer_signal = pl08x_put_xfer_signal,
++	.slave_channels = s3c64xx_dma0_info,
++	.num_slave_channels = ARRAY_SIZE(s3c64xx_dma0_info),
++};
++
++static AMBA_AHB_DEVICE(s3c64xx_dma0, "dma-pl080s.0", 0,
++			0x75000000, {IRQ_DMA0}, &s3c64xx_dma0_plat_data);
++
++/*
++ * DMA1
++ */
++
++static struct pl08x_channel_data s3c64xx_dma1_info[] = {
++	{
++		.bus_id = "pcm1_tx",
++		.min_signal = 0,
++		.max_signal = 0,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "pcm1_rx",
++		.min_signal = 1,
++		.max_signal = 1,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "i2s1_tx",
++		.min_signal = 2,
++		.max_signal = 2,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "i2s1_rx",
++		.min_signal = 3,
++		.max_signal = 3,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "spi1_tx",
++		.min_signal = 4,
++		.max_signal = 4,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "spi1_rx",
++		.min_signal = 5,
++		.max_signal = 5,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "ac97_out",
++		.min_signal = 6,
++		.max_signal = 6,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "ac97_in",
++		.min_signal = 7,
++		.max_signal = 7,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "ac97_mic",
++		.min_signal = 8,
++		.max_signal = 8,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "pwm",
++		.min_signal = 9,
++		.max_signal = 9,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "irda",
++		.min_signal = 10,
++		.max_signal = 10,
++		.periph_buses = PL08X_AHB2,
++	}, {
++		.bus_id = "external",
++		.min_signal = 11,
++		.max_signal = 11,
++		.periph_buses = PL08X_AHB2,
++	},
++};
++
++struct pl08x_platform_data s3c64xx_dma1_plat_data = {
++	.memcpy_channel = {
++		.bus_id = "memcpy",
++		.cctl_memcpy =
++			(PL080_BSIZE_4 << PL080_CONTROL_SB_SIZE_SHIFT |
++			PL080_BSIZE_4 << PL080_CONTROL_DB_SIZE_SHIFT |
++			PL080_WIDTH_32BIT << PL080_CONTROL_SWIDTH_SHIFT |
++			PL080_WIDTH_32BIT << PL080_CONTROL_DWIDTH_SHIFT |
++			PL080_CONTROL_PROT_BUFF | PL080_CONTROL_PROT_CACHE |
++			PL080_CONTROL_PROT_SYS),
++	},
++	.lli_buses = PL08X_AHB1,
++	.mem_buses = PL08X_AHB1,
++	.get_xfer_signal = pl08x_get_xfer_signal,
++	.put_xfer_signal = pl08x_put_xfer_signal,
++	.slave_channels = s3c64xx_dma1_info,
++	.num_slave_channels = ARRAY_SIZE(s3c64xx_dma1_info),
++};
++
++static AMBA_AHB_DEVICE(s3c64xx_dma1, "dma-pl080s.1", 0,
++			0x75100000, {IRQ_DMA1}, &s3c64xx_dma1_plat_data);
++
++static int __init s3c64xx_pl080_init(void)
++{
++	/* Set all DMA configuration to be DMA, not SDMA */
++	writel(0xffffff, S3C64XX_SDMA_SEL);
++
++	if (of_have_populated_dt())
++		return 0;
++
++	amba_device_register(&s3c64xx_dma0_device, &iomem_resource);
++	amba_device_register(&s3c64xx_dma1_device, &iomem_resource);
++
++	return 0;
++}
++arch_initcall(s3c64xx_pl080_init);
+diff --git a/arch/arm/plat-samsung/devs.c b/arch/arm/plat-samsung/devs.c
+index 0f9c3f4..90b4b61 100644
+--- a/arch/arm/plat-samsung/devs.c
++++ b/arch/arm/plat-samsung/devs.c
+@@ -1513,8 +1513,10 @@ void __init s3c64xx_spi0_set_platdata(int (*cfg_gpio)(void), int src_clk_nr,
+ 	pd.num_cs = num_cs;
+ 	pd.src_clk_nr = src_clk_nr;
+ 	pd.cfg_gpio = (cfg_gpio) ? cfg_gpio : s3c64xx_spi0_cfg_gpio;
+-#ifdef CONFIG_PL330_DMA
++#if defined(CONFIG_PL330_DMA)
+ 	pd.filter = pl330_filter;
++#elif defined(CONFIG_S3C64XX_PL080)
++	pd.filter = pl08x_filter_id;
+ #endif
+ 
+ 	s3c_set_platdata(&pd, sizeof(pd), &s3c64xx_device_spi0);
+@@ -1554,8 +1556,10 @@ void __init s3c64xx_spi1_set_platdata(int (*cfg_gpio)(void), int src_clk_nr,
+ 	pd.num_cs = num_cs;
+ 	pd.src_clk_nr = src_clk_nr;
+ 	pd.cfg_gpio = (cfg_gpio) ? cfg_gpio : s3c64xx_spi1_cfg_gpio;
+-#ifdef CONFIG_PL330_DMA
++#if defined(CONFIG_PL330_DMA)
+ 	pd.filter = pl330_filter;
++#elif defined(CONFIG_S3C64XX_PL080)
++	pd.filter = pl08x_filter_id;
+ #endif
+ 
+ 	s3c_set_platdata(&pd, sizeof(pd), &s3c64xx_device_spi1);
+@@ -1595,8 +1599,10 @@ void __init s3c64xx_spi2_set_platdata(int (*cfg_gpio)(void), int src_clk_nr,
+ 	pd.num_cs = num_cs;
+ 	pd.src_clk_nr = src_clk_nr;
+ 	pd.cfg_gpio = (cfg_gpio) ? cfg_gpio : s3c64xx_spi2_cfg_gpio;
+-#ifdef CONFIG_PL330_DMA
++#if defined(CONFIG_PL330_DMA)
+ 	pd.filter = pl330_filter;
++#elif defined(CONFIG_S3C64XX_PL080)
++	pd.filter = pl08x_filter_id;
+ #endif
+ 
+ 	s3c_set_platdata(&pd, sizeof(pd), &s3c64xx_device_spi2);
+diff --git a/arch/arm/plat-samsung/dma-ops.c b/arch/arm/plat-samsung/dma-ops.c
+index ec0d731..886326e 100644
+--- a/arch/arm/plat-samsung/dma-ops.c
++++ b/arch/arm/plat-samsung/dma-ops.c
+@@ -18,6 +18,12 @@
+ 
+ #include <mach/dma.h>
+ 
++#if defined(CONFIG_PL330_DMA)
++#define dma_filter pl330_filter
++#elif defined(CONFIG_S3C64XX_PL080)
++#define dma_filter pl08x_filter_id
++#endif
++
+ static unsigned samsung_dmadev_request(enum dma_ch dma_ch,
+ 				struct samsung_dma_req *param,
+ 				struct device *dev, char *ch_name)
+@@ -30,7 +36,7 @@ static unsigned samsung_dmadev_request(enum dma_ch dma_ch,
+ 	if (dev->of_node)
+ 		return (unsigned)dma_request_slave_channel(dev, ch_name);
+ 	else
+-		return (unsigned)dma_request_channel(mask, pl330_filter,
++		return (unsigned)dma_request_channel(mask, dma_filter,
+ 							(void *)dma_ch);
+ }
+ 
+-- 
+1.8.3.2
