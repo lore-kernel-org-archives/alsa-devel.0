@@ -1,29 +1,18 @@
-From: Mikel =?utf-8?b?R2FyY8OtYQ==?= <mikelgate@gmail.com>
-Subject: Re: Support new HDA codec
-Date: Sun, 25 Aug 2013 09:44:09 +0000 (UTC)
-Message-ID: <loom.20130825T113629-740@post.gmane.org>
-References: <AB277FB27524F74C87ACAFF84F2767490D5205C4E2@NTMBOX.central.cirsa.com>
- <s5hehtkxma6.wl%tiwai@suse.de>
- <20120225115048.GD3167@opensource.wolfsonmicro.com>
- <s5hpqd23i5s.wl%tiwai@suse.de>
- <20120227135131.GD3191@opensource.wolfsonmicro.com>
+From: Eldad Zack <eldad@fogrefinery.com>
+Subject: [PATCH v3 00/11] ALSA: usb-audio: fix playback/capture
+	concurrent usage
+Date: Sun, 25 Aug 2013 17:43:08 +0200
+Message-ID: <1377445399-5678-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id CBDE32617A4
- for <alsa-devel@alsa-project.org>; Sun, 25 Aug 2013 11:50:05 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1VDWxQ-0003fk-E0
- for alsa-devel@alsa-project.org; Sun, 25 Aug 2013 11:50:04 +0200
-Received: from 189.85-86-166.dynamic.clientes.euskaltel.es ([85.86.166.189])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sun, 25 Aug 2013 11:50:04 +0200
-Received: from mikelgate by 189.85-86-166.dynamic.clientes.euskaltel.es with
- local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sun, 25 Aug 2013 11:50:04 +0200
+Received: from mail-bk0-f54.google.com (mail-bk0-f54.google.com
+ [209.85.214.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id AFA3A2618EE
+ for <alsa-devel@alsa-project.org>; Sun, 25 Aug 2013 17:43:30 +0200 (CEST)
+Received: by mail-bk0-f54.google.com with SMTP id mz12so830250bkb.27
+ for <alsa-devel@alsa-project.org>; Sun, 25 Aug 2013 08:43:27 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,34 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, Eldad Zack <eldad@fogrefinery.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie <at> opensource.wolfsonmicro.com> writes:
+Hi,
 
-> 
-> On Sat, Feb 25, 2012 at 07:02:55PM +0100, Takashi Iwai wrote:
-> 
-> > OK.  BTW, what is the name of the codec chip?  WM8800?
-> 
-> It'll be WM8850 or WM8860 - the two chips are indistinguishable from
-> software.  WM8800 is another variant but it is not generally available,
-> though I appreciate it is what the ID register reads back.
-> 
-> 
-> On Sat, Feb 25, 2012 at 07:02:55PM +0100, Takashi Iwai wrote:
-> 
-> > OK.  BTW, what is the name of the codec chip?  WM8800?
-> 
-> It'll be WM8850 or WM8860 - the two chips are indistinguishable from
-> software.  WM8800 is another variant but it is not generally available,
-> though I appreciate it is what the ID register reads back.
-> 
+This patch series attempts to fix a long standing problem with the concurrent
+usage of playback and capture on implicit feedback devices.
 
-Hello, a this moment with a 3.7.10 kernel and debian wheezy I only have
-control of the Master volume with the generic parser (wm8850). Only one
-output can be controlled. No inputs are detected. What do you mean with
-appropriate bios setup? Do you know if there is more compatibility in higher
-kernels?
+Applies against current for-next (HEAD 68538bf2bce557c3b5fe8c59b034d45352500db1 ).
 
-Thank you.
+v2:
+ http://mailman.alsa-project.org/pipermail/alsa-devel/2013-August/065649.html
+v1:
+ http://mailman.alsa-project.org/pipermail/alsa-devel/2013-August/065517.html
+
+ * Changed "altset_idx" to "altsetting" thanks to Clemens' clarification.
+
+ #3: Thanks to Daniel's test, fixed a NULL dereference caused by userspace calling
+     snd_pcm_open() and then snd_pcm_close() immediately.
+ #8: subs->altset_idx was left intact, since it corresponds to the array index.
+ #10: this patch now removed subs->altset_idx, but also changes the check to be
+      performed against fmt->altsetting.
+ #11: New. This changes the name of snd_usb_endpoint member alt_idx to altsetting
+      for the same reason Clemens described.
+
+Clemens and Daniel - thank you very much for your help!
+
+Cheers,
+Eldad
+
+Eldad Zack (11):
+  ALSA: usb-audio: remove unused parameter from sync_ep_set_params
+  ALSA: usb-audio: remove deactivate_endpoints()
+  ALSA: usb-audio: prevent NULL dereference on stop trigger
+  ALSA: usb-audio: don't deactivate URBs on in-use EP
+  ALSA: usb-audio: void return type of snd_usb_endpoint_deactivate()
+  ALSA: usb-audio: clear SUBSTREAM_FLAG_SYNC_EP_STARTED on error
+  ALSA: usb-audio: correct ep use_count semantics (add set_param flag)
+  ALSA: usb-audio: conditional interface altsetting
+  ALSA: usb-audio: conditional concurrent usage of endpoint
+  ALSA: usb-audio: remove altset_idx from snd_usb_substream
+  ALSA: usb-audio: rename alt_idx to altsetting
+
+ sound/usb/card.h     |   4 +-
+ sound/usb/endpoint.c |  82 ++++++++++++++++++-------
+ sound/usb/endpoint.h |  11 +++-
+ sound/usb/pcm.c      | 168 ++++++++++++++++++++++++++++++++++++++-------------
+ sound/usb/pcm.h      |   2 +
+ sound/usb/proc.c     |   4 +-
+ 6 files changed, 201 insertions(+), 70 deletions(-)
+
+-- 
+1.8.1.5
