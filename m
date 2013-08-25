@@ -1,19 +1,19 @@
 From: Eldad Zack <eldad@fogrefinery.com>
-Subject: [PATCH v3 03/11] ALSA: usb-audio: prevent NULL
-	dereference on stop trigger
-Date: Sun, 25 Aug 2013 17:43:11 +0200
-Message-ID: <1377445399-5678-4-git-send-email-eldad@fogrefinery.com>
+Subject: [PATCH v3 04/11] ALSA: usb-audio: don't deactivate
+	URBs on in-use EP
+Date: Sun, 25 Aug 2013 17:45:25 +0200
+Message-ID: <1377445532-5876-1-git-send-email-eldad@fogrefinery.com>
 References: <1377445399-5678-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f46.google.com (mail-bk0-f46.google.com
- [209.85.214.46])
- by alsa0.perex.cz (Postfix) with ESMTP id D91012619D5
- for <alsa-devel@alsa-project.org>; Sun, 25 Aug 2013 17:43:40 +0200 (CEST)
-Received: by mail-bk0-f46.google.com with SMTP id 6so788336bkj.5
- for <alsa-devel@alsa-project.org>; Sun, 25 Aug 2013 08:43:40 -0700 (PDT)
+Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
+ [209.85.214.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 426E82619F0
+ for <alsa-devel@alsa-project.org>; Sun, 25 Aug 2013 17:45:38 +0200 (CEST)
+Received: by mail-bk0-f48.google.com with SMTP id my13so787893bkb.21
+ for <alsa-devel@alsa-project.org>; Sun, 25 Aug 2013 08:45:37 -0700 (PDT)
 In-Reply-To: <1377445399-5678-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,50 +28,33 @@ To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Daniel M
 Cc: alsa-devel@alsa-project.org, Eldad Zack <eldad@fogrefinery.com>
 List-Id: alsa-devel@alsa-project.org
 
-If an endpoint uses another endpoint for synchronization, and the
-other endpoint is stopped, an oops will occur on NULL dereference.
-Clearing the prepare/retire callbacks solves this issue.
-
-v2: Thanks to Daniel Mack, fixed (an irnoic) NULL dereference when
-the pcm substream is opened and closed immediately.
+If an endpoint in use, its associated URBs should not be
+deactivated.
 
 Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 ---
- sound/usb/pcm.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/usb/endpoint.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 9ec401a..4227d34 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -1199,6 +1199,11 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream, int direction)
- 		subs->interface = -1;
- 	}
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 86b23af..420df01 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -943,12 +943,12 @@ int snd_usb_endpoint_deactivate(struct snd_usb_endpoint *ep)
+ 	if (!ep)
+ 		return -EINVAL;
  
-+	if (subs->data_endpoint) {
-+		subs->data_endpoint->prepare_data_urb = NULL;
-+		subs->data_endpoint->retire_data_urb = NULL;
-+	}
+-	deactivate_urbs(ep, true);
+-	wait_clear_urbs(ep);
+-
+ 	if (ep->use_count != 0)
+ 		return 0;
+ 
++	deactivate_urbs(ep, true);
++	wait_clear_urbs(ep);
 +
- 	subs->pcm_substream = NULL;
- 	snd_usb_autosuspend(subs->stream->chip);
+ 	clear_bit(EP_FLAG_ACTIVATED, &ep->flags);
  
-@@ -1525,6 +1530,8 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
- 		subs->running = 1;
- 		return 0;
- 	case SNDRV_PCM_TRIGGER_STOP:
-+		subs->data_endpoint->prepare_data_urb = NULL;
-+		subs->data_endpoint->retire_data_urb = NULL;
- 		stop_endpoints(subs, false);
- 		subs->running = 0;
- 		return 0;
-@@ -1555,6 +1562,7 @@ static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
- 		subs->running = 1;
- 		return 0;
- 	case SNDRV_PCM_TRIGGER_STOP:
-+		subs->data_endpoint->retire_data_urb = NULL;
- 		stop_endpoints(subs, false);
- 		subs->running = 0;
- 		return 0;
+ 	return 0;
 -- 
 1.8.1.5
