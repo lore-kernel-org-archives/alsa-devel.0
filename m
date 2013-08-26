@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] ASoC: fsl_spdif: Remove unnecessary
- dev_set_drvdata()
-Date: Mon, 26 Aug 2013 12:53:43 +0100
-Message-ID: <20130826115343.GB10783@sirena.org.uk>
-References: <1377292486-7591-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: fsi: reserve prefetch period on DMA
+	transferring
+Date: Mon, 26 Aug 2013 13:02:55 +0100
+Message-ID: <20130826120255.GE10783@sirena.org.uk>
+References: <87ioytuffh.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0132160517002652000=="
+Content-Type: multipart/mixed; boundary="===============2661636858171280901=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 08BF5261A7A
- for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2013 13:53:54 +0200 (CEST)
-In-Reply-To: <1377292486-7591-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 21764261A79
+ for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2013 14:03:01 +0200 (CEST)
+In-Reply-To: <87ioytuffh.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, b42378@freescale.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Tomohito Esaki <etom@igel.co.jp>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0132160517002652000==
+--===============2661636858171280901==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QKdGvSO+nmPlgiQ/"
+	protocol="application/pgp-signature"; boundary="X3gaHHMYHkYqP6yf"
 Content-Disposition: inline
 
 
---QKdGvSO+nmPlgiQ/
+--X3gaHHMYHkYqP6yf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 23, 2013 at 06:14:45PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> Driver core clears the driver data to NULL after device_release or on pro=
-be=20
-> failure, so just remove it from here.
+On Sun, Aug 25, 2013 at 11:36:23PM -0700, Kuninori Morimoto wrote:
+> Current FSI is supporting DMAEngine transfer,
+> but, it needs to use work queue.
+> Therefore, DMA transfer settings might be late if there is heavy task.
+> This patch reserves next period beforehand on DMA transfer function.
+> Android sound will be breaking up without this patch.
 
 Applied, thanks.
 
---QKdGvSO+nmPlgiQ/
+--X3gaHHMYHkYqP6yf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSG0HEAAoJELSic+t+oim9lgYP/1Ri21ptSy9RPZtfx8Du/hX2
-3/Y+Syp44Gv2HQjDde0rew7XloCYRXAMuQwI6fp7/1IJ8cpWV8IuO9y+K+y3e6UZ
-EnDhT6ylRLOw73y6fodkkZhOr9stVqVE+hc/ldZw16fxROveDSNBNovvEO4aioVm
-vN56duSlGzPUcPmyjBG4zwFOWWyeuERyEwksgWQmRTrDU0c+7HQbAcDer+8j7dKc
-KNT9rCCVso6g2vFf7s12bN5C6+206p/mGUc15mSWWlYNUnQMjhlZfcIwLWapnsH6
-H/tF+6haCPcboyutMIxDIGxhntIh5qcPPahcfm65V4u/y+jDgVuOopfBUcSNAetE
-yEV5IFjuh2Ei+ggwsGngCOZIebMQkesfjqDY0YlZZki1ziFFLxFugf05fee+k93y
-Mk/wl9uXMCaStk8CMOCGlOHb+iv0Q1ZIO8kVFkXwVPcyeTNdD+8kmZwzViIBd+KG
-lkegkgaCLcW7q5X2VwIcGsY7r1o4aSvRdjhGOTE9YLUWZ2o5KUOw1EB/4qo7gh8T
-L5blDIHYFsjyoD0KqPwq93niRKVI0RyXUWuCALCtlueUtX+zdKJCgOCKCXeqiU/L
-A7QjI07FAUCo/qBoyRpmYco+TqN77Q5070oJhLLxBf/7fS4CCjSFZciPy7m/Vu2S
-wZwiXT2kGzxLKtjt172R
-=8Oym
+iQIcBAEBAgAGBQJSG0PrAAoJELSic+t+oim9MGIP/3SrrcBcRvur5laMkfqLX6xk
+uDvjnvQInkvuQW+bWFeOu8Y/+mcyQ1xMaIlCJMitLcKhdiIqgRQJyPdSDKylDxu0
+H0SJmvz536RdViuaAi8O9WSDTGjPh++GEWkANrWZ4zkQBaH/Csfu05P1GCpEZyOt
+HFu4tlbrP/g/hqm9ZOrc21a5UsDM7A8tOijIkbohr8xxkat6ZCm3PfkF52FZ58O4
+0fJ0qhPVR5pHkhksj5aRjwnb0XTuVej6EcgWjcZ+CVKKf8VwtsfUCIxqpIsPBjhg
+wQcjpgEjRsDXKSHPZ5cSPFTF718kf5XsOl+A9vjhL6DjqiuYzMOv0TzOYU7UVY8I
+TYl3GX4tQ+SD8nd0mjQRYKlavWEpU6Emo4WJdataKV3JX8UFJAG616aqS144Lv8D
+H3mDZRJt0ngHeoXS0rqyCpOPxW8yckzIcQMkfAHj2Ta8Wu9EkmAIfoaLcAQ6cPLw
+mu2aARwuJhFPrnAniOQnF0NLQaqPGZWSRAxZSeEupwFNmOSqe+tkCnWPjHY/h6XL
+YmgT7SjD/ktyX9zV9YjzlfNc90Ag/pAaYfHGXEI1djCGNBwVi7Q2htsUkyVvr7HF
+ToWxVirQWPoZitRF1DLQGlNJQqxdNMaO6g3OnB7e4Jzr5AFBDm4CfwgU3H6ZwvTp
+Mx/DBNOZ8vzvn8b9jgwt
+=SbxF
 -----END PGP SIGNATURE-----
 
---QKdGvSO+nmPlgiQ/--
+--X3gaHHMYHkYqP6yf--
 
---===============0132160517002652000==
+--===============2661636858171280901==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0132160517002652000==--
+--===============2661636858171280901==--
