@@ -1,20 +1,19 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [RFC PATCH 1/3] ALSA: hda - add flags and routines
- to get devices selection info for DP1.2 MST
-Date: Mon, 26 Aug 2013 04:49:39 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801323B31@SHSMSX101.ccr.corp.intel.com>
-References: <1377233796-10095-1-git-send-email-mengdong.lin@intel.com>
- <s5hli3siomt.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F801321BDD@SHSMSX101.ccr.corp.intel.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: Re: [PATCH v2 1/2] ASoC: fsl_spdif: Remove unnecessary
+ dev_set_drvdata()
+Date: Mon, 26 Aug 2013 14:05:56 +0800
+Message-ID: <20130826060556.GA12524@MrMyself>
+References: <1377292486-7591-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 58F402619FF
- for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2013 06:50:07 +0200 (CEST)
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F801321BDD@SHSMSX101.ccr.corp.intel.com>
-Content-Language: en-US
+Received: from db8outboundpool.messaging.microsoft.com
+ (mail-db8lp0185.outbound.messaging.microsoft.com [213.199.154.185])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30A712608A1
+ for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2013 08:14:59 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1377292486-7591-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,131 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Good to know this. Thank you :)
 
-The patches are revised as you suggested and submitted. Please have a review.
+Acked-by: Nicolin Chen <b42378@freescale.com>
+(
+ I'm not sure if I can use 'Acked-by'.
+ If not, pls replace it to 'Reviewed-by'
+ Thanks a lot.
+)
 
-There is a new patch to add 'Device Entry' and 'Inactive' fields to the unsolicited response for a display audio codec.
-
-Thanks
-Mengdong
-
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org
-> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Lin, Mengdong
-> Sent: Friday, August 23, 2013 11:25 PM
-> To: Takashi Iwai
-> Cc: alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] [RFC PATCH 1/3] ALSA: hda - add flags and routines to
-> get devices selection info for DP1.2 MST
+On Fri, Aug 23, 2013 at 06:14:45PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
 > 
-> > -----Original Message-----
-> > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > Sent: Friday, August 23, 2013 8:22 PM
-> > > +/**
-> > > + * snd_hda_get_devices - copy device list without cache
-> > > + * @codec: the HDA codec
-> > > + * @nid: NID of the pin to parse
-> > > + * @dev_list: device list array
-> > > + * @max_devices: max. number of devices to store
-> > > + *
-> > > + * Copy the device list. This info is dynamic and so not cached.
-> > > + * Currently called only from hda_proc.c, so not exported.
-> > > + */
-> > > +int snd_hda_get_devices(struct hda_codec *codec, hda_nid_t nid,
-> > > +			union hda_devlist_entry *dev_list, int max_devices) {
-> > > +	unsigned int parm;
-> > > +	int i, dev_len, devices;
-> > > +
-> > > +	parm = get_num_devices(codec, nid);
-> > > +	if (!parm)	/* not multi-stream capable */
-> > > +		return 0;
-> > > +
-> > > +	dev_len = parm + 1;
-> >
-> > Check dev_len with max_devices here.
+> Driver core clears the driver data to NULL after device_release or on probe 
+> failure, so just remove it from here.
 > 
-> Will fix it. Sorry, I forgot to check.
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+> Changes since v1:
+> - Also remove dev_set_drvdata from the remove function
 > 
-> >
-> > > +	devices = 0;
-> > > +
-> > > +	while (devices < dev_len) {
-> > > +		parm = snd_hda_codec_read(codec, nid, 0,
-> > > +					  AC_VERB_GET_DEVICE_LIST, devices);
-> > > +		if (parm == -1 && codec->bus->rirb_error)
-> > > +			break;
-> > > +
-> > > +		for (i = 0; i < 8; i++) {
-> > > +			dev_list[devices].value = parm & 0x7;
-> > > +			parm >>= 4;
-> > > +			devices++;
-> > > +			if (devices >= dev_len)
-> > > +				break;
-> > > +		}
-> > > +	}
-> > > +	return devices;
-> > > +}
-> > > +
-> > >  /**
-> > >   * snd_hda_queue_unsol_event - add an unsolicited event to queue
-> > >   * @bus: the BUS
-> > > diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-> > > index 701c2e0..736b55a 100644
-> > > --- a/sound/pci/hda/hda_codec.h
-> > > +++ b/sound/pci/hda/hda_codec.h
-> > > @@ -94,6 +94,8 @@ enum {
-> > >  #define AC_VERB_GET_HDMI_DIP_XMIT		0x0f32
-> > >  #define AC_VERB_GET_HDMI_CP_CTRL		0x0f33
-> > >  #define AC_VERB_GET_HDMI_CHAN_SLOT		0x0f34
-> > > +#define AC_VERB_GET_DEVICE_SEL			0xf35
-> > > +#define AC_VERB_GET_DEVICE_LIST			0xf36
-> > >
-> > >  /*
-> > >   * SET verbs
-> > > @@ -133,6 +135,7 @@ enum {
-> > >  #define AC_VERB_SET_HDMI_DIP_XMIT		0x732
-> > >  #define AC_VERB_SET_HDMI_CP_CTRL		0x733
-> > >  #define AC_VERB_SET_HDMI_CHAN_SLOT		0x734
-> > > +#define AC_VERB_SET_DEVICE_SEL			0x735
-> > >
-> > >  /*
-> > >   * Parameter IDs
-> > > @@ -154,6 +157,7 @@ enum {
-> > >  #define AC_PAR_GPIO_CAP			0x11
-> > >  #define AC_PAR_AMP_OUT_CAP		0x12
-> > >  #define AC_PAR_VOL_KNB_CAP		0x13
-> > > +#define AC_PAR_DEVLIST_LEN		0x15
-> > >  #define AC_PAR_HDMI_LPCM_CAP		0x20
-> > >
-> > >  /*
-> > > @@ -795,6 +799,19 @@ struct hda_pcm {
-> > >  	bool own_chmap;		/* codec driver provides own channel maps
-> */
-> > >  };
-> > >
-> > > +/* display pin's device list entry */ union  hda_devlist_entry {
-> > > +	unsigned int value;
-> > > +	struct  {
-> > > +		unsigned int present_detect:1;
-> > > +		unsigned int eld_valid:1;
-> > > +		unsigned int inactive:1;
-> > > +	} bits;
-> > > +};
-> >
-> > The bit fields are not really portable.
-> > Please use the explicit bit operation instead.
+>  sound/soc/fsl/fsl_spdif.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
 > 
-> You're right. It's compiler-dependent. I'll revise and verify the patch next
-> Monday.
+> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+> index 42a4382..a8ef46a 100644
+> --- a/sound/soc/fsl/fsl_spdif.c
+> +++ b/sound/soc/fsl/fsl_spdif.c
+> @@ -1184,7 +1184,7 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+>  					 &spdif_priv->cpu_dai_drv, 1);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "failed to register DAI: %d\n", ret);
+> -		goto error_dev;
+> +		return ret;
+>  	}
+>  
+>  	ret = imx_pcm_dma_init(pdev);
+> @@ -1197,8 +1197,6 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+>  
+>  error_component:
+>  	snd_soc_unregister_component(&pdev->dev);
+> -error_dev:
+> -	dev_set_drvdata(&pdev->dev, NULL);
+>  
+>  	return ret;
+>  }
+> @@ -1207,7 +1205,6 @@ static int fsl_spdif_remove(struct platform_device *pdev)
+>  {
+>  	imx_pcm_dma_exit(pdev);
+>  	snd_soc_unregister_component(&pdev->dev);
+> -	dev_set_drvdata(&pdev->dev, NULL);
+>  
+>  	return 0;
+>  }
+> -- 
+> 1.8.1.2
 > 
-> Thanks for the review!
-> Mengdong
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
