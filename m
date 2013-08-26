@@ -1,20 +1,18 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH v2 2/2] ASoC: fsl_spdif: Reduce the noise
-	on comments
-Date: Mon, 26 Aug 2013 14:07:29 +0800
-Message-ID: <20130826060728.GB12524@MrMyself>
-References: <1377292486-7591-1-git-send-email-festevam@gmail.com>
- <1377292486-7591-2-git-send-email-festevam@gmail.com>
+From: David Jander <david.jander@protonic.nl>
+Subject: Re: [PATCH] ASoC: codecs/sgtl5000.c: specify correct
+ reg_stride in regmap_config.
+Date: Mon, 26 Aug 2013 08:18:01 +0200
+Message-ID: <20130826081801.6d0dc734@archvile>
+References: <1377152584-28317-1-git-send-email-david@protonic.nl>
+ <20130825084426.GA10708@zzm-ubuntu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe004.messaging.microsoft.com [216.32.180.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 265702615B9
- for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2013 08:16:31 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1377292486-7591-2-git-send-email-festevam@gmail.com>
+Received: from protonic.xs4all.nl (protonic.xs4all.nl [213.84.116.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04B412615B9
+ for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2013 08:17:59 +0200 (CEST)
+In-Reply-To: <20130825084426.GA10708@zzm-ubuntu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,70 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@kernel.org
+To: zengzhaoming <zengzm.kernel@gmail.com>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, David Jander <david@protonic.nl>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 23, 2013 at 06:14:46PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
+On Sun, 25 Aug 2013 16:44:26 +0800
+zengzhaoming <zengzm.kernel@gmail.com> wrote:
+
+> On 08-22/08:23, David Jander wrote:
+> > This makes the RB-Tree more compact and efficient.
+> > 
+> > Signed-off-by: David Jander <david@protonic.nl>
+> > ---
+> >  sound/soc/codecs/sgtl5000.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+> > index 760e8bf..ba5ca67 100644
+> > --- a/sound/soc/codecs/sgtl5000.c
+> > +++ b/sound/soc/codecs/sgtl5000.c
+> > @@ -1480,6 +1480,7 @@ static struct snd_soc_codec_driver sgtl5000_driver =
+> > { static const struct regmap_config sgtl5000_regmap = {
+> >  	.reg_bits = 16,
+> >  	.val_bits = 16,
+> > +	.reg_stride = 2,
+> >  
+> >  	.max_register = SGTL5000_MAX_REG_OFFSET,
+> >  	.volatile_reg = sgtl5000_volatile,
+> > -- 
+> > 1.8.1.2
 > 
-> Remove the "====" pattern to let the comments cleaner and more uniform.
-> 
-> Also, do not use multi-line style for a single line comment. 
-> 
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> Fabio has post same patch for this.
+> http://comments.gmane.org/gmane.linux.alsa.devel/109903
 
-Well, I just wanted to make it distinct.
-
-But I'm fairly okay with this patch.
-
-Thank you.
-
-Acked-by: Nicolin Chen <b42378@freescale.com>
+Oh. I didn't see that one, sorry.
+Fabio's patch is from July, 5th. It takes quite some time for this to hit
+mainline then....
 
 Best regards,
-Nicolin Chen
 
-> ---
-> Changes since v1:
-> - None
->  sound/soc/fsl/fsl_spdif.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-> index bf58086..34b531b 100644
-> --- a/sound/soc/fsl/fsl_spdif.c
-> +++ b/sound/soc/fsl/fsl_spdif.c
-> @@ -555,7 +555,6 @@ struct snd_soc_dai_ops fsl_spdif_dai_ops = {
->  
->  
->  /*
-> - * ============================================
->   * FSL SPDIF IEC958 controller(mixer) functions
->   *
->   *	Channel status get/put control
-> @@ -563,7 +562,6 @@ struct snd_soc_dai_ops fsl_spdif_dai_ops = {
->   *	Valid bit value get control
->   *	DPLL lock status get control
->   *	User bit sync mode selection control
-> - * ============================================
->   */
->  
->  static int fsl_spdif_info(struct snd_kcontrol *kcontrol,
-> @@ -942,11 +940,7 @@ static const struct snd_soc_component_driver fsl_spdif_component = {
->  	.name		= "fsl-spdif",
->  };
->  
-> -/*
-> - * ================
-> - * FSL SPDIF REGMAP
-> - * ================
-> - */
-> +/* FSL SPDIF REGMAP */
->  
->  static bool fsl_spdif_readable_reg(struct device *dev, unsigned int reg)
->  {
-> -- 
-> 1.8.1.2
-> 
-> 
+-- 
+David Jander
+Protonic Holland.
