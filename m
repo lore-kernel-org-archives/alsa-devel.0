@@ -1,65 +1,159 @@
-From: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
-Date: Tue, 27 Aug 2013 09:19:49 +0200
-Message-ID: <521C5315.3030207@ladisch.de>
-References: <Pine.LNX.4.44L0.1308261419100.886-100000@iolanthe.rowland.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <Pine.LNX.4.44L0.1308261419100.886-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, James Stone <jamesmstone-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 1/9] ALSA: Compress - dont use lock for all ioctls
+Date: Tue, 27 Aug 2013 12:10:31 +0530
+Message-ID: <1377585639-29516-2-git-send-email-vinod.koul@intel.com>
+References: <1377585639-29516-1-git-send-email-vinod.koul@intel.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1377585639-29516-1-git-send-email-vinod.koul@intel.com>
+Sender: stable-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: broonie@kernel.org, lgirdwood@gmail.com, Vinod Koul <vinod.koul@intel.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Alan Stern wrote:
->> All the difficulty arises from the fact that we don't know beforehand
->> how many URBs will constitute an ALSA period since for playback
->> endpoints, the URB sizes can vary.  [...]
->> the number of URBs per period is fixed, and the number of packets in
->> each URB is adjusted during playback so that all the URBs end up
->> having roughly the same number of frames.
->> [...]
->> The parameter calculation now ends up being the same for both recording
->> and playback endpoints.  This may seem odd, but it follows from the
->> reasoning above.
+Some simple ioctls like timsetamp query, capabities query can be done anytime
+and should not be under the stream lock. Move these to
+snd_compress_simple_iotcls() which is invoked without lock held
 
-There is no reasoning about capture endpoints.
+While at it, improve readblity a bit by sprinkling some empty lines
 
-The driver cannot control how many samples actually end up in a capture
-packet, so it is possible that URBs end up being one USB frame longer
-than a period, in which case the ALSA period interrupts will accumulate
-delays of up to one period, or that URBs end up being one USB frame
-shorter than a period, in which case the ALSA period interrupt will be
-delayed to the end of the _next_ URB.
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Cc: <stable@vger.kernel.org>
+---
+ sound/core/compress_offload.c |   79 ++++++++++++++++++++++++++++++-----------
+ 1 files changed, 58 insertions(+), 21 deletions(-)
 
-The current algorithm uses very short capture URBs to ensure that _some_
-URB is completed as soon as possible after a period ends.
-
-Your patch makes things worse for running jackd at lower latencies
-because playback and capture period interrupts are expected to be more
-or less synchronous (jackd waits for both interrupts before acting on
-one period).  With only two periods per buffer and the capture period
-interrupt randomly delayed by up to one period, the time available for
-processing one period is reduced to zero.
-
-I'd suggest to keep the old calculation for capture URBs.  It would
-make sense to use longer capture URBs only if the period size is
-relatively large.
-
-Note: for capturing, the number of URBs has no effect on latency and
-just reduces the risk of overruns, so it is desirable to make the queue
-as long as possible (for a given URB length).
-
-> Not having heard any responses to the patch posted last Wednesday,
-
-Sorry, my #patches / free_time quotient is rather large.
-
-
-Regards,
-Clemens
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index 99db892..868aefd 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -729,70 +729,107 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
+ 	return retval;
+ }
+ 
+-static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
++static int snd_compress_simple_ioctls(struct file *file,
++				struct snd_compr_stream *stream,
++				unsigned int cmd, unsigned long arg)
+ {
+-	struct snd_compr_file *data = f->private_data;
+-	struct snd_compr_stream *stream;
+ 	int retval = -ENOTTY;
+ 
+-	if (snd_BUG_ON(!data))
+-		return -EFAULT;
+-	stream = &data->stream;
+-	if (snd_BUG_ON(!stream))
+-		return -EFAULT;
+-	mutex_lock(&stream->device->lock);
+ 	switch (_IOC_NR(cmd)) {
+ 	case _IOC_NR(SNDRV_COMPRESS_IOCTL_VERSION):
+ 		put_user(SNDRV_COMPRESS_VERSION,
+ 				(int __user *)arg) ? -EFAULT : 0;
+ 		break;
++
+ 	case _IOC_NR(SNDRV_COMPRESS_GET_CAPS):
+ 		retval = snd_compr_get_caps(stream, arg);
+ 		break;
++
+ 	case _IOC_NR(SNDRV_COMPRESS_GET_CODEC_CAPS):
+ 		retval = snd_compr_get_codec_caps(stream, arg);
+ 		break;
++
++	case _IOC_NR(SNDRV_COMPRESS_TSTAMP):
++		retval = snd_compr_tstamp(stream, arg);
++		break;
++
++	case _IOC_NR(SNDRV_COMPRESS_AVAIL):
++		retval = snd_compr_ioctl_avail(stream, arg);
++		break;
++
++		/* drain and partial drain need special handling
++	 * we need to drop the locks here as the streams would get blocked on the
++	 * dsp to get drained. The locking would be handled in respective
++	 * function here
++	 */
++	case _IOC_NR(SNDRV_COMPRESS_DRAIN):
++		retval = snd_compr_drain(stream);
++		break;
++
++	case _IOC_NR(SNDRV_COMPRESS_PARTIAL_DRAIN):
++		retval = snd_compr_partial_drain(stream);
++		break;
++	}
++
++	return retval;
++}
++
++static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
++{
++	struct snd_compr_file *data = f->private_data;
++	struct snd_compr_stream *stream;
++	int retval = -ENOTTY;
++
++	if (snd_BUG_ON(!data))
++		return -EFAULT;
++	stream = &data->stream;
++	if (snd_BUG_ON(!stream))
++		return -EFAULT;
++
++	mutex_lock(&stream->device->lock);
++	switch (_IOC_NR(cmd)) {
+ 	case _IOC_NR(SNDRV_COMPRESS_SET_PARAMS):
+ 		retval = snd_compr_set_params(stream, arg);
+ 		break;
++
+ 	case _IOC_NR(SNDRV_COMPRESS_GET_PARAMS):
+ 		retval = snd_compr_get_params(stream, arg);
+ 		break;
++
+ 	case _IOC_NR(SNDRV_COMPRESS_SET_METADATA):
+ 		retval = snd_compr_set_metadata(stream, arg);
+ 		break;
++
+ 	case _IOC_NR(SNDRV_COMPRESS_GET_METADATA):
+ 		retval = snd_compr_get_metadata(stream, arg);
+ 		break;
+-	case _IOC_NR(SNDRV_COMPRESS_TSTAMP):
+-		retval = snd_compr_tstamp(stream, arg);
+-		break;
+-	case _IOC_NR(SNDRV_COMPRESS_AVAIL):
+-		retval = snd_compr_ioctl_avail(stream, arg);
+-		break;
++
+ 	case _IOC_NR(SNDRV_COMPRESS_PAUSE):
+ 		retval = snd_compr_pause(stream);
+ 		break;
++
+ 	case _IOC_NR(SNDRV_COMPRESS_RESUME):
+ 		retval = snd_compr_resume(stream);
+ 		break;
++
+ 	case _IOC_NR(SNDRV_COMPRESS_START):
+ 		retval = snd_compr_start(stream);
+ 		break;
++
+ 	case _IOC_NR(SNDRV_COMPRESS_STOP):
+ 		retval = snd_compr_stop(stream);
+ 		break;
+-	case _IOC_NR(SNDRV_COMPRESS_DRAIN):
+-		retval = snd_compr_drain(stream);
+-		break;
+-	case _IOC_NR(SNDRV_COMPRESS_PARTIAL_DRAIN):
+-		retval = snd_compr_partial_drain(stream);
+-		break;
++
+ 	case _IOC_NR(SNDRV_COMPRESS_NEXT_TRACK):
+ 		retval = snd_compr_next_track(stream);
+ 		break;
+ 
++	default:
++		mutex_unlock(&stream->device->lock);
++		return snd_compress_simple_ioctls(f, stream, cmd, arg);
++
+ 	}
++
+ 	mutex_unlock(&stream->device->lock);
+ 	return retval;
+ }
+-- 
+1.7.0.4
