@@ -1,7 +1,7 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 1/9] ALSA: Compress - dont use lock for all ioctls
-Date: Tue, 27 Aug 2013 12:10:31 +0530
-Message-ID: <1377585639-29516-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 3/9] ASoC: compress: dont aquire lock for draining states
+Date: Tue, 27 Aug 2013 12:10:33 +0530
+Message-ID: <1377585639-29516-4-git-send-email-vinod.koul@intel.com>
 References: <1377585639-29516-1-git-send-email-vinod.koul@intel.com>
 Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <1377585639-29516-1-git-send-email-vinod.koul@intel.com>
@@ -10,150 +10,37 @@ To: alsa-devel@alsa-project.org, tiwai@suse.de
 Cc: broonie@kernel.org, lgirdwood@gmail.com, Vinod Koul <vinod.koul@intel.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Some simple ioctls like timsetamp query, capabities query can be done anytime
-and should not be under the stream lock. Move these to
-snd_compress_simple_iotcls() which is invoked without lock held
-
-While at it, improve readblity a bit by sprinkling some empty lines
+Both draining and partial draning states will take a while getting executed. The
+lock aquired will block the other operations like pause, stop etc which are
+perfectly valid cmds during these states. So dont use mutex while invoking DSP
+for these ops
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Cc: <stable@vger.kernel.org>
 ---
- sound/core/compress_offload.c |   79 ++++++++++++++++++++++++++++++-----------
- 1 files changed, 58 insertions(+), 21 deletions(-)
+ sound/soc/soc-compress.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
 
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 99db892..868aefd 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -729,70 +729,107 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
- 	return retval;
- }
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 06a8000..800ee89 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -171,6 +171,16 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	int ret = 0;
  
--static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
-+static int snd_compress_simple_ioctls(struct file *file,
-+				struct snd_compr_stream *stream,
-+				unsigned int cmd, unsigned long arg)
- {
--	struct snd_compr_file *data = f->private_data;
--	struct snd_compr_stream *stream;
- 	int retval = -ENOTTY;
- 
--	if (snd_BUG_ON(!data))
--		return -EFAULT;
--	stream = &data->stream;
--	if (snd_BUG_ON(!stream))
--		return -EFAULT;
--	mutex_lock(&stream->device->lock);
- 	switch (_IOC_NR(cmd)) {
- 	case _IOC_NR(SNDRV_COMPRESS_IOCTL_VERSION):
- 		put_user(SNDRV_COMPRESS_VERSION,
- 				(int __user *)arg) ? -EFAULT : 0;
- 		break;
-+
- 	case _IOC_NR(SNDRV_COMPRESS_GET_CAPS):
- 		retval = snd_compr_get_caps(stream, arg);
- 		break;
-+
- 	case _IOC_NR(SNDRV_COMPRESS_GET_CODEC_CAPS):
- 		retval = snd_compr_get_codec_caps(stream, arg);
- 		break;
-+
-+	case _IOC_NR(SNDRV_COMPRESS_TSTAMP):
-+		retval = snd_compr_tstamp(stream, arg);
-+		break;
-+
-+	case _IOC_NR(SNDRV_COMPRESS_AVAIL):
-+		retval = snd_compr_ioctl_avail(stream, arg);
-+		break;
-+
-+		/* drain and partial drain need special handling
-+	 * we need to drop the locks here as the streams would get blocked on the
-+	 * dsp to get drained. The locking would be handled in respective
-+	 * function here
++	/* for partial drain and drain cmd dont aquire lock while invoking DSP.
++	 * These calls will be blocked till these operation can complete while
++	 * will be a while. And during that app can invoke STOP, PAUSE etc
 +	 */
-+	case _IOC_NR(SNDRV_COMPRESS_DRAIN):
-+		retval = snd_compr_drain(stream);
-+		break;
-+
-+	case _IOC_NR(SNDRV_COMPRESS_PARTIAL_DRAIN):
-+		retval = snd_compr_partial_drain(stream);
-+		break;
++	if (cmd == SND_COMPR_TRIGGER_PARTIAL_DRAIN || cmd == SND_COMPR_TRIGGER_DRAIN) {
++		if (platform->driver->compr_ops &&
++					platform->driver->compr_ops->trigger)
++			return platform->driver->compr_ops->trigger(cstream, cmd);
 +	}
 +
-+	return retval;
-+}
-+
-+static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
-+{
-+	struct snd_compr_file *data = f->private_data;
-+	struct snd_compr_stream *stream;
-+	int retval = -ENOTTY;
-+
-+	if (snd_BUG_ON(!data))
-+		return -EFAULT;
-+	stream = &data->stream;
-+	if (snd_BUG_ON(!stream))
-+		return -EFAULT;
-+
-+	mutex_lock(&stream->device->lock);
-+	switch (_IOC_NR(cmd)) {
- 	case _IOC_NR(SNDRV_COMPRESS_SET_PARAMS):
- 		retval = snd_compr_set_params(stream, arg);
- 		break;
-+
- 	case _IOC_NR(SNDRV_COMPRESS_GET_PARAMS):
- 		retval = snd_compr_get_params(stream, arg);
- 		break;
-+
- 	case _IOC_NR(SNDRV_COMPRESS_SET_METADATA):
- 		retval = snd_compr_set_metadata(stream, arg);
- 		break;
-+
- 	case _IOC_NR(SNDRV_COMPRESS_GET_METADATA):
- 		retval = snd_compr_get_metadata(stream, arg);
- 		break;
--	case _IOC_NR(SNDRV_COMPRESS_TSTAMP):
--		retval = snd_compr_tstamp(stream, arg);
--		break;
--	case _IOC_NR(SNDRV_COMPRESS_AVAIL):
--		retval = snd_compr_ioctl_avail(stream, arg);
--		break;
-+
- 	case _IOC_NR(SNDRV_COMPRESS_PAUSE):
- 		retval = snd_compr_pause(stream);
- 		break;
-+
- 	case _IOC_NR(SNDRV_COMPRESS_RESUME):
- 		retval = snd_compr_resume(stream);
- 		break;
-+
- 	case _IOC_NR(SNDRV_COMPRESS_START):
- 		retval = snd_compr_start(stream);
- 		break;
-+
- 	case _IOC_NR(SNDRV_COMPRESS_STOP):
- 		retval = snd_compr_stop(stream);
- 		break;
--	case _IOC_NR(SNDRV_COMPRESS_DRAIN):
--		retval = snd_compr_drain(stream);
--		break;
--	case _IOC_NR(SNDRV_COMPRESS_PARTIAL_DRAIN):
--		retval = snd_compr_partial_drain(stream);
--		break;
-+
- 	case _IOC_NR(SNDRV_COMPRESS_NEXT_TRACK):
- 		retval = snd_compr_next_track(stream);
- 		break;
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
  
-+	default:
-+		mutex_unlock(&stream->device->lock);
-+		return snd_compress_simple_ioctls(f, stream, cmd, arg);
-+
- 	}
-+
- 	mutex_unlock(&stream->device->lock);
- 	return retval;
- }
+ 	if (platform->driver->compr_ops && platform->driver->compr_ops->trigger) {
 -- 
 1.7.0.4
