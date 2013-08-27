@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v11] ASoC: fsl: Add S/PDIF machine driver
-Date: Tue, 27 Aug 2013 15:50:16 +0100
-Message-ID: <20130827145016.GW10783@sirena.org.uk>
-References: <fac39ed91818630e03f81a5f0cf9ddde0e6a3c3a.1377244995.git.b42378@freescale.com>
- <5217B32C.5070300@wwwdotorg.org>
- <20130823191353.GK25263@sirena.org.uk>
- <20130827020107.GB3758@MrMyself>
+Subject: Re: [PATCH 3/8] ASoC: tlv320aic32x4: Convert table
+ based control and DAPM setup
+Date: Tue, 27 Aug 2013 15:54:30 +0100
+Message-ID: <20130827145430.GY10783@sirena.org.uk>
+References: <1377611461-3638-1-git-send-email-lars@metafoo.de>
+ <1377611461-3638-3-git-send-email-lars@metafoo.de>
+ <20130827143558.GO10783@sirena.org.uk>
+ <521CBA91.4020102@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1489042899997331065=="
+Content-Type: multipart/mixed; boundary="===============1961998531862750964=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id AA7A82652B9
- for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 16:50:43 +0200 (CEST)
-In-Reply-To: <20130827020107.GB3758@MrMyself>
+ by alsa0.perex.cz (Postfix) with ESMTP id 014952652B9
+ for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 16:54:39 +0200 (CEST)
+In-Reply-To: <521CBA91.4020102@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +23,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, Stephen Warren <swarren@wwwdotorg.org>, s.hauer@pengutronix.de, tomasz.figa@gmail.com, rob.herring@calxeda.com, p.zabel@pengutronix.de, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Javier Martin <javier.martin@vista-silicon.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1489042899997331065==
+--===============1961998531862750964==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RCcFxJ34+mAtH0DM"
+	protocol="application/pgp-signature"; boundary="XZLT0nNRngx3qG4/"
 Content-Disposition: inline
 
 
---RCcFxJ34+mAtH0DM
+--XZLT0nNRngx3qG4/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Aug 27, 2013 at 10:01:08AM +0800, Nicolin Chen wrote:
+On Tue, Aug 27, 2013 at 04:41:21PM +0200, Lars-Peter Clausen wrote:
+> On 08/27/2013 04:35 PM, Mark Brown wrote:
 
-> On Fri, Aug 23, 2013 at 08:13:53PM +0100, Mark Brown wrote:
+> > Please don't submit a bunch of unrelated patches as a series, submit
+> > them separately.
 
-> I think this patch hasn't been applied yet, already been acked though.
-> Is there any problem in it?
+> The last patch in the series depends on all the other patches in this series
+> (maybe except for the mark dirty fix).
 
-You've allowed less than one working day for a response here - Monday
-was a holiday in the UK.  Something like a week is normally a minimum
-for this sort of thing, especially in a case like this where there has
-been extensive discussion.
+Yes, it was mainly the mark_dirty change which shouldn't have any
+overlap.
 
---RCcFxJ34+mAtH0DM
+--XZLT0nNRngx3qG4/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSHLylAAoJELSic+t+oim9qW4P/jCJvkmyqb+IE8WCJcGSDuzs
-V9TruCMPHsZzAdU7B7Lx6clAYgM4C2bF/MZ2647/OutOvjz8BbgZc5m52ABy9Cs2
-CJHqn9e3TxgFKGMPSRKZdhriN6x/219ziwgjYp4WmMa2CDpMb+wG2Z+sdafCehHd
-p1WqSahsA3WRIVYI+2/kghJW2KCTCkbBtmw7Bu0PiIII25GEgSjhQ3JFn22QRr8N
-QClG+rZjaUyCLZ/G93wYmu6mgjU677OtwEPm99CpbZk2rwcvH6ahA7QG7wJxyGrZ
-LlSbMYswvHpf2K6GcoR+q1rSdvPHWbtOBwGpv4GcTsTHGkfyMdvhvKkbpL2y7u+A
-STJWR+Yu6mmRH7ehMuaq242G2p3QoG8dMa0i1vgAr/6Wqwz7nbSjO+cmPFjzVTvb
-3tc4Gh4wFNUSziIIxgTLIu5dmxuFV/hKqYfo5ijt3sqskoKNytK1qBYEUa0Wudh7
-O3QkM1nnoOuM9arSRCX2sc43qPf6wn514lxpw0a5yMAvJz8ZDR+0xzrHRyfcRZKl
-Urf4HNiduTa56lvQon0bJWcIPpXWskxPKQ48MYmLc2bTQCcMaFEpGIQn9Fh2/lYj
-qqsaIHnZXimf8px4YMGy/eGS36rKkQx2OP+KXVhvIFXmVUVJrpk4xXz9pPqYwd0l
-qBy2puhTYnQRlS3DqgDo
-=sBeY
+iQIcBAEBAgAGBQJSHL2jAAoJELSic+t+oim9WKMP/2o5yKLAqUUCNWlnc81ugiqx
+6VTsFlHCRw3XrzIydbcwhpvlWiXAtAJtmaEytY9XxiIz4P5/1CMDdSP+Wv135sTk
++3UwdrclckiDkwOIH1LhvfG1Qo9QYZ+jIaap9geaDgEhfWNAonY9+o4XBSqZsyq3
+f69ltHWF/EhkYI4vQEryguXXwXGF9eyxvqNUTIT/p+CwI/GZG8BieZ7yfwTG/3Gc
+j4FtaqP85PK39+tHK5OFYD9aOG9nURPwFZnpUhBZs46HxUE91rxxRkVzTYTgEnJ3
+TUCYnoKG3F220QNBTk8NcyyCNK/ioXts5VrCs8VoYaR/lquDP0yxQXZOiJHzQe7Y
+rLD/hwkFsyHX3+srHGpdQ2WBccEdY8fhjd0EOD433ypXl5MiDkUdHcBVitYJKTKY
+7j5WR/sr0qtsVJnD0XHg24h9ELhonNxMsfHCSFCtbodBbryscIHIPjZ1/fhnFUkB
+86hwHLe1+wPrkwuhlV5e9GJv7TA1Ze9FxMOWPpzKpEXpXro9kwLdy7hLEh44BC+e
+agDBmrg5HPOa0wSEHkja294fs5qpYPO/vWJqMPJxPJp5RAc8JifCVP9AuRQvtvP8
+KniAGvMI5/3SoG7njlXwLkrIFYfqAoHqCHmaJ1GexQ/elg69tQEI1jFCzZ7G0OS+
+hT9M6mKn/KfwRFvfQOIw
+=0WXD
 -----END PGP SIGNATURE-----
 
---RCcFxJ34+mAtH0DM--
+--XZLT0nNRngx3qG4/--
 
---===============1489042899997331065==
+--===============1961998531862750964==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1489042899997331065==--
+--===============1961998531862750964==--
