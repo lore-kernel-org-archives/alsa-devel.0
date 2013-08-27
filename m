@@ -1,19 +1,20 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: hda: Is it ok to enable SND_HDA_I915 to support
- Haswell Gfx power well by default?
-Date: Tue, 27 Aug 2013 11:00:32 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8013276C9@SHSMSX101.ccr.corp.intel.com>
-References: <F46914AEC2663F4A9BB62374E5EEF8F8013274C1@SHSMSX101.ccr.corp.intel.com>
- <521C7383.2040901@canonical.com> <s5hvc2rjw1o.wl%tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 2/9] ALSA: compress: use mutex in drain
+Date: Tue, 27 Aug 2013 15:46:14 +0530
+Message-ID: <20130827101614.GY2748@intel.com>
+References: <1377585639-29516-1-git-send-email-vinod.koul@intel.com>
+ <1377585639-29516-3-git-send-email-vinod.koul@intel.com>
+ <s5hioyrjur0.wl%tiwai@suse.de> <20130827094741.GV2748@intel.com>
+ <s5hd2ozjtfh.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 487072650F8
- for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 13:00:42 +0200 (CEST)
-In-Reply-To: <s5hvc2rjw1o.wl%tiwai@suse.de>
-Content-Language: en-US
+ by alsa0.perex.cz (Postfix) with ESMTP id 7CC21265133
+ for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 13:01:10 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hd2ozjtfh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,69 +24,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Tue, Aug 27, 2013 at 12:53:54PM +0200, Takashi Iwai wrote:
+> At Tue, 27 Aug 2013 15:17:41 +0530,
+> Vinod Koul wrote:
+> > On Tue, Aug 27, 2013 at 12:25:23PM +0200, Takashi Iwai wrote:
+> > > > --- a/sound/core/compress_offload.c
+> > > > +++ b/sound/core/compress_offload.c
+> > > > @@ -676,18 +676,29 @@ static int snd_compr_stop(struct snd_compr_stream *stream)
+> > > >  	return retval;
+> > > >  }
+> > > >  
+> > > > +/* this fn is called without lock being held and we change stream states here
+> > > > + * so while using the stream state auquire the lock but relase before invoking
+> > > > + * DSP as the call will possibly take a while
+> > > > + */
+> > > >  static int snd_compr_drain(struct snd_compr_stream *stream)
+> > > >  {
+> > > >  	int retval;
+> > > >  
+> > > > +	mutex_lock(&stream->device->lock);
+> > > >  	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
+> > > > -			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
+> > > > -		return -EPERM;
+> > > > +			stream->runtime->state == SNDRV_PCM_STATE_SETUP) {
+> > > > +		retval = -EPERM;
+> > > > +		goto ret;
+> > > > +	}
+> > > > +	mutex_unlock(&stream->device->lock);
+> > > >  	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_DRAIN);
+> > > 
+> > > Why release the lock here?  The trigger callback is called within this
+> > > mutex lock in other places.
+> > This is the main part :)
+> > 
+> > Since the drain states will take a while (order of few seconds) to execute so we
+> > will be blocked. Thats why we cant have lock here.
+> 
+> What's about other places calling the trigger ops within lock?
+> You can't mix things.
+Well i was going to treat drain only as exception to this. The issue here is
+during the long drain other triggers are perfectly valid cases
+> 
+> > The point of lock is to sync
+> > the stream states here.
+> 
+> Without the lock, it's racy.  What if another thread calls the same
+> function at the same time?
+that part can be checked by seeing if we are already draining.
+> 
+> > We are not modfying anything. During drain and partial
+> > drain we need to allow other trigger ops like pause, stop tog o thru so drop the
+> > lock here for these two ops only!
+> 
+> Well, the biggest problem is that there is no proper design for which
+> ops take a lock and which not.  The trigger callback is basically to
+> trigger the action.  There should be no long-time blocking there.
+> (Otherwise you'll definitely loose a gunfight :)
+The reason for blocked implementation is to treat return of the call as
+notifcation that draining is completed.
 
-Would you please add " default y" to SND_HDA_I915?
+For example user has written all the buffers, lets says worth 3 secs and now has
+triggered drain. User needs to wait till drain is complete before closing the
+device etc. So he waits on drain to compelete..
 
-Thanks
-Mengdong
+Do you have a better way to manage this?
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, August 27, 2013 5:57 PM
-> To: David Henningsson
-> Cc: Lin, Mengdong; alsa-devel@alsa-project.org
-> Subject: Re: hda: Is it ok to enable SND_HDA_I915 to support Haswell Gfx
-> power well by default?
-> 
-> At Tue, 27 Aug 2013 11:38:11 +0200,
-> David Henningsson wrote:
-> >
-> > On 08/27/2013 11:32 AM, Lin, Mengdong wrote:
-> > > Hi Takashi and David,
-> > >
-> > >
-> > >
-> > > Is it okay to enable SND_HDA_I915 by default?
-> >
-> > I think it should be automatically enabled if the user has selected
-> > both of snd-hda-intel and i915. And I thought it already was, but I
-> > haven't checked so I might very well be wrong.
-> 
-> It's not set to default=y.  But, it'd be even easier to get rid of the user
-> selection like below.
-> 
-> 
-> Takashi
-> 
-> ---
-> diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig index
-> 59c5e9c..8de66cc 100644
-> --- a/sound/pci/hda/Kconfig
-> +++ b/sound/pci/hda/Kconfig
-> @@ -152,14 +152,9 @@ config SND_HDA_CODEC_HDMI
->  	  This module is automatically loaded at probing.
-> 
->  config SND_HDA_I915
-> -	bool "Build Display HD-audio controller/codec power well support for i915
-> cards"
-> +	bool
-> +	default y
->  	depends on DRM_I915
-> -	help
-> -	  Say Y here to include full HDMI and DisplayPort HD-audio
-> controller/codec
-> -	  power-well support for Intel Haswell graphics cards based on the i915
-> driver.
-> -
-> -	  Note that this option must be enabled for Intel Haswell C+ stepping
-> machines, otherwise
-> -	  the GPU audio controller/codecs will not be initialized or damaged when
-> exit from S3 mode.
-> 
->  config SND_HDA_CODEC_CIRRUS
->  	bool "Build Cirrus Logic codec support"
+~Vinod
