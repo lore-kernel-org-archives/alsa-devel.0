@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/8] ASoC: jack: Remove unnecessary call to
- snd_soc_dapm_new_widgets()
-Date: Tue, 27 Aug 2013 15:37:48 +0100
-Message-ID: <20130827143748.GQ10783@sirena.org.uk>
+Subject: Re: [PATCH 6/8] ASoC: Call snd_soc_dapm_new_widgets()
+ only once during card initialization
+Date: Tue, 27 Aug 2013 15:38:32 +0100
+Message-ID: <20130827143832.GR10783@sirena.org.uk>
 References: <1377611461-3638-1-git-send-email-lars@metafoo.de>
- <1377611461-3638-5-git-send-email-lars@metafoo.de>
+ <1377611461-3638-6-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7399856799843066158=="
+Content-Type: multipart/mixed; boundary="===============6624601223953201882=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2516C2651D8
- for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 16:38:26 +0200 (CEST)
-In-Reply-To: <1377611461-3638-5-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C85B2652D0
+ for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 16:38:47 +0200 (CEST)
+In-Reply-To: <1377611461-3638-6-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +26,54 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7399856799843066158==
+--===============6624601223953201882==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mzmkN2k+aDjaU9Rr"
+	protocol="application/pgp-signature"; boundary="kAOhhqH5290wydqT"
 Content-Disposition: inline
 
 
---mzmkN2k+aDjaU9Rr
+--kAOhhqH5290wydqT
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Aug 27, 2013 at 03:50:58PM +0200, Lars-Peter Clausen wrote:
-> snd_soc_jack_add_pins() does not create any new DAPM widgets, so there is no
-> need to call snd_soc_dapm_new_widgets().
+On Tue, Aug 27, 2013 at 03:50:59PM +0200, Lars-Peter Clausen wrote:
+> Each time snd_soc_dapm_new_widgets() is called it will instantiate all the
+> widgets and routes that have been added so far and then power them. Doing this
+> multiple times before the card is fully initialized and all widgets have been
+> added can cause unnecessary and even invalid power state transitions which can
+> result in extra register writes and and also might cause clicks and pops.
 
 Applied, thanks.
 
---mzmkN2k+aDjaU9Rr
+--kAOhhqH5290wydqT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSHLm5AAoJELSic+t+oim9idgP/jbCKEvj2v5Uq5WwNXjFL5DD
-mqAQZJGoMLWVwLYtsPIt/aoCOvNNxVrQ6kD0KZCTltWzFz4oT6T49W++bu4k/xe3
-XASvoFKGHeveXTkXWH0dSNe15uX62r8X2INsZLRiABEInhE+8FIVzEMuQ5TDrBaM
-/mk0mVUb96FXOQtibOpqIkcYtxFMNkGabO4r+acGQjV+8O5ox0zjPEX5wS4jqiJh
-TWNGsbqsJM7NIx/2WJReKt2nzFQMcYurbhlOaTY0UKq0v7GdEUe7AMV/avzv0fKX
-44pGxYeCkRtQjzpBUf1VaSoSTmcrGHXt2Ii/Vi7Fz2y6RPeYHRDypmVLzCelvoGa
-VISiP7+0lQ4GTL1EUmtRuDkzWEGvpnLKmNsGOu9H/SFkBcp9rVoYOJzeKy/F+ddE
-PxVDI3zAJeBqC4xd/jAxXqqA3HY/wjSjCGD0DTdchY33ylaTUnZYtNPv37o8hAL/
-mm+d8ceSm+1Xmw8Cq0oVmc0L/K11/vhSe3Ze+8gPE/Q8CsyHOA2QVrYT9RNo3+tQ
-JtX3T5myxteVgtgT7fBlBS0ULPgvY0P4toNfm5Lmosmkb0CwFy92J8+FiTJBgU9/
-SezWvjV1b+ZJKBwegHWplw6XbOoGqd6Jb4cYhw69my+Lmuu5fD2+Y8vFqU8zwXfg
-+z5wIj52RqKSXI4NYncu
-=cAes
+iQIcBAEBAgAGBQJSHLnlAAoJELSic+t+oim9X8IP/Rgku+18XzY1vxT3aXYw1da9
+hqEff1AUEF2ZjTV5nHCcsX01cuRaDciTMjF9dnDTqTwSMDfswhXyN5aVaKLBOqje
+4bsnIdjF+3y0qtwV48R8zthObvb8Lcdq5NIUDvGCoif7AV8t/vYXejOyaPd6SwQ0
+rzdXdqcNLAgAWEelup+YGzpdsT0kVDhyxGbFGl28g42IxZ12V9VvtbLRWTUYgmGt
+wObOt5TvjchYd2V74NpDgl4FRw5jr8mO8pKsbDKwzyG5XvPHyiC+HYev4UgdpZSs
+s/y6b5cpN0xwH5dYwfCDPahLbAGqTvXiG00tZmrBZGBo43oT78sjUxeU4f054wMO
+cae0gc+TZhEpwHSOzkxclJRr+aNafr3NRrM6bqfdwUBuwfpBecV8eFepx9Y0kC5J
+/L29hodV0xmUb4hg5WKsjzKVFD8DX1ylFhccUiyzIxSqSdYi7wB1RhAShJQt5ILC
+ViLhjKjjQXerj6t/UlM8M3vNQVoEzb7WvU6fIRxi4Y6AN7Q1p2YJ/eIHPBrmu7jS
+SKKaaXRcDw5zwHRJ7SE/fF6unLhIWo75Ll6esaSK5uaCXRfX4+ZT3gN3HBPYULu3
+jmo+1GTn7Z82EyeDayNuk+eyszP83ytz9oz879q9qOOdNxSQc5wajwvqo/P7ozMb
+HAJYFjsROhgoWkS3cxiJ
+=QSTd
 -----END PGP SIGNATURE-----
 
---mzmkN2k+aDjaU9Rr--
+--kAOhhqH5290wydqT--
 
---===============7399856799843066158==
+--===============6624601223953201882==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7399856799843066158==--
+--===============6624601223953201882==--
