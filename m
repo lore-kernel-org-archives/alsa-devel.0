@@ -1,51 +1,58 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH v2 1/4] ALSA: hda - add flags and routines
- to get devices selection info for DP1.2 MST
-Date: Tue, 27 Aug 2013 03:16:50 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80132617B@SHSMSX101.ccr.corp.intel.com>
-References: <1377467051-21579-1-git-send-email-mengdong.lin@intel.com>
- <s5hppt0lizi.wl%tiwai@suse.de>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [trivial PATCH] treewide: Fix printks with 0x%#
+Date: Tue, 27 Aug 2013 01:39:25 -0400
+Message-ID: <201308270139.29838.vapier@gentoo.org>
+References: <1374778405.1957.21.camel@joe-AO722>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed;
+  boundary="nextPart2301473.EoAcj9NbxQ";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F3CD261609
- for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 05:16:56 +0200 (CEST)
-In-Reply-To: <s5hppt0lizi.wl%tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <1374778405.1957.21.camel@joe-AO722>
+Sender: owner-linux-mm@kvack.org
+To: Joe Perches <joe@perches.com>
+Cc: Jiri Kosina <trivial@kernel.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, John Stultz <john.stultz@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Daniele Venzano <venza@brownhat.org>, Andi Kleen <andi@firstfloor.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-mm@kvack.org, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+--nextPart2301473.EoAcj9NbxQ
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, August 26, 2013 8:44 PM
-> >
-> > +/* display pin's device list entry */ struct  hda_devlist_entry {
-> > +	unsigned int present_detect:1;
-> > +	unsigned int eld_valid:1;
-> > +	unsigned int inactive:1;
-> > +};
-> 
-> Can't it be simply an unsigned int containing the raw value?
-> You defined the bit flag in the above, and copying the bit field from/to the bit
-> flag looks redundant.
-> 
+On Thursday 25 July 2013 14:53:25 Joe Perches wrote:
+> Using 0x%# emits 0x0x.  Only one is necessary.
 
-How about using "u8"? 
-Since each device entry is only 4 bits in the response to "Get Device List Entry" Control.
+sounds like a job for checkpatch.pl :)
+-mike
 
-Thanks
-Mengdong
+--nextPart2301473.EoAcj9NbxQ
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJSHDuRAAoJEEFjO5/oN/WB9eAP/17Fsge8+iHzu8tiC05a4O7x
+rFgbaVSjlB4OEKMva3jKJPcdIwNjokS0rW6HfCLVVx9AbJC+Y+O21B95DCfD8ZCG
+7LECoepLtCh/pjtblxB9vevhjFVhqLtxVB68+kRziZ659QJZn93TWWO6eYa1hYlF
+NcqeX4cn5irE1eFLb5ghoSdPtGD0PIA4a/3WKoYg62wcx4xSR8UKzdTRTke7Zsfz
+Uscb1S6+XTTp7+hYGyDBUHp60DSmnN4m6MG6XMZKDGxAv2FfpF6h1tBTJu/ubpVg
+bGin+f0QRfVnIOMIzx5T9crH0JCfCmthnaFhs9+aEnqoPEQVTtqY577mV+k9tPY9
+ygB77cIfcePVENVYoOOLn5CjxQjZ9oaRG0acnBNWepoFS5ywKW4xO1H5k2LPY9o3
+Ivq0Dk0Elt3LVLhMtp4IH1GSrFlr9Rsc5+OU60suo9MlHFHobdt3YewUse8BUdQY
+4JqLrAKsvc6OYI/iALy72b7ecPyKi0hcfojOICoDzMd1m7v2AEJ19OIft2RtGij+
+b3WP2GvURB3lYst9eUUSn6Ga9QGtt/nbDtm+aHzPkBn1Y+KxoWJGL/rDtBPQhON6
+AfXoHYKx6BoB0zoOqdXa//MKQ33YTMuehll3Jk0wdg0PLjyO1zPjCSSHB+q1ur8t
+aqPDySYINMZvN6N/MT3N
+=EMNA
+-----END PGP SIGNATURE-----
+
+--nextPart2301473.EoAcj9NbxQ--
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
