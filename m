@@ -1,40 +1,42 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH] ASoc: kirkwood: Use the Kirkwood audio driver in Dove
- boards
-Date: Tue, 27 Aug 2013 20:27:11 +0200
-Message-ID: <20130827202711.6230c38d@armhf>
+From: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
+Date: Tue, 27 Aug 2013 22:03:26 +0200
+Message-ID: <521D060E.4@ladisch.de>
+References: <Pine.LNX.4.44L0.1308271246130.1810-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <Pine.LNX.4.44L0.1308271246130.1810-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, James Stone <jamesmstone-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch permits the generation of the Kirkwood audio driver which
-may be used in the Dove boards.
+Alan Stern wrote:
+> On Tue, 27 Aug 2013, Clemens Ladisch wrote:
+>> The current algorithm uses very short capture URBs to ensure that _some_
+>> URB is completed as soon as possible after a period ends.
+>> [...]
+>> I'd suggest to keep the old calculation for capture URBs.  It would
+>> make sense to use longer capture URBs only if the period size is
+>> relatively large.
+>
+> Okay.  What about playback endpoints with implicit sync?  The current
+> driver treats them the same as capture endpoints.  Is that really the
+> right thing to do?
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
- sound/soc/kirkwood/Kconfig                   | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/kirkwood/Kconfig b/sound/soc/kirkwood/Kconfig
-index 9e1970c..78ed4a4 100644
---- a/sound/soc/kirkwood/Kconfig
-+++ b/sound/soc/kirkwood/Kconfig
-@@ -1,6 +1,6 @@
- config SND_KIRKWOOD_SOC
--	tristate "SoC Audio for the Marvell Kirkwood chip"
--	depends on ARCH_KIRKWOOD || COMPILE_TEST
-+	tristate "SoC Audio for the Marvell Kirkwood and Dove chips"
-+	depends on ARCH_KIRKWOOD || ARCH_DOVE || COMPILE_TEST
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the Kirkwood I2S interface. You will also need to select the
+The only reason to not have an interrupt after each packet is to avoid
+the interrupt overhead (for both CPU and power); shorter URBs would
+result in a more precise DMA position reported to user space.  If there
+is already an interrupt for some capture URB (or for the feedback packet
+in case of explicit feedback), we might as well handle the playback
+packets so far.
 
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+Regards,
+Clemens
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
