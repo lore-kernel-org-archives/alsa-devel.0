@@ -1,58 +1,53 @@
-From: Mike Frysinger <vapier@gentoo.org>
+From: Joe Perches <joe@perches.com>
 Subject: Re: [trivial PATCH] treewide: Fix printks with 0x%#
-Date: Tue, 27 Aug 2013 01:39:25 -0400
-Message-ID: <201308270139.29838.vapier@gentoo.org>
+Date: Mon, 26 Aug 2013 23:00:47 -0700
+Message-ID: <1377583247.2658.13.camel@joe-AO722>
 References: <1374778405.1957.21.camel@joe-AO722>
+	 <201308270139.29838.vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart2301473.EoAcj9NbxQ";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <1374778405.1957.21.camel@joe-AO722>
-Sender: owner-linux-mm@kvack.org
-To: Joe Perches <joe@perches.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <201308270139.29838.vapier@gentoo.org>
+Sender: linux-parisc-owner@vger.kernel.org
+To: Mike Frysinger <vapier@gentoo.org>
 Cc: Jiri Kosina <trivial@kernel.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, John Stultz <john.stultz@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Daniele Venzano <venza@brownhat.org>, Andi Kleen <andi@firstfloor.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-mm@kvack.org, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---nextPart2301473.EoAcj9NbxQ
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+On Tue, 2013-08-27 at 01:39 -0400, Mike Frysinger wrote:
+> On Thursday 25 July 2013 14:53:25 Joe Perches wrote:
+> > Using 0x%# emits 0x0x.  Only one is necessary.
+> 
+> sounds like a job for checkpatch.pl :)
 
-On Thursday 25 July 2013 14:53:25 Joe Perches wrote:
-> Using 0x%# emits 0x0x.  Only one is necessary.
+Here.  Submit it yourself...
+---
+ scripts/checkpatch.pl | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-sounds like a job for checkpatch.pl :)
--mike
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 9ba4fc4..520f8e7 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3869,6 +3869,18 @@ sub process {
+ 			}
+ 		}
+ 
++# check for formats with "0x%#"
++		if ($line =~ /"X*"/) {
++			my $fmt = get_quoted_string($line, $rawline);
++			if ($fmt =~ /0x%#/) {
++				if (WARN("REDUNDANT_HEX",
++					 "Redundant hex prefix 0x format\n" . $herecurr) &&
++				    $fix) {
++					$fixed[$linenr - 1] =~ s/0x%#/%#/g;
++				}
++			}
++		}
++
+ # Check for misused memsets
+ 		if ($^V && $^V ge 5.10.0 &&
+ 		    defined $stat &&
 
---nextPart2301473.EoAcj9NbxQ
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
 
-iQIcBAABAgAGBQJSHDuRAAoJEEFjO5/oN/WB9eAP/17Fsge8+iHzu8tiC05a4O7x
-rFgbaVSjlB4OEKMva3jKJPcdIwNjokS0rW6HfCLVVx9AbJC+Y+O21B95DCfD8ZCG
-7LECoepLtCh/pjtblxB9vevhjFVhqLtxVB68+kRziZ659QJZn93TWWO6eYa1hYlF
-NcqeX4cn5irE1eFLb5ghoSdPtGD0PIA4a/3WKoYg62wcx4xSR8UKzdTRTke7Zsfz
-Uscb1S6+XTTp7+hYGyDBUHp60DSmnN4m6MG6XMZKDGxAv2FfpF6h1tBTJu/ubpVg
-bGin+f0QRfVnIOMIzx5T9crH0JCfCmthnaFhs9+aEnqoPEQVTtqY577mV+k9tPY9
-ygB77cIfcePVENVYoOOLn5CjxQjZ9oaRG0acnBNWepoFS5ywKW4xO1H5k2LPY9o3
-Ivq0Dk0Elt3LVLhMtp4IH1GSrFlr9Rsc5+OU60suo9MlHFHobdt3YewUse8BUdQY
-4JqLrAKsvc6OYI/iALy72b7ecPyKi0hcfojOICoDzMd1m7v2AEJ19OIft2RtGij+
-b3WP2GvURB3lYst9eUUSn6Ga9QGtt/nbDtm+aHzPkBn1Y+KxoWJGL/rDtBPQhON6
-AfXoHYKx6BoB0zoOqdXa//MKQ33YTMuehll3Jk0wdg0PLjyO1zPjCSSHB+q1ur8t
-aqPDySYINMZvN6N/MT3N
-=EMNA
------END PGP SIGNATURE-----
-
---nextPart2301473.EoAcj9NbxQ--
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
