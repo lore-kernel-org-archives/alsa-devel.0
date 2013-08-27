@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/8] ASoC: dapm: Fix marking widgets dirty
- when a route is added
-Date: Tue, 27 Aug 2013 15:33:02 +0100
-Message-ID: <20130827143302.GN10783@sirena.org.uk>
+Subject: Re: [PATCH 3/8] ASoC: tlv320aic32x4: Convert table
+ based control and DAPM setup
+Date: Tue, 27 Aug 2013 15:35:58 +0100
+Message-ID: <20130827143558.GO10783@sirena.org.uk>
 References: <1377611461-3638-1-git-send-email-lars@metafoo.de>
+ <1377611461-3638-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5855493453289365742=="
+Content-Type: multipart/mixed; boundary="===============0389152061431510041=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B373C2651D8
- for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 16:33:08 +0200 (CEST)
-In-Reply-To: <1377611461-3638-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E2D02651D8
+ for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 16:36:05 +0200 (CEST)
+In-Reply-To: <1377611461-3638-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Javier Martin <javier.martin@vista-silicon.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5855493453289365742==
+--===============0389152061431510041==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="EqVOK5mkaJAMmtSx"
+	protocol="application/pgp-signature"; boundary="MdEjg5WkSuUg8x46"
 Content-Disposition: inline
 
 
---EqVOK5mkaJAMmtSx
+--MdEjg5WkSuUg8x46
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Aug 27, 2013 at 03:50:54PM +0200, Lars-Peter Clausen wrote:
-> The current calls to dapm_mark_dirty() in snd_soc_dapm_add_path() are on a path
-> that is only reached if the sink widget is either a mixer or a mux. Move the
-> calls further up so they are called for all widget types.
+On Tue, Aug 27, 2013 at 03:50:56PM +0200, Lars-Peter Clausen wrote:
+> Let the core take care of instantiating the controls and DAPM widgets and
+> routes, this makes the code a bit shorter.
 
 Applied, thanks.
 
---EqVOK5mkaJAMmtSx
+Please don't submit a bunch of unrelated patches as a series, submit
+them separately.  It's a bit easier for review and will avoid later
+patches getting ignored if there's problems early on.
+
+--MdEjg5WkSuUg8x46
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSHLiaAAoJELSic+t+oim9WxQQAI/rle9B6p/g+3azYgtcTWvB
-zK8vARoKt24wRzukU7KzWtBpj57vEyKlWS3/t2Egc2j1S//NjdPIxySdBfC5rit/
-n1Vr/9Ob4mgo/RMJCs2i5/JZ0tgthgfyH+dLANyh085xJj3Lw1Fx8TLj7VyDHdvU
-jICjVdlpIY6ZozInq8wwab+hFn9B8SRKlRCgh2hNWnkSbLfesvXo+PagC3txcbZs
-Y7T+Epwzh6Zww5ZDFYfqTEyNeKGjmNFa67HhaRHcm8FSUfsgxCmcZp8cz+Dgw4aC
-5fBZ8DlwRwWVUh+kP3Y/wtcfwF2YAkLlLxZbdZxS74XXo75WdcBh4pVlm9FPH5Fc
-zUjjrKTWtFdhbAztItDTQ3ITZHsdlBntiWOhSo6XxwH6/W4DuwckjZzBFKxO2wCm
-uAbU0I0IEBQ7o1Z1zny9txmjv6gbtfty8psvV6y+XK/owT/iIsblNyK3DR2TIMaS
-IOUfSATRoqJqjp1/4FiWU2OSHnoZXh0k9iCQlmEuBHXf7eph2hKxc6UI7B7xWbU9
-2DIb9twJ/lX++u5V3Ihl5ceDJ0Z7A4g6JzGN9cDbJyk+Bjq80gj6tOFm0uwW1aXQ
-8PJeFKeyxmo+wkNOmg2nMQT2gAK6NTiee4txIq3bMKRYVZ60GVwRpe5/GDy9/Ixh
-jOf14P7zNZyeg05GiHzM
-=4UPT
+iQIcBAEBAgAGBQJSHLlLAAoJELSic+t+oim9Mv0P/Rh8uEXkJLgzwBvTsyBDIU9a
+vovP7Ul3FWkRiEVvEVvMlc8p+Uq8m/Y9U0z8NxJ5sOazVwNXNs3xBE5YyFfal+pp
+OBWI4RL4FV3FG3W0c7mUE5O7PLcoclxK9yo9jy9lRUp185q3X5HFrTlzAZ3khgun
+FjWlRe95T55Jq/8q6drWg1paXjbykqoGZyV1rMVXM2fJArHRWpDSEBTwNP897Xnj
+zko8DJFkjjR37YB2aC5bkT4LW8z+5bBC6zbhR0qDw74DIcHxLjfj4ce5sZomXE0A
+gTwhjuuawPtGIat16NnCU/t3b1hjGMhyF2JQLfSeJ03Sw61ITXg8JCGkf9+FaGjL
+QcRCiO/hObgsIvgcqbYvPanaBoqXIj9BJefxXm5xr1c8dX1Cf6wLnfja9DiK0Mbd
+ibjMPPErCGDBUU0AAqGd8oHBq2Hf0VlbalioJ+vqEzs0lFC30RxrRLX1rwukN1sw
+IjgLaa7O0KTWVXxvKWE2RLZ4mqjUrctzT8skhqZEZrIGGCo/0w0lBGnYN2w0GBTn
+xu/RjMCoXECx695H3xE3Gri72I1dklhWr+iSg1GO+CigI8RixcTQsmpDh4XgVlHm
+RLgYQZG2ZvV9cmIII6V5XpX+eIWZsiXDhvUU15ODisc3hZTwyk3X0yVGSznlpZ9l
+NO+nCJOWEXhVm7cROH2d
+=WOFS
 -----END PGP SIGNATURE-----
 
---EqVOK5mkaJAMmtSx--
+--MdEjg5WkSuUg8x46--
 
---===============5855493453289365742==
+--===============0389152061431510041==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5855493453289365742==--
+--===============0389152061431510041==--
