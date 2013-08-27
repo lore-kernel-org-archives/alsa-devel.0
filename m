@@ -1,20 +1,19 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH v11] ASoC: fsl: Add S/PDIF machine driver
-Date: Tue, 27 Aug 2013 10:01:08 +0800
-Message-ID: <20130827020107.GB3758@MrMyself>
-References: <fac39ed91818630e03f81a5f0cf9ddde0e6a3c3a.1377244995.git.b42378@freescale.com>
- <5217B32C.5070300@wwwdotorg.org>
- <20130823191353.GK25263@sirena.org.uk>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v2 1/4] ALSA: hda - add flags and routines
+ to get devices selection info for DP1.2 MST
+Date: Tue, 27 Aug 2013 03:16:50 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80132617B@SHSMSX101.ccr.corp.intel.com>
+References: <1377467051-21579-1-git-send-email-mengdong.lin@intel.com>
+ <s5hppt0lizi.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe001.messaging.microsoft.com [207.46.163.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 48949261609
- for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 04:13:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130823191353.GK25263@sirena.org.uk>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F3CD261609
+ for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 05:16:56 +0200 (CEST)
+In-Reply-To: <s5hppt0lizi.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,24 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, Stephen Warren <swarren@wwwdotorg.org>, s.hauer@pengutronix.de, tomasz.figa@gmail.com, rob.herring@calxeda.com, p.zabel@pengutronix.de, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 23, 2013 at 08:13:53PM +0100, Mark Brown wrote:
-> On Fri, Aug 23, 2013 at 01:08:28PM -0600, Stephen Warren wrote:
-> > On 08/23/2013 02:04 AM, Nicolin Chen wrote:
-> > > This patch implements a device-tree-only machine driver for Freescale
-> > > i.MX series Soc. It works with spdif_transmitter/spdif_receiver and
-> > > fsl_spdif.c drivers.
-> 
-> > The binding looks reasonable to me now. Thanks.
-> 
-> Is that a Reviewed-by?
+Hi Takashi,
 
-Sir,
-I think this patch hasn't been applied yet, already been acked though.
-Is there any problem in it?
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, August 26, 2013 8:44 PM
+> >
+> > +/* display pin's device list entry */ struct  hda_devlist_entry {
+> > +	unsigned int present_detect:1;
+> > +	unsigned int eld_valid:1;
+> > +	unsigned int inactive:1;
+> > +};
+> 
+> Can't it be simply an unsigned int containing the raw value?
+> You defined the bit flag in the above, and copying the bit field from/to the bit
+> flag looks redundant.
+> 
 
-Thank you.
-Nicolin
+How about using "u8"? 
+Since each device entry is only 4 bits in the response to "Get Device List Entry" Control.
+
+Thanks
+Mengdong
