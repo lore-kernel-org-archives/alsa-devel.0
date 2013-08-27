@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/8] ASoC: tlv320aic32x4: Convert table
- based control and DAPM setup
-Date: Tue, 27 Aug 2013 15:35:58 +0100
-Message-ID: <20130827143558.GO10783@sirena.org.uk>
+Subject: Re: [PATCH 4/8] ASoC;
+ wm8904: Remove unnecessary call to snd_soc_dapm_new_widgets()
+Date: Tue, 27 Aug 2013 15:36:45 +0100
+Message-ID: <20130827143645.GP10783@sirena.org.uk>
 References: <1377611461-3638-1-git-send-email-lars@metafoo.de>
- <1377611461-3638-3-git-send-email-lars@metafoo.de>
+ <1377611461-3638-4-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0389152061431510041=="
+Content-Type: multipart/mixed; boundary="===============6226919876529555027=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E2D02651D8
- for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 16:36:05 +0200 (CEST)
-In-Reply-To: <1377611461-3638-3-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C2E2265288
+ for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 16:37:02 +0200 (CEST)
+In-Reply-To: <1377611461-3638-4-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Javier Martin <javier.martin@vista-silicon.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0389152061431510041==
+--===============6226919876529555027==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MdEjg5WkSuUg8x46"
+	protocol="application/pgp-signature"; boundary="LpcCHpaCAbC4X43d"
 Content-Disposition: inline
 
 
---MdEjg5WkSuUg8x46
+--LpcCHpaCAbC4X43d
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Aug 27, 2013 at 03:50:56PM +0200, Lars-Peter Clausen wrote:
-> Let the core take care of instantiating the controls and DAPM widgets and
-> routes, this makes the code a bit shorter.
+On Tue, Aug 27, 2013 at 03:50:57PM +0200, Lars-Peter Clausen wrote:
+> The core will call snd_soc_dapm_new_widgets() once all components of the card
+> have been initialized, so there is no need to do this manually in the driver.
+> Calling it earlier also might result in a partially instantiated system being
+> powered up which cause undesired side effects.
 
 Applied, thanks.
 
-Please don't submit a bunch of unrelated patches as a series, submit
-them separately.  It's a bit easier for review and will avoid later
-patches getting ignored if there's problems early on.
-
---MdEjg5WkSuUg8x46
+--LpcCHpaCAbC4X43d
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSHLlLAAoJELSic+t+oim9Mv0P/Rh8uEXkJLgzwBvTsyBDIU9a
-vovP7Ul3FWkRiEVvEVvMlc8p+Uq8m/Y9U0z8NxJ5sOazVwNXNs3xBE5YyFfal+pp
-OBWI4RL4FV3FG3W0c7mUE5O7PLcoclxK9yo9jy9lRUp185q3X5HFrTlzAZ3khgun
-FjWlRe95T55Jq/8q6drWg1paXjbykqoGZyV1rMVXM2fJArHRWpDSEBTwNP897Xnj
-zko8DJFkjjR37YB2aC5bkT4LW8z+5bBC6zbhR0qDw74DIcHxLjfj4ce5sZomXE0A
-gTwhjuuawPtGIat16NnCU/t3b1hjGMhyF2JQLfSeJ03Sw61ITXg8JCGkf9+FaGjL
-QcRCiO/hObgsIvgcqbYvPanaBoqXIj9BJefxXm5xr1c8dX1Cf6wLnfja9DiK0Mbd
-ibjMPPErCGDBUU0AAqGd8oHBq2Hf0VlbalioJ+vqEzs0lFC30RxrRLX1rwukN1sw
-IjgLaa7O0KTWVXxvKWE2RLZ4mqjUrctzT8skhqZEZrIGGCo/0w0lBGnYN2w0GBTn
-xu/RjMCoXECx695H3xE3Gri72I1dklhWr+iSg1GO+CigI8RixcTQsmpDh4XgVlHm
-RLgYQZG2ZvV9cmIII6V5XpX+eIWZsiXDhvUU15ODisc3hZTwyk3X0yVGSznlpZ9l
-NO+nCJOWEXhVm7cROH2d
-=WOFS
+iQIcBAEBAgAGBQJSHLl6AAoJELSic+t+oim93/sQAJSwMKcfunibnecoiof8I/FB
++OOF5INQUmT+aCU5FXQGgwVQzJxR6lgLJZFSrExPHJ6fagdqvnHK9Tczn8ZPRe2z
+DK62ZWQzaxB3aqLZPnB1RWdd4hzfxm2N0xDklOMo8v63KZM5QXI/dZDaqdpncWfw
+k1oNM1FHp8+AFhzlrTGa4CgymjwCp3hUZ55J5LXw9ZA6VyJgilh7+h1ezvRPT8Cq
+CxVioC0ahQzx7jDcFm6Ppl+hGvmxYSqSI+B1FeNzUF/oQQbkZNLNPhYl+j4KpcUr
+W3FsfEXKSWYriuJNdQ4jmpQciIGhMwnm1TNaVuqrE9+XXAGg+3RkDZme8rElGjl0
+Ej9SbLgt8JBLbPH92aFOwa6ddwUYF45+BoveEhE1wRHJ6CliCxFDd0D/v61MA19B
+sKnGW54F4agRNWhz6kZ8RQdXsWjNHczkZCi+3+BWL2lr0M+4XCcZLvbwh/teyzcd
+tPQuGRjArd6DAepN+Nr1U1Vo6YlsgTsvInDeNVD+wYdm3IU6gD1Duys8UHVcMJHS
+AHuv+vcxsOX8uZY382EWz6jwQGeoOShDaIDSOcujj+moTy/8SJ7dlVUx6w8etpBe
+HUG+ibAdBpOeUM1FD3sq7wTaZds0ezx5fD8oMigWtTDYQyecFGZvUwMuZ7fnC2Je
+b+Sz+R2ssKd1ZTLxY6hV
+=u2Q8
 -----END PGP SIGNATURE-----
 
---MdEjg5WkSuUg8x46--
+--LpcCHpaCAbC4X43d--
 
---===============0389152061431510041==
+--===============6226919876529555027==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0389152061431510041==--
+--===============6226919876529555027==--
