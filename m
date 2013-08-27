@@ -1,15 +1,15 @@
 From: mengdong.lin@intel.com
-Subject: [PATCH v3 2/4] ALSA: hda - add device list & select
-	info of display pins to codec proc file
-Date: Mon, 26 Aug 2013 21:35:31 -0400
-Message-ID: <1377567331-1171-1-git-send-email-mengdong.lin@intel.com>
+Subject: [PATCH v3 3/4] ALSA: hda - Haswell codec exposes
+	device list/select info on pins
+Date: Mon, 26 Aug 2013 21:35:41 -0400
+Message-ID: <1377567341-1215-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 543DF2610C6
- for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 10:34:35 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43F19264EBF
+ for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 10:34:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,61 +25,29 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@intel.com>
 
-If a display codec supports multi-stream transport on the pins, the pin's
-device list length and device entries will be exposed to codec proc file.
+This patch is only to allow codec proc file to expose devices list/select info
+for Haswell codec pins.
+
+Since Haswell Gfx driver cannot support DP1.2 MST now, so all pins' device list
+is empty, meaning no pin is multi-streaming capaple.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
-diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
-index 9760f00..a8cb22e 100644
---- a/sound/pci/hda/hda_proc.c
-+++ b/sound/pci/hda/hda_proc.c
-@@ -582,6 +582,36 @@ static void print_gpio(struct snd_info_buffer *buffer,
- 	print_nid_array(buffer, codec, nid, &codec->nids);
- }
- 
-+static void print_device_list(struct snd_info_buffer *buffer,
-+			    struct hda_codec *codec, hda_nid_t nid)
-+{
-+	int i, curr = -1;
-+	u8 dev_list[AC_MAX_DEV_LIST_LEN];
-+	int devlist_len;
-+
-+	devlist_len = snd_hda_get_devices(codec, nid, dev_list,
-+					AC_MAX_DEV_LIST_LEN);
-+	snd_iprintf(buffer, "  Devices: %d\n", devlist_len);
-+	if (devlist_len <= 0)
-+		return;
-+
-+	curr = snd_hda_codec_read(codec, nid, 0,
-+				AC_VERB_GET_DEVICE_SEL, 0);
-+
-+	for (i = 0; i < devlist_len; i++) {
-+		if (i == curr)
-+			snd_iprintf(buffer, "    *");
-+		else
-+			snd_iprintf(buffer, "     ");
-+
-+		snd_iprintf(buffer,
-+			"Dev %02d: PD = %d, ELDV = %d, IA = %d\n", i,
-+			!!(dev_list[i] & AC_DE_PD),
-+			!!(dev_list[i] & AC_DE_ELDV),
-+			!!(dev_list[i] & AC_DE_IA));
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 030ca86..87ca984 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1989,8 +1989,10 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 		return -EINVAL;
+ 	}
+ 	codec->patch_ops = generic_hdmi_patch_ops;
+-	if (codec->vendor_id == 0x80862807)
++	if (codec->vendor_id == 0x80862807) {
+ 		codec->patch_ops.set_power_state = haswell_set_power_state;
++		codec->dp_mst = true;
 +	}
-+}
-+
- static void print_codec_info(struct snd_info_entry *entry,
- 			     struct snd_info_buffer *buffer)
- {
-@@ -751,6 +781,9 @@ static void print_codec_info(struct snd_info_entry *entry,
- 				    (wid_caps & AC_WCAP_DELAY) >>
- 				    AC_WCAP_DELAY_SHIFT);
  
-+		if (wid_type == AC_WID_PIN && codec->dp_mst)
-+			print_device_list(buffer, codec, nid);
-+
- 		if (wid_caps & AC_WCAP_CONN_LIST)
- 			print_conn_list(buffer, codec, nid, wid_type,
- 					conn, conn_len);
+ 	generic_hdmi_init_per_pins(codec);
+ 
 -- 
 1.8.1.2
