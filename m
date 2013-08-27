@@ -1,68 +1,41 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 2/9] ALSA: compress: use mutex in drain
-Date: Tue, 27 Aug 2013 15:17:41 +0530
-Message-ID: <20130827094741.GV2748@intel.com>
+Subject: Re: [PATCH 8/9] ALSA: compress: call pointer callback
+ and updates under a lock
+Date: Tue, 27 Aug 2013 15:18:59 +0530
+Message-ID: <20130827094859.GW2748@intel.com>
 References: <1377585639-29516-1-git-send-email-vinod.koul@intel.com>
- <1377585639-29516-3-git-send-email-vinod.koul@intel.com>
- <s5hioyrjur0.wl%tiwai@suse.de>
+ <1377585639-29516-9-git-send-email-vinod.koul@intel.com>
+ <s5hfvtvjugq.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <stable-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 053FB264F28
+ for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 12:33:54 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hioyrjur0.wl%tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
+In-Reply-To: <s5hfvtvjugq.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 27, 2013 at 12:25:23PM +0200, Takashi Iwai wrote:
-> At Tue, 27 Aug 2013 12:10:32 +0530,
+On Tue, Aug 27, 2013 at 12:31:33PM +0200, Takashi Iwai wrote:
+> At Tue, 27 Aug 2013 12:10:38 +0530,
 > Vinod Koul wrote:
 > > 
-> > Since we dont have lock over the function, we need to aquire mutex when checking
-> > and modfying states in drain and partial_drain handlers
-> > 
-> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> > Cc: <stable@vger.kernel.org>
-> > ---
-> >  sound/core/compress_offload.c |   22 +++++++++++++++++++---
-> >  1 files changed, 19 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-> > index 868aefd..e640f8c 100644
-> > --- a/sound/core/compress_offload.c
-> > +++ b/sound/core/compress_offload.c
-> > @@ -676,18 +676,29 @@ static int snd_compr_stop(struct snd_compr_stream *stream)
-> >  	return retval;
-> >  }
-> >  
-> > +/* this fn is called without lock being held and we change stream states here
-> > + * so while using the stream state auquire the lock but relase before invoking
-> > + * DSP as the call will possibly take a while
-> > + */
-> >  static int snd_compr_drain(struct snd_compr_stream *stream)
-> >  {
-> >  	int retval;
-> >  
-> > +	mutex_lock(&stream->device->lock);
-> >  	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
-> > -			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
-> > -		return -EPERM;
-> > +			stream->runtime->state == SNDRV_PCM_STATE_SETUP) {
-> > +		retval = -EPERM;
-> > +		goto ret;
-> > +	}
-> > +	mutex_unlock(&stream->device->lock);
-> >  	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_DRAIN);
+> > to prevent racy claculations as multiple threads can invoke and update values
 > 
-> Why release the lock here?  The trigger callback is called within this
-> mutex lock in other places.
-This is the main part :)
-
-Since the drain states will take a while (order of few seconds) to execute so we
-will be blocked. Thats why we cant have lock here. The point of lock is to sync
-the stream states here. We are not modfying anything. During drain and partial
-drain we need to allow other trigger ops like pause, stop tog o thru so drop the
-lock here for these two ops only!
+> Why a new lock?  Can't it be the same lock?
+Pointer query and updates IMO should be independent of the trigger ops. I dont
+see a reason why we should blcok pointers while we are pausing...
 
 ~Vinod
