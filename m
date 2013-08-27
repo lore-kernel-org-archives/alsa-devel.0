@@ -1,20 +1,19 @@
-From: Nikolay Martynov <mar.kolya@gmail.com>
-Subject: Re: [PATCH v3 00/11] ALSA: usb-audio: fix
- playback/capture concurrent usage
-Date: Mon, 26 Aug 2013 19:23:06 -0400
-Message-ID: <CALGY4fuux1=qy14eCfcGDcPmARAw6C+MqEEuwL=KF_-mVmUJ+g@mail.gmail.com>
-References: <1377445399-5678-1-git-send-email-eldad@fogrefinery.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] alsa-info: Run without lspci (if there is
+	no pci bus)
+Date: Tue, 27 Aug 2013 02:12:46 +0200
+Message-ID: <521BEEFE.4020400@canonical.com>
+References: <1376052469-6022-1-git-send-email-david.henningsson@canonical.com>
+ <s5hwqnv0y0y.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f181.google.com (mail-vc0-f181.google.com
- [209.85.220.181])
- by alsa0.perex.cz (Postfix) with ESMTP id BFBC5261B2C
- for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 01:23:10 +0200 (CEST)
-Received: by mail-vc0-f181.google.com with SMTP id hz10so2447177vcb.26
- for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2013 16:23:06 -0700 (PDT)
-In-Reply-To: <1377445399-5678-1-git-send-email-eldad@fogrefinery.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DA3C261B2C
+ for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 02:12:39 +0200 (CEST)
+In-Reply-To: <s5hwqnv0y0y.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,88 +23,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Eldad Zack <eldad@fogrefinery.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
+On 08/09/2013 03:55 PM, Takashi Iwai wrote:
+> At Fri,  9 Aug 2013 14:47:49 +0200,
+> David Henningsson wrote:
+>>
+>> On some embedded ARM hardware, there is no pci bus. In that case,
+>> do not require lspci so we can still get as much info as we can.
+>>
+>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+> 
+> Thanks, applied to my tree.
 
-  I've tried this patch and can confirm that it fixes the issue with CM108
-based USB headset I've described on the list several days ago (tried with
-Skype).
-  Thank you!
+Ping - did this ever get pushed to the official alsa-info?
 
-
-2013/8/25 Eldad Zack <eldad@fogrefinery.com>
-
-> Hi,
->
-> This patch series attempts to fix a long standing problem with the
-> concurrent
-> usage of playback and capture on implicit feedback devices.
->
-> Applies against current for-next (HEAD
-> 68538bf2bce557c3b5fe8c59b034d45352500db1 ).
->
-> v2:
->
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-August/065649.html
-> v1:
->
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-August/065517.html
->
->  * Changed "altset_idx" to "altsetting" thanks to Clemens' clarification.
->
->  #3: Thanks to Daniel's test, fixed a NULL dereference caused by userspace
-> calling
->      snd_pcm_open() and then snd_pcm_close() immediately.
->  #8: subs->altset_idx was left intact, since it corresponds to the array
-> index.
->  #10: this patch now removed subs->altset_idx, but also changes the check
-> to be
->       performed against fmt->altsetting.
->  #11: New. This changes the name of snd_usb_endpoint member alt_idx to
-> altsetting
->       for the same reason Clemens described.
->
-> Clemens and Daniel - thank you very much for your help!
->
-> Cheers,
-> Eldad
->
-> Eldad Zack (11):
->   ALSA: usb-audio: remove unused parameter from sync_ep_set_params
->   ALSA: usb-audio: remove deactivate_endpoints()
->   ALSA: usb-audio: prevent NULL dereference on stop trigger
->   ALSA: usb-audio: don't deactivate URBs on in-use EP
->   ALSA: usb-audio: void return type of snd_usb_endpoint_deactivate()
->   ALSA: usb-audio: clear SUBSTREAM_FLAG_SYNC_EP_STARTED on error
->   ALSA: usb-audio: correct ep use_count semantics (add set_param flag)
->   ALSA: usb-audio: conditional interface altsetting
->   ALSA: usb-audio: conditional concurrent usage of endpoint
->   ALSA: usb-audio: remove altset_idx from snd_usb_substream
->   ALSA: usb-audio: rename alt_idx to altsetting
->
->  sound/usb/card.h     |   4 +-
->  sound/usb/endpoint.c |  82 ++++++++++++++++++-------
->  sound/usb/endpoint.h |  11 +++-
->  sound/usb/pcm.c      | 168
-> ++++++++++++++++++++++++++++++++++++++-------------
->  sound/usb/pcm.h      |   2 +
->  sound/usb/proc.c     |   4 +-
->  6 files changed, 201 insertions(+), 70 deletions(-)
->
-> --
-> 1.8.1.5
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+> 
+> 
+> Takashi
+> 
+>> ---
+>>  alsa/utils/alsa-info.sh |   13 +++++++++----
+>>  1 file changed, 9 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/alsa/utils/alsa-info.sh b/alsa/utils/alsa-info.sh
+>> index 9d996aa..2280af5 100755
+>> --- a/alsa/utils/alsa-info.sh
+>> +++ b/alsa/utils/alsa-info.sh
+>> @@ -393,8 +393,10 @@ trap cleanup 0
+>>  if [ "$PROCEED" = "yes" ]; then
+>>  
+>>  if [ -z "$LSPCI" ]; then
+>> -	echo "This script requires lspci. Please install it, and re-run this script."
+>> -	exit 0
+>> +	if [ -d /sys/bus/pci ]; then
+>> +		echo "This script requires lspci. Please install it, and re-run this script."
+>> +		exit 0
+>> +	fi
+>>  fi
+>>  
+>>  #Fetch the info and store in temp files/variables
+>> @@ -407,8 +409,6 @@ KERNEL_OS=`uname -o`
+>>  ALSA_DRIVER_VERSION=`cat /proc/asound/version |head -n1|awk {'print $7'} |sed 's/\.$//'`
+>>  get_alsa_library_version
+>>  ALSA_UTILS_VERSION=`amixer -v |awk {'print $3'}`
+>> -VENDOR_ID=`lspci -vn | grep 040[1-3] | awk -F':' '{print $3}'| awk {'print substr($0, 2);}' >$TEMPDIR/vendor_id.tmp`
+>> -DEVICE_ID=`lspci -vn | grep 040[1-3] | awk -F':' '{print $4}'| awk {'print $1'} >$TEMPDIR/device_id.tmp`
+>>  LAST_CARD=$((`grep "]: " /proc/asound/cards | wc -l` - 1 ))
+>>  
+>>  ESDINST=$(which esd 2>/dev/null| sed 's|^[^/]*||' 2>/dev/null)
+>> @@ -434,7 +434,9 @@ fi
+>>  
+>>  cat /proc/asound/modules 2>/dev/null|awk {'print $2'}>$TEMPDIR/alsamodules.tmp
+>>  cat /proc/asound/cards >$TEMPDIR/alsacards.tmp
+>> +if [[ ! -z "$LSPCI" ]]; then
+>>  lspci |grep -i "multi\|audio">$TEMPDIR/lspci.tmp
+>> +fi
+>>  
+>>  #Check for HDA-Intel cards codec#*
+>>  cat /proc/asound/card*/codec\#* > $TEMPDIR/alsa-hda-intel.tmp 2> /dev/null
+>> @@ -547,6 +549,8 @@ echo "" >> $FILE
+>>  cat $TEMPDIR/alsacards.tmp >> $FILE
+>>  echo "" >> $FILE
+>>  echo "" >> $FILE
+>> +
+>> +if [[ ! -z "$LSPCI" ]]; then
+>>  echo "!!PCI Soundcards installed in the system" >> $FILE
+>>  echo "!!--------------------------------------" >> $FILE
+>>  echo "" >> $FILE
+>> @@ -559,6 +563,7 @@ echo "" >> $FILE
+>>  lspci -vvn |grep -A1 040[1-3] >> $FILE
+>>  echo "" >> $FILE
+>>  echo "" >> $FILE
+>> +fi
+>>  
+>>  if [ "$SNDOPTIONS" ]
+>>  then
+>> -- 
+>> 1.7.9.5
+>>
+> 
 
 
 
 -- 
-Martynov Nikolay.
-Email: mar.kolya@gmail.com
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
