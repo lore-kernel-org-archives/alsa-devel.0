@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/8] ASoC: dmic: Convert table based DAPM
-	setup
-Date: Tue, 27 Aug 2013 15:32:10 +0100
-Message-ID: <20130827143210.GM10783@sirena.org.uk>
+Subject: Re: [PATCH 1/8] ASoC: dapm: Fix marking widgets dirty
+ when a route is added
+Date: Tue, 27 Aug 2013 15:33:02 +0100
+Message-ID: <20130827143302.GN10783@sirena.org.uk>
 References: <1377611461-3638-1-git-send-email-lars@metafoo.de>
- <1377611461-3638-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0843071985421541134=="
+Content-Type: multipart/mixed; boundary="===============5855493453289365742=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B87E92651D8
- for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 16:32:48 +0200 (CEST)
-In-Reply-To: <1377611461-3638-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id B373C2651D8
+ for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 16:33:08 +0200 (CEST)
+In-Reply-To: <1377611461-3638-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +25,52 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0843071985421541134==
+--===============5855493453289365742==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sMkrXc3gAYLRVOjR"
+	protocol="application/pgp-signature"; boundary="EqVOK5mkaJAMmtSx"
 Content-Disposition: inline
 
 
---sMkrXc3gAYLRVOjR
+--EqVOK5mkaJAMmtSx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Aug 27, 2013 at 03:50:55PM +0200, Lars-Peter Clausen wrote:
-> Let the core take care of instantiating the DAPM widgets and routes, this makes
-> the code a bit shorter.
+On Tue, Aug 27, 2013 at 03:50:54PM +0200, Lars-Peter Clausen wrote:
+> The current calls to dapm_mark_dirty() in snd_soc_dapm_add_path() are on a path
+> that is only reached if the sink widget is either a mixer or a mux. Move the
+> calls further up so they are called for all widget types.
 
 Applied, thanks.
 
---sMkrXc3gAYLRVOjR
+--EqVOK5mkaJAMmtSx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSHLhmAAoJELSic+t+oim95DcQAJEQgJTPyrsB+cgsw92c08ix
-XMVIREfxC1UREWD6Bt5XE/mXhBf/9jRkxUhttyYZfgBghkkXR3WqYKSg4tTGga5/
-CvqyVwYzLdjKPfbfiBWftFIIeIiVvByvOhWHkd2Me6I/IY8BxGFyFakAMoPZx1qP
-uprhkkd68cqQuLv+w/lq0kG2wCL4sFlFP2jE8m1PPslK8nU0f5Jgy2hpO7JYaphO
-8SO5f2bnXEXHvEuu5M+Dtl1l4Cds2aXstUtmD9+hIqJuA+iB+uiGYT15IUs8fFfF
-Oi1t9zsccdtpReef01WEpz8yAZ4ezE/WsVrms51oioPhIfgWqxI8F8D53qOOzZu5
-enb1wv6qaABjEvQQW50W/ALGv24woNhe8Zeqy3tZE0a49OHBiM+qWKBAnLWStO94
-x8/Y+fD/XTuhZKc9ztE8PGpilB4S5334lF4Zbx99R4WqS7O4YD8giGZCjaS8jSmm
-9VAz9sSvIrSikI23OY+3aVC9vNBFRZox2wS9raTlFihpFSagVuHf8sOkmHJI2LO6
-2cRHXZy1wA5fQ+g1RDlTffRMxx1Yrmh1qIlszWH0GWF+w/a9H42I4EsQm4TEXs+x
-paqTVDTOVHsPXN0uICAdPYzXmJazNgSoIXrc3MzSVT9rnVUZZ+wby+GuDfCIV5p2
-6cR+1nSM3m692mvWetXu
-=me3e
+iQIcBAEBAgAGBQJSHLiaAAoJELSic+t+oim9WxQQAI/rle9B6p/g+3azYgtcTWvB
+zK8vARoKt24wRzukU7KzWtBpj57vEyKlWS3/t2Egc2j1S//NjdPIxySdBfC5rit/
+n1Vr/9Ob4mgo/RMJCs2i5/JZ0tgthgfyH+dLANyh085xJj3Lw1Fx8TLj7VyDHdvU
+jICjVdlpIY6ZozInq8wwab+hFn9B8SRKlRCgh2hNWnkSbLfesvXo+PagC3txcbZs
+Y7T+Epwzh6Zww5ZDFYfqTEyNeKGjmNFa67HhaRHcm8FSUfsgxCmcZp8cz+Dgw4aC
+5fBZ8DlwRwWVUh+kP3Y/wtcfwF2YAkLlLxZbdZxS74XXo75WdcBh4pVlm9FPH5Fc
+zUjjrKTWtFdhbAztItDTQ3ITZHsdlBntiWOhSo6XxwH6/W4DuwckjZzBFKxO2wCm
+uAbU0I0IEBQ7o1Z1zny9txmjv6gbtfty8psvV6y+XK/owT/iIsblNyK3DR2TIMaS
+IOUfSATRoqJqjp1/4FiWU2OSHnoZXh0k9iCQlmEuBHXf7eph2hKxc6UI7B7xWbU9
+2DIb9twJ/lX++u5V3Ihl5ceDJ0Z7A4g6JzGN9cDbJyk+Bjq80gj6tOFm0uwW1aXQ
+8PJeFKeyxmo+wkNOmg2nMQT2gAK6NTiee4txIq3bMKRYVZ60GVwRpe5/GDy9/Ixh
+jOf14P7zNZyeg05GiHzM
+=4UPT
 -----END PGP SIGNATURE-----
 
---sMkrXc3gAYLRVOjR--
+--EqVOK5mkaJAMmtSx--
 
---===============0843071985421541134==
+--===============5855493453289365742==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0843071985421541134==--
+--===============5855493453289365742==--
