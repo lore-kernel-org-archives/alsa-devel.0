@@ -1,19 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] alsa-info: Run without lspci (if there is
-	no pci bus)
-Date: Tue, 27 Aug 2013 02:12:46 +0200
-Message-ID: <521BEEFE.4020400@canonical.com>
-References: <1376052469-6022-1-git-send-email-david.henningsson@canonical.com>
- <s5hwqnv0y0y.wl%tiwai@suse.de>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: Re: [PATCH v2 1/2] ASoC: fsl_spdif: Remove unnecessary
+ dev_set_drvdata()
+Date: Tue, 27 Aug 2013 09:57:44 +0800
+Message-ID: <20130827015743.GA3758@MrMyself>
+References: <1377292486-7591-1-git-send-email-festevam@gmail.com>
+ <20130826060556.GA12524@MrMyself>
+ <20130826115255.GA10783@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DA3C261B2C
- for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 02:12:39 +0200 (CEST)
-In-Reply-To: <s5hwqnv0y0y.wl%tiwai@suse.de>
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9EC88261609
+ for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2013 04:09:33 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130826115255.GA10783@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,91 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/09/2013 03:55 PM, Takashi Iwai wrote:
-> At Fri,  9 Aug 2013 14:47:49 +0200,
-> David Henningsson wrote:
->>
->> On some embedded ARM hardware, there is no pci bus. In that case,
->> do not require lspci so we can still get as much info as we can.
->>
->> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+On Mon, Aug 26, 2013 at 12:52:55PM +0100, Mark Brown wrote:
+> On Mon, Aug 26, 2013 at 02:05:56PM +0800, Nicolin Chen wrote:
+> > Good to know this. Thank you :)
+> > 
+> > Acked-by: Nicolin Chen <b42378@freescale.com>
+> > (
+> >  I'm not sure if I can use 'Acked-by'.
+> >  If not, pls replace it to 'Reviewed-by'
+> >  Thanks a lot.
 > 
-> Thanks, applied to my tree.
+> Reviwed-by: is actually better - acked just means that you don't mind
+> the patch while reviewed means that you actaully did a proper review and
+> so on.
 
-Ping - did this ever get pushed to the official alsa-info?
+Thank you for the explain :)
 
-> 
-> 
-> Takashi
-> 
->> ---
->>  alsa/utils/alsa-info.sh |   13 +++++++++----
->>  1 file changed, 9 insertions(+), 4 deletions(-)
->>
->> diff --git a/alsa/utils/alsa-info.sh b/alsa/utils/alsa-info.sh
->> index 9d996aa..2280af5 100755
->> --- a/alsa/utils/alsa-info.sh
->> +++ b/alsa/utils/alsa-info.sh
->> @@ -393,8 +393,10 @@ trap cleanup 0
->>  if [ "$PROCEED" = "yes" ]; then
->>  
->>  if [ -z "$LSPCI" ]; then
->> -	echo "This script requires lspci. Please install it, and re-run this script."
->> -	exit 0
->> +	if [ -d /sys/bus/pci ]; then
->> +		echo "This script requires lspci. Please install it, and re-run this script."
->> +		exit 0
->> +	fi
->>  fi
->>  
->>  #Fetch the info and store in temp files/variables
->> @@ -407,8 +409,6 @@ KERNEL_OS=`uname -o`
->>  ALSA_DRIVER_VERSION=`cat /proc/asound/version |head -n1|awk {'print $7'} |sed 's/\.$//'`
->>  get_alsa_library_version
->>  ALSA_UTILS_VERSION=`amixer -v |awk {'print $3'}`
->> -VENDOR_ID=`lspci -vn | grep 040[1-3] | awk -F':' '{print $3}'| awk {'print substr($0, 2);}' >$TEMPDIR/vendor_id.tmp`
->> -DEVICE_ID=`lspci -vn | grep 040[1-3] | awk -F':' '{print $4}'| awk {'print $1'} >$TEMPDIR/device_id.tmp`
->>  LAST_CARD=$((`grep "]: " /proc/asound/cards | wc -l` - 1 ))
->>  
->>  ESDINST=$(which esd 2>/dev/null| sed 's|^[^/]*||' 2>/dev/null)
->> @@ -434,7 +434,9 @@ fi
->>  
->>  cat /proc/asound/modules 2>/dev/null|awk {'print $2'}>$TEMPDIR/alsamodules.tmp
->>  cat /proc/asound/cards >$TEMPDIR/alsacards.tmp
->> +if [[ ! -z "$LSPCI" ]]; then
->>  lspci |grep -i "multi\|audio">$TEMPDIR/lspci.tmp
->> +fi
->>  
->>  #Check for HDA-Intel cards codec#*
->>  cat /proc/asound/card*/codec\#* > $TEMPDIR/alsa-hda-intel.tmp 2> /dev/null
->> @@ -547,6 +549,8 @@ echo "" >> $FILE
->>  cat $TEMPDIR/alsacards.tmp >> $FILE
->>  echo "" >> $FILE
->>  echo "" >> $FILE
->> +
->> +if [[ ! -z "$LSPCI" ]]; then
->>  echo "!!PCI Soundcards installed in the system" >> $FILE
->>  echo "!!--------------------------------------" >> $FILE
->>  echo "" >> $FILE
->> @@ -559,6 +563,7 @@ echo "" >> $FILE
->>  lspci -vvn |grep -A1 040[1-3] >> $FILE
->>  echo "" >> $FILE
->>  echo "" >> $FILE
->> +fi
->>  
->>  if [ "$SNDOPTIONS" ]
->>  then
->> -- 
->> 1.7.9.5
->>
-> 
-
-
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Nicolin
