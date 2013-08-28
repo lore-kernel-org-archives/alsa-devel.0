@@ -1,58 +1,36 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 09/18] ASoC: Samsung: Do not queue cyclic buffers
- multiple times
-Date: Wed, 28 Aug 2013 10:53:15 +0100
-Message-ID: <20130828095315.GG10783@sirena.org.uk>
-References: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com>
- <1376243970-6489-10-git-send-email-tomasz.figa@gmail.com>
- <CACRpkdZd+LJeZdSjsD6OCLOnZ0VrDg0aa-e163NXsw6ajWf7rA@mail.gmail.com>
+From: loody <miloody@gmail.com>
+Subject: where to get snd_pcm_hardware info when usb audio
+	device plug in?
+Date: Wed, 28 Aug 2013 21:18:25 +0800
+Message-ID: <CANudz+uTk+GDAj=NfHQ_6ZrL6=ZmWJfXAnwRqk7yHPr4s0Jg1A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bfHXWC0AWsk5KHuB"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CACRpkdZd+LJeZdSjsD6OCLOnZ0VrDg0aa-e163NXsw6ajWf7rA@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Tomasz Figa <tomasz.figa@gmail.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-spi@vger.kernel.org, Dan Williams <djbw@fb.com>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f52.google.com (mail-wg0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 74EEF265450
+ for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2013 15:18:28 +0200 (CEST)
+Received: by mail-wg0-f52.google.com with SMTP id l18so4632098wgh.7
+ for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2013 06:18:25 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+hi all:
+is it possible to get snd_pcm_hardware information in /proc, /sys or
+anywhere when usb audio device plug in?
 
---bfHXWC0AWsk5KHuB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+if no, is there api I can take in usermode to get snd_pcm_hardware of
+this usb audio device?
 
-On Wed, Aug 28, 2013 at 09:06:27AM +0200, Linus Walleij wrote:
 
-> If patch 1 thru 9 are uncontroversial now, maybe Vinod can apply
-> these for v3.12 so we can get less noise and risk of collissions
-> in the next merge window?
-
-Patch 9 I was going to apply to ASoC towards the end of the release
-cycle - it shouldn't depend on the earlier ones as ASoC isn't using
-dmaengine yet.  Holding off partly to run testing and partly in case
-this ends up getting applied.
-
---bfHXWC0AWsk5KHuB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSHciIAAoJELSic+t+oim9fJ4P/j2sUwQRjMcCBS9A+6sCysTp
-N2dRUyj6YYqlhYZhCzYVvM7Gs4fENfFbsVBfr2XJ4uct8YooUJ+L2Unq0h33ZHGf
-4/Zelr4XydWS1T1xXljpU8qt1IulOxGIynADOKZ3craKsnqbpVI0tBk1yG0eLOYZ
-Cjkn8bSMTvme+TMPN9ecPEjik+o8gy/VBDstx9D8RiVPTfDOq2ZhMRuPzJ6Zsmce
-ZSO5sQI/KeoF3vajH0oxsw+U5Q6ziKuYVrYnBGmO38qEzVIGJNo2sreGup9bzOR/
-l9DFqS7MGOeNFIv7EzW2ztjj30aJ8XlnYyMc0cguMN2/pQMtq+27nADiwOnM3LOt
-fk3IusueuTc8Gn+GFnK37UikdBmn7EzuKl2RV7xWjN3V+SI6409Ei3Jp4+KTyk2C
-GpH4bG1e4/6/pzWdEPj8AcPL0ugpFXCN8vN9ZDQru2CTEul6YHORbP0MPBqYflzg
-FSOmzLmHCNAl3qoRhRF5aHvmnOXP05Pd50Mn46F2GR0xo3qYyY+7Y5OAGsCv6WzH
-CsMy0Ak2GUbW5RXgTMmiwyu1MjRTpeAPhcJdfuODnylAiEfyKwCxCwEH89eqYnEw
-tHrhzOkONwarQwnQ+nY1DcZAwiIAgDMG5ej2MsSnVW/ChRh1zZtJcBb+2Wp+f+Nm
-Kaex90saPSjyXDzm4d/V
-=KUZC
------END PGP SIGNATURE-----
-
---bfHXWC0AWsk5KHuB--
+-- 
+Thanks for your great help,
