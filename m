@@ -1,36 +1,51 @@
-From: loody <miloody@gmail.com>
-Subject: where to get snd_pcm_hardware info when usb audio
-	device plug in?
-Date: Wed, 28 Aug 2013 21:18:25 +0800
-Message-ID: <CANudz+uTk+GDAj=NfHQ_6ZrL6=ZmWJfXAnwRqk7yHPr4s0Jg1A@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoc: kirkwood: Use the Kirkwood audio driver in Dove
+ boards
+Date: Wed, 28 Aug 2013 15:15:09 +0100
+Message-ID: <20130828141509.GJ10783@sirena.org.uk>
+References: <20130827202711.6230c38d@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f52.google.com (mail-wg0-f52.google.com [74.125.82.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 74EEF265450
- for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2013 15:18:28 +0200 (CEST)
-Received: by mail-wg0-f52.google.com with SMTP id l18so4632098wgh.7
- for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2013 06:18:25 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="s7VmGO2m7mcnuX8Q"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130827202711.6230c38d@armhf>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-hi all:
-is it possible to get snd_pcm_hardware information in /proc, /sys or
-anywhere when usb audio device plug in?
 
-if no, is there api I can take in usermode to get snd_pcm_hardware of
-this usb audio device?
+--s7VmGO2m7mcnuX8Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Tue, Aug 27, 2013 at 08:27:11PM +0200, Jean-Francois Moine wrote:
+> This patch permits the generation of the Kirkwood audio driver which
+> may be used in the Dove boards.
 
--- 
-Thanks for your great help,
+Applied, thanks.
+
+--s7VmGO2m7mcnuX8Q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSHgXqAAoJELSic+t+oim93k8P/3B1712mADk7mYBhgWCt7lVS
+RAmKpwu8JDr48FKquc+AOSI3hZT0pg1Dg/zL5ZzxRMgu4ydNZCrP9Jts9LGJ1Bzr
+GK9O09EMAMt8FIaS0Yfp7PbaBZT8fJGnv7OA7oWnhqX/TOJ3zJ0PJMWR45IikAOg
+ykPHJ3ScR0FLXKFEqBBJAgxI7D45kt2tt1iWrl3dIoVS40HBFam3failRIgn8DPY
+fmNIUik7mboojNj76PT3529hRFI3Fy5M4rK3XuqLODbmj51hkhay+3aEqHPwOSpt
+QefPXFMZnZN14j+KmeT/2ccRX+SHcXc3hCL9HcDxJEjQ++oBMMH8SDEruqUChIEF
+39ee/M7PamgAvWlN1tBKujnPdw3TA3dAbX61w7GPLuROuNXFKxeg0Ly012DX1RfH
+sifgL3Y3seWZ9iBUM6Yw0ry5P8RxijG40/vKtUyc2S8FK7qjJWoh/L4JQF6u3jgc
+ZnaSNSwiYTsg2AjWLfijXvhd2dMb0UJIR+uPrym9WgWDIavMvELbTOASGyw7Gf4E
+cbyEJcKu0aTtTNc5ekhD9CCVvnEgh1bWiAXavEKbQHLTVry3IM+MkVQ7osY9veuj
+QRRl1HOWdL6VkfCLzWWrtHzhOOXSl4idO4J6UZxMhIlI+cZwPC/TaDByyMiPj08P
+iFzqCAcgAyEgVxSgNhCV
+=GNad
+-----END PGP SIGNATURE-----
+
+--s7VmGO2m7mcnuX8Q--
