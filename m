@@ -1,7 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 4/5] ASoC: Blackfin: ADAU1X61 eval board support
-Date: Wed, 28 Aug 2013 17:20:12 +0200
-Message-ID: <1377703214-23234-4-git-send-email-lars@metafoo.de>
+Subject: [PATCH 5/5] ASoC: Blackfin: ADAU1X81 eval board support
+Date: Wed, 28 Aug 2013 17:20:13 +0200
+Message-ID: <1377703214-23234-5-git-send-email-lars@metafoo.de>
 References: <1377703214-23234-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-189.synserver.de (smtp-out-189.synserver.de
  [212.40.185.189])
- by alsa0.perex.cz (Postfix) with ESMTP id C5D62265474
- for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2013 17:18:48 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CE2F265476
+ for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2013 17:18:49 +0200 (CEST)
 In-Reply-To: <1377703214-23234-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,68 +25,68 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a ASoC machine driver to support the EVAL-ADAU1X61 board
+This patch adds a ASoC machine driver to support the EVAL-ADAU1X81 board
 connected to a Analog Devices BF5XX evaluation board.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
  sound/soc/blackfin/Kconfig              |  13 +++
  sound/soc/blackfin/Makefile             |   2 +
- sound/soc/blackfin/bfin-eval-adau1x61.c | 151 ++++++++++++++++++++++++++++++++
- 3 files changed, 166 insertions(+)
- create mode 100644 sound/soc/blackfin/bfin-eval-adau1x61.c
+ sound/soc/blackfin/bfin-eval-adau1x81.c | 139 ++++++++++++++++++++++++++++++++
+ 3 files changed, 154 insertions(+)
+ create mode 100644 sound/soc/blackfin/bfin-eval-adau1x81.c
 
 diff --git a/sound/soc/blackfin/Kconfig b/sound/soc/blackfin/Kconfig
-index 54f74f8..30e3fb9 100644
+index 30e3fb9..87c3980 100644
 --- a/sound/soc/blackfin/Kconfig
 +++ b/sound/soc/blackfin/Kconfig
-@@ -43,6 +43,19 @@ config SND_SOC_BFIN_EVAL_ADAU1373
- 	  Note: This driver assumes that first ADAU1373 DAI is connected to the
+@@ -56,6 +56,19 @@ config SND_SOC_BFIN_EVAL_ADAU1X61
+ 	  Note: This driver assumes that the ADAU1X61 is connected to the
  	  first SPORT port on the BF5XX board.
  
-+config SND_SOC_BFIN_EVAL_ADAU1X61
-+	tristate "Support for the EVAL-ADAU1X61 board on Blackfin eval boards"
++config SND_SOC_BFIN_EVAL_ADAU1X81
++	tristate "Support for the EVAL-ADAU1X81 boards on Blackfin eval boards"
 +	depends on SND_BF5XX_I2S && I2C
 +	select SND_BF5XX_SOC_I2S
-+	select SND_SOC_ADAU1761
++	select SND_SOC_ADAU1781
 +	help
-+	  Say Y if you want to add support for the Analog Devices EVAL-ADAU1X61
++	  Say Y if you want to add support for the Analog Devices EVAL-ADAU1X81
 +	  board connected to one of the Blackfin evaluation boards like the
 +	  BF5XX-STAMP or BF5XX-EZKIT.
 +
-+	  Note: This driver assumes that the ADAU1X61 is connected to the
++	  Note: This driver assumes that the ADAU1X81 is connected to the
 +	  first SPORT port on the BF5XX board.
 +
  config SND_SOC_BFIN_EVAL_ADAV80X
  	tristate "Support for the EVAL-ADAV80X boards on Blackfin eval boards"
  	depends on SND_BF5XX_I2S && (SPI_MASTER || I2C)
 diff --git a/sound/soc/blackfin/Makefile b/sound/soc/blackfin/Makefile
-index ad0a6e9..91eb0e7 100644
+index 91eb0e7..f21e948 100644
 --- a/sound/soc/blackfin/Makefile
 +++ b/sound/soc/blackfin/Makefile
-@@ -22,6 +22,7 @@ snd-ssm2602-objs := bf5xx-ssm2602.o
- snd-ad73311-objs := bf5xx-ad73311.o
+@@ -23,6 +23,7 @@ snd-ad73311-objs := bf5xx-ad73311.o
  snd-ad193x-objs := bf5xx-ad193x.o
  snd-soc-bfin-eval-adau1373-objs := bfin-eval-adau1373.o
-+snd-soc-bfin-eval-adau1x61-objs := bfin-eval-adau1x61.o
+ snd-soc-bfin-eval-adau1x61-objs := bfin-eval-adau1x61.o
++snd-soc-bfin-eval-adau1x81-objs := bfin-eval-adau1x81.o
  snd-soc-bfin-eval-adau1701-objs := bfin-eval-adau1701.o
  snd-soc-bfin-eval-adav80x-objs := bfin-eval-adav80x.o
  
-@@ -31,5 +32,6 @@ obj-$(CONFIG_SND_BF5XX_SOC_SSM2602) += snd-ssm2602.o
- obj-$(CONFIG_SND_BF5XX_SOC_AD73311) += snd-ad73311.o
+@@ -33,5 +34,6 @@ obj-$(CONFIG_SND_BF5XX_SOC_AD73311) += snd-ad73311.o
  obj-$(CONFIG_SND_BF5XX_SOC_AD193X) += snd-ad193x.o
  obj-$(CONFIG_SND_SOC_BFIN_EVAL_ADAU1373) += snd-soc-bfin-eval-adau1373.o
-+obj-$(CONFIG_SND_SOC_BFIN_EVAL_ADAU1X61) += snd-soc-bfin-eval-adau1x61.o
+ obj-$(CONFIG_SND_SOC_BFIN_EVAL_ADAU1X61) += snd-soc-bfin-eval-adau1x61.o
++obj-$(CONFIG_SND_SOC_BFIN_EVAL_ADAU1X81) += snd-soc-bfin-eval-adau1x81.o
  obj-$(CONFIG_SND_SOC_BFIN_EVAL_ADAU1701) += snd-soc-bfin-eval-adau1701.o
  obj-$(CONFIG_SND_SOC_BFIN_EVAL_ADAV80X) += snd-soc-bfin-eval-adav80x.o
-diff --git a/sound/soc/blackfin/bfin-eval-adau1x61.c b/sound/soc/blackfin/bfin-eval-adau1x61.c
+diff --git a/sound/soc/blackfin/bfin-eval-adau1x81.c b/sound/soc/blackfin/bfin-eval-adau1x81.c
 new file mode 100644
-index 0000000..87adac8
+index 0000000..74e3459
 --- /dev/null
-+++ b/sound/soc/blackfin/bfin-eval-adau1x61.c
-@@ -0,0 +1,151 @@
++++ b/sound/soc/blackfin/bfin-eval-adau1x81.c
+@@ -0,0 +1,139 @@
 +/*
-+ * Machine driver for EVAL-ADAU1x61MINIZ on Analog Devices bfin
++ * Machine driver for EVAL-ADAU1x81 on Analog Devices bfin
 + * evaluation boards.
 + *
 + * Copyright 2011-2013 Analog Devices Inc.
@@ -105,37 +105,25 @@ index 0000000..87adac8
 +
 +#include "../codecs/adau17x1.h"
 +
-+static const struct snd_soc_dapm_widget bfin_eval_adau1x61_dapm_widgets[] = {
-+	SND_SOC_DAPM_LINE("In 1", NULL),
-+	SND_SOC_DAPM_LINE("In 2", NULL),
-+	SND_SOC_DAPM_LINE("In 3-4", NULL),
++static const struct snd_soc_dapm_widget bfin_eval_adau1x81_dapm_widgets[] = {
++	SND_SOC_DAPM_LINE("Stereo In", NULL),
++	SND_SOC_DAPM_LINE("Beep", NULL),
 +
-+	SND_SOC_DAPM_LINE("Diff Out L", NULL),
-+	SND_SOC_DAPM_LINE("Diff Out R", NULL),
-+	SND_SOC_DAPM_LINE("Stereo Out", NULL),
-+	SND_SOC_DAPM_HP("Capless HP Out", NULL),
++	SND_SOC_DAPM_SPK("Speaker", NULL),
++	SND_SOC_DAPM_HP("Headphone", NULL),
 +};
 +
-+static const struct snd_soc_dapm_route bfin_eval_adau1x61_dapm_routes[] = {
-+	{ "LAUX", NULL, "In 3-4" },
-+	{ "RAUX", NULL, "In 3-4" },
-+	{ "LINP", NULL, "In 1" },
-+	{ "LINN", NULL, "In 1"},
-+	{ "RINP", NULL, "In 2" },
-+	{ "RINN", NULL, "In 2" },
++static const struct snd_soc_dapm_route bfin_eval_adau1x81_dapm_routes[] = {
++	{ "BEEP", NULL, "Beep" },
++	{ "LMIC", NULL, "Stereo In" },
++	{ "LMIC", NULL, "Stereo In" },
 +
-+	{ "In 1", NULL, "MICBIAS" },
-+	{ "In 2", NULL, "MICBIAS" },
-+
-+	{ "Capless HP Out", NULL, "LHP" },
-+	{ "Capless HP Out", NULL, "RHP" },
-+	{ "Diff Out L", NULL, "LOUT" },
-+	{ "Diff Out R", NULL, "ROUT" },
-+	{ "Stereo Out", NULL, "LOUT" },
-+	{ "Stereo Out", NULL, "ROUT" },
++	{ "Headphone", NULL, "AOUTL" },
++	{ "Headphone", NULL, "AOUTR" },
++	{ "Speaker", NULL, "SP" },
 +};
 +
-+static int bfin_eval_adau1x61_hw_params(struct snd_pcm_substream *substream,
++static int bfin_eval_adau1x81_hw_params(struct snd_pcm_substream *substream,
 +	struct snd_pcm_hw_params *params)
 +{
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
@@ -177,42 +165,42 @@ index 0000000..87adac8
 +	return ret;
 +}
 +
-+static const struct snd_soc_ops bfin_eval_adau1x61_ops = {
-+	.hw_params = bfin_eval_adau1x61_hw_params,
++static const struct snd_soc_ops bfin_eval_adau1x81_ops = {
++	.hw_params = bfin_eval_adau1x81_hw_params,
 +};
 +
-+static struct snd_soc_dai_link bfin_eval_adau1x61_dai = {
-+	.name			= "adau1x61",
-+	.stream_name		= "adau1x61",
++static struct snd_soc_dai_link bfin_eval_adau1x81_dai = {
++	.name			= "adau1x81",
++	.stream_name		= "adau1x81",
 +	.cpu_dai_name		= "bfin-i2s.0",
 +	.codec_dai_name		= "adau-hifi",
 +	.platform_name		= "bfin-i2s-pcm-audio",
-+	.codec_name		= "adau1761.0-0038",
-+	.ops			= &bfin_eval_adau1x61_ops,
++	.codec_name		= "adau1781.0-0038",
++	.ops			= &bfin_eval_adau1x81_ops,
 +	.dai_fmt		= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
 +					SND_SOC_DAIFMT_CBM_CFM,
 +};
 +
-+static struct snd_soc_card bfin_eval_adau1x61 = {
-+	.name			= "bfin-eval-adau1x61",
-+	.driver_name		= "eval-adau1x61",
-+	.dai_link		= &bfin_eval_adau1x61_dai,
++static struct snd_soc_card bfin_eval_adau1x81 = {
++	.name			= "bfin-eval-adau1x81",
++	.driver_name		= "eval-adau1x81",
++	.dai_link		= &bfin_eval_adau1x81_dai,
 +	.num_links		= 1,
 +
-+	.dapm_widgets		= bfin_eval_adau1x61_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(bfin_eval_adau1x61_dapm_widgets),
-+	.dapm_routes		= bfin_eval_adau1x61_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(bfin_eval_adau1x61_dapm_routes),
++	.dapm_widgets		= bfin_eval_adau1x81_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(bfin_eval_adau1x81_dapm_widgets),
++	.dapm_routes		= bfin_eval_adau1x81_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(bfin_eval_adau1x81_dapm_routes),
 +};
 +
-+static int bfin_eval_adau1x61_probe(struct platform_device *pdev)
++static int bfin_eval_adau1x81_probe(struct platform_device *pdev)
 +{
-+	bfin_eval_adau1x61.dev = &pdev->dev;
++	bfin_eval_adau1x81.dev = &pdev->dev;
 +
-+	return snd_soc_register_card(&bfin_eval_adau1x61);
++	return snd_soc_register_card(&bfin_eval_adau1x81);
 +}
 +
-+static int bfin_eval_adau1x61_remove(struct platform_device *pdev)
++static int bfin_eval_adau1x81_remove(struct platform_device *pdev)
 +{
 +	struct snd_soc_card *card = platform_get_drvdata(pdev);
 +
@@ -221,20 +209,20 @@ index 0000000..87adac8
 +	return 0;
 +}
 +
-+static struct platform_driver bfin_eval_adau1x61_driver = {
++static struct platform_driver bfin_eval_adau1x81_driver = {
 +	.driver = {
-+		.name = "bfin-eval-adau1x61",
++		.name = "bfin-eval-adau1x81",
 +		.owner = THIS_MODULE,
 +		.pm = &snd_soc_pm_ops,
 +	},
-+	.probe = bfin_eval_adau1x61_probe,
-+	.remove = bfin_eval_adau1x61_remove,
++	.probe = bfin_eval_adau1x81_probe,
++	.remove = bfin_eval_adau1x81_remove,
 +};
-+module_platform_driver(bfin_eval_adau1x61_driver);
++module_platform_driver(bfin_eval_adau1x81_driver);
 +
 +MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
-+MODULE_DESCRIPTION("ALSA SoC bfin adau1x61 driver");
++MODULE_DESCRIPTION("ALSA SoC bfin adau1x81 driver");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:bfin-eval-adau1x61");
++MODULE_ALIAS("platform:bfin-eval-adau1x81");
 -- 
 1.8.0
