@@ -1,7 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 5/5] ASoC: Blackfin: ADAU1X81 eval board support
-Date: Wed, 28 Aug 2013 17:20:13 +0200
-Message-ID: <1377703214-23234-5-git-send-email-lars@metafoo.de>
+Subject: [PATCH 3/5] ASoC: Add ADAU1381/ADAU1781 audio CODEC
+	support
+Date: Wed, 28 Aug 2013 17:20:11 +0200
+Message-ID: <1377703214-23234-3-git-send-email-lars@metafoo.de>
 References: <1377703214-23234-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-189.synserver.de (smtp-out-189.synserver.de
  [212.40.185.189])
- by alsa0.perex.cz (Postfix) with ESMTP id 6CE2F265476
- for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2013 17:18:49 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CBC0265471
+ for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2013 17:18:48 +0200 (CEST)
 In-Reply-To: <1377703214-23234-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,69 +26,101 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a ASoC machine driver to support the EVAL-ADAU1X81 board
-connected to a Analog Devices BF5XX evaluation board.
+This patch adds support for the Analog Devices ADAU1381 and ADAU1781 audio
+CODECs. The device is a low-power, 24-bit stereo audio CODEC with multiple
+analog inputs and outputs, two digital microphone inputs and an I2S interface.
+The device can be controlled either using I2C or SPI. The main difference
+between the two variants is that the ADAU1781 has a freely programmable SigmaDSP
+processor, while the ADAU1381 has a fixed function wind noise reduction filter.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/blackfin/Kconfig              |  13 +++
- sound/soc/blackfin/Makefile             |   2 +
- sound/soc/blackfin/bfin-eval-adau1x81.c | 139 ++++++++++++++++++++++++++++++++
- 3 files changed, 154 insertions(+)
- create mode 100644 sound/soc/blackfin/bfin-eval-adau1x81.c
+ include/linux/platform_data/adau17x1.h |  19 +
+ sound/soc/codecs/Kconfig               |   5 +
+ sound/soc/codecs/Makefile              |   2 +
+ sound/soc/codecs/adau1781.c            | 675 +++++++++++++++++++++++++++++++++
+ 4 files changed, 701 insertions(+)
+ create mode 100644 sound/soc/codecs/adau1781.c
 
-diff --git a/sound/soc/blackfin/Kconfig b/sound/soc/blackfin/Kconfig
-index 30e3fb9..87c3980 100644
---- a/sound/soc/blackfin/Kconfig
-+++ b/sound/soc/blackfin/Kconfig
-@@ -56,6 +56,19 @@ config SND_SOC_BFIN_EVAL_ADAU1X61
- 	  Note: This driver assumes that the ADAU1X61 is connected to the
- 	  first SPORT port on the BF5XX board.
+diff --git a/include/linux/platform_data/adau17x1.h b/include/linux/platform_data/adau17x1.h
+index 5f559db..b890507 100644
+--- a/include/linux/platform_data/adau17x1.h
++++ b/include/linux/platform_data/adau17x1.h
+@@ -87,4 +87,23 @@ struct adau1761_platform_data {
+ 	enum adau17x1_micbias_voltage micbias_voltage;
+ };
  
-+config SND_SOC_BFIN_EVAL_ADAU1X81
-+	tristate "Support for the EVAL-ADAU1X81 boards on Blackfin eval boards"
-+	depends on SND_BF5XX_I2S && I2C
-+	select SND_BF5XX_SOC_I2S
-+	select SND_SOC_ADAU1781
-+	help
-+	  Say Y if you want to add support for the Analog Devices EVAL-ADAU1X81
-+	  board connected to one of the Blackfin evaluation boards like the
-+	  BF5XX-STAMP or BF5XX-EZKIT.
++/**
++ * struct adau1781_platform_data - ADAU1781 Codec driver platform data
++ * @left_input_differential:	If true configure the left input as
++	differential input.
++ * @right_input_differential:	If true configure the right input as
++ *	differntial input.
++ * @use_dmic:			If true configure the MIC pins as digital
++ *	microphone pins instead of analog microphone pins.
++ * @micbias_voltage:		Microphone voltage bias
++ */
++struct adau1781_platform_data {
++	bool left_input_differential;
++	bool right_input_differential;
 +
-+	  Note: This driver assumes that the ADAU1X81 is connected to the
-+	  first SPORT port on the BF5XX board.
++	bool use_dmic;
 +
- config SND_SOC_BFIN_EVAL_ADAV80X
- 	tristate "Support for the EVAL-ADAV80X boards on Blackfin eval boards"
- 	depends on SND_BF5XX_I2S && (SPI_MASTER || I2C)
-diff --git a/sound/soc/blackfin/Makefile b/sound/soc/blackfin/Makefile
-index 91eb0e7..f21e948 100644
---- a/sound/soc/blackfin/Makefile
-+++ b/sound/soc/blackfin/Makefile
-@@ -23,6 +23,7 @@ snd-ad73311-objs := bf5xx-ad73311.o
- snd-ad193x-objs := bf5xx-ad193x.o
- snd-soc-bfin-eval-adau1373-objs := bfin-eval-adau1373.o
- snd-soc-bfin-eval-adau1x61-objs := bfin-eval-adau1x61.o
-+snd-soc-bfin-eval-adau1x81-objs := bfin-eval-adau1x81.o
- snd-soc-bfin-eval-adau1701-objs := bfin-eval-adau1701.o
- snd-soc-bfin-eval-adav80x-objs := bfin-eval-adav80x.o
++	enum adau17x1_micbias_voltage micbias_voltage;
++};
++
+ #endif
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index d93a984..503f57f 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -21,6 +21,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_AD73311
+ 	select SND_SOC_ADAU1373 if I2C
+ 	select SND_SOC_ADAU1761 if SND_SOC_I2C_AND_SPI
++	select SND_SOC_ADAU1781 if SND_SOC_I2C_AND_SPI
+ 	select SND_SOC_ADAV80X if SND_SOC_I2C_AND_SPI
+ 	select SND_SOC_ADAU1701 if I2C
+ 	select SND_SOC_ADS117X
+@@ -202,6 +203,10 @@ config SND_SOC_ADAU1761
+ 	select SND_SOC_ADAU17X1
+ 	tristate
  
-@@ -33,5 +34,6 @@ obj-$(CONFIG_SND_BF5XX_SOC_AD73311) += snd-ad73311.o
- obj-$(CONFIG_SND_BF5XX_SOC_AD193X) += snd-ad193x.o
- obj-$(CONFIG_SND_SOC_BFIN_EVAL_ADAU1373) += snd-soc-bfin-eval-adau1373.o
- obj-$(CONFIG_SND_SOC_BFIN_EVAL_ADAU1X61) += snd-soc-bfin-eval-adau1x61.o
-+obj-$(CONFIG_SND_SOC_BFIN_EVAL_ADAU1X81) += snd-soc-bfin-eval-adau1x81.o
- obj-$(CONFIG_SND_SOC_BFIN_EVAL_ADAU1701) += snd-soc-bfin-eval-adau1701.o
- obj-$(CONFIG_SND_SOC_BFIN_EVAL_ADAV80X) += snd-soc-bfin-eval-adav80x.o
-diff --git a/sound/soc/blackfin/bfin-eval-adau1x81.c b/sound/soc/blackfin/bfin-eval-adau1x81.c
++config SND_SOC_ADAU1781
++	select SND_SOC_ADAU17X1
++	tristate
++
+ config SND_SOC_ADAV80X
+ 	tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 6aec0af..3f6c3a9 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -9,6 +9,7 @@ snd-soc-adau1701-objs := adau1701.o
+ snd-soc-adau1373-objs := adau1373.o
+ snd-soc-adau17x1-objs := adau17x1.o
+ snd-soc-adau1761-objs := adau1761.o
++snd-soc-adau1781-objs := adau1781.o
+ snd-soc-adav80x-objs := adav80x.o
+ snd-soc-ads117x-objs := ads117x.o
+ snd-soc-ak4104-objs := ak4104.o
+@@ -142,6 +143,7 @@ obj-$(CONFIG_SND_SOC_ADAU1373)	+= snd-soc-adau1373.o
+ obj-$(CONFIG_SND_SOC_ADAU1701)  += snd-soc-adau1701.o
+ obj-$(CONFIG_SND_SOC_ADAU17X1)	+= snd-soc-adau17x1.o
+ obj-$(CONFIG_SND_SOC_ADAU1761)	+= snd-soc-adau1761.o
++obj-$(CONFIG_SND_SOC_ADAU1781)	+= snd-soc-adau1781.o
+ obj-$(CONFIG_SND_SOC_ADAV80X)  += snd-soc-adav80x.o
+ obj-$(CONFIG_SND_SOC_ADS117X)	+= snd-soc-ads117x.o
+ obj-$(CONFIG_SND_SOC_AK4104)	+= snd-soc-ak4104.o
+diff --git a/sound/soc/codecs/adau1781.c b/sound/soc/codecs/adau1781.c
 new file mode 100644
-index 0000000..74e3459
+index 0000000..08bad0b
 --- /dev/null
-+++ b/sound/soc/blackfin/bfin-eval-adau1x81.c
-@@ -0,0 +1,139 @@
++++ b/sound/soc/codecs/adau1781.c
+@@ -0,0 +1,675 @@
 +/*
-+ * Machine driver for EVAL-ADAU1x81 on Analog Devices bfin
-+ * evaluation boards.
++ * Driver for ADAU1781/ADAU1781 codec
 + *
 + * Copyright 2011-2013 Analog Devices Inc.
 + * Author: Lars-Peter Clausen <lars@metafoo.de>
@@ -96,133 +129,670 @@ index 0000000..74e3459
 + */
 +
 +#include <linux/module.h>
-+#include <linux/device.h>
++#include <linux/init.h>
++#include <linux/i2c.h>
++#include <linux/spi/spi.h>
 +#include <linux/slab.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
-+#include <sound/soc.h>
 +#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/tlv.h>
++#include <linux/platform_data/adau17x1.h>
 +
-+#include "../codecs/adau17x1.h"
++#include "adau17x1.h"
 +
-+static const struct snd_soc_dapm_widget bfin_eval_adau1x81_dapm_widgets[] = {
-+	SND_SOC_DAPM_LINE("Stereo In", NULL),
-+	SND_SOC_DAPM_LINE("Beep", NULL),
++#define ADAU1781_DMIC_BEEP_CTRL		0x4008
++#define ADAU1781_LEFT_PGA		0x400e
++#define ADAU1781_RIGHT_PGA		0x400f
++#define ADAU1781_LEFT_PLAYBACK_MIXER	0x401c
++#define ADAU1781_RIGHT_PLAYBACK_MIXER	0x401e
++#define ADAU1781_MONO_PLAYBACK_MIXER	0x401f
++#define ADAU1781_LEFT_LINEOUT		0x4025
++#define ADAU1781_RIGHT_LINEOUT		0x4026
++#define ADAU1781_SPEAKER		0x4027
++#define ADAU1781_BEEP_ZC		0x4028
++#define ADAU1781_DEJITTER		0x4032
++#define ADAU1781_DIG_PWDN0		0x4080
++#define ADAU1781_DIG_PWDN1		0x4081
 +
-+	SND_SOC_DAPM_SPK("Speaker", NULL),
-+	SND_SOC_DAPM_HP("Headphone", NULL),
++#define ADAU1781_INPUT_DIFFERNTIAL BIT(3)
++
++#define ADAU1381_FIRMWARE "adau1381.bin"
++#define ADAU1781_FIRMWARE "adau1781.bin"
++
++static const struct reg_default adau1781_reg_defaults[] = {
++	{ ADAU1781_DMIC_BEEP_CTRL,		0x00 },
++	{ ADAU1781_LEFT_PGA,			0xc7 },
++	{ ADAU1781_RIGHT_PGA,			0xc7 },
++	{ ADAU1781_LEFT_PLAYBACK_MIXER,		0x00 },
++	{ ADAU1781_RIGHT_PLAYBACK_MIXER,	0x00 },
++	{ ADAU1781_MONO_PLAYBACK_MIXER,		0x00 },
++	{ ADAU1781_LEFT_LINEOUT,		0x00 },
++	{ ADAU1781_RIGHT_LINEOUT,		0x00 },
++	{ ADAU1781_SPEAKER,			0x00 },
++	{ ADAU1781_BEEP_ZC,			0x19 },
++	{ ADAU1781_DEJITTER,			0x60 },
++	{ ADAU1781_DIG_PWDN1,			0x0c },
++	{ ADAU1781_DIG_PWDN1,			0x00 },
++	{ ADAU17X1_CLOCK_CONTROL,		0x00 },
++	{ ADAU17X1_PLL_CONTROL,			0x00 },
++	{ ADAU17X1_REC_POWER_MGMT,		0x00 },
++	{ ADAU17X1_MICBIAS,			0x04 },
++	{ ADAU17X1_SERIAL_PORT0,		0x00 },
++	{ ADAU17X1_SERIAL_PORT1,		0x00 },
++	{ ADAU17X1_CONVERTER0,			0x00 },
++	{ ADAU17X1_CONVERTER1,			0x00 },
++	{ ADAU17X1_LEFT_INPUT_DIGITAL_VOL,	0x00 },
++	{ ADAU17X1_RIGHT_INPUT_DIGITAL_VOL,	0x00 },
++	{ ADAU17X1_ADC_CONTROL,			0x00 },
++	{ ADAU17X1_PLAY_POWER_MGMT,		0x00 },
++	{ ADAU17X1_DAC_CONTROL0,		0x00 },
++	{ ADAU17X1_DAC_CONTROL1,		0x00 },
++	{ ADAU17X1_DAC_CONTROL2,		0x00 },
++	{ ADAU17X1_SERIAL_PORT_PAD,		0x00 },
++	{ ADAU17X1_CONTROL_PORT_PAD0,		0x00 },
++	{ ADAU17X1_CONTROL_PORT_PAD1,		0x00 },
++	{ ADAU17X1_DSP_SAMPLING_RATE,		0x01 },
++	{ ADAU17X1_SERIAL_INPUT_ROUTE,		0x00 },
++	{ ADAU17X1_SERIAL_OUTPUT_ROUTE,		0x00 },
++	{ ADAU17X1_DSP_ENABLE,			0x00 },
++	{ ADAU17X1_DSP_RUN,			0x00 },
++	{ ADAU17X1_SERIAL_SAMPLING_RATE,	0x00 },
 +};
 +
-+static const struct snd_soc_dapm_route bfin_eval_adau1x81_dapm_routes[] = {
-+	{ "BEEP", NULL, "Beep" },
-+	{ "LMIC", NULL, "Stereo In" },
-+	{ "LMIC", NULL, "Stereo In" },
++static const DECLARE_TLV_DB_SCALE(adau1781_speaker_tlv, 0, 200, 0);
 +
-+	{ "Headphone", NULL, "AOUTL" },
-+	{ "Headphone", NULL, "AOUTR" },
-+	{ "Speaker", NULL, "SP" },
++static const unsigned int adau1781_pga_tlv[] = {
++	TLV_DB_RANGE_HEAD(4),
++	0, 1, TLV_DB_SCALE_ITEM(0, 600, 0),
++	2, 3, TLV_DB_SCALE_ITEM(1000, 400, 0),
++	4, 4, TLV_DB_SCALE_ITEM(1700, 0, 0),
++	5, 7, TLV_DB_SCALE_ITEM(2000, 600, 0),
 +};
 +
-+static int bfin_eval_adau1x81_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
++static const unsigned int adau1781_beep_tlv[] = {
++	TLV_DB_RANGE_HEAD(4),
++	0, 1, TLV_DB_SCALE_ITEM(0, 600, 0),
++	2, 3, TLV_DB_SCALE_ITEM(1000, 400, 0),
++	4, 4, TLV_DB_SCALE_ITEM(-2300, 0, 0),
++	5, 7, TLV_DB_SCALE_ITEM(2000, 600, 0),
++};
++
++static const DECLARE_TLV_DB_SCALE(adau1781_sidetone_tlv, -1800, 300, 1);
++
++static const char * const adau1781_speaker_bias_select_text[] = {
++	"Normal operation", "Power saving", "Enhanced performance",
++};
++
++static const char * const adau1781_bias_select_text[] = {
++	"Normal operation", "Extreme power saving", "Power saving",
++	"Enhanced performance",
++};
++
++static const SOC_ENUM_SINGLE_DECL(adau1781_adc_bias_enum,
++		ADAU17X1_REC_POWER_MGMT, 3, adau1781_bias_select_text);
++static const SOC_ENUM_SINGLE_DECL(adau1781_speaker_bias_enum,
++		ADAU17X1_PLAY_POWER_MGMT, 6, adau1781_speaker_bias_select_text);
++static const SOC_ENUM_SINGLE_DECL(adau1781_dac_bias_enum,
++		ADAU17X1_PLAY_POWER_MGMT, 4, adau1781_bias_select_text);
++static const SOC_ENUM_SINGLE_DECL(adau1781_playback_bias_enum,
++		ADAU17X1_PLAY_POWER_MGMT, 2, adau1781_bias_select_text);
++static const SOC_ENUM_SINGLE_DECL(adau1781_capture_bias_enum,
++		ADAU17X1_REC_POWER_MGMT, 1, adau1781_bias_select_text);
++
++static const struct snd_kcontrol_new adau1781_controls[] = {
++	SOC_SINGLE_TLV("Beep Capture Volume", ADAU1781_DMIC_BEEP_CTRL, 0, 7, 0,
++		adau1781_beep_tlv),
++	SOC_DOUBLE_R_TLV("PGA Capture Volume", ADAU1781_LEFT_PGA,
++		ADAU1781_RIGHT_PGA, 5, 7, 0, adau1781_pga_tlv),
++	SOC_DOUBLE_R("PGA Capture Switch", ADAU1781_LEFT_PGA,
++		ADAU1781_RIGHT_PGA, 1, 1, 0),
++
++	SOC_DOUBLE_R("Lineout Playback Switch", ADAU1781_LEFT_LINEOUT,
++		ADAU1781_RIGHT_LINEOUT, 1, 1, 0),
++	SOC_SINGLE("Beep ZC Switch", ADAU1781_BEEP_ZC, 0, 1, 0),
++
++	SOC_SINGLE("Mono Playback Switch", ADAU1781_MONO_PLAYBACK_MIXER,
++		0, 1, 0),
++	SOC_SINGLE_TLV("Mono Playback Volume", ADAU1781_SPEAKER, 6, 3, 0,
++		adau1781_speaker_tlv),
++
++	SOC_ENUM("ADC Bias", adau1781_adc_bias_enum),
++	SOC_ENUM("DAC Bias", adau1781_dac_bias_enum),
++	SOC_ENUM("Capture Bias", adau1781_capture_bias_enum),
++	SOC_ENUM("Playback Bias", adau1781_playback_bias_enum),
++	SOC_ENUM("Speaker Bias", adau1781_speaker_bias_enum),
++};
++
++static const struct snd_kcontrol_new adau1781_beep_mixer_controls[] = {
++	SOC_DAPM_SINGLE("Beep Capture Switch", ADAU1781_DMIC_BEEP_CTRL,
++		3, 1, 0),
++};
++
++static const struct snd_kcontrol_new adau1781_left_mixer_controls[] = {
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch",
++		ADAU1781_LEFT_PLAYBACK_MIXER, 5, 1, 0),
++	SOC_DAPM_SINGLE_TLV("Beep Playback Volume",
++		ADAU1781_LEFT_PLAYBACK_MIXER, 1, 8, 0, adau1781_sidetone_tlv),
++};
++
++static const struct snd_kcontrol_new adau1781_right_mixer_controls[] = {
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch",
++		ADAU1781_RIGHT_PLAYBACK_MIXER, 6, 1, 0),
++	SOC_DAPM_SINGLE_TLV("Beep Playback Volume",
++		ADAU1781_LEFT_PLAYBACK_MIXER, 1, 8, 0, adau1781_sidetone_tlv),
++};
++
++static const struct snd_kcontrol_new adau1781_mono_mixer_controls[] = {
++	SOC_DAPM_SINGLE_AUTODISABLE("Left Switch",
++		ADAU1781_MONO_PLAYBACK_MIXER, 7, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("Right Switch",
++		 ADAU1781_MONO_PLAYBACK_MIXER, 6, 1, 0),
++	SOC_DAPM_SINGLE_TLV("Beep Playback Volume",
++		ADAU1781_MONO_PLAYBACK_MIXER, 2, 8, 0, adau1781_sidetone_tlv),
++};
++
++static int adau1781_dejitter_fixup(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int pll_rate;
++	struct snd_soc_codec *codec = w->codec;
++	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++
++	/* After any power changes have been made the dejitter circuit
++	 * has to be reinitialized. */
++	regmap_write(adau->regmap, ADAU1781_DEJITTER, 0);
++	if (!adau->master)
++		regmap_write(adau->regmap, ADAU1781_DEJITTER, 5);
++
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget adau1781_dapm_widgets[] = {
++	SND_SOC_DAPM_PGA("Left PGA", ADAU1781_LEFT_PGA, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Right PGA", ADAU1781_RIGHT_PGA, 0, 0, NULL, 0),
++
++	SND_SOC_DAPM_OUT_DRV("Speaker", ADAU1781_SPEAKER, 0, 0, NULL, 0),
++
++	SOC_MIXER_NAMED_CTL_ARRAY("Beep Mixer", ADAU17X1_MICBIAS, 4, 0,
++		adau1781_beep_mixer_controls),
++
++	SOC_MIXER_ARRAY("Left Lineout Mixer", SND_SOC_NOPM, 0, 0,
++		adau1781_left_mixer_controls),
++	SOC_MIXER_ARRAY("Right Lineout Mixer", SND_SOC_NOPM, 0, 0,
++		adau1781_right_mixer_controls),
++	SOC_MIXER_ARRAY("Mono Mixer", SND_SOC_NOPM, 0, 0,
++		adau1781_mono_mixer_controls),
++
++	SND_SOC_DAPM_SUPPLY("Serial Input Routing", ADAU1781_DIG_PWDN0,
++		2, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("Serial Output Routing", ADAU1781_DIG_PWDN0,
++		3, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("Clock Domain Transfer", ADAU1781_DIG_PWDN0,
++		5, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("Serial Ports", ADAU1781_DIG_PWDN0, 4, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("ADC Engine", ADAU1781_DIG_PWDN0, 7, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("DAC Engine", ADAU1781_DIG_PWDN1, 0, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("Digital Mic", ADAU1781_DIG_PWDN1, 1, 0, NULL, 0),
++
++	SND_SOC_DAPM_SUPPLY("Sound Engine", ADAU1781_DIG_PWDN0, 0, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("SYSCLK", 1, ADAU1781_DIG_PWDN0, 1, 0, NULL, 0),
++
++	SND_SOC_DAPM_SUPPLY("Zero Crossing Detector", ADAU1781_DIG_PWDN1, 2, 0,
++		NULL, 0),
++
++	SND_SOC_DAPM_POST("Dejitter fixup", adau1781_dejitter_fixup),
++
++	SND_SOC_DAPM_INPUT("BEEP"),
++
++	SND_SOC_DAPM_OUTPUT("AOUTL"),
++	SND_SOC_DAPM_OUTPUT("AOUTR"),
++	SND_SOC_DAPM_OUTPUT("SP"),
++	SND_SOC_DAPM_INPUT("LMIC"),
++	SND_SOC_DAPM_INPUT("RMIC"),
++};
++
++static const struct snd_soc_dapm_route adau1781_dapm_routes[] = {
++	{ "Left Lineout Mixer", NULL, "Left Playback Enable" },
++	{ "Right Lineout Mixer", NULL, "Right Playback Enable" },
++
++	{ "Left Lineout Mixer", "Beep Playback Volume", "Beep Mixer" },
++	{ "Left Lineout Mixer", "Switch", "Left DAC" },
++
++	{ "Right Lineout Mixer", "Beep Playback Volume", "Beep Mixer" },
++	{ "Right Lineout Mixer", "Switch", "Right DAC" },
++
++	{ "Mono Mixer", "Beep Playback Volume", "Beep Mixer" },
++	{ "Mono Mixer", "Right Switch", "Right DAC" },
++	{ "Mono Mixer", "Left Switch", "Left DAC" },
++	{ "Speaker", NULL, "Mono Mixer" },
++
++	{ "Mono Mixer", NULL, "SYSCLK" },
++	{ "Left Lineout Mixer", NULL, "SYSCLK" },
++	{ "Left Lineout Mixer", NULL, "SYSCLK" },
++
++	{ "Beep Mixer", "Beep Capture Switch", "BEEP" },
++	{ "Beep Mixer", NULL, "Zero Crossing Detector" },
++
++	{ "Left DAC", NULL, "DAC Engine" },
++	{ "Right DAC", NULL, "DAC Engine" },
++
++	{ "Sound Engine", NULL, "SYSCLK" },
++	{ "DSP", NULL, "Sound Engine" },
++
++	{ "AIFCLK", NULL, "SYSCLK" },
++
++	{ "AIFIN", NULL, "Serial Input Routing" },
++	{ "AIFIN", NULL, "Serial Ports" },
++	{ "AIFIN", NULL, "Clock Domain Transfer" },
++	{ "AIFOUT", NULL, "Serial Output Routing" },
++	{ "AIFOUT", NULL, "Serial Ports" },
++	{ "AIFOUT", NULL, "Clock Domain Transfer" },
++
++	{ "AOUTL", NULL, "Left Lineout Mixer" },
++	{ "AOUTR", NULL, "Right Lineout Mixer" },
++	{ "SP", NULL, "Speaker" },
++};
++
++DECLARE_ADAU17X1_AIFOUT_MUX(adc, "ADC");
++
++static const struct snd_soc_dapm_route adau1781_adc_dapm_routes[] = {
++	{ "Left PGA", NULL, "LMIC" },
++	{ "Right PGA", NULL, "RMIC" },
++	{ "Left ADC", NULL, "Left PGA" },
++	{ "Right ADC", NULL, "Right PGA" },
++
++	{ "Left ADC", NULL, "ADC Engine" },
++	{ "Right ADC", NULL, "ADC Engine" },
++
++	{ "AIFOUT Capture Mux", "ADC", "Left ADC" },
++	{ "AIFOUT Capture Mux", "ADC", "Right ADC" },
++
++	{ "DSP", NULL, "Left ADC" },
++	{ "DSP", NULL, "Right ADC" },
++};
++
++static const char * const adau1781_dmic_select_text[] = {
++	"DMIC1", "DMIC2",
++};
++
++static const SOC_ENUM_SINGLE_DECL(adau1781_dmic_select_enum, 0, 0,
++	adau1781_dmic_select_text);
++
++static const struct snd_kcontrol_new adau1781_dmic_mux =
++	SOC_DAPM_ENUM_VIRT("DMIC Select", adau1781_dmic_select_enum);
++
++static const char * const adau1781_dmic_aifout_mux_text[] = {
++	"DMIC",
++	"DSP",
++};
++
++static const SOC_ENUM_SINGLE_DECL(adau1781_dmic_aifout_mux_enum,
++	ADAU17X1_SERIAL_OUTPUT_ROUTE, 0, adau1781_dmic_aifout_mux_text);
++
++static const struct snd_kcontrol_new adau1781_dmic_aifout_mux =
++	ADAU17X1_DSP_MUX_ENUM("AIFOUT Capture Mux",
++		adau1781_dmic_aifout_mux_enum);
++
++static const struct snd_soc_dapm_widget adau1781_dmic_dapm_widgets[] = {
++	SND_SOC_DAPM_VIRT_MUX("DMIC Select", SND_SOC_NOPM, 0, 0,
++		&adau1781_dmic_mux),
++
++	SND_SOC_DAPM_VIRT_MUX("AIFOUT Capture Mux", SND_SOC_NOPM, 0, 0,
++		&adau1781_dmic_aifout_mux),
++
++	SND_SOC_DAPM_ADC("DMIC1", NULL, ADAU1781_DMIC_BEEP_CTRL, 4, 0),
++	SND_SOC_DAPM_ADC("DMIC2", NULL, ADAU1781_DMIC_BEEP_CTRL, 5, 0),
++};
++
++static const struct snd_soc_dapm_route adau1781_dmic_dapm_routes[] = {
++	{ "DMIC1", NULL, "LMIC" },
++	{ "DMIC2", NULL, "RMIC" },
++
++	{ "DMIC1", NULL, "Digital Mic" },
++	{ "DMIC2", NULL, "Digital Mic" },
++	{ "DMIC1", NULL, "ADC Engine" },
++	{ "DMIC2", NULL, "ADC Engine" },
++
++	{ "DMIC Select", "DMIC1", "DMIC1" },
++	{ "DMIC Select", "DMIC2", "DMIC2" },
++
++	{ "AIFOUT Capture Mux", "DMIC", "DMIC Select" },
++	{ "DSP", NULL, "DMIC Select" },
++};
++
++static int adau1781_set_bias_level(struct snd_soc_codec *codec,
++		enum snd_soc_bias_level level)
++{
++	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++		break;
++	case SND_SOC_BIAS_PREPARE:
++		break;
++	case SND_SOC_BIAS_STANDBY:
++		regmap_update_bits(adau->regmap, ADAU17X1_CLOCK_CONTROL,
++			ADAU17X1_CLOCK_CONTROL_SYSCLK_EN,
++			ADAU17X1_CLOCK_CONTROL_SYSCLK_EN);
++
++		/* Precharge */
++		regmap_update_bits(adau->regmap, ADAU1781_DIG_PWDN1, 0x8, 0x8);
++		break;
++	case SND_SOC_BIAS_OFF:
++		regmap_update_bits(adau->regmap, ADAU1781_DIG_PWDN1, 0xc, 0x0);
++		regmap_update_bits(adau->regmap, ADAU17X1_CLOCK_CONTROL,
++			ADAU17X1_CLOCK_CONTROL_SYSCLK_EN, 0);
++		break;
++	}
++
++	codec->dapm.bias_level = level;
++	return 0;
++}
++
++static bool adau1781_readable_register(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case ADAU1781_DMIC_BEEP_CTRL:
++	case ADAU1781_LEFT_PGA:
++	case ADAU1781_RIGHT_PGA:
++	case ADAU1781_LEFT_PLAYBACK_MIXER:
++	case ADAU1781_RIGHT_PLAYBACK_MIXER:
++	case ADAU1781_MONO_PLAYBACK_MIXER:
++	case ADAU1781_LEFT_LINEOUT:
++	case ADAU1781_RIGHT_LINEOUT:
++	case ADAU1781_SPEAKER:
++	case ADAU1781_BEEP_ZC:
++	case ADAU1781_DEJITTER:
++	case ADAU1781_DIG_PWDN0:
++	case ADAU1781_DIG_PWDN1:
++		return true;
++	default:
++		break;
++	}
++
++	return adau17x1_readable_register(dev, reg);
++}
++
++static int adau1781_set_input_mode(struct adau *adau, unsigned int reg,
++	bool differential)
++{
++	unsigned int val;
++
++	if (differential)
++		val = ADAU1781_INPUT_DIFFERNTIAL;
++	else
++		val = 0;
++
++	return regmap_update_bits(adau->regmap, reg,
++		ADAU1781_INPUT_DIFFERNTIAL, val);
++}
++
++static int adau1781_probe(struct snd_soc_codec *codec)
++{
++	struct adau1781_platform_data *pdata = dev_get_platdata(codec->dev);
++	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	const char *firmware;
 +	int ret;
 +
-+	switch (params_rate(params)) {
-+	case 48000:
-+	case 8000:
-+	case 12000:
-+	case 16000:
-+	case 24000:
-+	case 32000:
-+	case 96000:
-+		pll_rate = 48000 * 1024;
++	ret = adau17x1_probe(codec);
++	if (ret)
++		return ret;
++
++	if (pdata) {
++		ret = adau1781_set_input_mode(adau, ADAU1781_LEFT_PGA,
++			pdata->left_input_differential);
++		if (ret)
++			return ret;
++		ret = adau1781_set_input_mode(adau, ADAU1781_RIGHT_PGA,
++			pdata->right_input_differential);
++		if (ret)
++			return ret;
++	}
++
++	if (pdata && pdata->use_dmic) {
++		ret = snd_soc_dapm_new_controls(&codec->dapm,
++			adau1781_dmic_dapm_widgets,
++			ARRAY_SIZE(adau1781_dmic_dapm_widgets));
++		if (ret)
++			return ret;
++		ret = snd_soc_dapm_add_routes(&codec->dapm,
++			adau1781_dmic_dapm_routes,
++			ARRAY_SIZE(adau1781_dmic_dapm_routes));
++		if (ret)
++			return ret;
++	} else {
++		ret = snd_soc_dapm_new_controls(&codec->dapm,
++			&adau17x1_adc_dsp_widget, 1);
++		if (ret)
++			return ret;
++		ret = snd_soc_dapm_add_routes(&codec->dapm,
++			adau1781_adc_dapm_routes,
++			ARRAY_SIZE(adau1781_adc_dapm_routes));
++		if (ret)
++			return ret;
++	}
++
++	switch (adau->type) {
++	case ADAU1381:
++		firmware = ADAU1381_FIRMWARE;
 +		break;
-+	case 44100:
-+	case 7350:
-+	case 11025:
-+	case 14700:
-+	case 22050:
-+	case 29400:
-+	case 88200:
-+		pll_rate = 44100 * 1024;
++	case ADAU1781:
++		firmware = ADAU1781_FIRMWARE;
 +		break;
 +	default:
 +		return -EINVAL;
 +	}
 +
-+	ret = snd_soc_dai_set_pll(codec_dai, ADAU17X1_PLL,
-+			ADAU17X1_PLL_SRC_MCLK, 12288000, pll_rate);
-+	if (ret)
++	ret = adau17x1_add_routes(codec);
++	if (ret < 0)
 +		return ret;
 +
-+	ret = snd_soc_dai_set_sysclk(codec_dai, ADAU17X1_CLK_SRC_PLL, pll_rate,
-+			SND_SOC_CLOCK_IN);
-+
-+	return ret;
-+}
-+
-+static const struct snd_soc_ops bfin_eval_adau1x81_ops = {
-+	.hw_params = bfin_eval_adau1x81_hw_params,
-+};
-+
-+static struct snd_soc_dai_link bfin_eval_adau1x81_dai = {
-+	.name			= "adau1x81",
-+	.stream_name		= "adau1x81",
-+	.cpu_dai_name		= "bfin-i2s.0",
-+	.codec_dai_name		= "adau-hifi",
-+	.platform_name		= "bfin-i2s-pcm-audio",
-+	.codec_name		= "adau1781.0-0038",
-+	.ops			= &bfin_eval_adau1x81_ops,
-+	.dai_fmt		= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+					SND_SOC_DAIFMT_CBM_CFM,
-+};
-+
-+static struct snd_soc_card bfin_eval_adau1x81 = {
-+	.name			= "bfin-eval-adau1x81",
-+	.driver_name		= "eval-adau1x81",
-+	.dai_link		= &bfin_eval_adau1x81_dai,
-+	.num_links		= 1,
-+
-+	.dapm_widgets		= bfin_eval_adau1x81_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(bfin_eval_adau1x81_dapm_widgets),
-+	.dapm_routes		= bfin_eval_adau1x81_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(bfin_eval_adau1x81_dapm_routes),
-+};
-+
-+static int bfin_eval_adau1x81_probe(struct platform_device *pdev)
-+{
-+	bfin_eval_adau1x81.dev = &pdev->dev;
-+
-+	return snd_soc_register_card(&bfin_eval_adau1x81);
-+}
-+
-+static int bfin_eval_adau1x81_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+
-+	snd_soc_unregister_card(card);
++	ret = adau17x1_load_firmware(adau, codec->dev, firmware);
++	if (ret)
++		dev_warn(codec->dev, "Failed to load firmware\n");
 +
 +	return 0;
 +}
 +
-+static struct platform_driver bfin_eval_adau1x81_driver = {
-+	.driver = {
-+		.name = "bfin-eval-adau1x81",
-+		.owner = THIS_MODULE,
-+		.pm = &snd_soc_pm_ops,
-+	},
-+	.probe = bfin_eval_adau1x81_probe,
-+	.remove = bfin_eval_adau1x81_remove,
-+};
-+module_platform_driver(bfin_eval_adau1x81_driver);
++static struct snd_soc_codec_driver adau1781_codec_driver = {
++	.probe			= adau1781_probe,
++	.remove			= adau17x1_suspend,
++	.suspend		= adau17x1_suspend,
++	.resume			= adau17x1_resume,
++	.set_bias_level		= adau1781_set_bias_level,
 +
++	.controls		= adau1781_controls,
++	.num_controls		= ARRAY_SIZE(adau1781_controls),
++	.dapm_widgets		= adau1781_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(adau1781_dapm_widgets),
++	.dapm_routes		= adau1781_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(adau1781_dapm_routes),
++};
++
++#define ADAU1781_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
++	SNDRV_PCM_FMTBIT_S32_LE)
++
++static struct snd_soc_dai_driver adau1781_dai_driver = {
++	.name = "adau-hifi",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 2,
++		.channels_max = 8,
++		.rates = SNDRV_PCM_RATE_8000_96000,
++		.formats = ADAU1781_FORMATS,
++	},
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 2,
++		.channels_max = 8,
++		.rates = SNDRV_PCM_RATE_8000_96000,
++		.formats = ADAU1781_FORMATS,
++	},
++	.ops = &adau17x1_dai_ops,
++};
++
++#if IS_ENABLED(CONFIG_SPI_MASTER)
++
++static const struct regmap_config adau1781_spi_regmap_config = {
++	.val_bits		= 8,
++	.reg_bits		= 24,
++	.read_flag_mask		= 0x01,
++	.max_register		= 0x40f8,
++	.reg_defaults		= adau1781_reg_defaults,
++	.num_reg_defaults	= ARRAY_SIZE(adau1781_reg_defaults),
++	.readable_reg		= adau1781_readable_register,
++	.volatile_reg		= adau17x1_volatile_register,
++	.cache_type		= REGCACHE_RBTREE,
++};
++
++static int adau1781_spi_probe(struct spi_device *spi)
++{
++	struct regmap *regmap;
++	enum adau17x1_type type = spi_get_device_id(spi)->driver_data;
++	int ret;
++
++	regmap = devm_regmap_init_spi(spi, &adau1781_spi_regmap_config);
++
++	ret = adau17x1_bus_probe(&spi->dev, regmap, type, true);
++	if (ret)
++		return ret;
++
++	return snd_soc_register_codec(&spi->dev, &adau1781_codec_driver,
++		&adau1781_dai_driver, 1);
++}
++
++static int adau1781_spi_remove(struct spi_device *spi)
++{
++	snd_soc_unregister_codec(&spi->dev);
++	return 0;
++}
++
++static const struct spi_device_id adau1781_spi_id[] = {
++	{ "adau1381", ADAU1381 },
++	{ "adau1781", ADAU1781 },
++	{ }
++};
++MODULE_DEVICE_TABLE(spi, adau1781_spi_id);
++
++static struct spi_driver adau1781_spi_driver = {
++	.driver = {
++		.name	= "adau1781",
++		.owner	= THIS_MODULE,
++	},
++	.probe		= adau1781_spi_probe,
++	.remove		= adau1781_spi_remove,
++	.id_table	= adau1781_spi_id,
++};
++
++static int __init adau1781_spi_register_driver(void)
++{
++	return spi_register_driver(&adau1781_spi_driver);
++}
++
++static void adau1781_spi_unregister_driver(void)
++{
++	spi_unregister_driver(&adau1781_spi_driver);
++}
++
++#else
++static int adau1781_spi_register_driver(void) { return 0; }
++static void adau1781_spi_unregister_driver(void) {}
++#endif
++
++#if IS_ENABLED(CONFIG_I2C)
++
++static const struct regmap_config adau1781_i2c_regmap_config = {
++	.val_bits		= 8,
++	.reg_bits		= 16,
++	.max_register		= 0x40f8,
++	.reg_defaults		= adau1781_reg_defaults,
++	.num_reg_defaults	= ARRAY_SIZE(adau1781_reg_defaults),
++	.readable_reg		= adau1781_readable_register,
++	.volatile_reg		= adau17x1_volatile_register,
++	.cache_type		= REGCACHE_RBTREE,
++};
++
++static int adau1781_i2c_probe(struct i2c_client *client,
++	const struct i2c_device_id *id)
++{
++	struct regmap *regmap;
++	enum adau17x1_type type = id->driver_data;
++	int ret;
++
++	regmap = devm_regmap_init_i2c(client, &adau1781_i2c_regmap_config);
++
++	ret = adau17x1_bus_probe(&client->dev, regmap, type, false);
++	if (ret)
++		return ret;
++
++	return snd_soc_register_codec(&client->dev, &adau1781_codec_driver,
++		&adau1781_dai_driver, 1);
++}
++
++static int adau1781_i2c_remove(struct i2c_client *client)
++{
++	snd_soc_unregister_codec(&client->dev);
++	return 0;
++}
++
++static const struct i2c_device_id adau1781_i2c_id[] = {
++	{ "adau1381", ADAU1381 },
++	{ "adau1781", ADAU1781 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, adau1781_i2c_id);
++
++static struct i2c_driver adau1781_i2c_driver = {
++	.driver = {
++		.name = "adau1781",
++		.owner = THIS_MODULE,
++	},
++	.probe = adau1781_i2c_probe,
++	.remove = adau1781_i2c_remove,
++	.id_table = adau1781_i2c_id,
++};
++
++static int __init adau1781_i2c_register_driver(void)
++{
++	return i2c_add_driver(&adau1781_i2c_driver);
++}
++
++static void __exit adau1781_i2c_unregister_driver(void)
++{
++	i2c_del_driver(&adau1781_i2c_driver);
++}
++
++#else
++static int adau1781_i2c_register_driver(void) { return 0; }
++static void adau1781_i2c_unregister_driver(void) {}
++#endif
++
++static int __init adau1781_init(void)
++{
++	int ret = 0;
++
++	ret = adau1781_spi_register_driver();
++	if (ret)
++		return ret;
++
++	ret = adau1781_i2c_register_driver();
++	if (ret)
++		adau1781_spi_unregister_driver();
++
++	return ret;
++}
++module_init(adau1781_init);
++
++static void __exit adau1781_exit(void)
++{
++	adau1781_i2c_unregister_driver();
++	adau1781_spi_unregister_driver();
++}
++module_exit(adau1781_exit);
++
++MODULE_DESCRIPTION("ASoC ADAU1381/ADAU1781 driver");
 +MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
-+MODULE_DESCRIPTION("ALSA SoC bfin adau1x81 driver");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:bfin-eval-adau1x81");
 -- 
 1.8.0
