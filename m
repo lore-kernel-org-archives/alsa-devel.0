@@ -1,55 +1,36 @@
-From: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
-Date: Wed, 28 Aug 2013 08:41:50 +0200
-Message-ID: <521D9BAE.2060508@ladisch.de>
-References: <Pine.LNX.4.44L0.1308271608430.940-100000@iolanthe.rowland.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 03/18] dmaengine: PL08x: Rework LLI handling to be less fragile
+Date: Wed, 28 Aug 2013 08:49:28 +0200
+Message-ID: <CACRpkdYYWZppS8pPZKejxe-RCOTkA786+k76gmsrn8jX+6ZP_w@mail.gmail.com>
+References: <1376243970-6489-1-git-send-email-tomasz.figa@gmail.com>
+	<1376243970-6489-4-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <Pine.LNX.4.44L0.1308271608430.940-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, James Stone <jamesmstone-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1376243970-6489-4-git-send-email-tomasz.figa@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-spi@vger.kernel.org, Dan Williams <djbw@fb.com>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Alan Stern wrote:
-> On Tue, 27 Aug 2013, Clemens Ladisch wrote:
->> Alan Stern wrote:
->>> On Tue, 27 Aug 2013, Clemens Ladisch wrote:
->>>> The current algorithm uses very short capture URBs to ensure that _some_
->>>> URB is completed as soon as possible after a period ends.
->>>> [...]
->>>> I'd suggest to keep the old calculation for capture URBs.  It would
->>>> make sense to use longer capture URBs only if the period size is
->>>> relatively large.
->>>
->>> Okay.  What about playback endpoints with implicit sync?  The current
->>> driver treats them the same as capture endpoints.  Is that really the
->>> right thing to do?
->>
->> The only reason to not have an interrupt after each packet is to avoid
->> the interrupt overhead (for both CPU and power); shorter URBs would
->> result in a more precise DMA position reported to user space.  If there
->> is already an interrupt for some capture URB (or for the feedback packet
->> in case of explicit feedback), we might as well handle the playback
->> packets so far.
+On Sun, Aug 11, 2013 at 7:59 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
+
+> Currently memory allocated for LLIs is casted to an array of structs,
+> which is fragile and also limits the driver to a single, predefined LLI
+> layout, while there are some variants of PL08x, which have more fields
+> in LLI (namely PL080S with its extra CCTL2).
 >
-> I don't quite understand.  Are you saying that playback endpoints with
-> implicit sync may as well use the same values for urb_packs and
-> ep->nurbs as other playback endpoints, rather than using the values
-> calculated for capture endpoints (which is what the current driver
-> does)?
+> This patch makes LLIs a sequence of 32-bit words, which is just filled
+> with appropriate values in appropriate order and padded with required
+> amount of dummy words (currently zero, but PL080S will make better use
+> of this).
+>
+> Suggested-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
 
-Sorry, what I said applies more to explicit sync endpoints.  When using
-implicit sync, a playback URB is submitted for each completed capture
-URB, with the number of samples per packet identical to the
-corresponding capture packet, so the parameters must be identical.
+Yes exactly like this :-)
 
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Regards,
-Clemens
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Yours,
+Linus Walleij
