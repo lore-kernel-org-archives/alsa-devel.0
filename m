@@ -1,25 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC 10/13] ASoC: kirkwood-t5325: add DAPM
- links between codec and cpu DAI
-Date: Wed, 28 Aug 2013 02:22:15 +0100
-Message-ID: <20130828012215.GF10783@sirena.org.uk>
-References: <20130820114949.GB23006@n2100.arm.linux.org.uk>
- <20130820133143.GC23006@n2100.arm.linux.org.uk>
- <20130820185019.GP30073@sirena.org.uk>
- <20130820201824.GA17845@n2100.arm.linux.org.uk>
- <1377199370.2618.99.camel@loki>
- <20130822201658.GK6617@n2100.arm.linux.org.uk>
- <1377259994.2444.41.camel@loki>
- <20130823125803.GN6617@n2100.arm.linux.org.uk>
- <20130823165800.GB30617@sirena.org.uk>
- <20130823174505.GQ6617@n2100.arm.linux.org.uk>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH v12] ASoC: fsl: Add S/PDIF machine driver
+Date: Wed, 28 Aug 2013 12:04:46 +0800
+Message-ID: <1377662686-31696-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1448017562733158697=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D5D502608D6
- for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2013 03:22:25 +0200 (CEST)
-In-Reply-To: <20130823174505.GQ6617@n2100.arm.linux.org.uk>
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe006.messaging.microsoft.com [216.32.180.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id D83CE2610A8
+ for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2013 05:53:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,100 +19,265 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: broonie@kernel.org, s.hauer@pengutronix.de, swarren@wwwdotorg.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, tomasz.figa@gmail.com, rob.herring@calxeda.com, p.zabel@pengutronix.de, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
+This patch implements a device-tree-only machine driver for Freescale
+i.MX series Soc. It works with spdif_transmitter/spdif_receiver and
+fsl_spdif.c drivers.
 
---===============1448017562733158697==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/Q7FmPuhIbtiu4EM"
-Content-Disposition: inline
+Signed-off-by: Nicolin Chen <b42378@freescale.com>
+---
+Changelog
+v11->v12:
+ * Dropped unused spdif_pdev.
+ * Register spdif-dit/dir depending on DT bool property.
+v10->v11:
+ * Use boolean properties for spdif-out/in switch instead of codec phandles.
+ * Accordingly create dummy codec driver in probe() instead of DT nodes.
 
+ .../devicetree/bindings/sound/imx-audio-spdif.txt  |   34 +++++
+ sound/soc/fsl/Kconfig                              |   11 ++
+ sound/soc/fsl/Makefile                             |    2 +
+ sound/soc/fsl/imx-spdif.c                          |  148 ++++++++++++++++++++
+ 4 files changed, 195 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+ create mode 100644 sound/soc/fsl/imx-spdif.c
 
---/Q7FmPuhIbtiu4EM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Aug 23, 2013 at 06:45:05PM +0100, Russell King - ARM Linux wrote:
-
-> Look Mark, frankly, shut your fucking mouth up about DPCM.  This bug has
-> nothing what so ever to do with DPCM, and the more times you try and
-> state that doesn't change that *FACT*.  And it is a FACT.
-
-You must know that this and the rest of your e-mail are not an
-appropriate or constructive way to interact with people.
-
-I now regret that have not confronted you on this more openly and
-directly before but unfortunately I had hoped that stepping back would
-help with deescalation.  I know I have needed to take a step back on
-several occasions myself in order to be calmer in my response.
-
-> So that's why it fails _without_ any DPCM stuff?  That's why the codecs
-> fail to have their set_bias stuff called?
-
-So, it is true that the widgets get double created in all cases where
-the same struct device is used for both platform and DAI.  However if
-DPCM is not used nothing really notices since the SoC side widgets don't
-do anything useful.  The relevance of DPCM is that it tries to use the
-widgets and therefore causes practical problems in normal use, otherwise
-it's just a memory leak on init.
-
-As you know the issue with the DAPMless CODECs was unrelated to this,
-was due to poor test coverage of such devices and has been resolved by
-making DAPM mandatory for CODECs to eliminate the possibility of similar
-regressions caused by the need for special casing.
-
-> You've had this problem described by IRC, including extracts from the
-> ASoC code indicating where things go wrong.  I've shown you the debug
-> I've used.  I've shown you the result of that debug.  You've had
-> descriptions of this problem via email too.  Yet you refuse to acknowledge
-> that there could possibly be a problem here.
-
-I am fairly sure that I have agreed that there is a bug and at the very
-least not said that everything is fine.  Just for the record there
-clearly is a bug with double creation of DAI widgets when the same
-struct device is used to register both a DAI and a platform.  You will
-also recall that Liam said he would provide a patch when he has time.
-
-As I have told you before your generally confrontational and demanding
-approach is not a good one for getting help from people, it doesn't help
-push your problems up the priority list or generate positive attention.
-Especially with the more extreme examples it can actively work against
-engagement; at an unconscious level it makes things less fun and at a
-conscious level not only are breaks for calm needed but I know that I at
-least have no desire to encourage anyone to believe that this is a good
-way of getting results.
-
---/Q7FmPuhIbtiu4EM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSHVDEAAoJELSic+t+oim94eIP/iQOtelFdxTz9G5v0yEb+Vm7
-QMdK3RdzXM4WrJ3jkHPp0bsaQNJj/HTQtEECpDdNEW+Tr+cgGUQl39BFlu4v5AzM
-ppsW+kNKrM2Cy1Yf/DjYfUlqNoRcg9rKznyXFX6Uiy9a3iXZD7h+WItR9W46r7Ue
-mg6Px2KwLEd7Nwp6YZSb7xIztvH9tmaI98BjsQAt4gUm/03jhK/lTLSo6eQymS0x
-cqZzNRFwPLMSIlHtlP83CZVeVgVAwwPkkbk1bI+T6st+mzP5gMWmszl66SeuDO+p
-pSjURPYVIRVpAFIhalRxxHiBaUBUnYPBNq+rI2TMI9XSpX2APk6xmsd1EbsIVPjT
-229fPFlwtMrPw6wHL8Pa4PrVBGSxDWbbN7uZ/m3RYpyZClLmz62jBEizXhgpydTC
-e2eXZuswuX8rMLIPBrSB06re7URKH9VYNkmYSJiTCJmV0Uep1DjJQbv6L05mejfD
-gDQGb6eNS0yYHgpq7OzsAujmZLGkFYQmqyX0qdqyAOg56nUyfW6Qjbz5i+Aa3wsF
-rVNbWw6Tn9pI5k5yDKWz2b5mu+7DpTRGvB2abHAoc8LVGIUn5Xa0tj7Pyw1+tDP6
-kEncVjKmSYKKvuUcPbOmryw2r4+CyT961ImgL22ZCP2C7HRsK5amD4Tm3P1wgF77
-MiGrDVgiHI/iz96/pU6P
-=5j5b
------END PGP SIGNATURE-----
-
---/Q7FmPuhIbtiu4EM--
-
---===============1448017562733158697==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1448017562733158697==--
+diff --git a/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt b/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+new file mode 100644
+index 0000000..7d13479
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/imx-audio-spdif.txt
+@@ -0,0 +1,34 @@
++Freescale i.MX audio complex with S/PDIF transceiver
++
++Required properties:
++
++  - compatible : "fsl,imx-audio-spdif"
++
++  - model : The user-visible name of this sound complex
++
++  - spdif-controller : The phandle of the i.MX S/PDIF controller
++
++
++Optional properties:
++
++  - spdif-out : This is a boolean property. If present, the transmitting
++    function of S/PDIF will be enabled, indicating there's a physical
++    S/PDIF out connector/jack on the board or it's connecting to some
++    other IP block, such as an HDMI encoder/display-controller.
++
++  - spdif-in : This is a boolean property. If present, the receiving
++    function of S/PDIF will be enabled, indicating there's a physical
++    S/PDIF in connector/jack on the board.
++
++* Note: At least one of these two properties should be set in the DT binding.
++
++
++Example:
++
++sound-spdif {
++	compatible = "fsl,imx-audio-spdif";
++	model = "imx-spdif";
++	spdif-controller = <&spdif>;
++	spdif-out;
++	spdif-in;
++};
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index cd088cc..a708380 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -193,6 +193,17 @@ config SND_SOC_IMX_SGTL5000
+ 	  Say Y if you want to add support for SoC audio on an i.MX board with
+ 	  a sgtl5000 codec.
+ 
++config SND_SOC_IMX_SPDIF
++	tristate "SoC Audio support for i.MX boards with S/PDIF"
++	select SND_SOC_IMX_PCM_DMA
++	select SND_SOC_FSL_SPDIF
++	select SND_SOC_FSL_UTILS
++	select SND_SOC_SPDIF
++	help
++	  SoC Audio support for i.MX boards with S/PDIF
++	  Say Y if you want to add support for SoC audio on an i.MX board with
++	  a S/DPDIF.
++
+ config SND_SOC_IMX_MC13783
+ 	tristate "SoC Audio support for I.MX boards with mc13783"
+ 	depends on MFD_MC13783 && ARM
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index 4b5970e..e2aaff7 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -45,6 +45,7 @@ snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
+ snd-soc-wm1133-ev1-objs := wm1133-ev1.o
+ snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
+ snd-soc-imx-wm8962-objs := imx-wm8962.o
++snd-soc-imx-spdif-objs :=imx-spdif.o
+ snd-soc-imx-mc13783-objs := imx-mc13783.o
+ 
+ obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
+@@ -53,4 +54,5 @@ obj-$(CONFIG_SND_SOC_MX27VIS_AIC32X4) += snd-soc-mx27vis-aic32x4.o
+ obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) += snd-soc-wm1133-ev1.o
+ obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
+ obj-$(CONFIG_SND_SOC_IMX_WM8962) += snd-soc-imx-wm8962.o
++obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
+ obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
+diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
+new file mode 100644
+index 0000000..816013b
+--- /dev/null
++++ b/sound/soc/fsl/imx-spdif.c
+@@ -0,0 +1,148 @@
++/*
++ * Copyright (C) 2013 Freescale Semiconductor, Inc.
++ *
++ * The code contained herein is licensed under the GNU General Public
++ * License. You may obtain a copy of the GNU General Public License
++ * Version 2 or later at the following locations:
++ *
++ * http://www.opensource.org/licenses/gpl-license.html
++ * http://www.gnu.org/copyleft/gpl.html
++ */
++
++#include <linux/module.h>
++#include <linux/of_platform.h>
++#include <sound/soc.h>
++
++struct imx_spdif_data {
++	struct snd_soc_dai_link dai[2];
++	struct snd_soc_card card;
++	struct platform_device *txdev;
++	struct platform_device *rxdev;
++};
++
++static int imx_spdif_audio_probe(struct platform_device *pdev)
++{
++	struct device_node *spdif_np, *np = pdev->dev.of_node;
++	struct imx_spdif_data *data;
++	int ret = 0, num_links = 0;
++
++	spdif_np = of_parse_phandle(np, "spdif-controller", 0);
++	if (!spdif_np) {
++		dev_err(&pdev->dev, "failed to find spdif-controller\n");
++		ret = -EINVAL;
++		goto end;
++	}
++
++	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
++	if (!data) {
++		dev_err(&pdev->dev, "failed to allocate memory\n");
++		ret = -ENOMEM;
++		goto end;
++	}
++
++	if (of_property_read_bool(np, "spdif-out")) {
++		data->dai[num_links].name = "S/PDIF TX";
++		data->dai[num_links].stream_name = "S/PDIF PCM Playback";
++		data->dai[num_links].codec_dai_name = "dit-hifi";
++		data->dai[num_links].codec_name = "spdif-dit";
++		data->dai[num_links].cpu_of_node = spdif_np;
++		data->dai[num_links].platform_of_node = spdif_np;
++		num_links++;
++
++		data->txdev = platform_device_register_simple("spdif-dit", -1, NULL, 0);
++		if (IS_ERR(data->txdev)) {
++			ret = PTR_ERR(data->txdev);
++			dev_err(&pdev->dev, "register dit failed: %d\n", ret);
++			goto end;
++		}
++	}
++
++	if (of_property_read_bool(np, "spdif-in")) {
++		data->dai[num_links].name = "S/PDIF RX";
++		data->dai[num_links].stream_name = "S/PDIF PCM Capture";
++		data->dai[num_links].codec_dai_name = "dir-hifi";
++		data->dai[num_links].codec_name = "spdif-dir";
++		data->dai[num_links].cpu_of_node = spdif_np;
++		data->dai[num_links].platform_of_node = spdif_np;
++		num_links++;
++
++		data->rxdev = platform_device_register_simple("spdif-dir", -1, NULL, 0);
++		if (IS_ERR(data->rxdev)) {
++			ret = PTR_ERR(data->rxdev);
++			dev_err(&pdev->dev, "register dir failed: %d\n", ret);
++			goto error_dit;
++		}
++	}
++
++	if (!num_links) {
++		dev_err(&pdev->dev, "no enabled S/PDIF DAI link\n");
++		goto error_dir;
++	}
++
++	data->card.dev = &pdev->dev;
++	data->card.num_links = num_links;
++	data->card.dai_link = data->dai;
++
++	ret = snd_soc_of_parse_card_name(&data->card, "model");
++	if (ret)
++		goto error_dir;
++
++	ret = snd_soc_register_card(&data->card);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card failed: %d\n", ret);
++		goto error_dir;
++	}
++
++	platform_set_drvdata(pdev, data);
++
++	goto end;
++
++error_dir:
++	if (data->rxdev)
++		platform_device_unregister(data->rxdev);
++error_dit:
++	if (data->txdev)
++		platform_device_unregister(data->txdev);
++end:
++	if (spdif_np)
++		of_node_put(spdif_np);
++
++	return ret;
++}
++
++static int imx_spdif_audio_remove(struct platform_device *pdev)
++{
++	struct imx_spdif_data *data = platform_get_drvdata(pdev);
++
++	if (data->rxdev)
++		platform_device_unregister(data->rxdev);
++	if (data->txdev)
++		platform_device_unregister(data->txdev);
++
++	snd_soc_unregister_card(&data->card);
++
++	return 0;
++}
++
++static const struct of_device_id imx_spdif_dt_ids[] = {
++	{ .compatible = "fsl,imx-audio-spdif", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, imx_spdif_dt_ids);
++
++static struct platform_driver imx_spdif_driver = {
++	.driver = {
++		.name = "imx-spdif",
++		.owner = THIS_MODULE,
++		.of_match_table = imx_spdif_dt_ids,
++	},
++	.probe = imx_spdif_audio_probe,
++	.remove = imx_spdif_audio_remove,
++};
++
++module_platform_driver(imx_spdif_driver);
++
++MODULE_AUTHOR("Freescale Semiconductor, Inc.");
++MODULE_DESCRIPTION("Freescale i.MX S/PDIF machine driver");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:imx-spdif");
+-- 
+1.7.1
