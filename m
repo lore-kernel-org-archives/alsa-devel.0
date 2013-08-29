@@ -1,56 +1,49 @@
-From: Luca Novarini <luca.novarini@gmail.com>
-Subject: Re: US-1641 drivers involvment
-Date: Thu, 29 Aug 2013 15:57:20 +0200
-Message-ID: <CA+5WxHLQ-Ao80aUVg6nt2shYJ=7GFWvVuQqyMVC92Lm1obWgEA@mail.gmail.com>
-References: <CA+5WxH+L75iiV4OkXoHAZk38AG9984VLctGNKm+61nTh4P2XTA@mail.gmail.com>
- <521F4639.2060600@ladisch.de>
+From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
+Date: Thu, 29 Aug 2013 11:00:57 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1308291059300.1170-100000@iolanthe.rowland.org>
+References: <CABRv+92cJPKVT9f2dyHJ_rg6sX3hP9Ct6QFas771fS79h7Eu2w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f53.google.com (mail-la0-f53.google.com
- [209.85.215.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 856B626172B
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 15:57:21 +0200 (CEST)
-Received: by mail-la0-f53.google.com with SMTP id el20so394434lab.12
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 06:57:21 -0700 (PDT)
-In-Reply-To: <521F4639.2060600@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CABRv+92cJPKVT9f2dyHJ_rg6sX3hP9Ct6QFas771fS79h7Eu2w-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: James Stone <jamesmstone-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Clemens for your fast answer!
-The vendor (Tascam) said that US-1641 driver are based on an identical
-concept as US-144 drivers, so far we should proceed in the same fashion I
-think....
-Have you idea where I can find further infos on how US144 drivers works?
+On Thu, 29 Aug 2013, James Stone wrote:
 
-Thank again! Regards,
-LL
+> On Wed, Aug 28, 2013 at 7:46 PM, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org> wrote:
+> > On Wed, 28 Aug 2013, Clemens Ladisch wrote:
+> >
+> >> Sorry, what I said applies more to explicit sync endpoints.  When using
+> >> implicit sync, a playback URB is submitted for each completed capture
+> >> URB, with the number of samples per packet identical to the
+> >> corresponding capture packet, so the parameters must be identical.
+> >
+> > Got it.  Below is an updated patch.
+> >
+> > James, the problem you encountered was most likely a result of the
+> > faulty treatment of capture endpoints that Clemens pointed out.  It was
+> > quite obvious in the usbmon traces that the unpatched driver used 8
+> > packets per URB whereas the patched driver used 22.  This updated patch
+> > should fix that problem.
+> >
+> 
+> Works fine. With this, it is possible to get clear playback at 64
+> frames/period too. With vanilla 3.10.9, there was some glitchy
+> distortion to the sound at that latency, so this seems to be an
+> improvement.
 
+That's good.  What happens if you push frames/period even lower?
 
-2013/8/29 Clemens Ladisch <clemens@ladisch.de>
+Daniel and Eldad, more testing of the most recent proposed patch would
+be welcome.
 
-> Luca Novarini wrote:
-> > I'm writing you to know how can I participate in the growth of ALSA
-> > supported card list to include also my current USB audio card, the
-> > Tascam US-1641.
->
-> >       bInterfaceClass       255 Vendor Specific Class
->
-> A driver for a device with a vendor-specific protocol would require
-> information from the vendor (Karsten?) or reverse engineering.
->
->
-> Regards,
-> Clemens
->
+Alan Stern
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
