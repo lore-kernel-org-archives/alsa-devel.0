@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/5] ASoC: Add ADAU1361/ADAU1761 audio
-	CODEC support
-Date: Thu, 29 Aug 2013 10:53:56 +0100
-Message-ID: <20130829095356.GQ10783@sirena.org.uk>
+Subject: Re: [PATCH 1/5] ASoC: Add ADAU1X61 and ADAU1X81 CODECs
+	common code
+Date: Thu, 29 Aug 2013 11:13:59 +0100
+Message-ID: <20130829101359.GR10783@sirena.org.uk>
 References: <1377703214-23234-1-git-send-email-lars@metafoo.de>
- <1377703214-23234-2-git-send-email-lars@metafoo.de>
- <20130828172400.GM10783@sirena.org.uk>
- <521F0027.5010002@metafoo.de>
+ <20130828165957.GL10783@sirena.org.uk>
+ <521EFF1B.9070202@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1707308252857976915=="
+Content-Type: multipart/mixed; boundary="===============1929041062017207063=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 95B682616B4
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 11:54:01 +0200 (CEST)
-In-Reply-To: <521F0027.5010002@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2880E261706
+ for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 12:14:02 +0200 (CEST)
+In-Reply-To: <521EFF1B.9070202@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,81 +27,83 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1707308252857976915==
+--===============1929041062017207063==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="u2qWrZzts+9rBanj"
+	protocol="application/pgp-signature"; boundary="rwSwrS9OkH+FvIfA"
 Content-Disposition: inline
 
 
---u2qWrZzts+9rBanj
+--rwSwrS9OkH+FvIfA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Aug 29, 2013 at 10:02:47AM +0200, Lars-Peter Clausen wrote:
-> On 08/28/2013 07:24 PM, Mark Brown wrote:
+On Thu, Aug 29, 2013 at 09:58:19AM +0200, Lars-Peter Clausen wrote:
 
-> > Not a requirement and perhaps it has no effect but these seem like they
-> > ought to integrate with the bias level configuration - since only the
-> > clocks seem to be managed by set_bias_level() the driver could
-> > presumably save a bit of power by dropping down to the minimal power
-> > consumption bias while the device is idle.  This is what the STANDBY to
-> > ON transition is all about.
+> It would be nice if this could be handled by the core. But how? One option
+> might be tracking the the DAI format in the core and power up the DAI widget
+> in DAPM if the stream is active regardless of if there is an active path if
+> the DAI is in master mode. That may power up more than what is needed
+> though. E.g. for this CODEC the clock generator and the rest of the DAI can
+> be powered up independently and we only need to power up the clock generator.
 
-> Hm, I'm not sure if it makes a difference since all the components have
-> individual power control bits that are managed by DAPM. I would expect the
-> bias current setting to only make a difference if the component is actually
-> powered up. I'll check with the designers, but I think this can still be
-> improved later on if it turns out that it saves power.
+Yes, that was what I was thinking of.  We can provide a mechanism to
+allow the driver to specify a specific widget for the clocks if one
+exists and fall back on the DAI widgets otherwise.
 
-Given that the device has non-capless headphone outputs I'd expect
-there's something being maintained normally, though it's possible that
-it's still ground referenced.
+> >> +static int adau17x1_set_dai_clkdiv(struct snd_soc_dai *dai, int div_id, int div)
+> >> +{
 
-> >> +static const struct snd_kcontrol_new adau1761_jack_detect_controls[] = {
-> >> +	SOC_SINGLE("Jack Detect Switch", ADAU1761_DIGMIC_JACKDETECT, 4, 1, 0),
-> >> +};
+> > What's this doing?  It'd be better to have a specific ID and check that
+> > too.
 
-> > Why is this a user visible control and not using the jack detection
-> > framework support?
+> Setting the relationship between the external clock rate and the internal
+> base sample rate. There might be a better way to do this though.
 
-> The CODEC unfortunately does not support reporting the jack state. All it
-> can do is mute the speaker output in hardware if something is plugged into
-> the headphone jack. The switch allows the users to control whether the
-> output should be auto-muted or not.
+If it's specifying two clock rates then specifying them both as actual
+rates might make sense.  I take it it's not possible for the driver to
+automatically figure out what the most sensible rate is?
 
-In that case it should be called something like "Speaker Automute
-Switch" or similar.  It's a bit unfortuante that there's not even any
-readback for the function.
+> >> +int adau17x1_set_micbias_voltage(struct snd_soc_codec *codec,
+> >> +	enum adau17x1_micbias_voltage micbias)
 
---u2qWrZzts+9rBanj
+> > When would a machine driver use this (as opposed to just letting it be
+> > set by platform data)?
+
+> It is not meant to be used by machine drivers, but by the adau1761 and
+> adau1781 CODEC drivers, which set the micbias based on platform data.
+
+Ah, in that case how about having generic platform data for the core and
+just passing that through to a platform data parsing function?
+
+--rwSwrS9OkH+FvIfA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSHxoxAAoJELSic+t+oim9oTwP/AoKdUMKprdLJnHEx1ML8Cm1
-60xjosBPocScoaenD9G0UZNZrylpD3RxyNGNUi83ISKSgu2d1wUoDnnPSeyGldZ0
-7bC8d1Ixu2tpkHuKtPuoWFNQ9WJ70aDKaXXI2kyQKJbDvZd42sWMf7BlnHNQYkc9
-BxcIHJl8+zxHTeU4XiLdmCSq07OyLFm96C/MG0b8UkmdoRuLzwkK0ZU0Ipf8xS6a
-i3AU7p0BmzWAhDRq0TArG9M4l9kiBj7bIEfT9cHWLPZavOEXviC9p21ZlLT5wYus
-hqNYTsEr65CRoA6AIv7L57G8mfiOJCjsw71H5SW8D9Fh5iLK9F6fENhuQMGI39BT
-SvbvW/c/blZ70GrP4X+P1Eti3kmXU3o1kLmkWR6/qjRhui8p3VIOji/ky4zS3MYG
-hWb2urXMykJNzGhjmF8jRFr5dJvh6/1RQEBT0LxzgNhV06rIR0tmAGtOJR6B7zbG
-LdiINduT5JV6DcdhR4nXlXokkcrBJAvj39uJNzUoKW66HpSZh9qTT9AS2eAXB5nK
-TEhaEPfGvErW3FWWiSvJNr4uopAVJeUvN9RC15qzGecF9x/BtsJO0ZLJpp6eV2ZB
-GPK2SSBzLCdCTOR+KNGNuerr1VjDjrUjMERJhLjtRaeOtrqFwfIypH8C6nojpX5S
-RETzufPXxDT7uuw+pCKd
-=PY7T
+iQIcBAEBAgAGBQJSHx7kAAoJELSic+t+oim92ZMP/ApX4KX0y4YJ2RQrKSjYIAWC
+tHmLRBfjNK1cGv0IbtksPC52R5uwIeAQeLSWC41fGenDK7nwc3T4SadwVLkaF/Zd
+vrH2dhIL/JVz0R8lNFrx4KP+tVHFS34RF2YX1YbK7VBU+xT1B72jpIUZ7BTMIejQ
+jsrdAZknRaBA5tVjwSx+qWck48sQGe5D/BuvQNTXghEruZRp5OwIP/ycvWeBK6om
+TSALWYh+qWtkuVktE1meg0H5Qxhlr42f+rDFer4iFqRZKmBJ9vQE5eTQxqINSTok
+UT9bLglGFUguCehvBU4KozRCe9pxijZWNVYO7FMR+rVR84hI+wnCtYxi3lA6IUJA
+ZZT3MGfAIzXGqVilQDAIBbv4TI8aHH27HkcbzqLllze3Bx6c3DJWthtMr8bJ1WOy
+aML1jWqzR9kg7Ohu3WlP0eAOVnifRP+G4vWiE/LzLZFkXNTUJK9hk4S/yRlw4lms
+Jtd67xQYZLZw/dMIak4zpJTzzEX9Qz9WeEATIZzAEuNj1lb40p7wKrM586Iq5LU0
+l7lO//NLzqrC+u8ArnHHJDjNoV1Uz028dcY+V6iIy5DYVokfCMdXRTce2hEJt0Q5
+RZjayjUOjd0hm4GTRuThIsSaqlOdTz9Svqc5+QeSb9HPER939GlQRpMazRybDyD+
+iu0jOjedp0DtmAB4HbZQ
+=+Mf9
 -----END PGP SIGNATURE-----
 
---u2qWrZzts+9rBanj--
+--rwSwrS9OkH+FvIfA--
 
---===============1707308252857976915==
+--===============1929041062017207063==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1707308252857976915==--
+--===============1929041062017207063==--
