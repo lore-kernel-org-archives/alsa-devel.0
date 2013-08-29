@@ -1,16 +1,18 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH 1/2] ASoC: soc-pcm: Allow to specify
-	unidirectional dai_link
-Date: Thu, 29 Aug 2013 10:32:13 -0300
-Message-ID: <1377783134-23528-1-git-send-email-fabio.estevam@freescale.com>
+Subject: [PATCH 2/2] ASoC: mxs-sgtl5000: Configure the
+	dai_links as unidirectional
+Date: Thu, 29 Aug 2013 10:32:14 -0300
+Message-ID: <1377783134-23528-2-git-send-email-fabio.estevam@freescale.com>
+References: <1377783134-23528-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db9outboundpool.messaging.microsoft.com
- (mail-db9lp0253.outbound.messaging.microsoft.com [213.199.154.253])
- by alsa0.perex.cz (Postfix) with ESMTP id CD6372654E4
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 15:32:36 +0200 (CEST)
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe005.messaging.microsoft.com [216.32.180.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E24D2654F6
+ for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 15:32:37 +0200 (CEST)
+In-Reply-To: <1377783134-23528-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,53 +26,73 @@ To: broonie@kernel.org
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Add 'playback_only' and 'capture_only' fields that can be used for specifying
-that a dai_link has a unidirectional capability.
+On a mx28 board, running "aplay -l" and "arecord -l" results in the following:
 
-The motivation for this is for the cases of systems, such as Freescale MX28,
-that has two unidirectional DAIs.
+$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: mxssgtl5000 [mxs_sgtl5000], device 0: Playback sgtl5000-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: mxssgtl5000 [mxs_sgtl5000], device 1: Capture sgtl5000-1 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+$ arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 0: mxssgtl5000 [mxs_sgtl5000], device 0: Playback sgtl5000-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: mxssgtl5000 [mxs_sgtl5000], device 1: Capture sgtl5000-1 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+,which is not correct because we got a capture device listed in aplay and a 
+playback device listed in arecord.
+
+On mx28 there are two serial audio interface ports (SAIF0 and SAIF1) and each
+one of them are unidirectional.
+
+Allow to specify a dai link as 'playback_only' or 'capture_only', which suits
+well for this case.
+
+After this change we can correctly report the capabilities as follows:
+
+$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: mxssgtl5000 [mxs_sgtl5000], device 0: HiFi Playback sgtl5000-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+$ arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 0: mxssgtl5000 [mxs_sgtl5000], device 1: HiFi Capture sgtl5000-1 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+Also tested playback and capture on the mx28evk board.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- include/sound/soc.h |  4 ++++
- sound/soc/soc-pcm.c | 10 ++++++++++
- 2 files changed, 14 insertions(+)
+ sound/soc/mxs/mxs-sgtl5000.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 8e2ad52..774d3be 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -934,6 +934,10 @@ struct snd_soc_dai_link {
- 	/* machine stream operations */
- 	const struct snd_soc_ops *ops;
- 	const struct snd_soc_compr_ops *compr_ops;
-+
-+	/* For unidirectional dai links */
-+	bool playback_only;
-+	bool capture_only;
+diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
+index ce084eb..4bb2737 100644
+--- a/sound/soc/mxs/mxs-sgtl5000.c
++++ b/sound/soc/mxs/mxs-sgtl5000.c
+@@ -105,11 +105,13 @@ static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
+ 		.stream_name	= "HiFi Playback",
+ 		.codec_dai_name	= "sgtl5000",
+ 		.ops		= &mxs_sgtl5000_hifi_ops,
++		.playback_only	= true,
+ 	}, {
+ 		.name		= "HiFi Rx",
+ 		.stream_name	= "HiFi Capture",
+ 		.codec_dai_name	= "sgtl5000",
+ 		.ops		= &mxs_sgtl5000_hifi_ops,
++		.capture_only	= true,
+ 	},
  };
  
- struct snd_soc_codec_conf {
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index fb70fbe..5e44863 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2020,6 +2020,16 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 			capture = 1;
- 	}
- 
-+	if (rtd->dai_link->playback_only) {
-+		playback = 1;
-+		capture = 0;
-+	}
-+
-+	if (rtd->dai_link->capture_only) {
-+		playback = 0;
-+		capture = 1;
-+	}
-+
- 	/* create the PCM */
- 	if (rtd->dai_link->no_pcm) {
- 		snprintf(new_name, sizeof(new_name), "(%s)",
 -- 
 1.8.1.2
