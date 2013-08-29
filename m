@@ -1,58 +1,50 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: 32337ea "ASoC: warn if we will overwrite the DAI stream widgets"
-Date: Wed, 28 Aug 2013 17:28:24 -0600
-Message-ID: <521E8798.10206@wwwdotorg.org>
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: [PATCH -next] ASoC: fsl_spdif: remove redundant dev_err call in
+ fsl_spdif_probe()
+Date: Thu, 29 Aug 2013 08:00:05 +0800
+Message-ID: <CAPgLHd8kBPX2RjLJ3FeXSFpiZjvGyaUM4nmoU0wEVMM7zjfWBA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, ARM kernel mailing list <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Steev Klimaszewski <steev-4jv++OSWV9OTkO8mciVlQg@public.gmane.org>, "linux-next-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-next-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: timur@tabi.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, rob.herring@calxeda.com
+Cc: devicetree@vger.kernel.org, yongjun_wei@trendmicro.com.cn, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Russell, if the warning in commit 32337ea "ASoC: warn if we will
-overwrite the DAI stream widgets" fires, what do I need to do to the
-ASoC driver to fix it? (I'm deliberately ignoring any other issues with
-this patch, and looking only to discover what is apparently wrong with
-my driver that's triggering this...).
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-Steev Klimaszewski reported this warning to me, and I've repro'd it
-running next-20130827 on a couple of Tegra systems (TrimSlice and
-Seaboard at least), using sound/soc/tegra/tegra_{trimslice,wm8903}.c,
-and associated ASoC components.
+There is a error message within devm_ioremap_resource
+already, so remove the dev_err call to avoid redundant
+error message.
 
-For the record, the commit description is:
->     ASoC: warn if we will overwrite the DAI stream widgets
->     
->     The DAI stream widgets can end up being created multiple times if the
->     CPU DAI and DMA/platform components share the same struct device.  This
->     bug has been reported in various forms to the ASoC maintainer(s) several
->     times, yet they refuse to acknowledge this:
->     
->     > Essentially all the dmaengine based platforms in mainline use a shared
->     > device for DMA and DAI; I'm fairly sure someone would have mentioned if
->     > there were problems.
->     >
->     > As you have been repeatedly told the Kirkwood drivers are the first
->     > drivers submitted to mainline which use DPCM and therefore it is not
->     > surprising that there are a few issues which need to be worked through,
->     > there were a few revisions to the framework which went in as a result of
->     > review during the mainline merge.  The problem you are seeing here is
->     > due to this being the first platform with a *shared* device to use DPCM.
->     
->     This is inspite of stating multiple times that this has nothing to do
->     with DPCM what so ever.  So, having tried to convince them over the
->     last month that this is the case, and them being obstructive and/or
->     obtuse, this is the only way left open to convince them that there is
->     a problem here.
->     
->     It is only through complete frustration over their inability to recognise
->     that there could be a problem that I am putting this into linux-next;
->     this is not something I want to do, but they leave me no other choice.
->     
->     If they are correct, then this patch will have no effect what so ever.
->     If I am correct, there will be warnings produced where a CPU DAI and
->     DMA/platform component shares the same struct device.
->     
->     Signed-off-by: Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ sound/soc/fsl/fsl_spdif.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index a9798aa..e93dc0d 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1113,10 +1113,8 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	regs = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(regs)) {
+-		dev_err(&pdev->dev, "could not map device resources\n");
++	if (IS_ERR(regs))
+ 		return PTR_ERR(regs);
+-	}
+ 
+ 	spdif_priv->regmap = devm_regmap_init_mmio_clk(&pdev->dev,
+ 			"core", regs, &fsl_spdif_regmap_config);
