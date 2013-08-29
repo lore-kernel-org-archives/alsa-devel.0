@@ -1,18 +1,21 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: 32337ea "ASoC: warn if we will overwrite the DAI
-	stream	widgets"
-Date: Thu, 29 Aug 2013 01:01:26 +0100
-Message-ID: <20130829000126.GQ6617@n2100.arm.linux.org.uk>
-References: <521E8798.10206@wwwdotorg.org>
+From: loody <miloody@gmail.com>
+Subject: Re: where to get snd_pcm_hardware info when usb audio
+ device plug in?
+Date: Thu, 29 Aug 2013 11:53:23 +0800
+Message-ID: <CANudz+v219cxgAwo2RtAMvmvQ+18doPX0qsX4Pc+vk9TAe3D2g@mail.gmail.com>
+References: <CANudz+uTk+GDAj=NfHQ_6ZrL6=ZmWJfXAnwRqk7yHPr4s0Jg1A@mail.gmail.com>
+ <521E07A1.5020807@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id EA8E52615CD
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 02:02:46 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <521E8798.10206@wwwdotorg.org>
+Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
+ [209.85.212.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id CEBB52615FA
+ for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 05:53:23 +0200 (CEST)
+Received: by mail-wi0-f169.google.com with SMTP id l12so7551775wiv.4
+ for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2013 20:53:23 -0700 (PDT)
+In-Reply-To: <521E07A1.5020807@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, Steev Klimaszewski <steev@pwnieexpress.com>, Liam Girdwood <lrg@ti.com>, ARM kernel mailing list <linux-arm-kernel@lists.infradead.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 28, 2013 at 05:28:24PM -0600, Stephen Warren wrote:
-> Russell, if the warning in commit 32337ea "ASoC: warn if we will
-> overwrite the DAI stream widgets" fires, what do I need to do to the
-> ASoC driver to fix it? (I'm deliberately ignoring any other issues with
-> this patch, and looking only to discover what is apparently wrong with
-> my driver that's triggering this...).
-> 
-> Steev Klimaszewski reported this warning to me, and I've repro'd it
-> running next-20130827 on a couple of Tegra systems (TrimSlice and
-> Seaboard at least), using sound/soc/tegra/tegra_{trimslice,wm8903}.c,
-> and associated ASoC components.
+hi clements:
 
-I chucked this into linux-next in order to prove that the issue I had
-been reporting was not specific to my systems here (because I was making
-absolutely no useful progress with Mark.)  Mark finally admitted for the
-first time that there's a bug here yesterday, so I've now dropped the
-patch out of linux-next (either that's coincidental or cause and effect).
-In any case, it's served its purpose.
+2013/8/28 Clemens Ladisch <clemens@ladisch.de>:
+> loody wrote:
+>> is it possible to get snd_pcm_hardware information in /proc, /sys or
+>> anywhere when usb audio device plug in?
+>>
+>> if no, is there api I can take in usermode to get snd_pcm_hardware of
+>> this usb audio device?
+>
+> Something like this?
+> http://download.atmark-techno.com/misc/demos/usb-audio-a500-howto/hw_params.c
+I download the file and
+1. cross-compile it with alsa-lib-1.0.23
 
-As for how to solve the underlying problem, I have no idea - I've been
-asking the same question of Mark for the last three weeks and just been
-getting a load of drivel about "it's because you're using DPCM" and
-other *totally useless* suggestions about the code I'm trying to get
-working.
+but I get below message
+# ./hw_params
+no soundcards found...no soundcards found...
 
-Liam says he's working on "a patch" last week, so I assume that this
-issue will eventually be resolved.
+but in my /proc/asound/cards, there seems a card exist.
+
+# cat /proc/asound/cards
+0 [default        ]: USB-Audio - Microsoft LifeChat LX-3000
+                      Microsoft LifeChat LX-3000  at usb-1, full speed
+
+Did I miss anything need to pay attention?
+
+thanks for your kind help,
+
+
+>
+>
+> Regards,
+> Clemens
+
+
+
+-- 
+Regards,
