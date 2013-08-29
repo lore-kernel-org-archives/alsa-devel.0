@@ -1,18 +1,18 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [RFC] ASoC: soc-pcm: Add support for unidirectional
-	dai links
-Date: Thu, 29 Aug 2013 01:54:59 -0300
-Message-ID: <1377752099-21373-1-git-send-email-festevam@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/5] ASoC: Add ADAU1X61 and ADAU1X81 CODECs
+	common code
+Date: Thu, 29 Aug 2013 09:58:19 +0200
+Message-ID: <521EFF1B.9070202@metafoo.de>
+References: <1377703214-23234-1-git-send-email-lars@metafoo.de>
+ <20130828165957.GL10783@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gh0-f170.google.com (mail-gh0-f170.google.com
- [209.85.160.170])
- by alsa0.perex.cz (Postfix) with ESMTP id C4A082615FA
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 06:55:14 +0200 (CEST)
-Received: by mail-gh0-f170.google.com with SMTP id z10so1840497ghb.1
- for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2013 21:55:14 -0700 (PDT)
+Received: from smtp-out-004.synserver.de (smtp-out-004.synserver.de
+ [212.40.185.4]) by alsa0.perex.cz (Postfix) with ESMTP id 0075A261646
+ for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 09:56:49 +0200 (CEST)
+In-Reply-To: <20130828165957.GL10783@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,121 +22,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, shawn.guo@linaro.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+On 08/28/2013 06:59 PM, Mark Brown wrote:
+> On Wed, Aug 28, 2013 at 05:20:09PM +0200, Lars-Peter Clausen wrote:
+> 
+>> +static void adau17x1_check_aifclk(struct snd_soc_codec *codec)
+>> +{
+>> +	struct adau *adau = snd_soc_codec_get_drvdata(codec);
+>> +
+>> +	/* If we are in master mode we need to generate bit- and frameclock,
+>> +	 * regardless of whether there is an active path or not */
+>> +	if (codec->active && adau->master)
+>> +		snd_soc_dapm_force_enable_pin(&codec->dapm, "AIFCLK");
+>> +	else
+>> +		snd_soc_dapm_disable_pin(&codec->dapm, "AIFCLK");
+>> +	snd_soc_dapm_sync(&codec->dapm);
+>> +}
+> 
+> I think this is eminently sensible but it seems like it should be a
+> framework feature.  That'd have to enable an actual AIF slot though
+> which is a bit fun, which slot do we enable for example?
 
-On a mx28 board, running "aplay -l" and "arecord -l" results in the following:
+It would be nice if this could be handled by the core. But how? One option
+might be tracking the the DAI format in the core and power up the DAI widget
+in DAPM if the stream is active regardless of if there is an active path if
+the DAI is in master mode. That may power up more than what is needed
+though. E.g. for this CODEC the clock generator and the rest of the DAI can
+be powered up independently and we only need to power up the clock generator.
 
-$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: mxssgtl5000 [mxs_sgtl5000], device 0: Playback sgtl5000-0 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: mxssgtl5000 [mxs_sgtl5000], device 1: Capture sgtl5000-1 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+> 
+>> +static int adau17x1_set_dai_clkdiv(struct snd_soc_dai *dai, int div_id, int div)
+>> +{
+>> +	struct adau *adau = snd_soc_codec_get_drvdata(dai->codec);
+>> +
+>> +	if (div < 0 || div > 4)
+>> +		return -EINVAL;
+>> +
+>> +	adau->sysclk_div = div;
+>> +
+>> +	return regmap_update_bits(adau->regmap, ADAU17X1_CLOCK_CONTROL,
+>> +		ADAU17X1_CLOCK_CONTROL_INFREQ_MASK, (div - 1) << 1);
+>> +}
+> 
+> What's this doing?  It'd be better to have a specific ID and check that
+> too.
 
-$ arecord -l
-**** List of CAPTURE Hardware Devices ****
-card 0: mxssgtl5000 [mxs_sgtl5000], device 0: Playback sgtl5000-0 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: mxssgtl5000 [mxs_sgtl5000], device 1: Capture sgtl5000-1 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+Setting the relationship between the external clock rate and the internal
+base sample rate. There might be a better way to do this though.
 
-,which is not correct because we got a capture device listed in aplay and a 
-playback device listed in arecord.
+> 
+>> +int adau17x1_set_micbias_voltage(struct snd_soc_codec *codec,
+>> +	enum adau17x1_micbias_voltage micbias)
+>> +{
+>> +	struct adau *adau = snd_soc_codec_get_drvdata(codec);
+>> +
+>> +	switch (micbias) {
+>> +	case ADAU17X1_MICBIAS_0_90_AVDD:
+>> +	case ADAU17X1_MICBIAS_0_65_AVDD:
+>> +		break;
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	regmap_write(adau->regmap, ADAU17X1_MICBIAS, micbias << 2);
+>> +
+>> +	return 0;
+>> +}
+>> +EXPORT_SYMBOL_GPL(adau17x1_set_micbias_voltage);
+> 
+> When would a machine driver use this (as opposed to just letting it be
+> set by platform data)?
 
-On mx28 there are two serial audio interface ports (SAIF0 and SAIF1) and each
-one of them are unidirectional.
+It is not meant to be used by machine drivers, but by the adau1761 and
+adau1781 CODEC drivers, which set the micbias based on platform data.
 
-Allow to specify a dai link as 'playback_only' or 'capture_only', which suits
-well for this case.
-
-After this change we can correctly report the capabilities as follows:
-
-$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: mxssgtl5000 [mxs_sgtl5000], device 0: HiFi Playback sgtl5000-0 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-$ arecord -l
-**** List of CAPTURE Hardware Devices ****
-card 0: mxssgtl5000 [mxs_sgtl5000], device 1: HiFi Capture sgtl5000-1 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-Also tested playback and capture on the mx28evk board.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-
-After I get some feedback, I can split the patch in two parts (one for soc-pcm
-and another one for mxs-sgtl5000).
-
- include/sound/soc.h          |  4 ++++
- sound/soc/mxs/mxs-sgtl5000.c |  2 ++
- sound/soc/soc-pcm.c          | 10 ++++++++++
- 3 files changed, 16 insertions(+)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 8e2ad52..774d3be 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -934,6 +934,10 @@ struct snd_soc_dai_link {
- 	/* machine stream operations */
- 	const struct snd_soc_ops *ops;
- 	const struct snd_soc_compr_ops *compr_ops;
-+
-+	/* For unidirectional dai links */
-+	bool playback_only;
-+	bool capture_only;
- };
- 
- struct snd_soc_codec_conf {
-diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
-index ce084eb..4bb2737 100644
---- a/sound/soc/mxs/mxs-sgtl5000.c
-+++ b/sound/soc/mxs/mxs-sgtl5000.c
-@@ -105,11 +105,13 @@ static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
- 		.stream_name	= "HiFi Playback",
- 		.codec_dai_name	= "sgtl5000",
- 		.ops		= &mxs_sgtl5000_hifi_ops,
-+		.playback_only	= true,
- 	}, {
- 		.name		= "HiFi Rx",
- 		.stream_name	= "HiFi Capture",
- 		.codec_dai_name	= "sgtl5000",
- 		.ops		= &mxs_sgtl5000_hifi_ops,
-+		.capture_only	= true,
- 	},
- };
- 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index fb70fbe..5e44863 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2020,6 +2020,16 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 			capture = 1;
- 	}
- 
-+	if (rtd->dai_link->playback_only) {
-+		playback = 1;
-+		capture = 0;
-+	}
-+
-+	if (rtd->dai_link->capture_only) {
-+		playback = 0;
-+		capture = 1;
-+	}
-+
- 	/* create the PCM */
- 	if (rtd->dai_link->no_pcm) {
- 		snprintf(new_name, sizeof(new_name), "(%s)",
--- 
-1.8.1.2
+Thanks for the fast review,
+- Lars
