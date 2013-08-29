@@ -1,23 +1,18 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Re: [PATCH] ASoC: codecs: da9055: Update driver name
- to fix breakage due to pmic driver with same name
-Date: Thu, 29 Aug 2013 17:38:28 +0530
-Message-ID: <1377778108.15438.6.camel@matrix>
-References: <20130708112613.GQ27646@sirena.org.uk>
- <1373542576.9286.101.camel@matrix> <20130717103651.GP22506@sirena.org.uk>
- <1374482594.13726.11.camel@matrix> <20130722100211.GP9858@sirena.org.uk>
- <1375110386.21326.6.camel@matrix> <20130729160157.GZ9858@sirena.org.uk>
- <1375689331.28910.5.camel@matrix> <20130805144201.GF9858@sirena.org.uk>
- <1375717898.29528.23.camel@matrix>  <20130805162342.GS9858@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC] ASoC: soc-pcm: Add support for
+	unidirectional dai links
+Date: Thu, 29 Aug 2013 12:45:30 +0100
+Message-ID: <20130829114530.GX10783@sirena.org.uk>
+References: <1377752099-21373-1-git-send-email-festevam@gmail.com>
+ <20130829104742.GU10783@sirena.org.uk>
+ <521F2835.4060109@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3894367302232696549=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from emea01-db3-obe.outbound.protection.outlook.com
- (mail-db3lp0080.outbound.protection.outlook.com [213.199.154.80])
- by alsa0.perex.cz (Postfix) with ESMTP id D21852654C8
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 13:24:52 +0200 (CEST)
-In-Reply-To: <20130805162342.GS9858@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id AAB662654E4
+ for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 13:45:33 +0200 (CEST)
+In-Reply-To: <521F2835.4060109@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,30 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, "kiran.padwal" <kiran.padwal@kpitcummins.com>, Adam Thomson <Adam.Thomson@diasemi.com>, David Dajun Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2013-08-05 at 17:23 +0100, Mark Brown wrote:
-> On Mon, Aug 05, 2013 at 09:21:37PM +0530, Ashish Chavan wrote:
 
-> > many stand alone CODEC drivers in kernel and most of them are fine
-> > without the MFD stub. We wish that our DA9055 CODEC driver should also
-> > be treated in the same way. Just placing it in a different hardware
-> > package (together with PMIC, in this case) shouldn't necessitate any
-> > changes in software. e.g. whether any chip is produced as a BGA
-> > component or through hole component, has no effect on it's software.
->
-> You only need to write the glue once, it'd probably take you less time
-> than writing these e-mails...  Once you've handed the regmap to the ASoC
-> core the code is identical.
-
-Apologies for my delayed response. Unfortunately I need to come out of
-this activity abruptly. One of my colleague, Adam Thomson will take this
-thread forward and will help in doing all required updates to the
-driver. He will also serve as future maintainer for DA9055 codec driver.
-
-Thanks for all your support till date.
+--===============3894367302232696549==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TNwgp3ukRgvXRjlQ"
+Content-Disposition: inline
 
 
-This message contains information that may be privileged or confidential and is the property of the KPIT Cummins Infosystems Ltd. It is intended only for the person to whom it is addressed. If you are not the intended recipient, you are not authorized to read, print, retain copy, disseminate, distribute, or use this message or any part thereof. If you receive this message in error, please notify the sender immediately and delete all copies of this message. KPIT Cummins Infosystems Ltd. does not accept any liability for virus infected mails.
+--TNwgp3ukRgvXRjlQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Aug 29, 2013 at 12:53:41PM +0200, Lars-Peter Clausen wrote:
+> On 08/29/2013 12:47 PM, Mark Brown wrote:
+
+> > This doesn't make much sense to me - it should be possible to tell from
+> > the capabilities of the two DAIs on the link if they support both
+> > playback and capture.  Or has the board wired up two bidirectional DAIs
+> > on each link for some reason?
+
+> The MXS DAIs are unidirectional, but the direction can be configured at
+> runtime. The alternative here is to specify the direction at driver probe
+> time instead of in the dai_link.
+
+Ah, OK.  That's somewhat interesting and is something that might happen
+for other devices - Fabio can you submit your patches please?
+
+--TNwgp3ukRgvXRjlQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSHzRWAAoJELSic+t+oim9G0QP/jYJAGDf3u4zqEzMOb0nALG+
+N72dMOAnjWWHKXLXAbDqWQPxomrsYrSL3KTmnA0DWbun+tDZ/8P/GhJYQLm/n8t5
+TomXevhkweukuPHy1cHKLdNjP/kbCOigvH6hUNMvSWYsNgQSQCaii8UCiIoFVbDq
+vtMsDvaMtxhea49AcD4bRXfTsbz7+pnNdFBDGrchv+w4/G2xuX7Y54ZqfNvXe3Rf
+IPdTMa4qH+s1NTL1xnlosgGAjyC9x0uiQq9b7/Q3st2UZRDskv1x4zF1yo8uqWV5
+XruFPS+4684C09zNn5i793a+OkbqZ06w6Uq7+t2Zgq/r1iw7XU5Kcz15YAtJHRet
+Cws455JThuizSM1OfaY8TEIkjBu1bQxH46FlrY6mofv0aJznUIqYdxjRWqL7bQ4B
+d9y+ilUuRL6Q+Jf7WDR6w6EtBIMdokE5RZ3DE4FDYfFaot+mpvt6kiANzQR55NZH
+697QME0xqgJHJEp9aMsBexBI70XnDTL2DTLQOMdfW+/s72QJ3+uMAi9bSszt6eEF
+tvOaLVAagrpm3k44Ix1RbL6kWWBoabrw7re+oVUaG6bNuGnd3+xR02su1+hOvGNH
+J6+CKPi6tASEU007oeRVQWjI4TYVvaFMJ8ZupE8A1Mc3gp9uerdsfrLVTAP+RHwU
+Y9lR/bBwYr07aizJ2kmI
+=eLZP
+-----END PGP SIGNATURE-----
+
+--TNwgp3ukRgvXRjlQ--
+
+--===============3894367302232696549==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3894367302232696549==--
