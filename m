@@ -1,16 +1,18 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: Buffer size for ALSA USB PCM audio
-Date: Thu, 29 Aug 2013 14:42:22 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1308291441100.1170-100000@iolanthe.rowland.org>
-References: <CABRv+93oVW0rDEJnNeGyfqem2PM42b28-z9q+Ze8r7rky7szDA@mail.gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl: Drop SND_SOC_FSL_UTILS from
+	SND_SOC_IMX_SPDIF
+Date: Thu, 29 Aug 2013 17:31:41 -0300
+Message-ID: <1377808301-10344-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
- by alsa0.perex.cz (Postfix) with SMTP id D7F46265580
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 20:42:23 +0200 (CEST)
-In-Reply-To: <CABRv+93oVW0rDEJnNeGyfqem2PM42b28-z9q+Ze8r7rky7szDA@mail.gmail.com>
+Received: from mail-qe0-f48.google.com (mail-qe0-f48.google.com
+ [209.85.128.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 564DB265591
+ for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 22:31:50 +0200 (CEST)
+Received: by mail-qe0-f48.google.com with SMTP id t9so83516qeq.35
+ for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 13:31:49 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,17 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: James Stone <jamesmstone@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Eldad Zack <eldad@fogrefinery.com>, USB list <linux-usb@vger.kernel.org>, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, b42378@freescale.com, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 29 Aug 2013, James Stone wrote:
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-> At 32 frames/period (reported round-trip latency 1.33ms), it starts up
-> but there are too many xruns for it to be usable.
+SND_SOC_FSL_UTILS is only used by PowerPC machines, so let's drop it in the
+i.mx case.
 
-Interesting.  Can you try doing the same thing with just playback, no 
-recording?  If that still gets underruns, please collect a usbmon 
-trace.
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/fsl/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-Alan Stern
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index a708380..704e246 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -197,7 +197,6 @@ config SND_SOC_IMX_SPDIF
+ 	tristate "SoC Audio support for i.MX boards with S/PDIF"
+ 	select SND_SOC_IMX_PCM_DMA
+ 	select SND_SOC_FSL_SPDIF
+-	select SND_SOC_FSL_UTILS
+ 	select SND_SOC_SPDIF
+ 	help
+ 	  SoC Audio support for i.MX boards with S/PDIF
+-- 
+1.8.1.2
