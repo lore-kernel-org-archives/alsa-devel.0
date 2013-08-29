@@ -1,50 +1,55 @@
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH -next] ASoC: fsl_spdif: remove redundant dev_err call in
- fsl_spdif_probe()
-Date: Thu, 29 Aug 2013 08:00:05 +0800
-Message-ID: <CAPgLHd8kBPX2RjLJ3FeXSFpiZjvGyaUM4nmoU0wEVMM7zjfWBA@mail.gmail.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: 32337ea "ASoC: warn if we will overwrite the DAI
+	stream	widgets"
+Date: Thu, 29 Aug 2013 01:01:26 +0100
+Message-ID: <20130829000126.GQ6617@n2100.arm.linux.org.uk>
+References: <521E8798.10206@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: timur@tabi.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, rob.herring@calxeda.com
-Cc: devicetree@vger.kernel.org, yongjun_wei@trendmicro.com.cn, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id EA8E52615CD
+ for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 02:02:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <521E8798.10206@wwwdotorg.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, Steev Klimaszewski <steev@pwnieexpress.com>, Liam Girdwood <lrg@ti.com>, ARM kernel mailing list <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+On Wed, Aug 28, 2013 at 05:28:24PM -0600, Stephen Warren wrote:
+> Russell, if the warning in commit 32337ea "ASoC: warn if we will
+> overwrite the DAI stream widgets" fires, what do I need to do to the
+> ASoC driver to fix it? (I'm deliberately ignoring any other issues with
+> this patch, and looking only to discover what is apparently wrong with
+> my driver that's triggering this...).
+> 
+> Steev Klimaszewski reported this warning to me, and I've repro'd it
+> running next-20130827 on a couple of Tegra systems (TrimSlice and
+> Seaboard at least), using sound/soc/tegra/tegra_{trimslice,wm8903}.c,
+> and associated ASoC components.
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+I chucked this into linux-next in order to prove that the issue I had
+been reporting was not specific to my systems here (because I was making
+absolutely no useful progress with Mark.)  Mark finally admitted for the
+first time that there's a bug here yesterday, so I've now dropped the
+patch out of linux-next (either that's coincidental or cause and effect).
+In any case, it's served its purpose.
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- sound/soc/fsl/fsl_spdif.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+As for how to solve the underlying problem, I have no idea - I've been
+asking the same question of Mark for the last three weeks and just been
+getting a load of drivel about "it's because you're using DPCM" and
+other *totally useless* suggestions about the code I'm trying to get
+working.
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index a9798aa..e93dc0d 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1113,10 +1113,8 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 	}
- 
- 	regs = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(regs)) {
--		dev_err(&pdev->dev, "could not map device resources\n");
-+	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
--	}
- 
- 	spdif_priv->regmap = devm_regmap_init_mmio_clk(&pdev->dev,
- 			"core", regs, &fsl_spdif_regmap_config);
+Liam says he's working on "a patch" last week, so I assume that this
+issue will eventually be resolved.
