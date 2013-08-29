@@ -1,67 +1,42 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 2/5] ASoC: Add ADAU1361/ADAU1761 audio
-	CODEC support
-Date: Thu, 29 Aug 2013 10:02:47 +0200
-Message-ID: <521F0027.5010002@metafoo.de>
-References: <1377703214-23234-1-git-send-email-lars@metafoo.de>
- <1377703214-23234-2-git-send-email-lars@metafoo.de>
- <20130828172400.GM10783@sirena.org.uk>
+From: James Stone <jamesmstone-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
+Date: Thu, 29 Aug 2013 09:10:22 +0100
+Message-ID: <CABRv+92cJPKVT9f2dyHJ_rg6sX3hP9Ct6QFas771fS79h7Eu2w@mail.gmail.com>
+References: <521D9BAE.2060508@ladisch.de>
+	<Pine.LNX.4.44L0.1308281441090.1541-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-004.synserver.de (smtp-out-004.synserver.de
- [212.40.185.4]) by alsa0.perex.cz (Postfix) with ESMTP id 04975261670
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 10:01:12 +0200 (CEST)
-In-Reply-To: <20130828172400.GM10783@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <Pine.LNX.4.44L0.1308281441090.1541-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/28/2013 07:24 PM, Mark Brown wrote:
-> On Wed, Aug 28, 2013 at 05:20:10PM +0200, Lars-Peter Clausen wrote:
-> 
->> +static const char * const adau1761_bias_select_text[] = {
->> +	"Normal operation", "Enhanced performance", "Power saving",
->> +};
->> +
->> +static const char * const adau1761_bias_select_extreme_text[] = {
->> +	"Normal operation", "Extreme power saving", "Enhanced performance",
->> +	"Power saving",
->> +};
-> 
-> Not a requirement and perhaps it has no effect but these seem like they
-> ought to integrate with the bias level configuration - since only the
-> clocks seem to be managed by set_bias_level() the driver could
-> presumably save a bit of power by dropping down to the minimal power
-> consumption bias while the device is idle.  This is what the STANDBY to
-> ON transition is all about.
+On Wed, Aug 28, 2013 at 7:46 PM, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org> wrote:
+> On Wed, 28 Aug 2013, Clemens Ladisch wrote:
+>
+>> Sorry, what I said applies more to explicit sync endpoints.  When using
+>> implicit sync, a playback URB is submitted for each completed capture
+>> URB, with the number of samples per packet identical to the
+>> corresponding capture packet, so the parameters must be identical.
+>
+> Got it.  Below is an updated patch.
+>
+> James, the problem you encountered was most likely a result of the
+> faulty treatment of capture endpoints that Clemens pointed out.  It was
+> quite obvious in the usbmon traces that the unpatched driver used 8
+> packets per URB whereas the patched driver used 22.  This updated patch
+> should fix that problem.
+>
 
-Hm, I'm not sure if it makes a difference since all the components have
-individual power control bits that are managed by DAPM. I would expect the
-bias current setting to only make a difference if the component is actually
-powered up. I'll check with the designers, but I think this can still be
-improved later on if it turns out that it saves power.
+Works fine. With this, it is possible to get clear playback at 64
+frames/period too. With vanilla 3.10.9, there was some glitchy
+distortion to the sound at that latency, so this seems to be an
+improvement.
 
-> 
->> +static const struct snd_kcontrol_new adau1761_jack_detect_controls[] = {
->> +	SOC_SINGLE("Jack Detect Switch", ADAU1761_DIGMIC_JACKDETECT, 4, 1, 0),
->> +};
-> 
-> Why is this a user visible control and not using the jack detection
-> framework support?
-> 
-
-The CODEC unfortunately does not support reporting the jack state. All it
-can do is mute the speaker output in hardware if something is plugged into
-the headphone jack. The switch allows the users to control whether the
-output should be auto-muted or not.
+James
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
