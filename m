@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: designware_i2s: Remove
- unnecessary dev_set_drvdata()
-Date: Thu, 29 Aug 2013 13:18:44 +0100
-Message-ID: <20130829121844.GA10783@sirena.org.uk>
+Subject: Re: [PATCH 2/3] ASoC: ep93xx-i2s: Remove unnecessary
+ dev_set_drvdata()
+Date: Thu, 29 Aug 2013 13:21:59 +0100
+Message-ID: <20130829122159.GB10783@sirena.org.uk>
 References: <1377519915-23998-1-git-send-email-fabio.estevam@freescale.com>
- <1377519915-23998-3-git-send-email-fabio.estevam@freescale.com>
+ <1377519915-23998-2-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5390691080342615876=="
+Content-Type: multipart/mixed; boundary="===============2162763473774357579=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 7790E26552F
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 14:18:46 +0200 (CEST)
-In-Reply-To: <1377519915-23998-3-git-send-email-fabio.estevam@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 13D18265502
+ for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2013 14:22:02 +0200 (CEST)
+In-Reply-To: <1377519915-23998-2-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +26,53 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5390691080342615876==
+--===============2162763473774357579==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="L4gFVV/CladpyON8"
+	protocol="application/pgp-signature"; boundary="ddcd+dsiJrvLd0CP"
 Content-Disposition: inline
 
 
---L4gFVV/CladpyON8
+--ddcd+dsiJrvLd0CP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Aug 26, 2013 at 09:25:15AM -0300, Fabio Estevam wrote:
+On Mon, Aug 26, 2013 at 09:25:14AM -0300, Fabio Estevam wrote:
 > Driver core clears the driver data to NULL after device_release or on probe
 > failure, so just remove it from here.
 
-Applied, thanks.
+Applied, thanks.  The actual thing here is a bit deeper - if anything
+ever relies on the driver data being set after remove() it's buggy
+anyway, setting it to NULL at all is pretty much ornamental.
 
---L4gFVV/CladpyON8
+--ddcd+dsiJrvLd0CP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSHzwhAAoJELSic+t+oim9lt4P/RJtDIZGJ0U07fs+1t1e9Tah
-QEijRdr1A9HIP3YYLEeI9MX7aooucgfCfIkFKLd6dWCYjWwPAPZ1JCNxYEoI+HfC
-8vsB8TGbEclH3CbdKPlpLvH3k6/aLg3j/rqgQUTuYuFizkn79jZGTsRFHHez/Rtu
-1C37SSfwQR5221dQQXHhb0efPeHXO0uDXBQB2nS6KGnDwrRwqZVbx4oGQsQgpwM2
-8HKrwFR2NCB/xaT1BCTMPzuRZJUFszCw0IeJtDJ2qQ4Sjy4eya6ZBRmQqgbLH7Yl
-VnM1bm3xYvtYR992d6dfDnlBoBXGhU7nV8JitBTOjBdiG07s6pp1NR2LJQbgn3Is
-49oYHlAHB+Yu0f/7n+YaIdvB1Ijd2nypDNbUAKH8zIk1PESXCTCR3BTtU58ulA2p
-iW0fMXLO5J2BmQBoG57zf9bXdo1Vhf8j8iY4f3PZe9QcI2fLe8W0Kdc5pT4mSdQj
-bnDzyhpiZEjGxSRiAA9RfuM9qTQNPFZjeex6W2dlbC7beOU3TL51FJccMpPH1mh4
-aKbJjv3U7ZSaun3kZFxneuj4r/husblWgaOR7YMdTjUHLBW2pFC+VUFsB62/niAb
-EBX0sv5cXlFheth0OsBWDcPNwyRUT7eME3xnr1UTF8F1dx+Ih5GkNFEhKtFowX5g
-2Dkr9IFjzePcCKCzyyzd
-=jLxo
+iQIcBAEBAgAGBQJSHzzkAAoJELSic+t+oim9uRMP/RBXWJLImiLtwhkiteXDmMIY
+NKC2F2bqN1+TmZ4qQSOJkYSh55yyrix0BOyULWPTNA+75PnVVOk5KaGorEDZRze6
+N8Rd5i3YFmECKBP5yujqiC0Yae36mc1x2VChe9ZMxMxLVSzv5TXcjvIcehs86NR+
+f25W9fm6a+EpxvLDs1f+84i2NHGZaHG78st9SOYgbFJKylljaZwwsmWblC9PIgLN
+5JbBe+2GWmierd6E1GsmLR9QdKcj5SYSIokN2QqEkHe/YO7U6HDRMct7FDJuIf36
+T/rKqjtPuZd/ceN0ouE1RXNmrpRNR6TOdn6vON2XsXv5gi6OyE60Cqf9tvit1i+k
+dSDevtbHY5XgPEPC7T4s52T5IS6PXDJQ23foxZTBem2Wezu3wRtPmWVYYANHqkmT
+P/1uvpqmNVfe4qKA+mEbNdodXs8VAxl9gczwuHxuj3+L/x3gs7/o8YwGc1D4yrPz
+DAtB395IhqpfUmMdXyDPpkGpDsitowH9GgDQkxVmu3ycUam82d5CZLkpkXn6b2JT
+X0yTmkppe9h64Vg6jck9W80NaHwj5PC/g0Z4Nzwo9MJ5eP1hB6SqlZJy7lbUFsmY
+AZ41NMr17jkrnn7OBFswB57oNOWM22Rajd0ZgqUh+sEWu69x2fOXz+x0UpzyzXiy
+BnCq2Sof/yqT9xQfuTM7
+=+/NA
 -----END PGP SIGNATURE-----
 
---L4gFVV/CladpyON8--
+--ddcd+dsiJrvLd0CP--
 
---===============5390691080342615876==
+--===============2162763473774357579==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5390691080342615876==--
+--===============2162763473774357579==--
