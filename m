@@ -1,85 +1,69 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: [PATCH 5/5] ASoC: cq93vc: Use regmap for I/O
-Date: Sat, 31 Aug 2013 14:08:59 +0100
-Message-ID: <1377954539-7532-5-git-send-email-broonie@kernel.org>
-References: <20130831130741.GG18608@sirena.org.uk>
-	<1377954539-7532-1-git-send-email-broonie@kernel.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/3] ASoC: generic simple sound card DT
+	bindings
+Date: Sat, 31 Aug 2013 17:10:30 +0200
+Message-ID: <52220766.1040504@metafoo.de>
+References: <1377945878-13322-1-git-send-email-mpa@pengutronix.de>
+ <1377945878-13322-3-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <1377954539-7532-1-git-send-email-broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Miguel Aguilar <miguel.aguilar-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linaro-kernel-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-180.synserver.de (smtp-out-180.synserver.de
+ [212.40.185.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id B30D8261AE4
+ for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 17:08:53 +0200 (CEST)
+In-Reply-To: <1377945878-13322-3-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+On 08/31/2013 12:44 PM, Markus Pargmann wrote:
+> Simple sound card initialized using DT. When used with AC97, ac97-codec
+> is used to automatically discover the used codec.
+> 
+> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+> ---
+>  .../bindings/sound/generic,simple-dt-card.txt      |  28 +++
+>  sound/soc/generic/Kconfig                          |   1 +
+>  sound/soc/generic/simple-card.c                    | 195 +++++++++++++++++++--
+>  3 files changed, 206 insertions(+), 18 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/generic,simple-dt-card.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/generic,simple-dt-card.txt b/Documentation/devicetree/bindings/sound/generic,simple-dt-card.txt
+> new file mode 100644
+> index 0000000..6b41dbe
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/generic,simple-dt-card.txt
+> @@ -0,0 +1,28 @@
+> +ASoC Simple Sound Card
+> +
+> +A simple generic driver that connects a CPU DAI with a CODEC.
+> +
+> +Required properties:
+> + - compatible: "asoc-simple-card" used for standard ssi, codec
+> +   combinations, or "asoc-simple-ac97-card" to use ac97 to discover the
+> +   codec.
+> + - cpu-dai: CPU DAI connected to the codec.
+> +
+> +Required properties for "asoc-simple-card":
+> + - audio-codec: Codec phandle.
+> + - codec-dai-name: DAI name within the codec.
 
-Avoid use of the ASoC-specific register I/O functions by converting to
-use the MMIO regmap provided the core MFD.
+In my opinion this binding exposes way to much of the ASoC internal data
+structures. E.g. CODECs are referenced by phandle, but the DAI of the CODEC
+is reference by a string. This string is completely ASoC internal. The
+binding also assumes that a CPU controller may have one DAI at most. In my
+opinion this binding ought to use the upcoming of_xlate stuff for ASoC
+components.
 
-Signed-off-by: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
----
- sound/soc/codecs/cq93vc.c | 24 +++---------------------
- 1 file changed, 3 insertions(+), 21 deletions(-)
-
-diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
-index 2cbb584..43737a27 100644
---- a/sound/soc/codecs/cq93vc.c
-+++ b/sound/soc/codecs/cq93vc.c
-@@ -38,24 +38,6 @@
- #include <sound/soc.h>
- #include <sound/initval.h>
- 
--static inline unsigned int cq93vc_read(struct snd_soc_codec *codec,
--						unsigned int reg)
--{
--	struct davinci_vc *davinci_vc = codec->control_data;
--
--	return readl(davinci_vc->base + reg);
--}
--
--static inline int cq93vc_write(struct snd_soc_codec *codec, unsigned int reg,
--		       unsigned int value)
--{
--	struct davinci_vc *davinci_vc = codec->control_data;
--
--	writel(value, davinci_vc->base + reg);
--
--	return 0;
--}
--
- static const struct snd_kcontrol_new cq93vc_snd_controls[] = {
- 	SOC_SINGLE("PGA Capture Volume", DAVINCI_VC_REG05, 0, 0x03, 0),
- 	SOC_SINGLE("Mono DAC Playback Volume", DAVINCI_VC_REG09, 0, 0x3f, 0),
-@@ -156,7 +138,9 @@ static int cq93vc_probe(struct snd_soc_codec *codec)
- 	struct davinci_vc *davinci_vc = codec->dev->platform_data;
- 
- 	davinci_vc->cq93vc.codec = codec;
--	codec->control_data = davinci_vc;
-+	codec->control_data = davinci_vc->regmap;
-+
-+	snd_soc_codec_set_cache_io(codec, 32, 32, SND_SOC_REGMAP);
- 
- 	/* Off, with power on */
- 	cq93vc_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-@@ -172,8 +156,6 @@ static int cq93vc_remove(struct snd_soc_codec *codec)
- }
- 
- static struct snd_soc_codec_driver soc_codec_dev_cq93vc = {
--	.read = cq93vc_read,
--	.write = cq93vc_write,
- 	.set_bias_level = cq93vc_set_bias_level,
- 	.probe = cq93vc_probe,
- 	.remove = cq93vc_remove,
--- 
-1.8.4.rc3
+- Lars
