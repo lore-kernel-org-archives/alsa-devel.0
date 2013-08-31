@@ -1,16 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: fsl: Add wrapping for dev_dbg()
-	in fsl_spdif.c
-Date: Fri, 30 Aug 2013 23:01:33 +0100
-Message-ID: <20130830220133.GB18608@sirena.org.uk>
-References: <7c26687b556e1b4fc33ea5771de7b64e45a02d38.1377855239.git.b42378@freescale.com>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH v11 3/8] ASoC: generic: simple DT sound card
+Date: Sat, 31 Aug 2013 09:17:52 +0200
+Message-ID: <20130831071752.GX20071@s25.your-server.de>
+References: <1376924761-4054-1-git-send-email-mpa@pengutronix.de>
+ <1376924761-4054-4-git-send-email-mpa@pengutronix.de>
+ <20130823095816.GF25263@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0348834961488740129=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F11C2619E0
- for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 00:01:39 +0200 (CEST)
-In-Reply-To: <7c26687b556e1b4fc33ea5771de7b64e45a02d38.1377855239.git.b42378@freescale.com>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 11B862608D0
+ for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 09:18:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130823095816.GF25263@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, timur@tabi.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============0348834961488740129==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="uZ3hkaAS1mZxFaxD"
-Content-Disposition: inline
+On Fri, Aug 23, 2013 at 10:58:16AM +0100, Mark Brown wrote:
+> On Mon, Aug 19, 2013 at 05:05:56PM +0200, Markus Pargmann wrote:
+> > Simple sound card initialized using DT. When used with AC97, ac97-codec
+> > is used to automatically discover the used codec.
+> 
+> I've held back a bit on this one.  The reason is that it's adding a
+> separate card to the generic card which doesn't seem like the obvious
+> thing to do - obviously they have very similar goals, it's just that one
+> is for DT usage and the other isn't.  What's the reason for not adding
+> DT support to the generic card?
 
+There was no code I could reuse from the existing simple card driver, so
+I decided to seperate the DT part.
 
---uZ3hkaAS1mZxFaxD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I will move the DT driver code into simple card and resend the patch.
 
-On Fri, Aug 30, 2013 at 05:38:08PM +0800, Nicolin Chen wrote:
-> Add wrapping '\n' for dev_dbg() in fsl_spdif.c
+Thanks,
 
-Applied both, thanks.
+Markus
 
---uZ3hkaAS1mZxFaxD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSIRY6AAoJELSic+t+oim9cYMP/0NaYZIyebC4kqYozti3BkOq
-Bx/mPLgZmmvjbFb0a6CQ1FNQfaFVt+xz+ubHmA508ebcHOoBNu7DMmK/gU6qKJcU
-LUMMpY953bS4lhfpYlonIFVukBkjyyC+srZPwsZG6/lw1s1r5w//Pp0Un6d6h5fa
-kIfh9NdiG5xEk56gy5D4vIjIF8C1AlEq0mjyaBI/gkqp3pMirLWio0QsdDQdPFu0
-VtGrOY9N4Ii40Y39zV0DNiVi+PQI5QGEn2ClicNHT670DZwwdYRsQUkuzR1y9eQj
-KUIMfWBMNF/fDY6QN5jetqmCZMcGQZOexUNjx0v62aSvcCm4EjPL5ixEwKI0EBjw
-UH/ExUjnhQsNRHCYmWmepbk8RFUdGjFVVVd4aGxqAhw2N7mpAIyAwAgpU0hcZUn0
-X2Q7O2e0RuIDp7BnN6fYBzHWvwnBRnuJpeqlaWvs4ZAwOm24URiCgljgJr1g7CIK
-9CO5eMvy+POKtKpxX5ociwWyjdTvdD8eresWsHvSEW13deMX+ELDC+flYNO61IO8
-uY2bQdN/QRvXKfoGNiLarx85EMlhQpprT18vgWYJ41gcOQT56Hfh/28/bIeOn3mk
-PqDARa0Rk/zbP051sg4WrNgTx/+5+1iqYN9ThMmTSLRSUQM7ijZ94pUkYWGjbQGK
-c8exp8heG1OojqNx/iJO
-=CXoi
------END PGP SIGNATURE-----
-
---uZ3hkaAS1mZxFaxD--
-
---===============0348834961488740129==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0348834961488740129==--
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
