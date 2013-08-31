@@ -1,201 +1,56 @@
-From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH 14/14] ASoC: kirkwood: add IEC958 channel status support
-Date: Sat, 31 Aug 2013 13:48:37 +0100
-Message-ID: <E1VFkbV-0003JU-HQ@rmk-PC.arm.linux.org.uk>
-References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: [PATCH] ASoC: cq93vc: Use table based control registration
+Date: Sat, 31 Aug 2013 13:59:31 +0100
+Message-ID: <1377953971-6035-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20130831123458.GF6617@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Jean-Francois Moine <moinejf@free.fr>, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Miguel Aguilar <miguel.aguilar-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linaro-kernel-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add support for userspace setting the IEC958 channel status data
-for the SPDIF interface.
+From: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+Saves a little code.
+
+Signed-off-by: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/kirkwood/kirkwood-i2s.c |   93 +++++++++++++++++++++++++++++++++++++
- sound/soc/kirkwood/kirkwood.h     |   33 +++++++++++++
- 2 files changed, 126 insertions(+), 0 deletions(-)
+ sound/soc/codecs/cq93vc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index 63df507..11f51e0 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -18,6 +18,7 @@
- #include <linux/mbus.h>
- #include <linux/delay.h>
- #include <linux/clk.h>
-+#include <sound/asoundef.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -29,11 +30,94 @@
- #define KIRKWOOD_I2S_RATES \
- 	(SNDRV_PCM_RATE_44100 | \
- 	 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000)
-+
- #define KIRKWOOD_I2S_FORMATS \
- 	(SNDRV_PCM_FMTBIT_S16_LE | \
- 	 SNDRV_PCM_FMTBIT_S24_LE | \
- 	 SNDRV_PCM_FMTBIT_S32_LE)
+diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
+index 3ce535b..43737a27 100644
+--- a/sound/soc/codecs/cq93vc.c
++++ b/sound/soc/codecs/cq93vc.c
+@@ -142,10 +142,6 @@ static int cq93vc_probe(struct snd_soc_codec *codec)
  
-+static int kirkwood_iec958_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
-+	uinfo->count = 1;
-+
-+	return 0;
-+}
-+
-+static int kirkwood_iec958_mask_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	memset(ucontrol->value.iec958.status, 0,
-+	       sizeof(ucontrol->value.iec958.status));
-+	memset(ucontrol->value.iec958.status, 0xff, 4);
-+	return 0;
-+}
-+
-+static int kirkwood_iec958_dflt_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
-+	struct kirkwood_dma_data *priv = snd_soc_dai_get_drvdata(cpu_dai);
-+	u32 reg;
-+
-+	reg = readl_relaxed(priv->io + KIRKWOOD_SPDIF_STATUS0_L);
-+	ucontrol->value.iec958.status[3] = reg >> 24;
-+	ucontrol->value.iec958.status[2] = reg >> 16;
-+	ucontrol->value.iec958.status[1] = reg >>  8;
-+	ucontrol->value.iec958.status[0] = reg;
-+
-+	return 0;
-+}
-+
-+static int kirkwood_iec958_dflt_put(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
-+	struct kirkwood_dma_data *priv = snd_soc_dai_get_drvdata(cpu_dai);
-+	u32 val, nval;
-+
-+	val  = readl_relaxed(priv->io + KIRKWOOD_SPDIF_PLAYCTL);
-+	nval = val & ~(KIRKWOOD_SPDIF_NON_PCM | KIRKWOOD_SPDIF_REG_VALIDITY);
-+	if (ucontrol->value.iec958.status[0] & IEC958_AES0_NONAUDIO)
-+		nval |= KIRKWOOD_SPDIF_NON_PCM | KIRKWOOD_SPDIF_REG_VALIDITY;
-+	writel_relaxed(nval, priv->io + KIRKWOOD_SPDIF_PLAYCTL);
-+
-+	val = readl_relaxed(priv->io + KIRKWOOD_SPDIF_STATUS0_L);
-+	nval = ucontrol->value.iec958.status[3] << 24 |
-+	       ucontrol->value.iec958.status[2] << 16 |
-+	       ucontrol->value.iec958.status[1] << 8 |
-+	       ucontrol->value.iec958.status[0];
-+	writel_relaxed(nval, priv->io + KIRKWOOD_SPDIF_STATUS0_L);
-+	writel_relaxed(nval, priv->io + KIRKWOOD_SPDIF_STATUS0_R);
-+
-+	return nval != val;
-+}
-+
-+static const struct snd_kcontrol_new kirkwood_i2s_iec958_controls[] = {
-+	{
-+		.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name	= SNDRV_CTL_NAME_IEC958("", PLAYBACK, CON_MASK),
-+		.access	= SNDRV_CTL_ELEM_ACCESS_READ,
-+		.info	= kirkwood_iec958_info,
-+		.get	= kirkwood_iec958_mask_get,
-+	}, {
-+		.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name	= SNDRV_CTL_NAME_IEC958("", PLAYBACK, PRO_MASK),
-+		.access	= SNDRV_CTL_ELEM_ACCESS_READ,
-+		.info	= kirkwood_iec958_info,
-+		.get	= kirkwood_iec958_mask_get,
-+	}, {
-+		.iface	= SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name	= SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
-+		.access	= SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info	= kirkwood_iec958_info,
-+		.get	= kirkwood_iec958_dflt_get,
-+		.put	= kirkwood_iec958_dflt_put,
-+	},
-+};
-+
- static int kirkwood_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		unsigned int fmt)
- {
-@@ -408,6 +492,15 @@ static int kirkwood_i2s_probe(struct snd_soc_dai *dai)
- 	struct kirkwood_dma_data *priv = snd_soc_dai_get_drvdata(dai);
- 	unsigned long value;
- 	unsigned int reg_data;
-+	int ret;
-+
-+	ret = snd_soc_add_dai_controls(dai, kirkwood_i2s_iec958_controls,
-+				ARRAY_SIZE(kirkwood_i2s_iec958_controls));
-+	if (ret) {
-+		dev_err(dai->dev,
-+			"unable to add soc card controls: %d\n", ret);
-+		return ret;
-+	}
+ 	snd_soc_codec_set_cache_io(codec, 32, 32, SND_SOC_REGMAP);
  
- 	/* It appears that these can't be attached to the CPU DAI */
- 	snd_soc_dapm_new_controls(&dai->dapm, widgets, ARRAY_SIZE(widgets));
-diff --git a/sound/soc/kirkwood/kirkwood.h b/sound/soc/kirkwood/kirkwood.h
-index 3b70876..17b48a6 100644
---- a/sound/soc/kirkwood/kirkwood.h
-+++ b/sound/soc/kirkwood/kirkwood.h
-@@ -105,6 +105,39 @@
- #define KIRKWOOD_PLAY_BYTE_INT_COUNT		0x1314
- #define KIRKWOOD_BYTE_INT_COUNT_MASK		0xffffff
+-	/* Set controls */
+-	snd_soc_add_codec_controls(codec, cq93vc_snd_controls,
+-			     ARRAY_SIZE(cq93vc_snd_controls));
+-
+ 	/* Off, with power on */
+ 	cq93vc_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
  
-+#define KIRKWOOD_SPDIF_PLAYCTL			0x2204
-+#define KIRKWOOD_SPDIF_NON_PCM			(1<<17)
-+#define KIRKWOOD_SPDIF_REG_VALIDITY		(1<<16)
-+#define KIRKWOOD_SPDIF_FORCE_PARERR		(1<<4)
-+#define KIRKWOOD_SPDIF_MEM_USER_EN		(1<<2)
-+#define KIRKWOOD_SPDIF_MEM_VALIDITY_EN		(1<<1)
-+#define KIRKWOOD_SPDIF_BLOCK_START_MODE		(1<<0)
-+
-+#define KIRKWOOD_SPDIF_STATUS0_L		0x2280
-+#define KIRKWOOD_SPDIF_STATUS1_L		0x2284
-+#define KIRKWOOD_SPDIF_STATUS2_L		0x2288
-+#define KIRKWOOD_SPDIF_STATUS3_L		0x228c
-+#define KIRKWOOD_SPDIF_STATUS4_L		0x2290
-+#define KIRKWOOD_SPDIF_STATUS5_L		0x2294
-+#define KIRKWOOD_SPDIF_STATUS0_R		0x22a0
-+#define KIRKWOOD_SPDIF_STATUS1_R		0x22a4
-+#define KIRKWOOD_SPDIF_STATUS2_R		0x22a8
-+#define KIRKWOOD_SPDIF_STATUS3_R		0x22ac
-+#define KIRKWOOD_SPDIF_STATUS4_R		0x22b0
-+#define KIRKWOOD_SPDIF_STATUS5_R		0x22b4
-+#define KIRKWOOD_SPDIF_USER0_L			0x22c0
-+#define KIRKWOOD_SPDIF_USER1_L			0x22c4
-+#define KIRKWOOD_SPDIF_USER2_L			0x22c8
-+#define KIRKWOOD_SPDIF_USER3_L			0x22cc
-+#define KIRKWOOD_SPDIF_USER4_L			0x22d0
-+#define KIRKWOOD_SPDIF_USER5_L			0x22d4
-+#define KIRKWOOD_SPDIF_USER0_R			0x22e0
-+#define KIRKWOOD_SPDIF_USER1_R			0x22e4
-+#define KIRKWOOD_SPDIF_USER2_R			0x22e8
-+#define KIRKWOOD_SPDIF_USER3_R			0x22ec
-+#define KIRKWOOD_SPDIF_USER4_R			0x22f0
-+#define KIRKWOOD_SPDIF_USER5_R			0x22f4
-+
- #define KIRKWOOD_I2S_PLAYCTL			0x2508
- #define KIRKWOOD_I2S_RECCTL			0x2408
- #define KIRKWOOD_I2S_CTL_JUST_MASK		(0xf<<26)
+@@ -164,6 +160,8 @@ static struct snd_soc_codec_driver soc_codec_dev_cq93vc = {
+ 	.probe = cq93vc_probe,
+ 	.remove = cq93vc_remove,
+ 	.resume = cq93vc_resume,
++	.controls = cq93vc_snd_controls,
++	.num_controls = ARRAY_SIZE(cq93vc_snd_controls),
+ };
+ 
+ static int cq93vc_platform_probe(struct platform_device *pdev)
 -- 
-1.7.4.4
+1.8.4.rc3
