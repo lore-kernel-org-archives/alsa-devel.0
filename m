@@ -1,14 +1,16 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH 0/3] ASoC: generic simple sound card DT bindings
-Date: Sat, 31 Aug 2013 12:44:35 +0200
-Message-ID: <1377945878-13322-1-git-send-email-mpa@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: Remove unused control_type field
+ from snd_soc_codec struct
+Date: Sat, 31 Aug 2013 12:48:38 +0100
+Message-ID: <20130831114838.GE18608@sirena.org.uk>
+References: <1377939739-14246-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1812550533155661844=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id E17C8261A1B
- for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 12:45:31 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E7AF2608A1
+ for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 13:48:43 +0200 (CEST)
+In-Reply-To: <1377939739-14246-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,29 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-The patches were already in the fsl-ssi ac97 series. I moved the seperated
-simple sound card DT driver into the existing simple card driver.
-
-Regards,
-
-Markus
+--===============1812550533155661844==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="UnaWdueM1EBWVRzC"
+Content-Disposition: inline
 
 
-Markus Pargmann (3):
-      ASoC: generic: simple card, use private data
-      ASoC: generic simple sound card DT bindings
-      ASoC: fsl: Kconfig, visible config items for simple card
+--UnaWdueM1EBWVRzC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- .../bindings/sound/generic,simple-dt-card.txt      |  28 +++
- include/sound/simple_card.h                        |   4 -
- sound/soc/fsl/Kconfig                              |  23 ++-
- sound/soc/generic/Kconfig                          |   1 +
- sound/soc/generic/simple-card.c                    | 225 ++++++++++++++++++---
- 5 files changed, 246 insertions(+), 35 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/generic,simple-dt-card.txt
+On Sat, Aug 31, 2013 at 11:02:17AM +0200, Lars-Peter Clausen wrote:
+> The control_type field was used by the core to track which raw IO methods to
+> use, but when switching to regmap this was no longer necessary and so the last
+> user of the field was removed in commit be3ea3b9 ("ASoC: Use new register map
+> API for ASoC generic physical I/O"). The field is now completely unused and can
+> be removed.
+
+Applied all, thanks.
+
+--UnaWdueM1EBWVRzC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSIdgTAAoJELSic+t+oim9FEsQAJ2Tho762UgKW7qE738/DMWT
+QJ8mmneAVCr1u8Pkbfe2As1bo+MlLO7gPZuYkhsVg9vgB1T91+vxxjzPvLOSPMAz
+uHUOZGnR3wGXoOnxcZXQIvXnmN9iNYDwPzvG0c+kZ1WuK5pIUIqX8tSDQaApa4kC
+aM/XbHAZfrxxuvEa9udE1BehKpIxZsMYOXindML4NC34Y51kLfA5liTNNGQmOXiI
+0u/CgPJq93tY/kgL3JqvmC0w91Bk+sTEKgj/24PpVbYEOszdnoTXozJzxs6yO517
+GbW6k0AV2XPTPaqANfG4GDVDcljZR9xRry4zD/b0LhSbf5+/o5EeSObFEvWXvCnV
+zd8wtjjPpOEUMLqR5nHQeTbWvBB9p2lrWHtIIPd0boo1w4dpb/cWYSAzLd8jARKn
+D8qMjCpNngP1oTB0dgaiyhCXYxsEXPZtaweJtKYlehhs/M8+x6ZDOeZ7GmU9FY4f
+jm+rVKaFgh/Q1aQbmpjAmZ62KEVifMfXfu6GJmfy74zu/4BgeiFGhe38W0h7ogIv
+tA5W1zYCx3/jqbSDvRBKDOOoe/mPSryuocFegrMWRJODy/A5WBtHaZqxYMKpqGYO
+v18ihn9T0MO73aruKthLyTQBlkekoqCYKvgEzXCgX+aXjR/NgZTOpuljYoQ75f/l
+gaY8TUzh2DkMoALFbhTo
+=73RN
+-----END PGP SIGNATURE-----
+
+--UnaWdueM1EBWVRzC--
+
+--===============1812550533155661844==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1812550533155661844==--
