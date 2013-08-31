@@ -1,16 +1,17 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/5] ASoC: Remove support for
-	reg_access_defaults
-Date: Sat, 31 Aug 2013 20:31:11 +0200
-Message-ID: <1377973875-2209-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 2/5] ASoC: Remove snd_soc_bulk_write_raw()
+Date: Sat, 31 Aug 2013 20:31:12 +0200
+Message-ID: <1377973875-2209-2-git-send-email-lars@metafoo.de>
+References: <1377973875-2209-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-180.synserver.de (smtp-out-180.synserver.de
  [212.40.185.180])
- by alsa0.perex.cz (Postfix) with ESMTP id DFE37261AE5
- for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 20:29:46 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A346B261AF4
+ for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 20:29:47 +0200 (CEST)
+In-Reply-To: <1377973875-2209-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,155 +25,98 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-No users of reg_access_defaults are left and new drivers are going to use regmap
-for this, so support for it can be removed.
+No users of snd_soc_bulk_write_raw() are left and new drivers are going to use
+regmap directly for this, so the function can be removed.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/soc.h   | 24 --------------------
- sound/soc/soc-cache.c | 63 ---------------------------------------------------
- sound/soc/soc-core.c  |  9 --------
- 3 files changed, 96 deletions(-)
+ include/sound/soc.h  |  3 ---
+ sound/soc/soc-core.c |  7 -------
+ sound/soc/soc-io.c   | 26 --------------------------
+ 3 files changed, 36 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 7184805..ae6efc6d 100644
+index ae6efc6d..c72b7b3 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -403,12 +403,6 @@ int snd_soc_cache_write(struct snd_soc_codec *codec,
- 			unsigned int reg, unsigned int value);
- int snd_soc_cache_read(struct snd_soc_codec *codec,
- 		       unsigned int reg, unsigned int *value);
--int snd_soc_default_volatile_register(struct snd_soc_codec *codec,
--				      unsigned int reg);
--int snd_soc_default_readable_register(struct snd_soc_codec *codec,
--				      unsigned int reg);
--int snd_soc_default_writable_register(struct snd_soc_codec *codec,
--				      unsigned int reg);
- int snd_soc_platform_read(struct snd_soc_platform *platform,
- 					unsigned int reg);
- int snd_soc_platform_write(struct snd_soc_platform *platform,
-@@ -542,22 +536,6 @@ int snd_soc_put_strobe(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol);
+@@ -686,7 +686,6 @@ struct snd_soc_codec {
+ 	unsigned int (*hw_read)(struct snd_soc_codec *, unsigned int);
+ 	unsigned int (*read)(struct snd_soc_codec *, unsigned int);
+ 	int (*write)(struct snd_soc_codec *, unsigned int, unsigned int);
+-	int (*bulk_write_raw)(struct snd_soc_codec *, unsigned int, const void *, size_t);
+ 	void *reg_cache;
+ 	const void *reg_def_copy;
+ 	const struct snd_soc_cache_ops *cache_ops;
+@@ -1093,8 +1092,6 @@ struct soc_enum {
+ unsigned int snd_soc_read(struct snd_soc_codec *codec, unsigned int reg);
+ unsigned int snd_soc_write(struct snd_soc_codec *codec,
+ 			   unsigned int reg, unsigned int val);
+-unsigned int snd_soc_bulk_write_raw(struct snd_soc_codec *codec,
+-				    unsigned int reg, const void *data, size_t len);
  
- /**
-- * struct snd_soc_reg_access - Describes whether a given register is
-- * readable, writable or volatile.
-- *
-- * @reg: the register number
-- * @read: whether this register is readable
-- * @write: whether this register is writable
-- * @vol: whether this register is volatile
-- */
--struct snd_soc_reg_access {
--	u16 reg;
--	u16 read;
--	u16 write;
--	u16 vol;
--};
--
--/**
-  * struct snd_soc_jack_pin - Describes a pin to update based on jack detection
-  *
-  * @pin:    name of the pin to update
-@@ -760,8 +738,6 @@ struct snd_soc_codec_driver {
- 	short reg_cache_step;
- 	short reg_word_size;
- 	const void *reg_cache_default;
--	short reg_access_size;
--	const struct snd_soc_reg_access *reg_access_default;
- 	enum snd_soc_compress_type compress_type;
+ /* device driver data */
  
- 	/* codec bias level */
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index e72f554..eaa898f 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -275,66 +275,3 @@ int snd_soc_cache_sync(struct snd_soc_codec *codec)
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_soc_cache_sync);
--
--static int snd_soc_get_reg_access_index(struct snd_soc_codec *codec,
--					unsigned int reg)
--{
--	const struct snd_soc_codec_driver *codec_drv;
--	unsigned int min, max, index;
--
--	codec_drv = codec->driver;
--	min = 0;
--	max = codec_drv->reg_access_size - 1;
--	do {
--		index = (min + max) / 2;
--		if (codec_drv->reg_access_default[index].reg == reg)
--			return index;
--		if (codec_drv->reg_access_default[index].reg < reg)
--			min = index + 1;
--		else
--			max = index;
--	} while (min <= max);
--	return -1;
--}
--
--int snd_soc_default_volatile_register(struct snd_soc_codec *codec,
--				      unsigned int reg)
--{
--	int index;
--
--	if (reg >= codec->driver->reg_cache_size)
--		return 1;
--	index = snd_soc_get_reg_access_index(codec, reg);
--	if (index < 0)
--		return 0;
--	return codec->driver->reg_access_default[index].vol;
--}
--EXPORT_SYMBOL_GPL(snd_soc_default_volatile_register);
--
--int snd_soc_default_readable_register(struct snd_soc_codec *codec,
--				      unsigned int reg)
--{
--	int index;
--
--	if (reg >= codec->driver->reg_cache_size)
--		return 1;
--	index = snd_soc_get_reg_access_index(codec, reg);
--	if (index < 0)
--		return 0;
--	return codec->driver->reg_access_default[index].read;
--}
--EXPORT_SYMBOL_GPL(snd_soc_default_readable_register);
--
--int snd_soc_default_writable_register(struct snd_soc_codec *codec,
--				      unsigned int reg)
--{
--	int index;
--
--	if (reg >= codec->driver->reg_cache_size)
--		return 1;
--	index = snd_soc_get_reg_access_index(codec, reg);
--	if (index < 0)
--		return 0;
--	return codec->driver->reg_access_default[index].write;
--}
--EXPORT_SYMBOL_GPL(snd_soc_default_writable_register);
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 7d13c4f..b78fa93 100644
+index b78fa93..d25feed 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -4222,15 +4222,6 @@ int snd_soc_register_codec(struct device *dev,
- 		}
- 	}
+@@ -2296,13 +2296,6 @@ unsigned int snd_soc_write(struct snd_soc_codec *codec,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_write);
  
--	if (codec_drv->reg_access_size && codec_drv->reg_access_default) {
--		if (!codec->volatile_register)
--			codec->volatile_register = snd_soc_default_volatile_register;
--		if (!codec->readable_register)
--			codec->readable_register = snd_soc_default_readable_register;
--		if (!codec->writable_register)
--			codec->writable_register = snd_soc_default_writable_register;
--	}
+-unsigned int snd_soc_bulk_write_raw(struct snd_soc_codec *codec,
+-				    unsigned int reg, const void *data, size_t len)
+-{
+-	return codec->bulk_write_raw(codec, reg, data, len);
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_bulk_write_raw);
 -
- 	for (i = 0; i < num_dai; i++) {
- 		fixup_codec_formats(&dai_drv[i].playback);
- 		fixup_codec_formats(&dai_drv[i].capture);
+ /**
+  * snd_soc_update_bits - update codec register bits
+  * @codec: audio codec
+diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
+index 8ca9ecc..0b20cf2 100644
+--- a/sound/soc/soc-io.c
++++ b/sound/soc/soc-io.c
+@@ -65,31 +65,6 @@ static unsigned int hw_read(struct snd_soc_codec *codec, unsigned int reg)
+ 	return val;
+ }
+ 
+-/* Primitive bulk write support for soc-cache.  The data pointed to by
+- * `data' needs to already be in the form the hardware expects.  Any
+- * data written through this function will not go through the cache as
+- * it only handles writing to volatile or out of bounds registers.
+- *
+- * This is currently only supported for devices using the regmap API
+- * wrappers.
+- */
+-static int snd_soc_hw_bulk_write_raw(struct snd_soc_codec *codec,
+-				     unsigned int reg,
+-				     const void *data, size_t len)
+-{
+-	/* To ensure that we don't get out of sync with the cache, check
+-	 * whether the base register is volatile or if we've directly asked
+-	 * to bypass the cache.  Out of bounds registers are considered
+-	 * volatile.
+-	 */
+-	if (!codec->cache_bypass
+-	    && !snd_soc_codec_volatile_register(codec, reg)
+-	    && reg < codec->driver->reg_cache_size)
+-		return -EINVAL;
+-
+-	return regmap_raw_write(codec->control_data, reg, data, len);
+-}
+-
+ /**
+  * snd_soc_codec_set_cache_io: Set up standard I/O functions.
+  *
+@@ -119,7 +94,6 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
+ 	memset(&config, 0, sizeof(config));
+ 	codec->write = hw_write;
+ 	codec->read = hw_read;
+-	codec->bulk_write_raw = snd_soc_hw_bulk_write_raw;
+ 
+ 	config.reg_bits = addr_bits;
+ 	config.val_bits = data_bits;
 -- 
 1.8.0
