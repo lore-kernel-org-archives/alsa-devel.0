@@ -1,7 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/5] ASoC: Remove snd_soc_bulk_write_raw()
-Date: Sat, 31 Aug 2013 20:31:12 +0200
-Message-ID: <1377973875-2209-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH 3/5] ASoC: Remove reg_def_copy
+Date: Sat, 31 Aug 2013 20:31:13 +0200
+Message-ID: <1377973875-2209-3-git-send-email-lars@metafoo.de>
 References: <1377973875-2209-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-180.synserver.de (smtp-out-180.synserver.de
  [212.40.185.180])
- by alsa0.perex.cz (Postfix) with ESMTP id A346B261AF4
- for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 20:29:47 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 402F42654B2
+ for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 20:29:49 +0200 (CEST)
 In-Reply-To: <1377973875-2209-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,98 +25,92 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-No users of snd_soc_bulk_write_raw() are left and new drivers are going to use
-regmap directly for this, so the function can be removed.
+reg_def_copy was introduced in commit 3335ddca ("ASoC: soc-cache: Use
+reg_def_copy instead of reg_cache_default") to keep a copy of the register
+defaults around in case the register defaults where placed in the __devinitdata
+section. With the __devinitdata section gone we effectivly keep the same data
+around twice. This patch removes reg_def_copy and uses reg_cache_default
+directly instead.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/soc.h  |  3 ---
- sound/soc/soc-core.c |  7 -------
- sound/soc/soc-io.c   | 26 --------------------------
- 3 files changed, 36 deletions(-)
+ include/sound/soc.h   |  1 -
+ sound/soc/soc-cache.c | 10 ++++++----
+ sound/soc/soc-core.c  | 15 ---------------
+ 3 files changed, 6 insertions(+), 20 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index ae6efc6d..c72b7b3 100644
+index c72b7b3..696de9a 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -686,7 +686,6 @@ struct snd_soc_codec {
- 	unsigned int (*hw_read)(struct snd_soc_codec *, unsigned int);
+@@ -687,7 +687,6 @@ struct snd_soc_codec {
  	unsigned int (*read)(struct snd_soc_codec *, unsigned int);
  	int (*write)(struct snd_soc_codec *, unsigned int, unsigned int);
--	int (*bulk_write_raw)(struct snd_soc_codec *, unsigned int, const void *, size_t);
  	void *reg_cache;
- 	const void *reg_def_copy;
+-	const void *reg_def_copy;
  	const struct snd_soc_cache_ops *cache_ops;
-@@ -1093,8 +1092,6 @@ struct soc_enum {
- unsigned int snd_soc_read(struct snd_soc_codec *codec, unsigned int reg);
- unsigned int snd_soc_write(struct snd_soc_codec *codec,
- 			   unsigned int reg, unsigned int val);
--unsigned int snd_soc_bulk_write_raw(struct snd_soc_codec *codec,
--				    unsigned int reg, const void *data, size_t len);
+ 	struct mutex cache_rw_mutex;
+ 	int val_bytes;
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index eaa898f..a7f83c0 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -78,8 +78,8 @@ static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
+ 		ret = snd_soc_cache_read(codec, i, &val);
+ 		if (ret)
+ 			return ret;
+-		if (codec->reg_def_copy)
+-			if (snd_soc_get_cache_val(codec->reg_def_copy,
++		if (codec_drv->reg_cache_default)
++			if (snd_soc_get_cache_val(codec_drv->reg_cache_default,
+ 						  i, codec_drv->reg_word_size) == val)
+ 				continue;
  
- /* device driver data */
+@@ -121,8 +121,10 @@ static int snd_soc_flat_cache_exit(struct snd_soc_codec *codec)
  
+ static int snd_soc_flat_cache_init(struct snd_soc_codec *codec)
+ {
+-	if (codec->reg_def_copy)
+-		codec->reg_cache = kmemdup(codec->reg_def_copy,
++	const struct snd_soc_codec_driver *codec_drv = codec->driver;
++
++	if (codec_drv->reg_cache_default)
++		codec->reg_cache = kmemdup(codec_drv->reg_cache_default,
+ 					   codec->reg_size, GFP_KERNEL);
+ 	else
+ 		codec->reg_cache = kzalloc(codec->reg_size, GFP_KERNEL);
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b78fa93..d25feed 100644
+index d25feed..fbfd6a7 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2296,13 +2296,6 @@ unsigned int snd_soc_write(struct snd_soc_codec *codec,
+@@ -4199,20 +4199,6 @@ int snd_soc_register_codec(struct device *dev,
+ 	if (codec_drv->reg_cache_size && codec_drv->reg_word_size) {
+ 		reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
+ 		codec->reg_size = reg_size;
+-		/* it is necessary to make a copy of the default register cache
+-		 * because in the case of using a compression type that requires
+-		 * the default register cache to be marked as the
+-		 * kernel might have freed the array by the time we initialize
+-		 * the cache.
+-		 */
+-		if (codec_drv->reg_cache_default) {
+-			codec->reg_def_copy = kmemdup(codec_drv->reg_cache_default,
+-						      reg_size, GFP_KERNEL);
+-			if (!codec->reg_def_copy) {
+-				ret = -ENOMEM;
+-				goto fail_codec_name;
+-			}
+-		}
+ 	}
+ 
+ 	for (i = 0; i < num_dai; i++) {
+@@ -4271,7 +4257,6 @@ found:
+ 	dev_dbg(codec->dev, "ASoC: Unregistered codec '%s'\n", codec->name);
+ 
+ 	snd_soc_cache_exit(codec);
+-	kfree(codec->reg_def_copy);
+ 	kfree(codec->name);
+ 	kfree(codec);
  }
- EXPORT_SYMBOL_GPL(snd_soc_write);
- 
--unsigned int snd_soc_bulk_write_raw(struct snd_soc_codec *codec,
--				    unsigned int reg, const void *data, size_t len)
--{
--	return codec->bulk_write_raw(codec, reg, data, len);
--}
--EXPORT_SYMBOL_GPL(snd_soc_bulk_write_raw);
--
- /**
-  * snd_soc_update_bits - update codec register bits
-  * @codec: audio codec
-diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
-index 8ca9ecc..0b20cf2 100644
---- a/sound/soc/soc-io.c
-+++ b/sound/soc/soc-io.c
-@@ -65,31 +65,6 @@ static unsigned int hw_read(struct snd_soc_codec *codec, unsigned int reg)
- 	return val;
- }
- 
--/* Primitive bulk write support for soc-cache.  The data pointed to by
-- * `data' needs to already be in the form the hardware expects.  Any
-- * data written through this function will not go through the cache as
-- * it only handles writing to volatile or out of bounds registers.
-- *
-- * This is currently only supported for devices using the regmap API
-- * wrappers.
-- */
--static int snd_soc_hw_bulk_write_raw(struct snd_soc_codec *codec,
--				     unsigned int reg,
--				     const void *data, size_t len)
--{
--	/* To ensure that we don't get out of sync with the cache, check
--	 * whether the base register is volatile or if we've directly asked
--	 * to bypass the cache.  Out of bounds registers are considered
--	 * volatile.
--	 */
--	if (!codec->cache_bypass
--	    && !snd_soc_codec_volatile_register(codec, reg)
--	    && reg < codec->driver->reg_cache_size)
--		return -EINVAL;
--
--	return regmap_raw_write(codec->control_data, reg, data, len);
--}
--
- /**
-  * snd_soc_codec_set_cache_io: Set up standard I/O functions.
-  *
-@@ -119,7 +94,6 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
- 	memset(&config, 0, sizeof(config));
- 	codec->write = hw_write;
- 	codec->read = hw_read;
--	codec->bulk_write_raw = snd_soc_hw_bulk_write_raw;
- 
- 	config.reg_bits = addr_bits;
- 	config.val_bits = data_bits;
 -- 
 1.8.0
