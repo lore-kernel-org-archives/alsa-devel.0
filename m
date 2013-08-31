@@ -1,91 +1,218 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/2] ASoC: wm8400: Use regmap for I/O
-Date: Sat, 31 Aug 2013 13:22:35 +0100
-Message-ID: <1377951755-27028-2-git-send-email-broonie@kernel.org>
-References: <1377951755-27028-1-git-send-email-broonie@kernel.org>
+From: Russell King <rmk+kernel@arm.linux.org.uk>
+Subject: [PATCH 01/14] ASoC: kirkwood: merge struct kirkwood_dma_priv with
+ struct kirkwood_dma_data
+Date: Sat, 31 Aug 2013 13:35:33 +0100
+Message-ID: <E1VFkOr-0003I3-Qz@rmk-PC.arm.linux.org.uk>
+References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 82EA4261A06
- for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 14:22:49 +0200 (CEST)
-In-Reply-To: <1377951755-27028-1-git-send-email-broonie@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20130831123458.GF6617@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Jean-Francois Moine <moinejf@free.fr>, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+Merge these two structures together; nothing other than the I2S and
+DMA driver makes use of struct kirkwood_dma_data, and it's not like
+struct kirkwood_dma_data is really just used to convey DMA specific
+data to the backend; it's more a general shared structure between the
+two halves.
 
-Since we no longer have a fake register to simulate we can use the
-framework for I/O.
+This will later allow kirkwood-dma.c and kirkwood-i2s.c to be merged
+together.
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
 ---
- sound/soc/codecs/wm8400.c | 26 ++++----------------------
- 1 file changed, 4 insertions(+), 22 deletions(-)
+ sound/soc/kirkwood/kirkwood-dma.c |   76 +++++++++++--------------------------
+ sound/soc/kirkwood/kirkwood.h     |    2 +
+ 2 files changed, 24 insertions(+), 54 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
-index 95c33d1..48dc7d2 100644
---- a/sound/soc/codecs/wm8400.c
-+++ b/sound/soc/codecs/wm8400.c
-@@ -67,25 +67,6 @@ struct wm8400_priv {
- 	int fll_in, fll_out;
- };
+diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+index d3d4bdc..112c262 100644
+--- a/sound/soc/kirkwood/kirkwood-dma.c
++++ b/sound/soc/kirkwood/kirkwood-dma.c
+@@ -33,11 +33,11 @@
+ 	 SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE | \
+ 	 SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE)
  
--static inline unsigned int wm8400_read(struct snd_soc_codec *codec,
--				       unsigned int reg)
--{
--	struct wm8400_priv *wm8400 = snd_soc_codec_get_drvdata(codec);
--
--	return wm8400_reg_read(wm8400->wm8400, reg);
--}
--
--/*
-- * write to the wm8400 register space
-- */
--static int wm8400_write(struct snd_soc_codec *codec, unsigned int reg,
--	unsigned int value)
--{
--	struct wm8400_priv *wm8400 = snd_soc_codec_get_drvdata(codec);
--
--	return wm8400_set_bits(wm8400->wm8400, reg, 0xffff, value);
--}
--
- static void wm8400_codec_reset(struct snd_soc_codec *codec)
+-struct kirkwood_dma_priv {
+-	struct snd_pcm_substream *play_stream;
+-	struct snd_pcm_substream *rec_stream;
+-	struct kirkwood_dma_data *data;
+-};
++static struct kirkwood_dma_data *kirkwood_priv(struct snd_pcm_substream *subs)
++{
++	struct snd_soc_pcm_runtime *soc_runtime = subs->private_data;
++	return snd_soc_dai_get_drvdata(soc_runtime->cpu_dai);
++}
+ 
+ static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
+ 	.info = (SNDRV_PCM_INFO_INTERLEAVED |
+@@ -63,8 +63,7 @@ static u64 kirkwood_dma_dmamask = DMA_BIT_MASK(32);
+ 
+ static irqreturn_t kirkwood_dma_irq(int irq, void *dev_id)
  {
- 	struct wm8400_priv *wm8400 = snd_soc_codec_get_drvdata(codec);
-@@ -1328,9 +1309,12 @@ static int wm8400_codec_probe(struct snd_soc_codec *codec)
- 		return -ENOMEM;
+-	struct kirkwood_dma_priv *prdata = dev_id;
+-	struct kirkwood_dma_data *priv = prdata->data;
++	struct kirkwood_dma_data *priv = dev_id;
+ 	unsigned long mask, status, cause;
  
- 	snd_soc_codec_set_drvdata(codec, priv);
--	codec->control_data = priv->wm8400 = wm8400;
-+	priv->wm8400 = wm8400;
-+	codec->control_data = wm8400->regmap;
- 	priv->codec = codec;
+ 	mask = readl(priv->io + KIRKWOOD_INT_MASK);
+@@ -89,10 +88,10 @@ static irqreturn_t kirkwood_dma_irq(int irq, void *dev_id)
+ 	writel(status, priv->io + KIRKWOOD_INT_CAUSE);
  
-+	snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
-+
- 	ret = devm_regulator_bulk_get(wm8400->dev,
- 				 ARRAY_SIZE(power), &power[0]);
- 	if (ret != 0) {
-@@ -1377,8 +1361,6 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8400 = {
- 	.remove =	wm8400_codec_remove,
- 	.suspend =	wm8400_suspend,
- 	.resume =	wm8400_resume,
--	.read = snd_soc_read,
--	.write = wm8400_write,
- 	.set_bias_level = wm8400_set_bias_level,
+ 	if (status & KIRKWOOD_INT_CAUSE_PLAY_BYTES)
+-		snd_pcm_period_elapsed(prdata->play_stream);
++		snd_pcm_period_elapsed(priv->substream_play);
  
- 	.controls = wm8400_snd_controls,
+ 	if (status & KIRKWOOD_INT_CAUSE_REC_BYTES)
+-		snd_pcm_period_elapsed(prdata->rec_stream);
++		snd_pcm_period_elapsed(priv->substream_rec);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -126,15 +125,10 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ {
+ 	int err;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+-	struct snd_soc_platform *platform = soc_runtime->platform;
+-	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
+-	struct kirkwood_dma_data *priv;
+-	struct kirkwood_dma_priv *prdata = snd_soc_platform_get_drvdata(platform);
++	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+ 	const struct mbus_dram_target_info *dram;
+ 	unsigned long addr;
+ 
+-	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
+ 	snd_soc_set_runtime_hwparams(substream, &kirkwood_dma_snd_hw);
+ 
+ 	/* Ensure that all constraints linked to dma burst are fulfilled */
+@@ -157,21 +151,11 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ 	if (err < 0)
+ 		return err;
+ 
+-	if (prdata == NULL) {
+-		prdata = kzalloc(sizeof(struct kirkwood_dma_priv), GFP_KERNEL);
+-		if (prdata == NULL)
+-			return -ENOMEM;
+-
+-		prdata->data = priv;
+-
++	if (!priv->substream_play && !priv->substream_rec) {
+ 		err = request_irq(priv->irq, kirkwood_dma_irq, IRQF_SHARED,
+-				  "kirkwood-i2s", prdata);
+-		if (err) {
+-			kfree(prdata);
++				  "kirkwood-i2s", priv);
++		if (err)
+ 			return -EBUSY;
+-		}
+-
+-		snd_soc_platform_set_drvdata(platform, prdata);
+ 
+ 		/*
+ 		 * Enable Error interrupts. We're only ack'ing them but
+@@ -183,11 +167,11 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ 	dram = mv_mbus_dram_info();
+ 	addr = substream->dma_buffer.addr;
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		prdata->play_stream = substream;
++		priv->substream_play = substream;
+ 		kirkwood_dma_conf_mbus_windows(priv->io,
+ 			KIRKWOOD_PLAYBACK_WIN, addr, dram);
+ 	} else {
+-		prdata->rec_stream = substream;
++		priv->substream_rec = substream;
+ 		kirkwood_dma_conf_mbus_windows(priv->io,
+ 			KIRKWOOD_RECORD_WIN, addr, dram);
+ 	}
+@@ -197,27 +181,19 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ 
+ static int kirkwood_dma_close(struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
+-	struct snd_soc_platform *platform = soc_runtime->platform;
+-	struct kirkwood_dma_priv *prdata = snd_soc_platform_get_drvdata(platform);
+-	struct kirkwood_dma_data *priv;
+-
+-	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
++	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+ 
+-	if (!prdata || !priv)
++	if (!priv)
+ 		return 0;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		prdata->play_stream = NULL;
++		priv->substream_play = NULL;
+ 	else
+-		prdata->rec_stream = NULL;
++		priv->substream_rec = NULL;
+ 
+-	if (!prdata->play_stream && !prdata->rec_stream) {
++	if (!priv->substream_play && !priv->substream_rec) {
+ 		writel(0, priv->io + KIRKWOOD_ERR_MASK);
+-		free_irq(priv->irq, prdata);
+-		kfree(prdata);
+-		snd_soc_platform_set_drvdata(platform, NULL);
++		free_irq(priv->irq, priv);
+ 	}
+ 
+ 	return 0;
+@@ -243,13 +219,9 @@ static int kirkwood_dma_hw_free(struct snd_pcm_substream *substream)
+ static int kirkwood_dma_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
+-	struct kirkwood_dma_data *priv;
++	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+ 	unsigned long size, count;
+ 
+-	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
+-
+ 	/* compute buffer size in term of "words" as requested in specs */
+ 	size = frames_to_bytes(runtime, runtime->buffer_size);
+ 	size = (size>>2)-1;
+@@ -272,13 +244,9 @@ static int kirkwood_dma_prepare(struct snd_pcm_substream *substream)
+ static snd_pcm_uframes_t kirkwood_dma_pointer(struct snd_pcm_substream
+ 						*substream)
+ {
+-	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
+-	struct kirkwood_dma_data *priv;
++	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+ 	snd_pcm_uframes_t count;
+ 
+-	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
+-
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		count = bytes_to_frames(substream->runtime,
+ 			readl(priv->io + KIRKWOOD_PLAY_BYTE_COUNT));
+diff --git a/sound/soc/kirkwood/kirkwood.h b/sound/soc/kirkwood/kirkwood.h
+index 4d92637..10a3aaa 100644
+--- a/sound/soc/kirkwood/kirkwood.h
++++ b/sound/soc/kirkwood/kirkwood.h
+@@ -129,6 +129,8 @@ struct kirkwood_dma_data {
+ 	struct clk *extclk;
+ 	uint32_t ctl_play;
+ 	uint32_t ctl_rec;
++	struct snd_pcm_substream *substream_play;
++	struct snd_pcm_substream *substream_rec;
+ 	int irq;
+ 	int burst;
+ };
 -- 
-1.8.4.rc3
+1.7.4.4
