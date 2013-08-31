@@ -1,19 +1,16 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH v11 3/8] ASoC: generic: simple DT sound card
-Date: Sat, 31 Aug 2013 09:17:52 +0200
-Message-ID: <20130831071752.GX20071@s25.your-server.de>
-References: <1376924761-4054-1-git-send-email-mpa@pengutronix.de>
- <1376924761-4054-4-git-send-email-mpa@pengutronix.de>
- <20130823095816.GF25263@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/3] ASoC: Remove unused control_type field
+	from snd_soc_codec struct
+Date: Sat, 31 Aug 2013 11:02:17 +0200
+Message-ID: <1377939739-14246-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 11B862608D0
- for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 09:18:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130823095816.GF25263@sirena.org.uk>
+Received: from smtp-out-153.synserver.de (smtp-out-153.synserver.de
+ [212.40.185.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 320D92608A1
+ for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 11:00:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,34 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The control_type field was used by the core to track which raw IO methods to
+use, but when switching to regmap this was no longer necessary and so the last
+user of the field was removed in commit be3ea3b9 ("ASoC: Use new register map
+API for ASoC generic physical I/O"). The field is now completely unused and can
+be removed.
 
-On Fri, Aug 23, 2013 at 10:58:16AM +0100, Mark Brown wrote:
-> On Mon, Aug 19, 2013 at 05:05:56PM +0200, Markus Pargmann wrote:
-> > Simple sound card initialized using DT. When used with AC97, ac97-codec
-> > is used to automatically discover the used codec.
-> 
-> I've held back a bit on this one.  The reason is that it's adding a
-> separate card to the generic card which doesn't seem like the obvious
-> thing to do - obviously they have very similar goals, it's just that one
-> is for DT usage and the other isn't.  What's the reason for not adding
-> DT support to the generic card?
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ include/sound/soc.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-There was no code I could reuse from the existing simple card driver, so
-I decided to seperate the DT part.
-
-I will move the DT driver code into simple card and resend the patch.
-
-Thanks,
-
-Markus
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 8e2ad52..9d4c2ab 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -705,7 +705,6 @@ struct snd_soc_codec {
+ 
+ 	/* codec IO */
+ 	void *control_data; /* codec control (i2c/3wire) data */
+-	enum snd_soc_control_type control_type;
+ 	hw_write_t hw_write;
+ 	unsigned int (*hw_read)(struct snd_soc_codec *, unsigned int);
+ 	unsigned int (*read)(struct snd_soc_codec *, unsigned int);
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.8.0
