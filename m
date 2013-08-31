@@ -1,17 +1,14 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 00/14] SPDIF support
-Date: Sat, 31 Aug 2013 17:28:26 +0200
-Message-ID: <52220B9A.9000007@metafoo.de>
-References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: fsl_spdif: Staticse non-exported symbols
+Date: Sat, 31 Aug 2013 16:41:45 +0100
+Message-ID: <1377963705-25670-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-180.synserver.de (smtp-out-180.synserver.de
- [212.40.185.180])
- by alsa0.perex.cz (Postfix) with ESMTP id B856F261AE5
- for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 17:26:53 +0200 (CEST)
-In-Reply-To: <20130831123458.GF6617@n2100.arm.linux.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3F18261AD6
+ for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2013 17:41:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +18,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Jean-Francois Moine <moinejf@free.fr>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+To: Nicolin Chen <b42378@freescale.com>, Fabio Estevam <fabio.estevam@freescale.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/31/2013 02:34 PM, Russell King - ARM Linux wrote:
-[...]
-> The same conditions apply as per my previous posting - the DAI link
-> needs to be setup and the associated DAPM routes to tell the CPU DAI
-> which outputs are in use, like this:
-> 
-> DAI link:
->                 .name = "S/PDIF1",
->                 .stream_name = "IEC958 Playback",
->                 .platform_name = "mvebu-audio.1",
->                 .cpu_dai_name = "mvebu-audio.1",
->                 .codec_dai_name = "dit-hifi",
->                 .codec_name = "spdif-dit",
-> 
-> static const struct snd_soc_dapm_route routes[] = {
->         { "Playback", NULL, "spdifdo" },
-> };
+From: Mark Brown <broonie@linaro.org>
 
-This is still not exactly the right way to implement this though. Add a
-second DAI to your CPU driver, like this:
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/fsl/fsl_spdif.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-static struct snd_soc_dai_driver kirkwood_mvebu_dais[] = {
-	{
-		.id = 0,
-		.probe = kirkwood_i2s_probe,
-    		.playback = {
-			.stream_name = "I2S Capture",
-			...
-		},
-		.capture = {
-			.stream_name = "I2S Playback",
-			...
-		},
-		.ops = &kirkwood_i2s_dai_ops,
-	}, {
-		.id = 1,
-		.probe = kirkwood_i2s_probe,
-    		.playback = {
-			.stream_name = "SPDIF Capture",
-			...
-		},
-		.capture = {
-			.stream_name = "SPDIF Playback",
-			...
-		},
-		.ops = &kirkwood_i2s_dai_ops,
-	},
-};
-
-Then connect the SPDIF AIF widgets to the SPDIF streams and the I2S AIF
-widgets to the I2S streams. In your machine driver setup the link config to
-use DAI 0 if the board uses I2S and DAI 1 if the board uses SPDIF. The ASoC
-framework will then create the necessary routes all by itself. Of course
-this won't work on a platform where both the SPDIF and I2S controller are
-used at the same time, but neither does your current solution.
-
-- Lars
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index e93dc0d..c5c228a 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -411,8 +411,8 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-int fsl_spdif_startup(struct snd_pcm_substream *substream,
+-			struct snd_soc_dai *cpu_dai)
++static int fsl_spdif_startup(struct snd_pcm_substream *substream,
++			     struct snd_soc_dai *cpu_dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+@@ -546,7 +546,7 @@ static int fsl_spdif_trigger(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-struct snd_soc_dai_ops fsl_spdif_dai_ops = {
++static struct snd_soc_dai_ops fsl_spdif_dai_ops = {
+ 	.startup = fsl_spdif_startup,
+ 	.hw_params = fsl_spdif_hw_params,
+ 	.trigger = fsl_spdif_trigger,
+@@ -919,7 +919,7 @@ static int fsl_spdif_dai_probe(struct snd_soc_dai *dai)
+ 	return 0;
+ }
+ 
+-struct snd_soc_dai_driver fsl_spdif_dai = {
++static struct snd_soc_dai_driver fsl_spdif_dai = {
+ 	.probe = &fsl_spdif_dai_probe,
+ 	.playback = {
+ 		.channels_min = 2,
+-- 
+1.8.4.rc3
