@@ -1,70 +1,67 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH 2/2] ARM: Dove: Add the audio device to the
-	Cubox DT
-Date: Sun, 1 Sep 2013 09:04:20 +0200
-Message-ID: <20130901090420.526e3bc3@armhf>
-References: <20130828113521.35c53365@armhf> <521DCD80.9010105@gmail.com>
- <20130831125128.0e3a23c7@armhf>
- <20130831112430.GD6617@n2100.arm.linux.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH 00/14] SPDIF support
+Date: Sun, 01 Sep 2013 09:42:29 +0200
+Message-ID: <5222EFE5.3010306@metafoo.de>
+References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
+ <52220B9A.9000007@metafoo.de> <20130831172853.GL18608@sirena.org.uk>
+ <20130831191956.GH6617@n2100.arm.linux.org.uk> <5222562B.8010001@metafoo.de>
+ <20130901064216.GN6617@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
- by alsa0.perex.cz (Postfix) with ESMTP id D5DF22607B6
- for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 09:03:13 +0200 (CEST)
-In-Reply-To: <20130831112430.GD6617@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20130901064216.GN6617@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Rob Herring <rob.herring@calxeda.com>, Ian Campbell <ian.campbell@citrix.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Jean-Francois Moine <moinejf@free.fr>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCAzMSBBdWcgMjAxMyAxMjoyNDozMSArMDEwMApSdXNzZWxsIEtpbmcgLSBBUk0gTGlu
-dXggPGxpbnV4QGFybS5saW51eC5vcmcudWs+IHdyb3RlOgoKPiA+IEFjY29yZGluZyB0byB0aGUg
-RG92ZSBzcGVjaWZpY2F0aW9uLCB0aGUgYXVkaW8gY29udHJvbGxlciB3b3JrcyB3aXRoCj4gPiB0
-aGUgc2FtcGxlcyByYXRlcyA0NC4xLCA0OCBhbmQgOTYga0h6LCBzbywgSSBkb24ndCBzZWUgdGhl
-IHVzYWdlIG9mIHRoZQo+ID4gZXh0ZXJuYWwgY2xvY2ssIGV4Y2VwdCB3aGVuIHVzaW5nIHRoZSB0
-d28gYXVkaW8gY29udHJvbGxlcnMgd2l0aAo+ID4gZGlmZmVyZW50IHNhbXBsZSByYXRlcy4gIAo+
-IAo+IEkgZG9uJ3Qgc2VlIHdoYXQgdGhlIERvdmUgc3BlY2lmaWNhdGlvbiBoYXMgdG8gZG8gd2l0
-aCB0aGF0IHN0YXRlbWVudDoKPiB3aGF0IHRoZSBEb3ZlIHNwZWMgc2F5cyBpcyB0aGF0IGlmIHlv
-dSB1c2UganVzdCB0aGUgaW50ZXJuYWwgRENPLCB0aGVuCj4gb25seSA0NC4xa0h6LCA0OGtIeiBh
-bmQgOTZrSHogYXJlIHN1cHBvcnRlZCAod2l0aCBzb21lIHRyaW1taW5nIG9mIHRoYXQuKQo+IEhv
-d2V2ZXIsIHRoZSB1c2Ugb2YgYW4gZXh0ZXJuYWwgY2xvY2sgYWxsb3dzIGZ1cnRoZXIgcmF0ZXMg
-dG8gYmUgc3VwcG9ydGVkLgo+IElmIHlvdSBoYXZlIGFuIGV4dGVybmFsIGNsb2NrLCB0aGVyZSBp
-cyBubyByZXF1aXJlbWVudCB0byB1c2UgdGhlIERDTyBmb3IKPiB0aG9zZSBzYW1wbGUgcmF0ZXMg
-LSB5b3UgY2FuIGlmIHlvdSB3aXNoLCBvciB5b3UgY2FuIHVzZSB0aGUgZXh0ZXJuYWwgY2xvY2su
-Cj4gCj4gVGhlIG1haW5saW5lIGRyaXZlciBpbXBsZW1lbnRzIHRoZSB1c2Ugb2YgdGhlIERDTyBm
-b3IgdGhlIHN0YW5kYXJkIDQ0LjEsCj4gNDggYW5kIDk2a0h6IHJhdGVzLCBvdGhlcndpc2UgaXQg
-dXNlcyB0aGUgZXh0ZXJuYWwgY2xvY2sgaWYgcHJlc2VudC4gIFRoaXMKPiBpcyBlbnRpcmVseSBj
-b25mb3JtYW50IHdpdGggdGhlIERvdmUgc3BlYy4KClJ1c3NlbGwsCgpJIGxvb2tlZCBhZ2FpbiBh
-dCB0aGUgQXJtYWRhLTUxMC1GdW5jdGlvbmFsLVNwZWMsIGFuZCBJIGZvdW5kOgoKLSBzZWN0aW9u
-IDEyLjEKCS4uLgoJSTJTIFN1cHBvcnRlZCBGZWF0dXJlcwoJCUFuIGF1ZGlvIHNhbXBsZSByYXRl
-IChGcykgb2YgNDQuMS80OC85NiBrSHouCgkJLi4uCglTL1BESUYgU3VwcG9ydGVkIEZlYXR1cmVz
-CgkJVGhlIElFQzYwOTU4LTEsIElFQzYwOTU4LTMsIGFuZCBJRUM2MTkzNyBzcGVjaWZpY2F0aW9u
-cy4KCQlBbiBhdWRpbyBzYW1wbGUgcmF0ZSAoRnMpIG9mIDQ0LjEvNDgvOTYga0h6LgoJCS4uLgoK
-LSBUYWJsZSA0MzY6IENsb2NrcyBDb250cm9sIFJlZ2lzdGVyCgkgICAgIE9mZnNldDogVW5pdDA6
-IDB4MDAwQjEyMzAsIFVuaXQxOiAweDAwMEI1MjMwCgkuLi4KCTE6MCBNQ0xLIHNvdXJjZSBSVyAg
-TUNMSyA9IDI1NiBGcywgd2hlcmUgRnMgPSA0NC4xIGtIeiwgNDgga0h6LCA5NiBrSHouCgkJCTB4
-MCBQbGF5YmFjayBzaG91bGQgbm90IGJlIGFjdGl2ZSB3aGVuIHNlbGVjdGluZyBhbiBleHRlcm5h
-bCBNQ0xLLCBvciBtb3ZpbmcKCQkJICAgIGZyb20gb25lIGV4dGVybmFsIE1DTEsgdG8gYW5vdGhl
-ciBNQ0xLIHNvdXJjZS4KCQkJICAgIDAgPSBEQ086IE1DTEsgaXMgZnJvbSBEQ08uCgkJCSAgICAx
-ID0gUmVzZXJ2ZWQKCQkJICAgIDIgPSBSZXNlcnZlZAoJCQkgICAgMyA9IEV4dGVybmFsOiBNQ0xL
-IGlzIGZyb20gYW4gZXh0ZXJuYWwgc291cmNlLgoKQXMgdGhleSBkb24ndCB3b3JrIHdpdGggbXkg
-VFYgc2V0LCBtYXkgeW91IGNvbmZpcm0gdGhhdCB0aGVzZSB3ZWJyYWRpb3MKCglodHRwOi8va2Vy
-bmUub25saW5lLnN0YWxpZy5uZXQvbGl2ZS1vcmkub2dnCglodHRwOi8vd3d3LnR2LXJhZGlvLmNv
-bS9zdGF0aW9uL2ZyYW5jZV9ibGV1X2JyZWl6X2l6ZWxfbXAzL2ZyYW5jZV9ibGV1X2JyZWl6X2l6
-ZWxfbXAzLTMyay5tM3UKCWh0dHA6Ly9wbHVtZm0ub25saW5lLnN0YWxpZy5uZXQvbGl2ZS1vcmku
-b2dnCgp3b3JrIGZvciB5b3Ugd2l0aCB0aGUgZXh0ZXJuYWwgY2xvY2s/IChzYW1wbGUgcmF0ZXMg
-cmVzcC4gMzMuMDc1LCAyNAphbmQgMjIuMDUga0h6KQoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkg
-ICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5m
-cmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 09/01/2013 08:42 AM, Russell King - ARM Linux wrote:
+> [...]
+> 21:07 < rmk> well, someone needs to come up with a fix for these duplicated widgets, and that's not me.
+> 21:07 < rmk> because... at the moment... asoc is completely useless for this hardware
+> 
+> The reason for my last couple of lines there is not that I'm being
+> difficult - I really don't know what the correct fix for the duplicated
+
+Well then say it that way. "I don't quite understand how this works yet and
+am unable to fix this myself can you help me figure it out". But maybe it is
+a cultural thing, who knows.
+
+Lets try to wrap up the situation:
+
+* The hardware has one audio stream, but two DAIs, one for SPDIF one for
+I2S. The same audio stream is sent to both DAIs at the same time (It is
+possible though to disable one or both of the DAIs).
+
+* This is something new and not supported by classical ASoC.
+
+* DPCM has support for this, but DPCM is still new, unstable,
+under-documented and apparently has a couple of bugs.
+
+* With non-DPCM ASoC it is possible to have two DAIs if they are not used at
+the same time (which is what I recommend you implement first, before trying
+to get DPCM running).
+
+I still don't know if you actually need to feature of being able to output
+the same audio signal to both DAIs, do you have such a board? But even then
+I still recommend to first get the non-DPCM either/or approach implemented
+and once that's working try to get DPCM running. Which probably involves
+fixing some of the DPCM issues in the core. As I said sending the same audio
+streams to two DAIs is something new and if there was no DPCM yet you'd need
+to add support for sending the same stream to multiple DAIs. So either way
+you'd have to get your hands dirty. And I'm sure people are willing to help
+you figure out the parts you don't understand yet if you ask _nicely_. I
+mean I don't come to you either if I have a new ARM SoC that's not supported
+yet and demand that you implement support for it and exclaim that the ARM
+port sucks because it doesn't support that SoC yet.
+
+- Lars
