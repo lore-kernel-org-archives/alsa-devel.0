@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: soc-pcm: Allow to specify
- unidirectional dai_link
-Date: Sun, 1 Sep 2013 16:29:58 +0100
-Message-ID: <20130901152958.GH3084@sirena.org.uk>
-References: <1377783134-23528-1-git-send-email-fabio.estevam@freescale.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH 08/14] ASoC: kirkwood: prefer external
+ clock over internal clock
+Date: Sun, 1 Sep 2013 18:41:53 +0200
+Message-ID: <20130901184153.353c644f@armhf>
+References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
+ <E1VFkVg-0003Ip-G7@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9185778725388108611=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9BDD1260863
- for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 17:30:04 +0200 (CEST)
-In-Reply-To: <1377783134-23528-1-git-send-email-fabio.estevam@freescale.com>
+Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5A2C260845
+ for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 18:40:47 +0200 (CEST)
+In-Reply-To: <E1VFkVg-0003Ip-G7@rmk-PC.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@freescale.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, shawn.guo@linaro.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============9185778725388108611==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="EdRE1UL8d3mMOE6m"
-Content-Disposition: inline
-
-
---EdRE1UL8d3mMOE6m
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 29, 2013 at 10:32:13AM -0300, Fabio Estevam wrote:
-> Add 'playback_only' and 'capture_only' fields that can be used for specifying
-> that a dai_link has a unidirectional capability.
-
-Applied both, thanks.
-
---EdRE1UL8d3mMOE6m
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSI11zAAoJELSic+t+oim9OasP/2JN/tNciV5mS73BGo2fl/Hf
-tFgLUYJ2fvkrq9Yox7zT0kEGZtuGD6UzFNElI5NvoYuADjFQZ75xbgetxERo+O6m
-PVGV9prhWs1Rd0Tp1g0KEQSijRu1YntYeBzNxmibGAbbLsnJW2ls28sISjOJ7QUD
-kKAmtEiCsB5f0Z8Sk6wS1PjSwCMTfVn5KzTw4q9baIYYNzuKqSGC/DGZkP/GdmaE
-kPcW0ywIN9eGhOGoy+L4mHnRB5GmyIMJFRMjEO+BoRwqWDTZq+F4LydcMXoWPiBQ
-1/pwT8jh7cPFs0R84yGJwKyWc9m6w//gUnoK5snq6S/xDOItVFRkmlp4vjo9FRhU
-sGQDULJE4Tm/+8pBPvLldT0flUuWecIwu2EQO3wzPTSuLjMFOqN/4rPVSPCjeRuI
-TZCu7rSKlMO/etEroTmEoKxPOshMb37BjLggWWjyuIWBFcOOxuMxMRMiRNPO71C+
-4KLu45kKajtmzvvRWAm8MwrohIzEp9MRu3KVH5wC8rIs2qazye+ZdPDjcZEvJbcb
-3D333nA62OmMf1/aAyVx2RAz0Y9IdmMpE+J/2oKGHbsNlNBm/WmLUUieAi57gyyR
-eJS7Hq8cgBvdoos7fuORodxWYMPHPk+9erlEkkke4NwQAtRlSEGvLzNP7NF+Ukkf
-h6qVwqPNdhE8Fa9oX/fv
-=6Wjr
------END PGP SIGNATURE-----
-
---EdRE1UL8d3mMOE6m--
-
---===============9185778725388108611==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9185778725388108611==--
+T24gU2F0LCAzMSBBdWcgMjAxMyAxMzo0MjozNiArMDEwMApSdXNzZWxsIEtpbmcgPHJtaytrZXJu
+ZWxAYXJtLmxpbnV4Lm9yZy51az4gd3JvdGU6Cgo+IFNpZ25lZC1vZmYtYnk6IFJ1c3NlbGwgS2lu
+ZyA8cm1rK2tlcm5lbEBhcm0ubGludXgub3JnLnVrPgo+IC0tLQo+ICBzb3VuZC9zb2Mva2lya3dv
+b2Qva2lya3dvb2QtaTJzLmMgfCAgIDE2ICsrKysrKysrLS0tLS0tLS0KPiAgMSBmaWxlcyBjaGFu
+Z2VkLCA4IGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3Nv
+dW5kL3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMuYyBiL3NvdW5kL3NvYy9raXJrd29vZC9raXJr
+d29vZC1pMnMuYwo+IGluZGV4IDg0ZGQ5YjAuLjhlMTAzNjkgMTAwNjQ0Cj4gLS0tIGEvc291bmQv
+c29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5jCj4gKysrIGIvc291bmQvc29jL2tpcmt3b29kL2tp
+cmt3b29kLWkycy5jCj4gQEAgLTEwNCwyMCArMTA0LDIwIEBAIHN0YXRpYyB2b2lkIGtpcmt3b29k
+X3NldF9yYXRlKHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpLAo+ICB7Cj4gIAl1aW50MzJfdCBjbGtz
+X2N0cmw7Cj4gIAo+IC0JaWYgKHJhdGUgPT0gNDQxMDAgfHwgcmF0ZSA9PSA0ODAwMCB8fCByYXRl
+ID09IDk2MDAwKSB7Cj4gLQkJLyogdXNlIGludGVybmFsIGRjbyBmb3Igc3VwcG9ydGVkIHJhdGVz
+ICovCj4gLQkJZGV2X2RiZyhkYWktPmRldiwgIiVzOiBkY28gc2V0IHJhdGUgPSAlbHVcbiIsCj4g
+LQkJCV9fZnVuY19fLCByYXRlKTsKPiAtCQlraXJrd29vZF9zZXRfZGNvKHByaXYtPmlvLCByYXRl
+KTsKPiAtCj4gLQkJY2xrc19jdHJsID0gS0lSS1dPT0RfTUNMS19TT1VSQ0VfRENPOwo+IC0JfSBl
+bHNlIGlmICghSVNfRVJSKHByaXYtPmV4dGNsaykpIHsKPiArCWlmICghSVNfRVJSKHByaXYtPmV4
+dGNsaykpIHsKPiAgCQkvKiB1c2Ugb3B0aW9uYWwgZXh0ZXJuYWwgY2xrIGZvciBvdGhlciByYXRl
+cyAqLwo+ICAJCWRldl9kYmcoZGFpLT5kZXYsICIlczogZXh0Y2xrIHNldCByYXRlID0gJWx1IC0+
+ICVsdVxuIiwKPiAgCQkJX19mdW5jX18sIHJhdGUsIDI1NiAqIHJhdGUpOwo+ICAJCWNsa19zZXRf
+cmF0ZShwcml2LT5leHRjbGssIDI1NiAqIHJhdGUpOwo+ICAKPiAgCQljbGtzX2N0cmwgPSBLSVJL
+V09PRF9NQ0xLX1NPVVJDRV9FWFRDTEs7Cj4gKwl9IGVsc2UgaWYgKHJhdGUgPT0gNDQxMDAgfHwg
+cmF0ZSA9PSA0ODAwMCB8fCByYXRlID09IDk2MDAwKSB7CgpUaGUgcmF0ZSBpcyBhbHdheXMgZ29v
+ZCwgYW5kIGhhdmluZyB0aGlzIHRlc3QgcmFpc2VzIGEgY29tcGlsYXRpb24gd2FybmluZwooY2xr
+c19jdHJsIG1heSBiZSBub3QgaW5pdGlhbGl6ZWQpLgoKCj4gKwkJLyogdXNlIGludGVybmFsIGRj
+byBmb3Igc3VwcG9ydGVkIHJhdGVzICovCj4gKwkJZGV2X2RiZyhkYWktPmRldiwgIiVzOiBkY28g
+c2V0IHJhdGUgPSAlbHVcbiIsCj4gKwkJCV9fZnVuY19fLCByYXRlKTsKPiArCQlraXJrd29vZF9z
+ZXRfZGNvKHByaXYtPmlvLCByYXRlKTsKPiArCj4gKwkJY2xrc19jdHJsID0gS0lSS1dPT0RfTUNM
+S19TT1VSQ0VfRENPOwo+ICAJfQo+ICAJd3JpdGVsKGNsa3NfY3RybCwgcHJpdi0+aW8gKyBLSVJL
+V09PRF9DTE9DS1NfQ1RSTCk7Cj4gIH0KCgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAq
+KiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZy
+LwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
