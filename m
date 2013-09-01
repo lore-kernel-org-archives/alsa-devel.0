@@ -1,18 +1,24 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH 08/14] ASoC: kirkwood: prefer external
- clock over internal clock
-Date: Sun, 1 Sep 2013 18:41:53 +0200
-Message-ID: <20130901184153.353c644f@armhf>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 00/14] SPDIF support
+Date: Sun, 1 Sep 2013 18:05:46 +0100
+Message-ID: <20130901170546.GI3084@sirena.org.uk>
 References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
- <E1VFkVg-0003Ip-G7@rmk-PC.arm.linux.org.uk>
+ <52220B9A.9000007@metafoo.de>
+ <20130831172853.GL18608@sirena.org.uk>
+ <20130831191956.GH6617@n2100.arm.linux.org.uk>
+ <5222562B.8010001@metafoo.de>
+ <20130901064216.GN6617@n2100.arm.linux.org.uk>
+ <5222EFE5.3010306@metafoo.de>
+ <20130901085121.GO6617@n2100.arm.linux.org.uk>
+ <20130901115116.GB3084@sirena.org.uk>
+ <20130901121518.GQ6617@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============4272456868267112304=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
- by alsa0.perex.cz (Postfix) with ESMTP id C5A2C260845
- for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 18:40:47 +0200 (CEST)
-In-Reply-To: <E1VFkVg-0003Ip-G7@rmk-PC.arm.linux.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD619260845
+ for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 19:05:53 +0200 (CEST)
+In-Reply-To: <20130901121518.GQ6617@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,40 +28,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King <rmk+kernel@arm.linux.org.uk>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jason Cooper <jason@lakedaemon.net>, Jean-Francois Moine <moinejf@free.fr>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCAzMSBBdWcgMjAxMyAxMzo0MjozNiArMDEwMApSdXNzZWxsIEtpbmcgPHJtaytrZXJu
-ZWxAYXJtLmxpbnV4Lm9yZy51az4gd3JvdGU6Cgo+IFNpZ25lZC1vZmYtYnk6IFJ1c3NlbGwgS2lu
-ZyA8cm1rK2tlcm5lbEBhcm0ubGludXgub3JnLnVrPgo+IC0tLQo+ICBzb3VuZC9zb2Mva2lya3dv
-b2Qva2lya3dvb2QtaTJzLmMgfCAgIDE2ICsrKysrKysrLS0tLS0tLS0KPiAgMSBmaWxlcyBjaGFu
-Z2VkLCA4IGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3Nv
-dW5kL3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMuYyBiL3NvdW5kL3NvYy9raXJrd29vZC9raXJr
-d29vZC1pMnMuYwo+IGluZGV4IDg0ZGQ5YjAuLjhlMTAzNjkgMTAwNjQ0Cj4gLS0tIGEvc291bmQv
-c29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5jCj4gKysrIGIvc291bmQvc29jL2tpcmt3b29kL2tp
-cmt3b29kLWkycy5jCj4gQEAgLTEwNCwyMCArMTA0LDIwIEBAIHN0YXRpYyB2b2lkIGtpcmt3b29k
-X3NldF9yYXRlKHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpLAo+ICB7Cj4gIAl1aW50MzJfdCBjbGtz
-X2N0cmw7Cj4gIAo+IC0JaWYgKHJhdGUgPT0gNDQxMDAgfHwgcmF0ZSA9PSA0ODAwMCB8fCByYXRl
-ID09IDk2MDAwKSB7Cj4gLQkJLyogdXNlIGludGVybmFsIGRjbyBmb3Igc3VwcG9ydGVkIHJhdGVz
-ICovCj4gLQkJZGV2X2RiZyhkYWktPmRldiwgIiVzOiBkY28gc2V0IHJhdGUgPSAlbHVcbiIsCj4g
-LQkJCV9fZnVuY19fLCByYXRlKTsKPiAtCQlraXJrd29vZF9zZXRfZGNvKHByaXYtPmlvLCByYXRl
-KTsKPiAtCj4gLQkJY2xrc19jdHJsID0gS0lSS1dPT0RfTUNMS19TT1VSQ0VfRENPOwo+IC0JfSBl
-bHNlIGlmICghSVNfRVJSKHByaXYtPmV4dGNsaykpIHsKPiArCWlmICghSVNfRVJSKHByaXYtPmV4
-dGNsaykpIHsKPiAgCQkvKiB1c2Ugb3B0aW9uYWwgZXh0ZXJuYWwgY2xrIGZvciBvdGhlciByYXRl
-cyAqLwo+ICAJCWRldl9kYmcoZGFpLT5kZXYsICIlczogZXh0Y2xrIHNldCByYXRlID0gJWx1IC0+
-ICVsdVxuIiwKPiAgCQkJX19mdW5jX18sIHJhdGUsIDI1NiAqIHJhdGUpOwo+ICAJCWNsa19zZXRf
-cmF0ZShwcml2LT5leHRjbGssIDI1NiAqIHJhdGUpOwo+ICAKPiAgCQljbGtzX2N0cmwgPSBLSVJL
-V09PRF9NQ0xLX1NPVVJDRV9FWFRDTEs7Cj4gKwl9IGVsc2UgaWYgKHJhdGUgPT0gNDQxMDAgfHwg
-cmF0ZSA9PSA0ODAwMCB8fCByYXRlID09IDk2MDAwKSB7CgpUaGUgcmF0ZSBpcyBhbHdheXMgZ29v
-ZCwgYW5kIGhhdmluZyB0aGlzIHRlc3QgcmFpc2VzIGEgY29tcGlsYXRpb24gd2FybmluZwooY2xr
-c19jdHJsIG1heSBiZSBub3QgaW5pdGlhbGl6ZWQpLgoKCj4gKwkJLyogdXNlIGludGVybmFsIGRj
-byBmb3Igc3VwcG9ydGVkIHJhdGVzICovCj4gKwkJZGV2X2RiZyhkYWktPmRldiwgIiVzOiBkY28g
-c2V0IHJhdGUgPSAlbHVcbiIsCj4gKwkJCV9fZnVuY19fLCByYXRlKTsKPiArCQlraXJrd29vZF9z
-ZXRfZGNvKHByaXYtPmlvLCByYXRlKTsKPiArCj4gKwkJY2xrc19jdHJsID0gS0lSS1dPT0RfTUNM
-S19TT1VSQ0VfRENPOwo+ICAJfQo+ICAJd3JpdGVsKGNsa3NfY3RybCwgcHJpdi0+aW8gKyBLSVJL
-V09PRF9DTE9DS1NfQ1RSTCk7Cj4gIH0KCgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAq
-KiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZy
-LwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============4272456868267112304==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/0U0QBNx7JIUZLHm"
+Content-Disposition: inline
+
+
+--/0U0QBNx7JIUZLHm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Sep 01, 2013 at 01:15:18PM +0100, Russell King - ARM Linux wrote:
+> On Sun, Sep 01, 2013 at 12:51:16PM +0100, Mark Brown wrote:
+> > Like Lars-Peter says it really, really shouldn't be - what moving to
+> > DPCM should be doing with this code is mostly moving the code around a
+> > bit to pull the bits that are shared into a front end DAI.  The most
+> > substantial change should be handling the enables but that shouldn't
+> > take much code at all, your curent patch does it in 35 lines and I'd not
+> > expect it to be much different in a DPCM world.
+
+> The delta between the DPCM version and the dual-DAI version is over 300
+> lines of change - the methods employed by these two methods are completely
+> different.
+
+> Maybe you could look at the patch and suggest where I'm going wrong?
+
+The diff doesn't look that worrying to me - a large chunk of it is about
+moving code around to register multiple DAIs which is something that the
+final DPCM code is going to want to do anyway.  A lot of the changes in
+the hw_params() function would probably stay the same too, though the
+function would move to the front end DAI I expect.
+
+> > Ask more detailed questions and engage in a discussion; the reason you
+> > keep on getting the same responses is that you tend to repeat the same
+> > requests a lot.  Something like "I understand the big picture but I am
+> > trying to do X and need to know Y because Z" (with all of X, Y and Z
+> > being important) is usually a good approach.
+
+> When you don't even understand the "big picture", it's hard to know
+> where to start.  That's why starting off with a simple question is
+> the right thing to do - and you expect to get a simple but informative
+> response, so that helps you to frame more specific questions later.
+
+> If you start from a position of knowing very little, it's exceedingly
+> difficult to ask specific questions.
+
+So say that - explain that you find it hard to relate the answer to what
+you're trying to accomplish, doing things like providing more detail on
+the problem you're trying to solve and highlighting anything that you've
+noticed is unusual to try to help people understand what might be
+missing from their answers.
+
+> Right, so, I have a widget with a stream name, and the stream name matches
+> a CPU DAI stream.
+
+Ah, this is stream names not regular routes - new code should just use a
+normal DAPM route to connect to the AIF widgets.  Stream names are being
+phased out now that we can just use DAPM routes (which mean that we
+don't need to go through every single widget doing string checks every
+time we start or stop a stream).
+
+> If I register this widget against the platform DAPM context, then there is
+> no connection between this widget and the CPU DAI streams.  (Bear in mind
+> that at the time I tried this, I had disabled the creation of the stream
+> widgets that were overwriting the platform stream widgets - because you
+> were not providing any useful information to work around that problem.)
+
+> If I register this widget against the CPU DAI DAPM context, the stream
+> name is matched to the CPU DAI streams, and a connection is made between
+> the stream widgets and my widget.
+
+> This is what I mean by "some bindings only happen within a context".
+
+This is happening because you're doing things based on the stream name -
+stream names aren't really DAPM routes, they're magic things which only
+work on the same DAPM context.  Previously we used to go through and do
+the string compare to look up widgets outside of DAPM at runtime which
+on a per device basis (though that made little difference since the only
+devices supported were CODECs which are always a single device and
+context), the current implementation replicates this functionality
+exactly using DAPM routes and the long term plan is that no stream names
+will be specified in widgets.
+
+If you omit the stream name and add the routes via a routing table you
+should at least get some error messages.
+
+--/0U0QBNx7JIUZLHm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSI3PnAAoJELSic+t+oim9S60P/ivqSZXrBhpt5aaIAowD2EOr
+SbpwCC6DqS9CTKhvWwPDG+Iujon0Qm4pH4bUsNc2YxQBrrqgyd04c+Fmx1lOD68f
+YjsQ2eTgQHZID7q7PaTeDZprqkAROfc1lVHxD5KZaGC+HwuG8Q6/vOyD9lQnu9l7
+qBVdFspNHesAK2xhXJht6kCdGNUrxq2Syz1/wvd5CPjF2TrRzOA/F0VH1NnrfVFP
+K/mNkuf4LHjswJemiW/5LhJz/ckgSAM2u9lwNLaXnjeifudAVaJot/jwtpt/RIg1
+QE9bIeGhqe0RT/fZcA6PgHDELoOKRnZsw/qiWzC8H0guiKWkcTiuLPfJE4xElGcQ
+j7a3x5RuDE9rq0C07fErkjyjJAhBA92/EWwAwnBhAoo5VFstoaF0yB49CMAekuo8
+917a7tkZ9XE4LTi8OC9ArCe3mht5DGj21nrZ+CGaT9ZhNPRfLdQWmoUgAdQUwA4J
+CqyKWJsNh5FfBcVXP/rpEnUzzcQGjS930hyZkdUJlR7BhCYRIFN7R+lr/p7pmuTp
+9kNU+WKzczWKb/hMCVqvEQreHsmeujBzDrUwYjm5YmjB8NsYWK2YZ7sNlHx+bXxe
+63XIiy4Rd/Hxqfge+mw7eVa1SFUAsVzQGQ5ogO3PBV2pRMZNlwVh+AVQBbp4W2+M
+/KFLBXLL28B/TqrnME8/
+=NE81
+-----END PGP SIGNATURE-----
+
+--/0U0QBNx7JIUZLHm--
+
+--===============4272456868267112304==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4272456868267112304==--
