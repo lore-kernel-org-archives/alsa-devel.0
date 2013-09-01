@@ -1,16 +1,22 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: [PATCH] ALSA: hda - hdmi: Fallback to ALSA allocation
-	when selecting CA
-Date: Sun,  1 Sep 2013 14:36:47 +0300
-Message-ID: <1378035407-29536-1-git-send-email-anssi.hannula@iki.fi>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 00/14] SPDIF support
+Date: Sun, 1 Sep 2013 12:51:16 +0100
+Message-ID: <20130901115116.GB3084@sirena.org.uk>
+References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
+ <52220B9A.9000007@metafoo.de>
+ <20130831172853.GL18608@sirena.org.uk>
+ <20130831191956.GH6617@n2100.arm.linux.org.uk>
+ <5222562B.8010001@metafoo.de>
+ <20130901064216.GN6617@n2100.arm.linux.org.uk>
+ <5222EFE5.3010306@metafoo.de>
+ <20130901085121.GO6617@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============8099756091645036333=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sypressi.dnainternet.net (sypressi.dnainternet.net
- [83.102.40.135])
- by alsa0.perex.cz (Postfix) with ESMTP id 87A0B2610C6
- for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 13:37:30 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE2522610C6
+ for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 13:51:24 +0200 (CEST)
+In-Reply-To: <20130901085121.GO6617@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +26,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Ashecrow <ashecrow42@free.fr>, Frank Zafka <kafkaesque1978@gmail.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org, =?UTF-8?q?Peter=20Fr=C3=BChberger?= <fritsch@xbmc.org>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jason Cooper <jason@lakedaemon.net>, Jean-Francois Moine <moinejf@free.fr>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-aGRtaV9jaGFubmVsX2FsbG9jYXRpb24oKSB0cmllcyB0byBmaW5kIGEgSERNSSBjaGFubmVsIGFs
-bG9jYXRpb24gdGhhdAptYXRjaGVzIHRoZSBudW1iZXIgY2hhbm5lbHMgaW4gdGhlIHBsYXliYWNr
-IHN0cmVhbSBhbmQgY29udGFpbnMgb25seQpzcGVha2VycyB0aGF0IHRoZSBIRE1JIHNpbmsgaGFz
-IHJlcG9ydGVkIGFzIGF2YWlsYWJsZSB2aWEgRURJRC4gSWYgbm8Kc3VjaCBhbGxvY2F0aW9uIGlz
-IGZvdW5kLCAwIChzdGVyZW8gYXVkaW8pIGlzIHVzZWQuCgpVc2luZyBDQSAwIGNhdXNlcyB0aGUg
-YXVkaW8gY2F1c2VzIHRoZSBzaW5rIHRvIGRpc2NhcmQgZXZlcnl0aGluZyBleGNlcHQKdGhlIGZp
-cnN0IHR3byBjaGFubmVscyAoZnJvbnQgbGVmdCBhbmQgZnJvbnQgcmlnaHQpLgoKSG93ZXZlciwg
-dGhlIHNpbmsgbWF5IGJlIGNhcGFibGUgb2YgcmVjZWl2aW5nIG1vcmUgY2hhbm5lbHMgdGhhbiBp
-dCBoYXMKc3BlYWtlcnMgKGFuZCB0aGVuIHBlcmZvcm0gZG93bm1peCBvciBkaXNjYXJkIHRoZSBl
-eHRyYSBjaGFubmVscyksIGluCndoaWNoIGNhc2UgaXQgaXMgcHJlZmVyYWJsZSB0byB1c2UgYSBD
-QSB0aGF0IGNvbnRhaW5zIGV4dHJhIGNoYW5uZWxzCnRoYW4gdG8gdXNlIENBIDAgd2hpY2ggZGlz
-Y2FyZHMgYWxsIHRoZSBub24tc3RlcmVvIGNoYW5uZWxzLgoKQWRkaXRpb25hbGx5LCBpdCBzZWVt
-cyB0aGF0IEhCUiAoSEQpIHBhc3N0aHJvdWdoIG91dHB1dCBkb2VzIG5vdCB3b3JrIG9uCkludGVs
-IEhETUkgY29kZWNzIHdoZW4gQ0EgaXMgc2V0IHRvIDAgKHBvc3NpYmx5IHRoZSBjb2RlYyB6ZXJv
-ZXMKY2hhbm5lbHMgbm90IHByZXNlbnQgaW4gQ0EpLiBUaGlzIGhhcHBlbnMgd2l0aCBhbGwgcmVj
-ZWl2ZXJzIHRoYXQgcmVwb3J0CmEgNS4xIHNwZWFrZXIgbWFzayBzaW5jZSBhIEhCUiBzdHJlYW0g
-aXMgY2FycmllZCBvbiA4IGNoYW5uZWxzIHRvIHRoZQpjb2RlYy4KCkFkZCBhIGZhbGxiYWNrIGlu
-IHRoZSBDQSBzZWxlY3Rpb24gc28gdGhhdCB0aGUgQ0EgY2hhbm5lbCBjb3VudCBhdCBsZWFzdApt
-YXRjaGVzIHRoZSBzdHJlYW0gY2hhbm5lbCBjb3VudCwgZXZlbiBpZiB0aGUgc3RyZWFtIGNvbnRh
-aW5zIGNoYW5uZWxzCm5vdCBwcmVzZW50IGluIHRoZSBzaW5rIHNwZWFrZXIgZGVzY3JpcHRvci4K
-ClRoYW5rcyB0byBHcmltR3JpZWZlciBhdCBPcGVuRUxFQyBmb3J1bXMgZm9yIGRpc2NvdmVyaW5n
-IHRoYXQgY2hhbmdpbmcKdGhlIHNpbmsgc3BlYWtlciBtYXNrIGFsbG93ZWQgSEJSIG91dHB1dC4K
-ClJlcG9ydGVkLWJ5OiBHcmltR3JpZWZlcgpSZXBvcnRlZC1ieTogQXNoZWNyb3cKUmVwb3J0ZWQt
-Ynk6IEZyYW5rIFphZmthIDxrYWZrYWVzcXVlMTk3OEBnbWFpbC5jb20+ClJlcG9ydGVkLWJ5OiBQ
-ZXRlciBGcsO8aGJlcmdlciA8ZnJpdHNjaEB4Ym1jLm9yZz4KU2lnbmVkLW9mZi1ieTogQW5zc2kg
-SGFubnVsYSA8YW5zc2kuaGFubnVsYUBpa2kuZmk+CkNjOiA8c3RhYmxlQHZnZXIua2VybmVsLm9y
-Zz4KLS0tCgpIb3BlZnVsbHkgdGhpcyBmaXhlcyBIQlIgKEhEIHBhc3N0aHJvdWdoKSBmb3IgdGhl
-IHJlbWFpbmluZyBJbnRlbCB1c2Vycwp3aG8gd2VyZSBzdGlsbCBleHBlcmllbmNpbmcgcHJvYmxl
-bXMuCgpCVFcsIHRoZSBoZG1pX2NoYW5uZWxfYWxsb2NhdGlvbigpIGxvZ2ljIHNlZW1zIGFsc28g
-b3RoZXJ3aXNlIHNvbWV3aGF0CnN1c3BlY3QgdG8gbWUuIFNob3VsZG4ndCB3ZSBhbHdheXMgc2Vs
-ZWN0IGFuIGFsbG9jYXRpb24gbWF0Y2hpbmcgQUxTQQpjaGFubmVsIG1hcHBpbmcsIGluc3RlYWQg
-b2YgcmUtYXNzaWduaW5nIGNoYW5uZWxzIHJlY2VpdmVkIGZyb20KdXNlcnNwYWNlICJyYW5kb21s
-eSIgdG8gc2luayBzcGVha2VycyAoaW4gY2FzZSBvZiB1bnVzdWFsIHNpbmsgc3BlYWtlcgptYXNr
-KT8KQW55d2F5LCBJIGxldCBpdCBiZSBmb3Igbm93IGF0IGxlYXN0LgoKCiBzb3VuZC9wY2kvaGRh
-L3BhdGNoX2hkbWkuYyB8IDExICsrKysrKysrKysrCiAxIGZpbGUgY2hhbmdlZCwgMTEgaW5zZXJ0
-aW9ucygrKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jIGIvc291bmQv
-cGNpL2hkYS9wYXRjaF9oZG1pLmMKaW5kZXggMDMwY2E4Ni4uMzU0ZmM1NSAxMDA2NDQKLS0tIGEv
-c291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1p
-LmMKQEAgLTU1MSw2ICs1NTEsMTcgQEAgc3RhdGljIGludCBoZG1pX2NoYW5uZWxfYWxsb2NhdGlv
-bihzdHJ1Y3QgaGRtaV9lbGQgKmVsZCwgaW50IGNoYW5uZWxzKQogCQl9CiAJfQogCisJaWYgKCFj
-YSkgeworCQkvKiBpZiB0aGVyZSB3YXMgbm8gbWF0Y2gsIHNlbGVjdCB0aGUgcmVndWxhciBBTFNB
-IGNoYW5uZWwKKwkJICogYWxsb2NhdGlvbiB3aXRoIHRoZSBtYXRjaGluZyBudW1iZXIgb2YgY2hh
-bm5lbHMgKi8KKwkJZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUoY2hhbm5lbF9hbGxvY2F0aW9u
-cyk7IGkrKykgeworCQkJaWYgKGNoYW5uZWxzID09IGNoYW5uZWxfYWxsb2NhdGlvbnNbaV0uY2hh
-bm5lbHMpIHsKKwkJCQljYSA9IGNoYW5uZWxfYWxsb2NhdGlvbnNbaV0uY2FfaW5kZXg7CisJCQkJ
-YnJlYWs7CisJCQl9CisJCX0KKwl9CisKIAlzbmRfcHJpbnRfY2hhbm5lbF9hbGxvY2F0aW9uKGVs
-ZC0+aW5mby5zcGtfYWxsb2MsIGJ1Ziwgc2l6ZW9mKGJ1ZikpOwogCXNuZF9wcmludGRkKCJIRE1J
-OiBzZWxlY3QgQ0EgMHgleCBmb3IgJWQtY2hhbm5lbCBhbGxvY2F0aW9uOiAlc1xuIiwKIAkJICAg
-IGNhLCBjaGFubmVscywgYnVmKTsKLS0gCjEuOC4xLjUKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+--===============8099756091645036333==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="GZVR6ND4mMseVXL/"
+Content-Disposition: inline
+
+
+--GZVR6ND4mMseVXL/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Sep 01, 2013 at 09:51:21AM +0100, Russell King - ARM Linux wrote:
+> On Sun, Sep 01, 2013 at 09:42:29AM +0200, Lars-Peter Clausen wrote:
+
+> > * With non-DPCM ASoC it is possible to have two DAIs if they are not used at
+> > the same time (which is what I recommend you implement first, before trying
+> > to get DPCM running).
+
+> If you'd look at my other responses, you'll see that this is what I tried
+> back in May, and I was unhappy about that solution because:
+
+> 1. there is no guarantee that they couldn't be used at the same time.
+> 2. this results in two entirely separate "CPU DAI"s, each with their
+>    own independent sample rate/format settings, which if they happen
+>    to be used together will result in fighting over the same register(s).
+
+These aren't issues for either/or, the whole point here is that the
+machine driver will be limited to only connecting one of the DAIs so
+there will be no way for userspace to interact with the unused DAI.  As
+Lars-Peter says you can add explicit checks for this in the code if you
+are concerned about system integrators getting this wrong.
+
+> Moreover, this results in a completely different set of changes to the
+> driver which are in an opposing direction to the DPCM approach.
+
+Like Lars-Peter says it really, really shouldn't be - what moving to
+DPCM should be doing with this code is mostly moving the code around a
+bit to pull the bits that are shared into a front end DAI.  The most
+substantial change should be handling the enables but that shouldn't
+take much code at all, your curent patch does it in 35 lines and I'd not
+expect it to be much different in a DPCM world.
+
+> > And I'm sure people are willing to help
+> > you figure out the parts you don't understand yet if you ask _nicely_.
+
+> Can you then please explain why when I ask for help understanding DAPM
+> in a "nice" way, the response I get is just "it's just a graph walk"
+> and no further technical details?
+
+Ask more detailed questions and engage in a discussion; the reason you
+keep on getting the same responses is that you tend to repeat the same
+requests a lot.  Something like "I understand the big picture but I am
+trying to do X and need to know Y because Z" (with all of X, Y and Z
+being important) is usually a good approach.
+
+The public interface for DAPM is that the widgets get created with
+sensible types and hooked up together then powered up as needed, if
+something needs to know specifics of that process like exactly when a
+given register will be written that's a worrying implementation detail.
+
+> | DAPM is a set of "widgets" representing various components of an
+> | audio system.  The widgets are linked together by a graph.  Each
+> | widget lives in a context - cpu, platform or codec.  Some bindings
+> | only happen within a context, others cross contexts (so linking the
+> | CPU audio stream to the codec for example)
+
+This last statement is not the case; you can see the route connecting
+code in snd_soc_dapm_add_route() - there is no case in which it will
+only try to match within a single context.
+
+As I have said to you without more information it is hard to tell what
+problems you are seeing when you are trying this.  It could be a case of
+trying to create routes before the widgets are added, or it could be a
+case of trying to create inter device links with widgets with globally
+duplicated names (though that would give wrong routes rather than no
+routes so I suspect sequencing).
+
+> > I mean I don't come to you either if I have a new ARM SoC that's not
+> > supported yet and demand that you implement support for it and exclaim
+> > that the ARM port sucks because it doesn't support that SoC yet.
+
+> If you come to me and ask about something in ARM, then you will most
+> likely get something more than a few words explaining a big chunk of
+> code - a bit like the oops report I disected last night and provided
+> full reasoning of the conclusion that I came to (SDRAM failure /
+> hardware fault on bit 8 of the SDRAM data bus.)
+
+The bit about the way in which support is requested is important here -
+it really can make a really big difference how one asks.
+
+--GZVR6ND4mMseVXL/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSIyoxAAoJELSic+t+oim93gMP/juuQfWsLnyUI0yVdA6ky1BY
+utcSse4HxaE2PyLZG0ou0Jup1PVEUdBTtj5XlQ/nlv+L0nvC2R4xFgs5T79e/qvq
+lKfeSwlvDKr+tKWdy+lCo1TGATSRSceUUYF0lfTwkfw7DdSc6C0T3Ttkv4Ns1SuH
+Gcs3QDHyoNOLBhGTfpUbMYSQS+AMjQNZlZ2S8tqWdMtLP07Bd9blW5d4zupCVnkq
+YvbchQOLwkX6isRELnxpWqcptf4SSKmasMEFdT2PCG7JqMgY5qj/7gJ+UMmbPZgP
+DsIGep15ZYnP1IfHdxAfanCdeKKInS/fMKjwTqaAuHQFCCzZSLHhrA7SmyoEp9mM
+hT8ApHNF29IkSi/rjZ89mcWlFVFEOI5f/eBvxvCmoYsS7Nf9Yw6+oFvyRV19x3DD
+w+WEAe0IWCUDZEwXwHcS+8J3S/DnGtcUJWQVvlSda4QJQ+QDVd8OhnmvCT6TvMxc
+liCsJ0DzHs/M7ExQ1Ts8YmPQzt6nRaeMJ2jWf8UwpPCOQAW4elDnjIY8u2yYb4gW
+fZtgHuYKHkH3vSw4Z45R1kKUVUymbcOmn7U5RLtGqT8oTfl2S1TRxYXoLMAFXHsp
+8h1RlXuIaAhYt2oAsUo9ipgkNR+VOG0gLf6TeTqyE0G7zVRkOwBXftDD5/lBhlfG
+MIn/vmYQDRueT3PFI+Na
+=WgaO
+-----END PGP SIGNATURE-----
+
+--GZVR6ND4mMseVXL/--
+
+--===============8099756091645036333==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8099756091645036333==--
