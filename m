@@ -1,20 +1,19 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 00/14] SPDIF support
-Date: Sun, 1 Sep 2013 09:51:21 +0100
-Message-ID: <20130901085121.GO6617@n2100.arm.linux.org.uk>
-References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
- <52220B9A.9000007@metafoo.de> <20130831172853.GL18608@sirena.org.uk>
- <20130831191956.GH6617@n2100.arm.linux.org.uk> <5222562B.8010001@metafoo.de>
- <20130901064216.GN6617@n2100.arm.linux.org.uk> <5222EFE5.3010306@metafoo.de>
+From: Eldad Zack <eldad@fogrefinery.com>
+Subject: Re: [PATCH v3 00/11] ALSA: usb-audio: fix
+ playback/capture concurrent usage
+Date: Sun, 1 Sep 2013 10:54:05 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1309011046440.1341@heraclitus>
+References: <1377445399-5678-1-git-send-email-eldad@fogrefinery.com>
+ <CALGY4fuux1=qy14eCfcGDcPmARAw6C+MqEEuwL=KF_-mVmUJ+g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-116058531-1378025651=:1341"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 59A59260866
- for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 10:51:44 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <5222EFE5.3010306@metafoo.de>
+Received: from mail-ee0-f43.google.com (mail-ee0-f43.google.com [74.125.83.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id A00DA2607D7
+ for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 10:54:12 +0200 (CEST)
+Received: by mail-ee0-f43.google.com with SMTP id e52so1709386eek.2
+ for <alsa-devel@alsa-project.org>; Sun, 01 Sep 2013 01:54:12 -0700 (PDT)
+In-Reply-To: <CALGY4fuux1=qy14eCfcGDcPmARAw6C+MqEEuwL=KF_-mVmUJ+g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,146 +23,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Jean-Francois Moine <moinejf@free.fr>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+To: Nikolay Martynov <mar.kolya@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Sep 01, 2013 at 09:42:29AM +0200, Lars-Peter Clausen wrote:
-> Lets try to wrap up the situation:
-> 
-> * The hardware has one audio stream, but two DAIs, one for SPDIF one for
-> I2S. The same audio stream is sent to both DAIs at the same time (It is
-> possible though to disable one or both of the DAIs).
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-More or less.  To be more clear: audio DMA commences when either one or
-both outputs are enabled, and stops when both are disabled.
+--8323328-116058531-1378025651=:1341
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-This is why either only one can be enabled, or if both are to be enabled,
-both enable bits must be set in one register write, and when disabled,
-both bits must be cleared in one register write.
 
-So, lets say for argument sake that you wanted to go from disabled to a
-single output, then to dual output, back to single output, and finally
-back to disabled.  You would need this sequence:
+On Mon, 26 Aug 2013, Nikolay Martynov wrote:
 
-- enable single output
-...
-- disable single output
-- wait for audio unit to indicate not busy
-- enable both outputs
-...
-- disable both outputs
-- wait for audio unit to indicate not busy
-- enable single output
-...
-- disable single output
-- wait for audio unit to indicate not busy
+> Hi.
+>=20
+> =A0 I've tried this patch and can confirm that it fixes the issue with =
+CM108 based USB headset I've described on the list several days ago (trie=
+d with Skype).
+> =A0 Thank you!
 
-> * This is something new and not supported by classical ASoC.
-> 
-> * DPCM has support for this, but DPCM is still new, unstable,
-> under-documented and apparently has a couple of bugs.
-> 
-> * With non-DPCM ASoC it is possible to have two DAIs if they are not used at
-> the same time (which is what I recommend you implement first, before trying
-> to get DPCM running).
+That's great - I'm glad it solved your issue and thank you for testing!
 
-If you'd look at my other responses, you'll see that this is what I tried
-back in May, and I was unhappy about that solution because:
+There's still some issues I bump into at the moment, hopefully I will=20
+find the time to resolve them before the 3.13 window.
 
-1. there is no guarantee that they couldn't be used at the same time.
-2. this results in two entirely separate "CPU DAI"s, each with their
-   own independent sample rate/format settings, which if they happen
-   to be used together will result in fighting over the same register(s).
+Cheers,
+Eldad
 
-Moreover, this results in a completely different set of changes to the
-driver which are in an opposing direction to the DPCM approach.
+>=20
+>=20
+> 2013/8/25 Eldad Zack <eldad@fogrefinery.com>
+>       Hi,
+>=20
+>       This patch series attempts to fix a long standing problem with th=
+e concurrent
+>       usage of playback and capture on implicit feedback devices.
+>=20
+>       Applies against current for-next (HEAD 68538bf2bce557c3b5fe8c59b0=
+34d45352500db1 ).
+>=20
+>       v2:
+>       =A0http://mailman.alsa-project.org/pipermail/alsa-devel/2013-Augu=
+st/065649.html
+>       v1:
+>       =A0http://mailman.alsa-project.org/pipermail/alsa-devel/2013-Augu=
+st/065517.html
+>=20
+>       =A0* Changed "altset_idx" to "altsetting" thanks to Clemens' clar=
+ification.
+>=20
+>       =A0#3: Thanks to Daniel's test, fixed a NULL dereference caused b=
+y userspace calling
+>       =A0 =A0 =A0snd_pcm_open() and then snd_pcm_close() immediately.
+>       =A0#8: subs->altset_idx was left intact, since it corresponds to =
+the array index.
+>       =A0#10: this patch now removed subs->altset_idx, but also changes=
+ the check to be
+>       =A0 =A0 =A0 performed against fmt->altsetting.
+>       =A0#11: New. This changes the name of snd_usb_endpoint member alt=
+_idx to altsetting
+>       =A0 =A0 =A0 for the same reason Clemens described.
+>=20
+>       Clemens and Daniel - thank you very much for your help!
+>=20
+>       Cheers,
+>       Eldad
+>=20
+>       Eldad Zack (11):
+>       =A0 ALSA: usb-audio: remove unused parameter from sync_ep_set_par=
+ams
+>       =A0 ALSA: usb-audio: remove deactivate_endpoints()
+>       =A0 ALSA: usb-audio: prevent NULL dereference on stop trigger
+>       =A0 ALSA: usb-audio: don't deactivate URBs on in-use EP
+>       =A0 ALSA: usb-audio: void return type of snd_usb_endpoint_deactiv=
+ate()
+>       =A0 ALSA: usb-audio: clear SUBSTREAM_FLAG_SYNC_EP_STARTED on erro=
+r
+>       =A0 ALSA: usb-audio: correct ep use_count semantics (add set_para=
+m flag)
+>       =A0 ALSA: usb-audio: conditional interface altsetting
+>       =A0 ALSA: usb-audio: conditional concurrent usage of endpoint
+>       =A0 ALSA: usb-audio: remove altset_idx from snd_usb_substream
+>       =A0 ALSA: usb-audio: rename alt_idx to altsetting
+>=20
+>       =A0sound/usb/card.h =A0 =A0 | =A0 4 +-
+>       =A0sound/usb/endpoint.c | =A082 ++++++++++++++++++-------
+>       =A0sound/usb/endpoint.h | =A011 +++-
+>       =A0sound/usb/pcm.c =A0 =A0 =A0| 168 +++++++++++++++++++++++++++++=
++++++++++-------------
+>       =A0sound/usb/pcm.h =A0 =A0 =A0| =A0 2 +
+>       =A0sound/usb/proc.c =A0 =A0 | =A0 4 +-
+>       =A06 files changed, 201 insertions(+), 70 deletions(-)
+>=20
+>       --
+>       1.8.1.5
+>=20
+>       _______________________________________________
+>       Alsa-devel mailing list
+>       Alsa-devel@alsa-project.org
+>       http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>=20
+>=20
+>=20
+>=20
+> --
+> Martynov Nikolay.
+> Email: mar.kolya@gmail.com
+>=20
+>=20
+--8323328-116058531-1378025651=:1341
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> I still don't know if you actually need to feature of being able to output
-> the same audio signal to both DAIs, do you have such a board?
 
-This board has the SPDIF connected to a TOSlink and a HDMI transmitter.
-It also has the I2S connected only to the HDMI transmitter, though it's
-common at the moment to only use the SPDIF output to drive them both.
-
-Having recently changed the TV connected to the HDMI, I find that where
-audio used to work at 48kHz and 44.1kHz with the old TV, it no longer
-works on anything but 44.1kHz.  The old TV converted everything to
-analogue internally in its HDMI receiver before passing it for further
-processing.  The new TV is a modern full HD model, so keeps everything in
-the digital domain.  I have yet to work out why the TV is muting itself
-with 48kHz audio.  However, audio continues to work via the TOSlink output
-at both sample rates.
-
-What I'm saying there is that we may need to have another codec in there
-so the HDMI transmitter has access to parameters like the sample rate,
-or we may have to switch it to using I2S for PCM audio and back to SPDIF
-for compressed audio (I'm hoping not because I think that's going to be
-an extremely hard problem to solve.)
-
-This is a brand new problem which I've only discovered during last week.
-As I have no SPDIF or HDMI analysers, I don't have an answer for this
-at the moment, and the only way I can solve it is by verifying the
-existing setup (which I believe is correct to the HDMI v1.3 spec) and
-experimenting, which will take some time.
-
-However, that's not a reason to hold up these patches - these patches
-do work, and allow audio to be used on this platform in at least some
-configurations.
-
-> But even then
-> I still recommend to first get the non-DPCM either/or approach implemented
-> and once that's working try to get DPCM running. Which probably involves
-> fixing some of the DPCM issues in the core. As I said sending the same audio
-> streams to two DAIs is something new and if there was no DPCM yet you'd need
-> to add support for sending the same stream to multiple DAIs. So either way
-> you'd have to get your hands dirty.
-
-Could you comment on the patch which creates the two front-end DAIs which
-I sent in a different sub-thread - the one which I indicated was from back
-in May time.  It isn't quite suitable for submission because the base it
-applies to has changed since then, but it should be sufficient to give an
-idea of the solution I was trying to implement there.
-
-> And I'm sure people are willing to help
-> you figure out the parts you don't understand yet if you ask _nicely_.
-
-Can you then please explain why when I ask for help understanding DAPM
-in a "nice" way, the response I get is just "it's just a graph walk"
-and no further technical details?
-
-I explained DAPM as I understood it to someone who knows nothing about it
-a fortnight ago, and this is how I described DAPM with only a basic
-understanding of it, most of that gathered by having been through some of
-the code with printk()s to work out some of the problems I was seeing:
-
-| DAPM is a set of "widgets" representing various components of an
-| audio system.  The widgets are linked together by a graph.  Each
-| widget lives in a context - cpu, platform or codec.  Some bindings
-| only happen within a context, others cross contexts (so linking the
-| CPU audio stream to the codec for example)
-
-I didn't want to go into the complexities of which widgets are activated
-when a stream starts playing, or the special cases with the various
-different types of widget that affect the walking and activation of the
-graph.
-
-Notice how much more information there - though it wasn't _that_ coherent
-(rather than using "linked" it should've been "bound").  The point is,
-I've described that there are widgets, there's a binding of widgets
-together, the widgets are associated with a context, and finally that
-there are restrictions on what bindings can happen.
-
-I've probably missed out quite a bit too without really knowing it -
-because I don't know it yet either.  Yes, I do know about the
-Documentation/sound/alsa/soc/dapm.txt document.
-
-> I mean I don't come to you either if I have a new ARM SoC that's not
-> supported yet and demand that you implement support for it and exclaim
-> that the ARM port sucks because it doesn't support that SoC yet.
-
-If you come to me and ask about something in ARM, then you will most
-likely get something more than a few words explaining a big chunk of
-code - a bit like the oops report I disected last night and provided
-full reasoning of the conclusion that I came to (SDRAM failure /
-hardware fault on bit 8 of the SDRAM data bus.)
+--8323328-116058531-1378025651=:1341--
