@@ -1,41 +1,38 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 00/14] SPDIF support
-Date: Sun, 1 Sep 2013 14:02:15 +0100
-Message-ID: <20130901130215.GS6617@n2100.arm.linux.org.uk>
-References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
- <52220B9A.9000007@metafoo.de> <20130831172853.GL18608@sirena.org.uk>
- <20130831191956.GH6617@n2100.arm.linux.org.uk> <5222562B.8010001@metafoo.de>
- <20130831210518.GK6617@n2100.arm.linux.org.uk>
- <20130901121928.GC3084@sirena.org.uk>
- <20130901123433.GR6617@n2100.arm.linux.org.uk>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCH 0/5] Remove ASoC-level I/O functions from cq93vc
+Date: Sun, 1 Sep 2013 16:48:47 +0200
+Message-ID: <20130901144847.GM20329@zurbaran>
+References: <20130831130741.GG18608@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 507F0264F41
- for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 15:02:31 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20130901123433.GR6617@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+In-Reply-To: <20130831130741.GG18608@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jason Cooper <jason@lakedaemon.net>, Jean-Francois Moine <moinejf@free.fr>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Miguel Aguilar <miguel.aguilar@ridgerun.com>, Liam Girdwood <lgirdwood@gmail.com>, Lee Jones <lee.jones@linaro.org>, davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Sep 01, 2013 at 01:34:33PM +0100, Russell King - ARM Linux wrote:
-> The non-DT support I run has full support for everything on Dove, which
-> means I can do much more in-depth testing than just running madplay or
-> something similar to check that there's audio out - which is about the
-> limit of what can be done with DT-only setups at the moment, such as
-> the DPCM bug triggered by vlc.
+Hi Mark,
 
-Sorry, that was a bit unclear: I meant that I can do testing with vlc
-on my setup, which I don't believe to be possible yet on DT setups.
+On Sat, Aug 31, 2013 at 02:07:41PM +0100, Mark Brown wrote:
+> This patch series removes the use of the ASoC-level read and write
+> functions from the cq93vc driver as part of a wider push to remove them
+> completely and just use regmap for all register I/O.  Since the driver
+> is essentially doing what regmap-mmio is doing this is done by adding a
+> MMIO regmap to the core device and using that.  This is compile tested
+> only, I don't have any hardware to run on.
+> 
+> Since I anticipate doing more cleanups over the CODEC drivers during the
+> next release cycle it'd be good to merge via ASoC, though there
+> shouldn't be any overlap with the first patch.
+As I'd prefer to carry the MFD ones (Including the twl6040 one) through
+mfd-next, I can build a branch for you to pull from. Would that be fine
+with you ?
+
+Cheers,
+Samuel.
+
+-- 
+Intel Open Source Technology Centre
+http://oss.intel.com/
