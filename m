@@ -1,19 +1,21 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: Re: [PATCH v3 00/11] ALSA: usb-audio: fix
- playback/capture concurrent usage
-Date: Sun, 1 Sep 2013 10:54:05 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1309011046440.1341@heraclitus>
-References: <1377445399-5678-1-git-send-email-eldad@fogrefinery.com>
- <CALGY4fuux1=qy14eCfcGDcPmARAw6C+MqEEuwL=KF_-mVmUJ+g@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 00/14] SPDIF support
+Date: Sun, 01 Sep 2013 12:08:37 +0200
+Message-ID: <52231225.8080704@metafoo.de>
+References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
+ <52220B9A.9000007@metafoo.de> <20130831172853.GL18608@sirena.org.uk>
+ <20130831191956.GH6617@n2100.arm.linux.org.uk> <5222562B.8010001@metafoo.de>
+ <20130901064216.GN6617@n2100.arm.linux.org.uk> <5222EFE5.3010306@metafoo.de>
+ <20130901085121.GO6617@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-116058531-1378025651=:1341"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f43.google.com (mail-ee0-f43.google.com [74.125.83.43])
- by alsa0.perex.cz (Postfix) with ESMTP id A00DA2607D7
- for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 10:54:12 +0200 (CEST)
-Received: by mail-ee0-f43.google.com with SMTP id e52so1709386eek.2
- for <alsa-devel@alsa-project.org>; Sun, 01 Sep 2013 01:54:12 -0700 (PDT)
-In-Reply-To: <CALGY4fuux1=qy14eCfcGDcPmARAw6C+MqEEuwL=KF_-mVmUJ+g@mail.gmail.com>
+Received: from smtp-out-017.synserver.de (smtp-out-016.synserver.de
+ [212.40.185.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8CCDF26087B
+ for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 12:07:09 +0200 (CEST)
+In-Reply-To: <20130901085121.GO6617@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,121 +25,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nikolay Martynov <mar.kolya@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Jean-Francois Moine <moinejf@free.fr>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 09/01/2013 10:51 AM, Russell King - ARM Linux wrote:
+> On Sun, Sep 01, 2013 at 09:42:29AM +0200, Lars-Peter Clausen wrote:
+>> Lets try to wrap up the situation:
+>>
+>> * The hardware has one audio stream, but two DAIs, one for SPDIF one for
+>> I2S. The same audio stream is sent to both DAIs at the same time (It is
+>> possible though to disable one or both of the DAIs).
+> 
+> More or less.  To be more clear: audio DMA commences when either one or
+> both outputs are enabled, and stops when both are disabled.
+> 
+> This is why either only one can be enabled, or if both are to be enabled,
+> both enable bits must be set in one register write, and when disabled,
+> both bits must be cleared in one register write.
+> 
+> So, lets say for argument sake that you wanted to go from disabled to a
+> single output, then to dual output, back to single output, and finally
+> back to disabled.  You would need this sequence:
+> 
+> - enable single output
+> ...
+> - disable single output
+> - wait for audio unit to indicate not busy
+> - enable both outputs
+> ...
+> - disable both outputs
+> - wait for audio unit to indicate not busy
+> - enable single output
+> ...
+> - disable single output
+> - wait for audio unit to indicate not busy
+> 
+>> * This is something new and not supported by classical ASoC.
+>>
+>> * DPCM has support for this, but DPCM is still new, unstable,
+>> under-documented and apparently has a couple of bugs.
+>>
+>> * With non-DPCM ASoC it is possible to have two DAIs if they are not used at
+>> the same time (which is what I recommend you implement first, before trying
+>> to get DPCM running).
+> 
+> If you'd look at my other responses, you'll see that this is what I tried
+> back in May, and I was unhappy about that solution because:
+> 
+> 1. there is no guarantee that they couldn't be used at the same time.
+> 2. this results in two entirely separate "CPU DAI"s, each with their
+>    own independent sample rate/format settings, which if they happen
+>    to be used together will result in fighting over the same register(s).
 
---8323328-116058531-1378025651=:1341
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+I know, but you can make it policy that only one of them may be used at a
+time. Furthermore you can add a check to the startup() callback to return an
+error, if the other DAI is active.
 
+>
+> Moreover, this results in a completely different set of changes to the
+> driver which are in an opposing direction to the DPCM approach.
+> 
 
-On Mon, 26 Aug 2013, Nikolay Martynov wrote:
+I think the patch is actually going to be maybe a 100 lines or so and it
+gives you something to work with and unlike your current approach is not
+trying to work around the framework. Then you can add the other patches
+adding the SPDIF controls on top of it. Once that's done you can concentrate
+on trying to get DPCM running.
 
-> Hi.
->=20
-> =A0 I've tried this patch and can confirm that it fixes the issue with =
-CM108 based USB headset I've described on the list several days ago (trie=
-d with Skype).
-> =A0 Thank you!
+>> I still don't know if you actually need to feature of being able to output
+>> the same audio signal to both DAIs, do you have such a board?
+> 
+> This board has the SPDIF connected to a TOSlink and a HDMI transmitter.
+> It also has the I2S connected only to the HDMI transmitter, though it's
+> common at the moment to only use the SPDIF output to drive them both.
 
-That's great - I'm glad it solved your issue and thank you for testing!
+Ok, so things will work fine with the either/or approach for now.
 
-There's still some issues I bump into at the moment, hopefully I will=20
-find the time to resolve them before the 3.13 window.
+[...]
+>> But even then
+>> I still recommend to first get the non-DPCM either/or approach implemented
+>> and once that's working try to get DPCM running. Which probably involves
+>> fixing some of the DPCM issues in the core. As I said sending the same audio
+>> streams to two DAIs is something new and if there was no DPCM yet you'd need
+>> to add support for sending the same stream to multiple DAIs. So either way
+>> you'd have to get your hands dirty.
+> 
+> Could you comment on the patch which creates the two front-end DAIs which
+> I sent in a different sub-thread - the one which I indicated was from back
+> in May time.  It isn't quite suitable for submission because the base it
+> applies to has changed since then, but it should be sufficient to give an
+> idea of the solution I was trying to implement there.
 
-Cheers,
-Eldad
+The patch looks OK, except for maybe the way the names for the DAIs are
+created. That probably something that's better handled in the core in a
+generic way.
 
->=20
->=20
-> 2013/8/25 Eldad Zack <eldad@fogrefinery.com>
->       Hi,
->=20
->       This patch series attempts to fix a long standing problem with th=
-e concurrent
->       usage of playback and capture on implicit feedback devices.
->=20
->       Applies against current for-next (HEAD 68538bf2bce557c3b5fe8c59b0=
-34d45352500db1 ).
->=20
->       v2:
->       =A0http://mailman.alsa-project.org/pipermail/alsa-devel/2013-Augu=
-st/065649.html
->       v1:
->       =A0http://mailman.alsa-project.org/pipermail/alsa-devel/2013-Augu=
-st/065517.html
->=20
->       =A0* Changed "altset_idx" to "altsetting" thanks to Clemens' clar=
-ification.
->=20
->       =A0#3: Thanks to Daniel's test, fixed a NULL dereference caused b=
-y userspace calling
->       =A0 =A0 =A0snd_pcm_open() and then snd_pcm_close() immediately.
->       =A0#8: subs->altset_idx was left intact, since it corresponds to =
-the array index.
->       =A0#10: this patch now removed subs->altset_idx, but also changes=
- the check to be
->       =A0 =A0 =A0 performed against fmt->altsetting.
->       =A0#11: New. This changes the name of snd_usb_endpoint member alt=
-_idx to altsetting
->       =A0 =A0 =A0 for the same reason Clemens described.
->=20
->       Clemens and Daniel - thank you very much for your help!
->=20
->       Cheers,
->       Eldad
->=20
->       Eldad Zack (11):
->       =A0 ALSA: usb-audio: remove unused parameter from sync_ep_set_par=
-ams
->       =A0 ALSA: usb-audio: remove deactivate_endpoints()
->       =A0 ALSA: usb-audio: prevent NULL dereference on stop trigger
->       =A0 ALSA: usb-audio: don't deactivate URBs on in-use EP
->       =A0 ALSA: usb-audio: void return type of snd_usb_endpoint_deactiv=
-ate()
->       =A0 ALSA: usb-audio: clear SUBSTREAM_FLAG_SYNC_EP_STARTED on erro=
-r
->       =A0 ALSA: usb-audio: correct ep use_count semantics (add set_para=
-m flag)
->       =A0 ALSA: usb-audio: conditional interface altsetting
->       =A0 ALSA: usb-audio: conditional concurrent usage of endpoint
->       =A0 ALSA: usb-audio: remove altset_idx from snd_usb_substream
->       =A0 ALSA: usb-audio: rename alt_idx to altsetting
->=20
->       =A0sound/usb/card.h =A0 =A0 | =A0 4 +-
->       =A0sound/usb/endpoint.c | =A082 ++++++++++++++++++-------
->       =A0sound/usb/endpoint.h | =A011 +++-
->       =A0sound/usb/pcm.c =A0 =A0 =A0| 168 +++++++++++++++++++++++++++++=
-+++++++++-------------
->       =A0sound/usb/pcm.h =A0 =A0 =A0| =A0 2 +
->       =A0sound/usb/proc.c =A0 =A0 | =A0 4 +-
->       =A06 files changed, 201 insertions(+), 70 deletions(-)
->=20
->       --
->       1.8.1.5
->=20
->       _______________________________________________
->       Alsa-devel mailing list
->       Alsa-devel@alsa-project.org
->       http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->=20
->=20
->=20
->=20
-> --
-> Martynov Nikolay.
-> Email: mar.kolya@gmail.com
->=20
->=20
---8323328-116058531-1378025651=:1341
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---8323328-116058531-1378025651=:1341--
+- Lars
