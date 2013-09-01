@@ -1,20 +1,19 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 00/14] SPDIF support
-Date: Sat, 31 Aug 2013 23:23:33 +0100
-Message-ID: <20130831222332.GL6617@n2100.arm.linux.org.uk>
-References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
- <52220B9A.9000007@metafoo.de> <20130831172853.GL18608@sirena.org.uk>
- <20130831191956.GH6617@n2100.arm.linux.org.uk> <5222562B.8010001@metafoo.de>
- <20130831210518.GK6617@n2100.arm.linux.org.uk>
+From: Chen Guangyu-B42378 <B42378@freescale.com>
+Subject: Re: [PATCH] ASoC: fsl_spdif: Staticse non-exported
+ symbols
+Date: Sun, 1 Sep 2013 02:43:49 +0000
+Message-ID: <cgvcjx6352rqksg31th46kge.1378003344008@email.android.com>
+References: <1377963705-25670-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 68CD42625CB
- for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 00:23:50 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130831210518.GK6617@n2100.arm.linux.org.uk>
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe005.messaging.microsoft.com [207.46.163.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58A8C261703
+ for <alsa-devel@alsa-project.org>; Sun,  1 Sep 2013 04:43:55 +0200 (CEST)
+In-Reply-To: <1377963705-25670-1-git-send-email-broonie@kernel.org>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,127 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Jean-Francois Moine <moinejf@free.fr>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Estevam Fabio-R49496 <r49496@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 31, 2013 at 10:05:18PM +0100, Russell King - ARM Linux wrote:
-> On Sat, Aug 31, 2013 at 10:46:35PM +0200, Lars-Peter Clausen wrote:
-> > On 08/31/2013 09:19 PM, Russell King - ARM Linux wrote:
-> > > On Sat, Aug 31, 2013 at 06:28:53PM +0100, Mark Brown wrote:
-> > >> On Sat, Aug 31, 2013 at 05:28:26PM +0200, Lars-Peter Clausen wrote:
-> > >>
-> > >>> Then connect the SPDIF AIF widgets to the SPDIF streams and the I2S AIF
-> > >>> widgets to the I2S streams. In your machine driver setup the link config to
-> > >>> use DAI 0 if the board uses I2S and DAI 1 if the board uses SPDIF. The ASoC
-> > >>> framework will then create the necessary routes all by itself. Of course
-> > >>> this won't work on a platform where both the SPDIF and I2S controller are
-> > >>> used at the same time, but neither does your current solution.
-> > >>
-> > >> This is the either/or approach I've been suggesting.
-> > > 
-> > > Ah, here we go again.  This is precisely why I can't work with you.
-> > > Nothing I say seems to stick in your mind.  I've been telling you for the
-> > > last four weeks that it doesn't work - and I've shown you the oopses and
-> > > warnings I get from trying it.  Your response to date: nothing of any
-> > > real use.
-> > > 
-> > > If you're not going to provide any useful responses on bug reports, it is
-> > > totally unreasonable that you even suggest that _that_ is how it should
-> > > be done when I've already proved that it's impossible at present.
-> > 
-> > Russell, please stop being such a bitch. You seem to be the only one who has
-> > any problems working with Mark, which maybe should make you wonder if the
-> > problem is not on your side. Insulting and screaming at people all the time
-> > won't exactly motivate them to help you with your problems. Please try to be
-> > constructive, it will makes things much easier for everyone.
-> 
-> Consider that Mark's been saying the same old stuff for the last four
-> weeks, and I've been showing that it doesn't work, and the only thing
-> that Mark says is the same old same old - maybe in the hope that if he
-> says it enough times the bugs will mysteriously vanish.  Unfortunately,
-> that isn't happening.
-> 
-> It's also not constructive or helpful, and it's extremely frustrating.
-> I have very little patience left with ASoC at this point, having spent
-> a month trying to get this stuff working.
-> 
-> I'm not the only one: I've heard other people complain about the _exact_
-> same issue with ASoC: ASoC is difficult to work with, and many people
-> just seem to give up with it - or keep their stuff in their own trees
-> locally.  I can very well see why that happens.
-> 
-> As for "This is the either/or approach I've been suggesting."  No, that's
-> another false statement from Mark.  What Mark has been suggesting all
-> along is to use DPCM - and that's something which I tried for ages to
-> get working, and it just doesn't work (as evidenced by the oopses and
-> warnings that get spat out of the kernel.)
-> 
-> Mark suggested it _before_ he suggested DPCM, and I tried that approach.
-> The problem is that it doesn't fit the hardware.  They aren't two
-> separate streams - they're a single stream with two output paths, and
-> there's restrictions in the hardware to do with how they're controlled.
-> 
-> There are two choices in how the hardware is used: either one output
-> only is used, or if both outputs are used, they must be used "as one" -
-> both outputs must be simultaneously enabled and disabled.  As far as
-> I know, that's not possible with two DAIs.
-> 
-> And here's the patch I tried.
-> 
-> See - I've been down this route before.  I've tried it, and I know
-> what it's problems are.  I'm not making up _anything_ here - I really
-> have tried all these "suggestions" and I'm just going round in circles
-> because Mark isn't listening to what I've been reporting back.
+Acked-by: Nicolin Chen <B42378@freescale.com>
 
-And this is how I ended up going down the DPCM route - this is from
-private mails, so I'm only including those bits which I authored.
-This is from an email exchange back in May (yes, this has been going
-on since May!)
+Thank you sir.
 
-> > > So, I have this Armada 510 on the Cubox, which is wired up to use mainly
-> > > the SPDIF output from the device.
-> >
-> > > The structure of the device (if you look at the page I point out in the
-> > > PDF below) is:
-> >
-> > > Tx DMA --> Tx FIFO ----> I2S formatter ----> I2S output
-> > >                     `--> SPDIF formatter --> SPDIF output
-> >
-> > > There are separate mute and enable bits for the I2S and SPDIF.  The mute
-> > > bits can be set and cleared independently at any time (but it's
-> > > recommended
-> > > to set the mute bits before pausing the entire block).  However, the
-> > > enable bits must be set and cleared simultaneously if both SPDIF and I2S
-> > > output are required - setting one then the other is not permitted by
-> > > the spec.
-> >
-> > > Now, Mark describes below about using two front ends and a single back
-> > > end to describe this.  So, I've created two DAIs in kirkwood-i2s.c,
-> > > one for I2S and one for SPDIF.  I've since come to the conclusion that
-> > > this is wrong.  I'm now wondering how all this front end/back end stuff
-> > > hangs together, and so forth.
+Sent by Android device.
 
-(Liam asks why)
+Mark Brown <broonie@kernel.org> wrote:
 
-> It's wrong because there's no way to tie the two DAIs together and tell
-> ASoC that the second DAI must not be started if the first one is already
-> running.
->
-> You can a card module come along, bind to the SPDIF one, then have the
-> SPDIF output be used (so the transmission starts), then the new card
-> module binds separately to the I2S one, at which point that automatically
-> starts up - which then violates the conditions layed down that "both
-> shall be started together or just one".
->
-> There is no way in the CPU DAI backend to tell ALSA "these two DAIs are
-> inherently linked and must be either started together or only one."
 
-(Liam includes his relevant parts of a driver he is working on using
-DPCM.)
+From: Mark Brown <broonie@linaro.org>
 
-So, it seems that you and Mark disagree with Liam.  That's just great.
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/fsl/fsl_spdif.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-I'm getting really tired of being told "you should do it this way" by
-various people where their way is different.  I'm just going round and
-round in circles with this.
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index e93dc0d..c5c228a 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -411,8 +411,8 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
+        return 0;
+ }
+
+-int fsl_spdif_startup(struct snd_pcm_substream *substream,
+-                       struct snd_soc_dai *cpu_dai)
++static int fsl_spdif_startup(struct snd_pcm_substream *substream,
++                            struct snd_soc_dai *cpu_dai)
+ {
+        struct snd_soc_pcm_runtime *rtd = substream->private_data;
+        struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+@@ -546,7 +546,7 @@ static int fsl_spdif_trigger(struct snd_pcm_substream *substream,
+        return 0;
+ }
+
+-struct snd_soc_dai_ops fsl_spdif_dai_ops = {
++static struct snd_soc_dai_ops fsl_spdif_dai_ops = {
+        .startup = fsl_spdif_startup,
+        .hw_params = fsl_spdif_hw_params,
+        .trigger = fsl_spdif_trigger,
+@@ -919,7 +919,7 @@ static int fsl_spdif_dai_probe(struct snd_soc_dai *dai)
+        return 0;
+ }
+
+-struct snd_soc_dai_driver fsl_spdif_dai = {
++static struct snd_soc_dai_driver fsl_spdif_dai = {
+        .probe = &fsl_spdif_dai_probe,
+        .playback = {
+                .channels_min = 2,
+--
+1.8.4.rc3
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
