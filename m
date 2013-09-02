@@ -1,84 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 08/14] ASoC: kirkwood: prefer external clock over
- internal clock
-Date: Mon, 2 Sep 2013 12:01:05 +0100
-Message-ID: <20130902110105.GN3084@sirena.org.uk>
+Subject: Re: [PATCH 09/14] ASoC: kirkwood-dma: remove
+	IEC958_SUBFRAME formats
+Date: Mon, 2 Sep 2013 12:02:02 +0100
+Message-ID: <20130902110202.GO3084@sirena.org.uk>
 References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
- <E1VFkVg-0003Ip-G7@rmk-PC.arm.linux.org.uk>
- <20130901184153.353c644f@armhf>
+ <E1VFkWe-0003Iw-UI@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0450365135577252800=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20130901184153.353c644f@armhf>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Content-Type: multipart/mixed; boundary="===============4176218667194974602=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB1E6265138
+ for <alsa-devel@alsa-project.org>; Mon,  2 Sep 2013 13:02:09 +0200 (CEST)
+In-Reply-To: <E1VFkWe-0003Iw-UI@rmk-PC.arm.linux.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0450365135577252800==
+--===============4176218667194974602==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KM+e2hnYAO+MCJ5e"
+	protocol="application/pgp-signature"; boundary="o41d8xLWOaLD8vYh"
 Content-Disposition: inline
 
 
---KM+e2hnYAO+MCJ5e
+--o41d8xLWOaLD8vYh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Sep 01, 2013 at 06:41:53PM +0200, Jean-Francois Moine wrote:
-> Russell King <rmk+kernel@arm.linux.org.uk> wrote:
+On Sat, Aug 31, 2013 at 01:43:36PM +0100, Russell King wrote:
+> The Audio block does not support IEC958 subframes as formatted by
+> ALSA: they're very close, but not close enough.  The formats differ
 
-> > +	} else if (rate == 44100 || rate == 48000 || rate == 96000) {
+Applied, thanks.
 
-> The rate is always good, and having this test raises a compilation warning
-> (clks_ctrl may be not initialized).
-
-That should be fixed - it might be worth keeping the test and adding an
-else with an error return for robustness.
-
---KM+e2hnYAO+MCJ5e
+--o41d8xLWOaLD8vYh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSJG/uAAoJELSic+t+oim9YecP/0W+e4zDMIu240tsbNLreRkR
-7x4wtpBQenFTyqTnHSn079yhwP0Hu7DdWrzjofhP1qdrNlbjeOYW2YhtLUp3gQww
-OOM+t28YQHKCJp/pG/SwXII++VSYbRaV+yQ19Tq9PHUJ6nR+fBWARiSwETVPFqdW
-hPhxeNdhOcbJ1wmfRDrAHKYVqO2/uthH3VM+272YamFR20OLnI9Xwszz0pvFIwnQ
-vczd9xgGUWtD7YK/K6uCcvkIhSSH0zo2dw10gcX1hSXC4S/2maXCyLTcF4af2Nw+
-ltN2kKsvCAP7ASYK1xndrJQHyCbRVVrpnk97VOddyIe0f7GQPh1uG9hVLlvi124L
-HuPb39gopWlQDmG4tQHMPoX5U9Ro+RY6REReSGWwBEJ04AWxkOU3mj85vw5y4Akg
-IUwCM1QN41l0CSSy4rFBw0KXlAYnAqDlLgih5NBEmwPELwsTezpzgUbG+p+WiUNF
-+qrQ5ltwkCWE5nKnRU0g5FL9lojaEEhkdEA8ZXIqArswuLMsnRMhyjalV4kRKq6V
-wfeLANzvZV2zyTVbxaxn1jNOr9uXbcj2A0fJOc408sctjU5h4847p1Jy8turs4TV
-CAfMI01vtdya8YyyvwLfwEzp1BS2Uy0WuKSriC5T9z7ejNpFOomg7JWIa8x0iK8z
-eC9Icsbxp/49+LwUbLGu
-=Y0LB
+iQIcBAEBAgAGBQJSJHAnAAoJELSic+t+oim9ELEQAJczr/yIjZV7J+po71/bpYFD
+gpphfeuPlyvJn6JwILnoSbLQHBH6OyBFg7POOEE9tUftHItuNdwdXaVUBzY91jij
+WAlwHEM2T1mvurMY3k0VOcLlDcBVAqG2emmzh7HwwQlFKLaVUSvIROu876Zd9CJK
+bQWjAo5h05E2ZAN+BFEe6pNLQkEozVavqMDYqX8YdAqKyCTz8Y5z6+U9UxQhQsBj
+dDuzLPTGEbD4OyNQgqjFqvE4RcTjIzek57Yz3NBPZ8lQsApv/NL8EwNXKuxDEDJO
+/9EURLM44hgRv9E1Sgnhnob67HadKcvPCs6WxoJuqcxiQoo+/11m5QHMzMvmhh/P
+HtYnl8RLkbRxmrJDv8XYFFPrkV3RjvHaDfFEXG9LPTWmkEmMvxnJM9ltSNNx/AuB
+5K+TvnOIM7+ERTaXC5i+9Rpb5M2dheOMWy1RHWpR9Au4QTiHpYgVnu9U9tyQ72u3
+FCFqmN5BkJp1s8wBUJkjh5Ix3gO0gQ+9QGQh5L21HrAFmT0+zj38uD8MnIk4PlkW
+IW9XSfM+1N6J8zReAt5KtOVeT1TanhPTnDChXMTIHi9Ja5Zf0QwTP6QuQQFxZPXR
+mmU5334Y6T4U6+E8euAMYzhkJlYL5DBR5st17YlQ9lC7xRuRC31ZHQkflhhUmgfF
+Vny+exQLO1jCSvhWoyyV
+=BAS7
 -----END PGP SIGNATURE-----
 
---KM+e2hnYAO+MCJ5e--
+--o41d8xLWOaLD8vYh--
 
-
---===============0450365135577252800==
+--===============4176218667194974602==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============0450365135577252800==--
+--===============4176218667194974602==--
