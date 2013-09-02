@@ -1,90 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2][RFC] snd_soc_codec include
-	snd_soc_component
-Date: Mon, 2 Sep 2013 11:55:01 +0100
-Message-ID: <20130902105501.GM3084@sirena.org.uk>
-References: <87eh97sqw7.wl%kuninori.morimoto.gx@renesas.com>
- <52244B11.10207@metafoo.de>
- <878uzfsj08.wl%kuninori.morimoto.gx@renesas.com>
- <52245B97.3000900@metafoo.de>
+Subject: Re: [PATCH 08/14] ASoC: kirkwood: prefer external clock over
+ internal clock
+Date: Mon, 2 Sep 2013 12:01:05 +0100
+Message-ID: <20130902110105.GN3084@sirena.org.uk>
+References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
+ <E1VFkVg-0003Ip-G7@rmk-PC.arm.linux.org.uk>
+ <20130901184153.353c644f@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8941479160859908914=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6CAEC26512A
- for <alsa-devel@alsa-project.org>; Mon,  2 Sep 2013 12:55:06 +0200 (CEST)
-In-Reply-To: <52245B97.3000900@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: multipart/mixed; boundary="===============0450365135577252800=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20130901184153.353c644f@armhf>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8941479160859908914==
+--===============0450365135577252800==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="i6vqABX3nJKXLk01"
+	protocol="application/pgp-signature"; boundary="KM+e2hnYAO+MCJ5e"
 Content-Disposition: inline
 
 
---i6vqABX3nJKXLk01
+--KM+e2hnYAO+MCJ5e
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Sep 02, 2013 at 11:34:15AM +0200, Lars-Peter Clausen wrote:
-> On 09/02/2013 10:52 AM, Kuninori Morimoto wrote:
+On Sun, Sep 01, 2013 at 06:41:53PM +0200, Jean-Francois Moine wrote:
+> Russell King <rmk+kernel@arm.linux.org.uk> wrote:
 
-> > As my previous email said, this patch cares only codec <-> component,
-> > but we re-consider about "component"
-> > if component will be used from "platform" (and "card" too ?) ?
-> > (since it is controlling "dai" inside)
-> > Or is it 2nd step like above ?
+> > +	} else if (rate == 44100 || rate == 48000 || rate == 96000) {
 
-> I think it can be done as a second step, as long as we keep in mind that we
-> want to do this eventually and don't built up any road blocks that will
-> prevent us form doing so.
+> The rate is always good, and having this test raises a compilation warning
+> (clks_ctrl may be not initialized).
 
-Yes, this is the approach I'd take too - just move things into the
-component drivers gradually.  So long as we don't cause problems for
-ourselves further down the road any improvements we make now mean less
-work later.
+That should be fixed - it might be worth keeping the test and adding an
+else with an error return for robustness.
 
---i6vqABX3nJKXLk01
+--KM+e2hnYAO+MCJ5e
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSJG6CAAoJELSic+t+oim9UaYP/3Q9uP+IoDiT6BMQ02GbQema
-vLbuprQbq4jAP4tMKRXBA+n/7R1G8rfERpZRQZy8klW66hQ3Zjkv7fKF5X2GjaBS
-R+qjCsckaCf7iofwt9qWKxN28aQsyRC+f2gu7ENXKTXSX6i6yTPHeYVsaAEFlaFH
-SN9MIs+FJolR7K/mWolyRP+tmVBTBMQUB91/ldebJiPn7S26R9LZwHGgBbyGsczJ
-P12ZCcHXtsqZTXn0Qp5/mfMebtQlMvMEa7lh7jmyFBe0IYf+FjqxvZfsQgsvj5l2
-nAkMnw36cqIJEmQowddltbo1StPkNgLnOqaVFrs1C35EQ9MFpf38R0v5Y+Fj2y0l
-MD0s1GTSaeBzPO9/fT3ewpCX2+xnU36iXwizorhzCsytKwBJk/NCYHk8DhtP14PU
-A28ZC5a+n0p2nBb50wfsBQFVzyWGMav+ZxV5z/1G7DWH8PARfmRu9C1TNpAAamu4
-xuvYcu3FaQd3nAU00ChbPqM0jMRvtlzyZj4zX4lKBVIbZpxU003ye6DyZSZVvFAD
-vCm3erdGTsUfOR+dlrU9mEu4SZ8DFfnWEMk7JpKiayNNQFUHQp59oR54ZLpclpIx
-//JrhuxOetJ9VNiINrr82/nQz39zQ4W6zp6ToRzRHu8oBtO5UFg3emPsqDydkPqh
-jBxl6iALRxZ7DHtftQnh
-=fbzh
+iQIcBAEBAgAGBQJSJG/uAAoJELSic+t+oim9YecP/0W+e4zDMIu240tsbNLreRkR
+7x4wtpBQenFTyqTnHSn079yhwP0Hu7DdWrzjofhP1qdrNlbjeOYW2YhtLUp3gQww
+OOM+t28YQHKCJp/pG/SwXII++VSYbRaV+yQ19Tq9PHUJ6nR+fBWARiSwETVPFqdW
+hPhxeNdhOcbJ1wmfRDrAHKYVqO2/uthH3VM+272YamFR20OLnI9Xwszz0pvFIwnQ
+vczd9xgGUWtD7YK/K6uCcvkIhSSH0zo2dw10gcX1hSXC4S/2maXCyLTcF4af2Nw+
+ltN2kKsvCAP7ASYK1xndrJQHyCbRVVrpnk97VOddyIe0f7GQPh1uG9hVLlvi124L
+HuPb39gopWlQDmG4tQHMPoX5U9Ro+RY6REReSGWwBEJ04AWxkOU3mj85vw5y4Akg
+IUwCM1QN41l0CSSy4rFBw0KXlAYnAqDlLgih5NBEmwPELwsTezpzgUbG+p+WiUNF
++qrQ5ltwkCWE5nKnRU0g5FL9lojaEEhkdEA8ZXIqArswuLMsnRMhyjalV4kRKq6V
+wfeLANzvZV2zyTVbxaxn1jNOr9uXbcj2A0fJOc408sctjU5h4847p1Jy8turs4TV
+CAfMI01vtdya8YyyvwLfwEzp1BS2Uy0WuKSriC5T9z7ejNpFOomg7JWIa8x0iK8z
+eC9Icsbxp/49+LwUbLGu
+=Y0LB
 -----END PGP SIGNATURE-----
 
---i6vqABX3nJKXLk01--
+--KM+e2hnYAO+MCJ5e--
 
---===============8941479160859908914==
+
+--===============0450365135577252800==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============8941479160859908914==--
+--===============0450365135577252800==--
