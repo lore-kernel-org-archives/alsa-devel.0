@@ -1,94 +1,72 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 0/2][RFC] snd_soc_codec include
-	snd_soc_component
-Date: Mon, 02 Sep 2013 11:34:15 +0200
-Message-ID: <52245B97.3000900@metafoo.de>
-References: <87eh97sqw7.wl%kuninori.morimoto.gx@renesas.com>
- <52244B11.10207@metafoo.de> <878uzfsj08.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 0/5] Remove ASoC-level I/O functions from cq93vc
+Date: Mon, 2 Sep 2013 10:48:47 +0100
+Message-ID: <20130902094847.GK3084@sirena.org.uk>
+References: <20130831130741.GG18608@sirena.org.uk>
+	<20130901144847.GM20329@zurbaran>
+	<20130901150853.GG3084@sirena.org.uk>
+	<20130902085534.GP20329@zurbaran>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-174.synserver.de (smtp-out-175.synserver.de
- [212.40.185.175])
- by alsa0.perex.cz (Postfix) with ESMTP id A78692610AF
- for <alsa-devel@alsa-project.org>; Mon,  2 Sep 2013 11:32:42 +0200 (CEST)
-In-Reply-To: <878uzfsj08.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/mixed; boundary="===============1697502904=="
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <20130902085534.GP20329@zurbaran>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, linaro-kernel-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Miguel Aguilar <miguel.aguilar-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/02/2013 10:52 AM, Kuninori Morimoto wrote:
-> 
-> Hi Lars
-> 
-> Thank you for your feedback
-> 
->>> But, we will need many "codec dai name exchange", becouse
->>>  1) the dai name rule on 1-dai / multi-dai are different,
->>>     it was depend on snd_soc_register_dai[s].
->>>  1) component is using both snd_soc_register_dai[s] inside
->>>     (this was for "cpu" side limit)
->>>  2) codec have been used snd_soc_register_dais even though
->>>     it was not multi-dai
->>>
->>
->> We only added the distinction between components with one DAIs and multiple
->> DAIs since most of the CPU DAI drivers with only one DAI used
->> snd_soc_register_dai() and we wanted to avoid having to update all the DAI
->> links. How about adding a boolean flag to __snd_soc_register_component()
->> which if set causes the function to always use snd_soc_register_dais(). This
->> will allow us to keep the existing naming for CODEC dai.
-> 
-> It is easy hack.
-> OK, we can try it.
-> 
->>> 2nd patch is rough version of "code dai name exchange" for it.
->>> Of course we need more and more codec driver patches,
->>> but it is wm8978 only as trial now.
->>>
->>> I guess "codec driver" should have "component driver" pointer too ?
->>> (it has .name only at this point, and 2nd patch includes it)
->>
->> In my opinion it is better to embed the component_driver struct into the
->> codec_driver struct just like the component struct is embedded in the codec
->> struct. Otherwise your patch looks fine to me. Maybe move
-> 
-> I see.
-> 
->> __snd_soc_register_component() up, so the forward declaration is not needed
->> anymore.
-> 
-> This was the reason why I used "rough" naming here :P
-> 
->>> We can move some feature from codec to component
->>> after this step ?
->>>
->>
->> Yes. I think most of the fields managed by the core which are not touched by
->> any drivers can be moved easily.
-> 
-> Nice !
-> 
-> 
-> As my previous email said, this patch cares only codec <-> component,
-> but we re-consider about "component"
-> if component will be used from "platform" (and "card" too ?) ?
-> (since it is controlling "dai" inside)
-> Or is it 2nd step like above ?
-> 
+--===============1697502904==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7vAdt9JsdkkzRPKN"
+Content-Disposition: inline
 
-I think it can be done as a second step, as long as we keep in mind that we
-want to do this eventually and don't built up any road blocks that will
-prevent us form doing so.
+--7vAdt9JsdkkzRPKN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-- Lars
+On Mon, Sep 02, 2013 at 10:55:34AM +0200, Samuel Ortiz wrote:
+
+> I put a topic/for-asoc branch upstream for you to pull from:
+
+Great, thanks!
+
+--7vAdt9JsdkkzRPKN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSJF78AAoJELSic+t+oim930AP/0bYs5hZCOHq4vCqQE/tHQM0
+uYLnn4WTj+2aMMec109ogh07Zqk73RsC4iikTI+ty3AhAPP8f5Oyt775J0sCxbhu
+dW5jpEJcwSLYWQdqTyJeWP0mhDZ45uumLds4jtkaa4XRACxF2tkkqco4wcWmj7/6
++8tLqBpCByUuZ2q/OblsU4Bwx4SycLKqaCOcc91fEqCh7hPNx+5B4gvYsGBzYPSo
+tzkCcOr3as+uU+Pjmn92p29fvpJnUE/3tUXvKkU6xeeMO04rGHH/JVFsp/kvR53n
+cyttMZoYG9z4slPx7V7O5Z1easbwLk4Et50LD+xAzWNkMcJj0AUhX5sFWynrRSpG
+kISLQ9MMsiDLCzWa4z7YbXUVOeI8fpw8DOAona5qqVcpz0lxVH1nSTZwcpLvDIeh
+9aED+Rso8XCLHNstw1G0JU/6/XXllpgXzUvGUYcv7NS9uxzKBc+J7hSdVFCnmA8w
+nD+qJFqVAMnRl03F39VbG4UTgw6aTHgBqZxE8ivrfcqdO2xDdoZ5dchLK7TnuDwf
+Ogd/4vwY8ng935QK7nM1LI7NJENEhibHPIlkZcG2lT09VlqPktYEXC8R1+Ans1eZ
+L02mpLsnyO+vla/aBHd5Fg+YNzz15gf189OrQOY3cUDJ+FMbKb/fBRcMLRol9cW2
+GivWAwSeStAHzcgmW4xH
+=0VMs
+-----END PGP SIGNATURE-----
+
+--7vAdt9JsdkkzRPKN--
+
+--===============1697502904==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1697502904==--
