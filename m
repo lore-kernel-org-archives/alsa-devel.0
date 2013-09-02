@@ -1,21 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Subject: Re: [PATCH 00/14] SPDIF support
-Date: Mon, 2 Sep 2013 17:41:34 +0100
-Message-ID: <20130902164134.GU3084@sirena.org.uk>
-References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
- <52220B9A.9000007@metafoo.de>
- <20130831191414.GG6617@n2100.arm.linux.org.uk>
- <20130831193431.GI6617@n2100.arm.linux.org.uk>
- <20130902144713.GR3084@sirena.org.uk>
- <20130902145207.GY6617@n2100.arm.linux.org.uk>
- <20130902145722.GA12808@n2100.arm.linux.org.uk>
+Date: Mon, 2 Sep 2013 17:59:33 +0100
+Message-ID: <20130902165932.GZ6617@n2100.arm.linux.org.uk>
+References: <20130901123433.GR6617@n2100.arm.linux.org.uk>
+ <20130902140632.GQ3084@sirena.org.uk>
+ <20130902141631.GV6617@n2100.arm.linux.org.uk>
+ <20130902162729.GT3084@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1435786085009475536=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 66DF12651C6
- for <alsa-devel@alsa-project.org>; Mon,  2 Sep 2013 18:41:42 +0200 (CEST)
-In-Reply-To: <20130902145722.GA12808@n2100.arm.linux.org.uk>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 454022651EC
+ for <alsa-devel@alsa-project.org>; Mon,  2 Sep 2013 18:59:52 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130902162729.GT3084@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,77 +24,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Mark Brown <broonie@kernel.org>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jason Cooper <jason@lakedaemon.net>, Jean-Francois Moine <moinejf@free.fr>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Sep 02, 2013 at 05:27:29PM +0100, Mark Brown wrote:
+> On Mon, Sep 02, 2013 at 03:16:31PM +0100, Russell King - ARM Linux wrote:
+> > On Mon, Sep 02, 2013 at 03:06:32PM +0100, Mark Brown wrote:
+> 
+> > > Yes, and this is one of the reasons for suggesting getting either/or
+> > > support merged - it will help things like the binding definition
+> > > progress (as well as being useful for any users with a S/PDIF only
+> > > system).
+> 
+> > Sorry, but I believe the exact opposite:
+> 
+> > 1. The DAI link binding created for a dual-DAI driver is completely
+> >    different from the DAI link binding for a DPCM driver.  The dual
+> >    DAI link binding will have to be completely rewritten when the
+> >    driver is converted to DPCM.
+> 
+> That seems like overstating the difficulties.  The updates for any new
+> S/PDIF drivers will be pretty much the same as those for the existing
+> I2S drivers and should just be mechanical changes, nothing too taxing.
 
---===============1435786085009475536==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+VeMz1SRxFChf6vr"
-Content-Disposition: inline
+Sorry, you need to explain more.
 
+Here's the dual-DAI version:
 
---+VeMz1SRxFChf6vr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+                .name = "S/PDIF1",
+                .stream_name = "IEC958 Playback",
+                .platform_name = "mvebu-audio.1",
+                .cpu_dai_name = "kirkwood-spdif.1",
+                .codec_dai_name = "dit-hifi",
+                .codec_name = "spdif-dit",
 
-On Mon, Sep 02, 2013 at 03:57:22PM +0100, Russell King - ARM Linux wrote:
-> On Mon, Sep 02, 2013 at 03:52:07PM +0100, Russell King - ARM Linux wrote:
-> > On Mon, Sep 02, 2013 at 03:47:13PM +0100, Mark Brown wrote:
+Here's the DPCM version:
 
-> > > > This is caused because substream->ops is NULL.  Why that's the case,
-> > > > I don't know, but I believe the PCM which is trying to be operated on
-> > > > is the one registered against the backend (by snd_pcm_new_internal).
+        {
+                .name = "S/PDIF1",
+                .stream_name = "Audio Playback",
+                .platform_name = "mvebu-audio.1",
+                .cpu_dai_name = "mvebu-audio.1",
+                .codec_name = "snd-soc-dummy",
+                .codec_dai_name = "snd-soc-dummy-dai",
+                .dynamic = 1,
+        }, {
+                .name = "Codec",
+                .stream_name = "IEC958 Playback",
+                .cpu_dai_name = "snd-soc-dummy-dai",
+                .platform_name = "snd-soc-dummy",
+                .no_pcm = 1,
+                .codec_dai_name = "dit-hifi",
+                .codec_name = "spdif-dit",
+        },
 
-> > > Liam did provide you with a workaround for this one along with a
-> > > suggested proper fix.  Have you had any success in using this
-> > > workaround, or with implementing the proper fix for that matter?  I
-> > > don't recall seeing any feedback on the results but perhaps I missed it.
+The above are two completely different beasts.  Please explain how the DT
+representation for those DAI links can be the same.
 
-> > I am not aware of any such patch.
+> > 2. When the driver is converted to DPCM, it must use DPCM for
+> >    everything, otherwise it has no way to know which of SPDIF or I2S to
+> >    enable.  The only way I know to work around that is to add additional
+> >    routes to link up the AIF widgets, and that's the solution you're all
+> >    telling me is not acceptable, as per the patch set at the start of
+> >    this thread.
+> 
+> What we have been telling you is that if there is a DAI link present
+> (there should be one for each physical DAI link) then this should be
+> enough information for the framework to know that the two DAIs are
+> linked and if any routes are needed in DAPM these should be added
+> automatically in the same way that we add links for CODEC<->CODEC links
+> at present.
+> 
+> It's been said to you off-list that having the links manually added
+> but marking them for removal when the framework figures out how to do
+> that should be OK.
 
-> That was a little hasty - I should say: I have not received any such patch
-> and I have nothing which suggests that a solution to this problem was even
-> outlined.  (I have checked my mailbox for anything from Liam, of which
-> there are a very small number of such mails.)
+Sorry, I just don't get this.  What you seem to be telling me here is to
+forget DPCM, and just go with the dual DAI solution.
 
-I was thinking of this:
+If I have separate CPU DAI links, then I can't do simultaneous operation,
+because both DAI links are entirely separate entities which are activated
+entirely separately.  The only way I know how to handle this is with the
+patch set I've already posted.
 
-   http://article.gmane.org/gmane.linux.alsa.devel/111647
-
-where Liam suggests setting some ops as a workaround and that the
-framework should just check for them before dereferencing otherwise.
-
---+VeMz1SRxFChf6vr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSJL+7AAoJELSic+t+oim9XO8P/00BLZvhglyGoEk4K+2/KlpT
-nGopY76tafxxmE52S3VxUlsFgdAAa+50HnVqZ5si3quZXIy+mPm78AyOlyBFESBB
-ZF6WirkEPItUf0RgzvNL7L2sDztHUnv7JBXUhzIVgpbW1JLrGMTUM2/DvvzM5ulH
-+2On46EPHNSj7SYXdhRUZw9sNZY8pGKahwGqEmMZ+1t3vvqRDu6SYnwLqGV6qatJ
-EOdRkK+H08xoaRAZ1wH+MvujfY4iYhhJWu1MDngvxGMfPhuDAri59BbMR4CfSF7X
-OHQ4z4fz6Kb5Gb4t/Vy5H76GbMr94F4YFUdxPUBgPZu94P+OiPDkMAUHjbYQGM9m
-gnC2xwAmtcX0eoywL4rNGzwH5DM0RmpZjsEZANKdVcVBbaPAkaj7Xk6YR1uWrXck
-kYYB7ouskbW3gi1ZTVnNGlf+QfGvUtE28/DyLDdZE4y3FK+HtTF7HMEiHQmL3Zxg
-Nb+ja14Xv5VoPeqHssGR/EKUsZSbgy2IOy44+QFXOrrvgj+VIitThezSXvTBo9QG
-A2DTXjzXXBI4Rj5sJKGolwwD8JKWLWQm0/esbUgoqfTNp1C9JL0YX9AQ4N03tPW0
-rqFpbTVEqwnTAh6+AtO1+/wBPbjoT7njsy6DiB1scIuyBx+1tlr3pSf/MdSYbx4V
-R/BLdiBOpV70sXS0wkOk
-=Vau4
------END PGP SIGNATURE-----
-
---+VeMz1SRxFChf6vr--
-
---===============1435786085009475536==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1435786085009475536==--
+We've been through this before: this is also not how Liam's example DPCM
+driver works - please go back and look at those diagrams I drew you of
+how Liam's driver is setup.  I've also said to you that from what I can
+see, the routes are still required for DPCM - those routes are in Liam's
+DPCM driver as well.
