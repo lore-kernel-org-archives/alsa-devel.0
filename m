@@ -1,18 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Re-setup HDMI pin and audio
- infoframe on stream switches
-Date: Tue, 03 Sep 2013 13:10:43 +0200
-Message-ID: <5225C3B3.8030108@canonical.com>
-References: <1378202279-14990-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 13/14] ASoC: kirkwood: add SPDIF output
+	support
+Date: Tue, 3 Sep 2013 12:17:20 +0100
+Message-ID: <20130903111720.GF3084@sirena.org.uk>
+References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
+ <E1VFkaX-0003JN-DQ@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3076564581456478348=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FD59261677
- for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2013 13:10:47 +0200 (CEST)
-In-Reply-To: <1378202279-14990-1-git-send-email-tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9638926168D
+ for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2013 13:17:37 +0200 (CEST)
+In-Reply-To: <E1VFkaX-0003JN-DQ@rmk-PC.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,167 +21,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mengdong Lin <mengdong.lin@intel.com>, alsa-devel@alsa-project.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/03/2013 11:57 AM, Takashi Iwai wrote:
-> When the transcoder:port mapping on Haswell HDMI/DP audio is changed
-> during the stream playback, the sound gets lost.  Typically this
-> problem is seen when the user switches the graphics mode from eDP+DP
-> to DP-only configuration, where CRTC 1 is used for DP in the former
-> while CRTC 0 is used for the latter.
-> 
-> The graphics controller notifies the change via the normal ELD update
-> procedure, so we get the intrinsic event.  For enabling the sound
-> again, the HDMI audio driver needs to reset the pin and set up the
-> audio infoframe again.
 
-Thanks for working on this!
-
-See a review comment below.
-
-> 
-> This patch achieves it by:
-> - keep the current status of channels and info frame setup in per_pin
->   struct,
-> - check the reconnection in the intrinsic event handler,
-> - reset the pin and the re-invoke hdmi_setup_audio_infoframe()
->   accordingly.
-> 
-> The hdmi_setup_audio_infoframe() function has been changed, too, so
-> that it can be invoked without passing the substream instance.
-> 
-> The patch is mostly based on the work by Mengdong Lin.
-> 
-> Cc: Mengdong Lin <mengdong.lin@intel.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/pci/hda/patch_hdmi.c | 41 +++++++++++++++++++++++++++++++----------
->  1 file changed, 31 insertions(+), 10 deletions(-)
-> 
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> index b83b14f..22b5089 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -67,6 +67,8 @@ struct hdmi_spec_per_pin {
->  	struct delayed_work work;
->  	struct snd_kcontrol *eld_ctl;
->  	int repoll_count;
-> +	bool setup; /* the stream has been set up by prepare callback */
-> +	int channels; /* current number of channels */
->  	bool non_pcm;
->  	bool chmap_set;		/* channel-map override by ALSA API? */
->  	unsigned char chmap[8]; /* ALSA API channel-map */
-> @@ -879,18 +881,19 @@ static bool hdmi_infoframe_uptodate(struct hda_codec *codec, hda_nid_t pin_nid,
->  	return true;
->  }
->  
-> -static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int pin_idx,
-> -				       bool non_pcm,
-> -				       struct snd_pcm_substream *substream)
-> +static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
-> +				       struct hdmi_spec_per_pin *per_pin,
-> +				       bool non_pcm)
->  {
-> -	struct hdmi_spec *spec = codec->spec;
-> -	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
->  	hda_nid_t pin_nid = per_pin->pin_nid;
-> -	int channels = substream->runtime->channels;
-> +	int channels = per_pin->channels;
->  	struct hdmi_eld *eld;
->  	int ca;
->  	union audio_infoframe ai;
->  
-> +	if (!channels)
-> +		return;
-> +
->  	eld = &per_pin->sink_eld;
->  	if (!eld->monitor_present)
->  		return;
-> @@ -1341,6 +1344,7 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
->  		eld_changed = true;
->  	}
->  	if (update_eld) {
-> +		bool old_eld_valid = pin_eld->eld_valid;
->  		pin_eld->eld_valid = eld->eld_valid;
->  		eld_changed = pin_eld->eld_size != eld->eld_size ||
->  			      memcmp(pin_eld->eld_buffer, eld->eld_buffer,
-> @@ -1350,6 +1354,18 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
->  			       eld->eld_size);
->  		pin_eld->eld_size = eld->eld_size;
->  		pin_eld->info = eld->info;
-> +
-> +		/* Haswell-specific workaround: re-setup when the transcoder is
-> +		 * changed during the stream playback
-> +		 */
-> +		if (codec->vendor_id == 0x80862807 &&
-> +		    eld->eld_valid && !old_eld_valid && per_pin->setup) {
-> +			snd_hda_codec_write(codec, pin_nid, 0,
-> +					    AC_VERB_SET_AMP_GAIN_MUTE,
-> +					    AMP_OUT_UNMUTE);
-
-If the system is deliberately muted by turning off "IEC958 Playback
-Switch", are we now ignoring that and turning it back on?
-
-Also, this looks a bit like the workaround I added a while back
-(83f26ad2c909083fa6 - ALSA: hda - fixup D3 pin and right channel mute on
-Haswell HDMI audio) is there a possibility we need to fix up D3 as well
-here? I e, call haswell_verify_pin_D0 rather than just setting the mute?
-Or perhaps move the call to haswell_verify_pin_D0 from hdmi_setup_stream
-to hdme_setup_audio_infoframe ?
-
-> +			hdmi_setup_audio_infoframe(codec, per_pin,
-> +						   per_pin->non_pcm);
-> +		}
->  	}
->  	mutex_unlock(&pin_eld->lock);
->  
-> @@ -1522,14 +1538,17 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
->  	hda_nid_t cvt_nid = hinfo->nid;
->  	struct hdmi_spec *spec = codec->spec;
->  	int pin_idx = hinfo_to_pin_index(spec, hinfo);
-> -	hda_nid_t pin_nid = get_pin(spec, pin_idx)->pin_nid;
-> +	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
-> +	hda_nid_t pin_nid = per_pin->pin_nid;
->  	bool non_pcm;
->  
->  	non_pcm = check_non_pcm_per_cvt(codec, cvt_nid);
-> +	per_pin->channels = substream->runtime->channels;
-> +	per_pin->setup = true;
->  
->  	hdmi_set_channel_count(codec, cvt_nid, substream->runtime->channels);
->  
-> -	hdmi_setup_audio_infoframe(codec, pin_idx, non_pcm, substream);
-> +	hdmi_setup_audio_infoframe(codec, per_pin, non_pcm);
->  
->  	return hdmi_setup_stream(codec, cvt_nid, pin_nid, stream_tag, format);
->  }
-> @@ -1569,6 +1588,9 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
->  		snd_hda_spdif_ctls_unassign(codec, pin_idx);
->  		per_pin->chmap_set = false;
->  		memset(per_pin->chmap, 0, sizeof(per_pin->chmap));
-> +
-> +		per_pin->setup = false;
-> +		per_pin->channels = 0;
->  	}
->  
->  	return 0;
-> @@ -1704,8 +1726,7 @@ static int hdmi_chmap_ctl_put(struct snd_kcontrol *kcontrol,
->  	per_pin->chmap_set = true;
->  	memcpy(per_pin->chmap, chmap, sizeof(chmap));
->  	if (prepared)
-> -		hdmi_setup_audio_infoframe(codec, pin_idx, per_pin->non_pcm,
-> -					   substream);
-> +		hdmi_setup_audio_infoframe(codec, per_pin, per_pin->non_pcm);
->  
->  	return 0;
->  }
-> 
+--===============3076564581456478348==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZOBTspFzEMOlPevk"
+Content-Disposition: inline
 
 
+--ZOBTspFzEMOlPevk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+On Sat, Aug 31, 2013 at 01:47:37PM +0100, Russell King wrote:
+> Add support for SPDIF output.  This is enabled via a widget being
+> connected to an output.  When this widget is not connected, SPDIF
+> output will remain disabled.
+
+This is still not a good approach to adding a new digital audio
+interface since it does not create a DAI but instead adds it like an
+analogue link (but hooked inside the CPU using the DPCM DAPM hooks).
+While this may work right now but will not be robust as the framework is
+developed and can cause problems in system integration.
+
+A new DAI should be being added for the S/PDIF interface, this should
+fully utilise DPCM but an either/or approach would be OK as a stepping
+stone.
+
+--ZOBTspFzEMOlPevk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSJcU9AAoJELSic+t+oim9je8QAIw2FU1djEiCNXug5sn/7/0w
+gzK0SYSIFVW2IbS1WyQgFc7TleTIYsaXcdRo+7HL0EKeUaGAg4NeIt2KB19DuEpv
+y82IgjsSroPYrogzxFqh1sJ026QjC8LV15RzJylZmYdd8VSo85PbO2/wXlIkwo3N
+h12iIa9x/4os0D9veYYiiz5W1TY6TVa96goNeBOC0Xq02yCK+flG1KYxStBQhEPO
+vtnBS6nJiE26JH04xr1LdEhSAPuLHQ1h16AjRbrXkwTXYGStD/S/9gErWv8Wsrut
++B96xRNJOlYhUAWx9itiTnpdBqWBsKq0cq5r+lgmk2krD/g0XrbAkZt4dZ/wQfYc
+ycFQLjo1hNmpQskiFrG96V8NRYjg/tqvLun8IDIpQmR2KikH0l4MkVOXV0aKqb1Z
+IPsShqRH4qltaQpSjHDwxS614Te5wjASrSRkN0USnQkOK7mQ5TR13sSivx/EKcX/
+lSYeT8wWx/byM47penDBe7zWTMnjOmeDK9W2uMUxee/3TxVCZ+rUy0AS1QBWX8IF
+GigKfp/Roibfqr3taxlQKOhofOaFO60seFygK2SjwhChscadqtmAqAq3KhJbDoJC
+XxeFhbIEpWKjvyMpE9pnEORncIFWlDPDr1PreNkucEWYAUOUb81nA6YxL3GSxAUr
+4Zv699bweVVvdEkzxjE7
+=iQh6
+-----END PGP SIGNATURE-----
+
+--ZOBTspFzEMOlPevk--
+
+--===============3076564581456478348==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3076564581456478348==--
