@@ -1,40 +1,61 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
-Date: Tue, 3 Sep 2013 10:04:17 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1309030958270.1063-100000@iolanthe.rowland.org>
-References: <CABRv+93oVW0rDEJnNeGyfqem2PM42b28-z9q+Ze8r7rky7szDA@mail.gmail.com>
+From: Uli Franke <uli.franke@weiss.ch>
+Subject: Constraints and hw_params with highly configurable HW
+Date: Tue, 03 Sep 2013 17:45:31 +0200
+Message-ID: <5226041B.4010105@weiss.ch>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CABRv+93oVW0rDEJnNeGyfqem2PM42b28-z9q+Ze8r7rky7szDA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: James Stone <jamesmstone-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from server11.hostfactory.ch (server11.hostfactory.ch
+ [80.190.249.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id D563226172B
+ for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2013 17:45:32 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Daniel Weiss <weiss@weiss.ch>, Rolf Anderegg <rolf.anderegg@weiss.ch>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 29 Aug 2013, James Stone wrote:
+Hi everybody
 
-> At 32 frames/period (reported round-trip latency 1.33ms), it starts up
-> but there are too many xruns for it to be usable.
+We're currently working on some neat enhancements for the still
+experimental snd_dice driver originally initiated by Clemens Ladisch. To
+list some of the new and already working features:
+ * firmware loading, backed by a user-space command line utility
+ * generic ALSA control support for mostly all device specific settings
+     for all our (i.e. Weiss Engineering) DICE based products
+and last but not least
+ * capture support
+ * slave mode (external clock source support).
 
-After further testing (off-list), it turns out that 32 frames/period
-works okay with three periods/buffer instead of two.  Not surprising
-really; with two periods you get only two URBs, and whenever one of 
-them completes, the other isn't long enough to exceed the scheduling 
-threshold.
+I'm currently debugging and fine-tuning things and that's where some
+questions arose. The initial implementation of Clemens tried to fetch
+all possible configurations of a device during probe in order to have
+all combinations of rates and channels at hand when it comes to
+formulate the constraints set within the ALSA pcm substream open
+callback. That's a nice approach but will fail with a lot of devices as
+their configurations can (and mostly will) be volatile. Our devices for
+instance feature several switches, options and alike which have heavy
+influence on the channel layout and sample rates and combination of both.
 
-In summary, it now appears that the most recent patch works better than
-the current driver.
+I consulted Takashi's documentation on constraints which suggests to
+"use the source" but I couldn't find any similar situation within other
+drivers (in case I should have missed something, just let me know of
+course).
 
-> > Daniel and Eldad, more testing of the most recent proposed patch would
-> > be welcome.
+Therefore I had the idea to define some maximum constraints and let the
+ALSA hw_params callback fail in case some settings or combinations are
+determined to be not supported during its invocation.
 
-Yes, please, more testing is needed.  I intend to submit the patch 
-when the current merge period ends.
+Is this viable? Could this be/is this consistent with the specs? If yes,
+would EINVAL an appropriate error code to return?
 
-Alan Stern
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Regards
+Uli
