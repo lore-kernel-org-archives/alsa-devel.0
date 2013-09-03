@@ -1,85 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 13/14] ASoC: kirkwood: add SPDIF output
-	support
-Date: Tue, 3 Sep 2013 12:17:20 +0100
-Message-ID: <20130903111720.GF3084@sirena.org.uk>
-References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
- <E1VFkaX-0003JN-DQ@rmk-PC.arm.linux.org.uk>
+Subject: Re: [PATCH v2 1/4] regmap: add regmap_field_update_bits()
+Date: Tue, 3 Sep 2013 12:20:50 +0100
+Message-ID: <20130903112050.GG3084@sirena.org.uk>
+References: <87sixrre8r.wl%kuninori.morimoto.gx@renesas.com>
+ <87mwnvsy7a.wl%kuninori.morimoto.gx@renesas.com>
+ <87li3fsy69.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3076564581456478348=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9638926168D
- for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2013 13:17:37 +0200 (CEST)
-In-Reply-To: <E1VFkaX-0003JN-DQ@rmk-PC.arm.linux.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King <rmk+kernel@arm.linux.org.uk>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gHypzss5dW8YUwgb"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87li3fsy69.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Simon <horms@verge.net.au>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3076564581456478348==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZOBTspFzEMOlPevk"
-Content-Disposition: inline
-
-
---ZOBTspFzEMOlPevk
+--gHypzss5dW8YUwgb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Aug 31, 2013 at 01:47:37PM +0100, Russell King wrote:
-> Add support for SPDIF output.  This is enabled via a widget being
-> connected to an output.  When this widget is not connected, SPDIF
-> output will remain disabled.
+On Sun, Sep 01, 2013 at 08:24:50PM -0700, Kuninori Morimoto wrote:
+> Current regmap_field is supporting read/write functions.
+> This patch adds new update_bits function for it.
 
-This is still not a good approach to adding a new digital audio
-interface since it does not create a DAI but instead adds it like an
-analogue link (but hooked inside the CPU using the DPCM DAPM hooks).
-While this may work right now but will not be robust as the framework is
-developed and can cause problems in system integration.
+Applied, thanks.
 
-A new DAI should be being added for the S/PDIF interface, this should
-fully utilise DPCM but an either/or approach would be OK as a stepping
-stone.
-
---ZOBTspFzEMOlPevk
+--gHypzss5dW8YUwgb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSJcU9AAoJELSic+t+oim9je8QAIw2FU1djEiCNXug5sn/7/0w
-gzK0SYSIFVW2IbS1WyQgFc7TleTIYsaXcdRo+7HL0EKeUaGAg4NeIt2KB19DuEpv
-y82IgjsSroPYrogzxFqh1sJ026QjC8LV15RzJylZmYdd8VSo85PbO2/wXlIkwo3N
-h12iIa9x/4os0D9veYYiiz5W1TY6TVa96goNeBOC0Xq02yCK+flG1KYxStBQhEPO
-vtnBS6nJiE26JH04xr1LdEhSAPuLHQ1h16AjRbrXkwTXYGStD/S/9gErWv8Wsrut
-+B96xRNJOlYhUAWx9itiTnpdBqWBsKq0cq5r+lgmk2krD/g0XrbAkZt4dZ/wQfYc
-ycFQLjo1hNmpQskiFrG96V8NRYjg/tqvLun8IDIpQmR2KikH0l4MkVOXV0aKqb1Z
-IPsShqRH4qltaQpSjHDwxS614Te5wjASrSRkN0USnQkOK7mQ5TR13sSivx/EKcX/
-lSYeT8wWx/byM47penDBe7zWTMnjOmeDK9W2uMUxee/3TxVCZ+rUy0AS1QBWX8IF
-GigKfp/Roibfqr3taxlQKOhofOaFO60seFygK2SjwhChscadqtmAqAq3KhJbDoJC
-XxeFhbIEpWKjvyMpE9pnEORncIFWlDPDr1PreNkucEWYAUOUb81nA6YxL3GSxAUr
-4Zv699bweVVvdEkzxjE7
-=iQh6
+iQIcBAEBAgAGBQJSJcYPAAoJELSic+t+oim9vBkQAJeU5r+Rxwl5iRGGY5FfyQAJ
+9zto6qh5wBg7qh8ZP0cw4JGzDEvtzeQ32E8i82mmzCus2h8EsLc8KdN5VfdaIFAK
+8sdzrep37tAeNasrC5MdxlUxn9rQ3YpJF3CHyVpWrvb0fQI5YQMZUORAoDOOolJr
+V2O3YBrinl/mBHCqbBywOb4uB25FCtOsCMrrHyUYiTfrGkaz9ld9p4UJihcfXspj
+aYjMzFe7Lvk6S+27R0sG1yO7XVBINVBIooNhtLeJ8zj5OMTRxAM31GT3d+8VrMBE
+tVASx4oR8+FMXNBZ3ytNhhzI1ZllQJIk+vV+MUDn5iO4XEFaFyJH61dv5v7LaBnH
+aAQqrFw5NbbYVgZ93h3xdXm80qmzenacg5BVcK/CBC3UCRk09+qkC6t5zwnKTsRw
+9HAN/At1JlsxbQKkj8rU/BcyGuNYLP76Ltrb6cAdo+sB9GBJUOXdZ4ZzoF0rKevq
+jsZrW68vFwDxneX5dt+aezgdd3j2DG/v1Cx+Ad553aBJAsZfZEpraWhe2/2dVqlW
+zkVFBzJ+sQQCowPxS6bmGSnmP3edu2+w2Uzl5k34FJgGccoamiV1MGNZsdorm55t
+nN3DaknUbbzNqSa3Dza9t9hlfSB4TarHdggOk9839QjVL4ekwxhcxqC7rYSWOgus
+LINX9JSonn5FwsKdDjb9
+=fwY8
 -----END PGP SIGNATURE-----
 
---ZOBTspFzEMOlPevk--
-
---===============3076564581456478348==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3076564581456478348==--
+--gHypzss5dW8YUwgb--
