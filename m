@@ -1,184 +1,432 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Re-setup HDMI pin and audio
- infoframe on stream switches
-Date: Tue, 03 Sep 2013 15:09:48 +0200
-Message-ID: <5225DF9C.7090807@canonical.com>
-References: <1378202279-14990-1-git-send-email-tiwai@suse.de>
- <5225C3B3.8030108@canonical.com> <s5hvc2i9kj1.wl%tiwai@suse.de>
- <5225D7BD.1060005@canonical.com> <s5hr4d69imz.wl%tiwai@suse.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 13/14] ASoC: kirkwood: add SPDIF output support
+Date: Tue, 3 Sep 2013 14:34:03 +0100
+Message-ID: <20130903133403.GG6617@n2100.arm.linux.org.uk>
+References: <20130831123458.GF6617@n2100.arm.linux.org.uk>
+ <E1VFkaX-0003JN-DQ@rmk-PC.arm.linux.org.uk>
+ <20130903111720.GF3084@sirena.org.uk>
+ <20130903113832.GF6617@n2100.arm.linux.org.uk>
+ <20130903115938.GA1560@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 05D082652F5
- for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2013 15:09:49 +0200 (CEST)
-In-Reply-To: <s5hr4d69imz.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mengdong Lin <mengdong.lin@intel.com>, alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20130903115938.GA1560@sirena.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/03/2013 02:47 PM, Takashi Iwai wrote:
-> At Tue, 03 Sep 2013 14:36:13 +0200,
-> David Henningsson wrote:
->>
->> On 09/03/2013 02:06 PM, Takashi Iwai wrote:
->>> At Tue, 03 Sep 2013 13:10:43 +0200,
->>> David Henningsson wrote:
->>>>
->>>> On 09/03/2013 11:57 AM, Takashi Iwai wrote:
->>>>> When the transcoder:port mapping on Haswell HDMI/DP audio is changed
->>>>> during the stream playback, the sound gets lost.  Typically this
->>>>> problem is seen when the user switches the graphics mode from eDP+DP
->>>>> to DP-only configuration, where CRTC 1 is used for DP in the former
->>>>> while CRTC 0 is used for the latter.
->>>>>
->>>>> The graphics controller notifies the change via the normal ELD update
->>>>> procedure, so we get the intrinsic event.  For enabling the sound
->>>>> again, the HDMI audio driver needs to reset the pin and set up the
->>>>> audio infoframe again.
->>>>
->>>> Thanks for working on this!
->>>>
->>>> See a review comment below.
->>>>
->>>>>
->>>>> This patch achieves it by:
->>>>> - keep the current status of channels and info frame setup in per_pin
->>>>>   struct,
->>>>> - check the reconnection in the intrinsic event handler,
->>>>> - reset the pin and the re-invoke hdmi_setup_audio_infoframe()
->>>>>   accordingly.
->>>>>
->>>>> The hdmi_setup_audio_infoframe() function has been changed, too, so
->>>>> that it can be invoked without passing the substream instance.
->>>>>
->>>>> The patch is mostly based on the work by Mengdong Lin.
->>>>>
->>>>> Cc: Mengdong Lin <mengdong.lin@intel.com>
->>>>> Cc: <stable@vger.kernel.org>
->>>>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
->>>>> ---
->>>>>  sound/pci/hda/patch_hdmi.c | 41 +++++++++++++++++++++++++++++++----------
->>>>>  1 file changed, 31 insertions(+), 10 deletions(-)
->>>>>
->>>>> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
->>>>> index b83b14f..22b5089 100644
->>>>> --- a/sound/pci/hda/patch_hdmi.c
->>>>> +++ b/sound/pci/hda/patch_hdmi.c
->>>>> @@ -67,6 +67,8 @@ struct hdmi_spec_per_pin {
->>>>>  	struct delayed_work work;
->>>>>  	struct snd_kcontrol *eld_ctl;
->>>>>  	int repoll_count;
->>>>> +	bool setup; /* the stream has been set up by prepare callback */
->>>>> +	int channels; /* current number of channels */
->>>>>  	bool non_pcm;
->>>>>  	bool chmap_set;		/* channel-map override by ALSA API? */
->>>>>  	unsigned char chmap[8]; /* ALSA API channel-map */
->>>>> @@ -879,18 +881,19 @@ static bool hdmi_infoframe_uptodate(struct hda_codec *codec, hda_nid_t pin_nid,
->>>>>  	return true;
->>>>>  }
->>>>>  
->>>>> -static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int pin_idx,
->>>>> -				       bool non_pcm,
->>>>> -				       struct snd_pcm_substream *substream)
->>>>> +static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
->>>>> +				       struct hdmi_spec_per_pin *per_pin,
->>>>> +				       bool non_pcm)
->>>>>  {
->>>>> -	struct hdmi_spec *spec = codec->spec;
->>>>> -	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
->>>>>  	hda_nid_t pin_nid = per_pin->pin_nid;
->>>>> -	int channels = substream->runtime->channels;
->>>>> +	int channels = per_pin->channels;
->>>>>  	struct hdmi_eld *eld;
->>>>>  	int ca;
->>>>>  	union audio_infoframe ai;
->>>>>  
->>>>> +	if (!channels)
->>>>> +		return;
->>>>> +
->>>>>  	eld = &per_pin->sink_eld;
->>>>>  	if (!eld->monitor_present)
->>>>>  		return;
->>>>> @@ -1341,6 +1344,7 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
->>>>>  		eld_changed = true;
->>>>>  	}
->>>>>  	if (update_eld) {
->>>>> +		bool old_eld_valid = pin_eld->eld_valid;
->>>>>  		pin_eld->eld_valid = eld->eld_valid;
->>>>>  		eld_changed = pin_eld->eld_size != eld->eld_size ||
->>>>>  			      memcmp(pin_eld->eld_buffer, eld->eld_buffer,
->>>>> @@ -1350,6 +1354,18 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
->>>>>  			       eld->eld_size);
->>>>>  		pin_eld->eld_size = eld->eld_size;
->>>>>  		pin_eld->info = eld->info;
->>>>> +
->>>>> +		/* Haswell-specific workaround: re-setup when the transcoder is
->>>>> +		 * changed during the stream playback
->>>>> +		 */
->>>>> +		if (codec->vendor_id == 0x80862807 &&
->>>>> +		    eld->eld_valid && !old_eld_valid && per_pin->setup) {
->>>>> +			snd_hda_codec_write(codec, pin_nid, 0,
->>>>> +					    AC_VERB_SET_AMP_GAIN_MUTE,
->>>>> +					    AMP_OUT_UNMUTE);
->>>>
->>>> If the system is deliberately muted by turning off "IEC958 Playback
->>>> Switch", are we now ignoring that and turning it back on?
->>>
->>> The pin amp is always unmuted.  The IEC958 Playback Switch is
->>> controlled via IEC958 status bits instead.
->>
->> Ok.
->>
->>>
->>>> Also, this looks a bit like the workaround I added a while back
->>>> (83f26ad2c909083fa6 - ALSA: hda - fixup D3 pin and right channel mute on
->>>> Haswell HDMI audio) is there a possibility we need to fix up D3 as well
->>>> here? I e, call haswell_verify_pin_D0 rather than just setting the mute?
->>>> Or perhaps move the call to haswell_verify_pin_D0 from hdmi_setup_stream
->>>> to hdme_setup_audio_infoframe ?
->>>
->>> The power state is fine in this case, but just to reset the amp state
->>> by some reason.  It's not enough to update the info frame, as far as I
->>> tested.
->>
->> Ok - maybe Mengdong can comment more on this, if it's the same scenario
->> as I was working around earlier (right channel muted and pin in D3), or
->> if this is something different.
->>
->> If it's the same issue, I was thinking that we could
->>  1) skip the extra snd_hda_codec_write here, and
->>  2) move the call to haswell_verify_pin_D0 from hdmi_setup_stream to
->> hdmi_setup_audio_infoframe?
-> 
-> That makes sense.  Though, I'd like to merge the working patch now and
-> improve later on, as it's already in 3.12 merge window now.
+On Tue, Sep 03, 2013 at 12:59:38PM +0100, Mark Brown wrote:
+> The mixer in Haswell is in the DSP block which sits between the front
+> and back end DAIs, external devices like the CODEC are connected to the
+> back ends.  I fear that your confusion between front and back end may
+> have mislead you here.
 
-Sure, no problem.
+Here's what Liam says about his driver:
 
-> 
->> Also, if the pin amp is always unmuted, we could speed up
->> haswell_verify_pin_D0 to always unmute instead of read-then-write.
-> 
-> Yes.
-> 
-> 
-> Takashi
-> 
+"It will show a simple example of how to connect about 5 FE pcms to
+2 BE DAIs".  So this tells us how the driver is structured, and here
+is the confirmation of that:
 
+Here's the declarations, with non-relevant information removed:
 
+static struct snd_soc_dai_driver hsw_dais[] = {
+        {
+                .name  = "System Pin", 
+                .playback = {
+                        .stream_name = "System Playback",
+        },
+        {
+                /* PCM and compressed */
+                .name  = "Offload0 Pin",
+                .playback = {
+                        .stream_name = "Offload0 Playback",
+                },
+        },
+        {
+                /* PCM and compressed */
+                .name  = "Offload1 Pin",
+                .playback = {
+                        .stream_name = "Offload1 Playback",
+                },
+        },
+        {
+                .name  = "Loopback Pin",  
+                .capture = {
+                        .stream_name = "Loopback Capture",
+                },
+        },
+        {
+                .name  = "Capture Pin",
+                .capture = {
+                        .stream_name = "Analog Capture",
+                },
+        },
+};
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+So, this creates five front end DAIs.  This layer also creates some
+widgets:
+
+static const struct snd_soc_dapm_widget widgets[] = {
+        /* Backend DAIs  */
+        SND_SOC_DAPM_AIF_IN("SSP0 CODEC IN", NULL, 0, SND_SOC_NOPM, 0, 0),
+        SND_SOC_DAPM_AIF_OUT("SSP0 CODEC OUT", NULL, 0, SND_SOC_NOPM, 0, 0),
+        SND_SOC_DAPM_AIF_IN("SSP1 BT IN", NULL, 0, SND_SOC_NOPM, 0, 0),
+        SND_SOC_DAPM_AIF_OUT("SSP1 BT OUT", NULL, 0, SND_SOC_NOPM, 0, 0),
+                        
+        /* Global Playback Mixer */
+        SND_SOC_DAPM_MIXER("Playback VMixer", SND_SOC_NOPM, 0, 0, NULL, 0),
+};
+
+and links these to the streams above:
+
+static const struct snd_soc_dapm_route graph[] = {
+        /* Playback Mixer */
+        {"Playback VMixer", NULL, "System Playback"},
+        {"Playback VMixer", NULL, "Offload0 Playback"}, 
+        {"Playback VMixer", NULL, "Offload1 Playback"},
+                        
+        {"SSP0 CODEC OUT", NULL, "Playback VMixer"},
+        {"Loopback Capture", NULL, "Playback VMixer"},
+                  
+        {"Analog Capture", NULL, "SSP0 CODEC IN"},
+};
+
+So, what the above ends up with is this:
+
+[s]System Playback ---+                    +-> [aif]SSP0 CODEC OUT
+                      |                    |
+[s]Offload0 Playback -+-> Playback VMixer -+
+                      |                    |
+[s]Offload1 Playback -+                    +-> [s]Loopback Capture
+
+[aif]SSP0 CODEC IN -> [s]Analog Capture
+
+The [s] and [aif] annotations label these up as stream widgets which
+are created automatically by ASoC, and [aif] widgets from the CPU DAI
+layer.
+
+The card layer sets up these links (again, minimised to omit unnecessary
+information).  First, let's look at the definition of snd_soc_dai_link,
+so we know how to identify front end and back end DAIs:
+
+struct snd_soc_dai_link {
+        /* Do not create a PCM for this DAI link (Backend link) */
+        unsigned int no_pcm:1;
+
+        /* This DAI link can route to other DAI links at runtime (Frontend)*/
+        unsigned int dynamic:1;
+};
+
+So, anything with .no_pcm = 1 is a backend, and anything with
+.dynamic = 1 is a frontend.  This is backed up by the code:
+
+        /* ASoC PCM operations */
+        if (rtd->dai_link->dynamic) {
+                rtd->ops.open           = dpcm_fe_dai_open;
+                rtd->ops.hw_params      = dpcm_fe_dai_hw_params;
+                rtd->ops.prepare        = dpcm_fe_dai_prepare;
+                rtd->ops.trigger        = dpcm_fe_dai_trigger;
+                rtd->ops.hw_free        = dpcm_fe_dai_hw_free;
+                rtd->ops.close          = dpcm_fe_dai_close;
+                rtd->ops.pointer        = soc_pcm_pointer;
+                rtd->ops.ioctl          = soc_pcm_ioctl;
+        } else {
+                rtd->ops.open           = soc_pcm_open;
+                rtd->ops.hw_params      = soc_pcm_hw_params;
+                rtd->ops.prepare        = soc_pcm_prepare;
+                rtd->ops.trigger        = soc_pcm_trigger;
+                rtd->ops.hw_free        = soc_pcm_hw_free;
+                rtd->ops.close          = soc_pcm_close;
+                rtd->ops.pointer        = soc_pcm_pointer;
+                rtd->ops.ioctl          = soc_pcm_ioctl;
+        }
+
+.dynamic can't be a backend, because why would we assign it front-end
+DAI operations if it were set true.  So, it's quite clear that
+.dynamic marks a frontend DAI.
+
+static struct snd_soc_dai_link haswell_dais[] = {
+        /* Front End DAI links */
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ note that comment
+        {
+                .name = "System",  
+                .stream_name = "System Playback",  
+                .cpu_dai_name = "System Pin",  
+                .platform_name = "hsw-pcm-audio",
+                .dynamic = 1,
+                .codec_name = "snd-soc-dummy",
+                .codec_dai_name = "snd-soc-dummy-dai",
+                .dpcm_playback = 1,
+        },
+Clearly, "System Playback" is a front end stream - not only does this has
+.dynamic = 1, but also it binds it to the dummy codec.
+        {
+                .name = "Offload0",
+                .stream_name = "Offload0 Playback",
+                .cpu_dai_name = "Offload0 Pin",
+                .platform_name = "hsw-pcm-audio",
+                .dynamic = 1,
+                .codec_name = "snd-soc-dummy",
+                .codec_dai_name = "snd-soc-dummy-dai",
+                .dpcm_playback = 1,
+        },
+Again, another front end stream.
+        {
+                .name = "Offload1",
+                .stream_name = "Offload1 Playback",
+                .cpu_dai_name = "Offload1 Pin",  
+                .platform_name = "hsw-pcm-audio",
+                .dynamic = 1,
+                .codec_name = "snd-soc-dummy",
+                .codec_dai_name = "snd-soc-dummy-dai",
+                .dpcm_playback = 1,
+        },
+And again.
+        { 
+                .name = "Loopback",
+                .stream_name = "Loopback",
+                .cpu_dai_name = "Loopback Pin",
+                .platform_name = "hsw-pcm-audio",
+                .dynamic = 1,
+                .codec_name = "snd-soc-dummy",
+                .codec_dai_name = "snd-soc-dummy-dai",
+                .dpcm_capture = 1,
+        },
+And again.
+        { 
+                .name = "Capture",
+                .stream_name = "Capture",
+                .cpu_dai_name = "Capture Pin",
+                .platform_name = "hsw-pcm-audio",
+                .dynamic = 1,
+                .codec_name = "snd-soc-dummy",
+                .codec_dai_name = "snd-soc-dummy-dai",
+                .trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POS$
+                .dpcm_capture = 1,
+        },
+And again.
+
+So... let's mark what's a front-end DAI stream:
+
+[FE:s]System Playback ---+                    +-> [aif]SSP0 CODEC OUT
+                         |                    |
+[FE:s]Offload0 Playback -+-> Playback VMixer -+
+                         |                    |
+[FE:s]Offload1 Playback -+                    +-> [FE:s]Loopback Capture
+
+[aif]SSP0 CODEC IN -> [FE:s]Analog Capture
+
+Now for the backends.  The card layer creates these two DAI links:
+        /* Back End DAI links */
+        { 
+                /* SSP0 - Codec */ 
+                .name = "Codec",
+                .cpu_dai_name = "snd-soc-dummy-dai",
+                .platform_name = "snd-soc-dummy",
+                .no_pcm = 1,
+                .codec_name = "rt5640.0-001c",
+                .codec_dai_name = "rt5640-aif1",
+                .dpcm_playback = 1,
+                .dpcm_capture = 1,
+        },
+        {
+                /* SSP1 - BT */
+                .name = "SSP1-Codec",
+                .cpu_dai_name = "snd-soc-dummy-dai",
+                .platform_name = "snd-soc-dummy",
+                .no_pcm = 1,
+                .codec_name = "snd-soc-dummy",
+                .codec_dai_name = "snd-soc-dummy-dai",
+	}
+
+We shall ignore the second, because that's just a dummy.  The first isn't.
+
+As it nas .no_pcm = 1, and the dummy dai for the CPU Dai, this is clearly
+a backend.  So, "rt5640-aif1" is the backend DAI which is the _codec_
+DAI.
+
+The RT5640 Codec driver creates this:
+
+struct snd_soc_dai_driver rt5640_dai[] = {  
+        {
+                .name = "rt5640-aif1",
+                .id = RT5640_AIF1,
+                .playback = {
+                        .stream_name = "AIF1 Playback",
+                },
+                .capture = {
+                        .stream_name = "AIF1 Capture",
+                },
+...
+
+which creates two streams called "AIF1 Playback" and "AIF1 Capture".
+These are the codec streams.  Let's call them "[BE:s]AIF1 Playback" and
+"[BE:s]AIF1 Capture" so we can clearly understand that these are backend
+DAI streams.
+
+What does the card layer do to connect these two together?
+
+static const struct snd_soc_dapm_route hsw_map[] = {
+        {"Headphones", NULL, "HPOR"},
+        {"Headphones", NULL, "HPOL"},
+        {"IN2P", NULL, "Mic"},
+                
+        /* CODEC BE connections */
+        {"SSP0 CODEC IN", NULL, "AIF1 Capture"},
+        {"AIF1 Playback", NULL, "SSP0 CODEC OUT"},
+};
+
+Note the last two lines.  So, let's add them to this diagram:
+
+[FE:s]System Playback ---+                    +-> [aif]SSP0 CODEC OUT -> [BE:s]AIF1 Playback
+                         |                    |
+[FE:s]Offload0 Playback -+-> Playback VMixer -+
+                         |                    |
+[FE:s]Offload1 Playback -+                    +-> [FE:s]Loopback Capture
+
+[BE:s]AIF1 Capture -> [aif]SSP0 CODEC IN -> [FE:s]Analog Capture
+
+And here we have the complete structure.  The DAPM routes and DAPM widgets
+sit between the front end DAI streams, and the back end DAI streams - and
+the back end DAI streams belong to the codec.
+
+What am I doing in my driver?
+
+Firstly, here's the front end driver:
+
+static struct snd_soc_dai_driver kirkwood_i2s_dai = {
+        .playback = {
+                .stream_name = "dma-tx",
+        },
+        .capture = {
+                .stream_name = "dma-rx",
+        },
+};
+
+So here we have two streams, one called "dma-tx" and the other called
+"dma-rx".  These are equivalent to "System Playback" and "Analog
+Capture" from Liam's driver.
+
+static const struct snd_soc_dapm_widget widgets[] = {
+        /* These widget names come from the names from the functional spec */
+        SND_SOC_DAPM_AIF_OUT_E("i2sdo", "dma-tx",
+                0, SND_SOC_NOPM, 0, 0, kirkwood_i2s_play_i2s,
+                SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+        SND_SOC_DAPM_AIF_OUT_E("spdifdo", "dma-tx",
+                0, SND_SOC_NOPM, 0, 0, kirkwood_i2s_play_spdif,
+                SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+        SND_SOC_DAPM_AIF_IN("i2sdi", "dma-rx",
+                0, SND_SOC_NOPM, 0, 0),
+};
+
+Onto these two streams, I attach some widgets:
+
+             +-> [aif]i2sdo
+[FE:s]dma-tx-+
+             +-> [aif]spdifdo
+
+[aif]i2sdi-->[FE:s]dma-rx
+
+The DAI links are setup:
+
+static struct snd_soc_dai_link kirkwood_spdif_dai1[] = {
+        {
+                .name = "S/PDIF1",
+                .stream_name = "Audio Playback",
+                .platform_name = "mvebu-audio.1",
+                .cpu_dai_name = "mvebu-audio.1",
+                .codec_name = "snd-soc-dummy",
+                .codec_dai_name = "snd-soc-dummy-dai",
+                .dynamic = 1,
+        }, {
+                .name = "Codec",
+                .stream_name = "IEC958 Playback",
+                .cpu_dai_name = "snd-soc-dummy-dai",
+                .platform_name = "snd-soc-dummy",
+                .no_pcm = 1,
+                .codec_dai_name = "dit-hifi",
+                .codec_name = "spdif-dit",
+        },
+};
+
+The first is the frontend - note the .dynamic = 1 in there and the
+dummy codec.  The second is the backend, which is the spdif transmitter.
+The SPDIF transmitter gives us this:
+
+static struct snd_soc_dai_driver dit_stub_dai = {
+        .name           = "dit-hifi",
+        .playback       = {
+                .stream_name    = "spdif-Playback",
+
+So, it has a stream called "spdif-Playback" (you know full well why I had
+to add the "spdif-" prefix here, so I won't explain that.)  This gives us
+a backend _codec_ stream of "spdif-Playback" which I'll mark up as
+"[BE]spdif-Playback".  This is no different from Liam's RT5640 Codec
+driver, and is equivalent to the "AIF1 Playback" there.
+
+How do I connect these together?
+
+static const struct snd_soc_dapm_route routes[] = {
+        { "spdif-Playback", NULL, "spdifdo" },
+};
+
+So, we end up with this (I'm ignoring the capture side here):
+
+             +-> [aif]i2sdo -> (not connected at present)
+[FE:s]dma-tx-+
+             +-> [aif]spdifdo -> [BE:s]spdif-Playback
+
+Now, let's go and compare that back to the structure of Liam's original
+driver:
+
+[FE:s]System Playback ---+                    +-> [aif]SSP0 CODEC OUT -> [BE:s]AIF1 Playback
+                         |                    |
+[FE:s]Offload0 Playback -+-> Playback VMixer -+
+                         |                    |
+[FE:s]Offload1 Playback -+                    +-> [FE:s]Loopback Capture
+
+[BE:s]AIF1 Capture -> [aif]SSP0 CODEC IN -> [FE:s]Analog Capture
+
+and we can see that both of these are doing the same thing.  Front end
+CPU DAI streams are connected through widgets to backend _codec_ streams.
+
+So, what I've been trying to find out from you is: you're saying that my
+driver is somehow incorrect, and needs to create more front-end DAIs.
+I'm saying that it is conformant with Liam's example.
+
+The hardware as a whole - the entire platform - is structured like this:
+
+                                       I2S enable
+                                            v
+                                   +-> I2S formatter -----.
+                                   |                      +-> HDMI chip
+<system memory> -> dma -> tx fifo -+                    +-'
+                    ^              +-> SPDIF formatter -+
+                    |                       ^           +-> TOSlink out
+               dma enable              SPDIF enable
+
+where "dma enable" is provided internally in the hardware as the logical
+OR of I2S enable and SPDIF enable.  There is no software control of that.
+
+Comparing that with the structure I'm creating, the "dma-tx" stream
+represents the DMA and TX fifo.  The "i2sdo" AIF widget represents the
+I2S formatted output.  The "spdifdo" AIF widget represents the SPDIF
+formatted output.  The "spdif-Playback" backend stream represents the
+TOSlink output, and the HDMI chip is currently not represented as it
+appears ASoC doesn't need to know about it with properly formatted SPDIF.
+
+Now, if you still disagree that my approach is compliant with Liam's,
+then please describe _and_ more importantly draw diagrams as I have done
+above - and as I've done in the past for you - to illustrate what you
+believe to be a _correct_ solution to this.
