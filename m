@@ -1,15 +1,16 @@
-From: Uli Franke <uli.franke@weiss.ch>
-Subject: Constraints and hw_params with highly configurable HW
-Date: Tue, 03 Sep 2013 17:45:31 +0200
-Message-ID: <5226041B.4010105@weiss.ch>
+From: Fabio Estevam <fabio.estevam@freescale.com>
+Subject: [PATCH] ASoC: fsl: imx-audmux: Check if we are running
+	a dt kernel
+Date: Tue, 3 Sep 2013 14:52:19 -0300
+Message-ID: <1378230739-24177-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server11.hostfactory.ch (server11.hostfactory.ch
- [80.190.249.120])
- by alsa0.perex.cz (Postfix) with ESMTP id D563226172B
- for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2013 17:45:32 +0200 (CEST)
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe006.messaging.microsoft.com [216.32.180.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id 904B22617AB
+ for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2013 19:55:11 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,43 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Daniel Weiss <weiss@weiss.ch>, Rolf Anderegg <rolf.anderegg@weiss.ch>
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi everybody
+Booting a mx51babbage board with a non-dt kernel leads to the following crash:
 
-We're currently working on some neat enhancements for the still
-experimental snd_dice driver originally initiated by Clemens Ladisch. To
-list some of the new and already working features:
- * firmware loading, backed by a user-space command line utility
- * generic ALSA control support for mostly all device specific settings
-     for all our (i.e. Weiss Engineering) DICE based products
-and last but not least
- * capture support
- * slave mode (external clock source support).
+Unable to handle kernel NULL pointer dereference at virtual address 0000001c
+pgd = 80004000
+[0000001c] *pgd=00000000
+Internal error: Oops: 5 [#1] SMP ARM
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 3.11.0-next-20130903 #287
+task: 9f860000 ti: 9f862000 task.ti: 9f862000
+PC is at of_get_next_available_child+0x5c/0x68
+LR is at of_get_next_available_child+0x1c/0x68
+pc : [<8043ea58>]    lr : [<8043ea18>]    psr: 60000193
+sp : 9f863d58  ip : 00000000  fp : 9f863d74
+r10: 9f89a010  r9 : 9f862000  r8 : 807bb26c
+r7 : 80615d5c  r6 : 00000000  r5 : 60000113  r4 : 00000000
+r3 : 00000000  r2 : 808770a4  r1 : 00000011  r0 : 60000113
+Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
+Control: 10c5387d  Table: 90004019  DAC: 00000017
+Process swapper/0 (pid: 1, stack limit = 0x9f862240)
+Stack: (0x9f863d58 to 0x9f864000)
 
-I'm currently debugging and fine-tuning things and that's where some
-questions arose. The initial implementation of Clemens tried to fetch
-all possible configurations of a device during probe in order to have
-all combinations of rates and channels at hand when it comes to
-formulate the constraints set within the ALSA pcm substream open
-callback. That's a nice approach but will fail with a lot of devices as
-their configurations can (and mostly will) be volatile. Our devices for
-instance feature several switches, options and alike which have heavy
-influence on the channel layout and sample rates and combination of both.
+In order to fix it, return an error when 'of_id' is NULL, which happens for the
+non-dt case.
 
-I consulted Takashi's documentation on constraints which suggests to
-"use the source" but I couldn't find any similar situation within other
-drivers (in case I should have missed something, just let me know of
-course).
+Also checked that audio is still functional when running the dt kernel for this 
+board after applying this patch.
 
-Therefore I had the idea to define some maximum constraints and let the
-ALSA hw_params callback fail in case some settings or combinations are
-determined to be not supported during its invocation.
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/fsl/imx-audmux.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Is this viable? Could this be/is this consistent with the specs? If yes,
-would EINVAL an appropriate error code to return?
-
-Regards
-Uli
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index ab17381..2b29b48 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -317,6 +317,9 @@ static int imx_audmux_probe(struct platform_device *pdev)
+ 	const struct of_device_id *of_id =
+ 			of_match_device(imx_audmux_dt_ids, &pdev->dev);
+ 
++	if (!of_id)
++		return -EINVAL;
++
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	audmux_base = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(audmux_base))
+-- 
+1.8.1.2
