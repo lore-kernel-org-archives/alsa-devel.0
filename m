@@ -1,23 +1,15 @@
-From: Carl Canuck <carl.canuck.official@gmail.com>
-Subject: Re: Documentation Request
-Date: Tue, 3 Sep 2013 23:15:37 -0400
-Message-ID: <CAPOzVs7TiHEA2Fc9k40X58P-a2QCUzXcLLSU_B27aFbsbO0ztQ@mail.gmail.com>
-References: <CAPOzVs4y7qc6PGps+rPzAKUUXJPuJSBowaqc2jnb=vRe9QchNg@mail.gmail.com>
- <522685BA.2030904@blennerhassett.gen.nz>
- <CAPOzVs5XUZ8RvcC4wTRp1sYZz7PP4UjnKu=qUzUcwdHkB-ta6Q@mail.gmail.com>
- <CACckToUBiwJg1TUMuw3eFws_rvf9qc3ZPfSzy7MRCB8b0JEnRg@mail.gmail.com>
- <CAPOzVs4+Sd=UXZ3gMGSNwMk1EW_yKPK+7dTo_vuWD_acyrWw6g@mail.gmail.com>
+From: mengdong.lin@intel.com
+Subject: [PATCH] ALSA: hda - unmute pin amplifier in infoframe
+	setup for Haswell
+Date: Tue,  3 Sep 2013 16:38:25 -0400
+Message-ID: <1378240705-27681-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f196.google.com (mail-ie0-f196.google.com
- [209.85.223.196])
- by alsa0.perex.cz (Postfix) with ESMTP id C9EE0265490
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 05:15:38 +0200 (CEST)
-Received: by mail-ie0-f196.google.com with SMTP id c10so46709ieb.7
- for <alsa-devel@alsa-project.org>; Tue, 03 Sep 2013 20:15:38 -0700 (PDT)
-In-Reply-To: <CAPOzVs4+Sd=UXZ3gMGSNwMk1EW_yKPK+7dTo_vuWD_acyrWw6g@mail.gmail.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41BF4265490
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 05:37:13 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,61 +19,161 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sorry, I only sent that last reply to Grant, the
-reply-to-anybody-but-sender options are a little counter-intuitive in Gmail.
+From: Mengdong Lin <mengdong.lin@intel.com>
 
+When Gfx driver reconnects a port and transcoder, the pin amplifier will be
+muted. To enable sound, the pin amp need to be unmuted.
 
-On Tue, Sep 3, 2013 at 11:10 PM, Carl Canuck <carl.canuck.official@gmail.com
-> wrote:
+This patch
+- moves pin amp unmuting from stream preparing to hdmi_setup_audio_infoframe().
+  So if port:transcoder reconnection happens during stream playback, the ELDV
+  unsol event can stil trigger pin's amp unmuting when re-setting up audio
+  info frame.
 
-> Hi Grant,
->
-> I have in fact spent a little time with Jack and even conjured up a
-> working prototype using Jack audio with ALSA MIDI (that will never see the
-> light of day).  However, you're ignoring the fact that:
->
-> 1.  Some people don't like having 20 separate audio applications running
-> and having to save all of their states individually
-> 2.  If you believe that any existing Jack session manager is a stable,
-> reliable application that adequately solves problem #1, then it's obvious
-> that you've not spent much time with Jack session managers
-> 3.  Jack is something like 15 years old now, and they still haven't even
-> managed to solve #1 and #2 yet, among other long-standing issues?
-> 4.  With points #1, #2 and #3 all being common knowledge, why should I put
-> my faith in Jack competently wrapping ALSA for me instead of taking matters
-> into my own hands and going straight to ALSA?
-> 5.  If you visit Windows/Mac audio forums, there are legions of people who
-> will tell you they tried Linux once, found Jack to be buggy and terrible in
-> general, never intend to try Linux again.  In fact, you can register a user
-> name on any non-Linux music forum, and ask "i'm thinking of trying Linux
-> for audio, thoughts?", and people will say exactly the things I described
-> to you, not because they have any unfounded bias against Linux or Jack, but
-> because that was truly their experience.
-> 6.  Jack's configuration settings and error logging are atrocious, it is
-> far too often excessively difficult to understand why Jack won't start and
-> how to fix it.
-> 7.  Is it really so unreasonable to ask for a basic example of a common
-> use-case for ALSA without being told that I should just abandon the quest
-> for that knowledge and put my faith in the Jack developers?  Should
-> deciphering the intended use of any API be an exercise left to the would-be
-> developer?
->
-> If you like Jack, then by all means use it, but it's not ideal for my
-> use-case, and I won't be spending any more time evaluating it until the
-> Jack developers address these long-standing issues.
->
-> Carl
->
-> <http://users.suse.com/~mana/alsa090_howto.html>
+- remove reading pin amp status before unmuting for speed-up, since pin amp
+  should always be unmuted.
 
+- rename haswell_verify_pin_D0() to haswell_verify_pin_cvt_D0(), since the
+  convertor power state is also fixed here.
 
-Also, I have in fact seen the link you provided Grant, but that once again
-is only bits and pieces of the use-case.  I'd like to know that I'm using
-ALSA as it's creators intended, rather than stringing together bits and
-pieces and hoping that I'm doing it right.
+- define is_haswell() to replace checking Haswell vendor ID everywhere.
 
-Regards,
-Carl
+This patch is mostly based on suggestion of David Henningsson.
+
+Cc: David Henningsson <david.henningsson@canonical.com>
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 9a58893..471c158 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -44,6 +44,8 @@ static bool static_hdmi_pcm;
+ module_param(static_hdmi_pcm, bool, 0644);
+ MODULE_PARM_DESC(static_hdmi_pcm, "Don't restrict PCM parameters per ELD info");
+ 
++#define is_haswell(codec)  ((codec)->vendor_id == 0x80862807)
++
+ struct hdmi_spec_per_cvt {
+ 	hda_nid_t cvt_nid;
+ 	int assigned;
+@@ -894,6 +896,11 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+ 	if (!channels)
+ 		return;
+ 
++	if (is_haswell(codec))
++		snd_hda_codec_write(codec, pin_nid, 0,
++					    AC_VERB_SET_AMP_GAIN_MUTE,
++					    AMP_OUT_UNMUTE);
++
+ 	eld = &per_pin->sink_eld;
+ 	if (!eld->monitor_present)
+ 		return;
+@@ -1033,10 +1040,10 @@ static void hdmi_unsol_event(struct hda_codec *codec, unsigned int res)
+ 		hdmi_non_intrinsic_event(codec, res);
+ }
+ 
+-static void haswell_verify_pin_D0(struct hda_codec *codec,
++static void haswell_verify_pin_cvt_D0(struct hda_codec *codec,
+ 		hda_nid_t cvt_nid, hda_nid_t nid)
+ {
+-	int pwr, lamp, ramp;
++	int pwr;
+ 
+ 	/* For Haswell, the converter 1/2 may keep in D3 state after bootup,
+ 	 * thus pins could only choose converter 0 for use. Make sure the
+@@ -1052,25 +1059,6 @@ static void haswell_verify_pin_D0(struct hda_codec *codec,
+ 		pwr = (pwr & AC_PWRST_ACTUAL) >> AC_PWRST_ACTUAL_SHIFT;
+ 		snd_printd("Haswell HDMI audio: Power for pin 0x%x is now D%d\n", nid, pwr);
+ 	}
+-
+-	lamp = snd_hda_codec_read(codec, nid, 0,
+-				  AC_VERB_GET_AMP_GAIN_MUTE,
+-				  AC_AMP_GET_LEFT | AC_AMP_GET_OUTPUT);
+-	ramp = snd_hda_codec_read(codec, nid, 0,
+-				  AC_VERB_GET_AMP_GAIN_MUTE,
+-				  AC_AMP_GET_RIGHT | AC_AMP_GET_OUTPUT);
+-	if (lamp != ramp) {
+-		snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_AMP_GAIN_MUTE,
+-				    AC_AMP_SET_RIGHT | AC_AMP_SET_OUTPUT | lamp);
+-
+-		lamp = snd_hda_codec_read(codec, nid, 0,
+-				  AC_VERB_GET_AMP_GAIN_MUTE,
+-				  AC_AMP_GET_LEFT | AC_AMP_GET_OUTPUT);
+-		ramp = snd_hda_codec_read(codec, nid, 0,
+-				  AC_VERB_GET_AMP_GAIN_MUTE,
+-				  AC_AMP_GET_RIGHT | AC_AMP_GET_OUTPUT);
+-		snd_printd("Haswell HDMI audio: Mute after set on pin 0x%x: [0x%x 0x%x]\n", nid, lamp, ramp);
+-	}
+ }
+ 
+ /*
+@@ -1087,8 +1075,8 @@ static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
+ 	int pinctl;
+ 	int new_pinctl = 0;
+ 
+-	if (codec->vendor_id == 0x80862807)
+-		haswell_verify_pin_D0(codec, cvt_nid, pin_nid);
++	if (is_haswell(codec))
++		haswell_verify_pin_cvt_D0(codec, cvt_nid, pin_nid);
+ 
+ 	if (snd_hda_query_pin_caps(codec, pin_nid) & AC_PINCAP_HBR) {
+ 		pinctl = snd_hda_codec_read(codec, pin_nid, 0,
+@@ -1227,7 +1215,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+ 			    mux_idx);
+ 
+ 	/* configure unused pins to choose other converters */
+-	if (codec->vendor_id == 0x80862807)
++	if (is_haswell(codec))
+ 		haswell_config_cvts(codec, pin_idx, mux_idx);
+ 
+ 	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
+@@ -1358,14 +1346,10 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ 		/* Haswell-specific workaround: re-setup when the transcoder is
+ 		 * changed during the stream playback
+ 		 */
+-		if (codec->vendor_id == 0x80862807 &&
+-		    eld->eld_valid && !old_eld_valid && per_pin->setup) {
+-			snd_hda_codec_write(codec, pin_nid, 0,
+-					    AC_VERB_SET_AMP_GAIN_MUTE,
+-					    AMP_OUT_UNMUTE);
++		if (is_haswell(codec) &&
++		    eld->eld_valid && !old_eld_valid && per_pin->setup)
+ 			hdmi_setup_audio_infoframe(codec, per_pin,
+ 						   per_pin->non_pcm);
+-		}
+ 	}
+ 	mutex_unlock(&pin_eld->lock);
+ 
+@@ -1405,7 +1389,7 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
+ 	if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
+ 		return 0;
+ 
+-	if (codec->vendor_id == 0x80862807)
++	if (is_haswell(codec))
+ 		intel_haswell_fixup_connect_list(codec, pin_nid);
+ 
+ 	pin_idx = spec->num_pins;
+@@ -2014,7 +1998,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 	codec->spec = spec;
+ 	hdmi_array_init(spec, 4);
+ 
+-	if (codec->vendor_id == 0x80862807) {
++	if (is_haswell(codec)) {
+ 		intel_haswell_enable_all_pins(codec, true);
+ 		intel_haswell_fixup_enable_dp12(codec);
+ 	}
+@@ -2025,7 +2009,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 		return -EINVAL;
+ 	}
+ 	codec->patch_ops = generic_hdmi_patch_ops;
+-	if (codec->vendor_id == 0x80862807) {
++	if (is_haswell(codec)) {
+ 		codec->patch_ops.set_power_state = haswell_set_power_state;
+ 		codec->dp_mst = true;
+ 	}
+-- 
+1.8.1.2
