@@ -1,15 +1,21 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH] ALSA: hda - unmute pin amplifier in infoframe
-	setup for Haswell
-Date: Tue,  3 Sep 2013 16:38:25 -0400
-Message-ID: <1378240705-27681-1-git-send-email-mengdong.lin@intel.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ALSA: hda - Re-setup HDMI pin and audio
+ infoframe on stream switches
+Date: Wed, 4 Sep 2013 04:53:51 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801331195@SHSMSX101.ccr.corp.intel.com>
+References: <1378202279-14990-1-git-send-email-tiwai@suse.de>
+ <5225C3B3.8030108@canonical.com> <s5hvc2i9kj1.wl%tiwai@suse.de>
+ <5225D7BD.1060005@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F801330FF3@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 41BF4265490
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 05:37:13 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id B80B62654BE
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 06:53:59 +0200 (CEST)
+In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F801330FF3@SHSMSX101.ccr.corp.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,161 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>, David Henningsson <david.henningsson@canonical.com>
+To: David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org
+> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Lin, Mengdong
+> Sent: Wednesday, September 04, 2013 9:30 AM
+> 
+> > >> Also, this looks a bit like the workaround I added a while back
+> > >> (83f26ad2c909083fa6 - ALSA: hda - fixup D3 pin and right channel
+> > >> mute on Haswell HDMI audio) is there a possibility we need to fix
+> > >> up D3 as well here? I e, call haswell_verify_pin_D0 rather than just setting
+> the mute?
+> > >> Or perhaps move the call to haswell_verify_pin_D0 from
+> > >> hdmi_setup_stream to hdme_setup_audio_infoframe ?
+> > >
+> > > The power state is fine in this case, but just to reset the amp
+> > > state by some reason.  It's not enough to update the info frame, as
+> > > far as I tested.
+> >
+> > Ok - maybe Mengdong can comment more on this, if it's the same
+> > scenario as I was working around earlier (right channel muted and pin
+> > in D3), or if this is something different.
+> 
+> They're same in nature, although the pin power state can be affected or not.
+> S3, hot-plug and Gfx mode switch can all make Gfx reconnect the port, maybe
+> to the same or a different transcoder.
+> During this process , audio will be disabled and re-enabled again in Gfx driver
+> side.
+> As a result, pin mute status, inforframe transmission, power state need to be
+> re-setup.
+> 
+> Till now, we only observed pin in D3 after boot. But considering Gfx is
+> implement runtime PM, it would be better to always check/fix pin power state.
 
-When Gfx driver reconnects a port and transcoder, the pin amplifier will be
-muted. To enable sound, the pin amp need to be unmuted.
+Fix typo: We only observe pin in D3 after boot and S3, i.e. the pin (port) is used for 1st time after GPU change state to D0.
+In this display mode switch case, the pin power state remains in D0, although Gfx driver disables and re-enables the port.
 
-This patch
-- moves pin amp unmuting from stream preparing to hdmi_setup_audio_infoframe().
-  So if port:transcoder reconnection happens during stream playback, the ELDV
-  unsol event can stil trigger pin's amp unmuting when re-setting up audio
-  info frame.
+> Since the ELD valid unsolicited response is a signal to indicate Gfx driver has
+> finished audio re-enabling, the audio driver could fix things in
+> hdmi_present_sense() triggered by the HDMI intrinsic event handler.
+> >
+> > If it's the same issue, I was thinking that we could
+> >  1) skip the extra snd_hda_codec_write here, and
+> >  2) move the call to haswell_verify_pin_D0 from hdmi_setup_stream to
+> > hdmi_setup_audio_infoframe?
+> >
+> > Also, if the pin amp is always unmuted, we could speed up
+> > haswell_verify_pin_D0 to always unmute instead of read-then-write.
 
-- remove reading pin amp status before unmuting for speed-up, since pin amp
-  should always be unmuted.
+I've submitted a patch for this, with subject 'ALSA: hda - unmute pin amplifier in infoframe setup for Haswell'. Could you have a look?
 
-- rename haswell_verify_pin_D0() to haswell_verify_pin_cvt_D0(), since the
-  convertor power state is also fixed here.
+But haswell_verify_pin_D0 is still called in hdmi_setup_stream() and only unmuting pin amp is moved to hdmi_setup_audio_infoframe().
+It's because ELDV unsol event may come in codec D3, and pin should not be set to D0 in the event handler for this case. 
+So the new patch still fixes pin power state when preparing the stream.
 
-- define is_haswell() to replace checking Haswell vendor ID everywhere.
-
-This patch is mostly based on suggestion of David Henningsson.
-
-Cc: David Henningsson <david.henningsson@canonical.com>
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 9a58893..471c158 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -44,6 +44,8 @@ static bool static_hdmi_pcm;
- module_param(static_hdmi_pcm, bool, 0644);
- MODULE_PARM_DESC(static_hdmi_pcm, "Don't restrict PCM parameters per ELD info");
- 
-+#define is_haswell(codec)  ((codec)->vendor_id == 0x80862807)
-+
- struct hdmi_spec_per_cvt {
- 	hda_nid_t cvt_nid;
- 	int assigned;
-@@ -894,6 +896,11 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
- 	if (!channels)
- 		return;
- 
-+	if (is_haswell(codec))
-+		snd_hda_codec_write(codec, pin_nid, 0,
-+					    AC_VERB_SET_AMP_GAIN_MUTE,
-+					    AMP_OUT_UNMUTE);
-+
- 	eld = &per_pin->sink_eld;
- 	if (!eld->monitor_present)
- 		return;
-@@ -1033,10 +1040,10 @@ static void hdmi_unsol_event(struct hda_codec *codec, unsigned int res)
- 		hdmi_non_intrinsic_event(codec, res);
- }
- 
--static void haswell_verify_pin_D0(struct hda_codec *codec,
-+static void haswell_verify_pin_cvt_D0(struct hda_codec *codec,
- 		hda_nid_t cvt_nid, hda_nid_t nid)
- {
--	int pwr, lamp, ramp;
-+	int pwr;
- 
- 	/* For Haswell, the converter 1/2 may keep in D3 state after bootup,
- 	 * thus pins could only choose converter 0 for use. Make sure the
-@@ -1052,25 +1059,6 @@ static void haswell_verify_pin_D0(struct hda_codec *codec,
- 		pwr = (pwr & AC_PWRST_ACTUAL) >> AC_PWRST_ACTUAL_SHIFT;
- 		snd_printd("Haswell HDMI audio: Power for pin 0x%x is now D%d\n", nid, pwr);
- 	}
--
--	lamp = snd_hda_codec_read(codec, nid, 0,
--				  AC_VERB_GET_AMP_GAIN_MUTE,
--				  AC_AMP_GET_LEFT | AC_AMP_GET_OUTPUT);
--	ramp = snd_hda_codec_read(codec, nid, 0,
--				  AC_VERB_GET_AMP_GAIN_MUTE,
--				  AC_AMP_GET_RIGHT | AC_AMP_GET_OUTPUT);
--	if (lamp != ramp) {
--		snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_AMP_GAIN_MUTE,
--				    AC_AMP_SET_RIGHT | AC_AMP_SET_OUTPUT | lamp);
--
--		lamp = snd_hda_codec_read(codec, nid, 0,
--				  AC_VERB_GET_AMP_GAIN_MUTE,
--				  AC_AMP_GET_LEFT | AC_AMP_GET_OUTPUT);
--		ramp = snd_hda_codec_read(codec, nid, 0,
--				  AC_VERB_GET_AMP_GAIN_MUTE,
--				  AC_AMP_GET_RIGHT | AC_AMP_GET_OUTPUT);
--		snd_printd("Haswell HDMI audio: Mute after set on pin 0x%x: [0x%x 0x%x]\n", nid, lamp, ramp);
--	}
- }
- 
- /*
-@@ -1087,8 +1075,8 @@ static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
- 	int pinctl;
- 	int new_pinctl = 0;
- 
--	if (codec->vendor_id == 0x80862807)
--		haswell_verify_pin_D0(codec, cvt_nid, pin_nid);
-+	if (is_haswell(codec))
-+		haswell_verify_pin_cvt_D0(codec, cvt_nid, pin_nid);
- 
- 	if (snd_hda_query_pin_caps(codec, pin_nid) & AC_PINCAP_HBR) {
- 		pinctl = snd_hda_codec_read(codec, pin_nid, 0,
-@@ -1227,7 +1215,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 			    mux_idx);
- 
- 	/* configure unused pins to choose other converters */
--	if (codec->vendor_id == 0x80862807)
-+	if (is_haswell(codec))
- 		haswell_config_cvts(codec, pin_idx, mux_idx);
- 
- 	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
-@@ -1358,14 +1346,10 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- 		/* Haswell-specific workaround: re-setup when the transcoder is
- 		 * changed during the stream playback
- 		 */
--		if (codec->vendor_id == 0x80862807 &&
--		    eld->eld_valid && !old_eld_valid && per_pin->setup) {
--			snd_hda_codec_write(codec, pin_nid, 0,
--					    AC_VERB_SET_AMP_GAIN_MUTE,
--					    AMP_OUT_UNMUTE);
-+		if (is_haswell(codec) &&
-+		    eld->eld_valid && !old_eld_valid && per_pin->setup)
- 			hdmi_setup_audio_infoframe(codec, per_pin,
- 						   per_pin->non_pcm);
--		}
- 	}
- 	mutex_unlock(&pin_eld->lock);
- 
-@@ -1405,7 +1389,7 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
- 	if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
- 		return 0;
- 
--	if (codec->vendor_id == 0x80862807)
-+	if (is_haswell(codec))
- 		intel_haswell_fixup_connect_list(codec, pin_nid);
- 
- 	pin_idx = spec->num_pins;
-@@ -2014,7 +1998,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
- 	codec->spec = spec;
- 	hdmi_array_init(spec, 4);
- 
--	if (codec->vendor_id == 0x80862807) {
-+	if (is_haswell(codec)) {
- 		intel_haswell_enable_all_pins(codec, true);
- 		intel_haswell_fixup_enable_dp12(codec);
- 	}
-@@ -2025,7 +2009,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
- 		return -EINVAL;
- 	}
- 	codec->patch_ops = generic_hdmi_patch_ops;
--	if (codec->vendor_id == 0x80862807) {
-+	if (is_haswell(codec)) {
- 		codec->patch_ops.set_power_state = haswell_set_power_state;
- 		codec->dp_mst = true;
- 	}
--- 
-1.8.1.2
+Thanks
+Mengdong
