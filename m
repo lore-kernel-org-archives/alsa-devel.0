@@ -1,24 +1,14 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: Documentation Request
-Date: Wed, 4 Sep 2013 08:04:17 +0200
-Message-ID: <CAFz=ag42pNW3GOMcXed0PQvK1fgk3AtXQ0fizm=0LNGG9-KYgg@mail.gmail.com>
-References: <CAPOzVs4y7qc6PGps+rPzAKUUXJPuJSBowaqc2jnb=vRe9QchNg@mail.gmail.com>
- <522685BA.2030904@blennerhassett.gen.nz>
- <CAPOzVs5XUZ8RvcC4wTRp1sYZz7PP4UjnKu=qUzUcwdHkB-ta6Q@mail.gmail.com>
- <CACckToUBiwJg1TUMuw3eFws_rvf9qc3ZPfSzy7MRCB8b0JEnRg@mail.gmail.com>
- <CAPOzVs4+Sd=UXZ3gMGSNwMk1EW_yKPK+7dTo_vuWD_acyrWw6g@mail.gmail.com>
- <CAPOzVs7TiHEA2Fc9k40X58P-a2QCUzXcLLSU_B27aFbsbO0ztQ@mail.gmail.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [PATCH] ASoC: atmel: disable error interrupt
+Date: Wed,  4 Sep 2013 15:27:46 +0800
+Message-ID: <1378279666-19873-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f48.google.com (mail-la0-f48.google.com
- [209.85.215.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A6242654C3
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 08:04:17 +0200 (CEST)
-Received: by mail-la0-f48.google.com with SMTP id er20so5477213lab.35
- for <alsa-devel@alsa-project.org>; Tue, 03 Sep 2013 23:04:17 -0700 (PDT)
-In-Reply-To: <CAPOzVs7TiHEA2Fc9k40X58P-a2QCUzXcLLSU_B27aFbsbO0ztQ@mail.gmail.com>
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A83E2654CA
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 09:29:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,23 +18,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Carl Canuck <carl.canuck.official@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Am 04.09.2013 05:16 schrieb "Carl Canuck" <carl.canuck.official@gmail.com>:
->
-> > 7.  Is it really so unreasonable to ask for a basic example of a common
-> > use-case for ALSA without being told that I should just abandon the
-quest
-> > for that knowledge and put my faith in the Jack developers?
+As once the error interrupt is triggered, it can not be cleared.
+So, disable it.
 
-It is unreasonable to think of *your* use case as a *common* use case for
-ALSA. It is a common use-case for Jack. I don't know of any program doing
-all of this on plain ALSA grounds (maybe except for Pd which ironically
-doesn't work for me with the ALSA driver but only with Jack.)
-Moreover, using Jack is (almost) the only reliable way to get full duplex
-audio on some implicit feedback USB interfaces because it implicitly works
-around a current (still?) limitation of the ALSA driver.
+No side effect found while testing on sama5d3xek and at91sam9x5ek
+boards.
 
-Regards, Felix
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+---
+ sound/soc/atmel/atmel_ssc_dai.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 0ecf356..bb53dea 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -649,7 +649,7 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
+ 	dma_params = ssc_p->dma_params[dir];
+ 
+ 	ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_enable);
+-	ssc_writel(ssc_p->ssc->regs, IER, dma_params->mask->ssc_error);
++	ssc_writel(ssc_p->ssc->regs, IDR, dma_params->mask->ssc_error);
+ 
+ 	pr_debug("%s enabled SSC_SR=0x%08x\n",
+ 			dir ? "receive" : "transmit",
+-- 
+1.7.9.5
