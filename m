@@ -1,25 +1,23 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: codecs: da9055: Update driver name
- to fix breakage due to pmic driver with same name
-Date: Wed, 4 Sep 2013 19:34:05 +0100
-Message-ID: <20130904183405.GX3084@sirena.org.uk>
-References: <1375689331.28910.5.camel@matrix>
- <20130805144201.GF9858@sirena.org.uk>
- <1375717898.29528.23.camel@matrix>
- <20130805162342.GS9858@sirena.org.uk>
- <1377778108.15438.6.camel@matrix>
- <2E89032DDAA8B9408CB92943514A033751E611AF@SW-EX-MBX01.diasemi.com>
- <20130902103843.GL3084@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A033751E612F5@SW-EX-MBX01.diasemi.com>
- <20130902174121.GV3084@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A033751E6157D@SW-EX-MBX01.diasemi.com>
+Subject: Re: [PATCH 00/14] SPDIF support
+Date: Wed, 4 Sep 2013 20:33:53 +0100
+Message-ID: <20130904193353.GA3084@sirena.org.uk>
+References: <20130901123433.GR6617@n2100.arm.linux.org.uk>
+ <20130902140632.GQ3084@sirena.org.uk>
+ <20130902141631.GV6617@n2100.arm.linux.org.uk>
+ <20130902162729.GT3084@sirena.org.uk>
+ <20130902165932.GZ6617@n2100.arm.linux.org.uk>
+ <20130902204421.GW3084@sirena.org.uk>
+ <20130902211830.GA6617@n2100.arm.linux.org.uk>
+ <20130902223500.GA3084@sirena.org.uk>
+ <20130902230011.GC6617@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7743656706496414462=="
+Content-Type: multipart/mixed; boundary="===============2544207999584552280=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 088BE265567
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 20:34:12 +0200 (CEST)
-In-Reply-To: <2E89032DDAA8B9408CB92943514A033751E6157D@SW-EX-MBX01.diasemi.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3748E265560
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 21:34:08 +0200 (CEST)
+In-Reply-To: <20130902230011.GC6617@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,67 +27,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, "kiran.padwal" <kiran.padwal@kpitcummins.com>, David Dajun Chen <david.chen@diasemi.com>, Ashish Chavan <ashish.chavan@kpitcummins.com>, lrg <lrg@ti.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jason Cooper <jason@lakedaemon.net>, Jean-Francois Moine <moinejf@free.fr>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7743656706496414462==
+--===============2544207999584552280==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="R9qb+eAX/AZDW6n0"
+	protocol="application/pgp-signature"; boundary="pI6hLdwVzam1XFuA"
 Content-Disposition: inline
 
 
---R9qb+eAX/AZDW6n0
+--pI6hLdwVzam1XFuA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Sep 04, 2013 at 04:13:25PM +0000, Opensource [Adam Thomson] wrote:
+On Tue, Sep 03, 2013 at 12:00:11AM +0100, Russell King - ARM Linux wrote:
 
-> Personally I don't see the issue in having two I2C clients defined for the one
-> chip, in the machine bindings. Logically it's absolutely correct for the chip,
-> and as long as the I2C IDs for the devices make sense (which wasn't the case for
-> DA9055, and is something I want to rectify), then it should be obvious
-> to anyone who comes across that code. Actually having them as two separate
-> entries in machine code helps to highlight that they are individual I2C devices
-> in one package rather than somehow linked internally and requiring ordered
-> initialisation. That seems right to me, and would tally with the associated
-> datasheet for the device.
+> > You should have one back end DAI per physical DAI.
 
-The goal is that users shouldn't even need to have to think about how
-the chip is constructed, they should just be able to use it with minimal
-thought or effort.  Anything that can be encapsulated within the drivers
-should be.
+> What do you mean "physical DAI"?  Do you mean "CPU DAI" which would be a
+> front end DAI?
 
---R9qb+eAX/AZDW6n0
+The same question got asked and answered in another subthread but for
+the record I'm speaking here about the back end DAIs - there should be
+one for S/PDIF and one for I2S.  With DPCM there should also be a front
+end DAI for the DMA.  I've cut a bunch of other discussion which was
+duplicated in that subthread.
+
+> > Unless there is a need to actually take some action you can, naturally,
+> > provide stubs.  You should provide the minimal set of stubs required for
+> > operation in your testing.
+
+> That needs to go in the ASoC code though - I don't think I have access
+> to the ALSA PCM which has been created for the backend DAI(s).  Remember,
+> the backend DAIs are "owned" by the dummy DAI driver, not the CPU driver,
+> so the CPU driver doesn't get to see any operations for that.
+
+If you need to define operations for the dummy driver then modify the
+dummy driver.  However as indicated in the other thread you should not
+be using the dummy DAI driver for the CPU side back end.
+
+--pI6hLdwVzam1XFuA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSJ30aAAoJELSic+t+oim9GYMP/1/kPPw/HZIwU9S1XcaXbkcI
-p7y4/x1zkIevB1aSlgGYCymludYuiMwapf9pPh179JqtTd/S5sXusu0TCsrUzeRB
-nCIyCitn+f1KbsM1FvF2R1uix59JoIqhEBqMO8LfVUeqBLJPNchXQjTwJY1Qq42H
-3LkVvETBtuXSAhh8JVjjMlDzZN3b0FpoqEcq7lkFty5UNN9/XdUny/eulqIMh3SL
-9Oeaz3yW0xaC9H3HuPXQbNaG1KFz0ue9LbpTlw7PFYov0JFTachaYWLp2BARrDbJ
-FTWxVUFIEYT3rqVgeQiBcgsmRXdzxIemTGpdrAFPJgfKjqv3X5yd50G5JW/qcaHK
-LDts0S3CnpGo1RvdYuBQJWuJktIwQNu1vKYPcL6kCTBCaZxX1lsu2hCQP3mGYXOQ
-E27oGHFUp8afW4TC7B/fK1W4tXC/vuIyR65OlDl1kEttJQiB2QwaXljKx7xwK8Y/
-1qS9bDrxZOUG0EEVhIE2CuwRXh1/06Glkn32a3opvW78uH3ixabXAKrf+ULy37MN
-XMZ49m3qlkquZXWiDJcESvrJWt45sqxzyx9ivSuyPKiOFQYS8WASYP3HTfzDGlX7
-Dk7AJMgtH8N/2jH6cSq1Mzv4aYeAEc29J4QFf2FLQEx4/+rviN2OOojDwQYHFdKj
-sjgOKMgBRJfEaeg/za7/
-=E+U6
+iQIcBAEBAgAGBQJSJ4sdAAoJELSic+t+oim94GwQAJGQ5ONMzbms8t5vdBGZdidL
+10LPvE4ByYpnbPuxEsGY0RjHPZSsSj3B9JWQzw+NGXx/4ffa1k20n2os/SX2beGc
+5s6wq1PvN8jRfkiAjXqwriQcdIZJRCuWNhQkN20iHWuKMqqF51zyyWgEtu9pQCDt
+US6q3MTE0VUEUZ5qBXUGD/8/CzF2R7ktLZArrd0fG7cgVSbkFwWnPndHcmo+dVWp
+fccPMyoK8UA9xx2VQESMBj/PqoPZ+R7F5QppzuIU1B9leiq8iR7Sl5qJ6IJWVSNQ
+RjgRcmxSno2MSInqMfrnFFbYuvmR30yWyI+tHu6RslEDSAbN7Tm6Nl01u8/92Kgt
+EK1Kch5JBShMuYkJOz5K88B0E7n8hNUz2jWy61qV6og62K1y0NiEu3TsWiXrl+bO
+DgdyBVd19NmLbwY2GEdoj2FohcIBK7EBJstDM4qQkzkDHPljz2XWIgXx3koTxINi
+psYsMi4ygx0b4flUvZwfUp/amjlNwlOKyubT2CSstksjojivqV1nwBLgjnbahkIc
+XRmhzx7MGpL+uPhA45Bsw9nH9QIlnkPRc3foqWNA80iCTmLVuwMw42IxJd5stDod
+lNlhIHl/ZzmtbX419pYJ+Qba9e3bFG2UUtcfJGSZDKLLxR6K5sBSyl3Hk/ycdAvQ
+JyQ7jtzlMdHNwolFhtXo
+=ZtoB
 -----END PGP SIGNATURE-----
 
---R9qb+eAX/AZDW6n0--
+--pI6hLdwVzam1XFuA--
 
---===============7743656706496414462==
+--===============2544207999584552280==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7743656706496414462==--
+--===============2544207999584552280==--
