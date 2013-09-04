@@ -1,25 +1,15 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: [PING!] Re: HDMI audio is not working on my new
-	desktop
-Date: Thu, 5 Sep 2013 09:03:29 +0600
-Message-ID: <CAN_LGv2OGfV-PaTHRBbvmsD+R_jdZh1JYcs4+Mi2evJ=tw1YzA@mail.gmail.com>
-References: <CAN_LGv1eGP=Krg_zRXhLhLVPv12dpybKj_fy+r=oS4nSnXRGCg@mail.gmail.com>
- <s5hbo4tmtn2.wl%tiwai@suse.de>
- <CA+v+29jhLVDHQ17TRTC3ZUW2g0b-mePQSWkCrLK95v_J5DggtA@mail.gmail.com>
- <CAN_LGv3S8tDofB=jQ=9cu1wExizo37ac_qL2GBJvvz0pi3grPQ@mail.gmail.com>
- <CA+v+29jcG-F=wpFcREfo50T9gJkaz-JXxUXYKbFZdH_9CqSSFg@mail.gmail.com>
- <CAN_LGv0jJu3x_N3=C-8Bbvi8mV_tW1x1YW2dA5Nw88zKdHqMvA@mail.gmail.com>
+From: mengdong.lin@intel.com
+Subject: [PATCH v2 2/2] ALSA: hda - unmute pin amplifier in
+	infoframe setup for Haswell
+Date: Wed,  4 Sep 2013 16:37:12 -0400
+Message-ID: <1378327032-14471-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qe0-f48.google.com (mail-qe0-f48.google.com
- [209.85.128.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 80A99265596
- for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2013 05:03:30 +0200 (CEST)
-Received: by mail-qe0-f48.google.com with SMTP id t9so569112qeq.21
- for <alsa-devel@alsa-project.org>; Wed, 04 Sep 2013 20:03:29 -0700 (PDT)
-In-Reply-To: <CAN_LGv0jJu3x_N3=C-8Bbvi8mV_tW1x1YW2dA5Nw88zKdHqMvA@mail.gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 03E7A265590
+ for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2013 05:35:58 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,60 +19,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wang Xingchao <wangxingchao2011@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, "Alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <xingchao.wang@linux.intel.com>, liam.r.girdwood@intel.com
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-2013/8/22 Alexander E. Patrakov <patrakov@gmail.com>:
-> 2013/8/22 Wang Xingchao <wangxingchao2011@gmail.com>:
->> cc Mengdong and Liam, we're in the same PRC audio Team.
->>
->> 2013/8/21 Alexander E. Patrakov <patrakov@gmail.com>:
->>> 2013/8/21 Wang Xingchao <wangxingchao2011@gmail.com>:
->>>> Hi Takashi/Alexander E. Patrakov,
->>>>
->>>> 2013/8/20 Takashi Iwai <tiwai@suse.de>:
->>>>> Xingchao, could you take a look at this bug?
->>>>
->>>> sure, i will take a look at it.
->>>> But i'm afraid i cannot continue tracking from next week, i'm under
->>>> leaving process at Intel.
->>>
->>> Best wishes to you, and good luck with a new job :)
->>>
->>> But then please tell us the contact information of the person at Intel
->>> who should be contacted instead of you for any further questions
->>> related to HDMI audio on Haswell.
->>>
->>>> At first glance, i saw a lot of errors:
->>>>
->>>> [  772.822663] playback write error (DMA or IRQ trouble?)
->>>> [  782.912776] playback write error (DMA or IRQ trouble?)
->>>> [  793.002904] playback write error (DMA or IRQ trouble?)
->>>> [  803.093052] playback write error (DMA or IRQ trouble?)
->>>> [  813.183205] playback write error (DMA or IRQ trouble?)
->>>> [  823.273217] playback write error (DMA or IRQ trouble?)
->>>>
->>>> I know this issue on some Haswell ULT boards(STP/WTM1) because they
->>>> are not stable, and it's better to use latest BIOS image(V131 or
->>>> later).
->>
->> btw, did you do any suspend/resume operation before the audio playback test?
->> if not, it's a new case. i found the issue only on some particular
->> boards after suspend/resume.
->
-> The issue is 100% reproducible without suspend/resume. Just in case, I
-> tested after one suspend-resume cycle, it didn't fix the problem.
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-On IRC (#intel-gfx) ohsix said that the bug
-(https://bugzilla.kernel.org/show_bug.cgi?id=60769) may be graphics
-related after all, but was too scared with the interrupt handling code
-there. The contents of /proc/interrupts are attached to the bug, but
-he said there is nothing interesting there.
+When Gfx driver reconnects a port and transcoder, the pin amplifier will
+be muted. To enable sound, the pin amp need to be unmuted.
 
-BTW I am surprised that the bug is still assigned to Jaroslav Kysela
-and not to Intel specialists (who are not even in the CC list of the
-bug).
+This patch
+- moves pin amp unmuting from stream preparing to hdmi_setup_audio_infoframe().
+  So if port:transcoder reconnection happens during stream playback, the ELDV
+  unsol event can stil trigger pin's amp unmuting when re-setting up audio
+  info frame.
 
+- remove reading pin amp status before unmuting for speed-up, since pin amp
+  should always be unmuted.
+
+- rename haswell_verify_pin_D0() to haswell_verify_D0(), since the convertor
+  power state is also fixed here.
+
+This patch is mostly based on suggestion of David Henningsson.
+
+Cc: David Henningsson <david.henningsson@canonical.com>
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 974b55c..3d8cd044 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -896,6 +896,11 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+ 	if (!channels)
+ 		return;
+ 
++	if (is_haswell(codec))
++		snd_hda_codec_write(codec, pin_nid, 0,
++					    AC_VERB_SET_AMP_GAIN_MUTE,
++					    AMP_OUT_UNMUTE);
++
+ 	eld = &per_pin->sink_eld;
+ 	if (!eld->monitor_present)
+ 		return;
+@@ -1035,10 +1040,10 @@ static void hdmi_unsol_event(struct hda_codec *codec, unsigned int res)
+ 		hdmi_non_intrinsic_event(codec, res);
+ }
+ 
+-static void haswell_verify_pin_D0(struct hda_codec *codec,
++static void haswell_verify_D0(struct hda_codec *codec,
+ 		hda_nid_t cvt_nid, hda_nid_t nid)
+ {
+-	int pwr, lamp, ramp;
++	int pwr;
+ 
+ 	/* For Haswell, the converter 1/2 may keep in D3 state after bootup,
+ 	 * thus pins could only choose converter 0 for use. Make sure the
+@@ -1054,25 +1059,6 @@ static void haswell_verify_pin_D0(struct hda_codec *codec,
+ 		pwr = (pwr & AC_PWRST_ACTUAL) >> AC_PWRST_ACTUAL_SHIFT;
+ 		snd_printd("Haswell HDMI audio: Power for pin 0x%x is now D%d\n", nid, pwr);
+ 	}
+-
+-	lamp = snd_hda_codec_read(codec, nid, 0,
+-				  AC_VERB_GET_AMP_GAIN_MUTE,
+-				  AC_AMP_GET_LEFT | AC_AMP_GET_OUTPUT);
+-	ramp = snd_hda_codec_read(codec, nid, 0,
+-				  AC_VERB_GET_AMP_GAIN_MUTE,
+-				  AC_AMP_GET_RIGHT | AC_AMP_GET_OUTPUT);
+-	if (lamp != ramp) {
+-		snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_AMP_GAIN_MUTE,
+-				    AC_AMP_SET_RIGHT | AC_AMP_SET_OUTPUT | lamp);
+-
+-		lamp = snd_hda_codec_read(codec, nid, 0,
+-				  AC_VERB_GET_AMP_GAIN_MUTE,
+-				  AC_AMP_GET_LEFT | AC_AMP_GET_OUTPUT);
+-		ramp = snd_hda_codec_read(codec, nid, 0,
+-				  AC_VERB_GET_AMP_GAIN_MUTE,
+-				  AC_AMP_GET_RIGHT | AC_AMP_GET_OUTPUT);
+-		snd_printd("Haswell HDMI audio: Mute after set on pin 0x%x: [0x%x 0x%x]\n", nid, lamp, ramp);
+-	}
+ }
+ 
+ /*
+@@ -1090,7 +1076,7 @@ static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
+ 	int new_pinctl = 0;
+ 
+ 	if (is_haswell(codec))
+-		haswell_verify_pin_D0(codec, cvt_nid, pin_nid);
++		haswell_verify_D0(codec, cvt_nid, pin_nid);
+ 
+ 	if (snd_hda_query_pin_caps(codec, pin_nid) & AC_PINCAP_HBR) {
+ 		pinctl = snd_hda_codec_read(codec, pin_nid, 0,
+@@ -1361,13 +1347,9 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ 		 * changed during the stream playback
+ 		 */
+ 		if (is_haswell(codec) &&
+-		    eld->eld_valid && !old_eld_valid && per_pin->setup) {
+-			snd_hda_codec_write(codec, pin_nid, 0,
+-					    AC_VERB_SET_AMP_GAIN_MUTE,
+-					    AMP_OUT_UNMUTE);
++		    eld->eld_valid && !old_eld_valid && per_pin->setup)
+ 			hdmi_setup_audio_infoframe(codec, per_pin,
+ 						   per_pin->non_pcm);
+-		}
+ 	}
+ 	mutex_unlock(&pin_eld->lock);
+ 
 -- 
-Alexander E. Patrakov
+1.8.1.2
