@@ -1,20 +1,25 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH 2/3] ASoC: generic simple sound card DT
-	bindings
-Date: Wed, 04 Sep 2013 12:21:36 -0600
-Message-ID: <52277A30.8010102@wwwdotorg.org>
-References: <1377945878-13322-1-git-send-email-mpa@pengutronix.de>
- <1377945878-13322-3-git-send-email-mpa@pengutronix.de>
- <52220766.1040504@metafoo.de> <52263795.8010600@wwwdotorg.org>
- <20130903231922.GL3084@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: codecs: da9055: Update driver name
+ to fix breakage due to pmic driver with same name
+Date: Wed, 4 Sep 2013 19:34:05 +0100
+Message-ID: <20130904183405.GX3084@sirena.org.uk>
+References: <1375689331.28910.5.camel@matrix>
+ <20130805144201.GF9858@sirena.org.uk>
+ <1375717898.29528.23.camel@matrix>
+ <20130805162342.GS9858@sirena.org.uk>
+ <1377778108.15438.6.camel@matrix>
+ <2E89032DDAA8B9408CB92943514A033751E611AF@SW-EX-MBX01.diasemi.com>
+ <20130902103843.GL3084@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A033751E612F5@SW-EX-MBX01.diasemi.com>
+ <20130902174121.GV3084@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A033751E6157D@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7743656706496414462=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BAED2619F5
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 20:21:42 +0200 (CEST)
-In-Reply-To: <20130903231922.GL3084@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 088BE265567
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 20:34:12 +0200 (CEST)
+In-Reply-To: <2E89032DDAA8B9408CB92943514A033751E6157D@SW-EX-MBX01.diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,52 +29,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, "kiran.padwal" <kiran.padwal@kpitcummins.com>, David Dajun Chen <david.chen@diasemi.com>, Ashish Chavan <ashish.chavan@kpitcummins.com>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/03/2013 05:19 PM, Mark Brown wrote:
-> On Tue, Sep 03, 2013 at 01:25:09PM -0600, Stephen Warren wrote:
-> 
->> Mark has made the argument that (at least for CODEC analog pins)
->> we can simply put those strings into the binding document, and
->> make them as much a part of the binding as anything else. After
->> all, (at least for CODEC analog pins) the values are simply the
->> names of the pins on the package, as listed by the HW
->> documentation itself.
-> 
->> We could presumably do the same thing for DAIs; in DT, use a 
->> string-based DAI name derived directly from the HW documentation,
->> rather than the current intra-ASoC DAI name strings.
-> 
->> That said, I will admit that I personally don't really like the
->> idea of using strings in bindings. That opinion certainly isn't
->> universal though.
-> 
-> I think either works - with DAIs there is a tendency (though not 
-> universal) for devices to just have numbered interfaces which makes
-> the numbers more natural.  I'm more concerned with the binding
-> being legible than with what ends up physically written in there,
-> the original reason for strings (apart from the fact that they're
-> in the drivers already) was that there was a lot of resistance in
-> the DT community to symbolic constants.  That would have lead to
-> bindings which looked like line noise.
 
-True.
+--===============7743656706496414462==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="R9qb+eAX/AZDW6n0"
+Content-Disposition: inline
 
->>> The binding also assumes that a CPU controller may have one DAI
->>> at most. In my opinion this binding ought to use the upcoming
->>> of_xlate stuff for ASoC components.
-> 
->> That restriction seems reasonable for a *simple* DT sound
->> binding. For more complex cards, one could presumably create more
->> complex bindings, be they generic bindings that cover arbitrary
->> more complex cases, or bindings for specific configurations that
->> happen to include multiple DAIs.
-> 
-> The complexity there comes from the device that's being used rather
-> than the design of the sound card though - the fact that a SoC has
-> an audio block with many DAIs shouldn't prevent it using the simple
-> bindings if someone just hung a simple CODEC off one of the DAIs.
 
-Yes, exactly.
+--R9qb+eAX/AZDW6n0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Sep 04, 2013 at 04:13:25PM +0000, Opensource [Adam Thomson] wrote:
+
+> Personally I don't see the issue in having two I2C clients defined for the one
+> chip, in the machine bindings. Logically it's absolutely correct for the chip,
+> and as long as the I2C IDs for the devices make sense (which wasn't the case for
+> DA9055, and is something I want to rectify), then it should be obvious
+> to anyone who comes across that code. Actually having them as two separate
+> entries in machine code helps to highlight that they are individual I2C devices
+> in one package rather than somehow linked internally and requiring ordered
+> initialisation. That seems right to me, and would tally with the associated
+> datasheet for the device.
+
+The goal is that users shouldn't even need to have to think about how
+the chip is constructed, they should just be able to use it with minimal
+thought or effort.  Anything that can be encapsulated within the drivers
+should be.
+
+--R9qb+eAX/AZDW6n0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSJ30aAAoJELSic+t+oim9GYMP/1/kPPw/HZIwU9S1XcaXbkcI
+p7y4/x1zkIevB1aSlgGYCymludYuiMwapf9pPh179JqtTd/S5sXusu0TCsrUzeRB
+nCIyCitn+f1KbsM1FvF2R1uix59JoIqhEBqMO8LfVUeqBLJPNchXQjTwJY1Qq42H
+3LkVvETBtuXSAhh8JVjjMlDzZN3b0FpoqEcq7lkFty5UNN9/XdUny/eulqIMh3SL
+9Oeaz3yW0xaC9H3HuPXQbNaG1KFz0ue9LbpTlw7PFYov0JFTachaYWLp2BARrDbJ
+FTWxVUFIEYT3rqVgeQiBcgsmRXdzxIemTGpdrAFPJgfKjqv3X5yd50G5JW/qcaHK
+LDts0S3CnpGo1RvdYuBQJWuJktIwQNu1vKYPcL6kCTBCaZxX1lsu2hCQP3mGYXOQ
+E27oGHFUp8afW4TC7B/fK1W4tXC/vuIyR65OlDl1kEttJQiB2QwaXljKx7xwK8Y/
+1qS9bDrxZOUG0EEVhIE2CuwRXh1/06Glkn32a3opvW78uH3ixabXAKrf+ULy37MN
+XMZ49m3qlkquZXWiDJcESvrJWt45sqxzyx9ivSuyPKiOFQYS8WASYP3HTfzDGlX7
+Dk7AJMgtH8N/2jH6cSq1Mzv4aYeAEc29J4QFf2FLQEx4/+rviN2OOojDwQYHFdKj
+sjgOKMgBRJfEaeg/za7/
+=E+U6
+-----END PGP SIGNATURE-----
+
+--R9qb+eAX/AZDW6n0--
+
+--===============7743656706496414462==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7743656706496414462==--
