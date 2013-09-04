@@ -1,7 +1,7 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: Florian Faber <faber@faberman.de>
 Subject: Re: Documentation Request
-Date: Wed, 04 Sep 2013 09:58:59 +0200
-Message-ID: <5226E843.4060203@ladisch.de>
+Date: Wed, 04 Sep 2013 10:18:33 +0200
+Message-ID: <5226ECD9.7060202@faberman.de>
 References: <CAPOzVs4y7qc6PGps+rPzAKUUXJPuJSBowaqc2jnb=vRe9QchNg@mail.gmail.com>
  <522685BA.2030904@blennerhassett.gen.nz>
  <CAPOzVs5XUZ8RvcC4wTRp1sYZz7PP4UjnKu=qUzUcwdHkB-ta6Q@mail.gmail.com>
@@ -9,15 +9,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 389D92654CA
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 09:59:02 +0200 (CEST)
-Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
- by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 36C86210C2
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 03:59:01 -0400 (EDT)
-Received: from [10.1.2.65] (unknown [94.101.37.4])
- by mail.messagingengine.com (Postfix) with ESMTPA id D03E2680117
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 03:59:00 -0400 (EDT)
+Received: from linuxproaudio.org (70.52.11.217.in-addr.arpa.manitu.net
+ [217.11.52.70]) by alsa0.perex.cz (Postfix) with ESMTP id 636BD2654D8
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 10:18:34 +0200 (CEST)
 In-Reply-To: <CAPOzVs5XUZ8RvcC4wTRp1sYZz7PP4UjnKu=qUzUcwdHkB-ta6Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,20 +25,25 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Carl Canuck wrote:
-> Surely
+Carl,
 
-:-/
+> Thanks for your response, but I think that is a very poor solution. [ignorant blah]
+>
+> Surely an experienced core ALSA developer could create such a demo [more blah]
 
-> an experienced core ALSA developer
+How about: You write the documentation, given your 'fresh' experience
+with ALSA to help others in your situation.
 
-Do you know how many there are?  And how much time they have?
+Or even better: Accept recommendations from other developers and use
+jack. You would have finished after half an hour and your application
+would cooperate with all other audio applications.
 
-> could create such a demo in less than an hour.
+All you have now is two wasted weeks of your life span and a
+non-cooperative application. And other new ALSA users are still in the
+same situation as you were.
 
-So if I'd set a stopwatch for one hour, and stopped typing then, you
-would be willing to accept the result?  ;-)
 
-
-Regards,
-Clemens
+Flo
+-- 
+Machines can do the work, so people have time to think.
+public key 8D073185          x-hkp://subkeys.pgp.net
