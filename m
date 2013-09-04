@@ -1,14 +1,24 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH] ASoC: atmel: disable error interrupt
-Date: Wed,  4 Sep 2013 15:27:46 +0800
-Message-ID: <1378279666-19873-1-git-send-email-voice.shen@atmel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Documentation Request
+Date: Wed, 04 Sep 2013 09:58:59 +0200
+Message-ID: <5226E843.4060203@ladisch.de>
+References: <CAPOzVs4y7qc6PGps+rPzAKUUXJPuJSBowaqc2jnb=vRe9QchNg@mail.gmail.com>
+ <522685BA.2030904@blennerhassett.gen.nz>
+ <CAPOzVs5XUZ8RvcC4wTRp1sYZz7PP4UjnKu=qUzUcwdHkB-ta6Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A83E2654CA
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 09:29:25 +0200 (CEST)
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 389D92654CA
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 09:59:02 +0200 (CEST)
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+ by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 36C86210C2
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 03:59:01 -0400 (EDT)
+Received: from [10.1.2.65] (unknown [94.101.37.4])
+ by mail.messagingengine.com (Postfix) with ESMTPA id D03E2680117
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2013 03:59:00 -0400 (EDT)
+In-Reply-To: <CAPOzVs5XUZ8RvcC4wTRp1sYZz7PP4UjnKu=qUzUcwdHkB-ta6Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,34 +28,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As once the error interrupt is triggered, it can not be cleared.
-So, disable it.
+Carl Canuck wrote:
+> Surely
 
-No side effect found while testing on sama5d3xek and at91sam9x5ek
-boards.
+:-/
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
----
- sound/soc/atmel/atmel_ssc_dai.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> an experienced core ALSA developer
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 0ecf356..bb53dea 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -649,7 +649,7 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
- 	dma_params = ssc_p->dma_params[dir];
- 
- 	ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_enable);
--	ssc_writel(ssc_p->ssc->regs, IER, dma_params->mask->ssc_error);
-+	ssc_writel(ssc_p->ssc->regs, IDR, dma_params->mask->ssc_error);
- 
- 	pr_debug("%s enabled SSC_SR=0x%08x\n",
- 			dir ? "receive" : "transmit",
--- 
-1.7.9.5
+Do you know how many there are?  And how much time they have?
+
+> could create such a demo in less than an hour.
+
+So if I'd set a stopwatch for one hour, and stopped typing then, you
+would be willing to accept the result?  ;-)
+
+
+Regards,
+Clemens
