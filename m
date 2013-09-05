@@ -1,20 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/5 v2] ARM: shmobile: bockw: add R-Car
- sound support (PIO)
-Date: Thu, 5 Sep 2013 14:53:01 +0100
-Message-ID: <20130905135301.GC3084@sirena.org.uk>
-References: <874nb2jgc4.wl%kuninori.morimoto.gx@renesas.com>
- <87haecvns0.wl%kuninori.morimoto.gx@renesas.com>
- <87bo4kvnow.wl%kuninori.morimoto.gx@renesas.com>
- <20130905055749.GF14960@verge.net.au>
- <20130905071946.GA8334@verge.net.au>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH] ASoC: kirkwood: change the compatible
+ string of the kirkwood-i2s driver
+Date: Thu, 5 Sep 2013 18:54:56 +0200
+Message-ID: <20130905185456.175f556b@armhf>
+References: <1378385791-29551-1-git-send-email-thomas.petazzoni@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1111398824742322856=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E9B892615B9
- for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2013 15:53:08 +0200 (CEST)
-In-Reply-To: <20130905071946.GA8334@verge.net.au>
+Received: from smtp3-g21.free.fr (smtp3-g21.free.fr [212.27.42.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93189261A1F
+ for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2013 18:53:48 +0200 (CEST)
+In-Reply-To: <1378385791-29551-1-git-send-email-thomas.petazzoni@free-electrons.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,59 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Simon Horman <horms@verge.net.au>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Linux-SH <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory Clement <gregory.clement@free-electrons.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1111398824742322856==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Gf9uwQCH04IP1HVU"
-Content-Disposition: inline
-
-
---Gf9uwQCH04IP1HVU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Sep 05, 2013 at 04:19:50PM +0900, Simon Horman wrote:
-
-> Morimoto-san, is this correct?
-> If so, Mark, would it be possible for you to provide topic/car
-> or similar as stable branch for me to use as a base?
-> My intention is to queue these up for v3.13.
-
-It's gone to Linus already so it's stable.
-
---Gf9uwQCH04IP1HVU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSKIy5AAoJELSic+t+oim9m20P/AxjAELtpiq5AOx2e4IJJPJD
-a+AfMf93SFECkZhZ+f9hV2yoNqpoF7ucjwbPgfy97WhFD8XDQ9lFV6oykqa/ucwG
-ZG++brQ+G2quR9CjNw2wVS32l3tyzhgqiDpcOMk+a1svASpyb3AyHF8SAazFKEL5
-nkWXHIHF9LadzgCxPr+/dYwAql8PevfAQTpyW91Wn2l4DedyXTSUuRAzolkorz8r
-8Uz7ZnjSnmKH7Nw9Q3PNQA3BYjmcjbamPRFOesjV7TrlYaOKTp0DXKE1hp1sAc78
-zhtdg/+Wly0v19/rH82t/O/tC1Dhg4oKB9l9BCSMRMIhlUxmYU0HCvKVxPPrmaW1
-Jl+f9X+5gFPjA8gigjIpoMH1SrktpeNoGsR3mIsulble45kqNeRgf7fhhcyVa1lf
-s8TPjBKWadEOiMrCvlx2t8SXoP1NNAEXfjlvbS/Rmb0u0UQ4GC1a2zmCoaJP5WRE
-Hji/35a/8GFQYcYNkfWbsBdp+1QndBSVAgXfd0rDbJYnDTuXlsWgK1OW5AZzMwgt
-Ry0YnksJkrYqktAqYpA9T9nQZqyGIVixd0iESVIo+pkUppUrsZPvO/fguTbjwOak
-b8EZw6eWCM7Eia5ay5HpZD+xz+zngJrnsLh00uFGXvIL9rJJVVPzzy4YsI+weoqk
-qlR+G9zXWX50S+d41XFO
-=srai
------END PGP SIGNATURE-----
-
---Gf9uwQCH04IP1HVU--
-
---===============1111398824742322856==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1111398824742322856==--
+T24gVGh1LCAgNSBTZXAgMjAxMyAxNDo1NjozMSArMDIwMApUaG9tYXMgUGV0YXp6b25pIDx0aG9t
+YXMucGV0YXp6b25pQGZyZWUtZWxlY3Ryb25zLmNvbT4gd3JvdGU6Cgo+IFRoZSBjb21wYXRpYmxl
+IHN0cmluZyBvZiB0aGUga2lya3dvb2QtaTJzIGRyaXZlciB3YXMgY2hvc2VuIGFzCj4gIm1hcnZl
+bGwsbXZlYnUtYXVkaW8iLiBVc2luZyBzdWNoIGEgY29tcGF0aWJsZSBzdHJpbmcgaXMgbm90IGEg
+Z29vZAo+IGlkZWEsIHNpbmNlICJtdmVidSIgaXMgdGhlIG5hbWUgb2YgYSBsYXJnZSBmYW1pbHkg
+b2YgU09DcywgaW4gd2hpY2gKPiBuZXcsIHVua25vd24gU09DcyB3aWxsIGJlIGNvbWluZyBpbiB0
+aGUgZnV0dXJlLiBJdCBpcyB0aGVyZWZvcmUKPiBpbXBvc3NpYmxlIHRvIGtub3cgd2hhdCB3aWxs
+IGJlIGV2b2x1dGlvbnMgb2YgdGhpcyBoYXJkd2FyZSBibG9jayBpbgo+IHRoZSBuZXh0IGdlbmVy
+YXRpb25zIG9mIHRoZSBTT0NzLiBGb3IgdGhpcyByZWFzb24sIHRoZSByZWNvbW1hbmRhdGlvbgo+
+IGZvciBjb21wYXRpYmxlIHN0cmluZ3Mgb2Ygb24tU09DcyBkZXZpY2VzIGhhcyBhbHdheXMgYmVl
+biB0byB1c2UgdGhlCj4gbmFtZSBvZiB0aGUgb2xkZXN0IFNPQyB0aGF0IGhhcyB0aGUgaGFyZHdh
+cmUgYmxvY2suIE5ldyBTT0NzIHRoYXQgaGF2ZQo+IGFuIGV4YWN0bHkgY29tcGF0aWJsZSBoYXJk
+d2FyZSBibG9jayBjYW4gcmVmZXJlbmNlIGl0IHVzaW5nIHRoZSBzYW1lCj4gY29tcGF0aWJsZSBz
+dHJpbmcuIFNlZSBbMV0sIFsyXSBhbmQgWzNdIGZvciB2YXJpb3VzIGNhc2VzIHdlcmUgdGhpcwo+
+IHN1Z2dlc3Rpb24gd2FzIG1hZGUsIGluY2x1ZGluZyBmcm9tIFJvYiBIZXJyaW5nLCBhIERldmlj
+ZSBUcmVlIGJpbmRpbmcKPiBtYWludGFpbmVyLgo+IAo+IEFzIGFuIGV4YW1wbGUsIHRoZXJlIGFy
+ZSBhbHJlYWR5IHNtYWxsIGRpZmZlcmVuY2VzIGJldHdlZW4gY3VycmVudAo+IGdlbmVyYXRpb25z
+Ogo+IAo+ICAqIE9uIEtpcmt3b29kLCBvbmx5IG9uZSBpbnRlcnJ1cHQgaXMgdXNlZCBmb3IgYXVk
+aW8uCj4gICogT24gRG92ZSwgdHdvIGludGVycnVwdHMgYXJlIHVzZWQsIG9uZSBmb3IgYXVkaW8g
+ZGF0YSBhbmQgb25lIGZvcgo+ICAgIGVycm9yIHJlcG9ydGluZy4KPiAKPiBJbiB0aGUgbmVhciBm
+dXR1cmUsIEknbGwgYmUgYWRkaW5nIGF1ZGlvIHN1cHBvcnQgdG8gQXJtYWRhIDM3MCwgd2hpY2gK
+PiBhbGxvd3MgaGFzIHRoZSBzYW1lIGhhcmR3YXJlIGJsb2NrIChidXQgbWF5YmUgd2l0aCBtaW5v
+ciB2YXJpYW50cykuCj4gCj4gVGhlcmVmb3JlLCB0aGlzIHBhdGNoIGNoYW5nZXMgdGhlIGRyaXZl
+ciB0byBhY2NlcHQKPiAibWFydmVsbCxraXJrd29vZC1hdWRpbyIgYW5kICJtYXJ2ZWxsLGRvdmUt
+YXVkaW8iIGFzIGNvbXBhdGlibGUKPiBzdHJpbmdzIGluc3RlYWQgb2YgdGhlIHRvby1nZW5lcmlj
+ICJtYXJ2ZWxsLG12ZWJ1LWF1ZGlvIi4gVGhlIHJlYXNvbgo+IGZvciB0aGUgdHdvIGRpZmZlcmVu
+dCBjb21wYXRpYmxlIHN0cmluZ3MgaXMgdGhlIGRpZmZlcmVuY2UgaW4gdGhlCj4gbnVtYmVyIG9m
+IGludGVycnVwdHMgdXNlZCBieSB0aGUgdHdvIFNPQ3MgZm9yIGF1ZGlvLgo+IAo+IFRoaXMgRGV2
+aWNlIFRyZWUgYmluZGluZyBoYXMgbmV2ZXIgYmVlbiBwYXJ0IG9mIGEgTGludXgga2VybmVsIHN0
+YWJsZQo+IHJlbGVhc2Ugc28gZmFyLCBzbyBpdCBjYW4gYmUgY2hhbmdlZCBub3cgd2l0aG91dCBi
+cmVha2luZyBiYWNrd2FyZAo+IGNvbXBhdGliaWxpdHkuCj4gCj4gWzFdIGh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAxMi1NYXJjaC8wNDA0MTcuaHRtbAo+
+IFsyXSBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtYXJtLWtlcm5l
+bC8yMDEzLUFwcmlsLzE2MTA2NS5odG1sCj4gWzNdIGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L3BpcGVybWFpbC9saW51eC1hcm0ta2VybmVsLzIwMTItTWFyY2gvMDg3NzAyLmh0bWwKPiAKPiBT
+aWduZWQtb2ZmLWJ5OiBUaG9tYXMgUGV0YXp6b25pIDx0aG9tYXMucGV0YXp6b25pQGZyZWUtZWxl
+Y3Ryb25zLmNvbT4KPiAtLS0KClRoZSBuYW1lIG9mIHRoZSBraXJ3b29kIGF1ZGlvIGRyaXZlciBo
+YXMgYmVlbiBjaGFuZ2VkIGZyb20KImtpcmt3b29kLWkycyIgdG8gIm12ZWJ1LWF1ZGlvIiBieSBS
+dXNzZWxsIEtpbmcKKGh0dHA6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvYXJtLWtlcm5lbC9tc2cy
+NjQxODUuaHRtbCkuCkkgaGF2ZSBqdXN0IHVzZWQgdGhpcyBuYW1lIGluIHRoZSBEVC4KClRoZW4s
+IHRoZSBzZWNvbmQgaW50ZXJydXB0IGluIERvdmUgaXMgbm90IHVzZWQgaW4gdGhlIGRyaXZlci4g
+SWYgaXQKc2hvdWxkLCBpdCB3b3VsZCBiZSBwcmVzZW50IGluIHRoZSBEVHMgb2YgdGhlIGRvdmUg
+Ym9hcmRzIG9ubHksIHNvLAphY3R1YWxseSwgdGhlcmUgaXMgbm90IG5lZWQgdG8gaGF2ZSBkaWZm
+ZXJlbnQgY29tcGF0aWJsZXMuCgpFdmVudHVhbGx5LCB5b3UgYXJlIHRhbGtpbmcgYWJvdXQgc29t
+ZSBvdGhlciBtdmVidSBTb0NzLiBCZWZvcmUgYWRkaW5nCmFueSBuZXcgY29tcGF0aWJsZSwgaXQg
+d291bGQgYmUgbmljZSB0byBrbm93IGlmLCBmb3IgZXhhbXBsZSwgc29tZQpjaGFuZ2VzIGFyZSBu
+ZWVkZWQgaW4gdGhlIGtpcmt3b29kL2RvdmUgYXVkaW8gZHJpdmVyIGZvciB0aGUgQXJtYWRhIDM3
+MC4uLgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAqKiBCcmVpemggaGEgTGludXggYXRh
+diEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZyLwpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
