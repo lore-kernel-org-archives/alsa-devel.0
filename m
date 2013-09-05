@@ -1,102 +1,66 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH v2 1/2] ALSA: hda - define is_haswell() to
-	check if a display audio codec is Haswell
-Date: Wed,  4 Sep 2013 16:36:57 -0400
-Message-ID: <1378327017-14431-1-git-send-email-mengdong.lin@intel.com>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH 4/5 v2] ARM: shmobile: bockw: add R-Car sound support
+ (PIO)
+Date: Thu, 5 Sep 2013 16:19:50 +0900
+Message-ID: <20130905071946.GA8334@verge.net.au>
+References: <874nb2jgc4.wl%kuninori.morimoto.gx@renesas.com>
+ <87haecvns0.wl%kuninori.morimoto.gx@renesas.com>
+ <87bo4kvnow.wl%kuninori.morimoto.gx@renesas.com>
+ <20130905055749.GF14960@verge.net.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id E0A9426559E
- for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2013 05:36:00 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130905055749.GF14960@verge.net.au>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Laurent <laurent.pinchart@ideasonboard.com>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+[ CC Mark Brown, alsa-devel ]
 
-To apply Haswell specific fixings, this patch defines is_haswell() to check
-whether a display audio codec is Haswell, to avoid explicitly checking Haswell
-vendor ID everywhere.
+On Thu, Sep 05, 2013 at 02:57:51PM +0900, Simon Horman wrote:
+> On Mon, Aug 26, 2013 at 01:52:35AM -0700, Kuninori Morimoto wrote:
+> > This patch enables R-Car sound,
+> > AK4643 (CN19) and AK4554 (CN20/CN21) codec chip
+> > on Bock-W.
+> > 
+> > But, it supports PIO transfer only at this point.
+> > User can check sound settings (Dip-switch/PFC etc)
+> > via this patch, but will get under/over flow error
+> > when playback/capture.
+> > Because PIO transfer via SSI will be interrupted
+> > "sampling rate" times per 1 second.
+> > 
+> > DMA transfer will be supported when HPB-DMAC was
+> > enabled on r8a7778.
+> > 
+> > You will notice strange ALSA sound card HW
+> > numbering on Bock-W board.
+> > This came from AK4554 strange format on playback/capture.
+> > The format on playback/capture is same on "normal" codec chip,
+> > but AK4554 was different.
+> > Because of that, AK4554 playback/capture are
+> > registered as a different sound card.
+> > 
+> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > ---
+> > v1 -> v2
+> 
+> Thanks, I have queued this up for v3.13.
+> 
+> There was a bit of diff-noise, please make sure I have applied it
+> correctly. The patch I applied is below:
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+Unfortunately I didn't read your cover email carefully before queuing this up.
+I now see that it has dependencies that aren't present in v3.11-rc and
+thus I have temporarily dropped it.
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 9a58893..974b55c 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -44,6 +44,8 @@ static bool static_hdmi_pcm;
- module_param(static_hdmi_pcm, bool, 0644);
- MODULE_PARM_DESC(static_hdmi_pcm, "Don't restrict PCM parameters per ELD info");
- 
-+#define is_haswell(codec)  ((codec)->vendor_id == 0x80862807)
-+
- struct hdmi_spec_per_cvt {
- 	hda_nid_t cvt_nid;
- 	int assigned;
-@@ -1087,7 +1089,7 @@ static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
- 	int pinctl;
- 	int new_pinctl = 0;
- 
--	if (codec->vendor_id == 0x80862807)
-+	if (is_haswell(codec))
- 		haswell_verify_pin_D0(codec, cvt_nid, pin_nid);
- 
- 	if (snd_hda_query_pin_caps(codec, pin_nid) & AC_PINCAP_HBR) {
-@@ -1227,7 +1229,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 			    mux_idx);
- 
- 	/* configure unused pins to choose other converters */
--	if (codec->vendor_id == 0x80862807)
-+	if (is_haswell(codec))
- 		haswell_config_cvts(codec, pin_idx, mux_idx);
- 
- 	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
-@@ -1358,7 +1360,7 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- 		/* Haswell-specific workaround: re-setup when the transcoder is
- 		 * changed during the stream playback
- 		 */
--		if (codec->vendor_id == 0x80862807 &&
-+		if (is_haswell(codec) &&
- 		    eld->eld_valid && !old_eld_valid && per_pin->setup) {
- 			snd_hda_codec_write(codec, pin_nid, 0,
- 					    AC_VERB_SET_AMP_GAIN_MUTE,
-@@ -1405,7 +1407,7 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
- 	if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
- 		return 0;
- 
--	if (codec->vendor_id == 0x80862807)
-+	if (is_haswell(codec))
- 		intel_haswell_fixup_connect_list(codec, pin_nid);
- 
- 	pin_idx = spec->num_pins;
-@@ -2014,7 +2016,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
- 	codec->spec = spec;
- 	hdmi_array_init(spec, 4);
- 
--	if (codec->vendor_id == 0x80862807) {
-+	if (is_haswell(codec)) {
- 		intel_haswell_enable_all_pins(codec, true);
- 		intel_haswell_fixup_enable_dp12(codec);
- 	}
-@@ -2025,7 +2027,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
- 		return -EINVAL;
- 	}
- 	codec->patch_ops = generic_hdmi_patch_ops;
--	if (codec->vendor_id == 0x80862807) {
-+	if (is_haswell(codec)) {
- 		codec->patch_ops.set_power_state = haswell_set_power_state;
- 		codec->dp_mst = true;
- 	}
--- 
-1.8.1.2
+It seems to me that the dependencies could be provided by
+the topic/car branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git.
+
+Morimoto-san, is this correct?
+If so, Mark, would it be possible for you to provide topic/car
+or similar as stable branch for me to use as a base?
+My intention is to queue these up for v3.13.
