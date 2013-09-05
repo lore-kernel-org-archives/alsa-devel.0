@@ -1,15 +1,20 @@
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: [PATCH] ASoC: kirkwood: change the compatible string
-	of the kirkwood-i2s driver
-Date: Thu,  5 Sep 2013 14:56:31 +0200
-Message-ID: <1378385791-29551-1-git-send-email-thomas.petazzoni@free-electrons.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/5 v2] ARM: shmobile: bockw: add R-Car
+ sound support (PIO)
+Date: Thu, 5 Sep 2013 14:53:01 +0100
+Message-ID: <20130905135301.GC3084@sirena.org.uk>
+References: <874nb2jgc4.wl%kuninori.morimoto.gx@renesas.com>
+ <87haecvns0.wl%kuninori.morimoto.gx@renesas.com>
+ <87bo4kvnow.wl%kuninori.morimoto.gx@renesas.com>
+ <20130905055749.GF14960@verge.net.au>
+ <20130905071946.GA8334@verge.net.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1111398824742322856=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A95D261A09
- for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2013 14:56:33 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9B892615B9
+ for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2013 15:53:08 +0200 (CEST)
+In-Reply-To: <20130905071946.GA8334@verge.net.au>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,100 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Russell King <linux@arm.linux.org.uk>, Rob Herring <rob.herring@calxeda.com>
-Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory Clement <gregory.clement@free-electrons.com>, linux-arm-kernel@lists.infradead.org
+To: Simon Horman <horms@verge.net.au>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Linux-SH <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The compatible string of the kirkwood-i2s driver was chosen as
-"marvell,mvebu-audio". Using such a compatible string is not a good
-idea, since "mvebu" is the name of a large family of SOCs, in which
-new, unknown SOCs will be coming in the future. It is therefore
-impossible to know what will be evolutions of this hardware block in
-the next generations of the SOCs. For this reason, the recommandation
-for compatible strings of on-SOCs devices has always been to use the
-name of the oldest SOC that has the hardware block. New SOCs that have
-an exactly compatible hardware block can reference it using the same
-compatible string. See [1], [2] and [3] for various cases were this
-suggestion was made, including from Rob Herring, a Device Tree binding
-maintainer.
 
-As an example, there are already small differences between current
-generations:
+--===============1111398824742322856==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Gf9uwQCH04IP1HVU"
+Content-Disposition: inline
 
- * On Kirkwood, only one interrupt is used for audio.
- * On Dove, two interrupts are used, one for audio data and one for
-   error reporting.
 
-In the near future, I'll be adding audio support to Armada 370, which
-allows has the same hardware block (but maybe with minor variants).
+--Gf9uwQCH04IP1HVU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Therefore, this patch changes the driver to accept
-"marvell,kirkwood-audio" and "marvell,dove-audio" as compatible
-strings instead of the too-generic "marvell,mvebu-audio". The reason
-for the two different compatible strings is the difference in the
-number of interrupts used by the two SOCs for audio.
+On Thu, Sep 05, 2013 at 04:19:50PM +0900, Simon Horman wrote:
 
-This Device Tree binding has never been part of a Linux kernel stable
-release so far, so it can be changed now without breaking backward
-compatibility.
+> Morimoto-san, is this correct?
+> If so, Mark, would it be possible for you to provide topic/car
+> or similar as stable branch for me to use as a base?
+> My intention is to queue these up for v3.13.
 
-[1] http://lists.infradead.org/pipermail/linux-mtd/2012-March/040417.html
-[2] http://lists.infradead.org/pipermail/linux-arm-kernel/2013-April/161065.html
-[3] http://lists.infradead.org/pipermail/linux-arm-kernel/2012-March/087702.html
+It's gone to Linus already so it's stable.
 
-Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
----
- Documentation/devicetree/bindings/sound/mvebu-audio.txt | 12 ++++++++----
- sound/soc/kirkwood/kirkwood-i2s.c                       |  3 ++-
- 2 files changed, 10 insertions(+), 5 deletions(-)
+--Gf9uwQCH04IP1HVU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-diff --git a/Documentation/devicetree/bindings/sound/mvebu-audio.txt b/Documentation/devicetree/bindings/sound/mvebu-audio.txt
-index 7e5fd37..f0062c5 100644
---- a/Documentation/devicetree/bindings/sound/mvebu-audio.txt
-+++ b/Documentation/devicetree/bindings/sound/mvebu-audio.txt
-@@ -2,13 +2,17 @@
- 
- Required properties:
- 
--- compatible: "marvell,mvebu-audio"
-+- compatible:
-+  "marvell,kirkwood-audio" for Kirkwood platforms
-+  "marvell,dove-audio" for Dove platforms
- 
- - reg: physical base address of the controller and length of memory mapped
-   region.
- 
--- interrupts: list of two irq numbers.
--  The first irq is used for data flow and the second one is used for errors.
-+- interrupts:
-+  with "marvell,kirkwood-audio", the audio interrupt
-+  with "marvell,dove-audio", a list of two interrupts, the first for
-+  the data flow, and the second for errors.
- 
- - clocks: one or two phandles.
-   The first one is mandatory and defines the internal clock.
-@@ -21,7 +25,7 @@ Required properties:
- Example:
- 
- i2s1: audio-controller@b4000 {
--	compatible = "marvell,mvebu-audio";
-+	compatible = "marvell,dove-audio";
- 	reg = <0xb4000 0x2210>;
- 	interrupts = <21>, <22>;
- 	clocks = <&gate_clk 13>;
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index 7fce340..0f3d73d 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -559,7 +559,8 @@ static int kirkwood_i2s_dev_remove(struct platform_device *pdev)
- 
- #ifdef CONFIG_OF
- static struct of_device_id mvebu_audio_of_match[] = {
--	{ .compatible = "marvell,mvebu-audio" },
-+	{ .compatible = "marvell,kirkwood-audio" },
-+	{ .compatible = "marvell,dove-audio" },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, mvebu_audio_of_match);
--- 
-1.8.1.2
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSKIy5AAoJELSic+t+oim9m20P/AxjAELtpiq5AOx2e4IJJPJD
+a+AfMf93SFECkZhZ+f9hV2yoNqpoF7ucjwbPgfy97WhFD8XDQ9lFV6oykqa/ucwG
+ZG++brQ+G2quR9CjNw2wVS32l3tyzhgqiDpcOMk+a1svASpyb3AyHF8SAazFKEL5
+nkWXHIHF9LadzgCxPr+/dYwAql8PevfAQTpyW91Wn2l4DedyXTSUuRAzolkorz8r
+8Uz7ZnjSnmKH7Nw9Q3PNQA3BYjmcjbamPRFOesjV7TrlYaOKTp0DXKE1hp1sAc78
+zhtdg/+Wly0v19/rH82t/O/tC1Dhg4oKB9l9BCSMRMIhlUxmYU0HCvKVxPPrmaW1
+Jl+f9X+5gFPjA8gigjIpoMH1SrktpeNoGsR3mIsulble45kqNeRgf7fhhcyVa1lf
+s8TPjBKWadEOiMrCvlx2t8SXoP1NNAEXfjlvbS/Rmb0u0UQ4GC1a2zmCoaJP5WRE
+Hji/35a/8GFQYcYNkfWbsBdp+1QndBSVAgXfd0rDbJYnDTuXlsWgK1OW5AZzMwgt
+Ry0YnksJkrYqktAqYpA9T9nQZqyGIVixd0iESVIo+pkUppUrsZPvO/fguTbjwOak
+b8EZw6eWCM7Eia5ay5HpZD+xz+zngJrnsLh00uFGXvIL9rJJVVPzzy4YsI+weoqk
+qlR+G9zXWX50S+d41XFO
+=srai
+-----END PGP SIGNATURE-----
+
+--Gf9uwQCH04IP1HVU--
+
+--===============1111398824742322856==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1111398824742322856==--
