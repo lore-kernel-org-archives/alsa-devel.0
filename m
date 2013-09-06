@@ -1,19 +1,16 @@
-From: Ashecrow <ashecrow42@free.fr>
-Subject: Re: [PATCH] ALSA: hda - hdmi: Fallback to ALSA
-	allocation when selecting CA
-Date: Fri, 6 Sep 2013 10:43:17 +0200
-Message-ID: <90F283E1-F425-4818-9A03-AAED8DB5547B@free.fr>
-References: <1378035407-29536-1-git-send-email-anssi.hannula@iki.fi>
- <s5hy57fbcf7.wl%tiwai@suse.de>
-Mime-Version: 1.0 (1.0)
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: kirkwood: change the compatible
+ string of the kirkwood-i2s driver
+Date: Fri, 6 Sep 2013 10:31:11 +0100
+Message-ID: <20130906093111.GA18774@sirena.org.uk>
+References: <1378385791-29551-1-git-send-email-thomas.petazzoni@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============6009518017546012564=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp03.smtpout.orange.fr
- [80.12.242.125])
- by alsa0.perex.cz (Postfix) with ESMTP id 60EDF260850
- for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2013 10:47:14 +0200 (CEST)
-In-Reply-To: <s5hy57fbcf7.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED9A6260850
+ for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2013 11:31:22 +0200 (CEST)
+In-Reply-To: <1378385791-29551-1-git-send-email-thomas.petazzoni@free-electrons.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,73 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Anssi Hannula <anssi.hannula@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, =?utf-8?Q?Peter_Fr=C3=BChberger?= <fritsch@xbmc.org>, "<stable@vger.kernel.org>" <stable@vger.kernel.org>, Frank Zafka <kafkaesque1978@gmail.com>
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory Clement <gregory.clement@free-electrons.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgZ3V5cywKQW5zc2ksIHRoYW5rIHlvdSB2ZXJ5IG11Y2ggZm9yIHlvdXIgd29yayEgSSdsbCB0
-ZXN0IHRoZSBwYXRjaCBhc2FwIGFuZCBJJ2xsIGtlZXAgeW91IHBvc3RlZC4KClRha2FzaGksIHdo
-ZXJlIGNhbiBJIGdldCBwYXRjaGVkIGtlcm5lbCBzb3VyY2VzLCBvciBvbiB3aGljaCBicmFuY2gg
-ZG8gSSBhcHBseSB0aGUgcGF0Y2ggdG8/CgpUaGFua3MKRXRpZW5uZQoKTGUgMiBzZXB0LiAyMDEz
-IMOgIDE1OjA2LCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+IGEgw6ljcml0IDoKCj4gQXQg
-U3VuLCAgMSBTZXAgMjAxMyAxNDozNjo0NyArMDMwMCwKPiBBbnNzaSBIYW5udWxhIHdyb3RlOgo+
-PiAKPj4gaGRtaV9jaGFubmVsX2FsbG9jYXRpb24oKSB0cmllcyB0byBmaW5kIGEgSERNSSBjaGFu
-bmVsIGFsbG9jYXRpb24gdGhhdAo+PiBtYXRjaGVzIHRoZSBudW1iZXIgY2hhbm5lbHMgaW4gdGhl
-IHBsYXliYWNrIHN0cmVhbSBhbmQgY29udGFpbnMgb25seQo+PiBzcGVha2VycyB0aGF0IHRoZSBI
-RE1JIHNpbmsgaGFzIHJlcG9ydGVkIGFzIGF2YWlsYWJsZSB2aWEgRURJRC4gSWYgbm8KPj4gc3Vj
-aCBhbGxvY2F0aW9uIGlzIGZvdW5kLCAwIChzdGVyZW8gYXVkaW8pIGlzIHVzZWQuCj4+IAo+PiBV
-c2luZyBDQSAwIGNhdXNlcyB0aGUgYXVkaW8gY2F1c2VzIHRoZSBzaW5rIHRvIGRpc2NhcmQgZXZl
-cnl0aGluZyBleGNlcHQKPj4gdGhlIGZpcnN0IHR3byBjaGFubmVscyAoZnJvbnQgbGVmdCBhbmQg
-ZnJvbnQgcmlnaHQpLgo+PiAKPj4gSG93ZXZlciwgdGhlIHNpbmsgbWF5IGJlIGNhcGFibGUgb2Yg
-cmVjZWl2aW5nIG1vcmUgY2hhbm5lbHMgdGhhbiBpdCBoYXMKPj4gc3BlYWtlcnMgKGFuZCB0aGVu
-IHBlcmZvcm0gZG93bm1peCBvciBkaXNjYXJkIHRoZSBleHRyYSBjaGFubmVscyksIGluCj4+IHdo
-aWNoIGNhc2UgaXQgaXMgcHJlZmVyYWJsZSB0byB1c2UgYSBDQSB0aGF0IGNvbnRhaW5zIGV4dHJh
-IGNoYW5uZWxzCj4+IHRoYW4gdG8gdXNlIENBIDAgd2hpY2ggZGlzY2FyZHMgYWxsIHRoZSBub24t
-c3RlcmVvIGNoYW5uZWxzLgo+PiAKPj4gQWRkaXRpb25hbGx5LCBpdCBzZWVtcyB0aGF0IEhCUiAo
-SEQpIHBhc3N0aHJvdWdoIG91dHB1dCBkb2VzIG5vdCB3b3JrIG9uCj4+IEludGVsIEhETUkgY29k
-ZWNzIHdoZW4gQ0EgaXMgc2V0IHRvIDAgKHBvc3NpYmx5IHRoZSBjb2RlYyB6ZXJvZXMKPj4gY2hh
-bm5lbHMgbm90IHByZXNlbnQgaW4gQ0EpLiBUaGlzIGhhcHBlbnMgd2l0aCBhbGwgcmVjZWl2ZXJz
-IHRoYXQgcmVwb3J0Cj4+IGEgNS4xIHNwZWFrZXIgbWFzayBzaW5jZSBhIEhCUiBzdHJlYW0gaXMg
-Y2FycmllZCBvbiA4IGNoYW5uZWxzIHRvIHRoZQo+PiBjb2RlYy4KPj4gCj4+IEFkZCBhIGZhbGxi
-YWNrIGluIHRoZSBDQSBzZWxlY3Rpb24gc28gdGhhdCB0aGUgQ0EgY2hhbm5lbCBjb3VudCBhdCBs
-ZWFzdAo+PiBtYXRjaGVzIHRoZSBzdHJlYW0gY2hhbm5lbCBjb3VudCwgZXZlbiBpZiB0aGUgc3Ry
-ZWFtIGNvbnRhaW5zIGNoYW5uZWxzCj4+IG5vdCBwcmVzZW50IGluIHRoZSBzaW5rIHNwZWFrZXIg
-ZGVzY3JpcHRvci4KPj4gCj4+IFRoYW5rcyB0byBHcmltR3JpZWZlciBhdCBPcGVuRUxFQyBmb3J1
-bXMgZm9yIGRpc2NvdmVyaW5nIHRoYXQgY2hhbmdpbmcKPj4gdGhlIHNpbmsgc3BlYWtlciBtYXNr
-IGFsbG93ZWQgSEJSIG91dHB1dC4KPj4gCj4+IFJlcG9ydGVkLWJ5OiBHcmltR3JpZWZlcgo+PiBS
-ZXBvcnRlZC1ieTogQXNoZWNyb3cKPj4gUmVwb3J0ZWQtYnk6IEZyYW5rIFphZmthIDxrYWZrYWVz
-cXVlMTk3OEBnbWFpbC5jb20+Cj4+IFJlcG9ydGVkLWJ5OiBQZXRlciBGcsO8aGJlcmdlciA8ZnJp
-dHNjaEB4Ym1jLm9yZz4KPj4gU2lnbmVkLW9mZi1ieTogQW5zc2kgSGFubnVsYSA8YW5zc2kuaGFu
-bnVsYUBpa2kuZmk+Cj4+IENjOiA8c3RhYmxlQHZnZXIua2VybmVsLm9yZz4KPj4gLS0tCj4+IAo+
-PiBIb3BlZnVsbHkgdGhpcyBmaXhlcyBIQlIgKEhEIHBhc3N0aHJvdWdoKSBmb3IgdGhlIHJlbWFp
-bmluZyBJbnRlbCB1c2Vycwo+PiB3aG8gd2VyZSBzdGlsbCBleHBlcmllbmNpbmcgcHJvYmxlbXMu
-Cj4gCj4gVGhhbmtzLCBJIGFwcGxpZWQgdGhlIHBhdGNoIG5vdy4KPiAKPiAKPj4gQlRXLCB0aGUg
-aGRtaV9jaGFubmVsX2FsbG9jYXRpb24oKSBsb2dpYyBzZWVtcyBhbHNvIG90aGVyd2lzZSBzb21l
-d2hhdAo+PiBzdXNwZWN0IHRvIG1lLiBTaG91bGRuJ3Qgd2UgYWx3YXlzIHNlbGVjdCBhbiBhbGxv
-Y2F0aW9uIG1hdGNoaW5nIEFMU0EKPj4gY2hhbm5lbCBtYXBwaW5nLCBpbnN0ZWFkIG9mIHJlLWFz
-c2lnbmluZyBjaGFubmVscyByZWNlaXZlZCBmcm9tCj4+IHVzZXJzcGFjZSAicmFuZG9tbHkiIHRv
-IHNpbmsgc3BlYWtlcnMgKGluIGNhc2Ugb2YgdW51c3VhbCBzaW5rIHNwZWFrZXIKPj4gbWFzayk/
-Cj4gCj4gSWYgcGVyX3Bpbi0+Y2htYXBfc2V0IGlzIHNldCBiZWZvcmVoYW5kLAo+IGhkbWlfbWFu
-dWFsX2NoYW5uZWxfYWxsb2NhdGlvbigpIGlzIGNhbGxlZCBpbnN0ZWFkLiAgU28gaXQgc2hvdWxk
-IGJlCj4gZmluZS4KPiAKPiAKPiBUYWthc2hpCj4gCj4+IEFueXdheSwgSSBsZXQgaXQgYmUgZm9y
-IG5vdyBhdCBsZWFzdC4KPj4gCj4+IAo+PiBzb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYyB8IDEx
-ICsrKysrKysrKysrCj4+IDEgZmlsZSBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspCj4+IAo+PiBk
-aWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgYi9zb3VuZC9wY2kvaGRhL3Bh
-dGNoX2hkbWkuYwo+PiBpbmRleCAwMzBjYTg2Li4zNTRmYzU1IDEwMDY0NAo+PiAtLS0gYS9zb3Vu
-ZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwo+PiArKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWku
-Ywo+PiBAQCAtNTUxLDYgKzU1MSwxNyBAQCBzdGF0aWMgaW50IGhkbWlfY2hhbm5lbF9hbGxvY2F0
-aW9uKHN0cnVjdCBoZG1pX2VsZCAqZWxkLCBpbnQgY2hhbm5lbHMpCj4+ICAgICAgICB9Cj4+ICAg
-IH0KPj4gCj4+ICsgICAgaWYgKCFjYSkgewo+PiArICAgICAgICAvKiBpZiB0aGVyZSB3YXMgbm8g
-bWF0Y2gsIHNlbGVjdCB0aGUgcmVndWxhciBBTFNBIGNoYW5uZWwKPj4gKyAgICAgICAgICogYWxs
-b2NhdGlvbiB3aXRoIHRoZSBtYXRjaGluZyBudW1iZXIgb2YgY2hhbm5lbHMgKi8KPj4gKyAgICAg
-ICAgZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUoY2hhbm5lbF9hbGxvY2F0aW9ucyk7IGkrKykg
-ewo+PiArICAgICAgICAgICAgaWYgKGNoYW5uZWxzID09IGNoYW5uZWxfYWxsb2NhdGlvbnNbaV0u
-Y2hhbm5lbHMpIHsKPj4gKyAgICAgICAgICAgICAgICBjYSA9IGNoYW5uZWxfYWxsb2NhdGlvbnNb
-aV0uY2FfaW5kZXg7Cj4+ICsgICAgICAgICAgICAgICAgYnJlYWs7Cj4+ICsgICAgICAgICAgICB9
-Cj4+ICsgICAgICAgIH0KPj4gKyAgICB9Cj4+ICsKPj4gICAgc25kX3ByaW50X2NoYW5uZWxfYWxs
-b2NhdGlvbihlbGQtPmluZm8uc3BrX2FsbG9jLCBidWYsIHNpemVvZihidWYpKTsKPj4gICAgc25k
-X3ByaW50ZGQoIkhETUk6IHNlbGVjdCBDQSAweCV4IGZvciAlZC1jaGFubmVsIGFsbG9jYXRpb246
-ICVzXG4iLAo+PiAgICAgICAgICAgIGNhLCBjaGFubmVscywgYnVmKTsKPj4gLS0gCj4+IDEuOC4x
-LjUKPj4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+--===============6009518017546012564==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
+Content-Disposition: inline
+
+
+--UugvWAfsgieZRqgk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Sep 05, 2013 at 02:56:31PM +0200, Thomas Petazzoni wrote:
+> The compatible string of the kirkwood-i2s driver was chosen as
+> "marvell,mvebu-audio". Using such a compatible string is not a good
+> idea, since "mvebu" is the name of a large family of SOCs, in which
+> new, unknown SOCs will be coming in the future. It is therefore
+
+Applied, thanks.
+
+--UugvWAfsgieZRqgk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSKaDcAAoJELSic+t+oim9d7EP/R+fU4/kO3iGSA1dXN55L70P
+kk9P9RHkGI9Id2K/UmkKvEAZ1gxD2bEEPNeO5LbJ4Ewex4t4Bch2ruMI+uQ+XzUW
+PJDej+fOjNcqvqDuWShWzv9eqN7clMmW848RWFRyo8STNIhTw5QXqJWb1Dse5Jzc
+saPAOOKoRWJBtCHBzbOgZubGv1MKulWW9yvifSenlZEjTUe9leztYOHVh2Pr3/mf
+GsGOKRIogRNiA3TkX+f/dNX+RhLfCHC6z+NQDqpz4/PVO2jFwsTTK4QMUXrBoWjj
+ofcAXHy1BmOlQhcvA6GsRzbSqTeZX5NTARsse5mzgX4AHCOC4iBcpVrT7pjqrZ2R
+JwK+ZcaLhxU/9CemEzVN/qLI6qnDMVkPLmjZUrQo0YCI1dJiHsULZuPhnWsgrb8w
+jQZcipM4cgVtOMCx4rEhyxv6L2bLGgjJFHn40OeNbagh9jmvWT9ywDGEO39TgCvY
+KruWOBY7bMpKTlhm2TMd8AQ1LiltXQoBUh0uZ3RTYN2lz9a8Or0pOrIMPySxVitq
+XcyuW8t3Mkj/2RaImEJ5qClh389Gne8LN2u1xzZ4mLs3+n+xlNHE1XAUk5rSf57M
+gV3CfuomG281S1g+J9MHoIc0IYZ2a+VoEwGriEsDBpOMoY/GsvR9+Hi79btwea6T
+X4vDhNnp//5HNEL05WB3
+=g+Y4
+-----END PGP SIGNATURE-----
+
+--UugvWAfsgieZRqgk--
+
+--===============6009518017546012564==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6009518017546012564==--
