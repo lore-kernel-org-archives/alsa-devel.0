@@ -1,17 +1,18 @@
-From: "Jurgen Kramer" <gtmkramer@xs4all.nl>
-Subject: [PATCH] aplay - fix two off by one errors
-Date: Sun, 8 Sep 2013 13:50:51 +0200
-Message-ID: <127132b074e97d56b5deab572b9c2176.squirrel@webmail.xs4all.nl>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: where to get snd_pcm_hardware info when usb audio
+ device plug in?
+Date: Sun, 08 Sep 2013 14:28:36 +0200
+Message-ID: <522C6D74.9000208@ladisch.de>
+References: <CANudz+uTk+GDAj=NfHQ_6ZrL6=ZmWJfXAnwRqk7yHPr4s0Jg1A@mail.gmail.com>	<521E07A1.5020807@ladisch.de>	<CANudz+v219cxgAwo2RtAMvmvQ+18doPX0qsX4Pc+vk9TAe3D2g@mail.gmail.com>
+ <CANudz+uu5XNL6-KgE4oTV_z=8qOUZh8ppNGznCYFBx3dGEzEZQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;boundary="----=_20130908135051_59489"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr9.xs4all.nl (smtp-vbr9.xs4all.nl [194.109.24.29])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B50F261691
- for <alsa-devel@alsa-project.org>; Sun,  8 Sep 2013 13:50:51 +0200 (CEST)
-Received: from webmail.xs4all.nl (dovemail16.xs4all.nl [194.109.26.18])
- by smtp-vbr9.xs4all.nl (8.13.8/8.13.8) with ESMTP id r88Bojwu095618
- for <alsa-devel@alsa-project.org>; Sun, 8 Sep 2013 13:50:51 +0200 (CEST)
- (envelope-from gtmkramer@xs4all.nl)
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id E1F07261696
+ for <alsa-devel@alsa-project.org>; Sun,  8 Sep 2013 14:29:20 +0200 (CEST)
+In-Reply-To: <CANudz+uu5XNL6-KgE4oTV_z=8qOUZh8ppNGznCYFBx3dGEzEZQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,77 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: loody <miloody@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_20130908135051_59489
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+loody wrote:
+> ALSA lib conf.c:3601:(snd_config_update_r) Cannot access file /media/sdb1/software/linux.sound/alsa-lib-1.0.23.mips.clibc/build/share/alsa/alsa.conf
 
-Attached patch for aplay fixes two off-by-one errors preventing usage of
-the last available sample format.
-
-diff -uNrp alsa-utils-1.0.27.2/aplay/aplay.c
-alsa-utils-1.0.27.2-jk/aplay/aplay.c
---- alsa-utils-1.0.27.2/aplay/aplay.c	2013-07-09 17:28:37.000000000 +0200
-+++ alsa-utils-1.0.27.2-jk/aplay/aplay.c	2013-09-08 13:46:23.746825429 +0=
-200
-@@ -242,7 +242,7 @@ _("Usage: %s [OPTION]... [FILE]...\n"
-   )
- 		, command);
- 	printf(_("Recognized sample formats are:"));
--	for (k =3D 0; k < SND_PCM_FORMAT_LAST; ++k) {
-+	for (k =3D 0; k <=3D SND_PCM_FORMAT_LAST; ++k) {
- 		const char *s =3D snd_pcm_format_name(k);
- 		if (s)
- 			printf(" %s", s);
-@@ -1114,7 +1114,7 @@ static void show_available_sample_format
- 	snd_pcm_format_t format;
-
- 	fprintf(stderr, "Available formats:\n");
--	for (format =3D 0; format < SND_PCM_FORMAT_LAST; format++) {
-+	for (format =3D 0; format <=3D SND_PCM_FORMAT_LAST; format++) {
- 		if (snd_pcm_hw_params_test_format(handle, params, format) =3D=3D 0)
- 			fprintf(stderr, "- %s\n", snd_pcm_format_name(format));
- 	}
+How exactly did you compile and install alsa-lib?
 
 
-Jurgen
-
-------=_20130908135051_59489
-Content-Type: text/x-patch; name="aplay-fix-off-by-one-errors.patch"
-Content-Disposition: attachment;
-  filename="aplay-fix-off-by-one-errors.patch"
-Content-Transfer-Encoding: quoted-printable
-
-diff -uNrp alsa-utils-1.0.27.2/aplay/aplay.c alsa-utils-1.0.27.2-jk/aplay=
-/aplay.c
---- alsa-utils-1.0.27.2/aplay/aplay.c	2013-07-09 17:28:37.000000000 +0200
-+++ alsa-utils-1.0.27.2-jk/aplay/aplay.c	2013-09-08 13:46:23.746825429 +0=
-200
-@@ -242,7 +242,7 @@ _("Usage: %s [OPTION]... [FILE]...\n"
-   )
- 		, command);
- 	printf(_("Recognized sample formats are:"));
--	for (k =3D 0; k < SND_PCM_FORMAT_LAST; ++k) {
-+	for (k =3D 0; k <=3D SND_PCM_FORMAT_LAST; ++k) {
- 		const char *s =3D snd_pcm_format_name(k);
- 		if (s)
- 			printf(" %s", s);
-@@ -1114,7 +1114,7 @@ static void show_available_sample_format
- 	snd_pcm_format_t format;
-=20
- 	fprintf(stderr, "Available formats:\n");
--	for (format =3D 0; format < SND_PCM_FORMAT_LAST; format++) {
-+	for (format =3D 0; format <=3D SND_PCM_FORMAT_LAST; format++) {
- 		if (snd_pcm_hw_params_test_format(handle, params, format) =3D=3D 0)
- 			fprintf(stderr, "- %s\n", snd_pcm_format_name(format));
- 	}
-------=_20130908135051_59489
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
-------=_20130908135051_59489--
+Regards,
+Clemens
