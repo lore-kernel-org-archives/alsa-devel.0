@@ -1,18 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: where to get snd_pcm_hardware info when usb audio
- device plug in?
-Date: Sun, 08 Sep 2013 14:28:36 +0200
-Message-ID: <522C6D74.9000208@ladisch.de>
-References: <CANudz+uTk+GDAj=NfHQ_6ZrL6=ZmWJfXAnwRqk7yHPr4s0Jg1A@mail.gmail.com>	<521E07A1.5020807@ladisch.de>	<CANudz+v219cxgAwo2RtAMvmvQ+18doPX0qsX4Pc+vk9TAe3D2g@mail.gmail.com>
- <CANudz+uu5XNL6-KgE4oTV_z=8qOUZh8ppNGznCYFBx3dGEzEZQ@mail.gmail.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: US-1641 drivers involvment
+Date: Sun, 08 Sep 2013 16:42:05 +0200
+Message-ID: <522C8CBD.9000109@gmail.com>
+References: <CA+5WxH+L75iiV4OkXoHAZk38AG9984VLctGNKm+61nTh4P2XTA@mail.gmail.com>
+ <521F4639.2060600@ladisch.de>
+ <CA+5WxHLQ-Ao80aUVg6nt2shYJ=7GFWvVuQqyMVC92Lm1obWgEA@mail.gmail.com>
+ <CA+5WxHJ9wBB8-YB=mFFMv=qxvuxKzZmw1XFgNXuwnuixt9hocA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id E1F07261696
- for <alsa-devel@alsa-project.org>; Sun,  8 Sep 2013 14:29:20 +0200 (CEST)
-In-Reply-To: <CANudz+uu5XNL6-KgE4oTV_z=8qOUZh8ppNGznCYFBx3dGEzEZQ@mail.gmail.com>
+Received: from mail-wg0-f47.google.com (mail-wg0-f47.google.com [74.125.82.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7C682616C1
+ for <alsa-devel@alsa-project.org>; Sun,  8 Sep 2013 16:42:08 +0200 (CEST)
+Received: by mail-wg0-f47.google.com with SMTP id f12so4365768wgh.2
+ for <alsa-devel@alsa-project.org>; Sun, 08 Sep 2013 07:42:07 -0700 (PDT)
+In-Reply-To: <CA+5WxHJ9wBB8-YB=mFFMv=qxvuxKzZmw1XFgNXuwnuixt9hocA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,15 +25,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: loody <miloody@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Luca Novarini <luca.novarini@gmail.com>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-loody wrote:
-> ALSA lib conf.c:3601:(snd_config_update_r) Cannot access file /media/sdb1/software/linux.sound/alsa-lib-1.0.23.mips.clibc/build/share/alsa/alsa.conf
+On 05.09.2013 14:30, Luca Novarini wrote:
+> Hello?
+> No one got any advice where to start?
 
-How exactly did you compile and install alsa-lib?
+Try to add the USB ID to the exisiting Tascam driver. Than see how far
+the driver gets in understanding the device's replies to the setup commands.
+
+As Clemens said, you probably need to reverse engineer the Windows
+driver in order to understand the details in their protocol.
 
 
-Regards,
-Clemens
+Daniel
