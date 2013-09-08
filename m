@@ -1,17 +1,17 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: [PATCH] ASoC: ad1980: fix the indentation
-Date: Sun,  8 Sep 2013 17:48:03 +0800
-Message-ID: <1378633683-16264-1-git-send-email-Baohua.Song@csr.com>
+From: "Jurgen Kramer" <gtmkramer@xs4all.nl>
+Subject: [PATCH] aplay - fix two off by one errors
+Date: Sun, 8 Sep 2013 13:50:51 +0200
+Message-ID: <127132b074e97d56b5deab572b9c2176.squirrel@webmail.xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;boundary="----=_20130908135051_59489"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f44.google.com (mail-pa0-f44.google.com
- [209.85.220.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 303182617AB
- for <alsa-devel@alsa-project.org>; Sun,  8 Sep 2013 11:48:17 +0200 (CEST)
-Received: by mail-pa0-f44.google.com with SMTP id fz6so5100240pac.3
- for <alsa-devel@alsa-project.org>; Sun, 08 Sep 2013 02:48:16 -0700 (PDT)
+Received: from smtp-vbr9.xs4all.nl (smtp-vbr9.xs4all.nl [194.109.24.29])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B50F261691
+ for <alsa-devel@alsa-project.org>; Sun,  8 Sep 2013 13:50:51 +0200 (CEST)
+Received: from webmail.xs4all.nl (dovemail16.xs4all.nl [194.109.26.18])
+ by smtp-vbr9.xs4all.nl (8.13.8/8.13.8) with ESMTP id r88Bojwu095618
+ for <alsa-devel@alsa-project.org>; Sun, 8 Sep 2013 13:50:51 +0200 (CEST)
+ (envelope-from gtmkramer@xs4all.nl)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,80 +21,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, device-drivers-devel@blackfin.uclinux.org, Barry Song <Baohua.Song@csr.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Barry Song <Baohua.Song@csr.com>
----
- sound/soc/codecs/ad1980.c | 44 ++++++++++++++++++++++----------------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+------=_20130908135051_59489
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
-index 7257a88..be5032c 100644
---- a/sound/soc/codecs/ad1980.c
-+++ b/sound/soc/codecs/ad1980.c
-@@ -61,39 +61,39 @@ static const struct soc_enum ad1980_cap_src =
- 	SOC_ENUM_DOUBLE(AC97_REC_SEL, 8, 0, 7, ad1980_rec_sel);
- 
- static const struct snd_kcontrol_new ad1980_snd_ac97_controls[] = {
--SOC_DOUBLE("Master Playback Volume", AC97_MASTER, 8, 0, 31, 1),
--SOC_SINGLE("Master Playback Switch", AC97_MASTER, 15, 1, 1),
-+	SOC_DOUBLE("Master Playback Volume", AC97_MASTER, 8, 0, 31, 1),
-+	SOC_SINGLE("Master Playback Switch", AC97_MASTER, 15, 1, 1),
- 
--SOC_DOUBLE("Headphone Playback Volume", AC97_HEADPHONE, 8, 0, 31, 1),
--SOC_SINGLE("Headphone Playback Switch", AC97_HEADPHONE, 15, 1, 1),
-+	SOC_DOUBLE("Headphone Playback Volume", AC97_HEADPHONE, 8, 0, 31, 1),
-+	SOC_SINGLE("Headphone Playback Switch", AC97_HEADPHONE, 15, 1, 1),
- 
--SOC_DOUBLE("PCM Playback Volume", AC97_PCM, 8, 0, 31, 1),
--SOC_SINGLE("PCM Playback Switch", AC97_PCM, 15, 1, 1),
-+	SOC_DOUBLE("PCM Playback Volume", AC97_PCM, 8, 0, 31, 1),
-+	SOC_SINGLE("PCM Playback Switch", AC97_PCM, 15, 1, 1),
- 
--SOC_DOUBLE("PCM Capture Volume", AC97_REC_GAIN, 8, 0, 31, 0),
--SOC_SINGLE("PCM Capture Switch", AC97_REC_GAIN, 15, 1, 1),
-+	SOC_DOUBLE("PCM Capture Volume", AC97_REC_GAIN, 8, 0, 31, 0),
-+	SOC_SINGLE("PCM Capture Switch", AC97_REC_GAIN, 15, 1, 1),
- 
--SOC_SINGLE("Mono Playback Volume", AC97_MASTER_MONO, 0, 31, 1),
--SOC_SINGLE("Mono Playback Switch", AC97_MASTER_MONO, 15, 1, 1),
-+	SOC_SINGLE("Mono Playback Volume", AC97_MASTER_MONO, 0, 31, 1),
-+	SOC_SINGLE("Mono Playback Switch", AC97_MASTER_MONO, 15, 1, 1),
- 
--SOC_SINGLE("Phone Capture Volume", AC97_PHONE, 0, 31, 1),
--SOC_SINGLE("Phone Capture Switch", AC97_PHONE, 15, 1, 1),
-+	SOC_SINGLE("Phone Capture Volume", AC97_PHONE, 0, 31, 1),
-+	SOC_SINGLE("Phone Capture Switch", AC97_PHONE, 15, 1, 1),
- 
--SOC_SINGLE("Mic Volume", AC97_MIC, 0, 31, 1),
--SOC_SINGLE("Mic Switch", AC97_MIC, 15, 1, 1),
-+	SOC_SINGLE("Mic Volume", AC97_MIC, 0, 31, 1),
-+	SOC_SINGLE("Mic Switch", AC97_MIC, 15, 1, 1),
- 
--SOC_SINGLE("Stereo Mic Switch", AC97_AD_MISC, 6, 1, 0),
--SOC_DOUBLE("Line HP Swap Switch", AC97_AD_MISC, 10, 5, 1, 0),
-+	SOC_SINGLE("Stereo Mic Switch", AC97_AD_MISC, 6, 1, 0),
-+	SOC_DOUBLE("Line HP Swap Switch", AC97_AD_MISC, 10, 5, 1, 0),
- 
--SOC_DOUBLE("Surround Playback Volume", AC97_SURROUND_MASTER, 8, 0, 31, 1),
--SOC_DOUBLE("Surround Playback Switch", AC97_SURROUND_MASTER, 15, 7, 1, 1),
-+	SOC_DOUBLE("Surround Playback Volume", AC97_SURROUND_MASTER, 8, 0, 31, 1),
-+	SOC_DOUBLE("Surround Playback Switch", AC97_SURROUND_MASTER, 15, 7, 1, 1),
- 
--SOC_DOUBLE("Center/LFE Playback Volume", AC97_CENTER_LFE_MASTER, 8, 0, 31, 1),
--SOC_DOUBLE("Center/LFE Playback Switch", AC97_CENTER_LFE_MASTER, 15, 7, 1, 1),
-+	SOC_DOUBLE("Center/LFE Playback Volume", AC97_CENTER_LFE_MASTER, 8, 0, 31, 1),
-+	SOC_DOUBLE("Center/LFE Playback Switch", AC97_CENTER_LFE_MASTER, 15, 7, 1, 1),
- 
--SOC_ENUM("Capture Source", ad1980_cap_src),
-+	SOC_ENUM("Capture Source", ad1980_cap_src),
- 
--SOC_SINGLE("Mic Boost Switch", AC97_MIC, 6, 1, 0),
-+	SOC_SINGLE("Mic Boost Switch", AC97_MIC, 6, 1, 0),
- };
- 
- static const struct snd_soc_dapm_widget ad1980_dapm_widgets[] = {
--- 
-1.8.2.3
+Attached patch for aplay fixes two off-by-one errors preventing usage of
+the last available sample format.
+
+diff -uNrp alsa-utils-1.0.27.2/aplay/aplay.c
+alsa-utils-1.0.27.2-jk/aplay/aplay.c
+--- alsa-utils-1.0.27.2/aplay/aplay.c	2013-07-09 17:28:37.000000000 +0200
++++ alsa-utils-1.0.27.2-jk/aplay/aplay.c	2013-09-08 13:46:23.746825429 +0=
+200
+@@ -242,7 +242,7 @@ _("Usage: %s [OPTION]... [FILE]...\n"
+   )
+ 		, command);
+ 	printf(_("Recognized sample formats are:"));
+-	for (k =3D 0; k < SND_PCM_FORMAT_LAST; ++k) {
++	for (k =3D 0; k <=3D SND_PCM_FORMAT_LAST; ++k) {
+ 		const char *s =3D snd_pcm_format_name(k);
+ 		if (s)
+ 			printf(" %s", s);
+@@ -1114,7 +1114,7 @@ static void show_available_sample_format
+ 	snd_pcm_format_t format;
+
+ 	fprintf(stderr, "Available formats:\n");
+-	for (format =3D 0; format < SND_PCM_FORMAT_LAST; format++) {
++	for (format =3D 0; format <=3D SND_PCM_FORMAT_LAST; format++) {
+ 		if (snd_pcm_hw_params_test_format(handle, params, format) =3D=3D 0)
+ 			fprintf(stderr, "- %s\n", snd_pcm_format_name(format));
+ 	}
+
+
+Jurgen
+
+------=_20130908135051_59489
+Content-Type: text/x-patch; name="aplay-fix-off-by-one-errors.patch"
+Content-Disposition: attachment;
+  filename="aplay-fix-off-by-one-errors.patch"
+Content-Transfer-Encoding: quoted-printable
+
+diff -uNrp alsa-utils-1.0.27.2/aplay/aplay.c alsa-utils-1.0.27.2-jk/aplay=
+/aplay.c
+--- alsa-utils-1.0.27.2/aplay/aplay.c	2013-07-09 17:28:37.000000000 +0200
++++ alsa-utils-1.0.27.2-jk/aplay/aplay.c	2013-09-08 13:46:23.746825429 +0=
+200
+@@ -242,7 +242,7 @@ _("Usage: %s [OPTION]... [FILE]...\n"
+   )
+ 		, command);
+ 	printf(_("Recognized sample formats are:"));
+-	for (k =3D 0; k < SND_PCM_FORMAT_LAST; ++k) {
++	for (k =3D 0; k <=3D SND_PCM_FORMAT_LAST; ++k) {
+ 		const char *s =3D snd_pcm_format_name(k);
+ 		if (s)
+ 			printf(" %s", s);
+@@ -1114,7 +1114,7 @@ static void show_available_sample_format
+ 	snd_pcm_format_t format;
+=20
+ 	fprintf(stderr, "Available formats:\n");
+-	for (format =3D 0; format < SND_PCM_FORMAT_LAST; format++) {
++	for (format =3D 0; format <=3D SND_PCM_FORMAT_LAST; format++) {
+ 		if (snd_pcm_hw_params_test_format(handle, params, format) =3D=3D 0)
+ 			fprintf(stderr, "- %s\n", snd_pcm_format_name(format));
+ 	}
+------=_20130908135051_59489
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+------=_20130908135051_59489--
