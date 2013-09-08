@@ -1,36 +1,49 @@
-From: vichy <vichy.kuo-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: question about webcam audio capture
-Date: Sun, 8 Sep 2013 23:24:48 +0800
-Message-ID: <CAOVJa8Epo9+7puHP-q2dOBhhuEmaScXP4aFX-g8m0VrB4dykSg@mail.gmail.com>
-References: <CAOVJa8GsD9aO1RyPL0a_e1CnxkMMRCjbHv9C1Bap7DC_yOTptQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: fsl_spdif: Select regmap-mmio
+Date: Sun,  8 Sep 2013 17:22:24 +0100
+Message-ID: <1378657344-6279-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CAOVJa8GsD9aO1RyPL0a_e1CnxkMMRCjbHv9C1Bap7DC_yOTptQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4EC6026257D
+ for <alsa-devel@alsa-project.org>; Sun,  8 Sep 2013 18:22:36 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmial.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-2013/9/8 vichy <vichy.kuo-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>:
-> hi all:
-> I try to do webcam audio capture on my arm platform.
-> when I execute audio capture I got below message
-> "retire_capture_urb: 108 callbacks suppressed"
->
-> my questions:
-> 1. where I can get the message "retire_capture_urb: 108 callbacks
-> suppressed" show in sound/usb driver?
->     I try to  grep -rwn '"retire_capture_urb.*' sound/usb/*, but get nothing.
->
-> 2. from usb mon log, it seems HW keep Active status high even until
-> ehci_io_watchdog happen, because the ep status is  -EXDEV.
-> if my observation is correct, is it possible to modify usb sound
-> driver to purposely send fix number urbs.
-> Because from the usb mon log, the first 8 urb will get time out already.
-BTW, forget to say my kernel version is 3.8.2
+From: Mark Brown <broonie@linaro.org>
 
->thanks for your help in advance,
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+The S/PDIF driver needs regmap so select it to make sure it gets
+included in the build.
+
+Reported-by: Fengguang Wu <fengguang.wu@intel.com>
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/fsl/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 704e246..b7ab71f 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -198,6 +198,7 @@ config SND_SOC_IMX_SPDIF
+ 	select SND_SOC_IMX_PCM_DMA
+ 	select SND_SOC_FSL_SPDIF
+ 	select SND_SOC_SPDIF
++	select REGMAP_MMIO
+ 	help
+ 	  SoC Audio support for i.MX boards with S/PDIF
+ 	  Say Y if you want to add support for SoC audio on an i.MX board with
+-- 
+1.8.4.rc3
