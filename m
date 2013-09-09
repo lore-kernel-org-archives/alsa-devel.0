@@ -1,53 +1,350 @@
-From: vichy <vichy.kuo-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [alsa-devel] question about webcam audio capture
-Date: Mon, 9 Sep 2013 23:12:35 +0800
-Message-ID: <CAOVJa8G2Om-eTinhA4BBeK+r9c6C5BvXu4cS7+RSJc=cVWgriA@mail.gmail.com>
-References: <CAOVJa8GsD9aO1RyPL0a_e1CnxkMMRCjbHv9C1Bap7DC_yOTptQ@mail.gmail.com>
-	<522DCF23.8090301@ladisch.de>
+From: <oku@iki.fi>
+Subject: [PATCH RFC 2/8] ASoC: davinci-evm: Add device tree
+	binding
+Date: Mon, 9 Sep 2013 18:12:13 +0300
+Message-ID: <2f2fa45507656c464b413a9761c7dd2059f4590e.1378738436.git.jsarha@ti.com>
+References: <cover.1378738436.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <522DCF23.8090301-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 347E42650D7
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 17:12:28 +0200 (CEST)
+In-Reply-To: <cover.1378738436.git.jsarha@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Darren Etheridge <detheridge@ti.com>, devicetree-discuss@lists.ozlabs.org, Jyri Sarha <jsarha@ti.com>, "Hebbar, Gururaja" <gururaja.hebbar@ti.com>, liam.r.girdwood@linux.intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-hi Clemens:
+From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
 
-2013/9/9 Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>:
-> vichy wrote:
->> I try to do webcam audio capture on my arm platform.
->> when I execute audio capture I got below message
->> "retire_capture_urb: 108 callbacks suppressed"
->
-> This means that the retire_capture_urb() function printed lots of
-> messages, and that 108 of them were thrown away because they were
-> identical.
-Does that mean:
-1. 108 of messages are the same and through away
-2. alsa get data from uac device through Host controller driver 108
-times and find they are the same and through away
+Device tree support for Davinci Machine driver
 
->You have to look at the previous line to get the actual
-> message.
-I try to  grep -rwn '"retire_capture_urb.*' sound/usb/*, but get nothing.
-Would you please tell me what the "previous line to get the actual
-message"  you mean?
+When the board boots with device tree, the driver will receive card,
+codec, dai interface details (like the card name, DAPM routing map,
+phandle for the audio components described in the dts file, codec mclk
+speed). The card will be set up based on this information. Since the
+routing is provided via DT we can mark the card fully routed so core
+can take care of disconnecting the unused pins.
 
->
->> 2. from usb mon log, it seems HW keep Active status high even until
->> ehci_io_watchdog happen, because the ep status is  -EXDEV.
->
-> How are you trying to capture data?
-I use the capture function in tinyalsa.
+Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
+Signed-off-by: Darren Etheridge <detheridge@ti.com>
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
+---
+ .../bindings/sound/davinci-evm-audio.txt           |   53 ++++++
+ sound/soc/davinci/davinci-evm.c                    |  181 +++++++++++++++++---
+ 2 files changed, 214 insertions(+), 20 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
 
-BTW, If I want to use number of urbs I expected and only send/complete
-only 1 round, where I can find the source code to modify?
-
-
-Thanks for your great help,
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt b/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
+new file mode 100644
+index 0000000..25f7180
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
+@@ -0,0 +1,53 @@
++* Texas Instruments SoC audio setups with TLV320AIC3X Codec
++
++Required properties:
++- compatible :
++	"ti,dm365-voice-codec-audio"	: for DM365 platforms with Voice Codec
++	"ti,da830-evm-audio"		: for DM365/DA8xx/OMAPL1x/AM33xx
++
++- ti,model : The user-visible name of this sound complex.
++- ti,audio-codec : The phandle of the TLV320AIC3x audio codec
++- ti,mcasp-controller : The phandle of the McASP controller
++- ti,codec-clock-rate : The Codec Clock rate (in Hz) applied to the Codec
++- ti,audio-routing : A list of the connections between audio components.
++  Each entry is a pair of strings, the first being the connection's sink,
++  the second being the connection's source. Valid names for sources and
++  sinks are the codec's pins, and the jacks on the board:
++
++  Codec pins:
++
++  * MIC3L
++  * MIC3R
++  * LINE1L
++  * LINE2L
++  * LINE1R
++  * LINE2R
++
++  Board connectors:
++
++  * Headphone Jack
++  * Line Out
++  * Mic Jack
++
++
++Example:
++
++sound {
++	compatible = "ti,da830-evm-audio";
++	ti,model = "DA830 EVM";
++	ti,audio-codec = <&tlv320aic3x>;
++	ti,mcasp-controller = <&mcasp1>;
++	ti,codec-clock-rate = <12000000>;
++	ti,audio-routing =
++		"Headphone Jack",       "HPLOUT",
++		"Headphone Jack",       "HPROUT",
++		"Line Out",             "LLOUT",
++		"Line Out",             "RLOUT",
++		"MIC3L",                "Mic Bias 2V",
++		"MIC3R",                "Mic Bias 2V",
++		"Mic Bias 2V",          "Mic Jack",
++		"LINE1L",               "Line In",
++		"LINE2L",               "Line In",
++		"LINE1R",               "Line In",
++		"LINE2R",               "Line In";
++};
+diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+index fd7c45b..ca548b3 100644
+--- a/sound/soc/davinci/davinci-evm.c
++++ b/sound/soc/davinci/davinci-evm.c
+@@ -16,6 +16,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/platform_data/edma.h>
+ #include <linux/i2c.h>
++#include <linux/of_platform.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+@@ -23,6 +24,8 @@
+ #include <asm/dma.h>
+ #include <asm/mach-types.h>
+ 
++#include <linux/edma.h>
++
+ #include "davinci-pcm.h"
+ #include "davinci-i2s.h"
+ #include "davinci-mcasp.h"
+@@ -35,27 +38,38 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_codec *codec = rtd->codec;
++	struct snd_soc_card *soc_card = codec->card;
++	struct device_node *np = soc_card->dev->of_node;
+ 	int ret = 0;
+ 	unsigned sysclk;
+ 
+-	/* ASP1 on DM355 EVM is clocked by an external oscillator */
+-	if (machine_is_davinci_dm355_evm() || machine_is_davinci_dm6467_evm() ||
+-	    machine_is_davinci_dm365_evm())
+-		sysclk = 27000000;
+-
+-	/* ASP0 in DM6446 EVM is clocked by U55, as configured by
+-	 * board-dm644x-evm.c using GPIOs from U18.  There are six
+-	 * options; here we "know" we use a 48 KHz sample rate.
+-	 */
+-	else if (machine_is_davinci_evm())
+-		sysclk = 12288000;
+-
+-	else if (machine_is_davinci_da830_evm() ||
+-				machine_is_davinci_da850_evm())
+-		sysclk = 24576000;
+-
+-	else
+-		return -EINVAL;
++	if (np) {
++		ret = of_property_read_u32(np, "ti,codec-clock-rate", &sysclk);
++		if (ret < 0)
++			return ret;
++	} else {
++		/* ASP1 on DM355 EVM is clocked by an external oscillator */
++		if (machine_is_davinci_dm355_evm() ||
++			machine_is_davinci_dm6467_evm() ||
++			machine_is_davinci_dm365_evm())
++			sysclk = 27000000;
++
++		/*
++		 * ASP0 in DM6446 EVM is clocked by U55, as configured by
++		 * board-dm644x-evm.c using GPIOs from U18.  There are six
++		 * options; here we "know" we use a 48 KHz sample rate.
++		 */
++		else if (machine_is_davinci_evm())
++			sysclk = 12288000;
++
++		else if (machine_is_davinci_da830_evm() ||
++					machine_is_davinci_da850_evm())
++			sysclk = 24576000;
++
++		else
++			return -EINVAL;
++	}
+ 
+ 	/* set codec DAI configuration */
+ 	ret = snd_soc_dai_set_fmt(codec_dai, AUDIO_FORMAT);
+@@ -133,13 +147,22 @@ static int evm_aic3x_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
++	struct device_node *np = codec->card->dev->of_node;
++	int ret;
+ 
+ 	/* Add davinci-evm specific widgets */
+ 	snd_soc_dapm_new_controls(dapm, aic3x_dapm_widgets,
+ 				  ARRAY_SIZE(aic3x_dapm_widgets));
+ 
+-	/* Set up davinci-evm specific audio path audio_map */
+-	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
++	if (np) {
++		ret = snd_soc_of_parse_audio_routing(codec->card,
++							"ti,audio-routing");
++		if (ret)
++			return ret;
++	} else {
++		/* Set up davinci-evm specific audio path audio_map */
++		snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
++	}
+ 
+ 	/* not connected */
+ 	snd_soc_dapm_disable_pin(dapm, "MONO_LOUT");
+@@ -288,6 +311,108 @@ static struct snd_soc_card da850_snd_soc_card = {
+ 	.num_links = 1,
+ };
+ 
++#if defined(CONFIG_OF)
++
++enum {
++	MACHINE_VERSION_1 = 0,	/* DM365 with Voice Codec */
++	MACHINE_VERSION_2,	/* DM365/DA8xx/OMAPL1x/AM33xx */
++};
++
++static const struct of_device_id davinci_evm_dt_ids[] = {
++	{
++		.compatible = "ti,dm365-voice-codec-audio",
++		.data = (void *)MACHINE_VERSION_1,
++	},
++	{
++		.compatible = "ti,da830-evm-audio",
++		.data = (void *)MACHINE_VERSION_2,
++	},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, davinci_evm_dt_ids);
++
++/*
++ * This struct is just used as place holder. It will be filled with
++ * data from dt node
++ */
++static struct snd_soc_dai_link evm_dai = {
++	.name		= "TLV320AIC3X",
++	.stream_name	= "AIC3X",
++	.codec_dai_name	= "tlv320aic3x-hifi",
++};
++
++/* davinci evm audio machine driver */
++static struct snd_soc_card evm_soc_card = {
++	.owner = THIS_MODULE,
++	.dai_link = &evm_dai,
++	.num_links = 1,
++};
++
++static int davinci_evm_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	const struct of_device_id *match =
++		of_match_device(of_match_ptr(davinci_evm_dt_ids), &pdev->dev);
++	u32 machine_ver;
++	int ret = 0;
++
++	machine_ver = (u32)match->data;
++	switch (machine_ver) {
++	case MACHINE_VERSION_1:
++		evm_dai.name		= "Voice Codec - CQ93VC";
++		evm_dai.stream_name	= "CQ93";
++		evm_dai.codec_dai_name	= "cq93vc-hifi";
++		break;
++
++	case MACHINE_VERSION_2:
++		evm_dai.ops = &evm_ops;
++		evm_dai.init = evm_aic3x_init;
++		break;
++	}
++
++	evm_dai.codec_of_node = of_parse_phandle(np, "ti,audio-codec", 0);
++	if (!evm_dai.codec_of_node)
++		return -EINVAL;
++
++	evm_dai.cpu_of_node = of_parse_phandle(np,
++						"ti,mcasp-controller", 0);
++	if (!evm_dai.cpu_of_node)
++		return -EINVAL;
++
++	evm_dai.platform_of_node = evm_dai.cpu_of_node;
++
++	evm_soc_card.dev = &pdev->dev;
++	ret = snd_soc_of_parse_card_name(&evm_soc_card, "ti,model");
++	if (ret)
++		return ret;
++
++	ret = snd_soc_register_card(&evm_soc_card);
++	if (ret)
++		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
++
++	return ret;
++}
++
++static int davinci_evm_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(card);
++
++	return 0;
++}
++
++static struct platform_driver davinci_evm_driver = {
++	.probe		= davinci_evm_probe,
++	.remove		= davinci_evm_remove,
++	.driver		= {
++		.name	= "davinci_evm",
++		.owner	= THIS_MODULE,
++		.of_match_table = of_match_ptr(davinci_evm_dt_ids),
++	},
++};
++#endif
++
+ static struct platform_device *evm_snd_device;
+ 
+ static int __init evm_init(void)
+@@ -296,6 +421,15 @@ static int __init evm_init(void)
+ 	int index;
+ 	int ret;
+ 
++#if defined(CONFIG_OF)
++	/*
++	 * If dtb is there, the devices will be created dynamically.
++	 * Only register platfrom driver structure.
++	 */
++	if (of_have_populated_dt())
++		return platform_driver_register(&davinci_evm_driver);
++#endif
++
+ 	if (machine_is_davinci_evm()) {
+ 		evm_snd_dev_data = &dm6446_snd_soc_card_evm;
+ 		index = 0;
+@@ -331,6 +465,13 @@ static int __init evm_init(void)
+ 
+ static void __exit evm_exit(void)
+ {
++#if defined(CONFIG_OF)
++	if (of_have_populated_dt()) {
++		platform_driver_unregister(&davinci_evm_driver);
++		return;
++	}
++#endif
++
+ 	platform_device_unregister(evm_snd_device);
+ }
+ 
+-- 
+1.7.9.5
