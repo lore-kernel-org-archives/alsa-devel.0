@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ad1980: fix the indentation
-Date: Mon, 9 Sep 2013 16:02:26 +0100
-Message-ID: <20130909150226.GG29403@sirena.org.uk>
-References: <1378633683-16264-1-git-send-email-Baohua.Song@csr.com>
+Subject: Re: [PATCH] ASoC: rsnd: fixup flag name of
+	rsnd_scu_platform_info
+Date: Mon, 9 Sep 2013 16:06:31 +0100
+Message-ID: <20130909150631.GH29403@sirena.org.uk>
+References: <87li36wrou.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4454928288461344065=="
+Content-Type: multipart/mixed; boundary="===============0518575738719273320=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 827B32650C0
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 17:02:32 +0200 (CEST)
-In-Reply-To: <1378633683-16264-1-git-send-email-Baohua.Song@csr.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 858012650A0
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 17:06:35 +0200 (CEST)
+In-Reply-To: <87li36wrou.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,62 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: alsa-devel@alsa-project.org, device-drivers-devel@blackfin.uclinux.org, Barry Song <Baohua.Song@csr.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4454928288461344065==
+--===============0518575738719273320==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0CboPPdgCg0mBjgS"
+	protocol="application/pgp-signature"; boundary="NJ866PXMcXz+O0Zc"
 Content-Disposition: inline
 
 
---0CboPPdgCg0mBjgS
+--NJ866PXMcXz+O0Zc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Sep 08, 2013 at 05:48:03PM +0800, Barry Song wrote:
+On Sun, Sep 08, 2013 at 09:21:41PM -0700, Kuninori Morimoto wrote:
+> it should be *USE*, not *USB*
 
->  static const struct snd_kcontrol_new ad1980_snd_ac97_controls[] = {
-> -SOC_DOUBLE("Master Playback Volume", AC97_MASTER, 8, 0, 31, 1),
-> -SOC_SINGLE("Master Playback Switch", AC97_MASTER, 15, 1, 1),
-> +	SOC_DOUBLE("Master Playback Volume", AC97_MASTER, 8, 0, 31, 1),
-> +	SOC_SINGLE("Master Playback Switch", AC97_MASTER, 15, 1, 1),
+Applied, thanks.
 
-The existing indentation is actually idiomatic for ASoC tables - it
-minimises the amount of wrapping within the tables which gets annoying
-fast.
-
---0CboPPdgCg0mBjgS
+--NJ866PXMcXz+O0Zc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSLeL/AAoJELSic+t+oim90AgP/2SSjlZ6AwdBBiRtWvxV+Mwa
-+cOhmGqkqgxvEEzk8jaY45NYxzCoyY1YDirwnULv/WjOVRYQ4+ahxrl2QJQFh0Va
-htYuPde530KJtMT1vtUJIQ61m25JzdqL90RsHpumY5sqOrGrEG55WHw4bOQ2lUzI
-Q+/v2V2/zx3b8LUMWCSn8CfW0bFzXKu8NPMro69HocM9s2Wf89cFu2SgUyK43yqu
-csJCButT5dJMoDqm63oJchfU2tSRP6R/zPix1W3BEmN7xxy76Odcpb63RBKyNTtj
-nErK3DMATW2RL5Q+OXXCX77uGeWOqq6tpSavtXXlx5WKUTCeoofIrX4KtLXbeGMI
-U0zi5dyCQERwe74xFOHVJ8vYjCpzUHv5BZV1wSm1nNnF6Q4JsmWvNecsEWuLVv2K
-xgZYEjcQU9q8ydZbj/axRbaLGnvHpXqpXrfIa6ta9vgYNSrS78RaYGo9VHNX4OLC
-KrIrD4No7ac1i+djxpNX3Y1sYR4qX1yAqG8v2SqRaGjFLq9Tk8KYin/7g9r2JDDD
-xszFgh4yTvO4k/iAOwCzzVWe2OlLl2DlmWFIppXFfx2jmVLxKQ+HzEEkxop0c40O
-Mfs1xYCmQK2WoOHXW0diXVw6XQSaT9Fkoi2MrJDUkUAeZB8PKVvL57BZRBhmqXXZ
-mKY/YgMcf4d6vjHtKPva
-=XsY2
+iQIcBAEBAgAGBQJSLeP0AAoJELSic+t+oim92jUP/2M0u7qSsDqGeaoxCjT9Z9qn
+v+oHX0z4Xgz5yabFMQm2rgCqnYm5kTJufbYnmyNCMUBEP0LIu+I4XfvXCjBXKKAH
+Z/nM6ZH2ksTZRWFJp45/MRvG3Prj18Pa/nkJgnVJqbG+z7Lp3qS+fc9UJGIV+VA4
+/w9E2Kf0MgIOxUmpQ4F60a96bphv6lICdwYn865LbtuUwZyrILOS4CCJQcgTxSCZ
+gqfW4C72hCyGITHrshvYbcz4WqOiJY95fQwbyOBmfUVILRVRmqt7pWPRXq59gvw1
+mc9bcEbpa8kjoBQiyJfHgg9/2EZSU2QpUVldKwT+tufLD2yqenh91K1L9pOntC4e
+lk2OqaFuYikPWl9yi7gCoNwia25g9Yg8e0XKThERXt344Gu/PbirkMknPKL2LJIg
+yeemFx5f1HJxA6jgvnQ1IhpImBzIfWT8q3e9DsFvrDRZRQKDpQIBU1eqKGHHDMsS
+KvSYACAesdapvIZPlvJj5dMBIjjyoUoHQrFiszEKwxtbcsjcV+Xe76Vck28OkFYi
+wbMr4StNzsRSdzXefTLzxFKJkFcsM5lwbvWybmiIqOg4q2ql/C5URxJ+q3zpWRup
+tdnJSRTlCAqr8pW6y6UDPneTXDoYpFUs/oBG4llQyAoAXW/Yz+TTNY2yMVNUq4qJ
+VCQ+I50k5/t0B0HocVFV
+=tO/+
 -----END PGP SIGNATURE-----
 
---0CboPPdgCg0mBjgS--
+--NJ866PXMcXz+O0Zc--
 
---===============4454928288461344065==
+--===============0518575738719273320==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4454928288461344065==--
+--===============0518575738719273320==--
