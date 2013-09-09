@@ -1,22 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: where to get snd_pcm_hardware info when usb audio
- device plug in?
-Date: Mon, 09 Sep 2013 10:17:33 +0200
-Message-ID: <522D841D.1050603@ladisch.de>
-References: <CANudz+uTk+GDAj=NfHQ_6ZrL6=ZmWJfXAnwRqk7yHPr4s0Jg1A@mail.gmail.com>
- <521E07A1.5020807@ladisch.de>
- <CANudz+v219cxgAwo2RtAMvmvQ+18doPX0qsX4Pc+vk9TAe3D2g@mail.gmail.com>
- <CANudz+uu5XNL6-KgE4oTV_z=8qOUZh8ppNGznCYFBx3dGEzEZQ@mail.gmail.com>
- <522C6D74.9000208@ladisch.de>
- <CANudz+s_iQ9tQSEpk30FaeGPVVBy=u65nxxh230=aZkUg4369w@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Add Toshiba Satellite C870 to MSI
+	blacklist
+Date: Mon,  9 Sep 2013 10:24:00 +0200
+Message-ID: <1378715040-22905-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id A84252608D9
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 10:17:35 +0200 (CEST)
-In-Reply-To: <CANudz+s_iQ9tQSEpk30FaeGPVVBy=u65nxxh230=aZkUg4369w@mail.gmail.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7ECA2261673
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 10:21:51 +0200 (CEST)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4FB89A398F
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 10:21:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,18 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: loody <miloody@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-loody wrote:
->> How exactly did you compile and install alsa-lib?
->
-> $ ./configure --prefix=/media/sdb1/software/linux.sound/alsa-lib-1.0.23.mips.clibc/build --host=mipsel-linux CC=mipsel-linux-gnu-gcc --disable-python
+Toshiba Satellite C870 shows interrupt problems occasionally when
+certain mixer controls like "Mic Switch" is toggled.  This seems
+worked around by not using MSI.
 
-The --prefix option specifies where the files are on the target system.
-You must not use it.
+Bugzilla: https://bugzilla.novell.com/show_bug.cgi?id=833585
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-Regards,
-Clemens
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index c6c9829..7f88dd6 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -3400,6 +3400,7 @@ static struct snd_pci_quirk msi_black_list[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x81f2, "ASUS", 0), /* Athlon64 X2 + nvidia */
+ 	SND_PCI_QUIRK(0x1043, 0x81f6, "ASUS", 0), /* nvidia */
+ 	SND_PCI_QUIRK(0x1043, 0x822d, "ASUS", 0), /* Athlon64 X2 + nvidia MCP55 */
++	SND_PCI_QUIRK(0x1179, 0xfb44, "Toshiba Satellite C870", 0), /* AMD Hudson */
+ 	SND_PCI_QUIRK(0x1849, 0x0888, "ASRock", 0), /* Athlon64 X2 + nvidia */
+ 	SND_PCI_QUIRK(0xa0a0, 0x0575, "Aopen MZ915-M", 0), /* ICH6 */
+ 	{}
+-- 
+1.8.4
