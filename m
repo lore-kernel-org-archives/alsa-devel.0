@@ -1,84 +1,53 @@
-From: <oku@iki.fi>
-Subject: [PATCH RFC 0/8] Fix AM335x-evm analog audio support
-Date: Mon, 9 Sep 2013 18:12:11 +0300
-Message-ID: <cover.1378738436.git.jsarha@ti.com>
+From: vichy <vichy.kuo-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] question about webcam audio capture
+Date: Mon, 9 Sep 2013 23:12:35 +0800
+Message-ID: <CAOVJa8G2Om-eTinhA4BBeK+r9c6C5BvXu4cS7+RSJc=cVWgriA@mail.gmail.com>
+References: <CAOVJa8GsD9aO1RyPL0a_e1CnxkMMRCjbHv9C1Bap7DC_yOTptQ@mail.gmail.com>
+	<522DCF23.8090301@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 241B92650A0
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 17:12:22 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, devicetree-discuss@lists.ozlabs.org, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <522DCF23.8090301-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jyri Sarha <jsarha@ti.com>
+hi Clemens:
 
-This set of patches fixes the basic audio support for am335x-evm. It
-should also be relatively simple to add the necessary nodes to
-relevant dts files to get BeagleBone + AudioCape and am335x-evmsk
-working too.
+2013/9/9 Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>:
+> vichy wrote:
+>> I try to do webcam audio capture on my arm platform.
+>> when I execute audio capture I got below message
+>> "retire_capture_urb: 108 callbacks suppressed"
+>
+> This means that the retire_capture_urb() function printed lots of
+> messages, and that 108 of them were thrown away because they were
+> identical.
+Does that mean:
+1. 108 of messages are the same and through away
+2. alsa get data from uac device through Host controller driver 108
+times and find they are the same and through away
 
-The patch set depends on following patches:
+>You have to look at the previous line to get the actual
+> message.
+I try to  grep -rwn '"retire_capture_urb.*' sound/usb/*, but get nothing.
+Would you please tell me what the "previous line to get the actual
+message"  you mean?
 
-[PATCH v2] ARM: dts: add AM33XX EDMA support 
-     https://lkml.org/lkml/2013/8/26/57 
+>
+>> 2. from usb mon log, it seems HW keep Active status high even until
+>> ehci_io_watchdog happen, because the ep status is  -EXDEV.
+>
+> How are you trying to capture data?
+I use the capture function in tinyalsa.
 
-[PATCH v11 5/8] ARM: dts: add AM33XX SPI DMA support
-     https://lkml.org/lkml/2013/6/18/55
+BTW, If I want to use number of urbs I expected and only send/complete
+only 1 round, where I can find the source code to modify?
 
-[PATCH v2] ARM: EDMA: Fix clearing of unused list for DT DMA resources
-     https://lkml.org/lkml/2013/7/22/441
 
-I have tried my best not to break the existing support for older
-davinci boards, but since I do not have those boards I can not be
-sure.
-
-Some commit comments refer to a dmaengine based davinci audio
-implementation which is planned for but nothing has been done yet.
-
-Best regards,
-Jyri
-
-Darren Etheridge (1):
-  ARM/dts: am335x-evm: Add audio support for am335x-evm.dts
-
-Hebbar, Gururaja (2):
-  ASoC: davinci-evm: Add device tree binding
-  ASoC: davinci: Add support for AM33xx SoC Audio
-
-Joel A Fernandes (1):
-  ASoC: davinci-mcasp: Add pinctrl support
-
-Jyri Sarha (3):
-  ASoC: davinci-mcasp: Get DMA related properties from DT
-  ASoC: davinci-mcasp: Extract DMA channels directly from DT
-  ARM/dts: am33xx: mcasp: Add new dma related properties
-
-Pantelis Antoniou (1):
-  ARM/dts: am33xx: Add mcasp0 and mcasp1 device tree entries
-
- .../bindings/sound/davinci-evm-audio.txt           |   53 ++++++
- .../bindings/sound/davinci-mcasp-audio.txt         |   13 +-
- arch/arm/boot/dts/am335x-evm.dts                   |   56 ++++++
- arch/arm/boot/dts/am33xx.dtsi                      |   35 ++++
- include/linux/platform_data/davinci_asp.h          |    2 +
- sound/soc/davinci/Kconfig                          |    8 +
- sound/soc/davinci/Makefile                         |    3 +
- sound/soc/davinci/davinci-evm.c                    |  181 +++++++++++++++++---
- sound/soc/davinci/davinci-mcasp.c                  |   82 +++++++--
- 9 files changed, 391 insertions(+), 42 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
-
--- 
-1.7.9.5
+Thanks for your great help,
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
