@@ -1,85 +1,59 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC 6/8] ARM/dts: am33xx: Add mcasp0 and
- mcasp1 device tree entries
-Date: Mon, 9 Sep 2013 16:27:42 +0100
-Message-ID: <20130909152742.GN29403@sirena.org.uk>
-References: <cover.1378738436.git.jsarha@ti.com>
- <a8dd2abf8c468f6a42557b2794d104d31da4649a.1378738436.git.jsarha@ti.com>
+Subject: Re: [PATCH] codecs: mc13783: add spi errate fix
+Date: Mon, 9 Sep 2013 16:33:28 +0100
+Message-ID: <20130909153328.GO29403@sirena.org.uk>
+References: <1378735956-17318-1-git-send-email-s.trumtrar@pengutronix.de>
+ <20130909145730.GF29403@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3683518642109619885=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C0DD2650D7
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 17:27:45 +0200 (CEST)
-In-Reply-To: <a8dd2abf8c468f6a42557b2794d104d31da4649a.1378738436.git.jsarha@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: oku@iki.fi
-Cc: Darren Etheridge <detheridge@ti.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Pantelis Antoniou <panto@antoniou-consulting.com>, Jyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PeSNlYkxSF9b/2wn"
+Return-path: <stable-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130909145730.GF29403@sirena.org.uk>
+Sender: stable-owner@vger.kernel.org
+To: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3683518642109619885==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jPcKFu7Fa0A6HrUo"
-Content-Disposition: inline
-
-
---jPcKFu7Fa0A6HrUo
+--PeSNlYkxSF9b/2wn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 09, 2013 at 06:12:17PM +0300, oku@iki.fi wrote:
-> From: Pantelis Antoniou <panto@antoniou-consulting.com>
+On Mon, Sep 09, 2013 at 03:57:30PM +0100, Mark Brown wrote:
+> On Mon, Sep 09, 2013 at 04:12:36PM +0200, Steffen Trumtrar wrote:
+> > The MC13783 Chip Errata, Rev. 4 says, that depending on SPI clock
+> > and main audio clock speed, the Audio Codec or Stereo DAC do sometimes
+> > not start when programmed to do so. This is due to an internal clock
+> > timing issue related to the loading of the SPI bits into the audio bloc=
+k.
 >=20
-> Add missing mcasp entries in the am33xx.dtsi include file.
->=20
-> Signed-off-by: Pantelis Antoniou <panto@antoniou-consulting.com>
-> Signed-off-by: Darren Etheridge <detheridge@ti.com>
-> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> Applied, thanks.
 
-Acked-by: Mark Brown <broonie@linaro.org>
+=2E..and reverted since PMIC_AUDIO_CODEC isn't defined.  Please fix and
+resend.
 
-I'd expect this to go via the arm-soc tree, the bindings are already
-merged and there's no build time dependency on any ASoC code anyway.
-
---jPcKFu7Fa0A6HrUo
+--PeSNlYkxSF9b/2wn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSLejrAAoJELSic+t+oim99RoP/A5Z7lQB5ITaPOXMTH/NE7bn
-LEedLTFYKXBigEZ676UNc1dS2zsoMwSmF7A4snNVZsvN44eCpWk7WH8xVkN4Rjj1
-zXaQ1xLKmL4+5SofLxA2lnCR+UJNfmyCuA54DGB9aYieVpHBXdSLSgfi6SM5E6zb
-RzQtdVkpm/sA4bORHGDjIa9McNxunac8zNwHPNddLzntjzV5x70y/2Ceh+xEgYt3
-eyV6yg71zqUtQT4DbMcNaMZ2JHdpO9zOsIVPVzmoJYMjWSUxYNwOIpI3j27jL9d8
-MvTFPTkMMVIJRCQNaHopXXMWAmoAynPC2PXoDvSEn4RJGsH2FGR24JP74J9Yk9WO
-APxCr+dJH68wrjO0Bf8dwhepW9KmD/ott/hz4iRywZZcsg7JHhvnWQcN3uyiHpfc
-2Iu22m1GDi5MFTq+Tr8ZGOQbDeRou/amZRyfcmsUIo4BStDa3v+eFTSaXahMRNet
-mugpuLWRUFfiWbzD+oxffGc4qXr6I2O0l887hnq/7JCmgYfP5dumhU+j59NrdPLt
-dEBjuGlI0/8lbc/kLCgY8mc1AaDr3HUMV1u3QCKuON5hiCa4EFtbG78wAqPsEWzp
-mQjPw+nNbxbflntmFmSlBJwlHBE0NgWPPnQr6Izl0yeDe+SP/wIeh2KVWGGqVx6u
-dwdJYyy8ErddtT3dYKkU
-=eyfk
+iQIcBAEBAgAGBQJSLepEAAoJELSic+t+oim9cX0P/35/0iSt0pxm6UKuecXjESUf
+L531Xezu56aRZDrQ9cnZoKr6oBnSM9wsVBv33WcDs5SianYWqOELy1dt+J5ovDvA
+Qax+VaHIxTpFrMzLcm/my8xgsSz6GiAOwSFKYzxGUJJvv2XIOIsJ4J56R2Z2f6cc
+r+qi8E0ApLNmwuDQUu1UYVngPJZNgaK3zvH/5emctJDeHz6JRBbDJApI0UpyavO7
+FH4j6eJSWc5UFR85avXni4uXVYoFvkqJ12PBi1agDc2YXlCNO7EFl2gfzCkT1/Gv
++667UD3PcbFZtGtqgQ5bx4kj+7T56mYd11BYYIdt4wvULCvutWoKnzYvRsfK90DM
+9NVYKCQkwmYxVn3xHJVTjwaiM1b4qm7/TlMkJLsVJWYR57cKsioUsNGJGUYEZyiP
+OUk3Qn9DeQNTsIbes4fPGxTDBbk7aKPfVP3flwnIXmTyQIl8eF6XOk2P5ZbFobDF
+fFeKkp7jsg6EjwKVkvEPvhmZXxn1G4Xq0nMfLGP0bEll3Gg0odT4Uzc0H6dADr9v
+rakQqz9hMWP5K4skM2YNRlQcICjLQBSgK2aePGGFpQMMNCB5+gjtQZGDNe0MXNzm
+669wZRCtPjHCJ4nHbgMBC0JT1Nhu1joBidFZaRtSHQ33YJIV9aKJJp1+TiBelXuS
+IJiaEl16uRGDFge4ZZI3
+=KE3o
 -----END PGP SIGNATURE-----
 
---jPcKFu7Fa0A6HrUo--
-
---===============3683518642109619885==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3683518642109619885==--
+--PeSNlYkxSF9b/2wn--
