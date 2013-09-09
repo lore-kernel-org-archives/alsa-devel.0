@@ -1,16 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: fixup flag name of
-	rsnd_scu_platform_info
-Date: Mon, 9 Sep 2013 16:06:31 +0100
-Message-ID: <20130909150631.GH29403@sirena.org.uk>
-References: <87li36wrou.wl%kuninori.morimoto.gx@renesas.com>
+From: <oku@iki.fi>
+Subject: [PATCH RFC 0/8] Fix AM335x-evm analog audio support
+Date: Mon, 9 Sep 2013 18:12:11 +0300
+Message-ID: <cover.1378738436.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0518575738719273320=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 858012650A0
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 17:06:35 +0200 (CEST)
-In-Reply-To: <87li36wrou.wl%kuninori.morimoto.gx@renesas.com>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 241B92650A0
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 17:12:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +18,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, devicetree-discuss@lists.ozlabs.org, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Jyri Sarha <jsarha@ti.com>
 
---===============0518575738719273320==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NJ866PXMcXz+O0Zc"
-Content-Disposition: inline
+This set of patches fixes the basic audio support for am335x-evm. It
+should also be relatively simple to add the necessary nodes to
+relevant dts files to get BeagleBone + AudioCape and am335x-evmsk
+working too.
 
+The patch set depends on following patches:
 
---NJ866PXMcXz+O0Zc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+[PATCH v2] ARM: dts: add AM33XX EDMA support 
+     https://lkml.org/lkml/2013/8/26/57 
 
-On Sun, Sep 08, 2013 at 09:21:41PM -0700, Kuninori Morimoto wrote:
-> it should be *USE*, not *USB*
+[PATCH v11 5/8] ARM: dts: add AM33XX SPI DMA support
+     https://lkml.org/lkml/2013/6/18/55
 
-Applied, thanks.
+[PATCH v2] ARM: EDMA: Fix clearing of unused list for DT DMA resources
+     https://lkml.org/lkml/2013/7/22/441
 
---NJ866PXMcXz+O0Zc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I have tried my best not to break the existing support for older
+davinci boards, but since I do not have those boards I can not be
+sure.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
+Some commit comments refer to a dmaengine based davinci audio
+implementation which is planned for but nothing has been done yet.
 
-iQIcBAEBAgAGBQJSLeP0AAoJELSic+t+oim92jUP/2M0u7qSsDqGeaoxCjT9Z9qn
-v+oHX0z4Xgz5yabFMQm2rgCqnYm5kTJufbYnmyNCMUBEP0LIu+I4XfvXCjBXKKAH
-Z/nM6ZH2ksTZRWFJp45/MRvG3Prj18Pa/nkJgnVJqbG+z7Lp3qS+fc9UJGIV+VA4
-/w9E2Kf0MgIOxUmpQ4F60a96bphv6lICdwYn865LbtuUwZyrILOS4CCJQcgTxSCZ
-gqfW4C72hCyGITHrshvYbcz4WqOiJY95fQwbyOBmfUVILRVRmqt7pWPRXq59gvw1
-mc9bcEbpa8kjoBQiyJfHgg9/2EZSU2QpUVldKwT+tufLD2yqenh91K1L9pOntC4e
-lk2OqaFuYikPWl9yi7gCoNwia25g9Yg8e0XKThERXt344Gu/PbirkMknPKL2LJIg
-yeemFx5f1HJxA6jgvnQ1IhpImBzIfWT8q3e9DsFvrDRZRQKDpQIBU1eqKGHHDMsS
-KvSYACAesdapvIZPlvJj5dMBIjjyoUoHQrFiszEKwxtbcsjcV+Xe76Vck28OkFYi
-wbMr4StNzsRSdzXefTLzxFKJkFcsM5lwbvWybmiIqOg4q2ql/C5URxJ+q3zpWRup
-tdnJSRTlCAqr8pW6y6UDPneTXDoYpFUs/oBG4llQyAoAXW/Yz+TTNY2yMVNUq4qJ
-VCQ+I50k5/t0B0HocVFV
-=tO/+
------END PGP SIGNATURE-----
+Best regards,
+Jyri
 
---NJ866PXMcXz+O0Zc--
+Darren Etheridge (1):
+  ARM/dts: am335x-evm: Add audio support for am335x-evm.dts
 
---===============0518575738719273320==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Hebbar, Gururaja (2):
+  ASoC: davinci-evm: Add device tree binding
+  ASoC: davinci: Add support for AM33xx SoC Audio
 
+Joel A Fernandes (1):
+  ASoC: davinci-mcasp: Add pinctrl support
 
---===============0518575738719273320==--
+Jyri Sarha (3):
+  ASoC: davinci-mcasp: Get DMA related properties from DT
+  ASoC: davinci-mcasp: Extract DMA channels directly from DT
+  ARM/dts: am33xx: mcasp: Add new dma related properties
+
+Pantelis Antoniou (1):
+  ARM/dts: am33xx: Add mcasp0 and mcasp1 device tree entries
+
+ .../bindings/sound/davinci-evm-audio.txt           |   53 ++++++
+ .../bindings/sound/davinci-mcasp-audio.txt         |   13 +-
+ arch/arm/boot/dts/am335x-evm.dts                   |   56 ++++++
+ arch/arm/boot/dts/am33xx.dtsi                      |   35 ++++
+ include/linux/platform_data/davinci_asp.h          |    2 +
+ sound/soc/davinci/Kconfig                          |    8 +
+ sound/soc/davinci/Makefile                         |    3 +
+ sound/soc/davinci/davinci-evm.c                    |  181 +++++++++++++++++---
+ sound/soc/davinci/davinci-mcasp.c                  |   82 +++++++--
+ 9 files changed, 391 insertions(+), 42 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
+
+-- 
+1.7.9.5
