@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC 1/8] ASoC: davinci-mcasp: Add pinctrl
-	support
-Date: Mon, 9 Sep 2013 16:19:19 +0100
-Message-ID: <20130909151919.GJ29403@sirena.org.uk>
+Subject: Re: [PATCH RFC 2/8] ASoC: davinci-evm: Add device tree
+	binding
+Date: Mon, 9 Sep 2013 16:21:46 +0100
+Message-ID: <20130909152146.GK29403@sirena.org.uk>
 References: <cover.1378738436.git.jsarha@ti.com>
- <6eaf283d62b023c3b7e2f26d937ca0ef602ef200.1378738436.git.jsarha@ti.com>
+ <2f2fa45507656c464b413a9761c7dd2059f4590e.1378738436.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6086114830603084826=="
+Content-Type: multipart/mixed; boundary="===============3130553680514307624=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E8A2A265125
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 17:19:22 +0200 (CEST)
-In-Reply-To: <6eaf283d62b023c3b7e2f26d937ca0ef602ef200.1378738436.git.jsarha@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 380BD2650A0
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 17:21:48 +0200 (CEST)
+In-Reply-To: <2f2fa45507656c464b413a9761c7dd2059f4590e.1378738436.git.jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +23,86 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: oku@iki.fi
 Cc: Darren Etheridge <detheridge@ti.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Jyri Sarha <jsarha@ti.com>, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>, liam.r.girdwood@linux.intel.com, Joel A Fernandes <agnel.joel@gmail.com>
+ Gururaja" <gururaja.hebbar@ti.com>, liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6086114830603084826==
+--===============3130553680514307624==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OY4z34RctfP64Hws"
+	protocol="application/pgp-signature"; boundary="jIHsHaVgx5AQzhyz"
 Content-Disposition: inline
 
 
---OY4z34RctfP64Hws
+--jIHsHaVgx5AQzhyz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 09, 2013 at 06:12:12PM +0300, oku@iki.fi wrote:
+On Mon, Sep 09, 2013 at 06:12:13PM +0300, oku@iki.fi wrote:
+> From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+>=20
+> Device tree support for Davinci Machine driver
 
-> +	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
-> +	if (IS_ERR(pinctrl))
-> +		dev_warn(&pdev->dev,
-> +			 "pins are not configured from the driver\n");
+You need to send this to the device tree maintainers and the device tree
+mailing list (not the old one you CCed).
+
+> +  Codec pins:
 > +
+> +  * MIC3L
+> +  * MIC3R
+> +  * LINE1L
+> +  * LINE2L
+> +  * LINE1R
+> +  * LINE2R
 
-This should be being done by the driver core now - is that not working?
+These should be documented in the binding for the CODEC and referenced
+here - if there isn't a binding for the CODEC you should add it.
 
---OY4z34RctfP64Hws
+> +	machine_ver =3D (u32)match->data;
+> +	switch (machine_ver) {
+> +	case MACHINE_VERSION_1:
+> +		evm_dai.name		=3D "Voice Codec - CQ93VC";
+> +		evm_dai.stream_name	=3D "CQ93";
+> +		evm_dai.codec_dai_name	=3D "cq93vc-hifi";
+> +		break;
+> +
+> +	case MACHINE_VERSION_2:
+> +		evm_dai.ops =3D &evm_ops;
+> +		evm_dai.init =3D evm_aic3x_init;
+> +		break;
+> +	}
+
+This appears to have binndings for two completely different CODECs...
+
+--jIHsHaVgx5AQzhyz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSLeb0AAoJELSic+t+oim9D88P/RX1R00GoNS7FyPM82H0xXVD
-Z1Y2Pbq1VDaSzx2lHt8r+nUSZvoM4Id0UpzO4o2AQVrcY1WGq6iFaui3O1mO67Uc
-58x0dhDbdX7tznFnvCeZSpfpbThqh/jCkiP5xQG2BkBcG2Betc9R52dTWr/U1+cM
-bB+F9wGF9WSkPIj5X/+vEtv7IduHas4G42zPpO3QhVa1dLtV9VVmseGNc4lh9Dmu
-MvDUFkFrmigejeL2jrvzTH04z1ODfFEV2p9V2pQLS7SVY/kOIW67JHNTJL9aDbCV
-nvJSCBEYJ9Hp+pG/DnMkvUhEchxvvevfXwNqjd8SS8eKs0Z3o2ooXzLxtzN7corJ
-Kg6UdWzBgQzS8KjUlBZ0stLoCfiFP+XZXShkUwijpaMgh3pjz1itS3eDEEgKD3li
-2Q4yswetjWY3uTO8eHCoaA8TLqpCG0FnCL2j6MwRtDNgNWohEgCKbdXInsLH+yMm
-yl40MxGuOiiPyWMAUkm7rUX/j8UotsMco9mwGQG9b++u65KVz3xuI8VR7uCmOJz7
-TCkc7ZKGUB9xIneld0FUK5bFKsH6/NOQQkUtIeF69PBnW61kyRA2NUjPXiwdpCN+
-f8wPxqVPYVvCPNscx8bEaeTVvo5hYznTvt+2yrGjco3iscq6clIwoeKnMFazQ7p/
-hMpEDD8jcmGMXyf+IYdb
-=3n9w
+iQIcBAEBAgAGBQJSLeeGAAoJELSic+t+oim9h88QAJ0O5SHCgfNFe+fgTk4daxfu
+CESQN8WJpwmQwrUEjTNNYoXdy+LlriH79IuiIXMxu38lCGrd1SNyraO0hIrOnJiZ
+DrRlCHoUpc/5PevrUWH+us6GeKi4ep0QdxrlwqcUrf8iidUdVgWgJJpQ8/LDSsW+
+3mEHl3hVDOJhBt82JHxQNa46l/WOn0+AyZb88JygBCA6AIbhCjGujSu/PReVzHZh
+I+oXDLElujeNKlRrU0Rtivj04IJ5iJoB6LYizPk/M2eMKijZ9r+mIvtX0xqK4Ytt
+IbrCbaFBBMXEmhlqZ37gPcz5UPbrybqQuGdXPRvuq8pie79RGIp4ASgumZL1KO/z
+LECdSlUJHMJj8t1mY+NcJSkeJTpVl90dE78kYX/Jk+Sa/b1zBzzzmCojne7sGC1Q
+1SUSVAfh+enNE7K5Ae/znee9qdbvOBJRI19wWfxV6+J7Qsi/G1sYHjYSrsLbZHUz
+3xTsUGiWqsMWMdXZkBNqOpvkXTFoV/zNn5nUwEVtxezA2n2b7b+dDJ+YCxt5eUI1
+bHlc572t9qvxhuoMVkJUVdCi+Y7CdqT/MaOobLHEzYo2CRQr7jCC2e44fohU+XHN
+vencR+zHVNt9jrfwWWgyhmRMZxiJbqXKsHsSXO6soUBFkrwckWLbZNentvX/C4y+
+VzliPns2A7uCDYH2hksw
+=EVYG
 -----END PGP SIGNATURE-----
 
---OY4z34RctfP64Hws--
+--jIHsHaVgx5AQzhyz--
 
---===============6086114830603084826==
+--===============3130553680514307624==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6086114830603084826==--
+--===============3130553680514307624==--
