@@ -1,16 +1,16 @@
 From: <oku@iki.fi>
-Subject: [PATCH RFC 6/8] ARM/dts: am33xx: Add mcasp0 and mcasp1
-	device tree entries
-Date: Mon, 9 Sep 2013 18:12:17 +0300
-Message-ID: <a8dd2abf8c468f6a42557b2794d104d31da4649a.1378738436.git.jsarha@ti.com>
+Subject: [PATCH RFC 8/8] ARM/dts: am335x-evm: Add audio support
+	for am335x-evm.dts
+Date: Mon, 9 Sep 2013 18:12:19 +0300
+Message-ID: <b40c4fbd9452504aaa81f463cbeaaac1c5e35356.1378738436.git.jsarha@ti.com>
 References: <cover.1378738436.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EE242650A0
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 17:12:37 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6545F2650EE
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 17:12:42 +0200 (CEST)
 In-Reply-To: <cover.1378738436.git.jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,50 +22,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Darren Etheridge <detheridge@ti.com>, devicetree-discuss@lists.ozlabs.org, Pantelis Antoniou <panto@antoniou-consulting.com>, Jyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com, broonie@kernel.org
+Cc: Darren Etheridge <detheridge@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, devicetree-discuss@lists.ozlabs.org, Jyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Pantelis Antoniou <panto@antoniou-consulting.com>
+From: Darren Etheridge <detheridge@ti.com>
 
-Add missing mcasp entries in the am33xx.dtsi include file.
+Adds sound, tlv320aic3x, mcasp1, and am335x_evm_audio_pin nodes.
 
-Signed-off-by: Pantelis Antoniou <panto@antoniou-consulting.com>
 Signed-off-by: Darren Etheridge <detheridge@ti.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Jyri Sarha <jsarha@ti.com>
 ---
- arch/arm/boot/dts/am33xx.dtsi |   21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ arch/arm/boot/dts/am335x-evm.dts |   56 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
-diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
-index 0fdb949..2c0679a 100644
---- a/arch/arm/boot/dts/am33xx.dtsi
-+++ b/arch/arm/boot/dts/am33xx.dtsi
-@@ -552,5 +552,26 @@
- 			#size-cells = <1>;
- 			status = "disabled";
+diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
+index 3aee1a4..4a49229 100644
+--- a/arch/arm/boot/dts/am335x-evm.dts
++++ b/arch/arm/boot/dts/am335x-evm.dts
+@@ -149,6 +149,16 @@
+ 				0x14c (PIN_INPUT_PULLDOWN | MUX_MODE7)
+ 			>;
  		};
 +
-+		mcasp0: mcasp@48038000 {
-+			compatible = "ti,omap2-mcasp-audio";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			ti,hwmods = "mcasp0";
-+			reg = <0x48038000 0x2000>;
-+			interrupts = <80 81>;
-+			status = "disabled";
-+		};
-+
-+		mcasp1: mcasp@4803C000 {
-+			compatible = "ti,omap2-mcasp-audio";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			ti,hwmods = "mcasp1";
-+			reg = <0x4803C000 0x2000>;
-+			interrupts = <82 83>;
-+			status = "disabled";
++		am335x_evm_audio_pins: am335x_evm_audio_pins {
++			pinctrl-single,pins = <
++				0x10c (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_rx_dv.mcasp1_aclkx */
++				0x110 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_txd3.mcasp1_fsx */
++				0x108 (PIN_OUTPUT_PULLDOWN | MUX_MODE4) /* mii1_col.mcasp1_axr2 */
++				0x144 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* rmii1_ref_clk.mcasp1_axr3 */
++			>;
 +		};
 +
  	};
- };
+ 
+ 	ocp {
+@@ -215,6 +225,19 @@
+ 				compatible = "ti,tmp275";
+ 				reg = <0x48>;
+ 			};
++
++			tlv320aic3x: tlv320aic3x@1b {
++				compatible = "ti,tlv320aic3x";
++				reg = <0x1b>;
++				status = "okay";
++
++				/* Regulators */
++				AVDD-supply = <&vaux2_reg>;
++				IOVDD-supply = <&vaux2_reg>;
++				DRVDD-supply = <&vaux2_reg>;
++				DVDD-supply = <&vbat>;
++			};
++
+ 		};
+ 
+ 		elm: elm@48080000 {
+@@ -311,6 +334,20 @@
+ 				};
+ 			};
+ 		};
++
++		sound {
++			compatible = "ti,da830-evm-audio";
++			ti,model = "DA830 EVM";
++			ti,audio-codec = <&tlv320aic3x>;
++			ti,mcasp-controller = <&mcasp1>;
++			ti,codec-clock-rate = <12000000>;
++			ti,audio-routing =
++				"Headphone Jack",       "HPLOUT",
++				"Headphone Jack",       "HPROUT",
++				"LINE1L",               "Line In",
++				"LINE1R",               "Line In";
++		};
++
+ 	};
+ 
+ 	vbat: fixedregulator@0 {
+@@ -378,6 +415,25 @@
+ 
+ #include "tps65910.dtsi"
+ 
++&mcasp1 {
++		pinctrl-names = "default";
++		pinctrl-0 = <&am335x_evm_audio_pins>;
++
++		status = "okay";
++
++		op-mode = <0>;          /* MCASP_IIS_MODE */
++		tdm-slots = <2>;
++		num-serializer = <16>;
++		serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
++			0 0 1 2
++			0 0 0 0
++			0 0 0 0
++			0 0 0 0
++		>;
++		tx-num-evt = <1>;
++		rx-num-evt = <1>;
++};
++
+ &tps {
+ 	vcc1-supply = <&vbat>;
+ 	vcc2-supply = <&vbat>;
 -- 
 1.7.9.5
