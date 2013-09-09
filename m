@@ -1,18 +1,14 @@
-From: Ashecrow <ashecrow42@free.fr>
-Subject: Re: [PATCH] ALSA: hda - hdmi: Fallback to ALSA
-	allocation when selecting CA
-Date: Mon, 9 Sep 2013 20:20:59 +0200
-Message-ID: <69179FE2-37F6-4CAA-AA7D-FDC20B45AC58@free.fr>
-References: <1378035407-29536-1-git-send-email-anssi.hannula@iki.fi>
- <s5hy57fbcf7.wl%tiwai@suse.de> <90F283E1-F425-4818-9A03-AAED8DB5547B@free.fr>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: [PATCH] ASoC: wm8903: disable IRQs during BIAS_OFF
+Date: Mon,  9 Sep 2013 12:44:49 -0600
+Message-ID: <1378752289-6301-1-git-send-email-swarren@wwwdotorg.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 663A82650E7
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 20:21:17 +0200 (CEST)
-In-Reply-To: <90F283E1-F425-4818-9A03-AAED8DB5547B@free.fr>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8D352651A3
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 20:44:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,146 +18,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Frank Zafka <kafkaesque1978@gmail.com>, alsa-devel@alsa-project.org, wxc200@gmail.com, stable@vger.kernel.org, =?iso-8859-1?Q?Peter_Fr=FChberger?= <fritsch@xbmc.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys,
-Let me tell you, you rock!!!!
-I have compiled kernel sources from Linus master branch in his GIT repo and=
- it works flawlessly, I now have DTS-HD MSTR.
+From: Stephen Warren <swarren@nvidia.com>
 
-Thanks Anssi for your great work!
-Thanks to any one who contributed to it.
-I can't believe I've struggled for so many months and only 8 lines of kerne=
-l code fix it.
+If the WM8903 IRQ is triggered after the device is suspended, or before
+it is resumed, the underlying I2C bus that the WM8903 is attached to may
+not be available. This may cause the IRQ handler to emit the following
+error:
 
-Hail ALSA and hail Linux :), I now have the perfect media center
+    wm8903 0-001a: Failed to read IRQ status: -16
 
+... or perhaps even cause a failure inside the I2C driver.
 
-Le 6 sept. 2013 =E0 10:43, Ashecrow a =E9crit :
+To prevent this, explicitly mask all interrupt sources when entering
+BIAS_OFF. Also, modify the IRQ handler to immediately return if the
+device is in BIAS_OFF, so that shared interrupt lines don't cause a
+similar problem. This requires that WM8903 interrupts be disabled to
+avoid interrupt storms.
 
-> Hi guys,
-> Anssi, thank you very much for your work! I'll test the patch asap and I'=
-ll keep you posted.
-> =
+During resume (actually, the transition back to BIAS_STANDBY), restore
+the desired IRQ mask.
 
-> Takashi, where can I get patched kernel sources, or on which branch do I =
-apply the patch to?
-> =
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+---
+ sound/soc/codecs/wm8903.c | 38 ++++++++++++++++++++++++++++----------
+ 1 file changed, 28 insertions(+), 10 deletions(-)
 
-> Thanks
-> Etienne
-> =
-
-> Le 2 sept. 2013 =E0 15:06, Takashi Iwai <tiwai@suse.de> a =E9crit :
-> =
-
->> At Sun,  1 Sep 2013 14:36:47 +0300,
->> Anssi Hannula wrote:
->>> =
-
->>> hdmi_channel_allocation() tries to find a HDMI channel allocation that
->>> matches the number channels in the playback stream and contains only
->>> speakers that the HDMI sink has reported as available via EDID. If no
->>> such allocation is found, 0 (stereo audio) is used.
->>> =
-
->>> Using CA 0 causes the audio causes the sink to discard everything except
->>> the first two channels (front left and front right).
->>> =
-
->>> However, the sink may be capable of receiving more channels than it has
->>> speakers (and then perform downmix or discard the extra channels), in
->>> which case it is preferable to use a CA that contains extra channels
->>> than to use CA 0 which discards all the non-stereo channels.
->>> =
-
->>> Additionally, it seems that HBR (HD) passthrough output does not work on
->>> Intel HDMI codecs when CA is set to 0 (possibly the codec zeroes
->>> channels not present in CA). This happens with all receivers that report
->>> a 5.1 speaker mask since a HBR stream is carried on 8 channels to the
->>> codec.
->>> =
-
->>> Add a fallback in the CA selection so that the CA channel count at least
->>> matches the stream channel count, even if the stream contains channels
->>> not present in the sink speaker descriptor.
->>> =
-
->>> Thanks to GrimGriefer at OpenELEC forums for discovering that changing
->>> the sink speaker mask allowed HBR output.
->>> =
-
->>> Reported-by: GrimGriefer
->>> Reported-by: Ashecrow
->>> Reported-by: Frank Zafka <kafkaesque1978@gmail.com>
->>> Reported-by: Peter Fr=FChberger <fritsch@xbmc.org>
->>> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
->>> Cc: <stable@vger.kernel.org>
->>> ---
->>> =
-
->>> Hopefully this fixes HBR (HD passthrough) for the remaining Intel users
->>> who were still experiencing problems.
->> =
-
->> Thanks, I applied the patch now.
->> =
-
->> =
-
->>> BTW, the hdmi_channel_allocation() logic seems also otherwise somewhat
->>> suspect to me. Shouldn't we always select an allocation matching ALSA
->>> channel mapping, instead of re-assigning channels received from
->>> userspace "randomly" to sink speakers (in case of unusual sink speaker
->>> mask)?
->> =
-
->> If per_pin->chmap_set is set beforehand,
->> hdmi_manual_channel_allocation() is called instead.  So it should be
->> fine.
->> =
-
->> =
-
->> Takashi
->> =
-
->>> Anyway, I let it be for now at least.
->>> =
-
->>> =
-
->>> sound/pci/hda/patch_hdmi.c | 11 +++++++++++
->>> 1 file changed, 11 insertions(+)
->>> =
-
->>> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
->>> index 030ca86..354fc55 100644
->>> --- a/sound/pci/hda/patch_hdmi.c
->>> +++ b/sound/pci/hda/patch_hdmi.c
->>> @@ -551,6 +551,17 @@ static int hdmi_channel_allocation(struct hdmi_eld=
- *eld, int channels)
->>>      }
->>>  }
->>> =
-
->>> +    if (!ca) {
->>> +        /* if there was no match, select the regular ALSA channel
->>> +         * allocation with the matching number of channels */
->>> +        for (i =3D 0; i < ARRAY_SIZE(channel_allocations); i++) {
->>> +            if (channels =3D=3D channel_allocations[i].channels) {
->>> +                ca =3D channel_allocations[i].ca_index;
->>> +                break;
->>> +            }
->>> +        }
->>> +    }
->>> +
->>>  snd_print_channel_allocation(eld->info.spk_alloc, buf, sizeof(buf));
->>>  snd_printdd("HDMI: select CA 0x%x for %d-channel allocation: %s\n",
->>>          ca, channels, buf);
->>> -- =
-
->>> 1.8.1.5
->>> =
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index eebcb1d..e847bbe 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -1091,6 +1091,22 @@ static const struct snd_soc_dapm_route wm8903_intercon[] = {
+ 	{ "Right Line Output PGA", NULL, "Charge Pump" },
+ };
+ 
++static void wm8903_setup_mic_det_irqs(struct snd_soc_codec *codec)
++{
++	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
++	int irq_mask = WM8903_MICDET_EINT | WM8903_MICSHRT_EINT;
++
++	/* Enable interrupts we've got a report configured for */
++	if (wm8903->mic_det)
++		irq_mask &= ~WM8903_MICDET_EINT;
++	if (wm8903->mic_short)
++		irq_mask &= ~WM8903_MICSHRT_EINT;
++
++	snd_soc_update_bits(codec, WM8903_INTERRUPT_STATUS_1_MASK,
++			    WM8903_MICDET_EINT | WM8903_MICSHRT_EINT,
++			    irq_mask);
++}
++
+ static int wm8903_set_bias_level(struct snd_soc_codec *codec,
+ 				 enum snd_soc_bias_level level)
+ {
+@@ -1169,6 +1185,8 @@ static int wm8903_set_bias_level(struct snd_soc_codec *codec,
+ 					    WM8903_CP_DYN_V,
+ 					    WM8903_CP_DYN_FREQ |
+ 					    WM8903_CP_DYN_V);
++
++			wm8903_setup_mic_det_irqs(codec);
+ 		}
+ 
+ 		snd_soc_update_bits(codec, WM8903_VMID_CONTROL_0,
+@@ -1177,6 +1195,8 @@ static int wm8903_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 
+ 	case SND_SOC_BIAS_OFF:
++		snd_soc_write(codec, WM8903_INTERRUPT_STATUS_1_MASK, 0xffff);
++
+ 		snd_soc_update_bits(codec, WM8903_BIAS_CONTROL_0,
+ 				    WM8903_BIAS_ENA, 0);
+ 
+@@ -1600,7 +1620,6 @@ int wm8903_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack,
+ 		      int det, int shrt)
+ {
+ 	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
+-	int irq_mask = WM8903_MICDET_EINT | WM8903_MICSHRT_EINT;
+ 
+ 	dev_dbg(codec->dev, "Enabling microphone detection: %x %x\n",
+ 		det, shrt);
+@@ -1610,15 +1629,7 @@ int wm8903_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack,
+ 	wm8903->mic_det = det;
+ 	wm8903->mic_short = shrt;
+ 
+-	/* Enable interrupts we've got a report configured for */
+-	if (det)
+-		irq_mask &= ~WM8903_MICDET_EINT;
+-	if (shrt)
+-		irq_mask &= ~WM8903_MICSHRT_EINT;
+-
+-	snd_soc_update_bits(codec, WM8903_INTERRUPT_STATUS_1_MASK,
+-			    WM8903_MICDET_EINT | WM8903_MICSHRT_EINT,
+-			    irq_mask);
++	wm8903_setup_mic_det_irqs(codec);
+ 
+ 	if (det || shrt) {
+ 		/* Enable mic detection, this may not have been set through
+@@ -1642,6 +1653,13 @@ static irqreturn_t wm8903_irq(int irq, void *data)
+ 	int mic_report, ret;
+ 	unsigned int int_val, mask, int_pol;
+ 
++	/*
++	 * During suspend, a shared IRQ may be triggered by some other device.
++	 * If so, just ignore it; WM8903 shouldn't be generating interrupts.
++	 */
++	if (wm8903->codec->dapm.bias_level == SND_SOC_BIAS_OFF)
++		return IRQ_NONE;
++
+ 	ret = regmap_read(wm8903->regmap, WM8903_INTERRUPT_STATUS_1_MASK,
+ 			  &mask);
+ 	if (ret != 0) {
+-- 
+1.8.1.5
