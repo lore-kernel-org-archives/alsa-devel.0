@@ -1,17 +1,17 @@
-From: <oku@iki.fi>
-Subject: [PATCH RFC 7/8] ARM/dts: am33xx: mcasp: Add new dma
-	related properties
-Date: Mon, 9 Sep 2013 18:12:18 +0300
-Message-ID: <e4f85aad7a8162dcfb4145e7e9e580a3f0010bb9.1378738436.git.jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RFC 1/8] ASoC: davinci-mcasp: Add pinctrl
+	support
+Date: Mon, 9 Sep 2013 16:19:19 +0100
+Message-ID: <20130909151919.GJ29403@sirena.org.uk>
 References: <cover.1378738436.git.jsarha@ti.com>
+ <6eaf283d62b023c3b7e2f26d937ca0ef602ef200.1378738436.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6086114830603084826=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id D32CB26511C
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 17:12:39 +0200 (CEST)
-In-Reply-To: <cover.1378738436.git.jsarha@ti.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8A2A265125
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2013 17:19:22 +0200 (CEST)
+In-Reply-To: <6eaf283d62b023c3b7e2f26d937ca0ef602ef200.1378738436.git.jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Darren Etheridge <detheridge@ti.com>, devicetree-discuss@lists.ozlabs.org, Jyri Sarha <jsarha@ti.com>, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>, liam.r.girdwood@linux.intel.com, broonie@kernel.org
+To: oku@iki.fi
+Cc: Darren Etheridge <detheridge@ti.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Jyri Sarha <jsarha@ti.com>, "Hebbar,
+ Gururaja" <gururaja.hebbar@ti.com>, liam.r.girdwood@linux.intel.com, Joel A Fernandes <agnel.joel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jyri Sarha <jsarha@ti.com>
 
-This patch adds couple of dma related mcasp properies to DT which may
-not be needed after dmaengine implementaion of davinci audio is ready.
+--===============6086114830603084826==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="OY4z34RctfP64Hws"
+Content-Disposition: inline
 
-Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
-Signed-off-by: Darren Etheridge <detheridge@ti.com>
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- arch/arm/boot/dts/am33xx.dtsi |   18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
-index 2c0679a..57f2b4a 100644
---- a/arch/arm/boot/dts/am33xx.dtsi
-+++ b/arch/arm/boot/dts/am33xx.dtsi
-@@ -558,9 +558,16 @@
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			ti,hwmods = "mcasp0";
--			reg = <0x48038000 0x2000>;
-+			reg = <0x48038000 0x2000>,
-+			      <0x46400000 0x400000>,
-+			      <0x46400000 0x400000>;
-+			reg-names = "mpu", "dma-tx", "dma-rx";
- 			interrupts = <80 81>;
- 			status = "disabled";
-+			asp-chan-q = <2>;	/* EVENTQ_2 */
-+			dmas = <&edma 8
-+				&edma 9>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcasp1: mcasp@4803C000 {
-@@ -568,9 +575,16 @@
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			ti,hwmods = "mcasp1";
--			reg = <0x4803C000 0x2000>;
-+			reg = <0x4803C000 0x2000>,
-+			      <0x46400000 0x400000>,
-+			      <0x46400000 0x400000>;
-+			reg-names = "mpu", "dma-tx", "dma-rx";
- 			interrupts = <82 83>;
- 			status = "disabled";
-+			asp-chan-q = <2>;	/* EVENTQ_2 */
-+			dmas = <&edma 10
-+				&edma 11>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 	};
--- 
-1.7.9.5
+--OY4z34RctfP64Hws
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Sep 09, 2013 at 06:12:12PM +0300, oku@iki.fi wrote:
+
+> +	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
+> +	if (IS_ERR(pinctrl))
+> +		dev_warn(&pdev->dev,
+> +			 "pins are not configured from the driver\n");
+> +
+
+This should be being done by the driver core now - is that not working?
+
+--OY4z34RctfP64Hws
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSLeb0AAoJELSic+t+oim9D88P/RX1R00GoNS7FyPM82H0xXVD
+Z1Y2Pbq1VDaSzx2lHt8r+nUSZvoM4Id0UpzO4o2AQVrcY1WGq6iFaui3O1mO67Uc
+58x0dhDbdX7tznFnvCeZSpfpbThqh/jCkiP5xQG2BkBcG2Betc9R52dTWr/U1+cM
+bB+F9wGF9WSkPIj5X/+vEtv7IduHas4G42zPpO3QhVa1dLtV9VVmseGNc4lh9Dmu
+MvDUFkFrmigejeL2jrvzTH04z1ODfFEV2p9V2pQLS7SVY/kOIW67JHNTJL9aDbCV
+nvJSCBEYJ9Hp+pG/DnMkvUhEchxvvevfXwNqjd8SS8eKs0Z3o2ooXzLxtzN7corJ
+Kg6UdWzBgQzS8KjUlBZ0stLoCfiFP+XZXShkUwijpaMgh3pjz1itS3eDEEgKD3li
+2Q4yswetjWY3uTO8eHCoaA8TLqpCG0FnCL2j6MwRtDNgNWohEgCKbdXInsLH+yMm
+yl40MxGuOiiPyWMAUkm7rUX/j8UotsMco9mwGQG9b++u65KVz3xuI8VR7uCmOJz7
+TCkc7ZKGUB9xIneld0FUK5bFKsH6/NOQQkUtIeF69PBnW61kyRA2NUjPXiwdpCN+
+f8wPxqVPYVvCPNscx8bEaeTVvo5hYznTvt+2yrGjco3iscq6clIwoeKnMFazQ7p/
+hMpEDD8jcmGMXyf+IYdb
+=3n9w
+-----END PGP SIGNATURE-----
+
+--OY4z34RctfP64Hws--
+
+--===============6086114830603084826==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6086114830603084826==--
