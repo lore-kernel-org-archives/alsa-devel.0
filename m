@@ -1,10 +1,9 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: codecs: da9055: Update driver name
  to fix breakage due to pmic driver with same name
-Date: Tue, 10 Sep 2013 13:05:54 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A033751E630F5@SW-EX-MBX01.diasemi.com>
-References: <1375717898.29528.23.camel@matrix>
- <20130805162342.GS9858@sirena.org.uk> <1377778108.15438.6.camel@matrix>
+Date: Tue, 10 Sep 2013 18:07:24 +0100
+Message-ID: <20130910170724.GU29403@sirena.org.uk>
+References: <1377778108.15438.6.camel@matrix>
  <2E89032DDAA8B9408CB92943514A033751E611AF@SW-EX-MBX01.diasemi.com>
  <20130902103843.GL3084@sirena.org.uk>
  <2E89032DDAA8B9408CB92943514A033751E612F5@SW-EX-MBX01.diasemi.com>
@@ -13,16 +12,14 @@ References: <1375717898.29528.23.camel@matrix>
  <20130904183405.GX3084@sirena.org.uk>
  <2E89032DDAA8B9408CB92943514A033751E61991@SW-EX-MBX01.diasemi.com>
  <20130909112643.GX29403@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A033751E630F5@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4005137182016041055=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
- [195.245.231.144])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F991261A18
- for <alsa-devel@alsa-project.org>; Tue, 10 Sep 2013 15:06:03 +0200 (CEST)
-In-Reply-To: <20130909112643.GX29403@sirena.org.uk>
-Content-Language: en-US
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F2A5261A18
+ for <alsa-devel@alsa-project.org>; Tue, 10 Sep 2013 19:07:28 +0200 (CEST)
+In-Reply-To: <2E89032DDAA8B9408CB92943514A033751E630F5@SW-EX-MBX01.diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,30 +29,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
 Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, "kiran.padwal" <kiran.padwal@kpitcummins.com>, David Dajun Chen <david.chen@diasemi.com>, Ashish Chavan <ashish.chavan@kpitcummins.com>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 09, 2013 at 12:27, Mark Brown wrote:
 
-> > Bringing this back to DA9055 though, the current method of initialisation, for
-> > PMIC and Codec, isn't complicated or confusing nor does it require a lot of
-> > effort. As well as this the implementation is logically sound. It should
-> > remain that way in my opinion. The only thing that should be updated is the I2C
-> > Id of the Codec to make it more meaningful, and preferably sooner rather than
-> > later so the issue can be finally put to bed.
-> 
-> Well, the obvious approach would seem to be to just do the registration
-> of the CODEC I2C device from the MFD...
+--===============4005137182016041055==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yWPvFVzSs/idg2A5"
+Content-Disposition: inline
 
-Had we felt that was the obvious approach then we'd have taken it, as it's much
-easier to 'fall in line'. However I believe the approach that we adopted was
-the obvious and correct one for our chip. It is just a shame that you don't see
-things the same way.
 
-As it stands we have fully functional drivers integrated in the kernel, which
-are tested and proven. What remains as far as I'm concerned is a simple ID
-name change to make things cleaner, but you do not agree with this approach.
-Your suggestion is to move initialisation of the Codec to the MFD core of the
-PMIC driver which to me is unnecessary and limiting and is something I cannot
-agree with. Basically we're at a bit of an impasse here...
+--yWPvFVzSs/idg2A5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Sep 10, 2013 at 01:05:54PM +0000, Opensource [Adam Thomson] wrote:
+
+> Your suggestion is to move initialisation of the Codec to the MFD core of the
+> PMIC driver which to me is unnecessary and limiting and is something I cannot
+> agree with. Basically we're at a bit of an impasse here...
+
+What limitations do you see?  I don't see any substantial issues and you
+haven't mentioned any.
+
+--yWPvFVzSs/idg2A5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSL1HJAAoJELSic+t+oim96MYP/1SDPXgy/uJfNa4papGUYx9M
+UFqC/yKk+P+gjoOmxZrHWLVEUKuws78oBUeH+6MPVGM/nUYMsfdygKAKsciETxR7
+hsHp7G9JZ9cBR/6NG4utWsDWNdIcI8w3Ce2KYZV4tK0YodvzUMqGNM9JlLsF9f/V
+uwzn5bWwSHFN/FMSpgd/P9qrsEM3wIEGMWvy5YOWf5+QAgwBDbm2DwO2QgqlZm7D
+Cqh6TkwhtiJ8MurxtJVA+iRHhiNjjpshjPmyjtYuCDXTfzoR+e9FPNNWvK/0ykPD
+Lui6KoRbTjErRqknmfmR14bk/ptjNqbZiGIYl/4YpUvHrfyNva269rnsaCNyUYBR
++7YJSViRldO5NDp5upmTv1mrulAw/v2RXy0CdDWSMqolAo5Fuz38MwPAm1GDvPjC
+Y84iwNLVVkvo1qgklkggCs+MJjpAc4TFB6714eW6Jvj4Ou0Dj0RnVEcU/5ltyZ9p
+WIuUi81z6RPP0o88H6iSc9tcQIvMhB/d8iOC31SmDh1zgQ6Ptw+uwQ5HL0u4/iii
+h/ZRXqUueJKay8mOAlpdMpWTByfv2FLQks2gkuoms/2l8oS7Ct4zO0YV7oYzMVrp
+pUAiwQac/dMiDqVVNoaN00X7cdJnuLhuL8iIKHIbXUsYCdzsZcopJEF4lV/o7lFm
+LJm3ihch6Ze2Xvpc/hrQ
+=99fh
+-----END PGP SIGNATURE-----
+
+--yWPvFVzSs/idg2A5--
+
+--===============4005137182016041055==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4005137182016041055==--
