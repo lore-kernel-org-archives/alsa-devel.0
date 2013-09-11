@@ -1,61 +1,36 @@
-From: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [alsa-devel] alsa crash with =?windows-1252?Q?=93_ALSA_s?=
- =?windows-1252?Q?ound/usb/urb=2Ec=3A179_cannot_submit_urb_=28err?=
- =?windows-1252?Q?_=3D_-27=29=94_on_imx6q_sabrelite?=
-Date: Wed, 11 Sep 2013 14:55:42 +0200
-Message-ID: <5230684E.6030900@gmail.com>
-References: <CAFT5LgLN2dWg9Pef5AHH9AFPv-1e_WAp=3J+LEdvYTCWjKXAhg@mail.gmail.com> <522C9061.5070303@gmail.com> <CAFT5LgKjrYhZ4=cQE7PVBut6L3RvFsR3B16PUUtvEC5cqZLwpg@mail.gmail.com>
+From: Abhayadev S <abhayadevs@gmail.com>
+Subject: Scarlett Mixer 8i6
+Date: Wed, 11 Sep 2013 19:20:00 +0530
+Message-ID: <CAMF23z0+08Wczo4XqqSUcroEoQJ1-CZ0bBjrLGSicH9gT_UOZg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CAFT5LgKjrYhZ4=cQE7PVBut6L3RvFsR3B16PUUtvEC5cqZLwpg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Ankit Agarwal <ankitgenius90-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oa0-f43.google.com (mail-oa0-f43.google.com
+ [209.85.219.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A2A2265302
+ for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2013 15:50:21 +0200 (CEST)
+Received: by mail-oa0-f43.google.com with SMTP id i10so9350088oag.16
+ for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2013 06:50:20 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11.09.2013 14:53, Ankit Agarwal wrote:
-> 
-> On Sun, Sep 8, 2013 at 8:27 PM, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-> <mailto:zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>> wrote:
-> 
->     On 02.09.2013 12:51, Ankit Agarwal wrote:
->     > I am using alsa pcm player to listen to audio. The alsa pcm
->     crashes with
->     > the error: ALSA sound/usb/urb.c:179 cannot submit urb (err = -27).
->     I am
->     > able to hear the data initially but when other transaction begins
->     on HID
->     > report endpoint, alsa crashes with the mentioned error.
-> 
->     -27 == -EFBIG, which seems to relate to a scheduling problem on the bus,
->     and hence probably rather to a host controller bug than an issue with
->     snd-usb.
-> 
->     > I am working on imx6q board with linux kernel-3.0.35. I am using Apple
->     > device to get the digital audio.
-> 
->     Please try with a more recent kernel, and see if you can find the
->     location where EFBIG is initially reported.
-> 
-> 
-> I have found that EFBIG is being reported by ehci-host controller. It is
-> coming from file ehci-sched.c under iso_stream_schedule() function. The
-> error is thrown when the controller tries to schedule the urb too far
-> into the future, ie, there is overflow of the scheduled URBs. I might be
-> happening because the URBs are not scheduled properly.
+just checked the ALSA tree and found that the support for 18i6 mixer is
+enabled but not able to find the same in the kernel mainline tree at
+kernel.org. When is this planned to be patched in the mainline kernel?
 
-Ok. What about trying a newer kernel? The issue might be fixed already.
+Also, i have a 8i6 for which i would like to extend the support for the
+internal mixer. Can i use the code for 18i6 here? or does it needs any
+changes? in anyway i could help it to add the support for 8i6 device too?
 
-In any case, this does not seem related to snd-usb, so I copied the usb
-list.
-
-
-Daniel
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Regards,
+Abhayadev S
