@@ -1,66 +1,102 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: [alsa-devel] alsa crash with =?windows-1252?Q?=93_ALSA_s?=
- =?windows-1252?Q?ound/usb/urb=2Ec=3A179_cannot_submit_urb_=28err?=
- =?windows-1252?Q?_=3D_-27=29=94_on_imx6q_sabrelite?=
-Date: Wed, 11 Sep 2013 10:48:33 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1309111044200.1352-100000@iolanthe.rowland.org>
-References: <5230684E.6030900@gmail.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH] ASoC: wm8903: disable IRQs during BIAS_OFF
+Date: Wed, 11 Sep 2013 10:16:56 -0600
+Message-ID: <52309778.9010004@wwwdotorg.org>
+References: <1378752289-6301-1-git-send-email-swarren@wwwdotorg.org>
+ <20130909202726.GU29403@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <5230684E.6030900-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Ankit Agarwal <ankitgenius90-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id E0649261AA0
+ for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2013 18:17:00 +0200 (CEST)
+In-Reply-To: <20130909202726.GU29403@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 11 Sep 2013, Daniel Mack wrote:
-
-> On 11.09.2013 14:53, Ankit Agarwal wrote:
-> > 
-> > On Sun, Sep 8, 2013 at 8:27 PM, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-> > <mailto:zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>> wrote:
-> > 
-> >     On 02.09.2013 12:51, Ankit Agarwal wrote:
-> >     > I am using alsa pcm player to listen to audio. The alsa pcm
-> >     crashes with
-> >     > the error: ALSA sound/usb/urb.c:179 cannot submit urb (err = -27).
-> >     I am
-> >     > able to hear the data initially but when other transaction begins
-> >     on HID
-> >     > report endpoint, alsa crashes with the mentioned error.
-> > 
-> >     -27 == -EFBIG, which seems to relate to a scheduling problem on the bus,
-> >     and hence probably rather to a host controller bug than an issue with
-> >     snd-usb.
-> > 
-> >     > I am working on imx6q board with linux kernel-3.0.35. I am using Apple
-> >     > device to get the digital audio.
-> > 
-> >     Please try with a more recent kernel, and see if you can find the
-> >     location where EFBIG is initially reported.
-> > 
-> > 
-> > I have found that EFBIG is being reported by ehci-host controller. It is
-> > coming from file ehci-sched.c under iso_stream_schedule() function. The
-> > error is thrown when the controller tries to schedule the urb too far
-> > into the future, ie, there is overflow of the scheduled URBs. I might be
-> > happening because the URBs are not scheduled properly.
+On 09/09/2013 02:27 PM, Mark Brown wrote:
+> On Mon, Sep 09, 2013 at 12:44:49PM -0600, Stephen Warren wrote:
+>> From: Stephen Warren <swarren@nvidia.com>
+>> 
+>> If the WM8903 IRQ is triggered after the device is suspended, or
+>> before it is resumed, the underlying I2C bus that the WM8903 is
+>> attached to may not be available. This may cause the IRQ handler
+>> to emit the following error:
+>> 
+>> wm8903 0-001a: Failed to read IRQ status: -16
+>> 
+>> ... or perhaps even cause a failure inside the I2C driver.
+>> 
+>> To prevent this, explicitly mask all interrupt sources when
+>> entering BIAS_OFF. Also, modify the IRQ handler to immediately
+>> return if the device is in BIAS_OFF, so that shared interrupt
+>> lines don't cause a similar problem. This requires that WM8903
+>> interrupts be disabled to avoid interrupt storms.
+>> 
+>> During resume (actually, the transition back to BIAS_STANDBY),
+>> restore the desired IRQ mask.
 > 
-> Ok. What about trying a newer kernel? The issue might be fixed already.
+> This should be being handled in at a framework level, there's a
+> generic problem here that affects essentially every device out
+> there which might need interrupts over suspend (and causes
+> relatively frequent problems). Your fix also won't help if someone
+> has arranged for the wm8903 mic detect to be a wake source which
+> you normally want in phone or tablet type applications but is where
+> this sort of issue most frequently bites since we'll never turn the
+> device off the interrupt does need to be asserted to kick off the
+> wake.
+> 
+> Drivers usually work around this by disabling their interrupt with 
+> disable_irq() between suspend() and suspend_late(), then doing the
+> same thing again between resume_noirq() and resume() covering both
+> the windows where this can happen.  This preserves the ability to
+> wake from the interrupt but it's not awesome; ideally genirq would
+> be able to understand that it can't deliver interrupts to a
+> suspended device but then of course at the minute genirq has no
+> idea that a device is even associated with the interrupt.
 
--EFBIG is still returned under the same circumstances as in earlier
-kernels.  You can get more information about those errors if you enable
-CONFIG_USB_DEBUG.
+So I suppose request_irq() could be enhanced to associate IRQs with
+devices, which would at least give genirq the knowledge it needs to
+mask interrupts before devices were resumed.
 
-Starting in the 3.11 kernel, however, -EXDEV is no longer returned for
-USB submission.  It would be a good idea to test with 3.11.  It also
-would be a good idea to get a usbmon trace showing what happens when
-the errors occur.
+However, I'm not sure it's possible for genirq to handle this
+transparently in all situations.
 
-Alan Stern
+When would the IRQ be re-enabled again?
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+If it the IRQ is enabled immediately before the device's resume() is
+called, then IRQs can still fire while the device is suspended. That
+would solve the issue at hand here; that the I2C device used for
+register IO wasn't resumed when the IRQ fired, but could presumably
+still be problematic for the device itself, in general if not in this
+case. Perhaps drivers just need to support this?
+
+If the IRQ is enabled immediately after the device's resume() is
+called, then a device wouldn't be able to receive IRQs during the
+execution of resume(), which I assume would completely break some drivers?
+
+This gets more complicated with shared IRQ lines, since it wouldn't be
+possible to enable the IRQ immediately before/after *a* device's
+resume() was called, but rather, this could only happen immediately
+before/after the resume() for *all* devices using that IRQ were called.
+
+It seems like the only way a driver can really manage IRQ handling in
+the general case is to mask interrupts at the source, like this patch
+does, rather than mask them at the interrupt controller, where the IRQ
+may already be shared.
+
+I guess that means that for wakeup interrupts, the driver does indeed
+need to disable the interrupt at the source between resume_noirq() and
+resume(), although I have no idea how that could possibly work, if the
+register IO is over an I2C device that itself uses its own interrupts...
