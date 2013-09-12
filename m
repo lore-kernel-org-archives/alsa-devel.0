@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2][RFC] ASoC: add .of_xlate_dai_name and
-	DT support
-Date: Thu, 12 Sep 2013 11:39:00 +0100
-Message-ID: <20130912103900.GG29403@sirena.org.uk>
-References: <87eh97sqw7.wl%kuninori.morimoto.gx@renesas.com>
- <87eh94xab2.wl%kuninori.morimoto.gx@renesas.com>
- <87d2ooxa9o.wl%kuninori.morimoto.gx@renesas.com>
- <87ob80i45a.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH RFC 3/8] ASoC: davinci-mcasp: Get DMA
+ related properties from DT
+Date: Thu, 12 Sep 2013 12:08:00 +0100
+Message-ID: <20130912110800.GI29403@sirena.org.uk>
+References: <cover.1378738436.git.jsarha@ti.com>
+ <35b6dc24d8a803b97c683d4d2c51db7e3518f7ff.1378738436.git.jsarha@ti.com>
+ <20130909152559.GM29403@sirena.org.uk>
+ <d56ff517b8d6e29af7639665bb17c1bb@kapsi.fi>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3097058653835897995=="
+Content-Type: multipart/mixed; boundary="===============5564749780878843351=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 8ED912615AE
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 12:39:09 +0200 (CEST)
-In-Reply-To: <87ob80i45a.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 67E2F2615DD
+ for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 13:08:04 +0200 (CEST)
+In-Reply-To: <d56ff517b8d6e29af7639665bb17c1bb@kapsi.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +23,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Jyri Sarha <oku@iki.fi>
+Cc: Darren Etheridge <detheridge@ti.com>, alsa-devel@alsa-project.org, Joel Fernandes <joelf@ti.com>, Jyri Sarha <jsarha@ti.com>, "Hebbar,
+ Gururaja" <gururaja.hebbar@ti.com>, liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3097058653835897995==
+--===============5564749780878843351==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="O/h6J1ag3HNdqgMf"
+	protocol="application/pgp-signature"; boundary="f3WXSwEsV7zDmurZ"
 Content-Disposition: inline
 
 
---O/h6J1ag3HNdqgMf
+--f3WXSwEsV7zDmurZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Sep 10, 2013 at 05:38:33PM -0700, Kuninori Morimoto wrote:
+On Wed, Sep 11, 2013 at 02:48:19PM +0300, Jyri Sarha wrote:
 
-> This is very flying RFC patches since previous
-> "ASoC: snd_soc_codec includes snd_soc_component"
-> has no response at this point.
-> But I want any opinion about .of_xlate_dai_name implementation
-> and DT support method
+> I have not studied the code enough to give a good work estimate about
+> the conversion, but at least the current EDMA driver would need cyclic
+> mode to be implemented before the conversion would be possible. It may
 
-This all looks basically OK to me, though we will need to go and update
-binding documents to say which DAI is which on the CODECs that use the
-bindings.
+The other option is to support non-cyclic mode in the generic code.
 
---O/h6J1ag3HNdqgMf
+> However, after taking a another look at the added DT bindings, I think
+> we could survive with mcasp dma register addresses only for now. To my
+> understanding those are anyway need in mcasp node. In DT boot the
+> mcasp EDMA event queue could be hardcoded to the highest priority for
+> now.
+
+> How does this sound?
+
+I'm not clear what that means in concrete terms, sorry.  Do you mean you
+can just use the existing register ranges for the McASP?  Please bear in
+mind that I don't really know anything about this hardware.
+
+--f3WXSwEsV7zDmurZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSMZnBAAoJELSic+t+oim9RTAP/A5iHfiwig6f1vVzDXuhCtkU
-2AbIWslLm1Ezss2+gdb/j8mN2lM6Mxhhoma7i1exndYDV/rithcvVMod6qaZrJfr
-8oQq6L9cBVUvi3MRIneGmc+ygG7gS8tWkshmy/d4AwPdeAZdCrNHfPUQOz259Hl7
-IoPjk5E3Q/r7j4rvd5YuqyrcfHJdMia/9fbLIie7E5ow0j5FcV5/LAvLvr/BEvD3
-EP08E90VVgnRhlHCmgS9dDTXh5mcoCm/MRdzZ8FtnN/Y+BNNBL3Iszy7lZHtbssu
-zC8DbDOsyJuwLtAscNWyEnprt9K4EwpSQw1BONdvvF9ePK+mz7GXeVFTFYL56do6
-JtCyPqLsmZtDCafQ5nd/kGrQvIbxwYK/UaCbKYgVF/Pze/RmrxvjYU52z5G596Lc
-vaH2R2nQoWkqxUbjL/es5PMC6VZ7ynF1qlIODal4vRIe2tV9wudbNHcwV1OrcnqM
-ZcJZiD+gcbb+CwqWP1SEE94+lHTkf2/7xXvnVMfIElU2PNWLG0kCnAtinfNyKr2U
-QO1eIQpYoUdNZh3z+IIa0+Vezp0KGIKDHsRRd1rq9TOr0DIEdfLyGoglTqQFwCYu
-nk6giv1QK/caUI/aperc183wmJQGdWm4awusSzGkmg2Ewkl2xNNc5zBLBp9bqb1v
-Eisaz3aHR8R+AVEqRYPZ
-=PQPG
+iQIcBAEBAgAGBQJSMaCNAAoJELSic+t+oim9hxsP/0GcGj/JsA0VsRfqRTIHGuvU
+Jp9p9XER4lZd8uDd0eekWjWC2zqPI/c43X9gH1BEfSn3DEHtOVjnz8mdbWkunrIT
+qqR0j2O50XP4rqkCOej6SACdwNMiRHXq9aZER7V/hvukclPaaPQhzcqDVqM/cAfr
+OjodTavTjpTApP6KR+O3PbZ455hWYyXIo9IfTayWQFiUD1A49Kig9NK1LTN+QqJ7
+JtJ3tRow8AU7sajZd2qXXYJZvm6iZqBKsO6Vo0fp/FJ4UtiZEiAWRN8OXrVklNkm
+NQ9wshFDMGNYSZNClycX4P/xZEYJvn/kq8PzUI/beT9FnY2Xgr7WK6CCR0VTH0aQ
+rWDmtZQPZhVaPOiJSQmMqewq9sViWr5cc2ISeia+dKG28PfTsRyyDdTYPTqqxn0E
+kZxSkTZmMgrl7dSoGY4U3twhogJlLoSE7aIDvm2cC6nOhRMurgIanoOnz3GUZSGg
+tITzuSJo/8cdgIj5Of1grsga3FmtrW70sJZLtVLbBuOrbkZuiPsRViQ8SFvYI3pi
+w9vezAPpaw3KcPchxoBRgSGH9nU3eiInj3dY/ReyA29uACZOd84+wQuFVUXvBYy9
+6WWfaMNyGee4gsRNGo035ILCanzI4a4QSRP8OMAf7PitMRCeAQmA0uQkRVsM2+QV
+Bb1ZWtGf7VUIAA6eyXpf
+=lPA6
 -----END PGP SIGNATURE-----
 
---O/h6J1ag3HNdqgMf--
+--f3WXSwEsV7zDmurZ--
 
---===============3097058653835897995==
+--===============5564749780878843351==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3097058653835897995==--
+--===============5564749780878843351==--
