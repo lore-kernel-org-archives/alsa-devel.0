@@ -1,21 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC 2/8] ASoC: davinci-evm: Add device tree
-	binding
-Date: Thu, 12 Sep 2013 12:47:07 +0100
-Message-ID: <20130912114707.GK29403@sirena.org.uk>
-References: <cover.1378738436.git.jsarha@ti.com>
- <2f2fa45507656c464b413a9761c7dd2059f4590e.1378738436.git.jsarha@ti.com>
- <20130909152146.GK29403@sirena.org.uk>
- <7fd2aed6239e4bbb791a4f232c74881a@kapsi.fi>
- <20130911113533.GQ29403@sirena.org.uk>
- <26fb2b5213b7ea9c8bd9e2ef023614a3@kapsi.fi>
+Subject: Re: [PATCH 2/2][RFC] ASoC: simple-card: add Device
+ Tree support
+Date: Thu, 12 Sep 2013 12:55:16 +0100
+Message-ID: <20130912115516.GN29403@sirena.org.uk>
+References: <87eh97sqw7.wl%kuninori.morimoto.gx@renesas.com>
+ <87eh94xab2.wl%kuninori.morimoto.gx@renesas.com>
+ <87d2ooxa9o.wl%kuninori.morimoto.gx@renesas.com>
+ <87ob80i45a.wl%kuninori.morimoto.gx@renesas.com>
+ <87li34i41w.wl%kuninori.morimoto.gx@renesas.com>
+ <5231A607.5080701@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2159703271743840244=="
+Content-Type: multipart/mixed; boundary="===============8952590770565155102=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 0512B261675
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 13:47:14 +0200 (CEST)
-In-Reply-To: <26fb2b5213b7ea9c8bd9e2ef023614a3@kapsi.fi>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CC0B261675
+ for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 13:55:22 +0200 (CEST)
+In-Reply-To: <5231A607.5080701@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,69 +25,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <oku@iki.fi>
-Cc: Darren Etheridge <detheridge@ti.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Jyri Sarha <jsarha@ti.com>, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>, liam.r.girdwood@linux.intel.com
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2159703271743840244==
+--===============8952590770565155102==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3sLite7U3kd5/6th"
+	protocol="application/pgp-signature"; boundary="f1V9hGvJIYI6R1Zo"
 Content-Disposition: inline
 
 
---3sLite7U3kd5/6th
+--f1V9hGvJIYI6R1Zo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Sep 11, 2013 at 09:02:06PM +0300, Jyri Sarha wrote:
+On Thu, Sep 12, 2013 at 01:31:19PM +0200, Sebastian Hesselbarth wrote:
+> On 09/11/13 02:40, Kuninori Morimoto wrote:
 
-> I can of course also add the list of pins to Documentation/devicetree/
-> bindings/sound/tlv320aic3x.txt, if that was what you meant. It would
-> make sense to have the pins there. However, I really can not find the
+> >+- sound-dai				: phandle and port for CPU/CODEC
+> >+- #sound-dai-cells			: sound-dai phandle's node
 
-Yes, that is what I meant.
+> IMHO, "sound-dai" is too ASoC specific for this property name.
+> To make it more generic, what about e.g. "sound-link" and
+> "#sound-link-cells" instead?
 
-> list of pins from any of the Wolfson codec binding documents
-> (Documentation/devicetree/bindings/sound/wm*.txt) for exmaple. Are you
-> perhaps refering to some other document or is the convention changing
-> for v3.12?
+DAI is an acronym for digital audio interface which is a fairly widely
+used term for these things.
 
-This is more to do with the fact that very few people have actually done
-DT bindings for machines so nobody has been documenting the bindings
-properly.  If you look you'll see some of the Wolfson devices do have
-pin lists.
+> >+- system-clock-frequency		: system clock rate for each CPU/CODEC
 
---3sLite7U3kd5/6th
+> Instead of "system-clock-frequency" use standard property name
+> "clock-frequency". In the driver, you can check for this property
+> and use it, if no common clocks are available on the arch running.
+
+We've been round this loop several times, audio devices tend to have
+multiple clocks so it's important to say which one is being set.
+
+--f1V9hGvJIYI6R1Zo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSMam4AAoJELSic+t+oim9GXMP/R1KGPtz2sAjCVSZvFghGs6M
-hnTLzpMTjmVQy/aeTw3dRgBoSZbGys/FiEe3CMUFgYoYTlXRbynRuy/Pu/o7BJfa
-QupLI09x4CGy3FqSs2YEdswNlMfwQsndUT97aeFIU47voR89Sq2tfhyxkWQIrWDx
-t30eYkC3SWGf6czMQynqH5zYXSCNBuVhYZw3K1CEYyvAQ4MZep6EVrkpCW/onHmZ
-sLoqkBG3xkSv8E4pEdQEe4SjwdUtt3IWTeqBjFDwEoxBvFEiUZotVGhnsYI9dqBz
-RqIP2xioqxLSIJyRL37Js0Xi4Jvp6jQNg+xZhNdzlmFs+fRrJUuac7GDN9tih97q
-Jr3ZlanTYNbaFBuqmM60SLZRAT0CQTWx2QxzJEZxYKby0DCP0yvoqyQBO4iEVuTw
-Ui0xLTLgsy6K3YokfnzOG8tzeL+KKWrqVZz91aQUyGqi+fAXlm1LDoqT8x0qGB10
-A0tIg6SRDZrlVqF0fzJIovPo9UGpyC+FbhI9m0MXazxQltkXcDbO/otCyVFF7/0t
-ug/VeOQBN5MeQhwRZ2zp+7mj7jJFjp8lZKwqRA6O5umpGmJA5yMtKxDyA8LafncL
-dG6dLf7PM5pN5LBDDToIx7y/mtKrK+ssHkmDsW4DtGqM8btHhm/AOivYMRwoE9KE
-5diCLv/9SJ20uCmh5jcH
-=NU9R
+iQIcBAEBAgAGBQJSMauhAAoJELSic+t+oim93PgP/ispg4mC7dGgb6GGPD0om3H1
++cDMCmRHcpYcWflVNmM3hrIJamNeNEv3GtAvDVBgHhxlF9ra2yfKVaLW4/Zr6UM4
+sH+E4MYOnv4QMiNaUcKpp9OX2PM+MdXK1gHAU+c7MMmj1hVj+B2YwUIQIFbPTv3W
+inewS1512CEkzI4Kwwwfc68ZgdtJfJ+fnZUqrqt2xQctJAsZLrcJmdWy1YYQTEed
+hBaQnWbf+QCS9Iu5nDSZZ1TdGrxLHUs/9WDlY+3TIAmJwR38LYmHGxcwT+XtQfWz
+55BFvfHrdhWELhUke7IBm12HQiik9vw/hDllSPOQQ1/s/vxzaxakijIFJ8rf1iJV
+C2Pb1BrjR+BCit8wN7wH/bjbkYenPLLdaK47n0QWXnOnlV0lHvoj5aerlKAbslFB
+o+k1fesKmtyBzVssnLSvBjmeAq2XGZzQvtzIG+CTxBSWk7NKXVZQnElZ1ipUkema
+ZbIsbAa+exrj+C3c1W9pyaeiyu1eomWkuuzjDsqUPrZcyK5kag28DFGDmPARF1dc
+q//Uy6B9hqlmtldCaqJ8L72sfuLYxsR+nt5ZUlTfPzqJEXKtdv2XuZJD+aDi4wCD
+db0ti0z3nVoGfdeQd4ekUK6GvXw6qbqdZ6Jwo9RGTvXJ9SFLsnWNhAIQ5lbaCZnj
+eAH9qat9HtOFeqmfZ5t9
+=CHJV
 -----END PGP SIGNATURE-----
 
---3sLite7U3kd5/6th--
+--f1V9hGvJIYI6R1Zo--
 
---===============2159703271743840244==
+--===============8952590770565155102==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2159703271743840244==--
+--===============8952590770565155102==--
