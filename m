@@ -1,22 +1,23 @@
-From: Daniel Mack <zonque@gmail.com>
+From: Radoslaw Szkodzinski <astralstorm@gmail.com>
 Subject: Re: Lynx HiLo USB DAC issues
-Date: Thu, 12 Sep 2013 18:41:46 +0200
-Message-ID: <5231EECA.1030600@gmail.com>
+Date: Thu, 12 Sep 2013 19:00:49 +0200
+Message-ID: <CAAmECqT5kR=d=HYjWrNUahN5kDdw3ez+YxKqQGoykTVcduy==w@mail.gmail.com>
 References: <CAAmECqTLRKu8uEpX9YHY3=W5bB0ydys2oQ2pAgHs2WjsjCqUFQ@mail.gmail.com>
  <CAAmECqRAJy=j+16Yp8kjb==905SMRhguL01CMqvMG8AP4A7QeA@mail.gmail.com>
  <CAAmECqTyhg0vPrTQzmthpjXFC_mtzO0WAs=WWbbzQ8CdkP6HzA@mail.gmail.com>
  <CAAmECqRfMqgVXSjuouqVzBX1FOGt79c+ueSQ1xLVFQAJ4QE6tw@mail.gmail.com>
+ <5231EECA.1030600@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f41.google.com (mail-bk0-f41.google.com
- [209.85.214.41])
- by alsa0.perex.cz (Postfix) with ESMTP id CCB7D2654CD
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 18:41:47 +0200 (CEST)
-Received: by mail-bk0-f41.google.com with SMTP id na10so23436bkb.0
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 09:41:47 -0700 (PDT)
-In-Reply-To: <CAAmECqRfMqgVXSjuouqVzBX1FOGt79c+ueSQ1xLVFQAJ4QE6tw@mail.gmail.com>
+Received: from mail-lb0-f181.google.com (mail-lb0-f181.google.com
+ [209.85.217.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C06D2654CD
+ for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 19:01:30 +0200 (CEST)
+Received: by mail-lb0-f181.google.com with SMTP id u14so1121110lbd.26
+ for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 10:01:29 -0700 (PDT)
+In-Reply-To: <5231EECA.1030600@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,34 +27,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Radoslaw Szkodzinski <astralstorm@gmail.com>
+To: Daniel Mack <zonque@gmail.com>
 Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Radoslaw,
-
-On 12.09.2013 02:43, Radoslaw Szkodzinski wrote:
-> Never mind, I see the issue now. (It is late here.)
-> The CLOCK_SELECTOR is read-only according to lsusb output.
-> 
-> Apparently uac_clock_selector_get_val fails to work, returning invalid
-> pin number.
-> That should not happen, but it shouldn't be called either in this
-> case, as the selector is irrelevant.
-
-Sorry, I don't follow. Given that you successfully dug into the driver
-sources already, can you share a patch that makes things work for you?
-
-The problem with the clocking framework in UAC2 is that it's quite
-powerful (there are multipliers, dividers, switches etc), but I haven't
-yet seen a system that actually makes uses it in more complex
-applications. Hence it's not exactly easy to come up with a generic
-approach of how to handle all the possible cases correctly, and how to
-react on clock validity loss for instance.
-
-Help from someone who has access to a more complex device is hence more
-than welcome :)
-
-
-Thanks,
-Daniel
+T24gVGh1LCBTZXAgMTIsIDIwMTMgYXQgNjo0MSBQTSwgRGFuaWVsIE1hY2sgPHpvbnF1ZUBnbWFp
+bC5jb20+IHdyb3RlOgo+IEhpIFJhZG9zbGF3LAo+Cj4gT24gMTIuMDkuMjAxMyAwMjo0MywgUmFk
+b3NsYXcgU3prb2R6aW5za2kgd3JvdGU6Cj4+IE5ldmVyIG1pbmQsIEkgc2VlIHRoZSBpc3N1ZSBu
+b3cuIChJdCBpcyBsYXRlIGhlcmUuKQo+PiBUaGUgQ0xPQ0tfU0VMRUNUT1IgaXMgcmVhZC1vbmx5
+IGFjY29yZGluZyB0byBsc3VzYiBvdXRwdXQuCj4+Cj4+IEFwcGFyZW50bHkgdWFjX2Nsb2NrX3Nl
+bGVjdG9yX2dldF92YWwgZmFpbHMgdG8gd29yaywgcmV0dXJuaW5nIGludmFsaWQKPj4gcGluIG51
+bWJlci4KPj4gVGhhdCBzaG91bGQgbm90IGhhcHBlbiwgYnV0IGl0IHNob3VsZG4ndCBiZSBjYWxs
+ZWQgZWl0aGVyIGluIHRoaXMKPj4gY2FzZSwgYXMgdGhlIHNlbGVjdG9yIGlzIGlycmVsZXZhbnQu
+Cj4KPiBTb3JyeSwgSSBkb24ndCBmb2xsb3cuIEdpdmVuIHRoYXQgeW91IHN1Y2Nlc3NmdWxseSBk
+dWcgaW50byB0aGUgZHJpdmVyCj4gc291cmNlcyBhbHJlYWR5LCBjYW4geW91IHNoYXJlIGEgcGF0
+Y2ggdGhhdCBtYWtlcyB0aGluZ3Mgd29yayBmb3IgeW91PwoKVGhlIHBhdGNoIGlzIG5vdCBjb21w
+bGV0ZSB5ZXQ7IEkndmUgZG9uZSB0aGUgc2VsZWN0b3IgZml4LCBidXQgaXQKdW5jb3ZlcmVkIGFu
+IGlzc3VlIHdoZXJlIHRoZSBkZXZpY2UgZG9lc24ndCByZXBvcnQgYW55IHNhbXBsZSByYXRlcwoo
+Q1VSIDAsIFJBTkdFIDApIGFuZCBBTFNBIGlzIHVuYWJsZSB0byBoYW5kbGUgdGhpcy4KSSdsbCBh
+ZGQgc29tZSBwcm9iaW5nIC0gdGhpcywgdW5saWtlIHRoZSBicm9rZW4gc2VsZWN0b3IsIGlzCnRl
+Y2huaWNhbGx5IGFsbG93ZWQgYnkgVUFDMiBidXQgYSBiaXQgc2lsbHkuCihUaGUgZGV2aWNlIGNh
+biBoYW5kbGUgYW55dGhpbmcgMSBIeiB0byAzODRrSHouIEFuZCBEU0QuKQoKPiBUaGUgcHJvYmxl
+bSB3aXRoIHRoZSBjbG9ja2luZyBmcmFtZXdvcmsgaW4gVUFDMiBpcyB0aGF0IGl0J3MgcXVpdGUK
+PiBwb3dlcmZ1bCAodGhlcmUgYXJlIG11bHRpcGxpZXJzLCBkaXZpZGVycywgc3dpdGNoZXMgZXRj
+KSwgYnV0IEkgaGF2ZW4ndAo+IHlldCBzZWVuIGEgc3lzdGVtIHRoYXQgYWN0dWFsbHkgbWFrZXMg
+dXNlcyBpdCBpbiBtb3JlIGNvbXBsZXgKPiBhcHBsaWNhdGlvbnMuIEhlbmNlIGl0J3Mgbm90IGV4
+YWN0bHkgZWFzeSB0byBjb21lIHVwIHdpdGggYSBnZW5lcmljCj4gYXBwcm9hY2ggb2YgaG93IHRv
+IGhhbmRsZSBhbGwgdGhlIHBvc3NpYmxlIGNhc2VzIGNvcnJlY3RseSwgYW5kIGhvdyB0bwo+IHJl
+YWN0IG9uIGNsb2NrIHZhbGlkaXR5IGxvc3MgZm9yIGluc3RhbmNlLgoKSSd2ZSBkZWNpZGVkIGlu
+IHRoYXQgY2FzZSAocmVhZG9ubHkgaW52YWxpZCBzZWxlY3RvcikgdG8gY291bnQgdGhlCnZhbGlk
+IHNvdXJjZXMgYW5kIGlmIHRoZXJlJ3Mgb25seSBvbmUgdmFsaWQsIHVzZSB0aGF0LgoKPiBIZWxw
+IGZyb20gc29tZW9uZSB3aG8gaGFzIGFjY2VzcyB0byBhIG1vcmUgY29tcGxleCBkZXZpY2UgaXMg
+aGVuY2UgbW9yZQo+IHRoYW4gd2VsY29tZSA6KQoKLS0gClJhZG9zxYJhdyBTemtvZHppxYRza2kK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
