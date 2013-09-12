@@ -1,23 +1,20 @@
 From: Radoslaw Szkodzinski <astralstorm@gmail.com>
-Subject: Re: Lynx HiLo USB DAC issues
-Date: Thu, 12 Sep 2013 19:00:49 +0200
-Message-ID: <CAAmECqT5kR=d=HYjWrNUahN5kDdw3ez+YxKqQGoykTVcduy==w@mail.gmail.com>
-References: <CAAmECqTLRKu8uEpX9YHY3=W5bB0ydys2oQ2pAgHs2WjsjCqUFQ@mail.gmail.com>
- <CAAmECqRAJy=j+16Yp8kjb==905SMRhguL01CMqvMG8AP4A7QeA@mail.gmail.com>
- <CAAmECqTyhg0vPrTQzmthpjXFC_mtzO0WAs=WWbbzQ8CdkP6HzA@mail.gmail.com>
- <CAAmECqRfMqgVXSjuouqVzBX1FOGt79c+ueSQ1xLVFQAJ4QE6tw@mail.gmail.com>
- <5231EECA.1030600@gmail.com>
+Subject: Re: USB Audio/ALSA
+Date: Thu, 12 Sep 2013 19:05:59 +0200
+Message-ID: <CAAmECqSL5WkHP+omfiAtw14mEBDbY1Jws8W1gkkNuEevSB=bEw@mail.gmail.com>
+References: <CAOiXha+sn0okoKFN9Q-C0PLmP1EqServFfFLSHsJT-NCq1+z=w@mail.gmail.com>
+ <5231ECED.1010900@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f181.google.com (mail-lb0-f181.google.com
- [209.85.217.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C06D2654CD
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 19:01:30 +0200 (CEST)
-Received: by mail-lb0-f181.google.com with SMTP id u14so1121110lbd.26
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 10:01:29 -0700 (PDT)
-In-Reply-To: <5231EECA.1030600@gmail.com>
+Received: from mail-la0-f47.google.com (mail-la0-f47.google.com
+ [209.85.215.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 553EE2654D8
+ for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 19:06:42 +0200 (CEST)
+Received: by mail-la0-f47.google.com with SMTP id eo20so72629lab.20
+ for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 10:06:41 -0700 (PDT)
+In-Reply-To: <5231ECED.1010900@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,37 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Rajaram R <rajaram.officemail@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBTZXAgMTIsIDIwMTMgYXQgNjo0MSBQTSwgRGFuaWVsIE1hY2sgPHpvbnF1ZUBnbWFp
-bC5jb20+IHdyb3RlOgo+IEhpIFJhZG9zbGF3LAo+Cj4gT24gMTIuMDkuMjAxMyAwMjo0MywgUmFk
-b3NsYXcgU3prb2R6aW5za2kgd3JvdGU6Cj4+IE5ldmVyIG1pbmQsIEkgc2VlIHRoZSBpc3N1ZSBu
-b3cuIChJdCBpcyBsYXRlIGhlcmUuKQo+PiBUaGUgQ0xPQ0tfU0VMRUNUT1IgaXMgcmVhZC1vbmx5
-IGFjY29yZGluZyB0byBsc3VzYiBvdXRwdXQuCj4+Cj4+IEFwcGFyZW50bHkgdWFjX2Nsb2NrX3Nl
-bGVjdG9yX2dldF92YWwgZmFpbHMgdG8gd29yaywgcmV0dXJuaW5nIGludmFsaWQKPj4gcGluIG51
-bWJlci4KPj4gVGhhdCBzaG91bGQgbm90IGhhcHBlbiwgYnV0IGl0IHNob3VsZG4ndCBiZSBjYWxs
-ZWQgZWl0aGVyIGluIHRoaXMKPj4gY2FzZSwgYXMgdGhlIHNlbGVjdG9yIGlzIGlycmVsZXZhbnQu
-Cj4KPiBTb3JyeSwgSSBkb24ndCBmb2xsb3cuIEdpdmVuIHRoYXQgeW91IHN1Y2Nlc3NmdWxseSBk
-dWcgaW50byB0aGUgZHJpdmVyCj4gc291cmNlcyBhbHJlYWR5LCBjYW4geW91IHNoYXJlIGEgcGF0
-Y2ggdGhhdCBtYWtlcyB0aGluZ3Mgd29yayBmb3IgeW91PwoKVGhlIHBhdGNoIGlzIG5vdCBjb21w
-bGV0ZSB5ZXQ7IEkndmUgZG9uZSB0aGUgc2VsZWN0b3IgZml4LCBidXQgaXQKdW5jb3ZlcmVkIGFu
-IGlzc3VlIHdoZXJlIHRoZSBkZXZpY2UgZG9lc24ndCByZXBvcnQgYW55IHNhbXBsZSByYXRlcwoo
-Q1VSIDAsIFJBTkdFIDApIGFuZCBBTFNBIGlzIHVuYWJsZSB0byBoYW5kbGUgdGhpcy4KSSdsbCBh
-ZGQgc29tZSBwcm9iaW5nIC0gdGhpcywgdW5saWtlIHRoZSBicm9rZW4gc2VsZWN0b3IsIGlzCnRl
-Y2huaWNhbGx5IGFsbG93ZWQgYnkgVUFDMiBidXQgYSBiaXQgc2lsbHkuCihUaGUgZGV2aWNlIGNh
-biBoYW5kbGUgYW55dGhpbmcgMSBIeiB0byAzODRrSHouIEFuZCBEU0QuKQoKPiBUaGUgcHJvYmxl
-bSB3aXRoIHRoZSBjbG9ja2luZyBmcmFtZXdvcmsgaW4gVUFDMiBpcyB0aGF0IGl0J3MgcXVpdGUK
-PiBwb3dlcmZ1bCAodGhlcmUgYXJlIG11bHRpcGxpZXJzLCBkaXZpZGVycywgc3dpdGNoZXMgZXRj
-KSwgYnV0IEkgaGF2ZW4ndAo+IHlldCBzZWVuIGEgc3lzdGVtIHRoYXQgYWN0dWFsbHkgbWFrZXMg
-dXNlcyBpdCBpbiBtb3JlIGNvbXBsZXgKPiBhcHBsaWNhdGlvbnMuIEhlbmNlIGl0J3Mgbm90IGV4
-YWN0bHkgZWFzeSB0byBjb21lIHVwIHdpdGggYSBnZW5lcmljCj4gYXBwcm9hY2ggb2YgaG93IHRv
-IGhhbmRsZSBhbGwgdGhlIHBvc3NpYmxlIGNhc2VzIGNvcnJlY3RseSwgYW5kIGhvdyB0bwo+IHJl
-YWN0IG9uIGNsb2NrIHZhbGlkaXR5IGxvc3MgZm9yIGluc3RhbmNlLgoKSSd2ZSBkZWNpZGVkIGlu
-IHRoYXQgY2FzZSAocmVhZG9ubHkgaW52YWxpZCBzZWxlY3RvcikgdG8gY291bnQgdGhlCnZhbGlk
-IHNvdXJjZXMgYW5kIGlmIHRoZXJlJ3Mgb25seSBvbmUgdmFsaWQsIHVzZSB0aGF0LgoKPiBIZWxw
-IGZyb20gc29tZW9uZSB3aG8gaGFzIGFjY2VzcyB0byBhIG1vcmUgY29tcGxleCBkZXZpY2UgaXMg
-aGVuY2UgbW9yZQo+IHRoYW4gd2VsY29tZSA6KQoKLS0gClJhZG9zxYJhdyBTemtvZHppxYRza2kK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+T24gVGh1LCBTZXAgMTIsIDIwMTMgYXQgNjozMyBQTSwgRGFuaWVsIE1hY2sgPHpvbnF1ZUBnbWFp
+bC5jb20+IHdyb3RlOgo+IE9uIDEyLjA5LjIwMTMgMDU6MzAsIFJhamFyYW0gUiB3cm90ZToKPj4g
+SSBhbSB0cnlpbmcgdG8gYnJpbmcgdXAgQW5kcm9pZCBBY2Nlc3NvcnkgQXVkaW8gaW4gbXkgU2Ft
+c3VuZyBHcmFuZAo+PiBtb2JpbGUuLiBJIGFtIHVzaW5nIGEgTGludXggUEMgZm9yIHRoZSBzYW1l
+LiBUaGUgbW9iaWxlIHJlLWVudW1lcmF0ZXMgaW4KPj4gQU9BIG1vZGUgd2l0aCBhbiBBdWRpbyBp
+bnRlcmZhY2UuIEJ1dCB3aGVuIEkgcGxheSBzb25nLCBJIHNlZSBub3RoaW5nIG9uCj4+IHRoZSBi
+dXMuICBJIGNhbiBzZWUgYW4gQU9BIGF1ZGlvIGRldmljZSBlbnRyeSBpbiAvcHJvYy9hc291bmQv
+Y2FyZHMuIFRoZQo+PiBtb2JpbGUgcnVucyBBbmRyb2lkIEpCCj4KPiBJZiB0aGUgY2FyZCBpcyBw
+cmVzZW50IGluIC9wcm9jL2Fzb3VuZC9jYXJkcywgYWxzYSBkZXRlY3RlZCBpdCBqdXN0Cj4gZmlu
+ZSwgYW5kIHlvdSBoYXZlIHRvIGxvb2sgYXQgdGhlIEFkcm9pZCBzb3VuZCBzeXN0ZW0gaW4gb3Jk
+ZXIgdG8gZmluZAo+IG91dCB3aHkgaXQncyBub3QgdXNlZC4gVW5mb3J0dW5hdGVseSwgQW5kcm9p
+ZCBkZWNpZGVkIG5vdCB0byB1c2UgYW55IG9mCj4gdGhlIEFMU0EgdXNlcnNwYWNlIGNvZGUgYnV0
+IHJlaW52ZW50ZWQgdGhlIHdoZWVsLCBmb3Igd2hpY2ggc2ltcGxlIHRvb2xzCj4gbGlrZSBhcGxh
+eSBhcmUgdW5hdmFpbGFibGUuCgpBY3R1YWxseSBxdWl0ZSBhIGZldyBkZXZpY2VzIGNvbWUgd2l0
+aCBlaXRoZXIgdGlueWFsc2Egb3IgZnVsbCBhbHNhLWxpYi4KClF1YWxjb21tLWJhc2VkIG9uZXMg
+YXJlIHRoZSBleGNlcHRpb24uCgotLSAKUmFkb3PFgmF3IFN6a29kemnFhHNraQpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
