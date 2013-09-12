@@ -1,21 +1,17 @@
-From: Radoslaw Szkodzinski <astralstorm@gmail.com>
-Subject: Re: Lynx HiLo USB DAC issues
-Date: Thu, 12 Sep 2013 02:43:22 +0200
-Message-ID: <CAAmECqRfMqgVXSjuouqVzBX1FOGt79c+ueSQ1xLVFQAJ4QE6tw@mail.gmail.com>
-References: <CAAmECqTLRKu8uEpX9YHY3=W5bB0ydys2oQ2pAgHs2WjsjCqUFQ@mail.gmail.com>
- <CAAmECqRAJy=j+16Yp8kjb==905SMRhguL01CMqvMG8AP4A7QeA@mail.gmail.com>
- <CAAmECqTyhg0vPrTQzmthpjXFC_mtzO0WAs=WWbbzQ8CdkP6HzA@mail.gmail.com>
+From: Michael Jordan <jordan.mymail@gmail.com>
+Subject: Hello
+Date: Wed, 11 Sep 2013 23:12:24 -0400
+Message-ID: <20130911231224.2d52a2e3@mach1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f176.google.com (mail-lb0-f176.google.com
- [209.85.217.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BED1261AFF
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 02:44:03 +0200 (CEST)
-Received: by mail-lb0-f176.google.com with SMTP id y6so267335lbh.35
- for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2013 17:44:02 -0700 (PDT)
-In-Reply-To: <CAAmECqTyhg0vPrTQzmthpjXFC_mtzO0WAs=WWbbzQ8CdkP6HzA@mail.gmail.com>
+Received: from mail-yh0-f41.google.com (mail-yh0-f41.google.com
+ [209.85.213.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 440AE261B06
+ for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 05:12:28 +0200 (CEST)
+Received: by mail-yh0-f41.google.com with SMTP id f73so4049566yha.0
+ for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2013 20:12:27 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,15 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-TmV2ZXIgbWluZCwgSSBzZWUgdGhlIGlzc3VlIG5vdy4gKEl0IGlzIGxhdGUgaGVyZS4pClRoZSBD
-TE9DS19TRUxFQ1RPUiBpcyByZWFkLW9ubHkgYWNjb3JkaW5nIHRvIGxzdXNiIG91dHB1dC4KCkFw
-cGFyZW50bHkgdWFjX2Nsb2NrX3NlbGVjdG9yX2dldF92YWwgZmFpbHMgdG8gd29yaywgcmV0dXJu
-aW5nIGludmFsaWQKcGluIG51bWJlci4KVGhhdCBzaG91bGQgbm90IGhhcHBlbiwgYnV0IGl0IHNo
-b3VsZG4ndCBiZSBjYWxsZWQgZWl0aGVyIGluIHRoaXMKY2FzZSwgYXMgdGhlIHNlbGVjdG9yIGlz
-IGlycmVsZXZhbnQuCgotLSAKUmFkb3PFgmF3IFN6a29kemnFhHNraQpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hello Gururaja,
+
+If I am trying to ask some questions about the alsa system, do I need
+to copy somebody directly to get a response? I have posted about 4
+questions on the group in the last few months, and I have not even
+gotten a slap on the hand.
+
+The reason I am contacting you is you have mentioned working on the
+TLV320AIC3X which is the chip used on the OMAPL138 board that we have.
+I am attempting to write a driver for a PCM3168A which we have already
+constructed a board for, and plugs into the 100 pin audio expander
+connecter. I have the basic draft of a driver, but everything in the
+code seems to be fairly strongly coded for the DA850 boards to use the
+TLV320AIC. I can prevent it loading, and my module will load, but
+things are not "connecting" internally. I assumed that I would need to
+make some changes in the arch/arm/mach-davinci/board-da850-evm.c.
+
+However what I am running into is chasing me up a trail that eventually
+has me modifying mach-types.h and creating a whole new board
+configuration. I said ok, so I copied board-da850-evm.c to
+board-da850-evm-mod.c which made it necessary for me to begin modifying
+some Kconfig's, etc., and I still cannot get the kernel to compile with
+the new kernel driver.
+
+I just need to know, am I heading down the wrong path with this? I have
+a pcm3168a.c and pcm3168a.h which have a basic structure for the new
+codec, but I cannot figure out how to get the system to actually use it
+because it basically appears that the TLV320AIC3X is "hard-wired" into
+the system.
+
+Help please,
+
+Michael
