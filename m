@@ -1,51 +1,72 @@
-From: "Nathanael D. Noblet" <nathanael@gnat.ca>
-Subject: Re: Internal Mic Boost channel is unused
-Date: Thu, 12 Sep 2013 13:17:43 -0600
-Message-ID: <52321357.2060109@gnat.ca>
-References: <5231E348.8020204@gnat.ca> <1379011427.4254.3.camel@david-saucy>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: codecs: da9055: Update driver name to
+ fix breakage due to pmic driver with same name
+Date: Thu, 12 Sep 2013 22:58:10 +0100
+Message-ID: <20130912215810.GX29403@sirena.org.uk>
+References: <20130902103843.GL3084@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A033751E612F5@SW-EX-MBX01.diasemi.com>
+ <20130902174121.GV3084@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A033751E6157D@SW-EX-MBX01.diasemi.com>
+ <20130904183405.GX3084@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A033751E61991@SW-EX-MBX01.diasemi.com>
+ <20130909112643.GX29403@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A033751E630F5@SW-EX-MBX01.diasemi.com>
+ <20130910170724.GU29403@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A033751E634EF@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from titanium.nobletdesign.com (titanium.nobletdesign.com
- [64.34.172.148])
- by alsa0.perex.cz (Postfix) with ESMTP id 393A7265500
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 21:17:45 +0200 (CEST)
-Received: from titanium.nobletdesign.com (localhost.localdomain [127.0.0.1])
- by titanium.nobletdesign.com (Postfix) with ESMTP id 4C57CF7803C
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 14:17:44 -0500 (CDT)
-Received: from iridium.noblet.ca (S0106c0c1c0f4a322.cg.shawcable.net
- [68.146.127.169])
- by titanium.nobletdesign.com (Postfix) with ESMTP id 05EE6F7803B
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 14:17:43 -0500 (CDT)
-In-Reply-To: <1379011427.4254.3.camel@david-saucy>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eayjU+2cFWOKR49Y"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <2E89032DDAA8B9408CB92943514A033751E634EF@SW-EX-MBX01.diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: Ashish Chavan <ashish.chavan@kpitcummins.com>, lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, linux-kernel <linux-kernel@vger.kernel.org>, "kiran.padwal" <kiran.padwal@kpitcummins.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/12/2013 12:43 PM, David Henningsson wrote:
-> So I saw that you had two selector nodes (0x17 and 0x18), so I figured
-> one could be "Internal Mic Boost" (for internal mic) and the other one
-> "Mic Boost" (for external mic).
->
-> However, according to the BIOS, you actually have *two* external mic
-> jacks. Is this correct? It could possibly be that one of them is part of
-> a headset jack. This might be related to what's confusing the driver, so
-> perhaps if we just removed the fake mic input that would make things
-> work.
 
-I do have two external mini jacks. One has a mic image, one has a 
-headphone image...  Whether both can be used as mic inputs that I'm not 
-sure about.
+--eayjU+2cFWOKR49Y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Nathanael d. Noblet
-t 403.875.4613
+On Thu, Sep 12, 2013 at 05:11:06PM +0000, Opensource [Adam Thomson] wrote:
+
+> It's limiting in as much as it's insisting on a required order for
+> initialisation which shouldn't be there. As said previously they're 2 separate
+> devices in one package, with no internal connection, so either could be
+> instantiated first. It should be open to the user to decide on this based on
+> their platform and needs.
+
+> With your approach, it is more work for no gain here, and holds us to a
+> logical representation which doesn't fit with the device in question (which is
+> not really an MFD, it's two devices, one of which is an MFD, the PMIC).
+
+I'm having a hard time understanding this as a practical limitation, can
+you be more specific about the cases where this would present a noticable
+problem?  It'd at least ensure that the configuration where the whole
+device is present gets tested to some extent, though that doesn't seem
+likely to break again.
+
+--eayjU+2cFWOKR49Y
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSMjjvAAoJELSic+t+oim9iZgP/AxCOYz6PCLDR1eE5NyvGQms
+WtrGxuM3R7pOwx7/tMviL6OjCeE1kiQqZUNi9E8UKC9+V2jtdy5wDE6+8mEl9zrH
+OkRlKntL/uVc38uVH3JzFLcbW8mey5OXs5GJAZjKGu5RhjywNjEB8ggOKuNVYkAJ
+hTw9ovgYe+kLM76YOtiwz6bQ8Nd6wds8dIXlS9336vf44SMZiM+Cff8n7mXvq3M6
+u13GP3/VSMs5b0omVgmS8y8cV4ihtQoRe8EOFoQEumqqA8q5e4TqA/9Lqs2v19I1
+WQa/2Rk7gL5wnff4VDRvzF/4QyGCLmHpU+f44dJErpS8oaYeOFMgtKkkQVkNL4kv
+XMJXAzthXR8+7ewti/P3idyWo+E+R/kZVSTf9AnFswoRVihxa9VnAfTuizLT05Yw
+5CzMIKFllwh2Sh/YVWuuMDBDa2g+CGvgRMFDEPyhvIDOIT3MwcbjXlCcP0pWr3UG
+8aUOfXLUw0VXvn1xU9umluLR3l6tH+SvBvdqReu/Mw9ahL0SMmeKM7FnmBKcMfN4
+IDuxp0leEIfWNGmao/eYMdQVGImUrw6RJEQMkg93dibTxtdvwh0UinBI+qS+2C73
+9cMnaOhWpMUu0XVon1xDnMtLVOKgflUbmPQNmnKKQhAetrfybI8rVdH7xdIpRUsJ
+C0CVnRx2CUiv+hNcIObu
+=vGgr
+-----END PGP SIGNATURE-----
+
+--eayjU+2cFWOKR49Y--
