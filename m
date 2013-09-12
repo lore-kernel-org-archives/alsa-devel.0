@@ -1,65 +1,34 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Internal Mic Boost channel is unused
-Date: Thu, 12 Sep 2013 14:43:47 -0400
-Message-ID: <1379011427.4254.3.camel@david-saucy>
-References: <5231E348.8020204@gnat.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id DB8E82654D6
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 20:43:49 +0200 (CEST)
-In-Reply-To: <5231E348.8020204@gnat.ca>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Nathanael D. Noblet" <nathanael@gnat.ca>
-Cc: alsa-devel@alsa-project.org
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH 1/2] snd-ac97-codec: Add ID for TI TLV320AIC27 codec
+Date: Thu, 12 Sep 2013 20:54:01 +0200
+Message-ID: <1379012042-4382-1-git-send-email-linux@rainbow-software.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On tor, 2013-09-12 at 09:52 -0600, Nathanael D. Noblet wrote:
-> Hello,
-> 
->     I have an issue I'd like to help completely solve. Unfortunately I 
-> only have a tenuous grasp of what is actually going on so some of this 
-> could be wrong/include errors.
-> 
->    Here's what I know.
-> 
->   1) I have the following hardware (alsa-info attached).
->   2) The internal microphone requires that the mic boost channel be 
-> something other than 0 to function properly.
->   3) Changing what pulseaudio expects things to be labelled causes the 
-> problem to go away. (via the attached patch to 
-> /usr/share/pulseaudio/paths/analog-input-mic.conf).
-> 
->    From the discussion with David Henningsson (diwic on IRC). It seems 
-> that pulse doesn't expect a Mic Boost channel to be used with internal 
-> microphones. As such to fix this particular hardware, the driver would 
-> need to make the internal mic boost be labelled "Internal Mic Boost" as 
-> opposed to Mic Boost, which is then is used for both external and 
-> internal mics.
-> 
->    I'd love to be able to help any way I can to get these fixed once and 
-> for all. Let me know if you need more information or what not.
-> 
+Add 0x54584e03 ID for TI TLV320AIC27 AC'97 codec according to datasheet:
+http://www.ti.com/lit/ds/slas253a/slas253a.pdf
 
-So I saw that you had two selector nodes (0x17 and 0x18), so I figured
-one could be "Internal Mic Boost" (for internal mic) and the other one
-"Mic Boost" (for external mic).
+The weird thing is that the chip is physically marked 320AD91.
 
-However, according to the BIOS, you actually have *two* external mic
-jacks. Is this correct? It could possibly be that one of them is part of
-a headset jack. This might be related to what's confusing the driver, so
-perhaps if we just removed the fake mic input that would make things
-work.
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+---
+ sound/pci/ac97/ac97_codec.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-// David
+diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
+index 445ca48..bf578ba2 100644
+--- a/sound/pci/ac97/ac97_codec.c
++++ b/sound/pci/ac97/ac97_codec.c
+@@ -175,6 +175,7 @@ static const struct ac97_codec_id snd_ac97_codec_ids[] = {
+ { 0x54524106, 0xffffffff, "TR28026",		NULL,		NULL },
+ { 0x54524108, 0xffffffff, "TR28028",		patch_tritech_tr28028,	NULL }, // added by xin jin [07/09/99]
+ { 0x54524123, 0xffffffff, "TR28602",		NULL,		NULL }, // only guess --jk [TR28023 = eMicro EM28023 (new CT1297)]
++{ 0x54584e03, 0xffffffff, "TLV320AIC27",	NULL,		NULL },
+ { 0x54584e20, 0xffffffff, "TLC320AD9xC",	NULL,		NULL },
+ { 0x56494161, 0xffffffff, "VIA1612A",		NULL,		NULL }, // modified ICE1232 with S/PDIF
+ { 0x56494170, 0xffffffff, "VIA1617A",		patch_vt1617a,	NULL }, // modified VT1616 with S/PDIF
+-- 
+Ondrej Zary
