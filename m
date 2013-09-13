@@ -1,72 +1,116 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: codecs: da9055: Update driver name to
- fix breakage due to pmic driver with same name
-Date: Thu, 12 Sep 2013 22:58:10 +0100
-Message-ID: <20130912215810.GX29403@sirena.org.uk>
-References: <20130902103843.GL3084@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A033751E612F5@SW-EX-MBX01.diasemi.com>
- <20130902174121.GV3084@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A033751E6157D@SW-EX-MBX01.diasemi.com>
- <20130904183405.GX3084@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A033751E61991@SW-EX-MBX01.diasemi.com>
- <20130909112643.GX29403@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A033751E630F5@SW-EX-MBX01.diasemi.com>
- <20130910170724.GU29403@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A033751E634EF@SW-EX-MBX01.diasemi.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Internal Mic Boost channel is unused
+Date: Fri, 13 Sep 2013 11:23:50 +0800
+Message-ID: <CAN8ccia+VBy9hvEuky=J4cMxGsePRPQv-dn3STF1H8891La+XA@mail.gmail.com>
+References: <5231E348.8020204@gnat.ca>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eayjU+2cFWOKR49Y"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2E89032DDAA8B9408CB92943514A033751E634EF@SW-EX-MBX01.diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Ashish Chavan <ashish.chavan@kpitcummins.com>, lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, linux-kernel <linux-kernel@vger.kernel.org>, "kiran.padwal" <kiran.padwal@kpitcummins.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ie0-f175.google.com (mail-ie0-f175.google.com
+ [209.85.223.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89F8226072A
+ for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 05:23:51 +0200 (CEST)
+Received: by mail-ie0-f175.google.com with SMTP id e14so1363197iej.6
+ for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 20:23:50 -0700 (PDT)
+In-Reply-To: <5231E348.8020204@gnat.ca>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Nathanael D. Noblet" <nathanael@gnat.ca>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+>
+>  1) I have the following hardware (alsa-info attached).
 
---eayjU+2cFWOKR49Y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Simple mixer control 'Input Source',0
+Capabilities: cenum Items: 'Mic' 'Internal Mic' 'Mic 1'
+Item0: 'Internal Mic'
+Simple mixer control 'Input Source',1
+Capabilities: cenum Items: 'Mic' 'Internal Mic' 'Mic 1'
+Item0: 'Internal Mic'
+Simple mixer control 'Input Source',2
+Capabilities: cenum Items: 'Mic' 'Internal Mic' 'Mic 1'
+Item0: 'Internal Mic'
 
-On Thu, Sep 12, 2013 at 05:11:06PM +0000, Opensource [Adam Thomson] wrote:
 
-> It's limiting in as much as it's insisting on a required order for
-> initialisation which shouldn't be there. As said previously they're 2 separate
-> devices in one package, with no internal connection, so either could be
-> instantiated first. It should be open to the user to decide on this based on
-> their platform and needs.
+using hda-emu
 
-> With your approach, it is more work for no gain here, and holds us to a
-> logical representation which doesn't fit with the device in question (which is
-> not really an MFD, it's two devices, one of which is an MFD, the PMIC).
+the driver always use selector 0x17 for the three input source controls
 
-I'm having a hard time understanding this as a practical limitation, can
-you be more specific about the cases where this would present a noticable
-problem?  It'd at least ensure that the configuration where the whole
-device is present gets tested to some extent, though that doesn't seem
-likely to break again.
+6 Input Source:0
+ITEM: 0:Mic, 1:Mic 1, 2:Internal Mic, VAL: [Mic]
+> set 6 2
+send: NID=0x14, VERB=0x701(set_connect_sel), PARM=0x0
+receive: 0x0
+send: NID=0x17, VERB=0x701(set_connect_sel), PARM=0x3
+receive: 0x0
+> set 7 2
+send: NID=0x15, VERB=0x701(set_connect_sel), PARM=0x0
+receive: 0x0
+send: NID=0x17, VERB=0x701(set_connect_sel), PARM=0x3
+receive: 0x0
+> set 8 2
+send: NID=0x16, VERB=0x701(set_connect_sel), PARM=0x0
+receive: 0x0
+send: NID=0x17, VERB=0x701(set_connect_sel), PARM=0x3
+receive: 0x0
 
---eayjU+2cFWOKR49Y
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+It is a bug of the driver to create three input source select controls when
+there are only two audio selectors 0x17 and 0x18 as node 0x23 is not one of
+the input pins
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
+The topology does not allow three different input sources with two selectors
 
-iQIcBAEBAgAGBQJSMjjvAAoJELSic+t+oim9iZgP/AxCOYz6PCLDR1eE5NyvGQms
-WtrGxuM3R7pOwx7/tMviL6OjCeE1kiQqZUNi9E8UKC9+V2jtdy5wDE6+8mEl9zrH
-OkRlKntL/uVc38uVH3JzFLcbW8mey5OXs5GJAZjKGu5RhjywNjEB8ggOKuNVYkAJ
-hTw9ovgYe+kLM76YOtiwz6bQ8Nd6wds8dIXlS9336vf44SMZiM+Cff8n7mXvq3M6
-u13GP3/VSMs5b0omVgmS8y8cV4ihtQoRe8EOFoQEumqqA8q5e4TqA/9Lqs2v19I1
-WQa/2Rk7gL5wnff4VDRvzF/4QyGCLmHpU+f44dJErpS8oaYeOFMgtKkkQVkNL4kv
-XMJXAzthXR8+7ewti/P3idyWo+E+R/kZVSTf9AnFswoRVihxa9VnAfTuizLT05Yw
-5CzMIKFllwh2Sh/YVWuuMDBDa2g+CGvgRMFDEPyhvIDOIT3MwcbjXlCcP0pWr3UG
-8aUOfXLUw0VXvn1xU9umluLR3l6tH+SvBvdqReu/Mw9ahL0SMmeKM7FnmBKcMfN4
-IDuxp0leEIfWNGmao/eYMdQVGImUrw6RJEQMkg93dibTxtdvwh0UinBI+qS+2C73
-9cMnaOhWpMUu0XVon1xDnMtLVOKgflUbmPQNmnKKQhAetrfybI8rVdH7xdIpRUsJ
-C0CVnRx2CUiv+hNcIObu
-=vGgr
------END PGP SIGNATURE-----
+ >  2) The internal microphone requires that the mic boost channel be
+something other than 0 to function properly.
 
---eayjU+2cFWOKR49Y--
+You have to find out whether node 0x1a or 0x1b can be used as the headset
+jack (headphone with Mic using TRRS connector)
+
+>  3) Changing what pulseaudio expects things to be labelled causes the
+problem to go away. (via the attached patch to
+/usr/share/pulseaudio/paths/analog-input-mic.conf).
+>
+>   From the discussion with David Henningsson (diwic on IRC). It seems
+that pulse doesn't expect a Mic Boost channel to be used with internal
+microphones. As such to fix this particular hardware, the driver would need
+to make the internal mic boost be labelled "Internal Mic Boost" as opposed
+to Mic Boost, which is then is used for both external and internal mics.
+>
+
+Node 0x14 [Audio Input] wcaps 0x100d1b: Stereo Amp-In R/L
+Control: name="Capture Volume", index=0, device=0 ControlAmp: chs=3,
+dir=In, idx=0, ofs=0
+Control: name="Capture Switch", index=0, device=0 ControlAmp: chs=3,
+dir=In, idx=0, ofs=0
+Device: name="CX20588 Analog", type="Audio", device=0 Amp-In caps:
+ofs=0x4a, nsteps=0x50, stepsize=0x03, mute=1
+Amp-In vals: [0x50 0x50] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+Converter: stream=4, channel=0 SDI-Select: 0
+PCM: rates [0x160]: 44100 48000 96000
+bits [0xe]: 16 20 24
+formats [0x1]: PCM
+Power states: D0 D1 D2 D3 D3cold EPSS Power: setting=D0, actual=D0
+Connection: 4
+0x17* 0x18 0x23 0x24
+
+Node 0x24 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+Amp-In caps: ofs=0x4a, nsteps=0x4a, stepsize=0x03, mute=1
+Amp-In vals: [0x00 0x00] [0x00 0x00]
+Power states: D0 D1 D2 D3 D3cold EPSS
+Power: setting=D0, actual=D0
+Connection: 2
+0x10 0x11
+
+BTW there seem to be an audio path from DAC to ADC throungh audio mixer
+0x24, does this allow you to record the DAC playback directly ? Using
+hda-analyzer to change the selection of  audio input node 0x14 and fix the
+amps at node 0x24
