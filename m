@@ -1,15 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] Fix access of freed memory in namehints
-Date: Fri, 13 Sep 2013 13:21:44 -0400
-Message-ID: <1379092904-11316-1-git-send-email-david.henningsson@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: core: Add API for configuration of
+	DAI FS
+Date: Fri, 13 Sep 2013 18:26:04 +0100
+Message-ID: <20130913172604.GM29403@sirena.org.uk>
+References: <1379092188-7385-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ <1379092188-7385-4-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1454642135983158901=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BF512608EC
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 19:21:48 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FB8E2608EC
+ for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 19:26:08 +0200 (CEST)
+In-Reply-To: <1379092188-7385-4-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,116 +21,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>, 1008600@bugs.launchpad.net
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sometimes a hook manipulates the config tree, which makes currently
-running iterators point to freed memory. As a workaround, make two
-copies, one for the iterators and another for the hooks.
 
-BugLink: https://bugs.launchpad.net/bugs/1008600
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- src/control/namehint.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+--===============1454642135983158901==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5oxqo70nJj2c7aYG"
+Content-Disposition: inline
 
-diff --git a/src/control/namehint.c b/src/control/namehint.c
-index 8d5e925..28975a4 100644
---- a/src/control/namehint.c
-+++ b/src/control/namehint.c
-@@ -406,7 +406,7 @@ static const next_devices_t next_devices[] = {
- };
- #endif
- 
--static int add_card(snd_config_t *config, struct hint_list *list, int card)
-+static int add_card(snd_config_t *config, snd_config_t *rw_config, struct hint_list *list, int card)
- {
- 	int err, ok;
- 	snd_config_t *conf, *n;
-@@ -449,7 +449,7 @@ static int add_card(snd_config_t *config, struct hint_list *list, int card)
- 			ok = 0;
- 			for (device = 0; err >= 0 && device <= max_device; device++) {
- 				list->device = device;
--				err = try_config(config, list, list->siface, str);
-+				err = try_config(rw_config, list, list->siface, str);
- 				if (err < 0)
- 					break;
- 				ok++;
-@@ -464,7 +464,7 @@ static int add_card(snd_config_t *config, struct hint_list *list, int card)
- 		if (err < 0) {
- 			list->card = card;
- 			list->device = -1;
--			err = try_config(config, list, list->siface, str);
-+			err = try_config(rw_config, list, list->siface, str);
- 		}
- 		if (err == -ENOMEM)
- 			goto __error;
-@@ -493,7 +493,8 @@ static int get_card_name(struct hint_list *list, int card)
- 	return 0;
- }
- 
--static int add_software_devices(snd_config_t *config, struct hint_list *list)
-+static int add_software_devices(snd_config_t *config, snd_config_t *rw_config,
-+				struct hint_list *list)
- {
- 	int err;
- 	snd_config_t *conf, *n;
-@@ -509,7 +510,7 @@ static int add_software_devices(snd_config_t *config, struct hint_list *list)
- 			continue;
- 		list->card = -1;
- 		list->device = -1;
--		err = try_config(config, list, list->siface, str);
-+		err = try_config(rw_config, list, list->siface, str);
- 		if (err == -ENOMEM)
- 			return -ENOMEM;
- 	}
-@@ -547,7 +548,7 @@ int snd_device_name_hint(int card, const char *iface, void ***hints)
- 	struct hint_list list;
- 	char ehints[24];
- 	const char *str;
--	snd_config_t *conf, *local_config = NULL;
-+	snd_config_t *conf, *local_config = NULL, *local_config_rw = NULL;
- 	snd_config_update_t *local_config_update = NULL;
- 	snd_config_iterator_t i, next;
- 	int err;
-@@ -557,6 +558,7 @@ int snd_device_name_hint(int card, const char *iface, void ***hints)
- 	err = snd_config_update_r(&local_config, &local_config_update, NULL);
- 	if (err < 0)
- 		return err;
-+	err = snd_config_copy(&local_config_rw, local_config);
- 	list.list = NULL;
- 	list.count = list.allocated = 0;
- 	list.siface = iface;
-@@ -586,9 +588,9 @@ int snd_device_name_hint(int card, const char *iface, void ***hints)
- 	if (card >= 0) {
- 		err = get_card_name(&list, card);
- 		if (err >= 0)
--			err = add_card(local_config, &list, card);
-+			err = add_card(local_config, local_config_rw, &list, card);
- 	} else {
--		add_software_devices(local_config, &list);
-+		add_software_devices(local_config, local_config_rw, &list);
- 		err = snd_card_next(&card);
- 		if (err < 0)
- 			goto __error;
-@@ -596,7 +598,7 @@ int snd_device_name_hint(int card, const char *iface, void ***hints)
- 			err = get_card_name(&list, card);
- 			if (err < 0)
- 				goto __error;
--			err = add_card(local_config, &list, card);
-+			err = add_card(local_config, local_config_rw, &list, card);
- 			if (err < 0)
- 				goto __error;
- 			err = snd_card_next(&card);
-@@ -630,6 +632,8 @@ int snd_device_name_hint(int card, const char *iface, void ***hints)
-       		if (list.cardname)
- 	      		free(list.cardname);
- 	}
-+	if (local_config_rw)
-+		snd_config_delete(local_config_rw);
- 	if (local_config)
- 		snd_config_delete(local_config);
- 	if (local_config_update)
--- 
-1.8.3.2
+
+--5oxqo70nJj2c7aYG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Sep 13, 2013 at 06:09:48PM +0100, Liam Girdwood wrote:
+> Some codec drivers when running in slave mode require that FS is explicit=
+ly
+> set by the machine driver as it may not be exactly BCLK/rate.
+>=20
+> Extend the DAI API by adding :-
+>=20
+> int snd_soc_dai_set_fs(struct snd_soc_dai *dai, unsigned int fs);
+
+I'm struggling to think of a better name for this right now but the _fs
+name is making me think of the MCLK/SYSCLK rate rather than the BCLK
+rate - lots of clocks get specified as a multiple of the sample rate so
+it's not jumping out which clock.  The best I can come up with is
+_bclk_fs() but perhaps there are better ideas?  Or should we pass in a
+clock ID (and provide standard defines for things like BCLK) so it can
+apply to any clock?
+
+Though looking at your ACPI ID patch perhaps pwgen can give us some good
+ideas :)
+
+--5oxqo70nJj2c7aYG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSM0qpAAoJELSic+t+oim9UbMP/3+J1Vy0qWDTemlSru0YpvtX
+IK8pPR3ckBaEZ0gUUvb4IggIOBHMCCJKExoh/4EGHXSeNWK3tluDIUEEe7YIBS6/
+gWjrZ/ygK7Q5kijj3d44nazUgHm84DF6nThArUS6t3tEnoufzzu0NtKi2+oMpch4
+pQbRXXOy0RoNrqSethIW9UuzQ90xaEez+fTYaMU08OopOyhgn42TuJWK6e3ii6Zr
+vX4SYxQ9Tt7WYkdYfhyi+0fHG/qERDQBVig6KNntZVBWQxjOonGczJTfF5H8qEPU
+Zc0evbiXSMp34IFp5c/orPmHdevBLTGO/FpSrUjoB0qSEvVkJTTD+u/s9Ky55H9U
+UUYFWx4wxe63GH4BZ4JbWu40xNoR7Wc2j+VxLKo9ja8ZouJejlXOdFfvd9asM5+l
+VA9bK4poeyGIT/v96jatKCVprfNnQJ2nrBkSaTy+LuV8fgqKkeciXUk2xfhHTyNm
+2x5hWyZVEv3eoDoSjmmGK2IkVq+TsGxNc+FRr8rjQ4CPr6W2XF/HyMqlX8HzkBOs
+/CQlRIzq2mt0ijI/Knt+KH2gZrjqOU3R6UyVDzOblaS0OK6HFaCL0ttv0Fl8w2Qw
+5ut0LbhBSv0qlkpUNe/76rchQuRGUGyNAEDhkYp/ubq6Ffy0hlC7ug1qA5Au/v79
+jP7AaFwfQcB9g470FOW4
+=x3zf
+-----END PGP SIGNATURE-----
+
+--5oxqo70nJj2c7aYG--
+
+--===============1454642135983158901==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1454642135983158901==--
