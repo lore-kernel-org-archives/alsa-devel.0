@@ -1,20 +1,16 @@
-From: Rajaram R <rajaram.officemail@gmail.com>
-Subject: Re: USB Audio/ALSA
-Date: Fri, 13 Sep 2013 11:57:41 +0530
-Message-ID: <CAOiXhaKctOMJDzR5hu-PBcK2Di1hZfDwTYnCRRRx5gBCjxTK7w@mail.gmail.com>
-References: <CAOiXha+sn0okoKFN9Q-C0PLmP1EqServFfFLSHsJT-NCq1+z=w@mail.gmail.com>
- <52320097.7050309@ladisch.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ALSA: asihpi: a couple array out of bounds
+	issues
+Date: Fri, 13 Sep 2013 10:44:44 +0300
+Message-ID: <20130913074444.GA19211@elgon.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ve0-f172.google.com (mail-ve0-f172.google.com
- [209.85.128.172])
- by alsa0.perex.cz (Postfix) with ESMTP id A502B26080A
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 08:27:42 +0200 (CEST)
-Received: by mail-ve0-f172.google.com with SMTP id oz11so665409veb.3
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2013 23:27:41 -0700 (PDT)
-In-Reply-To: <52320097.7050309@ladisch.de>
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90C0E260845
+ for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 09:44:59 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,38 +20,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Eldad Zack <eldad@fogrefinery.com>, Bill Pemberton <wfp5p@virginia.edu>, kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 12, 2013 at 11:27 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
->
-> Rajaram R wrote:
-> > I am trying to bring up Android Accessory Audio
->
-> There are lots of bugs in various accessory firmware version; you need
-> kernel 3.10 or the latest stable kernel on the host for a workaround.
->
-> > But when I play song, I see nothing on the bus.  I can see an AOA
-> > audio device entry in /proc/asound/cards.
->
-> The important thing is whether you see an entry with "arecord -l".
->
-> > The error i see when I play is "Sorry this player does not support this
-> > type of audio file android".
->
-> Is that on the Android device?  In that case, this has nothing to do
-> with ALSA.
+These ->put() functions are called from snd_ctl_elem_write() with user
+supplied data.  snd_asihpi_tuner_band_put() is missing a limit check and
+the check in snd_asihpi_clksrc_put() can underflow.
 
-Yes I understand it is nothing to do with ALSA. I hope to get
-attention of ALSA guys who worked on Samsung grand/Android platform
-who would have definitely faced this issue.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
->
->
-> Regards,
-> Clemens
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index dc632cd..5f2acd3 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -1913,6 +1913,7 @@ static int snd_asihpi_tuner_band_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_card_asihpi *asihpi = snd_kcontrol_chip(kcontrol);
+ 	*/
+ 	u32 h_control = kcontrol->private_value;
++	unsigned int idx;
+ 	u16 band;
+ 	u16 tuner_bands[HPI_TUNER_BAND_LAST];
+ 	u32 num_bands = 0;
+@@ -1920,7 +1921,10 @@ static int snd_asihpi_tuner_band_put(struct snd_kcontrol *kcontrol,
+ 	num_bands = asihpi_tuner_band_query(kcontrol, tuner_bands,
+ 			HPI_TUNER_BAND_LAST);
+ 
+-	band = tuner_bands[ucontrol->value.enumerated.item[0]];
++	idx = ucontrol->value.enumerated.item[0];
++	if (idx >= ARRAY_SIZE(tuner_bands))
++		idx = ARRAY_SIZE(tuner_bands) - 1;
++	band = tuner_bands[idx];
+ 	hpi_handle_error(hpi_tuner_set_band(h_control, band));
+ 
+ 	return 1;
+@@ -2383,7 +2387,8 @@ static int snd_asihpi_clksrc_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_card_asihpi *asihpi =
+ 			(struct snd_card_asihpi *)(kcontrol->private_data);
+ 	struct clk_cache *clkcache = &asihpi->cc;
+-	int change, item;
++	unsigned int item;
++	int change;
+ 	u32 h_control = kcontrol->private_value;
+ 
+ 	change = 1;
