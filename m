@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: core: Add API for configuration of
-	DAI FS
-Date: Fri, 13 Sep 2013 18:26:04 +0100
-Message-ID: <20130913172604.GM29403@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: trace: Make sure trace header doesnt
+ depend on any headers
+Date: Fri, 13 Sep 2013 18:27:04 +0100
+Message-ID: <20130913172704.GN29403@sirena.org.uk>
 References: <1379092188-7385-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1379092188-7385-4-git-send-email-liam.r.girdwood@linux.intel.com>
+ <1379092188-7385-2-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1454642135983158901=="
+Content-Type: multipart/mixed; boundary="===============5479767892797404870=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FB8E2608EC
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 19:26:08 +0200 (CEST)
-In-Reply-To: <1379092188-7385-4-git-send-email-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B56D72608EC
+ for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 19:27:06 +0200 (CEST)
+In-Reply-To: <1379092188-7385-2-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,66 +26,50 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1454642135983158901==
+--===============5479767892797404870==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5oxqo70nJj2c7aYG"
+	protocol="application/pgp-signature"; boundary="ZTJVE4c8IMEntwwM"
 Content-Disposition: inline
 
 
---5oxqo70nJj2c7aYG
+--ZTJVE4c8IMEntwwM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 13, 2013 at 06:09:48PM +0100, Liam Girdwood wrote:
-> Some codec drivers when running in slave mode require that FS is explicit=
-ly
-> set by the machine driver as it may not be exactly BCLK/rate.
->=20
-> Extend the DAI API by adding :-
->=20
-> int snd_soc_dai_set_fs(struct snd_soc_dai *dai, unsigned int fs);
+On Fri, Sep 13, 2013 at 06:09:46PM +0100, Liam Girdwood wrote:
+> Fix build so that asoc trace event header doesn't depend on other headers.
 
-I'm struggling to think of a better name for this right now but the _fs
-name is making me think of the MCLK/SYSCLK rate rather than the BCLK
-rate - lots of clocks get specified as a multiple of the sample rate so
-it's not jumping out which clock.  The best I can come up with is
-_bclk_fs() but perhaps there are better ideas?  Or should we pass in a
-clock ID (and provide standard defines for things like BCLK) so it can
-apply to any clock?
+Applied, thanks.
 
-Though looking at your ACPI ID patch perhaps pwgen can give us some good
-ideas :)
-
---5oxqo70nJj2c7aYG
+--ZTJVE4c8IMEntwwM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSM0qpAAoJELSic+t+oim9UbMP/3+J1Vy0qWDTemlSru0YpvtX
-IK8pPR3ckBaEZ0gUUvb4IggIOBHMCCJKExoh/4EGHXSeNWK3tluDIUEEe7YIBS6/
-gWjrZ/ygK7Q5kijj3d44nazUgHm84DF6nThArUS6t3tEnoufzzu0NtKi2+oMpch4
-pQbRXXOy0RoNrqSethIW9UuzQ90xaEez+fTYaMU08OopOyhgn42TuJWK6e3ii6Zr
-vX4SYxQ9Tt7WYkdYfhyi+0fHG/qERDQBVig6KNntZVBWQxjOonGczJTfF5H8qEPU
-Zc0evbiXSMp34IFp5c/orPmHdevBLTGO/FpSrUjoB0qSEvVkJTTD+u/s9Ky55H9U
-UUYFWx4wxe63GH4BZ4JbWu40xNoR7Wc2j+VxLKo9ja8ZouJejlXOdFfvd9asM5+l
-VA9bK4poeyGIT/v96jatKCVprfNnQJ2nrBkSaTy+LuV8fgqKkeciXUk2xfhHTyNm
-2x5hWyZVEv3eoDoSjmmGK2IkVq+TsGxNc+FRr8rjQ4CPr6W2XF/HyMqlX8HzkBOs
-/CQlRIzq2mt0ijI/Knt+KH2gZrjqOU3R6UyVDzOblaS0OK6HFaCL0ttv0Fl8w2Qw
-5ut0LbhBSv0qlkpUNe/76rchQuRGUGyNAEDhkYp/ubq6Ffy0hlC7ug1qA5Au/v79
-jP7AaFwfQcB9g470FOW4
-=x3zf
+iQIcBAEBAgAGBQJSM0rlAAoJELSic+t+oim9A44P/1Rl1sBzS32/ACnOZY3V7xb0
+lHXtQIGw5cSFyP64LRxkEXUnuMy9hejVB4gz1lovvqVbURf3KG8uXf0fPH1UZVL4
+eg9hifg2VE7zXFDgzxXOm9WQx/SCTVZ1YmmXaZDH6fpUcItt9Jm/QAibgp2zd+JO
+A+JKjHkvhnG2WBSJ004WZIi5+l1k8Z1Sx6sWFzuFD/teRqVwwZRvuGk8HI4nIyCy
+Ad4imKja4OI690MRvJ5LFAtKMkfJhWtEbclFl5AxaC1jMVmNwbbOftTe8TJhoN3f
+Pcg2JQqjkSzX6GzB4B523RAS4wxLgjXS5fFXY2oiqFMO3KB5+scuwkMr9CVP0ccD
+ScJ2GR4BCbacchalltqXm6qVd8Dh5DnrcuDcDDOus6b4MKGaMTqLy41bGscO0k7E
+ZpKuKjm/3yAqg9pV47Cxfhyk/QXGXDXj44f/HJsQJrHfuWHABA21cZnIlH5WZBzF
+j4x6NIM9zhemZ75owX+XfWae/xqfQGlLjYZ9naJQ4V7BLC32bKl5DwbPo04t/oA1
+VEab7URQ4O/DIQ8mThcSFaogPhj/Ws2YS37noEzbFI07qIWQuXtPp1sm2F4nFM/R
+Tbvw0TulrJ83zQ/M0qDz4HoWqyO20yAc7As78w7kfyMWjyPASjBYXqXk3MLVTSZw
+2n5eabnZGd2Z0x/wZ+SV
+=fCZx
 -----END PGP SIGNATURE-----
 
---5oxqo70nJj2c7aYG--
+--ZTJVE4c8IMEntwwM--
 
---===============1454642135983158901==
+--===============5479767892797404870==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1454642135983158901==--
+--===============5479767892797404870==--
