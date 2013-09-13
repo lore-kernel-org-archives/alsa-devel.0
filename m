@@ -1,39 +1,31 @@
-From: Misael Lopez <misael.lopez@ti.com>
-Subject: Re: [PATCH 1/1] ASoC: twl6040: Remove redundant
-	semicolon
-Date: Fri, 13 Sep 2013 18:12:25 -0500
-Message-ID: <52339BD9.3000606@ti.com>
-References: <1379069177-1159-1-git-send-email-sachin.kamat@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C61B261A36
- for <alsa-devel@alsa-project.org>; Sat, 14 Sep 2013 01:12:28 +0200 (CEST)
-In-Reply-To: <1379069177-1159-1-git-send-email-sachin.kamat@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, broonie@kernel.org
+From: Valentin Ilie <valentin.ilie@gmail.com>
+Subject: [PATCH] ASoC: blackfin: Add missing break statement to bf6xx
+Date: Sat, 14 Sep 2013 02:20:37 +0300
+Message-ID: <1379114437-25090-1-git-send-email-valentin.ilie@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Valentin Ilie <valentin.ilie@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/13/2013 05:46 AM, Sachin Kamat wrote:
+SNDRV_PCM_FORMAT_S8 isn't supposed to fall through to SNDRV_PCM_FORMAT_S16_LE
 
-> Redundant semicolon removed.
+Signed-off-by: Valentin Ilie <valentin.ilie@gmail.com>
+---
+ sound/soc/blackfin/bf6xx-i2s.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
-
-
-LGTM.
-
-Regards,
--Misa
+diff --git a/sound/soc/blackfin/bf6xx-i2s.c b/sound/soc/blackfin/bf6xx-i2s.c
+index c02405c..5810a06 100644
+--- a/sound/soc/blackfin/bf6xx-i2s.c
++++ b/sound/soc/blackfin/bf6xx-i2s.c
+@@ -88,6 +88,7 @@ static int bfin_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_FORMAT_S8:
+ 		param.spctl |= 0x70;
+ 		sport->wdsize = 1;
++		break;
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+ 		param.spctl |= 0xf0;
+ 		sport->wdsize = 2;
+-- 
+1.7.9.5
