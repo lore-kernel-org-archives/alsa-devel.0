@@ -1,17 +1,19 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 1/2] ASoC: fsl_ssi: Staticize local symbols
-Date: Fri, 13 Sep 2013 15:22:17 +0530
-Message-ID: <1379065938-26728-1-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 2/2] ASoC: rt5640: Staticize hp_amp_power_on
+Date: Fri, 13 Sep 2013 15:22:18 +0530
+Message-ID: <1379065938-26728-2-git-send-email-sachin.kamat@linaro.org>
+References: <1379065938-26728-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f51.google.com (mail-pa0-f51.google.com
- [209.85.220.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F1582608B7
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 12:10:29 +0200 (CEST)
-Received: by mail-pa0-f51.google.com with SMTP id lf1so2331871pab.24
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 03:10:28 -0700 (PDT)
+Received: from mail-pd0-f177.google.com (mail-pd0-f177.google.com
+ [209.85.192.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39EB42608D1
+ for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 12:10:32 +0200 (CEST)
+Received: by mail-pd0-f177.google.com with SMTP id y10so1048614pdj.36
+ for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 03:10:31 -0700 (PDT)
+In-Reply-To: <1379065938-26728-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,34 +27,25 @@ To: alsa-devel@alsa-project.org
 Cc: sachin.kamat@linaro.org, bardliao@realtek.com, broonie@kernel.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-Local symbols used only in this file are made static.
+'hp_amp_power_on' is used only in this file. Make it static.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/fsl/fsl_ssi.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5640.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index c6b7439..4973be7 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -748,7 +748,7 @@ static void fsl_ssi_ac97_init(void)
- 	fsl_ssi_setup(fsl_ac97_data);
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index c26a8f8..2f6bb16 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -926,7 +926,7 @@ static int rt5640_set_dmic2_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
  }
  
--void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
-+static void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
- 		unsigned short val)
+-void hp_amp_power_on(struct snd_soc_codec *codec)
++static void hp_amp_power_on(struct snd_soc_codec *codec)
  {
- 	struct ccsr_ssi *ssi = fsl_ac97_data->ssi;
-@@ -770,7 +770,7 @@ void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
- 	udelay(100);
- }
+ 	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
  
--unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
-+static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
- 		unsigned short reg)
- {
- 	struct ccsr_ssi *ssi = fsl_ac97_data->ssi;
 -- 
 1.7.9.5
