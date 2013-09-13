@@ -1,16 +1,17 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: USB Audio initialization race
-Date: Fri, 13 Sep 2013 17:06:26 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1309131702350.15677-100000@netrider.rowland.org>
-References: <52337B32.4080304@canonical.com>
+From: Misael Lopez <misael.lopez@ti.com>
+Subject: Re: [PATCH 1/1] ASoC: twl6040: Remove redundant
+	semicolon
+Date: Fri, 13 Sep 2013 18:12:25 -0500
+Message-ID: <52339BD9.3000606@ti.com>
+References: <1379069177-1159-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
- by alsa0.perex.cz (Postfix) with SMTP id BC3582619ED
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 23:06:29 +0200 (CEST)
-In-Reply-To: <52337B32.4080304@canonical.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C61B261A36
+ for <alsa-devel@alsa-project.org>; Sat, 14 Sep 2013 01:12:28 +0200 (CEST)
+In-Reply-To: <1379069177-1159-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,67 +21,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, zonque@gmail.com
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 13 Sep 2013, David Henningsson wrote:
+On 09/13/2013 05:46 AM, Sachin Kamat wrote:
 
-> 2013-09-13 16:39, Alan Stern skrev:
-> > On Fri, 13 Sep 2013, David Henningsson wrote:
-> >
-> >> I'm sometimes seeing that USB audio devices are not initialized
-> >> correctly by PulseAudio, but I can't reproduce this myself.
-> >>
-> >> I have, however, spotted what I think is a race condition in the driver
-> >> code, if a device has more than one interface. snd_card_register is
-> >> called once for every interface, which means that it will be shown to
-> >> userspace after the first interface has been probed. So the race could
-> >> look like:
-> >>
-> >> 1) The first interface is probed, which might contain the mixer controls
-> >> 2) snd_card_register is called, which sends a signal to userspace
-> >> 3) PulseAudio probes the device and notices that it has no PCMs, so it
-> >> ignores the device
-> >> 4) The second interface is probed, which adds the PCMs
-> >> 5) snd_card_register is again called, which is a no-op since the card
-> >> already exist
-> >> 6) User is unhappy because his plugged in sound card did not show up in
-> >> PulseAudio.
-> >>
-> >> So, assuming all this is right, it seems like we need some type of
-> >> callback from the usb driver when all the interfaces for the sound card
-> >> has been probed, so we can call snd_card_register at that point instead.
-> >> Thoughts?
-> > The driver probably doesn't know when all the interfaces have been
-> > probed.
-> I'm unsure if you mean "the usb driver" or "the usb audio driver" in the 
-> sentence above, but the USB driver would enumerate all interfaces and 
-> call the usb audio driver for every interface, and so the USB driver 
-> would know when all the interfaces have been probed, right?
+> Redundant semicolon removed.
 
-I'm not sure what you mean by "the USB driver".  The USB core registers 
-all the interfaces, which causes them to be probed.  The USB core does 
-know when all the interfaces have been registered.
-
-> Is there a way the USB audio driver can subscribe, or get an additional 
-> callback of some sort, when that happens?
-
-No, not currently.
-
-> > Maybe it would be better to send a signal to userspace each
-> > time snd_card_register is called, even if nothing is done.
 > 
-> That sounds very suboptimal, given that PulseAudio's probing mechanism 
-> can be quite heavy (depending on the device).
-> >
-> > Alternatively, when the first interface is probed, the driver could
-> > claim all the other interfaces belonging to the same association.
-> Not sure how well that would work out with "composite" devices, e g 
-> headset with volume up/down buttons?
+> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 
-Presumably the HID interface (with the button controls) would not be in 
-the audio interface association.  Anyway, the audio driver wouldn't 
-claim anything that wasn't an audio interface.
 
-Alan Stern
+LGTM.
+
+Regards,
+-Misa
