@@ -1,43 +1,58 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ASoC: ab8500-codec: info leak in anc_status_control_put()
-Date: Fri, 13 Sep 2013 10:53:36 +0300
-Message-ID: <20130913075336.GD19211@elgon.mountain>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 1/2] ALSA: ctxfi: Staticize local symbols
+Date: Fri, 13 Sep 2013 15:14:21 +0530
+Message-ID: <1379065462-1720-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Grant Likely <grant.likely@linaro.org>, Rob Herring <rob.herring@calxeda.com>, Fabio Baltieri <fabio.baltieri@linaro.org>, Lee Jones <lee.jones@linaro.org>, Jiri Kosina <jkosina@suse.cz>, Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
+ [209.85.220.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 426B52608B7
+ for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 12:02:33 +0200 (CEST)
+Received: by mail-pa0-f52.google.com with SMTP id kq13so2324892pab.11
+ for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 03:02:32 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, sachin.kamat@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-If the user passes an invalid value it leads to an info leak when we
-print the error message or it could oops.  This is called with user
-supplied data from snd_ctl_elem_write().
+Local symbols used only in this file are made static.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+ sound/pci/ctxfi/ctdaio.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index b8ba0ad..80555d7 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -1225,13 +1225,18 @@ static int anc_status_control_put(struct snd_kcontrol *kcontrol,
- 	struct ab8500_codec_drvdata *drvdata = dev_get_drvdata(codec->dev);
- 	struct device *dev = codec->dev;
- 	bool apply_fir, apply_iir;
--	int req, status;
-+	unsigned int req;
-+	int status;
+diff --git a/sound/pci/ctxfi/ctdaio.c b/sound/pci/ctxfi/ctdaio.c
+index 0c00eb4..84f86bf 100644
+--- a/sound/pci/ctxfi/ctdaio.c
++++ b/sound/pci/ctxfi/ctdaio.c
+@@ -33,7 +33,7 @@ struct daio_rsc_idx {
+ 	unsigned short right;
+ };
  
- 	dev_dbg(dev, "%s: Enter.\n", __func__);
+-struct daio_rsc_idx idx_20k1[NUM_DAIOTYP] = {
++static struct daio_rsc_idx idx_20k1[NUM_DAIOTYP] = {
+ 	[LINEO1] = {.left = 0x00, .right = 0x01},
+ 	[LINEO2] = {.left = 0x18, .right = 0x19},
+ 	[LINEO3] = {.left = 0x08, .right = 0x09},
+@@ -44,7 +44,7 @@ struct daio_rsc_idx idx_20k1[NUM_DAIOTYP] = {
+ 	[SPDIFI1] = {.left = 0x95, .right = 0x9d},
+ };
  
- 	mutex_lock(&drvdata->anc_lock);
- 
- 	req = ucontrol->value.integer.value[0];
-+	if (req >= ARRAY_SIZE(enum_anc_state)) {
-+		status = -EINVAL;
-+		goto cleanup;
-+	}
- 	if (req != ANC_APPLY_FIR_IIR && req != ANC_APPLY_FIR &&
- 		req != ANC_APPLY_IIR) {
- 		dev_err(dev, "%s: ERROR: Unsupported status to set '%s'!\n",
+-struct daio_rsc_idx idx_20k2[NUM_DAIOTYP] = {
++static struct daio_rsc_idx idx_20k2[NUM_DAIOTYP] = {
+ 	[LINEO1] = {.left = 0x40, .right = 0x41},
+ 	[LINEO2] = {.left = 0x60, .right = 0x61},
+ 	[LINEO3] = {.left = 0x50, .right = 0x51},
+-- 
+1.7.9.5
