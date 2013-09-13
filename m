@@ -1,23 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC 3/8] ASoC: davinci-mcasp: Get DMA
- related properties from DT
-Date: Fri, 13 Sep 2013 11:34:31 +0100
-Message-ID: <20130913103431.GG29403@sirena.org.uk>
-References: <cover.1378738436.git.jsarha@ti.com>
- <35b6dc24d8a803b97c683d4d2c51db7e3518f7ff.1378738436.git.jsarha@ti.com>
- <20130909152559.GM29403@sirena.org.uk>
- <d56ff517b8d6e29af7639665bb17c1bb@kapsi.fi>
- <20130912110800.GI29403@sirena.org.uk>
- <62c9342f91e99fa5d421a7ad29fbf354@kapsi.fi>
- <20130912115626.GO29403@sirena.org.uk>
- <49bf24974af0ff34d2be7db97e04f2a9@kapsi.fi>
+Subject: Re: [PATCH 1/2] ASoC: fsl_ssi: Staticize local symbols
+Date: Fri, 13 Sep 2013 11:35:20 +0100
+Message-ID: <20130913103520.GH29403@sirena.org.uk>
+References: <1379065938-26728-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7259691706908052802=="
+Content-Type: multipart/mixed; boundary="===============0238799758271044199=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 22DF52608ED
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 12:34:34 +0200 (CEST)
-In-Reply-To: <49bf24974af0ff34d2be7db97e04f2a9@kapsi.fi>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C9242608ED
+ for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 12:35:24 +0200 (CEST)
+In-Reply-To: <1379065938-26728-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,65 +19,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <oku@iki.fi>
-Cc: Darren Etheridge <detheridge@ti.com>, alsa-devel@alsa-project.org, Joel Fernandes <joelf@ti.com>, Jyri Sarha <jsarha@ti.com>, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>, liam.r.girdwood@linux.intel.com
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7259691706908052802==
+--===============0238799758271044199==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yeCL+mIsZLk3aPZ2"
+	protocol="application/pgp-signature"; boundary="m4G02V+VBfI/G6w2"
 Content-Disposition: inline
 
 
---yeCL+mIsZLk3aPZ2
+--m4G02V+VBfI/G6w2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Sep 12, 2013 at 03:10:12PM +0300, Jyri Sarha wrote:
-> On 2013-09-12 14:56, Mark Brown wrote:
+On Fri, Sep 13, 2013 at 03:22:17PM +0530, Sachin Kamat wrote:
+> Local symbols used only in this file are made static.
 
-> >What exactly is the dma register location here - what hardware is being
-> >controlled?
+Applied, thanks.
 
-> They is the McASP-bus receive/transmit buffer data port addresses.
-> So those
-> are McASP entity specific properties that need to be passed to
-> DMA-engine.
-
-OK, and presumably this is just part of the main McASP register block
-and doesn't need to go into DT?
-
---yeCL+mIsZLk3aPZ2
+--m4G02V+VBfI/G6w2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSMuo0AAoJELSic+t+oim92NsP/1698aNsco5uPXA+/9T0C5la
-btbsbEl8J2xMsBgFbQ/svMhYHsphB9KbfMYgkbkGjpfRi6xWn08A4qWW+DSTcE0/
-a+zQgimdCtc2SX9RvrPizKa3XTSLbqco+1FWx7a/TSHEatwD56OHOsbCVNkmS2Rj
-uU1IzDINogmxCn5LguutpeBiD4qP4s8xLbXFB4xtZ9iXNHqJVYJlVhZcf0MqhR+v
-q9o3kZKXPnTdx6N7ipe/vqVVfHNrzNdV+tMrvZhWQEESmq+9z1z0iAPcKVZ9q2g4
-iQY7yr61b6Bbx/wZE9oCe7j24WhHbr9/r5UbNesQlOCps2D52eA+40nB988Li7V2
-SMDgyAre7jFfOSz7isYFkn1Qooq1RS3P5NlsTNfo7MIYoeauiA36pj2RzXG/swlo
-WrOwJRPlYfCU6j/wIcXPalKixfgJDAI8duZLKIOaLUKUGhKdz7vNFX5ays9Qt4pW
-AE/dKlClxWpks5t+tX1XUjW7LY5c8hmHv7VJEk1q3RpcNcNbSOqtps5Ax7hOxD0I
-dEcf2XAE8qFPefl+AJcEiiXsofYEmX9ZFo2fR3kG3o7WrY7D1s3eMbBAWZWuG4cZ
-aFpl6FPExj/W0CIMovVrQJKFVmAoKa6RYb2ppwuh8/b66TW1hZ2Ppw6ZnSZAQvK7
-rFe4uQ9TXJ3zrZZRzGlk
-=gyzS
+iQIcBAEBAgAGBQJSMuplAAoJELSic+t+oim9thwP/1aahXlZZS2ywHRQZNDECiqY
+rLR+qtbiRrcGiyt+tqeyPlb5FY9T/Lh1phfn6r1fu55+/kl83BKqqcHPBBddgpYU
+0a7k8xVdMXzwirUIKNpopvTHMYx5a8AJuTukKTtc8E5WMKekfz6sXG7dI89RhIqA
+Rni9LBCnooP1Dk08U6CA9FrsoxCucwmiz1OegK6jCkmCOql2Y3Gutv3ec5v7vSwy
+8qJGLWpb5q7x8BbQ/uYyfqpvhLtJMWl46ysLH9oxl+Thh7Y3XTiTJtuG56PsJD7t
+LFnkIY6BBJZsuuZnWEg7vPbNO6psNDy5YC6kd8umas/v8LY+zJqy/NCbb6ZIDIXk
+GrfUG1Nfn9PxTq3vQ8orOKNZd2aIHIJZtt8cdLWKyEjP6P/r7Q5VhmEhTTs6Owh6
+z7BvTi+TmA0kTp/HDvCB0WUTfkag2DchzNloLOIi9j8mzMHpYgLQq6kB21LjR1Uo
+51POAxnmQlBaN7LDE/pkV4jtPULRjBvDH7o1rnaVmT7Ir1MyFlKDnazj2TaFun2i
+H5dJVLk2Y86oO8Q2eBsVojgmkzAVjEwCXNPhO2L3Q8uKiyryYHdLUoaLJ/X0zoCf
+Qds89s0MkuyWhQDr3D9eKQyVdjGFa8ikMip773crMxJaxzMi/Wxxp8DIlh9a6tep
+KG9HgF3uswNhev4Ga1JU
+=jooC
 -----END PGP SIGNATURE-----
 
---yeCL+mIsZLk3aPZ2--
+--m4G02V+VBfI/G6w2--
 
---===============7259691706908052802==
+--===============0238799758271044199==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7259691706908052802==--
+--===============0238799758271044199==--
