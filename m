@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: core utils: Dont set DMA params for
-	BE substreams
-Date: Fri, 13 Sep 2013 18:27:31 +0100
-Message-ID: <20130913172731.GO29403@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: core: Only add platform DAI widgets
+	once.
+Date: Fri, 13 Sep 2013 18:28:16 +0100
+Message-ID: <20130913172815.GP29403@sirena.org.uk>
 References: <1379092188-7385-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1379092188-7385-3-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2783954252322070155=="
+Content-Type: multipart/mixed; boundary="===============4572463675353681969=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 79CEF2619DA
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 19:27:33 +0200 (CEST)
-In-Reply-To: <1379092188-7385-3-git-send-email-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 21231261732
+ for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 19:28:18 +0200 (CEST)
+In-Reply-To: <1379092188-7385-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,50 +25,51 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2783954252322070155==
+--===============4572463675353681969==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dB9btecPJHCmBhFt"
+	protocol="application/pgp-signature"; boundary="qWa1yZoiEHIhUpc5"
 Content-Disposition: inline
 
 
---dB9btecPJHCmBhFt
+--qWa1yZoiEHIhUpc5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Sep 13, 2013 at 06:09:47PM +0100, Liam Girdwood wrote:
-> BE substreams dont require dummy DMA configs so dont set any.
+On Fri, Sep 13, 2013 at 06:09:45PM +0100, Liam Girdwood wrote:
+> Currently platform CPU DAI widgets are created in soc_probe_platform and
+> soc_probe_link_dais. Remove the extra call in soc_probe_link_dais().
 
 Applied, thanks.
 
---dB9btecPJHCmBhFt
+--qWa1yZoiEHIhUpc5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSM0sAAAoJELSic+t+oim96TUQAIZPxYfapE8+/xtHDkCQwF+Y
-0vXVpu+MdJ7eIbK82/r1xLieuKpbc4AuakDNjztOwg7FjdoVj11pqKn8KqjGRjm+
-aLbrW4DYxFDD25wvjBFW1Z7XfneKkzx0vkphg0aIcddNuS2hxzOv6yEOUSAdmzsZ
-tgwBvYbjHOdYUh9RE6rSgP9SvD78WRXE6G+W8aAL6t4kEn/EZdaxwBwxWlqmCVcR
-ujv9aY0nK+3em2KsQ4y32Rvlw3n6YHZwv2yB8tBDFPV0M3lR4ny5BHC4QLdsKQiq
-hH2/DQ+gKC+v7KziERe9jlIW08ebBCEbjdrqRK7lIknHSI7Wl7iQY4U7LureehtF
-/xsmrVedoMvoE6CgevFDL+yqjZQUmdEP0Iv1YxvOX+pYI7nccsUEJi2A7qXgm+4y
-EKC9b1ZpfSrRbNKvo4GWBJ2QAWQhbqCvZ/IlDMRs68jnrTI05LKIwJSbQ7xiTTyN
-QojtgdV6UzLV36ylrPXHT9g7qNQFbXn0UVfw5gHWPbXctAtX6KJx1xyNceymQBsU
-S7iTHAuF5HAOqx2IHsOIxPxqMtiWhco9tjq/2h33WiTOKEPwMXZzHZC+5CYCC9Yc
-fwCCHkBtTg9HKSeHmkbUxnpfB43821j7k9ZKlJwvhEIS3OyUjn514h9xhvvVHWyA
-5cmeBLOvL6R0kkTIegnc
-=KTGl
+iQIcBAEBAgAGBQJSM0ssAAoJELSic+t+oim9kJQP/1wbDw/kWzXqn8EWoHovGALn
+xRn7TNOnnjZlZBtffaaTQNnBzRXlTL1FpbCotAMFebBKb09bKLWX2Z4H7QVV0+x0
+7U/BWH4ZuwF+5gx3esj2oAnO5s2SX5OI3irUfWJ2dGOB7I46E34YAPA61c86t/4f
+NtoOD6MZ319lE/O4mezwHoYlvHa5aAYjiJHoazzs75NjawzxbcSUSeYhwYBy9WAK
+TMkch7od8UONqbbMTU2avBYXEIWIL+pPRbxYuWItOfIU0JVE2Fiufk8aQfIAhynM
+Fb7W9lUibdvT4rXv8uYzvNcclqyojX7AbmWtwFMlKjL+8/IwKCloj51oZhoQ33hH
+f3Hos1UBsVc15XU3EfbRHHmA6ePI0q6rI/uWgjVeY8YOkgfnNI3RmD+mhllYbs9h
+PV8BnLW8U0Ij2Leqxx4u7kIGXWhVJd+VAf8U8mkz23/vKFm4/i3XFeFZStx4fPD+
+BMXCSd/5IpVrt1xiMCHpRdQ8btdCoYmmxcjPCxzWq4Z5QZ1ZHmiGrIn7pmi6LLa9
+68dvZZHN6V81yFIqEQvTHbdxTV2IYWejJApOAmxm5Gql1w4bfFkDFdBIlccmzTAY
+2d+E+y6rlDFSrP6ULuHfY2Coee0/v1KU+Zlc/WJHQedYPBizMFOW82/e6+2F0wDB
+303AEFtvCVBLXJADrh0V
+=QDCZ
 -----END PGP SIGNATURE-----
 
---dB9btecPJHCmBhFt--
+--qWa1yZoiEHIhUpc5--
 
---===============2783954252322070155==
+--===============4572463675353681969==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2783954252322070155==--
+--===============4572463675353681969==--
