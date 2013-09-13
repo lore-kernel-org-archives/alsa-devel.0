@@ -1,51 +1,50 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 2/2] ASoC: rt5640: Staticize hp_amp_power_on
-Date: Fri, 13 Sep 2013 15:22:18 +0530
-Message-ID: <1379065938-26728-2-git-send-email-sachin.kamat@linaro.org>
-References: <1379065938-26728-1-git-send-email-sachin.kamat@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: SAMSUNG: Allow mono in i2s driver
+Date: Fri, 13 Sep 2013 11:33:22 +0100
+Message-ID: <20130913103322.GF29403@sirena.org.uk>
+References: <1378909649-8985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f177.google.com (mail-pd0-f177.google.com
- [209.85.192.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 39EB42608D1
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 12:10:32 +0200 (CEST)
-Received: by mail-pd0-f177.google.com with SMTP id y10so1048614pdj.36
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 03:10:31 -0700 (PDT)
-In-Reply-To: <1379065938-26728-1-git-send-email-sachin.kamat@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sachin.kamat@linaro.org, bardliao@realtek.com, broonie@kernel.org, timur@tabi.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SGSxvnK+1Z2m6Yvc"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1378909649-8985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: kgene.kim@samsung.com, ben-linux@fluff.org, lgirdwood@gmail.com, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-'hp_amp_power_on' is used only in this file. Make it static.
 
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
----
- sound/soc/codecs/rt5640.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--SGSxvnK+1Z2m6Yvc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index c26a8f8..2f6bb16 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -926,7 +926,7 @@ static int rt5640_set_dmic2_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
--void hp_amp_power_on(struct snd_soc_codec *codec)
-+static void hp_amp_power_on(struct snd_soc_codec *codec)
- {
- 	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
- 
--- 
-1.7.9.5
+On Wed, Sep 11, 2013 at 03:27:29PM +0100, Charles Keepax wrote:
+
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+
+APPLIED, THANKS.  Please also remember to CC maintainers on patches.
+
+--SGSxvnK+1Z2m6Yvc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSMunvAAoJELSic+t+oim9MVgP/A2KWsWqgGLGH/ubYKi3k6ut
+xC1HBYs06ROEe9Oqoj3vF76lvtkCPJsPM4f0VfCWl+uYVnJyW6LN1fTjO2ybWyRT
+GUqb91T7MBUh/Vy9x6RSr0Gaj5md9gBLKfAK+3X1iI1zwDRn2KK6j4JybI5apzbh
+kBjv2/QOWVBBLJSuFAB5FADZEnVBRW4aRGWsJJSFgyH1Wy3w8iHfV+dTSQkvBsAn
+Ls8Y/zBPQnlo964GWBpVDdl9WDEWYLAX0tll1eW99XJM17Ezb2vRDNO279/DF4+E
+OAZd116GEgo03dIpDF1uX2cJpJGJOnaiL0qRUy6FCdac5mQE3W6Bpceq3lUfMIAt
+VuL/inUv3QIFQ1arY1svTyGyMVi8gRNAgmORojMsKaFuwmaE56hCiylB1KDgDmac
+hIx4mHIS9yYg2eKGexVc53rJ/v5lrz1pryF47raMuEljG1qqJ6nRjsZ8VJZaspac
+VckNOIoyhR+LPv04lTEBwfcC0b76i501E6CxrOb2Hblc2S1foJhs4CRQsHEMf0wK
+E0xNXHPDbx5xXAKmuIPCIoHSHBjJIU2KYtRAMXysPT9UGe42SMAMGcrJMo5XyRCr
+Ltq98q64VhL8KMcy8EPB5AQBw29wlsinwrp8f1HX9I2nQtdOb6IXquqF33Dctu5n
+6zxLxk2dbS/MR2KMtjgC
+=rW2H
+-----END PGP SIGNATURE-----
+
+--SGSxvnK+1Z2m6Yvc--
