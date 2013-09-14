@@ -1,17 +1,17 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: USB Audio initialization race
-Date: Fri, 13 Sep 2013 19:47:50 -0400
-Message-ID: <5233A426.7070606@canonical.com>
-References: <Pine.LNX.4.44L0.1309131702350.15677-100000@netrider.rowland.org>
+Subject: Re: Internal Mic Boost channel is unused
+Date: Fri, 13 Sep 2013 20:34:04 -0400
+Message-ID: <5233AEFC.8000907@canonical.com>
+References: <5231E348.8020204@gnat.ca> <52333782.9070402@gnat.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 8413E261A5F
- for <alsa-devel@alsa-project.org>; Sat, 14 Sep 2013 01:47:56 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.44L0.1309131702350.15677-100000@netrider.rowland.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id CE6F4261A95
+ for <alsa-devel@alsa-project.org>; Sat, 14 Sep 2013 02:34:10 +0200 (CEST)
+In-Reply-To: <52333782.9070402@gnat.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,86 +21,150 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, zonque@gmail.com
+To: "Nathanael D. Noblet" <nathanael@gnat.ca>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2013-09-13 17:06, Alan Stern skrev:
-> On Fri, 13 Sep 2013, David Henningsson wrote:
+2013-09-13 12:04, Nathanael D. Noblet skrev:
+> Sorry I some how deleted your response... so this may not thread well...
 >
->> 2013-09-13 16:39, Alan Stern skrev:
->>> On Fri, 13 Sep 2013, David Henningsson wrote:
+> Only about 20% of what you said makes much sense to me so you'll have 
+> to bear with me...
+
+Raymond often comments on everything that looks strange or interesting 
+to him, even if it's irrelevant to the actual problem. Don't worry.
+
+>
 >>>
->>>> I'm sometimes seeing that USB audio devices are not initialized
->>>> correctly by PulseAudio, but I can't reproduce this myself.
->>>>
->>>> I have, however, spotted what I think is a race condition in the driver
->>>> code, if a device has more than one interface. snd_card_register is
->>>> called once for every interface, which means that it will be shown to
->>>> userspace after the first interface has been probed. So the race could
->>>> look like:
->>>>
->>>> 1) The first interface is probed, which might contain the mixer controls
->>>> 2) snd_card_register is called, which sends a signal to userspace
->>>> 3) PulseAudio probes the device and notices that it has no PCMs, so it
->>>> ignores the device
->>>> 4) The second interface is probed, which adds the PCMs
->>>> 5) snd_card_register is again called, which is a no-op since the card
->>>> already exist
->>>> 6) User is unhappy because his plugged in sound card did not show up in
->>>> PulseAudio.
->>>>
->>>> So, assuming all this is right, it seems like we need some type of
->>>> callback from the usb driver when all the interfaces for the sound card
->>>> has been probed, so we can call snd_card_register at that point instead.
->>>> Thoughts?
->>> The driver probably doesn't know when all the interfaces have been
->>> probed.
->> I'm unsure if you mean "the usb driver" or "the usb audio driver" in the
->> sentence above, but the USB driver would enumerate all interfaces and
->> call the usb audio driver for every interface, and so the USB driver
->> would know when all the interfaces have been probed, right?
-> I'm not sure what you mean by "the USB driver".  The USB core registers
-> all the interfaces, which causes them to be probed.  The USB core does
-> know when all the interfaces have been registered.
-Ok.
->> Is there a way the USB audio driver can subscribe, or get an additional
->> callback of some sort, when that happens?
-> No, not currently.
+>>>  1) I have the following hardware (alsa-info attached).
+>>
+>> Simple mixer control 'Input Source',0
+>> Capabilities: cenum Items: 'Mic' 'Internal Mic' 'Mic 1'
+>> Item0: 'Internal Mic'
+>> Simple mixer control 'Input Source',1
+>> Capabilities: cenum Items: 'Mic' 'Internal Mic' 'Mic 1'
+>> Item0: 'Internal Mic'
+>> Simple mixer control 'Input Source',2
+>> Capabilities: cenum Items: 'Mic' 'Internal Mic' 'Mic 1'
+>> Item0: 'Internal Mic'
+>>
+>>
+>> using hda-emu
+>>
+>> the driver always use selector 0x17 for the three input source controls
+>>
+>> 6 Input Source:0
+>> ITEM: 0:Mic, 1:Mic 1, 2:Internal Mic, VAL: [Mic]
+>>> set 6 2
+>> send: NID=0x14, VERB=0x701(set_connect_sel), PARM=0x0
+>> receive: 0x0
+>> send: NID=0x17, VERB=0x701(set_connect_sel), PARM=0x3
+>> receive: 0x0
+>>> set 7 2
+>> send: NID=0x15, VERB=0x701(set_connect_sel), PARM=0x0
+>> receive: 0x0
+>> send: NID=0x17, VERB=0x701(set_connect_sel), PARM=0x3
+>> receive: 0x0
+>>> set 8 2
+>> send: NID=0x16, VERB=0x701(set_connect_sel), PARM=0x0
+>> receive: 0x0
+>> send: NID=0x17, VERB=0x701(set_connect_sel), PARM=0x3
+>> receive: 0x0
+>>
+>> It is a bug of the driver to create three input source select 
+>> controls when
+>> there are only two audio selectors 0x17 and 0x18 as node 0x23 is not 
+>> one of
+>> the input pins
+>>
+>> The topology does not allow three different input sources with two 
+>> selectors
+>
+> Ok so the that makes sense but I'm not sure what you want me to do 
+> about it.
 
-Given the use case we have here, do you think that would be a reasonable 
-solution to the problem?
+This indeed looks like a driver bug, but let's figure out the hardware 
+first.
 
 >
->>> Maybe it would be better to send a signal to userspace each
->>> time snd_card_register is called, even if nothing is done.
->> That sounds very suboptimal, given that PulseAudio's probing mechanism
->> can be quite heavy (depending on the device).
+>>
+>>  >  2) The internal microphone requires that the mic boost channel be
+>> something other than 0 to function properly.
+>>
+>> You have to find out whether node 0x1a or 0x1b can be used as the 
+>> headset
+>> jack (headphone with Mic using TRRS connector)
+>
+> So basically I need to plug a microphone into each port and figure out 
+> if both of them work as microphone. A couple things.
+>
+> 1) What if both can be a microphone?
+> 2) If only one can be a microphone, I have no idea how to tell you if 
+> its 0x1a or 0x1b.. hda-analyzer/alsa low level stuff is completely new 
+> to me.
 
-As Clemens said, there are device nodes being added, but having a look 
-at how this is handled in udev's 78-sound-card.rules [1], the rule has a 
-big comment section in the beginning. This comment claims that |"||The 
-control device node creation can be used as synchronization point". I 
-understand this will happen on the first call to snd_card_register, and 
-only then.|
+When you plug something in, you can look at the output of "amixer -D 
+hw:<cardname> contents" to see what, if anything switched to "values=on" 
+instead of "values=off".
 
->>> Alternatively, when the first interface is probed, the driver could
->>> claim all the other interfaces belonging to the same association.
->> Not sure how well that would work out with "composite" devices, e g
->> headset with volume up/down buttons?
-> Presumably the HID interface (with the button controls) would not be in
-> the audio interface association.  Anyway, the audio driver wouldn't
-> claim anything that wasn't an audio interface.
-Ok, I'll trust you to know this better than me. :-)
+We would like you to plug a mic into the mic jack and see in what way 
+the output of "amixer -D hw:<cardname> contents" changes.
+Then we would like you to plug a headset (with both headphone and mic, 
+like most smartphones have), and again see if there's a difference in 
+amixer.
+You can also try this with a headphone only in the headphone jack, if 
+you like.
 
-I'm not sure exactly what "claim all the other interfaces belonging to 
-the same association" means, but if it means it can enumerate all those 
-interfaces it has claimed but not yet probed, maybe the USB audio driver 
-can use this information to avoid calling snd_card_register until after 
-probing the last interface?
+>
+>>
+>>>  3) Changing what pulseaudio expects things to be labelled causes the
+>> problem to go away. (via the attached patch to
+>> /usr/share/pulseaudio/paths/analog-input-mic.conf).
+>>>
+>>>   From the discussion with David Henningsson (diwic on IRC). It seems
+>> that pulse doesn't expect a Mic Boost channel to be used with internal
+>> microphones. As such to fix this particular hardware, the driver 
+>> would need
+>> to make the internal mic boost be labelled "Internal Mic Boost" as 
+>> opposed
+>> to Mic Boost, which is then is used for both external and internal mics.
+>>>
+>>
+>> Node 0x14 [Audio Input] wcaps 0x100d1b: Stereo Amp-In R/L
+>> Control: name="Capture Volume", index=0, device=0 ControlAmp: chs=3,
+>> dir=In, idx=0, ofs=0
+>> Control: name="Capture Switch", index=0, device=0 ControlAmp: chs=3,
+>> dir=In, idx=0, ofs=0
+>> Device: name="CX20588 Analog", type="Audio", device=0 Amp-In caps:
+>> ofs=0x4a, nsteps=0x50, stepsize=0x03, mute=1
+>> Amp-In vals: [0x50 0x50] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+>> Converter: stream=4, channel=0 SDI-Select: 0
+>> PCM: rates [0x160]: 44100 48000 96000
+>> bits [0xe]: 16 20 24
+>> formats [0x1]: PCM
+>> Power states: D0 D1 D2 D3 D3cold EPSS Power: setting=D0, actual=D0
+>> Connection: 4
+>> 0x17* 0x18 0x23 0x24
+>>
+>> Node 0x24 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+>> Amp-In caps: ofs=0x4a, nsteps=0x4a, stepsize=0x03, mute=1
+>> Amp-In vals: [0x00 0x00] [0x00 0x00]
+>> Power states: D0 D1 D2 D3 D3cold EPSS
+>> Power: setting=D0, actual=D0
+>> Connection: 2
+>> 0x10 0x11
+>>
+>> BTW there seem to be an audio path from DAC to ADC throungh audio mixer
+>> 0x24, does this allow you to record the DAC playback directly ? Using
+>> hda-analyzer to change the selection of  audio input node 0x14 and 
+>> fix the
+>> amps at node 0x24
+>
+> I have no idea what DAC to ADC means. If you want me to do something 
+> to test I can do that.
+
+This is completely irrelevant to your problem.
 
 -- 
 David Henningsson, Canonical Ltd.
 https://launchpad.net/~diwic
-
-[1] http://cgit.freedesktop.org/systemd/systemd/tree/src/udev/rules/78-sound-card.rules?id=19c5f19d69bb5f520fa7213239490c55de06d99d
