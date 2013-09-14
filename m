@@ -1,20 +1,16 @@
-From: Colomban Wendling <lists.ban@herbesfolles.org>
-Subject: Re: Fwd: Re: Realtek ALC889: HDA Intel and kernel 3.1
- gives choppy sound (again)
-Date: Sat, 14 Sep 2013 16:19:33 +0200
-Message-ID: <52347075.3000304@herbesfolles.org>
-References: <4EE8B368.2080605@herbesfolles.org> <s5h39cnnra5.wl%tiwai@suse.de>
- <4EE8CAE4.4040609@herbesfolles.org> <s5hsjknm53r.wl%tiwai@suse.de>
- <4EEF530D.9050205@canonical.com> <s5hd3bkk294.wl%tiwai@suse.de>
- <4F2C3165.5060803@herbesfolles.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: USB Audio initialization race
+Date: Sat, 14 Sep 2013 21:33:14 +0200
+Message-ID: <5234B9FA.2020806@ladisch.de>
+References: <Pine.LNX.4.44L0.1309140939540.30219-100000@netrider.rowland.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.herbesfolles.org (a4nancy.globenet.org [80.67.172.114])
- by alsa0.perex.cz (Postfix) with ESMTP id C8B95261A47
- for <alsa-devel@alsa-project.org>; Sat, 14 Sep 2013 16:19:56 +0200 (CEST)
-In-Reply-To: <4F2C3165.5060803@herbesfolles.org>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id E13CC2619DE
+ for <alsa-devel@alsa-project.org>; Sat, 14 Sep 2013 21:33:59 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.44L0.1309140939540.30219-100000@netrider.rowland.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,54 +20,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-SGkgYWdhaW4sCgpMZSAwMy8wMi8yMDEyIDIwOjExLCBDb2xvbWJhbiBXZW5kbGluZyBhIMOpY3Jp
-dCA6Cj4gTGUgMTkvMTIvMjAxMSAxNjozMCwgVGFrYXNoaSBJd2FpIGEgw6ljcml0IDoKPj4gQXQg
-TW9uLCAxOSBEZWMgMjAxMSAxNjowNjo1MyArMDEwMCwKPj4gRGF2aWQgSGVubmluZ3Nzb24gd3Jv
-dGU6Cj4+Pgo+Pj4gWy4uLl0KPj4+Cj4+PiBIbW0sIHRoYW5rcyBmb3IgZmlndXJpbmcgdGhpcyBv
-bmUgb3V0LiBBY3R1YWxseSB0aGlzIGlzIHRoZSB0aGlyZCB0aW1lIEkgCj4+PiBoZWFyIG9mIGph
-Y2sgZGV0ZWN0aW9uIGZsaXBwaW5nIGJhY2sgYW5kIGZvcnRoLiBJJ20gd29uZGVyaW5nIGlmIHdl
-IG5lZWQgCj4+PiAoYW5kIHdoZXRoZXIgb3RoZXIgT1NlcyBoYXZlPykgYSBmaWx0ZXIgLyBmbG9v
-ZCBwcm90ZWN0aW9uIG9uIHRoaXMgCj4+PiBzdHVmZiwgYW5kIGlmIHNvLCBob3cgaXQgd29ya3M/
-IEkgbWVhbiwgbm9ib2R5IHdvdWxkIG5vdGljZSBoYWxmIGEgCj4+PiBzZWNvbmQgb2YgZGVsYXkg
-b24gdGhhdCBzd2l0Y2ggYW55d2F5Lgo+Pgo+PiBJIGRvbid0IHRoaW5rIHRoZXJlIGlzIGEgcGVy
-ZmVjdCBmaWx0ZXJpbmcgZm9yIHN1Y2ggYSBwcm9ibGVtLgo+PiBUaGVvcmV0aWNhbGx5IHdlIGNh
-biBzZWUgaG93IG9mdGVuIGl0J3MgZmxpcHBlZCwgYW5kIGRpc2FibGVzIHRoZQo+PiBqYWNrLWRl
-dGVjdGlvbiBhY2NvcmRpbmdseS4gIEJ1dCBub3Qgc3VyZSBob3cgdXNlZnVsIGl0IGlzIGluCj4+
-IHByYWN0aWNlLCBzaW5jZSBpdCdzIGEgcmFyZSBjYXNlLCBhbmQgdGhlIG1hbnVhbCBhZGp1c3Rt
-ZW50IGlzIGVhc3kuCj4gCj4gSXQncyBlYXN5IHRvIGZpeCwgYnV0IEksIGFzIGEgc2ltcGxlIHVz
-ZXIsIHRoaW5rIGl0J3MgcmVhbGx5IGhhcmQgdG8KPiBmaW5kIG91dCAtLSBhY3R1YWxseSBJIHdv
-dWxkbid0IGhhdmUgZm91bmQgdGhpcyBvdXQgaWYgeW91IHdlcmVuJ3QgdGhlcmUKPiB0ZWxsaW5n
-IG1lIDopCj4gCj4gU28gbWF5YmUgaXQnZCBiZSBnb29kIHRvIGhhdmUgYW4gYXV0b21hdGljIGRp
-c2FibGUgaWYgdGhpcyBpc24ndCBhIGJ1Zwo+IGluIGFuIEFMU0EgY29kZSBzb21ld2hlcmUgLS0g
-anVzdCByZW1lbWJlcmluZyBJIG5ldmVyIHN1ZmZlcmVkIG9mIHRoZQo+IHByb2JsZW0gYmVmb3Jl
-IDMuMC4KClRoaXMgYnVnIGlzIHN0aWxsIHByZXNlbnQgYXMgb2YgY3VycmVudCBtYXN0ZXIgKDMu
-MTEuMCspIC0tIGphY2sKZGV0ZWN0aW9uIGlzIHN0aWxsIGJyb2tlbiB3aXRoIG15IFJlYWx0ZWsg
-QUxDODg5IG9uIGEgTVNJIEg1NU0tRTMzLgoKTW9yZW92ZXIsIHNpbmNlIGtjdGxzIHdlcmUgaW50
-cm9kdWNlZCwgdGhpcyBqYWNrIGRldGVjdGlvbiBpc3N1ZSBicmVha3MKdXNlcmxhbmQgYXBwcyB0
-aGF0IGxpc3RlbiB0byB0aGVtLiAgRS5nLiBQdWxzZUF1ZGlvIG5vdyBzd2l0Y2ggYmFjayBhbmQK
-Zm9ydGggYmV0d2VlbiBmcm9udCBhbmQgYmFjayBwYW5lbCwgZm9yIHdoaWNoIGl0IG1haW50YWlu
-cyAyIHNlcGFyYXRlCnNldCBvZiBzZXR0aW5ncyB3aGljaCBhY3R1YWxseSByZXN1bHRzIGluIG1v
-cmUgb3IgbGVzcyB0aGUgc2FtZSBpc3N1ZQp0aGFuIHdpdGggQXV0b011dGUuCgpJIHNlZSAyIHBv
-c3NpYmxlIHNvbHV0aW9uczoKCjEpIGZpeCB0aGUgamFjayBkZXRlY3Rpb24gKGlmIGl0IGlzbid0
-IGEgYnVnIGluIHRoZSBjYXJkIGJ1dCBpbiB0aGUKZHJpdmVyIHNvbWV3aGVyZSkKCjIpIGlmIGl0
-J3Mgbm90IHBvc3NpYmxlIHRvIGZpeCB0aGUgZHJpdmVyLCBhZGQgYSB3YXkgdG8gY29tcGxldGVs
-eQpkaXNhYmxlIGphY2sgZXZlbnRzIChlLmcuIGEgbW9kdWxlIHBhcmFtIG9yIHNvbWV0aGluZyku
-CgpDdXJyZW50bHkgSSBoYWQgdG8gY29tbWVudC1vdXQgdGhlIHNuZF9rY3RsX2phY2tfcmVwb3J0
-KCkgY2FsbCBpbgpzbmRfaGRhX2phY2tfcmVwb3J0X3N5bmMoKSBzbyBJIGNvdWxkIGFjdHVhbGx5
-IHVzZSB0aGUgZHJpdmVyLgoKCkJUVyBpZiBpdCBoZWxwcywgc25kX2hkYV9qYWNrX3Vuc29sX2V2
-ZW50KCkgb25seSByZWNlaXZlcyBldmVudHMgd2hlbgphY3R1YWxseSBwbHVnZ2luZy91bnBsdWdn
-aW5nIGEgamFjayBvciBkdXJpbmcgcGxheWJhY2ssIGJ1dCBuZXZlciB3aGVuCnRoZSBjYXJkIGlz
-IGlkbGUuCgoKSSB3b3VsZCBiZSBtb3JlIHRoYW4gaGFwcHkgdG8gZG8gYW55dGhpbmcgSSBjYW4g
-dG8gaGVscCBmaXhpbmcgdGhpcy4KCgpCZXN0IHJlZ2FyZHMsCkNvbG9tYmFuCgoKUFM6IG9yaWdp
-bmFsIHRocmVhZChzKToKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwv
-YWxzYS1kZXZlbC8yMDExLU5vdmVtYmVyLzA0NTcwNy5odG1sCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxMS1EZWNlbWJlci8wNDcxNTIuaHRt
-bApodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIw
-MTEtRGVjZW1iZXIvMDQ3MjEwLmh0bWwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+Alan Stern wrote:
+> So here's my question: If the sound driver recognizes that interface B
+> is connected with interface A when B is probed, why can't it recognize
+> this fact when A is probed?  It could claim B while A's probe is
+> running.  Then the sound card would be registered with the PCM
+> component already in place.
+
+The sound driver already does this.
+
+
+Regards,
+Clemens
