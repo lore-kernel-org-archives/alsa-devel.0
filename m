@@ -1,16 +1,19 @@
-From: David Henningsson <david.henningsson@canonical.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: Internal Mic Boost channel is unused
-Date: Fri, 13 Sep 2013 20:34:04 -0400
-Message-ID: <5233AEFC.8000907@canonical.com>
-References: <5231E348.8020204@gnat.ca> <52333782.9070402@gnat.ca>
+Date: Sat, 14 Sep 2013 10:23:54 +0800
+Message-ID: <CAN8ccia+kZr1P+mx0HsXH7UXBukjarV-1-La0rQX2iTgdRpVFQ@mail.gmail.com>
+References: <5231E348.8020204@gnat.ca>
+	<52333782.9070402@gnat.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id CE6F4261A95
- for <alsa-devel@alsa-project.org>; Sat, 14 Sep 2013 02:34:10 +0200 (CEST)
+Received: from mail-ie0-f178.google.com (mail-ie0-f178.google.com
+ [209.85.223.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 951B3261A95
+ for <alsa-devel@alsa-project.org>; Sat, 14 Sep 2013 04:23:55 +0200 (CEST)
+Received: by mail-ie0-f178.google.com with SMTP id to1so4000706ieb.23
+ for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 19:23:54 -0700 (PDT)
 In-Reply-To: <52333782.9070402@gnat.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,149 +25,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: "Nathanael D. Noblet" <nathanael@gnat.ca>
-Cc: alsa-devel@alsa-project.org
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2013-09-13 12:04, Nathanael D. Noblet skrev:
-> Sorry I some how deleted your response... so this may not thread well...
->
-> Only about 20% of what you said makes much sense to me so you'll have 
-> to bear with me...
-
-Raymond often comments on everything that looks strange or interesting 
-to him, even if it's irrelevant to the actual problem. Don't worry.
-
->
->>>
->>>  1) I have the following hardware (alsa-info attached).
->>
->> Simple mixer control 'Input Source',0
->> Capabilities: cenum Items: 'Mic' 'Internal Mic' 'Mic 1'
->> Item0: 'Internal Mic'
->> Simple mixer control 'Input Source',1
->> Capabilities: cenum Items: 'Mic' 'Internal Mic' 'Mic 1'
->> Item0: 'Internal Mic'
->> Simple mixer control 'Input Source',2
->> Capabilities: cenum Items: 'Mic' 'Internal Mic' 'Mic 1'
->> Item0: 'Internal Mic'
->>
->>
->> using hda-emu
->>
->> the driver always use selector 0x17 for the three input source controls
->>
->> 6 Input Source:0
->> ITEM: 0:Mic, 1:Mic 1, 2:Internal Mic, VAL: [Mic]
->>> set 6 2
->> send: NID=0x14, VERB=0x701(set_connect_sel), PARM=0x0
->> receive: 0x0
->> send: NID=0x17, VERB=0x701(set_connect_sel), PARM=0x3
->> receive: 0x0
->>> set 7 2
->> send: NID=0x15, VERB=0x701(set_connect_sel), PARM=0x0
->> receive: 0x0
->> send: NID=0x17, VERB=0x701(set_connect_sel), PARM=0x3
->> receive: 0x0
->>> set 8 2
->> send: NID=0x16, VERB=0x701(set_connect_sel), PARM=0x0
->> receive: 0x0
->> send: NID=0x17, VERB=0x701(set_connect_sel), PARM=0x3
->> receive: 0x0
->>
->> It is a bug of the driver to create three input source select 
->> controls when
->> there are only two audio selectors 0x17 and 0x18 as node 0x23 is not 
->> one of
->> the input pins
->>
->> The topology does not allow three different input sources with two 
->> selectors
->
-> Ok so the that makes sense but I'm not sure what you want me to do 
-> about it.
-
-This indeed looks like a driver bug, but let's figure out the hardware 
-first.
-
->
->>
->>  >  2) The internal microphone requires that the mic boost channel be
->> something other than 0 to function properly.
->>
->> You have to find out whether node 0x1a or 0x1b can be used as the 
->> headset
->> jack (headphone with Mic using TRRS connector)
->
-> So basically I need to plug a microphone into each port and figure out 
-> if both of them work as microphone. A couple things.
->
-> 1) What if both can be a microphone?
-> 2) If only one can be a microphone, I have no idea how to tell you if 
-> its 0x1a or 0x1b.. hda-analyzer/alsa low level stuff is completely new 
-> to me.
-
-When you plug something in, you can look at the output of "amixer -D 
-hw:<cardname> contents" to see what, if anything switched to "values=on" 
-instead of "values=off".
-
-We would like you to plug a mic into the mic jack and see in what way 
-the output of "amixer -D hw:<cardname> contents" changes.
-Then we would like you to plug a headset (with both headphone and mic, 
-like most smartphones have), and again see if there's a difference in 
-amixer.
-You can also try this with a headphone only in the headphone jack, if 
-you like.
-
->
->>
->>>  3) Changing what pulseaudio expects things to be labelled causes the
->> problem to go away. (via the attached patch to
->> /usr/share/pulseaudio/paths/analog-input-mic.conf).
->>>
->>>   From the discussion with David Henningsson (diwic on IRC). It seems
->> that pulse doesn't expect a Mic Boost channel to be used with internal
->> microphones. As such to fix this particular hardware, the driver 
->> would need
->> to make the internal mic boost be labelled "Internal Mic Boost" as 
->> opposed
->> to Mic Boost, which is then is used for both external and internal mics.
->>>
->>
->> Node 0x14 [Audio Input] wcaps 0x100d1b: Stereo Amp-In R/L
->> Control: name="Capture Volume", index=0, device=0 ControlAmp: chs=3,
->> dir=In, idx=0, ofs=0
->> Control: name="Capture Switch", index=0, device=0 ControlAmp: chs=3,
->> dir=In, idx=0, ofs=0
->> Device: name="CX20588 Analog", type="Audio", device=0 Amp-In caps:
->> ofs=0x4a, nsteps=0x50, stepsize=0x03, mute=1
->> Amp-In vals: [0x50 0x50] [0x80 0x80] [0x80 0x80] [0x80 0x80]
->> Converter: stream=4, channel=0 SDI-Select: 0
->> PCM: rates [0x160]: 44100 48000 96000
->> bits [0xe]: 16 20 24
->> formats [0x1]: PCM
->> Power states: D0 D1 D2 D3 D3cold EPSS Power: setting=D0, actual=D0
->> Connection: 4
->> 0x17* 0x18 0x23 0x24
->>
->> Node 0x24 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
->> Amp-In caps: ofs=0x4a, nsteps=0x4a, stepsize=0x03, mute=1
->> Amp-In vals: [0x00 0x00] [0x00 0x00]
->> Power states: D0 D1 D2 D3 D3cold EPSS
->> Power: setting=D0, actual=D0
->> Connection: 2
->> 0x10 0x11
->>
->> BTW there seem to be an audio path from DAC to ADC throungh audio mixer
->> 0x24, does this allow you to record the DAC playback directly ? Using
->> hda-analyzer to change the selection of  audio input node 0x14 and 
->> fix the
->> amps at node 0x24
->
-> I have no idea what DAC to ADC means. If you want me to do something 
-> to test I can do that.
-
-This is completely irrelevant to your problem.
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Pgo+Pj4gIDEpIEkgaGF2ZSB0aGUgZm9sbG93aW5nIGhhcmR3YXJlIChhbHNhLWluZm8gYXR0YWNo
+ZWQpLgo+Pj4KPj4KPj4gU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0lucHV0IFNvdXJjZScsMAo+PiBD
+YXBhYmlsaXRpZXM6IGNlbnVtIEl0ZW1zOiAnTWljJyAnSW50ZXJuYWwgTWljJyAnTWljIDEnCj4+
+IEl0ZW0wOiAnSW50ZXJuYWwgTWljJwo+PiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnSW5wdXQgU291
+cmNlJywxCj4+IENhcGFiaWxpdGllczogY2VudW0gSXRlbXM6ICdNaWMnICdJbnRlcm5hbCBNaWMn
+ICdNaWMgMScKPj4gSXRlbTA6ICdJbnRlcm5hbCBNaWMnCj4+IFNpbXBsZSBtaXhlciBjb250cm9s
+ICdJbnB1dCBTb3VyY2UnLDIKPj4gQ2FwYWJpbGl0aWVzOiBjZW51bSBJdGVtczogJ01pYycgJ0lu
+dGVybmFsIE1pYycgJ01pYyAxJwo+PiBJdGVtMDogJ0ludGVybmFsIE1pYycKPj4KPj4KPj4gdXNp
+bmcgaGRhLWVtdQo+Pgo+PiB0aGUgZHJpdmVyIGFsd2F5cyB1c2Ugc2VsZWN0b3IgMHgxNyBmb3Ig
+dGhlIHRocmVlIGlucHV0IHNvdXJjZSBjb250cm9scwo+Pgo+PiA2IElucHV0IFNvdXJjZTowCj4+
+IElURU06IDA6TWljLCAxOk1pYyAxLCAyOkludGVybmFsIE1pYywgVkFMOiBbTWljXQo+Pgo+Pj4g
+c2V0IDYgMgo+Pj4KPj4gc2VuZDogTklEPTB4MTQsIFZFUkI9MHg3MDEoc2V0X2Nvbm5lY3Rfc2Vs
+KSwgUEFSTT0weDAKPj4gcmVjZWl2ZTogMHgwCj4+IHNlbmQ6IE5JRD0weDE3LCBWRVJCPTB4NzAx
+KHNldF9jb25uZWN0X3NlbCksIFBBUk09MHgzCj4+IHJlY2VpdmU6IDB4MAo+Pgo+Pj4gc2V0IDcg
+Mgo+Pj4KPj4gc2VuZDogTklEPTB4MTUsIFZFUkI9MHg3MDEoc2V0X2Nvbm5lY3Rfc2VsKSwgUEFS
+TT0weDAKPj4gcmVjZWl2ZTogMHgwCj4+IHNlbmQ6IE5JRD0weDE3LCBWRVJCPTB4NzAxKHNldF9j
+b25uZWN0X3NlbCksIFBBUk09MHgzCj4+IHJlY2VpdmU6IDB4MAo+Pgo+Pj4gc2V0IDggMgo+Pj4K
+Pj4gc2VuZDogTklEPTB4MTYsIFZFUkI9MHg3MDEoc2V0X2Nvbm5lY3Rfc2VsKSwgUEFSTT0weDAK
+Pj4gcmVjZWl2ZTogMHgwCj4+IHNlbmQ6IE5JRD0weDE3LCBWRVJCPTB4NzAxKHNldF9jb25uZWN0
+X3NlbCksIFBBUk09MHgzCj4+IHJlY2VpdmU6IDB4MAo+Pgo+PiBJdCBpcyBhIGJ1ZyBvZiB0aGUg
+ZHJpdmVyIHRvIGNyZWF0ZSB0aHJlZSBpbnB1dCBzb3VyY2Ugc2VsZWN0IGNvbnRyb2xzCj4+IHdo
+ZW4KPj4gdGhlcmUgYXJlIG9ubHkgdHdvIGF1ZGlvIHNlbGVjdG9ycyAweDE3IGFuZCAweDE4IGFz
+IG5vZGUgMHgyMyBpcyBub3Qgb25lCj4+IG9mCj4+IHRoZSBpbnB1dCBwaW5zCj4+Cj4+IFRoZSB0
+b3BvbG9neSBkb2VzIG5vdCBhbGxvdyB0aHJlZSBkaWZmZXJlbnQgaW5wdXQgc291cmNlcyB3aXRo
+IHR3bwo+PiBzZWxlY3RvcnMKPj4KPgo+IE9rIHNvIHRoZSB0aGF0IG1ha2VzIHNlbnNlIGJ1dCBJ
+J20gbm90IHN1cmUgd2hhdCB5b3Ugd2FudCBtZSB0byBkbyBhYm91dAo+IGl0Lgo+Cj4KCnVuZm9y
+dHVuYXRlbHkgZXZlbiBhdXRvIG1pYyBpcyBlbmFibGVkIGJ5IHJlbW92aW5nIG9uZSBvZiB0aGUg
+ZXh0ZXJuYWwgbWljLAp0aGUgZHJpdmVyIG9ubHkgdXNlIDB4MTcKCgpoZGEtY29kZWM6IEVuYWJs
+ZSBhdXRvLW1pYyBzd2l0Y2ggb24gTklEIDB4MWUvMHgxYi8weDAKCj4gamFjawpOSUQgMHgxOTog
+Y2ZnIDB4MDMyMTEwNDA6IFtKYWNrXSBIUCBPdXQgYXQgRXh0IExlZnQKTklEIDB4MWI6IGNmZyAw
+eDAzYTE5MDMwOiBbSmFja10gTWljIGF0IEV4dCBMZWZ0Ck5JRCAweDFlOiBjZmcgMHg5NWE3MDEy
+MDogW0ZpeGVkXSBNaWMgYXQgSW50IFRvcApOSUQgMHgxZjogY2ZnIDB4OTIxNzAxMTA6IFtGaXhl
+ZF0gU3BlYWtlciBhdCBJbnQgRnJvbnQKPiBqYWNrIDB4MWIgMQpzZW5kOiBOSUQ9MHgxYiwgVkVS
+Qj0weGYwOShnZXRfcGluX3NlbnNlKSwgUEFSTT0weDAKcmVjZWl2ZTogMHg4MDAwMDAwMApzZW5k
+OiBOSUQ9MHgxNCwgVkVSQj0weDcwMShzZXRfY29ubmVjdF9zZWwpLCBQQVJNPTB4MApyZWNlaXZl
+OiAweDAKc2VuZDogTklEPTB4MTcsIFZFUkI9MHg3MDEoc2V0X2Nvbm5lY3Rfc2VsKSwgUEFSTT0w
+eDEKcmVjZWl2ZTogMHgwCkpBQ0sgcmVwb3J0IEhlYWRwaG9uZSwgc3RhdHVzIDAKQ1RMIE5vdGlm
+eTogTWljIEphY2s6MCwgbWFzaz0xCkpBQ0sgcmVwb3J0IE1pYywgc3RhdHVzIDIKPiBqYWNrIDB4
+MWIgMApzZW5kOiBOSUQ9MHgxYiwgVkVSQj0weGYwOShnZXRfcGluX3NlbnNlKSwgUEFSTT0weDAK
+cmVjZWl2ZTogMHgwCnNlbmQ6IE5JRD0weDE0LCBWRVJCPTB4NzAxKHNldF9jb25uZWN0X3NlbCks
+IFBBUk09MHgwCnJlY2VpdmU6IDB4MApzZW5kOiBOSUQ9MHgxNywgVkVSQj0weDcwMShzZXRfY29u
+bmVjdF9zZWwpLCBQQVJNPTB4MwpyZWNlaXZlOiAweDAKSkFDSyByZXBvcnQgSGVhZHBob25lLCBz
+dGF0dXMgMApDVEwgTm90aWZ5OiBNaWMgSmFjazowLCBtYXNrPTEKSkFDSyByZXBvcnQgTWljLCBz
+dGF0dXMgMAoKCgo+Cj4+ICA+ICAyKSBUaGUgaW50ZXJuYWwgbWljcm9waG9uZSByZXF1aXJlcyB0
+aGF0IHRoZSBtaWMgYm9vc3QgY2hhbm5lbCBiZQo+PiBzb21ldGhpbmcgb3RoZXIgdGhhbiAwIHRv
+IGZ1bmN0aW9uIHByb3Blcmx5Lgo+Pgo+PiBZb3UgaGF2ZSB0byBmaW5kIG91dCB3aGV0aGVyIG5v
+ZGUgMHgxYSBvciAweDFiIGNhbiBiZSB1c2VkIGFzIHRoZSBoZWFkc2V0Cj4+IGphY2sgKGhlYWRw
+aG9uZSB3aXRoIE1pYyB1c2luZyBUUlJTIGNvbm5lY3RvcikKPj4KPgo+IFNvIGJhc2ljYWxseSBJ
+IG5lZWQgdG8gcGx1ZyBhIG1pY3JvcGhvbmUgaW50byBlYWNoIHBvcnQgYW5kIGZpZ3VyZSBvdXQg
+aWYKPiBib3RoIG9mIHRoZW0gd29yayBhcyBtaWNyb3Bob25lLiBBIGNvdXBsZSB0aGluZ3MuCj4K
+CgpSZWZlciB0byBBc3BpcmUgT25lIFNlcmllcyBRdWljayBHdWlkZSwgdGhlIGhlYWRwaG9uZSBq
+YWNrIHN1cHBvcnQKaGVhZHBob25lIG9yIHNwZWFrZXIsICB3aGF0IHlvdSBuZWVkIGlzIHRvIGZp
+bmQgb3V0IHdoaWNoIG5vZGUgaXMgdGhlIG1pYwpqYWNrICgweDFhIG9yIDB4MWIpID8KCmljb24g
+SXRlbSBEZXNjcmlwdGlvbgpIZWFkcGhvbmUvc3BlYWtlci8gQ29ubmVjdHMgdG8gYXVkaW8gbGlu
+ZS1vdXQgZGV2aWNlcyDvgKAKbGluZS1vdXQgamFjayAoZS5nLiwgc3BlYWtlcnMsIGhlYWRwaG9u
+ZXMpLgpNaWNyb3Bob25lLWluIGphY2sgQWNjZXB0cyBpbnB1dHMgZnJvbSBleHRlcm5hbAogICAg
+ICAgICAgICAgICAgICBtaWNyb3Bob25lcy4KCgoKCj4+Cj4+PiAgIEZyb20gdGhlIGRpc2N1c3Np
+b24gd2l0aCBEYXZpZCBIZW5uaW5nc3NvbiAoZGl3aWMgb24gSVJDKS4gSXQgc2VlbXMKPj4+Cj4+
+IHRoYXQgcHVsc2UgZG9lc24ndCBleHBlY3QgYSBNaWMgQm9vc3QgY2hhbm5lbCB0byBiZSB1c2Vk
+IHdpdGggaW50ZXJuYWwKPj4gbWljcm9waG9uZXMuIEFzIHN1Y2ggdG8gZml4IHRoaXMgcGFydGlj
+dWxhciBoYXJkd2FyZSwgdGhlIGRyaXZlciB3b3VsZAo+PiBuZWVkCj4+IHRvIG1ha2UgdGhlIGlu
+dGVybmFsIG1pYyBib29zdCBiZSBsYWJlbGxlZCAiSW50ZXJuYWwgTWljIEJvb3N0IiBhcyBvcHBv
+c2VkCj4+IHRvIE1pYyBCb29zdCwgd2hpY2ggaXMgdGhlbiBpcyB1c2VkIGZvciBib3RoIGV4dGVy
+bmFsIGFuZCBpbnRlcm5hbCBtaWNzLgo+Pgo+Pj4KPj4+CkFzIHRoZXJlIGlzIG5vIHBhdGggZm9y
+IHRoZSBpbnB1dCBwaW5zIHRvIHRoZSBvdXRwdXQgcGlucyAoTm8gTWljIHBsYXliYWNrCnZvbHVt
+ZSkKClRoZSBjYXBhYmlsaXRlcyBvZiB0aGlzIG1pYyBib29zdCAgc2hvdWxkIGJlIGN2b2x1bWUg
+aW5zdGVhZCBvZiB2b2x1bWUKCml0IHNob3VsZCBub3QgYXBwZWFyIGluIFBsYXliYWNrIFZpZXcg
+b2YgYWxzYW1peGVyCgoKU2ltcGxlIG1peGVyIGNvbnRyb2wgJ01pYyBCb29zdCcsMAogIENhcGFi
+aWxpdGllczogdm9sdW1lIHBlbnVtCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBG
+cm9udCBSaWdodAogIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAog
+IExpbWl0czogMCAtIDQKICBGcm9udCBMZWZ0OiAwIFswJV0gWzAuMDBkQl0KICBGcm9udCBSaWdo
+dDogMCBbMCVdIFswLjAwZEJdCgoKCgo+Cj4+IE5vZGUgMHgxNCBbQXVkaW8gSW5wdXRdIHdjYXBz
+IDB4MTAwZDFiOiBTdGVyZW8gQW1wLUluIFIvTAo+PiBDb250cm9sOiBuYW1lPSJDYXB0dXJlIFZv
+bHVtZSIsIGluZGV4PTAsIGRldmljZT0wIENvbnRyb2xBbXA6IGNocz0zLAo+PiBkaXI9SW4sIGlk
+eD0wLCBvZnM9MAo+PiBDb250cm9sOiBuYW1lPSJDYXB0dXJlIFN3aXRjaCIsIGluZGV4PTAsIGRl
+dmljZT0wIENvbnRyb2xBbXA6IGNocz0zLAo+PiBkaXI9SW4sIGlkeD0wLCBvZnM9MAo+PiBEZXZp
+Y2U6IG5hbWU9IkNYMjA1ODggQW5hbG9nIiwgdHlwZT0iQXVkaW8iLCBkZXZpY2U9MCBBbXAtSW4g
+Y2FwczoKPj4gb2ZzPTB4NGEsIG5zdGVwcz0weDUwLCBzdGVwc2l6ZT0weDAzLCBtdXRlPTEKPj4g
+QW1wLUluIHZhbHM6IFsweDUwIDB4NTBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4
+ODBdCj4+IENvbnZlcnRlcjogc3RyZWFtPTQsIGNoYW5uZWw9MCBTREktU2VsZWN0OiAwCj4+IFBD
+TTogcmF0ZXMgWzB4MTYwXTogNDQxMDAgNDgwMDAgOTYwMDAKPj4gYml0cyBbMHhlXTogMTYgMjAg
+MjQKPj4gZm9ybWF0cyBbMHgxXTogUENNCj4+IFBvd2VyIHN0YXRlczogRDAgRDEgRDIgRDMgRDNj
+b2xkIEVQU1MgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAo+PiBDb25uZWN0aW9uOiA0Cj4+
+IDB4MTcqIDB4MTggMHgyMyAweDI0Cj4+Cj4+IE5vZGUgMHgyNCBbQXVkaW8gTWl4ZXJdIHdjYXBz
+IDB4MjAwNTBiOiBTdGVyZW8gQW1wLUluCj4+IEFtcC1JbiBjYXBzOiBvZnM9MHg0YSwgbnN0ZXBz
+PTB4NGEsIHN0ZXBzaXplPTB4MDMsIG11dGU9MQo+PiBBbXAtSW4gdmFsczogWzB4MDAgMHgwMF0g
+WzB4MDAgMHgwMF0KPj4gUG93ZXIgc3RhdGVzOiBEMCBEMSBEMiBEMyBEM2NvbGQgRVBTUwo+PiBQ
+b3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCj4+IENvbm5lY3Rpb246IDIKPj4gMHgxMCAweDEx
+Cj4+Cj4+IEJUVyB0aGVyZSBzZWVtIHRvIGJlIGFuIGF1ZGlvIHBhdGggZnJvbSBEQUMgdG8gQURD
+IHRocm91bmdoIGF1ZGlvIG1peGVyCj4+IDB4MjQsIGRvZXMgdGhpcyBhbGxvdyB5b3UgdG8gcmVj
+b3JkIHRoZSBEQUMgcGxheWJhY2sgZGlyZWN0bHkgPyBVc2luZwo+PiBoZGEtYW5hbHl6ZXIgdG8g
+Y2hhbmdlIHRoZSBzZWxlY3Rpb24gb2YgIGF1ZGlvIGlucHV0IG5vZGUgMHgxNCBhbmQgZml4IHRo
+ZQo+PiBhbXBzIGF0IG5vZGUgMHgyNAo+Pgo+Cj4gSSBoYXZlIG5vIGlkZWEgd2hhdCBEQUMgdG8g
+QURDIG1lYW5zLgoKCltBdWRpbyBPdXRwdXRdIDB4MTAvMHgxMSAtPiBbQXVkaW8gTWl4ZXJdIDB4
+MjQgLT4gW0F1ZGlvIFNlbGVjdG9yXSAweDE3IC0+CltBdWRpbyBJbnB1dF0gMHgxNAoKcmVjb3Jk
+IHRoZSBwbGF5aW5nIHNpZ25hbCB3aXRob3V0IGEgbG9vcGJhY2sgY2FibGUKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
