@@ -1,20 +1,16 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Internal Mic Boost channel is unused
-Date: Sat, 14 Sep 2013 12:14:10 +0800
-Message-ID: <CAN8cciYg90mZHn_vzJAJW26TF+qUEXej+XGztmC=+JZ_h53n-w@mail.gmail.com>
-References: <5231E348.8020204@gnat.ca>
-	<52333782.9070402@gnat.ca>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: USB Audio initialization race
+Date: Sat, 14 Sep 2013 09:44:51 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1309140939540.30219-100000@netrider.rowland.org>
+References: <5233A426.7070606@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f171.google.com (mail-ie0-f171.google.com
- [209.85.223.171])
- by alsa0.perex.cz (Postfix) with ESMTP id DBB9A261AA7
- for <alsa-devel@alsa-project.org>; Sat, 14 Sep 2013 06:14:13 +0200 (CEST)
-Received: by mail-ie0-f171.google.com with SMTP id at1so4234441iec.16
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2013 21:14:11 -0700 (PDT)
-In-Reply-To: <52333782.9070402@gnat.ca>
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+ by alsa0.perex.cz (Postfix) with SMTP id 1A5412617AB
+ for <alsa-devel@alsa-project.org>; Sat, 14 Sep 2013 15:44:52 +0200 (CEST)
+In-Reply-To: <5233A426.7070606@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,88 +20,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Nathanael D. Noblet" <nathanael@gnat.ca>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
->
->
->> Node 0x14 [Audio Input] wcaps 0x100d1b: Stereo Amp-In R/L
->> Control: name="Capture Volume", index=0, device=0 ControlAmp: chs=3,
->> dir=In, idx=0, ofs=0
->> Control: name="Capture Switch", index=0, device=0 ControlAmp: chs=3,
->> dir=In, idx=0, ofs=0
->> Device: name="CX20588 Analog", type="Audio", device=0 Amp-In caps:
->> ofs=0x4a, nsteps=0x50, stepsize=0x03, mute=1
->> Amp-In vals: [0x50 0x50] [0x80 0x80] [0x80 0x80] [0x80 0x80]
->> Converter: stream=4, channel=0 SDI-Select: 0
->> PCM: rates [0x160]: 44100 48000 96000
->> bits [0xe]: 16 20 24
->> formats [0x1]: PCM
->> Power states: D0 D1 D2 D3 D3cold EPSS Power: setting=D0, actual=D0
->> Connection: 4
->> 0x17* 0x18 0x23 0x24
->>
->> Node 0x24 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
->> Amp-In caps: ofs=0x4a, nsteps=0x4a, stepsize=0x03, mute=1
->> Amp-In vals: [0x00 0x00] [0x00 0x00]
->> Power states: D0 D1 D2 D3 D3cold EPSS
->> Power: setting=D0, actual=D0
->> Connection: 2
->> 0x10 0x11
->>
->> BTW there seem to be an audio path from DAC to ADC throungh audio mixer
->> 0x24, does this allow you to record the DAC playback directly ? Using
->> hda-analyzer to change the selection of  audio input node 0x14 and fix the
->> amps at node 0x24
->>
->
-> I have no idea what DAC to ADC means. If you want me to do something to
-> test I can do that.
->
->
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/plain/Documentation/sound/alsa/HD-Audio.txt
+On Fri, 13 Sep 2013, David Henningsson wrote:
 
+> 2013-09-13 17:06, Alan Stern skrev:
+> > On Fri, 13 Sep 2013, David Henningsson wrote:
+> >
+> >> 2013-09-13 16:39, Alan Stern skrev:
+> >>> On Fri, 13 Sep 2013, David Henningsson wrote:
+> >>>
+> >>>> I'm sometimes seeing that USB audio devices are not initialized
+> >>>> correctly by PulseAudio, but I can't reproduce this myself.
+> >>>>
+> >>>> I have, however, spotted what I think is a race condition in the driver
+> >>>> code, if a device has more than one interface. snd_card_register is
+> >>>> called once for every interface, which means that it will be shown to
+> >>>> userspace after the first interface has been probed. So the race could
+> >>>> look like:
+> >>>>
+> >>>> 1) The first interface is probed, which might contain the mixer controls
+> >>>> 2) snd_card_register is called, which sends a signal to userspace
+> >>>> 3) PulseAudio probes the device and notices that it has no PCMs, so it
+> >>>> ignores the device
+> >>>> 4) The second interface is probed, which adds the PCMs
+> >>>> 5) snd_card_register is again called, which is a no-op since the card
+> >>>> already exist
+> >>>> 6) User is unhappy because his plugged in sound card did not show up in
+> >>>> PulseAudio.
+> >>>>
+> >>>> So, assuming all this is right, it seems like we need some type of
+> >>>> callback from the usb driver when all the interfaces for the sound card
+> >>>> has been probed, so we can call snd_card_register at that point instead.
+> >>>> Thoughts?
+> >>> The driver probably doesn't know when all the interfaces have been
+> >>> probed.
+> >> I'm unsure if you mean "the usb driver" or "the usb audio driver" in the
+> >> sentence above, but the USB driver would enumerate all interfaces and
+> >> call the usb audio driver for every interface, and so the USB driver
+> >> would know when all the interfaces have been probed, right?
+> > I'm not sure what you mean by "the USB driver".  The USB core registers
+> > all the interfaces, which causes them to be probed.  The USB core does
+> > know when all the interfaces have been registered.
+> Ok.
+> >> Is there a way the USB audio driver can subscribe, or get an additional
+> >> callback of some sort, when that happens?
+> > No, not currently.
+> 
+> Given the use case we have here, do you think that would be a reasonable 
+> solution to the problem?
 
-hints::
-  Shows / stores hint strings for codec parsers for any use.
-  Its format is `key = value`.  For example, passing `jack_detect = no`
-  will disable the jack detection of the machine completely.
+I'd prefer to look at other solutions.
 
+> >>> Maybe it would be better to send a signal to userspace each
+> >>> time snd_card_register is called, even if nothing is done.
+> >> That sounds very suboptimal, given that PulseAudio's probing mechanism
+> >> can be quite heavy (depending on the device).
+> 
+> As Clemens said, there are device nodes being added, but having a look 
+> at how this is handled in udev's 78-sound-card.rules [1], the rule has a 
+> big comment section in the beginning. This comment claims that |"||The 
+> control device node creation can be used as synchronization point". I 
+> understand this will happen on the first call to snd_card_register, and 
+> only then.|
+> 
+> >>> Alternatively, when the first interface is probed, the driver could
+> >>> claim all the other interfaces belonging to the same association.
+> >> Not sure how well that would work out with "composite" devices, e g
+> >> headset with volume up/down buttons?
+> > Presumably the HID interface (with the button controls) would not be in
+> > the audio interface association.  Anyway, the audio driver wouldn't
+> > claim anything that wasn't an audio interface.
+> Ok, I'll trust you to know this better than me. :-)
+> 
+> I'm not sure exactly what "claim all the other interfaces belonging to 
+> the same association" means, but if it means it can enumerate all those 
+> interfaces it has claimed but not yet probed, maybe the USB audio driver 
+> can use this information to avoid calling snd_card_register until after 
+> probing the last interface?
 
-Hint Strings
-~~~~~~~~~~~~
-The codec parser have several switches and adjustment knobs for
-matching better with the actual codec or device behavior.  Many of
-them can be adjusted dynamically via "hints" strings as mentioned in
-the section above.  For example, by passing `jack_detect = no` string
-via sysfs or a patch file, you can disable the jack detection, thus
-the codec parser will skip the features like auto-mute or mic
-auto-switch.  As a boolean value, either `yes`, `no`, `true`, `false`,
-`1` or `0` can be passed.
+A driver claims an interface when it wants to be bound to that
+interface right away, without waiting for a probe.  Thus, when the
+first audio interface in a USB device is probed, the audio driver takes 
+the opportunity to claim all the other audio interfaces associated with 
+it.
 
-The generic parser supports the following hints:
+In this case, it sounds like the control interface (A) gets probed,
+which causes the sound card to be registered.  A little later, the PCM
+interface (B) is probed.  The sound driver recognizes that interface B
+is connected with interface A and adds this information to the sound
+card, but it's already too late.
 
-- add_stereo_mix_input (bool): add the stereo mix (analog-loopback
-  mix) to the input mux if available
-- mixer_nid (int): specifies the widget NID of the analog-loopback
-  mixer
+So here's my question: If the sound driver recognizes that interface B
+is connected with interface A when B is probed, why can't it recognize
+this fact when A is probed?  It could claim B while A's probe is
+running.  Then the sound card would be registered with the PCM 
+component already in place.
 
-specify hints
-
-
-
-mixer_nid = 0x24
-add_stereo_mix_input = true
-
-
-> get 6
-6 Input Source:0
-ITEM: 0:Mic, 1:Mic 1, 2:Internal Mic, 3:Stereo Mix, VAL: [Mic]
-> set 6 3
-send: NID=0x14, VERB=0x701(set_connect_sel), PARM=0x3
-receive: 0x0
-send: NID=0x24, VERB=0x360(set_amp_gain_mute,I:L#0), PARM=0x4a
-receive: 0x0
-send: NID=0x24, VERB=0x350(set_amp_gain_mute,I:R#0), PARM=0x4a
-receive: 0x0
+Alan Stern
