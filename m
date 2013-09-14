@@ -1,16 +1,20 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: USB Audio initialization race
-Date: Sat, 14 Sep 2013 09:44:51 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1309140939540.30219-100000@netrider.rowland.org>
-References: <5233A426.7070606@canonical.com>
+From: Colomban Wendling <lists.ban@herbesfolles.org>
+Subject: Re: Fwd: Re: Realtek ALC889: HDA Intel and kernel 3.1
+ gives choppy sound (again)
+Date: Sat, 14 Sep 2013 16:19:33 +0200
+Message-ID: <52347075.3000304@herbesfolles.org>
+References: <4EE8B368.2080605@herbesfolles.org> <s5h39cnnra5.wl%tiwai@suse.de>
+ <4EE8CAE4.4040609@herbesfolles.org> <s5hsjknm53r.wl%tiwai@suse.de>
+ <4EEF530D.9050205@canonical.com> <s5hd3bkk294.wl%tiwai@suse.de>
+ <4F2C3165.5060803@herbesfolles.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
- by alsa0.perex.cz (Postfix) with SMTP id 1A5412617AB
- for <alsa-devel@alsa-project.org>; Sat, 14 Sep 2013 15:44:52 +0200 (CEST)
-In-Reply-To: <5233A426.7070606@canonical.com>
+Received: from mail.herbesfolles.org (a4nancy.globenet.org [80.67.172.114])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8B95261A47
+ for <alsa-devel@alsa-project.org>; Sat, 14 Sep 2013 16:19:56 +0200 (CEST)
+In-Reply-To: <4F2C3165.5060803@herbesfolles.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,103 +24,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, zonque@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 13 Sep 2013, David Henningsson wrote:
-
-> 2013-09-13 17:06, Alan Stern skrev:
-> > On Fri, 13 Sep 2013, David Henningsson wrote:
-> >
-> >> 2013-09-13 16:39, Alan Stern skrev:
-> >>> On Fri, 13 Sep 2013, David Henningsson wrote:
-> >>>
-> >>>> I'm sometimes seeing that USB audio devices are not initialized
-> >>>> correctly by PulseAudio, but I can't reproduce this myself.
-> >>>>
-> >>>> I have, however, spotted what I think is a race condition in the driver
-> >>>> code, if a device has more than one interface. snd_card_register is
-> >>>> called once for every interface, which means that it will be shown to
-> >>>> userspace after the first interface has been probed. So the race could
-> >>>> look like:
-> >>>>
-> >>>> 1) The first interface is probed, which might contain the mixer controls
-> >>>> 2) snd_card_register is called, which sends a signal to userspace
-> >>>> 3) PulseAudio probes the device and notices that it has no PCMs, so it
-> >>>> ignores the device
-> >>>> 4) The second interface is probed, which adds the PCMs
-> >>>> 5) snd_card_register is again called, which is a no-op since the card
-> >>>> already exist
-> >>>> 6) User is unhappy because his plugged in sound card did not show up in
-> >>>> PulseAudio.
-> >>>>
-> >>>> So, assuming all this is right, it seems like we need some type of
-> >>>> callback from the usb driver when all the interfaces for the sound card
-> >>>> has been probed, so we can call snd_card_register at that point instead.
-> >>>> Thoughts?
-> >>> The driver probably doesn't know when all the interfaces have been
-> >>> probed.
-> >> I'm unsure if you mean "the usb driver" or "the usb audio driver" in the
-> >> sentence above, but the USB driver would enumerate all interfaces and
-> >> call the usb audio driver for every interface, and so the USB driver
-> >> would know when all the interfaces have been probed, right?
-> > I'm not sure what you mean by "the USB driver".  The USB core registers
-> > all the interfaces, which causes them to be probed.  The USB core does
-> > know when all the interfaces have been registered.
-> Ok.
-> >> Is there a way the USB audio driver can subscribe, or get an additional
-> >> callback of some sort, when that happens?
-> > No, not currently.
-> 
-> Given the use case we have here, do you think that would be a reasonable 
-> solution to the problem?
-
-I'd prefer to look at other solutions.
-
-> >>> Maybe it would be better to send a signal to userspace each
-> >>> time snd_card_register is called, even if nothing is done.
-> >> That sounds very suboptimal, given that PulseAudio's probing mechanism
-> >> can be quite heavy (depending on the device).
-> 
-> As Clemens said, there are device nodes being added, but having a look 
-> at how this is handled in udev's 78-sound-card.rules [1], the rule has a 
-> big comment section in the beginning. This comment claims that |"||The 
-> control device node creation can be used as synchronization point". I 
-> understand this will happen on the first call to snd_card_register, and 
-> only then.|
-> 
-> >>> Alternatively, when the first interface is probed, the driver could
-> >>> claim all the other interfaces belonging to the same association.
-> >> Not sure how well that would work out with "composite" devices, e g
-> >> headset with volume up/down buttons?
-> > Presumably the HID interface (with the button controls) would not be in
-> > the audio interface association.  Anyway, the audio driver wouldn't
-> > claim anything that wasn't an audio interface.
-> Ok, I'll trust you to know this better than me. :-)
-> 
-> I'm not sure exactly what "claim all the other interfaces belonging to 
-> the same association" means, but if it means it can enumerate all those 
-> interfaces it has claimed but not yet probed, maybe the USB audio driver 
-> can use this information to avoid calling snd_card_register until after 
-> probing the last interface?
-
-A driver claims an interface when it wants to be bound to that
-interface right away, without waiting for a probe.  Thus, when the
-first audio interface in a USB device is probed, the audio driver takes 
-the opportunity to claim all the other audio interfaces associated with 
-it.
-
-In this case, it sounds like the control interface (A) gets probed,
-which causes the sound card to be registered.  A little later, the PCM
-interface (B) is probed.  The sound driver recognizes that interface B
-is connected with interface A and adds this information to the sound
-card, but it's already too late.
-
-So here's my question: If the sound driver recognizes that interface B
-is connected with interface A when B is probed, why can't it recognize
-this fact when A is probed?  It could claim B while A's probe is
-running.  Then the sound card would be registered with the PCM 
-component already in place.
-
-Alan Stern
+SGkgYWdhaW4sCgpMZSAwMy8wMi8yMDEyIDIwOjExLCBDb2xvbWJhbiBXZW5kbGluZyBhIMOpY3Jp
+dCA6Cj4gTGUgMTkvMTIvMjAxMSAxNjozMCwgVGFrYXNoaSBJd2FpIGEgw6ljcml0IDoKPj4gQXQg
+TW9uLCAxOSBEZWMgMjAxMSAxNjowNjo1MyArMDEwMCwKPj4gRGF2aWQgSGVubmluZ3Nzb24gd3Jv
+dGU6Cj4+Pgo+Pj4gWy4uLl0KPj4+Cj4+PiBIbW0sIHRoYW5rcyBmb3IgZmlndXJpbmcgdGhpcyBv
+bmUgb3V0LiBBY3R1YWxseSB0aGlzIGlzIHRoZSB0aGlyZCB0aW1lIEkgCj4+PiBoZWFyIG9mIGph
+Y2sgZGV0ZWN0aW9uIGZsaXBwaW5nIGJhY2sgYW5kIGZvcnRoLiBJJ20gd29uZGVyaW5nIGlmIHdl
+IG5lZWQgCj4+PiAoYW5kIHdoZXRoZXIgb3RoZXIgT1NlcyBoYXZlPykgYSBmaWx0ZXIgLyBmbG9v
+ZCBwcm90ZWN0aW9uIG9uIHRoaXMgCj4+PiBzdHVmZiwgYW5kIGlmIHNvLCBob3cgaXQgd29ya3M/
+IEkgbWVhbiwgbm9ib2R5IHdvdWxkIG5vdGljZSBoYWxmIGEgCj4+PiBzZWNvbmQgb2YgZGVsYXkg
+b24gdGhhdCBzd2l0Y2ggYW55d2F5Lgo+Pgo+PiBJIGRvbid0IHRoaW5rIHRoZXJlIGlzIGEgcGVy
+ZmVjdCBmaWx0ZXJpbmcgZm9yIHN1Y2ggYSBwcm9ibGVtLgo+PiBUaGVvcmV0aWNhbGx5IHdlIGNh
+biBzZWUgaG93IG9mdGVuIGl0J3MgZmxpcHBlZCwgYW5kIGRpc2FibGVzIHRoZQo+PiBqYWNrLWRl
+dGVjdGlvbiBhY2NvcmRpbmdseS4gIEJ1dCBub3Qgc3VyZSBob3cgdXNlZnVsIGl0IGlzIGluCj4+
+IHByYWN0aWNlLCBzaW5jZSBpdCdzIGEgcmFyZSBjYXNlLCBhbmQgdGhlIG1hbnVhbCBhZGp1c3Rt
+ZW50IGlzIGVhc3kuCj4gCj4gSXQncyBlYXN5IHRvIGZpeCwgYnV0IEksIGFzIGEgc2ltcGxlIHVz
+ZXIsIHRoaW5rIGl0J3MgcmVhbGx5IGhhcmQgdG8KPiBmaW5kIG91dCAtLSBhY3R1YWxseSBJIHdv
+dWxkbid0IGhhdmUgZm91bmQgdGhpcyBvdXQgaWYgeW91IHdlcmVuJ3QgdGhlcmUKPiB0ZWxsaW5n
+IG1lIDopCj4gCj4gU28gbWF5YmUgaXQnZCBiZSBnb29kIHRvIGhhdmUgYW4gYXV0b21hdGljIGRp
+c2FibGUgaWYgdGhpcyBpc24ndCBhIGJ1Zwo+IGluIGFuIEFMU0EgY29kZSBzb21ld2hlcmUgLS0g
+anVzdCByZW1lbWJlcmluZyBJIG5ldmVyIHN1ZmZlcmVkIG9mIHRoZQo+IHByb2JsZW0gYmVmb3Jl
+IDMuMC4KClRoaXMgYnVnIGlzIHN0aWxsIHByZXNlbnQgYXMgb2YgY3VycmVudCBtYXN0ZXIgKDMu
+MTEuMCspIC0tIGphY2sKZGV0ZWN0aW9uIGlzIHN0aWxsIGJyb2tlbiB3aXRoIG15IFJlYWx0ZWsg
+QUxDODg5IG9uIGEgTVNJIEg1NU0tRTMzLgoKTW9yZW92ZXIsIHNpbmNlIGtjdGxzIHdlcmUgaW50
+cm9kdWNlZCwgdGhpcyBqYWNrIGRldGVjdGlvbiBpc3N1ZSBicmVha3MKdXNlcmxhbmQgYXBwcyB0
+aGF0IGxpc3RlbiB0byB0aGVtLiAgRS5nLiBQdWxzZUF1ZGlvIG5vdyBzd2l0Y2ggYmFjayBhbmQK
+Zm9ydGggYmV0d2VlbiBmcm9udCBhbmQgYmFjayBwYW5lbCwgZm9yIHdoaWNoIGl0IG1haW50YWlu
+cyAyIHNlcGFyYXRlCnNldCBvZiBzZXR0aW5ncyB3aGljaCBhY3R1YWxseSByZXN1bHRzIGluIG1v
+cmUgb3IgbGVzcyB0aGUgc2FtZSBpc3N1ZQp0aGFuIHdpdGggQXV0b011dGUuCgpJIHNlZSAyIHBv
+c3NpYmxlIHNvbHV0aW9uczoKCjEpIGZpeCB0aGUgamFjayBkZXRlY3Rpb24gKGlmIGl0IGlzbid0
+IGEgYnVnIGluIHRoZSBjYXJkIGJ1dCBpbiB0aGUKZHJpdmVyIHNvbWV3aGVyZSkKCjIpIGlmIGl0
+J3Mgbm90IHBvc3NpYmxlIHRvIGZpeCB0aGUgZHJpdmVyLCBhZGQgYSB3YXkgdG8gY29tcGxldGVs
+eQpkaXNhYmxlIGphY2sgZXZlbnRzIChlLmcuIGEgbW9kdWxlIHBhcmFtIG9yIHNvbWV0aGluZyku
+CgpDdXJyZW50bHkgSSBoYWQgdG8gY29tbWVudC1vdXQgdGhlIHNuZF9rY3RsX2phY2tfcmVwb3J0
+KCkgY2FsbCBpbgpzbmRfaGRhX2phY2tfcmVwb3J0X3N5bmMoKSBzbyBJIGNvdWxkIGFjdHVhbGx5
+IHVzZSB0aGUgZHJpdmVyLgoKCkJUVyBpZiBpdCBoZWxwcywgc25kX2hkYV9qYWNrX3Vuc29sX2V2
+ZW50KCkgb25seSByZWNlaXZlcyBldmVudHMgd2hlbgphY3R1YWxseSBwbHVnZ2luZy91bnBsdWdn
+aW5nIGEgamFjayBvciBkdXJpbmcgcGxheWJhY2ssIGJ1dCBuZXZlciB3aGVuCnRoZSBjYXJkIGlz
+IGlkbGUuCgoKSSB3b3VsZCBiZSBtb3JlIHRoYW4gaGFwcHkgdG8gZG8gYW55dGhpbmcgSSBjYW4g
+dG8gaGVscCBmaXhpbmcgdGhpcy4KCgpCZXN0IHJlZ2FyZHMsCkNvbG9tYmFuCgoKUFM6IG9yaWdp
+bmFsIHRocmVhZChzKToKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwv
+YWxzYS1kZXZlbC8yMDExLU5vdmVtYmVyLzA0NTcwNy5odG1sCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxMS1EZWNlbWJlci8wNDcxNTIuaHRt
+bApodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIw
+MTEtRGVjZW1iZXIvMDQ3MjEwLmh0bWwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
