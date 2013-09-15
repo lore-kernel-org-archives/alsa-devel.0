@@ -1,16 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: USB Audio initialization race
-Date: Sun, 15 Sep 2013 10:49:40 +0200
-Message-ID: <523574A4.4010203@ladisch.de>
-References: <Pine.LNX.4.44L0.1309142127140.6622-100000@netrider.rowland.org>
+From: Michael Findlater <michael.findlater@gmail.com>
+Subject: Roland UA-55 (snd-usb-audio)
+Date: Mon, 16 Sep 2013 06:37:11 +1200
+Message-ID: <CAH8q-WO6BPMP4vdaM2sRpjUhSZACP_Nxr-dNe4UkP=Osw1yhqg@mail.gmail.com>
+Reply-To: michael.findlater@gmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 15ADF261A29
- for <alsa-devel@alsa-project.org>; Sun, 15 Sep 2013 10:50:29 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.44L0.1309142127140.6622-100000@netrider.rowland.org>
+Received: from mail-lb0-f172.google.com (mail-lb0-f172.google.com
+ [209.85.217.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5BB8261A25
+ for <alsa-devel@alsa-project.org>; Sun, 15 Sep 2013 20:37:32 +0200 (CEST)
+Received: by mail-lb0-f172.google.com with SMTP id x18so3597373lbi.3
+ for <alsa-devel@alsa-project.org>; Sun, 15 Sep 2013 11:37:32 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,31 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>, zonque@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Alan Stern wrote:
-> On Sat, 14 Sep 2013, Clemens Ladisch wrote:
->> Alan Stern wrote:
->>> So here's my question: If the sound driver recognizes that interface B
->>> is connected with interface A when B is probed, why can't it recognize
->>> this fact when A is probed?  It could claim B while A's probe is
->>> running.  Then the sound card would be registered with the PCM
->>> component already in place.
->>
->> The sound driver already does this.
->
-> It does?  Why does the comment preceding snd_usb_audio_probe() say:
->
->  * thus we check the usb device pointer and creates the card instance
->  * only at the first time.  the successive calls of this function will
->  * append the pcm interface to the corresponding card.
+Hello there!
 
-For UAC devices with correct descriptors, and for devices with multi-
-interface quirks, the driver claims all interfaces at once.  But it is
-still possible to have devices with zero or two audio control interfaces.
+I am attempting to use the Roland UA-55, which apparently should work
+after recent changes were made for support for Roland devices by
+Clemens Ladisch. I am using the 3.11 kernel upon Debian sid. The
+device shows in /proc/asound/cards but does not seem to work.
 
+The GNOME volume mixer it shows the device as a "QUAD-CAPTURE Analog
+Surround 4.0", but I am not sure whether this is correct.
 
-Regards,
-Clemens
+When I select the card as the output device and try to play to it,
+nothing will play, 'aplay' does not work either (I hear nothing). If I
+turn the headphone output knob on the device up I hear a very soft
+static in my right ear.
+
+'alsamixer' reports that 'This sound device does not have any controls.'
+
+I do not know where to go from here, but have ran the "Alsa
+Information Script", an output of this is available at:
+http://www.alsa-project.org/db/?f=8f62ce460ecc5cac394c0b014b2e2aa4d28ae2dc
+
+I am stuck with how to proceed to debug the issue. If at all possible,
+I would be grateful if someone is able to point me in the right
+direction.
+
+Best regards,
+
+Michael Findlater
