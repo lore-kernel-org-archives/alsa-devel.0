@@ -1,18 +1,17 @@
-From: Michael Findlater <michael.findlater@gmail.com>
-Subject: Roland UA-55 (snd-usb-audio)
-Date: Mon, 16 Sep 2013 06:37:11 +1200
-Message-ID: <CAH8q-WO6BPMP4vdaM2sRpjUhSZACP_Nxr-dNe4UkP=Osw1yhqg@mail.gmail.com>
-Reply-To: michael.findlater@gmail.com
+From: Andreas Mohr <andi@lisas.de>
+Subject: Re: [RFC PATCH] ES938 support for ES18xx driver
+Date: Sun, 15 Sep 2013 20:49:02 +0200
+Message-ID: <20130915184902.GA23480@rhlx01.hs-esslingen.de>
+References: <201309142240.47419.linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f172.google.com (mail-lb0-f172.google.com
- [209.85.217.172])
- by alsa0.perex.cz (Postfix) with ESMTP id A5BB8261A25
- for <alsa-devel@alsa-project.org>; Sun, 15 Sep 2013 20:37:32 +0200 (CEST)
-Received: by mail-lb0-f172.google.com with SMTP id x18so3597373lbi.3
- for <alsa-devel@alsa-project.org>; Sun, 15 Sep 2013 11:37:32 -0700 (PDT)
+Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57C83261A25
+ for <alsa-devel@alsa-project.org>; Sun, 15 Sep 2013 20:49:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201309142240.47419.linux@rainbow-software.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +21,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ondrej Zary <linux@rainbow-software.org>
+Cc: alsa-devel@alsa-project.org, krzysztof.h1@wp.pl, Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello there!
+Hi,
 
-I am attempting to use the Roland UA-55, which apparently should work
-after recent changes were made for support for Roland devices by
-Clemens Ladisch. I am using the 3.11 kernel upon Debian sid. The
-device shows in /proc/asound/cards but does not seem to work.
+> ES938 is controlled by MIDI SysEx commands sent through card's MPU401 port.
+> 
+> The following patch works but has a problem: the midi port cannot be used by
+> userspace applications. Opening and closing the rawmidi device on each control
+> change would probably work (as long as the port is not used by an application)
+> but that just does not seem right. Is there a way to cleanly fix this?
 
-The GNOME volume mixer it shows the device as a "QUAD-CAPTURE Analog
-Surround 4.0", but I am not sure whether this is correct.
+Just to clarify matters:
 
-When I select the card as the output device and try to play to it,
-nothing will play, 'aplay' does not work either (I hear nothing). If I
-turn the headphone output knob on the device up I hear a very soft
-static in my right ear.
+The story here was a bit split, but then I got it:
+you're saying that since ES938 control is via MIDI SysEx,
+these operations will occupy MIDI resources at least while controlling ES938
+and therefore they're unavailable for userspace.
 
-'alsamixer' reports that 'This sound device does not have any controls.'
+Don't tell me we'd require a MIDI access multiplexing layer which perhaps does not exist yet...
 
-I do not know where to go from here, but have ran the "Alsa
-Information Script", an output of this is available at:
-http://www.alsa-project.org/db/?f=8f62ce460ecc5cac394c0b014b2e2aa4d28ae2dc
 
-I am stuck with how to proceed to debug the issue. If at all possible,
-I would be grateful if someone is able to point me in the right
-direction.
+> (There are two problems: 3D level does not have any effect and alsamixer does
+> not display the TLV dB values - but don't know why).
 
-Best regards,
+Hmm, I'm rather in the dark here as well - however from my driver experiences
+the actually sort-of standardized 3D level control
+may have some "weird" deviations (at least when talking AC97 or pseudo-AC97)
+such as different bitmask indices or possibly even inverted volume operation
+(background: azt3328 is pseudo-AC97, thus it has some deviations).
+Sorry for not knowing any more helpful hints...
 
-Michael Findlater
+Hmm, or perhaps ES938_REG_POWER needs some special values configured
+to have 3D sound effects powered up, too?
+OTOH if this is a simple non-DSP implementation then 3D probably is implemented
+via delay lines etc., so perhaps it is so simple that it does not have a
+special "enable power" switch after all.
+
+Oh, and BTW, my azt3328.c said:
+
+ *  - (non-bug) "Bass/Treble or 3D settings don't work" - they do get evaluated
+ *    if you set PCM output switch to "pre 3D" instead of "post 3D".
+ *    If this can't be set, then get a mixer application that Isn't Stupid (tm)
+ *    (e.g. kmix, gamix) - unfortunately several are!!
+
+So perhaps ES938 has (perhaps since it might more or less conform to certain
+standards specs?) another control for PCM output switch as well
+which would need implementing or simply isn't set properly?
+(to clarify, we're talking about a switch which would cause output signal
+to be grabbed pre or post the 3D manipulation block)
+
+
+> +		if (snd_es938_init(&chip->es938, card, 0, 0) == 0)
+> +			printk("es938 found!\n");
+
+Perhaps we could have a more verbose message here?
+That ES938 surely must have some human-readable characteristics...
+(hmm, what about "ES938 3D audio effects processor found!"?)
+((or "Detected ..."))
+
+
+> +	/* try to read a register to detect chip presence */
+> +	if (snd_es938_read_reg(chip, ES938_REG_MISC, NULL) < 0)
+> +		return -ENODEV;
+
+Perhaps that check is not specific enough, i.e. it might be useful
+to figure out a more precise check?
+
+
+Thanks a ton for enhancing the feature set of certain sound cards :))
+
+Andreas Mohr
