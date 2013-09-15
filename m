@@ -1,17 +1,17 @@
-From: Andreas Mohr <andi@lisas.de>
+From: Ondrej Zary <linux@rainbow-software.org>
 Subject: Re: [RFC PATCH] ES938 support for ES18xx driver
-Date: Sun, 15 Sep 2013 20:49:02 +0200
-Message-ID: <20130915184902.GA23480@rhlx01.hs-esslingen.de>
-References: <201309142240.47419.linux@rainbow-software.org>
+Date: Sun, 15 Sep 2013 22:25:45 +0200
+Message-ID: <201309152225.46581.linux@rainbow-software.org>
+References: <20130915184902.GA23480@rhlx01.hs-esslingen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 57C83261A25
- for <alsa-devel@alsa-project.org>; Sun, 15 Sep 2013 20:49:02 +0200 (CEST)
+Received: from mail-1.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6B23261A28
+ for <alsa-devel@alsa-project.org>; Sun, 15 Sep 2013 22:26:33 +0200 (CEST)
+In-Reply-To: <20130915184902.GA23480@rhlx01.hs-esslingen.de>
 Content-Disposition: inline
-In-Reply-To: <201309142240.47419.linux@rainbow-software.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,76 +21,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ondrej Zary <linux@rainbow-software.org>
+To: Andreas Mohr <andi@lisas.de>
 Cc: alsa-devel@alsa-project.org, krzysztof.h1@wp.pl, Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sunday 15 September 2013 20:49:02 Andreas Mohr wrote:
+> Hi,
+>
+> > ES938 is controlled by MIDI SysEx commands sent through card's MPU401
+> > port.
+> >
+> > The following patch works but has a problem: the midi port cannot be used
+> > by userspace applications. Opening and closing the rawmidi device on each
+> > control change would probably work (as long as the port is not used by an
+> > application) but that just does not seem right. Is there a way to cleanly
+> > fix this?
+>
+> Just to clarify matters:
+>
+> The story here was a bit split, but then I got it:
+> you're saying that since ES938 control is via MIDI SysEx,
+> these operations will occupy MIDI resources at least while controlling
+> ES938 and therefore they're unavailable for userspace.
+>
+> Don't tell me we'd require a MIDI access multiplexing layer which perhaps
+> does not exist yet...
 
-> ES938 is controlled by MIDI SysEx commands sent through card's MPU401 port.
-> 
-> The following patch works but has a problem: the midi port cannot be used by
-> userspace applications. Opening and closing the rawmidi device on each control
-> change would probably work (as long as the port is not used by an application)
-> but that just does not seem right. Is there a way to cleanly fix this?
+Probably some hack that would allow the driver to send MIDI data behind 
+everyone's back would be enough. Receiving is not needed (because the read 
+register command is used only once for device detection). The 
+SNDRV_RAWMIDI_LFLG_APPEND thing looks like that but does not seem to work.
 
-Just to clarify matters:
+And another bad thing I forgot to mention before: the driver cannot be 
+unloaded because the MIDI device is open (circular dependency between 
+snd-es18xx and snd-es938).
 
-The story here was a bit split, but then I got it:
-you're saying that since ES938 control is via MIDI SysEx,
-these operations will occupy MIDI resources at least while controlling ES938
-and therefore they're unavailable for userspace.
+Maybe rawmidi_open_priv() would work, only if it was exported (and not _priv).
 
-Don't tell me we'd require a MIDI access multiplexing layer which perhaps does not exist yet...
+> > (There are two problems: 3D level does not have any effect and alsamixer
+> > does not display the TLV dB values - but don't know why).
+>
+> Hmm, I'm rather in the dark here as well - however from my driver
+> experiences the actually sort-of standardized 3D level control
+> may have some "weird" deviations (at least when talking AC97 or
+> pseudo-AC97) such as different bitmask indices or possibly even inverted
+> volume operation (background: azt3328 is pseudo-AC97, thus it has some
+> deviations). Sorry for not knowing any more helpful hints...
+>
+> Hmm, or perhaps ES938_REG_POWER needs some special values configured
+> to have 3D sound effects powered up, too?
+> OTOH if this is a simple non-DSP implementation then 3D probably is
+> implemented via delay lines etc., so perhaps it is so simple that it does
+> not have a special "enable power" switch after all.
+>
+> Oh, and BTW, my azt3328.c said:
+>
+> *  - (non-bug) "Bass/Treble or 3D settings don't work" - they do get
+> evaluated 
+> *    if you set PCM output switch to "pre 3D" instead of "post 3D".
+> *    If this can't be set, then get a mixer application that Isn't Stupid
+> (tm) 
+> *    (e.g. kmix, gamix) - unfortunately several are!!
 
+BTW. I've got an AZT3328 card and it works fine with your driver. Thanks for 
+it.
+I'm thinking about doing some reverse-engineering of thunderbird-based sound 
+cards (VLSI Thunderbird - Aztech PCI 368-DSP, Thunderbird Avenger - Philips 
+Acoustic/Seismic/Rhythmic Edge).
 
-> (There are two problems: 3D level does not have any effect and alsamixer does
-> not display the TLV dB values - but don't know why).
+> So perhaps ES938 has (perhaps since it might more or less conform to
+> certain standards specs?) another control for PCM output switch as well
+> which would need implementing or simply isn't set properly?
+> (to clarify, we're talking about a switch which would cause output signal
+> to be grabbed pre or post the 3D manipulation block)
 
-Hmm, I'm rather in the dark here as well - however from my driver experiences
-the actually sort-of standardized 3D level control
-may have some "weird" deviations (at least when talking AC97 or pseudo-AC97)
-such as different bitmask indices or possibly even inverted volume operation
-(background: azt3328 is pseudo-AC97, thus it has some deviations).
-Sorry for not knowing any more helpful hints...
+The good thing is that there's a datasheet available for ES938 - e.g. at 
+http://www.datasheetarchive.com/ES938-datasheet.html
 
-Hmm, or perhaps ES938_REG_POWER needs some special values configured
-to have 3D sound effects powered up, too?
-OTOH if this is a simple non-DSP implementation then 3D probably is implemented
-via delay lines etc., so perhaps it is so simple that it does not have a
-special "enable power" switch after all.
+The 3D switch works but the level doesn't. Maybe I should use only the 3 
+specific level values from the datasheet and not a variable scale. Or just 
+remove the level control completely as Windows driver does (there's only a 3D 
+switch).
 
-Oh, and BTW, my azt3328.c said:
+> > +		if (snd_es938_init(&chip->es938, card, 0, 0) == 0)
+> > +			printk("es938 found!\n");
+>
+> Perhaps we could have a more verbose message here?
+> That ES938 surely must have some human-readable characteristics...
+> (hmm, what about "ES938 3D audio effects processor found!"?)
+> ((or "Detected ..."))
 
- *  - (non-bug) "Bass/Treble or 3D settings don't work" - they do get evaluated
- *    if you set PCM output switch to "pre 3D" instead of "post 3D".
- *    If this can't be set, then get a mixer application that Isn't Stupid (tm)
- *    (e.g. kmix, gamix) - unfortunately several are!!
+Yes, that's wrong - it's only for testing purposes. There should probably be 
+no message at all as the es18xx driver itself does not display anything if 
+everything is OK.
 
-So perhaps ES938 has (perhaps since it might more or less conform to certain
-standards specs?) another control for PCM output switch as well
-which would need implementing or simply isn't set properly?
-(to clarify, we're talking about a switch which would cause output signal
-to be grabbed pre or post the 3D manipulation block)
+> > +	/* try to read a register to detect chip presence */
+> > +	if (snd_es938_read_reg(chip, ES938_REG_MISC, NULL) < 0)
+> > +		return -ENODEV;
+>
+> Perhaps that check is not specific enough, i.e. it might be useful
+> to figure out a more precise check?
 
+snd_es938_read_reg() checks that the returned data match the format used by 
+ES938. Maybe we can reread all the register values back after writing to be 
+sure.
 
-> +		if (snd_es938_init(&chip->es938, card, 0, 0) == 0)
-> +			printk("es938 found!\n");
-
-Perhaps we could have a more verbose message here?
-That ES938 surely must have some human-readable characteristics...
-(hmm, what about "ES938 3D audio effects processor found!"?)
-((or "Detected ..."))
-
-
-> +	/* try to read a register to detect chip presence */
-> +	if (snd_es938_read_reg(chip, ES938_REG_MISC, NULL) < 0)
-> +		return -ENODEV;
-
-Perhaps that check is not specific enough, i.e. it might be useful
-to figure out a more precise check?
-
-
-Thanks a ton for enhancing the feature set of certain sound cards :))
-
-Andreas Mohr
+-- 
+Ondrej Zary
