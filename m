@@ -1,8 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/2] ASoC: core: Add devm_snd_soc_register_card()
-Date: Mon, 16 Sep 2013 18:03:42 +0100
-Message-ID: <1379351023-28996-1-git-send-email-broonie@kernel.org>
+Subject: [PATCH 2/2] ASoC: smdk_wm8994: Use devm_snd_soc_unregister_card()
+Date: Mon, 16 Sep 2013 18:03:43 +0100
+Message-ID: <1379351023-28996-2-git-send-email-broonie@kernel.org>
+References: <1379351023-28996-1-git-send-email-broonie@kernel.org>
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1379351023-28996-1-git-send-email-broonie@kernel.org>
 Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>
 Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
@@ -10,68 +12,47 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mark Brown <broonie@linaro.org>
 
-Simplify error handling and remove repetitive (and rarely executed) code
-for unregistration by providing a devm_snd_soc_register() card.
-
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- include/sound/soc.h    |  1 +
- sound/soc/soc-devres.c | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 35 insertions(+)
+ sound/soc/samsung/smdk_wm8994.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index f126676..7ab5d2b 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -364,6 +364,7 @@ int snd_soc_codec_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
+diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
+index 5fd7a05..831972d 100644
+--- a/sound/soc/samsung/smdk_wm8994.c
++++ b/sound/soc/samsung/smdk_wm8994.c
+@@ -193,7 +193,7 @@ static int smdk_audio_probe(struct platform_device *pdev)
  
- int snd_soc_register_card(struct snd_soc_card *card);
- int snd_soc_unregister_card(struct snd_soc_card *card);
-+int devm_snd_soc_register_card(struct device *dev, struct snd_soc_card *card);
- int snd_soc_suspend(struct device *dev);
- int snd_soc_resume(struct device *dev);
- int snd_soc_poweroff(struct device *dev);
-diff --git a/sound/soc/soc-devres.c b/sound/soc/soc-devres.c
-index 13fe86f..b1d7322 100644
---- a/sound/soc/soc-devres.c
-+++ b/sound/soc/soc-devres.c
-@@ -50,3 +50,37 @@ int devm_snd_soc_register_component(struct device *dev,
+ 	platform_set_drvdata(pdev, board);
+ 
+-	ret = snd_soc_register_card(card);
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 
+ 	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card() failed:%d\n", ret);
+@@ -201,15 +201,6 @@ static int smdk_audio_probe(struct platform_device *pdev)
  	return ret;
  }
- EXPORT_SYMBOL_GPL(devm_snd_soc_register_component);
-+
-+static void devm_card_release(struct device *dev, void *res)
-+{
-+	snd_soc_unregister_card(*(struct snd_soc_card **)res);
-+}
-+
-+/**
-+ * devm_snd_soc_register_card - resource managed card registration
-+ * @dev: Device used to manage card
-+ * @card: Card to register
-+ *
-+ * Register a card with automatic unregistration when the device is
-+ * unregistered.
-+ */
-+int devm_snd_soc_register_card(struct device *dev, struct snd_soc_card *card)
-+{
-+	struct device **ptr;
-+	int ret;
-+
-+	ptr = devres_alloc(devm_card_release, sizeof(*ptr), GFP_KERNEL);
-+	if (!ptr)
-+		return -ENOMEM;
-+
-+	ret = snd_soc_register_card(card);
-+	if (ret == 0) {
-+		*ptr = dev;
-+		devres_add(dev, ptr);
-+	} else {
-+		devres_free(ptr);
-+	}
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(devm_snd_soc_register_card);
+ 
+-static int smdk_audio_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+-
+-	snd_soc_unregister_card(card);
+-
+-	return 0;
+-}
+-
+ static struct platform_driver smdk_audio_driver = {
+ 	.driver		= {
+ 		.name	= "smdk-audio-wm8894",
+@@ -217,7 +208,6 @@ static struct platform_driver smdk_audio_driver = {
+ 		.of_match_table = of_match_ptr(samsung_wm8994_of_match),
+ 	},
+ 	.probe		= smdk_audio_probe,
+-	.remove		= smdk_audio_remove,
+ };
+ 
+ module_platform_driver(smdk_audio_driver);
 -- 
 1.8.4.rc3
