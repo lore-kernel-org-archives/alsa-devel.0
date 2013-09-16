@@ -1,18 +1,18 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Internal Mic Boost channel is unused
-Date: Mon, 16 Sep 2013 23:57:48 +0200
-Message-ID: <52377EDC.6040105@canonical.com>
-References: <5231E348.8020204@gnat.ca> <52333782.9070402@gnat.ca>
- <5233AEFC.8000907@canonical.com> <5237204A.7040602@gnat.ca>
+Subject: Re: USB Audio initialization race
+Date: Tue, 17 Sep 2013 00:21:27 +0200
+Message-ID: <52378467.1040402@canonical.com>
+References: <Pine.LNX.4.44L0.1309142127140.6622-100000@netrider.rowland.org>
+ <523574A4.4010203@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id B6CA8265043
- for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2013 23:57:50 +0200 (CEST)
-In-Reply-To: <5237204A.7040602@gnat.ca>
+ by alsa0.perex.cz (Postfix) with ESMTP id C0CA9265043
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 00:21:29 +0200 (CEST)
+In-Reply-To: <523574A4.4010203@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,78 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Nathanael D. Noblet" <nathanael@gnat.ca>
-Cc: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Alan Stern <stern@rowland.harvard.edu>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 09/16/2013 05:14 PM, Nathanael D. Noblet wrote:
-> On 09/13/2013 06:34 PM, David Henningsson wrote:
->>>>  >  2) The internal microphone requires that the mic boost channel be
->>>> something other than 0 to function properly.
->>>>
->>>> You have to find out whether node 0x1a or 0x1b can be used as the
->>>> headset
->>>> jack (headphone with Mic using TRRS connector)
+On 09/15/2013 10:49 AM, Clemens Ladisch wrote:
+> Alan Stern wrote:
+>> On Sat, 14 Sep 2013, Clemens Ladisch wrote:
+>>> Alan Stern wrote:
+>>>> So here's my question: If the sound driver recognizes that interface B
+>>>> is connected with interface A when B is probed, why can't it recognize
+>>>> this fact when A is probed?  It could claim B while A's probe is
+>>>> running.  Then the sound card would be registered with the PCM
+>>>> component already in place.
 >>>
->>> So basically I need to plug a microphone into each port and figure out
->>> if both of them work as microphone. A couple things.
->>>
->>> 1) What if both can be a microphone?
->>> 2) If only one can be a microphone, I have no idea how to tell you if
->>> its 0x1a or 0x1b.. hda-analyzer/alsa low level stuff is completely new
->>> to me.
+>>> The sound driver already does this.
 >>
->> When you plug something in, you can look at the output of "amixer -D
->> hw:<cardname> contents" to see what, if anything switched to "values=on"
->> instead of "values=off".
+>> It does?  Why does the comment preceding snd_usb_audio_probe() say:
 >>
->> We would like you to plug a mic into the mic jack and see in what way
->> the output of "amixer -D hw:<cardname> contents" changes.
->> Then we would like you to plug a headset (with both headphone and mic,
->> like most smartphones have), and again see if there's a difference in
->> amixer.
->> You can also try this with a headphone only in the headphone jack, if
->> you like.
->>
+>>  * thus we check the usb device pointer and creates the card instance
+>>  * only at the first time.  the successive calls of this function will
+>>  * append the pcm interface to the corresponding card.
 > 
-> So here's what I did. I didn't have a combo headphone/mic thing handy.
-> 
-> 1) nothing.out is the netbook with nothing external plugged in.
-> 2) mic.out is when I plugged in a microphone into the mic jack
-> 3) head.out is when there were headphones plugged into the headphone jack
-> 4) both.out is when something was plugged into both (mic into mic and
-> headphone into headphones...
-> 
-> A quick diff shows that amixer is seeing differences.
-> --- nothing.out    2013-09-16 09:11:54.678168182 -0600
-> +++ mic.out    2013-09-16 09:11:54.675168245 -0600
-> @@ -6,7 +6,7 @@
->    : values=on
->  numid=18,iface=CARD,name='Mic Jack'
->    ; type=BOOLEAN,access=r-------,values=1
-> -  : values=off
-> +  : values=on
->  numid=20,iface=CARD,name='Mic Jack',index=1
->    ; type=BOOLEAN,access=r-------,values=1
->    : values=off
-> 
-> 
-> Given this information... what's the next step?
+> For UAC devices with correct descriptors, and for devices with multi-
+> interface quirks, the driver claims all interfaces at once.  But it is
+> still possible to have devices with zero or two audio control interfaces.
 
-Matching this with your alsa-info, we can see that 'Mic Jack'
-corresponds to 0x1b and 'Mic Jack', index=1 corresponds to 0x1a.
+So, indeed there is some claiming being done in the usb audio driver, so
+maybe this is not as much of a problem as I thought, but I think this
+comment is wrong:
 
-Hence you could try turning pin 0x1a to "not connected" in
-hda-jack-retask. (I don't know how/if hda-jack-retask is packaged in
-Fedora, but it is part of alsa-tools.)
+	/* we are allowed to call snd_card_register() many times */
 
-If this resolves your problem, we could then try making that the default
-in upcoming kernels, but the question is we really dare to do that,
-without clear confirmation that 0x1a is actually useless. In current
-state it's a bit buggy, but if the headphone jack is actually a headset
-jack turning that off would make the headset mic go from "needs manual
-adjustment to work" to "completely unusuable".
+...because it implies that it is okay to change the card and then call
+snd_card_register again, and it is not, because userspace cannot handle
+that correctly. It would be more appropriate to print a warning if this
+happens.
 
+Also, I wonder if it makes sense to also claim control interfaces
+(USB_SUBCLASS_AUDIOCONTROL) in snd_usb_create_stream, in case the audio
+streaming interface is probed before the control interface?
+
+Anyway, I'm waiting for the (latest) bug reporter to return back to me
+with "lsusb -v" and some more info, so I can verify if this could
+actually be the problem or not.
 
 -- 
 David Henningsson, Canonical Ltd.
