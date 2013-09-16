@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: bells: Add missing route to power up
-	DSP clock
-Date: Tue, 17 Sep 2013 00:43:25 +0100
-Message-ID: <20130916234325.GD21013@sirena.org.uk>
-References: <1379342295-18423-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: arizona: Improve handling of setting
+	REFCLK to 0
+Date: Tue, 17 Sep 2013 00:44:56 +0100
+Message-ID: <20130916234456.GE21013@sirena.org.uk>
+References: <1379342075-18323-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4425385659466375850=="
+Content-Type: multipart/mixed; boundary="===============4613910571448833038=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 71BD926504A
- for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 01:43:40 +0200 (CEST)
-In-Reply-To: <1379342295-18423-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F118265049
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 01:45:20 +0200 (CEST)
+In-Reply-To: <1379342075-18323-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, sbkim73@samsung.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, ben-linux@fluff.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4425385659466375850==
+--===============4613910571448833038==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pQhZXvAqiZgbeUkD"
+	protocol="application/pgp-signature"; boundary="47eKBCiAZYFK5l32"
 Content-Disposition: inline
 
 
---pQhZXvAqiZgbeUkD
+--47eKBCiAZYFK5l32
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Sep 16, 2013 at 03:38:15PM +0100, Charles Keepax wrote:
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+On Mon, Sep 16, 2013 at 03:34:35PM +0100, Charles Keepax wrote:
 
-Applied, thanks.
+Please fix your mailer to word wrap within paragraphs.
 
---pQhZXvAqiZgbeUkD
+> This patch missed getting upstreamed at the time it was written, sorry
+> about that.
+
+Applied, thanks.  You might want to check up on what you're upstreaming,
+there seem to be a few things sitting around not upstreamed...
+
+--47eKBCiAZYFK5l32
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSN5eaAAoJELSic+t+oim9fp4P/3JO37Fo+MSrQpiqt+oRw8Jo
-tkcJciOH3r8/q0KRT7L6vDKbghA2cXROS6JJroqUU5ETQh+pNslQdTnwwoIfI4Tc
-6gZpcEUDvCvx2jJI2E9WiwDAgIpj3JwE7f7V5LHIMmZ/hJH72l+/hwJvKvO0IU2y
-9cgyOZVAEA4tN4FL2nicf2xMM1uVsr8XzjjRc1rNFAd4qpS4bv52lEmuPnj+wp5Z
-oQa0sBVMkGaj2G3FuiNO6qJoY6bGqvuICuvUQtjKI8hbVV6zmGvR2CgVwbQbgpu3
-yL27KnoceDOsGNBdbC1P4q45EbOZrvCCsLfZ8zFwzj+bJTlLFWHeOs5afVMJmby9
-10F6SeKEr8KIX9HKSrAfHbmNb/y6ro98eC551xf4fwx/NtmsmTe7cRiFl0hM+34S
-XpouZ5vsCgXEURAShKdqBoGMVRrPFPveMWAM41ktD7HWICsDKRffs9Ia10ndSz+M
-6zNTe2Wop+CgE6VDvcd3RQIe+lX1+VqOOezwBcne6QWXQgA/XinPVfGevnxrLHPo
-kFOPfNgyqGII9JrAUGn3CVnk+aT2gJZBrjTKo7oC6iqRgQQ8qjOHVKfbp1T6WrEf
-M3p5wkxt7xky10pnMBidjlADOVQjG5KicKP7s9HTHcPC2UxaxT2dowWSKzBiXi7+
-9xbIQBCsGmMcaDTOYep+
-=Bcy5
+iQIcBAEBAgAGBQJSN5f1AAoJELSic+t+oim9bb4P/iRlVrBdWjz4u7sINCTFMFab
+ttcmCgE/phiycRMr/hRfr094u3TLqtXn5VQG28UzvYFSBPvj9h4vE+xgN6aMHPlQ
+ySJZwibLlxgAvj6BafukitsmV91vebZ/8AOnFwefEpwsYzujB24iraDjLtK3DrQl
+Ur1E43a2BQ/RvLouwTwn82wziOnpA+81eE60tcymrkp2Ep6uipnUW7USp7TR4wvv
+J5McoLT8QRcHV5wLnVDnMm/Q36IRHQIW2CJeQkQk8ufObuPoFg+ipFir0sqA4SOS
+9nTfKiYenlc0SiVBqb4tTeNpKZOXLGK8oJTVS6ekjEbRwS9XRFT4Mg3LgRjWweSW
+H4t5zt6rghRn7BBLTp1NeOoWRSPP7/RNPaKZG8PBlYZ0+L3E57XD4yOmCD0Q4ceF
+pyLiBLdJ47tcpXeRQ7VyDce+Isp7hMznZhc8Y6/1rbxYzBLna9Hmg5fz+v2NfaOg
++vq+0CvTXIgbEdPET6A9nYugs7TZkNWYZYLQXjNpvQjYq/zMFmdwtPHcKCaONVtR
+yMd0SaqdDGUtbKoCIPmPmJeqEQp/xHvcyIlYIxJHVenZJfDkasS6BPbHFxHRqTxQ
+ERhiv1CJl08+freP0FL7kySiy3yGlLRVcQ9WNqIgsXnDYNs5sQOSmaUEUt/tuYz0
+oHSIfJc2oCstgnDJOhLT
+=7INl
 -----END PGP SIGNATURE-----
 
---pQhZXvAqiZgbeUkD--
+--47eKBCiAZYFK5l32--
 
---===============4425385659466375850==
+--===============4613910571448833038==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4425385659466375850==--
+--===============4613910571448833038==--
