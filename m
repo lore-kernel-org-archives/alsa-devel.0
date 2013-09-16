@@ -1,358 +1,96 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [RFC PATCH] ES938 support for ES18xx driver
-Date: Mon, 16 Sep 2013 22:20:54 +0200
-Message-ID: <201309162220.55221.linux@rainbow-software.org>
-References: <20130915184902.GA23480@rhlx01.hs-esslingen.de> <201309152304.27585.linux@rainbow-software.org> <20130915212358.GB32375@rhlx01.hs-esslingen.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Fwd: Re: Realtek ALC889: HDA Intel and kernel 3.1
+ gives choppy sound (again)
+Date: Mon, 16 Sep 2013 23:26:04 +0200
+Message-ID: <5237776C.10000@canonical.com>
+References: <4EE8B368.2080605@herbesfolles.org> <s5h39cnnra5.wl%tiwai@suse.de>
+ <4EE8CAE4.4040609@herbesfolles.org> <s5hsjknm53r.wl%tiwai@suse.de>
+ <4EEF530D.9050205@canonical.com> <s5hd3bkk294.wl%tiwai@suse.de>
+ <4F2C3165.5060803@herbesfolles.org> <52347075.3000304@herbesfolles.org>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130915212358.GB32375@rhlx01.hs-esslingen.de>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andreas Mohr <andi@lisas.de>
-Cc: alsa-devel@alsa-project.org, krzysztof.h1@wp.pl, Kernel development list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id E28A3265025
+ for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2013 23:26:05 +0200 (CEST)
+In-Reply-To: <52347075.3000304@herbesfolles.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Colomban Wendling <lists.ban@herbesfolles.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is v2, which opens/closes the MIDI device everytime a mixer control
-value is changed. Userspace apps can now use the MIDI port. Changing the mixer
-controls will fail when the MIDI port is open.
-
-Also the 3D level control now works - seems that the reserved bit 0 must be
-set.
-
----
- sound/isa/Kconfig  |    4 +
- sound/isa/Makefile |    2 +
- sound/isa/es18xx.c |   11 +++-
- sound/isa/es938.c  |  203 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- sound/isa/es938.h  |   29 ++++++++
- 5 files changed, 248 insertions(+), 1 deletions(-)
- create mode 100644 sound/isa/es938.c
- create mode 100644 sound/isa/es938.h
-
-diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
-index affa134..a8bf3e3 100644
---- a/sound/isa/Kconfig
-+++ b/sound/isa/Kconfig
-@@ -17,6 +17,9 @@ config SND_SB16_DSP
-         select SND_PCM
-         select SND_SB_COMMON
- 
-+config SND_ES938
-+	tristate
-+
- menuconfig SND_ISA
- 	bool "ISA sound devices"
- 	depends on ISA && ISA_DMA_API
-@@ -183,6 +186,7 @@ config SND_ES18XX
- 	select SND_OPL3_LIB
- 	select SND_MPU401_UART
- 	select SND_PCM
-+	select SND_ES938
- 	help
- 	  Say Y here to include support for ESS AudioDrive ES18xx chips.
- 
-diff --git a/sound/isa/Makefile b/sound/isa/Makefile
-index 9a15f14..d59e0bf 100644
---- a/sound/isa/Makefile
-+++ b/sound/isa/Makefile
-@@ -8,6 +8,7 @@ snd-als100-objs := als100.o
- snd-azt2320-objs := azt2320.o
- snd-cmi8328-objs := cmi8328.o
- snd-cmi8330-objs := cmi8330.o
-+snd-es938-objs := es938.o
- snd-es18xx-objs := es18xx.o
- snd-opl3sa2-objs := opl3sa2.o
- snd-sc6000-objs := sc6000.o
-@@ -19,6 +20,7 @@ obj-$(CONFIG_SND_ALS100) += snd-als100.o
- obj-$(CONFIG_SND_AZT2320) += snd-azt2320.o
- obj-$(CONFIG_SND_CMI8328) += snd-cmi8328.o
- obj-$(CONFIG_SND_CMI8330) += snd-cmi8330.o
-+obj-$(CONFIG_SND_ES938) += snd-es938.o
- obj-$(CONFIG_SND_ES18XX) += snd-es18xx.o
- obj-$(CONFIG_SND_OPL3SA2) += snd-opl3sa2.o
- obj-$(CONFIG_SND_SC6000) += snd-sc6000.o
-diff --git a/sound/isa/es18xx.c b/sound/isa/es18xx.c
-index 12978b8..5e496a7 100644
---- a/sound/isa/es18xx.c
-+++ b/sound/isa/es18xx.c
-@@ -96,6 +96,7 @@
- #define SNDRV_LEGACY_FIND_FREE_IRQ
- #define SNDRV_LEGACY_FIND_FREE_DMA
- #include <sound/initval.h>
-+#include "es938.h"
- 
- #define PFX "es18xx: "
- 
-@@ -122,6 +123,7 @@ struct snd_es18xx {
- 	struct snd_pcm_substream *playback_b_substream;
- 
- 	struct snd_rawmidi *rmidi;
-+	struct snd_es938 es938;
- 
- 	struct snd_kcontrol *hw_volume;
- 	struct snd_kcontrol *hw_switch;
-@@ -2166,7 +2168,14 @@ static int snd_audiodrive_probe(struct snd_card *card, int dev)
- 			return err;
- 	}
- 
--	return snd_card_register(card);
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		return err;
-+
-+	if (mpu_port[dev] > 0 && mpu_port[dev] != SNDRV_AUTO_PORT)
-+		snd_es938_init(&chip->es938, card, 0, 0);
-+
-+	return 0;
- }
- 
- static int snd_es18xx_isa_match(struct device *pdev, unsigned int dev)
-diff --git a/sound/isa/es938.c b/sound/isa/es938.c
-new file mode 100644
-index 0000000..a01f887
---- /dev/null
-+++ b/sound/isa/es938.c
-@@ -0,0 +1,203 @@
-+/*
-+ *  Driver for ESS ES938 3-D Audio Effects Processor
-+ *  Copyright (c) 2013 Ondrej Zary
-+ *
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program; if not, write to the Free Software
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <sound/asoundef.h>
-+#include <sound/control.h>
-+#include <sound/core.h>
-+#include <sound/rawmidi.h>
-+#include "es938.h"
-+
-+MODULE_AUTHOR("Ondrej Zary");
-+MODULE_DESCRIPTION("ESS ES938");
-+MODULE_LICENSE("GPL");
-+
-+static int snd_es938_read_reg(struct snd_es938 *chip, u8 reg, u8 *out)
-+{
-+	u8 buf[8];
-+	int i = 0, res;
-+	u8 sysex[] = { MIDI_CMD_COMMON_SYSEX, 0x00, 0x00, ES938_ID,
-+		       ES938_CMD_REG_R, reg, MIDI_CMD_COMMON_SYSEX_END };
-+	unsigned long end_time;
-+
-+	snd_rawmidi_kernel_write(chip->rfile.output, sysex, sizeof(sysex));
-+
-+	memset(buf, 0, sizeof(buf));
-+	end_time = jiffies + msecs_to_jiffies(100);
-+	while (i < sizeof(buf)) {
-+		res = snd_rawmidi_kernel_read(chip->rfile.input, buf + i,
-+					      sizeof(buf) - i);
-+		if (res > 0)
-+			i += res;
-+		if (time_after(jiffies, end_time))
-+			return -1;
-+	}
-+
-+	/* check reply */
-+	if (memcmp(buf, sysex, 6) || buf[7] != MIDI_CMD_COMMON_SYSEX_END)
-+		return -1;
-+
-+	if (out)
-+		*out = buf[6];
-+
-+	return 0;
-+}
-+
-+static void snd_es938_write_reg(struct snd_es938 *chip, u8 reg, u8 val)
-+{
-+	u8 sysex[] = { MIDI_CMD_COMMON_SYSEX, 0x00, 0x00, ES938_ID,
-+		       ES938_CMD_REG_W, reg, val, MIDI_CMD_COMMON_SYSEX_END };
-+
-+	snd_rawmidi_kernel_write(chip->rfile.output, sysex, sizeof(sysex));
-+	chip->regs[reg] = val;
-+}
-+
-+#define ES938_MIXER(xname, xindex, reg, shift, mask) \
-+{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = xindex, \
-+.info = snd_es938_info_mixer, \
-+.get = snd_es938_get_mixer, .put = snd_es938_put_mixer, \
-+.private_value = reg | (shift << 8) | (mask << 16) }
-+
-+#define ES938_MIXER_TLV(xname, xindex, reg, shift, mask, xtlv) \
-+{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = xindex, \
-+.access = SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ, \
-+.info = snd_es938_info_mixer, \
-+.get = snd_es938_get_mixer, .put = snd_es938_put_mixer, \
-+.private_value = reg | (shift << 8) | (mask << 16), \
-+.tlv = { .p = (xtlv) } }
-+
-+static const DECLARE_TLV_DB_SCALE(db_scale_tone, -900, 300, 0);
-+
-+static struct snd_kcontrol_new snd_es938_controls[] = {
-+ES938_MIXER_TLV("Tone Control - Bass", 0, ES938_REG_TONE, 0, 7, db_scale_tone),
-+ES938_MIXER_TLV("Tone Control - Treble", 0, ES938_REG_TONE, 4, 7, db_scale_tone),
-+ES938_MIXER("3D Control - Level", 0, ES938_REG_SPATIAL, 1, 63),
-+ES938_MIXER("3D Control - Switch", 0, ES938_REG_SPATIAL_EN, 0, 1),
-+};
-+
-+int snd_es938_init(struct snd_es938 *chip, struct snd_card *card, int device,
-+		   int subdevice)
-+{
-+	int ret, i;
-+
-+	ret = snd_rawmidi_kernel_open(card, device, subdevice,
-+			SNDRV_RAWMIDI_LFLG_OPEN | SNDRV_RAWMIDI_LFLG_APPEND,
-+			&chip->rfile);
-+	if (ret < 0) {
-+		snd_printk(KERN_WARNING "es938: unable to open MIDI device\n");
-+		return ret;
-+	}
-+
-+	/* try to read a register to detect chip presence */
-+	if (snd_es938_read_reg(chip, ES938_REG_MISC, NULL) < 0) {
-+		ret = -ENODEV;
-+		goto err;
-+	}
-+
-+	/* write default values (there's no reset) */
-+	snd_es938_write_reg(chip, ES938_REG_MISC, 0x49);
-+	snd_es938_write_reg(chip, ES938_REG_TONE, 0x33);
-+	/* reserved bit 0 must be set for 3D to work */
-+	snd_es938_write_reg(chip, ES938_REG_SPATIAL, 0x01);
-+	/* datasheet specifies invalid value 0x00 as default */
-+	snd_es938_write_reg(chip, ES938_REG_SPATIAL_EN, 0x02);
-+	snd_es938_write_reg(chip, ES938_REG_POWER, 0x0e);
-+
-+	strlcat(card->mixername, " + ES938", sizeof(card->mixername));
-+	for (i = 0; i < ARRAY_SIZE(snd_es938_controls); i++) {
-+		ret = snd_ctl_add(card,
-+				  snd_ctl_new1(&snd_es938_controls[i], chip));
-+		if (ret < 0)
-+			goto err;
-+	}
-+
-+	chip->card = card;
-+	chip->device = device;
-+	chip->subdevice = subdevice;
-+err:
-+	snd_rawmidi_kernel_release(&chip->rfile);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(snd_es938_init);
-+
-+int snd_es938_info_mixer(struct snd_kcontrol *kcontrol,
-+			 struct snd_ctl_elem_info *uinfo)
-+{
-+	int mask = (kcontrol->private_value >> 16) & 0xff;
-+
-+	uinfo->type = mask == 1 ? SNDRV_CTL_ELEM_TYPE_BOOLEAN :
-+				  SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = mask;
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_es938_info_mixer);
-+
-+int snd_es938_get_mixer(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_es938 *chip = snd_kcontrol_chip(kcontrol);
-+	int reg = kcontrol->private_value & 0xff;
-+	int shift = (kcontrol->private_value >> 8) & 0xff;
-+	int mask = (kcontrol->private_value >> 16) & 0xff;
-+	u8 val = chip->regs[reg];
-+
-+	ucontrol->value.integer.value[0] = (val >> shift) & mask;
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_es938_get_mixer);
-+
-+int snd_es938_put_mixer(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_es938 *chip = snd_kcontrol_chip(kcontrol);
-+	int reg = kcontrol->private_value & 0xff;
-+	int shift = (kcontrol->private_value >> 8) & 0xff;
-+	int mask = (kcontrol->private_value >> 16) & 0xff;
-+	u8 val = ucontrol->value.integer.value[0] & mask;
-+	u8 oldval = chip->regs[reg];
-+	u8 newval;
-+	int err;
-+
-+	mask <<= shift;
-+	val <<= shift;
-+
-+	newval = (oldval & ~mask) | val;
-+	if (newval == oldval)
-+		return 0;
-+
-+	/* this will fail if the MIDI port is used by an application */
-+	err = snd_rawmidi_kernel_open(chip->card, chip->device,
-+			chip->subdevice,
-+			SNDRV_RAWMIDI_LFLG_OPEN | SNDRV_RAWMIDI_LFLG_APPEND,
-+			&chip->rfile);
-+	if (err < 0)
-+		return err;
-+
-+	snd_es938_write_reg(chip, reg, newval);
-+
-+	snd_rawmidi_kernel_release(&chip->rfile);
-+
-+	return 1;
-+}
-+EXPORT_SYMBOL(snd_es938_put_mixer);
-diff --git a/sound/isa/es938.h b/sound/isa/es938.h
-new file mode 100644
-index 0000000..b67dfc7
---- /dev/null
-+++ b/sound/isa/es938.h
-@@ -0,0 +1,29 @@
-+#include <sound/tlv.h>
-+
-+#define ES938_ID		0x7b
-+
-+#define ES938_CMD_REG_R		0x7e
-+#define ES938_CMD_REG_W		0x7f
-+
-+#define ES938_REG_MISC		0
-+#define ES938_REG_TONE		1
-+#define ES938_REG_SPATIAL	5
-+#define ES938_REG_SPATIAL_EN	6
-+#define ES938_REG_POWER		7
-+
-+struct snd_es938 {
-+	u8 regs[8];
-+	struct snd_card *card;
-+	int device;
-+	int subdevice;
-+	struct snd_rawmidi_file rfile;
-+};
-+
-+int snd_es938_init(struct snd_es938 *chip, struct snd_card *card, int device,
-+		   int subdevice);
-+int snd_es938_info_mixer(struct snd_kcontrol *kcontrol,
-+			 struct snd_ctl_elem_info *uinfo);
-+int snd_es938_get_mixer(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol);
-+int snd_es938_put_mixer(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol);
--- 
-Ondrej Zary
+T24gMDkvMTQvMjAxMyAwNDoxOSBQTSwgQ29sb21iYW4gV2VuZGxpbmcgd3JvdGU6Cj4gSGkgYWdh
+aW4sCj4gCj4gTGUgMDMvMDIvMjAxMiAyMDoxMSwgQ29sb21iYW4gV2VuZGxpbmcgYSDDqWNyaXQg
+Ogo+PiBMZSAxOS8xMi8yMDExIDE2OjMwLCBUYWthc2hpIEl3YWkgYSDDqWNyaXQgOgo+Pj4gQXQg
+TW9uLCAxOSBEZWMgMjAxMSAxNjowNjo1MyArMDEwMCwKPj4+IERhdmlkIEhlbm5pbmdzc29uIHdy
+b3RlOgo+Pj4+Cj4+Pj4gWy4uLl0KPj4+Pgo+Pj4+IEhtbSwgdGhhbmtzIGZvciBmaWd1cmluZyB0
+aGlzIG9uZSBvdXQuIEFjdHVhbGx5IHRoaXMgaXMgdGhlIHRoaXJkIHRpbWUgSSAKPj4+PiBoZWFy
+IG9mIGphY2sgZGV0ZWN0aW9uIGZsaXBwaW5nIGJhY2sgYW5kIGZvcnRoLiBJJ20gd29uZGVyaW5n
+IGlmIHdlIG5lZWQgCj4+Pj4gKGFuZCB3aGV0aGVyIG90aGVyIE9TZXMgaGF2ZT8pIGEgZmlsdGVy
+IC8gZmxvb2QgcHJvdGVjdGlvbiBvbiB0aGlzIAo+Pj4+IHN0dWZmLCBhbmQgaWYgc28sIGhvdyBp
+dCB3b3Jrcz8gSSBtZWFuLCBub2JvZHkgd291bGQgbm90aWNlIGhhbGYgYSAKPj4+PiBzZWNvbmQg
+b2YgZGVsYXkgb24gdGhhdCBzd2l0Y2ggYW55d2F5Lgo+Pj4KPj4+IEkgZG9uJ3QgdGhpbmsgdGhl
+cmUgaXMgYSBwZXJmZWN0IGZpbHRlcmluZyBmb3Igc3VjaCBhIHByb2JsZW0uCj4+PiBUaGVvcmV0
+aWNhbGx5IHdlIGNhbiBzZWUgaG93IG9mdGVuIGl0J3MgZmxpcHBlZCwgYW5kIGRpc2FibGVzIHRo
+ZQo+Pj4gamFjay1kZXRlY3Rpb24gYWNjb3JkaW5nbHkuICBCdXQgbm90IHN1cmUgaG93IHVzZWZ1
+bCBpdCBpcyBpbgo+Pj4gcHJhY3RpY2UsIHNpbmNlIGl0J3MgYSByYXJlIGNhc2UsIGFuZCB0aGUg
+bWFudWFsIGFkanVzdG1lbnQgaXMgZWFzeS4KPj4KPj4gSXQncyBlYXN5IHRvIGZpeCwgYnV0IEks
+IGFzIGEgc2ltcGxlIHVzZXIsIHRoaW5rIGl0J3MgcmVhbGx5IGhhcmQgdG8KPj4gZmluZCBvdXQg
+LS0gYWN0dWFsbHkgSSB3b3VsZG4ndCBoYXZlIGZvdW5kIHRoaXMgb3V0IGlmIHlvdSB3ZXJlbid0
+IHRoZXJlCj4+IHRlbGxpbmcgbWUgOikKPj4KPj4gU28gbWF5YmUgaXQnZCBiZSBnb29kIHRvIGhh
+dmUgYW4gYXV0b21hdGljIGRpc2FibGUgaWYgdGhpcyBpc24ndCBhIGJ1Zwo+PiBpbiBhbiBBTFNB
+IGNvZGUgc29tZXdoZXJlIC0tIGp1c3QgcmVtZW1iZXJpbmcgSSBuZXZlciBzdWZmZXJlZCBvZiB0
+aGUKPj4gcHJvYmxlbSBiZWZvcmUgMy4wLgo+IAo+IFRoaXMgYnVnIGlzIHN0aWxsIHByZXNlbnQg
+YXMgb2YgY3VycmVudCBtYXN0ZXIgKDMuMTEuMCspIC0tIGphY2sKPiBkZXRlY3Rpb24gaXMgc3Rp
+bGwgYnJva2VuIHdpdGggbXkgUmVhbHRlayBBTEM4ODkgb24gYSBNU0kgSDU1TS1FMzMuCj4gCj4g
+TW9yZW92ZXIsIHNpbmNlIGtjdGxzIHdlcmUgaW50cm9kdWNlZCwgdGhpcyBqYWNrIGRldGVjdGlv
+biBpc3N1ZSBicmVha3MKPiB1c2VybGFuZCBhcHBzIHRoYXQgbGlzdGVuIHRvIHRoZW0uICBFLmcu
+IFB1bHNlQXVkaW8gbm93IHN3aXRjaCBiYWNrIGFuZAo+IGZvcnRoIGJldHdlZW4gZnJvbnQgYW5k
+IGJhY2sgcGFuZWwsIGZvciB3aGljaCBpdCBtYWludGFpbnMgMiBzZXBhcmF0ZQo+IHNldCBvZiBz
+ZXR0aW5ncyB3aGljaCBhY3R1YWxseSByZXN1bHRzIGluIG1vcmUgb3IgbGVzcyB0aGUgc2FtZSBp
+c3N1ZQo+IHRoYW4gd2l0aCBBdXRvTXV0ZS4KPiAKPiBJIHNlZSAyIHBvc3NpYmxlIHNvbHV0aW9u
+czoKPiAKPiAxKSBmaXggdGhlIGphY2sgZGV0ZWN0aW9uIChpZiBpdCBpc24ndCBhIGJ1ZyBpbiB0
+aGUgY2FyZCBidXQgaW4gdGhlCj4gZHJpdmVyIHNvbWV3aGVyZSkKPiAKPiAyKSBpZiBpdCdzIG5v
+dCBwb3NzaWJsZSB0byBmaXggdGhlIGRyaXZlciwgYWRkIGEgd2F5IHRvIGNvbXBsZXRlbHkKPiBk
+aXNhYmxlIGphY2sgZXZlbnRzIChlLmcuIGEgbW9kdWxlIHBhcmFtIG9yIHNvbWV0aGluZykuCj4g
+Cj4gQ3VycmVudGx5IEkgaGFkIHRvIGNvbW1lbnQtb3V0IHRoZSBzbmRfa2N0bF9qYWNrX3JlcG9y
+dCgpIGNhbGwgaW4KPiBzbmRfaGRhX2phY2tfcmVwb3J0X3N5bmMoKSBzbyBJIGNvdWxkIGFjdHVh
+bGx5IHVzZSB0aGUgZHJpdmVyLgo+IAo+IAo+IEJUVyBpZiBpdCBoZWxwcywgc25kX2hkYV9qYWNr
+X3Vuc29sX2V2ZW50KCkgb25seSByZWNlaXZlcyBldmVudHMgd2hlbgo+IGFjdHVhbGx5IHBsdWdn
+aW5nL3VucGx1Z2dpbmcgYSBqYWNrIG9yIGR1cmluZyBwbGF5YmFjaywgYnV0IG5ldmVyIHdoZW4K
+PiB0aGUgY2FyZCBpcyBpZGxlLgo+IAo+IAo+IEkgd291bGQgYmUgbW9yZSB0aGFuIGhhcHB5IHRv
+IGRvIGFueXRoaW5nIEkgY2FuIHRvIGhlbHAgZml4aW5nIHRoaXMuCj4gCj4gCj4gQmVzdCByZWdh
+cmRzLAo+IENvbG9tYmFuCj4gCj4gCj4gUFM6IG9yaWdpbmFsIHRocmVhZChzKToKPiBodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTEtTm92ZW1i
+ZXIvMDQ1NzA3Lmh0bWwKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFp
+bC9hbHNhLWRldmVsLzIwMTEtRGVjZW1iZXIvMDQ3MTUyLmh0bWwKPiBodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTEtRGVjZW1iZXIvMDQ3MjEw
+Lmh0bWwKPiAKCldlbGwsIGluIHRoZSBsYXN0IHllYXIgb3IgdHdvIHRoZSBmb2xsb3dpbmcgYWRk
+aXRpb25zIGhhdmUgYmVlbiBtYWRlIHRvCnRoZSBrZXJuZWw6CgogMSkgamFja3BvbGxfaW50ZXJ2
+YWwgYXMgYSBtb2R1bGUgcGFyYW1ldGVyIC0gdHVybnMgb2ZmIHVuc29sIGV2ZW50cyBhbmQKaW5z
+dGVhZCBwb2xscyB0aGUgamFjayBjb25uZWN0aW9uIGF0IHRoZSBpbnRlcnZhbCB5b3Ugc3BlY2lm
+eQoKIDIpIEtlcm5lbCBhdXRvbXV0ZSBjYW4gKGZvciBhbG1vc3QgYWxsIGNhcmRzLCBJIGJlbGll
+dmUpIGJlIGRpc2FibGVkIGJ5CnNldHRpbmcgYSBtaXhlciBjb250cm9sIG5hbWVkICJBdXRvbXV0
+ZSBtb2RlIgoKLi4uYW5kIHlvdSBjYW4gZGlzYWJsZSBqYWNrIGRldGVjdGlvbiBpbiBQdWxzZUF1
+ZGlvIGJ5IGNvbW1lbnRpbmcgb3V0CmFsbCBzZWN0aW9ucyB3aXRoIHRoZSBqYWNrIHlvdSB3YW50
+IHRvIGRpc2FibGUsIHRoZSBmaWxlcyBhcmUgaW4KL3Vzci9zaGFyZS9wdWxzZWF1ZGlvL2Fsc2Et
+bWl4ZXIvcGF0aHMvKgoKQnR3LCBqdXN0IGEgd2lsZCB0aGVvcnksIGJlY2F1c2UgSSdtIHJlYWxs
+eSBub3QgYSBzdWJqZWN0IG1hdHRlciBleHBlcnQ6CnNpbmNlIHRoaXMgaXMgYSBob21lLWJ1aWx0
+IGNvbXB1dGVyIChJIGFzc3VtZSksIEkgd29uZGVyIGlmIHRoaXMgY291bGQKYmUgYSB2ZXJ5IGhh
+cmR3YXJlIG5lYXIgcHJvYmxlbSAtIGkgZSwgaXMgdGhlIGNhYmxlIHRvIHRoZSBmcm9udCBwYW5l
+bApjaGFzc2kgdmVyeSBjbG9zZSB0byBzb21ldGhpbmcgdGhhdCBnaXZlcyBvdXQgYSBsb3Qgb2Yg
+RU1JIGRpc3R1cmJhbmNlCm9yIHNvbWV0aGluZyBsaWtlIHRoYXQ/CgotLSAKRGF2aWQgSGVubmlu
+Z3Nzb24sIENhbm9uaWNhbCBMdGQuCmh0dHBzOi8vbGF1bmNocGFkLm5ldC9+ZGl3aWMKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
