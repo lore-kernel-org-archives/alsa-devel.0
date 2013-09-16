@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: blackfin: Add missing break
-	statement to bf6xx
-Date: Tue, 17 Sep 2013 00:47:34 +0100
-Message-ID: <20130916234734.GH21013@sirena.org.uk>
-References: <1379114437-25090-1-git-send-email-valentin.ilie@gmail.com>
+Subject: Re: [PATCH 1/1] ASoC: twl6040: Remove redundant
+	semicolon
+Date: Tue, 17 Sep 2013 00:48:17 +0100
+Message-ID: <20130916234817.GI21013@sirena.org.uk>
+References: <1379069177-1159-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3204869519916613218=="
+Content-Type: multipart/mixed; boundary="===============5661354420703432480=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C28D0265049
- for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 01:47:47 +0200 (CEST)
-In-Reply-To: <1379114437-25090-1-git-send-email-valentin.ilie@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7AEFD2650D1
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 01:48:31 +0200 (CEST)
+In-Reply-To: <1379069177-1159-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Valentin Ilie <valentin.ilie@gmail.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3204869519916613218==
+--===============5661354420703432480==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="e5bfZ/T2xnjpUIbw"
+	protocol="application/pgp-signature"; boundary="oxV4ZoPwBLqAyY+a"
 Content-Disposition: inline
 
 
---e5bfZ/T2xnjpUIbw
+--oxV4ZoPwBLqAyY+a
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Sep 14, 2013 at 02:20:37AM +0300, Valentin Ilie wrote:
-> SNDRV_PCM_FORMAT_S8 isn't supposed to fall through to SNDRV_PCM_FORMAT_S1=
-6_LE
->=20
-> Signed-off-by: Valentin Ilie <valentin.ilie@gmail.com>
+On Fri, Sep 13, 2013 at 04:16:17PM +0530, Sachin Kamat wrote:
+> Redundant semicolon removed.
 
 Applied, thanks.
 
---e5bfZ/T2xnjpUIbw
+--oxV4ZoPwBLqAyY+a
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSN5iTAAoJELSic+t+oim9gq0P/A9HFPvZ1GO5zbtwGu7jzPb6
-nxihZp9QKf2Kblo2a/AC+Cfec6id3059WEvvfzFoJ9r1rGeeCnLf+E84zBvQSiwG
-AFJVOk4GwspVOucan2hBlRR/51SmOMxRqlzt1hi2UcEH2ve5P4rC5yIiY9BrkgJ8
-7gfSs4ZiY5SUIE4h91BBkeewVFSq6Ubxc0tANX0WrzXF/aDy789Kfi0dscj8oxcg
-pFysM7CQxDU62nrWYvhYyA4cllMfcFNQeRi22poPk+7vECt1DgXB3gPAi2VZxRT1
-YcN0JFWbarJl9X46aWT+/l0YhLScLrIBqJ36eH9MVN+j1gk6a+W9lklFYKn6scS2
-NdEVha6QydcAlNN1l1supp8ZnISkEztxIHvobsaY9a48dp+8XzSLlp8zILITFFZO
-DTxWG/Rjxc5h96PxxDBCWx9LiXaj3yx2boCwAliBKLqkBYAIxZuOEHHK/7hfpBju
-mbEyehtbyCvjNHaCgEBydG6gXGN0bLSns4UUSJWhLMu0bkwwL1yZrzKhUI176fZ7
-l9yObaHIFxPHMbuUzgP3pfmORb4MGxamR5uw8D7t40DCwTdmBgNI1T1Xx5vm6Or1
-Gy6g19bezt1HyX0B7s0zGH6tdSaSSgxwCNIEqYGoLQn7XwHCOS8L8QcYCw3NQCBK
-Uz+b85D+nfrfmqo3dRm6
-=o5oB
+iQIcBAEBAgAGBQJSN5i+AAoJELSic+t+oim9Y1sP/21y/IdXBdQoJV/sMXBKt3pK
+6JDi6plp8N02EeRGdI2qlpFXkynkoe3CDE0EQvVOaxkVEhsFcKKfvxkaE0XaXIOJ
+btRQUR4rJOrQjz5zW9I8xL3XR/vHnsMTER7LN91b9SYVZXnPl2rY4a/ad07k2rxV
+hM6TeLsACtz6uiPJELFFu5TS1LmSzUxq7mMgsTDPsad6KDF3geN4vyYqIzLGucGo
+7MM3rydLPbE+5Ndncx5pLrONYgtfJ6K1NQTI4+Zx/HJ6BlTO12WsZl8qj3BTggJ9
+KEZ+zQSUC20cv6rtfHSmbLG+Q1WlDJaXf163VmOMcv6sIrGmyi0DKPOReCf0I0GQ
+/7SbumqtBWuEhT2iMa13X6ET1xKJLWKQeatgG5gx7LKYrVGgW0bWdlY6p0lBzWFY
+/vksVKHe5fBuVs2DawvZAkXiLUIUdSRCKlowPS9HadDGXJvdajydenfSQfKkIHVp
+nLfUySaD0FGsLa1zKSR8GFlu5ooCaK2yGdGOrZY4Py04KYgBqYzF4LAxuE2/X2oz
+rFbOhzthbdcALukhKrf4y129emUEsf3Nh/5QfXoV2tNv+X6FjcMHWhM+V6yG2VLU
+o7zp2VmgIQbv24uv8vtFmOzQOTSv4eOlTg94+ax39cVqYlUeNlsuqarqR7fZD/+K
+wcq6giW/mrDtd35ZW65r
+=v1FR
 -----END PGP SIGNATURE-----
 
---e5bfZ/T2xnjpUIbw--
+--oxV4ZoPwBLqAyY+a--
 
---===============3204869519916613218==
+--===============5661354420703432480==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3204869519916613218==--
+--===============5661354420703432480==--
