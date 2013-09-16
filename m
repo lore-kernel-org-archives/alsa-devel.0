@@ -1,18 +1,18 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: USB Audio initialization race
-Date: Tue, 17 Sep 2013 00:21:27 +0200
-Message-ID: <52378467.1040402@canonical.com>
-References: <Pine.LNX.4.44L0.1309142127140.6622-100000@netrider.rowland.org>
- <523574A4.4010203@ladisch.de>
+Subject: Re: [RFC PATCH] ALSA : hda - not use assigned
+ converters for all unused pins
+Date: Tue, 17 Sep 2013 00:40:15 +0200
+Message-ID: <523788CF.3060001@canonical.com>
+References: <1379299244-18559-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id C0CA9265043
- for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 00:21:29 +0200 (CEST)
-In-Reply-To: <523574A4.4010203@ladisch.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id C5F9C265043
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 00:40:17 +0200 (CEST)
+In-Reply-To: <1379299244-18559-1-git-send-email-mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +22,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Alan Stern <stern@rowland.harvard.edu>, zonque@gmail.com
+To: mengdong.lin@intel.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/15/2013 10:49 AM, Clemens Ladisch wrote:
-> Alan Stern wrote:
->> On Sat, 14 Sep 2013, Clemens Ladisch wrote:
->>> Alan Stern wrote:
->>>> So here's my question: If the sound driver recognizes that interface B
->>>> is connected with interface A when B is probed, why can't it recognize
->>>> this fact when A is probed?  It could claim B while A's probe is
->>>> running.  Then the sound card would be registered with the PCM
->>>> component already in place.
->>>
->>> The sound driver already does this.
->>
->> It does?  Why does the comment preceding snd_usb_audio_probe() say:
->>
->>  * thus we check the usb device pointer and creates the card instance
->>  * only at the first time.  the successive calls of this function will
->>  * append the pcm interface to the corresponding card.
+On 09/16/2013 04:40 AM, mengdong.lin@intel.com wrote:
+> From: Mengdong Lin <mengdong.lin@intel.com>
 > 
-> For UAC devices with correct descriptors, and for devices with multi-
-> interface quirks, the driver claims all interfaces at once.  But it is
-> still possible to have devices with zero or two audio control interfaces.
+> BIOS can mark a pin as "no physical connection" if the port is used by an
+> integrated display which is not audio capable. And audio driver will overlook
+> such pins.
+> 
+> On Haswell, such a disconneted pin will keep muted and connected to the 1st
+> converter by default. But if the 1st convertor is assigned to a connected pin
+> for audio streaming. The muted disconnected pin can make the connected pin
+> no sound output.
+> 
+> So this patch avoids using assigned converters for all unused pins for Haswell,
+> including the disconected pins.
 
-So, indeed there is some claiming being done in the usb audio driver, so
-maybe this is not as much of a problem as I thought, but I think this
-comment is wrong:
+Thanks for the patch!
 
-	/* we are allowed to call snd_card_register() many times */
+> 
+> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+> 
+> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> index 3d8cd044..4960695 100644
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -1152,29 +1152,34 @@ static void haswell_config_cvts(struct hda_codec *codec,
+>  			int pin_id, int mux_id)
+>  {
+>  	struct hdmi_spec *spec = codec->spec;
+> -	struct hdmi_spec_per_pin *per_pin;
+> -	int pin_idx, mux_idx;
+> +	hda_nid_t  pin_nid;
+> +	int pin_idx, cvt_idx;
+>  	int curr;
+> -	int err;
+> -
+> -	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+> -		per_pin = get_pin(spec, pin_idx);
+> +	struct hdmi_spec_per_cvt *per_cvt;
+>  
+> +	/* configure all 3 pins, including "no physical connection" ones */
+> +	for (pin_nid = 5; pin_nid < 8; pin_nid++) {
 
-...because it implies that it is okay to change the card and then call
-snd_card_register again, and it is not, because userspace cannot handle
-that correctly. It would be more appropriate to print a warning if this
-happens.
+It might not be so future proof to hard code nid IDs here (even if it
+should be safe right now?). Perhaps more elegant to go through the
+entire codec->nids array like being done here:
 
-Also, I wonder if it makes sense to also claim control interfaces
-(USB_SUBCLASS_AUDIOCONTROL) in snd_usb_create_stream, in case the audio
-streaming interface is probed before the control interface?
+http://lxr.linux.no/linux+*/sound/pci/hda/hda_auto_parser.c#L188
 
-Anyway, I'm waiting for the (latest) bug reporter to return back to me
-with "lsusb -v" and some more info, so I can verify if this could
-actually be the problem or not.
+The nid's wcaps is cached so it does not mean additional reads from the
+codec.
+
+> +		pin_idx = pin_nid_to_pin_index(spec, pin_nid);
+>  		if (pin_idx == pin_id)
+>  			continue;
+>  
+> -		curr = snd_hda_codec_read(codec, per_pin->pin_nid, 0,
+> +		curr = snd_hda_codec_read(codec, pin_nid, 0,
+>  					  AC_VERB_GET_CONNECT_SEL, 0);
+> +		if (curr != mux_id)
+> +			continue;
+> +
+> +		for (cvt_idx = 0; cvt_idx < spec->num_cvts; cvt_idx++) {
+> +			per_cvt = get_cvt(spec, cvt_idx);
+>  
+> -		/* Choose another unused converter */
+> -		if (curr == mux_id) {
+> -			err = hdmi_choose_cvt(codec, pin_idx, NULL, &mux_idx);
+> -			if (err < 0)
+> -				return;
+> -			snd_printdd("HDMI: choose converter %d for pin %d\n", mux_idx, pin_idx);
+> -			snd_hda_codec_write_cache(codec, per_pin->pin_nid, 0,
+> +			/* Must not already be assigned */
+> +			if (!per_cvt->assigned) {
+> +				snd_printdd("choose converter %d for pin %d\n",
+> +					cvt_idx, pin_idx);
+> +				snd_hda_codec_write_cache(codec, pin_nid, 0,
+>  					    AC_VERB_SET_CONNECT_SEL,
+> -					    mux_idx);
+> +					    cvt_idx);
+> +				break;
+> +			}
+>  		}
+>  	}
+>  }
+> 
+
+
 
 -- 
 David Henningsson, Canonical Ltd.
