@@ -1,18 +1,16 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [RFC PATCH] ALSA : hda - not use assigned
- converters for all unused pins
-Date: Tue, 17 Sep 2013 00:40:15 +0200
-Message-ID: <523788CF.3060001@canonical.com>
-References: <1379299244-18559-1-git-send-email-mengdong.lin@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: core: Add API for configuration of
+	DAI BCLK ratio
+Date: Tue, 17 Sep 2013 00:42:42 +0100
+Message-ID: <20130916234242.GC21013@sirena.org.uk>
+References: <1379332906-5894-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1145943662995778924=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id C5F9C265043
- for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 00:40:17 +0200 (CEST)
-In-Reply-To: <1379299244-18559-1-git-send-email-mengdong.lin@intel.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9297A26504A
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 01:42:45 +0200 (CEST)
+In-Reply-To: <1379332906-5894-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,98 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@intel.com
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/16/2013 04:40 AM, mengdong.lin@intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@intel.com>
-> 
-> BIOS can mark a pin as "no physical connection" if the port is used by an
-> integrated display which is not audio capable. And audio driver will overlook
-> such pins.
-> 
-> On Haswell, such a disconneted pin will keep muted and connected to the 1st
-> converter by default. But if the 1st convertor is assigned to a connected pin
-> for audio streaming. The muted disconnected pin can make the connected pin
-> no sound output.
-> 
-> So this patch avoids using assigned converters for all unused pins for Haswell,
-> including the disconected pins.
 
-Thanks for the patch!
-
-> 
-> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-> 
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> index 3d8cd044..4960695 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -1152,29 +1152,34 @@ static void haswell_config_cvts(struct hda_codec *codec,
->  			int pin_id, int mux_id)
->  {
->  	struct hdmi_spec *spec = codec->spec;
-> -	struct hdmi_spec_per_pin *per_pin;
-> -	int pin_idx, mux_idx;
-> +	hda_nid_t  pin_nid;
-> +	int pin_idx, cvt_idx;
->  	int curr;
-> -	int err;
-> -
-> -	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-> -		per_pin = get_pin(spec, pin_idx);
-> +	struct hdmi_spec_per_cvt *per_cvt;
->  
-> +	/* configure all 3 pins, including "no physical connection" ones */
-> +	for (pin_nid = 5; pin_nid < 8; pin_nid++) {
-
-It might not be so future proof to hard code nid IDs here (even if it
-should be safe right now?). Perhaps more elegant to go through the
-entire codec->nids array like being done here:
-
-http://lxr.linux.no/linux+*/sound/pci/hda/hda_auto_parser.c#L188
-
-The nid's wcaps is cached so it does not mean additional reads from the
-codec.
-
-> +		pin_idx = pin_nid_to_pin_index(spec, pin_nid);
->  		if (pin_idx == pin_id)
->  			continue;
->  
-> -		curr = snd_hda_codec_read(codec, per_pin->pin_nid, 0,
-> +		curr = snd_hda_codec_read(codec, pin_nid, 0,
->  					  AC_VERB_GET_CONNECT_SEL, 0);
-> +		if (curr != mux_id)
-> +			continue;
-> +
-> +		for (cvt_idx = 0; cvt_idx < spec->num_cvts; cvt_idx++) {
-> +			per_cvt = get_cvt(spec, cvt_idx);
->  
-> -		/* Choose another unused converter */
-> -		if (curr == mux_id) {
-> -			err = hdmi_choose_cvt(codec, pin_idx, NULL, &mux_idx);
-> -			if (err < 0)
-> -				return;
-> -			snd_printdd("HDMI: choose converter %d for pin %d\n", mux_idx, pin_idx);
-> -			snd_hda_codec_write_cache(codec, per_pin->pin_nid, 0,
-> +			/* Must not already be assigned */
-> +			if (!per_cvt->assigned) {
-> +				snd_printdd("choose converter %d for pin %d\n",
-> +					cvt_idx, pin_idx);
-> +				snd_hda_codec_write_cache(codec, pin_nid, 0,
->  					    AC_VERB_SET_CONNECT_SEL,
-> -					    mux_idx);
-> +					    cvt_idx);
-> +				break;
-> +			}
->  		}
->  	}
->  }
-> 
+--===============1145943662995778924==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qtZFehHsKgwS5rPz"
+Content-Disposition: inline
 
 
+--qtZFehHsKgwS5rPz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+On Mon, Sep 16, 2013 at 01:01:46PM +0100, Liam Girdwood wrote:
+> Some codec drivers when running in slave mode require that BCLK to sample rate ratio
+> is explicitly set by the machine driver as it may not be exactly rate * frame size.
+
+Applied, thanks.
+
+--qtZFehHsKgwS5rPz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSN5dvAAoJELSic+t+oim92DQP/3t3L3EAsfRp32zG7dyWi/4s
+dh0+S/RkWiK+OSixXof8MyC3H0j+qWDy42CibtjkimC8jK/BVny8xRt0ZmOB/cDP
+OMIC9OdlxkN44FpK9BV1wJt4f5GBJl+7Fam+xAaIcf/f74zNU0TgE6yRHFh7u4Co
+DfAo8cdNIjeey/BW8h/Sq9he1e6Aw3tsrqnYPzYWoOHZrK0YuENa2tDkcigYnH+I
+4TG/DXu9LofNt7u0OoBkg/9v6AF+F5qzanzlOdsUot1ullewhWLXG8lW6/+SMt3s
+LdbI3zeAS5cnnAVFEngJwAp2S6C37EcfRdA3sEXi7sowW06AuvNe3h1SS4naY3vh
+SPSupz749wpdoIrh0dQHYcaJAq3OUvebPV3k6ddU1f5vuzlpZHA7/uu9Yto56ed8
+U4QonS/ftFsSfmkm4pi2rWVF9iiFVHQNldXdQ540aKVTGXmOQvFXQI31xJlP3UO2
+np8fnHlZPZGLYgG7LMaTftoaJUjdCiQo7+kU7Abs8Xu7UO0Gj3v4xOqUmSQCkNkw
+QMYToMUAJi9ySBLNAmzqh8bkcAU1/UAGdlUElt+tAhgW5lEJ1ASCc8dakDRNQ4Dd
+Uqy2ngV+uwLGchg5wntQJPEU++AupqYOo8+y6gFNpGG2AVVTNskQvQkxopNZ4A0t
+zTavF9igKSbF2XhM3KhH
+=CjM2
+-----END PGP SIGNATURE-----
+
+--qtZFehHsKgwS5rPz--
+
+--===============1145943662995778924==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1145943662995778924==--
