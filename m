@@ -1,21 +1,18 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Fwd: Re: Realtek ALC889: HDA Intel and kernel 3.1
- gives choppy sound (again)
-Date: Mon, 16 Sep 2013 23:26:04 +0200
-Message-ID: <5237776C.10000@canonical.com>
-References: <4EE8B368.2080605@herbesfolles.org> <s5h39cnnra5.wl%tiwai@suse.de>
- <4EE8CAE4.4040609@herbesfolles.org> <s5hsjknm53r.wl%tiwai@suse.de>
- <4EEF530D.9050205@canonical.com> <s5hd3bkk294.wl%tiwai@suse.de>
- <4F2C3165.5060803@herbesfolles.org> <52347075.3000304@herbesfolles.org>
+Subject: Re: Internal Mic Boost channel is unused
+Date: Mon, 16 Sep 2013 23:57:48 +0200
+Message-ID: <52377EDC.6040105@canonical.com>
+References: <5231E348.8020204@gnat.ca> <52333782.9070402@gnat.ca>
+ <5233AEFC.8000907@canonical.com> <5237204A.7040602@gnat.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id E28A3265025
- for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2013 23:26:05 +0200 (CEST)
-In-Reply-To: <52347075.3000304@herbesfolles.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id B6CA8265043
+ for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2013 23:57:50 +0200 (CEST)
+In-Reply-To: <5237204A.7040602@gnat.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,72 +22,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Colomban Wendling <lists.ban@herbesfolles.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: "Nathanael D. Noblet" <nathanael@gnat.ca>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDkvMTQvMjAxMyAwNDoxOSBQTSwgQ29sb21iYW4gV2VuZGxpbmcgd3JvdGU6Cj4gSGkgYWdh
-aW4sCj4gCj4gTGUgMDMvMDIvMjAxMiAyMDoxMSwgQ29sb21iYW4gV2VuZGxpbmcgYSDDqWNyaXQg
-Ogo+PiBMZSAxOS8xMi8yMDExIDE2OjMwLCBUYWthc2hpIEl3YWkgYSDDqWNyaXQgOgo+Pj4gQXQg
-TW9uLCAxOSBEZWMgMjAxMSAxNjowNjo1MyArMDEwMCwKPj4+IERhdmlkIEhlbm5pbmdzc29uIHdy
-b3RlOgo+Pj4+Cj4+Pj4gWy4uLl0KPj4+Pgo+Pj4+IEhtbSwgdGhhbmtzIGZvciBmaWd1cmluZyB0
-aGlzIG9uZSBvdXQuIEFjdHVhbGx5IHRoaXMgaXMgdGhlIHRoaXJkIHRpbWUgSSAKPj4+PiBoZWFy
-IG9mIGphY2sgZGV0ZWN0aW9uIGZsaXBwaW5nIGJhY2sgYW5kIGZvcnRoLiBJJ20gd29uZGVyaW5n
-IGlmIHdlIG5lZWQgCj4+Pj4gKGFuZCB3aGV0aGVyIG90aGVyIE9TZXMgaGF2ZT8pIGEgZmlsdGVy
-IC8gZmxvb2QgcHJvdGVjdGlvbiBvbiB0aGlzIAo+Pj4+IHN0dWZmLCBhbmQgaWYgc28sIGhvdyBp
-dCB3b3Jrcz8gSSBtZWFuLCBub2JvZHkgd291bGQgbm90aWNlIGhhbGYgYSAKPj4+PiBzZWNvbmQg
-b2YgZGVsYXkgb24gdGhhdCBzd2l0Y2ggYW55d2F5Lgo+Pj4KPj4+IEkgZG9uJ3QgdGhpbmsgdGhl
-cmUgaXMgYSBwZXJmZWN0IGZpbHRlcmluZyBmb3Igc3VjaCBhIHByb2JsZW0uCj4+PiBUaGVvcmV0
-aWNhbGx5IHdlIGNhbiBzZWUgaG93IG9mdGVuIGl0J3MgZmxpcHBlZCwgYW5kIGRpc2FibGVzIHRo
-ZQo+Pj4gamFjay1kZXRlY3Rpb24gYWNjb3JkaW5nbHkuICBCdXQgbm90IHN1cmUgaG93IHVzZWZ1
-bCBpdCBpcyBpbgo+Pj4gcHJhY3RpY2UsIHNpbmNlIGl0J3MgYSByYXJlIGNhc2UsIGFuZCB0aGUg
-bWFudWFsIGFkanVzdG1lbnQgaXMgZWFzeS4KPj4KPj4gSXQncyBlYXN5IHRvIGZpeCwgYnV0IEks
-IGFzIGEgc2ltcGxlIHVzZXIsIHRoaW5rIGl0J3MgcmVhbGx5IGhhcmQgdG8KPj4gZmluZCBvdXQg
-LS0gYWN0dWFsbHkgSSB3b3VsZG4ndCBoYXZlIGZvdW5kIHRoaXMgb3V0IGlmIHlvdSB3ZXJlbid0
-IHRoZXJlCj4+IHRlbGxpbmcgbWUgOikKPj4KPj4gU28gbWF5YmUgaXQnZCBiZSBnb29kIHRvIGhh
-dmUgYW4gYXV0b21hdGljIGRpc2FibGUgaWYgdGhpcyBpc24ndCBhIGJ1Zwo+PiBpbiBhbiBBTFNB
-IGNvZGUgc29tZXdoZXJlIC0tIGp1c3QgcmVtZW1iZXJpbmcgSSBuZXZlciBzdWZmZXJlZCBvZiB0
-aGUKPj4gcHJvYmxlbSBiZWZvcmUgMy4wLgo+IAo+IFRoaXMgYnVnIGlzIHN0aWxsIHByZXNlbnQg
-YXMgb2YgY3VycmVudCBtYXN0ZXIgKDMuMTEuMCspIC0tIGphY2sKPiBkZXRlY3Rpb24gaXMgc3Rp
-bGwgYnJva2VuIHdpdGggbXkgUmVhbHRlayBBTEM4ODkgb24gYSBNU0kgSDU1TS1FMzMuCj4gCj4g
-TW9yZW92ZXIsIHNpbmNlIGtjdGxzIHdlcmUgaW50cm9kdWNlZCwgdGhpcyBqYWNrIGRldGVjdGlv
-biBpc3N1ZSBicmVha3MKPiB1c2VybGFuZCBhcHBzIHRoYXQgbGlzdGVuIHRvIHRoZW0uICBFLmcu
-IFB1bHNlQXVkaW8gbm93IHN3aXRjaCBiYWNrIGFuZAo+IGZvcnRoIGJldHdlZW4gZnJvbnQgYW5k
-IGJhY2sgcGFuZWwsIGZvciB3aGljaCBpdCBtYWludGFpbnMgMiBzZXBhcmF0ZQo+IHNldCBvZiBz
-ZXR0aW5ncyB3aGljaCBhY3R1YWxseSByZXN1bHRzIGluIG1vcmUgb3IgbGVzcyB0aGUgc2FtZSBp
-c3N1ZQo+IHRoYW4gd2l0aCBBdXRvTXV0ZS4KPiAKPiBJIHNlZSAyIHBvc3NpYmxlIHNvbHV0aW9u
-czoKPiAKPiAxKSBmaXggdGhlIGphY2sgZGV0ZWN0aW9uIChpZiBpdCBpc24ndCBhIGJ1ZyBpbiB0
-aGUgY2FyZCBidXQgaW4gdGhlCj4gZHJpdmVyIHNvbWV3aGVyZSkKPiAKPiAyKSBpZiBpdCdzIG5v
-dCBwb3NzaWJsZSB0byBmaXggdGhlIGRyaXZlciwgYWRkIGEgd2F5IHRvIGNvbXBsZXRlbHkKPiBk
-aXNhYmxlIGphY2sgZXZlbnRzIChlLmcuIGEgbW9kdWxlIHBhcmFtIG9yIHNvbWV0aGluZykuCj4g
-Cj4gQ3VycmVudGx5IEkgaGFkIHRvIGNvbW1lbnQtb3V0IHRoZSBzbmRfa2N0bF9qYWNrX3JlcG9y
-dCgpIGNhbGwgaW4KPiBzbmRfaGRhX2phY2tfcmVwb3J0X3N5bmMoKSBzbyBJIGNvdWxkIGFjdHVh
-bGx5IHVzZSB0aGUgZHJpdmVyLgo+IAo+IAo+IEJUVyBpZiBpdCBoZWxwcywgc25kX2hkYV9qYWNr
-X3Vuc29sX2V2ZW50KCkgb25seSByZWNlaXZlcyBldmVudHMgd2hlbgo+IGFjdHVhbGx5IHBsdWdn
-aW5nL3VucGx1Z2dpbmcgYSBqYWNrIG9yIGR1cmluZyBwbGF5YmFjaywgYnV0IG5ldmVyIHdoZW4K
-PiB0aGUgY2FyZCBpcyBpZGxlLgo+IAo+IAo+IEkgd291bGQgYmUgbW9yZSB0aGFuIGhhcHB5IHRv
-IGRvIGFueXRoaW5nIEkgY2FuIHRvIGhlbHAgZml4aW5nIHRoaXMuCj4gCj4gCj4gQmVzdCByZWdh
-cmRzLAo+IENvbG9tYmFuCj4gCj4gCj4gUFM6IG9yaWdpbmFsIHRocmVhZChzKToKPiBodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTEtTm92ZW1i
-ZXIvMDQ1NzA3Lmh0bWwKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFp
-bC9hbHNhLWRldmVsLzIwMTEtRGVjZW1iZXIvMDQ3MTUyLmh0bWwKPiBodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTEtRGVjZW1iZXIvMDQ3MjEw
-Lmh0bWwKPiAKCldlbGwsIGluIHRoZSBsYXN0IHllYXIgb3IgdHdvIHRoZSBmb2xsb3dpbmcgYWRk
-aXRpb25zIGhhdmUgYmVlbiBtYWRlIHRvCnRoZSBrZXJuZWw6CgogMSkgamFja3BvbGxfaW50ZXJ2
-YWwgYXMgYSBtb2R1bGUgcGFyYW1ldGVyIC0gdHVybnMgb2ZmIHVuc29sIGV2ZW50cyBhbmQKaW5z
-dGVhZCBwb2xscyB0aGUgamFjayBjb25uZWN0aW9uIGF0IHRoZSBpbnRlcnZhbCB5b3Ugc3BlY2lm
-eQoKIDIpIEtlcm5lbCBhdXRvbXV0ZSBjYW4gKGZvciBhbG1vc3QgYWxsIGNhcmRzLCBJIGJlbGll
-dmUpIGJlIGRpc2FibGVkIGJ5CnNldHRpbmcgYSBtaXhlciBjb250cm9sIG5hbWVkICJBdXRvbXV0
-ZSBtb2RlIgoKLi4uYW5kIHlvdSBjYW4gZGlzYWJsZSBqYWNrIGRldGVjdGlvbiBpbiBQdWxzZUF1
-ZGlvIGJ5IGNvbW1lbnRpbmcgb3V0CmFsbCBzZWN0aW9ucyB3aXRoIHRoZSBqYWNrIHlvdSB3YW50
-IHRvIGRpc2FibGUsIHRoZSBmaWxlcyBhcmUgaW4KL3Vzci9zaGFyZS9wdWxzZWF1ZGlvL2Fsc2Et
-bWl4ZXIvcGF0aHMvKgoKQnR3LCBqdXN0IGEgd2lsZCB0aGVvcnksIGJlY2F1c2UgSSdtIHJlYWxs
-eSBub3QgYSBzdWJqZWN0IG1hdHRlciBleHBlcnQ6CnNpbmNlIHRoaXMgaXMgYSBob21lLWJ1aWx0
-IGNvbXB1dGVyIChJIGFzc3VtZSksIEkgd29uZGVyIGlmIHRoaXMgY291bGQKYmUgYSB2ZXJ5IGhh
-cmR3YXJlIG5lYXIgcHJvYmxlbSAtIGkgZSwgaXMgdGhlIGNhYmxlIHRvIHRoZSBmcm9udCBwYW5l
-bApjaGFzc2kgdmVyeSBjbG9zZSB0byBzb21ldGhpbmcgdGhhdCBnaXZlcyBvdXQgYSBsb3Qgb2Yg
-RU1JIGRpc3R1cmJhbmNlCm9yIHNvbWV0aGluZyBsaWtlIHRoYXQ/CgotLSAKRGF2aWQgSGVubmlu
-Z3Nzb24sIENhbm9uaWNhbCBMdGQuCmh0dHBzOi8vbGF1bmNocGFkLm5ldC9+ZGl3aWMKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 09/16/2013 05:14 PM, Nathanael D. Noblet wrote:
+> On 09/13/2013 06:34 PM, David Henningsson wrote:
+>>>>  >  2) The internal microphone requires that the mic boost channel be
+>>>> something other than 0 to function properly.
+>>>>
+>>>> You have to find out whether node 0x1a or 0x1b can be used as the
+>>>> headset
+>>>> jack (headphone with Mic using TRRS connector)
+>>>
+>>> So basically I need to plug a microphone into each port and figure out
+>>> if both of them work as microphone. A couple things.
+>>>
+>>> 1) What if both can be a microphone?
+>>> 2) If only one can be a microphone, I have no idea how to tell you if
+>>> its 0x1a or 0x1b.. hda-analyzer/alsa low level stuff is completely new
+>>> to me.
+>>
+>> When you plug something in, you can look at the output of "amixer -D
+>> hw:<cardname> contents" to see what, if anything switched to "values=on"
+>> instead of "values=off".
+>>
+>> We would like you to plug a mic into the mic jack and see in what way
+>> the output of "amixer -D hw:<cardname> contents" changes.
+>> Then we would like you to plug a headset (with both headphone and mic,
+>> like most smartphones have), and again see if there's a difference in
+>> amixer.
+>> You can also try this with a headphone only in the headphone jack, if
+>> you like.
+>>
+> 
+> So here's what I did. I didn't have a combo headphone/mic thing handy.
+> 
+> 1) nothing.out is the netbook with nothing external plugged in.
+> 2) mic.out is when I plugged in a microphone into the mic jack
+> 3) head.out is when there were headphones plugged into the headphone jack
+> 4) both.out is when something was plugged into both (mic into mic and
+> headphone into headphones...
+> 
+> A quick diff shows that amixer is seeing differences.
+> --- nothing.out    2013-09-16 09:11:54.678168182 -0600
+> +++ mic.out    2013-09-16 09:11:54.675168245 -0600
+> @@ -6,7 +6,7 @@
+>    : values=on
+>  numid=18,iface=CARD,name='Mic Jack'
+>    ; type=BOOLEAN,access=r-------,values=1
+> -  : values=off
+> +  : values=on
+>  numid=20,iface=CARD,name='Mic Jack',index=1
+>    ; type=BOOLEAN,access=r-------,values=1
+>    : values=off
+> 
+> 
+> Given this information... what's the next step?
+
+Matching this with your alsa-info, we can see that 'Mic Jack'
+corresponds to 0x1b and 'Mic Jack', index=1 corresponds to 0x1a.
+
+Hence you could try turning pin 0x1a to "not connected" in
+hda-jack-retask. (I don't know how/if hda-jack-retask is packaged in
+Fedora, but it is part of alsa-tools.)
+
+If this resolves your problem, we could then try making that the default
+in upcoming kernels, but the question is we really dare to do that,
+without clear confirmation that 0x1a is actually useless. In current
+state it's a bit buggy, but if the headphone jack is actually a headset
+jack turning that off would make the headset mic go from "needs manual
+adjustment to work" to "completely unusuable".
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
