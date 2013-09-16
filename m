@@ -1,56 +1,77 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [RFC PATCH] ES938 support for ES18xx driver
-Date: Mon, 16 Sep 2013 18:14:44 +0200
-Message-ID: <201309161814.45080.linux@rainbow-software.org>
-References: <20130915184902.GA23480@rhlx01.hs-esslingen.de> <201309152304.27585.linux@rainbow-software.org> <20130915212358.GB32375@rhlx01.hs-esslingen.de>
-Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130915212358.GB32375@rhlx01.hs-esslingen.de>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andreas Mohr <andi@lisas.de>
-Cc: alsa-devel@alsa-project.org, krzysztof.h1@wp.pl, Kernel development list <linux-kernel@vger.kernel.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/2] ASoC: core: Add devm_snd_soc_register_card()
+Date: Mon, 16 Sep 2013 18:03:42 +0100
+Message-ID: <1379351023-28996-1-git-send-email-broonie@kernel.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 15 September 2013 23:23:58 Andreas Mohr wrote:
-> On Sun, Sep 15, 2013 at 11:04:26PM +0200, Ondrej Zary wrote:
-> > On Sunday 15 September 2013 22:35:20 Andreas Mohr wrote:
-> > > What!?!? I didn't quite expect any kernel dev to have that one, too ;)
-> >
-> > Don't remember where I got it from but it looked nice so I bought it :)
->
-> Yup, e.g. the builtin amp is quite nice.
->
-> > > Thanks for hinting at the TLV control dB values thingy! Didn't know
-> > > that such thing existed, thus azt3328 does not have it (yet?).
-> >
-> > It's a nice thing, especially for cards that can go above 0 dB. You then
-> > know that the sound can be distorted when you set e.g. PCM volume too
-> > high.
->
-> Hmm, any hint how to precisely do dB values normalization scaling,
-> for a card where this is not documented? Or perhaps that's actually easy -
-> haven't thought about it...
+From: Mark Brown <broonie@linaro.org>
 
-Perhaps with 3 sound cards: one for recording, one with known dB values and 
-one unknown.
-First play some test signal at known dB value and record that.
-Then play the signal using on the unknown card and ajdust its mixer so that 
-the recording revel is the same as before.
-Repeat a few times to find out the dB value of mixer step.
+Simplify error handling and remove repetitive (and rarely executed) code
+for unregistration by providing a devm_snd_soc_register() card.
 
-> > > Is there any chip ID/version register to be identified?
-> >
-> > No, there are only 8 registers, all(? - haven't tested) R/W.
->
-> OK, but possibly they happen to be creating another virtual register
-> mapping range? (i.e. index/data register combo?)
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ include/sound/soc.h    |  1 +
+ sound/soc/soc-devres.c | 34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+)
 
-Datasheet says that there are no more registers - just 0..7 (2,3,4 are 
-reserved).
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index f126676..7ab5d2b 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -364,6 +364,7 @@ int snd_soc_codec_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
+ 
+ int snd_soc_register_card(struct snd_soc_card *card);
+ int snd_soc_unregister_card(struct snd_soc_card *card);
++int devm_snd_soc_register_card(struct device *dev, struct snd_soc_card *card);
+ int snd_soc_suspend(struct device *dev);
+ int snd_soc_resume(struct device *dev);
+ int snd_soc_poweroff(struct device *dev);
+diff --git a/sound/soc/soc-devres.c b/sound/soc/soc-devres.c
+index 13fe86f..b1d7322 100644
+--- a/sound/soc/soc-devres.c
++++ b/sound/soc/soc-devres.c
+@@ -50,3 +50,37 @@ int devm_snd_soc_register_component(struct device *dev,
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(devm_snd_soc_register_component);
++
++static void devm_card_release(struct device *dev, void *res)
++{
++	snd_soc_unregister_card(*(struct snd_soc_card **)res);
++}
++
++/**
++ * devm_snd_soc_register_card - resource managed card registration
++ * @dev: Device used to manage card
++ * @card: Card to register
++ *
++ * Register a card with automatic unregistration when the device is
++ * unregistered.
++ */
++int devm_snd_soc_register_card(struct device *dev, struct snd_soc_card *card)
++{
++	struct device **ptr;
++	int ret;
++
++	ptr = devres_alloc(devm_card_release, sizeof(*ptr), GFP_KERNEL);
++	if (!ptr)
++		return -ENOMEM;
++
++	ret = snd_soc_register_card(card);
++	if (ret == 0) {
++		*ptr = dev;
++		devres_add(dev, ptr);
++	} else {
++		devres_free(ptr);
++	}
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(devm_snd_soc_register_card);
 -- 
-Ondrej Zary
+1.8.4.rc3
