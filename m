@@ -1,7 +1,7 @@
 From: <jsarha-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH v2 05/11] ASoC: davinci-mcasp: Remove interrupt property from DT bindings doc
-Date: Tue, 17 Sep 2013 12:26:04 +0300
-Message-ID: <1b47734e397bfac8846dcfc194fd1ab63f320d1a.1379409268.git.jsarha@ti.com>
+Subject: [PATCH v2 06/11] ASoC: davinci: Add support for AM33xx SoC Audio
+Date: Tue, 17 Sep 2013 12:26:05 +0300
+Message-ID: <c59efc1524b19f50dc37606bfa246dde9c20d312.1379409268.git.jsarha@ti.com>
 References: <cover.1379409268.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,35 +12,67 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76
 Cc: peter.ujfalusi-l0cyMroinI0@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org, gururaja.hebbar-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, nm-l0cyMroinI0@public.gmane.org, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+From: "Hebbar, Gururaja" <gururaja.hebbar-l0cyMroinI0@public.gmane.org>
 
-Davinci McASP driver does use interrupts for anything ATM.
+AM33xx uses same McASP IP as the Davinci Platform. This patch updates
+Kconfig and makefile to enable build for McASP, PCM & Codec drivers.
 
+Signed-off-by: Hebbar, Gururaja <gururaja.hebbar-l0cyMroinI0@public.gmane.org>
+Signed-off-by: Darren Etheridge <detheridge-l0cyMroinI0@public.gmane.org>
 Signed-off-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 ---
- .../bindings/sound/davinci-mcasp-audio.txt         |    2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/davinci/Kconfig  |   18 +++++++++++++++---
+ sound/soc/davinci/Makefile |    1 +
+ 2 files changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-index 68e0f47..b5e7b78 100644
---- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-+++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-@@ -11,7 +11,6 @@ Required properties:
- - reg-names : The mandatory reg-range must be named "mpu" and the optional DMA
- 	      reg-range must be named "dma". For backward compatibility it is
- 	      good to keep "mpu" first in the list.
--- interrupts : Interrupt number for McASP
- - op-mode : I2S/DIT ops mode.
- - tdm-slots : Slots for TDM operation.
- - num-serializer : Serializers used by McASP.
-@@ -40,7 +39,6 @@ mcasp0: mcasp0@1d00000 {
- 	#size-cells = <0>;
- 	reg = <0x100000 0x3000>;
- 	reg-names "mpu";
--	interrupts = <82 83>;
- 	op-mode = <0>;		/* MCASP_IIS_MODE */
- 	tdm-slots = <2>;
- 	num-serializer = <16>;
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index c82f89c..6c8e687 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -1,9 +1,10 @@
+ config SND_DAVINCI_SOC
+-	tristate "SoC Audio for the TI DAVINCI chip"
+-	depends on ARCH_DAVINCI
++	tristate "SoC Audio for the TI DAVINCI or AM33XX chip"
++	depends on ARCH_DAVINCI || SOC_AM33XX
+ 	help
++	  Machine driver for DAVINCI audio.
+ 	  Say Y or M if you want to add support for codecs attached to
+-	  the DAVINCI AC97 or I2S interface. You will also need
++	  the DAVINCI AC97, I2S, or McASP interface. You will also need
+ 	  to select the audio interfaces to support below.
+ 
+ config SND_DAVINCI_SOC_I2S
+@@ -15,6 +16,17 @@ config SND_DAVINCI_SOC_MCASP
+ config SND_DAVINCI_SOC_VCIF
+ 	tristate
+ 
++config SND_AM33XX_SOC_EVM
++	tristate "SoC Audio for the AM33XX chip based boards"
++	select SND_DAVINCI_SOC
++	select SND_SOC_TLV320AIC3X
++	select SND_DAVINCI_SOC_MCASP
++	help
++	  Say Y or M if you want to add support for SoC audio on AM33XX
++	  boards using McASP and TLV320AIC3X codec. For example AM335X-EVM,
++	  AM335X-EVMSK, and BeagelBone with AudioCape boards have this
++	  setup.
++
+ config SND_DAVINCI_SOC_EVM
+ 	tristate "SoC Audio support for DaVinci DM6446, DM355 or DM365 EVM"
+ 	depends on SND_DAVINCI_SOC
+diff --git a/sound/soc/davinci/Makefile b/sound/soc/davinci/Makefile
+index a396ab6..bc81e79 100644
+--- a/sound/soc/davinci/Makefile
++++ b/sound/soc/davinci/Makefile
+@@ -13,6 +13,7 @@ obj-$(CONFIG_SND_DAVINCI_SOC_VCIF) += snd-soc-davinci-vcif.o
+ snd-soc-evm-objs := davinci-evm.o
+ 
+ obj-$(CONFIG_SND_DAVINCI_SOC_EVM) += snd-soc-evm.o
++obj-$(CONFIG_SND_AM33XX_SOC_EVM) += snd-soc-evm.o
+ obj-$(CONFIG_SND_DM6467_SOC_EVM) += snd-soc-evm.o
+ obj-$(CONFIG_SND_DA830_SOC_EVM) += snd-soc-evm.o
+ obj-$(CONFIG_SND_DA850_SOC_EVM) += snd-soc-evm.o
 -- 
 1.7.9.5
 
