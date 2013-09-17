@@ -1,57 +1,103 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: Re: [PATCH 2/2] ASoC: SPEAr spdif_out: Use
-	devm_snd_soc_register_component
-Date: Tue, 17 Sep 2013 12:14:44 +0530
-Message-ID: <CAK9yfHyk2tdh3DZXjoA4VPRS6fpO19744toK2tSOab3AtvRv=g@mail.gmail.com>
-References: <1379394697-19810-1-git-send-email-sachin.kamat@linaro.org>
- <1379394697-19810-2-git-send-email-sachin.kamat@linaro.org>
- <CAOh2x==NRbyPmYv-jBde2rrYm9b4Yz_Wok08szuxmt6EzEA4Og@mail.gmail.com>
+From: <jsarha-l0cyMroinI0@public.gmane.org>
+Subject: [PATCH v2 00/11] Fix AM335x-evm analog audio support
+Date: Tue, 17 Sep 2013 12:25:59 +0300
+Message-ID: <cover.1379409268.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f51.google.com (mail-oa0-f51.google.com
- [209.85.219.51])
- by alsa0.perex.cz (Postfix) with ESMTP id A26DB26007E
- for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 08:44:47 +0200 (CEST)
-Received: by mail-oa0-f51.google.com with SMTP id l6so911652oag.10
- for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2013 23:44:46 -0700 (PDT)
-In-Reply-To: <CAOh2x==NRbyPmYv-jBde2rrYm9b4Yz_Wok08szuxmt6EzEA4Og@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: "vipin.kumar" <vipin.kumar@st.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: peter.ujfalusi-l0cyMroinI0@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org, gururaja.hebbar-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, nm-l0cyMroinI0@public.gmane.org, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 17 September 2013 11:04, Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> On Tue, Sep 17, 2013 at 10:41 AM, Sachin Kamat <sachin.kamat@linaro.org> wrote:
->> devm_snd_soc_register_component makes code simpler.
->>
->> +       ret = devm_snd_soc_register_component(&pdev->dev, &spdif_out_component,
->> +                                             &spdif_out_dai, 1);
->>         return ret;
->>  }
->>
->
-> What about doing return devm_snd_soc_register_component(***) here?
-> And same for the other patch?
+From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 
-The other patch already has it. I will do this as part of follow-on
-cleanup patch as it makes 'ret'
-unused after that.
+The first version of patches can been found here:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-September/066178.html
 
->
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Changes for v2
+ - Dropped our "ASoC: davinci-mcasp: Add pinctrl support" since
+   driver core is taking care of this now.
+ - Cleanup am33xx audio build
+ - Add regulators to tlv320aic3x DT binding document
+ - Remove dm365-voice-codec-audio DT support as it has never
+   been tested an probably does not work
+ - Add output pins and Line In connector to davinci-evm-audio DT binding doc
+ - Remove asp_chan_q and ram_chan_q properties from mcasp DT node
+   in DT mode mcasp is hardcoded to event queue 0 (highest priority)
+ - Add pins to tlv320aic3x DT bindings document. If I misunderstood
+   Marks comment and this patch is not needed, then just leave it out
+ Changes based on TI internal discussions
+ - Move system clock rate logic away from from evm_hw_params soc-op
+ - Remove unnecesary #if defined(CONFIG_OF) from davinci-evm.c
+ - Make dma property DT binding document more exact
+ - Add only "dma" reg location instead of separate "dma-tx" and "dma-rx"
+ - Primarily look for "mpu" reg property, but fall back to index 0 if not found
+ - Remove interrupt property from mcasp DT node as it is not used
+ - Remove #address-cells and #size-cells mcasp properties as they are not needed
 
-Thanks.
+This set of patches fixes the basic audio support for am335x-evm. It
+should also be relatively simple to add the necessary nodes to
+relevant dts files to get BeagleBone + AudioCape and am335x-evmsk
+working too.
+
+The patch set depends on following patches:
+
+[PATCH v11 4/8] ARM: dts: add AM33XX EDMA support 
+     https://lkml.org/lkml/2013/6/18/49
+
+[PATCH v11 5/8] ARM: dts: add AM33XX SPI DMA support
+     https://lkml.org/lkml/2013/6/18/55
+
+[PATCH v2] ARM: EDMA: Fix clearing of unused list for DT DMA resources
+     https://lkml.org/lkml/2013/7/22/441
+
+I have tried my best not to break the existing support for older
+davinci boards, but since I do not have those boards I can not be
+sure.
+
+Some commit comments refer to a dmaengine based davinci audio
+implementation which is planned for but nothing has been done yet.
+
+Best regards,
+Jyri
+
+Darren Etheridge (1):
+  ARM/dts: am335x-evm: Add audio support for am335x-evm.dts
+
+Hebbar, Gururaja (2):
+  ASoC: davinci-evm: Add device tree binding
+  ASoC: davinci: Add support for AM33xx SoC Audio
+
+Jyri Sarha (7):
+  ASoC: davinci-evm: Move sysclk logic away from evm_hw_params
+  ASoC: davinci-mcasp: Add DMA register locations to DT
+  ASoC: davinci-mcasp: Extract DMA channels directly from DT
+  ASoC: davinci-mcasp: Remove interrupt property from DT bindings doc
+  ASoC: tlv320aic3x: Add regulators to DT bindings document
+  ASoC: tlv320aic3x: Add codec pins to DT bindings document
+  ARM/dts: am33xx: mcasp: Add new dma register location to reg-property
+
+Pantelis Antoniou (1):
+  ARM/dts: am33xx: Add mcasp0 and mcasp1 device tree entries
+
+ .../bindings/sound/davinci-evm-audio.txt           |   58 ++++++
+ .../bindings/sound/davinci-mcasp-audio.txt         |   15 +-
+ .../devicetree/bindings/sound/tlv320aic3x.txt      |   26 +++
+ arch/arm/boot/dts/am335x-evm.dts                   |   56 ++++++
+ arch/arm/boot/dts/am33xx.dtsi                      |   25 +++
+ include/linux/platform_data/davinci_asp.h          |    2 +
+ sound/soc/davinci/Kconfig                          |   18 +-
+ sound/soc/davinci/Makefile                         |    1 +
+ sound/soc/davinci/davinci-evm.c                    |  184 +++++++++++++++++---
+ sound/soc/davinci/davinci-mcasp.c                  |  106 +++++++----
+ 10 files changed, 428 insertions(+), 63 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
 
 -- 
-With warm regards,
-Sachin
+1.7.9.5
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
