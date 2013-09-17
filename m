@@ -1,120 +1,80 @@
-From: <jsarha-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH v2 11/11] ARM/dts: am335x-evm: Add audio support for am335x-evm.dts
-Date: Tue, 17 Sep 2013 12:26:10 +0300
-Message-ID: <2ae907b861ee49ba9b3bdac701214824d2faec60.1379409268.git.jsarha@ti.com>
-References: <cover.1379409268.git.jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/1] ASoC: snd_soc_codec includes
+	snd_soc_component
+Date: Tue, 17 Sep 2013 13:26:32 +0100
+Message-ID: <20130917122632.GZ21013@sirena.org.uk>
+References: <87eh97sqw7.wl%kuninori.morimoto.gx@renesas.com>
+ <87eh94xab2.wl%kuninori.morimoto.gx@renesas.com>
+ <87d2ooxa9o.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <cover.1379409268.git.jsarha-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: peter.ujfalusi-l0cyMroinI0@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org, gururaja.hebbar-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, nm-l0cyMroinI0@public.gmane.org, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============9135695224535844618=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id DAFBC261675
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 14:26:38 +0200 (CEST)
+In-Reply-To: <87d2ooxa9o.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Darren Etheridge <detheridge-l0cyMroinI0@public.gmane.org>
 
-Adds sound, tlv320aic3x, mcasp1, and am335x_evm_audio_pin nodes.
+--===============9135695224535844618==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="b/1sb/HZzV9blKCG"
+Content-Disposition: inline
 
-Signed-off-by: Darren Etheridge <detheridge-l0cyMroinI0@public.gmane.org>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Signed-off-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
----
- arch/arm/boot/dts/am335x-evm.dts |   56 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
 
-diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
-index 3aee1a4..4a49229 100644
---- a/arch/arm/boot/dts/am335x-evm.dts
-+++ b/arch/arm/boot/dts/am335x-evm.dts
-@@ -149,6 +149,16 @@
- 				0x14c (PIN_INPUT_PULLDOWN | MUX_MODE7)
- 			>;
- 		};
-+
-+		am335x_evm_audio_pins: am335x_evm_audio_pins {
-+			pinctrl-single,pins = <
-+				0x10c (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_rx_dv.mcasp1_aclkx */
-+				0x110 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_txd3.mcasp1_fsx */
-+				0x108 (PIN_OUTPUT_PULLDOWN | MUX_MODE4) /* mii1_col.mcasp1_axr2 */
-+				0x144 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* rmii1_ref_clk.mcasp1_axr3 */
-+			>;
-+		};
-+
- 	};
- 
- 	ocp {
-@@ -215,6 +225,19 @@
- 				compatible = "ti,tmp275";
- 				reg = <0x48>;
- 			};
-+
-+			tlv320aic3x: tlv320aic3x@1b {
-+				compatible = "ti,tlv320aic3x";
-+				reg = <0x1b>;
-+				status = "okay";
-+
-+				/* Regulators */
-+				AVDD-supply = <&vaux2_reg>;
-+				IOVDD-supply = <&vaux2_reg>;
-+				DRVDD-supply = <&vaux2_reg>;
-+				DVDD-supply = <&vbat>;
-+			};
-+
- 		};
- 
- 		elm: elm@48080000 {
-@@ -311,6 +334,20 @@
- 				};
- 			};
- 		};
-+
-+		sound {
-+			compatible = "ti,da830-evm-audio";
-+			ti,model = "DA830 EVM";
-+			ti,audio-codec = <&tlv320aic3x>;
-+			ti,mcasp-controller = <&mcasp1>;
-+			ti,codec-clock-rate = <12000000>;
-+			ti,audio-routing =
-+				"Headphone Jack",       "HPLOUT",
-+				"Headphone Jack",       "HPROUT",
-+				"LINE1L",               "Line In",
-+				"LINE1R",               "Line In";
-+		};
-+
- 	};
- 
- 	vbat: fixedregulator@0 {
-@@ -378,6 +415,25 @@
- 
- #include "tps65910.dtsi"
- 
-+&mcasp1 {
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&am335x_evm_audio_pins>;
-+
-+		status = "okay";
-+
-+		op-mode = <0>;          /* MCASP_IIS_MODE */
-+		tdm-slots = <2>;
-+		num-serializer = <16>;
-+		serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
-+			0 0 1 2
-+			0 0 0 0
-+			0 0 0 0
-+			0 0 0 0
-+		>;
-+		tx-num-evt = <1>;
-+		rx-num-evt = <1>;
-+};
-+
- &tps {
- 	vcc1-supply = <&vbat>;
- 	vcc2-supply = <&vbat>;
--- 
-1.7.9.5
+--b/1sb/HZzV9blKCG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On Wed, Sep 04, 2013 at 07:39:03PM -0700, Kuninori Morimoto wrote:
+> Codec includes component by this patch,
+> and component moved to upside of codec
+> to avoid extra declaration.
+> Codec dai will be registered via component
+> by this patch.
+
+Applied both, thanks.
+
+--b/1sb/HZzV9blKCG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSOEp1AAoJELSic+t+oim97ocQAI2/lxlHKRnzf1+0/jPI+N3A
+QKm7Rk8UAkbwTmbWXLdru+I9ml0JSlFBY0v+QiD9GBpESehvbhrKUTzQ0v4eSoxB
+MO9gr2MBSUEZU1pXhh2UXQwCgbcAZtUXLJf+oC6Y7neYdhxgOM7HUXljAwwoQsle
+VIx4VPDG3CHBiStW+T0RkLpgZLnnpZuqFsUYRMPqbNF5sjLP8bCoCB8l6qoIJzO+
+NJEimBkMkdco1vJsInvYkaegbj6YB92pjGEZDazJt8WVDFD3zDNxLmdv9bxwGM1m
+hDCS7/yYeoGE2AJ8Dy0xSubVkD7Sv9rSp/cc8CsQ2oXi/1MrlVMOHdMTmBEhxmIa
+rJ9tjNSzSbMJM1q+1f9wQQLAoWrH8MXUrPSYSDIiFzph4tNkuvFERtDqOsuEqzbR
+TgB4fwLav3TBJLB9K1nZGuicRTYws1z8uC0jKfD7iwtrNQ3XYiaW+iX2wEeSJtUZ
+RWhr3EVDxJP1xcJVfSBXWkXHsza6YujTD0Pd0TBHwb/Ho5ccz553fTvf0sns1mEk
+H8AVlvVoR5MmqSCQnsO+ZWLzhhed4LziSRUxcIY5malrekhgrfT9stFM6WD1VgWu
+MM1EPZWfRDTKhuvfatZp3vYNhctRZm7voklyRn2AYx9dW+UXpPwSw/wp+efnCp/M
+sqP9panxYgc58YE+P31N
+=4B8f
+-----END PGP SIGNATURE-----
+
+--b/1sb/HZzV9blKCG--
+
+--===============9135695224535844618==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9135695224535844618==--
