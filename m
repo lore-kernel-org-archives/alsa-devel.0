@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: fsl_ssi: Remove redundant
-	dev_set_drvdata
-Date: Tue, 17 Sep 2013 13:36:27 +0100
-Message-ID: <20130917123627.GB21013@sirena.org.uk>
-References: <1379068165-8397-1-git-send-email-sachin.kamat@linaro.org>
+Subject: Re: [PATCH v2 2/4] regmap: Add regmap_fields APIs
+Date: Tue, 17 Sep 2013 13:48:52 +0100
+Message-ID: <20130917124852.GD21013@sirena.org.uk>
+References: <87sixrre8r.wl%kuninori.morimoto.gx@renesas.com>
+ <87mwnvsy7a.wl%kuninori.morimoto.gx@renesas.com>
+ <87k3izsxw8.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0001992705336886688=="
+Content-Type: multipart/mixed; boundary="===============1859635199190998974=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E1E4C2651AD
- for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 14:36:29 +0200 (CEST)
-In-Reply-To: <1379068165-8397-1-git-send-email-sachin.kamat@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CB1A265165
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 14:49:07 +0200 (CEST)
+In-Reply-To: <87k3izsxw8.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +21,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: alsa-devel@alsa-project.org, timur@tabi.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0001992705336886688==
+--===============1859635199190998974==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hqsgWuDCGoNNiKsj"
+	protocol="application/pgp-signature"; boundary="xFHWmGwbilGjB8dh"
 Content-Disposition: inline
 
 
---hqsgWuDCGoNNiKsj
+--xFHWmGwbilGjB8dh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Sep 13, 2013 at 03:59:25PM +0530, Sachin Kamat wrote:
-> Driver core sets the driver data to NULL on detach.
+On Sun, Sep 01, 2013 at 08:30:50PM -0700, Kuninori Morimoto wrote:
+> Current Linux kernel is supporting regmap_field method
+> and it is very useful feature.
+> It needs one regmap_filed for one register access.
 
-Applied, thanks.
+Applied, thanks.  I did make one update:
 
---hqsgWuDCGoNNiKsj
+> + * A non-zero will be returned when fields access enable,
+> + * a zero will be returned in single field.
+> + */
+> +int regmap_fields_enable(struct regmap_field *field)
+> +{
+> +	return field->id_size && field->id_offset;
+> +}
+> +EXPORT_SYMBOL_GPL(regmap_fields_enable);
+
+This seems like it should be something like _is_present() - the name
+makes me think it will turn something on, not check that something is
+there.  I removed it since it's not used by the following patches and I
+didn't notice earlier when I initially looked at the patches during the
+merge window.
+
+--xFHWmGwbilGjB8dh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSOEzIAAoJELSic+t+oim9yd4P/RWI9pGyx3Y4OTIjdFOQlz52
-7cdH5syNBDXyzMzRyX+1yUW6rdF3pCbWr5LICoCjNc2JAEwqpHDw9NANu0i4fCU3
-OgzuWVUTx1TOeTgFI475f0VsVBQbBedLXVDB1gkXWibelc/IiAnoQgAw/cRbZ2Jw
-K7EyV9rdEq3vaCF0QxXckeqpBJOalK4egB5mDihIl4ITEABlQ0MA2YTkq2S1wszc
-xZX5tWDXgBSpKibeNtHoilQ9givuyFjumU5d335aJEV9IVUz5A2HqVb5mp0AJWTc
-FxBjgCcO98Oz3QzoS8XrDI+7IKHqxz+Q1QBFoDe2wf/LrovPb+lVAoQheMdUkNVz
-XiLg8VgJKJIuRkvjt910t2zkJfOkeA+KCpOxspxv9txAmbpe4G0gniS+xojRUm/g
-eH/3WqIMDZIMGzExZedG9t63K7TDWd1t/mTS7T+7JJnOl9zUObAzkmsg246L84Zp
-6ZcYNxcAZTW6czULW5cj3rAx+JiJh6ZzjLftQPFxFFvBNuYLJgPnekuZi5clkiC+
-yRT036eIff7iuAYwOUNvStoiHkrhYEDxKkzAEv9LCVePY00IUaJJGngR0cbPYl2q
-CCgefPyT4/+f/fsQQh17584mNDgm/ozyPlLRPNf6zgneuTDBQ3KgKyEG7EqpjUeD
-moVorkgkG8ZNfiHKP3Os
-=LxaW
+iQIcBAEBAgAGBQJSOE+xAAoJELSic+t+oim9whgP/ApzL9UpdSBx+dE3DN3PR+Bk
+GOaq+imWynulqOg7WiQYfvBNI/sRY74ouBAx1qSTj1Z50QsLaNUhBtc1Qm5BkAr+
+oS1Qart+/wOOMOkB8wYnt2f957GqdWKHesxil309v7C58iniuGNAWNcJwSsGj97l
+qSyrRXb8FzSR7+fDdY2H9BLz2segJveMD42mX/tZkzIHCLhQRpgKCF7axyjcJp4n
+WL9gNHHsfQOjBeon3ISv6CFNJyHhD9ZnhEXa615lbgq7gMIWQ6lbRmvgKDCFTvJh
+fGXCrLyzifrzN84NXavUvqhJcSiXOhXHXew2lCL6QXtcwDRxrndL4EUrfGhe4K6J
+PqcvpErCG5mQkCDFAvxtrUQr+eEnL50XMzFOH0YY9sOYaCQij/DFgCzpqftI8mae
+Di+9n8w1RphZDg5XfMGuWtKzsaQDgt4sm4HIGqO1EtrSmBk4u3zlDsv0FGF8Blh/
+vG8UqC1P6oqLF6RoKpO15iV92i5vcJtsxol/NPtyRrLGWL2SKiKqc2LVdrpO8jlT
+WFTGtSIqWU6Zk3ESqV8lLm1xXt4C+uuUrpuZL4UUIvHXCAX+1ySFLR2vzIbO8FQK
+9u5qL3PlfA4LybJ8x8ZUlhKSxE3BAC90y+Kd/tyoRrlDa1ApYUgxC0ml6r4kP++M
+nG23SdmiBqaqUn3I/aAf
+=WVT1
 -----END PGP SIGNATURE-----
 
---hqsgWuDCGoNNiKsj--
+--xFHWmGwbilGjB8dh--
 
---===============0001992705336886688==
+--===============1859635199190998974==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0001992705336886688==--
+--===============1859635199190998974==--
