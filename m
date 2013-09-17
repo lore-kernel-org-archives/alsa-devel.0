@@ -1,16 +1,17 @@
-From: Waldemar Brodkorb <wbx@openadk.org>
-Subject: alsa-lib 1.0.27.2 and musl
-Date: Tue, 17 Sep 2013 19:22:25 +0200
-Message-ID: <20130917172225.GI14246@waldemar-brodkorb.de>
-Reply-To: Waldemar Brodkorb <wbx@openadk.org>
+From: Sander Jansen <s.jansen@gmail.com>
+Subject: Incorrect sbits for snd-usb-audio
+Date: Tue, 17 Sep 2013 13:23:11 -0500
+Message-ID: <CACj81kHdoV6ReddOn_eiLikpzm=_-1WxoPACGOS4Noh7zrctLg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from helium.waldemar-brodkorb.de (helium.waldemar-brodkorb.de
- [89.238.66.15]) by alsa0.perex.cz (Postfix) with ESMTP id EEB522651BC
- for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 19:22:25 +0200 (CEST)
-Content-Disposition: inline
+Received: from mail-vc0-f178.google.com (mail-vc0-f178.google.com
+ [209.85.220.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A0182651FF
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 20:23:12 +0200 (CEST)
+Received: by mail-vc0-f178.google.com with SMTP id ha12so4329326vcb.37
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 11:23:11 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,20 +24,30 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgRGV2ZWxvcGVycywKCkkgYW0gdHJ5aW5nIHRvIGNyb3NzLWNvbXBpbGUgYWxzYS1saWIgd2l0
-aCBhIG11c2zCuSBsaWJjIGJhc2VkCnRvb2xjaGFpbi4gVW5mb3J0dW5hdGVseSBzcmMvY29tcGF0
-L2hzZWFyY2hfci5jIGlzIGZhaWxpbmcgdG8KY29tcGlsZSwgYmVjYXVzZSBvZiBzb21lIGdsaWJj
-IHNwZWNpZmljIG1hY3JvcyAobGlrZSBfUCkgbm9ybWFsbHkKZGVmaW5lZCBpbiBzeXMvY2RlZnMu
-aC4gQWZ0ZXIgZ3JlcHBpbmcgdGhyb3VnaCB0aGUgY29kZSBJIGNhbiBub3QKZmluZCBhbnkgY29u
-c3VtZXIgZm9yIGFueSBmdW5jdGlvbnMgaW1wbGVtZW50ZWQgaW4gaHNlYXJjaF9yLmMuCldoZW4g
-SSBqdXN0IGNvbW1lbnQgb3V0IHRoZSBjb2RlLCBldmVyeXRoaW5nIGNvbXBpbGVzIGZpbmUuCgpT
-ZWVtcyB0aGF0IHRoYXQgdXNhZ2Ugb2YgaHNlYXJjaCBmdW5jdGlvbnMgd2FzIHJlbW92ZWQgaW4g
-dGhlIGNvZGUgCmxvbmcgdGltZSBhZ28uCmNvbW1pdCAyNzNkMTE1ZGUwNTU3NDI1MWJkZDY2MTc0
-N2VjYjY4NDQ5YTVjZjFkCkF1dGhvcjogSmFyb3NsYXYgS3lzZWxhIDxwZXJleEBwZXJleC5jej4K
-RGF0ZTogICBTYXQgSnVsIDE1IDEwOjIwOjMyIDIwMDAgKzAwMDAKCiAgICBSZW1vdmVkIG9sZCBt
-aXhlciBBUEkgZnVuY3Rpb25zLgogICAgQWRkZWQgc2ltcGxlIGNvbnRyb2wgbGF5ZXIgKGV4cGVy
-aW1lbnRhbCkuCgpDYW4gaXQganVzdCBiZSByZW1vdmVkPwoKdGhhbmtzIGZvciBhbnkgYWR2aWNl
-IG9yIGNvbW1lbnQuCgpiZXN0IHJlZ2FyZHMKIFdhbGRlbWFyCgoKwrkgaHR0cDovL3d3dy5tdXNs
-LWxpYmMub3JnLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi,
+
+I have a Focusrite Scarlett 2i4 USB Audio Interface. The audio format
+exposed by ALSA for  this device is S32_LE. From the hardware specs and
+lsusb. it supposed to only have a 24 bit resolution (with the LSB bits set
+to 0):
+
+AudioStreaming Interface Descriptor:
+        bLength                 6
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bSubslotSize            4
+        bBitResolution         24
+
+When I query the sbits for this device, I expect it to return 24, but
+instead it returns 32. Looking through the usb audio driver code, it
+doesn't look like this information is actually exposed to userspace. The
+'parse_audio_format_i_type'  in usb/format.c merely returns the supported
+formats, but doesn't include any msbits info. (and it doesn't look like it
+can be easily changed to return the msbits info as well).
+
+Was this intentionally left out, or is this a missing feature in the driver?
+
+Thanks,
+
+Sander
