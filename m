@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: snd_soc_codec includes
-	snd_soc_component
-Date: Tue, 17 Sep 2013 13:26:32 +0100
-Message-ID: <20130917122632.GZ21013@sirena.org.uk>
-References: <87eh97sqw7.wl%kuninori.morimoto.gx@renesas.com>
- <87eh94xab2.wl%kuninori.morimoto.gx@renesas.com>
- <87d2ooxa9o.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 1/1] ASoC: fsl_spdif: Remove redundant
+	semicolon
+Date: Tue, 17 Sep 2013 13:36:08 +0100
+Message-ID: <20130917123608.GA21013@sirena.org.uk>
+References: <1379067762-4881-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9135695224535844618=="
+Content-Type: multipart/mixed; boundary="===============2688177582945688990=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id DAFBC261675
- for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 14:26:38 +0200 (CEST)
-In-Reply-To: <87d2ooxa9o.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D0275261675
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 14:36:11 +0200 (CEST)
+In-Reply-To: <1379067762-4881-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9135695224535844618==
+--===============2688177582945688990==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="b/1sb/HZzV9blKCG"
+	protocol="application/pgp-signature"; boundary="8teuZUM8bA5gqecl"
 Content-Disposition: inline
 
 
---b/1sb/HZzV9blKCG
+--8teuZUM8bA5gqecl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Sep 04, 2013 at 07:39:03PM -0700, Kuninori Morimoto wrote:
-> Codec includes component by this patch,
-> and component moved to upside of codec
-> to avoid extra declaration.
-> Codec dai will be registered via component
-> by this patch.
+On Fri, Sep 13, 2013 at 03:52:42PM +0530, Sachin Kamat wrote:
+> Redundant semicolon at the end of brace is removed.
 
-Applied both, thanks.
+Applied, thanks.
 
---b/1sb/HZzV9blKCG
+--8teuZUM8bA5gqecl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSOEp1AAoJELSic+t+oim97ocQAI2/lxlHKRnzf1+0/jPI+N3A
-QKm7Rk8UAkbwTmbWXLdru+I9ml0JSlFBY0v+QiD9GBpESehvbhrKUTzQ0v4eSoxB
-MO9gr2MBSUEZU1pXhh2UXQwCgbcAZtUXLJf+oC6Y7neYdhxgOM7HUXljAwwoQsle
-VIx4VPDG3CHBiStW+T0RkLpgZLnnpZuqFsUYRMPqbNF5sjLP8bCoCB8l6qoIJzO+
-NJEimBkMkdco1vJsInvYkaegbj6YB92pjGEZDazJt8WVDFD3zDNxLmdv9bxwGM1m
-hDCS7/yYeoGE2AJ8Dy0xSubVkD7Sv9rSp/cc8CsQ2oXi/1MrlVMOHdMTmBEhxmIa
-rJ9tjNSzSbMJM1q+1f9wQQLAoWrH8MXUrPSYSDIiFzph4tNkuvFERtDqOsuEqzbR
-TgB4fwLav3TBJLB9K1nZGuicRTYws1z8uC0jKfD7iwtrNQ3XYiaW+iX2wEeSJtUZ
-RWhr3EVDxJP1xcJVfSBXWkXHsza6YujTD0Pd0TBHwb/Ho5ccz553fTvf0sns1mEk
-H8AVlvVoR5MmqSCQnsO+ZWLzhhed4LziSRUxcIY5malrekhgrfT9stFM6WD1VgWu
-MM1EPZWfRDTKhuvfatZp3vYNhctRZm7voklyRn2AYx9dW+UXpPwSw/wp+efnCp/M
-sqP9panxYgc58YE+P31N
-=4B8f
+iQIcBAEBAgAGBQJSOEy1AAoJELSic+t+oim9uPgQAJWntFyyWERzWM7hhblCRVVl
+KF/J0tNg3GFKg/PeuVfdFsAiGZLzsN8TvuCiFpNVKZpL+/p2kHU5yvfaPHhz5A1o
+9st2p3Ol3EIAjf18UPn6AG5N4zf7UCLnV8x9zgfSFtm3gDakAnMno/Lqu41OIZfP
+QOz4sk6EitJAyJHd1Rn0zb06oqQvtXUAbdVTGxrB7CSMNW2Eg9QmKvwHBWnq4bJU
+wQuFNwUPY0Nc2W85LfDZb/s1GfS3SMaki7ftzO+orcnv6tR4UoUAPHX7NnHBJ6wu
+vdW0BzEymr8GNcyTjs2giOebay2dNUpqPLCs/yuy5Ji0fGoCoHBTCY4RrPtMh+5i
+CzwQu2hSe0H8AxiqCV+Kr7nAbQvR7/guWauSR4Q6EISyx54NxmXG5UCkXTTNOSRH
+qVcieDXwJ/ak7wkKjjkixbGplpQYPo1y/LfwYcY5tUiIWNVYZjUl/OWusQwIyswm
+JDlcbf3iBU3xoG6sNckexDe8HHgIEl5Rv8xDYn3xqI/25Tt/3vvvhFxzQhPxz4fM
+YW9rRjEujdInnn2XobGKlain23Mh1B90vysxfA/EYc1efYH+0hdSYOb2skNokyqf
+QZVT4P3CNqoY/HMHeBSe925z8hNKtAWSKuHvqbqt1ID7YB3+gQgXieIQhDqTCndK
+d+jD5eUmITAbE7D4g376
+=NjSy
 -----END PGP SIGNATURE-----
 
---b/1sb/HZzV9blKCG--
+--8teuZUM8bA5gqecl--
 
---===============9135695224535844618==
+--===============2688177582945688990==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9135695224535844618==--
+--===============2688177582945688990==--
