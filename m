@@ -1,78 +1,67 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 3/4] ASoC: rsnd: gen: rsnd_gen_ops cares
- .probe and .remove
-Date: Tue, 17 Sep 2013 13:58:26 +0100
-Message-ID: <20130917125826.GA14323@sirena.org.uk>
+Subject: Re: [PATCH v2 4/4] ASoC: rsnd: use regmap instead of original
+ register mapping method
+Date: Tue, 17 Sep 2013 14:04:02 +0100
+Message-ID: <20130917130402.GE21013@sirena.org.uk>
 References: <87sixrre8r.wl%kuninori.morimoto.gx@renesas.com>
  <87mwnvsy7a.wl%kuninori.morimoto.gx@renesas.com>
- <87ioyjsxvj.wl%kuninori.morimoto.gx@renesas.com>
+ <87hae3sxt2.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6429194568692323607=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 16A4A265141
- for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 14:58:30 +0200 (CEST)
-In-Reply-To: <87ioyjsxvj.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KMIs29sPfC/9Gbii"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87hae3sxt2.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Simon <horms@verge.net.au>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6429194568692323607==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
-Content-Disposition: inline
-
-
---5vNYLRcllDrimb99
+--KMIs29sPfC/9Gbii
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Sep 01, 2013 at 08:31:16PM -0700, Kuninori Morimoto wrote:
-> Current rsnd_gen_ops didn't care about .probe and .remove
-> functions, but it was not good sense.
-> This patch tidyup it
+On Sun, Sep 01, 2013 at 08:32:45PM -0700, Kuninori Morimoto wrote:
 
-Applied, thanks.
+> +void rsnd_write(struct rsnd_priv *priv,
+> +		struct rsnd_mod *mod,
+> +		enum rsnd_reg reg, u32 data)
+> +{
+> +	struct rsnd_gen *gen = rsnd_priv_to_gen(priv);
+> +
+> +	if (regmap_fields_enable(gen->regs[reg]))
+> +		regmap_fields_write(gen->regs[reg], rsnd_mod_id(mod), data);
+> +	else
+> +		regmap_field_write(gen->regs[reg], data);
+> +}
 
---5vNYLRcllDrimb99
+Ah, sorry - I see you are actually using fields_enable().  I must've
+searched for the wrong thing.  However looking at this I'm not sure that
+this is a good use anyway, it seems like the caller should know if the
+register it is writing to is in one of the repeated blocks.  Can you
+provide a bit more detail as to what's going on here?
+
+--KMIs29sPfC/9Gbii
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSOFHvAAoJELSic+t+oim927oP+wYaBN5BCsDvCPGC0ZweDcW/
-YVCSjxo4N/LgM2JGfyFa620WkMzQ+O12DuQo5xB3OmA4wTk3jVpdbYFcM1OdFqrI
-7r8Mts+y3t9/v7GpNnJSINflSp6Wt/ny5PgJouNWJFR4xzFMx5TU2cCL2u/7dLj5
-BobDkJJTAct8Ztd7GRaAq5pBy54fteIkW+mt6U44eutSveL6XPPz5fV34elbcyOE
-52OiBjWCsEeYzb9R66sc6vE0XlP4A5sbtEzL4z5qqQgb7nOiGrKWXdYIYWjHOaxO
-s8R+nzr8+pepLiveSLqi9AoZ1Za/fkRGwmWh3Dn9+SVlAtXOVCefKanCFmylPTxi
-hdFn1alucNRT83dGKMh4ynpft+K1oCsnGDZNS29fg6n66fNh3jSWOD/HmLI3Y3Ig
-Fxxx5rkTXrnNWMEW3xvMTsiThC/DCn0/ohq39p3Y4lB0/hLmF2CBVc1Q+6lMnXy/
-HEZtC2+ysjl5M/fUVrASUonJ2QrXgjk2tZGrUl116Q/+sDrSjNlvcKFFJrFrIVkQ
-VTeaV1xQAhgV2wWPOYOU56TgBYzaPi9mOMajFt9aKYzboKOOOwf9KPEgx7ghivQF
-vU8Vby/jRngekEj851uTKNlWPvc8Vsup7GeHbBu8oL0YJAnNTVMcYz3dHJ/2EQoO
-VsIxUbnALJopVFFPi6Gf
-=0Ca9
+iQIcBAEBAgAGBQJSOFM/AAoJELSic+t+oim9FtMP/19FYyF0X3HmIBRJXE+Y/+ZZ
+sJQNrcrsncmXyfRL9SrBXZP5rTkh14D4modMyXTj8njS11B0z+nQ4VUUClvaVJGY
+B1kPJXFsk9nAAWFRg9i8/HLAwFgJcA/2xmLm4jOrhokHBC8eHdX4Dd26uIDnELjt
+VFqgTGjPUlu9RBlRx3dwHweV4S4eTaa6hr1FZGfgATbKOv/9xoOvtUKjVv365kug
+n22cOJ8UL3pGJvUZXH9iDH3Nzef2DVQt0DXHWJNelybAkaZkWrPOqjMC4LibJVRB
+VBmOj8j3at7M/Ly6Vu4GFRgrkHTgFYaNXULzqus6XVH2TWGJ43kO0ob/kbRmCSUW
+8T8oK7x8TCY00dx6vjg8MYwiuiRELP/uojEauKEc1V131OdDyUZdcv1wJaFSaNAJ
+BYc2lG9UTC63oR1OrZYCzG0Mc6Qy/niSC+svOX6V3idordS3K2ov/AAZX9e+E8Mm
+7kF6xya+/947WIBdvAmqy7krgovRzfsY1gz018bCPt5jeDy7SAy30j6EdIufjpmF
+yQQbhd5TumIPsG4QiIEwGNCYZxNYIdsl7fNF9h7ZH975y4z3TvIJzQVpn2rR/lo/
+PpONwGap3c8nPiO68A202MvW3ExeUpqSa1uT/ciK9t54LNx0cvt9u1psguY+2rlL
+OSE4A5HbrHh0XFKwrLNH
+=P8FL
 -----END PGP SIGNATURE-----
 
---5vNYLRcllDrimb99--
-
---===============6429194568692323607==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6429194568692323607==--
+--KMIs29sPfC/9Gbii--
