@@ -1,60 +1,58 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v2 05/11] ASoC: davinci-mcasp: Remove
- interrupt property from DT bindings doc
-Date: Wed, 18 Sep 2013 15:46:35 +0100
-Message-ID: <20130918144635.GT21013@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH v2 06/11] ASoC: davinci: Add support for
+ AM33xx SoC Audio
+Date: Wed, 18 Sep 2013 15:47:24 +0100
+Message-ID: <20130918144723.GU21013@sirena.org.uk>
 References: <cover.1379409268.git.jsarha@ti.com>
- <1b47734e397bfac8846dcfc194fd1ab63f320d1a.1379409268.git.jsarha@ti.com>
+ <c59efc1524b19f50dc37606bfa246dde9c20d312.1379409268.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="m+1hRa/9CwYN9i9M"
+	protocol="application/pgp-signature"; boundary="w5nY8nmEklXMR7Cj"
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1b47734e397bfac8846dcfc194fd1ab63f320d1a.1379409268.git.jsarha-l0cyMroinI0@public.gmane.org>
+In-Reply-To: <c59efc1524b19f50dc37606bfa246dde9c20d312.1379409268.git.jsarha-l0cyMroinI0@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: jsarha-l0cyMroinI0@public.gmane.org
 Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nm-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org, gururaja.hebbar-l0cyMroinI0@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---m+1hRa/9CwYN9i9M
+--w5nY8nmEklXMR7Cj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 17, 2013 at 12:26:04PM +0300, jsarha-l0cyMroinI0@public.gmane.org wrote:
-> From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+On Tue, Sep 17, 2013 at 12:26:05PM +0300, jsarha-l0cyMroinI0@public.gmane.org wrote:
+> From: "Hebbar, Gururaja" <gururaja.hebbar-l0cyMroinI0@public.gmane.org>
 >=20
-> Davinci McASP driver does use interrupts for anything ATM.
+> AM33xx uses same McASP IP as the Davinci Platform. This patch updates
+> Kconfig and makefile to enable build for McASP, PCM & Codec drivers.
 
-How about moving these to optional instead of removing them completely
-(or just leaving them alone)?  That way if the driver does want to start
-using them people will have hooked them up already so no updates will be
-required.
+Applied, thanks.
 
---m+1hRa/9CwYN9i9M
+--w5nY8nmEklXMR7Cj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSObzIAAoJELSic+t+oim9aAUQAIyhKTdSnuLHkBBe48JPhUMj
-d5XCKQf/cvxwx9u/OEHL78JF2Q0EnFh1Y4I6adwHgugLPRRlCFI0mSp9KhqGmZLX
-z1zrM303wdX+7iDZxWjjq44OvkCFPjypaJ8CF6J8NsElwzGis3WTnDTwFpy+OtFB
-ISzsWBHvuwZIA9j7mdtc9NNUw2xPn49IwY6WlySScBssMjdkuGBWFDmZ/5uxMnCa
-vR8LxZrW3PB6AK4iE78tdTpxnSe839XfAxVa0nVLLvRisI9dWXC1mAZ+U8fnruqF
-pP/cDD8EBhmfMNqFeCXpLXuFTWRgDE90+So3JoRR0Zv+xue0HpjHcADJO8ndR7mS
-rzaHXI/+MJsBg63OHUn+qH8ko6tnDv6VC/cqApq6KkuY0u9XMCHKY9O/nLhEVg/0
-ZTjPaMFTJ6N5ZpkOCbjwl5vI50aGOigNZ/ZJw6SYPj0o+/SFhVVqmmEL1WwkLVlC
-zXO6OvhrO5tT5ftzdjD6vBFTgrVQ0KV2+Kd2YnHze2CTBuk/yxhUqeQRogLZilOc
-kgrdT+If7u0DbdUZDmTtjGQQqR0tTQM/RgkRGWIMqE7+ttD9QbU/aBR4BvZ5Rp/N
-tXf8gh6WWWyWtVGgZ8Wd9Sq6BnTHRLpcpwwieu1R/vPJeRoOyPu17bNSHyQxTLoS
-T/JBjCJlejYCfmXuwsN1
-=Nlus
+iQIcBAEBAgAGBQJSObz4AAoJELSic+t+oim9+7cP/ita+VvmIhDdk9MYICJxFPtw
+ajZg3yiezJ6Q5Lx9z2VyMa3NUuHBUN32XRLorGyanA5x/iZqdbnLlcQP6zkGrNoJ
+HY+doq/8LclXgTLFJPOTR48xktUKTLLNgb+lJ735LUJT4rBfY+Qkw+/7/WJFEVnn
+cq8QI978ZEmNmILpQVFOW9xiDJObIrcq5qsStLUj1kDqmOjWROs1VuCRjis4Cm+c
+bioMhgYV32KAOrGlzhtXw8SJt+XPwakwKcI+sTfKI0BIzU1XVP9RzPUtstr15RlI
+l4hsONl+uzZ//at137fSUot/Tm2HWPhR5BVt3iVC7xMOEsHiLsEhsbSHOES9rZVP
+qNc3GmFMmPd+hNgTCBaplXdo6+KT+N9IcCBIuVkIMOG0V4rDTgPJJqLCXQLWj/b0
+Xxt9fhv6Kcixhn9IY7TMQTCpf8IDt+abjgPHxrVU638ngcYHipsg+xM/9UDOJTmj
+IvwO17/Z+VfqC59dzTxqfKedt8y2OLoKg8HNx6Q3R/4tphH+GKL2YpfTE/zJ/DrQ
+malb3jqcg4Yb2tj0UbuZ+QcwLiFyE7EK3NDh/crjvcJWuwnnwSmMW4FPvCE/tweD
+YhRc/rQVMMBIaEo+qdQovkEUr1CGh+4+SoR74CZreq0VyXSzNKgN7O31xJIiJIhY
+OBMV3ISAFx4S8o0Mb6Ku
+=F8aa
 -----END PGP SIGNATURE-----
 
---m+1hRa/9CwYN9i9M--
+--w5nY8nmEklXMR7Cj--
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
