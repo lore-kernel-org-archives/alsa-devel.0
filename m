@@ -1,78 +1,61 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 08/11] ASoC: tlv320aic3x: Add codec pins
- to DT bindings document
-Date: Wed, 18 Sep 2013 15:50:23 +0100
-Message-ID: <20130918145023.GW21013@sirena.org.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 04/11] ASoC: davinci-mcasp: Extract DMA
+ channels directly from DT
+Date: Wed, 18 Sep 2013 15:51:06 +0100
+Message-ID: <20130918145106.GX21013@sirena.org.uk>
 References: <cover.1379409268.git.jsarha@ti.com>
- <6ea3d67f8bc283bb7ab0087ccefe411bb2487603.1379409268.git.jsarha@ti.com>
+ <dc7012e1c2ae59c35eedd9328139f1060048b395.1379409268.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1644734476608539198=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B7292610A6
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 16:50:36 +0200 (CEST)
-In-Reply-To: <6ea3d67f8bc283bb7ab0087ccefe411bb2487603.1379409268.git.jsarha@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: jsarha@ti.com
-Cc: nm@ti.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, joelf@ti.com, gururaja.hebbar@ti.com, detheridge@ti.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="rVbcdceMkFY6fDyG"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <dc7012e1c2ae59c35eedd9328139f1060048b395.1379409268.git.jsarha-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: jsarha-l0cyMroinI0@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nm-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org, gururaja.hebbar-l0cyMroinI0@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1644734476608539198==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8QANErTbuLtKTfKg"
-Content-Disposition: inline
-
-
---8QANErTbuLtKTfKg
+--rVbcdceMkFY6fDyG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 17, 2013 at 12:26:07PM +0300, jsarha@ti.com wrote:
-> From: Jyri Sarha <jsarha@ti.com>
+On Tue, Sep 17, 2013 at 12:26:03PM +0300, jsarha-l0cyMroinI0@public.gmane.org wrote:
+> From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 >=20
-> Add list of codec pins to tlv320aic3x DT bindings document.
+> Extract DMA channels directly from DT as they can not be found from
+> platform resources anymore. This is a work-around until davinci audio
+> driver is updated to use dmaengine.
 
-Applied, thanks.
+Looks good to me but again should get the DT maintainers to check out
+this lot.
 
---8QANErTbuLtKTfKg
+--rVbcdceMkFY6fDyG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSOb2sAAoJELSic+t+oim9BWgQAIISjuYz5vyW4MIHZzKnslC4
-ukbfLng0jYQjJchXbwpf5iz39HxajD2Cl+mK5Q/iZKVHw5K0Ik6erx8qTzK8ne9k
-nuuN5yWWVYaAMGnS8dO50NfyZWSJkWmJCe8gYCEkY7RhbsiwOgnoeKf1FwA8B4lo
-DAj9+TRq+ODPXfNVWvxOagHIVT/SZOcndwAND+97SU9ujdt3kCImrLBHBUndeoz1
-UCr2krOeLCRE29qHEl0EWp/BSqJBrwWMBOugr1JyrOyC0OzV5mRTvypJGNMNcsEY
-dutn9vJoQdIo1Uv3Omtroc2AkHbBTM+fe6wzPUYEJWvHQ98/kOH1X4neKRgmCkUM
-W7qCIgHhlFGESp/XioiLjy18T05X6hw0Xql6Gzt9gkIKS+AcJkYx+iT7sYhL0rTu
-G4DMBXyWyWrhJcDskYr/u7uDDs9Nx6oRTqXj3gQJyAhOG/h5Lcgaw3ioR3QuHup0
-hI5mZU70FPc0LxKeujgYpbbEglRSseFOCMTCG5IxdhJ3vHXwvQVB79NoOiGoCa6c
-x8jYtVbGnP7ZwSVO+WQdEuUSK5CaFh+EVIFPrZ+RheqZHOkEtlR4I9pTmp1wDQBF
-JlMa4EM1ld68FzikLZsLW3Fqvpn+hbTxmeuKAQTMxFFsfMR/vGE/C51oPWE8pnrP
-WUvaWVgDkWx6dL/Qyo0K
-=JE+a
+iQIcBAEBAgAGBQJSOb3XAAoJELSic+t+oim97SAP/1EqTSuNuUD2WIK9LQ9ewUD1
+aQYQLjQ6bXPyzY/xg/hWJnGapDuJ7qOHGTvxJ1wgjZXBAd9n68dx0GS5MCc8jvPH
+aPPPuXtm2021EgSpSerHOwTIABS/ZLIkIBhsko1rr0454tkBoJWFytQ86Ch+uT3c
+ZqWSWkaSbnZ8jluVzFixO5DL+8RhzSyWEONqT0Ok27zSk9OL+58dCV/tlLhupuQI
+/4noBML3pKyodO1TuSPOrbiEFjRR2+igbRezgYNg3uzvFlRTlC15WJowJkA2OQpQ
+8y2H7fnvmBkDpYy9V15GZUv3piZXhOl6P8sa5ra9JsDO+o6pNLjphtJCsmG0brCU
+bE3/wIU9LAtmw788r5EeKST94FohN4rON6srfu2qHe5k5kWdHIo9hnIbuUFtap+W
+2eELcrqCsnWsWQWbW5j2WPFO19ydKuM7rBE1uYAqpUHFpHhPSiccgZVukJlo/AeO
+5/CbFunx3fzBqcQwLJpCHITxngIgsopCPvFEuGLSckFqe3wZGVkqTO7r3e5LMcf5
+51k7iMDnaehbve1d5dFIG9udsBlC5bS/nGIUwwAx4hJwzD1uIfnUsjJ/tkWmw+LE
+N9rt1LmxanSbRzepE8qGwjVIq79pv3N0+mKh/OIjaZ21hwqovRcEZhzHka9LoYLa
+plToN7yZbTVh73fI60Fz
+=4CPE
 -----END PGP SIGNATURE-----
 
---8QANErTbuLtKTfKg--
-
---===============1644734476608539198==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1644734476608539198==--
+--rVbcdceMkFY6fDyG--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
