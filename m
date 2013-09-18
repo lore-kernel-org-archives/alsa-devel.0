@@ -1,68 +1,70 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v2 05/11] ASoC: davinci-mcasp: Remove
- interrupt property from DT bindings doc
-Date: Wed, 18 Sep 2013 16:07:28 +0100
-Message-ID: <20130918150728.GZ21013@sirena.org.uk>
-References: <cover.1379409268.git.jsarha@ti.com>
- <1b47734e397bfac8846dcfc194fd1ab63f320d1a.1379409268.git.jsarha@ti.com>
- <20130918144635.GT21013@sirena.org.uk>
- <5239BD42.2060903@ti.com>
+From: Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH] ASoC: rt5640: ifdef for ACPI module table
+Date: Wed, 18 Sep 2013 08:10:27 -0700
+Message-ID: <CAOesGMjgvfqsx=Q+qJUdWPdomAkDktd1T6=sKjANC-8SnY8VPA@mail.gmail.com>
+References: <1379484624-11029-1-git-send-email-olof@lixom.net>
+ <523955BC.2050506@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fIj/D6Y6BN1okdX1"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <5239BD42.2060903-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Nishanth Menon <nm-l0cyMroinI0@public.gmane.org>
-Cc: jsarha-l0cyMroinI0@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org, gururaja.hebbar-l0cyMroinI0@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
+ [209.85.212.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30FF72610A6
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 17:10:28 +0200 (CEST)
+Received: by mail-wi0-f180.google.com with SMTP id hj3so6638761wib.1
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 08:10:27 -0700 (PDT)
+In-Reply-To: <523955BC.2050506@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: liam.r.girdwood@linux.intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, broonie@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Sep 18, 2013 at 12:26 AM, Jarkko Nikula
+<jarkko.nikula@linux.intel.com> wrote:
+> On 09/18/2013 09:10 AM, Olof Johansson wrote:
+>>
+>> Commit 02b80773de37 (ASoC: rt5640: Add ACPI probing support.) causes
+>> a warning due to unreferenced variable on non-ACPI configs such as
+>> tegra_defconfig on ARM:
+>>
+>>    sound/soc/codecs/rt5640.c:2085:30: warning: 'rt5640_acpi_match' defined
+>> but not used [-Wunused-variable]
+>>
+>> Signed-off-by: Olof Johansson<olof@lixom.net>
+>> ---
+>>   sound/soc/codecs/rt5640.c |    2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+>> index 0bfb960..a856706 100644
+>> --- a/sound/soc/codecs/rt5640.c
+>> +++ b/sound/soc/codecs/rt5640.c
+>> @@ -2082,11 +2082,13 @@ static const struct i2c_device_id rt5640_i2c_id[]
+>> = {
+>>   };
+>>   MODULE_DEVICE_TABLE(i2c, rt5640_i2c_id);
+>>
+>> +#if CONFIG_ACPI
+>>   static struct acpi_device_id rt5640_acpi_match[] = {
+>>         { "INT33CA", 0 },
+>>         { },
+>>   };
+>>   MODULE_DEVICE_TABLE(acpi, rt5640_acpi_match);
+>> +#endif
+>
+> My 1c, maybe #ifdef?
 
---fIj/D6Y6BN1okdX1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yeah, I should have sat on this until morning, I cooked it up too late
+last night. :)
 
-On Wed, Sep 18, 2013 at 09:48:34AM -0500, Nishanth Menon wrote:
-> On 09/18/2013 09:46 AM, Mark Brown wrote:
 
-> > How about moving these to optional instead of removing them completely
-> > (or just leaving them alone)?  That way if the driver does want to start
-> > using them people will have hooked them up already so no updates will be
-> > required.
-
-> the definitions as they stand now make no sense as the ordering of the
-> interrupts are undefined - example is the first index RX or TX? the
-> alternative will be PIO McASP driver, which might be nice, but having
-> a vague binding with 0 code behind is of no use for anyone right?
-
-So the sensible fix seems to be to specify the order rather than remove
-them then...
-
---fIj/D6Y6BN1okdX1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSOcGtAAoJELSic+t+oim9TEEQAJlPqcW1mTBIWz5009R+fD/m
-KuzRA2Q2VaJBnNZc/BUE7bi72oGW0DceftBfjkopWQ3YRHunkO31mXW3ZGmLJazn
-9Djphs6n3u31ZsWbfzcO25AIPIwvaaH1DMi/S+fXbgpgHcJ/QrsZz+N9nJhsQJru
-ywTzduuNMDhjq30LagB4EnENR4F0ZNIqR6rTsThBMlRYtLhBRefRBBp05ityLg1d
-zh6rb/nx9f0KW/FTXyPQstVn3QBNoTePqS/1LAfC3+6rCeu8xe1QtLC9VoF4O4bc
-ciTgUHNLFy6Ff+3aX9i+Znud0w2O9t+r91eeal+SFlclcNIMlgzorDRj3+ayMfbl
-E+CSA7cHAW9WpWOzp5YRmkhF9TgrnQGHTkwWF+Gqvza46YlV4NvYqtbhv7gqNyCZ
-tqj7w2jb1lXBprpmNjoS5+c6ippdv4/vVmIBJWoOwsKxVol5wi59CEc/dO+izIWK
-Lbxg7JN+QJ35cYjvw6DD+0apqE4ypheDdx4/MzFFUeZsd+fCYvAJBZomettd689l
-6yM0afvWPSIP9niS3UH3nK7vNyr+Yevkv37RYkwLlOkzML2/w0sf4nSZ+3Rv8hDD
-uVT7MaI+gWM+cIgPREsLFqo9KmqoBh9jMX2H9Zr7pRlkOei7CrY8RUT7Ct+Aaz1P
-cbuSkYKPAL/XJ3qAxhTC
-=q1OH
------END PGP SIGNATURE-----
-
---fIj/D6Y6BN1okdX1--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-Olof
