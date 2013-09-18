@@ -1,58 +1,79 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v2 00/11] Fix AM335x-evm analog audio support
-Date: Wed, 18 Sep 2013 10:42:52 +0100
-Message-ID: <20130918094252.GM21013@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 01/11] ASoC: davinci-evm: Move sysclk
+ logic away from evm_hw_params
+Date: Wed, 18 Sep 2013 10:53:38 +0100
+Message-ID: <20130918095338.GN21013@sirena.org.uk>
 References: <cover.1379409268.git.jsarha@ti.com>
+ <dad0f7eb787d3f65848425a67d668e3935033195.1379409268.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0yM48dKbQb4SmPLM"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <cover.1379409268.git.jsarha-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: jsarha-l0cyMroinI0@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nm-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org, gururaja.hebbar-l0cyMroinI0@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============6504736477374074301=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C7BE260818
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 11:53:40 +0200 (CEST)
+In-Reply-To: <dad0f7eb787d3f65848425a67d668e3935033195.1379409268.git.jsarha@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: jsarha@ti.com
+Cc: nm@ti.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, joelf@ti.com, gururaja.hebbar@ti.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---0yM48dKbQb4SmPLM
+--===============6504736477374074301==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HJakWL7yBo69DI1O"
+Content-Disposition: inline
+
+
+--HJakWL7yBo69DI1O
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 17, 2013 at 12:25:59PM +0300, jsarha-l0cyMroinI0@public.gmane.org wrote:
-> From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+On Tue, Sep 17, 2013 at 12:26:00PM +0300, jsarha@ti.com wrote:
+> From: Jyri Sarha <jsarha@ti.com>
 >=20
-> The first version of patches can been found here:
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-September/06617=
-8.html
+> The sysclk rate does not change runtime so it should be initialized at
+> init time.
 
-Please remember to always CC maintainers on patches.
+Applied, thanks.
 
---0yM48dKbQb4SmPLM
+--HJakWL7yBo69DI1O
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSOXWYAAoJELSic+t+oim9CgEP/RAG54eOKGo4CegA9RNAqDeC
-K6g0SMRYKI/RVZVkEW1Pl3F2gsC90WEqiZxH++oD/SvD1CCxXmLN2WvbW+8kRN70
-UfPXIGGft1WYFx0TT6p2NVGunD3tUgxuWVmB8ZEQNjeh7T2d/MVQ68ckWibfI/gV
-T+8n8SCiEbpWYIW/g7lcLndjAYMFJ4AR+zWrUp+7cBND6BwBOH7ruG0ppJoIZUrd
-pXAhTkBvrO4yKwFCrr2/s9P7wZRObxJwJpGh2TcnRZCWkjN7cQuZwzgpbr5WqMr7
-Z4v4ZX4E/Y+sgAiekZYB9iuxjStcUT1ewq60zsJIOyLm8q5TzvdDBn+jc+N6/NVd
-F0zyUH59ZdXU+M+D2G+l8dwd/sB9MSJvUn3NS/RcqX1NpwTXysqEvLOOFg3fGu0o
-EB/+7pLHAXgmSGwerMtk7Uj8qdxgwUy/UfMPjx0iFCoBH1Lri2YeVWhTe6Mn+SvW
-YNM0ZbirVMnWZoPdZPkx9ScP7qHxyNPOoRJWJcMB3FYfTHj7Sz1XW8Vn+Vr6xm67
-DXh7TcMe0MYFFiEpKkyL4aTBDy+vPofsOB2Qm4TEBmprRClBmRErLhy+InDdzPxE
-FesvKb2LNwbLUzftnoRd88TWkGY/DYpL2Y6DJiWoew00PRUbhYA4Eupamkx+QJl6
-yDwp+bze3aHBr7wGb63m
-=Dmst
+iQIcBAEBAgAGBQJSOXgeAAoJELSic+t+oim9tdkQAIgyk/5gVx36DwsdI70WDHKd
+1y+GOA0kjr5H1+Cvoxobh0jGt+LffOpTFq2XuInqwoDC+iMpTJgDkR5jb7UpemZP
+ybuYjGQhwUM2oVhWlSUH+k4YX3EeR4ZaQEZS1x/zm9zHqh7ArMHkSiCCq2WjzfCh
+/DGhQde6vXF1Da8XjioiDjO5JD84WBAgW8OfXtvv7CfOhMn4yw18YgYLgleog44n
+kmCI9cZcfSI4YLU9BLgsEyZizAppKQkFSHs2FasBGE5oh0PmP0Jm1LMzVXG8Bzvc
+HxvsKtpqgCh4/hrQetFBczzSbZIZlaAuTQb6qIHjCtv7NI7ta+HEpDKVdhyzn2w7
+5qhOKohTB5vGbOsDFlElW2wf3ZiHVueNWaETQPMjgNZcMk0Xrij3cl1gf2f1M/jT
+sIb/JfMzIXOT3q3+ujUsZJUfGQBneBXbewbGDZOQf4TZQP9U1VQkn7dolIQQiIWB
+eaKPfvzlk/pTihWeLoEcJI7ZyrS4yVqTE2u/jfxaiKfIhI7aw+GYrBpDhiIbuipV
+Hcq4HPnojXcXiCAyVJUrcyn4e2fPRMAQHfvtrNITyqqWbnY/ouC3RMt9RKP9GI9R
+l9Gd3o3g3eC60uZE72Vohqj2Xaf49SyT0Wp52bGoyjqJ5S/mjktjP9p/65jV8wRF
+Ec3hmACEqugEdd0pZz5c
+=MvLK
 -----END PGP SIGNATURE-----
 
---0yM48dKbQb4SmPLM--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--HJakWL7yBo69DI1O--
+
+--===============6504736477374074301==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6504736477374074301==--
