@@ -1,16 +1,25 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: [PATCH] ASoC: rt5640: ifdef for ACPI module table
-Date: Wed, 18 Sep 2013 10:26:52 +0300
-Message-ID: <523955BC.2050506@linux.intel.com>
-References: <1379484624-11029-1-git-send-email-olof@lixom.net>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v2 05/11] ASoC: davinci-mcasp: Remove
+ interrupt property from DT bindings doc
+Date: Wed, 18 Sep 2013 10:40:14 +0300
+Message-ID: <523958DE.9040803@ti.com>
+References: <cover.1379409268.git.jsarha@ti.com>
+ <1b47734e397bfac8846dcfc194fd1ab63f320d1a.1379409268.git.jsarha@ti.com>
+ <52393F10.4090405@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F433260844
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 09:26:55 +0200 (CEST)
-In-Reply-To: <1379484624-11029-1-git-send-email-olof@lixom.net>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id DEE9D260840
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 09:40:16 +0200 (CEST)
+Received: from dflxv15.itg.ti.com ([128.247.5.124])
+ by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id r8I7eFA5013689
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 02:40:15 -0500
+Received: from DLEE71.ent.ti.com (dlee71.ent.ti.com [157.170.170.114])
+ by dflxv15.itg.ti.com (8.14.3/8.13.8) with ESMTP id r8I7eFaC003052
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 02:40:15 -0500
+In-Reply-To: <52393F10.4090405@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,38 +29,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Olof Johansson <olof@lixom.net>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@linaro.org
+To: Gururaja Hebbar <gururaja.hebbar@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/18/2013 09:10 AM, Olof Johansson wrote:
-> Commit 02b80773de37 (ASoC: rt5640: Add ACPI probing support.) causes
-> a warning due to unreferenced variable on non-ACPI configs such as
-> tegra_defconfig on ARM:
+On 09/18/2013 08:50 AM, Gururaja Hebbar wrote:
+> On Tuesday 17 September 2013 02:56 PM, jsarha@ti.com wrote:
+>> From: Jyri Sarha <jsarha@ti.com>
+>>
+>> Davinci McASP driver does use interrupts for anything ATM.
 >
->    sound/soc/codecs/rt5640.c:2085:30: warning: 'rt5640_acpi_match' defined but not used [-Wunused-variable]
+> s/does use/does not use
 >
-> Signed-off-by: Olof Johansson<olof@lixom.net>
-> ---
->   sound/soc/codecs/rt5640.c |    2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-> index 0bfb960..a856706 100644
-> --- a/sound/soc/codecs/rt5640.c
-> +++ b/sound/soc/codecs/rt5640.c
-> @@ -2082,11 +2082,13 @@ static const struct i2c_device_id rt5640_i2c_id[] = {
->   };
->   MODULE_DEVICE_TABLE(i2c, rt5640_i2c_id);
->
-> +#if CONFIG_ACPI
->   static struct acpi_device_id rt5640_acpi_match[] = {
->   	{ "INT33CA", 0 },
->   	{ },
->   };
->   MODULE_DEVICE_TABLE(acpi, rt5640_acpi_match);
-> +#endif
-My 1c, maybe #ifdef?
 
--- 
-Jarkko
+I'll fix that.
+
+Thanks,
+Jyri
