@@ -1,26 +1,22 @@
-From: Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH] ASoC: rt5640: ifdef for ACPI module table
-Date: Wed, 18 Sep 2013 11:44:18 -0700
-Message-ID: <CAOesGMh1zSFnYTBjLdUPBv6od_K0okrTTipnhu6BjO-QX1X6PA@mail.gmail.com>
-References: <1379484624-11029-1-git-send-email-olof@lixom.net>
- <20130918094158.GL21013@sirena.org.uk>
- <CAOesGMj52_xcKS4q54i_gw_T2xWt=c6rwBtP9Ds2LbytjRuNKQ@mail.gmail.com>
- <20130918153842.GA21013@sirena.org.uk>
- <20130918165334.GA26446@quad.lixom.net>
- <20130918172858.GE21013@sirena.org.uk>
- <20130918173620.GA28143@quad.lixom.net>
- <20130918183401.GG21013@sirena.org.uk>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Fwd: Re: Realtek ALC889: HDA Intel and kernel 3.1
+ gives choppy sound (again)
+Date: Wed, 18 Sep 2013 20:57:57 +0200
+Message-ID: <5239F7B5.9070905@canonical.com>
+References: <4EE8B368.2080605@herbesfolles.org> <s5h39cnnra5.wl%tiwai@suse.de>
+ <4EE8CAE4.4040609@herbesfolles.org> <s5hsjknm53r.wl%tiwai@suse.de>
+ <4EEF530D.9050205@canonical.com> <s5hd3bkk294.wl%tiwai@suse.de>
+ <4F2C3165.5060803@herbesfolles.org> <52347075.3000304@herbesfolles.org>
+ <5237776C.10000@canonical.com> <5239DC41.2050709@herbesfolles.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f170.google.com (mail-we0-f170.google.com
- [74.125.82.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 920762615BF
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 20:44:18 +0200 (CEST)
-Received: by mail-we0-f170.google.com with SMTP id w62so6981913wes.15
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 11:44:18 -0700 (PDT)
-In-Reply-To: <20130918183401.GG21013@sirena.org.uk>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD8F02615BF
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 20:57:54 +0200 (CEST)
+In-Reply-To: <5239DC41.2050709@herbesfolles.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,41 +26,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Arnd Bergmann <arnd@arndb.de>
+To: Colomban Wendling <lists.ban@herbesfolles.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 18, 2013 at 11:34 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Sep 18, 2013 at 10:36:20AM -0700, Olof Johansson wrote:
->> On Wed, Sep 18, 2013 at 06:28:58PM +0100, Mark Brown wrote:
->
->> > I'd have expected the folks doing the allyesconfig builds to have
->> > complained then...
->
->> Allyes will probably turn on CONFIG_ACPI and thus reference the variable
->> in the struct device.
->
-> Yeah, I was thinking of OF which isn't available on all architectures.
-> Perhaps it is on every architecture people tend to do this stuff on
-> though.
->
->> With the new of_match_ptr() and ACPI_PTR() you get rid of the
->> ifdef in struct device for those, but you still want it around
->> MODULE_DEVICE_TABLE() and the actual definition of the match table.
->
-> Hrm, perhaps that was what was supposed to happen - have
-> MODULE_DEVICE_TABLE() create the appropriate eliminateable static
-> reference so the compiler can figure things out and we don't need the
-> ifdefs.  It'd certainly be nice to elimiante more of these ifdefs.
-
-Easiest way to do that is probably to provide a new macro to declare
-the match tables with, that compiles out and/or gives appropriate
-attributes depending on what is enabled or not in the config. That
-gets rid of the ifdefs but we don't have anything like it today.
-
-I'm honestly not sure I think it's needed, the ifdef for the table
-doesn't bother me. But if people feel strongly about it then it's
-likely the best way forward.
-
-
--Olof
+T24gMDkvMTgvMjAxMyAwNzowMCBQTSwgQ29sb21iYW4gV2VuZGxpbmcgd3JvdGU6Cj4gVEw7RFI6
+IE9NRyBJJ20gYW4gaWRpb3QsIGp1c3QgZm9yZ2V0IGFib3V0IHRob3NlIG1haWxzLgo+IAo+IExl
+IDE2LzA5LzIwMTMgMjM6MjYsIERhdmlkIEhlbm5pbmdzc29uIGEgw6ljcml0IDoKPj4gQnR3LCBq
+dXN0IGEgd2lsZCB0aGVvcnksIGJlY2F1c2UgSSdtIHJlYWxseSBub3QgYSBzdWJqZWN0IG1hdHRl
+ciBleHBlcnQ6Cj4+IHNpbmNlIHRoaXMgaXMgYSBob21lLWJ1aWx0IGNvbXB1dGVyIChJIGFzc3Vt
+ZSksIEkgd29uZGVyIGlmIHRoaXMgY291bGQKPj4gYmUgYSB2ZXJ5IGhhcmR3YXJlIG5lYXIgcHJv
+YmxlbSAtIGkgZSwgaXMgdGhlIGNhYmxlIHRvIHRoZSBmcm9udCBwYW5lbAo+PiBjaGFzc2kgdmVy
+eSBjbG9zZSB0byBzb21ldGhpbmcgdGhhdCBnaXZlcyBvdXQgYSBsb3Qgb2YgRU1JIGRpc3R1cmJh
+bmNlCj4+IG9yIHNvbWV0aGluZyBsaWtlIHRoYXQ/Cj4gCj4gWW91J3JlIGEgZ2VuaXVzIGFuZCBJ
+J20gYSB0b3RhbCBpZGlvdC4gIEkgbmV2ZXIgdGhvdWdoIGl0IGNvdWxkIGJlIGl0LAo+IGJ1dCBh
+cHBhcmVudGx5IEkgb3Zlcmxvb2tlZCB0aGUgQUMnOTcgZnJvbnQgcGFuZWwgY29ubmVjdGlvbiBj
+aGFydCBmb3IKPiBIREEgcGlucy4gIFNpbmNlIEkgZGlkbid0IGNoZWNrIGhvdyBJIHBsdWdnZWQg
+aXQgcHJldmlvdXNseSBJIHdvbid0IGJlCj4gc3VyZSwgYnV0IEknZCB0aGluayBJIGRpZCBwbHVn
+IEZQX1JFVF9SIHRvIHRoZSBTRU5TRV9TRU5EIHBpbiAtLSB3aGljaAo+IHdpdGhvdXQgYSBzdXJw
+cmlzZSBsZWFkcyB0byB3ZWlyZCBzdHVmZi4KPiAKPiBJJ20gdGVycmlibHksIHRlcnJpYmx5IHNv
+cnJ5IGZvciBhbGwgdGhlIG5vaXNlLCBhbmQgZm9yIHdhc3RpbmcgeW91cgo+IHRpbWUuICBTb3Jy
+eS4KCk5vIHdvcnJpZXMsIGdsYWQgaXQgd29ya2VkIG91dC4gTm93IGF0IGxlYXN0IHdlIGtub3cg
+d2hlcmUgdG8gcG9pbnQgdGhlCm5leHQgcGVyc29uIGhhdmluZyB0aGVzZSBwcm9ibGVtcyEgOy0p
+CgotLSAKRGF2aWQgSGVubmluZ3Nzb24sIENhbm9uaWNhbCBMdGQuCmh0dHBzOi8vbGF1bmNocGFk
+Lm5ldC9+ZGl3aWMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
