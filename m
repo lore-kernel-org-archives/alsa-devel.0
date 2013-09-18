@@ -1,55 +1,58 @@
-From: Gururaja Hebbar <gururaja.hebbar-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH v2 05/11] ASoC: davinci-mcasp: Remove interrupt property
- from DT bindings doc
-Date: Wed, 18 Sep 2013 11:20:08 +0530
-Message-ID: <52393F10.4090405@ti.com>
-References: <cover.1379409268.git.jsarha@ti.com> <1b47734e397bfac8846dcfc194fd1ab63f320d1a.1379409268.git.jsarha@ti.com>
+From: Olof Johansson <olof@lixom.net>
+Subject: [PATCH] ASoC: rt5640: ifdef for ACPI module table
+Date: Tue, 17 Sep 2013 23:10:24 -0700
+Message-ID: <1379484624-11029-1-git-send-email-olof@lixom.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1b47734e397bfac8846dcfc194fd1ab63f320d1a.1379409268.git.jsarha-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: jsarha-l0cyMroinI0@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, nm-l0cyMroinI0@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f175.google.com (mail-pd0-f175.google.com
+ [209.85.192.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2AB4261AA7
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 08:10:02 +0200 (CEST)
+Received: by mail-pd0-f175.google.com with SMTP id q10so6571962pdj.20
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2013 23:10:02 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@linaro.org
+Cc: liam.r.girdwood@linux.intel.com, Olof Johansson <olof@lixom.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 17 September 2013 02:56 PM, jsarha-l0cyMroinI0@public.gmane.org wrote:
-> From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-> 
-> Davinci McASP driver does use interrupts for anything ATM.
+Commit 02b80773de37 (ASoC: rt5640: Add ACPI probing support.) causes
+a warning due to unreferenced variable on non-ACPI configs such as
+tegra_defconfig on ARM:
 
-s/does use/does not use
+  sound/soc/codecs/rt5640.c:2085:30: warning: 'rt5640_acpi_match' defined but not used [-Wunused-variable]
 
-> 
-> Signed-off-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-> ---
->  .../bindings/sound/davinci-mcasp-audio.txt         |    2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-> index 68e0f47..b5e7b78 100644
-> --- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-> +++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-> @@ -11,7 +11,6 @@ Required properties:
->  - reg-names : The mandatory reg-range must be named "mpu" and the optional DMA
->  	      reg-range must be named "dma". For backward compatibility it is
->  	      good to keep "mpu" first in the list.
-> -- interrupts : Interrupt number for McASP
->  - op-mode : I2S/DIT ops mode.
->  - tdm-slots : Slots for TDM operation.
->  - num-serializer : Serializers used by McASP.
-> @@ -40,7 +39,6 @@ mcasp0: mcasp0@1d00000 {
->  	#size-cells = <0>;
->  	reg = <0x100000 0x3000>;
->  	reg-names "mpu";
-> -	interrupts = <82 83>;
->  	op-mode = <0>;		/* MCASP_IIS_MODE */
->  	tdm-slots = <2>;
->  	num-serializer = <16>;
-> 
+Signed-off-by: Olof Johansson <olof@lixom.net>
+---
+ sound/soc/codecs/rt5640.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 0bfb960..a856706 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2082,11 +2082,13 @@ static const struct i2c_device_id rt5640_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5640_i2c_id);
+ 
++#if CONFIG_ACPI
+ static struct acpi_device_id rt5640_acpi_match[] = {
+ 	{ "INT33CA", 0 },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(acpi, rt5640_acpi_match);
++#endif
+ 
+ static int rt5640_parse_dt(struct rt5640_priv *rt5640, struct device_node *np)
+ {
+-- 
+1.7.10.4
