@@ -1,90 +1,58 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: ifdef for ACPI module table
-Date: Wed, 18 Sep 2013 10:41:58 +0100
-Message-ID: <20130918094158.GL21013@sirena.org.uk>
-References: <1379484624-11029-1-git-send-email-olof@lixom.net>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 00/11] Fix AM335x-evm analog audio support
+Date: Wed, 18 Sep 2013 10:42:52 +0100
+Message-ID: <20130918094252.GM21013@sirena.org.uk>
+References: <cover.1379409268.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3574197461554048318=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C5AB260818
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 11:42:05 +0200 (CEST)
-In-Reply-To: <1379484624-11029-1-git-send-email-olof@lixom.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Olof Johansson <olof@lixom.net>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0yM48dKbQb4SmPLM"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <cover.1379409268.git.jsarha-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: jsarha-l0cyMroinI0@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nm-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org, gururaja.hebbar-l0cyMroinI0@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3574197461554048318==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="zhjhOMouxCL2qD2w"
-Content-Disposition: inline
-
-
---zhjhOMouxCL2qD2w
+--0yM48dKbQb4SmPLM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 17, 2013 at 11:10:24PM -0700, Olof Johansson wrote:
+On Tue, Sep 17, 2013 at 12:25:59PM +0300, jsarha-l0cyMroinI0@public.gmane.org wrote:
+> From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+>=20
+> The first version of patches can been found here:
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-September/06617=
+8.html
 
-Please send things to the advertised maintainer addresses.
+Please remember to always CC maintainers on patches.
 
-> Commit 02b80773de37 (ASoC: rt5640: Add ACPI probing support.) causes
-> a warning due to unreferenced variable on non-ACPI configs such as
-> tegra_defconfig on ARM:
-
->   sound/soc/codecs/rt5640.c:2085:30: warning: 'rt5640_acpi_match' defined but not used [-Wunused-variable]
-
-> +#if CONFIG_ACPI
->  static struct acpi_device_id rt5640_acpi_match[] = {
->  	{ "INT33CA", 0 },
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(acpi, rt5640_acpi_match);
-> +#endif
-
-Shouldn't the fix for this be to do the same as we're doing for the OF
-tables and have an acpi_match_ptr()?  It seems like we're doing the same
-thing so we should be handling it in a similar fashion.
-
---zhjhOMouxCL2qD2w
+--0yM48dKbQb4SmPLM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSOXVjAAoJELSic+t+oim9eksP/0GaYFRdzQd2TBnVfrtdXnle
-/RNsZuOXyC/AxUfaRSqgdlYDMBM4Np2FQDyOyr0qEm07PVx4D4i9mnB97ZWwGUth
-tk/wtzfbRkn9vNd6f3yTtpZr6AMPfCT52Y1FacR1jjLit1SJlwxLs9ADHSLZYnOd
-zKDhnaw6GBck5H/2yXUV8i1QTOb2zUl27dzjcxQnXOTjlsfSLzrFybpF4XG0ueHC
-8uLkyxmrdVReXun1eNoJVJqlw0yUq+gBaAGgsBcsCz++YM9IwA6/EbgTJnCc3B0K
-URPdIawEoqaa9icbn7DK8e+He8+D07SvtPwtWmXiBdzHHKdHbaUj0ZP4qu7WogaX
-5UcVZlBlqVZCV4mCSgibLQHNtTiaJPWLnAWx6z6ii+FetVMRNYKUSCmfpqAGYbv9
-7nT8yUtzgTe2bJ1W0hgwAWW4oH6jhUtMAwmkQg0uy/so2+vNe4y+3cMqX/fgJI9X
-QbxG0gL+UKkystDOUkLsiuMyAcipLaSh/gHSRaRlefmfdsXN5MpjhOH0Uk9UIaZs
-bmHZzPTFRgFWM99zLJvzp6/IwN1Vr84tf+H5+6SJu+A269JTxIB98OXBmGXfZfHu
-TT+hgj4KxBHvuWc3cCWRbMGRWXNBp1BiKcy5X3YpMmx+gPI7PdirWTlDsIrTfbcY
-U68213RpCQGs7pkaR23O
-=DAYW
+iQIcBAEBAgAGBQJSOXWYAAoJELSic+t+oim9CgEP/RAG54eOKGo4CegA9RNAqDeC
+K6g0SMRYKI/RVZVkEW1Pl3F2gsC90WEqiZxH++oD/SvD1CCxXmLN2WvbW+8kRN70
+UfPXIGGft1WYFx0TT6p2NVGunD3tUgxuWVmB8ZEQNjeh7T2d/MVQ68ckWibfI/gV
+T+8n8SCiEbpWYIW/g7lcLndjAYMFJ4AR+zWrUp+7cBND6BwBOH7ruG0ppJoIZUrd
+pXAhTkBvrO4yKwFCrr2/s9P7wZRObxJwJpGh2TcnRZCWkjN7cQuZwzgpbr5WqMr7
+Z4v4ZX4E/Y+sgAiekZYB9iuxjStcUT1ewq60zsJIOyLm8q5TzvdDBn+jc+N6/NVd
+F0zyUH59ZdXU+M+D2G+l8dwd/sB9MSJvUn3NS/RcqX1NpwTXysqEvLOOFg3fGu0o
+EB/+7pLHAXgmSGwerMtk7Uj8qdxgwUy/UfMPjx0iFCoBH1Lri2YeVWhTe6Mn+SvW
+YNM0ZbirVMnWZoPdZPkx9ScP7qHxyNPOoRJWJcMB3FYfTHj7Sz1XW8Vn+Vr6xm67
+DXh7TcMe0MYFFiEpKkyL4aTBDy+vPofsOB2Qm4TEBmprRClBmRErLhy+InDdzPxE
+FesvKb2LNwbLUzftnoRd88TWkGY/DYpL2Y6DJiWoew00PRUbhYA4Eupamkx+QJl6
+yDwp+bze3aHBr7wGb63m
+=Dmst
 -----END PGP SIGNATURE-----
 
---zhjhOMouxCL2qD2w--
-
---===============3574197461554048318==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3574197461554048318==--
+--0yM48dKbQb4SmPLM--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
