@@ -1,74 +1,81 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v2 02/11] ASoC: davinci-evm: Add device tree
- binding
-Date: Wed, 18 Sep 2013 15:38:25 +0100
-Message-ID: <20130918143825.GR21013@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 03/11] ASoC: davinci-mcasp: Add DMA
+ register locations to DT
+Date: Wed, 18 Sep 2013 15:39:34 +0100
+Message-ID: <20130918143934.GS21013@sirena.org.uk>
 References: <cover.1379409268.git.jsarha@ti.com>
- <b94659fe6bb26dd457c6c6d542db912896f327b0.1379409268.git.jsarha@ti.com>
+ <66bdda0c0b75d737d649260b9ec10f9f870c20cd.1379409268.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tTvAEuyWWbMF5UF4"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <b94659fe6bb26dd457c6c6d542db912896f327b0.1379409268.git.jsarha-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: jsarha-l0cyMroinI0@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nm-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org, gururaja.hebbar-l0cyMroinI0@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============4320976697184205775=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CDA026109C
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 16:39:42 +0200 (CEST)
+In-Reply-To: <66bdda0c0b75d737d649260b9ec10f9f870c20cd.1379409268.git.jsarha@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: jsarha@ti.com
+Cc: nm@ti.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, joelf@ti.com, gururaja.hebbar@ti.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---tTvAEuyWWbMF5UF4
-Content-Type: text/plain; charset=us-ascii
+--===============4320976697184205775==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="doRsZBpDQ+I4/+/t"
 Content-Disposition: inline
 
-On Tue, Sep 17, 2013 at 12:26:01PM +0300, jsarha-l0cyMroinI0@public.gmane.org wrote:
 
-> +  TLV320AIC3X pins:
-> +
-> +  * LLOUT
-> +  * RLOUT
-> +  * MONO_LOUT
-> +  * HPLOUT
-> +  * HPROUT
-> +  * HPLCOM
-> +  * HPRCOM
-> +  * MIC3L
-> +  * MIC3R
-> +  * LINE1L
-> +  * LINE2L
-> +  * LINE1R
-> +  * LINE2R
+--doRsZBpDQ+I4/+/t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-These should be in the CODEC DT bindings.  You should also be CCing the
-DT maintainers directly, they're a bit overloaded so tend not to read
-things that only go to the list :/
+On Tue, Sep 17, 2013 at 12:26:02PM +0300, jsarha@ti.com wrote:
+> From: Jyri Sarha <jsarha@ti.com>
+>=20
+> This patch adds DMA register location to mcasp DT bindings. On am33xx
+> SoCs the McASP registers are mapped trough L4 interconnect, which is
+> not accessible by the DMA controller, so McASP data port is mapped
+> trough L3 to a different location.
 
-Otherwise this looks good.
+Looks good to me but again you ought to CC the DT maintainers directly.
 
---tTvAEuyWWbMF5UF4
+--doRsZBpDQ+I4/+/t
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSObrWAAoJELSic+t+oim9/FQQAI05dKjfL7Zc+SaTqRTFtNbD
-73dPcYc8vJjxNdxfvk7iO9gl/0UgWfO1UwA/b+gTpN64N07eT0SXUEAdiirPTkVo
-MkWb4UwJNV10C1klo+K/QdQXH3Iivz4dFelHYTL1ueQ1OrB5bWZsPkiFihOaPHGf
-8dVXy9Zp3NZyb5gXam4b/NnPfd81Da6mlkvo1NFypbIc/p85Es2oPxMbchOPWLUz
-7Vl/O3l92boR+n0BZBl6YIoTmS9JrW/cRHSPSZF/hmsUYqU2TAbaB8f0iiD9rTgJ
-v/WUlw5MkhXeI/U4SCL/hjlOYp6bMkraaYjAL22t82pTShL0YLWErmn9XF1F4VPm
-a8B0IBqv+A1ST5LRN3VAAHIjBmdFsxSqd7JsM+/xhtWlEy0T35fA08XsQykFKrXO
-8vuAKJ2MnrBXCqrJB18EoLxFRsSAEjkwUZe/q3zMxk9OqlQvhT3rV/EgJlNw3tMS
-tlVkXwn68zeTNPlVSwAAgz8thWD8c16TRCYT6t39h7Mwn5GsMBYjVSLF4sMraRKt
-9YEctAyh0FcADpuun5Fz/SFNMUBGHYvNZC1+qdxcVV1pE7tBw0TfG23gFG8grbh1
-CjAqjw+A5G6zbIep72ovcvB9k8VEJzC7MwICssw7pBDFLEghykTBrXILwHpRzp3+
-pu65MQg0XyS7fF+GVy2H
-=6r8N
+iQIcBAEBAgAGBQJSObsiAAoJELSic+t+oim9iTYP/AgI7eXO+NlMt5PnJhovg8aq
+zJhHPngULD3s+IqIYRSg8hH2/fxdhyInWzbbP/RAhXyHqGW9ezS9d9QHufCKc17V
+T3pig31aZcfJajt0sbpvY2vvEavbN9JZqdzOP/hxEF+aS7DBaeYtj455q9Em/cmG
+94/FyT0g+5Cs6T/3Ex4OJ18rL+iFBbkjeOL0DvyUgD9/OZgWxFHl699wkBCaYL+T
+OiICftOxw7PvmKM8hX16QcxgR3o5APsQnIvVuPh8Alhiuf1VD5hxPIV//s72rAd8
+99m+rhvlmx2o5PbkVYj0r8De8GM15DzUcJ6pQWWT/IE4gc5XGdS0WZmhIPxRLIS0
+jvFpTvzuSq5QzuvNOvZFsI1jYTp/JcenAgihqrDhexsMyYsfOd/8rUs1tUButzUq
+6sYzydjA809e6JT5F/++hRCkPfhTIi4jMwbNoG9pDldjZpnCtPwbGO9mecCLt0IY
+j1xBzsmKio7KiEOuJuK+XpMfXUQWf8Z696o42HUE/vEkmhBjXy+uJE3zfR+XwPMU
+6p7qs113FBLNZ8kzjmcXHSHdmwUhmjqjDWLSEGbLTMBw8N/q/082S2FxWQRsfbGz
+U+gLjgqui3ZvR9f4OxyVoHuHOepLe6yAfy/a4JBV75Ue7mRae4WSoa1fbL+zB2AC
+JmReV8W4RYeI2qIyUlNx
+=hOlP
 -----END PGP SIGNATURE-----
 
---tTvAEuyWWbMF5UF4--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--doRsZBpDQ+I4/+/t--
+
+--===============4320976697184205775==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4320976697184205775==--
