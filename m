@@ -1,23 +1,21 @@
-From: Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH] ASoC: rt5640: ifdef for ACPI module table
-Date: Wed, 18 Sep 2013 09:53:34 -0700
-Message-ID: <20130918165334.GA26446@quad.lixom.net>
-References: <1379484624-11029-1-git-send-email-olof@lixom.net>
- <20130918094158.GL21013@sirena.org.uk>
- <CAOesGMj52_xcKS4q54i_gw_T2xWt=c6rwBtP9Ds2LbytjRuNKQ@mail.gmail.com>
- <20130918153842.GA21013@sirena.org.uk>
+From: Colomban Wendling <lists.ban@herbesfolles.org>
+Subject: Re: Fwd: Re: Realtek ALC889: HDA Intel and kernel 3.1
+ gives choppy sound (again)
+Date: Wed, 18 Sep 2013 19:00:49 +0200
+Message-ID: <5239DC41.2050709@herbesfolles.org>
+References: <4EE8B368.2080605@herbesfolles.org> <s5h39cnnra5.wl%tiwai@suse.de>
+ <4EE8CAE4.4040609@herbesfolles.org> <s5hsjknm53r.wl%tiwai@suse.de>
+ <4EEF530D.9050205@canonical.com> <s5hd3bkk294.wl%tiwai@suse.de>
+ <4F2C3165.5060803@herbesfolles.org> <52347075.3000304@herbesfolles.org>
+ <5237776C.10000@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f43.google.com (mail-pa0-f43.google.com
- [209.85.220.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 8ECB82610D3
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 18:54:08 +0200 (CEST)
-Received: by mail-pa0-f43.google.com with SMTP id hz10so8505120pad.30
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 09:54:07 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20130918153842.GA21013@sirena.org.uk>
+Received: from mail.herbesfolles.org (a4nancy.globenet.org [80.67.172.114])
+ by alsa0.perex.cz (Postfix) with ESMTP id 211A82610D3
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2013 19:00:51 +0200 (CEST)
+In-Reply-To: <5237776C.10000@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,61 +25,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 18, 2013 at 04:38:42PM +0100, Mark Brown wrote:
-> On Wed, Sep 18, 2013 at 08:13:14AM -0700, Olof Johansson wrote:
-> > On Wed, Sep 18, 2013 at 2:41 AM, Mark Brown <broonie@kernel.org> wrote:
-> > > On Tue, Sep 17, 2013 at 11:10:24PM -0700, Olof Johansson wrote:
-> 
-> > > Please send things to the advertised maintainer addresses.
-> 
-> > I sent it to the person signing off on the patch that this fixes up,
-> > you should probably use your maintainer address for that.
-> 
-> In that case you should've also CCed the maintainer address, you should
-> always CC maintainers on patches.
-
-Sure, will do. But you should also consider using your maintainer address
-for your maintainer work. Linaro will surely be credited for it anyway
-in the oh-so-important statistics. :-)
-
-> > > Shouldn't the fix for this be to do the same as we're doing for the OF
-> > > tables and have an acpi_match_ptr()?  It seems like we're doing the same
-> > > thing so we should be handling it in a similar fashion.
-> 
-> > There's already ACPI_PTR(), which is exactly why this warning shows
-> > up. of_match_ptr() and ACPI_PTR() will evaluate to NULL if
-> > CONFIG_OF/ACPI aren't set, which is the case here -- which in turn is
-> > why there's a warning that the match table is defined but never used.
-> 
-> > So, the solution is either to not define the table, i.e. ifdef, or to
-> > not use the ACPI_PTR() macro. It makes sense to not advertise the
-> > driver as capable of probing on ACPI if ACPI is not enabled in the
-> > kernel config, which in turn means ifdef.
-> 
-> > Unless I'm missing something here, of course. :)
-> 
-> We're supposed to be able to do this sort of stuff without the ifdef
-> noise and have the compiler eliminate unreferenced static symbols
-> automatically, though I can't see how of_match_ptr() actually does this
-> now.  I don't immedately seem to be able to persuade Kconfig to turn
-> off OF to verify though we do have some examples which nobody has
-> complained about...
-
-The problem doesn't show up when you build the driver as a module, because by
-then the MODULE_DEVICE_TABLE() reference means the table is referenced. But
-when you don't build as a module, MODULE_GENERIC_TABLE() reduces down to
-nothing, thus causing this.
-
-Only way to avoid is as I see it is to mark the table __maybe_unused,
-which in this case doesn't look like much of a better option.
-
-Most other drivers, for example those using pci or of module tables, have
-Kconfig dependencies such that there's no need to ifdef. There are plenty of
-examples of drivers ifdeffing on CONFIG_OF for those tables though.
-
-
--Olof
+VEw7RFI6IE9NRyBJJ20gYW4gaWRpb3QsIGp1c3QgZm9yZ2V0IGFib3V0IHRob3NlIG1haWxzLgoK
+TGUgMTYvMDkvMjAxMyAyMzoyNiwgRGF2aWQgSGVubmluZ3Nzb24gYSDDqWNyaXQgOgo+IE9uIDA5
+LzE0LzIwMTMgMDQ6MTkgUE0sIENvbG9tYmFuIFdlbmRsaW5nIHdyb3RlOgo+PiBbLi4uXQo+Pgo+
+PiBUaGlzIGJ1ZyBpcyBzdGlsbCBwcmVzZW50IGFzIG9mIGN1cnJlbnQgbWFzdGVyICgzLjExLjAr
+KSAtLSBqYWNrCj4+IGRldGVjdGlvbiBpcyBzdGlsbCBicm9rZW4gd2l0aCBteSBSZWFsdGVrIEFM
+Qzg4OSBvbiBhIE1TSSBINTVNLUUzMy4KPj4KPj4gWy4uLl0KPiAKPiBXZWxsLCBpbiB0aGUgbGFz
+dCB5ZWFyIG9yIHR3byB0aGUgZm9sbG93aW5nIGFkZGl0aW9ucyBoYXZlIGJlZW4gbWFkZSB0bwo+
+IHRoZSBrZXJuZWw6Cj4gCj4gIDEpIGphY2twb2xsX2ludGVydmFsIGFzIGEgbW9kdWxlIHBhcmFt
+ZXRlciAtIHR1cm5zIG9mZiB1bnNvbCBldmVudHMgYW5kCj4gaW5zdGVhZCBwb2xscyB0aGUgamFj
+ayBjb25uZWN0aW9uIGF0IHRoZSBpbnRlcnZhbCB5b3Ugc3BlY2lmeQoKSSB0cmllZCBpdCBhbmQg
+aXQgZGlkbid0IGhlbHAsIGJlY2F1c2UgdGhlIHdob2xlIGphY2sgZGV0ZWN0aW9uIHRoaW5nCmZh
+aWxlZCwgc28gaXQgb25seSBsZWFkIHRvIGZld2VyIGJ1dCBsb25nZXIgY3V0cy4KCj4gIDIpIEtl
+cm5lbCBhdXRvbXV0ZSBjYW4gKGZvciBhbG1vc3QgYWxsIGNhcmRzLCBJIGJlbGlldmUpIGJlIGRp
+c2FibGVkIGJ5Cj4gc2V0dGluZyBhIG1peGVyIGNvbnRyb2wgbmFtZWQgIkF1dG9tdXRlIG1vZGUi
+CgpUaGF0J3Mgd2hhdCBJIGluaXRpYWxseSBkaWQsIGFuZCBpdCBmaXhlZCBteSBwcm9ibGVtICd0
+aWwgUEEgc3RhcnRlZCB0bwpzZWUgdGhvc2UgZXZlbnRzLgoKPiAuLi5hbmQgeW91IGNhbiBkaXNh
+YmxlIGphY2sgZGV0ZWN0aW9uIGluIFB1bHNlQXVkaW8gYnkgY29tbWVudGluZyBvdXQKPiBhbGwg
+c2VjdGlvbnMgd2l0aCB0aGUgamFjayB5b3Ugd2FudCB0byBkaXNhYmxlLCB0aGUgZmlsZXMgYXJl
+IGluCj4gL3Vzci9zaGFyZS9wdWxzZWF1ZGlvL2Fsc2EtbWl4ZXIvcGF0aHMvKgoKR29vZCB0byBr
+bm93LCB0aGFua3MuCgo+IEJ0dywganVzdCBhIHdpbGQgdGhlb3J5LCBiZWNhdXNlIEknbSByZWFs
+bHkgbm90IGEgc3ViamVjdCBtYXR0ZXIgZXhwZXJ0Ogo+IHNpbmNlIHRoaXMgaXMgYSBob21lLWJ1
+aWx0IGNvbXB1dGVyIChJIGFzc3VtZSksIEkgd29uZGVyIGlmIHRoaXMgY291bGQKPiBiZSBhIHZl
+cnkgaGFyZHdhcmUgbmVhciBwcm9ibGVtIC0gaSBlLCBpcyB0aGUgY2FibGUgdG8gdGhlIGZyb250
+IHBhbmVsCj4gY2hhc3NpIHZlcnkgY2xvc2UgdG8gc29tZXRoaW5nIHRoYXQgZ2l2ZXMgb3V0IGEg
+bG90IG9mIEVNSSBkaXN0dXJiYW5jZQo+IG9yIHNvbWV0aGluZyBsaWtlIHRoYXQ/CgpZb3UncmUg
+YSBnZW5pdXMgYW5kIEknbSBhIHRvdGFsIGlkaW90LiAgSSBuZXZlciB0aG91Z2ggaXQgY291bGQg
+YmUgaXQsCmJ1dCBhcHBhcmVudGx5IEkgb3Zlcmxvb2tlZCB0aGUgQUMnOTcgZnJvbnQgcGFuZWwg
+Y29ubmVjdGlvbiBjaGFydCBmb3IKSERBIHBpbnMuICBTaW5jZSBJIGRpZG4ndCBjaGVjayBob3cg
+SSBwbHVnZ2VkIGl0IHByZXZpb3VzbHkgSSB3b24ndCBiZQpzdXJlLCBidXQgSSdkIHRoaW5rIEkg
+ZGlkIHBsdWcgRlBfUkVUX1IgdG8gdGhlIFNFTlNFX1NFTkQgcGluIC0tIHdoaWNoCndpdGhvdXQg
+YSBzdXJwcmlzZSBsZWFkcyB0byB3ZWlyZCBzdHVmZi4KCkknbSB0ZXJyaWJseSwgdGVycmlibHkg
+c29ycnkgZm9yIGFsbCB0aGUgbm9pc2UsIGFuZCBmb3Igd2FzdGluZyB5b3VyCnRpbWUuICBTb3Jy
+eS4KClJlZ2FyZHMsCkNvbG9tYmFuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
