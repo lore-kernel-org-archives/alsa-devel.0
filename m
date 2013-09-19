@@ -1,23 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: ifdef for ACPI module table
-Date: Thu, 19 Sep 2013 13:02:36 +0100
-Message-ID: <20130919120236.GN21013@sirena.org.uk>
-References: <1379484624-11029-1-git-send-email-olof@lixom.net>
- <20130918094158.GL21013@sirena.org.uk>
- <CAOesGMj52_xcKS4q54i_gw_T2xWt=c6rwBtP9Ds2LbytjRuNKQ@mail.gmail.com>
- <20130918153842.GA21013@sirena.org.uk>
- <20130918165334.GA26446@quad.lixom.net>
- <20130918172858.GE21013@sirena.org.uk>
- <20130918173620.GA28143@quad.lixom.net>
- <20130918183401.GG21013@sirena.org.uk>
- <CAOesGMh1zSFnYTBjLdUPBv6od_K0okrTTipnhu6BjO-QX1X6PA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mfd: mc13xxx: Move SPI erratum
+ workaround into SPI I/O function
+Date: Thu, 19 Sep 2013 13:09:51 +0100
+Message-ID: <20130919120951.GO21013@sirena.org.uk>
+References: <1379527587-14567-1-git-send-email-broonie@kernel.org>
+ <1379527587-14567-2-git-send-email-broonie@kernel.org>
+ <20130919091318.GA22389@lee--X1>
+ <20130919095628.GH21013@sirena.org.uk>
+ <20130919100434.GB22389@lee--X1>
+ <20130919114107.GL21013@sirena.org.uk>
+ <20130919114910.GE22389@lee--X1>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3174108151284270474=="
+Content-Type: multipart/mixed; boundary="===============0272573262728649233=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FA04261A10
- for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2013 14:02:46 +0200 (CEST)
-In-Reply-To: <CAOesGMh1zSFnYTBjLdUPBv6od_K0okrTTipnhu6BjO-QX1X6PA@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B0EA261ACF
+ for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2013 14:10:04 +0200 (CEST)
+In-Reply-To: <20130919114910.GE22389@lee--X1>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,76 +26,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Olof Johansson <olof@lixom.net>
-Cc: liam.r.girdwood@linux.intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Arnd Bergmann <arnd@arndb.de>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Samuel Ortiz <sameo@linux.intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, u.kleine-koenig@pengutronix.de, Marc Reilly <marc@cpdesign.com.au>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3174108151284270474==
+--===============0272573262728649233==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dRZtNaFcRiL7vj6v"
+	protocol="application/pgp-signature"; boundary="3h+hNn3PVp185ISI"
 Content-Disposition: inline
 
 
---dRZtNaFcRiL7vj6v
-Content-Type: text/plain; charset=us-ascii
+--3h+hNn3PVp185ISI
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 18, 2013 at 11:44:18AM -0700, Olof Johansson wrote:
+On Thu, Sep 19, 2013 at 12:49:10PM +0100, Lee Jones wrote:
+> > > Either way, it needs changing.
 
-> > Hrm, perhaps that was what was supposed to happen - have
-> > MODULE_DEVICE_TABLE() create the appropriate eliminateable static
-> > reference so the compiler can figure things out and we don't need the
-> > ifdefs.  It'd certainly be nice to elimiante more of these ifdefs.
+> > Let's see if someone actually tests the code first though.
 
-> Easiest way to do that is probably to provide a new macro to declare
-> the match tables with, that compiles out and/or gives appropriate
-> attributes depending on what is enabled or not in the config. That
-> gets rid of the ifdefs but we don't have anything like it today.
+> I've taken the liberty of bulding it, but I don't have the h/w to
+> actually run the code.
 
-Yup.
+> I get:
+>   drivers/mfd/mc13xxx-spi.c: In function =E2=80=98mc13xxx_spi_write=E2=80=
+=99:
+>   drivers/mfd/mc13xxx-spi.c:97:14: warning: initialisation discards =E2=
+=80=98const=E2=80=99 qualifier from pointer target type [enabled by default]
 
-> I'm honestly not sure I think it's needed, the ifdef for the table
-> doesn't bother me. But if people feel strongly about it then it's
-> likely the best way forward.
+Sure, but like I say let's see if the code actually works first.
 
-For me it's not the tables per se, it's the general proliferation of
-options to get coverage on making things more error prone - the more
-things always get seen by the compiler the better.  I'm not sure I care
-enough to actually do the work but it's nice when someone has done it.
-
-Anyway Thierry sent the #ifdef version of the patch so this is sorted
-now.
-
---dRZtNaFcRiL7vj6v
+--3h+hNn3PVp185ISI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSOufYAAoJELSic+t+oim9APIQAIfFl3fwvwu5aIoQANlFprLy
-YOhf56guMTkZNWqSJ8CJ5p7Petic98FwUSRW8LLFfTkkpA408zBCvW0Uq4o+k70H
-hBxj4Wv+wdMfjNExLBgXt5fh+KEQinetTD6I0kuU8lBpUaxkMBhb37QBMG28u41Z
-Pf+Ve20ahnUCgHSbNThxtHF6QSMfsw7rDb/SdWYqlQBZJ6tYDX9i3FCQZsnJwayy
-I7jutMxVChKJKUz2NNF57EBypU1OP4fFGL6bxQSNqqP4vIbhBPQm+YhjfqYYNGaK
-Z0x5op5c7OsRXiXwgkDZqgiOY1r33nQwOepBuwTLdmAdAdtTm65pD4ux2DCaXUzL
-qIgary0MpXliEFzRNW3tmDUVNaAYrvXJKL07lewROKpi65CU0CdhAhR4NF8e4g+l
-QtWO1XzHNfKx4aoPP64CDD7TcH5D9P0hLiiHCE1l3f4TC+S7/7NSEDOckVCem7Fu
-rkBp9kr3YfCrpxSQFozhipXu9uWKH7hRw+Ph13VGl/DfHzyqyWaAfAcTWMOw2kuw
-G7J1l9zYGu1zVq2ii9XxFg9sRZlzuQkmVGI/DD33rBooTPeOnEYhTq/HAmjtfGBB
-94XmGzJ/FnuN9opOzfjiEHPk9pgBXqA6vXsuzYCiNObvlBEY2XzZHY+P3zjcefF5
-GzqOc1zQkMSe2R70GeGa
-=k3M+
+iQIcBAEBAgAGBQJSOumMAAoJELSic+t+oim9E4gP/1R5iMPJ+adeA0/5DtJp3+ia
+0XohInPtVvSPQCCMSegpQ/vSu1uWychJL/WrB4SHJBgzbKFH9LqKGEP9wF5USSrJ
+BD+cDrIwwn0dzQGlNCEMcrEaupXZrDC7SMbzTm85VSRng7SqSutc/bIP//r5nQ/V
+5S19xkVjaYvx88F8ZpUMkajue7UVpzj8OK7GHYcrwieSVdYP1+b9YMhociTjv7Hl
+J/OHas43PBJoq1N2OWNEa4dLUE/RvIVWZKNj+NTtn+kCsqIUJA2OCXEdrGp4YYBY
+wyWOt5Ir0Uy4X6y6nlHxMUs10r3/vULNlKARaNpNmCPa33AL0N71SMgnP6iEP5jF
+9MiyY6SPgsHeHvzatBv8lbZNMnH6WzX52Yy3XO+qTC0m42GcndVvpNOGY1YR/wv+
+Z5fide2BgzRrcoSvUMvzXehPmqBRBI7EYbVUBMHc/Mp0udBwyBrHkJxq7LFH7UTH
+iHy+L6eanzdV+jc+Y6SJ+Q4H/y+6H8UHeC2EykE5KZOScTw70dAaD2OROCBtSi45
+wx+cRvtmq17WbZ8FG/kWklOB8pmXFIi9bV19HyHq/nDPQffqeb6M1uAvuhyVkl8R
+GYNqSZqgX0ktQOOf9EMFlZv24j3x7FhylFxlIiZI9+mjZOohWRuPeCkbyPS3GAlr
+jhcgRoBTxkC3+EPy4SNv
+=V+bL
 -----END PGP SIGNATURE-----
 
---dRZtNaFcRiL7vj6v--
+--3h+hNn3PVp185ISI--
 
---===============3174108151284270474==
+--===============0272573262728649233==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3174108151284270474==--
+--===============0272573262728649233==--
