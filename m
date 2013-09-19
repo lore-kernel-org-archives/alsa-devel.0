@@ -1,42 +1,61 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 1/3] ASoC: ab8500: Downgrade noisy log
-	message
-Date: Fri, 20 Sep 2013 13:09:09 +0100
-Message-ID: <20130920120909.GA2185@lee--X1>
-References: <1379669959-21517-1-git-send-email-broonie@kernel.org>
+From: Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Subject: [PATCH 27/51] DMA-API: provide a helper to setup DMA masks
+Date: Thu, 19 Sep 2013 22:52:02 +0100
+Message-ID: <E1VMm8o-0007iV-Ac@rmk-PC.arm.linux.org.uk>
+References: <20130919212235.GD12758@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f181.google.com (mail-ea0-f181.google.com
- [209.85.215.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 662FA26564B
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 14:09:13 +0200 (CEST)
-Received: by mail-ea0-f181.google.com with SMTP id d10so211719eaj.40
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 05:09:13 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1379669959-21517-1-git-send-email-broonie@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linaro-kernel@linaro.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <b43-dev-bounces+gldbd-bcm43xx-dev=gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <20130919212235.GD12758-l+eeeJia6m9vn6HldHNs0ANdhmdF6hFW@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/b43-dev>,
+ <mailto:b43-dev-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/b43-dev/>
+List-Post: <mailto:b43-dev-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:b43-dev-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/b43-dev>,
+ <mailto:b43-dev-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "b43-dev" <b43-dev-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: b43-dev-bounces+gldbd-bcm43xx-dev=gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, b43-dev-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, e1000-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-ide-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-nvme-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Solarflare linux maintainers <linux-net-drivers-s/n/eUQHGBpZroRs9YW3xA@public.gmane.org>, uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+Cc: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyMCBTZXAgMjAxMywgTWFyayBCcm93biB3cm90ZToKCj4gRnJvbTogTWFyayBCcm93
-biA8YnJvb25pZUBsaW5hcm8ub3JnPgo+IAo+IFNpZ25lZC1vZmYtYnk6IE1hcmsgQnJvd24gPGJy
-b29uaWVAbGluYXJvLm9yZz4KPiAtLS0KPiAgc291bmQvc29jL2NvZGVjcy9hYjg1MDAtY29kZWMu
-YyB8IDIgKy0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0p
-CgpGV0lXOiBBbGwgMyBwYXRjaGVzIGxvb2sgZ29vZCB0byBtZToKCkFja2VkLWJ5OiBMZWUgSm9u
-ZXMgPGxlZS5qb25lc0BsaW5hcm8ub3JnPgoKLS0gCkxlZSBKb25lcwpMaW5hcm8gU1RNaWNyb2Vs
-ZWN0cm9uaWNzIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNv
-ZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBC
-bG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Many drivers contain code such as:
+
+	dev->dma_mask = &dev->coherent_dma_mask;
+	dev->coherent_dma_mask = MASK;
+
+Let's move this pattern out of drivers and have the DMA API provide a
+helper for it.  This helper uses dma_set_mask_and_coherent() to allow
+platform issues to be properly dealt with via dma_set_mask()/
+dma_is_supported().
+
+Signed-off-by: Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+---
+ include/linux/dma-mapping.h |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index ec951f9..27d1421 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -111,6 +111,16 @@ static inline int dma_set_mask_and_coherent(struct device *dev, u64 mask)
+ 	return rc;
+ }
+ 
++/*
++ * Similar to the above, except it deals with the case where the device
++ * does not have dev->dma_mask appropriately setup.
++ */
++static inline int dma_coerce_mask_and_coherent(struct device *dev, u64 mask)
++{
++	dev->dma_mask = &dev->coherent_dma_mask;
++	return dma_set_mask_and_coherent(dev, mask);
++}
++
+ extern u64 dma_get_required_mask(struct device *dev);
+ 
+ static inline unsigned int dma_get_max_seg_size(struct device *dev)
+-- 
+1.7.4.4
