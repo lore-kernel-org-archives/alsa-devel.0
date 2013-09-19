@@ -1,67 +1,27 @@
-From: Andreas Mohr <andi@lisas.de>
-Subject: Re: [RFC PATCH] ES938 support for ES18xx driver
-Date: Thu, 19 Sep 2013 19:36:49 +0200
-Message-ID: <20130919173649.GA18537@rhlx01.hs-esslingen.de>
-References: <20130915184902.GA23480@rhlx01.hs-esslingen.de>
- <201309152304.27585.linux@rainbow-software.org>
- <20130915212358.GB32375@rhlx01.hs-esslingen.de>
- <201309162220.55221.linux@rainbow-software.org>
+From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Subject: Re: [PATCH] ASoC: generic: Add generic DT based simple codec
+Date: Thu, 19 Sep 2013 18:49:52 +0100
+Message-ID: <20130919174952.GC12758@n2100.arm.linux.org.uk>
+References: <20130919105437.75e0f0a3@armhf> <20130919104028.GI21013@sirena.org.uk> <20130919193403.30ac5764@armhf>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <201309162220.55221.linux@rainbow-software.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: Andreas Mohr <andi@lisas.de>, alsa-devel@alsa-project.org, krzysztof.h1@wp.pl, Kernel development list <linux-kernel@vger.kernel.org>
+In-Reply-To: <20130919193403.30ac5764@armhf>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thu, Sep 19, 2013 at 07:34:03PM +0200, Jean-Francois Moine wrote:
+> Otherwise, for Dove, we need at least "s16_le", "s24_le" and "s32_le"
+> and, perhaps, "iec958_subframe_le" and "iec958_subframe_be".
 
-On Mon, Sep 16, 2013 at 10:20:54PM +0200, Ondrej Zary wrote:
-> +static int snd_es938_read_reg(struct snd_es938 *chip, u8 reg, u8 *out)
-> +{
-> +	u8 buf[8];
-> +	int i = 0, res;
-> +	u8 sysex[] = { MIDI_CMD_COMMON_SYSEX, 0x00, 0x00, ES938_ID,
-> +		       ES938_CMD_REG_R, reg, MIDI_CMD_COMMON_SYSEX_END };
-> +	unsigned long end_time;
-> +
-> +	snd_rawmidi_kernel_write(chip->rfile.output, sysex, sizeof(sysex));
-> +
-> +	memset(buf, 0, sizeof(buf));
-> +	end_time = jiffies + msecs_to_jiffies(100);
-> +	while (i < sizeof(buf)) {
-> +		res = snd_rawmidi_kernel_read(chip->rfile.input, buf + i,
-> +					      sizeof(buf) - i);
-> +		if (res > 0)
-> +			i += res;
-> +		if (time_after(jiffies, end_time))
-> +			return -1;
-> +	}
-
-Forgive me, but I seem to faintly remember that it's preferred for
-user code to tend towards non-jiffies-based timing (IIRC due to
-NOHZ efforts etc.).
-So if that actually is the case, then one might want to change it to
-less jiffies-dependent handling (use non-jiffies helpers), but then how?
-
-> +static void snd_es938_write_reg(struct snd_es938 *chip, u8 reg, u8 val)
-> +{
-> +	u8 sysex[] = { MIDI_CMD_COMMON_SYSEX, 0x00, 0x00, ES938_ID,
-> +		       ES938_CMD_REG_W, reg, val, MIDI_CMD_COMMON_SYSEX_END };
-> +
-> +	snd_rawmidi_kernel_write(chip->rfile.output, sysex, sizeof(sysex));
-
-snd_rawmidi_kernel_write() is prototyped as const unsigned char *buf,
-so perhaps...
-const unsigned char buf[] = ...;?
-(static const probably not so useful
-e.g. since static const may be rather prone to cache misses)
-
-Though personally I do favour u8, since "char" seems so unsuitably stringy -
-but the prototype currently doesn't offer it typed that way...
-
-(Almost-)Reviewed-By: Andreas Mohr <andim2@users.sf.net>
-
-Andreas Mohr
+The audio block can't do IEC958 subframes in the format ALSA wants
+them.  The hardware format is different.  I've sent a commit removing
+these foramts from sound/soc/kirkwood with a full explanation.  Mark
+seems not to have merged even that one though.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
