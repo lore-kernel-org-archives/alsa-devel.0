@@ -1,63 +1,73 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: kirkwood: fix loss of external clock at probe time
-Date: Thu, 19 Sep 2013 12:06:42 +0100
-Message-ID: <20130919110642.GK21013@sirena.org.uk>
-References: <20130919114957.1fede091@armhf>
+From: Thierry Reding <thierry.reding@gmail.com>
+Subject: Re: [PATCH] ASoC: rt5640: Omit ACPI match table only if !ACPI
+Date: Thu, 19 Sep 2013 13:21:04 +0200
+Message-ID: <20130919112104.GB10852@ulmo>
+References: <1379582286-10600-1-git-send-email-treding@nvidia.com>
+ <20130919104525.GJ21013@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gphVtybrzJJtG9bX"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="BwCQnh7xodEAoBMC"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20130919114957.1fede091@armhf>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+In-Reply-To: <20130919104525.GJ21013@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---gphVtybrzJJtG9bX
+--BwCQnh7xodEAoBMC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 19, 2013 at 11:49:57AM +0200, Jean-Francois Moine wrote:
+On Thu, Sep 19, 2013 at 11:45:25AM +0100, Mark Brown wrote:
+> On Thu, Sep 19, 2013 at 11:18:06AM +0200, Thierry Reding wrote:
+> > The ACPI_PTR() macro evaluates to NULL if ACPI is disabled and hence the
+> > ACPI match table won't be used, causing the compiler to complain. Avoid
+> > this by protecting the table using an #ifdef CONFIG_ACPI.
+>=20
+> Applied, thanks.  Like I was saying to Olof we really should be able to
+> do better than needing the ifdefs though.
 
->  	priv->extclk = devm_clk_get(&pdev->dev, "extclk");
-> -	if (!IS_ERR(priv->extclk)) {
-> +	if (IS_ERR(priv->extclk)) {
-> +		if (np && of_property_match_string(np, "clock-names", "extclk") >= 0)
-> +			return -EPROBE_DEFER;
-> +	} else {
+The struct device_driver's .acpi_match_table field is unconditionally
+declared and the ACPI table with one entry and the sentinel weighs in
+at 26 bytes, so perhaps doing away with the conditionals would be an
+equally good option.
 
-This one really does seem like something the clock API ought to be
-doing, either as standard or with a separate helper - essentially every
-driver ought to be doing this for robustness.  Doing it on general
-failures is more tricky but in the specific case where we know the clock
-should be present but we don't have the driver loaded yet.
+Or perhaps we can annotate the table so that the compiler will stop
+complaining but remove the table nonetheless if it isn't used. Similarly
+to what we can do with
 
---gphVtybrzJJtG9bX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+	if (IS_ENABLED(CONFIG_FOO)) {
+		...
+	}
+
+constructs. I can't really think of a way to do that, though. Perhaps
+gcc will throw away the table anyway, so we'll just need a way to make
+it shut up?
+
+Thierry
+
+--BwCQnh7xodEAoBMC
+Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSOtq/AAoJELSic+t+oim9wjoP/RmbQAo77BoNulLzF6nWnauP
-/OorEo0B/3OQHUdjMMLESzcYV0FDtaa939w+/oBZ+S8kvB7HL+VxM6XCEibyddyR
-r279IsfuWETIFiUzmzquAjAHtYIiGC7iMSMpZ/Rxg9UHki73X8BghBhnJe1AL2gR
-h3pWdsbpExbW02UGbG4f65519au4dHSCQOJmzVHSjCleB/MgrNhpwcfatrQw4Nc5
-jV0JK83j1gDx9TRmFQWNCjiySP2Ne4ZMPiqO/rx4Qf34Rz4iLghPHj7eCJxC2CIn
-ELAHl52gDIljuJ56SJ1ZFq/tNV8enTPlPgFQBAT9rQ6kXGpZLenzkZnY1PuKimRk
-hbcl3JtLO7CVw+KM5YIAf9pMCO3AYHGnOc4eGBcpDQqzvzUyUhyQnw51y3xdysYT
-Tb8o1kJigrB5aKtXL0HZFf1so0rYXsHkksy2LEEyXid51JL7P6y2j/rhLM4kouLk
-Aqeixw+Nciia9XxwVjsRPTBqPZfAdhZ8AXRp/JjWAfleUPf94ylhPd7igQ8syrbZ
-y62V9NVYmzGu4fARbC05qMqCXfm10B2KASNe6GuyNoXW9VG7aKmkaf7AZmTHeR9N
-83BJysfJhRGjrv/MqbLmVKI2rmgcArzIxfEvbN90kgTv8cLKIrR08ixDPA47PAnb
-KI+EWuovNyVUF2aOV+gw
-=zYFh
+iQIcBAEBAgAGBQJSOt4fAAoJEN0jrNd/PrOhhfgP/2n44EedI+4yGfxiJSYeK3LW
+Od9cT6CGmyRmCAw2dzcpWrvP9oIOkq/kCnOUmfsawX7eJnnsWyDL2aZtTT3qcaGq
+ASmABxlpl2FI8+t1PJ4w/MmFiKyWRUCIV1p4Xt6rtlLeMmNTRZUtxuPx+2Qd8OOB
+yE5HfTlc8kYEDDTvLSp4+AwAwrRWuQAXikJYL/5vDjRdLas0wLkNBkmAThXXpDr4
+Ha7aVKbVgmEKRtPoach3xtdkWiGpZNHZQSM8jFumVv2eVEM+oq5nJzj5iLjCJW7n
+/9kqxOajZ9C7+jEQ3cjJOYVnL/sfKMCKxl55Z/lgNEWgr9MWVTsWX9N65srYzZb0
+Ue1NoQYFpVZusw/ILgKG14f3dXkRT4iC8srDw6sGg0ohrkIZ8Vmjsu6atPXspcY7
+JGbxMKYJSCFeVhHLurknTuqxgYnTPT9aaaHPZ3eRLj1D0xkpYL1HM2LWSt937pgJ
+3KzgvDvz29pzOzD1qbNbjvTcGCuZ6Yv7Bkt49I0LFAIbk9PBiZ+2FmmcwXjfrRVh
+VgZixTqOJPgTPHdLlOSk3bhoOOkCiRhrmFWjXmCs2b85AuIPaTX0ANpc1YKDLSFO
+8ngP3bcXLOKbs1B9TgCTLhIRprCDdRgoJyeyw4D79dTlraJlUtWJOjcBmvGhgTRL
+CiTHi7LKlkzRlyEhxQzj
+=EKGL
 -----END PGP SIGNATURE-----
 
---gphVtybrzJJtG9bX--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--BwCQnh7xodEAoBMC--
