@@ -1,38 +1,74 @@
-From: "Sarha, Jyri" <jsarha-l0cyMroinI0@public.gmane.org>
-Subject: RE: [PATCH v3 07/11] ASoC: tlv320aic3x: Add regulators to DT
- bindings document
-Date: Thu, 19 Sep 2013 13:45:19 +0000
-Message-ID: <0EB243F40EB34A418EAED8001C4B3AD019E84292@DNCE05.ent.ti.com>
-References: <cover.1379590035.git.jsarha@ti.com>
- <1b88bfa3793d807ff6e325df1bbff6cb4eb976e6.1379590036.git.jsarha@ti.com>,<20130919132955.GS21013@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: imx-sgtl5000: Use
+	devm_snd_soc_register_card
+Date: Thu, 19 Sep 2013 14:57:07 +0100
+Message-ID: <20130919135707.GU21013@sirena.org.uk>
+References: <1379391168-5220-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20130919132955.GS21013-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "Ujfalusi, Peter" <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, "liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org" <liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, "grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org" <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, "rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org" <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, "Fernandes, Joel" <joelf-l0cyMroinI0@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============2623051253329109136=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id E210A265342
+ for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2013 15:57:15 +0200 (CEST)
+In-Reply-To: <1379391168-5220-1-git-send-email-sachin.kamat@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-No change here either.
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+--===============2623051253329109136==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lpBPog2+b3WGyJY6"
+Content-Disposition: inline
 
-________________________________________
-From: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org [devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org] on behalf of Mark Brown [broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org]
-Sent: Thursday, September 19, 2013 4:29 PM
-To: Sarha, Jyri
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org; devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; Ujfalusi, Peter; liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org; grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org; rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org; Fernandes, Joel
-Subject: Re: [PATCH v3 07/11] ASoC: tlv320aic3x: Add regulators to DT bindings document
 
-On Thu, Sep 19, 2013 at 02:29:40PM +0300, Jyri Sarha wrote:
-> Add regulator properties to tlv320aic3x DT bindings document.
+--lpBPog2+b3WGyJY6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Similarly for this and the other CODEC patch, are these changed?
+On Tue, Sep 17, 2013 at 09:42:46AM +0530, Sachin Kamat wrote:
+> devm_snd_soc_register_card makes code simpler.
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Applied all, thanks.
+
+--lpBPog2+b3WGyJY6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSOwKwAAoJELSic+t+oim9ckMP/2ZHH5yiwkKNvQVvCqGBzWpQ
+m3rU1offB+9Msggh0TpR5Xm9L2I6qku088vuPyaQ0qd0bDeNiKJr4P4nahQc4kbQ
+oGUIzcadvd2EHOZsFCxM4slT0CNe4He2Co+dd4juNsyGMAiWjtUGF59v0at6TonM
+DnWeAO20k5KfRDiXzKSDVYgGHstcZMzv8Ysi5oYem+75T1P76VUeUPyK9RFBJsbz
+GGeEz9/LY9QNTckJyj/RphnF1Brv4ZO3pCWmw6QupxmHBkOjDZTO89pMKHxnKzzT
+8Q5mbQhWTmPA+t5YJZOcfASnB6c1lanFModkR35Xua8dhCWgcNYNKUZKXGHjn5FG
+yMCKVNZXYLccCwWk2NxoQAEItUzwdRZlgXfTZGJc233fPWaRDCmPEzEU3RJN+I93
+yP152Kxa33sIHUPN+2MK76WvX+XVAccI/y9aAu+ornC3pkrD0mRp+gu7Jb4nQAUN
+VdSd7+k9OPkp2vx81tawYX1rctM5wMO4G4fGQXhLX+StchhxLZaeAvZK4Lclrshv
+tiY39CKTelMv1nGThWoPsGFuW8m4sL52wJAjEeWuRCSaQB1JnYbQCHqXRUM5TIPS
+MPsT7HqBDlLw97JqITbXTpQuftpmTuriBvdCI+94Ltxx2IkZLXBXozue4NAHmkDn
+1hHEh4FDhuRgm91XIXkp
+=cfc7
+-----END PGP SIGNATURE-----
+
+--lpBPog2+b3WGyJY6--
+
+--===============2623051253329109136==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2623051253329109136==--
