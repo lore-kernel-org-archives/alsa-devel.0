@@ -1,131 +1,67 @@
-From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: Re: [PATCH] ASoC: generic: Add generic DT based simple codec
-Date: Thu, 19 Sep 2013 19:34:03 +0200
-Message-ID: <20130919193403.30ac5764@armhf>
-References: <20130919105437.75e0f0a3@armhf>
-	<20130919104028.GI21013@sirena.org.uk>
+From: Andreas Mohr <andi@lisas.de>
+Subject: Re: [RFC PATCH] ES938 support for ES18xx driver
+Date: Thu, 19 Sep 2013 19:36:49 +0200
+Message-ID: <20130919173649.GA18537@rhlx01.hs-esslingen.de>
+References: <20130915184902.GA23480@rhlx01.hs-esslingen.de>
+ <201309152304.27585.linux@rainbow-software.org>
+ <20130915212358.GB32375@rhlx01.hs-esslingen.de>
+ <201309162220.55221.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20130919104028.GI21013-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <201309162220.55221.linux@rainbow-software.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ondrej Zary <linux@rainbow-software.org>
+Cc: Andreas Mohr <andi@lisas.de>, alsa-devel@alsa-project.org, krzysztof.h1@wp.pl, Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 19 Sep 2013 11:40:28 +0100
-Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+Hi,
 
-> On Thu, Sep 19, 2013 at 10:54:37AM +0200, Jean-Francois Moine wrote:
-> > This patch adds a simple sound codec which is described by the DT.
-> > This codec may be used when no specific codec action is needed.
->=20
-> Hrm.  I'm generally not enthusiastic about this sort of thing because=
- it
-> requires every user of the device to understand the capabilities of t=
-he
-> device instead of being able to just say they have a device of type X=
- -
-> it seems better to type the data in once in a driver and then referen=
-ce
-> it.  That said...
+On Mon, Sep 16, 2013 at 10:20:54PM +0200, Ondrej Zary wrote:
+> +static int snd_es938_read_reg(struct snd_es938 *chip, u8 reg, u8 *out)
+> +{
+> +	u8 buf[8];
+> +	int i = 0, res;
+> +	u8 sysex[] = { MIDI_CMD_COMMON_SYSEX, 0x00, 0x00, ES938_ID,
+> +		       ES938_CMD_REG_R, reg, MIDI_CMD_COMMON_SYSEX_END };
+> +	unsigned long end_time;
+> +
+> +	snd_rawmidi_kernel_write(chip->rfile.output, sysex, sizeof(sysex));
+> +
+> +	memset(buf, 0, sizeof(buf));
+> +	end_time = jiffies + msecs_to_jiffies(100);
+> +	while (i < sizeof(buf)) {
+> +		res = snd_rawmidi_kernel_read(chip->rfile.input, buf + i,
+> +					      sizeof(buf) - i);
+> +		if (res > 0)
+> +			i += res;
+> +		if (time_after(jiffies, end_time))
+> +			return -1;
+> +	}
 
-Well, first, the codecs hdmi and dmic have no DT support.
-Then, from the Cubox point of vue, the codec hdmi offers playback
-and capture while the Cubox has only playback (via the tda998x HDMI
-transmitter), and, also, the codec spdif transmitter has a lot of
-sample rates while the Dove audio device supports only 44.1, 48 and 96
-kHz.
+Forgive me, but I seem to faintly remember that it's preferred for
+user code to tend towards non-jiffies-based timing (IIRC due to
+NOHZ efforts etc.).
+So if that actually is the case, then one might want to change it to
+less jiffies-dependent handling (use non-jiffies helpers), but then how?
 
-So, instead of adding new hdmi and spdif_transmitter codecs,
-I thought it could be useful to have a generic codec with DT support.
+> +static void snd_es938_write_reg(struct snd_es938 *chip, u8 reg, u8 val)
+> +{
+> +	u8 sysex[] = { MIDI_CMD_COMMON_SYSEX, 0x00, 0x00, ES938_ID,
+> +		       ES938_CMD_REG_W, reg, val, MIDI_CMD_COMMON_SYSEX_END };
+> +
+> +	snd_rawmidi_kernel_write(chip->rfile.output, sysex, sizeof(sysex));
 
-On the other hand, as the first use of this codec is for the Cubox,
-an other solution could be to have the codec included in the kirkwood
-driver (declared by DT as either i2s or s/pdif). This would simplify
-the use or not of s/pdif in this driver.
+snd_rawmidi_kernel_write() is prototyped as const unsigned char *buf,
+so perhaps...
+const unsigned char buf[] = ...;?
+(static const probably not so useful
+e.g. since static const may be rather prone to cache misses)
 
-> > +Child 'capture' and 'playback' required properties:
-> > +- stream-name: name of the stream
->=20
-> What does this mean in the binding?
+Though personally I do favour u8, since "char" seems so unsuitably stringy -
+but the prototype currently doesn't offer it typed that way...
 
-Indeed, the stream name could be implicit (either "Playback" or
-"Capture"), but, as the users are aware of it, a more friendly
-name is nicer ("S/PDIF Playback").
+(Almost-)Reviewed-By: Andreas Mohr <andim2@users.sf.net>
 
-> > +Formats:
-> > +	"s8"
-> > +	"u8"
->=20
-> I'd cut this down to just the PCM formats for now - many of the forma=
-ts
-> you list there aren't terribly well defined even within ALSA, I don't
-> think some of them have ever been used at all.  A binding document
-> should really document what things mean as well.
-
-I have no idea about which format is used or not, and there is no
-explanation about their meanings in the uapi (but I can search them..).
-
-Otherwise, for Dove, we need at least "s16_le", "s24_le" and "s32_le"
-and, perhaps, "iec958_subframe_le" and "iec958_subframe_be".
-
-So, what do you think should be the format set?
-
-> > +Rates:
-> > +	5512
-> > +	8000
->=20
-> This shouldn't be a list of defined rates, it should allow any number=
-,
-> and it should support ranges since while some devices do enumerate
-> specific rates simpler devices often just support a continuous range =
-of
-> rates.
-
-There cannot be any number because the rates are coded by discrete
-values in a bitmap.
-
-=46or the continuous range, I was thinking about the value '0' followed
-by the min and max rates. Have you any other syntax in mind?
-
-> > --- a/sound/soc/generic/Kconfig
-> > +++ b/sound/soc/generic/Kconfig
->=20
-> CODEC drivers should go in codecs.
-
-OK.
-
-> > +#define DRV_NAME "simple-codec"
->=20
-> Just write the string in the one place where it is used.
-
-OK.
-
-> > +static char *format_tb[] =3D {
-> > +	"s8", "u8", "s16_le", "s16_be",
-> > +	"u16_le", "u16_be", "s24_le", "s24_be",
-> > +	"u24_le", "u24_be", "s32_le", "s32_be",
-> > +	"u32_le", "u32_be", "float_le", "float_be",
-> > +
-> > +	"float64_le", "float64_be", "iec958_subframe_le", "iec958_subfram=
-e_be",
-> > +	"mu_law", "a_law", "ima_adpcm", "mpeg",
-> > +	"gsm", "", "", "",
-> > +	"", "", "", "special",
->=20
-> This seems a bit obscure and fragile - an explicit lookup table would=
- be
-> better I think.
-
-OK.
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Andreas Mohr
