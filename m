@@ -1,65 +1,41 @@
-From: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH v2 05/11] ASoC: davinci-mcasp: Remove interrupt property
- from DT bindings doc
-Date: Thu, 19 Sep 2013 14:46:16 +0300
-Message-ID: <523AE408.2020108@ti.com>
-References: <cover.1379409268.git.jsarha@ti.com> <1b47734e397bfac8846dcfc194fd1ab63f320d1a.1379409268.git.jsarha@ti.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 2/3] mfd: mc13xxx: Move SPI erratum workaround into SPI
+ I/O function
+Date: Thu, 19 Sep 2013 12:49:10 +0100
+Message-ID: <20130919114910.GE22389@lee--X1>
+References: <1379527587-14567-1-git-send-email-broonie@kernel.org>
+ <1379527587-14567-2-git-send-email-broonie@kernel.org>
+ <20130919091318.GA22389@lee--X1>
+ <20130919095628.GH21013@sirena.org.uk>
+ <20130919100434.GB22389@lee--X1>
+ <20130919114107.GL21013@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1b47734e397bfac8846dcfc194fd1ab63f320d1a.1379409268.git.jsarha-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: jsarha-l0cyMroinI0@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org, gururaja.hebbar-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, nm-l0cyMroinI0@public.gmane.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130919114107.GL21013@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Marc Reilly <marc@cpdesign.com.au>, u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/17/2013 12:26 PM, jsarha-l0cyMroinI0@public.gmane.org wrote:
-> From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+> > Either way, it needs changing.
 >=20
-> Davinci McASP driver does use interrupts for anything ATM.
->=20
-> Signed-off-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+> Let's see if someone actually tests the code first though.
 
-Do not remove the interrupts. Even if they are not used they need to be
-described in DT so in the future if we want we can use them.
-The DT describes the HW and not the Linux implementation for the HW...
+I've taken the liberty of bulding it, but I don't have the h/w to
+actually run the code.
 
-> ---
->  .../bindings/sound/davinci-mcasp-audio.txt         |    2 --
->  1 file changed, 2 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-au=
-dio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.t=
-xt
-> index 68e0f47..b5e7b78 100644
-> --- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-> +++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-> @@ -11,7 +11,6 @@ Required properties:
->  - reg-names : The mandatory reg-range must be named "mpu" and the op=
-tional DMA
->  	      reg-range must be named "dma". For backward compatibility it =
-is
->  	      good to keep "mpu" first in the list.
-> -- interrupts : Interrupt number for McASP
->  - op-mode : I2S/DIT ops mode.
->  - tdm-slots : Slots for TDM operation.
->  - num-serializer : Serializers used by McASP.
-> @@ -40,7 +39,6 @@ mcasp0: mcasp0@1d00000 {
->  	#size-cells =3D <0>;
->  	reg =3D <0x100000 0x3000>;
->  	reg-names "mpu";
-> -	interrupts =3D <82 83>;
->  	op-mode =3D <0>;		/* MCASP_IIS_MODE */
->  	tdm-slots =3D <2>;
->  	num-serializer =3D <16>;
->=20
-
+I get:
+  drivers/mfd/mc13xxx-spi.c: In function =E2=80=98mc13xxx_spi_write=E2=80=
+=99:
+  drivers/mfd/mc13xxx-spi.c:97:14: warning: initialisation discards =E2=
+=80=98const=E2=80=99 qualifier from pointer target type [enabled by def=
+ault]
 
 --=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
