@@ -1,118 +1,76 @@
-From: Adam Williamson <awilliam@redhat.com>
-Subject: Re: No sound with Sony VAIO VPCZ1 (ALC889)
-Date: Thu, 19 Sep 2013 15:10:23 -0700
-Message-ID: <1379628623.2918.13.camel@adam>
-References: <51D464A5.6040507@gmail.com> <51D59D60.9020105@gmail.com>
- <51D5FCFC.8010506@gmail.com> <s5hip0pwp49.wl%tiwai@suse.de>
- <51D6B56D.8050909@gmail.com> <s5h1u7dchqh.wl%tiwai@suse.de>
- <020e0ad5107eb4c2bb333468be58d7d3@www.happyassassin.net>
- <51D9F543.2070605@gmail.com>
- <c2cbc2323ce3a8e0df5f52de3ecb276c@www.happyassassin.net>
- <s5hvc4luem4.wl%tiwai@suse.de>
- <46b0590bfa4ffc836dde180f8ffe3c97@www.happyassassin.net>
- <s5hwqoycu0y.wl%tiwai@suse.de> <51DDD53A.8040502@gmail.com>
- <s5hbo69vf4z.wl%tiwai@suse.de> <51DE7B63.7060708@gmail.com>
- <s5hfvvlcs4o.wl%tiwai@suse.de> <51DE9D18.6010304@gmail.com>
- <51E4FD95.2080500@gmail.com> <s5hsizflykp.wl%tiwai@suse.de>
- <51E4FF18.2050208@gmail.com> <s5hoba2n9ve.wl%tiwai@suse.de>
- <51E59331.5000200@gmail.com> <s5hehaymho4.wl%tiwai@suse.de>
- <51E5D5F1.4020101@gmail.com> <s5hzjtllj7n.wl%tiwai@suse.de>
- <1379447519.24293.21.camel@adam> <s5hob7oahfl.wl%tiwai@suse.de>
- <1379623482.2918.4.camel@adam>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id E3DD4261B1C
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 00:10:27 +0200 (CEST)
-In-Reply-To: <1379623482.2918.4.camel@adam>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Tormen <my.nl.abos@gmail.com>
+From: Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Subject: [PATCH 08/51] DMA-API: net: intel/ixgbevf: fix 32-bit DMA mask
+ handling
+Date: Thu, 19 Sep 2013 22:32:59 +0100
+Message-ID: <E1VMlqN-0007fw-MQ@rmk-PC.arm.linux.org.uk>
+References: <20130919212235.GD12758@n2100.arm.linux.org.uk>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20130919212235.GD12758-l+eeeJia6m9vn6HldHNs0ANdhmdF6hFW@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, b43-dev-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, e1000-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-ide-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-nvme-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Solarflare linux maintainers <linux-net-drivers-s/n/eUQHGBpZroRs9YW3xA@public.gmane.org>, uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+Cc: Jeff Kirsher <jeffrey.t.kirsher-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Jesse Brandeburg <jesse.brandeburg-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Bruce Allan <bruce.w.allan-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Carolyn Wyborny <carolyn.wyborny-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Don Skidmore <donald.c.skidmore-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Greg Rose <gregory.v.rose-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Peter P Waskiewicz Jr <peter.p.waskiewicz.jr-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Alex Duyck <alexander.h.duyck-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, John Ronciak <john.ronciak-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Tushar Dave <tushar.n.dave-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2013-09-19 at 13:44 -0700, Adam Williamson wrote:
-> On Thu, 2013-09-19 at 18:45 +0200, Takashi Iwai wrote:
-> > At Tue, 17 Sep 2013 12:51:59 -0700,
-> > Adam Williamson wrote:
-> > > 
-> > > On Wed, 2013-07-17 at 09:49 +0200, Takashi Iwai wrote:
-> > > 
-> > > > > echo "multi_io = no" 
-> > > > >  >/sys/devices/pci0000:00/0000:00:1b.0/sound/card0/hwC0D0/hints
-> > > > > echo "1" 
-> > > > >  >/sys/devices/pci0000:00/0000:00:1b.0/sound/card0/hwC0D0/reconfigure
-> > > > > 
-> > > > > http://www.alsa-project.org/db/?f=8494525c7988dc528a45cc1e45134666f3793d7a
-> > > > > 
-> > > > >    < Master >
-> > > > >    Headphone
-> > > > >    Speaker
-> > > > >    Mic
-> > > > >    Mic Boost
-> > > > >    Mic 1
-> > > > >    Mic Boost 1
-> > > > >    Beep
-> > > > >    Auto-Mute Mode    Enabled
-> > > > > 
-> > > > > AT THIS POINT IT WORKED !
-> > > > > 
-> > > > > But not automatically though ?!
-> > > > > I have to manually put in the hint.
-> > > > 
-> > > > Hm, so something clears the flag again (or prevents the flag
-> > > > working).  Could you try to figure out when and where no_multi_io flag
-> > > > is set and cleared, e.g. by adding printk()s in the code path?
-> > > 
-> > > So it looks like things stalled a bit here; if you still need info from
-> > > someone with an affected system I can try and do it, but you might need
-> > > to walk me through it / provide patches a bit more than the above, as
-> > > I'm just a dumb qa monkey :) If you can make it a bit more 'tab a, slot
-> > > b' I'll try and do the testing. Thanks!
-> > 
-> > Could you just try 3.12-rc1?
-> 
-> Sure, I'll get on that and get back to you.
+The fallback to 32-bit DMA mask is rather odd:
+	if (!dma_set_mask(&pdev->dev, DMA_BIT_MASK(64)) &&
+	    !dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64))) {
+		pci_using_dac = 1;
+	} else {
+		err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+		if (err) {
+			err = dma_set_coherent_mask(&pdev->dev,
+						    DMA_BIT_MASK(32));
+			if (err) {
+				dev_err(&pdev->dev, "No usable DMA "
+					"configuration, aborting\n");
+				goto err_dma;
+			}
+		}
+		pci_using_dac = 0;
+	}
+This means we only set the coherent DMA mask in the fallback path if
+the DMA mask set failed, which is silly.  This fixes it to set the
+coherent DMA mask only if dma_set_mask() succeeded, and to error out
+if either fails.
 
-3.12 RC1:
+Signed-off-by: Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+---
+ drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c |   15 +++++----------
+ 1 files changed, 5 insertions(+), 10 deletions(-)
 
-Internal speaker playback works
-Headphone playback works
-Internal mic is available as an input and works
-
-Dedicated mic jack is NOT available as an input in GNOME control center
-Input line from headphone/headset jack is NOT available as an input in
-GNOME control center
-
-pavucontrol shows Internal Microphone and Microphone inputs. If I plug
-my headset into the dedicated mic jack, set the pavucontrol input to
-Microphone, and fiddle with the headset, I see the volume levels
-bouncing around, so it looks like that is the dedicated mic jack and it
-works. There does not appear to be any input channel in PA that maps to
-the input line from the headphone/headset jack. Jack sensing works -
-input switches between "Microphone" and "Internal Microphone" as I plug
-and unplug something from the dedicated mic jack.
-
-alsamixer shows 'Mic', 'Mic 1' and 'Internal Mic' inputs; I can't get
-pavucontrol to show any input level from a headset plugged into the
-headset/headphone jack no matter how I twiddle with it, though.
-
-Overall looking pretty good except for a bug in the GNOME control panel
-applet for sound and the lack of handling of the input line from the
-headphone/headset jack (I don't know if this ever worked in the past,
-anyway, I only finally figured out what all the inputs actually are in
-the context of this thread).
+diff --git a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
+index 59a62bb..e34c2da 100644
+--- a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
++++ b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
+@@ -3326,19 +3326,14 @@ static int ixgbevf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (err)
+ 		return err;
+ 
+-	if (!dma_set_mask(&pdev->dev, DMA_BIT_MASK(64)) &&
+-	    !dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64))) {
++	if (!dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64))) {
+ 		pci_using_dac = 1;
+ 	} else {
+-		err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
++		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+ 		if (err) {
+-			err = dma_set_coherent_mask(&pdev->dev,
+-						    DMA_BIT_MASK(32));
+-			if (err) {
+-				dev_err(&pdev->dev, "No usable DMA "
+-					"configuration, aborting\n");
+-				goto err_dma;
+-			}
++			dev_err(&pdev->dev, "No usable DMA "
++				"configuration, aborting\n");
++			goto err_dma;
+ 		}
+ 		pci_using_dac = 0;
+ 	}
 -- 
-Adam Williamson
-Fedora QA Community Monkey
-IRC: adamw | Twitter: AdamW_Fedora | XMPP: adamw AT happyassassin . net
-http://www.happyassassin.net
+1.7.4.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
