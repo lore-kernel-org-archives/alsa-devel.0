@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: mxs-saif: Use
+Subject: Re: [PATCH 1/1] ASoC: omap-mcpdm: Use
 	devm_snd_soc_register_component
-Date: Thu, 19 Sep 2013 14:59:24 +0100
-Message-ID: <20130919135924.GY21013@sirena.org.uk>
-References: <1379393409-13607-1-git-send-email-sachin.kamat@linaro.org>
+Date: Thu, 19 Sep 2013 14:59:35 +0100
+Message-ID: <20130919135935.GZ21013@sirena.org.uk>
+References: <1379393882-17769-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0625461764443921742=="
+Content-Type: multipart/mixed; boundary="===============5575258692817320444=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 24DF3265363
- for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2013 15:59:37 +0200 (CEST)
-In-Reply-To: <1379393409-13607-1-git-send-email-sachin.kamat@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D89926545B
+ for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2013 15:59:43 +0200 (CEST)
+In-Reply-To: <1379393882-17769-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org
+Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, misael.lopez@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0625461764443921742==
+--===============5575258692817320444==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UJoEJyuH25+IoM96"
+	protocol="application/pgp-signature"; boundary="v3gsnnLXiLKXzTq3"
 Content-Disposition: inline
 
 
---UJoEJyuH25+IoM96
+--v3gsnnLXiLKXzTq3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Sep 17, 2013 at 10:20:09AM +0530, Sachin Kamat wrote:
+On Tue, Sep 17, 2013 at 10:28:02AM +0530, Sachin Kamat wrote:
+
 > devm_snd_soc_register_component makes code simpler.
 
 Applied, thanks.
 
---UJoEJyuH25+IoM96
+--v3gsnnLXiLKXzTq3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSOwM4AAoJELSic+t+oim9WT0QAJzGF3pKIxnMgLW6d+aZT2Vc
-1GHiIlaqfradr5UTRJ8yzVCPc+XUE9cxA4ihM/vkFfdPhFB4Y+lBv7PuApI76bXa
-MXM4ApCy0Qnx4BBFXxs3LIVVEIrIz24ULhYA2hrGTN1QRuxfPQySIv7SQzt+MfCH
-2jX4gCXQHmmglQaTk1t8Qloeo85ISh9vG8uX4JXA6VDoDMWTslQ//d8gw4IilbM+
-EuWx0/zZHndLUcBq5vZembMRjZqM8/kX9Zy5QpiE/iQJdsPfqYPYD169fmM/ivYx
-ZdsxqdODWaCv+T+cOUUQNHQM4g4z+M1HAjlMd/OLrjo1hoPovhciXAfPh4At3h++
-Qzsjyn7tw9HbF/wFHlmlnALs6Ye8zOVctaZu+WsF9Iw2Hn49tOmLCbFO2pBTorCC
-XTs1L66+hYvvzbhAOkF79foy3IQFzGFdBKNV+Zn05zM6llnptoxt70UgRst66s4o
-rYM2gKPaQje2ous6T7j+9t0jxU+acpi38aI3XXY+3WmyB4hQIH3EJNq7GvDUG28g
-QuzjAjDOA23lUhnJkmFhFR4EBzvJr6CxvzduMiLc+0Ghfjurn0vH650zAiq3cArX
-dIy23g8jo5dxmiTutJYIFAHwLpvOSwvSwwSZNbcbqtdSKefk0RNkuleaAC/yHV6s
-6j0GhnArfgREMwQO2XxI
-=S3fw
+iQIcBAEBAgAGBQJSOwNEAAoJELSic+t+oim9S28P/2DwWRbVcWdkhdLHgfKI5VsK
+Mz1/Xhh7yQWrxH4/lbpCVyhd/KQDTWINTeCauK13quV90TPFa1PKCsti8gUEu4Ei
+h+eGJ4Hahcp5qtNz119nDn5kfLP52eth2WLuwQgRIg7s3B+46vI+mY1gH6kPhDbV
++yhARherDxC8lx0kIeQHik80aI5yLD3pGle6CCZOnVUHp1GxdXG9YyeRUTxWP7my
+5QTSy49js6594sGZppXU0+SXUZZkdHindmfgQ7DQbkiFBq4Spl4MNDgVZoaS2sav
+gAK99yTwPzpihSDp+GXsU8Bo6zKhSu1C1kyLtNz1ak33I0K8URuFLbV4qNQAG95a
+sXqbTtWllhOGcHOY0wLt3y90qomsArsycgdh8S9nFDMReGcKCOsHxMG65+l18DUE
+yViTuBcHTEJHqdLG2M98d2IHkxrcCyVplp/0Xqxh6sXFQQq77M3VFt1i6qYtGIdT
+/qU9HJ46mipoGkg/tPa2+H8IV6oplKshHQgg9dlHJOU9kfbLkcT/ZTKcHI4T5ODz
+Iz6G0125NwFM4725Rj/QIWgQT3QAMQlby/x/TE/HjPSOhyZAvCPwNV033CUY26mI
+eZDKMDBN2iikcvpazqGTmnrMeIYsAtY2RSJbb1RY18ZJ+BdF3/L33RAtUqelmIvq
+gtNAeyoFLD2qv/CSjVTn
+=ey/b
 -----END PGP SIGNATURE-----
 
---UJoEJyuH25+IoM96--
+--v3gsnnLXiLKXzTq3--
 
---===============0625461764443921742==
+--===============5575258692817320444==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0625461764443921742==--
+--===============5575258692817320444==--
