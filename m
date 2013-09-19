@@ -1,53 +1,46 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 2/3] mfd: mc13xxx: Move SPI erratum workaround into SPI
- I/O function
-Date: Thu, 19 Sep 2013 10:13:18 +0100
-Message-ID: <20130919091318.GA22389@lee--X1>
-References: <1379527587-14567-1-git-send-email-broonie@kernel.org>
- <1379527587-14567-2-git-send-email-broonie@kernel.org>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: [PATCH] ASoc: kirkwood: Extend the min and max number
+ of bytes per period
+Date: Thu, 19 Sep 2013 11:20:43 +0200
+Message-ID: <20130919112043.5ad16147@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1379527587-14567-2-git-send-email-broonie@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Marc Reilly <marc@cpdesign.com.au>, u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE9982619E3
+ for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2013 11:18:38 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 18 Sep 2013, Mark Brown wrote:
-
-> From: Mark Brown <broonie@linaro.org>
->=20
-> Move the workaround for double sending AUDIO_CODEC and AUDIO_DAC writ=
-es
-> into the SPI core, aiding refactoring to eliminate the ASoC custom I/=
-O
-> functions and avoiding the extra writes for I2C.
->=20
-> Signed-off-by: Mark Brown <broonie@linaro.org>
-> ---
->  drivers/mfd/mc13xxx-spi.c   | 5 +++++
->  include/linux/mfd/mc13xxx.h | 7 +++++++
->  sound/soc/codecs/mc13783.c  | 4 ----
->  3 files changed, 12 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/mfd/mc13xxx-spi.c b/drivers/mfd/mc13xxx-spi.c
-> index 77189da..363c359 100644
-> --- a/drivers/mfd/mc13xxx-spi.c
-> +++ b/drivers/mfd/mc13xxx-spi.c
-> @@ -94,10 +94,15 @@ static int mc13xxx_spi_write(void *context, const=
- void *data, size_t count)
->  {
->  	struct device *dev =3D context;
->  	struct spi_device *spi =3D to_spi_device(dev);
-> +	char *reg =3D data;
-
-I think this requires a cast.
-
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+VGhpcyBwYXRjaCBleHRlbmRzIHRoZSBtaW4gYW5kIG1heCBudW1iZXIgb2YgYnl0ZXMgcGVyIHBl
+cmlvZC4KSXQgbWFpbmx5IHBlcm1pdHMgdG8gcmVkdWNlIHRoZSBzb3VuZCBkZWxheSBpbiBNSURJ
+IHJlYWwtdGltZSBwbGF5aW5nLgoKU2lnbmVkLW9mZi1ieTogSmVhbi1GcmFuY29pcyBNb2luZSA8
+bW9pbmVqZkBmcmVlLmZyPgotLS0KIHNvdW5kL3NvYy9raXJrd29vZC9raXJrd29vZC5oIHwgNCAr
+Ky0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlm
+ZiAtLWdpdCBhL3NvdW5kL3NvYy9raXJrd29vZC9raXJrd29vZC5oIGIvc291bmQvc29jL2tpcmt3
+b29kL2tpcmt3b29kLmgKaW5kZXggZjhlMWNjYy4uYmYyM2FmYiAxMDA2NDQKLS0tIGEvc291bmQv
+c29jL2tpcmt3b29kL2tpcmt3b29kLmgKKysrIGIvc291bmQvc29jL2tpcmt3b29kL2tpcmt3b29k
+LmgKQEAgLTEyMyw4ICsxMjMsOCBAQAogLyogbmVlZCB0byBmaW5kIHdoZXJlIHRoZXkgY29tZSBm
+cm9tICAgICAgICAgICAgICAgKi8KICNkZWZpbmUgS0lSS1dPT0RfU05EX01JTl9QRVJJT0RTCQk4
+CiAjZGVmaW5lIEtJUktXT09EX1NORF9NQVhfUEVSSU9EUwkJMTYKLSNkZWZpbmUgS0lSS1dPT0Rf
+U05EX01JTl9QRVJJT0RfQllURVMJCTB4NDAwMAotI2RlZmluZSBLSVJLV09PRF9TTkRfTUFYX1BF
+UklPRF9CWVRFUwkJMHg0MDAwCisjZGVmaW5lIEtJUktXT09EX1NORF9NSU5fUEVSSU9EX0JZVEVT
+CQkweDgwMAorI2RlZmluZSBLSVJLV09PRF9TTkRfTUFYX1BFUklPRF9CWVRFUwkJMHg4MDAwCiAj
+ZGVmaW5lIEtJUktXT09EX1NORF9NQVhfQlVGRkVSX0JZVEVTCQkoS0lSS1dPT0RfU05EX01BWF9Q
+RVJJT0RfQllURVMgXAogCQkJCQkJICogS0lSS1dPT0RfU05EX01BWF9QRVJJT0RTKQogCi0tIApL
+ZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYhICoqCkplZgkJ
+fAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
