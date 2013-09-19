@@ -1,31 +1,15 @@
-From: Adam Williamson <awilliam@redhat.com>
-Subject: Re: No sound with Sony VAIO VPCZ1 (ALC889)
-Date: Thu, 19 Sep 2013 13:44:42 -0700
-Message-ID: <1379623482.2918.4.camel@adam>
-References: <51D464A5.6040507@gmail.com> <51D59D60.9020105@gmail.com>
- <51D5FCFC.8010506@gmail.com> <s5hip0pwp49.wl%tiwai@suse.de>
- <51D6B56D.8050909@gmail.com> <s5h1u7dchqh.wl%tiwai@suse.de>
- <020e0ad5107eb4c2bb333468be58d7d3@www.happyassassin.net>
- <51D9F543.2070605@gmail.com>
- <c2cbc2323ce3a8e0df5f52de3ecb276c@www.happyassassin.net>
- <s5hvc4luem4.wl%tiwai@suse.de>
- <46b0590bfa4ffc836dde180f8ffe3c97@www.happyassassin.net>
- <s5hwqoycu0y.wl%tiwai@suse.de> <51DDD53A.8040502@gmail.com>
- <s5hbo69vf4z.wl%tiwai@suse.de> <51DE7B63.7060708@gmail.com>
- <s5hfvvlcs4o.wl%tiwai@suse.de> <51DE9D18.6010304@gmail.com>
- <51E4FD95.2080500@gmail.com> <s5hsizflykp.wl%tiwai@suse.de>
- <51E4FF18.2050208@gmail.com> <s5hoba2n9ve.wl%tiwai@suse.de>
- <51E59331.5000200@gmail.com> <s5hehaymho4.wl%tiwai@suse.de>
- <51E5D5F1.4020101@gmail.com> <s5hzjtllj7n.wl%tiwai@suse.de>
- <1379447519.24293.21.camel@adam> <s5hob7oahfl.wl%tiwai@suse.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: [PATCH 00/51] DMA mask changes
+Date: Thu, 19 Sep 2013 22:22:35 +0100
+Message-ID: <20130919212235.GD12758@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 83CEF261AF9
- for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2013 22:44:47 +0200 (CEST)
-In-Reply-To: <s5hob7oahfl.wl%tiwai@suse.de>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 1453C261AF9
+ for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2013 23:22:49 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,70 +19,155 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Tormen <my.nl.abos@gmail.com>
+To: alsa-devel@alsa-project.org, b43-dev@lists.infradead.org, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, e1000-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-ide@vger.kernel.org, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, linux-nvme@lists.infradead.org, linux-omap@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org, linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, Solarflare linux maintainers <linux-net-drivers@solarflare.com>, uclinux-dist-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2013-09-19 at 18:45 +0200, Takashi Iwai wrote:
-> At Tue, 17 Sep 2013 12:51:59 -0700,
-> Adam Williamson wrote:
-> > 
-> > On Wed, 2013-07-17 at 09:49 +0200, Takashi Iwai wrote:
-> > 
-> > > > echo "multi_io = no" 
-> > > >  >/sys/devices/pci0000:00/0000:00:1b.0/sound/card0/hwC0D0/hints
-> > > > echo "1" 
-> > > >  >/sys/devices/pci0000:00/0000:00:1b.0/sound/card0/hwC0D0/reconfigure
-> > > > 
-> > > > http://www.alsa-project.org/db/?f=8494525c7988dc528a45cc1e45134666f3793d7a
-> > > > 
-> > > >    < Master >
-> > > >    Headphone
-> > > >    Speaker
-> > > >    Mic
-> > > >    Mic Boost
-> > > >    Mic 1
-> > > >    Mic Boost 1
-> > > >    Beep
-> > > >    Auto-Mute Mode    Enabled
-> > > > 
-> > > > AT THIS POINT IT WORKED !
-> > > > 
-> > > > But not automatically though ?!
-> > > > I have to manually put in the hint.
-> > > 
-> > > Hm, so something clears the flag again (or prevents the flag
-> > > working).  Could you try to figure out when and where no_multi_io flag
-> > > is set and cleared, e.g. by adding printk()s in the code path?
-> > 
-> > So it looks like things stalled a bit here; if you still need info from
-> > someone with an affected system I can try and do it, but you might need
-> > to walk me through it / provide patches a bit more than the above, as
-> > I'm just a dumb qa monkey :) If you can make it a bit more 'tab a, slot
-> > b' I'll try and do the testing. Thanks!
-> 
-> Could you just try 3.12-rc1?
+This started out as a request to look at the DMA mask situation, and how
+to solve the issues which we have on ARM - notably how the DMA mask
+should be setup.
 
-Sure, I'll get on that and get back to you.
+However, I started off reviewing how the dma_mask and coherent_dma_mask
+was being used, and what I found was rather messy, and in some cases
+rather buggy.  I tried to get some of the bug fixes in before the last
+merge window, but it seems that the maintainers preferred to have the
+full solution rather than a simple -rc suitable bug fix.
 
-I don't recall if we eventually established exactly how this is
-'supposed to' work in the first place, but just in case we didn't, the
-'extra' mic is input support on the headphone jack which is intended to
-be used for noise cancelling. The system came with earphones that have
-mics on the back of each ear, and the Windows install had a special
-audio driver which used the input from those mics to do noise
-cancelling.
+So, this is an attempt to clean things up.
 
-I noticed yesterday PulseAudio can actually do noise cancelling now, so
-I think we have the bits in place where we could use this 'as it was
-intended to be used', perhaps: the 'extra input' should be available,
-and PA should offer an output profile that is 'output over the headphone
-jack with noise-cancelling based on input from the headphone jack'. That
-would be the 'ideal' setup, I guess. (You can also actually use the
-phones successfully as a headset, the mics pick up your own voice when
-you talk quite well...)
--- 
-Adam Williamson
-Fedora QA Community Monkey
-IRC: adamw | Twitter: AdamW_Fedora | XMPP: adamw AT happyassassin . net
-http://www.happyassassin.net
+The first point here is that drivers performing DMA should be calling
+dma_set_mask()/dma_set_coherent_mask() in their probe function to verify
+that DMA can be performed.  Lots of ARM drivers omit this step; please
+refer to the DMA API documentation on this subject.
+
+What this means is that the DMA mask provided by bus code is a default
+value - nothing more.  It doesn't have to accurately reflect what the
+device is actually capable of.  Apart from the storage for dev->dma_mask
+being initialised for any device which is DMA capable, there is no other
+initialisation which is strictly necessary at device creation time.
+
+Now, these cleanups address two major areas:
+1. The setting of DMA masks, particularly when both the coherent and
+   streaming DMA masks are set together.
+
+2. The initialisation of DMA masks by drivers - this seems to be becoming
+   a popular habbit, one which may not be entirely the right solution.
+   Rather than having this scattered throughout the tree, I've pulled
+   that into a central location (and called it coercing the DMA mask -
+   because it really is about forcing the DMA mask to be that value.)
+
+3. Finally, addressing the long held misbelief that DMA masks somehow
+   correspond with physical addresses.  We already have established
+   long ago that dma_addr_t values returned from the DMA API are the
+   values which you program into the DMA controller, and so are the
+   bus addresses.  It is _only_ sane that DMA masks are also bus
+   related too, and not related to physical address spaces.
+
+(3) is a very important point for LPAE systems, which may still have
+less than 4GB of memory, but this memory is all located above the 4GB
+physical boundary.  This means with the current model, any device
+using a 32-bit DMA mask fails - even though the DMA controller is
+still only a 32-bit DMA controller but the 32-bit bus addresses map
+to system memory.  To put it another way, the bus addresses have a
+4GB physical offset on them.
+
+This email is only being sent to the mailing lists in question, not to
+anyone personally.  The list of individuals is far to great to do that.
+I'm hoping no mailing lists reject the patches based on the number of
+recipients.
+
+Patches based on v3.12-rc1.
+
+ Documentation/DMA-API-HOWTO.txt                   |   37 +++++++++------
+ Documentation/DMA-API.txt                         |    8 +++
+ arch/arm/include/asm/dma-mapping.h                |    8 +++
+ arch/arm/mm/dma-mapping.c                         |   49 ++++++++++++++++++--
+ arch/arm/mm/init.c                                |   12 +++---
+ arch/arm/mm/mm.h                                  |    2 +
+ arch/powerpc/kernel/vio.c                         |    3 +-
+ block/blk-settings.c                              |    8 ++--
+ drivers/amba/bus.c                                |    6 +--
+ drivers/ata/pata_ixp4xx_cf.c                      |    5 ++-
+ drivers/ata/pata_octeon_cf.c                      |    5 +-
+ drivers/block/nvme-core.c                         |   10 ++---
+ drivers/crypto/ixp4xx_crypto.c                    |   48 ++++++++++----------
+ drivers/dma/amba-pl08x.c                          |    5 ++
+ drivers/dma/dw/platform.c                         |    8 +--
+ drivers/dma/edma.c                                |    6 +--
+ drivers/dma/pl330.c                               |    4 ++
+ drivers/firmware/dcdbas.c                         |   23 +++++-----
+ drivers/firmware/google/gsmi.c                    |   13 +++--
+ drivers/gpu/drm/exynos/exynos_drm_drv.c           |    6 ++-
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c          |    5 +-
+ drivers/media/platform/omap3isp/isp.c             |    6 +-
+ drivers/media/platform/omap3isp/isp.h             |    3 -
+ drivers/mmc/card/queue.c                          |    3 +-
+ drivers/mmc/host/sdhci-acpi.c                     |    5 +-
+ drivers/net/ethernet/broadcom/b44.c               |    3 +-
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c  |    8 +---
+ drivers/net/ethernet/brocade/bna/bnad.c           |   13 ++----
+ drivers/net/ethernet/emulex/benet/be_main.c       |   12 +----
+ drivers/net/ethernet/intel/e1000/e1000_main.c     |    9 +---
+ drivers/net/ethernet/intel/e1000e/netdev.c        |   18 +++-----
+ drivers/net/ethernet/intel/igb/igb_main.c         |   18 +++-----
+ drivers/net/ethernet/intel/igbvf/netdev.c         |   18 +++-----
+ drivers/net/ethernet/intel/ixgb/ixgb_main.c       |   16 ++-----
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c     |   15 ++----
+ drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c |   15 ++----
+ drivers/net/ethernet/nxp/lpc_eth.c                |    6 ++-
+ drivers/net/ethernet/octeon/octeon_mgmt.c         |    5 +-
+ drivers/net/ethernet/sfc/efx.c                    |   12 +-----
+ drivers/net/wireless/b43/dma.c                    |    9 +---
+ drivers/net/wireless/b43legacy/dma.c              |    9 +---
+ drivers/of/platform.c                             |    3 -
+ drivers/parport/parport_pc.c                      |    8 +++-
+ drivers/scsi/scsi_lib.c                           |    2 +-
+ drivers/staging/dwc2/platform.c                   |    5 +-
+ drivers/staging/et131x/et131x.c                   |   17 +------
+ drivers/staging/imx-drm/imx-drm-core.c            |    8 +++-
+ drivers/staging/imx-drm/ipuv3-crtc.c              |    4 +-
+ drivers/staging/media/dt3155v4l/dt3155v4l.c       |    5 +--
+ drivers/usb/chipidea/ci_hdrc_imx.c                |    7 +--
+ drivers/usb/dwc3/dwc3-exynos.c                    |    7 +--
+ drivers/usb/gadget/lpc32xx_udc.c                  |    4 +-
+ drivers/usb/host/bcma-hcd.c                       |    3 +-
+ drivers/usb/host/ehci-atmel.c                     |    7 +--
+ drivers/usb/host/ehci-octeon.c                    |    4 +-
+ drivers/usb/host/ehci-omap.c                      |   10 ++--
+ drivers/usb/host/ehci-orion.c                     |    7 +--
+ drivers/usb/host/ehci-platform.c                  |   10 ++--
+ drivers/usb/host/ehci-s5p.c                       |    7 +--
+ drivers/usb/host/ehci-spear.c                     |    7 +--
+ drivers/usb/host/ehci-tegra.c                     |    7 +--
+ drivers/usb/host/ohci-at91.c                      |    9 ++--
+ drivers/usb/host/ohci-exynos.c                    |    7 +--
+ drivers/usb/host/ohci-nxp.c                       |    5 +-
+ drivers/usb/host/ohci-octeon.c                    |    5 +-
+ drivers/usb/host/ohci-omap3.c                     |   10 ++--
+ drivers/usb/host/ohci-pxa27x.c                    |    8 ++--
+ drivers/usb/host/ohci-sa1111.c                    |    6 +++
+ drivers/usb/host/ohci-spear.c                     |    7 +--
+ drivers/usb/host/ssb-hcd.c                        |    3 +-
+ drivers/usb/host/uhci-platform.c                  |    7 +--
+ drivers/usb/musb/am35x.c                          |   50 +++++++--------------
+ drivers/usb/musb/da8xx.c                          |   49 +++++++-------------
+ drivers/usb/musb/davinci.c                        |   48 +++++++-------------
+ drivers/usb/musb/tusb6010.c                       |   49 +++++++-------------
+ drivers/video/amba-clcd.c                         |    5 ++
+ include/linux/amba/bus.h                          |    2 -
+ include/linux/dma-mapping.h                       |   31 +++++++++++++
+ sound/arm/pxa2xx-pcm.c                            |    9 +---
+ sound/soc/atmel/atmel-pcm.c                       |   11 ++---
+ sound/soc/blackfin/bf5xx-ac97-pcm.c               |   11 ++---
+ sound/soc/blackfin/bf5xx-i2s-pcm.c                |   10 ++---
+ sound/soc/davinci/davinci-pcm.c                   |    9 +---
+ sound/soc/fsl/fsl_dma.c                           |    9 +---
+ sound/soc/fsl/mpc5200_dma.c                       |   10 ++---
+ sound/soc/jz4740/jz4740-pcm.c                     |   12 ++---
+ sound/soc/kirkwood/kirkwood-dma.c                 |    9 +---
+ sound/soc/nuc900/nuc900-pcm.c                     |    9 ++--
+ sound/soc/omap/omap-pcm.c                         |   11 ++---
+ sound/soc/pxa/pxa2xx-pcm.c                        |   11 ++---
+ sound/soc/s6000/s6000-pcm.c                       |    9 +---
+ sound/soc/samsung/dma.c                           |   11 ++---
+ sound/soc/samsung/idma.c                          |   11 ++---
+ 93 files changed, 493 insertions(+), 566 deletions(-)
