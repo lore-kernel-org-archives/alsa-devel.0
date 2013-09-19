@@ -1,77 +1,55 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 01/11] ASoC: davinci-evm: Move sysclk
- logic away from evm_hw_params
-Date: Thu, 19 Sep 2013 14:23:16 +0100
-Message-ID: <20130919132316.GR21013@sirena.org.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 07/11] ASoC: tlv320aic3x: Add regulators to DT
+ bindings document
+Date: Thu, 19 Sep 2013 14:29:55 +0100
+Message-ID: <20130919132955.GS21013@sirena.org.uk>
 References: <cover.1379590035.git.jsarha@ti.com>
- <dad0f7eb787d3f65848425a67d668e3935033195.1379590036.git.jsarha@ti.com>
+ <1b88bfa3793d807ff6e325df1bbff6cb4eb976e6.1379590036.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3374363470222491925=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B946261ACA
- for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2013 15:23:32 +0200 (CEST)
-In-Reply-To: <dad0f7eb787d3f65848425a67d668e3935033195.1379590036.git.jsarha@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, joelf@ti.com, rob.herring@calxeda.com, peter.ujfalusi@ti.com, grant.likely@linaro.org, linux-omap@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TRAzd1zqvkbVQS90"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1b88bfa3793d807ff6e325df1bbff6cb4eb976e6.1379590036.git.jsarha-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3374363470222491925==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xYza636WGbju2Spp"
-Content-Disposition: inline
-
-
---xYza636WGbju2Spp
+--TRAzd1zqvkbVQS90
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Sep 19, 2013 at 02:29:34PM +0300, Jyri Sarha wrote:
-> The sysclk rate does not change runtime so it should be initialized at
-> init time.
+On Thu, Sep 19, 2013 at 02:29:40PM +0300, Jyri Sarha wrote:
+> Add regulator properties to tlv320aic3x DT bindings document.
 
-Are there any updates from the version already applied (I only dropped
-the patch to allow the extra builds, not this one).
+Similarly for this and the other CODEC patch, are these changed?
 
---xYza636WGbju2Spp
+--TRAzd1zqvkbVQS90
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSOvrBAAoJELSic+t+oim9sIMP/1OJJWxWj23iC6/R2mNmQTEP
-pYjTan2t7VHKehEzpyyjZKUFVTHf1TzEZxcScymv5IO5nHl1BF3dqTA9vDy0TdIL
-1lG0X/OmKAESMdI2JoWv9mW8I8tpsF++CwmNxd41Ww7+6c3/BJFt1YUD26PQE+BM
-cWsymodjDjiVdB73GqsalsRCPCh8O5ngqPZDRlKF5PcgQtLn19CyFGttlVtF6yA5
-Yh4G+tIsZwAAUPxnE2NM3WS3Pomu/FM07slPh+CtPDO+DfwqdXwx21XVa4p5SVvd
-ec3M8QTa3jpmuE4WPg9sSKXbT+VEbONRxlbpN9ot6iouMpvFnIQYsDhwdyltoY22
-7fnpGgIC8Eo1uli4VmXhMhTDPuGbVkWgpHgVGMa2zUX3cfJsmVESJA0MVk8pM7tW
-+uualifrXN6MPemltbl2Gxub4qctYcj4i2XVvVvKX952NxSkRKbs7r+zxhdOAcT1
-+qxO+am9ng2n/LLpmaMwp1VmXAlkoDAbtyfr2P2zcRc3wCrBZNxdNAhBk66TBCFo
-pSJklnjDBLmal1N1FiUnSO6nceZwJ5RbP3SOeS/zvys9of8WzYoSslQ3EG3wKI9q
-RqXyWfqE2Ku5HMJ+X6MPwyYwKvpIMf2a824LK17VEvfJZvoKS+LbgmYu+Bs5FmHp
-VBzT4FJ7QDOLTq5ife1v
-=cwIE
+iQIcBAEBAgAGBQJSOvxQAAoJELSic+t+oim9qgMP/35GIxpqHMRAac682dOlnijS
+MgSrMvYeIszJXK/ILS6Y+pQbndMUE2QVwosV9GTq/HXjfZsct+z/5vILoHAL25b8
+wdqOHPmouAHMz3ZCR/SVtsKpesQ0VUsp1GrHV4/5cwfyttLGfyBtsuH5U8Tz0gkO
+4zzy59HTANyHbRpknc2mVzAMj2NdEpcmVKNFrWSpZB45XE+uXTT7iQI0L9JDEU1Q
+NWVfBNBhFk8mn6TypnqiOFmxgiXQHeHVzuE3ofgFeXQ05Yvl8IgEF7XkjLQI5Cy3
+KcQZtzGyduzNsWPEdqszIOsSvD5/QkO7rwYwfl5urYNhmMsgya7WdBgAXpmC20hO
+10TKUwdr+2SXzIGkT8Dvsg5w/q69WAktR9zQYRFodjuuvkalbFntKo8k8WbuN7xa
+O2eUxab+mMIZiV8PwuZEGKsJRdrxgsgcCKCcLKi6Z1v823WaHt23TC4enP+WQU3B
+e+wD2rI+qrhGgrlxcFe0AtR8bTMjexV3kPgCrFvTEYLmg0OWnX/H8y5D9NIx0tcS
+iNR+DdpeAteL4doR7ug2Zb0KYoU4XIM5NER7aBLu8vRARn3vjJky9dI6hOX5cBLl
+6+w9P0kZHUwD1aOlZ0dxrlBj7LRuqJS8RYgcM+ErQuuCjOc9FnCDyn2iXj4RrH3D
+0Nr2Y6UTB/zdGQbCb6/A
+=WQ5L
 -----END PGP SIGNATURE-----
 
---xYza636WGbju2Spp--
-
---===============3374363470222491925==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3374363470222491925==--
+--TRAzd1zqvkbVQS90--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
