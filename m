@@ -1,52 +1,63 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: Omit ACPI match table only if !ACPI
-Date: Thu, 19 Sep 2013 11:45:25 +0100
-Message-ID: <20130919104525.GJ21013@sirena.org.uk>
-References: <1379582286-10600-1-git-send-email-treding@nvidia.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: kirkwood: fix loss of external clock at probe time
+Date: Thu, 19 Sep 2013 12:06:42 +0100
+Message-ID: <20130919110642.GK21013@sirena.org.uk>
+References: <20130919114957.1fede091@armhf>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="m699nQIRt8EJjqXo"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="gphVtybrzJJtG9bX"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1379582286-10600-1-git-send-email-treding@nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Thierry Reding <thierry.reding@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20130919114957.1fede091@armhf>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---m699nQIRt8EJjqXo
+--gphVtybrzJJtG9bX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Sep 19, 2013 at 11:18:06AM +0200, Thierry Reding wrote:
-> The ACPI_PTR() macro evaluates to NULL if ACPI is disabled and hence the
-> ACPI match table won't be used, causing the compiler to complain. Avoid
-> this by protecting the table using an #ifdef CONFIG_ACPI.
+On Thu, Sep 19, 2013 at 11:49:57AM +0200, Jean-Francois Moine wrote:
 
-Applied, thanks.  Like I was saying to Olof we really should be able to
-do better than needing the ifdefs though.
+>  	priv->extclk = devm_clk_get(&pdev->dev, "extclk");
+> -	if (!IS_ERR(priv->extclk)) {
+> +	if (IS_ERR(priv->extclk)) {
+> +		if (np && of_property_match_string(np, "clock-names", "extclk") >= 0)
+> +			return -EPROBE_DEFER;
+> +	} else {
 
---m699nQIRt8EJjqXo
+This one really does seem like something the clock API ought to be
+doing, either as standard or with a separate helper - essentially every
+driver ought to be doing this for robustness.  Doing it on general
+failures is more tricky but in the specific case where we know the clock
+should be present but we don't have the driver loaded yet.
+
+--gphVtybrzJJtG9bX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSOtXCAAoJELSic+t+oim9+NYP/2NNEJfIOoZT/HxrGBCCDCvK
-/j66ilAUrCNDybecOekiRonjD5nD+HXEeC6MeYm/Jv58nwfi5Xe9WeZJZWSawM8W
-4ai7tJT2ezBblNYMjKSSCeQ4llfTeUvPBxRQNEeqGhRbugk0FY0DfBHRhCLPvgbk
-TaLY3lU3LCjFDZlPlnVHjaxcw0Rc0vGeH1X5pXmLGyrr/wctIbMsBBdmyMEO8B6j
-hWL5XKgxsShBsfeP2G9km10hKBH8aTjtomXKrUpXbfp++DMAR2Iev9SqSFVtfW5r
-Wq8N6R/9RTE9Pn5xmeoMDpO3Zk/qymPFqV+Zs7khV4ZIg+kZJG3Vc0ckC6k9vuC/
-ijsiWBk2tFw4RX2Ntqt/3byk05/1+hTr41jUfSRZtPLSQkiNTbpmp6J3jhHk6vHH
-mD73WQJY4mBaQDGZ/mcUUy56vCNcBFCHTf1Uje1UWqZ6/ZeWmzthyS8aLoC+natQ
-DxxN3fFgPLbRfKgoo3nFoAZZugcxlki1PQCXhockv9O/1vf9oGk5JZXzyaAjyVoW
-WWKzbkTAXPgnztFKgBSlGRl6cbcyJVmhZSrJ6y8mhmtQAZf1rJ4vtGQkz2sydZ5+
-Twh0liYNagWJUlELDhPb284MLcos/urolynMb8sgNvrqmbnDppVjlykldW3yXmIJ
-X3bn3HV7uT1z0Z0kmzDs
-=yjk2
+iQIcBAEBAgAGBQJSOtq/AAoJELSic+t+oim9wjoP/RmbQAo77BoNulLzF6nWnauP
+/OorEo0B/3OQHUdjMMLESzcYV0FDtaa939w+/oBZ+S8kvB7HL+VxM6XCEibyddyR
+r279IsfuWETIFiUzmzquAjAHtYIiGC7iMSMpZ/Rxg9UHki73X8BghBhnJe1AL2gR
+h3pWdsbpExbW02UGbG4f65519au4dHSCQOJmzVHSjCleB/MgrNhpwcfatrQw4Nc5
+jV0JK83j1gDx9TRmFQWNCjiySP2Ne4ZMPiqO/rx4Qf34Rz4iLghPHj7eCJxC2CIn
+ELAHl52gDIljuJ56SJ1ZFq/tNV8enTPlPgFQBAT9rQ6kXGpZLenzkZnY1PuKimRk
+hbcl3JtLO7CVw+KM5YIAf9pMCO3AYHGnOc4eGBcpDQqzvzUyUhyQnw51y3xdysYT
+Tb8o1kJigrB5aKtXL0HZFf1so0rYXsHkksy2LEEyXid51JL7P6y2j/rhLM4kouLk
+Aqeixw+Nciia9XxwVjsRPTBqPZfAdhZ8AXRp/JjWAfleUPf94ylhPd7igQ8syrbZ
+y62V9NVYmzGu4fARbC05qMqCXfm10B2KASNe6GuyNoXW9VG7aKmkaf7AZmTHeR9N
+83BJysfJhRGjrv/MqbLmVKI2rmgcArzIxfEvbN90kgTv8cLKIrR08ixDPA47PAnb
+KI+EWuovNyVUF2aOV+gw
+=zYFh
 -----END PGP SIGNATURE-----
 
---m699nQIRt8EJjqXo--
+--gphVtybrzJJtG9bX--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
