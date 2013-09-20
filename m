@@ -1,17 +1,19 @@
-From: Bruce <abruceperson@gmail.com>
-Subject: Alsa mmap and asynchronous callbacks
-Date: Fri, 20 Sep 2013 13:03:40 +1000
-Message-ID: <523BBB0C.4020707@gmail.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [RFC PATCH] ALSA : hda - not use assigned
+ converters for all unused pins
+Date: Fri, 20 Sep 2013 08:00:17 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80137789B@SHSMSX101.ccr.corp.intel.com>
+References: <1379299244-18559-1-git-send-email-mengdong.lin@intel.com>
+ <523788CF.3060001@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
- [209.85.192.182])
- by alsa0.perex.cz (Postfix) with ESMTP id C5B74261B01
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 05:03:48 +0200 (CEST)
-Received: by mail-pd0-f182.google.com with SMTP id r10so9190068pdi.13
- for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2013 20:03:47 -0700 (PDT)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9992A261A2F
+ for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 10:00:22 +0200 (CEST)
+In-Reply-To: <523788CF.3060001@canonical.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi David,
 
-I tried posting a query related to async callbacks on the alsa-user 
-list, and the Hammerfall forum, but noone appeared to know what I was 
-talking about. I'm hoping someone here can at least give me some clues.
+Sorry, I missed your mail. Please see comments below ...
 
-*Working:*
-I wrote an application, based around the alsa example code 
-alsa-lib/test/pcm.c using mmap and asynchronous callback notifications. 
-This application runs fine with 32 channels in and 2 out on a Hammerfall 
-MADI system and under alsa 1.0.15. It now works on 2 different machines 
-setup with SUSE 10, then with alsa (and card driver) upgraded to 1.0.15.
-alsamixer is used to setup the soundcard in 96kHz mode (double speed).
-/Note:/ For some reason (I can't recall) I never managed to get the  
-playback async callback to work at the same time as capture callback, so 
-I simply called the playback "top-up" routine from the capture async 
-routine. That works fine.
-The application was used for some years !
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Tuesday, September 17, 2013 6:40 AM
 
-*Problem:*
-SUSE 11 with alsa 1.0.18, same machine, same sound card, application 
-hangs after a few callbacks. No more asynchronous callbacks occur after 
-approx 1s of playback/record. However, the callbacks are working for a 
-short time.
-alsamixer looks quite different for the Hammerfall with this newer alsa, 
-and it does appear to be the change of alsa driver that causes the problem.
+> > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> > index 3d8cd044..4960695 100644
+> > --- a/sound/pci/hda/patch_hdmi.c
+> > +++ b/sound/pci/hda/patch_hdmi.c
+> > @@ -1152,29 +1152,34 @@ static void haswell_config_cvts(struct
+> hda_codec *codec,
+> >  			int pin_id, int mux_id)
+> >  {
+> >  	struct hdmi_spec *spec = codec->spec;
+> > -	struct hdmi_spec_per_pin *per_pin;
+> > -	int pin_idx, mux_idx;
+> > +	hda_nid_t  pin_nid;
+> > +	int pin_idx, cvt_idx;
+> >  	int curr;
+> > -	int err;
+> > -
+> > -	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+> > -		per_pin = get_pin(spec, pin_idx);
+> > +	struct hdmi_spec_per_cvt *per_cvt;
+> >
+> > +	/* configure all 3 pins, including "no physical connection" ones */
+> > +	for (pin_nid = 5; pin_nid < 8; pin_nid++) {
+> 
+> It might not be so future proof to hard code nid IDs here (even if it should be
+> safe right now?). Perhaps more elegant to go through the entire codec->nids
+> array like being done here:
+> 
+> http://lxr.linux.no/linux+*/sound/pci/hda/hda_auto_parser.c#L188
+> 
+> The nid's wcaps is cached so it does not mean additional reads from the codec.
 
-SUSE 11/Ubuntu with alsa 1.0.27. I tried this configuration in order to 
-try a different Xonar sound card. The application was modified for only 
-2 channels, and interleaved instead of non-interleaved sample format (as 
-required by the hardware if not using plughw). Both Xonar and Hammerfall 
-hang in the same way.
+Xingchao defined haswell_config_cvts() to configure converters on codec->pins before.
+But codec->pins does not include the pins programmed by BIOS as "No physical connections" (like port B in the OEM machine).
+So I change the code from using codec->pins to hard coded NIDs. It's not graceful and the NIDs may change in the future.
 
-aplay and alsamixer both work with both soundcards.
+There is another option to change add_pin() to not overlook such "no connection" pins for Haswell.
+But there would be a side effect: the 1st pin can be "no connection" and then the following function will be affected:
+- simple_playback_build_pcms()
+- simple_playback_init()
+Both of them assume the 1st pin is valid and use get_pin(spec, 0) to operates on the 1st pin.
+And in addition, I don't want more PCM and controls to be created on the "No connection" pins.
+So finally I gave up to change add_pin() but just modify haswell_config_cvts().
 
-The alsa calls I'm using do not appear to be in the deprecated list 
-(except  "snd_pcm_sw_params_set_xfer_align" in 1.0.27).
-
-Would you like me to post code fragments ?
-
-/Note: /As a workaround, I attempted to install the working 1.0.15 under 
-the later kernal in Suse 11. Unfortunately ./configure fails in 
-alsa-driver due to differing kernel hooks. It is not realistic to stay 
-with the very old SUSE 10; much of the machine hardware is not recognised.
-
--- 
-Cheers,
-Bruce
+Thanks
+Mengdong
