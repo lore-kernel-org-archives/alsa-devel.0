@@ -1,20 +1,19 @@
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH 42/51] DMA-API: usb: musb: use
- platform_device_register_full() to avoid directly messing with dma masks
-Date: Fri, 20 Sep 2013 10:15:52 -0500
-Message-ID: <20130920151552.GQ26101@radagast>
-References: <20130919212235.GD12758@n2100.arm.linux.org.uk>
- <E1VMnQk-0007sX-Ty@rmk-PC.arm.linux.org.uk>
- <20130920131125.GO26101@radagast>
- <20130920134938.GO25647@n2100.arm.linux.org.uk>
-Reply-To: balbi@ti.com
+From: Olaf Hering <olaf@aepfle.de>
+Subject: Re: hdmi audio on Shuttle XS35GS V3L
+Date: Fri, 20 Sep 2013 17:27:27 +0200
+Message-ID: <20130920152727.GA16734@aepfle.de>
+References: <20130919142333.GA29383@aepfle.de>
+ <20130920122546.GA9628@aepfle.de> <523C481F.8050703@ladisch.de>
+ <20130920135446.GA29307@aepfle.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8713123321030954905=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A13326569A
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 17:17:00 +0200 (CEST)
-In-Reply-To: <20130920134938.GO25647@n2100.arm.linux.org.uk>
+Received: from mo-p00-ob.rzone.de (mo-p00-ob.rzone.de [81.169.146.162])
+ by alsa0.perex.cz (Postfix) with ESMTP id B130126569A
+ for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 17:27:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130920135446.GA29307@aepfle.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,82 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-nvme@lists.infradead.org, linux-ide@vger.kernel.org, devel@driverdev.osuosl.org, linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org, e1000-devel@lists.sourceforge.net, b43-dev@lists.infradead.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Solarflare linux maintainers <linux-net-drivers@solarflare.com>, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, Felipe Balbi <balbi@ti.com>, linux-crypto@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============8713123321030954905==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rKoHqF+aPLVth8b2"
-Content-Disposition: inline
+On Fri, Sep 20, Olaf Hering wrote:
 
---rKoHqF+aPLVth8b2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Fri, Sep 20, Clemens Ladisch wrote:
+> 
+> > Olaf Hering wrote:
+> > > Does anyone happen to know if HDMI audio is supposed to work on the
+> > > Shuttle XS35GS V3L? I have tried an AOC E2260Pwhu monitor and also a
+> > > Philips 22PFL3805H/12 TV, both show the picture but no sound is played
+> > > via HDMI.
+> > >
+> > > ==> /proc/asound/card0/eld#1.0 <==
+> > > monitor_present         0
+> > > eld_valid               0
+> > 
+> > > ==> /proc/asound/card1/eld#0.0 <==
+> > > monitor_present         0
+> > > eld_valid               0
+> > 
+> > Is this with some monitor present?
+> 
+> Yes, the AOC monitor is connected to the Shuttle with an HDMI cable (EAN
+> 4043718042692, if that matters).
 
-Hi,
-
-On Fri, Sep 20, 2013 at 02:49:38PM +0100, Russell King - ARM Linux wrote:
-> On Fri, Sep 20, 2013 at 08:11:25AM -0500, Felipe Balbi wrote:
-> > Hi,
-> >=20
-> > On Fri, Sep 20, 2013 at 12:14:38AM +0100, Russell King wrote:
-> > > Use platform_device_register_full() for those drivers which can, to
-> > > avoid messing directly with DMA masks.  This can only be done when
-> > > the driver does not need to access the allocated musb platform device
-> > > from within its callbacks, which may be called during the musb
-> > > device probing.
-> > >=20
-> > > Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
-> >=20
-> > you want me to carry this one through my tree or you prefer getting my
-> > Acked-by ? Either way works for me:
-> >=20
-> > Acked-by: Felipe Balbi <balbi@ti.com>
-> >=20
-> > there's also the third option of me setting up a branch with only this
-> > patch and we both merge it, that'd also work.
->=20
-> I think this patch is sufficiently stand-alone that it should be fine
-> if you want to take it through your tree.  That may be better in the
-> long run to avoid conflicts with this patch and any future work in
-> this area during this cycle.
-
-awesome, i'll take this one early next week.
-
---=20
-balbi
-
---rKoHqF+aPLVth8b2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSPGaoAAoJEIaOsuA1yqREE+MP/2yK4ec5lzVPs6fLeF9dUQHh
-yWwfvqZLfu9D9lFIzGOOgfPm03or8ubh7i/ryfKBHxyKiGysUyo2yen3AwOwFgq1
-2VbJzj55Zz5fejj7T9YE2hJPXU3ofUTdkNSJkbOGqnROvzNcCBYorIgcsAceohqP
-biXh7G8wuxJmJqe967o/LVi9M4GL9ny+GqXdqT7TzuPeFzIwnlDpRL2+vgQDD3Y8
-maW6NOBkrF8W7g2qM5qG4oT/LPNyIEAFpJqOYSQ14EgDp0VxviUl4kMDSqihMOM7
-iPMQJPMhNKRx8vSUilrRxGCY636T0bSXZd1x6L+AIQ0XsTzEtFT73v929byiFNso
-bzQpIOgJjrDgUfBi4MnOemhm98+/UhamcqoXq7v6FQ2FyhEMeIgArAIwwr3VxOf1
-E7iiKaT7jVMRMcNZ+7UJsb+09vie5hGleu4M7YBayoxDEEtlWI8t0aOcngW8oVO4
-DHD3uff/mpbTt9UYf7009WRToHXQwLMhbAimBcXbtya9Nxa79LNxT6aWEzfB2uVS
-Ju5j7FEQZUsAMHQdJIUu+kpcEjrc5IKWWsedQul4piraIFh2Jb+8ODrGLEQvMq9e
-8Jxl6hajoiw6zWfr+HMSqJa3MkDtaZ9GEOyvZqlnrBnpNS4dI3jZKDfresiz1fkq
-o5bj9gHe6QmYbP9tPOOz
-=V876
------END PGP SIGNATURE-----
-
---rKoHqF+aPLVth8b2--
-
---===============8713123321030954905==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I just realized snd has a debug= parameter, this is what I get:
 
 
---===============8713123321030954905==--
+[    8.907799] input: PC Speaker as /devices/platform/pcspkr/input/input3
+[    8.927950] snd_hda_intel 0000:00:1b.0: irq 47 for MSI/MSI-X
+[    8.953396] ALSA hda_auto_parser.c:393 autoconfig: line_outs=1 (0xd/0x0/0x0/0x0/0x0) type:speaker
+[    8.953407] ALSA hda_auto_parser.c:397    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+[    8.953414] ALSA hda_auto_parser.c:401    hp_outs=1 (0xb/0x0/0x0/0x0/0x0)
+[    8.953419] ALSA hda_auto_parser.c:402    mono: mono_out=0x0
+[    8.953424] ALSA hda_auto_parser.c:406    inputs:
+[    8.953431] ALSA hda_auto_parser.c:410      Mic=0xa
+[    8.956379] input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input4
+[    9.034729] ALSA patch_hdmi.c:1301 HDMI status: Codec=1 Pin=3 Presence_Detect=0 ELD_Valid=0
+[    9.036489] input: HDA Intel HDMI/DP,pcm=3 as /devices/pci0000:00/0000:00:1b.0/sound/card0/input5
+[    9.037841] input: HDA Intel Front Headphone as /devices/pci0000:00/0000:00:1b.0/sound/card0/input6
+[    9.038085] input: HDA Intel Mic as /devices/pci0000:00/0000:00:1b.0/sound/card0/input7
+[    9.039520] ALSA hda_intel.c:3116 0000:01:00.1: Handle VGA-switcheroo audio client
+[    9.039532] ALSA hda_intel.c:3317 0000:01:00.1: Using LPIB position fix
+[    9.039644] snd_hda_intel 0000:01:00.1: irq 48 for MSI/MSI-X
+[    9.042396] ALSA hda_intel.c:1787 0000:01:00.1: Enable sync_write for stable communication
+[    9.043985] ALSA patch_hdmi.c:1301 HDMI status: Codec=0 Pin=3 Presence_Detect=0 ELD_Valid=0
+[    9.045871] input: HD-Audio Generic HDMI/DP,pcm=3 as /devices/pci0000:00/0000:00:1c.0/0000:01:00.1/sound/card1/input8
+
+So monitor_present remains 0 and hdmi_setup_audio_infoframe is skipped
+(if that matters).
+
+Perhaps hdmi_present_sense should also dump present to see the actual
+response.
+
+Olaf
