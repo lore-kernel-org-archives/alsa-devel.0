@@ -1,82 +1,83 @@
-From: Olaf Hering <olaf@aepfle.de>
-Subject: Re: hdmi audio on Shuttle XS35GS V3L
-Date: Fri, 20 Sep 2013 17:27:27 +0200
-Message-ID: <20130920152727.GA16734@aepfle.de>
-References: <20130919142333.GA29383@aepfle.de>
- <20130920122546.GA9628@aepfle.de> <523C481F.8050703@ladisch.de>
- <20130920135446.GA29307@aepfle.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 28/51] DMA-API: sound: fix dma mask handling in a lot of
+ drivers
+Date: Fri, 20 Sep 2013 17:36:54 +0100
+Message-ID: <20130920163654.GN21013@sirena.org.uk>
+References: <20130919212235.GD12758@n2100.arm.linux.org.uk>
+ <E1VMm9m-0007ij-ER@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo-p00-ob.rzone.de (mo-p00-ob.rzone.de [81.169.146.162])
- by alsa0.perex.cz (Postfix) with ESMTP id B130126569A
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 17:27:30 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130920135446.GA29307@aepfle.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============4406136581201344290=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <E1VMm9m-0007ij-ER@rmk-PC.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-mmc@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-nvme@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-ide@vger.kernel.org, devel@driverdev.osuosl.org, linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org, e1000-devel@lists.sourceforge.net, b43-dev@lists.infradead.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Timur Tabi <timur@tabi.org>, Kukjin Kim <kgene.kim@samsung.com>, dri-devel@lists.freedesktop.org, Ben Dooks <ben-linux@fluff.org>, linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Solarflare linux maintainers <linux-net-drivers@solarflare.com>, Eric Miao <eric.y.miao@gmail.com>, Sangbeom Kim <sbkim73@samsu>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 20, Olaf Hering wrote:
 
-> On Fri, Sep 20, Clemens Ladisch wrote:
-> 
-> > Olaf Hering wrote:
-> > > Does anyone happen to know if HDMI audio is supposed to work on the
-> > > Shuttle XS35GS V3L? I have tried an AOC E2260Pwhu monitor and also a
-> > > Philips 22PFL3805H/12 TV, both show the picture but no sound is played
-> > > via HDMI.
-> > >
-> > > ==> /proc/asound/card0/eld#1.0 <==
-> > > monitor_present         0
-> > > eld_valid               0
-> > 
-> > > ==> /proc/asound/card1/eld#0.0 <==
-> > > monitor_present         0
-> > > eld_valid               0
-> > 
-> > Is this with some monitor present?
-> 
-> Yes, the AOC monitor is connected to the Shuttle with an HDMI cable (EAN
-> 4043718042692, if that matters).
-
-I just realized snd has a debug= parameter, this is what I get:
+--===============4406136581201344290==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="NbUNL4d9A9kY58qh"
+Content-Disposition: inline
 
 
-[    8.907799] input: PC Speaker as /devices/platform/pcspkr/input/input3
-[    8.927950] snd_hda_intel 0000:00:1b.0: irq 47 for MSI/MSI-X
-[    8.953396] ALSA hda_auto_parser.c:393 autoconfig: line_outs=1 (0xd/0x0/0x0/0x0/0x0) type:speaker
-[    8.953407] ALSA hda_auto_parser.c:397    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-[    8.953414] ALSA hda_auto_parser.c:401    hp_outs=1 (0xb/0x0/0x0/0x0/0x0)
-[    8.953419] ALSA hda_auto_parser.c:402    mono: mono_out=0x0
-[    8.953424] ALSA hda_auto_parser.c:406    inputs:
-[    8.953431] ALSA hda_auto_parser.c:410      Mic=0xa
-[    8.956379] input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input4
-[    9.034729] ALSA patch_hdmi.c:1301 HDMI status: Codec=1 Pin=3 Presence_Detect=0 ELD_Valid=0
-[    9.036489] input: HDA Intel HDMI/DP,pcm=3 as /devices/pci0000:00/0000:00:1b.0/sound/card0/input5
-[    9.037841] input: HDA Intel Front Headphone as /devices/pci0000:00/0000:00:1b.0/sound/card0/input6
-[    9.038085] input: HDA Intel Mic as /devices/pci0000:00/0000:00:1b.0/sound/card0/input7
-[    9.039520] ALSA hda_intel.c:3116 0000:01:00.1: Handle VGA-switcheroo audio client
-[    9.039532] ALSA hda_intel.c:3317 0000:01:00.1: Using LPIB position fix
-[    9.039644] snd_hda_intel 0000:01:00.1: irq 48 for MSI/MSI-X
-[    9.042396] ALSA hda_intel.c:1787 0000:01:00.1: Enable sync_write for stable communication
-[    9.043985] ALSA patch_hdmi.c:1301 HDMI status: Codec=0 Pin=3 Presence_Detect=0 ELD_Valid=0
-[    9.045871] input: HD-Audio Generic HDMI/DP,pcm=3 as /devices/pci0000:00/0000:00:1c.0/0000:01:00.1/sound/card1/input8
+--NbUNL4d9A9kY58qh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So monitor_present remains 0 and hdmi_setup_audio_infoframe is skipped
-(if that matters).
+On Thu, Sep 19, 2013 at 10:53:02PM +0100, Russell King wrote:
+> This code sequence is unsafe in modules:
+>=20
+> static u64 mask =3D DMA_BIT_MASK(something);
+> ...
+> 	if (!dev->dma_mask)
+> 		dev->dma_mask =3D &mask;
 
-Perhaps hdmi_present_sense should also dump present to see the actual
-response.
+Acked-by: Mark Brown <broonie@linaro.org>
 
-Olaf
+--NbUNL4d9A9kY58qh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSPHmjAAoJELSic+t+oim9WB4QAINsf282vDwWmQYHGXTeorHo
+q0pJ/9bTwBrSE0KzOK9H6UvL7oxCgzMPOT8RiSjWcdEXX/FavpH1TCf+ETkaYyEA
+NaPvO/uUV/99qWhM/PJQvtv4yxhIR7ENiZKywUuFnWQuc44yGUWBLK8ooA4xXtme
+WMcWyy7SMMcP/+9eBd9aNe1FPYFirsqSrrCpWSR/fD+TWFKMB6HG+OZGNYRFMrRm
+Xet5sWMGwzBiL453M0ujAEHKd/g4VOkweCydEq+2Rt2am6ph+SrMuoQvCDZ1bvbh
+71nyYA+j2xNy8jb7AA9PukWoeXyAI0xRY8zh939Uvdxf4SPUIVgw9wJE5rMRGoT5
+k4We/z2A4m1DGCtg1JQN86HAe7jv3YlGLoPOhsrOnOEV55VnXIz0Lm9x3HjTNfvG
+LcJXBGeHmU3Jvj3JEpA57YDbOhpwx0klK7RS5v6BjIJrJUSwjATqt1WQVr528HDp
+rXQpUqxUL3KObdlA5TYweR2I0KxWe47rw612XGqhRiI+equSdTDP770QsO1nXlsA
+qCfn3Gh7t+hyB3yFZUquWEXwKVv0YMh3Ds/bR2RtZluSl3SzM9n/Dp45w6SMu1LN
+oSpxUS7KNzTPXQp0kns7dDFnJJWXid7mUScjK4rc5pSyBF4NSEqJsmqHm0whd/qL
+uR8J7AFq8DkXx3g+/4gf
+=H53r
+-----END PGP SIGNATURE-----
+
+--NbUNL4d9A9kY58qh--
+
+
+--===============4406136581201344290==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============4406136581201344290==--
