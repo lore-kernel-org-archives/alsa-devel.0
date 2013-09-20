@@ -1,83 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 28/51] DMA-API: sound: fix dma mask handling in a lot of
- drivers
-Date: Fri, 20 Sep 2013 17:36:54 +0100
-Message-ID: <20130920163654.GN21013@sirena.org.uk>
-References: <20130919212235.GD12758@n2100.arm.linux.org.uk>
- <E1VMm9m-0007ij-ER@rmk-PC.arm.linux.org.uk>
+Subject: Re: [PATCH] ASoC: adav80x: Convert to direct regmap
+	API usage
+Date: Fri, 20 Sep 2013 17:39:47 +0100
+Message-ID: <20130920163947.GO21013@sirena.org.uk>
+References: <1379676580-19008-1-git-send-email-broonie@kernel.org>
+ <523C348D.3050502@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4406136581201344290=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <E1VMm9m-0007ij-ER@rmk-PC.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Russell King <rmk+kernel@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-mmc@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-nvme@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-ide@vger.kernel.org, devel@driverdev.osuosl.org, linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org, e1000-devel@lists.sourceforge.net, b43-dev@lists.infradead.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Timur Tabi <timur@tabi.org>, Kukjin Kim <kgene.kim@samsung.com>, dri-devel@lists.freedesktop.org, Ben Dooks <ben-linux@fluff.org>, linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Solarflare linux maintainers <linux-net-drivers@solarflare.com>, Eric Miao <eric.y.miao@gmail.com>, Sangbeom Kim <sbkim73@samsu>
+Content-Type: multipart/mixed; boundary="===============4307128380209627295=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1BC4E265712
+ for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 18:39:58 +0200 (CEST)
+In-Reply-To: <523C348D.3050502@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4406136581201344290==
+--===============4307128380209627295==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NbUNL4d9A9kY58qh"
+	protocol="application/pgp-signature"; boundary="fcasAdn045BL8lzs"
 Content-Disposition: inline
 
 
---NbUNL4d9A9kY58qh
+--fcasAdn045BL8lzs
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 19, 2013 at 10:53:02PM +0100, Russell King wrote:
-> This code sequence is unsafe in modules:
->=20
-> static u64 mask =3D DMA_BIT_MASK(something);
-> ...
-> 	if (!dev->dma_mask)
-> 		dev->dma_mask =3D &mask;
+On Fri, Sep 20, 2013 at 01:42:05PM +0200, Lars-Peter Clausen wrote:
 
-Acked-by: Mark Brown <broonie@linaro.org>
+> I have a, in my opinion, slightly better version of this patch, just hadn't
+> had the time to test it yet. I also have regmap conversion for the adau1373
+> driver.
 
---NbUNL4d9A9kY58qh
+OK.  Any ETA for those?
+
+--fcasAdn045BL8lzs
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSPHmjAAoJELSic+t+oim9WB4QAINsf282vDwWmQYHGXTeorHo
-q0pJ/9bTwBrSE0KzOK9H6UvL7oxCgzMPOT8RiSjWcdEXX/FavpH1TCf+ETkaYyEA
-NaPvO/uUV/99qWhM/PJQvtv4yxhIR7ENiZKywUuFnWQuc44yGUWBLK8ooA4xXtme
-WMcWyy7SMMcP/+9eBd9aNe1FPYFirsqSrrCpWSR/fD+TWFKMB6HG+OZGNYRFMrRm
-Xet5sWMGwzBiL453M0ujAEHKd/g4VOkweCydEq+2Rt2am6ph+SrMuoQvCDZ1bvbh
-71nyYA+j2xNy8jb7AA9PukWoeXyAI0xRY8zh939Uvdxf4SPUIVgw9wJE5rMRGoT5
-k4We/z2A4m1DGCtg1JQN86HAe7jv3YlGLoPOhsrOnOEV55VnXIz0Lm9x3HjTNfvG
-LcJXBGeHmU3Jvj3JEpA57YDbOhpwx0klK7RS5v6BjIJrJUSwjATqt1WQVr528HDp
-rXQpUqxUL3KObdlA5TYweR2I0KxWe47rw612XGqhRiI+equSdTDP770QsO1nXlsA
-qCfn3Gh7t+hyB3yFZUquWEXwKVv0YMh3Ds/bR2RtZluSl3SzM9n/Dp45w6SMu1LN
-oSpxUS7KNzTPXQp0kns7dDFnJJWXid7mUScjK4rc5pSyBF4NSEqJsmqHm0whd/qL
-uR8J7AFq8DkXx3g+/4gf
-=H53r
+iQIcBAEBAgAGBQJSPHpQAAoJELSic+t+oim9+zkP/R6nGmDu8GAPRfXC0OjITyiE
+2aR9ig7ZEVpFSuwiKdc1sJvluFZJ1NrYCRk8kqIrmfHW9FhK2OxfDRD1nuWXuOD/
+4YY+Urjv29vfZ44z5Yocck3UU5dXyLWdDzkFxlUkNdFgKYYPt8IQRrMIGtlOwe1I
+a9Vwybd1LXGfgpRZnCMG6r+tlWn7qt9FG0Xu66H2zTbrHWumwFDZeEAV8pFyAIXO
+MT62EJDAMbstlPeK3NUlWdFNcTfZmswVFw/FHT/UONO3BIDUeEAQVbZhIaqJaNLQ
+EoiC3ZfWrDVNl02wZFhjLrhNaJRBcQGr6x5sAayAlQUmpuhtiBmycSnDr6bCESFs
+if/Am1e6RD3267XcUCl518rg/dDBev8GEIcPrSHCc8fVGTdovu8SJ8DzLdbKgRZP
+epnj7DYj/Pu644bMBfheMmnwetoPML4aY8V+toXgfD11hpwAX+RHymJXZEuFuWVT
+8F0grwKUmDthqflbv1secM++/SCFKL6aKakN8t7FmRgsqJUxS5kIc5urKHMo7xxr
+tBN9Ix7F/U839uaWa7pJQsCvETs/GFfCGziZZCdy3ZqIs7vys2t9dBygPWl8vhdm
+AYPWlq0CqQD2eFAKPOAOhvQApQs1UI13+os8QhQtsXHyi2VFHByavYhSNJL4Kx7p
+rQWrgAcq1tYQ0xeoUT/B
+=lHgk
 -----END PGP SIGNATURE-----
 
---NbUNL4d9A9kY58qh--
+--fcasAdn045BL8lzs--
 
-
---===============4406136581201344290==
+--===============4307128380209627295==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============4406136581201344290==--
+--===============4307128380209627295==--
