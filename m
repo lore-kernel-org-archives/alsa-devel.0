@@ -1,17 +1,21 @@
-From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH 26/51] DMA-API: usb: ohci-sa1111: add a note
-	about DMA masks
-Date: Thu, 19 Sep 2013 22:51:02 +0100
-Message-ID: <E1VMm7q-0007iO-68@rmk-PC.arm.linux.org.uk>
-References: <20130919212235.GD12758@n2100.arm.linux.org.uk>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 1/3] ASoC: ab8500: Downgrade noisy log
+	message
+Date: Fri, 20 Sep 2013 13:09:09 +0100
+Message-ID: <20130920120909.GA2185@lee--X1>
+References: <1379669959-21517-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 87E61261A2F
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 14:08:14 +0200 (CEST)
-In-Reply-To: <20130919212235.GD12758@n2100.arm.linux.org.uk>
+Received: from mail-ea0-f181.google.com (mail-ea0-f181.google.com
+ [209.85.215.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 662FA26564B
+ for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 14:09:13 +0200 (CEST)
+Received: by mail-ea0-f181.google.com with SMTP id d10so211719eaj.40
+ for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 05:09:13 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1379669959-21517-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,34 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, b43-dev@lists.infradead.org, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, e1000-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-ide@vger.kernel.org, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, linux-nvme@lists.infradead.org, linux-omap@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org, linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, Solarflare linux maintainers <linux-net-drivers@solarflare.com>, uclinux-dist-devel@blackfin.uclinux.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Alan Stern <stern@rowland.harvard.edu>
+To: Mark Brown <broonie@kernel.org>
+Cc: linaro-kernel@linaro.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add a comment to explain why this driver doesn't call any of the DMA
-API dma_set_mask() functions.
-
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
----
- drivers/usb/host/ohci-sa1111.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/usb/host/ohci-sa1111.c b/drivers/usb/host/ohci-sa1111.c
-index 17b2a7d..aa9e127 100644
---- a/drivers/usb/host/ohci-sa1111.c
-+++ b/drivers/usb/host/ohci-sa1111.c
-@@ -185,6 +185,12 @@ static int ohci_hcd_sa1111_probe(struct sa1111_dev *dev)
- 	if (usb_disabled())
- 		return -ENODEV;
- 
-+	/*
-+	 * We don't call dma_set_mask_and_coherent() here because the
-+	 * DMA mask has already been appropraitely setup by the core
-+	 * SA-1111 bus code (which includes bug workarounds.)
-+	 */
-+
- 	hcd = usb_create_hcd(&ohci_sa1111_hc_driver, &dev->dev, "sa1111");
- 	if (!hcd)
- 		return -ENOMEM;
--- 
-1.7.4.4
+T24gRnJpLCAyMCBTZXAgMjAxMywgTWFyayBCcm93biB3cm90ZToKCj4gRnJvbTogTWFyayBCcm93
+biA8YnJvb25pZUBsaW5hcm8ub3JnPgo+IAo+IFNpZ25lZC1vZmYtYnk6IE1hcmsgQnJvd24gPGJy
+b29uaWVAbGluYXJvLm9yZz4KPiAtLS0KPiAgc291bmQvc29jL2NvZGVjcy9hYjg1MDAtY29kZWMu
+YyB8IDIgKy0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0p
+CgpGV0lXOiBBbGwgMyBwYXRjaGVzIGxvb2sgZ29vZCB0byBtZToKCkFja2VkLWJ5OiBMZWUgSm9u
+ZXMgPGxlZS5qb25lc0BsaW5hcm8ub3JnPgoKLS0gCkxlZSBKb25lcwpMaW5hcm8gU1RNaWNyb2Vs
+ZWN0cm9uaWNzIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNv
+ZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBC
+bG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
