@@ -1,48 +1,106 @@
-From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Subject: Re: [PATCH 01/51] DMA-API: provide a helper to set both DMA and
- coherent DMA masks
-Date: Fri, 20 Sep 2013 15:12:44 +0100
-Message-ID: <20130920141244.GQ25647@n2100.arm.linux.org.uk>
-References: <20130919212235.GD12758@n2100.arm.linux.org.uk>
- <E1VMlja-0007fA-HU@rmk-PC.arm.linux.org.uk>
- <1379640097.2500.4.camel@bwh-desktop.uk.level5networks.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [RFC PATCH] ALSA : hda - not use assigned
+ converters for all unused pins
+Date: Fri, 20 Sep 2013 14:48:41 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801377CC0@SHSMSX101.ccr.corp.intel.com>
+References: <1379299244-18559-1-git-send-email-mengdong.lin@intel.com>
+ <523788CF.3060001@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F80137789B@SHSMSX101.ccr.corp.intel.com>
+ <523C161B.9050502@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <b43-dev-bounces+gldbd-bcm43xx-dev=gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1379640097.2500.4.camel-/LGg1Z1CJKQ+9kgCwbf1HqK4ta4zdZpAajtMo4Cw6ucAvxtiuMwx3w@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/b43-dev>,
- <mailto:b43-dev-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/b43-dev/>
-List-Post: <mailto:b43-dev-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:b43-dev-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/b43-dev>,
- <mailto:b43-dev-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "b43-dev" <b43-dev-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: b43-dev-bounces+gldbd-bcm43xx-dev=gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Ben Hutchings <bhutchings-s/n/eUQHGBpZroRs9YW3xA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-nvme-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-ide-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, e1000-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, b43-dev-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Solarflare linux maintainers <linux-net-drivers-s/n/eUQHGBpZroRs9YW3xA@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Landley <rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org>, uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 390C726569A
+ for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 16:48:47 +0200 (CEST)
+In-Reply-To: <523C161B.9050502@canonical.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 20, 2013 at 02:21:37AM +0100, Ben Hutchings wrote:
-> On Thu, 2013-09-19 at 22:25 +0100, Russell King wrote:
-> [...]
-> > -dma_set_coherent_mask() will always be able to set the same or a
-> > -smaller mask as dma_set_mask(). However for the rare case that a
-> > +The coherent coherent mask will always be able to set the same or a
-> > +smaller mask as the streaming mask. However for the rare case that a
-> [...]
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Friday, September 20, 2013 5:32 PM
+> To: Lin, Mengdong
+> Cc: alsa-devel@alsa-project.org; tiwai@suse.de
+> Subject: Re: [alsa-devel] [RFC PATCH] ALSA : hda - not use assigned converters
+> for all unused pins
 > 
-> The new wording doesn't make sense; a mask doesn't set itself.  I would
-> suggest:
+> On 09/20/2013 10:00 AM, Lin, Mengdong wrote:
+> > Hi David,
+> >
+> > Sorry, I missed your mail. Please see comments below ...
+> >
+> >> -----Original Message-----
+> >> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> >> Sent: Tuesday, September 17, 2013 6:40 AM
+> >
+> >>> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> >>> index 3d8cd044..4960695 100644
+> >>> --- a/sound/pci/hda/patch_hdmi.c
+> >>> +++ b/sound/pci/hda/patch_hdmi.c
+> >>> @@ -1152,29 +1152,34 @@ static void haswell_config_cvts(struct
+> >> hda_codec *codec,
+> >>>  			int pin_id, int mux_id)
+> >>>  {
+> >>>  	struct hdmi_spec *spec = codec->spec;
+> >>> -	struct hdmi_spec_per_pin *per_pin;
+> >>> -	int pin_idx, mux_idx;
+> >>> +	hda_nid_t  pin_nid;
+> >>> +	int pin_idx, cvt_idx;
+> >>>  	int curr;
+> >>> -	int err;
+> >>> -
+> >>> -	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+> >>> -		per_pin = get_pin(spec, pin_idx);
+> >>> +	struct hdmi_spec_per_cvt *per_cvt;
+> >>>
+> >>> +	/* configure all 3 pins, including "no physical connection" ones */
+> >>> +	for (pin_nid = 5; pin_nid < 8; pin_nid++) {
+> >>
+> >> It might not be so future proof to hard code nid IDs here (even if it
+> >> should be safe right now?). Perhaps more elegant to go through the
+> >> entire codec->nids array like being done here:
+> >>
+> >> http://lxr.linux.no/linux+*/sound/pci/hda/hda_auto_parser.c#L188
+> >>
+> >> The nid's wcaps is cached so it does not mean additional reads from the
+> codec.
+> >
+> > Xingchao defined haswell_config_cvts() to configure converters on
+> codec->pins before.
+> > But codec->pins does not include the pins programmed by BIOS as "No
+> physical connections" (like port B in the OEM machine).
+> > So I change the code from using codec->pins to hard coded NIDs. It's not
+> graceful and the NIDs may change in the future.
+> >
+> > There is another option to change add_pin() to not overlook such "no
+> connection" pins for Haswell.
 > 
-> "The coherent mask can always be set to the same or a smaller mask than
-> the streaming mask."
+> I was suggesting to do something like this in haswell_config_cvts:
+> 
+> 	int end_nid = codec->start_nid + codec->num_nodes;
+> 	for (nid = codec->start_nid; nid < end_nid; nid++) {
+> 		unsigned int wid_caps = get_wcaps(codec, nid);
+> 		if (get_wcaps_type(wid_caps) != AC_WID_PIN)
+> 			continue;
+>                 /* etc */
+> 
+> 
 
-Yes, the original sentence is not particularly good, but I think even
-your modified version can be interpreted as "a mask setting itself"
-for all the same reasons that the original can be (which mask does "same"
-refer to?)
+Yes, this's elegant. I misunderstood your point in the afternoon. 
+I'll revise the patch as you suggested on Sunday, now out of office on holiday.
 
-Even so, I prefer your version.  Thanks. :)
+Thanks
+Mengdong
