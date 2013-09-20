@@ -1,54 +1,61 @@
-From: Olaf Hering <olaf@aepfle.de>
-Subject: Re: hdmi audio on Shuttle XS35GS V3L
-Date: Fri, 20 Sep 2013 15:54:46 +0200
-Message-ID: <20130920135446.GA29307@aepfle.de>
-References: <20130919142333.GA29383@aepfle.de>
- <20130920122546.GA9628@aepfle.de> <523C481F.8050703@ladisch.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 39/51] DMA-API: others: use dma_set_coherent_mask()
+Date: Fri, 20 Sep 2013 15:00:18 +0100
+Message-ID: <20130920140018.GP25647@n2100.arm.linux.org.uk>
+References: <20130919212235.GD12758@n2100.arm.linux.org.uk>
+ <E1VMnNq-0007s4-HN@rmk-PC.arm.linux.org.uk>
+ <20130920121652.GA7630@mtj.dyndns.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo-p00-ob.rzone.de (mo-p00-ob.rzone.de [81.169.146.162])
- by alsa0.perex.cz (Postfix) with ESMTP id 62A1E26569A
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2013 15:54:51 +0200 (CEST)
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 Content-Disposition: inline
-In-Reply-To: <523C481F.8050703@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <20130920121652.GA7630@mtj.dyndns.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Tejun Heo <tj@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, David Airlie <airlied@linux.ie>, linux-mmc@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-nvme@lists.infradead.org, linux-ide@vger.kernel.org, devel@driverdev.osuosl.org, linux-samsung-soc@vger.kernel.org, Joonyoung Shim <jy0922.shim@samsung.com>, linux-scsi@vger.kernel.org, e1000-devel@lists.sourceforge.net, Seung-Woo Kim <sw0312.kim@samsung.com>, b43-dev@lists.infradead.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, Inki Dae <inki.dae@samsung.com>, Kukjin Kim <kgene.kim@samsung.com>, dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Solarflare linux maintainers <linux-net-drivers@solarflare.com>, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, Kyungmin Park <kyungmin.park@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 20, Clemens Ladisch wrote:
-
-> Olaf Hering wrote:
-> > Does anyone happen to know if HDMI audio is supposed to work on the
-> > Shuttle XS35GS V3L? I have tried an AOC E2260Pwhu monitor and also a
-> > Philips 22PFL3805H/12 TV, both show the picture but no sound is played
-> > via HDMI.
-> >
-> > ==> /proc/asound/card0/eld#1.0 <==
-> > monitor_present         0
-> > eld_valid               0
+On Fri, Sep 20, 2013 at 07:16:52AM -0500, Tejun Heo wrote:
+> On Fri, Sep 20, 2013 at 12:11:38AM +0100, Russell King wrote:
+> > The correct way for a driver to specify the coherent DMA mask is
+> > not to directly access the field in the struct device, but to use
+> > dma_set_coherent_mask().  Only arch and bus code should access this
+> > member directly.
+> > 
+> > Convert all direct write accesses to using the correct API.
+> > 
+> > Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
 > 
-> > ==> /proc/asound/card1/eld#0.0 <==
-> > monitor_present         0
-> > eld_valid               0
+> Acked-by: Tejun Heo <tj@kernel.org>
 > 
-> Is this with some monitor present?
+> The patch is pretty widely spread.  I don't mind how it gets routed
+> but what's the plan?
 
-Yes, the AOC monitor is connected to the Shuttle with an HDMI cable (EAN
-4043718042692, if that matters).
+The plan is... I'm going to try and avoid going through the hell of
+re-posting this patch series to all the recipients another time...
+(It's taken some 17 hours and lots of hand holding to get this patch
+set out without exim jumping off a cliff into deep OOM - soo deep that
+even the OOM killer doesn't run and the CPU is 100% idle because
+every single process stuck in an uninterruptible sleep waiting for
+every other process to free some memory - ouch!)
 
-The speaker in the AOC is working when I use an audio cable and a VGA
-cable. But I was hoping to need just one cable to carry both audio and
-video.
+I know that dealing with this patch set will be a problem due to how
+widespread this is, but much of the driver level changes come down to
+depending on a couple of patches.  One solution would be if I published
+a branch with just the dependencies in, which subsystem maintainers
+could pull, and then apply the appropriate patches on top.
 
-Olaf
+Another would be if subsystem maintainers are happy that I carry them,
+I can add the acks, and then later on towards the end of the cycle,
+provide a branch subsystem maintainers could pull.
+
+Or... if you can think of something easier...
