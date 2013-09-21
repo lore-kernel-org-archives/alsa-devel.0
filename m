@@ -1,36 +1,84 @@
-From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Subject: Re: [PATCH v2 1/2] ASoC: kirkwood: clk: probe defer when clock not
-	yet ready
-Date: Sat, 21 Sep 2013 11:51:52 +0100
-Message-ID: <20130921105151.GK12758@n2100.arm.linux.org.uk>
-References: <20130921120006.47b00fe7@armhf> <20130921104734.GJ12758@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: adav80x: Convert to direct regmap
+ API usage
+Date: Sat, 21 Sep 2013 14:16:30 +0100
+Message-ID: <20130921131630.GS21013@sirena.org.uk>
+References: <1379676580-19008-1-git-send-email-broonie@kernel.org>
+ <523C348D.3050502@metafoo.de>
+ <20130920163947.GO21013@sirena.org.uk> <523C7CDE.50704@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20130921104734.GJ12758-l+eeeJia6m9vn6HldHNs0ANdhmdF6hFW@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mike Turquette <mturquette-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============5510898557095953716=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7698C261717
+ for <alsa-devel@alsa-project.org>; Sat, 21 Sep 2013 15:16:43 +0200 (CEST)
+In-Reply-To: <523C7CDE.50704@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Sep 21, 2013 at 11:47:34AM +0100, Russell King - ARM Linux wrote:
-> Another comment.  This is broken - it will never fall through if a
-> 'dev' is given, because of_clk_get_by_name() will always return an
-> -EPROBE_DEFER error pointer in that case.
-> 
-> So this approach is unworkable.
 
-And another comment:
+--===============5510898557095953716==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="1lNKaBMh+XZLvvpk"
+Content-Disposition: inline
 
-This whole approach is broken - while Mark is correct that we should
-find a way to return -EPROBE_DEFER if a clock is specified, the solution
-here does not allow that - it will return -EPROBE_DEFER whenever the
-clock is not found _or_ is not specified.
 
-This has the effect of making the external clock *non*optional for the
-kirkwood-i2s driver, which is also completely broken.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--1lNKaBMh+XZLvvpk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Sep 20, 2013 at 06:50:38PM +0200, Lars-Peter Clausen wrote:
+> On 09/20/2013 06:39 PM, Mark Brown wrote:
+
+> >> I have a, in my opinion, slightly better version of this patch, just hadn't
+> >> had the time to test it yet. I also have regmap conversion for the adau1373
+> >> driver.
+
+> > OK.  Any ETA for those?
+
+> Next week, maybe.
+
+Great, thanks.
+
+--1lNKaBMh+XZLvvpk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSPZwiAAoJELSic+t+oim9I9sP/jzEcLrRhjUi3PfEo3hYw4Vb
+2JIVGh2RciloZM7qaV/ZRwZ7wx2JU39oKZ1HEkeYALYXo1KIXpLuGuiO5l603+2w
+6tDBFWbnEKn6NBMdNLnRSYnX0aeAMagWCEuqdiclPBLhtgy0MJvbcz2vM+N/dP3p
+KcS+G8TKQMJ+ZpCp20ZryTCwpR6tFzBMBK+UpZUoKFes5cn6dRcAVh1yTAVbMAMY
+ZTDw5HexAtZUN/V+9UwR/ZaUiv+M86gM4k6+b8iHxv2MuMKR150h+Lv1eADnFdWE
+3HVQVr3jyqYyG+JDVbWBUD1S01J9VG+wj6WeQWAq7+AJ//UGIb9WHQDHo29k08yp
+6Dcfkb6xBADAFvHCu6IOYuSIdO3LjUz0ibIjUADJFUVAgTforqgTur8gGk9fNNXj
+hHslexTDce17N+a6WSJA7C81maJo8lwXNTEx0kaIBlF60wDdXIvh6c07u2EYqz/h
+1F1vrca/fhi2r/gybYYDuYxm5L5xmBh1ZJKc22v8rcs5hQbWAxLD3ckgb9YTJr0H
+FWclZjDjcT1fOBqiYQc7SRL5NH8w8cIPc0L+i4BNp0cuTx4OVdWwymNvryBeTbRf
+ykXC8lgLVKNuU5mAcakx/Fps97D6kvLE1OrwE6svgJo0dFGDnQlHaKO+oR3++NAS
+XZJt2CGz4sknZ1drms/b
+=QufP
+-----END PGP SIGNATURE-----
+
+--1lNKaBMh+XZLvvpk--
+
+--===============5510898557095953716==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5510898557095953716==--
