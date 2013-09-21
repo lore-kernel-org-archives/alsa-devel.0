@@ -1,8 +1,8 @@
 From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: [PATCH v2 1/2] ASoC: kirkwood: clk: probe defer when clock not yet
- ready
-Date: Sat, 21 Sep 2013 12:00:06 +0200
-Message-ID: <20130921120006.47b00fe7@armhf>
+Subject: [PATCH v2 2/2] ASoC: kirkwood: fix loss of external clock at probe
+ time
+Date: Sat, 21 Sep 2013 12:00:36 +0200
+Message-ID: <20130921120036.5730dbfd@armhf>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
@@ -12,52 +12,34 @@ To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brow
 Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Mike Turquette <mturquette-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-At probe time, a clock device may not be ready when some other device
-wants to use it.=20
+At probe time, when the clock driver is not yet initialized, the
+external clock of the kirkwood sound device will not be usable.
 
-This patch lets the functions clk_get/devm_clk_get return a probe defer
-when the clock is defined in the DT but not yet available.
+This patch fixes this problem defering the device probe.
 
 Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
 ---
- drivers/clk/clk.c    | 2 +-
- drivers/clk/clkdev.c | 9 +++++++--
- 2 files changed, 8 insertions(+), 3 deletions(-)
+ sound/soc/kirkwood/kirkwood-i2s.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index a004769..582abc8 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -2181,7 +2181,7 @@ EXPORT_SYMBOL_GPL(of_clk_del_provider);
- struct clk *of_clk_get_from_provider(struct of_phandle_args *clkspec)
- {
- 	struct of_clk_provider *provider;
--	struct clk *clk =3D ERR_PTR(-ENOENT);
-+	struct clk *clk =3D ERR_PTR(-EPROBE_DEFER);
+diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kir=
+kwood-i2s.c
+index 0f3d73d..14f32d9 100644
+--- a/sound/soc/kirkwood/kirkwood-i2s.c
++++ b/sound/soc/kirkwood/kirkwood-i2s.c
+@@ -496,7 +496,10 @@ static int kirkwood_i2s_dev_probe(struct platform_=
+device *pdev)
+ 		return err;
 =20
- 	/* Check if we have such a provider in our array */
- 	mutex_lock(&of_clk_lock);
-diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
-index 442a313..f8b28d9 100644
---- a/drivers/clk/clkdev.c
-+++ b/drivers/clk/clkdev.c
-@@ -157,8 +157,13 @@ struct clk *clk_get(struct device *dev, const char=
- *con_id)
-=20
- 	if (dev) {
- 		clk =3D of_clk_get_by_name(dev->of_node, con_id);
--		if (!IS_ERR(clk) && __clk_get(clk))
--			return clk;
-+		if (!IS_ERR(clk)) {
-+			if (__clk_get(clk))
-+				return clk;
-+		} else {
-+			if (PTR_ERR(clk) =3D=3D -EPROBE_DEFER)
-+				return clk;
-+		}
- 	}
-=20
- 	return clk_get_sys(dev_id, con_id);
+ 	priv->extclk =3D devm_clk_get(&pdev->dev, "extclk");
+-	if (!IS_ERR(priv->extclk)) {
++	if (IS_ERR(priv->extclk)) {
++		if (PTR_ERR(priv->extclk) =3D=3D -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++	} else {
+ 		if (priv->extclk =3D=3D priv->clk) {
+ 			devm_clk_put(&pdev->dev, priv->extclk);
+ 			priv->extclk =3D ERR_PTR(-EINVAL);
 
 
 --=20
