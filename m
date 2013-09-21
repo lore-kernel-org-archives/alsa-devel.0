@@ -1,80 +1,132 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: kirkwood: fix loss of
- external clock at probe time
-Date: Sat, 21 Sep 2013 14:36:46 +0100
-Message-ID: <20130921133646.GV21013@sirena.org.uk>
-References: <20130921120036.5730dbfd@armhf>
+From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Subject: Re: [PATCH v2 1/2] ASoC: kirkwood: clk: probe defer when clock not
+ yet ready
+Date: Sat, 21 Sep 2013 19:06:24 +0200
+Message-ID: <20130921190624.1435c26b@armhf>
+References: <20130921120006.47b00fe7@armhf>
+	<20130921104734.GJ12758@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7680082802425081426=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id DEC3E261703
- for <alsa-devel@alsa-project.org>; Sat, 21 Sep 2013 15:37:02 +0200 (CEST)
-In-Reply-To: <20130921120036.5730dbfd@armhf>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mike Turquette <mturquette@linaro.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@linaro.org>, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20130921104734.GJ12758-l+eeeJia6m9vn6HldHNs0ANdhmdF6hFW@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Mike Turquette <mturquette-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 21 Sep 2013 11:47:34 +0100
+Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org> wrote:
 
---===============7680082802425081426==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="uTOHp36N6S0WjZTp"
-Content-Disposition: inline
-
-
---uTOHp36N6S0WjZTp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Sep 21, 2013 at 12:00:36PM +0200, Jean-Francois Moine wrote:
-> At probe time, when the clock driver is not yet initialized, the
-> external clock of the kirkwood sound device will not be usable.
+> On Sat, Sep 21, 2013 at 12:00:06PM +0200, Jean-Francois Moine wrote:
+> > diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> > index a004769..582abc8 100644
+> > --- a/drivers/clk/clk.c
+> > +++ b/drivers/clk/clk.c
+> > @@ -2181,7 +2181,7 @@ EXPORT_SYMBOL_GPL(of_clk_del_provider);
+> >  struct clk *of_clk_get_from_provider(struct of_phandle_args *clksp=
+ec)
+> >  {
+> >  	struct of_clk_provider *provider;
+> > -	struct clk *clk =3D ERR_PTR(-ENOENT);
+> > +	struct clk *clk =3D ERR_PTR(-EPROBE_DEFER);
+> > =20
+> >  	/* Check if we have such a provider in our array */
+> >  	mutex_lock(&of_clk_lock);
+> > diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
+> > index 442a313..f8b28d9 100644
+> > --- a/drivers/clk/clkdev.c
+> > +++ b/drivers/clk/clkdev.c
+> > @@ -157,8 +157,13 @@ struct clk *clk_get(struct device *dev, const =
+char *con_id)
+> > =20
+> >  	if (dev) {
+> >  		clk =3D of_clk_get_by_name(dev->of_node, con_id);
+> > -		if (!IS_ERR(clk) && __clk_get(clk))
+> > -			return clk;
+> > +		if (!IS_ERR(clk)) {
+> > +			if (__clk_get(clk))
+> > +				return clk;
+> > +		} else {
+> > +			if (PTR_ERR(clk) =3D=3D -EPROBE_DEFER)
+> > +				return clk;
+> > +		}
 >=20
-> This patch fixes this problem defering the device probe.
+> Another comment.  This is broken - it will never fall through if a
+> 'dev' is given, because of_clk_get_by_name() will always return an
+> -EPROBE_DEFER error pointer in that case.
+>=20
+> So this approach is unworkable.
 
-Applied, thanks.  It won't do anything without a version of patch 1 but
-there's no build time dependency and it seems like we should get a fix
-into the core for the unspecified vs unregistered problem.
+> And another comment:
+>=20
+> This whole approach is broken - while Mark is correct that we should
+> find a way to return -EPROBE_DEFER if a clock is specified, the solut=
+ion
+> here does not allow that - it will return -EPROBE_DEFER whenever the
+> clock is not found _or_ is not specified.
+>=20
+> This has the effect of making the external clock *non*optional for th=
+e
+> kirkwood-i2s driver, which is also completely broken.
 
---uTOHp36N6S0WjZTp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+It works fine for me (I tried both cases, with and without the external
+clock).
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
+The scheme is as follows:
 
-iQIcBAEBAgAGBQJSPaDrAAoJELSic+t+oim9tGcP/AsPpe1cppna27H3RIMv1IWR
-cw0Z5hunWgENC9JfKPFsi1Oc16Ln57ZQ8gPYad+AcxnF59MV6I9RavTkm+ZwRnsY
-JvCuSV/GqKfke4YMUjpJT0R2ptSCHNMTqDdvKbM0aMdpFnzZQrRqSw0qvf02WWKd
-iUB0m5kD1IlVAW28ppse2z7jlR743mDxcMXM6zDGFjl+Xg+gEaphgICzO8DokwH9
-+CJBIrMcltG3J4SqC3fbEU9PiT8seIndSqB/8G4/R9zxDSQGvbsqWAUCCnH+9s9c
-gl79zzavI80IAuG5h0ngFlaZmPmbmw6Lsxzv3oTiS0IXj/35plHGV/DPwvKHAInQ
-lDT4/keYds0jQTt9rg1YOyaivamLMruWW1pwd9c4KDRPenEwoR6W4nMMe4cRpb/f
-2wFKLIPwlTNwRJLhYxZWeTmLngltEFKxCVtofg+TSOlEVEpUmDEUfkVYMpBLS115
-ygCnLUwos0hp8wyREZIldrlX69t3222TnuydSlmghOQdxDRL/p/Glq+Hx9LolFLk
-pv43QrbP9a0RzURx7j2V6C9db61NZm7fcFHHRnmbQC3dt/yZmSo40235czf9QgXB
-b6xdsOYAMh8pNM2BemhE6GB8+ivvG4NdC5uxAIA+kAdhMaEbj9YgRjQdvWLM0Uy1
-xBpZFnNc709U0Q0z1O8y
-=fIua
------END PGP SIGNATURE-----
+- kirkwood-i2s kirkwood_i2s_dev_probe() calls:
 
---uTOHp36N6S0WjZTp--
+	priv->extclk =3D &pdev->dev, "extclk");
 
---===============7680082802425081426==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+- devm_clk_get() calls:
 
+	clk =3D clk_get(dev, id);
 
---===============7680082802425081426==--
+- clk_get() does:
+
+	if (dev)			// this is the case
+		clk =3D of_clk_get_by_name(dev->of_node, con_id);
+
+- of_clk_get_by_name() does:
+
+	if (name)			// this is the case
+		index =3D of_property_match_string(np, "clock-names", name);
+
+  Here, if the external clock is declared in the DT, index is >=3D 0.
+  If there is no externel clock in the DT, index is < 0.
+
+	clk =3D of_clk_get(np, index);
+ 	if (!IS_ERR(clk))
+		break;
+	else if (name && index >=3D 0) {
+		pr_err("ERROR: could not get clock %s:%s(%i)\n",
+ 			np->full_name, name ? name : "", index); =20
+ 		return clk;
+ 	}
+
+- If the index is < 0, of_clk_get() immediately returns -EINVAL.
+
+  So, kirkwood-i2s knows there is no external clock. DONE.
+
+- otherwise, if the index is >=3D 0 (the external clock is declared in
+  the DT), of_clk_get() gets the phandle (of_parse_phandle_with_args())
+  and gets the clock (of_clk_get_from_provider()).
+
+  This last function returns either the clock (device initialized),
+  a -EPROBE_DEFER error (clock not yet initialized) or some other
+  error (bad DT or clock error).
+
+  So, kirkwood-i2s knows there is a declared external clock and it acts
+  according to the return code (accept, defer or ignore). DONE.
+
+Did I miss something?
+
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
