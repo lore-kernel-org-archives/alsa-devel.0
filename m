@@ -1,120 +1,66 @@
-From: Peter Senna Tschudin <peter.senna@gmail.com>
-Subject: [PATCH 4/5] ALSA: Fix assignment of 0/1 to bool variables
-Date: Sun, 22 Sep 2013 20:44:12 +0200
-Message-ID: <1379875453-20083-4-git-send-email-peter.senna@gmail.com>
-References: <1379875453-20083-1-git-send-email-peter.senna@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1379875453-20083-1-git-send-email-peter.senna@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz
-Cc: tiwai@suse.de, wfp5p@virginia.edu, zonque@gmail.com, eldad@fogrefinery.com, david.henningsson@canonical.com, hegge@resisty.net, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Peter Senna Tschudin <peter.senna@gmail.com>, alsa-devel@alsa-project.org
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [RFC/RFT PATCH] ALSA: hda - hdmi: Add ATI/AMD
+ multi-channel audio support
+Date: Mon, 23 Sep 2013 00:14:11 +0300
+Message-ID: <523F5DA3.6070103@iki.fi>
+References: <1379872233-32210-1-git-send-email-anssi.hannula@iki.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
+ [83.102.40.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 371FB2650BD
+ for <alsa-devel@alsa-project.org>; Sun, 22 Sep 2013 23:14:17 +0200 (CEST)
+In-Reply-To: <1379872233-32210-1-git-send-email-anssi.hannula@iki.fi>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, =?UTF-8?B?UGV0ZXIgRnLDvGhiZXJnZXI=?= <fritsch@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
-Convert 0 to false and 1 to true when assigning values to bool
-variables. Inspired by commit 3db1cd5c05f35fb43eb134df6f321de4e63141f2.
+Just a small update on a few things.
 
-The simplified semantic patch that find this problem is as
-follows (http://coccinelle.lip6.fr/):
+22.09.2013 20:50, Anssi Hannula kirjoitti:
+[...]
+> Since there is no ELD support (unless out-of-band communication with the
+> graphics driver is added so that they can provide it to us directly),
+> ELD is currently emulated with only the basic information populated
+> (speaker mask, SADs, connection type). There are some bits missing on
+> the radeon driver side (the SADs etc are not populated) so currently
+> the ELD emulation only works on fglrx. ELD emulation is not needed for
+> multi-channel playback.
 
-@@
-bool b;
-@@
-(
--b = 0
-+b = false
-|
--b = 1
-+b = true
-)
+Actually, it seems this support is already there in radeon open-source
+driver. It was added in 3.11 for some chips and 3.12 for others. I
+haven't tested yet, though.
 
-Signed-off-by: Peter Senna Tschudin <peter.senna@gmail.com>
+[...]
+> HBR mode (needed for DTS-HD/TrueHD passthrough) is not working yet, and
+> the released documentation does not mention it.
 
----
- sound/pci/azt3328.c |   14 +++++++-------
- sound/usb/mixer.c   |    4 ++--
- 2 files changed, 9 insertions(+), 9 deletions(-)
+I'm hearing we may get HBR docs soon. If so, I'll update the patch
+accordingly at that time.
 
-diff -u -p a/sound/usb/mixer.c b/sound/usb/mixer.c
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1151,14 +1151,14 @@ static void check_no_speaker_on_headset(
- 	const char *names_to_check[] = {
- 		"Headset", "headset", "Headphone", "headphone", NULL};
- 	const char **s;
--	bool found = 0;
-+	bool found = false;
- 
- 	if (strcmp("Speaker", kctl->id.name))
- 		return;
- 
- 	for (s = names_to_check; *s; s++)
- 		if (strstr(card->shortname, *s)) {
--			found = 1;
-+			found = true;
- 			break;
- 		}
- 
-diff -u -p a/sound/pci/azt3328.c b/sound/pci/azt3328.c
---- a/sound/pci/azt3328.c
-+++ b/sound/pci/azt3328.c
-@@ -715,14 +715,14 @@ snd_azf3328_mixer_ac97_read(struct snd_a
- 	const struct snd_azf3328 *chip = ac97->private_data;
- 	unsigned short reg_azf = snd_azf3328_mixer_ac97_map_reg_idx(reg_ac97);
- 	unsigned short reg_val = 0;
--	bool unsupported = 0;
-+	bool unsupported = false;
- 
- 	snd_azf3328_dbgmixer(
- 		"snd_azf3328_mixer_ac97_read reg_ac97 %u\n",
- 			reg_ac97
- 	);
- 	if (reg_azf & AZF_AC97_REG_UNSUPPORTED)
--		unsupported = 1;
-+		unsupported = true;
- 	else {
- 		if (reg_azf & AZF_AC97_REG_REAL_IO_READ)
- 			reg_val = snd_azf3328_mixer_inw(chip,
-@@ -759,7 +759,7 @@ snd_azf3328_mixer_ac97_read(struct snd_a
- 				reg_val = azf_emulated_ac97_vendor_id & 0xffff;
- 				break;
- 			default:
--				unsupported = 1;
-+				unsupported = true;
- 				break;
- 			}
- 		}
-@@ -776,14 +776,14 @@ snd_azf3328_mixer_ac97_write(struct snd_
- {
- 	const struct snd_azf3328 *chip = ac97->private_data;
- 	unsigned short reg_azf = snd_azf3328_mixer_ac97_map_reg_idx(reg_ac97);
--	bool unsupported = 0;
-+	bool unsupported = false;
- 
- 	snd_azf3328_dbgmixer(
- 		"snd_azf3328_mixer_ac97_write reg_ac97 %u val %u\n",
- 			reg_ac97, val
- 	);
- 	if (reg_azf & AZF_AC97_REG_UNSUPPORTED)
--		unsupported = 1;
-+		unsupported = true;
- 	else {
- 		if (reg_azf & AZF_AC97_REG_REAL_IO_WRITE)
- 			snd_azf3328_mixer_outw(
-@@ -808,7 +808,7 @@ snd_azf3328_mixer_ac97_write(struct snd_
- 				 */
- 				break;
- 			default:
--				unsupported = 1;
-+				unsupported = true;
- 				break;
- 			}
- 		}
-@@ -1559,7 +1559,7 @@ snd_azf3328_pcm_trigger(struct snd_pcm_s
- 	struct snd_azf3328_codec_data *codec = runtime->private_data;
- 	int result = 0;
- 	u16 flags1;
--	bool previously_muted = 0;
-+	bool previously_muted = false;
- 	bool is_main_mixer_playback_codec = (AZF_CODEC_PLAYBACK == codec->type);
- 
- 	snd_azf3328_dbgcalls("snd_azf3328_pcm_trigger cmd %d\n", cmd);
+[...]
+> +				/* in paired mode we need to take into account
+> +				 * the occupied channel pairs instead of just the
+> +				 * channel count */
+> +				for (c = 0; c < 8; c++) {
+> +					if (cap->speakers[c] || cap->speakers[c+1])
+> +						chanpairs++;
+> +				}
+
+s/c++/c += 2/
+
+That part is still untested though.
+
+-- 
+Anssi Hannula
