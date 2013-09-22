@@ -1,18 +1,16 @@
 From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [RFC/RFT PATCH] ALSA: hda - hdmi: Add ATI/AMD
- multi-channel audio support
-Date: Mon, 23 Sep 2013 00:14:11 +0300
-Message-ID: <523F5DA3.6070103@iki.fi>
-References: <1379872233-32210-1-git-send-email-anssi.hannula@iki.fi>
+Subject: [PATCH] HDA-Intel: present up to 8 HDMI/DP outputs via
+	"hdmi" device
+Date: Mon, 23 Sep 2013 00:41:50 +0300
+Message-ID: <1379886110-27931-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
- [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 371FB2650BD
- for <alsa-devel@alsa-project.org>; Sun, 22 Sep 2013 23:14:17 +0200 (CEST)
-In-Reply-To: <1379872233-32210-1-git-send-email-anssi.hannula@iki.fi>
+Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
+ [83.102.40.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94E692650C0
+ for <alsa-devel@alsa-project.org>; Sun, 22 Sep 2013 23:41:55 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,45 +20,147 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, =?UTF-8?B?UGV0ZXIgRnLDvGhiZXJnZXI=?= <fritsch@xbmc.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Just a small update on a few things.
+Some new AMD cards have HDA codecs presenting 6 connected HDMI/DP pin
+nodes (plus 1 unconnected pin node) according to the ALSA card database.
 
-22.09.2013 20:50, Anssi Hannula kirjoitti:
-[...]
-> Since there is no ELD support (unless out-of-band communication with the
-> graphics driver is added so that they can provide it to us directly),
-> ELD is currently emulated with only the basic information populated
-> (speaker mask, SADs, connection type). There are some bits missing on
-> the radeon driver side (the SADs etc are not populated) so currently
-> the ELD emulation only works on fglrx. ELD emulation is not needed for
-> multi-channel playback.
+Example:
+http://www.alsa-project.org/db/?f=de3ced7af41de0ed54d218650e5e2f16c511787b
 
-Actually, it seems this support is already there in radeon open-source
-driver. It was added in 3.11 for some chips and 3.12 for others. I
-haven't tested yet, though.
+Bump the maximum number of presented HDMI outputs per card via the
+"hdmi" PCM from 4 to 8 (so that the last possible device is DEV=7).
 
-[...]
-> HBR mode (needed for DTS-HD/TrueHD passthrough) is not working yet, and
-> the released documentation does not mention it.
+Note that HDMI PCM devices DEV=4..7 use shared PCM device numbers, so
+HDA cards that have over 4 audio PCM devices or multiple S/PDIF or modem
+devices will have their remaining PCM devices misrepresented as HDMI
+devices.
 
-I'm hearing we may get HBR docs soon. If so, I'll update the patch
-accordingly at that time.
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+---
 
-[...]
-> +				/* in paired mode we need to take into account
-> +				 * the occupied channel pairs instead of just the
-> +				 * channel count */
-> +				for (c = 0; c < 8; c++) {
-> +					if (cap->speakers[c] || cap->speakers[c+1])
-> +						chanpairs++;
-> +				}
+Another example:
+http://www.alsa-project.org/db/?f=cd12a9d38f51c47eeedd380e4c5713f0d9a6c9de
 
-s/c++/c += 2/
+I do not have confirmed that all of these pins are actually usable (and
+therefore this patch is untested on affected hardware), but I guess that
+is probable.
+Maybe the large amount of them has something to do with DisplayPort
+supporting multiple displays via a single connector, but that is just
+a wild guess on my part...
 
-That part is still untested though.
 
+But do we want some sort of a solution for the possible conflicts between
+non-HDMI devices in the 10+ physical PCM device numbering range?
+
+
+ src/conf/cards/HDA-Intel.conf | 92 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 92 insertions(+)
+
+diff --git a/src/conf/cards/HDA-Intel.conf b/src/conf/cards/HDA-Intel.conf
+index 3957c12..7976b6c 100644
+--- a/src/conf/cards/HDA-Intel.conf
++++ b/src/conf/cards/HDA-Intel.conf
+@@ -305,6 +305,98 @@ HDA-Intel.pcm.hdmi.3 {
+ 	}
+ }
+ 
++HDA-Intel.pcm.hdmi.4 {
++	@args [ CARD AES0 AES1 AES2 AES3 ]
++	@args.CARD { type string }
++	@args.AES0 { type integer }
++	@args.AES1 { type integer }
++	@args.AES2 { type integer }
++	@args.AES3 { type integer }
++	@func refer
++	name {
++		@func concat
++		strings [
++			"cards.HDA-Intel.pcm.hdmi.common:"
++			"CARD=" $CARD ","
++			"DEVICE=10,"
++			"CTLINDEX=4,"
++			"AES0=" $AES0 ","
++			"AES1=" $AES1 ","
++			"AES2=" $AES2 ","
++			"AES3=" $AES3
++		]
++	}
++}
++
++HDA-Intel.pcm.hdmi.5 {
++	@args [ CARD AES0 AES1 AES2 AES3 ]
++	@args.CARD { type string }
++	@args.AES0 { type integer }
++	@args.AES1 { type integer }
++	@args.AES2 { type integer }
++	@args.AES3 { type integer }
++	@func refer
++	name {
++		@func concat
++		strings [
++			"cards.HDA-Intel.pcm.hdmi.common:"
++			"CARD=" $CARD ","
++			"DEVICE=11,"
++			"CTLINDEX=5,"
++			"AES0=" $AES0 ","
++			"AES1=" $AES1 ","
++			"AES2=" $AES2 ","
++			"AES3=" $AES3
++		]
++	}
++}
++
++HDA-Intel.pcm.hdmi.6 {
++	@args [ CARD AES0 AES1 AES2 AES3 ]
++	@args.CARD { type string }
++	@args.AES0 { type integer }
++	@args.AES1 { type integer }
++	@args.AES2 { type integer }
++	@args.AES3 { type integer }
++	@func refer
++	name {
++		@func concat
++		strings [
++			"cards.HDA-Intel.pcm.hdmi.common:"
++			"CARD=" $CARD ","
++			"DEVICE=12,"
++			"CTLINDEX=6,"
++			"AES0=" $AES0 ","
++			"AES1=" $AES1 ","
++			"AES2=" $AES2 ","
++			"AES3=" $AES3
++		]
++	}
++}
++
++HDA-Intel.pcm.hdmi.7 {
++	@args [ CARD AES0 AES1 AES2 AES3 ]
++	@args.CARD { type string }
++	@args.AES0 { type integer }
++	@args.AES1 { type integer }
++	@args.AES2 { type integer }
++	@args.AES3 { type integer }
++	@func refer
++	name {
++		@func concat
++		strings [
++			"cards.HDA-Intel.pcm.hdmi.common:"
++			"CARD=" $CARD ","
++			"DEVICE=13,"
++			"CTLINDEX=7,"
++			"AES0=" $AES0 ","
++			"AES1=" $AES1 ","
++			"AES2=" $AES2 ","
++			"AES3=" $AES3
++		]
++	}
++}
++
+ <confdir:pcm/modem.conf>
+ 
+ HDA-Intel.pcm.modem.0 {
 -- 
-Anssi Hannula
+1.8.1.5
