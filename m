@@ -1,65 +1,181 @@
-From: Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>
-Subject: Re: [alsa-devel] Buffer size for ALSA USB PCM audio
-Date: Sun, 22 Sep 2013 23:50:39 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1309222343390.4431@anubis>
-References: <Pine.LNX.4.44L0.1308291059300.1170-100000@iolanthe.rowland.org>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [PATCH] HDA-Intel: present up to 8 HDMI/DP outputs
+ via "hdmi" device
+Date: Mon, 23 Sep 2013 01:17:09 +0300
+Message-ID: <523F6C65.9090002@iki.fi>
+References: <1379886110-27931-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <Pine.LNX.4.44L0.1308291059300.1170-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Cc: James Stone <jamesmstone-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
+ [83.102.40.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id E865C2650C5
+ for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2013 00:17:12 +0200 (CEST)
+In-Reply-To: <1379886110-27931-1-git-send-email-anssi.hannula@iki.fi>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On Thu, 29 Aug 2013, Alan Stern wrote:
-
-> On Thu, 29 Aug 2013, James Stone wrote:
+23.09.2013 00:41, Anssi Hannula kirjoitti:
+> Some new AMD cards have HDA codecs presenting 6 connected HDMI/DP pin
+> nodes (plus 1 unconnected pin node) according to the ALSA card database.
 > 
-> > On Wed, Aug 28, 2013 at 7:46 PM, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org> wrote:
-> > > On Wed, 28 Aug 2013, Clemens Ladisch wrote:
-> > >
-> > >> Sorry, what I said applies more to explicit sync endpoints.  When using
-> > >> implicit sync, a playback URB is submitted for each completed capture
-> > >> URB, with the number of samples per packet identical to the
-> > >> corresponding capture packet, so the parameters must be identical.
-> > >
-> > > Got it.  Below is an updated patch.
-> > >
-> > > James, the problem you encountered was most likely a result of the
-> > > faulty treatment of capture endpoints that Clemens pointed out.  It was
-> > > quite obvious in the usbmon traces that the unpatched driver used 8
-> > > packets per URB whereas the patched driver used 22.  This updated patch
-> > > should fix that problem.
-> > >
-> > 
-> > Works fine. With this, it is possible to get clear playback at 64
-> > frames/period too. With vanilla 3.10.9, there was some glitchy
-> > distortion to the sound at that latency, so this seems to be an
-> > improvement.
+> Example:
+> http://www.alsa-project.org/db/?f=de3ced7af41de0ed54d218650e5e2f16c511787b
 > 
-> That's good.  What happens if you push frames/period even lower?
+> Bump the maximum number of presented HDMI outputs per card via the
+> "hdmi" PCM from 4 to 8 (so that the last possible device is DEV=7).
 > 
-> Daniel and Eldad, more testing of the most recent proposed patch would
-> be welcome.
+> Note that HDMI PCM devices DEV=4..7 use shared PCM device numbers, so
+> HDA cards that have over 4 audio PCM devices or multiple S/PDIF or modem
+> devices will have their remaining PCM devices misrepresented as HDMI
+> devices.
+> 
+> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+> ---
+> 
+> Another example:
+> http://www.alsa-project.org/db/?f=cd12a9d38f51c47eeedd380e4c5713f0d9a6c9de
+> 
+> I do not have confirmed that all of these pins are actually usable (and
+> therefore this patch is untested on affected hardware), but I guess that
+> is probable.
+> Maybe the large amount of them has something to do with DisplayPort
+> supporting multiple displays via a single connector, but that is just
+> a wild guess on my part...
 
-Sorry for the long response time but I've been busy lately.
+>From what I can see from looking at the radeon driver and their wiki,
+Radeon display cores DCE4+ have 6 pins, and DCE8+ have 7 pins.
 
-I see a good improvement on my card (M-Audio C400, implicit feedback) -
-using a 48 frame period (@48kHz) I get no xruns with jack running without 
-clients. Without the patch, the above test generates constant xruns.
-I tested the patch with mainline 3.11.0, and let jack run about 5 
-minutes.
+http://www.x.org/wiki/RadeonFeature/#index7h2
 
-Thank you for working on this! FWIW, feel free to add:
+So seems this is really needed. Now what is left is whether we care
+about the 10+ non-HDMI conflicts, and if so, what do we do about that?
 
-Tested-by: Eldad Zack <eldad-v6AqZgAe4C4dvzyIwGCCOg@public.gmane.org>
 
-Cheers,
-Eldad
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+> But do we want some sort of a solution for the possible conflicts between
+> non-HDMI devices in the 10+ physical PCM device numbering range?
+> 
+> 
+>  src/conf/cards/HDA-Intel.conf | 92 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 92 insertions(+)
+> 
+> diff --git a/src/conf/cards/HDA-Intel.conf b/src/conf/cards/HDA-Intel.conf
+> index 3957c12..7976b6c 100644
+> --- a/src/conf/cards/HDA-Intel.conf
+> +++ b/src/conf/cards/HDA-Intel.conf
+> @@ -305,6 +305,98 @@ HDA-Intel.pcm.hdmi.3 {
+>  	}
+>  }
+>  
+> +HDA-Intel.pcm.hdmi.4 {
+> +	@args [ CARD AES0 AES1 AES2 AES3 ]
+> +	@args.CARD { type string }
+> +	@args.AES0 { type integer }
+> +	@args.AES1 { type integer }
+> +	@args.AES2 { type integer }
+> +	@args.AES3 { type integer }
+> +	@func refer
+> +	name {
+> +		@func concat
+> +		strings [
+> +			"cards.HDA-Intel.pcm.hdmi.common:"
+> +			"CARD=" $CARD ","
+> +			"DEVICE=10,"
+> +			"CTLINDEX=4,"
+> +			"AES0=" $AES0 ","
+> +			"AES1=" $AES1 ","
+> +			"AES2=" $AES2 ","
+> +			"AES3=" $AES3
+> +		]
+> +	}
+> +}
+> +
+> +HDA-Intel.pcm.hdmi.5 {
+> +	@args [ CARD AES0 AES1 AES2 AES3 ]
+> +	@args.CARD { type string }
+> +	@args.AES0 { type integer }
+> +	@args.AES1 { type integer }
+> +	@args.AES2 { type integer }
+> +	@args.AES3 { type integer }
+> +	@func refer
+> +	name {
+> +		@func concat
+> +		strings [
+> +			"cards.HDA-Intel.pcm.hdmi.common:"
+> +			"CARD=" $CARD ","
+> +			"DEVICE=11,"
+> +			"CTLINDEX=5,"
+> +			"AES0=" $AES0 ","
+> +			"AES1=" $AES1 ","
+> +			"AES2=" $AES2 ","
+> +			"AES3=" $AES3
+> +		]
+> +	}
+> +}
+> +
+> +HDA-Intel.pcm.hdmi.6 {
+> +	@args [ CARD AES0 AES1 AES2 AES3 ]
+> +	@args.CARD { type string }
+> +	@args.AES0 { type integer }
+> +	@args.AES1 { type integer }
+> +	@args.AES2 { type integer }
+> +	@args.AES3 { type integer }
+> +	@func refer
+> +	name {
+> +		@func concat
+> +		strings [
+> +			"cards.HDA-Intel.pcm.hdmi.common:"
+> +			"CARD=" $CARD ","
+> +			"DEVICE=12,"
+> +			"CTLINDEX=6,"
+> +			"AES0=" $AES0 ","
+> +			"AES1=" $AES1 ","
+> +			"AES2=" $AES2 ","
+> +			"AES3=" $AES3
+> +		]
+> +	}
+> +}
+> +
+> +HDA-Intel.pcm.hdmi.7 {
+> +	@args [ CARD AES0 AES1 AES2 AES3 ]
+> +	@args.CARD { type string }
+> +	@args.AES0 { type integer }
+> +	@args.AES1 { type integer }
+> +	@args.AES2 { type integer }
+> +	@args.AES3 { type integer }
+> +	@func refer
+> +	name {
+> +		@func concat
+> +		strings [
+> +			"cards.HDA-Intel.pcm.hdmi.common:"
+> +			"CARD=" $CARD ","
+> +			"DEVICE=13,"
+> +			"CTLINDEX=7,"
+> +			"AES0=" $AES0 ","
+> +			"AES1=" $AES1 ","
+> +			"AES2=" $AES2 ","
+> +			"AES3=" $AES3
+> +		]
+> +	}
+> +}
+> +
+>  <confdir:pcm/modem.conf>
+>  
+>  HDA-Intel.pcm.modem.0 {
+> 
+
+
+-- 
+Anssi Hannula
