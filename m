@@ -1,117 +1,35 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH v2] ALSA : hda - not use assigned converters
-	for all unused pins
-Date: Sat, 21 Sep 2013 20:34:45 -0400
-Message-ID: <1379810085-25931-1-git-send-email-mengdong.lin@intel.com>
+From: Grant Likely <grant.likely@linaro.org>
+Subject: Re: [PATCH 22/51] DMA-API: amba: get rid of separate dma_mask
+Date: Sun, 22 Sep 2013 07:18:28 -0500
+Message-ID: <20130922121828.58F02C42373@trevor.secretlab.ca>
+References: <20130919212235.GD12758@n2100.arm.linux.org.uk>
+ <E1VMm3x-0007hp-Lv@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 7377B265057
- for <alsa-devel@alsa-project.org>; Sun, 22 Sep 2013 09:33:03 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <E1VMm3x-0007hp-Lv@rmk-PC.arm.linux.org.uk>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, b43-dev@lists.infradead.org, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, e1000-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-ide@vger.kernel.org, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, linux-nvme@lists.infradead.org, linux-omap@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org, linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, Solarflare linux maintainers <linux-net-drivers@solarflare.com>, uclinux-dist-devel@blackfin.uclinux.org
+Cc: Rob Herring <rob.herring@calxeda.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+On Thu, 19 Sep 2013 22:47:01 +0100, Russell King <rmk+kernel@arm.linux.org.uk> wrote:
+> AMBA Primecell devices always treat streaming and coherent DMA exactly
+> the same, so there's no point in having the masks separated.
+> 
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
 
-BIOS can mark a pin as "no physical connection" if the port is used by an
-integrated display which is not audio capable. And audio driver will overlook
-such pins.
+for the drivers/of/platform.c portion:
+Acked-by: Grant Likely <grant.likely@linaro.org>
 
-On Haswell, such a disconneted pin will keep muted and connected to the 1st
-converter by default. But if the 1st convertor is assigned to a connected pin
-for audio streaming. The muted disconnected pin can make the connected pin
-no sound output.
-
-So this patch avoids using assigned converters for all unused pins for Haswell,
-including the disconected pins.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 3d8cd044..7ea0245 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1149,32 +1149,43 @@ static int hdmi_choose_cvt(struct hda_codec *codec,
- }
- 
- static void haswell_config_cvts(struct hda_codec *codec,
--			int pin_id, int mux_id)
-+			hda_nid_t pin_nid, int mux_idx)
- {
- 	struct hdmi_spec *spec = codec->spec;
--	struct hdmi_spec_per_pin *per_pin;
--	int pin_idx, mux_idx;
--	int curr;
--	int err;
-+	hda_nid_t nid, end_nid;
-+	int cvt_idx, curr;
-+	struct hdmi_spec_per_cvt *per_cvt;
- 
--	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
--		per_pin = get_pin(spec, pin_idx);
-+	/* configure all pins, including "no physical connection" ones */
-+	end_nid = codec->start_nid + codec->num_nodes;
-+	for (nid = codec->start_nid; nid < end_nid; nid++) {
-+		unsigned int wid_caps = get_wcaps(codec, nid);
-+		unsigned int wid_type = get_wcaps_type(wid_caps);
- 
--		if (pin_idx == pin_id)
-+		if (wid_type != AC_WID_PIN)
- 			continue;
- 
--		curr = snd_hda_codec_read(codec, per_pin->pin_nid, 0,
-+		if (nid == pin_nid)
-+			continue;
-+
-+		curr = snd_hda_codec_read(codec, nid, 0,
- 					  AC_VERB_GET_CONNECT_SEL, 0);
-+		if (curr != mux_idx)
-+			continue;
- 
--		/* Choose another unused converter */
--		if (curr == mux_id) {
--			err = hdmi_choose_cvt(codec, pin_idx, NULL, &mux_idx);
--			if (err < 0)
--				return;
--			snd_printdd("HDMI: choose converter %d for pin %d\n", mux_idx, pin_idx);
--			snd_hda_codec_write_cache(codec, per_pin->pin_nid, 0,
-+		/* choose an unassigned converter. The conveters in the
-+		 * connection list are in the same order as in the codec.
-+		 */
-+		for (cvt_idx = 0; cvt_idx < spec->num_cvts; cvt_idx++) {
-+			per_cvt = get_cvt(spec, cvt_idx);
-+			if (!per_cvt->assigned) {
-+				snd_printdd("choose cvt %d for pin nid %d\n",
-+					cvt_idx, nid);
-+				snd_hda_codec_write_cache(codec, nid, 0,
- 					    AC_VERB_SET_CONNECT_SEL,
--					    mux_idx);
-+					    cvt_idx);
-+				break;
-+			}
- 		}
- 	}
- }
-@@ -1216,7 +1227,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 
- 	/* configure unused pins to choose other converters */
- 	if (is_haswell(codec))
--		haswell_config_cvts(codec, pin_idx, mux_idx);
-+		haswell_config_cvts(codec, per_pin->pin_nid, mux_idx);
- 
- 	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
- 
--- 
-1.8.1.2
+g.
