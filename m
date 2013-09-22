@@ -1,18 +1,15 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: bells: Specify REFCLK for FLLs
-Date: Sat, 21 Sep 2013 21:08:36 +0100
-Message-ID: <20130921200836.GI3635@opensource.wolfsonmicro.com>
-References: <1379758218-28580-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20130921132833.GU21013@sirena.org.uk>
+From: mengdong.lin@intel.com
+Subject: [PATCH v2] ALSA : hda - not use assigned converters
+	for all unused pins
+Date: Sat, 21 Sep 2013 20:34:45 -0400
+Message-ID: <1379810085-25931-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 098C7264F22
- for <alsa-devel@alsa-project.org>; Sat, 21 Sep 2013 22:08:37 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130921132833.GU21013@sirena.org.uk>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7377B265057
+ for <alsa-devel@alsa-project.org>; Sun, 22 Sep 2013 09:33:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,24 +19,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, sbkim73@samsung.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, ben-linux@fluff.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ah... yeah sorry forgot that, have always had a crystal in my
-board. Best just ignore this patch I guess we will just have to
-not set a good example.
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-Thanks,
-Charles
+BIOS can mark a pin as "no physical connection" if the port is used by an
+integrated display which is not audio capable. And audio driver will overlook
+such pins.
 
-On Sat, Sep 21, 2013 at 02:28:33PM +0100, Mark Brown wrote:
-> On Sat, Sep 21, 2013 at 11:10:18AM +0100, Charles Keepax wrote:
-> > Wolfson recommends using a higher frequency REFCLK for best performance
-> > rather than the default 32kHz reference clock source. We should set a
-> > good example and do so.
-> 
-> The trick here is of course that MCLK1 is not guaranteed to be
-> physically present on the board and there are a range of possible
-> frequencies it could be set to...  I'm not sure I actually have any
-> crystals.
+On Haswell, such a disconneted pin will keep muted and connected to the 1st
+converter by default. But if the 1st convertor is assigned to a connected pin
+for audio streaming. The muted disconnected pin can make the connected pin
+no sound output.
+
+So this patch avoids using assigned converters for all unused pins for Haswell,
+including the disconected pins.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 3d8cd044..7ea0245 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1149,32 +1149,43 @@ static int hdmi_choose_cvt(struct hda_codec *codec,
+ }
+ 
+ static void haswell_config_cvts(struct hda_codec *codec,
+-			int pin_id, int mux_id)
++			hda_nid_t pin_nid, int mux_idx)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+-	struct hdmi_spec_per_pin *per_pin;
+-	int pin_idx, mux_idx;
+-	int curr;
+-	int err;
++	hda_nid_t nid, end_nid;
++	int cvt_idx, curr;
++	struct hdmi_spec_per_cvt *per_cvt;
+ 
+-	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+-		per_pin = get_pin(spec, pin_idx);
++	/* configure all pins, including "no physical connection" ones */
++	end_nid = codec->start_nid + codec->num_nodes;
++	for (nid = codec->start_nid; nid < end_nid; nid++) {
++		unsigned int wid_caps = get_wcaps(codec, nid);
++		unsigned int wid_type = get_wcaps_type(wid_caps);
+ 
+-		if (pin_idx == pin_id)
++		if (wid_type != AC_WID_PIN)
+ 			continue;
+ 
+-		curr = snd_hda_codec_read(codec, per_pin->pin_nid, 0,
++		if (nid == pin_nid)
++			continue;
++
++		curr = snd_hda_codec_read(codec, nid, 0,
+ 					  AC_VERB_GET_CONNECT_SEL, 0);
++		if (curr != mux_idx)
++			continue;
+ 
+-		/* Choose another unused converter */
+-		if (curr == mux_id) {
+-			err = hdmi_choose_cvt(codec, pin_idx, NULL, &mux_idx);
+-			if (err < 0)
+-				return;
+-			snd_printdd("HDMI: choose converter %d for pin %d\n", mux_idx, pin_idx);
+-			snd_hda_codec_write_cache(codec, per_pin->pin_nid, 0,
++		/* choose an unassigned converter. The conveters in the
++		 * connection list are in the same order as in the codec.
++		 */
++		for (cvt_idx = 0; cvt_idx < spec->num_cvts; cvt_idx++) {
++			per_cvt = get_cvt(spec, cvt_idx);
++			if (!per_cvt->assigned) {
++				snd_printdd("choose cvt %d for pin nid %d\n",
++					cvt_idx, nid);
++				snd_hda_codec_write_cache(codec, nid, 0,
+ 					    AC_VERB_SET_CONNECT_SEL,
+-					    mux_idx);
++					    cvt_idx);
++				break;
++			}
+ 		}
+ 	}
+ }
+@@ -1216,7 +1227,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+ 
+ 	/* configure unused pins to choose other converters */
+ 	if (is_haswell(codec))
+-		haswell_config_cvts(codec, pin_idx, mux_idx);
++		haswell_config_cvts(codec, per_pin->pin_nid, mux_idx);
+ 
+ 	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
+ 
+-- 
+1.8.1.2
