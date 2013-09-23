@@ -1,71 +1,53 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH] ASoC: generic: Add generic DT based simple
-	codec
-Date: Mon, 23 Sep 2013 15:19:56 -0600
-Message-ID: <5240B07C.6080404@wwwdotorg.org>
-References: <20130919105437.75e0f0a3@armhf>
+From: Joel Fernandes <joelf-l0cyMroinI0@public.gmane.org>
+Subject: [PATCH 0/3] dma: edma: Add cyclic DMA support
+Date: Mon, 23 Sep 2013 18:05:12 -0500
+Message-ID: <1379977515-3794-1-git-send-email-joelf@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 16F8F2610D3
- for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2013 23:20:01 +0200 (CEST)
-In-Reply-To: <20130919105437.75e0f0a3@armhf>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Matt Porter <matt-agtwNxEcTQJWk0Htik3J/w@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Dan Williams <djbw-b10kYP2dOMg@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Lars Peter-Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Linux DaVinci Kernel List <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, Linux OMAP List <linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux ARM Kernel List <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/19/2013 02:54 AM, Jean-Francois Moine wrote:
-> This patch adds a simple sound codec which is described by the DT.
-> This codec may be used when no specific codec action is needed.
+The following series adds Cyclic DMA support to TI EDMA DMA Engine driver.
 
-> diff --git a/Documentation/devicetree/bindings/sound/simple-codec.txt b/Documentation/devicetree/bindings/sound/simple-codec.txt
+First we split out the calculations for the Slave DMA case into a separate
+function so that we may reuse it for the calculations of Cyclic DMA parameters.
+Next patch then adds the actual support for Cyclic DMA, enables interrupts
+correctly and uses's the callbacks in virt-dma during interrupts thus
+signalling back to the ALSA layer that a period was transmitted.
 
-> +Device-Tree bindings for the simple codec
-> +
-> +Required properties:
-> +- compatible: should be "linux,simple-codec".
+Some background on motivation for this series:
+Currently, only user of Cyclic DMA in EDMA is davinci-pcm driver. As of today,
+this driver directly calls into the EDMA private API (arch/arm/common/edma.c)
+without going through the DMAEngine.
 
-We shouldn't have any Linux-specific bindings. It might be reasonable to
-define a binding for a "simple CODEC", but there's no reason it should
-be Linux-specific.
+davinci-pcm in future will be modified to use DMA Engine framework for Cyclic
+DMA instead of directly using the Private API. However that's a much larger
+effort, involving dealing with ping-pong from SRAM on user's of the Davinci
+McASP, etc. As a first step, we add Cyclic DMA support to the EDMA driver so
+that this may be used when the actual conversion of davinci-pcm happens.
 
-> +- dai-name: name of the codec
+Tested series along with couple of hacks to davinci-pcm to work with DMA Engine:
+git-9UaJU3cA/F/QT0dZR+AlfA@public.gmane.org:joelagnel/linux-kernel.git (branch dma/cyclic)
 
-That should be internal to the driver; it's Linux-specific.
+Joel Fernandes (3):
+  dma: edma: Split out PaRAM set calculations into its own function
+  dma: edma: Add support for Cyclic DMA
+  dma: edma: Increase maximum SG limit to 20
 
-> +Optional properties:
-> +- capture: information about capture
-> +- playback: information about playback
-> +At least one of the 'capture' or 'playback' nodes must be present.
+ drivers/dma/edma.c | 350 +++++++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 273 insertions(+), 77 deletions(-)
 
-Judging by the example, those are nodes not properties.
-
-> +Child 'capture' and 'playback' required properties:
-> +- stream-name: name of the stream
-
-Stream name is also probably too Linux-specific.
-
-> +- formats: list of the supported formats (see below)
-> +- rates: list of the supported rates (see below)
-> +- #channels: minimum and maximum numbers of channels
-> +
-> +Formats:
-> +	"s8"
-> +	"u8"
-
-I think the binding should specify on-the-wire formats, not in-memory
-formats. For example, if this binding is used to represent an I2S CODEC,
-it's more important to know whether it supports left-justified,
-right-justified, DSP mode, etc., and the max number of bits (or perhaps
-a list of supported numbers of bits) per channel in each case.
+-- 
+1.8.1.2
