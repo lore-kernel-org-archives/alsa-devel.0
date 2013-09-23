@@ -1,15 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 3/5] ASoC: Docs: update DAPM
-Date: Mon, 23 Sep 2013 12:14:00 +0100
-Message-ID: <1379934842-4489-3-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 5/5] ASoC: Docs: Add documentation for Dynamic
+	PCM
+Date: Mon, 23 Sep 2013 12:14:02 +0100
+Message-ID: <1379934842-4489-5-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1379934842-4489-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E49F26088F
- for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2013 13:14:22 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 43EBE2608A1
+ for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2013 13:14:23 +0200 (CEST)
 In-Reply-To: <1379934842-4489-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,159 +25,400 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Update the DAPM documentation and bring it up to date with the current
-code base. This includes API changes and new widgets.
+Add documentation describing DPCM with examples of a DSP based
+smart phone.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- Documentation/sound/alsa/soc/dapm.txt | 71 ++++++++++++++++++++---------------
- 1 file changed, 41 insertions(+), 30 deletions(-)
+ Documentation/sound/alsa/soc/DPCM.txt | 380 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 380 insertions(+)
+ create mode 100644 Documentation/sound/alsa/soc/DPCM.txt
 
-diff --git a/Documentation/sound/alsa/soc/dapm.txt b/Documentation/sound/alsa/soc/dapm.txt
-index 05bf5a0..7dfd88c 100644
---- a/Documentation/sound/alsa/soc/dapm.txt
-+++ b/Documentation/sound/alsa/soc/dapm.txt
-@@ -21,7 +21,7 @@ level power systems.
- 
- There are 4 power domains within DAPM
- 
--   1. Codec domain - VREF, VMID (core codec and audio power)
-+   1. Codec bias domain - VREF, VMID (core codec and audio power)
-       Usually controlled at codec probe/remove and suspend/resume, although
-       can be set at stream time if power is not needed for sidetone, etc.
- 
-@@ -63,14 +63,22 @@ Audio DAPM widgets fall into a number of types:-
-  o Line       - Line Input/Output (and optional Jack)
-  o Speaker    - Speaker
-  o Supply     - Power or clock supply widget used by other widgets.
-+ o Regulator  - External regulator that supplies power to audio components.
-+ o Clock      -	External clock that supplies clock to audio componnents.
-+ o AIF IN     - Audio Interface Input (with TDM slot mask).
-+ o AIF OUT    - Audio Interface Output (with TDM slot mask).
-+ o Siggen     - Signal Generator.
-+ o DAI IN     - Digital Audio Interface Input.
-+ o DAI OUT    - Digital Audio Interface Output.
-+ o DAI Link   - DAI Link between two DAI structures */
-  o Pre        - Special PRE widget (exec before all others)
-  o Post       - Special POST widget (exec after all others)
- 
- (Widgets are defined in include/sound/soc-dapm.h)
- 
--Widgets are usually added in the codec driver and the machine driver. There are
--convenience macros defined in soc-dapm.h that can be used to quickly build a
--list of widgets of the codecs and machines DAPM widgets.
-+Widgets can be added to the sound card by any of the component driver types.
-+There are convenience macros defined in soc-dapm.h that can be used to quickly
-+build a list of widgets of the codecs and machines DAPM widgets.
- 
- Most widgets have a name, register, shift and invert. Some widgets have extra
- parameters for stream name and kcontrols.
-@@ -80,11 +88,13 @@ parameters for stream name and kcontrols.
- -------------------------
- 
- Stream Widgets relate to the stream power domain and only consist of ADCs
--(analog to digital converters) and DACs (digital to analog converters).
-+(analog to digital converters), DACs (digital to analog converters),
-+AIF IN and AIF OUT.
- 
- Stream widgets have the following format:-
- 
- SND_SOC_DAPM_DAC(name, stream name, reg, shift, invert),
-+SND_SOC_DAPM_AIF_IN(name, stream, slot, reg, shift, invert)
- 
- NOTE: the stream name must match the corresponding stream name in your codec
- snd_soc_codec_dai.
-@@ -94,6 +104,11 @@ e.g. stream widgets for HiFi playback and capture
- SND_SOC_DAPM_DAC("HiFi DAC", "HiFi Playback", REG, 3, 1),
- SND_SOC_DAPM_ADC("HiFi ADC", "HiFi Capture", REG, 2, 1),
- 
-+e.g. stream widgets for AIF
+diff --git a/Documentation/sound/alsa/soc/DPCM.txt b/Documentation/sound/alsa/soc/DPCM.txt
+new file mode 100644
+index 0000000..aa8546f
+--- /dev/null
++++ b/Documentation/sound/alsa/soc/DPCM.txt
+@@ -0,0 +1,380 @@
++Dynamic PCM
++===========
 +
-+SND_SOC_DAPM_AIF_IN("AIF1RX", "AIF1 Playback", 0, SND_SOC_NOPM, 0, 0),
-+SND_SOC_DAPM_AIF_OUT("AIF1TX", "AIF1 Capture", 0, SND_SOC_NOPM, 0, 0),
++1. Description
++==============
 +
- 
- 2.2 Path Domain Widgets
- -----------------------
-@@ -121,12 +136,14 @@ If you dont want the mixer elements prefixed with the name of the mixer widget,
- you can use SND_SOC_DAPM_MIXER_NAMED_CTL instead. the parameters are the same
- as for SND_SOC_DAPM_MIXER.
- 
--2.3 Platform/Machine domain Widgets
-------------------------------------
++Dynamic PCM allows an ALSA PCM device to digitally route its PCM audio to
++various digital endpoints during the PCM stream runtime. e.g. PCM0 can route
++digital audio to I2S DAI0, I2S DAI1 or PDM DAI2. This is useful for on SoC DSP
++drivers that expose several ALSA PCMs and can route to multiple DAIs.
 +
-+2.3 Machine domain Widgets
++The DPCM runtime routing is determined by the ALSA mixer settings in the same
++way as the analog signal is routed in an ASoC codec driver. DPCM uses a DAPM
++graph representing the DSP internal audio paths and uses the mixer settings to
++determine the patch used by each ALSA PCM.
++
++DPCM re-uses all the existing component codec, platform and DAI drivers without
++any modifications.
++
++
++Phone Audio System with SoC based DSP
++-------------------------------------
++
++Consider the following phone audio subsystem. This will be used in this
++document for all examples :-
++
++| Front End PCMs    |  SoC DSP  | Back End DAIs | Audio devices |
++
++                    *************
++PCM0 <------------> *           * <----DAI0-----> Codec Headset
++                    *           *
++PCM1 <------------> *           * <----DAI1-----> Codec Speakers
++                    *   DSP     *
++PCM2 <------------> *           * <----DAI2-----> MODEM
++                    *           *
++PCM3 <------------> *           * <----DAI3-----> BT
++                    *           *
++                    *           * <----DAI4-----> DMIC
++                    *           *
++                    *           * <----DAI5-----> FM
++                    *************
++
++This diagram shows a simple smart phone audio subsystem. It supports Bluetooth,
++FM digital radio, Speakers, Headset Jack, digital microphones and cellular
++modem. This sound card exposes 4 DSP front end (FE) ALSA PCM devices and
++supports 6 back end (BE) DAIs. Each FE PCM can digitally route audio data to any
++of the BE DAIs. The FE PCM devices can also route audio to more than 1 BE DAI.
++
++
++
++Example - DPCM Switching playback from DAI0 to DAI1
++---------------------------------------------------
++
++Audio is being played to the Headset. After a while the user removes the headset
++and audio continues playing on the speakers.
++
++Playback on PCM0 to Headset would look like :-
++
++                    *************
++PCM0 <============> *           * <====DAI0=====> Codec Headset
++                    *           *
++PCM1 <------------> *           * <----DAI1-----> Codec Speakers
++                    *   DSP     *
++PCM2 <------------> *           * <----DAI2-----> MODEM
++                    *           *
++PCM3 <------------> *           * <----DAI3-----> BT
++                    *           *
++                    *           * <----DAI4-----> DMIC
++                    *           *
++                    *           * <----DAI5-----> FM
++                    *************
++
++The headset is removed from the jack by user so the speakers must now be used :-
++
++                    *************
++PCM0 <============> *           * <----DAI0-----> Codec Headset
++                    *           *
++PCM1 <------------> *           * <====DAI1=====> Codec Speakers
++                    *   DSP     *
++PCM2 <------------> *           * <----DAI2-----> MODEM
++                    *           *
++PCM3 <------------> *           * <----DAI3-----> BT
++                    *           *
++                    *           * <----DAI4-----> DMIC
++                    *           *
++                    *           * <----DAI5-----> FM
++                    *************
++
++The audio driver processes this as follows :-
++
++ 1) Machine driver receives Jack removal event.
++
++ 2) Machine driver OR audio HAL disables the Headset path.
++
++ 3) DPCM runs the PCM trigger(stop), hw_free(), shutdown() operations on DAI0
++    for headset since the path is now disabled.
++
++ 4) Machine driver or audio HAL enables the speaker path.
++
++ 5) DPCM runs the PCM ops for startup(), hw_params(), prepapre() and
++    trigger(start) for DAI1 Speakers since the path is enabled.
++
++In this example, the machine driver or userspace audio HAL can alter the routing
++and then DPCM will take care of managing the DAI PCM operations to either bring
++the link up or down. Audio playback does not stop during this transition.
++
++
++
++DPCM machine driver
++===================
++
++The DPCM enabled ASoC machine driver is similar to normal machine drivers
++except that we also have to :-
++
++ 1) Define the FE and BE DAI links.
++
++ 2) Define any FE/BE PCM operations.
++
++ 3) Define widget graph connections.
++
++
++1 FE and BE DAI links
++---------------------
++
++| Front End PCMs    |  SoC DSP  | Back End DAIs | Audio devices |
++
++                    *************
++PCM0 <------------> *           * <----DAI0-----> Codec Headset
++                    *           *
++PCM1 <------------> *           * <----DAI1-----> Codec Speakers
++                    *   DSP     *
++PCM2 <------------> *           * <----DAI2-----> MODEM
++                    *           *
++PCM3 <------------> *           * <----DAI3-----> BT
++                    *           *
++                    *           * <----DAI4-----> DMIC
++                    *           *
++                    *           * <----DAI5-----> FM
++                    *************
++
++For the example above we have to define 4 FE DAI links and 6 BE DAI links. The
++FE DAI links are defined as follows :-
++
++static struct snd_soc_dai_link machine_dais[] = {
++	{
++		.name = "PCM0 System",
++		.stream_name = "System Playback",
++		.cpu_dai_name = "System Pin",
++		.platform_name = "dsp-audio",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.dynamic = 1,
++		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_playback = 1,
++	},
++	.....< other FE and BE DAI links here >
++};
++
++This FE DAI link is pretty similar to a regular DAI link except that we also
++set the DAI link to a DPCM FE with the "dynamic = 1". The supported FE stream
++directions should also be set with the "dpcm_playback" and "dpcm_capture"
++flags. There is also an option to specify the ordering of the trigger call for
++each FE. This allows the ASoC core to trigger the DSP before or after the other
++components (as some DSPs have strong requirements for the ordering DAI/DSP
++start and stop sequences).
++
++The FE DAI above sets the codec and code DAIs to dummy devices since the BE is
++dynamic and will change depending on runtime config.
++
++The BE DAIs are configured as follows :-
++
++static struct snd_soc_dai_link machine_dais[] = {
++	.....< FE DAI links here >
++	{
++		.name = "Codec Headset",
++		.cpu_dai_name = "ssp-dai.0",
++		.platform_name = "snd-soc-dummy",
++		.no_pcm = 1,
++		.codec_name = "rt5640.0-001c",
++		.codec_dai_name = "rt5640-aif1",
++		.ignore_suspend = 1,
++		.ignore_pmdown_time = 1,
++		.be_hw_params_fixup = hswult_ssp0_fixup,
++		.ops = &haswell_ops,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++	},
++	.....< other BE DAI links here >
++};
++
++This BE DAI link connects DAI0 to the codec (in this case RT5460 AIF1). It sets
++the "no_pcm" flag to mark it has a BE and sets flags for supported stream
++directions using "dpcm_playback" and "dpcm_capture" above.
++
++The BE has also flags set for ignoreing suspend and PM down time. This allows
++the BE to work in a hostless mode where the host CPU is not transferring data
++like a BT phone call :-
++
++                    *************
++PCM0 <------------> *           * <----DAI0-----> Codec Headset
++                    *           *
++PCM1 <------------> *           * <----DAI1-----> Codec Speakers
++                    *   DSP     *
++PCM2 <------------> *           * <====DAI2=====> MODEM
++                    *           *
++PCM3 <------------> *           * <====DAI3=====> BT
++                    *           *
++                    *           * <----DAI4-----> DMIC
++                    *           *
++                    *           * <----DAI5-----> FM
++                    *************
++
++This allows the host CPU to sleep whilst the DSP, MODEM DAI and the BT DAI are
++still in operation.
++
++A BE DAI link can also set the codec to a dummy device if the code is a device
++that is managed externally.
++
++Likewise a BE DAI can also set a dummy cpu DAI if the CPU DAI is managed by the
++DSP firmware.
++
++
++2 FE/BE PCM operations
++----------------------
++
++The BE above also exports some PCM operations and a "fixup" callback. The fixup
++callback is used by the machine driver to (re)configure the DAI based upon the
++FE hw params. i.e. the DSP may perform SRC or ASRC from the FE to BE.
++
++e.g. DSP converts all FE hw params to run at fixed rate of 48k, 16bit, stereo for
++DAI0. This means all FE hw_params have to be fixed in the machine driver for
++DAI0 so that the DAI is running at desired configuration regardless of the FE
++configuration.
++
++static int dai0_fixup(struct snd_soc_pcm_runtime *rtd,
++			struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	/* The DSP will covert the FE rate to 48k, stereo */
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
++
++	/* set DAI0 to 16 bit */
++	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
++				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
++				    SNDRV_PCM_FORMAT_S16_LE);
++	return 0;
++}
++
++The other PCM operation are the same as for regular DAI links. Use as necessary.
++
++
++3 Widget graph connections
 +--------------------------
- 
- Machine widgets are different from codec widgets in that they don't have a
- codec register bit associated with them. A machine widget is assigned to each
--machine audio component (non codec) that can be independently powered. e.g.
-+machine audio component (non codec or DSP) that can be independently
-+powered. e.g.
- 
-  o Speaker Amp
-  o Microphone Bias
-@@ -146,12 +163,12 @@ static int spitz_mic_bias(struct snd_soc_dapm_widget* w, int event)
- SND_SOC_DAPM_MIC("Mic Jack", spitz_mic_bias),
- 
- 
--2.4 Codec Domain
------------------
-+2.4 Codec (BIAS) Domain
-+-----------------------
- 
--The codec power domain has no widgets and is handled by the codecs DAPM event
--handler. This handler is called when the codec powerstate is changed wrt to any
--stream event or by kernel PM events.
-+The codec bias power domain has no widgets and is handled by the codecs DAPM
-+event handler. This handler is called when the codec powerstate is changed wrt
-+to any stream event or by kernel PM events.
- 
- 
- 2.5 Virtual Widgets
-@@ -169,15 +186,16 @@ After all the widgets have been defined, they can then be added to the DAPM
- subsystem individually with a call to snd_soc_dapm_new_control().
- 
- 
--3. Codec Widget Interconnections
--================================
-+3. Codec/DSP Widget Interconnections
-+====================================
- 
--Widgets are connected to each other within the codec and machine by audio paths
--(called interconnections). Each interconnection must be defined in order to
--create a map of all audio paths between widgets.
-+Widgets are connected to each other within the codec, platform and machine by
-+audio paths (called interconnections). Each interconnection must be defined in
-+order to create a map of all audio paths between widgets.
- 
--This is easiest with a diagram of the codec (and schematic of the machine audio
--system), as it requires joining widgets together via their audio signal paths.
-+This is easiest with a diagram of the codec or DSP (and schematic of the machine
-+audio system), as it requires joining widgets together via their audio signal
-+paths.
- 
- e.g., from the WM8731 output mixer (wm8731.c)
- 
-@@ -247,16 +265,9 @@ machine and includes the codec. e.g.
-  o Mic Jack
-  o Codec Pins
- 
--When a codec pin is NC it can be marked as not used with a call to
--
--snd_soc_dapm_set_endpoint(codec, "Widget Name", 0);
--
--The last argument is 0 for inactive and 1 for active. This way the pin and its
--input widget will never be powered up and consume power.
--
--This also applies to machine widgets. e.g. if a headphone is connected to a
--jack then the jack can be marked active. If the headphone is removed, then
--the headphone jack can be marked inactive.
-+Endpoints are added to the DAPM graph so that their usage can be determined in
-+order to save power. e.g. NC codecs pins will be switched OFF, unconnected
-+jacks can also be switched OFF.
- 
- 
- 5 DAPM Widget Events
++
++The BE DAI links will normally be connected to the graph at initialisation time
++by the ASoC DAPM core. However, if the BE codec or BE DAI is a dummy then this
++has to be set explicitly in the driver :-
++
++/* BE for codec Headset -  DAI0 is dummy and managed by DSP FW */
++{"DAI0 CODEC IN", NULL, "AIF1 Capture"},
++{"AIF1 Playback", NULL, "DAI0 CODEC OUT"},
++
++
++Writing a DPCM DSP driver
++=========================
++
++The DPCM DSP driver looks much like a standard platform class ASoC driver
++combined with elements from a codec class driver. A DSP platform driver must
++implement :-
++
++ 1) Front End PCM DAIs - i.e. struct snd_soc_dai_driver.
++
++ 2) DAPM graph showing DSP audio routing from FE DAIs to BEs.
++
++ 3) DAPM widgets from DSP graph.
++
++ 4) Mixers for gains, routing, etc.
++
++ 5) DMA configuration.
++
++ 6) BE AIF widgets.
++
++Items 6 is important for routing the audio outside of the DSP. AIF need to be
++defined for each BE and each stream direction. e.g for BE DAI0 above we would
++have :-
++
++SND_SOC_DAPM_AIF_IN("DAI0 RX", NULL, 0, SND_SOC_NOPM, 0, 0),
++SND_SOC_DAPM_AIF_OUT("DAI0 TX", NULL, 0, SND_SOC_NOPM, 0, 0),
++
++The BE AIF are used to connect the DSP graph to the graphs for the other
++component drivers (e.g. codec graph).
++
++
++Hostless PCM streams
++====================
++
++A hostless PCM stream is a stream that is not routed through the host CPU. An
++example of this would be a phone call from handset to modem.
++
++
++                    *************
++PCM0 <------------> *           * <----DAI0-----> Codec Headset
++                    *           *
++PCM1 <------------> *           * <====DAI1=====> Codec Speakers/Mic
++                    *   DSP     *
++PCM2 <------------> *           * <====DAI2=====> MODEM
++                    *           *
++PCM3 <------------> *           * <----DAI3-----> BT
++                    *           *
++                    *           * <----DAI4-----> DMIC
++                    *           *
++                    *           * <----DAI5-----> FM
++                    *************
++
++In this case the PCM data is routed via the DSP. The host CPU in this use case
++is only used for control and can sleep during the runtime of the stream.
++
++The host can control the hostless link either by :-
++
++ 1) Configuring the link as a CODEC <-> CODEC style link. In this case the link
++    is enabled or disabled by the state of the DAPM graph. This usually means
++    there is a mixer control that can be used to connect or disconnect the path
++    between both DAIs.
++
++ 2) Hostless FE. This FE has a virtual connection to the BE DAI links on the DAPM
++    graph. Control is then carried out by the FE as regualar PCM operations.
++    This method gives more control over the DAI links, but requires much more
++    userspace code to control the link. Its recommended to use CODEC<->CODEC
++    unless your HW needs more fine grained sequencing of the PCM ops.
++
++
++CODEC <-> CODEC link
++--------------------
++
++This DAI link is enabled when DAPM detects a valid path within the DAPM graph.
++The machine driver sets some additional parameters to the DAI link i.e.
++
++static const struct snd_soc_pcm_stream dai_params = {
++	.formats = SNDRV_PCM_FMTBIT_S32_LE,
++	.rate_min = 8000,
++	.rate_max = 8000,
++	.channels_min = 2,
++	.channels_max = 2,
++};
++
++static struct snd_soc_dai_link dais[] = {
++	< ... more DAI links above ... >
++	{
++		.name = "MODEM",
++		.stream_name = "MODEM",
++		.cpu_dai_name = "dai2",
++		.codec_dai_name = "modem-aif1",
++		.codec_name = "modem",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++				| SND_SOC_DAIFMT_CBM_CFM,
++		.params = &dai_params,
++	}
++	< ... more DAI links here ... >
++
++These parameters are used to configure the DAI hw_params() when DAPM detects a
++valid path and then calls the PCM operations to start the link. DAPM will also
++call the appropriate PCM operations to disable the DAI when the path is no
++longer valid.
++
++
++Hostless FE
++-----------
++
++The DAI link(s) are enabled by a FE that does not read or write any PCM data.
++This means creating a new FE that is connected with a virtual path to both
++DAI links. The DAI links will be started when the FE PCM is started and stopped
++when the FE PCM is stopped. Note that the FE PCM cannot read or write data in
++this configuration.
++
++
 -- 
 1.8.1.2
