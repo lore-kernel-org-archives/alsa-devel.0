@@ -1,18 +1,17 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH] HDA-Intel: present up to 8 HDMI/DP outputs
- via "hdmi" device
-Date: Mon, 23 Sep 2013 01:17:09 +0300
-Message-ID: <523F6C65.9090002@iki.fi>
-References: <1379886110-27931-1-git-send-email-anssi.hannula@iki.fi>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: fsl_ssi: Cannot do simultaneous capture and playback
+Date: Sun, 22 Sep 2013 23:05:03 -0300
+Message-ID: <CAOMZO5CPmYtzbR0Ahn5STKwPO_NnC=n314gJtj3WciUonXuqaQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
- [83.102.40.133])
- by alsa0.perex.cz (Postfix) with ESMTP id E865C2650C5
- for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2013 00:17:12 +0200 (CEST)
-In-Reply-To: <1379886110-27931-1-git-send-email-anssi.hannula@iki.fi>
+Received: from mail-ve0-f172.google.com (mail-ve0-f172.google.com
+ [209.85.128.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id E75852650D4
+ for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2013 04:05:04 +0200 (CEST)
+Received: by mail-ve0-f172.google.com with SMTP id oz11so1863031veb.17
+ for <alsa-devel@alsa-project.org>; Sun, 22 Sep 2013 19:05:04 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,160 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <kernel@pengutronix.de>, Nicolin Chen <b42378@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-23.09.2013 00:41, Anssi Hannula kirjoitti:
-> Some new AMD cards have HDA codecs presenting 6 connected HDMI/DP pin
-> nodes (plus 1 unconnected pin node) according to the ALSA card database.
-> 
-> Example:
-> http://www.alsa-project.org/db/?f=de3ced7af41de0ed54d218650e5e2f16c511787b
-> 
-> Bump the maximum number of presented HDMI outputs per card via the
-> "hdmi" PCM from 4 to 8 (so that the last possible device is DEV=7).
-> 
-> Note that HDMI PCM devices DEV=4..7 use shared PCM device numbers, so
-> HDA cards that have over 4 audio PCM devices or multiple S/PDIF or modem
-> devices will have their remaining PCM devices misrepresented as HDMI
-> devices.
-> 
-> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
-> ---
-> 
-> Another example:
-> http://www.alsa-project.org/db/?f=cd12a9d38f51c47eeedd380e4c5713f0d9a6c9de
-> 
-> I do not have confirmed that all of these pins are actually usable (and
-> therefore this patch is untested on affected hardware), but I guess that
-> is probable.
-> Maybe the large amount of them has something to do with DisplayPort
-> supporting multiple displays via a single connector, but that is just
-> a wild guess on my part...
+Hi,
 
->From what I can see from looking at the radeon driver and their wiki,
-Radeon display cores DCE4+ have 6 pins, and DCE8+ have 7 pins.
+I am trying to do simultaneous capture and playback on mx6 wandboard
+and I noticed that it only works if I run 'aplay first'.
 
-http://www.x.org/wiki/RadeonFeature/#index7h2
+Here is the sequence that works:
 
-So seems this is really needed. Now what is left is whether we care
-about the 10+ non-HDMI conflicts, and if so, what do we do about that?
+1) aplay file.wav
 
+2) Run 'alsamixer' and select line-in in the capture tab
 
+3) Connect audio via line-in input
 
-> But do we want some sort of a solution for the possible conflicts between
-> non-HDMI devices in the 10+ physical PCM device numbering range?
-> 
-> 
->  src/conf/cards/HDA-Intel.conf | 92 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 92 insertions(+)
-> 
-> diff --git a/src/conf/cards/HDA-Intel.conf b/src/conf/cards/HDA-Intel.conf
-> index 3957c12..7976b6c 100644
-> --- a/src/conf/cards/HDA-Intel.conf
-> +++ b/src/conf/cards/HDA-Intel.conf
-> @@ -305,6 +305,98 @@ HDA-Intel.pcm.hdmi.3 {
->  	}
->  }
->  
-> +HDA-Intel.pcm.hdmi.4 {
-> +	@args [ CARD AES0 AES1 AES2 AES3 ]
-> +	@args.CARD { type string }
-> +	@args.AES0 { type integer }
-> +	@args.AES1 { type integer }
-> +	@args.AES2 { type integer }
-> +	@args.AES3 { type integer }
-> +	@func refer
-> +	name {
-> +		@func concat
-> +		strings [
-> +			"cards.HDA-Intel.pcm.hdmi.common:"
-> +			"CARD=" $CARD ","
-> +			"DEVICE=10,"
-> +			"CTLINDEX=4,"
-> +			"AES0=" $AES0 ","
-> +			"AES1=" $AES1 ","
-> +			"AES2=" $AES2 ","
-> +			"AES3=" $AES3
-> +		]
-> +	}
-> +}
-> +
-> +HDA-Intel.pcm.hdmi.5 {
-> +	@args [ CARD AES0 AES1 AES2 AES3 ]
-> +	@args.CARD { type string }
-> +	@args.AES0 { type integer }
-> +	@args.AES1 { type integer }
-> +	@args.AES2 { type integer }
-> +	@args.AES3 { type integer }
-> +	@func refer
-> +	name {
-> +		@func concat
-> +		strings [
-> +			"cards.HDA-Intel.pcm.hdmi.common:"
-> +			"CARD=" $CARD ","
-> +			"DEVICE=11,"
-> +			"CTLINDEX=5,"
-> +			"AES0=" $AES0 ","
-> +			"AES1=" $AES1 ","
-> +			"AES2=" $AES2 ","
-> +			"AES3=" $AES3
-> +		]
-> +	}
-> +}
-> +
-> +HDA-Intel.pcm.hdmi.6 {
-> +	@args [ CARD AES0 AES1 AES2 AES3 ]
-> +	@args.CARD { type string }
-> +	@args.AES0 { type integer }
-> +	@args.AES1 { type integer }
-> +	@args.AES2 { type integer }
-> +	@args.AES3 { type integer }
-> +	@func refer
-> +	name {
-> +		@func concat
-> +		strings [
-> +			"cards.HDA-Intel.pcm.hdmi.common:"
-> +			"CARD=" $CARD ","
-> +			"DEVICE=12,"
-> +			"CTLINDEX=6,"
-> +			"AES0=" $AES0 ","
-> +			"AES1=" $AES1 ","
-> +			"AES2=" $AES2 ","
-> +			"AES3=" $AES3
-> +		]
-> +	}
-> +}
-> +
-> +HDA-Intel.pcm.hdmi.7 {
-> +	@args [ CARD AES0 AES1 AES2 AES3 ]
-> +	@args.CARD { type string }
-> +	@args.AES0 { type integer }
-> +	@args.AES1 { type integer }
-> +	@args.AES2 { type integer }
-> +	@args.AES3 { type integer }
-> +	@func refer
-> +	name {
-> +		@func concat
-> +		strings [
-> +			"cards.HDA-Intel.pcm.hdmi.common:"
-> +			"CARD=" $CARD ","
-> +			"DEVICE=13,"
-> +			"CTLINDEX=7,"
-> +			"AES0=" $AES0 ","
-> +			"AES1=" $AES1 ","
-> +			"AES2=" $AES2 ","
-> +			"AES3=" $AES3
-> +		]
-> +	}
-> +}
-> +
->  <confdir:pcm/modem.conf>
->  
->  HDA-Intel.pcm.modem.0 {
-> 
+4) arecord -f cd -c 2 | aplay -f cd
 
+Then I am able to hear the playback.
 
--- 
-Anssi Hannula
+However, if I do not do step 1, and try to do the arecord/aplay directly I get:
+
+$ arecord -f cd  | aplay -f cd
+imx-sgtl5000 sound.13: set sample size in capture stream first
+fsl-ssi-dai 2028000.ssi: ASoC: can't open interface 2028000.ssi: -11
+ALSA lib pcm_dmix.c:1018:(snd_pcm_dmix_
+open) unable to open slave
+aplay: main:660: audio open error: Device or resource busy
+Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+
+I will try to debug this, but if anyone has any suggestions, please let me know.
+
+Thanks,
+
+Fabio Estevam
