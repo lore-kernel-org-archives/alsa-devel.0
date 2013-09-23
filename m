@@ -1,104 +1,59 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ALSA: compress: Make sure we trigger STOP
- before closing the stream.
-Date: Mon, 23 Sep 2013 15:11:00 +0530
-Message-ID: <20130923094100.GD17188@intel.com>
-References: <1379090597-7096-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <20130916035753.GJ17188@intel.com> <1379329283.3215.34.camel@loki>
- <s5hr4ckahjp.wl%tiwai@suse.de> <1379931579.2516.48.camel@loki>
+From: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 23/51] DMA-API: dma: pl08x: add
+ dma_set_mask_and_coherent() call
+Date: Mon, 23 Sep 2013 15:42:22 +0530
+Message-ID: <20130923101222.GH17188@intel.com>
+References: <20130919212235.GD12758@n2100.arm.linux.org.uk>
+ <E1VMm4v-0007hz-RC@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id A2961260818
- for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2013 12:31:32 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1379931579.2516.48.camel@loki>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.jf.intel.com>, Mark Brown <broonie@kernel.org>
+In-Reply-To: <E1VMm4v-0007hz-RC-eh5Bv4kxaXIANfyc6IWni62ZND6+EDdj@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, b43-dev-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, e1000-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-ide-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-nvme-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Solarflare linux maintainers <linux-net-drivers-s/n/eUQHGBpZroRs9YW3xA@public.gmane.org>, uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 23, 2013 at 11:19:39AM +0100, Liam Girdwood wrote:
-> On Thu, 2013-09-19 at 18:43 +0200, Takashi Iwai wrote:
-> > At Mon, 16 Sep 2013 12:01:23 +0100,
-> > Liam Girdwood wrote:
-> > > 
-> > > On Mon, 2013-09-16 at 09:27 +0530, Vinod Koul wrote:
-> > > > On Fri, Sep 13, 2013 at 05:43:16PM +0100, Liam Girdwood wrote:
-> > > > > Currently we assume that userspace will shut down the compressed stream
-> > > > > correctly. However, if userspcae dies (e.g. cplay & ctrl-C) we dont
-> > > > > stop the stream before freeing it.
-> > > > > 
-> > > > > This now checks that the stream is stopped before freeing.
-> > > > > 
-> > > > > Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> > > > > ---
-> > > > >  sound/core/compress_offload.c | 12 ++++++++++++
-> > > > >  1 file changed, 12 insertions(+)
-> > > > > 
-> > > > > diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-> > > > > index 99db892..a9ae4f3 100644
-> > > > > --- a/sound/core/compress_offload.c
-> > > > > +++ b/sound/core/compress_offload.c
-> > > > > @@ -139,6 +139,18 @@ static int snd_compr_open(struct inode *inode, struct file *f)
-> > > > >  static int snd_compr_free(struct inode *inode, struct file *f)
-> > > > >  {
-> > > > >  	struct snd_compr_file *data = f->private_data;
-> > > > > +	struct snd_compr_runtime *runtime = data->stream.runtime;
-> > > > > +
-> > > > > +	switch (runtime->state) {
-> > > > > +	case SNDRV_PCM_STATE_RUNNING:
-> > > > > +	case SNDRV_PCM_STATE_DRAINING:
-> > > > > +	case SNDRV_PCM_STATE_PAUSED:
-> > > > > +		data->stream.ops->trigger(&data->stream, SNDRV_PCM_TRIGGER_STOP);
-> > > > when usermode dies the free will get invoked as we have below. The free is a
-> > > > valid trigger from any state. So shouldnt the DSP then STOP the DMAs and free
-> > > > the streams.
-> > > 
-> > > This means that the compressed stream ops don't follow the PCM ops wrt
-> > > trigger() sequencing (i.e. we have to add extra logic in free to deal
-> > > with this difference).
-> > > 
-> > > I think it would be better to follow the PCM operations use case here as
-> > > it simplifies the driver code and stops people making the false
-> > > assumption that trigger() works the same way throughout ALSA ?   
-> > 
-> > Well, the trigger of compress API has a few more jobs than PCM,
-> > and it's exactly what should be fixed (e.g. the proper handling of
-> > drain).  We need a bit more consensus over that.
-Drain handling would be different, I am working on taht way, havent been able to
-get the time it needs...
-
-> > So, I didn't apply this patch yet.  If Vinod is happy with this (even
-> > as a temporary solution), let me know.
-Sorry my bad, your and Liam mail went to some other folder due to my bad rules
-set. Sorry for not reverting earlier..
+On Thu, Sep 19, 2013 at 10:48:01PM +0100, Russell King wrote:
+> The DMA API requires drivers to call the appropriate dma_set_mask()
+> functions before doing any DMA mapping.  Add this required call to
+> the AMBA PL08x driver.
 > 
-> Without this patch we have the two different sequences for shutdown
-> depending on whether userspace dies or not. i.e.
-> 
-> 1) Normal: trigger(start) -> play -> trigger(stop) -> close()
-> 
-> 2) ctrl-C: trigger(start) -> play -> ctrl-C -> close() 
-> 
-> So we miss out the trigger(STOP) and close the device with the stream
-> still in a trigger running state.
-my point was since we have DSPs we can let DSP internally treat free in not
-stopped cases as goto stop and then free. We do this way in our DSPs and save us
-a cmd to be sent. Above way though fine will just add that cmd.
-
-The patch is okay but only argument i had was that we can save one cmd since we
-have a DSP. Am okay if we have this too..
+> Signed-off-by: Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Acked-by: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
 
 ~Vinod
+> ---
+>  drivers/dma/amba-pl08x.c |    5 +++++
+>  1 files changed, 5 insertions(+), 0 deletions(-)
+> 
+> diff --git a/drivers/dma/amba-pl08x.c b/drivers/dma/amba-pl08x.c
+> index fce46c5..e51a983 100644
+> --- a/drivers/dma/amba-pl08x.c
+> +++ b/drivers/dma/amba-pl08x.c
+> @@ -2055,6 +2055,11 @@ static int pl08x_probe(struct amba_device *adev, const struct amba_id *id)
+>  	if (ret)
+>  		return ret;
+>  
+> +	/* Ensure that we can do DMA */
+> +	ret = dma_set_mask_and_coherent(&adev->dev, DMA_BIT_MASK(32));
+> +	if (ret)
+> +		goto out_no_pl08x;
+> +
+>  	/* Create the driver state holder */
+>  	pl08x = kzalloc(sizeof(*pl08x), GFP_KERNEL);
+>  	if (!pl08x) {
+> -- 
+> 1.7.4.4
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 -- 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
