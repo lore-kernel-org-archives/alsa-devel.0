@@ -1,14 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 1/5] ASoC: Docs: Update codec documentation
-Date: Mon, 23 Sep 2013 12:13:58 +0100
-Message-ID: <1379934842-4489-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 2/5] ASoC: Docs: Platform update
+Date: Mon, 23 Sep 2013 12:13:59 +0100
+Message-ID: <1379934842-4489-2-git-send-email-liam.r.girdwood@linux.intel.com>
+References: <1379934842-4489-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 484B2260845
- for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2013 13:14:21 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EFEF260865
+ for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2013 13:14:22 +0200 (CEST)
+In-Reply-To: <1379934842-4489-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,91 +24,47 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Update the codec class driver documentation and bring it up to date
-with the current code base. This includes API changes, regmap and
-multi component.
+Update the platform class driver documentation and bring it up to date
+with the current code base. This includes multi component and DSP.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- Documentation/sound/alsa/soc/codec.txt | 46 +++++++++++-----------------------
- 1 file changed, 15 insertions(+), 31 deletions(-)
+ Documentation/sound/alsa/soc/platform.txt | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/sound/alsa/soc/codec.txt b/Documentation/sound/alsa/soc/codec.txt
-index bce23a4..db5f9c9 100644
---- a/Documentation/sound/alsa/soc/codec.txt
-+++ b/Documentation/sound/alsa/soc/codec.txt
-@@ -1,22 +1,23 @@
--ASoC Codec Driver
--=================
-+ASoC Codec Class Driver
-+=======================
+diff --git a/Documentation/sound/alsa/soc/platform.txt b/Documentation/sound/alsa/soc/platform.txt
+index d57efad..3a08a2c 100644
+--- a/Documentation/sound/alsa/soc/platform.txt
++++ b/Documentation/sound/alsa/soc/platform.txt
+@@ -1,9 +1,9 @@
+ ASoC Platform Driver
+ ====================
  
--The codec driver is generic and hardware independent code that configures the
--codec to provide audio capture and playback. It should contain no code that is
--specific to the target platform or machine. All platform and machine specific
--code should be added to the platform and machine drivers respectively.
-+The codec class driver is generic and hardware independent code that configures
-+the codec, FM, MODEM, BT or external DSP to provide audio capture and playback.
-+It should contain no code that is specific to the target platform or machine.
-+All platform and machine specific code should be added to the platform and
-+machine drivers respectively.
+-An ASoC platform driver can be divided into audio DMA and SoC DAI configuration
+-and control. The platform drivers only target the SoC CPU and must have no board
+-specific code.
++An ASoC platform driver class can be divided into audio DMA drivers, SoC DAI
++drivers and DSP drivers. The platform drivers only target the SoC CPU and must
++have no board specific code.
  
--Each codec driver *must* provide the following features:-
-+Each codec class driver *must* provide the following features:-
+ Audio DMA
+ =========
+@@ -64,3 +64,16 @@ Each SoC DAI driver must provide the following features:-
+  5) Suspend and resume (optional)
  
-  1) Codec DAI and PCM configuration
-- 2) Codec control IO - using I2C, 3 Wire(SPI) or both APIs
-+ 2) Codec control IO - using RegMap API
-  3) Mixers and audio controls
-  4) Codec audio operations
-+ 5) DAPM description.
-+ 6) DAPM event handler.
- 
- Optionally, codec drivers can also provide:-
- 
-- 5) DAPM description.
-- 6) DAPM event handler.
-  7) DAC Digital mute control.
- 
- Its probably best to use this guide in conjunction with the existing codec
-@@ -64,26 +65,9 @@ struct snd_soc_dai_driver wm8731_dai = {
- 2 - Codec control IO
- --------------------
- The codec can usually be controlled via an I2C or SPI style interface
--(AC97 combines control with data in the DAI). The codec drivers provide
--functions to read and write the codec registers along with supplying a
--register cache:-
--
--	/* IO control data and register cache */
--	void *control_data; /* codec control (i2c/3wire) data */
--	void *reg_cache;
--
--Codec read/write should do any data formatting and call the hardware
--read write below to perform the IO. These functions are called by the
--core and ALSA when performing DAPM or changing the mixer:-
--
--    unsigned int (*read)(struct snd_soc_codec *, unsigned int);
--    int (*write)(struct snd_soc_codec *, unsigned int, unsigned int);
--
--Codec hardware IO functions - usually points to either the I2C, SPI or AC97
--read/write:-
--
--	hw_write_t hw_write;
--	hw_read_t hw_read;
-+(AC97 combines control with data in the DAI). The codec driver should use the
-+Regmap API for all codec IO. Please see include/linux/regmap.h and existing
-+codec drivers for example regmap usage.
- 
- 
- 3 - Mixers and audio controls
-@@ -127,7 +111,7 @@ Defines a stereo enumerated control
- 
- 4 - Codec Audio Operations
- --------------------------
--The codec driver also supports the following ALSA operations:-
-+The codec driver also supports the following ALSA PCM operations:-
- 
- /* SoC audio ops */
- struct snd_soc_ops {
+ Please see codec.txt for a description of items 1 - 4.
++
++
++SoC DSP Drivers
++===============
++
++Each SoC DSP driver usually supplies the following features :-
++
++ 1) DAPM graph
++ 2) Mixer controls
++ 3) DMA IO to/from DSP buffers (if applicable)
++ 4) Definition of DSP front end (FE) PCM devices.
++
++Please see DPCM.txt for a description of item 4.
 -- 
 1.8.1.2
