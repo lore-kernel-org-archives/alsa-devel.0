@@ -1,254 +1,151 @@
-From: Joel Fernandes <joelf-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH 2/3] dma: edma: Add support for Cyclic DMA
-Date: Mon, 23 Sep 2013 18:05:14 -0500
-Message-ID: <1379977515-3794-3-git-send-email-joelf@ti.com>
-References: <1379977515-3794-1-git-send-email-joelf@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 2/6] ASoC: tlv320aic3x: Move resource
+	acquisition to I2C probe
+Date: Tue, 24 Sep 2013 00:12:44 +0100
+Message-ID: <1379977968-25982-2-git-send-email-broonie@kernel.org>
+References: <1379977968-25982-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <1379977515-3794-1-git-send-email-joelf-l0cyMroinI0@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Matt Porter <matt-agtwNxEcTQJWk0Htik3J/w@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Dan Williams <djbw-b10kYP2dOMg@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Lars Peter-Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Joel Fernandes <joelf-l0cyMroinI0@public.gmane.org>, Linux DaVinci Kernel List <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, Linux Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux OMAP List <linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux ARM Kernel List <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41FA0261599
+ for <alsa-devel@alsa-project.org>; Tue, 24 Sep 2013 01:12:59 +0200 (CEST)
+In-Reply-To: <1379977968-25982-1-git-send-email-broonie@kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hebbar Gururaja <gururaja.hebbar@ti.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Using the PaRAM configuration function that we split for reuse by the
-different DMA types, we implement Cyclic DMA support.
-For the cyclic case, we pass different configuration parameters to this
-function, and handle all the Cyclic-specific functionality separately.
+From: Mark Brown <broonie@linaro.org>
 
-Callbacks to the DMA users are handled using vchan_cyclic_callback in
-the virt-dma layer. Linking is handled the same way as the slave SG case
-except for the last slot where we link it back to the first one in a
-cyclic fashion.
+This is more idiomatic and interacts better with deferred probing.
 
-For continuity, we check for cases where no.of periods is great than the
-MAX number of slots the driver can allocate for a particular descriptor
-and error out on such cases.
-
-Signed-off-by: Joel Fernandes <joelf-l0cyMroinI0@public.gmane.org>
+Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- drivers/dma/edma.c | 159 ++++++++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 151 insertions(+), 8 deletions(-)
+ sound/soc/codecs/tlv320aic3x.c | 63 ++++++++++++++++++++++--------------------
+ 1 file changed, 33 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/dma/edma.c b/drivers/dma/edma.c
-index 725b00c..9b63e1e 100644
---- a/drivers/dma/edma.c
-+++ b/drivers/dma/edma.c
-@@ -54,6 +54,7 @@
- struct edma_desc {
- 	struct virt_dma_desc		vdesc;
- 	struct list_head		node;
-+	int				cyclic;
- 	int				absync;
- 	int				pset_nr;
- 	int				processed;
-@@ -167,8 +168,13 @@ static void edma_execute(struct edma_chan *echan)
- 	 * then setup a link to the dummy slot, this results in all future
- 	 * events being absorbed and that's OK because we're done
- 	 */
--	if (edesc->processed == edesc->pset_nr)
--		edma_link(echan->slot[nslots-1], echan->ecc->dummy_slot);
-+	if (edesc->processed == edesc->pset_nr) {
-+		if (edesc->cyclic)
-+			edma_link(echan->slot[nslots-1], echan->slot[1]);
-+		else
-+			edma_link(echan->slot[nslots-1],
-+				  echan->ecc->dummy_slot);
-+	}
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 3abbff3..de17a36 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1345,23 +1345,6 @@ static int aic3x_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 	}
  
- 	edma_resume(echan->ch_num);
- 
-@@ -449,6 +455,138 @@ static struct dma_async_tx_descriptor *edma_prep_slave_sg(
- 	return vchan_tx_prep(&echan->vchan, &edesc->vdesc, tx_flags);
+-	if (gpio_is_valid(aic3x->gpio_reset) &&
+-	    !aic3x_is_shared_reset(aic3x)) {
+-		ret = gpio_request(aic3x->gpio_reset, "tlv320aic3x reset");
+-		if (ret != 0)
+-			goto err_gpio;
+-		gpio_direction_output(aic3x->gpio_reset, 0);
+-	}
+-
+-	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++)
+-		aic3x->supplies[i].supply = aic3x_supply_names[i];
+-
+-	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(aic3x->supplies),
+-				 aic3x->supplies);
+-	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
+-		goto err_get;
+-	}
+ 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++) {
+ 		aic3x->disable_nb[i].nb.notifier_call = aic3x_regulator_event;
+ 		aic3x->disable_nb[i].aic3x = aic3x;
+@@ -1418,12 +1401,6 @@ err_notif:
+ 	while (i--)
+ 		regulator_unregister_notifier(aic3x->supplies[i].consumer,
+ 					      &aic3x->disable_nb[i].nb);
+-	regulator_bulk_free(ARRAY_SIZE(aic3x->supplies), aic3x->supplies);
+-err_get:
+-	if (gpio_is_valid(aic3x->gpio_reset) &&
+-	    !aic3x_is_shared_reset(aic3x))
+-		gpio_free(aic3x->gpio_reset);
+-err_gpio:
+ 	return ret;
  }
  
-+static struct dma_async_tx_descriptor *edma_prep_dma_cyclic(
-+	struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
-+	size_t period_len, enum dma_transfer_direction direction,
-+	unsigned long tx_flags, void *context)
-+{
-+	struct edma_chan *echan = to_edma_chan(chan);
-+	struct device *dev = chan->device->dev;
-+	struct edma_desc *edesc;
-+	dma_addr_t src_addr, dst_addr;
-+	enum dma_slave_buswidth dev_width;
-+	u32 burst;
-+	int i, ret, nr_periods;
-+
-+	if (unlikely(!echan || !buf_len || !period_len))
-+		return NULL;
-+
-+	if (direction == DMA_DEV_TO_MEM) {
-+		src_addr = echan->cfg.src_addr;
-+		dst_addr = buf_addr;
-+		dev_width = echan->cfg.src_addr_width;
-+		burst = echan->cfg.src_maxburst;
-+	} else if (direction == DMA_MEM_TO_DEV) {
-+		src_addr = buf_addr;
-+		dst_addr = echan->cfg.dst_addr;
-+		dev_width = echan->cfg.dst_addr_width;
-+		burst = echan->cfg.dst_maxburst;
-+	} else {
-+		dev_err(dev, "%s: bad direction?\n", __func__);
-+		return NULL;
+@@ -1434,15 +1411,9 @@ static int aic3x_remove(struct snd_soc_codec *codec)
+ 
+ 	aic3x_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	list_del(&aic3x->list);
+-	if (gpio_is_valid(aic3x->gpio_reset) &&
+-	    !aic3x_is_shared_reset(aic3x)) {
+-		gpio_set_value(aic3x->gpio_reset, 0);
+-		gpio_free(aic3x->gpio_reset);
+-	}
+ 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++)
+ 		regulator_unregister_notifier(aic3x->supplies[i].consumer,
+ 					      &aic3x->disable_nb[i].nb);
+-	regulator_bulk_free(ARRAY_SIZE(aic3x->supplies), aic3x->supplies);
+ 
+ 	return 0;
+ }
+@@ -1484,7 +1455,7 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
+ 	struct aic3x_priv *aic3x;
+ 	struct aic3x_setup_data *ai3x_setup;
+ 	struct device_node *np = i2c->dev.of_node;
+-	int ret;
++	int ret, i;
+ 	u32 value;
+ 
+ 	aic3x = devm_kzalloc(&i2c->dev, sizeof(struct aic3x_priv), GFP_KERNEL);
+@@ -1545,14 +1516,46 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
+ 
+ 	aic3x->model = id->driver_data;
+ 
++	if (gpio_is_valid(aic3x->gpio_reset) &&
++	    !aic3x_is_shared_reset(aic3x)) {
++		ret = gpio_request(aic3x->gpio_reset, "tlv320aic3x reset");
++		if (ret != 0)
++			goto err;
++		gpio_direction_output(aic3x->gpio_reset, 0);
 +	}
 +
-+	if (dev_width == DMA_SLAVE_BUSWIDTH_UNDEFINED) {
-+		dev_err(dev, "Undefined slave buswidth\n");
-+		return NULL;
++	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++)
++		aic3x->supplies[i].supply = aic3x_supply_names[i];
++
++	ret = devm_regulator_bulk_get(&i2c->dev, ARRAY_SIZE(aic3x->supplies),
++				      aic3x->supplies);
++	if (ret != 0) {
++		dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
++		goto err_gpio;
 +	}
 +
-+	if (unlikely(buf_len % period_len)) {
-+		dev_err(dev, "Period should be multiple of Buffer length\n");
-+		return NULL;
-+	}
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_aic3x, &aic3x_dai, 1);
+ 	return ret;
 +
-+	nr_periods = (buf_len / period_len) + 1;
-+
-+	/*
-+	 * Cyclic DMA users such as audio cannot tolerate delays introduced
-+	 * by cases where the number of periods is more than the maximum
-+	 * number of SGs the EDMA driver can handle at a time. For DMA types
-+	 * such as Slave SGs, such delays are tolerable and synchronized,
-+	 * but the synchronization is difficult to achieve with Cyclic and
-+	 * cannot be guaranteed, so we error out early.
-+	 */
-+	if (nr_periods > MAX_NR_SG)
-+		return NULL;
-+
-+	edesc = kzalloc(sizeof(*edesc) + nr_periods *
-+		sizeof(edesc->pset[0]), GFP_ATOMIC);
-+	if (!edesc) {
-+		dev_dbg(dev, "Failed to allocate a descriptor\n");
-+		return NULL;
-+	}
-+
-+	edesc->cyclic = 1;
-+	edesc->pset_nr = nr_periods;
-+
-+	dev_dbg(dev, "%s: nr_periods=%d\n", __func__, nr_periods);
-+	dev_dbg(dev, "%s: period_len=%d\n", __func__, period_len);
-+	dev_dbg(dev, "%s: buf_len=%d\n", __func__, buf_len);
-+
-+	for (i = 0; i < nr_periods; i++) {
-+		/* Allocate a PaRAM slot, if needed */
-+		if (echan->slot[i] < 0) {
-+			echan->slot[i] =
-+				edma_alloc_slot(EDMA_CTLR(echan->ch_num),
-+						EDMA_SLOT_ANY);
-+			if (echan->slot[i] < 0) {
-+				dev_err(dev, "Failed to allocate slot\n");
-+				return NULL;
-+			}
-+		}
-+
-+		if (i == nr_periods - 1) {
-+			memcpy(&edesc->pset[i], &edesc->pset[0],
-+			       sizeof(edesc->pset[0]));
-+			break;
-+		}
-+
-+		ret = edma_config_pset(chan, &edesc->pset[i], src_addr,
-+				       dst_addr, burst, dev_width, period_len,
-+				       direction);
-+		if (ret < 0)
-+			return NULL;
-+
-+		if (direction == DMA_DEV_TO_MEM)
-+			dst_addr += period_len;
-+		else
-+			src_addr += period_len;
-+
-+		dev_dbg(dev, "%s: Configure period %d of buf:\n", __func__, i);
-+		dev_dbg(dev,
-+			"\n pset[%d]:\n"
-+			"  chnum\t%d\n"
-+			"  slot\t%d\n"
-+			"  opt\t%08x\n"
-+			"  src\t%08x\n"
-+			"  dst\t%08x\n"
-+			"  abcnt\t%08x\n"
-+			"  ccnt\t%08x\n"
-+			"  bidx\t%08x\n"
-+			"  cidx\t%08x\n"
-+			"  lkrld\t%08x\n",
-+			i, echan->ch_num, echan->slot[i],
-+			edesc->pset[i].opt,
-+			edesc->pset[i].src,
-+			edesc->pset[i].dst,
-+			edesc->pset[i].a_b_cnt,
-+			edesc->pset[i].ccnt,
-+			edesc->pset[i].src_dst_bidx,
-+			edesc->pset[i].src_dst_cidx,
-+			edesc->pset[i].link_bcntrld);
-+
-+		edesc->absync = ret;
-+
-+		/*
-+		 * Enable interrupts for every period because callback
-+		 * has to be called for every period.
-+		 */
-+		edesc->pset[i].opt |= TCINTEN;
-+	}
-+
-+	return vchan_tx_prep(&echan->vchan, &edesc->vdesc, tx_flags);
-+}
-+
- static void edma_callback(unsigned ch_num, u16 ch_status, void *data)
++err_gpio:
++	if (gpio_is_valid(aic3x->gpio_reset) &&
++	    !aic3x_is_shared_reset(aic3x))
++		gpio_free(aic3x->gpio_reset);
++err:
++	return ret;
+ }
+ 
+ static int aic3x_i2c_remove(struct i2c_client *client)
  {
- 	struct edma_chan *echan = data;
-@@ -457,24 +595,28 @@ static void edma_callback(unsigned ch_num, u16 ch_status, void *data)
- 	unsigned long flags;
- 	struct edmacc_param p;
- 
--	/* Pause the channel */
--	edma_pause(echan->ch_num);
-+	edesc = echan->edesc;
++	struct aic3x_priv *aic3x = i2c_get_clientdata(client);
 +
-+	/* Pause the channel for non-cyclic */
-+	if (!edesc || (edesc && !edesc->cyclic))
-+		edma_pause(echan->ch_num);
+ 	snd_soc_unregister_codec(&client->dev);
++	if (gpio_is_valid(aic3x->gpio_reset) &&
++	    !aic3x_is_shared_reset(aic3x)) {
++		gpio_set_value(aic3x->gpio_reset, 0);
++		gpio_free(aic3x->gpio_reset);
++	}
+ 	return 0;
+ }
  
- 	switch (ch_status) {
- 	case DMA_COMPLETE:
- 		spin_lock_irqsave(&echan->vchan.lock, flags);
- 
--		edesc = echan->edesc;
- 		if (edesc) {
--			if (edesc->processed == edesc->pset_nr) {
-+			if (edesc->cyclic) {
-+				vchan_cyclic_callback(&edesc->vdesc);
-+			} else if (edesc->processed == edesc->pset_nr) {
- 				dev_dbg(dev, "Transfer complete, stopping channel %d\n", ch_num);
- 				edma_stop(echan->ch_num);
- 				vchan_cookie_complete(&edesc->vdesc);
-+				edma_execute(echan);
- 			} else {
- 				dev_dbg(dev, "Intermediate transfer complete on channel %d\n", ch_num);
-+				edma_execute(echan);
- 			}
--
--			edma_execute(echan);
- 		}
- 
- 		spin_unlock_irqrestore(&echan->vchan.lock, flags);
-@@ -670,6 +812,7 @@ static void edma_dma_init(struct edma_cc *ecc, struct dma_device *dma,
- 			  struct device *dev)
- {
- 	dma->device_prep_slave_sg = edma_prep_slave_sg;
-+	dma->device_prep_dma_cyclic = edma_prep_dma_cyclic;
- 	dma->device_alloc_chan_resources = edma_alloc_chan_resources;
- 	dma->device_free_chan_resources = edma_free_chan_resources;
- 	dma->device_issue_pending = edma_issue_pending;
 -- 
-1.8.1.2
+1.8.4.rc3
