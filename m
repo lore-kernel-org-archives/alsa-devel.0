@@ -1,153 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/3] ASoC: mc13783: Use regmap directly from
-	ASoC
-Date: Mon, 23 Sep 2013 19:14:33 +0100
-Message-ID: <1379960073-23245-3-git-send-email-broonie@kernel.org>
-References: <1379960073-23245-1-git-send-email-broonie@kernel.org>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH 36/51] DMA-API: usb: use dma_set_coherent_mask()
+Date: Mon, 23 Sep 2013 14:27:39 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1309231418030.1348-100000@iolanthe.rowland.org>
+References: <E1VMmHX-0007jq-Cj@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C85532610BF
- for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2013 20:14:43 +0200 (CEST)
-In-Reply-To: <1379960073-23245-1-git-send-email-broonie@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>, Samuel Ortiz <sameo@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@linaro.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <E1VMmHX-0007jq-Cj@rmk-PC.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, Alexander Shishkin <alexander.shishkin@linux.intel.com>, linux-mmc@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-nvme@lists.infradead.org, linux-ide@vger.kernel.org, devel@driverdev.osuosl.org, linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org, e1000-devel@lists.sourceforge.net, b43-dev@lists.infradead.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, Stephen Warren <swarren@wwwdotorg.org>, Kukjin Kim <kgene.kim@samsung.com>, dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Solarflare linux maintainers <linux-net-drivers@solarflare.com>, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, Felipe Balbi <balbi@ti.com>, linux-crypto@vger.kernel.org, Greg Kroah-Hartman <gregkh@linu>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On Thu, 19 Sep 2013, Russell King wrote:
 
-As part of a push to remove the register I/O functionality from ASoC (since
-it is now duplicated in the regmap API) convert the mc13783 driver to use
-regmap directly.
+> The correct way for a driver to specify the coherent DMA mask is
+> not to directly access the field in the struct device, but to use
+> dma_set_coherent_mask().  Only arch and bus code should access this
+> member directly.
+> 
+> Convert all direct write accesses to using the correct API.
+> 
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/codecs/mc13783.c | 55 ++++++++--------------------------------------
- 1 file changed, 9 insertions(+), 46 deletions(-)
+> diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
+> index f6b790c..5b0cd2d 100644
+> --- a/drivers/usb/host/ehci-platform.c
+> +++ b/drivers/usb/host/ehci-platform.c
 
-diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
-index 4d3c8fd..eedbf05 100644
---- a/sound/soc/codecs/mc13783.c
-+++ b/sound/soc/codecs/mc13783.c
-@@ -30,16 +30,10 @@
- #include <sound/soc.h>
- #include <sound/initval.h>
- #include <sound/soc-dapm.h>
-+#include <linux/regmap.h>
- 
- #include "mc13783.h"
- 
--#define MC13783_AUDIO_RX0	36
--#define MC13783_AUDIO_RX1	37
--#define MC13783_AUDIO_TX	38
--#define MC13783_SSI_NETWORK	39
--#define MC13783_AUDIO_CODEC	40
--#define MC13783_AUDIO_DAC	41
--
- #define AUDIO_RX0_ALSPEN		(1 << 5)
- #define AUDIO_RX0_ALSPSEL		(1 << 7)
- #define AUDIO_RX0_ADDCDC		(1 << 21)
-@@ -95,41 +89,12 @@
- 
- struct mc13783_priv {
- 	struct mc13xxx *mc13xxx;
-+	struct regmap *regmap;
- 
- 	enum mc13783_ssi_port adc_ssi_port;
- 	enum mc13783_ssi_port dac_ssi_port;
- };
- 
--static unsigned int mc13783_read(struct snd_soc_codec *codec,
--	unsigned int reg)
--{
--	struct mc13783_priv *priv = snd_soc_codec_get_drvdata(codec);
--	unsigned int value = 0;
--
--	mc13xxx_lock(priv->mc13xxx);
--
--	mc13xxx_reg_read(priv->mc13xxx, reg, &value);
--
--	mc13xxx_unlock(priv->mc13xxx);
--
--	return value;
--}
--
--static int mc13783_write(struct snd_soc_codec *codec,
--	unsigned int reg, unsigned int value)
--{
--	struct mc13783_priv *priv = snd_soc_codec_get_drvdata(codec);
--	int ret;
--
--	mc13xxx_lock(priv->mc13xxx);
--
--	ret = mc13xxx_reg_write(priv->mc13xxx, reg, value);
--
--	mc13xxx_unlock(priv->mc13xxx);
--
--	return ret;
--}
--
- /* Mapping between sample rates and register value */
- static unsigned int mc13783_rates[] = {
- 	8000, 11025, 12000, 16000,
-@@ -583,8 +548,14 @@ static struct snd_kcontrol_new mc13783_control_list[] = {
- static int mc13783_probe(struct snd_soc_codec *codec)
- {
- 	struct mc13783_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	int ret;
- 
--	mc13xxx_lock(priv->mc13xxx);
-+	codec->control_data = dev_get_regmap(codec->dev->parent, NULL);
-+	ret = snd_soc_codec_set_cache_io(codec, 8, 24, SND_SOC_REGMAP);
-+	if (ret != 0) {
-+		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-+		return ret;
-+	}
- 
- 	/* these are the reset values */
- 	mc13xxx_reg_write(priv->mc13xxx, MC13783_AUDIO_RX0, 0x25893);
-@@ -608,8 +579,6 @@ static int mc13783_probe(struct snd_soc_codec *codec)
- 		mc13xxx_reg_rmw(priv->mc13xxx, MC13783_AUDIO_DAC,
- 				0, AUDIO_SSI_SEL);
- 
--	mc13xxx_unlock(priv->mc13xxx);
--
- 	return 0;
- }
- 
-@@ -617,13 +586,9 @@ static int mc13783_remove(struct snd_soc_codec *codec)
- {
- 	struct mc13783_priv *priv = snd_soc_codec_get_drvdata(codec);
- 
--	mc13xxx_lock(priv->mc13xxx);
--
- 	/* Make sure VAUDIOON is off */
- 	mc13xxx_reg_rmw(priv->mc13xxx, MC13783_AUDIO_RX0, 0x3, 0);
- 
--	mc13xxx_unlock(priv->mc13xxx);
--
- 	return 0;
- }
- 
-@@ -713,8 +678,6 @@ static struct snd_soc_dai_driver mc13783_dai_sync[] = {
- static struct snd_soc_codec_driver soc_codec_dev_mc13783 = {
- 	.probe		= mc13783_probe,
- 	.remove		= mc13783_remove,
--	.read		= mc13783_read,
--	.write		= mc13783_write,
- 	.controls	= mc13783_control_list,
- 	.num_controls	= ARRAY_SIZE(mc13783_control_list),
- 	.dapm_widgets	= mc13783_dapm_widgets,
--- 
-1.8.4.rc3
+> @@ -91,8 +91,9 @@ static int ehci_platform_probe(struct platform_device *dev)
+>  		dev->dev.platform_data = &ehci_platform_defaults;
+>  	if (!dev->dev.dma_mask)
+>  		dev->dev.dma_mask = &dev->dev.coherent_dma_mask;
+> -	if (!dev->dev.coherent_dma_mask)
+> -		dev->dev.coherent_dma_mask = DMA_BIT_MASK(32);
+> +	err = dma_set_coherent_mask(&dev->dev, DMA_BIT_MASK(32));
+> +	if (err)
+> +		return err;
+>  
+>  	pdata = dev_get_platdata(&dev->dev);
+
+ehci-platform.c is a generic file, intended for use by multiple
+platforms.  Is it not possible that on some platforms, the arch or bus
+code may already have initialized the DMA masks?  Isn't something like 
+this (i.e., DMA bindings) planned for Device Tree?
+
+By eliminating the tests above and calling dma_set_coherent_mask or
+dma_coerce_mask_and_coherent unconditionally, this patch (and the next)
+would overwrite those initial settings.
+
+I don't know to what extent the same may be true for the other,
+platform-specific, drivers changed by this patch.  But it's something 
+to be aware of.
+
+Alan Stern
