@@ -1,49 +1,80 @@
-From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: Re: [PATCH] ASoC: kirkwood: add S/PDIF support
-Date: Tue, 24 Sep 2013 18:32:41 +0200
-Message-ID: <20130924183241.12a97af4@armhf>
-References: <20130924124122.64834b2a@armhf>
-	<20130924105127.GB12758@n2100.arm.linux.org.uk>
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH] ASoC: kirkwood: simplify clock handling
+Date: Tue, 24 Sep 2013 20:12:35 +0200
+Message-ID: <1380046355-7920-1-git-send-email-u.kleine-koenig@pengutronix.de>
+References: <1379951159-8294-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20130924105127.GB12758-l+eeeJia6m9vn6HldHNs0ANdhmdF6hFW@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B5619261A9D
+ for <alsa-devel@alsa-project.org>; Tue, 24 Sep 2013 20:12:53 +0200 (CEST)
+In-Reply-To: <1379951159-8294-1-git-send-email-u.kleine-koenig@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, kernel@pengutronix.de, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 24 Sep 2013 11:51:27 +0100
-Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org> wrote:
-
-> On Tue, Sep 24, 2013 at 12:41:22PM +0200, Jean-Francois Moine wrote:
-> > This patch adds S/PDIF input/output for mvebu DT boards.
-> >=20
-> > Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
->=20
-> Right, so if this goes in, then we're completely fucked for doing thi=
-s
-> the way that Mark apparantly wants it to be done, because once these
-> DT properties go in, they're there to stay.
-
-Indeed!
-
-The DT properties I propose just reflect the hardware connections of
-the board. There are only i2s-out and spdif-out in the Cubox, while
-there may be kirkwood boards with, say, only spdif-in and spdif-out.
-
-These definitions do not interfere with your DPCM problem: you assume
-i2s-out and spdif-out for the i2s1 dove device, and that is what I
-assume too, but from the DT. Then, the driver does not need to know the
-type of the audio device (Kirkwood or Dove), nor to know if it is the
-first or the second i2s device of the Dove chip.
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+VGhlcmUgaXMgbm8gbmVlZCB0byBub3QgdXNlIGV4dGNsayBpZiBpdCBpcyBpZGVudGljYWwgdG8g
+dGhlIG1haW4gY2xrLgpUaGUgbWFpbiBtb3RpdmF0aW9uIGZvciB0aGlzIHBhdGNoIGlzIGRyb3Bw
+aW5nIGRldm1fY2xrX3B1dCB3aGljaCBpcwp1c2VkIGluIGEgd3Jvbmcgd2F5IGJ5IGFsbCBvdGhl
+ciB1c2Vycy4KCldoaWxlIGF0IGl0IGFsc28gZXh0ZW5kIHRoZSBjb21tZW50cy4KClNpZ25lZC1v
+ZmYtYnk6IFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9uaXguZGU+
+Ci0tLQpIZWxsbywKCnRoZXJlIG1pZ2h0IGJlIHNvbWUgZnVydGhlciBvcHRpbWlzYXRpb25zIHBv
+c3NpYmxlLiBJIG9ubHkgbm90ZSB0aGVtCmhlcmUgYmVjYXVzZSBJIGRvbid0IGhhdmUgdGhlIGhh
+cmR3YXJlIHRvIHRlc3Q6CgogLSBvbmx5IGVuYWJsZSBleHRjbGsgaWYgaXQgYSBjbG9jayByYXRl
+IHVzZWQgdGhhdCBtYWtlcyB1c2Ugb2YgdGhlCiAgIGV4dGVybmFsIGNsb2NrLiBOb3Qgc3VyZSBp
+ZiB0aGF0IHdvcmtzOyBoYXJkd2FyZSBkb2NzIHJlYWRpbmcKICAgbmVjZXNzYXJ5LgogLSBvbmx5
+IHByb3ZpZGUgZXh0Y2xrIGlmIGl0J3MgIT0gdGhlIGludGVybmFsIGNsb2NrLgogLSBUaGUgY29k
+ZSB1c2VzOgoKCXByaXYtPmNsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCBucCA/ICJpbnRl
+cm5hbCIgOiBOVUxMKTsKCiAgIGkuZS4gcHJvdmlkZXMgYSBjb25faWQgaW4gdGhlIGR0LWNhc2Uu
+IEkgdGhpbmsgdGhhdCB1c2luZyBOVUxMCiAgIHVuY29uZGl0aW9uYWxseSBzaG91bGQgYWxzbyB3
+b3JrLCBpLmUuIHJldHVybiB0aGUgZmlyc3QgY2xrCiAgIGFzc29jaWF0ZWQgdG8gdGhlIGRldmlj
+ZS4gT1RPSCB0aGUgY3VycmVudCBjb2RlIG1pZ2h0IG1ha2UgdGhpbmdzCiAgIGNsZWFyZXIgYmVj
+YXVzZSBpdCdzIG1vcmUgZXhwbGljaXQuCgpCZXN0IHJlZ2FyZHMKVXdlCi0tLQogc291bmQvc29j
+L2tpcmt3b29kL2tpcmt3b29kLWkycy5jIHwgMjQgKysrKysrKysrKysrKysrLS0tLS0tLS0tCiAx
+IGZpbGUgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkKCmRpZmYgLS1n
+aXQgYS9zb3VuZC9zb2Mva2lya3dvb2Qva2lya3dvb2QtaTJzLmMgYi9zb3VuZC9zb2Mva2lya3dv
+b2Qva2lya3dvb2QtaTJzLmMKaW5kZXggMGYzZDczZC4uODIyNGY5MyAxMDA2NDQKLS0tIGEvc291
+bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5jCisrKyBiL3NvdW5kL3NvYy9raXJrd29vZC9r
+aXJrd29vZC1pMnMuYwpAQCAtMTA0LDE2ICsxMDQsMjUgQEAgc3RhdGljIHZvaWQga2lya3dvb2Rf
+c2V0X3JhdGUoc3RydWN0IHNuZF9zb2NfZGFpICpkYWksCiAJdWludDMyX3QgY2xrc19jdHJsOwog
+CiAJaWYgKHJhdGUgPT0gNDQxMDAgfHwgcmF0ZSA9PSA0ODAwMCB8fCByYXRlID09IDk2MDAwKSB7
+Ci0JCS8qIHVzZSBpbnRlcm5hbCBkY28gZm9yIHRoZSBzdXBwb3J0ZWQgcmF0ZXMKLQkJICogZGVm
+aW5lZCBpbiBraXJrd29vZF9pMnNfZGFpICovCisJCS8qCisJCSAqIHVzZSBpbnRlcm5hbCBkY28g
+Zm9yIHRoZSBzdXBwb3J0ZWQgcmF0ZXMKKwkJICogZGVmaW5lZCBpbiBraXJrd29vZF9pMnNfZGFp
+CisJCSAqIE5vdGU6IEZvciB0aGVzZSBzcGVjaWZpYyByYXRlcyB0aGUgZGNvIGlzIGFsc28gdXNl
+ZCBpZgorCQkgKiBraXJrd29vZF9pMnNfZGFpX2V4dGNsayBpcyBpbiB1c2UuCisJCSAqLwogCQlk
+ZXZfZGJnKGRhaS0+ZGV2LCAiJXM6IGRjbyBzZXQgcmF0ZSA9ICVsdVxuIiwKIAkJCV9fZnVuY19f
+LCByYXRlKTsKIAkJa2lya3dvb2Rfc2V0X2Rjbyhwcml2LT5pbywgcmF0ZSk7CiAKIAkJY2xrc19j
+dHJsID0gS0lSS1dPT0RfTUNMS19TT1VSQ0VfRENPOwogCX0gZWxzZSB7Ci0JCS8qIHVzZSB0aGUg
+ZXh0ZXJuYWwgY2xvY2sgZm9yIHRoZSBvdGhlciByYXRlcwotCQkgKiBkZWZpbmVkIGluIGtpcmt3
+b29kX2kyc19kYWlfZXh0Y2xrICovCisJCS8qCisJCSAqIHVzZSB0aGUgZXh0ZXJuYWwgY2xvY2sg
+Zm9yIHRoZSBvdGhlciByYXRlcworCQkgKiBkZWZpbmVkIGluIGtpcmt3b29kX2kyc19kYWlfZXh0
+Y2xrCisJCSAqIFRoaXMgY2FzZSBpc24ndCByZWFjaGVkIGlmIGtpcmt3b29kX2kyc19kYWkgaXMg
+aW4gdXNlIChhbmQgc28KKwkJICogZXh0Y2xrIGlzbid0IHZhbGlkKSBiZWNhdXNlIGl0IG9ubHkg
+c3VwcG9ydHMgdGhlIHRocmVlIHJhdGVzCisJCSAqIGFib3ZlLgorCQkgKi8KIAkJZGV2X2RiZyhk
+YWktPmRldiwgIiVzOiBleHRjbGsgc2V0IHJhdGUgPSAlbHUgLT4gJWx1XG4iLAogCQkJX19mdW5j
+X18sIHJhdGUsIDI1NiAqIHJhdGUpOwogCQljbGtfc2V0X3JhdGUocHJpdi0+ZXh0Y2xrLCAyNTYg
+KiByYXRlKTsKQEAgLTQ5NywxMiArNTA2LDkgQEAgc3RhdGljIGludCBraXJrd29vZF9pMnNfZGV2
+X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAKIAlwcml2LT5leHRjbGsgPSBk
+ZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgImV4dGNsayIpOwogCWlmICghSVNfRVJSKHByaXYtPmV4
+dGNsaykpIHsKLQkJaWYgKHByaXYtPmV4dGNsayA9PSBwcml2LT5jbGspIHsKLQkJCWRldm1fY2xr
+X3B1dCgmcGRldi0+ZGV2LCBwcml2LT5leHRjbGspOwotCQkJcHJpdi0+ZXh0Y2xrID0gRVJSX1BU
+UigtRUlOVkFMKTsKLQkJfSBlbHNlIHsKKwkJY2xrX3ByZXBhcmVfZW5hYmxlKHByaXYtPmV4dGNs
+ayk7CisJCWlmIChwcml2LT5leHRjbGsgIT0gcHJpdi0+Y2xrKSB7CiAJCQlkZXZfaW5mbygmcGRl
+di0+ZGV2LCAiZm91bmQgZXh0ZXJuYWwgY2xvY2tcbiIpOwotCQkJY2xrX3ByZXBhcmVfZW5hYmxl
+KHByaXYtPmV4dGNsayk7CiAJCQlzb2NfZGFpID0gJmtpcmt3b29kX2kyc19kYWlfZXh0Y2xrOwog
+CQl9CiAJfQotLSAKMS44LjQucmMzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
