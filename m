@@ -1,16 +1,14 @@
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH] ASoC: kirkwood: simplify clock handling
-Date: Tue, 24 Sep 2013 20:12:35 +0200
-Message-ID: <1380046355-7920-1-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1379951159-8294-1-git-send-email-u.kleine-koenig@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/3] ASoC: tlv320aic23: Remove #defines for I2C
+Date: Tue, 24 Sep 2013 19:27:16 +0100
+Message-ID: <1380047238-16909-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B5619261A9D
- for <alsa-devel@alsa-project.org>; Tue, 24 Sep 2013 20:12:53 +0200 (CEST)
-In-Reply-To: <1379951159-8294-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B1F0261A2C
+ for <alsa-devel@alsa-project.org>; Tue, 24 Sep 2013 20:27:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +18,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, kernel@pengutronix.de, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlcmUgaXMgbm8gbmVlZCB0byBub3QgdXNlIGV4dGNsayBpZiBpdCBpcyBpZGVudGljYWwgdG8g
-dGhlIG1haW4gY2xrLgpUaGUgbWFpbiBtb3RpdmF0aW9uIGZvciB0aGlzIHBhdGNoIGlzIGRyb3Bw
-aW5nIGRldm1fY2xrX3B1dCB3aGljaCBpcwp1c2VkIGluIGEgd3Jvbmcgd2F5IGJ5IGFsbCBvdGhl
-ciB1c2Vycy4KCldoaWxlIGF0IGl0IGFsc28gZXh0ZW5kIHRoZSBjb21tZW50cy4KClNpZ25lZC1v
-ZmYtYnk6IFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9uaXguZGU+
-Ci0tLQpIZWxsbywKCnRoZXJlIG1pZ2h0IGJlIHNvbWUgZnVydGhlciBvcHRpbWlzYXRpb25zIHBv
-c3NpYmxlLiBJIG9ubHkgbm90ZSB0aGVtCmhlcmUgYmVjYXVzZSBJIGRvbid0IGhhdmUgdGhlIGhh
-cmR3YXJlIHRvIHRlc3Q6CgogLSBvbmx5IGVuYWJsZSBleHRjbGsgaWYgaXQgYSBjbG9jayByYXRl
-IHVzZWQgdGhhdCBtYWtlcyB1c2Ugb2YgdGhlCiAgIGV4dGVybmFsIGNsb2NrLiBOb3Qgc3VyZSBp
-ZiB0aGF0IHdvcmtzOyBoYXJkd2FyZSBkb2NzIHJlYWRpbmcKICAgbmVjZXNzYXJ5LgogLSBvbmx5
-IHByb3ZpZGUgZXh0Y2xrIGlmIGl0J3MgIT0gdGhlIGludGVybmFsIGNsb2NrLgogLSBUaGUgY29k
-ZSB1c2VzOgoKCXByaXYtPmNsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCBucCA/ICJpbnRl
-cm5hbCIgOiBOVUxMKTsKCiAgIGkuZS4gcHJvdmlkZXMgYSBjb25faWQgaW4gdGhlIGR0LWNhc2Uu
-IEkgdGhpbmsgdGhhdCB1c2luZyBOVUxMCiAgIHVuY29uZGl0aW9uYWxseSBzaG91bGQgYWxzbyB3
-b3JrLCBpLmUuIHJldHVybiB0aGUgZmlyc3QgY2xrCiAgIGFzc29jaWF0ZWQgdG8gdGhlIGRldmlj
-ZS4gT1RPSCB0aGUgY3VycmVudCBjb2RlIG1pZ2h0IG1ha2UgdGhpbmdzCiAgIGNsZWFyZXIgYmVj
-YXVzZSBpdCdzIG1vcmUgZXhwbGljaXQuCgpCZXN0IHJlZ2FyZHMKVXdlCi0tLQogc291bmQvc29j
-L2tpcmt3b29kL2tpcmt3b29kLWkycy5jIHwgMjQgKysrKysrKysrKysrKysrLS0tLS0tLS0tCiAx
-IGZpbGUgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkKCmRpZmYgLS1n
-aXQgYS9zb3VuZC9zb2Mva2lya3dvb2Qva2lya3dvb2QtaTJzLmMgYi9zb3VuZC9zb2Mva2lya3dv
-b2Qva2lya3dvb2QtaTJzLmMKaW5kZXggMGYzZDczZC4uODIyNGY5MyAxMDA2NDQKLS0tIGEvc291
-bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5jCisrKyBiL3NvdW5kL3NvYy9raXJrd29vZC9r
-aXJrd29vZC1pMnMuYwpAQCAtMTA0LDE2ICsxMDQsMjUgQEAgc3RhdGljIHZvaWQga2lya3dvb2Rf
-c2V0X3JhdGUoc3RydWN0IHNuZF9zb2NfZGFpICpkYWksCiAJdWludDMyX3QgY2xrc19jdHJsOwog
-CiAJaWYgKHJhdGUgPT0gNDQxMDAgfHwgcmF0ZSA9PSA0ODAwMCB8fCByYXRlID09IDk2MDAwKSB7
-Ci0JCS8qIHVzZSBpbnRlcm5hbCBkY28gZm9yIHRoZSBzdXBwb3J0ZWQgcmF0ZXMKLQkJICogZGVm
-aW5lZCBpbiBraXJrd29vZF9pMnNfZGFpICovCisJCS8qCisJCSAqIHVzZSBpbnRlcm5hbCBkY28g
-Zm9yIHRoZSBzdXBwb3J0ZWQgcmF0ZXMKKwkJICogZGVmaW5lZCBpbiBraXJrd29vZF9pMnNfZGFp
-CisJCSAqIE5vdGU6IEZvciB0aGVzZSBzcGVjaWZpYyByYXRlcyB0aGUgZGNvIGlzIGFsc28gdXNl
-ZCBpZgorCQkgKiBraXJrd29vZF9pMnNfZGFpX2V4dGNsayBpcyBpbiB1c2UuCisJCSAqLwogCQlk
-ZXZfZGJnKGRhaS0+ZGV2LCAiJXM6IGRjbyBzZXQgcmF0ZSA9ICVsdVxuIiwKIAkJCV9fZnVuY19f
-LCByYXRlKTsKIAkJa2lya3dvb2Rfc2V0X2Rjbyhwcml2LT5pbywgcmF0ZSk7CiAKIAkJY2xrc19j
-dHJsID0gS0lSS1dPT0RfTUNMS19TT1VSQ0VfRENPOwogCX0gZWxzZSB7Ci0JCS8qIHVzZSB0aGUg
-ZXh0ZXJuYWwgY2xvY2sgZm9yIHRoZSBvdGhlciByYXRlcwotCQkgKiBkZWZpbmVkIGluIGtpcmt3
-b29kX2kyc19kYWlfZXh0Y2xrICovCisJCS8qCisJCSAqIHVzZSB0aGUgZXh0ZXJuYWwgY2xvY2sg
-Zm9yIHRoZSBvdGhlciByYXRlcworCQkgKiBkZWZpbmVkIGluIGtpcmt3b29kX2kyc19kYWlfZXh0
-Y2xrCisJCSAqIFRoaXMgY2FzZSBpc24ndCByZWFjaGVkIGlmIGtpcmt3b29kX2kyc19kYWkgaXMg
-aW4gdXNlIChhbmQgc28KKwkJICogZXh0Y2xrIGlzbid0IHZhbGlkKSBiZWNhdXNlIGl0IG9ubHkg
-c3VwcG9ydHMgdGhlIHRocmVlIHJhdGVzCisJCSAqIGFib3ZlLgorCQkgKi8KIAkJZGV2X2RiZyhk
-YWktPmRldiwgIiVzOiBleHRjbGsgc2V0IHJhdGUgPSAlbHUgLT4gJWx1XG4iLAogCQkJX19mdW5j
-X18sIHJhdGUsIDI1NiAqIHJhdGUpOwogCQljbGtfc2V0X3JhdGUocHJpdi0+ZXh0Y2xrLCAyNTYg
-KiByYXRlKTsKQEAgLTQ5NywxMiArNTA2LDkgQEAgc3RhdGljIGludCBraXJrd29vZF9pMnNfZGV2
-X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAKIAlwcml2LT5leHRjbGsgPSBk
-ZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgImV4dGNsayIpOwogCWlmICghSVNfRVJSKHByaXYtPmV4
-dGNsaykpIHsKLQkJaWYgKHByaXYtPmV4dGNsayA9PSBwcml2LT5jbGspIHsKLQkJCWRldm1fY2xr
-X3B1dCgmcGRldi0+ZGV2LCBwcml2LT5leHRjbGspOwotCQkJcHJpdi0+ZXh0Y2xrID0gRVJSX1BU
-UigtRUlOVkFMKTsKLQkJfSBlbHNlIHsKKwkJY2xrX3ByZXBhcmVfZW5hYmxlKHByaXYtPmV4dGNs
-ayk7CisJCWlmIChwcml2LT5leHRjbGsgIT0gcHJpdi0+Y2xrKSB7CiAJCQlkZXZfaW5mbygmcGRl
-di0+ZGV2LCAiZm91bmQgZXh0ZXJuYWwgY2xvY2tcbiIpOwotCQkJY2xrX3ByZXBhcmVfZW5hYmxl
-KHByaXYtPmV4dGNsayk7CiAJCQlzb2NfZGFpID0gJmtpcmt3b29kX2kyc19kYWlfZXh0Y2xrOwog
-CQl9CiAJfQotLSAKMS44LjQucmMzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+From: Mark Brown <broonie@linaro.org>
+
+The only control interface supported by this driver is I2C so there is no
+need for conditional compilation around the control interface.
+
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/tlv320aic23.c | 25 +------------------------
+ 1 file changed, 1 insertion(+), 24 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index 31762eb..3299459 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -613,7 +613,6 @@ static struct snd_soc_codec_driver soc_codec_dev_tlv320aic23 = {
+ 	.num_dapm_routes = ARRAY_SIZE(tlv320aic23_intercon),
+ };
+ 
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ /*
+  * If the i2c layer weren't so broken, we could pass this kind of data
+  * around
+@@ -660,29 +659,7 @@ static struct i2c_driver tlv320aic23_i2c_driver = {
+ 	.id_table = tlv320aic23_id,
+ };
+ 
+-#endif
+-
+-static int __init tlv320aic23_modinit(void)
+-{
+-	int ret;
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-	ret = i2c_add_driver(&tlv320aic23_i2c_driver);
+-	if (ret != 0) {
+-		printk(KERN_ERR "Failed to register TLV320AIC23 I2C driver: %d\n",
+-		       ret);
+-	}
+-#endif
+-	return ret;
+-}
+-module_init(tlv320aic23_modinit);
+-
+-static void __exit tlv320aic23_exit(void)
+-{
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-	i2c_del_driver(&tlv320aic23_i2c_driver);
+-#endif
+-}
+-module_exit(tlv320aic23_exit);
++module_i2c_driver(tlv320aic23_i2c_driver);
+ 
+ MODULE_DESCRIPTION("ASoC TLV320AIC23 codec driver");
+ MODULE_AUTHOR("Arun KS <arunks@mistralsolutions.com>");
+-- 
+1.8.4.rc3
