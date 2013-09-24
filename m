@@ -1,79 +1,82 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl: fsl_ssi: Fix simultaneous
-	capture and playback
-Date: Tue, 24 Sep 2013 11:00:28 +0100
-Message-ID: <20130924100028.GP21013@sirena.org.uk>
-References: <1379909305-23572-1-git-send-email-festevam@gmail.com>
+Subject: Re: [alsa-devel] "ASoC: ab8500: Convert register I/O to regmap"
+ breaks snowball
+Date: Tue, 24 Sep 2013 11:49:35 +0100
+Message-ID: <20130924104935.GB3226@sirena.org.uk>
+References: <20130924071718.GA12019@quad.lixom.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7617878826008134029=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2408C2619E7
- for <alsa-devel@alsa-project.org>; Tue, 24 Sep 2013 12:49:00 +0200 (CEST)
-In-Reply-To: <1379909305-23572-1-git-send-email-festevam@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, b42378@freescale.com
+Content-Type: multipart/mixed; boundary="===============5354425702160473029=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20130924071718.GA12019@quad.lixom.net>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Olof Johansson <olof@lixom.net>
+Cc: alsa-devel@alsa-project.org, lee.jones@linaro.org, linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7617878826008134029==
+--===============5354425702160473029==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dyeNwb3VXvZMW7tj"
+	protocol="application/pgp-signature"; boundary="0eh6TmSyL6TZE2Uz"
 Content-Disposition: inline
 
 
---dyeNwb3VXvZMW7tj
+--0eh6TmSyL6TZE2Uz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 23, 2013 at 01:08:25AM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
+On Tue, Sep 24, 2013 at 12:17:18AM -0700, Olof Johansson wrote:
+> Mark, Lee,
 >=20
-> When doing simultaneous capture and playback on a mx6 board we get the fo=
-llowing
-> error:
+> [I wasn't subscribed to alsa-devel when the patch was posted, so I'm
+> sending this as a standalone email instead of as a reply to that]
 
-Applied, thanks.
+Please, as previously requested, CC maintainers on things like this.
+This is important both for filtering and for subsystems with multiple
+maintainers like ASoC.
 
---dyeNwb3VXvZMW7tj
+--0eh6TmSyL6TZE2Uz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSQWK5AAoJELSic+t+oim91QAP/R09U0zN6dcKw3AAw8ZPyESz
-W34IQfFrT68uNbx3dyJG1DgS/PCIyybzT9cVysg1nLBJjliSSQcNKGM4GreAcCMY
-koWQvXk1/wLjv5YVaEoQgi2d9HYy8c8MWeY8vAlxveq/W9QJ7FwiC7YLDmO3jAxY
-qSdS2fNI/o/FmL8F8o2y3DBSQp1ySvZORjPLkhGMrcfYrsBr6lDyOrtJNTHI8/Kt
-cKomx+5BlYAftVGx02SiWIedyrMPQ1g0b8NtkHpHka/ibQrSRdYSaqzfbdwhzIMn
-Bw7UZKeFUYGpAeGB+Sl4imT9bHauMBt+iToP+Jfbp1tm2G3NOV+fgHJOOIno0l+1
-WDYIsAjyI6KCPjaPzCzERyVtfzv9FC8T3TB2A+ub3IUuDWKgexyvKvaWsg3Yg2Yu
-5Y3pTDOsz4Iz8mRjkMUImWDpgKOWmu698Cfy/9WK5qtzsF3Ont88j4ymZT74G+tc
-neGQDHEyQC+jnAVK0M1uSyhWVcdiclx89i8Wj4Pr7UIDzILhtgjkZeSN+fLmhzYn
-r0Au+RR238Btc4FbTjq1g+zCzp5VmUadPMnxlCqarfZw28gkBpm/j14MHrqmlR1L
-q5Zbl1acDmRlA9Y7p0UuEKSh6SXlFD1nO64hIQ2kFWRA3C6FIPvZ8RabLdSwDp40
-Dv8SCKlIbC1ADHUb1ePb
-=fNT4
+iQIcBAEBAgAGBQJSQW48AAoJELSic+t+oim9f1oP/ivOdpXbvVDQycpwPikBaiZJ
+g5ojlVbuMNE6413ofzljg7ebRKzVV2ckdEWbDS69mRA6zQ4PzkRz18byZvwHB0Et
+aqIq295ySfWesufcKzVn0X9mitNgP8WeeNiZC31QPkHBYLCUjPC1u8nOzELYgQm1
+qzBgrbpfVcjQVhZT+KOWXqEaDqeoxvIrY+DsDxPoMO/A7ZPq5aXInYfq9h0aVQo1
+/czMyUkTHdIUvid1FpVn5kqf35OgzLYK7RkWb7QNH+/ljKb2UySQhRTBppV1Tffz
+Gemea2EuXOJwE9FjRQg+FPokrswwT1LCVqUTMULD39SjEZaWM1fDc9Cu1ZD5XKyF
+e/gdFV64fGol4lHcsp5nBSd1yIk8SSG36VT+qETV04ST8tfn4YEw5l5Cgxn6K434
+VMW5HjydBMjYSvHIFHcDiAdJ5MV3Id7u1wEyO3UztdqxOH+eIxohN7c5fUUo4uc6
+h4rGlNJKsXA0T3yZIZJRGya46qT1v1GpjLnsBGQMcTZlvOHAEl15KTgTlplLhW+E
+LI3D4q6eAl5C9KV8GAfAD94xVEOS6FEUUmuw+ppnSeZ1pca7FiuJmrEMx2bwglz8
+B9he32OaPdAQ1bxdxcQI6trMFO+dQXwMjcaEDLL9tGlGSsUkQ136mfMTZaoKYiYx
+94+SdRkB3iD57ktQrB6t
+=x8T6
 -----END PGP SIGNATURE-----
 
---dyeNwb3VXvZMW7tj--
+--0eh6TmSyL6TZE2Uz--
 
---===============7617878826008134029==
+
+--===============5354425702160473029==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============7617878826008134029==--
+--===============5354425702160473029==--
