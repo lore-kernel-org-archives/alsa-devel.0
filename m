@@ -1,58 +1,74 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rsnd: remove rsnd_priv_read/write/bset()
-Date: Tue, 24 Sep 2013 19:53:56 +0100
-Message-ID: <20130924185356.GJ3226@sirena.org.uk>
-References: <87sixrre8r.wl%kuninori.morimoto.gx@renesas.com>
- <87mwnvsy7a.wl%kuninori.morimoto.gx@renesas.com>
- <87hae3sxt2.wl%kuninori.morimoto.gx@renesas.com>
- <20130917130402.GE21013@sirena.org.uk>
- <uioxzfuoi.wl%kuninori.morimoto.gx@renesas.com>
- <20130917133525.GG21013@sirena.org.uk>
- <87y56mrbqg.wl%kuninori.morimoto.gx@renesas.com>
- <87wqm6rbnn.wl%kuninori.morimoto.gx@renesas.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH] ASoC: kirkwood: simplify clock handling
+Date: Tue, 24 Sep 2013 21:04:42 +0200
+Message-ID: <20130924210442.6f617798@armhf>
+References: <1379951159-8294-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <1380046355-7920-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="F4+N/OgRSdC8YnqX"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87wqm6rbnn.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Simon <horms@verge.net.au>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp3-g21.free.fr (smtp3-g21.free.fr [212.27.42.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 99FFE261A2C
+ for <alsa-devel@alsa-project.org>; Tue, 24 Sep 2013 21:02:29 +0200 (CEST)
+In-Reply-To: <1380046355-7920-1-git-send-email-u.kleine-koenig@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
---F4+N/OgRSdC8YnqX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Sep 23, 2013 at 11:12:17PM -0700, Kuninori Morimoto wrote:
-> adg.c only used rsnd_priv_read/write/bset()
-> which is the only user of NULL mod.
-> but, it can be removed.
-
-Applied both, thanks.
-
---F4+N/OgRSdC8YnqX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSQd/AAAoJELSic+t+oim9Dl4P/j3TwQGGb0vm5Q8N0ThF6JqH
-PhmXclqk2YScw53eazMmTKHR1nvUY4nCDc/sOLgA01X7KArau23Y0RWMFFlsezjU
-Yyq7dFNB1uU8diPmxu3GGFDEH/Z3LfJhw0+j5bbdy3g3F4pww3+41gk6lEl4pAYD
-gxrtY8Bu7qeu6GhWmsWe9jsURzgBNF8fUlQ5A5GuoEIQOTjTRo2jiapFRE35XO65
-+6+JbW5aIWtabVWzIpdGFj3Ww7H+Fsdj04YspHuML/bsq4ERZp63WfrCP6bMuqLG
-iWm9iOWppgk2YRfvZJX9aPxpvkjoTKsDGjymCMRITCS47R+Ma6kjKg2CGQUOT3ir
-Mc04VEzNEK3hgVh/wL1ia0OIvcuMTPfKVkjGjs00mmuqeSPrgRNmAmLh+AO5ekpb
-U7fMHL1kEZSxHB5dEvkToq4bNGjy93ENysBV6DbR41pAOL93xzcBSwI1mSiV7ZDa
-GK+Y07ycU0SQhpgjIoVba8GncX09xDCtZRgtxMPrAv6tK07XgG2xkQcKV7qkrIAr
-FVOX4rY1Y9eGsFAva3DwmsflgPDdelspOTAn3qzm4/4RAw0YpUzCLycTEFoI/1Ng
-Ec6g6ZRJTlu6OO0bNXhjuJQ6g2tMFHGGDeSjIZ7WCldEz+giGJvvtzFo5NWK1PyT
-UXciaIUNYgp6/anGGMoz
-=F+Ef
------END PGP SIGNATURE-----
-
---F4+N/OgRSdC8YnqX--
+T24gVHVlLCAyNCBTZXAgMjAxMyAyMDoxMjozNSArMDIwMApVd2UgS2xlaW5lLUvDtm5pZyA8dS5r
+bGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRlPiB3cm90ZToKCj4gVGhlcmUgaXMgbm8gbmVlZCB0
+byBub3QgdXNlIGV4dGNsayBpZiBpdCBpcyBpZGVudGljYWwgdG8gdGhlIG1haW4gY2xrLgo+IFRo
+ZSBtYWluIG1vdGl2YXRpb24gZm9yIHRoaXMgcGF0Y2ggaXMgZHJvcHBpbmcgZGV2bV9jbGtfcHV0
+IHdoaWNoIGlzCj4gdXNlZCBpbiBhIHdyb25nIHdheSBieSBhbGwgb3RoZXIgdXNlcnMuCj4gCj4g
+V2hpbGUgYXQgaXQgYWxzbyBleHRlbmQgdGhlIGNvbW1lbnRzLgo+IAo+IFNpZ25lZC1vZmYtYnk6
+IFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9uaXguZGU+Cj4gLS0t
+Cj4gSGVsbG8sCj4gCj4gdGhlcmUgbWlnaHQgYmUgc29tZSBmdXJ0aGVyIG9wdGltaXNhdGlvbnMg
+cG9zc2libGUuIEkgb25seSBub3RlIHRoZW0KPiBoZXJlIGJlY2F1c2UgSSBkb24ndCBoYXZlIHRo
+ZSBoYXJkd2FyZSB0byB0ZXN0Ogo+IAo+ICAtIG9ubHkgZW5hYmxlIGV4dGNsayBpZiBpdCBhIGNs
+b2NrIHJhdGUgdXNlZCB0aGF0IG1ha2VzIHVzZSBvZiB0aGUKPiAgICBleHRlcm5hbCBjbG9jay4g
+Tm90IHN1cmUgaWYgdGhhdCB3b3JrczsgaGFyZHdhcmUgZG9jcyByZWFkaW5nCj4gICAgbmVjZXNz
+YXJ5Lgo+ICAtIG9ubHkgcHJvdmlkZSBleHRjbGsgaWYgaXQncyAhPSB0aGUgaW50ZXJuYWwgY2xv
+Y2suCj4gIC0gVGhlIGNvZGUgdXNlczoKPiAKPiAJcHJpdi0+Y2xrID0gZGV2bV9jbGtfZ2V0KCZw
+ZGV2LT5kZXYsIG5wID8gImludGVybmFsIiA6IE5VTEwpOwo+IAo+ICAgIGkuZS4gcHJvdmlkZXMg
+YSBjb25faWQgaW4gdGhlIGR0LWNhc2UuIEkgdGhpbmsgdGhhdCB1c2luZyBOVUxMCj4gICAgdW5j
+b25kaXRpb25hbGx5IHNob3VsZCBhbHNvIHdvcmssIGkuZS4gcmV0dXJuIHRoZSBmaXJzdCBjbGsK
+PiAgICBhc3NvY2lhdGVkIHRvIHRoZSBkZXZpY2UuIE9UT0ggdGhlIGN1cnJlbnQgY29kZSBtaWdo
+dCBtYWtlIHRoaW5ncwo+ICAgIGNsZWFyZXIgYmVjYXVzZSBpdCdzIG1vcmUgZXhwbGljaXQuCglb
+c25pcF0KClV3ZSwKClRoZSBjb2RlIGFyb3VuZCBsaW5lIDEwNCBpbiBraXJrd29vZC1pMnMuYyBp
+cyBub3Qgd2hhdCBpdCBzaG91bGQgYmUKKHRoZSBwYXRjaCBmcm9tIFJ1c3NlbGwgaXMgbG9zdCBz
+b21ld2hlcmUgaW4gdGhlIG1haWxpbmctbGlzdCkuCkluc3RlYWQgb2Y6CgoJaWYgKHJhdGUgPT0g
+NDQxMDAgfHwgcmF0ZSA9PSA0ODAwMCB8fCByYXRlID09IDk2MDAwKSB7CgkJLyogdXNlIGludGVy
+bmFsIGRjbyBmb3IgdGhlIHN1cHBvcnRlZCByYXRlcwoJCSAqIGRlZmluZWQgaW4ga2lya3dvb2Rf
+aTJzX2RhaSAqLwoKaXQgc2hvdWxkIGJlOgoKCWlmIChJU19FUlIocHJpdi0+ZXh0Y2xrKSkgewkv
+KiBubyBleHRlcm5hbCBjbG9jayAqLwoJCS8qIHVzZSBpbnRlcm5hbCBkY28gLSB0aGUgc3VwcG9y
+dGVkIHJhdGVzIGFyZQoJCSAqIGRlZmluZWQgaW4ga2lya3dvb2RfaTJzX2RhaSAqLwoKVGhhdCBp
+czogaWYgdGhlcmUgaXMgYW4gZXh0ZXJuYWwgY2xvY2ssIHVzZSBpdC4KCkluIGZhY3QsIHRoZSBp
+bnRlcm5hbCBkY28gaXMgdXNlZCBmb3IgdHdvIGF1ZGlvIGRldmljZXMuIFdoZW4gYm90aApkZXZp
+Y2VzIGFyZSB1c2VkIGF0IHRoZSBzYW1lIHRpbWUsIGF0IGxlYXN0IG9uZSBvZiB0aGVtIG11c3Qg
+YWx3YXlzIHVzZQphbiBleHRlcm5hbCBjbG9jaywgb3RoZXJ3aXNlLCB0aGVyZSBpcyBhIGNsb2Nr
+IHJhdGUgY29uZmxpY3QuCgpBcyBvbmx5IG9uZSBjbG9jayBpcyB1c2VkLCB0aGVyZSBpcyBubyBu
+ZWVkIHRvIGRlY2xhcmUgMiBjbG9ja3MgaW4gdGhlCkRULCBidXQgdGhlIGRyaXZlciBtdXN0IGtu
+b3cgaWYgaXQgdXNlcyB0aGUgaW50ZXJuYWwgb3IgZXh0ZXJuYWwgY2xvY2sKKHRvIHNldCB0aGUg
+cmlnaHQgY2xvY2sgaW5wdXQgYW5kIGFsc28gYmVjYXVzZSB0aGVpciByYXRlcyBhcmUgbm90IHNl
+dAp0aGUgc2FtZSB3YXkpCgpTbywgdGhlIHByb2JlIGNvZGUgc2hvdWxkIGJlOgoKCS8qIGNoZWNr
+IGZpcnN0IGlmIGFuIGV4dGVybmFsIGNsb2NrIGlzIGRlY2xhcmVkICovCglwcml2LT5leHRjbGsg
+PSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgImV4dGNsayIpOwoJaWYgKCFJU19FUlIocHJpdi0+
+ZXh0Y2xrKSkgewoJCS4uLiB1c2UgdGhlIGV4dGVybmFsIGNsb2NrIC4uLgoJfSBlbHNlIHsKCgkJ
+LyogZ2V0IHRoZSBmaXJzdCBjbG9jayB3aGljaCBtdXN0IGJlIHRoZSBkY28gKi8KCQlwcml2LT5j
+bGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgTlVMTCk7CgkJaWYgKElTX0VSUihwcml2LT5j
+bGspKQoJCQkuLiBlcnJvciwgbm8gY2xvY2sgLi4KCQkuLiB1c2UgdGhlIGludGVybmFsIGRjbyAu
+Li4KCX0KCi0tIApLZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0
+YXYhICoqCkplZgkJfAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
