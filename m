@@ -1,82 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] "ASoC: ab8500: Convert register I/O to regmap"
- breaks snowball
-Date: Tue, 24 Sep 2013 11:49:35 +0100
-Message-ID: <20130924104935.GB3226@sirena.org.uk>
-References: <20130924071718.GA12019@quad.lixom.net>
+Subject: Re: Audio Miniconference 2013 - Edinburgh 21st October
+Date: Tue, 24 Sep 2013 10:42:53 +0100
+Message-ID: <20130924094253.GO21013@sirena.org.uk>
+References: <20130813170933.GZ6427@sirena.org.uk>
+ <1379993061.2051.14.camel@katana>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5354425702160473029=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20130924071718.GA12019@quad.lixom.net>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Olof Johansson <olof@lixom.net>
-Cc: alsa-devel@alsa-project.org, lee.jones@linaro.org, linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============2045688479482771590=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 84A732619E9
+ for <alsa-devel@alsa-project.org>; Tue, 24 Sep 2013 12:49:00 +0200 (CEST)
+In-Reply-To: <1379993061.2051.14.camel@katana>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arun Raghavan <arun.raghavan@collabora.co.uk>
+Cc: Colin Guthrie <colin@guthr.ie>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>, Tanu Kaskinen <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5354425702160473029==
+--===============2045688479482771590==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0eh6TmSyL6TZE2Uz"
+	protocol="application/pgp-signature"; boundary="OvQTJYj2nBz/p38G"
 Content-Disposition: inline
 
 
---0eh6TmSyL6TZE2Uz
+--OvQTJYj2nBz/p38G
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 24, 2013 at 12:17:18AM -0700, Olof Johansson wrote:
-> Mark, Lee,
->=20
-> [I wasn't subscribed to alsa-devel when the patch was posted, so I'm
-> sending this as a standalone email instead of as a reply to that]
+On Tue, Sep 24, 2013 at 08:54:21AM +0530, Arun Raghavan wrote:
 
-Please, as previously requested, CC maintainers on things like this.
-This is important both for filtering and for subsystems with multiple
-maintainers like ASoC.
+> A bit late already, but do we know what conference(s) we need to be
+> registered for? LinuxCon/ELCE only, or is GstConf okay as well?
 
---0eh6TmSyL6TZE2Uz
+I think it should just be anything that week, someone else was asking so
+I'll check.
+
+--OvQTJYj2nBz/p38G
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSQW48AAoJELSic+t+oim9f1oP/ivOdpXbvVDQycpwPikBaiZJ
-g5ojlVbuMNE6413ofzljg7ebRKzVV2ckdEWbDS69mRA6zQ4PzkRz18byZvwHB0Et
-aqIq295ySfWesufcKzVn0X9mitNgP8WeeNiZC31QPkHBYLCUjPC1u8nOzELYgQm1
-qzBgrbpfVcjQVhZT+KOWXqEaDqeoxvIrY+DsDxPoMO/A7ZPq5aXInYfq9h0aVQo1
-/czMyUkTHdIUvid1FpVn5kqf35OgzLYK7RkWb7QNH+/ljKb2UySQhRTBppV1Tffz
-Gemea2EuXOJwE9FjRQg+FPokrswwT1LCVqUTMULD39SjEZaWM1fDc9Cu1ZD5XKyF
-e/gdFV64fGol4lHcsp5nBSd1yIk8SSG36VT+qETV04ST8tfn4YEw5l5Cgxn6K434
-VMW5HjydBMjYSvHIFHcDiAdJ5MV3Id7u1wEyO3UztdqxOH+eIxohN7c5fUUo4uc6
-h4rGlNJKsXA0T3yZIZJRGya46qT1v1GpjLnsBGQMcTZlvOHAEl15KTgTlplLhW+E
-LI3D4q6eAl5C9KV8GAfAD94xVEOS6FEUUmuw+ppnSeZ1pca7FiuJmrEMx2bwglz8
-B9he32OaPdAQ1bxdxcQI6trMFO+dQXwMjcaEDLL9tGlGSsUkQ136mfMTZaoKYiYx
-94+SdRkB3iD57ktQrB6t
-=x8T6
+iQIcBAEBAgAGBQJSQV6aAAoJELSic+t+oim9kx0P/R7HAPjOVRcz2u/47a/JXaaN
+J6DS4UjZ9W8NnTyDmyOL8+1wHTXLzMxUSXQfZjNJx47xvUNerW5sSI7+5GHJQ9dK
+7zW+ckCdLY0oj+sLagUrondlfmke92c5ys2v2p3e3bx2kfk/d0F+rwwYZN9bxmqt
+1gdR3n8oBYWUHCTht313gXzH1+7lraINaixMD7MBKFjXMu5fJrE8546VFk/Df40M
+MjfRxh8YBNdZGYyvh0Sw5r10pxJKXm6uQ2QyRDJhNissD9KAVuVVcoTzABLkvqm3
+ylFiUxsMi5EzwHcLnB1JwMi7jKDn22U1Sqyy3MrEfp9DCHo+T7+ilPxoJpUBel9W
+5Y+PEqLqF5GqsYA4wpVcfZa2aAE4PFOKMYn7IfgxMeeUJb/LvGWAN5E91661yTu/
+9ifLrFCL21iTa5zvc+KLJyXFibsVZDiqaJvi0/f7qMm7Zc7fSKbZ6FOjLesqYHHI
+5k6nPFLSmXUT9fJGk5BRRTAWT91ajKJDNDeO7Lnow4F3MLbx4Trv5ztdG6A8z4ZG
+LQzUNaz5m21tgv+/iUbA+zdW8pA3hSc5LEKYj/5NzrwJwcGrj2e41QZ5Hyjfcy4Q
+p1tA0TduChOcY07l/0D4kkq0L1+5XDaZ6pGyr0j5awum/Jf/lzQmkq7DxBg9awbo
+Vw0z4K6QAPuHHq9ijf+m
+=gTRP
 -----END PGP SIGNATURE-----
 
---0eh6TmSyL6TZE2Uz--
+--OvQTJYj2nBz/p38G--
 
-
---===============5354425702160473029==
+--===============2045688479482771590==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============5354425702160473029==--
+--===============2045688479482771590==--
