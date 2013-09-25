@@ -1,49 +1,48 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 2/3] mfd: mc13xxx: Move SPI erratum workaround into SPI
- I/O function
-Date: Wed, 25 Sep 2013 14:05:14 +0100
-Message-ID: <20130925130514.GK5132@lee--X1>
-References: <1379960073-23245-1-git-send-email-broonie@kernel.org>
- <1379960073-23245-2-git-send-email-broonie@kernel.org>
- <20130925111954.GG5132@lee--X1>
- <20130925113103.GN3226@sirena.org.uk>
- <20130925114643.GH5132@lee--X1>
- <20130925115502.GI5132@lee--X1>
- <20130925123536.GO3226@sirena.org.uk>
- <20130925125139.GJ5132@lee--X1>
- <20130925125538.GP3226@sirena.org.uk>
+From: =?ISO-8859-1?Q?st=E9phane_cerveau?= <scerveau@gmail.com>
+Subject: IMX WM8740 I2S support
+Date: Wed, 25 Sep 2013 15:08:02 +0200
+Message-ID: <5242E032.3060706@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20130925125538.GP3226@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linaro-kernel@lists.linaro.org
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+ [209.85.212.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75E0A265388
+ for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 15:08:09 +0200 (CEST)
+Received: by mail-wi0-f179.google.com with SMTP id hm2so5497324wib.0
+ for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 06:08:09 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 25 Sep 2013, Mark Brown wrote:
+Dear all,
 
-> On Wed, Sep 25, 2013 at 01:51:39PM +0100, Lee Jones wrote:
-> > On Wed, 25 Sep 2013, Mark Brown wrote:
-> > > On Wed, Sep 25, 2013 at 12:55:02PM +0100, Lee Jones wrote:
->=20
-> > > > https://git.linaro.org/gitweb?p=3Dpeople/ljones/mfd.git mfd-aso=
-c
->=20
-> > > Thanks, could you include the first patch as well please (there's=
- a
-> > > dependency for bisection due to the BUG_ONs)?=20
->=20
-> > Okay, done. Same branch.
->=20
-> Pulled, thanks.  That URI isn't directly pullable BTW.
+I'm currently working on supporting WM8740 device software configured =
 
-I know.
+with imx6q system.
+For now my driver seems to be configured correctly. The playback is =
 
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+launched but i get:
+  ALSA sound/core/pcm_lib.c:1822 playback write error (DMA or IRQ trouble?
+write error: Input/output error
+
+The imx ssi is not sending me any data on I2S bus( nothing can be seen =
+
+on the oscillo).
+
+I would like to know how do I have to configure my master clock in order =
+
+to launch the I2S. My master clock is for now 24MHz.
+Sorry to be confused a bit but i'm quite newbie with this device.
+Best regards.
+
+St=E9phane
