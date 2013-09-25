@@ -1,15 +1,18 @@
-From: Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [PATCH] ASoC: imx-sgtl5000: do not use devres on a
-	foreign device
-Date: Wed, 25 Sep 2013 12:16:08 +0200
-Message-ID: <1380104168-29678-1-git-send-email-p.zabel@pengutronix.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH v2] ALSA : hda - not use assigned
+ converters for all unused pins
+Date: Wed, 25 Sep 2013 12:45:04 +0200
+Message-ID: <5242BEB0.3020901@canonical.com>
+References: <1379810085-25931-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 56F02265338
- for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 12:16:17 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 733CF261AFE
+ for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 12:45:06 +0200 (CEST)
+In-Reply-To: <1379810085-25931-1-git-send-email-mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,81 +22,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Arnaud Patard <arnaud.patard@rtp-net.org>
+To: mengdong.lin@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Calling devm_clk_get with any device pointer other than our own confuses
-devres. Use clk_get instead. This avoids hitting the following warning in
-the imx-sgtl5000 error path:
+On 09/22/2013 02:34 AM, mengdong.lin@intel.com wrote:
+> From: Mengdong Lin <mengdong.lin@intel.com>
+> 
+> BIOS can mark a pin as "no physical connection" if the port is used by an
+> integrated display which is not audio capable. And audio driver will overlook
+> such pins.
+> 
+> On Haswell, such a disconneted pin will keep muted and connected to the 1st
+> converter by default. But if the 1st convertor is assigned to a connected pin
+> for audio streaming. The muted disconnected pin can make the connected pin
+> no sound output.
+> 
+> So this patch avoids using assigned converters for all unused pins for Haswell,
+> including the disconected pins.
+> 
+> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
-imx-sgtl5000 sound.12: snd_soc_register_card failed (-517)
-platform sound.12: Driver imx-sgtl5000 requests probe deferral
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 75 at drivers/base/dd.c:272 driver_probe_device+0x194/0x218()
-Modules linked in: snd_soc_sgtl5000(+) snd_soc_imx_sgtl5000 coda snd_soc_imx_audmux imx_sdma snd_soc_fsl_spdif snd_soc_fsl_ssi
-CPU: 0 PID: 75 Comm: udevd Not tainted 3.11.0-rc6+ #4682
-Backtrace:
-[<80010bc4>] (dump_backtrace+0x0/0x10c) from [<80010d60>] (show_stack+0x18/0x1c)
- r6:00000110 r5:00000009 r4:00000000 r3:00000000
-[<80010d48>] (show_stack+0x0/0x1c) from [<804f0764>] (dump_stack+0x20/0x28)
-[<804f0744>] (dump_stack+0x0/0x28) from [<8001a4a4>] (warn_slowpath_common+0x6c/0x8c)
-[<8001a438>] (warn_slowpath_common+0x0/0x8c) from [<8001a4e8>] (warn_slowpath_null+0x24/0x2c)
- r8:7f032000 r7:7f02f93c r6:cf8eaa54 r5:cf8eaa20 r4:80728a0c
-[<8001a4c4>] (warn_slowpath_null+0x0/0x2c) from [<80286bdc>] (driver_probe_device+0x194/0x218)
-[<80286a48>] (driver_probe_device+0x0/0x218) from [<80286cf4>] (__driver_attach+0x94/0x98)
- r7:00000000 r6:cf8eaa54 r5:7f02f93c r4:cf8eaa20
-[<80286c60>] (__driver_attach+0x0/0x98) from [<802851c8>] (bus_for_each_dev+0x5c/0x90)
- r6:80286c60 r5:7f02f93c r4:00000000 r3:cf8ef03c
-[<8028516c>] (bus_for_each_dev+0x0/0x90) from [<80286654>] (driver_attach+0x24/0x28)
- r6:806d0424 r5:cf16a580 r4:7f02f93c
-[<80286630>] (driver_attach+0x0/0x28) from [<802861e4>] (bus_add_driver+0xdc/0x234)
-[<80286108>] (bus_add_driver+0x0/0x234) from [<802871d4>] (driver_register+0x80/0x154)
- r8:7f032000 r7:00000001 r6:7f02fa68 r5:7f02fa74 r4:7f02f93c
-[<80287154>] (driver_register+0x0/0x154) from [<8033c278>] (i2c_register_driver+0x34/0xbc)
-[<8033c244>] (i2c_register_driver+0x0/0xbc) from [<7f032018>] (sgtl5000_i2c_driver_init+0x18/0x24 [snd_soc_sgtl5000])
- r5:7f02fa74 r4:cfb7ff48
-[<7f032000>] (sgtl5000_i2c_driver_init+0x0/0x24 [snd_soc_sgtl5000]) from [<80008738>] (do_one_initcall+0xf4/0x150)
-[<80008644>] (do_one_initcall+0x0/0x150) from [<80053f64>] (load_module+0x174c/0x1db4)
-[<80052818>] (load_module+0x0/0x1db4) from [<800546ac>] (SyS_init_module+0xe0/0xf4)
-[<800545cc>] (SyS_init_module+0x0/0xf4) from [<8000e540>] (ret_fast_syscall+0x0/0x30)
- r6:00005b22 r5:00afed68 r4:00000000
----[ end trace b24c5c3bb145dbdd ]---
+For the record, we have tested the previous version of this patch and
+confirmed it was working, and the changes here look good, so I'm all for
+applying it.
 
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
----
- sound/soc/fsl/imx-sgtl5000.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Reviewed-by: David Henningsson <david.henningsson@canonical.com>
 
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index 46c5b4f..52df7d5 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -128,7 +128,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 		goto fail;
- 	}
- 
--	data->codec_clk = devm_clk_get(&codec_dev->dev, NULL);
-+	data->codec_clk = clk_get(&codec_dev->dev, NULL);
- 	if (IS_ERR(data->codec_clk)) {
- 		ret = PTR_ERR(data->codec_clk);
- 		goto fail;
-@@ -172,6 +172,8 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 	return 0;
- 
- fail:
-+	if (!IS_ERR(data->codec_clk))
-+		clk_put(data->codec_clk);
- 	if (ssi_np)
- 		of_node_put(ssi_np);
- 	if (codec_np)
-@@ -185,6 +187,7 @@ static int imx_sgtl5000_remove(struct platform_device *pdev)
- 	struct imx_sgtl5000_data *data = platform_get_drvdata(pdev);
- 
- 	snd_soc_unregister_card(&data->card);
-+	clk_put(data->codec_clk);
- 
- 	return 0;
- }
+> 
+> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> index 3d8cd044..7ea0245 100644
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -1149,32 +1149,43 @@ static int hdmi_choose_cvt(struct hda_codec *codec,
+>  }
+>  
+>  static void haswell_config_cvts(struct hda_codec *codec,
+> -			int pin_id, int mux_id)
+> +			hda_nid_t pin_nid, int mux_idx)
+>  {
+>  	struct hdmi_spec *spec = codec->spec;
+> -	struct hdmi_spec_per_pin *per_pin;
+> -	int pin_idx, mux_idx;
+> -	int curr;
+> -	int err;
+> +	hda_nid_t nid, end_nid;
+> +	int cvt_idx, curr;
+> +	struct hdmi_spec_per_cvt *per_cvt;
+>  
+> -	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+> -		per_pin = get_pin(spec, pin_idx);
+> +	/* configure all pins, including "no physical connection" ones */
+> +	end_nid = codec->start_nid + codec->num_nodes;
+> +	for (nid = codec->start_nid; nid < end_nid; nid++) {
+> +		unsigned int wid_caps = get_wcaps(codec, nid);
+> +		unsigned int wid_type = get_wcaps_type(wid_caps);
+>  
+> -		if (pin_idx == pin_id)
+> +		if (wid_type != AC_WID_PIN)
+>  			continue;
+>  
+> -		curr = snd_hda_codec_read(codec, per_pin->pin_nid, 0,
+> +		if (nid == pin_nid)
+> +			continue;
+> +
+> +		curr = snd_hda_codec_read(codec, nid, 0,
+>  					  AC_VERB_GET_CONNECT_SEL, 0);
+> +		if (curr != mux_idx)
+> +			continue;
+>  
+> -		/* Choose another unused converter */
+> -		if (curr == mux_id) {
+> -			err = hdmi_choose_cvt(codec, pin_idx, NULL, &mux_idx);
+> -			if (err < 0)
+> -				return;
+> -			snd_printdd("HDMI: choose converter %d for pin %d\n", mux_idx, pin_idx);
+> -			snd_hda_codec_write_cache(codec, per_pin->pin_nid, 0,
+> +		/* choose an unassigned converter. The conveters in the
+> +		 * connection list are in the same order as in the codec.
+> +		 */
+> +		for (cvt_idx = 0; cvt_idx < spec->num_cvts; cvt_idx++) {
+> +			per_cvt = get_cvt(spec, cvt_idx);
+> +			if (!per_cvt->assigned) {
+> +				snd_printdd("choose cvt %d for pin nid %d\n",
+> +					cvt_idx, nid);
+> +				snd_hda_codec_write_cache(codec, nid, 0,
+>  					    AC_VERB_SET_CONNECT_SEL,
+> -					    mux_idx);
+> +					    cvt_idx);
+> +				break;
+> +			}
+>  		}
+>  	}
+>  }
+> @@ -1216,7 +1227,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+>  
+>  	/* configure unused pins to choose other converters */
+>  	if (is_haswell(codec))
+> -		haswell_config_cvts(codec, pin_idx, mux_idx);
+> +		haswell_config_cvts(codec, per_pin->pin_nid, mux_idx);
+>  
+>  	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
+>  
+> 
+
+
+
 -- 
-1.8.4.rc3
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
