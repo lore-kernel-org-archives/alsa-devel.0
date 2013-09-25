@@ -1,19 +1,20 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
+From: LANGLOIS Olivier PIS -EXT <olivier.pis.langlois@transport.alstom.com>
 Subject: Re: [RFC/RFT PATCH] ALSA: hda - hdmi: Add ATI/AMD
  multi-channel audio support
-Date: Wed, 25 Sep 2013 17:10:28 +0300
-Message-ID: <5242EED4.3040001@iki.fi>
+Date: Wed, 25 Sep 2013 15:17:22 +0000
+Message-ID: <89F8E4011FD7234ABFE48744E300CBC206B5C9FD@041-DB3MPN1-091.041d.mgd.msft.net>
 References: <1379872233-32210-1-git-send-email-anssi.hannula@iki.fi>
- <1380082956.1031.11.camel@Wailaba2>
+ <1380082956.1031.11.camel@Wailaba2> <5242EED4.3040001@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
- [83.102.40.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FDE6265522
- for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 16:10:39 +0200 (CEST)
-In-Reply-To: <1380082956.1031.11.camel@Wailaba2>
+Received: from as-smtp3.itc.alstom.com (as-smtp3.itc.alstom.com
+ [159.245.16.38])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EF7D265517
+ for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 17:17:39 +0200 (CEST)
+In-Reply-To: <5242EED4.3040001@iki.fi>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,116 +24,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Olivier Langlois <olivier@trillion01.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, =?UTF-8?B?UGV0ZXIgRg==?= =?UTF-8?B?csO8aGJlcmdlcg==?= <fritsch@xbmc.org>
+To: Anssi Hannula <anssi.hannula@iki.fi>, Olivier Langlois <olivier@trillion01.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, =?utf-8?B?UGV0ZXIgRnLDvGhiZXJnZXI=?= <fritsch@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
-MjUuMDkuMjAxMyAwNzoyMiwgT2xpdmllciBMYW5nbG9pcyBraXJqb2l0dGk6Cj4gSGksCgpIaSEK
-Cj4gVGhpcyBpcyBqdXN0IHRvIGxldCB5b3Uga25vdyB0aGF0IEkgaGF2ZSBhcHBsaWVkIHlvdXIg
-cGF0Y2ggb24gbXkgbGludXgKPiAzLjExIHNldHVwIGFuZAo+IAo+IHNwZWFrZXItdGVzdCAtRCBo
-ZG1pOkNBUkQ9R2VuZXJpYyxERVY9MCAtYzggLXIxOTIwMDAgLUYgUzE2X0xFCj4gCj4gZGlkIHdv
-cmsgYXMgZXhwZWN0ZWQgb24gbXkgNy4xIHJlY2VpdmVyIHdpdGg6Cj4gCj4gbGFubzExMDZAd2hp
-cHBldDIgL3Byb2MvYXNvdW5kL2NhcmQwIDooICQgY2F0IGNvZGVjIzAgCj4gQ29kZWM6IEFUSSBS
-Nnh4IEhETUkKPiBBZGRyZXNzOiAwCj4gQUZHIEZ1bmN0aW9uIElkOiAweDEgKHVuc29sIDApCj4g
-VmVuZG9yIElkOiAweDEwMDJhYTAxCj4gU3Vic3lzdGVtIElkOiAweDAwYWEwMTAwCj4gUmV2aXNp
-b24gSWQ6IDB4MTAwMzAwCj4gTm8gTW9kZW0gRnVuY3Rpb24gR3JvdXAgZm91bmQKPiBEZWZhdWx0
-IFBDTToKPiAgICAgcmF0ZXMgWzB4NzBdOiAzMjAwMCA0NDEwMCA0ODAwMAo+ICAgICBiaXRzIFsw
-eDJdOiAxNgo+ICAgICBmb3JtYXRzIFsweDVdOiBQQ00gQUMzCgpHcmVhdCB0byBoZWFyIHRoYXQs
-IHRoYW5rcy4gU28gUmV2aXNpb24gSWQgMysgd29ya3MgOikKCkkgZm9yZ290IHRvIGFzayBmb3Ig
-aXQgZXhwbGljaXRlbHksIGJ1dCBJIGd1ZXNzIHlvdSBjaGVja2VkIHRoYXQKY2hhbm5lbHMgc2Vl
-bWVkIHRvIG1hcHBlZCBjb3JyZWN0bHkgKGF0IGxlYXN0IGZvciBlYWNoIHNwZWFrZXIgeW91CmFj
-dHVhbGx5IGhhdmUpPwoKQWxzbywgY291bGQgeW91IHBhc3RlIHRoZSB3aG9sZSAvcHJvYy9hc291
-bmQvY2FyZDAvY29kZWMjMCwgZm9yIHRoZSByZWNvcmQ/Cgo+IEZyb20gZG1lc2c6Cj4gCj4gbGFu
-bzExMDZAd2hpcHBldDIgL2V0YyAkIGRtZXNnIHwgZ3JlcCBoZG1pClsuLi5dCj4gCj4gQ29ycmVj
-dCBtZSBpZiBJIGFtIHdyb25nIGJ1dCB0aGlzIGNvZGVjIHNob3VsZCBiZSBhYmxlIHRvIG91dHB1
-dCAyNCBiaXRzCj4gUENNLiBIb3cgb25lIGNvdWxkIGdvIHRvIHRlc3QgdGhhdD8KCkp1c3QgdXNl
-IC1GIFMzMl9MRSBmb3Igc3BlYWtlci10ZXN0LgoKCldoeSBTMzIgYW5kIG5vdCBTMjQ/IFRoaXMg
-aXMgYmVjYXVzZSB0aGVyZSBhcmUgdGhyZWUgZm9ybWF0cyBmb3IgMjQtYml0CmF1ZGlvOgoKSWYg
-ZWFjaCBzYW1wbGUgaGFzIGV4YWN0bHkgMjQgYml0cyBhbmQgbmV4dCBzYW1wbGUgZm9sbG93cyBp
-bW1lZGlhdGVseSwKaXQgaXMgUzI0XzNMRSAoL0JFKS4KSWYgZWFjaCBzYW1wbGUgaGFzIGEgc3Bh
-Y2Ugb2YgMzIgYml0cyBidXQgb25seSAyNCBiaXRzIGFyZSB1c2VkLCB0aGVyZQphcmUgdHdvIHdh
-eXMgdG8gcGxhY2UgdGhvc2UgMjQgYml0cyB0byAzMiBiaXRzLiBFaXRoZXIgdGhlIG1vc3QKc2ln
-bmlmaWNhbnQgMjQgYml0cyBhcmUgdXNlZCwgb3IgdGhlIGxlYXN0IHNpZ25pZmljYW50IDI0IGJp
-dHMgYXJlIHVzZWQuCgpJZiB0aGUgbW9zdCBzaWduaWZpY2FudCBiaXRzIGFyZSB1c2VkIChhbmQg
-OCBsZWFzdCBzaWduaWZpY2FudCBiaXRzIG5vdAp1c2VkKSwgdGhlIGZvcm1hdCBpcyBhY3R1YWxs
-eSBleGFjdGx5IHRoZSBzYW1lIGFzIDMyIGJpdCAoZXhjZXB0IHRoYXQKdGhlIGxlYXN0IHNpZ25p
-ZmljYW50IGJpdHMgYXJlIHNpbXBseSBpZ25vcmVkKSwgYW5kIGhlbmNlIHRoZSBmb3JtYXQgaXMK
-UzMyX0xFICgvQkUpLiBUaGUgb3RoZXIgZm9ybWF0IChsZWFzdCBzaWduaWZpY2FudCBiaXRzIHVz
-ZWQpIGlzIFMyNF9MRQooL0JFKS4KCgo+IEdvb2Qgd29yayBBbnNzaSEKPiAKPiBPbiBTdW4sIDIw
-MTMtMDktMjIgYXQgMjA6NTAgKzAzMDAsIEFuc3NpIEhhbm51bGEgd3JvdGU6Cj4+IFJlcXVlc3Qg
-Zm9yIGNvbW1lbnRzIGFuZCB0ZXN0aW5nLgo+Pgo+PiBBTUQganVzdCByZWxlYXNlZCB0aGUgZG9j
-dW1lbnRhdGlvbiBuZWVkZWQgZm9yIG11bHRpLWNoYW5uZWwgSERNSQo+PiBzdXBwb3J0LCBzbyBo
-ZXJlIGlzIHRoZSBpbml0aWFsIHBhdGNoIGFkZGluZyBzdWNoIHN1cHBvcnQuCj4+Cj4+IFRoaXMg
-aGFzIGJlZW4gdGVzdGVkIG9uIGNvZGVjIDB4MTAwMmFhMDEsIHJldmlzaW9uIDB4MTAwMjAwIHdp
-dGggdGhlCj4+IGV4Y2VwdGlvbiBvZiBjdXN0b20gY2hhbm5lbCBtYXBzLCB3aGljaCBJIGludGVu
-ZCB0byB0ZXN0IGxhdGVyLgo+Pgo+PiBJJ20gZXNwZWNpYWxseSBpbnRlcmVzdGVkIGluIHRlc3Rl
-cnMgd2l0aDoKPj4gLSBPbGRlciBjb2RlY3Mgb3RoZXIgdGhhbiAweDEwMDJhYTAxLiBNeSBiZXN0
-IGd1ZXNzIGlzIHRoYXQgdGhlIG5ldyBjb2RlCj4+ICAgc2hvdWxkIHdvcmsgb24gdGhlbSBhcyB3
-ZWxsLCBidXQgSSdtIG5vdCByZWFsbHkgMTAwJSBzdXJlLgo+PiAtIENvZGVjIDB4MTAwMmFhMDEg
-cmV2aXNpb25zIDB4MTAwMzAwIChSZXYgSUQgMykgb3IgbGF0ZXIgKHNlZQo+PiAgIC9wcm9jL2Fz
-b3VuZC9jYXJkWC9jb2RlYyNZKS4gVGhlc2Ugc3VwcG9ydCBpbmRpdmlkdWFsIGNoYW5uZWwKPj4g
-ICByZW1hcHBpbmcgYW5kIHRoYXQgY29kZSBpcyBlbnRpcmVseSB1bnRlc3RlZCAoZXZlbiBmb3Ig
-cmVndWxhcgo+PiAgIDUuMS83LjEpLgo+Pgo+PiBJIGRlY2lkZWQgaXQgd2FzIGJlc3QgdG8gZ2V0
-IHRoaXMgb3V0IHRoZXJlIGVhcmx5IGV2ZW4gdGhvdWdoIG1ham9yCj4+IHBhcnRzIG9mIGl0IGFy
-ZSBzdGlsbCB1bnRlc3RlZCwgZm9yIGNvbW1lbnRzIGFuZCBmb3Igb3RoZXIgcGVvcGxlIHRvCj4+
-IHRlc3QgOikKPj4KPj4gTm90ZSB0aGF0IHRoaXMgcmVjZW50IGNvbW1pdCBpcyBwcm9iYWJseSBy
-ZXF1aXJlZCBmb3IgbXVsdGktY2hhbm5lbCB0bwo+PiB3b3JrIHdpdGggdGhlIG9wZW4tc291cmNl
-IHJhZGVvbiBkcml2ZXI6Cj4+IEFMU0E6IGhkYSAtIGhkbWk6IEZhbGxiYWNrIHRvIEFMU0EgYWxs
-b2NhdGlvbiB3aGVuIHNlbGVjdGluZyBDQQo+PiBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQv
-bGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0L3NvdW5kL3BjaS9oZGEv
-cGF0Y2hfaGRtaS5jP2lkPTE4ZTM5MTg2MmNjZWFmNDNkZGI4ZWI1Y2NhMDVlMWE4M2FiZGViYWEK
-Pj4KPj4gRWFzaWVzdCB3YXkgdG8gdGVzdCBiYXNpYyBtdWx0aWNoYW5uZWwgaXMgYnkgc3BlYWtl
-ci10ZXN0LCBlLmcuCj4+IHNwZWFrZXItdGVzdCAtRCBoZG1pOkNBUkQ9R2VuZXJpYyxERVY9MCAt
-YzggLXIxOTIwMDAgLUYgUzE2X0xFCj4+IGZvciA3LjEgMTYtYml0IDE5MmtIego+Pgo+Pgo+PiBE
-ZXRhaWxlZCBkaXNjdXNzaW9uIGJlbG93Ogo+Pgo+PiBBVEkvQU1EIGNvZGVjcyBkbyBub3Qgc3Vw
-cG9ydCBhbGwgdGhlIHN0YW5kYXJkIEhEQSBIRE1JL0RQIGZ1bmN0aW9ucy4gSW4KPj4gcGFydGlj
-dWxhciwgdGhlc2UgYXJlIG1pc3Npbmc6Cj4+IC0gRUxEIHN1cHBvcnQKPj4gLSBzdGFuZGFyZCBj
-aGFubmVsIG1hcHBpbmcgc3VwcG9ydAo+PiAtIHN0YW5kYXJkIGluZm9mcmFtZSBjb25maWd1cmF0
-aW9uIHN1cHBvcnQKPj4KPj4gSW4gcGxhY2Ugb2YgdGhlbSwgY3VzdG9tIEhEQSBwaW4gdmVyYnMg
-YXJlIGluY2x1ZGVkLCB0aGF0IGFsbG93Ogo+PiAtIGdldHRpbmcgc3BlYWtlciBtYXNrIGZyb20g
-RURJRAo+PiAtIGdldHRpbmcgU0FEcyBmcm9tIEVESUQKPj4gLSBnZXR0aW5nIGNvbm5lY3Rpb24g
-dHlwZSBmcm9tIEVESUQgKEhETUksIERpc3BsYXlQb3J0KQo+PiAtIHNldHRpbmcgQ0EgZm9yIGlu
-Zm9mcmFtZQo+PiAtIHNldHRpbmcgZG93bi1taXggaW5mb3JtYXRpb24gZm9yIGluZm9mcmFtZQo+
-PiAtIGNoYW5uZWwgcGFpciByZW1hcHBpbmcKPj4gLSBpbmRpdmlkdWFsIGNoYW5uZWwgcmVtYXBw
-aW5nIChyZXZpc2lvbiBJRCAzKykKPj4KPj4gVGhlIGRvY3VtZW50YXRpb24gZm9yIHRoZSB2ZXJi
-cyBoYXMgbm93IGJlZW4gcmVsZWFzZWQgYnkgQU1EOgo+PiBodHRwOi8vd3d3Lngub3JnL2RvY3Mv
-QU1EL0FNRF9IREFfdmVyYnMucGRmCj4+Cj4+IEFsc28sIGNvbnZlcnRlZCBub2RlcyBkbyBub3Qg
-aGF2ZSBhbGwgdGhlaXIgc3VwcG9ydGVkIHJhdGVzLCBmb3JtYXRzIGFuZAo+PiBjaGFubmVsIGNv
-dW50cyBsaXN0ZWQuCj4+Cj4+IEFkZCBzdXBwb3J0IGZvciB0aGUgQVRJL0FNRCBzcGVjaWZpYyB2
-ZXJicyBhbmQgdXNlIHRoZW0gaW5zdGVhZCBvZiB0aGUKPj4gZ2VuZXJpYyBtZXRob2RzIG9uIEFU
-SS9BTUQgY29kZWNzLiBUaGlzIGFsbG93cyBtdWx0aS1jaGFubmVsIGF1ZGlvIHRvCj4+IHdvcmsu
-Cj4+IElzIHRoZSB3YXkgaXQgaXMgZG9uZSBPSywgb3Igc2hvdWxkIHNvbWV0aGluZyBtb3JlIGdl
-bmVyaWMgYmUgcHV0IGludG8KPj4gcGxhY2UgKGN1c3RvbSBjYWxsYmFja3MgYW5kL29yIGZsYWdz
-IGluIHN0cnVjdCBoZG1pX3NwZWMgbWF5YmUpPwo+Pgo+PiBPbiB0aGUgb2xkZXIgQVRJL0FNRCBj
-b2RlY3MgdGhhdCBkbyBub3Qgc3VwcG9ydCBpbmRpdmlkdWFsIHJlbWFwcGluZywKPj4gY2hhbm5l
-bCByZW1hcHBpbmcgaXMgcmVzdHJpY3RlZCB0byBwYWlyIHJlbWFwcGluZy4gVGhpcyBkb2VzIG5v
-dCBhZmZlY3QKPj4gdGhlIHN0YW5kYXJkIG11bHRpLWNoYW5uZWwgY29uZmlndXJhdGlvbnMuCj4+
-Cj4+IFNpbmNlIHRoZXJlIGlzIG5vIEVMRCBzdXBwb3J0ICh1bmxlc3Mgb3V0LW9mLWJhbmQgY29t
-bXVuaWNhdGlvbiB3aXRoIHRoZQo+PiBncmFwaGljcyBkcml2ZXIgaXMgYWRkZWQgc28gdGhhdCB0
-aGV5IGNhbiBwcm92aWRlIGl0IHRvIHVzIGRpcmVjdGx5KSwKPj4gRUxEIGlzIGN1cnJlbnRseSBl
-bXVsYXRlZCB3aXRoIG9ubHkgdGhlIGJhc2ljIGluZm9ybWF0aW9uIHBvcHVsYXRlZAo+PiAoc3Bl
-YWtlciBtYXNrLCBTQURzLCBjb25uZWN0aW9uIHR5cGUpLiBUaGVyZSBhcmUgc29tZSBiaXRzIG1p
-c3Npbmcgb24KPj4gdGhlIHJhZGVvbiBkcml2ZXIgc2lkZSAodGhlIFNBRHMgZXRjIGFyZSBub3Qg
-cG9wdWxhdGVkKSBzbyBjdXJyZW50bHkKPj4gdGhlIEVMRCBlbXVsYXRpb24gb25seSB3b3JrcyBv
-biBmZ2xyeC4gRUxEIGVtdWxhdGlvbiBpcyBub3QgbmVlZGVkIGZvcgo+PiBtdWx0aS1jaGFubmVs
-IHBsYXliYWNrLgo+Pgo+PiBSYWZhxYIsIGFyZSB5b3UgaW50ZXJlc3RlZCBpbiBpbXBsZW1lbnRp
-bmcgdGhlIG1pc3NpbmcgYml0cyBpbiB0aGUgcmFkZW9uCj4+IGRyaXZlciwgYXMgSSBzZWUgeW91
-IGhhdmUgbG9va2VkIGludG8gdGhpcyBiZWZvcmU/Cj4+Cj4+IFRoZSBFTEQgZW11bGF0aW9uIHdh
-cyBxdWl0ZSBxdWlja2x5IGhhY2tlZCB0b2dldGhlciBhbmQgaGFzbid0IGJlZW4KPj4gY2xlYW5l
-ZCB1cCB5ZXQsIHNpbmNlIEknbSBub3Qgc3VyZSBob3cgd2Ugd2FudCB0byB1bHRpbWF0ZWx5IGhh
-bmRsZQo+PiB0aGlzLiBJcyBFTEQgZW11bGF0aW9uIHRoZSB3YXkgdG8gZ28/IElmIHNvLCB3aGVy
-ZSBkb2VzIHRoZSBjb2RlIGJlbG9uZwo+PiAodGhlIEFUSSBzcGVjaWZpYyBjb2RlIGlzIGluIHBh
-dGNoX2hkbWkuYywgYnV0IHRoZSBFTEQgcGFyc2luZy9kZWZpbmVzCj4+IGV0YyBhcmUgaW4gaGRh
-X2VsZC5jKT8KPj4KPj4gQ29kZWMgMHgxMDAyYWEwMSBpcyBzd2l0Y2hlZCBiYWNrIHRvIHBhdGNo
-X2F0aWhkbWkgdG8gc3VwcG9ydCB0aGUKPj4gQVRJL0FNRCBzcGVjaWZpYyBmZWF0dXJlcy4KPj4K
-Pj4gSEJSIG1vZGUgKG5lZWRlZCBmb3IgRFRTLUhEL1RydWVIRCBwYXNzdGhyb3VnaCkgaXMgbm90
-IHdvcmtpbmcgeWV0LCBhbmQKPj4gdGhlIHJlbGVhc2VkIGRvY3VtZW50YXRpb24gZG9lcyBub3Qg
-bWVudGlvbiBpdC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogQW5zc2kgSGFubnVsYSA8YW5zc2kuaGFu
-bnVsYUBpa2kuZmk+Cj4+IFRlc3RlZC1ieTogUGV0ZXIgRnLDvGhiZXJnZXIgPGZyaXRzY2hAeGJt
-Yy5vcmc+Cj4+IENjOiBSYWZhxYIgTWnFgmVja2kgPHphamVjNUBnbWFpbC5jb20+Cj4+IC0tLQo+
-PiAgc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgfCA0MTggKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKy0tLS0tCj4+ICAxIGZpbGUgY2hhbmdlZCwgMzc0IGluc2VydGlv
-bnMoKyksIDQ0IGRlbGV0aW9ucygtKQo+PgoKWy4uLl0KLS0gCkFuc3NpIEhhbm51bGEKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Anssi,
+
+>
+> Great to hear that, thanks. So Revision Id 3+ works :)
+>
+> I forgot to ask for it explicitely, but I guess you checked that channels
+> seemed to mapped correctly (at least for each speaker you actually have)?
+
+Absolutely. I haven't been explicit about it but I would have mention it if something was wrong in that regard. I have 8 speakers.
+
+I have used speaker-test to test stereo, 5.1 and 7.1 mapping and the mapping is perfect.
+
+One small detail that I have noticed is that there seem to be a small delay as I add more and more channels. With 8 channels, there might be up to 1 sec between the time speaker-test prints a channel name and the sound from previous chan stops and I start to hear noise from the new one.
+
+I have concluded that this may come from my receiver that seem to reinitialize itself during each channel switch but I'm not totally sure.
+>
+> Also, could you paste the whole /proc/asound/card0/codec#0, for the
+> record?
+
+I'll provide that info to you when I'm back home later. For now, from what I remember, as it is the first thing that I have checked after having reloaded the driver with the patch, there is nothing printed there that reflect the new multi channel capability of the codec. but maybe it is me that does not know what to look for.
+
+Also, if you want me to test functionality only available with my hardware revision, just prepare me small test cases. I'll be happy to run them. No chance that I run on 'advanced' features on my own as my ALSA usage is very simple.
+
+Greetings,
+Olivier
+
+
+________________________________
+CONFIDENTIALITY : This e-mail and any attachments are confidential and may be privileged. If you are not a named recipient, please notify the sender immediately and do not disclose the contents to another person, use it for any purpose or store or copy the information in any medium.
