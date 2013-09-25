@@ -1,25 +1,19 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 2/3] mfd: mc13xxx: Move SPI erratum
- workaround into SPI I/O function
-Date: Wed, 25 Sep 2013 12:55:02 +0100
-Message-ID: <20130925115502.GI5132@lee--X1>
-References: <1379960073-23245-1-git-send-email-broonie@kernel.org>
- <1379960073-23245-2-git-send-email-broonie@kernel.org>
- <20130925111954.GG5132@lee--X1>
- <20130925113103.GN3226@sirena.org.uk>
- <20130925114643.GH5132@lee--X1>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH] ASoC: imx-sgtl5000: do not use devres on a
+	foreign device
+Date: Wed, 25 Sep 2013 20:14:30 +0800
+Message-ID: <20130925121428.GA21081@S2101-09.ap.freescale.net>
+References: <1380104168-29678-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f169.google.com (mail-ea0-f169.google.com
- [209.85.215.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 59916265388
- for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 13:55:07 +0200 (CEST)
-Received: by mail-ea0-f169.google.com with SMTP id k11so3140022eaj.14
- for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 04:55:07 -0700 (PDT)
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe002.messaging.microsoft.com [207.46.163.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E6E6265388
+ for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 14:12:56 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20130925114643.GH5132@lee--X1>
+In-Reply-To: <1380104168-29678-1-git-send-email-p.zabel@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,21 +23,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Samuel Ortiz <sameo@linux.intel.com>, linux-kernel@vger.kernel.org
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Arnaud Patard <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAyNSBTZXAgMjAxMywgTGVlIEpvbmVzIHdyb3RlOgoKPiBPbiBXZWQsIDI1IFNlcCAy
-MDEzLCBNYXJrIEJyb3duIHdyb3RlOgo+IAo+ID4gT24gV2VkLCBTZXAgMjUsIDIwMTMgYXQgMTI6
-MTk6NTRQTSArMDEwMCwgTGVlIEpvbmVzIHdyb3RlOgo+ID4gCj4gPiA+IEkgYXNzdW1lIHRoaXMg
-aXMgb2theSB0byBnbyBpbiB2aWEgdGhlIE1GRCB0cmVlLgo+ID4gCj4gPiA+IEkndmUgYXBwbGll
-ZCBpdCB1bnRpbCB5b3Ugc2F5IG90aGVyd2lzZS4KPiA+IAo+ID4gQ2FuIHlvdSBwbGVhc2UgcHV0
-IGl0IG9uIGEgYnJhbmNoIEkgY2FuIHB1bGwgaW50byBBU29DIGluIGNhc2Ugd2UgbWFuYWdlCj4g
-PiB0byBnZXQgcmlkIG9mIGFsbCB0aGUgb3RoZXIgdXNlcnMgdGhpcyBjeWNsZT8KPiAKPiBZZXMs
-IEkgY2FuIGRvIHRoYXQuCgpodHRwczovL2dpdC5saW5hcm8ub3JnL2dpdHdlYj9wPXBlb3BsZS9s
-am9uZXMvbWZkLmdpdCBtZmQtYXNvYwoKLS0gCkxlZSBKb25lcwpMaW5hcm8gU1RNaWNyb2VsZWN0
-cm9uaWNzIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3
-YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9n
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Wed, Sep 25, 2013 at 12:16:08PM +0200, Philipp Zabel wrote:
+> Calling devm_clk_get with any device pointer other than our own confuses
+> devres. Use clk_get instead. This avoids hitting the following warning in
+> the imx-sgtl5000 error path:
+> 
+> imx-sgtl5000 sound.12: snd_soc_register_card failed (-517)
+> platform sound.12: Driver imx-sgtl5000 requests probe deferral
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 75 at drivers/base/dd.c:272 driver_probe_device+0x194/0x218()
+> Modules linked in: snd_soc_sgtl5000(+) snd_soc_imx_sgtl5000 coda snd_soc_imx_audmux imx_sdma snd_soc_fsl_spdif snd_soc_fsl_ssi
+> CPU: 0 PID: 75 Comm: udevd Not tainted 3.11.0-rc6+ #4682
+> Backtrace:
+> [<80010bc4>] (dump_backtrace+0x0/0x10c) from [<80010d60>] (show_stack+0x18/0x1c)
+>  r6:00000110 r5:00000009 r4:00000000 r3:00000000
+> [<80010d48>] (show_stack+0x0/0x1c) from [<804f0764>] (dump_stack+0x20/0x28)
+> [<804f0744>] (dump_stack+0x0/0x28) from [<8001a4a4>] (warn_slowpath_common+0x6c/0x8c)
+> [<8001a438>] (warn_slowpath_common+0x0/0x8c) from [<8001a4e8>] (warn_slowpath_null+0x24/0x2c)
+>  r8:7f032000 r7:7f02f93c r6:cf8eaa54 r5:cf8eaa20 r4:80728a0c
+> [<8001a4c4>] (warn_slowpath_null+0x0/0x2c) from [<80286bdc>] (driver_probe_device+0x194/0x218)
+> [<80286a48>] (driver_probe_device+0x0/0x218) from [<80286cf4>] (__driver_attach+0x94/0x98)
+>  r7:00000000 r6:cf8eaa54 r5:7f02f93c r4:cf8eaa20
+> [<80286c60>] (__driver_attach+0x0/0x98) from [<802851c8>] (bus_for_each_dev+0x5c/0x90)
+>  r6:80286c60 r5:7f02f93c r4:00000000 r3:cf8ef03c
+> [<8028516c>] (bus_for_each_dev+0x0/0x90) from [<80286654>] (driver_attach+0x24/0x28)
+>  r6:806d0424 r5:cf16a580 r4:7f02f93c
+> [<80286630>] (driver_attach+0x0/0x28) from [<802861e4>] (bus_add_driver+0xdc/0x234)
+> [<80286108>] (bus_add_driver+0x0/0x234) from [<802871d4>] (driver_register+0x80/0x154)
+>  r8:7f032000 r7:00000001 r6:7f02fa68 r5:7f02fa74 r4:7f02f93c
+> [<80287154>] (driver_register+0x0/0x154) from [<8033c278>] (i2c_register_driver+0x34/0xbc)
+> [<8033c244>] (i2c_register_driver+0x0/0xbc) from [<7f032018>] (sgtl5000_i2c_driver_init+0x18/0x24 [snd_soc_sgtl5000])
+>  r5:7f02fa74 r4:cfb7ff48
+> [<7f032000>] (sgtl5000_i2c_driver_init+0x0/0x24 [snd_soc_sgtl5000]) from [<80008738>] (do_one_initcall+0xf4/0x150)
+> [<80008644>] (do_one_initcall+0x0/0x150) from [<80053f64>] (load_module+0x174c/0x1db4)
+> [<80052818>] (load_module+0x0/0x1db4) from [<800546ac>] (SyS_init_module+0xe0/0xf4)
+> [<800545cc>] (SyS_init_module+0x0/0xf4) from [<8000e540>] (ret_fast_syscall+0x0/0x30)
+>  r6:00005b22 r5:00afed68 r4:00000000
+> ---[ end trace b24c5c3bb145dbdd ]---
+
+This is a known issue [1].  Thanks for fixing it.
+
+> 
+> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
+
+Shawn
+
+[1] http://thread.gmane.org/gmane.linux.alsa.devel/109093/focus=109101
+
+> ---
+>  sound/soc/fsl/imx-sgtl5000.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+> index 46c5b4f..52df7d5 100644
+> --- a/sound/soc/fsl/imx-sgtl5000.c
+> +++ b/sound/soc/fsl/imx-sgtl5000.c
+> @@ -128,7 +128,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+>  		goto fail;
+>  	}
+>  
+> -	data->codec_clk = devm_clk_get(&codec_dev->dev, NULL);
+> +	data->codec_clk = clk_get(&codec_dev->dev, NULL);
+>  	if (IS_ERR(data->codec_clk)) {
+>  		ret = PTR_ERR(data->codec_clk);
+>  		goto fail;
+> @@ -172,6 +172,8 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+>  	return 0;
+>  
+>  fail:
+> +	if (!IS_ERR(data->codec_clk))
+> +		clk_put(data->codec_clk);
+>  	if (ssi_np)
+>  		of_node_put(ssi_np);
+>  	if (codec_np)
+> @@ -185,6 +187,7 @@ static int imx_sgtl5000_remove(struct platform_device *pdev)
+>  	struct imx_sgtl5000_data *data = platform_get_drvdata(pdev);
+>  
+>  	snd_soc_unregister_card(&data->card);
+> +	clk_put(data->codec_clk);
+>  
+>  	return 0;
+>  }
+> -- 
+> 1.8.4.rc3
+> 
