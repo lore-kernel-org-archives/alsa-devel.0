@@ -1,15 +1,21 @@
-From: Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [PATCH] ASoC: fsl/imx-sgtl5000: Fix uninitialized
-	pointer use in error path
-Date: Wed, 25 Sep 2013 15:22:01 +0200
-Message-ID: <1380115321-32311-1-git-send-email-p.zabel@pengutronix.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: imx-sgtl5000: do not use devres on a
+ foreign device
+Date: Wed, 25 Sep 2013 10:23:05 -0300
+Message-ID: <CAOMZO5BJQAGRDXNFng1BJ1RWAsLMKwUapTivDQ4PM0ytd=mG-w@mail.gmail.com>
+References: <1380104168-29678-1-git-send-email-p.zabel@pengutronix.de>
+ <20130925121428.GA21081@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id C4A6C2654BA
- for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 15:22:03 +0200 (CEST)
+Received: from mail-vc0-f170.google.com (mail-vc0-f170.google.com
+ [209.85.220.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF1552654BA
+ for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 15:23:06 +0200 (CEST)
+Received: by mail-vc0-f170.google.com with SMTP id kw10so4383591vcb.15
+ for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 06:23:06 -0700 (PDT)
+In-Reply-To: <20130925121428.GA21081@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,43 +25,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Arnaud Patard <arnaud.patard@rtp-net.org>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Arnaud Patard <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch avoids to dereference the uninitialized data pointer if the
-error path is entered before devm_kzalloc is called (or if the allocation
-fails). It fixes the following warning:
+On Wed, Sep 25, 2013 at 9:14 AM, Shawn Guo <shawn.guo@linaro.org> wrote:
+>
+> This is a known issue [1].  Thanks for fixing it.
 
-    sound/soc/fsl/imx-sgtl5000.c: In function 'imx_sgtl5000_probe':
-    sound/soc/fsl/imx-sgtl5000.c:175:18: warning: 'data' may be used uninitialized in this function [-Wmaybe-uninitialized]
+Correct. I missed to fix it after Shawn reported it.
 
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
----
- sound/soc/fsl/imx-sgtl5000.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Regards,
 
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index c49e4cb..6f4bdc8 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -62,7 +62,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 	struct device_node *ssi_np, *codec_np;
- 	struct platform_device *ssi_pdev;
- 	struct i2c_client *codec_dev;
--	struct imx_sgtl5000_data *data;
-+	struct imx_sgtl5000_data *data = NULL;
- 	int int_port, ext_port;
- 	int ret;
- 
-@@ -172,7 +172,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 	return 0;
- 
- fail:
--	if (!IS_ERR(data->codec_clk))
-+	if (data && !IS_ERR(data->codec_clk))
- 		clk_put(data->codec_clk);
- 	if (ssi_np)
- 		of_node_put(ssi_np);
--- 
-1.8.4.rc3
+Fabio Estevam
