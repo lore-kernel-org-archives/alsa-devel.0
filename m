@@ -1,21 +1,20 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: imx-sgtl5000: do not use devres on a
- foreign device
-Date: Wed, 25 Sep 2013 10:23:56 -0300
-Message-ID: <CAOMZO5Dk9P8Y+eH4y3dtdXtoz9sH_41VKYjz-mNx1A4qjoVqtQ@mail.gmail.com>
-References: <1380104168-29678-1-git-send-email-p.zabel@pengutronix.de>
- <20130925121428.GA21081@S2101-09.ap.freescale.net>
+From: =?UTF-8?B?c3TDqXBoYW5lIGNlcnZlYXU=?= <scerveau@gmail.com>
+Subject: Re: IMX WM8740 I2S support
+Date: Wed, 25 Sep 2013 15:54:54 +0200
+Message-ID: <5242EB2E.4010107@gmail.com>
+References: <5242E032.3060706@gmail.com>
+ <CAOMZO5DL6R8TR0=mH4kYVuJQcWo6vBPWVDSP21NMMpgrtfTXeg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f170.google.com (mail-wi0-f170.google.com
- [209.85.212.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 799FA2654BA
- for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 15:23:57 +0200 (CEST)
-Received: by mail-wi0-f170.google.com with SMTP id cb5so5212694wib.5
- for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 06:23:57 -0700 (PDT)
-In-Reply-To: <20130925121428.GA21081@S2101-09.ap.freescale.net>
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+ [209.85.212.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id ACD902654CF
+ for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 15:54:58 +0200 (CEST)
+Received: by mail-wi0-f173.google.com with SMTP id hq15so5466444wib.12
+ for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 06:54:58 -0700 (PDT)
+In-Reply-To: <CAOMZO5DL6R8TR0=mH4kYVuJQcWo6vBPWVDSP21NMMpgrtfTXeg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,16 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Arnaud Patard <arnaud.patard@rtp-net.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 25, 2013 at 9:14 AM, Shawn Guo <shawn.guo@linaro.org> wrote:
->
-> This is a known issue [1].  Thanks for fixing it.
-
-Correct. I missed to fix it after Shawn reported it.
-
-Regards,
-
-Fabio Estevam
+VGh4IGZvciB5b3VyIGFuc3dlci4KSSBjaGVja2VkIGluIHRoZSBmb2xkZXIgbGludXgvZmlybXdh
+cmUvaW14L3NkbWEvIGFuZCB0aGVyZSBpcyB0aGVzZSBmaWxlczoKCjE5MjggU2VwIDE5IDExOjEz
+IHNkbWEtaW14MjUtdG8xLmJpbi5paGV4CjEwMzQwIFNlcCAxOSAxMToxMyBzZG1hLWlteDMxLXRv
+MS5iaW4uaWhleAoxMDM2OCBTZXAgMTkgMTE6MTMgc2RtYS1pbXgzMS10bzIuYmluLmloZXgKNTU0
+NCBTZXAgMTkgMTE6MTMgc2RtYS1pbXgzNS10bzEuYmluLmloZXgKNDgyNCBTZXAgMTkgMTE6MTMg
+c2RtYS1pbXgzNS10bzIuYmluLmloZXgKMTUzMiBTZXAgMTkgMTE6MTMgc2RtYS1pbXg1MC10bzEu
+YmluLmloZXgKMjI0OCBTZXAgMTkgMTE6MTMgc2RtYS1pbXg1MS10bzMuYmluLmloZXgKMzg4MCBT
+ZXAgMTkgMTE6MTMgc2RtYS1pbXg1My10bzEuYmluLmloZXgKMTgzOCBTZXAgMTkgMTE6MTcgc2Rt
+YS1pbXg2cS10bzEuYmluCjI4NjggU2VwIDE5IDExOjE3IHNkbWEtaW14NnEtdG8xLmJpbi5nZW4u
+bwoxNDgyIFNlcCAxOSAxMToxNyAuc2RtYS1pbXg2cS10bzEuYmluLmdlbi5vLmNtZAo1MTAgU2Vw
+IDE5IDExOjE3IHNkbWEtaW14NnEtdG8xLmJpbi5nZW4uUwo1MDY4IFNlcCAxOSAxMToxMyBzZG1h
+LWlteDZxLXRvMS5iaW4uaWhleAoKQXMgeW91IGNhbiBzZWUgdGhlIHNkbWEtaW14NnEtdG8xLmJp
+bi5nZW4ubyBpcyBjb3JyZWN0bHkgYnVpbHQuCkhvdyBjYW4gaSBjaGVjayB0aGF0IHRoZSBmaXJt
+d2FyZSBpcyBjb3JyZWN0bHkgbG9hZGVkPyBXaGF0IGlzIHRoZSAKcHVycG9zZSBvZiB0aGlzIGZp
+cm13YXJlIHNlZW4gdGhhdCB3bTg5NjIgaXMgd29ya2luZyBmaW5lIGluIApTTkRfU09DX0RBSUZN
+VF9EU1BfQi4KTXkgcG9pbnQgaXMgdXNpbmcgQVVEX01VWDQgd2l0aCBJMlMgcHJvdG9jb2wuCkJl
+c3QgcmVnYXJkcy4KClN0ZXBoYW5lCgoKT24gMDkvMjUvMjAxMyAwMzoxMiBQTSwgRmFiaW8gRXN0
+ZXZhbSB3cm90ZToKPiBPbiBXZWQsIFNlcCAyNSwgMjAxMyBhdCAxMDowOCBBTSwgc3TDqXBoYW5l
+IGNlcnZlYXUgPHNjZXJ2ZWF1QGdtYWlsLmNvbT4gd3JvdGU6Cj4+IERlYXIgYWxsLAo+Pgo+PiBJ
+J20gY3VycmVudGx5IHdvcmtpbmcgb24gc3VwcG9ydGluZyBXTTg3NDAgZGV2aWNlIHNvZnR3YXJl
+IGNvbmZpZ3VyZWQgd2l0aAo+PiBpbXg2cSBzeXN0ZW0uCj4+IEZvciBub3cgbXkgZHJpdmVyIHNl
+ZW1zIHRvIGJlIGNvbmZpZ3VyZWQgY29ycmVjdGx5LiBUaGUgcGxheWJhY2sgaXMgbGF1bmNoZWQK
+Pj4gYnV0IGkgZ2V0Ogo+PiAgIEFMU0Egc291bmQvY29yZS9wY21fbGliLmM6MTgyMiBwbGF5YmFj
+ayB3cml0ZSBlcnJvciAoRE1BIG9yIElSUSB0cm91YmxlPwo+PiB3cml0ZSBlcnJvcjogSW5wdXQv
+b3V0cHV0IGVycm9yCj4gVGhpcyBtYXkgaW5kaWNhdGUgdGhhdCB5b3UgYXJlIG1pc3NpbmcgdGhl
+IFNETUEgZmlybXdhcmUgZm9yIHRoZSBteDYuCj4gKGxpbnV4L2Zpcm13YXJlL3NkbWEvc2RtYS1p
+bXg2cS5iaW4pCj4KPiBTdGFydGluZyBvbiAzLjEyLXJjMSB5b3UgZG9uJ3QgbmVlZCB0aGUgU0RN
+QSBmaXJtd2FyZSBmb3IgYXVkaW8KPiBwbGF5YmFjayBhbnltb3JlLgo+Cj4gU28gSSB3b3VsZCBz
+dWdnZXN0IG9uZSBvZiB0aGUgYWJvdmUgbWV0aG9kcy4KPgo+IFJlZ2FyZHMsCj4KPiBGYWJpbyBF
+c3RldmFtCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
