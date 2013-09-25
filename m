@@ -1,20 +1,19 @@
-From: Meelis Roos <mroos@linux.ee>
-Subject: usb-audio mic problem with Polycom C100S
-Date: Wed, 25 Sep 2013 17:09:19 +0300 (EEST)
-Message-ID: <alpine.SOC.1.00.1309251653350.17530@math.ut.ee>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [RFC/RFT PATCH] ALSA: hda - hdmi: Add ATI/AMD
+ multi-channel audio support
+Date: Wed, 25 Sep 2013 17:10:28 +0300
+Message-ID: <5242EED4.3040001@iki.fi>
+References: <1379872233-32210-1-git-send-email-anssi.hannula@iki.fi>
+ <1380082956.1031.11.camel@Wailaba2>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2.it.da.ut.ee (smtp2.it.da.ut.ee [193.40.5.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 03BF42654CF
- for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 16:09:19 +0200 (CEST)
-Received: from math.ut.ee (math.ut.ee [193.40.36.2])
- by smtp2.it.da.ut.ee (Postfix) with ESMTP id 82B7073D5C4
- for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 17:09:19 +0300 (EEST)
-Received: from localhost (localhost [127.0.0.1])
- by math.ut.ee (Postfix) with ESMTP id 5EB4A427977
- for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 17:09:19 +0300 (EEST)
+Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
+ [83.102.40.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FDE6265522
+ for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2013 16:10:39 +0200 (CEST)
+In-Reply-To: <1380082956.1031.11.camel@Wailaba2>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,330 +23,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Olivier Langlois <olivier@trillion01.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, =?UTF-8?B?UGV0ZXIgRg==?= =?UTF-8?B?csO8aGJlcmdlcg==?= <fritsch@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
-I tried to use Skype (4.1) with Polycom Communicator C100S. Audio 
-output works fine but mic seems to be dead, although it is set to 
-capture and volume is even max. Dmesg tells the following two kinds of 
-"cannot get freq at ep ..." messages while trying to use it.
-
-Linux is 3.12-rc2 but I saw the same behaviour a couple releases ago 
-when I first tried it.
-
-I am not subscribed to alsa-devel, please CC in replies.
-
-dmesg
-
-[117273.437015] usb 1-1.2.3: new full-speed USB device number 9 using ehci-pci
-[117273.901033] usb 1-1.2.3: New USB device found, idVendor=095d, idProduct=0005
-[117273.901036] usb 1-1.2.3: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[117273.901037] usb 1-1.2.3: Product: Polycom Communicator
-[117273.901038] usb 1-1.2.3: Manufacturer: Polycom,Inc.
-[117273.901039] usb 1-1.2.3: SerialNumber: L80646021E21
-[117273.962134] hid-generic 0003:095D:0005.0005: hiddev0,hidraw3: USB HID v1.00 Device [Polycom,Inc. Polycom Communicator] on usb-0000:00:1a.0-1.2.3/input3
-[117273.974525] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117273.978540] ALSA sound/usb/clock.c:309 9:1:1: cannot get freq at ep 0x82
-[117274.019749] usbcore: registered new interface driver snd-usb-audio
-[117380.633919] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117380.636540] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117383.587846] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117383.619463] ALSA sound/usb/clock.c:309 9:1:1: cannot get freq at ep 0x82
-[117383.639484] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117383.671451] ALSA sound/usb/clock.c:309 9:1:1: cannot get freq at ep 0x82
-[117383.697219] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117383.699840] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117385.663752] ALSA sound/usb/clock.c:309 9:1:1: cannot get freq at ep 0x82
-[117385.666495] ALSA sound/usb/clock.c:309 9:1:1: cannot get freq at ep 0x82
-[117386.090400] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117386.122894] ALSA sound/usb/clock.c:309 9:1:1: cannot get freq at ep 0x82
-[117386.143015] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117386.174880] ALSA sound/usb/clock.c:309 9:1:1: cannot get freq at ep 0x82
-[117386.200626] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117386.203252] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117392.696024] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117392.698650] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117395.407411] ALSA sound/usb/clock.c:309 9:1:1: cannot get freq at ep 0x82
-[117395.410160] ALSA sound/usb/clock.c:309 9:1:1: cannot get freq at ep 0x82
-[117449.635703] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
-[117449.638451] ALSA sound/usb/clock.c:309 9:2:1: cannot get freq at ep 0x1
- 
-lsusb -v
-
-Bus 001 Device 008: ID 095d:0005 Polycom, Inc. 
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.10
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0 
-  bDeviceProtocol         0 
-  bMaxPacketSize0         8
-  idVendor           0x095d Polycom, Inc.
-  idProduct          0x0005 
-  bcdDevice            1.00
-  iManufacturer           1 
-  iProduct                2 
-  iSerial                 3 
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          231
-    bNumInterfaces          4
-    bConfigurationValue     1
-    iConfiguration          0 
-    bmAttributes         0x80
-      (Bus Powered)
-    MaxPower              500mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           83
-        bInCollection           2
-        baInterfaceNr( 0)       2
-        baInterfaceNr( 1)       1
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             1
-        wTerminalType      0x0201 Microphone
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0 
-        iTerminal               0 
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      6 (FEATURE_UNIT)
-        bUnitID                 2
-        bSourceID               1
-        bControlSize            1
-        bmaControls( 0)      0x03
-          Mute Control
-          Volume Control
-        bmaControls( 1)      0x00
-        bmaControls( 2)      0x00
-        iFeature                0 
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      4 (MIXER_UNIT)
-        bUnitID                 3
-        bNrInPins               1
-        baSourceID( 0)          2
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0 
-        bmControls         0x00
-        iMixer                  0 
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             4
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bSourceID               3
-        iTerminal               0 
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             5
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0 
-        iTerminal               0 
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      6 (FEATURE_UNIT)
-        bUnitID                 6
-        bSourceID               5
-        bControlSize            1
-        bmaControls( 0)      0x03
-          Mute Control
-          Volume Control
-        bmaControls( 1)      0x00
-        bmaControls( 2)      0x00
-        iFeature                0 
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             7
-        wTerminalType      0x0301 Speaker
-        bAssocTerminal          0
-        bSourceID               6
-        iTerminal               0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           4
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                11
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            1 Discrete
-        tSamFreq[ 0]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           13
-          Transfer Type            Isochronous
-          Synch Type               Synchronous
-          Usage Type               Data
-        wMaxPacketSize     0x00c0  1x 192 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           5
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                11
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            1 Discrete
-        tSamFreq[ 0]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes           13
-          Transfer Type            Isochronous
-          Synch Type               Synchronous
-          Usage Type               Data
-        wMaxPacketSize     0x00c0  1x 192 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         3 Human Interface Device
-      bInterfaceSubClass      0 No Subclass
-      bInterfaceProtocol      0 None
-      iInterface              0 
-        HID Device Descriptor:
-          bLength                 9
-          bDescriptorType        33
-          bcdHID               1.00
-          bCountryCode            0 Not supported
-          bNumDescriptors         1
-          bDescriptorType        34 Report
-          wDescriptorLength      52
-         Report Descriptors: 
-           ** UNAVAILABLE **
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0008  1x 8 bytes
-        bInterval              10
-
-
--- 
-Meelis Roos (mroos@linux.ee)
+MjUuMDkuMjAxMyAwNzoyMiwgT2xpdmllciBMYW5nbG9pcyBraXJqb2l0dGk6Cj4gSGksCgpIaSEK
+Cj4gVGhpcyBpcyBqdXN0IHRvIGxldCB5b3Uga25vdyB0aGF0IEkgaGF2ZSBhcHBsaWVkIHlvdXIg
+cGF0Y2ggb24gbXkgbGludXgKPiAzLjExIHNldHVwIGFuZAo+IAo+IHNwZWFrZXItdGVzdCAtRCBo
+ZG1pOkNBUkQ9R2VuZXJpYyxERVY9MCAtYzggLXIxOTIwMDAgLUYgUzE2X0xFCj4gCj4gZGlkIHdv
+cmsgYXMgZXhwZWN0ZWQgb24gbXkgNy4xIHJlY2VpdmVyIHdpdGg6Cj4gCj4gbGFubzExMDZAd2hp
+cHBldDIgL3Byb2MvYXNvdW5kL2NhcmQwIDooICQgY2F0IGNvZGVjIzAgCj4gQ29kZWM6IEFUSSBS
+Nnh4IEhETUkKPiBBZGRyZXNzOiAwCj4gQUZHIEZ1bmN0aW9uIElkOiAweDEgKHVuc29sIDApCj4g
+VmVuZG9yIElkOiAweDEwMDJhYTAxCj4gU3Vic3lzdGVtIElkOiAweDAwYWEwMTAwCj4gUmV2aXNp
+b24gSWQ6IDB4MTAwMzAwCj4gTm8gTW9kZW0gRnVuY3Rpb24gR3JvdXAgZm91bmQKPiBEZWZhdWx0
+IFBDTToKPiAgICAgcmF0ZXMgWzB4NzBdOiAzMjAwMCA0NDEwMCA0ODAwMAo+ICAgICBiaXRzIFsw
+eDJdOiAxNgo+ICAgICBmb3JtYXRzIFsweDVdOiBQQ00gQUMzCgpHcmVhdCB0byBoZWFyIHRoYXQs
+IHRoYW5rcy4gU28gUmV2aXNpb24gSWQgMysgd29ya3MgOikKCkkgZm9yZ290IHRvIGFzayBmb3Ig
+aXQgZXhwbGljaXRlbHksIGJ1dCBJIGd1ZXNzIHlvdSBjaGVja2VkIHRoYXQKY2hhbm5lbHMgc2Vl
+bWVkIHRvIG1hcHBlZCBjb3JyZWN0bHkgKGF0IGxlYXN0IGZvciBlYWNoIHNwZWFrZXIgeW91CmFj
+dHVhbGx5IGhhdmUpPwoKQWxzbywgY291bGQgeW91IHBhc3RlIHRoZSB3aG9sZSAvcHJvYy9hc291
+bmQvY2FyZDAvY29kZWMjMCwgZm9yIHRoZSByZWNvcmQ/Cgo+IEZyb20gZG1lc2c6Cj4gCj4gbGFu
+bzExMDZAd2hpcHBldDIgL2V0YyAkIGRtZXNnIHwgZ3JlcCBoZG1pClsuLi5dCj4gCj4gQ29ycmVj
+dCBtZSBpZiBJIGFtIHdyb25nIGJ1dCB0aGlzIGNvZGVjIHNob3VsZCBiZSBhYmxlIHRvIG91dHB1
+dCAyNCBiaXRzCj4gUENNLiBIb3cgb25lIGNvdWxkIGdvIHRvIHRlc3QgdGhhdD8KCkp1c3QgdXNl
+IC1GIFMzMl9MRSBmb3Igc3BlYWtlci10ZXN0LgoKCldoeSBTMzIgYW5kIG5vdCBTMjQ/IFRoaXMg
+aXMgYmVjYXVzZSB0aGVyZSBhcmUgdGhyZWUgZm9ybWF0cyBmb3IgMjQtYml0CmF1ZGlvOgoKSWYg
+ZWFjaCBzYW1wbGUgaGFzIGV4YWN0bHkgMjQgYml0cyBhbmQgbmV4dCBzYW1wbGUgZm9sbG93cyBp
+bW1lZGlhdGVseSwKaXQgaXMgUzI0XzNMRSAoL0JFKS4KSWYgZWFjaCBzYW1wbGUgaGFzIGEgc3Bh
+Y2Ugb2YgMzIgYml0cyBidXQgb25seSAyNCBiaXRzIGFyZSB1c2VkLCB0aGVyZQphcmUgdHdvIHdh
+eXMgdG8gcGxhY2UgdGhvc2UgMjQgYml0cyB0byAzMiBiaXRzLiBFaXRoZXIgdGhlIG1vc3QKc2ln
+bmlmaWNhbnQgMjQgYml0cyBhcmUgdXNlZCwgb3IgdGhlIGxlYXN0IHNpZ25pZmljYW50IDI0IGJp
+dHMgYXJlIHVzZWQuCgpJZiB0aGUgbW9zdCBzaWduaWZpY2FudCBiaXRzIGFyZSB1c2VkIChhbmQg
+OCBsZWFzdCBzaWduaWZpY2FudCBiaXRzIG5vdAp1c2VkKSwgdGhlIGZvcm1hdCBpcyBhY3R1YWxs
+eSBleGFjdGx5IHRoZSBzYW1lIGFzIDMyIGJpdCAoZXhjZXB0IHRoYXQKdGhlIGxlYXN0IHNpZ25p
+ZmljYW50IGJpdHMgYXJlIHNpbXBseSBpZ25vcmVkKSwgYW5kIGhlbmNlIHRoZSBmb3JtYXQgaXMK
+UzMyX0xFICgvQkUpLiBUaGUgb3RoZXIgZm9ybWF0IChsZWFzdCBzaWduaWZpY2FudCBiaXRzIHVz
+ZWQpIGlzIFMyNF9MRQooL0JFKS4KCgo+IEdvb2Qgd29yayBBbnNzaSEKPiAKPiBPbiBTdW4sIDIw
+MTMtMDktMjIgYXQgMjA6NTAgKzAzMDAsIEFuc3NpIEhhbm51bGEgd3JvdGU6Cj4+IFJlcXVlc3Qg
+Zm9yIGNvbW1lbnRzIGFuZCB0ZXN0aW5nLgo+Pgo+PiBBTUQganVzdCByZWxlYXNlZCB0aGUgZG9j
+dW1lbnRhdGlvbiBuZWVkZWQgZm9yIG11bHRpLWNoYW5uZWwgSERNSQo+PiBzdXBwb3J0LCBzbyBo
+ZXJlIGlzIHRoZSBpbml0aWFsIHBhdGNoIGFkZGluZyBzdWNoIHN1cHBvcnQuCj4+Cj4+IFRoaXMg
+aGFzIGJlZW4gdGVzdGVkIG9uIGNvZGVjIDB4MTAwMmFhMDEsIHJldmlzaW9uIDB4MTAwMjAwIHdp
+dGggdGhlCj4+IGV4Y2VwdGlvbiBvZiBjdXN0b20gY2hhbm5lbCBtYXBzLCB3aGljaCBJIGludGVu
+ZCB0byB0ZXN0IGxhdGVyLgo+Pgo+PiBJJ20gZXNwZWNpYWxseSBpbnRlcmVzdGVkIGluIHRlc3Rl
+cnMgd2l0aDoKPj4gLSBPbGRlciBjb2RlY3Mgb3RoZXIgdGhhbiAweDEwMDJhYTAxLiBNeSBiZXN0
+IGd1ZXNzIGlzIHRoYXQgdGhlIG5ldyBjb2RlCj4+ICAgc2hvdWxkIHdvcmsgb24gdGhlbSBhcyB3
+ZWxsLCBidXQgSSdtIG5vdCByZWFsbHkgMTAwJSBzdXJlLgo+PiAtIENvZGVjIDB4MTAwMmFhMDEg
+cmV2aXNpb25zIDB4MTAwMzAwIChSZXYgSUQgMykgb3IgbGF0ZXIgKHNlZQo+PiAgIC9wcm9jL2Fz
+b3VuZC9jYXJkWC9jb2RlYyNZKS4gVGhlc2Ugc3VwcG9ydCBpbmRpdmlkdWFsIGNoYW5uZWwKPj4g
+ICByZW1hcHBpbmcgYW5kIHRoYXQgY29kZSBpcyBlbnRpcmVseSB1bnRlc3RlZCAoZXZlbiBmb3Ig
+cmVndWxhcgo+PiAgIDUuMS83LjEpLgo+Pgo+PiBJIGRlY2lkZWQgaXQgd2FzIGJlc3QgdG8gZ2V0
+IHRoaXMgb3V0IHRoZXJlIGVhcmx5IGV2ZW4gdGhvdWdoIG1ham9yCj4+IHBhcnRzIG9mIGl0IGFy
+ZSBzdGlsbCB1bnRlc3RlZCwgZm9yIGNvbW1lbnRzIGFuZCBmb3Igb3RoZXIgcGVvcGxlIHRvCj4+
+IHRlc3QgOikKPj4KPj4gTm90ZSB0aGF0IHRoaXMgcmVjZW50IGNvbW1pdCBpcyBwcm9iYWJseSBy
+ZXF1aXJlZCBmb3IgbXVsdGktY2hhbm5lbCB0bwo+PiB3b3JrIHdpdGggdGhlIG9wZW4tc291cmNl
+IHJhZGVvbiBkcml2ZXI6Cj4+IEFMU0E6IGhkYSAtIGhkbWk6IEZhbGxiYWNrIHRvIEFMU0EgYWxs
+b2NhdGlvbiB3aGVuIHNlbGVjdGluZyBDQQo+PiBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQv
+bGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0L3NvdW5kL3BjaS9oZGEv
+cGF0Y2hfaGRtaS5jP2lkPTE4ZTM5MTg2MmNjZWFmNDNkZGI4ZWI1Y2NhMDVlMWE4M2FiZGViYWEK
+Pj4KPj4gRWFzaWVzdCB3YXkgdG8gdGVzdCBiYXNpYyBtdWx0aWNoYW5uZWwgaXMgYnkgc3BlYWtl
+ci10ZXN0LCBlLmcuCj4+IHNwZWFrZXItdGVzdCAtRCBoZG1pOkNBUkQ9R2VuZXJpYyxERVY9MCAt
+YzggLXIxOTIwMDAgLUYgUzE2X0xFCj4+IGZvciA3LjEgMTYtYml0IDE5MmtIego+Pgo+Pgo+PiBE
+ZXRhaWxlZCBkaXNjdXNzaW9uIGJlbG93Ogo+Pgo+PiBBVEkvQU1EIGNvZGVjcyBkbyBub3Qgc3Vw
+cG9ydCBhbGwgdGhlIHN0YW5kYXJkIEhEQSBIRE1JL0RQIGZ1bmN0aW9ucy4gSW4KPj4gcGFydGlj
+dWxhciwgdGhlc2UgYXJlIG1pc3Npbmc6Cj4+IC0gRUxEIHN1cHBvcnQKPj4gLSBzdGFuZGFyZCBj
+aGFubmVsIG1hcHBpbmcgc3VwcG9ydAo+PiAtIHN0YW5kYXJkIGluZm9mcmFtZSBjb25maWd1cmF0
+aW9uIHN1cHBvcnQKPj4KPj4gSW4gcGxhY2Ugb2YgdGhlbSwgY3VzdG9tIEhEQSBwaW4gdmVyYnMg
+YXJlIGluY2x1ZGVkLCB0aGF0IGFsbG93Ogo+PiAtIGdldHRpbmcgc3BlYWtlciBtYXNrIGZyb20g
+RURJRAo+PiAtIGdldHRpbmcgU0FEcyBmcm9tIEVESUQKPj4gLSBnZXR0aW5nIGNvbm5lY3Rpb24g
+dHlwZSBmcm9tIEVESUQgKEhETUksIERpc3BsYXlQb3J0KQo+PiAtIHNldHRpbmcgQ0EgZm9yIGlu
+Zm9mcmFtZQo+PiAtIHNldHRpbmcgZG93bi1taXggaW5mb3JtYXRpb24gZm9yIGluZm9mcmFtZQo+
+PiAtIGNoYW5uZWwgcGFpciByZW1hcHBpbmcKPj4gLSBpbmRpdmlkdWFsIGNoYW5uZWwgcmVtYXBw
+aW5nIChyZXZpc2lvbiBJRCAzKykKPj4KPj4gVGhlIGRvY3VtZW50YXRpb24gZm9yIHRoZSB2ZXJi
+cyBoYXMgbm93IGJlZW4gcmVsZWFzZWQgYnkgQU1EOgo+PiBodHRwOi8vd3d3Lngub3JnL2RvY3Mv
+QU1EL0FNRF9IREFfdmVyYnMucGRmCj4+Cj4+IEFsc28sIGNvbnZlcnRlZCBub2RlcyBkbyBub3Qg
+aGF2ZSBhbGwgdGhlaXIgc3VwcG9ydGVkIHJhdGVzLCBmb3JtYXRzIGFuZAo+PiBjaGFubmVsIGNv
+dW50cyBsaXN0ZWQuCj4+Cj4+IEFkZCBzdXBwb3J0IGZvciB0aGUgQVRJL0FNRCBzcGVjaWZpYyB2
+ZXJicyBhbmQgdXNlIHRoZW0gaW5zdGVhZCBvZiB0aGUKPj4gZ2VuZXJpYyBtZXRob2RzIG9uIEFU
+SS9BTUQgY29kZWNzLiBUaGlzIGFsbG93cyBtdWx0aS1jaGFubmVsIGF1ZGlvIHRvCj4+IHdvcmsu
+Cj4+IElzIHRoZSB3YXkgaXQgaXMgZG9uZSBPSywgb3Igc2hvdWxkIHNvbWV0aGluZyBtb3JlIGdl
+bmVyaWMgYmUgcHV0IGludG8KPj4gcGxhY2UgKGN1c3RvbSBjYWxsYmFja3MgYW5kL29yIGZsYWdz
+IGluIHN0cnVjdCBoZG1pX3NwZWMgbWF5YmUpPwo+Pgo+PiBPbiB0aGUgb2xkZXIgQVRJL0FNRCBj
+b2RlY3MgdGhhdCBkbyBub3Qgc3VwcG9ydCBpbmRpdmlkdWFsIHJlbWFwcGluZywKPj4gY2hhbm5l
+bCByZW1hcHBpbmcgaXMgcmVzdHJpY3RlZCB0byBwYWlyIHJlbWFwcGluZy4gVGhpcyBkb2VzIG5v
+dCBhZmZlY3QKPj4gdGhlIHN0YW5kYXJkIG11bHRpLWNoYW5uZWwgY29uZmlndXJhdGlvbnMuCj4+
+Cj4+IFNpbmNlIHRoZXJlIGlzIG5vIEVMRCBzdXBwb3J0ICh1bmxlc3Mgb3V0LW9mLWJhbmQgY29t
+bXVuaWNhdGlvbiB3aXRoIHRoZQo+PiBncmFwaGljcyBkcml2ZXIgaXMgYWRkZWQgc28gdGhhdCB0
+aGV5IGNhbiBwcm92aWRlIGl0IHRvIHVzIGRpcmVjdGx5KSwKPj4gRUxEIGlzIGN1cnJlbnRseSBl
+bXVsYXRlZCB3aXRoIG9ubHkgdGhlIGJhc2ljIGluZm9ybWF0aW9uIHBvcHVsYXRlZAo+PiAoc3Bl
+YWtlciBtYXNrLCBTQURzLCBjb25uZWN0aW9uIHR5cGUpLiBUaGVyZSBhcmUgc29tZSBiaXRzIG1p
+c3Npbmcgb24KPj4gdGhlIHJhZGVvbiBkcml2ZXIgc2lkZSAodGhlIFNBRHMgZXRjIGFyZSBub3Qg
+cG9wdWxhdGVkKSBzbyBjdXJyZW50bHkKPj4gdGhlIEVMRCBlbXVsYXRpb24gb25seSB3b3JrcyBv
+biBmZ2xyeC4gRUxEIGVtdWxhdGlvbiBpcyBub3QgbmVlZGVkIGZvcgo+PiBtdWx0aS1jaGFubmVs
+IHBsYXliYWNrLgo+Pgo+PiBSYWZhxYIsIGFyZSB5b3UgaW50ZXJlc3RlZCBpbiBpbXBsZW1lbnRp
+bmcgdGhlIG1pc3NpbmcgYml0cyBpbiB0aGUgcmFkZW9uCj4+IGRyaXZlciwgYXMgSSBzZWUgeW91
+IGhhdmUgbG9va2VkIGludG8gdGhpcyBiZWZvcmU/Cj4+Cj4+IFRoZSBFTEQgZW11bGF0aW9uIHdh
+cyBxdWl0ZSBxdWlja2x5IGhhY2tlZCB0b2dldGhlciBhbmQgaGFzbid0IGJlZW4KPj4gY2xlYW5l
+ZCB1cCB5ZXQsIHNpbmNlIEknbSBub3Qgc3VyZSBob3cgd2Ugd2FudCB0byB1bHRpbWF0ZWx5IGhh
+bmRsZQo+PiB0aGlzLiBJcyBFTEQgZW11bGF0aW9uIHRoZSB3YXkgdG8gZ28/IElmIHNvLCB3aGVy
+ZSBkb2VzIHRoZSBjb2RlIGJlbG9uZwo+PiAodGhlIEFUSSBzcGVjaWZpYyBjb2RlIGlzIGluIHBh
+dGNoX2hkbWkuYywgYnV0IHRoZSBFTEQgcGFyc2luZy9kZWZpbmVzCj4+IGV0YyBhcmUgaW4gaGRh
+X2VsZC5jKT8KPj4KPj4gQ29kZWMgMHgxMDAyYWEwMSBpcyBzd2l0Y2hlZCBiYWNrIHRvIHBhdGNo
+X2F0aWhkbWkgdG8gc3VwcG9ydCB0aGUKPj4gQVRJL0FNRCBzcGVjaWZpYyBmZWF0dXJlcy4KPj4K
+Pj4gSEJSIG1vZGUgKG5lZWRlZCBmb3IgRFRTLUhEL1RydWVIRCBwYXNzdGhyb3VnaCkgaXMgbm90
+IHdvcmtpbmcgeWV0LCBhbmQKPj4gdGhlIHJlbGVhc2VkIGRvY3VtZW50YXRpb24gZG9lcyBub3Qg
+bWVudGlvbiBpdC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogQW5zc2kgSGFubnVsYSA8YW5zc2kuaGFu
+bnVsYUBpa2kuZmk+Cj4+IFRlc3RlZC1ieTogUGV0ZXIgRnLDvGhiZXJnZXIgPGZyaXRzY2hAeGJt
+Yy5vcmc+Cj4+IENjOiBSYWZhxYIgTWnFgmVja2kgPHphamVjNUBnbWFpbC5jb20+Cj4+IC0tLQo+
+PiAgc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgfCA0MTggKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKy0tLS0tCj4+ICAxIGZpbGUgY2hhbmdlZCwgMzc0IGluc2VydGlv
+bnMoKyksIDQ0IGRlbGV0aW9ucygtKQo+PgoKWy4uLl0KLS0gCkFuc3NpIEhhbm51bGEKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
