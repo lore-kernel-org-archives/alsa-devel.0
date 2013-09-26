@@ -1,25 +1,25 @@
 From: Ian Clarke <ianclarke340@gmail.com>
 Subject: Re: [PATCH - ALSA: snd-virtuoso 1/1] Xonar DSX support
-Date: Thu, 26 Sep 2013 10:07:04 +0000 (UTC)
-Message-ID: <loom.20130926T115807-948@post.gmane.org>
+Date: Thu, 26 Sep 2013 10:17:43 +0000 (UTC)
+Message-ID: <loom.20130926T121716-949@post.gmane.org>
 References: <504c9632.8697320a.1336.4b37@mx.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BA5E2655FF
- for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2013 12:07:24 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id BA0FF26260F
+ for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2013 12:18:05 +0200 (CEST)
 Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1VP8Tj-0000Hl-Lz
- for alsa-devel@alsa-project.org; Thu, 26 Sep 2013 12:07:23 +0200
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1VP8e4-0001rc-0J
+ for alsa-devel@alsa-project.org; Thu, 26 Sep 2013 12:18:04 +0200
 Received: from host-78-144-105-4.as13285.net ([78.144.105.4])
  by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
  id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2013 12:07:23 +0200
+ for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2013 12:18:04 +0200
 Received: from ianclarke340 by host-78-144-105-4.as13285.net with local
  (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2013 12:07:23 +0200
+ for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2013 12:18:04 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -96,7 +96,8 @@ get_xonar_wm87x6_model(struct oxygen *chip,
 >  	case 0x835e:
 >  		chip->model = model_xonar_hdav_slim;
 
---------------------------------------------------------------------------
+
+-------------------------------------------------------------------------
 
 It appears that I need to apply this patch but I cannot understand how to do
 this.
