@@ -1,25 +1,16 @@
-From: Ian Clarke <ianclarke340@gmail.com>
-Subject: Re: [PATCH - ALSA: snd-virtuoso 1/1] Xonar DSX support
-Date: Thu, 26 Sep 2013 10:17:43 +0000 (UTC)
-Message-ID: <loom.20130926T121716-949@post.gmane.org>
-References: <504c9632.8697320a.1336.4b37@mx.google.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoc: kirkwood: Extend the min and max
+ number of bytes per period
+Date: Thu, 26 Sep 2013 11:24:08 +0100
+Message-ID: <20130926102408.GE19304@sirena.org.uk>
+References: <20130919112043.5ad16147@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7101512311318021416=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id BA0FF26260F
- for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2013 12:18:05 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1VP8e4-0001rc-0J
- for alsa-devel@alsa-project.org; Thu, 26 Sep 2013 12:18:04 +0200
-Received: from host-78-144-105-4.as13285.net ([78.144.105.4])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2013 12:18:04 +0200
-Received: from ianclarke340 by host-78-144-105-4.as13285.net with local
- (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2013 12:18:04 +0200
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46924261A6C
+ for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2013 12:24:15 +0200 (CEST)
+In-Reply-To: <20130919112043.5ad16147@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,82 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
- <sgiurgiu11 <at> gmail.com> writes:
 
-> 
-> From: Sergiu Giurgiu <sgiurgiu11 <at> gmail.com>
-> 
-> This patch adds support for ASUS - Xonar DSX sound cards. Tested on
-openSUSE 12.2 with kernel:
-> Linux 3.4.6-2.10-desktop #1 SMP PREEMPT Thu Jul 26 09:36:26 UTC 2012
-(641c197) x86_64 x86_64 x86_64 GNU/Linux
-> Works:
->  - play sounds
->  - adjust volume on master channel.
->  - mute .
-> 
-> Since Xonar DS uses the same chip, everything that works for DS should
-work for DSX as well.
-> 
-> Thank you,
-> Sergiu Giurgiu.
-> 
-> Signed-off-by: Sergiu Giurgiu <sgiurgiu11 <at> gmail.com>
-> 
-> diff --git a/mirror/sound/pci/oxygen/virtuoso.c
-b/mirror/sound/pci/oxygen/virtuoso.c
-> index 3d71423..8104eab 100644
-> --- a/mirror/sound/pci/oxygen/virtuoso.c
-> +++ b/mirror/sound/pci/oxygen/virtuoso.c
->  <at>  <at>  -52,6 +52,7  <at>  <at>  static
-DEFINE_PCI_DEVICE_TABLE(xonar_ids) = {
->  	{ OXYGEN_PCI_SUBID(0x1043, 0x835d) },
->  	{ OXYGEN_PCI_SUBID(0x1043, 0x835e) },
->  	{ OXYGEN_PCI_SUBID(0x1043, 0x838e) },
-> +	{ OXYGEN_PCI_SUBID(0x1043, 0x8522) },
->  	{ OXYGEN_PCI_SUBID_BROKEN_EEPROM },
->  	{ }
->  };
-> diff --git a/mirror/sound/pci/oxygen/xonar_wm87x6.c
-b/mirror/sound/pci/oxygen/xonar_wm87x6.c
-> index 63cff90..b555b62 100644
-> --- a/mirror/sound/pci/oxygen/xonar_wm87x6.c
-> +++ b/mirror/sound/pci/oxygen/xonar_wm87x6.c
->  <at>  <at>  -1255,7 +1255,6  <at>  <at>  static void
-dump_wm87x6_registers(struct oxygen *chip,
->  }
-> 
->  static const struct oxygen_model model_xonar_ds = {
-> -	.shortname = "Xonar DS",
->  	.longname = "Asus Virtuoso 66",
->  	.chip = "AV200",
->  	.init = xonar_ds_init,
->  <at>  <at>  -1327,6 +1326,11  <at>  <at>  int __devinit
-get_xonar_wm87x6_model(struct oxygen *chip,
->  	switch (id->subdevice) {
->  	case 0x838e:
->  		chip->model = model_xonar_ds;
-> +		chip->model.shortname = "Xonar DS";
-> +		break;
-> +	case 0x8522:
-> +		chip->model = model_xonar_ds;
-> +		chip->model.shortname = "Xonar DSX";
->  		break;
->  	case 0x835e:
->  		chip->model = model_xonar_hdav_slim;
+--===============7101512311318021416==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/2994txjAzEdQwm5"
+Content-Disposition: inline
 
 
--------------------------------------------------------------------------
+--/2994txjAzEdQwm5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It appears that I need to apply this patch but I cannot understand how to do
-this.
-I have read that in order for the drivers to recognise the DSX card then
-this patch is necessary.
-Please explain where to apply it and how to compile the drivers afterwards.
+On Thu, Sep 19, 2013 at 11:20:43AM +0200, Jean-Francois Moine wrote:
+> This patch extends the min and max number of bytes per period.
+> It mainly permits to reduce the sound delay in MIDI real-time playing.
 
-Linux Mint 14, KDE, ASUS M5A78L-M motherboard with ALC887 chip. ALSA and
-PulseAudio, all work together but sound quality is disappointing so I wish
-to use the Xonar DSX instead.
+Applied, thanks.  For the minimum limit is there any hardware imposed
+limit that could be used rather than tweaking the numbers?
+
+--/2994txjAzEdQwm5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSRAtEAAoJELSic+t+oim9RykP/37/XPq0ayZkbSob+V4Xzb0r
+F1/xgVcXjFS9rsp1M9RzcqNgJNQrsru03ZdOOvgjAG3WHRbCpyVBMNRlz1uhSPuM
+MbbE4y5GCkTwIfP/GSKmTXN0Ux8eb3Uebaf0ZtT/AG3xbm5YV+buSRatwUu2d743
+CEcDdzjT2r9P4yzEv+0wxBdEsYLqJqT7uu0Q6ZBTVsWe4wKmaiumICM23nH9kHDD
+G2wTk3+Vl/x6VdzvN78uTv1mwkIW9PdmaPuavPiY6hLTmjEXSKCXuS/JJT3xvHxF
+P1Z+YrWCxNBH+T0QeOAcZanPxSIyoM5CXzYwfeonf0FtWnsN0B6aeHMDj5Q/i8tx
+h3dOaSK2WIQyHZbQ+YzoCDRjtZshvA6S6FkbKS87tn1U+/+SWGreUtCpJE4ZjPK9
+zW9WLy2j6HMIUVjaBNBfSS8rAoBP42HtbXmn2f89yPHsArOpvg3tQG/duRLENJqJ
+x3jDkk2EM9PrAXNfX7U0SpFvch322YszTFJWQU7zTzRoJr5CY2bkN82H4J1xXOx7
+t9jzpm+eIcE4HDZm5j0Okx40BibPNUEpuGH+R4HOYUbXP/PvRcXu5gQGDIVHBC6M
+2MWYkYkIvTVFMiOPOqUwNevF2ZVLCIYYsKC6pKvZ8mKFZi7dOQp7+BM7sh9nXXPG
+emdo4Ulywwb4Eum9kOYB
+=3EW9
+-----END PGP SIGNATURE-----
+
+--/2994txjAzEdQwm5--
+
+--===============7101512311318021416==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7101512311318021416==--
