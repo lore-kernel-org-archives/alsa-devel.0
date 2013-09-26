@@ -1,16 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Subject: Re: [PATCH] ASoc: kirkwood: Extend the min and max
- number of bytes per period
-Date: Thu, 26 Sep 2013 11:24:08 +0100
-Message-ID: <20130926102408.GE19304@sirena.org.uk>
+	number of bytes	per period
+Date: Thu, 26 Sep 2013 11:28:40 +0100
+Message-ID: <20130926102840.GP12758@n2100.arm.linux.org.uk>
 References: <20130919112043.5ad16147@armhf>
+ <20130926102408.GE19304@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7101512311318021416=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 46924261A6C
- for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2013 12:24:15 +0200 (CEST)
-In-Reply-To: <20130919112043.5ad16147@armhf>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id D27CC261A6C
+ for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2013 12:29:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130926102408.GE19304@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Sep 26, 2013 at 11:24:08AM +0100, Mark Brown wrote:
+> On Thu, Sep 19, 2013 at 11:20:43AM +0200, Jean-Francois Moine wrote:
+> > This patch extends the min and max number of bytes per period.
+> > It mainly permits to reduce the sound delay in MIDI real-time playing.
+> 
+> Applied, thanks.  For the minimum limit is there any hardware imposed
+> limit that could be used rather than tweaking the numbers?
 
---===============7101512311318021416==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/2994txjAzEdQwm5"
-Content-Disposition: inline
+I looked at that, and apart from interrupt rate, I don't see any.
 
+The values I have for these in my tree are:
 
---/2994txjAzEdQwm5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+#define KIRKWOOD_SND_MIN_PERIODS                2
+#define KIRKWOOD_SND_MAX_PERIODS                16
+#define KIRKWOOD_SND_MIN_PERIOD_BYTES           256
+#define KIRKWOOD_SND_MAX_PERIOD_BYTES           0x100000
+#define KIRKWOOD_SND_MAX_BUFFER_BYTES           0x100000
 
-On Thu, Sep 19, 2013 at 11:20:43AM +0200, Jean-Francois Moine wrote:
-> This patch extends the min and max number of bytes per period.
-> It mainly permits to reduce the sound delay in MIDI real-time playing.
-
-Applied, thanks.  For the minimum limit is there any hardware imposed
-limit that could be used rather than tweaking the numbers?
-
---/2994txjAzEdQwm5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSRAtEAAoJELSic+t+oim9RykP/37/XPq0ayZkbSob+V4Xzb0r
-F1/xgVcXjFS9rsp1M9RzcqNgJNQrsru03ZdOOvgjAG3WHRbCpyVBMNRlz1uhSPuM
-MbbE4y5GCkTwIfP/GSKmTXN0Ux8eb3Uebaf0ZtT/AG3xbm5YV+buSRatwUu2d743
-CEcDdzjT2r9P4yzEv+0wxBdEsYLqJqT7uu0Q6ZBTVsWe4wKmaiumICM23nH9kHDD
-G2wTk3+Vl/x6VdzvN78uTv1mwkIW9PdmaPuavPiY6hLTmjEXSKCXuS/JJT3xvHxF
-P1Z+YrWCxNBH+T0QeOAcZanPxSIyoM5CXzYwfeonf0FtWnsN0B6aeHMDj5Q/i8tx
-h3dOaSK2WIQyHZbQ+YzoCDRjtZshvA6S6FkbKS87tn1U+/+SWGreUtCpJE4ZjPK9
-zW9WLy2j6HMIUVjaBNBfSS8rAoBP42HtbXmn2f89yPHsArOpvg3tQG/duRLENJqJ
-x3jDkk2EM9PrAXNfX7U0SpFvch322YszTFJWQU7zTzRoJr5CY2bkN82H4J1xXOx7
-t9jzpm+eIcE4HDZm5j0Okx40BibPNUEpuGH+R4HOYUbXP/PvRcXu5gQGDIVHBC6M
-2MWYkYkIvTVFMiOPOqUwNevF2ZVLCIYYsKC6pKvZ8mKFZi7dOQp7+BM7sh9nXXPG
-emdo4Ulywwb4Eum9kOYB
-=3EW9
------END PGP SIGNATURE-----
-
---/2994txjAzEdQwm5--
-
---===============7101512311318021416==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7101512311318021416==--
+which are partly based on patches applied to Rabeeh's kernel, and then
+further adjusted.  Yes, the max period bytes won't be reachable since
+the minimum period will cause it to be half the max buffer bytes.
