@@ -1,42 +1,101 @@
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH 00/51] DMA mask changes
-Date: Thu, 26 Sep 2013 22:23:08 +0200
-Message-ID: <CACna6rxkpYzdD8_Jfi22vA2suUa3k-JM65_gCySQpp4crVCoPg@mail.gmail.com>
-References: <20130919212235.GD12758@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: si476x: Remove custom register I/O
+	implementation
+Date: Thu, 26 Sep 2013 21:58:07 +0100
+Message-ID: <20130926205807.GV19304@sirena.org.uk>
+References: <1380220461-16359-1-git-send-email-broonie@kernel.org>
+ <CAHQ1cqG2Uwhw3M933OPwsX1R=ZrpdmKjsy_DYTL_+CpfQvdVag@mail.gmail.com>
+ <20130926194350.GU19304@sirena.org.uk>
+ <CAHQ1cqF=8+vW9Ug+5KE3qFamis-m8A+agRF7uJrMbOzd5qk5jQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20130919212235.GD12758@n2100.arm.linux.org.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, b43-dev <b43-dev@lists.infradead.org>, "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>, devicetree@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>, e1000-devel@lists.sourceforge.net, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-ide@vger.kernel.org, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, linux-nvme@lists.infradead.org, linux-omap@vger.kernel.org, linux ppc dev <linuxppc-dev@lists.ozlabs.org>, linux-samsung-soc@vger.kernel.org, Linux SCSI List <linux-scsi@vger.kernel.org>, linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, Solarflare linux maintainers <linux-ne>
+Content-Type: multipart/mixed; boundary="===============6734809453278825793=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 972B1264E9D
+ for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2013 22:58:09 +0200 (CEST)
+In-Reply-To: <CAHQ1cqF=8+vW9Ug+5KE3qFamis-m8A+agRF7uJrMbOzd5qk5jQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-2013/9/19 Russell King - ARM Linux <linux@arm.linux.org.uk>:
-> This email is only being sent to the mailing lists in question, not t=
-o
-> anyone personally.  The list of individuals is far to great to do tha=
-t.
-> I'm hoping no mailing lists reject the patches based on the number of
-> recipients.
 
-Huh, I think it was enough to send only 3 patches to the b43-dev@. Like=
-:
-[PATCH 01/51] DMA-API: provide a helper to set both DMA and coherent DM=
-A masks
-[PATCH 14/51] DMA-API: net: b43: (...)
-[PATCH 15/51] DMA-API: net: b43legacy: (...)
-;)
+--===============6734809453278825793==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pkBzO0lo80FoaZii"
+Content-Disposition: inline
 
-I believe Joe has some nice script for doing it that way. When fixing
-some coding style / formatting, he sends only related patches to the
-given ML.
 
---=20
-Rafa=C5=82
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--pkBzO0lo80FoaZii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Sep 26, 2013 at 12:58:27PM -0700, Andrey Smirnov wrote:
+> On Thu, Sep 26, 2013 at 12:43 PM, Mark Brown <broonie@kernel.org> wrote:
+
+> > What exactly is the locking you're talking about here?
+
+> I am talking about locking specific for si476x MFD device that is
+> hadled by si476x_core_lock / si476x_core_unlock. The code before the
+> patch has both externally exposed functions via V4L2 driver and SoC
+> driver obtain said lock for the duration of their interaction with the
+> device. The patch appears to remove lock acquisition for SoC
+> functions.
+
+But what exactly are these locks supposed to be protecting?
+
+> > The way the code is written it looks like the lock is being held to
+> > ensure there's no race due to a power state change.
+
+> That lock is being held to prevent device access contention between
+> all of the code that can be triggered to be executed via V4L2 ioctl
+> API and SoC API. As an example, I can open the radio device and start
+> tuning it using corresponding ioctl, meanwhile, parallel to that
+> process my other code is trying to change the sample rate of the
+> codec. To prevent those two from clashes both of them try to acquire
+> "core lock" with si476x_core_lock before the start doing anything with
+> chip/MFD.
+
+In what way might these things conflict?  What are the clashes you are
+concerned about?
+
+--pkBzO0lo80FoaZii
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSRJ/bAAoJELSic+t+oim9PvoP/jGw9WsU8Scz56m1xLgsvR/h
+dEuuLo4MYf+P8we7AKZ1qVn9by0VfCEseI2mLqtzTXfhUUJ55NKuxop7736TyD9L
+b7IKcKxk3p1pePWDuDUiGr5KVyz5T5JxPIq7O2kc+OyabJc02PvUoxhCs6BgSkXY
+dqT2TnT+qFqsRLMoFsDY9AhQiEnMHfKaiC+zToU9Mv62PdoHarOxITERVOu8wO00
+waFsqqgkikiAgYHGDWLaTZw+1EaUsHR2gCQXnisU7Sc0n+19gDr21pfT9rAvehIX
+9WJiMQ28UPOjmEdbXJPCvltmCZe2oHiD6u4kV/cdVvy9tdjMu2+qWPsTFnv5NQfM
+zsIikqdfZpswLxUdgrSOuulp0keCPNTuEUi83c9Oe9EQdn+UCNoozypSlNEnCncL
+utoGE5xegU8yMTJUZJwsZaOTOnCOkg5B6KcFkTtcVYDR26vTDXjHTa8fBYyM40Xd
+0RuuI2eWf0KP5/Mmmecfaxh5JCMeiOSBiLHcpFSk6ThtwWWn0laQdqI5g41TlQ9R
+e3vcFv/s5ePmTI6fLQ5+yvtH96oBgD+4yLthtUWPV9K7qCmos4WLG4of7wTx+FTY
+uiytJ9AqOCc+VRnwmFO6Kcqv0Z2DxYQOZ2UjJrfmjPgl5rBToFAmXbcQtFdqo1Hj
+SglRrgElTChMTjOAyw4b
+=5pgo
+-----END PGP SIGNATURE-----
+
+--pkBzO0lo80FoaZii--
+
+--===============6734809453278825793==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6734809453278825793==--
