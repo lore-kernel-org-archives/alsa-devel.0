@@ -1,18 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoc: kirkwood: Extend the min and max
- number of bytes per period
-Date: Fri, 27 Sep 2013 15:42:26 +0100
-Message-ID: <20130927144226.GJ19304@sirena.org.uk>
-References: <20130919112043.5ad16147@armhf>
- <20130926102408.GE19304@sirena.org.uk>
- <20130926102840.GP12758@n2100.arm.linux.org.uk>
+Subject: ASoC updates for v3.12
+Date: Fri, 27 Sep 2013 16:42:59 +0100
+Message-ID: <20130927154258.GK19304@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1283924569996965336=="
+Content-Type: multipart/mixed; boundary="===============8254439511000130634=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id CAF11265098
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 16:42:37 +0200 (CEST)
-In-Reply-To: <20130926102840.GP12758@n2100.arm.linux.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 91730265099
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 17:43:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +17,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1283924569996965336==
+--===============8254439511000130634==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0ZSpXV6RUUo6PuQK"
+	protocol="application/pgp-signature"; boundary="ENS8W0Tt0j5TmTCM"
 Content-Disposition: inline
 
 
---0ZSpXV6RUUo6PuQK
+--ENS8W0Tt0j5TmTCM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Sep 26, 2013 at 11:28:40AM +0100, Russell King - ARM Linux wrote:
+The following changes since commit 4a10c2ac2f368583138b774ca41fac4207911983:
 
-> The values I have for these in my tree are:
+  Linux 3.12-rc2 (2013-09-23 15:41:09 -0700)
 
-> #define KIRKWOOD_SND_MIN_PERIODS                2
-> #define KIRKWOOD_SND_MAX_PERIODS                16
-> #define KIRKWOOD_SND_MIN_PERIOD_BYTES           256
-> #define KIRKWOOD_SND_MAX_PERIOD_BYTES           0x100000
-> #define KIRKWOOD_SND_MAX_BUFFER_BYTES           0x100000
+are available in the git repository at:
 
-> which are partly based on patches applied to Rabeeh's kernel, and then
-> further adjusted.  Yes, the max period bytes won't be reachable since
-> the minimum period will cause it to be half the max buffer bytes.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.12-rc2
 
-Those don't look implausible, obviously it'd be pretty CPU intensive
-application that pushed down to the minima but perhaps someone is
-willing to pay the cost.  As you say the maximum buffer might want
-tweaking (or perhaps the maximum period bytes).
+for you to fetch changes up to 267666ea3bd6e804c2c8bbafbe628026be963d06:
 
---0ZSpXV6RUUo6PuQK
+  Merge remote-tracking branch 'asoc/fix/max98095' into asoc-linus (2013-09-27 14:56:24 +0100)
+
+----------------------------------------------------------------
+
+ASoC: Fixes for v3.12
+
+Nothing too exciting here, all driver specific except for the fix from
+Liam for DPCM systems which have both front and back end DAIs which is
+not yet used by anything in mainline.
+
+----------------------------------------------------------------
+Dan Carpenter (3):
+      ASoC: max98095: a couple array underflows
+      ASoC: ab8500-codec: info leak in anc_status_control_put()
+      ASoC: 88pm860x: array overflow in snd_soc_put_volsw_2r_st()
+
+Liam Girdwood (1):
+      ASoC: core: Only add platform DAI widgets once.
+
+Mark Brown (6):
+      Merge remote-tracking branch 'asoc/fix/88pm860x' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/ab8500' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/bfin' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/core' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/fsl' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/max98095' into asoc-linus
+
+Philipp Zabel (2):
+      ASoC: imx-sgtl5000: do not use devres on a foreign device
+      ASoC: imx-sgtl5000: Fix uninitialized pointer use in error path
+
+Valentin Ilie (1):
+      ASoC: blackfin: Add missing break statement to bf6xx
+
+ sound/soc/blackfin/bf6xx-i2s.c    | 1 +
+ sound/soc/codecs/88pm860x-codec.c | 3 +++
+ sound/soc/codecs/ab8500-codec.c   | 7 ++++++-
+ sound/soc/codecs/max98095.c       | 4 ++--
+ sound/soc/fsl/imx-sgtl5000.c      | 7 +++++--
+ sound/soc/soc-core.c              | 1 -
+ 6 files changed, 17 insertions(+), 6 deletions(-)
+
+--ENS8W0Tt0j5TmTCM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSRZlPAAoJELSic+t+oim9zfMQAJ12+BS2KYZkMEcc6vgSkCaR
-ON9CxOqa+YxJdLJ60Q7o7Eews8z7CTC1wAduQZkKvSzFl6f+fmjWJsF1UgXfa04g
-emh3ILIsWDOsViycSEPWIJ3WjOo8aurESEyw7QrJyTmtfc41m+Z2Rr2eSOHGdHl+
-LfZcu0UBFzZw+X78JFdko+tut/ZUV/olUMJS6qyGjlu0qQfEgixX7EAv0uFQqxC4
-SkC/l9xbGC+gIwPlarbk9lLYnxlRtWvANbSwb3v6uB/oMxvoXLsCeVaQfioe3Zu3
-c4A+HH3I+aWl8qeTMI5SgKAzdodLvIKVer0NpzzI9nkkwL9j9QC454IxtNbHSqpS
-yl7XROdnXpx012EKZDxWjCbocaVOqrQWeyDaJ2h30Issr38V+CTccgr/pzrupuiv
-+8Z7rmga+uyRtT9oo4TrqVdTNM7qj1OfRkCmTf/7fuU8pKJu6wVx3sgqJY/HJsqh
-7zHyFKLlYHNx5DH2DrC6JkT7r4D2K1bkZcjFK4p8HXj5odC+n1ZEooxJwhp60n1i
-ZNh4HbsJjw8UtpSSLyAGSPpDuOCcCNzcnQ9kIVkoHRl/kTt+rxP+Qo+d5alIVwPl
-IxpfBfbP8vHjAIuDPVbZQB7r4Jfwzqy8mXuYb1oDGrEfF0CZ3KmGl3SH27PLu2B3
-OqXe/KoJSe40Cs4y8XQn
-=EBJC
+iQIcBAEBAgAGBQJSRad/AAoJELSic+t+oim9vOIQAIcutCho4nB1QZBTdTzxzLOb
+w9CW05dbq6vLSWszEX6ABwDOQ2GdZ3w/+P3hwMiTtFZbNa5xYFro7XQhhWXWXGh/
+hJj/tQEvQfLaCMOYjewvlAfCmqUbLi7VWPVVd51I2wrHRKSkVYAUSI31p91DOLhM
+amYJ7BYvkqQNUQia1FvmQ8F3b72uEMWXPQLoUu2U2djYdgjBca/dnH9A5jn8dNUc
+Bw3baoE2zCxbxwkNZovWb8YdM6ww3zJcLVw6ntP5k8Mo+kLR6Mc7iis1upgmMpnT
+hoW7tQvkurnI1nii17arShArj9rpnMB+BHENLrpEAF4boGUf6YvSJj0hNZwulDiZ
+zAmRa5/iMOuPL1ZSuYN3Y3qbJOVht2SmGfpx1lZZV9hNqUlCUKQHREDzgMzp1cb7
+RdAw1HTKGoVUjGBX3oaRS74lIHG4L0AJ++1RntnQuXxuGbJYiLGdwwhhLg7NPXys
+FAdeYUy8o7jMuVgVHYQ++keC28hAovGIEO3G+6pEevATanL3iVQcr6GYLk3WYw1R
+9t1Ge1wfOl5gb+mQnmbBDgwSLHwVD59SMfi/IUePUNygcfF1o8s2Q5H05dqPopLY
+rk+ywPbjteOKEM7A+0uXw7lwPc1t+T+ScZUNZ/Nnj6eL8I6WtHUdaVvYQ54DBGS1
++hJLoNt/xbFb0tt22pJK
+=+keS
 -----END PGP SIGNATURE-----
 
---0ZSpXV6RUUo6PuQK--
+--ENS8W0Tt0j5TmTCM--
 
---===============1283924569996965336==
+--===============8254439511000130634==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1283924569996965336==--
+--===============8254439511000130634==--
