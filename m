@@ -1,20 +1,26 @@
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [RFC/RFT PATCH] ALSA: hda - hdmi: Add ATI/AMD
-	multi-channel audio support
-Date: Fri, 27 Sep 2013 12:19:03 +0200
-Message-ID: <CACna6rzfMw46kw36d2A_JvMjujnCWOYZOJLtT7dDDvU6P5vh+A@mail.gmail.com>
-References: <1379872233-32210-1-git-send-email-anssi.hannula@iki.fi>
+From: Andrey Smirnov <andrew.smirnov@gmail.com>
+Subject: Re: [PATCH] ASoC: si476x: Remove custom register I/O
+	implementation
+Date: Fri, 27 Sep 2013 08:53:58 -0700
+Message-ID: <CAHQ1cqHwqYpdrUnYfXOsVXcYHRPGWzkTNv5SJKACUdXN58=wew@mail.gmail.com>
+References: <1380220461-16359-1-git-send-email-broonie@kernel.org>
+ <CAHQ1cqG2Uwhw3M933OPwsX1R=ZrpdmKjsy_DYTL_+CpfQvdVag@mail.gmail.com>
+ <20130926194350.GU19304@sirena.org.uk>
+ <CAHQ1cqF=8+vW9Ug+5KE3qFamis-m8A+agRF7uJrMbOzd5qk5jQ@mail.gmail.com>
+ <20130926205807.GV19304@sirena.org.uk>
+ <CAHQ1cqFUNVsKAdimFooyraK3vpvZP=asxAimjzhyyD8T1YRP=Q@mail.gmail.com>
+ <20130927100757.GA19304@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f169.google.com (mail-we0-f169.google.com
- [74.125.82.169])
- by alsa0.perex.cz (Postfix) with ESMTP id F1734265062
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 12:19:05 +0200 (CEST)
-Received: by mail-we0-f169.google.com with SMTP id t60so2469033wes.14
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 03:19:03 -0700 (PDT)
-In-Reply-To: <1379872233-32210-1-git-send-email-anssi.hannula@iki.fi>
+Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
+ [209.85.220.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C654265098
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 17:54:02 +0200 (CEST)
+Received: by mail-pa0-f52.google.com with SMTP id kl14so2933105pab.25
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 08:54:00 -0700 (PDT)
+In-Reply-To: <20130927100757.GA19304@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +30,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?Q?Peter_Fr=C3=BChberger?= <fritsch@xbmc.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-2013/9/22 Anssi Hannula <anssi.hannula@iki.fi>:
-> +       pos = 20;
-> +       for (i = 1; i <= 14; i++) {
+>
+> OK, so if it's purely about send_command() then why is the locking not
+> being done in that function?  Surely the most obvious and robust place
+> to protect the function is within the function itself?
 
-What about using HDMI_AUDIO_CODING_TYPE_PCM and HDMI_AUDIO_CODING_TYPE_WMA_PRO?
+Not having send_command acquire any locks allows me to have variable
+levels of granularity of locking, for example in the worker thread
+that fetches RDS data from the chip it allows me to get exclusive
+access to the chip for the duration of the FIFO draining. Also any
+band switch for that chip, like AM to FM, etc. require chip to be
+power cycled which translates to multiple calls to send_command as
+well, I think having those performed atomically simplifies the driver
+as well.
 
-
-> +               if (i == 13) /* not handled by ATI/AMD */
-> +                       continue;
-
-Replace 13 with HDMI_AUDIO_CODING_TYPE_DST and add
-HDMI_AUDIO_CODING_TYPE_DSD (it's not used/reserved too).
-
-
-> +               snd_hda_codec_write(codec, nid, 0, ATI_VERB_SET_AUDIO_DESCRIPTOR, i << 3);
-> +               ati_sad = snd_hda_codec_read(codec, nid, 0, ATI_VERB_GET_AUDIO_DESCRIPTOR, 0);
-
-Now I understand why I couldn't RE that. I didn't know I have to write
-something to the ATI_VERB_SET_AUDIO_DESCRIPTOR.
-
-
-> +               if (i == 1 && ati_sad & 0xff000000 && (ati_sad & 0xff00) != (ati_sad & 0xff000000) >> 16) {
-
-Don't you get a warning about lacking brackets around
-ati_sad & 0xff000000
-?
-Please replace magic "1" with HDMI_AUDIO_CODING_TYPE_PCM.
+Even if such fine granularity could be made to work, I think it is a
+big change that would need to be tested on the real HW and
+unfortunately I don't have any now and I don't believe there are or
+has ever been any users of that driver besides me and the company I
+used to work for(which no longer ships the device with that chip, so
+we can exclude them). I am trying to get some sort of evaluation board
+from SiLabs, but until and if they give it to me, any changes like
+that can not be verified to work on a real HW.
