@@ -1,8 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/3] ASoC: adau1373: Remove ADAU1373_PLL_CTRL7
-	register definition
-Date: Fri, 27 Sep 2013 13:47:09 +0200
-Message-ID: <1380282430-28159-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH 3/3] ASoC: adau1373: Issue soft reset on probe
+Date: Fri, 27 Sep 2013 13:47:10 +0200
+Message-ID: <1380282430-28159-3-git-send-email-lars@metafoo.de>
 References: <1380282430-28159-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +9,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-078.synserver.de (smtp-out-078.synserver.de
  [212.40.185.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CF4126507E
+ by alsa0.perex.cz (Postfix) with ESMTP id E7E1126508C
  for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 13:45:57 +0200 (CEST)
 In-Reply-To: <1380282430-28159-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,24 +25,26 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-There is no such register.
+Reset the device on probe to make sure that the register settings match the
+register cache defaults.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/adau1373.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/adau1373.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-index c57c1f8..2f84054 100644
+index 2f84054..59654b1 100644
 --- a/sound/soc/codecs/adau1373.c
 +++ b/sound/soc/codecs/adau1373.c
-@@ -74,7 +74,6 @@ struct adau1373 {
- #define ADAU1373_PLL_CTRL4(x)	(0x2c + (x) * 7)
- #define ADAU1373_PLL_CTRL5(x)	(0x2d + (x) * 7)
- #define ADAU1373_PLL_CTRL6(x)	(0x2e + (x) * 7)
--#define ADAU1373_PLL_CTRL7(x)	(0x2f + (x) * 7)
- #define ADAU1373_HEADDECT	0x36
- #define ADAU1373_ADC_DAC_STATUS	0x37
- #define ADAU1373_ADC_CTRL	0x3c
+@@ -1540,6 +1540,8 @@ static int adau1373_i2c_probe(struct i2c_client *client,
+ 	if (IS_ERR(adau1373->regmap))
+ 		return PTR_ERR(adau1373->regmap);
+ 
++	regmap_write(adau1373->regmap, ADAU1373_SOFT_RESET, 0x00);
++
+ 	dev_set_drvdata(&client->dev, adau1373);
+ 
+ 	ret = snd_soc_register_codec(&client->dev, &adau1373_codec_driver,
 -- 
 1.8.0
