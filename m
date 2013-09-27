@@ -1,42 +1,34 @@
-From: Florian Faber <faber@faberman.de>
-Subject: Re: Can't get capturing from RME Hammerfall MADI card
- to work: sound loops & silcence
-Date: Fri, 27 Sep 2013 09:47:48 +0200
-Message-ID: <52453824.9070308@faberman.de>
-References: <CANYi0v7OD_AFC9-jFeH4MGLZQGsPX91S5NdjqDsmZ_9pOR0hPg@mail.gmail.com>
- <CAGqxWvJQPFd_v_iN0eyVG1qCCUxeYpcOP0YU961Gn2JGdN3RgA@mail.gmail.com>
- <5245370C.5060408@ladisch.de>
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: [PATCH] ASoC: wm8993: drop regulator_bulk_free of devm_ allocated data
+Date: Fri, 27 Sep 2013 16:15:54 +0800
+Message-ID: <CAPgLHd8rbL2mmN+hFb-Jqvy+tu7wyTj702Z0fKNG_KOCW1kd1Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from linuxproaudio.org (70.52.11.217.in-addr.arpa.manitu.net
- [217.11.52.70]) by alsa0.perex.cz (Postfix) with ESMTP id CA92B265090
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 09:47:49 +0200 (CEST)
-In-Reply-To: <5245370C.5060408@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, sachin.kamat@linaro.org, wfp5p@virginia.edu
+Cc: yongjun_wei@trendmicro.com.cn, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens,
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
->> Similar issues here, but can add it all seems to work absolutely fine with
->> alsa 1.0.15, but fails with 1.0.18+.
-> This sound like some change in the driver introduced a bug.
+It's not necessary to free regulator consumers allocated with
+devm_regulator_bulk_get.
 
-the driver works fine with versions up to 1.0.27. I have the card
-running on a daily base with current kernel versions.
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ sound/soc/codecs/wm8993.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-
-Flo
--- 
-Machines can do the work, so people have time to think.
-public key 8D073185          x-hkp://subkeys.pgp.net
+diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
+index 433d59a..2ee23a3 100644
+--- a/sound/soc/codecs/wm8993.c
++++ b/sound/soc/codecs/wm8993.c
+@@ -1562,7 +1562,6 @@ static int wm8993_remove(struct snd_soc_codec *codec)
+ 	struct wm8993_priv *wm8993 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	wm8993_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	regulator_bulk_free(ARRAY_SIZE(wm8993->supplies), wm8993->supplies);
+ 	return 0;
+ }
+ 
