@@ -1,17 +1,19 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 1/6] ASoC: cs4271: Include linux/of.h header
-Date: Fri, 27 Sep 2013 16:45:49 +0530
-Message-ID: <1380280554-32591-1-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 2/6] ASoC: pcm1681: Include linux/of.h header
+Date: Fri, 27 Sep 2013 16:45:50 +0530
+Message-ID: <1380280554-32591-2-git-send-email-sachin.kamat@linaro.org>
+References: <1380280554-32591-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f177.google.com (mail-pd0-f177.google.com
- [209.85.192.177])
- by alsa0.perex.cz (Postfix) with ESMTP id C7480265074
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 13:16:01 +0200 (CEST)
-Received: by mail-pd0-f177.google.com with SMTP id y10so2443370pdj.8
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 04:16:00 -0700 (PDT)
+Received: from mail-pd0-f171.google.com (mail-pd0-f171.google.com
+ [209.85.192.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DB0B265079
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 13:16:03 +0200 (CEST)
+Received: by mail-pd0-f171.google.com with SMTP id g10so2463823pdj.2
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 04:16:03 -0700 (PDT)
+In-Reply-To: <1380280554-32591-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,17 +31,17 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/codecs/cs4271.c |    1 +
+ sound/soc/codecs/pcm1681.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index a20f1bb..f6e9534 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -25,6 +25,7 @@
+diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
+index 651ce09..54ea15b 100644
+--- a/sound/soc/codecs/pcm1681.c
++++ b/sound/soc/codecs/pcm1681.c
+@@ -21,6 +21,7 @@
  #include <linux/gpio.h>
  #include <linux/i2c.h>
- #include <linux/spi/spi.h>
+ #include <linux/regmap.h>
 +#include <linux/of.h>
  #include <linux/of_device.h>
  #include <linux/of_gpio.h>
