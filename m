@@ -1,17 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: generic: Add generic DT based simple
-	codec
-Date: Fri, 27 Sep 2013 10:55:15 +0100
-Message-ID: <20130927095515.GZ19304@sirena.org.uk>
-References: <20130919105437.75e0f0a3@armhf> <5240B07C.6080404@wwwdotorg.org>
- <CAL_JsqKmfurrCqEYRNqcLRZMU-VjPin2dvK1Q6CMcK4i=+x-8w@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: si476x: Remove custom register I/O
+	implementation
+Date: Fri, 27 Sep 2013 11:07:57 +0100
+Message-ID: <20130927100757.GA19304@sirena.org.uk>
+References: <1380220461-16359-1-git-send-email-broonie@kernel.org>
+ <CAHQ1cqG2Uwhw3M933OPwsX1R=ZrpdmKjsy_DYTL_+CpfQvdVag@mail.gmail.com>
+ <20130926194350.GU19304@sirena.org.uk>
+ <CAHQ1cqF=8+vW9Ug+5KE3qFamis-m8A+agRF7uJrMbOzd5qk5jQ@mail.gmail.com>
+ <20130926205807.GV19304@sirena.org.uk>
+ <CAHQ1cqFUNVsKAdimFooyraK3vpvZP=asxAimjzhyyD8T1YRP=Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8604495239965521102=="
+Content-Type: multipart/mixed; boundary="===============8129944771423408661=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 587FA26507F
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 11:55:19 +0200 (CEST)
-In-Reply-To: <CAL_JsqKmfurrCqEYRNqcLRZMU-VjPin2dvK1Q6CMcK4i=+x-8w@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5AA2A265068
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 12:08:03 +0200 (CEST)
+In-Reply-To: <CAHQ1cqFUNVsKAdimFooyraK3vpvZP=asxAimjzhyyD8T1YRP=Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,67 +25,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robherring2@gmail.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Stephen Warren <swarren@wwwdotorg.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8604495239965521102==
+--===============8129944771423408661==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="i6UfSqW8aw8u8VxJ"
+	protocol="application/pgp-signature"; boundary="Do9hQ/bfCb4zBpLo"
 Content-Disposition: inline
 
 
---i6UfSqW8aw8u8VxJ
+--Do9hQ/bfCb4zBpLo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Sep 26, 2013 at 09:57:30PM -0500, Rob Herring wrote:
-> On Mon, Sep 23, 2013 at 4:19 PM, Stephen Warren <swarren@wwwdotorg.org> wrote:
+On Thu, Sep 26, 2013 at 03:48:09PM -0700, Andrey Smirnov wrote:
+> On Thu, Sep 26, 2013 at 1:58 PM, Mark Brown <broonie@kernel.org> wrote:
 
-> > We shouldn't have any Linux-specific bindings. It might be reasonable to
-> > define a binding for a "simple CODEC", but there's no reason it should
-> > be Linux-specific.
+> > In what way might these things conflict?  What are the clashes you are
+> > concerned about?
 
-> Further, just define the type of codec h/w. If linux can use its
-> simple-codec driver for it, then add a match table entry for said
-> codec. Then the DT is future proof when you decide the simple driver
-> doesn't really work for that h/w.
+> That lock serves the purpose of making sure that
+> si476x_core_send_command, calls to which all the rest of the functions
+> boil down to, is not executed in parallel to itself. So I am concerned
+> that with the lock acquisition removal it would be possible to make
+> that condition happen.
 
-So, this is what I keep telling people to do but lots of people don't
-want to do this - it eliminates the need have this binding at all since
-if you know which type of device you have there's no need to specify
-fixed properties of the device via DT.
+OK, so if it's purely about send_command() then why is the locking not
+being done in that function?  Surely the most obvious and robust place
+to protect the function is within the function itself?
 
---i6UfSqW8aw8u8VxJ
+--Do9hQ/bfCb4zBpLo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSRVX/AAoJELSic+t+oim9JC8P/0TWCOqxn6hrIRvfFnYcIM/H
-wFasA1xhqEdAEhbQMpBTBGcuWSRzy2LPLM42amNOIakIb8OySOSKRv0Gul61WNwL
-Btl0iUDrgeyrBOy4+iIJCO0KFseQVxSYHgqBMd/ubwrq6j6LwdI+d4M+uedOugrQ
-M5heLRCebWyyX6gtbse8xqX78ovlMEcdnErfU17vAyobApa6sMzkEhNSt5o4DpXO
-KfCxFnRLw0zd7M8a5yyAbAThJBzx4mnKqaQt59UfMrC03SSEgIzClPRPHQG8gYEI
-szQb7/2o9oqg37xQZEAImPATxQ/syk9z76QfZEcIJFlTp8gGExJDQMR8occlYqRH
-G7YCSsi3wXvo8Igvqyd/mHGNEjEVX2JtG68Hr6pVaiACAc6YrgD9+WMP7Yqfl4PU
-qezUXlvC4ZcP9MG+HOrci7LfoX3lIq6UUB9tzW8VlkQ+q1X6Rzv7cychPlerxOeZ
-X+MZxyLywTZs4YdCRRciQESO0wyWfsXKmrrb85feOSDYNl4X6aiWpfJi5ooPewf8
-vO5qxsvouL/zwsEX4rP4njjyrtfoDPjybCZHnGxXRhjE/1UMQ9LZGxh/gmTR0gc3
-TkZpDMSY2TXveVz1Bs3k+kch8ZYEimMKhh7HG9xd23G+mBpZTR8x4EWdk3bHbvcM
-+jZSfslO9yGQSCV0zlmI
-=haJP
+iQIcBAEBAgAGBQJSRVj6AAoJELSic+t+oim9j4kQAJprho03MsTyLbdviIzYnXFt
+hmainHW2GUQCDT3YJR/ayUZqmnPrBwGqfzXPH60VVnizCgvlrlb7sgdlXOobZclM
+y+WXMitdHC4LFf8p7K1iBeGLKP3YXeElUsYTZB1wA/K1DGQKfD+THEkP2sVSvi/S
+qngSjeFLG/KmHk0w/yD5wW39aMuZ7uVEkaWSVBPgziPkgirB91dJOAmySZdU8lRm
+641+9pKUsRSVeydVA6pJK0+dQMXRKKF+WTeuCjpiKzmPx+cBC0uda3R9lUgTPeGJ
+QQ2/JMIj5+lFq9YuY0StZT3DmguTSeBK4etIEhiUE9yd4tRZ5c+NSK+HrYZD0qUu
+jWAmHqT9JJCowV09rTBv1E/petIPAy7k5bopCDUbjtEPDqVOlLoba4rhNL6SBPjL
+B3uEOSmW0fBJ6tJZFLdEMFtz8Go8bo5fSjcZ++el0JoFRnuba6nqXCIvojFmKtIP
+q2EfdPYpXElFp64W/J8CSaF8QXs31c5Y9JcpaEvOLoz0ZyRaEUzzLBnd2H/Abn/G
+vqUUJHoLuYS6lSvyDIRP9FIEX0KzyjBH7UZAnMtJswUxyYIZRmW3FiBzR++hsvbC
+ITq8nAFw6bLe1mHPEYGdY3BoHYzqw2ZJnbKUWR24AL15wpWKP1FZHG8rByGh+2Sw
+5MoVqdfqZ11r5WAQbXiB
+=+bSs
 -----END PGP SIGNATURE-----
 
---i6UfSqW8aw8u8VxJ--
+--Do9hQ/bfCb4zBpLo--
 
---===============8604495239965521102==
+--===============8129944771423408661==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8604495239965521102==--
+--===============8129944771423408661==--
