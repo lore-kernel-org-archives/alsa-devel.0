@@ -1,19 +1,19 @@
 From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 Subject: Re: [RFC/RFT PATCH] ALSA: hda - hdmi: Add ATI/AMD
 	multi-channel audio support
-Date: Fri, 27 Sep 2013 11:27:53 +0200
-Message-ID: <CACna6rx7x1TM3NuegCYQ+kG3qiCyHxtjLub4sW3CJa+3zK6R_g@mail.gmail.com>
+Date: Fri, 27 Sep 2013 12:19:03 +0200
+Message-ID: <CACna6rzfMw46kw36d2A_JvMjujnCWOYZOJLtT7dDDvU6P5vh+A@mail.gmail.com>
 References: <1379872233-32210-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f170.google.com (mail-we0-f170.google.com
- [74.125.82.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 878D2265053
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 11:27:53 +0200 (CEST)
-Received: by mail-we0-f170.google.com with SMTP id w62so2401146wes.15
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 02:27:53 -0700 (PDT)
+Received: from mail-we0-f169.google.com (mail-we0-f169.google.com
+ [74.125.82.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1734265062
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 12:19:05 +0200 (CEST)
+Received: by mail-we0-f169.google.com with SMTP id t60so2469033wes.14
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 03:19:03 -0700 (PDT)
 In-Reply-To: <1379872233-32210-1-git-send-email-anssi.hannula@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,23 +29,29 @@ Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?Q?Peter_F
 List-Id: alsa-devel@alsa-project.org
 
 2013/9/22 Anssi Hannula <anssi.hannula@iki.fi>:
-> AMD just released the documentation needed for multi-channel HDMI
-> support, so here is the initial patch adding such support.
->
-> This has been tested on codec 0x1002aa01, revision 0x100200 with the
-> exception of custom channel maps, which I intend to test later.
->
-> I'm especially interested in testers with:
-> - Older codecs other than 0x1002aa01. My best guess is that the new code
->   should work on them as well, but I'm not really 100% sure.
-> - Codec 0x1002aa01 revisions 0x100300 (Rev ID 3) or later (see
->   /proc/asound/cardX/codec#Y). These support individual channel
->   remapping and that code is entirely untested (even for regular
->   5.1/7.1).
+> +       pos = 20;
+> +       for (i = 1; i <= 14; i++) {
 
-Wow, that's a nice (and quick) work :) I was on vacations for the last
-week, and only noticed the docs release. Planned to work on that, but
-you were much faster :)
+What about using HDMI_AUDIO_CODING_TYPE_PCM and HDMI_AUDIO_CODING_TYPE_WMA_PRO?
 
-I'll test it with my cards, but it'll take me some time (env setup,
-cards switching...).
+
+> +               if (i == 13) /* not handled by ATI/AMD */
+> +                       continue;
+
+Replace 13 with HDMI_AUDIO_CODING_TYPE_DST and add
+HDMI_AUDIO_CODING_TYPE_DSD (it's not used/reserved too).
+
+
+> +               snd_hda_codec_write(codec, nid, 0, ATI_VERB_SET_AUDIO_DESCRIPTOR, i << 3);
+> +               ati_sad = snd_hda_codec_read(codec, nid, 0, ATI_VERB_GET_AUDIO_DESCRIPTOR, 0);
+
+Now I understand why I couldn't RE that. I didn't know I have to write
+something to the ATI_VERB_SET_AUDIO_DESCRIPTOR.
+
+
+> +               if (i == 1 && ati_sad & 0xff000000 && (ati_sad & 0xff00) != (ati_sad & 0xff000000) >> 16) {
+
+Don't you get a warning about lacking brackets around
+ati_sad & 0xff000000
+?
+Please replace magic "1" with HDMI_AUDIO_CODING_TYPE_PCM.
