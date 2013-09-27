@@ -1,18 +1,18 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 3/6] ASoC: pcm1792a: Include linux/of.h header
-Date: Fri, 27 Sep 2013 16:45:51 +0530
-Message-ID: <1380280554-32591-3-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 4/6] ASoC: tas5086: Include linux/of.h header
+Date: Fri, 27 Sep 2013 16:45:52 +0530
+Message-ID: <1380280554-32591-4-git-send-email-sachin.kamat@linaro.org>
 References: <1380280554-32591-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
- [209.85.192.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D4EA26507E
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 13:16:06 +0200 (CEST)
-Received: by mail-pd0-f182.google.com with SMTP id r10so2486937pdi.27
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 04:16:05 -0700 (PDT)
+Received: from mail-pb0-f45.google.com (mail-pb0-f45.google.com
+ [209.85.160.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A426265072
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 13:16:09 +0200 (CEST)
+Received: by mail-pb0-f45.google.com with SMTP id mc17so2431115pbc.32
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 04:16:08 -0700 (PDT)
 In-Reply-To: <1380280554-32591-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,20 +31,20 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/codecs/pcm1792a.c |    1 +
+ sound/soc/codecs/tas5086.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm1792a.c
-index 2a8eccf..6f14c50 100644
---- a/sound/soc/codecs/pcm1792a.c
-+++ b/sound/soc/codecs/pcm1792a.c
-@@ -28,6 +28,7 @@
- #include <sound/initval.h>
- #include <sound/soc.h>
- #include <sound/tlv.h>
+diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
+index 6d31d88..e7c9a08 100644
+--- a/sound/soc/codecs/tas5086.c
++++ b/sound/soc/codecs/tas5086.c
+@@ -37,6 +37,7 @@
+ #include <linux/i2c.h>
+ #include <linux/regmap.h>
+ #include <linux/spi/spi.h>
 +#include <linux/of.h>
  #include <linux/of_device.h>
- 
- #include "pcm1792a.h"
+ #include <linux/of_gpio.h>
+ #include <sound/pcm.h>
 -- 
 1.7.9.5
