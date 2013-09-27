@@ -1,17 +1,17 @@
-From: Meelis Roos <mroos@linux.ee>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: usb-audio mic problem with Polycom C100S
-Date: Fri, 27 Sep 2013 16:10:59 +0300 (EEST)
-Message-ID: <alpine.SOC.1.00.1309271608540.1451@math.ut.ee>
+Date: Fri, 27 Sep 2013 15:14:39 +0200
+Message-ID: <524584BF.5040908@ladisch.de>
 References: <alpine.SOC.1.00.1309251653350.17530@math.ut.ee>
- <52458079.3090809@ladisch.de>
+ <52458079.3090809@ladisch.de> <alpine.SOC.1.00.1309271608540.1451@math.ut.ee>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2.it.da.ut.ee (smtp2.it.da.ut.ee [193.40.5.67])
- by alsa0.perex.cz (Postfix) with ESMTP id EA97A265713
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 15:10:59 +0200 (CEST)
-In-Reply-To: <52458079.3090809@ladisch.de>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 4F30A2656FE
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 15:14:46 +0200 (CEST)
+In-Reply-To: <alpine.SOC.1.00.1309271608540.1451@math.ut.ee>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,26 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+To: Meelis Roos <mroos@linux.ee>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> > I tried to use Skype (4.1) with Polycom Communicator C100S. Audio
-> > output works fine but mic seems to be dead, although it is set to
-> > capture and volume is even max.
-> 
-> Please show the output of "amixer scontents" for this device.
+Meelis Roos wrote:
+>>> I tried to use Skype (4.1) with Polycom Communicator C100S. Audio
+>>> output works fine but mic seems to be dead, although it is set to
+>>> capture and volume is even max.
+>
+> Simple mixer control 'Mic',0
+>   Limits: Capture 0 - 64
+>   Mono: Capture 0 [0%] [0.00dB] [on]
 
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 61
-  Mono: Playback 20 [33%] [-20.17dB] [on]
-Simple mixer control 'Mic',0
-  Capabilities: cvolume cvolume-joined cswitch cswitch-joined
-  Capture channels: Mono
-  Limits: Capture 0 - 64
-  Mono: Capture 0 [0%] [0.00dB] [on]
+This is at the lowest setting.
 
--- 
-Meelis Roos (mroos@linux.ee)
+
+Regards,
+Clemens
