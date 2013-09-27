@@ -1,17 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/3] ASoC: adau1373: Issue soft reset on probe
-Date: Fri, 27 Sep 2013 13:47:10 +0200
-Message-ID: <1380282430-28159-3-git-send-email-lars@metafoo.de>
-References: <1380282430-28159-1-git-send-email-lars@metafoo.de>
+From: Rob Sykes <aquegg@yahoo.co.uk>
+Subject: pcm_rate API  question
+Date: Fri, 27 Sep 2013 12:59:33 +0100 (BST)
+Message-ID: <1380283173.50500.YahooMailNeo@web171404.mail.ir2.yahoo.com>
+Reply-To: Rob Sykes <aquegg@yahoo.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-078.synserver.de (smtp-out-078.synserver.de
- [212.40.185.78])
- by alsa0.perex.cz (Postfix) with ESMTP id E7E1126508C
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 13:45:57 +0200 (CEST)
-In-Reply-To: <1380282430-28159-1-git-send-email-lars@metafoo.de>
+Received: from nm5-vm0.bullet.mail.ird.yahoo.com
+ (nm5-vm0.bullet.mail.ird.yahoo.com [77.238.189.207])
+ by alsa0.perex.cz (Postfix) with SMTP id BCF2C265079
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 13:59:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,30 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Reset the device on probe to make sure that the register settings match the
-register cache defaults.
+Hello alsa devs,
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/adau1373.c | 2 ++
- 1 file changed, 2 insertions(+)
+There's an ongoing attempt to see if libsoxr-lsr can be used as a plug-in r=
+eplacement for libsamplerate in pulseaudio and in alsa (libsoxr-lsr is desi=
+gned with this usage in mind).
 
-diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-index 2f84054..59654b1 100644
---- a/sound/soc/codecs/adau1373.c
-+++ b/sound/soc/codecs/adau1373.c
-@@ -1540,6 +1540,8 @@ static int adau1373_i2c_probe(struct i2c_client *client,
- 	if (IS_ERR(adau1373->regmap))
- 		return PTR_ERR(adau1373->regmap);
- 
-+	regmap_write(adau1373->regmap, ADAU1373_SOFT_RESET, 0x00);
-+
- 	dev_set_drvdata(&client->dev, adau1373);
- 
- 	ret = snd_soc_register_codec(&client->dev, &adau1373_codec_driver,
--- 
-1.8.0
+With pulseaudio, it seems to 'just work', but with alsa, it looks like ther=
+e is a buffering problem. =A0Progress reports for this are here:
+
+http://blog.ivitera.com/pavel/linux-audio/pulseaudio-with-ld_preloading-lib=
+soxr-lsr
+
+http://blog.ivitera.com/pavel/linux-audio/simple-use-of-libsoxr-lsr-in-alsa=
+-using-ld_preload
+
+
+AFAICT, the problem with alsa relates to the use of this function in pcm_ra=
+te.h:
+
+typedef struct snd_pcm_rate_ops {
+...
+=A0 =A0 =A0 =A0 void (*convert_s16)(void *obj, int16_t *dst, unsigned int d=
+st_frames,
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const int16_t *src,=
+ unsigned int src_frames);
+
+Is there documentation available regarding the use of this function? For ex=
+ample, is the plugin obliged always to consume=A0src_frames and generate=A0=
+dst_frames samples? =A0If so, how is the plugin expected to comply (say, if=
+ it's not been given enough input to generate that amount of output)?
+
+TIA,
+Rob
