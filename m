@@ -1,18 +1,18 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 2/6] ASoC: pcm1681: Include linux/of.h header
-Date: Fri, 27 Sep 2013 16:45:50 +0530
-Message-ID: <1380280554-32591-2-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 3/6] ASoC: pcm1792a: Include linux/of.h header
+Date: Fri, 27 Sep 2013 16:45:51 +0530
+Message-ID: <1380280554-32591-3-git-send-email-sachin.kamat@linaro.org>
 References: <1380280554-32591-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f171.google.com (mail-pd0-f171.google.com
- [209.85.192.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DB0B265079
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 13:16:03 +0200 (CEST)
-Received: by mail-pd0-f171.google.com with SMTP id g10so2463823pdj.2
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 04:16:03 -0700 (PDT)
+Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
+ [209.85.192.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D4EA26507E
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 13:16:06 +0200 (CEST)
+Received: by mail-pd0-f182.google.com with SMTP id r10so2486937pdi.27
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 04:16:05 -0700 (PDT)
 In-Reply-To: <1380280554-32591-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,20 +31,20 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/codecs/pcm1681.c |    1 +
+ sound/soc/codecs/pcm1792a.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
-index 651ce09..54ea15b 100644
---- a/sound/soc/codecs/pcm1681.c
-+++ b/sound/soc/codecs/pcm1681.c
-@@ -21,6 +21,7 @@
- #include <linux/gpio.h>
- #include <linux/i2c.h>
- #include <linux/regmap.h>
+diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm1792a.c
+index 2a8eccf..6f14c50 100644
+--- a/sound/soc/codecs/pcm1792a.c
++++ b/sound/soc/codecs/pcm1792a.c
+@@ -28,6 +28,7 @@
+ #include <sound/initval.h>
+ #include <sound/soc.h>
+ #include <sound/tlv.h>
 +#include <linux/of.h>
  #include <linux/of_device.h>
- #include <linux/of_gpio.h>
- #include <sound/pcm.h>
+ 
+ #include "pcm1792a.h"
 -- 
 1.7.9.5
