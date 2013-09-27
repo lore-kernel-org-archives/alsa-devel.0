@@ -1,7 +1,7 @@
 From: Wei Yongjun <weiyj.lk@gmail.com>
 Subject: [PATCH] ASoC: wm8993: drop regulator_bulk_free of devm_ allocated data
-Date: Fri, 27 Sep 2013 16:15:54 +0800
-Message-ID: <CAPgLHd8rbL2mmN+hFb-Jqvy+tu7wyTj702Z0fKNG_KOCW1kd1Q@mail.gmail.com>
+Date: Fri, 27 Sep 2013 16:22:49 +0800
+Message-ID: <CAPgLHd_-3McKfmk9fE0R386_RjMS-kKKrJN=dBt2gWC7tUPLxQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-kernel-owner@vger.kernel.org>
