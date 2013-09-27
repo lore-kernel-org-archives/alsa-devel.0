@@ -1,7 +1,7 @@
 From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [PATCH 1/2] [RESEND] snd-ac97-codec: Add ID for TI TLV320AIC27 codec
-Date: Fri, 27 Sep 2013 20:27:58 +0200
-Message-ID: <201309272027.59117.linux@rainbow-software.org>
+Subject: [PATCH 2/2] [RESEND] snd-ac97-codec: Use complete ID when the codec is not known
+Date: Fri, 27 Sep 2013 20:28:03 +0200
+Message-ID: <201309272028.03764.linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
@@ -13,27 +13,26 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add 0x54584e03 ID for TI TLV320AIC27 AC'97 codec according to datasheet:
-http://www.ti.com/lit/ds/slas253a/slas253a.pdf
-
-The weird thing is that the chip is physically marked 320AD91.
+Currently, if the codec ID is not known, the last byte of the ID is used as name.
+It's not helpful at all, use full codec ID instead.
 
 Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 ---
- sound/pci/ac97/ac97_codec.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ sound/pci/ac97/ac97_codec.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
-index 445ca48..bf578ba2 100644
+index bf578ba2..30a40a8 100644
 --- a/sound/pci/ac97/ac97_codec.c
 +++ b/sound/pci/ac97/ac97_codec.c
-@@ -175,6 +175,7 @@ static const struct ac97_codec_id snd_ac97_codec_ids[] = {
- { 0x54524106, 0xffffffff, "TR28026",		NULL,		NULL },
- { 0x54524108, 0xffffffff, "TR28028",		patch_tritech_tr28028,	NULL }, // added by xin jin [07/09/99]
- { 0x54524123, 0xffffffff, "TR28602",		NULL,		NULL }, // only guess --jk [TR28023 = eMicro EM28023 (new CT1297)]
-+{ 0x54584e03, 0xffffffff, "TLV320AIC27",	NULL,		NULL },
- { 0x54584e20, 0xffffffff, "TLC320AD9xC",	NULL,		NULL },
- { 0x56494161, 0xffffffff, "VIA1612A",		NULL,		NULL }, // modified ICE1232 with S/PDIF
- { 0x56494170, 0xffffffff, "VIA1617A",		patch_vt1617a,	NULL }, // modified VT1616 with S/PDIF
+@@ -1830,7 +1830,7 @@ void snd_ac97_get_name(struct snd_ac97 *ac97, unsigned int id, char *name, int m
+ 				pid->patch(ac97);
+ 		}
+ 	} else
+-		sprintf(name + strlen(name), " id %x", id & 0xff);
++		sprintf(name + strlen(name), " id %x", id);
+ }
+ 
+ /**
 -- 
 Ondrej Zary
