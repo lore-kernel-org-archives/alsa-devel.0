@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: adau1373: Convert to direct
-	regmap usage
-Date: Fri, 27 Sep 2013 14:29:11 +0100
-Message-ID: <20130927132911.GE19304@sirena.org.uk>
-References: <1380282430-28159-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: adav80x: Convert to direct regmap
+	usage
+Date: Fri, 27 Sep 2013 14:29:58 +0100
+Message-ID: <20130927132958.GF19304@sirena.org.uk>
+References: <1380287905-20520-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3640644227348617812=="
+Content-Type: multipart/mixed; boundary="===============5775955017460701326=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 463082656FE
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 15:29:15 +0200 (CEST)
-In-Reply-To: <1380282430-28159-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id A096326576F
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 15:30:01 +0200 (CEST)
+In-Reply-To: <1380287905-20520-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,50 +25,50 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3640644227348617812==
+--===============5775955017460701326==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RHnfto7yGd+QdmRl"
+	protocol="application/pgp-signature"; boundary="Iv4H2WyLgK50POYH"
 Content-Disposition: inline
 
 
---RHnfto7yGd+QdmRl
+--Iv4H2WyLgK50POYH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Sep 27, 2013 at 01:47:08PM +0200, Lars-Peter Clausen wrote:
+On Fri, Sep 27, 2013 at 03:18:25PM +0200, Lars-Peter Clausen wrote:
 > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-Applied all, thanks.
+Applied, thanks.
 
---RHnfto7yGd+QdmRl
+--Iv4H2WyLgK50POYH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSRYgkAAoJELSic+t+oim9iJAP/2Z3T3ERjv3JC1qUNoiL08la
-0K2v1CmXajWw8tcsQbzoP7F92eVUutctl0CsSNBbPcl6MgS4RMDzafjBB700EhwW
-DxS2bu7fWWwmJhcqMyEFK+/KmDyp6dmdxytPOfn8W26/QkYGKvb3+aHdvtzRl74m
-ULW9+hbK+LS65nmTI/ynRoHDpnUo4JWoTXnhFn8DsIi6G/bGYf0T4uipw2eor3E3
-eF9wzP1zSEj9aZhOTn9HV0yjGwxRh1+4A71nMU84A/Odk2vkE1Y8s/Qp5SFbZedz
-rdW9d2J/zNCPaVypRT1TDHTB6UDgWnrb7BqnIWSu8InkGTXorvPAlUIxf24vhFpI
-UZV0WhXLxkB4hPCAnvYsQNznAmtGUompAPkSHnoAJ+cfoB/eWhl7CPzEW8YfT7IP
-sEJqbdJMDEwVmgmFUt3catqP4xEuh0mFy8axhpw3GEqtcpInp7z2PlctWhQK5x2N
-cERQ9kQY53TmJNWmteA3WBb08AxSZjxgNIBJfjHz1rjHOb4WNoHUN9INLnm5335V
-7VI2TlTpIFrR07ZXEV36oycmSotczo7UZaxmo782yKVPYYbBboWVCgWK2lqpvyQN
-b9BN/YB/iuyDHO4ZhIvawwydE9D3fQpteD+exJs1UiGAy8s1Si+1fLAhgUv4wSS+
-I35a9jC7jCHgT0TDUS3q
-=a8Zl
+iQIcBAEBAgAGBQJSRYhTAAoJELSic+t+oim9YrQP/2Bu93HVBuoICqakTUecsyFF
+5nJFmm9cRup69Lp2G1V+1Rf7IGfXthqzR5KMK/lINbDt4qOW+KwmLRweKK/RBaaY
+092Pde9tIYzcqsYOmTIQ02bMgc57rUePO0oaKiXRdAfOifXU8Fm9tRNDf8KcFc/h
+VTBWWx8P79Q2bV0fbJcymWfOKzTmbw3BTYvEVY5klFZTSfu+WUHGYiRgPgR8hkpo
+W4H60GqC3cFFPWD755qWHII4i6xSjOkGg5/P+LdcMoxCvlcY3tPAePQqPsvaLiPK
+hE5xAUmlHwptIXUE/J7yX5i5eHagRrO9+x9ZZYvqmp3hBySnlIoZrDegQR9qrIVa
+y95M8pvB2UYQ/51uYbHvBcuTHmrXSmtnBFdgZVBNuZEnFk2opvG00yScYJbU013S
+X+sEs3hBASbvQub6b2ZenakOlXUnv02FhCu9FPyrqVGTPz9i7A7dJJcMMmSPhn6Q
+4zhrrcldphfIcN7eflz8bdoWNlxvX0qHzep5wN7KTBkP1zSgFm2YhSp/7l0zR28u
+ex28hwV+dLBlXMx07dzFDQjR0654fWNRYc0H13LRP/QBJH9/YEqe2FwdnYrzyufd
+XLcpSnizPaRrexOB4kBnsMecg3ynyRHRn0CMXCX6fWnHzUTyYvLpYG6gUSYQ3/v7
+95lEm2cyuDQKe+CHVKuZ
+=GraU
 -----END PGP SIGNATURE-----
 
---RHnfto7yGd+QdmRl--
+--Iv4H2WyLgK50POYH--
 
---===============3640644227348617812==
+--===============5775955017460701326==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3640644227348617812==--
+--===============5775955017460701326==--
