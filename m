@@ -1,8 +1,8 @@
 From: Andrey Smirnov <andrew.smirnov@gmail.com>
 Subject: Re: [PATCH] ASoC: si476x: Remove custom register I/O
 	implementation
-Date: Fri, 27 Sep 2013 12:28:14 -0700
-Message-ID: <CAHQ1cqHEaHSUR1hL5ybs511PdCiz5QWUi5uZ5qDMZcFnVHc3=w@mail.gmail.com>
+Date: Fri, 27 Sep 2013 21:37:01 -0700
+Message-ID: <CAHQ1cqEeHa+JbDZ8S0ySztRpe09zL1r9BYstyu+unzMn5UeymA@mail.gmail.com>
 References: <1380220461-16359-1-git-send-email-broonie@kernel.org>
  <CAHQ1cqG2Uwhw3M933OPwsX1R=ZrpdmKjsy_DYTL_+CpfQvdVag@mail.gmail.com>
  <20130926194350.GU19304@sirena.org.uk>
@@ -12,17 +12,19 @@ References: <1380220461-16359-1-git-send-email-broonie@kernel.org>
  <20130927100757.GA19304@sirena.org.uk>
  <CAHQ1cqHwqYpdrUnYfXOsVXcYHRPGWzkTNv5SJKACUdXN58=wew@mail.gmail.com>
  <20130927170232.GL19304@sirena.org.uk>
+ <CAHQ1cqHEaHSUR1hL5ybs511PdCiz5QWUi5uZ5qDMZcFnVHc3=w@mail.gmail.com>
+ <20130927194816.GO19304@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f49.google.com (mail-pa0-f49.google.com
- [209.85.220.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 37AE72650C1
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 21:28:16 +0200 (CEST)
-Received: by mail-pa0-f49.google.com with SMTP id ld10so3161381pab.8
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 12:28:14 -0700 (PDT)
-In-Reply-To: <20130927170232.GL19304@sirena.org.uk>
+Received: from mail-pd0-f171.google.com (mail-pd0-f171.google.com
+ [209.85.192.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id CEC162650DB
+ for <alsa-devel@alsa-project.org>; Sat, 28 Sep 2013 06:37:02 +0200 (CEST)
+Received: by mail-pd0-f171.google.com with SMTP id g10so3399406pdj.2
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2013 21:37:01 -0700 (PDT)
+In-Reply-To: <20130927194816.GO19304@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,31 +38,20 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 27, 2013 at 10:02 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Sep 27, 2013 at 08:53:58AM -0700, Andrey Smirnov wrote:
 >
->> > OK, so if it's purely about send_command() then why is the locking not
->> > being done in that function?  Surely the most obvious and robust place
->> > to protect the function is within the function itself?
->
->> Not having send_command acquire any locks allows me to have variable
->> levels of granularity of locking, for example in the worker thread
->> that fetches RDS data from the chip it allows me to get exclusive
->> access to the chip for the duration of the FIFO draining. Also any
->> band switch for that chip, like AM to FM, etc. require chip to be
->> power cycled which translates to multiple calls to send_command as
->> well, I think having those performed atomically simplifies the driver
->> as well.
->
-> Right, so it's not just protecting send_command() but is instead
-> protecting higher level things.  In that case shouldn't the locking be
-> performed further up in this driver too rather than on each register
-> write?
+> Since the driver doesn't expose any controls to userspace the only
+> things that can cause register writes are the operations provided by the
+> CODEC driver, they could take the lock for their runtime (which is about
+> the level the v4l stuff is running at AIUI).
 
-That is the case for the V4L driver, in that code the locking is
-acquired for logical operations, such "tune" or "power up" rather than
-for a single register write, but for the codec driver, to the best of
-my knowledge, read and write register are the highest level operations
-that it provides. Or am I just unaware of some codec driver
-functionality that driver can provide and SoC sound subsystem will use
-that would allow the lock to be obtained at higher levels?
+Do you mean moving it to si476x_codec_set_dai_fmt and
+si476x_codec_hw_params? If those are the only two places where
+register read and write are called by SoC sound subsystem then I think
+that would work.
+
+> This still won't fix the issue with the device being powered off but I
+> guess that normal usage patterns will have powered the device up to do
+> tuning or something prior to audio being started
+
+You mean the issue cause by my forgetting to sync cache on power up?
+That would be a subject for a separate patch.
