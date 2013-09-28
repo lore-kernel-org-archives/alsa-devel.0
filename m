@@ -1,80 +1,62 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: [PATCH 2/5] gpio: samsung: Use CONFIG_ARCH_S3C64XX to
-	check for S3C64xx support
-Date: Sat, 28 Sep 2013 20:21:34 +0200
-Message-ID: <1380392497-27406-2-git-send-email-tomasz.figa@gmail.com>
-References: <1380392497-27406-1-git-send-email-tomasz.figa@gmail.com>
+From: Clemens Ladisch <cladisch@googlemail.com>
+Subject: Re: [alsa-devel] hdmi sound rerouted?
+Date: Sun, 29 Sep 2013 00:32:40 +0200
+Message-ID: <52475908.1060705@googlemail.com>
+References: <20130927185045.47660@gmx.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f47.google.com (mail-ee0-f47.google.com [74.125.83.47])
- by alsa0.perex.cz (Postfix) with ESMTP id E85F82610AE
- for <alsa-devel@alsa-project.org>; Sat, 28 Sep 2013 20:22:10 +0200 (CEST)
-Received: by mail-ee0-f47.google.com with SMTP id d49so1816316eek.20
- for <alsa-devel@alsa-project.org>; Sat, 28 Sep 2013 11:22:10 -0700 (PDT)
-In-Reply-To: <1380392497-27406-1-git-send-email-tomasz.figa@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-samsung-soc@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Arnd Bergmann <arnd@arndb.de>, Sangbeom Kim <sbkim73@samsung.com>, Linus Walleij <linus.walleij@linaro.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Ben Dooks <ben-linux@fluff.org>, Olof Johansson <olof@lixom.net>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Mauro Carvalho Chehab <m.chehab@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <20130927185045.47660@gmx.com>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Dagg Stompler <daggs@gmx.com>
+Cc: alsa-user@lists.sourceforge.net, Alex Deucher <alexander.deucher@amd.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Since CONFIG_PLAT_S3C64XX is going to be removed, this patch modifies
-the gpio-samsung driver to use the proper way of checking for S3C64xx
-support - CONFIG_ARCH_S3C64XX.
+Dagg Stompler wrote:
+>> daggs@gmx.com wrote:
+>>> card 0: PCH [HDA Intel PCH], device 3: HDMI 0 [HDMI 0]
+>>> card 1: Generic [HD-Audio Generic], device 3: HDMI 0 [HDMI 0]
+>>> card 2: HDMI [HDA ATI HDMI], device 3: HDMI 0 [HDMI 0]
+>>
+>> The second one is called "Generic" because your kernel does not (yet)
+>> know the hardware.
+>>
+>>> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Cedar HDMI Audio [Radeon HD 5400/6300 Series]
+>>> 06:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] RV635 HDMI Audio [Radeon HD 3600 Series]
+>>
+>> These are the HDMI outputs of *two* graphics cards. The first one's
+>> model is so new that the driver doesn't know it.
+>
+> the 3600 doesn't have hdmi socket so I think it is irrelevant for my issue.
 
-Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
----
- drivers/gpio/gpio-samsung.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+The RV635 chip does support HDMI outputs (even if none are actually
+connected), so the corresponding PCI device shows up here.
 
-diff --git a/drivers/gpio/gpio-samsung.c b/drivers/gpio/gpio-samsung.c
-index 29b5d67..76e02b9 100644
---- a/drivers/gpio/gpio-samsung.c
-+++ b/drivers/gpio/gpio-samsung.c
-@@ -1033,7 +1033,7 @@ static int s3c24xx_gpiolib_fbank_to_irq(struct gpio_chip *chip, unsigned offset)
- }
- #endif
- 
--#ifdef CONFIG_PLAT_S3C64XX
-+#ifdef CONFIG_ARCH_S3C64XX
- static int s3c64xx_gpiolib_mbank_to_irq(struct gpio_chip *chip, unsigned pin)
- {
- 	return pin < 5 ? IRQ_EINT(23) + pin : -ENXIO;
-@@ -1174,7 +1174,7 @@ struct samsung_gpio_chip s3c24xx_gpios[] = {
-  */
- 
- static struct samsung_gpio_chip s3c64xx_gpios_4bit[] = {
--#ifdef CONFIG_PLAT_S3C64XX
-+#ifdef CONFIG_ARCH_S3C64XX
- 	{
- 		.chip	= {
- 			.base	= S3C64XX_GPA(0),
-@@ -1227,7 +1227,7 @@ static struct samsung_gpio_chip s3c64xx_gpios_4bit[] = {
- };
- 
- static struct samsung_gpio_chip s3c64xx_gpios_4bit2[] = {
--#ifdef CONFIG_PLAT_S3C64XX
-+#ifdef CONFIG_ARCH_S3C64XX
- 	{
- 		.base	= S3C64XX_GPH_BASE + 0x4,
- 		.chip	= {
-@@ -1257,7 +1257,7 @@ static struct samsung_gpio_chip s3c64xx_gpios_4bit2[] = {
- };
- 
- static struct samsung_gpio_chip s3c64xx_gpios_2bit[] = {
--#ifdef CONFIG_PLAT_S3C64XX
-+#ifdef CONFIG_ARCH_S3C64XX
- 	{
- 		.base	= S3C64XX_GPF_BASE,
- 		.config	= &samsung_gpio_cfgs[6],
--- 
-1.8.3.2
+>>> If you update the kernel, you will get two devices named "HDA ATI HDMI".
+>
+> upgrade to where?
+
+Oops.  Even the latest driver lacks the PCI IDs of many HDMI HDA devices
+(aa50/aa58/aa60/aa68/aa80/aa88/aa90/aa98: Cypress/Juniper/Redwood/Cedar/
+Cayman+Antilles/Barts/Turks/Caicos).
+
+Alex, are these devices that require disabling snooping?
+
+
+Regards,
+Clemens
+
+------------------------------------------------------------------------------
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
