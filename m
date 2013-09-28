@@ -1,62 +1,53 @@
-From: Clemens Ladisch <cladisch@googlemail.com>
-Subject: Re: [alsa-devel] hdmi sound rerouted?
-Date: Sun, 29 Sep 2013 00:32:40 +0200
-Message-ID: <52475908.1060705@googlemail.com>
-References: <20130927185045.47660@gmx.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/5] ASoC: samsung: Use CONFIG_ARCH_S3C64XX to check for
+ S3C64xx support
+Date: Sat, 28 Sep 2013 23:56:14 +0100
+Message-ID: <20130928225614.GR19304@sirena.org.uk>
+References: <1380392497-27406-1-git-send-email-tomasz.figa@gmail.com>
+ <1380392497-27406-4-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <20130927185045.47660@gmx.com>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: Dagg Stompler <daggs@gmx.com>
-Cc: alsa-user@lists.sourceforge.net, Alex Deucher <alexander.deucher@amd.com>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0OOz7ZB592LYQf07"
+Return-path: <linux-media-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1380392497-27406-4-git-send-email-tomasz.figa@gmail.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Ben Dooks <ben-linux@fluff.org>, Linus Walleij <linus.walleij@linaro.org>, Mauro Carvalho Chehab <m.chehab@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dagg Stompler wrote:
->> daggs@gmx.com wrote:
->>> card 0: PCH [HDA Intel PCH], device 3: HDMI 0 [HDMI 0]
->>> card 1: Generic [HD-Audio Generic], device 3: HDMI 0 [HDMI 0]
->>> card 2: HDMI [HDA ATI HDMI], device 3: HDMI 0 [HDMI 0]
->>
->> The second one is called "Generic" because your kernel does not (yet)
->> know the hardware.
->>
->>> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Cedar HDMI Audio [Radeon HD 5400/6300 Series]
->>> 06:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] RV635 HDMI Audio [Radeon HD 3600 Series]
->>
->> These are the HDMI outputs of *two* graphics cards. The first one's
->> model is so new that the driver doesn't know it.
->
-> the 3600 doesn't have hdmi socket so I think it is irrelevant for my issue.
 
-The RV635 chip does support HDMI outputs (even if none are actually
-connected), so the corresponding PCI device shows up here.
+--0OOz7ZB592LYQf07
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->>> If you update the kernel, you will get two devices named "HDA ATI HDMI".
->
-> upgrade to where?
+On Sat, Sep 28, 2013 at 08:21:36PM +0200, Tomasz Figa wrote:
+> Since CONFIG_PLAT_S3C64XX is going to be removed, this patch modifies
+> the s3c-i2s-v2 driver to use the proper way of checking for S3C64xx
+> support - CONFIG_ARCH_S3C64XX.
 
-Oops.  Even the latest driver lacks the PCI IDs of many HDMI HDA devices
-(aa50/aa58/aa60/aa68/aa80/aa88/aa90/aa98: Cypress/Juniper/Redwood/Cedar/
-Cayman+Antilles/Barts/Turks/Caicos).
+Acked-by: Mark Brown <broonie@linaro.org>
 
-Alex, are these devices that require disabling snooping?
+--0OOz7ZB592LYQf07
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
 
-Regards,
-Clemens
+iQIcBAEBAgAGBQJSR16KAAoJELSic+t+oim9+dMP/RJpgnBErQM5bz0RQBrAAzRi
+6nDP5Ppp/GrQIUzrdj8PS7mLjC5ip+AFQ4kmGLi0X7CKEm2a7q/j+b4O+U4gNOum
+XGyYjCwg0UoEQu4oALt72uPVppO3sNrCqMsdOMexyzdIKP9WzFnlLJDzL8X1qcCu
+qaRZzMORrb76GZeGVQcxJIDLX+R9xu1XvPWbTXg9JEhcLqZuYIWGRBrx99t+alEF
+vZm0Qu6ydduHmgVmBWjuaA3qDwrDEbRwZiuVlK7TwLLjYL6+dCp6xWmhBZUWsni/
+WAVyciNE+GNrswdz+I75qlGGcDj75W0OomqWMkZcUDSz2T1jm+yoEBi+Mrharotj
+BhWj4B+vKUlG5cPvZsBnXbhCd/pl3sIUNa8aL8uNda0BsR/3HewGkKwLvizy0qPP
+pfkmf4y1bS2s89hQfbYx5Dm00alVjQxTs4LCKF/WOAC6YxRxHvoaub4ENG/NDomk
+Zkn0sKFAqoVeSD0IeJc79gE18HIf+FjUG4NmzL1JxOSprC4yxnfVxvYzEQjD4plb
+opNs7Riht8qg9LKr0l8Y+sulaHFMVEfgH/wNg7XhyuhIWxwCyzNh2Msm6DmooR25
+4hPNimcXl09SPeM2PN20E6QxBLlYXOWxkUwOu/1VeM8m/gUdy83TOvaVF3cRcdJN
+yuGGJMF/+J3iIe6B23zy
+=mlUA
+-----END PGP SIGNATURE-----
 
-------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
+--0OOz7ZB592LYQf07--
