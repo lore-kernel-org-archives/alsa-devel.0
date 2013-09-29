@@ -1,51 +1,97 @@
-From: Manuel Reimer <Manuel.Spam@nurfuerspam.de>
-Subject: Microphone does not longer work on Lenovo N581
-Date: Sun, 29 Sep 2013 10:13:34 +0200
-Message-ID: <l28nen$jns$1@ger.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 6011E2615A6
- for <alsa-devel@alsa-project.org>; Sun, 29 Sep 2013 10:15:09 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1VQC9g-0002Vv-5F
- for alsa-devel@alsa-project.org; Sun, 29 Sep 2013 10:15:04 +0200
-Received: from p54947dc7.dip0.t-ipconnect.de ([84.148.125.199])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sun, 29 Sep 2013 10:15:04 +0200
-Received: from Manuel.Spam by p54947dc7.dip0.t-ipconnect.de with local (Gmexim
- 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sun, 29 Sep 2013 10:15:04 +0200
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 0/8] i2c: Remove redundant driver field from the i2c_client struct
+Date: Sun, 29 Sep 2013 10:50:58 +0200
+Message-ID: <1380444666-12019-1-git-send-email-lars@metafoo.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wolfram Sang <wsa@the-dreams.de>, David Airlie <airlied@linux.ie>, Mauro Carvalho Chehab <m.chehab@samsung.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
 
-I'm using Archlinux and so usually run always on the latest kernel.
+This series removes the redundant driver field from the i2c_client struct. The
+field is redundant since the same pointer can be accessed through
+to_i2c_driver(client->dev.driver). The commit log suggests that the field has
+been around since forever (since before v2.6.12-rc2) and it looks as if it was
+simply forgotten to remove it during the conversion of the i2c framework to the
+generic device driver model.
 
-But unfortunately somewhere with Kernel 3.9 my Intel sound got broken. 
-Playback works, but no microphone is found.
+Nevertheless there are a still a few users of the field around. This series
+first updates all users to use an alternative method of accessing the same data
+and then the last patch removes the driver field from the i2c_client struct.
 
-So I keep downgrading to 3.8.8 for some months, now.
+Note that due to this changes on most architectures neither the code size nor
+the type of generated instructions will change. This is due to the fact that we
+aren't really interested in the pointer value itself, but rather want to
+dereference it to access one of the fields of the struct. offset_of() (and hence
+to_i2c_driver) works by subtracting a offset from the pointer, so the compiler
+can internally create the sum of these two offsets and use that to access the
+field.
 
-Can someone please help me with finding a solution for this? Is it 
-really possible that the alsa driver "snd_had_intel" was broken between 
-3.8 and 3.9 and noone found this bug, so far?
+E.g. on ARM the expression client->driver->command(...) generates
 
-Thank you very much in advance
+		...
+		ldr     r3, [r0, #28]
+		ldr     r3, [r3, #32]
+		blx     r3
+		...
 
-Greetings,
+and the expression to_i2c_driver(client->dev.driver)->command(...) generates
 
-Manuel
+		...
+		ldr     r3, [r0, #160]
+    	ldr     r3, [r3, #-4]
+    	blx     r3
+		...
+
+Other architectures will generate similar code.
+
+The most common pattern is to use the i2c_driver to get to the device_driver
+struct embedded in it. The same struct can easily be accessed through the device
+struct embedded in the i2c_client struct.  E.g. client->driver->driver.field can
+be replaced by client->dev.driver->field. Here again the generated code is
+almost identical and only the offsets differ.
+
+E.g. on ARM the expression 'client->driver->driver.owner' generates
+
+		ldr     r3, [r0, #28]
+		ldr     r0, [r3, #44]
+
+and 'client->dev.driver->owner' generates
+
+		ldr     r3, [r0, #160]
+		ldr     r0, [r3, #8]
+
+The kernel overall code size is slightly reduced since the code that manages the
+driver field is removed and of course also the runtime memory footprint of the
+i2c_client struct is reduced.
+
+- Lars
+
+Lars-Peter Clausen (8):
+  [media] s5c73m3: Don't use i2c_client->driver
+  [media] exynos4-is: Don't use i2c_client->driver
+  [media] core: Don't use i2c_client->driver
+  drm: encoder_slave: Don't use i2c_client->driver
+  drm: nouveau: Don't use i2c_client->driver
+  ALSA: ppc: keywest: Don't use i2c_client->driver
+  ASoC: imx-wm8962: Don't use i2c_client->driver
+  i2c: Remove redundant 'driver' field from the i2c_client struct
+
+ drivers/gpu/drm/drm_encoder_slave.c            |  8 ++++----
+ drivers/gpu/drm/nouveau/core/subdev/therm/ic.c |  3 ++-
+ drivers/i2c/i2c-core.c                         | 21 ++++++++++++---------
+ drivers/i2c/i2c-smbus.c                        | 10 ++++++----
+ drivers/media/i2c/s5c73m3/s5c73m3-core.c       |  2 +-
+ drivers/media/platform/exynos4-is/media-dev.c  |  6 +++---
+ drivers/media/v4l2-core/tuner-core.c           |  6 +++---
+ drivers/media/v4l2-core/v4l2-common.c          | 10 +++++-----
+ include/linux/i2c.h                            |  2 --
+ include/media/v4l2-common.h                    |  2 +-
+ sound/ppc/keywest.c                            |  4 ++--
+ sound/soc/fsl/imx-wm8962.c                     |  2 +-
+ 12 files changed, 40 insertions(+), 36 deletions(-)
+
+-- 
+1.8.0
