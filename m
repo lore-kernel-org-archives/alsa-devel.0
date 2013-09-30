@@ -1,112 +1,67 @@
-From: Dr Nicholas J Bailey <nicholas.bailey@glasgow.ac.uk>
-Subject: Re: snd-usb-usx2y (Tascam US-122) sequence errors --
-	PLEASE FIX
-Date: Mon, 30 Sep 2013 18:07:45 +0100
-Message-ID: <3237224.7XQAgIOXUv@arial>
-References: <1879797.EMyhs7R6HO@arial>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: generic: Add generic DT based simple codec
+Date: Mon, 30 Sep 2013 18:43:19 +0100
+Message-ID: <20130930174319.GG19304@sirena.org.uk>
+References: <20130919105437.75e0f0a3@armhf>
+ <5240B07C.6080404@wwwdotorg.org>
+ <CAL_JsqKmfurrCqEYRNqcLRZMU-VjPin2dvK1Q6CMcK4i=+x-8w@mail.gmail.com>
+ <5249AB82.60701@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plockton.cent.gla.ac.uk (plockton.cent.gla.ac.uk
- [130.209.16.75])
- by alsa0.perex.cz (Postfix) with ESMTP id 7567B261AB3
- for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2013 19:12:20 +0200 (CEST)
-Received: from cas05.campus.gla.ac.uk ([130.209.14.38])
- by plockton.cent.gla.ac.uk with esmtp (Exim 4.72)
- (envelope-from <Nicholas.Bailey@glasgow.ac.uk>) id 1VQh1A-0003DI-2i
- for alsa-devel@alsa-project.org; Mon, 30 Sep 2013 18:12:20 +0100
-In-Reply-To: <1879797.EMyhs7R6HO@arial>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0EphSjNCSB1asamE"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <5249AB82.60701-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Rob Herring <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This was in fact reported in May, but the fix suggested by Guido Aulisi in 
-reply to Julien Claassen on Linux Audio User in May hasn't yet made it into 
-kernel 3.10.
 
-Applying the patch suggested here:
+--0EphSjNCSB1asamE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-	http://linuxaudio.org/mailarchive/lau/2013/5/20/200177
+On Mon, Sep 30, 2013 at 10:49:06AM -0600, Stephen Warren wrote:
 
-resolved the problem for me.
+> The only potential issue with that approach is if the CODEC can be used
+> in a "simple" mode where e.g. no control GPIOs, regulator manipulation,
+> etc. are required, or in a more complex mode where such things are
+> required, you may end up with the device-specific binding being written
+> to the simple mode, and hence missing features required for the complex
+> mode. Having a separate simple binding prevents the device-specific
+> binding from being broken that way.
 
-It is only 4 characters to change. I would very much appreciate it if somebody 
-could do that officially because I don't like building custom kernels. Also, I 
-don't really understand what this patch is doing (except literally, of course) 
-so having somebody who does look at it and accept it would be just great.
+That would probably indicate a bug in the complex bindings since if the
+simple mode exists then usually that would mean that the bindings for
+the complex mode ought to be specifying things as optional, these things
+are typically just done by strapping pins instead of routing them to the
+CPU.
 
-Nick/.
+--0EphSjNCSB1asamE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
 
-On Saturday 28 September 2013 15:30:04 Dr Nicholas J Bailey wrote:
-> I'm on debian jessie,
-> 
-> Linux arial 3.10-3-686-pae #1 SMP Debian 3.10.11-1 (2013-09-10) i686
-> GNU/Linux
-> 
-> with a Tascam us-122 that has recently stopped working.
-> 
-> When I try to capture with anything, there is a few hundred ms of audio then
-> the capture process stalls and the following dmesg appears:
-> 
-> [  462.596296] Sequence Error!(hcd_frame=0 ep=8in;wait=1024,frame=0).
-> [  462.596296] Most probably some urb of usb-frame 1024 is still missing.
-> [  462.596296] Cause could be too long delays in usb-hcd interrupt handling.
-> [  477.959230] Sequence Error!(hcd_frame=0 ep=8in;wait=1024,frame=0). [ 
-> 477.959230] Most probably some urb of usb-frame 1024 is still missing. [ 
-> 477.959230] Cause could be too long delays in usb-hcd interrupt handling.
-> 
-> Before this kernel, the box worked OK. The only think that leads me to
-> believe it might be my fault is that for a very long time, I've had to plug
-> the box in:
-> 
-> [  445.529271] usb 2-1.6: new full-speed USB device number 5 using ehci-pci
-> [  445.622076] usb 2-1.6: New USB device found, idVendor=1604,
-> idProduct=8006 [  445.622086] usb 2-1.6: New USB device strings: Mfr=0,
-> Product=0, SerialNumber=0
-> 
-> then unplug it and plug it in again:
-> 
-> [  445.972743] usb 2-1.6: USB disconnect, device number 5
-> [  447.621519] usb 2-1.6: new full-speed USB device number 6 using ehci-pci
-> [  447.714462] usb 2-1.6: New USB device found, idVendor=1604,
-> idProduct=8007 [  447.714471] usb 2-1.6: New USB device strings: Mfr=0,
-> Product=0, SerialNumber=0
-> [  447.834852] usbcore: registered new interface driver snd-usb-usx2y
-> [  455.194314] usb 2-1.6: USB disconnect, device number 6
-> [  457.487433] usb 2-1.6: new full-speed USB device number 7 using ehci-pci
-> [  457.579960] usb 2-1.6: New USB device found, idVendor=1604,
-> idProduct=8006 [  457.579969] usb 2-1.6: New USB device strings: Mfr=0,
-> Product=0, SerialNumber=0
-> 
-> to get the firmware to load
-> 
-> [  457.888884] usb 2-1.6: USB disconnect, device number 7
-> [  459.379782] usb 2-1.6: new full-speed USB device number 8 using ehci-pci
-> [  459.472516] usb 2-1.6: New USB device found, idVendor=1604,
-> idProduct=8007 [  459.472526] usb 2-1.6: New USB device strings: Mfr=0,
-> Product=0, SerialNumber=0
-> 
-> (green USB light comes on here).
-> 
-> I'm not sure about how to start debugging this; there are many things that
-> could be wrong. If it will help, I'll try and file a bug report; if not
-> please tell me to shut up (prefereably after pointing me at the solution :)
-> )
-> 
-> Nick/.
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+iQIcBAEBAgAGBQJSSbg0AAoJELSic+t+oim9WokP/35cunBYLfbNVepbijrz7Rmf
+ybeUeVJ/BYziDPYBl9CgvZYyE9F7E1SPhZFNpYYcQ8HtUUslt50kwvpNucay4Ksc
+GYsQ7oEKHMUuZxVXxvAtl5Of8RG3BXHwmzWDjnqy/LDGdV+nUv0WEEBdJxYT+v2F
+7m/caF+7DCHeV2Yg/IYJw0AWz2zHaCkS9P817xad97DOvYFVKDRf5FO/GZ33VWGA
+EmNBHQIu2aaZ2Pj8Cem590tHPCsDz7Bg8bOoIKbbOfiyWDi93zNDVZ/QYy5mINwn
+KtG/yHqVupB6VwpQ1fwtdTqZ3qgOPgwE30/ioB9vg7V2WSL8KF1Dc4dl9I1qLmzV
+yZJQGSN45HRaWt9InmsgdEE3loxLAbgG8DkO1wqiXXFic0cYAz4DldYk0aEWMtwD
+iaQVCaJyEUzY9xBP7AP9+3P8Jj8LxFCCnhTIRbw2fiX0LIik86xGGCZb8H2JRj3M
+sKH+DUQEnaSrXi4T/swlPkKS9WHqD8HRuG3k83qzb1MMMdKOeRTQgS6t15FRe6UU
+lUP4StCDU3r1zZSEAuuLSNrEJwRGGdZ5mokuOq4eqgeOO/lXB+tvvkFu8XQN5+ld
+sjGRAJyISvdoG1YqllzTiI5CtMtTt0/5XJrhlDhWk6+wQcS3v9ADezeeJfiZOZqT
+GsuKREintH/jfaaekRyF
+=5Ztw
+-----END PGP SIGNATURE-----
+
+--0EphSjNCSB1asamE--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
