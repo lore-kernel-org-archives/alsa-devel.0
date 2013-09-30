@@ -1,21 +1,22 @@
-From: Dr Nicholas J Bailey <nicholas.bailey@glasgow.ac.uk>
-Subject: Re: snd-usb-usx2y (Tascam US-122) sequence errors
-Date: Mon, 30 Sep 2013 12:09:39 +0100
-Message-ID: <2157722.DYiUDh07P6@arial>
-References: <1879797.EMyhs7R6HO@arial>
+From: Rob Sykes <aquegg@yahoo.co.uk>
+Subject: Re: pcm_rate API  question
+Date: Mon, 30 Sep 2013 12:15:13 +0100 (BST)
+Message-ID: <1380539713.33591.YahooMailNeo@web171401.mail.ir2.yahoo.com>
+References: <1380283173.50500.YahooMailNeo@web171404.mail.ir2.yahoo.com>
+ <52457C3F.5090003@ladisch.de>
+ <1380295697.44147.YahooMailNeo@web171405.mail.ir2.yahoo.com>
+ <1380362320.63959.YahooMailNeo@web171406.mail.ir2.yahoo.com>
+ <52493D77.40601@ladisch.de>
+Reply-To: Rob Sykes <aquegg@yahoo.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plockton.cent.gla.ac.uk (plockton.cent.gla.ac.uk
- [130.209.16.75])
- by alsa0.perex.cz (Postfix) with ESMTP id DA5912619F4
- for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2013 13:14:13 +0200 (CEST)
-Received: from cas05.campus.gla.ac.uk ([130.209.14.38])
- by plockton.cent.gla.ac.uk with esmtp (Exim 4.72)
- (envelope-from <Nicholas.Bailey@glasgow.ac.uk>) id 1VQbQb-0007UY-JV
- for alsa-devel@alsa-project.org; Mon, 30 Sep 2013 12:14:13 +0100
-In-Reply-To: <1879797.EMyhs7R6HO@arial>
+Received: from nm22-vm2.bullet.mail.ird.yahoo.com
+ (nm22-vm2.bullet.mail.ird.yahoo.com [212.82.109.252])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C9A02619FA
+ for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2013 13:15:14 +0200 (CEST)
+In-Reply-To: <52493D77.40601@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,72 +26,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I found this in Linux Audio Users:
-
-	http://linuxaudio.org/mailarchive/lau/2013/5/20/200177
-
-which would indicate that the issue has been current since May, and possibly 
-impacts upon many different sound cards.
-
-Does this still persist with kernel 3.10? My symptoms certainly agree exactly 
-with this. Using alas-tools 1.0.27 with kernel 3.10-3.
-
-Nick/.
-
-
-
-
-On Saturday 28 September 2013 15:30:04 Dr Nicholas J Bailey wrote:
-> I'm on debian jessie,
-> 
-> Linux arial 3.10-3-686-pae #1 SMP Debian 3.10.11-1 (2013-09-10) i686
-> GNU/Linux
-> 
-> with a Tascam us-122 that has recently stopped working.
-> 
-> When I try to capture with anything, there is a few hundred ms of audio then
-> the capture process stalls and the following dmesg appears:
-> 
-> [  462.596296] Sequence Error!(hcd_frame=0 ep=8in;wait=1024,frame=0).
-> [  462.596296] Most probably some urb of usb-frame 1024 is still missing.
-> [  462.596296] Cause could be too long delays in usb-hcd interrupt handling.
-> [  477.959230] Sequence Error!(hcd_frame=0 ep=8in;wait=1024,frame=0). [ 
-> 477.959230] Most probably some urb of usb-frame 1024 is still missing. [ 
-> 477.959230] Cause could be too long delays in usb-hcd interrupt handling.
-> 
-> Before this kernel, the box worked OK. The only think that leads me to
-> believe it might be my fault is that for a very long time, I've had to plug
-> the box in:
-> 
-> [  445.529271] usb 2-1.6: new full-speed USB device number 5 using ehci-pci
-> [  445.622076] usb 2-1.6: New USB device found, idVendor=1604,
-> idProduct=8006 [  445.622086] usb 2-1.6: New USB device strings: Mfr=0,
-> Product=0, SerialNumber=0
-> 
-> then unplug it and plug it in again:
-> 
-> [  445.972743] usb 2-1.6: USB disconnect, device number 5
-> [  447.621519] usb 2-1.6: new full-speed USB device number 6 using ehci-pci
-> [  447.714462] usb 2-1.6: New USB device found, idVendor=1604,
-> idProduct=8007 [  447.714471] usb 2-1.6: New USB device strings: Mfr=0,
-> Product=0, SerialNumber=0
-> [  447.834852] usbcore: registered new interface driver snd-usb-usx2y
-> [  455.194314] usb 2-1.6: USB disconnect, device number 6
-> [  457.487433] usb 2-1.6: new full-speed USB device number 7 using ehci-pci
-> [  457.579960] usb 2-1.6: New USB device found, idVendor=1604,
-> idProduct=8006 [  457.579969] usb 2-1.6: New USB device strings: Mfr=0,
-> Product=0, SerialNumber=0
-> 
-> to get the firmware to load
-> 
-> [  457.888884] usb 2-1.6: USB disconnect, device number 7
-> [  459.379782] usb 2-1.6: new full-speed USB device number 8 using ehci-pci
-> [  459.472516] usb 2-1.6: New USB device found, idVendor=1604,
-> idProduct=8007 [  459.472526] usb 2-1.6: New USB device strings: Mfr=0,
-> Product=0, SerialNumber=0
-> 
-> (green USB light comes on here).
-> 
+LS0tLS0gT3JpZ2luYWwgTWVzc2FnZSAtLS0tLQoKPiBGcm9tOiBDbGVtZW5zIExhZGlzY2ggPGNs
+ZW1lbnNAbGFkaXNjaC5kZT4KPiBUbzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gQ2M6
+IAo+IFNlbnQ6IE1vbmRheSwgMzAgU2VwdGVtYmVyIDIwMTMsIDk6NTkKPiBTdWJqZWN0OiBSZTog
+W2Fsc2EtZGV2ZWxdIHBjbV9yYXRlIEFQScKgIHF1ZXN0aW9uCj4gCj4+PsKgIFR5cGljYWxseSB0
+aGVyZSBpcyBzb21lIGJ1ZmZlcmluZy9kZWxheSB3aXRoaW4gYSByZXNhbXBsZXIgLS0gaG93Cj4+
+PsKgIGRvZXMgdGhlIHBjbV9yYXRlIEFQSSBhbGxvdyBmb3IgdGhpcz8KPiAKPiBUaGUgQVBJIGl0
+c2VsZiBkb2VzIG5vdCBhbGxvdyBmb3IgdGhpcy7CoCBZb3VyIGNvZGUgbXVzdCBnZW5lcmF0ZQo+
+IGRzdF9mcmFtZXMgc2FtcGxlcy4KPiAKPiBBdCBzdGFydHVwLCBwcmVmaXggdGhlIG91dHB1dCB3
+aXRoIHplcm8gc2FtcGxlcy7CoCBGb3IgZXhhbXBsZSwKClRoYW5rcyBDbGVtZW5zLiBIYXZpbmcg
+dG8gcHJlZml4IHRoZSBvdXRwdXQgd2l0aCBhIHNpZ25hbCB0aGF0IGlzIHVucmVsYXRlZCB0byB0
+aGUgaW5wdXQgc2lnbmFsIGRvZXNuJ3Qgc2VlbSBncmVhdCwgdGhvdWdoIEkgZ3Vlc3MgdGhpcyBq
+dXN0IG1hbmlmZXN0cyBpdHNlbGYgYXMgYSBkZWxheSAodmFyaWFibGUsIGRlcGVuZGVudCBvbiBy
+ZXNhbXBsZXIsIGV0Yy4pIGFuZCBtYXkgZ28gdW5ub3RpY2VkLiDCoE9mIG1vcmUgY29uY2VybiBp
+cyB0aGF0IHRoaXMgc2l0dWF0aW9uIGNhbiBhcHBhcmVudGx5IG9jY3VyIGF0IGFueSB0aW1lOiAi
+YWZ0ZXIgdGhhdCBmaXJzdCBjYWxsIGFsbCBzdWJzZXF1ZW50IGNhbGxzIHdpbGwgcHJvYmFibHkg
+Z2V0IHlvdSBhYm91dCAyMDAwIHNhbXBsZXMgb3V0IGZvciBldmVyeSAxMDAwIHNhbXBsZXMgeW91
+IHB1dCBpbiIg4oCUIG9ubHkgInByb2JhYmx5Iiwgbm90ICJhbHdheXMiOyBvY2N1cnJpbmcgYWZ0
+ZXIgdGhlIHN0YXJ0LCB0aGlzIHdpbGwgbGlrZWx5IGNhdXNlIGF1ZGlibGUgZGlzdG9ydGlvbi4K
+Cj4gVGhlIGNvbnZlcnNpb24gaW5kZWVkIGlzIG5vdCBhY2N1cmF0ZSwgdW5sZXNzIHlvdSBhcmUg
+dXNpbmcgYSBwZXJpb2QKPiBzaXplIG9mIGFuIGludGVnZXIgbXVsdGlwbGUgb2YgNDQxIGZyYW1l
+cy7CoCBJbiB5b3VyIGV4YW1wbGUsIHRoZQo+IGFwcGxpY2F0aW9uIHByb2JhYmx5IHVzZWQgYSBi
+dWZmZXIgb2YgMC41IHMgYW5kIGZvdXIgcGVyaW9kcyBwZXIgYnVmZmVyOwo+IGl0IHNob3VsZCBl
+aXRoZXIgZG91YmxlIHRoZSBidWZmZXIgc2l6ZSBvciBoYWx2ZSB0aGUgbnVtYmVyIG9mIHBlcmlv
+ZHMuCgpPaCBva2F5LCB0aGUgYXBwbGljYXRpb24gaW4gcXVlc3Rpb24gd2FzIGFwbGF5wqAxLjAu
+MjU7IG1heWJlIGl0J3Mgc2luY2UgYmVlbiBmaXhlZCwgYnV0IG5vIG1hdHRlciwgaXQgc2VlbXMg
+dGhhdCB0aGUgYWJvdmUgYnVmZmVyaW5nIGlzc3VlIGlzIHRoZSBtYWluIHByb2JsZW0uCgpDaGVl
+cnMsClJvYgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
