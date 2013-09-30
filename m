@@ -1,21 +1,14 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [RFC] ALSA: Reduce delay for a blocking pcm_drain.
-Date: Mon, 30 Sep 2013 21:26:01 +0800
-Message-ID: <CAN8ccibYW3XaXMSGqGpb5-8aip0OTLyG5pyURjX8KL=RcmaYqQ@mail.gmail.com>
-References: <1380340785-30427-1-git-send-email-dgreid@chromium.org>
- <CAN8cciamcg3wqiDV75oZ6dms-aNtN2o-QMWg0n59otibpmfV7A@mail.gmail.com>
- <CAN8ccia8VzuubtiOZETTN5DAm_LjmQdaxqDHQQ6iv8S_NvtSBg@mail.gmail.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH] ASoC: pcm: Remove extra spaces from dev_ prints
+Date: Mon, 30 Sep 2013 17:08:15 +0300
+Message-ID: <1380550095-21080-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f45.google.com (mail-pb0-f45.google.com
- [209.85.160.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B804261A5A
- for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2013 15:26:03 +0200 (CEST)
-Received: by mail-pb0-f45.google.com with SMTP id mc17so5590019pbc.32
- for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2013 06:26:01 -0700 (PDT)
-In-Reply-To: <CAN8ccia8VzuubtiOZETTN5DAm_LjmQdaxqDHQQ6iv8S_NvtSBg@mail.gmail.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F028261A50
+ for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2013 16:09:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,27 +18,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
->
-> This can be worked around in user space as well by using a nonblocking
-drain and
-> sleeping based on how many samples are queued.  Would that be the right
-thing to
-> do or is this (or something similar) worth fixing here.
->
-> To test this I opened a pcm and set no period wakeups, played a few
-samples and
-> then called drain, which hung indefinitely.  Using a USB headset with a
-> max period size of 128k but only 15ms of the buffer filled, having the
-> drain time shorter without losing samples makes a blocking call
-> feasible.
->
+dev_ prints are already prefixed by ": " before format string so there is no
+need for extra spaces.
 
-Do you mean that you tested on a patched version of USB audio driver since
-only three drivers support
-SNDRV_PCM_INFO_NO_PERIOD_WAKEUP
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+---
+ sound/soc/soc-pcm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/log/sound?qt=grep&q=period+wakeup
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 330c9a6..d449872 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -721,7 +721,7 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
+ 	list_add(&dpcm->list_be, &fe->dpcm[stream].be_clients);
+ 	list_add(&dpcm->list_fe, &be->dpcm[stream].fe_clients);
+ 
+-	dev_dbg(fe->dev, "  connected new DPCM %s path %s %s %s\n",
++	dev_dbg(fe->dev, "connected new DPCM %s path %s %s %s\n",
+ 			stream ? "capture" : "playback",  fe->dai_link->name,
+ 			stream ? "<-" : "->", be->dai_link->name);
+ 
+@@ -749,7 +749,7 @@ static void dpcm_be_reparent(struct snd_soc_pcm_runtime *fe,
+ 		if (dpcm->fe == fe)
+ 			continue;
+ 
+-		dev_dbg(fe->dev, "  reparent %s path %s %s %s\n",
++		dev_dbg(fe->dev, "reparent %s path %s %s %s\n",
+ 			stream ? "capture" : "playback",
+ 			dpcm->fe->dai_link->name,
+ 			stream ? "<-" : "->", dpcm->be->dai_link->name);
+@@ -773,7 +773,7 @@ static void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
+ 		if (dpcm->state != SND_SOC_DPCM_LINK_STATE_FREE)
+ 			continue;
+ 
+-		dev_dbg(fe->dev, "  freed DSP %s path %s %s %s\n",
++		dev_dbg(fe->dev, "freed DSP %s path %s %s %s\n",
+ 			stream ? "capture" : "playback", fe->dai_link->name,
+ 			stream ? "<-" : "->", dpcm->be->dai_link->name);
+ 
+@@ -2116,7 +2116,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 
+ 	pcm->private_free = platform->driver->pcm_free;
+ out:
+-	dev_info(rtd->card->dev, " %s <-> %s mapping ok\n", codec_dai->name,
++	dev_info(rtd->card->dev, "%s <-> %s mapping ok\n", codec_dai->name,
+ 		cpu_dai->name);
+ 	return ret;
+ }
+-- 
+1.8.4.rc3
