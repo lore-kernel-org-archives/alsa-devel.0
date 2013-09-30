@@ -1,53 +1,75 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH] ASoC: generic: Add generic DT based simple codec
-Date: Mon, 30 Sep 2013 10:49:06 -0600
-Message-ID: <5249AB82.60701@wwwdotorg.org>
-References: <20130919105437.75e0f0a3@armhf> <5240B07C.6080404@wwwdotorg.org> <CAL_JsqKmfurrCqEYRNqcLRZMU-VjPin2dvK1Q6CMcK4i=+x-8w@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: pcm: Remove extra spaces from dev_
+	prints
+Date: Mon, 30 Sep 2013 18:06:48 +0100
+Message-ID: <20130930170648.GE19304@sirena.org.uk>
+References: <1380550095-21080-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CAL_JsqKmfurrCqEYRNqcLRZMU-VjPin2dvK1Q6CMcK4i=+x-8w-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============5924949414332383034=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11C93261AB3
+ for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2013 19:06:51 +0200 (CEST)
+In-Reply-To: <1380550095-21080-1-git-send-email-jarkko.nikula@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/26/2013 08:57 PM, Rob Herring wrote:
-> On Mon, Sep 23, 2013 at 4:19 PM, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org> wrote:
->> On 09/19/2013 02:54 AM, Jean-Francois Moine wrote:
->>> This patch adds a simple sound codec which is described by the DT.
->>> This codec may be used when no specific codec action is needed.
->>
->>> diff --git a/Documentation/devicetree/bindings/sound/simple-codec.txt b/Documentation/devicetree/bindings/sound/simple-codec.txt
->>
->>> +Device-Tree bindings for the simple codec
->>> +
->>> +Required properties:
->>> +- compatible: should be "linux,simple-codec".
->>
->> We shouldn't have any Linux-specific bindings. It might be reasonable to
->> define a binding for a "simple CODEC", but there's no reason it should
->> be Linux-specific.
-> 
-> Further, just define the type of codec h/w. If linux can use its
-> simple-codec driver for it, then add a match table entry for said
-> codec. Then the DT is future proof when you decide the simple driver
-> doesn't really work for that h/w.
 
-The only potential issue with that approach is if the CODEC can be used
-in a "simple" mode where e.g. no control GPIOs, regulator manipulation,
-etc. are required, or in a more complex mode where such things are
-required, you may end up with the device-specific binding being written
-to the simple mode, and hence missing features required for the complex
-mode. Having a separate simple binding prevents the device-specific
-binding from being broken that way.
+--===============5924949414332383034==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+zeCMqFCsETNqUaq"
+Content-Disposition: inline
 
-That said, it's probably better to simply get the device-specific
-binding completely fleshed out and representing all resources the first
-time around, then there's no issue either.
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--+zeCMqFCsETNqUaq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Sep 30, 2013 at 05:08:15PM +0300, Jarkko Nikula wrote:
+> dev_ prints are already prefixed by ": " before format string so there is no
+> need for extra spaces.
+
+Applied, thanks.
+
+--+zeCMqFCsETNqUaq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSSa+kAAoJELSic+t+oim9AzkP/jdRT974J+eiRPvnIUqMrL3y
+s8ROyv01gC8eb68ZFxSQ916p6Sv1V0IbB3QxjP9i9tPiuzyVJ830qXhQRMHyoSxU
+2+6zh5b7X7jZmU9O7oYdxYCL0GUAkNdBB/xRkUWfjaNHOEve3IEepvQEYdNLG0ik
+Cr0eRrVf275f5zvpMKjDao3u+2JeTlTo126mPNOQibpqGg+k8nAdPhKFgCMh3Ryq
+xhcqSH59mYanKdtJM8nUNTsi0IcxysKjL1sQtYwsuPfFh9PFJdYPKgV5hk2IxzHB
+ZhC+B9MdbsFcB5lxkukdc23xSFzOEKF/qz6e/SKidp5+ru3I3ZgDPrZX1qGhq4+7
+V4QKnmLy9lDRBE6eB5vQtZErUAYtPcnx/R2VMS8ylGEipSJFpeqkR9NqCIrwXIej
+zcGsLZfIPO/Ox57QalWBQkDuynSOUC35HF7NhrshlWik7uUtNgaLi0v86eIQp8hq
+mv1JVVmcWWq5W2EU6ggPHyMoKI5LtWzxUXHw6Ai8c1EcHye1KwhnTt2nxB8jlJJo
+bTwHxpNraYtwnJyBIk7Gr7xg8U9Ea8YUlibfIlpGDNs+Xo27Q9w3qhUvAzw26Dug
+DFZXa9DdaXvXsrYn4eCeSf0DW235sC9s5VlRAkt/ibTkJMu+TeSA+5iDB6hBCbk5
+YKuAXfeXsfSSAbLSNZso
+=JJZb
+-----END PGP SIGNATURE-----
+
+--+zeCMqFCsETNqUaq--
+
+--===============5924949414332383034==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5924949414332383034==--
