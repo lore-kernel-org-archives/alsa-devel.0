@@ -1,28 +1,25 @@
 From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH 19/51] DMA-API: media: dt3155v4l: replace dma_set_mask()+dma_set_coherent_mask()
- with new helper
-Date: Mon, 30 Sep 2013 13:57:47 +0200
-Message-ID: <5249673B.5020705@xs4all.nl>
-References: <20130919212235.GD12758@n2100.arm.linux.org.uk> <E1VMm13-0007hO-9l@rmk-PC.arm.linux.org.uk>
+Subject: Re: [PATCH 3/8] [media] core: Don't use i2c_client->driver
+Date: Mon, 30 Sep 2013 14:49:36 +0200
+Message-ID: <52497360.2040808@xs4all.nl>
+References: <1380444666-12019-1-git-send-email-lars@metafoo.de> <1380444666-12019-4-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <E1VMm13-0007hO-9l@rmk-PC.arm.linux.org.uk>
-Sender: netdev-owner@vger.kernel.org
-To: Russell King <rmk+kernel@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, b43-dev@lists.infradead.org, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, e1000-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-ide@vger.kernel.org, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, linux-nvme@lists.infradead.org, linux-omap@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org, linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, Solarflare linux maintainers <linux-net-drivers@solarflare.com>, uclinux-dist-devel@blackfin.uclinux.org, Mauro Carvalho Chehab <m.chehab@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <1380444666-12019-4-git-send-email-lars@metafoo.de>
+Sender: linux-media-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Wolfram Sang <wsa@the-dreams.de>, David Airlie <airlied@linux.ie>, Mauro Carvalho Chehab <m.chehab@samsung.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/19/2013 11:44 PM, Russell King wrote:
-> Replace the following sequence:
+On 09/29/2013 10:51 AM, Lars-Peter Clausen wrote:
+> The 'driver' field of the i2c_client struct is redundant and is going to be
+> removed. The results of the expressions 'client->driver.driver->field' and
+> 'client->dev.driver->field' are identical, so replace all occurrences of the
+> former with the later.
 > 
-> 	dma_set_mask(dev, mask);
-> 	dma_set_coherent_mask(dev, mask);
-> 
-> with a call to the new helper dma_set_mask_and_coherent().
-> 
-> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
 Acked-by: Hans Verkuil <hans.verkuil@cisco.com>
 
@@ -31,23 +28,97 @@ Regards,
 	Hans
 
 > ---
->  drivers/staging/media/dt3155v4l/dt3155v4l.c |    5 +----
->  1 files changed, 1 insertions(+), 4 deletions(-)
+>  drivers/media/v4l2-core/tuner-core.c  |  6 +++---
+>  drivers/media/v4l2-core/v4l2-common.c | 10 +++++-----
+>  include/media/v4l2-common.h           |  2 +-
+>  3 files changed, 9 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/staging/media/dt3155v4l/dt3155v4l.c b/drivers/staging/media/dt3155v4l/dt3155v4l.c
-> index 90d6ac4..081407b 100644
-> --- a/drivers/staging/media/dt3155v4l/dt3155v4l.c
-> +++ b/drivers/staging/media/dt3155v4l/dt3155v4l.c
-> @@ -901,10 +901,7 @@ dt3155_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	int err;
->  	struct dt3155_priv *pd;
+> diff --git a/drivers/media/v4l2-core/tuner-core.c b/drivers/media/v4l2-core/tuner-core.c
+> index ddc9379..4133af0 100644
+> --- a/drivers/media/v4l2-core/tuner-core.c
+> +++ b/drivers/media/v4l2-core/tuner-core.c
+> @@ -43,7 +43,7 @@
 >  
-> -	err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
-> -	if (err)
-> -		return -ENODEV;
-> -	err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
-> +	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
->  	if (err)
->  		return -ENODEV;
->  	pd = kzalloc(sizeof(*pd), GFP_KERNEL);
+>  #define UNSET (-1U)
+>  
+> -#define PREFIX (t->i2c->driver->driver.name)
+> +#define PREFIX (t->i2c->dev.driver->name)
+>  
+>  /*
+>   * Driver modprobe parameters
+> @@ -452,7 +452,7 @@ static void set_type(struct i2c_client *c, unsigned int type,
+>  	}
+>  
+>  	tuner_dbg("%s %s I2C addr 0x%02x with type %d used for 0x%02x\n",
+> -		  c->adapter->name, c->driver->driver.name, c->addr << 1, type,
+> +		  c->adapter->name, c->dev.driver->name, c->addr << 1, type,
+>  		  t->mode_mask);
+>  	return;
+>  
+> @@ -556,7 +556,7 @@ static void tuner_lookup(struct i2c_adapter *adap,
+>  		int mode_mask;
+>  
+>  		if (pos->i2c->adapter != adap ||
+> -		    strcmp(pos->i2c->driver->driver.name, "tuner"))
+> +		    strcmp(pos->i2c->dev.driver->name, "tuner"))
+>  			continue;
+>  
+>  		mode_mask = pos->mode_mask;
+> diff --git a/drivers/media/v4l2-core/v4l2-common.c b/drivers/media/v4l2-core/v4l2-common.c
+> index 037d7a5..433d6d7 100644
+> --- a/drivers/media/v4l2-core/v4l2-common.c
+> +++ b/drivers/media/v4l2-core/v4l2-common.c
+> @@ -236,14 +236,14 @@ void v4l2_i2c_subdev_init(struct v4l2_subdev *sd, struct i2c_client *client,
+>  	v4l2_subdev_init(sd, ops);
+>  	sd->flags |= V4L2_SUBDEV_FL_IS_I2C;
+>  	/* the owner is the same as the i2c_client's driver owner */
+> -	sd->owner = client->driver->driver.owner;
+> +	sd->owner = client->dev.driver->owner;
+>  	sd->dev = &client->dev;
+>  	/* i2c_client and v4l2_subdev point to one another */
+>  	v4l2_set_subdevdata(sd, client);
+>  	i2c_set_clientdata(client, sd);
+>  	/* initialize name */
+>  	snprintf(sd->name, sizeof(sd->name), "%s %d-%04x",
+> -		client->driver->driver.name, i2c_adapter_id(client->adapter),
+> +		client->dev.driver->name, i2c_adapter_id(client->adapter),
+>  		client->addr);
+>  }
+>  EXPORT_SYMBOL_GPL(v4l2_i2c_subdev_init);
+> @@ -274,11 +274,11 @@ struct v4l2_subdev *v4l2_i2c_new_subdev_board(struct v4l2_device *v4l2_dev,
+>  	   loaded. This delay-load mechanism doesn't work if other drivers
+>  	   want to use the i2c device, so explicitly loading the module
+>  	   is the best alternative. */
+> -	if (client == NULL || client->driver == NULL)
+> +	if (client == NULL || client->dev.driver == NULL)
+>  		goto error;
+>  
+>  	/* Lock the module so we can safely get the v4l2_subdev pointer */
+> -	if (!try_module_get(client->driver->driver.owner))
+> +	if (!try_module_get(client->dev.driver->owner))
+>  		goto error;
+>  	sd = i2c_get_clientdata(client);
+>  
+> @@ -287,7 +287,7 @@ struct v4l2_subdev *v4l2_i2c_new_subdev_board(struct v4l2_device *v4l2_dev,
+>  	if (v4l2_device_register_subdev(v4l2_dev, sd))
+>  		sd = NULL;
+>  	/* Decrease the module use count to match the first try_module_get. */
+> -	module_put(client->driver->driver.owner);
+> +	module_put(client->dev.driver->owner);
+>  
+>  error:
+>  	/* If we have a client but no subdev, then something went wrong and
+> diff --git a/include/media/v4l2-common.h b/include/media/v4l2-common.h
+> index 16550c4..a707529 100644
+> --- a/include/media/v4l2-common.h
+> +++ b/include/media/v4l2-common.h
+> @@ -35,7 +35,7 @@
+>  	printk(level "%s %d-%04x: " fmt, name, i2c_adapter_id(adapter), addr , ## arg)
+>  
+>  #define v4l_client_printk(level, client, fmt, arg...)			    \
+> -	v4l_printk(level, (client)->driver->driver.name, (client)->adapter, \
+> +	v4l_printk(level, (client)->dev.driver->name, (client)->adapter, \
+>  		   (client)->addr, fmt , ## arg)
+>  
+>  #define v4l_err(client, fmt, arg...) \
 > 
