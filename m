@@ -1,42 +1,90 @@
-From: =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>
-Subject: [PATCH 2/2] ASoC: fsl: Fix sound on mx31moboard
-Date: Tue,  1 Oct 2013 14:36:11 +0200
-Message-ID: <1380630971-11431-3-git-send-email-philippe.retornaz@epfl.ch>
-References: <1380630971-11431-1-git-send-email-philippe.retornaz@epfl.ch>
- <1380630971-11431-2-git-send-email-philippe.retornaz@epfl.ch>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 3/3] ASoC: tas5086: add suspend callback
+Date: Tue,  1 Oct 2013 14:48:26 +0200
+Message-ID: <1380631706-19365-3-git-send-email-zonque@gmail.com>
+References: <1380631706-19365-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1380630971-11431-2-git-send-email-philippe.retornaz@epfl.ch>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: broonie@kernel.org
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, s.hauer@pengutronix.de, =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, shawn.guo@linaro.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 536C7264EF1
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 14:48:32 +0200 (CEST)
+In-Reply-To: <1380631706-19365-1-git-send-email-zonque@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, s.neumann@raumfeld.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Q29tbWl0IDQyODEwZCAoQVNvQzogaW14LW1jMTM3ODM6IEFkZCBhdWRtdXggc2V0dGluZ3MgZm9y
-IG14MjdwZGspIGJyb2tlCnRoZSBzb3VuZCBvbiBteDMxbW9ib2FyZC4gUmVzdG9yZSBiYWNrIHRo
-ZSBhdWRtdXggc2V0dGluZyBvbiBzdWNoIGJvYXJkcy4KClNpZ25lZC1vZmYtYnk6IFBoaWxpcHBl
-IFLDqXRvcm5heiA8cGhpbGlwcGUucmV0b3JuYXpAZXBmbC5jaD4KLS0tCiBzb3VuZC9zb2MvZnNs
-L2lteC1tYzEzNzgzLmMgfCAgICAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyks
-IDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvZnNsL2lteC1tYzEzNzgzLmMg
-Yi9zb3VuZC9zb2MvZnNsL2lteC1tYzEzNzgzLmMKaW5kZXggYTNkNjBkNC4uYTJmZDczMiAxMDA2
-NDQKLS0tIGEvc291bmQvc29jL2ZzbC9pbXgtbWMxMzc4My5jCisrKyBiL3NvdW5kL3NvYy9mc2wv
-aW14LW1jMTM3ODMuYwpAQCAtMTEyLDcgKzExMiw3IEBAIHN0YXRpYyBpbnQgaW14X21jMTM3ODNf
-cHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIAkJcmV0dXJuIHJldDsKIAl9CiAK
-LQlpZiAobWFjaGluZV9pc19teDMxXzNkcygpKSB7CisJaWYgKG1hY2hpbmVfaXNfbXgzMV8zZHMo
-KSB8fCBtYWNoaW5lX2lzX214MzFtb2JvYXJkKCkpIHsKIAkJaW14X2F1ZG11eF92Ml9jb25maWd1
-cmVfcG9ydChNWDMxX0FVRE1VWF9QT1JUNF9TU0lfUElOU180LAogCQkJSU1YX0FVRE1VWF9WMl9Q
-VENSX1NZTiwKIAkJCUlNWF9BVURNVVhfVjJfUERDUl9SWERTRUwoTVgzMV9BVURNVVhfUE9SVDFf
-U1NJMCkgfAotLSAKMS43LjkuNQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmxpbnV4LWFybS1rZXJuZWwgbWFpbGluZyBsaXN0CmxpbnV4LWFybS1rZXJu
-ZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwK
+When going to suspend, shut down all channels and re-do the init
+procedure at resume time.
+
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/soc/codecs/tas5086.c | 30 ++++++++++++++++++++++++++++--
+ 1 file changed, 28 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
+index 3a88c68..2996d2e 100644
+--- a/sound/soc/codecs/tas5086.c
++++ b/sound/soc/codecs/tas5086.c
+@@ -762,14 +762,39 @@ static struct snd_soc_dai_driver tas5086_dai = {
+ };
+ 
+ #ifdef CONFIG_PM
++static int tas5086_soc_suspend(struct snd_soc_codec *codec)
++{
++	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
++	int ret;
++
++	/* Shut down all channels */
++	ret = regmap_write(priv->regmap, TAS5086_SYS_CONTROL_2, 0x60);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
+ static int tas5086_soc_resume(struct snd_soc_codec *codec)
+ {
+ 	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
++	int ret;
+ 
+-	/* Restore codec state */
+-	return regcache_sync(priv->regmap);
++	tas5086_reset(priv);
++	regcache_mark_dirty(priv->regmap);
++
++	ret = tas5086_init(codec->dev, priv);
++	if (ret < 0)
++		return ret;
++
++	ret = regcache_sync(priv->regmap);
++	if (ret < 0)
++		return ret;
++
++	return 0;
+ }
+ #else
++#define tas5086_soc_suspend	NULL
+ #define tas5086_soc_resume	NULL
+ #endif /* CONFIG_PM */
+ 
+@@ -832,6 +857,7 @@ static int tas5086_remove(struct snd_soc_codec *codec)
+ static struct snd_soc_codec_driver soc_codec_dev_tas5086 = {
+ 	.probe			= tas5086_probe,
+ 	.remove			= tas5086_remove,
++	.suspend		= tas5086_soc_suspend,
+ 	.resume			= tas5086_soc_resume,
+ 	.controls		= tas5086_controls,
+ 	.num_controls		= ARRAY_SIZE(tas5086_controls),
+-- 
+1.8.3.1
