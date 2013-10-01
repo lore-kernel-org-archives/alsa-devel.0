@@ -1,58 +1,94 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: [PATCH] ASoC: omap: Fix incorrect ARM dependency
-Date: Tue,  1 Oct 2013 21:20:50 +0300
-Message-ID: <1380651650-32131-1-git-send-email-jarkko.nikula@bitmer.com>
+From: Kevin Hilman <khilman@linaro.org>
+Subject: Re: [PATCH] ARM: omap: edma: add suspend suspend/resume hooks
+Date: Tue, 01 Oct 2013 11:42:59 -0700
+Message-ID: <87pproj0i4.fsf@linaro.org>
+References: <1380635493-31040-1-git-send-email-zonque@gmail.com>
+	<1380635493-31040-2-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (bitmer.com [213.157.87.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D95E265334
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 20:23:10 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1380635493-31040-2-git-send-email-zonque@gmail.com> (Daniel
+	Mack's message of "Tue, 1 Oct 2013 15:51:33 +0200")
+Sender: linux-omap-owner@vger.kernel.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: linux-omap@vger.kernel.org, s.neumann@raumfeld.com, mporter@ti.com, nsekhar@ti.com, alsa-devel@alsa-project.org, gururaja.hebbar@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit b0e0a4d ("ASoC: omap: Enable COMPILE_TEST build for DT platforms")
-added two incorrect CONFIG_ARCH_ARM dependencies making impossible to select
-audio support for Nokia RX-51. Fix this by using correct CONFIG_ARM.
+Daniel Mack <zonque@gmail.com> writes:
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
----
-This is a fix for 3.12-rc. I.e. not for next merge window.
----
- sound/soc/omap/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> This patch makes the edma driver resume correctly after suspend. Tested
+> on an AM33xx platform with cyclic audio streams.
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index daa78a0..4a07f71 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -1,6 +1,6 @@
- config SND_OMAP_SOC
- 	tristate "SoC Audio for the Texas Instruments OMAP chips"
--	depends on (ARCH_OMAP && DMA_OMAP) || (ARCH_ARM && COMPILE_TEST)
-+	depends on (ARCH_OMAP && DMA_OMAP) || (ARM && COMPILE_TEST)
- 	select SND_DMAENGINE_PCM
- 
- config SND_OMAP_SOC_DMIC
-@@ -26,7 +26,7 @@ config SND_OMAP_SOC_N810
- 
- config SND_OMAP_SOC_RX51
- 	tristate "SoC Audio support for Nokia RX-51"
--	depends on SND_OMAP_SOC && ARCH_ARM && (MACH_NOKIA_RX51 || COMPILE_TEST)
-+	depends on SND_OMAP_SOC && ARM && (MACH_NOKIA_RX51 || COMPILE_TEST)
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TLV320AIC3X
- 	select SND_SOC_TPA6130A2
--- 
-1.8.4.rc3
+Please add a little more detail abou why the EDMA loses its context
+across suspend/resume (e.g. which power domain(s) its in, and why they
+lose context across suspend/resume.
+
+Also, is a full context save necessary every time?  What if no channels
+are in use?  Also, is a full restore necessary every time? Are there
+cases where the domain doesn't lose context and a restore would not be
+necessary?  Often this can be checked by reading register(s) that has a
+known power-on reset value.
+
+> The code was shamelessly taken from an ancient BSP tree.
+>
+> Signed-off-by: Daniel Mack <zonque@gmail.com>
+
+[...]
+
+> +static int edma_pm_suspend(struct device *dev)
+> +{
+> +	int i, j;
+> +
+> +	pm_runtime_get_sync(dev);
+> +
+> +	for (i = 0; i < arch_num_cc; i++) {
+> +		struct edma *ecc = edma_cc[i];
+> +
+> +		/* backup channel data */
+> +		for (j = 0; j < ecc->num_channels; j++)
+> +			ecc->context.ch_map[j] =
+> +				edma_read_array(i, EDMA_DCHMAP, j);
+> +
+> +		/* backup DMA Queue Number */
+> +		for (j = 0; j < 8; j++)
+> +			ecc->context.que_num[j] =
+> +				edma_read_array(i, EDMA_DMAQNUM, j);
+> +
+> +		/* backup DMA shadow Event Set data */
+> +		ecc->context.sh_esr = edma_shadow0_read_array(i, SH_ESR, 0);
+> +		ecc->context.sh_esrh = edma_shadow0_read_array(i, SH_ESR, 1);
+> +
+> +		/* backup DMA Shadow Event Enable Set data */
+> +		ecc->context.sh_eesr =
+> +			edma_shadow0_read_array(i, SH_EER, 0);
+> +		ecc->context.sh_eesrh =
+> +			edma_shadow0_read_array(i, SH_EER, 1);
+> +
+> +		/* backup DMA Shadow Interrupt Enable Set data */
+> +		ecc->context.sh_iesr =
+> +			edma_shadow0_read_array(i, SH_IER, 0);
+> +		ecc->context.sh_iesrh =
+> +			edma_shadow0_read_array(i, SH_IER, 1);
+> +
+> +		ecc->context.que_tc_map = edma_read(i, EDMA_QUETCMAP);
+> +
+> +		/* backup DMA Queue Priority data */
+> +		ecc->context.que_pri = edma_read(i, EDMA_QUEPRI);
+> +
+> +		/* backup paramset */
+> +		for (j = 0; j < ecc->num_slots; j++)
+> +			memcpy_fromio(&ecc->context.prm_set[j],
+> +				      edmacc_regs_base[i] + PARM_OFFSET(j),
+> +				      PARM_SIZE);
+> +	}
+
+The actual context save doesn't belong here, it belongs in the
+->runtime_suspend callback(), and conversly the context restore belongs
+in the ->runtime_resume() callback.
+
+> +	pm_runtime_put_sync(dev);
+> +
+> +	return 0;
+> +}
+
+Kevin
