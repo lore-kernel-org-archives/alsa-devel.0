@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: kirkwood: fix compilation warning in
- kirkwood_dma_open
-Date: Tue, 1 Oct 2013 11:49:51 +0100
-Message-ID: <20131001104951.GM19304@sirena.org.uk>
-References: <1380463213-2720-1-git-send-email-murzin.v@gmail.com>
+Subject: Re: Problems with i.MX233 driver in 3.12rc2
+Date: Tue, 1 Oct 2013 12:41:27 +0100
+Message-ID: <20131001114127.GN19304@sirena.org.uk>
+References: <CAG8Y82pXO3ZFGG75fY4ggSTpNQ4wF2j=mmVuw3XmWxKSdT2Y=Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0787655398292825154=="
+Content-Type: multipart/mixed; boundary="===============4917791535019907063=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C40CC261A8D
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 12:49:53 +0200 (CEST)
-In-Reply-To: <1380463213-2720-1-git-send-email-murzin.v@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 053E7262610
+ for <Alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 13:41:35 +0200 (CEST)
+In-Reply-To: <CAG8Y82pXO3ZFGG75fY4ggSTpNQ4wF2j=mmVuw3XmWxKSdT2Y=Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +19,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vladimir Murzin <murzin.v@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Trevor Page <trevg60@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0787655398292825154==
+--===============4917791535019907063==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="M70YYmmjmThh04Jd"
+	protocol="application/pgp-signature"; boundary="kM4gEFU/49KOGupy"
 Content-Disposition: inline
 
 
---M70YYmmjmThh04Jd
+--kM4gEFU/49KOGupy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Sep 29, 2013 at 04:00:13PM +0200, Vladimir Murzin wrote:
-> writel() supposes the first argument of type unsigned int. This fix the
-> warning:
+On Tue, Oct 01, 2013 at 07:43:43AM +0100, Trevor Page wrote:
 
-Applied, thanks.
+> First post to this list - I hope this is the appropriate place to ask for
+> this assistance.
 
---M70YYmmjmThh04Jd
+You probably want to CC people working on the driver too - I've added a
+few, git will probably help you find more.  Things just on the list can
+easily get missed with all the traffic.
+
+> I'm using the Olinuxino Maxi board with the i.MX233 processor. I'm using
+> the 3.12rc2 kernel at the moment because this has recently introduced the
+> drivers for this processor's audio. I understand that the drivers for this
+> chip's audio are:
+
+>  sound/soc/codecs/mxs-builtin-codec.c
+> sound/soc/mxs/mxs-builtin-audio.c
+>  sound/soc/mxs/mxs-builtin-dai.c
+> sound/soc/mxs/mxs-builtin-pcm.c
+
+These aren't in mainline?
+
+--kM4gEFU/49KOGupy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSSqjLAAoJELSic+t+oim90BgQAIQT+MRpS8Xn1728qVWFfTaH
-bLgpMTGsOnVfJAU/jjy1W6rJ90Ibp5+1pK5QHnnZA19VvBiPvG3iNACkMFa5WK0R
-MnIuHtOSqOvqJxR5Yo7QxNaFGJUbkX+UoSWH3MT9JfEqO2bOcgPBwIsxDs/wWZNE
-v9q0Gr7Yvhvzkc409Sg1l6XKtY2/Vx5gb+yJzUCUIBidKm567kzZ4RLV7AFDFuJx
-pKAoEeH726cVHl6a5pT9SjwsvHNlgkSrRw7wwlnWJBGsO3NYMtFQGmuxEsRxUnqM
-25vfAqCr+HuedR1iMcERLsQTIfXuhnsiq46K9j+ps0ioY2IgX1cMEjikc0Jho6pP
-amK+kM+yRthnh7JXJS53sWpxj5y82/68JeN/902JLYa/1Hl+00i7+tqqueWqRnVc
-hcuRhHrOzwRUXerXaiXKDfExPxjR6L1/cb1vdBf8RbYt68nKGgl+UddcqceyAj93
-gVdTXyWWrHI+W8U0S4EPyIo3VmP/IcOzas/5bZo72M3zQaqOSFO5AKHc83JMJl7d
-ta0vidqYxfT9og7EhJ0ZChVC3ZoGvk6OGIMd2tazqUo8gkkbvhPMbpQD5oRYN3Pd
-2Esn+oC8Eq1Q6djq80Fj8c/EbKWEgvZef4zmME2YOyQvpN/myeU2DaIQFRiPUesC
-9zliDc6xcFt9WTikIV8A
-=twwA
+iQIcBAEBAgAGBQJSSrTkAAoJELSic+t+oim93vUP/2TlvXAM96EzvAABKME8tLYQ
+l+yokgoPIt2oQoVrytvYZZtlToTkUpAJWlU2sC+L+JaK4JyckZSeIXFp9IAu24VI
+GCftKRYJV7gx1JRTEO/kWr4Xp+dbpx0XB77UJpymSuxhTPDvcBfT7IQJXKtxMkag
+qH2DLpdSUnrPH17kmxIUOapGynE3gR2NDYMH4n0YmZ3jz/bjAgun4GXyLAH9fxKI
+FGEVClNNHJ8rAWYmcH8K73H/FC1EHoPe/+oZAqgHhkcYDkbL1KedAzf3YSyuWMAo
+qHooNRe+8ZJHb//F3OZxn4Sr3N8Dzjui+DFIZ2/FeyZ39SgYZFAGiZEXYm7odMEA
+dMN6giQDWXEPlSXY5/E1LN7X2bCvtt/ypT7dVYZn8KwqlmSNxQsJwaVeXEhA/rLc
+dnNGsNNLcBGS+OewD3Kah5cVNl0LHl7diFIEBQVa+UihJ9eNNvYX2DYeW+4fDdfS
+WopchocdqSRTlyLF+pDKO7XAnvXHHNfbaBSBzG00yxJA2LMT5NiHLgiz32V/Qw7w
+2kXUag0Qr9EVtXfgLIsQHuyeYmbJqDGe7MSvtoMm3PqsvlyJpoPhnWtqxlcvGiYH
+tWgnHEN+FwhYg2HQxf/lzqOu03nr0yPRkx65PbUvQCnuGDcMwbbRB7MA9q2yVP/I
+I4dq5pHgTtE8xcoIuZ3H
+=OFUt
 -----END PGP SIGNATURE-----
 
---M70YYmmjmThh04Jd--
+--kM4gEFU/49KOGupy--
 
---===============0787655398292825154==
+--===============4917791535019907063==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0787655398292825154==--
+--===============4917791535019907063==--
