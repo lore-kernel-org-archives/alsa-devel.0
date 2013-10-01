@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl: imx-sgtl5000: Add .remove back
-Date: Tue, 1 Oct 2013 11:47:57 +0100
-Message-ID: <20131001104757.GK19304@sirena.org.uk>
-References: <1380590257-7516-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: kirkwood: fix compilation warning in
+ kirkwood_dma_open
+Date: Tue, 1 Oct 2013 11:49:51 +0100
+Message-ID: <20131001104951.GM19304@sirena.org.uk>
+References: <1380463213-2720-1-git-send-email-murzin.v@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1478707260394579453=="
+Content-Type: multipart/mixed; boundary="===============0787655398292825154=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F052261A8D
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 12:48:02 +0200 (CEST)
-In-Reply-To: <1380590257-7516-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C40CC261A8D
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 12:49:53 +0200 (CEST)
+In-Reply-To: <1380463213-2720-1-git-send-email-murzin.v@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,62 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: olof@lixom.net, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, p.zabel@pengutronix.de
+To: Vladimir Murzin <murzin.v@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1478707260394579453==
+--===============0787655398292825154==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nkAIkdqOakIAdIKa"
+	protocol="application/pgp-signature"; boundary="M70YYmmjmThh04Jd"
 Content-Disposition: inline
 
 
---nkAIkdqOakIAdIKa
+--M70YYmmjmThh04Jd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 30, 2013 at 10:17:37PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> Commit e8f00c1b01 (Merge remote-tracking branch 'asoc/fix/fsl' into asoc-=
-devm)=20
-> fixed a conflict, but missed to add the .remove function back,which cause=
-s the=20
-> following build warning:
+On Sun, Sep 29, 2013 at 04:00:13PM +0200, Vladimir Murzin wrote:
+> writel() supposes the first argument of type unsigned int. This fix the
+> warning:
 
 Applied, thanks.
 
---nkAIkdqOakIAdIKa
+--M70YYmmjmThh04Jd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSSqhaAAoJELSic+t+oim9qGcQAJPS548YxfngQ/hB6DLQxecP
-gDbgW6vQnPBsgDVqMurVdGY1k0yfUJNeS9M4EWpty2wCWdcyBt7cyDC7sHksL/tN
-9bD5vdnBmkcPVG0+wirwS5zPtZ8Lnt+veqY0ZT/IwMTy0JvJmbXSNBm886cOzyAT
-AgE4VtwkD6KQxH7IFAtEG6m/90rPTMvBTaRbiCXGsioD5kEbtEi9ZRym5RWSIOeC
-6zOrzWYBWtHoLph/fTXimIyaF2PODne8snKAtUs/Y4/cil6fJc0eGraFh//MJ7/x
-GF2esHJqvJyfBN+opCoXRANU+5nFXMCAEQ5IcJHX9ofzR5LtQEzl7lPF3cS7eggu
-/c5lTTafjaOjHs86aMH1VZhMl+s/qUzKVP/Axn+IfMY7E+Z2Mhna81FY1CQIjEch
-/TDPVvGgON7Y+/ReVTGQ/5A81D823gAgur7v+XnTdlc19Go1EwUY59pFbP2+5aAj
-D1FVaOWj6lQDrHtIoeJkmLWUE6qYmUCx9CgxrrBaXpvdLnfoDNTT9QnommFstd8y
-r3xs1BgN7vCM1lvrrnZcBDwVTEgV4wp4x1ekaI9QyaIR84ahgB//ANFyArtiq/Kv
-QsHTZZkiBtJDexaO0GwZ409YIQvwVAWnKUrBWW+oW1SHNhp0nhmBGjebMHncJ4ub
-ZBNBEYmMyvrFlXvTptJV
-=CWnY
+iQIcBAEBAgAGBQJSSqjLAAoJELSic+t+oim90BgQAIQT+MRpS8Xn1728qVWFfTaH
+bLgpMTGsOnVfJAU/jjy1W6rJ90Ibp5+1pK5QHnnZA19VvBiPvG3iNACkMFa5WK0R
+MnIuHtOSqOvqJxR5Yo7QxNaFGJUbkX+UoSWH3MT9JfEqO2bOcgPBwIsxDs/wWZNE
+v9q0Gr7Yvhvzkc409Sg1l6XKtY2/Vx5gb+yJzUCUIBidKm567kzZ4RLV7AFDFuJx
+pKAoEeH726cVHl6a5pT9SjwsvHNlgkSrRw7wwlnWJBGsO3NYMtFQGmuxEsRxUnqM
+25vfAqCr+HuedR1iMcERLsQTIfXuhnsiq46K9j+ps0ioY2IgX1cMEjikc0Jho6pP
+amK+kM+yRthnh7JXJS53sWpxj5y82/68JeN/902JLYa/1Hl+00i7+tqqueWqRnVc
+hcuRhHrOzwRUXerXaiXKDfExPxjR6L1/cb1vdBf8RbYt68nKGgl+UddcqceyAj93
+gVdTXyWWrHI+W8U0S4EPyIo3VmP/IcOzas/5bZo72M3zQaqOSFO5AKHc83JMJl7d
+ta0vidqYxfT9og7EhJ0ZChVC3ZoGvk6OGIMd2tazqUo8gkkbvhPMbpQD5oRYN3Pd
+2Esn+oC8Eq1Q6djq80Fj8c/EbKWEgvZef4zmME2YOyQvpN/myeU2DaIQFRiPUesC
+9zliDc6xcFt9WTikIV8A
+=twwA
 -----END PGP SIGNATURE-----
 
---nkAIkdqOakIAdIKa--
+--M70YYmmjmThh04Jd--
 
---===============1478707260394579453==
+--===============0787655398292825154==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1478707260394579453==--
+--===============0787655398292825154==--
