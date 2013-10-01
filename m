@@ -1,18 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Realtek ALC286 SONY Vaio Pro 13 Ubuntu 13.10
-Date: Tue, 01 Oct 2013 08:28:24 +0200
-Message-ID: <524A6B88.2080802@canonical.com>
-References: <524652C0.5040207@uwo.ca> <52492D48.102@canonical.com>
- <524A67F1.5020300@uwo.ca>
+From: Trevor Page <trevg60@gmail.com>
+Subject: Problems with i.MX233 driver in 3.12rc2
+Date: Tue, 1 Oct 2013 07:43:43 +0100
+Message-ID: <CAG8Y82pXO3ZFGG75fY4ggSTpNQ4wF2j=mmVuw3XmWxKSdT2Y=Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D29E2651DC
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 08:28:34 +0200 (CEST)
-In-Reply-To: <524A67F1.5020300@uwo.ca>
+Received: from mail-bk0-f43.google.com (mail-bk0-f43.google.com
+ [209.85.214.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0C932651DC
+ for <Alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 08:43:43 +0200 (CEST)
+Received: by mail-bk0-f43.google.com with SMTP id mz13so2413555bkb.16
+ for <Alsa-devel@alsa-project.org>; Mon, 30 Sep 2013 23:43:43 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,75 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yuval Levy <ylevy@uwo.ca>, Kailang <kailang@realtek.com>, David Chen <david.chen@canonical.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/01/2013 08:13 AM, Yuval Levy wrote:
-> Thank you for the quick reply.
-> 
-> On 09/30/2013 03:50 AM, David Henningsson wrote:
->> An important distinction is here: to they work in Windows without
->> specific Realtek drivers installed, or do you require Realtek's Windows
->> drivers for this support?
-> 
-> I am 99% certain that yes.  I am no Windows expert.  After taking
-> delivery of the laptop and ascertaining that the functionality that I
-> need works, I have backed up SONY's original stuff and stored it away.
-> Far away.  I have reformatted the SDD, leaving 30 GB for a Windows
-> install (because unfortunately, the law school's exam system requires
-> either Windows or Mac).  I reinstalled Windows from Microsoft's media.
-> I have not installed any other driver myself, but I am not sure if
-> Windows downloads drivers from the internet.  It definitely did download
-> drivers for my Brother printer, automatically and without asking for
-> permission, after it discovered it on the network.  I booted into
-> Windows before writing this email and looked in the Control Panel.  It
-> says the driver for the two microsoft and for the loudspeakers is Microsoft.
+Hello,
 
-Ok. If things work without extra drivers from Sony or Realtek, then it
-should be possible to get things working in Linux too without extra
-information from these parties...
+First post to this list - I hope this is the appropriate place to ask for
+this assistance.
 
->> Second, to do some actual triaging. I see you have been running
->> hda-jack-sense-test. Could you run it all three scenarios:
->>  1) nothing connected
->>  2) headphone (without mic) connected
->>  3) headset (heaphone + mic combo) connected
-> 
-> Done and added to the bug report. 0x21 works as you expected.  0x18 not.
-> 
-> As you suggested I installed alsa-tools-gui and did the advance override
-> with hdajackretask:
-> * selected codec Realtek ALC286
-> * clicked Advance override in the Options on the right hand side
-> * clicked Override under pins 0x18 and 0x21
-> * changed Jack detection from Present to Not present for both pins
+I'm using the Olinuxino Maxi board with the i.MX233 processor. I'm using
+the 3.12rc2 kernel at the moment because this has recently introduced the
+drivers for this processor's audio. I understand that the drivers for this
+chip's audio are:
 
-Ok - given that 0x21 works as expected you should only need to do this
-for pin 0x18.
+ sound/soc/codecs/mxs-builtin-codec.c
+sound/soc/mxs/mxs-builtin-audio.c
+ sound/soc/mxs/mxs-builtin-dai.c
+sound/soc/mxs/mxs-builtin-pcm.c
 
-> * clicked Apply now
-> 
-> An error message appeared: Failed to create file
-> '/home/yuv/.pulse/client.conf.3K083W': No such file or directory
-> 
-> maybe it should save to /home/yuv/.config/pulse/client.conf.3K083W?
->                                    ^^^^^^^
-> I am sorry I do not know how to fix this, can you help?
+My application for the board is a simple C program that uses the Linphone
+library to make VOIP calls. The problem I am having is that audio usually
+works (playback and capture) perfectly fine from boot, but at some point it
+may suddenly go 'dead'. At this point, there is no longer any audio from
+the headphone socket. I have not yet pinpointed exactly what it takes to
+trigger the fault, but I have seen it happen once when the call was put on
+hold while a Linphone call was in progress.
 
-Oh. That's fixed upstream [1], but apparently not in Ubuntu yet.
+Once the audio output is dead, these are some further observations:
+- When a Linphone call is received, I still hear a click from the headphone
+output when the call ends.
+- I have confirmed that the DAC / HP channels are turned up and unmuted.
+- If I run speaker-test when the audio is working, speaker-test
+periodically prints time duration information (presumably on each pass of
+its internal loop), like "0 - Front Left", "Time per period ...". When the
+audio is dead, speaker-test just freezes on "0 - Front Left" forever, as if
+some call is either blocking or returning to say it is busy. This might
+hopefully therefore be a useful point to start debugging.
+- I have only ever managed to restore audio using a reboot.
 
-Any of these workarounds should do it:
+I would like to have a go at debugging this. My problem though is that
+although I'm experienced with C and microprocessor programming, compiling
+and debugging embedded Linux is new ground for me. I'd be grateful for any
+pointers on things I could try in order to gain an insight into what's
+going wrong, and tips on how I could debug the drivers.
 
- 1) use the "boot override" instead (and reboot your computer to test)
- 2) create a symlink from .pulse to .config/pulse
- 3) or copy everything from .config/pulse to .pulse (but then you have
-to restart your computer afterwards, so PulseAudio will look in .pulse
-instead).
+So far my plan for today is to build the kernel again with the i.MX233
+audio drivers as external modules so that I can hopefully play with them a
+bit and compile them separately. (I assume the development and debug
+process for audio drivers like this is to compile them as .ko modules and
+modprobe them in). However without having any prior knowledge of Linux
+drivers or the ALSA / ASoC framework I'm not sure if I'm going to get very
+far.
 
+Regards,
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
-
-[1]
-http://git.alsa-project.org/?p=alsa-tools.git;a=commitdiff;h=772fbde91c00c8f9517e67e2f5401d28e9aa88d4
+Trevor.
