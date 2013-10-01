@@ -1,18 +1,16 @@
 From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: [PATCH 3/4] ALSA: hda - hdmi: Add HBR bitstreaming
-	support for ATI/AMD HDMI codecs
-Date: Tue,  1 Oct 2013 23:30:55 +0300
-Message-ID: <1380659456-3746-4-git-send-email-anssi.hannula@iki.fi>
-References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>
+Subject: [PATCH] amixer: fix indentation when printing
+	container TLV contents
+Date: Tue,  1 Oct 2013 23:46:53 +0300
+Message-ID: <1380660413-22755-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
- [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D576264F03
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 22:31:28 +0200 (CEST)
-In-Reply-To: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>
+Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
+ [83.102.40.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F1C5261ABF
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 22:47:00 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,83 +21,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Olivier Langlois <olivier@trillion01.com>, alsa-devel@alsa-project.org, =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Peter=20Fr=C3=BChberger?= <fritsch@xbmc.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-QVRJL0FNRCBIRE1JIGNvZGVjcyBkbyBub3QgaW5jbHVkZSBzdGFuZGFyZCBIREEgSERNSSBIQlIg
-c3VwcG9ydCAod2hpY2gKaXMgcmVxdWlyZWQgZm9yIGJpdHN0cmVhbWluZyBEVFMtSEQgYW5kIERv
-bGJ5IFRydWVIRCksIGluc3RlYWQgdGhleSBoYXZlCmN1c3RvbSB2ZXJicyBmb3IgY2hlY2tpbmcg
-YW5kIGVuYWJsaW5nIGl0LgoKQWRkIHN1cHBvcnQgZm9yIHRoZSBBVEkvQU1EIEhETUkgSEJSIHZl
-cmJzLgoKVGhlIHNwZWNpZmljYXRpb24gaXMgYXZhaWxhYmxlIGF0OgpodHRwOi8vd3d3Lngub3Jn
-L2RvY3MvQU1EL0FNRF9IREFfdmVyYnNfdjIucGRmCgpTaWduZWQtb2ZmLWJ5OiBBbnNzaSBIYW5u
-dWxhIDxhbnNzaS5oYW5udWxhQGlraS5maT4KVGVzdGVkLWJ5OiBQZXRlciBGcsO8aGJlcmdlciA8
-ZnJpdHNjaEB4Ym1jLm9yZz4KLS0tCiBzb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYyB8IDY1ICsr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0KIDEgZmlsZSBjaGFu
-Z2VkLCA2NCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQv
-cGNpL2hkYS9wYXRjaF9oZG1pLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwppbmRleCAx
-OWFkYjAxLi5jMGNkNGNhIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwor
-KysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwpAQCAtMTE0MCw3ICsxMTQwLDcgQEAgc3Rh
-dGljIGludCBoZG1pX3NldHVwX3N0cmVhbShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywgaGRhX25p
-ZF90IGN2dF9uaWQsCiAJCQkJCSAgICBuZXdfcGluY3RsKTsKIAogCX0KLQlpZiAoaXNfaGJyX2Zv
-cm1hdChmb3JtYXQpICYmICFuZXdfcGluY3RsKSB7CisJaWYgKGlzX2hicl9mb3JtYXQoZm9ybWF0
-KSAmJiAhbmV3X3BpbmN0bCAmJiAhaXNfYXRpaGRtaShjb2RlYykpIHsKIAkJc25kX3ByaW50ZGQo
-ImhkbWlfc2V0dXBfc3RyZWFtOiBIQlIgaXMgbm90IHN1cHBvcnRlZFxuIik7CiAJCXJldHVybiAt
-RUlOVkFMOwogCX0KQEAgLTI2NTQsNiArMjY1NCw3IEBAIHN0YXRpYyBpbnQgcGF0Y2hfbnZoZG1p
-XzhjaF83eChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKICNkZWZpbmUgQVRJX1ZFUkJfU0VUX01V
-TFRJQ0hBTk5FTF8yMwkweDc3OAogI2RlZmluZSBBVElfVkVSQl9TRVRfTVVMVElDSEFOTkVMXzQ1
-CTB4Nzc5CiAjZGVmaW5lIEFUSV9WRVJCX1NFVF9NVUxUSUNIQU5ORUxfNjcJMHg3N2EKKyNkZWZp
-bmUgQVRJX1ZFUkJfU0VUX0hCUl9DT05UUk9MCTB4NzdjCiAjZGVmaW5lIEFUSV9WRVJCX1NFVF9N
-VUxUSUNIQU5ORUxfMQkweDc4NQogI2RlZmluZSBBVElfVkVSQl9TRVRfTVVMVElDSEFOTkVMXzMJ
-MHg3ODYKICNkZWZpbmUgQVRJX1ZFUkJfU0VUX01VTFRJQ0hBTk5FTF81CTB4Nzg3CkBAIC0yNjY1
-LDYgKzI2NjYsNyBAQCBzdGF0aWMgaW50IHBhdGNoX252aGRtaV84Y2hfN3goc3RydWN0IGhkYV9j
-b2RlYyAqY29kZWMpCiAjZGVmaW5lIEFUSV9WRVJCX0dFVF9NVUxUSUNIQU5ORUxfMjMJMHhmNzgK
-ICNkZWZpbmUgQVRJX1ZFUkJfR0VUX01VTFRJQ0hBTk5FTF80NQkweGY3OQogI2RlZmluZSBBVElf
-VkVSQl9HRVRfTVVMVElDSEFOTkVMXzY3CTB4ZjdhCisjZGVmaW5lIEFUSV9WRVJCX0dFVF9IQlJf
-Q09OVFJPTAkweGY3YwogI2RlZmluZSBBVElfVkVSQl9HRVRfTVVMVElDSEFOTkVMXzEJMHhmODUK
-ICNkZWZpbmUgQVRJX1ZFUkJfR0VUX01VTFRJQ0hBTk5FTF8zCTB4Zjg2CiAjZGVmaW5lIEFUSV9W
-RVJCX0dFVF9NVUxUSUNIQU5ORUxfNQkweGY4NwpAQCAtMjY3Myw2ICsyNjc1LDkgQEAgc3RhdGlj
-IGludCBwYXRjaF9udmhkbWlfOGNoXzd4KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCiAjZGVm
-aW5lIEFUSV9PVVRfRU5BQkxFIDB4MQogCisjZGVmaW5lIEFUSV9IQlJfQ0FQQUJMRSAweDAxCisj
-ZGVmaW5lIEFUSV9IQlJfRU5BQkxFIDB4MTAKKwogc3RhdGljIHZvaWQgYXRpaGRtaV9zZXRfY2Eo
-c3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGhkYV9uaWRfdCBwaW5fbmlkLCBpbnQgY2EpCiB7CiAJ
-cHJpbnRrKCJBVEk6IHNldHRpbmcgY2EgJWRcbiIsIGNhKTsKQEAgLTI4MTMsNiArMjgxOCw2MyBA
-QCBzdGF0aWMgaW50IGF0aWhkbWlfZ2V0X2NoYW5fc2xvdChzdHJ1Y3QgaGRhX2NvZGVjICpjb2Rl
-YywgaGRhX25pZF90IHBpbl9uaWQsIGludAogfQogI2VuZGlmCiAKK3N0YXRpYyBpbnQgYXRpaGRt
-aV9wbGF5YmFja19wY21fcHJlcGFyZShzdHJ1Y3QgaGRhX3BjbV9zdHJlYW0gKmhpbmZvLAorCQkJ
-CQlzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKKwkJCQkJdW5zaWduZWQgaW50IHN0cmVhbV90YWcs
-CisJCQkJCXVuc2lnbmVkIGludCBmb3JtYXQsCisJCQkJCXN0cnVjdCBzbmRfcGNtX3N1YnN0cmVh
-bSAqc3Vic3RyZWFtKQoreworCXN0cnVjdCBoZG1pX3NwZWMgKnNwZWMgPSBjb2RlYy0+c3BlYzsK
-KwlpbnQgcGluX2lkeCA9IGhpbmZvX3RvX3Bpbl9pbmRleChzcGVjLCBoaW5mbyk7CisJc3RydWN0
-IGhkbWlfc3BlY19wZXJfcGluICpwZXJfcGluID0gZ2V0X3BpbihzcGVjLCBwaW5faWR4KTsKKwlo
-ZGFfbmlkX3QgcGluX25pZCA9IHBlcl9waW4tPnBpbl9uaWQ7CisJaW50IGhicl9jdGwsIGhicl9j
-dGxfbmV3OworCisJaGJyX2N0bCA9IHNuZF9oZGFfY29kZWNfcmVhZChjb2RlYywgcGluX25pZCwg
-MCwgQVRJX1ZFUkJfR0VUX0hCUl9DT05UUk9MLCAwKTsKKwlpZiAoaGJyX2N0bCAmIEFUSV9IQlJf
-Q0FQQUJMRSkgeworCQlpZiAoaXNfaGJyX2Zvcm1hdChmb3JtYXQpKQorCQkJaGJyX2N0bF9uZXcg
-PSBoYnJfY3RsIHwgQVRJX0hCUl9FTkFCTEU7CisJCWVsc2UKKwkJCWhicl9jdGxfbmV3ID0gaGJy
-X2N0bCAmIH5BVElfSEJSX0VOQUJMRTsKKworCQlzbmRfcHJpbnRkZCgiYXRpaGRtaV9wbGF5YmFj
-a19wY21fcHJlcGFyZTogIgorCQkJCSJOSUQ9MHgleCwgJXNoYnItY3RsPTB4JXhcbiIsCisJCQkJ
-cGluX25pZCwKKwkJCQloYnJfY3RsID09IGhicl9jdGxfbmV3ID8gIiIgOiAibmV3LSIsCisJCQkJ
-aGJyX2N0bF9uZXcpOworCisJCWlmIChoYnJfY3RsICE9IGhicl9jdGxfbmV3KQorCQkJc25kX2hk
-YV9jb2RlY193cml0ZShjb2RlYywgcGluX25pZCwgMCwKKwkJCQkJCUFUSV9WRVJCX1NFVF9IQlJf
-Q09OVFJPTCwKKwkJCQkJCWhicl9jdGxfbmV3KTsKKworCX0gZWxzZSBpZiAoaXNfaGJyX2Zvcm1h
-dChmb3JtYXQpKSB7CisJCXNuZF9wcmludGRkKCJhdGloZG1pX3BsYXliYWNrX3BjbV9wcmVwYXJl
-OiBIQlIgaXMgbm90IHN1cHBvcnRlZFxuIik7CisJCXJldHVybiAtRUlOVkFMOworCX0KKworCXJl
-dHVybiBnZW5lcmljX2hkbWlfcGxheWJhY2tfcGNtX3ByZXBhcmUoaGluZm8sIGNvZGVjLCBzdHJl
-YW1fdGFnLCBmb3JtYXQsIHN1YnN0cmVhbSk7Cit9CisKK3N0YXRpYyBpbnQgYXRpaGRtaV9idWls
-ZF9wY21zKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQoreworCXN0cnVjdCBoZG1pX3NwZWMgKnNw
-ZWMgPSBjb2RlYy0+c3BlYzsKKwlpbnQgZXJyLCBwaW5faWR4OworCisJZXJyID0gZ2VuZXJpY19o
-ZG1pX2J1aWxkX3BjbXMoY29kZWMpOworCisJaWYgKGVycikKKwkJcmV0dXJuIGVycjsKKworCWZv
-ciAocGluX2lkeCA9IDA7IHBpbl9pZHggPCBzcGVjLT5udW1fcGluczsgcGluX2lkeCsrKSB7CisJ
-CXN0cnVjdCBoZGFfcGNtICppbmZvID0gZ2V0X3BjbV9yZWMoc3BlYywgcGluX2lkeCk7CisKKwkJ
-aW5mby0+c3RyZWFtW1NORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0tdLm9wcy5wcmVwYXJlID0gYXRp
-aGRtaV9wbGF5YmFja19wY21fcHJlcGFyZTsKKwl9CisKKwlyZXR1cm4gMDsKK30KKwogc3RhdGlj
-IGludCBhdGloZG1pX2luaXQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiB7CiAJc3RydWN0IGhk
-bWlfc3BlYyAqc3BlYyA9IGNvZGVjLT5zcGVjOwpAQCAtMjg0OSw2ICsyOTExLDcgQEAgc3RhdGlj
-IGludCBwYXRjaF9hdGloZG1pKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCQlyZXR1cm4gZXJy
-OwogCiAJY29kZWMtPnBhdGNoX29wcy5pbml0ID0gYXRpaGRtaV9pbml0OworCWNvZGVjLT5wYXRj
-aF9vcHMuYnVpbGRfcGNtcyA9IGF0aWhkbWlfYnVpbGRfcGNtczsKIAogCS8qIEFUSS9BTUQgY29u
-dmVydGVycyBkbyBub3QgYWR2ZXJ0aXNlIGFsbCBvZiB0aGVpciBjYXBhYmlsaXRpZXMgKi8KIAlz
-cGVjID0gY29kZWMtPnNwZWM7Ci0tIAoxLjguMS41CgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+decode_tlv() adds indentation in the beginning, with the expectation
+that the TLV will be printed on the line afterwards in a switch-case.
+
+However, in the case of a container TLV the switch-case simply adds
+another level of indentation and calls decode_tlv() for the inner TLVs.
+This causes the first inner TLV to be printed with too much indentation
+and double '|'.
+
+Fix that by printing "container" and a newline for container TLVs, so
+that the result is as follows:
+  : values=0,0,0,0,0,0,0,0
+  | container
+    | chmap-variable=FL,FR
+    | chmap-variable=FL,FR,LFE
+    | chmap-variable=FL,FR,FC
+
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+---
+ amixer/amixer.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/amixer/amixer.c b/amixer/amixer.c
+index b83b0c3..cf82892 100644
+--- a/amixer/amixer.c
++++ b/amixer/amixer.c
+@@ -460,6 +460,7 @@ static void decode_tlv(unsigned int spaces, unsigned int *tlv, unsigned int tlv_
+ 	}
+ 	switch (type) {
+ 	case SND_CTL_TLVT_CONTAINER:
++		printf("container\n");
+ 		size += sizeof(unsigned int) -1;
+ 		size /= sizeof(unsigned int);
+ 		while (idx < size) {
+-- 
+1.8.1.5
