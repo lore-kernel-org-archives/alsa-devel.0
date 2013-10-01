@@ -1,39 +1,104 @@
-From: Thomas Pugliese <thomas.pugliese-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH] sound: usb: support wireless devices in snd_usb_parse_datainterval
-Date: Tue,  1 Oct 2013 14:32:57 -0500
-Message-ID: <1380655977-1403-1-git-send-email-thomas.pugliese@gmail.com>
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Thomas Pugliese <thomas.pugliese-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [RFC/RFT v2 0/4] ALSA: hda - hdmi: ATI/AMD
+	multi-channel and HBR support
+Date: Tue,  1 Oct 2013 23:30:52 +0300
+Message-ID: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
+ [83.102.40.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD54A261ABF
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 22:31:19 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Olivier Langlois <olivier@trillion01.com>, alsa-devel@alsa-project.org, =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Peter=20Fr=C3=BChberger?= <fritsch@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, 
-This patch adds support for dev speed USB_SPEED_WIRELESS in 
-snd_usb_parse_datainterval which allows the usb sound core to create 
-ISO urbs with the correct number and size of buffers.
-
-Signed-off-by: Thomas Pugliese <thomas.pugliese-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- sound/usb/helper.c |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/usb/helper.c b/sound/usb/helper.c
-index 6209024..51ed1ac 100644
---- a/sound/usb/helper.c
-+++ b/sound/usb/helper.c
-@@ -118,6 +118,7 @@ unsigned char snd_usb_parse_datainterval(struct snd_usb_audio *chip,
- {
- 	switch (snd_usb_get_speed(chip->dev)) {
- 	case USB_SPEED_HIGH:
-+	case USB_SPEED_WIRELESS:
- 	case USB_SPEED_SUPER:
- 		if (get_endpoint(alts, 0)->bInterval >= 1 &&
- 		    get_endpoint(alts, 0)->bInterval <= 4)
--- 
-1.7.10.4
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+SGkgYWxsIQoKSGVyZSBpcyBhIHNlY29uZCByZXZpc2lvbiBvZiB0aGUgQVRJL0FNRCBtdWx0aWNo
+YW5uZWwgcGF0Y2gsIG5vdyBhCnBhdGNoc2V0LgoKU2luY2UgdGhlIGxhc3QgcmV2aXNpb24gZnJv
+bSBhIGJpdCBvdmVyIHRoZSB3ZWVrIGFnbywgQU1EIGhhcyByZWxlYXNlZAptb3JlIGRvY3VtZW50
+YXRpb24gKCBodHRwOi8vd3d3Lngub3JnL2RvY3MvQU1EL0FNRF9IREFfdmVyYnNfdjIucGRmICks
+CnNvIHRoZSBwYXRjaHNldCBjb250YWlucyBuZXcgYWRkaXRpb25zOgoKLSBIQlIgYml0c3RyZWFt
+aW5nIHN1cHBvcnQgKEhEIHBhc3N0aHJvdWdoLCBmb3IgRFRTLUhEIGFuZCBEb2xieSBUcnVlSEQp
+CiAgbyBUaGlzIGNvbXBsZXRlcyB0aGUgc2V0LCBub3cgd2UgaGF2ZSBIQlIgb24gTlZJRElBLCBJ
+bnRlbCBhbmQgQU1EIDopCgotIE1vcmUgY29tcGxldGUgRUxEIGVtdWxhdGlvbiBvbiByZXZpc2lv
+biAzKyAoMHgxMDAzMDApIGNvZGVjcwogIG8gVW50ZXN0ZWQsIHRob3VnaCBmcm9tIHdoYXQgSSBj
+YW4gc2VlIHRoZSBuZXdseSBhZGRlZCBmaWVsZHMgbWF5IG5vdAogICAgYmUgZmlsbGVkIGluIHll
+dCBieSB0aGUgcmFkZW9uIGRyaXZlci4KCi0gUmFtcCB1cC9kb3duIGNvbmZpZ3VyYXRpb24gYWNj
+b3JkaW5nIHRvIG5vbi1wY20gYml0IG9uIHJldjMrCiAgbyBJIGd1ZXNzIHRoaXMgbWVhbnMgZ3Jh
+ZHVhbCBmYWRlLWluL291dD8gVW50ZXN0ZWQuCgpPdGhlciBjaGFuZ2VzIHNpbmNlIHRoZSBwcmV2
+aW91cyBwb3N0OgotIEVMRCBlbXVsYXRpb24gbW92ZWQgdG8gaGRhX2VsZC5jIGFuZCBjbGVhbmVk
+IHVwIGEgYml0Ci0gU29tZSBmaXhlcyB0byBoZG1pX2NobWFwX2N0bF90bHYoKSBjaGFuZ2VzCihh
+bmQgbWF5YmUgc29tZXRoaW5nIGVsc2UgSSBmb3Jnb3QgLSBpZiBzbywgc29ycnkpCgpBbHNvLCB0
+aGUgcGFpcndpc2UgY2hhbm5lbCBtYXBwaW5nIGNvZGUgaGFzIGJlZW4gdGVzdGVkIHRvIHdvcmsg
+d2l0aApjdXN0b20gY2hhbm5lbCBtYXBzLiBUaGUgVExWIGNvbnRlbnRzIGFyZSBzaG93biBhcyBm
+b2xsb3dzIGJ5IGFtaXhlcjoKICAgIHwgY2htYXAtcGFpcmVkPUZMLEZSCiAgICB8IGNobWFwLXBh
+aXJlZD1GTCxGUixOQSxMRkUKICAgIHwgY2htYXAtcGFpcmVkPUZMLEZSLEZDLE5BCiAgICB8IGNo
+bWFwLXBhaXJlZD1GTCxGUixSTCxSUgogICAgfCBjaG1hcC1wYWlyZWQ9RkwsRlIsRkMsTEZFCiAg
+ICB8IGNobWFwLXBhaXJlZD1GTCxGUixOQSxMRkUsUkwsUlIKICAgIHwgY2htYXAtcGFpcmVkPUZM
+LEZSLEZDLE5BLFJMLFJSCltldGNdCgpSYWZhxYIsIGRvIHlvdSBrbm93IGFib3V0IHRoZSBtaXNz
+aW5nIChBRkFJQ1MpIHN1cHBvcnQgZm9yIGxpcHN5bmMgKEY3QikKYW5kIHNpbmsgaW5mb3JtYXRp
+b24gKEY4MSkgaW4gcmFkZW9uIGRyaXZlcj8KClRoaXMgcGF0Y2hzZXQgcmVxdWlyZXMgYXQgbGVh
+c3QgbW9yZSB0ZXN0aW5nIGJlZm9yZSBpdCBzaG91bGQgYmUgYXBwbGllZC4KCkEgZmV3IG90aGVy
+IHNvbWV3aGF0IG9wZW4gdGhpbmdzOgotIEkgbmFtZWQgZXZlcnl0aGluZyBhdGkvQVRJIGV4Y2Vw
+dCBmb3IgaXNfYW1kaGRtaV9yZXYzKCkgYW5kCiAgaGFzX2FtZF9mdWxsX3JlbWFwX3N1cHBvcnQo
+KSB0aGF0IGFyZSBBTUQtb25seSwgdGhvdWdoIEFNRC1vbmx5IHZlcmJzCiAgSSBzdGlsbCBuYW1l
+ZCBBVEkgdG8gaGF2ZSBzaW1pbGFyIG5hbWVzIHRvIG90aGVyIHZlcmJzLiBEb2VzIHRoYXQKICBz
+ZWVtIHNlbnNpYmxlIG9yIGhvdyBzaG91bGQgdGhpcyBiZSBkb25lPwotIEN1cnJlbnRseSBzZXR1
+cF9hdWRpb19pbmZvZnJhbWUoKSB3cml0ZXMgdGhlIGNoYW5uZWwgbWFwcGluZyBldmVyeQogIHRp
+bWUgZm9yIEFUSS9BTUQsIHNob3VsZCB3ZSB0cnkgdG8gYXZvaWQgdGhhdD8gSWYgc28sIGFueQog
+IHN1Z2dlc3Rpb25zPwogIChhcmdoLCBqdXN0IG5vdGljZWQgdGhpcyBpcyBicm9rZW4gZm9yIG1h
+bnVhbCBjaGFubmVsIG1hcHMgb24gbm9uLUFUSTsKICAgaWYganVzdCB0aGUgY2htYXAgaXMgY2hh
+bmdlZCwgY2hhbm5lbCBtYXBwaW5nIGlzIG5vdCB1cGRhdGVkOwogICBzbyB0aGlzIHJlcXVpcmVz
+IGZpeGVzIGluIHRoZSBnZW5lcmljIHNpZGUgYXMgd2VsbCkKCkknbSBlc3BlY2lhbGx5IGludGVy
+ZXN0ZWQgaW4gdGVzdGVycyB3aXRoOgoKLSBPbGRlciBjb2RlY3Mgb3RoZXIgdGhhbiAweDEwMDJh
+YTAxLiBNeSBiZXN0IGd1ZXNzIHN0aWxsIGlzIHRoYXQgdGhlCiAgbmV3IGNvZGUgd29ya3Mgb24g
+dGhlbSBhcyB3ZWxsLgogIG8gT24gdGhlc2UgSSdkIGxpa2UgdG8ga25vdyBpZiBtdWx0aWNoYW5u
+ZWwgYW5kIHRoZSBuZXcgZm9ybWF0cwogICAgd29yaywgaS5lLiBlLmcuCiAgICBzcGVha2VyLXRl
+c3QgLUQgaGRtaTpDQVJEPUdlbmVyaWMsREVWPTAgLWM4IC1yMTkyMDAwIC1GIFMzMl9MRQoKLSBD
+b2RlYyAweDEwMDJhYTAxIHJldmlzaW9ucyAweDEwMDMwMCAoUmV2IElEIDMpIG9yIGxhdGVyIChz
+ZWUKICAvcHJvYy9hc291bmQvY2FyZFgvY29kZWMjWSkuIFRoZXNlIGFyZSBIRDc3NTArIEkgdGhp
+bmsuIFN0dWZmIHRvIGJlCiAgdGVzdGVkIG9uIHRoZXNlOgogIG8gVGhlIHJhbXAgdXAvZG93biBz
+dHVmZiwgaS5lLiBwYXRjaCA0LiBJcyB0aGVyZSBhbnkgZGlmZmVyZW5jZSBzZWVuCiAgICB3aXRo
+IHRoZXNlLCBpbiB0aGUgYmVnaW5uaW5nL2VuZCAoaS5lLiBmYWRlLW91dC9pbik6CiAgICBzcGVh
+a2VyLXRlc3QgLUQgaGRtaTpDQVJEPUdlbmVyaWMsREVWPTAsQUVTMD0weDA0IC1jMiAtcjQ4MDAw
+CiAgICBzcGVha2VyLXRlc3QgLUQgaGRtaTpDQVJEPUdlbmVyaWMsREVWPTAsQUVTMD0weDA2IC1j
+MiAtcjQ4MDAwCiAgICBBbHNvLCBpcyB0aGVyZSBhIGRpZmZlcmVuY2UgaW4gdGhlIGJlZ2lubmlu
+ZyBvZiB0aGVzZQogICAgKG1heWJlIGdhcmJhZ2Ugc291bmQgYW5kL29yIHNsaWdodGx5IHNsb3dl
+ciBzdGFydHVwPyk6CiAgICBhcGxheSAtRGhkbWk6Q0FSRD1HZW5lcmljLERFVj0wLEFFUzA9NCAt
+cjQ0MTAwIC1mIHMxNl9sZSAtYzIgdGVzdGkuZHRzLmN1dC5zcGRpZgogICAgYXBsYXkgLURoZG1p
+OkNBUkQ9R2VuZXJpYyxERVY9MCxBRVMwPTYgLXI0NDEwMCAtZiBzMTZfbGUgLWMyIHRlc3RpLmR0
+cy5jdXQuc3BkaWYKCiAgbyBDb250ZW50cyBvZiAvcHJvYy9hc291bmQvY2FyZFgvZWxkIzAuIEkn
+ZCBsaWtlIHRvIHNlZSB0aGUgY29udGVudHMKICAgIGJvdGggd2l0aCByYWRlb24gYW5kIHdpdGgg
+dGhlIHByb3ByaWV0YXJ5IGZnbHJ4IGRyaXZlciBpbiB1c2UKCk9saXZpZXIsIGNhbiB5b3UgdGVz
+dCBhZ2FpbiBvbiB5b3VyIHJldjMgaHc/IDopCgpUaGUgcGF0Y2hzZXQgY2FuIGJlIGZvdW5kIGlu
+IGNvbWJpbmVkIGZvcm0gKGZvciBlLmcuIHRlc3RpbmcgcHVycG9zZXMpIGF0OgpodHRwOi8vb25z
+ZS5maS9maWxlcy9hdGloZG1pNS5wYXRjaAoKVGhlIHRlc3QgZmlsZSByZWZlcmVuY2VkIGFib3Zl
+IGNhbiBiZSBmb3VuZCBhdDoKaHR0cDovL29uc2UuZmkvZmlsZXMvdGVzdGkuZHRzLmN1dC5zcGRp
+Zi5neiAoanVzdCByZWd1bGFyIERUUykKCkFuc3NpIEhhbm51bGEgKDQpOgogICAgICBBTFNBOiBo
+ZGEgLSBoZG1pOiBBZGQgQVRJL0FNRCBtdWx0aS1jaGFubmVsIGF1ZGlvIHN1cHBvcnQKICAgICAg
+QUxTQTogaGRhIC0gaGRtaTogQWRkIEVMRCBlbXVsYXRpb24gZm9yIEFUSS9BTUQgY29kZWNzCiAg
+ICAgIEFMU0E6IGhkYSAtIGhkbWk6IEFkZCBIQlIgYml0c3RyZWFtaW5nIHN1cHBvcnQgZm9yIEFU
+SS9BTUQgSERNSSBjb2RlY3MKICAgICAgQUxTQTogaGRhIC0gaGRtaTogRGlzYWJsZSByYW1wLXVw
+L2Rvd24gZm9yIG5vbi1QQ00gb24gQU1EIGNvZGVjcwoKIHNvdW5kL3BjaS9oZGEvaGRhX2VsZC5j
+ICAgIHwgMTU3ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysKIHNvdW5kL3BjaS9oZGEvaGRhX2xvY2FsLmggIHwg
+ICA1ICsrKwogc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgfCA0MjQgKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0t
+LS0tLS0tLS0tLQogMyBmaWxlcyBjaGFuZ2VkLCA1NDcgaW5zZXJ0aW9ucygrKSwgMzkgZGVsZXRp
+b25zKC0pCgotLSAKQW5zc2kgSGFubnVsYQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
