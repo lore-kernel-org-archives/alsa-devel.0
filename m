@@ -1,20 +1,17 @@
-From: Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH v2] ASoC: imx-sgtl5000: do not use devres
- on a foreign device
-Date: Mon, 30 Sep 2013 17:41:55 -0700
-Message-ID: <CAOesGMi5SmBq9bvRTgfeV0w=B1QcokGnVNM5vUqiBQ4JUYw2KQ@mail.gmail.com>
-References: <1380115268-32118-1-git-send-email-p.zabel@pengutronix.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl: imx-sgtl5000: Add .remove back
+Date: Mon, 30 Sep 2013 22:17:37 -0300
+Message-ID: <1380590257-7516-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f46.google.com (mail-qa0-f46.google.com
- [209.85.216.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 132A026517B
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 02:41:56 +0200 (CEST)
-Received: by mail-qa0-f46.google.com with SMTP id j7so2859092qaq.5
- for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2013 17:41:56 -0700 (PDT)
-In-Reply-To: <1380115268-32118-1-git-send-email-p.zabel@pengutronix.de>
+Received: from mail-ye0-f169.google.com (mail-ye0-f169.google.com
+ [209.85.213.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11A1726517B
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 03:17:52 +0200 (CEST)
+Received: by mail-ye0-f169.google.com with SMTP id r13so2047584yen.0
+ for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2013 18:17:52 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,36 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Sachin Kamat <sachin.kamat@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Shawn Guo <shawn.guo@linaro.org>, Arnaud Patard <arnaud.patard@rtp-net.org>
+To: broonie@kernel.org
+Cc: olof@lixom.net, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, p.zabel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-On Wed, Sep 25, 2013 at 6:21 AM, Philipp Zabel <p.zabel@pengutronix.de> wrote:
+Commit e8f00c1b01 (Merge remote-tracking branch 'asoc/fix/fsl' into asoc-devm) 
+fixed a conflict, but missed to add the .remove function back,which causes the 
+following build warning:
 
-> Changes since v1:
->  - Rebased onto asoc/for-next, adding back imx_sgtl5000_remove.
+sound/soc/fsl/imx-sgtl5000.c:185:12: warning: 'imx_sgtl5000_remove' defined but not used [-Wunused-function]
 
-[...]
+Fix the warning by adding the .remove function back.
 
-> +static int imx_sgtl5000_remove(struct platform_device *pdev)
-> +{
-> +       struct imx_sgtl5000_data *data = platform_get_drvdata(pdev);
-> +
-> +       clk_put(data->codec_clk);
-> +
-> +       return 0;
-> +}
-> +
+Reported-by: Olof Johansson <olof@lixom.net>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/fsl/imx-sgtl5000.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-This function is never referenced nor called from anywhere, so if you
-want to add it back you've better add a reference to it as well. :)
-
-For now it results in:
-
-sound/soc/fsl/imx-sgtl5000.c:185:12: warning: 'imx_sgtl5000_remove'
-defined but not used [-Wunused-function]
-
-
--Olof
+diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+index 6f4bdc8..ed6ba1e 100644
+--- a/sound/soc/fsl/imx-sgtl5000.c
++++ b/sound/soc/fsl/imx-sgtl5000.c
+@@ -204,6 +204,7 @@ static struct platform_driver imx_sgtl5000_driver = {
+ 		.of_match_table = imx_sgtl5000_dt_ids,
+ 	},
+ 	.probe = imx_sgtl5000_probe,
++	.remove = imx_sgtl5000_remove,
+ };
+ module_platform_driver(imx_sgtl5000_driver);
+ 
+-- 
+1.8.1.2
