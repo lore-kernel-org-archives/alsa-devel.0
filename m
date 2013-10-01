@@ -1,47 +1,37 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: Problems with i.MX233 driver in 3.12rc2
-Date: Tue, 1 Oct 2013 09:54:11 -0300
-Message-ID: <CAOMZO5DmAKApO4RtdWKKHb3c14MzZOFQWz4Q01pE-BngTrMvPw@mail.gmail.com>
-References: <CAG8Y82pXO3ZFGG75fY4ggSTpNQ4wF2j=mmVuw3XmWxKSdT2Y=Q@mail.gmail.com>
- <20131001114127.GN19304@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ve0-f177.google.com (mail-ve0-f177.google.com
- [209.85.128.177])
- by alsa0.perex.cz (Postfix) with ESMTP id E26AF264F13
- for <Alsa-devel@alsa-project.org>; Tue,  1 Oct 2013 14:54:12 +0200 (CEST)
-Received: by mail-ve0-f177.google.com with SMTP id db12so5022280veb.8
- for <Alsa-devel@alsa-project.org>; Tue, 01 Oct 2013 05:54:12 -0700 (PDT)
-In-Reply-To: <20131001114127.GN19304@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Trevor Page <trevg60@gmail.com>, Shawn Guo <shawn.guo@linaro.org>, "alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH] ARM: omap: edma: add suspend suspend/resume hooks
+Date: Tue,  1 Oct 2013 15:51:32 +0200
+Message-ID: <1380635493-31040-1-git-send-email-zonque@gmail.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: linux-omap@vger.kernel.org
+Cc: s.neumann@raumfeld.com, mporter@ti.com, nsekhar@ti.com, alsa-devel@alsa-project.org, gururaja.hebbar@ti.com, linux-arm-kernel@lists.infradead.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 1, 2013 at 8:41 AM, Mark Brown <broonie@kernel.org> wrote:
+This patch adds support for edma driver.
 
->>  sound/soc/codecs/mxs-builtin-codec.c
->> sound/soc/mxs/mxs-builtin-audio.c
->>  sound/soc/mxs/mxs-builtin-dai.c
->> sound/soc/mxs/mxs-builtin-pcm.c
->
-> These aren't in mainline?
+I know the intermediate code in arch/arm/common is going to be purged
+eventually when the real dma-engine driver lands, so I don't know
+whether it's reasonable to include my patch after all. It might just
+server as template for the suspend/resume functions in the final
+driver, or maybe anyone wants to include that intermediate hack for the
+time being.
 
-Yes, not yet.
+Successfully tested on an AM335x board with davinci-mcasp enabled
+audio. A patch to make the latter work after suspend has been posted
+on alsa-devel.
 
-Trevor, please work with the driver author to get it submitted to this
-list, so that it can be properly reviewed.
 
 Thanks,
+Dainel
 
-Fabio Estevam
+
+Daniel Mack (1):
+  ARM: omap: edma: add suspend suspend/resume hooks
+
+ arch/arm/common/edma.c | 133 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 133 insertions(+)
+
+-- 
+1.8.3.1
+
