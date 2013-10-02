@@ -1,85 +1,79 @@
 From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [RFC/RFT v2 0/4] ALSA: hda - hdmi: ATI/AMD
- multi-channel and HBR support
-Date: Wed, 02 Oct 2013 19:42:53 +0300
-Message-ID: <524C4D0D.1070903@iki.fi>
-References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>
- <s5hli2bu4gs.wl%tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
- [83.102.40.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 45E4D26509E
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2013 18:43:01 +0200 (CEST)
-In-Reply-To: <s5hli2bu4gs.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH] ALSA: hda - hdmi: Fix channel map switch not taking effect
+Date: Wed,  2 Oct 2013 21:13:32 +0300
+Message-ID: <1380737612-16512-1-git-send-email-anssi.hannula@iki.fi>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Olivier Langlois <olivier@trillion01.com>, alsa-devel@alsa-project.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, linux-kernel@vger.kernel.org, =?UTF-8?B?UGV0ZXIgRnLDvGhiZXJnZXI=?= <fritsch@xbmc.org>
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-02.10.2013 17:34, Takashi Iwai kirjoitti:
-> At Tue,  1 Oct 2013 23:30:52 +0300,
-> Anssi Hannula wrote:
-[...]
->> Anssi Hannula (4):
->>       ALSA: hda - hdmi: Add ATI/AMD multi-channel audio support
->>       ALSA: hda - hdmi: Add ELD emulation for ATI/AMD codecs
->>       ALSA: hda - hdmi: Add HBR bitstreaming support for ATI/AMD HDMI codecs
->>       ALSA: hda - hdmi: Disable ramp-up/down for non-PCM on AMD codecs
-> 
-> 
-> The patches generally look good, but I'm thinking whether it's cleaner
-> to create a new ops items.  Maybe it can be specific to HDMI codec,
-> e.g.
-> 
-> struct hda_hdmi_ops {
-> 	int (*get_chan_slot)(struct hda_codec *codec, hda_nid_t pin, int slot);
-> 	int (*set_chan_slot)(struct hda_codec *codec, hda_nid_t pin, int setup);
-> 	int (*set_ca)(struct hda_codec *codec, hda_nid_t pin, int ca);
-> 	....
-> }
-> 
-> It's not sexy to have a thing like is_atihdmi() in the common header
-> and see it in everywhere.
+Currently hdmi_setup_audio_infoframe() reprograms the HDA channel
+mapping only when the infoframe is not up-to-date or the non-PCM flag
+has changed.
 
-OK, will do that for next version.
+However, when just the channel map has been changed, the infoframe may
+still be up-to-date and non-PCM flag may not have changed, so the new
+channel map is not actually programmed into the HDA codec.
 
-Regarding hda_eld.c, I guess I'll add struct hda_hdmi_ops to struct
-hdmi_spec, then keep snd_hdmi_ati_get_eld() in hda_eld.c but make it
-non-static, so I can assign the correct _get_eld in patch_hdmi.c?
+Notably, this failing case is also always triggered when the device is
+already in a prepared state and a new channel map is configured while
+changing only the channel positions (for example, plain
+"speaker-test -c2 -m FR,FL").
 
+Fix that by keeping track of the last programmed channel map and making
+hdmi_setup_audio_infoframe() always update the hardware mapping if the
+channel map has changed.
 
-P.S. I asked whether new callbacks should be added in the previous RFC
-message, but I guess that was easy to overlook as the message was a bit
-incoherent... :)
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: <stable@vger.kernel.org>
+---
 
---
-Anssi Hannula
+BTW, is there some mechanism preventing hdmi_chmap_ctl_put() to be called
+at the same time with generic_hdmi_playback_pcm_prepare() that I didn't
+see with a quick look?
+Both of them call hdmi_setup_audio_infoframe() which is not thread-safe.
 
-> thanks,
-> 
-> Takashi
-> 
->>
->>  sound/pci/hda/hda_eld.c    | 157 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->>  sound/pci/hda/hda_local.h  |   5 +++
->>  sound/pci/hda/patch_hdmi.c | 424 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------
->>  3 files changed, 547 insertions(+), 39 deletions(-)
->>
->> -- 
->> Anssi Hannula
->>
+ sound/pci/hda/patch_hdmi.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 7ea0245..09f38a1 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -74,6 +74,8 @@ struct hdmi_spec_per_pin {
+ 	bool non_pcm;
+ 	bool chmap_set;		/* channel-map override by ALSA API? */
+ 	unsigned char chmap[8]; /* ALSA API channel-map */
++	bool last_chmap_set;	/* channel-map override programmed? */
++	unsigned char last_chmap[8]; /* last programmed channel-map */
+ 	char pcm_name[8];	/* filled in build_pcm callbacks */
+ };
+ 
+@@ -955,15 +957,21 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+ 					    ai.bytes, sizeof(ai));
+ 		hdmi_start_infoframe_trans(codec, pin_nid);
+ 	} else {
+-		/* For non-pcm audio switch, setup new channel mapping
+-		 * accordingly */
+-		if (per_pin->non_pcm != non_pcm)
++		/* For non-pcm audio switch or channel-map switch,
++		 * setup new channel mapping accordingly */
++		if (per_pin->non_pcm != non_pcm
++		    || per_pin->chmap_set != per_pin->last_chmap_set
++		    || (per_pin->chmap_set && memcmp(per_pin->chmap, per_pin->last_chmap,
++						     ARRAY_SIZE(per_pin->chmap)) != 0))
+ 			hdmi_setup_channel_mapping(codec, pin_nid, non_pcm, ca,
+ 						   channels, per_pin->chmap,
+ 						   per_pin->chmap_set);
+ 	}
+ 
+ 	per_pin->non_pcm = non_pcm;
++	per_pin->last_chmap_set = per_pin->chmap_set;
++	if (per_pin->chmap_set)
++		memcpy(per_pin->last_chmap, per_pin->chmap, ARRAY_SIZE(per_pin->chmap));
+ }
+ 
+ 
 -- 
-Anssi Hannula
+1.8.1.5
