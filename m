@@ -1,60 +1,60 @@
-From: Thomas Pugliese <thomas.pugliese-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] sound: usb: add support for wireless USB devices
-Date: Wed, 2 Oct 2013 09:38:58 -0500 (CDT)
-Message-ID: <alpine.DEB.2.02.1310020937080.2882@mint32-VirtualBox>
-References: <1380655935-1366-1-git-send-email-thomas.pugliese@gmail.com> <524C1FFA.8080704@gmail.com>
+From: Manuel Reimer <Manuel.Spam@nurfuerspam.de>
+Subject: Re: Microphone does not longer work on Lenovo N581
+Date: Wed, 02 Oct 2013 16:54:55 +0200
+Message-ID: <l2hc35$42d$1@ger.gmane.org>
+References: <l28nen$jns$1@ger.gmane.org> <s5h1u44uh1m.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <524C1FFA.8080704-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Thomas Pugliese <thomas.pugliese-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF67B265495
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2013 16:54:51 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1VRNpC-0006SN-2x
+ for alsa-devel@alsa-project.org; Wed, 02 Oct 2013 16:54:50 +0200
+Received: from p5dd560a0.dip0.t-ipconnect.de ([93.213.96.160])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Wed, 02 Oct 2013 16:54:50 +0200
+Received: from Manuel.Spam by p5dd560a0.dip0.t-ipconnect.de with local (Gmexim
+ 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Wed, 02 Oct 2013 16:54:50 +0200
+In-Reply-To: <s5h1u44uh1m.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 10/02/2013 12:02 PM, Takashi Iwai wrote:
+> First off, take alsa-info.sh output on 3.8.8 kernel where the internal
+> mic works.  Run the script with --no-upload option, and keep the
+> output.
 
+Nice script. I did so and used "diff" to compare the two.
 
-On Wed, 2 Oct 2013, Daniel Mack wrote:
+This way, I saw, that not only "Microphone" disappeared but "Capture" 
+was added.
 
-> On 01.10.2013 21:32, Thomas Pugliese wrote:
-> > This patch updates snd_usb_audio_create also support devices whose 
-> > speed == USB_SPEED_WIRELESS.
-> 
-> Interesting. What device are you testing this with?
-> 
-> 
-> Daniel
-> 
+So I pushed "Capture" to maximum volume and unmuted the channel and... 
+now my microphone works!
 
-The device I am testing with is a C-Media USB Audio device (VID:0x0d8c, 
-PID:0x0103) connected to a wireless USB host using an Alereon Wireless USB 
-bridge.
+IMHO it is a bit confusing if "Microphone" is renamed to "Capture" ;)
 
-Tom
+And another thing, that seems to be misnamed, is the "Internal 
+microphone boost" setting. If an external microphone is plugged in, then 
+this setting also applies to this microphone. So maybe it would be 
+better to name it "Microphone boost"?
 
-> 
-> > 
-> > Signed-off-by: Thomas Pugliese <thomas.pugliese-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> > ---
-> >  sound/usb/card.c |    1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/sound/usb/card.c b/sound/usb/card.c
-> > index 64952e2..ef76aa0 100644
-> > --- a/sound/usb/card.c
-> > +++ b/sound/usb/card.c
-> > @@ -349,6 +349,7 @@ static int snd_usb_audio_create(struct usb_device *dev, int idx,
-> >  	case USB_SPEED_LOW:
-> >  	case USB_SPEED_FULL:
-> >  	case USB_SPEED_HIGH:
-> > +	case USB_SPEED_WIRELESS:
-> >  	case USB_SPEED_SUPER:
-> >  		break;
-> >  	default:
-> > 
-> 
-> 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thank you for your help.
+
+Greetings,
+
+Manuel
