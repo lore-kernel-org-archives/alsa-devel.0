@@ -1,16 +1,26 @@
-From: John Spencer <maillist-alsa@barfooze.de>
-Subject: Re: alsa-lib 1.0.27.2 and musl
-Date: Wed, 02 Oct 2013 17:02:42 +0200
-Message-ID: <524C3592.4060001@barfooze.de>
-References: <20130917172225.GI14246@waldemar-brodkorb.de>
+From: =?ISO-8859-1?Q?J=F6rn_Nettingsmeier?=
+ <nettings@stackingdwarves.net>
+Subject: Re: Can't get capturing from RME Hammerfall MADI card
+ to work: sound loops & silcence
+Date: Wed, 02 Oct 2013 17:16:15 +0200
+Message-ID: <524C38BF.9070200@stackingdwarves.net>
+References: <CANYi0v7OD_AFC9-jFeH4MGLZQGsPX91S5NdjqDsmZ_9pOR0hPg@mail.gmail.com>
+ <CAGqxWvJQPFd_v_iN0eyVG1qCCUxeYpcOP0YU961Gn2JGdN3RgA@mail.gmail.com>
+ <5245370C.5060408@ladisch.de> <52453824.9070308@faberman.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from furnace.wzff.de (furnace.wzff.de [176.9.216.40])
- by alsa0.perex.cz (Postfix) with ESMTP id DAB5326549F
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2013 17:06:28 +0200 (CEST)
-In-Reply-To: <20130917172225.GI14246@waldemar-brodkorb.de>
+Received: from mail.stackingdwarves.net (evil.stackingdwarves.net
+ [188.40.12.36]) by alsa0.perex.cz (Postfix) with ESMTP id 845A0265495
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2013 17:16:16 +0200 (CEST)
+Received: from hoppetosse.villakunterbunt.netz (p508B9E50.dip0.t-ipconnect.de
+ [80.139.158.80])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (Client did not present a certificate)
+ by mail.stackingdwarves.net (Postfix) with ESMTPSA id D99176074A
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2013 17:16:14 +0200 (CEST)
+In-Reply-To: <52453824.9070308@faberman.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,34 +30,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Waldemar Brodkorb <wbx@openadk.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDkvMTcvMjAxMyAwNzoyMiBQTSwgV2FsZGVtYXIgQnJvZGtvcmIgd3JvdGU6Cj4gSGkgRGV2
-ZWxvcGVycywKPgo+IEkgYW0gdHJ5aW5nIHRvIGNyb3NzLWNvbXBpbGUgYWxzYS1saWIgd2l0aCBh
-IG11c2zCuSBsaWJjIGJhc2VkCj4gdG9vbGNoYWluLiBVbmZvcnR1bmF0ZWx5IHNyYy9jb21wYXQv
-aHNlYXJjaF9yLmMgaXMgZmFpbGluZyB0bwo+IGNvbXBpbGUsIGJlY2F1c2Ugb2Ygc29tZSBnbGli
-YyBzcGVjaWZpYyBtYWNyb3MgKGxpa2UgX1ApIG5vcm1hbGx5Cj4gZGVmaW5lZCBpbiBzeXMvY2Rl
-ZnMuaC4gQWZ0ZXIgZ3JlcHBpbmcgdGhyb3VnaCB0aGUgY29kZSBJIGNhbiBub3QKPiBmaW5kIGFu
-eSBjb25zdW1lciBmb3IgYW55IGZ1bmN0aW9ucyBpbXBsZW1lbnRlZCBpbiBoc2VhcmNoX3IuYy4K
-PiBXaGVuIEkganVzdCBjb21tZW50IG91dCB0aGUgY29kZSwgZXZlcnl0aGluZyBjb21waWxlcyBm
-aW5lLgo+Cj4gU2VlbXMgdGhhdCB0aGF0IHVzYWdlIG9mIGhzZWFyY2ggZnVuY3Rpb25zIHdhcyBy
-ZW1vdmVkIGluIHRoZSBjb2RlCj4gbG9uZyB0aW1lIGFnby4KPiBjb21taXQgMjczZDExNWRlMDU1
-NzQyNTFiZGQ2NjE3NDdlY2I2ODQ0OWE1Y2YxZAo+IEF1dGhvcjogSmFyb3NsYXYgS3lzZWxhPHBl
-cmV4QHBlcmV4LmN6Pgo+IERhdGU6ICAgU2F0IEp1bCAxNSAxMDoyMDozMiAyMDAwICswMDAwCj4K
-PiAgICAgIFJlbW92ZWQgb2xkIG1peGVyIEFQSSBmdW5jdGlvbnMuCj4gICAgICBBZGRlZCBzaW1w
-bGUgY29udHJvbCBsYXllciAoZXhwZXJpbWVudGFsKS4KPgo+IENhbiBpdCBqdXN0IGJlIHJlbW92
-ZWQ/CgpTZWVtcyBzbywgeWVzLiBjYW4geW91IGNvbWUgdXAgd2l0aCBhIHBhdGNoIHRoYXQgcmVt
-b3ZlcyAKc3JjL2NvbXBhdC9oc2VhcmNoX3IuYyBwbHVzIGFueSByZWZlcmVuY2VzIGZyb20gTWFr
-ZWZpbGUuKidzID8KdGhlIGNvbmZpZ3VyZSBjaGVjayAiY2hlY2tpbmcgZm9yIGhzZWFyY2hfciIg
-c2hvdWxkIGFsc28gYmUgcmVtb3ZlZCBmcm9tIApjb25maWd1cmUuYWMuCgoKaWYgc28gcGxlYXNl
-IHNlbmQgaXQgaGVyZSB3aXRoIGEgdGl0bGUgbGlrZQoiW1BBVENIXTogcmVtb3ZlIHVubmVjZXNz
-YXJ5L29ic29sZXRlIGNvbXBhdC9oc2VhcmNoX3IuYyIKYW5kIGEgY29tbWVudCBtZW50aW9uaW5n
-IGl0cyByZW1vdmFsIHdpdGggdGhlIGFib3ZlIGNvbW1pdCwgcGx1cyB0aGF0IGl0IApoaWdobHkg
-aW5jcmVhc2VzIHBvcnRhYmlsaXR5IGZvciBub24tZ2xpYmMgc3lzdGVtcy4KCnRoYW5rcy4KCgo+
-Cj4gdGhhbmtzIGZvciBhbnkgYWR2aWNlIG9yIGNvbW1lbnQuCj4KPiBiZXN0IHJlZ2FyZHMKPiAg
-IFdhbGRlbWFyCj4KPgo+IMK5IGh0dHA6Ly93d3cubXVzbC1saWJjLm9yZy8KCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 09/27/2013 09:47 AM, Florian Faber wrote:
+> Clemens,
+>
+>>> Similar issues here, but can add it all seems to work absolutely fine w=
+ith
+>>> alsa 1.0.15, but fails with 1.0.18+.
+>> This sound like some change in the driver introduced a bug.
+>
+> the driver works fine with versions up to 1.0.27. I have the card
+> running on a daily base with current kernel versions.
+
+same here, although mine is a bit older (lspci says rev d2).
+current 3.10.x and 3.11 kernels, alsa at 1.0.26.
+
+niels, pretty much everyone who uses such hardware on linux will be =
+
+running jack. can i suggest you run a brief check with jack, and then =
+
+maybe look at its backend implementation to find out where stuff goes wrong?
+
+
+
+-- =
+
+J=F6rn Nettingsmeier
+Lortzingstr. 11, 45128 Essen, Tel. +49 177 7937487
+
+Meister f=FCr Veranstaltungstechnik (B=FChne/Studio)
+Tonmeister VDT
+
+http://stackingdwarves.net
