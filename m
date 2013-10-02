@@ -1,30 +1,49 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 2/5] gpio: samsung: Use CONFIG_ARCH_S3C64XX to check for
- S3C64xx support
-Date: Wed, 2 Oct 2013 12:46:51 +0200
-Message-ID: <CACRpkdZXOGpTspPucd=d0=Ws9Ccx19h4UYTTdgZceoofhuq0Kw@mail.gmail.com>
-References: <1380392497-27406-1-git-send-email-tomasz.figa@gmail.com>
-	<1380392497-27406-2-git-send-email-tomasz.figa@gmail.com>
+From: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH] sound: usb: add support for wireless USB devices
+Date: Wed, 02 Oct 2013 15:30:34 +0200
+Message-ID: <524C1FFA.8080704@gmail.com>
+References: <1380655935-1366-1-git-send-email-thomas.pugliese@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <1380392497-27406-2-git-send-email-tomasz.figa@gmail.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kukjin Kim <kgene.kim@samsung.com>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Ben Dooks <ben-linux@fluff.org>, Mauro Carvalho Chehab <m.chehab@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Martin
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1380655935-1366-1-git-send-email-thomas.pugliese-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Thomas Pugliese <thomas.pugliese-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Sep 28, 2013 at 8:21 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
+On 01.10.2013 21:32, Thomas Pugliese wrote:
+> This patch updates snd_usb_audio_create also support devices whose 
+> speed == USB_SPEED_WIRELESS.
 
-> Since CONFIG_PLAT_S3C64XX is going to be removed, this patch modifies
-> the gpio-samsung driver to use the proper way of checking for S3C64xx
-> support - CONFIG_ARCH_S3C64XX.
->
-> Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
+Interesting. What device are you testing this with?
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-I assume that this will go through ARM SoC?
+Daniel
 
-Yours,
-Linus Walleij
+
+> 
+> Signed-off-by: Thomas Pugliese <thomas.pugliese-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> ---
+>  sound/usb/card.c |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/usb/card.c b/sound/usb/card.c
+> index 64952e2..ef76aa0 100644
+> --- a/sound/usb/card.c
+> +++ b/sound/usb/card.c
+> @@ -349,6 +349,7 @@ static int snd_usb_audio_create(struct usb_device *dev, int idx,
+>  	case USB_SPEED_LOW:
+>  	case USB_SPEED_FULL:
+>  	case USB_SPEED_HIGH:
+> +	case USB_SPEED_WIRELESS:
+>  	case USB_SPEED_SUPER:
+>  		break;
+>  	default:
+> 
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
