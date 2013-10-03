@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: fsl: imx-ssi: fix probe on imx31
-Date: Thu, 3 Oct 2013 16:59:54 +0100
-Message-ID: <20131003155954.GV27287@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: fsl: Fix sound on mx31moboard
+Date: Thu, 3 Oct 2013 17:00:44 +0100
+Message-ID: <20131003160044.GW27287@sirena.org.uk>
 References: <1380630971-11431-1-git-send-email-philippe.retornaz@epfl.ch>
  <1380630971-11431-2-git-send-email-philippe.retornaz@epfl.ch>
+ <1380630971-11431-3-git-send-email-philippe.retornaz@epfl.ch>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0096717755653477036=="
+Content-Type: multipart/mixed; boundary="===============0049520833985276670=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 34AEB265560
- for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2013 18:00:03 +0200 (CEST)
-In-Reply-To: <1380630971-11431-2-git-send-email-philippe.retornaz@epfl.ch>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2AD3A265585
+ for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2013 18:00:50 +0200 (CEST)
+In-Reply-To: <1380630971-11431-3-git-send-email-philippe.retornaz@epfl.ch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,56 +26,52 @@ Cc: fabio.estevam@freescale.com, s.hauer@pengutronix.de, shawn.guo@linaro.org, a
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0096717755653477036==
+--===============0049520833985276670==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NQqDiQVflaif2hna"
+	protocol="application/pgp-signature"; boundary="50RDeE14MEV4qpyy"
 Content-Disposition: inline
 
 
---NQqDiQVflaif2hna
+--50RDeE14MEV4qpyy
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 01, 2013 at 02:36:10PM +0200, Philippe R=E9tornaz wrote:
-> On imx31 with mc13783 codec the FIQ is not necessary and not enabled
-> as DMA transfer is available.
-> Change the probe() function to fail only if both FIQ and DMA are not
-> available.
+On Tue, Oct 01, 2013 at 02:36:11PM +0200, Philippe R=E9tornaz wrote:
+> Commit 42810d (ASoC: imx-mc13783: Add audmux settings for mx27pdk) broke
+> the sound on mx31moboard. Restore back the audmux setting on such boards.
 
-Is this something that used to work but has been broken or is this
-enabling a new feture?  Just wondering if this needs to be sent to Linus
-as a fix.
+Applied, thanks.
 
---NQqDiQVflaif2hna
+--50RDeE14MEV4qpyy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSTZR3AAoJELSic+t+oim9UIsP/29CFxGbP7eZY+uD6nQ2U8e8
-mdpjK+tKSqG74Vb5JnNsNHalyE4EfeJgu6V8Ghu+xE+SAeujMh9mkh1vAC/1MDLu
-Q3B3fTg3S3cmWRcodXgP2i0EQqOCjxQQbtMbhx/rg8Bjc42+OiQCdujv+xAgZE2l
-Rfc3YG1ogimvGLEjshKIWNWPur6ROZV5zPtITUycjgVAXK1qTT7X/dfVWZ93+6lj
-Lr9yEJeBMvna8bVb4PGYm1fZKT6Lg7C2fhZIGiMN7WpuQnYw8wIYep8YSHrI5oFx
-I/oWeoqVJyQgSbjJKy+aXGFBEjbZyMB13Ixo9c2lIA+t3syaM0jKYmz8CRzrHthr
-UWvR9tw8i7IY7n7hfYCtwCETtOtCnDIdteReo2wNnNzvuRGKjAlgY6edEXXjR2fA
-38zwpyY7hGw7W1CrKu/Io9ZmBEtvtaZhELsNQxlO93CWQKL39PF6QXUMcxIpzr27
-6Z9JFALfrRRxsSd90LZ5eoKSymU+Z6SOWr9HAeiG6Az0+pdMuJoLTcIN4lg87pWy
-IFNNl86KAjmavur1FFm2iQPhQnJ8rI2ZCnESp0Kh6JYQInstFuBYvoNUjGZDY+iD
-/p9115PJqYfdqUl3J28ATvv2X6u2QsPhM0sIdCawcElMUvlBDSZFObS39vHyIU5h
-wVLbPriMPUaVYaMMgbqR
-=mQSC
+iQIcBAEBAgAGBQJSTZSpAAoJELSic+t+oim9IV4P/0KMACLFlY36989hQ4q1W10V
+tDSjP658ZLjpNSPCXGE0LbqP0VaHfrQI/Q9YBTBpg6PfCZlAwK+Bsawppx10wyqu
+ZoprWE42EzJ+DaHCWk/dBEIhFr9qDX2rawpLrFpBpP4MtepAzGzWH0rPlD9cuvKu
+Z5DMLlGhPUyb+r7GXFjKaUGjl5HiebGKbm/HybTbINGZy9feTfCUPDmIw/joTcsw
+FWwMJlhwtutQJrZWQLP2nGJQKiOjZiOS+amSFnis5My4DFe6gCngxmZig09dmLI3
+7x/D0TmIFzZPS+80lk7Ykz9p2b25yAsnDlsEp1I9QtFAtUF4SCi+eSeApJ2QxKRQ
+SbjthrCpvfBjjTxg45DJg7WendFBiI0h+d+dve7F5QORT+6bUQIyyVfto8pTOgGP
+RfP7vPgvQEXeAC81B64WJwvL/ZdCIp9knPgcnZ70ywzlSCcgyPLYzohcnTFCp2mH
+daq0W2QZyxhYFcIfuMi4gP9/4SkMXq8NjeNkDTplll0WehMD1ti2hgTzDsThwjyo
+IEF0dBcXphfyMrciTqDW/VdFtbjwFj80POp0XJiIABxBszDFSxEIti3M4cK00CUJ
++FwjNF9MMK5WifWmoAVJquIPHwC6t/jQzYVBBvr8WkUCd6um1GE6Tb8yKSfI+/Ib
+1oDDY1PRU5dy44e71X04
+=GlhR
 -----END PGP SIGNATURE-----
 
---NQqDiQVflaif2hna--
+--50RDeE14MEV4qpyy--
 
---===============0096717755653477036==
+--===============0049520833985276670==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0096717755653477036==--
+--===============0049520833985276670==--
