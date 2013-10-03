@@ -1,52 +1,63 @@
-From: Vinod Koul <vinod.koul@intel.com>
+From: Liam Girdwood <liam.r.girdwood@intel.com>
 Subject: Re: [alsa-devel] [RFC] ASoC: core: Allow DAI links to be specified
  by using ACPI names
-Date: Thu, 3 Oct 2013 20:59:42 +0530
-Message-ID: <20131003152942.GI16684@intel.com>
+Date: Thu, 03 Oct 2013 17:56:06 +0100
+Message-ID: <1380819366.2517.6.camel@loki>
 References: <1380803636-24079-1-git-send-email-jarkko.nikula@linux.intel.com>
- <20131003133729.GR27287@sirena.org.uk>
- <524D7DB5.1010608@linux.intel.com>
+	 <20131003133729.GR27287@sirena.org.uk> <524D7DB5.1010608@linux.intel.com>
+	 <20131003152942.GI16684@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-acpi-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <524D7DB5.1010608@linux.intel.com>
+In-Reply-To: <20131003152942.GI16684@intel.com>
 Sender: linux-acpi-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, Mika Westerberg <mika.westerberg@linux.jf.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>, linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mika Westerberg <mika.westerberg@linux.jf.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 03, 2013 at 05:22:45PM +0300, Jarkko Nikula wrote:
-> On 10/03/2013 04:37 PM, Mark Brown wrote:
-> >On Thu, Oct 03, 2013 at 03:33:56PM +0300, Jarkko Nikula wrote:
-> >
-> >>For instance, matchine drivers could specify codec in DAI link by using:
-> >>	.codec_name = "INT33CA:00",
-> >>instead of
-> >>	.codec_name = "rt5640.0-001c",
-> >>Note that ACPI name is used just an alias during bind time and core
-> >>continues to use device name. In fact, machine drivers could use either
-> >>names.
-> >This is making me wonder if we shouldn't be taking the stable names we
-> >get from ACPI as the dev_name() instead of our internal ones on ACPI
-> >systems (and possibly something similar on DT) rather than adding custom
-> >code like this.
-> This is actually somewhat confusing issue. I think it's relatively
-> easy to switch using ACPI names within ASoC core (by modifying
-> fmt_single_name or something like that).
-> 
-> Problem is that for ACPI enumerated client devices the dev_name(dev)
-> still comes from those subsystems as before. So for instance dev_
-> prints in codec driver or ASoC core keeps printing "rt5640 0-001c:"
-> as before and I personally find it a bit more confusing if internal
-> ASoC names don't match as easily with dev_ prints.
-> 
-> But yes, I agree. This alias name in DAI link is not that clear
-> either as it exists only during bind time.
-Sorry am very ignorant about ACPI, but cant resist asking why should ACPI
-allocate some internal name and then we go about figuring the bus, slave and
-codec. Wouldn't it make sense to just get "rt5640.0-001c" as device from ACPI
-and use it.
+T24gVGh1LCAyMDEzLTEwLTAzIGF0IDIwOjU5ICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOgo+IE9u
+IFRodSwgT2N0IDAzLCAyMDEzIGF0IDA1OjIyOjQ1UE0gKzAzMDAsIEphcmtrbyBOaWt1bGEgd3Jv
+dGU6Cj4gPiBPbiAxMC8wMy8yMDEzIDA0OjM3IFBNLCBNYXJrIEJyb3duIHdyb3RlOgo+ID4gPk9u
+IFRodSwgT2N0IDAzLCAyMDEzIGF0IDAzOjMzOjU2UE0gKzAzMDAsIEphcmtrbyBOaWt1bGEgd3Jv
+dGU6Cj4gPiA+Cj4gPiA+PkZvciBpbnN0YW5jZSwgbWF0Y2hpbmUgZHJpdmVycyBjb3VsZCBzcGVj
+aWZ5IGNvZGVjIGluIERBSSBsaW5rIGJ5IHVzaW5nOgo+ID4gPj4JLmNvZGVjX25hbWUgPSAiSU5U
+MzNDQTowMCIsCj4gPiA+Pmluc3RlYWQgb2YKPiA+ID4+CS5jb2RlY19uYW1lID0gInJ0NTY0MC4w
+LTAwMWMiLAo+ID4gPj5Ob3RlIHRoYXQgQUNQSSBuYW1lIGlzIHVzZWQganVzdCBhbiBhbGlhcyBk
+dXJpbmcgYmluZCB0aW1lIGFuZCBjb3JlCj4gPiA+PmNvbnRpbnVlcyB0byB1c2UgZGV2aWNlIG5h
+bWUuIEluIGZhY3QsIG1hY2hpbmUgZHJpdmVycyBjb3VsZCB1c2UgZWl0aGVyCj4gPiA+Pm5hbWVz
+Lgo+ID4gPlRoaXMgaXMgbWFraW5nIG1lIHdvbmRlciBpZiB3ZSBzaG91bGRuJ3QgYmUgdGFraW5n
+IHRoZSBzdGFibGUgbmFtZXMgd2UKPiA+ID5nZXQgZnJvbSBBQ1BJIGFzIHRoZSBkZXZfbmFtZSgp
+IGluc3RlYWQgb2Ygb3VyIGludGVybmFsIG9uZXMgb24gQUNQSQo+ID4gPnN5c3RlbXMgKGFuZCBw
+b3NzaWJseSBzb21ldGhpbmcgc2ltaWxhciBvbiBEVCkgcmF0aGVyIHRoYW4gYWRkaW5nIGN1c3Rv
+bQo+ID4gPmNvZGUgbGlrZSB0aGlzLgo+ID4gVGhpcyBpcyBhY3R1YWxseSBzb21ld2hhdCBjb25m
+dXNpbmcgaXNzdWUuIEkgdGhpbmsgaXQncyByZWxhdGl2ZWx5Cj4gPiBlYXN5IHRvIHN3aXRjaCB1
+c2luZyBBQ1BJIG5hbWVzIHdpdGhpbiBBU29DIGNvcmUgKGJ5IG1vZGlmeWluZwo+ID4gZm10X3Np
+bmdsZV9uYW1lIG9yIHNvbWV0aGluZyBsaWtlIHRoYXQpLgo+ID4gCj4gPiBQcm9ibGVtIGlzIHRo
+YXQgZm9yIEFDUEkgZW51bWVyYXRlZCBjbGllbnQgZGV2aWNlcyB0aGUgZGV2X25hbWUoZGV2KQo+
+ID4gc3RpbGwgY29tZXMgZnJvbSB0aG9zZSBzdWJzeXN0ZW1zIGFzIGJlZm9yZS4gU28gZm9yIGlu
+c3RhbmNlIGRldl8KPiA+IHByaW50cyBpbiBjb2RlYyBkcml2ZXIgb3IgQVNvQyBjb3JlIGtlZXBz
+IHByaW50aW5nICJydDU2NDAgMC0wMDFjOiIKPiA+IGFzIGJlZm9yZSBhbmQgSSBwZXJzb25hbGx5
+IGZpbmQgaXQgYSBiaXQgbW9yZSBjb25mdXNpbmcgaWYgaW50ZXJuYWwKPiA+IEFTb0MgbmFtZXMg
+ZG9uJ3QgbWF0Y2ggYXMgZWFzaWx5IHdpdGggZGV2XyBwcmludHMuCj4gPiAKPiA+IEJ1dCB5ZXMs
+IEkgYWdyZWUuIFRoaXMgYWxpYXMgbmFtZSBpbiBEQUkgbGluayBpcyBub3QgdGhhdCBjbGVhcgo+
+ID4gZWl0aGVyIGFzIGl0IGV4aXN0cyBvbmx5IGR1cmluZyBiaW5kIHRpbWUuCj4gU29ycnkgYW0g
+dmVyeSBpZ25vcmFudCBhYm91dCBBQ1BJLCBidXQgY2FudCByZXNpc3QgYXNraW5nIHdoeSBzaG91
+bGQgQUNQSQo+IGFsbG9jYXRlIHNvbWUgaW50ZXJuYWwgbmFtZSBhbmQgdGhlbiB3ZSBnbyBhYm91
+dCBmaWd1cmluZyB0aGUgYnVzLCBzbGF2ZSBhbmQKPiBjb2RlYy4gV291bGRuJ3QgaXQgbWFrZSBz
+ZW5zZSB0byBqdXN0IGdldCAicnQ1NjQwLjAtMDAxYyIgYXMgZGV2aWNlIGZyb20gQUNQSQo+IGFu
+ZCB1c2UgaXQuCj4gCgpXZSBoYXZlIHRoZSBzaXR1YXRpb24gd2hlcmVieSBzb21lIEJJT1Mgc2V0
+dGluZ3MgY2FuIGFsdGVyIHRoZSBJMkMgYnVzCm51bWJlciB1c2VkIGJ5IHRoZSBjb2RlYy4gaS5l
+LiBtYXRjaGluZyBmYWlsIG9uICJydDU2NDAuMC0wMDFjIiBidXQKd291bGQgc3VjY2VlZCBvbiAi
+cnQ1NjQwLjctMDAxYyIuCgpNb3ZpbmcgdGhpcyB0byBhbHNvIHN1cHBvcnQgQUNQSSBuYW1lcyB3
+b3VsZCBiZSBhIGJvbnVzIHNpbmNlIHdlIHdvdWxkCm9ubHkgbmVlZCB0byBtYXRjaCBvbiB0aGUg
+c3RhdGljIEFDUEkgZGV2aWNlIG5hbWUuCgpMaWFtCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KSW50ZWwgQ29ycG9y
+YXRpb24gKFVLKSBMaW1pdGVkClJlZ2lzdGVyZWQgTm8uIDExMzQ5NDUgKEVuZ2xhbmQpClJlZ2lz
+dGVyZWQgT2ZmaWNlOiBQaXBlcnMgV2F5LCBTd2luZG9uIFNOMyAxUkoKVkFUIE5vOiA4NjAgMjE3
+MyA0NwoKVGhpcyBlLW1haWwgYW5kIGFueSBhdHRhY2htZW50cyBtYXkgY29udGFpbiBjb25maWRl
+bnRpYWwgbWF0ZXJpYWwgZm9yCnRoZSBzb2xlIHVzZSBvZiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50
+KHMpLiBBbnkgcmV2aWV3IG9yIGRpc3RyaWJ1dGlvbgpieSBvdGhlcnMgaXMgc3RyaWN0bHkgcHJv
+aGliaXRlZC4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkCnJlY2lwaWVudCwgcGxlYXNlIGNv
+bnRhY3QgdGhlIHNlbmRlciBhbmQgZGVsZXRlIGFsbCBjb3BpZXMuCg==
 
--- 
-~Vinod
