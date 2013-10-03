@@ -1,37 +1,55 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [PATCH 2/5] gpio: samsung: Use CONFIG_ARCH_S3C64XX to check for S3C64xx support
-Date: Wed, 02 Oct 2013 23:10:52 +0200
-Message-ID: <3903161.Vxg4RcbQZc@flatron>
-References: <1380392497-27406-1-git-send-email-tomasz.figa@gmail.com> <1380392497-27406-2-git-send-email-tomasz.figa@gmail.com> <CACRpkdZXOGpTspPucd=d0=Ws9Ccx19h4UYTTdgZceoofhuq0Kw@mail.gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] ASoC: fsl_ssi: Fix irq_of_parse_and_map() return value check
+Date: Wed,  2 Oct 2013 21:15:22 -0700
+Message-ID: <1380773722-1295-1-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <CACRpkdZXOGpTspPucd=d0=Ws9Ccx19h4UYTTdgZceoofhuq0Kw@mail.gmail.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kukjin Kim <kgene.kim@samsung.com>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Ben Dooks <ben-linux@fluff.org>, Mauro Carvalho Chehab <m.chehab@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Martin
+Content-Transfer-Encoding: 7bit
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: alsa-devel@alsa-project.org
+Cc: Timur Tabi <timur@tabi.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Grant Likely <grant.likely@linaro.org>, linuxppc-dev@lists.ozlabs.org, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Linus,
+irq_of_parse_and_map() returns 0 on error, not NO_IRQ.
 
-On Wednesday 02 of October 2013 12:46:51 Linus Walleij wrote:
-> On Sat, Sep 28, 2013 at 8:21 PM, Tomasz Figa <tomasz.figa@gmail.com> 
-wrote:
-> > Since CONFIG_PLAT_S3C64XX is going to be removed, this patch modifies
-> > the gpio-samsung driver to use the proper way of checking for S3C64xx
-> > support - CONFIG_ARCH_S3C64XX.
-> > 
-> > Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
-> 
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Fix the following xtensa:allmodconfig build error.
 
-Thanks.
+sound/soc/fsl/fsl_ssi.c:705:26: error: 'NO_IRQ' undeclared (first use in this function)
+make[4]: *** [sound/soc/fsl/fsl_ssi.o] Error 1
 
-> I assume that this will go through ARM SoC?
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Grant Likely <grant.likely@linaro.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+Previously submitted by Grant Likely as part of a different patch set.
+See https://lkml.org/lkml/2012/1/11/342.
+Also see https://lkml.org/lkml/2013/7/25/642.
 
-I think so.
+ sound/soc/fsl/fsl_ssi.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards,
-Tomasz
-
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index c6b7439..6b81d0c 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -936,7 +936,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	ssi_private->ssi_phys = res.start;
+ 
+ 	ssi_private->irq = irq_of_parse_and_map(np, 0);
+-	if (ssi_private->irq == NO_IRQ) {
++	if (ssi_private->irq == 0) {
+ 		dev_err(&pdev->dev, "no irq for node %s\n", np->full_name);
+ 		return -ENXIO;
+ 	}
+-- 
+1.7.9.7
