@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: fsl: Fix sound on mx31moboard
-Date: Thu, 3 Oct 2013 17:00:44 +0100
-Message-ID: <20131003160044.GW27287@sirena.org.uk>
-References: <1380630971-11431-1-git-send-email-philippe.retornaz@epfl.ch>
- <1380630971-11431-2-git-send-email-philippe.retornaz@epfl.ch>
- <1380630971-11431-3-git-send-email-philippe.retornaz@epfl.ch>
+Subject: Re: [PATCH] ASoC: omap: Fix incorrect ARM dependency
+Date: Thu, 3 Oct 2013 17:01:20 +0100
+Message-ID: <20131003160120.GX27287@sirena.org.uk>
+References: <1380651650-32131-1-git-send-email-jarkko.nikula@bitmer.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0049520833985276670=="
+Content-Type: multipart/mixed; boundary="===============4168473952741930116=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AD3A265585
- for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2013 18:00:50 +0200 (CEST)
-In-Reply-To: <1380630971-11431-3-git-send-email-philippe.retornaz@epfl.ch>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1EB302655AE
+ for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2013 18:01:25 +0200 (CEST)
+In-Reply-To: <1380651650-32131-1-git-send-email-jarkko.nikula@bitmer.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +19,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
-Cc: fabio.estevam@freescale.com, s.hauer@pengutronix.de, shawn.guo@linaro.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0049520833985276670==
+--===============4168473952741930116==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="50RDeE14MEV4qpyy"
+	protocol="application/pgp-signature"; boundary="KRJ4yArSHF8vY7I3"
 Content-Disposition: inline
 
 
---50RDeE14MEV4qpyy
-Content-Type: text/plain; charset=iso-8859-1
+--KRJ4yArSHF8vY7I3
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 01, 2013 at 02:36:11PM +0200, Philippe R=E9tornaz wrote:
-> Commit 42810d (ASoC: imx-mc13783: Add audmux settings for mx27pdk) broke
-> the sound on mx31moboard. Restore back the audmux setting on such boards.
+On Tue, Oct 01, 2013 at 09:20:50PM +0300, Jarkko Nikula wrote:
+> Commit b0e0a4d ("ASoC: omap: Enable COMPILE_TEST build for DT platforms")
+> added two incorrect CONFIG_ARCH_ARM dependencies making impossible to select
+> audio support for Nokia RX-51. Fix this by using correct CONFIG_ARM.
 
 Applied, thanks.
 
---50RDeE14MEV4qpyy
+--KRJ4yArSHF8vY7I3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSTZSpAAoJELSic+t+oim9IV4P/0KMACLFlY36989hQ4q1W10V
-tDSjP658ZLjpNSPCXGE0LbqP0VaHfrQI/Q9YBTBpg6PfCZlAwK+Bsawppx10wyqu
-ZoprWE42EzJ+DaHCWk/dBEIhFr9qDX2rawpLrFpBpP4MtepAzGzWH0rPlD9cuvKu
-Z5DMLlGhPUyb+r7GXFjKaUGjl5HiebGKbm/HybTbINGZy9feTfCUPDmIw/joTcsw
-FWwMJlhwtutQJrZWQLP2nGJQKiOjZiOS+amSFnis5My4DFe6gCngxmZig09dmLI3
-7x/D0TmIFzZPS+80lk7Ykz9p2b25yAsnDlsEp1I9QtFAtUF4SCi+eSeApJ2QxKRQ
-SbjthrCpvfBjjTxg45DJg7WendFBiI0h+d+dve7F5QORT+6bUQIyyVfto8pTOgGP
-RfP7vPgvQEXeAC81B64WJwvL/ZdCIp9knPgcnZ70ywzlSCcgyPLYzohcnTFCp2mH
-daq0W2QZyxhYFcIfuMi4gP9/4SkMXq8NjeNkDTplll0WehMD1ti2hgTzDsThwjyo
-IEF0dBcXphfyMrciTqDW/VdFtbjwFj80POp0XJiIABxBszDFSxEIti3M4cK00CUJ
-+FwjNF9MMK5WifWmoAVJquIPHwC6t/jQzYVBBvr8WkUCd6um1GE6Tb8yKSfI+/Ib
-1oDDY1PRU5dy44e71X04
-=GlhR
+iQIcBAEBAgAGBQJSTZTNAAoJELSic+t+oim9YGMP/inuSJUR5KEH33J7/KIm2AJb
+o//KJTTZ4WW2q9+4dvbtucSo4s5W2xDuSQN2rQkgtTt4jfFS0LrtIRTIgT7VtkJp
+JGZ1Vc0venlZIUclaemQENCjgRyMDE83PVbVBbHQkikw2pHcrvItpAQ74zue5B1P
+edQCoBFZfYcTIt1IAbKf7wApccUp1C7CsPVksv9oF/7QiQVa7bbFg6rKYOKR7W1m
++YUE85hv4sZSxJj2zPzNoohME3CcVE6YCym1XyVXXDhBeUnp8M2HmEr5g3hclKb6
+ijd1P/oAHhZI/dEYKcvE2YHOVQvvzPhWWMA3cvgiFnOPOIjtiTwTAqGRgWgwzcPT
+9ZaN/1n+4Z0kzJpFePPgcwjS21qAn6CXeUxubtn+4+x7njO2xX9u9TIi7abHvo9u
+uewuM7GEUXe137vWe+ozeRrMcbQ8QsfMv6wC4G98Q+ThpTtKsTO/77CWQ92McnJU
+FfFLsHl+nY7guWEDZU7H4GdwQ1Z7IzdYdPh/sWEi79VRUYQjad+iqUWjKugkjart
+CrAXCKUNXR4pyetuAE60E+7DpHWKD5h49h5GP0OcWmaFxApaW2ccbAViWNSsxU9Y
+xivzwoiLG17p5YVN9tlnp9qDu4ULuvhatoiZfhr567+gOnTWTwptwcIpRzvmhMl1
+omSahwsSJbr+uYdRoEMB
+=Eh0O
 -----END PGP SIGNATURE-----
 
---50RDeE14MEV4qpyy--
+--KRJ4yArSHF8vY7I3--
 
---===============0049520833985276670==
+--===============4168473952741930116==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0049520833985276670==--
+--===============4168473952741930116==--
