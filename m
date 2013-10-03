@@ -1,133 +1,75 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [RFC] ASoC: core: Allow DAI links to be specified by using ACPI names
-Date: Thu,  3 Oct 2013 15:33:56 +0300
-Message-ID: <1380803636-24079-1-git-send-email-jarkko.nikula@linux.intel.com>
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Sender: linux-acpi-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-acpi@vger.kernel.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: tas5086: move two variables into
+	private struct
+Date: Thu, 3 Oct 2013 14:14:54 +0100
+Message-ID: <20131003131454.GP27287@sirena.org.uk>
+References: <1380631706-19365-1-git-send-email-zonque@gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============1216664217997893309=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C64F2608D4
+ for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2013 15:14:58 +0200 (CEST)
+In-Reply-To: <1380631706-19365-1-git-send-email-zonque@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, s.neumann@raumfeld.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds alternative way to specify DAI links by using ACPI names.
-ACPI name here is considered to be used as an alias for device name during
-DAI link binding time.
 
-Rationale behind this is that device name especially with bus connected
-codecs may not be constant enough to be used in machines with dynamic and
-variable amount of bus controllers due changing bus/adapter number.
+--===============1216664217997893309==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="FrxVhwK/bNRjN48l"
+Content-Disposition: inline
 
-One way to solve this problem on ACPI 5 based systems is to use ACPI names
-of those devices that are enumerated by the ACPI subsystem.
 
-For instance, matchine drivers could specify codec in DAI link by using:
-	.codec_name = "INT33CA:00",
-instead of
-	.codec_name = "rt5640.0-001c",
+--FrxVhwK/bNRjN48l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Note that ACPI name is used just an alias during bind time and core
-continues to use device name. In fact, machine drivers could use either
-names.
+On Tue, Oct 01, 2013 at 02:48:24PM +0200, Daniel Mack wrote:
+> We need to access the charge_period and start_mid_z values from other
+> places later, so move them to the private struct.
 
-Thanks to Mika Westerberg for initial idea to use ACPI handles for binding.
-Author extended and simplified the idea so that struct snd_soc_dai_link
-doesn't need a new field, machine drivers don't need any additional code
-and soc-core.c can handle matching when executing soc_bind_dai_link().
+Applied all, thanks.
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
----
-linux-acpi@vger.kernel.org cc'd if ACPI folks would like to check API usage
-here.
----
- sound/soc/soc-core.c | 38 ++++++++++++++++++++++++++++++++------
- 1 file changed, 32 insertions(+), 6 deletions(-)
+--FrxVhwK/bNRjN48l
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4280c70..5cb440e 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -36,6 +36,7 @@
- #include <linux/of.h>
- #include <linux/gpio.h>
- #include <linux/of_gpio.h>
-+#include <linux/acpi.h>
- #include <sound/ac97_codec.h>
- #include <sound/core.h>
- #include <sound/jack.h>
-@@ -836,6 +837,27 @@ EXPORT_SYMBOL_GPL(snd_soc_resume);
- static const struct snd_soc_dai_ops null_dai_ops = {
- };
- 
-+static bool soc_match_name(struct device *dev,
-+			   const char *comp_name, const char *bind_name)
-+{
-+	if (!strcmp(comp_name, bind_name))
-+		return true;
-+
-+#if IS_ENABLED(CONFIG_ACPI)
-+	if (ACPI_HANDLE(dev)) {
-+		struct acpi_device *adev;
-+		if (!acpi_bus_get_device(ACPI_HANDLE(dev), &adev) &&
-+		    !strcmp(dev_name(&adev->dev), bind_name)) {
-+			dev_dbg(dev, "Matching with ACPI name %s\n",
-+				dev_name(&adev->dev));
-+			return true;
-+		}
-+	}
-+#endif
-+
-+	return false;
-+}
-+
- static int soc_bind_dai_link(struct snd_soc_card *card, int num)
- {
- 	struct snd_soc_dai_link *dai_link = &card->dai_link[num];
-@@ -853,10 +875,12 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
- 		    (cpu_dai->dev->of_node != dai_link->cpu_of_node))
- 			continue;
- 		if (dai_link->cpu_name &&
--		    strcmp(dev_name(cpu_dai->dev), dai_link->cpu_name))
-+		    !soc_match_name(cpu_dai->dev, dev_name(cpu_dai->dev),
-+				    dai_link->cpu_name))
- 			continue;
- 		if (dai_link->cpu_dai_name &&
--		    strcmp(cpu_dai->name, dai_link->cpu_dai_name))
-+		    !soc_match_name(cpu_dai->dev, cpu_dai->name,
-+				    dai_link->cpu_dai_name))
- 			continue;
- 
- 		rtd->cpu_dai = cpu_dai;
-@@ -874,7 +898,8 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
- 			if (codec->dev->of_node != dai_link->codec_of_node)
- 				continue;
- 		} else {
--			if (strcmp(codec->name, dai_link->codec_name))
-+			if (!soc_match_name(codec->dev, codec->name,
-+					    dai_link->codec_name))
- 				continue;
- 		}
- 
-@@ -886,8 +911,8 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
- 		 */
- 		list_for_each_entry(codec_dai, &dai_list, list) {
- 			if (codec->dev == codec_dai->dev &&
--				!strcmp(codec_dai->name,
--					dai_link->codec_dai_name)) {
-+			    soc_match_name(codec->dev, codec_dai->name,
-+					   dai_link->codec_dai_name)) {
- 
- 				rtd->codec_dai = codec_dai;
- 			}
-@@ -918,7 +943,8 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
- 			    dai_link->platform_of_node)
- 				continue;
- 		} else {
--			if (strcmp(platform->name, platform_name))
-+			if (!soc_match_name(platform->dev, platform->name,
-+					    platform_name))
- 				continue;
- 		}
- 
--- 
-1.8.4.rc3
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
 
+iQIcBAEBAgAGBQJSTW3LAAoJELSic+t+oim9ao0P/1pzuQTMOIzTQotjv2mOcodo
+E37hB2D6hwvezpoXl9CWjdi0EoVy5qnzjQUp/xhVjF258kq7jRwr3WAt1+so8FOH
+/cU4T6cAK02luJc2fv/SCsm/9PKg/Yo1347I4W9tJ2Trzwa8OtOjncnjGFBieLQw
+nhvSgirRo5x1qjM9HUUtnKr6zakKWgyeW6SBcCQNe0WjtIUi2RQIBlBr986hQ5CT
+/pyAyLUOV5ggbtb6yDCOcuFIkCLfNI7YAqz+xP1I1zBjO/PJ1ibg0Zssvq//uIHQ
+k5H8alwswViI8avDM1IoWS6df1vllbCeU2SY3osCtRz8M+CHps3CVDS653hQC36Y
+rae5oRWFpTu8UzUeWZjPLMQZ6juisS/PlxLJD5fnr9UJ3ZF/BOBpwENaRav8ukkS
+KXH9CPNCH5grO98TN0vDGs4CPwrruZ3mrE1FKaYb/kSNguxYLx95KKnJ7w0ZR/9A
+XzRbwv5flNuu/wbwjT2VXNzD0mYLFCCaQKLO9dtJkYcWoQsWzmcbLGkQLkCjdeEK
+HvBRM+nUzZs5zjOdOVUundFO4WG5FclE0h8qh/BykOIjylFpPc350EjJzXda+oif
+hi8elpcivM6EIR2FyLdcpl5gHdR+D+NZYgNdM+CnGV91tZg8T2hDmV/01nt/Q05l
+v/xup47VdX2Kk6iyTR5U
+=dJtJ
+-----END PGP SIGNATURE-----
+
+--FrxVhwK/bNRjN48l--
+
+--===============1216664217997893309==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1216664217997893309==--
