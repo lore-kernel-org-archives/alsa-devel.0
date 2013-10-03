@@ -1,63 +1,112 @@
-From: Liam Girdwood <liam.r.girdwood@intel.com>
-Subject: Re: [alsa-devel] [RFC] ASoC: core: Allow DAI links to be specified
- by using ACPI names
-Date: Thu, 03 Oct 2013 17:56:06 +0100
-Message-ID: <1380819366.2517.6.camel@loki>
-References: <1380803636-24079-1-git-send-email-jarkko.nikula@linux.intel.com>
-	 <20131003133729.GR27287@sirena.org.uk> <524D7DB5.1010608@linux.intel.com>
-	 <20131003152942.GI16684@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Audio Miniconference 2013 schedule - Edinburgh 21st
+	October
+Date: Thu, 3 Oct 2013 19:17:54 +0100
+Message-ID: <20131003181754.GE27287@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20131003152942.GI16684@intel.com>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>, linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mika Westerberg <mika.westerberg@linux.jf.intel.com>
+Content-Type: multipart/mixed; boundary="===============5412985159694220466=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1CFC2655BB
+ for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2013 20:18:08 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Colin Guthrie <colin@guthr.ie>, Takashi Iwai <tiwai@suse.de>, Arun Raghavan <arun.raghavan@collabora.co.uk>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>, Tanu Kaskinen <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAyMDEzLTEwLTAzIGF0IDIwOjU5ICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOgo+IE9u
-IFRodSwgT2N0IDAzLCAyMDEzIGF0IDA1OjIyOjQ1UE0gKzAzMDAsIEphcmtrbyBOaWt1bGEgd3Jv
-dGU6Cj4gPiBPbiAxMC8wMy8yMDEzIDA0OjM3IFBNLCBNYXJrIEJyb3duIHdyb3RlOgo+ID4gPk9u
-IFRodSwgT2N0IDAzLCAyMDEzIGF0IDAzOjMzOjU2UE0gKzAzMDAsIEphcmtrbyBOaWt1bGEgd3Jv
-dGU6Cj4gPiA+Cj4gPiA+PkZvciBpbnN0YW5jZSwgbWF0Y2hpbmUgZHJpdmVycyBjb3VsZCBzcGVj
-aWZ5IGNvZGVjIGluIERBSSBsaW5rIGJ5IHVzaW5nOgo+ID4gPj4JLmNvZGVjX25hbWUgPSAiSU5U
-MzNDQTowMCIsCj4gPiA+Pmluc3RlYWQgb2YKPiA+ID4+CS5jb2RlY19uYW1lID0gInJ0NTY0MC4w
-LTAwMWMiLAo+ID4gPj5Ob3RlIHRoYXQgQUNQSSBuYW1lIGlzIHVzZWQganVzdCBhbiBhbGlhcyBk
-dXJpbmcgYmluZCB0aW1lIGFuZCBjb3JlCj4gPiA+PmNvbnRpbnVlcyB0byB1c2UgZGV2aWNlIG5h
-bWUuIEluIGZhY3QsIG1hY2hpbmUgZHJpdmVycyBjb3VsZCB1c2UgZWl0aGVyCj4gPiA+Pm5hbWVz
-Lgo+ID4gPlRoaXMgaXMgbWFraW5nIG1lIHdvbmRlciBpZiB3ZSBzaG91bGRuJ3QgYmUgdGFraW5n
-IHRoZSBzdGFibGUgbmFtZXMgd2UKPiA+ID5nZXQgZnJvbSBBQ1BJIGFzIHRoZSBkZXZfbmFtZSgp
-IGluc3RlYWQgb2Ygb3VyIGludGVybmFsIG9uZXMgb24gQUNQSQo+ID4gPnN5c3RlbXMgKGFuZCBw
-b3NzaWJseSBzb21ldGhpbmcgc2ltaWxhciBvbiBEVCkgcmF0aGVyIHRoYW4gYWRkaW5nIGN1c3Rv
-bQo+ID4gPmNvZGUgbGlrZSB0aGlzLgo+ID4gVGhpcyBpcyBhY3R1YWxseSBzb21ld2hhdCBjb25m
-dXNpbmcgaXNzdWUuIEkgdGhpbmsgaXQncyByZWxhdGl2ZWx5Cj4gPiBlYXN5IHRvIHN3aXRjaCB1
-c2luZyBBQ1BJIG5hbWVzIHdpdGhpbiBBU29DIGNvcmUgKGJ5IG1vZGlmeWluZwo+ID4gZm10X3Np
-bmdsZV9uYW1lIG9yIHNvbWV0aGluZyBsaWtlIHRoYXQpLgo+ID4gCj4gPiBQcm9ibGVtIGlzIHRo
-YXQgZm9yIEFDUEkgZW51bWVyYXRlZCBjbGllbnQgZGV2aWNlcyB0aGUgZGV2X25hbWUoZGV2KQo+
-ID4gc3RpbGwgY29tZXMgZnJvbSB0aG9zZSBzdWJzeXN0ZW1zIGFzIGJlZm9yZS4gU28gZm9yIGlu
-c3RhbmNlIGRldl8KPiA+IHByaW50cyBpbiBjb2RlYyBkcml2ZXIgb3IgQVNvQyBjb3JlIGtlZXBz
-IHByaW50aW5nICJydDU2NDAgMC0wMDFjOiIKPiA+IGFzIGJlZm9yZSBhbmQgSSBwZXJzb25hbGx5
-IGZpbmQgaXQgYSBiaXQgbW9yZSBjb25mdXNpbmcgaWYgaW50ZXJuYWwKPiA+IEFTb0MgbmFtZXMg
-ZG9uJ3QgbWF0Y2ggYXMgZWFzaWx5IHdpdGggZGV2XyBwcmludHMuCj4gPiAKPiA+IEJ1dCB5ZXMs
-IEkgYWdyZWUuIFRoaXMgYWxpYXMgbmFtZSBpbiBEQUkgbGluayBpcyBub3QgdGhhdCBjbGVhcgo+
-ID4gZWl0aGVyIGFzIGl0IGV4aXN0cyBvbmx5IGR1cmluZyBiaW5kIHRpbWUuCj4gU29ycnkgYW0g
-dmVyeSBpZ25vcmFudCBhYm91dCBBQ1BJLCBidXQgY2FudCByZXNpc3QgYXNraW5nIHdoeSBzaG91
-bGQgQUNQSQo+IGFsbG9jYXRlIHNvbWUgaW50ZXJuYWwgbmFtZSBhbmQgdGhlbiB3ZSBnbyBhYm91
-dCBmaWd1cmluZyB0aGUgYnVzLCBzbGF2ZSBhbmQKPiBjb2RlYy4gV291bGRuJ3QgaXQgbWFrZSBz
-ZW5zZSB0byBqdXN0IGdldCAicnQ1NjQwLjAtMDAxYyIgYXMgZGV2aWNlIGZyb20gQUNQSQo+IGFu
-ZCB1c2UgaXQuCj4gCgpXZSBoYXZlIHRoZSBzaXR1YXRpb24gd2hlcmVieSBzb21lIEJJT1Mgc2V0
-dGluZ3MgY2FuIGFsdGVyIHRoZSBJMkMgYnVzCm51bWJlciB1c2VkIGJ5IHRoZSBjb2RlYy4gaS5l
-LiBtYXRjaGluZyBmYWlsIG9uICJydDU2NDAuMC0wMDFjIiBidXQKd291bGQgc3VjY2VlZCBvbiAi
-cnQ1NjQwLjctMDAxYyIuCgpNb3ZpbmcgdGhpcyB0byBhbHNvIHN1cHBvcnQgQUNQSSBuYW1lcyB3
-b3VsZCBiZSBhIGJvbnVzIHNpbmNlIHdlIHdvdWxkCm9ubHkgbmVlZCB0byBtYXRjaCBvbiB0aGUg
-c3RhdGljIEFDUEkgZGV2aWNlIG5hbWUuCgpMaWFtCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KSW50ZWwgQ29ycG9y
-YXRpb24gKFVLKSBMaW1pdGVkClJlZ2lzdGVyZWQgTm8uIDExMzQ5NDUgKEVuZ2xhbmQpClJlZ2lz
-dGVyZWQgT2ZmaWNlOiBQaXBlcnMgV2F5LCBTd2luZG9uIFNOMyAxUkoKVkFUIE5vOiA4NjAgMjE3
-MyA0NwoKVGhpcyBlLW1haWwgYW5kIGFueSBhdHRhY2htZW50cyBtYXkgY29udGFpbiBjb25maWRl
-bnRpYWwgbWF0ZXJpYWwgZm9yCnRoZSBzb2xlIHVzZSBvZiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50
-KHMpLiBBbnkgcmV2aWV3IG9yIGRpc3RyaWJ1dGlvbgpieSBvdGhlcnMgaXMgc3RyaWN0bHkgcHJv
-aGliaXRlZC4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkCnJlY2lwaWVudCwgcGxlYXNlIGNv
-bnRhY3QgdGhlIHNlbmRlciBhbmQgZGVsZXRlIGFsbCBjb3BpZXMuCg==
 
+--===============5412985159694220466==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="IQ2ZtBPOZQVGoXc0"
+Content-Disposition: inline
+
+
+--IQ2ZtBPOZQVGoXc0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+The audio mini-summit in Edinburgh is now less than a month away so it
+seems like a good time to start pulling together a schedule.  Looking at
+the topics people mentioned when filling out the registration form there
+were three major topics that people wanted to cover:
+
+ - Compressed audio review: tinycompress, integration into userspace,
+   driver upstreaming.
+
+ - UCM and other use case management status & review.
+
+ - Effects offload to DSPs with dynamically instantiatable algorithms,
+   and general dynamic DSP firmware handling.
+
+Plus a few things that only one or two people brought up:
+
+ - Process stuff (the list, bug tracking and so on).
+
+ - Some relatively specific hardware support topics:
+  - HDMI hotplug handling throughout the stack
+  - Mic status LED handling throughout the stack.
+
+ - Code cleanups:
+  - Moving away from the custom ALSA device registration infrastructure.
+  - General code modernisation.
+
+ - General routing control in userspace - UIs, automation.
+
+The first question is if there is anything important that is missing
+=66rom the above list - please speak up soon if there is!  It'd also be
+good to have volunteers to lead the discussions in each area.
+
+In terms of format I'd propose that we go through the list above in
+roughly that order, having someone lead discussion on the topic.  Does
+this sound good to people?
+
+As previously mentioned it'd be good if anyone planning to attend could
+fill in the form at:
+
+ https://docs.google.com/forms/d/105uav9tkwwkDU4P1T3IOWjfsa3kgtDbFAJOlHgBQR=
+5k/viewform
+
+to help with planning & coordination.
+
+--IQ2ZtBPOZQVGoXc0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSTbTPAAoJELSic+t+oim9SzQP/0Z2uzKtYPWIkJVKHpJqPMg+
+R5/3TmUnMFcFht/utPIO0wrRqO7ga4RuxbiUfQQmHHFVvc+2EUJLTVQWtys95fC8
+XBMxnPkjSO2PRbjba7ad0rzDe780yrOiDS2udWLzZA0ckdO+PIb+/kWbYnxqrVjY
+AddRqvC0z1TV/qqA5Y8QG0vnNIrw9gS9hnahsVL/Jq+yBpTrUbcSFY9aWejdYRc9
+b6DGEGM6WsGbCxC+Qmeb2aArgRf+NN4NqlA7M1Lj5vPyM9ZxG1ufSApCbcFEIIz+
+FcMHB+mft32Vteg+aPsFx1QXnGbuKxnTqq/RbBN37SbHUzho/PNzn5yRbtoGUzr5
+XPNzby0d3hXTbT9muIQ3FTFGtz2UsDOSPryf5Y/0n38S3/GgRstFdw+EMEREl/r6
+aJnX8Jp2dJCHJLaDBkLQkOqeewEzIQw3ReMhhbFNW0i2cyMk+gXV05ej5mb6EMjj
+CqJlTQRfKClRV6apPVYMJRd/T8C7BRVmT1nsNxSPkfnP3++PGWLNxPJeT6Dz2fd5
+W/bQZNXGvL3Il7/bkVooVR9FBqBt3f73+dwacTd5NtYwgc6/OXSQxgJOzZ9OK8uU
+P8Gq3MK4k0ONCUslhzWrTzIIHPvYU0qmAx3yWkRdV/okluQdo21LxyyC/NIgT7fk
+Kk5SgTMcH3AJ6wACzEKD
+=Xb3n
+-----END PGP SIGNATURE-----
+
+--IQ2ZtBPOZQVGoXc0--
+
+--===============5412985159694220466==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5412985159694220466==--
