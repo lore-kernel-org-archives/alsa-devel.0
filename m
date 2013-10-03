@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: tas5086: move two variables into
-	private struct
-Date: Thu, 3 Oct 2013 14:14:54 +0100
-Message-ID: <20131003131454.GP27287@sirena.org.uk>
-References: <1380631706-19365-1-git-send-email-zonque@gmail.com>
+Subject: Re: [PATCH] ASoC: davinci-mcasp: add support for
+	suspend and resume
+Date: Thu, 3 Oct 2013 14:22:55 +0100
+Message-ID: <20131003132255.GQ27287@sirena.org.uk>
+References: <1380631802-19498-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1216664217997893309=="
+Content-Type: multipart/mixed; boundary="===============3489069352031635451=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C64F2608D4
- for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2013 15:14:58 +0200 (CEST)
-In-Reply-To: <1380631706-19365-1-git-send-email-zonque@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C00C260895
+ for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2013 15:23:01 +0200 (CEST)
+In-Reply-To: <1380631802-19498-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, s.neumann@raumfeld.com
+Cc: marek.belisko@gmail.com, alsa-devel@alsa-project.org, s.neumann@raumfeld.com, nsekhar@ti.com, gururaja.hebbar@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1216664217997893309==
+--===============3489069352031635451==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FrxVhwK/bNRjN48l"
+	protocol="application/pgp-signature"; boundary="jXoUnAu9pZeaHebo"
 Content-Disposition: inline
 
 
---FrxVhwK/bNRjN48l
+--jXoUnAu9pZeaHebo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Oct 01, 2013 at 02:48:24PM +0200, Daniel Mack wrote:
-> We need to access the charge_period and start_mid_z values from other
-> places later, so move them to the private struct.
+On Tue, Oct 01, 2013 at 02:50:02PM +0200, Daniel Mack wrote:
+> When the system returns from suspend, it looses its configuration. Most
+> of it is restored by running a normal audio stream startup, but the DAI
+> format is left unset as that's configured on the audio device creation.
 
-Applied all, thanks.
+Applied, thanks.
 
---FrxVhwK/bNRjN48l
+--jXoUnAu9pZeaHebo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSTW3LAAoJELSic+t+oim9ao0P/1pzuQTMOIzTQotjv2mOcodo
-E37hB2D6hwvezpoXl9CWjdi0EoVy5qnzjQUp/xhVjF258kq7jRwr3WAt1+so8FOH
-/cU4T6cAK02luJc2fv/SCsm/9PKg/Yo1347I4W9tJ2Trzwa8OtOjncnjGFBieLQw
-nhvSgirRo5x1qjM9HUUtnKr6zakKWgyeW6SBcCQNe0WjtIUi2RQIBlBr986hQ5CT
-/pyAyLUOV5ggbtb6yDCOcuFIkCLfNI7YAqz+xP1I1zBjO/PJ1ibg0Zssvq//uIHQ
-k5H8alwswViI8avDM1IoWS6df1vllbCeU2SY3osCtRz8M+CHps3CVDS653hQC36Y
-rae5oRWFpTu8UzUeWZjPLMQZ6juisS/PlxLJD5fnr9UJ3ZF/BOBpwENaRav8ukkS
-KXH9CPNCH5grO98TN0vDGs4CPwrruZ3mrE1FKaYb/kSNguxYLx95KKnJ7w0ZR/9A
-XzRbwv5flNuu/wbwjT2VXNzD0mYLFCCaQKLO9dtJkYcWoQsWzmcbLGkQLkCjdeEK
-HvBRM+nUzZs5zjOdOVUundFO4WG5FclE0h8qh/BykOIjylFpPc350EjJzXda+oif
-hi8elpcivM6EIR2FyLdcpl5gHdR+D+NZYgNdM+CnGV91tZg8T2hDmV/01nt/Q05l
-v/xup47VdX2Kk6iyTR5U
-=dJtJ
+iQIcBAEBAgAGBQJSTW+sAAoJELSic+t+oim9OW0P/0ax17QqImWp/1pITmYlsTC5
+i9u6qlGYyZxfBnbCye3wlcnmncT1j+vcYDGZYNtj9KzodTuuX7eWQpM/6cBHFx/E
+6KbrKWWkSJJkntdn/Mfg2HjWqw85axkxlXL8Q16Ziun+fUKx5cF0S8o5OWslF+fu
+xmcrLZoC8m8vLaq/keYu8QcbFAmuuRcsVUL+d6N3AjfBu4U5cI4S8gGIlED8XAB3
++MgKsG6m3sT4eRIwVZ1JW6ehXbMO/iAOnF+lCjXd7FwCRrNVHmdl1JIwN+z/PeAo
+kgnWGJq1oZFbgfsnuSAL6xvUI583MgvFOC39Gr8CinWCIfjIl+rgbPYJ7+kzhviA
+0m0Ka7T4ISZSuHLcA3br8DKKZxtjxvqPV7yczOi9ji7kUB+GJcH8E8qrP5QJYP6g
+XYXxbl2si0IHBONGw1SvECs4boT7E8LjTEFgvWB9wEPdR5d5RKSYM9Np11mYo8DF
+BvL8TrICD79XLVDR7MT1TXkjQfQGcEy9RyYxdFnWLP+3DL6HgERJfCNovePNDe5l
+jjOWOtF1HaNG8jv5jWE5ku4yS39YSU4btg4Cb+DLq9IXcmKnzWFj8A76kSKzzfa7
++G5Po+eOwr+tWatnq7sWNiBXg64BFof5e0Mj33NQfP1YeRECqKXrifSmHMjwh3YY
+ce3MYBQrlznZLgfI+n0I
+=vmOu
 -----END PGP SIGNATURE-----
 
---FrxVhwK/bNRjN48l--
+--jXoUnAu9pZeaHebo--
 
---===============1216664217997893309==
+--===============3489069352031635451==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1216664217997893309==--
+--===============3489069352031635451==--
