@@ -1,15 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: omap: Fix incorrect ARM dependency
-Date: Thu, 3 Oct 2013 17:01:20 +0100
-Message-ID: <20131003160120.GX27287@sirena.org.uk>
-References: <1380651650-32131-1-git-send-email-jarkko.nikula@bitmer.com>
+From: =?ISO-8859-1?Q?Philippe_R=E9tornaz?= <philippe.retornaz@epfl.ch>
+Subject: Re: [PATCH 1/2] ASoC: fsl: imx-ssi: fix probe on imx31
+Date: Thu, 03 Oct 2013 18:07:27 +0200
+Message-ID: <524D963F.5080507@epfl.ch>
+References: <1380630971-11431-1-git-send-email-philippe.retornaz@epfl.ch>
+ <1380630971-11431-2-git-send-email-philippe.retornaz@epfl.ch>
+ <20131003155954.GV27287@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4168473952741930116=="
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1EB302655AE
- for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2013 18:01:25 +0200 (CEST)
-In-Reply-To: <1380651650-32131-1-git-send-email-jarkko.nikula@bitmer.com>
+Received: from smtp4.epfl.ch (smtp4.epfl.ch [128.178.224.219])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8311D26557F
+ for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2013 18:07:29 +0200 (CEST)
+In-Reply-To: <20131003155954.GV27287@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,57 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: fabio.estevam@freescale.com, s.hauer@pengutronix.de, shawn.guo@linaro.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Le 03/10/2013 17:59, Mark Brown a =E9crit :
+> On Tue, Oct 01, 2013 at 02:36:10PM +0200, Philippe R=E9tornaz wrote:
+>> On imx31 with mc13783 codec the FIQ is not necessary and not
+>> enabled as DMA transfer is available. Change the probe() function
+>> to fail only if both FIQ and DMA are not available.
+>
+> Is this something that used to work but has been broken or is this
+> enabling a new feture?  Just wondering if this needs to be sent to
+> Linus as a fix.
+>
 
---===============4168473952741930116==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KRJ4yArSHF8vY7I3"
-Content-Disposition: inline
+It was working but it is broken since a few release.
+There is no need to rush for a fix, both patches can follow the standard
+process.
+Anyway, there is a pending fix on the imx-sdma driver in order to have the
+sound fully working again on my board:
+http://lists.infradead.org/pipermail/linux-arm-kernel/2013-October/201498.h=
+tml
 
+Thanks !
 
---KRJ4yArSHF8vY7I3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Oct 01, 2013 at 09:20:50PM +0300, Jarkko Nikula wrote:
-> Commit b0e0a4d ("ASoC: omap: Enable COMPILE_TEST build for DT platforms")
-> added two incorrect CONFIG_ARCH_ARM dependencies making impossible to select
-> audio support for Nokia RX-51. Fix this by using correct CONFIG_ARM.
-
-Applied, thanks.
-
---KRJ4yArSHF8vY7I3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSTZTNAAoJELSic+t+oim9YGMP/inuSJUR5KEH33J7/KIm2AJb
-o//KJTTZ4WW2q9+4dvbtucSo4s5W2xDuSQN2rQkgtTt4jfFS0LrtIRTIgT7VtkJp
-JGZ1Vc0venlZIUclaemQENCjgRyMDE83PVbVBbHQkikw2pHcrvItpAQ74zue5B1P
-edQCoBFZfYcTIt1IAbKf7wApccUp1C7CsPVksv9oF/7QiQVa7bbFg6rKYOKR7W1m
-+YUE85hv4sZSxJj2zPzNoohME3CcVE6YCym1XyVXXDhBeUnp8M2HmEr5g3hclKb6
-ijd1P/oAHhZI/dEYKcvE2YHOVQvvzPhWWMA3cvgiFnOPOIjtiTwTAqGRgWgwzcPT
-9ZaN/1n+4Z0kzJpFePPgcwjS21qAn6CXeUxubtn+4+x7njO2xX9u9TIi7abHvo9u
-uewuM7GEUXe137vWe+ozeRrMcbQ8QsfMv6wC4G98Q+ThpTtKsTO/77CWQ92McnJU
-FfFLsHl+nY7guWEDZU7H4GdwQ1Z7IzdYdPh/sWEi79VRUYQjad+iqUWjKugkjart
-CrAXCKUNXR4pyetuAE60E+7DpHWKD5h49h5GP0OcWmaFxApaW2ccbAViWNSsxU9Y
-xivzwoiLG17p5YVN9tlnp9qDu4ULuvhatoiZfhr567+gOnTWTwptwcIpRzvmhMl1
-omSahwsSJbr+uYdRoEMB
-=Eh0O
------END PGP SIGNATURE-----
-
---KRJ4yArSHF8vY7I3--
-
---===============4168473952741930116==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4168473952741930116==--
+Philippe
