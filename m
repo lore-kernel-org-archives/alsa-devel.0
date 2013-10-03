@@ -1,61 +1,63 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: snd_device_name_hint segfaults
-Date: Thu, 03 Oct 2013 22:16:17 +0200
-Message-ID: <524DD091.6060105@canonical.com>
-References: <20130626183909.GI18126@alittletooquiet.net>
- <s5hvc50xe9x.wl%tiwai@suse.de> <20130627143050.GK18126@alittletooquiet.net>
- <s5hli5voapl.wl%tiwai@suse.de> <20131003183623.GB29746@alittletooquiet.net>
+From: Wolfram Sang <wsa@the-dreams.de>
+Subject: Re: [PATCH 0/8] i2c: Remove redundant driver field from the
+ i2c_client struct
+Date: Thu, 3 Oct 2013 22:38:00 +0200
+Message-ID: <20131003203800.GA4563@katana>
+References: <1380444666-12019-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 3088E26007E
- for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2013 22:16:14 +0200 (CEST)
-In-Reply-To: <20131003183623.GB29746@alittletooquiet.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Forest Bond <forest@forestbond.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="W/nzBZO5zC0uMSeA"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1380444666-12019-1-git-send-email-lars@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: David Airlie <airlied@linux.ie>, Mauro Carvalho Chehab <m.chehab@samsung.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/03/2013 08:36 PM, Forest Bond wrote:
->>>>> Here is the backtrace:
->>>>>
->>>>> #0  0x003f0e78 in __strcpy_chk () from /lib/i386-linux-gnu/libc.so.6
->>>>> #1  0x0625084b in strcpy (__src=0x0, __dest=0xb6025e80 "pcm.(null)") at /usr/include/i386-li
->>>>> nux-gnu/bits/string3.h:105
->>>>> #2  try_config (config=0xaf1c4df0, list=0xb52fe804, base=0x323e962 "pcm", name=0x0) at nameh
->>>>> int.c:243
->>>>> #3  0x06251bc5 in add_software_devices (list=0xb52fe804, config=0xaf1c4df0) at namehint.c:51
->>>>> 2
->>>>> #4  snd_device_name_hint (card=-1, iface=<optimized out>, hints=0xb52fe90c) at namehint.c:59
 
->> In general, the configuration space itself should be static,
->> determined at the loading time.
-> 
-> I've been meaning to follow up on this issue for a while.  Sorry for the delayed
-> report.  We disabled PulseAudio idle exit and the problem went away, so it does
-> appear to be related somehow.
+--W/nzBZO5zC0uMSeA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi, a few weeks ago I came up with a related patch (based on an Ubuntu
-bug report). This might be what you're looking for:
+On Sun, Sep 29, 2013 at 10:50:58AM +0200, Lars-Peter Clausen wrote:
+> Hi,
+>=20
+> This series removes the redundant driver field from the i2c_client struct=
+=2E The
+> field is redundant since the same pointer can be accessed through
+> to_i2c_driver(client->dev.driver). The commit log suggests that the field=
+ has
+> been around since forever (since before v2.6.12-rc2) and it looks as if i=
+t was
+> simply forgotten to remove it during the conversion of the i2c framework =
+to the
+> generic device driver model.
 
-http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=23bf1dce9438c0cf74357928289aa8f06957c283
+Applied to for-next with great pleasure, thanks!
 
-When I fixed it, I thought it was just an edge case, but if this avoids
-access violations in standard scenarios for you, VLC, mythtv, chromium,
-and others - maybe we should try to make an update, even for stable
-Ubuntu releases (such as Ubuntu 12.04)?
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+--W/nzBZO5zC0uMSeA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSTdWnAAoJEBQN5MwUoCm2YmUP/iibuIQXef2UeEPAuVBr4S/G
+GX0ZBM947XqiUZ6c6KHYmsNuXKQI4KUrq8D+jqnk0pZmyTAQ9kyatNHZeXPnCDxR
+ogjSqA7jVrp0lJqI/Fhw6v4v1LWhhcbBNvTnyHtmXkXuGyqyPgv2I2kpRG8P3WKS
+qh9Xbk7kf1cw1HKnT1c3giGDr8ISvA/AHa02M8VbbBk1PFV4PmzAdXCx8b9Drju6
+QfCJUKqoE1gRFn+wyYhBjQYkhrPPr47O0+1hoOCFtL+kBxRGvI0FoQ8eVuaa00Zf
+2yb7Njr/5ALk/bgc0Odm8foFVD4QkFXpSZ5692hZutZhrifAVCOzpWFZhG2s98dw
+K+6yuARazPQrQoth0XUULCY14x8n7sI4eFzN4UUlG0YgSkyHB3GXQgoR4M1ong1E
++vNTcr+lghurvlAt0NQcsXov6xC6XxV6L7aXsT9+E7FFe7b+I8roeK51NqJ2CaIG
+aRseWEIuWhvaUU3J+IPLy0X/2T/5t1ktXQNMSPJECaAxsnaX5BcI+sQugnsCfAra
+/y+sotn64DYD9D4yyNly2O+ytqvrV5jooi02BdNEV7mWZskxTiJHf6erLOTpctEI
+sEpmygJtnIZ9GSTk1wfLRGNzhUkknz4xqrVvdRfmn4EEkTBYVQf8shy07rW8OWEL
+bqVLYxEJ7w1CKmOgiDdE
+=UFw1
+-----END PGP SIGNATURE-----
+
+--W/nzBZO5zC0uMSeA--
