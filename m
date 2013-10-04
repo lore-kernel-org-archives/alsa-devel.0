@@ -1,14 +1,19 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [RFC] ASoC: pcm: Trigger all commands on error
-Date: Fri,  4 Oct 2013 12:53:17 +0200
-Message-ID: <1380883997-18236-1-git-send-email-mpa@pengutronix.de>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: Re: [PATCH 1/6] ASoC: cs4271: Include linux/of.h header
+Date: Fri, 4 Oct 2013 17:28:19 +0530
+Message-ID: <CAK9yfHzi6D5Un23eAX_SLUF_FDWTw_WtsZu=rC3z9YJZeKQANg@mail.gmail.com>
+References: <1380280554-32591-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 984FA26109C
- for <alsa-devel@alsa-project.org>; Fri,  4 Oct 2013 12:53:42 +0200 (CEST)
+Received: from mail-oa0-f41.google.com (mail-oa0-f41.google.com
+ [209.85.219.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E9452610A5
+ for <alsa-devel@alsa-project.org>; Fri,  4 Oct 2013 13:58:21 +0200 (CEST)
+Received: by mail-oa0-f41.google.com with SMTP id n10so3860631oag.0
+ for <alsa-devel@alsa-project.org>; Fri, 04 Oct 2013 04:58:20 -0700 (PDT)
+In-Reply-To: <1380280554-32591-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,73 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Sachin Kamat <sachin.kamat@linaro.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-If a start command is triggered and an error occures in the first called
-function, e.g. DMA, all other functions are not executed and the error
-value is returned immediately.
+On 27 September 2013 16:45, Sachin Kamat <sachin.kamat@linaro.org> wrote:
+> 'of_match_ptr' is defined in linux/of.h. Include it explicitly.
+>
+> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+> ---
+>  sound/soc/codecs/cs4271.c |    1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+> index a20f1bb..f6e9534 100644
+> --- a/sound/soc/codecs/cs4271.c
+> +++ b/sound/soc/codecs/cs4271.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/gpio.h>
+>  #include <linux/i2c.h>
+>  #include <linux/spi/spi.h>
+> +#include <linux/of.h>
+>  #include <linux/of_device.h>
+>  #include <linux/of_gpio.h>
+>  #include <sound/pcm.h>
+> --
+> 1.7.9.5
+>
 
-In case of a start command, the calling function will call undo_start,
-calling this trigger function with the stop command. It will call stop
-for each function. But only the first function was started previously.
-The other functions may fail in the assumption that a stop command
-always comes after a start command.
+Mark,
 
-As the API does not specify the behaviour of trigger functionpointers, I
-think this should be fixed in the function calling the trigger
-functionpointers.
+Just a gentle ping on this series.
 
-This patch changes the behaviour. The trigger function calls all
-functionpointers independent of their returncodes. The first error-code
-is returned.
-
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
----
- sound/soc/soc-pcm.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 330c9a6..23fc25b 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -616,26 +616,28 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int ret;
-+	int ret = 0;
-+	int err = 0;
- 
- 	if (codec_dai->driver->ops->trigger) {
- 		ret = codec_dai->driver->ops->trigger(substream, cmd, codec_dai);
--		if (ret < 0)
--			return ret;
-+		if (!err && ret)
-+			err = ret;
- 	}
- 
- 	if (platform->driver->ops && platform->driver->ops->trigger) {
- 		ret = platform->driver->ops->trigger(substream, cmd);
--		if (ret < 0)
--			return ret;
-+		if (!err && ret)
-+			err = ret;
- 	}
- 
- 	if (cpu_dai->driver->ops->trigger) {
- 		ret = cpu_dai->driver->ops->trigger(substream, cmd, cpu_dai);
--		if (ret < 0)
--			return ret;
-+		if (!err && ret)
-+			err = ret;
- 	}
--	return 0;
-+
-+	return err;
- }
- 
- static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
 -- 
-1.8.4.rc3
+With warm regards,
+Sachin
