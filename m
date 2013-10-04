@@ -1,8 +1,8 @@
 From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: [PATCH 6/7] ALSA: hda - hdmi: Fix available channel
-	maps missing from TLV
-Date: Sat,  5 Oct 2013 02:25:43 +0300
-Message-ID: <1380929144-24944-7-git-send-email-anssi.hannula@iki.fi>
+Subject: [PATCH 7/7] ALSA: hda - hdmi: Tweak debug messages to
+	be more useful
+Date: Sat,  5 Oct 2013 02:25:44 +0300
+Message-ID: <1380929144-24944-8-git-send-email-anssi.hannula@iki.fi>
 References: <1380929144-24944-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
  [83.102.40.134])
- by alsa0.perex.cz (Postfix) with ESMTP id E3F7A2617A6
- for <alsa-devel@alsa-project.org>; Sat,  5 Oct 2013 01:26:20 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 275082617A5
+ for <alsa-devel@alsa-project.org>; Sat,  5 Oct 2013 01:26:23 +0200 (CEST)
 In-Reply-To: <1380929144-24944-1-git-send-email-anssi.hannula@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,43 +26,47 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently the available channel maps TLV only contains channel maps that
-are limited to the traditional 7.1 speakers.
-
-Since the other HDMI channel mapping functions have been fixed to
-properly handle all CEA-861-E specified speakers, allow them to be
-listed.
+Allow channel map debugging for both automatic and manual channel maps,
+and print CA always when updating infoframe.
 
 Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
 ---
-
-Unless there was another reason for this?
-
-
- sound/pci/hda/patch_hdmi.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/pci/hda/patch_hdmi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 3c89e48..9f2c396 100644
+index 9f2c396..7dba20c 100644
 --- a/sound/pci/hda/patch_hdmi.c
 +++ b/sound/pci/hda/patch_hdmi.c
-@@ -1666,8 +1666,6 @@ static int hdmi_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
- 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
- 	struct hda_codec *codec = info->private_data;
- 	struct hdmi_spec *spec = codec->spec;
--	const unsigned int valid_mask =
--		FL | FR | RL | RR | LFE | FC | RLC | RRC;
- 	unsigned int __user *dst;
- 	int chs, count = 0;
+@@ -639,8 +639,6 @@ static void hdmi_std_setup_channel_mapping(struct hda_codec *codec,
+ 			break;
+ 		}
+ 	}
+-
+-	hdmi_debug_channel_mapping(codec, pin_nid);
+ }
  
-@@ -1685,8 +1683,6 @@ static int hdmi_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
- 			int chs_bytes = chs * 4;
- 			if (cap->channels != chs)
- 				continue;
--			if (cap->spk_mask & ~valid_mask)
--				continue;
- 			if (size < 8)
- 				return -ENOMEM;
- 			if (put_user(SNDRV_CTL_TLVT_CHMAP_VAR, dst) ||
+ struct channel_map_table {
+@@ -795,6 +793,8 @@ static void hdmi_setup_channel_mapping(struct hda_codec *codec,
+ 		hdmi_std_setup_channel_mapping(codec, pin_nid, non_pcm, ca);
+ 		hdmi_setup_fake_chmap(map, ca);
+ 	}
++
++	hdmi_debug_channel_mapping(codec, pin_nid);
+ }
+ 
+ /*
+@@ -985,9 +985,9 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+ 	if (!hdmi_infoframe_uptodate(codec, pin_nid, ai.bytes,
+ 					sizeof(ai))) {
+ 		snd_printdd("hdmi_setup_audio_infoframe: "
+-			    "pin=%d channels=%d\n",
++			    "pin=%d channels=%d ca=0x%02x\n",
+ 			    pin_nid,
+-			    active_channels);
++			    active_channels, ca);
+ 		hdmi_setup_channel_mapping(codec, pin_nid, non_pcm, ca,
+ 					   channels, per_pin->chmap,
+ 					   per_pin->chmap_set);
 -- 
 1.8.1.5
