@@ -1,8 +1,8 @@
 From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: [PATCH 2/7] ALSA: hda - hdmi: Fix incorrect default
-	channel mapping for unusual CAs
-Date: Sat,  5 Oct 2013 02:25:39 +0300
-Message-ID: <1380929144-24944-3-git-send-email-anssi.hannula@iki.fi>
+Subject: [PATCH 3/7] ALSA: hda - hdmi: Fix programmed active
+	channel count
+Date: Sat,  5 Oct 2013 02:25:40 +0300
+Message-ID: <1380929144-24944-4-git-send-email-anssi.hannula@iki.fi>
 References: <1380929144-24944-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
  [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E4EC261661
- for <alsa-devel@alsa-project.org>; Sat,  5 Oct 2013 01:26:01 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F6622616AC
+ for <alsa-devel@alsa-project.org>; Sat,  5 Oct 2013 01:26:07 +0200 (CEST)
 In-Reply-To: <1380929144-24944-1-git-send-email-anssi.hannula@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,72 +26,116 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hdmi_std_setup_channel_mapping() selects a Channel Allocation according
-to the sink reported speaker mask, preferring the ALSA standard layouts.
+Currently the converter channel count is set to the number of actual
+input channels. The audio infoframe channel count field is set
+similarly.
 
-If the channel allocation is not one of the ALSA standard layouts, the
-ALSA channels are mapped directly to HDMI channels in order. However,
-the function does not take into account that there a holes in the HDMI
-channel map.
+However, sometimes the used channel map does not map all input channels
+to outputs. Notably, 3 channel modes (e.g. 2.1) require a dummy input
+channel so there are 4 input channels. According to the HDA
+specification, converter channel count should be programmed according to
+the number of _active_ channels.
 
-Additionally, the function tries to disable a slot by using
-AC_VERB_SET_CHAN_SLOT with parameter ((alsa_ch << 8) | 0xf), while the
-correct parameter is ((0xf << 8) | hdmi_slot), i.e. the slot should be
-unassigned, not the ALSA channel.
+On Intel HDMI codecs (but not on NVIDIA), setting the converter channel
+to a higher value than there are actually mapped channels to HDMI slots
+will cause no audio to be output at all.
 
-Fix both of the issues for non-ALSA-default layouts.
+Note that the effects of this issue are currently partially masked by
+other bugs that prevent the driver from actually unmapping channels in
+certain cases. For example, if a 4 channel stream is first created and
+prepared, it gets a FL,FR,RL,RR mapping (ALSA->HDMI slot mapping 0->0,
+1->1, 2->4, 3->5). If one thereafter assigns a FR,FL,FC mapping to it,
+the driver will remap 2->3 but fail to unmap 2->4 and 3->5, so there are
+still 4 active channels and the issue will not trigger in this case.
+These bugs will be fixed separately.
 
-Tested on Intel HDMI with a speaker mask of FL | FR | FC | RC, which
-causes CA 0x06 to be selected for 4-channel audio, which causes
-incorrect output (sound destined to RC goes to FC and FC goes nowhere)
-without the patch.
+Fix the channel counts in the converter channel count field and in the
+audio infoframe channel count field to match the actual number of active
+channels.
 
 Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
 ---
- sound/pci/hda/patch_hdmi.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ sound/pci/hda/patch_hdmi.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 6ed34df..5244802 100644
+index 5244802..ac818cb 100644
 --- a/sound/pci/hda/patch_hdmi.c
 +++ b/sound/pci/hda/patch_hdmi.c
-@@ -597,22 +597,32 @@ static void hdmi_std_setup_channel_mapping(struct hda_codec *codec,
- 				       bool non_pcm,
- 				       int ca)
+@@ -63,6 +63,7 @@ struct hdmi_spec_per_pin {
+ 	hda_nid_t pin_nid;
+ 	int num_mux_nids;
+ 	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
++	hda_nid_t cvt_nid;
+ 
+ 	struct hda_codec *codec;
+ 	struct hdmi_eld sink_eld;
+@@ -902,8 +903,9 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
  {
-+	struct cea_channel_speaker_allocation *ch_alloc;
- 	int i;
- 	int err;
- 	int order;
- 	int non_pcm_mapping[8];
+ 	hda_nid_t pin_nid = per_pin->pin_nid;
+ 	int channels = per_pin->channels;
++	int active_channels;
+ 	struct hdmi_eld *eld;
+-	int ca;
++	int ca, ordered_ca;
+ 	union audio_infoframe ai;
  
- 	order = get_channel_allocation_order(ca);
-+	ch_alloc = &channel_allocations[order];
+ 	if (!channels)
+@@ -925,6 +927,11 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+ 	if (ca < 0)
+ 		ca = 0;
  
- 	if (hdmi_channel_mapping[ca][1] == 0) {
--		for (i = 0; i < channel_allocations[order].channels; i++)
--			hdmi_channel_mapping[ca][i] = i | (i << 4);
--		for (; i < 8; i++)
--			hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
-+		int hdmi_slot = 0;
-+		/* fill actual channel mappings in ALSA channel (i) order */
-+		for (i = 0; i < ch_alloc->channels; i++) {
-+			while (!ch_alloc->speakers[7 - hdmi_slot] && !WARN_ON(hdmi_slot >= 8))
-+				hdmi_slot++; /* skip zero slots */
++	ordered_ca = get_channel_allocation_order(ca);
++	active_channels = channel_allocations[ordered_ca].channels;
 +
-+			hdmi_channel_mapping[ca][i] = (i << 4) | hdmi_slot++;
-+		}
-+		/* fill the rest of the slots with ALSA channel 0xf */
-+		for (hdmi_slot = 0; hdmi_slot < 8; hdmi_slot++)
-+			if (!ch_alloc->speakers[7 - hdmi_slot])
-+				hdmi_channel_mapping[ca][i++] = (0xf << 4) | hdmi_slot;
- 	}
++	hdmi_set_channel_count(codec, per_pin->cvt_nid, active_channels);
++
+ 	memset(&ai, 0, sizeof(ai));
+ 	if (eld->info.conn_type == 0) { /* HDMI */
+ 		struct hdmi_audio_infoframe *hdmi_ai = &ai.hdmi;
+@@ -932,7 +939,7 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+ 		hdmi_ai->type		= 0x84;
+ 		hdmi_ai->ver		= 0x01;
+ 		hdmi_ai->len		= 0x0a;
+-		hdmi_ai->CC02_CT47	= channels - 1;
++		hdmi_ai->CC02_CT47	= active_channels - 1;
+ 		hdmi_ai->CA		= ca;
+ 		hdmi_checksum_audio_infoframe(hdmi_ai);
+ 	} else if (eld->info.conn_type == 1) { /* DisplayPort */
+@@ -941,7 +948,7 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+ 		dp_ai->type		= 0x84;
+ 		dp_ai->len		= 0x1b;
+ 		dp_ai->ver		= 0x11 << 2;
+-		dp_ai->CC02_CT47	= channels - 1;
++		dp_ai->CC02_CT47	= active_channels - 1;
+ 		dp_ai->CA		= ca;
+ 	} else {
+ 		snd_printd("HDMI: unknown connection type at pin %d\n",
+@@ -959,7 +966,7 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+ 		snd_printdd("hdmi_setup_audio_infoframe: "
+ 			    "pin=%d channels=%d\n",
+ 			    pin_nid,
+-			    channels);
++			    active_channels);
+ 		hdmi_setup_channel_mapping(codec, pin_nid, non_pcm, ca,
+ 					   channels, per_pin->chmap,
+ 					   per_pin->chmap_set);
+@@ -1238,6 +1245,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+ 	per_cvt = get_cvt(spec, cvt_idx);
+ 	/* Claim converter */
+ 	per_cvt->assigned = 1;
++	per_pin->cvt_nid = per_cvt->cvt_nid;
+ 	hinfo->nid = per_cvt->cvt_nid;
  
- 	if (non_pcm) {
--		for (i = 0; i < channel_allocations[order].channels; i++)
-+		for (i = 0; i < ch_alloc->channels; i++)
- 			non_pcm_mapping[i] = i | (i << 4);
- 		for (; i < 8; i++)
- 			non_pcm_mapping[i] = 0xf | (i << 4);
+ 	snd_hda_codec_write_cache(codec, per_pin->pin_nid, 0,
+@@ -1560,8 +1568,6 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 	per_pin->channels = substream->runtime->channels;
+ 	per_pin->setup = true;
+ 
+-	hdmi_set_channel_count(codec, cvt_nid, substream->runtime->channels);
+-
+ 	hdmi_setup_audio_infoframe(codec, per_pin, non_pcm);
+ 
+ 	return hdmi_setup_stream(codec, cvt_nid, pin_nid, stream_tag, format);
 -- 
 1.8.1.5
