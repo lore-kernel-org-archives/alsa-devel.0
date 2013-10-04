@@ -1,16 +1,15 @@
-From: Liam Girdwood <liam.r.girdwood@intel.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: Audio Miniconference 2013 schedule - Edinburgh
 	21st October
-Date: Fri, 04 Oct 2013 11:32:23 +0100
-Message-ID: <1380882743.2682.8.camel@loki>
+Date: Fri, 4 Oct 2013 11:39:05 +0100
+Message-ID: <20131004103905.GK27287@sirena.org.uk>
 References: <20131003181754.GE27287@sirena.org.uk> <524E92C5.3080903@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2317422779448749612=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 9852C26109C
- for <alsa-devel@alsa-project.org>; Fri,  4 Oct 2013 12:32:29 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34F272610A3
+ for <alsa-devel@alsa-project.org>; Fri,  4 Oct 2013 12:39:11 +0200 (CEST)
 In-Reply-To: <524E92C5.3080903@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,50 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Daniel Mack <zonque@gmail.com>
-Cc: Colin Guthrie <colin@guthr.ie>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Arun Raghavan <arun.raghavan@collabora.co.uk>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Tanu Kaskinen <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>, "Bossart,
+Cc: Colin Guthrie <colin@guthr.ie>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Arun Raghavan <arun.raghavan@collabora.co.uk>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>, Tanu Kaskinen <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>, "Bossart,
  Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2013-10-04 at 12:04 +0200, Daniel Mack wrote:
-> On 03.10.2013 20:17, Mark Brown wrote:
-> > The audio mini-summit in Edinburgh is now less than a month away so
-> > it seems like a good time to start pulling together a schedule.
-> > Looking at the topics people mentioned when filling out the
-> > registration form there were three major topics that people wanted
-> > to cover:
-> > 
-> > - Compressed audio review: tinycompress, integration into
-> > userspace, driver upstreaming.
-> > 
-> > - UCM and other use case management status & review.
-> > 
-> > - Effects offload to DSPs with dynamically instantiatable
-> > algorithms, and general dynamic DSP firmware handling.
-> 
+
+--===============2317422779448749612==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Epi5nlKhkk4Kf+ga"
+Content-Disposition: inline
+
+
+--Epi5nlKhkk4Kf+ga
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Oct 04, 2013 at 12:04:53PM +0200, Daniel Mack wrote:
+
 > - The status of DPCM and where we want to go with it. I think that's a
 > very interesting and important yet fairly undocumented feature that
 > not even the original authors seem to fully understand anymore ;)
 
-Fwiw, I've posted some recent patches to ASoC docs that include DPCM
-amongst other updates :) I'll also bring along some DPCM slides for
-Edinburgh too.
+I think the main thing we need here is just someone to mainline drivers
+so we've got examples - I don't recall any particular confusion anyway.
+But yes, a status update would be good.
 
-DSP FW handling and effects are important topics for me this year. I do
-have some patches for FW handling that have mostly been updated from the
-initial alsa-devel patch review (sadly from last December when I was at
-TI) and I plan to send for review V2 when HSW DSP driver is upstream.
+--Epi5nlKhkk4Kf+ga
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Liam
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSTprFAAoJELSic+t+oim9KYAP/0F7L81SEMuwJTdjqe9iF9yu
+acFPA9HcZWsqBOwWs4E9KetLE1SX8tRKUWGP4cSfHgg6MqrJqsJWwwoIp/BuI+1K
+I+KPsRF1RydsLi+n88HENwxD0WnlVm43c3o9s6dPbEU5/W0KT2iQn9UUFWWzXsxa
+7NV10kKt0hvSnkKXwUPJa+odVr1ge6LEEfuJ6k2KNN9TLe+ifAVbsJYs77nDuZz0
+3IZJFhBNRgcWA6zII4fSZJUKDhZZtbE5C/wZJ3HSpCsF/yz4iBB1axLgHmGICO0W
+ubDsm0cF/LtFEpKKcHsih6wdwaT+g0LBPawvPPXDinzmaT2QaeIv8idiQ7hEfYyP
+qL7cqKbZmbprA5/dOG249uW5P9coSaWPXsLvjFsoigAxFXh0JsCDzGSm56Zm3zJX
+CA+6YkkR+tZPBlb24T26NZI+Xa4Wt0kc8FrUmI39u+Ko6PN2iN+07wT6Pp6TmCgp
+pVTnWSLubvQ7mnPZwMwhKT24H9f1t9cDd4QgO1iBOOPFib/o/m9R/ABt/DMZDwY5
+oN6e8hJPwYoPP9qBqoL61p4TmwCupQB/N8ToG3XPU5bbg4iFuEk0lgSkyJZu3v8L
+PWoefIZqbXhH/I/9lNkyZsVXKQ3TMnECnyEA9Ut9DsVs5B98hpSIJyM26STX0/U9
+h3oPrY4l5kRqPUDWY1PY
+=+r00
+-----END PGP SIGNATURE-----
+
+--Epi5nlKhkk4Kf+ga--
+
+--===============2317422779448749612==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-
----------------------------------------------------------------------
-Intel Corporation (UK) Limited
-Registered No. 1134945 (England)
-Registered Office: Pipers Way, Swindon SN3 1RJ
-VAT No: 860 2173 47
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+--===============2317422779448749612==--
