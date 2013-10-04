@@ -1,8 +1,8 @@
 From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: [PATCH 1/7] ALSA: hda - hdmi: Fix reported channel map
-	on common default layouts
-Date: Sat,  5 Oct 2013 02:25:38 +0300
-Message-ID: <1380929144-24944-2-git-send-email-anssi.hannula@iki.fi>
+Subject: [PATCH 2/7] ALSA: hda - hdmi: Fix incorrect default
+	channel mapping for unusual CAs
+Date: Sat,  5 Oct 2013 02:25:39 +0300
+Message-ID: <1380929144-24944-3-git-send-email-anssi.hannula@iki.fi>
 References: <1380929144-24944-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
  [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F2C4261664
- for <alsa-devel@alsa-project.org>; Sat,  5 Oct 2013 01:25:56 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E4EC261661
+ for <alsa-devel@alsa-project.org>; Sat,  5 Oct 2013 01:26:01 +0200 (CEST)
 In-Reply-To: <1380929144-24944-1-git-send-email-anssi.hannula@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,52 +26,72 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hdmi_setup_fake_chmap() is supposed to set the reported channel map when
-the channel map is not specified by the user.
+hdmi_std_setup_channel_mapping() selects a Channel Allocation according
+to the sink reported speaker mask, preferring the ALSA standard layouts.
 
-However, the function indexes channel_allocations[] with a wrong value
-and extracts the wrong nibble from hdmi_channel_mapping[], causing wrong
-channel maps to be shown.
+If the channel allocation is not one of the ALSA standard layouts, the
+ALSA channels are mapped directly to HDMI channels in order. However,
+the function does not take into account that there a holes in the HDMI
+channel map.
 
-Fix those issues.
+Additionally, the function tries to disable a slot by using
+AC_VERB_SET_CHAN_SLOT with parameter ((alsa_ch << 8) | 0xf), while the
+correct parameter is ((0xf << 8) | hdmi_slot), i.e. the slot should be
+unassigned, not the ALSA channel.
 
-Tested on Intel HDMI to correctly generate various channel maps, for
-example 3,4,14,15,7,8,5,6 (instead of incorrect 3,4,8,7,5,6,14,0) for
-standard 7.1 channel audio. (Note that the side and rear channels are
-reported as RL/RR and RLC/RRC, respectively, as per the CEA-861
-standard, instead of the more traditional SL/SR and RL/RR.)
+Fix both of the issues for non-ALSA-default layouts.
 
-Note that this only fixes the layouts that only contain traditional 7.1
-speakers (2.0, 2.1, 4.0, 5.1, 7.1, etc.). E.g. the rear center of 6.1
-is still being shown wrongly due to an issue with from_cea_slot()
-which will be fixed in a later patch.
+Tested on Intel HDMI with a speaker mask of FL | FR | FC | RC, which
+causes CA 0x06 to be selected for 4-channel audio, which causes
+incorrect output (sound destined to RC goes to FC and FC goes nowhere)
+without the patch.
 
 Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
 ---
-
-I'm assuming the usage of RL/RR and RLC/RRC instead of SL/SR and RL/RR is
-intentional. If not, everything needs to be rethinked.
-
-
- sound/pci/hda/patch_hdmi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_hdmi.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
 diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 09f38a1..6ed34df 100644
+index 6ed34df..5244802 100644
 --- a/sound/pci/hda/patch_hdmi.c
 +++ b/sound/pci/hda/patch_hdmi.c
-@@ -742,9 +742,10 @@ static int hdmi_manual_setup_channel_mapping(struct hda_codec *codec,
- static void hdmi_setup_fake_chmap(unsigned char *map, int ca)
+@@ -597,22 +597,32 @@ static void hdmi_std_setup_channel_mapping(struct hda_codec *codec,
+ 				       bool non_pcm,
+ 				       int ca)
  {
++	struct cea_channel_speaker_allocation *ch_alloc;
  	int i;
-+	int ordered_ca = get_channel_allocation_order(ca);
- 	for (i = 0; i < 8; i++) {
--		if (i < channel_allocations[ca].channels)
--			map[i] = from_cea_slot((hdmi_channel_mapping[ca][i] >> 4) & 0x0f);
-+		if (i < channel_allocations[ordered_ca].channels)
-+			map[i] = from_cea_slot(hdmi_channel_mapping[ca][i] & 0x0f);
- 		else
- 			map[i] = 0;
+ 	int err;
+ 	int order;
+ 	int non_pcm_mapping[8];
+ 
+ 	order = get_channel_allocation_order(ca);
++	ch_alloc = &channel_allocations[order];
+ 
+ 	if (hdmi_channel_mapping[ca][1] == 0) {
+-		for (i = 0; i < channel_allocations[order].channels; i++)
+-			hdmi_channel_mapping[ca][i] = i | (i << 4);
+-		for (; i < 8; i++)
+-			hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
++		int hdmi_slot = 0;
++		/* fill actual channel mappings in ALSA channel (i) order */
++		for (i = 0; i < ch_alloc->channels; i++) {
++			while (!ch_alloc->speakers[7 - hdmi_slot] && !WARN_ON(hdmi_slot >= 8))
++				hdmi_slot++; /* skip zero slots */
++
++			hdmi_channel_mapping[ca][i] = (i << 4) | hdmi_slot++;
++		}
++		/* fill the rest of the slots with ALSA channel 0xf */
++		for (hdmi_slot = 0; hdmi_slot < 8; hdmi_slot++)
++			if (!ch_alloc->speakers[7 - hdmi_slot])
++				hdmi_channel_mapping[ca][i++] = (0xf << 4) | hdmi_slot;
  	}
+ 
+ 	if (non_pcm) {
+-		for (i = 0; i < channel_allocations[order].channels; i++)
++		for (i = 0; i < ch_alloc->channels; i++)
+ 			non_pcm_mapping[i] = i | (i << 4);
+ 		for (; i < 8; i++)
+ 			non_pcm_mapping[i] = 0xf | (i << 4);
 -- 
 1.8.1.5
