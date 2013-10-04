@@ -1,44 +1,40 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: Re: [PATCH 1/6] ASoC: cs4271: Include linux/of.h header
-Date: Fri, 4 Oct 2013 22:11:02 +0530
-Message-ID: <CAK9yfHxzygBr=tH7F8ripf_biGuH_rwmScU+YXdLyzdk5HVAAw@mail.gmail.com>
-References: <1380280554-32591-1-git-send-email-sachin.kamat@linaro.org>
- <CAK9yfHzi6D5Un23eAX_SLUF_FDWTw_WtsZu=rC3z9YJZeKQANg@mail.gmail.com>
- <20131004161019.GQ27287@sirena.org.uk>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [RFC] ASoC: core: Allow DAI links to be specified by using ACPI names
+Date: Fri, 04 Oct 2013 19:17:17 +0200
+Message-ID: <2478106.vxrWh0grvl@vostro.rjw.lan>
+References: <1380803636-24079-1-git-send-email-jarkko.nikula@linux.intel.com> <1655137.c5uTBo1XRy@vostro.rjw.lan> <524E6CC3.8040507@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f45.google.com (mail-oa0-f45.google.com
- [209.85.219.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 42FDD2615DF
- for <alsa-devel@alsa-project.org>; Fri,  4 Oct 2013 18:41:05 +0200 (CEST)
-Received: by mail-oa0-f45.google.com with SMTP id o17so4240858oag.32
- for <alsa-devel@alsa-project.org>; Fri, 04 Oct 2013 09:41:04 -0700 (PDT)
-In-Reply-To: <20131004161019.GQ27287@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <524E6CC3.8040507@linux.intel.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mika Westerberg <mika.westerberg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday, 4 October 2013, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Oct 04, 2013 at 05:28:19PM +0530, Sachin Kamat wrote:
->
->> Just a gentle ping on this series.
->
-> Don't send contentless pings.
->
-I did keep the entire patch content on top of my message if that is what
-you mean by content.
+On Friday, October 04, 2013 10:22:43 AM Jarkko Nikula wrote:
+> On 10/04/2013 09:53 AM, Rafael J. Wysocki wrote:
+> > On Thursday, October 03, 2013 03:33:56 PM Jarkko Nikula wrote:
+> >> This patch adds alternative way to specify DAI links by using ACPI names.
+> >> ACPI name here is considered to be used as an alias for device name during
+> >> DAI link binding time.
+> > What's DAI?
+> It comes from Digital Audio Interface, and DAI link in ALSA SoC 
+> basically ties together platform, DAI and codec devices by name or 
+> device tree node.
+> 
+> > +#if IS_ENABLED(CONFIG_ACPI)
+> > That's not necessary, because ACPI_HANDLE() is defined as false for
+> > CONFIG_ACPI unset.
+> Actually problem acpi_bus_get_device() that is not available if 
+> CONFIG_ACPI is not set. Which suggests was it even meant to be used in 
+> drivers that are build for non ACPI systems too?
+
+No, acpi_bus_get_device() shoudn't be used if CONFIG_ACPI is not set.
+
+Thanks!
 
 -- 
-With warm regards,
-Sachin
+I speak only for myself.
+Rafael J. Wysocki, Intel Open Source Technology Center.
