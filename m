@@ -1,27 +1,11 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: [PING!] Re: HDMI audio is not working on my new
-	desktop
-Date: Sat, 5 Oct 2013 18:19:06 +0600
-Message-ID: <CAN_LGv1vJn8awr4hEOA8HfJkBHhOMVfLbUUXuJqcmytSSX2YFQ@mail.gmail.com>
-References: <CAN_LGv1eGP=Krg_zRXhLhLVPv12dpybKj_fy+r=oS4nSnXRGCg@mail.gmail.com>
- <s5hbo4tmtn2.wl%tiwai@suse.de>
- <CA+v+29jhLVDHQ17TRTC3ZUW2g0b-mePQSWkCrLK95v_J5DggtA@mail.gmail.com>
- <CAN_LGv3S8tDofB=jQ=9cu1wExizo37ac_qL2GBJvvz0pi3grPQ@mail.gmail.com>
- <CA+v+29jcG-F=wpFcREfo50T9gJkaz-JXxUXYKbFZdH_9CqSSFg@mail.gmail.com>
- <CAN_LGv0jJu3x_N3=C-8Bbvi8mV_tW1x1YW2dA5Nw88zKdHqMvA@mail.gmail.com>
- <CAN_LGv2OGfV-PaTHRBbvmsD+R_jdZh1JYcs4+Mi2evJ=tw1YzA@mail.gmail.com>
- <CAN_LGv3uaUjk2g8NEVgmU+aghBBHA7ay27uhvjhLb_+K59vPuw@mail.gmail.com>
+From: klem.dev@gmail.com
+Subject: [PATCH 1/4] ESI W192M: Update ESI W192M driver.
+Date: Sat,  5 Oct 2013 15:41:02 +0200
+Message-ID: <525016e8.a556b40a.02db.ffff9b6a@mx.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f175.google.com (mail-qc0-f175.google.com
- [209.85.216.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D0AA2610B8
- for <alsa-devel@alsa-project.org>; Sat,  5 Oct 2013 14:19:08 +0200 (CEST)
-Received: by mail-qc0-f175.google.com with SMTP id v2so3553412qcr.6
- for <alsa-devel@alsa-project.org>; Sat, 05 Oct 2013 05:19:07 -0700 (PDT)
-In-Reply-To: <CAN_LGv3uaUjk2g8NEVgmU+aghBBHA7ay27uhvjhLb_+K59vPuw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,84 +15,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wang Xingchao <wangxingchao2011@gmail.com>
-Cc: "Alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, broonie@kernel.org, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: patch@alsa-project.org
+Cc: Clement Guedez <klem.dev@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2013/10/5 Alexander E. Patrakov <patrakov@gmail.com>:
-> 2013/9/5 Alexander E. Patrakov <patrakov@gmail.com>:
->> 2013/8/22 Alexander E. Patrakov <patrakov@gmail.com>:
->>> 2013/8/22 Wang Xingchao <wangxingchao2011@gmail.com>:
->>>> cc Mengdong and Liam, we're in the same PRC audio Team.
->>>>
->>>> 2013/8/21 Alexander E. Patrakov <patrakov@gmail.com>:
->>>>> 2013/8/21 Wang Xingchao <wangxingchao2011@gmail.com>:
->>>>>> Hi Takashi/Alexander E. Patrakov,
->>>>>>
->>>>>> 2013/8/20 Takashi Iwai <tiwai@suse.de>:
->>>>>>> Xingchao, could you take a look at this bug?
->>>>>>
->>>>>> sure, i will take a look at it.
->>>>>> But i'm afraid i cannot continue tracking from next week, i'm under
->>>>>> leaving process at Intel.
->>>>>
->>>>> Best wishes to you, and good luck with a new job :)
->>>>>
->>>>> But then please tell us the contact information of the person at Intel
->>>>> who should be contacted instead of you for any further questions
->>>>> related to HDMI audio on Haswell.
->>>>>
->>>>>> At first glance, i saw a lot of errors:
->>>>>>
->>>>>> [  772.822663] playback write error (DMA or IRQ trouble?)
->>>>>> [  782.912776] playback write error (DMA or IRQ trouble?)
->>>>>> [  793.002904] playback write error (DMA or IRQ trouble?)
->>>>>> [  803.093052] playback write error (DMA or IRQ trouble?)
->>>>>> [  813.183205] playback write error (DMA or IRQ trouble?)
->>>>>> [  823.273217] playback write error (DMA or IRQ trouble?)
->>>>>>
->>>>>> I know this issue on some Haswell ULT boards(STP/WTM1) because they
->>>>>> are not stable, and it's better to use latest BIOS image(V131 or
->>>>>> later).
->>>>
->>>> btw, did you do any suspend/resume operation before the audio playback test?
->>>> if not, it's a new case. i found the issue only on some particular
->>>> boards after suspend/resume.
->>>
->>> The issue is 100% reproducible without suspend/resume. Just in case, I
->>> tested after one suspend-resume cycle, it didn't fix the problem.
->>
->> On IRC (#intel-gfx) ohsix said that the bug
->> (https://bugzilla.kernel.org/show_bug.cgi?id=60769) may be graphics
->> related after all, but was too scared with the interrupt handling code
->> there. The contents of /proc/interrupts are attached to the bug, but
->> he said there is nothing interesting there.
->>
->> BTW I am surprised that the bug is still assigned to Jaroslav Kysela
->> and not to Intel specialists (who are not even in the CC list of the
->> bug).
->>
->> --
->> Alexander E. Patrakov
->
-> broonie@kernel.org asked to CC: him to the thread. As far as I know,
-> Intel tried to reproduce this bug on their hardware and on some OEM
-> boards, but didn't try exactly the same motherboard, and reproduced
-> another bug (files play silently but IRQs seem to come correctly).
->
-> It is interesting to know that today I found two people on FreeNode
-> IRC with the same board, and only one of them (rvalles) can reproduce
-> the IRQ problem. The other one (broonie) uses an older kernel
-> (Debian's 3.10-3, current unstable) and sees the "files play silently"
-> problem instead of the IRQ one.
->
-> --
-> Alexander E. Patrakov
+From: Clement Guedez <klem.dev@gmail.com>
 
-I have tried the Debian kernel on my Gentoo system and... HDMI audio
-works (but always plays both in the Dell monitor and the LG TV
-simultaneously). So this is a regression, will bisect.
+Update Waveterminal 192M driver to support alsa changes that happened since last driver commit.
 
+Signed-off-by: Clement Guedez <klem.dev@gmail.com>
+---
+ sound/pci/ice1712/wtm.c | 37 ++++++++++++++++++++++---------------
+ 1 file changed, 22 insertions(+), 15 deletions(-)
+
+diff --git a/sound/pci/ice1712/wtm.c b/sound/pci/ice1712/wtm.c
+index bcf30a3..b6b650c 100644
+--- a/sound/pci/ice1712/wtm.c
++++ b/sound/pci/ice1712/wtm.c
+@@ -463,7 +463,7 @@ static int wtm_add_controls(struct snd_ice1712 *ice)
+ 
+ static int wtm_init(struct snd_ice1712 *ice)
+ {
+-	static unsigned short stac_inits_prodigy[] = {
++	static unsigned short stac_inits_wtm[] = {
+ 		STAC946X_RESET, 0,
+ 		(unsigned short)-1
+ 	};
+@@ -473,9 +473,10 @@ static int wtm_init(struct snd_ice1712 *ice)
+ 	ice->num_total_dacs = 8;
+ 	ice->num_total_adcs = 4;
+ 	ice->force_rdma1 = 1;
++	ice->vt1720 = 0;  /* ice1724, e.g. 23 GPIOs */
+ 
+ 	/*initialize codec*/
+-	p = stac_inits_prodigy;
++	p = stac_inits_wtm;
+ 	for (; *p != (unsigned short)-1; p += 2) {
+ 		stac9460_put(ice, p[0], p[1]);
+ 		stac9460_2_put(ice, p[0], p[1]);
+@@ -485,19 +486,25 @@ static int wtm_init(struct snd_ice1712 *ice)
+ 
+ 
+ static unsigned char wtm_eeprom[] = {
+-	0x47,	/*SYSCONF: clock 192KHz, 4ADC, 8DAC */
+-	0x80,	/* ACLINK : I2S */
+-	0xf8,	/* I2S: vol; 96k, 24bit, 192k */
+-	0xc1	/*SPDIF: out-en, spidf ext out*/,
+-	0x9f,	/* GPIO_DIR */
+-	0xff,	/* GPIO_DIR1 */
+-	0x7f,	/* GPIO_DIR2 */
+-	0x9f,	/* GPIO_MASK */
+-	0xff,	/* GPIO_MASK1 */
+-	0x7f,	/* GPIO_MASK2 */
+-	0x16,	/* GPIO_STATE */
+-	0x80,	/* GPIO_STATE1 */
+-	0x00,	/* GPIO_STATE2 */
++	[ICE_EEP2_SYSCONF]     = 0x67, /* 49MHz crystal, mpu401,
++					* spdif-in+ 1 stereo ADC,
++					* 4 stereo DACs
++					*/
++	[ICE_EEP2_ACLINK]      = 0x80,  /* I2S */
++	[ICE_EEP2_I2S]         = 0xf8,  /* vol, 96k, 24bit, 192k */
++	[ICE_EEP2_SPDIF]       = 0xc1,  /* out-en, out-int, spdif-in */
++	[ICE_EEP2_GPIO_DIR]    = 0x9f,
++	[ICE_EEP2_GPIO_DIR1]   = 0xff,
++	[ICE_EEP2_GPIO_DIR2]   = 0x7f,
++	[ICE_EEP2_GPIO_MASK]   = 0x9f,
++	[ICE_EEP2_GPIO_MASK1]  = 0xff,
++	[ICE_EEP2_GPIO_MASK2]  = 0x7f,
++	[ICE_EEP2_GPIO_STATE]  = 0x16,
++	[ICE_EEP2_GPIO_STATE1] = 0x80,
++	[ICE_EEP2_GPIO_STATE2] = 0x00, /* GPIO20: 0 = CD drive dig. input
++					* passthrough,
++					* 1 = SPDIF-OUT from ice1724
++					*/
+ };
+ 
+ 
 -- 
-Alexander E. Patrakov
+1.8.4.rc3
