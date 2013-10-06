@@ -1,19 +1,16 @@
-From: Olivier Langlois <olivier@trillion01.com>
-Subject: Re: [RFC/RFT v2 0/4] ALSA: hda - hdmi: ATI/AMD
- multi-channel and HBR support
-Date: Sat, 05 Oct 2013 23:48:58 -0400
-Message-ID: <1381031338.10109.2.camel@Wailaba2>
-References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>
- <1380870371.875.14.camel@Wailaba2> <524F51C6.7050203@iki.fi>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/3] ASoC: dapm: Add support for virtual mixer
+	controls
+Date: Sun,  6 Oct 2013 13:43:49 +0200
+Message-ID: <1381059831-16074-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from outbound-ss-742.hostmonster.com
- (outbound-ss-742.hostmonster.com [74.220.223.97])
- by alsa0.perex.cz (Postfix) with SMTP id 587BB2616CF
- for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2013 05:49:03 +0200 (CEST)
-In-Reply-To: <524F51C6.7050203@iki.fi>
+Received: from smtp-out-184.synserver.de (smtp-out-187.synserver.de
+ [212.40.185.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id 681032619FA
+ for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2013 13:42:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,75 +20,153 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, linux-kernel@vger.kernel.org, Peter =?ISO-8859-1?Q?Fr=FChberger?= <fritsch@xbmc.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+This patch adds support for virtual DAPM mixer controls. They are similar to
+virtual DAPM enums. There is no hardware register backing the control, so
+changing the control's value wont have any direct effect on the hardware. But it
+still influences the DAPM graph by causing the path it sits on to be connected
+or disconnected. This in turn can cause power changes for some of the widgets on
+the DAPM graph, which will then modify the hardware state.
 
-> > 
-> > Rear left and rear right channels are flipped.
-> 
-> Thanks for testing.
-> 
-> That seems a bit strange, I would've expected everything to be flipped
-> if there was a bug there.
-> 
-Anssi, you were right to be suspicious. The bug was in my wiring.
-> 
-> >>
-> >>   o Contents of /proc/asound/cardX/eld#0. I'd like to see the contents
-> >>     both with radeon and with the proprietary fglrx driver in use
-> >>
-> > With fglrx 13.10 Beta 2:
-> > 
-> > lano1106@whippet2 /proc/asound/card0 $ cat codec#0 
-> 
-> Note I said eld#0, not codec#0 :)
-> 
-> Though I guess the correct filename is actually eld#0.0.
-> 
-> [...]
-> 
-My mistake.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ include/sound/soc-dapm.h |  4 ++++
+ include/sound/soc.h      |  3 ++-
+ sound/soc/soc-dapm.c     | 45 +++++++++++++++++++++++++++------------------
+ 3 files changed, 33 insertions(+), 19 deletions(-)
 
-Here is the good content:
-
-monitor_present		1
-eld_valid		1
-monitor_name		
-connection_type		HDMI
-eld_version		[0x2] CEA-861D or below
-edid_version		[0x0] no CEA EDID Timing Extension block present
-manufacture_id		0x0
-product_id		0x0
-port_id			0x0
-support_hdcp		0
-support_ai		0
-audio_sync_delay	0
-speakers		[0x4f] FL/FR LFE FC RL/RR RLC/RRC
-sad_count		7
-sad0_coding_type	[0x1] LPCM
-sad0_channels		8
-sad0_rates		[0x1ee0] 32000 44100 48000 88200 96000 176400 192000
-sad0_bits		[0xe0000] 16 20 24
-sad1_coding_type	[0x2] AC-3
-sad1_channels		6
-sad1_rates		[0xe0] 32000 44100 48000
-sad1_max_bitrate	640000
-sad2_coding_type	[0x7] DTS
-sad2_channels		7
-sad2_rates		[0x6c0] 44100 48000 88200 96000
-sad2_max_bitrate	1536000
-sad3_coding_type	[0xa] E-AC-3/DD+ (Dolby Digital Plus)
-sad3_channels		8
-sad3_rates		[0xc0] 44100 48000
-sad4_coding_type	[0xb] DTS-HD
-sad4_channels		8
-sad4_rates		[0x1ec0] 44100 48000 88200 96000 176400 192000
-sad5_coding_type	[0xc] MLP (Dolby TrueHD)
-sad5_channels		8
-sad5_rates		[0x1ec0] 44100 48000 88200 96000 176400 192000
-sad6_coding_type	[0xe] WMAPro
-sad6_channels		8
-sad6_rates		[0x6e0] 32000 44100 48000 88200 96000
-sad6_profile		3
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 27a72d5..2037c45 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -286,6 +286,8 @@ struct device;
+ 	.info = snd_soc_info_volsw, \
+ 	.get = snd_soc_dapm_get_volsw, .put = snd_soc_dapm_put_volsw, \
+ 	.private_value = SOC_SINGLE_VALUE(reg, shift, max, invert, 1) }
++#define SOC_DAPM_SINGLE_VIRT(xname, max) \
++	SOC_DAPM_SINGLE(xname, SND_SOC_NOPM, 0, max, 0)
+ #define SOC_DAPM_SINGLE_TLV(xname, reg, shift, max, invert, tlv_array) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+ 	.info = snd_soc_info_volsw, \
+@@ -300,6 +302,8 @@ struct device;
+ 	.tlv.p = (tlv_array), \
+ 	.get = snd_soc_dapm_get_volsw, .put = snd_soc_dapm_put_volsw, \
+ 	.private_value = SOC_SINGLE_VALUE(reg, shift, max, invert, 0) }
++#define SOC_DAPM_SINGLE_TLV_VIRT(xname, max, tlv_array) \
++	SOC_DAPM_SINGLE(xname, SND_SOC_NOPM, 0, max, 0, tlv_array)
+ #define SOC_DAPM_ENUM(xname, xenum) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+ 	.info = snd_soc_info_enum_double, \
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 6dd329a..af1678c 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1049,7 +1049,8 @@ struct snd_soc_pcm_runtime {
+ /* mixer control */
+ struct soc_mixer_control {
+ 	int min, max, platform_max;
+-	unsigned int reg, rreg, shift, rshift;
++	int reg, rreg;
++	unsigned int shift, rshift;
+ 	unsigned int invert:1;
+ 	unsigned int autodisable:1;
+ };
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index c17c14c..25b9554 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -499,18 +499,22 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
+ 		int val;
+ 		struct soc_mixer_control *mc = (struct soc_mixer_control *)
+ 			w->kcontrol_news[i].private_value;
+-		unsigned int reg = mc->reg;
++		int reg = mc->reg;
+ 		unsigned int shift = mc->shift;
+ 		int max = mc->max;
+ 		unsigned int mask = (1 << fls(max)) - 1;
+ 		unsigned int invert = mc->invert;
+ 
+-		val = soc_widget_read(w, reg);
+-		val = (val >> shift) & mask;
+-		if (invert)
+-			val = max - val;
++		if (reg != SND_SOC_NOPM) {
++			val = soc_widget_read(w, reg);
++			val = (val >> shift) & mask;
++			if (invert)
++				val = max - val;
++			p->connect = !!val;
++		} else {
++			p->connect = 0;
++		}
+ 
+-		p->connect = !!val;
+ 	}
+ 	break;
+ 	case snd_soc_dapm_mux: {
+@@ -2791,7 +2795,7 @@ int snd_soc_dapm_get_volsw(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_card *card = codec->card;
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	unsigned int reg = mc->reg;
++	int reg = mc->reg;
+ 	unsigned int shift = mc->shift;
+ 	int max = mc->max;
+ 	unsigned int mask = (1 << fls(max)) - 1;
+@@ -2804,7 +2808,7 @@ int snd_soc_dapm_get_volsw(struct snd_kcontrol *kcontrol,
+ 			 kcontrol->id.name);
+ 
+ 	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+-	if (dapm_kcontrol_is_powered(kcontrol))
++	if (dapm_kcontrol_is_powered(kcontrol) && reg != SND_SOC_NOPM)
+ 		val = (snd_soc_read(codec, reg) >> shift) & mask;
+ 	else
+ 		val = dapm_kcontrol_get_value(kcontrol);
+@@ -2835,7 +2839,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_card *card = codec->card;
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	unsigned int reg = mc->reg;
++	int reg = mc->reg;
+ 	unsigned int shift = mc->shift;
+ 	int max = mc->max;
+ 	unsigned int mask = (1 << fls(max)) - 1;
+@@ -2857,19 +2861,24 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+ 
+ 	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+ 
+-	dapm_kcontrol_set_value(kcontrol, val);
++	change = dapm_kcontrol_set_value(kcontrol, val);
+ 
+-	mask = mask << shift;
+-	val = val << shift;
++	if (reg != SND_SOC_NOPM) {
++		mask = mask << shift;
++		val = val << shift;
++
++		change = snd_soc_test_bits(codec, reg, mask, val);
++	}
+ 
+-	change = snd_soc_test_bits(codec, reg, mask, val);
+ 	if (change) {
+-		update.kcontrol = kcontrol;
+-		update.reg = reg;
+-		update.mask = mask;
+-		update.val = val;
++		if (reg != SND_SOC_NOPM) {
++			update.kcontrol = kcontrol;
++			update.reg = reg;
++			update.mask = mask;
++			update.val = val;
+ 
+-		card->update = &update;
++			card->update = &update;
++		}
+ 
+ 		soc_dapm_mixer_update_power(card, kcontrol, connect);
+ 
+-- 
+1.8.0
