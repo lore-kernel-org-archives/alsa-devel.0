@@ -1,19 +1,19 @@
 From: Eldad Zack <eldad@fogrefinery.com>
-Subject: [PATCH v4 04/15] ALSA: usb-audio: don't deactivate
-	URBs on in-use EP
-Date: Sun,  6 Oct 2013 22:31:09 +0200
-Message-ID: <1381091480-23636-5-git-send-email-eldad@fogrefinery.com>
+Subject: [PATCH v4 02/15] ALSA: usb-audio: remove
+	deactivate_endpoints()
+Date: Sun,  6 Oct 2013 22:31:07 +0200
+Message-ID: <1381091480-23636-3-git-send-email-eldad@fogrefinery.com>
 References: <1381091480-23636-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f54.google.com (mail-bk0-f54.google.com
- [209.85.214.54])
- by alsa0.perex.cz (Postfix) with ESMTP id D68DC261A56
- for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2013 22:31:30 +0200 (CEST)
-Received: by mail-bk0-f54.google.com with SMTP id mz12so2343322bkb.13
- for <alsa-devel@alsa-project.org>; Sun, 06 Oct 2013 13:31:30 -0700 (PDT)
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F965261A5F
+ for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2013 22:31:28 +0200 (CEST)
+Received: by mail-bk0-f51.google.com with SMTP id mx10so2267036bkb.24
+ for <alsa-devel@alsa-project.org>; Sun, 06 Oct 2013 13:31:28 -0700 (PDT)
 In-Reply-To: <1381091480-23636-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,33 +28,53 @@ To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Daniel M
 Cc: alsa-devel@alsa-project.org, Eldad Zack <eldad@fogrefinery.com>
 List-Id: alsa-devel@alsa-project.org
 
-If an endpoint in use, its associated URBs should not be
-deactivated.
+The only call site for deactivate_endpoints() at snd_usb_hw_free().
+The return value is not checked there, as it is irrelevant if it
+fails on hw_free.
+This patch moves the deactivation of the endpoints directly into
+snd_usb_hw_free().
 
 Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 ---
- sound/usb/endpoint.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/usb/pcm.c | 19 ++-----------------
+ 1 file changed, 2 insertions(+), 17 deletions(-)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 5dd51af..e84732c 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -959,12 +959,12 @@ int snd_usb_endpoint_deactivate(struct snd_usb_endpoint *ep)
- 	if (!ep)
- 		return -EINVAL;
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 19e7995..1a9a018 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -282,22 +282,6 @@ static void stop_endpoints(struct snd_usb_substream *subs, bool wait)
+ 	}
+ }
  
--	deactivate_urbs(ep, true);
--	wait_clear_urbs(ep);
+-static int deactivate_endpoints(struct snd_usb_substream *subs)
+-{
+-	int reta, retb;
 -
- 	if (ep->use_count != 0)
- 		return 0;
- 
-+	deactivate_urbs(ep, true);
-+	wait_clear_urbs(ep);
-+
- 	clear_bit(EP_FLAG_ACTIVATED, &ep->flags);
- 
- 	return 0;
+-	reta = snd_usb_endpoint_deactivate(subs->sync_endpoint);
+-	retb = snd_usb_endpoint_deactivate(subs->data_endpoint);
+-
+-	if (reta < 0)
+-		return reta;
+-
+-	if (retb < 0)
+-		return retb;
+-
+-	return 0;
+-}
+-
+ static int search_roland_implicit_fb(struct usb_device *dev, int ifnum,
+ 				     unsigned int altsetting,
+ 				     struct usb_host_interface **alts,
+@@ -736,7 +720,8 @@ static int snd_usb_hw_free(struct snd_pcm_substream *substream)
+ 	down_read(&subs->stream->chip->shutdown_rwsem);
+ 	if (!subs->stream->chip->shutdown) {
+ 		stop_endpoints(subs, true);
+-		deactivate_endpoints(subs);
++		snd_usb_endpoint_deactivate(subs->sync_endpoint);
++		snd_usb_endpoint_deactivate(subs->data_endpoint);
+ 	}
+ 	up_read(&subs->stream->chip->shutdown_rwsem);
+ 	return snd_pcm_lib_free_vmalloc_buffer(substream);
 -- 
 1.8.1.5
