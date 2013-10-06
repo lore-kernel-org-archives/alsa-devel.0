@@ -1,19 +1,19 @@
 From: Eldad Zack <eldad@fogrefinery.com>
-Subject: [PATCH v4 03/15] ALSA: usb-audio: prevent NULL
-	dereference on stop trigger
-Date: Sun,  6 Oct 2013 22:31:08 +0200
-Message-ID: <1381091480-23636-4-git-send-email-eldad@fogrefinery.com>
+Subject: [PATCH v4 01/15] ALSA: usb-audio: remove unused
+	parameter from sync_ep_set_params
+Date: Sun,  6 Oct 2013 22:31:06 +0200
+Message-ID: <1381091480-23636-2-git-send-email-eldad@fogrefinery.com>
 References: <1381091480-23636-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f45.google.com (mail-bk0-f45.google.com
- [209.85.214.45])
- by alsa0.perex.cz (Postfix) with ESMTP id A306F261A60
- for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2013 22:31:29 +0200 (CEST)
-Received: by mail-bk0-f45.google.com with SMTP id mx11so2349829bkb.32
- for <alsa-devel@alsa-project.org>; Sun, 06 Oct 2013 13:31:29 -0700 (PDT)
+Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
+ [209.85.214.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 40197261A5E
+ for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2013 22:31:27 +0200 (CEST)
+Received: by mail-bk0-f48.google.com with SMTP id my13so2292827bkb.35
+ for <alsa-devel@alsa-project.org>; Sun, 06 Oct 2013 13:31:27 -0700 (PDT)
 In-Reply-To: <1381091480-23636-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,50 +28,36 @@ To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Daniel M
 Cc: alsa-devel@alsa-project.org, Eldad Zack <eldad@fogrefinery.com>
 List-Id: alsa-devel@alsa-project.org
 
-If an endpoint uses another endpoint for synchronization, and the
-other endpoint is stopped, an oops will occur on NULL dereference.
-Clearing the prepare/retire callbacks solves this issue.
-
-v2: Thanks to Daniel Mack, fixed (an ironic) NULL dereference when
-the pcm substream is opened and closed immediately.
+Since the format is not actually used in sync_ep_set_params(),
+there is no need to pass it down.
 
 Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 ---
- sound/usb/pcm.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/usb/endpoint.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 1a9a018..525bc8c 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -1205,6 +1205,11 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream, int direction)
- 		subs->interface = -1;
- 	}
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 21dc642..5dd51af 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -714,8 +714,7 @@ out_of_memory:
+ /*
+  * configure a sync endpoint
+  */
+-static int sync_ep_set_params(struct snd_usb_endpoint *ep,
+-			      struct audioformat *fmt)
++static int sync_ep_set_params(struct snd_usb_endpoint *ep)
+ {
+ 	int i;
  
-+	if (subs->data_endpoint) {
-+		subs->data_endpoint->prepare_data_urb = NULL;
-+		subs->data_endpoint->retire_data_urb = NULL;
-+	}
-+
- 	subs->pcm_substream = NULL;
- 	snd_usb_autosuspend(subs->stream->chip);
- 
-@@ -1535,6 +1540,8 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
- 		subs->running = 1;
- 		return 0;
- 	case SNDRV_PCM_TRIGGER_STOP:
-+		subs->data_endpoint->prepare_data_urb = NULL;
-+		subs->data_endpoint->retire_data_urb = NULL;
- 		stop_endpoints(subs, false);
- 		subs->running = 0;
- 		return 0;
-@@ -1565,6 +1572,7 @@ static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
- 		subs->running = 1;
- 		return 0;
- 	case SNDRV_PCM_TRIGGER_STOP:
-+		subs->data_endpoint->retire_data_urb = NULL;
- 		stop_endpoints(subs, false);
- 		subs->running = 0;
- 		return 0;
+@@ -812,7 +811,7 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
+ 					 buffer_periods, fmt, sync_ep);
+ 		break;
+ 	case  SND_USB_ENDPOINT_TYPE_SYNC:
+-		err = sync_ep_set_params(ep, fmt);
++		err = sync_ep_set_params(ep);
+ 		break;
+ 	default:
+ 		err = -EINVAL;
 -- 
 1.8.1.5
