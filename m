@@ -1,16 +1,20 @@
-From: Alexander Stein <alexander.stein@informatik.tu-chemnitz.de>
-Subject: ALSA lib pcm_hw.c:1466:(_snd_pcm_hw_open) Unknown
-	field chmap
-Date: Thu, 03 Oct 2013 21:15:51 +0200
-Message-ID: <6043812.jjP6m6Xcry@kongar>
+From: Guido Aulisi <guido.aulisi@gmail.com>
+Subject: Re: [PATCH v2] ALSA: snd-usb-usx2y: remove bogus frame
+	checks
+Date: Sun, 06 Oct 2013 10:29:23 +0200
+Message-ID: <1381048163.1974.5.camel@yoda.heavyware>
+References: <1380728990-8443-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cora.hrz.tu-chemnitz.de (cora.hrz.tu-chemnitz.de
- [134.109.228.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EDED261281
- for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2013 21:16:44 +0200 (CEST)
+Received: from mail-ea0-f178.google.com (mail-ea0-f178.google.com
+ [209.85.215.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A20B2619F4
+ for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2013 10:29:26 +0200 (CEST)
+Received: by mail-ea0-f178.google.com with SMTP id a15so2597904eae.9
+ for <alsa-devel@alsa-project.org>; Sun, 06 Oct 2013 01:29:26 -0700 (PDT)
+In-Reply-To: <1380728990-8443-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,25 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Daniel Mack <zonque@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, nicholas.bailey@glasgow.ac.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+> Next time, when detecting such problems, please consider sending a
+patch
+> to alsa-devel, so fixes make it to the users eventually :)
 
-I get this error message from several games I got recently. There is either not sound at all or it is choppy. This was with alsa-lib-1.0.27.1. So I downgraded to 1.0.26 and everything was fine. I compiled alsa-lib-1.0.27.1 myself and started them using LD_LIBRARY_PATH: everything worked. So I assumed there is something in the config files which has changed. Comparing them I noticed some changes in /usr/share/alsa/cards/Audigy2.conf. Those lines were added:
-chmap [ "UNKNOWN" "FL,FR" ]
-chmap [ "UNKNOWN" "RL,RR" ]
-chmap [ "UNKNOWN" "FC,LFE" ]
-chmap [ "UNKNOWN" "SL,SR" ]
+You are right, but I thought it was a problem with a broken/weird usb
+controller, because it worked with my old laptop.
+When I saw another user with the same problem, I sent the patch to LAU
+(the only mailing list I've subscribed to).
 
-See alsa-lib commits 5ba11d69dafbd4502469fd957b4580169779664c and ec7acfc408856cfe71a122e3b5387463d7b3d919. Updating to 1.0.27.1 again and commenting those lines out everything is ok now.
+Now I remember why I did that patch: if you see my dmesg output without
+that patch, you can see that the driver is comparing 1024 to 0. If you
+check the history of the driver, you can see that this check has already
+been narrowed with the bit AND operation; I tried to narrow the check a
+little more, so I chose 0x3ff because 1024 & 0x3ff = 0.
+But I forgot about my Tascam (because I bought a RME Raydat) and never
+tested that patch, but I was quite confident that it should work.
 
-So I'm wondering what is the reason for this error message? How to fix that?
+[  669.312765] ALSA sound/usb/usx2y/usbusx2yaudio.c:141 should not be
+here with counts=42
+[  669.329821] ALSA sound/usb/usx2y/usbusx2yaudio.c:141 should not be
+here with counts=42
+[  669.345854] ALSA sound/usb/usx2y/usbusx2yaudio.c:141 should not be
+here with counts=42
+[  669.471627] ALSA sound/usb/usx2y/usbusx2yaudio.c:311 Sequence
+Error!(hcd_frame=3 ep=10out;wait=1024,frame=0).
+Most probably some urb of usb-frame 1024 is still missing.
+Cause could be too long delays in usb-hcd interrupt handling.
+[ 1203.531392] ALSA sound/usb/usx2y/usbusx2yaudio.c:311 Sequence
+Error!(hcd_frame=4 ep=8in;wait=1025,frame=1).
+Most probably some urb of usb-frame 1025 is still missing.
+Cause could be too long delays in usb-hcd interrupt handling.
+[ 1218.908160] ALSA sound/usb/usx2y/usbusx2yaudio.c:311 Sequence
+Error!(hcd_frame=5 ep=8in;wait=1026,frame=2).
+Most probably some urb of usb-frame 1026 is still missing.
 
-Thanks,
-Alexander
-
-PS: my sound card:
-03:07.0 Multimedia audio controller: Creative Labs SB0400 Audigy2 Value
-  1102:0008
+Ciao a tutti
+Guido
