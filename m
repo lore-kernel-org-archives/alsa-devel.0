@@ -1,19 +1,19 @@
 From: Eldad Zack <eldad@fogrefinery.com>
-Subject: [PATCH v4 09/15] ALSA: usb-audio: conditional
-	interface altsetting
-Date: Sun,  6 Oct 2013 22:31:14 +0200
-Message-ID: <1381091480-23636-10-git-send-email-eldad@fogrefinery.com>
+Subject: [PATCH v4 10/15] ALSA: usb-audio: conditional
+	concurrent usage of endpoint
+Date: Sun,  6 Oct 2013 22:31:15 +0200
+Message-ID: <1381091480-23636-11-git-send-email-eldad@fogrefinery.com>
 References: <1381091480-23636-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f44.google.com (mail-bk0-f44.google.com
- [209.85.214.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 851AA261A89
- for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2013 22:31:37 +0200 (CEST)
-Received: by mail-bk0-f44.google.com with SMTP id mz10so2352410bkb.31
- for <alsa-devel@alsa-project.org>; Sun, 06 Oct 2013 13:31:37 -0700 (PDT)
+Received: from mail-bk0-f42.google.com (mail-bk0-f42.google.com
+ [209.85.214.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id CAF5B261A92
+ for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2013 22:31:38 +0200 (CEST)
+Received: by mail-bk0-f42.google.com with SMTP id my10so2373967bkb.29
+ for <alsa-devel@alsa-project.org>; Sun, 06 Oct 2013 13:31:38 -0700 (PDT)
 In-Reply-To: <1381091480-23636-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,150 +28,257 @@ To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Daniel M
 Cc: alsa-devel@alsa-project.org, Eldad Zack <eldad@fogrefinery.com>
 List-Id: alsa-devel@alsa-project.org
 
-On some devices, if the endpoint for the other direction is in use,
-setting one interface will shutdown the other (in use) endpoint.
-This patch moves all of the alternate setting operations for pcm
-ops to one function which checks if we can do so.
+If the current endpoint is in use, check if the hardware parameters
+match. If they do, allow the usage.
+This also requires setting the parameters in case an data endpoint
+is used as a synchornization source, and it is first set by its
+sink endpoint.
 
-If current alternate is 0, it is safe to set.
+Also check the data endpoint on the substream in the other direction.
+If it is in use, the rate and format must match.
+The channel count may differ - but the period bytes must match.
+If the channel count is different, adjust the expected period bytes
+by the ratio of the channel count.
 
-Thanks to Clemens Ladisch for pointing out that cur_altsetting
-in usb_interface can be used to determine the current altsetting
-index as well as the correct naming convention for the altsetting
-number.
+Add the same check to hw_params, to prevent overwriting the
+current params.
+Clear the hardware parameters on hw_free only if the other endpoint
+is not in use.
+
+No change for sync endpoints (explicit feedback).
 
 Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 
 ---
-v2:
-* Removed get_interface usage.
-* Fixed NULL dereference for explicit feedback - now other_subs will
-  be set only after testing that subs is not NULL.
-v3:
-* Changed "altset_idx" to "altsetting".
-v4:
-* Removed helper functions
+v2: added checking the data endpoint on the substream in the other
+    direction.
 ---
- sound/usb/pcm.c | 68 ++++++++++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 60 insertions(+), 8 deletions(-)
+ sound/usb/endpoint.c | 63 ++++++++++++++++++++++++++++++++++++++++++++++++----
+ sound/usb/endpoint.h |  9 +++++++-
+ sound/usb/pcm.c      | 59 ++++++++++++++++++++++++++++++++++++++----------
+ 3 files changed, 114 insertions(+), 17 deletions(-)
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 89381ad..c165ccf 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -216,6 +216,60 @@ int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
- 	}
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index c90d065..6cb3137 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -753,6 +753,51 @@ out_of_memory:
+ 	return -ENOMEM;
  }
  
-+static int get_cur_altsetting(struct usb_device *dev, int ifnum)
++bool snd_usb_endpoint_may_set_params(struct snd_usb_substream *subs,
++				     snd_pcm_format_t pcm_format,
++				     unsigned int channels,
++				     unsigned int period_bytes,
++				     unsigned int rate)
 +{
-+	struct usb_interface *iface;
-+	struct usb_interface_descriptor *altsd;
++	struct snd_usb_substream *other_subs =
++		&subs->stream->substream[subs->direction ^ 1];
++	struct snd_usb_endpoint *other_ep = other_subs->data_endpoint;
 +
-+	if (ifnum == -1)
-+		return 0;
++	/* no associated substream */
++	if (!subs)
++		return true;
 +
-+	iface = usb_ifnum_to_if(dev, ifnum);
-+	if (!iface)
-+		return -EINVAL;
++	if (other_ep && other_ep->use_count != 0) {
++		int other_pb;
++		if (other_subs->pcm_format != pcm_format ||
++		    other_subs->cur_rate != rate)
++			return false;
 +
-+	if (!iface->cur_altsetting)
-+		return -EINVAL;
-+	altsd = &(iface->cur_altsetting->desc);
-+
-+	return altsd->bAlternateSetting;
-+}
-+
-+static int subs_set_interface(struct snd_usb_substream *subs, int ifnum,
-+			      int altsetting)
-+{
-+	struct snd_usb_substream *other_subs;
-+	int err;
-+
-+	snd_printdd(KERN_DEBUG "%s: Requested set interface %d alts %d\n",
-+		    __func__, ifnum, altsetting);
-+
-+	if (subs == NULL)
-+		return usb_set_interface(subs->dev, ifnum, altsetting);
-+	other_subs = &(subs->stream->substream[subs->direction ^ 1]);
-+
-+	if (other_subs->data_endpoint &&
-+	    other_subs->data_endpoint->use_count != 0) {
-+		int cur_altsetting = get_cur_altsetting(subs->dev, ifnum);
-+
-+		if (cur_altsetting == altsetting)
-+			return 0;
-+
-+		if (cur_altsetting > 0 && altsetting == 0)
-+			return 0;
++		other_pb = (other_subs->channels == channels ?
++			    other_subs->period_bytes :
++			    other_subs->period_bytes * channels / other_subs->channels);
++		if (other_pb != period_bytes)
++			return false;
 +	}
 +
-+	err = usb_set_interface(subs->dev, ifnum, altsetting);
-+	snd_printdd(KERN_DEBUG "%s: Interface %d alts set to %d (err %d)\n",
-+		    __func__, ifnum, altsetting, err);
-+	if (err < 0)
-+		return err;
++	/* data_endpoint not yet initialized */
++	if (!subs->data_endpoint)
++		return true;
 +
-+	subs->interface = altsetting == 0 ? -1 : ifnum;
++	if (subs->data_endpoint->use_count == 0)
++		return true;
 +
-+	return 0;
++	if (subs->pcm_format != pcm_format ||
++	    subs->channels != channels ||
++	    subs->period_bytes != period_bytes ||
++	    subs->cur_rate != rate)
++		return false;
++
++	snd_printdd(KERN_INFO "ep #%x in use, parameters match\n",
++		    subs->data_endpoint->ep_num);
++	return true;
 +}
 +
- static int start_endpoints(struct snd_usb_substream *subs, bool can_sleep)
+ /**
+  * snd_usb_endpoint_set_params: configure an snd_usb_endpoint
+  *
+@@ -765,6 +810,7 @@ out_of_memory:
+  * @rate: the frame rate.
+  * @fmt: the USB audio format information
+  * @sync_ep: the sync endpoint to use, if any
++ * @subs: the substream that uses this endpoint as data endpoint
+  *
+  * Determine the number of URBs to be used on this endpoint.
+  * An endpoint must be configured before it can be started.
+@@ -778,14 +824,23 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
+ 				unsigned int buffer_periods,
+ 				unsigned int rate,
+ 				struct audioformat *fmt,
+-				struct snd_usb_endpoint *sync_ep)
++				struct snd_usb_endpoint *sync_ep,
++				struct snd_usb_substream *subs)
  {
  	int err;
-@@ -242,9 +296,9 @@ static int start_endpoints(struct snd_usb_substream *subs, bool can_sleep)
  
- 		if (subs->data_endpoint->iface != subs->sync_endpoint->iface ||
- 		    subs->data_endpoint->altsetting != subs->sync_endpoint->altsetting) {
--			err = usb_set_interface(subs->dev,
--						subs->sync_endpoint->iface,
--						subs->sync_endpoint->altsetting);
-+			err = subs_set_interface(subs,
-+						 subs->sync_endpoint->iface,
-+						 subs->sync_endpoint->altsetting);
- 			if (err < 0) {
- 				clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags);
- 				snd_printk(KERN_ERR
-@@ -467,20 +521,19 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
- 
- 	/* close the old interface */
- 	if (subs->interface >= 0 && subs->interface != fmt->iface) {
--		err = usb_set_interface(subs->dev, subs->interface, 0);
-+		err = subs_set_interface(subs, subs->interface, 0);
- 		if (err < 0) {
- 			snd_printk(KERN_ERR "%d:%d:%d: return to setting 0 failed (%d)\n",
- 				dev->devnum, fmt->iface, fmt->altsetting, err);
- 			return -EIO;
- 		}
--		subs->interface = -1;
- 		subs->altset_idx = 0;
+ 	if (ep->param_set || ep->use_count != 0) {
+-		snd_printk(KERN_WARNING "Unable to change format on ep #%x: already in use\n",
+-			   ep->ep_num);
+-		return -EBUSY;
++		if (!subs ||
++		    !snd_usb_endpoint_may_set_params(subs, pcm_format,
++						     channels, period_bytes,
++						     rate)) {
++			snd_printk(KERN_WARNING
++				   "Unable to change format on ep #%x: already in use\n",
++				   ep->ep_num);
++			return -EBUSY;
++		}
++		/* Endpoint already set with the same parameters */
++		return 0;
  	}
+ 	ep->param_set = true;
  
- 	/* set interface */
- 	if (subs->interface != fmt->iface ||
- 	    subs->altset_idx != fmt->altset_idx) {
--		err = usb_set_interface(dev, fmt->iface, fmt->altsetting);
-+		err = subs_set_interface(subs, fmt->iface, fmt->altsetting);
- 		if (err < 0) {
- 			snd_printk(KERN_ERR "%d:%d:%d: usb_set_interface failed (%d)\n",
- 				   dev->devnum, fmt->iface, fmt->altsetting, err);
-@@ -488,7 +541,6 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
- 		}
- 		snd_printdd(KERN_INFO "setting usb interface %d:%d\n",
- 				fmt->iface, fmt->altsetting);
--		subs->interface = fmt->iface;
- 		subs->altset_idx = fmt->altset_idx;
+diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
+index 1c7e8ee..188675d 100644
+--- a/sound/usb/endpoint.h
++++ b/sound/usb/endpoint.h
+@@ -16,7 +16,8 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
+ 				unsigned int buffer_periods,
+ 				unsigned int rate,
+ 				struct audioformat *fmt,
+-				struct snd_usb_endpoint *sync_ep);
++				struct snd_usb_endpoint *sync_ep,
++				struct snd_usb_substream *subs);
  
- 		snd_usb_set_interface_quirk(dev);
-@@ -1202,7 +1254,7 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream, int direction)
- 	stop_endpoints(subs, true);
+ int  snd_usb_endpoint_start(struct snd_usb_endpoint *ep, bool can_sleep);
+ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep);
+@@ -32,4 +33,10 @@ void snd_usb_handle_sync_urb(struct snd_usb_endpoint *ep,
+ 			     struct snd_usb_endpoint *sender,
+ 			     const struct urb *urb);
  
- 	if (!as->chip->shutdown && subs->interface >= 0) {
--		usb_set_interface(subs->dev, subs->interface, 0);
-+		subs_set_interface(subs, subs->interface, 0);
- 		subs->interface = -1;
- 	}
++bool snd_usb_endpoint_may_set_params(struct snd_usb_substream *subs,
++				     snd_pcm_format_t pcm_format,
++				     unsigned int channels,
++				     unsigned int period_bytes,
++				     unsigned int rate);
++
+ #endif /* __USBAUDIO_ENDPOINT_H */
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index c165ccf..7895c81 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -635,6 +635,7 @@ static int configure_sync_endpoint(struct snd_usb_substream *subs)
+ 						   0, 0,
+ 						   subs->cur_rate,
+ 						   subs->cur_audiofmt,
++						   NULL,
+ 						   NULL);
  
+ 	/* Try to find the best matching audioformat. */
+@@ -672,9 +673,18 @@ static int configure_sync_endpoint(struct snd_usb_substream *subs)
+ 					  0, 0,
+ 					  subs->cur_rate,
+ 					  sync_fp,
+-					  NULL);
++					  NULL,
++					  sync_subs);
++	if (ret < 0)
++		return ret;
+ 
+-	return ret;
++	sync_subs->pcm_format = subs->pcm_format;
++	sync_subs->period_bytes = sync_period_bytes;
++	sync_subs->channels = sync_fp->channels;
++	sync_subs->cur_rate = subs->cur_rate;
++	sync_subs->data_endpoint = subs->sync_endpoint;
++
++	return 0;
+ }
+ 
+ /*
+@@ -696,7 +706,8 @@ static int configure_endpoint(struct snd_usb_substream *subs)
+ 					  subs->buffer_periods,
+ 					  subs->cur_rate,
+ 					  subs->cur_audiofmt,
+-					  subs->sync_endpoint);
++					  subs->sync_endpoint,
++					  subs);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -722,18 +733,38 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_usb_substream *subs = substream->runtime->private_data;
+ 	struct audioformat *fmt;
+ 	int ret;
++	snd_pcm_format_t pcm_format;
++	unsigned int period_bytes;
++	unsigned int period_frames;
++	unsigned int buffer_periods;
++	unsigned int channels;
++	unsigned int rate;
+ 
+ 	ret = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+ 					       params_buffer_bytes(hw_params));
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	subs->pcm_format = params_format(hw_params);
+-	subs->period_bytes = params_period_bytes(hw_params);
+-	subs->period_frames = params_period_size(hw_params);
+-	subs->buffer_periods = params_periods(hw_params);
+-	subs->channels = params_channels(hw_params);
+-	subs->cur_rate = params_rate(hw_params);
++	pcm_format = params_format(hw_params);
++	period_bytes = params_period_bytes(hw_params);
++	period_frames = params_period_size(hw_params);
++	buffer_periods = params_periods(hw_params);
++	channels = params_channels(hw_params);
++	rate = params_rate(hw_params);
++
++	if (!snd_usb_endpoint_may_set_params(subs, pcm_format, channels,
++					     period_bytes, rate)) {
++		snd_printk(KERN_WARNING "Unable to set hw_params on substream (dir: %d), data EP in use\n",
++			   subs->direction);
++		return -EBUSY;
++	}
++
++	subs->pcm_format = pcm_format;
++	subs->period_bytes = period_bytes;
++	subs->period_frames = period_frames;
++	subs->buffer_periods = buffer_periods;
++	subs->channels = channels;
++	subs->cur_rate = rate;
+ 
+ 	fmt = find_format(subs);
+ 	if (!fmt) {
+@@ -767,9 +798,13 @@ static int snd_usb_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_usb_substream *subs = substream->runtime->private_data;
+ 
+-	subs->cur_audiofmt = NULL;
+-	subs->cur_rate = 0;
+-	subs->period_bytes = 0;
++	if (!subs->data_endpoint || subs->data_endpoint->use_count == 0) {
++		subs->cur_audiofmt = NULL;
++		subs->cur_rate = 0;
++		subs->period_bytes = 0;
++		subs->channels = 0;
++	}
++
+ 	down_read(&subs->stream->chip->shutdown_rwsem);
+ 	if (!subs->stream->chip->shutdown) {
+ 		stop_endpoints(subs, true);
 -- 
 1.8.1.5
