@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/3] ASoC: twl4030: Use virtual DAPM mixer
+Subject: [PATCH 3/3] ASoC: twl6040: Use virtual DAPM mixer
 	controls
-Date: Sun,  6 Oct 2013 13:43:50 +0200
-Message-ID: <1381059831-16074-2-git-send-email-lars@metafoo.de>
+Date: Sun,  6 Oct 2013 13:43:51 +0200
+Message-ID: <1381059831-16074-3-git-send-email-lars@metafoo.de>
 References: <1381059831-16074-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-184.synserver.de (smtp-out-187.synserver.de
  [212.40.185.187])
- by alsa0.perex.cz (Postfix) with ESMTP id D8436261A0D
- for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2013 13:42:37 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B3A0261A12
+ for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2013 13:42:38 +0200 (CEST)
 In-Reply-To: <1381059831-16074-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,133 +27,73 @@ Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 By using the new virtual DAPM mixer controls it is possible to remove the
-twl4030 specific implementation of virtual controls.
+twl6040 specific implementation of virtual controls.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/twl4030.c | 80 +++++++++++++++++++++-------------------------
- 1 file changed, 36 insertions(+), 44 deletions(-)
+ sound/soc/codecs/twl6040.c | 22 +++++-----------------
+ 1 file changed, 5 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 1e3884d..dfc51bb 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -46,13 +46,7 @@
- /* TWL4030 PMBR1 Register GPIO6 mux bits */
- #define TWL4030_GPIO6_PWM0_MUTE(value)	((value & 0x03) << 2)
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index 35059a2..f2f4bcb 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -54,12 +54,7 @@ enum twl6040_dai_id {
+ #define TWL6040_OUTHF_0dB 0x03
+ #define TWL6040_OUTHF_M52dB 0x1D
  
--/* Shadow register used by the audio driver */
--#define TWL4030_REG_SW_SHADOW		0x4A
--#define TWL4030_CACHEREGNUM	(TWL4030_REG_SW_SHADOW + 1)
+-/* Shadow register used by the driver */
+-#define TWL6040_REG_SW_SHADOW	0x2F
+-#define TWL6040_CACHEREGNUM	(TWL6040_REG_SW_SHADOW + 1)
 -
--/* TWL4030_REG_SW_SHADOW (0x4A) Fields */
--#define TWL4030_HFL_EN			0x01
--#define TWL4030_HFR_EN			0x02
-+#define TWL4030_CACHEREGNUM	(TWL4030_REG_MISC_SET_2 + 1)
+-/* TWL6040_REG_SW_SHADOW (0x2F) fields */
+-#define TWL6040_EAR_PATH_ENABLE	0x01
++#define TWL6040_CACHEREGNUM	(TWL6040_REG_STATUS + 1)
  
- /*
-  * twl4030 register cache & default register settings
-@@ -132,7 +126,6 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] = {
- 	0x00, /* REG_VIBRA_PWM_SET	(0x47)	*/
- 	0x00, /* REG_ANAMIC_GAIN	(0x48)	*/
- 	0x00, /* REG_MISC_SET_2		(0x49)	*/
--	0x00, /* REG_SW_SHADOW		(0x4A)	- Shadow, non HW register */
+ struct twl6040_jack_data {
+ 	struct snd_soc_jack *jack;
+@@ -135,8 +130,6 @@ static const u8 twl6040_reg[TWL6040_CACHEREGNUM] = {
+ 	0x00, /* REG_HFOTRIM	0x2C	*/
+ 	0x09, /* REG_ACCCTL	0x2D	*/
+ 	0x00, /* REG_STATUS	0x2E (ro) */
+-
+-	0x00, /* REG_SW_SHADOW	0x2F - Shadow, non HW register */
  };
  
- /* codec private data */
-@@ -198,42 +191,41 @@ static int twl4030_write(struct snd_soc_codec *codec,
- 	int write_to_reg = 0;
+ /* List of registers to be restored after power up */
+@@ -220,12 +213,8 @@ static int twl6040_read_reg_volatile(struct snd_soc_codec *codec,
+ 	if (reg >= TWL6040_CACHEREGNUM)
+ 		return -EIO;
  
- 	twl4030_write_reg_cache(codec, reg, value);
--	if (likely(reg < TWL4030_REG_SW_SHADOW)) {
--		/* Decide if the given register can be written */
--		switch (reg) {
--		case TWL4030_REG_EAR_CTL:
--			if (twl4030->earpiece_enabled)
--				write_to_reg = 1;
--			break;
--		case TWL4030_REG_PREDL_CTL:
--			if (twl4030->predrivel_enabled)
--				write_to_reg = 1;
--			break;
--		case TWL4030_REG_PREDR_CTL:
--			if (twl4030->predriver_enabled)
--				write_to_reg = 1;
--			break;
--		case TWL4030_REG_PRECKL_CTL:
--			if (twl4030->carkitl_enabled)
--				write_to_reg = 1;
--			break;
--		case TWL4030_REG_PRECKR_CTL:
--			if (twl4030->carkitr_enabled)
--				write_to_reg = 1;
--			break;
--		case TWL4030_REG_HS_GAIN_SET:
--			if (twl4030->hsl_enabled || twl4030->hsr_enabled)
--				write_to_reg = 1;
--			break;
--		default:
--			/* All other register can be written */
-+	/* Decide if the given register can be written */
-+	switch (reg) {
-+	case TWL4030_REG_EAR_CTL:
-+		if (twl4030->earpiece_enabled)
- 			write_to_reg = 1;
--			break;
--		}
--		if (write_to_reg)
--			return twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,
--						    value, reg);
-+		break;
-+	case TWL4030_REG_PREDL_CTL:
-+		if (twl4030->predrivel_enabled)
-+			write_to_reg = 1;
-+		break;
-+	case TWL4030_REG_PREDR_CTL:
-+		if (twl4030->predriver_enabled)
-+			write_to_reg = 1;
-+		break;
-+	case TWL4030_REG_PRECKL_CTL:
-+		if (twl4030->carkitl_enabled)
-+			write_to_reg = 1;
-+		break;
-+	case TWL4030_REG_PRECKR_CTL:
-+		if (twl4030->carkitr_enabled)
-+			write_to_reg = 1;
-+		break;
-+	case TWL4030_REG_HS_GAIN_SET:
-+		if (twl4030->hsl_enabled || twl4030->hsr_enabled)
-+			write_to_reg = 1;
-+		break;
-+	default:
-+		/* All other register can be written */
-+		write_to_reg = 1;
-+		break;
- 	}
-+	if (write_to_reg)
-+		return twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,
-+					    value, reg);
-+
- 	return 0;
+-	if (likely(reg < TWL6040_REG_SW_SHADOW)) {
+-		value = twl6040_reg_read(twl6040, reg);
+-		twl6040_write_reg_cache(codec, reg, value);
+-	} else {
+-		value = twl6040_read_reg_cache(codec, reg);
+-	}
++	value = twl6040_reg_read(twl6040, reg);
++	twl6040_write_reg_cache(codec, reg, value);
+ 
+ 	return value;
  }
+@@ -261,8 +250,7 @@ static int twl6040_write(struct snd_soc_codec *codec,
+ 		return -EIO;
  
-@@ -532,7 +524,7 @@ SOC_DAPM_ENUM("Route", twl4030_handsfreel_enum);
+ 	twl6040_write_reg_cache(codec, reg, value);
+-	if (likely(reg < TWL6040_REG_SW_SHADOW) &&
+-	    twl6040_is_path_unmuted(codec, reg))
++	if (twl6040_is_path_unmuted(codec, reg))
+ 		return twl6040_reg_write(twl6040, reg, value);
+ 	else
+ 		return 0;
+@@ -555,7 +543,7 @@ static const struct snd_kcontrol_new hfr_mux_controls =
+ 	SOC_DAPM_ENUM("Route", twl6040_hf_enum[1]);
  
- /* Handsfree Left virtual mute */
- static const struct snd_kcontrol_new twl4030_dapm_handsfreelmute_control =
--	SOC_DAPM_SINGLE("Switch", TWL4030_REG_SW_SHADOW, 0, 1, 0);
+ static const struct snd_kcontrol_new ep_path_enable_control =
+-	SOC_DAPM_SINGLE("Switch", TWL6040_REG_SW_SHADOW, 0, 1, 0);
 +	SOC_DAPM_SINGLE_VIRT("Switch", 1);
  
- /* Handsfree Right */
- static const char *twl4030_handsfreer_texts[] =
-@@ -548,7 +540,7 @@ SOC_DAPM_ENUM("Route", twl4030_handsfreer_enum);
- 
- /* Handsfree Right virtual mute */
- static const struct snd_kcontrol_new twl4030_dapm_handsfreermute_control =
--	SOC_DAPM_SINGLE("Switch", TWL4030_REG_SW_SHADOW, 1, 1, 0);
-+	SOC_DAPM_SINGLE_VIRT("Switch", 1);
- 
- /* Vibra */
- /* Vibra audio path selection */
+ static const struct snd_kcontrol_new auxl_switch_control =
+ 	SOC_DAPM_SINGLE("Switch", TWL6040_REG_HFLCTL, 6, 1, 0);
 -- 
 1.8.0
