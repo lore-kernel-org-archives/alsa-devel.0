@@ -1,99 +1,67 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/3] ASoC: twl6040: Use virtual DAPM mixer
-	controls
-Date: Sun,  6 Oct 2013 13:43:51 +0200
-Message-ID: <1381059831-16074-3-git-send-email-lars@metafoo.de>
-References: <1381059831-16074-1-git-send-email-lars@metafoo.de>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [alsa-devel] [RFC/RFT v2 0/4] ALSA: hda - hdmi: ATI/AMD multi-channel
+ and HBR support
+Date: Sun, 06 Oct 2013 15:07:39 +0300
+Message-ID: <5251528B.4010506@iki.fi>
+References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>  <1380870371.875.14.camel@Wailaba2> <524F51C6.7050203@iki.fi> <1381031338.10109.2.camel@Wailaba2>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-184.synserver.de (smtp-out-187.synserver.de
- [212.40.185.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B3A0261A12
- for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2013 13:42:38 +0200 (CEST)
-In-Reply-To: <1381059831-16074-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1381031338.10109.2.camel@Wailaba2>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Olivier Langlois <olivier@trillion01.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, linux-kernel@vger.kernel.org, =?UTF-8?B?UGV0ZXIgRnLDvGhiZXJnZXI=?= <fritsch@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
-By using the new virtual DAPM mixer controls it is possible to remove the
-twl6040 specific implementation of virtual controls.
+06.10.2013 06:48, Olivier Langlois kirjoitti:
+> 
+>>>>
+>>>>   o Contents of /proc/asound/cardX/eld#0. I'd like to see the contents
+>>>>     both with radeon and with the proprietary fglrx driver in use
+>>>>
+>>> With fglrx 13.10 Beta 2:
+>>>
+>>> lano1106@whippet2 /proc/asound/card0 $ cat codec#0 
+>>
+>> Note I said eld#0, not codec#0 :)
+>>
+>> Though I guess the correct filename is actually eld#0.0.
+>>
+>> [...]
+>>
+> My mistake.
+> 
+> Here is the good content:
+[...]
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/twl6040.c | 22 +++++-----------------
- 1 file changed, 5 insertions(+), 17 deletions(-)
+Does not look right. And after looking at the code I saw quite a big bug
+which caused all of the rev3+ features to not work :)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 35059a2..f2f4bcb 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -54,12 +54,7 @@ enum twl6040_dai_id {
- #define TWL6040_OUTHF_0dB 0x03
- #define TWL6040_OUTHF_M52dB 0x1D
- 
--/* Shadow register used by the driver */
--#define TWL6040_REG_SW_SHADOW	0x2F
--#define TWL6040_CACHEREGNUM	(TWL6040_REG_SW_SHADOW + 1)
--
--/* TWL6040_REG_SW_SHADOW (0x2F) fields */
--#define TWL6040_EAR_PATH_ENABLE	0x01
-+#define TWL6040_CACHEREGNUM	(TWL6040_REG_STATUS + 1)
- 
- struct twl6040_jack_data {
- 	struct snd_soc_jack *jack;
-@@ -135,8 +130,6 @@ static const u8 twl6040_reg[TWL6040_CACHEREGNUM] = {
- 	0x00, /* REG_HFOTRIM	0x2C	*/
- 	0x09, /* REG_ACCCTL	0x2D	*/
- 	0x00, /* REG_STATUS	0x2E (ro) */
--
--	0x00, /* REG_SW_SHADOW	0x2F - Shadow, non HW register */
- };
- 
- /* List of registers to be restored after power up */
-@@ -220,12 +213,8 @@ static int twl6040_read_reg_volatile(struct snd_soc_codec *codec,
- 	if (reg >= TWL6040_CACHEREGNUM)
- 		return -EIO;
- 
--	if (likely(reg < TWL6040_REG_SW_SHADOW)) {
--		value = twl6040_reg_read(twl6040, reg);
--		twl6040_write_reg_cache(codec, reg, value);
--	} else {
--		value = twl6040_read_reg_cache(codec, reg);
--	}
-+	value = twl6040_reg_read(twl6040, reg);
-+	twl6040_write_reg_cache(codec, reg, value);
- 
- 	return value;
- }
-@@ -261,8 +250,7 @@ static int twl6040_write(struct snd_soc_codec *codec,
- 		return -EIO;
- 
- 	twl6040_write_reg_cache(codec, reg, value);
--	if (likely(reg < TWL6040_REG_SW_SHADOW) &&
--	    twl6040_is_path_unmuted(codec, reg))
-+	if (twl6040_is_path_unmuted(codec, reg))
- 		return twl6040_reg_write(twl6040, reg, value);
- 	else
- 		return 0;
-@@ -555,7 +543,7 @@ static const struct snd_kcontrol_new hfr_mux_controls =
- 	SOC_DAPM_ENUM("Route", twl6040_hf_enum[1]);
- 
- static const struct snd_kcontrol_new ep_path_enable_control =
--	SOC_DAPM_SINGLE("Switch", TWL6040_REG_SW_SHADOW, 0, 1, 0);
-+	SOC_DAPM_SINGLE_VIRT("Switch", 1);
- 
- static const struct snd_kcontrol_new auxl_switch_control =
- 	SOC_DAPM_SINGLE("Switch", TWL6040_REG_HFLCTL, 6, 1, 0);
+Please change 0x1002791a to 0x1002aa01 in this part in the end of
+sound/pci/hda/hda_local.h:
+
+#define is_amdhdmi_rev3(codec) \
+	((codec)->vendor_id == 0x1002791a && ((codec)->revisi
+
+Then please test everything again. I.e.
+  o speaker-test -D hdmi:CARD=Generic,DEV=0 -c8 -r192000 -F S32_LE
+
+  o Is there any difference seen
+    with these, in the beginning/end (i.e. fade-out/in):
+    speaker-test -D hdmi:CARD=Generic,DEV=0,AES0=0x04 -c2 -r48000
+    speaker-test -D hdmi:CARD=Generic,DEV=0,AES0=0x06 -c2 -r48000
+
+  o Also, is there a difference in the beginning of these
+    (maybe garbage sound and/or slightly slower startup?):
+    aplay -Dhdmi:CARD=Generic,DEV=0,AES0=4 -r44100 -f s16_le -c2
+testi.dts.cut.spdif
+    aplay -Dhdmi:CARD=Generic,DEV=0,AES0=6 -r44100 -f s16_le -c2
+testi.dts.cut.spdif
+
+  o Contents of /proc/asound/cardX/eld#0.0
+
+Thanks a lot :)
+
 -- 
-1.8.0
+Anssi Hannula
