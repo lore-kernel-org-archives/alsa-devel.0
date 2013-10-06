@@ -1,67 +1,66 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [alsa-devel] [RFC/RFT v2 0/4] ALSA: hda - hdmi: ATI/AMD multi-channel
- and HBR support
-Date: Sun, 06 Oct 2013 15:07:39 +0300
-Message-ID: <5251528B.4010506@iki.fi>
-References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>  <1380870371.875.14.camel@Wailaba2> <524F51C6.7050203@iki.fi> <1381031338.10109.2.camel@Wailaba2>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: Audio Miniconference 2013 schedule - Edinburgh
+ 21st October
+Date: Sun, 06 Oct 2013 19:10:59 +0300
+Message-ID: <1381075859.3245.31.camel@laptop>
+References: <20131003181754.GE27287@sirena.org.uk>
+ <524F34FD.8090404@linux.intel.com>
+Reply-To: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1381031338.10109.2.camel@Wailaba2>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Olivier Langlois <olivier@trillion01.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, linux-kernel@vger.kernel.org, =?UTF-8?B?UGV0ZXIgRnLDvGhiZXJnZXI=?= <fritsch@xbmc.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 83475261A2B
+ for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2013 18:11:03 +0200 (CEST)
+In-Reply-To: <524F34FD.8090404@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Colin Guthrie <colin@guthr.ie>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Arun Raghavan <arun.raghavan@collabora.co.uk>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@intel.com>, David Henningsson <david.henningsson@canonical.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-06.10.2013 06:48, Olivier Langlois kirjoitti:
+On Fri, 2013-10-04 at 16:37 -0500, Pierre-Louis Bossart wrote:
+> >   - Effects offload to DSPs with dynamically instantiatable algorithms,
+> >     and general dynamic DSP firmware handling.
 > 
->>>>
->>>>   o Contents of /proc/asound/cardX/eld#0. I'd like to see the contents
->>>>     both with radeon and with the proprietary fglrx driver in use
->>>>
->>> With fglrx 13.10 Beta 2:
->>>
->>> lano1106@whippet2 /proc/asound/card0 $ cat codec#0 
->>
->> Note I said eld#0, not codec#0 :)
->>
->> Though I guess the correct filename is actually eld#0.0.
->>
->> [...]
->>
-> My mistake.
-> 
-> Here is the good content:
-[...]
+> I can try and prepare an overview about what we've started to look at 
+> for effect offload. The one thing that's missing from the agenda is that 
+> DSP offload and dynamic firmware handling do require control on audio 
+> policy (high level arbitration between use cases), audio routing (some 
+> paths may not be available at all times) and resource management 
+> (memory/MCPS/etc). We not be able to solve this in a generic manner but 
+> having hooks to detect/notify a DSP resource is or is not available 
+> might be a good thing.
 
-Does not look right. And after looking at the code I saw quite a big bug
-which caused all of the rev3+ features to not work :)
+Perhaps I should present our (Murphy[1] team at Intel) plans for the
+routing infrastructure and policy in PulseAudio? It might be relevant
+for this, although effect offloading and firmware handling is not
+something that we have thought about. Even without effect offloading and
+firmware handling the routing system has to deal with use case
+prioritizing and constraints regarding what audio paths are available
+and what paths can be used simultaneously.
 
-Please change 0x1002791a to 0x1002aa01 in this part in the end of
-sound/pci/hda/hda_local.h:
+BTW, there will also be a Murphy meeting/BoF on Wednesday at 13:00 in
+the Dunvegan room at the Sheraton hotel next to the conference center.
+Anyone who's interested in Murphy is welcome to attend. I'd expect there
+to be a general overview of Murphy from Janos, and I should present the
+status and plans for the routing work in PulseAudio (perhaps in more
+detail than in the audio miniconf). Other than that, there's not much
+else planned, just general Q&A with the Murphy developers (Janos Kovacs
+and Jaska Uimonen will be present - too bad they couldn't make it to the
+audio miniconf).
 
-#define is_amdhdmi_rev3(codec) \
-	((codec)->vendor_id == 0x1002791a && ((codec)->revisi
-
-Then please test everything again. I.e.
-  o speaker-test -D hdmi:CARD=Generic,DEV=0 -c8 -r192000 -F S32_LE
-
-  o Is there any difference seen
-    with these, in the beginning/end (i.e. fade-out/in):
-    speaker-test -D hdmi:CARD=Generic,DEV=0,AES0=0x04 -c2 -r48000
-    speaker-test -D hdmi:CARD=Generic,DEV=0,AES0=0x06 -c2 -r48000
-
-  o Also, is there a difference in the beginning of these
-    (maybe garbage sound and/or slightly slower startup?):
-    aplay -Dhdmi:CARD=Generic,DEV=0,AES0=4 -r44100 -f s16_le -c2
-testi.dts.cut.spdif
-    aplay -Dhdmi:CARD=Generic,DEV=0,AES0=6 -r44100 -f s16_le -c2
-testi.dts.cut.spdif
-
-  o Contents of /proc/asound/cardX/eld#0.0
-
-Thanks a lot :)
+[1] Murphy is the resource policy daemon in Tizen IVI,
+https://01.org/murphy/
 
 -- 
-Anssi Hannula
+Tanu
