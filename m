@@ -1,20 +1,19 @@
-From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Subject: Re: [Alsa-user]  hdmi sound rerouted?
-Date: Mon, 7 Oct 2013 13:36:24 +0000
-Message-ID: <A3397C8B8B789E45844E7EC5DEAD89D02E80F013@satlexdag05.amd.com>
-References: <20130927185045.47660@gmx.com>	<52475908.1060705@googlemail.com>
- <A3397C8B8B789E45844E7EC5DEAD89D02E80B231@satlexdag05.amd.com>
- <s5h4n927jn0.wl%tiwai@suse.de>
+From: Dr Nicholas J Bailey <nicholas.bailey@glasgow.ac.uk>
+Subject: Re: [PATCH v2] ALSA: snd-usb-usx2y: remove bogus frame
+	checks
+Date: Mon, 7 Oct 2013 15:58:51 +0100
+Message-ID: <27085905.a7dazzfD9V@arial>
+References: <1380728990-8443-1-git-send-email-zonque@gmail.com>
+ <1381048163.1974.5.camel@yoda.heavyware>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe005.messaging.microsoft.com [207.46.163.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 50A792650FA
- for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2013 15:36:32 +0200 (CEST)
-In-Reply-To: <s5h4n927jn0.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from plockton.cent.gla.ac.uk (plockton.cent.gla.ac.uk
+ [130.209.16.75])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5A7E265119
+ for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2013 17:03:37 +0200 (CEST)
+In-Reply-To: <1381048163.1974.5.camel@yoda.heavyware>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,84 +23,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, Dagg Stompler <daggs@gmx.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <cladisch@googlemail.com>
+To: Guido Aulisi <guido.aulisi@gmail.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, September 30, 2013 5:18 AM
-> To: Deucher, Alexander
-> Cc: Clemens Ladisch; Dagg Stompler; alsa-user@lists.sourceforge.net; alsa-
-> devel@alsa-project.org
-> Subject: Re: [alsa-devel] [Alsa-user] hdmi sound rerouted?
-> 
-> At Mon, 30 Sep 2013 02:23:22 +0000,
-> Deucher, Alexander wrote:
-> >
-> > > -----Original Message-----
-> > > From: Clemens Ladisch [mailto:cladisch@googlemail.com]
-> > > Sent: Saturday, September 28, 2013 6:33 PM
-> > > To: Dagg Stompler
-> > > Cc: alsa-user@lists.sourceforge.net; Deucher, Alexander; alsa-
-> devel@alsa-
-> > > project.org
-> > > Subject: Re: [Alsa-user] [alsa-devel] hdmi sound rerouted?
-> > >
-> > > Dagg Stompler wrote:
-> > > >> daggs@gmx.com wrote:
-> > > >>> card 0: PCH [HDA Intel PCH], device 3: HDMI 0 [HDMI 0]
-> > > >>> card 1: Generic [HD-Audio Generic], device 3: HDMI 0 [HDMI 0]
-> > > >>> card 2: HDMI [HDA ATI HDMI], device 3: HDMI 0 [HDMI 0]
-> > > >>
-> > > >> The second one is called "Generic" because your kernel does not (yet)
-> > > >> know the hardware.
-> > > >>
-> > > >>> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Cedar
-> > > HDMI Audio [Radeon HD 5400/6300 Series]
-> > > >>> 06:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] RV635
-> > > HDMI Audio [Radeon HD 3600 Series]
-> > > >>
-> > > >> These are the HDMI outputs of *two* graphics cards. The first one's
-> > > >> model is so new that the driver doesn't know it.
-> > > >
-> > > > the 3600 doesn't have hdmi socket so I think it is irrelevant for my issue.
-> > >
-> > > The RV635 chip does support HDMI outputs (even if none are actually
-> > > connected), so the corresponding PCI device shows up here.
-> > >
-> > > >>> If you update the kernel, you will get two devices named "HDA ATI
-> > > HDMI".
-> > > >
-> > > > upgrade to where?
-> > >
-> > > Oops.  Even the latest driver lacks the PCI IDs of many HDMI HDA devices
-> > > (aa50/aa58/aa60/aa68/aa80/aa88/aa90/aa98:
-> > > Cypress/Juniper/Redwood/Cedar/
-> > > Cayman+Antilles/Barts/Turks/Caicos).
-> > >
-> > > Alex, are these devices that require disabling snooping?
-> >
-> > Sorry what does snooping mean in this context?
-> 
-> Most of HD-audio controller have a snoop control, but the recent AMD
-> HDMI audio controller don't have the feature, thus the driver must use
-> the non-cached pages.  At least, PCI ID 1002:aaa0, aaa8 and aab0 are
-> known to require such.
-> 
-> Now the question is whether all new chips above (aa50,...) require the
-> same workaround, too.  Could you check this or forward the inquiry to
-> someone in AMD?
-
-According to our internal teams, disabling snooping is only required on the audio parts included in Evergreen and Northern Islands GPUs.  Older chips like R7xx (aa48) and newer chips like Southern Islands (aaa0) are able to use snooping.  I'm not real familiar with the audio portions of the GPUs so if you need further clarification, let me know.
-
-Alex
-
-> 
-> FWIW, such a chip needs to set AZX_DRIVER_ATIHDMI_NS bits in
-> driver_data of pci entries in sound/pci/hda/hda_intel.c.
+On Monday 07 October 2013 08:41:06 you wrote:
+> Can anyone test whether the patch below works alone without the
+> previous patch?  (Meanwhile, the previous patch to remove the frame
+> check is fine, it's just too strict for controllers like ehci, so it's
+> still fine to apply.)
 > 
 > 
 > thanks,
 > 
 > Takashi
+> 
+> ---
+> diff --git a/sound/usb/usx2y/usbusx2yaudio.c
+> b/sound/usb/usx2y/usbusx2yaudio.c index 6234a51..1236ff3 100644
+> --- a/sound/usb/usx2y/usbusx2yaudio.c
+> +++ b/sound/usb/usx2y/usbusx2yaudio.c
+> @@ -137,10 +137,12 @@ static int usX2Y_urb_play_prepare(struct
+> snd_usX2Y_substream *subs, /* calculate the size of a packet */
+>                 counts = cap_urb->iso_frame_desc[pack].actual_length /
+> usX2Y->stride; count += counts;
+> +#if 0
+>                 if (counts < 43 || counts > 50) {
+>                         snd_printk(KERN_ERR "should not be here with
+> counts=%i\n", counts); return -EPIPE;
+>                 }
+> +#endif
+>                 /* set up descriptor */
+>                 urb->iso_frame_desc[pack].offset = pack ?
+>                         urb->iso_frame_desc[pack - 1].offset +
+
+For me, this patch alone fails in much the same way (possibly exactly the same 
+way) as before the previous patch.
+
+>From audacity (probably not much use unless you know the source code... I 
+don't):
+
+Expression 'PaAlsaStreamComponent_Initialize( &self->capture, alsaApi, 
+inParams, StreamDirection_In, NULL != callback )' failed in 
+'src/hostapi/alsa/pa_linux_alsa.c', line: 2092
+Expression 'PaAlsaStream_Initialize( stream, alsaHostApi, inputParameters, 
+outputParameters, sampleRate, framesPerBuffer, callback, streamFlags, userData 
+)' failed in 'src/hostapi/alsa/pa_linux_alsa.c', line: 2764
+Expression 'stream->playback.pcm' failed in 
+'src/hostapi/alsa/pa_linux_alsa.c', line: 4541
+Expression 'stream->playback.pcm' failed in 
+'src/hostapi/alsa/pa_linux_alsa.c', line: 4541
+^C
+
+
+[I hit ^C because recording stalled]
+
+
+nick@arial:/usr/src$ dmesg | tail
+[  111.667015] usb 2-1.6.4: New USB device strings: Mfr=0, Product=0, 
+SerialNumber=0
+[  114.707156] Sequence Error!(hcd_frame=3 ep=8in;wait=1024,frame=0).
+[  114.707156] Most probably some urb of usb-frame 1024 is still missing.
+[  114.707156] Cause could be too long delays in usb-hcd interrupt handling.
+[  574.566748] Sequence Error!(hcd_frame=3 ep=8in;wait=1024,frame=0).
+[  574.566748] Most probably some urb of usb-frame 1024 is still missing.
+[  574.566748] Cause could be too long delays in usb-hcd interrupt handling.
+[  575.593918] Sequence Error!(hcd_frame=6 ep=8in;wait=1027,frame=3).
+[  575.593918] Most probably some urb of usb-frame 1027 is still missing.
+[  575.593918] Cause could be too long delays in usb-hcd interrupt handling.
+
+
+Reverting to the previous patch, everything works fine:
+
+[  170.252226] usb 2-1.6.4: USB disconnect, device number 5
+[  173.012844] usb 2-1.6.4: new full-speed USB device number 7 using ehci-pci
+[  173.105451] usb 2-1.6.4: New USB device found, idVendor=1604, 
+idProduct=8006
+[  173.105456] usb 2-1.6.4: New USB device strings: Mfr=0, Product=0, 
+SerialNumber=0
+[  175.372992] usb 2-1.6.4: USB disconnect, device number 7
+[  177.109626] usb 2-1.6.4: new full-speed USB device number 8 using ehci-pci
+[  177.202361] usb 2-1.6.4: New USB device found, idVendor=1604, 
+idProduct=8007
+[  177.202372] usb 2-1.6.4: New USB device strings: Mfr=0, Product=0, 
+SerialNumber=0
+
+
+[no further messages]
+
+Best stick with the original patch then :)
+
+Nick/.
