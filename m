@@ -1,21 +1,17 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: Re: [PATCH v4 00/15] ALSA: usb-audio: fix
- playback/capture concurrent usage
-Date: Mon, 7 Oct 2013 19:20:33 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1310071915350.1353@anubis>
-References: <1381091480-23636-1-git-send-email-eldad@fogrefinery.com>
- <s5heh7xsa0d.wl%tiwai@suse.de>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Re: Audio Miniconference 2013 schedule - Edinburgh
+ 21st October
+Date: Mon, 07 Oct 2013 10:22:42 -0700
+Message-ID: <5252EDE2.9070902@codeaurora.org>
+References: <20131003181754.GE27287@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f44.google.com (mail-bk0-f44.google.com
- [209.85.214.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 1716D261B21
- for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2013 19:20:40 +0200 (CEST)
-Received: by mail-bk0-f44.google.com with SMTP id mz10so2810982bkb.3
- for <alsa-devel@alsa-project.org>; Mon, 07 Oct 2013 10:20:40 -0700 (PDT)
-In-Reply-To: <s5heh7xsa0d.wl%tiwai@suse.de>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.11.231])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4253265176
+ for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2013 19:22:44 +0200 (CEST)
+In-Reply-To: <20131003181754.GE27287@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Nikolay Martynov <mar.kolya@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Colin Guthrie <colin@guthr.ie>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Arun Raghavan <arun.raghavan@collabora.co.uk>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>, Tanu Kaskinen <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 10/3/2013 11:17 AM, Mark Brown wrote:
+> The first question is if there is anything important that is missing
+> from the above list - please speak up soon if there is!
+
+Lately, there has been a lot of emphasis on reducing cold start latency
+which audio hardware path setup takes up good chunk of time. I found
+DAPM takes up quite a bit of time finding path to enable. In addition,
+DPCM could be enhanced to save on cold start latency by enabling
+front-end & back-end in parallel if underlying hardware can support it.
+
+I would like to see if we can have some discussion on optimization.
+
+Thanks
+Patrick
+
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
 
 
-On Mon, 7 Oct 2013, Takashi Iwai wrote:
-
-> At Sun,  6 Oct 2013 22:31:05 +0200,
-> Eldad Zack wrote:
-> > 
-> > Hi,
-> > 
-> > This patch series attempts to fix a long standing problem with the concurrent
-> > usage of playback and capture on implicit feedback devices.
-[snip]
-> 
-> For reducing the further development, I applied trivial cleanup / fix
-> patches now, namely, below have been merged now:
-
-Thanks, Takashi!
-
->   ALSA: usb-audio: remove unused parameter from sync_ep_set_params
->   ALSA: usb-audio: remove deactivate_endpoints()
->   ALSA: usb-audio: don't deactivate URBs on in-use EP
->   ALSA: usb-audio: void return type of snd_usb_endpoint_deactivate()
->   ALSA: usb-audio: clear SUBSTREAM_FLAG_SYNC_EP_STARTED on error
->   ALSA: usb-audio: rename alt_idx to altsetting
->   ALSA: usb-audio: remove unused endpoint flag EP_FLAG_ACTIVATED
-> 
-> The patches below need trivial fixes:
->   ALSA: usb-audio: prevent NULL dereference on stop trigger
->   ALSA: usb-audio: improve logging messages
-> 
-> And these need reconsideration:
->   ALSA: usb-audio: always wait in start_endpoints
->   ALSA: usb-audio: correct ep use_count semantics (add set_param flag)
-> 
-> I'll check the rest later.
-
-Thanks for the very fast response and the review! I'll try to fix all 
-the issues for the rest and repost.
-
-Cheers,
-Eldad
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
