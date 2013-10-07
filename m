@@ -1,77 +1,165 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tlv320aic3x: Connect 'Left Line1R
- Mux' and 'Right Line1L Mux'
-Date: Mon, 7 Oct 2013 12:04:49 +0100
-Message-ID: <20131007110449.GI21581@sirena.org.uk>
-References: <1381136359-26931-1-git-send-email-peter.ujfalusi@ti.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [PATCH] ALSA: hda - hdmi: Fix channel map switch not taking   effect
+Date: Mon, 07 Oct 2013 15:45:09 +0300
+Message-ID: <884f0056bbbc27a2f35c581de11a07d9@mail.onse.fi>
+References: <1380737612-16512-1-git-send-email-anssi.hannula@iki.fi>
+ <s5hzjqlseqt.wl%tiwai@suse.de>
+ <73e325dd7c696e2d16946890a66dc838@mail.onse.fi>
+ <s5h61t9s6n7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4920561027778941080=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 7EADC265071
- for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2013 13:04:55 +0200 (CEST)
-In-Reply-To: <1381136359-26931-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <s5h61t9s6n7.wl%tiwai@suse.de>
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai kirjoitti 2013-10-07 13:43:
+> At Mon, 07 Oct 2013 13:31:17 +0300,
+> Anssi Hannula wrote:
+> 
+> Takashi Iwai kirjoitti 2013-10-07 10:48:
+> > At Wed,  2 Oct 2013 21:13:32 +0300,
+> > Anssi Hannula wrote:
+> >
+> > Currently hdmi_setup_audio_infoframe() reprograms the HDA channel
+> > mapping only when the infoframe is not up-to-date or the non-PCM flag
+> > has changed.
+> >
+> > However, when just the channel map has been changed, the infoframe may
+> > still be up-to-date and non-PCM flag may not have changed, so the new
+> > channel map is not actually programmed into the HDA codec.
+> >
+> > Notably, this failing case is also always triggered when the device is
+> > already in a prepared state and a new channel map is configured while
+> > changing only the channel positions (for example, plain
+> > "speaker-test -c2 -m FR,FL").
+> >
+> > Fix that by keeping track of the last programmed channel map and making
+> > hdmi_setup_audio_infoframe() always update the hardware mapping if the
+> > channel map has changed.
+> >
+> > Hmm, maybe it's easier (and safer) to remove the check and always call
+> > hdmi_setup_channel_mapping()?  Of course, the drawback is the
+> > unnecessary verbs, but it's not too much.
+> 
+> Easier, yes. I don't really have that good of an idea how big of a 
+> delay
+> do 8 write verbs cause, so I'll rely on your judgment :)
+> 
+> I guess I could replace the writes with read-and-write-if-differs 
+> cycles
+> when I add the set_slot ops for ATI/AMD, since it seems to be used for
+> other similar cases (like channel count)?
+> 
+> Well, this would result in more cost, as read requires a sync.
 
---===============4920561027778941080==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7SrMUQONj8Rl9QNG"
-Content-Disposition: inline
+Hmm, so why does e.g. converter channel count set-up use that, then?
 
+> If any, we can use the cached write/update.  But this assumes that the
+> hardware never clears the value by some operation internally.
 
---7SrMUQONj8Rl9QNG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It should not, but better be safe than sorry here (at least for stable) 
+:)
 
-On Mon, Oct 07, 2013 at 11:59:19AM +0300, Peter Ujfalusi wrote:
-> The two paths were not connected in the DAPM route causing the associated
-> routes to be non working and the following warnings printed in the logs:
-> tlv320aic3x-codec 0-001b: ASoC: mux Right Line1L Mux has no paths
-> tlv320aic3x-codec 0-001b: ASoC: mux Left Line1R Mux has no paths
+> > Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+> > Cc: <stable@vger.kernel.org>
+> > ---
+> >
+> > BTW, is there some mechanism preventing hdmi_chmap_ctl_put() to be
+> > called
+> > at the same time with generic_hdmi_playback_pcm_prepare() that I didn't
+> > see with a quick look?
+> > Both of them call hdmi_setup_audio_infoframe() which is not
+> > thread-safe.
+> >
+> > Yeah, we need to introduce a mutex there.
+> 
+> I guess hdmi_present_sense() is the same, as it can also call
+> hdmi_setup_audio_infoframe()?
+> 
+> Hm, looking at the code, we have already pin_eld->lock in
+> hdmi_present_sense().  This can be used in other places, too.
 
-Applied, thanks.
+Well, hdmi_setup_audio_infoframe() is non-threadsafe for other reasons 
+than
+eld as well (e.g. write verbs to hw), though, so it might be a bit 
+confusing
+as-is. Better move/rename the lock if we end up using it? Or not?
 
---7SrMUQONj8Rl9QNG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> (And pin_eld->monitor_present change at the beginning of
+> hdmi_present_sense() should be protected in the mutex, too...)
+> 
+> BTW, shouldn't hdmi_present_sense() call hdmi_setup_audio_infoframe()
+> always
+> when eld_changed is true? hdmi_setup_audio_infoframe() does not do its
+> stuff if !monitor_present, so if one starts playback before plugging 
+> in,
+> the channel mappings etc will never be set even when plug-in happens
+> (from what I can see, that is -  did not test yet).
+> 
+> Well, there is such a call but currently specific to Haswell because
+> it hasn't been tested for others.  Maybe we can simply get rid of
+> is_haswell() check there.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+OK, will test later and provide a patch if it works as expected.
 
-iQIcBAEBAgAGBQJSUpVOAAoJELSic+t+oim9bAQQAJeBdRkUFCEtOs//i0w+n1Mb
-/vfEOkKR6RohtdxGpHVb8jlzFCsVK8V7XeJu+VO1zVGN1SGrUJ4mMBAjimyTicS7
-lc0RejCGMofrDwBbI0/z9jbAwj4ShB95DEigE9evhpas3WPKE6O85KU5xZohAdeN
-KjVRjNrt6bV0Zv0ezL1/99IwA8y70TPsyDiJepDP+dpAS78Jbxox/jKEUzoRnlvD
-o6pC5V0saacah6Czou5OFFsof5JQPdUN1wzO7A08KrsUbjiyqpKirn+sXmIAsc9U
-iplFHXFEcOpwG0qKSCUkGwMXt69tkrNZI2PaLKKAeTFraHrdkecW+DPKbiB2HSeL
-kBgeDAF53NJTQ03JKCBUvAx/8GbSY2OaLBKl850pacEhewC1RjB9yUnJILpHB5tx
-PEeZ9HXZ/WQK4+DIy9ce9dB1aHWzmffWLvPjesjYEpSBT/ZRYKOMDHnJcMC2ox5H
-v/MObWS74Qb5wRzW3zSBdRtcMmOB9rMxKxjoo5xdqdefBvuw+PucvDjxg9oaaWs6
-3aoTHa8jLLw3XxcLf+RL1RbGYvuovcYX8KxmMlR3R9dXRH49qI1HeqzDBXzQNeQr
-oXqiQ1wH3N+sK0dc3tQZzebQP58y5la/TqPEfJMIoZMrGYODw8d3CCqMQEvfrkq4
-WYp8aw3zRUw22/2W5rBQ
-=jZ7o
------END PGP SIGNATURE-----
-
---7SrMUQONj8Rl9QNG--
-
---===============4920561027778941080==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4920561027778941080==--
+> 
+> 
+> 
+> 
+> > thanks,
+> >
+> > Takashi
+> >
+> > sound/pci/hda/patch_hdmi.c | 14 +++++++++++---
+> > 1 file changed, 11 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> > index 7ea0245..09f38a1 100644
+> > --- a/sound/pci/hda/patch_hdmi.c
+> > +++ b/sound/pci/hda/patch_hdmi.c
+> > @@ -74,6 +74,8 @@ struct hdmi_spec_per_pin {
+> > 	bool non_pcm;
+> > 	bool chmap_set;		/* channel-map override by ALSA API? */
+> > 	unsigned char chmap[8]; /* ALSA API channel-map */
+> > +	bool last_chmap_set;	/* channel-map override programmed? */
+> > +	unsigned char last_chmap[8]; /* last programmed channel-map */
+> > 	char pcm_name[8];	/* filled in build_pcm callbacks */
+> > };
+> >
+> > @@ -955,15 +957,21 @@ static void hdmi_setup_audio_infoframe(struct
+> > hda_codec *codec,
+> > 					    ai.bytes, sizeof(ai));
+> > 		hdmi_start_infoframe_trans(codec, pin_nid);
+> > 	} else {
+> > -		/* For non-pcm audio switch, setup new channel mapping
+> > -		 * accordingly */
+> > -		if (per_pin->non_pcm != non_pcm)
+> > +		/* For non-pcm audio switch or channel-map switch,
+> > +		 * setup new channel mapping accordingly */
+> > +		if (per_pin->non_pcm != non_pcm
+> > +		    || per_pin->chmap_set != per_pin->last_chmap_set
+> > +		    || (per_pin->chmap_set && memcmp(per_pin->chmap,
+> > per_pin->last_chmap,
+> > +						     ARRAY_SIZE(per_pin->chmap)) != 0))
+> > 			hdmi_setup_channel_mapping(codec, pin_nid, non_pcm, ca,
+> > 						   channels, per_pin->chmap,
+> > 						   per_pin->chmap_set);
+> > 	}
+> >
+> > 	per_pin->non_pcm = non_pcm;
+> > +	per_pin->last_chmap_set = per_pin->chmap_set;
+> > +	if (per_pin->chmap_set)
+> > +		memcpy(per_pin->last_chmap, per_pin->chmap,
+> > ARRAY_SIZE(per_pin->chmap));
+> > }
+> >
+> >
+> > --
+> > 1.8.1.5
+> >
+> 
