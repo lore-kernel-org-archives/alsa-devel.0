@@ -1,18 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: Audio Miniconference 2013 schedule - Edinburgh
  21st October
-Date: Mon, 07 Oct 2013 18:39:48 +0200
-Message-ID: <5252E3D4.2020400@metafoo.de>
+Date: Mon, 7 Oct 2013 17:53:44 +0100
+Message-ID: <20131007165344.GQ21581@sirena.org.uk>
 References: <20131003181754.GE27287@sirena.org.uk>
+ <5252E3D4.2020400@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3169082318484580323=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-020.synserver.de (smtp-out-020.synserver.de
- [212.40.185.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C6CE265162
- for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2013 18:38:00 +0200 (CEST)
-In-Reply-To: <20131003181754.GE27287@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2FD2265172
+ for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2013 18:53:55 +0200 (CEST)
+In-Reply-To: <5252E3D4.2020400@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,47 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: Colin Guthrie <colin@guthr.ie>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Arun Raghavan <arun.raghavan@collabora.co.uk>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>, Tanu Kaskinen <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>, "Bossart,
  Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/03/2013 08:17 PM, Mark Brown wrote:
-> The audio mini-summit in Edinburgh is now less than a month away so it
-> seems like a good time to start pulling together a schedule.  Looking at
-> the topics people mentioned when filling out the registration form there
-> were three major topics that people wanted to cover:
-> 
->  - Compressed audio review: tinycompress, integration into userspace,
->    driver upstreaming.
-> 
->  - UCM and other use case management status & review.
-> 
->  - Effects offload to DSPs with dynamically instantiatable algorithms,
->    and general dynamic DSP firmware handling.
-> 
-> Plus a few things that only one or two people brought up:
-> 
->  - Process stuff (the list, bug tracking and so on).
-> 
->  - Some relatively specific hardware support topics:
->   - HDMI hotplug handling throughout the stack
->   - Mic status LED handling throughout the stack.
-> 
->  - Code cleanups:
->   - Moving away from the custom ALSA device registration infrastructure.
->   - General code modernisation.
-> 
->  - General routing control in userspace - UIs, automation.
-> 
-> The first question is if there is anything important that is missing
-> from the above list - please speak up soon if there is!  It'd also be
-> good to have volunteers to lead the discussions in each area.
-> 
 
-One thing I think that would be good to discuss, considering how often this
-has come up over the last few months, is devicetree bindings for audio
-devices. And what should and needs to be done on the framework side to
-better support this.
+--===============3169082318484580323==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="aX6oBa4COn3eIhlv"
+Content-Disposition: inline
 
-- Lars
+
+--aX6oBa4COn3eIhlv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Oct 07, 2013 at 06:39:48PM +0200, Lars-Peter Clausen wrote:
+
+> One thing I think that would be good to discuss, considering how often this
+> has come up over the last few months, is devicetree bindings for audio
+> devices. And what should and needs to be done on the framework side to
+> better support this.
+
+There's going to be a *very* large segment of the ARM mini-summit given
+over to device tree discussions, it seems better to cover that there
+since this is an issue that affects a bunch of subsystems in similar
+ways.
+
+--aX6oBa4COn3eIhlv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSUucUAAoJELSic+t+oim9pN4P/iuLBFud+E2KcUz75Lwoq+Vd
+9fuWCt0MuPf6t/Bet5HAnid5HzeE2+vGKrDvpaQ889GI9AFDJBYZ1DxZMweRUrdI
+F+BJfmjFscqOOskIOVsbNl5gnKPchcntq8LKOgKUyfaY7AJFo1PtNJEk0xJaTpj8
+0yYF/lM31ShItv5nocyb5D8sx1qfXMpG3kOfxVzKD0AaFDUX2jui+cJiO3OGEBiL
+5WwIqfTg33Y/dTM/OzdUosmxz6o9DAGnCC7suZZIj7kSVFyBdsmT9W6GpU9qvFyw
+NTLD8Bi5FyvHnI8ewVdtSWn9lWtQGbARR6d1O6XXfymEDAH99h30xTu9hs5eqc6l
+s5d+txgUX+KM0doA3Bf05EGJ7FJvquvgfgUHjUTDyDpCwQ5E1vfJg3T5Ls3ZQMch
+2l5IRzDR1Dwfx13Ff8qr5g5+8EM8NhfIrE2eQkLVrrQZ4QVhpFwXsLQ1WBMjbsY0
+uhpY1aOIfMfLN//Cg5AaE98Ci/V5yr01Dp2HY4HSrarkOI+X8cb0z6UJu28M0LrS
+6rq/WmgoHB14p+MVj2zwZK+1sqnbkmX4XrNysrjqVQzvxInFA3DKCeXi7EBgovhY
+a6RYVZfmk/ZVGd0iDX834xwRwcmCQEILicr6uZT6HSrr9jnvtGddEXQt6yPRkFgh
+W9beRFzaN5G/y2shg16Y
+=49oE
+-----END PGP SIGNATURE-----
+
+--aX6oBa4COn3eIhlv--
+
+--===============3169082318484580323==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3169082318484580323==--
