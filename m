@@ -1,22 +1,19 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: Re: [PATCH v4 07/15] ALSA: usb-audio: correct ep
- use_count semantics (add set_param flag)
-Date: Mon, 7 Oct 2013 21:31:35 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1310072032200.1463@anubis>
-References: <1381091480-23636-1-git-send-email-eldad@fogrefinery.com>
- <1381091480-23636-8-git-send-email-eldad@fogrefinery.com>
- <s5hiox9safi.wl%tiwai@suse.de>
+From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Subject: Re: Audio Miniconference 2013 schedule - Edinburgh
+ 21st October
+Date: Mon, 07 Oct 2013 22:59:06 +0300
+Message-ID: <1381175946.16362.10.camel@dev-laptop>
+References: <20131003181754.GE27287@sirena.org.uk>
+ <524F34FD.8090404@linux.intel.com> <1381075859.3245.31.camel@laptop>
+ <20131007151411.GO21581@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f54.google.com (mail-bk0-f54.google.com
- [209.85.214.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 50806265176
- for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2013 21:31:39 +0200 (CEST)
-Received: by mail-bk0-f54.google.com with SMTP id mz12so2820694bkb.41
- for <alsa-devel@alsa-project.org>; Mon, 07 Oct 2013 12:31:39 -0700 (PDT)
-In-Reply-To: <s5hiox9safi.wl%tiwai@suse.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CF19265193
+ for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2013 21:59:55 +0200 (CEST)
+In-Reply-To: <20131007151411.GO21581@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,52 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Nikolay Martynov <mar.kolya@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Colin Guthrie <colin@guthr.ie>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Arun Raghavan <arun.raghavan@collabora.co.uk>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>, David Henningsson <david.henningsson@canonical.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On Mon, 7 Oct 2013, Takashi Iwai wrote:
-
-> At Sun,  6 Oct 2013 22:31:12 +0200,
-> Eldad Zack wrote:
-> > 
-> > Currently, use_count is used in snd_usb_endpoint_set_params to
-> > ensure the parameters don't get changed for an in-use endpoint.
-> > 
-> > However, there is a subtle condition where this check fails -
-> > if hw_params is called on both substreams before calling prepare (for
-> > playback) or start trigger (for capture): the endpoint is not yet
-> > started, i.e., snd_usb_endpoint_start() does not yet increment use_count.
-> > 
-> > This adds a flag to check if the parameters are set, but does not
-> > omit checking the use_count.
-> > 
-> > Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
-> > 
-> > ---
-> > v2: Cleaned up the patch, now it does only one thing (add the flag
-> > and the check).
+On Mon, 2013-10-07 at 16:14 +0100, Mark Brown wrote:
+> On Sun, Oct 06, 2013 at 07:10:59PM +0300, Tanu Kaskinen wrote:
 > 
-> I guess this logic doesn't work if a capture stream is re-prepared
-> before started.  I know that you'll change the capture stream starting
-> in the later patch, but then this patch must be applied after that,
-> because it implicitly assumes the scheme.
+> > Perhaps I should present our (Murphy[1] team at Intel) plans for the
+> > routing infrastructure and policy in PulseAudio? It might be relevant
+> > for this, although effect offloading and firmware handling is not
+> > something that we have thought about. Even without effect offloading and
+> > firmware handling the routing system has to deal with use case
+> > prioritizing and constraints regarding what audio paths are available
+> > and what paths can be used simultaneously.
+> 
+> That sounds interesting, there was also a use case management thing on
+> the agenda - do you want to take that?
 
-Yes and it causes a regression too, it prevents full-duplex usage
-(with jack or client that use the same sequence). Sorry, I forgot to add 
-that to the commit message.
+Sure, why not.
 
-I left this so the change is clear, I figured it helps when reading the 
-history.
-Should I combine this with the later patch? Or should I put a notice in
-this commit message that "this patch breaks... will be fixed later 
-by..."?
-
-BTW - sorry if that's a trivial question - is it possible for ops to 
-race, or do the ops get serialized?
-If it is possible, I believe there's a few places that need locking.
-
-Cheers,
-Eldad
+-- 
+Tanu
