@@ -1,15 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] ASoC: pcm: Trigger all commands on error
-Date: Mon, 7 Oct 2013 18:27:06 +0100
-Message-ID: <20131007172706.GS21581@sirena.org.uk>
-References: <1380883997-18236-1-git-send-email-mpa@pengutronix.de>
+Subject: Re: Audio Miniconference 2013 schedule - Edinburgh
+ 21st October
+Date: Mon, 7 Oct 2013 18:44:48 +0100
+Message-ID: <20131007174448.GT21581@sirena.org.uk>
+References: <20131003181754.GE27287@sirena.org.uk>
+ <5252EDE2.9070902@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1805323502541506579=="
+Content-Type: multipart/mixed; boundary="===============1497413242507511566=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 45ACB265176
- for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2013 19:27:14 +0200 (CEST)
-In-Reply-To: <1380883997-18236-1-git-send-email-mpa@pengutronix.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id DD52F265162
+ for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2013 19:44:57 +0200 (CEST)
+In-Reply-To: <5252EDE2.9070902@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,76 +21,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: kernel@pengutronix.de, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Patrick Lai <plai@codeaurora.org>
+Cc: Colin Guthrie <colin@guthr.ie>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Arun Raghavan <arun.raghavan@collabora.co.uk>, Ryo Tsutsui <Ryo.Tsutsui@wolfsonmicro.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>, Tanu Kaskinen <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1805323502541506579==
+--===============1497413242507511566==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gXx2FYK2AghGE4Yq"
+	protocol="application/pgp-signature"; boundary="53TzBEXPl5+8hjUY"
 Content-Disposition: inline
 
 
---gXx2FYK2AghGE4Yq
+--53TzBEXPl5+8hjUY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 04, 2013 at 12:53:17PM +0200, Markus Pargmann wrote:
+On Mon, Oct 07, 2013 at 10:22:42AM -0700, Patrick Lai wrote:
 
-> In case of a start command, the calling function will call undo_start,
-> calling this trigger function with the stop command. It will call stop
-> for each function. But only the first function was started previously.
-> The other functions may fail in the assumption that a stop command
-> always comes after a start command.
+> Lately, there has been a lot of emphasis on reducing cold start latency
+> which audio hardware path setup takes up good chunk of time. I found
+> DAPM takes up quite a bit of time finding path to enable. In addition,
 
-> As the API does not specify the behaviour of trigger functionpointers, I
-> think this should be fixed in the function calling the trigger
-> functionpointers.
+What are the problems you're seeing here?  This used to be a big
+problem for modern CODECs with big sets of widgets and routes but the
+optimisations I did a while back (which made it into v3.4 so I think
+everyone is using them now) and the work that Tsutsui-san did in v3.10
+on improving the graph reset got it reasonably under control for the
+systems that I was aware of having trouble.
 
-> This patch changes the behaviour. The trigger function calls all
-> functionpointers independent of their returncodes. The first error-code
-> is returned.
+The commits from Tsutsui-san were:
 
-I'm not sure if this will resolve the problem robustly - if something is
-going to get confused about this it seems just as likely that the
-trigger that failed will get upset because it gets a _STOP after
-returning an error from _START.  I think what I'd expect here is that
-the unwind on error would unwind only the triggers that it successfully
-ran.  Equally well I'd be a bit surprised if a trigger function actually
-had a problem with extra _STOPs since they mostly just do register
-writes...  did you see this from code inspection or were you resolving a
-practical problem in your system?
+   0e669246dcd1 ASoC: dapm: Remove redundant clear_walk() for supply widget=
+s=20
+   1059ecfa0f1e ASoC: dapm: Only clear paths we've walked
 
---gXx2FYK2AghGE4Yq
+(mainly the second one).
+
+> DPCM could be enhanced to save on cold start latency by enabling
+> front-end & back-end in parallel if underlying hardware can support it.
+
+Hrm, nobody mentioned any problems with CPU side startup times
+previously.  What exactly is taking the time with this stuff - is it
+something that could be pushed into DAPM and use what's there already
+(or alternatively then be optimised and used for CODECs too)?
+
+> I would like to see if we can have some discussion on optimization.
+
+Well volunteered :)
+
+--53TzBEXPl5+8hjUY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSUu7nAAoJELSic+t+oim94RsP/jeuGgi7up+TxrEv230u9V4k
-u/OboLdDFGA2uqkQygBsDr7xSKyZid35ViLXV7Y/1cnwgJjNc3upfATFXveq5X+H
-hfHS6Vh1ohrP4ykK2+AAo1/oIcgvWK3VKLeInucJ6VLGIXdDarLqfx1RkfOIJYdr
-fk255BulXHyvs+LgWeg4Z3nbkk2HgTzpRoMzKFp/Rl26JzNubk5o/33pwl0k0KA6
-Wmm/n20gz5DUx3tT5NDnwc6m6zJauwURQCxwciO0LIWWvhnkkEmpCkSFxvjshAAq
-l/MojzMr3XnPxSzzUJgV5XkeXJZeVyI233LHP4LCMCTFLd2cjRoQlVGTvEhyirxh
-DHr7FyA9Mn9YNEfgz8adnAFdMiYB6t7Qj4Pgu6agaEYm1NK6WS7/HQPDjFMq5ich
-plDEMHtIjMm7iG5gZb6nYuY55twWetocER03m0KiO0TC0U9Tl7LY/7SQILTiOMAP
-6MF34bpEP0GxQxt55dPq6exGal7ehtC+quvgkaBvg4i7dE4hcl6mhsfA0TOGY5pX
-x0HoFxzT2Jx9FbOXCdUiTInqyzFzgtJ6X+Ck8Rg84ws/naYuzObmYLociqU+q03u
-bwYzLlugCEu2iXlUxfsS5az0K52bcE4zqMKStA7wFLby8kymd0dmeBqIskM87eLa
-3iMJprsXIEe9T8+AXC84
-=1c+E
+iQIcBAEBAgAGBQJSUvMNAAoJELSic+t+oim9L3IP/jeNlu5yGXI1iSEnh1JkV1R3
+hlmEzx/OXBiEtbapHQ6hqPu5hKSrRgifp+oh5XkomXc0QZlsCkplyP0FIauHfiU3
+5jVaRCiLf58xi2iUud6ILAPQrQcFfil/JUfGEiFXLm5DsECPjBB9tfY339aqvgWQ
+bMNZqzGGT1w1D/nMveQhNtxF1ezsDpIqktrdQRO+ECGmI5h6hrJOMJkZm3BvAD/J
+vDEzscznChvWelZvikd2BXJ1mbhCuN4IhGwvOhU8n1/VCcCA1cs+ff7sQE2h0tmC
+bjWTSHcTOSODNaHoox45w6qmAibQ3G/DWREA2J34TVho2uuIoIGrvkSQ8egon/+T
+mvJLbTELD/2O7IR+m5Z6CBJpAcQCsgYghi+CocRciJcAFVnYYXxhcj98C83H/hfZ
+sir/zJ35hCLubkbinDWnmJXOG1nhaNOHnDvihytnov1RZfhilmSEPw4MEs5R15fW
+OZR/bUdi/PAmX01dexkYetITuaotuasgUyCz+a/SThtrccL1RWOajMm18BHRuyrR
+xQX+HIq2Ks/DcSMpAu+vpf0k2Wjjsng/3ASr/Hh1RH53HXFhy1D6NrD9uLp5glVK
+D5tnggQOj1N0YWfMfT+ssevX4FEbw0Ou0It7GWRvX8H/Q7C1e2lifiRLDoY0lp5q
+A0clPo5Ir7B72hGFCrOO
+=WoF9
 -----END PGP SIGNATURE-----
 
---gXx2FYK2AghGE4Yq--
+--53TzBEXPl5+8hjUY--
 
---===============1805323502541506579==
+--===============1497413242507511566==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1805323502541506579==--
+--===============1497413242507511566==--
