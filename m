@@ -1,19 +1,21 @@
-From: Dr Nicholas J Bailey <nicholas.bailey@glasgow.ac.uk>
+From: Daniel Mack <zonque@gmail.com>
 Subject: Re: [PATCH v2] ALSA: snd-usb-usx2y: remove bogus frame
 	checks
-Date: Mon, 7 Oct 2013 15:58:51 +0100
-Message-ID: <27085905.a7dazzfD9V@arial>
+Date: Mon, 07 Oct 2013 17:11:44 +0200
+Message-ID: <5252CF30.7030002@gmail.com>
 References: <1380728990-8443-1-git-send-email-zonque@gmail.com>
- <1381048163.1974.5.camel@yoda.heavyware>
+ <1381048163.1974.5.camel@yoda.heavyware> <27085905.a7dazzfD9V@arial>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plockton.cent.gla.ac.uk (plockton.cent.gla.ac.uk
- [130.209.16.75])
- by alsa0.perex.cz (Postfix) with ESMTP id D5A7E265119
- for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2013 17:03:37 +0200 (CEST)
-In-Reply-To: <1381048163.1974.5.camel@yoda.heavyware>
+Received: from mail-bk0-f47.google.com (mail-bk0-f47.google.com
+ [209.85.214.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C60D265128
+ for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2013 17:11:49 +0200 (CEST)
+Received: by mail-bk0-f47.google.com with SMTP id mx12so2676891bkb.34
+ for <alsa-devel@alsa-project.org>; Mon, 07 Oct 2013 08:11:47 -0700 (PDT)
+In-Reply-To: <27085905.a7dazzfD9V@arial>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,94 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Guido Aulisi <guido.aulisi@gmail.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Daniel Mack <zonque@gmail.com>
+To: Dr Nicholas J Bailey <nicholas.bailey@glasgow.ac.uk>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Guido Aulisi <guido.aulisi@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 07 October 2013 08:41:06 you wrote:
-> Can anyone test whether the patch below works alone without the
-> previous patch?  (Meanwhile, the previous patch to remove the frame
-> check is fine, it's just too strict for controllers like ehci, so it's
-> still fine to apply.)
+On 07.10.2013 16:58, Dr Nicholas J Bailey wrote:
+> For me, this patch alone fails in much the same way (possibly exactly the same 
+> way) as before the previous patch.
 > 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> ---
-> diff --git a/sound/usb/usx2y/usbusx2yaudio.c
-> b/sound/usb/usx2y/usbusx2yaudio.c index 6234a51..1236ff3 100644
-> --- a/sound/usb/usx2y/usbusx2yaudio.c
-> +++ b/sound/usb/usx2y/usbusx2yaudio.c
-> @@ -137,10 +137,12 @@ static int usX2Y_urb_play_prepare(struct
-> snd_usX2Y_substream *subs, /* calculate the size of a packet */
->                 counts = cap_urb->iso_frame_desc[pack].actual_length /
-> usX2Y->stride; count += counts;
-> +#if 0
->                 if (counts < 43 || counts > 50) {
->                         snd_printk(KERN_ERR "should not be here with
-> counts=%i\n", counts); return -EPIPE;
->                 }
-> +#endif
->                 /* set up descriptor */
->                 urb->iso_frame_desc[pack].offset = pack ?
->                         urb->iso_frame_desc[pack - 1].offset +
+> From audacity (probably not much use unless you know the source code... I 
+> don't):
 
-For me, this patch alone fails in much the same way (possibly exactly the same 
-way) as before the previous patch.
+[...]
 
->From audacity (probably not much use unless you know the source code... I 
-don't):
+> nick@arial:/usr/src$ dmesg | tail
+> [  111.667015] usb 2-1.6.4: New USB device strings: Mfr=0, Product=0, 
+> SerialNumber=0
+> [  114.707156] Sequence Error!(hcd_frame=3 ep=8in;wait=1024,frame=0).
+> [  114.707156] Most probably some urb of usb-frame 1024 is still missing.
 
-Expression 'PaAlsaStreamComponent_Initialize( &self->capture, alsaApi, 
-inParams, StreamDirection_In, NULL != callback )' failed in 
-'src/hostapi/alsa/pa_linux_alsa.c', line: 2092
-Expression 'PaAlsaStream_Initialize( stream, alsaHostApi, inputParameters, 
-outputParameters, sampleRate, framesPerBuffer, callback, streamFlags, userData 
-)' failed in 'src/hostapi/alsa/pa_linux_alsa.c', line: 2764
-Expression 'stream->playback.pcm' failed in 
-'src/hostapi/alsa/pa_linux_alsa.c', line: 4541
-Expression 'stream->playback.pcm' failed in 
-'src/hostapi/alsa/pa_linux_alsa.c', line: 4541
-^C
+You certainly haven't booted a kernel which contains the patch we're
+talking about here. The only occurance of the error message you quote
+was removed by this patch, so a patched kernel can't possibly produce
+what you see in your logs.
+
+Please check your setup again and see what 'uname -a' says.
 
 
-[I hit ^C because recording stalled]
-
-
-nick@arial:/usr/src$ dmesg | tail
-[  111.667015] usb 2-1.6.4: New USB device strings: Mfr=0, Product=0, 
-SerialNumber=0
-[  114.707156] Sequence Error!(hcd_frame=3 ep=8in;wait=1024,frame=0).
-[  114.707156] Most probably some urb of usb-frame 1024 is still missing.
-[  114.707156] Cause could be too long delays in usb-hcd interrupt handling.
-[  574.566748] Sequence Error!(hcd_frame=3 ep=8in;wait=1024,frame=0).
-[  574.566748] Most probably some urb of usb-frame 1024 is still missing.
-[  574.566748] Cause could be too long delays in usb-hcd interrupt handling.
-[  575.593918] Sequence Error!(hcd_frame=6 ep=8in;wait=1027,frame=3).
-[  575.593918] Most probably some urb of usb-frame 1027 is still missing.
-[  575.593918] Cause could be too long delays in usb-hcd interrupt handling.
-
-
-Reverting to the previous patch, everything works fine:
-
-[  170.252226] usb 2-1.6.4: USB disconnect, device number 5
-[  173.012844] usb 2-1.6.4: new full-speed USB device number 7 using ehci-pci
-[  173.105451] usb 2-1.6.4: New USB device found, idVendor=1604, 
-idProduct=8006
-[  173.105456] usb 2-1.6.4: New USB device strings: Mfr=0, Product=0, 
-SerialNumber=0
-[  175.372992] usb 2-1.6.4: USB disconnect, device number 7
-[  177.109626] usb 2-1.6.4: new full-speed USB device number 8 using ehci-pci
-[  177.202361] usb 2-1.6.4: New USB device found, idVendor=1604, 
-idProduct=8007
-[  177.202372] usb 2-1.6.4: New USB device strings: Mfr=0, Product=0, 
-SerialNumber=0
-
-
-[no further messages]
-
-Best stick with the original patch then :)
-
-Nick/.
+Daniel
