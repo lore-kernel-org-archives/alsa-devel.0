@@ -1,17 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
 Subject: Re: [PATCH v2 1/2] ASoC: dmaengine-pcm: Add support
  for querying DMA capabilities
-Date: Tue, 8 Oct 2013 20:29:58 +0530
-Message-ID: <20131008145958.GQ2954@intel.com>
+Date: Tue, 8 Oct 2013 20:36:12 +0530
+Message-ID: <20131008150612.GR2954@intel.com>
 References: <1381237680-32654-1-git-send-email-lars@metafoo.de>
- <20131008154923.GE21581@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5011969231002917363=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C695265355
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2013 17:52:30 +0200 (CEST)
-In-Reply-To: <20131008154923.GE21581@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id E0E1A26535C
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2013 17:59:01 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1381237680-32654-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,68 +22,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Oct 08, 2013 at 03:07:59PM +0200, Lars-Peter Clausen wrote:
+> Currently each platform making use the the generic dmaengine PCM driver still
+> needs to provide a custom snd_pcm_hardware struct which specifies the
+> capabilities of the DMA controller, e.g. the maximum period size that can be
+> supported. This patch adds code which uses the newly introduced
+> dma_get_slave_caps() API to query this information from the dmaengine driver.
+> The new code path will only be taken if the 'pcm_hardware' field of the
+> snd_dmaengine_pcm_config struct is NULL.
+> 
+> The patch also introduces a new 'fifo_size' field to the
+> snd_dmaengine_dai_dma_data struct which is used to initialize the
+> snd_pcm_hardware 'fifo_size' field and needs to be set by the DAI driver.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> 
+> ---
+> Changes since v1:
+> 	* Use dma_get_max_seg_size() to get the maximum size of one period
+> 	* Assume that a DMA engine driver is able to support an infinite number of
+> 	  periods
+> 	* Increase min_period_bytes from 16 to 256.
+> ---
+>  include/sound/dmaengine_pcm.h         |  2 ++
+>  sound/soc/soc-generic-dmaengine-pcm.c | 55 ++++++++++++++++++++++++++++-------
+>  2 files changed, 47 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+> index f11c35c..83b2c3e 100644
+> --- a/include/sound/dmaengine_pcm.h
+> +++ b/include/sound/dmaengine_pcm.h
+> @@ -61,6 +61,7 @@ struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream)
+>   * @slave_id: Slave requester id for the DMA channel.
+>   * @filter_data: Custom DMA channel filter data, this will usually be used when
+>   * requesting the DMA channel.
+> + * @fifo_size: FIFO size of the DAI controller in bytes
+is this supposed to be DMA FIFO or I2S FIFO? 
 
---===============5011969231002917363==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4SFOXa2GPu3tIq4H"
-Content-Disposition: inline
+And second question for Takakshi or Mark. I see that this value ends up in
+usermode, what is the intented usage of this?
 
+>   */
+>  struct snd_dmaengine_dai_dma_data {
+>  	dma_addr_t addr;
+> @@ -68,6 +69,7 @@ struct snd_dmaengine_dai_dma_data {
+>  	u32 maxburst;
+>  	unsigned int slave_id;
+>  	void *filter_data;
+> +	unsigned int fifo_size;
+>  };
+>  
+>  void snd_dmaengine_pcm_set_config_from_dai_data(
+> diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+> index e29ec3c..c39e19e 100644
+> --- a/sound/soc/soc-generic-dmaengine-pcm.c
+> +++ b/sound/soc/soc-generic-dmaengine-pcm.c
+> @@ -36,6 +36,15 @@ static struct dmaengine_pcm *soc_platform_to_pcm(struct snd_soc_platform *p)
+>  	return container_of(p, struct dmaengine_pcm, platform);
+>  }
+>  
+> +static struct device *dmaengine_dma_dev(struct dmaengine_pcm *pcm,
+> +	struct snd_pcm_substream *substream)
+> +{
+> +	if (!pcm->chan[substream->stream])
+> +		return NULL;
+> +
+> +	return pcm->chan[substream->stream]->device->dev;
+> +}
+> +
+>  /**
+>   * snd_dmaengine_pcm_prepare_slave_config() - Generic prepare_slave_config callback
+>   * @substream: PCM substream
+> @@ -92,28 +101,54 @@ static int dmaengine_pcm_hw_params(struct snd_pcm_substream *substream,
+>  	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+>  }
+>  
+> -static int dmaengine_pcm_open(struct snd_pcm_substream *substream)
+> +static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substream)
+>  {
+>  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>  	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
+> +	struct device *dma_dev = dmaengine_dma_dev(pcm, substream);
+>  	struct dma_chan *chan = pcm->chan[substream->stream];
+> +	struct snd_dmaengine_dai_dma_data *dma_data;
+> +	struct dma_slave_caps dma_caps;
+> +	struct snd_pcm_hardware hw;
+>  	int ret;
+>  
+> -	ret = snd_soc_set_runtime_hwparams(substream,
+> +	if (pcm->config->pcm_hardware)
+> +		return snd_soc_set_runtime_hwparams(substream,
+>  				pcm->config->pcm_hardware);
+> -	if (ret)
+> -		return ret;
+>  
+> -	return snd_dmaengine_pcm_open(substream, chan);
+> +	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+> +
+> +	memset(&hw, 0, sizeof(hw));
+> +	hw.info = SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+> +			SNDRV_PCM_INFO_INTERLEAVED;
+> +	hw.periods_min = 2;
+> +	hw.periods_max = UINT_MAX;
+> +	hw.period_bytes_min = 256;
+> +	hw.period_bytes_max = dma_get_max_seg_size(dma_dev);
+I think you should check if the driver has set this, if not goto some default
 
---4SFOXa2GPu3tIq4H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Oct 08, 2013 at 04:49:23PM +0100, Mark Brown wrote:
-> On Tue, Oct 08, 2013 at 03:07:59PM +0200, Lars-Peter Clausen wrote:
->=20
-> > supported. This patch adds code which uses the newly introduced
-> > dma_get_slave_caps() API to query this information from the dmaengine d=
-river.
->=20
-> How newly introduced (ie, is it in Linus' tree)?
-It was merged in last merge window, so you dont have any dependency...
-
---
+-- 
 ~Vinod
-
-
---=20
-
---4SFOXa2GPu3tIq4H
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSVB3uAAoJEHwUBw8lI4NHIe4QALWZ0WmJHCJtXXMS0v2QEVeV
-QX3Gas8PPxKfy1ktiswOTWvxhKs8Caj/d6KXCK/0HFF9zNWLpSrbD2gvaCcWz/VI
-MumRoQANUWRPvvZVFe4unS8eLwiM7Q1YnGQOXHDTZIyv/q1TyA9B4s4JaeG15Y4X
-HS4vgwwKHiZ/nV42sY3ZmS8lVZ8mYN/hLDU4CQQy1EGD7+DJMk2eu8XxWvBB4X9a
-gbSC2JvSOnnqk/V/TQLx4BOIr8iPmkD/vwZ59yqtKq7DWMV3XV1mRQr0YKn0+GPh
-XYl344QkykZaTfj8jRoM+yIviugK+wuAC8otA4mBCK5RkjP4hMxmf4j0icmDizdR
-pcuBCsVbHMrYVfaPFIDMjYPu6jvSveze1uNutl7/9a89DvU+WHUMRVP9OKRinhk0
-nf56LDue9gJAuG5DsRSlWX0qzticIzjsrQWzYncsiJI3xH+ffxB3sgkRYmGoiMS7
-5RlThFFW0ODkxgiEOqk6jDu9Gq05zfrYwyrph7195rrx9MvM4sO8eJQPgg+bK2An
-sNpxRnMuDZNLPM5s3i9zp4euYP6OP2ew8lG6nqHNh0jpatf9WaEZFZpWT/rJTnje
-kL4udWqjQHEp57LCVbcSukob6Mx1VZlxIxjnhoOhnNnCeZLG8aq19/DVzOt8x80v
-FOrwwA235Y3GEOjYba/8
-=UHs/
------END PGP SIGNATURE-----
-
---4SFOXa2GPu3tIq4H--
-
---===============5011969231002917363==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5011969231002917363==--
