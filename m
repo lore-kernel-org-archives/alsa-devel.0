@@ -1,40 +1,50 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: no reset_resume for driver snd-usb-audio for logitech headset
- H600
-Date: Tue, 8 Oct 2013 13:38:26 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1310081335400.1102-100000@iolanthe.rowland.org>
-References: <BLU0-SMTP368B73167BF4C991BFDCE6A11C0@phx.gbl>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Add fixup for ASUS N56VZ
+Date: Tue,  8 Oct 2013 20:00:28 +0200
+Message-ID: <1381255228-6229-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <BLU0-SMTP368B73167BF4C991BFDCE6A11C0-MsuGFMq8XAE@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org
-Cc: USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 019D02610C4
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2013 19:57:44 +0200 (CEST)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 6E92DA52BF
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2013 19:57:41 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 8 Oct 2013 baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org wrote:
+ASUS N56VZ needs a fixup for the bass speaker pin, which was already
+provided via model=asus-mode4.
 
-> Hello,
-> 
-> please help me with the bug for my Logitech Headset;
-> 
-> https://bugzilla.kernel.org/show_bug.cgi?id=62691
-> 
-> Bug ID: 62691
-> Summary: no reset_resume for driver snd-usb-audio for logitech headset H600
-> 
-> Thank you
-> 
-> Best regards, Bernhard
+Bugzilla: https://bugzilla.novell.com/show_bug.cgi?id=841645
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Actually this should be brought to the attention of the ALSA 
-developers (CC'ed).  They are the people in charge of the snd-usb-audio 
-driver.
-
-Alan Stern
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 52c26d3..ed9deb6 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4596,6 +4596,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
++	SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ", ALC662_FIXUP_ASUS_MODE4),
+ 	SND_PCI_QUIRK(0x1043, 0x8469, "ASUS mobo", ALC662_FIXUP_NO_JACK_DETECT),
+ 	SND_PCI_QUIRK(0x105b, 0x0cd6, "Foxconn", ALC662_FIXUP_ASUS_MODE2),
+ 	SND_PCI_QUIRK(0x144d, 0xc051, "Samsung R720", ALC662_FIXUP_IDEAPAD),
+-- 
+1.8.4
