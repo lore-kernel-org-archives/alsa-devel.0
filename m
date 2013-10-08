@@ -1,63 +1,81 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RESEND PATCH v3 03/11] ASoC: davinci-mcasp: Add DMA register
- locations to DT
-Date: Tue, 8 Oct 2013 01:46:41 +0100
-Message-ID: <20131008004641.GV21581@sirena.org.uk>
-References: <cover.1379590035.git.jsarha@ti.com>
- <66bdda0c0b75d737d649260b9ec10f9f870c20cd.1379590036.git.jsarha@ti.com>
- <20131007214718.GA2976@kartoffel>
+From: Bruce <abruceperson@gmail.com>
+Subject: Re: Can't get capturing from RME Hammerfall MADI card
+ to work: sound loops & silcence
+Date: Tue, 08 Oct 2013 14:59:46 +1100
+Message-ID: <52538332.3070501@gmail.com>
+References: <CANYi0v7OD_AFC9-jFeH4MGLZQGsPX91S5NdjqDsmZ_9pOR0hPg@mail.gmail.com>
+ <CAGqxWvJQPFd_v_iN0eyVG1qCCUxeYpcOP0YU961Gn2JGdN3RgA@mail.gmail.com>
+ <5245370C.5060408@ladisch.de> <52453824.9070308@faberman.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VpY0yS1BYpNZumir"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20131007214718.GA2976@kartoffel>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: jsarha@ti.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "joelf@ti.com" <joelf@ti.com>, "Hebbar, Gururaja" <gururaja.hebbar@ti.com>, Darren Etheridge <detheridge@ti.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f180.google.com (mail-pd0-f180.google.com
+ [209.85.192.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6AAAA2652BD
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2013 05:59:59 +0200 (CEST)
+Received: by mail-pd0-f180.google.com with SMTP id y10so8048021pdj.39
+ for <alsa-devel@alsa-project.org>; Mon, 07 Oct 2013 20:59:58 -0700 (PDT)
+In-Reply-To: <52453824.9070308@faberman.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Florian Faber <faber@faberman.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 27/09/2013 5:47 PM, Florian Faber wrote:
+> Clemens,
+>
+>>> Similar issues here, but can add it all seems to work absolutely fine with
+>>> alsa 1.0.15, but fails with 1.0.18+.
+>> This sound like some change in the driver introduced a bug.
+> the driver works fine with versions up to 1.0.27. I have the card
+> running on a daily base with current kernel versions.
 
---VpY0yS1BYpNZumir
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi Flo (or driver developers),
 
-On Mon, Oct 07, 2013 at 10:47:18PM +0100, Mark Rutland wrote:
-> On Thu, Sep 26, 2013 at 08:18:28PM +0100, Jyri Sarha wrote:
+I cannot get our card to work with alsa 1.0.27 (or 1.0.18), but it does 
+work fine with 1.0.15. I'm trying to work out what could be different 
+from my setup to yours. I have tried different PCs, different Linux 
+distributions and two different HDSP cards.
+I'm using a HDSPe MADI Rev1.1 loaded with the latest firmware. Is yours 
+the same ?
 
-> >  - interrupts : Interrupt number for McASP
+May I send you a particular application to attempt running on your 
+system with 1.0.27 and see if it works ?
 
-> The device also seems to be able to generate multiple interrupts -- which
-> interrupt does this actually cover?
+*Note* I can use all parts of 1.0.27 (eg, lib, alsamixer, aplay) 
+/except/ for the Hammerfall driver (remains at 1.0.15) and it still 
+works for me. I cannot install the new driver under an older kernel due 
+to incompatibilities, but trying 1.0.18 or 1.0.27 (including later 
+driver) with a newer kernel fails.
 
-> The driver doesn't seem to use it (by a grep of irq|interrupt). Have I missed
-> something?
+I thought if I could somehow get the 1.0.15 hammerfall driver working 
+with a new kernel (help ??) I could then somehow step through the 
+subsequent changes made to the driver one by one till it breaks. This 
+approach could take some considerable time, so any pointers as to how to 
+do this would be much appreciated !  I do not profess to know much about 
+alsa driver development, or how to even access the (svn ?) revision 
+steps, but this might be the only way to work out what is happening here.
 
-No, they're not actually of much practical use to us at the minute but
-it was generally felt better to include the information and not use it
-so that if someone does come up with a use for them then the trees for
-deployed systems already have the information.
+Cheers,
+Bruce
 
---VpY0yS1BYpNZumir
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+PS: I will also ask the Hammerfall Linux forum, but that seems a bit 
+inactive now.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSU1XuAAoJELSic+t+oim9KgIQAJ4V4Z9TOmQTvNCxb7I4Jm5C
-SZIGIiA5GCJCQ1XMrbFzBTU9vbeHELOJxIx13TIafi0+YcXIVceatPnHYzM7DCFy
-APnIVWEN8SJs+nN5ZDklCb57wF+SkZ/xuPCf8A2eL6SigLMn8dAcIYU7gXsxHObd
-BNfYmLWH75wnJKUm3a1eFbykPtBLrW5yNSCfiOggjgOp/2XmYTlDrmex6MtjoApL
-U4OBqwJ3BRhyLnQknvG9/kc/04Pmke+PTywju0hiyWo9WfrCcZHBeG/5h5igs62N
-BegoX8cPLAGH45DYq6sFfG0S4afc6iurWS5Ypd2cQWj4E9Vv0mjxZo42LTAQnHWy
-JjiLLPqwVJ523ktzHgPG9dplKIC3eUCBVewr9c54Y1tm3c0TcqTK06AbPS2HCj9e
-6bFxVHjZAeAMFHWY3NNNzqb08KF0guDYvfIiP+POfOrBat+AMxS1YUhAwbCTWBoM
-mzeJsolJQSt5TMXp2teoKPN+vUc3DQsX08+RWv+kMg9qHaX/wMgedaCoyWMrL7WK
-tfCMmQ3uJFKyVDBPOon4biZc9IX+TuivQZ5+WcElowuWzfvXv74YTbTH3vw2p0L2
-kz6FmRP7hW9Ydie9rpFqnbdFtBhtO+tOinzyFv27wmN7lA54cG9+KvT+p0+WNbz9
-UIMo7SzkmdCYrG/AYEY1
-=KeRW
------END PGP SIGNATURE-----
+>
+>
+> Flo
 
---VpY0yS1BYpNZumir--
+
+-- 
+Cheers,
+Bruce
