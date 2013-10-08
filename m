@@ -1,144 +1,63 @@
-From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [RESEND PATCH v3 11/11] ARM/dts: am335x-evm: Add
- audio support for am335x-evm.dts
-Date: Mon, 7 Oct 2013 23:02:45 +0100
-Message-ID: <20131007220245.GE2976@kartoffel>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RESEND PATCH v3 03/11] ASoC: davinci-mcasp: Add DMA register
+ locations to DT
+Date: Tue, 8 Oct 2013 01:46:41 +0100
+Message-ID: <20131008004641.GV21581@sirena.org.uk>
 References: <cover.1379590035.git.jsarha@ti.com>
- <cd7271a46f1c6937039b749ed105afa8057b9770.1379590036.git.jsarha@ti.com>
+ <66bdda0c0b75d737d649260b9ec10f9f870c20cd.1379590036.git.jsarha@ti.com>
+ <20131007214718.GA2976@kartoffel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
- [217.140.96.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 45863265193
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2013 00:02:47 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VpY0yS1BYpNZumir"
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <cd7271a46f1c6937039b749ed105afa8057b9770.1379590036.git.jsarha@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "joelf@ti.com" <joelf@ti.com>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, Darren Etheridge <detheridge@ti.com>, "broonie@kernel.org" <broonie@kernel.org>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+In-Reply-To: <20131007214718.GA2976@kartoffel>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: jsarha@ti.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "joelf@ti.com" <joelf@ti.com>, "Hebbar, Gururaja" <gururaja.hebbar@ti.com>, Darren Etheridge <detheridge@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 26, 2013 at 08:18:36PM +0100, Jyri Sarha wrote:
-> From: Darren Etheridge <detheridge@ti.com>
-> 
-> Adds sound, tlv320aic3x, mcasp1, and am335x_evm_audio_pin nodes.
-> 
-> Signed-off-by: Darren Etheridge <detheridge@ti.com>
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Signed-off-by: Jyri Sarha <jsarha@ti.com>
-> ---
->  arch/arm/boot/dts/am335x-evm.dts |   56 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 56 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
-> index 3aee1a4..4a49229 100644
-> --- a/arch/arm/boot/dts/am335x-evm.dts
-> +++ b/arch/arm/boot/dts/am335x-evm.dts
-> @@ -149,6 +149,16 @@
->  				0x14c (PIN_INPUT_PULLDOWN | MUX_MODE7)
->  			>;
->  		};
-> +
-> +		am335x_evm_audio_pins: am335x_evm_audio_pins {
-> +			pinctrl-single,pins = <
-> +				0x10c (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_rx_dv.mcasp1_aclkx */
-> +				0x110 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_txd3.mcasp1_fsx */
-> +				0x108 (PIN_OUTPUT_PULLDOWN | MUX_MODE4) /* mii1_col.mcasp1_axr2 */
-> +				0x144 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* rmii1_ref_clk.mcasp1_axr3 */
-> +			>;
-> +		};
-> +
->  	};
->  
->  	ocp {
-> @@ -215,6 +225,19 @@
->  				compatible = "ti,tmp275";
->  				reg = <0x48>;
->  			};
-> +
-> +			tlv320aic3x: tlv320aic3x@1b {
-> +				compatible = "ti,tlv320aic3x";
-> +				reg = <0x1b>;
-> +				status = "okay";
-> +
-> +				/* Regulators */
-> +				AVDD-supply = <&vaux2_reg>;
-> +				IOVDD-supply = <&vaux2_reg>;
-> +				DRVDD-supply = <&vaux2_reg>;
-> +				DVDD-supply = <&vbat>;
-> +			};
-> +
->  		};
->  
->  		elm: elm@48080000 {
-> @@ -311,6 +334,20 @@
->  				};
->  			};
->  		};
-> +
-> +		sound {
-> +			compatible = "ti,da830-evm-audio";
-> +			ti,model = "DA830 EVM";
-> +			ti,audio-codec = <&tlv320aic3x>;
-> +			ti,mcasp-controller = <&mcasp1>;
-> +			ti,codec-clock-rate = <12000000>;
-> +			ti,audio-routing =
-> +				"Headphone Jack",       "HPLOUT",
-> +				"Headphone Jack",       "HPROUT",
-> +				"LINE1L",               "Line In",
-> +				"LINE1R",               "Line In";
-> +		};
-> +
->  	};
->  
->  	vbat: fixedregulator@0 {
-> @@ -378,6 +415,25 @@
->  
->  #include "tps65910.dtsi"
->  
-> +&mcasp1 {
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&am335x_evm_audio_pins>;
 
-I didn't see mention of pinctrl added to the binding. It should be.
+--VpY0yS1BYpNZumir
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Mark.
+On Mon, Oct 07, 2013 at 10:47:18PM +0100, Mark Rutland wrote:
+> On Thu, Sep 26, 2013 at 08:18:28PM +0100, Jyri Sarha wrote:
 
-> +
-> +		status = "okay";
-> +
-> +		op-mode = <0>;          /* MCASP_IIS_MODE */
-> +		tdm-slots = <2>;
-> +		num-serializer = <16>;
-> +		serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
-> +			0 0 1 2
-> +			0 0 0 0
-> +			0 0 0 0
-> +			0 0 0 0
-> +		>;
-> +		tx-num-evt = <1>;
-> +		rx-num-evt = <1>;
-> +};
-> +
->  &tps {
->  	vcc1-supply = <&vbat>;
->  	vcc2-supply = <&vbat>;
-> -- 
-> 1.7.9.5
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe devicetree" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+> >  - interrupts : Interrupt number for McASP
+
+> The device also seems to be able to generate multiple interrupts -- which
+> interrupt does this actually cover?
+
+> The driver doesn't seem to use it (by a grep of irq|interrupt). Have I missed
+> something?
+
+No, they're not actually of much practical use to us at the minute but
+it was generally felt better to include the information and not use it
+so that if someone does come up with a use for them then the trees for
+deployed systems already have the information.
+
+--VpY0yS1BYpNZumir
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSU1XuAAoJELSic+t+oim9KgIQAJ4V4Z9TOmQTvNCxb7I4Jm5C
+SZIGIiA5GCJCQ1XMrbFzBTU9vbeHELOJxIx13TIafi0+YcXIVceatPnHYzM7DCFy
+APnIVWEN8SJs+nN5ZDklCb57wF+SkZ/xuPCf8A2eL6SigLMn8dAcIYU7gXsxHObd
+BNfYmLWH75wnJKUm3a1eFbykPtBLrW5yNSCfiOggjgOp/2XmYTlDrmex6MtjoApL
+U4OBqwJ3BRhyLnQknvG9/kc/04Pmke+PTywju0hiyWo9WfrCcZHBeG/5h5igs62N
+BegoX8cPLAGH45DYq6sFfG0S4afc6iurWS5Ypd2cQWj4E9Vv0mjxZo42LTAQnHWy
+JjiLLPqwVJ523ktzHgPG9dplKIC3eUCBVewr9c54Y1tm3c0TcqTK06AbPS2HCj9e
+6bFxVHjZAeAMFHWY3NNNzqb08KF0guDYvfIiP+POfOrBat+AMxS1YUhAwbCTWBoM
+mzeJsolJQSt5TMXp2teoKPN+vUc3DQsX08+RWv+kMg9qHaX/wMgedaCoyWMrL7WK
+tfCMmQ3uJFKyVDBPOon4biZc9IX+TuivQZ5+WcElowuWzfvXv74YTbTH3vw2p0L2
+kz6FmRP7hW9Ydie9rpFqnbdFtBhtO+tOinzyFv27wmN7lA54cG9+KvT+p0+WNbz9
+UIMo7SzkmdCYrG/AYEY1
+=KeRW
+-----END PGP SIGNATURE-----
+
+--VpY0yS1BYpNZumir--
