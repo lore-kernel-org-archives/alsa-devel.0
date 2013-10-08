@@ -1,86 +1,170 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: Re: [PATCH v4 14/15] ALSA: usb-audio: always wait in
- start_endpoints
-Date: Tue, 8 Oct 2013 21:25:17 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1310082112490.1364@anubis>
-References: <1381091480-23636-1-git-send-email-eldad@fogrefinery.com>
- <1381091480-23636-15-git-send-email-eldad@fogrefinery.com>
- <s5hfvsdsa8n.wl%tiwai@suse.de> <alpine.LNX.2.00.1310072111050.11043@anubis>
- <s5hbo30jl9c.wl%tiwai@suse.de>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v4 00/10] Fix AM335x-evm analog audio support
+Date: Tue, 8 Oct 2013 22:36:31 +0300
+Message-ID: <cover.1381259962.git.jsarha@ti.com>
+References: <cover.1379409268.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f43.google.com (mail-bk0-f43.google.com
- [209.85.214.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BA082610C4
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2013 21:25:24 +0200 (CEST)
-Received: by mail-bk0-f43.google.com with SMTP id mz13so3386693bkb.2
- for <alsa-devel@alsa-project.org>; Tue, 08 Oct 2013 12:25:24 -0700 (PDT)
-In-Reply-To: <s5hbo30jl9c.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Nikolay Martynov <mar.kolya@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <cover.1379409268.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: linux-omap@vger.kernel.org, broonie@kernel.org, mark.rutland@arm.com, joelf@ti.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+The v3 version of patches can be found here:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-September/066728.html
+The v2 version of patches can be found here:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-September/066379.html
+The RFC version of patches can been found here:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-September/066178.html
 
+Changes since v3
+  - Rebased on top of v3.12-rc4
+  - Drop already applied patches:
+    - [PATCH v2 01/11] ASoC: davinci-evm: Move sysclk logic away from evm_hw_params
+    - [PATCH v2 06/11] ASoC: davinci: Add support for AM33xx SoC Audio
+    - [PATCH v2 07/11] ASoC: tlv320aic3x: Add regulators to DT bindings document
+    - [PATCH v2 08/11] ASoC: tlv320aic3x: Add codec pins to DT bindings document
+  - Add: ASoC: davinci: Fix AM33xx SoC Audio support
+    - Contains the fixes from Peter:
+      http://mailman.alsa-project.org/pipermail/alsa-devel/2013-September/066448.html
+    - Contents of this patch were squashed to "[PATCH v3 06/11] ASoC:
+      davinci: Add support for AM33xx SoC Audio", but since the patch v2 was
+      already applied the changes are here as a separate patch.
+  - Add: ASoC: davinci-mcasp: Remove redundant num-serializer DT parameter
+  - Change: ASoC: davinci-mcasp: Add DMA register locations to DT
+    to: ASoC: davinci-mcasp: Add location for data port registers to DT
+    - Use more accurate name for data port register location
+    - Improve commit message
+  - Change: ASoC: davinci-mcasp: Interrupts property to optional and add interrupt-names
+    to: ASoC: davinci-mcasp: Improve DT bindings document
+    - Remove #address-cells and #size-cells
+    - Bracket named interrupts tuples
+    - Add missing "for" to serial-dir description
+    - Improve tdm-slots description
+    - Improve op-mode description
+    - Add pinctrl-names and pinctrl-0 descriptions
+  - Change: ARM/dts: am335x-evm: Add audio support for am335x-evm.dts
+    - Use board specific name 'AM335x-EVM' for the soundcard.
+    - Use the board specific tlv320aic3106 codec. Use this name instead of generic
+      tlv320aic3x.
+    - Remove num-serializer property from mcasp node
+    - Remove blank lines
+  - Change: ARM/dts: am33xx: Add mcasp0 and mcasp1 device tree entries
+    - Bracket all named property tuples
+  - Add: ARM/dts: am335x-evmsk: Audio support
+  - The other patches in the set not mentioned here are identical to their
+    earlier version
 
-On Tue, 8 Oct 2013, Takashi Iwai wrote:
+Changes since v2
+  [PATCH v2 01/11] ASoC: davinci-evm: Move sysclk logic away from evm_hw_params
+   - no change
+  [PATCH v2 02/11] ASoC: davinci-evm: Add device tree binding
+   - no change
+  [PATCH v2 03/11] ASoC: davinci-mcasp: Add DMA register locations to DT
+   - no change
+  [PATCH v2 04/11] ASoC: davinci-mcasp: Extract DMA channels directly from DT
+   - no change
+  [PATCH v2 05/11] ASoC: davinci-mcasp: Remove interrupt property from DT bindin
+   - restore binding but make it optional and add interrupt-names property
+  [PATCH v2 06/11] ASoC: davinci: Add support for AM33xx SoC Audio
+   - SND_DAVINCI_SOC help "Machine driver for ..." -> "Platform driver for ..."
+   - SND_AM33XX_SOC_EVM depends on SND_DAVINCI_SOC && SOC_AM33XX 
+   - SND_AM33XX_SOC_EVM does not selcet SND_DAVINCI_SOC
+  [PATCH v2 07/11] ASoC: tlv320aic3x: Add regulators to DT bindings document
+   - no change
+  [PATCH v2 08/11] ASoC: tlv320aic3x: Add codec pins to DT bindings document
+   - no change
+  [PATCH v2 09/11] ARM/dts: am33xx: Add mcasp0 and mcasp1 device tree entries
+   - restore interrupt property and add interrupt-names property
+  [PATCH v2 10/11] ARM/dts: am33xx: mcasp: Add new dma register location to reg-property
+   - no change
+  [PATCH v2 11/11] ARM/dts: am335x-evm: Add audio support for am335x-evm.dts
+   - no change
 
-> At Mon, 7 Oct 2013 21:26:57 +0200 (CEST),
-> Eldad Zack wrote:
-> > 
-> > 
-> > 
-> > On Mon, 7 Oct 2013, Takashi Iwai wrote:
-> > 
-> > > At Sun,  6 Oct 2013 22:31:19 +0200,
-> > > Eldad Zack wrote:
-> > > > 
-> > > > Start the endpoints at prepare also for capture endpoints,
-> > > > since it might be needed to wait for the URBs to be unlinked.
-> > > > 
-> > > > If an implicit feedback source endpoint stops being used by its
-> > > > sink endpoint, but immediately used as a data endpoint, usb_submit_urb
-> > > > will return -EBUSY.
-> > > > 
-> > > > Merge two trigger cases since they are now the same.
-> > > This change worries me about the timing.  This change means that the
-> > > capture stream isn't started at the moment the trigger callback is
-> > > called but at the next urb handling.  It means a possible regression
-> > > in the case of realtime usage.
-> > 
-> > I'm not sure I understand. Do you mean it might cause the delay between 
-> > capture and playback to vary at each startup?
-> 
-> No, I mean that the actual begin of the recording will be delayed in
-> comparison with the driver without your patch.  The delay can't be
-> avoided in this style.
+Changes from RFC to v2
+ - Dropped out "ASoC: davinci-mcasp: Add pinctrl support" since
+   driver core is taking care of this now.
+ - Cleanup am33xx audio build
+ - Add regulators to tlv320aic3x DT binding document
+ - Remove dm365-voice-codec-audio DT support as it has never
+   been tested an probably does not work
+ - Add output pins and Line In connector to davinci-evm-audio DT binding doc
+ - Remove asp_chan_q and ram_chan_q properties from mcasp DT node
+   in DT mode mcasp is hardcoded to event queue 0 (highest priority)
+ - Add pins to tlv320aic3x DT bindings document. If I misunderstood
+   Marks comment and this patch is not needed, then just leave it out
+ Changes based on TI internal discussions
+ - Move system clock rate logic away from from evm_hw_params soc-op
+ - Remove unnecesary #if defined(CONFIG_OF) from davinci-evm.c
+ - Make dma property DT binding document more exact
+ - Add only "dma" reg location instead of separate "dma-tx" and "dma-rx"
+ - Primarily look for "mpu" reg property, but fall back to index 0 if not found
+ - Remove interrupt property from mcasp DT node as it is not used
+ - Remove #address-cells and #size-cells mcasp properties as they are not needed
 
-Ah. I see what you mean.
+The patch set depends on following patches:
 
-> > > Is there any reason to do this except for clean up?  IOW, does this
-> > > fix any problem by itself?
-> > 
-> > Yes, I only became aware of it since I bumped into it with my test tool.
-> > Attached here - I hope the mailing list accepts attachments.
-> 
-> I understand that this will be required for the implicit feedback
-> case.  But why applying this to *all* other cases, too, although we
-> know that this may regress slightly with respect to the latency?
-> This is my biggest concern.
+[PATCH v11 4/8] ARM: dts: add AM33XX EDMA support 
+     https://lkml.org/lkml/2013/6/18/49
 
-Yes, I understand now. I'll of course change that along with all the 
-rest and post a new set.
-Thanks!
+[PATCH v11 5/8] ARM: dts: add AM33XX SPI DMA support
+     https://lkml.org/lkml/2013/6/18/55
 
-Cheers,
-Eldad
+[PATCH v2 01/11] ASoC: davinci-evm: Move sysclk logic away from evm_hw_params 
+     http://mailman.alsa-project.org/pipermail/alsa-devel/2013-September/066381.html
+
+[PATCH v2 06/11] ASoC: davinci: Add support for AM33xx SoC Audio 
+     http://mailman.alsa-project.org/pipermail/alsa-devel/2013-September/066385.html
+
+This set of patches fixes the basic audio support for am335x-evm and
+am335x-evmsk. It should be relatively simple to add the necessary
+nodes to relevant dts files to get BeagleBone + AudioCape working too.
+
+I have tried my best not to break the existing support for older
+davinci boards, but since I do not have those boards I can not be
+sure.
+
+Some commit comments refer to a dmaengine based davinci audio
+implementation which is planned for but nothing has been done yet.
+
+Best regards,
+Jyri
+
+Darren Etheridge (1):
+  ARM/dts: am335x-evm: Add audio support for am335x-evm.dts
+
+Hebbar, Gururaja (1):
+  ASoC: davinci-evm: Add device tree binding
+
+Jyri Sarha (5):
+  ASoC: davinci: Fix AM33xx SoC Audio support
+  ASoC: davinci-mcasp: Add location for data port registers to DT
+  ASoC: davinci-mcasp: Extract DMA channels directly from DT
+  ASoC: davinci-mcasp: Improve DT bindings document
+  ARM/dts: am33xx: mcasp: Add location for data port registers to
+    reg-property
+
+Pantelis Antoniou (1):
+  ARM/dts: am33xx: Add mcasp0 and mcasp1 device tree entries
+
+Peter Ujfalusi (2):
+  ASoC: davinci-mcasp: Remove redundant num-serializer DT parameter
+  ARM/dts: am335x-evmsk: Audio support
+
+ .../bindings/sound/davinci-evm-audio.txt           |   58 +++++++++
+ .../bindings/sound/davinci-mcasp-audio.txt         |   38 ++++--
+ arch/arm/boot/dts/am335x-evm.dts                   |   54 +++++++++
+ arch/arm/boot/dts/am335x-evmsk.dts                 |   51 ++++++++
+ arch/arm/boot/dts/am33xx.dtsi                      |   29 +++++
+ include/linux/platform_data/davinci_asp.h          |    2 +
+ sound/soc/davinci/Kconfig                          |    4 +-
+ sound/soc/davinci/davinci-evm.c                    |  120 +++++++++++++++++-
+ sound/soc/davinci/davinci-mcasp.c                  |  128 ++++++++++++--------
+ 9 files changed, 417 insertions(+), 67 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
+
+-- 
+1.7.9.5
+
