@@ -1,20 +1,16 @@
-From: Olivier Langlois <olivier@trillion01.com>
-Subject: Re: [RFC/RFT v2 0/4] ALSA: hda - hdmi: ATI/AMD
- multi-channel and HBR support
-Date: Wed, 09 Oct 2013 00:32:14 -0400
-Message-ID: <1381293134.845.4.camel@Wailaba2>
-References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>
- <1380870371.875.14.camel@Wailaba2> <524F51C6.7050203@iki.fi>
- <1381031338.10109.2.camel@Wailaba2> <5251528B.4010506@iki.fi>
+From: Qiao Zhou <zhouqiao@marvell.com>
+Subject: async between dmaengine_pcm_dma_complete and
+	snd_pcm_release
+Date: Wed, 9 Oct 2013 15:29:06 +0800
+Message-ID: <525505C2.4070201@marvell.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from oproxy4-pub.mail.unifiedlayer.com
- (oproxy4-pub.mail.unifiedlayer.com [74.220.216.66])
- by alsa0.perex.cz (Postfix) with SMTP id 5D1CA260795
- for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2013 06:32:17 +0200 (CEST)
-In-Reply-To: <5251528B.4010506@iki.fi>
+Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
+ [67.231.148.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3B772607D7
+ for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2013 09:29:13 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,75 +20,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, linux-kernel@vger.kernel.org, Peter =?ISO-8859-1?Q?Fr=FChberger?= <fritsch@xbmc.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, trinity.qiao.zhou@gmail.com, "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>, Chao Xie <cxie4@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark, Liam, Jaroslav, Takashi
 
-> 
-> Then please test everything again. I.e.
->   o speaker-test -D hdmi:CARD=Generic,DEV=0 -c8 -r192000 -F S32_LE
-> 
-this work fine
+I met an issue in which kernel panic appears in 
+dmaengine_pcm_dma_complete function on a quad-core system. The 
+dmaengine_pcm_dma_complete is running core0, while snd_pcm_release has 
+already been executed on core1, due to in low memory stress oom killer 
+kills the audio thread to release some memory.
 
->   o Is there any difference seen
->     with these, in the beginning/end (i.e. fade-out/in):
->     speaker-test -D hdmi:CARD=Generic,DEV=0,AES0=0x04 -c2 -r48000
->     speaker-test -D hdmi:CARD=Generic,DEV=0,AES0=0x06 -c2 -r48000
-> 
-I have the same result as before the last fix. AES0=0x04 works
-AES0=0x06 doesn't. No error is emitted from speaker-test but no sound is
-coming out speakers.
+snd_pcm_release frees the runtime parameters, and runtime is used in 
+dmaengine_pcm_dma_complete, which is a callback from tasklet in 
+dmaengine. In current audio driver, we can't promise that 
+dmaengine_pcm_dma_complete is not executed after snd_pcm_release on 
+multi cores. Maybe we should add some protection. Do you have any 
+suggestion?
 
->   o Also, is there a difference in the beginning of these
->     (maybe garbage sound and/or slightly slower startup?):
->     aplay -Dhdmi:CARD=Generic,DEV=0,AES0=4 -r44100 -f s16_le -c2
-> testi.dts.cut.spdif
->     aplay -Dhdmi:CARD=Generic,DEV=0,AES0=6 -r44100 -f s16_le -c2
-> testi.dts.cut.spdif
+I have tried to apply below workaround, which can fix the panic, but I'm 
+not confident it's proper. Need your comment and better suggestion.
 
-no garbage. Maybe slightly slower startup with AES0=0x6.
-> 
->   o Contents of /proc/asound/cardX/eld#0.0
-> 
-> Thanks a lot :)
-> 
-monitor_present		1
-eld_valid		1
-monitor_name		SC-09TX
-connection_type		HDMI
-eld_version		[0x2] CEA-861D or below
-edid_version		[0x0] no CEA EDID Timing Extension block present
-manufacture_id		0x2f41
-product_id		0x0
-port_id			0x10000000005
-support_hdcp		0
-support_ai		0
-audio_sync_delay	0
-speakers		[0x4f] FL/FR LFE FC RL/RR RLC/RRC
-sad_count		7
-sad0_coding_type	[0x1] LPCM
-sad0_channels		8
-sad0_rates		[0x1ee0] 32000 44100 48000 88200 96000 176400 192000
-sad0_bits		[0xe0000] 16 20 24
-sad1_coding_type	[0x2] AC-3
-sad1_channels		6
-sad1_rates		[0xe0] 32000 44100 48000
-sad1_max_bitrate	640000
-sad2_coding_type	[0x7] DTS
-sad2_channels		7
-sad2_rates		[0x6c0] 44100 48000 88200 96000
-sad2_max_bitrate	1536000
-sad3_coding_type	[0xa] E-AC-3/DD+ (Dolby Digital Plus)
-sad3_channels		8
-sad3_rates		[0xc0] 44100 48000
-sad4_coding_type	[0xb] DTS-HD
-sad4_channels		8
-sad4_rates		[0x1ec0] 44100 48000 88200 96000 176400 192000
-sad5_coding_type	[0xc] MLP (Dolby TrueHD)
-sad5_channels		8
-sad5_rates		[0x1ec0] 44100 48000 88200 96000 176400 192000
-sad6_coding_type	[0xe] WMAPro
-sad6_channels		8
-sad6_rates		[0x6e0] 32000 44100 48000 88200 96000
-sad6_profile		3
+
+ From d568a88e8f66ee21d44324bdfb48d2a3106cf0d1 Mon Sep 17 00:00:00 2001
+From: Qiao Zhou <zhouqiao@marvell.com>
+Date: Wed, 9 Oct 2013 15:24:29 +0800
+Subject: [PATCH] ASoC: soc-dmaengine: add mutex to protect runtime param
+
+under SMP arch, the dmaengine_pcm_dma_complete callback has the
+chance to run on one cpu while at the same time, the substream is
+released on another cpu. thus it may access param which is already
+freed. we need to add mutes to protect such access, and check PCM
+availability before using it.
+
+Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
+---
+  sound/soc/soc-dmaengine-pcm.c |   11 ++++++++++-
+  1 files changed, 10 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
+index 111b7d9..5917029 100644
+--- a/sound/soc/soc-dmaengine-pcm.c
++++ b/sound/soc/soc-dmaengine-pcm.c
+@@ -125,13 +125,22 @@ EXPORT_SYMBOL_GPL(snd_hwparams_to_dma_slave_config);
+  static void dmaengine_pcm_dma_complete(void *arg)
+  {
+  	struct snd_pcm_substream *substream = arg;
+-	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
++	struct dmaengine_pcm_runtime_data *prtd;
++
++	mutex_lock(&substream->pcm->open_mutex);
++	if (!substream || !substream->runtime) {
++		mutex_unlock(&substream->pcm->open_mutex);
++		return;
++	}
++
++	prtd = substream_to_prtd(substream);
+
+  	prtd->pos += snd_pcm_lib_period_bytes(substream);
+  	if (prtd->pos >= snd_pcm_lib_buffer_bytes(substream))
+  		prtd->pos = 0;
+
+  	snd_pcm_period_elapsed(substream);
++	mutex_unlock(&substream->pcm->open_mutex);
+  }
+
+  static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream 
+*substream)
+-- 
+1.7.0.4
+
+
+-- 
+
+Best Regards
+Qiao
