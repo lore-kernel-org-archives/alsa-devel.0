@@ -1,23 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] ASoC: pcm: Trigger all commands on error
-Date: Wed, 9 Oct 2013 15:59:17 +0100
-Message-ID: <20131009145917.GN21581@sirena.org.uk>
-References: <1380883997-18236-1-git-send-email-mpa@pengutronix.de>
- <20131007172706.GS21581@sirena.org.uk>
- <20131008082933.GA19005@pengutronix.de>
- <20131008093413.GX21581@sirena.org.uk>
- <20131008094839.GB19005@pengutronix.de>
- <20131008104457.GA21581@sirena.org.uk>
- <20131009130553.GD19005@pengutronix.de>
- <20131009132004.GL21581@sirena.org.uk>
- <20131009141242.GE19005@pengutronix.de>
+From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+Subject: [PATCH] ASoC: mc13783: add mixer controls
+Date: Wed,  9 Oct 2013 17:01:44 +0200
+Message-ID: <1381330904-26389-1-git-send-email-s.trumtrar@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0836673370725589355=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id CA6D52654D6
- for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2013 16:59:23 +0200 (CEST)
-In-Reply-To: <20131009141242.GE19005@pengutronix.de>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id E76942654D6
+ for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2013 17:01:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,63 +18,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: kernel@pengutronix.de, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Add more kcontrols for the alsa mixer infrastructure.
 
---===============0836673370725589355==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lpu0notPcOSkplGy"
-Content-Disposition: inline
+Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+---
+ sound/soc/codecs/mc13783.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-
---lpu0notPcOSkplGy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Oct 09, 2013 at 04:12:42PM +0200, Markus Pargmann wrote:
-> On Wed, Oct 09, 2013 at 02:20:04PM +0100, Mark Brown wrote:
-
-> > I'm not sure what you mean here.  How would the error be handled without
-> > calling _STOP?
-
-> The START error should be handled in mxs_saif and there shouldn't be a
-> _STOP call for mxs_saif_trigger afterwards to handle the failed START.
-
-How would the framework know that the error has been handled - what
-tells it that the error returned is for an error that has been handled
-as opposed to an error that has not been handled?
-
---lpu0notPcOSkplGy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSVW9CAAoJELSic+t+oim9DG4P/jEmJBGwBBrEkzHg9XgUhACE
-7hZUufjtT4iEgfE2racxkrYE4lv0gNxzcxDJtTydZI6K2wOYC56A/JLsG6DCj+As
-YTLag2m5NY5CidH0pYfgPiA1ttuuTUJ0cEfI5O0SOVTdFQ4rniBPAvYqpUXvFguL
-V3VE5AKBQ5mbT8BGnWUxOs0RuvOfwiXQjdRYNFQqg0T5DUCaRruzNivHRRfUSh8c
-hI21qgKlSnja8v6lQnb4ZrIC9BX8+KuEh5qFCwwp4EXhChVcUI0Li2Q2VlqhVJxj
-pi+SfZ+Z87pTluHvGgJ100IObSxIo/TRukH4ZtQM0sPtUGsF4iRkiuJTqsyEEa5Z
-kZR+bNyNtRrCkX8/hG0wi2bdkRKAIc0Q1yOM3qaW/WHLuLGVc4S9u/g5Y/0+Y1nR
-TZKb8qe93cyKot3cI1gutfSWsFpTKKz8yenApW9nhtFGwDeFjb6DIVRaOimBfgTo
-SelSx9UB5D3lPBJ7oqm5wXc0+lbRpW+KabxzoNEdpIAi4RuAGXksVbaF7WwMTp7M
-bbBFkM73Sddjk9XToL5cHz9dqC6TUFPSqcazymjavzbS9SY+3pOXu/AnVZrgtk8j
-6EqTQDZstgN/3hit1SooPTl2xU8hAolR5QdRsiY+eEN+1IyyNYICVQ8pAStL83Os
-fIgNoa/0N/ZKqbiJaRKu
-=er1n
------END PGP SIGNATURE-----
-
---lpu0notPcOSkplGy--
-
---===============0836673370725589355==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0836673370725589355==--
+diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
+index eedbf05..fafe999 100644
+--- a/sound/soc/codecs/mc13783.c
++++ b/sound/soc/codecs/mc13783.c
+@@ -534,6 +534,30 @@ static struct snd_soc_dapm_route mc13783_routes[] = {
+ static const char * const mc13783_3d_mixer[] = {"Stereo", "Phase Mix",
+ 						"Mono", "Mono Mix"};
+ 
++static const char * const mc13783_alsp[] = {"Off", "Codec", "Right"};
++
++static const char * const mc13783_ahs[] = {"Codec", "Mixer"};
++
++static const struct soc_enum mc13783_enum_asp =
++	SOC_ENUM_SINGLE(MC13783_AUDIO_RX0, 4, ARRAY_SIZE(mc13783_alsp),
++			mc13783_alsp);
++
++static const struct soc_enum mc13783_enum_alsp =
++	SOC_ENUM_SINGLE(MC13783_AUDIO_RX0, 7, ARRAY_SIZE(mc13783_alsp),
++			mc13783_alsp);
++
++static const struct soc_enum mc13783_enum_ahs =
++	SOC_ENUM_SINGLE(MC13783_AUDIO_RX0, 11, ARRAY_SIZE(mc13783_ahs),
++			mc13783_ahs);
++
++static const struct soc_enum mc13783_enum_arxout =
++	SOC_ENUM_SINGLE(MC13783_AUDIO_RX0, 17, ARRAY_SIZE(mc13783_ahs),
++			mc13783_ahs);
++
++static const struct soc_enum mc13783_enum_codec =
++	SOC_ENUM_SINGLE(MC13783_AUDIO_RX1, 4, ARRAY_SIZE(mc13783_alsp),
++			mc13783_alsp);
++
+ static const struct soc_enum mc13783_enum_3d_mixer =
+ 	SOC_ENUM_SINGLE(MC13783_AUDIO_RX1, 16, ARRAY_SIZE(mc13783_3d_mixer),
+ 			mc13783_3d_mixer);
+@@ -541,8 +565,32 @@ static const struct soc_enum mc13783_enum_3d_mixer =
+ static struct snd_kcontrol_new mc13783_control_list[] = {
+ 	SOC_SINGLE("Loudspeaker enable", MC13783_AUDIO_RX0, 5, 1, 0),
+ 	SOC_SINGLE("PCM Playback Volume", MC13783_AUDIO_RX1, 6, 15, 0),
++	SOC_SINGLE("PCM Playback Switch", MC13783_AUDIO_RX1, 5, 1, 0),
+ 	SOC_DOUBLE("PCM Capture Volume", MC13783_AUDIO_TX, 19, 14, 31, 0),
+ 	SOC_ENUM("3D Control", mc13783_enum_3d_mixer),
++	SOC_ENUM("Earpiece Switch", mc13783_enum_asp),
++	SOC_ENUM("Loudspeaker Switch", mc13783_enum_alsp),
++
++	SOC_ENUM("Headset Switch", mc13783_enum_ahs),
++	SOC_SINGLE("Headset Amp Right Switch", MC13783_AUDIO_RX0, 9, 1, 0),
++	SOC_SINGLE("Headset Amp Left Switch", MC13783_AUDIO_RX0, 10, 1, 0),
++
++	SOC_ENUM("Line out Amp Switch", mc13783_enum_arxout),
++	SOC_SINGLE("Line out Amp Right Switch", MC13783_AUDIO_RX0, 15, 1, 0),
++	SOC_SINGLE("Line out Amp Left Switch", MC13783_AUDIO_RX0, 16, 1, 0),
++
++	SOC_SINGLE("Codec Capture Mix Switch", MC13783_AUDIO_RX0, 21, 1, 0),
++	SOC_SINGLE("PCM Capture Mix Switch", MC13783_AUDIO_RX0, 22, 1, 0),
++	SOC_SINGLE("Line in Capture Mix Switch", MC13783_AUDIO_RX0, 23, 1, 0),
++
++	SOC_SINGLE("Codec Capture Volume", MC13783_AUDIO_RX1, 1, 15, 0),
++	SOC_SINGLE("Codec Capture Switch", MC13783_AUDIO_RX1, 0, 1, 0),
++
++	SOC_SINGLE("PGA Capture Volume", MC13783_AUDIO_RX1, 12, 15, 0),
++	SOC_SINGLE("PGA Capture Switch", MC13783_AUDIO_RX1, 10, 1, 0),
++
++	SOC_SINGLE("MC1 Capture Bias Switch", MC13783_AUDIO_TX, 0, 1, 0),
++	SOC_SINGLE("MC2 Capture Bias Switch", MC13783_AUDIO_TX, 1, 1, 0),
+ };
+ 
+ static int mc13783_probe(struct snd_soc_codec *codec)
+-- 
+1.8.4.rc3
