@@ -1,114 +1,70 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: async between dmaengine_pcm_dma_complete and
-	snd_pcm_release
-Date: Wed, 09 Oct 2013 10:30:14 +0200
-Message-ID: <52551416.9020004@metafoo.de>
-References: <525505C2.4070201@marvell.com> <5255119D.9020303@metafoo.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v4 08/10] ARM/dts: am33xx: mcasp: Add location for data
+ port registers to reg-property
+Date: Wed, 9 Oct 2013 11:29:44 +0300
+Message-ID: <525513F8.1040103@ti.com>
+References: <cover.1381259962.git.jsarha@ti.com> <37c7ee5f2eab24df86baba1bd36da66c5a637744.1381259962.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-202.synserver.de (smtp-out-202.synserver.de
- [212.40.185.202])
- by alsa0.perex.cz (Postfix) with ESMTP id A3F112607BB
- for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2013 10:28:16 +0200 (CEST)
-In-Reply-To: <5255119D.9020303@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Qiao Zhou <zhouqiao@marvell.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>, trinity.qiao.zhou@gmail.com, Chao Xie <cxie4@marvell.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <37c7ee5f2eab24df86baba1bd36da66c5a637744.1381259962.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: linux-omap@vger.kernel.org, broonie@kernel.org, mark.rutland@arm.com, joelf@ti.com, "Hebbar, Gururaja" <gururaja.hebbar@ti.com>, Darren Etheridge <detheridge@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/09/2013 10:19 AM, Lars-Peter Clausen wrote:
-> On 10/09/2013 09:29 AM, Qiao Zhou wrote:
->> Hi Mark, Liam, Jaroslav, Takashi
->>
->> I met an issue in which kernel panic appears in dmaengine_pcm_dma_complete
->> function on a quad-core system. The dmaengine_pcm_dma_complete is running
->> core0, while snd_pcm_release has already been executed on core1, due to in
->> low memory stress oom killer kills the audio thread to release some memory.
->>
->> snd_pcm_release frees the runtime parameters, and runtime is used in
->> dmaengine_pcm_dma_complete, which is a callback from tasklet in dmaengine.
->> In current audio driver, we can't promise that dmaengine_pcm_dma_complete is
->> not executed after snd_pcm_release on multi cores. Maybe we should add some
->> protection. Do you have any suggestion?
->>
->> I have tried to apply below workaround, which can fix the panic, but I'm not
->> confident it's proper. Need your comment and better suggestion.
-> 
-> I think this is a general problem with your dmaengine driver, nothing audio
-> specific. If the callback is able to run after dmaengine_terminate_all() has
-> returned successfully there is a bug in the dmaengine driver. You need to
-> make sure that none of the callbacks is called after terminate_all() has
-> finished and you probably also have to make sure that the tasklet has
-> completed, if it is running at the same time as the call to
-> dmaengine_terminate_all().
+On 10/08/2013 10:36 PM, Jyri Sarha wrote:
+> This patch adds a second tuple to reg property. The new property tupl=
+e
+> describes the memory location for data port registers mapped trough
+> L3 bus on am33xx. The both property tuples are named accordingly in
+> the reg-names property.
+>=20
+> Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
+> Signed-off-by: Darren Etheridge <detheridge@ti.com>
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> ---
+>  arch/arm/boot/dts/am33xx.dtsi |    8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx=
+=2Edtsi
+> index 22659e7..c8ba19e 100644
+> --- a/arch/arm/boot/dts/am33xx.dtsi
+> +++ b/arch/arm/boot/dts/am33xx.dtsi
+> @@ -671,7 +671,9 @@
+>  		mcasp0: mcasp@48038000 {
+>  			compatible =3D "ti,omap2-mcasp-audio";
+>  			ti,hwmods =3D "mcasp0";
+> -			reg =3D <0x48038000 0x2000>;
+> +			reg =3D <0x48038000 0x2000>,
+> +			      <0x46400000 0x400000>;
 
-On the other hand that last part could get tricky as the
-dmaengine_terminate_all() might be call from within the callback.
+mcasp0 data port is at 0x46000000. 0x46400000 is for mcasp1.
 
-> 
-> - Lars
-> 
-> 
->>
->>
->> From d568a88e8f66ee21d44324bdfb48d2a3106cf0d1 Mon Sep 17 00:00:00 2001
->> From: Qiao Zhou <zhouqiao@marvell.com>
->> Date: Wed, 9 Oct 2013 15:24:29 +0800
->> Subject: [PATCH] ASoC: soc-dmaengine: add mutex to protect runtime param
->>
->> under SMP arch, the dmaengine_pcm_dma_complete callback has the
->> chance to run on one cpu while at the same time, the substream is
->> released on another cpu. thus it may access param which is already
->> freed. we need to add mutes to protect such access, and check PCM
->> availability before using it.
->>
->> Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
->> ---
->>  sound/soc/soc-dmaengine-pcm.c |   11 ++++++++++-
->>  1 files changed, 10 insertions(+), 1 deletions(-)
->>
->> diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
->> index 111b7d9..5917029 100644
->> --- a/sound/soc/soc-dmaengine-pcm.c
->> +++ b/sound/soc/soc-dmaengine-pcm.c
->> @@ -125,13 +125,22 @@ EXPORT_SYMBOL_GPL(snd_hwparams_to_dma_slave_config);
->>  static void dmaengine_pcm_dma_complete(void *arg)
->>  {
->>      struct snd_pcm_substream *substream = arg;
->> -    struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
->> +    struct dmaengine_pcm_runtime_data *prtd;
->> +
->> +    mutex_lock(&substream->pcm->open_mutex);
->> +    if (!substream || !substream->runtime) {
->> +        mutex_unlock(&substream->pcm->open_mutex);
->> +        return;
->> +    }
->> +
->> +    prtd = substream_to_prtd(substream);
->>
->>      prtd->pos += snd_pcm_lib_period_bytes(substream);
->>      if (prtd->pos >= snd_pcm_lib_buffer_bytes(substream))
->>          prtd->pos = 0;
->>
->>      snd_pcm_period_elapsed(substream);
->> +    mutex_unlock(&substream->pcm->open_mutex);
->>  }
->>
->>  static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream
->> *substream)
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+> +			reg-names =3D "mpu", "dat";
+>  			interrupts =3D <80>, <81>;
+>  			interrupts-names =3D "tx", "rx";
+>  			status =3D "disabled";
+> @@ -683,7 +685,9 @@
+>  		mcasp1: mcasp@4803C000 {
+>  			compatible =3D "ti,omap2-mcasp-audio";
+>  			ti,hwmods =3D "mcasp1";
+> -			reg =3D <0x4803C000 0x2000>;
+> +			reg =3D <0x4803C000 0x2000>,
+> +			      <0x46400000 0x400000>;
+> +			reg-names =3D "mpu", "dat";
+>  			interrupts =3D <82>, <83>;
+>  			interrupts-names =3D "tx", "rx";
+>  			status =3D "disabled";
+>=20
+
+
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
