@@ -1,53 +1,109 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: mc13783: add mixer controls
-Date: Wed, 09 Oct 2013 17:21:40 +0200
-Message-ID: <52557484.1070808@metafoo.de>
-References: <1381330904-26389-1-git-send-email-s.trumtrar@pengutronix.de>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v4.2 10/10] ARM/dts: am335x-evmsk: Audio support
+Date: Wed, 9 Oct 2013 18:58:38 +0300
+Message-ID: <1381334318-12559-1-git-send-email-jsarha@ti.com>
+References: <f389f285899dce8aa7651e79dc26d8f8748a4525.1381259962.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-205.synserver.de (smtp-out-205.synserver.de
- [212.40.185.205])
- by alsa0.perex.cz (Postfix) with ESMTP id BB5A0261603
- for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2013 17:19:43 +0200 (CEST)
-In-Reply-To: <1381330904-26389-1-git-send-email-s.trumtrar@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <f389f285899dce8aa7651e79dc26d8f8748a4525.1381259962.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: linux-omap@vger.kernel.org, broonie@kernel.org, mark.rutland@arm.com, joelf@ti.com, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/09/2013 05:01 PM, Steffen Trumtrar wrote:
-> [...]
-> +
-> +static const struct soc_enum mc13783_enum_asp =
-> +	SOC_ENUM_SINGLE(MC13783_AUDIO_RX0, 4, ARRAY_SIZE(mc13783_alsp),
-> +			mc13783_alsp);
-> +
-> +static const struct soc_enum mc13783_enum_alsp =
-> +	SOC_ENUM_SINGLE(MC13783_AUDIO_RX0, 7, ARRAY_SIZE(mc13783_alsp),
-> +			mc13783_alsp);
-> +
-> +static const struct soc_enum mc13783_enum_ahs =
-> +	SOC_ENUM_SINGLE(MC13783_AUDIO_RX0, 11, ARRAY_SIZE(mc13783_ahs),
-> +			mc13783_ahs);
-> +
-> +static const struct soc_enum mc13783_enum_arxout =
-> +	SOC_ENUM_SINGLE(MC13783_AUDIO_RX0, 17, ARRAY_SIZE(mc13783_ahs),
-> +			mc13783_ahs);
-> +
-> +static const struct soc_enum mc13783_enum_codec =
-> +	SOC_ENUM_SINGLE(MC13783_AUDIO_RX1, 4, ARRAY_SIZE(mc13783_alsp),
-> +			mc13783_alsp);
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-For bonus points use SOC_ENUM_SINGLE_DECL(...) ;)
+AM335x EVM-SK have only support for audio playback (stereo jack on the
+board) via tlv320aic3106 codec connected to McASP1.
+Enable the support for audio playback on the board:
+- McASP1 configuration
+- tlv320aic3106 configuration
+- Machine driver.
 
-- Lars
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
+---
+ arch/arm/boot/dts/am335x-evmsk.dts |   48 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+
+diff --git a/arch/arm/boot/dts/am335x-evmsk.dts b/arch/arm/boot/dts/am335x-evmsk.dts
+index 4f339fa..9e570fb 100644
+--- a/arch/arm/boot/dts/am335x-evmsk.dts
++++ b/arch/arm/boot/dts/am335x-evmsk.dts
+@@ -158,6 +158,15 @@
+ 				0x14c (PIN_INPUT_PULLDOWN | MUX_MODE7)
+ 			>;
+ 		};
++
++		mcasp1_pins: mcasp1_pins {
++			pinctrl-single,pins = <
++				0x10c (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_crs.mcasp1_aclkx */
++				0x110 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_rxerr.mcasp1_fsx */
++				0x108 (PIN_OUTPUT_PULLDOWN | MUX_MODE4) /* mii1_col.mcasp1_axr2 */
++				0x144 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* rmii1_ref_clk.mcasp1_axr3 */
++			>;
++		};
+ 	};
+ 
+ 	ocp {
+@@ -206,6 +215,18 @@
+ 				st,max-limit-y = <550>;
+ 				st,max-limit-z = <750>;
+ 			};
++
++			tlv320aic3106: tlv320aic3106@1b {
++				compatible = "ti,tlv320aic3106";
++				reg = <0x1b>;
++				status = "okay";
++
++				/* Regulators */
++				AVDD-supply = <&vaux2_reg>;
++				IOVDD-supply = <&vaux2_reg>;
++				DRVDD-supply = <&vaux2_reg>;
++				DVDD-supply = <&vbat>;
++			};
+ 		};
+ 
+ 		musb: usb@47400000 {
+@@ -233,6 +254,17 @@
+ 				pinctrl-0 = <&ecap2_pins>;
+ 			};
+ 		};
++
++		sound {
++			compatible = "ti,da830-evm-audio";
++			ti,model = "AM335x-EVMSK";
++			ti,audio-codec = <&tlv320aic3106>;
++			ti,mcasp-controller = <&mcasp1>;
++			ti,codec-clock-rate = <24576000>;
++			ti,audio-routing =
++				"Headphone Jack",       "HPLOUT",
++				"Headphone Jack",       "HPROUT";
++		};
+ 	};
+ 
+ 	vbat: fixedregulator@0 {
+@@ -419,3 +451,19 @@
+ 	phy_id = <&davinci_mdio>, <1>;
+ 	phy-mode = "rgmii-txid";
+ };
++
++&mcasp1 {
++		pinctrl-names = "default";
++		pinctrl-0 = <&mcasp1_pins>;
++
++		status = "okay";
++
++		op-mode = <0>;          /* MCASP_IIS_MODE */
++		tdm-slots = <2>;
++		/* 4 serializers */
++		serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
++			0 0 1 2
++		>;
++		tx-num-evt = <1>;
++		rx-num-evt = <1>;
++};
+-- 
+1.7.9.5
+
