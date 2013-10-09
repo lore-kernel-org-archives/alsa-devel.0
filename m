@@ -1,57 +1,103 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v4 09/10] ARM/dts: am335x-evm: Add audio support for am335x-evm.dts
-Date: Wed, 9 Oct 2013 11:12:11 +0300
-Message-ID: <52550FDB.4010401@ti.com>
-References: <cover.1381259962.git.jsarha@ti.com> <1acef783bb6add9598add8214edd70f15e66e4ad.1381259962.git.jsarha@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: async between dmaengine_pcm_dma_complete and
+	snd_pcm_release
+Date: Wed, 09 Oct 2013 10:19:41 +0200
+Message-ID: <5255119D.9020303@metafoo.de>
+References: <525505C2.4070201@marvell.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1acef783bb6add9598add8214edd70f15e66e4ad.1381259962.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
-Cc: linux-omap@vger.kernel.org, broonie@kernel.org, mark.rutland@arm.com, joelf@ti.com, Darren Etheridge <detheridge@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-202.synserver.de (smtp-out-202.synserver.de
+ [212.40.185.202])
+ by alsa0.perex.cz (Postfix) with ESMTP id 308272607BB
+ for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2013 10:17:45 +0200 (CEST)
+In-Reply-To: <525505C2.4070201@marvell.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Qiao Zhou <zhouqiao@marvell.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>, trinity.qiao.zhou@gmail.com, Chao Xie <cxie4@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jyri,
+On 10/09/2013 09:29 AM, Qiao Zhou wrote:
+> Hi Mark, Liam, Jaroslav, Takashi
+> 
+> I met an issue in which kernel panic appears in dmaengine_pcm_dma_complete
+> function on a quad-core system. The dmaengine_pcm_dma_complete is running
+> core0, while snd_pcm_release has already been executed on core1, due to in
+> low memory stress oom killer kills the audio thread to release some memory.
+> 
+> snd_pcm_release frees the runtime parameters, and runtime is used in
+> dmaengine_pcm_dma_complete, which is a callback from tasklet in dmaengine.
+> In current audio driver, we can't promise that dmaengine_pcm_dma_complete is
+> not executed after snd_pcm_release on multi cores. Maybe we should add some
+> protection. Do you have any suggestion?
+> 
+> I have tried to apply below workaround, which can fix the panic, but I'm not
+> confident it's proper. Need your comment and better suggestion.
 
-On 10/08/2013 10:36 PM, Jyri Sarha wrote:
-> @@ -407,6 +442,25 @@
-> =20
->  #include "tps65910.dtsi"
-> =20
-> +&mcasp1 {
-> +		pinctrl-names =3D "default";
-> +		pinctrl-0 =3D <&am335x_evm_audio_pins>;
+I think this is a general problem with your dmaengine driver, nothing audio
+specific. If the callback is able to run after dmaengine_terminate_all() has
+returned successfully there is a bug in the dmaengine driver. You need to
+make sure that none of the callbacks is called after terminate_all() has
+finished and you probably also have to make sure that the tasklet has
+completed, if it is running at the same time as the call to
+dmaengine_terminate_all().
+
+- Lars
+
+
+> 
+> 
+> From d568a88e8f66ee21d44324bdfb48d2a3106cf0d1 Mon Sep 17 00:00:00 2001
+> From: Qiao Zhou <zhouqiao@marvell.com>
+> Date: Wed, 9 Oct 2013 15:24:29 +0800
+> Subject: [PATCH] ASoC: soc-dmaengine: add mutex to protect runtime param
+> 
+> under SMP arch, the dmaengine_pcm_dma_complete callback has the
+> chance to run on one cpu while at the same time, the substream is
+> released on another cpu. thus it may access param which is already
+> freed. we need to add mutes to protect such access, and check PCM
+> availability before using it.
+> 
+> Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
+> ---
+>  sound/soc/soc-dmaengine-pcm.c |   11 ++++++++++-
+>  1 files changed, 10 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
+> index 111b7d9..5917029 100644
+> --- a/sound/soc/soc-dmaengine-pcm.c
+> +++ b/sound/soc/soc-dmaengine-pcm.c
+> @@ -125,13 +125,22 @@ EXPORT_SYMBOL_GPL(snd_hwparams_to_dma_slave_config);
+>  static void dmaengine_pcm_dma_complete(void *arg)
+>  {
+>      struct snd_pcm_substream *substream = arg;
+> -    struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
+> +    struct dmaengine_pcm_runtime_data *prtd;
 > +
-> +		status =3D "okay";
+> +    mutex_lock(&substream->pcm->open_mutex);
+> +    if (!substream || !substream->runtime) {
+> +        mutex_unlock(&substream->pcm->open_mutex);
+> +        return;
+> +    }
 > +
-> +		op-mode =3D <0>;          /* MCASP_IIS_MODE */
-> +		tdm-slots =3D <2>;
-> +		/* 16 serializer */
-> +		serial-dir =3D <  /* 0: INACTIVE, 1: TX, 2: RX */
-> +			0 0 1 2
-> +			0 0 0 0
-> +			0 0 0 0
-> +			0 0 0 0
-> +		>;
-
-The McASP on AM335x have only 4 serializers.
-
-> +		tx-num-evt =3D <1>;
-> +		rx-num-evt =3D <1>;
-> +};
-> +
->  &tps {
->  	vcc1-supply =3D <&vbat>;
->  	vcc2-supply =3D <&vbat>;
->=20
-
-
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> +    prtd = substream_to_prtd(substream);
+> 
+>      prtd->pos += snd_pcm_lib_period_bytes(substream);
+>      if (prtd->pos >= snd_pcm_lib_buffer_bytes(substream))
+>          prtd->pos = 0;
+> 
+>      snd_pcm_period_elapsed(substream);
+> +    mutex_unlock(&substream->pcm->open_mutex);
+>  }
+> 
+>  static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream
+> *substream)
