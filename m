@@ -1,14 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: dapm: Use async I/O for DAPM sequences
-Date: Wed,  9 Oct 2013 14:01:44 +0100
-Message-ID: <1381323704-11448-1-git-send-email-broonie@kernel.org>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [RFC] ASoC: pcm: Trigger all commands on error
+Date: Wed, 9 Oct 2013 15:05:53 +0200
+Message-ID: <20131009130553.GD19005@pengutronix.de>
+References: <1380883997-18236-1-git-send-email-mpa@pengutronix.de>
+ <20131007172706.GS21581@sirena.org.uk>
+ <20131008082933.GA19005@pengutronix.de>
+ <20131008093413.GX21581@sirena.org.uk>
+ <20131008094839.GB19005@pengutronix.de>
+ <20131008104457.GA21581@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 09C072654CA
- for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2013 15:01:56 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B41BC2610A3
+ for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2013 15:05:57 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20131008104457.GA21581@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,117 +26,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: kernel@pengutronix.de, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On Tue, Oct 08, 2013 at 11:44:57AM +0100, Mark Brown wrote:
+> On Tue, Oct 08, 2013 at 11:48:39AM +0200, Markus Pargmann wrote:
+> > On Tue, Oct 08, 2013 at 10:34:13AM +0100, Mark Brown wrote:
+> 
+> > > I meant just unwinding the things done in the trigger call.
+> 
+> > You mean unwinding when we detect the error? If we return the
+> > error code from the trigger function, the pcm_native.c will still
+> > trigger a STOP command which is executed on all components.
+> 
+> Sure, but it's another way of getting consistency and does seem a bit
+> more obvious.
 
-Within a DAPM sequence we normally don't care about when exactly a register
-write has completed so long as they happen in the order we requested. This
-means that we can issue most of the writes we do asynchronously which
-should maximise the ability of the underlying frameworks to keep the
-hardware busy, providing a small performance improvement on some systems.
+It is still not consistent as we get an additional STOP after cleanly
+unwinding the START:
 
-We currently ensure that all writes are completed both when changing to a
-different device and when calling into the regulator and clock frameworks.
-This should ensure that the previous ordering is maintained.
+snd_pcm_do_start()
+    soc_pcm_trigger() # START
+        codec_dai->driver->ops->trigger() # START
+	platform->driver->ops->trigger() # Assuming an error here
 
-We also ensure that writes are completed prior to calling into widget
-event functions since some event functions implement delays.  This
-should be improved in future so that widgets can disable this sync in
-order to add extra writes.
+	unwind:
+        codec_dai->driver->ops->trigger() # STOP
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
+A failed snd_pcm_do_start() is detected, so undo_start is called:
 
-xvdfvsd
----
- sound/soc/soc-dapm.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+snd_pcm_undo_start()
+    soc_pcm_trigger() # STOP
+        codec_dai->driver->ops->trigger() # STOP
+	platform->driver->ops->trigger() # STOP
+	cpu_dai->driver->ops->trigger() # STOP
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 25b9554..905e4c5 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -409,6 +409,12 @@ static inline void soc_widget_unlock(struct snd_soc_dapm_widget *w)
- 		mutex_unlock(&w->platform->mutex);
- }
- 
-+static void soc_dapm_async_complete(struct snd_soc_dapm_context *dapm)
-+{
-+	if (dapm->codec && dapm->codec->using_regmap)
-+		regmap_async_complete(dapm->codec->control_data);
-+}
-+
- static int soc_widget_update_bits_locked(struct snd_soc_dapm_widget *w,
- 	unsigned short reg, unsigned int mask, unsigned int value)
- {
-@@ -417,8 +423,9 @@ static int soc_widget_update_bits_locked(struct snd_soc_dapm_widget *w,
- 	int ret;
- 
- 	if (w->codec && w->codec->using_regmap) {
--		ret = regmap_update_bits_check(w->codec->control_data,
--					       reg, mask, value, &change);
-+		ret = regmap_update_bits_check_async(w->codec->control_data,
-+						     reg, mask, value,
-+						     &change);
- 		if (ret != 0)
- 			return ret;
- 	} else {
-@@ -1201,6 +1208,8 @@ int dapm_regulator_event(struct snd_soc_dapm_widget *w,
- {
- 	int ret;
- 
-+	soc_dapm_async_complete(w->dapm);
-+
- 	if (SND_SOC_DAPM_EVENT_ON(event)) {
- 		if (w->on_val & SND_SOC_DAPM_REGULATOR_BYPASS) {
- 			ret = regulator_allow_bypass(w->regulator, false);
-@@ -1234,6 +1243,8 @@ int dapm_clock_event(struct snd_soc_dapm_widget *w,
- 	if (!w->clk)
- 		return -EIO;
- 
-+	soc_dapm_async_complete(w->dapm);
-+
- #ifdef CONFIG_HAVE_CLK
- 	if (SND_SOC_DAPM_EVENT_ON(event)) {
- 		return clk_prepare_enable(w->clk);
-@@ -1426,6 +1437,7 @@ static void dapm_seq_check_event(struct snd_soc_card *card,
- 	if (w->event && (w->event_flags & event)) {
- 		pop_dbg(w->dapm->dev, card->pop_time, "pop test : %s %s\n",
- 			w->name, ev_name);
-+		soc_dapm_async_complete(w->dapm);
- 		trace_snd_soc_dapm_widget_event_start(w, event);
- 		ret = w->event(w, NULL, event);
- 		trace_snd_soc_dapm_widget_event_done(w, event);
-@@ -1498,6 +1510,7 @@ static void dapm_seq_run(struct snd_soc_card *card,
- 	struct list_head *list, int event, bool power_up)
- {
- 	struct snd_soc_dapm_widget *w, *n;
-+	struct snd_soc_dapm_context *d;
- 	LIST_HEAD(pending);
- 	int cur_sort = -1;
- 	int cur_subseq = -1;
-@@ -1528,6 +1541,9 @@ static void dapm_seq_run(struct snd_soc_card *card,
- 								       cur_subseq);
- 			}
- 
-+			if (cur_dapm && w->dapm != cur_dapm)
-+				soc_dapm_async_complete(cur_dapm);
-+
- 			INIT_LIST_HEAD(&pending);
- 			cur_sort = -1;
- 			cur_subseq = INT_MIN;
-@@ -1586,6 +1602,10 @@ static void dapm_seq_run(struct snd_soc_card *card,
- 				cur_dapm->seq_notifier(cur_dapm,
- 						       i, cur_subseq);
- 	}
-+
-+	list_for_each_entry(d, &card->dapm_list, list) {
-+		soc_dapm_async_complete(d);
-+	}
- }
- 
- static void dapm_widget_update(struct snd_soc_card *card)
+Now all component trigger functions are called without a matching START
+command.
+
+> 
+> > > > Another possibility is to explicitly allow multiple _STOPs. Then I could
+> > > > fix the driver to store the clock state. But I would prefer a generic
+> > > > solution.
+> 
+> > > You're going to have to handle this anyway to be robust - what happens
+> > > if it's the clock enable that fails?
+> 
+> > If clk_enable fails, we can return an error code in the mxs-saif trigger
+> > function. Of course the error handling is missing here, but it is not
+> > necessary to store the state of the clock to handle errors properly.
+> 
+> Right, but then _STOP will be called without the clock having been
+> successfully enabled so you'll have an unbalanced clk_disable().
+
+_STOP is only called as long as the error handling is not working
+properly. Otherwise STOP should not be called for a failed START.
+
+Regards,
+
+Markus
+
 -- 
-1.8.4.rc3
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
