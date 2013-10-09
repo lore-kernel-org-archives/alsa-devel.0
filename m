@@ -1,14 +1,15 @@
-From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-Subject: [PATCH] ASoC: mc13783: add mixer controls
-Date: Wed,  9 Oct 2013 17:01:44 +0200
-Message-ID: <1381330904-26389-1-git-send-email-s.trumtrar@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: mc13783: add mixer controls
+Date: Wed, 9 Oct 2013 16:13:36 +0100
+Message-ID: <20131009151336.GO21581@sirena.org.uk>
+References: <1381330904-26389-1-git-send-email-s.trumtrar@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4539616843360800513=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id E76942654D6
- for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2013 17:01:52 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FEAE2654E1
+ for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2013 17:13:45 +0200 (CEST)
+In-Reply-To: <1381330904-26389-1-git-send-email-s.trumtrar@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,84 +19,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>
+To: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add more kcontrols for the alsa mixer infrastructure.
 
-Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
----
- sound/soc/codecs/mc13783.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+--===============4539616843360800513==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="R4k3HSW7UfPFhwix"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
-index eedbf05..fafe999 100644
---- a/sound/soc/codecs/mc13783.c
-+++ b/sound/soc/codecs/mc13783.c
-@@ -534,6 +534,30 @@ static struct snd_soc_dapm_route mc13783_routes[] = {
- static const char * const mc13783_3d_mixer[] = {"Stereo", "Phase Mix",
- 						"Mono", "Mono Mix"};
- 
-+static const char * const mc13783_alsp[] = {"Off", "Codec", "Right"};
-+
-+static const char * const mc13783_ahs[] = {"Codec", "Mixer"};
-+
-+static const struct soc_enum mc13783_enum_asp =
-+	SOC_ENUM_SINGLE(MC13783_AUDIO_RX0, 4, ARRAY_SIZE(mc13783_alsp),
-+			mc13783_alsp);
-+
-+static const struct soc_enum mc13783_enum_alsp =
-+	SOC_ENUM_SINGLE(MC13783_AUDIO_RX0, 7, ARRAY_SIZE(mc13783_alsp),
-+			mc13783_alsp);
-+
-+static const struct soc_enum mc13783_enum_ahs =
-+	SOC_ENUM_SINGLE(MC13783_AUDIO_RX0, 11, ARRAY_SIZE(mc13783_ahs),
-+			mc13783_ahs);
-+
-+static const struct soc_enum mc13783_enum_arxout =
-+	SOC_ENUM_SINGLE(MC13783_AUDIO_RX0, 17, ARRAY_SIZE(mc13783_ahs),
-+			mc13783_ahs);
-+
-+static const struct soc_enum mc13783_enum_codec =
-+	SOC_ENUM_SINGLE(MC13783_AUDIO_RX1, 4, ARRAY_SIZE(mc13783_alsp),
-+			mc13783_alsp);
-+
- static const struct soc_enum mc13783_enum_3d_mixer =
- 	SOC_ENUM_SINGLE(MC13783_AUDIO_RX1, 16, ARRAY_SIZE(mc13783_3d_mixer),
- 			mc13783_3d_mixer);
-@@ -541,8 +565,32 @@ static const struct soc_enum mc13783_enum_3d_mixer =
- static struct snd_kcontrol_new mc13783_control_list[] = {
- 	SOC_SINGLE("Loudspeaker enable", MC13783_AUDIO_RX0, 5, 1, 0),
- 	SOC_SINGLE("PCM Playback Volume", MC13783_AUDIO_RX1, 6, 15, 0),
-+	SOC_SINGLE("PCM Playback Switch", MC13783_AUDIO_RX1, 5, 1, 0),
- 	SOC_DOUBLE("PCM Capture Volume", MC13783_AUDIO_TX, 19, 14, 31, 0),
- 	SOC_ENUM("3D Control", mc13783_enum_3d_mixer),
-+	SOC_ENUM("Earpiece Switch", mc13783_enum_asp),
-+	SOC_ENUM("Loudspeaker Switch", mc13783_enum_alsp),
-+
-+	SOC_ENUM("Headset Switch", mc13783_enum_ahs),
-+	SOC_SINGLE("Headset Amp Right Switch", MC13783_AUDIO_RX0, 9, 1, 0),
-+	SOC_SINGLE("Headset Amp Left Switch", MC13783_AUDIO_RX0, 10, 1, 0),
-+
-+	SOC_ENUM("Line out Amp Switch", mc13783_enum_arxout),
-+	SOC_SINGLE("Line out Amp Right Switch", MC13783_AUDIO_RX0, 15, 1, 0),
-+	SOC_SINGLE("Line out Amp Left Switch", MC13783_AUDIO_RX0, 16, 1, 0),
-+
-+	SOC_SINGLE("Codec Capture Mix Switch", MC13783_AUDIO_RX0, 21, 1, 0),
-+	SOC_SINGLE("PCM Capture Mix Switch", MC13783_AUDIO_RX0, 22, 1, 0),
-+	SOC_SINGLE("Line in Capture Mix Switch", MC13783_AUDIO_RX0, 23, 1, 0),
-+
-+	SOC_SINGLE("Codec Capture Volume", MC13783_AUDIO_RX1, 1, 15, 0),
-+	SOC_SINGLE("Codec Capture Switch", MC13783_AUDIO_RX1, 0, 1, 0),
-+
-+	SOC_SINGLE("PGA Capture Volume", MC13783_AUDIO_RX1, 12, 15, 0),
-+	SOC_SINGLE("PGA Capture Switch", MC13783_AUDIO_RX1, 10, 1, 0),
-+
-+	SOC_SINGLE("MC1 Capture Bias Switch", MC13783_AUDIO_TX, 0, 1, 0),
-+	SOC_SINGLE("MC2 Capture Bias Switch", MC13783_AUDIO_TX, 1, 1, 0),
- };
- 
- static int mc13783_probe(struct snd_soc_codec *codec)
--- 
-1.8.4.rc3
+
+--R4k3HSW7UfPFhwix
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Oct 09, 2013 at 05:01:44PM +0200, Steffen Trumtrar wrote:
+
+> +static const char * const mc13783_alsp[] = {"Off", "Codec", "Right"};
+> +
+> +static const char * const mc13783_ahs[] = {"Codec", "Mixer"};
+
+What are these - these look like they might be DAPM rather than regular
+controls?
+
+> +	SOC_SINGLE("Headset Amp Right Switch", MC13783_AUDIO_RX0, 9, 1, 0),
+> +	SOC_SINGLE("Headset Amp Left Switch", MC13783_AUDIO_RX0, 10, 1, 0),
+
+I would expect these to be stereo controls rather than two mono
+controls?
+
+> +	SOC_ENUM("Line out Amp Switch", mc13783_enum_arxout),
+
+Switches shouldn't be enums.
+
+> +	SOC_SINGLE("Codec Capture Mix Switch", MC13783_AUDIO_RX0, 21, 1, 0),
+
+CODEC and Codec seem to be getting mixed in the file.
+
+--R4k3HSW7UfPFhwix
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSVXKdAAoJELSic+t+oim9SO8P/1oEZuEumQA6GVRjs5Q+uRrJ
++wz7oOe1m15eDX6K6LAVJmzaOVacnm3JW+EoXmLXKELD4OnONeENPP5H1Gq0uJDh
++i8MpbB8FE+7QbfO7CTWA8Q0b2AQEeKKKuBUo44M6dBDOi/gdOFNDjqb0yS0adIo
+yHVYFR+QAw+ipQV0YDDAZbJVNLQCTQuzNW0O9mmZO9EH5G2PcM/tChWbNjeqAJE/
+M7tTX0V3sBhBzOoT20TCjcCGzt7ADMMtIXKO9JNA8BeHILGbuFJsyPivPWZWjamC
+9atfhEB8WDQso2CC4DibAF/bFd6+ZSfdiWyEz8aTiAk7ijITrNN7lq2j+IBEOzzj
+EYFMl33H6ZAkbhuI9j/01FxExdmRv9N7aqQz5ZXQOry2nQ2T/v9VbUxWs0Q3lgzJ
+NMzzGiAExnSYAtb+V8QQSJLklDy9zx8Kl5ED/dNqQ2xMOsRRdFppRhv94pQzVAzb
+2uFH8lB0YytAbxzOsDKdwfr5i6S1330+zny9pNaaHLgzhGYgg8CYMTrjdSb5e2A4
+/PHUE5WIUOwLv2WY1SgdneOy0yifNxvNzUruQLwIMlcbMYFlkn/3GjwjZRGpkryY
+AI44PPGWvup7lJz0Lj3G/dcnh4S0MqJbbbPUhpgj1tZ1pRgAWoFPSXGcW318dYE1
+6k3fuWlgh2kjCEPrf6sH
+=jga6
+-----END PGP SIGNATURE-----
+
+--R4k3HSW7UfPFhwix--
+
+--===============4539616843360800513==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4539616843360800513==--
