@@ -1,109 +1,81 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH v4.2 10/10] ARM/dts: am335x-evmsk: Audio support
-Date: Wed, 9 Oct 2013 18:58:38 +0300
-Message-ID: <1381334318-12559-1-git-send-email-jsarha@ti.com>
-References: <f389f285899dce8aa7651e79dc26d8f8748a4525.1381259962.git.jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC v2] ASoC: pcm: Store component running state
+Date: Wed, 9 Oct 2013 19:22:02 +0100
+Message-ID: <20131009182202.GX21581@sirena.org.uk>
+References: <20131009141242.GE19005@pengutronix.de>
+ <1381329076-12022-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <f389f285899dce8aa7651e79dc26d8f8748a4525.1381259962.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
-Cc: linux-omap@vger.kernel.org, broonie@kernel.org, mark.rutland@arm.com, joelf@ti.com, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>
+Content-Type: multipart/mixed; boundary="===============5118718572696327203=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4CC63261609
+ for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2013 20:22:09 +0200 (CEST)
+In-Reply-To: <1381329076-12022-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-AM335x EVM-SK have only support for audio playback (stereo jack on the
-board) via tlv320aic3106 codec connected to McASP1.
-Enable the support for audio playback on the board:
-- McASP1 configuration
-- tlv320aic3106 configuration
-- Machine driver.
+--===============5118718572696327203==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HxEkdbCoFEDbFH5U"
+Content-Disposition: inline
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- arch/arm/boot/dts/am335x-evmsk.dts |   48 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
 
-diff --git a/arch/arm/boot/dts/am335x-evmsk.dts b/arch/arm/boot/dts/am335x-evmsk.dts
-index 4f339fa..9e570fb 100644
---- a/arch/arm/boot/dts/am335x-evmsk.dts
-+++ b/arch/arm/boot/dts/am335x-evmsk.dts
-@@ -158,6 +158,15 @@
- 				0x14c (PIN_INPUT_PULLDOWN | MUX_MODE7)
- 			>;
- 		};
-+
-+		mcasp1_pins: mcasp1_pins {
-+			pinctrl-single,pins = <
-+				0x10c (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_crs.mcasp1_aclkx */
-+				0x110 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_rxerr.mcasp1_fsx */
-+				0x108 (PIN_OUTPUT_PULLDOWN | MUX_MODE4) /* mii1_col.mcasp1_axr2 */
-+				0x144 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* rmii1_ref_clk.mcasp1_axr3 */
-+			>;
-+		};
- 	};
- 
- 	ocp {
-@@ -206,6 +215,18 @@
- 				st,max-limit-y = <550>;
- 				st,max-limit-z = <750>;
- 			};
-+
-+			tlv320aic3106: tlv320aic3106@1b {
-+				compatible = "ti,tlv320aic3106";
-+				reg = <0x1b>;
-+				status = "okay";
-+
-+				/* Regulators */
-+				AVDD-supply = <&vaux2_reg>;
-+				IOVDD-supply = <&vaux2_reg>;
-+				DRVDD-supply = <&vaux2_reg>;
-+				DVDD-supply = <&vbat>;
-+			};
- 		};
- 
- 		musb: usb@47400000 {
-@@ -233,6 +254,17 @@
- 				pinctrl-0 = <&ecap2_pins>;
- 			};
- 		};
-+
-+		sound {
-+			compatible = "ti,da830-evm-audio";
-+			ti,model = "AM335x-EVMSK";
-+			ti,audio-codec = <&tlv320aic3106>;
-+			ti,mcasp-controller = <&mcasp1>;
-+			ti,codec-clock-rate = <24576000>;
-+			ti,audio-routing =
-+				"Headphone Jack",       "HPLOUT",
-+				"Headphone Jack",       "HPROUT";
-+		};
- 	};
- 
- 	vbat: fixedregulator@0 {
-@@ -419,3 +451,19 @@
- 	phy_id = <&davinci_mdio>, <1>;
- 	phy-mode = "rgmii-txid";
- };
-+
-+&mcasp1 {
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mcasp1_pins>;
-+
-+		status = "okay";
-+
-+		op-mode = <0>;          /* MCASP_IIS_MODE */
-+		tdm-slots = <2>;
-+		/* 4 serializers */
-+		serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
-+			0 0 1 2
-+		>;
-+		tx-num-evt = <1>;
-+		rx-num-evt = <1>;
-+};
--- 
-1.7.9.5
+--HxEkdbCoFEDbFH5U
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Wed, Oct 09, 2013 at 04:31:16PM +0200, Markus Pargmann wrote:
+> Store the state of the components to detect not matching START/STOP
+> command pairs. Otherwise a component's trigger function may be called
+> twice with the same command which can lead to problems.
+
+> This is a patch which stores the state of platform, cpu_dai and codec_dai to
+> call their trigger functions only if they are not already in the correct state.
+
+No, this seems way too complex and fragile.  The original idea was
+better though I'm still not convinced it actually fixes the problem you
+think it fixes.
+
+--HxEkdbCoFEDbFH5U
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSVZ7HAAoJELSic+t+oim9EfwP+wYy3vm420vlz5D0ySoxGu9U
+Qqvs+bDJO47sC0rtwCdK6dyml7UdqjCcHkF51P9NirPXvwhVAGfx17mGhVf1t50o
+uz2Mn3j3/xdnfLWHnpRxc2oqNekq7mTMyGAJvZ4Q36dg/n11oedwPa5vMkJr60+k
+6eu+bErPybRp1Ab+NGkufYc1XfflHSbRCIngBY6Q4GHfnozV0ZFGSaisBvkZ0SUd
+W5Ud+QR9j7+6LTys074hHV+YXEWKRRaMN8GvSHGh1hvyPGXtcN92RcHi6WnJRVql
+O0q3lBmjs29ZLrjvNU69hZ+TWre8tEefsB/T9UtGZ1bEv0ybtQMIHXPu1Y1Eaq0u
+vby5zKK6xhUroOvVxRPssPkOb6GYQBGSnc85s5nuYK0b4828ljaWZh+alBHRxTza
+fEgezVyQBEfu4OE6Fnwuk8I7KxNNDSoSjkcrJCrjwWdHoQoNclAzC+/6I9ZNNa7r
+acG8YkvvfziJbTA7RWT63wYrECTUD5HPlKJAB0diLQqfbpTmgYHMtZC+QOV0NPjr
+mU6QMK0e56TYmyYlhixP0LsMvXaSfWzwQewufejDMqmDHPqT8h/mnGDaH2k1Ah4m
+DYLnU/6IXhOEuEOVSirPgOoQ5yWutAVW2GDdnArtucrTsxaXNbdMMpYv6W7FOqL7
+6NyBsyWv70ze/tK+oVSL
+=L+OZ
+-----END PGP SIGNATURE-----
+
+--HxEkdbCoFEDbFH5U--
+
+--===============5118718572696327203==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5118718572696327203==--
