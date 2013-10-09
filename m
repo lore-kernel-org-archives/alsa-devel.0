@@ -1,32 +1,111 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: [alsa-devel] no reset_resume for driver snd-usb-audio for logitech
- headset H600
-Date: Wed, 9 Oct 2013 10:33:06 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1310091028340.1371-100000@iolanthe.rowland.org>
-References: <525516D5.6030200@ladisch.de>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v4.2 09/10] ARM/dts: am335x-evm: Add audio support for am335x-evm.dts
+Date: Wed, 9 Oct 2013 17:32:54 +0300
+Message-ID: <1381329174-9556-1-git-send-email-jsarha@ti.com>
+References: <1381322701-8851-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <525516D5.6030200-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1381322701-8851-1-git-send-email-jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: linux-omap@vger.kernel.org, broonie@kernel.org, mark.rutland@arm.com, joelf@ti.com, Darren Etheridge <detheridge@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 9 Oct 2013, Clemens Ladisch wrote:
+From: Darren Etheridge <detheridge@ti.com>
 
-> And why does the kernel whine about the lack of a callback that is
-> documented as being optional?
+Adds sound, tlv320aic3106, mcasp1, and am335x_evm_audio_pin nodes.
 
-It might indeed be a good idea to change that dev_warn() statement to 
-dev_dbg().  On the other hand, without that message this particular 
-failure might have been harder to diagnose.
+Signed-off-by: Darren Etheridge <detheridge@ti.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
+---
+ arch/arm/boot/dts/am335x-evm.dts |   51 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
 
-Does anybody have strong feelings either way?
+diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
+index e8ec875..814b3e9 100644
+--- a/arch/arm/boot/dts/am335x-evm.dts
++++ b/arch/arm/boot/dts/am335x-evm.dts
+@@ -149,6 +149,16 @@
+ 				0x14c (PIN_INPUT_PULLDOWN | MUX_MODE7)
+ 			>;
+ 		};
++
++		am335x_evm_audio_pins: am335x_evm_audio_pins {
++			pinctrl-single,pins = <
++				0x10c (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_rx_dv.mcasp1_aclkx */
++				0x110 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_txd3.mcasp1_fsx */
++				0x108 (PIN_OUTPUT_PULLDOWN | MUX_MODE4) /* mii1_col.mcasp1_axr2 */
++				0x144 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* rmii1_ref_clk.mcasp1_axr3 */
++			>;
++		};
++
+ 	};
+ 
+ 	ocp {
+@@ -244,6 +254,18 @@
+ 				compatible = "ti,tmp275";
+ 				reg = <0x48>;
+ 			};
++
++			tlv320aic3106: tlv320aic3106@1b {
++				compatible = "ti,tlv320aic3106";
++				reg = <0x1b>;
++				status = "okay";
++
++				/* Regulators */
++				AVDD-supply = <&vaux2_reg>;
++				IOVDD-supply = <&vaux2_reg>;
++				DRVDD-supply = <&vaux2_reg>;
++				DVDD-supply = <&vbat>;
++			};
+ 		};
+ 
+ 		elm: elm@48080000 {
+@@ -340,6 +362,19 @@
+ 				};
+ 			};
+ 		};
++
++		sound {
++			compatible = "ti,da830-evm-audio";
++			ti,model = "AM335x-EVM";
++			ti,audio-codec = <&tlv320aic3106>;
++			ti,mcasp-controller = <&mcasp1>;
++			ti,codec-clock-rate = <12000000>;
++			ti,audio-routing =
++				"Headphone Jack",       "HPLOUT",
++				"Headphone Jack",       "HPROUT",
++				"LINE1L",               "Line In",
++				"LINE1R",               "Line In";
++		};
+ 	};
+ 
+ 	vbat: fixedregulator@0 {
+@@ -407,6 +442,22 @@
+ 
+ #include "tps65910.dtsi"
+ 
++&mcasp1 {
++		pinctrl-names = "default";
++		pinctrl-0 = <&am335x_evm_audio_pins>;
++
++		status = "okay";
++
++		op-mode = <0>;          /* MCASP_IIS_MODE */
++		tdm-slots = <2>;
++		/* 4 serializers */
++		serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
++			0 0 1 2
++		>;
++		tx-num-evt = <1>;
++		rx-num-evt = <1>;
++};
++
+ &tps {
+ 	vcc1-supply = <&vbat>;
+ 	vcc2-supply = <&vbat>;
+-- 
+1.7.9.5
 
-Alan Stern
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
