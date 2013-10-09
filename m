@@ -1,61 +1,116 @@
-From: <y@dflp33.itg.ti.com>
-Subject: [PATCH v4.1 08/10] ARM/dts: am33xx: mcasp: Add location for data port registers to reg-property
-Date: Wed, 9 Oct 2013 15:44:34 +0300
-Message-ID: <9643.4214887724$1381322724@news.gmane.org>
-References: <525513F8.1040103@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: dapm: Run clock and regulator events
+	separately to other supplies
+Date: Wed,  9 Oct 2013 14:01:19 +0100
+Message-ID: <1381323679-11390-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <525513F8.1040103-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, "Hebbar, Gururaja" <gururaja.hebbar-l0cyMroinI0@public.gmane.org>, Darren Etheridge <detheridge-l0cyMroinI0@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13B742610D4
+ for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2013 15:01:28 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+From: Mark Brown <broonie@linaro.org>
 
-This patch adds a second tuple to reg property. The new property tuple
-describes the memory location for data port registers mapped trough
-L3 bus on am33xx. The both property tuples are named accordingly in
-the reg-names property.
+In order to avoid trying to use an external clock or supply for an
+on-chip supply prior to it being enabled move the clock and regulator
+supply events to a separate step in DAPM sequencing from normal supply
+events.
 
-Signed-off-by: Hebbar, Gururaja <gururaja.hebbar-l0cyMroinI0@public.gmane.org>
-Signed-off-by: Darren Etheridge <detheridge-l0cyMroinI0@public.gmane.org>
-Signed-off-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+This should have minimal practical impact since these widgets are sorted
+using SND_SOC_NOPM which is a negative value and hence sorted
+separately to any real register writes, though it may be relevant if
+supplies have event callbacks only.
+
+Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- arch/arm/boot/dts/am33xx.dtsi |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/soc-dapm.c | 50 +++++++++++++++++++++++++-------------------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
 
-diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
-index 22659e7..4a86762 100644
---- a/arch/arm/boot/dts/am33xx.dtsi
-+++ b/arch/arm/boot/dts/am33xx.dtsi
-@@ -671,7 +671,9 @@
- 		mcasp0: mcasp@48038000 {
- 			compatible = "ti,omap2-mcasp-audio";
- 			ti,hwmods = "mcasp0";
--			reg = <0x48038000 0x2000>;
-+			reg = <0x48038000 0x2000>,
-+			      <0x46000000 0x400000>;
-+			reg-names = "mpu", "dat";
- 			interrupts = <80>, <81>;
- 			interrupts-names = "tx", "rx";
- 			status = "disabled";
-@@ -683,7 +685,9 @@
- 		mcasp1: mcasp@4803C000 {
- 			compatible = "ti,omap2-mcasp-audio";
- 			ti,hwmods = "mcasp1";
--			reg = <0x4803C000 0x2000>;
-+			reg = <0x4803C000 0x2000>,
-+			      <0x46400000 0x400000>;
-+			reg-names = "mpu", "dat";
- 			interrupts = <82>, <83>;
- 			interrupts-names = "tx", "rx";
- 			status = "disabled";
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 905e4c5..eb26d5a 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -59,31 +59,31 @@ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+ /* dapm power sequences - make this per codec in the future */
+ static int dapm_up_seq[] = {
+ 	[snd_soc_dapm_pre] = 0,
+-	[snd_soc_dapm_supply] = 1,
+ 	[snd_soc_dapm_regulator_supply] = 1,
+ 	[snd_soc_dapm_clock_supply] = 1,
+-	[snd_soc_dapm_micbias] = 2,
++	[snd_soc_dapm_supply] = 2,
++	[snd_soc_dapm_micbias] = 3,
+ 	[snd_soc_dapm_dai_link] = 2,
+-	[snd_soc_dapm_dai_in] = 3,
+-	[snd_soc_dapm_dai_out] = 3,
+-	[snd_soc_dapm_aif_in] = 3,
+-	[snd_soc_dapm_aif_out] = 3,
+-	[snd_soc_dapm_mic] = 4,
+-	[snd_soc_dapm_mux] = 5,
+-	[snd_soc_dapm_virt_mux] = 5,
+-	[snd_soc_dapm_value_mux] = 5,
+-	[snd_soc_dapm_dac] = 6,
+-	[snd_soc_dapm_switch] = 7,
+-	[snd_soc_dapm_mixer] = 7,
+-	[snd_soc_dapm_mixer_named_ctl] = 7,
+-	[snd_soc_dapm_pga] = 8,
+-	[snd_soc_dapm_adc] = 9,
+-	[snd_soc_dapm_out_drv] = 10,
+-	[snd_soc_dapm_hp] = 10,
+-	[snd_soc_dapm_spk] = 10,
+-	[snd_soc_dapm_line] = 10,
+-	[snd_soc_dapm_kcontrol] = 11,
+-	[snd_soc_dapm_post] = 12,
++	[snd_soc_dapm_dai_in] = 4,
++	[snd_soc_dapm_dai_out] = 4,
++	[snd_soc_dapm_aif_in] = 4,
++	[snd_soc_dapm_aif_out] = 4,
++	[snd_soc_dapm_mic] = 5,
++	[snd_soc_dapm_mux] = 6,
++	[snd_soc_dapm_virt_mux] = 6,
++	[snd_soc_dapm_value_mux] = 6,
++	[snd_soc_dapm_dac] = 7,
++	[snd_soc_dapm_switch] = 8,
++	[snd_soc_dapm_mixer] = 8,
++	[snd_soc_dapm_mixer_named_ctl] = 8,
++	[snd_soc_dapm_pga] = 9,
++	[snd_soc_dapm_adc] = 10,
++	[snd_soc_dapm_out_drv] = 11,
++	[snd_soc_dapm_hp] = 11,
++	[snd_soc_dapm_spk] = 11,
++	[snd_soc_dapm_line] = 11,
++	[snd_soc_dapm_kcontrol] = 12,
++	[snd_soc_dapm_post] = 13,
+ };
+ 
+ static int dapm_down_seq[] = {
+@@ -109,10 +109,10 @@ static int dapm_down_seq[] = {
+ 	[snd_soc_dapm_dai_in] = 10,
+ 	[snd_soc_dapm_dai_out] = 10,
+ 	[snd_soc_dapm_dai_link] = 11,
+-	[snd_soc_dapm_clock_supply] = 12,
+-	[snd_soc_dapm_regulator_supply] = 12,
+ 	[snd_soc_dapm_supply] = 12,
+-	[snd_soc_dapm_post] = 13,
++	[snd_soc_dapm_clock_supply] = 13,
++	[snd_soc_dapm_regulator_supply] = 13,
++	[snd_soc_dapm_post] = 14,
+ };
+ 
+ static void pop_wait(u32 pop_time)
 -- 
-1.7.9.5
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.8.4.rc3
