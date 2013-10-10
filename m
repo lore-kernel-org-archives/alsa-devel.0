@@ -1,21 +1,16 @@
-From: Qiao Zhou <zhouqiao@marvell.com>
-Subject: Re: async between dmaengine_pcm_dma_complete and
-	snd_pcm_release
-Date: Thu, 10 Oct 2013 13:54:12 +0800
-Message-ID: <52564104.9050007@marvell.com>
-References: <525505C2.4070201@marvell.com> <5255119D.9020303@metafoo.de>
- <52551416.9020004@metafoo.de> <52552EA5.4010109@marvell.com>
- <52553738.9000200@metafoo.de> <5255FD3E.8040009@marvell.com>
- <20131010025625.GW2954@intel.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Enable surround speakers (when
+	line out is also present)
+Date: Thu, 10 Oct 2013 09:01:25 +0200
+Message-ID: <1381388485-3649-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com
- [67.231.156.173])
- by alsa0.perex.cz (Postfix) with ESMTP id CDA54261729
- for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 07:54:36 +0200 (CEST)
-In-Reply-To: <20131010025625.GW2954@intel.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF5332617AB
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 09:01:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,36 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>, "trinity.qiao.zhou@gmail.com" <trinity.qiao.zhou@gmail.com>, Chao Xie <cxie4@marvell.com>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>, 1236965@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-On 10/10/2013 10:56 AM, Vinod Koul wrote:
-> On Thu, Oct 10, 2013 at 09:05:02AM +0800, Qiao Zhou wrote:
->> On 10/09/2013 07:00 PM, Lars-Peter Clausen wrote:
->>> I think we'll eventually need to versions of dmaengine_terminate_all(). A
->>> sync version which makes sure that the tasklet has finished and a non-sync
->>> version that only makes sure that no new callbacks are started. I think the
->>> sync version should be the default with an optional async version which must
->>> be used, if it can run from within the callback. So we'd call the async
->>> version in the pcm_trigger callback and the sync version in the pcm_close
->>> callback.
->> In our current dmaengine driver, the dma interrupt is disabled in
->> terminate_all, so there is no new callback after it. This is the
->> async version. Takashi also mentions the requirement for such sync
->> version. I'll investigate the sync version more. thanks a lot.
-> Your issue seems to be more on the case callback has been onvoked while the
-> terminate_all in processing and after that case when sound core freed the
-> pointers. If you get a new callback after the terminate_all then taht would only
-> be a driver bug!
-Agree. No new callback should be invoked after terminate_all.
->
-> --
-> ~Vinod
->
+In the case where we have both line out and more than stereo speakers,
+the speaker DACs will end up in extra_out_nid.
+In fact, AFAIU, speakers are the only ones that can end up in extra_out_nid,
+and if we have several of those, they should be surround outputs
+rather than copy front.
 
+BugLink: https://bugs.launchpad.net/bugs/1236965
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_codec.c |   19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
+Notes:
+ * Thanks to Raymond Yau for the pointer
+ * Not tested (yet), except in hda-emu
+ * Not sure if this should be sent to stable or not, given that it is a change of behaviour
+ * Alsainfo available here:
+   https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1236965/+attachment/3867946/+files/alsaInfoWhenAudioPlaybackFailing.txt
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 5b6c4e3..68801ba 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -5395,11 +5395,6 @@ int snd_hda_multi_out_analog_prepare(struct hda_codec *codec,
+ 			snd_hda_codec_setup_stream(codec,
+ 						   mout->hp_out_nid[i],
+ 						   stream_tag, 0, format);
+-	for (i = 0; i < ARRAY_SIZE(mout->extra_out_nid); i++)
+-		if (!mout->no_share_stream && mout->extra_out_nid[i])
+-			snd_hda_codec_setup_stream(codec,
+-						   mout->extra_out_nid[i],
+-						   stream_tag, 0, format);
+ 
+ 	/* surrounds */
+ 	for (i = 1; i < mout->num_dacs; i++) {
+@@ -5410,6 +5405,20 @@ int snd_hda_multi_out_analog_prepare(struct hda_codec *codec,
+ 			snd_hda_codec_setup_stream(codec, nids[i], stream_tag,
+ 						   0, format);
+ 	}
++
++	/* extra surrounds */
++	for (i = 0; i < ARRAY_SIZE(mout->extra_out_nid); i++) {
++		int ch = 0;
++		if (!mout->extra_out_nid[i])
++			break;
++		if (chs >= (i + 1) * 2)
++			ch = i * 2;
++		else if (!mout->no_share_stream)
++			break;
++		snd_hda_codec_setup_stream(codec, mout->extra_out_nid[i],
++					   stream_tag, ch, format);
++	}
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_HDA(snd_hda_multi_out_analog_prepare);
 -- 
-
-Best Regards
-Qiao
+1.7.9.5
