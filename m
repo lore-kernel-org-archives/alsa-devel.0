@@ -1,17 +1,22 @@
-From: Jason Steigler <drsteigler@gmail.com>
-Subject: ALSA: HDA Control and node attachment
-Date: Thu, 10 Oct 2013 15:31:30 -0400
-Message-ID: <CAPOintU8g1xyQrRBnmnXGon+3ern7=PpbYe=5JQy08L0JDef0Q@mail.gmail.com>
+From: =?UTF-8?Q?Petri_J=C3=A4rvisalo?= <petri.jarvisalo@gmail.com>
+Subject: Re: Fast Track Ultra 8r...
+Date: Fri, 11 Oct 2013 00:55:12 +0300
+Message-ID: <CAAsyid18JgtFpG1pxSz6wkcZ=u7Ojej4B3ywqDWJJ7P1ijQonQ@mail.gmail.com>
+References: <CAAsyid1UrqG=7zEL2QMz=q4NEKb6A3n8Wp5E4b3LPkr_GF3Q3g@mail.gmail.com>
+ <CAFz=ag5aCshs6WJAksartBXfkUpocYEw5WknT=AStP0aFPo35g@mail.gmail.com>
+ <CAAsyid35weXqn1amGKz2vEYDYBP6tHqTq1yBsWEUtCpx6iWF3A@mail.gmail.com>
+ <CAFz=ag6SdfRTK_FNwWcwtUy2TPmq=nQNH8KEqMfSbbmZOi9PWw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f195.google.com (mail-wi0-f195.google.com
- [209.85.212.195])
- by alsa0.perex.cz (Postfix) with ESMTP id D13AA26172D
- for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 21:31:30 +0200 (CEST)
-Received: by mail-wi0-f195.google.com with SMTP id hq15so572900wib.10
- for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 12:31:30 -0700 (PDT)
+Received: from mail-ie0-f181.google.com (mail-ie0-f181.google.com
+ [209.85.223.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id E5CB22655D9
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 23:55:13 +0200 (CEST)
+Received: by mail-ie0-f181.google.com with SMTP id tp5so6314971ieb.40
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 14:55:12 -0700 (PDT)
+In-Reply-To: <CAFz=ag6SdfRTK_FNwWcwtUy2TPmq=nQNH8KEqMfSbbmZOi9PWw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,35 +26,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-I was wondering if it's possible from user-space to change which node a
-control is attached to.  In older ALSA (1.0.23), I had used the
-'3stack-6ch-dig' model to get 6 channel audio for an "Realtek ALC662 rev 1"
-codec.  I had configured the front panel mic (node 0x19) to be an output
-using hda-verb that could be controlled by the Center and LFE mixer
-controls.  The board also has jacks on the back and one of those would
-match the audio coming out the front.  When I change the volume or mute the
-controls, they both were affected (which I expected/wanted).
-
-With newer ALSA (1.0.24 with debian Wheezy's stock kernel), the model
-'3stack-6ch-dig' doesn't exist, but the codec can be configured to 6
-channels.  I have made the same adjustments with hda-verb to make the node
-an output.  The volume control works for the 'front' and 'rear' jacks, but
-only muting works on the 'rear' jack.  I noticed that the control nodes for
-Center and LFE are not the same between the 2 setups.  In the older
-version, they were tied to node 0x0e (Audio Mixer), and with the newer
-version node 0x18 (which looks like the 'Rear Mic' jack).
-
-I am not knowledgeable of the details of the HDA codec (yet), and am mostly
-curious if they can be changed in user-space or if I'll have to start
-learning the HDA codec code and try to find a way to move the controls
-around.  I tried using hda-jack-retask and could assign the mic nodes as
-outputs, but wasn't sure if it would allow me to move controls on the HDA
-graph.
-
-Thanks in advance!
-Jason
+MjAxMy8xMC8xMCBGZWxpeCBIb21hbm4gPGxpbnV4YXVkaW9Ac2hvd2xhYm9yLmRlPgoKPgo+IEFt
+IDEwLjEwLjIwMTMgMTk6NDEgc2NocmllYiAiUGV0cmkgSsOkcnZpc2FsbyIgPHBldHJpLmphcnZp
+c2Fsb0BnbWFpbC5jb20+Ogo+Cj4gPgo+ID4gV2hlbiBwbHVnZ2luZyBpbiB0aGUgZGV2aWNlIGF0
+IG90aGVyIE9TLCB0aGUgaW50ZXJuYWwgcm91dGluZyBmb3IgaW5wdXRzCj4gaXMgZGlzYWJsZWQg
+YW5kIHNvZnR3YXJlIHJvdXRlcyBzdHJhaWdodCAxID0gMSB0byA4ID0gOCwgbGlrZSB0aGlzLCBh
+bmQKPiB0aGVyZSBpcyBubyBlZmZlY3RzIGFwcGxpZWQuCj4KPiBUaG9zZSBkZWZhdWx0cyBhcmUg
+dGhlIHdvcnN0IEkgY2FuIHRoaW5rIG9mIGZvciAqbXkqIHVzZSBjYXNlLiBUaGF0J3Mgd2h5Cj4g
+SSBoYXZlbid0IGltcGxlbWVudGVkIHRoZW0uIEkgZG8gZnVsbHkgYXBwcmVjaWF0ZSB0aGF0IHRo
+b3NlIHdvdWxkIGJlIHNhbmUKPiBkZWZhdWx0cyBmb3IgbWFueSBwZW9wbGUuIEkgd291bGRuJ3Qg
+bWluZCBhbnlvbmUgaW1wbGVtZW50aW5nIHRoZW0gaW4gQWxzYS4KPiBJdCdzIGp1c3QsIHdlbGws
+IEkgd29uJ3QgOy0pCj4KPiBXaGVuIEkgc3RhcnRlZCB3b3JraW5nIG9uIHRoZSBGVFUgbWl4ZXIg
+c3VwcG9ydCBJIGRpZG4ndCB0aGluayBhYm91dCB0aGUKPiBkZWZhdWx0cyBhdCBhbGwuIFRoZSBk
+ZWZhdWx0IHdlIGhhdmUgcmlnaHQgbm93IGFyZSB0aGUgb25lcyB5b3UgZ2V0IHdpdGhvdXQKPiBl
+eHBsaWNpdGx5IHNwZWNpZnlpbmcgYW55Lgo+Cj4gQnV0IGluIGZhY3QsIG5vdyBJIGNvbXBsZXRl
+bHkgZmVsbCBpbiBsb3ZlIHdpdGggdGhlc2UgaW5zYW5lIGRlZmF1bHRzOgo+IFRoZXkgZ2l2ZSBt
+ZSBhbiBpbnN0YW50IGFsZXJ0IHRoYXQgSSBoYXZlbid0IHJlc3RvcmVkIG15IHBlcnNvbmFsICdy
+aWdodCcKPiBzZXR0aW5ncyEgVGhhdCdzIG9mIGV4dHJlbWUgdmFsdWUgZm9yIG15IHB1cnBvc2Vz
+IGFzIEkgdXNlIHRoZSBkZXZpY2UKPiBtYWlubHkgb24gbGl2ZSBvY2Nhc2lvbnMgYW5kIHRoZSAn
+d3JvbmcnIHNldHRpbmdzIGNlcnRhaW5seSBjYW5ub3QgZ28KPiB1bm5vdGljZWQgaW4gdGhlIHNv
+dW5kY2hlY2suCj4KPiBTbyBhZ2FpbiwgYW55Ym9keSBpbnRlcmVzdGVkIGlzIGludml0ZWQgdG8g
+aW1wbGVtZW50IG5ldyBkZWZhdWx0cyBmb3IgdGhlCj4gRlRVLiBJIHdvbicgdCBvYmplY3QgYW55
+IGNob2ljZSwgaG93IGNvdWxkIEk/IEJ1dCBJIHdvbid0IGRvIGl0IG15c2VsZgo+IHNpbmNlIEkn
+bSBwZXJzb25hbGx5IHZlcnkgaGFwcHkgd2l0aCB0aGUgY3VycmVudCBzdGF0ZS4KPgo+IFJlZ2Fy
+ZHMsCj4gRmVsaXgKPgoKU28sCgp0aGUgb25seSBvcHRpb24gbGVmdCBmb3IgbWUgaXMgdG8gYXNr
+IGlmIHNvbWUga2luZCBwZXJzb24gd291bGQgcGF0Y2ggYW5kCmNoYW5nZSB0aGUgZGVmYXVsdCBz
+ZXR0aW5ncywgaSB0aGluayBpdCB3b3VsZCBzZXJ2ZSB0aGUgbWFqb3JpdHkgb2YgdXNlcnMKYW5k
+IGVhc2UgdGhlIHVzYWJpbGl0eSA6KQoKVGhhbmtzLApQZXRyaQpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
