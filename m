@@ -1,15 +1,21 @@
-From: John Spencer <maillist-alsa@barfooze.de>
-Subject: [PATCH] local.h: include sys/types.h to fix issues
-	with pcm.h
-Date: Thu, 10 Oct 2013 18:56:22 +0200
-Message-ID: <1381424182-26601-1-git-send-email-maillist-alsa@barfooze.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: async between dmaengine_pcm_dma_complete and
+ snd_pcm_release
+Date: Thu, 10 Oct 2013 21:40:10 +0530
+Message-ID: <20131010161010.GB2954@intel.com>
+References: <525505C2.4070201@marvell.com> <5255119D.9020303@metafoo.de>
+ <52551416.9020004@metafoo.de> <52552EA5.4010109@marvell.com>
+ <52553738.9000200@metafoo.de> <20131010025408.GV2954@intel.com>
+ <52565B5A.9020504@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from furnace.wzff.de (furnace.wzff.de [176.9.216.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D9EC2655ED
- for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 19:00:23 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0AA172619E4
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 19:03:00 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <52565B5A.9020504@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,30 +25,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: John Spencer <maillist-alsa@barfooze.de>
+To: Lars-Peter Clausen <lars@metafoo.de>, Dan J Williams <dan.j.williams@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Qiao Zhou <zhouqiao@marvell.com>, Mark Brown <broonie@kernel.org>, "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>, "trinity.qiao.zhou@gmail.com" <trinity.qiao.zhou@gmail.com>, Chao Xie <cxie4@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-sys/types.h is required for the u_int_XX types used by pcm.h.
-since a change in pcm.h is not desired, we add the inclusion
-to the header that includes pcm.h during build.
+On Thu, Oct 10, 2013 at 09:46:34AM +0200, Lars-Peter Clausen wrote:
 
-Signed-off-by: John Spencer <maillist-alsa@barfooze.de>
----
- include/local.h |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
++ Dan
 
-diff --git a/include/local.h b/include/local.h
-index f0db188..9464efa 100644
---- a/include/local.h
-+++ b/include/local.h
-@@ -31,6 +31,7 @@
- #include <endian.h>
- #include <stdarg.h>
- #include <sys/poll.h>
-+#include <sys/types.h>
- #include <errno.h>
- #include <linux/types.h>
- #include <linux/ioctl.h>
--- 
-1.7.3.4
+> [...]
+> > 
+> >>>> On the other hand that last part could get tricky as the
+> >>>> dmaengine_terminate_all() might be call from within the callback.
+> >>> It's tricky indeed in case xrun happens. we should avoid possible deadlock.
+> >>
+> >> I think we'll eventually need to versions of dmaengine_terminate_all(). A
+> >> sync version which makes sure that the tasklet has finished and a non-sync
+> >> version that only makes sure that no new callbacks are started. I think the
+> >> sync version should be the default with an optional async version which must
+> >> be used, if it can run from within the callback. So we'd call the async
+> >> version in the pcm_trigger callback and the sync version in the pcm_close
+> >> callback.
+> > Yes this can be done. We can name this disable_callback cmd. The cmd will tell
+> > dma driver to disable all callback on the channel. This can be invoked from the
+> > TRIGEGR_STOP and then terminate_all in the free
+> > 
+> 
+> I think we should make it the default behavior of dmaengine_terminate_all()
+> to wait for the tasklet to finish.
+No we cant since terminate can get invoked from callback itself!
+
+> Since this is what almost always want,
+> except in this case where you might end up calling dmaeinge_terminate_all()
+> from within the callback. Internally this can be implemented as two separate
+> commands. So leave the DMA_TERMINATE_ALL as it is and add a new
+> DMA_SYNC_CALLBACKS (or whatever it will be named) command. This command will
+> internally call tasklet_kill().
+Implementations will have tasklet for dmaengine and not per channel. So
+tasklet_kill is not option!
+
+>Then we have two new functions
+> dmaengine_terminate_all_async() which will just issue the DMA_TERMINATE_ALL
+> command, the other function is dmaengine_sync_callbacks() which will issue
+> the DMA_SYNC_CALLBACKS command. dmaengine_terminate_all() will then first
+> call dmaengine_terminate_all_async() and then dmaengine_sync_callbacks().
+> The ALSA code would have to be updated first to call
+> dmaengine_terminate_all_async() for TRIGGER_STOP and
+> dmaengine_sync_callbacks() on the pcm_close path.
+In order to avoid the complication for getting called from the callback itself,
+I was thinking that we tell dma driver explictly that from now on dont invoke
+the callbacks (we might be in callback context), then we return. DMA engine will
+not issue any new callbacks. And also give chance to existing callback to
+return.
+Then the client can safely call terminate_all() to abort the channel from non
+callback context!
+
+The only issue here is that we get called from callback context as well as
+thread of client and all this cna happen while callback is executing.
+
+This make API similistic IMO.
+
+--
+~Vinod
