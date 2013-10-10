@@ -1,22 +1,15 @@
-From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [RESEND PATCH v3 03/11] ASoC: davinci-mcasp: Add
- DMA register locations to DT
-Date: Thu, 10 Oct 2013 17:59:59 +0100
-Message-ID: <20131010165959.GB3910@e106331-lin.cambridge.arm.com>
-References: <cover.1379590035.git.jsarha@ti.com>
- <66bdda0c0b75d737d649260b9ec10f9f870c20cd.1379590036.git.jsarha@ti.com>
- <20131007214718.GA2976@kartoffel>
- <20131008004641.GV21581@sirena.org.uk>
+From: John Spencer <maillist-alsa@barfooze.de>
+Subject: [PATCH] local.h: include sys/types.h to fix issues
+	with pcm.h
+Date: Thu, 10 Oct 2013 18:56:22 +0200
+Message-ID: <1381424182-26601-1-git-send-email-maillist-alsa@barfooze.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
- [217.140.96.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 501E7261A27
- for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 19:00:01 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20131008004641.GV21581@sirena.org.uk>
+Received: from furnace.wzff.de (furnace.wzff.de [176.9.216.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D9EC2655ED
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 19:00:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,30 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "joelf@ti.com" <joelf@ti.com>, "jsarha@ti.com" <jsarha@ti.com>, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, Darren Etheridge <detheridge@ti.com>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: John Spencer <maillist-alsa@barfooze.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 08, 2013 at 01:46:41AM +0100, Mark Brown wrote:
-> On Mon, Oct 07, 2013 at 10:47:18PM +0100, Mark Rutland wrote:
-> > On Thu, Sep 26, 2013 at 08:18:28PM +0100, Jyri Sarha wrote:
-> 
-> > >  - interrupts : Interrupt number for McASP
-> 
-> > The device also seems to be able to generate multiple interrupts -- which
-> > interrupt does this actually cover?
-> 
-> > The driver doesn't seem to use it (by a grep of irq|interrupt). Have I missed
-> > something?
-> 
-> No, they're not actually of much practical use to us at the minute but
-> it was generally felt better to include the information and not use it
-> so that if someone does come up with a use for them then the trees for
-> deployed systems already have the information.
+sys/types.h is required for the u_int_XX types used by pcm.h.
+since a change in pcm.h is not desired, we add the inclusion
+to the header that includes pcm.h during build.
 
-Sure, but if this device can generate multiple interrupts, we should
-make it possible to describe all of them, unambiguously.
+Signed-off-by: John Spencer <maillist-alsa@barfooze.de>
+---
+ include/local.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Thanks,
-Mark.
+diff --git a/include/local.h b/include/local.h
+index f0db188..9464efa 100644
+--- a/include/local.h
++++ b/include/local.h
+@@ -31,6 +31,7 @@
+ #include <endian.h>
+ #include <stdarg.h>
+ #include <sys/poll.h>
++#include <sys/types.h>
+ #include <errno.h>
+ #include <linux/types.h>
+ #include <linux/ioctl.h>
+-- 
+1.7.3.4
