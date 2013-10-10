@@ -1,39 +1,97 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [RESEND PATCH v3 03/11] ASoC: davinci-mcasp: Add DMA register
- locations to DT
-Date: Thu, 10 Oct 2013 20:29:59 +0300
-Message-ID: <5256E417.7010403@ti.com>
-References: <cover.1379590035.git.jsarha@ti.com> <66bdda0c0b75d737d649260b9ec10f9f870c20cd.1379590036.git.jsarha@ti.com> <20131007214718.GA2976@kartoffel> <20131008004641.GV21581@sirena.org.uk> <20131010165959.GB3910@e106331-lin.cambridge.arm.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: async between dmaengine_pcm_dma_complete and
+	snd_pcm_release
+Date: Thu, 10 Oct 2013 19:53:33 +0200
+Message-ID: <5256E99D.1010207@metafoo.de>
+References: <525505C2.4070201@marvell.com> <5255119D.9020303@metafoo.de>
+ <52551416.9020004@metafoo.de> <52552EA5.4010109@marvell.com>
+ <52553738.9000200@metafoo.de> <20131010025408.GV2954@intel.com>
+ <52565B5A.9020504@metafoo.de> <20131010161010.GB2954@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20131010165959.GB3910@e106331-lin.cambridge.arm.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Rutland <mark.rutland@arm.com>, Mark Brown <broonie@kernel.org>
-Cc: "jsarha@ti.com" <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "joelf@ti.com" <joelf@ti.com>, "Hebbar, Gururaja" <gururaja.hebbar@ti.com>, Darren Etheridge <detheridge@ti.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailhost.informatik.uni-hamburg.de
+ (mailhost.informatik.uni-hamburg.de [134.100.9.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9DA8926171D
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 19:52:46 +0200 (CEST)
+In-Reply-To: <20131010161010.GB2954@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Qiao Zhou <zhouqiao@marvell.com>, Mark Brown <broonie@kernel.org>, "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>, "trinity.qiao.zhou@gmail.com" <trinity.qiao.zhou@gmail.com>, Dan J Williams <dan.j.williams@intel.com>, Chao Xie <cxie4@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/10/2013 07:59 PM, Mark Rutland wrote:
->> No, they're not actually of much practical use to us at the minute b=
-ut
->> it was generally felt better to include the information and not use =
-it
->> so that if someone does come up with a use for them then the trees f=
-or
->> deployed systems already have the information.
->=20
-> Sure, but if this device can generate multiple interrupts, we should
-> make it possible to describe all of them, unambiguously.
+On 10/10/2013 06:10 PM, Vinod Koul wrote:
+> On Thu, Oct 10, 2013 at 09:46:34AM +0200, Lars-Peter Clausen wrote:
+>
+> + Dan
+>
+>> [...]
+>>>
+>>>>>> On the other hand that last part could get tricky as the
+>>>>>> dmaengine_terminate_all() might be call from within the callback.
+>>>>> It's tricky indeed in case xrun happens. we should avoid possible deadlock.
+>>>>
+>>>> I think we'll eventually need to versions of dmaengine_terminate_all(). A
+>>>> sync version which makes sure that the tasklet has finished and a non-sync
+>>>> version that only makes sure that no new callbacks are started. I think the
+>>>> sync version should be the default with an optional async version which must
+>>>> be used, if it can run from within the callback. So we'd call the async
+>>>> version in the pcm_trigger callback and the sync version in the pcm_close
+>>>> callback.
+>>> Yes this can be done. We can name this disable_callback cmd. The cmd will tell
+>>> dma driver to disable all callback on the channel. This can be invoked from the
+>>> TRIGEGR_STOP and then terminate_all in the free
+>>>
+>>
+>> I think we should make it the default behavior of dmaengine_terminate_all()
+>> to wait for the tasklet to finish.
+> No we cant since terminate can get invoked from callback itself!
 
-This is why Jyri added them to the DT. They are not used by the Linux d=
-river,
-but the HW have interrupt lines (two of them: TX and RX).
+That's why I'm suggesting to introduce a dmaenigne_terminate_all_async() which 
+needs to be called in case
 
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+>> Since this is what almost always want,
+>> except in this case where you might end up calling dmaeinge_terminate_all()
+>> from within the callback. Internally this can be implemented as two separate
+>> commands. So leave the DMA_TERMINATE_ALL as it is and add a new
+>> DMA_SYNC_CALLBACKS (or whatever it will be named) command. This command will
+>> internally call tasklet_kill().
+> Implementations will have tasklet for dmaengine and not per channel. So
+> tasklet_kill is not option!
+
+Most drivers actually have the tasklet per channel.
+
+>
+>> Then we have two new functions
+>> dmaengine_terminate_all_async() which will just issue the DMA_TERMINATE_ALL
+>> command, the other function is dmaengine_sync_callbacks() which will issue
+>> the DMA_SYNC_CALLBACKS command. dmaengine_terminate_all() will then first
+>> call dmaengine_terminate_all_async() and then dmaengine_sync_callbacks().
+>> The ALSA code would have to be updated first to call
+>> dmaengine_terminate_all_async() for TRIGGER_STOP and
+>> dmaengine_sync_callbacks() on the pcm_close path.
+> In order to avoid the complication for getting called from the callback itself,
+> I was thinking that we tell dma driver explictly that from now on dont invoke
+> the callbacks (we might be in callback context), then we return. DMA engine will
+> not issue any new callbacks. And also give chance to existing callback to
+> return.
+> Then the client can safely call terminate_all() to abort the channel from non
+> callback context!
+
+But you'll gain nothing by that. The race condition still exists. You need a 
+mechanism to to synchronize the execution of the callback against 
+dmaengine_terminate_all(). One simple way for drivers with a per channel 
+tasklet is to use tasklet_kill() for this. But other possibilities also exists 
+as well.
+
+- Lars
