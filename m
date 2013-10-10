@@ -1,83 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: mc13783: add mixer controls
-Date: Thu, 10 Oct 2013 10:44:22 +0100
-Message-ID: <20131010094422.GE21581@sirena.org.uk>
-References: <1381330904-26389-1-git-send-email-s.trumtrar@pengutronix.de>
- <20131009151336.GO21581@sirena.org.uk>
- <20131010073411.GF14042@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6074777709895903447=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 08FBD26031E
- for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 11:44:30 +0200 (CEST)
-In-Reply-To: <20131010073411.GF14042@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 2/2] ALSA: hda - Fix microphone for Sony VAIO Pro 13 (Haswell model)
+Date: Thu, 10 Oct 2013 12:19:24 +0200
+Message-ID: <1381400364-6067-2-git-send-email-david.henningsson@canonical.com>
+References: <1381400364-6067-1-git-send-email-david.henningsson@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1381400364-6067-1-git-send-email-david.henningsson@canonical.com>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: 1227093@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The external mic showed up with a precense detect of "always present",
+essentially disabling the internal mic. Therefore turn off presence
+detection for this pin.
 
---===============6074777709895903447==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ez1fCABS8b19cfNB"
-Content-Disposition: inline
+Note: The external mic seems not yet working, but an internal mic is
+certainly better than no mic at all.
 
+Cc: stable@vger.kernel.org
+BugLink: https://bugs.launchpad.net/bugs/1227093
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---ez1fCABS8b19cfNB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Note: when doing stable backports, the two lines ".chained = true" and
+".chain_id = ALC269_FIXUP_HEADSET_MIC" can be dropped.
 
-On Thu, Oct 10, 2013 at 09:34:11AM +0200, Steffen Trumtrar wrote:
-> On Wed, Oct 09, 2013 at 04:13:36PM +0100, Mark Brown wrote:
-
-> > > +	SOC_ENUM("Line out Amp Switch", mc13783_enum_arxout),
-
-> > Switches shouldn't be enums.
-
-> Hm, would "Line out Amp Source" be correct then? Or just "Line out Amp"?
-> I'm not really getting the documentation in that regard.
-
-Either of those would be fine.  If there's no guidance you can pick
-basically anything sensible that doesn't have a defined meaning.
-
---ez1fCABS8b19cfNB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSVnbyAAoJELSic+t+oim9beIQAJAvTKkHGD0mscZgLmWPx9nz
-ia1Ti9m/X0XdOhr+soQkTsKcYg0URWavyrVFSQwCvqpXmMOdb+kXhmA+zq9U7IeG
-Uuyv2S7FH+amxHUSgDY5Btw/aYoqKGdCU+JNOH0HGGpQaX07VKyDlgDJVX/PfZvD
-KNlvckC76vpS+8xC9EkGjGPz9SZfukc1OBPnDdN33oW+wdhXpi/1qmsjasUgNDRN
-TMo6jfMfxqYE2A4ki8QpU/41R1a7RxG12tpav44t3uCm2+SWCniYmGBWFknZTDCO
-Yd31lHWFgbGrbkBsua6JrevVPuDoEKPCMPktfcWbsFuP0rzx02uEbH0iLWOx94fz
-rMdMgCfx2I7br0jKl69EcENop3JZ8NvNV3uRDQnXwnH/yHGYtzZ4kr/uYCJLnpTY
-RQW0KV5tKpy7gYWAuytxWPvZmgTiyLdVBfx1cqNWSX4ujK/XP7G1RJjQ9JvrqzLD
-lYQ43KGGB5epiqnWvmtH/NN8y/r73FFqpPDzWVT24nui7rh0fXo5v+G8x5fI1z4M
-L/ctmyVySWreh/3ptK+DQQ7oEnzROnHcSBY2tPDbWLeaAk7PCubCVjTBrcN3ry5F
-tUhb8hRx6Qv0uYZli2tW1y7rBToL6zFu77SCdulJJYXxtzcmguFIjEooZ9vMwOGj
-lXZzggIZ9WM410mG42gw
-=tAWl
------END PGP SIGNATURE-----
-
---ez1fCABS8b19cfNB--
-
---===============6074777709895903447==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6074777709895903447==--
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8cb3350..ec47681 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3556,6 +3556,7 @@ enum {
+ 	ALC282_FIXUP_ASUS_TX300,
+ 	ALC283_FIXUP_INT_MIC,
+ 	ALC290_FIXUP_MONO_SPEAKERS,
++	ALC286_FIXUP_SONY_MIC_NO_PRESENCE,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -3844,6 +3845,15 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_DELL3_MIC_NO_PRESENCE,
+ 	},
++	[ALC286_FIXUP_SONY_MIC_NO_PRESENCE] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x18, 0x01a1913c }, /* use as headset mic, without its own jack detect */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MIC,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -3908,6 +3918,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x8398, "ASUS P1005", ALC269_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x83ce, "ASUS P1005", ALC269_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x8516, "ASUS X101CH", ALC269_FIXUP_ASUS_X101),
++	SND_PCI_QUIRK(0x104d, 0x90b6, "Sony VAIO Pro 13", ALC286_FIXUP_SONY_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x104d, 0x9073, "Sony VAIO", ALC275_FIXUP_SONY_VAIO_GPIO2),
+ 	SND_PCI_QUIRK(0x104d, 0x907b, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
+ 	SND_PCI_QUIRK(0x104d, 0x9084, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
+-- 
+1.7.9.5
