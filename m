@@ -1,21 +1,17 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: Fast Track Ultra 8r...
-Date: Thu, 10 Oct 2013 20:22:41 +0200
-Message-ID: <CAFz=ag6SdfRTK_FNwWcwtUy2TPmq=nQNH8KEqMfSbbmZOi9PWw@mail.gmail.com>
-References: <CAAsyid1UrqG=7zEL2QMz=q4NEKb6A3n8Wp5E4b3LPkr_GF3Q3g@mail.gmail.com>
- <CAFz=ag5aCshs6WJAksartBXfkUpocYEw5WknT=AStP0aFPo35g@mail.gmail.com>
- <CAAsyid35weXqn1amGKz2vEYDYBP6tHqTq1yBsWEUtCpx6iWF3A@mail.gmail.com>
+From: Jason Steigler <drsteigler@gmail.com>
+Subject: ALSA: HDA Control and node attachment
+Date: Thu, 10 Oct 2013 15:31:30 -0400
+Message-ID: <CAPOintU8g1xyQrRBnmnXGon+3ern7=PpbYe=5JQy08L0JDef0Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qe0-f48.google.com (mail-qe0-f48.google.com
- [209.85.128.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 11AA726171D
- for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 20:22:42 +0200 (CEST)
-Received: by mail-qe0-f48.google.com with SMTP id d4so2257480qej.21
- for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 11:22:42 -0700 (PDT)
-In-Reply-To: <CAAsyid35weXqn1amGKz2vEYDYBP6tHqTq1yBsWEUtCpx6iWF3A@mail.gmail.com>
+Received: from mail-wi0-f195.google.com (mail-wi0-f195.google.com
+ [209.85.212.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id D13AA26172D
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 21:31:30 +0200 (CEST)
+Received: by mail-wi0-f195.google.com with SMTP id hq15so572900wib.10
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 12:31:30 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Petri_J=E4rvisalo?= <petri.jarvisalo@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am 10.10.2013 19:41 schrieb "Petri J=E4rvisalo" <petri.jarvisalo@gmail.com>:
->
-> When plugging in the device at other OS, the internal routing for inputs
-is disabled and software routes straight 1 =3D 1 to 8 =3D 8, like this, and
-there is no effects applied.
+Hello,
 
-Those defaults are the worst I can think of for *my* use case. That's why I
-haven't implemented them. I do fully appreciate that those would be sane
-defaults for many people. I wouldn't mind anyone implementing them in Alsa.
-It's just, well, I won't ;-)
+I was wondering if it's possible from user-space to change which node a
+control is attached to.  In older ALSA (1.0.23), I had used the
+'3stack-6ch-dig' model to get 6 channel audio for an "Realtek ALC662 rev 1"
+codec.  I had configured the front panel mic (node 0x19) to be an output
+using hda-verb that could be controlled by the Center and LFE mixer
+controls.  The board also has jacks on the back and one of those would
+match the audio coming out the front.  When I change the volume or mute the
+controls, they both were affected (which I expected/wanted).
 
-When I started working on the FTU mixer support I didn't think about the
-defaults at all. The default we have right now are the ones you get without
-explicitly specifying any.
+With newer ALSA (1.0.24 with debian Wheezy's stock kernel), the model
+'3stack-6ch-dig' doesn't exist, but the codec can be configured to 6
+channels.  I have made the same adjustments with hda-verb to make the node
+an output.  The volume control works for the 'front' and 'rear' jacks, but
+only muting works on the 'rear' jack.  I noticed that the control nodes for
+Center and LFE are not the same between the 2 setups.  In the older
+version, they were tied to node 0x0e (Audio Mixer), and with the newer
+version node 0x18 (which looks like the 'Rear Mic' jack).
 
-But in fact, now I completely fell in love with these insane defaults: They
-give me an instant alert that I haven't restored my personal 'right'
-settings! That's of extreme value for my purposes as I use the device
-mainly on live occasions and the 'wrong' settings certainly cannot go
-unnoticed in the soundcheck.
+I am not knowledgeable of the details of the HDA codec (yet), and am mostly
+curious if they can be changed in user-space or if I'll have to start
+learning the HDA codec code and try to find a way to move the controls
+around.  I tried using hda-jack-retask and could assign the mic nodes as
+outputs, but wasn't sure if it would allow me to move controls on the HDA
+graph.
 
-So again, anybody interested is invited to implement new defaults for the
-FTU. I won' t object any choice, how could I? But I won't do it myself
-since I'm personally very happy with the current state.
-
-Regards,
-Felix
+Thanks in advance!
+Jason
