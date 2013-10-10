@@ -1,21 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: async between dmaengine_pcm_dma_complete and
-	snd_pcm_release
-Date: Thu, 10 Oct 2013 19:53:33 +0200
-Message-ID: <5256E99D.1010207@metafoo.de>
-References: <525505C2.4070201@marvell.com> <5255119D.9020303@metafoo.de>
- <52551416.9020004@metafoo.de> <52552EA5.4010109@marvell.com>
- <52553738.9000200@metafoo.de> <20131010025408.GV2954@intel.com>
- <52565B5A.9020504@metafoo.de> <20131010161010.GB2954@intel.com>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Re: Fast Track Ultra 8r...
+Date: Thu, 10 Oct 2013 20:22:41 +0200
+Message-ID: <CAFz=ag6SdfRTK_FNwWcwtUy2TPmq=nQNH8KEqMfSbbmZOi9PWw@mail.gmail.com>
+References: <CAAsyid1UrqG=7zEL2QMz=q4NEKb6A3n8Wp5E4b3LPkr_GF3Q3g@mail.gmail.com>
+ <CAFz=ag5aCshs6WJAksartBXfkUpocYEw5WknT=AStP0aFPo35g@mail.gmail.com>
+ <CAAsyid35weXqn1amGKz2vEYDYBP6tHqTq1yBsWEUtCpx6iWF3A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DA8926171D
- for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 19:52:46 +0200 (CEST)
-In-Reply-To: <20131010161010.GB2954@intel.com>
+Received: from mail-qe0-f48.google.com (mail-qe0-f48.google.com
+ [209.85.128.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11AA726171D
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 20:22:42 +0200 (CEST)
+Received: by mail-qe0-f48.google.com with SMTP id d4so2257480qej.21
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 11:22:42 -0700 (PDT)
+In-Reply-To: <CAAsyid35weXqn1amGKz2vEYDYBP6tHqTq1yBsWEUtCpx6iWF3A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,73 +25,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Qiao Zhou <zhouqiao@marvell.com>, Mark Brown <broonie@kernel.org>, "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>, "trinity.qiao.zhou@gmail.com" <trinity.qiao.zhou@gmail.com>, Dan J Williams <dan.j.williams@intel.com>, Chao Xie <cxie4@marvell.com>
+To: =?ISO-8859-1?Q?Petri_J=E4rvisalo?= <petri.jarvisalo@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/10/2013 06:10 PM, Vinod Koul wrote:
-> On Thu, Oct 10, 2013 at 09:46:34AM +0200, Lars-Peter Clausen wrote:
+Am 10.10.2013 19:41 schrieb "Petri J=E4rvisalo" <petri.jarvisalo@gmail.com>:
 >
-> + Dan
->
->> [...]
->>>
->>>>>> On the other hand that last part could get tricky as the
->>>>>> dmaengine_terminate_all() might be call from within the callback.
->>>>> It's tricky indeed in case xrun happens. we should avoid possible deadlock.
->>>>
->>>> I think we'll eventually need to versions of dmaengine_terminate_all(). A
->>>> sync version which makes sure that the tasklet has finished and a non-sync
->>>> version that only makes sure that no new callbacks are started. I think the
->>>> sync version should be the default with an optional async version which must
->>>> be used, if it can run from within the callback. So we'd call the async
->>>> version in the pcm_trigger callback and the sync version in the pcm_close
->>>> callback.
->>> Yes this can be done. We can name this disable_callback cmd. The cmd will tell
->>> dma driver to disable all callback on the channel. This can be invoked from the
->>> TRIGEGR_STOP and then terminate_all in the free
->>>
->>
->> I think we should make it the default behavior of dmaengine_terminate_all()
->> to wait for the tasklet to finish.
-> No we cant since terminate can get invoked from callback itself!
+> When plugging in the device at other OS, the internal routing for inputs
+is disabled and software routes straight 1 =3D 1 to 8 =3D 8, like this, and
+there is no effects applied.
 
-That's why I'm suggesting to introduce a dmaenigne_terminate_all_async() which 
-needs to be called in case
+Those defaults are the worst I can think of for *my* use case. That's why I
+haven't implemented them. I do fully appreciate that those would be sane
+defaults for many people. I wouldn't mind anyone implementing them in Alsa.
+It's just, well, I won't ;-)
 
->
->> Since this is what almost always want,
->> except in this case where you might end up calling dmaeinge_terminate_all()
->> from within the callback. Internally this can be implemented as two separate
->> commands. So leave the DMA_TERMINATE_ALL as it is and add a new
->> DMA_SYNC_CALLBACKS (or whatever it will be named) command. This command will
->> internally call tasklet_kill().
-> Implementations will have tasklet for dmaengine and not per channel. So
-> tasklet_kill is not option!
+When I started working on the FTU mixer support I didn't think about the
+defaults at all. The default we have right now are the ones you get without
+explicitly specifying any.
 
-Most drivers actually have the tasklet per channel.
+But in fact, now I completely fell in love with these insane defaults: They
+give me an instant alert that I haven't restored my personal 'right'
+settings! That's of extreme value for my purposes as I use the device
+mainly on live occasions and the 'wrong' settings certainly cannot go
+unnoticed in the soundcheck.
 
->
->> Then we have two new functions
->> dmaengine_terminate_all_async() which will just issue the DMA_TERMINATE_ALL
->> command, the other function is dmaengine_sync_callbacks() which will issue
->> the DMA_SYNC_CALLBACKS command. dmaengine_terminate_all() will then first
->> call dmaengine_terminate_all_async() and then dmaengine_sync_callbacks().
->> The ALSA code would have to be updated first to call
->> dmaengine_terminate_all_async() for TRIGGER_STOP and
->> dmaengine_sync_callbacks() on the pcm_close path.
-> In order to avoid the complication for getting called from the callback itself,
-> I was thinking that we tell dma driver explictly that from now on dont invoke
-> the callbacks (we might be in callback context), then we return. DMA engine will
-> not issue any new callbacks. And also give chance to existing callback to
-> return.
-> Then the client can safely call terminate_all() to abort the channel from non
-> callback context!
+So again, anybody interested is invited to implement new defaults for the
+FTU. I won' t object any choice, how could I? But I won't do it myself
+since I'm personally very happy with the current state.
 
-But you'll gain nothing by that. The race condition still exists. You need a 
-mechanism to to synchronize the execution of the callback against 
-dmaengine_terminate_all(). One simple way for drivers with a per channel 
-tasklet is to use tasklet_kill() for this. But other possibilities also exists 
-as well.
-
-- Lars
+Regards,
+Felix
