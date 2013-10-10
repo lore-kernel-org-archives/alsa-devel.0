@@ -1,22 +1,23 @@
-From: =?UTF-8?Q?Petri_J=C3=A4rvisalo?= <petri.jarvisalo@gmail.com>
+From: Grant Diffey <gdiffey@gmail.com>
 Subject: Re: Fast Track Ultra 8r...
-Date: Fri, 11 Oct 2013 00:55:12 +0300
-Message-ID: <CAAsyid18JgtFpG1pxSz6wkcZ=u7Ojej4B3ywqDWJJ7P1ijQonQ@mail.gmail.com>
+Date: Fri, 11 Oct 2013 10:26:43 +1100
+Message-ID: <CACckToX5rsEKJ2wadR5TepdjkfoOqNV8W9AyBwnhu3rCJ2p9zQ@mail.gmail.com>
 References: <CAAsyid1UrqG=7zEL2QMz=q4NEKb6A3n8Wp5E4b3LPkr_GF3Q3g@mail.gmail.com>
  <CAFz=ag5aCshs6WJAksartBXfkUpocYEw5WknT=AStP0aFPo35g@mail.gmail.com>
  <CAAsyid35weXqn1amGKz2vEYDYBP6tHqTq1yBsWEUtCpx6iWF3A@mail.gmail.com>
  <CAFz=ag6SdfRTK_FNwWcwtUy2TPmq=nQNH8KEqMfSbbmZOi9PWw@mail.gmail.com>
+ <CAAsyid18JgtFpG1pxSz6wkcZ=u7Ojej4B3ywqDWJJ7P1ijQonQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f181.google.com (mail-ie0-f181.google.com
- [209.85.223.181])
- by alsa0.perex.cz (Postfix) with ESMTP id E5CB22655D9
- for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 23:55:13 +0200 (CEST)
-Received: by mail-ie0-f181.google.com with SMTP id tp5so6314971ieb.40
- for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 14:55:12 -0700 (PDT)
-In-Reply-To: <CAFz=ag6SdfRTK_FNwWcwtUy2TPmq=nQNH8KEqMfSbbmZOi9PWw@mail.gmail.com>
+Received: from mail-pd0-f170.google.com (mail-pd0-f170.google.com
+ [209.85.192.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 492F52655D9
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 01:26:45 +0200 (CEST)
+Received: by mail-pd0-f170.google.com with SMTP id x10so3365408pdj.1
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 16:26:44 -0700 (PDT)
+In-Reply-To: <CAAsyid18JgtFpG1pxSz6wkcZ=u7Ojej4B3ywqDWJJ7P1ijQonQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,37 +27,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Felix Homann <linuxaudio@showlabor.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Felix Homann <linuxaudio@showlabor.de>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMy8xMC8xMCBGZWxpeCBIb21hbm4gPGxpbnV4YXVkaW9Ac2hvd2xhYm9yLmRlPgoKPgo+IEFt
-IDEwLjEwLjIwMTMgMTk6NDEgc2NocmllYiAiUGV0cmkgSsOkcnZpc2FsbyIgPHBldHJpLmphcnZp
-c2Fsb0BnbWFpbC5jb20+Ogo+Cj4gPgo+ID4gV2hlbiBwbHVnZ2luZyBpbiB0aGUgZGV2aWNlIGF0
-IG90aGVyIE9TLCB0aGUgaW50ZXJuYWwgcm91dGluZyBmb3IgaW5wdXRzCj4gaXMgZGlzYWJsZWQg
-YW5kIHNvZnR3YXJlIHJvdXRlcyBzdHJhaWdodCAxID0gMSB0byA4ID0gOCwgbGlrZSB0aGlzLCBh
-bmQKPiB0aGVyZSBpcyBubyBlZmZlY3RzIGFwcGxpZWQuCj4KPiBUaG9zZSBkZWZhdWx0cyBhcmUg
-dGhlIHdvcnN0IEkgY2FuIHRoaW5rIG9mIGZvciAqbXkqIHVzZSBjYXNlLiBUaGF0J3Mgd2h5Cj4g
-SSBoYXZlbid0IGltcGxlbWVudGVkIHRoZW0uIEkgZG8gZnVsbHkgYXBwcmVjaWF0ZSB0aGF0IHRo
-b3NlIHdvdWxkIGJlIHNhbmUKPiBkZWZhdWx0cyBmb3IgbWFueSBwZW9wbGUuIEkgd291bGRuJ3Qg
-bWluZCBhbnlvbmUgaW1wbGVtZW50aW5nIHRoZW0gaW4gQWxzYS4KPiBJdCdzIGp1c3QsIHdlbGws
-IEkgd29uJ3QgOy0pCj4KPiBXaGVuIEkgc3RhcnRlZCB3b3JraW5nIG9uIHRoZSBGVFUgbWl4ZXIg
-c3VwcG9ydCBJIGRpZG4ndCB0aGluayBhYm91dCB0aGUKPiBkZWZhdWx0cyBhdCBhbGwuIFRoZSBk
-ZWZhdWx0IHdlIGhhdmUgcmlnaHQgbm93IGFyZSB0aGUgb25lcyB5b3UgZ2V0IHdpdGhvdXQKPiBl
-eHBsaWNpdGx5IHNwZWNpZnlpbmcgYW55Lgo+Cj4gQnV0IGluIGZhY3QsIG5vdyBJIGNvbXBsZXRl
-bHkgZmVsbCBpbiBsb3ZlIHdpdGggdGhlc2UgaW5zYW5lIGRlZmF1bHRzOgo+IFRoZXkgZ2l2ZSBt
-ZSBhbiBpbnN0YW50IGFsZXJ0IHRoYXQgSSBoYXZlbid0IHJlc3RvcmVkIG15IHBlcnNvbmFsICdy
-aWdodCcKPiBzZXR0aW5ncyEgVGhhdCdzIG9mIGV4dHJlbWUgdmFsdWUgZm9yIG15IHB1cnBvc2Vz
-IGFzIEkgdXNlIHRoZSBkZXZpY2UKPiBtYWlubHkgb24gbGl2ZSBvY2Nhc2lvbnMgYW5kIHRoZSAn
-d3JvbmcnIHNldHRpbmdzIGNlcnRhaW5seSBjYW5ub3QgZ28KPiB1bm5vdGljZWQgaW4gdGhlIHNv
-dW5kY2hlY2suCj4KPiBTbyBhZ2FpbiwgYW55Ym9keSBpbnRlcmVzdGVkIGlzIGludml0ZWQgdG8g
-aW1wbGVtZW50IG5ldyBkZWZhdWx0cyBmb3IgdGhlCj4gRlRVLiBJIHdvbicgdCBvYmplY3QgYW55
-IGNob2ljZSwgaG93IGNvdWxkIEk/IEJ1dCBJIHdvbid0IGRvIGl0IG15c2VsZgo+IHNpbmNlIEkn
-bSBwZXJzb25hbGx5IHZlcnkgaGFwcHkgd2l0aCB0aGUgY3VycmVudCBzdGF0ZS4KPgo+IFJlZ2Fy
-ZHMsCj4gRmVsaXgKPgoKU28sCgp0aGUgb25seSBvcHRpb24gbGVmdCBmb3IgbWUgaXMgdG8gYXNr
-IGlmIHNvbWUga2luZCBwZXJzb24gd291bGQgcGF0Y2ggYW5kCmNoYW5nZSB0aGUgZGVmYXVsdCBz
-ZXR0aW5ncywgaSB0aGluayBpdCB3b3VsZCBzZXJ2ZSB0aGUgbWFqb3JpdHkgb2YgdXNlcnMKYW5k
-IGVhc2UgdGhlIHVzYWJpbGl0eSA6KQoKVGhhbmtzLApQZXRyaQpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+I agree with petri but I'm already on the record as saying my preference
+would be
+
+softreturns -> outputs everything else muted no effects.
+
+Petri the scripts are probably something I wrote (if it's a couple of
+nested for loops of shell)
+
+The bigger problem imho is that snd-usb-audio doesn't preserve alsa volumes
+and I still don't understand the reasoning for this.
+
+
+On Fri, Oct 11, 2013 at 8:55 AM, Petri J=E4rvisalo
+<petri.jarvisalo@gmail.com>wrote:
+
+> 2013/10/10 Felix Homann <linuxaudio@showlabor.de>
+>
+> >
+> > Am 10.10.2013 19:41 schrieb "Petri J=E4rvisalo" <petri.jarvisalo@gmail.=
+com
+> >:
+> >
+> > >
+> > > When plugging in the device at other OS, the internal routing for
+> inputs
+> > is disabled and software routes straight 1 =3D 1 to 8 =3D 8, like this,=
+ and
+> > there is no effects applied.
+> >
+> > Those defaults are the worst I can think of for *my* use case. That's w=
+hy
+> > I haven't implemented them. I do fully appreciate that those would be
+> sane
+> > defaults for many people. I wouldn't mind anyone implementing them in
+> Alsa.
+> > It's just, well, I won't ;-)
+> >
+> > When I started working on the FTU mixer support I didn't think about the
+> > defaults at all. The default we have right now are the ones you get
+> without
+> > explicitly specifying any.
+> >
+> > But in fact, now I completely fell in love with these insane defaults:
+> > They give me an instant alert that I haven't restored my personal 'righ=
+t'
+> > settings! That's of extreme value for my purposes as I use the device
+> > mainly on live occasions and the 'wrong' settings certainly cannot go
+> > unnoticed in the soundcheck.
+> >
+> > So again, anybody interested is invited to implement new defaults for t=
+he
+> > FTU. I won' t object any choice, how could I? But I won't do it myself
+> > since I'm personally very happy with the current state.
+> >
+> > Regards,
+> > Felix
+> >
+>
+> So,
+>
+> the only option left for me is to ask if some kind person would patch and
+> change the default settings, i think it would serve the majority of users
+> and ease the usability :)
+>
+> Thanks,
+> Petri
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
