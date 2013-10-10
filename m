@@ -1,67 +1,93 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/2] ALSA: hda - Fix microphone for Sony VAIO Pro 13 (Haswell model)
-Date: Thu, 10 Oct 2013 12:19:24 +0200
-Message-ID: <1381400364-6067-2-git-send-email-david.henningsson@canonical.com>
-References: <1381400364-6067-1-git-send-email-david.henningsson@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1381400364-6067-1-git-send-email-david.henningsson@canonical.com>
-Sender: stable-owner@vger.kernel.org
+Subject: [PATCH 1/2] ALSA: hda - Add a headset mic model for
+	ALC269 and friends
+Date: Thu, 10 Oct 2013 12:19:23 +0200
+Message-ID: <1381400364-6067-1-git-send-email-david.henningsson@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id BCD872607B6
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2013 12:19:25 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1227093@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>, stable@vger.kernel.org
+Cc: 1227093@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-The external mic showed up with a precense detect of "always present",
-essentially disabling the internal mic. Therefore turn off presence
-detection for this pin.
-
-Note: The external mic seems not yet working, but an internal mic is
-certainly better than no mic at all.
-
-Cc: stable@vger.kernel.org
-BugLink: https://bugs.launchpad.net/bugs/1227093
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/pci/hda/patch_realtek.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ Documentation/sound/alsa/HD-Audio-Models.txt |    1 +
+ sound/pci/hda/patch_realtek.c                |   15 +++++++++++++++
+ 2 files changed, 16 insertions(+)
 
-Note: when doing stable backports, the two lines ".chained = true" and
-".chain_id = ALC269_FIXUP_HEADSET_MIC" can be dropped.
-
+diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt b/Documentation/sound/alsa/HD-Audio-Models.txt
+index f911e36..ba143cd 100644
+--- a/Documentation/sound/alsa/HD-Audio-Models.txt
++++ b/Documentation/sound/alsa/HD-Audio-Models.txt
+@@ -28,6 +28,7 @@ ALC269/270/275/276/28x/29x
+   alc269-dmic		Enable ALC269(VA) digital mic workaround
+   alc271-dmic		Enable ALC271X digital mic workaround
+   inv-dmic		Inverted internal mic workaround
++  headset-mic           Indicates a combined headset (mic+headphone jack)
+   lenovo-dock   	Enables docking station I/O for some Lenovos
+   dell-headset-multi	Headset jack, which can also be used as mic-in
+   dell-headset-dock	Headset jack (without mic-in), and also dock I/O
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 8cb3350..ec47681 100644
+index ed9deb6..8cb3350 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -3556,6 +3556,7 @@ enum {
- 	ALC282_FIXUP_ASUS_TX300,
- 	ALC283_FIXUP_INT_MIC,
- 	ALC290_FIXUP_MONO_SPEAKERS,
-+	ALC286_FIXUP_SONY_MIC_NO_PRESENCE,
- };
+@@ -2819,6 +2819,15 @@ static void alc269_fixup_hweq(struct hda_codec *codec,
+ 	alc_write_coef_idx(codec, 0x1e, coef | 0x80);
+ }
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -3844,6 +3845,15 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_DELL3_MIC_NO_PRESENCE,
++static void alc269_fixup_headset_mic(struct hda_codec *codec,
++				       const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (action == HDA_FIXUP_ACT_PRE_PROBE)
++		spec->parse_flags |= HDA_PINCFG_HEADSET_MIC;
++}
++
+ static void alc271_fixup_dmic(struct hda_codec *codec,
+ 			      const struct hda_fixup *fix, int action)
+ {
+@@ -3516,6 +3525,7 @@ enum {
+ 	ALC271_FIXUP_DMIC,
+ 	ALC269_FIXUP_PCM_44K,
+ 	ALC269_FIXUP_STEREO_DMIC,
++	ALC269_FIXUP_HEADSET_MIC,
+ 	ALC269_FIXUP_QUANTA_MUTE,
+ 	ALC269_FIXUP_LIFEBOOK,
+ 	ALC269_FIXUP_AMIC,
+@@ -3614,6 +3624,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_stereo_dmic,
  	},
-+	[ALC286_FIXUP_SONY_MIC_NO_PRESENCE] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x18, 0x01a1913c }, /* use as headset mic, without its own jack detect */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HEADSET_MIC,
++	[ALC269_FIXUP_HEADSET_MIC] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc269_fixup_headset_mic,
 +	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -3908,6 +3918,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x8398, "ASUS P1005", ALC269_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x83ce, "ASUS P1005", ALC269_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x8516, "ASUS X101CH", ALC269_FIXUP_ASUS_X101),
-+	SND_PCI_QUIRK(0x104d, 0x90b6, "Sony VAIO Pro 13", ALC286_FIXUP_SONY_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x104d, 0x9073, "Sony VAIO", ALC275_FIXUP_SONY_VAIO_GPIO2),
- 	SND_PCI_QUIRK(0x104d, 0x907b, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
- 	SND_PCI_QUIRK(0x104d, 0x9084, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
+ 	[ALC269_FIXUP_QUANTA_MUTE] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_quanta_mute,
+@@ -3979,6 +3993,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC269_FIXUP_STEREO_DMIC, .name = "alc269-dmic"},
+ 	{.id = ALC271_FIXUP_DMIC, .name = "alc271-dmic"},
+ 	{.id = ALC269_FIXUP_INV_DMIC, .name = "inv-dmic"},
++	{.id = ALC269_FIXUP_HEADSET_MIC, .name = "headset-mic"},
+ 	{.id = ALC269_FIXUP_LENOVO_DOCK, .name = "lenovo-dock"},
+ 	{.id = ALC269_FIXUP_HP_GPIO_LED, .name = "hp-gpio-led"},
+ 	{.id = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "dell-headset-multi"},
 -- 
 1.7.9.5
