@@ -1,19 +1,17 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 6/6] ASoC: atmel: Include linux/of.h header
-Date: Fri, 11 Oct 2013 17:24:01 +0530
-Message-ID: <1381492441-31195-6-git-send-email-sachin.kamat@linaro.org>
-References: <1381492441-31195-1-git-send-email-sachin.kamat@linaro.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Recording devices opened mono still sending stereo
+ causing corrupt audio
+Date: Fri, 11 Oct 2013 14:33:33 +0200
+Message-ID: <5257F01D.3040908@ladisch.de>
+References: <52575722.7060208@mixxx.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
- [209.85.220.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 2318D2656E5
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 13:54:49 +0200 (CEST)
-Received: by mail-pa0-f45.google.com with SMTP id rd3so4285158pab.32
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 04:54:49 -0700 (PDT)
-In-Reply-To: <1381492441-31195-1-git-send-email-sachin.kamat@linaro.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 2C4F6261A1B
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 14:33:36 +0200 (CEST)
+In-Reply-To: <52575722.7060208@mixxx.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,28 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sachin.kamat@linaro.org, broonie@kernel.org
+To: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>, Portaudio Mailing List <portaudio@music.columbia.edu>, alsa-devel@alsa-project.org
+Cc: mixxx-devel <mixxx-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-'of_match_ptr' is defined in linux/of.h. Include it explicitly.
+Sean M. Pappalardo - D.J. Pegasus wrote:
+> the problem occurs when PA is asked to open just one channel of
+> a sound input device yet the device seems to stream two anyway.
 
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
----
- sound/soc/atmel/sam9g20_wm8731.c |    1 +
- 1 file changed, 1 insertion(+)
+Many devices do not support mono streams.
 
-diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-index 802717e..f15bff1 100644
---- a/sound/soc/atmel/sam9g20_wm8731.c
-+++ b/sound/soc/atmel/sam9g20_wm8731.c
-@@ -37,6 +37,7 @@
- #include <linux/interrupt.h>
- #include <linux/platform_device.h>
- #include <linux/i2c.h>
-+#include <linux/of.h>
- 
- #include <linux/atmel-ssc.h>
- 
--- 
-1.7.9.5
+> I'm suspecting there's a miscommunication between PA and ALSA
+
+The communication between ALSA and PA works just fine; ALSA reports the
+minimum number of channels, and PA saves this value.
+
+What does not work is the communication between PA and the application;
+PA has no mechanism to report the minimum number of channels.
+
+Even worse, if some application tries to use a channel count that is too
+low, PA cleverly replaces it with the minimum support channel count:
+
+  self->numHostChannels = PA_MAX( params->channelCount, StreamDirection_In == streamDir ? devInfo->minInputChannels
+          : devInfo->minOutputChannels );
+
+and then does not bother to tell anybody about this.
+
+This bug is especially egregious because PA does later check whether the
+number of channels is actually supported by the device; the code above
+ensures that this checks uses the wrong channel number.
+
+
+Regards,
+Clemens
