@@ -1,18 +1,19 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 3/6] ASoC: pcm1792a: Include linux/of.h header
-Date: Fri, 11 Oct 2013 17:23:58 +0530
-Message-ID: <1381492441-31195-3-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 5/6] ASoC: tlv320aic3x: Include linux/of.h
+	header
+Date: Fri, 11 Oct 2013 17:24:00 +0530
+Message-ID: <1381492441-31195-5-git-send-email-sachin.kamat@linaro.org>
 References: <1381492441-31195-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f48.google.com (mail-pb0-f48.google.com
- [209.85.160.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F27B2656AC
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 13:54:43 +0200 (CEST)
-Received: by mail-pb0-f48.google.com with SMTP id ma3so4033531pbc.7
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 04:54:43 -0700 (PDT)
+Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
+ [209.85.220.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD0FD26567B
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 13:54:47 +0200 (CEST)
+Received: by mail-pa0-f46.google.com with SMTP id fa1so4243771pad.5
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 04:54:47 -0700 (PDT)
 In-Reply-To: <1381492441-31195-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,20 +32,20 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/codecs/pcm1792a.c |    1 +
+ sound/soc/codecs/tlv320aic3x.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm1792a.c
-index 2a8eccf..6f14c50 100644
---- a/sound/soc/codecs/pcm1792a.c
-+++ b/sound/soc/codecs/pcm1792a.c
-@@ -28,6 +28,7 @@
- #include <sound/initval.h>
- #include <sound/soc.h>
- #include <sound/tlv.h>
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 892c108..f8b9fa6 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -40,6 +40,7 @@
+ #include <linux/i2c.h>
+ #include <linux/gpio.h>
+ #include <linux/regulator/consumer.h>
 +#include <linux/of.h>
- #include <linux/of_device.h>
- 
- #include "pcm1792a.h"
+ #include <linux/of_gpio.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
 -- 
 1.7.9.5
