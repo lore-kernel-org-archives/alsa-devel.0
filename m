@@ -1,18 +1,18 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 2/6] ASoC: pcm1681: Include linux/of.h header
-Date: Fri, 11 Oct 2013 17:23:57 +0530
-Message-ID: <1381492441-31195-2-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 4/6] ASoC: tas5086: Include linux/of.h header
+Date: Fri, 11 Oct 2013 17:23:59 +0530
+Message-ID: <1381492441-31195-4-git-send-email-sachin.kamat@linaro.org>
 References: <1381492441-31195-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
- [209.85.220.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 26420265695
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 13:54:41 +0200 (CEST)
-Received: by mail-pa0-f46.google.com with SMTP id fa1so4243653pad.5
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 04:54:41 -0700 (PDT)
+Received: from mail-pd0-f179.google.com (mail-pd0-f179.google.com
+ [209.85.192.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id F31162656B8
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 13:54:45 +0200 (CEST)
+Received: by mail-pd0-f179.google.com with SMTP id v10so4109943pde.24
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 04:54:45 -0700 (PDT)
 In-Reply-To: <1381492441-31195-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,17 +31,17 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/codecs/pcm1681.c |    1 +
+ sound/soc/codecs/tas5086.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
-index 651ce09..54ea15b 100644
---- a/sound/soc/codecs/pcm1681.c
-+++ b/sound/soc/codecs/pcm1681.c
-@@ -21,6 +21,7 @@
- #include <linux/gpio.h>
+diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
+index 6d31d88..e7c9a08 100644
+--- a/sound/soc/codecs/tas5086.c
++++ b/sound/soc/codecs/tas5086.c
+@@ -37,6 +37,7 @@
  #include <linux/i2c.h>
  #include <linux/regmap.h>
+ #include <linux/spi/spi.h>
 +#include <linux/of.h>
  #include <linux/of_device.h>
  #include <linux/of_gpio.h>
