@@ -1,24 +1,109 @@
-From: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
-Subject: Re: [PATCH 3/5] [media] s3c-camif: Use CONFIG_ARCH_S3C64XX to check
- for S3C64xx support
-Date: Fri, 11 Oct 2013 15:13:39 +0200
-Message-ID: <5257F983.9060904@gmail.com>
-References: <1380392497-27406-1-git-send-email-tomasz.figa@gmail.com> <1380392497-27406-3-git-send-email-tomasz.figa@gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH v4 0/5] dma: mxs-dma bugfixes and cleanup
+Date: Fri, 11 Oct 2013 11:01:29 -0300
+Message-ID: <CAOMZO5AG_efwTbtUjG8TPEY=_kyjrcZkEQV6XfZ6CLZ3_msWig@mail.gmail.com>
+References: <1381493539-31756-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <1380392497-27406-3-git-send-email-tomasz.figa@gmail.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Ben Dooks <ben-linux@fluff.org>, Linus Walleij <linus.walleij@linaro.org>, Mauro Carvalho Chehab <m.chehab@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-we0-f177.google.com (mail-we0-f177.google.com
+ [74.125.82.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id C244A261A42
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 16:01:29 +0200 (CEST)
+Received: by mail-we0-f177.google.com with SMTP id x55so4169485wes.36
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 07:01:29 -0700 (PDT)
+In-Reply-To: <1381493539-31756-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Dong Aisheng <b29396@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, =?UTF-8?Q?Lothar_Wa=C3=9Fmann?= <LW@karo-electronics.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/28/2013 08:21 PM, Tomasz Figa wrote:
-> Since CONFIG_PLAT_S3C64XX is going to be removed, this patch modifies
-> the Kconfig entry of s3c-camif driver to use the proper way of checking
-> for S3C64xx support - CONFIG_ARCH_S3C64XX.
->
-> Signed-off-by: Tomasz Figa<tomasz.figa@gmail.com>
+Hi Markus,
 
-Acked-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+[Also including alsa-devel and some other folks involved with mxs audio]
+
+On Fri, Oct 11, 2013 at 9:12 AM, Markus Pargmann <mpa@pengutronix.de> wrote:
+> Hi,
+>
+> v4 adds another patch to increase sound stability. Patch 3 ("dma: mxs-dma: Fix
+> channel reset hardware bug") decreases the number of channel stalls, but after
+> hours of repeated playback the bug still appears. The new patch ("dma: mxs: Use
+> semaphores for cyclic DMA") replaces reset channel usage with hardware
+> semaphore counter mechanism.
+
+How is the bug you are trying to solve manifest and how to reproduce it?
+
+I have been investigating an issue about sound stability on mx28 as well.
+
+The usecase I am doing is:
+
+while true
+do
+    arecord -D hw:0,1 -d 10 -f S16_LE -r 44100 -c 2 | aplay
+    sleep 2
+done
+
+(Record 10 seconds, sleep and keep in this loop forever).
+
+The problem I see is that randomly the captured audio becomes
+extremely noisy and loud (throughout the whole 10 seconds) and then in
+the subsequent loop it becomes normal. This is very random and it
+happens at a 1 or 2% failure rate.
+
+I tested your v3, but it did not help to fix this particular issue.
+
+I also tried experimenting with the SAIF IOMUX settings:
+
+index cda19c8..463fa92 100644
+--- a/arch/arm/boot/dts/imx28.dtsi
++++ b/arch/arm/boot/dts/imx28.dtsi
+@@ -545,9 +545,9 @@
+                         MX28_PAD_SAIF0_BITCLK__SAIF0_BITCLK
+                         MX28_PAD_SAIF0_SDATA0__SAIF0_SDATA0
+                     >;
+-                    fsl,drive-strength = <MXS_DRIVE_12mA>;
++                    fsl,drive-strength = <MXS_DRIVE_4mA>;
+                     fsl,voltage = <MXS_VOLTAGE_HIGH>;
+-                    fsl,pull-up = <MXS_PULL_ENABLE>;
++                    fsl,pull-up = <MXS_PULL_DISABLE>;
+                 };
+
+                 saif0_pins_b: saif0@1 {
+@@ -557,9 +557,9 @@
+                         MX28_PAD_SAIF0_BITCLK__SAIF0_BITCLK
+                         MX28_PAD_SAIF0_SDATA0__SAIF0_SDATA0
+                     >;
+-                    fsl,drive-strength = <MXS_DRIVE_12mA>;
++                    fsl,drive-strength = <MXS_DRIVE_4mA>;
+                     fsl,voltage = <MXS_VOLTAGE_HIGH>;
+-                    fsl,pull-up = <MXS_PULL_ENABLE>;
++                    fsl,pull-up = <MXS_PULL_DISABLE>;
+                 };
+
+                 saif1_pins_a: saif1@0 {
+@@ -567,9 +567,9 @@
+                     fsl,pinmux-ids = <
+                         MX28_PAD_SAIF1_SDATA0__SAIF1_SDATA0
+                     >;
+-                    fsl,drive-strength = <MXS_DRIVE_12mA>;
++                    fsl,drive-strength = <MXS_DRIVE_4mA>;
+                     fsl,voltage = <MXS_VOLTAGE_HIGH>;
+-                    fsl,pull-up = <MXS_PULL_ENABLE>;
++                    fsl,pull-up = <MXS_PULL_DISABLE>;
+                 };
+
+and my tests are showing a much better stability. Not able to get this
+problem after several hours.
+
+Regards,
+
+Fabio Estevam
