@@ -1,17 +1,14 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH 3/3] ASoC: mxs-saif: Handle errors in trigger
-	function
-Date: Fri, 11 Oct 2013 12:11:04 +0200
-Message-ID: <1381486264-1672-4-git-send-email-mpa@pengutronix.de>
-References: <1381486264-1672-1-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH 0/3] ASoC: mxs-saif error handling
+Date: Fri, 11 Oct 2013 12:11:01 +0200
+Message-ID: <1381486264-1672-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id EB174265665
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 12:11:47 +0200 (CEST)
-In-Reply-To: <1381486264-1672-1-git-send-email-mpa@pengutronix.de>
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id DA219265665
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 12:11:55 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +19,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: kernel@pengutronix.de, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
----
- sound/soc/mxs/mxs-saif.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+Hi,
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index c8ead01..fc3d89b 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -494,6 +494,7 @@ static int mxs_saif_trigger(struct snd_pcm_substream *substream, int cmd,
- 	struct mxs_saif *saif = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct mxs_saif *master_saif;
- 	u32 delay;
-+	int ret;
- 
- 	master_saif = mxs_saif_get_master(saif);
- 	if (!master_saif)
-@@ -508,21 +509,32 @@ static int mxs_saif_trigger(struct snd_pcm_substream *substream, int cmd,
- 
- 		dev_dbg(cpu_dai->dev, "start\n");
- 
--		clk_enable(master_saif->clk);
--		if (!master_saif->mclk_in_use)
--			__raw_writel(BM_SAIF_CTRL_RUN,
--				master_saif->base + SAIF_CTRL + MXS_SET_ADDR);
-+		ret = clk_enable(master_saif->clk);
-+		if (ret) {
-+			dev_err(saif->dev, "Failed to enable master clock\n");
-+			return ret;
-+		}
- 
- 		/*
- 		 * If the saif's master is not himself, we also need to enable
- 		 * itself clk for its internal basic logic to work.
- 		 */
- 		if (saif != master_saif) {
--			clk_enable(saif->clk);
-+			ret = clk_enable(saif->clk);
-+			if (ret) {
-+				dev_err(saif->dev, "Failed to enable master clock\n");
-+				clk_disable(master_saif->clk);
-+				return ret;
-+			}
-+
- 			__raw_writel(BM_SAIF_CTRL_RUN,
- 				saif->base + SAIF_CTRL + MXS_SET_ADDR);
- 		}
- 
-+		if (!master_saif->mclk_in_use)
-+			__raw_writel(BM_SAIF_CTRL_RUN,
-+				master_saif->base + SAIF_CTRL + MXS_SET_ADDR);
-+
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 			/*
- 			 * write data to saif data register to trigger
--- 
-1.8.4.rc3
+This series contains error handling patches for mxs-saif. The first patch is
+a comment about the possible command sequence of trigger functions.
+
+Regards,
+
+Markus Pargmann
+
+
+Markus Pargmann (3):
+      ASoC: snd_soc_dai_ops trigger function description
+      ASoC: mxs-saif: Store saif state
+      ASoC: mxs-saif: Handle errors in trigger function
+
+ include/sound/soc-dai.h  |  7 +++++++
+ sound/soc/mxs/mxs-saif.c | 30 +++++++++++++++++++++++++-----
+ sound/soc/mxs/mxs-saif.h |  5 +++++
+ 3 files changed, 37 insertions(+), 5 deletions(-)
