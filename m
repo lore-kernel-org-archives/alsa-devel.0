@@ -1,16 +1,14 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH 2/3] ASoC: mxs-saif: Store saif state
-Date: Fri, 11 Oct 2013 12:11:03 +0200
-Message-ID: <1381486264-1672-3-git-send-email-mpa@pengutronix.de>
-References: <1381486264-1672-1-git-send-email-mpa@pengutronix.de>
+From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+Subject: [PATCH v2 1/2] ASoC: mc13783: add mixer controls
+Date: Fri, 11 Oct 2013 12:28:13 +0200
+Message-ID: <1381487294-20406-1-git-send-email-s.trumtrar@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 108AF265670
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 12:11:56 +0200 (CEST)
-In-Reply-To: <1381486264-1672-1-git-send-email-mpa@pengutronix.de>
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 20C22265665
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 12:28:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,75 +18,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: kernel@pengutronix.de, Mark Brown <broonie@kernel.org>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Trigger commands may be passed multiple times. To avoid errors with
-clk_enable/disable, store the saif state and return if saif is already
-running/stopped.
+Add more controls to the alsa mixer infrastructure.
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
 ---
- sound/soc/mxs/mxs-saif.c | 8 ++++++++
- sound/soc/mxs/mxs-saif.h | 5 +++++
- 2 files changed, 13 insertions(+)
+Changes in v2:
+	- Fix some control names
+	- remove controls that belong to DAPM
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index b56b8a0..c8ead01 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -503,6 +503,9 @@ static int mxs_saif_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		if (saif->state == MXS_SAIF_STATE_RUNNING)
-+			return 0;
+ sound/soc/codecs/mc13783.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
+index eedbf05..2b62737 100644
+--- a/sound/soc/codecs/mc13783.c
++++ b/sound/soc/codecs/mc13783.c
+@@ -541,8 +541,26 @@ static const struct soc_enum mc13783_enum_3d_mixer =
+ static struct snd_kcontrol_new mc13783_control_list[] = {
+ 	SOC_SINGLE("Loudspeaker enable", MC13783_AUDIO_RX0, 5, 1, 0),
+ 	SOC_SINGLE("PCM Playback Volume", MC13783_AUDIO_RX1, 6, 15, 0),
++	SOC_SINGLE("PCM Playback Switch", MC13783_AUDIO_RX1, 5, 1, 0),
+ 	SOC_DOUBLE("PCM Capture Volume", MC13783_AUDIO_TX, 19, 14, 31, 0),
+ 	SOC_ENUM("3D Control", mc13783_enum_3d_mixer),
 +
- 		dev_dbg(cpu_dai->dev, "start\n");
- 
- 		clk_enable(master_saif->clk);
-@@ -543,6 +546,7 @@ static int mxs_saif_trigger(struct snd_pcm_substream *substream, int cmd,
- 		}
- 
- 		master_saif->ongoing = 1;
-+		saif->state = MXS_SAIF_STATE_RUNNING;
- 
- 		dev_dbg(saif->dev, "CTRL 0x%x STAT 0x%x\n",
- 			__raw_readl(saif->base + SAIF_CTRL),
-@@ -555,6 +559,9 @@ static int mxs_saif_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		if (saif->state == MXS_SAIF_STATE_STOPPED)
-+			return 0;
++	SOC_SINGLE("CDCOUT Switch", MC13783_AUDIO_RX0, 18, 1, 0),
++	SOC_SINGLE("Earpiece Amp Switch", MC13783_AUDIO_RX0, 3, 1, 0),
++	SOC_DOUBLE("Headset Amp Switch", MC13783_AUDIO_RX0, 10, 9, 1, 0),
++	SOC_DOUBLE("Line out Amp Switch", MC13783_AUDIO_RX0, 16, 15, 1, 0),
 +
- 		dev_dbg(cpu_dai->dev, "stop\n");
- 
- 		/* wait a while for the current sample to complete */
-@@ -575,6 +582,7 @@ static int mxs_saif_trigger(struct snd_pcm_substream *substream, int cmd,
- 		}
- 
- 		master_saif->ongoing = 0;
-+		saif->state = MXS_SAIF_STATE_STOPPED;
- 
- 		break;
- 	default:
-diff --git a/sound/soc/mxs/mxs-saif.h b/sound/soc/mxs/mxs-saif.h
-index 53eaa4b..fbaf7ba 100644
---- a/sound/soc/mxs/mxs-saif.h
-+++ b/sound/soc/mxs/mxs-saif.h
-@@ -124,6 +124,11 @@ struct mxs_saif {
- 
- 	u32 fifo_underrun;
- 	u32 fifo_overrun;
++	SOC_SINGLE("PCM Capture Mixin Switch", MC13783_AUDIO_RX0, 22, 1, 0),
++	SOC_SINGLE("Line in Capture Mixin Switch", MC13783_AUDIO_RX0, 23, 1, 0),
 +
-+	enum {
-+		MXS_SAIF_STATE_STOPPED,
-+		MXS_SAIF_STATE_RUNNING,
-+	} state;
++	SOC_SINGLE("CODEC Capture Volume", MC13783_AUDIO_RX1, 1, 15, 0),
++	SOC_SINGLE("CODEC Capture Mixin Switch", MC13783_AUDIO_RX0, 21, 1, 0),
++
++	SOC_SINGLE("Line in Capture Volume", MC13783_AUDIO_RX1, 12, 15, 0),
++	SOC_SINGLE("Line in Capture Switch", MC13783_AUDIO_RX1, 10, 1, 0),
++
++	SOC_SINGLE("MC1 Capture Bias Switch", MC13783_AUDIO_TX, 0, 1, 0),
++	SOC_SINGLE("MC2 Capture Bias Switch", MC13783_AUDIO_TX, 1, 1, 0),
  };
  
- extern int mxs_saif_put_mclk(unsigned int saif_id);
+ static int mc13783_probe(struct snd_soc_codec *codec)
 -- 
 1.8.4.rc3
