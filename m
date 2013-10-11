@@ -1,19 +1,18 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 5/6] ASoC: tlv320aic3x: Include linux/of.h
-	header
-Date: Fri, 11 Oct 2013 17:24:00 +0530
-Message-ID: <1381492441-31195-5-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 6/6] ASoC: atmel: Include linux/of.h header
+Date: Fri, 11 Oct 2013 17:24:01 +0530
+Message-ID: <1381492441-31195-6-git-send-email-sachin.kamat@linaro.org>
 References: <1381492441-31195-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
- [209.85.220.46])
- by alsa0.perex.cz (Postfix) with ESMTP id CD0FD26567B
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 13:54:47 +0200 (CEST)
-Received: by mail-pa0-f46.google.com with SMTP id fa1so4243771pad.5
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 04:54:47 -0700 (PDT)
+Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
+ [209.85.220.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2318D2656E5
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 13:54:49 +0200 (CEST)
+Received: by mail-pa0-f45.google.com with SMTP id rd3so4285158pab.32
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2013 04:54:49 -0700 (PDT)
 In-Reply-To: <1381492441-31195-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,20 +31,20 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/codecs/tlv320aic3x.c |    1 +
+ sound/soc/atmel/sam9g20_wm8731.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 892c108..f8b9fa6 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -40,6 +40,7 @@
+diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+index 802717e..f15bff1 100644
+--- a/sound/soc/atmel/sam9g20_wm8731.c
++++ b/sound/soc/atmel/sam9g20_wm8731.c
+@@ -37,6 +37,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
  #include <linux/i2c.h>
- #include <linux/gpio.h>
- #include <linux/regulator/consumer.h>
 +#include <linux/of.h>
- #include <linux/of_gpio.h>
- #include <linux/slab.h>
- #include <sound/core.h>
+ 
+ #include <linux/atmel-ssc.h>
+ 
 -- 
 1.7.9.5
