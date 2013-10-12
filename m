@@ -1,51 +1,49 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 2/2] ASoC: pcm1792a: Fix max_register setting
-Date: Sat, 12 Oct 2013 17:26:49 +0800
-Message-ID: <1381570009.3884.3.camel@phoenix>
-References: <1381569865.3884.1.camel@phoenix>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f44.google.com (mail-pb0-f44.google.com
- [209.85.160.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 39A7E260323
- for <alsa-devel@alsa-project.org>; Sat, 12 Oct 2013 11:26:54 +0200 (CEST)
-Received: by mail-pb0-f44.google.com with SMTP id xa7so5285894pbc.3
- for <alsa-devel@alsa-project.org>; Sat, 12 Oct 2013 02:26:53 -0700 (PDT)
-In-Reply-To: <1381569865.3884.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Michael Trimarchi <michael@amarulasolutions.com>, Liam Girdwood <lgirdwood@gmail.com>
+From: Felipe Pena <felipensp@gmail.com>
+Subject: [PATCH] sound: soc: fsl: Fix memory leak in imx-audmux.c
+Date: Sat, 12 Oct 2013 19:22:34 -0300
+Message-ID: <1381616554-18654-1-git-send-email-felipensp@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Fabio Estevam <fabio.estevam@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, Bill Pemberton <wfp5p@virginia.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Felipe Pena <felipensp@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-According to the datasheet, the max_register is register 23.
+When audmux_clk is used and clk_prepare_enable function succeed,
+the memory alloc'd to buf variable is leaked
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: Felipe Pena <felipensp@gmail.com>
 ---
- sound/soc/codecs/pcm1792a.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/imx-audmux.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm1792a.c
-index 2a8eccf..7613181 100644
---- a/sound/soc/codecs/pcm1792a.c
-+++ b/sound/soc/codecs/pcm1792a.c
-@@ -188,7 +188,7 @@ MODULE_DEVICE_TABLE(of, pcm1792a_of_match);
- static const struct regmap_config pcm1792a_regmap = {
- 	.reg_bits		= 8,
- 	.val_bits		= 8,
--	.max_register		= 24,
-+	.max_register		= 23,
- 	.reg_defaults		= pcm1792a_reg_defaults,
- 	.num_reg_defaults	= ARRAY_SIZE(pcm1792a_reg_defaults),
- 	.writeable_reg		= pcm1792a_writeable_reg,
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index d3bf71a..977759a 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -66,19 +66,20 @@ static ssize_t audmux_read_file(struct file *file, char __user *user_buf,
+ 				size_t count, loff_t *ppos)
+ {
+ 	ssize_t ret;
+-	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
++	char *buf;
+ 	int port = (int)file->private_data;
+ 	u32 pdcr, ptcr;
+ 
+-	if (!buf)
+-		return -ENOMEM;
+-
+ 	if (audmux_clk) {
+ 		ret = clk_prepare_enable(audmux_clk);
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
++	buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
+ 	ptcr = readl(audmux_base + IMX_AUDMUX_V2_PTCR(port));
+ 	pdcr = readl(audmux_base + IMX_AUDMUX_V2_PDCR(port));
+ 
 -- 
-1.8.1.2
+1.7.10.4
