@@ -1,50 +1,33 @@
-From: Felipe Pena <felipensp@gmail.com>
-Subject: [PATCH v2] sound: soc: fsl: Fix memory leak in imx-audmux.c
-Date: Sat, 12 Oct 2013 19:35:06 -0300
-Message-ID: <1381617306-18764-1-git-send-email-felipensp@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Fabio Estevam <fabio.estevam@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, Bill Pemberton <wfp5p@virginia.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Felipe Pena <felipensp@gmail.com>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: dsp after dmix
+Date: Sun, 13 Oct 2013 14:34:23 +0200
+Message-ID: <CAOf5uwmrS1AZrmKfbUYokU1Azdd2dZv2=Z=fGp+UQyy_mW1ijQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f46.google.com (mail-wg0-f46.google.com [74.125.82.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2727261AB1
+ for <alsa-devel@alsa-project.org>; Sun, 13 Oct 2013 14:34:23 +0200 (CEST)
+Received: by mail-wg0-f46.google.com with SMTP id k14so6367448wgh.25
+ for <alsa-devel@alsa-project.org>; Sun, 13 Oct 2013 05:34:23 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-When audmux_clk is used and clk_prepare_enable function succeed,
-the memory alloc'd to buf variable is leaked
+Hi all,
 
-Signed-off-by: Felipe Pena <felipensp@gmail.com>
----
- sound/soc/fsl/imx-audmux.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+I have written a plugin to use the dsp of omapl138 and filtering the
+audio stream.
+My problem is to apply filtering after dmix plugin. Is there a way to have dsp
+filtering after alsa mixing?
 
-diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-index d3bf71a..ac86993 100644
---- a/sound/soc/fsl/imx-audmux.c
-+++ b/sound/soc/fsl/imx-audmux.c
-@@ -66,13 +66,10 @@ static ssize_t audmux_read_file(struct file *file, char __user *user_buf,
- 				size_t count, loff_t *ppos)
- {
- 	ssize_t ret;
--	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
-+	char *buf;
- 	int port = (int)file->private_data;
- 	u32 pdcr, ptcr;
- 
--	if (!buf)
--		return -ENOMEM;
--
- 	if (audmux_clk) {
- 		ret = clk_prepare_enable(audmux_clk);
- 		if (ret)
-@@ -85,6 +82,10 @@ static ssize_t audmux_read_file(struct file *file, char __user *user_buf,
- 	if (audmux_clk)
- 		clk_disable_unprepare(audmux_clk);
- 
-+	buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
- 	ret = snprintf(buf, PAGE_SIZE, "PDCR: %08x\nPTCR: %08x\n",
- 		       pdcr, ptcr);
- 
--- 
-1.7.10.4
+Michael
