@@ -1,60 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] sound/soc/atmel: don't use
- devm_pinctrl_get_select_default() in probe
-Date: Mon, 14 Oct 2013 17:37:53 +0100
-Message-ID: <20131014163753.GF2443@sirena.org.uk>
-References: <1381681071-6021-1-git-send-email-wsa@the-dreams.de>
- <1381681071-6021-5-git-send-email-wsa@the-dreams.de>
- <20131014131748.GU2443@sirena.org.uk>
- <20131014145629.GA17351@katana>
+Subject: Re: [PATCH 0/3] ASoC: mxs-saif error handling
+Date: Mon, 14 Oct 2013 18:02:16 +0100
+Message-ID: <20131014170216.GI2443@sirena.org.uk>
+References: <1381486264-1672-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oxour8c+zPVguRmP"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20131014145629.GA17351@katana>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfram Sang <wsa@the-dreams.de>
-Cc: linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============6977790696384271006=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 91C51261631
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 19:02:40 +0200 (CEST)
+In-Reply-To: <1381486264-1672-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: kernel@pengutronix.de, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---oxour8c+zPVguRmP
-Content-Type: text/plain; charset=us-ascii
+--===============6977790696384271006==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YtWd7p+F4osuzCU+"
 Content-Disposition: inline
 
-On Mon, Oct 14, 2013 at 04:56:29PM +0200, Wolfram Sang wrote:
 
-> > Applied, thanks.  Please use subject lines appropriate to the subsystem.
+--YtWd7p+F4osuzCU+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> That's quite a nut to crack with a generated patch series running over
-> the whole tree. I wonder if it is really worth the effort?
+On Fri, Oct 11, 2013 at 12:11:01PM +0200, Markus Pargmann wrote:
+> Hi,
+>=20
+> This series contains error handling patches for mxs-saif. The first patch=
+ is
+> a comment about the possible command sequence of trigger functions.
 
-I think it's probably worth the effort to add something to put rules for
-these things in MAINTAINERS, it'd cover 90% of cases.  If you're sending
-only one of a big series with a subject line that won't pattern match
-that's a good way to get stuff dropped on the floor.
+Applied all, thanks.
 
---oxour8c+zPVguRmP
+--YtWd7p+F4osuzCU+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSXB3eAAoJELSic+t+oim96PgP/3uv47vH2aj625X/6GOgIOYm
-D+9pH4cTBpGheD9Lnz3RqHDWU3KRmu8PN/+aZNioM4OJn3/hf9374Vk2shx004Vf
-aUUhHR/qVNvYiNIXQBeeYJZASvK968oRQi7VbUPsVNmZ3LoLsd+/AzKTpgYFbn4g
-VGSOg/FWSeTWSGOlJKivjwBEk1j/3m37rJb/s3N5/I6lJ4nvrjMyg8Z5ltFtlZvQ
-IY4iWoaPydQA7hDsLFsnf9Dvpk+hhU6wYXyCLoZM9+33UttFUo9GYdWKaSxyI3XY
-Cu8/OreH5aA+OwEMrWDJRuD29ZTAkI8XP5iLqkSsTKVIBmZsj6xSMUFrNkZIKZhN
-zAiinq+k5ITPjsjkUfUoTmFW/QD2toHsEL3Z/mAv/jzK6Wj7Ukxjl2Q1YP5tsxDn
-9K3RBO0jCdoYoHzn8WrM6st1OFzBJlCwJfc5C5q9FJQPcKgUEmpw0FPc0H9SsXQA
-MH1mU4Hajk7Jr8PBFxIHDcQD5Z3issnGiSIYLI3DvC7ONMY2tQmSN3S7FL3QTMFQ
-5Rf2ZXc3QqQe1+LrQ6LkZuym1JpiFshfqtBXv7QyAkr6hZhivEdFTPUCT+YCEXWH
-VF6w/TRwFvtgCzjY4LQj4lsw6OnellnIKOSUpK4XnfVlXWlejkqRC0V1BH/8HZEg
-jvn4UryGx6zkkG8tK4DR
-=qa9t
+iQIcBAEBAgAGBQJSXCOVAAoJELSic+t+oim9LLMQAJwGTM53+96xTtr7X8ndd+Dx
+qNxL6uTsNHQJeov3KKKS0YcAu/wiVlH85go8CNgwYnJ2r7kGfz9cVVpBm7ajJV6a
+JIXQYRzHw6SiYIpdt618D6vNLVeaEc9TYrPiwsWEVU6hs1kTA+cWWN2m5vlFYBDh
+Jq00yR8JVk/ehnmSz9gOXzG2BNdwTnasCh45ZfyZFSVvF6cCBZMIOKEWTHiVEWWV
+C04AKlGxMpRQbT/fbTdXWTcP2UqLSG5PA1xf/eMJLHHYX9oQgeJsJNcVMTcVB1m0
+2StLxstA4e/Ad5Q1/Li5np3gZBJtoBM05YJ2Hd97wnvsNGyXdToF79SAAeDJGazE
+u4cPbC3BtqBSGVamcvLYCLoIDTI75ID0UNhAUSVpu5hab3ssbb0qe/2+P82m353t
+vN/s/lf+9Y0UJzokun0pBmGJRaUCpGfr+mDt8KzxQRbtGCbLf6Md55wD03ZyCayW
+Y/H/dcqMxcfDG59MS96mnts6cMySp2T8Nk2uJIjS7vYD0+5QMjlMgBGWYFn9Esci
+9XVmw5aYc+qn48oH4Zc6UGvBFQjnAtIhFIxctgxSjzFiLvCSV0JHtTYZ5GVISY5d
+G8o50McdeVjHueEAy1tBJPI21ziNVHVii0ME6IiqAiq6CP5Zf1Iy5SB2w1S9VFBx
+yLE4NGea2aFYXFzXD6Ag
+=pw6W
 -----END PGP SIGNATURE-----
 
---oxour8c+zPVguRmP--
+--YtWd7p+F4osuzCU+--
+
+--===============6977790696384271006==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6977790696384271006==--
