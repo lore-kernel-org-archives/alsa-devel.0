@@ -1,35 +1,42 @@
-From: Felipe Pena <felipensp@gmail.com>
-Subject: Re: [PATCH v2] sound: soc: fsl: Fix memory leak in imx-audmux.c
-Date: Mon, 14 Oct 2013 09:05:44 -0300
-Message-ID: <CA+5g0SJGMy+XJw91uE6doidbjiPJrwXdgSkidZHCfP4L=Xx7dg@mail.gmail.com>
-References: <1381617306-18764-1-git-send-email-felipensp@gmail.com> <20131014115937.GR2443@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: dsp after dmix
+Date: Mon, 14 Oct 2013 14:15:03 +0200
+Message-ID: <525BE047.9000501@ladisch.de>
+References: <CAOf5uwmrS1AZrmKfbUYokU1Azdd2dZv2=Z=fGp+UQyy_mW1ijQ@mail.gmail.com>	<525B985A.30409@ladisch.de>
+ <CAOf5uwnFtN4mDqgfLThRXGUcHQpFJ6wkFFoZhBJdWc6FaBPapg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20131014115937.GR2443@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Fabio Estevam <fabio.estevam@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, Bill Pemberton <wfp5p@virginia.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 434052608ED
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 14:15:07 +0200 (CEST)
+In-Reply-To: <CAOf5uwnFtN4mDqgfLThRXGUcHQpFJ6wkFFoZhBJdWc6FaBPapg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Mon, Oct 14, 2013 at 8:59 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Sat, Oct 12, 2013 at 07:35:06PM -0300, Felipe Pena wrote:
->> When audmux_clk is used and clk_prepare_enable function succeed,
->> the memory alloc'd to buf variable is leaked
+Michael Trimarchi wrote:
+> On Mon, Oct 14, 2013 at 9:08 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+>> Michael Trimarchi wrote:
+>>> My problem is to apply filtering after dmix plugin.
+>>
+>> The dmix plugin works only on top of a "hw" device.
 >
-> Applied, thanks.  Please try to use subject lines appropriate for the
-> subsystem and keep your CC lists focused - you want to send to
-> maintainers and people working on the specific code but it's best to
-> avoid people working on tree wide cleanups like Bill so they don't get
-> too much spam.
+> Yes I have seen the code. Is there anyway to work with dps without passing
+> thought pulseaudio?
 
-Thanks guys for accepting the patch. Sorry for inconvenience about the
-subject line.
+You would have to write an ALSA kernel driver for the DSP device.
 
-About the CC list I just use the one that I get from scripts/get_maintainer.pl.
 
--- 
 Regards,
-Felipe Pena
+Clemens
