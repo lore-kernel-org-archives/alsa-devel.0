@@ -1,51 +1,55 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: dsp after dmix
-Date: Mon, 14 Oct 2013 14:25:03 +0200
-Message-ID: <525BE29F.1030107@ladisch.de>
-References: <CAOf5uwmrS1AZrmKfbUYokU1Azdd2dZv2=Z=fGp+UQyy_mW1ijQ@mail.gmail.com>	<525B985A.30409@ladisch.de>	<CAOf5uwnFtN4mDqgfLThRXGUcHQpFJ6wkFFoZhBJdWc6FaBPapg@mail.gmail.com>	<525BE047.9000501@ladisch.de>
- <CAOf5uwne9V3FgB_3rhTDr0Z08wJYKGAP8M1pR0VYhXxZ4rio-g@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] sound: soc: fsl: Fix memory leak in imx-audmux.c
+Date: Mon, 14 Oct 2013 13:27:49 +0100
+Message-ID: <20131014122749.GT2443@sirena.org.uk>
+References: <1381617306-18764-1-git-send-email-felipensp@gmail.com>
+ <20131014115937.GR2443@sirena.org.uk>
+ <CA+5g0SJGMy+XJw91uE6doidbjiPJrwXdgSkidZHCfP4L=Xx7dg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 70F57261A92
- for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 14:25:09 +0200 (CEST)
-In-Reply-To: <CAOf5uwne9V3FgB_3rhTDr0Z08wJYKGAP8M1pR0VYhXxZ4rio-g@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Michael Trimarchi <michael@amarulasolutions.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="hUen2UJD5eWDKlb+"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CA+5g0SJGMy+XJw91uE6doidbjiPJrwXdgSkidZHCfP4L=Xx7dg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Felipe Pena <felipensp@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Fabio Estevam <fabio.estevam@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, Bill Pemberton <wfp5p@virginia.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Michael Trimarchi wrote:
-> On Mon, Oct 14, 2013 at 2:15 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
->> Michael Trimarchi wrote:
->>> On Mon, Oct 14, 2013 at 9:08 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
->>>> Michael Trimarchi wrote:
->>>>> My problem is to apply filtering after dmix plugin.
->>>>
->>>> The dmix plugin works only on top of a "hw" device.
->>>
->>> Yes I have seen the code. Is there anyway to work with dps without passing
->>> thought pulseaudio?
->>
->> You would have to write an ALSA kernel driver for the DSP device.
->
-> This is not a good approach of the general problem because a lot of dsp has userspace
-> support and firmware and initialization is done by userspace library. Can I change
-> the writei and readi of the dmix plugin and let use my dsp function?
 
-Yes, it would be possible to replace the dmix plugin with your dsp-mix
-plugin.
+--hUen2UJD5eWDKlb+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Mon, Oct 14, 2013 at 09:05:44AM -0300, Felipe Pena wrote:
 
-Regards,
-Clemens
+> About the CC list I just use the one that I get from scripts/get_maintainer.pl.
+
+Yeah, that's the most common reason - get_maintianer tends to pick up
+extra people.  You really need to look at the list of people it
+generates and why they're there, if they're there due to git commits
+they might just have been doing some generic work.
+
+--hUen2UJD5eWDKlb+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSW+NCAAoJELSic+t+oim9L1UP/jcuKWRIdjedFeuRv5TI2clO
+3/8skzqSD1AEJ4/nOdB3Xua1AJHADB+e4BWYqsaKmb5uzDfL38S4CnUQ9sM70XeI
+O0K/0mH6Uivc/NZke/9IVfBIU59FuaCtwsWugltj0AYGCFYb/8ujC94bozWCgG8M
+SOGnc3toDU8xvq88dDmja0Zhm1Our47vavmSix+at26agFAsbX/gCFS+ifhMmzR2
+UEJmwnarJGt+x+pA63MspmQErWzZQkKS0VXB9zwB+lukevWPdCb8pM/jOnvaTuia
+xtQkp3wX1Os1lieGcQLFUd5sUmzau2yIgwNaZH/s6nIJEv6y0y7uwRRyUJyhKSVT
+4khEKne3ZRSeS8Y+7OHPGbbd+YbYU+uAoUuB8/G7Zfenvu1X77CP3wcTBV/fIDNx
+XlVAxMZ10QYR6F/Vq5zx6CvzDTJ5DkcRVwjqtytiXMMVViokXg+Rbo460opn2GsD
+hUwDmdguBv/Jatt4B+rtD1z4lUJT6X0DhnJX0aCPaubIFH6adirG/LoGN/qcrR+O
+YFPwUngXWEioOg5CgsCKWMwexo3sSbJIQn30ol2/wwFtey2+r53e2034ecluTnzD
+zAvHAEDrpWxM5qmk9tOEp2mxN6XIT4NPBrYKFlYf8NKznwzm8BTbN6kNSn/c4kWP
+YfC1xAOUuaZvc0jAPCwN
+=rGg7
+-----END PGP SIGNATURE-----
+
+--hUen2UJD5eWDKlb+--
