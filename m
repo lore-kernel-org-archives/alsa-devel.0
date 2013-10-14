@@ -1,75 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2] sound/soc/fsl: remove leftover
-	release_mem_region
-Date: Mon, 14 Oct 2013 14:21:17 +0100
-Message-ID: <20131014132117.GV2443@sirena.org.uk>
-References: <1381693899-12075-1-git-send-email-wsa@the-dreams.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tegra: support new register layouts in Tegra124
+Date: Mon, 14 Oct 2013 14:56:44 +0100
+Message-ID: <20131014135644.GX2443@sirena.org.uk>
+References: <1381527797-18447-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3754588179548366197=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 794C2261098
- for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 15:21:45 +0200 (CEST)
-In-Reply-To: <1381693899-12075-1-git-send-email-wsa@the-dreams.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <wsa@the-dreams.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="krsqJi1PDCheOQxO"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1381527797-18447-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3754588179548366197==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eV9cGEf2bJwTs/8b"
-Content-Disposition: inline
-
-
---eV9cGEf2bJwTs/8b
+--krsqJi1PDCheOQxO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 13, 2013 at 09:51:26PM +0200, Wolfram Sang wrote:
-> When converting this driver to devm_ioremap_resource, the removal of this now
-> unneeded function has been forgotten.
+On Fri, Oct 11, 2013 at 03:43:17PM -0600, Stephen Warren wrote:
+> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+>=20
+> Tegra124 introduces some small changes to the layout of some registers.
+> Modify the affected drivers to program those registers appropriately
+> based on which SoC they're running on.
 
 Applied, thanks.
 
---eV9cGEf2bJwTs/8b
+--krsqJi1PDCheOQxO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSW+/KAAoJELSic+t+oim9azEP/0ax3sPkOMoHnxMM+7TCcRNG
-0rVVgiHuXaXl41/b6fVe4WxIFFmoPLTAkraZ6orRaxOPtj3SVy+0W50CpjlpgRF8
-DbXl1ma+h8P2fP8B2ejWpnDbAz5iq+LvWyMc1vuw0AkirA2Fcyc6x0yRs+Rg9z3r
-1qzr76G9piD6NyJuezlYcbUvjOtjRr6aYJwi3jQZGyXZfi79kaDVBFd4IWz807UJ
-Ahq7sP5MmJV5ikCD3ky+FEO4sMKP0Ri3tFZbckSq1evl3dM32c6BvpafJ88L5isM
-BNxzIbOXJAx19oy7rVxRpgkWsTIi3MtVRt//FmLx4JtPmTTmyLw8ne1asCBrkqdN
-VNhR5IXnUS/fWL5lBhYuRmtNQ35GSYilCERbWnUB0XpqxLpOZjskqHCL+GPVO6f0
-JSlaCKchvDgtoNUcMrnTgxtte8d17SgHvF5hdFRP/mNtAMigrtIy8qDuMCER49go
-5erTLcvNEC5pEpUJh0rf3Yv1c+J1W5UndX8d3kz/uZRncmyCy5/N9FXO94g1qDwB
-VyWufD9j2/t/waEiXZINn5meDcqS/GTRCRAX4Ul4trVUNZwr44fMo4g5O2HJRp+6
-seXNWD6LhZcpqL01hUF5yidyr1UcWheVUjVtrJTPCzMbbq477J5Ww7ek0AFjY2xp
-vUQuE1oFZFtkw3kXZbt1
-=zpIJ
+iQIcBAEBAgAGBQJSW/gZAAoJELSic+t+oim9gTIP/1d2iMIXtzD2fVP6rWluy2LS
+WJaMGSXHfgEXHe/WZV8JfFkdPsl2Evc0wYNpxFM0rHX+l+zWuRqsyX6NusaV4x1N
+T6YIp/mplt3Ihd4wGd3HeDcancXqyblrdTEZBAVhjwmVENmyubzdkbH2FqhVeH2i
+3AqsqlB77L+dPrfvvBSwOTkd54an6zy1xle7aSbTJlPFzkVD1pOGy+wb8SP4NtU3
+kiZ7VQD2rp+toJGiJsLJtkeyH25SLB/3wokJF0zUPE4+tUnbp65aTBtuy93ypzoR
++2IpEybahrV+rxpEEufBuEew4KzOLvFbnIs4j+38NJcpn2QZdF9sw0X2rhiV7F8W
+tle4j4xPjz6M8cqus/UqR1p4rADjJOFxVCj3jcaomu4i6tfgntcV9HwbmGx5Cz4A
+h2+p2w3zr7nI4u+02rKCjIn3BeC/wBMmxs0pVEuucXPFO9SI6eHyqj0PNze9jJ3Q
+P/VTiix45AiJ2n6wfVSBCrFGEC4tS8sC18J5OAWQSKyunLftytjlhTeEuts9Xd6O
+E24XyKzzp5wlCTVFk25tDCPje8XSw5nFBemwqZe18XO8CRa0MrGsrzjE8szECRNE
+MGuSGQ18HYMnOtxhox7m2gOKucVdE4sYfSeEFuAqWfcs22COSeQ4a6HsXOuF7Mwm
+18aetY6fPECLR2tj/+xg
+=DtNp
 -----END PGP SIGNATURE-----
 
---eV9cGEf2bJwTs/8b--
-
---===============3754588179548366197==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3754588179548366197==--
+--krsqJi1PDCheOQxO--
