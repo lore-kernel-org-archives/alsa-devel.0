@@ -1,74 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: pcm1792a: Fix max_register
-	setting
-Date: Mon, 14 Oct 2013 15:08:44 +0100
-Message-ID: <20131014140844.GZ2443@sirena.org.uk>
-References: <1381569865.3884.1.camel@phoenix> <1381570009.3884.3.camel@phoenix>
+From: Wolfram Sang <wsa@the-dreams.de>
+Subject: Re: [PATCH 4/4] sound/soc/atmel: don't use
+ devm_pinctrl_get_select_default() in probe
+Date: Mon, 14 Oct 2013 16:56:29 +0200
+Message-ID: <20131014145629.GA17351@katana>
+References: <1381681071-6021-1-git-send-email-wsa@the-dreams.de>
+ <1381681071-6021-5-git-send-email-wsa@the-dreams.de>
+ <20131014131748.GU2443@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6553440746327380684=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A8832610B9
- for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 16:09:09 +0200 (CEST)
-In-Reply-To: <1381570009.3884.3.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: alsa-devel@alsa-project.org, Michael Trimarchi <michael@amarulasolutions.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="1yeeQ81UyVL57Vl7"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20131014131748.GU2443@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6553440746327380684==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="n8BV0TfTmv8nl9Pc"
-Content-Disposition: inline
-
-
---n8BV0TfTmv8nl9Pc
+--1yeeQ81UyVL57Vl7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Oct 12, 2013 at 05:26:49PM +0800, Axel Lin wrote:
-> According to the datasheet, the max_register is register 23.
 
-Applied, thanks.
+> Applied, thanks.  Please use subject lines appropriate to the subsystem.
 
---n8BV0TfTmv8nl9Pc
+That's quite a nut to crack with a generated patch series running over
+the whole tree. I wonder if it is really worth the effort?
+
+
+--1yeeQ81UyVL57Vl7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+Version: GnuPG v1.4.14 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSW/rpAAoJELSic+t+oim9jrQP/inL6TLOlxJhdJ7J0hb4mJzS
-paMdFFWZqglIEzebhXLLx6PTAy64cks10idyb2v/dN6L8oIYiJxpjX7luCDklwTH
-DGbCpHC+abLhjmRMey74c8JtRubSN8/aagT0TBbHboQlfbzGqzeuTAZOXWUYZHM6
-b7e3EiVWEybF5UCxeN+fYCJPh0jfY5bPBtVAQc8bk5NdX+pWkOri6K/XgtVkcJzB
-wT9fEu/Et5pfy8Qk2uxB3Dc8SXqWDu6j34O7HowkNpaMUqzw0XLHCTOIJwS2aZxL
-+YNLTVqcaG2SWkr0tSWPXmiYFGruO1TALRA+jOrE1wv+/LVnJj4t0Z0JqPEEbp+o
-HEZZD5KeZ8SP0lTAGPEAzoSRp2H6CsmLdXjauQH4hZEsb/24EQNdT9JM3R8E3cx/
-3pgd9gACQ7ePvhvqTZOxpWIACfuJ2wCrL2L51ULQ8O+yQRL/f1olhO6i2uNvEPIW
-bChJnFNAK28EQLBTSmC1u4aorMIa9I434B8WHegarTrCJTmQRHlbdBqZY5xBZRw4
-e2CvRvd4vQxkB+IUpCw8WoVm96nXgULWG4lQWIkO0Xo2wpZgihCurqSjQs9IUceu
-ukqqVdLs8RiSQ5iaEN1Wy8LD8Bx2sNNM1kc5+U86tx+C5y0qHDK9hGfgAKeo6nLV
-6eg00fQbI91TbRuYJfFz
-=+YUj
+iQIcBAEBAgAGBQJSXAYcAAoJEBQN5MwUoCm2tiUP/2VgGzL7AY40+VTdZAQQKGMV
+ANe03M+Xppbs+DbQg1nlYOPBSmEzsOQhLE1uwEUvhZtTBrvU2C69UHmCoRcdINeF
+bCJQC6jbJesjUQ65g6NLDlSq8j697qU+RvxKHJw4JbHU3HZPpwYgKLTKNAHo5guD
+ic6aSXljXFBqeMm6wSG/bxsqBYbBx628sYSFgOw4moLM53gI6CFkbj+YROI6AXlW
+fplpf5v3zTaO+5Hh/GswtnbMNDTv8q+hnl4XlHDFUZj0bJEj2FZONkwdB6t5pu7K
+qyLP2Lg00nmXhxZZdcZ5O6/2R5Lmxuc8rBSzhCNl5ZXMIJ7uLfzQHfxjXgG2GCcE
+IDyAnmb+xYSDOsyRn1loYkSvfrBIXpvOAhk4gSWrlEOZE6PSgdw2GSUDgJREGiHv
+hYwEnaovQuQ+QhaawM8A+ye5jAodHQqxn37YF9VnO9+kNGM3PGu9Fyz2MPx+rsym
+HNIOY9Yrh4An22yvXrVXedp69hTycyRDOHf/KNmTv5haVOzzziFMsNi2TK0EVtEp
+h603xTDn2VJU3qThpLekVIrTSimJ4V9NZRSSVGtjTqUIoNrnzrpcr6ddL97tAvKU
+0gJ1svpVqJYovIYvJyNqBUy9fYcE5Vy7UzMzsPMnLCiaN6cnXecYfL/Onuu3XLDM
+y+zHrN3ActPJHAxGpEXN
+=BIcA
 -----END PGP SIGNATURE-----
 
---n8BV0TfTmv8nl9Pc--
-
---===============6553440746327380684==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6553440746327380684==--
+--1yeeQ81UyVL57Vl7--
