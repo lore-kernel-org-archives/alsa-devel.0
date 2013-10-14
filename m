@@ -1,17 +1,22 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: Michael Trimarchi <michael@amarulasolutions.com>
 Subject: Re: dsp after dmix
-Date: Mon, 14 Oct 2013 14:15:03 +0200
-Message-ID: <525BE047.9000501@ladisch.de>
-References: <CAOf5uwmrS1AZrmKfbUYokU1Azdd2dZv2=Z=fGp+UQyy_mW1ijQ@mail.gmail.com>	<525B985A.30409@ladisch.de>
+Date: Mon, 14 Oct 2013 14:18:27 +0200
+Message-ID: <CAOf5uwne9V3FgB_3rhTDr0Z08wJYKGAP8M1pR0VYhXxZ4rio-g@mail.gmail.com>
+References: <CAOf5uwmrS1AZrmKfbUYokU1Azdd2dZv2=Z=fGp+UQyy_mW1ijQ@mail.gmail.com>
+ <525B985A.30409@ladisch.de>
  <CAOf5uwnFtN4mDqgfLThRXGUcHQpFJ6wkFFoZhBJdWc6FaBPapg@mail.gmail.com>
+ <525BE047.9000501@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 434052608ED
- for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 14:15:07 +0200 (CEST)
-In-Reply-To: <CAOf5uwnFtN4mDqgfLThRXGUcHQpFJ6wkFFoZhBJdWc6FaBPapg@mail.gmail.com>
+Received: from mail-we0-f171.google.com (mail-we0-f171.google.com
+ [74.125.82.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05EFB2608EC
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 14:18:27 +0200 (CEST)
+Received: by mail-we0-f171.google.com with SMTP id t60so7006140wes.30
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 05:18:27 -0700 (PDT)
+In-Reply-To: <525BE047.9000501@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,22 +26,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Michael Trimarchi <michael@amarulasolutions.com>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Michael Trimarchi wrote:
-> On Mon, Oct 14, 2013 at 9:08 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
->> Michael Trimarchi wrote:
->>> My problem is to apply filtering after dmix plugin.
+Hi
+
+On Mon, Oct 14, 2013 at 2:15 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Michael Trimarchi wrote:
+>> On Mon, Oct 14, 2013 at 9:08 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+>>> Michael Trimarchi wrote:
+>>>> My problem is to apply filtering after dmix plugin.
+>>>
+>>> The dmix plugin works only on top of a "hw" device.
 >>
->> The dmix plugin works only on top of a "hw" device.
+>> Yes I have seen the code. Is there anyway to work with dps without passing
+>> thought pulseaudio?
 >
-> Yes I have seen the code. Is there anyway to work with dps without passing
-> thought pulseaudio?
+> You would have to write an ALSA kernel driver for the DSP device.
+>
 
-You would have to write an ALSA kernel driver for the DSP device.
+This is not a good approach of the general problem because a lot of
+dsp has userspace
+support and firmware and initialization is done by userspace library.
+Can I change
+the writei and readi of the dmix plugin and let use my dsp function?
+
+Michael
 
 
-Regards,
-Clemens
+
+>
+> Regards,
+> Clemens
