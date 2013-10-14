@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] sound/soc/atmel: don't use
- devm_pinctrl_get_select_default() in probe
-Date: Mon, 14 Oct 2013 14:17:48 +0100
-Message-ID: <20131014131748.GU2443@sirena.org.uk>
-References: <1381681071-6021-1-git-send-email-wsa@the-dreams.de>
- <1381681071-6021-5-git-send-email-wsa@the-dreams.de>
+Subject: Re: [PATCH V2] sound/soc/fsl: remove leftover
+	release_mem_region
+Date: Mon, 14 Oct 2013 14:21:17 +0100
+Message-ID: <20131014132117.GV2443@sirena.org.uk>
+References: <1381693899-12075-1-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7906000682226353145=="
+Content-Type: multipart/mixed; boundary="===============3754588179548366197=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D93E32608EC
- for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 15:18:16 +0200 (CEST)
-In-Reply-To: <1381681071-6021-5-git-send-email-wsa@the-dreams.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 794C2261098
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 15:21:45 +0200 (CEST)
+In-Reply-To: <1381693899-12075-1-git-send-email-wsa@the-dreams.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Wolfram Sang <wsa@the-dreams.de>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7906000682226353145==
+--===============3754588179548366197==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="N4FnyIpcgIJc+tmW"
+	protocol="application/pgp-signature"; boundary="eV9cGEf2bJwTs/8b"
 Content-Disposition: inline
 
 
---N4FnyIpcgIJc+tmW
+--eV9cGEf2bJwTs/8b
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Oct 13, 2013 at 06:17:50PM +0200, Wolfram Sang wrote:
-> Since commit ab78029 (drivers/pinctrl: grab default handles from device core),
-> we can rely on device core for setting the default pins.
+On Sun, Oct 13, 2013 at 09:51:26PM +0200, Wolfram Sang wrote:
+> When converting this driver to devm_ioremap_resource, the removal of this now
+> unneeded function has been forgotten.
 
-Applied, thanks.  Please use subject lines appropriate to the subsystem.
+Applied, thanks.
 
---N4FnyIpcgIJc+tmW
+--eV9cGEf2bJwTs/8b
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSW+75AAoJELSic+t+oim9TdcP/1UZSjKtrdUF8tH9xDZXwSdb
-XK8bn1mrnmsyfBHLL9h1bzmyaGH/DsL4StbeomL7oRvCGqjCoaz3FdPtDSN3Biv2
-CY3tpiX3Vebq8qRCcwmMrVB682yKnshm2VulyCNeUrhJz2Z1S6bvSp+yfs38LPmp
-3yZFoDDSQgTfWM/igbeT2fRWfgzHMcXHyq6PdMUo50klJsddQmzjhy8LKHSttppY
-luEJoMqkCeEa+Sg7ZwEV0fSBZwjCQZ7Bs/Jx3D5AKUCqGS3lvqbAVergJz1QmzfV
-op9bAgMitCRqnlHiyHdKOvgqiLO9BWeUe21NLOS6OZAX3W7t7jzYWBZNVlPekg2A
-S/xFgiScloQOwqalfZFr6yXflJ5iyeaOABWZPciqBZMJr5bhn2Fj5Wh82UZioOGt
-1+VGp5Bf1U5PE+UBZ7/NrjDjrhaTWsyki6XcbbFEuzJTb877D5IJbS76lxKHTpNU
-FALIHkIf6BQtUrYyIzPkNJDrkPfTUQUdwRNEAzUbmJnXbD6Ln6Sbd9WXnhINBZgl
-isL7tlTsgJIITseVvsVBFdEZsfP6nWatwEXumM/yYnKaebUeSNnKQus6n93O9VJd
-kHQb9GVaYX9vtNpBsNJ3JpXlon2d2Ln+J3e1+GXeTkV0PJIs1oCnm51UTbAldCZ2
-Hcgrt3oxFsscIOJQvrJ2
-=sHl6
+iQIcBAEBAgAGBQJSW+/KAAoJELSic+t+oim9azEP/0ax3sPkOMoHnxMM+7TCcRNG
+0rVVgiHuXaXl41/b6fVe4WxIFFmoPLTAkraZ6orRaxOPtj3SVy+0W50CpjlpgRF8
+DbXl1ma+h8P2fP8B2ejWpnDbAz5iq+LvWyMc1vuw0AkirA2Fcyc6x0yRs+Rg9z3r
+1qzr76G9piD6NyJuezlYcbUvjOtjRr6aYJwi3jQZGyXZfi79kaDVBFd4IWz807UJ
+Ahq7sP5MmJV5ikCD3ky+FEO4sMKP0Ri3tFZbckSq1evl3dM32c6BvpafJ88L5isM
+BNxzIbOXJAx19oy7rVxRpgkWsTIi3MtVRt//FmLx4JtPmTTmyLw8ne1asCBrkqdN
+VNhR5IXnUS/fWL5lBhYuRmtNQ35GSYilCERbWnUB0XpqxLpOZjskqHCL+GPVO6f0
+JSlaCKchvDgtoNUcMrnTgxtte8d17SgHvF5hdFRP/mNtAMigrtIy8qDuMCER49go
+5erTLcvNEC5pEpUJh0rf3Yv1c+J1W5UndX8d3kz/uZRncmyCy5/N9FXO94g1qDwB
+VyWufD9j2/t/waEiXZINn5meDcqS/GTRCRAX4Ul4trVUNZwr44fMo4g5O2HJRp+6
+seXNWD6LhZcpqL01hUF5yidyr1UcWheVUjVtrJTPCzMbbq477J5Ww7ek0AFjY2xp
+vUQuE1oFZFtkw3kXZbt1
+=zpIJ
 -----END PGP SIGNATURE-----
 
---N4FnyIpcgIJc+tmW--
+--eV9cGEf2bJwTs/8b--
 
---===============7906000682226353145==
+--===============3754588179548366197==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7906000682226353145==--
+--===============3754588179548366197==--
