@@ -1,24 +1,24 @@
 From: Michael Trimarchi <michael@amarulasolutions.com>
 Subject: Re: dsp after dmix
-Date: Mon, 14 Oct 2013 14:33:55 +0200
-Message-ID: <CAOf5uwmsk8=wK5pd1w5URXmsvfOH9S25_P4QrvYht9W+-aw=1Q@mail.gmail.com>
+Date: Mon, 14 Oct 2013 14:44:48 +0200
+Message-ID: <CAOf5uwmHbqmRe2pOrGWAPz4NxqVJYacbQfZP+3+nSEK8WD1T2Q@mail.gmail.com>
 References: <CAOf5uwmrS1AZrmKfbUYokU1Azdd2dZv2=Z=fGp+UQyy_mW1ijQ@mail.gmail.com>
  <525B985A.30409@ladisch.de>
  <CAOf5uwnFtN4mDqgfLThRXGUcHQpFJ6wkFFoZhBJdWc6FaBPapg@mail.gmail.com>
  <525BE047.9000501@ladisch.de>
  <CAOf5uwne9V3FgB_3rhTDr0Z08wJYKGAP8M1pR0VYhXxZ4rio-g@mail.gmail.com>
  <s5hob6sox52.wl%tiwai@suse.de>
+ <CAOf5uwmsk8=wK5pd1w5URXmsvfOH9S25_P4QrvYht9W+-aw=1Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f171.google.com (mail-wi0-f171.google.com
- [209.85.212.171])
- by alsa0.perex.cz (Postfix) with ESMTP id A25532608EC
- for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 14:33:55 +0200 (CEST)
-Received: by mail-wi0-f171.google.com with SMTP id ey11so1648147wid.4
- for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 05:33:55 -0700 (PDT)
-In-Reply-To: <s5hob6sox52.wl%tiwai@suse.de>
+Received: from mail-wg0-f45.google.com (mail-wg0-f45.google.com [74.125.82.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id D60AE2608EC
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 14:44:48 +0200 (CEST)
+Received: by mail-wg0-f45.google.com with SMTP id z12so5196153wgg.12
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 05:44:48 -0700 (PDT)
+In-Reply-To: <CAOf5uwmsk8=wK5pd1w5URXmsvfOH9S25_P4QrvYht9W+-aw=1Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,46 +34,58 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi
 
-On Mon, Oct 14, 2013 at 2:27 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 14 Oct 2013 14:18:27 +0200,
-> Michael Trimarchi wrote:
->>
->> Hi
->>
->> On Mon, Oct 14, 2013 at 2:15 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
->> > Michael Trimarchi wrote:
->> >> On Mon, Oct 14, 2013 at 9:08 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
->> >>> Michael Trimarchi wrote:
->> >>>> My problem is to apply filtering after dmix plugin.
->> >>>
->> >>> The dmix plugin works only on top of a "hw" device.
->> >>
->> >> Yes I have seen the code. Is there anyway to work with dps without passing
->> >> thought pulseaudio?
->> >
->> > You would have to write an ALSA kernel driver for the DSP device.
->> >
->>
->> This is not a good approach of the general problem because a lot of
->> dsp has userspace
->> support and firmware and initialization is done by userspace library.
->> Can I change
->> the writei and readi of the dmix plugin and let use my dsp function?
+On Mon, Oct 14, 2013 at 2:33 PM, Michael Trimarchi
+<michael@amarulasolutions.com> wrote:
+> Hi
 >
-> It's not trivial approach, either.  The key of dmix is the mmaped
-> buffer shared among multiple clients, and the shared buffer may be
-> altered at any time by any client.  This makes the post processing
-> pretty difficult.
+> On Mon, Oct 14, 2013 at 2:27 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> At Mon, 14 Oct 2013 14:18:27 +0200,
+>> Michael Trimarchi wrote:
+>>>
+>>> Hi
+>>>
+>>> On Mon, Oct 14, 2013 at 2:15 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+>>> > Michael Trimarchi wrote:
+>>> >> On Mon, Oct 14, 2013 at 9:08 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+>>> >>> Michael Trimarchi wrote:
+>>> >>>> My problem is to apply filtering after dmix plugin.
+>>> >>>
+>>> >>> The dmix plugin works only on top of a "hw" device.
+>>> >>
+>>> >> Yes I have seen the code. Is there anyway to work with dps without passing
+>>> >> thought pulseaudio?
+>>> >
+>>> > You would have to write an ALSA kernel driver for the DSP device.
+>>> >
+>>>
+>>> This is not a good approach of the general problem because a lot of
+>>> dsp has userspace
+>>> support and firmware and initialization is done by userspace library.
+>>> Can I change
+>>> the writei and readi of the dmix plugin and let use my dsp function?
+>>
+>> It's not trivial approach, either.  The key of dmix is the mmaped
+>> buffer shared among multiple clients, and the shared buffer may be
+>> altered at any time by any client.  This makes the post processing
+>> pretty difficult.
+>>
+>> If the post-processing can be applied in real time, one alternative
+>> approach would be to go through loopback device.  But it's also tricky
+>> and involves many round trips.
+>>
 >
-> If the post-processing can be applied in real time, one alternative
-> approach would be to go through loopback device.  But it's also tricky
-> and involves many round trips.
+> Yes I know about shared area mapping. Can you explain a bit more
+> the loopback device approch?
 >
 
-Yes I know about shared area mapping. Can you explain a bit more
-the loopback device approch?
+dmix->aloop->dsp_plugin->hw
+
+Is it possible to describe in alsarc?
 
 Michael
 
+
+> Michael
 >
-> Takashi
+>>
+>> Takashi
