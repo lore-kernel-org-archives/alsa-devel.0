@@ -1,35 +1,33 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [PATCH 4/4] sound/soc/atmel: don't use devm_pinctrl_get_select_default()
- in probe
-Date: Mon, 14 Oct 2013 13:28:37 +0800
-Message-ID: <525B8105.6090303@atmel.com>
-References: <1381681071-6021-1-git-send-email-wsa@the-dreams.de> <1381681071-6021-5-git-send-email-wsa@the-dreams.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: dsp after dmix
+Date: Mon, 14 Oct 2013 09:08:10 +0200
+Message-ID: <525B985A.30409@ladisch.de>
+References: <CAOf5uwmrS1AZrmKfbUYokU1Azdd2dZv2=Z=fGp+UQyy_mW1ijQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1381681071-6021-5-git-send-email-wsa@the-dreams.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfram Sang <wsa@the-dreams.de>
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 08F64260864
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2013 09:08:13 +0200 (CEST)
+In-Reply-To: <CAOf5uwmrS1AZrmKfbUYokU1Azdd2dZv2=Z=fGp+UQyy_mW1ijQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Michael Trimarchi <michael@amarulasolutions.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Wolfram Sang,
+Michael Trimarchi wrote:
+> My problem is to apply filtering after dmix plugin.
 
-On 10/14/2013 00:17, Wolfram Sang wrote:
-> Since commit ab78029 (drivers/pinctrl: grab default handles from device core),
-> we can rely on device core for setting the default pins.
->
-> Acked-by: Linus Walleij <linus.walleij@linaro.org> (personally at LCE13)
-> Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
-> ---
->   sound/soc/atmel/atmel_wm8904.c | 8 --------
->   1 file changed, 8 deletions(-)
+The dmix plugin works only on top of a "hw" device.
 
-Tested OK on at91sam9n12ek and sama5d3xek board.
-Thanks.
 
-Acked-by: Bo Shen <voice.shen@atmel.com>
-
-Best Regards,
-Bo Shen
+Regards,
+Clemens
