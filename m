@@ -1,23 +1,17 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH] ALSA: hda - hdmi: Fix channel map switch
- not taking effect
-Date: Tue, 15 Oct 2013 19:22:00 +0300
-Message-ID: <525D6BA8.3000804@iki.fi>
-References: <1380737612-16512-1-git-send-email-anssi.hannula@iki.fi>
- <s5hzjqlseqt.wl%tiwai@suse.de>
- <73e325dd7c696e2d16946890a66dc838@mail.onse.fi>
- <s5h61t9s6n7.wl%tiwai@suse.de>
- <884f0056bbbc27a2f35c581de11a07d9@mail.onse.fi>
- <s5hsiwdqlc4.wl%tiwai@suse.de> <s5hy55umtwv.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Audio Miniconference 2013 schedule II - Edinburgh
+	21st October
+Date: Tue, 15 Oct 2013 18:04:44 +0100
+Message-ID: <20131015170444.GT2443@sirena.org.uk>
+References: <20131014161003.GC2443@sirena.org.uk>
+ <CAL-7xP9=TfwCuMtzfOLv9LMwkHqRt+BRzOwf2AOHBxpoenk3ZQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5368485708649944978=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
- [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F7282610C5
- for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2013 18:22:04 +0200 (CEST)
-In-Reply-To: <s5hy55umtwv.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD0102610B1
+ for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2013 19:04:52 +0200 (CEST)
+In-Reply-To: <CAL-7xP9=TfwCuMtzfOLv9LMwkHqRt+BRzOwf2AOHBxpoenk3ZQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,126 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Eric Laurent <elaurent@google.com>
+Cc: Colin Guthrie <colin@guthr.ie>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Arun Raghavan <arun.raghavan@collabora.co.uk>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>, Tanu Kaskinen <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-15.10.2013 18:32, Takashi Iwai kirjoitti:
-> At Mon, 07 Oct 2013 15:09:15 +0200,
-> Takashi Iwai wrote:
->>
->> At Mon, 07 Oct 2013 15:45:09 +0300,
->> Anssi Hannula wrote:
->>>
->>> Takashi Iwai kirjoitti 2013-10-07 13:43:
->>>> At Mon, 07 Oct 2013 13:31:17 +0300,
->>>> Anssi Hannula wrote:
->>>>
->>>> Takashi Iwai kirjoitti 2013-10-07 10:48:
->>>>> At Wed,  2 Oct 2013 21:13:32 +0300,
->>>>> Anssi Hannula wrote:
->>>>>
->>>>> Currently hdmi_setup_audio_infoframe() reprograms the HDA channel
->>>>> mapping only when the infoframe is not up-to-date or the non-PCM flag
->>>>> has changed.
->>>>>
->>>>> However, when just the channel map has been changed, the infoframe may
->>>>> still be up-to-date and non-PCM flag may not have changed, so the new
->>>>> channel map is not actually programmed into the HDA codec.
->>>>>
->>>>> Notably, this failing case is also always triggered when the device is
->>>>> already in a prepared state and a new channel map is configured while
->>>>> changing only the channel positions (for example, plain
->>>>> "speaker-test -c2 -m FR,FL").
->>>>>
->>>>> Fix that by keeping track of the last programmed channel map and making
->>>>> hdmi_setup_audio_infoframe() always update the hardware mapping if the
->>>>> channel map has changed.
->>>>>
->>>>> Hmm, maybe it's easier (and safer) to remove the check and always call
->>>>> hdmi_setup_channel_mapping()?  Of course, the drawback is the
->>>>> unnecessary verbs, but it's not too much.
->>>>
->>>> Easier, yes. I don't really have that good of an idea how big of a 
->>>> delay
->>>> do 8 write verbs cause, so I'll rely on your judgment :)
->>>>
->>>> I guess I could replace the writes with read-and-write-if-differs 
->>>> cycles
->>>> when I add the set_slot ops for ATI/AMD, since it seems to be used for
->>>> other similar cases (like channel count)?
->>>>
->>>> Well, this would result in more cost, as read requires a sync.
->>>
->>> Hmm, so why does e.g. converter channel count set-up use that, then?
->>
->> It can be optimized as well :)
->>
->>>> If any, we can use the cached write/update.  But this assumes that the
->>>> hardware never clears the value by some operation internally.
->>>
->>> It should not, but better be safe than sorry here (at least for stable) 
->>> :)
->>>
->>>>> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
->>>>> Cc: <stable@vger.kernel.org>
->>>>> ---
->>>>>
->>>>> BTW, is there some mechanism preventing hdmi_chmap_ctl_put() to be
->>>>> called
->>>>> at the same time with generic_hdmi_playback_pcm_prepare() that I didn't
->>>>> see with a quick look?
->>>>> Both of them call hdmi_setup_audio_infoframe() which is not
->>>>> thread-safe.
->>>>>
->>>>> Yeah, we need to introduce a mutex there.
->>>>
->>>> I guess hdmi_present_sense() is the same, as it can also call
->>>> hdmi_setup_audio_infoframe()?
->>>>
->>>> Hm, looking at the code, we have already pin_eld->lock in
->>>> hdmi_present_sense().  This can be used in other places, too.
->>>
->>> Well, hdmi_setup_audio_infoframe() is non-threadsafe for other reasons 
->>> than
->>> eld as well (e.g. write verbs to hw), though, so it might be a bit 
->>> confusing
->>> as-is. Better move/rename the lock if we end up using it? Or not?
->>
->> Yeah, it'd make sense.
->>
->>>> (And pin_eld->monitor_present change at the beginning of
->>>> hdmi_present_sense() should be protected in the mutex, too...)
->>>>
->>>> BTW, shouldn't hdmi_present_sense() call hdmi_setup_audio_infoframe()
->>>> always
->>>> when eld_changed is true? hdmi_setup_audio_infoframe() does not do its
->>>> stuff if !monitor_present, so if one starts playback before plugging 
->>>> in,
->>>> the channel mappings etc will never be set even when plug-in happens
->>>> (from what I can see, that is -  did not test yet).
->>>>
->>>> Well, there is such a call but currently specific to Haswell because
->>>> it hasn't been tested for others.  Maybe we can simply get rid of
->>>> is_haswell() check there.
->>>
->>> OK, will test later and provide a patch if it works as expected.
->>
->> Thanks.
-> 
-> [dropped stable from Cc]
-> 
-> Anssi, is the lock fix/cleanup patch ready?
-> 
-> I already have patche to extend mutex lock over other places and
-> move it into per_pin, but if you have already similar patches, I'll
-> take yours, hopefully together with other fixes.
 
-Nope, haven't had the time to work on it yet (my excuse is that I was at
-XBMC DevCon last weekend :) ).
+--===============5368485708649944978==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Q4k2DfJVmmZNtoLx"
+Content-Disposition: inline
 
-So feel free to apply yours and I'll work on top of that (at some point
-later this week I guess).
 
--- 
-Anssi Hannula
+--Q4k2DfJVmmZNtoLx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Oct 15, 2013 at 09:00:40AM -0700, Eric Laurent wrote:
+
+> I can facilitate discussion on compress audio user space and tinycompress
+> with a presentation of what was done for Android K release.
+> Someone else should take the lead for the driver part.
+
+> I can also present user space changes for audio effect offloading.
+
+That'd be great, thanks.  Can you coordinate with Pierre for the effects
+offloading stuff so it fits in with his general DSP management topic?
+
+--Q4k2DfJVmmZNtoLx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSXXWpAAoJELSic+t+oim9MsMP+wUfL7IyeNu6vB+klYkLeo1A
+4f9/93049DaJ1QwPTgatm0bzRiI1ucIR/ZAMK5vSs6xtwBAN9Ve1ptXyTpgSmUVJ
+DRgUSixbH5aeXk5ZZelRBVwWHCgEUKtQ8q5y/2v9bpkUv1cOX9x/5E2MJSob+16k
+oKc1419q7WOYyOxU4l22DfW0cPomCKiARBhEgubeLo5PYQUBnXSQaR80/KmFKlaJ
+Nls7kgXFBT7QVQDlELpKEetclcnSIvKQPFo3tVoMmNaO+R5ft3GqlFsfcsdPUpTV
+6xYieqOBha8soZUJ6B3G8059jDCPRewmAo1H8usE/pLFRTJ6KVf7OQjV6oWdg+Ep
+XBHc39vV88g/pn7kO4GawCAkgmizILjVI1e7CjprS3PJ8AsUsuZZR1q0by4H477X
+DKNfTVQuElvcKoBEdKX1LAlhieQ4tk2x6VDg7Ijd4uhaUVp7o4Y0diq4OUEEQji0
+AEKgp95l7enFsAOB7qfKJFnEtSaH72EtdRHuhnAgquKk1Pd0XyYJFaFPryJRLtSY
+cZPjUYuVUBmoWY73IjSvVtFyeXTrxBMQM19OGaP5rIHIO+hZJPzeNEJbWOnQi9uW
+Y3ySRXQyxZzsbKj9k5z0OHqsDqks1q3LE9ceT/d0mHPp9TD9GPxC26NTB6XseR8P
+7BnOTiEDcLKZ5UF7WrKA
+=1MpZ
+-----END PGP SIGNATURE-----
+
+--Q4k2DfJVmmZNtoLx--
+
+--===============5368485708649944978==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5368485708649944978==--
