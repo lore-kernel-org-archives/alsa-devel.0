@@ -1,21 +1,18 @@
-From: Nicolin Chen <b42378@freescale.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: generic-dmaengine-pcm: Add an
  interface to override its functions
-Date: Tue, 15 Oct 2013 17:37:17 +0800
-Message-ID: <20131015093717.GB18784@MrMyself>
+Date: Tue, 15 Oct 2013 12:05:18 +0100
+Message-ID: <20131015110518.GW2443@sirena.org.uk>
 References: <1381823360-8672-1-git-send-email-b42378@freescale.com>
  <525CF814.6090403@metafoo.de> <20131015082229.GA18714@MrMyself>
  <525D04B4.3050606@metafoo.de> <20131015092350.GA18784@MrMyself>
  <525D0D7A.8010309@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3867438884115365744=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe004.messaging.microsoft.com [216.32.181.184])
- by alsa0.perex.cz (Postfix) with ESMTP id E0490261664
- for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2013 11:47:26 +0200 (CEST)
-Content-Disposition: inline
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D962261736
+ for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2013 13:05:24 +0200 (CEST)
 In-Reply-To: <525D0D7A.8010309@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,61 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+
+--===============3867438884115365744==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Wk+D4bxjv0bBail9"
+Content-Disposition: inline
+
+
+--Wk+D4bxjv0bBail9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
 On Tue, Oct 15, 2013 at 11:40:10AM +0200, Lars-Peter Clausen wrote:
-> On 10/15/2013 11:23 AM, Nicolin Chen wrote:
-> > On Tue, Oct 15, 2013 at 11:02:44AM +0200, Lars-Peter Clausen wrote:
-> >>> If this modification to sound/core/pcm_dmaengine.c is not fair,
-> >>> what about moving the modification to soc-gerneric-dmaengine-pcm.c?
-> >>>
-> >>> For example, instead of using snd_dmaengine_pcm_trigger() directly
-> >>> in gerneric soc dmaengine driver, we create a new one inside gerneric
-> >>> soc dmaengine driver and check the override:
-> >>>
-> >>> static int snd_soc_dmaengine_pcm_trigger(substream, cmd) {
-> >>> 	if (config->driver->ops->trigger)
-> >>> 		return config->driver->ops->trigger(substream, cmd);
-> >>> 		
-> >>> 	return snd_dmaengine_pcm_trigger(substream, cmd);
-> >>> }
-> >>>
-> >>> Since it happens inside generic dmaengine pcm ASoC driver, it won't break
-> >>> those helper functions.
-> >>>
-> >>> I'm trying this just because I hope generic dmaengine can be more flexible
-> >>> Admittedly, using helper functions might be more plausible way in current
-> >>> ASoC structure. However, there might be so much change for an generic soc
-> >>> dmaengine implementation even if it just wants to override one single func.
-> >>
-> >> Well the idea of the generic dmaengine driver is to be generic and not
-> >> require SoC specific hacks since those should not be necessary if things are
-> >> done right. What exactly do you want to implement in the overwritten ops?
-> >>
-> >> - Lars
-> > 
-> > Just like I mentioned in the commit comments, using on-chip memory would
-> > need an alternative memory allocating function to replace the default one
-> > from external DDR. imx-pcm-dma.c is now using ASoC generic dmaengine, so
-> > if we turn it back to helper functions way, all cpu dai drivers might have
-> > to be turned back as well.
-> > 
-> > ASoC generic dmaengine is quite concise and well-developed for us to use.
-> > But after using it, its own limitation might make user waver to choose the
-> > old fashion helper functions. So I just wish it could provide a back door
-> > for an easy trick. Then we can continue to enjoy the convenience from it
-> > and also be able to tackle these uncommon cases.
-> 
+
 > Wanting to use on-chip memory for the audio buffers is not that uncommon.
 > I'd rather see this implemented generically in the generic driver instead of
 > each SoC implementing its own version.
-> 
-> - Lars
 
-Is that so? Actually, I did as you said in my internal branch, but I just
-fear that might not be easy to upstream, so I tried to figure out another
-plausible way. It looks like I took a detour :)
+I agree - to me it looks like the major problm here is that the handling
+of the on chip memory tends to vary widely between devices rather than
+that there are different problems.
 
-Thank you for the advice.
-Nicolin Chen
+--Wk+D4bxjv0bBail9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSXSFrAAoJELSic+t+oim9QugP/3lpje0VdWaMZI1pMn07Ocmt
+b+arR3FUowBl3juPwebblZy2o+cIepRCD67LcFuwu33bvhHvgeYRKG17HwtaTUIX
+d5BdkGmbOUFV+j6CRHkG/n15zcBGDAAqManATmfBkijoB2eooaJINdtaTAGy+i2d
+fW6KlgS4Gq6uRJq104jKjrCyPRaPM7ZUzd9w97U2EqsA1ik5ZeEWDNKuCQeZx1FK
+VBlkR3JDT9vEGw6zk97Q5PB6TwUSt5sBdrHGuC+TqIKl0w5h8RVPsSmyIzdLLR8I
+S/sVdZOjUJRcI6AahnT9FPboJrxfFbi2MTnyTfKAPZqJMVgsb6lyFA9buazoBmaz
+2zFEVHUMOGVUW0YqdhROTTdKVlHEmohPrBhNyizpu4zLuq8kTdM0Kd8cBbo5iWjc
+L//oF+hMXygYc6CGpxSQeiByIE6ehT+ajesjGagG/3rk7p3mh4X8rf9tF+AMji3r
+7QW/XUUdWQkCn/S7/0okua+8F658XZazblxkMVEUQn8yGtoOyiicVS4NtYVJwB2H
+KRDwBz5m6ITRL6iHzCgg7v+qwosBPR6nuOWv+ZLH2tdT/mwmxmqM7q+A3rLG84S6
+LvDHfOSwXyZ5MU0KXPZ1ZvoJziKNk4W64F083aeDTRsZgVjKfqDe+14dgLOHO+R/
+oKbi48ApXXn/xmW731oE
+=kydy
+-----END PGP SIGNATURE-----
+
+--Wk+D4bxjv0bBail9--
+
+--===============3867438884115365744==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3867438884115365744==--
