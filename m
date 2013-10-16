@@ -1,7 +1,7 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [RFC PATCH 1/2] thinkpad-acpi: Add mute and mic-mute LED functionality
-Date: Wed, 16 Oct 2013 14:15:35 +0200
-Message-ID: <1381925736-11399-2-git-send-email-david.henningsson@canonical.com>
+Subject: [RFC PATCH 2/2] ALSA: hda - add connection to thinkpad_acpi to control mute/micmute LEDs
+Date: Wed, 16 Oct 2013 14:15:36 +0200
+Message-ID: <1381925736-11399-3-git-send-email-david.henningsson@canonical.com>
 References: <1381925736-11399-1-git-send-email-david.henningsson@canonical.com>
 Return-path: <platform-driver-x86-owner@vger.kernel.org>
 In-Reply-To: <1381925736-11399-1-git-send-email-david.henningsson@canonical.com>
@@ -10,164 +10,134 @@ To: tiwai@suse.de, alsa-devel@alsa-project.org, platform-driver-x86@vger.kernel.
 Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Questions / notes:
+Notes/questions:
 
-This patch supersedes the second of Alex Hung's patches posted earlier at
-http://www.spinics.net/lists/platform-driver-x86/msg04673.html
+For mute LEDs we can follow master like we already do on HP machines, but for
+mic mutes, we might have several capture switches. Honestly, on these laptops
+which almost always have autoswitched mics, there is only one recording source
+anyway. Can't we simply remove the extra capture PCMs, that seems easiest?
 
-Not sure if thinkpad_acpi should be dropped into include/linux
-though, any better suggestion?
+For some reason CONFIG_THINKPAD_ACPI did not work here (it was not defined),
+but maybe it's due to the way I'm testing, or I'm missing something obvious. 
+Not sure.
 
-Should TPACPI_VERSION be increased because we added a new LED driver?
+There are Thinkpad's with Realtek codecs as well which have mute/micmute.
+Maybe we should consider a more generic solution instead of copy-pasting
+between differen patch_* files?
+
+And also, we're missing a symbol_put in this version. Should we add a new
+"free" fixup action where we can add a call to symbol_put, or do you have a
+better suggestion?
 
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- drivers/platform/x86/thinkpad_acpi.c |   94 +++++++++++++++++++++++++++++++++-
- include/linux/thinkpad_acpi.h        |   10 ++++
- 2 files changed, 103 insertions(+), 1 deletion(-)
- create mode 100644 include/linux/thinkpad_acpi.h
+ sound/pci/hda/patch_conexant.c |   78 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 78 insertions(+)
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index 03ca6c1..ecdfeae 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -23,7 +23,7 @@
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
--#define TPACPI_VERSION "0.24"
-+#define TPACPI_VERSION "0.25"
- #define TPACPI_SYSFS_VERSION 0x020700
- 
- /*
-@@ -88,6 +88,7 @@
- 
- #include <linux/pci_ids.h>
- 
-+#include <linux/thinkpad_acpi.h>
- 
- /* ThinkPad CMOS commands */
- #define TP_CMOS_VOLUME_DOWN	0
-@@ -8350,6 +8351,93 @@ static struct ibm_struct fan_driver_data = {
- 	.resume = fan_resume,
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index ec68eae..237df7f 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -3232,8 +3232,80 @@ enum {
+ 	CXT_FIXUP_HEADPHONE_MIC_PIN,
+ 	CXT_FIXUP_HEADPHONE_MIC,
+ 	CXT_FIXUP_GPIO1,
++	CXT_FIXUP_THINKPAD_ACPI,
  };
  
-+/*************************************************************************
-+ * Mute LED subdriver
-+ */
++/* FIXME: figure out why #ifdef CONFIG_THINKPAD_ACPI does not work */
 +
-+#define MUTE_LED_INDEX 0
-+#define MICMUTE_LED_INDEX 1
++#if 1 /* #ifdef CONFIG_THINKPAD_ACPI */
 +
-+static int mute_led_on_off(int whichled, int state)
++#include <linux/thinkpad_acpi.h>
++
++static int (*mute_led_set_func)(int);
++static int (*micmute_led_set_func)(int);
++
++static void update_tpacpi_mute_led(void *private_data, int enabled)
 +{
-+	int output;
-+	acpi_handle temp;
++	struct hda_codec *codec = private_data;
++	struct conexant_spec *spec = codec->spec;
 +
-+	acpi_string m;
-+	if (whichled == MICMUTE_LED_INDEX) {
-+		state = state > 0 ? 2 : 0;
-+		m = "MMTS";
-+	} else {
-+		state = state > 0 ? 1 : 0;
-+		m = "SSMS";
++	if (spec->dynamic_eapd)
++		cx_auto_vmaster_hook(private_data, enabled);
++
++	if (mute_led_set_func)
++		mute_led_set_func(!enabled);
++}
++
++static void update_tpacpi_micmute_led(struct hda_codec *codec,
++				      struct snd_ctl_elem_value *ucontrol)
++{
++	int val;
++	if (!ucontrol || !micmute_led_set_func)
++		return;
++	/* TODO: if this is a stereo switch, better check both channels? What about additional capture switches with indices, on other ADCs? */
++	val = ucontrol->value.integer.value[0];
++	if (strcmp("Capture Switch", ucontrol->id.name) == 0 && ucontrol->id.index == 0)
++		micmute_led_set_func(!val);
++
++}
++
++static void cxt_fixup_thinkpad_acpi(struct hda_codec *codec,
++				  const struct hda_fixup *fix, int action)
++{
++	struct conexant_spec *spec = codec->spec;
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		mute_led_set_func = symbol_request(tpacpi_mute_led_set);
++		if (!mute_led_set_func)
++			snd_printk(KERN_WARNING "Failed to find thinkpad-acpi symbol tpacpi_mute_led_set\n");
++		else if (mute_led_set_func(0) < 0) {
++			symbol_put(mute_led_set_func);
++			mute_led_set_func = NULL;
++		}
++
++		micmute_led_set_func = symbol_request(tpacpi_micmute_led_set);
++		if (!micmute_led_set_func)
++			snd_printk(KERN_WARNING "Failed to find thinkpad-acpi symbol tpacpi_micmute_led_set\n");
++		else if (micmute_led_set_func(0) < 0) {
++			symbol_put(micmute_led_set_func);
++			micmute_led_set_func = NULL;
++		}
++	/* FIXME: when do we call symbol_put? In a new FREE fixup action? */
 +	}
-+
-+	if (!ACPI_SUCCESS(acpi_get_handle(hkey_handle, m, &temp))) {
-+		pr_warn("Thinkpad ACPI has no %s interface.\n", m);
-+		return -EIO;
-+	}
-+
-+	if (!acpi_evalf(hkey_handle, &output, m, "dd", state))
-+		return -EIO;
-+
-+	return 0;
++	if (action == HDA_FIXUP_ACT_PROBE && micmute_led_set_func)
++		spec->gen.cap_sync_hook = update_tpacpi_micmute_led;
++	if (action == HDA_FIXUP_ACT_PROBE && mute_led_set_func)
++		spec->gen.vmaster_mute.hook = update_tpacpi_mute_led;
 +}
 +
-+static unsigned int mute_led_state;
-+static unsigned int micmute_led_state;
++#else
 +
-+int tpacpi_mute_led_set(int on)
++static void cxt_fixup_thinkpad_acpi(struct hda_codec *codec,
++				  const struct hda_fixup *fix, int action)
 +{
-+	int err;
-+	int state = on ? 1 : 0;
-+	if (mute_led_state < 0 || mute_led_state == state)
-+		return mute_led_state;
-+	err = mute_led_on_off(MUTE_LED_INDEX, state);
-+	mute_led_state = err ? err : state;
-+	return err;
-+}
-+EXPORT_SYMBOL(tpacpi_mute_led_set);
-+
-+int tpacpi_micmute_led_set(int on)
-+{
-+	int err;
-+	int state = on ? 1 : 0;
-+	if (micmute_led_state < 0 || micmute_led_state == state)
-+		return micmute_led_state;
-+	err = mute_led_on_off(MICMUTE_LED_INDEX, state);
-+	micmute_led_state = err ? err : state;
-+	return err;
-+}
-+EXPORT_SYMBOL(tpacpi_micmute_led_set);
-+
-+static int mute_led_init(struct ibm_init_struct *iibm)
-+{
-+	acpi_handle temp;
-+
-+	if (ACPI_SUCCESS(acpi_get_handle(hkey_handle, "MMTG", &temp)))
-+		micmute_led_state = mute_led_on_off(MICMUTE_LED_INDEX, 0);
-+	else
-+		micmute_led_state = -ENODEV;
-+
-+	if (ACPI_SUCCESS(acpi_get_handle(hkey_handle, "GSMS", &temp)))
-+		mute_led_state = mute_led_on_off(MUTE_LED_INDEX, 0);
-+	else
-+		mute_led_state = -ENODEV;
-+
-+	return 0;
 +}
 +
-+static void mute_led_exit(void)
-+{
-+	tpacpi_mute_led_set(0);
-+	tpacpi_micmute_led_set(0);
-+}
++#endif
 +
-+static struct ibm_struct mute_led_driver_data = {
-+	.name = "mute_led",
-+	.exit = mute_led_exit,
-+};
-+
- /****************************************************************************
-  ****************************************************************************
-  *
-@@ -8768,6 +8856,10 @@ static struct ibm_init_struct ibms_init[] __initdata = {
- 		.init = fan_init,
- 		.data = &fan_driver_data,
+ static void cxt_fixup_stereo_dmic(struct hda_codec *codec,
+ 				  const struct hda_fixup *fix, int action)
+ {
+@@ -3344,6 +3416,8 @@ static const struct hda_fixup cxt_fixups[] = {
+ 	[CXT_PINCFG_LENOVO_TP410] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = cxt_pincfg_lenovo_tp410,
++		.chained = true,
++		.chain_id = CXT_FIXUP_THINKPAD_ACPI,
  	},
-+	{
-+		.init = mute_led_init,
-+		.data = &mute_led_driver_data,
+ 	[CXT_PINCFG_LEMOTE_A1004] = {
+ 		.type = HDA_FIXUP_PINS,
+@@ -3385,6 +3459,10 @@ static const struct hda_fixup cxt_fixups[] = {
+ 			{ }
+ 		},
+ 	},
++	[CXT_FIXUP_THINKPAD_ACPI] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cxt_fixup_thinkpad_acpi,
 +	},
  };
  
- static int __init set_ibm_param(const char *val, struct kernel_param *kp)
-diff --git a/include/linux/thinkpad_acpi.h b/include/linux/thinkpad_acpi.h
-new file mode 100644
-index 0000000..9fecd15
---- /dev/null
-+++ b/include/linux/thinkpad_acpi.h
-@@ -0,0 +1,10 @@
-+#ifndef __THINKPAD_ACPI_H__
-+#define __THINKPAD_ACPI_H__
-+
-+/* These two functions return 0 if success, or negative error code
-+   (e g -ENODEV if no led present) */
-+
-+int tpacpi_mute_led_set(int on);
-+int tpacpi_micmute_led_set(int on);
-+
-+#endif
+ static const struct snd_pci_quirk cxt5051_fixups[] = {
 -- 
 1.7.9.5
