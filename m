@@ -1,143 +1,58 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [RFC PATCH 2/2] ALSA: hda - add connection to thinkpad_acpi to control mute/micmute LEDs
-Date: Wed, 16 Oct 2013 14:15:36 +0200
-Message-ID: <1381925736-11399-3-git-send-email-david.henningsson@canonical.com>
-References: <1381925736-11399-1-git-send-email-david.henningsson@canonical.com>
+Subject: [RFC PATCH 0/2] Enable mute LEDs and mic mute LEDs on Thinkpad
+Date: Wed, 16 Oct 2013 14:15:34 +0200
+Message-ID: <1381925736-11399-1-git-send-email-david.henningsson@canonical.com>
 Return-path: <platform-driver-x86-owner@vger.kernel.org>
-In-Reply-To: <1381925736-11399-1-git-send-email-david.henningsson@canonical.com>
 Sender: platform-driver-x86-owner@vger.kernel.org
 To: tiwai@suse.de, alsa-devel@alsa-project.org, platform-driver-x86@vger.kernel.org, ibm-acpi@hmh.eng.br, alex.hung@canonical.com, hui.wang@canonical.com
 Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Notes/questions:
+Hi!
 
-For mute LEDs we can follow master like we already do on HP machines, but for
-mic mutes, we might have several capture switches. Honestly, on these laptops
-which almost always have autoswitched mics, there is only one recording source
-anyway. Can't we simply remove the extra capture PCMs, that seems easiest?
+These two patches bind the thinkpad-acpi and the snd-hda-intel drivers together
+so that the mute and mic-mute LEDs correspond to the current mute/micmute status
+of the internal sound card.
 
-For some reason CONFIG_THINKPAD_ACPI did not work here (it was not defined),
-but maybe it's due to the way I'm testing, or I'm missing something obvious. 
-Not sure.
+The patches are against Takashi's sound tree and are working on a
+Thinkpad X220-tablet, but the patches are otherwise in draft quality. Which means
+that there are several outstanding issues that would need feedback from upstream.
 
-There are Thinkpad's with Realtek codecs as well which have mute/micmute.
-Maybe we should consider a more generic solution instead of copy-pasting
-between differen patch_* files?
+First, I'd like feedback on the connection between the drivers - Takashi suggested
+that we could bind the drivers together like we've recently done when connecting
+the snd-hda-intel and the i915 driver, so this follows a similar scheme, with
+exported symbols from the thinkpad-acpi driver and a symbol_request on the
+snd-hda-intel side.
+This also opens up for future improvements so that the hardware mute/volume does
+not need to be its own card, but instead properly integrate with the output it
+actually controls on the kernel side.
 
-And also, we're missing a symbol_put in this version. Should we add a new
-"free" fixup action where we can add a call to symbol_put, or do you have a
-better suggestion?
+Second, about the LEDs as a security feature. As implemented in these patches
+there is no userspace interface at all, which would meet Matthew's concern about
+that. A future improvement could be that an alsamixer control was added, that
+allows the LED to be turned off, but not on. Which means, if PulseAudio or other
+daemon knows that recording goes on from another source (e g bluetooth or network
+connected mic) it could turn the mic mute LED off to indicate that to the user,
+but the only way to turn the LED on is to actually mute the internal card's
+hardware.
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_conexant.c |   78 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 78 insertions(+)
+Finally, it is my hope that I will get some quick and constructive feedback so
+we can have it all in order to be merged in time for the 3.13 kernel merge window.
+I'll be at Linuxcon Europe next week to answer questions if you have any, and
+we might also spend some time talking about it on the audio meeting on Monday.
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index ec68eae..237df7f 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -3232,8 +3232,80 @@ enum {
- 	CXT_FIXUP_HEADPHONE_MIC_PIN,
- 	CXT_FIXUP_HEADPHONE_MIC,
- 	CXT_FIXUP_GPIO1,
-+	CXT_FIXUP_THINKPAD_ACPI,
- };
- 
-+/* FIXME: figure out why #ifdef CONFIG_THINKPAD_ACPI does not work */
-+
-+#if 1 /* #ifdef CONFIG_THINKPAD_ACPI */
-+
-+#include <linux/thinkpad_acpi.h>
-+
-+static int (*mute_led_set_func)(int);
-+static int (*micmute_led_set_func)(int);
-+
-+static void update_tpacpi_mute_led(void *private_data, int enabled)
-+{
-+	struct hda_codec *codec = private_data;
-+	struct conexant_spec *spec = codec->spec;
-+
-+	if (spec->dynamic_eapd)
-+		cx_auto_vmaster_hook(private_data, enabled);
-+
-+	if (mute_led_set_func)
-+		mute_led_set_func(!enabled);
-+}
-+
-+static void update_tpacpi_micmute_led(struct hda_codec *codec,
-+				      struct snd_ctl_elem_value *ucontrol)
-+{
-+	int val;
-+	if (!ucontrol || !micmute_led_set_func)
-+		return;
-+	/* TODO: if this is a stereo switch, better check both channels? What about additional capture switches with indices, on other ADCs? */
-+	val = ucontrol->value.integer.value[0];
-+	if (strcmp("Capture Switch", ucontrol->id.name) == 0 && ucontrol->id.index == 0)
-+		micmute_led_set_func(!val);
-+
-+}
-+
-+static void cxt_fixup_thinkpad_acpi(struct hda_codec *codec,
-+				  const struct hda_fixup *fix, int action)
-+{
-+	struct conexant_spec *spec = codec->spec;
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
-+		mute_led_set_func = symbol_request(tpacpi_mute_led_set);
-+		if (!mute_led_set_func)
-+			snd_printk(KERN_WARNING "Failed to find thinkpad-acpi symbol tpacpi_mute_led_set\n");
-+		else if (mute_led_set_func(0) < 0) {
-+			symbol_put(mute_led_set_func);
-+			mute_led_set_func = NULL;
-+		}
-+
-+		micmute_led_set_func = symbol_request(tpacpi_micmute_led_set);
-+		if (!micmute_led_set_func)
-+			snd_printk(KERN_WARNING "Failed to find thinkpad-acpi symbol tpacpi_micmute_led_set\n");
-+		else if (micmute_led_set_func(0) < 0) {
-+			symbol_put(micmute_led_set_func);
-+			micmute_led_set_func = NULL;
-+		}
-+	/* FIXME: when do we call symbol_put? In a new FREE fixup action? */
-+	}
-+	if (action == HDA_FIXUP_ACT_PROBE && micmute_led_set_func)
-+		spec->gen.cap_sync_hook = update_tpacpi_micmute_led;
-+	if (action == HDA_FIXUP_ACT_PROBE && mute_led_set_func)
-+		spec->gen.vmaster_mute.hook = update_tpacpi_mute_led;
-+}
-+
-+#else
-+
-+static void cxt_fixup_thinkpad_acpi(struct hda_codec *codec,
-+				  const struct hda_fixup *fix, int action)
-+{
-+}
-+
-+#endif
-+
- static void cxt_fixup_stereo_dmic(struct hda_codec *codec,
- 				  const struct hda_fixup *fix, int action)
- {
-@@ -3344,6 +3416,8 @@ static const struct hda_fixup cxt_fixups[] = {
- 	[CXT_PINCFG_LENOVO_TP410] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = cxt_pincfg_lenovo_tp410,
-+		.chained = true,
-+		.chain_id = CXT_FIXUP_THINKPAD_ACPI,
- 	},
- 	[CXT_PINCFG_LEMOTE_A1004] = {
- 		.type = HDA_FIXUP_PINS,
-@@ -3385,6 +3459,10 @@ static const struct hda_fixup cxt_fixups[] = {
- 			{ }
- 		},
- 	},
-+	[CXT_FIXUP_THINKPAD_ACPI] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = cxt_fixup_thinkpad_acpi,
-+	},
- };
- 
- static const struct snd_pci_quirk cxt5051_fixups[] = {
+Thanks in advance!
+
+David Henningsson (2):
+  thinkpad-acpi: Add mute and mic-mute LED functionality
+  ALSA: hda - add connection to thinkpad_acpi to control mute/micmute
+    LEDs
+
+ drivers/platform/x86/thinkpad_acpi.c |   94 +++++++++++++++++++++++++++++++++-
+ include/linux/thinkpad_acpi.h        |   10 ++++
+ sound/pci/hda/patch_conexant.c       |   78 ++++++++++++++++++++++++++++
+ 3 files changed, 181 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/thinkpad_acpi.h
+
 -- 
 1.7.9.5
