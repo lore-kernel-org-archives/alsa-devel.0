@@ -1,19 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v4] ALSA: Add SoC on-chip internal memory
- support for DMA buffer allocation
-Date: Wed, 16 Oct 2013 18:33:52 +0200
-Message-ID: <525EBFF0.1080303@metafoo.de>
-References: <1381920801-9187-1-git-send-email-b42378@freescale.com>
- <20131016115847.GK2443@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/2] ASoC: rt5640: Power down LDO while
+	suspended
+Date: Wed, 16 Oct 2013 17:33:34 +0100
+Message-ID: <1381941215-29031-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-205.synserver.de (smtp-out-205.synserver.de
- [212.40.185.205])
- by alsa0.perex.cz (Postfix) with ESMTP id F2C14261A42
- for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2013 18:31:50 +0200 (CEST)
-In-Reply-To: <20131016115847.GK2443@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id E37C5261A49
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2013 18:35:00 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, lgirdwood@gmail.com
+To: Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Stephen Warren <swarren@nvidia.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/16/2013 01:58 PM, Mark Brown wrote:
-> On Wed, Oct 16, 2013 at 06:53:21PM +0800, Nicolin Chen wrote:
-> 
->> +	if (!dev->of_node)
->> +		return NULL;
->> +
->> +	pool = of_get_named_gen_pool(dev->of_node, "iram", 0);
->> +	if (!pool)
->> +		return NULL;
-> 
-> Can you refactor these ifdefs so they just protect this OF specific code
-> and just have the allocation fail otherwise please?  That way the OF
-> dependency is minimised - we should be able to support this on other
-> platforms in the future and the rest of the code will be the same.
-> 
-> Also is iram the best name?  It makes me think of the dedicated fast
-> instruction RAM that some processors have.  sram perhaps (for static
-> RAM)?
+From: Mark Brown <broonie@linaro.org>
 
-Using IRAM (internal SRAM) for this seems to be quite popular (`grep IRAM
-arch/arm -r`). Existing devicetree bindings also seem to use the 'iram'
-property to refer to the on-chip SRAM
-(Documentation/devicetree/bindings/media/coda.txt). It's probably a good
-idea to stay consistent with the existing bindings.
+If we have control over the LDO then disable it during suspend; the device
+is already being put into reset so will be non-functional over suspend
+anyway and this will save a small amount of power.
 
-- Lars
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/rt5640.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 641eeeb..b0cde92 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -1979,12 +1979,20 @@ static int rt5640_suspend(struct snd_soc_codec *codec)
+ 	rt5640_reset(codec);
+ 	regcache_cache_only(rt5640->regmap, true);
+ 	regcache_mark_dirty(rt5640->regmap);
++	if (gpio_is_valid(rt5640->pdata.ldo1_en))
++		gpio_set_value_cansleep(rt5640->pdata.ldo1_en, 0);
+ 
+ 	return 0;
+ }
+ 
+ static int rt5640_resume(struct snd_soc_codec *codec)
+ {
++	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
++
++	if (gpio_is_valid(rt5640->pdata.ldo1_en)) {
++		gpio_set_value_cansleep(rt5640->pdata.ldo1_en, 1);
++		msleep(400);
++	}
+ 	rt5640_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+ 	return 0;
+-- 
+1.8.4.rc3
