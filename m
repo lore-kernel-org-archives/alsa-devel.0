@@ -1,25 +1,24 @@
-From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [RESEND PATCH v3 03/11] ASoC: davinci-mcasp: Add
- DMA register locations to DT
-Date: Wed, 16 Oct 2013 16:04:38 +0100
-Message-ID: <20131016150438.GN19196@e106331-lin.cambridge.arm.com>
-References: <cover.1379590035.git.jsarha@ti.com>
- <66bdda0c0b75d737d649260b9ec10f9f870c20cd.1379590036.git.jsarha@ti.com>
- <20131007214718.GA2976@kartoffel>
- <20131008004641.GV21581@sirena.org.uk>
- <20131010165959.GB3910@e106331-lin.cambridge.arm.com>
- <5256E417.7010403@ti.com>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: dsp after dmix
+Date: Wed, 16 Oct 2013 17:31:33 +0200
+Message-ID: <CAOf5uwnw4N1BogGpARwjMm3Kc2HO=A9c48xAWhTF721eHCuRtg@mail.gmail.com>
+References: <CAOf5uwmrS1AZrmKfbUYokU1Azdd2dZv2=Z=fGp+UQyy_mW1ijQ@mail.gmail.com>
+ <525B985A.30409@ladisch.de>
+ <CAOf5uwnFtN4mDqgfLThRXGUcHQpFJ6wkFFoZhBJdWc6FaBPapg@mail.gmail.com>
+ <525BE047.9000501@ladisch.de>
+ <CAOf5uwne9V3FgB_3rhTDr0Z08wJYKGAP8M1pR0VYhXxZ4rio-g@mail.gmail.com>
+ <20131014203309.GR2443@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
- [217.140.96.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 19DBD26036C
- for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2013 17:04:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <5256E417.7010403@ti.com>
-Content-Language: en-US
+Received: from mail-wi0-f177.google.com (mail-wi0-f177.google.com
+ [209.85.212.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F68226036C
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2013 17:31:33 +0200 (CEST)
+Received: by mail-wi0-f177.google.com with SMTP id h11so974072wiv.16
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2013 08:31:33 -0700 (PDT)
+In-Reply-To: <20131014203309.GR2443@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,29 +28,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "joelf@ti.com" <joelf@ti.com>, "jsarha@ti.com" <jsarha@ti.com>, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Darren Etheridge <detheridge@ti.com>, Mark Brown <broonie@kernel.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 10, 2013 at 06:29:59PM +0100, Peter Ujfalusi wrote:
-> On 10/10/2013 07:59 PM, Mark Rutland wrote:
-> >> No, they're not actually of much practical use to us at the minute but
-> >> it was generally felt better to include the information and not use it
-> >> so that if someone does come up with a use for them then the trees for
-> >> deployed systems already have the information.
-> > 
-> > Sure, but if this device can generate multiple interrupts, we should
-> > make it possible to describe all of them, unambiguously.
-> 
-> This is why Jyri added them to the DT. They are not used by the Linux driver,
-> but the HW have interrupt lines (two of them: TX and RX).
+Hi Mark
 
-The binding only describes a single interrupt, and even if multiple
-interrupts were listed, there's no way to disambiguate them (e.g.
-interrupt-names).
+On Mon, Oct 14, 2013 at 10:33 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Oct 14, 2013 at 02:18:27PM +0200, Michael Trimarchi wrote:
+>
+>> > You would have to write an ALSA kernel driver for the DSP device.
+>
+>> This is not a good approach of the general problem because a lot of
+>> dsp has userspace
+>> support and firmware and initialization is done by userspace library.
+>> Can I change
+>> the writei and readi of the dmix plugin and let use my dsp function?
+>
+> I'm not sure that's generally common - memory to memory DSPs are a bit
+> unusual for audio since the latency requirements tend to be fairly
+> tight.  I can't think of many examples that don't need some exposure to
+> the kernel...
 
-It would be nice to remedy this.
+A lot of time you need to deal with SDK from others so in my case the dsp
+can be used only from the userspace. If the applicaiton does not do the
+audio mixing and the dmix is optimized to use the mmap and shared
+memory region the only way is to use somenthing like the aloop but
+this will increase the overhead like using pulseaudio.
 
-Cheers,
-Mark.
+Michael
