@@ -1,39 +1,72 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: [PATCH v2 7/8] spi: s3c64xx: Always select S3C64XX_PL080 when ARCH_S3C64XX is enabled
-Date: Wed, 16 Oct 2013 21:10:58 +0200
-Message-ID: <1381950659-12703-8-git-send-email-tomasz.figa@gmail.com>
-References: <1381950659-12703-1-git-send-email-tomasz.figa@gmail.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1381950659-12703-1-git-send-email-tomasz.figa@gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: linux-samsung-soc@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-spi@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Ben Dooks <ben-linux@fluff.org>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sachin Kamat <sachin.kamat@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>, Tomasz Figa <tomasz.figa@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [RFC PATCH 2/2] ALSA: hda - add connection to thinkpad_acpi to
+ control mute/micmute LEDs
+Date: Wed, 16 Oct 2013 23:08:44 +0200
+Message-ID: <525F005C.3060806@canonical.com>
+References: <1381925736-11399-1-git-send-email-david.henningsson@canonical.com>	<1381925736-11399-3-git-send-email-david.henningsson@canonical.com> <s5hob6puuyg.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+In-Reply-To: <s5hob6puuyg.wl%tiwai@suse.de>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, platform-driver-x86@vger.kernel.org, ibm-acpi@hmh.eng.br, alex.hung@canonical.com, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-The legacy S3C64xx DMA driver has been removed, DMA support on
-S3C64xx is provided only by the generic PL08x driver.
+On 10/16/2013 04:55 PM, Takashi Iwai wrote:
+> At Wed, 16 Oct 2013 14:15:36 +0200,
+> David Henningsson wrote:
+>>
+>> Notes/questions:
+>>
+>> For mute LEDs we can follow master like we already do on HP machines, but for
+>> mic mutes, we might have several capture switches. Honestly, on these laptops
+>> which almost always have autoswitched mics, there is only one recording source
+>> anyway. Can't we simply remove the extra capture PCMs, that seems easiest?
+> 
+> The fixup would be applied only to specific machines, so they are
+> without extra capture PCMs, no?
 
-This patch modifies the Kconfig entry of spi-s3c64xx driver, which
-relies on availability of DMA, to always select the S3C64XX_PL080
-symbol.
+Actually, what I was thinking of is already implemented: when auto_mic
+is turned on, num_adc_nids is set to one, so there are no extra ADCs. I
+think we can get away (at least for now) with just an extra check that
+there are no extra ADCs (added in v2 of the patch).
 
-Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
----
- drivers/spi/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>> For some reason CONFIG_THINKPAD_ACPI did not work here (it was not defined),
+>> but maybe it's due to the way I'm testing, or I'm missing something obvious. 
+>> Not sure.
+> 
+> It can be a module.  Use IS_ENABLED() macro.
+> 
+> #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 760d7b6..e2dd2fb 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -395,7 +395,7 @@ config SPI_S3C24XX_FIQ
- config SPI_S3C64XX
- 	tristate "Samsung S3C64XX series type SPI"
- 	depends on PLAT_SAMSUNG
--	select S3C64XX_DMA if ARCH_S3C64XX && !S3C64XX_PL080
-+	select S3C64XX_PL080 if ARCH_S3C64XX
- 	help
- 	  SPI driver for Samsung S3C64XX and newer SoCs.
- 
+Thanks!
+
+>> There are Thinkpad's with Realtek codecs as well which have mute/micmute.
+>> Maybe we should consider a more generic solution instead of copy-pasting
+>> between differen patch_* files?
+> 
+> Maybe.  But it's not that wide spread. 
+
+Perhaps other people on this list have a better overview than I, but I
+get the feeling that at least the mute LED is quite common on Thinkpads.
+The micmute LED perhaps not so much.
+
+> Let's make this one working at
+> first.  The further code sharing (involving module split eventually)
+> can be discussed later.
+
+Ok.
+
+>> And also, we're missing a symbol_put in this version. Should we add a new
+>> "free" fixup action where we can add a call to symbol_put, or do you have a
+>> better suggestion?
+> 
+> Hm, yes, a new free fixup action is a feasible option.
+
+Ok, added in v2.
+
 -- 
-1.8.3.2
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
