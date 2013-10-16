@@ -1,49 +1,55 @@
-From: "Geyslan G. Bem" <geyslan@gmail.com>
-Subject: [PATCH] sound: pci: emu10k1: Remove useless casting in emufx.c
-Date: Wed, 16 Oct 2013 13:21:45 -0300
-Message-ID: <1381940506-29855-1-git-send-email-geyslan@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: kernel-br@googlegroups.com, "Geyslan G. Bem" <geyslan@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Bill Pemberton <wfp5p@virginia.edu>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v4] ALSA: Add SoC on-chip internal memory
+ support for DMA buffer allocation
+Date: Wed, 16 Oct 2013 18:33:52 +0200
+Message-ID: <525EBFF0.1080303@metafoo.de>
+References: <1381920801-9187-1-git-send-email-b42378@freescale.com>
+ <20131016115847.GK2443@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-205.synserver.de (smtp-out-205.synserver.de
+ [212.40.185.205])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2C14261A42
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2013 18:31:50 +0200 (CEST)
+In-Reply-To: <20131016115847.GK2443@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Casting (void *) value returned by kcalloc is useless
-as mentioned in Documentation/CodingStyle, Chap 14.
+On 10/16/2013 01:58 PM, Mark Brown wrote:
+> On Wed, Oct 16, 2013 at 06:53:21PM +0800, Nicolin Chen wrote:
+> 
+>> +	if (!dev->of_node)
+>> +		return NULL;
+>> +
+>> +	pool = of_get_named_gen_pool(dev->of_node, "iram", 0);
+>> +	if (!pool)
+>> +		return NULL;
+> 
+> Can you refactor these ifdefs so they just protect this OF specific code
+> and just have the allocation fail otherwise please?  That way the OF
+> dependency is minimised - we should be able to support this on other
+> platforms in the future and the rest of the code will be the same.
+> 
+> Also is iram the best name?  It makes me think of the dedicated fast
+> instruction RAM that some processors have.  sram perhaps (for static
+> RAM)?
 
-Signed-off-by: Geyslan G. Bem <geyslan@gmail.com>
----
- sound/pci/emu10k1/emufx.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+Using IRAM (internal SRAM) for this seems to be quite popular (`grep IRAM
+arch/arm -r`). Existing devicetree bindings also seem to use the 'iram'
+property to refer to the on-chip SRAM
+(Documentation/devicetree/bindings/media/coda.txt). It's probably a good
+idea to stay consistent with the existing bindings.
 
-diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index 0275209..3f51dac 100644
---- a/sound/pci/emu10k1/emufx.c
-+++ b/sound/pci/emu10k1/emufx.c
-@@ -1183,9 +1183,8 @@ static int _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
- 	mm_segment_t seg;
- 
- 	if ((icode = kzalloc(sizeof(*icode), GFP_KERNEL)) == NULL ||
--	    (icode->gpr_map = (u_int32_t __user *)
--	     kcalloc(512 + 256 + 256 + 2 * 1024, sizeof(u_int32_t),
--		     GFP_KERNEL)) == NULL ||
-+	    (icode->gpr_map = kcalloc(512 + 256 + 256 + 2 * 1024, sizeof(u_int32_t),
-+				      GFP_KERNEL)) == NULL ||
- 	    (controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
- 				sizeof(*controls), GFP_KERNEL)) == NULL) {
- 		err = -ENOMEM;
-@@ -1815,10 +1814,9 @@ static int _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
- 
- 	if ((icode = kzalloc(sizeof(*icode), GFP_KERNEL)) == NULL)
- 		return -ENOMEM;
--	if ((icode->gpr_map = (u_int32_t __user *)
--	     kcalloc(256 + 160 + 160 + 2 * 512, sizeof(u_int32_t),
--		     GFP_KERNEL)) == NULL ||
--            (controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
-+	if ((icode->gpr_map = kcalloc(256 + 160 + 160 + 2 * 512, sizeof(u_int32_t),
-+				      GFP_KERNEL)) == NULL ||
-+	    (controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
- 				sizeof(struct snd_emu10k1_fx8010_control_gpr),
- 				GFP_KERNEL)) == NULL ||
- 	    (ipcm = kzalloc(sizeof(*ipcm), GFP_KERNEL)) == NULL) {
--- 
-1.8.4
+- Lars
