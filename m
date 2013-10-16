@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/6] ASoC: pcm1792a: Include linux/of.h
+Subject: Re: [PATCH 4/6] ASoC: tas5086: Include linux/of.h
 	header
-Date: Wed, 16 Oct 2013 19:01:08 +0100
-Message-ID: <20131016180108.GR2443@sirena.org.uk>
+Date: Wed, 16 Oct 2013 19:01:48 +0100
+Message-ID: <20131016180148.GS2443@sirena.org.uk>
 References: <1381492441-31195-1-git-send-email-sachin.kamat@linaro.org>
- <1381492441-31195-3-git-send-email-sachin.kamat@linaro.org>
+ <1381492441-31195-4-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2776196680550790485=="
+Content-Type: multipart/mixed; boundary="===============5818694056643405442=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 186AA265251
- for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2013 20:01:11 +0200 (CEST)
-In-Reply-To: <1381492441-31195-3-git-send-email-sachin.kamat@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id BE50526526F
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2013 20:01:50 +0200 (CEST)
+In-Reply-To: <1381492441-31195-4-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,50 +26,50 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2776196680550790485==
+--===============5818694056643405442==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="g0wx1Af4JGcSqOcb"
+	protocol="application/pgp-signature"; boundary="KeIsG8VqVRB5JorP"
 Content-Disposition: inline
 
 
---g0wx1Af4JGcSqOcb
+--KeIsG8VqVRB5JorP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Oct 11, 2013 at 05:23:58PM +0530, Sachin Kamat wrote:
+On Fri, Oct 11, 2013 at 05:23:59PM +0530, Sachin Kamat wrote:
 > 'of_match_ptr' is defined in linux/of.h. Include it explicitly.
 
 Applied, thanks.
 
---g0wx1Af4JGcSqOcb
+--KeIsG8VqVRB5JorP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSXtRhAAoJELSic+t+oim96VAP/io9efIveX3K5bzEwsHKIugG
-PC7X7NL01W8ZKb5wayY5DiIbcZVTEs2yC/UCJWoxXXqr6BTZ5KfYQsLiBGAVTkap
-9m8gPB1W8SLuEbhHmJpGKXu60RNN2HA5zYvRKCGfYyRtG9M0wm5UihZyoIrrUE0Y
-Z3dX6IK+Vp7FasqXc6t8rZuI8t5wquuxdGD8gs2JMujYPR7Nhe0YsfPqE0guEoFS
-kpiYF5FvOiP9bi9LDGKTntqQuaJy8xpLvqev4uBN0Yt5qnFvIKR3lBl1ospzOFGh
-fFTSz8f4kXcuFiyYt8obVnlZtdMjpeXr30XjbLFCBd9ANS4gjWHqdxaEx/YWE8oa
-mGQsGsTMpT/Gq7U8Q8bjGDqJhXZHVKaNPp7jz7E33mndtC1U50PBfL87kXbf4rkt
-1Uu7ADc4HQQGXzsDXFXtUzBTeVUy6QWLrHAXt/bwMmeig6dgpLesq2EWsZT/Jv2H
-DX8ByMLIhqiOq2DqwztK4wYIj80AoiX1xKWH7BspLdscDFd9Kw+lb++zr+l7/WRW
-IcWVdLldpQeBZd3tfmvr+h1wryy5qW7Km5w9ZJZiuh9O1153uiftrIKAN8LUd+lZ
-VCZ+uuT2Mj0q7G6zc7Tjzc2UVnqQxfm3GcB6FJUQJV8A7EcYAvhjdhSzwhn66Krl
-DT5RTDx/d4HDq3V4nDOQ
-=VhFb
+iQIcBAEBAgAGBQJSXtSJAAoJELSic+t+oim9k38QAJo2OoW6oKHaFKKP/V4B3Isc
+L1g1pe4r6NET/ZYSvM/lCWEuso7X0oIHvtVeNnQBgebUQhuz00ydPSZ1xqAyrPcA
+y+fgrw6Cpj+pohPJJsYDEB9bozwjhy4benSxaMASXc87FF1xq9DQ4uBaVi1x/pW8
+RXKXGJPwlT+YcGW0gev8xq0ZZ+e0CGliPOZ6evyKXPlbRzwQCdKDIxigwDht5Zuw
+IaXFdV9vl0blLHcMuNLtybDcCwUDLmpMxhDLlcncFX8v5qnPnv6JayPkcKkpoWqI
+LOmsh6SDy+r9HqJ0bX1R1P38vz38oSq6ecNt/M8HcZ8TA5hLt9Sh++I1+8+iRvZc
+uTai9yXxh1vNaPcV0BoPFAH3cpnZI0lbPseyp4BrMZ/Vnubb2KTuhjBMiFgjJHoi
+eUgT59/mNEtPCkxNW6iOYJEfc191Xcg2Ls+YScvktyIZrap0u6c65Ska5I24aEuH
+DlMm5XWJtWhxD8O86eTRZPAkoKJyTVlW4MKW/xthLXuYCQqnAO0eJ5d+UEmOTjSM
+kRnmyMo2tkAtIbcFv2+VmqsjIp3tC2hIKnoUtDa1hRd8ppyOX4Z+EyfNF9HnIvtJ
+Fn0oGL0lZlmVGiiu6E3VD3pSzn2JEMNdq+ADd03qleFQAMhbKLDpq342tXN/DW2z
+bGQhX8YUglDeFIJtnNBe
+=YB63
 -----END PGP SIGNATURE-----
 
---g0wx1Af4JGcSqOcb--
+--KeIsG8VqVRB5JorP--
 
---===============2776196680550790485==
+--===============5818694056643405442==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2776196680550790485==--
+--===============5818694056643405442==--
