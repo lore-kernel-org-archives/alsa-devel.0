@@ -1,16 +1,19 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH v3] ALSA: Add SoC on-chip internal memory
-	support for DMA buffer allocation
-Date: Wed, 16 Oct 2013 18:16:02 +0800
-Message-ID: <1381918562-12831-1-git-send-email-b42378@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Audio Miniconference 2013 schedule II - Edinburgh
+	21st October
+Date: Wed, 16 Oct 2013 11:28:57 +0100
+Message-ID: <20131016102857.GE2443@sirena.org.uk>
+References: <20131014161003.GC2443@sirena.org.uk>
+ <20131015164408.GQ2954@intel.com>
+ <20131015192636.GW2443@sirena.org.uk>
+ <20131016021732.GU2954@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1379890047869275793=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe003.messaging.microsoft.com [213.199.154.206])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F623265113
- for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2013 12:16:12 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id C154426510F
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2013 12:29:03 +0200 (CEST)
+In-Reply-To: <20131016021732.GU2954@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,169 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lars@metafoo.de, broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Colin Guthrie <colin@guthr.ie>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Arun Raghavan <arun.raghavan@collabora.co.uk>, Liam Girdwood <liam.r.girdwood@intel.com>, Tanu Kaskinen <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Now it's quite common that an SoC contains its on-chip internal memory.
-By using this memory space for DMA buffer during audio playback/record,
-we can shutdown the voltage for external memory to save power.
 
-Thus add new DEV type with iram malloc()/free() and accordingly modify
-current default mmap() for the iram circumstance.
+--===============1379890047869275793==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Ky0ujAyBToem0Xjc"
+Content-Disposition: inline
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
-Changelog
-v2->v3:
- * Moved iram specific mmap procedure out of ifdef ARCH_HAS_DMA_MMAP_COHERENT
-v1->v2:
- * Added of_node check
- * Dropped noops and unused physical addr in snd_free_dev_iram()
 
----
- include/sound/memalloc.h |  5 ++++
- sound/core/memalloc.c    | 72 ++++++++++++++++++++++++++++++++++++++++++++++++
- sound/core/pcm_native.c  |  7 +++++
- 3 files changed, 84 insertions(+)
+--Ky0ujAyBToem0Xjc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
-index cf15b82..b53443e 100644
---- a/include/sound/memalloc.h
-+++ b/include/sound/memalloc.h
-@@ -52,6 +52,11 @@ struct snd_dma_device {
- #else
- #define SNDRV_DMA_TYPE_DEV_SG	SNDRV_DMA_TYPE_DEV /* no SG-buf support */
- #endif
-+#ifdef CONFIG_OF
-+#define SNDRV_DMA_TYPE_DEV_IRAM		4	/* generic device iram-buffer */
-+#else
-+#define SNDRV_DMA_TYPE_DEV_IRAM		SNDRV_DMA_TYPE_DEV
-+#endif
- 
- /*
-  * info for buffer allocation
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index bdf826f..2957938 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -30,6 +30,7 @@
- #include <linux/seq_file.h>
- #include <asm/uaccess.h>
- #include <linux/dma-mapping.h>
-+#include <linux/genalloc.h>
- #include <linux/moduleparam.h>
- #include <linux/mutex.h>
- #include <sound/memalloc.h>
-@@ -157,6 +158,61 @@ static void snd_free_dev_pages(struct device *dev, size_t size, void *ptr,
- 	dec_snd_pages(pg);
- 	dma_free_coherent(dev, PAGE_SIZE << pg, ptr, dma);
- }
-+
-+#ifdef CONFIG_OF
-+/**
-+ * snd_malloc_dev_iram - allocate memory from on-chip internal memory
-+ * @dev: DMA device pointer
-+ * @size: number of bytes to allocate from the iram
-+ * @dma: dma-view physical address
-+ *
-+ * Return cpu-view address or NULL indicating allocating failure
-+ *
-+ * This function requires iram phandle provided via of_node
-+ */
-+void *snd_malloc_dev_iram(struct device *dev, size_t size, dma_addr_t *dma)
-+{
-+	struct gen_pool *pool;
-+	unsigned long vaddr;
-+
-+	if (!dev->of_node)
-+		return NULL;
-+
-+	pool = of_get_named_gen_pool(dev->of_node, "iram", 0);
-+	if (!pool)
-+		return NULL;
-+
-+	vaddr = gen_pool_alloc(pool, size);
-+	if (!vaddr)
-+		return NULL;
-+
-+	*dma = gen_pool_virt_to_phys(pool, vaddr);
-+
-+	return (void *)vaddr;
-+}
-+
-+/**
-+ * snd_free_dev_iram - free allocated specific memory from on-chip internal memory
-+ * @dev: DMA device pointer
-+ * @size: size in bytes of memory to free
-+ * @ptr: cpu-view address returned from snd_malloc_dev_iram
-+ *
-+ * This function requires iram phandle provided via of_node
-+ */
-+void snd_free_dev_iram(struct device *dev, size_t size, void *ptr)
-+{
-+	struct gen_pool *pool;
-+
-+	if (!dev->of_node)
-+		return;
-+
-+	pool = of_get_named_gen_pool(dev->of_node, "iram", 0);
-+	if (!pool)
-+		return;
-+
-+	gen_pool_free(pool, (unsigned long)ptr, size);
-+}
-+#endif /* CONFIG_OF */
- #endif /* CONFIG_HAS_DMA */
- 
- /*
-@@ -197,6 +253,17 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
- 		dmab->addr = 0;
- 		break;
- #ifdef CONFIG_HAS_DMA
-+	case SNDRV_DMA_TYPE_DEV_IRAM:
-+#ifdef CONFIG_OF
-+		dmab->area = snd_malloc_dev_iram(device, size, &dmab->addr);
-+		if (dmab->area)
-+			break;
-+#endif
-+		/*
-+		 * Internal memory might have limited size and no enough space,
-+		 * so if we fail to malloc, try to fetch memory traditionally.
-+		 */
-+		dmab->dev.type = SNDRV_DMA_TYPE_DEV;
- 	case SNDRV_DMA_TYPE_DEV:
- 		dmab->area = snd_malloc_dev_pages(device, size, &dmab->addr);
- 		break;
-@@ -269,6 +336,11 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab)
- 		snd_free_pages(dmab->area, dmab->bytes);
- 		break;
- #ifdef CONFIG_HAS_DMA
-+	case SNDRV_DMA_TYPE_DEV_IRAM:
-+#ifdef CONFIG_OF
-+		snd_free_dev_iram(dmab->dev.dev, dmab->bytes, dmab->area);
-+			break;
-+#endif
- 	case SNDRV_DMA_TYPE_DEV:
- 		snd_free_dev_pages(dmab->dev.dev, dmab->bytes, dmab->area, dmab->addr);
- 		break;
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index a68d4c6..74de2a3 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3199,6 +3199,13 @@ int snd_pcm_lib_default_mmap(struct snd_pcm_substream *substream,
- 			     struct vm_area_struct *area)
- {
- 	area->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
-+	if (substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV_IRAM &&
-+			SNDRV_DMA_TYPE_DEV_IRAM != SNDRV_DMA_TYPE_DEV) {
-+		area->vm_page_prot = pgprot_writecombine(area->vm_page_prot);
-+		return remap_pfn_range(area, area->vm_start,
-+				substream->dma_buffer.addr >> PAGE_SHIFT,
-+				area->vm_end - area->vm_start, area->vm_page_prot);
-+	}
- #ifdef ARCH_HAS_DMA_MMAP_COHERENT
- 	if (!substream->ops->page &&
- 	    substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV)
--- 
-1.8.4
+On Wed, Oct 16, 2013 at 07:47:32AM +0530, Vinod Koul wrote:
+
+> On 3.4  was hit by DAPM sync bug as DAPM update gets triggered without holding
+> lock in few places, after realizing the problem I sae the fix was availble
+> mainline, clearly this should have been marked to stable.
+
+Yeah.  Changing locking makes me nervous, I never know how that plays
+with the out of tree stuff people have - when DPCM wasn't in mainline it
+all seemed especially fragile for stable.  That's sorted now of course.
+
+--Ky0ujAyBToem0Xjc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSXmpmAAoJELSic+t+oim9KSgP/iRz88vERH6pe+gosiqXpyRj
+Jw6hIOpHW+HjzVNrk9UEqUOOhOOt7lOqOFAJzhXrlA3Vp2vXn8F0CQMn8hAGZ0vJ
+YfQLdHrHhzAeCyW0cgL9ZnVvACwwdQucrnzv4mkk60s5wCGs872+XbMJmuODRC+b
+cBT6e4j7oDJHKNOFT2tQ6KW28iVc8uNJnIt3iPA7VurvO4VB1WmJZ1JxSK5wA35C
+ape89oWRK+B/ajEICsOwEzob+jFBn+fWVr1pVBqsW6biWtjaSlH3eJ0Pgk2N8PiI
+lbPr1sAf5NSq3KF+cLgdjBqFViNDFDepcszpXyIQdLZZ6tW3N0eAvFGKWV4bvwNB
+515mRair+eZMPs1KOTItfZStE0Y68oqe1+AYJuNjjOlczTjNPAOmxP/khkg3D0el
+2w0BWNWotPSrQqVBmLuycDgxRj6Q+zhxMnzDndS0ALVMB1ZzrktvhnDbBY0P1VtS
+WizSecQsksbcZu+KzsrbwXo1QKibv2RVKUXFprEzpcwxCIYhv4Jtn9crctpCVU5K
+pPkVH+Ktl2VhLuJ1oq3d26nP8PdjzzKc7aZwmvBxFMmPc6Bz+5BVJCviNyxKdsin
+v7RiunQ7iQJMMUTXqj50GRJGlvt3fp9T7+12G3knucl8iDuwpRKjwmPfcMddC9Qr
+h4lh3d3LRlHoQH0WIEc0
+=MYmV
+-----END PGP SIGNATURE-----
+
+--Ky0ujAyBToem0Xjc--
+
+--===============1379890047869275793==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1379890047869275793==--
