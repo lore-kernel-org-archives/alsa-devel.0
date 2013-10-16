@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/2] ASoC: rt5640: Power down LDO while
-	suspended
-Date: Wed, 16 Oct 2013 17:33:34 +0100
-Message-ID: <1381941215-29031-1-git-send-email-broonie@kernel.org>
+Subject: [PATCH 2/2] ASoC: rt5640: Don't go to standby on resume
+Date: Wed, 16 Oct 2013 17:33:35 +0100
+Message-ID: <1381941215-29031-2-git-send-email-broonie@kernel.org>
+References: <1381941215-29031-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E37C5261A49
- for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2013 18:35:00 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DA91261A64
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2013 18:35:03 +0200 (CEST)
+In-Reply-To: <1381941215-29031-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,39 +26,26 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mark Brown <broonie@linaro.org>
 
-If we have control over the LDO then disable it during suspend; the device
-is already being put into reset so will be non-functional over suspend
-anyway and this will save a small amount of power.
+There is no need for the CODEC to go to standby on resume since the core will
+power it up as needed and in any case it is an idle_bias_off CODEC so would
+normally sit with bias off while idle.
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/rt5640.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/rt5640.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 641eeeb..b0cde92 100644
+index b0cde92..4d041d3 100644
 --- a/sound/soc/codecs/rt5640.c
 +++ b/sound/soc/codecs/rt5640.c
-@@ -1979,12 +1979,20 @@ static int rt5640_suspend(struct snd_soc_codec *codec)
- 	rt5640_reset(codec);
- 	regcache_cache_only(rt5640->regmap, true);
- 	regcache_mark_dirty(rt5640->regmap);
-+	if (gpio_is_valid(rt5640->pdata.ldo1_en))
-+		gpio_set_value_cansleep(rt5640->pdata.ldo1_en, 0);
+@@ -1993,7 +1993,6 @@ static int rt5640_resume(struct snd_soc_codec *codec)
+ 		gpio_set_value_cansleep(rt5640->pdata.ldo1_en, 1);
+ 		msleep(400);
+ 	}
+-	rt5640_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
  
  	return 0;
  }
- 
- static int rt5640_resume(struct snd_soc_codec *codec)
- {
-+	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
-+
-+	if (gpio_is_valid(rt5640->pdata.ldo1_en)) {
-+		gpio_set_value_cansleep(rt5640->pdata.ldo1_en, 1);
-+		msleep(400);
-+	}
- 	rt5640_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
- 	return 0;
 -- 
 1.8.4.rc3
