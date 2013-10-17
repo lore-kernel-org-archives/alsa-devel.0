@@ -1,161 +1,61 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCHv1 1/8] ALSA: Add SAI SoC Digital Audio
- Interface driver.
-Date: Thu, 17 Oct 2013 19:43:12 +0200
-Message-ID: <526021B0.6050206@metafoo.de>
-References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
- <1382000477-17304-2-git-send-email-Li.Xiubo@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/4] sound/soc/atmel: don't use
+ devm_pinctrl_get_select_default() in probe
+Date: Thu, 17 Oct 2013 18:42:05 +0100
+Message-ID: <20131017174205.GQ2443@sirena.org.uk>
+References: <1381681071-6021-1-git-send-email-wsa@the-dreams.de>
+ <1381681071-6021-5-git-send-email-wsa@the-dreams.de>
+ <20131014131748.GU2443@sirena.org.uk>
+ <20131014145629.GA17351@katana>
+ <20131014163753.GF2443@sirena.org.uk>
+ <20131017164331.GA2896@katana>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-234.synserver.de (smtp-out-234.synserver.de
- [212.40.185.234])
- by alsa0.perex.cz (Postfix) with ESMTP id 598052610C2
- for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2013 19:41:08 +0200 (CEST)
-In-Reply-To: <1382000477-17304-2-git-send-email-Li.Xiubo@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, tiwai@suse.de, b18965@freescale.com, timur@tabi.org, lgirdwood@gmail.com, r65073@freescale.com, LW@KARO-electronics.de, linux@arm.linux.org.uk, b42378@freescale.com, oskar@scara.com, grant.likely@linaro.org, devicetree@vger.kernel.org, ian.campbell@citrix.com, pawel.moll@arm.com, swarren@wwwdotorg.org, rob.herring@calxeda.com, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, fabio.estevam@freescale.com, linux-kernel@vger.kernel.org, rob@landley.net, r64188@freescale.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="XWGl2Oocib6fGxwW"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20131017164331.GA2896@katana>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/17/2013 11:01 AM, Xiubo Li wrote:
-[...]
-> +static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
-> +		struct snd_pcm_hw_params *params,
-> +		struct snd_soc_dai *cpu_dai)
-> +{
-> +	int ret;
-> +
-> +	ret = fsl_sai_hw_params_tr(substream, params, cpu_dai,
-> +				FSL_FMT_TRANSMITTER);
-> +	if (ret) {
-> +		dev_err(cpu_dai->dev,
-> +				"Cannot set sai transmitter hw params: %d\n",
-> +				ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = fsl_sai_hw_params_tr(substream, params, cpu_dai,
-> +				FSL_FMT_RECEIVER);
-> +	if (ret) {
-> +		dev_err(cpu_dai->dev,
-> +				"Cannot set sai's receiver hw params: %d\n",
-> +				ret);
-> +		return ret;
-> +	}
 
-Shouldn't, depending on the substream direction, either transmit or receiver
-be configured, instead of always configuring both?
+--XWGl2Oocib6fGxwW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +
-> +	return 0;
-> +}
-> +
-> +static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
-> +		struct snd_soc_dai *dai)
-> +{
-> +	struct fsl_sai *sai = snd_soc_dai_get_drvdata(dai);
-> +	unsigned int tcsr, rcsr;
-> +
-> +	tcsr = readl(sai->base + SAI_TCSR);
-> +	rcsr = readl(sai->base + SAI_RCSR);
-> +
-> +	switch (cmd) {
-> +	case SNDRV_PCM_TRIGGER_START:
-> +	case SNDRV_PCM_TRIGGER_RESUME:
-> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> +		rcsr |= SAI_CSR_TERE | SAI_CSR_FRDE;
-> +		tcsr |= SAI_CSR_TERE | SAI_CSR_FRDE;
-> +		writel(rcsr, sai->base + SAI_RCSR);
-> +		udelay(10);
-> +		writel(tcsr, sai->base + SAI_TCSR);
-> +		break;
-> +
-> +	case SNDRV_PCM_TRIGGER_STOP:
-> +	case SNDRV_PCM_TRIGGER_SUSPEND:
-> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> +		tcsr &= ~(SAI_CSR_TERE | SAI_CSR_FRDE);
-> +		rcsr &= ~(SAI_CSR_TERE | SAI_CSR_FRDE);
-> +		writel(tcsr, sai->base + SAI_TCSR);
-> +		udelay(10);
-> +		writel(rcsr, sai->base + SAI_RCSR);
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
+On Thu, Oct 17, 2013 at 06:46:14PM +0200, Wolfram Sang wrote:
 
-Same here, shouldn't tx and rx be started independently depending on the
-substream direction?
+> On the other hand, MAINTAINERS information gets overlooked and/or could
+> get stale. Thinking about it again, it is probably less work (at least
+> for me with i2c) to create a git-hook fixing the subject line than to
+> always nag people.
 
-> +	return 0;
-> +}
-> +
-> +static struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
+That doesn't fix the main problem which is getting the mail looked at in
+the first place - not having a subject line that people are looking for
+makes it easy for things to get dropped on the floor.
 
-const
+--XWGl2Oocib6fGxwW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> +	.set_sysclk	= fsl_sai_set_dai_sysclk,
-> +	.set_clkdiv	= fsl_sai_set_dai_clkdiv,
-> +	.set_fmt	= fsl_sai_set_dai_fmt,
-> +	.set_tdm_slot	= fsl_sai_set_dai_tdm_slot,
-> +	.hw_params	= fsl_sai_hw_params,
-> +	.trigger	= fsl_sai_trigger,
-> +};
-[...]
-> +static const struct snd_soc_component_driver fsl_component = {
-> +	.name           = "fsl-sai",
-> +};
-> +
-> +static int fsl_sai_probe(struct platform_device *pdev)
-> +{
-[...]
-> +
-> +	sai->dma_params_rx.addr = res->start + SAI_RDR;
-> +	sai->dma_params_rx.maxburst = 6;
-> +	index = of_property_match_string(np, "dma-names", "rx");
-> +	ret = of_parse_phandle_with_args(np, "dmas", "#dma-cells", index,
-> +				&dma_args);
-> +	if (ret)
-> +		return ret;
-> +	sai->dma_params_rx.slave_id = dma_args.args[1];
-> +
-> +	sai->dma_params_tx.addr = res->start + SAI_TDR;
-> +	sai->dma_params_tx.maxburst = 6;
-> +	index = of_property_match_string(np, "dma-names", "tx");
-> +	ret = of_parse_phandle_with_args(np, "dmas", "#dma-cells", index,
-> +				&dma_args);
-> +	if (ret)
-> +		return ret;
-> +	sai->dma_params_tx.slave_id = dma_args.args[1];
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-The driver should not have to manually parse the dma devicetree properties,
-this is something that should be handled by the dma engine driver.
+iQIcBAEBAgAGBQJSYCFqAAoJELSic+t+oim9Q+YP/RtH19EYuBUnkdv0M8N9vO7N
+9H0nBh7lhunYEyOvvWDCAECtMJeWcxSgulfKSbaZACtOVOTX33T90qQ2e0cBTPTN
+e5bjP+QR6ZeQ1E4I2h229qAt0y+CM9hbSQau2t2Xmsl6ofvTT8FL0qXBcUpkMPQi
+zBE1WCUKj2nzAfSKVPKHawnEZw1qXLoLtxe6SMxiVTCvo7ZAAVXCAD2s9CX+vbOk
+3z1YaBQ+8Hg9zT7/MHWSsx7c1Kwj7kd48f+Lv6CXc5tau/he7OjwZG9DDSgnsIgc
+7yeA7zDeze8r6kiIUr6Ty+Cv+ZnemS/90NNeicvqViuXxEZXdouOZ9ahCoRgxmmV
+A31Ucqp67M5mnVEtB9oKXyOoMhk/iUhN38oRJJu/0kN5X74nwY6VFj5gFI7RtIiM
+JUDBs4LEUha1y/fZHCaGWkoyTpv/FT744+Woemuey2exmj1Bg+xOSuhGVdCJzYdA
+72x7i55eVHPD5iH7BkAqmkouyWA5t32fvMJKaEtbC6PGnCbly92Sf4AQFCE7bBOO
+X8xuJqOxXyf7O5/z3JgVQeVDDihw5sjsBBMjBWuHdwZGhCOP32MgRyi46JI2B100
+lUG6lObaECaWv3pJzCvtqtegeyxFdkTnSD5ltqkXOH/C7QDJ9fhDgQJyW9YHMcYP
+Ix1+ommmTz6ZUjVWjUsO
+=AE10
+-----END PGP SIGNATURE-----
 
-> +
-> +	ret = snd_soc_register_component(&pdev->dev, &fsl_component,
-> +			&fsl_sai_dai, 1);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = fsl_pcm_dma_init(pdev);
-> +	if (ret)
-> +		goto out;
-> +
-> +	platform_set_drvdata(pdev, sai);
-> +
-> +	return 0;
-> +
-> +out:
-> +	snd_soc_unregister_component(&pdev->dev);
-> +	return ret;
-> +}
+--XWGl2Oocib6fGxwW--
