@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4] ALSA: Add SoC on-chip internal memory
- support for DMA buffer allocation
-Date: Thu, 17 Oct 2013 10:38:34 +0100
-Message-ID: <20131017093834.GI2443@sirena.org.uk>
-References: <1381920801-9187-1-git-send-email-b42378@freescale.com>
- <20131016115847.GK2443@sirena.org.uk> <525EBFF0.1080303@metafoo.de>
- <20131016174658.GO2443@sirena.org.uk>
- <20131017015431.GD24805@MrMyself>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Fix irq_of_parse_and_map()
+ return value check
+Date: Thu, 17 Oct 2013 10:40:54 +0100
+Message-ID: <20131017094054.GJ2443@sirena.org.uk>
+References: <1380773722-1295-1-git-send-email-linux@roeck-us.net>
+ <20131003155816.GU27287@sirena.org.uk>
+ <525F4421.3090404@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4641235767557497702=="
+Content-Type: multipart/mixed; boundary="===============0944784938352899781=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 376F1265358
- for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2013 11:38:47 +0200 (CEST)
-In-Reply-To: <20131017015431.GD24805@MrMyself>
+ by alsa0.perex.cz (Postfix) with ESMTP id D28F5265358
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2013 11:40:58 +0200 (CEST)
+In-Reply-To: <525F4421.3090404@roeck-us.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Grant Likely <grant.likely@linaro.org>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4641235767557497702==
+--===============0944784938352899781==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HqT/R3Rz35fLyCbr"
+	protocol="application/pgp-signature"; boundary="agVz1gqRg0BwYviO"
 Content-Disposition: inline
 
 
---HqT/R3Rz35fLyCbr
+--agVz1gqRg0BwYviO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Oct 17, 2013 at 09:54:32AM +0800, Nicolin Chen wrote:
+On Wed, Oct 16, 2013 at 06:57:53PM -0700, Guenter Roeck wrote:
 
-> Do I still need to change the name to SRAM? I think both name make sense to me.
-> I use IRAM just because using different name for phandle and macro/functions
-> might confuse people when reviewing the patch. But it looks like IRAM is still
-> not the perfect choice.
+> do you plan to send this patch upstream anytime soon ?
 
-No, IRAM is fine if that is actually used these days.
+It'll go next time I send stuff if it hasn't already.
 
---HqT/R3Rz35fLyCbr
+--agVz1gqRg0BwYviO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSX7AXAAoJELSic+t+oim9LCMP/2KxaQFuhtaYGNVB1/cXJHpR
-vf70Obu7BPo7aGpWqkxB2/0ldLkGZy+q9bzpL3wL+Dh8PcxOOKOnX6o+yJ1bxHrP
-8pugDBooBAru4mxmqWVTLXTVztTZCprH3rEahT74UoLC8ej/AKTmm2zT56XRzkjD
-xERg7nz7ruxG/qnqNjOO2ANgewwRHDkj7QoEAkknQpyvuJoEpwv4c7n9/fK4Q6BU
-oHNKC8n1zpJujnTLDU4QU+G/F3BsFKsgIZzfEzn7/z37J2xqvh8YxkxCUdaF9Knb
-+KM+haMVYgtXRDB1PsJrvCAcQ/dvj816Xdkmw/tAdw2Iy/ljTWH/DppNdxz2PAtK
-tOkHkPpWNMelovToH2F4YWO/GyNmU4QkjjDY1cxCfq/P53+IdwWsImldPWhzqmMF
-zX6LLE/WMNYX8pbI8EOcoaTxTydHJktHbZl0kNpsVUTFaxMx8r71a1RcNit+0IH6
-eUrkQGk5BGCMJ6b44sUIeMXNnV86Ha6dkjvp8qxibv+1kc8kfEGsKidaSJimuFEJ
-LG5olBcmBNsIqKS46VNKybC0YpxITi+0gKoNUSYbrrWcctZ/tyIiUbOdn5S177UA
-vgWsT2XWHFuUhk4cqC0GBinbr4uQggacJ6en8Uat9txhoKjTr2A4vD9uXGhdq+Gy
-mQA07jT4XzAYuFBLjNQ8
-=wVSt
+iQIcBAEBAgAGBQJSX7CjAAoJELSic+t+oim9ZvMP/iguM/JmDhW+NeRgbccLUquR
+tGkh7Sr4EfaYAM80Z2jcRX2Z+WKB9zGZsNvT/y3sEM6UJnyyoY0Nhzfn0ZirHorJ
+sNjvufySJvJWl4UwlPGekNo42Jp+8o0EFXzhDe5fThC2utJlT9F/Dtzqsh6veaCY
+zz4LQkImJNjfx5OfjS1mfn4fqZnt/q/q1TJmFcwaJiU+2rYzVu0VWZqsIjFDxGI7
+QD9jLRt1Y7IvZOFT/fbheR8B8pmx+5g/dh0ymdOVPJbLo2NmNPCMGimz7723R/Qh
+QPBXIisyFkLJq9GjBXCYRlt4/fk8cIoynObJ2ihBOEXFGLcJ3qgUjmWaSd+hWumr
+bHjLrgSB83mHU/yvBtcLsH7MUziVyyfg7JtvuenwAVVPfSha2N/3/Tz/vvQX/Rha
+GC47KdnrH8+a69S0E/c6C5b9qK+BCY/lBGnWp08PR2r2NHc5Ob43QtsRBjCSK48v
+sRbq+yXjV4BmWE1FHTvAFx2UbCQZCgkd/keTcQDDqcXClFvH31A4GY0VAyZXscqt
+T5Xt23IAsSVf1M+fS728YBpPQ47DaLOZqvGqHxEBkk9SqjLUXpfCmxuWy1HZJKWy
+e//AYo7jyi8845cCL97+vPG+kN/hO0VUpoj4sl/wgl2BwT4qGLW1u8OLwUCBixI8
+bMfvi1xQmhyTzgI//y9M
+=gIzk
 -----END PGP SIGNATURE-----
 
---HqT/R3Rz35fLyCbr--
+--agVz1gqRg0BwYviO--
 
---===============4641235767557497702==
+--===============0944784938352899781==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4641235767557497702==--
+--===============0944784938352899781==--
