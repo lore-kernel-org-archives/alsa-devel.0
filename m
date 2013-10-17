@@ -1,21 +1,21 @@
-From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: [PATCH 3/3] ASoC: cs42l73: Add Device Tree support
-	for CS42L73
-Date: Thu, 17 Oct 2013 23:51:46 +0000
-Message-ID: <CC453167-E102-450F-8813-EEE20B9EFF96@cirrus.com>
-References: <1382025815-7912-1-git-send-email-brian.austin@cirrus.com>
- <1382025815-7912-3-git-send-email-brian.austin@cirrus.com>,
- <20131017233953.GY2443@sirena.org.uk>
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Subject: Re: [PATCH 1/3] ALSA: pxa: slightly refactor reset
+	handling
+Date: Fri, 18 Oct 2013 03:53:31 +0400
+Message-ID: <CALT56yPKG=DXCtPYtjXXavU2y1ev7JfPpmrpm=hig21B-_SvLg@mail.gmail.com>
+References: <1382004097-6350-1-git-send-email-dbaryshkov@gmail.com>
+ <20131017233607.GW2443@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe004.messaging.microsoft.com [216.32.181.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 11427261622
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2013 01:51:54 +0200 (CEST)
-In-Reply-To: <20131017233953.GY2443@sirena.org.uk>
-Content-Language: en-US
+Received: from mail-ie0-f171.google.com (mail-ie0-f171.google.com
+ [209.85.223.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71765261622
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2013 01:53:32 +0200 (CEST)
+Received: by mail-ie0-f171.google.com with SMTP id tp5so5339895ieb.30
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2013 16:53:31 -0700 (PDT)
+In-Reply-To: <20131017233607.GW2443@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,18 +26,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
+On Fri, Oct 18, 2013 at 3:36 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Thu, Oct 17, 2013 at 02:01:35PM +0400, Dmitry Eremin-Solenikov wrote:
+>> PXA25x also shows some problems when using interrupts during reset
+>> handling. Thus do not use interrupts on all pxa kinds (to detect codec
+>> ready state). Instead use a common mdelay-loop on all platforms to
+>> detect codecs becoming ready.
+>
+> Applied all, thanks.  I'm somewhat surprised nobody noticed the reset
+> issues on the pxa25x before - this stuff all got really heavily tested
+> back in the day.
 
-> On Oct 17, 2013, at 18:40, "Mark Brown" <broonie@kernel.org> wrote:
-> 
->> On Thu, Oct 17, 2013 at 11:03:35AM -0500, Brian Austin wrote:
->> This patch adds device tree support for the cs42l73 codec.
->> Reset Gpio and Charge Pump Frequency are available
-> 
-> Actually this doesn't apply for me, some missing dependency perhaps?  I
-> didn't check exactly what's conflicting.
+Maybe it was some coincidence/whatever. Maybe it is some hardware issue
+of exact mask version. When I first started hacking around PXA, it was known
+that tosa sometimes does not reset the AC97 codec for the first time.
+However it looks like nobody bothered to debug that, because in most (~3/4)
+cases reset went through. Now some kernel changes made kernel hang
+looping in the interrupt, if the reset is not properly handled.
 
-Hmmm.  I'll check when I get in. I'm pretty sure it's off the for-next but I'll check again.
+-- 
+With best wishes
+Dmitry
