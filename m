@@ -1,7 +1,7 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCHv1 2/8] ARM: dts: Add Freescale SAI ALSA SoC Digital Audio Interface node for VF610.
-Date: Thu, 17 Oct 2013 17:01:11 +0800
-Message-ID: <1382000477-17304-3-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCHv1 4/8] Documentation: Add device tree bindings for Freescale SAI.
+Date: Thu, 17 Oct 2013 17:01:13 +0800
+Message-ID: <1382000477-17304-5-git-send-email-Li.Xiubo@freescale.com>
 References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -9,33 +9,55 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: r65073@freescale.com, timur@tabi.org, lgirdwood@gmail.com, broonie@kernel.org
-Cc: r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com, shawn.guo@linaro.org, b42378@freescale.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Jingchang Lu <b35083@freescale.com>
+Cc: r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com, shawn.guo@linaro.org, b42378@freescale.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch add the SAI's edma mux Tx and Rx support.
+This adds the Document for Freescale SAI driver under
+Documentation/devicetree/bindings/sound/.
 
-Signed-off-by: Jingchang Lu <b35083@freescale.com>
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- arch/arm/boot/dts/vf610.dtsi | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/sound/fsl-sai.txt          | 32 ++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl-sai.txt
 
-diff --git a/arch/arm/boot/dts/vf610.dtsi b/arch/arm/boot/dts/vf610.dtsi
-index 18e3a4c..391f180 100644
---- a/arch/arm/boot/dts/vf610.dtsi
-+++ b/arch/arm/boot/dts/vf610.dtsi
-@@ -151,9 +151,11 @@
- 			sai2: sai@40031000 {
- 				compatible = "fsl,vf610-sai";
- 				reg = <0x40031000 0x1000>;
--				interrupts = <0 86 0x04>;
- 				clocks = <&clks VF610_CLK_SAI2>;
- 				clock-names = "sai";
-+				dma-names = "tx", "rx";
-+				dmas = <&edma0 0 VF610_EDMA_MUXID0_SAI2_TX>,
-+					<&edma0 0 VF610_EDMA_MUXID0_SAI2_RX>;
- 				status = "disabled";
- 			};
- 
+diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+new file mode 100644
+index 0000000..267afbd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+@@ -0,0 +1,32 @@
++Freescale Synchronous Audio Interface (SAI).
++
++The SAI is based on I2S module that used communicating with audio codecs,
++which provides a synchronous audio interface that supports fullduplex
++serial interfaces with frame synchronization such as I2S, AC97, TDM, and
++codec/DSP interfaces.
++
++
++Required properties:
++- compatible: Compatible list, contains "fsl,vf610-sai".
++- reg: Offset and length of the register set for the device.
++- clocks: Must contain an entry for each entry in clock-names.
++- clock-names : Must include the "sai" entry.
++- dmas : Generic dma devicetree binding as described in
++  Documentation/devicetree/bindings/dma/dma.txt.
++- dma-names : Two dmas have to be defined, "tx" and "rx".
++- pinctrl-names: Must contain a "default" entry.
++- pinctrl-NNN: One property must exist for each entry in pinctrl-names.
++  See ../pinctrl/pinctrl-bindings.txt for details of the property values.
++
++Example:
++sai2: sai@40031000 {
++	      compatible = "fsl,vf610-sai";
++	      reg = <0x40031000 0x1000>;
++	      pinctrl-names = "default";
++	      pinctrl-0 = <&pinctrl_sai2_1>;
++	      clocks = <&clks VF610_CLK_SAI2>;
++	      clock-names = "sai";
++	      dma-names = "tx", "rx";
++	      dmas = <&edma0 0 VF610_EDMA_MUXID0_SAI2_TX>,
++		   <&edma0 0 VF610_EDMA_MUXID0_SAI2_RX>;
++};
 -- 
 1.8.0
