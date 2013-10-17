@@ -1,45 +1,56 @@
-From: Raphael S Carvalho <raphael.scarv@gmail.com>
-Subject: Re: [Kernel-BR] Re: [PATCH] sound: pci: emu10k1: code refactoring and
- casting removal
-Date: Thu, 17 Oct 2013 15:35:46 -0300
-Message-ID: <CACz=Wecn4rft6baBq1k9TWDdB41RVOdyWthdowgfZqJozpyX9A@mail.gmail.com>
-References: <1381961482-25085-1-git-send-email-geyslan@gmail.com>
-	<s5hli1sqv7e.wl%tiwai@suse.de>
-	<CAGG-pUQ_5jgrfSEN7_hV982FBtCmdba231gwtqfbxejshLmHhg@mail.gmail.com>
-	<s5hzjq8t6pl.wl%tiwai@suse.de>
-	<CAGG-pUQAOZ852CamCE+T4zM2Wwc0xKr+WRbGQLEqK=EvC3JCvw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/2] ASoC: dai: Provide interface for setting
+	DMA data at probe time
+Date: Thu, 17 Oct 2013 22:34:12 +0100
+Message-ID: <1382045653-14807-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAGG-pUQAOZ852CamCE+T4zM2Wwc0xKr+WRbGQLEqK=EvC3JCvw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: kernel-br@googlegroups.com, =?ISO-8859-1?Q?Geyslan_Greg=F3rio_Bem?= <geyslan@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Bill Pemberton <wfp5p@virginia.edu>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D155261616
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2013 23:34:18 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-> 2013/10/17 Takashi Iwai <tiwai@suse.de>:
->>
->> Geyslan, you don't have to waste too much of your time (and my time
->> for review) for this kind of so old driver code unless it really fixes
->> the bugs.  A clean up is good in general, but it can be sometimes
->> worse than nothing since it also breaks the history, thus makes hard
->> to follow via "git blame", for example, and of course, there is always
->> a potential danger of regression.
->>
->> So, if it's about clean up, do it only in a systematic way that others
->> can follow easily, and don't do it too intensively.
->>
->>
->> thanks,
->>
->> Takashi
+From: Mark Brown <broonie@linaro.org>
 
-His code refactoring proposal is welcome since the old code sucks from
-several points of view, e.g. maintainability, legibility, etc.
-Yes, of course, it's important to be careful in order not to introduce
-regressions. And yes, he could improve something here and there.
-As long as changes improve the maintainability and legibility of the
-code, there is no reason to refuse them.
+Allow DMA data to be set at probe time for devices that can do that,
+avoiding the need to do it every time we start a stream and supporting
+non-DT dmaengine users using the helpers.
 
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ include/sound/soc-dai.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 1ce3685..800c101 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -286,6 +286,13 @@ static inline void snd_soc_dai_set_dma_data(struct snd_soc_dai *dai,
+ 		dai->capture_dma_data = data;
+ }
+ 
++static inline void snd_soc_dai_init_dma_data(struct snd_soc_dai *dai,
++					     void *playback, void *capture)
++{
++	dai->playback_dma_data = playback;
++	dai->capture_dma_data = capture;
++}
++
+ static inline void snd_soc_dai_set_drvdata(struct snd_soc_dai *dai,
+ 		void *data)
+ {
 -- 
-Raphael S. Carvalho
+1.8.4.rc3
