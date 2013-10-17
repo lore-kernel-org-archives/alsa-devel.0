@@ -1,77 +1,116 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_ssi: Fix irq_of_parse_and_map()
- return value check
-Date: Thu, 17 Oct 2013 10:40:54 +0100
-Message-ID: <20131017094054.GJ2443@sirena.org.uk>
-References: <1380773722-1295-1-git-send-email-linux@roeck-us.net>
- <20131003155816.GU27287@sirena.org.uk>
- <525F4421.3090404@roeck-us.net>
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+Subject: Re: [PATCHv1 1/8] ALSA: Add SAI SoC Digital Audio Interface driver.
+Date: Thu, 17 Oct 2013 11:42:08 +0200
+Message-ID: <20131017114208.595a4224@ipc1.ka-ro>
+References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
+	<1382000477-17304-2-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0944784938352899781=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D28F5265358
- for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2013 11:40:58 +0200 (CEST)
-In-Reply-To: <525F4421.3090404@roeck-us.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Grant Likely <grant.likely@linaro.org>, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <1382000477-17304-2-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: r65073@freescale.com, timur@tabi.org, lgirdwood@gmail.com, broonie@kernel.org, r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, oskar@scara.com, shawn.guo@linaro.org, b42378@freescale.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============0944784938352899781==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="agVz1gqRg0BwYviO"
-Content-Disposition: inline
+Xiubo Li <Li.Xiubo@freescale.com> wrote:
+[...]
+> diff --git a/sound/soc/fsl/fsl-pcm-dma.c b/sound/soc/fsl/fsl-pcm-dma.=
+c
+> new file mode 100644
+> index 0000000..c4d925e
+> --- /dev/null
+> +++ b/sound/soc/fsl/fsl-pcm-dma.c
+> @@ -0,0 +1,51 @@
+[...]
+> +
+> +static int fsl_sai_probe(struct platform_device *pdev)
+> +{
+> +	struct of_phandle_args	dma_args;
+> +	int index;
+> +	struct resource *res;
+> +	struct fsl_sai *sai;
+> +	int ret =3D 0;
+> +	struct device_node *np =3D pdev->dev.of_node;
+> +
+> +	sai =3D devm_kzalloc(&pdev->dev, sizeof(*sai), GFP_KERNEL);
+> +	if (!sai)
+> +		return -ENOMEM;
+> +
+> +	sai->fbt =3D FSL_SAI_FBT_MSB;
+> +
+> +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	sai->base =3D devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(sai->base)) {
+> +		ret =3D PTR_ERR(sai->base);
+> +		return ret;
+>
+could be:
+		return PTR_ERR(sai->base);
+
+[...]
+> +static const struct of_device_id fsl_sai_ids[] =3D {
+> +	{ .compatible =3D "fsl,vf610-sai", },
+> +	{ /*sentinel*/ },
+>
+The comma after the last entry in a struct initializer is there to make
+patches that append another entry cleaner. Since this entry is and
+always must be the last entry, the comma is useless here.
+
+> diff --git a/sound/soc/fsl/fsl-sai.h b/sound/soc/fsl/fsl-sai.h
+> new file mode 100644
+> index 0000000..ab76a8e
+> --- /dev/null
+> +++ b/sound/soc/fsl/fsl-sai.h
+> @@ -0,0 +1,127 @@
+> +/*
+> + * Copyright 2012-2013 Freescale Semiconductor, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or mod=
+ify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +#ifndef __FSL_SAI_H
+> +#define __FSL_SAI_H
+> +
+> +#include <sound/dmaengine_pcm.h>
+> +
+> +#define FSL_SAI_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
+> +			 SNDRV_PCM_FMTBIT_S20_3LE |\
+> +			 SNDRV_PCM_FMTBIT_S24_LE)
+> +
+> +#define FSL_SAI_DMABUF_SIZE	(32 * 1024)
+> +#define TCD_NUMBER		4
+> +#define EDMA_PRIO_HIGH          6
+> +
+strange indentation with mixed spaces and tabs.
+
+> +/* SAI Transmit and Recieve Configuration 2 Register */
+> +#define SAI_TCR2		0x08
+> +#define SAI_RCR2		0x88
+> +#define SAI_CR2_SYNC		BIT(30)
+> +#define SAI_CR2_MSEL_MASK	(0xff << 26)
+> +#define SAI_CR2_MSEL_BUS	0
+> +#define SAI_CR2_MSEL_MCLK1	BIT(26)
+> +#define SAI_CR2_MSEL_MCLK2	BIT(27)
+> +#define SAI_CR2_MSEL_MCLK3	(BIT(26)|BIT(27))
+>
+spaces around '|'?
 
 
---agVz1gqRg0BwYviO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Lothar Wa=C3=9Fmann
+--=20
+___________________________________________________________
 
-On Wed, Oct 16, 2013 at 06:57:53PM -0700, Guenter Roeck wrote:
+Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
 
-> do you plan to send this patch upstream anytime soon ?
-
-It'll go next time I send stuff if it hasn't already.
-
---agVz1gqRg0BwYviO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSX7CjAAoJELSic+t+oim9ZvMP/iguM/JmDhW+NeRgbccLUquR
-tGkh7Sr4EfaYAM80Z2jcRX2Z+WKB9zGZsNvT/y3sEM6UJnyyoY0Nhzfn0ZirHorJ
-sNjvufySJvJWl4UwlPGekNo42Jp+8o0EFXzhDe5fThC2utJlT9F/Dtzqsh6veaCY
-zz4LQkImJNjfx5OfjS1mfn4fqZnt/q/q1TJmFcwaJiU+2rYzVu0VWZqsIjFDxGI7
-QD9jLRt1Y7IvZOFT/fbheR8B8pmx+5g/dh0ymdOVPJbLo2NmNPCMGimz7723R/Qh
-QPBXIisyFkLJq9GjBXCYRlt4/fk8cIoynObJ2ihBOEXFGLcJ3qgUjmWaSd+hWumr
-bHjLrgSB83mHU/yvBtcLsH7MUziVyyfg7JtvuenwAVVPfSha2N/3/Tz/vvQX/Rha
-GC47KdnrH8+a69S0E/c6C5b9qK+BCY/lBGnWp08PR2r2NHc5Ob43QtsRBjCSK48v
-sRbq+yXjV4BmWE1FHTvAFx2UbCQZCgkd/keTcQDDqcXClFvH31A4GY0VAyZXscqt
-T5Xt23IAsSVf1M+fS728YBpPQ47DaLOZqvGqHxEBkk9SqjLUXpfCmxuWy1HZJKWy
-e//AYo7jyi8845cCL97+vPG+kN/hO0VUpoj4sl/wgl2BwT4qGLW1u8OLwUCBixI8
-bMfvi1xQmhyTzgI//y9M
-=gIzk
------END PGP SIGNATURE-----
-
---agVz1gqRg0BwYviO--
-
---===============0944784938352899781==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0944784938352899781==--
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
