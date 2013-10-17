@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: cs42l73: Add Device Tree support
-	for CS42L73
-Date: Fri, 18 Oct 2013 00:39:53 +0100
-Message-ID: <20131017233953.GY2443@sirena.org.uk>
-References: <1382025815-7912-1-git-send-email-brian.austin@cirrus.com>
- <1382025815-7912-3-git-send-email-brian.austin@cirrus.com>
+Subject: Re: [PATCH v2] ASoC: add snd_soc_of_get_dai_name()
+	default of_xlate
+Date: Fri, 18 Oct 2013 00:43:49 +0100
+Message-ID: <20131017234349.GA2443@sirena.org.uk>
+References: <87li1vdx9y.wl%kuninori.morimoto.gx@renesas.com>
+ <525E57C0.6000508@metafoo.de>
+ <87ob6o1tgg.wl%kuninori.morimoto.gx@renesas.com>
+ <87li1s1o8c.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0784821266429993745=="
+Content-Type: multipart/mixed; boundary="===============8995967311995693045=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B753F261622
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2013 01:39:55 +0200 (CEST)
-In-Reply-To: <1382025815-7912-3-git-send-email-brian.austin@cirrus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9511A261622
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2013 01:43:54 +0200 (CEST)
+In-Reply-To: <87li1s1o8c.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +23,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0784821266429993745==
+--===============8995967311995693045==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5iQfWP9hwu8WkYTt"
+	protocol="application/pgp-signature"; boundary="QEmF4LapLAdOVlp0"
 Content-Disposition: inline
 
 
---5iQfWP9hwu8WkYTt
+--QEmF4LapLAdOVlp0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Oct 17, 2013 at 11:03:35AM -0500, Brian Austin wrote:
-> This patch adds device tree support for the cs42l73 codec.
-> Reset Gpio and Charge Pump Frequency are available
+On Wed, Oct 16, 2013 at 10:05:26PM -0700, Kuninori Morimoto wrote:
+> Current snd_soc_of_get_dai_name() needs .of_xlate_dai_name()
+> callback on each component drivers.
+> But required behavior on almost all these drivers is
+> just returns its indexed driver's name.
 
-Actually this doesn't apply for me, some missing dependency perhaps?  I
-didn't check exactly what's conflicting.
+Applied, thanks.
 
---5iQfWP9hwu8WkYTt
+--QEmF4LapLAdOVlp0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSYHVGAAoJELSic+t+oim96HcP/3qk/wLAy7qCjWf4QDluvgSu
-vLpUxdbWOnhdWQHO7JydNU2DA8HP7nI+uRFhXfL6UYjbDkip571uVM+1XsMS5BQt
-pMlW0srBYieXDaHMA1zITUNwOFM7A6l3vGtLHrYvZIcvZ2d6QS+ea5hQe1QygXzs
-s6QPhQzGRrdQDQ+cKbfINK2UmYnvFH/8o+PuZ9cUW7sjAQAJkdiIlVM2uEvqrsiD
-lklD1HgU1ASN8nu1PcOi53aC8MwsNoe7h31pjdkbm3sYQ9nGD9NYkBY3ucidfXMu
-Mmvk/8XHZd6JQ8rrFO4hGCUwC/D0mOGsQGfwBgD21GEcyiWO64uomY2B/TnjB0c5
-GWlKwODxWwB8Yq727h+rfNAd4hQD0cwJ/yb+6TI2j19WbQlw7ZjY0ueFGxwtkVgs
-SGPoMGZ0yP8VVS+hFjvu10u0YHogjZQ18zZgGmaBEIvdZcWlKwzxQwJMa+UM3/kY
-FgiwZ0kD03SoFWSWc+d8cR2Q4NmUKCIzQC1+6tcoSzEoJTstCQOMP50mv1ckz4PI
-gvOkNx4dvxkf49D0UYkfs6uXeYsYyGE3u1ii2OuBOz8POagnIcZCqENuUsMSx6yR
-RSpIPV5htxQBe/P2LXix9YILxMiycRSvM0YxNs9/rVWebpZXPhMwCpQsHNTjooVB
-ntN+dsj4HVT6mysJxXIq
-=5wL1
+iQIcBAEBAgAGBQJSYHYyAAoJELSic+t+oim9wwMP+wTEHIhBpGzUxw/gEpsM7mRb
+HqKRFseQ1iKwUXSbTdSQJPZL6suH1G+2XIEqAE/bMt3B9490T+BVH/82SzOFEMwq
+r/FKJtNNwHNi2VVlm8su8VT5UJr34Tn+G/zCncg/yjVP+xpycGGWdxNVpQ+WWz4l
+akWZaPxUJhLtdaRYwPRVQGyFnlPbtSDhotY57zFOc9Heb3ucZawaHGxFOM1OzAH6
+b63PumxPfxlozNWgYtb3Vw5TZ7odgatxFHGrGl+K24nF3m8MCOIOyJ4taQzC2+Iz
+tXwOLo92p2KQBk09jSwNmJ85RLao0RHeTcvOwfmeQ/p6yxRnqCizLZ/1s9gmZz9a
+TBiM+GpBpzdxZcg/IzdS7dDmwnrjeKCnmtX/7txKkTwEGbceQmdHuvY9xUnDECYJ
+BcWW39t0zFdbDdt0ZVtc6piaWAmNCzJ88GC0V/E4ve/eQtP2Pj8Dud9I7zhLpWQz
+voa3E2lorirhTlq+hvvJBeI1mguZg9W1JAs40hIAf+1oFWu3dp6YrUF6V+/QwEtB
+QuLN8K/skQ6GweJLh8i8+vDGlspi2kfk54ZinKtcIinnTC/L/PApbO1E8kULeWjg
+6Ci89faBO4vU7pm42bd1P0uuH64xyPY+O95U/rypSgtroWi8/bcv+YjkAikRUENT
+Z/BFOwDMtT26wIqcPdao
+=YbCY
 -----END PGP SIGNATURE-----
 
---5iQfWP9hwu8WkYTt--
+--QEmF4LapLAdOVlp0--
 
---===============0784821266429993745==
+--===============8995967311995693045==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0784821266429993745==--
+--===============8995967311995693045==--
