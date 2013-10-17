@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ALSA: pxa: slightly refactor reset
-	handling
-Date: Fri, 18 Oct 2013 00:36:07 +0100
-Message-ID: <20131017233607.GW2443@sirena.org.uk>
-References: <1382004097-6350-1-git-send-email-dbaryshkov@gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: cs42l73: Add platform data
+ support for cs42l73 codec
+Date: Fri, 18 Oct 2013 00:37:18 +0100
+Message-ID: <20131017233718.GX2443@sirena.org.uk>
+References: <1382025815-7912-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5992047346512410043=="
+Content-Type: multipart/mixed; boundary="===============2942370912800720837=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D8178261622
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2013 01:36:09 +0200 (CEST)
-In-Reply-To: <1382004097-6350-1-git-send-email-dbaryshkov@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B8FC1261622
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2013 01:37:20 +0200 (CEST)
+In-Reply-To: <1382025815-7912-1-git-send-email-brian.austin@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5992047346512410043==
+--===============2942370912800720837==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="uKwnt1DTffWt333R"
+	protocol="application/pgp-signature"; boundary="5baGGYxPGMjgwtsu"
 Content-Disposition: inline
 
 
---uKwnt1DTffWt333R
+--5baGGYxPGMjgwtsu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Oct 17, 2013 at 02:01:35PM +0400, Dmitry Eremin-Solenikov wrote:
-> PXA25x also shows some problems when using interrupts during reset
-> handling. Thus do not use interrupts on all pxa kinds (to detect codec
-> ready state). Instead use a common mdelay-loop on all platforms to
-> detect codecs becoming ready.
+On Thu, Oct 17, 2013 at 11:03:33AM -0500, Brian Austin wrote:
+> Add support for RST GPIO and Charge Pump Freq in platform data
 
-Applied all, thanks.  I'm somewhat surprised nobody noticed the reset
-issues on the pxa25x before - this stuff all got really heavily tested
-back in the day.
+Applied all, thanks.  The DT changes really should have been sent to the
+DT maintainers and the DT list but it looks like a pretty standard
+binding so let's not worry.
 
---uKwnt1DTffWt333R
+--5baGGYxPGMjgwtsu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSYHRkAAoJELSic+t+oim9AgwP/ipwJ98p8aRLnZl/oVl7bmSp
-ouceVHaM/MBL0WpyiPNH2wK9FwkxuYKy06GKuk1mMwKRZI7jb21see0H8fhYEi4l
-BYe2bLhuIgSDo8CaG1lRWB8687LvOKE0RDjBAnmMMjRzqmCCJUm9ksVvg5Popzan
-7IhB4jIFQgdoyNO1Ra5XSkafMCtZLwbwHo/Xx8vrxoYrKNDsdHX2t4uRJUozARBx
-xO8ThkNOVyQ1PgCW3fAc708glwM2BE6D9pkyfkqM0U0wuQfi736x78B2hRFNsPZV
-izWfnNsJ4fWCGm+ZGBpskGs70Bza5vkie112x4KGMjILnC6c3X/X8bd3n/as7h90
-zt3s5WSCp7cX+XQfTm/7XM9F1fdg0UI9q0pd+0hHykdwFD7ht0ABgyJYhh6R/pDB
-qBNs45CVdTmziVJCoUz8yEN9yV2zzg47j2J483P5uR0hHlixVQ9KCCNWgh3tbH+6
-rghXzCURrVpS6Pv8qFP1EdhdmgZUfNzRybOkR6SivG7vCzkuW7nPq9Tttk6iDnh0
-BA/Rln/QXwQsEABYJaAfAXgt0gP5OUP9LQRFOLpcYUSUBWZ9Aos9+4WzIvzojDEO
-EcLiF2yPdGAgPq9W5JlyDjgLY+0Vasm/lpyoR/l0LU2PDOxbigltZMhZ46dj9FFI
-AtZKLN44fSGBdGkO98fo
-=2L+e
+iQIcBAEBAgAGBQJSYHSqAAoJELSic+t+oim9LqsP/RIHq9vtzaCA+enBHAfoXwIJ
+0tym/b1jXY42St0HEjXTTvDvo6KAEBq3SfPwxGhvFX0nUr0+UEuptpWeTo3H62ZY
+Xdv5nht7EXODq3f38OZBolM5thRCjNT7h2N9PW3CeQQLmRobedkJG34mLTgJvY6x
+5oHiog0SLJKWAX3XO74hFj1lAtg3Nn5aLt5MAXr9kf0R05flv3YY5yVCmbRRvRKP
+/M+P/Li84SHeu1gUrQOYOVaL5drPl3OqjuyGzZJdcwIEnbgoKn/uEwilspVtQn1i
+36TuJ4h2RSazPB6BGTXTs3a1QYLp0wwMAbDgDffyIereruyb8+6Bdj2Z5whh2Ow5
+tKKY9xMsPrOGvmxsZoHJ68NNbyXwQF6WooX7bdgu1CQT8tlccaKd1lQmYF0x5dRC
+Z9HJq7f3cQFhpUHwcfCkpby/AWjQ5skoEUeeWslMGnVnF0ZiGpN/FSdn9nJeup5U
+jjTCCOfJ4bdmccZdsXnxH8C4JuTRd+1mwHfuh0zfm/JbVtlAKMwhzbDmNDVxf+U9
+4t4wqZKbcTLJpbUBd9IO0bKB4zVJo19w7rAwK4py99mbYxbaulemNwWmh5pi8S7N
+i+d+yo0OOLnsiqStzf8kJGiO8Sni2tyZHCJQa8u+XGAOqBaBv92RuWctCibuFhe9
+QZoIlosz4eALuMc5TYrY
+=4CVj
 -----END PGP SIGNATURE-----
 
---uKwnt1DTffWt333R--
+--5baGGYxPGMjgwtsu--
 
---===============5992047346512410043==
+--===============2942370912800720837==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5992047346512410043==--
+--===============2942370912800720837==--
