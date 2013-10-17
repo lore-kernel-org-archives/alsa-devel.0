@@ -1,64 +1,45 @@
-From: Mauro Carvalho Chehab <m.chehab@samsung.com>
-Subject: Re: [PATCH 2/8] [media] exynos4-is: Don't use i2c_client->driver
-Date: Thu, 17 Oct 2013 14:46:04 -0300
-Message-ID: <20131017144604.1d649988@samsung.com>
-References: <1380444666-12019-1-git-send-email-lars@metafoo.de>
- <1380444666-12019-3-git-send-email-lars@metafoo.de>
+From: Raphael S Carvalho <raphael.scarv@gmail.com>
+Subject: Re: [Kernel-BR] Re: [PATCH] sound: pci: emu10k1: code refactoring and
+ casting removal
+Date: Thu, 17 Oct 2013 15:35:46 -0300
+Message-ID: <CACz=Wecn4rft6baBq1k9TWDdB41RVOdyWthdowgfZqJozpyX9A@mail.gmail.com>
+References: <1381961482-25085-1-git-send-email-geyslan@gmail.com>
+	<s5hli1sqv7e.wl%tiwai@suse.de>
+	<CAGG-pUQ_5jgrfSEN7_hV982FBtCmdba231gwtqfbxejshLmHhg@mail.gmail.com>
+	<s5hzjq8t6pl.wl%tiwai@suse.de>
+	<CAGG-pUQAOZ852CamCE+T4zM2Wwc0xKr+WRbGQLEqK=EvC3JCvw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <1380444666-12019-3-git-send-email-lars@metafoo.de>
+In-Reply-To: <CAGG-pUQAOZ852CamCE+T4zM2Wwc0xKr+WRbGQLEqK=EvC3JCvw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Wolfram Sang <wsa@the-dreams.de>, David Airlie <airlied@linux.ie>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Kyungmin Park <kyungmin.park@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>
+To: kernel-br@googlegroups.com, =?ISO-8859-1?Q?Geyslan_Greg=F3rio_Bem?= <geyslan@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Bill Pemberton <wfp5p@virginia.edu>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Em Sun, 29 Sep 2013 10:51:00 +0200
-Lars-Peter Clausen <lars@metafoo.de> escreveu:
+> 2013/10/17 Takashi Iwai <tiwai@suse.de>:
+>>
+>> Geyslan, you don't have to waste too much of your time (and my time
+>> for review) for this kind of so old driver code unless it really fixes
+>> the bugs.  A clean up is good in general, but it can be sometimes
+>> worse than nothing since it also breaks the history, thus makes hard
+>> to follow via "git blame", for example, and of course, there is always
+>> a potential danger of regression.
+>>
+>> So, if it's about clean up, do it only in a systematic way that others
+>> can follow easily, and don't do it too intensively.
+>>
+>>
+>> thanks,
+>>
+>> Takashi
 
-> The 'driver' field of the i2c_client struct is redundant and is going to be
-> removed. The results of the expressions 'client->driver.driver->field' and
-> 'client->dev.driver->field' are identical, so replace all occurrences of the
-> former with the later.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Kyungmin Park <kyungmin.park@samsung.com>
-> Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-
-Acked-by: Mauro Carvalho Chehab <m.chehab@samsung.com>
-
-> ---
->  drivers/media/platform/exynos4-is/media-dev.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
-> index a835112..7a4ee4c 100644
-> --- a/drivers/media/platform/exynos4-is/media-dev.c
-> +++ b/drivers/media/platform/exynos4-is/media-dev.c
-> @@ -411,8 +411,8 @@ static int fimc_md_of_add_sensor(struct fimc_md *fmd,
->  
->  	device_lock(&client->dev);
->  
-> -	if (!client->driver ||
-> -	    !try_module_get(client->driver->driver.owner)) {
-> +	if (!client->dev.driver ||
-> +	    !try_module_get(client->dev.driver->owner)) {
->  		ret = -EPROBE_DEFER;
->  		v4l2_info(&fmd->v4l2_dev, "No driver found for %s\n",
->  						node->full_name);
-> @@ -442,7 +442,7 @@ static int fimc_md_of_add_sensor(struct fimc_md *fmd,
->  	fmd->num_sensors++;
->  
->  mod_put:
-> -	module_put(client->driver->driver.owner);
-> +	module_put(client->dev.driver->owner);
->  dev_put:
->  	device_unlock(&client->dev);
->  	put_device(&client->dev);
-
+His code refactoring proposal is welcome since the old code sucks from
+several points of view, e.g. maintainability, legibility, etc.
+Yes, of course, it's important to be careful in order not to introduce
+regressions. And yes, he could improve something here and there.
+As long as changes improve the maintainability and legibility of the
+code, there is no reason to refuse them.
 
 -- 
-
-Cheers,
-Mauro
+Raphael S. Carvalho
