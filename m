@@ -1,83 +1,81 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCHv1 8/8] Documentation: Add device tree bindings for Freescale VF610 sound.
-Date: Thu, 17 Oct 2013 17:01:17 +0800
-Message-ID: <1382000477-17304-9-git-send-email-Li.Xiubo@freescale.com>
-References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4] ALSA: Add SoC on-chip internal memory
+ support for DMA buffer allocation
+Date: Thu, 17 Oct 2013 10:38:34 +0100
+Message-ID: <20131017093834.GI2443@sirena.org.uk>
+References: <1381920801-9187-1-git-send-email-b42378@freescale.com>
+ <20131016115847.GK2443@sirena.org.uk> <525EBFF0.1080303@metafoo.de>
+ <20131016174658.GO2443@sirena.org.uk>
+ <20131017015431.GD24805@MrMyself>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: r65073@freescale.com, timur@tabi.org, lgirdwood@gmail.com, broonie@kernel.org
-Cc: r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com, shawn.guo@linaro.org, b42378@freescale.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: multipart/mixed; boundary="===============4641235767557497702=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 376F1265358
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2013 11:38:47 +0200 (CEST)
+In-Reply-To: <20131017015431.GD24805@MrMyself>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This adds the Document for Freescale VF610 sound driver under
-Documentation/devicetree/bindings/sound/.
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
----
- .../devicetree/bindings/sound/fsl-sgtl5000.txt     | 52 ++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/fsl-sgtl5000.txt
+--===============4641235767557497702==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HqT/R3Rz35fLyCbr"
+Content-Disposition: inline
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-sgtl5000.txt b/Documentation/devicetree/bindings/sound/fsl-sgtl5000.txt
-new file mode 100644
-index 0000000..43e350f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/fsl-sgtl5000.txt
-@@ -0,0 +1,52 @@
-+Freescale VF610 audio complex with SGTL5000 codec
-+
-+Required properties:
-+- compatible: "fsl,vf610-sgtl5000"
-+- model: The user-visible name of this sound complex.
-+- saif-controllers: The phandle list of the SAI controller.
-+- audio-codec: The phandle of the SGTL5000 audio codec.
-+- audio-routing : A list of the connections between audio components.
-+  Each entry is a pair of strings, the first being the connection's sink,
-+  the second being the connection's source. Valid names could be power
-+  supplies, SGTL5000 pins, and the jacks on the board:
-+
-+  -- Power supplies:
-+     * Mic Bias
-+
-+  -- SGTL5000 pins:
-+     * MIC_IN
-+     * LINE_IN
-+     * HP_OUT
-+     * LINE_OUT
-+
-+  -- Board connectors:
-+     * Mic Jack
-+     * Line In Jack
-+     * Headphone Jack
-+     * Line Out Jack
-+     * Ext Spk
-+
-+Example:
-+
-+sound {
-+	compatible = "fsl,vf610-sgtl5000";
-+	model = "vf610-sgtl5000";
-+	saif-controller = <&sai2>;
-+	audio-codec = <&codec>;
-+	audio-routing =
-+		"MIC_IN", "Mic Jack",
-+		"Mic Jack", "Mic Bias",
-+		"LINE_IN", "Line In Jack",
-+		"Headphone Jack", "HP_OUT",
-+		"Ext Spk", "LINE_OUT";
-+};
-+
-+&i2c0 {
-+	...
-+
-+	codec: sgtl5000@0a {
-+	       compatible = "fsl,sgtl5000";
-+	       reg = <0x0a>;
-+	       clocks = <&clks VF610_CLK_SAI2>;
-+       };
-+};
--- 
-1.8.0
+
+--HqT/R3Rz35fLyCbr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Oct 17, 2013 at 09:54:32AM +0800, Nicolin Chen wrote:
+
+> Do I still need to change the name to SRAM? I think both name make sense to me.
+> I use IRAM just because using different name for phandle and macro/functions
+> might confuse people when reviewing the patch. But it looks like IRAM is still
+> not the perfect choice.
+
+No, IRAM is fine if that is actually used these days.
+
+--HqT/R3Rz35fLyCbr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSX7AXAAoJELSic+t+oim9LCMP/2KxaQFuhtaYGNVB1/cXJHpR
+vf70Obu7BPo7aGpWqkxB2/0ldLkGZy+q9bzpL3wL+Dh8PcxOOKOnX6o+yJ1bxHrP
+8pugDBooBAru4mxmqWVTLXTVztTZCprH3rEahT74UoLC8ej/AKTmm2zT56XRzkjD
+xERg7nz7ruxG/qnqNjOO2ANgewwRHDkj7QoEAkknQpyvuJoEpwv4c7n9/fK4Q6BU
+oHNKC8n1zpJujnTLDU4QU+G/F3BsFKsgIZzfEzn7/z37J2xqvh8YxkxCUdaF9Knb
++KM+haMVYgtXRDB1PsJrvCAcQ/dvj816Xdkmw/tAdw2Iy/ljTWH/DppNdxz2PAtK
+tOkHkPpWNMelovToH2F4YWO/GyNmU4QkjjDY1cxCfq/P53+IdwWsImldPWhzqmMF
+zX6LLE/WMNYX8pbI8EOcoaTxTydHJktHbZl0kNpsVUTFaxMx8r71a1RcNit+0IH6
+eUrkQGk5BGCMJ6b44sUIeMXNnV86Ha6dkjvp8qxibv+1kc8kfEGsKidaSJimuFEJ
+LG5olBcmBNsIqKS46VNKybC0YpxITi+0gKoNUSYbrrWcctZ/tyIiUbOdn5S177UA
+vgWsT2XWHFuUhk4cqC0GBinbr4uQggacJ6en8Uat9txhoKjTr2A4vD9uXGhdq+Gy
+mQA07jT4XzAYuFBLjNQ8
+=wVSt
+-----END PGP SIGNATURE-----
+
+--HqT/R3Rz35fLyCbr--
+
+--===============4641235767557497702==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4641235767557497702==--
