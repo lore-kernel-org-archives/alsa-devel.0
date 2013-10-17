@@ -1,52 +1,41 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/8] ARM: s3c64xx: Let amba-pl08x driver handle DMA
-Date: Thu, 17 Oct 2013 11:22:01 +0100
-Message-ID: <20131017102201.GK2443@sirena.org.uk>
-References: <1381950659-12703-1-git-send-email-tomasz.figa@gmail.com>
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW-bxm8fMRDkQLDiMYJYoSAnRvVK+yQ3ZXh@public.gmane.org>
+Subject: Re: [PATCHv1 0/8] ALSA: Add SAI driver and enable SGT15000 codec.
+Date: Thu, 17 Oct 2013 12:22:30 +0200
+Message-ID: <20131017122230.314ab555@ipc1.ka-ro>
+References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="msurlP/dxjcBujZL"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1381950659-12703-1-git-send-email-tomasz.figa@gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-spi@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Ben Dooks <ben-linux@fluff.org>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sachin Kamat <sachin.kamat@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1382000477-17304-1-git-send-email-Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: r65073-KZfg59tc24xl57MIdRCFDg@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, r64188-KZfg59tc24xl57MIdRCFDg@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, ian.campbell-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org, rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org, oskar-fYPSZ7JpQqsAvxtiuMwx3w@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org, b18965-KZfg59tc24xl57MIdRCFDg@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---msurlP/dxjcBujZL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org> wrote:
 
-On Wed, Oct 16, 2013 at 09:10:51PM +0200, Tomasz Figa wrote:
-> Since the patches extending support of amba-pl08x DMA engine driver to
-> PL080S DMA engine (PL080 modified by Samsung) found in Samsung S3C64xx
-> SoCs got merged into Linux 3.12, it is a good time to migrate the
-> platform to use this driver and drop the legacy DMA code.
+The subject has a wrong name for the codec "SGT1..." instead of
+"SGTL...", which will make it difficult to search for this thread in
+mail archives or in commit messages once this patches should be applied=
+!
 
-Tested-by: Mark Brown <broonie@linaro.org>
 
---msurlP/dxjcBujZL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Lothar Wa=C3=9Fmann
+--=20
+___________________________________________________________
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
 
-iQIcBAEBAgAGBQJSX7pFAAoJELSic+t+oim9hioP/38H4f2bdntWMdZC4PoWcWMx
-ijznGiykYZgnxlpaLnZRQtag4f26g3duj/2+ICOODsM97lDXgyv8CDhFmafqN0fL
-yANX9dWafEQqkuywwpbfeinn+MXOTdbnmMUcnTWppUjw7NH7dBqigslU0IAKneOy
-vhojbjUcU7n1ZvBNbnvmrrQzgahhJ4AzYJ0fUzV1/P4g1GEKerOdEz0OJbLbXsdB
-iz+vC1gU6l1wwcXzY53cfq7Y/kgTv4Ne3wPMeGI6zYJIoKNvuFpOFtCnlWKVdspi
-Cv9oJNGzsEurSNEs9hil21NoSn0tWwnm9CoTSGQvFidl3tokBGkeRjgXH/7ZTg/z
-odx+5W3jddKyoiWSSLDuyyxe/gcUPywM8Azkasp4LLrfVPFp+EywEn+Eta1FRUS7
-KpGH25u3id43x4XAZ+uKXjMjW73dxTe75weGog5agKJ4B+IKcKWD09rMBvBwnbd5
-5NJRbJigyhgJyOQVnDpOYezZkBRH+hmFRJQ0KQJscUkYDOGDUh8rXC0zYSNLsARp
-gK9CDUlv9w+DNIavSKVkb4EUw2CLqvhT1hrNyP7rGWadGB0kqYf0djV0CgQ+/Rv8
-xiIIlMg6VUFRT9dW5zzpYYxED0GeOWbO9hJFp4zptDYApcayrmHbyL41R3avm2Ro
-d0066uQinp3UyE28bffC
-=xQFJ
------END PGP SIGNATURE-----
-
---msurlP/dxjcBujZL--
+www.karo-electronics.de | info-AvR2QvxeiV7DiMYJYoSAnRvVK+yQ3ZXh@public.gmane.org
+___________________________________________________________
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
