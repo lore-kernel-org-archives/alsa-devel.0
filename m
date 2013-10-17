@@ -1,51 +1,133 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/2] ASoC: samsung: Initialise DMA data at device probe time
-Date: Thu, 17 Oct 2013 22:34:13 +0100
-Message-ID: <1382045653-14807-2-git-send-email-broonie@kernel.org>
-References: <1382045653-14807-1-git-send-email-broonie@kernel.org>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1382045653-14807-1-git-send-email-broonie@kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+From: "Geyslan G. Bem" <geyslan@gmail.com>
+Subject: [PATCH v3] sound: pci: emu10k1: code refactoring
+Date: Thu, 17 Oct 2013 19:57:12 -0300
+Message-ID: <1382050633-21120-1-git-send-email-geyslan@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: kernel-br@googlegroups.com, "Geyslan G. Bem" <geyslan@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Bill Pemberton <wfp5p@virginia.edu>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+Partially restructures _snd_emu10k1_audigy_init_efx() and
+_snd_emu10k1_init_efx() functions.
 
-This is a minor simplification and will help with converting the platform
-to use the dmaengine helpers.
+Be noted that the cast is demanded to use '__user'. So, in these cases,
+avoid patches based on the coccinelle 'drop_kmalloc_cast' semantic patch.
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
+Signed-off-by: Geyslan G. Bem <geyslan@gmail.com>
 ---
- sound/soc/samsung/i2s.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ sound/pci/emu10k1/emufx.c | 76 ++++++++++++++++++++++++++++-------------------
+ 1 file changed, 45 insertions(+), 31 deletions(-)
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 32956df..2c4d250 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -702,13 +702,6 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
- 	}
- 	writel(mod, i2s->addr + I2SMOD);
+diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
+index 0275209..1f9c7c4 100644
+--- a/sound/pci/emu10k1/emufx.c
++++ b/sound/pci/emu10k1/emufx.c
+@@ -1182,15 +1182,20 @@ static int _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
+ 	u32 *gpr_map;
+ 	mm_segment_t seg;
  
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		snd_soc_dai_set_dma_data(dai, substream,
--			(void *)&i2s->dma_playback);
--	else
--		snd_soc_dai_set_dma_data(dai, substream,
--			(void *)&i2s->dma_capture);
--
- 	i2s->frmclk = params_rate(params);
- 
- 	return 0;
-@@ -970,6 +963,8 @@ static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
- 	}
- 	clk_prepare_enable(i2s->clk);
- 
-+	snd_soc_dai_init_dma_data(dai, &i2s->dma_playback, &i2s->dma_capture);
+-	if ((icode = kzalloc(sizeof(*icode), GFP_KERNEL)) == NULL ||
+-	    (icode->gpr_map = (u_int32_t __user *)
+-	     kcalloc(512 + 256 + 256 + 2 * 1024, sizeof(u_int32_t),
+-		     GFP_KERNEL)) == NULL ||
+-	    (controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
+-				sizeof(*controls), GFP_KERNEL)) == NULL) {
+-		err = -ENOMEM;
+-		goto __err;
+-	}
++	err = -ENOMEM;
++	icode = kzalloc(sizeof(*icode), GFP_KERNEL);
++	if (!icode)
++		return err;
 +
- 	if (other) {
- 		other->addr = i2s->addr;
- 		other->clk = i2s->clk;
++	icode->gpr_map = (u_int32_t __user *) kcalloc(512 + 256 + 256 + 2 * 1024,
++						      sizeof(u_int32_t), GFP_KERNEL);
++	if (!icode->gpr_map)
++		goto __err_gpr;
++	controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
++			   sizeof(*controls), GFP_KERNEL);
++	if (!controls)
++		goto __err_ctrls;
++
+ 	gpr_map = (u32 __force *)icode->gpr_map;
+ 
+ 	icode->tram_data_map = icode->gpr_map + 512;
+@@ -1741,12 +1746,12 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 	emu->support_tlv = 0; /* clear again */
+ 	snd_leave_user(seg);
+ 
+- __err:
++__err:
+ 	kfree(controls);
+-	if (icode != NULL) {
+-		kfree((void __force *)icode->gpr_map);
+-		kfree(icode);
+-	}
++__err_ctrls:
++	kfree((void __force *)icode->gpr_map);
++__err_gpr:
++	kfree(icode);
+ 	return err;
+ }
+ 
+@@ -1813,18 +1818,26 @@ static int _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 	u32 *gpr_map;
+ 	mm_segment_t seg;
+ 
+-	if ((icode = kzalloc(sizeof(*icode), GFP_KERNEL)) == NULL)
+-		return -ENOMEM;
+-	if ((icode->gpr_map = (u_int32_t __user *)
+-	     kcalloc(256 + 160 + 160 + 2 * 512, sizeof(u_int32_t),
+-		     GFP_KERNEL)) == NULL ||
+-            (controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
+-				sizeof(struct snd_emu10k1_fx8010_control_gpr),
+-				GFP_KERNEL)) == NULL ||
+-	    (ipcm = kzalloc(sizeof(*ipcm), GFP_KERNEL)) == NULL) {
+-		err = -ENOMEM;
+-		goto __err;
+-	}
++	err = -ENOMEM;
++	icode = kzalloc(sizeof(*icode), GFP_KERNEL);
++	if (!icode)
++		return err;
++
++	icode->gpr_map = (u_int32_t __user *) kcalloc(256 + 160 + 160 + 2 * 512,
++						      sizeof(u_int32_t), GFP_KERNEL);
++	if (!icode->gpr_map)
++		goto __err_gpr;
++
++	controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
++			   sizeof(struct snd_emu10k1_fx8010_control_gpr),
++			   GFP_KERNEL);
++	if (!controls)
++		goto __err_ctrls;
++
++	ipcm = kzalloc(sizeof(*ipcm), GFP_KERNEL);
++	if (!ipcm)
++		goto __err_ipcm;
++
+ 	gpr_map = (u32 __force *)icode->gpr_map;
+ 
+ 	icode->tram_data_map = icode->gpr_map + 256;
+@@ -2363,13 +2376,14 @@ static int _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 	snd_leave_user(seg);
+ 	if (err >= 0)
+ 		err = snd_emu10k1_ipcm_poke(emu, ipcm);
+-      __err:
++__err:
+ 	kfree(ipcm);
++__err_ipcm:
+ 	kfree(controls);
+-	if (icode != NULL) {
+-		kfree((void __force *)icode->gpr_map);
+-		kfree(icode);
+-	}
++__err_ctrls:
++	kfree((void __force *)icode->gpr_map);
++__err_gpr:
++	kfree(icode);
+ 	return err;
+ }
+ 
 -- 
-1.8.4.rc3
+1.8.4
