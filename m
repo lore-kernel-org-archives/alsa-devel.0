@@ -1,38 +1,143 @@
-From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCHv1 1/8] ALSA: Add SAI SoC Digital Audio Interface
- driver.
-Date: Thu, 17 Oct 2013 15:51:54 +0200
-Message-ID: <525FEB7A.5040406@metafoo.de>
-References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com> <1382000477-17304-2-git-send-email-Li.Xiubo@freescale.com> <525FD4C7.3050806@tabi.org> <525FD65B.3040004@metafoo.de> <525FE48B.7020709@tabi.org> <525FE728.90403@metafoo.de> <525FE815.1040300@tabi.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: wm8962: Move interrupt initalisation to
+	probe()
+Date: Thu, 17 Oct 2013 14:56:56 +0100
+Message-ID: <1382018216-30205-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <525FE815.1040300-N01EOCouUvQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>
-Cc: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, r65073-KZfg59tc24xl57MIdRCFDg@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, b18965-KZfg59tc24xl57MIdRCFDg@public.gmane.org, LW-bxm8fMRDkQLDiMYJYoSAnRvVK+yQ3ZXh@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org, oskar-fYPSZ7JpQqsAvxtiuMwx3w@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ian.campbell-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org, r64188-KZfg59tc24xl57MIdRCFDg@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F86A261A61
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2013 15:57:00 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/17/2013 03:37 PM, Timur Tabi wrote:
-> Lars-Peter Clausen wrote:
->>> >Maybe I've been out of the loop for too long, but why is that a particular
->>> >problem with this driver?
-> 
->> It is usually something you'd want to check in general to make sure that you
->> don't have multiple device that access the same iomem region at the same
->> time.
-> 
-> I understand that, but I'm trying to figure out why of_iomap() is okay for
-> hundreds of other drivers, but not this one.  I've used it dozens of times
-> myself, without ever worrying about overlapping regions.
+From: Mark Brown <broonie@linaro.org>
 
-The driver would work fine with just of_iomap(). But the resource range
-check comes basically for free and it does help to catch errors, so I'd
-recommend on using it rather than not using it.
+This is more idiomatic and fixes bugs in the error handling paths.
 
-- Lars
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/wm8962.c | 68 +++++++++++++++++++++++------------------------
+ 1 file changed, 33 insertions(+), 35 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 11d80f3..54379ee 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3377,7 +3377,7 @@ static int wm8962_probe(struct snd_soc_codec *codec)
+ 	int ret;
+ 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+ 	struct wm8962_pdata *pdata = &wm8962->pdata;
+-	int i, trigger, irq_pol;
++	int i;
+ 	bool dmicclk, dmicdat;
+ 
+ 	wm8962->codec = codec;
+@@ -3506,36 +3506,6 @@ static int wm8962_probe(struct snd_soc_codec *codec)
+ 	wm8962_init_beep(codec);
+ 	wm8962_init_gpio(codec);
+ 
+-	if (wm8962->irq) {
+-		if (pdata->irq_active_low) {
+-			trigger = IRQF_TRIGGER_LOW;
+-			irq_pol = WM8962_IRQ_POL;
+-		} else {
+-			trigger = IRQF_TRIGGER_HIGH;
+-			irq_pol = 0;
+-		}
+-
+-		snd_soc_update_bits(codec, WM8962_INTERRUPT_CONTROL,
+-				    WM8962_IRQ_POL, irq_pol);
+-
+-		ret = request_threaded_irq(wm8962->irq, NULL, wm8962_irq,
+-					   trigger | IRQF_ONESHOT,
+-					   "wm8962", codec->dev);
+-		if (ret != 0) {
+-			dev_err(codec->dev, "Failed to request IRQ %d: %d\n",
+-				wm8962->irq, ret);
+-			wm8962->irq = 0;
+-			/* Non-fatal */
+-		} else {
+-			/* Enable some IRQs by default */
+-			snd_soc_update_bits(codec,
+-					    WM8962_INTERRUPT_STATUS_2_MASK,
+-					    WM8962_FLL_LOCK_EINT |
+-					    WM8962_TEMP_SHUT_EINT |
+-					    WM8962_FIFOS_ERR_EINT, 0);
+-		}
+-	}
+-
+ 	return 0;
+ }
+ 
+@@ -3544,9 +3514,6 @@ static int wm8962_remove(struct snd_soc_codec *codec)
+ 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+ 	int i;
+ 
+-	if (wm8962->irq)
+-		free_irq(wm8962->irq, codec);
+-
+ 	cancel_delayed_work_sync(&wm8962->mic_work);
+ 
+ 	wm8962_free_gpio(codec);
+@@ -3619,7 +3586,7 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 	struct wm8962_pdata *pdata = dev_get_platdata(&i2c->dev);
+ 	struct wm8962_priv *wm8962;
+ 	unsigned int reg;
+-	int ret, i;
++	int ret, i, irq_pol, trigger;
+ 
+ 	wm8962 = devm_kzalloc(&i2c->dev, sizeof(struct wm8962_priv),
+ 			      GFP_KERNEL);
+@@ -3714,6 +3681,37 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 				ret);
+ 	}
+ 
++	if (wm8962->irq) {
++		if (pdata->irq_active_low) {
++			trigger = IRQF_TRIGGER_LOW;
++			irq_pol = WM8962_IRQ_POL;
++		} else {
++			trigger = IRQF_TRIGGER_HIGH;
++			irq_pol = 0;
++		}
++
++		regmap_update_bits(wm8962->regmap, WM8962_INTERRUPT_CONTROL,
++				   WM8962_IRQ_POL, irq_pol);
++
++		ret = devm_request_threaded_irq(&i2c->dev, wm8962->irq, NULL,
++						wm8962_irq,
++						trigger | IRQF_ONESHOT,
++						"wm8962", &i2c->dev);
++		if (ret != 0) {
++			dev_err(&i2c->dev, "Failed to request IRQ %d: %d\n",
++				wm8962->irq, ret);
++			wm8962->irq = 0;
++			/* Non-fatal */
++		} else {
++			/* Enable some IRQs by default */
++			regmap_update_bits(wm8962->regmap,
++					   WM8962_INTERRUPT_STATUS_2_MASK,
++					   WM8962_FLL_LOCK_EINT |
++					   WM8962_TEMP_SHUT_EINT |
++					   WM8962_FIFOS_ERR_EINT, 0);
++		}
++	}
++
+ 	pm_runtime_enable(&i2c->dev);
+ 	pm_request_idle(&i2c->dev);
+ 
+-- 
+1.8.4.rc3
