@@ -1,68 +1,66 @@
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [PATCH 4/4] sound/soc/atmel: don't use
- devm_pinctrl_get_select_default() in probe
-Date: Thu, 17 Oct 2013 18:46:14 +0200
-Message-ID: <20131017164331.GA2896@katana>
-References: <1381681071-6021-1-git-send-email-wsa@the-dreams.de>
- <1381681071-6021-5-git-send-email-wsa@the-dreams.de>
- <20131014131748.GU2443@sirena.org.uk>
- <20131014145629.GA17351@katana>
- <20131014163753.GF2443@sirena.org.uk>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 1/3] ALSA: hda - Treat zero connection as
+ non-error
+Date: Thu, 17 Oct 2013 19:03:04 +0200
+Message-ID: <52601848.6080101@canonical.com>
+References: <1382027554-12370-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8P1HSweYDcXXzwPJ"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20131014163753.GF2443@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 317D02602F3
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2013 19:03:05 +0200 (CEST)
+In-Reply-To: <1382027554-12370-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 10/17/2013 06:32 PM, Takashi Iwai wrote:
+> The zero-length connection list happens so often on Haswell HDMI, and
+> it results in warning messages like
+>     ALSA: hda_codec: invalid CONNECT_LIST verb 5[1]:0
+> at each time the codec resumes from the power-save, which is fairly
+> annoying.
 
---8P1HSweYDcXXzwPJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Agreed, but it's not the "invalid CONNECT_LIST verb" message you're
+changing, it's the "invalid dep_range_val" message?
+
+> 
+> Since this is no real error, make it shown only in the verbose debug
+> mode.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/hda_codec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+> index 68801ba..d725bbf 100644
+> --- a/sound/pci/hda/hda_codec.c
+> +++ b/sound/pci/hda/hda_codec.c
+> @@ -574,7 +574,7 @@ int snd_hda_get_raw_connections(struct hda_codec *codec, hda_nid_t nid,
+>  		if (range_val) {
+>  			/* ranges between the previous and this one */
+>  			if (!prev_nid || prev_nid >= val) {
+> -				snd_printk(KERN_WARNING "hda_codec: "
+> +				snd_printdd("hda_codec: "
+>  					   "invalid dep_range_val %x:%x\n",
+>  					   prev_nid, val);
+>  				continue;
+> 
 
 
-> > > Applied, thanks.  Please use subject lines appropriate to the subsyst=
-em.
->=20
-> > That's quite a nut to crack with a generated patch series running over
-> > the whole tree. I wonder if it is really worth the effort?
->=20
-> I think it's probably worth the effort to add something to put rules for
-> these things in MAINTAINERS, it'd cover 90% of cases.  If you're sending
-> only one of a big series with a subject line that won't pattern match
-> that's a good way to get stuff dropped on the floor.
 
-On the other hand, MAINTAINERS information gets overlooked and/or could
-get stale. Thinking about it again, it is probably less work (at least
-for me with i2c) to create a git-hook fixing the subject line than to
-always nag people.
-
-
---8P1HSweYDcXXzwPJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSYBRKAAoJEBQN5MwUoCm2CbAQALUYDpiLZZwKwwuK4S4VPEX/
-6LvBZ/QMrk6UiwPqPSnZd4efz4PKzE/f3CYXSTuNqS81WFDDjC2xwDfRDxuoIMEi
-E2W3XdSGYuKc9qZwFfUI25yMDfEYJd8OSyx8fzMvDUANDxKvwMqptyKIPZLHy5xa
-DmFofoMB75GAdpIQfnBtTalLv+lNvKyOROvk4MUO14s+kcnGNCoibYW0q+KbGE50
-kAFjijflyymPXasPOEVRpPW682hJlRdG8H05ZpSDQ4TG6ktS8wKRi/WxOp8dMqlC
-Hduqs6t4rJBX5CGgF2xgO5ifK1DPZ6KM8nL0Rgu8oKyYpAz5T5twTs8Gc6hgM/fZ
-GFTplPUav2YPVG8XtYmOdzJuqVGXtHjDrQDKMlcvILZ+oSrQHo9qBZBm9BS1yfKd
-1ImiaKTOvsPUfqe0VylBZdKafN6v1n8JcyxnJrjTIkFB2imem8N8fDDW6+A8BCvp
-1ZB1t9zZVzIAsvHw5sez6lXjmKOQz4oxjRM4s821Dir7txsCParNUBliJmLG9p98
-s/f+jqjK1AAP2R350lGhVIIw50YsbKkdsh7Oim1zZ9hcFWcsytCgrgGAu+W5jb0G
-EPWTJy3lDHQv41w0sqj2LpWY6r+KQu5FQyucEMikmdE5vUTk1eVtwAT1zvfWJ2OY
-6k6jE1hWL1ijgSO0oKig
-=J9HR
------END PGP SIGNATURE-----
-
---8P1HSweYDcXXzwPJ--
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
