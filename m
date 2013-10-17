@@ -1,88 +1,316 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv1 1/8] ALSA: Add SAI SoC Digital Audio
- Interface driver.
-Date: Thu, 17 Oct 2013 15:10:03 +0100
-Message-ID: <20131017141003.GO2443@sirena.org.uk>
-References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
- <1382000477-17304-2-git-send-email-Li.Xiubo@freescale.com>
- <525FD4C7.3050806@tabi.org> <525FD65B.3040004@metafoo.de>
- <525FE48B.7020709@tabi.org> <525FE728.90403@metafoo.de>
- <525FE815.1040300@tabi.org> <525FEB7A.5040406@metafoo.de>
+From: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
+Subject: [Patch v2][ 16/37] ASoC: eukrea-tlv320: Add DT support.
+Date: Thu, 17 Oct 2013 17:02:14 +0200
+Message-ID: <1382022155-21954-17-git-send-email-denis@eukrea.com>
+References: <1382022155-21954-1-git-send-email-denis@eukrea.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5498208072526565621=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F991265510
- for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2013 16:10:10 +0200 (CEST)
-In-Reply-To: <525FEB7A.5040406@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, tiwai@suse.de, b18965@freescale.com, Timur Tabi <timur@tabi.org>, lgirdwood@gmail.com, r65073@freescale.com, LW@KARO-electronics.de, linux@arm.linux.org.uk, b42378@freescale.com, Xiubo Li <Li.Xiubo@freescale.com>, oskar@scara.com, grant.likely@linaro.org, devicetree@vger.kernel.org, ian.campbell@citrix.com, pawel.moll@arm.com, swarren@wwwdotorg.org, rob.herring@calxeda.com, linux-arm-kernel@lists.infradead.org, fabio.estevam@freescale.com, linux-kernel@vger.kernel.org, rob@landley.net, r64188@freescale.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1382022155-21954-1-git-send-email-denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, =?UTF-8?q?Eric=20B=C3=A9nard?= <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>, Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Cc: Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>
+Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: Eric B=C3=A9nard <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
 
---===============5498208072526565621==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5+z6kX2Nyw2GkWv9"
-Content-Disposition: inline
+Signed-off-by: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
+---
+ .../devicetree/bindings/sound/eukrea-tlv320.txt    |   23 ++++
+ sound/soc/fsl/Kconfig                              |    5 +-
+ sound/soc/fsl/eukrea-tlv320.c                      |  125 ++++++++++++=
++++++---
+ 3 files changed, 133 insertions(+), 20 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/eukrea-tlv3=
+20.txt
 
+diff --git a/Documentation/devicetree/bindings/sound/eukrea-tlv320.txt =
+b/Documentation/devicetree/bindings/sound/eukrea-tlv320.txt
+new file mode 100644
+index 0000000..8791037
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/eukrea-tlv320.txt
+@@ -0,0 +1,23 @@
++Audio complex for Eukrea boards with tlv320aic23 codec.
++
++Required properties:
++- compatible : "eukrea,eukrea-tlv320"
++- model : The user-visible name of this sound complex.
++- ssi-controller : The phandle of the SSI controller.
++- audio-codec : The phandle of the tlv320aic23 audio codec.
++- mux-int-port : The internal port of the i.MX audio muxer (AUDMUX).
++- mux-ext-port : The external port of the i.MX audio muxer.
++
++Note: The AUDMUX port numbering should start at 1, which is consistent=
+ with
++hardware manual.
++
++Example:
++
++	sound {
++		compatible =3D "eukrea,eukrea-tlv320";
++		model =3D "imx51-eukrea-tlv320aic23";
++		ssi-controller =3D <&ssi2>;
++		fsl,audio-codec =3D <&tlv320aic23>;
++		mux-int-port =3D <2>;
++		mux-ext-port =3D <3>;
++	};
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index b7ab71f..9c3cd64 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -161,12 +161,15 @@ config SND_SOC_EUKREA_TLV320
+ 	depends on MACH_EUKREA_MBIMX27_BASEBOARD \
+ 		|| MACH_EUKREA_MBIMXSD25_BASEBOARD \
+ 		|| MACH_EUKREA_MBIMXSD35_BASEBOARD \
+-		|| MACH_EUKREA_MBIMXSD51_BASEBOARD
++		|| MACH_EUKREA_MBIMXSD51_BASEBOARD \
++		|| OF
+ 	depends on I2C
+ 	select SND_SOC_TLV320AIC23
+ 	select SND_SOC_IMX_PCM_FIQ
+ 	select SND_SOC_IMX_AUDMUX
+ 	select SND_SOC_IMX_SSI
++	select SND_SOC_FSL_SSI
++	select SND_SOC_IMX_PCM_DMA
+ 	help
+ 	  Enable I2S based access to the TLV320AIC23B codec attached
+ 	  to the SSI interface
+diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv32=
+0.c
+index 9a4a0ca..975af57 100644
+--- a/sound/soc/fsl/eukrea-tlv320.c
++++ b/sound/soc/fsl/eukrea-tlv320.c
+@@ -17,6 +17,8 @@
+=20
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
+ #include <linux/device.h>
+ #include <linux/i2c.h>
+ #include <sound/core.h>
+@@ -26,24 +28,33 @@
+=20
+ #include "../codecs/tlv320aic23.h"
+ #include "imx-ssi.h"
++#include "fsl_ssi.h"
+ #include "imx-audmux.h"
+=20
+ #define CODEC_CLOCK 12000000
+=20
++struct eukrea_tlv320 {
++	char of;
++};
++
+ static int eukrea_tlv320_hw_params(struct snd_pcm_substream *substream=
+,
+ 			    struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
++	struct eukrea_tlv320 *priv =3D snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_dai *codec_dai =3D rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai =3D rtd->cpu_dai;
+ 	int ret;
+=20
+-	ret =3D snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
+-				  SND_SOC_DAIFMT_NB_NF |
+-				  SND_SOC_DAIFMT_CBM_CFM);
+-	if (ret) {
+-		pr_err("%s: failed set cpu dai format\n", __func__);
+-		return ret;
++	/* fsl_ssi lacks the set_fmt ops. */
++	if (!priv->of) {
++		ret =3D snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
++					  SND_SOC_DAIFMT_NB_NF |
++					  SND_SOC_DAIFMT_CBM_CFM);
++		if (ret) {
++			pr_err("%s: failed set cpu dai format\n", __func__);
++			return ret;
++		}
+ 	}
+=20
+ 	ret =3D snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+@@ -60,15 +71,18 @@ static int eukrea_tlv320_hw_params(struct snd_pcm_s=
+ubstream *substream,
+ 		pr_err("%s: failed setting codec sysclk\n", __func__);
+ 		return ret;
+ 	}
+-	snd_soc_dai_set_tdm_slot(cpu_dai, 0xffffffc, 0xffffffc, 2, 0);
+=20
+-	ret =3D snd_soc_dai_set_sysclk(cpu_dai, IMX_SSP_SYS_CLK, 0,
+-				SND_SOC_CLOCK_IN);
+-	if (ret) {
+-		pr_err("can't set CPU system clock IMX_SSP_SYS_CLK\n");
+-		return ret;
+-	}
++	/* fsl_ssi lacks the set_sysclk ops */
++	if (!priv->of) {
++		snd_soc_dai_set_tdm_slot(cpu_dai, 0xffffffc, 0xffffffc, 2, 0);
+=20
++		ret =3D snd_soc_dai_set_sysclk(cpu_dai, IMX_SSP_SYS_CLK, 0,
++					SND_SOC_CLOCK_IN);
++		if (ret) {
++			pr_err("can't set CPU system clock IMX_SSP_SYS_CLK\n");
++			return ret;
++		}
++	}
+ 	return 0;
+ }
+=20
+@@ -80,7 +94,6 @@ static struct snd_soc_dai_link eukrea_tlv320_dai =3D =
+{
+ 	.name		=3D "tlv320aic23",
+ 	.stream_name	=3D "TLV320AIC23",
+ 	.codec_dai_name	=3D "tlv320aic23-hifi",
+-	.platform_name	=3D "imx-ssi.0",
+ 	.codec_name	=3D "tlv320aic23-codec.0-001a",
+ 	.cpu_dai_name	=3D "imx-ssi.0",
+ 	.ops		=3D &eukrea_tlv320_snd_ops,
+@@ -97,8 +110,56 @@ static int eukrea_tlv320_probe(struct platform_devi=
+ce *pdev)
+ {
+ 	int ret;
+ 	int int_port =3D 0, ext_port;
++	struct platform_device *ssi_pdev;
++	struct device_node *np =3D pdev->dev.of_node;
++	struct device_node *ssi_np;
++	struct eukrea_tlv320 *priv;
++
++	priv =3D devm_kzalloc(&pdev->dev,
++				sizeof(struct eukrea_tlv320), GFP_KERNEL);
++	if (priv =3D=3D NULL)
++		return -ENOMEM;
++
++	if (np) {
++		ssi_np =3D of_parse_phandle(pdev->dev.of_node,
++					  "ssi-controller", 0);
++		ssi_pdev =3D of_find_device_by_node(ssi_np);
++		if (!ssi_pdev) {
++			dev_err(&pdev->dev, "ssi-controller missing or "
++				"invalid.\n");
++			ret =3D -ENODEV;
++			goto err;
++		}
++
++		ret =3D of_property_read_u32(np, "mux-int-port", &int_port);
++		if (ret) {
++			dev_err(&pdev->dev,
++				"mux-int-port missing or invalid\n");
++			return ret;
++		}
++		ret =3D of_property_read_u32(np, "mux-ext-port", &ext_port);
++		if (ret) {
++			dev_err(&pdev->dev,
++				"mux-ext-port missing or invalid\n");
++			return ret;
++		}
++
++		/*
++		 * The port numbering in the hardware manual starts at 1, while
++		 * the audmux API expects it starts at 0.
++		 */
++		int_port--;
++		ext_port--;
++
++		eukrea_tlv320_dai.cpu_dai_name =3D dev_name(&ssi_pdev->dev);
++		eukrea_tlv320_dai.platform_of_node =3D ssi_np;
++		priv->of =3D 1;
++	} else {
++		eukrea_tlv320_dai.platform_name =3D "imx-ssi.0";
++	}
+=20
+-	if (machine_is_eukrea_cpuimx27()) {
++	if (machine_is_eukrea_cpuimx27() ||
++	    of_find_compatible_node(NULL, NULL, "fsl,imx21-audmux")) {
+ 		imx_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
+ 			IMX_AUDMUX_V1_PCR_SYN |
+ 			IMX_AUDMUX_V1_PCR_TFSDIR |
+@@ -115,8 +176,12 @@ static int eukrea_tlv320_probe(struct platform_dev=
+ice *pdev)
+ 		);
+ 	} else if (machine_is_eukrea_cpuimx25sd() ||
+ 		   machine_is_eukrea_cpuimx35sd() ||
+-		   machine_is_eukrea_cpuimx51sd()) {
+-		ext_port =3D machine_is_eukrea_cpuimx25sd() ? 4 : 3;
++		   machine_is_eukrea_cpuimx51sd() ||
++		   of_find_compatible_node(NULL, NULL, "fsl,imx31-audmux")) {
++		if (!np)
++			ext_port =3D machine_is_eukrea_cpuimx25sd() ?
++				4 : 3;
++
+ 		imx_audmux_v2_configure_port(int_port,
+ 			IMX_AUDMUX_V2_PTCR_SYN |
+ 			IMX_AUDMUX_V2_PTCR_TFSDIR |
+@@ -130,14 +195,29 @@ static int eukrea_tlv320_probe(struct platform_de=
+vice *pdev)
+ 			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port)
+ 		);
+ 	} else {
+-		/* return happy. We might run on a totally different machine */
+-		return 0;
++		if (np) {
++			/* The eukrea,eukrea-tlv320 driver was explicitely
++			 * requested (through the device tree).
++			 */
++			dev_err(&pdev->dev,
++				"Missing audmux DT node.\n");
++			return -ENODEV;
++		} else {
++			/* Return happy.
++			 * We might run on a totally different machine.
++			 */
++			return 0;
++		}
+ 	}
+=20
+ 	eukrea_tlv320.dev =3D &pdev->dev;
++	snd_soc_card_set_drvdata(&eukrea_tlv320, priv);
+ 	ret =3D snd_soc_register_card(&eukrea_tlv320);
++err:
+ 	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
++	if (np)
++		of_node_put(ssi_np);
+=20
+ 	return ret;
+ }
+@@ -149,10 +229,17 @@ static int eukrea_tlv320_remove(struct platform_d=
+evice *pdev)
+ 	return 0;
+ }
+=20
++static const struct of_device_id imx_tlv320_dt_ids[] =3D {
++	{ .compatible =3D "eukrea,eukrea-tlv320"},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, imx_tlv320_dt_ids);
++
+ static struct platform_driver eukrea_tlv320_driver =3D {
+ 	.driver =3D {
+ 		.name =3D "eukrea_tlv320",
+ 		.owner =3D THIS_MODULE,
++		.of_match_table =3D imx_tlv320_dt_ids,
+ 	},
+ 	.probe =3D eukrea_tlv320_probe,
+ 	.remove =3D eukrea_tlv320_remove,};
+--=20
+1.7.9.5
 
---5+z6kX2Nyw2GkWv9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Oct 17, 2013 at 03:51:54PM +0200, Lars-Peter Clausen wrote:
-> On 10/17/2013 03:37 PM, Timur Tabi wrote:
-
-> > I understand that, but I'm trying to figure out why of_iomap() is okay for
-> > hundreds of other drivers, but not this one.  I've used it dozens of times
-> > myself, without ever worrying about overlapping regions.
-
-> The driver would work fine with just of_iomap(). But the resource range
-> check comes basically for free and it does help to catch errors, so I'd
-> recommend on using it rather than not using it.
-
-There's also the fact that it's a devm_ function which means less error
-handling code that we can break which is nice.  There's probably a case
-for an improved OF helper here...
-
---5+z6kX2Nyw2GkWv9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSX++4AAoJELSic+t+oim9UWQP/0NLFy/f672CK3D2TKw6jpXp
-t+kX7AU+gXDdmR82JsW1LpMa+ZZtgA/RYezIi+yKL0BOadXLEdIZB86wsRT+Sqsp
-luBmPkpdVMCJDjcUpcatCsTkPBlqNy6UstzY+RnJlLUJ9QqC2JmUrueouZEcQXDj
-MKj13kFv+hp/6WTxBiaaVJdVhQ4S4ky2rYR4xtIQe0Fd/QGFYgEuRaOvwZx1+txY
-oennu3y9ADupCEcB3qzsnYj0EWu+wEbBltAMNa+lzHyc6pz1CqBrpKZguM9/Hj7t
-NManCo9b/3GA9ZQAasg2/lMwchqeMHswtg6N1aL9DDgpr58TWh75mBdiFqPtISjI
-k+ynBTwKfbEJtEF1xFEOfD9bHLZpmmqAQ9VSqg3gYzALCUqusqpdGbgPMM/edH5q
-Et14WDYSH/BZSuXUoJeQ53QjlqNFdWXAF51Vf3f1RoSkWoT53QCn2TEsc2oH5wUF
-GogKb67uxz+J4Rqe75aWpq5KRj5szkY0XmvOuwU4Po8RceJp0RuhSpqcGldlm2jn
-1wv/RVwiZeiPi74vTAaTUqqOMW6BXWmTktHVYVdzDZeVd5tgoqJ16tiQQB3XBQrl
-1qrJLxM6h/6/BDyR7NqpkPB3UvIwYDwbyISmgsEDVgw4W3FznpsLbbBiJdbsBXBz
-u30E/rYr0FH2eMVLlGk7
-=Bz6j
------END PGP SIGNATURE-----
-
---5+z6kX2Nyw2GkWv9--
-
---===============5498208072526565621==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5498208072526565621==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
