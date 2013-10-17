@@ -1,17 +1,17 @@
 From: Brian Austin <brian.austin@cirrus.com>
-Subject: [PATCH 2/3] ASoC: cs42l73: Namespace defines for
-	cs42l73 codec
-Date: Thu, 17 Oct 2013 11:03:34 -0500
-Message-ID: <1382025815-7912-2-git-send-email-brian.austin@cirrus.com>
+Subject: [PATCH 3/3] ASoC: cs42l73: Add Device Tree support for
+	CS42L73
+Date: Thu, 17 Oct 2013 11:03:35 -0500
+Message-ID: <1382025815-7912-3-git-send-email-brian.austin@cirrus.com>
 References: <1382025815-7912-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe002.messaging.microsoft.com [216.32.180.12])
- by alsa0.perex.cz (Postfix) with ESMTP id AC7E5260309
- for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2013 18:01:39 +0200 (CEST)
+Received: from db8outboundpool.messaging.microsoft.com
+ (mail-db8lp0188.outbound.messaging.microsoft.com [213.199.154.188])
+ by alsa0.perex.cz (Postfix) with ESMTP id D441326030F
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2013 18:01:40 +0200 (CEST)
 In-Reply-To: <1382025815-7912-1-git-send-email-brian.austin@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,282 +26,115 @@ To: alsa-devel@alsa-project.org
 Cc: Brian Austin <brian.austin@cirrus.com>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Cleanup to namespace the defines for the cs42l73 driver
+This patch adds device tree support for the cs42l73 codec.
+Reset Gpio and Charge Pump Frequency are available
 
 Signed-off-by: Brian Austin <brian.austin@cirrus.com>
 ---
- sound/soc/codecs/cs42l73.c |  38 ++++++++---------
- sound/soc/codecs/cs42l73.h | 104 ++++++++++++++++++++++-----------------------
- 2 files changed, 70 insertions(+), 72 deletions(-)
+ .../devicetree/bindings/sound/cs42l73.txt          | 22 +++++++++++++++
+ sound/soc/codecs/cs42l73.c                         | 31 +++++++++++++++++++---
+ 2 files changed, 50 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs42l73.txt
 
+diff --git a/Documentation/devicetree/bindings/sound/cs42l73.txt b/Documentation/devicetree/bindings/sound/cs42l73.txt
+new file mode 100644
+index 0000000..5a86495
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs42l73.txt
+@@ -0,0 +1,22 @@
++CS42L73 audio CODEC
++
++Required properties:
++
++  - compatible : "cirrus,cs42l73"
++
++  - reg : the I2C address of the device for I2C
++
++Optional properties:
++
++  - reset_gpio : a GPIO spec for the reset pin
++  - chgfreq    : Charge Pump Frequency values 0x00-0x0F
++
++
++Example:
++
++codec: cs42l73@4a {
++	compatible = "cirrus,cs42l73";
++	reg = <0x4a>;
++	reset_gpio = <&gpio 10 0>;
++	chgfreq = <0x05>;
++};
+\ No newline at end of file
 diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index dfdb715..e3187cc 100644
+index e3187cc..4607958 100644
 --- a/sound/soc/codecs/cs42l73.c
 +++ b/sound/soc/codecs/cs42l73.c
-@@ -1047,11 +1047,11 @@ static int cs42l73_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+@@ -17,7 +17,7 @@
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
+-#include <linux/gpio.h>
++#include <linux/of_gpio.h>
+ #include <linux/pm.h>
+ #include <linux/i2c.h>
+ #include <linux/regmap.h>
+@@ -1414,6 +1414,7 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
+ 	struct cs42l73_private *cs42l73;
+ 	struct cs42l73_platform_data *pdata = dev_get_platdata(&i2c_client->dev);
+ 	int ret;
++	u32 val32;
+ 	unsigned int devid = 0;
+ 	unsigned int reg;
  
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM:
--		mmcc |= MS_MASTER;
-+		mmcc |= CS42L73_MS_MASTER;
- 		break;
- 
- 	case SND_SOC_DAIFMT_CBS_CFS:
--		mmcc &= ~MS_MASTER;
-+		mmcc &= ~CS42L73_MS_MASTER;
- 		break;
- 
- 	default:
-@@ -1063,11 +1063,11 @@ static int cs42l73_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 
- 	switch (format) {
- 	case SND_SOC_DAIFMT_I2S:
--		spc &= ~SPDIF_PCM;
-+		spc &= ~CS42L73_SPDIF_PCM;
- 		break;
- 	case SND_SOC_DAIFMT_DSP_A:
- 	case SND_SOC_DAIFMT_DSP_B:
--		if (mmcc & MS_MASTER) {
-+		if (mmcc & CS42L73_MS_MASTER) {
- 			dev_err(codec->dev,
- 				"PCM format in slave mode only\n");
- 			return -EINVAL;
-@@ -1077,25 +1077,25 @@ static int cs42l73_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 				"PCM format is not supported on ASP port\n");
- 			return -EINVAL;
- 		}
--		spc |= SPDIF_PCM;
-+		spc |= CS42L73_SPDIF_PCM;
- 		break;
- 	default:
- 		return -EINVAL;
+@@ -1431,9 +1432,26 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
+ 		return ret;
  	}
  
--	if (spc & SPDIF_PCM) {
-+	if (spc & CS42L73_SPDIF_PCM) {
- 		/* Clear PCM mode, clear PCM_BIT_ORDER bit for MSB->LSB */
--		spc &= ~(PCM_MODE_MASK | PCM_BIT_ORDER);
-+		spc &= ~(CS42L73_PCM_MODE_MASK | CS42L73_PCM_BIT_ORDER);
- 		switch (format) {
- 		case SND_SOC_DAIFMT_DSP_B:
- 			if (inv == SND_SOC_DAIFMT_IB_IF)
--				spc |= PCM_MODE0;
-+				spc |= CS42L73_PCM_MODE0;
- 			if (inv == SND_SOC_DAIFMT_IB_NF)
--				spc |= PCM_MODE1;
-+				spc |= CS42L73_PCM_MODE1;
- 		break;
- 		case SND_SOC_DAIFMT_DSP_A:
- 			if (inv == SND_SOC_DAIFMT_IB_IF)
--				spc |= PCM_MODE1;
-+				spc |= CS42L73_PCM_MODE1;
- 			break;
- 		default:
- 			return -EINVAL;
-@@ -1155,7 +1155,7 @@ static int cs42l73_pcm_hw_params(struct snd_pcm_substream *substream,
- 	int mclk_coeff;
- 	int srate = params_rate(params);
- 
--	if (priv->config[id].mmcc & MS_MASTER) {
-+	if (priv->config[id].mmcc & CS42L73_MS_MASTER) {
- 		/* CS42L73 Master */
- 		/* MCLK -> srate */
- 		mclk_coeff =
-@@ -1174,13 +1174,13 @@ static int cs42l73_pcm_hw_params(struct snd_pcm_substream *substream,
- 		priv->config[id].spc &= 0xFC;
- 		/* Use SCLK=64*Fs if internal MCLK >= 6.4MHz */
- 		if (priv->mclk >= 6400000)
--			priv->config[id].spc |= MCK_SCLK_64FS;
-+			priv->config[id].spc |= CS42L73_MCK_SCLK_64FS;
- 		else
--			priv->config[id].spc |= MCK_SCLK_MCLK;
-+			priv->config[id].spc |= CS42L73_MCK_SCLK_MCLK;
- 	} else {
- 		/* CS42L73 Slave */
- 		priv->config[id].spc &= 0xFC;
--		priv->config[id].spc |= MCK_SCLK_64FS;
-+		priv->config[id].spc |= CS42L73_MCK_SCLK_64FS;
- 	}
- 	/* Update ASRCs */
- 	priv->config[id].srate = srate;
-@@ -1200,8 +1200,8 @@ static int cs42l73_set_bias_level(struct snd_soc_codec *codec,
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
--		snd_soc_update_bits(codec, CS42L73_DMMCC, MCLKDIS, 0);
--		snd_soc_update_bits(codec, CS42L73_PWRCTL1, PDN, 0);
-+		snd_soc_update_bits(codec, CS42L73_DMMCC, CS42L73_MCLKDIS, 0);
-+		snd_soc_update_bits(codec, CS42L73_PWRCTL1, CS42L73_PDN, 0);
- 		break;
- 
- 	case SND_SOC_BIAS_PREPARE:
-@@ -1212,11 +1212,11 @@ static int cs42l73_set_bias_level(struct snd_soc_codec *codec,
- 			regcache_cache_only(cs42l73->regmap, false);
- 			regcache_sync(cs42l73->regmap);
- 		}
--		snd_soc_update_bits(codec, CS42L73_PWRCTL1, PDN, 1);
-+		snd_soc_update_bits(codec, CS42L73_PWRCTL1, CS42L73_PDN, 1);
- 		break;
- 
- 	case SND_SOC_BIAS_OFF:
--		snd_soc_update_bits(codec, CS42L73_PWRCTL1, PDN, 1);
-+		snd_soc_update_bits(codec, CS42L73_PWRCTL1, CS42L73_PDN, 1);
- 		if (cs42l73->shutdwn_delay > 0) {
- 			mdelay(cs42l73->shutdwn_delay);
- 			cs42l73->shutdwn_delay = 0;
-@@ -1225,7 +1225,7 @@ static int cs42l73_set_bias_level(struct snd_soc_codec *codec,
- 				     * down.
- 				     */
- 		}
--		snd_soc_update_bits(codec, CS42L73_DMMCC, MCLKDIS, 1);
-+		snd_soc_update_bits(codec, CS42L73_DMMCC, CS42L73_MCLKDIS, 1);
- 		break;
- 	}
- 	codec->dapm.bias_level = level;
-diff --git a/sound/soc/codecs/cs42l73.h b/sound/soc/codecs/cs42l73.h
-index 4f83d39..4574618 100644
---- a/sound/soc/codecs/cs42l73.h
-+++ b/sound/soc/codecs/cs42l73.h
-@@ -128,60 +128,60 @@
- /* Bitfield Definitions */
- 
- /* CS42L73_PWRCTL1 */
--#define PDN_ADCB		(1 << 7)
--#define PDN_DMICB		(1 << 6)
--#define PDN_ADCA		(1 << 5)
--#define PDN_DMICA		(1 << 4)
--#define PDN_LDO			(1 << 2)
--#define DISCHG_FILT		(1 << 1)
--#define PDN			(1 << 0)
-+#define CS42L73_PDN_ADCB		(1 << 7)
-+#define CS42L73_PDN_DMICB		(1 << 6)
-+#define CS42L73_PDN_ADCA		(1 << 5)
-+#define CS42L73_PDN_DMICA		(1 << 4)
-+#define CS42L73_PDN_LDO			(1 << 2)
-+#define CS42L73_DISCHG_FILT		(1 << 1)
-+#define CS42L73_PDN			(1 << 0)
- 
- /* CS42L73_PWRCTL2 */
--#define PDN_MIC2_BIAS		(1 << 7)
--#define PDN_MIC1_BIAS		(1 << 6)
--#define PDN_VSP			(1 << 4)
--#define PDN_ASP_SDOUT		(1 << 3)
--#define PDN_ASP_SDIN		(1 << 2)
--#define PDN_XSP_SDOUT		(1 << 1)
--#define PDN_XSP_SDIN		(1 << 0)
-+#define CS42L73_PDN_MIC2_BIAS		(1 << 7)
-+#define CS42L73_PDN_MIC1_BIAS		(1 << 6)
-+#define CS42L73_PDN_VSP			(1 << 4)
-+#define CS42L73_PDN_ASP_SDOUT		(1 << 3)
-+#define CS42L73_PDN_ASP_SDIN		(1 << 2)
-+#define CS42L73_PDN_XSP_SDOUT		(1 << 1)
-+#define CS42L73_PDN_XSP_SDIN		(1 << 0)
- 
- /* CS42L73_PWRCTL3 */
--#define PDN_THMS		(1 << 5)
--#define PDN_SPKLO		(1 << 4)
--#define PDN_EAR			(1 << 3)
--#define PDN_SPK			(1 << 2)
--#define PDN_LO			(1 << 1)
--#define PDN_HP			(1 << 0)
-+#define CS42L73_PDN_THMS		(1 << 5)
-+#define CS42L73_PDN_SPKLO		(1 << 4)
-+#define CS42L73_PDN_EAR			(1 << 3)
-+#define CS42L73_PDN_SPK			(1 << 2)
-+#define CS42L73_PDN_LO			(1 << 1)
-+#define CS42L73_PDN_HP			(1 << 0)
- 
- /* Thermal Overload Detect. Requires interrupt ... */
--#define THMOVLD_150C		0
--#define THMOVLD_132C		1
--#define THMOVLD_115C		2
--#define THMOVLD_098C		3
-+#define CS42L73_THMOVLD_150C		0
-+#define CS42L73_THMOVLD_132C		1
-+#define CS42L73_THMOVLD_115C		2
-+#define CS42L73_THMOVLD_098C		3
- 
- #define CS42L73_CHARGEPUMP_MASK	(0xF0)
- 
- /* CS42L73_ASPC, CS42L73_XSPC, CS42L73_VSPC */
--#define	SP_3ST			(1 << 7)
--#define SPDIF_I2S		(0 << 6)
--#define SPDIF_PCM		(1 << 6)
--#define PCM_MODE0		(0 << 4)
--#define PCM_MODE1		(1 << 4)
--#define PCM_MODE2		(2 << 4)
--#define PCM_MODE_MASK		(3 << 4)
--#define PCM_BIT_ORDER		(1 << 3)
--#define MCK_SCLK_64FS		(0 << 0)
--#define MCK_SCLK_MCLK		(2 << 0)
--#define MCK_SCLK_PREMCLK	(3 << 0)
-+#define	CS42L73_SP_3ST			(1 << 7)
-+#define CS42L73_SPDIF_I2S		(0 << 6)
-+#define CS42L73_SPDIF_PCM		(1 << 6)
-+#define CS42L73_PCM_MODE0		(0 << 4)
-+#define CS42L73_PCM_MODE1		(1 << 4)
-+#define CS42L73_PCM_MODE2		(2 << 4)
-+#define CS42L73_PCM_MODE_MASK		(3 << 4)
-+#define CS42L73_PCM_BIT_ORDER		(1 << 3)
-+#define CS42L73_MCK_SCLK_64FS		(0 << 0)
-+#define CS42L73_MCK_SCLK_MCLK		(2 << 0)
-+#define CS42L73_MCK_SCLK_PREMCLK	(3 << 0)
- 
- /* CS42L73_xSPMMCC */
--#define MS_MASTER		(1 << 7)
-+#define CS42L73_MS_MASTER		(1 << 7)
- 
- 
- /* CS42L73_DMMCC */
--#define MCLKDIS			(1 << 0)
--#define MCLKSEL_MCLK2		(1 << 4)
--#define MCLKSEL_MCLK1		(0 << 4)
-+#define CS42L73_MCLKDIS			(1 << 0)
-+#define CS42L73_MCLKSEL_MCLK2		(1 << 4)
-+#define CS42L73_MCLKSEL_MCLK1		(0 << 4)
- 
- /* CS42L73 MCLK derived from MCLK1 or MCLK2 */
- #define CS42L73_CLKID_MCLK1     0
-@@ -195,28 +195,26 @@
- #define CS42L73_VSP		2
- 
- /* IS1, IM1 */
--#define MIC2_SDET		(1 << 6)
--#define THMOVLD			(1 << 4)
--#define DIGMIXOVFL		(1 << 3)
--#define IPBOVFL			(1 << 1)
--#define IPAOVFL			(1 << 0)
-+#define CS42L73_MIC2_SDET		(1 << 6)
-+#define CS42L73_THMOVLD			(1 << 4)
-+#define CS42L73_DIGMIXOVFL		(1 << 3)
-+#define CS42L73_IPBOVFL			(1 << 1)
-+#define CS42L73_IPAOVFL			(1 << 0)
- 
- /* Analog Softramp */
--#define ANLGOSFT		(1 << 0)
-+#define CS42L73_ANLGOSFT		(1 << 0)
- 
- /* HP A/B Analog Mute */
--#define HPA_MUTE		(1 << 7)
-+#define CS42L73_HPA_MUTE		(1 << 7)
- /* LO A/B Analog Mute	*/
--#define LOA_MUTE		(1 << 7)
-+#define CS42L73_LOA_MUTE		(1 << 7)
- /* Digital Mute */
--#define HLAD_MUTE		(1 << 0)
--#define HLBD_MUTE		(1 << 1)
--#define SPKD_MUTE		(1 << 2)
--#define ESLD_MUTE		(1 << 3)
-+#define CS42L73_HLAD_MUTE		(1 << 0)
-+#define CS42L73_HLBD_MUTE		(1 << 1)
-+#define CS42L73_SPKD_MUTE		(1 << 2)
-+#define CS42L73_ESLD_MUTE		(1 << 3)
- 
- /* Misc defines for codec */
--#define CS42L73_RESET_GPIO 143
+-	if (pdata)
++	if (pdata) {
+ 		cs42l73->pdata = *pdata;
 -
- #define CS42L73_DEVID		0x00042A73
- #define CS42L73_MCLKX_MIN	5644800
- #define CS42L73_MCLKX_MAX	38400000
++	} else {
++		pdata = devm_kzalloc(&i2c_client->dev,
++				     sizeof(struct cs42l73_platform_data),
++				GFP_KERNEL);
++		if (!pdata) {
++			dev_err(&i2c_client->dev, "could not allocate pdata\n");
++			return -ENOMEM;
++		}
++		if (i2c_client->dev.of_node) {
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"chgfreq", &val32) >= 0)
++				pdata->chgfreq = val32;
++		}
++		pdata->reset_gpio = of_get_named_gpio(i2c_client->dev.of_node,
++						"reset-gpio", 0);
++		cs42l73->pdata = *pdata;
++	}
++
+ 	i2c_set_clientdata(i2c_client, cs42l73);
+ 
+ 	if ( cs42l73->pdata.reset_gpio) {
+@@ -1493,6 +1511,12 @@ static int cs42l73_i2c_remove(struct i2c_client *client)
+ 	return 0;
+ }
+ 
++static const struct of_device_id cs42l73_of_match[] = {
++	{ .compatible = "cirrus,cs42l73", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, cs42l73_of_match);
++
+ static const struct i2c_device_id cs42l73_id[] = {
+ 	{"cs42l73", 0},
+ 	{}
+@@ -1504,6 +1528,7 @@ static struct i2c_driver cs42l73_i2c_driver = {
+ 	.driver = {
+ 		   .name = "cs42l73",
+ 		   .owner = THIS_MODULE,
++		   .of_match_table = cs42l73_of_match,
+ 		   },
+ 	.id_table = cs42l73_id,
+ 	.probe = cs42l73_i2c_probe,
 -- 
 1.8.4.rc3
