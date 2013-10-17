@@ -1,70 +1,52 @@
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-Subject: Re: [PATCHv1 5/8] ASoC: sgtl5000: Revise the bugs about the
- sgt15000 codec.
-Date: Thu, 17 Oct 2013 12:17:21 +0200
-Message-ID: <20131017121721.43e1b34b@ipc1.ka-ro>
-References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
-	<1382000477-17304-6-git-send-email-Li.Xiubo@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 0/8] ARM: s3c64xx: Let amba-pl08x driver handle DMA
+Date: Thu, 17 Oct 2013 11:22:01 +0100
+Message-ID: <20131017102201.GK2443@sirena.org.uk>
+References: <1381950659-12703-1-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1382000477-17304-6-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: r65073@freescale.com, timur@tabi.org, lgirdwood@gmail.com, broonie@kernel.org, r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, oskar@scara.com, shawn.guo@linaro.org, b42378@freescale.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="msurlP/dxjcBujZL"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1381950659-12703-1-git-send-email-tomasz.figa@gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-spi@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Ben Dooks <ben-linux@fluff.org>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sachin Kamat <sachin.kamat@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Xiubo Li <Li.Xiubo@freescale.com> wrote:
-> When the CONFIG_REGULATOR is disabled there will be some warnings
-> printed out.
->=20
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-> ---
->  sound/soc/codecs/sgtl5000.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
->=20
-> diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.=
-c
-> index 1f4093f..4e2e4c9 100644
-> --- a/sound/soc/codecs/sgtl5000.c
-> +++ b/sound/soc/codecs/sgtl5000.c
-> @@ -883,14 +883,19 @@ static int ldo_regulator_register(struct snd_so=
-c_codec *codec,
->  				struct regulator_init_data *init_data,
->  				int voltage)
->  {
-> +#ifdef CONFIG_SND_SOC_FSL_SGTL5000
-> +	return 0;
-> +#else
->  	dev_err(codec->dev, "this setup needs regulator support in the kern=
-el\n");
->  	return -EINVAL;
-> +#endif
->
-This looks wrong to me, as this will disable the error for unsolicited
-platforms in a multi arch kernel!
+--msurlP/dxjcBujZL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->  static int ldo_regulator_remove(struct snd_soc_codec *codec)
->  {
->  	return 0;
->  }
-> +
->  #endif
-> =20
-Why do you add an extra empty line here?
+On Wed, Oct 16, 2013 at 09:10:51PM +0200, Tomasz Figa wrote:
+> Since the patches extending support of amba-pl08x DMA engine driver to
+> PL080S DMA engine (PL080 modified by Samsung) found in Samsung S3C64xx
+> SoCs got merged into Linux 3.12, it is a good time to migrate the
+> platform to use this driver and drop the legacy DMA code.
 
+Tested-by: Mark Brown <broonie@linaro.org>
 
-Lothar Wa=C3=9Fmann
---=20
-___________________________________________________________
+--msurlP/dxjcBujZL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+iQIcBAEBAgAGBQJSX7pFAAoJELSic+t+oim9hioP/38H4f2bdntWMdZC4PoWcWMx
+ijznGiykYZgnxlpaLnZRQtag4f26g3duj/2+ICOODsM97lDXgyv8CDhFmafqN0fL
+yANX9dWafEQqkuywwpbfeinn+MXOTdbnmMUcnTWppUjw7NH7dBqigslU0IAKneOy
+vhojbjUcU7n1ZvBNbnvmrrQzgahhJ4AzYJ0fUzV1/P4g1GEKerOdEz0OJbLbXsdB
+iz+vC1gU6l1wwcXzY53cfq7Y/kgTv4Ne3wPMeGI6zYJIoKNvuFpOFtCnlWKVdspi
+Cv9oJNGzsEurSNEs9hil21NoSn0tWwnm9CoTSGQvFidl3tokBGkeRjgXH/7ZTg/z
+odx+5W3jddKyoiWSSLDuyyxe/gcUPywM8Azkasp4LLrfVPFp+EywEn+Eta1FRUS7
+KpGH25u3id43x4XAZ+uKXjMjW73dxTe75weGog5agKJ4B+IKcKWD09rMBvBwnbd5
+5NJRbJigyhgJyOQVnDpOYezZkBRH+hmFRJQ0KQJscUkYDOGDUh8rXC0zYSNLsARp
+gK9CDUlv9w+DNIavSKVkb4EUw2CLqvhT1hrNyP7rGWadGB0kqYf0djV0CgQ+/Rv8
+xiIIlMg6VUFRT9dW5zzpYYxED0GeOWbO9hJFp4zptDYApcayrmHbyL41R3avm2Ro
+d0066uQinp3UyE28bffC
+=xQFJ
+-----END PGP SIGNATURE-----
+
+--msurlP/dxjcBujZL--
