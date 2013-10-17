@@ -1,61 +1,128 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] sound/soc/atmel: don't use
- devm_pinctrl_get_select_default() in probe
-Date: Thu, 17 Oct 2013 18:42:05 +0100
-Message-ID: <20131017174205.GQ2443@sirena.org.uk>
-References: <1381681071-6021-1-git-send-email-wsa@the-dreams.de>
- <1381681071-6021-5-git-send-email-wsa@the-dreams.de>
- <20131014131748.GU2443@sirena.org.uk>
- <20131014145629.GA17351@katana>
- <20131014163753.GF2443@sirena.org.uk>
- <20131017164331.GA2896@katana>
+From: Mauro Carvalho Chehab <m.chehab@samsung.com>
+Subject: Re: [PATCH 3/8] [media] core: Don't use i2c_client->driver
+Date: Thu, 17 Oct 2013 14:45:43 -0300
+Message-ID: <20131017144543.10e5542e@samsung.com>
+References: <1380444666-12019-1-git-send-email-lars@metafoo.de>
+ <1380444666-12019-4-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XWGl2Oocib6fGxwW"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20131017164331.GA2896@katana>
+In-reply-to: <1380444666-12019-4-git-send-email-lars@metafoo.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfram Sang <wsa@the-dreams.de>
-Cc: linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Wolfram Sang <wsa@the-dreams.de>, David Airlie <airlied@linux.ie>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Em Sun, 29 Sep 2013 10:51:01 +0200
+Lars-Peter Clausen <lars@metafoo.de> escreveu:
 
---XWGl2Oocib6fGxwW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> The 'driver' field of the i2c_client struct is redundant and is going to be
+> removed. The results of the expressions 'client->driver.driver->field' and
+> 'client->dev.driver->field' are identical, so replace all occurrences of the
+> former with the later.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-On Thu, Oct 17, 2013 at 06:46:14PM +0200, Wolfram Sang wrote:
+Acked-by: Mauro Carvalho Chehab <m.chehab@samsung.com>
 
-> On the other hand, MAINTAINERS information gets overlooked and/or could
-> get stale. Thinking about it again, it is probably less work (at least
-> for me with i2c) to create a git-hook fixing the subject line than to
-> always nag people.
+> ---
+>  drivers/media/v4l2-core/tuner-core.c  |  6 +++---
+>  drivers/media/v4l2-core/v4l2-common.c | 10 +++++-----
+>  include/media/v4l2-common.h           |  2 +-
+>  3 files changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/media/v4l2-core/tuner-core.c b/drivers/media/v4l2-core/tuner-core.c
+> index ddc9379..4133af0 100644
+> --- a/drivers/media/v4l2-core/tuner-core.c
+> +++ b/drivers/media/v4l2-core/tuner-core.c
+> @@ -43,7 +43,7 @@
+>  
+>  #define UNSET (-1U)
+>  
+> -#define PREFIX (t->i2c->driver->driver.name)
+> +#define PREFIX (t->i2c->dev.driver->name)
+>  
+>  /*
+>   * Driver modprobe parameters
+> @@ -452,7 +452,7 @@ static void set_type(struct i2c_client *c, unsigned int type,
+>  	}
+>  
+>  	tuner_dbg("%s %s I2C addr 0x%02x with type %d used for 0x%02x\n",
+> -		  c->adapter->name, c->driver->driver.name, c->addr << 1, type,
+> +		  c->adapter->name, c->dev.driver->name, c->addr << 1, type,
+>  		  t->mode_mask);
+>  	return;
+>  
+> @@ -556,7 +556,7 @@ static void tuner_lookup(struct i2c_adapter *adap,
+>  		int mode_mask;
+>  
+>  		if (pos->i2c->adapter != adap ||
+> -		    strcmp(pos->i2c->driver->driver.name, "tuner"))
+> +		    strcmp(pos->i2c->dev.driver->name, "tuner"))
+>  			continue;
+>  
+>  		mode_mask = pos->mode_mask;
+> diff --git a/drivers/media/v4l2-core/v4l2-common.c b/drivers/media/v4l2-core/v4l2-common.c
+> index 037d7a5..433d6d7 100644
+> --- a/drivers/media/v4l2-core/v4l2-common.c
+> +++ b/drivers/media/v4l2-core/v4l2-common.c
+> @@ -236,14 +236,14 @@ void v4l2_i2c_subdev_init(struct v4l2_subdev *sd, struct i2c_client *client,
+>  	v4l2_subdev_init(sd, ops);
+>  	sd->flags |= V4L2_SUBDEV_FL_IS_I2C;
+>  	/* the owner is the same as the i2c_client's driver owner */
+> -	sd->owner = client->driver->driver.owner;
+> +	sd->owner = client->dev.driver->owner;
+>  	sd->dev = &client->dev;
+>  	/* i2c_client and v4l2_subdev point to one another */
+>  	v4l2_set_subdevdata(sd, client);
+>  	i2c_set_clientdata(client, sd);
+>  	/* initialize name */
+>  	snprintf(sd->name, sizeof(sd->name), "%s %d-%04x",
+> -		client->driver->driver.name, i2c_adapter_id(client->adapter),
+> +		client->dev.driver->name, i2c_adapter_id(client->adapter),
+>  		client->addr);
+>  }
+>  EXPORT_SYMBOL_GPL(v4l2_i2c_subdev_init);
+> @@ -274,11 +274,11 @@ struct v4l2_subdev *v4l2_i2c_new_subdev_board(struct v4l2_device *v4l2_dev,
+>  	   loaded. This delay-load mechanism doesn't work if other drivers
+>  	   want to use the i2c device, so explicitly loading the module
+>  	   is the best alternative. */
+> -	if (client == NULL || client->driver == NULL)
+> +	if (client == NULL || client->dev.driver == NULL)
+>  		goto error;
+>  
+>  	/* Lock the module so we can safely get the v4l2_subdev pointer */
+> -	if (!try_module_get(client->driver->driver.owner))
+> +	if (!try_module_get(client->dev.driver->owner))
+>  		goto error;
+>  	sd = i2c_get_clientdata(client);
+>  
+> @@ -287,7 +287,7 @@ struct v4l2_subdev *v4l2_i2c_new_subdev_board(struct v4l2_device *v4l2_dev,
+>  	if (v4l2_device_register_subdev(v4l2_dev, sd))
+>  		sd = NULL;
+>  	/* Decrease the module use count to match the first try_module_get. */
+> -	module_put(client->driver->driver.owner);
+> +	module_put(client->dev.driver->owner);
+>  
+>  error:
+>  	/* If we have a client but no subdev, then something went wrong and
+> diff --git a/include/media/v4l2-common.h b/include/media/v4l2-common.h
+> index 16550c4..a707529 100644
+> --- a/include/media/v4l2-common.h
+> +++ b/include/media/v4l2-common.h
+> @@ -35,7 +35,7 @@
+>  	printk(level "%s %d-%04x: " fmt, name, i2c_adapter_id(adapter), addr , ## arg)
+>  
+>  #define v4l_client_printk(level, client, fmt, arg...)			    \
+> -	v4l_printk(level, (client)->driver->driver.name, (client)->adapter, \
+> +	v4l_printk(level, (client)->dev.driver->name, (client)->adapter, \
+>  		   (client)->addr, fmt , ## arg)
+>  
+>  #define v4l_err(client, fmt, arg...) \
 
-That doesn't fix the main problem which is getting the mail looked at in
-the first place - not having a subject line that people are looking for
-makes it easy for things to get dropped on the floor.
 
---XWGl2Oocib6fGxwW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+-- 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSYCFqAAoJELSic+t+oim9Q+YP/RtH19EYuBUnkdv0M8N9vO7N
-9H0nBh7lhunYEyOvvWDCAECtMJeWcxSgulfKSbaZACtOVOTX33T90qQ2e0cBTPTN
-e5bjP+QR6ZeQ1E4I2h229qAt0y+CM9hbSQau2t2Xmsl6ofvTT8FL0qXBcUpkMPQi
-zBE1WCUKj2nzAfSKVPKHawnEZw1qXLoLtxe6SMxiVTCvo7ZAAVXCAD2s9CX+vbOk
-3z1YaBQ+8Hg9zT7/MHWSsx7c1Kwj7kd48f+Lv6CXc5tau/he7OjwZG9DDSgnsIgc
-7yeA7zDeze8r6kiIUr6Ty+Cv+ZnemS/90NNeicvqViuXxEZXdouOZ9ahCoRgxmmV
-A31Ucqp67M5mnVEtB9oKXyOoMhk/iUhN38oRJJu/0kN5X74nwY6VFj5gFI7RtIiM
-JUDBs4LEUha1y/fZHCaGWkoyTpv/FT744+Woemuey2exmj1Bg+xOSuhGVdCJzYdA
-72x7i55eVHPD5iH7BkAqmkouyWA5t32fvMJKaEtbC6PGnCbly92Sf4AQFCE7bBOO
-X8xuJqOxXyf7O5/z3JgVQeVDDihw5sjsBBMjBWuHdwZGhCOP32MgRyi46JI2B100
-lUG6lObaECaWv3pJzCvtqtegeyxFdkTnSD5ltqkXOH/C7QDJ9fhDgQJyW9YHMcYP
-Ix1+ommmTz6ZUjVWjUsO
-=AE10
------END PGP SIGNATURE-----
-
---XWGl2Oocib6fGxwW--
+Cheers,
+Mauro
