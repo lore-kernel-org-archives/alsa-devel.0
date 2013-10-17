@@ -1,180 +1,133 @@
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Subject: [PATCH 3/3] ALSA: ASoC: pxa: add asoc pm callbacks to
-	pxa audio drivers
-Date: Thu, 17 Oct 2013 14:01:37 +0400
-Message-ID: <1382004097-6350-3-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 2/3] ALSA: ASoC: pxa: fix pxa2xx-ac97 DAI initialization order
+Date: Thu, 17 Oct 2013 14:01:36 +0400
+Message-ID: <1382004097-6350-2-git-send-email-dbaryshkov@gmail.com>
 References: <1382004097-6350-1-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 9ED2D26084B
- for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2013 12:01:47 +0200 (CEST)
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <1382004097-6350-1-git-send-email-dbaryshkov@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@kernel.org>, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-After convertion to snd_soc_register_card, platform driver should
-reference snd_soc_pm_ops callbacks to properly suspend/resume sound
-hardware. This was missed during conversion of PXA sound devices.
+After recent changes to codec/DAI initialization order changes, codec
+driver (wm9712 in my case) tries to access codec prior to
+pxa2xx_ac97_hw_probe() being called (because DAIs are probed after all
+codecs are probed). Move hw-related probe/remove/suspend/resume
+functions to pxa2xx-ac97 driver level, instead of DAI level.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- sound/soc/pxa/brownstone.c     | 1 +
- sound/soc/pxa/corgi.c          | 1 +
- sound/soc/pxa/e740_wm9705.c    | 1 +
- sound/soc/pxa/e750_wm9705.c    | 1 +
- sound/soc/pxa/e800_wm9712.c    | 1 +
- sound/soc/pxa/imote2.c         | 1 +
- sound/soc/pxa/mioa701_wm9713.c | 1 +
- sound/soc/pxa/palm27x.c        | 1 +
- sound/soc/pxa/poodle.c         | 1 +
- sound/soc/pxa/tosa.c           | 1 +
- sound/soc/pxa/ttc-dkb.c        | 1 +
- 11 files changed, 11 insertions(+)
+ sound/soc/pxa/pxa2xx-ac97.c | 56 ++++++++++++++++++++-------------------------
+ 1 file changed, 25 insertions(+), 31 deletions(-)
 
-diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
-index 5b7d969..08acdc2 100644
---- a/sound/soc/pxa/brownstone.c
-+++ b/sound/soc/pxa/brownstone.c
-@@ -163,6 +163,7 @@ static struct platform_driver mmp_driver = {
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index f1059d9..ae956e3 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -89,33 +89,6 @@ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_mic_mono_in = {
+ 	.filter_data	= &pxa2xx_ac97_pcm_aux_mic_mono_req,
+ };
+ 
+-#ifdef CONFIG_PM
+-static int pxa2xx_ac97_suspend(struct snd_soc_dai *dai)
+-{
+-	return pxa2xx_ac97_hw_suspend();
+-}
+-
+-static int pxa2xx_ac97_resume(struct snd_soc_dai *dai)
+-{
+-	return pxa2xx_ac97_hw_resume();
+-}
+-
+-#else
+-#define pxa2xx_ac97_suspend	NULL
+-#define pxa2xx_ac97_resume	NULL
+-#endif
+-
+-static int pxa2xx_ac97_probe(struct snd_soc_dai *dai)
+-{
+-	return pxa2xx_ac97_hw_probe(to_platform_device(dai->dev));
+-}
+-
+-static int pxa2xx_ac97_remove(struct snd_soc_dai *dai)
+-{
+-	pxa2xx_ac97_hw_remove(to_platform_device(dai->dev));
+-	return 0;
+-}
+-
+ static int pxa2xx_ac97_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params,
+ 				 struct snd_soc_dai *cpu_dai)
+@@ -185,10 +158,6 @@ static struct snd_soc_dai_driver pxa_ac97_dai_driver[] = {
+ {
+ 	.name = "pxa2xx-ac97",
+ 	.ac97_control = 1,
+-	.probe = pxa2xx_ac97_probe,
+-	.remove = pxa2xx_ac97_remove,
+-	.suspend = pxa2xx_ac97_suspend,
+-	.resume = pxa2xx_ac97_resume,
+ 	.playback = {
+ 		.stream_name = "AC97 Playback",
+ 		.channels_min = 2,
+@@ -246,6 +215,12 @@ static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
+ 		return -ENXIO;
+ 	}
+ 
++	ret = pxa2xx_ac97_hw_probe(pdev);
++	if (ret) {
++		dev_err(&pdev->dev, "PXA2xx AC97 hw probe error (%d)\n", ret);
++		return ret;
++	}
++
+ 	ret = snd_soc_set_ac97_ops(&pxa2xx_ac97_ops);
+ 	if (ret != 0)
+ 		return ret;
+@@ -262,15 +237,34 @@ static int pxa2xx_ac97_dev_remove(struct platform_device *pdev)
+ {
+ 	snd_soc_unregister_component(&pdev->dev);
+ 	snd_soc_set_ac97_ops(NULL);
++	pxa2xx_ac97_hw_remove(pdev);
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int pxa2xx_ac97_dev_suspend(struct device *dev)
++{
++	return pxa2xx_ac97_hw_suspend();
++}
++
++static int pxa2xx_ac97_dev_resume(struct device *dev)
++{
++	return pxa2xx_ac97_hw_resume();
++}
++
++static SIMPLE_DEV_PM_OPS(pxa2xx_ac97_pm_ops,
++		pxa2xx_ac97_dev_suspend, pxa2xx_ac97_dev_resume);
++#endif
++
+ static struct platform_driver pxa2xx_ac97_driver = {
+ 	.probe		= pxa2xx_ac97_dev_probe,
+ 	.remove		= pxa2xx_ac97_dev_remove,
  	.driver		= {
- 		.name	= "brownstone-audio",
+ 		.name	= "pxa2xx-ac97",
  		.owner	= THIS_MODULE,
-+		.pm     = &snd_soc_pm_ops,
- 	},
- 	.probe		= brownstone_probe,
- 	.remove		= brownstone_remove,
-diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
-index f4cce1e..1853d41 100644
---- a/sound/soc/pxa/corgi.c
-+++ b/sound/soc/pxa/corgi.c
-@@ -329,6 +329,7 @@ static struct platform_driver corgi_driver = {
- 	.driver		= {
- 		.name	= "corgi-audio",
- 		.owner	= THIS_MODULE,
-+		.pm     = &snd_soc_pm_ops,
- 	},
- 	.probe		= corgi_probe,
- 	.remove		= corgi_remove,
-diff --git a/sound/soc/pxa/e740_wm9705.c b/sound/soc/pxa/e740_wm9705.c
-index 70d799b..44b5c09 100644
---- a/sound/soc/pxa/e740_wm9705.c
-+++ b/sound/soc/pxa/e740_wm9705.c
-@@ -178,6 +178,7 @@ static struct platform_driver e740_driver = {
- 	.driver		= {
- 		.name	= "e740-audio",
- 		.owner	= THIS_MODULE,
-+		.pm     = &snd_soc_pm_ops,
- 	},
- 	.probe		= e740_probe,
- 	.remove		= e740_remove,
-diff --git a/sound/soc/pxa/e750_wm9705.c b/sound/soc/pxa/e750_wm9705.c
-index f94d2ab..c34e447 100644
---- a/sound/soc/pxa/e750_wm9705.c
-+++ b/sound/soc/pxa/e750_wm9705.c
-@@ -160,6 +160,7 @@ static struct platform_driver e750_driver = {
- 	.driver		= {
- 		.name	= "e750-audio",
- 		.owner	= THIS_MODULE,
-+		.pm     = &snd_soc_pm_ops,
- 	},
- 	.probe		= e750_probe,
- 	.remove		= e750_remove,
-diff --git a/sound/soc/pxa/e800_wm9712.c b/sound/soc/pxa/e800_wm9712.c
-index 8768a64..3137f80 100644
---- a/sound/soc/pxa/e800_wm9712.c
-+++ b/sound/soc/pxa/e800_wm9712.c
-@@ -150,6 +150,7 @@ static struct platform_driver e800_driver = {
- 	.driver		= {
- 		.name	= "e800-audio",
- 		.owner	= THIS_MODULE,
-+		.pm     = &snd_soc_pm_ops,
- 	},
- 	.probe		= e800_probe,
- 	.remove		= e800_remove,
-diff --git a/sound/soc/pxa/imote2.c b/sound/soc/pxa/imote2.c
-index eef1f7b..fd2f4ed 100644
---- a/sound/soc/pxa/imote2.c
-+++ b/sound/soc/pxa/imote2.c
-@@ -91,6 +91,7 @@ static struct platform_driver imote2_driver = {
- 	.driver		= {
- 		.name	= "imote2-audio",
- 		.owner	= THIS_MODULE,
-+		.pm     = &snd_soc_pm_ops,
- 	},
- 	.probe		= imote2_probe,
- 	.remove		= imote2_remove,
-diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
-index bbea778..160c524 100644
---- a/sound/soc/pxa/mioa701_wm9713.c
-+++ b/sound/soc/pxa/mioa701_wm9713.c
-@@ -215,6 +215,7 @@ static struct platform_driver mioa701_wm9713_driver = {
- 	.driver		= {
- 		.name		= "mioa701-wm9713",
- 		.owner		= THIS_MODULE,
-+		.pm     = &snd_soc_pm_ops,
++#ifdef CONFIG_PM_SLEEP
++		.pm	= &pxa2xx_ac97_pm_ops,
++#endif
  	},
  };
  
-diff --git a/sound/soc/pxa/palm27x.c b/sound/soc/pxa/palm27x.c
-index e1ffcdd..3284c4b 100644
---- a/sound/soc/pxa/palm27x.c
-+++ b/sound/soc/pxa/palm27x.c
-@@ -181,6 +181,7 @@ static struct platform_driver palm27x_wm9712_driver = {
- 	.driver		= {
- 		.name		= "palm27x-asoc",
- 		.owner		= THIS_MODULE,
-+		.pm     = &snd_soc_pm_ops,
- 	},
- };
- 
-diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
-index fafe463..c93e138 100644
---- a/sound/soc/pxa/poodle.c
-+++ b/sound/soc/pxa/poodle.c
-@@ -303,6 +303,7 @@ static struct platform_driver poodle_driver = {
- 	.driver		= {
- 		.name	= "poodle-audio",
- 		.owner	= THIS_MODULE,
-+		.pm     = &snd_soc_pm_ops,
- 	},
- 	.probe		= poodle_probe,
- 	.remove		= poodle_remove,
-diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
-index a3fe191..1d9c2ed 100644
---- a/sound/soc/pxa/tosa.c
-+++ b/sound/soc/pxa/tosa.c
-@@ -275,6 +275,7 @@ static struct platform_driver tosa_driver = {
- 	.driver		= {
- 		.name	= "tosa-audio",
- 		.owner	= THIS_MODULE,
-+		.pm     = &snd_soc_pm_ops,
- 	},
- 	.probe		= tosa_probe,
- 	.remove		= tosa_remove,
-diff --git a/sound/soc/pxa/ttc-dkb.c b/sound/soc/pxa/ttc-dkb.c
-index 13c9ee0..0b535b5 100644
---- a/sound/soc/pxa/ttc-dkb.c
-+++ b/sound/soc/pxa/ttc-dkb.c
-@@ -160,6 +160,7 @@ static struct platform_driver ttc_dkb_driver = {
- 	.driver		= {
- 		.name	= "ttc-dkb-audio",
- 		.owner	= THIS_MODULE,
-+		.pm     = &snd_soc_pm_ops,
- 	},
- 	.probe		= ttc_dkb_probe,
- 	.remove		= ttc_dkb_remove,
 -- 
 1.8.4.rc3
