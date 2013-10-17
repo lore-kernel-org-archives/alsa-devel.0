@@ -1,133 +1,58 @@
-From: "Geyslan G. Bem" <geyslan@gmail.com>
-Subject: [PATCH v3] sound: pci: emu10k1: code refactoring
-Date: Thu, 17 Oct 2013 19:57:12 -0300
-Message-ID: <1382050633-21120-1-git-send-email-geyslan@gmail.com>
+From: =?UTF-8?Q?Geyslan_Greg=C3=B3rio_Bem?= <geyslan@gmail.com>
+Subject: Re: [Kernel-BR] Re: [PATCH] sound: pci: emu10k1: code refactoring and
+ casting removal
+Date: Thu, 17 Oct 2013 20:04:17 -0300
+Message-ID: <CAGG-pUT77AWL8gJ7C5gwucTZOZmzPq3d9gmX=7yfJXyEEo1DdA@mail.gmail.com>
+References: <1381961482-25085-1-git-send-email-geyslan@gmail.com>
+	<s5hli1sqv7e.wl%tiwai@suse.de>
+	<CAGG-pUQ_5jgrfSEN7_hV982FBtCmdba231gwtqfbxejshLmHhg@mail.gmail.com>
+	<s5hzjq8t6pl.wl%tiwai@suse.de>
+	<CAGG-pUQAOZ852CamCE+T4zM2Wwc0xKr+WRbGQLEqK=EvC3JCvw@mail.gmail.com>
+	<CACz=Wecn4rft6baBq1k9TWDdB41RVOdyWthdowgfZqJozpyX9A@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CACz=Wecn4rft6baBq1k9TWDdB41RVOdyWthdowgfZqJozpyX9A@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: kernel-br@googlegroups.com, "Geyslan G. Bem" <geyslan@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Bill Pemberton <wfp5p@virginia.edu>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+To: Raphael S Carvalho <raphael.scarv@gmail.com>
+Cc: kernel-br <kernel-br@googlegroups.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Bill Pemberton <wfp5p@virginia.edu>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Partially restructures _snd_emu10k1_audigy_init_efx() and
-_snd_emu10k1_init_efx() functions.
+2013/10/17 Raphael S Carvalho <raphael.scarv@gmail.com>:
+>> 2013/10/17 Takashi Iwai <tiwai@suse.de>:
+>>>
+>>> Geyslan, you don't have to waste too much of your time (and my time
+>>> for review) for this kind of so old driver code unless it really fixes
+>>> the bugs.  A clean up is good in general, but it can be sometimes
+>>> worse than nothing since it also breaks the history, thus makes hard
+>>> to follow via "git blame", for example, and of course, there is always
+>>> a potential danger of regression.
+>>>
+>>> So, if it's about clean up, do it only in a systematic way that others
+>>> can follow easily, and don't do it too intensively.
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+Takashi,
 
-Be noted that the cast is demanded to use '__user'. So, in these cases,
-avoid patches based on the coccinelle 'drop_kmalloc_cast' semantic patch.
+I sent the last version:
+[PATCH v3] sound: pci: emu10k1: code refactoring
 
-Signed-off-by: Geyslan G. Bem <geyslan@gmail.com>
----
- sound/pci/emu10k1/emufx.c | 76 ++++++++++++++++++++++++++++-------------------
- 1 file changed, 45 insertions(+), 31 deletions(-)
+Regards.
 
-diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index 0275209..1f9c7c4 100644
---- a/sound/pci/emu10k1/emufx.c
-+++ b/sound/pci/emu10k1/emufx.c
-@@ -1182,15 +1182,20 @@ static int _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
- 	u32 *gpr_map;
- 	mm_segment_t seg;
- 
--	if ((icode = kzalloc(sizeof(*icode), GFP_KERNEL)) == NULL ||
--	    (icode->gpr_map = (u_int32_t __user *)
--	     kcalloc(512 + 256 + 256 + 2 * 1024, sizeof(u_int32_t),
--		     GFP_KERNEL)) == NULL ||
--	    (controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
--				sizeof(*controls), GFP_KERNEL)) == NULL) {
--		err = -ENOMEM;
--		goto __err;
--	}
-+	err = -ENOMEM;
-+	icode = kzalloc(sizeof(*icode), GFP_KERNEL);
-+	if (!icode)
-+		return err;
-+
-+	icode->gpr_map = (u_int32_t __user *) kcalloc(512 + 256 + 256 + 2 * 1024,
-+						      sizeof(u_int32_t), GFP_KERNEL);
-+	if (!icode->gpr_map)
-+		goto __err_gpr;
-+	controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
-+			   sizeof(*controls), GFP_KERNEL);
-+	if (!controls)
-+		goto __err_ctrls;
-+
- 	gpr_map = (u32 __force *)icode->gpr_map;
- 
- 	icode->tram_data_map = icode->gpr_map + 512;
-@@ -1741,12 +1746,12 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
- 	emu->support_tlv = 0; /* clear again */
- 	snd_leave_user(seg);
- 
-- __err:
-+__err:
- 	kfree(controls);
--	if (icode != NULL) {
--		kfree((void __force *)icode->gpr_map);
--		kfree(icode);
--	}
-+__err_ctrls:
-+	kfree((void __force *)icode->gpr_map);
-+__err_gpr:
-+	kfree(icode);
- 	return err;
- }
- 
-@@ -1813,18 +1818,26 @@ static int _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
- 	u32 *gpr_map;
- 	mm_segment_t seg;
- 
--	if ((icode = kzalloc(sizeof(*icode), GFP_KERNEL)) == NULL)
--		return -ENOMEM;
--	if ((icode->gpr_map = (u_int32_t __user *)
--	     kcalloc(256 + 160 + 160 + 2 * 512, sizeof(u_int32_t),
--		     GFP_KERNEL)) == NULL ||
--            (controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
--				sizeof(struct snd_emu10k1_fx8010_control_gpr),
--				GFP_KERNEL)) == NULL ||
--	    (ipcm = kzalloc(sizeof(*ipcm), GFP_KERNEL)) == NULL) {
--		err = -ENOMEM;
--		goto __err;
--	}
-+	err = -ENOMEM;
-+	icode = kzalloc(sizeof(*icode), GFP_KERNEL);
-+	if (!icode)
-+		return err;
-+
-+	icode->gpr_map = (u_int32_t __user *) kcalloc(256 + 160 + 160 + 2 * 512,
-+						      sizeof(u_int32_t), GFP_KERNEL);
-+	if (!icode->gpr_map)
-+		goto __err_gpr;
-+
-+	controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
-+			   sizeof(struct snd_emu10k1_fx8010_control_gpr),
-+			   GFP_KERNEL);
-+	if (!controls)
-+		goto __err_ctrls;
-+
-+	ipcm = kzalloc(sizeof(*ipcm), GFP_KERNEL);
-+	if (!ipcm)
-+		goto __err_ipcm;
-+
- 	gpr_map = (u32 __force *)icode->gpr_map;
- 
- 	icode->tram_data_map = icode->gpr_map + 256;
-@@ -2363,13 +2376,14 @@ static int _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
- 	snd_leave_user(seg);
- 	if (err >= 0)
- 		err = snd_emu10k1_ipcm_poke(emu, ipcm);
--      __err:
-+__err:
- 	kfree(ipcm);
-+__err_ipcm:
- 	kfree(controls);
--	if (icode != NULL) {
--		kfree((void __force *)icode->gpr_map);
--		kfree(icode);
--	}
-+__err_ctrls:
-+	kfree((void __force *)icode->gpr_map);
-+__err_gpr:
-+	kfree(icode);
- 	return err;
- }
- 
--- 
-1.8.4
+>
+> His code refactoring proposal is welcome since the old code sucks from
+> several points of view, e.g. maintainability, legibility, etc.
+> Yes, of course, it's important to be careful in order not to introduce
+> regressions. And yes, he could improve something here and there.
+> As long as changes improve the maintainability and legibility of the
+> code, there is no reason to refuse them.
+>
+> --
+> Raphael S. Carvalho
+
+Raphael, thank you for reply.
+
+Regards.
