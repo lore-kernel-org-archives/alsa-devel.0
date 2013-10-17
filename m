@@ -1,41 +1,57 @@
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW-bxm8fMRDkQLDiMYJYoSAnRvVK+yQ3ZXh@public.gmane.org>
-Subject: Re: [PATCHv1 0/8] ALSA: Add SAI driver and enable SGT15000 codec.
-Date: Thu, 17 Oct 2013 12:22:30 +0200
-Message-ID: <20131017122230.314ab555@ipc1.ka-ro>
-References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/8] spi: s3c64xx: Do not require legacy DMA API in
+ case of S3C64XX
+Date: Thu, 17 Oct 2013 11:33:43 +0100
+Message-ID: <20131017103343.GL2443@sirena.org.uk>
+References: <1381950659-12703-1-git-send-email-tomasz.figa@gmail.com>
+ <1381950659-12703-2-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1382000477-17304-1-git-send-email-Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: r65073-KZfg59tc24xl57MIdRCFDg@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, r64188-KZfg59tc24xl57MIdRCFDg@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, ian.campbell-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org, rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org, oskar-fYPSZ7JpQqsAvxtiuMwx3w@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org, b18965-KZfg59tc24xl57MIdRCFDg@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yUJ/QPh5Cdrmy6jV"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1381950659-12703-2-git-send-email-tomasz.figa@gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-spi@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Ben Dooks <ben-linux@fluff.org>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sachin Kamat <sachin.kamat@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org> wrote:
+--yUJ/QPh5Cdrmy6jV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The subject has a wrong name for the codec "SGT1..." instead of
-"SGTL...", which will make it difficult to search for this thread in
-mail archives or in commit messages once this patches should be applied=
-!
+On Wed, Oct 16, 2013 at 09:10:52PM +0200, Tomasz Figa wrote:
+> With support for amba-pl08x driver, on S3C64xx the generic DMA engine
+> API can be used instead of the private s3c-dma interface.
+>=20
+> Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
 
+Acked-by: Mark Brown <broonie@linaro.org>
 
-Lothar Wa=C3=9Fmann
---=20
-___________________________________________________________
+in case we can get this into v3.13.
 
-Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+--yUJ/QPh5Cdrmy6jV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-www.karo-electronics.de | info-AvR2QvxeiV7DiMYJYoSAnRvVK+yQ3ZXh@public.gmane.org
-___________________________________________________________
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSX70EAAoJELSic+t+oim9/d0P/20K4so9KGWaIq4727FQMCac
+WaRkv0sMBo/oPDta0T3UWiIE1m5t7/5SnqBFniWUPFQpyxiCd/PZcmLustJlKsBf
+RjKOCvIItMYqPCrMCN11K/magpZEOjq9t+eJssO6IvO4zOKLJ03rPpV7VX9Lq5Bu
+KxQuqJSsU8iYcMzoO611TY4O96vOMvwjwGlEVDUbIO0wTI9gYEOkDBYJi9ERcjx1
+FWkPIW6COrxd+H4GGbllZNRkriCl71UyuCzuzOsLIKOD0IxGUFPo2OUG7zc4EiCh
+BBmn/ipqAwlV9inM26VroFPaob6OrTBJMwnk0YoumTP5E+yuc5WRhR+yFL5TMq2c
+TfphsllxzBHQaf2ntKBtUFNuuYMEonUcKNbquRcmol68IqAkxYJeOVYS5pvDyuwJ
+NcmRujwsDJZyBOuzkK3yKf67ys9D6kWCVGqHNawMC3pSfWBFgpO7eB6087Hndx6A
+Q3Ru3Hb8NKGM0au5BiPSSXVsNVIFgRtxBv8ShXBtoyKV7joLYuq8DdxZnUEfOnVv
+ViFPf69EOOPG3Qzwe98V53QP4nLJfE5Z6TKKiUjAp7qEkW7UxQxiBVYxrABz7xS0
+8bjRZ4NFfglMTF+vfVPZ2uBWafQJ/ucakGfcFODv4MRK3dQf9ERdpwIcdYowcBHE
+D5EK+8Lz0G5WOdZ49JF1
+=Mu24
+-----END PGP SIGNATURE-----
+
+--yUJ/QPh5Cdrmy6jV--
