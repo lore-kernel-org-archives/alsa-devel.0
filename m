@@ -1,57 +1,157 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/8] ASoC: Samsung: Do not require legacy DMA API in
- case of S3C64XX
-Date: Thu, 17 Oct 2013 11:34:09 +0100
-Message-ID: <20131017103409.GM2443@sirena.org.uk>
-References: <1381950659-12703-1-git-send-email-tomasz.figa@gmail.com>
- <1381950659-12703-3-git-send-email-tomasz.figa@gmail.com>
+From: =?UTF-8?Q?Geyslan_Greg=C3=B3rio_Bem?= <geyslan@gmail.com>
+Subject: Re: [PATCH] sound: pci: emu10k1: code refactoring and casting removal
+Date: Thu, 17 Oct 2013 08:13:32 -0300
+Message-ID: <CAGG-pUQ_5jgrfSEN7_hV982FBtCmdba231gwtqfbxejshLmHhg@mail.gmail.com>
+References: <1381961482-25085-1-git-send-email-geyslan@gmail.com>
+	<s5hli1sqv7e.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="l8yoENEkJUIoCzE7"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1381950659-12703-3-git-send-email-tomasz.figa@gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-spi@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Ben Dooks <ben-linux@fluff.org>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mike Turquette <mturquette@linaro.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sachin Kamat <sachin.kamat@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hli1sqv7e.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: kernel-br <kernel-br@googlegroups.com>, Jaroslav Kysela <perex@perex.cz>, Bill Pemberton <wfp5p@virginia.edu>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+2013/10/17 Takashi Iwai <tiwai@suse.de>:
+> At Wed, 16 Oct 2013 19:11:21 -0300,
+> Geyslan G. Bem wrote:
+>>
+>> Partially restructures _snd_emu10k1_audigy_init_efx() and
+>> _snd_emu10k1_init_efx() functions.
+>>
+>> Removes useless casting (void *) from value returned by kcalloc;
+>> see Documentation/CodingStyle, Chap 14.
+>>
+>> Signed-off-by: Geyslan G. Bem <geyslan@gmail.com>
+>> ---
+>>  sound/pci/emu10k1/emufx.c | 84 ++++++++++++++++++++++++++---------------------
+>>  1 file changed, 46 insertions(+), 38 deletions(-)
+>>
+>> diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
+>> index 0275209..afd4691 100644
+>> --- a/sound/pci/emu10k1/emufx.c
+>> +++ b/sound/pci/emu10k1/emufx.c
+>> @@ -1182,15 +1182,20 @@ static int _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
+>>       u32 *gpr_map;
+>>       mm_segment_t seg;
+>>
+>> -     if ((icode = kzalloc(sizeof(*icode), GFP_KERNEL)) == NULL ||
+>> -         (icode->gpr_map = (u_int32_t __user *)
+>> -          kcalloc(512 + 256 + 256 + 2 * 1024, sizeof(u_int32_t),
+>> -                  GFP_KERNEL)) == NULL ||
+>> -         (controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
+>> -                             sizeof(*controls), GFP_KERNEL)) == NULL) {
+>> -             err = -ENOMEM;
+>> -             goto __err;
+>> -     }
+>> +     err = -ENOMEM;
+>> +     icode = kzalloc(sizeof(*icode), GFP_KERNEL);
+>> +     if (!icode)
+>> +             return err;
+>> +
+>> +     icode->gpr_map = (__user) kcalloc(512 + 256 + 256 + 2 * 1024,
+>> +                                       sizeof(u_int32_t), GFP_KERNEL);
+>> +     if (!icode->gpr_map)
+>> +             goto __err_gpr;
+>> +     controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
+>> +                        sizeof(*controls), GFP_KERNEL);
+>> +     if (!controls)
+>> +             goto __err_ctrls;
+>> +
+>>       gpr_map = (u32 __force *)icode->gpr_map;
+>>
+>>       icode->tram_data_map = icode->gpr_map + 512;
+>> @@ -1741,12 +1746,12 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+>>       emu->support_tlv = 0; /* clear again */
+>>       snd_leave_user(seg);
+>>
+>> - __err:
+>> +__err:
+>>       kfree(controls);
+>> -     if (icode != NULL) {
+>> -             kfree((void __force *)icode->gpr_map);
+>> -             kfree(icode);
+>> -     }
+>> +__err_ctrls:
+>> +     kfree((void __force *)icode->gpr_map);
+>> +__err_gpr:
+>> +     kfree(icode);
+>>       return err;
+>>  }
+>>
+>> @@ -1813,18 +1818,26 @@ static int _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+>>       u32 *gpr_map;
+>>       mm_segment_t seg;
+>>
+>> -     if ((icode = kzalloc(sizeof(*icode), GFP_KERNEL)) == NULL)
+>> -             return -ENOMEM;
+>> -     if ((icode->gpr_map = (u_int32_t __user *)
+>> -          kcalloc(256 + 160 + 160 + 2 * 512, sizeof(u_int32_t),
+>> -                  GFP_KERNEL)) == NULL ||
+>> -            (controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
+>> -                             sizeof(struct snd_emu10k1_fx8010_control_gpr),
+>> -                             GFP_KERNEL)) == NULL ||
+>> -         (ipcm = kzalloc(sizeof(*ipcm), GFP_KERNEL)) == NULL) {
+>> -             err = -ENOMEM;
+>> -             goto __err;
+>> -     }
+>> +     err = -ENOMEM;
+>> +     icode = kzalloc(sizeof(*icode), GFP_KERNEL);
+>> +     if (!icode)
+>> +             return err;
+>> +
+>> +     icode->gpr_map = (__user) kcalloc(256 + 160 + 160 + 2 * 512,
+>> +                                       sizeof(u_int32_t), GFP_KERNEL);
+>> +     if (!icode->gpr_map)
+>> +             goto __err_gpr;
+>> +
+>> +     controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
+>> +                        sizeof(struct snd_emu10k1_fx8010_control_gpr),
+>> +                        GFP_KERNEL);
+>> +     if (!controls)
+>> +             goto __err_ctrls;
+>> +
+>> +     ipcm = kzalloc(sizeof(*ipcm), GFP_KERNEL);
+>> +     if (!ipcm)
+>> +             goto __err_ipcm;
+>> +
+>>       gpr_map = (u32 __force *)icode->gpr_map;
+>>
+>>       icode->tram_data_map = icode->gpr_map + 256;
+>> @@ -2335,14 +2348,8 @@ static int _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+>>               for (z = 0; z < 16; z++)
+>>                       OP(icode, &ptr, iACC3, FXBUS2(z), C_00000000, C_00000000, EXTIN(z));
+>>       }
+>> -
+>>
+>> -     if (gpr > tmp) {
+>> -             snd_BUG();
+>> -             err = -EIO;
+>> -             goto __err;
+>> -     }
+>> -     if (i > SND_EMU10K1_GPR_CONTROLS) {
+>> +     if (gpr > tmp || i > SND_EMU10K1_GPR_CONTROLS) {
+>>               snd_BUG();
+>
+> In that way, you can't distinguish which condition triggered the bug
+> (it could be shown in WARN() called in snd_BUG() in the original
+> version), so this is a functional change.  Avoid it in a clean up
+> patch.
+>
+>
+> thanks,
+>
+> Takashi
 
---l8yoENEkJUIoCzE7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Takashi, I actually thought that that change was a cleanup.  :) But
+ok, now I see the reason (tracing)
+What about using this instead snd_BUG?
 
-On Wed, Oct 16, 2013 at 09:10:53PM +0200, Tomasz Figa wrote:
-> With support for amba-pl08x driver, on S3C64xx the generic DMA engine
-> API can be used instead of the private s3c-dma interface.
->=20
-> Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
+snd_printd(KERN_WARN "BUG?\ngpr: %d, i: %d", gpr, i);
 
-Acked-by: Mark Brown <broonie@linaro.org>
+It prints file, line and we can put the data. I really want to reduce
+repeated code.
 
-in case we can get this into v3.13.
-
---l8yoENEkJUIoCzE7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSX70eAAoJELSic+t+oim9AswP/RXLYLCjNzuQhjC7kqrxV/iM
-YLb9UfUaA0AGjeguru6VDxLUCZufSPB+7fmMV7H9z9PDpQaPXY5TArLD70Pcehkn
-H+zN6NSwCqzOk7uMclpVgaakogN4e4rK7IYAirEuKNKYcY1RszCA9yUBbKw5yic2
-78porNpNxT6Bd2WEtY+AjtJhrG0eKmyGPUcXgA0BexGYl5Mdg3qaXQmFxo52askT
-H61U2777s3mpluHnYoJJEM6UyJIAN+GAo4mtQTIyg57WqW5deoxTvnZJhB2sABjR
-dKuj+W35GLSVjggxbiY1RsAsKQpSjiJkjbAlIGJ9lI6Q6ayy1yoD+pVUV88XWQ0d
-JXuWErzNhcnq9H4hQQZax5S8AaxFrX3R11YRAR27BCAjtgDfqwJ+Ryg1W0fwJz3L
-C1tLCo1++EMzaGmnSVDY6013VCPD8V2K3G+ugSjABTjiS7QbLswcof9LFRwqEAQV
-WycqhGcY5Fldb9BBJ7rVe+smrfk5OS+Ngo49BjuF7xatc+2hh8jrFgmIzn4QZ2N2
-QIfep8dFVEPN/XkcVqwvV+JKg7V74UErx4s34TXK8pI5StPw31wsoQRcZelaQDck
-aD9IvYVwnzYKaS0g5NtKbmiDIOYOztAKhzu1Gk9Op20nxScqKCUMSN4mxTaE9HF/
-Bwx0JD0g/NVE1l3Kbmub
-=0zrV
------END PGP SIGNATURE-----
-
---l8yoENEkJUIoCzE7--
+Regards,
+Geyslan
