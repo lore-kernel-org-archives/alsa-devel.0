@@ -1,7 +1,7 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCHv1 5/8] ASoC: sgtl5000: Revise the bugs about the sgt15000 codec.
-Date: Thu, 17 Oct 2013 17:01:14 +0800
-Message-ID: <1382000477-17304-6-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCHv1 7/8] ARM: dts: Enable SGT15000 codec based audio driver node for VF610.
+Date: Thu, 17 Oct 2013 17:01:16 +0800
+Message-ID: <1382000477-17304-8-git-send-email-Li.Xiubo@freescale.com>
 References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,91 +12,51 @@ To: r65073@freescale.com, timur@tabi.org, lgirdwood@gmail.com, broonie@kernel.or
 Cc: r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com, shawn.guo@linaro.org, b42378@freescale.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-When the CONFIG_REGULATOR is disabled there will be some warnings
-printed out.
+This patch add and enable SGT15000 codec support, and also specified
+the corresponding SAI node.
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+Signed-off-by: Alison Wang <b18965@freescale.com
 ---
- sound/soc/codecs/sgtl5000.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/vf610-twr.dts | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 1f4093f..4e2e4c9 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -883,14 +883,19 @@ static int ldo_regulator_register(struct snd_soc_codec *codec,
- 				struct regulator_init_data *init_data,
- 				int voltage)
- {
-+#ifdef CONFIG_SND_SOC_FSL_SGTL5000
-+	return 0;
-+#else
- 	dev_err(codec->dev, "this setup needs regulator support in the kernel\n");
- 	return -EINVAL;
-+#endif
- }
+diff --git a/arch/arm/boot/dts/vf610-twr.dts b/arch/arm/boot/dts/vf610-twr.dts
+index e4106dd..a2d9214 100644
+--- a/arch/arm/boot/dts/vf610-twr.dts
++++ b/arch/arm/boot/dts/vf610-twr.dts
+@@ -34,6 +34,19 @@
+ 		};
+ 	};
  
- static int ldo_regulator_remove(struct snd_soc_codec *codec)
- {
- 	return 0;
- }
++	sound {
++		compatible = "fsl,vf610-sgtl5000";
++		model = "vf610-sgtl5000";
++		saif-controller = <&sai2>;
++		audio-codec = <&codec>;
++		audio-routing =
++			"MIC_IN", "Mic Jack",
++			"Mic Jack", "Mic Bias",
++			"LINE_IN", "Line In Jack",
++			"Headphone Jack", "HP_OUT",
++			"Ext Spk", "LINE_OUT";
++	};
 +
- #endif
+ };
  
- /*
-@@ -1137,6 +1142,7 @@ static int sgtl5000_resume(struct snd_soc_codec *codec)
- #define sgtl5000_resume  NULL
- #endif	/* CONFIG_SUSPEND */
- 
-+#ifdef CONFIG_REGULATOR
- /*
-  * sgtl5000 has 3 internal power supplies:
-  * 1. VAG, normally set to vdda/2
-@@ -1269,6 +1275,7 @@ static int sgtl5000_set_power_regs(struct snd_soc_codec *codec)
- 
- 	return 0;
- }
-+#endif
- 
- static int sgtl5000_replace_vddd_with_ldo(struct snd_soc_codec *codec)
- {
-@@ -1370,6 +1377,7 @@ err_regulator_free:
- 				sgtl5000->supplies);
- 	if (external_vddd)
- 		ldo_regulator_remove(codec);
+ &fec0 {
+@@ -55,6 +68,12 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_i2c0_1>;
+ 	status = "okay";
 +
- 	return ret;
++	codec: sgtl5000@0a {
++		compatible = "fsl,sgtl5000";
++		reg = <0x0a>;
++		clocks = <&clks VF610_CLK_SAI2>;
++	};
+ };
  
- }
-@@ -1391,11 +1399,12 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- 	if (ret)
- 		return ret;
- 
-+#ifdef CONFIG_REGULATOR
- 	/* power up sgtl5000 */
- 	ret = sgtl5000_set_power_regs(codec);
- 	if (ret)
- 		goto err;
--
-+#endif
- 	/* enable small pop, introduce 400ms delay in turning off */
- 	snd_soc_update_bits(codec, SGTL5000_CHIP_REF_CTRL,
- 				SGTL5000_SMALL_POP,
-@@ -1446,6 +1455,7 @@ err:
- 						sgtl5000->supplies);
- 	regulator_bulk_free(ARRAY_SIZE(sgtl5000->supplies),
- 				sgtl5000->supplies);
-+
- 	ldo_regulator_remove(codec);
- 
- 	return ret;
-@@ -1461,6 +1471,7 @@ static int sgtl5000_remove(struct snd_soc_codec *codec)
- 						sgtl5000->supplies);
- 	regulator_bulk_free(ARRAY_SIZE(sgtl5000->supplies),
- 				sgtl5000->supplies);
-+
- 	ldo_regulator_remove(codec);
- 
- 	return 0;
+ &sai2 {
 -- 
 1.8.0
