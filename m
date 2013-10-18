@@ -1,46 +1,55 @@
-From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: Re: [PATCH] ASoC: kirkwood: add S/PDIF support
-Date: Fri, 18 Oct 2013 17:38:12 +0200
-Message-ID: <20131018173812.74a23b52@armhf>
-References: <20130924124122.64834b2a@armhf>
-	<20131018003439.GG2443@sirena.org.uk>
-	<20131018103019.GW25034@n2100.arm.linux.org.uk>
-	<20131018124832.GK2443@sirena.org.uk>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v5 09/12] ARM/dts: am33xx: mcasp: Add location for data port registers to reg-property
+Date: Fri, 18 Oct 2013 18:37:48 +0300
+Message-ID: <42a07ec95e568eb3158b8c15645e55e9ecb2a7e0.1382110090.git.jsarha@ti.com>
+References: <cover.1382110089.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20131018124832.GK2443-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <cover.1382110089.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, bcousson@baylibre.com, mark.rutland@arm.com
+Cc: linux-omap@vger.kernel.org, broonie@kernel.org, joelf@ti.com, Jyri Sarha <jsarha@ti.com>, "Hebbar, Gururaja" <gururaja.hebbar@ti.com>, Darren Etheridge <detheridge@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 18 Oct 2013 13:48:32 +0100
-Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+This patch adds a second tuple to reg property. The new property tuple
+describes the memory location for data port registers mapped trough
+L3 bus on am33xx. The both property tuples are named accordingly in
+the reg-names property.
 
-> > "widgets that manage the enable of the S/PDIF and I2S interfaces be=
-tween
-> > the FE and BE DAIs" is exactly what I did and you told me that was =
-wrong.
-> > Make up your fscking mind. =20
->=20
-> No, this is not the case.  The major problem with your last set of
-> patches was that they did not create any back end DAIs, instead they
-> created purely DAPM routes from the single traditional DAI out to
-> widgets in the CODEC.  What I'm asking Jean-Francois to do above is
-> create and use back end DAIs.
+Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
+Signed-off-by: Darren Etheridge <detheridge@ti.com>
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
+---
+ arch/arm/boot/dts/am33xx.dtsi |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Mark,
+diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
+index 72c416d..b1d2d3f 100644
+--- a/arch/arm/boot/dts/am33xx.dtsi
++++ b/arch/arm/boot/dts/am33xx.dtsi
+@@ -671,7 +671,9 @@
+ 		mcasp0: mcasp@48038000 {
+ 			compatible = "ti,am33xx-mcasp-audio";
+ 			ti,hwmods = "mcasp0";
+-			reg = <0x48038000 0x2000>;
++			reg = <0x48038000 0x2000>,
++			      <0x46000000 0x400000>;
++			reg-names = "mpu", "dat";
+ 			interrupts = <80>, <81>;
+ 			interrupts-names = "tx", "rx";
+ 			status = "disabled";
+@@ -683,7 +685,9 @@
+ 		mcasp1: mcasp@4803C000 {
+ 			compatible = "ti,am33xx-mcasp-audio";
+ 			ti,hwmods = "mcasp1";
+-			reg = <0x4803C000 0x2000>;
++			reg = <0x4803C000 0x2000>,
++			      <0x46400000 0x400000>;
++			reg-names = "mpu", "dat";
+ 			interrupts = <82>, <83>;
+ 			interrupts-names = "tx", "rx";
+ 			status = "disabled";
+-- 
+1.7.9.5
 
-I think I understood what you mean. I am testing my system with this
-new approach and I will submit a new patch as soon as it works.
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
