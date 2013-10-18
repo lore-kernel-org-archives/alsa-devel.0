@@ -1,21 +1,16 @@
 From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH 3/3] ASoC: cs42l73: Add Device Tree support
-	for CS42L73
-Date: Fri, 18 Oct 2013 14:05:30 -0500
-Message-ID: <alpine.DEB.2.10.1310181404540.6723@heelrod.ad.cirrus.com>
-References: <1382025815-7912-1-git-send-email-brian.austin@cirrus.com>
- <1382025815-7912-3-git-send-email-brian.austin@cirrus.com>
- <20131017233953.GY2443@sirena.org.uk>
- <alpine.DEB.2.10.1310181339460.6723@heelrod.ad.cirrus.com>
+Subject: [PATCH 3/3] ASoC: cs42l73: Add Device Tree support for
+	CS42L73
+Date: Fri, 18 Oct 2013 14:14:21 -0500
+Message-ID: <1382123661-3027-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe001.messaging.microsoft.com [216.32.180.11])
- by alsa0.perex.cz (Postfix) with ESMTP id E2FCC261AC4
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2013 21:03:48 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.10.1310181339460.6723@heelrod.ad.cirrus.com>
+Received: from db9outboundpool.messaging.microsoft.com
+ (mail-db9lp0249.outbound.messaging.microsoft.com [213.199.154.249])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2F58261AC4
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2013 21:12:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,16 +20,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: Brian Austin <brian.austin@cirrus.com>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
->> Actually this doesn't apply for me, some missing dependency perhaps?  I
->> didn't check exactly what's conflicting.
->> 
-> If you apply 0003 before the others it can fail with removal of gpio.h from 
-> patch 0002 for of_gpio.h. That's the only problem I can find. If I apply them 
-> in series they apply OK. Is that the dependency you see? Is is OK to have a 
-> patch dependant on another?
->
-It's broke. I'll resubmit v2 for 3/3
+This patch adds device tree support for the cs42l73 codec.
+Reset Gpio and Charge Pump Frequency are available
+
+Signed-off-by: Brian Austin <brian.austin@cirrus.com>
+---
+ .../devicetree/bindings/sound/cs42l73.txt          | 22 +++++++++++++++
+ sound/soc/codecs/cs42l73.c                         | 31 +++++++++++++++++++---
+ 2 files changed, 50 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs42l73.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/cs42l73.txt b/Documentation/devicetree/bindings/sound/cs42l73.txt
+new file mode 100644
+index 0000000..5a86495
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs42l73.txt
+@@ -0,0 +1,22 @@
++CS42L73 audio CODEC
++
++Required properties:
++
++  - compatible : "cirrus,cs42l73"
++
++  - reg : the I2C address of the device for I2C
++
++Optional properties:
++
++  - reset_gpio : a GPIO spec for the reset pin.
++  - chgfreq    : Charge Pump Frequency values 0x00-0x0F
++
++
++Example:
++
++codec: cs42l73@4a {
++	compatible = "cirrus,cs42l73";
++	reg = <0x4a>;
++	reset_gpio = <&gpio 10 0>;
++	chgfreq = <0x05>;
++};
+\ No newline at end of file
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index e3187cc..4607958 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -17,7 +17,7 @@
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
+-#include <linux/gpio.h>
++#include <linux/of_gpio.h>
+ #include <linux/pm.h>
+ #include <linux/i2c.h>
+ #include <linux/regmap.h>
+@@ -1414,6 +1414,7 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
+ 	struct cs42l73_private *cs42l73;
+ 	struct cs42l73_platform_data *pdata = dev_get_platdata(&i2c_client->dev);
+ 	int ret;
++	u32 val32;
+ 	unsigned int devid = 0;
+ 	unsigned int reg;
+ 
+@@ -1431,9 +1432,26 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
+ 		return ret;
+ 	}
+ 
+-	if (pdata)
++	if (pdata) {
+ 		cs42l73->pdata = *pdata;
+-
++	} else {
++		pdata = devm_kzalloc(&i2c_client->dev,
++				     sizeof(struct cs42l73_platform_data),
++				GFP_KERNEL);
++		if (!pdata) {
++			dev_err(&i2c_client->dev, "could not allocate pdata\n");
++			return -ENOMEM;
++		}
++		if (i2c_client->dev.of_node) {
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"chgfreq", &val32) >= 0)
++				pdata->chgfreq = val32;
++		}
++		pdata->reset_gpio = of_get_named_gpio(i2c_client->dev.of_node,
++						"reset-gpio", 0);
++		cs42l73->pdata = *pdata;
++	}
++
+ 	i2c_set_clientdata(i2c_client, cs42l73);
+ 
+ 	if ( cs42l73->pdata.reset_gpio) {
+@@ -1493,6 +1511,12 @@ static int cs42l73_i2c_remove(struct i2c_client *client)
+ 	return 0;
+ }
+ 
++static const struct of_device_id cs42l73_of_match[] = {
++	{ .compatible = "cirrus,cs42l73", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, cs42l73_of_match);
++
+ static const struct i2c_device_id cs42l73_id[] = {
+ 	{"cs42l73", 0},
+ 	{}
+@@ -1504,6 +1528,7 @@ static struct i2c_driver cs42l73_i2c_driver = {
+ 	.driver = {
+ 		   .name = "cs42l73",
+ 		   .owner = THIS_MODULE,
++		   .of_match_table = cs42l73_of_match,
+ 		   },
+ 	.id_table = cs42l73_id,
+ 	.probe = cs42l73_i2c_probe,
+-- 
+1.8.4.rc3
