@@ -1,38 +1,48 @@
-From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Subject: Re: [PATCH] ASoC: kirkwood: add S/PDIF support
-Date: Fri, 18 Oct 2013 15:33:27 +0100
-Message-ID: <20131018143326.GZ25034@n2100.arm.linux.org.uk>
-References: <20130924124122.64834b2a@armhf> <20131018003439.GG2443@sirena.org.uk> <20131018103019.GW25034@n2100.arm.linux.org.uk> <20131018124832.GK2443@sirena.org.uk> <20131018125638.GX25034@n2100.arm.linux.org.uk> <20131018134829.GQ2443@sirena.org.uk>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v5 01/12] ASoC: davinci: Fix AM33xx SoC Audio support
+Date: Fri, 18 Oct 2013 18:37:40 +0300
+Message-ID: <7289635e982532bb1a53865ae09cb7b17d866525.1382110089.git.jsarha@ti.com>
+References: <cover.1382110089.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20131018134829.GQ2443-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <cover.1382110089.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, bcousson@baylibre.com, mark.rutland@arm.com
+Cc: linux-omap@vger.kernel.org, broonie@kernel.org, joelf@ti.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 18, 2013 at 02:48:29PM +0100, Mark Brown wrote:
-> On Fri, Oct 18, 2013 at 01:56:38PM +0100, Russell King - ARM Linux wrote:
-> > And I think you're just wrong on what you've said above.  But... I've
-> > basically given up any hope of progressing that code after months of
-> > pissing around with your obstructive attitude, and I've elected (and
-> > others) to maintain it completely out of mainline for the forseeable
-> > future - hopefully until you get replaced by someone who can be more
-> > assistive and helpful.
-> 
-> Once more, please be civil and constructive - a confrontational approach
-> has not been helping here.  If you are intent on behaving in this
-> fashion please at least try to avoid disrupting others who are
-> interested in working in mainline.
+SND_DAVINCI_SOC is a platform driver for Davinci and AM33XX SoCs, not
+a machine driver. Make SND_AM33XX_SOC_EVM dependent of SND_DAVINCI_SOC
+instead of selecting it and add dependecy to SOC_AM33XX.
 
-Well, you say that but that's actually a total lie.  It is you who have
-done far more than anyone else to disrupt progress on this issue through
-your purposely misleading and unhelpful comments.  Many I remind you that
-it was _me_ who spent months implementing the suggestions you came out
-with only to be told time and time again that it was wrong.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
+---
+ sound/soc/davinci/Kconfig |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index 6c8e687..95970f5 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -2,7 +2,7 @@ config SND_DAVINCI_SOC
+ 	tristate "SoC Audio for the TI DAVINCI or AM33XX chip"
+ 	depends on ARCH_DAVINCI || SOC_AM33XX
+ 	help
+-	  Machine driver for DAVINCI audio.
++	  Platform driver for daVinci or AM33xx
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the DAVINCI AC97, I2S, or McASP interface. You will also need
+ 	  to select the audio interfaces to support below.
+@@ -18,7 +18,7 @@ config SND_DAVINCI_SOC_VCIF
+ 
+ config SND_AM33XX_SOC_EVM
+ 	tristate "SoC Audio for the AM33XX chip based boards"
+-	select SND_DAVINCI_SOC
++	depends on SND_DAVINCI_SOC && SOC_AM33XX
+ 	select SND_SOC_TLV320AIC3X
+ 	select SND_DAVINCI_SOC_MCASP
+ 	help
+-- 
+1.7.9.5
+
