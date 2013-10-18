@@ -1,56 +1,43 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv1 6/8] ASoC: fsl: add SGT15000 based audio machine driver.
-Date: Fri, 18 Oct 2013 18:33:31 +0100
-Message-ID: <20131018173331.GV2443@sirena.org.uk>
-References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
- <1382000477-17304-7-git-send-email-Li.Xiubo@freescale.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: [PATCH RESEND] ASoC: kirkwood: prefer external clock over internal
+ clock
+Date: Fri, 18 Oct 2013 20:34:52 +0200
+Message-ID: <20131018203452.177f8693@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9ss1VCek+7fjM2m0"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1382000477-17304-7-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: r65073@freescale.com, timur@tabi.org, lgirdwood@gmail.com, r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com, shawn.guo@linaro.org, b42378@freescale.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Jason Cooper <jason@lakedaemon.net>, Mark Brown <broonie@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---9ss1VCek+7fjM2m0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Oct 17, 2013 at 05:01:15PM +0800, Xiubo Li wrote:
-
-> +	ret = snd_soc_register_card(&fsl_sgt1500_card);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "register soc sound card failed :%d\n",
-> +				ret);
-> +		return ret;
-> +	}
-
-Use the newly added devm_snd_soc_register_card() (in -next).
-
---9ss1VCek+7fjM2m0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSYXDnAAoJELSic+t+oim9seMP/iiRnKDJNKcdrKFo60VsGo6M
-qYoKvXuXS66QMJudg2iouuG9XhS3AklWnXhubsPCuUVddbmtGTUsliubs30YvXdo
-0R6AAG3svmUvWfS776GCFpW8runhD4nmJNrPslOQ2TNRjdYNmI8PDyyykeeoD2SX
-RfN2ZTWqrYgipBg/FXHgGNomYpCjnwmPh0onpXIi2A1LKEy1D65Np3aLgCBkXmqb
-CXfoIUGc2t4FIHDXfwQ3PRCVmJ4mVsPb9ggylHPeZiHmIKUfSNVPAJn1pUA2SNKc
-ZbdbsfxOVavbvYI3XYAVKyW3adjqNiOrYy/XhKcJvfEqD+Vgsv9JQyVM1YOenk/H
-PaKBeoe9cmGJzU6lvmRLoXynZ82PrtGCuSM5mwZaM06rSgTkuRteJU6tctIugOdK
-B2PtkCV14bpodixBuidOuSDyAewE2q+yLCDZIDSNju9n4M2tXacpnfSwMbRm/Cnv
-9Np2xWsNXro1IwuYY4MzZwU+DAx4cF0nfzHfwmuRZUvvS14ujkcaRWrsoOCisDch
-612ktvxCKAmzmNdkgaUi038QMqczxkfClpnHn3IDI0nxvdn4k1btF0WlVBbyo9zl
-cuWEpjMpY/fPV94tXyj2m4LDz7bZf/tyZY8W/rD9hoeEXDJL83wNVpQPM72OcX6g
-lSxz5AGiHxYtQqJS+PEJ
-=+/EO
------END PGP SIGNATURE-----
-
---9ss1VCek+7fjM2m0--
+V2hlbiB0aGVyZSBpcyBhbiBleHRlcm5hbCBjbG9jaywgYWx3YXlzIHVzZSB0aGlzIG9uZS4KVGhp
+cyBwcmV2ZW50cyB0aGUgdHdvIERvdmUgYXVkaW8gZGV2aWNlcyB0byB1c2UgdGhlIHNhbWUgRENP
+IGNsb2NrCmF0IGRpZmZlcmVudCByYXRlcy4KClNpZ25lZC1vZmYtYnk6IEplYW4tRnJhbmNvaXMg
+TW9pbmUgPG1vaW5lamZAZnJlZS5mcj4KLS0tClRoaXMgcGF0Y2ggd2FzIGluaXRpYWx5IHByb3Bv
+c2VkIGJ5IFJ1c3NlbGwsIGJ1dCB3aXRoIGFuIGVycm9uZW91cwonZWxzZSBpZicuCi0tLQogc291
+bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEg
+aW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2tpcmt3
+b29kL2tpcmt3b29kLWkycy5jIGIvc291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5jCmlu
+ZGV4IDBmM2Q3M2QuLjhhYzg5ZjUgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9raXJrd29vZC9raXJr
+d29vZC1pMnMuYworKysgYi9zb3VuZC9zb2Mva2lya3dvb2Qva2lya3dvb2QtaTJzLmMKQEAgLTEw
+Myw3ICsxMDMsNyBAQCBzdGF0aWMgdm9pZCBraXJrd29vZF9zZXRfcmF0ZShzdHJ1Y3Qgc25kX3Nv
+Y19kYWkgKmRhaSwKIHsKIAl1aW50MzJfdCBjbGtzX2N0cmw7CiAKLQlpZiAocmF0ZSA9PSA0NDEw
+MCB8fCByYXRlID09IDQ4MDAwIHx8IHJhdGUgPT0gOTYwMDApIHsKKwlpZiAoSVNfRVJSKHByaXYt
+PmV4dGNsaykpIHsKIAkJLyogdXNlIGludGVybmFsIGRjbyBmb3IgdGhlIHN1cHBvcnRlZCByYXRl
+cwogCQkgKiBkZWZpbmVkIGluIGtpcmt3b29kX2kyc19kYWkgKi8KIAkJZGV2X2RiZyhkYWktPmRl
+diwgIiVzOiBkY28gc2V0IHJhdGUgPSAlbHVcbiIsCgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkg
+ICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5m
+cmVlLmZyLwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+bGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZy
+YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtYXJtLWtlcm5lbAo=
