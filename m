@@ -1,16 +1,18 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: [PATCH 3/3] ASoC: cs42l73: Add Device Tree support for
-	CS42L73
-Date: Fri, 18 Oct 2013 14:14:21 -0500
-Message-ID: <1382123661-3027-1-git-send-email-brian.austin@cirrus.com>
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v3 2/2] ASoC: kirkwood: fix loss of
+ external clock at probe time
+Date: Fri, 18 Oct 2013 21:12:59 +0200
+Message-ID: <20131018191259.GF10079@pengutronix.de>
+References: <20131018203555.4d974251@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db9outboundpool.messaging.microsoft.com
- (mail-db9lp0249.outbound.messaging.microsoft.com [213.199.154.249])
- by alsa0.perex.cz (Postfix) with ESMTP id B2F58261AC4
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2013 21:12:18 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B19EF261B29
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2013 21:13:13 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20131018203555.4d974251@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,119 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Brian Austin <brian.austin@cirrus.com>, broonie@kernel.org, lgirdwood@gmail.com
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Mark Brown <broonie@kernel.org>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds device tree support for the cs42l73 codec.
-Reset Gpio and Charge Pump Frequency are available
+Hello,
 
-Signed-off-by: Brian Austin <brian.austin@cirrus.com>
----
- .../devicetree/bindings/sound/cs42l73.txt          | 22 +++++++++++++++
- sound/soc/codecs/cs42l73.c                         | 31 +++++++++++++++++++---
- 2 files changed, 50 insertions(+), 3 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/cs42l73.txt
+On Fri, Oct 18, 2013 at 08:35:55PM +0200, Jean-Francois Moine wrote:
+> diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkw=
+ood-i2s.c
+> index 8ac89f5..2bbbab5 100644
+> --- a/sound/soc/kirkwood/kirkwood-i2s.c
+> +++ b/sound/soc/kirkwood/kirkwood-i2s.c
+> @@ -496,15 +496,13 @@ static int kirkwood_i2s_dev_probe(struct platform_d=
+evice *pdev)
+>  		return err;
+>  =
 
-diff --git a/Documentation/devicetree/bindings/sound/cs42l73.txt b/Documentation/devicetree/bindings/sound/cs42l73.txt
-new file mode 100644
-index 0000000..5a86495
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/cs42l73.txt
-@@ -0,0 +1,22 @@
-+CS42L73 audio CODEC
-+
-+Required properties:
-+
-+  - compatible : "cirrus,cs42l73"
-+
-+  - reg : the I2C address of the device for I2C
-+
-+Optional properties:
-+
-+  - reset_gpio : a GPIO spec for the reset pin.
-+  - chgfreq    : Charge Pump Frequency values 0x00-0x0F
-+
-+
-+Example:
-+
-+codec: cs42l73@4a {
-+	compatible = "cirrus,cs42l73";
-+	reg = <0x4a>;
-+	reset_gpio = <&gpio 10 0>;
-+	chgfreq = <0x05>;
-+};
-\ No newline at end of file
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index e3187cc..4607958 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -17,7 +17,7 @@
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
--#include <linux/gpio.h>
-+#include <linux/of_gpio.h>
- #include <linux/pm.h>
- #include <linux/i2c.h>
- #include <linux/regmap.h>
-@@ -1414,6 +1414,7 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
- 	struct cs42l73_private *cs42l73;
- 	struct cs42l73_platform_data *pdata = dev_get_platdata(&i2c_client->dev);
- 	int ret;
-+	u32 val32;
- 	unsigned int devid = 0;
- 	unsigned int reg;
- 
-@@ -1431,9 +1432,26 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
- 		return ret;
- 	}
- 
--	if (pdata)
-+	if (pdata) {
- 		cs42l73->pdata = *pdata;
--
-+	} else {
-+		pdata = devm_kzalloc(&i2c_client->dev,
-+				     sizeof(struct cs42l73_platform_data),
-+				GFP_KERNEL);
-+		if (!pdata) {
-+			dev_err(&i2c_client->dev, "could not allocate pdata\n");
-+			return -ENOMEM;
-+		}
-+		if (i2c_client->dev.of_node) {
-+			if (of_property_read_u32(i2c_client->dev.of_node,
-+				"chgfreq", &val32) >= 0)
-+				pdata->chgfreq = val32;
-+		}
-+		pdata->reset_gpio = of_get_named_gpio(i2c_client->dev.of_node,
-+						"reset-gpio", 0);
-+		cs42l73->pdata = *pdata;
-+	}
-+
- 	i2c_set_clientdata(i2c_client, cs42l73);
- 
- 	if ( cs42l73->pdata.reset_gpio) {
-@@ -1493,6 +1511,12 @@ static int cs42l73_i2c_remove(struct i2c_client *client)
- 	return 0;
- }
- 
-+static const struct of_device_id cs42l73_of_match[] = {
-+	{ .compatible = "cirrus,cs42l73", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, cs42l73_of_match);
-+
- static const struct i2c_device_id cs42l73_id[] = {
- 	{"cs42l73", 0},
- 	{}
-@@ -1504,6 +1528,7 @@ static struct i2c_driver cs42l73_i2c_driver = {
- 	.driver = {
- 		   .name = "cs42l73",
- 		   .owner = THIS_MODULE,
-+		   .of_match_table = cs42l73_of_match,
- 		   },
- 	.id_table = cs42l73_id,
- 	.probe = cs42l73_i2c_probe,
--- 
-1.8.4.rc3
+>  	priv->extclk =3D devm_clk_get(&pdev->dev, "extclk");
+> -	if (!IS_ERR(priv->extclk)) {
+> -		if (priv->extclk =3D=3D priv->clk) {
+> -			devm_clk_put(&pdev->dev, priv->extclk);
+> -			priv->extclk =3D ERR_PTR(-EINVAL);
+> -		} else {
+> -			dev_info(&pdev->dev, "found external clock\n");
+> -			clk_prepare_enable(priv->extclk);
+> -			soc_dai =3D &kirkwood_i2s_dai_extclk;
+> -		}
+> +	if (IS_ERR(priv->extclk)) {
+> +		if (PTR_ERR(priv->extclk) =3D=3D -EPROBE_DEFER)
+> +			return -EPROBE_DEFER;
+Maybe the better logic here is:
+		if (!PTR_ERR(priv->extclk) =3D=3D -ENOENT)
+			return PTR_ERR(priv->extclk);
+
+?
+
+> +	} else {
+> +		dev_info(&pdev->dev, "found external clock\n");
+> +		clk_prepare_enable(priv->extclk);
+> +		soc_dai =3D kirkwood_i2s_dai_extclk;
+Another todo (that is already in the patched code) is that you should
+check the return value of clk_prepare_enable.
+
+Best regards
+Uwe
+
+-- =
+
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
