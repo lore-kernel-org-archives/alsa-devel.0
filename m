@@ -1,73 +1,41 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: kirkwood: add S/PDIF support
-Date: Fri, 18 Oct 2013 01:34:39 +0100
-Message-ID: <20131018003439.GG2443@sirena.org.uk>
-References: <20130924124122.64834b2a@armhf>
+From: Xiubo Li-B47053 <B47053@freescale.com>
+Subject: RE: [PATCHv1 1/8] ALSA: Add SAI SoC Digital Audio Interface driver.
+Date: Fri, 18 Oct 2013 03:19:42 +0000
+Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F82865423@039-SN2MPN1-013.039d.mgd.msft.net>
+References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
+ <1382000477-17304-2-git-send-email-Li.Xiubo@freescale.com>
+ <20131017114208.595a4224@ipc1.ka-ro>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tPwux3QCgxkzM4Gx"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20130924124122.64834b2a@armhf>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20131017114208.595a4224@ipc1.ka-ro>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: =?utf-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Wang Huan-B18965 <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "perex@perex.cz" <perex@perex.cz>, Guo Shawn-R65073 <r65073@freescale.com>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Chen Guangyu-B42378 <B42378@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "broonie@kernel.org" <broonie@kernel.org>, osk
 List-Id: alsa-devel@alsa-project.org
 
-
---tPwux3QCgxkzM4Gx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Sep 24, 2013 at 12:41:22PM +0200, Jean-Francois Moine wrote:
-
-> This patch adds S/PDIF input/output for mvebu DT boards.
-
-This got less discussion than I was expecting and then slipped under a
-lot of other patches in my queue while that was timing out, sorry...  in
-any case, this still has the issue that it used a single DAI and a
-single DAI link to represent two physical DAIs and their links.
-
-Please as covered in the prior threads on this either implement DPCM or
-implement two traditional DAIs which can't be used simultaneously (which
-should be simpler and can then be built on incrementally).
-
-The last set of DPCMish patches was reported to work so should be a
-fairly small refactoring away from being OK - the main thing is to
-create back end DAIs for the physical links and then put the widgets
-that manage the enable of the S/PDIF and I2S interfaces between the FE
-and BE DAIs instead of directly connecting them to widgets on the CODEC.
-
-For two traditional DAIs it should just be a case of duplicating the DAI
-with a differnet ID then setting the enable bits based on the ID of the
-DAI in use and ideally adding some code to check that they're not both
-active (or that limit can be enforced by only having machine drivers
-that use one or the other).
-
---tPwux3QCgxkzM4Gx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSYIIcAAoJELSic+t+oim9TGMP/A1E9YB6IawqUiVErkoC/l+g
-warTiBPhWiLXzmPC2PEBs8l2++S2VYpS7cVnSMVHkciddMTJTSCZ3dy8Za7700Vl
-9E3c1UjJYJhljKzziidX8DTMwz2krcZtZpuSIsuYBTgRDP5E6b+8oT3JyezVqdE+
-OYyLrLkz4X/M/nWdMV62rFkLxMQEsle9Ck8IxJVKdJPm/p+QiWtSlqLGzR5BVbz6
-IcxJnb6WoLgR30U4bcxluvocX3xMlaq4kVsNdRlvt/G5Hzafag/Y6H8VPby2MBjo
-pvLbwWwUNcCACkbwTRXFfZ/aVD7fBP2OY07qE14HHD/1mOv1ZD4nLcD31h7C8ioW
-t8FYxMho1j7KCydaF7ZV+JovRlbRPxm05fiDTH846XbSBRRM/wAeMMBQxhN1tLpr
-RdIHnSDsXivcLKAmf7ypyIhBG2ApRpEsJq/QU6l820aVWVnMeNhxcke09PnSBKci
-XTS/kzKEkfjsIhTrGCCWP79W/qniOyhlreVCZPnry79ZjuPJrb/89JzK8DlMwNRy
-UCwdl5lM0AbKOQlZLl8MIZNQS9ck5+Ja3RT6/ebNx72D+Wyj+IhQE7OTBZLXVrdY
-Z+afVitblo+EaJ4dUVX2KxJSby9wkfdyVTu/M0evZ4qpuryPsN09s6dMUdEmIXOT
-JW4VyI4OG5F7//SJDgBo
-=0rnc
------END PGP SIGNATURE-----
-
---tPwux3QCgxkzM4Gx--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+SGksDQoNCj4gPiArCXJlcyA9IHBsYXRmb3JtX2dldF9yZXNvdXJjZShwZGV2LCBJT1JFU09VUkNF
+X01FTSwgMCk7DQo+ID4gKwlzYWktPmJhc2UgPSBkZXZtX2lvcmVtYXBfcmVzb3VyY2UoJnBkZXYt
+PmRldiwgcmVzKTsNCj4gPiArCWlmIChJU19FUlIoc2FpLT5iYXNlKSkgew0KPiA+ICsJCXJldCA9
+IFBUUl9FUlIoc2FpLT5iYXNlKTsNCj4gPiArCQlyZXR1cm4gcmV0Ow0KPiA+DQo+IGNvdWxkIGJl
+Og0KPiAJCXJldHVybiBQVFJfRVJSKHNhaS0+YmFzZSk7DQo+DQoNClllc++8jFRoaXMgbG9va3Mg
+YmV0dGVyLg0KDQogDQo+ID4gKyNkZWZpbmUgRlNMX1NBSV9ETUFCVUZfU0laRQkoMzIgKiAxMDI0
+KQ0KPiA+ICsjZGVmaW5lIFRDRF9OVU1CRVIJCTQNCj4gPiArI2RlZmluZSBFRE1BX1BSSU9fSElH
+SCAgICAgICAgICA2DQo+ID4gKw0KPiBzdHJhbmdlIGluZGVudGF0aW9uIHdpdGggbWl4ZWQgc3Bh
+Y2VzIGFuZCB0YWJzLg0KPiANCg0KVGhpcyB3aWxsIGJlIHJldmlzZWQgaW4gdGhlIG5leHQgdmVy
+c2lvbi4NCg0KDQoNCj4gPiArI2RlZmluZSBTQUlfQ1IyX01TRUxfTUNMSzMJKEJJVCgyNil8QklU
+KDI3KSkNCj4gPg0KPiBzcGFjZXMgYXJvdW5kICd8Jz8NCj4gDQoNCkFuZCB0aGlzIHRvby4NCg0K
+DQoNCg0KLS0NCkJSUywNClhpdWJvDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpsaW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlzdApsaW51eC1hcm0ta2Vy
+bmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCg==
