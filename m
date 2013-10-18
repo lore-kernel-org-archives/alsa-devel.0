@@ -1,59 +1,78 @@
-From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Subject: Re: [PATCH] ASoC: kirkwood: add S/PDIF support
-Date: Fri, 18 Oct 2013 13:56:38 +0100
-Message-ID: <20131018125638.GX25034@n2100.arm.linux.org.uk>
-References: <20130924124122.64834b2a@armhf> <20131018003439.GG2443@sirena.org.uk> <20131018103019.GW25034@n2100.arm.linux.org.uk> <20131018124832.GK2443@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: simple-card: un-implemented .set_fmt
+	is not error
+Date: Fri, 18 Oct 2013 14:09:36 +0100
+Message-ID: <20131018130936.GP2443@sirena.org.uk>
+References: <87bo2n1l2y.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20131018124832.GK2443-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============4721795583475292204=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id C280F261AB4
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2013 15:09:42 +0200 (CEST)
+In-Reply-To: <87bo2n1l2y.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 18, 2013 at 01:48:32PM +0100, Mark Brown wrote:
-> On Fri, Oct 18, 2013 at 11:30:19AM +0100, Russell King - ARM Linux wrote:
-> > On Fri, Oct 18, 2013 at 01:34:39AM +0100, Mark Brown wrote:
-> 
-> > > The last set of DPCMish patches was reported to work so should be a
-> > > fairly small refactoring away from being OK - the main thing is to
-> > > create back end DAIs for the physical links and then put the widgets
-> > > that manage the enable of the S/PDIF and I2S interfaces between the FE
-> > > and BE DAIs instead of directly connecting them to widgets on the CODEC.
-> 
-> > ROTFL.  You're now telling JF to do exactly what I did in my last patch.
-> > Your two-faced-ness is utterly astounding.
-> 
-> > "widgets that manage the enable of the S/PDIF and I2S interfaces between
-> > the FE and BE DAIs" is exactly what I did and you told me that was wrong.
-> > Make up your fscking mind.
-> 
-> No, this is not the case.  The major problem with your last set of
-> patches was that they did not create any back end DAIs, instead they
-> created purely DAPM routes from the single traditional DAI out to
-> widgets in the CODEC.  What I'm asking Jean-Francois to do above is
-> create and use back end DAIs.
-> 
-> Please let me also remind you that confrontational behaviour such as the
-> ad hominem remarks above is not at all constructive or helpful, please
-> keep the discussion civil.
 
-Let me remind you that I had a definition of what a front end and a back
-end DAI was from Liam, and your definition is at odds with that.
+--===============4721795583475292204==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Xq83POD0U/QTzh8i"
+Content-Disposition: inline
 
-I am still of the opinion that you don't know what you're talking about
-most of the time, and nothing has changed in that regard, and I still
-regard you as a completely  obstructive and unhelpful person.
 
-And I think you're just wrong on what you've said above.  But... I've
-basically given up any hope of progressing that code after months of
-pissing around with your obstructive attitude, and I've elected (and
-others) to maintain it completely out of mainline for the forseeable
-future - hopefully until you get replaced by someone who can be more
-assistive and helpful.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--Xq83POD0U/QTzh8i
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Oct 17, 2013 at 05:25:45PM -0700, Kuninori Morimoto wrote:
+> Current simple-card returns error if DAI doesn't support
+> .set_fmt callback.
+> But the return value -ENOTSUPP means "not supported",
+> it is not error.
+> This patch avoids such case
+
+Applied, thanks.
+
+--Xq83POD0U/QTzh8i
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSYTMNAAoJELSic+t+oim9IfcP/0c0aEY+196ReEZbMhetjPlx
+Y2TfEslMI2/mOV0IrlRy/0yhtztgi0lP2FWRa5V+WMiI/lppldtCtPf++DJVmwDs
+lXdOBAvaD2TXOI8ipTDsQPSGwzqUWbU9ew8zEtgvdNB/3M9xnSlC4pCzZy3ttNFA
+fbMN3p361ydvqNZVnSTHGnkG/WMj5+bzGIAl0/iGSgMP5TewUjBNWov1AaUFG8PY
+EHBKhWG3JW5TCIBLFw2TemtikcQDmi5bpObdvPw/GYqjnJS+vZ1LP4/9Y9suvGYa
+gyurMDsA+rvAg2zIu8k2v8FRSbqPUDHhd6PXgVSJi1J0uyH5nz1cettGn9Q80WdK
+YN2eklD4U+fmqP4PCzEvuYbNPC0TaecwKS2OcvmludUqFVPcRGgaYqHx2NuuzYU0
+jKrDNFsWEIieUIVanhdVf/IZQZjBH6OE9YQX1n7PYMVXYFBPMwQXApWGytTa2GWr
+fCMnumflO88Nb5qTVnsLkXIUciUmncz2GlIFme804z874G3ZTkVmyhich0X6L6mL
+8AkGqTLI+M0HR6ypVN1iGCycOrxADUegWEvmjrQ8kpgzFEjHRS1eo9AiaVGOGzI+
+/T1/rCyHUDUJ7/sYfYrGxyFRTm6ALsFmaNU58SxpSrm8fvdf872SZQpcpjGVN6LF
+ZoPzBzYGuNtzVBdHG7L7
+=hvZj
+-----END PGP SIGNATURE-----
+
+--Xq83POD0U/QTzh8i--
+
+--===============4721795583475292204==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4721795583475292204==--
