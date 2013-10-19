@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] ASoC: dmaengine-pcm: Add support
- for querying DMA capabilities
-Date: Sat, 19 Oct 2013 21:27:56 +0100
-Message-ID: <20131019202756.GH2443@sirena.org.uk>
-References: <1381237680-32654-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: imx: Open code dma channel request
+Date: Sat, 19 Oct 2013 21:30:15 +0100
+Message-ID: <20131019203015.GI2443@sirena.org.uk>
+References: <1382212933-15641-1-git-send-email-broonie@kernel.org>
+ <5262EB47.7000302@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1932472968999235907=="
+Content-Type: multipart/mixed; boundary="===============4176649704362663946=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 22624262625
- for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2013 22:28:01 +0200 (CEST)
-In-Reply-To: <1381237680-32654-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FE64262625
+ for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2013 22:30:18 +0200 (CEST)
+In-Reply-To: <5262EB47.7000302@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linaro-kernel@lists.linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1932472968999235907==
+--===============4176649704362663946==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="53tfuk7jz6ispOYh"
+	protocol="application/pgp-signature"; boundary="OL77D1xY4Kgu2EHc"
 Content-Disposition: inline
 
 
---53tfuk7jz6ispOYh
+--OL77D1xY4Kgu2EHc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Oct 08, 2013 at 03:07:59PM +0200, Lars-Peter Clausen wrote:
-> Currently each platform making use the the generic dmaengine PCM driver still
-> needs to provide a custom snd_pcm_hardware struct which specifies the
-> capabilities of the DMA controller, e.g. the maximum period size that can be
+On Sat, Oct 19, 2013 at 10:27:51PM +0200, Lars-Peter Clausen wrote:
 
-Applied both, thanks.  It seems like if there's issues with the FIFO
-stuff we can always clean it up later and this is definitely a step
-forward in terms of usability for the API.
+> Since the driver is already using the generic struct adding this to
+> the other patch makes more sense to me:
 
---53tfuk7jz6ispOYh
+You're quite right, to be honest I didn't even look at what the data was
+- I was just doing a mechanical conversion to let me get on with the
+Samsung driver.
+
+--OL77D1xY4Kgu2EHc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSYutJAAoJELSic+t+oim9fuwP/3aJRm1SOOkFnVWtpTp2RjHg
-RNxpdVS+O+zhbHzRgwCLppPQlp3mMorIbMNNLAwRkwA1Wg5VK1DgcG372iHjV9xf
-dUQR8ho/pLJxFW2tpQG2iZId9iiqoYflKAObAhHx6P4FJaTt2oSX7L1er3b6R+v6
-r3GewjFry/H2BiP10BO06CqNpHnPRy6IzRqbOuoQNAsrlZ2tHiBwTdGI0I4/rDiy
-KqPpGdfV3ltG4eR9x+25y8jTeLLbNMA1GLPaieNFdDZxxK+nX9g0fMCrZF7ZJw3N
-tEoBvcQWpIHScjYMdy7wxNkdGHmAYqwbF+ebEtXo53Ou9iagfOEo/xZZ/5TrKEBH
-TZA8sQ60Bw97R6SlaHcAtO9+rnipO+ngfgbk15DBy6OjcqEUOfutFc9XR5maJZ8R
-k9fe9JkY4Zhk3EgNV25ZcsEOS+bidOI5rvlPayAURsALd9Gx0XsqPlw/x9IU3f2M
-xBKq69UN1b4HNEz6PZc595wvwHOhA9kuE7y8Og+6qR57p9/YBvKipoyQYk0W7rOz
-C+DZuTL8bfGstL0dSniYOaBoZz5aMVHqD2f/JDsOH0p3UTbLk7TAQLn21klfcelA
-MeytF45Pe8mLPlYDOmxtKZhhXPjfg/weT6QselE6/d32UkGOnLpR4JVHCVfCa/m3
-78KGZ285UnAU5YtoRLRD
-=yj9z
+iQIcBAEBAgAGBQJSYuvUAAoJELSic+t+oim9dYkQAJPucD540atw0WtHMmWXZzeb
+QOO08WYrm99lCV5RQ94u79csAoC7okAX1IxkVusA/+VDMYjU8lRTLS20eVQt393H
+vvh40K7k0KYAnYVKyhHo+mM4lriv+O7nkiFpmm9d/t0Fc+u4gJn7mTLzSg4fGmzs
+WtsQJeiG/aNrUBRlHHCJUpe8WCTo174yLYW7epjm5W+2P6ESOKKeA++8i3i33zZk
+eUyvPVkXKWkc5jNSF0A/df1sx2X0OlfYUnwXTOTELq3fhR2pctZBiVmNI5Bet88e
+NDMb+iiNLKB5ILr0m5Hfiezk24AIODLAbP/o18jkBUp3nE3w5hCeVsJe22ORtWct
+wqZWaOuFz/ebyyn5MGKc25uEADddB1YQgzsU/jZq1Drw4HTKnoAKTZGjuyL4nwn4
+KkGbI3noK5z3IYWU1rVya355GLBWJnpqOE8Ra44+I+cQNwPuqrFZ3Ww1VOJyxsVL
+rHdSKg49Ej1y6clkpwfy2JcNs9vBKyPP5hyz2RsbaKxgwYQmm+ZGYQOCajfEYVLO
+HUxsYGmgKMc/xEPB0qx3OTPcqs69CXxI19AlZDjS+vhQZW9wd98T2/FNnU+rWOny
+sQ9LRtILQI7ZTWfvBowbarzYH9YawxKepZ6Il5BQ3C4nWls/uT6t1vE9AJl8/bmb
+UdtIshmuK4+5U4REyoVA
+=stCV
 -----END PGP SIGNATURE-----
 
---53tfuk7jz6ispOYh--
+--OL77D1xY4Kgu2EHc--
 
---===============1932472968999235907==
+--===============4176649704362663946==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1932472968999235907==--
+--===============4176649704362663946==--
