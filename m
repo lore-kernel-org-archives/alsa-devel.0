@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: ep93xx: Open code dma channel
- request
-Date: Sat, 19 Oct 2013 21:00:32 +0100
-Message-ID: <20131019200032.GD2443@sirena.org.uk>
-References: <1382188384-18063-1-git-send-email-broonie@kernel.org>
- <1382188384-18063-2-git-send-email-broonie@kernel.org>
- <5262BF2D.1080104@metafoo.de>
+Subject: Re: [PATCH] ASoC: dmaengine: Use filter_data rather
+ than dma_data for compat requests
+Date: Sat, 19 Oct 2013 21:01:15 +0100
+Message-ID: <20131019200115.GE2443@sirena.org.uk>
+References: <1382189739-22732-1-git-send-email-broonie@kernel.org>
+ <5262BFC9.3020405@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1073978166782824433=="
+Content-Type: multipart/mixed; boundary="===============6704461689602742976=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 55DB92610C7
- for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2013 22:00:37 +0200 (CEST)
-In-Reply-To: <5262BF2D.1080104@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id BD1BA264EBF
+ for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2013 22:01:17 +0200 (CEST)
+In-Reply-To: <5262BFC9.3020405@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,64 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Ryan Mallon <rmallon@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1073978166782824433==
+--===============6704461689602742976==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4IfZ6i/5rsADVrr6"
+	protocol="application/pgp-signature"; boundary="5YYVglCS/eEjGrzH"
 Content-Disposition: inline
 
 
---4IfZ6i/5rsADVrr6
+--5YYVglCS/eEjGrzH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Oct 19, 2013 at 07:19:41PM +0200, Lars-Peter Clausen wrote:
-> On 10/19/2013 03:13 PM, Mark Brown wrote:
-> [...]
-> >  static const struct snd_dmaengine_pcm_config ep93xx_dmaengine_pcm_config = {
-> >  	.pcm_hardware = &ep93xx_pcm_hardware,
-> >  	.compat_filter_fn = ep93xx_pcm_dma_filter,
+On Sat, Oct 19, 2013 at 07:22:17PM +0200, Lars-Peter Clausen wrote:
 
-> The compat_filter_fn attribute should probably removed
+> I think this patch also needs to update sound/soc/fsl/imx-pcm-dma.c
 
-Yeah, I was in two minds about that.  Obviously the ideal thing is to
-change the drivers so they can use the filter function again; from that
-point of view it's kind of like what's going on with Tegra in intention
-- it is notionaly using the filter function, it's just that the DAIs are
-putting the data in the wrong place at the minute.
+Yes, I sent a patch for that I think?  Or did I forget to post it?
 
---4IfZ6i/5rsADVrr6
+--5YYVglCS/eEjGrzH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSYuTcAAoJELSic+t+oim9BYEP+gIgCjuYA2cJCmQZdeECo41k
-WjwN3HHqrIxs/5yyDRR4P2RrZJ+0alfXLEZPaQFwUfBezTGTPgYhCUNCmF6jjKMx
-iYbiIftMKiUpVXJuouym3KBqitb8kbL5bLwqZoWDW+plYRfKH93nC2cT3xIbFi/8
-SwRKcARCDitSWq8qUjAP63BQ8NnbQlc7SXJBwaJxtJi9vQjINVD1+ZTLptVMZJyB
-PCXP3WDoW5IR0oSmIWcs8yyRQljvjqAwTBV8jc4JlkQULdTami3g07PlQrbIEZUE
-4GoRrCK+1CO+Znv2RGp49DBz0Mlc0NwLTDmTuJnYvaShBWOf+B/52vd2nbpTeOXv
-gKc+XYQ5UKwsjQ17ydKPCJicHH6RUNBH/UNLNOHPPqhT/TnRI707XdnmcUOUFqSf
-dk0GmL4/KwcCL4P0v4v9XSBmkdQqRnYQFl0kqCEjlhNpV5ibOC71lbNVgSiq4i2D
-MMin+TG55Y5hi91p7QQgBvmS8gWE/7HUw/8BLW4Jcpl/dUC44ixlVwht0z844ser
-c/jQO29owHLg0IpGkKhgGyGmTwDvYfywc3MSFEP8BP2pb32lh2GHTQG6RKzQoxlo
-Dho4dwtLs4PCewsMHxeCIotR9snoRnr9pPqKktfiQsyBk13B35aCPLagGWRc2XJd
-2COKoBDOUh9/7ImUfqNg
-=YVJg
+iQIcBAEBAgAGBQJSYuUIAAoJELSic+t+oim9dNQP/2NbckL28Jtf3TwVjZ+5H5Lx
+4iaCUFMF4gUUFK5kLc2qU/DrthGKX7Y6KvETvtX8OR7bD2HPCTcxZb6QPwx2C+yP
+PKuEy6tXR17S8Vo59bhzjkTS5YFLKsP4OtClx6+eB1GLMXQi5UsDrG4VbWKpdS6F
+JIFCObedM0+TTPSzOBMDKeKvLHK/asrn91UBhYlesem9Oe7rxgdCx0mcO0wZCv1u
+ic6UPW4HO+5zfsmfR9lfZfLwyNmAun11Z90xXCOZ197sVrZi3t1tW1kDp2Mm9BKv
+8ouJlDnfASrDNvqaVq5lscleJ3kMlMpdF8340JswawNiWqS4Jjx9z0W6ZKfAU0p/
+aMscKtLBzd7FGHSyPTFwuc3ARvXPjf/c6xQrnwoomGd5eRtFLTu1RghAy1UOSaXx
+N3XD3QlKeXRubBp78Vpm0pvICd7CS8Vsu6jzMoXXo3tvlp4vt7OuYcUaIEwgpPtg
+IpAf30r12GQxyUNdQ1lb4MLsSti554OVrJlX07GAXNav/jTGQNTyO0y8ZqEQjJqy
+xEZ+wMsLjQjO4Y0peVzKZ/WbJQedlWkULWy3xRkK827wgCuZkK1haYZsGfgyR2yj
+lGoUy1IEEuMzdncVbuvewIYLQSFwOs6wvCdGsMNKZmXWUS16JwTa34834vKH7u8n
+o2SEj42DWwkB1nDrcH+N
+=jzwZ
 -----END PGP SIGNATURE-----
 
---4IfZ6i/5rsADVrr6--
+--5YYVglCS/eEjGrzH--
 
---===============1073978166782824433==
+--===============6704461689602742976==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1073978166782824433==--
+--===============6704461689602742976==--
