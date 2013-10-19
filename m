@@ -1,96 +1,63 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/3] ASoC: dmaengine: Support custom channel names
-Date: Sat, 19 Oct 2013 17:43:51 +0100
-Message-ID: <1382201032-13538-2-git-send-email-broonie@kernel.org>
-References: <1382201032-13538-1-git-send-email-broonie@kernel.org>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1382201032-13538-1-git-send-email-broonie@kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Tomasz Figa <t.figa@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ALSA: Add MAINTAINERS entry for dmaengine
+ helpers
+Date: Sat, 19 Oct 2013 19:17:41 +0200
+Message-ID: <5262BEB5.2000709@metafoo.de>
+References: <1382189634-22645-1-git-send-email-broonie@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-101.synserver.de (smtp-out-103.synserver.de
+ [212.40.185.103])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D0752608ED
+ for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2013 19:17:51 +0200 (CEST)
+In-Reply-To: <1382189634-22645-1-git-send-email-broonie@kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On 10/19/2013 03:33 PM, Mark Brown wrote:
+> From: Mark Brown <broonie@linaro.org>
+> 
+> Help ensure that Lars-Peter gets CCed on dmaengine related patches by
+> adding a MAINTAINERS entry for the helpers.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-Some devices have more than just simple TX and RX DMA channels, for example
-modern Samsung I2S IPs support a secondary transmit DMA stream which is
-mixed into the primary stream during playback. Allow such devices to
-specify the names of the channels to be requested in their dma_data.
+Thanks.
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- include/sound/dmaengine_pcm.h         |  6 ++++++
- sound/soc/soc-generic-dmaengine-pcm.c | 13 ++++++++++++-
- 2 files changed, 18 insertions(+), 1 deletion(-)
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index 83b2c3e..1501731 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -61,6 +61,7 @@ struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream)
-  * @slave_id: Slave requester id for the DMA channel.
-  * @filter_data: Custom DMA channel filter data, this will usually be used when
-  * requesting the DMA channel.
-+ * @chan_name: Custom channel name to use when requesting DMA channel.
-  * @fifo_size: FIFO size of the DAI controller in bytes
-  */
- struct snd_dmaengine_dai_dma_data {
-@@ -69,6 +70,7 @@ struct snd_dmaengine_dai_dma_data {
- 	u32 maxburst;
- 	unsigned int slave_id;
- 	void *filter_data;
-+	const char *chan_name;
- 	unsigned int fifo_size;
- };
- 
-@@ -98,6 +100,10 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
-  * playback.
-  */
- #define SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX BIT(3)
-+/*
-+ * The PCM streams have custom channel names specified.
-+ */
-+#define SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME BIT(4)
- 
- /**
-  * struct snd_dmaengine_pcm_config - Configuration data for dmaengine based PCM
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 2eea2e0..0c469cb 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -186,6 +186,8 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
- 	const struct snd_dmaengine_pcm_config *config = pcm->config;
-+	struct device *dev = rtd->platform->dev;
-+	struct snd_dmaengine_dai_dma_data *dma_data;
- 	struct snd_pcm_substream *substream;
- 	size_t prealloc_buffer_size;
- 	size_t max_buffer_size;
-@@ -206,6 +208,13 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 		if (!substream)
- 			continue;
- 
-+		dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+
-+		if (!pcm->chan[i] &&
-+		    (pcm->flags & SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME))
-+			pcm->chan[i] = dma_request_slave_channel(dev,
-+				dma_data->chan_name);
-+
- 		if (!pcm->chan[i] && (pcm->flags & SND_DMAENGINE_PCM_FLAG_COMPAT)) {
- 			pcm->chan[i] = dmaengine_pcm_compat_request_channel(rtd,
- 				substream);
-@@ -278,7 +287,9 @@ static void dmaengine_pcm_request_chan_of(struct dmaengine_pcm *pcm,
- {
- 	unsigned int i;
- 
--	if ((pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_DT) || !dev->of_node)
-+	if ((pcm->flags & (SND_DMAENGINE_PCM_FLAG_NO_DT |
-+			   SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME)) ||
-+	    !dev->of_node)
- 		return;
- 
- 	if (pcm->flags & SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX) {
--- 
-1.8.4.rc3
+> ---
+>  MAINTAINERS | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 34ca01a..3a7eaaa 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -7877,6 +7877,13 @@ F:	Documentation/sound/alsa/soc/
+>  F:	sound/soc/
+>  F:	include/sound/soc*
+>  
+> +SOUND - DMAENGINE HELPERS
+> +M:	Lars-Peter Clausen <lars@metafoo.de>
+> +S:	Supported
+> +F:	include/sound/dmaengine_pcm.h
+> +F:	sound/core/pcm_dmaengine.c
+> +F:	sound/soc/soc-generic-dmaengine-pcm.c
+> +
+>  SPARC + UltraSPARC (sparc/sparc64)
+>  M:	"David S. Miller" <davem@davemloft.net>
+>  L:	sparclinux@vger.kernel.org
+> 
