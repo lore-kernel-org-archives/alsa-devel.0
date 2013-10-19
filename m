@@ -1,14 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/2] ASoC: cirrus: Enable compile test builds
-Date: Sat, 19 Oct 2013 14:13:03 +0100
-Message-ID: <1382188384-18063-1-git-send-email-broonie@kernel.org>
+Subject: [PATCH 2/2] ASoC: ep93xx: Open code dma channel request
+Date: Sat, 19 Oct 2013 14:13:04 +0100
+Message-ID: <1382188384-18063-2-git-send-email-broonie@kernel.org>
+References: <1382188384-18063-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 357022608A2
- for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2013 15:13:10 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 064B32608E9
+ for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2013 15:13:11 +0200 (CEST)
+In-Reply-To: <1382188384-18063-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,26 +26,44 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mark Brown <broonie@linaro.org>
 
-The core support for ep93xx (currently only the DMA driver) does not
-depend on the architecture at all and everything else has more strict
-dependencies so enable compile test builds for improved build coverage.
+Currently the ep93xx DMA code is one of the few users relying on the fact
+that the compat code uses the dma_data as the filter data for non-DT
+channel requests. Since the rest of the core expects this to be a struct
+snd_dmaengine_dai_data this isn't terribly helpful this will be changed to
+use the already existing filter data so avoid breaking ep93xx by open
+coding the current behaviour.
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/cirrus/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/cirrus/ep93xx-pcm.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/soc/cirrus/Kconfig b/sound/soc/cirrus/Kconfig
-index 2c20f01..06f938d 100644
---- a/sound/soc/cirrus/Kconfig
-+++ b/sound/soc/cirrus/Kconfig
-@@ -1,6 +1,6 @@
- config SND_EP93XX_SOC
- 	tristate "SoC Audio support for the Cirrus Logic EP93xx series"
--	depends on ARCH_EP93XX && SND_SOC
-+	depends on (ARCH_EP93XX || COMPILE_TEST) && SND_SOC
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
+diff --git a/sound/soc/cirrus/ep93xx-pcm.c b/sound/soc/cirrus/ep93xx-pcm.c
+index 0e9f56e..cfe517e 100644
+--- a/sound/soc/cirrus/ep93xx-pcm.c
++++ b/sound/soc/cirrus/ep93xx-pcm.c
+@@ -57,9 +57,22 @@ static bool ep93xx_pcm_dma_filter(struct dma_chan *chan, void *filter_param)
+ 	return false;
+ }
+ 
++static struct dma_chan *ep93xx_compat_request_channel(
++	struct snd_soc_pcm_runtime *rtd,
++	struct snd_pcm_substream *substream)
++{
++	struct snd_dmaengine_dai_dma_data *dma_data;
++
++	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++
++	return snd_dmaengine_pcm_request_channel(ep93xx_pcm_dma_filter,
++						 dma_data);
++}
++
+ static const struct snd_dmaengine_pcm_config ep93xx_dmaengine_pcm_config = {
+ 	.pcm_hardware = &ep93xx_pcm_hardware,
+ 	.compat_filter_fn = ep93xx_pcm_dma_filter,
++	.compat_request_channel = ep93xx_compat_request_channel,
+ 	.prealloc_buffer_size = 131072,
+ };
+ 
 -- 
 1.8.4.rc3
