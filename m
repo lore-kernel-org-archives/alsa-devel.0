@@ -1,13 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: ASoC updates for v3.12
-Date: Sat, 19 Oct 2013 13:56:07 +0100
-Message-ID: <20131019125607.GA2443@sirena.org.uk>
+From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Subject: Re: [Alsa-user]  hdmi sound rerouted?
+Date: Sat, 19 Oct 2013 12:59:30 +0000
+Message-ID: <A3397C8B8B789E45844E7EC5DEAD89D02E818E48@satlexdag05.amd.com>
+References: <20131019094918.273460@gmx.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4340901010571435911=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 32C7A260885
- for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2013 14:56:10 +0200 (CEST)
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe003.messaging.microsoft.com [213.199.154.206])
+ by alsa0.perex.cz (Postfix) with ESMTP id DAF342608B7
+ for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2013 15:01:20 +0200 (CEST)
+In-Reply-To: <20131019094918.273460@gmx.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,114 +22,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Dagg Stompler <daggs@gmx.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <cladisch@googlemail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4340901010571435911==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZNMkbfjzv9RSo/Cd"
-Content-Disposition: inline
-
-
---ZNMkbfjzv9RSo/Cd
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-The following changes since commit 61e6cfa80de5760bbe406f4e815b7739205754d2:
-
-  Linux 3.12-rc5 (2013-10-13 15:41:28 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc=
--v3.12-rc5
-
-for you to fetch changes up to 40f8989695660dee984338861ca9900b8e0b5183:
-
-  Merge remote-tracking branch 'asoc/fix/tlv320aic3x' into asoc-linus (2013=
--10-18 14:17:14 +0100)
-
-----------------------------------------------------------------
-
-ASoC: Fixes for v3.12
-
-A number of small, fairly unexciting, fixes for drivers - nothing stand
-out.
-
-----------------------------------------------------------------
-Axel Lin (3):
-      ASoC: pcm1681: Fix max_register setting
-      ASoC: pcm1681: Fix max_register setting
-      ASoC: pcm1792a: Fix max_register setting
-
-Guenter Roeck (1):
-      ASoC: fsl_ssi: Fix irq_of_parse_and_map() return value check
-
-Jarkko Nikula (1):
-      ASoC: omap: Fix incorrect ARM dependency
-
-Kuninori Morimoto (1):
-      ASoC: rcar: fixup generation checker
-
-Mark Brown (6):
-      Merge remote-tracking branch 'asoc/fix/fsl' into asoc-linus
-      Merge remote-tracking branch 'asoc/fix/omap' into asoc-linus
-      Merge remote-tracking branch 'asoc/fix/pcm1681' into asoc-linus
-      Merge remote-tracking branch 'asoc/fix/pcm1792a' into asoc-linus
-      Merge remote-tracking branch 'asoc/fix/rcar' into asoc-linus
-      Merge remote-tracking branch 'asoc/fix/tlv320aic3x' into asoc-linus
-
-Peter Ujfalusi (1):
-      ASoC: tlv320aic3x: Connect 'Left Line1R Mux' and 'Right Line1L Mux'
-
-Philippe R=E9tornaz (2):
-      ASoC: fsl: Fix sound on mx31moboard
-      ASoC: fsl: imx-ssi: fix probe on imx31
-
- include/sound/rcar_snd.h       |  1 +
- sound/soc/codecs/pcm1681.c     |  2 +-
- sound/soc/codecs/pcm1792a.c    |  2 +-
- sound/soc/codecs/tlv320aic3x.c |  4 ++++
- sound/soc/fsl/fsl_ssi.c        |  2 +-
- sound/soc/fsl/imx-mc13783.c    |  2 +-
- sound/soc/fsl/imx-ssi.c        | 23 ++++++++++++-----------
- sound/soc/fsl/imx-ssi.h        |  2 ++
- sound/soc/omap/Kconfig         |  4 ++--
- sound/soc/sh/rcar/rsnd.h       |  4 ++--
- 10 files changed, 27 insertions(+), 19 deletions(-)
-
---ZNMkbfjzv9RSo/Cd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSYoFkAAoJELSic+t+oim9j5wP/RHZXe90QyYCA2XTa8jebvqp
-wHBLmb5W56nyoovFSg6JFLuvPFN/DWspuO9GPpjdsRWz8KtmvL59wIon5NmAdjog
-3UWvfN/gHSCDbPsGsNfsxp/xWvHkYXIhNNtZ+Ph8Fk1xEFa7ZhIDyf0atVDjkvVp
-msbj+QXLRwH9UnTKNLe3JhqZ8daiPTPcIQ3w+px9qs134lIkTzejBHo4SK2ivCUR
-mL9AdfCMvpvs2LsdfAUMS97cjZbikkLQswmwkdcm+3fwTDcS53jysx9NpWCApveI
-kCypw7et1CgguhggqQowQbOfhEy2YvyhSasJtoGXyIftktYM5fJbQSagG5LT5tih
-Q0ed0VIFQsu0XzZL5ZokjoFoZfCPnyPB630Ja7zUXDiXOYQ07+ewUKoNytTaTkz8
-+JcWWzZzhNA2dQoPFwgZYZqdO4WUmm9r45A8XRY/qDY57XPU9IkTZB0l5XDYgYvB
-UDZEnUT6C/ySQm79ed+DIymhrSOCzRZmkv0MgTlonBog8u+8YA01nMQIlIvcVVvd
-/TaebN4T/gsgFwzui8rds8bM/pubJhtXln4AYTjnvl6/KfZkICBkhDz9L/63sXxZ
-3vY+nvOQQP3Ut7S1ZiG9OVSxzjJs954byB+v7Et6tOEaR17xUoJYqZWOk/nIpCRP
-pHW+9sAbSlpcDBvyi4dH
-=9F8x
------END PGP SIGNATURE-----
-
---ZNMkbfjzv9RSo/Cd--
-
---===============4340901010571435911==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4340901010571435911==--
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBEYWdnIFN0b21wbGVyIFttYWls
+dG86ZGFnZ3NAZ214LmNvbV0NCj4gU2VudDogU2F0dXJkYXksIE9jdG9iZXIgMTksIDIwMTMgNTo0
+OSBBTQ0KPiBUbzogVGFrYXNoaSBJd2FpOyBEZXVjaGVyLCBBbGV4YW5kZXINCj4gQ2M6IENsZW1l
+bnMgTGFkaXNjaDsgYWxzYS11c2VyQGxpc3RzLnNvdXJjZWZvcmdlLm5ldDsgYWxzYS1kZXZlbEBh
+bHNhLQ0KPiBwcm9qZWN0Lm9yZw0KPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtBbHNhLXVz
+ZXJdIGhkbWkgc291bmQgcmVyb3V0ZWQ/DQo+IA0KPiA+IC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2Ug
+LS0tLS0NCj4gPiBGcm9tOiBUYWthc2hpIEl3YWkNCj4gPiBTZW50OiAxMC8wOC8xMyAxMDo0OSBB
+TQ0KPiA+IFRvOiBEZXVjaGVyLCBBbGV4YW5kZXINCj4gPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2
+ZWxdIFtBbHNhLXVzZXJdIMKgaGRtaSBzb3VuZCByZXJvdXRlZD8NCj4gPg0KPiA+IEF0IE1vbiwg
+NyBPY3QgMjAxMyAxMzozNjoyNCArMDAwMCwNCj4gPiBEZXVjaGVyLCBBbGV4YW5kZXIgd3JvdGU6
+DQo+ID4gPg0KPiA+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gPiBGcm9t
+OiBUYWthc2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQ0KPiA+ID4gPiBTZW50OiBNb25k
+YXksIFNlcHRlbWJlciAzMCwgMjAxMyA1OjE4IEFNDQo+ID4gPiA+IFRvOiBEZXVjaGVyLCBBbGV4
+YW5kZXINCj4gPiA+ID4gQ2M6IENsZW1lbnMgTGFkaXNjaDsgRGFnZyBTdG9tcGxlcjsgYWxzYS11
+c2VyQGxpc3RzLnNvdXJjZWZvcmdlLm5ldDsNCj4gYWxzYS0NCj4gPiA+ID4gZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZw0KPiA+ID4gPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtBbHNhLXVzZXJd
+IGhkbWkgc291bmQgcmVyb3V0ZWQ/DQo+ID4gPiA+DQo+ID4gPiA+IEF0IE1vbiwgMzAgU2VwIDIw
+MTMgMDI6MjM6MjIgKzAwMDAsDQo+ID4gPiA+IERldWNoZXIsIEFsZXhhbmRlciB3cm90ZToNCj4g
+PiA+ID4gPg0KPiA+ID4gPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+ID4g
+PiA+IEZyb206IENsZW1lbnMgTGFkaXNjaCBbbWFpbHRvOmNsYWRpc2NoQGdvb2dsZW1haWwuY29t
+XQ0KPiA+ID4gPiA+ID4gU2VudDogU2F0dXJkYXksIFNlcHRlbWJlciAyOCwgMjAxMyA2OjMzIFBN
+DQo+ID4gPiA+ID4gPiBUbzogRGFnZyBTdG9tcGxlcg0KPiA+ID4gPiA+ID4gQ2M6IGFsc2EtdXNl
+ckBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQ7IERldWNoZXIsIEFsZXhhbmRlcjsgYWxzYS0NCj4gPiA+
+ID4gZGV2ZWxAYWxzYS0NCj4gPiA+ID4gPiA+IHByb2plY3Qub3JnDQo+ID4gPiA+ID4gPiBTdWJq
+ZWN0OiBSZTogW0Fsc2EtdXNlcl0gW2Fsc2EtZGV2ZWxdIGhkbWkgc291bmQgcmVyb3V0ZWQ/DQo+
+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gRGFnZyBTdG9tcGxlciB3cm90ZToNCj4gPiA+ID4gPiA+
+ID4+IGRhZ2dzQGdteC5jb20gd3JvdGU6DQo+ID4gPiA+ID4gPiA+Pj4gY2FyZCAwOiBQQ0ggW0hE
+QSBJbnRlbCBQQ0hdLCBkZXZpY2UgMzogSERNSSAwIFtIRE1JIDBdDQo+ID4gPiA+ID4gPiA+Pj4g
+Y2FyZCAxOiBHZW5lcmljIFtIRC1BdWRpbyBHZW5lcmljXSwgZGV2aWNlIDM6IEhETUkgMCBbSERN
+SSAwXQ0KPiA+ID4gPiA+ID4gPj4+IGNhcmQgMjogSERNSSBbSERBIEFUSSBIRE1JXSwgZGV2aWNl
+IDM6IEhETUkgMCBbSERNSSAwXQ0KPiA+ID4gPiA+ID4gPj4NCj4gPiA+ID4gPiA+ID4+IFRoZSBz
+ZWNvbmQgb25lIGlzIGNhbGxlZCAiR2VuZXJpYyIgYmVjYXVzZSB5b3VyIGtlcm5lbCBkb2VzIG5v
+dA0KPiAoeWV0KQ0KPiA+ID4gPiA+ID4gPj4ga25vdyB0aGUgaGFyZHdhcmUuDQo+ID4gPiA+ID4g
+PiA+Pg0KPiA+ID4gPiA+ID4gPj4+IDAxOjAwLjEgQXVkaW8gZGV2aWNlOiBBZHZhbmNlZCBNaWNy
+byBEZXZpY2VzLCBJbmMuIFtBTUQvQVRJXQ0KPiBDZWRhcg0KPiA+ID4gPiA+ID4gSERNSSBBdWRp
+byBbUmFkZW9uIEhEIDU0MDAvNjMwMCBTZXJpZXNdDQo+ID4gPiA+ID4gPiA+Pj4gMDY6MDAuMSBB
+dWRpbyBkZXZpY2U6IEFkdmFuY2VkIE1pY3JvIERldmljZXMsIEluYy4gW0FNRC9BVEldDQo+IFJW
+NjM1DQo+ID4gPiA+ID4gPiBIRE1JIEF1ZGlvIFtSYWRlb24gSEQgMzYwMCBTZXJpZXNdDQo+ID4g
+PiA+ID4gPiA+Pg0KPiA+ID4gPiA+ID4gPj4gVGhlc2UgYXJlIHRoZSBIRE1JIG91dHB1dHMgb2Yg
+KnR3byogZ3JhcGhpY3MgY2FyZHMuIFRoZSBmaXJzdA0KPiBvbmUncw0KPiA+ID4gPiA+ID4gPj4g
+bW9kZWwgaXMgc28gbmV3IHRoYXQgdGhlIGRyaXZlciBkb2Vzbid0IGtub3cgaXQuDQo+ID4gPiA+
+ID4gPiA+DQo+ID4gPiA+ID4gPiA+IHRoZSAzNjAwIGRvZXNuJ3QgaGF2ZSBoZG1pIHNvY2tldCBz
+byBJIHRoaW5rIGl0IGlzIGlycmVsZXZhbnQgZm9yIG15DQo+IGlzc3VlLg0KPiA+ID4gPiA+ID4N
+Cj4gPiA+ID4gPiA+IFRoZSBSVjYzNSBjaGlwIGRvZXMgc3VwcG9ydCBIRE1JIG91dHB1dHMgKGV2
+ZW4gaWYgbm9uZSBhcmUNCj4gYWN0dWFsbHkNCj4gPiA+ID4gPiA+IGNvbm5lY3RlZCksIHNvIHRo
+ZSBjb3JyZXNwb25kaW5nIFBDSSBkZXZpY2Ugc2hvd3MgdXAgaGVyZS4NCj4gPiA+ID4gPiA+DQo+
+ID4gPiA+ID4gPiA+Pj4gSWYgeW91IHVwZGF0ZSB0aGUga2VybmVsLCB5b3Ugd2lsbCBnZXQgdHdv
+IGRldmljZXMgbmFtZWQgIkhEQQ0KPiBBVEkNCj4gPiA+ID4gPiA+IEhETUkiLg0KPiA+ID4gPiA+
+ID4gPg0KPiA+ID4gPiA+ID4gPiB1cGdyYWRlIHRvIHdoZXJlPw0KPiA+ID4gPiA+ID4NCj4gPiA+
+ID4gPiA+IE9vcHMuIEV2ZW4gdGhlIGxhdGVzdCBkcml2ZXIgbGFja3MgdGhlIFBDSSBJRHMgb2Yg
+bWFueSBIRE1JIEhEQQ0KPiBkZXZpY2VzDQo+ID4gPiA+ID4gPiAoYWE1MC9hYTU4L2FhNjAvYWE2
+OC9hYTgwL2FhODgvYWE5MC9hYTk4Og0KPiA+ID4gPiA+ID4gQ3lwcmVzcy9KdW5pcGVyL1JlZHdv
+b2QvQ2VkYXIvDQo+ID4gPiA+ID4gPiBDYXltYW4rQW50aWxsZXMvQmFydHMvVHVya3MvQ2FpY29z
+KS4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBBbGV4LCBhcmUgdGhlc2UgZGV2aWNlcyB0aGF0
+IHJlcXVpcmUgZGlzYWJsaW5nIHNub29waW5nPw0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gU29ycnkg
+d2hhdCBkb2VzIHNub29waW5nIG1lYW4gaW4gdGhpcyBjb250ZXh0Pw0KPiA+ID4gPg0KPiA+ID4g
+PiBNb3N0IG9mIEhELWF1ZGlvIGNvbnRyb2xsZXIgaGF2ZSBhIHNub29wIGNvbnRyb2wsIGJ1dCB0
+aGUgcmVjZW50IEFNRA0KPiA+ID4gPiBIRE1JIGF1ZGlvIGNvbnRyb2xsZXIgZG9uJ3QgaGF2ZSB0
+aGUgZmVhdHVyZSwgdGh1cyB0aGUgZHJpdmVyIG11c3QgdXNlDQo+ID4gPiA+IHRoZSBub24tY2Fj
+aGVkIHBhZ2VzLiBBdCBsZWFzdCwgUENJIElEIDEwMDI6YWFhMCwgYWFhOCBhbmQgYWFiMCBhcmUN
+Cj4gPiA+ID4ga25vd24gdG8gcmVxdWlyZSBzdWNoLg0KPiA+ID4gPg0KPiA+ID4gPiBOb3cgdGhl
+IHF1ZXN0aW9uIGlzIHdoZXRoZXIgYWxsIG5ldyBjaGlwcyBhYm92ZSAoYWE1MCwuLi4pIHJlcXVp
+cmUgdGhlDQo+ID4gPiA+IHNhbWUgd29ya2Fyb3VuZCwgdG9vLiBDb3VsZCB5b3UgY2hlY2sgdGhp
+cyBvciBmb3J3YXJkIHRoZSBpbnF1aXJ5IHRvDQo+ID4gPiA+IHNvbWVvbmUgaW4gQU1EPw0KPiA+
+ID4NCj4gPiA+IEFjY29yZGluZyB0byBvdXIgaW50ZXJuYWwgdGVhbXMsIGRpc2FibGluZyBzbm9v
+cGluZyBpcyBvbmx5IHJlcXVpcmVkIG9uDQo+IHRoZSBhdWRpbyBwYXJ0cyBpbmNsdWRlZCBpbiBF
+dmVyZ3JlZW4gYW5kIE5vcnRoZXJuIElzbGFuZHMgR1BVcy4gT2xkZXIgY2hpcHMNCj4gbGlrZSBS
+N3h4IChhYTQ4KSBhbmQgbmV3ZXIgY2hpcHMgbGlrZSBTb3V0aGVybiBJc2xhbmRzIChhYWEwKSBh
+cmUgYWJsZSB0byB1c2UNCj4gc25vb3BpbmcuIEknbSBub3QgcmVhbCBmYW1pbGlhciB3aXRoIHRo
+ZSBhdWRpbyBwb3J0aW9ucyBvZiB0aGUgR1BVcyBzbyBpZiB5b3UNCj4gbmVlZCBmdXJ0aGVyIGNs
+YXJpZmljYXRpb24sIGxldCBtZSBrbm93Lg0KPiA+DQo+ID4gVGhhbmtzIGZvciB0aGUgaW5mb3Jt
+YXRpb24uDQo+ID4NCj4gPiBUaG91Z2gsIGl0J3Mgc3RyYW5nZSB0aGF0IHRoZSBpbmZvcm1hdGlv
+biBkb2Vzbid0IG1hdGNoIHdpdGggd2hhdCBJJ3ZlDQo+ID4gaGVhcmQgKGFuZCBhbHNvIHdpdGgg
+d2hhdCBJJ3ZlIHRlc3RlZCB3aXRoIGEgbGFwdG9wKS4gSSd2ZSBoZWFyZCB0aGF0DQo+ID4gaXQn
+cyBTb3V0aGVybiBJc2xhbmQgSERNSSB0aGF0IG5lZWRzIHRoZSBzbm9vcC1kaXNhYmxlbWVudC4N
+Cj4gPg0KPiA+IENvdWxkIHlvdSBhc2sgYWdhaW4gd2hldGhlciBpdCdzIHJlYWxseSBFdmVyZ3Jl
+ZW4gLyBOb3RoZXJuIElzbGFuZHM/DQo+ID4NCj4gPg0KPiA+IHRoYW5rcywNCj4gPg0KPiA+IFRh
+a2FzaGkNCj4gPg0KPiA+ID4NCj4gPiA+IEFsZXgNCj4gPiA+DQo+ID4gPiA+DQo+ID4gPiA+IEZX
+SVcsIHN1Y2ggYSBjaGlwIG5lZWRzIHRvIHNldCBBWlhfRFJJVkVSX0FUSUhETUlfTlMgYml0cyBp
+bg0KPiA+ID4gPiBkcml2ZXJfZGF0YSBvZiBwY2kgZW50cmllcyBpbiBzb3VuZC9wY2kvaGRhL2hk
+YV9pbnRlbC5jLg0KPiA+ID4gPg0KPiA+ID4gPg0KPiA+ID4gPiB0aGFua3MsDQo+ID4gPiA+DQo+
+ID4gPiA+IFRha2FzaGkNCj4gPiA+DQo+ID4gPg0KPiANCj4gYW55IHVwZGF0ZXMgb24gdGhlIG1h
+dHRlciBndXlzPw0KDQoNCkhhdmVuJ3QgaGVhcmQgYmFjay4gIEknbGwgcGluZyB0aGVtIGFnYWlu
+Lg0KDQpBbGV4DQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
