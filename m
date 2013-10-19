@@ -1,101 +1,130 @@
-From: "Dagg Stompler" <daggs@gmx.com>
-Subject: Re: [alsa-devel]   hdmi sound rerouted?
-Date: Sat, 19 Oct 2013 11:49:17 +0200
-Message-ID: <20131019094918.273460@gmx.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: ASoC updates for v3.12
+Date: Sat, 19 Oct 2013 13:56:07 +0100
+Message-ID: <20131019125607.GA2443@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>, "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============4340901010571435911=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32C7A260885
+ for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2013 14:56:10 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogVGFrYXNoaSBJd2FpCj4gU2Vu
-dDogMTAvMDgvMTMgMTA6NDkgQU0KPiBUbzogRGV1Y2hlciwgQWxleGFuZGVyCj4gU3ViamVjdDog
-UmU6IFthbHNhLWRldmVsXSBbQWxzYS11c2VyXSDCoGhkbWkgc291bmQgcmVyb3V0ZWQ/Cj4gCj4g
-QXQgTW9uLCA3IE9jdCAyMDEzIDEzOjM2OjI0ICswMDAwLAo+IERldWNoZXIsIEFsZXhhbmRlciB3
-cm90ZToKPiA+IAo+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+ID4gPiBGcm9tOiBU
-YWthc2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQo+ID4gPiBTZW50OiBNb25kYXksIFNl
-cHRlbWJlciAzMCwgMjAxMyA1OjE4IEFNCj4gPiA+IFRvOiBEZXVjaGVyLCBBbGV4YW5kZXIKPiA+
-ID4gQ2M6IENsZW1lbnMgTGFkaXNjaDsgRGFnZyBTdG9tcGxlcjsgYWxzYS11c2VyQGxpc3RzLnNv
-dXJjZWZvcmdlLm5ldDsgYWxzYS0KPiA+ID4gZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+ID4gPiBT
-dWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtBbHNhLXVzZXJdIGhkbWkgc291bmQgcmVyb3V0ZWQ/
-Cj4gPiA+IAo+ID4gPiBBdCBNb24sIDMwIFNlcCAyMDEzIDAyOjIzOjIyICswMDAwLAo+ID4gPiBE
-ZXVjaGVyLCBBbGV4YW5kZXIgd3JvdGU6Cj4gPiA+ID4KPiA+ID4gPiA+IC0tLS0tT3JpZ2luYWwg
-TWVzc2FnZS0tLS0tCj4gPiA+ID4gPiBGcm9tOiBDbGVtZW5zIExhZGlzY2ggW21haWx0bzpjbGFk
-aXNjaEBnb29nbGVtYWlsLmNvbV0KPiA+ID4gPiA+IFNlbnQ6IFNhdHVyZGF5LCBTZXB0ZW1iZXIg
-MjgsIDIwMTMgNjozMyBQTQo+ID4gPiA+ID4gVG86IERhZ2cgU3RvbXBsZXIKPiA+ID4gPiA+IENj
-OiBhbHNhLXVzZXJAbGlzdHMuc291cmNlZm9yZ2UubmV0OyBEZXVjaGVyLCBBbGV4YW5kZXI7IGFs
-c2EtCj4gPiA+IGRldmVsQGFsc2EtCj4gPiA+ID4gPiBwcm9qZWN0Lm9yZwo+ID4gPiA+ID4gU3Vi
-amVjdDogUmU6IFtBbHNhLXVzZXJdIFthbHNhLWRldmVsXSBoZG1pIHNvdW5kIHJlcm91dGVkPwo+
-ID4gPiA+ID4KPiA+ID4gPiA+IERhZ2cgU3RvbXBsZXIgd3JvdGU6Cj4gPiA+ID4gPiA+PiBkYWdn
-c0BnbXguY29tIHdyb3RlOgo+ID4gPiA+ID4gPj4+IGNhcmQgMDogUENIIFtIREEgSW50ZWwgUENI
-XSwgZGV2aWNlIDM6IEhETUkgMCBbSERNSSAwXQo+ID4gPiA+ID4gPj4+IGNhcmQgMTogR2VuZXJp
-YyBbSEQtQXVkaW8gR2VuZXJpY10sIGRldmljZSAzOiBIRE1JIDAgW0hETUkgMF0KPiA+ID4gPiA+
-ID4+PiBjYXJkIDI6IEhETUkgW0hEQSBBVEkgSERNSV0sIGRldmljZSAzOiBIRE1JIDAgW0hETUkg
-MF0KPiA+ID4gPiA+ID4+Cj4gPiA+ID4gPiA+PiBUaGUgc2Vjb25kIG9uZSBpcyBjYWxsZWQgIkdl
-bmVyaWMiIGJlY2F1c2UgeW91ciBrZXJuZWwgZG9lcyBub3QgKHlldCkKPiA+ID4gPiA+ID4+IGtu
-b3cgdGhlIGhhcmR3YXJlLgo+ID4gPiA+ID4gPj4KPiA+ID4gPiA+ID4+PiAwMTowMC4xIEF1ZGlv
-IGRldmljZTogQWR2YW5jZWQgTWljcm8gRGV2aWNlcywgSW5jLiBbQU1EL0FUSV0gQ2VkYXIKPiA+
-ID4gPiA+IEhETUkgQXVkaW8gW1JhZGVvbiBIRCA1NDAwLzYzMDAgU2VyaWVzXQo+ID4gPiA+ID4g
-Pj4+IDA2OjAwLjEgQXVkaW8gZGV2aWNlOiBBZHZhbmNlZCBNaWNybyBEZXZpY2VzLCBJbmMuIFtB
-TUQvQVRJXSBSVjYzNQo+ID4gPiA+ID4gSERNSSBBdWRpbyBbUmFkZW9uIEhEIDM2MDAgU2VyaWVz
-XQo+ID4gPiA+ID4gPj4KPiA+ID4gPiA+ID4+IFRoZXNlIGFyZSB0aGUgSERNSSBvdXRwdXRzIG9m
-ICp0d28qIGdyYXBoaWNzIGNhcmRzLiBUaGUgZmlyc3Qgb25lJ3MKPiA+ID4gPiA+ID4+IG1vZGVs
-IGlzIHNvIG5ldyB0aGF0IHRoZSBkcml2ZXIgZG9lc24ndCBrbm93IGl0Lgo+ID4gPiA+ID4gPgo+
-ID4gPiA+ID4gPiB0aGUgMzYwMCBkb2Vzbid0IGhhdmUgaGRtaSBzb2NrZXQgc28gSSB0aGluayBp
-dCBpcyBpcnJlbGV2YW50IGZvciBteSBpc3N1ZS4KPiA+ID4gPiA+Cj4gPiA+ID4gPiBUaGUgUlY2
-MzUgY2hpcCBkb2VzIHN1cHBvcnQgSERNSSBvdXRwdXRzIChldmVuIGlmIG5vbmUgYXJlIGFjdHVh
-bGx5Cj4gPiA+ID4gPiBjb25uZWN0ZWQpLCBzbyB0aGUgY29ycmVzcG9uZGluZyBQQ0kgZGV2aWNl
-IHNob3dzIHVwIGhlcmUuCj4gPiA+ID4gPgo+ID4gPiA+ID4gPj4+IElmIHlvdSB1cGRhdGUgdGhl
-IGtlcm5lbCwgeW91IHdpbGwgZ2V0IHR3byBkZXZpY2VzIG5hbWVkICJIREEgQVRJCj4gPiA+ID4g
-PiBIRE1JIi4KPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gdXBncmFkZSB0byB3aGVyZT8KPiA+ID4g
-PiA+Cj4gPiA+ID4gPiBPb3BzLiBFdmVuIHRoZSBsYXRlc3QgZHJpdmVyIGxhY2tzIHRoZSBQQ0kg
-SURzIG9mIG1hbnkgSERNSSBIREEgZGV2aWNlcwo+ID4gPiA+ID4gKGFhNTAvYWE1OC9hYTYwL2Fh
-NjgvYWE4MC9hYTg4L2FhOTAvYWE5ODoKPiA+ID4gPiA+IEN5cHJlc3MvSnVuaXBlci9SZWR3b29k
-L0NlZGFyLwo+ID4gPiA+ID4gQ2F5bWFuK0FudGlsbGVzL0JhcnRzL1R1cmtzL0NhaWNvcykuCj4g
-PiA+ID4gPgo+ID4gPiA+ID4gQWxleCwgYXJlIHRoZXNlIGRldmljZXMgdGhhdCByZXF1aXJlIGRp
-c2FibGluZyBzbm9vcGluZz8KPiA+ID4gPgo+ID4gPiA+IFNvcnJ5IHdoYXQgZG9lcyBzbm9vcGlu
-ZyBtZWFuIGluIHRoaXMgY29udGV4dD8KPiA+ID4gCj4gPiA+IE1vc3Qgb2YgSEQtYXVkaW8gY29u
-dHJvbGxlciBoYXZlIGEgc25vb3AgY29udHJvbCwgYnV0IHRoZSByZWNlbnQgQU1ECj4gPiA+IEhE
-TUkgYXVkaW8gY29udHJvbGxlciBkb24ndCBoYXZlIHRoZSBmZWF0dXJlLCB0aHVzIHRoZSBkcml2
-ZXIgbXVzdCB1c2UKPiA+ID4gdGhlIG5vbi1jYWNoZWQgcGFnZXMuIEF0IGxlYXN0LCBQQ0kgSUQg
-MTAwMjphYWEwLCBhYWE4IGFuZCBhYWIwIGFyZQo+ID4gPiBrbm93biB0byByZXF1aXJlIHN1Y2gu
-Cj4gPiA+IAo+ID4gPiBOb3cgdGhlIHF1ZXN0aW9uIGlzIHdoZXRoZXIgYWxsIG5ldyBjaGlwcyBh
-Ym92ZSAoYWE1MCwuLi4pIHJlcXVpcmUgdGhlCj4gPiA+IHNhbWUgd29ya2Fyb3VuZCwgdG9vLiBD
-b3VsZCB5b3UgY2hlY2sgdGhpcyBvciBmb3J3YXJkIHRoZSBpbnF1aXJ5IHRvCj4gPiA+IHNvbWVv
-bmUgaW4gQU1EPwo+ID4gCj4gPiBBY2NvcmRpbmcgdG8gb3VyIGludGVybmFsIHRlYW1zLCBkaXNh
-Ymxpbmcgc25vb3BpbmcgaXMgb25seSByZXF1aXJlZCBvbiB0aGUgYXVkaW8gcGFydHMgaW5jbHVk
-ZWQgaW4gRXZlcmdyZWVuIGFuZCBOb3J0aGVybiBJc2xhbmRzIEdQVXMuIE9sZGVyIGNoaXBzIGxp
-a2UgUjd4eCAoYWE0OCkgYW5kIG5ld2VyIGNoaXBzIGxpa2UgU291dGhlcm4gSXNsYW5kcyAoYWFh
-MCkgYXJlIGFibGUgdG8gdXNlIHNub29waW5nLiBJJ20gbm90IHJlYWwgZmFtaWxpYXIgd2l0aCB0
-aGUgYXVkaW8gcG9ydGlvbnMgb2YgdGhlIEdQVXMgc28gaWYgeW91IG5lZWQgZnVydGhlciBjbGFy
-aWZpY2F0aW9uLCBsZXQgbWUga25vdy4KPiAKPiBUaGFua3MgZm9yIHRoZSBpbmZvcm1hdGlvbi4K
-PiAKPiBUaG91Z2gsIGl0J3Mgc3RyYW5nZSB0aGF0IHRoZSBpbmZvcm1hdGlvbiBkb2Vzbid0IG1h
-dGNoIHdpdGggd2hhdCBJJ3ZlCj4gaGVhcmQgKGFuZCBhbHNvIHdpdGggd2hhdCBJJ3ZlIHRlc3Rl
-ZCB3aXRoIGEgbGFwdG9wKS4gSSd2ZSBoZWFyZCB0aGF0Cj4gaXQncyBTb3V0aGVybiBJc2xhbmQg
-SERNSSB0aGF0IG5lZWRzIHRoZSBzbm9vcC1kaXNhYmxlbWVudC4KPiAKPiBDb3VsZCB5b3UgYXNr
-IGFnYWluIHdoZXRoZXIgaXQncyByZWFsbHkgRXZlcmdyZWVuIC8gTm90aGVybiBJc2xhbmRzPwo+
-IAo+IAo+IHRoYW5rcywKPiAKPiBUYWthc2hpCj4gCj4gPiAKPiA+IEFsZXgKPiA+IAo+ID4gPiAK
-PiA+ID4gRldJVywgc3VjaCBhIGNoaXAgbmVlZHMgdG8gc2V0IEFaWF9EUklWRVJfQVRJSERNSV9O
-UyBiaXRzIGluCj4gPiA+IGRyaXZlcl9kYXRhIG9mIHBjaSBlbnRyaWVzIGluIHNvdW5kL3BjaS9o
-ZGEvaGRhX2ludGVsLmMuCj4gPiA+IAo+ID4gPiAKPiA+ID4gdGhhbmtzLAo+ID4gPiAKPiA+ID4g
-VGFrYXNoaQo+ID4gCj4gPgoKYW55IHVwZGF0ZXMgb24gdGhlIG1hdHRlciBndXlzPwoKLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tCk9jdG9iZXIgV2ViaW5hcnM6IENvZGUgZm9yIFBlcmZvcm1hbmNlCkZy
-ZWUgSW50ZWwgd2ViaW5hcnMgY2FuIGhlbHAgeW91IGFjY2VsZXJhdGUgYXBwbGljYXRpb24gcGVy
-Zm9ybWFuY2UuCkV4cGxvcmUgdGlwcyBmb3IgTVBJLCBPcGVuTVAsIGFkdmFuY2VkIHByb2ZpbGlu
-ZywgYW5kIG1vcmUuIEdldCB0aGUgbW9zdCBmcm9tIAp0aGUgbGF0ZXN0IEludGVsIHByb2Nlc3Nv
-cnMgYW5kIGNvcHJvY2Vzc29ycy4gU2VlIGFic3RyYWN0cyBhbmQgcmVnaXN0ZXIgPgpodHRwOi8v
-cHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/aWQ9NjAxMzUwMzEmaXU9LzQxNDAv
-b3N0Zy5jbGt0cmsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS11c2VyIG1haWxpbmcgbGlzdApBbHNhLXVzZXJAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2EtdXNlcgo=
+
+--===============4340901010571435911==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZNMkbfjzv9RSo/Cd"
+Content-Disposition: inline
+
+
+--ZNMkbfjzv9RSo/Cd
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+The following changes since commit 61e6cfa80de5760bbe406f4e815b7739205754d2:
+
+  Linux 3.12-rc5 (2013-10-13 15:41:28 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc=
+-v3.12-rc5
+
+for you to fetch changes up to 40f8989695660dee984338861ca9900b8e0b5183:
+
+  Merge remote-tracking branch 'asoc/fix/tlv320aic3x' into asoc-linus (2013=
+-10-18 14:17:14 +0100)
+
+----------------------------------------------------------------
+
+ASoC: Fixes for v3.12
+
+A number of small, fairly unexciting, fixes for drivers - nothing stand
+out.
+
+----------------------------------------------------------------
+Axel Lin (3):
+      ASoC: pcm1681: Fix max_register setting
+      ASoC: pcm1681: Fix max_register setting
+      ASoC: pcm1792a: Fix max_register setting
+
+Guenter Roeck (1):
+      ASoC: fsl_ssi: Fix irq_of_parse_and_map() return value check
+
+Jarkko Nikula (1):
+      ASoC: omap: Fix incorrect ARM dependency
+
+Kuninori Morimoto (1):
+      ASoC: rcar: fixup generation checker
+
+Mark Brown (6):
+      Merge remote-tracking branch 'asoc/fix/fsl' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/omap' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/pcm1681' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/pcm1792a' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/rcar' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/tlv320aic3x' into asoc-linus
+
+Peter Ujfalusi (1):
+      ASoC: tlv320aic3x: Connect 'Left Line1R Mux' and 'Right Line1L Mux'
+
+Philippe R=E9tornaz (2):
+      ASoC: fsl: Fix sound on mx31moboard
+      ASoC: fsl: imx-ssi: fix probe on imx31
+
+ include/sound/rcar_snd.h       |  1 +
+ sound/soc/codecs/pcm1681.c     |  2 +-
+ sound/soc/codecs/pcm1792a.c    |  2 +-
+ sound/soc/codecs/tlv320aic3x.c |  4 ++++
+ sound/soc/fsl/fsl_ssi.c        |  2 +-
+ sound/soc/fsl/imx-mc13783.c    |  2 +-
+ sound/soc/fsl/imx-ssi.c        | 23 ++++++++++++-----------
+ sound/soc/fsl/imx-ssi.h        |  2 ++
+ sound/soc/omap/Kconfig         |  4 ++--
+ sound/soc/sh/rcar/rsnd.h       |  4 ++--
+ 10 files changed, 27 insertions(+), 19 deletions(-)
+
+--ZNMkbfjzv9RSo/Cd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSYoFkAAoJELSic+t+oim9j5wP/RHZXe90QyYCA2XTa8jebvqp
+wHBLmb5W56nyoovFSg6JFLuvPFN/DWspuO9GPpjdsRWz8KtmvL59wIon5NmAdjog
+3UWvfN/gHSCDbPsGsNfsxp/xWvHkYXIhNNtZ+Ph8Fk1xEFa7ZhIDyf0atVDjkvVp
+msbj+QXLRwH9UnTKNLe3JhqZ8daiPTPcIQ3w+px9qs134lIkTzejBHo4SK2ivCUR
+mL9AdfCMvpvs2LsdfAUMS97cjZbikkLQswmwkdcm+3fwTDcS53jysx9NpWCApveI
+kCypw7et1CgguhggqQowQbOfhEy2YvyhSasJtoGXyIftktYM5fJbQSagG5LT5tih
+Q0ed0VIFQsu0XzZL5ZokjoFoZfCPnyPB630Ja7zUXDiXOYQ07+ewUKoNytTaTkz8
++JcWWzZzhNA2dQoPFwgZYZqdO4WUmm9r45A8XRY/qDY57XPU9IkTZB0l5XDYgYvB
+UDZEnUT6C/ySQm79ed+DIymhrSOCzRZmkv0MgTlonBog8u+8YA01nMQIlIvcVVvd
+/TaebN4T/gsgFwzui8rds8bM/pubJhtXln4AYTjnvl6/KfZkICBkhDz9L/63sXxZ
+3vY+nvOQQP3Ut7S1ZiG9OVSxzjJs954byB+v7Et6tOEaR17xUoJYqZWOk/nIpCRP
+pHW+9sAbSlpcDBvyi4dH
+=9F8x
+-----END PGP SIGNATURE-----
+
+--ZNMkbfjzv9RSo/Cd--
+
+--===============4340901010571435911==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4340901010571435911==--
