@@ -1,34 +1,55 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: [PATCH] ASoC: tegra: Remove redundant initialisation of compat_filter_fn
-Date: Sat, 19 Oct 2013 14:17:03 +0100
-Message-ID: <1382188623-19494-1-git-send-email-broonie@kernel.org>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ALSA: Add MAINTAINERS entry for dmaengine
+	helpers
+Date: Sat, 19 Oct 2013 14:33:54 +0100
+Message-ID: <1382189634-22645-1-git-send-email-broonie@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 189CC260886
+ for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2013 15:34:04 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+From: Mark Brown <broonie@linaro.org>
 
-Setting a field in a static struct to NULL has no effect so don't bother
-(and don't generate false positives for grep).
+Help ensure that Lars-Peter gets CCed on dmaengine related patches by
+adding a MAINTAINERS entry for the helpers.
 
-Signed-off-by: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/tegra/tegra_pcm.c | 1 -
- 1 file changed, 1 deletion(-)
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/tegra/tegra_pcm.c b/sound/soc/tegra/tegra_pcm.c
-index f056f63..7b2d23b 100644
---- a/sound/soc/tegra/tegra_pcm.c
-+++ b/sound/soc/tegra/tegra_pcm.c
-@@ -56,7 +56,6 @@ static const struct snd_pcm_hardware tegra_pcm_hardware = {
- static const struct snd_dmaengine_pcm_config tegra_dmaengine_pcm_config = {
- 	.pcm_hardware = &tegra_pcm_hardware,
- 	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
--	.compat_filter_fn = NULL,
- 	.prealloc_buffer_size = PAGE_SIZE * 8,
- };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 34ca01a..3a7eaaa 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7877,6 +7877,13 @@ F:	Documentation/sound/alsa/soc/
+ F:	sound/soc/
+ F:	include/sound/soc*
  
++SOUND - DMAENGINE HELPERS
++M:	Lars-Peter Clausen <lars@metafoo.de>
++S:	Supported
++F:	include/sound/dmaengine_pcm.h
++F:	sound/core/pcm_dmaengine.c
++F:	sound/soc/soc-generic-dmaengine-pcm.c
++
+ SPARC + UltraSPARC (sparc/sparc64)
+ M:	"David S. Miller" <davem@davemloft.net>
+ L:	sparclinux@vger.kernel.org
 -- 
 1.8.4.rc3
