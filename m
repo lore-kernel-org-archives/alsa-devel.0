@@ -1,18 +1,14 @@
-From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Subject: Re: [Alsa-user]  hdmi sound rerouted?
-Date: Sat, 19 Oct 2013 12:59:30 +0000
-Message-ID: <A3397C8B8B789E45844E7EC5DEAD89D02E818E48@satlexdag05.amd.com>
-References: <20131019094918.273460@gmx.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/2] ASoC: cirrus: Enable compile test builds
+Date: Sat, 19 Oct 2013 14:13:03 +0100
+Message-ID: <1382188384-18063-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe003.messaging.microsoft.com [213.199.154.206])
- by alsa0.perex.cz (Postfix) with ESMTP id DAF342608B7
- for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2013 15:01:20 +0200 (CEST)
-In-Reply-To: <20131019094918.273460@gmx.com>
-Content-Language: en-US
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 357022608A2
+ for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2013 15:13:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,94 +18,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dagg Stompler <daggs@gmx.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <cladisch@googlemail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Ryan Mallon <rmallon@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBEYWdnIFN0b21wbGVyIFttYWls
-dG86ZGFnZ3NAZ214LmNvbV0NCj4gU2VudDogU2F0dXJkYXksIE9jdG9iZXIgMTksIDIwMTMgNTo0
-OSBBTQ0KPiBUbzogVGFrYXNoaSBJd2FpOyBEZXVjaGVyLCBBbGV4YW5kZXINCj4gQ2M6IENsZW1l
-bnMgTGFkaXNjaDsgYWxzYS11c2VyQGxpc3RzLnNvdXJjZWZvcmdlLm5ldDsgYWxzYS1kZXZlbEBh
-bHNhLQ0KPiBwcm9qZWN0Lm9yZw0KPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtBbHNhLXVz
-ZXJdIGhkbWkgc291bmQgcmVyb3V0ZWQ/DQo+IA0KPiA+IC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2Ug
-LS0tLS0NCj4gPiBGcm9tOiBUYWthc2hpIEl3YWkNCj4gPiBTZW50OiAxMC8wOC8xMyAxMDo0OSBB
-TQ0KPiA+IFRvOiBEZXVjaGVyLCBBbGV4YW5kZXINCj4gPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2
-ZWxdIFtBbHNhLXVzZXJdIMKgaGRtaSBzb3VuZCByZXJvdXRlZD8NCj4gPg0KPiA+IEF0IE1vbiwg
-NyBPY3QgMjAxMyAxMzozNjoyNCArMDAwMCwNCj4gPiBEZXVjaGVyLCBBbGV4YW5kZXIgd3JvdGU6
-DQo+ID4gPg0KPiA+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gPiBGcm9t
-OiBUYWthc2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQ0KPiA+ID4gPiBTZW50OiBNb25k
-YXksIFNlcHRlbWJlciAzMCwgMjAxMyA1OjE4IEFNDQo+ID4gPiA+IFRvOiBEZXVjaGVyLCBBbGV4
-YW5kZXINCj4gPiA+ID4gQ2M6IENsZW1lbnMgTGFkaXNjaDsgRGFnZyBTdG9tcGxlcjsgYWxzYS11
-c2VyQGxpc3RzLnNvdXJjZWZvcmdlLm5ldDsNCj4gYWxzYS0NCj4gPiA+ID4gZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZw0KPiA+ID4gPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtBbHNhLXVzZXJd
-IGhkbWkgc291bmQgcmVyb3V0ZWQ/DQo+ID4gPiA+DQo+ID4gPiA+IEF0IE1vbiwgMzAgU2VwIDIw
-MTMgMDI6MjM6MjIgKzAwMDAsDQo+ID4gPiA+IERldWNoZXIsIEFsZXhhbmRlciB3cm90ZToNCj4g
-PiA+ID4gPg0KPiA+ID4gPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+ID4g
-PiA+IEZyb206IENsZW1lbnMgTGFkaXNjaCBbbWFpbHRvOmNsYWRpc2NoQGdvb2dsZW1haWwuY29t
-XQ0KPiA+ID4gPiA+ID4gU2VudDogU2F0dXJkYXksIFNlcHRlbWJlciAyOCwgMjAxMyA2OjMzIFBN
-DQo+ID4gPiA+ID4gPiBUbzogRGFnZyBTdG9tcGxlcg0KPiA+ID4gPiA+ID4gQ2M6IGFsc2EtdXNl
-ckBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQ7IERldWNoZXIsIEFsZXhhbmRlcjsgYWxzYS0NCj4gPiA+
-ID4gZGV2ZWxAYWxzYS0NCj4gPiA+ID4gPiA+IHByb2plY3Qub3JnDQo+ID4gPiA+ID4gPiBTdWJq
-ZWN0OiBSZTogW0Fsc2EtdXNlcl0gW2Fsc2EtZGV2ZWxdIGhkbWkgc291bmQgcmVyb3V0ZWQ/DQo+
-ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gRGFnZyBTdG9tcGxlciB3cm90ZToNCj4gPiA+ID4gPiA+
-ID4+IGRhZ2dzQGdteC5jb20gd3JvdGU6DQo+ID4gPiA+ID4gPiA+Pj4gY2FyZCAwOiBQQ0ggW0hE
-QSBJbnRlbCBQQ0hdLCBkZXZpY2UgMzogSERNSSAwIFtIRE1JIDBdDQo+ID4gPiA+ID4gPiA+Pj4g
-Y2FyZCAxOiBHZW5lcmljIFtIRC1BdWRpbyBHZW5lcmljXSwgZGV2aWNlIDM6IEhETUkgMCBbSERN
-SSAwXQ0KPiA+ID4gPiA+ID4gPj4+IGNhcmQgMjogSERNSSBbSERBIEFUSSBIRE1JXSwgZGV2aWNl
-IDM6IEhETUkgMCBbSERNSSAwXQ0KPiA+ID4gPiA+ID4gPj4NCj4gPiA+ID4gPiA+ID4+IFRoZSBz
-ZWNvbmQgb25lIGlzIGNhbGxlZCAiR2VuZXJpYyIgYmVjYXVzZSB5b3VyIGtlcm5lbCBkb2VzIG5v
-dA0KPiAoeWV0KQ0KPiA+ID4gPiA+ID4gPj4ga25vdyB0aGUgaGFyZHdhcmUuDQo+ID4gPiA+ID4g
-PiA+Pg0KPiA+ID4gPiA+ID4gPj4+IDAxOjAwLjEgQXVkaW8gZGV2aWNlOiBBZHZhbmNlZCBNaWNy
-byBEZXZpY2VzLCBJbmMuIFtBTUQvQVRJXQ0KPiBDZWRhcg0KPiA+ID4gPiA+ID4gSERNSSBBdWRp
-byBbUmFkZW9uIEhEIDU0MDAvNjMwMCBTZXJpZXNdDQo+ID4gPiA+ID4gPiA+Pj4gMDY6MDAuMSBB
-dWRpbyBkZXZpY2U6IEFkdmFuY2VkIE1pY3JvIERldmljZXMsIEluYy4gW0FNRC9BVEldDQo+IFJW
-NjM1DQo+ID4gPiA+ID4gPiBIRE1JIEF1ZGlvIFtSYWRlb24gSEQgMzYwMCBTZXJpZXNdDQo+ID4g
-PiA+ID4gPiA+Pg0KPiA+ID4gPiA+ID4gPj4gVGhlc2UgYXJlIHRoZSBIRE1JIG91dHB1dHMgb2Yg
-KnR3byogZ3JhcGhpY3MgY2FyZHMuIFRoZSBmaXJzdA0KPiBvbmUncw0KPiA+ID4gPiA+ID4gPj4g
-bW9kZWwgaXMgc28gbmV3IHRoYXQgdGhlIGRyaXZlciBkb2Vzbid0IGtub3cgaXQuDQo+ID4gPiA+
-ID4gPiA+DQo+ID4gPiA+ID4gPiA+IHRoZSAzNjAwIGRvZXNuJ3QgaGF2ZSBoZG1pIHNvY2tldCBz
-byBJIHRoaW5rIGl0IGlzIGlycmVsZXZhbnQgZm9yIG15DQo+IGlzc3VlLg0KPiA+ID4gPiA+ID4N
-Cj4gPiA+ID4gPiA+IFRoZSBSVjYzNSBjaGlwIGRvZXMgc3VwcG9ydCBIRE1JIG91dHB1dHMgKGV2
-ZW4gaWYgbm9uZSBhcmUNCj4gYWN0dWFsbHkNCj4gPiA+ID4gPiA+IGNvbm5lY3RlZCksIHNvIHRo
-ZSBjb3JyZXNwb25kaW5nIFBDSSBkZXZpY2Ugc2hvd3MgdXAgaGVyZS4NCj4gPiA+ID4gPiA+DQo+
-ID4gPiA+ID4gPiA+Pj4gSWYgeW91IHVwZGF0ZSB0aGUga2VybmVsLCB5b3Ugd2lsbCBnZXQgdHdv
-IGRldmljZXMgbmFtZWQgIkhEQQ0KPiBBVEkNCj4gPiA+ID4gPiA+IEhETUkiLg0KPiA+ID4gPiA+
-ID4gPg0KPiA+ID4gPiA+ID4gPiB1cGdyYWRlIHRvIHdoZXJlPw0KPiA+ID4gPiA+ID4NCj4gPiA+
-ID4gPiA+IE9vcHMuIEV2ZW4gdGhlIGxhdGVzdCBkcml2ZXIgbGFja3MgdGhlIFBDSSBJRHMgb2Yg
-bWFueSBIRE1JIEhEQQ0KPiBkZXZpY2VzDQo+ID4gPiA+ID4gPiAoYWE1MC9hYTU4L2FhNjAvYWE2
-OC9hYTgwL2FhODgvYWE5MC9hYTk4Og0KPiA+ID4gPiA+ID4gQ3lwcmVzcy9KdW5pcGVyL1JlZHdv
-b2QvQ2VkYXIvDQo+ID4gPiA+ID4gPiBDYXltYW4rQW50aWxsZXMvQmFydHMvVHVya3MvQ2FpY29z
-KS4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBBbGV4LCBhcmUgdGhlc2UgZGV2aWNlcyB0aGF0
-IHJlcXVpcmUgZGlzYWJsaW5nIHNub29waW5nPw0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gU29ycnkg
-d2hhdCBkb2VzIHNub29waW5nIG1lYW4gaW4gdGhpcyBjb250ZXh0Pw0KPiA+ID4gPg0KPiA+ID4g
-PiBNb3N0IG9mIEhELWF1ZGlvIGNvbnRyb2xsZXIgaGF2ZSBhIHNub29wIGNvbnRyb2wsIGJ1dCB0
-aGUgcmVjZW50IEFNRA0KPiA+ID4gPiBIRE1JIGF1ZGlvIGNvbnRyb2xsZXIgZG9uJ3QgaGF2ZSB0
-aGUgZmVhdHVyZSwgdGh1cyB0aGUgZHJpdmVyIG11c3QgdXNlDQo+ID4gPiA+IHRoZSBub24tY2Fj
-aGVkIHBhZ2VzLiBBdCBsZWFzdCwgUENJIElEIDEwMDI6YWFhMCwgYWFhOCBhbmQgYWFiMCBhcmUN
-Cj4gPiA+ID4ga25vd24gdG8gcmVxdWlyZSBzdWNoLg0KPiA+ID4gPg0KPiA+ID4gPiBOb3cgdGhl
-IHF1ZXN0aW9uIGlzIHdoZXRoZXIgYWxsIG5ldyBjaGlwcyBhYm92ZSAoYWE1MCwuLi4pIHJlcXVp
-cmUgdGhlDQo+ID4gPiA+IHNhbWUgd29ya2Fyb3VuZCwgdG9vLiBDb3VsZCB5b3UgY2hlY2sgdGhp
-cyBvciBmb3J3YXJkIHRoZSBpbnF1aXJ5IHRvDQo+ID4gPiA+IHNvbWVvbmUgaW4gQU1EPw0KPiA+
-ID4NCj4gPiA+IEFjY29yZGluZyB0byBvdXIgaW50ZXJuYWwgdGVhbXMsIGRpc2FibGluZyBzbm9v
-cGluZyBpcyBvbmx5IHJlcXVpcmVkIG9uDQo+IHRoZSBhdWRpbyBwYXJ0cyBpbmNsdWRlZCBpbiBF
-dmVyZ3JlZW4gYW5kIE5vcnRoZXJuIElzbGFuZHMgR1BVcy4gT2xkZXIgY2hpcHMNCj4gbGlrZSBS
-N3h4IChhYTQ4KSBhbmQgbmV3ZXIgY2hpcHMgbGlrZSBTb3V0aGVybiBJc2xhbmRzIChhYWEwKSBh
-cmUgYWJsZSB0byB1c2UNCj4gc25vb3BpbmcuIEknbSBub3QgcmVhbCBmYW1pbGlhciB3aXRoIHRo
-ZSBhdWRpbyBwb3J0aW9ucyBvZiB0aGUgR1BVcyBzbyBpZiB5b3UNCj4gbmVlZCBmdXJ0aGVyIGNs
-YXJpZmljYXRpb24sIGxldCBtZSBrbm93Lg0KPiA+DQo+ID4gVGhhbmtzIGZvciB0aGUgaW5mb3Jt
-YXRpb24uDQo+ID4NCj4gPiBUaG91Z2gsIGl0J3Mgc3RyYW5nZSB0aGF0IHRoZSBpbmZvcm1hdGlv
-biBkb2Vzbid0IG1hdGNoIHdpdGggd2hhdCBJJ3ZlDQo+ID4gaGVhcmQgKGFuZCBhbHNvIHdpdGgg
-d2hhdCBJJ3ZlIHRlc3RlZCB3aXRoIGEgbGFwdG9wKS4gSSd2ZSBoZWFyZCB0aGF0DQo+ID4gaXQn
-cyBTb3V0aGVybiBJc2xhbmQgSERNSSB0aGF0IG5lZWRzIHRoZSBzbm9vcC1kaXNhYmxlbWVudC4N
-Cj4gPg0KPiA+IENvdWxkIHlvdSBhc2sgYWdhaW4gd2hldGhlciBpdCdzIHJlYWxseSBFdmVyZ3Jl
-ZW4gLyBOb3RoZXJuIElzbGFuZHM/DQo+ID4NCj4gPg0KPiA+IHRoYW5rcywNCj4gPg0KPiA+IFRh
-a2FzaGkNCj4gPg0KPiA+ID4NCj4gPiA+IEFsZXgNCj4gPiA+DQo+ID4gPiA+DQo+ID4gPiA+IEZX
-SVcsIHN1Y2ggYSBjaGlwIG5lZWRzIHRvIHNldCBBWlhfRFJJVkVSX0FUSUhETUlfTlMgYml0cyBp
-bg0KPiA+ID4gPiBkcml2ZXJfZGF0YSBvZiBwY2kgZW50cmllcyBpbiBzb3VuZC9wY2kvaGRhL2hk
-YV9pbnRlbC5jLg0KPiA+ID4gPg0KPiA+ID4gPg0KPiA+ID4gPiB0aGFua3MsDQo+ID4gPiA+DQo+
-ID4gPiA+IFRha2FzaGkNCj4gPiA+DQo+ID4gPg0KPiANCj4gYW55IHVwZGF0ZXMgb24gdGhlIG1h
-dHRlciBndXlzPw0KDQoNCkhhdmVuJ3QgaGVhcmQgYmFjay4gIEknbGwgcGluZyB0aGVtIGFnYWlu
-Lg0KDQpBbGV4DQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+From: Mark Brown <broonie@linaro.org>
+
+The core support for ep93xx (currently only the DMA driver) does not
+depend on the architecture at all and everything else has more strict
+dependencies so enable compile test builds for improved build coverage.
+
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/cirrus/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/cirrus/Kconfig b/sound/soc/cirrus/Kconfig
+index 2c20f01..06f938d 100644
+--- a/sound/soc/cirrus/Kconfig
++++ b/sound/soc/cirrus/Kconfig
+@@ -1,6 +1,6 @@
+ config SND_EP93XX_SOC
+ 	tristate "SoC Audio support for the Cirrus Logic EP93xx series"
+-	depends on ARCH_EP93XX && SND_SOC
++	depends on (ARCH_EP93XX || COMPILE_TEST) && SND_SOC
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
+-- 
+1.8.4.rc3
