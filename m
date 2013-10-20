@@ -1,93 +1,84 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: kirkwood: add S/PDIF support
-Date: Sun, 20 Oct 2013 18:12:55 +0100
-Message-ID: <20131020171255.GP2443@sirena.org.uk>
-References: <20131018203750.7b981d62@armhf>
+From: Benoit Cousson <bcousson@baylibre.com>
+Subject: Re: [PATCH v5 DTS 0/4] Fix AM335x-evm analog audio support
+Date: Sun, 20 Oct 2013 19:14:30 +0200
+Message-ID: <52640F76.7060208@baylibre.com>
+References: <52615C70.30307@baylibre.com> <cover.1382288454.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7460679021621201097=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E6C2526179C
- for <alsa-devel@alsa-project.org>; Sun, 20 Oct 2013 19:13:01 +0200 (CEST)
-In-Reply-To: <20131018203750.7b981d62@armhf>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Liam Girdwood <lgirdwood@gmail.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <cover.1382288454.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: linux-omap@vger.kernel.org, broonie@kernel.org, joelf@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi Jyri,
 
---===============7460679021621201097==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gzSx7wqTEktSSHja"
-Content-Disposition: inline
+On 20/10/2013 19:04, Jyri Sarha wrote:
+> Hi Benoit,
+> I rebased the DTS patches on top of
+> git://git.kernel.org/pub/scm/linux/kernel/git/bcousson/linux-omap-dt.=
+git
+> for_3.13/dts -branch
+> and tested the result. Hope that was the right branch.
 
+Yes, thanks for the update.
 
---gzSx7wqTEktSSHja
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I've just applied the patches.
 
-On Fri, Oct 18, 2013 at 08:37:50PM +0200, Jean-Francois Moine wrote:
-> This patch adds S/PDIF input/output for mvebu DT boards.
+Regards,
+Benoit
 
-This looks basically good, thanks.  A couple of things though:
-
-> +	if (dai->name[0] == 'i')
-> +		ctl &= ~KIRKWOOD_PLAYCTL_SPDIF_EN;	/* i2s */
-> +	else
-> +		ctl &= ~KIRKWOOD_PLAYCTL_I2S_EN;	/* spdif */
-> +
-
-This works and isn't actively a problem but it's not really normal
-either - the normal thing would be to use dai->id.
-
-> +static struct snd_soc_dai_driver kirkwood_i2s_dai[2] = {
-> +    {
-> +	.name = "i2s",
-> +	.playback = {
-
-This should cause problems for the existing (non-DT) machine drivers?
-They're using cpu_dai_name to bind the CPU DAI and you're now setting an
-explicit name instead of letting the dev_name() be used.  The patch
-should be updating those machine drivers too unless I'm missing
-something.
-
---gzSx7wqTEktSSHja
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSZA8UAAoJELSic+t+oim9il8P/AyXwsSPGBlR2smfhPNWjJ1A
-203Qzh+S8rS79sZcqB280g9oimt8PSH+BrTvXoVt1Tix4gT/97iTmPEZPUNbKDcR
-ABC/KZmMB1MimyxsV1v9OCOe8huHPptetgT5nqGnmZMi0RhTtywfTG8+j/GejnLL
-afZ6Gea+PBGTxUi+AvybFBXFH+I/gGmgq1iYba6cydAjMscUjyn/04yLC0/kd7TH
-V52leJnzuLQw7W6/WJDo15hh9d0gFfnPyQqclE9NA83L1HDphfI8J7qtozk7+Axl
-5mMye+wejbHr5o1GLCEMrxq0uSDv0IIjdDB/0BgrVEgaschO1J+rDI5G85iNJgGG
-C9p19fy69WNxQHI73xhe2EYxNZgnX54K74W7Tn2BmH1KwLTFuhdyrx3TvcOSST+D
-EulN2lQ+2xzToIXo2KG7XAldtGp38tEvFNXdxI5l203s8CXudhxpx5yFPJrHGnZu
-6ZyN99aZVTOo4kppjV3v/5jM3uuZY1uC40dXPGeDUzJKnt1UeRw/EySlMpZy+R4J
-K0CKV2Jq/NyJYWSI8/23j65Z2FH5pcsEHj1TsanFwYc5qLN0JoHrMCYeUg2DVx5e
-VDMrdQfvIAPFrvhy5By4LWoNMWYQbYGalmPVldR87WuJogpxCCZCkby+IHPceuf4
-qalklKFo8yctlQnfHJYA
-=iwrK
------END PGP SIGNATURE-----
-
---gzSx7wqTEktSSHja--
-
---===============7460679021621201097==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+>
+> The DTS patches can also be pulled from:
+> git://git.ti.com/~jyrisarha/ti-linux-kernel/jyrisarhas-audio-video-li=
+nux-feature-tree.git
+> for_bcousson/for_3.13/dts -branch
+>
+> The non DTS patches rebased on top of v3.12-rc5 can be pulled from he=
+re:
+> git://git.ti.com/~jyrisarha/ti-linux-kernel/jyrisarhas-audio-video-li=
+nux-feature-tree.git
+> v3.12-rc5-am33xx-audio-patch-v5-no-dts -branch
+>
+> The the full patch series can be found here:
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-October/067=
+443.html
+>
+> Best regards,
+> Jyri
+>
+> Darren Etheridge (1):
+>    ARM/dts: am335x-evm: Add audio support for am335x-evm.dts
+>
+> Jyri Sarha (1):
+>    ARM/dts: am33xx: mcasp: Add location for data port registers to
+>      reg-property
+>
+> Pantelis Antoniou (1):
+>    ARM/dts: am33xx: Add mcasp0 and mcasp1 device tree entries
+>
+> Peter Ujfalusi (1):
+>    ARM/dts: am335x-evmsk: Audio support
+>
+>   arch/arm/boot/dts/am335x-evm.dts   |   50 +++++++++++++++++++++++++=
++++++++++++
+>   arch/arm/boot/dts/am335x-evmsk.dts |   48 +++++++++++++++++++++++++=
++++++++++
+>   arch/arm/boot/dts/am33xx.dtsi      |   28 ++++++++++++++++++++
+>   3 files changed, 126 insertions(+)
+>
 
 
---===============7460679021621201097==--
+--=20
+Beno=EEt Cousson
+BayLibre
+Embedded Linux Technology Lab
+www.baylibre.com
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
