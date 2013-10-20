@@ -1,84 +1,105 @@
-From: Benoit Cousson <bcousson@baylibre.com>
-Subject: Re: [PATCH v5 DTS 0/4] Fix AM335x-evm analog audio support
-Date: Sun, 20 Oct 2013 19:14:30 +0200
-Message-ID: <52640F76.7060208@baylibre.com>
-References: <52615C70.30307@baylibre.com> <cover.1382288454.git.jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: si476x: Fix locking of core
+Date: Sun, 20 Oct 2013 18:15:08 +0100
+Message-ID: <1382289308-12733-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <cover.1382288454.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
-Cc: linux-omap@vger.kernel.org, broonie@kernel.org, joelf@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D5DE2619E7
+ for <alsa-devel@alsa-project.org>; Sun, 20 Oct 2013 19:15:11 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jyri,
+From: Mark Brown <broonie@linaro.org>
 
-On 20/10/2013 19:04, Jyri Sarha wrote:
-> Hi Benoit,
-> I rebased the DTS patches on top of
-> git://git.kernel.org/pub/scm/linux/kernel/git/bcousson/linux-omap-dt.=
-git
-> for_3.13/dts -branch
-> and tested the result. Hope that was the right branch.
+The conversion of the si476x to regmap removed locking of the core during
+register updates, allowing things like power state changes for the MFD to
+happen during a register update. Avoid this by taking the core lock in the
+DAI operations (which are the only things that do register updates) as we
+used to do in the open coded register I/O functions.
 
-Yes, thanks for the update.
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/si476x.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-I've just applied the patches.
-
-Regards,
-Benoit
-
->
-> The DTS patches can also be pulled from:
-> git://git.ti.com/~jyrisarha/ti-linux-kernel/jyrisarhas-audio-video-li=
-nux-feature-tree.git
-> for_bcousson/for_3.13/dts -branch
->
-> The non DTS patches rebased on top of v3.12-rc5 can be pulled from he=
-re:
-> git://git.ti.com/~jyrisarha/ti-linux-kernel/jyrisarhas-audio-video-li=
-nux-feature-tree.git
-> v3.12-rc5-am33xx-audio-patch-v5-no-dts -branch
->
-> The the full patch series can be found here:
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-October/067=
-443.html
->
-> Best regards,
-> Jyri
->
-> Darren Etheridge (1):
->    ARM/dts: am335x-evm: Add audio support for am335x-evm.dts
->
-> Jyri Sarha (1):
->    ARM/dts: am33xx: mcasp: Add location for data port registers to
->      reg-property
->
-> Pantelis Antoniou (1):
->    ARM/dts: am33xx: Add mcasp0 and mcasp1 device tree entries
->
-> Peter Ujfalusi (1):
->    ARM/dts: am335x-evmsk: Audio support
->
->   arch/arm/boot/dts/am335x-evm.dts   |   50 +++++++++++++++++++++++++=
-+++++++++++
->   arch/arm/boot/dts/am335x-evmsk.dts |   48 +++++++++++++++++++++++++=
-+++++++++
->   arch/arm/boot/dts/am33xx.dtsi      |   28 ++++++++++++++++++++
->   3 files changed, 126 insertions(+)
->
-
-
---=20
-Beno=EEt Cousson
-BayLibre
-Embedded Linux Technology Lab
-www.baylibre.com
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/si476x.c b/sound/soc/codecs/si476x.c
+index 03645ce..52e7cb0 100644
+--- a/sound/soc/codecs/si476x.c
++++ b/sound/soc/codecs/si476x.c
+@@ -73,6 +73,7 @@ static const struct snd_soc_dapm_route si476x_dapm_routes[] = {
+ static int si476x_codec_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 				    unsigned int fmt)
+ {
++	struct si476x_core *core = i2c_mfd_cell_to_core(codec_dai->dev);
+ 	int err;
+ 	u16 format = 0;
+ 
+@@ -136,9 +137,14 @@ static int si476x_codec_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		return -EINVAL;
+ 	}
+ 
++	si476x_core_lock(core);
++
+ 	err = snd_soc_update_bits(codec_dai->codec, SI476X_DIGITAL_IO_OUTPUT_FORMAT,
+ 				  SI476X_DIGITAL_IO_OUTPUT_FORMAT_MASK,
+ 				  format);
++
++	si476x_core_unlock(core);
++
+ 	if (err < 0) {
+ 		dev_err(codec_dai->codec->dev, "Failed to set output format\n");
+ 		return err;
+@@ -151,6 +157,7 @@ static int si476x_codec_hw_params(struct snd_pcm_substream *substream,
+ 				  struct snd_pcm_hw_params *params,
+ 				  struct snd_soc_dai *dai)
+ {
++	struct si476x_core *core = i2c_mfd_cell_to_core(dai->dev);
+ 	int rate, width, err;
+ 
+ 	rate = params_rate(params);
+@@ -176,11 +183,13 @@ static int si476x_codec_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 
++	si476x_core_lock(core);
++
+ 	err = snd_soc_write(dai->codec, SI476X_DIGITAL_IO_OUTPUT_SAMPLE_RATE,
+ 			    rate);
+ 	if (err < 0) {
+ 		dev_err(dai->codec->dev, "Failed to set sample rate\n");
+-		return err;
++		goto out;
+ 	}
+ 
+ 	err = snd_soc_update_bits(dai->codec, SI476X_DIGITAL_IO_OUTPUT_FORMAT,
+@@ -189,10 +198,13 @@ static int si476x_codec_hw_params(struct snd_pcm_substream *substream,
+ 				  (width << SI476X_DIGITAL_IO_SAMPLE_SIZE_SHIFT));
+ 	if (err < 0) {
+ 		dev_err(dai->codec->dev, "Failed to set output width\n");
+-		return err;
++		goto out;
+ 	}
+ 
+-	return 0;
++out:
++	si476x_core_unlock(core);
++
++	return err;
+ }
+ 
+ static int si476x_codec_probe(struct snd_soc_codec *codec)
+-- 
+1.8.4.rc3
