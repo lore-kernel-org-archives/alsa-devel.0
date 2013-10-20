@@ -1,109 +1,93 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH v5 DTS 4/4] ARM/dts: am335x-evmsk: Audio support
-Date: Sun, 20 Oct 2013 20:04:11 +0300
-Message-ID: <b87ebe5f14a0b729fdcc0c58e8920dc2554c5721.1382288457.git.jsarha@ti.com>
-References: <cover.1382288454.git.jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: kirkwood: add S/PDIF support
+Date: Sun, 20 Oct 2013 18:12:55 +0100
+Message-ID: <20131020171255.GP2443@sirena.org.uk>
+References: <20131018203750.7b981d62@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <cover.1382288454.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, bcousson@baylibre.com
-Cc: linux-omap@vger.kernel.org, broonie@kernel.org, joelf@ti.com, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>
+Content-Type: multipart/mixed; boundary="===============7460679021621201097=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6C2526179C
+ for <alsa-devel@alsa-project.org>; Sun, 20 Oct 2013 19:13:01 +0200 (CEST)
+In-Reply-To: <20131018203750.7b981d62@armhf>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Liam Girdwood <lgirdwood@gmail.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-AM335x EVM-SK have only support for audio playback (stereo jack on the
-board) via tlv320aic3106 codec connected to McASP1.
-Enable the support for audio playback on the board:
-- McASP1 configuration
-- tlv320aic3106 configuration
-- Machine driver.
+--===============7460679021621201097==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gzSx7wqTEktSSHja"
+Content-Disposition: inline
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- arch/arm/boot/dts/am335x-evmsk.dts |   48 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
 
-diff --git a/arch/arm/boot/dts/am335x-evmsk.dts b/arch/arm/boot/dts/am335x-evmsk.dts
-index 1a7e0d9..03febf8 100644
---- a/arch/arm/boot/dts/am335x-evmsk.dts
-+++ b/arch/arm/boot/dts/am335x-evmsk.dts
-@@ -115,6 +115,17 @@
- 		brightness-levels = <0 58 61 66 75 90 125 170 255>;
- 		default-brightness-level = <8>;
- 	};
-+
-+	sound {
-+		compatible = "ti,da830-evm-audio";
-+		ti,model = "AM335x-EVMSK";
-+		ti,audio-codec = <&tlv320aic3106>;
-+		ti,mcasp-controller = <&mcasp1>;
-+		ti,codec-clock-rate = <24576000>;
-+		ti,audio-routing =
-+			"Headphone Jack",       "HPLOUT",
-+			"Headphone Jack",       "HPROUT";
-+	};
- };
- 
- &am33xx_pinmux {
-@@ -244,6 +255,15 @@
- 			0x14c (PIN_INPUT_PULLDOWN | MUX_MODE7)
- 		>;
- 	};
-+
-+	mcasp1_pins: mcasp1_pins {
-+		pinctrl-single,pins = <
-+			0x10c (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_crs.mcasp1_aclkx */
-+			0x110 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_rxerr.mcasp1_fsx */
-+			0x108 (PIN_OUTPUT_PULLDOWN | MUX_MODE4) /* mii1_col.mcasp1_axr2 */
-+			0x144 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* rmii1_ref_clk.mcasp1_axr3 */
-+		>;
-+	};
- };
- 
- &uart0 {
-@@ -291,6 +311,18 @@
- 		st,max-limit-y = <550>;
- 		st,max-limit-z = <750>;
- 	};
-+
-+	tlv320aic3106: tlv320aic3106@1b {
-+		compatible = "ti,tlv320aic3106";
-+		reg = <0x1b>;
-+		status = "okay";
-+
-+		/* Regulators */
-+		AVDD-supply = <&vaux2_reg>;
-+		IOVDD-supply = <&vaux2_reg>;
-+		DRVDD-supply = <&vaux2_reg>;
-+		DVDD-supply = <&vbat>;
-+	};
- };
- 
- &usb {
-@@ -437,3 +469,19 @@
- &gpio0 {
- 	ti,no-reset-on-init;
- };
-+
-+&mcasp1 {
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mcasp1_pins>;
-+
-+		status = "okay";
-+
-+		op-mode = <0>;          /* MCASP_IIS_MODE */
-+		tdm-slots = <2>;
-+		/* 4 serializers */
-+		serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
-+			0 0 1 2
-+		>;
-+		tx-num-evt = <1>;
-+		rx-num-evt = <1>;
-+};
--- 
-1.7.9.5
+--gzSx7wqTEktSSHja
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Fri, Oct 18, 2013 at 08:37:50PM +0200, Jean-Francois Moine wrote:
+> This patch adds S/PDIF input/output for mvebu DT boards.
+
+This looks basically good, thanks.  A couple of things though:
+
+> +	if (dai->name[0] == 'i')
+> +		ctl &= ~KIRKWOOD_PLAYCTL_SPDIF_EN;	/* i2s */
+> +	else
+> +		ctl &= ~KIRKWOOD_PLAYCTL_I2S_EN;	/* spdif */
+> +
+
+This works and isn't actively a problem but it's not really normal
+either - the normal thing would be to use dai->id.
+
+> +static struct snd_soc_dai_driver kirkwood_i2s_dai[2] = {
+> +    {
+> +	.name = "i2s",
+> +	.playback = {
+
+This should cause problems for the existing (non-DT) machine drivers?
+They're using cpu_dai_name to bind the CPU DAI and you're now setting an
+explicit name instead of letting the dev_name() be used.  The patch
+should be updating those machine drivers too unless I'm missing
+something.
+
+--gzSx7wqTEktSSHja
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSZA8UAAoJELSic+t+oim9il8P/AyXwsSPGBlR2smfhPNWjJ1A
+203Qzh+S8rS79sZcqB280g9oimt8PSH+BrTvXoVt1Tix4gT/97iTmPEZPUNbKDcR
+ABC/KZmMB1MimyxsV1v9OCOe8huHPptetgT5nqGnmZMi0RhTtywfTG8+j/GejnLL
+afZ6Gea+PBGTxUi+AvybFBXFH+I/gGmgq1iYba6cydAjMscUjyn/04yLC0/kd7TH
+V52leJnzuLQw7W6/WJDo15hh9d0gFfnPyQqclE9NA83L1HDphfI8J7qtozk7+Axl
+5mMye+wejbHr5o1GLCEMrxq0uSDv0IIjdDB/0BgrVEgaschO1J+rDI5G85iNJgGG
+C9p19fy69WNxQHI73xhe2EYxNZgnX54K74W7Tn2BmH1KwLTFuhdyrx3TvcOSST+D
+EulN2lQ+2xzToIXo2KG7XAldtGp38tEvFNXdxI5l203s8CXudhxpx5yFPJrHGnZu
+6ZyN99aZVTOo4kppjV3v/5jM3uuZY1uC40dXPGeDUzJKnt1UeRw/EySlMpZy+R4J
+K0CKV2Jq/NyJYWSI8/23j65Z2FH5pcsEHj1TsanFwYc5qLN0JoHrMCYeUg2DVx5e
+VDMrdQfvIAPFrvhy5By4LWoNMWYQbYGalmPVldR87WuJogpxCCZCkby+IHPceuf4
+qalklKFo8yctlQnfHJYA
+=iwrK
+-----END PGP SIGNATURE-----
+
+--gzSx7wqTEktSSHja--
+
+--===============7460679021621201097==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7460679021621201097==--
