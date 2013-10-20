@@ -1,48 +1,25 @@
-From: Patrick Lai <plai@codeaurora.org>
-Subject: Re: Audio Miniconference 2013 schedule II - Edinburgh
- 21st	October
-Date: Sun, 20 Oct 2013 14:25:31 -0700
-Message-ID: <52644A4B.8080605@codeaurora.org>
-References: <20131014161003.GC2443@sirena.org.uk>
- <s5ha9i6fumc.wl%tiwai@suse.de> <20131018171919.GS2443@sirena.org.uk>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tegra: Remove redundant initialisation of compat_filter_fn
+Date: Sun, 20 Oct 2013 22:38:04 +0100
+Message-ID: <52644D3C.9020709@wwwdotorg.org>
+References: <1382188623-19494-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.11.231])
- by alsa0.perex.cz (Postfix) with ESMTP id 985842619E7
- for <alsa-devel@alsa-project.org>; Sun, 20 Oct 2013 23:33:58 +0200 (CEST)
-In-Reply-To: <20131018171919.GS2443@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
-Cc: Colin Guthrie <colin@guthr.ie>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Arun Raghavan <arun.raghavan@collabora.co.uk>, Liam Girdwood <liam.r.girdwood@intel.com>, Tanu Kaskinen <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>, "Bossart,
- Pierre-louis" <pierre-louis.bossart@intel.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1382188623-19494-1-git-send-email-broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/18/2013 10:19 AM, Mark Brown wrote:
-> On Fri, Oct 18, 2013 at 05:48:11PM +0200, Takashi Iwai wrote:
->
->> Those topics that only one or two people brought up (cough...) can be
->> lead of course by such a person :)  If anything about ALSA core stuff
->> is in topic, count me.
->
-> Yes, they're first in line if they didn't volunteer already.  :)
->
+On 10/19/2013 02:17 PM, Mark Brown wrote:
+> From: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+> 
+> Setting a field in a static struct to NULL has no effect so don't bother
+> (and don't generate false positives for grep).
 
-Yes, I would not mind driving the discussion. I don't have presentation
-but white board drawing should be enough. See you all tomorrow
+I'm fine with this either way, so feel free to take my ack whichever way
+you work this out with Lars-Peter.
 
-Thanks
-Patrick
-
--- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+Acked-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
