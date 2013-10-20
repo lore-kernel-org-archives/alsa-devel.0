@@ -1,88 +1,85 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 2/2] ASoC: kirkwood: fix loss of external clock at
- probe time
-Date: Sun, 20 Oct 2013 17:33:26 +0100
-Message-ID: <20131020163326.GN2443@sirena.org.uk>
+Subject: Re: [PATCH v3 2/2] ASoC: kirkwood: fix loss of
+ external clock at probe time
+Date: Sun, 20 Oct 2013 17:38:19 +0100
+Message-ID: <20131020163819.GO2443@sirena.org.uk>
 References: <20131018203555.4d974251@armhf>
- <20131018191259.GF10079@pengutronix.de>
- <20131019102809.180dc4ff@armhf>
- <20131020080333.GG10079@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6411236333935572787=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20131020080333.GG10079@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Content-Type: multipart/mixed; boundary="===============4375170136043405280=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BCAF26167E
+ for <alsa-devel@alsa-project.org>; Sun, 20 Oct 2013 18:38:23 +0200 (CEST)
+In-Reply-To: <20131018203555.4d974251@armhf>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6411236333935572787==
+--===============4375170136043405280==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IW2h5r2J1WQ8moYU"
+	protocol="application/pgp-signature"; boundary="+59tGnj4H6fvPoOj"
 Content-Disposition: inline
 
 
---IW2h5r2J1WQ8moYU
-Content-Type: text/plain; charset=iso-8859-1
+--+59tGnj4H6fvPoOj
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 20, 2013 at 10:03:33AM +0200, Uwe Kleine-K=F6nig wrote:
+On Fri, Oct 18, 2013 at 08:35:55PM +0200, Jean-Francois Moine wrote:
+> At probe time, when the clock driver is not yet initialized, the
+> external clock of the kirkwood sound device will not be usable.
 
-> Yes, that's understood. My suggestion behaves as your's for the return
-> values -EPROBE_DEFER and -ENOENT, so the deferred probe should work,
-> too. The question is only what you want to do for other errors (don't
-> know if they can happen at this stage). I'd say, on a dt parsing error
-> bail out, too.
+This doesn't apply against -next, could you please check and resend?
 
-It seems like the best thing to do is defer if the error might resolve
-itself but otherwise carry on with the reduced functionality from the
-internal clocks.  I'd expect most errors to be permanently fatal though,
-certainly a failure to parse the DT is unlikely to get fixed at runtime.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broone/sound.git topic/kirkwood
 
---IW2h5r2J1WQ8moYU
+or the for-next branch.
+
+> It also removes the test about same internal and external clocks which
+> can never occur.
+
+It seems like reasonable defensiveness to have the test there in case
+someone has a broken DT, though it'd be better to complain about the DT.
+
+--+59tGnj4H6fvPoOj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSZAXTAAoJELSic+t+oim9yzoQAI1ZS4eQ2b2aV7NeJ7aiuhGB
-H9kftQzOzIuZCCWGHBIgaasVw/DWSNZeYuG1i1Pa2sZsn8bRFdbu86RSnsLOWMSo
-FnWz/WHMlL8kp1KXT8lkAFU5sIBIsp/98lM6FYRMmfBHlTkOZpAsSI45ES8hs7sD
-0ralGH+guGzmbOFHokxEOp1oejAq08oV0Q/JYzESwtpi0C3DkQ6sI5tgK2/K4Cyy
-AfASou5nPdeUvfJQDUJaH8Q+KuWWIyQQxreC4mOE1M7//8MGFe0mePrawVLQjuge
-QQzZZxGn8ZH8tspIKr05cO25kre0AmlMMMRtd+i2+FF69IxEF+0GzeRFqXbc9N9Q
-rR8DKXwtDo+QbHiQLmwPyXnxo7I/MSXojfHhzjwwXMa68wwxd8VcZ73ZfPeO15Ow
-WvZOJMrldd44zEFSaRwP6Qj1X6SZQNgX9l4oOrPZgnO0WRv0ZXFGzW3WF4AtZbn6
-Nbd5mrEDsJo8IxbX9UspES8Mzo+KI4ng3ujMiv2LgNo7ktqzRYSPWTZqmoHGl18X
-AOZBpgur2Y49sGVWVRoDD+/vdu4kFsuT81BqkbAt2bVz5X8TAfkvbQB6behlRxoQ
-pH/YSJ+CrZmh/Vni0fJtTSv5QdlJ1ZrRR9CFysoECjbRLII32KnI9nNFY2PbmjGF
-I0l+V2jR3oqPsNCy7oyv
-=FUnl
+iQIcBAEBAgAGBQJSZAb4AAoJELSic+t+oim9ryYP/jmtocD7i9SyE0x+5gALYUn0
+lNXpuyIiTcrzCIg82eQ0xYjMTfgwKtDOJadJo2bhlnntAnwi0EmPllfudr5Y/PP2
+dnEsXi4RB028+Ar/nv5wWRFDF+X5rqIIRWDiYz7e9p0+cqc5g9pv6bYOrIcy3AwG
+bZiGe216ZBShb9GUk/9R/DYVbPekRlo0U5HoxbDgavoR865L9K1m7+UQxZdbrQ6T
+nugUX18mCA7nsEqiGR9V52sygp3fCj0YNlC3cBO0Akuf1GOUMmb34Bvx1L6okz73
+g7GI1nCYGHQQuGtQ56yUk3U1YdkeG0AwjNo4JmfgZ/SKnXiuqmBinTzSOmudYT1W
+Vkn8vtV5Jf7z90Iz+9e+kHhU62uQLi4Dwr1kvgs2RcHiEcgzTpJZ0goN8py1qoJx
+1X2LHRW/smZzcaVOpEp7eypl5HSy7AyWValQv4q18QYoIW2Xb9T0wjcEt/GZF3AW
+whg8TZOs0rhD17A9iicMQKKwUqcGNUxbVt/cFTSU0+iijTGV0uelRhYavAqzNrf0
+OJaXIv4uXq5G6ZlvrTSwun6+4EhrbDVNzNshWWUMfrzV/wdI6Fmglcv/iwePjO2g
+7yrQTNDjvQ8+b5CNuY+QwRwqPR00EjQSsMleCM3w+h/g80FTjQwuHUJltA72X+9K
+Cn+yZrgo1H7v2PoyH50+
+=a+DM
 -----END PGP SIGNATURE-----
 
---IW2h5r2J1WQ8moYU--
+--+59tGnj4H6fvPoOj--
 
-
---===============6411236333935572787==
+--===============4375170136043405280==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============6411236333935572787==--
+--===============4375170136043405280==--
