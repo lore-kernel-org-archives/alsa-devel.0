@@ -1,7 +1,7 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] [17/29] ALSA: dice: remove superfluous field
-Date: Mon, 21 Oct 2013 21:30:30 +0200
-Message-ID: <526580D6.2050803@ladisch.de>
+Subject: [PATCH] [18/29] ALSA: dice: fix locking
+Date: Mon, 21 Oct 2013 21:31:05 +0200
+Message-ID: <526580F9.2010205@ladisch.de>
 References: <52657E3B.7040205@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,35 +20,53 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The pcm field was not actually used.
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
 
+Avoid a lock inversion between dice->mutex and pcm->open_mutex.
+
+Signed-off-by: Stefan Richter <stefanr@s5r6.in-berlin.de>
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- sound/firewire/dice.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/firewire/dice.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index 57ceb13..2d198ae 100644
+index 2d198ae..2d3a04e 100644
 --- a/sound/firewire/dice.c
 +++ b/sound/firewire/dice.c
-@@ -43,7 +43,6 @@ struct dice {
- 	bool global_enabled;
- 	wait_queue_head_t hwdep_wait;
- 	u32 notification_bits;
--	struct snd_pcm_substream *pcm;
- 	struct fw_iso_resources resources;
- 	struct amdtp_out_stream stream;
- };
-@@ -564,8 +563,7 @@ static int dice_create_pcm(struct dice *dice)
- 		return err;
- 	pcm->private_data = dice;
- 	strcpy(pcm->name, dice->card->shortname);
--	dice->pcm = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
--	dice->pcm->ops = &ops;
-+	pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->ops = &ops;
+@@ -981,12 +981,12 @@ static void dice_remove(struct fw_unit *unit)
+ {
+ 	struct dice *dice = dev_get_drvdata(&unit->device);
 
- 	return 0;
- }
+-	mutex_lock(&dice->mutex);
+-
+ 	amdtp_out_stream_pcm_abort(&dice->stream);
+
+ 	snd_card_disconnect(dice->card);
+
++	mutex_lock(&dice->mutex);
++
+ 	dice_stream_stop(dice);
+ 	dice_owner_clear(dice);
+
+@@ -999,8 +999,6 @@ static void dice_bus_reset(struct fw_unit *unit)
+ {
+ 	struct dice *dice = dev_get_drvdata(&unit->device);
+
+-	mutex_lock(&dice->mutex);
+-
+ 	/*
+ 	 * On a bus reset, the DICE firmware disables streaming and then goes
+ 	 * off contemplating its own navel for hundreds of milliseconds before
+@@ -1011,6 +1009,8 @@ static void dice_bus_reset(struct fw_unit *unit)
+ 	 */
+ 	amdtp_out_stream_pcm_abort(&dice->stream);
+
++	mutex_lock(&dice->mutex);
++
+ 	dice->global_enabled = false;
+ 	dice_stream_stop_packets(dice);
+
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
