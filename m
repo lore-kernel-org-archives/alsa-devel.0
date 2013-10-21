@@ -1,7 +1,7 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] [18/29] ALSA: dice: fix locking
-Date: Mon, 21 Oct 2013 21:31:05 +0200
-Message-ID: <526580F9.2010205@ladisch.de>
+Subject: [PATCH] [19/29] ALSA: dice: make amdtp_rates[] const
+Date: Mon, 21 Oct 2013 21:31:42 +0200
+Message-ID: <5265811E.5050609@ladisch.de>
 References: <52657E3B.7040205@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,53 +20,38 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-
-Avoid a lock inversion between dice->mutex and pcm->open_mutex.
-
-Signed-off-by: Stefan Richter <stefanr@s5r6.in-berlin.de>
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- sound/firewire/dice.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/firewire/amdtp.c |    2 +-
+ sound/firewire/amdtp.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index 2d198ae..2d3a04e 100644
---- a/sound/firewire/dice.c
-+++ b/sound/firewire/dice.c
-@@ -981,12 +981,12 @@ static void dice_remove(struct fw_unit *unit)
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index a09c3b3..5540f70 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -65,7 +65,7 @@ void amdtp_out_stream_destroy(struct amdtp_out_stream *s)
+ }
+ EXPORT_SYMBOL(amdtp_out_stream_destroy);
+
+-unsigned int amdtp_syt_intervals[CIP_SFC_COUNT] = {
++const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT] = {
+ 	[CIP_SFC_32000]  =  8,
+ 	[CIP_SFC_44100]  =  8,
+ 	[CIP_SFC_48000]  =  8,
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index f3d03dd..839ebf8 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -103,7 +103,7 @@ void amdtp_out_stream_pcm_prepare(struct amdtp_out_stream *s);
+ unsigned long amdtp_out_stream_pcm_pointer(struct amdtp_out_stream *s);
+ void amdtp_out_stream_pcm_abort(struct amdtp_out_stream *s);
+
+-extern unsigned int amdtp_syt_intervals[CIP_SFC_COUNT];
++extern const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT];
+
+ static inline bool amdtp_out_stream_running(struct amdtp_out_stream *s)
  {
- 	struct dice *dice = dev_get_drvdata(&unit->device);
-
--	mutex_lock(&dice->mutex);
--
- 	amdtp_out_stream_pcm_abort(&dice->stream);
-
- 	snd_card_disconnect(dice->card);
-
-+	mutex_lock(&dice->mutex);
-+
- 	dice_stream_stop(dice);
- 	dice_owner_clear(dice);
-
-@@ -999,8 +999,6 @@ static void dice_bus_reset(struct fw_unit *unit)
- {
- 	struct dice *dice = dev_get_drvdata(&unit->device);
-
--	mutex_lock(&dice->mutex);
--
- 	/*
- 	 * On a bus reset, the DICE firmware disables streaming and then goes
- 	 * off contemplating its own navel for hundreds of milliseconds before
-@@ -1011,6 +1009,8 @@ static void dice_bus_reset(struct fw_unit *unit)
- 	 */
- 	amdtp_out_stream_pcm_abort(&dice->stream);
-
-+	mutex_lock(&dice->mutex);
-+
- 	dice->global_enabled = false;
- 	dice_stream_stop_packets(dice);
-
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
