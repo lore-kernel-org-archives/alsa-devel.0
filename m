@@ -1,24 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Audio Miniconference 2013 October
-Date: Mon, 21 Oct 2013 10:06:24 +0100
-Message-ID: <20131021090624.GA31476@sirena.org.uk>
+From: "Ranjith" <ranjithvs@iwavesystems.com>
+Subject: Fw:  alsa project installation not working
+Date: Mon, 21 Oct 2013 14:40:41 +0530
+Message-ID: <78C7351C227B4881AD33B8C6FC5032CA@iwdtp049>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A8E4F265095
- for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 11:06:32 +0200 (CEST)
-Received: from ed03490-ge-0-0-0.mgdfwr.lumison.net ([212.20.242.100]
- helo=finisterre)
- by cassiel.sirena.org.uk with esmtpsa (TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128)
- (Exim 4.80) (envelope-from <broonie@sirena.org.uk>)
- id 1VYBRW-0000e5-Bx
- for alsa-devel@alsa-project.org; Mon, 21 Oct 2013 10:06:32 +0100
-Received: from broonie by finisterre with local (Exim 4.80)
- (envelope-from <broonie@sirena.org.uk>) id 1VYBRQ-0000aN-BS
- for alsa-devel@alsa-project.org; Mon, 21 Oct 2013 10:06:24 +0100
-Content-Disposition: inline
+Received: from sip2-98.nexcess.net (iwavesystems.com [207.32.180.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E6D326508D
+ for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 11:10:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,4 +21,24 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The room is Harris 2 upstairs on the 1st floor.
+
+
+--------------------------------------------------
+From: "Ranjith" <ranjithvs@iwavesystems.com>
+Sent: Monday, October 21, 2013 2:32 PM
+To: <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] alsa project installation not working
+
+> Hi,
+>
+>  I am using Ubuntu 12.10. I am not able to install alsa project. When I'm 
+> giving ./configure it is throwing error as configure command not found.
+>
+>
+> Thanks & Regards,
+>
+> Ranjith
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel 
