@@ -1,7 +1,7 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] [15/29] ALSA: dice: avoid superflous write at bus reset
-Date: Mon, 21 Oct 2013 21:29:20 +0200
-Message-ID: <52658090.7080604@ladisch.de>
+Subject: [PATCH] [16/29] ALSA: dice: remove 10s period length limit
+Date: Mon, 21 Oct 2013 21:29:53 +0200
+Message-ID: <526580B1.7090209@ladisch.de>
 References: <52657E3B.7040205@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,37 +20,27 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-When a bus reset happens, the enable register is automatically cleared,
-so we do not need to clear it manually when stopping the stream.
+Since commit f2b3614cefb6 (Don't check DMA time-out too shortly), we
+need no longer to restrict the period length to less than 10 s.
 
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- sound/firewire/dice.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ sound/firewire/dice.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index 59d5ca4..cfa98a8 100644
+index cfa98a8..57ceb13 100644
 --- a/sound/firewire/dice.c
 +++ b/sound/firewire/dice.c
-@@ -246,6 +246,9 @@ static void dice_enable_clear(struct dice *dice)
- {
- 	__be32 value;
+@@ -350,7 +350,7 @@ static int dice_open(struct snd_pcm_substream *substream)
 
-+	if (!dice->global_enabled)
-+		return;
-+
- 	value = 0;
- 	snd_fw_transaction(dice->unit, TCODE_WRITE_QUADLET_REQUEST,
- 			   global_address(dice, GLOBAL_ENABLE),
-@@ -1009,6 +1012,8 @@ static void dice_bus_reset(struct fw_unit *unit)
- 	 * manner.
- 	 */
- 	amdtp_out_stream_pcm_abort(&dice->stream);
-+
-+	dice->global_enabled = false;
- 	dice_stream_stop_packets(dice);
+ 	err = snd_pcm_hw_constraint_minmax(runtime,
+ 					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
+-					   5000, 8192000);
++					   5000, UINT_MAX);
+ 	if (err < 0)
+ 		goto err_lock;
 
- 	dice_owner_update(dice);
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
