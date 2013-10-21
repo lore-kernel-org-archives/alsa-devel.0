@@ -1,7 +1,7 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] [19/29] ALSA: dice: make amdtp_rates[] const
-Date: Mon, 21 Oct 2013 21:31:42 +0200
-Message-ID: <5265811E.5050609@ladisch.de>
+Subject: [PATCH] [20/29] ALSA: dice: get clock capabilities
+Date: Mon, 21 Oct 2013 21:32:17 +0200
+Message-ID: <52658141.7060009@ladisch.de>
 References: <52657E3B.7040205@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,38 +20,71 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+In preparation for sample rate selection support, ensure that the driver
+knows about the device's clock capabilities.
+
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- sound/firewire/amdtp.c |    2 +-
- sound/firewire/amdtp.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/firewire/dice.c |   23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index a09c3b3..5540f70 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -65,7 +65,7 @@ void amdtp_out_stream_destroy(struct amdtp_out_stream *s)
+diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
+index 2d3a04e..06fef47 100644
+--- a/sound/firewire/dice.c
++++ b/sound/firewire/dice.c
+@@ -36,6 +36,7 @@ struct dice {
+ 	struct mutex mutex;
+ 	unsigned int global_offset;
+ 	unsigned int rx_offset;
++	unsigned int clock_caps;
+ 	struct fw_address_handler notification_handler;
+ 	int owner_generation;
+ 	int dev_lock_count; /* > 0 driver, < 0 userspace */
+@@ -830,9 +831,10 @@ static int dice_interface_check(struct fw_unit *unit)
+ 	return 0;
  }
- EXPORT_SYMBOL(amdtp_out_stream_destroy);
 
--unsigned int amdtp_syt_intervals[CIP_SFC_COUNT] = {
-+const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT] = {
- 	[CIP_SFC_32000]  =  8,
- 	[CIP_SFC_44100]  =  8,
- 	[CIP_SFC_48000]  =  8,
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index f3d03dd..839ebf8 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -103,7 +103,7 @@ void amdtp_out_stream_pcm_prepare(struct amdtp_out_stream *s);
- unsigned long amdtp_out_stream_pcm_pointer(struct amdtp_out_stream *s);
- void amdtp_out_stream_pcm_abort(struct amdtp_out_stream *s);
-
--extern unsigned int amdtp_syt_intervals[CIP_SFC_COUNT];
-+extern const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT];
-
- static inline bool amdtp_out_stream_running(struct amdtp_out_stream *s)
+-static int dice_init_offsets(struct dice *dice)
++static int dice_read_params(struct dice *dice)
  {
+ 	__be32 pointers[6];
++	__be32 value;
+ 	int err;
+
+ 	err = snd_fw_transaction(dice->unit, TCODE_READ_BLOCK_REQUEST,
+@@ -844,6 +846,23 @@ static int dice_init_offsets(struct dice *dice)
+ 	dice->global_offset = be32_to_cpu(pointers[0]) * 4;
+ 	dice->rx_offset = be32_to_cpu(pointers[4]) * 4;
+
++	/* some very old firmwares don't tell about their clock support */
++	if (be32_to_cpu(pointers[1]) * 4 >= GLOBAL_CLOCK_CAPABILITIES + 4) {
++		err = snd_fw_transaction(
++				dice->unit, TCODE_READ_QUADLET_REQUEST,
++				global_address(dice, GLOBAL_CLOCK_CAPABILITIES),
++				&value, 4, 0);
++		if (err < 0)
++			return err;
++		dice->clock_caps = be32_to_cpu(value);
++	} else {
++		/* this should be supported by any device */
++		dice->clock_caps = CLOCK_CAP_RATE_44100 |
++				   CLOCK_CAP_RATE_48000 |
++				   CLOCK_CAP_SOURCE_ARX1 |
++				   CLOCK_CAP_SOURCE_INTERNAL;
++	}
++
+ 	return 0;
+ }
+
+@@ -905,7 +924,7 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+ 	dice->unit = unit;
+ 	init_waitqueue_head(&dice->hwdep_wait);
+
+-	err = dice_init_offsets(dice);
++	err = dice_read_params(dice);
+ 	if (err < 0)
+ 		goto err_mutex;
+
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
