@@ -1,7 +1,7 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] [26/29] ALSA: dice: document quadlet alignment
-Date: Mon, 21 Oct 2013 21:35:25 +0200
-Message-ID: <526581FD.5080006@ladisch.de>
+Subject: [PATCH] [27/29] ALSA: dice: dice_proc_read: remove wrong typecast
+Date: Mon, 21 Oct 2013 21:40:49 +0200
+Message-ID: <52658341.2000706@ladisch.de>
 References: <52657E3B.7040205@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,32 +20,27 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Doing accesses without quadlet alignment is a bad idea because the
-firmware's byte-swapping would garble the data; clarify this in the
-documentation.
+Remove a wrong typecast that resulted from a copy-and-paste error.
 
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- sound/firewire/dice-interface.h |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/firewire/dice.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/firewire/dice-interface.h b/sound/firewire/dice-interface.h
-index af916b9..27b044f 100644
---- a/sound/firewire/dice-interface.h
-+++ b/sound/firewire/dice-interface.h
-@@ -7,9 +7,9 @@
-
- /*
-  * Generally, all registers can be read like memory, i.e., with quadlet read or
-- * block read transactions with any alignment or length.  Writes are not
-- * allowed except where noted; quadlet-sized registers must be written with
-- * a quadlet write transaction.
-+ * block read transactions with at least quadlet-aligned offset and length.
-+ * Writes are not allowed except where noted; quadlet-sized registers must be
-+ * written with a quadlet write transaction.
-  *
-  * All values are in big endian.  The DICE firmware runs on a little-endian CPU
-  * and just byte-swaps _all_ quadlets on the bus, so values without endianness
+diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
+index 25a9636..5f0f102 100644
+--- a/sound/firewire/dice.c
++++ b/sound/firewire/dice.c
+@@ -1053,8 +1053,7 @@ static void dice_proc_read(struct snd_info_entry *entry,
+ 			break;
+ 		snd_iprintf(buffer, "rx %u:\n", stream);
+ 		snd_iprintf(buffer, "  iso channel: %d\n", (int)buf.rx.iso);
+-		snd_iprintf(buffer, "  sequence start: %u\n",
+-			    (int)buf.rx.seq_start);
++		snd_iprintf(buffer, "  sequence start: %u\n", buf.rx.seq_start);
+ 		snd_iprintf(buffer, "  audio channels: %u\n",
+ 			    buf.rx.number_audio);
+ 		snd_iprintf(buffer, "  midi ports: %u\n", buf.rx.number_midi);
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
