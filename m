@@ -1,15 +1,20 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH] ALSA: hda - add codec ID for Valleyview2
-	display codec
-Date: Sun, 20 Oct 2013 23:03:31 -0400
-Message-ID: <1382324611-8240-1-git-send-email-mengdong.lin@intel.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH] ASoC: kirkwood: cleanup the external clock
+	probe
+Date: Mon, 21 Oct 2013 12:09:16 +0200
+Message-ID: <20131021120916.3a3ffcf8@armhf>
+References: <20131021094613.2a07bd79@armhf>
+ <20131021080657.GU25034@n2100.arm.linux.org.uk>
+ <20131021102834.768c0887@armhf>
+ <20131021085200.GW25034@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C278265071
- for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 12:01:00 +0200 (CEST)
+Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA1F5265071
+ for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 12:09:01 +0200 (CEST)
+In-Reply-To: <20131021085200.GW25034@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,36 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Jason Cooper <jason@lakedaemon.net>, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
-
-This patch adds codec ID (0x80862882) and module alias for
-Valleyview2 display codec.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 7ea0245..e332db8 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2671,6 +2671,7 @@ static const struct hda_codec_preset snd_hda_preset_hdmi[] = {
- { .id = 0x80862806, .name = "PantherPoint HDMI", .patch = patch_generic_hdmi },
- { .id = 0x80862807, .name = "Haswell HDMI",	.patch = patch_generic_hdmi },
- { .id = 0x80862880, .name = "CedarTrail HDMI",	.patch = patch_generic_hdmi },
-+{ .id = 0x80862882, .name = "Valleyview2 HDMI",	.patch = patch_generic_hdmi },
- { .id = 0x808629fb, .name = "Crestline HDMI",	.patch = patch_generic_hdmi },
- {} /* terminator */
- };
-@@ -2725,6 +2726,7 @@ MODULE_ALIAS("snd-hda-codec-id:80862805");
- MODULE_ALIAS("snd-hda-codec-id:80862806");
- MODULE_ALIAS("snd-hda-codec-id:80862807");
- MODULE_ALIAS("snd-hda-codec-id:80862880");
-+MODULE_ALIAS("snd-hda-codec-id:80862882");
- MODULE_ALIAS("snd-hda-codec-id:808629fb");
- 
- MODULE_LICENSE("GPL");
--- 
-1.8.1.2
+T24gTW9uLCAyMSBPY3QgMjAxMyAwOTo1MjowMCArMDEwMApSdXNzZWxsIEtpbmcgLSBBUk0gTGlu
+dXggPGxpbnV4QGFybS5saW51eC5vcmcudWs+IHdyb3RlOgoKPiA+ID4gTkFLLiAgSXQgY2FuIG9j
+Y3VyLiAgCj4gPiAKPiA+IEluIHdoaWNoIGNhc2U/IEFuZCwgd2hhdCB3b3VsZCBiZSB0aGUgcmln
+aHQgdHJlYXRtZW50PyAgCj4gCj4gICAgICAgICBwcml2LT5jbGsgPSBkZXZtX2Nsa19nZXQoJnBk
+ZXYtPmRldiwgTlVMTCk7Cj4gICAgICAgICBwcml2LT5leHRjbGsgPSBkZXZtX2Nsa19nZXQoJnBk
+ZXYtPmRldiwgImV4dGNsayIpOwo+IAo+IFN1cHBseWluZyB0aGUgZmlyc3QgY2xvY2sgdG8gdGhp
+cyBkcml2ZXIgd2l0aG91dCBhIHNlcGFyYXRlICJleHRjbGsiCj4gdmlhIGNsa2RldiB3aWxsIHJl
+dHVybiBpdCBhcyB0aGUgc2Vjb25kIGNsb2NrLgo+IAo+IEFnYWluLCBOQUsuICBZb3VyIGNoYW5n
+ZSBpcyBhZ2FpbnN0IHRoZSBwcmluY2lwbGVzIG9mIHRoZSBjbGsgQVBJLgoKWW91IGFyZSByaWdo
+dC4KCk1hcmssIHBsZWFzZSBmb3JnZXQgYWJvdXQgdGhpcyBwYXRjaC4KClRoYW5rcy4KCi0tIApL
+ZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYhICoqCkplZgkJ
+fAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
