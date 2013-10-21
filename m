@@ -1,74 +1,37 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 2/3] dma: edma: Add support for Cyclic DMA
-Date: Mon, 21 Oct 2013 12:23:19 +0530
-Message-ID: <20131021065319.GM14013@intel.com>
-References: <1379977515-3794-1-git-send-email-joelf@ti.com>
- <1379977515-3794-3-git-send-email-joelf@ti.com>
+From: Xiubo Li-B47053 <B47053@freescale.com>
+Subject: RE: [PATCHv1 6/8] ASoC: fsl: add SGT15000 based audio machine driver.
+Date: Mon, 21 Oct 2013 07:50:22 +0000
+Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F8286684E@039-SN2MPN1-013.039d.mgd.msft.net>
+References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
+ <1382000477-17304-7-git-send-email-Li.Xiubo@freescale.com>
+ <20131018173331.GV2443@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1379977515-3794-3-git-send-email-joelf@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Joel Fernandes <joelf@ti.com>
-Cc: Matt Porter <matt@ohporter.com>, Mark Brown <broonie@linaro.org>, Russell King <linux@arm.linux.org.uk>, Dan Williams <djbw@fb.com>, Jyri Sarha <jsarha@ti.com>, Lars Peter-Clausen <lars@metafoo.de>, Linux OMAP List <linux-omap@vger.kernel.org>, Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>, Linux DaVinci Kernel List <davinci-linux-open-source@linux.davincidsp.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20131018173331.GV2443@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Wang Huan-B18965 <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "perex@perex.cz" <perex@perex.cz>, Guo Shawn-R65073 <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Chen Guangyu-B42378 <B42378@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.co>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 23, 2013 at 06:05:14PM -0500, Joel Fernandes wrote:
- 
-> @@ -449,6 +455,138 @@ static struct dma_async_tx_descriptor *edma_prep_slave_sg(
->  	return vchan_tx_prep(&echan->vchan, &edesc->vdesc, tx_flags);
->  }
->  
-> +static struct dma_async_tx_descriptor *edma_prep_dma_cyclic(
-> +	struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
-> +	size_t period_len, enum dma_transfer_direction direction,
-> +	unsigned long tx_flags, void *context)
-> +{
-> +	struct edma_chan *echan = to_edma_chan(chan);
-> +	struct device *dev = chan->device->dev;
-> +	struct edma_desc *edesc;
-> +	dma_addr_t src_addr, dst_addr;
-> +	enum dma_slave_buswidth dev_width;
-> +	u32 burst;
-> +	int i, ret, nr_periods;
-> +
-> +	if (unlikely(!echan || !buf_len || !period_len))
-> +		return NULL;
-> +
-> +	if (direction == DMA_DEV_TO_MEM) {
-> +		src_addr = echan->cfg.src_addr;
-> +		dst_addr = buf_addr;
-> +		dev_width = echan->cfg.src_addr_width;
-> +		burst = echan->cfg.src_maxburst;
-> +	} else if (direction == DMA_MEM_TO_DEV) {
-> +		src_addr = buf_addr;
-> +		dst_addr = echan->cfg.dst_addr;
-> +		dev_width = echan->cfg.dst_addr_width;
-> +		burst = echan->cfg.dst_maxburst;
-> +	} else {
-> +		dev_err(dev, "%s: bad direction?\n", __func__);
-> +		return NULL;
-> +	}
-> +
-> +	if (dev_width == DMA_SLAVE_BUSWIDTH_UNDEFINED) {
-> +		dev_err(dev, "Undefined slave buswidth\n");
-> +		return NULL;
-> +	}
-> +
-> +	if (unlikely(buf_len % period_len)) {
-> +		dev_err(dev, "Period should be multiple of Buffer length\n");
-> +		return NULL;
-> +	}
-> +
-> +	nr_periods = (buf_len / period_len) + 1;
-?
+> > +	ret = snd_soc_register_card(&fsl_sgt1500_card);
+> > +	if (ret) {
+> > +		dev_err(&pdev->dev, "register soc sound card failed :%d\n",
+> > +				ret);
+> > +		return ret;
+> > +	}
+> 
+> Use the newly added devm_snd_soc_register_card() (in -next).
+>
 
-consider the case of buf = period_len, above makes nr_period = 2.
-
-Or buf len 100, period len 50, makes nr_period = 3
-
-Both doesnt seem right to me?
-
---
-~Vinod
+Okey, Please see the next version.
