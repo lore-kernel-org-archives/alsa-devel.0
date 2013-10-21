@@ -1,138 +1,55 @@
-From: Xiubo Li-B47053 <B47053@freescale.com>
-Subject: RE: [alsa-devel] [PATCHv1 1/8] ALSA: Add SAI SoC Digital Audio
- Interface driver.
-Date: Mon, 21 Oct 2013 06:59:10 +0000
-Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F828667B8@039-SN2MPN1-013.039d.mgd.msft.net>
-References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
- <1382000477-17304-2-git-send-email-Li.Xiubo@freescale.com>
- <526021B0.6050206@metafoo.de>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH v3 2/2] ASoC: kirkwood: fix loss of
+ external clock at probe time
+Date: Mon, 21 Oct 2013 09:24:34 +0200
+Message-ID: <20131021092434.02966f5e@armhf>
+References: <20131018203555.4d974251@armhf>
+ <20131020163819.GO2443@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <526021B0.6050206@metafoo.de>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Wang Huan-B18965 <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Guo Shawn-R65073 <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Chen Guangyu-B42378 <B42378@freescale.com>, "oskar@scara.com" <oskar@scara.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, broonie
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB8E72655D6
+ for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 09:24:24 +0200 (CEST)
+In-Reply-To: <20131020163819.GO2443@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-> > +static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
-> > +		struct snd_pcm_hw_params *params,
-> > +		struct snd_soc_dai *cpu_dai)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret = fsl_sai_hw_params_tr(substream, params, cpu_dai,
-> > +				FSL_FMT_TRANSMITTER);
-> > +	if (ret) {
-> > +		dev_err(cpu_dai->dev,
-> > +				"Cannot set sai transmitter hw params: %d\n",
-> > +				ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = fsl_sai_hw_params_tr(substream, params, cpu_dai,
-> > +				FSL_FMT_RECEIVER);
-> > +	if (ret) {
-> > +		dev_err(cpu_dai->dev,
-> > +				"Cannot set sai's receiver hw params: %d\n",
-> > +				ret);
-> > +		return ret;
-> > +	}
-> 
-> Shouldn't, depending on the substream direction, either transmit or
-> receiver be configured, instead of always configuring both?
-> 
-
-Yes, this can be configed separately. Please see the next version.
-
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int fsl_sai_trigger(struct snd_pcm_substream *substream, int
-> cmd,
-> > +		struct snd_soc_dai *dai)
-> > +{
-> > +	struct fsl_sai *sai = snd_soc_dai_get_drvdata(dai);
-> > +	unsigned int tcsr, rcsr;
-> > +
-> > +	tcsr = readl(sai->base + SAI_TCSR);
-> > +	rcsr = readl(sai->base + SAI_RCSR);
-> > +
-> > +	switch (cmd) {
-> > +	case SNDRV_PCM_TRIGGER_START:
-> > +	case SNDRV_PCM_TRIGGER_RESUME:
-> > +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> > +		rcsr |= SAI_CSR_TERE | SAI_CSR_FRDE;
-> > +		tcsr |= SAI_CSR_TERE | SAI_CSR_FRDE;
-> > +		writel(rcsr, sai->base + SAI_RCSR);
-> > +		udelay(10);
-> > +		writel(tcsr, sai->base + SAI_TCSR);
-> > +		break;
-> > +
-> > +	case SNDRV_PCM_TRIGGER_STOP:
-> > +	case SNDRV_PCM_TRIGGER_SUSPEND:
-> > +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> > +		tcsr &= ~(SAI_CSR_TERE | SAI_CSR_FRDE);
-> > +		rcsr &= ~(SAI_CSR_TERE | SAI_CSR_FRDE);
-> > +		writel(tcsr, sai->base + SAI_TCSR);
-> > +		udelay(10);
-> > +		writel(rcsr, sai->base + SAI_RCSR);
-> > +		break;
-> > +	default:
-> > +		return -EINVAL;
-> > +	}
-> > +
-> 
-> Same here, shouldn't tx and rx be started independently depending on the
-> substream direction?
-> 
-
-But this couldn't, from the SAI's spec we can see that:
-------
-The SAI transmitter and receiver can be configured to operate with synchronous bit clock
-and frame sync.
-
-1), 
-If the transmitter bit clock and frame sync are to be used by both the transmitter and
-receiver:
-* The transmitter must be configured for asynchronous operation and the receiver for
-synchronous operation.
-* In synchronous mode, the receiver is enabled only when both the transmitter and
-receiver are enabled.
-* It is recommended that the transmitter is the last enabled and the first disabled.
-
-2),
-If the receiver bit clock and frame sync are to be used by both the transmitter and
-receiver:
-* The receiver must be configured for asynchronous operation and the transmitter for
-synchronous operation.
-* In synchronous mode, the transmitter is enabled only when both the receiver and
-transmitter are both enabled.
-* It is recommended that the receiver is the last enabled and the first disabled.
-------
-
-The receiver and transmitter should be both enabled at the same time if any of them is alive.
-
-
-> > +	return 0;
-> > +}
-> > +
-> > +static struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
-> 
-> const
-> 
-
-Please see the next version.
+T24gU3VuLCAyMCBPY3QgMjAxMyAxNzozODoxOSArMDEwMApNYXJrIEJyb3duIDxicm9vbmllQGtl
+cm5lbC5vcmc+IHdyb3RlOgoKPiBPbiBGcmksIE9jdCAxOCwgMjAxMyBhdCAwODozNTo1NVBNICsw
+MjAwLCBKZWFuLUZyYW5jb2lzIE1vaW5lIHdyb3RlOgo+ID4gQXQgcHJvYmUgdGltZSwgd2hlbiB0
+aGUgY2xvY2sgZHJpdmVyIGlzIG5vdCB5ZXQgaW5pdGlhbGl6ZWQsIHRoZQo+ID4gZXh0ZXJuYWwg
+Y2xvY2sgb2YgdGhlIGtpcmt3b29kIHNvdW5kIGRldmljZSB3aWxsIG5vdCBiZSB1c2FibGUuICAK
+PiAKPiBUaGlzIGRvZXNuJ3QgYXBwbHkgYWdhaW5zdCAtbmV4dCwgY291bGQgeW91IHBsZWFzZSBj
+aGVjayBhbmQgcmVzZW5kPwo+IAo+ICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51
+eC9rZXJuZWwvZ2l0L2Jyb29uZS9zb3VuZC5naXQgdG9waWMva2lya3dvb2QKPiAKPiBvciB0aGUg
+Zm9yLW5leHQgYnJhbmNoLgoKTm90IGVhc3kgdG8gZmluZCA6KQoKPiA+IEl0IGFsc28gcmVtb3Zl
+cyB0aGUgdGVzdCBhYm91dCBzYW1lIGludGVybmFsIGFuZCBleHRlcm5hbCBjbG9ja3Mgd2hpY2gK
+PiA+IGNhbiBuZXZlciBvY2N1ci4KPiAKPiBJdCBzZWVtcyBsaWtlIHJlYXNvbmFibGUgZGVmZW5z
+aXZlbmVzcyB0byBoYXZlIHRoZSB0ZXN0IHRoZXJlIGluIGNhc2UKPiBzb21lb25lIGhhcyBhIGJy
+b2tlbiBEVCwgdGhvdWdoIGl0J2QgYmUgYmV0dGVyIHRvIGNvbXBsYWluIGFib3V0IHRoZSBEVC4K
+ClRoZSByZW1vdmVkIHRlc3QgcnVuIGludG86CgoJY2xvY2tzID0gPCZzaTUzNTEgMj4sIDwmc2k1
+MzUxIDI+OwoJY2xvY2stbmFtZXMgPSAiaW50ZXJuYWwiLCAiZXh0Y2xrIjsKCndoZXJlIGl0IHNl
+ZW1zIHRoYXQgdGhlIHVzZXIgcmVhbGx5IHdhbnRlZCB0byBtYWtlIGEgbWlzdGFrZS4KVGhlbiwg
+dGhlIGFjdHVhbCBjb2RlIGp1c3Qgd2FudHMgdGhlIHNpNTM1MSAyIHRvIHdvcmsgYXMgdGhlIGlu
+dGVybmFsCmNsb2NrLCBhbmQgdGhhdCBjYW5ub3QgYmUuCgpBbHNvLCBhYm91dCBlcnJvcnMsIHlv
+dSBtYXkgc2VlIHRoYXQgYSBgbm9ybWFsYCBlcnJvciBhczoKCgljbG9ja3MgPSA8JnNpNTM1MSAy
+PiwgPCZnYXRlX2NsayAxMz47CgljbG9jay1uYW1lcyA9ICJpbnRlcm5hbCIsICJleHRjbGsiOwoK
+aS5lLiBpbnZlcnNpb24gb2YgdGhlIGludGVybmFsIGFuZCBleHRlcm5hbCBjbG9jayBwaGFuZGxl
+J3MsIGNhbm5vdCBiZQpkZXRlY3RlZC4uLgoKU28sIGl0IGlzIGJldHRlciB0byByZW1vdmUgdGhl
+IHVzZWxlc3MgdGVzdC4KCi0tIApLZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhh
+IExpbnV4IGF0YXYhICoqCkplZgkJfAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
