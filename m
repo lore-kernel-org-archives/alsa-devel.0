@@ -1,47 +1,53 @@
-From: Xiubo Li-B47053 <B47053@freescale.com>
-Subject: RE: [PATCHv1 8/8] Documentation: Add device tree bindings for
- Freescale VF610 sound.
-Date: Mon, 21 Oct 2013 07:24:56 +0000
-Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F82866807@039-SN2MPN1-013.039d.mgd.msft.net>
-References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
- <1382000477-17304-9-git-send-email-Li.Xiubo@freescale.com>
- <20131018173126.GU2443@sirena.org.uk>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: [PATCH] ASoC: kirkwood: cleanup the external clock
+	probe
+Date: Mon, 21 Oct 2013 09:46:13 +0200
+Message-ID: <20131021094613.2a07bd79@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20131018173126.GU2443@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Wang Huan-B18965 <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "perex@perex.cz" <perex@perex.cz>, Guo Shawn-R65073 <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Chen Guangyu-B42378 <B42378@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.co>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5523B2655DD
+ for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 09:45:58 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jason Cooper <jason@lakedaemon.net>, Mark Brown <broonie@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.org, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> > +  -- Power supplies:
-> > +     * Mic Bias
-> > +
-> > +  -- SGTL5000 pins:
-> > +     * MIC_IN
-> > +     * LINE_IN
-> > +     * HP_OUT
-> > +     * LINE_OUT
-> 
-> Things that are part of the CODEC should be part of the CODEC binding and
-> this binding should reference that - this way the information doesn't
-> have to be replicated by all boards using the CODEC and if new devices
-> are supported by the CODEC driver then only that needs updating hopefully.
->
-
-Yes, the "-- SGTL5000 pins:" should be in the CODEC binding.
-But, actually the CODEC binding hasn't any reference about this.
-
-So I added it here, but not very sure.
+VGhpcyBwYXRjaCBjaGVja3MgdGhlIHJldHVybiB2YWx1ZSBvZiB0aGUgY2xrX3ByZXBhcmVfZW5h
+YmxlIG9mIHRoZQpleHRlcm5hbCBjbG9jayBhbmQgcmVtb3ZlcyB0aGUgdGVzdCBhYm91dCBhIHNh
+bWUgaW50ZXJuYWwgYW5kIGV4dGVybmFsCmNsb2NrIHdoaWNoIHdvdWxkIHF1aXRlIG5ldmVyIG9j
+Y3VyIGFuZCB3b24ndCB3b3JrIGluIG1vc3QgY2FzZXMKaXQgd291bGQgb2NjdXIuCgpTaWduZWQt
+b2ZmLWJ5OiBKZWFuLUZyYW5jb2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Ci0tLQpUaGlzIHBh
+dGNoIGFwcGxpZXMgYWdhaW5zdCBicm9vbmllL3NvdW5kIGZvci1uZXh0LgotLS0KIHNvdW5kL3Nv
+Yy9raXJrd29vZC9raXJrd29vZC1pMnMuYyB8IDEzICsrKysrLS0tLS0tLS0KIDEgZmlsZSBjaGFu
+Z2VkLCA1IGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQv
+c29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5jLm9sZCBiL3NvdW5kL3NvYy9raXJrd29vZC9raXJr
+d29vZC1pMnMuYy5wYXQyCmluZGV4IGQwNTA0YTIuLmMyNDMzZWEgMTAwNjQ0Ci0tLSBhL3NvdW5k
+L3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMuYy5vbGQKKysrIGIvc291bmQvc29jL2tpcmt3b29k
+L2tpcmt3b29kLWkycy5jLnBhdDIKQEAgLTUwMCwxNCArNTAwLDExIEBAIHN0YXRpYyBpbnQga2ly
+a3dvb2RfaTJzX2Rldl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQogCQlpZiAo
+UFRSX0VSUihwcml2LT5leHRjbGspID09IC1FUFJPQkVfREVGRVIpCiAJCQlyZXR1cm4gLUVQUk9C
+RV9ERUZFUjsKIAl9IGVsc2UgewotCQlpZiAocHJpdi0+ZXh0Y2xrID09IHByaXYtPmNsaykgewot
+CQkJZGV2bV9jbGtfcHV0KCZwZGV2LT5kZXYsIHByaXYtPmV4dGNsayk7Ci0JCQlwcml2LT5leHRj
+bGsgPSBFUlJfUFRSKC1FSU5WQUwpOwotCQl9IGVsc2UgewotCQkJZGV2X2luZm8oJnBkZXYtPmRl
+diwgImZvdW5kIGV4dGVybmFsIGNsb2NrXG4iKTsKLQkJCWNsa19wcmVwYXJlX2VuYWJsZShwcml2
+LT5leHRjbGspOwotCQkJc29jX2RhaSA9ICZraXJrd29vZF9pMnNfZGFpX2V4dGNsazsKLQkJfQor
+CQlkZXZfaW5mbygmcGRldi0+ZGV2LCAiZm91bmQgZXh0ZXJuYWwgY2xvY2tcbiIpOworCQlyZXQg
+PSBjbGtfcHJlcGFyZV9lbmFibGUocHJpdi0+ZXh0Y2xrKTsKKwkJaWYgKGVyciA8IDApCisJCQly
+ZXR1cm4gZXJyOworCQlzb2NfZGFpID0ga2lya3dvb2RfaTJzX2RhaV9leHRjbGs7CiAJfQogCiAJ
+LyogU29tZSBzZW5zaWJsZSBkZWZhdWx0cyAtIHRoaXMgcmVmbGVjdHMgdGhlIHBvd2VydXAgdmFs
+dWVzICovCgotLSAKS2VuIGFyIGMnaGVudGHDsQl8CSAgICAgICoqIEJyZWl6aCBoYSBMaW51eCBh
+dGF2ISAqKgpKZWYJCXwJCWh0dHA6Ly9tb2luZWpmLmZyZWUuZnIvCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
