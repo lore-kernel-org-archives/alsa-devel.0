@@ -1,7 +1,7 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] [22/29] ALSA: dice: get rate-dependent parameters
-Date: Mon, 21 Oct 2013 21:33:26 +0200
-Message-ID: <52658186.1080205@ladisch.de>
+Subject: [PATCH] [23/29] ALSA: dice: dynamic sample rate selection
+Date: Mon, 21 Oct 2013 21:34:00 +0200
+Message-ID: <526581A8.7090708@ladisch.de>
 References: <52657E3B.7040205@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,198 +20,218 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In preparation for sample rate selection support, read the stream
-parameters that might change when running at different sample rates.
+Instead of relying of some control panel application to configure some
+fixed sample rate, allow applications to set it automatically.
 
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- sound/firewire/dice.c |   92 ++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 90 insertions(+), 2 deletions(-)
+ sound/firewire/dice.c |  137 ++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 102 insertions(+), 35 deletions(-)
 
 diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index 49b47ba..e6bba6d 100644
+index e6bba6d..61dd00c 100644
 --- a/sound/firewire/dice.c
 +++ b/sound/firewire/dice.c
-@@ -6,10 +6,12 @@
-  */
-
- #include <linux/compat.h>
-+#include <linux/completion.h>
- #include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/firewire.h>
- #include <linux/firewire-constants.h>
-+#include <linux/jiffies.h>
- #include <linux/module.h>
- #include <linux/mod_devicetable.h>
- #include <linux/mutex.h>
-@@ -37,11 +39,14 @@ struct dice {
- 	unsigned int global_offset;
- 	unsigned int rx_offset;
- 	unsigned int clock_caps;
-+	unsigned int rx_channels[3];
-+	unsigned int rx_midi_ports[3];
- 	struct fw_address_handler notification_handler;
- 	int owner_generation;
- 	int dev_lock_count; /* > 0 driver, < 0 userspace */
- 	bool dev_lock_changed;
- 	bool global_enabled;
-+	struct completion clock_accepted;
- 	wait_queue_head_t hwdep_wait;
- 	u32 notification_bits;
- 	struct fw_iso_resources resources;
-@@ -53,15 +58,23 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
- MODULE_LICENSE("GPL v2");
-
- static const unsigned int dice_rates[] = {
-+	/* mode 0 */
- 	[0] =  32000,
- 	[1] =  44100,
- 	[2] =  48000,
-+	/* mode 1 */
- 	[3] =  88200,
- 	[4] =  96000,
-+	/* mode 2 */
- 	[5] = 176400,
+@@ -70,6 +70,17 @@ static const unsigned int dice_rates[] = {
  	[6] = 192000,
  };
 
-+static unsigned int rate_index_to_mode(unsigned int rate_index)
++static unsigned int rate_to_index(unsigned int rate)
 +{
-+	return ((int)rate_index - 1) / 2;
-+}
++	unsigned int i;
 +
- static void dice_lock_changed(struct dice *dice)
- {
- 	dice->dev_lock_changed = true;
-@@ -264,6 +277,7 @@ static void dice_notification(struct fw_card *card, struct fw_request *request,
- 			      void *data, size_t length, void *callback_data)
- {
- 	struct dice *dice = callback_data;
-+	u32 bits;
- 	unsigned long flags;
-
- 	if (tcode != TCODE_WRITE_QUADLET_REQUEST) {
-@@ -274,10 +288,17 @@ static void dice_notification(struct fw_card *card, struct fw_request *request,
- 		fw_send_response(card, request, RCODE_ADDRESS_ERROR);
- 		return;
- 	}
-+
-+	bits = be32_to_cpup(data);
-+
- 	spin_lock_irqsave(&dice->lock, flags);
--	dice->notification_bits |= be32_to_cpup(data);
-+	dice->notification_bits |= bits;
- 	spin_unlock_irqrestore(&dice->lock, flags);
-+
- 	fw_send_response(card, request, RCODE_COMPLETE);
-+
-+	if (bits & NOTIFY_CLOCK_ACCEPTED)
-+		complete(&dice->clock_accepted);
- 	wake_up(&dice->hwdep_wait);
- }
-
-@@ -457,6 +478,26 @@ static void dice_stream_stop(struct dice *dice)
- 	fw_iso_resources_free(&dice->resources);
- }
-
-+static int dice_change_rate(struct dice *dice, unsigned int clock_rate)
-+{
-+	__be32 value;
-+	int err;
-+
-+	INIT_COMPLETION(dice->clock_accepted);
-+
-+	value = cpu_to_be32(clock_rate | CLOCK_SOURCE_ARX1);
-+	err = snd_fw_transaction(dice->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 global_address(dice, GLOBAL_CLOCK_SELECT),
-+				 &value, 4, 0);
-+	if (err < 0)
-+		return err;
-+
-+	wait_for_completion_timeout(&dice->clock_accepted,
-+				    msecs_to_jiffies(100));
++	for (i = 0; i < ARRAY_SIZE(dice_rates); ++i)
++		if (dice_rates[i] == rate)
++			return i;
 +
 +	return 0;
 +}
 +
- static int dice_hw_params(struct snd_pcm_substream *substream,
- 			  struct snd_pcm_hw_params *hw_params)
+ static unsigned int rate_index_to_mode(unsigned int rate_index)
  {
-@@ -831,11 +872,51 @@ static int dice_interface_check(struct fw_unit *unit)
- 	return 0;
+ 	return ((int)rate_index - 1) / 2;
+@@ -302,6 +313,59 @@ static void dice_notification(struct fw_card *card, struct fw_request *request,
+ 	wake_up(&dice->hwdep_wait);
  }
 
-+static int highest_supported_mode_rate(struct dice *dice, unsigned int mode)
++static int dice_rate_constraint(struct snd_pcm_hw_params *params,
++				struct snd_pcm_hw_rule *rule)
 +{
-+	int i;
++	struct dice *dice = rule->private;
++	const struct snd_interval *channels =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval *rate =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval allowed_rates = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++	unsigned int i, mode;
 +
-+	for (i = ARRAY_SIZE(dice_rates) - 1; i >= 0; --i)
++	for (i = 0; i < ARRAY_SIZE(dice_rates); ++i) {
++		mode = rate_index_to_mode(i);
 +		if ((dice->clock_caps & (1 << i)) &&
-+		    rate_index_to_mode(i) == mode)
-+			return i;
-+
-+	return -1;
-+}
-+
-+static int dice_read_mode_params(struct dice *dice, unsigned int mode)
-+{
-+	__be32 values[2];
-+	int rate_index, err;
-+
-+	rate_index = highest_supported_mode_rate(dice, mode);
-+	if (rate_index < 0) {
-+		dice->rx_channels[mode] = 0;
-+		dice->rx_midi_ports[mode] = 0;
-+		return 0;
++		    snd_interval_test(channels, dice->rx_channels[mode])) {
++			allowed_rates.min = min(allowed_rates.min,
++						dice_rates[i]);
++			allowed_rates.max = max(allowed_rates.max,
++						dice_rates[i]);
++		}
 +	}
 +
++	return snd_interval_refine(rate, &allowed_rates);
++}
++
++static int dice_channels_constraint(struct snd_pcm_hw_params *params,
++				    struct snd_pcm_hw_rule *rule)
++{
++	struct dice *dice = rule->private;
++	const struct snd_interval *rate =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval allowed_channels = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++	unsigned int i, mode;
++
++	for (i = 0; i < ARRAY_SIZE(dice_rates); ++i)
++		if ((dice->clock_caps & (1 << i)) &&
++		    snd_interval_test(rate, dice_rates[i])) {
++			mode = rate_index_to_mode(i);
++			allowed_channels.min = min(allowed_channels.min,
++						   dice->rx_channels[mode]);
++			allowed_channels.max = max(allowed_channels.max,
++						   dice->rx_channels[mode]);
++		}
++
++	return snd_interval_refine(channels, &allowed_channels);
++}
++
+ static int dice_open(struct snd_pcm_substream *substream)
+ {
+ 	static const struct snd_pcm_hardware hardware = {
+@@ -311,6 +375,8 @@ static int dice_open(struct snd_pcm_substream *substream)
+ 			SNDRV_PCM_INFO_INTERLEAVED |
+ 			SNDRV_PCM_INFO_BLOCK_TRANSFER,
+ 		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
++		.channels_min = UINT_MAX,
++		.channels_max = 0,
+ 		.buffer_bytes_max = 16 * 1024 * 1024,
+ 		.period_bytes_min = 1,
+ 		.period_bytes_max = UINT_MAX,
+@@ -319,53 +385,46 @@ static int dice_open(struct snd_pcm_substream *substream)
+ 	};
+ 	struct dice *dice = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	__be32 clock_sel, data[2];
+-	unsigned int rate_index, number_audio, number_midi;
++	unsigned int i;
+ 	int err;
+
+ 	err = dice_try_lock(dice);
+ 	if (err < 0)
+ 		goto error;
+
+-	err = snd_fw_transaction(dice->unit, TCODE_READ_QUADLET_REQUEST,
+-				 global_address(dice, GLOBAL_CLOCK_SELECT),
+-				 &clock_sel, 4, 0);
+-	if (err < 0)
+-		goto err_lock;
+-	rate_index = (be32_to_cpu(clock_sel) & CLOCK_RATE_MASK)
+-							>> CLOCK_RATE_SHIFT;
+-	if (rate_index >= ARRAY_SIZE(dice_rates)) {
+-		err = -ENXIO;
+-		goto err_lock;
+-	}
+-
+-	err = snd_fw_transaction(dice->unit, TCODE_READ_BLOCK_REQUEST,
+-				 rx_address(dice, RX_NUMBER_AUDIO),
+-				 data, 2 * 4, 0);
+-	if (err < 0)
+-		goto err_lock;
+-	number_audio = be32_to_cpu(data[0]);
+-	number_midi = be32_to_cpu(data[1]);
+-
+ 	runtime->hw = hardware;
+
+-	runtime->hw.rates = snd_pcm_rate_to_rate_bit(dice_rates[rate_index]);
++	for (i = 0; i < ARRAY_SIZE(dice_rates); ++i)
++		if (dice->clock_caps & (1 << i))
++			runtime->hw.rates |=
++				snd_pcm_rate_to_rate_bit(dice_rates[i]);
+ 	snd_pcm_limit_hw_rates(runtime);
+
+-	runtime->hw.channels_min = number_audio;
+-	runtime->hw.channels_max = number_audio;
++	for (i = 0; i < 3; ++i)
++		if (dice->rx_channels[i]) {
++			runtime->hw.channels_min = min(runtime->hw.channels_min,
++						       dice->rx_channels[i]);
++			runtime->hw.channels_max = max(runtime->hw.channels_max,
++						       dice->rx_channels[i]);
++		}
+
+-	amdtp_out_stream_set_parameters(&dice->stream, dice_rates[rate_index],
+-					number_audio, number_midi);
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				  dice_rate_constraint, dice,
++				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	if (err < 0)
++		goto err_lock;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				  dice_channels_constraint, dice,
++				  SNDRV_PCM_HW_PARAM_RATE, -1);
++	if (err < 0)
++		goto err_lock;
+
+ 	err = snd_pcm_hw_constraint_step(runtime, 0,
+-					 SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
+-					 amdtp_syt_intervals[rate_index]);
++					 SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 32);
+ 	if (err < 0)
+ 		goto err_lock;
+ 	err = snd_pcm_hw_constraint_step(runtime, 0,
+-					 SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
+-					 amdtp_syt_intervals[rate_index]);
++					 SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 32);
+ 	if (err < 0)
+ 		goto err_lock;
+
+@@ -502,6 +561,7 @@ static int dice_hw_params(struct snd_pcm_substream *substream,
+ 			  struct snd_pcm_hw_params *hw_params)
+ {
+ 	struct dice *dice = substream->private_data;
++	unsigned int rate_index, mode;
+ 	int err;
+
+ 	mutex_lock(&dice->mutex);
+@@ -511,15 +571,22 @@ static int dice_hw_params(struct snd_pcm_substream *substream,
+ 	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+ 					       params_buffer_bytes(hw_params));
+ 	if (err < 0)
+-		goto error;
++		return err;
+
++	rate_index = rate_to_index(params_rate(hw_params));
 +	err = dice_change_rate(dice, rate_index << CLOCK_RATE_SHIFT);
 +	if (err < 0)
 +		return err;
 +
-+	err = snd_fw_transaction(dice->unit, TCODE_READ_BLOCK_REQUEST,
-+				 rx_address(dice, RX_NUMBER_AUDIO),
-+				 values, 2 * 4, 0);
-+	if (err < 0)
-+		return err;
-+
-+	dice->rx_channels[mode]   = be32_to_cpu(values[0]);
-+	dice->rx_midi_ports[mode] = be32_to_cpu(values[1]);
-+
-+	return 0;
-+}
-+
- static int dice_read_params(struct dice *dice)
- {
- 	__be32 pointers[6];
- 	__be32 value;
--	int err;
-+	int mode, err;
++	mode = rate_index_to_mode(rate_index);
++	amdtp_out_stream_set_parameters(&dice->stream,
++					params_rate(hw_params),
++					params_channels(hw_params),
++					dice->rx_midi_ports[mode]);
+ 	amdtp_out_stream_set_pcm_format(&dice->stream,
+ 					params_format(hw_params));
 
- 	err = snd_fw_transaction(dice->unit, TCODE_READ_BLOCK_REQUEST,
- 				 DICE_PRIVATE_SPACE,
-@@ -863,6 +944,12 @@ static int dice_read_params(struct dice *dice)
- 				   CLOCK_CAP_SOURCE_INTERNAL;
- 	}
-
-+	for (mode = 2; mode >= 0; --mode) {
-+		err = dice_read_mode_params(dice, mode);
-+		if (err < 0)
-+			return err;
-+	}
-+
  	return 0;
+-
+-error:
+-	return err;
  }
 
-@@ -922,6 +1009,7 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- 	spin_lock_init(&dice->lock);
- 	mutex_init(&dice->mutex);
- 	dice->unit = unit;
-+	init_completion(&dice->clock_accepted);
- 	init_waitqueue_head(&dice->hwdep_wait);
-
- 	dice->notification_handler.length = 4;
+ static int dice_hw_free(struct snd_pcm_substream *substream)
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
