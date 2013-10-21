@@ -1,50 +1,43 @@
-From: =?ISO-8859-1?Q?st=E9phane_cerveau?= <scerveau@gmail.com>
-Subject: Re: mxc-spdif delay: miss 1-2s at the beginning of the
- song
-Date: Mon, 21 Oct 2013 14:08:26 +0200
-Message-ID: <5265193A.5010504@gmail.com>
-References: <525D4F5B.6050105@gmail.com> <52651502.7000608@gmail.com>
- <526518C3.20603@ladisch.de>
+From: Mike Turquette <mturquette@linaro.org>
+Subject: Re: [PATCH v2 4/8] clk: samsung: s3c64xx: Add aliases for DMA clocks
+Date: Mon, 21 Oct 2013 05:11:42 -0700
+Message-ID: <20131021121142.11944.48412@quantum>
+References: <1381950659-12703-1-git-send-email-tomasz.figa@gmail.com>
+ <1381950659-12703-5-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
- [209.85.212.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 87A15260795
- for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 14:08:28 +0200 (CEST)
-Received: by mail-wi0-f169.google.com with SMTP id cb5so5074504wib.2
- for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 05:08:28 -0700 (PDT)
-In-Reply-To: <526518C3.20603@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1381950659-12703-5-git-send-email-tomasz.figa@gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-samsung-soc@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-spi@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Ben Dooks <ben-linux@fluff.org>, Jaroslav Kysela <perex@perex.cz>, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Padmavathi Venna <padma.v@samsung.com>, Russell King <linux@arm.linux.org.uk>, Sachin Kamat <sachin.kamat@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.de>, Tomasz Figa <tomasz.figa@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Clemens,
+Quoting Tomasz Figa (2013-10-16 12:10:55)
+> This patch adds clkdev aliases for clocks used by PL08x DMA driver.
+> 
+> Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
 
-I had a try with a CD player outputing in spdif on the same amplifer and =
+Acked-by: Mike Turquette <mturquette@linaro.org>
 
-i dont face the issue.
-BR.
-
-St=E9phane
-
-On 10/21/2013 02:06 PM, Clemens Ladisch wrote:
-> st=E9phane cerveau wrote:
->> Concerning the music startup i still have some issues with sync.
->> For now i put a delay in playback start but this is not clearly
->> fixing the issue and this is not a solution for me.
-> Are you sure that the problem isn't that the receiver is slow
-> to lock on?
->
->
-> Regards,
-> Clemens
+> ---
+>  drivers/clk/samsung/clk-s3c64xx.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/clk/samsung/clk-s3c64xx.c b/drivers/clk/samsung/clk-s3c64xx.c
+> index 7d2c842..06cf105 100644
+> --- a/drivers/clk/samsung/clk-s3c64xx.c
+> +++ b/drivers/clk/samsung/clk-s3c64xx.c
+> @@ -332,7 +332,9 @@ static struct samsung_clock_alias s3c64xx_clock_aliases[] = {
+>         ALIAS(HCLK_HSMMC0, "s3c-sdhci.0", "hsmmc"),
+>         ALIAS(HCLK_HSMMC0, "s3c-sdhci.0", "mmc_busclk.0"),
+>         ALIAS(HCLK_DMA1, NULL, "dma1"),
+> +       ALIAS(HCLK_DMA1, "dma-pl080s.1", "apb_pclk"),
+>         ALIAS(HCLK_DMA0, NULL, "dma0"),
+> +       ALIAS(HCLK_DMA0, "dma-pl080s.0", "apb_pclk"),
+>         ALIAS(HCLK_CAMIF, "s3c-camif", "camif"),
+>         ALIAS(HCLK_LCD, "s3c-fb", "lcd"),
+>         ALIAS(PCLK_SPI1, "s3c6410-spi.1", "spi"),
+> -- 
+> 1.8.3.2
