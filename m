@@ -1,15 +1,20 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH RESEND] ASoC: dont call dapm_sync while
-	reporting jack always
-Date: Mon, 21 Oct 2013 19:07:34 +0530
-Message-ID: <1382362654-26213-1-git-send-email-vinod.koul@intel.com>
+From: Denis Carikli <denis@eukrea.com>
+Subject: Re: [PATCHv4][ 1/4] ASoC: eukrea-tlv320: Add DT
+	support.
+Date: Mon, 21 Oct 2013 16:31:44 +0200
+Message-ID: <52653AD0.6030201@eukrea.com>
+References: <1382356948-2905-1-git-send-email-denis@eukrea.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id A7EF426510F
- for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 16:31:12 +0200 (CEST)
+Received: from mo1.mail-out.ovh.net (11.mo1.mail-out.ovh.net [188.165.48.29])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43669265121
+ for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 16:32:30 +0200 (CEST)
+Received: from mail641.ha.ovh.net (gw6.ovh.net [213.251.189.206])
+ by mo1.mail-out.ovh.net (Postfix) with SMTP id 5DB97FFB899
+ for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 16:33:08 +0200 (CEST)
+In-Reply-To: <1382356948-2905-1-git-send-email-denis@eukrea.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,51 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com
+To: Denis Carikli <denis@eukrea.com>, Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, =?UTF-8?B?RXJpYyBCw6luYXJk?= <eric@eukrea.com>, Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-While reporting the jack status snd_soc_jack_report() invokes snd_soc_dapm_sync()
-always. This should be required when we have pins associated with jack and
-reporting enables or disables these.
-So add a check for this case
-
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
-Sorry previous one had some non upstream cruft
-
- sound/soc/soc-jack.c |    7 ++++++-
- 1 files changed, 6 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index c9f7953..9fd4ed8 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -65,6 +65,7 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
- 	struct snd_soc_codec *codec;
- 	struct snd_soc_dapm_context *dapm;
- 	struct snd_soc_jack_pin *pin;
-+	unsigned int sync = 0;
- 	int enable;
- 
- 	trace_snd_soc_jack_report(jack, mask, status);
-@@ -92,12 +93,16 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
- 			snd_soc_dapm_enable_pin(dapm, pin->pin);
- 		else
- 			snd_soc_dapm_disable_pin(dapm, pin->pin);
-+
-+		/* we need to sync for this case only */
-+		sync = 1;
- 	}
- 
- 	/* Report before the DAPM sync to help users updating micbias status */
- 	blocking_notifier_call_chain(&jack->notifier, jack->status, jack);
- 
--	snd_soc_dapm_sync(dapm);
-+	if (sync)
-+		snd_soc_dapm_sync(dapm);
- 
- 	snd_jack_report(jack->jack, jack->status);
- 
--- 
-1.7.0.4
+SGksCgpPbiAxMC8yMS8yMDEzIDAyOjAyIFBNLCBEZW5pcyBDYXJpa2xpIHdyb3RlOgo+IENjOiBS
+b2IgSGVycmluZyA8cm9iLmhlcnJpbmdAY2FseGVkYS5jb20+Cj4gQ2M6IFBhd2VsIE1vbGwgPHBh
+d2VsLm1vbGxAYXJtLmNvbT4KPiBDYzogTWFyayBSdXRsYW5kIDxtYXJrLnJ1dGxhbmRAYXJtLmNv
+bT4KPiBDYzogU3RlcGhlbiBXYXJyZW4gPHN3YXJyZW5Ad3d3ZG90b3JnLm9yZz4KPiBDYzogSWFu
+IENhbXBiZWxsIDxpamMrZGV2aWNldHJlZUBoZWxsaW9uLm9yZy51az4KPiBDYzogZGV2aWNldHJl
+ZUB2Z2VyLmtlcm5lbC5vcmcKPiBDYzogTGlhbSBHaXJkd29vZCA8bGdpcmR3b29kQGdtYWlsLmNv
+bT4KPiBDYzogTWFyayBCcm93biA8YnJvb25pZUBrZXJuZWwub3JnPgo+IENjOiBhbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKPiBDYzogU2FzY2hhIEhhdWVyIDxrZXJuZWxAcGVuZ3V0cm9uaXgu
+ZGU+Cj4gQ2M6IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IENjOiBFcmlj
+IELDqW5hcmQgPGVyaWNAZXVrcmVhLmNvbT4KPgo+IFNpZ25lZC1vZmYtYnk6IERlbmlzIENhcmlr
+bGkgPGRlbmlzQGV1a3JlYS5jb20+Cj4gLS0tCj4gQ2hhbmdlTG9nIHYyLT52NDoKPiAtIGEgbXVs
+dGlsaW5lIHN0cmluZyB3YXMgYXZvaWRlZC4KPiAtLS0KU29ycnkgSSB3YXMgc2lkZXRyYWNrZWQs
+IGFuZCB0aGVuIEkgdG90YWxseSBmb3Jnb3QgdG8gYWRkcmVzcyB0aGUgcmVzdCAKb2YgdGhlIGNv
+bW1lbnRzLi4uCgpEZW5pcy4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
