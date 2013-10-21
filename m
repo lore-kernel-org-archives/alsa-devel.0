@@ -1,124 +1,337 @@
-From: Smilen Dimitrov <sd@imi.aau.dk>
-Subject: Re: [Solved] Questions about virtual ALSA driver
- (dummy), PortAudio and full-duplex
-Date: Mon, 21 Oct 2013 16:48:03 +0200
-Message-ID: <52653EA3.1010109@imi.aau.dk>
-References: <51EF41C8.2040701@imi.aau.dk>
- <201307241403.28873.gineera@aspect135.co.uk> <51F07150.1060004@imi.aau.dk>
- <51F0E3C5.4020400@ladisch.de>
-Reply-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+From: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCHv5][ 1/4] ASoC: eukrea-tlv320: Add DT support.
+Date: Mon, 21 Oct 2013 17:43:58 +0200
+Message-ID: <1382370241-9517-1-git-send-email-denis@eukrea.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from asmtp.www1.dk (asmtp.danhost.dk [91.144.243.214])
- by alsa0.perex.cz (Postfix) with ESMTP id 3503E265121
- for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 16:48:09 +0200 (CEST)
-In-Reply-To: <51F0E3C5.4020400@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: portaudio@music.columbia.edu, alsa-devel@alsa-project.org, audacity-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, =?UTF-8?q?Eric=20B=C3=A9nard?= <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>, Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi list(s),
+Cc: Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>
+Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: Eric B=C3=A9nard <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
 
-I hope I'll be forgiven for bumping all lists again - just wanted to confirm that indeed, the problem I stated in the start of this thread, was not with Audacity nor PortAudio nor ALSA as such (even with the older versions I've used); the problem was my modification of the ALSA `dummy` driver, submitted previously as `dummy-2.6.32-patest-fix.c` (or "dummy-mod" for short).
+Signed-off-by: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
+---
+ChangeLog v4->v5:
+- The pr_err are now replaced with (non line wrapped) dev_err.
+- The place of the "};" in eukrea_tlv320_driver is now fixed.
+---
+ .../devicetree/bindings/sound/eukrea-tlv320.txt    |   23 ++++
+ sound/soc/fsl/Kconfig                              |    5 +-
+ sound/soc/fsl/eukrea-tlv320.c                      |  135 ++++++++++++=
+++++----
+ 3 files changed, 140 insertions(+), 23 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/eukrea-tlv3=
+20.txt
 
-I'd also announce, that it seems that the driver `dummy-2.6.32-patest-fix.c` (or "dummy-fix"), uploaded in this directory:
+diff --git a/Documentation/devicetree/bindings/sound/eukrea-tlv320.txt =
+b/Documentation/devicetree/bindings/sound/eukrea-tlv320.txt
+new file mode 100644
+index 0000000..8791037
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/eukrea-tlv320.txt
+@@ -0,0 +1,23 @@
++Audio complex for Eukrea boards with tlv320aic23 codec.
++
++Required properties:
++- compatible : "eukrea,eukrea-tlv320"
++- model : The user-visible name of this sound complex.
++- ssi-controller : The phandle of the SSI controller.
++- audio-codec : The phandle of the tlv320aic23 audio codec.
++- mux-int-port : The internal port of the i.MX audio muxer (AUDMUX).
++- mux-ext-port : The external port of the i.MX audio muxer.
++
++Note: The AUDMUX port numbering should start at 1, which is consistent=
+ with
++hardware manual.
++
++Example:
++
++	sound {
++		compatible =3D "eukrea,eukrea-tlv320";
++		model =3D "imx51-eukrea-tlv320aic23";
++		ssi-controller =3D <&ssi2>;
++		fsl,audio-codec =3D <&tlv320aic23>;
++		mux-int-port =3D <2>;
++		mux-ext-port =3D <3>;
++	};
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index b7ab71f..9c3cd64 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -161,12 +161,15 @@ config SND_SOC_EUKREA_TLV320
+ 	depends on MACH_EUKREA_MBIMX27_BASEBOARD \
+ 		|| MACH_EUKREA_MBIMXSD25_BASEBOARD \
+ 		|| MACH_EUKREA_MBIMXSD35_BASEBOARD \
+-		|| MACH_EUKREA_MBIMXSD51_BASEBOARD
++		|| MACH_EUKREA_MBIMXSD51_BASEBOARD \
++		|| OF
+ 	depends on I2C
+ 	select SND_SOC_TLV320AIC23
+ 	select SND_SOC_IMX_PCM_FIQ
+ 	select SND_SOC_IMX_AUDMUX
+ 	select SND_SOC_IMX_SSI
++	select SND_SOC_FSL_SSI
++	select SND_SOC_IMX_PCM_DMA
+ 	help
+ 	  Enable I2S based access to the TLV320AIC23B codec attached
+ 	  to the SSI interface
+diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv32=
+0.c
+index 9a4a0ca..92710cf 100644
+--- a/sound/soc/fsl/eukrea-tlv320.c
++++ b/sound/soc/fsl/eukrea-tlv320.c
+@@ -17,6 +17,8 @@
+=20
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
+ #include <linux/device.h>
+ #include <linux/i2c.h>
+ #include <sound/core.h>
+@@ -26,49 +28,64 @@
+=20
+ #include "../codecs/tlv320aic23.h"
+ #include "imx-ssi.h"
++#include "fsl_ssi.h"
+ #include "imx-audmux.h"
+=20
+ #define CODEC_CLOCK 12000000
+=20
++struct eukrea_tlv320 {
++	char of;
++};
++
+ static int eukrea_tlv320_hw_params(struct snd_pcm_substream *substream=
+,
+ 			    struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
++	struct eukrea_tlv320 *priv =3D snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_dai *codec_dai =3D rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai =3D rtd->cpu_dai;
+ 	int ret;
+=20
+-	ret =3D snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
+-				  SND_SOC_DAIFMT_NB_NF |
+-				  SND_SOC_DAIFMT_CBM_CFM);
+-	if (ret) {
+-		pr_err("%s: failed set cpu dai format\n", __func__);
+-		return ret;
++	/* fsl_ssi lacks the set_fmt ops. */
++	if (!priv->of) {
++		ret =3D snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
++					  SND_SOC_DAIFMT_NB_NF |
++					  SND_SOC_DAIFMT_CBM_CFM);
++		if (ret) {
++			dev_err(cpu_dai->dev,
++				"Failed to set the cpu dai format\n");
++			return ret;
++		}
+ 	}
+=20
+ 	ret =3D snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+ 				  SND_SOC_DAIFMT_NB_NF |
+ 				  SND_SOC_DAIFMT_CBM_CFM);
+ 	if (ret) {
+-		pr_err("%s: failed set codec dai format\n", __func__);
++		dev_err(cpu_dai->dev,
++			"Failed to set the codec dai format.\n");
+ 		return ret;
+ 	}
+=20
+ 	ret =3D snd_soc_dai_set_sysclk(codec_dai, 0,
+ 				     CODEC_CLOCK, SND_SOC_CLOCK_OUT);
+ 	if (ret) {
+-		pr_err("%s: failed setting codec sysclk\n", __func__);
++		dev_err(cpu_dai->dev,
++			"Failed to set the codec dai sysclk.\n");
+ 		return ret;
+ 	}
+-	snd_soc_dai_set_tdm_slot(cpu_dai, 0xffffffc, 0xffffffc, 2, 0);
+=20
+-	ret =3D snd_soc_dai_set_sysclk(cpu_dai, IMX_SSP_SYS_CLK, 0,
+-				SND_SOC_CLOCK_IN);
+-	if (ret) {
+-		pr_err("can't set CPU system clock IMX_SSP_SYS_CLK\n");
+-		return ret;
+-	}
++	/* fsl_ssi lacks the set_sysclk ops */
++	if (!priv->of) {
++		snd_soc_dai_set_tdm_slot(cpu_dai, 0xffffffc, 0xffffffc, 2, 0);
+=20
++		ret =3D snd_soc_dai_set_sysclk(cpu_dai, IMX_SSP_SYS_CLK, 0,
++					SND_SOC_CLOCK_IN);
++		if (ret) {
++			dev_err(cpu_dai->dev, "Can't set CPU system clock IMX_SSP_SYS_CLK.\=
+n");
++			return ret;
++		}
++	}
+ 	return 0;
+ }
+=20
+@@ -80,7 +97,6 @@ static struct snd_soc_dai_link eukrea_tlv320_dai =3D =
+{
+ 	.name		=3D "tlv320aic23",
+ 	.stream_name	=3D "TLV320AIC23",
+ 	.codec_dai_name	=3D "tlv320aic23-hifi",
+-	.platform_name	=3D "imx-ssi.0",
+ 	.codec_name	=3D "tlv320aic23-codec.0-001a",
+ 	.cpu_dai_name	=3D "imx-ssi.0",
+ 	.ops		=3D &eukrea_tlv320_snd_ops,
+@@ -97,8 +113,56 @@ static int eukrea_tlv320_probe(struct platform_devi=
+ce *pdev)
+ {
+ 	int ret;
+ 	int int_port =3D 0, ext_port;
++	struct platform_device *ssi_pdev;
++	struct device_node *np =3D pdev->dev.of_node;
++	struct device_node *ssi_np;
++	struct eukrea_tlv320 *priv;
++
++	priv =3D devm_kzalloc(&pdev->dev,
++				sizeof(struct eukrea_tlv320), GFP_KERNEL);
++	if (priv =3D=3D NULL)
++		return -ENOMEM;
+=20
+-	if (machine_is_eukrea_cpuimx27()) {
++	if (np) {
++		ssi_np =3D of_parse_phandle(pdev->dev.of_node,
++					  "ssi-controller", 0);
++		ssi_pdev =3D of_find_device_by_node(ssi_np);
++		if (!ssi_pdev) {
++			dev_err(&pdev->dev,
++				"ssi-controller missing or invalid.\n");
++			ret =3D -ENODEV;
++			goto err;
++		}
++
++		ret =3D of_property_read_u32(np, "mux-int-port", &int_port);
++		if (ret) {
++			dev_err(&pdev->dev,
++				"mux-int-port missing or invalid\n");
++			return ret;
++		}
++		ret =3D of_property_read_u32(np, "mux-ext-port", &ext_port);
++		if (ret) {
++			dev_err(&pdev->dev,
++				"mux-ext-port missing or invalid\n");
++			return ret;
++		}
++
++		/*
++		 * The port numbering in the hardware manual starts at 1, while
++		 * the audmux API expects it starts at 0.
++		 */
++		int_port--;
++		ext_port--;
++
++		eukrea_tlv320_dai.cpu_dai_name =3D dev_name(&ssi_pdev->dev);
++		eukrea_tlv320_dai.platform_of_node =3D ssi_np;
++		priv->of =3D 1;
++	} else {
++		eukrea_tlv320_dai.platform_name =3D "imx-ssi.0";
++	}
++
++	if (machine_is_eukrea_cpuimx27() ||
++	    of_find_compatible_node(NULL, NULL, "fsl,imx21-audmux")) {
+ 		imx_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
+ 			IMX_AUDMUX_V1_PCR_SYN |
+ 			IMX_AUDMUX_V1_PCR_TFSDIR |
+@@ -115,8 +179,12 @@ static int eukrea_tlv320_probe(struct platform_dev=
+ice *pdev)
+ 		);
+ 	} else if (machine_is_eukrea_cpuimx25sd() ||
+ 		   machine_is_eukrea_cpuimx35sd() ||
+-		   machine_is_eukrea_cpuimx51sd()) {
+-		ext_port =3D machine_is_eukrea_cpuimx25sd() ? 4 : 3;
++		   machine_is_eukrea_cpuimx51sd() ||
++		   of_find_compatible_node(NULL, NULL, "fsl,imx31-audmux")) {
++		if (!np)
++			ext_port =3D machine_is_eukrea_cpuimx25sd() ?
++				4 : 3;
++
+ 		imx_audmux_v2_configure_port(int_port,
+ 			IMX_AUDMUX_V2_PTCR_SYN |
+ 			IMX_AUDMUX_V2_PTCR_TFSDIR |
+@@ -130,14 +198,29 @@ static int eukrea_tlv320_probe(struct platform_de=
+vice *pdev)
+ 			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port)
+ 		);
+ 	} else {
+-		/* return happy. We might run on a totally different machine */
+-		return 0;
++		if (np) {
++			/* The eukrea,eukrea-tlv320 driver was explicitely
++			 * requested (through the device tree).
++			 */
++			dev_err(&pdev->dev,
++				"Missing audmux DT node.\n");
++			return -ENODEV;
++		} else {
++			/* Return happy.
++			 * We might run on a totally different machine.
++			 */
++			return 0;
++		}
+ 	}
+=20
+ 	eukrea_tlv320.dev =3D &pdev->dev;
++	snd_soc_card_set_drvdata(&eukrea_tlv320, priv);
+ 	ret =3D snd_soc_register_card(&eukrea_tlv320);
++err:
+ 	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
++	if (np)
++		of_node_put(ssi_np);
+=20
+ 	return ret;
+ }
+@@ -149,13 +232,21 @@ static int eukrea_tlv320_remove(struct platform_d=
+evice *pdev)
+ 	return 0;
+ }
+=20
++static const struct of_device_id imx_tlv320_dt_ids[] =3D {
++	{ .compatible =3D "eukrea,eukrea-tlv320"},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, imx_tlv320_dt_ids);
++
+ static struct platform_driver eukrea_tlv320_driver =3D {
+ 	.driver =3D {
+ 		.name =3D "eukrea_tlv320",
+ 		.owner =3D THIS_MODULE,
++		.of_match_table =3D imx_tlv320_dt_ids,
+ 	},
+ 	.probe =3D eukrea_tlv320_probe,
+-	.remove =3D eukrea_tlv320_remove,};
++	.remove =3D eukrea_tlv320_remove,
++};
+=20
+ module_platform_driver(eukrea_tlv320_driver);
+=20
+--=20
+1.7.9.5
 
-    http://sdaaubckp.sourceforge.net/post/alsa-patest-duplex/fix/
-
-... fixes the problems with the full-duplex "drop input" I experienced in Audacity - but I'll still use this opportunity to ask some questions. I'll try to be as brief as I can here, some more info is in the `Readme` in the `fix` directory.
-
-As a reminder, the full-duplex "drop input" looked like this for me:
-
-    http://sdaaubckp.sourceforge.net/post/alsa-patest-duplex/fix/dummy-mod-fddrop.png
-
-... or, as the screenshot shows, very soon after a start of capture in full-duplex mode, `dummy-mod` would trigger a full-duplex "drop input" in PortAudio, which would propagate to Audacity.
-
-The behavior of `dummy-fix` now is like this:
-
-    http://sdaaubckp.sourceforge.net/post/alsa-patest-duplex/fix/dummy-fix-ok.png
-
-... or, as the screenshot shows, Audacity can now run for 10 mins in full-duplex capture mode with `dummy-fix`, without a full-duplex "drop input" being triggered; which is as good as I need it, I guess.
-
-
-First, though, I have a question on the "nature" of full-duplex. The way I see it now, there are two distinct contexts for full-duplex use, which I'd call:
-
-* monitoring - you want to listen on the speakers, what is recorded on the microphone (playback of the capture stream)
-* studio/overlay recording - you want to play a background track, and you want to record the singer singing to that track "in sync" with the played track
-
-In the monitoring case, I guess one doesn't care much for stream synchronization - input stream will arrive when it arrives (after inherent latencies of the system); in the mean time you can just play silence - and as soon as input data is available, you can play that too; it is "full-duplex" only in the sense that the playback and capture streams are running "at the same time" generally. On the other hand, for "overlay" recording, one would probably want the recorded stream as closely synchronized as possible to the playback stream. Is this correctly understood?
-
->From this, I guess that ALSA's `latency.c` achieves the full-duplex synchronization (of the "overlay" kind) by calling `snd_pcm_link`, *and* by writing a 2*period_size worth of playback data (let's call this playback pre-buffer) *before* the full-duplex operation starts. However, I couldn't see anything like this "playback pre-buffer" in PortAudio, even if `pa_linux_alsa.c` does call `snd_pcm_link`. Then, I couldn't see a "playback pre-buffer" in PortAudio's `patest_duplex.c` either, but I thought maybe this program is meant to demonstrate a full-duplex of the monitoring kind (and thus it doesn't need such prebuffering). So my question is - does PortAudio do this kind of playback pre-buffer that I may have missed; and if it doesn't, does Audacity do it?
-
-
-Back to topic - so, while I suspected anything from the massive printouts from ALSA/PortAudio debugs and kernel message printouts to (un)reliability of hrtimers in the Linux kernel as the cause of trouble, it turns out that isn't the problem - the issue got solved as soon as I managed to simulate the IRQ .pointer behavior of `hda-intel`, as timer callback .pointer behavior within `dummy-fix`.
-
-First of all, the full-duplex "drop input" seems to be triggered, initially, by a polling error of the playback stream in PortAudio. I'm still not exactly clear on which stream it is (due to the PortAudio code using "thisComponent" and "otherComponent"), but both the error condition of `snd_pcm_playback_poll` in ALSA, and further behavior of the `margin` variable in the PortAudio code in `ContinuePoll`, seem to indicate that a hw_ptr is not increasing. While the original `snd-dummy` always recalculates the .pointer position in the .pointer function - I had moved that calculation in the timer callback in `dummy-mod`, and the .pointer function then simply returned the last calculated value. So in `dummy-fix`, .pointer function again recalculates the position (almost) every call - but this wa
- s not the entirety of the fix.
-
-The fix is in simulation of this behavior of `hda-intel`:
-
-    For period sizes > 64 frames; the period IRQ (or timer function) for the playback stream should be delayed early for some 48 frames (at CD quality, 48/44100 = 1.088 ms); however it should return the proper expected .pointer position (at periods, that is typically N*period_size+1 in frames, where N=0,1,(2..))
-
-Now this is what puzzles me most: _why_ should the playback stream (in particular) be delayed early? I noticed this behavior by first analyzing the period IRQ positions of `hda-intel` (the plot shows use of both ALSA `latency-mod.c`, and PortAudio `patest_duplex_wire.c`, as user-space programs):
-
-    http://sdaaubckp.sourceforge.net/post/alsa-patest-duplex/fix/collectmirq_hda.png
-
-Note here that: even as period sizes increase - the playback (red) is delayed early from the capture (blue), for approximately the same amount of time. As this plots (as closely as possible) the IRQs the card issues, that means that the card hardware actually issues the playback interrupts early. Why?
-
-In comparison, in `dummy-mod` there were no discernible time offsets between capture and playback timer callbacks:
-
-    http://sdaaubckp.sourceforge.net/post/alsa-patest-duplex/fix/collectmirq_duM.png
-
-... and seemingly, this is what caused the full-duplex drop. Now, `dummy-fix` behaves rather similarly to `hda-intel` in that respect:
-
-    http://sdaaubckp.sourceforge.net/post/alsa-patest-duplex/fix/collectmirq_duF.png
-
-... and here is a plot, that shows how `dummy-fix` approximates `hda-intel` a bit more closely - for period_size 256 and buffer_size 512 frames:
-
-    http://sdaaubckp.sourceforge.net/post/alsa-patest-duplex/fix/cmirq_hda_duF_512_256.png
-
-
-Another interesting thing is, that `hda-intel` does not behave the same for period_size <= 64 frames; in that case, the playback is delayed late, not early. In earlier mails in this thread, I tried to analyze smaller period sizes (so as to limit the ammount of kernel data to be analyzed and plotted) - and this made me interpret the offsets as "quarter period"; obviously that approach failed. (Other problems I had was 16UL*100000000UL not actually fitting in unsigned long, but requiring unsigned long long; and a bug in Gnuplot when using palette, which inverted the capture and playback colors in the plots, making me code the wrong offsets). The interesting thing, though, is that when I try to simulate that behavior in `dummy-fix`:
-
-    http://sdaaubckp.sourceforge.net/post/alsa-patest-duplex/fix/cmirq_hda_duF_128_PERIOD64F.png
-
-... even if the behavior is quite close (left half is `hda-intel`, right half is `dummy-fix`), the `dummy-fix` tends to XRUN a _lot_ in that case; however, it should be said that `hda-intel` also tends to XRUN quite a bit (though not as much) for period_size 64 frames. Going back to running the periods (timer callbacks) of capture and playback streams without significant offsets (close to each other):
-
-    http://sdaaubckp.sourceforge.net/post/alsa-patest-duplex/fix/cmirq_hda_duF_128_64.png
-
-... seems to make `dummy-fix` much more reliable (very few XRUNs). Why?
-
-
-Finally, there is also some test code, that allows for acquiring .pointer positions with Audacity - this code is somewhat simpler though, and renders using the timestamps of the .pointer printouts (not the timestamps of the causing IRQ/timers, which would have happened a bit earlier), but still looks good enough, I guess. This is the comparison of `hda-intel` and `dummy-fix` in full-duplex mode:
-
-    http://sdaaubckp.sourceforge.net/post/alsa-patest-duplex/fix/collectmirq_acity_dup.png
-
-... but interestingly, Audacity (or PortAudio) seems to settle on slightly different period_sizes for `hda-intel` vs. `dummy-fix` in capture-only mode:
-
-    http://sdaaubckp.sourceforge.net/post/alsa-patest-duplex/fix/collectmirq_acity_cap.png
-
-... or period_size / buffer_size (period_per_buffer) as a table (for my dev platform, at least):
-
-    | audacity |   capture-only  |   full-duplex   |
-    |----------------------------------------------|
-    |dummy-fix | 1102 / 4408 (4) | 2048 / 4096 (2) |
-    |hda-intel | 1088 / 4352 (4) | 2048 / 4096 (2) |
-    ------------------------------------------------
-
-Would anyone have an idea, why would Audacity (or PortAudio?) choose the same settings for the two drivers in full-duplex mode, but differing settings in capture-only mode?
-
-
-To summarize, I haven't really found the exact conditions which trigger the full-duplex drop input detection in PortAudio - but it seems I've fixed the problem, by replicating the early delay of playback vs. capture timers behavior of `hda-intel`; hope it's robust enough, so I don't come back crying to the list(s) about new significant bugs found `:)` However, I'd still love to hear if anyone has answers to my questions above - or to a more simplified understanding of what condition actually triggers this drop (or, indeed, any comments `:)`).
-
-Many thanks for all the responses in this thread so far (most of it found on alsa-devel) - I doubt I would have arrived at this point without that help; much appreciated,
-Cheers!
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
