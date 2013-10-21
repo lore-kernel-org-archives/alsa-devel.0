@@ -1,7 +1,7 @@
 From: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCHv4][ 2/4] ARM: dts: cpuimx51, mbimxsd51: Add sound support.
-Date: Mon, 21 Oct 2013 14:02:26 +0200
-Message-ID: <1382356948-2905-2-git-send-email-denis@eukrea.com>
+Subject: [PATCHv4][ 3/4] ARM: dts: cpuimx25, mbimxsd25: Add sound support.
+Date: Mon, 21 Oct 2013 14:02:27 +0200
+Message-ID: <1382356948-2905-3-git-send-email-denis@eukrea.com>
 References: <1382356948-2905-1-git-send-email-denis@eukrea.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,14 +32,14 @@ ChangeLog v2->v4:
   will be submited later, because they depend on changes touching other
   subsystems.
 ---
- .../boot/dts/imx51-eukrea-mbimxsd51-baseboard.dts  |    9 +++++++++
+ .../boot/dts/imx25-eukrea-mbimxsd25-baseboard.dts  |    9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm/boot/dts/imx51-eukrea-mbimxsd51-baseboard.dts b/a=
-rch/arm/boot/dts/imx51-eukrea-mbimxsd51-baseboard.dts
-index 64d8082..7a485a9 100644
---- a/arch/arm/boot/dts/imx51-eukrea-mbimxsd51-baseboard.dts
-+++ b/arch/arm/boot/dts/imx51-eukrea-mbimxsd51-baseboard.dts
+diff --git a/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard.dts b/a=
+rch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard.dts
+index be24a85..9d1261d 100644
+--- a/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard.dts
++++ b/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard.dts
 @@ -48,6 +48,15 @@
  			linux,default-trigger =3D "heartbeat";
  		};
@@ -47,11 +47,11 @@ index 64d8082..7a485a9 100644
 +
 +	sound {
 +		compatible =3D "eukrea,eukrea-tlv320";
-+		model =3D "imx51-eukrea-tlv320aic23";
-+		ssi-controller =3D <&ssi2>;
++		model =3D "imx25-eukrea-tlv320aic23";
++		ssi-controller =3D <&ssi1>;
 +		fsl,audio-codec =3D <&tlv320aic23>;
-+		mux-int-port =3D <2>;
-+		mux-ext-port =3D <3>;
++		mux-int-port =3D <1>;
++		mux-ext-port =3D <5>;
 +	};
  };
 =20
