@@ -1,15 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] ASoC: dont call dapm_sync while reporting jack
-	always
-Date: Mon, 21 Oct 2013 19:02:07 +0530
-Message-ID: <1382362327-26057-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH RESEND] ASoC: dont call dapm_sync while
+	reporting jack always
+Date: Mon, 21 Oct 2013 19:07:34 +0530
+Message-ID: <1382362654-26213-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 9028726510F
- for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 16:25:50 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A7EF426510F
+ for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 16:31:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,9 +28,10 @@ always. This should be required when we have pins associated with jack and
 reporting enables or disables these.
 So add a check for this case
 
-Change-Id: I671cd444d1b6610dcb83b28f7339477556373e5c
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
+Sorry previous one had some non upstream cruft
+
  sound/soc/soc-jack.c |    7 ++++++-
  1 files changed, 6 insertions(+), 1 deletions(-)
 
