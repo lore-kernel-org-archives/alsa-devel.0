@@ -1,53 +1,74 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH] ASoC: kirkwood: cleanup the external clock
-	probe
-Date: Mon, 21 Oct 2013 09:46:13 +0200
-Message-ID: <20131021094613.2a07bd79@armhf>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 2/3] dma: edma: Add support for Cyclic DMA
+Date: Mon, 21 Oct 2013 12:23:19 +0530
+Message-ID: <20131021065319.GM14013@intel.com>
+References: <1379977515-3794-1-git-send-email-joelf@ti.com>
+ <1379977515-3794-3-git-send-email-joelf@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 5523B2655DD
- for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2013 09:45:58 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jason Cooper <jason@lakedaemon.net>, Mark Brown <broonie@kernel.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.org, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1379977515-3794-3-git-send-email-joelf@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Joel Fernandes <joelf@ti.com>
+Cc: Matt Porter <matt@ohporter.com>, Mark Brown <broonie@linaro.org>, Russell King <linux@arm.linux.org.uk>, Dan Williams <djbw@fb.com>, Jyri Sarha <jsarha@ti.com>, Lars Peter-Clausen <lars@metafoo.de>, Linux OMAP List <linux-omap@vger.kernel.org>, Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>, Linux DaVinci Kernel List <davinci-linux-open-source@linux.davincidsp.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCBjaGVja3MgdGhlIHJldHVybiB2YWx1ZSBvZiB0aGUgY2xrX3ByZXBhcmVfZW5h
-YmxlIG9mIHRoZQpleHRlcm5hbCBjbG9jayBhbmQgcmVtb3ZlcyB0aGUgdGVzdCBhYm91dCBhIHNh
-bWUgaW50ZXJuYWwgYW5kIGV4dGVybmFsCmNsb2NrIHdoaWNoIHdvdWxkIHF1aXRlIG5ldmVyIG9j
-Y3VyIGFuZCB3b24ndCB3b3JrIGluIG1vc3QgY2FzZXMKaXQgd291bGQgb2NjdXIuCgpTaWduZWQt
-b2ZmLWJ5OiBKZWFuLUZyYW5jb2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Ci0tLQpUaGlzIHBh
-dGNoIGFwcGxpZXMgYWdhaW5zdCBicm9vbmllL3NvdW5kIGZvci1uZXh0LgotLS0KIHNvdW5kL3Nv
-Yy9raXJrd29vZC9raXJrd29vZC1pMnMuYyB8IDEzICsrKysrLS0tLS0tLS0KIDEgZmlsZSBjaGFu
-Z2VkLCA1IGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQv
-c29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5jLm9sZCBiL3NvdW5kL3NvYy9raXJrd29vZC9raXJr
-d29vZC1pMnMuYy5wYXQyCmluZGV4IGQwNTA0YTIuLmMyNDMzZWEgMTAwNjQ0Ci0tLSBhL3NvdW5k
-L3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMuYy5vbGQKKysrIGIvc291bmQvc29jL2tpcmt3b29k
-L2tpcmt3b29kLWkycy5jLnBhdDIKQEAgLTUwMCwxNCArNTAwLDExIEBAIHN0YXRpYyBpbnQga2ly
-a3dvb2RfaTJzX2Rldl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQogCQlpZiAo
-UFRSX0VSUihwcml2LT5leHRjbGspID09IC1FUFJPQkVfREVGRVIpCiAJCQlyZXR1cm4gLUVQUk9C
-RV9ERUZFUjsKIAl9IGVsc2UgewotCQlpZiAocHJpdi0+ZXh0Y2xrID09IHByaXYtPmNsaykgewot
-CQkJZGV2bV9jbGtfcHV0KCZwZGV2LT5kZXYsIHByaXYtPmV4dGNsayk7Ci0JCQlwcml2LT5leHRj
-bGsgPSBFUlJfUFRSKC1FSU5WQUwpOwotCQl9IGVsc2UgewotCQkJZGV2X2luZm8oJnBkZXYtPmRl
-diwgImZvdW5kIGV4dGVybmFsIGNsb2NrXG4iKTsKLQkJCWNsa19wcmVwYXJlX2VuYWJsZShwcml2
-LT5leHRjbGspOwotCQkJc29jX2RhaSA9ICZraXJrd29vZF9pMnNfZGFpX2V4dGNsazsKLQkJfQor
-CQlkZXZfaW5mbygmcGRldi0+ZGV2LCAiZm91bmQgZXh0ZXJuYWwgY2xvY2tcbiIpOworCQlyZXQg
-PSBjbGtfcHJlcGFyZV9lbmFibGUocHJpdi0+ZXh0Y2xrKTsKKwkJaWYgKGVyciA8IDApCisJCQly
-ZXR1cm4gZXJyOworCQlzb2NfZGFpID0ga2lya3dvb2RfaTJzX2RhaV9leHRjbGs7CiAJfQogCiAJ
-LyogU29tZSBzZW5zaWJsZSBkZWZhdWx0cyAtIHRoaXMgcmVmbGVjdHMgdGhlIHBvd2VydXAgdmFs
-dWVzICovCgotLSAKS2VuIGFyIGMnaGVudGHDsQl8CSAgICAgICoqIEJyZWl6aCBoYSBMaW51eCBh
-dGF2ISAqKgpKZWYJCXwJCWh0dHA6Ly9tb2luZWpmLmZyZWUuZnIvCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Sep 23, 2013 at 06:05:14PM -0500, Joel Fernandes wrote:
+ 
+> @@ -449,6 +455,138 @@ static struct dma_async_tx_descriptor *edma_prep_slave_sg(
+>  	return vchan_tx_prep(&echan->vchan, &edesc->vdesc, tx_flags);
+>  }
+>  
+> +static struct dma_async_tx_descriptor *edma_prep_dma_cyclic(
+> +	struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
+> +	size_t period_len, enum dma_transfer_direction direction,
+> +	unsigned long tx_flags, void *context)
+> +{
+> +	struct edma_chan *echan = to_edma_chan(chan);
+> +	struct device *dev = chan->device->dev;
+> +	struct edma_desc *edesc;
+> +	dma_addr_t src_addr, dst_addr;
+> +	enum dma_slave_buswidth dev_width;
+> +	u32 burst;
+> +	int i, ret, nr_periods;
+> +
+> +	if (unlikely(!echan || !buf_len || !period_len))
+> +		return NULL;
+> +
+> +	if (direction == DMA_DEV_TO_MEM) {
+> +		src_addr = echan->cfg.src_addr;
+> +		dst_addr = buf_addr;
+> +		dev_width = echan->cfg.src_addr_width;
+> +		burst = echan->cfg.src_maxburst;
+> +	} else if (direction == DMA_MEM_TO_DEV) {
+> +		src_addr = buf_addr;
+> +		dst_addr = echan->cfg.dst_addr;
+> +		dev_width = echan->cfg.dst_addr_width;
+> +		burst = echan->cfg.dst_maxburst;
+> +	} else {
+> +		dev_err(dev, "%s: bad direction?\n", __func__);
+> +		return NULL;
+> +	}
+> +
+> +	if (dev_width == DMA_SLAVE_BUSWIDTH_UNDEFINED) {
+> +		dev_err(dev, "Undefined slave buswidth\n");
+> +		return NULL;
+> +	}
+> +
+> +	if (unlikely(buf_len % period_len)) {
+> +		dev_err(dev, "Period should be multiple of Buffer length\n");
+> +		return NULL;
+> +	}
+> +
+> +	nr_periods = (buf_len / period_len) + 1;
+?
+
+consider the case of buf = period_len, above makes nr_period = 2.
+
+Or buf len 100, period len 50, makes nr_period = 3
+
+Both doesnt seem right to me?
+
+--
+~Vinod
