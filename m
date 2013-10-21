@@ -1,7 +1,7 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] [27/29] ALSA: dice: dice_proc_read: remove wrong typecast
-Date: Mon, 21 Oct 2013 21:40:49 +0200
-Message-ID: <52658341.2000706@ladisch.de>
+Subject: [PATCH] [28/29] ALSA: dice: fix detection of Weiss devices
+Date: Mon, 21 Oct 2013 21:41:31 +0200
+Message-ID: <5265836B.2020107@ladisch.de>
 References: <52657E3B.7040205@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,27 +20,63 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Remove a wrong typecast that resulted from a copy-and-paste error.
+While most DICE devices keep TCAT's default category ID of 0x04, Weiss
+devices identify themselves with 0x00.
 
+Reported-by: Rolf Anderegg <rolf.anderegg@weiss.ch>
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- sound/firewire/dice.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/firewire/dice.c |   17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
 diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index 25a9636..5f0f102 100644
+index 5f0f102..49d630b 100644
 --- a/sound/firewire/dice.c
 +++ b/sound/firewire/dice.c
-@@ -1053,8 +1053,7 @@ static void dice_proc_read(struct snd_info_entry *entry,
+@@ -1109,7 +1109,10 @@ static void dice_card_free(struct snd_card *card)
+ 	mutex_destroy(&dice->mutex);
+ }
+
+-#define DICE_CATEGORY_ID 0x04
++#define OUI_WEISS		0x001c6a
++
++#define DICE_CATEGORY_ID	0x04
++#define WEISS_CATEGORY_ID	0x00
+
+ static int dice_interface_check(struct fw_unit *unit)
+ {
+@@ -1123,15 +1126,15 @@ static int dice_interface_check(struct fw_unit *unit)
+ 	struct fw_device *device = fw_parent_device(unit);
+ 	struct fw_csr_iterator it;
+ 	int key, value, vendor = -1, model = -1, err;
+-	unsigned int i;
++	unsigned int category, i;
+ 	__be32 pointers[ARRAY_SIZE(min_values)];
+ 	__be32 version;
+
+ 	/*
+ 	 * Check that GUID and unit directory are constructed according to DICE
+ 	 * rules, i.e., that the specifier ID is the GUID's OUI, and that the
+-	 * GUID chip ID consists of the 8-bit DICE category ID, the 10-bit
+-	 * product ID, and a 22-bit serial number.
++	 * GUID chip ID consists of the 8-bit category ID, the 10-bit product
++	 * ID, and a 22-bit serial number.
+ 	 */
+ 	fw_csr_iterator_init(&it, unit->directory);
+ 	while (fw_csr_iterator_next(&it, &key, &value)) {
+@@ -1144,7 +1147,11 @@ static int dice_interface_check(struct fw_unit *unit)
  			break;
- 		snd_iprintf(buffer, "rx %u:\n", stream);
- 		snd_iprintf(buffer, "  iso channel: %d\n", (int)buf.rx.iso);
--		snd_iprintf(buffer, "  sequence start: %u\n",
--			    (int)buf.rx.seq_start);
-+		snd_iprintf(buffer, "  sequence start: %u\n", buf.rx.seq_start);
- 		snd_iprintf(buffer, "  audio channels: %u\n",
- 			    buf.rx.number_audio);
- 		snd_iprintf(buffer, "  midi ports: %u\n", buf.rx.number_midi);
+ 		}
+ 	}
+-	if (device->config_rom[3] != ((vendor << 8) | DICE_CATEGORY_ID) ||
++	if (vendor == OUI_WEISS)
++		category = WEISS_CATEGORY_ID;
++	else
++		category = DICE_CATEGORY_ID;
++	if (device->config_rom[3] != ((vendor << 8) | category) ||
+ 	    device->config_rom[4] >> 22 != model)
+ 		return -ENODEV;
+
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
