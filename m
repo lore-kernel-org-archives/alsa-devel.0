@@ -1,7 +1,7 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] [16/29] ALSA: dice: remove 10s period length limit
-Date: Mon, 21 Oct 2013 21:29:53 +0200
-Message-ID: <526580B1.7090209@ladisch.de>
+Subject: [PATCH] [17/29] ALSA: dice: remove superfluous field
+Date: Mon, 21 Oct 2013 21:30:30 +0200
+Message-ID: <526580D6.2050803@ladisch.de>
 References: <52657E3B.7040205@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,27 +20,35 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Since commit f2b3614cefb6 (Don't check DMA time-out too shortly), we
-need no longer to restrict the period length to less than 10 s.
+The pcm field was not actually used.
 
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- sound/firewire/dice.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/firewire/dice.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index cfa98a8..57ceb13 100644
+index 57ceb13..2d198ae 100644
 --- a/sound/firewire/dice.c
 +++ b/sound/firewire/dice.c
-@@ -350,7 +350,7 @@ static int dice_open(struct snd_pcm_substream *substream)
+@@ -43,7 +43,6 @@ struct dice {
+ 	bool global_enabled;
+ 	wait_queue_head_t hwdep_wait;
+ 	u32 notification_bits;
+-	struct snd_pcm_substream *pcm;
+ 	struct fw_iso_resources resources;
+ 	struct amdtp_out_stream stream;
+ };
+@@ -564,8 +563,7 @@ static int dice_create_pcm(struct dice *dice)
+ 		return err;
+ 	pcm->private_data = dice;
+ 	strcpy(pcm->name, dice->card->shortname);
+-	dice->pcm = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
+-	dice->pcm->ops = &ops;
++	pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->ops = &ops;
 
- 	err = snd_pcm_hw_constraint_minmax(runtime,
- 					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
--					   5000, 8192000);
-+					   5000, UINT_MAX);
- 	if (err < 0)
- 		goto err_lock;
-
+ 	return 0;
+ }
 
 ------------------------------------------------------------------------------
 October Webinars: Code for Performance
