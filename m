@@ -1,49 +1,83 @@
-From: "John Twideldum" <twideldums_throwaway@gmx.at>
-Subject: no sound on Haswell Lenovo T440s with 3.12-rc5
-Date: Tue, 22 Oct 2013 11:54:59 +0200 (CEST)
-Message-ID: <trinity-b51ca9da-a4d1-40fc-b921-baf720a5e8f9-1382435699391@3capp-gmx-bs50>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCHv1 8/8] Documentation: Add device tree bindings for
+ Freescale VF610 sound.
+Date: Tue, 22 Oct 2013 10:47:08 +0100
+Message-ID: <20131022094708.GA2883@sirena.org.uk>
+References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
+ <1382000477-17304-9-git-send-email-Li.Xiubo@freescale.com>
+ <20131018173126.GU2443@sirena.org.uk>
+ <1DD289F6464F0949A2FCA5AA6DC23F82866807@039-SN2MPN1-013.039d.mgd.msft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
- by alsa0.perex.cz (Postfix) with ESMTP id D39C92652D7
- for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2013 11:54:59 +0200 (CEST)
-Received: from 3capp-gmx-bs50.server.lan ([172.19.170.103]) by
- mrigmx.server.lan (mrigmx001) with ESMTP (Nemesis) id
- 0M2rpw-1VoZvR27FO-00shuL for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2013
- 11:54:59 +0200
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============2948204017731858731=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1DD289F6464F0949A2FCA5AA6DC23F82866807@039-SN2MPN1-013.039d.mgd.msft.net>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Xiubo Li-B47053 <B47053@freescale.com>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Wang Huan-B18965 <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "perex@perex.cz" <perex@perex.cz>, Guo Shawn-R65073 <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Chen Guangyu-B42378 <B42378@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.co>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all...
 
-There is a shiny new Lenovo T440s on my desk, which is a Haswell generation Ultrabook.
+--===============2948204017731858731==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="EVF5PPMfhYS0aIcm"
+Content-Disposition: inline
 
-Configuration dump running 3.12-rc5:
-http://www.alsa-project.org/db/?f=2eec0890ae63625c1b47a7e7cbcbb1722c8c5080
 
-Symptoms:
-I have console beep, but no sound.
-Specifically,
-a) it appears "Intel Haswell HDMI" on displayport appears to be picked as default output,
-b) alternative output 2 "HDA Intel PCH/Realtek ALC292" has no PCM control.
+--EVF5PPMfhYS0aIcm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-So my wild guess would be
-a) PCH needs to be default and
-b) the PCM controls are missing due to a bug
+On Mon, Oct 21, 2013 at 07:24:56AM +0000, Xiubo Li-B47053 wrote:
 
-Is there a patch already queued for 3.13?
+> Yes, the "-- SGTL5000 pins:" should be in the CODEC binding.
+> But, actually the CODEC binding hasn't any reference about this.
 
-If not - willing to test, but may take some time as I'm travelling...
+> So I added it here, but not very sure.
 
-Thank you!
+Please add them to the CODEC binding instead.
+
+--EVF5PPMfhYS0aIcm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSZkmVAAoJELSic+t+oim9WE8P/jOtCT9+1ZxQ8Dv0pN2DjbGa
+YCyJYQMjzU/KuIl5iLZBpXqCPuccq8oZw41xr6cQbIE6lWS58g7QakJxtc3Eh/Kt
+tzhXFN4hD2/Mhg4ruNRa/lV/B8V2WyHydhNyII6yLZ7x0znZHLgkkpKZNdwN0eQl
+cmYQ+FlHmFujx2RaeLi5OOORNX8R0ugMjCi0ouCFQy1JoPJmXzdPnb+woM/7Gqg4
+NP0lGt7G6WKF+XURykOrekbLEDZiuZixxyJv5gQYg1GWoMQdNH2pTeJbEDtlk5GB
+pqB6Ib6ErS4/wQehuc4VcWIkjIZ8LH9b7VjVCs+hp25a0w0/jqq/V+sl27HNjo+f
+4hz3Houy938UpKfrRE5yTC+XNroJqWPBmXwjKcGd/TuH9RQwjqD0JlO1Fpw/SZRp
+H/w42KYZbX5HBvMjPxRQYuEMCIQI+SuLZJKEZehiv6CEAskW+9BnKdiZ51F50YUt
+sRqa9BTZuVqaG0BmHzPRDehBDQ6kALTbAf9gK+jaoSyk1GRJlb96pGLx7XwFnv05
+KMUHjv0FbYouzRla+lGOmFl4ZOk61zUpcD+jk3MFUgTAKbH50yMKKNHAMHkGqAlV
+KjFy4xcssY7Pd6MA0PwAfRhLP4H/85NX5EFgHJcY95hUMpon7ZwZzmTzlBa3lbLU
+b3cwlP6Hg63FtN6Mw8qa
+=fjJL
+-----END PGP SIGNATURE-----
+
+--EVF5PPMfhYS0aIcm--
+
+
+--===============2948204017731858731==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============2948204017731858731==--
