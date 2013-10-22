@@ -1,29 +1,34 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v5 02/12] ASoC: davinci-evm: Add device tree binding
-Date: Tue, 22 Oct 2013 19:41:00 +0300
-Message-ID: <5266AA9C.2020907@ti.com>
-References: <cover.1382110089.git.jsarha@ti.com> <66c21e66320e30453e6deded0f37ef582b4fba7c.1382110089.git.jsarha@ti.com> <20131022110147.GA9388@sirena.org.uk> <52666EE3.8070607@ti.com> <20131022123923.GF9388@sirena.org.uk>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: tegra: Remove redundant initialisation
+ of compat_filter_fn
+Date: Tue, 22 Oct 2013 22:07:05 +0100
+Message-ID: <5266E8F9.70307@wwwdotorg.org>
+References: <1382188623-19494-1-git-send-email-broonie@kernel.org> <52644D3C.9020709@wwwdotorg.org> <52666422.9010505@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20131022123923.GF9388@sirena.org.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, bcousson@baylibre.com, mark.rutland@arm.com, linux-omap@vger.kernel.org, joelf@ti.com, "Hebbar, Gururaja" <gururaja.hebbar@ti.com>, Darren Etheridge <detheridge@ti.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <52666422.9010505-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/22/2013 03:39 PM, Mark Brown wrote:
-> It would look a good deal less odd which is useful in itself; the best
-> thing would be if they could both use the same driver which uses both
-> platform and DT data.
+On 10/22/2013 12:40 PM, Lars-Peter Clausen wrote:
+> On 10/20/2013 11:38 PM, Stephen Warren wrote:
+>> On 10/19/2013 02:17 PM, Mark Brown wrote:
+>>> From: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+>>>
+>>> Setting a field in a static struct to NULL has no effect so don't bother
+>>> (and don't generate false positives for grep).
+>>
+>> I'm fine with this either way, so feel free to take my ack whichever way
+>> you work this out with Lars-Peter.
+> 
+> I don't care that much either, just wanted to give an explanation why things
+> are the way they are. Mark, if you want to merge this patch you can add:
+> Acked-by: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+> 
+> Btw. wasn't there a plan to move tegra to the generic dma bindings?
 
-I see. To be honest the whole non DT part looks pretty hairy to me too, 
-but I can not clean it up because I do not have access to the relevant HW.
-
-Would it look better to you if I would use module_platform_driver() 
-macro inside #ifdef CONFIG_OF and put the module_init() and 
-module_exit() into #else branch?
-
-Best regards,
-Jyri
+IIRC, it's been using them for a release or two.
