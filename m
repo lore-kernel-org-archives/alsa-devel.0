@@ -1,18 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v6] ALSA: Add SoC on-chip internal memory
- support for DMA buffer allocation
-Date: Tue, 22 Oct 2013 14:06:08 +0200
-Message-ID: <52666A30.7030102@metafoo.de>
-References: <1382410849-11906-1-git-send-email-b42378@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v5 05/12] ASoC: davinci-mcasp: Change
+ compatible property model to more accurate
+Date: Tue, 22 Oct 2013 13:14:02 +0100
+Message-ID: <20131022121402.GD9388@sirena.org.uk>
+References: <cover.1382110089.git.jsarha@ti.com>
+ <5a00f98be6143547dedd0d3d73c3aa1fbbc2895c.1382110090.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6293776965235411198=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-203.synserver.de (smtp-out-204.synserver.de
- [212.40.185.204])
- by alsa0.perex.cz (Postfix) with ESMTP id D52732619F4
- for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2013 14:07:45 +0200 (CEST)
-In-Reply-To: <1382410849-11906-1-git-send-email-b42378@freescale.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B7C4261281
+ for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2013 14:14:09 +0200 (CEST)
+In-Reply-To: <5a00f98be6143547dedd0d3d73c3aa1fbbc2895c.1382110090.git.jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Jyri Sarha <jsarha@ti.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, joelf@ti.com, bcousson@baylibre.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/22/2013 05:00 AM, Nicolin Chen wrote:
-[...]
-> +/**
-> + * snd_free_dev_iram - free allocated specific memory from on-chip internal memory
-> + * @dev: DMA device pointer
-> + * @size: size in bytes of memory to free
-> + * @ptr: cpu-view address returned from snd_malloc_dev_iram
-> + *
-> + * This function requires iram phandle provided via of_node
-> + */
-> +void snd_free_dev_iram(struct device *dev, size_t size, void *ptr)
-> +{
-> +	struct gen_pool *pool = NULL;
-> +
-> +	if (!dev->of_node)
-> +		return;
-> +
-> +	pool = of_get_named_gen_pool(dev->of_node, "iram", 0);
-> +	if (!pool)
-> +		return;
 
-I've had a closer look at the other SNDRV_DMA_TYPE implementations and I
-think a better way to handle this is to assign the pool to the
-snd_dma_buffer's private_data field and then use it here instead of looking
-the pool up again. This will also make it easier to use a non-OF lookup scheme.
+--===============6293776965235411198==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="llIrKcgUOe3dCx0c"
+Content-Disposition: inline
 
-> +
-> +	gen_pool_free(pool, (unsigned long)ptr, size);
-> +}
->  #endif /* CONFIG_HAS_DMA */
->  
->  /*
+
+--llIrKcgUOe3dCx0c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Oct 18, 2013 at 06:37:44PM +0300, Jyri Sarha wrote:
+> Change the model omap2-mcasp-audio in compatible property to
+> am33xx-mcasp-audio as omap2 does not have mcasp.
+
+Applied, thanks.
+
+--llIrKcgUOe3dCx0c
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSZmwBAAoJELSic+t+oim96+AQAJBBIyYJv9m8yoeAQlu5s/hJ
+iRYPoW/WMEO3WUlbWhJMnYYuAE1wAYg0O9hLRNmSZaoeOSxP5FtvUYQrfaDGoShf
+rPddw5rNGabqmGBMW4prAkuZFXWQDGSt+vz3qgxNDAUU3QVCdfnRvDcorfGI1po/
+HIRU8glMGkJl7oWUlzc+m3vPcBZgaZ+X5rAwLKqw5SxGVsHb67zMo1A4ispC0m8C
+x5Mabj0LADRK3GH2DZNUKuo5fSVx4x9+hRPjl0VnUSuT4qkf0OtusOZFY0TjX3fp
+Nchl1h5fZzQM1rUlML5Yog2PTjMwoTnOR66I7ikPo5Aah4AeMbBdYD2XbsZFVyUs
+0d7ruAXDonFHQhRpvyO+bBOnzFYphaEdt6aKM73OhYBVnvjDVQ/DjvyLvwrt6rnx
+NxDhcfIs7vNimFqq7aqvqTrJkFH1LkVdnWS4LRCoKoupLrzy4evUMi9mvUyE8GQw
+guUJceWDzuvmzOZTUs+O/4Hb7zSIV3XJ8bdifyvTmwvZNwuH6E9AsNOxw4JBSwX1
+d93fLh5MsmRcXfczqMwe/Znb3t+oGE+eQxsMZhzzjE0d37Kxf50/ACXOzZe0CniQ
+j0+ptSzIQkCbmRMaM2ainkIHZ4ieRuIeA51N0GUnFP/4Nzeo9myDxI/7yBGmGlgY
+JlaE9T2y4otm80mIRZ1g
+=iVl9
+-----END PGP SIGNATURE-----
+
+--llIrKcgUOe3dCx0c--
+
+--===============6293776965235411198==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6293776965235411198==--
