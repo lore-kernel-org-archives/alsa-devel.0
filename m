@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND] ASoC: dont call dapm_sync while
- reporting jack always
-Date: Tue, 22 Oct 2013 09:32:23 +0100
-Message-ID: <20131022083223.GA20821@sirena.org.uk>
-References: <1382362654-26213-1-git-send-email-vinod.koul@intel.com>
+From: "John Twideldum" <twideldums_throwaway@gmx.at>
+Subject: no sound on Haswell Lenovo T440s with 3.12-rc5
+Date: Tue, 22 Oct 2013 11:54:59 +0200 (CEST)
+Message-ID: <trinity-b51ca9da-a4d1-40fc-b921-baf720a5e8f9-1382435699391@3capp-gmx-bs50>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8403290994274300283=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id AE3FB2652B0
- for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2013 10:33:04 +0200 (CEST)
-In-Reply-To: <1382362654-26213-1-git-send-email-vinod.koul@intel.com>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id D39C92652D7
+ for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2013 11:54:59 +0200 (CEST)
+Received: from 3capp-gmx-bs50.server.lan ([172.19.170.103]) by
+ mrigmx.server.lan (mrigmx001) with ESMTP (Nemesis) id
+ 0M2rpw-1VoZvR27FO-00shuL for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2013
+ 11:54:59 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi all...
 
---===============8403290994274300283==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
-Content-Disposition: inline
+There is a shiny new Lenovo T440s on my desk, which is a Haswell generation Ultrabook.
 
+Configuration dump running 3.12-rc5:
+http://www.alsa-project.org/db/?f=2eec0890ae63625c1b47a7e7cbcbb1722c8c5080
 
---SLDf9lqlvOQaIe6s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Symptoms:
+I have console beep, but no sound.
+Specifically,
+a) it appears "Intel Haswell HDMI" on displayport appears to be picked as default output,
+b) alternative output 2 "HDA Intel PCH/Realtek ALC292" has no PCM control.
 
-On Mon, Oct 21, 2013 at 07:07:34PM +0530, Vinod Koul wrote:
-> While reporting the jack status snd_soc_jack_report() invokes snd_soc_dapm_sync()
-> always. This should be required when we have pins associated with jack and
-> reporting enables or disables these.
-> So add a check for this case
+So my wild guess would be
+a) PCH needs to be default and
+b) the PCM controls are missing due to a bug
 
-Applied, thanks.  It'd be good when doing things like this to say what
-the advantage is; with DAPM the general thing is that it gets called a
-lot so it should be cheap enough to just call all the time.
+Is there a patch already queued for 3.13?
 
---SLDf9lqlvOQaIe6s
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+If not - willing to test, but may take some time as I'm travelling...
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSZjgNAAoJELSic+t+oim97VwP/1A3k4h1km+jeAfI1JcAAj2q
-q6J/VcobUtoM/VaFrWAk50GEs4d5YEHIMyhyHw2zupUHgmudIHgtFco+A1mBu7tV
-jCOKCoBnM7xAWBnRiNnbVe5pwDX3Wy8DEu61v0QZy7S6jzC29RU/YiFdOazNkDhj
-QaiZ5++3VsbsesK2QtEDSzqITImWNEKkuYdKKfwDka08/NM4uM9Q+KTBf49IIiFb
-wV5fcr2HX40rcgTNitUxRTjmDo6w/z2DnwLTNYQJHLmzHCkpYpqI1VriMIJSqfof
-CIiGOuiU8HfI/HeL8zB/qVfwDAk555jHY0f8VBMkKPh+toMnN0uPCziRXdShwBLc
-uZtL91NHBMzA7/zzGzBnBBnHrs9Sf+RQTymxszhwZQZ9zvG2ld0XZHwxQdskcU0m
-ecsCMTbnXFGzOYI9kI548k74aRe0Mjx2Qqin220tOxAWMRVgPsNlfMLFs96Tphci
-FUKdcpK4QOB5dRLxfX9aovmC4vvFJymB1wDYTvh1ZDoA1Dn4ADa+2s1sL8rjPlx2
-321kzBOm5HJKe7PMDL9wDa5aSTwGNKNT0kouIJLHCwd8mrE1IssQRvT2BJ++t9Bb
-0Rzt1M8vw9ADZ22K/raP5N3yuqzi3HDI5XHurgZsBY1VH8gXr7A1WZfC2MqPJo2g
-g05oOAO+13G2NG/fIvCS
-=TZFf
------END PGP SIGNATURE-----
-
---SLDf9lqlvOQaIe6s--
-
---===============8403290994274300283==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8403290994274300283==--
+Thank you!
