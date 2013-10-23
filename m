@@ -1,59 +1,88 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 07/12] ASoC: davinci-mcasp: Remove redundant
- num-serializer DT parameter
-Date: Wed, 23 Oct 2013 12:15:43 +0100
-Message-ID: <20131023111543.GM9388@sirena.org.uk>
-References: <cover.1382110089.git.jsarha@ti.com>
- <1a9937bd0cad470b43e41a7fc537b354e2795535.1382110090.git.jsarha@ti.com>
+Subject: Re: [PATCH 2/3] ASoC: dmaengine: Support custom
+ channel names
+Date: Wed, 23 Oct 2013 12:30:28 +0100
+Message-ID: <20131023113028.GP9388@sirena.org.uk>
+References: <1382201032-13538-1-git-send-email-broonie@kernel.org>
+ <1382201032-13538-2-git-send-email-broonie@kernel.org>
+ <5266654D.30200@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pFpMklMRdxwSC3Yi"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1a9937bd0cad470b43e41a7fc537b354e2795535.1382110090.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, bcousson@baylibre.com, mark.rutland@arm.com, linux-omap@vger.kernel.org, joelf@ti.com, Peter Ujfalusi <peter.ujfalusi@ti.com>
+Content-Type: multipart/mixed; boundary="===============8762327211302515734=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA8152610C5
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2013 13:30:40 +0200 (CEST)
+In-Reply-To: <5266654D.30200@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sangbeom Kim <sbkim73@samsung.com>, Tomasz Figa <t.figa@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, linaro-kernel@lists.linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---pFpMklMRdxwSC3Yi
+--===============8762327211302515734==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="IihjUyvzd0n5Ehsu"
+Content-Disposition: inline
+
+
+--IihjUyvzd0n5Ehsu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 18, 2013 at 06:37:46PM +0300, Jyri Sarha wrote:
-> From: Peter Ujfalusi <peter.ujfalusi@ti.com>
->=20
-> The serial-dir array gives this information so there is no need to have t=
-he
-> num-serializer property in DT description.
-> Just ignore the property in the driver the DTS files can be updated
-> separately without regression.
-> Update the documentation at the same time for davinci-mcasp
+On Tue, Oct 22, 2013 at 01:45:17PM +0200, Lars-Peter Clausen wrote:
+> On 10/19/2013 06:43 PM, Mark Brown wrote:
 
-Applied, thanks.
+> > Some devices have more than just simple TX and RX DMA channels, for example
+> > modern Samsung I2S IPs support a secondary transmit DMA stream which is
+> > mixed into the primary stream during playback. Allow such devices to
+> > specify the names of the channels to be requested in their dma_data.
 
---pFpMklMRdxwSC3Yi
+> As shortly discussed yesterday, I think the general idea is fine. But it
+> might be better to have the names available at PCM creation time, since this
+> allows us to e.g. do proper probe referral and will also have the code take
+> the same path in the DT case, no matter if it uses the default names or not.
+
+I agree, but I'm thinking that the way to do this is to get the entire
+struct provided earlier so that the compat drivers get to use this stuff
+too.  Is there any great reason not to do that?
+
+--IihjUyvzd0n5Ehsu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSZ6/cAAoJELSic+t+oim9+ycP/RM0DthBmcs2ynQnuHKL8K60
-d7job/Vwev+8DGPr1TIyxwW8QGs9HUP1uTRzxz/x43k15j8CCEJChaAm6dZRDDSh
-1bEsKGa8OeOGJZebOWsdKs2WMg+GerCINqktbJCA0XWrWHM/cIhxLweITHZN3+2V
-FUXQyTdOLeuovj3YgCrUA/DOCjuVkxS/uR2Jx4p9Sxj1EUDZiddJo2UW8ct6dup6
-kbLT0rdzC2Ot4TEBgN8TZd9ApPzUMJy+HPfR3CZEMhnCpxRN0l+EioKhwezdInak
-6r1rKeaNM60Ctmdcm6dtozzZ9K/fWwvAl2jm3vS7cub80rKC3BZuXTkWid/z5zX+
-s+dPQAjmTolabShc1ULohK02gKzXgr+OVuVW6MHuK3ip86FhI7IXE3tOoI8CqTZv
-NM8wuSQISvpvPyyeJD9XiJpLqi+SyzFRt5agqsETURLqFdLtTONnXvmyjcG66jgV
-n0Cp5NeT867bhj6omuOQ17F84H7PZwu9HBm/eM1aRRDY5U9PR0NU9W2Q8WF2OFyR
-D4s43QwNraib4q8JoCG/d0PTGdYetvQfQFkcGMuYbItR27841tWi7MM4BVXP8EXd
-leoYxU60N0irDMMzrTk+hx6PN+WlAvxqyom2dr4jGNe+vVaknS97w9e1fv2IccaZ
-2cYOBnb5kdmwsnn8XLti
-=ZKCw
+iQIcBAEBAgAGBQJSZ7NRAAoJELSic+t+oim9q/cP/3GoDrtzO+N6XQ8DMeXeCQct
+rjoRRptujeWjRlwtxr5ukTaTgVWFbPgrzHE+UCi6GJB5w6F3whP4kMmIPYjPtHi7
+k0I/6E0lg0OlAdQtP/3EklepJCKUyvl96sYLiDR3iclxGvZnsOqFk1vSh6h2Yo2Z
+chRhfEwUrjEDzH0DahpIYwrHiFzhJnY3KY9xQ+IMo/pxRdXLGMLT/qYGW3MXQDDu
+/QgcmSo9QWnY2IHn+JyC+QGeuj0/GpsaHIkFfo2XwLQA0kthxvZwJIJ7y/jAIIfB
+6HfkV6Kg3I7MpzykJJZmE1Iik/izWHxQlNSK7jUT5hpoRjjZ+vEPrfXSzA/+EG1c
+UVsah+32i8ij9tM81xJ+4d3Yx6KEob5TwTZb5QNlhKQ01xPt2J3FDoZSGu7BOU5U
+SOrwg8Jl4aPsQZVHGEreOt9s2/iSkY8h43bS6sOHF+inp/Qt7Eqj0v3oQWTakMBT
+QrBP/DCkAjLUEOZXDPDzwifMXtU9EKLu5CyZpYr71FfHiAG3c9bi/RmgJRdmQT6M
+dLIrZQjG/dkNWDiSeSPR/WWF15wZAfhKZi38vZy9cGRIB433vJhA0YZ0k/hazbKl
+P17OzoTritKuiAIG4LcfnCWOtQ5EiIBldVq/LTKimFkUbZxgr+Z9EikFtrml7njt
+TujpNKsaV+fHccBv6XFc
+=E16e
 -----END PGP SIGNATURE-----
 
---pFpMklMRdxwSC3Yi--
+--IihjUyvzd0n5Ehsu--
+
+--===============8762327211302515734==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8762327211302515734==--
