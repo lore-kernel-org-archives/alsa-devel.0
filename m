@@ -1,34 +1,62 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: tegra: Remove redundant initialisation
- of compat_filter_fn
-Date: Tue, 22 Oct 2013 22:07:05 +0100
-Message-ID: <5266E8F9.70307@wwwdotorg.org>
-References: <1382188623-19494-1-git-send-email-broonie@kernel.org> <52644D3C.9020709@wwwdotorg.org> <52666422.9010505@metafoo.de>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Re: [PATCH RESEND] ASoC: dont call dapm_sync while
+ reporting jack always
+Date: Tue, 22 Oct 2013 19:45:50 -0700
+Message-ID: <5267385E.6020007@codeaurora.org>
+References: <1382362654-26213-1-git-send-email-vinod.koul@intel.com>
+ <20131022083223.GA20821@sirena.org.uk> <20131022153654.GQ14013@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <52666422.9010505-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.11.231])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30B5726082D
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2013 04:45:58 +0200 (CEST)
+In-Reply-To: <20131022153654.GQ14013@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 10/22/2013 12:40 PM, Lars-Peter Clausen wrote:
-> On 10/20/2013 11:38 PM, Stephen Warren wrote:
->> On 10/19/2013 02:17 PM, Mark Brown wrote:
->>> From: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
->>>
->>> Setting a field in a static struct to NULL has no effect so don't bother
->>> (and don't generate false positives for grep).
+On 10/22/2013 8:36 AM, Vinod Koul wrote:
+> On Tue, Oct 22, 2013 at 09:32:23AM +0100, Mark Brown wrote:
+>> On Mon, Oct 21, 2013 at 07:07:34PM +0530, Vinod Koul wrote:
+>>> While reporting the jack status snd_soc_jack_report() invokes snd_soc_dapm_sync()
+>>> always. This should be required when we have pins associated with jack and
+>>> reporting enables or disables these.
+>>> So add a check for this case
 >>
->> I'm fine with this either way, so feel free to take my ack whichever way
->> you work this out with Lars-Peter.
-> 
-> I don't care that much either, just wanted to give an explanation why things
-> are the way they are. Mark, if you want to merge this patch you can add:
-> Acked-by: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-> 
-> Btw. wasn't there a plan to move tegra to the generic dma bindings?
+>> Applied, thanks.  It'd be good when doing things like this to say what
+>> the advantage is; with DAPM the general thing is that it gets called a
+>> lot so it should be cheap enough to just call all the time.
+> Okay, my thoughts were that it was obvious. We saw an issue when monkey testing
+> with jack, bunch of dapm_sync's got triggered (insertion, reroute from usermode,
+> removal, again reroute from usermode, and so on). The insertion and removal ones
+> were quite not required for cases with no pins
+>
+We observed the same thing on our side and create another report API
+which does not call snd_soc_dapm_sync() :)
+Thanks for working out a better solution
 
-IIRC, it's been using them for a release or two.
+Thanks
+Patrick
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+
+
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
