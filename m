@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 2/4] ASoC: davinci-evm: Add device tree
-	binding
-Date: Wed, 23 Oct 2013 16:43:18 +0100
-Message-ID: <20131023154318.GC31415@sirena.org.uk>
-References: <cover.1382529191.git.jsarha@ti.com>
- <5ee719e9e2b156e80214bfce42157ae27e792be5.1382529191.git.jsarha@ti.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH] ALSA: compress: fix drain calls blocking other
+	compress functions
+Date: Wed, 23 Oct 2013 21:47:01 +0530
+Message-ID: <1382545021-26918-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1753479968514006106=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DB372616A6
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2013 17:43:23 +0200 (CEST)
-In-Reply-To: <5ee719e9e2b156e80214bfce42157ae27e792be5.1382529191.git.jsarha@ti.com>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5091E2619FE
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2013 19:10:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +19,148 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, joelf@ti.com, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>, Darren Etheridge <detheridge@ti.com>, tony@atomide.com, linux-omap@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+The drain and drain_notify callback were blocked by low level driver untill the
+draining was complete. Due to this being invoked with big fat mutex held, others
+ops like reading timestamp, calling pause, drop were blocked.
 
---===============1753479968514006106==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+nBD6E3TurpgldQp"
-Content-Disposition: inline
+So to fix this we add a new snd_compr_drain_notify() API. This would be required
+to be invoked by low level driver when drain or partial drain has been completed
+by the DSP. Thus we make the drain and partial_drain callback as non blocking
+and driver returns immediately after notifying DSP.  The waiting is done while
+relasing the lock so that other ops can go ahead.
 
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+CC: stable@vger.kernel.org
+---
+ include/sound/compress_driver.h |   12 ++++++++++
+ sound/core/compress_offload.c   |   43 +++++++++++++++++++++++++++++++++++---
+ 2 files changed, 51 insertions(+), 4 deletions(-)
 
---+nBD6E3TurpgldQp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Oct 23, 2013 at 03:30:14PM +0300, Jyri Sarha wrote:
-> From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
->=20
-> Device tree support for Davinci Machine driver
-
-Applied, thanks.
-
---+nBD6E3TurpgldQp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSZ+6TAAoJELSic+t+oim949oQAIlMXs9+ndenSZJkH3tJDxFG
-XiYexvt8DTmVclrcncK2Q2UwbGremdfz+0SqhEJqx+l2ktlzY91ZVjxVOtZX72k7
-PUj8jgti2o7t9+VFFdFwj5BYlhzUGFa06+sQKY0KtomTokLzGNLRA7QrhpG6jpYq
-xE8uDWAOoUm7o7nWFBLoJz/+Ka1LZct3kUxOXRm/tBWfNsOPlG5BFmd3rac3Qalr
-jzORoODyrZHN5zj4uRKKCzeBucFi5EsWch8MkrNyx2rsjNf5R/4X1JcG68ta5jZb
-dGNL1rJbrKTd+Q4QbOGRBmPJbXJxuu+w3xbfeo8g97SneRHedk6nQefC8VT90zRG
-gnTlKLKgngQkfbBeFLlwim4IWukipYBwM0/MYD9hKKwDooS4lFp7YWeMODmNbbIv
-7DYgA/pWS0EQbSnJZget4cVuMNrg6pUH25R79hNumYl9TC1QdL1WEarLPTl4APdH
-8PGPQB7j7mjoRPTDDWihnI9XBkEjloLnLLJ6FmjUsd8Quz8401vHL5gedae3FjiC
-dbqfMttHUlFNW6UH9UF+Ga9OSxu8kmrzp8CUgHxaZwNDvuw5pbPabuM5hZXvjiYu
-rdR7gwZ5gVgKI8e+ZzO7spjovIC+KM/HDIBP3TChHqyoCzny5TduqZEmY/l0JC06
-HfiWRXDnItDfS1M2Lst7
-=6AxA
------END PGP SIGNATURE-----
-
---+nBD6E3TurpgldQp--
-
---===============1753479968514006106==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1753479968514006106==--
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index 9031a26..eff5f84 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -48,6 +48,8 @@ struct snd_compr_ops;
+  *	the ring buffer
+  * @total_bytes_transferred: cumulative bytes transferred by offload DSP
+  * @sleep: poll sleep
++ * @wait: drain wait queuq
++ * @draining: draining wait condition
+  */
+ struct snd_compr_runtime {
+ 	snd_pcm_state_t state;
+@@ -59,6 +61,8 @@ struct snd_compr_runtime {
+ 	u64 total_bytes_available;
+ 	u64 total_bytes_transferred;
+ 	wait_queue_head_t sleep;
++	wait_queue_head_t wait;
++	unsigned int draining;
+ 	void *private_data;
+ };
+ 
+@@ -171,4 +175,12 @@ static inline void snd_compr_fragment_elapsed(struct snd_compr_stream *stream)
+ 	wake_up(&stream->runtime->sleep);
+ }
+ 
++static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
++{
++	snd_BUG_ON(!stream);
++
++	stream->runtime->draining = 1;
++	wake_up(&stream->runtime->wait);
++}
++
+ #endif
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index bea523a..3582f9f 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -123,6 +123,7 @@ static int snd_compr_open(struct inode *inode, struct file *f)
+ 	}
+ 	runtime->state = SNDRV_PCM_STATE_OPEN;
+ 	init_waitqueue_head(&runtime->sleep);
++	init_waitqueue_head(&runtime->wait);
+ 	data->stream.runtime = runtime;
+ 	f->private_data = (void *)data;
+ 	mutex_lock(&compr->lock);
+@@ -682,12 +683,36 @@ static int snd_compr_stop(struct snd_compr_stream *stream)
+ 	if (!retval) {
+ 		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
+ 		wake_up(&stream->runtime->sleep);
++		stream->runtime->draining = 1;
++		wake_up(&stream->runtime->wait);
+ 		stream->runtime->total_bytes_available = 0;
+ 		stream->runtime->total_bytes_transferred = 0;
+ 	}
+ 	return retval;
+ }
+ 
++static int snd_compress_wait_for_drain(struct snd_compr_stream *stream)
++{
++	int retval = 0;
++
++	/*
++	 * we are called with lock held. So drop the lock while we wait for
++	 * drain complete notfication from the driver
++	 */
++	stream->runtime->state = SNDRV_PCM_STATE_DRAINING;
++	mutex_unlock(&stream->device->lock);
++
++	retval = wait_event_interruptible(stream->runtime->wait, stream->runtime->draining);
++	if (retval)
++		pr_err("Wait for drain failed %d\n", retval);
++
++	wake_up(&stream->runtime->sleep);
++	mutex_lock(&stream->device->lock);
++	stream->runtime->state = SNDRV_PCM_STATE_SETUP;
++
++	return retval;
++}
++
+ static int snd_compr_drain(struct snd_compr_stream *stream)
+ {
+ 	int retval;
+@@ -695,12 +720,16 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
+ 	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
+ 			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
+ 		return -EPERM;
++
++	stream->runtime->draining = 0;
+ 	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_DRAIN);
+-	if (!retval) {
+-		stream->runtime->state = SNDRV_PCM_STATE_DRAINING;
++	if (retval) {
++		pr_err("SND_COMPR_TRIGGER_DRAIN failed %d\n", retval);
+ 		wake_up(&stream->runtime->sleep);
++		return retval;
+ 	}
+-	return retval;
++
++	return snd_compress_wait_for_drain(stream);
+ }
+ 
+ static int snd_compr_next_track(struct snd_compr_stream *stream)
+@@ -735,10 +764,16 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
+ 	if (stream->next_track == false)
+ 		return -EPERM;
+ 
++	stream->runtime->draining = 0;
+ 	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_PARTIAL_DRAIN);
++	if (retval) {
++		pr_err("Partial drain returned failure\n");
++		wake_up(&stream->runtime->sleep);
++		return retval;
++	}
+ 
+ 	stream->next_track = false;
+-	return retval;
++	return snd_compress_wait_for_drain(stream);
+ }
+ 
+ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+-- 
+1.7.0.4
