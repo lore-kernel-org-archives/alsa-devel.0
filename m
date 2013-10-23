@@ -1,132 +1,78 @@
-From: Sebastian Reichel <sre@debian.org>
-Subject: [PATCH] ASoC: tpa6130a2: Add device tree support
-Date: Wed, 23 Oct 2013 14:03:28 +0200
-Message-ID: <1382529808-28440-1-git-send-email-sre@debian.org>
-Return-path: <linux-doc-owner@vger.kernel.org>
-Sender: linux-doc-owner@vger.kernel.org
-To: Sebastian Reichel <sre@ring0.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Landley <rob@landley.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Grant Likely <grant.likely@linaro.org>, Sebastian Reichel <sre@debian.org>, Bill Pemberton <wfp5p@virginia.edu>, Sachin Kamat <sachin.kamat@linaro.org>, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v6 1/4] ASoC: davinci: Add support for AM33xx SoC Audio
+Date: Wed, 23 Oct 2013 15:30:13 +0300
+Message-ID: <f1892d46be8790665faabc7e992abd43a020d4b1.1382529191.git.jsarha@ti.com>
+References: <cover.1382529191.git.jsarha@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <cover.1382529191.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: linux-omap@vger.kernel.org, joelf@ti.com, tony@atomide.com, "Hebbar, Gururaja" <gururaja.hebbar@ti.com>, Darren Etheridge <detheridge@ti.com>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add device tree support to tpa6130a2 driver and document the
-bindings.
+From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
 
-Signed-off-by: Sebastian Reichel <sre@debian.org>
+AM33xx uses same McASP IP as the Davinci Platform. This patch updates
+Kconfig and makefile to enable build for McASP, PCM & Codec drivers.
+
+Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
+Signed-off-by: Darren Etheridge <detheridge@ti.com>
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
 ---
- .../devicetree/bindings/sound/tpa6130a2.txt        | 27 ++++++++++++++++++
- sound/soc/codecs/tpa6130a2.c                       | 32 ++++++++++++++++------
- 2 files changed, 50 insertions(+), 9 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/tpa6130a2.txt
+ sound/soc/davinci/Kconfig  |   18 +++++++++++++++---
+ sound/soc/davinci/Makefile |    1 +
+ 2 files changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/tpa6130a2.txt b/Documentation/devicetree/bindings/sound/tpa6130a2.txt
-new file mode 100644
-index 0000000..6dfa740
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tpa6130a2.txt
-@@ -0,0 +1,27 @@
-+Texas Instruments - tpa6130a2 Codec module
-+
-+The tpa6130a2 serial control bus communicates through I2C protocols
-+
-+Required properties:
-+
-+- compatible - "string" - One of:
-+    "ti,tpa6130a2" - TPA6130A2
-+    "ti,tpa6140a2" - TPA6140A2
-+
-+
-+- reg - <int> -  I2C slave address
-+
-+- Vdd-supply - <phandle> - power supply regulator
-+
-+Optional properties:
-+
-+- power-gpio - gpio pin to power the device
-+
-+Example:
-+
-+tpa6130a2: tpa6130a2@60 {
-+	compatible = "ti,tpa6130a2";
-+	reg = <0x60>;
-+	Vdd-supply = <&vmmc2>;
-+	power-gpio = <&gpio4 2 GPIO_ACTIVE_HIGH>;
-+};
-diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
-index c58bee8..998555f 100644
---- a/sound/soc/codecs/tpa6130a2.c
-+++ b/sound/soc/codecs/tpa6130a2.c
-@@ -30,6 +30,7 @@
- #include <sound/tpa6130a2-plat.h>
- #include <sound/soc.h>
- #include <sound/tlv.h>
-+#include <linux/of_gpio.h>
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index c82f89c..95970f5 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -1,9 +1,10 @@
+ config SND_DAVINCI_SOC
+-	tristate "SoC Audio for the TI DAVINCI chip"
+-	depends on ARCH_DAVINCI
++	tristate "SoC Audio for the TI DAVINCI or AM33XX chip"
++	depends on ARCH_DAVINCI || SOC_AM33XX
+ 	help
++	  Platform driver for daVinci or AM33xx
+ 	  Say Y or M if you want to add support for codecs attached to
+-	  the DAVINCI AC97 or I2S interface. You will also need
++	  the DAVINCI AC97, I2S, or McASP interface. You will also need
+ 	  to select the audio interfaces to support below.
  
- #include "tpa6130a2.h"
+ config SND_DAVINCI_SOC_I2S
+@@ -15,6 +16,17 @@ config SND_DAVINCI_SOC_MCASP
+ config SND_DAVINCI_SOC_VCIF
+ 	tristate
  
-@@ -364,30 +365,33 @@ static int tpa6130a2_probe(struct i2c_client *client,
- {
- 	struct device *dev;
- 	struct tpa6130a2_data *data;
--	struct tpa6130a2_platform_data *pdata;
-+	struct tpa6130a2_platform_data *pdata = client->dev.platform_data;
-+	struct device_node *np = client->dev.of_node;
- 	const char *regulator;
- 	int ret;
- 
- 	dev = &client->dev;
- 
--	if (client->dev.platform_data == NULL) {
--		dev_err(dev, "Platform data not set\n");
--		dump_stack();
--		return -ENODEV;
--	}
--
- 	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
- 	if (data == NULL) {
- 		dev_err(dev, "Can not allocate memory\n");
- 		return -ENOMEM;
- 	}
- 
-+	if (pdata) {
-+		data->power_gpio = pdata->power_gpio;
-+	} else if (np) {
-+		data->power_gpio = of_get_named_gpio(np, "power-gpio", 0);
-+	} else {
-+		dev_err(dev, "Platform data not set\n");
-+		dump_stack();
-+		return -ENODEV;
-+	}
++config SND_AM33XX_SOC_EVM
++	tristate "SoC Audio for the AM33XX chip based boards"
++	depends on SND_DAVINCI_SOC && SOC_AM33XX
++	select SND_SOC_TLV320AIC3X
++	select SND_DAVINCI_SOC_MCASP
++	help
++	  Say Y or M if you want to add support for SoC audio on AM33XX
++	  boards using McASP and TLV320AIC3X codec. For example AM335X-EVM,
++	  AM335X-EVMSK, and BeagelBone with AudioCape boards have this
++	  setup.
 +
- 	tpa6130a2_client = client;
+ config SND_DAVINCI_SOC_EVM
+ 	tristate "SoC Audio support for DaVinci DM6446, DM355 or DM365 EVM"
+ 	depends on SND_DAVINCI_SOC
+diff --git a/sound/soc/davinci/Makefile b/sound/soc/davinci/Makefile
+index a396ab6..bc81e79 100644
+--- a/sound/soc/davinci/Makefile
++++ b/sound/soc/davinci/Makefile
+@@ -13,6 +13,7 @@ obj-$(CONFIG_SND_DAVINCI_SOC_VCIF) += snd-soc-davinci-vcif.o
+ snd-soc-evm-objs := davinci-evm.o
  
- 	i2c_set_clientdata(tpa6130a2_client, data);
- 
--	pdata = client->dev.platform_data;
--	data->power_gpio = pdata->power_gpio;
- 	data->id = id->driver_data;
- 
- 	mutex_init(&data->mutex);
-@@ -466,10 +470,20 @@ static const struct i2c_device_id tpa6130a2_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, tpa6130a2_id);
- 
-+#if IS_ENABLED(CONFIG_OF)
-+static const struct of_device_id tpa6130a2_of_match[] = {
-+	{ .compatible = "ti,tpa6130a2", },
-+	{ .compatible = "ti,tpa6140a2" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, tpa6130a2_of_match);
-+#endif
-+
- static struct i2c_driver tpa6130a2_i2c_driver = {
- 	.driver = {
- 		.name = "tpa6130a2",
- 		.owner = THIS_MODULE,
-+		.of_match_table = of_match_ptr(tpa6130a2_of_match),
- 	},
- 	.probe = tpa6130a2_probe,
- 	.remove = tpa6130a2_remove,
+ obj-$(CONFIG_SND_DAVINCI_SOC_EVM) += snd-soc-evm.o
++obj-$(CONFIG_SND_AM33XX_SOC_EVM) += snd-soc-evm.o
+ obj-$(CONFIG_SND_DM6467_SOC_EVM) += snd-soc-evm.o
+ obj-$(CONFIG_SND_DA830_SOC_EVM) += snd-soc-evm.o
+ obj-$(CONFIG_SND_DA850_SOC_EVM) += snd-soc-evm.o
 -- 
-1.8.4.rc3
+1.7.9.5
 
