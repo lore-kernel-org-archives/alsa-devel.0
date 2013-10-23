@@ -1,60 +1,77 @@
-From: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCHv6][ 4/4] ARM: dts: mbimxsd35: Add sound support.
-Date: Wed, 23 Oct 2013 11:16:06 +0200
-Message-ID: <1382519766-17359-4-git-send-email-denis@eukrea.com>
-References: <1382519766-17359-1-git-send-email-denis@eukrea.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v5 06/12] ASoC: davinci-mcasp: Improve DT
+ bindings document
+Date: Wed, 23 Oct 2013 12:15:20 +0100
+Message-ID: <20131023111520.GL9388@sirena.org.uk>
+References: <cover.1382110089.git.jsarha@ti.com>
+ <668306c88da19a61b88c45111a27e3602b0def7e.1382110090.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1382519766-17359-1-git-send-email-denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, =?UTF-8?q?Eric=20B=C3=A9nard?= <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============8876360657818197955=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83D5B2610B8
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2013 13:15:27 +0200 (CEST)
+In-Reply-To: <668306c88da19a61b88c45111a27e3602b0def7e.1382110090.git.jsarha@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, joelf@ti.com, bcousson@baylibre.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Cc: Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>
-Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Eric B=C3=A9nard <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
-Signed-off-by: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
----
- .../boot/dts/imx35-eukrea-mbimxsd35-baseboard.dts  |    9 +++++++++
- 1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm/boot/dts/imx35-eukrea-mbimxsd35-baseboard.dts b/a=
-rch/arm/boot/dts/imx35-eukrea-mbimxsd35-baseboard.dts
-index 1378b8d..4045c5d 100644
---- a/arch/arm/boot/dts/imx35-eukrea-mbimxsd35-baseboard.dts
-+++ b/arch/arm/boot/dts/imx35-eukrea-mbimxsd35-baseboard.dts
-@@ -48,6 +48,15 @@
- 			linux,default-trigger =3D "heartbeat";
- 		};
- 	};
-+
-+	sound {
-+		compatible =3D "eukrea,eukrea-tlv320";
-+		model =3D "imx35-eukrea-tlv320aic23";
-+		ssi-controller =3D <&ssi1>;
-+		fsl,audio-codec =3D <&tlv320aic23>;
-+		mux-int-port =3D <1>;
-+		mux-ext-port =3D <4>;
-+	};
- };
-=20
- &audmux {
---=20
-1.7.9.5
+--===============8876360657818197955==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="aYrjF+tKt+ApYAdb"
+Content-Disposition: inline
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--aYrjF+tKt+ApYAdb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Oct 18, 2013 at 06:37:45PM +0300, Jyri Sarha wrote:
+> Makes interrupts property optional as the interrupts are not currently
+> used by the driver and adds interrupt-names property to name listed
+> interrupts. Currently know interrupt names are "tx" and "rx".
+
+Applied, thanks.
+
+--aYrjF+tKt+ApYAdb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSZ6/FAAoJELSic+t+oim9u1cP/Ax96V2HSKx2JDL/C0h2F2IM
+WZUpV/SqwnsFn8PdUiji+a8gipt1xVzwj20aKqSZJONqz8hc9slgEQEXiD7KbNrz
+MNuSz/kfxEgjH/J08aigVjuDGwyzyio1tPFVv2lUvlOv5Sk437OQoPtE1YFYjLIe
+5vxC6ANebn968n3eMJAk3moHUQ2HC6jGysNL2Ul5OHwtVSYr3f7+5XejcSJwpCQG
+B5OYZMctNfPiRPHgs8VMM/5aIMnn4pPSkLSwNHOKvqmUQRw3a5LS36DjxpcZHAF3
+xPQ1/Lum17qnME2V2W2A+7TLoNIx5azJNk5nRsi6xKGCiZmQC4oCV1PSY7w+w1Y7
++OpnhaHa+OnQhnaj4/c+HSgjQXpHu45/eH3MvMbNSyoF5YEz1qx6kTL8MfYcGBDg
+m/WO4kuUwYC5FjzGR06n4cjEbTUGGNUGM/EBUE4OLjCmYhDdPA3sNl+Jz6A6BH3x
+QwS5DJyzHmb9wuSsEJ6XGZYJ+MOVF3xHZUBdK8lClAtYMF6ptX+2G5lG+OtIfcrK
+GZixSJr6WWdLYgyFlKeFWi6vPQ6TCwVvruARhQyACyArLryKqxyF8iK5jotCX4Jr
+TYMd1ulovMWRNLiLBNna0+0RkfS/FrDKWHFDPYUbJdhYms0pDn8Fin0ArSkJtxG7
+3OEbI7oLPqgl4eaDSZ1n
+=eYA9
+-----END PGP SIGNATURE-----
+
+--aYrjF+tKt+ApYAdb--
+
+--===============8876360657818197955==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8876360657818197955==--
