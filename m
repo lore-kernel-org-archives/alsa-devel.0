@@ -1,17 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] ALSA: compress: fix drain calls blocking other
-	compress functions
-Date: Thu, 24 Oct 2013 13:05:41 +0530
-Message-ID: <1382600141-9866-1-git-send-email-vinod.koul@intel.com>
-References: <1382545021-26918-1-git-send-email-vinod.koul@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: tpa6130a2: Add device tree support
+Date: Thu, 24 Oct 2013 10:06:59 +0100
+Message-ID: <20131024090659.GD31415@sirena.org.uk>
+References: <1382529808-28440-1-git-send-email-sre@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4959071921368677151=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id EFA672608D8
- for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2013 10:29:24 +0200 (CEST)
-In-Reply-To: <1382545021-26918-1-git-send-email-vinod.koul@intel.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id D20562608D8
+ for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2013 11:07:30 +0200 (CEST)
+In-Reply-To: <1382529808-28440-1-git-send-email-sre@debian.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,152 +19,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com
+To: Sebastian Reichel <sre@debian.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-doc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Sebastian Reichel <sre@ring0.de>, Bill Pemberton <wfp5p@virginia.edu>, Rob Landley <rob@landley.net>, Grant Likely <grant.likely@linaro.org>, Sachin Kamat <sachin.kamat@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-The drain and drain_notify callback were blocked by low level driver untill the
-draining was complete. Due to this being invoked with big fat mutex held, others
-ops like reading timestamp, calling pause, drop were blocked.
 
-So to fix this we add a new snd_compr_drain_notify() API. This would be required
-to be invoked by low level driver when drain or partial drain has been completed
-by the DSP. Thus we make the drain and partial_drain callback as non blocking
-and driver returns immediately after notifying DSP.
-The waiting is done while relasing the lock so that other ops can go ahead.
+--===============4959071921368677151==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eqp4TxRxnD4KrmFZ"
+Content-Disposition: inline
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-CC: stable@vger.kernel.org
----
-v2:
- fix the 80 line warn
- move the state change to compress_drain()
 
- include/sound/compress_driver.h |   12 ++++++++++
- sound/core/compress_offload.c   |   43 ++++++++++++++++++++++++++++++++++++--
- 2 files changed, 52 insertions(+), 3 deletions(-)
+--eqp4TxRxnD4KrmFZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-index 9031a26..eff5f84 100644
---- a/include/sound/compress_driver.h
-+++ b/include/sound/compress_driver.h
-@@ -48,6 +48,8 @@ struct snd_compr_ops;
-  *	the ring buffer
-  * @total_bytes_transferred: cumulative bytes transferred by offload DSP
-  * @sleep: poll sleep
-+ * @wait: drain wait queuq
-+ * @draining: draining wait condition
-  */
- struct snd_compr_runtime {
- 	snd_pcm_state_t state;
-@@ -59,6 +61,8 @@ struct snd_compr_runtime {
- 	u64 total_bytes_available;
- 	u64 total_bytes_transferred;
- 	wait_queue_head_t sleep;
-+	wait_queue_head_t wait;
-+	unsigned int draining;
- 	void *private_data;
- };
- 
-@@ -171,4 +175,12 @@ static inline void snd_compr_fragment_elapsed(struct snd_compr_stream *stream)
- 	wake_up(&stream->runtime->sleep);
- }
- 
-+static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
-+{
-+	snd_BUG_ON(!stream);
-+
-+	stream->runtime->draining = 1;
-+	wake_up(&stream->runtime->wait);
-+}
-+
- #endif
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index bea523a..c030365 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -123,6 +123,7 @@ static int snd_compr_open(struct inode *inode, struct file *f)
- 	}
- 	runtime->state = SNDRV_PCM_STATE_OPEN;
- 	init_waitqueue_head(&runtime->sleep);
-+	init_waitqueue_head(&runtime->wait);
- 	data->stream.runtime = runtime;
- 	f->private_data = (void *)data;
- 	mutex_lock(&compr->lock);
-@@ -682,12 +683,36 @@ static int snd_compr_stop(struct snd_compr_stream *stream)
- 	if (!retval) {
- 		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
- 		wake_up(&stream->runtime->sleep);
-+		stream->runtime->draining = 1;
-+		wake_up(&stream->runtime->wait);
- 		stream->runtime->total_bytes_available = 0;
- 		stream->runtime->total_bytes_transferred = 0;
- 	}
- 	return retval;
- }
- 
-+static int snd_compress_wait_for_drain(struct snd_compr_stream *stream)
-+{
-+	int retval = 0;
-+
-+	/*
-+	 * we are called with lock held. So drop the lock while we wait for
-+	 * drain complete notfication from the driver
-+	 */
-+	stream->runtime->state = SNDRV_PCM_STATE_DRAINING;
-+	mutex_unlock(&stream->device->lock);
-+
-+	retval = wait_event_interruptible(stream->runtime->wait,
-+			stream->runtime->draining);
-+	if (retval)
-+		pr_err("Wait for drain failed %d\n", retval);
-+
-+	wake_up(&stream->runtime->sleep);
-+	mutex_lock(&stream->device->lock);
-+
-+	return retval;
-+}
-+
- static int snd_compr_drain(struct snd_compr_stream *stream)
- {
- 	int retval;
-@@ -695,11 +720,17 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
- 	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
- 			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
- 		return -EPERM;
-+
-+	stream->runtime->draining = 0;
- 	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_DRAIN);
--	if (!retval) {
--		stream->runtime->state = SNDRV_PCM_STATE_DRAINING;
-+	if (retval) {
-+		pr_err("SND_COMPR_TRIGGER_DRAIN failed %d\n", retval);
- 		wake_up(&stream->runtime->sleep);
-+		return retval;
- 	}
-+
-+	retval = snd_compress_wait_for_drain(stream);
-+	stream->runtime->state = SNDRV_PCM_STATE_SETUP;
- 	return retval;
- }
- 
-@@ -735,10 +766,16 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
- 	if (stream->next_track == false)
- 		return -EPERM;
- 
-+	stream->runtime->draining = 0;
- 	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_PARTIAL_DRAIN);
-+	if (retval) {
-+		pr_err("Partial drain returned failure\n");
-+		wake_up(&stream->runtime->sleep);
-+		return retval;
-+	}
- 
- 	stream->next_track = false;
--	return retval;
-+	return snd_compress_wait_for_drain(stream);
- }
- 
- static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
--- 
-1.7.0.4
+On Wed, Oct 23, 2013 at 02:03:28PM +0200, Sebastian Reichel wrote:
+> Add device tree support to tpa6130a2 driver and document the
+> bindings.
+
+Applied, thanks.
+
+--eqp4TxRxnD4KrmFZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSaOMkAAoJELSic+t+oim9JEQP/0Exs3GXPXMtPohGPPPSW8C2
+j7A+sklIqXdOesSSDaEhym8s0/ZLsdb9yU6cErRC6XjKmL67+5TaU2rPrpPWF/ls
+EabRWCmh1tNOYk46laYEWkByU+Fz+p1NmWXhx2ptlQtUXfuErwrOluU3VpjZ+pp3
+fw0P/hDthvszrO0m6BLrqR3m60uYaor9SQ+BtL6qW8LUv401HuIyXjlQRrxuHW/S
+Ps5pjLJ2sEsFpyAc/vdLYz/dp9CbvsyJ/egvk8reZiqIYnCWsh9PSjJS9SaWzjE0
+fbsG6VztfPjyU7cpyxjuuC6Y39eerUbB3vf3qfHDEjT1KOHl1dxOhs7s32fidws7
+ZhJciuKlIhRG7+DaEeYXZVvUAP7vyiPjL1uNfcBkRFDy043BomPBPReiZ3hPjBUx
+Dqt0LKj24hICfbRy8U5QoecUaZ+xRw/A3cNsg9Wbsn9c8eE5nwwlspejisVSjPMM
+cVnAXyF2CsJHaYA9SmgxscIpKsBdVQHfWtDyqDAseEKoeX30Hiv7TTq5IcxLdfXH
+Pu5ZuSKQg/hfcMMRuWSsQuUIrTmcG2Cz7Ph04ik2aQu72SDPiaAShPNoiuwi2YrZ
+AiIuGKFnWuIo+S0nVe8VOGhW2TXDky+M3Q3TcmwRf8G3NzhlO4l0BcfKlKfZtAdv
+ZG0O+Qo5MWcBdzhH647t
+=Gihs
+-----END PGP SIGNATURE-----
+
+--eqp4TxRxnD4KrmFZ--
+
+--===============4959071921368677151==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4959071921368677151==--
