@@ -1,19 +1,21 @@
 From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH 5/5] ALSA: hda - hdmi: Disable ramp-up/down
- for non-PCM on AMD codecs
-Date: Thu, 24 Oct 2013 22:00:24 +0300
-Message-ID: <52696E48.80105@iki.fi>
-References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
- <1382638238-25055-6-git-send-email-anssi.hannula@iki.fi>
+Subject: Re: [RFC/RFT v2 0/4] ALSA: hda - hdmi: ATI/AMD
+ multi-channel and HBR support
+Date: Thu, 24 Oct 2013 22:06:28 +0300
+Message-ID: <52696FB4.1090704@iki.fi>
+References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>	
+ <1380870371.875.14.camel@Wailaba2> <524F51C6.7050203@iki.fi>	
+ <1381031338.10109.2.camel@Wailaba2> <5251528B.4010506@iki.fi>
+ <1381293134.845.4.camel@Wailaba2>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
- [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 5045E261641
- for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2013 21:00:30 +0200 (CEST)
-In-Reply-To: <1382638238-25055-6-git-send-email-anssi.hannula@iki.fi>
+Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
+ [83.102.40.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 877472615F7
+ for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2013 21:06:32 +0200 (CEST)
+In-Reply-To: <1381293134.845.4.camel@Wailaba2>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,101 +25,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Olivier Langlois <olivier@trillion01.com>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Peter_Fr=FChberger?= <fritsch@xbmc.org>
+To: Olivier Langlois <olivier@trillion01.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-24.10.2013 21:10, Anssi Hannula kirjoitti:
-> Recent AMD HDMI codecs (revision ID 3 and later, 0x100300 as reported by
-> procfs codec#0) have a configurable ramp-up/down functionality.
+Hmm, I thought I replied to this but I guess not...
+
+09.10.2013 07:32, Olivier Langlois kirjoitti:
 > 
-> The documentation ( http://www.x.org/docs/AMD/AMD_HDA_verbs_v2.pdf )
-> specifies that 180 ("180/256 =~ 0.7") is recommended for PCM and 0 for
-> non-PCM.
+>>
+>> Then please test everything again. I.e.
+>>   o speaker-test -D hdmi:CARD=Generic,DEV=0 -c8 -r192000 -F S32_LE
+>>
+> this work fine
 > 
-> Apply the recommended values according to provided S/PDIF AES0 settings
-> since ramp-up/down does not make sense for non-PCM.
+>>   o Is there any difference seen
+>>     with these, in the beginning/end (i.e. fade-out/in):
+>>     speaker-test -D hdmi:CARD=Generic,DEV=0,AES0=0x04 -c2 -r48000
+>>     speaker-test -D hdmi:CARD=Generic,DEV=0,AES0=0x06 -c2 -r48000
+>>
+> I have the same result as before the last fix. AES0=0x04 works
+> AES0=0x06 doesn't. No error is emitted from speaker-test but no sound is
+> coming out speakers.
+
+OK, that is actually expected, didn't think the test through :)
+
+>>   o Also, is there a difference in the beginning of these
+>>     (maybe garbage sound and/or slightly slower startup?):
+>>     aplay -Dhdmi:CARD=Generic,DEV=0,AES0=4 -r44100 -f s16_le -c2
+>> testi.dts.cut.spdif
+>>     aplay -Dhdmi:CARD=Generic,DEV=0,AES0=6 -r44100 -f s16_le -c2
+>> testi.dts.cut.spdif
 > 
-> v2: adapted to hdmi_ops infrastructure
-> 
-> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
-> Tested-by: Olivier Langlois <olivier@trillion01.com> # v1
+> no garbage. Maybe slightly slower startup with AES0=0x6.
 
-Hmm, actually, re-reading mails reveals that Olivier didn't find the
-expected difference with this setting, except for "maybe slightly slower
-startup with AES0=6" (i.e. value 0, which is unexpected).
+OK, a bit unexpected but not totally strange.
 
-So maybe
-a) it makes too unnoticiable a difference, or
-b) only affects certain hardware (card and/or sink), or
-c) ramp-up/down is only triggered with the MUTE bit of
-   ATI_VERB_SET_MULTICHANNEL_xx which is also rev3+ specific,
-   but is not presently used by the driver,
-or something else.
+>>
+>>   o Contents of /proc/asound/cardX/eld#0.0
+>>
+>> Thanks a lot :)
+>>
+> monitor_present		1
+> eld_valid		1
+> monitor_name		SC-09TX
+> connection_type		HDMI
+[...]
 
-So there's a significant chance setting ramp rate is useless for us ATM,
-but probably does not do actual harm either.
+Looks OK, thanks for testing. Do you happen to have an EDID handy for
+the receiver, just to double-check the data matches? Not sure how it is
+available with fglrx driver, maybe in /var/log/Xorg.0.log...
+No need to go to extraordinary lengths to get it, though :)
 
-Takashi, I'll leave it to you whether to apply this one (if you apply,
-feel free to add to patch description e.g. "No actual playback
-difference has been found in testing, so possibly something more is
-needed for ramp-up/down.").
-
-I guess I might investigate the ramp-up/down/MUTE-bit stuff more at some
-point, but probably not in the next few months...
-
-
-> ---
->  sound/pci/hda/patch_hdmi.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> index 2c45591..74bd2e63ce 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -2819,6 +2819,10 @@ static int patch_nvhdmi_8ch_7x(struct hda_codec *codec)
->  #define ATI_VERB_GET_MULTICHANNEL_7	0xf88
->  #define ATI_VERB_GET_MULTICHANNEL_MODE	0xf89
->  
-> +/* AMD specific HDA cvt verbs */
-> +#define ATI_VERB_SET_RAMP_RATE		0x770
-> +#define ATI_VERB_GET_RAMP_RATE		0xf70
-> +
->  #define ATI_OUT_ENABLE 0x1
->  
->  #define ATI_MULTICHANNEL_MODE_PAIRED	0
-> @@ -3050,6 +3054,23 @@ static int atihdmi_pin_hbr_setup(struct hda_codec *codec, hda_nid_t pin_nid,
->  	return 0;
->  }
->  
-> +static int atihdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
-> +				hda_nid_t pin_nid, u32 stream_tag, int format)
-> +{
-> +
-> +	if (is_amdhdmi_rev3_or_later(codec)) {
-> +		int ramp_rate = 180; /* default as per AMD spec */
-> +		/* disable ramp-up/down for non-pcm as per AMD spec */
-> +		if (format & AC_FMT_TYPE_NON_PCM)
-> +			ramp_rate = 0;
-> +
-> +		snd_hda_codec_write(codec, cvt_nid, 0, ATI_VERB_SET_RAMP_RATE, ramp_rate);
-> +	}
-> +
-> +	return hdmi_setup_stream(codec, cvt_nid, pin_nid, stream_tag, format);
-> +}
-> +
-> +
->  static int atihdmi_init(struct hda_codec *codec)
->  {
->  	struct hdmi_spec *spec = codec->spec;
-> @@ -3096,6 +3117,7 @@ static int patch_atihdmi(struct hda_codec *codec)
->  	spec->ops.pin_set_slot_channel = atihdmi_pin_set_slot_channel;
->  	spec->ops.pin_setup_infoframe = atihdmi_pin_setup_infoframe;
->  	spec->ops.pin_hbr_setup = atihdmi_pin_hbr_setup;
-> +	spec->ops.setup_stream = atihdmi_setup_stream;
->  
->  	if (!has_amd_full_remap_support(codec)) {
->  		/* override to ATI/AMD-specific versions with pairwise mapping */
-> 
 -- 
 Anssi Hannula
