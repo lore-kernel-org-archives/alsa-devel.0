@@ -1,16 +1,16 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH] ASoC: fsl: Add missing pm to current machine
-	drivers
-Date: Thu, 24 Oct 2013 18:15:29 +0800
-Message-ID: <1382609729-21954-1-git-send-email-b42378@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl: Add missing pm to current
+	machine drivers
+Date: Thu, 24 Oct 2013 11:17:30 +0100
+Message-ID: <20131024101730.GB17157@sirena.org.uk>
+References: <1382609729-21954-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3512360859272935800=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe003.messaging.microsoft.com [213.199.154.206])
- by alsa0.perex.cz (Postfix) with ESMTP id 068A32608D8
- for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2013 12:15:31 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AE0A26160D
+ for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2013 12:17:38 +0200 (CEST)
+In-Reply-To: <1382609729-21954-1-git-send-email-b42378@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
+To: Nicolin Chen <b42378@freescale.com>
 Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Add missing pm to current machine drivers so that all of them would
-correctly do suspend/resume.
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
- sound/soc/fsl/imx-mc13783.c  | 1 +
- sound/soc/fsl/imx-sgtl5000.c | 1 +
- sound/soc/fsl/imx-wm8962.c   | 1 +
- 3 files changed, 3 insertions(+)
+--===============3512360859272935800==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="dc+cDN39EJAMEtIO"
+Content-Disposition: inline
 
-diff --git a/sound/soc/fsl/imx-mc13783.c b/sound/soc/fsl/imx-mc13783.c
-index a3d60d4..8ded5ad 100644
---- a/sound/soc/fsl/imx-mc13783.c
-+++ b/sound/soc/fsl/imx-mc13783.c
-@@ -160,6 +160,7 @@ static struct platform_driver imx_mc13783_audio_driver = {
- 	.driver = {
- 		.name = "imx_mc13783",
- 		.owner = THIS_MODULE,
-+		.pm = &snd_soc_pm_ops,
- 	},
- 	.probe = imx_mc13783_probe,
- 	.remove = imx_mc13783_remove
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index 6f4bdc8..4b65c04 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -201,6 +201,7 @@ static struct platform_driver imx_sgtl5000_driver = {
- 	.driver = {
- 		.name = "imx-sgtl5000",
- 		.owner = THIS_MODULE,
-+		.pm = &snd_soc_pm_ops,
- 		.of_match_table = imx_sgtl5000_dt_ids,
- 	},
- 	.probe = imx_sgtl5000_probe,
-diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
-index 6c60666..72064e9 100644
---- a/sound/soc/fsl/imx-wm8962.c
-+++ b/sound/soc/fsl/imx-wm8962.c
-@@ -310,6 +310,7 @@ static struct platform_driver imx_wm8962_driver = {
- 	.driver = {
- 		.name = "imx-wm8962",
- 		.owner = THIS_MODULE,
-+		.pm = &snd_soc_pm_ops,
- 		.of_match_table = imx_wm8962_dt_ids,
- 	},
- 	.probe = imx_wm8962_probe,
--- 
-1.8.4
+
+--dc+cDN39EJAMEtIO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Oct 24, 2013 at 06:15:29PM +0800, Nicolin Chen wrote:
+> Add missing pm to current machine drivers so that all of them would
+> correctly do suspend/resume.
+
+Applied all, thanks.
+
+--dc+cDN39EJAMEtIO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSaPO2AAoJELSic+t+oim9/VEQAJ1Hc+lkU2e6Y2AiTmh4iWA3
+tllHg3LoaAEYsC4yFADUCm3PV1qctsolEIUstKG1p0eyyngt9iqdPD+UGwibr178
+a7arCYAyf31hn3pQ22mEGKkQ3dtvG/TFREKuQBhfXYKFK/hoZUVhqodO8pm7nnia
+0gBURQscnZC+iRrRT1tx0GcoU/M5rkXrcu3Eo3YBKJ/IzMNUmEeTL/WKuek118kH
+OSI/o4DXTCuV0aexs+W1Eyam2w++xOBw2pOic8qydBVlOkcvlmEZMizmHg+6xZgj
+iBuHnJPGa1+WGX6cZzOAlMaMgttToPGA6LQLAKoBp6HlgpnHm0G0Xya5TiJ5gxkx
+inEdfnlAOuakthOoay9XinrM7+mqjpI0owHsnbFcsbo4PXllV1GgPF+tNN9WryMN
+WgNA84Wtxd/VFIU/ZTxsXJDuxC5zsdV0dFOREl0KL0WDUrDBEQjtd+AQgVHyAP16
+2JOrEhcRfR4lqcQfllAQcr3KxDIujhzHPHjA8aKu3NOeMTmBXVBcHnptuoZldEZ0
+YOQYPyTKl0waJuKkBVyg3zMaqprJheqGLq2YtnaOdMvui4kTYrySHbROFKrtWh+M
+zcSA13Ib2H8vcOQY7hCa+Pnx4G8E2WboLg9+33FuRbI6wqP+TWua3zZ5qDc0I15l
+0EzZTO/WeWzzLzLUgWJ5
+=m38h
+-----END PGP SIGNATURE-----
+
+--dc+cDN39EJAMEtIO--
+
+--===============3512360859272935800==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3512360859272935800==--
