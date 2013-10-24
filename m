@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: kirkwood: add S/PDIF support
-Date: Thu, 24 Oct 2013 12:06:30 +0100
-Message-ID: <20131024110630.GB18506@sirena.org.uk>
-References: <20131021105049.58721da9@armhf>
+Subject: Re: [PATCH v4] ASoC: kirkwood: add S/PDIF support
+Date: Thu, 24 Oct 2013 12:08:33 +0100
+Message-ID: <20131024110833.GC18506@sirena.org.uk>
+References: <20131021122422.4cde72c0@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5071122194613852448=="
+Content-Type: multipart/mixed; boundary="===============7009832637610343323=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B106260863
- for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2013 13:06:41 +0200 (CEST)
-In-Reply-To: <20131021105049.58721da9@armhf>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C76F260863
+ for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2013 13:08:45 +0200 (CEST)
+In-Reply-To: <20131021122422.4cde72c0@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,51 +24,71 @@ Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-proj
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5071122194613852448==
+--===============7009832637610343323==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hQiwHBbRI9kgIhsi"
+	protocol="application/pgp-signature"; boundary="5QAgd0e35j3NYeGe"
 Content-Disposition: inline
 
 
---hQiwHBbRI9kgIhsi
+--5QAgd0e35j3NYeGe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 21, 2013 at 10:50:49AM +0200, Jean-Francois Moine wrote:
-> This patch adds S/PDIF input/output for mvebu DT boards.
+On Mon, Oct 21, 2013 at 12:24:22PM +0200, Jean-Francois Moine wrote:
 
-Applied, thanks (this is actually your v3, you forgot to update the
-subject line).
+> +static struct snd_soc_dai_driver kirkwood_i2s_dai[3] =3D {
+> +	DAI_DEF("i2s", 0,
+> +		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
+> +					SNDRV_PCM_RATE_96000),
+> +	DAI_DEF("spdif", 1,
+> +		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
+> +					SNDRV_PCM_RATE_96000),
+> +	DAI_DEF("i2s/spdif", 2,
+> +		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
+> +					SNDRV_PCM_RATE_96000),
 
---hQiwHBbRI9kgIhsi
+I didn't take this version because this third DAI reintroduces the
+problem with having both S/PDIF and I2S in the single DAI.  The problem
+there is that you end up with one traditional DAI linked to two
+different CODECs which the framework doesn't understand - it's
+introducing a DAI which does what v1 does. =20
+
+This is what DPCM addresses for this platform, it allows the single DMA
+controller to be used in conjunction with the two external DAIs by
+splitting the DMA from the DAI in the model the subsystem has.
+Hopefully someone will have the time and enthusiasm to update to use
+this and support systems that want to use I2S and S/PDIF simultaneously.
+
+--5QAgd0e35j3NYeGe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSaP8zAAoJELSic+t+oim9x4QP/iF1gtowpbvJY6Dp9NBaA+Li
-Vt7TurWwYutiC776vmSHBqL2yC2UGEwEAP44MXa8pNX0G7wdbxjeHIN24LvWzIOm
-ic4TUKLkfr/8sgD4DyLbJwhEitw2IgOvLbJysKodWLMsDvYUjISgYOurRMyva4uE
-4nQsrdCFHBcwMTWhdF8B4IDKa7z/qrcRjr5bsvob8/0Z2dfqy7MsY4pBgE5VsaZF
-yVBFSUv5fUFScVydjQW4bPPCZYvgQDH226Yy/8oEsozJ80pv+Qi9O+o3j+ZtDyfh
-T1M8MYeIeQ57vIvW0/8p77QQATLpTlQCxZcuG5Y/kFIpa0pTsRcBYypiolwmQPx3
-90st3uZBqC794vGTXQbWrbl5glOsfT97MpOKaItihjbtipxbhj4y65YEznCpbot4
-I0vZvyP7QPqHeAT9jjlqtNM2H0nei/5xm54VoXhYqOlUNS44AunuVvCjOWU86zG2
-/Ic564i9F4KJ9E8vuAr8NujfZ+l/AFBicw5YY/MtedT+4TiOUqHA7kpMhqGamSqe
-Wr+T1xaLI/VXndf4x0Wq4QuYt+i140oL7DWkT2Qeat1zOOXI/foR8NHKpxuylt4m
-dpCYO6nNR5mOjnRY15Fi6uZzAxyN6hUDa1zBJCHIVM6YeoBtr+CX0k6a9l7cDbIZ
-oRKG1Gt/0zgQg2Yb566E
-=IuoK
+iQIcBAEBAgAGBQJSaP+uAAoJELSic+t+oim9Eq0P/0peOc1faY2Mz75bBkyxEfcJ
+0ouq0Xu8N3gQ0p+8lTKdMZeMSeodx4MckEccGHXSpqdfmvdySTeZwb8mJ/cFfqxV
+7RhpDpeT29Hs/tF1rGypbCIMY0smlkiYxUF3rO59Ryekdzoxz02TV6VWJAa1u370
+ZEGq76iSMPcBd2if4FT7gfFjExk3UJrBEIbWkmvKhzouYi2guD1CgbYv9UXimLvb
+5yPQ0BLsLWcWyo0YgEVk8N6WfKWKAT55pd/m9SUL5X1R51qP2Jo8M0Bntfv4sMFK
+WedsDN86llP6zNy+zRLs3nk49ylzP1PZRkJtQoVeYdnDSrWQc4U+lO6gRJdUpBp6
+8yKRq9U4JFzbK/zLh6JDzPbVFN04opnPWn0vc3Fmq5anP8MoFthGF3MzCodhb7di
+Qn/1qW5p1Rzx91wavCKRAtvUAVQy65Rehnt5I4u8eygk7j7zNdjHbsVDZry+bifn
+k0WkKHMEmDtK2OtO/xwvGcOjrcKCnBoq9gqUvqpEA4P1wi9PmXTYoM9k9Jmd/F9I
+KIVYf9ue5wecBBNEjaLUjlEeZ4d3bLf8G79q4j+e28naYX3G/DUesMT7GNEvSAoG
+caxCnBuaV7RJxPHCwkvzdDEeOfT+g2dAJesLDeLTyFMJ7h/43o2G5p88bT1IUJRX
+92ZCwow4GxnPuOcmfAXN
+=93dN
 -----END PGP SIGNATURE-----
 
---hQiwHBbRI9kgIhsi--
+--5QAgd0e35j3NYeGe--
 
---===============5071122194613852448==
+--===============7009832637610343323==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5071122194613852448==--
+--===============7009832637610343323==--
