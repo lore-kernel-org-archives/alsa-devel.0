@@ -1,16 +1,21 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Is that reasonable to support pinctrl PM in ASoC core?
-Date: Thu, 24 Oct 2013 19:07:43 +0800
-Message-ID: <20131024110743.GD8385@MrMyself>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ALSA: compress: fix drain calls blocking
+ other compress functions
+Date: Thu, 24 Oct 2013 16:05:05 +0530
+Message-ID: <20131024103505.GX14013@intel.com>
+References: <1382545021-26918-1-git-send-email-vinod.koul@intel.com>
+ <1382600141-9866-1-git-send-email-vinod.koul@intel.com>
+ <s5hli1jnhps.wl%tiwai@suse.de> <20131024092724.GW14013@intel.com>
+ <s5hbo2fnddl.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co1outboundpool.messaging.microsoft.com
- (co1ehsobe004.messaging.microsoft.com [216.32.180.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 3012A261ADD
- for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2013 13:23:56 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E3A0261A3A
+ for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2013 13:29:14 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <s5hbo2fnddl.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,39 +25,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Thu, Oct 24, 2013 at 12:59:18PM +0200, Takashi Iwai wrote:
+> At Thu, 24 Oct 2013 14:57:24 +0530,
+> Vinod Koul wrote:
+> > 
+> > On Thu, Oct 24, 2013 at 11:25:35AM +0200, Takashi Iwai wrote:
+> > > At Thu, 24 Oct 2013 13:05:41 +0530,
+> > > Vinod Koul wrote:
+> > > > 
+> > > > The drain and drain_notify callback were blocked by low level driver untill the
+> > > > draining was complete. Due to this being invoked with big fat mutex held, others
+> > > > ops like reading timestamp, calling pause, drop were blocked.
+> > > > 
+> > > > So to fix this we add a new snd_compr_drain_notify() API. This would be required
+> > > > to be invoked by low level driver when drain or partial drain has been completed
+> > > > by the DSP. Thus we make the drain and partial_drain callback as non blocking
+> > > > and driver returns immediately after notifying DSP.
+> > > > The waiting is done while relasing the lock so that other ops can go ahead.
+> > > > 
+> > > > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> > > > CC: stable@vger.kernel.org
+> > > > ---
+> > > > v2:
+> > > >  fix the 80 line warn
+> > > >  move the state change to compress_drain()
+> > > > 
+> > > >  include/sound/compress_driver.h |   12 ++++++++++
+> > > >  sound/core/compress_offload.c   |   43 ++++++++++++++++++++++++++++++++++++--
+> > > >  2 files changed, 52 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+> > > > index 9031a26..eff5f84 100644
+> > > > --- a/include/sound/compress_driver.h
+> > > > +++ b/include/sound/compress_driver.h
+> > > > @@ -48,6 +48,8 @@ struct snd_compr_ops;
+> > > >   *	the ring buffer
+> > > >   * @total_bytes_transferred: cumulative bytes transferred by offload DSP
+> > > >   * @sleep: poll sleep
+> > > > + * @wait: drain wait queuq
+> > > > + * @draining: draining wait condition
+> > > 
+> > > What does this mean exactly?  I thought draining = 1 meaning that the
+> > > stream is draining (i.e. waiting for the finish notification), but
+> > > it looks opposite in your code below...
+> > What i meant was the draining wait conditions which would be used for waiting.
+> > Before wait the caller will set to 0 and on completion the callback will set to
+> > 1 and wake up.
+> 
+> Well, it's not so intuitive as the flag being named "draining".
+> Please give a more detailed comment (or name it a bit less-confusing
+> one :)
+hmmm, yes it needs a better name :)
+perhaps drain_condition or drain_wake would be apt!
+ 
+> > > > +
+> > > > +	wake_up(&stream->runtime->sleep);
+> > > > +	mutex_lock(&stream->device->lock);
+> > > > +
+> > > > +	return retval;
+> > > > +}
+> > > > +
+> > > >  static int snd_compr_drain(struct snd_compr_stream *stream)
+> > > >  {
+> > > >  	int retval;
+> > > > @@ -695,11 +720,17 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
+> > > >  	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
+> > > >  			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
+> > > >  		return -EPERM;
+> > > > +
+> > > > +	stream->runtime->draining = 0;
+> > > >  	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_DRAIN);
+> > > > -	if (!retval) {
+> > > > -		stream->runtime->state = SNDRV_PCM_STATE_DRAINING;
+> > > > +	if (retval) {
+> > > > +		pr_err("SND_COMPR_TRIGGER_DRAIN failed %d\n", retval);
+> > > >  		wake_up(&stream->runtime->sleep);
+> > > > +		return retval;
+> > > >  	}
+> > > > +
+> > > > +	retval = snd_compress_wait_for_drain(stream);
+> > > > +	stream->runtime->state = SNDRV_PCM_STATE_SETUP;
+> > > 
+> > > So, the runtime state goes to SETUP even if wait_for_drain() returns
+> > > an error?  In other words, compress core expects that the driver takes
+> > > care of the proper state change in the error handling?
+> > I guess it would make sense to communicate error. I havent added notion of
+> > status on drain complete. By adding another status flag in the callback we cna
+> > let driver tell us if error occured. Then pass the error in draining value and
+> > do the state change accordingly.
+> 
+> I think it's fine as in the current patch, I just wanted to make sure
+> that this runtime state change is the designed behavior.  If so, it'd
+> be better to document / comment clearly.
+Sure, lets add that explictly!
 
-It's quite popular that more drivers are using pinctrl PM, for example:
-(Documentation/devicetree/bindings/arm/primecell.txt). Just like what
-runtime PM does, it would de-active and en-active pin group depending
-on whether it's being used or not.
-
-And I think this pinctrl PM might be also beneficial to cpu dai drivers
-since they might have actual pins, and they can hypnotize/wake them up
-along with runtime PM:
-
-@@ -183,6 +183,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
-	struct snd_soc_dai_driver *codec_dai_drv = codec_dai->driver;
-	int ret = 0;
-
-+       pinctrl_pm_select_default_state(cpu_dai->dev);
-	pm_runtime_get_sync(cpu_dai->dev);
-	pm_runtime_get_sync(codec_dai->dev);
-	pm_runtime_get_sync(platform->dev);
-
-		       
-As pinctrl PM is also reference counted and would return 0 if there
-is no pinctrl settings, this would not break current ASoC subsystem
-and any cpu dai driver.
-
-So I just want to ask if it's reasonable to add it. Or another one:
-is there anything similar to sleep pins? Although I've searched the
-whole ./sound directory, it seems no drivers under it is using this
-pinctrl PM.
-
-Best regards,
-Nicolin Chen
+-- 
+~Vinod
