@@ -1,20 +1,16 @@
-From: Mihai Moise <mihai.moise5@gmail.com>
-Subject: Re: Bug report Realtek ALC887-VD HDA Intel tone://15000
-Date: Thu, 24 Oct 2013 15:28:55 -0400
-Message-ID: <CAEha1fR4isA_9NjoM8zJDt3RX_D-Woq2+E2ihy8pv5Bs8r6vJQ@mail.gmail.com>
-References: <CAEha1fQ6sTp6dXfX3_88raLG6YJJX23ECi8skPVmD5mmj3eVsA@mail.gmail.com>
- <CAEha1fTEsqXNMEhepG+t=68RxDpHkNFOG9VFga2jmNmRZSXfJA@mail.gmail.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [PATCH] ALSA: hda - hdmi: Re-setup pin and infoframe
+	on plug-in on all codecs
+Date: Fri, 25 Oct 2013 01:45:18 +0300
+Message-ID: <1382654718-23424-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f196.google.com (mail-vc0-f196.google.com
- [209.85.220.196])
- by alsa0.perex.cz (Postfix) with ESMTP id A305A261641
- for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2013 21:28:59 +0200 (CEST)
-Received: by mail-vc0-f196.google.com with SMTP id ht10so314801vcb.3
- for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2013 12:28:58 -0700 (PDT)
-In-Reply-To: <CAEha1fTEsqXNMEhepG+t=68RxDpHkNFOG9VFga2jmNmRZSXfJA@mail.gmail.com>
+Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
+ [83.102.40.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EA4A2615A6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 00:45:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/24/13, Mihai Moise <mihai.moise5@gmail.com> wrote:
+hdmi_setup_audio_infoframe() does not set up pin and infoframe if there
+is no connected sink. If a sink is connected while audio playback is
+already in progress, the pin and infoframe will not be properly set up,
+causing no audio or wrongly mapped audio.
 
-> I have written a resampler for ALSA. It uses S+P with a symmetric
+On Intel Haswell codecs the hdmi_setup_audio_infoframe() is already
+called again from hdmi_present_sense() when an ELD appears because
+transcoder:port mapping may have changed.
 
-Please ignore this. Gmail mistakenly sent out a draft.
+Make the call non-Haswell-specific so that audio will be properly set up
+if the playback was started before a sink was connected.
 
-The next e-mail after the one I'm quoting is valid.
+Tested on non-Haswell Intel HDMI codec by plugging sink in during
+playback.
+
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+---
+ sound/pci/hda/patch_hdmi.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 804adb8..a1fe4bb 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1462,11 +1462,12 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ 		pin_eld->eld_size = eld->eld_size;
+ 		pin_eld->info = eld->info;
+ 
+-		/* Haswell-specific workaround: re-setup when the transcoder is
+-		 * changed during the stream playback
++		/*
++		 * Re-setup pin and infoframe. This is needed e.g. when
++		 * - sink is first plugged-in (infoframe is not set up if !monitor_present)
++		 * - transcoder can change during stream playback on Haswell
+ 		 */
+-		if (is_haswell(codec) &&
+-		    eld->eld_valid && !old_eld_valid && per_pin->setup)
++		if (eld->eld_valid && !old_eld_valid && per_pin->setup)
+ 			hdmi_setup_audio_infoframe(codec, per_pin,
+ 						   per_pin->non_pcm);
+ 	}
+-- 
+1.8.1.5
