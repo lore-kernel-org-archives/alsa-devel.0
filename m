@@ -1,96 +1,80 @@
-From: Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Subject: Re: [PATCHv7][ 2/5] ASoC: eukrea-tlv320: Add DT support.
-Date: Thu, 24 Oct 2013 22:39:10 -0500
-Message-ID: <8309A8FC-87E3-4479-BAB7-DD9B818D56BE@codeaurora.org>
-References: <1382616832-23593-1-git-send-email-denis@eukrea.com> <1382616832-23593-2-git-send-email-denis@eukrea.com>
-Mime-Version: 1.0 (Apple Message framework v1283)
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1382616832-23593-2-git-send-email-denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, =?iso-8859-1?Q?Eric_B=E9nard?= <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: mengdong.lin@intel.com
+Subject: [PATCH] ALSA: hda - fix DigEn for Valleyview2 display
+	codec
+Date: Thu, 24 Oct 2013 18:02:40 -0400
+Message-ID: <1382652160-13279-1-git-send-email-mengdong.lin@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 420A12625EF
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 07:00:02 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-On Oct 24, 2013, at 7:13 AM, Denis Carikli wrote:
+On some Baytrail/Vallleyview platforms, DigEn is disabled on convertors.
+Thus audio data is blocked from passing through the node and no sound can
+be heard over HDMI/DP.
 
-> Cc: Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>
-> Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
-> Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-> Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-> Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
-> Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-> Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-> Cc: Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-> Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-> Cc: Eric B=E9nard <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
->=20
-> Signed-off-by: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
-> ---
-> ChangeLog v6->v7:
-> - The cleanups went into another patch.
-> - The support for fsl_ssi doesn't depend on dt anymore.
-> - platform_name =3D "imx-ssi.0" is still set when in non-dt mode.
-> ---
-> .../devicetree/bindings/sound/eukrea-tlv320.txt    |   23 +++++
-> sound/soc/fsl/Kconfig                              |    5 +-
-> sound/soc/fsl/eukrea-tlv320.c                      |   88 +++++++++++=
-+++++++--
-> 3 files changed, 107 insertions(+), 9 deletions(-)
-> create mode 100644 Documentation/devicetree/bindings/sound/eukrea-tlv=
-320.txt
->=20
-> diff --git a/Documentation/devicetree/bindings/sound/eukrea-tlv320.tx=
-t b/Documentation/devicetree/bindings/sound/eukrea-tlv320.txt
-> new file mode 100644
-> index 0000000..8791037
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/eukrea-tlv320.txt
-> @@ -0,0 +1,23 @@
-> +Audio complex for Eukrea boards with tlv320aic23 codec.
-> +
-> +Required properties:
-> +- compatible : "eukrea,eukrea-tlv320"
-> +- model : The user-visible name of this sound complex.
-> +- ssi-controller : The phandle of the SSI controller.
-> +- audio-codec : The phandle of the tlv320aic23 audio codec.
-> +- mux-int-port : The internal port of the i.MX audio muxer (AUDMUX).
-> +- mux-ext-port : The external port of the i.MX audio muxer.
+This patch fixes the covertor's DigEn when setting up a stream.
 
-mux-int-port & mux-ext-port should probably be vendor prefixed. (I know=
- there are examples in tree where this isn't done).
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
-> +
-> +Note: The AUDMUX port numbering should start at 1, which is consiste=
-nt with
-> +hardware manual.
-> +
-> +Example:
-> +
-> +	sound {
-> +		compatible =3D "eukrea,eukrea-tlv320";
-> +		model =3D "imx51-eukrea-tlv320aic23";
-> +		ssi-controller =3D <&ssi2>;
-> +		fsl,audio-codec =3D <&tlv320aic23>;
-
-this is inconsistent with the binding description above, is it audio-co=
-dec or fsl,audio-codec?
-
-> +		mux-int-port =3D <2>;
-> +		mux-ext-port =3D <3>;
-> +	};
-
---=20
-Employee of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, host=
-ed by The Linux Foundation
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index e332db8..f619732 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -45,6 +45,7 @@ module_param(static_hdmi_pcm, bool, 0644);
+ MODULE_PARM_DESC(static_hdmi_pcm, "Don't restrict PCM parameters per ELD info");
+ 
+ #define is_haswell(codec)  ((codec)->vendor_id == 0x80862807)
++#define is_valleyview(codec) ((codec)->vendor_id == 0x80862882)
+ 
+ struct hdmi_spec_per_cvt {
+ 	hda_nid_t cvt_nid;
+@@ -1061,6 +1062,20 @@ static void haswell_verify_D0(struct hda_codec *codec,
+ 	}
+ }
+ 
++static void vlv_verify_digen(struct hda_codec *codec, hda_nid_t cvt_nid)
++{
++	unsigned int digi1;
++
++	digi1 = snd_hda_codec_read(codec, cvt_nid, 0,
++				  AC_VERB_GET_DIGI_CONVERT_1, 0);
++
++	if (!(digi1 & AC_DIG1_ENABLE))
++		snd_hda_codec_write_cache(codec, cvt_nid, 0,
++			AC_VERB_SET_DIGI_CONVERT_1,
++			(digi1 | AC_DIG1_ENABLE) & 0xff);
++
++}
++
+ /*
+  * Callbacks
+  */
+@@ -1078,6 +1093,9 @@ static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
+ 	if (is_haswell(codec))
+ 		haswell_verify_D0(codec, cvt_nid, pin_nid);
+ 
++	if (is_valleyview(codec))
++		vlv_verify_digen(codec, cvt_nid);
++
+ 	if (snd_hda_query_pin_caps(codec, pin_nid) & AC_PINCAP_HBR) {
+ 		pinctl = snd_hda_codec_read(codec, pin_nid, 0,
+ 					    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
+-- 
+1.8.1.2
