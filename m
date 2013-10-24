@@ -1,16 +1,16 @@
 From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: [PATCH 2/5] ALSA: hda - hdmi: Add ATI/AMD
-	multi-channel audio support
-Date: Thu, 24 Oct 2013 21:10:35 +0300
-Message-ID: <1382638238-25055-3-git-send-email-anssi.hannula@iki.fi>
+Subject: [PATCH 1/5] ALSA: hda - hdmi: Allow HDA patches to
+	customize more operations
+Date: Thu, 24 Oct 2013 21:10:34 +0300
+Message-ID: <1382638238-25055-2-git-send-email-anssi.hannula@iki.fi>
 References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
- [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 22B81261641
+Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
+ [83.102.40.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 565EE261A3F
  for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2013 20:10:53 +0200 (CEST)
 In-Reply-To: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,227 +26,491 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: Olivier Langlois <olivier@trillion01.com>, alsa-devel@alsa-project.org, =?UTF-8?q?Peter=20Fr=C3=BChberger?= <fritsch@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
-QVRJL0FNRCBjb2RlY3MgZG8gbm90IHN1cHBvcnQgYWxsIHRoZSBzdGFuZGFyZCBIREEgSERNSS9E
-UCBmdW5jdGlvbnMsCmluc3RlYWQgdmFyaW91cyB2ZW5kb3Itc3BlY2lmaWMgdmVyYnMgYXJlIHBy
-b3ZpZGVkLgoKVGhpcyBjb21taXQgYWRkcmVzc2VzIHRoZXNlIG1pc3NpbmcgZnVuY3Rpb25zOgot
-IHN0YW5kYXJkIGNoYW5uZWwgbWFwcGluZyBzdXBwb3J0Ci0gc3RhbmRhcmQgaW5mb2ZyYW1lIGNv
-bmZpZ3VyYXRpb24gc3VwcG9ydAoKQVRJL0FNRCBwcm92aWRlcyB0aGVpciBvd24gdmVyYnMgdGhh
-dCBhbGxvdyB0aGUgZm9sbG93aW5nOgotIHNldHRpbmcgQ0EgZm9yIGluZm9mcmFtZQotIHNldHRp
-bmcgZG93bi1taXggaW5mb3JtYXRpb24gZm9yIGluZm9mcmFtZQotIGNoYW5uZWwgcGFpciByZW1h
-cHBpbmcKLSBpbmRpdmlkdWFsIGNoYW5uZWwgcmVtYXBwaW5nIChyZXZpc2lvbiBJRCAzKywgMHgx
-MDAzMDArKQoKVGhlIGRvY3VtZW50YXRpb24gZm9yIHRoZSB2ZXJicyBoYXMgbm93IGJlZW4gcmVs
-ZWFzZWQgYnkgQU1EOgpodHRwOi8vd3d3Lngub3JnL2RvY3MvQU1EL0FNRF9IREFfdmVyYnNfdjIu
-cGRmCgpBZGQgc3VwcG9ydCBmb3IgdGhlIEFUSS9BTUQgc3BlY2lmaWMgdmVyYnMgYW5kIHVzZSB0
-aGVtIGluc3RlYWQgb2YgdGhlCmdlbmVyaWMgbWV0aG9kcyBvbiBBVEkvQU1EIGNvZGVjcy4gVGhp
-cyBhbGxvd3MgbXVsdGktY2hhbm5lbCBQQ00gYXVkaW8KdG8gd29yay4KCkNoYW5uZWwgcmVtYXBw
-aW5nIGlzIHJlc3RyaWN0ZWQgdG8gcGFpcndpc2UgbWFwcGluZyBvbiBjb2RlY3Mgd2l0aApyZXZp
-c2lvbiBJRCAyICgweDEwMDIwMCBhcyByZXBvcnRlZCBieSBwcm9jZnMgY29kZWMjWCkgb3IgbG93
-ZXIuIFRoaXMKbWVhbnMgY2FyZHMgdXAgdG8gUmFkZW9uIEhENzY3MCBhcyBmYXIgYXMgSSBrbm93
-LiBUaGlzIHdpbGwgbm90IGFmZmVjdApzdGFuZGFyZCBtdWx0aS1jaGFubmVsIG1vZGVzIHNpbmNl
-IHRoZXNlIGNvZGVjcyBzdXBwb3J0IGF1dG9tYXRpYwpGQy1MRkUgc3dhcHBpbmcgZm9yIEhETUku
-CgpBVEkvQU1EIGNvZGVjcyBkbyBub3QgYWR2ZXJ0aXNlIGFsbCBvZiB0aGVpciBzdXBwb3J0ZWQg
-cmF0ZXMsIGZvcm1hdHMKYW5kIGNoYW5uZWwgY291bnRzLCB0aGVyZWZvcmUgdGhhdCBpbmZvcm1h
-dGlvbiBpcyBmb3JjZWQgYWNjb3JkaW5nbHkgc28KdGhhdCBhbGwgSERNSSAxLnggUENNIHBhcmFt
-ZXRlcnMgYXJlIG1hcmtlZCBhcyBzdXBwb3J0ZWQuCgpTdXBwb3J0IGZvciBtdWx0aXBsZSBwb3J0
-cyBpcyBhbHNvIGFkZGVkIHRvIHBhdGNoX2F0aWhkbWkgc28gdGhhdAoweDEwMDJhYTAxIGNvZGVj
-cyB3aXRoIG11bHRpcGxlIHBvcnRzIHdpbGwgd29yayBwcm9wZXJseSB3aGVuIHN3aXRjaGVkCmJh
-Y2sgdG8gdGhhdCBwYXRjaC4KCnYyOiBzcGxpdHRlZCBFTEQgZW11bGF0aW9uIHRvIGEgc2VwYXJh
-dGUgcGF0Y2gsIHRsdiBmaXhlcwp2MzogYWRhcHRlZCB0byB0aGUgbmV3IGhkbWlfb3BzIGluZnJh
-c3RydWN0dXJlLCBmaXhlZCByZXYzKyB2ZW5kb3IgaWQKClNpZ25lZC1vZmYtYnk6IEFuc3NpIEhh
-bm51bGEgPGFuc3NpLmhhbm51bGFAaWtpLmZpPgpUZXN0ZWQtYnk6IFBldGVyIEZyw7xoYmVyZ2Vy
-IDxmcml0c2NoQHhibWMub3JnPiAjIHYyClRlc3RlZC1ieTogT2xpdmllciBMYW5nbG9pcyA8b2xp
-dmllckB0cmlsbGlvbjAxLmNvbT4gIyB2MityZXYzZml4Ci0tLQogc291bmQvcGNpL2hkYS9wYXRj
-aF9oZG1pLmMgfCAzMDIgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0t
-LS0tCiAxIGZpbGUgY2hhbmdlZCwgMjczIGluc2VydGlvbnMoKyksIDI5IGRlbGV0aW9ucygtKQoK
-ZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jIGIvc291bmQvcGNpL2hkYS9w
-YXRjaF9oZG1pLmMKaW5kZXggYjExY2JlMC4uNGVmNTY3NiAxMDA2NDQKLS0tIGEvc291bmQvcGNp
-L2hkYS9wYXRjaF9oZG1pLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKQEAgLTYs
-NiArNiw3IEBACiAgKiAgQ29weXJpZ2h0IChjKSAyMDA2IEFUSSBUZWNobm9sb2dpZXMgSW5jLgog
-ICogIENvcHlyaWdodCAoYykgMjAwOCBOVklESUEgQ29ycC4gIEFsbCByaWdodHMgcmVzZXJ2ZWQu
-CiAgKiAgQ29weXJpZ2h0IChjKSAyMDA4IFdlaSBOaSA8d25pQG52aWRpYS5jb20+CisgKiAgQ29w
-eXJpZ2h0IChjKSAyMDEzIEFuc3NpIEhhbm51bGEgPGFuc3NpLmhhbm51bGFAaWtpLmZpPgogICoK
-ICAqICBBdXRob3JzOgogICoJCQlXdSBGZW5nZ3VhbmcgPHdmZ0BsaW51eC5pbnRlbC5jb20+CkBA
-IC0xMjgsNyArMTI5LDcgQEAgc3RydWN0IGhkbWlfc3BlYyB7CiAJc3RydWN0IGhkbWlfZWxkIHRl
-bXBfZWxkOwogCXN0cnVjdCBoZG1pX29wcyBvcHM7CiAJLyoKLQkgKiBOb24tZ2VuZXJpYyBBVEkv
-TlZJRElBIHNwZWNpZmljCisJICogTm9uLWdlbmVyaWMgVklBL05WSURJQSBzcGVjaWZpYwogCSAq
-LwogCXN0cnVjdCBoZGFfbXVsdGlfb3V0IG11bHRpb3V0OwogCXN0cnVjdCBoZGFfcGNtX3N0cmVh
-bSBwY21fcGxheWJhY2s7CkBAIC0yNzg1LDQ5ICsyNzg2LDI5MiBAQCBzdGF0aWMgaW50IHBhdGNo
-X252aGRtaV84Y2hfN3goc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiB9CiAKIC8qCi0gKiBBVEkt
-c3BlY2lmaWMgaW1wbGVtZW50YXRpb25zCi0gKgotICogRklYTUU6IHdlIG1heSBvbWl0IHRoZSB3
-aG9sZSB0aGlzIGFuZCB1c2UgdGhlIGdlbmVyaWMgY29kZSBvbmNlIGFmdGVyCi0gKiBpdCdzIGNv
-bmZpcm1lZCB0byB3b3JrLgorICogQVRJL0FNRC1zcGVjaWZpYyBpbXBsZW1lbnRhdGlvbnMKICAq
-LwogCi0jZGVmaW5lIEFUSUhETUlfQ1ZUX05JRAkJMHgwMgkvKiBhdWRpbyBjb252ZXJ0ZXIgKi8K
-LSNkZWZpbmUgQVRJSERNSV9QSU5fTklECQkweDAzCS8qIEhETUkgb3V0cHV0IHBpbiAqLworI2Rl
-ZmluZSBpc19hbWRoZG1pX3JldjNfb3JfbGF0ZXIoY29kZWMpIFwKKwkoKGNvZGVjKS0+dmVuZG9y
-X2lkID09IDB4MTAwMmFhMDEgJiYgKChjb2RlYyktPnJldmlzaW9uX2lkICYgMHhmZjAwKSA+PSAw
-eDAzMDApCisjZGVmaW5lIGhhc19hbWRfZnVsbF9yZW1hcF9zdXBwb3J0KGNvZGVjKSBpc19hbWRo
-ZG1pX3JldjNfb3JfbGF0ZXIoY29kZWMpCisKKy8qIEFUSS9BTUQgc3BlY2lmaWMgSERBIHBpbiB2
-ZXJicywgc2VlIHRoZSBBTUQgSERBIFZlcmJzIHNwZWNpZmljYXRpb24gKi8KKyNkZWZpbmUgQVRJ
-X1ZFUkJfU0VUX0NIQU5ORUxfQUxMT0NBVElPTgkweDc3MQorI2RlZmluZSBBVElfVkVSQl9TRVRf
-RE9XTk1JWF9JTkZPCTB4NzcyCisjZGVmaW5lIEFUSV9WRVJCX1NFVF9NVUxUSUNIQU5ORUxfMDEJ
-MHg3NzcKKyNkZWZpbmUgQVRJX1ZFUkJfU0VUX01VTFRJQ0hBTk5FTF8yMwkweDc3OAorI2RlZmlu
-ZSBBVElfVkVSQl9TRVRfTVVMVElDSEFOTkVMXzQ1CTB4Nzc5CisjZGVmaW5lIEFUSV9WRVJCX1NF
-VF9NVUxUSUNIQU5ORUxfNjcJMHg3N2EKKyNkZWZpbmUgQVRJX1ZFUkJfU0VUX01VTFRJQ0hBTk5F
-TF8xCTB4Nzg1CisjZGVmaW5lIEFUSV9WRVJCX1NFVF9NVUxUSUNIQU5ORUxfMwkweDc4NgorI2Rl
-ZmluZSBBVElfVkVSQl9TRVRfTVVMVElDSEFOTkVMXzUJMHg3ODcKKyNkZWZpbmUgQVRJX1ZFUkJf
-U0VUX01VTFRJQ0hBTk5FTF83CTB4Nzg4CisjZGVmaW5lIEFUSV9WRVJCX1NFVF9NVUxUSUNIQU5O
-RUxfTU9ERQkweDc4OQorI2RlZmluZSBBVElfVkVSQl9HRVRfQ0hBTk5FTF9BTExPQ0FUSU9OCTB4
-ZjcxCisjZGVmaW5lIEFUSV9WRVJCX0dFVF9ET1dOTUlYX0lORk8JMHhmNzIKKyNkZWZpbmUgQVRJ
-X1ZFUkJfR0VUX01VTFRJQ0hBTk5FTF8wMQkweGY3NworI2RlZmluZSBBVElfVkVSQl9HRVRfTVVM
-VElDSEFOTkVMXzIzCTB4Zjc4CisjZGVmaW5lIEFUSV9WRVJCX0dFVF9NVUxUSUNIQU5ORUxfNDUJ
-MHhmNzkKKyNkZWZpbmUgQVRJX1ZFUkJfR0VUX01VTFRJQ0hBTk5FTF82NwkweGY3YQorI2RlZmlu
-ZSBBVElfVkVSQl9HRVRfTVVMVElDSEFOTkVMXzEJMHhmODUKKyNkZWZpbmUgQVRJX1ZFUkJfR0VU
-X01VTFRJQ0hBTk5FTF8zCTB4Zjg2CisjZGVmaW5lIEFUSV9WRVJCX0dFVF9NVUxUSUNIQU5ORUxf
-NQkweGY4NworI2RlZmluZSBBVElfVkVSQl9HRVRfTVVMVElDSEFOTkVMXzcJMHhmODgKKyNkZWZp
-bmUgQVRJX1ZFUkJfR0VUX01VTFRJQ0hBTk5FTF9NT0RFCTB4Zjg5CisKKyNkZWZpbmUgQVRJX09V
-VF9FTkFCTEUgMHgxCisKKyNkZWZpbmUgQVRJX01VTFRJQ0hBTk5FTF9NT0RFX1BBSVJFRAkwCisj
-ZGVmaW5lIEFUSV9NVUxUSUNIQU5ORUxfTU9ERV9TSU5HTEUJMQorCitzdGF0aWMgdm9pZCBhdGlo
-ZG1pX3Bpbl9zZXR1cF9pbmZvZnJhbWUoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGhkYV9uaWRf
-dCBwaW5fbmlkLCBpbnQgY2EsCisJCQkJCWludCBhY3RpdmVfY2hhbm5lbHMsIGludCBjb25uX3R5
-cGUpCit7CisJc25kX2hkYV9jb2RlY193cml0ZShjb2RlYywgcGluX25pZCwgMCwgQVRJX1ZFUkJf
-U0VUX0NIQU5ORUxfQUxMT0NBVElPTiwgY2EpOworfQorCitzdGF0aWMgaW50IGF0aWhkbWlfcGFp
-cmVkX3N3YXBfZmNfbGZlKGludCBwb3MpCit7CisJLyoKKwkgKiBBVEkvQU1EIGhhdmUgYXV0b21h
-dGljIEZDL0xGRSBzd2FwIGJ1aWx0LWluCisJICogd2hlbiBpbiBwYWlyd2lzZSBtYXBwaW5nIG1v
-ZGUuCisJICovCisKKwlzd2l0Y2ggKHBvcykgeworCQkvKiBzZWUgY2hhbm5lbF9hbGxvY2F0aW9u
-c1tdLnNwZWFrZXJzW10gKi8KKwkJY2FzZSAyOiByZXR1cm4gMzsKKwkJY2FzZSAzOiByZXR1cm4g
-MjsKKwkJZGVmYXVsdDogYnJlYWs7CisJfQorCisJcmV0dXJuIHBvczsKK30KKworc3RhdGljIGlu
-dCBhdGloZG1pX3BhaXJlZF9jaG1hcF92YWxpZGF0ZShpbnQgY2EsIGludCBjaHMsIHVuc2lnbmVk
-IGNoYXIgKm1hcCkKK3sKKwlzdHJ1Y3QgY2VhX2NoYW5uZWxfc3BlYWtlcl9hbGxvY2F0aW9uICpj
-YXA7CisJaW50IGksIGo7CisKKwkvKiBjaGVjayB0aGF0IG9ubHkgY2hhbm5lbCBwYWlycyBuZWVk
-IHRvIGJlIHJlbWFwcGVkIG9uIG9sZCBwcmUtcmV2MyBBVEkvQU1EICovCisKKwljYXAgPSAmY2hh
-bm5lbF9hbGxvY2F0aW9uc1tnZXRfY2hhbm5lbF9hbGxvY2F0aW9uX29yZGVyKGNhKV07CisJZm9y
-IChpID0gMDsgaSA8IGNoczsgKytpKSB7CisJCWludCBtYXNrID0gdG9fc3BrX21hc2sobWFwW2ld
-KTsKKwkJYm9vbCBvayA9IGZhbHNlOworCQlib29sIGNvbXBhbmlvbl9vayA9IGZhbHNlOworCisJ
-CWlmICghbWFzaykKKwkJCWNvbnRpbnVlOworCisJCWZvciAoaiA9IDAgKyBpICUgMjsgaiA8IDg7
-IGogKz0gMikgeworCQkJaW50IGNoYW5faWR4ID0gNyAtIGF0aWhkbWlfcGFpcmVkX3N3YXBfZmNf
-bGZlKGopOworCQkJaWYgKGNhcC0+c3BlYWtlcnNbY2hhbl9pZHhdID09IG1hc2spIHsKKwkJCQkv
-KiBjaGFubmVsIGlzIGluIGEgc3VwcG9ydGVkIHBvc2l0aW9uICovCisJCQkJb2sgPSB0cnVlOwor
-CisJCQkJaWYgKGkgJSAyID09IDAgJiYgaSArIDEgPCBjaHMpIHsKKwkJCQkJLyogZXZlbiBjaGFu
-bmVsLCBjaGVjayB0aGUgb2RkIGNvbXBhbmlvbiAqLworCQkJCQlpbnQgY29tcF9jaGFuX2lkeCA9
-IDcgLSBhdGloZG1pX3BhaXJlZF9zd2FwX2ZjX2xmZShqICsgMSk7CisJCQkJCWludCBjb21wX21h
-c2tfcmVxID0gdG9fc3BrX21hc2sobWFwW2krMV0pOworCQkJCQlpbnQgY29tcF9tYXNrX2FjdCA9
-IGNhcC0+c3BlYWtlcnNbY29tcF9jaGFuX2lkeF07CisKKwkJCQkJaWYgKGNvbXBfbWFza19yZXEg
-PT0gY29tcF9tYXNrX2FjdCkKKwkJCQkJCWNvbXBhbmlvbl9vayA9IHRydWU7CisJCQkJCWVsc2UK
-KwkJCQkJCXJldHVybiAtRUlOVkFMOworCQkJCX0KKwkJCQlicmVhazsKKwkJCX0KKwkJfQorCisJ
-CWlmICghb2spCisJCQlyZXR1cm4gLUVJTlZBTDsKKworCQlpZiAoY29tcGFuaW9uX29rKQorCQkJ
-aSsrOyAvKiBjb21wYW5pb24gY2hhbm5lbCBhbHJlYWR5IGNoZWNrZWQgKi8KKwl9CisKKwlyZXR1
-cm4gMDsKK30KKworc3RhdGljIGludCBhdGloZG1pX3Bpbl9zZXRfc2xvdF9jaGFubmVsKHN0cnVj
-dCBoZGFfY29kZWMgKmNvZGVjLCBoZGFfbmlkX3QgcGluX25pZCwKKwkJCQkJaW50IGhkbWlfc2xv
-dCwgaW50IHN0cmVhbV9jaGFubmVsKQoreworCWludCB2ZXJiOworCWludCBhdGlfY2hhbm5lbF9z
-ZXR1cCA9IDA7CisKKwlpZiAoaGRtaV9zbG90ID4gNykKKwkJcmV0dXJuIC1FSU5WQUw7CisKKwlp
-ZiAoIWhhc19hbWRfZnVsbF9yZW1hcF9zdXBwb3J0KGNvZGVjKSkgeworCQloZG1pX3Nsb3QgPSBh
-dGloZG1pX3BhaXJlZF9zd2FwX2ZjX2xmZShoZG1pX3Nsb3QpOworCisJCS8qIEluIGNhc2UgdGhp
-cyBpcyBhbiBvZGQgc2xvdCBidXQgd2l0aG91dCBzdHJlYW0gY2hhbm5lbCwgZG8gbm90CisJCSAq
-IGRpc2FibGUgdGhlIHNsb3Qgc2luY2UgdGhlIGNvcnJlc3BvbmRpbmcgZXZlbiBzbG90IGNvdWxk
-IGhhdmUgYQorCQkgKiBjaGFubmVsLiBJbiBjYXNlIG5laXRoZXIgaGF2ZSBhIGNoYW5uZWwsIHRo
-ZSBzbG90IHBhaXIgd2lsbCBiZQorCQkgKiBkaXNhYmxlZCB3aGVuIHRoaXMgZnVuY3Rpb24gaXMg
-Y2FsbGVkIGZvciB0aGUgZXZlbiBzbG90LiAqLworCQlpZiAoaGRtaV9zbG90ICUgMiAhPSAwICYm
-IHN0cmVhbV9jaGFubmVsID09IDB4ZikKKwkJCXJldHVybiAwOworCisJCWhkbWlfc2xvdCAtPSBo
-ZG1pX3Nsb3QgJSAyOworCisJCWlmIChzdHJlYW1fY2hhbm5lbCAhPSAweGYpCisJCQlzdHJlYW1f
-Y2hhbm5lbCAtPSBzdHJlYW1fY2hhbm5lbCAlIDI7CisJfQorCisJdmVyYiA9IEFUSV9WRVJCX1NF
-VF9NVUxUSUNIQU5ORUxfMDEgKyBoZG1pX3Nsb3QvMiArIChoZG1pX3Nsb3QgJSAyKSAqIDB4MDBl
-OworCisJLyogYXRpX2NoYW5uZWxfc2V0dXAgZm9ybWF0OiBbNy4uNF0gPSBzdHJlYW1fY2hhbm5l
-bF9pZCwgWzFdID0gbXV0ZSwgWzBdID0gZW5hYmxlICovCisKKwlpZiAoc3RyZWFtX2NoYW5uZWwg
-IT0gMHhmKQorCQlhdGlfY2hhbm5lbF9zZXR1cCA9IChzdHJlYW1fY2hhbm5lbCA8PCA0KSB8IEFU
-SV9PVVRfRU5BQkxFOworCisJcmV0dXJuIHNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIHBpbl9u
-aWQsIDAsIHZlcmIsIGF0aV9jaGFubmVsX3NldHVwKTsKK30KKworc3RhdGljIGludCBhdGloZG1p
-X3Bpbl9nZXRfc2xvdF9jaGFubmVsKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBoZGFfbmlkX3Qg
-cGluX25pZCwKKwkJCQkJaW50IGFzcF9zbG90KQoreworCWJvb2wgd2FzX29kZCA9IGZhbHNlOwor
-CWludCBhdGlfYXNwX3Nsb3QgPSBhc3Bfc2xvdDsKKwlpbnQgdmVyYjsKKwlpbnQgYXRpX2NoYW5u
-ZWxfc2V0dXA7CisKKwlpZiAoYXNwX3Nsb3QgPiA3KQorCQlyZXR1cm4gLUVJTlZBTDsKKworCWlm
-ICghaGFzX2FtZF9mdWxsX3JlbWFwX3N1cHBvcnQoY29kZWMpKSB7CisJCWF0aV9hc3Bfc2xvdCA9
-IGF0aWhkbWlfcGFpcmVkX3N3YXBfZmNfbGZlKGFzcF9zbG90KTsKKwkJaWYgKGF0aV9hc3Bfc2xv
-dCAlIDIgIT0gMCkgeworCQkJYXRpX2FzcF9zbG90IC09IDE7CisJCQl3YXNfb2RkID0gdHJ1ZTsK
-KwkJfQorCX0KKworCXZlcmIgPSBBVElfVkVSQl9HRVRfTVVMVElDSEFOTkVMXzAxICsgYXRpX2Fz
-cF9zbG90LzIgKyAoYXRpX2FzcF9zbG90ICUgMikgKiAweDAwZTsKKworCWF0aV9jaGFubmVsX3Nl
-dHVwID0gc25kX2hkYV9jb2RlY19yZWFkKGNvZGVjLCBwaW5fbmlkLCAwLCB2ZXJiLCAwKTsKKwor
-CWlmICghKGF0aV9jaGFubmVsX3NldHVwICYgQVRJX09VVF9FTkFCTEUpKQorCQlyZXR1cm4gMHhm
-OworCisJcmV0dXJuICgoYXRpX2NoYW5uZWxfc2V0dXAgJiAweGYwKSA+PiA0KSArICEhd2FzX29k
-ZDsKK30KIAotc3RhdGljIGludCBhdGloZG1pX3BsYXliYWNrX3BjbV9wcmVwYXJlKHN0cnVjdCBo
-ZGFfcGNtX3N0cmVhbSAqaGluZm8sCi0JCQkJCXN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAotCQkJ
-CQl1bnNpZ25lZCBpbnQgc3RyZWFtX3RhZywKLQkJCQkJdW5zaWduZWQgaW50IGZvcm1hdCwKLQkJ
-CQkJc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCitzdGF0aWMgaW50IGF0aWhk
-bWlfcGFpcmVkX2NobWFwX2NlYV9hbGxvY192YWxpZGF0ZV9nZXRfdHlwZShzdHJ1Y3QgY2VhX2No
-YW5uZWxfc3BlYWtlcl9hbGxvY2F0aW9uICpjYXAsCisJCQkJCQkJICAgIGludCBjaGFubmVscykK
-K3sKKwlpbnQgYzsKKworCS8qCisJICogUHJlLXJldjMgQVRJL0FNRCBjb2RlY3Mgb3BlcmF0ZSBp
-biBhIHBhaXJlZCBjaGFubmVsIG1vZGUsIHNvCisJICogd2UgbmVlZCB0byB0YWtlIHRoYXQgaW50
-byBhY2NvdW50IChhIHNpbmdsZSBjaGFubmVsIG1heSB0YWtlIDIKKwkgKiBjaGFubmVsIHNsb3Rz
-IGlmIHdlIG5lZWQgdG8gY2FycnkgYSBzaWxlbnQgY2hhbm5lbCBuZXh0IHRvIGl0KS4KKwkgKiBP
-biBSZXYzKyBBTUQgY29kZWNzIHRoaXMgZnVuY3Rpb24gaXMgbm90IHVzZWQuCisJICovCisJaW50
-IGNoYW5wYWlycyA9IDA7CisKKwkvKiBXZSBvbmx5IHByb2R1Y2UgZXZlbi1udW1iZXJlZCBjaGFu
-bmVsIGNvdW50IFRMVnMgKi8KKwlpZiAoKGNoYW5uZWxzICUgMikgIT0gMCkKKwkJcmV0dXJuIC0x
-OworCisJZm9yIChjID0gMDsgYyA8IDc7IGMgKz0gMikgeworCQlpZiAoY2FwLT5zcGVha2Vyc1tj
-XSB8fCBjYXAtPnNwZWFrZXJzW2MrMV0pCisJCQljaGFucGFpcnMrKzsKKwl9CisKKwlpZiAoY2hh
-bnBhaXJzICogMiAhPSBjaGFubmVscykKKwkJcmV0dXJuIC0xOworCisJcmV0dXJuIFNORFJWX0NU
-TF9UTFZUX0NITUFQX1BBSVJFRDsKK30KKworc3RhdGljIHZvaWQgYXRpaGRtaV9wYWlyZWRfY2Vh
-X2FsbG9jX3RvX3Rsdl9jaG1hcChzdHJ1Y3QgY2VhX2NoYW5uZWxfc3BlYWtlcl9hbGxvY2F0aW9u
-ICpjYXAsCisJCQkJCQkgIHVuc2lnbmVkIGludCAqY2htYXAsIGludCBjaGFubmVscykKK3sKKwkv
-KiBwcm9kdWNlIHBhaXJlZCBtYXBzIGZvciBwcmUtcmV2MyBBVEkvQU1EIGNvZGVjcyAqLworCWlu
-dCBjb3VudCA9IDA7CisJaW50IGM7CisKKwlmb3IgKGMgPSA3OyBjID49IDA7IGMtLSkgeworCQlp
-bnQgY2hhbiA9IDcgLSBhdGloZG1pX3BhaXJlZF9zd2FwX2ZjX2xmZSg3IC0gYyk7CisJCWludCBz
-cGsgPSBjYXAtPnNwZWFrZXJzW2NoYW5dOworCQlpZiAoIXNwaykgeworCQkJLyogYWRkIE4vQSBj
-aGFubmVsIGlmIHRoZSBjb21wYW5pb24gY2hhbm5lbCBpcyBvY2N1cGllZCAqLworCQkJaWYgKGNh
-cC0+c3BlYWtlcnNbY2hhbiArIChjaGFuICUgMiA/IC0xIDogMSldKQorCQkJCWNobWFwW2NvdW50
-KytdID0gU05EUlZfQ0hNQVBfTkE7CisKKwkJCWNvbnRpbnVlOworCQl9CisKKwkJY2htYXBbY291
-bnQrK10gPSBzcGtfdG9fY2htYXAoc3BrKTsKKwl9CisKKwlXQVJOX09OKGNvdW50ICE9IGNoYW5u
-ZWxzKTsKK30KKworc3RhdGljIGludCBhdGloZG1pX2luaXQoc3RydWN0IGhkYV9jb2RlYyAqY29k
-ZWMpCiB7CiAJc3RydWN0IGhkbWlfc3BlYyAqc3BlYyA9IGNvZGVjLT5zcGVjOwotCXN0cnVjdCBo
-ZG1pX3NwZWNfcGVyX2N2dCAqcGVyX2N2dCA9IGdldF9jdnQoc3BlYywgMCk7Ci0JaW50IGNoYW5z
-ID0gc3Vic3RyZWFtLT5ydW50aW1lLT5jaGFubmVsczsKLQlpbnQgaSwgZXJyOworCWludCBwaW5f
-aWR4LCBlcnI7CiAKLQllcnIgPSBzaW1wbGVfcGxheWJhY2tfcGNtX3ByZXBhcmUoaGluZm8sIGNv
-ZGVjLCBzdHJlYW1fdGFnLCBmb3JtYXQsCi0JCQkJCSAgc3Vic3RyZWFtKTsKLQlpZiAoZXJyIDwg
-MCkKKwllcnIgPSBnZW5lcmljX2hkbWlfaW5pdChjb2RlYyk7CisKKwlpZiAoZXJyKQogCQlyZXR1
-cm4gZXJyOwotCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIHBlcl9jdnQtPmN2dF9uaWQsIDAs
-Ci0JCQkgICAgQUNfVkVSQl9TRVRfQ1ZUX0NIQU5fQ09VTlQsIGNoYW5zIC0gMSk7Ci0JLyogRklY
-TUU6IFhYWCAqLwotCWZvciAoaSA9IDA7IGkgPCBjaGFuczsgaSsrKSB7Ci0JCXNuZF9oZGFfY29k
-ZWNfd3JpdGUoY29kZWMsIHBlcl9jdnQtPmN2dF9uaWQsIDAsCi0JCQkJICAgIEFDX1ZFUkJfU0VU
-X0hETUlfQ0hBTl9TTE9ULAotCQkJCSAgICAoaSA8PCA0KSB8IGkpOworCisJZm9yIChwaW5faWR4
-ID0gMDsgcGluX2lkeCA8IHNwZWMtPm51bV9waW5zOyBwaW5faWR4KyspIHsKKwkJc3RydWN0IGhk
-bWlfc3BlY19wZXJfcGluICpwZXJfcGluID0gZ2V0X3BpbihzcGVjLCBwaW5faWR4KTsKKworCQkv
-KiBtYWtlIHN1cmUgZG93bm1peCBpbmZvcm1hdGlvbiBpbiBpbmZvZnJhbWUgaXMgemVybyAqLwor
-CQlzbmRfaGRhX2NvZGVjX3dyaXRlKGNvZGVjLCBwZXJfcGluLT5waW5fbmlkLCAwLCBBVElfVkVS
-Ql9TRVRfRE9XTk1JWF9JTkZPLCAwKTsKKworCQkvKiBlbmFibGUgY2hhbm5lbC13aXNlIHJlbWFw
-IG1vZGUgaWYgc3VwcG9ydGVkICovCisJCWlmIChoYXNfYW1kX2Z1bGxfcmVtYXBfc3VwcG9ydChj
-b2RlYykpCisJCQlzbmRfaGRhX2NvZGVjX3dyaXRlKGNvZGVjLCBwZXJfcGluLT5waW5fbmlkLCAw
-LAorCQkJCQkgICAgQVRJX1ZFUkJfU0VUX01VTFRJQ0hBTk5FTF9NT0RFLAorCQkJCQkgICAgQVRJ
-X01VTFRJQ0hBTk5FTF9NT0RFX1NJTkdMRSk7CiAJfQorCiAJcmV0dXJuIDA7CiB9CiAKIHN0YXRp
-YyBpbnQgcGF0Y2hfYXRpaGRtaShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIHsKIAlzdHJ1Y3Qg
-aGRtaV9zcGVjICpzcGVjOwotCWludCBlcnIgPSBwYXRjaF9zaW1wbGVfaGRtaShjb2RlYywgQVRJ
-SERNSV9DVlRfTklELCBBVElIRE1JX1BJTl9OSUQpOwotCWlmIChlcnIgPCAwKQorCXN0cnVjdCBo
-ZG1pX3NwZWNfcGVyX2N2dCAqcGVyX2N2dDsKKwlpbnQgZXJyLCBjdnRfaWR4OworCisJZXJyID0g
-cGF0Y2hfZ2VuZXJpY19oZG1pKGNvZGVjKTsKKworCWlmIChlcnIpCiAJCXJldHVybiBlcnI7CisK
-Kwljb2RlYy0+cGF0Y2hfb3BzLmluaXQgPSBhdGloZG1pX2luaXQ7CisKIAlzcGVjID0gY29kZWMt
-PnNwZWM7Ci0Jc3BlYy0+cGNtX3BsYXliYWNrLm9wcy5wcmVwYXJlID0gYXRpaGRtaV9wbGF5YmFj
-a19wY21fcHJlcGFyZTsKKworCXNwZWMtPm9wcy5waW5fZ2V0X3Nsb3RfY2hhbm5lbCA9IGF0aWhk
-bWlfcGluX2dldF9zbG90X2NoYW5uZWw7CisJc3BlYy0+b3BzLnBpbl9zZXRfc2xvdF9jaGFubmVs
-ID0gYXRpaGRtaV9waW5fc2V0X3Nsb3RfY2hhbm5lbDsKKwlzcGVjLT5vcHMucGluX3NldHVwX2lu
-Zm9mcmFtZSA9IGF0aWhkbWlfcGluX3NldHVwX2luZm9mcmFtZTsKKworCWlmICghaGFzX2FtZF9m
-dWxsX3JlbWFwX3N1cHBvcnQoY29kZWMpKSB7CisJCS8qIG92ZXJyaWRlIHRvIEFUSS9BTUQtc3Bl
-Y2lmaWMgdmVyc2lvbnMgd2l0aCBwYWlyd2lzZSBtYXBwaW5nICovCisJCXNwZWMtPm9wcy5jaG1h
-cF9jZWFfYWxsb2NfdmFsaWRhdGVfZ2V0X3R5cGUgPQorCQkJYXRpaGRtaV9wYWlyZWRfY2htYXBf
-Y2VhX2FsbG9jX3ZhbGlkYXRlX2dldF90eXBlOworCQlzcGVjLT5vcHMuY2VhX2FsbG9jX3RvX3Rs
-dl9jaG1hcCA9IGF0aWhkbWlfcGFpcmVkX2NlYV9hbGxvY190b190bHZfY2htYXA7CisJCXNwZWMt
-Pm9wcy5jaG1hcF92YWxpZGF0ZSA9IGF0aWhkbWlfcGFpcmVkX2NobWFwX3ZhbGlkYXRlOworCX0K
-KworCS8qIEFUSS9BTUQgY29udmVydGVycyBkbyBub3QgYWR2ZXJ0aXNlIGFsbCBvZiB0aGVpciBj
-YXBhYmlsaXRpZXMgKi8KKwlmb3IgKGN2dF9pZHggPSAwOyBjdnRfaWR4IDwgc3BlYy0+bnVtX2N2
-dHM7IGN2dF9pZHgrKykgeworCQlwZXJfY3Z0ID0gZ2V0X2N2dChzcGVjLCBjdnRfaWR4KTsKKwkJ
-cGVyX2N2dC0+Y2hhbm5lbHNfbWF4ID0gbWF4KHBlcl9jdnQtPmNoYW5uZWxzX21heCwgOHUpOwor
-CQlwZXJfY3Z0LT5yYXRlcyB8PSBTVVBQT1JURURfUkFURVM7CisJCXBlcl9jdnQtPmZvcm1hdHMg
-fD0gU1VQUE9SVEVEX0ZPUk1BVFM7CisJCXBlcl9jdnQtPm1heGJwcyA9IG1heChwZXJfY3Z0LT5t
-YXhicHMsIDI0dSk7CisJfQorCisJc3BlYy0+Y2hhbm5lbHNfbWF4ID0gbWF4KHNwZWMtPmNoYW5u
-ZWxzX21heCwgOHUpOworCiAJcmV0dXJuIDA7CiB9CiAKQEAgLTI4NDcsNyArMzA5MSw3IEBAIHN0
-YXRpYyBjb25zdCBzdHJ1Y3QgaGRhX2NvZGVjX3ByZXNldCBzbmRfaGRhX3ByZXNldF9oZG1pW10g
-PSB7CiB7IC5pZCA9IDB4MTAwMjc5M2MsIC5uYW1lID0gIlJTNjAwIEhETUkiLAkucGF0Y2ggPSBw
-YXRjaF9hdGloZG1pIH0sCiB7IC5pZCA9IDB4MTAwMjc5MTksIC5uYW1lID0gIlJTNjAwIEhETUki
-LAkucGF0Y2ggPSBwYXRjaF9hdGloZG1pIH0sCiB7IC5pZCA9IDB4MTAwMjc5MWEsIC5uYW1lID0g
-IlJTNjkwLzc4MCBIRE1JIiwJLnBhdGNoID0gcGF0Y2hfYXRpaGRtaSB9LAoteyAuaWQgPSAweDEw
-MDJhYTAxLCAubmFtZSA9ICJSNnh4IEhETUkiLAkucGF0Y2ggPSBwYXRjaF9nZW5lcmljX2hkbWkg
-fSwKK3sgLmlkID0gMHgxMDAyYWEwMSwgLm5hbWUgPSAiUjZ4eCBIRE1JIiwJLnBhdGNoID0gcGF0
-Y2hfYXRpaGRtaSB9LAogeyAuaWQgPSAweDEwOTUxMzkwLCAubmFtZSA9ICJTaUkxMzkwIEhETUki
-LAkucGF0Y2ggPSBwYXRjaF9nZW5lcmljX2hkbWkgfSwKIHsgLmlkID0gMHgxMDk1MTM5MiwgLm5h
-bWUgPSAiU2lJMTM5MiBIRE1JIiwJLnBhdGNoID0gcGF0Y2hfZ2VuZXJpY19oZG1pIH0sCiB7IC5p
-ZCA9IDB4MTdlODAwNDcsIC5uYW1lID0gIkNocm9udGVsIEhETUkiLAkucGF0Y2ggPSBwYXRjaF9n
-ZW5lcmljX2hkbWkgfSwKLS0gCjEuOC4xLjUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+Upcoming AMD multichannel support requires many customized operations
+(channel mapping, ELD, HBR) but can otherwise share most of its code
+with the generic patch.
+
+Add a local struct hdmi_ops containing customizable HDMI-specific
+callbacks and move the current code to those callbacks. Functionality is
+unaltered.
+
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+---
+ sound/pci/hda/patch_hdmi.c | 275 ++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 195 insertions(+), 80 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index a1fe4bb..b11cbe0 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -82,6 +82,39 @@ struct hdmi_spec_per_pin {
+ #endif
+ };
+ 
++struct cea_channel_speaker_allocation;
++
++/* operations used by generic code that can be overridden by patches */
++struct hdmi_ops {
++	int (*pin_get_eld)(struct hda_codec *codec, hda_nid_t pin_nid,
++			   unsigned char *buf, int *eld_size);
++
++	/* get and set channel assigned to each HDMI ASP (audio sample packet) slot */
++	int (*pin_get_slot_channel)(struct hda_codec *codec, hda_nid_t pin_nid,
++				    int asp_slot);
++	int (*pin_set_slot_channel)(struct hda_codec *codec, hda_nid_t pin_nid,
++				    int asp_slot, int channel);
++
++	void (*pin_setup_infoframe)(struct hda_codec *codec, hda_nid_t pin_nid,
++				    int ca, int active_channels, int conn_type);
++
++	/* enable/disable HBR (HD passthrough) */
++	int (*pin_hbr_setup)(struct hda_codec *codec, hda_nid_t pin_nid, bool hbr);
++
++	int (*setup_stream)(struct hda_codec *codec, hda_nid_t cvt_nid,
++			    hda_nid_t pin_nid, u32 stream_tag, int format);
++
++	/* Helpers for producing the channel map TLVs. These can be overridden
++	 * for devices that have non-standard mapping requirements. */
++	int (*chmap_cea_alloc_validate_get_type)(struct cea_channel_speaker_allocation *cap,
++						 int channels);
++	void (*cea_alloc_to_tlv_chmap)(struct cea_channel_speaker_allocation *cap,
++				       unsigned int *chmap, int channels);
++
++	/* check that the user-given chmap is supported */
++	int (*chmap_validate)(int ca, int channels, unsigned char *chmap);
++};
++
+ struct hdmi_spec {
+ 	int num_cvts;
+ 	struct snd_array cvts; /* struct hdmi_spec_per_cvt */
+@@ -93,6 +126,7 @@ struct hdmi_spec {
+ 	unsigned int channels_max; /* max over all cvts */
+ 
+ 	struct hdmi_eld temp_eld;
++	struct hdmi_ops ops;
+ 	/*
+ 	 * Non-generic ATI/NVIDIA specific
+ 	 */
+@@ -648,24 +682,24 @@ static void hdmi_debug_channel_mapping(struct hda_codec *codec,
+ 				       hda_nid_t pin_nid)
+ {
+ #ifdef CONFIG_SND_DEBUG_VERBOSE
++	struct hdmi_spec *spec = codec->spec;
+ 	int i;
+-	int slot;
++	int channel;
+ 
+ 	for (i = 0; i < 8; i++) {
+-		slot = snd_hda_codec_read(codec, pin_nid, 0,
+-						AC_VERB_GET_HDMI_CHAN_SLOT, i);
++		channel = spec->ops.pin_get_slot_channel(codec, pin_nid, i);
+ 		printk(KERN_DEBUG "HDMI: ASP channel %d => slot %d\n",
+-						slot >> 4, slot & 0xf);
++						channel, i);
+ 	}
+ #endif
+ }
+ 
+-
+ static void hdmi_std_setup_channel_mapping(struct hda_codec *codec,
+ 				       hda_nid_t pin_nid,
+ 				       bool non_pcm,
+ 				       int ca)
+ {
++	struct hdmi_spec *spec = codec->spec;
+ 	struct cea_channel_speaker_allocation *ch_alloc;
+ 	int i;
+ 	int err;
+@@ -698,9 +732,10 @@ static void hdmi_std_setup_channel_mapping(struct hda_codec *codec,
+ 	}
+ 
+ 	for (i = 0; i < 8; i++) {
+-		err = snd_hda_codec_write(codec, pin_nid, 0,
+-					  AC_VERB_SET_HDMI_CHAN_SLOT,
+-					  non_pcm ? non_pcm_mapping[i] : hdmi_channel_mapping[ca][i]);
++		int slotsetup = non_pcm ? non_pcm_mapping[i] : hdmi_channel_mapping[ca][i];
++		int hdmi_slot = slotsetup & 0x0f;
++		int channel = (slotsetup & 0xf0) >> 4;
++		err = spec->ops.pin_set_slot_channel(codec, pin_nid, hdmi_slot, channel);
+ 		if (err) {
+ 			snd_printdd(KERN_NOTICE
+ 				    "HDMI: channel mapping failed\n");
+@@ -810,6 +845,7 @@ static int hdmi_manual_setup_channel_mapping(struct hda_codec *codec,
+ 					     int chs, unsigned char *map,
+ 					     int ca)
+ {
++	struct hdmi_spec *spec = codec->spec;
+ 	int ordered_ca = get_channel_allocation_order(ca);
+ 	int alsa_pos, hdmi_slot;
+ 	int assignments[8] = {[0 ... 7] = 0xf};
+@@ -825,11 +861,10 @@ static int hdmi_manual_setup_channel_mapping(struct hda_codec *codec,
+ 	}
+ 
+ 	for (hdmi_slot = 0; hdmi_slot < 8; hdmi_slot++) {
+-		int val, err;
++		int err;
+ 
+-		val = (assignments[hdmi_slot] << 4) | hdmi_slot;
+-		err = snd_hda_codec_write(codec, pin_nid, 0,
+-					  AC_VERB_SET_HDMI_CHAN_SLOT, val);
++		err = spec->ops.pin_set_slot_channel(codec, pin_nid, hdmi_slot,
++						     assignments[hdmi_slot]);
+ 		if (err)
+ 			return -EINVAL;
+ 	}
+@@ -865,6 +900,22 @@ static void hdmi_setup_channel_mapping(struct hda_codec *codec,
+ 	hdmi_debug_channel_mapping(codec, pin_nid);
+ }
+ 
++static int hdmi_pin_set_slot_channel(struct hda_codec *codec, hda_nid_t pin_nid,
++				     int asp_slot, int channel)
++{
++	return snd_hda_codec_write(codec, pin_nid, 0,
++				   AC_VERB_SET_HDMI_CHAN_SLOT,
++				   (channel << 4) | asp_slot);
++}
++
++static int hdmi_pin_get_slot_channel(struct hda_codec *codec, hda_nid_t pin_nid,
++				     int asp_slot)
++{
++	return (snd_hda_codec_read(codec, pin_nid, 0,
++				   AC_VERB_GET_HDMI_CHAN_SLOT,
++				   asp_slot) & 0xf0) >> 4;
++}
++
+ /*
+  * Audio InfoFrame routines
+  */
+@@ -986,16 +1037,64 @@ static bool hdmi_infoframe_uptodate(struct hda_codec *codec, hda_nid_t pin_nid,
+ 	return true;
+ }
+ 
++static void hdmi_pin_setup_infoframe(struct hda_codec *codec,
++				     hda_nid_t pin_nid,
++				     int ca, int active_channels,
++				     int conn_type)
++{
++	union audio_infoframe ai;
++
++	if (conn_type == 0) { /* HDMI */
++		struct hdmi_audio_infoframe *hdmi_ai = &ai.hdmi;
++
++		hdmi_ai->type		= 0x84;
++		hdmi_ai->ver		= 0x01;
++		hdmi_ai->len		= 0x0a;
++		hdmi_ai->CC02_CT47	= active_channels - 1;
++		hdmi_ai->CA		= ca;
++		hdmi_checksum_audio_infoframe(hdmi_ai);
++	} else if (conn_type == 1) { /* DisplayPort */
++		struct dp_audio_infoframe *dp_ai = &ai.dp;
++
++		dp_ai->type		= 0x84;
++		dp_ai->len		= 0x1b;
++		dp_ai->ver		= 0x11 << 2;
++		dp_ai->CC02_CT47	= active_channels - 1;
++		dp_ai->CA		= ca;
++	} else {
++		snd_printd("HDMI: unknown connection type at pin %d\n",
++			    pin_nid);
++		return;
++	}
++
++	/*
++	 * sizeof(ai) is used instead of sizeof(*hdmi_ai) or
++	 * sizeof(*dp_ai) to avoid partial match/update problems when
++	 * the user switches between HDMI/DP monitors.
++	 */
++	if (!hdmi_infoframe_uptodate(codec, pin_nid, ai.bytes,
++					sizeof(ai))) {
++		snd_printdd("hdmi_pin_setup_infoframe: "
++			    "pin=%d channels=%d ca=0x%02x\n",
++			    pin_nid,
++			    active_channels, ca);
++		hdmi_stop_infoframe_trans(codec, pin_nid);
++		hdmi_fill_audio_infoframe(codec, pin_nid,
++					    ai.bytes, sizeof(ai));
++		hdmi_start_infoframe_trans(codec, pin_nid);
++	}
++}
++
+ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+ 				       struct hdmi_spec_per_pin *per_pin,
+ 				       bool non_pcm)
+ {
++	struct hdmi_spec *spec = codec->spec;
+ 	hda_nid_t pin_nid = per_pin->pin_nid;
+ 	int channels = per_pin->channels;
+ 	int active_channels;
+ 	struct hdmi_eld *eld;
+ 	int ca, ordered_ca;
+-	union audio_infoframe ai;
+ 
+ 	if (!channels)
+ 		return;
+@@ -1021,30 +1120,6 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+ 
+ 	hdmi_set_channel_count(codec, per_pin->cvt_nid, active_channels);
+ 
+-	memset(&ai, 0, sizeof(ai));
+-	if (eld->info.conn_type == 0) { /* HDMI */
+-		struct hdmi_audio_infoframe *hdmi_ai = &ai.hdmi;
+-
+-		hdmi_ai->type		= 0x84;
+-		hdmi_ai->ver		= 0x01;
+-		hdmi_ai->len		= 0x0a;
+-		hdmi_ai->CC02_CT47	= active_channels - 1;
+-		hdmi_ai->CA		= ca;
+-		hdmi_checksum_audio_infoframe(hdmi_ai);
+-	} else if (eld->info.conn_type == 1) { /* DisplayPort */
+-		struct dp_audio_infoframe *dp_ai = &ai.dp;
+-
+-		dp_ai->type		= 0x84;
+-		dp_ai->len		= 0x1b;
+-		dp_ai->ver		= 0x11 << 2;
+-		dp_ai->CC02_CT47	= active_channels - 1;
+-		dp_ai->CA		= ca;
+-	} else {
+-		snd_printd("HDMI: unknown connection type at pin %d\n",
+-			    pin_nid);
+-		return;
+-	}
+-
+ 	/*
+ 	 * always configure channel mapping, it may have been changed by the
+ 	 * user in the meantime
+@@ -1053,27 +1128,12 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+ 				   channels, per_pin->chmap,
+ 				   per_pin->chmap_set);
+ 
+-	/*
+-	 * sizeof(ai) is used instead of sizeof(*hdmi_ai) or
+-	 * sizeof(*dp_ai) to avoid partial match/update problems when
+-	 * the user switches between HDMI/DP monitors.
+-	 */
+-	if (!hdmi_infoframe_uptodate(codec, pin_nid, ai.bytes,
+-					sizeof(ai))) {
+-		snd_printdd("hdmi_setup_audio_infoframe: "
+-			    "pin=%d channels=%d ca=0x%02x\n",
+-			    pin_nid,
+-			    active_channels, ca);
+-		hdmi_stop_infoframe_trans(codec, pin_nid);
+-		hdmi_fill_audio_infoframe(codec, pin_nid,
+-					    ai.bytes, sizeof(ai));
+-		hdmi_start_infoframe_trans(codec, pin_nid);
+-	}
++	spec->ops.pin_setup_infoframe(codec, pin_nid, ca, active_channels,
++				      eld->info.conn_type);
+ 
+ 	per_pin->non_pcm = non_pcm;
+ }
+ 
+-
+ /*
+  * Unsolicited events
+  */
+@@ -1176,26 +1236,22 @@ static void haswell_verify_D0(struct hda_codec *codec,
+ #define is_hbr_format(format) \
+ 	((format & AC_FMT_TYPE_NON_PCM) && (format & AC_FMT_CHAN_MASK) == 7)
+ 
+-static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
+-			      hda_nid_t pin_nid, u32 stream_tag, int format)
++static int hdmi_pin_hbr_setup(struct hda_codec *codec, hda_nid_t pin_nid,
++			      bool hbr)
+ {
+-	int pinctl;
+-	int new_pinctl = 0;
+-
+-	if (is_haswell(codec))
+-		haswell_verify_D0(codec, cvt_nid, pin_nid);
++	int pinctl, new_pinctl;
+ 
+ 	if (snd_hda_query_pin_caps(codec, pin_nid) & AC_PINCAP_HBR) {
+ 		pinctl = snd_hda_codec_read(codec, pin_nid, 0,
+ 					    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
+ 
+ 		new_pinctl = pinctl & ~AC_PINCTL_EPT;
+-		if (is_hbr_format(format))
++		if (hbr)
+ 			new_pinctl |= AC_PINCTL_EPT_HBR;
+ 		else
+ 			new_pinctl |= AC_PINCTL_EPT_NATIVE;
+ 
+-		snd_printdd("hdmi_setup_stream: "
++		snd_printdd("hdmi_pin_hbr_setup: "
+ 			    "NID=0x%x, %spinctl=0x%x\n",
+ 			    pin_nid,
+ 			    pinctl == new_pinctl ? "" : "new-",
+@@ -1205,11 +1261,26 @@ static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
+ 			snd_hda_codec_write(codec, pin_nid, 0,
+ 					    AC_VERB_SET_PIN_WIDGET_CONTROL,
+ 					    new_pinctl);
++	} else if (hbr)
++		return -EINVAL;
+ 
+-	}
+-	if (is_hbr_format(format) && !new_pinctl) {
++	return 0;
++}
++
++static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
++			      hda_nid_t pin_nid, u32 stream_tag, int format)
++{
++	struct hdmi_spec *spec = codec->spec;
++	int err;
++
++	if (is_haswell(codec))
++		haswell_verify_D0(codec, cvt_nid, pin_nid);
++
++	err = spec->ops.pin_hbr_setup(codec, pin_nid, is_hbr_format(format));
++
++	if (err) {
+ 		snd_printdd("hdmi_setup_stream: HBR is not supported\n");
+-		return -EINVAL;
++		return err;
+ 	}
+ 
+ 	snd_hda_codec_setup_stream(codec, cvt_nid, stream_tag, 0, format);
+@@ -1424,7 +1495,7 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ 		codec->addr, pin_nid, pin_eld->monitor_present, eld->eld_valid);
+ 
+ 	if (eld->eld_valid) {
+-		if (snd_hdmi_get_eld(codec, pin_nid, eld->eld_buffer,
++		if (spec->ops.pin_get_eld(codec, pin_nid, eld->eld_buffer,
+ 						     &eld->eld_size) < 0)
+ 			eld->eld_valid = false;
+ 		else {
+@@ -1655,7 +1726,7 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 	hdmi_setup_audio_infoframe(codec, per_pin, non_pcm);
+ 	mutex_unlock(&per_pin->lock);
+ 
+-	return hdmi_setup_stream(codec, cvt_nid, pin_nid, stream_tag, format);
++	return spec->ops.setup_stream(codec, cvt_nid, pin_nid, stream_tag, format);
+ }
+ 
+ static int generic_hdmi_playback_pcm_cleanup(struct hda_pcm_stream *hinfo,
+@@ -1727,6 +1798,34 @@ static int hdmi_chmap_ctl_info(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
++static int hdmi_chmap_cea_alloc_validate_get_type(struct cea_channel_speaker_allocation *cap,
++						  int channels)
++{
++	/* If the speaker allocation matches the channel count, it is OK.*/
++	if (cap->channels != channels)
++		return -1;
++
++	/* all channels are remappable freely */
++	return SNDRV_CTL_TLVT_CHMAP_VAR;
++}
++
++static void hdmi_cea_alloc_to_tlv_chmap(struct cea_channel_speaker_allocation *cap,
++					unsigned int *chmap, int channels)
++{
++	int count = 0;
++	int c;
++
++	for (c = 7; c >= 0; c--) {
++		int spk = cap->speakers[c];
++		if (!spk)
++			continue;
++
++		chmap[count++] = spk_to_chmap(spk);
++	}
++
++	WARN_ON(count != channels);
++}
++
+ static int hdmi_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+ 			      unsigned int size, unsigned int __user *tlv)
+ {
+@@ -1743,16 +1842,19 @@ static int hdmi_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+ 	size -= 8;
+ 	dst = tlv + 2;
+ 	for (chs = 2; chs <= spec->channels_max; chs++) {
+-		int i, c;
++		int i;
+ 		struct cea_channel_speaker_allocation *cap;
+ 		cap = channel_allocations;
+ 		for (i = 0; i < ARRAY_SIZE(channel_allocations); i++, cap++) {
+ 			int chs_bytes = chs * 4;
+-			if (cap->channels != chs)
++			int type = spec->ops.chmap_cea_alloc_validate_get_type(cap, chs);
++			unsigned int tlv_chmap[8];
++
++			if (type < 0)
+ 				continue;
+ 			if (size < 8)
+ 				return -ENOMEM;
+-			if (put_user(SNDRV_CTL_TLVT_CHMAP_VAR, dst) ||
++			if (put_user(type, dst) ||
+ 			    put_user(chs_bytes, dst + 1))
+ 				return -EFAULT;
+ 			dst += 2;
+@@ -1762,14 +1864,10 @@ static int hdmi_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+ 				return -ENOMEM;
+ 			size -= chs_bytes;
+ 			count += chs_bytes;
+-			for (c = 7; c >= 0; c--) {
+-				int spk = cap->speakers[c];
+-				if (!spk)
+-					continue;
+-				if (put_user(spk_to_chmap(spk), dst))
+-					return -EFAULT;
+-				dst++;
+-			}
++			spec->ops.cea_alloc_to_tlv_chmap(cap, tlv_chmap, chs);
++			if (copy_to_user(dst, tlv_chmap, chs_bytes))
++				return -EFAULT;
++			dst += chs;
+ 		}
+ 	}
+ 	if (put_user(count, tlv + 1))
+@@ -1803,7 +1901,7 @@ static int hdmi_chmap_ctl_put(struct snd_kcontrol *kcontrol,
+ 	unsigned int ctl_idx;
+ 	struct snd_pcm_substream *substream;
+ 	unsigned char chmap[8];
+-	int i, ca, prepared = 0;
++	int i, err, ca, prepared = 0;
+ 
+ 	ctl_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
+ 	substream = snd_pcm_chmap_substream(info, ctl_idx);
+@@ -1827,6 +1925,11 @@ static int hdmi_chmap_ctl_put(struct snd_kcontrol *kcontrol,
+ 	ca = hdmi_manual_channel_allocation(ARRAY_SIZE(chmap), chmap);
+ 	if (ca < 0)
+ 		return -EINVAL;
++	if (spec->ops.chmap_validate) {
++		err = spec->ops.chmap_validate(ca, ARRAY_SIZE(chmap), chmap);
++		if (err)
++			return err;
++	}
+ 	mutex_lock(&per_pin->lock);
+ 	per_pin->chmap_set = true;
+ 	memcpy(per_pin->chmap, chmap, sizeof(chmap));
+@@ -2033,6 +2136,17 @@ static const struct hda_codec_ops generic_hdmi_patch_ops = {
+ #endif
+ };
+ 
++static const struct hdmi_ops generic_standard_hdmi_ops = {
++	.pin_get_eld				= snd_hdmi_get_eld,
++	.pin_get_slot_channel			= hdmi_pin_get_slot_channel,
++	.pin_set_slot_channel			= hdmi_pin_set_slot_channel,
++	.pin_setup_infoframe			= hdmi_pin_setup_infoframe,
++	.pin_hbr_setup				= hdmi_pin_hbr_setup,
++	.setup_stream				= hdmi_setup_stream,
++	.chmap_cea_alloc_validate_get_type	= hdmi_chmap_cea_alloc_validate_get_type,
++	.cea_alloc_to_tlv_chmap			= hdmi_cea_alloc_to_tlv_chmap,
++};
++
+ 
+ static void intel_haswell_fixup_connect_list(struct hda_codec *codec,
+ 					     hda_nid_t nid)
+@@ -2115,6 +2229,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 	if (spec == NULL)
+ 		return -ENOMEM;
+ 
++	spec->ops = generic_standard_hdmi_ops;
+ 	codec->spec = spec;
+ 	hdmi_array_init(spec, 4);
+ 
+-- 
+1.8.1.5
