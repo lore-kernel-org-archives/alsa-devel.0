@@ -1,59 +1,66 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [RFC 2/2] spi: Use stable dev_name for ACPI enumerated SPI slaves
-Date: Fri, 25 Oct 2013 16:09:47 +0200
-Message-ID: <1530227.7u44IdW1Bp@vostro.rjw.lan>
-References: <1382703540-3769-1-git-send-email-jarkko.nikula@linux.intel.com> <1382703540-3769-3-git-send-email-jarkko.nikula@linux.intel.com> <20131025125909.GA12932@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: include/uapi/firewire.h for other firewire drivers
+Date: Fri, 25 Oct 2013 23:54:12 +0900
+Message-ID: <526A8614.20908@sakamocchi.jp>
+References: <526A6092.4030709@sakamocchi.jp> <526A6C50.2000901@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3678682.1027DfbcGu"; micalg="pgp-sha256"; protocol="application/pgp-signature"
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20131025125909.GA12932@sirena.org.uk>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07FE02655CE
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 16:54:19 +0200 (CEST)
+In-Reply-To: <526A6C50.2000901@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Clemens,
 
---nextPart3678682.1027DfbcGu
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Thanks for your quick reply.
 
-On Friday, October 25, 2013 01:59:09 PM Mark Brown wrote:
-> On Fri, Oct 25, 2013 at 03:19:00PM +0300, Jarkko Nikula wrote:
-> > Current spi bus_num.chip_select "spix.y" based device naming scheme may not
-> > be stable enough to be used in name based matching, for instance within
-> > ALSA SoC subsystem.
-> 
-> I'm happy with this from the SPI side modulo Raphael's comments - are
-> folks happy from the ACPI side?
+> When a control panel wants to change several settings, it should not
+> need to establish a CMP connection just to be able to prevent the driver
+> from starting streaming at the same time.
 
-I think yes in general, but I'd like to understand why the ACPI_HANDLE()
-thing doesn't work as expected.
+There is no need to establish connection. The control panel just check 
+the value of "peer-to-peer connection counter" field in iPCR/oPCR.
 
--- 
-I speak only for myself.
-Rafael J. Wysocki, Intel Open Source Technology Center.
---nextPart3678682.1027DfbcGu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+But anyway, it's better to give an easy way via the interface. I agree.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
+> When this is possible, the kernel FireWire framework should be extended
+> to allow the driver to prevent FFADO from using the device.  However, it
+> would be hard for the kernel to differentiate between FFADO and some
+> control panel, so I guess FFADO should be changed to not attach to
+> a device that already has a kernel driver.
 
-iQIcBAABCAAGBQJSanuxAAoJEILEb/54YlRx13sQAIma44w/ksmY8FRR94k0iG78
-VzAHCpXZhxd43ZjSRviAAyQINT+h6N4fFWT32ZjZqwEYNRkfDUjuy5RdR5MwD+iT
-becubgM7R8qS2dZsxu0N/1kKF5KjjFXpz3uynSz3yna5BYECRZo+NHgXlMynpOI1
-f0yz760d0RTu/KMvMzkdpPT6g5Cjg8E01adpW1xlCvqKi2Fp2M57uXJnlLZHv1d7
-82PgQasM2XD0lqOGhx7HqzQc6WF6SKnycJ/RoFjc7Z/97iWzKhgzDLrLsd8qL98D
-lPEkjnpmcwW2YckvALqrm8lVS9UCmIe2pL75ylJw4HyJjpJeYhbjo0fRshaQ9nTj
-qGwAydIyEFIze+5rqRizrNd2K1ckXTt2dQTxRPNOY7219n6I4x4kNvM/CdxcJ5Bx
-dBH0HhKp54tUzoeiTrRvyW71jV0vuqcPQr3r0ckGxDMEi5EumlycLWtg1CUHbGjl
-8Uq2bf8c2ZsyPicpQ9esJuY3HtjlD4iqDGuCImZwCGm5iyFeSo2GMMquSmuFlu0k
-v25VRYRvwD13lLF5+KggPgTtU5iRNxd/6i9chkeeubrT9g5euBNOuO3XQqcJlbYs
-oDDfRvqlln3Avan93hkRRuhE25g8BKQyo3NxIdVeOgxl65BIKdAc8mce/sMY3e/u
-rXuKs7sNSyQ82Z2sNGCf
-=0M2M
------END PGP SIGNATURE-----
+I'm not a developer for Juju so cannot have any idea for kernel land at 
+all. But for FFADO, I can put your idea as my future commitment.
 
---nextPart3678682.1027DfbcGu--
+> For Fireworks devices, applications will need to send EFC commands, but
+> will not be able to allocate the same 0xecc080000000 address, so the
+> driver needs a SEND_EFC ioctl.  (That's the same reason why snd-dice has
+> DICE_NOTIFICATION.)
 
+Now I understand the reason DICE_NOTIFICATION exists. Dice also have the 
+similar issue as Fireworks has. For EFC, I'm willing to keep FFADO using 
+"EFC over AVC" but I found this is not enough for some models with 
+latest firmware.
+
+Well, you said "The primary purpose is to support control panel/mixer". 
+But this interface can also be good for prevention of conflict with 
+FFADO driver. I wonder why you mention this first. Are there any thoughts?
+
+
+Thanks
+
+Takashi Sakamoto
