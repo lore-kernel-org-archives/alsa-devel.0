@@ -1,55 +1,55 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Samsung: I2S: fix return value check in
- i2s_alloc_dai()
-Date: Fri, 25 Oct 2013 10:26:30 +0100
-Message-ID: <20131025092630.GQ18506@sirena.org.uk>
-References: <CAPgLHd8nzO9Q1fF1KsuJna_JVJDd+cimBC3ipd3nTP9Sz=fE9g@mail.gmail.com>
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: [PATCH] ASoC: fsl_spdif: fix return value check in
+	fsl_spdif_probe()
+Date: Fri, 25 Oct 2013 17:29:25 +0800
+Message-ID: <CAPgLHd-2d+RLDq1U=wXR72nAEH1Hr6FDcWp0eAyEkrNmfjrEaA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WZLuFERxa6Y0cbOt"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAPgLHd8nzO9Q1fF1KsuJna_JVJDd+cimBC3ipd3nTP9Sz=fE9g@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: ben-linux@fluff.org, kgene.kim@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, rob.herring@calxeda.com, yongjun_wei@trendmicro.com.cn, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ea0-f176.google.com (mail-ea0-f176.google.com
+ [209.85.215.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F9DD26500A
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 11:29:28 +0200 (CEST)
+Received: by mail-ea0-f176.google.com with SMTP id q16so431281ead.7
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 02:29:26 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: timur@tabi.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, rob.herring@calxeda.com
+Cc: yongjun_wei@trendmicro.com.cn, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
---WZLuFERxa6Y0cbOt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In case of error, the function platform_get_resource() returns NULL
+pointer not ERR_PTR(). The IS_ERR() test in the return value check
+should be replaced with NULL test.
 
-On Fri, Oct 25, 2013 at 05:06:24PM +0800, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->=20
-> In case of error, the function platform_device_alloc() returns NULL
-> pointer not ERR_PTR(). The IS_ERR() test in the return value check
-> should be replaced with NULL test.
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ sound/soc/fsl/fsl_spdif.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Applied, thanks.
-
---WZLuFERxa6Y0cbOt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSajlDAAoJELSic+t+oim9RD4P/RaDW/rZuPlo2zALckMmWgPM
-Ws6VQDmYeR2fxq+cuzxJD4QpSKrtPEw9UbprWYoMf8EMfilbVjys79OK8bjvKGVR
-Yotc05XUXCMOs+OnZEuex0J9x9uung+UhxyahSdXwysyAd8VGVEPDhj6RGbol6ca
-+KaqPejbQp9pmeN1wqeOG4ZDvRNC38WhNG0aGW2pfFkTIBCmZYbp6JF1VSPaA24R
-kP72LeZZ0XiwiZ28f8/Jcnizt7opGVXmqXIPSxq5wGe9GIsENwfWIthnRvyZUbAX
-E3ecDpDUQLxLmIYuUxYaHLEtZTgKc9EBHqvVdxDfI1lGHjM6zDfif4ivA2Yf5LZX
-ehdPY5I3E9r+Mq0U6pKp3yd5/5wG5wicJOnZTK5nRPV17fVSx81epOgqq2PUdul8
-w1CGs+iAeVCSWucFN1VBIdbduf2F71zxlH6Tshv99lPURv/4z0O3lI2Bu++kYC0A
-5yWtNfmK/abPD7EdsrHOVcDtN1ECOE7djw3Kf3+yama8u50a8PLjoWFbrkKcorcm
-BbnKtVpnF0I41niPBXu+t5JPVjNlxsA2b4w96YpsAV76l5yy71iC9EkPe24Ao3hC
-0tYizYJkxJJmf3Vm2a83+6CiSEwDkOE8DM5Vcg2ZRHnqSWEiy5NoIYLONEbMZnKB
-akiYdZMyhT+zxAXXGMk5
-=viAv
------END PGP SIGNATURE-----
-
---WZLuFERxa6Y0cbOt--
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 3920c3e..e5bfafe 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1107,9 +1107,9 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+ 
+ 	/* Get the addresses and IRQ */
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (IS_ERR(res)) {
++	if (!res) {
+ 		dev_err(&pdev->dev, "could not determine device resources\n");
+-		return PTR_ERR(res);
++		return -ENXIO;
+ 	}
+ 
+ 	regs = devm_ioremap_resource(&pdev->dev, res);
