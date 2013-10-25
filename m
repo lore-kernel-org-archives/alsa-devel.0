@@ -1,17 +1,17 @@
 From: Brian Austin <brian.austin@cirrus.com>
-Subject: [PATCH RESEND v2 3/4] ASoC: cs42l52: convert pdata
-	config to regmap_update_bits
-Date: Fri, 25 Oct 2013 10:01:16 -0500
-Message-ID: <1382713277-10306-4-git-send-email-brian.austin@cirrus.com>
+Subject: [PATCH RESEND v2 2/4] ASoC: cs42l52: increase
+	MAX_REGISTER for regmap_register_patch
+Date: Fri, 25 Oct 2013 10:01:15 -0500
+Message-ID: <1382713277-10306-3-git-send-email-brian.austin@cirrus.com>
 References: <1382713277-10306-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe006.messaging.microsoft.com [216.32.180.16])
- by alsa0.perex.cz (Postfix) with ESMTP id DF36C265643
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 16:59:10 +0200 (CEST)
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id DF93826564B
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 16:59:12 +0200 (CEST)
 In-Reply-To: <1382713277-10306-1-git-send-email-brian.austin@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,101 +26,25 @@ To: alsa-devel@alsa-project.org
 Cc: Brian Austin <brian.austin@cirrus.com>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Moving platform data to bus probe and convert to regmap_update_bits.
-This will work nicer when converted to device tree instead of having it
-split into multiple probes
+regmap_register_patch fails without the MAX_REGISTER set to highest
+register written to. Increase to register 0x47
 
 Signed-off-by: Brian Austin <brian.austin@cirrus.com>
 ---
- sound/soc/codecs/cs42l52.c | 69 +++++++++++++++++++++++-----------------------
- 1 file changed, 34 insertions(+), 35 deletions(-)
+ sound/soc/codecs/cs42l52.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index 8367f3c..56c5611 100644
---- a/sound/soc/codecs/cs42l52.c
-+++ b/sound/soc/codecs/cs42l52.c
-@@ -1117,40 +1117,6 @@ static int cs42l52_probe(struct snd_soc_codec *codec)
- 	cs42l52->sysclk = CS42L52_DEFAULT_CLK;
- 	cs42l52->config.format = CS42L52_DEFAULT_FORMAT;
+diff --git a/sound/soc/codecs/cs42l52.h b/sound/soc/codecs/cs42l52.h
+index 4277012..1a9412d 100644
+--- a/sound/soc/codecs/cs42l52.h
++++ b/sound/soc/codecs/cs42l52.h
+@@ -269,6 +269,6 @@
+ #define CS42L52_FIX_BITS1			0x3E
+ #define CS42L52_FIX_BITS2			0x47
  
--	/* Set Platform MICx CFG */
--	snd_soc_update_bits(codec, CS42L52_MICA_CTL,
--			    CS42L52_MIC_CTL_TYPE_MASK,
--				cs42l52->pdata.mica_cfg <<
--				CS42L52_MIC_CTL_TYPE_SHIFT);
--
--	snd_soc_update_bits(codec, CS42L52_MICB_CTL,
--			    CS42L52_MIC_CTL_TYPE_MASK,
--				cs42l52->pdata.micb_cfg <<
--				CS42L52_MIC_CTL_TYPE_SHIFT);
--
--	/* if Single Ended, Get Mic_Select */
--	if (cs42l52->pdata.mica_cfg)
--		snd_soc_update_bits(codec, CS42L52_MICA_CTL,
--				    CS42L52_MIC_CTL_MIC_SEL_MASK,
--				cs42l52->pdata.mica_sel <<
--				CS42L52_MIC_CTL_MIC_SEL_SHIFT);
--	if (cs42l52->pdata.micb_cfg)
--		snd_soc_update_bits(codec, CS42L52_MICB_CTL,
--				    CS42L52_MIC_CTL_MIC_SEL_MASK,
--				cs42l52->pdata.micb_sel <<
--				CS42L52_MIC_CTL_MIC_SEL_SHIFT);
--
--	/* Set Platform Charge Pump Freq */
--	snd_soc_update_bits(codec, CS42L52_CHARGE_PUMP,
--			    CS42L52_CHARGE_PUMP_MASK,
--				cs42l52->pdata.chgfreq <<
--				CS42L52_CHARGE_PUMP_SHIFT);
--
--	/* Set Platform Bias Level */
--	snd_soc_update_bits(codec, CS42L52_IFACE_CTL2,
--			    CS42L52_IFACE_CTL2_BIAS_LVL,
--				cs42l52->pdata.micbias_lvl);
--
- 	return ret;
- }
+-#define CS42L52_MAX_REGISTER			0x34
++#define CS42L52_MAX_REGISTER			0x47
  
-@@ -1257,7 +1223,40 @@ static int cs42l52_i2c_probe(struct i2c_client *i2c_client,
- 		return ret;
- 	}
- 
--	regcache_cache_only(cs42l52->regmap, true);
-+	/* Set Platform Data */
-+	if (cs42l52->pdata.mica_cfg)
-+		regmap_update_bits(cs42l52->regmap, CS42L52_MICA_CTL,
-+				   CS42L52_MIC_CTL_TYPE_MASK,
-+				cs42l52->pdata.mica_cfg <<
-+				CS42L52_MIC_CTL_TYPE_SHIFT);
-+
-+	if (cs42l52->pdata.micb_cfg)
-+		regmap_update_bits(cs42l52->regmap, CS42L52_MICB_CTL,
-+				   CS42L52_MIC_CTL_TYPE_MASK,
-+				cs42l52->pdata.micb_cfg <<
-+				CS42L52_MIC_CTL_TYPE_SHIFT);
-+
-+	if (cs42l52->pdata.mica_sel)
-+		regmap_update_bits(cs42l52->regmap, CS42L52_MICA_CTL,
-+				   CS42L52_MIC_CTL_MIC_SEL_MASK,
-+				cs42l52->pdata.mica_sel <<
-+				CS42L52_MIC_CTL_MIC_SEL_SHIFT);
-+	if (cs42l52->pdata.micb_sel)
-+		regmap_update_bits(cs42l52->regmap, CS42L52_MICB_CTL,
-+				   CS42L52_MIC_CTL_MIC_SEL_MASK,
-+				cs42l52->pdata.micb_sel <<
-+				CS42L52_MIC_CTL_MIC_SEL_SHIFT);
-+
-+	if (cs42l52->pdata.chgfreq)
-+		regmap_update_bits(cs42l52->regmap, CS42L52_CHARGE_PUMP,
-+				   CS42L52_CHARGE_PUMP_MASK,
-+				cs42l52->pdata.chgfreq <<
-+				CS42L52_CHARGE_PUMP_SHIFT);
-+
-+	if (cs42l52->pdata.micbias_lvl)
-+		regmap_update_bits(cs42l52->regmap, CS42L52_IFACE_CTL2,
-+				   CS42L52_IFACE_CTL2_BIAS_LVL,
-+				cs42l52->pdata.micbias_lvl);
- 
- 	ret =  snd_soc_register_codec(&i2c_client->dev,
- 			&soc_codec_dev_cs42l52, &cs42l52_dai, 1);
+ #endif
 -- 
 1.8.4.rc3
