@@ -1,28 +1,112 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: [RFC] ASoC: core: Allow DAI links to be specified by using ACPI
- names
-Date: Fri, 25 Oct 2013 09:53:28 +0300
-Message-ID: <526A1568.9010100@linux.intel.com>
-References: <1380803636-24079-1-git-send-email-jarkko.nikula@linux.intel.com> <20131024095118.GH31415@sirena.org.uk>
+From: Mike Looijmans <mike.looijmans@topic.nl>
+Subject: Using codecs with AND without cpu_dai
+Date: Fri, 25 Oct 2013 08:56:56 +0200
+Message-ID: <526A1638.5040606@topic.nl>
+References: <B02206F4ACA2904A8270028316B8DAFF01149AB8@mercury.corp.adaptivedigital.com>
+ <523A6C7C.3010608@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20131024095118.GH31415@sirena.org.uk>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mika Westerberg <mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp103.mer-nm.internl.net (smtp103.mer-nm.internl.net
+ [217.149.192.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2405264F45
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 08:57:00 +0200 (CEST)
+Received: from amavisd-new (mailscanner04.wrt-nm.internl.net [217.149.192.127])
+ by smtp103.mer-nm.internl.net (Postfix) with ESMTP id 27EA13F5F5
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 08:57:00 +0200 (CEST)
+Received: from smtp103.mer-nm.internl.net ([217.149.192.139])
+ by amavisd-new (mailscanner04.wrt-nm.internl.net [217.149.192.160])
+ (amavisd-new, port 10024)
+ with ESMTP for <alsa-devel@alsa-project.org>;
+ Fri, 25 Oct 2013 08:56:59 +0200 (CEST)
+Received: from TOP-EX01.TOPIC.LOCAL (mail.topic.nl [82.204.13.182])
+ (using TLSv1 with cipher AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by smtp103.mer-nm.internl.net (Postfix) with ESMTPS
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 08:56:57 +0200 (CEST)
+In-Reply-To: <523A6C7C.3010608@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/24/2013 12:51 PM, Mark Brown wrote:
-> On Thu, Oct 03, 2013 at 03:33:56PM +0300, Jarkko Nikula wrote:
->> This patch adds alternative way to specify DAI links by using ACPI names.
->> ACPI name here is considered to be used as an alias for device name during
->> DAI link binding time.
-> Did anything happen with the idea of making dev_name() use the ACPI
-> name?
-Well, looks like I manage to put it aside. I'll spin it again as next 
-merge window starts to be too near now.
-
--- 
-Jarkko
+77u/SSd2ZSBydW4gaW50byBhIHNlY29uZCBwcm9qZWN0IHdoZXJlIHdlJ2xsIHByb2JhYmx5IHdh
+bnQgdG8gdXNlIGFuIGF1ZGlvIGNvZGVjIAppbiBtdWx0aXBsZSB3YXlzLiBJbiB0aGlzIGNhc2Us
+IGl0IG1lYW5zIHRoYXQgd2Ugd2FudCB0byBhY3RpdmF0ZSB0aGUgY29kZWMgCndpdGhvdXQgYWN0
+dWFsbHkgY2FwdHVyaW5nIGRhdGEsIGJ1dCB3ZSBhbHNhIHdhbnQgdG8gInBlZWsiIGF0IHRoZSBk
+YXRhIHdoaWxlIAp0aGUgY29kZWMgaXMgcnVubmluZy4KCk1vcmUgaW4gZGV0YWlsLCB0aGUgSTJT
+IGRhdGEgZnJvbSB0aGUgY29kZWMgaXMgcHJvY2Vzc2VkIGJ5LCBmb3IgZXhhbXBsZSwgYW4gCkZQ
+R0EuIFRoZSBJMkMgYnVzIGlzIGFsc28gY29ubmVjdGVkIHRvIHRoZSBDUFUsIHNvIHRoYXQgdGhl
+IENQVSBjYW4gYWxzbyAKYXF1aXJlIHRoZSBkYXRhIHZpYSBBbHNhLgoKU28gZmFyLCBJJ3ZlIGJl
+ZW4gdXNpbmcgYSBwaWVjZSBvZiBoYWNraXNoIGNvZGUgbGlrZSB0aGlzIHRvIHR1cm4gb24gYSBj
+b2RlYyAKd2l0aG91dCBjYXB0dXJpbmcgZnJvbSBpdCAoa2VybmVsIDIuNi4zNyBiYXNlZCBjb2Rl
+IGZvciBub3cpOgoKCXN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYyA9IGNvZGVjX2RhaS0+Y29k
+ZWM7CglzdHJ1Y3Qgc25kX3NvY19wY21fcnVudGltZSBmYWtlX3J0ZDsKCWZha2VfcnRkLmNvZGVj
+X2RhaSA9IHRhY2hvX2RhaTsKCWZha2VfcnRkLmNvZGVjID0gY29kZWM7Cgljb2RlYy0+YWN0aXZl
+Kys7Cgljb2RlY19kYWktPmFjdGl2ZSsrOwoJY29kZWNfZGFpLT5jYXB0dXJlX2FjdGl2ZSsrOwoJ
+c25kX3NvY19kYXBtX3N0cmVhbV9ldmVudCgmZmFrZV9ydGQsIGNhcHR1cmVfc3RyZWFtX25hbWUs
+IApTTkRfU09DX0RBUE1fU1RSRUFNX1NUQVJUKTsKCgpUaGlzIHdvcmtzIHdlbGwsIGl0IG5lYXRs
+eSB1c2VzIERBUE0gdG8gc3dpdGNoIG9uIHRoZSBwcm9wZXIgQURDIHBhdGhzLiBPbmUgCmNhbiBu
+b3cgYWxzbyB1c2UgdGhlIHJlZ3VsYXIgQWxzYSBpbnRlcmZhY2VzIHRvIHN0YXJ0IHNhbXBsaW5n
+IGZyb20gdGhhdCAKY29kZWMuIE9mIGNvdXJzZSwgd2hlbiB5b3Ugc3RvcCB0aGUgY2FwdHVyZSBz
+dHJlYW0sIHRoZSBjb2RlYyB3aWxsIGJlIHNodXQgCmRvd24gYmVjYXVzZSB0aGVyZSdzIG5vIHJl
+ZmVyZW5jZSBjb3VudGluZyBvciBhbnl0aGluZyBzaW1pbGFyIG9uIHRoZSBjb2RlYyB1c2FnZS4K
+Ckl0IHdvdWxkIGJlIG5lYXRlciB0byBoYXZlIGEgImR1bW15IiBkYWkgdGhhdCBjb25uZWN0cyB0
+byB0aGUgY29kZWMsIGJ1dCB3aGVuIApJIGRvIHRoYXQsIHRoZSByZWd1bGFyIGNwdSBkYWkgY2Fu
+bm90IGJlIHVzZWQgYW5kIEkgY2Fubm90IGNhcHR1cmUgdGhlIHN0cmVhbSAKYW5kIHByb2Nlc3Mg
+aXQgZWxzZXdoZXJlIGF0IHRoZSBzYW1lIHRpbWUuCgpBIHNpbWlsYXIgc2l0dWF0aW9uIGluIHB1
+cmUgYXVkaW8gY29tcG9uZW50cyB3b3VsZCBiZSBhIHNlY29uZCBjb2RlYyB0aGF0IApvdXRwdXRz
+IHRoZSBJMlMgZGF0YSB0byBTUERJRiwgYW5kIGEgcHJpbWFyeSBjb2RlYyB0aGF0IHNhbXBsZXMg
+YW5hbG9nIGF1ZGlvIAp0byB0aGUgSTJTIGJ1cy4gUXVpdGUgc2ltaWxhciwgeW91IGRvbid0IG5l
+ZWQgdG8gaGF2ZSBhIGNhcHR1cmUgcnVubmluZywgYnV0IApib3RoIGNvZGVjcyBtdXN0IGJlIHBv
+d2VyZWQgb24gYW4gYWN0aXZlbHkgcnVuIGluIG9yZGVyIHRvIGhhdmUgYSAKYW5hbG9nLXRvLXNw
+ZGlmIGZ1bmN0aW9uIHdpdGhvdXQgaW52b2x2aW5nIHRoZSBDUFUuIEFuZCB0aGUgQ1BVIHNob3Vs
+ZCBiZSBhYmxlIAp0byAicGx1ZyBpbiIgYXQgd2lsbCB0byBncmFiIHRoZSBhdWRpbyBkYXRhLCB3
+aXRob3V0IGRpc3R1cmJpbmcgdGhlIHR3by4KCkFueW9uZSBhbnkgZXhwZXJpZW5jZSBvciBpZGVh
+cyBpbnRvIGEgQ09SUkVDVCB3YXkgdG8gaGFuZGxlIHRoZXNlIGtpbmQgb2Ygc2V0dXBzPwoKCk1l
+dCB2cmllbmRlbGlqa2UgZ3JvZXQgLyBraW5kIHJlZ2FyZHMsCgpNaWtlIExvb2lqbWFucwoKVE9Q
+SUMgRW1iZWRkZWQgU3lzdGVtcwpFaW5kaG92ZW5zZXdlZyAzMi1DLCBOTC01NjgzIEtIIEJlc3QK
+UG9zdGJ1cyA0NDAsIE5MLTU2ODAgQUsgQmVzdApUZWxlZm9vbjogKCszMSkg4oCTICgwKTQ5OSAt
+IDMzLjY5Ljc5ClRlbGVmYXg6ICgrMzEpIC0gKDApNDk5IC0gMzMuNjkuNzAKRS1tYWlsOiBtaWtl
+Lmxvb2lqbWFuc0B0b3BpYy5ubApXZWJzaXRlOiB3d3cudG9waWMubmwKCkRpdCBlLW1haWwgYmVy
+aWNodCBlbiBkZSBldmVudHVlZWwgZGFhcmJpaiBiZWhvcmVuZGUgYmlqbGFnZW4gemlqbiB1aXRz
+bHVpdGVuZCBiZXN0ZW1kIHZvb3IgZGUgZ2VhZHJlc3NlZXJkZSwgem9hbHMgZGllIGJsaWprdCB1
+aXQgaGV0IGUtbWFpbCBiZXJpY2h0IGVuL29mIGRlIGJpamxhZ2VuLiBFciBrdW5uZW4gZ2VnZXZl
+bnMgbWV0IGJldHJla2tpbmcgdG90IGVlbiBkZXJkZSBpbnN0YWFuLiBJbmRpZW4gdSBhbHMgbmll
+dC1nZWFkcmVzc2VlcmRlIGRpdCBiZXJpY2h0IGVuIGRlIGJpamxhZ2VuIG9udHZhbmd0LCB0ZXJ3
+aWpsIHUgbmlldCBiZXZvZWdkIG9mIGdlbWFjaHRpZ2QgYmVudCBvbSBkaXQgYmVyaWNodCBuYW1l
+bnMgZGUgZ2VhZHJlc3NlZXJkZSB0ZSBvbnR2YW5nZW4sIHdvcmR0IHUgdmVyem9jaHQgZGUgYWZ6
+ZW5kZXIgaGllcm92ZXIgZGlyZWN0IHRlIGluZm9ybWVyZW4gZW4gaGV0IGUtbWFpbCBiZXJpY2h0
+IG1ldCBkZSBiaWpsYWdlbiB0ZSB2ZXJuaWV0aWdlbi4gSWVkZXIgZ2VicnVpayB2YW4gZGUgaW5o
+b3VkIHZhbiBoZXQgZS1tYWlsIGJlcmljaHQsIHdhYXJvbmRlciBkZSBkYWFyYmlqIGJlaG9yZW5k
+ZSBiaWpsYWdlbiwgZG9vciBlZW4gYW5kZXIgZGFuIGRlIGdlYWRyZXNzZWVyZGUgaXMgb25yZWNo
+dG1hdGlnIGplZ2VucyBvbnMgZGFuIHdlbCBkZSBldmVudHVlZWwgaW4gaGV0IGUtbWFpbCBiZXJp
+Y2h0IG9mIGRlIGJpamxhZ2VuIHZvb3Jrb21lbmRlIGFuZGVyZSBwZXJzb25lbi4gVE9QSUMgRW1i
+ZWRkZWQgU3lzdGVtcyBpcyBuaWV0IGFhbnNwcmFrZWxpamsgdm9vciBlbmlnZXJsZWkgc2NoYWRl
+IHZvb3J0dmxvZWllbmQgdWl0IGhldCBnZWJydWlrIGVuL29mIGFjY2VwdGF0aWUgdmFuIGRpdCBl
+LW1haWwgYmVyaWNodCBvZiBkZSBkYWFyYmlqIGJlaG9yZW5kZSBiaWpsYWdlbi4KClRoZSBjb250
+ZW50cyBvZiB0aGlzIG1lc3NhZ2UsIGFzIHdlbGwgYXMgYW55IGVuY2xvc3VyZXMsIGFyZSBhZGRy
+ZXNzZWQgcGVyc29uYWxseSB0bywgYW5kIHRodXMgc29sZWx5IGludGVuZGVkIGZvciB0aGUgYWRk
+cmVzc2VlLiBUaGV5IG1heSBjb250YWluIGluZm9ybWF0aW9uIHJlZ2FyZGluZyBhIHRoaXJkIHBh
+cnR5LiBBIHJlY2lwaWVudCB3aG8gaXMgbmVpdGhlciB0aGUgYWRkcmVzc2VlLCBub3IgZW1wb3dl
+cmVkIHRvIHJlY2VpdmUgdGhpcyBtZXNzYWdlIG9uIGJlaGFsZiBvZiB0aGUgYWRkcmVzc2VlLCBp
+cyBraW5kbHkgcmVxdWVzdGVkIHRvIGltbWVkaWF0ZWx5IGluZm9ybSB0aGUgc2VuZGVyIG9mIHJl
+Y2VpcHQsIGFuZCB0byBkZXN0cm95IHRoZSBtZXNzYWdlIGFuZCB0aGUgZW5jbG9zdXJlcy4gQW55
+IHVzZSBvZiB0aGUgY29udGVudHMgb2YgdGhpcyBtZXNzYWdlIGFuZC9vciB0aGUgZW5jbG9zdXJl
+cyBieSBhbnkgb3RoZXIgcGVyc29uIHRoYW4gdGhlIGFkZHJlc3NlZSBvciBwZXJzb24gd2hvIGlz
+IGVtcG93ZXJlZCB0byByZWNlaXZlIHRoaXMgbWVzc2FnZSwgaXMgaWxsZWdhbCB0b3dhcmRzIHRo
+ZSBzZW5kZXIgYW5kL29yIHRoZSBhZm9yZW1lbnRpb25lZCB0aGlyZCBwYXJ0eS4gVE9QSUMgRW1i
+ZWRkZWQgU3lzdGVtcyBpcyBub3QgIGxpYWJsZSBmb3IgYW55IGRhbWFnZSBhcyBhIHJlc3VsdCBv
+ZiB0aGUgdXNlIGFuZC9vciBhY2NlcHRhbmNlIG9mIHRoaXMgbWVzc2FnZSBhbmQgYXMgd2VsbCBh
+cyBhbnkgZW5jbG9zdXJlcy4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
