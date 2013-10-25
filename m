@@ -1,19 +1,17 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: Enable display power well management in HD-A
- driver on Baytrail platform (Valleyview SOC)
-Date: Fri, 25 Oct 2013 15:08:13 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8013D7B37@SHSMSX101.ccr.corp.intel.com>
-References: <F46914AEC2663F4A9BB62374E5EEF8F8013CBF2B@SHSMSX101.ccr.corp.intel.com>
- <s5h8uxhmx2h.wl%tiwai@suse.de> <s5h4n85mvb6.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RESEND v2 2/4] ASoC: cs42l52: increase
+ MAX_REGISTER for regmap_register_patch
+Date: Fri, 25 Oct 2013 16:37:36 +0100
+Message-ID: <20131025153736.GA26122@sirena.org.uk>
+References: <1382713277-10306-1-git-send-email-brian.austin@cirrus.com>
+ <1382713277-10306-3-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3643708306268955914=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 03C8926562E
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 17:08:17 +0200 (CEST)
-In-Reply-To: <s5h4n85mvb6.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 759E0265669
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 17:37:41 +0200 (CEST)
+In-Reply-To: <1382713277-10306-3-git-send-email-brian.austin@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Li, Jocelyn" <jocelyn.li@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Barnes,
- Jesse" <jesse.barnes@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "David Henningsson (david.henningsson@canonical.com)" <david.henningsson@canonical.com>
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Friday, October 25, 2013 7:42 PM
 
-> > > We want to enable display power well management on Batrail platform
-> (Valleyview SOC), similar to what we did on Haswell.
-> > > Would you please check if our ideas are ok and give some advice?
-> > >
-> > > For Valleyview/VLV the display controller has a power well island. When
-> display is off, the display island can be power gated.
-> > > Unlike Haswell, the VLV HD-A controller is not in the display power well. The
-> controller is in south bridge and shared by multiple codecs, same as the
-> predecessors of Haswell.
-> >
-> > But the power is still controlled based on the usage of HD-audio
-> > controller, not per codec, isn't it?  If so, we can keep using the
-> > runtime PM implementation.
-> 
-> Reading again your mail, it sounds like we need the i915 power up/down *just
-> for HDMI codec*, not for onboard audio, while both of them are connected
-> over the same HD-audio bus (i.e. controller).  If it's the case, an easiest way is
-> to put i915_request_power_well*() at set_power_state callback as you pointed.
-> 
-> I don't like an idea to add pre_resume and post_suspend opts again.
+--===============3643708306268955914==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="FL5UXtIhxfXey3p5"
+Content-Disposition: inline
 
-Yes, the i915 power up/down is just for the HDMI codec. The audio controller and on-board codec are not affected.
-So we'll try the 1st option and see if it can work as we expected.
 
-Thanks for your advice!
-Mengdong
+--FL5UXtIhxfXey3p5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Oct 25, 2013 at 10:01:15AM -0500, Brian Austin wrote:
+> regmap_register_patch fails without the MAX_REGISTER set to highest
+> register written to. Increase to register 0x47
+
+Hrm.  It probably shouldn't be doing that, unless there's some great
+reason I've not thought of - this is for random undocumented registers
+which we ought to be able to exclude from the the register map that
+Linux knows about.  What's the root cause?
+
+--FL5UXtIhxfXey3p5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSapA3AAoJELSic+t+oim9s5wP/0g0BkOjwxZZnSUc9Crn+lmS
+8+Y4GXRn1/gkGq7Ks4mn1nyzY4NdSujqexfKtYAxSpNsPrF+5jg2Qasf5ES9jFAv
+/WdQGaxA2wwh9WtBoD9i6MHiFByjszTRxMw0EcY7vi1CSmQNBVxoUdqzkCaE8Dnj
+rUpHF/Lv3d5j5o3RpwiY2MXkv1yzNYnIm4en+VkCjngx/y4WGKNbJVQ1rhSrJ5s2
+n1p/gwOdHN6RelERrADQlFJbj4D7Nbn/ypLiInTkKoy+1FnnnRYluwTRZnKVtgn7
+WmM+Gy9aJmvfA9/sMxt5qdSl7rRgAOEJCPUXhfg6s/7PaNCpExeIVSbXNjFc84YL
+FM+iqi1UgWJRMwIxthD0g78hflqsw/v/CtomnZViUJyamudN1qxyC6eVAmhAIxJs
+RWL0ZMnJt55RSoDQxOUkUNRcItaECxmKnsqVnRvJpyJ4qEg4GRow9daMeGtZTFer
+1+o8e54WU0wDpz13IKH1Pt7wDSgFtUTeZ82yHK2pCwRVz8gijHSA8qKzhTnyrB3O
+ogMTmtmrEBew4exwnYNhSg+AhLeASANjkIbi5jwF9R2cSSKUs4uDTckyMgoPauDj
+45ge3e1WR/qUKN/Luu3f11qvJEpPInXAxrh0WkSPaw2GNmYNkK42W2bi+oSkspxZ
+Q8cirXzXjKvG7FECvUiq
+=tBM0
+-----END PGP SIGNATURE-----
+
+--FL5UXtIhxfXey3p5--
+
+--===============3643708306268955914==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3643708306268955914==--
