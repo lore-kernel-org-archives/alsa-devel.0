@@ -1,17 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 2/2] spi: Use stable dev_name for ACPI
-	enumerated SPI slaves
-Date: Fri, 25 Oct 2013 13:59:09 +0100
-Message-ID: <20131025125909.GA12932@sirena.org.uk>
-References: <1382703540-3769-1-git-send-email-jarkko.nikula@linux.intel.com>
- <1382703540-3769-3-git-send-email-jarkko.nikula@linux.intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: include/uapi/firewire.h for other firewire drivers
+Date: Fri, 25 Oct 2013 15:04:16 +0200
+Message-ID: <526A6C50.2000901@ladisch.de>
+References: <526A6092.4030709@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3400078545978527398=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D9BC26557E
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 14:59:19 +0200 (CEST)
-In-Reply-To: <1382703540-3769-3-git-send-email-jarkko.nikula@linux.intel.com>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 254EE265593
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 15:04:24 +0200 (CEST)
+In-Reply-To: <526A6092.4030709@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Sakamoto wrote:
+> About include/uapi/firewire.h, I'd like you to give me an advice.
+>
+> I'm sorry but I have little knowledgement about Dice chipset. So here
+> I want to know what I should do for snd-fireworks/snd-bebob.
 
---===============3400078545978527398==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
-Content-Disposition: inline
+The primary purpose is to support control panel/mixer applications,
+which should be able to find out which ALSA device corresponds to which
+FireWire device.
 
+> The header file includes an interface  for users to know its already
+> streaming or not, and lock it.
 
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Because every device can have settings that should not be changed while
+streaming.
 
-On Fri, Oct 25, 2013 at 03:19:00PM +0300, Jarkko Nikula wrote:
-> Current spi bus_num.chip_select "spix.y" based device naming scheme may not
-> be stable enough to be used in name based matching, for instance within
-> ALSA SoC subsystem.
+> But for Fireworks/BeBoB, I think checking CMP connections do the same
+> thing.
 
-I'm happy with this from the SPI side modulo Raphael's comments - are
-folks happy from the ACPI side?
+When a control panel wants to change several settings, it should not
+need to establish a CMP connection just to be able to prevent the driver
+from starting streaming at the same time.
 
---NzB8fVQJ5HfG6fxh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> Current FFADO can be failed when CMP connections on the device are
+> established, and ALSA can do the same. (but there are some problems.
+> both drivers set sampling rate before checking CMP connections. For this
+> I have a plan to post a patch for both FFADO and ALSA.)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+This lock is not intended to prevent ALSA/FFADO conflicts.
 
-iQIcBAEBAgAGBQJSamsTAAoJELSic+t+oim9N0QP/A0kRxbrkYg9lpIBb+seOC+H
-STL+41jpU5Yo/UhdSrSOCSlw9LoyNRwlppfJQ65kNpnuRz7SCqOmUkeJ8+FQUQQ7
-5LyWktRKhRqy6s4n7RB5B/+rZKJu83JvYNIUz/3siKbzofiEoYwU+uaBRdngVM60
-MchZO78lhdUCeTG1qMAbb9mly/oDp96VpwnBpKMIP+NMCA38JFX4AqhFFJLGxmv+
-+pOsClJeqC0BrZnUIBNqkiMNQ99+RejilG+cd0uasfqbF/aBNAxiGIHgURxHhTFZ
-TCVXe2/m38CpAtg0tsnQo8wYZDP0y2vzd8zgOAQpQogsrZwUL4arfp8pWWctoNKv
-g/kzSGf5HyIpsXrAuBYjBz/BlLe+hcAw/aO++PXtimXofosrSs8IDHCbhEi9100x
-aDbQ0YVxv1rZH2ZG8TSrnfl2P5FuQIPg/wAKUPhSZP0Su9kFHDnm/Pgv5fDBVzWA
-wW5jg5ycRq61VTETUQlI88HRZoEfccJ+oXTXUfDVIS8MvC0z3W8fr2utg89mjqvO
-G6rZOBgcTP8iuWFQUVDkxpz1gvdSTC9zIaZmV2cJ1HEDS4dlmqlaIf+UQDhPTRsr
-D0D9WUiD6gP41r51XGF0pAP990Un9/DxfH3kULa/Cg2JphgCAGtEimo+jxLV5bbG
-VM7p95OvbDm2ZNOXtE1d
-=A36A
------END PGP SIGNATURE-----
+At the moment, snd-dice and FFADO do not attach to the same devices.
+When this is possible, the kernel FireWire framework should be extended
+to allow the driver to prevent FFADO from using the device.  However, it
+would be hard for the kernel to differentiate between FFADO and some
+control panel, so I guess FFADO should be changed to not attach to
+a device that already has a kernel driver.
 
---NzB8fVQJ5HfG6fxh--
+> Should I implement the same lock for Fireworks/BeBoB drivers?
 
---===============3400078545978527398==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Yes.
+
+For Fireworks devices, applications will need to send EFC commands, but
+will not be able to allocate the same 0xecc080000000 address, so the
+driver needs a SEND_EFC ioctl.  (That's the same reason why snd-dice has
+DICE_NOTIFICATION.)
 
 
---===============3400078545978527398==--
+Regards,
+Clemens
