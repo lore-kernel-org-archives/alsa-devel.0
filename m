@@ -1,57 +1,55 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Enable display power well management in HD-A driver on
- Baytrail platform (Valleyview SOC)
-Date: Fri, 25 Oct 2013 09:20:02 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8013CBF2B@SHSMSX101.ccr.corp.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Samsung: I2S: fix return value check in
+ i2s_alloc_dai()
+Date: Fri, 25 Oct 2013 10:26:30 +0100
+Message-ID: <20131025092630.GQ18506@sirena.org.uk>
+References: <CAPgLHd8nzO9Q1fF1KsuJna_JVJDd+cimBC3ipd3nTP9Sz=fE9g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AC262654D9
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 11:20:07 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: "Li, Jocelyn" <jocelyn.li@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Barnes,
- Jesse" <jesse.barnes@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "David Henningsson (david.henningsson@canonical.com)" <david.henningsson@canonical.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WZLuFERxa6Y0cbOt"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAPgLHd8nzO9Q1fF1KsuJna_JVJDd+cimBC3ipd3nTP9Sz=fE9g@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: ben-linux@fluff.org, kgene.kim@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, rob.herring@calxeda.com, yongjun_wei@trendmicro.com.cn, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-We want to enable display power well management on Batrail platform (Valleyview SOC), similar to what we did on Haswell.
-Would you please check if our ideas are ok and give some advice?
+--WZLuFERxa6Y0cbOt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-For Valleyview/VLV the display controller has a power well island. When display is off, the display island can be power gated.
-Unlike Haswell, the VLV HD-A controller is not in the display power well. The controller is in south bridge and shared by multiple codecs, same as the predecessors of Haswell.
+On Fri, Oct 25, 2013 at 05:06:24PM +0800, Wei Yongjun wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>=20
+> In case of error, the function platform_device_alloc() returns NULL
+> pointer not ERR_PTR(). The IS_ERR() test in the return value check
+> should be replaced with NULL test.
 
-To assure audio is not disturbed by power well off, the Gfx i915 driver will provide the same API as Haswell: i915_request_power_well & i915_release_power_well
-So audio driver can indicate whether audio codec needs the power well.
+Applied, thanks.
 
-In HD-A driver, the display codec can suspend to D3 when there this no active streaming or ioctls which will actually trigger transactions to the display codec on HD-A bus.
-So our basic idea is to request power before codec resumes to D0 and release power after codec suspends to D3.
-And there can be two options for this:
+--WZLuFERxa6Y0cbOt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-1.       Overwrite the 'set_power_state' ops for the VLV display codec, and request/release Gfx power well there via the i915 API in this ops.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-And future VLV specific fixes may also go to this ops.
+iQIcBAEBAgAGBQJSajlDAAoJELSic+t+oim9RD4P/RaDW/rZuPlo2zALckMmWgPM
+Ws6VQDmYeR2fxq+cuzxJD4QpSKrtPEw9UbprWYoMf8EMfilbVjys79OK8bjvKGVR
+Yotc05XUXCMOs+OnZEuex0J9x9uung+UhxyahSdXwysyAd8VGVEPDhj6RGbol6ca
++KaqPejbQp9pmeN1wqeOG4ZDvRNC38WhNG0aGW2pfFkTIBCmZYbp6JF1VSPaA24R
+kP72LeZZ0XiwiZ28f8/Jcnizt7opGVXmqXIPSxq5wGe9GIsENwfWIthnRvyZUbAX
+E3ecDpDUQLxLmIYuUxYaHLEtZTgKc9EBHqvVdxDfI1lGHjM6zDfif4ivA2Yf5LZX
+ehdPY5I3E9r+Mq0U6pKp3yd5/5wG5wicJOnZTK5nRPV17fVSx81epOgqq2PUdul8
+w1CGs+iAeVCSWucFN1VBIdbduf2F71zxlH6Tshv99lPURv/4z0O3lI2Bu++kYC0A
+5yWtNfmK/abPD7EdsrHOVcDtN1ECOE7djw3Kf3+yama8u50a8PLjoWFbrkKcorcm
+BbnKtVpnF0I41niPBXu+t5JPVjNlxsA2b4w96YpsAV76l5yy71iC9EkPe24Ao3hC
+0tYizYJkxJJmf3Vm2a83+6CiSEwDkOE8DM5Vcg2ZRHnqSWEiy5NoIYLONEbMZnKB
+akiYdZMyhT+zxAXXGMk5
+=viAv
+-----END PGP SIGNATURE-----
 
-2.       Add two new codec ops like 'pre_resume/post_suspend', and request/release Gfx power well here.
-Which way do you think is better? Personally I don't want to add new ops and prefer 1st option, and VLV-like processors can use the same ops.
-And there is an open question:
-Can we assume that middleware (e.g. pulseaudio or audio flinger) will close the PCM device if there is no need to play audio for power saving?
-Is this a usual way for middleware to work with ALSA?
-Now in HD-A driver, once the PCM device is open, the codec will resume to D0. And so the codec will request display power well.
-If middleware opens PCM device but doesn't play, there will be power waste. We want to avoid this.
-
-Thanks
-Mengdong
+--WZLuFERxa6Y0cbOt--
