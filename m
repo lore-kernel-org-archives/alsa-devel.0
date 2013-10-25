@@ -1,75 +1,45 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: include/uapi/firewire.h for other firewire drivers
-Date: Fri, 25 Oct 2013 15:04:16 +0200
-Message-ID: <526A6C50.2000901@ladisch.de>
-References: <526A6092.4030709@sakamocchi.jp>
+From: "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>
+Subject: Re: [RFC 1/2] i2c: Use stable dev_name for ACPI enumerated I2C slaves
+Date: Fri, 25 Oct 2013 15:18:01 +0200
+Message-ID: <98785510.yWYAtabkbj@vostro.rjw.lan>
+References: <1382703540-3769-1-git-send-email-jarkko.nikula@linux.intel.com> <6032482.JJ4PNSSnIp@vostro.rjw.lan> <526A6A41.6020909@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 254EE265593
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 15:04:24 +0200 (CEST)
-In-Reply-To: <526A6092.4030709@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <526A6A41.6020909-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> About include/uapi/firewire.h, I'd like you to give me an advice.
->
-> I'm sorry but I have little knowledgement about Dice chipset. So here
-> I want to know what I should do for snd-fireworks/snd-bebob.
+On Friday, October 25, 2013 03:55:29 PM Jarkko Nikula wrote:
+> Hi
+> 
+> On 10/25/2013 03:52 PM, Rafael J. Wysocki wrote:
+> >   
+> > +static void i2c_dev_set_name(struct i2c_adapter *adap,
+> > +			     struct i2c_client *client)
+> > +{
+> > +#if IS_ENABLED(CONFIG_ACPI)
+> > +	if (ACPI_HANDLE(&client->dev)) {
+> > ACPI_HANDLE() already contains an "is CONFIG_ACPI enabled?" check, so the #if
+> > around the if (ACPI_HANDLE()) {} is redundant.
+> >
+> > Similarly for the SPI patch.
+> >
+> Well, acpi_bus_get_device() is not available for non-ACPI builds and at 
+> least the gcc I used for test build didn't optimize that block away.
 
-The primary purpose is to support control panel/mixer applications,
-which should be able to find out which ALSA device corresponds to which
-FireWire device.
+Well, it should.  ACPI_HANDLE() translates to (NULL) if CONFIG_ACPI
+is not defined and that causes the check to become "if (NULL)" which
+should always be dropped by the compiler.
 
-> The header file includes an interface  for users to know its already
-> streaming or not, and lock it.
+Does providing a stub acpi_bus_get_device() for !CONFIG_ACPI actually help?
 
-Because every device can have settings that should not be changed while
-streaming.
+Rafael
 
-> But for Fireworks/BeBoB, I think checking CMP connections do the same
-> thing.
-
-When a control panel wants to change several settings, it should not
-need to establish a CMP connection just to be able to prevent the driver
-from starting streaming at the same time.
-
-> Current FFADO can be failed when CMP connections on the device are
-> established, and ALSA can do the same. (but there are some problems.
-> both drivers set sampling rate before checking CMP connections. For this
-> I have a plan to post a patch for both FFADO and ALSA.)
-
-This lock is not intended to prevent ALSA/FFADO conflicts.
-
-At the moment, snd-dice and FFADO do not attach to the same devices.
-When this is possible, the kernel FireWire framework should be extended
-to allow the driver to prevent FFADO from using the device.  However, it
-would be hard for the kernel to differentiate between FFADO and some
-control panel, so I guess FFADO should be changed to not attach to
-a device that already has a kernel driver.
-
-> Should I implement the same lock for Fireworks/BeBoB drivers?
-
-Yes.
-
-For Fireworks devices, applications will need to send EFC commands, but
-will not be able to allocate the same 0xecc080000000 address, so the
-driver needs a SEND_EFC ioctl.  (That's the same reason why snd-dice has
-DICE_NOTIFICATION.)
-
-
-Regards,
-Clemens
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
