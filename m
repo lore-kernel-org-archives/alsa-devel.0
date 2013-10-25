@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND v2 3/4] ASoC: cs42l52: convert pdata
- config to regmap_update_bits
-Date: Fri, 25 Oct 2013 16:43:02 +0100
-Message-ID: <20131025154302.GC26122@sirena.org.uk>
+Subject: Re: [PATCH RESEND v2 4/4] ASoC: cs42l52: Add chip rev
+	id message
+Date: Fri, 25 Oct 2013 16:43:16 +0100
+Message-ID: <20131025154315.GD26122@sirena.org.uk>
 References: <1382713277-10306-1-git-send-email-brian.austin@cirrus.com>
- <1382713277-10306-4-git-send-email-brian.austin@cirrus.com>
+ <1382713277-10306-5-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3287528813418380120=="
+Content-Type: multipart/mixed; boundary="===============4422909076019560211=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 693A1265669
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 17:43:06 +0200 (CEST)
-In-Reply-To: <1382713277-10306-4-git-send-email-brian.austin@cirrus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E8182656C9
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2013 17:43:19 +0200 (CEST)
+In-Reply-To: <1382713277-10306-5-git-send-email-brian.austin@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,52 +26,50 @@ Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3287528813418380120==
+--===============4422909076019560211==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Sr1nOIr3CvdE5hEN"
+	protocol="application/pgp-signature"; boundary="yudcn1FV7Hsu/q59"
 Content-Disposition: inline
 
 
---Sr1nOIr3CvdE5hEN
+--yudcn1FV7Hsu/q59
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Oct 25, 2013 at 10:01:16AM -0500, Brian Austin wrote:
-> Moving platform data to bus probe and convert to regmap_update_bits.
-> This will work nicer when converted to device tree instead of having it
-> split into multiple probes
+On Fri, Oct 25, 2013 at 10:01:17AM -0500, Brian Austin wrote:
+> This patch adds a print message at bootup for the CODEC Rev ID
 
 Applied, thanks.
 
---Sr1nOIr3CvdE5hEN
+--yudcn1FV7Hsu/q59
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSapGDAAoJELSic+t+oim98vAP/31dD3RUd+S9LZLP/z9e8jRK
-YCcbBQRKejgttAUXuV4Qq6m2LVlqW/i/LSRBcKTpPCl6O+ThzkH+nxl/oqwIww8Z
-IKTv49w3OftDHbGKfEt9ygqMoAYJoj6AdS5lInFRaxJzUPKn13BXW6v73Gei3Ehv
-v1dmkvr5xoGz0lN22pnE2fCXH4D715SydhjuY/7qpFyINee5TF7j28N5JDAgqh/9
-0LmG9afUQOR11Qv418XYCClwqOb/eO46gzdOhY0RErh7CTqQEGPEaMbnGI4/9KAx
-jca8HhobP+PcUxXZ9baCbmN3bMds/c4MdFQWYARe4u3ezz1ap/WHLqhSnXkiP89I
-7HJTuRsRSb1GfKjpq3Rg0nfZVJyIc9FTjsq9JoOSPlBVFw6QdwsxZHJS7Wtmnhga
-nxA65Eu1X0y3eUkoiM5BBTeuGDa8ox6hCfYwGPXItngtndU3coms017Yy3CKv8HF
-qIWeHdILLXjI6gxQnarMPyoUjqywihSmMav2hCH294/CJIuW/zqy5j7T4Bne/FOP
-pliG2cO0hy1tlgPVMLEOvUZYfLHVwk5phlmAkiG620ho6LrfKnP9xmQO670S/fVv
-44nUfsucWZaiFgZExJWRT828bDhe+7FI4lvijCSRtBqk84I4m/aeiRXKs2dbcKkL
-o60hDxkFRc0N5W5rRULg
-=oQAo
+iQIcBAEBAgAGBQJSapGQAAoJELSic+t+oim9T6sQAIqwx8HgRK5B5RwHv41VVaxC
+8J4fRSMHIZiteVaRaAaS9YfhgOpRl/keSwzmgeAUeWrnr+L2QTtIz9iR3VtkKxTm
+pK6JL3m2V8b1b4tFZysTUpH0fsuQDmk8uj8U6aJFhuqoMs8gj9L0wWialH9iyqVY
+yXe7F2+5Zl8sgDQAFLFMY0DkGHKS9yqeTSbsyXm9RemYG5LLlkVfsr/5MUyMG+n4
+myfqZmZ4zFbJZuQU+3A7LxinvbHiq6dTFrBgiZKeuHdVau8rg6ZTbDnVOdYhqtqc
+8rMl1Pi2YWj3xIx0eNFpyv+ahCf/qk5abal70EuK4f/Qk+zKAqaQa3ZXz+kAaIqj
+oBDMEyioEELrfc6vDslSoKu3kVXdO9tnqgaDuKX8bEKT9R34BGit3rRKZ6T9Z2Yb
+JaGrQ1X0317srzZAsnQg0Bdeo/WnCllJWGw1VkrS6isO08T3bkgpu++ytvfnDSgr
+yJz9/Xt9C00x9sc0erg63RuTW8KUUYEbcLTx/c41Pa3Vx1V5kxriVrj++n0OSUR5
+rFPR0bsNejRf6ZRvI1PgHHNMpeBkFNtiwNEs7ocIVNZavLSt/yUcZ5KeiFef2rFs
+kolo+k6rCQlA6jiKUNLiB1+D61mNd6lT4gr22AzFTymD9a+IXb+Wt2hRAR98owxb
+E/dGvn7/fiXQKcI7sw19
+=fYsu
 -----END PGP SIGNATURE-----
 
---Sr1nOIr3CvdE5hEN--
+--yudcn1FV7Hsu/q59--
 
---===============3287528813418380120==
+--===============4422909076019560211==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3287528813418380120==--
+--===============4422909076019560211==--
