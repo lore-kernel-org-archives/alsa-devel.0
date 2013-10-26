@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: wm5110: Add missing routes for
-	AEC Loopback
-Date: Sat, 26 Oct 2013 21:31:41 +0100
-Message-ID: <20131026203141.GB6362@sirena.org.uk>
-References: <1382797886-20643-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: fsl_spdif: fix return value check in
+ fsl_spdif_probe()
+Date: Sat, 26 Oct 2013 21:34:12 +0100
+Message-ID: <20131026203412.GC6362@sirena.org.uk>
+References: <CAPgLHd-2d+RLDq1U=wXR72nAEH1Hr6FDcWp0eAyEkrNmfjrEaA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4597302500374230849=="
+Content-Type: multipart/mixed; boundary="===============1057235542725374029=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B243261A01
- for <alsa-devel@alsa-project.org>; Sat, 26 Oct 2013 22:31:46 +0200 (CEST)
-In-Reply-To: <1382797886-20643-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5850A261A57
+ for <alsa-devel@alsa-project.org>; Sat, 26 Oct 2013 22:34:25 +0200 (CEST)
+In-Reply-To: <CAPgLHd-2d+RLDq1U=wXR72nAEH1Hr6FDcWp0eAyEkrNmfjrEaA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, timur@tabi.org, rob.herring@calxeda.com, yongjun_wei@trendmicro.com.cn, grant.likely@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4597302500374230849==
+--===============1057235542725374029==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KFztAG8eRSV9hGtP"
+	protocol="application/pgp-signature"; boundary="iFRdW5/EC4oqxDHL"
 Content-Disposition: inline
 
 
---KFztAG8eRSV9hGtP
+--iFRdW5/EC4oqxDHL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Oct 26, 2013 at 03:31:26PM +0100, Charles Keepax wrote:
-> Reported-by: Nariman Poushin <nariman.poushin@wolfsonmicro.com>
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+On Fri, Oct 25, 2013 at 05:29:25PM +0800, Wei Yongjun wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>=20
+> In case of error, the function platform_get_resource() returns NULL
+> pointer not ERR_PTR(). The IS_ERR() test in the return value check
+> should be replaced with NULL test.
 
 Applied, thanks.
 
---KFztAG8eRSV9hGtP
+--iFRdW5/EC4oqxDHL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSbCaqAAoJELSic+t+oim994EP/1uRPvb6/KJ+Mu2FdOJD46YA
-u3rxg46CQocvEI9HNyaQQOC5j2TGMFNnBasxze6jTwBy6obtlQRZxXJFoQVFAoJ5
-ausvyIFLUfoWPXv0cJDLmoWfCSbXNoq5zMZJbFoTkjAywq2mXQzolJdXRafFouPa
-8bl3pwWRkXiKOg4dfbLEYIJKbtOed/N8mQDEd05RQafbE0RRKiUGJBnk2m/nTOxQ
-ywM3pG0ev7WnPoBEFHdCpe5u3Eb9H7I3DKbBSnxxc4XPdx4yIQQvpoUH9r9MMnVC
-mioeFyFVAzEL84hT10afIEdOxpg53+sFOG4y+HMZz9L3s+2Rkt86BudoxXOlFQR/
-FoQiK0zJOn9RKEKQDfHiZpPCuI/83pWd9AyB5kQld907LBhFgAovbHunjZEAOEKj
-Z+11YqRKF2ksrDelQcPxbBSSW0v5Qj7aWT9PYu21CRLOXc267GpGgB5dT2Fcxh8d
-x51Ydj4QnxqaTzDs06L9MJtFJrUztoDT6DiLzg+dAVx0DfTG372fUXcp82q16B4v
-DZvYAHjEdoOraAcYEHUHMJcrVsVNENkfeSAmCjWbipI6+ECWi7wfRU99+wRrFfOI
-kpsVTV4TQ9IDPPY8bYitMcdXwB5IuGthBXWGrLzGCPvvBvcl+qS6anPFUfBLeIbn
-2iLAGsTIRVSZ2xHDFWbA
-=JeZF
+iQIcBAEBAgAGBQJSbCdBAAoJELSic+t+oim9tXoP/R8vKktz5XS1Z9dhDYcNtlAw
+fgsVHr0oSIqCXIO7vtLQH+HkFJoP80gWfP0DWAAmE24ho7AccKfohsTHSkYecuxd
+rhnDRfQa22p8WTTGEcn6A01bm3dtOpGs3xw/claxRaGZEafaCXRFJaAwcdEWd/6N
+gbhx2/v7vdNVxRWbL5BUFcVvNRo+DNN2rA5KugeK3e68KriCl6eg5iUrGhZKH0PB
+tF3zr4bRslzVVEuUNic9VPjaiE9VzNmCTab0pHR8c3Na4NcoBANHnCBN/dGLkGwW
+zF0kzAY6SLvgSCNSIqZIyvFXqMfsjEbiC4aikMtMw5ONdCqvBYb6ob5RP2r6GrD0
+EzBaAnsLKgr2Nf5xNO40VAy8qYcnYPS4ATIzUYvO1WhOEkEINjjNBwBMNyBGi08M
+rdhv8hiafQOKJsp3zibHCq0SbNbe3J0RPwF9cAz0qOErIWUT8JaFcGgeHaaVJ5f8
+COsD1N805PCxT+tdGUNBo99x0cogG5vutUVB+hU9pX2GUDtjPudLP56PlUG7+K1J
+fxCPVGk63iFhA7QcW5tYYR0671WjDgxMKNXEgtLve5ccoOJXgkrgYNYDt5vPMm8v
+LBOL91XXIGW/7IGKddRniybriv7+/2hBdWbhPvWFMV5iC39X/z/C0eESdW/+k39E
+fpEU/rQOWEhnq0AqTjvK
+=UNV2
 -----END PGP SIGNATURE-----
 
---KFztAG8eRSV9hGtP--
+--iFRdW5/EC4oqxDHL--
 
---===============4597302500374230849==
+--===============1057235542725374029==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4597302500374230849==--
+--===============1057235542725374029==--
