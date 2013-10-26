@@ -1,16 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: include/uapi/firewire.h for other firewire drivers
-Date: Sat, 26 Oct 2013 14:16:07 +0900
-Message-ID: <526B5017.8010106@sakamocchi.jp>
-References: <526A6092.4030709@sakamocchi.jp> <526A6C50.2000901@ladisch.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCHv7][ 2/5] ASoC: eukrea-tlv320: Add DT
+	support.
+Date: Sat, 26 Oct 2013 12:48:40 +0100
+Message-ID: <20131026114840.GX2443@sirena.org.uk>
+References: <1382616832-23593-1-git-send-email-denis@eukrea.com>
+ <1382616832-23593-2-git-send-email-denis@eukrea.com>
+ <20131025191513.5345BC4042C@trevor.secretlab.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3643141271045628572=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id C78C72654CA
- for <alsa-devel@alsa-project.org>; Sat, 26 Oct 2013 07:16:13 +0200 (CEST)
-In-Reply-To: <526A6C50.2000901@ladisch.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id D96A22610C4
+ for <alsa-devel@alsa-project.org>; Sat, 26 Oct 2013 13:48:49 +0200 (CEST)
+In-Reply-To: <20131025191513.5345BC4042C@trevor.secretlab.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,82 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Eric =?iso-8859-1?Q?B=E9nard?= <eric@eukrea.com>, Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Denis Carikli <denis@eukrea.com>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens,
 
- > Because every device can have settings that should not be changed
- > while streaming.
-
-For this, I have a further question.
-
-Currently my Fireworks/BeBoB driver give Control interfaces for these 
-settings, like changing sampling rate, switching digital interface. The 
-primarry purpose of these is the same, a prevention from stopping 
-streaming. The secondary purpose is debug codes for these functionality.
-
-But based on firewire.h interface, it is the applications' 
-responsibility, not drivers'. Is my understanding correct?
-
-Here some devices has "write-only" settings. For such device, my driver 
-remember these settings. If the applications has such responsibility, 
-there may be some inconsistency.
+--===============3643141271045628572==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wpclBcJ4x2yUw58h"
+Content-Disposition: inline
 
 
-Thanks
+--wpclBcJ4x2yUw58h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Takashi Sakamoto
+On Fri, Oct 25, 2013 at 08:15:13PM +0100, Grant Likely wrote:
+> On Thu, 24 Oct 2013 14:13:49 +0200, Denis Carikli <denis@eukrea.com> wrote:
+
+> > +- mux-int-port : The internal port of the i.MX audio muxer (AUDMUX).
+> > +- mux-ext-port : The external port of the i.MX audio muxer.
+
+> > +Note: The AUDMUX port numbering should start at 1, which is consistent with
+> > +hardware manual.
+
+> Looks okay to me. I've not been following the sound bindings very
+> closely. Are the described properties a common pattern for sound complex
+> bindings?
+
+They're standard for i.MX - it's a mux within the SoC.
+
+--wpclBcJ4x2yUw58h
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSa6wVAAoJELSic+t+oim9muwP/0iD5Ket3S2v1hCYZka6CVfH
+Q4UIIwHE/jLq+EiwzkSE0X408MeGLufVsonB4sDeYKwjDNgn/e8+BxQGBri39h2Z
+InWUGvNuQqdgAfxZd0XbH4156UKWBf7jefd29L/wzLm94+QpPq2tliAVJtMx0qzF
+tvl6aLLAynHvWQJvKcGLYeJVCy/Yjex9uJtzJ8wLfWNxJ2ZVINxQHp1eBhpJsjF4
+0crAuCgthhRAAVl/dkCPVwkBYPbUIGPfFUAgSEY8ovBcuLuTY9RlOz4TmFhMO6I9
+sSOFBmEnJEHI4x7Spr/4JF8+5HdXRabZ/8ajMC8IC3UDlQlslJc4hYQai47g9Tig
+q3EoiD+K4qVDmGC39w5TjlkPW+iH3/ZnI4YVpkPxn8ec9iPxB32p7vkaMAKMevug
+Cqh6lW4jXSO090OEjb2sD6J0oKtVTViXISNTHFhY5L5umKEvB18PjvH3g2ukizO+
+V/TG78yfuqRu+we2X5RsbkynDpsYf5VSTSwvxH69fXRcWQx9l7eoAFXQhOSszw3Q
+J/XW22ZqbhoQdt9ljDNEdyknq9DN5M27lwla2/8V7IfyFoDHNUeNeOp9+eit07H8
+F62irQsTgdq+Ebl/q3YIkZcKqg/NNV8HovxcAroP/I2gL0GXR9nxL4Vk6bR2Rhyy
+vyjZsfMkYVzPAgfVqGo/
+=6OGO
+-----END PGP SIGNATURE-----
+
+--wpclBcJ4x2yUw58h--
+
+--===============3643141271045628572==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-(Oct 25 2013 22:04), Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> About include/uapi/firewire.h, I'd like you to give me an advice.
->>
->> I'm sorry but I have little knowledgement about Dice chipset. So here
->> I want to know what I should do for snd-fireworks/snd-bebob.
->
-> The primary purpose is to support control panel/mixer applications,
-> which should be able to find out which ALSA device corresponds to which
-> FireWire device.
->
->> The header file includes an interface  for users to know its already
->> streaming or not, and lock it.
->
-> Because every device can have settings that should not be changed while
-> streaming.
->
->> But for Fireworks/BeBoB, I think checking CMP connections do the same
->> thing.
->
-> When a control panel wants to change several settings, it should not
-> need to establish a CMP connection just to be able to prevent the driver
-> from starting streaming at the same time.
->
->> Current FFADO can be failed when CMP connections on the device are
->> established, and ALSA can do the same. (but there are some problems.
->> both drivers set sampling rate before checking CMP connections. For this
->> I have a plan to post a patch for both FFADO and ALSA.)
->
-> This lock is not intended to prevent ALSA/FFADO conflicts.
->
-> At the moment, snd-dice and FFADO do not attach to the same devices.
-> When this is possible, the kernel FireWire framework should be extended
-> to allow the driver to prevent FFADO from using the device.  However, it
-> would be hard for the kernel to differentiate between FFADO and some
-> control panel, so I guess FFADO should be changed to not attach to
-> a device that already has a kernel driver.
->
->> Should I implement the same lock for Fireworks/BeBoB drivers?
->
-> Yes.
->
-> For Fireworks devices, applications will need to send EFC commands, but
-> will not be able to allocate the same 0xecc080000000 address, so the
-> driver needs a SEND_EFC ioctl.  (That's the same reason why snd-dice has
-> DICE_NOTIFICATION.)
->
->
-> Regards,
-> Clemens
+--===============3643141271045628572==--
