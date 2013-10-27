@@ -1,58 +1,201 @@
-From: Sebastian Reichel <sre@debian.org>
-Subject: [RFC 2/4] ARM: OMAP: rx51: Register audio device
-Date: Sun, 27 Oct 2013 22:24:44 +0100
-Message-ID: <1382909086-10493-3-git-send-email-sre@debian.org>
-References: <1382909086-10493-1-git-send-email-sre@debian.org>
+From: Barry Song <21cnbao@gmail.com>
+Subject: [PATCH v2 1/6] ASoC: sirf: add sirf platform driver
+	which provides DMA
+Date: Mon, 28 Oct 2013 06:23:48 +0800
+Message-ID: <1382912628-13796-1-git-send-email-Baohua.Song@csr.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1382909086-10493-1-git-send-email-sre@debian.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sebastian Reichel <sre@ring0.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Landley <rob@landley.net>, Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grant Likely <grant.likely@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>, Sebastian Reichel <sre@debian.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f178.google.com (mail-wi0-f178.google.com
+ [209.85.212.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFC422607B6
+ for <alsa-devel@alsa-project.org>; Sun, 27 Oct 2013 23:24:01 +0100 (CET)
+Received: by mail-wi0-f178.google.com with SMTP id hn9so3181611wib.5
+ for <alsa-devel@alsa-project.org>; Sun, 27 Oct 2013 15:24:01 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: lars@metafoo.de, broonie@kernel.org, lgirdwood@gmail.com
+Cc: Rongjun Ying <Rongjun.Ying@csr.com>, alsa-devel@alsa-project.org, workgroup.linux@csr.com, linux-arm-kernel@lists.infradead.org, Barry Song <Baohua.Song@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
-=46rom: Pali Roh=C3=A1r <pali.rohar@gmail.com>
+From: Rongjun Ying <Rongjun.Ying@csr.com>
 
-This patch adds support for the audio chip to the legacy
-boardcode of the Nokia N900.
+this driver uses dmaengine APIs and provides DMA to the CPU DAIs
+of I2S, USP and SiRF-soc-inner.
+SiRFSoC has 3 audio DAIs: I2S, USP(Universal Serial Ports) and DAI
+connected to soc-inner-codec, all of them will use the same DMA
+driver here.
 
-Signed-off-by: Pali Roh=C3=A1r <pali.rohar@gmail.com>
-Signed-off-by: Sebastian Reichel <sre@debian.org>
+Signed-off-by: Rongjun Ying <Rongjun.Ying@csr.com>
+Signed-off-by: Barry Song <Baohua.Song@csr.com>
 ---
- arch/arm/mach-omap2/board-rx51-peripherals.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ -v2: use the generic dmaengine PCM driver as Lars-Peter Clausen's comments;
 
-diff --git a/arch/arm/mach-omap2/board-rx51-peripherals.c b/arch/arm/ma=
-ch-omap2/board-rx51-peripherals.c
-index 68dc998..65e3627 100644
---- a/arch/arm/mach-omap2/board-rx51-peripherals.c
-+++ b/arch/arm/mach-omap2/board-rx51-peripherals.c
-@@ -1205,6 +1205,16 @@ error:
- 	 */
- }
-=20
-+static struct platform_device rx51_audio_device =3D {
-+	.name	=3D "rx51-audio",
-+	.id	=3D -1,
+ sound/soc/Kconfig         |  1 +
+ sound/soc/Makefile        |  1 +
+ sound/soc/sirf/Kconfig    |  4 ++
+ sound/soc/sirf/Makefile   |  3 ++
+ sound/soc/sirf/sirf-pcm.c | 99 +++++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 108 insertions(+)
+ create mode 100644 sound/soc/sirf/Kconfig
+ create mode 100644 sound/soc/sirf/Makefile
+ create mode 100644 sound/soc/sirf/sirf-pcm.c
+
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 5138b84..d5dce2b 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -48,6 +48,7 @@ source "sound/soc/pxa/Kconfig"
+ source "sound/soc/samsung/Kconfig"
+ source "sound/soc/s6000/Kconfig"
+ source "sound/soc/sh/Kconfig"
++source "sound/soc/sirf/Kconfig"
+ source "sound/soc/spear/Kconfig"
+ source "sound/soc/tegra/Kconfig"
+ source "sound/soc/txx9/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 61a64d2..1a47ff9 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -25,6 +25,7 @@ obj-$(CONFIG_SND_SOC)	+= pxa/
+ obj-$(CONFIG_SND_SOC)	+= samsung/
+ obj-$(CONFIG_SND_SOC)	+= s6000/
+ obj-$(CONFIG_SND_SOC)	+= sh/
++obj-$(CONFIG_SND_SOC)	+= sirf/
+ obj-$(CONFIG_SND_SOC)	+= spear/
+ obj-$(CONFIG_SND_SOC)	+= tegra/
+ obj-$(CONFIG_SND_SOC)	+= txx9/
+diff --git a/sound/soc/sirf/Kconfig b/sound/soc/sirf/Kconfig
+new file mode 100644
+index 0000000..1637089
+--- /dev/null
++++ b/sound/soc/sirf/Kconfig
+@@ -0,0 +1,4 @@
++config SND_SIRF_SOC
++	tristate "Platform DMA driver for the SiRF SoC chips"
++	depends on ARCH_SIRF && SND_SOC
++	select SND_SOC_GENERIC_DMAENGINE_PCM
+diff --git a/sound/soc/sirf/Makefile b/sound/soc/sirf/Makefile
+new file mode 100644
+index 0000000..f268b83
+--- /dev/null
++++ b/sound/soc/sirf/Makefile
+@@ -0,0 +1,3 @@
++snd-soc-sirf-objs := sirf-pcm.o
++
++obj-$(CONFIG_SND_SIRF_SOC) += snd-soc-sirf.o
+diff --git a/sound/soc/sirf/sirf-pcm.c b/sound/soc/sirf/sirf-pcm.c
+new file mode 100644
+index 0000000..1d53786
+--- /dev/null
++++ b/sound/soc/sirf/sirf-pcm.c
+@@ -0,0 +1,99 @@
++/*
++ * ALSA PCM interface for the SiRF SoC
++ *
++ * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
++ *
++ * Licensed under GPLv2 or later.
++ */
++
++#include <linux/module.h>
++#include <linux/sirfsoc_dma.h>
++#include <sound/dmaengine_pcm.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++
++static struct snd_pcm_hardware sirf_pcm_hardware = {
++	.info                   = (SNDRV_PCM_INFO_MMAP
++			| SNDRV_PCM_INFO_MMAP_VALID
++			| SNDRV_PCM_INFO_INTERLEAVED
++			| SNDRV_PCM_INFO_BLOCK_TRANSFER
++			| SNDRV_PCM_INFO_RESUME
++			| SNDRV_PCM_INFO_PAUSE),
++	.formats                = (SNDRV_PCM_FMTBIT_S16_LE),
++	.rates                  = (SNDRV_PCM_RATE_48000),
++	.rate_min               = 512,
++	.rate_max               = 115200,
++	.channels_min           = 1,
++	.channels_max           = 2,
++	.buffer_bytes_max       = 64 * 1024,
++	.period_bytes_min       = 128,
++	.period_bytes_max       = 32 * 1024,
++	.periods_min            = 2,
++	.periods_max            = 2,
 +};
 +
-+static void __init rx51_init_audio(void)
++static bool filter(struct dma_chan *chan, void *param)
 +{
-+	platform_device_register(&rx51_audio_device);
++	struct snd_dmaengine_dai_dma_data *dma_data = param;
++
++	if (!sirfsoc_dma_filter_id(chan, dma_data->filter_data))
++		return false;
++
++	chan->private = dma_data->filter_data;
++
++	return true;
 +}
 +
- static struct tsc2005_platform_data tsc2005_pdata =3D {
- 	.ts_pressure_max	=3D 2048,
- 	.ts_pressure_fudge	=3D 2,
-@@ -1287,6 +1297,7 @@ void __init rx51_peripherals_init(void)
- 	gpmc_onenand_init(board_onenand_data);
- 	board_smc91x_init();
- 	rx51_add_gpio_keys();
-+	rx51_init_audio();
- 	rx51_init_wl1251();
- 	rx51_init_tsc2005();
- 	rx51_init_si4713();
---=20
-1.8.4.rc3
++static const struct snd_dmaengine_pcm_config sirf_dmaengine_pcm_config = {
++	.pcm_hardware = &sirf_pcm_hardware,
++	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
++	.compat_filter_fn = filter,
++	.prealloc_buffer_size = 64 * 1024,
++};
++
++static int sirf_pcm_probe(struct platform_device *pdev)
++{
++	return snd_dmaengine_pcm_register(&pdev->dev,
++		&sirf_dmaengine_pcm_config,
++		SND_DMAENGINE_PCM_FLAG_NO_DT |
++		SND_DMAENGINE_PCM_FLAG_COMPAT);
++}
++
++static int sirf_pcm_remove(struct platform_device *pdev)
++{
++	snd_dmaengine_pcm_unregister(&pdev->dev);
++	return 0;
++}
++
++static struct platform_driver sirf_pcm_driver = {
++	.driver = {
++		.name = "sirf-pcm-audio",
++		.owner = THIS_MODULE,
++	},
++	.probe = sirf_pcm_probe,
++	.remove = sirf_pcm_remove,
++};
++
++static int __init sirf_pcm_init(void)
++{
++	int ret = 0;
++
++	ret = platform_driver_register(&sirf_pcm_driver);
++	if (ret)
++		pr_err("failed to register platform driver\n");
++	return ret;
++}
++
++static void __exit sirf_pcm_exit(void)
++{
++	platform_driver_unregister(&sirf_pcm_driver);
++}
++
++module_init(sirf_pcm_init);
++module_exit(sirf_pcm_exit);
++
++MODULE_DESCRIPTION("SiRF PCM audio interface driver");
++MODULE_AUTHOR("RongJun Ying <Rongjun.Ying@csr.com>");
++MODULE_LICENSE("GPL v2");
+-- 
+1.8.2.3
