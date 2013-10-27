@@ -1,92 +1,76 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ALSA: pcm_dmaengine: Remove hardcoded PCM
- formats
-Date: Sun, 27 Oct 2013 16:53:56 +0100
-Message-ID: <526D3714.7000002@metafoo.de>
-References: <s5hhac5l4m8.wl%tiwai@suse.de>
+From: Sebastian Reichel <sre@debian.org>
+Subject: [RFC 0/4] DT support for rx51-audio
+Date: Sun, 27 Oct 2013 22:24:42 +0100
+Message-ID: <1382909086-10493-1-git-send-email-sre@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-129.synserver.de (smtp-out-129.synserver.de
- [212.40.185.129])
- by alsa0.perex.cz (Postfix) with ESMTP id A2E4226169D
- for <alsa-devel@alsa-project.org>; Sun, 27 Oct 2013 16:53:57 +0100 (CET)
-In-Reply-To: <s5hhac5l4m8.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-doc-owner@vger.kernel.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: Sebastian Reichel <sre@ring0.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Landley <rob@landley.net>, Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grant Likely <grant.likely@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Sebastian Reichel <sre@debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/25/2013 06:03 PM, Takashi Iwai wrote:
-> Use the standard PCM helper function to figure out the sample bytes
-> instead of hardcodec PCM format checks in
-> snd_hwparams_to_dma_slave_config().
-> 
-> The patch also extends the format check for 8 bytes formats although
-> no one should match so far.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
-> 
-> I stumbled upon this, but am not 100% sure whether the current
-> hardcoded formats are the designed limitation...
+Hi,
 
-Looks good. I'm not sure if we ever need to handle the 24 bits per word case
-and if the current code handles the case correctly. But since the patch
-keeps the existing behavior for that case it should be fine.
+This patchset adds DT support in rx51-audio. I tested it on the Nokia N=
+900
+and was able to play sound with aplay using earphones and earspeaker. T=
+he
+Loudspeakers did not work. I don't know the reason.
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+The patchset consists of 4 patches:
 
-Thanks.
+1. convert rx51-audio to snd_soc_register_card()
+2. init audio in rx51 platform file
+3. add some DT helpers to ASoC core
+4. add DT support to rx51-audio
 
-> 
->  sound/core/pcm_dmaengine.c | 22 +++++++++-------------
->  1 file changed, 9 insertions(+), 13 deletions(-)
-> 
-> diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
-> index aa924d9..94d0873 100644
-> --- a/sound/core/pcm_dmaengine.c
-> +++ b/sound/core/pcm_dmaengine.c
-> @@ -63,23 +63,19 @@ int snd_hwparams_to_dma_slave_config(const struct snd_pcm_substream *substream,
->  	struct dma_slave_config *slave_config)
->  {
->  	enum dma_slave_buswidth buswidth;
-> +	int bits;
->  
-> -	switch (params_format(params)) {
-> -	case SNDRV_PCM_FORMAT_S8:
-> +	bits = snd_pcm_format_physical_width(params_format(params));
-> +	if (bits < 8 || bits > 64)
-> +		return -EINVAL;
-> +	else if (bits == 8)
->  		buswidth = DMA_SLAVE_BUSWIDTH_1_BYTE;
-> -		break;
-> -	case SNDRV_PCM_FORMAT_S16_LE:
-> +	else if (bits == 16)
->  		buswidth = DMA_SLAVE_BUSWIDTH_2_BYTES;
-> -		break;
-> -	case SNDRV_PCM_FORMAT_S18_3LE:
-> -	case SNDRV_PCM_FORMAT_S20_3LE:
-> -	case SNDRV_PCM_FORMAT_S24_LE:
-> -	case SNDRV_PCM_FORMAT_S32_LE:
-> +	else if (bits <= 32)
->  		buswidth = DMA_SLAVE_BUSWIDTH_4_BYTES;
-> -		break;
-> -	default:
-> -		return -EINVAL;
-> -	}
-> +	else
-> +		buswidth = DMA_SLAVE_BUSWIDTH_8_BYTES;
->  
->  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->  		slave_config->direction = DMA_MEM_TO_DEV;
-> 
+Please note, that the patch is RFC level for now. For example non DT bo=
+ot
+does not work, because I did not yet add pdata in boardcode.
+
+Proposed DTS node would look like this:
+
+sound: rx51-audio {
+       compatible =3D "nokia,rx51-audio";
+
+       ti,mcbsp =3D <&mcbsp2>;
+       ti,codec =3D <&tlv320aic3x>;
+       ti,codec_aux =3D <&tlv320aic3x_aux>;
+       ti,headset_amp =3D <&tpa6130a2>;
+
+       tvout-selection-gpio =3D <&gpio2 8 GPIO_ACTIVE_HIGH>; /* 40 */
+       jack-detection-gpio =3D <&gpio6 17 GPIO_ACTIVE_HIGH>; /* 177 */
+       eci-sw-gpio =3D <&gpio6 22 GPIO_ACTIVE_HIGH>; /* 182 */
+       speaker-amp-gpio =3D <&twl_gpio 7 GPIO_ACTIVE_HIGH>;
+};
+
+-- Sebastian
+
+Pali Roh=C3=A1r (2):
+  ASoC: omap: rx51: Use snd_soc_register_card
+  ARM: OMAP: rx51: Register audio device
+
+Sebastian Reichel (2):
+  ASoC: Allow Aux Codecs to be specified using DT
+  ASoC: RX-51: Add DT support to sound driver
+
+ .../devicetree/bindings/sound/nokia,rx51.txt       |  28 +++
+ .../devicetree/bindings/vendor-prefixes.txt        |   1 +
+ arch/arm/mach-omap2/board-rx51-peripherals.c       |  11 ++
+ include/sound/rx51.h                               |  18 ++
+ include/sound/soc.h                                |  13 +-
+ sound/soc/omap/omap-mcbsp.c                        |   5 +-
+ sound/soc/omap/omap-mcbsp.h                        |   2 +-
+ sound/soc/omap/rx51.c                              | 212 +++++++++++++=
+++------
+ sound/soc/soc-core.c                               |  68 +++++--
+ 9 files changed, 277 insertions(+), 81 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/nokia,rx51.=
+txt
+ create mode 100644 include/sound/rx51.h
+
+--=20
+1.8.4.rc3
+
