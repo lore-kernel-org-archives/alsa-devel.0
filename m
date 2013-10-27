@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_spdif: fix return value check in
- fsl_spdif_probe()
-Date: Sat, 26 Oct 2013 21:34:12 +0100
-Message-ID: <20131026203412.GC6362@sirena.org.uk>
-References: <CAPgLHd-2d+RLDq1U=wXR72nAEH1Hr6FDcWp0eAyEkrNmfjrEaA@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ALSA: pcm_dmaengine: Remove hardcoded PCM
+ formats
+Date: Sun, 27 Oct 2013 16:53:56 +0100
+Message-ID: <526D3714.7000002@metafoo.de>
+References: <s5hhac5l4m8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1057235542725374029=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 5850A261A57
- for <alsa-devel@alsa-project.org>; Sat, 26 Oct 2013 22:34:25 +0200 (CEST)
-In-Reply-To: <CAPgLHd-2d+RLDq1U=wXR72nAEH1Hr6FDcWp0eAyEkrNmfjrEaA@mail.gmail.com>
+Received: from smtp-out-129.synserver.de (smtp-out-129.synserver.de
+ [212.40.185.129])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2E4226169D
+ for <alsa-devel@alsa-project.org>; Sun, 27 Oct 2013 16:53:57 +0100 (CET)
+In-Reply-To: <s5hhac5l4m8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +22,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, timur@tabi.org, rob.herring@calxeda.com, yongjun_wei@trendmicro.com.cn, grant.likely@linaro.org, linuxppc-dev@lists.ozlabs.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 10/25/2013 06:03 PM, Takashi Iwai wrote:
+> Use the standard PCM helper function to figure out the sample bytes
+> instead of hardcodec PCM format checks in
+> snd_hwparams_to_dma_slave_config().
+> 
+> The patch also extends the format check for 8 bytes formats although
+> no one should match so far.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+> 
+> I stumbled upon this, but am not 100% sure whether the current
+> hardcoded formats are the designed limitation...
 
---===============1057235542725374029==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="iFRdW5/EC4oqxDHL"
-Content-Disposition: inline
+Looks good. I'm not sure if we ever need to handle the 24 bits per word case
+and if the current code handles the case correctly. But since the patch
+keeps the existing behavior for that case it should be fine.
 
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 
---iFRdW5/EC4oqxDHL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks.
 
-On Fri, Oct 25, 2013 at 05:29:25PM +0800, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->=20
-> In case of error, the function platform_get_resource() returns NULL
-> pointer not ERR_PTR(). The IS_ERR() test in the return value check
-> should be replaced with NULL test.
-
-Applied, thanks.
-
---iFRdW5/EC4oqxDHL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSbCdBAAoJELSic+t+oim9tXoP/R8vKktz5XS1Z9dhDYcNtlAw
-fgsVHr0oSIqCXIO7vtLQH+HkFJoP80gWfP0DWAAmE24ho7AccKfohsTHSkYecuxd
-rhnDRfQa22p8WTTGEcn6A01bm3dtOpGs3xw/claxRaGZEafaCXRFJaAwcdEWd/6N
-gbhx2/v7vdNVxRWbL5BUFcVvNRo+DNN2rA5KugeK3e68KriCl6eg5iUrGhZKH0PB
-tF3zr4bRslzVVEuUNic9VPjaiE9VzNmCTab0pHR8c3Na4NcoBANHnCBN/dGLkGwW
-zF0kzAY6SLvgSCNSIqZIyvFXqMfsjEbiC4aikMtMw5ONdCqvBYb6ob5RP2r6GrD0
-EzBaAnsLKgr2Nf5xNO40VAy8qYcnYPS4ATIzUYvO1WhOEkEINjjNBwBMNyBGi08M
-rdhv8hiafQOKJsp3zibHCq0SbNbe3J0RPwF9cAz0qOErIWUT8JaFcGgeHaaVJ5f8
-COsD1N805PCxT+tdGUNBo99x0cogG5vutUVB+hU9pX2GUDtjPudLP56PlUG7+K1J
-fxCPVGk63iFhA7QcW5tYYR0671WjDgxMKNXEgtLve5ccoOJXgkrgYNYDt5vPMm8v
-LBOL91XXIGW/7IGKddRniybriv7+/2hBdWbhPvWFMV5iC39X/z/C0eESdW/+k39E
-fpEU/rQOWEhnq0AqTjvK
-=UNV2
------END PGP SIGNATURE-----
-
---iFRdW5/EC4oqxDHL--
-
---===============1057235542725374029==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1057235542725374029==--
+> 
+>  sound/core/pcm_dmaengine.c | 22 +++++++++-------------
+>  1 file changed, 9 insertions(+), 13 deletions(-)
+> 
+> diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+> index aa924d9..94d0873 100644
+> --- a/sound/core/pcm_dmaengine.c
+> +++ b/sound/core/pcm_dmaengine.c
+> @@ -63,23 +63,19 @@ int snd_hwparams_to_dma_slave_config(const struct snd_pcm_substream *substream,
+>  	struct dma_slave_config *slave_config)
+>  {
+>  	enum dma_slave_buswidth buswidth;
+> +	int bits;
+>  
+> -	switch (params_format(params)) {
+> -	case SNDRV_PCM_FORMAT_S8:
+> +	bits = snd_pcm_format_physical_width(params_format(params));
+> +	if (bits < 8 || bits > 64)
+> +		return -EINVAL;
+> +	else if (bits == 8)
+>  		buswidth = DMA_SLAVE_BUSWIDTH_1_BYTE;
+> -		break;
+> -	case SNDRV_PCM_FORMAT_S16_LE:
+> +	else if (bits == 16)
+>  		buswidth = DMA_SLAVE_BUSWIDTH_2_BYTES;
+> -		break;
+> -	case SNDRV_PCM_FORMAT_S18_3LE:
+> -	case SNDRV_PCM_FORMAT_S20_3LE:
+> -	case SNDRV_PCM_FORMAT_S24_LE:
+> -	case SNDRV_PCM_FORMAT_S32_LE:
+> +	else if (bits <= 32)
+>  		buswidth = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> -		break;
+> -	default:
+> -		return -EINVAL;
+> -	}
+> +	else
+> +		buswidth = DMA_SLAVE_BUSWIDTH_8_BYTES;
+>  
+>  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>  		slave_config->direction = DMA_MEM_TO_DEV;
+> 
