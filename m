@@ -1,22 +1,21 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH v2 2/6] ASoC: sirf: add I2S CPU DAI driver
-Date: Sun, 27 Oct 2013 22:41:56 -0500
-Message-ID: <CAOZdJXUW5u5Zh561-FHGHfW-fK20L_EeBcdBtSeanWqTfkmndQ@mail.gmail.com>
-References: <1382913424-28626-1-git-send-email-Baohua.Song@csr.com>
+From: Xiubo Li-B47053 <B47053@freescale.com>
+Subject: Re: [PATCHv1 1/8] ALSA: Add SAI SoC Digital Audio
+ Interface driver.
+Date: Mon, 28 Oct 2013 05:58:42 +0000
+Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F8286A385@039-SN2MPN1-013.039d.mgd.msft.net>
+References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
+ <1382000477-17304-2-git-send-email-Li.Xiubo@freescale.com>
+ <526021B0.6050206@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muin.pair.com (muin.pair.com [209.68.1.55])
- by alsa0.perex.cz (Postfix) with ESMTP id 8ADED2608C7
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 04:41:58 +0100 (CET)
-Received: from mail-ve0-f177.google.com (mail-ve0-f177.google.com
- [209.85.128.177])
- by muin.pair.com (Postfix) with ESMTPSA id 973F78FC3F
- for <alsa-devel@alsa-project.org>; Sun, 27 Oct 2013 23:41:56 -0400 (EDT)
-Received: by mail-ve0-f177.google.com with SMTP id oz11so4549411veb.22
- for <alsa-devel@alsa-project.org>; Sun, 27 Oct 2013 20:41:56 -0700 (PDT)
-In-Reply-To: <1382913424-28626-1-git-send-email-Baohua.Song@csr.com>
+Received: from db9outboundpool.messaging.microsoft.com
+ (mail-db9lp0251.outbound.messaging.microsoft.com [213.199.154.251])
+ by alsa0.perex.cz (Postfix) with ESMTP id C356F26109C
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 06:58:46 +0100 (CET)
+In-Reply-To: <526021B0.6050206@metafoo.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,25 +25,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, workgroup.linux@csr.com, Rongjun Ying <Rongjun.Ying@csr.com>, broonie@kernel.org, Barry Song <Baohua.Song@csr.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: "djbw@fb.com" <djbw@fb.com>, "vinod.koul@intel.com" <vinod.koul@intel.com>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Wang Huan-B18965 <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Guo Shawn-R65073 <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, Lars-Peter Clausen <lars@metafoo.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Chen Guangyu-B42378 <B42378@freescale.com>, "oskar@scara.com" <oskar@scara.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, rob.herring@calxeda.co
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Oct 27, 2013 at 5:37 PM, Barry Song <21cnbao@gmail.com> wrote:
-> +       si2s->sirf_pcm_pdev = platform_device_register_simple("sirf-pcm-audio",
-> +                       0, NULL, 0);
-> +       if (IS_ERR(si2s->sirf_pcm_pdev))
-> +               return PTR_ERR(si2s->sirf_pcm_pdev);
-> +
-> +       platform_set_drvdata(pdev, si2s);
-> +
-> +       spin_lock_init(&si2s->lock);
-> +
-> +       ret = of_property_read_u32(pdev->dev.of_node,
-> +                       "sirf,i2s-dma-rx-channel", &rx_dma_ch);
-> +       if (ret < 0) {
-> +               dev_err(&pdev->dev, "Unable to USP0 rx dma channel\n");
-> +               return ret;
-> +       }
+Hi Dan, Vinod,
 
-Shouldn't you also call platform_device_unregister() before the 'return' here?
+
+> > +static int fsl_sai_probe(struct platform_device *pdev) {
+> [...]
+> > +
+> > +	sai->dma_params_rx.addr = res->start + SAI_RDR;
+> > +	sai->dma_params_rx.maxburst = 6;
+> > +	index = of_property_match_string(np, "dma-names", "rx");
+> > +	ret = of_parse_phandle_with_args(np, "dmas", "#dma-cells", index,
+> > +				&dma_args);
+> > +	if (ret)
+> > +		return ret;
+> > +	sai->dma_params_rx.slave_id = dma_args.args[1];
+> > +
+> > +	sai->dma_params_tx.addr = res->start + SAI_TDR;
+> > +	sai->dma_params_tx.maxburst = 6;
+> > +	index = of_property_match_string(np, "dma-names", "tx");
+> > +	ret = of_parse_phandle_with_args(np, "dmas", "#dma-cells", index,
+> > +				&dma_args);
+> > +	if (ret)
+> > +		return ret;
+> > +	sai->dma_params_tx.slave_id = dma_args.args[1];
+> 
+> The driver should not have to manually parse the dma devicetree
+> properties, this is something that should be handled by the dma engine
+> driver.
+> 
+
+What do you think about the DMA slave_id ?
+I have been noticed by one colleague that this should be parsed here, which
+is from your opinions ?
+
+
+> > +
+> > +	ret = snd_soc_register_component(&pdev->dev, &fsl_component,
+> > +			&fsl_sai_dai, 1);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = fsl_pcm_dma_init(pdev);
+> > +	if (ret)
+> > +		goto out;
