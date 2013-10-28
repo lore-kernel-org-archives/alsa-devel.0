@@ -1,55 +1,57 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 1/4] ASoC: omap: rx51: Use snd_soc_register_card
-Date: Mon, 28 Oct 2013 09:00:15 -0700
-Message-ID: <20131028160015.GA13643@sirena.org.uk>
-References: <1382909086-10493-1-git-send-email-sre@debian.org>
- <1382909086-10493-2-git-send-email-sre@debian.org>
+Subject: Re: [RFC 1/2] i2c: Use stable dev_name for ACPI enumerated I2C slaves
+Date: Mon, 28 Oct 2013 09:10:01 -0700
+Message-ID: <20131028161001.GB13643@sirena.org.uk>
+References: <1382703540-3769-1-git-send-email-jarkko.nikula@linux.intel.com>
+ <98785510.yWYAtabkbj@vostro.rjw.lan>
+ <526A726F.1030407@linux.intel.com>
+ <2889412.bEKBLJtgSW@vostro.rjw.lan>
+ <526E636D.3070005@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T4sUOijqQbZv57TR"
-Return-path: <linux-doc-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="JYK4vJDZwFMowpUq"
+Return-path: <linux-acpi-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1382909086-10493-2-git-send-email-sre@debian.org>
-Sender: linux-doc-owner@vger.kernel.org
-To: Sebastian Reichel <sre@debian.org>
-Cc: Sebastian Reichel <sre@ring0.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Landley <rob@landley.net>, Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grant Likely <grant.likely@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
+In-Reply-To: <526E636D.3070005@linux.intel.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Wolfram Sang <wsa@the-dreams.de>, linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---T4sUOijqQbZv57TR
-Content-Type: text/plain; charset=iso-8859-1
+--JYK4vJDZwFMowpUq
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 27, 2013 at 10:24:43PM +0100, Sebastian Reichel wrote:
-> From: Pali Roh=E1r <pali.rohar@gmail.com>
->=20
-> This patch converts the rx51 ASoC module to use
-> snd_soc_register_card. It also adds module alias
-> to support driver autoloading.
+On Mon, Oct 28, 2013 at 03:15:25PM +0200, Jarkko Nikula wrote:
 
-You should really use devm_snd_soc_register_card() here.
+> One possible thing to do is to let structure definitions to be
+> available for non-ACPI builds. Then compiler won't fail on structure
+> access which will be anyway optimized away by later compiler stages.
 
---T4sUOijqQbZv57TR
+You could also have inline accessor functions which can be stubbed out
+when not needed.
+
+--JYK4vJDZwFMowpUq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSbooGAAoJELSic+t+oim95JIP/iM6CcdgQoi38u29uqn9Wngk
-Ybk5NgxgSlgX5BEsPmh38fD2V4Vx+BrY6gPrMM0ibBCuWQGKDmsZRIvfdkbYxiXD
-tysn3aKwrR+cL3AFteb6K3QByYo8JigxZoubvN/mRO+6EOt/k+I8RcA5uV+IwVXB
-kkPKSibo6aBlnFj6kwqNaiEmhhVLfszIifgAuaibh9+MGjUkj304ZiID/0/Qww3n
-55dZkUnqG2+co+fRgIR+95wq/gQKjN4AwiP91bEt50NpdcjMcNcxBUzjjgXdzJ7Q
-a+gKjwlivR3SwsU3KRcrVDHnk4FmHXMZaNk9H/T7CNN5oKq4HTpCeNQcBYQD/5KV
-/vvxDCQpBuGy/uAS5+5HP4UzNVLJDDkxi10NxXZbp1mJt1WIp4juCxFiMybnpNwU
-wlpUFXoq9SKRvfDfvf/PcakO5CFkKSgbztkQxj+8dzbI1yRiKYQRvNDXZ/bbSD4+
-E36g/xJJIU4l4ASPWYFHDmKIquypCli10zphQuKGkGD2OKK9X1xta9E7SqN7XvB5
-zaDlkMndHss677LWiyQ+DzQIVmkL0e5OQrI/r/Vt8Qyf5Y/Es0NkZ25DLACPtfFu
-oDJrGyINpVhZKNpIw4IasoVpdufy3yysZoOwHvLWAN5YMwlofNRb7Ktld8NKpVxU
-V10ybJaRt9O2qlAb0+cV
-=S7Vd
+iQIcBAEBAgAGBQJSboxWAAoJELSic+t+oim9pXUQAI5P5ya2dgyxtn0txqAnDsQb
+CkW5YVgj59iCWUseYSgZsceO+EpJGuVmNLc+aL1ksCghMMjiOljLmkRzVdFw9Aya
+JZw3H3i4irieReNUr00rWfLBIoz8MawzBFmAhwY1ukGqWwvMhO1naIgGgCoTmHGC
+QVHkEJblnjtmD2T480pAkEZSY17t9n0ZuVOIOaXYCcu7AXfET8NNDtL8NVY/ovJj
+fbw8eIVr/u1dBqzk8vEEC05Wwi3L27c6ss2qjoFyQeJB5s4tBh7BIJsC5oYJ3KWr
+YYwAf4Sqcbz08z/ryUfOZNwIGSiO4kT1ipx6+2tigclDgvDDAnp9jpEYoPYfyQt1
+Zhuu2am6oo3DJQ/qt4ZjLCkbEbBPbImT74h8cAybZs+z4kUyfKTekvAp4ok8QWjv
+SkM2XUHF5C1fJPY/SqEcQrl6FybbRsV+8hNmfogeC7Y5KP8Ah+u5J/DzEUYy+gjP
+uO2pHhgPY0g/rcKoxyEfO6uxvWZBmpYPVtk3IBLESa9jz6W0uQjnOhJPZeCxCuoK
+ddZoZFP3s2Ld9BV7hLJue47BAIm5dyBfI7w5DR8ED9AhcUhpjz/wa63v82ayb6p3
+Y30ad5FZaE5ZyvMmXDy+kdIbA7aDDFpqxe170bnjx7SdU+48nN++LwxM/c6iCMy+
+FJFP82sE3Bwxk9QD3Cwr
+=H4BM
 -----END PGP SIGNATURE-----
 
---T4sUOijqQbZv57TR--
+--JYK4vJDZwFMowpUq--
