@@ -1,18 +1,18 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: [PATCH v2 5/6] ASoC: sirf-inner: add mach driver for
-	SiRFSoC internal codec
-Date: Tue, 29 Oct 2013 07:15:59 +0800
-Message-ID: <1383002159-29273-1-git-send-email-Baohua.Song@csr.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [PATCH] drm/radeon/audio: fix missing multichannel PCM
+	SAD in some cases
+Date: Tue, 29 Oct 2013 01:19:16 +0200
+Message-ID: <1383002356-2479-1-git-send-email-anssi.hannula@iki.fi>
+References: <526EE844.4030608@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f41.google.com (mail-pb0-f41.google.com
- [209.85.160.41])
- by alsa0.perex.cz (Postfix) with ESMTP id C7E9A2652CC
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 00:16:12 +0100 (CET)
-Received: by mail-pb0-f41.google.com with SMTP id um1so2928230pbc.0
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 16:16:11 -0700 (PDT)
+Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
+ [83.102.40.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43DA1260376
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 00:20:00 +0100 (CET)
+In-Reply-To: <526EE844.4030608@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,298 +22,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Rongjun Ying <Rongjun.Ying@csr.com>, alsa-devel@alsa-project.org, workgroup.linux@csr.com, linux-arm-kernel@lists.infradead.org, Barry Song <Baohua.Song@csr.com>
+To: Alex Deucher <alexander.deucher@amd.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Andre Heider <a.heider@gmail.com>, =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Rongjun Ying <Rongjun.Ying@csr.com>
-
-This connects DMA, CPU DAI and Codec DAI together and works
-as a mach driver.
-
-Signed-off-by: Rongjun Ying <Rongjun.Ying@csr.com>
-Signed-off-by: Barry Song <Baohua.Song@csr.com>
----
- -v2: use extcon for both Linux and Android support;
- use DAPM to replace legacy kcontrol
-
- sound/soc/sirf/Kconfig      |   5 +
- sound/soc/sirf/Makefile     |   2 +
- sound/soc/sirf/sirf-inner.c | 237 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 244 insertions(+)
- create mode 100644 sound/soc/sirf/sirf-inner.c
-
-diff --git a/sound/soc/sirf/Kconfig b/sound/soc/sirf/Kconfig
-index afa3952..564b0ec 100644
---- a/sound/soc/sirf/Kconfig
-+++ b/sound/soc/sirf/Kconfig
-@@ -11,3 +11,8 @@ config SND_SIRF_SOC_INNER
- 
- config SND_SOC_SIRF_USP
- 	tristate
-+
-+config SND_SIRF_INNER
-+	tristate "SoC Audio support for SiRF inner codec of SiRF EVB"
-+	depends on SND_SIRF_SOC
-+	select SND_SIRF_SOC_INNER
-diff --git a/sound/soc/sirf/Makefile b/sound/soc/sirf/Makefile
-index 8517c67..80abdf6 100644
---- a/sound/soc/sirf/Makefile
-+++ b/sound/soc/sirf/Makefile
-@@ -1,9 +1,11 @@
- snd-soc-sirf-objs := sirf-pcm.o
-+snd-soc-sirf-inner-objs := sirf-inner.o
- snd-soc-sirf-soc-inner-objs := sirf-soc-inner.o
- snd-soc-sirf-i2s-objs := sirf-i2s.o
- snd-soc-sirf-usp-objs := sirf-usp.o
- 
- obj-$(CONFIG_SND_SIRF_SOC) += snd-soc-sirf.o
-+obj-$(CONFIG_SND_SIRF_INNER) += snd-soc-sirf-inner.o
- obj-$(CONFIG_SND_SIRF_SOC_INNER) += snd-soc-sirf-soc-inner.o
- obj-$(CONFIG_SND_SOC_SIRF_I2S) += snd-soc-sirf-i2s.o
- obj-$(CONFIG_SND_SOC_SIRF_USP) += snd-soc-sirf-usp.o
-diff --git a/sound/soc/sirf/sirf-inner.c b/sound/soc/sirf/sirf-inner.c
-new file mode 100644
-index 0000000..e36ac5e
---- /dev/null
-+++ b/sound/soc/sirf/sirf-inner.c
-@@ -0,0 +1,237 @@
-+/*
-+ * SiRF inner audio device driver
-+ *
-+ * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
-+ *
-+ * Licensed under GPLv2 or later.
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/gpio.h>
-+#include <linux/of_gpio.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+
-+#include <linux/extcon.h>
-+#include <linux/extcon/extcon-gpio.h>
-+
-+#define SIRF_JACK_GPIO_DEBOUNCE_TIME	200 /* in ms */
-+struct sirf_inner_extcon_info {
-+	struct platform_device pdev;
-+	struct gpio_extcon_platform_data extcon_data;
-+	int last_state;
-+	int state_changed;
-+};
-+
-+struct sirf_inner_card {
-+	unsigned int            gpio_hp_pa;
-+	unsigned int            gpio_spk_pa;
-+	struct platform_device	*sirf_inner_device;
-+	struct sirf_inner_extcon_info	extcon_info;
-+};
-+
-+static int sirf_inner_hp_event(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *ctrl, int event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct snd_soc_card *card = dapm->card;
-+	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
-+	int on = !SND_SOC_DAPM_EVENT_OFF(event);
-+	if (gpio_is_valid(sinner_card->gpio_hp_pa))
-+		gpio_direction_output(sinner_card->gpio_hp_pa, on);
-+	return 0;
-+}
-+
-+static int sirf_inner_spk_event(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *ctrl, int event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct snd_soc_card *card = dapm->card;
-+	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
-+	int on = !SND_SOC_DAPM_EVENT_OFF(event);
-+
-+	if (sinner_card->extcon_info.state_changed) {
-+		sinner_card->extcon_info.state_changed = 0;
-+		if (!sinner_card->extcon_info.last_state)
-+			gpio_direction_output(sinner_card->gpio_spk_pa, 0);
-+		else
-+			gpio_direction_output(sinner_card->gpio_spk_pa, 1);
-+	} else {
-+		if (gpio_is_valid(sinner_card->gpio_spk_pa))
-+			gpio_direction_output(sinner_card->gpio_spk_pa, on);
-+	}
-+
-+	return 0;
-+}
-+static const struct snd_soc_dapm_widget sirf_inner_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Hp", sirf_inner_hp_event),
-+	SND_SOC_DAPM_SPK("Ext Spk", sirf_inner_spk_event),
-+	SND_SOC_DAPM_MIC("Ext Mic", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route intercon[] = {
-+	{"Hp", NULL, "HPOUTL"},
-+	{"Hp", NULL, "HPOUTR"},
-+	{"Ext Spk", NULL, "SPKOUT"},
-+	{"MICIN1", NULL, "Mic Bias"},
-+	{"Mic Bias", NULL, "Ext Mic"},
-+};
-+
-+/* Digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link sirf_inner_dai_links[] = {
-+	{
-+		.name = "SiRF inner",
-+		.stream_name = "SiRF inner",
-+		.codec_dai_name = "sirf-soc-inner",
-+		.platform_name = "sirf-pcm-audio.1",
-+	},
-+};
-+
-+/* Audio machine driver */
-+static struct snd_soc_card snd_soc_sirf_inner_card = {
-+	.name = "SiRF inner",
-+	.owner = THIS_MODULE,
-+	.dai_link = sirf_inner_dai_links,
-+	.num_links = ARRAY_SIZE(sirf_inner_dai_links),
-+	.dapm_widgets = sirf_inner_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(sirf_inner_dapm_widgets),
-+	.dapm_routes = intercon,
-+	.num_dapm_routes = ARRAY_SIZE(intercon),
-+};
-+
-+static int sirf_inner_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &snd_soc_sirf_inner_card;
-+	struct sirf_inner_card *sinner_card;
-+	int ret;
-+
-+	sinner_card = devm_kzalloc(&pdev->dev, sizeof(struct sirf_inner_card),
-+			GFP_KERNEL);
-+	if (sinner_card == NULL)
-+		return -ENOMEM;
-+
-+	sinner_card->sirf_inner_device = platform_device_alloc("soc-audio", -1);
-+	if (!sinner_card->sirf_inner_device)
-+		return -ENOMEM;
-+
-+	sirf_inner_dai_links[0].cpu_of_node =
-+		of_parse_phandle(pdev->dev.of_node, "sirf,inner-platform", 0);
-+	sirf_inner_dai_links[0].codec_of_node =
-+		of_parse_phandle(pdev->dev.of_node, "sirf,inner-codec", 0);
-+	sinner_card->gpio_spk_pa = of_get_named_gpio(pdev->dev.of_node,
-+			"spk-pa-gpios", 0);
-+	sinner_card->gpio_hp_pa =  of_get_named_gpio(pdev->dev.of_node,
-+			"hp-pa-gpios", 0);
-+	if (gpio_is_valid(sinner_card->gpio_spk_pa))
-+		gpio_request(sinner_card->gpio_spk_pa, "SPA_PA_SD");
-+	if (gpio_is_valid(sinner_card->gpio_hp_pa))
-+		gpio_request(sinner_card->gpio_hp_pa, "HP_PA_SD");
-+
-+	card->dev = &pdev->dev;
-+	snd_soc_card_set_drvdata(card, sinner_card);
-+	platform_set_drvdata(pdev, card);
-+	if (gpio_is_valid(sinner_card->gpio_hp_pa))
-+		gpio_direction_output(sinner_card->gpio_hp_pa, 0);
-+	if (gpio_is_valid(sinner_card->gpio_spk_pa))
-+		gpio_direction_output(sinner_card->gpio_spk_pa, 0);
-+
-+	platform_set_drvdata(sinner_card->sirf_inner_device,
-+			&snd_soc_sirf_inner_card);
-+
-+	ret =  platform_device_add(sinner_card->sirf_inner_device);
-+	if (ret) {
-+		platform_device_put(sinner_card->sirf_inner_device);
-+		return ret;
-+	}
-+
-+	sinner_card->extcon_info.extcon_data.name = "h2w";
-+	sinner_card->extcon_info.extcon_data.debounce =
-+		SIRF_JACK_GPIO_DEBOUNCE_TIME;
-+	sinner_card->extcon_info.extcon_data.irq_flags =
-+		IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_SHARED;
-+	sinner_card->extcon_info.extcon_data.state_on = "0";
-+	sinner_card->extcon_info.extcon_data.state_off = "1";
-+	sinner_card->extcon_info.extcon_data.gpio =
-+		of_get_named_gpio(pdev->dev.of_node,
-+		"hp-switch-gpios", 0);
-+
-+	sinner_card->extcon_info.pdev.name = "extcon-gpio";
-+	sinner_card->extcon_info.pdev.id = pdev->id;
-+	sinner_card->extcon_info.pdev.dev.platform_data =
-+		&sinner_card->extcon_info.extcon_data;
-+
-+	return platform_device_register(&sinner_card->extcon_info.pdev);
-+}
-+
-+static int sirf_inner_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
-+
-+	if (gpio_is_valid(sinner_card->gpio_hp_pa))
-+		gpio_free(sinner_card->gpio_hp_pa);
-+	if (gpio_is_valid(sinner_card->gpio_spk_pa))
-+		gpio_free(sinner_card->gpio_spk_pa);
-+
-+	platform_device_put(sinner_card->sirf_inner_device);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM_SLEEP
-+static int sirf_inner_resume(struct device *dev)
-+{
-+	struct snd_soc_card *card = dev_get_drvdata(dev);
-+	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
-+	struct extcon_dev *edev;
-+	int state;
-+
-+	edev = extcon_get_extcon_dev(sinner_card->extcon_info.extcon_data.name);
-+	state = gpio_get_value(sinner_card->extcon_info.extcon_data.gpio);
-+	if (state != sinner_card->extcon_info.last_state) {
-+		sinner_card->extcon_info.state_changed = 1;
-+		sinner_card->extcon_info.last_state = state;
-+		extcon_set_state(edev, state);
-+	}
-+	return 0;
-+}
-+
-+static int sirf_inner_suspend(struct device *dev)
-+{
-+	struct snd_soc_card *card = dev_get_drvdata(dev);
-+	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
-+	sinner_card->extcon_info.last_state = gpio_get_value(sinner_card->extcon_info.extcon_data.gpio);
-+	if (gpio_is_valid(sinner_card->gpio_spk_pa))
-+		gpio_direction_output(sinner_card->gpio_spk_pa, 0);
-+	return 0;
-+}
-+#endif
-+
-+static const struct of_device_id sirf_inner_of_match[] = {
-+	{.compatible = "sirf,sirf-inner", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, sirf_inner_of_match);
-+
-+static const struct dev_pm_ops sirf_inner_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(sirf_inner_suspend, sirf_inner_resume)
-+};
-+
-+static struct platform_driver sirf_inner_driver = {
-+	.driver = {
-+		.name = "sirf-inner",
-+		.owner = THIS_MODULE,
-+		.pm = &sirf_inner_pm_ops,
-+		.of_match_table = sirf_inner_of_match,
-+	},
-+	.probe = sirf_inner_probe,
-+	.remove = sirf_inner_remove,
-+};
-+module_platform_driver(sirf_inner_driver);
-+
-+MODULE_AUTHOR("RongJun Ying <RongJun.Ying@csr.com>");
-+MODULE_DESCRIPTION("ALSA SoC SIRF inner AUDIO driver");
-+MODULE_LICENSE("GPL v2");
--- 
-1.8.2.3
+VGhlIGN1cnJlbnQgY29kZSB3cml0aW5nIFNBRHMgdG8gdGhlIGF1ZGlvIHJlZ2lzdGVycyBzZWVt
+cyB0byBhc3N1bWUKdGhhdCB0aGVyZSBpcyBhdCBtb3N0IGEgc2luZ2xlIFNBRCBwZXIgYXVkaW8g
+Zm9ybWF0LgoKSG93ZXZlciwgdGhhdCBpcyBub3QgdGhlIGNhc2UuIEVzcGVjaWFsbHkgZm9yIFBD
+TSBpdCBpcyBzb21ld2hhdCBjb21tb24KZm9yIHNpbmtzIHRvIGhhdmUgdHdvIFNBRHMsIG9uZSBm
+b3IgOC1jaGFubmVsIGFuZCBvbmUgZm9yIDItY2hhbm5lbAphdWRpbywgd2hpY2ggbWF5IGhhdmUg
+ZGlmZmVyZW50IHN1cHBvcnRlZCBzYW1wbGUgcmF0ZXMgKGkuZS4gdGhlIHNpbmsKc3VwcG9ydHMg
+c3RlcmVvIGF1ZGlvIGF0IGhpZ2hlciBzYW1wbGUgcmF0ZXMgdGhhbiBtdWx0aWNoYW5uZWwgYXVk
+aW8pLgoKQmVjYXVzZSBvZiB0aGlzLCBvbmx5IHRoZSAyLWNoYW5uZWwgU0FEIG1heSBiZSB1c2Vk
+IGlmIGl0IGFwcGVhcnMgYmVmb3JlCnRoZSA4LWNoYW5uZWwgU0FELiBVbmxlc3Mgb3RoZXIgU0FE
+cyByZXF1aXJlIG90aGVyd2lzZSwgdGhpcyBtYXkgY2F1c2UKdGhlIEFMU0EgSERBIGRyaXZlciB0
+byBhbGxvdyBzdGVyZW8gcGxheWJhY2sgb25seS4KCkZpeCB0aGUgY29kZSB0byBwaWNrIHRoZSBQ
+Q00gU0FEIHdpdGggdGhlIGhpZ2hlc3QgbnVtYmVyIG9mIGNoYW5uZWxzLAp3aGlsZSBtZXJnaW5n
+IHRoZSByYXRlIG1hc2tzIG9mIFBDTSBTQURzIHdpdGggbG93ZXIgYW1vdW50IG9mIGNoYW5uZWxz
+CmludG8gdGhlIGFkZGl0aW9uYWwgc3RlcmVvIHJhdGUgbWFzayBieXRlLgoKVGVjaG5pY2FsbHkg
+dGhlcmUgYXJlIGV2ZW4gbW9yZSBjYXNlcyB0byBoYW5kbGUgKG11bHRpcGxlIG5vbi1QQ00gU0FE
+cwpvZiB0aGUgc2FtZSB0eXBlLCBtb3JlIHRoYW4gdHdvIFBDTSBTQURzIHdpdGggdmFyeWluZyBj
+aGFubmVsIGNvdW50cywKZXRjKSwgYnV0IHRob3NlIGhhdmUgbm90IGFjdHVhbGx5IGJlZW4gZW5j
+b3VudGVyZWQgaW4gdGhlIGZpZWxkIGFuZApoYW5kbGluZyB0aGVtIHdvdWxkIGJlIG5vbi10cml2
+aWFsLgoKRXhhbXBsZSBhZmZlY3RlZCBFRElEIGZyb20gT25reW8gVFgtU1I2NzQgc3BlY2lmeWlu
+ZyAxOTJrSHogc3RlcmVvCnN1cHBvcnQgYW5kIDk2a0h6IDgtY2hhbm5lbCBzdXBwb3J0IChhbmQg
+b3RoZXIgOC1jaGFubmVsIGNvbXByZXNzZWQKZm9ybWF0cyk6CjAwZmZmZmZmZmZmZmZmMDAzZGNi
+MDEwMDAwMDAwMDAxCmZmZmYwMTAzODAwMDAwNzgwYTBkYzlhMDU3NDc5ODI3CjEyNDg0YzAwMDAw
+MDAxMDEwMTAxMDEwMTAxMDEwMTAxCjAxMDEwMTAxMDEwMTAxMWQ4MDE4NzExYzE2MjA1ODJjCjI1
+MDBjNDhlMjEwMDAwOWUwMTFkMDA3MjUxZDAxZTIwCjZlMjg1NTAwYzQ4ZTIxMDAwMDFlMDAwMDAw
+ZmMwMDU0CjU4MmQ1MzUyMzYzNzM0MjAyMDIwMjAyMDAwMDAwMGZkCjAwMzEzZDBmMmUwODAwMGEy
+MDIwMjAyMDIwMjAwMTliCjAyMDMyZjcyNGY4NTA0MDMwZjBlMDcwNjk0MTMxMjFlCjFkMTYxNTAx
+MmYwOTdmMDcwZjFmMDcxNzA3NTAzNzA3CjUwM2YwN2MwODM0ZjAwMDA2NjAzMGMwMGZmZmY4MDhj
+CjBhZDA4YTIwZTAyZDEwMTAzZTk2MDBjNDhlMjEwMDAwCjE4MDExZDgwZDA3MjFjMTYyMDEwMmMy
+NTgwYzQ4ZTIxCjAwMDA5ZTAxMWQwMGJjNTJkMDFlMjBiODI4NTU0MGM0CjhlMjEwMDAwMWU4YzBh
+ZDA5MDIwNDAzMTIwMGM0MDU1CjAwYzQ4ZTIxMDAwMDE4MDAwMDAwMDAwMDAwMDAwMGE4CgpTaWdu
+ZWQtb2ZmLWJ5OiBBbnNzaSBIYW5udWxhIDxhbnNzaS5oYW5udWxhQGlraS5maT4KVGVzdGVkLWJ5
+OiBBbmRyZSBIZWlkZXIgPGEuaGVpZGVyQGdtYWlsLmNvbT4KQ2M6IFJhZmHFgiBNacWCZWNraSA8
+emFqZWM1QGdtYWlsLmNvbT4KLS0tCiBkcml2ZXJzL2dwdS9kcm0vcmFkZW9uL2RjZTZfYWZtdC5j
+ICAgICAgfCAyMCArKysrKysrKysrKysrKystLS0tLQogZHJpdmVycy9ncHUvZHJtL3JhZGVvbi9l
+dmVyZ3JlZW5faGRtaS5jIHwgMjAgKysrKysrKysrKysrKysrLS0tLS0KIGRyaXZlcnMvZ3B1L2Ry
+bS9yYWRlb24vcjYwMF9oZG1pLmMgICAgICB8IDIwICsrKysrKysrKysrKysrKy0tLS0tCiAzIGZp
+bGVzIGNoYW5nZWQsIDQ1IGluc2VydGlvbnMoKyksIDE1IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvZ3B1L2RybS9yYWRlb24vZGNlNl9hZm10LmMgYi9kcml2ZXJzL2dwdS9kcm0v
+cmFkZW9uL2RjZTZfYWZtdC5jCmluZGV4IDg1YTY5ZDIuLjBhMGZjZWUgMTAwNjQ0Ci0tLSBhL2Ry
+aXZlcnMvZ3B1L2RybS9yYWRlb24vZGNlNl9hZm10LmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL3Jh
+ZGVvbi9kY2U2X2FmbXQuYwpAQCAtMTk4LDIwICsxOTgsMzAgQEAgdm9pZCBkY2U2X2FmbXRfd3Jp
+dGVfc2FkX3JlZ3Moc3RydWN0IGRybV9lbmNvZGVyICplbmNvZGVyKQogCiAJZm9yIChpID0gMDsg
+aSA8IEFSUkFZX1NJWkUoZWxkX3JlZ190b190eXBlKTsgaSsrKSB7CiAJCXUzMiB2YWx1ZSA9IDA7
+CisJCXU4IHN0ZXJlb19mcmVxcyA9IDA7CisJCWludCBtYXhfY2hhbm5lbHMgPSAtMTsKIAkJaW50
+IGo7CiAKIAkJZm9yIChqID0gMDsgaiA8IHNhZF9jb3VudDsgaisrKSB7CiAJCQlzdHJ1Y3QgY2Vh
+X3NhZCAqc2FkID0gJnNhZHNbal07CiAKIAkJCWlmIChzYWQtPmZvcm1hdCA9PSBlbGRfcmVnX3Rv
+X3R5cGVbaV1bMV0pIHsKLQkJCQl2YWx1ZSA9IE1BWF9DSEFOTkVMUyhzYWQtPmNoYW5uZWxzKSB8
+Ci0JCQkJCURFU0NSSVBUT1JfQllURV8yKHNhZC0+Ynl0ZTIpIHwKLQkJCQkJU1VQUE9SVEVEX0ZS
+RVFVRU5DSUVTKHNhZC0+ZnJlcSk7CisJCQkJaWYgKHNhZC0+Y2hhbm5lbHMgPiBtYXhfY2hhbm5l
+bHMpIHsKKwkJCQkJdmFsdWUgPSBNQVhfQ0hBTk5FTFMoc2FkLT5jaGFubmVscykgfAorCQkJCQkJ
+REVTQ1JJUFRPUl9CWVRFXzIoc2FkLT5ieXRlMikgfAorCQkJCQkJU1VQUE9SVEVEX0ZSRVFVRU5D
+SUVTKHNhZC0+ZnJlcSk7CisJCQkJCW1heF9jaGFubmVscyA9IHNhZC0+Y2hhbm5lbHM7CisJCQkJ
+fQorCiAJCQkJaWYgKHNhZC0+Zm9ybWF0ID09IEhETUlfQVVESU9fQ09ESU5HX1RZUEVfUENNKQot
+CQkJCQl2YWx1ZSB8PSBTVVBQT1JURURfRlJFUVVFTkNJRVNfU1RFUkVPKHNhZC0+ZnJlcSk7Ci0J
+CQkJYnJlYWs7CisJCQkJCXN0ZXJlb19mcmVxcyB8PSBzYWQtPmZyZXE7CisJCQkJZWxzZQorCQkJ
+CQlicmVhazsKIAkJCX0KIAkJfQorCisJCXZhbHVlIHw9IFNVUFBPUlRFRF9GUkVRVUVOQ0lFU19T
+VEVSRU8oc3RlcmVvX2ZyZXFzKTsKKwogCQlXUkVHMzJfRU5EUE9JTlQob2Zmc2V0LCBlbGRfcmVn
+X3RvX3R5cGVbaV1bMF0sIHZhbHVlKTsKIAl9CiAKZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2Ry
+bS9yYWRlb24vZXZlcmdyZWVuX2hkbWkuYyBiL2RyaXZlcnMvZ3B1L2RybS9yYWRlb24vZXZlcmdy
+ZWVuX2hkbWkuYwppbmRleCBmNzFjZTM5Li4yYTQ4MzdkIDEwMDY0NAotLS0gYS9kcml2ZXJzL2dw
+dS9kcm0vcmFkZW9uL2V2ZXJncmVlbl9oZG1pLmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL3JhZGVv
+bi9ldmVyZ3JlZW5faGRtaS5jCkBAIC0xMzksMjAgKzEzOSwzMCBAQCBzdGF0aWMgdm9pZCBldmVy
+Z3JlZW5faGRtaV93cml0ZV9zYWRfcmVncyhzdHJ1Y3QgZHJtX2VuY29kZXIgKmVuY29kZXIpCiAK
+IAlmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShlbGRfcmVnX3RvX3R5cGUpOyBpKyspIHsKIAkJ
+dTMyIHZhbHVlID0gMDsKKwkJdTggc3RlcmVvX2ZyZXFzID0gMDsKKwkJaW50IG1heF9jaGFubmVs
+cyA9IC0xOwogCQlpbnQgajsKIAogCQlmb3IgKGogPSAwOyBqIDwgc2FkX2NvdW50OyBqKyspIHsK
+IAkJCXN0cnVjdCBjZWFfc2FkICpzYWQgPSAmc2Fkc1tqXTsKIAogCQkJaWYgKHNhZC0+Zm9ybWF0
+ID09IGVsZF9yZWdfdG9fdHlwZVtpXVsxXSkgewotCQkJCXZhbHVlID0gTUFYX0NIQU5ORUxTKHNh
+ZC0+Y2hhbm5lbHMpIHwKLQkJCQkJREVTQ1JJUFRPUl9CWVRFXzIoc2FkLT5ieXRlMikgfAotCQkJ
+CQlTVVBQT1JURURfRlJFUVVFTkNJRVMoc2FkLT5mcmVxKTsKKwkJCQlpZiAoc2FkLT5jaGFubmVs
+cyA+IG1heF9jaGFubmVscykgeworCQkJCQl2YWx1ZSA9IE1BWF9DSEFOTkVMUyhzYWQtPmNoYW5u
+ZWxzKSB8CisJCQkJCQlERVNDUklQVE9SX0JZVEVfMihzYWQtPmJ5dGUyKSB8CisJCQkJCQlTVVBQ
+T1JURURfRlJFUVVFTkNJRVMoc2FkLT5mcmVxKTsKKwkJCQkJbWF4X2NoYW5uZWxzID0gc2FkLT5j
+aGFubmVsczsKKwkJCQl9CisKIAkJCQlpZiAoc2FkLT5mb3JtYXQgPT0gSERNSV9BVURJT19DT0RJ
+TkdfVFlQRV9QQ00pCi0JCQkJCXZhbHVlIHw9IFNVUFBPUlRFRF9GUkVRVUVOQ0lFU19TVEVSRU8o
+c2FkLT5mcmVxKTsKLQkJCQlicmVhazsKKwkJCQkJc3RlcmVvX2ZyZXFzIHw9IHNhZC0+ZnJlcTsK
+KwkJCQllbHNlCisJCQkJCWJyZWFrOwogCQkJfQogCQl9CisKKwkJdmFsdWUgfD0gU1VQUE9SVEVE
+X0ZSRVFVRU5DSUVTX1NURVJFTyhzdGVyZW9fZnJlcXMpOworCiAJCVdSRUczMihlbGRfcmVnX3Rv
+X3R5cGVbaV1bMF0sIHZhbHVlKTsKIAl9CiAKZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9y
+YWRlb24vcjYwMF9oZG1pLmMgYi9kcml2ZXJzL2dwdS9kcm0vcmFkZW9uL3I2MDBfaGRtaS5jCmlu
+ZGV4IGY0NDMwMTAuLmRhNWNmYTQgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1L2RybS9yYWRlb24v
+cjYwMF9oZG1pLmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL3JhZGVvbi9yNjAwX2hkbWkuYwpAQCAt
+MzY0LDIwICszNjQsMzAgQEAgc3RhdGljIHZvaWQgZGNlM18yX2FmbXRfd3JpdGVfc2FkX3JlZ3Mo
+c3RydWN0IGRybV9lbmNvZGVyICplbmNvZGVyKQogCiAJZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJ
+WkUoZWxkX3JlZ190b190eXBlKTsgaSsrKSB7CiAJCXUzMiB2YWx1ZSA9IDA7CisJCXU4IHN0ZXJl
+b19mcmVxcyA9IDA7CisJCWludCBtYXhfY2hhbm5lbHMgPSAtMTsKIAkJaW50IGo7CiAKIAkJZm9y
+IChqID0gMDsgaiA8IHNhZF9jb3VudDsgaisrKSB7CiAJCQlzdHJ1Y3QgY2VhX3NhZCAqc2FkID0g
+JnNhZHNbal07CiAKIAkJCWlmIChzYWQtPmZvcm1hdCA9PSBlbGRfcmVnX3RvX3R5cGVbaV1bMV0p
+IHsKLQkJCQl2YWx1ZSA9IE1BWF9DSEFOTkVMUyhzYWQtPmNoYW5uZWxzKSB8Ci0JCQkJCURFU0NS
+SVBUT1JfQllURV8yKHNhZC0+Ynl0ZTIpIHwKLQkJCQkJU1VQUE9SVEVEX0ZSRVFVRU5DSUVTKHNh
+ZC0+ZnJlcSk7CisJCQkJaWYgKHNhZC0+Y2hhbm5lbHMgPiBtYXhfY2hhbm5lbHMpIHsKKwkJCQkJ
+dmFsdWUgPSBNQVhfQ0hBTk5FTFMoc2FkLT5jaGFubmVscykgfAorCQkJCQkJREVTQ1JJUFRPUl9C
+WVRFXzIoc2FkLT5ieXRlMikgfAorCQkJCQkJU1VQUE9SVEVEX0ZSRVFVRU5DSUVTKHNhZC0+ZnJl
+cSk7CisJCQkJCW1heF9jaGFubmVscyA9IHNhZC0+Y2hhbm5lbHM7CisJCQkJfQorCiAJCQkJaWYg
+KHNhZC0+Zm9ybWF0ID09IEhETUlfQVVESU9fQ09ESU5HX1RZUEVfUENNKQotCQkJCQl2YWx1ZSB8
+PSBTVVBQT1JURURfRlJFUVVFTkNJRVNfU1RFUkVPKHNhZC0+ZnJlcSk7Ci0JCQkJYnJlYWs7CisJ
+CQkJCXN0ZXJlb19mcmVxcyB8PSBzYWQtPmZyZXE7CisJCQkJZWxzZQorCQkJCQlicmVhazsKIAkJ
+CX0KIAkJfQorCisJCXZhbHVlIHw9IFNVUFBPUlRFRF9GUkVRVUVOQ0lFU19TVEVSRU8oc3RlcmVv
+X2ZyZXFzKTsKKwogCQlXUkVHMzIoZWxkX3JlZ190b190eXBlW2ldWzBdLCB2YWx1ZSk7CiAJfQog
+Ci0tIAoxLjguMS41CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
