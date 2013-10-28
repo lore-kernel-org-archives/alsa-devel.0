@@ -1,35 +1,55 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC] ASoC: core: Allow DAI links to be specified
- by using ACPI names
-Date: Mon, 28 Oct 2013 17:23:45 +0200
-Message-ID: <526E8181.2030208@linux.intel.com>
-References: <1380803636-24079-1-git-send-email-jarkko.nikula@linux.intel.com> <20131024095118.GH31415@sirena.org.uk> <526A1568.9010100@linux.intel.com> <20131025100618.GR18506@sirena.org.uk> <526A4B11.5000802@linux.intel.com> <1382961194.2334.23.camel@loki> <20131028150639.GA10936@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC 1/4] ASoC: omap: rx51: Use snd_soc_register_card
+Date: Mon, 28 Oct 2013 09:00:15 -0700
+Message-ID: <20131028160015.GA13643@sirena.org.uk>
+References: <1382909086-10493-1-git-send-email-sre@debian.org>
+ <1382909086-10493-2-git-send-email-sre@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20131028150639.GA10936@sirena.org.uk>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="T4sUOijqQbZv57TR"
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1382909086-10493-2-git-send-email-sre@debian.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: Sebastian Reichel <sre@debian.org>
+Cc: Sebastian Reichel <sre@ring0.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Landley <rob@landley.net>, Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grant Likely <grant.likely@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/28/2013 05:06 PM, Mark Brown wrote:
-> On Mon, Oct 28, 2013 at 11:53:14AM +0000, Liam Girdwood wrote:
->> On Fri, 2013-10-25 at 13:42 +0300, Jarkko Nikula wrote:
->>> Yes, I don't see any urgent reason to push this hack in. Better to check
->>> dev_name change first. What I'm going to propose there is "spix.y" to
->>> "spi-INTABCD:xy" and "x-00yz" to "i2c-INTABCD:xy"
->> We probably need to be able to match on ACPI name alone as some BIOS
->> settings can change the I2C bus number and break the name match used at
->> bind time. e.g. on Haswell the codec can either be on I2C bus 0 or 7.
-> Indeed.  The way I initially read the suggestion above the idea was to
-> replace the bus number with the ACPI name for the device which seemed
-> sensible but now I reread the bus number is still there.
-Sorry, my textual proposal above was confusing and should have used 
-different variables for ACPI name. What I meant was "spix.y" -> 
-"spi-INTABCD:ij" and "x-00yz" to "i2c-INTABCD:ij" where "INTABCD:ij" was 
-the ACPI device name which contains the device instance in "ij".
 
--- 
-Jarkko
+--T4sUOijqQbZv57TR
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, Oct 27, 2013 at 10:24:43PM +0100, Sebastian Reichel wrote:
+> From: Pali Roh=E1r <pali.rohar@gmail.com>
+>=20
+> This patch converts the rx51 ASoC module to use
+> snd_soc_register_card. It also adds module alias
+> to support driver autoloading.
+
+You should really use devm_snd_soc_register_card() here.
+
+--T4sUOijqQbZv57TR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSbooGAAoJELSic+t+oim95JIP/iM6CcdgQoi38u29uqn9Wngk
+Ybk5NgxgSlgX5BEsPmh38fD2V4Vx+BrY6gPrMM0ibBCuWQGKDmsZRIvfdkbYxiXD
+tysn3aKwrR+cL3AFteb6K3QByYo8JigxZoubvN/mRO+6EOt/k+I8RcA5uV+IwVXB
+kkPKSibo6aBlnFj6kwqNaiEmhhVLfszIifgAuaibh9+MGjUkj304ZiID/0/Qww3n
+55dZkUnqG2+co+fRgIR+95wq/gQKjN4AwiP91bEt50NpdcjMcNcxBUzjjgXdzJ7Q
+a+gKjwlivR3SwsU3KRcrVDHnk4FmHXMZaNk9H/T7CNN5oKq4HTpCeNQcBYQD/5KV
+/vvxDCQpBuGy/uAS5+5HP4UzNVLJDDkxi10NxXZbp1mJt1WIp4juCxFiMybnpNwU
+wlpUFXoq9SKRvfDfvf/PcakO5CFkKSgbztkQxj+8dzbI1yRiKYQRvNDXZ/bbSD4+
+E36g/xJJIU4l4ASPWYFHDmKIquypCli10zphQuKGkGD2OKK9X1xta9E7SqN7XvB5
+zaDlkMndHss677LWiyQ+DzQIVmkL0e5OQrI/r/Vt8Qyf5Y/Es0NkZ25DLACPtfFu
+oDJrGyINpVhZKNpIw4IasoVpdufy3yysZoOwHvLWAN5YMwlofNRb7Ktld8NKpVxU
+V10ybJaRt9O2qlAb0+cV
+=S7Vd
+-----END PGP SIGNATURE-----
+
+--T4sUOijqQbZv57TR--
