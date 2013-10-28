@@ -1,66 +1,126 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [RFC] ASoC: core: Allow DAI links to be specified
- by using ACPI names
-Date: Mon, 28 Oct 2013 09:46:11 -0700
-Message-ID: <20131028164611.GL13643@sirena.org.uk>
-References: <1380803636-24079-1-git-send-email-jarkko.nikula@linux.intel.com>
- <20131024095118.GH31415@sirena.org.uk>
- <526A1568.9010100@linux.intel.com>
- <20131025100618.GR18506@sirena.org.uk>
- <526A4B11.5000802@linux.intel.com>
- <1382961194.2334.23.camel@loki>
- <20131028150639.GA10936@sirena.org.uk>
- <526E8181.2030208@linux.intel.com>
+From: Nikolay Martynov <mar.kolya@gmail.com>
+Subject: Re: [PATCH v4 00/15] ALSA: usb-audio: fix
+	playback/capture concurrent usage
+Date: Mon, 28 Oct 2013 13:45:11 -0400
+Message-ID: <CALGY4ftG1hZR0QKE7Xm7FWri1TKJWjh5gprPsO4RKaX1jHCAqw@mail.gmail.com>
+References: <1381091480-23636-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WuT04sMzYDXq8et0"
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <526E8181.2030208@linux.intel.com>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ve0-f177.google.com (mail-ve0-f177.google.com
+ [209.85.128.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id AE45D26171F
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 18:45:12 +0100 (CET)
+Received: by mail-ve0-f177.google.com with SMTP id oz11so5105060veb.8
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 10:45:11 -0700 (PDT)
+In-Reply-To: <1381091480-23636-1-git-send-email-eldad@fogrefinery.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Eldad Zack <eldad@fogrefinery.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi.
 
---WuT04sMzYDXq8et0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I've tried this series applied against 3.11.6 in ubuntu with MS headset -
+seems to be working fine with Skype.
 
-On Mon, Oct 28, 2013 at 05:23:45PM +0200, Jarkko Nikula wrote:
-> On 10/28/2013 05:06 PM, Mark Brown wrote:
+Thanks!
 
-> >Indeed.  The way I initially read the suggestion above the idea was to
-> >replace the bus number with the ACPI name for the device which seemed
-> >sensible but now I reread the bus number is still there.
 
-> Sorry, my textual proposal above was confusing and should have used
-> different variables for ACPI name. What I meant was "spix.y" ->
-> "spi-INTABCD:ij" and "x-00yz" to "i2c-INTABCD:ij" where "INTABCD:ij"
-> was the ACPI device name which contains the device instance in "ij".
+2013/10/6 Eldad Zack <eldad@fogrefinery.com>
 
-Ah, OK - it's actually what I read it as in the first place then!
+> Hi,
+>
+> This patch series attempts to fix a long standing problem with the
+> concurrent
+> usage of playback and capture on implicit feedback devices.
+>
+> Now the following work properly on my system:
+> * Full-duplex with jack :)
+>
+> * All tests I ran with my tool. Will post it in case anyone want to try it,
+>   it takes about 15 minutes to run all the tests.
+>
+> * Starting a capture-only jackd instance, e.g.:
+>     jackd -n 1 -d alsa -d hw:2,0 -C
+>   and then playback-only:
+>     jackd -n 2 -d alsa -d hw:2,0 -P
+>   and then stop and start the playback.
+>   The same with playback running and restarting capture.
+>
+> * Trying to start a second substream with parameter mismatch (rate or
+>   period bytes is all I can test with my device) will fail,
+>   without ill effects.
+>
+> With this series applied there are now 3 usage tracking variables:
+>  - substream usage flag
+>  - endpoint param_set (to protect the parameters until the endpoint is
+> started)
+>  - the existing endpoint use_count
+>
+> Changes from v3:
+> * Added substream "used" flag, to prevent failure in some combinations of
+> ops. (#13)
+> * Moved start_endpoints for capture to prepare (#14)
+> * Added more constraints to the endpoint_may_set_params function (#10)
+> * Cleanups (#12, #15)
+>
+> v3:
+>
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-August/065744.html
+>
+> Applies against for-next, tested on upstream 3.12-rc3 (needs Alan Stern's
+> recent
+> patch "improve buffer size computations for USB PCM audio" to apply cleanly
+> on current mainline).
+>
+> Daniel and Nikolay: if you can test again with this series I'd appreciate
+> it.
+>
+> Cheers,
+> Eldad
+>
+> Eldad Zack (15):
+>   ALSA: usb-audio: remove unused parameter from sync_ep_set_params
+>   ALSA: usb-audio: remove deactivate_endpoints()
+>   ALSA: usb-audio: prevent NULL dereference on stop trigger
+>   ALSA: usb-audio: don't deactivate URBs on in-use EP
+>   ALSA: usb-audio: void return type of snd_usb_endpoint_deactivate()
+>   ALSA: usb-audio: clear SUBSTREAM_FLAG_SYNC_EP_STARTED on error
+>   ALSA: usb-audio: correct ep use_count semantics (add set_param flag)
+>   ALSA: usb-audio: rename alt_idx to altsetting
+>   ALSA: usb-audio: conditional interface altsetting
+>   ALSA: usb-audio: conditional concurrent usage of endpoint
+>   ALSA: usb-audio: remove altset_idx from snd_usb_substream
+>   ALSA: usb-audio: remove unused endpoint flag EP_FLAG_ACTIVATED
+>   ALSA: usb-audio: clear sync subs hw_params
+>   ALSA: usb-audio: always wait in start_endpoints
+>   ALSA: usb-audio: improve logging messages
+>
+>  sound/usb/card.h     |   9 ++-
+>  sound/usb/endpoint.c | 122 ++++++++++++++++++++---------
+>  sound/usb/endpoint.h |  13 +++-
+>  sound/usb/pcm.c      | 214
+> ++++++++++++++++++++++++++++++++++++---------------
+>  sound/usb/pcm.h      |   2 +
+>  sound/usb/proc.c     |   4 +-
+>  6 files changed, 258 insertions(+), 106 deletions(-)
+>
+> --
+> 1.8.1.5
+>
+>
 
---WuT04sMzYDXq8et0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSbpTQAAoJELSic+t+oim9c9wP/jooDse6OvPPV3l8W4Afoar+
-Prb0U9KwDPOzd1dhyo9mNd7vMgf5VF+uZy8W2IP4MxH6YzXbyawt10AyTfqTkUiA
-ss88QWpwxuu/eT5U43bUxQXkGESumyd36GV3T7QcioaxPT0B2EUIGHU2VGznY70C
-H3a8NWFfU97FTxCEeA9yXFh2Tr6NLw47dpiZBeKAvttnSDL8Z8Gc6CAFmFMYKuAc
-TJM6fO8rZ75SrsrpPwvw8KlUjBBz62ZbU/8lGi9FHBNmt2X/mBXpX6bk4Px0cUll
-lcEnSe7H2fQpRcCbrDlDIOOSw7dtXrd0fPN1b+WmwkzOV3JEM9KaUjtt0S+02NDi
-1oa2rMBEHkuEhWUmD3lrynCSnH49hirtAm6w1lAmPW268Xz8k+iC3T0OP/XBVSmE
-gJwSUUIBU32DKcfwVvz8orsakOc5uanamo6lYUSKGo3g4YsKUQ0mrnwpbXJWpBAw
-IhiVEz8HHo7AzfcOGENIzt3PPzwn/LL6oN8Rmzp5i/Mtc9HdgPWAo5sHvtOn1Aq4
-jnDTIlZkW1S/H8qBF9gzlyQI3KxeZTvOE3lKH1SBiSNtgt0ODgSv207UU/oiWreC
-205NuTc7b9dUUpror9Q7o45KFMsB29mpTQvcCl+i7W/Ymt6y2j24MYETgKlqEpZt
-GHC0DQiAG9PybI3jZuG5
-=Qt2a
------END PGP SIGNATURE-----
-
---WuT04sMzYDXq8et0--
+-- 
+Martynov Nikolay.
+Email: mar.kolya@gmail.com
