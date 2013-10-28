@@ -1,26 +1,18 @@
-From: Andre Heider <a.heider@gmail.com>
-Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
- multi-channel and HBR support
-Date: Tue, 29 Oct 2013 00:15:52 +0100
-Message-ID: <20131028231552.GA72034@localhost>
-References: <20131025165452.GA89428@deflower.internal>
- <526AA924.5070508@iki.fi> <20131028175206.GA70365@localhost>
- <526EA91B.3090607@iki.fi> <20131028181743.GA70502@localhost>
- <526EAC12.5000905@iki.fi> <20131028183554.GB70502@localhost>
- <526ECAAC.306@iki.fi> <20131028220045.GA71497@localhost>
- <526EE844.4030608@iki.fi>
+From: Barry Song <21cnbao@gmail.com>
+Subject: [PATCH v2 5/6] ASoC: sirf-inner: add mach driver for
+	SiRFSoC internal codec
+Date: Tue, 29 Oct 2013 07:15:59 +0800
+Message-ID: <1383002159-29273-1-git-send-email-Baohua.Song@csr.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f173.google.com (mail-ea0-f173.google.com
- [209.85.215.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 88C99260320
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 00:16:00 +0100 (CET)
-Received: by mail-ea0-f173.google.com with SMTP id g10so2558056eak.18
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 16:16:00 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <526EE844.4030608@iki.fi>
+Received: from mail-pb0-f41.google.com (mail-pb0-f41.google.com
+ [209.85.160.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7E9A2652CC
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 00:16:12 +0100 (CET)
+Received: by mail-pb0-f41.google.com with SMTP id um1so2928230pbc.0
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 16:16:11 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,146 +22,298 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Peter =?iso-8859-1?Q?Fr=FChberger?= <fritsch@xbmc.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Rongjun Ying <Rongjun.Ying@csr.com>, alsa-devel@alsa-project.org, workgroup.linux@csr.com, linux-arm-kernel@lists.infradead.org, Barry Song <Baohua.Song@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 29, 2013 at 12:42:12AM +0200, Anssi Hannula wrote:
-> 29.10.2013 00:00, Andre Heider kirjoitti:
-> > On Mon, Oct 28, 2013 at 10:35:56PM +0200, Anssi Hannula wrote:
-> >> 28.10.2013 20:35, Andre Heider kirjoitti:
-> >>> On Mon, Oct 28, 2013 at 08:25:22PM +0200, Anssi Hannula wrote:
-> >>>> 28.10.2013 20:17, Andre Heider kirjoitti:
-> >>>>> On Mon, Oct 28, 2013 at 08:12:43PM +0200, Anssi Hannula wrote:
-> >>>>>> 28.10.2013 19:52, Andre Heider kirjoitti:
-> >>>>>>> On Fri, Oct 25, 2013 at 08:23:48PM +0300, Anssi Hannula wrote:
-> >>>>>>>> 25.10.2013 19:54, Andre Heider kirjoitti:
-> >>>>>>>>> cat /proc/asound/card0/eld\#0.0
-> >>>>>>>>> 	monitor_present		1
-> >>>>>>>>> 	eld_valid		0
-> >>>>>>>>
-> >>>>>>>> However, this should have eld_valid=1 and contain more info. To get a
-> >>>>>>>> hint on whether it is a bug in audio or video driver, could you give a
-> >>>>>>>> log with CONFIG_SND_DEBUG ?
-> >>>>>>>>
-> >>>>>>>> AFAICS the sound git master tree should have the necessary support in
-> >>>>>>>> the radeon video driver to allow the audio driver to generate a valid
-> >>>>>>>> ELD with your card.
-> >>>>>>>
-> >>>>>>> With CONFIG_SND_DEBUG=y I get a bunch of
-> >>>>>>> "HDMI ATI/AMD: no speaker allocation for ELD"
-> >>>>>>> but afaics that's about it.
-> >>>>>>
-> >>>>>> Thanks, that is exactly what I was looking for.
-> >>>>>>
-> >>>>>> Looks like a radeon driver issue - it does not seem to setup the speaker
-> >>>>>> allocation registers properly (so that ALSA could read them from there),
-> >>>>>> and I verified that the EDID you posted has a valid speaker allocation
-> >>>>>> byte 0x4f.
-> >>>>>>
-> >>>>>> Just to recheck - you are running sound git master, or something else?
-> >>>>>
-> >>>>> This is from 3.12-rc7 with today's sound/master (3fbdaf9b) merged on top.
-> >>>>>
-> >>>>
-> >>>> Ah, OK, that certainly explains it. 3.12-x has this one:
-> >>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/drivers/gpu/drm/radeon?id=555b1b651acf44bf27ebbb04235d38a8fd2d58dc
-> >>>>
-> >>>> Could you revert that for testing, just to see if you get proper ELD
-> >>>> info then?
-> >>>
-> >>> Blergh, guess that's my fault for not just using sound/master.
-> >>>
-> >>> But that looks better:
-> >>>
-> >>> cat /proc/asound/card0/eld\#0.0
-> >>> 	monitor_present		1
-> >>> 	eld_valid		1
-> >>> 	monitor_name		
-> >>> 	connection_type		HDMI
-> >>> 	eld_version		[0x2] CEA-861D or below
-> >>> 	edid_version		[0x0] no CEA EDID Timing Extension block present
-> >>> 	manufacture_id		0x0
-> >>> 	product_id		0x0
-> >>> 	port_id			0x0
-> >>> 	support_hdcp		0
-> >>> 	support_ai		0
-> >>> 	audio_sync_delay	0
-> >>> 	speakers		[0x4f] FL/FR LFE FC RL/RR RLC/RRC
-> >>> 	sad_count		4
-> >>> 	sad0_coding_type	[0x1] LPCM
-> >>> 	sad0_channels		2
-> >>> 	sad0_rates		[0x1ee0] 32000 44100 48000 88200 96000 176400 192000
-> >>> 	sad0_bits		[0xe0000] 16 20 24
-> >>
-> >> Thanks.
-> >>
-> >> Hmm, seems we have bug in the radeon driver, we are missing the
-> >> 8-channel PCM SAD here.
-> >>
-> >> Can you try the attached patch?
-> > 
-> > Sure, with that patch I get:
-> > 
-> > 	monitor_present		1
-> > 	eld_valid		1
-> > 	monitor_name		
-> > 	connection_type		HDMI
-> > 	eld_version		[0x2] CEA-861D or below
-> > 	edid_version		[0x0] no CEA EDID Timing Extension block present
-> > 	manufacture_id		0x0
-> > 	product_id		0x0
-> > 	port_id			0x0
-> > 	support_hdcp		0
-> > 	support_ai		0
-> > 	audio_sync_delay	0
-> > 	speakers		[0x4f] FL/FR LFE FC RL/RR RLC/RRC
-> > 	sad_count		5
-> > 	sad0_coding_type	[0x1] LPCM
-> > 	sad0_channels		8
-> > 	sad0_rates		[0x6e0] 32000 44100 48000 88200 96000
-> > 	sad0_bits		[0xe0000] 16 20 24
-> > 	sad1_coding_type	[0x1] LPCM
-> > 	sad1_channels		2
-> > 	sad1_rates		[0x1ee0] 32000 44100 48000 88200 96000 176400 192000
-> > 	sad1_bits		[0xe0000] 16 20 24
-> > 	sad2_coding_type	[0x2] AC-3
-> > 	sad2_channels		8
-> > 	sad2_rates		[0xe0] 32000 44100 48000
-> > 	sad2_max_bitrate	640000
-> > 	sad3_coding_type	[0x6] AAC-LC
-> > 	sad3_channels		8
-> > 	sad3_rates		[0xe0] 32000 44100 48000
-> > 	sad3_max_bitrate	640000
-> > 	sad4_coding_type	[0x7] DTS
-> > 	sad4_channels		8
-> > 	sad4_rates		[0xe0] 32000 44100 48000
-> > 	sad4_max_bitrate	1536000
-> 
-> OK, looks good, I'll submit the patch to radeon people then.
-> 
-> > Those are supposed to be hardware capabilities, right? Because I'm
-> > pretty sure this dated receiver doesn't support AAC bitstreams.
-> 
-> Yep. I did manually verify that your EDID really claims AAC support,
-> though. It could be wrong I guess, and the reported max_bitrate is
-> suspiciously the same as for AC-3.
-> 
-> If you want to try AAC bitstreaming, you can download this:
-> http://onse.fi/files/testi.aac.lc.unconfirmed.spdif
-> and play it back using:
-> aplay -Dhdmi:CARD=Generic,DEV=0,AES0=6 -r44100 -f s16_le -c2 \
-> 	testi.aac.lc.unconfirmed.spdif
-> 
-> (file unconfirmed as I don't have AAC HW)
+From: Rongjun Ying <Rongjun.Ying@csr.com>
 
-That looks like its playing something, but there's no sound at all. The
-receiver claims there's a Dolby Digital stream active while that aplay
-command is running... so yeah, looks like the EDID is lying.
-(Same with another raw AAC LE file I just googled).
+This connects DMA, CPU DAI and Codec DAI together and works
+as a mach driver.
 
-But on the good side, multichannel AC3 and DTS passthrough is working
-flawlessly with XBMC ;)
+Signed-off-by: Rongjun Ying <Rongjun.Ying@csr.com>
+Signed-off-by: Barry Song <Baohua.Song@csr.com>
+---
+ -v2: use extcon for both Linux and Android support;
+ use DAPM to replace legacy kcontrol
 
-Thanks again,
-Andre
+ sound/soc/sirf/Kconfig      |   5 +
+ sound/soc/sirf/Makefile     |   2 +
+ sound/soc/sirf/sirf-inner.c | 237 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 244 insertions(+)
+ create mode 100644 sound/soc/sirf/sirf-inner.c
+
+diff --git a/sound/soc/sirf/Kconfig b/sound/soc/sirf/Kconfig
+index afa3952..564b0ec 100644
+--- a/sound/soc/sirf/Kconfig
++++ b/sound/soc/sirf/Kconfig
+@@ -11,3 +11,8 @@ config SND_SIRF_SOC_INNER
+ 
+ config SND_SOC_SIRF_USP
+ 	tristate
++
++config SND_SIRF_INNER
++	tristate "SoC Audio support for SiRF inner codec of SiRF EVB"
++	depends on SND_SIRF_SOC
++	select SND_SIRF_SOC_INNER
+diff --git a/sound/soc/sirf/Makefile b/sound/soc/sirf/Makefile
+index 8517c67..80abdf6 100644
+--- a/sound/soc/sirf/Makefile
++++ b/sound/soc/sirf/Makefile
+@@ -1,9 +1,11 @@
+ snd-soc-sirf-objs := sirf-pcm.o
++snd-soc-sirf-inner-objs := sirf-inner.o
+ snd-soc-sirf-soc-inner-objs := sirf-soc-inner.o
+ snd-soc-sirf-i2s-objs := sirf-i2s.o
+ snd-soc-sirf-usp-objs := sirf-usp.o
+ 
+ obj-$(CONFIG_SND_SIRF_SOC) += snd-soc-sirf.o
++obj-$(CONFIG_SND_SIRF_INNER) += snd-soc-sirf-inner.o
+ obj-$(CONFIG_SND_SIRF_SOC_INNER) += snd-soc-sirf-soc-inner.o
+ obj-$(CONFIG_SND_SOC_SIRF_I2S) += snd-soc-sirf-i2s.o
+ obj-$(CONFIG_SND_SOC_SIRF_USP) += snd-soc-sirf-usp.o
+diff --git a/sound/soc/sirf/sirf-inner.c b/sound/soc/sirf/sirf-inner.c
+new file mode 100644
+index 0000000..e36ac5e
+--- /dev/null
++++ b/sound/soc/sirf/sirf-inner.c
+@@ -0,0 +1,237 @@
++/*
++ * SiRF inner audio device driver
++ *
++ * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
++ *
++ * Licensed under GPLv2 or later.
++ */
++
++#include <linux/platform_device.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/gpio.h>
++#include <linux/of_gpio.h>
++
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++
++#include <linux/extcon.h>
++#include <linux/extcon/extcon-gpio.h>
++
++#define SIRF_JACK_GPIO_DEBOUNCE_TIME	200 /* in ms */
++struct sirf_inner_extcon_info {
++	struct platform_device pdev;
++	struct gpio_extcon_platform_data extcon_data;
++	int last_state;
++	int state_changed;
++};
++
++struct sirf_inner_card {
++	unsigned int            gpio_hp_pa;
++	unsigned int            gpio_spk_pa;
++	struct platform_device	*sirf_inner_device;
++	struct sirf_inner_extcon_info	extcon_info;
++};
++
++static int sirf_inner_hp_event(struct snd_soc_dapm_widget *w,
++				struct snd_kcontrol *ctrl, int event)
++{
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
++	int on = !SND_SOC_DAPM_EVENT_OFF(event);
++	if (gpio_is_valid(sinner_card->gpio_hp_pa))
++		gpio_direction_output(sinner_card->gpio_hp_pa, on);
++	return 0;
++}
++
++static int sirf_inner_spk_event(struct snd_soc_dapm_widget *w,
++				struct snd_kcontrol *ctrl, int event)
++{
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
++	int on = !SND_SOC_DAPM_EVENT_OFF(event);
++
++	if (sinner_card->extcon_info.state_changed) {
++		sinner_card->extcon_info.state_changed = 0;
++		if (!sinner_card->extcon_info.last_state)
++			gpio_direction_output(sinner_card->gpio_spk_pa, 0);
++		else
++			gpio_direction_output(sinner_card->gpio_spk_pa, 1);
++	} else {
++		if (gpio_is_valid(sinner_card->gpio_spk_pa))
++			gpio_direction_output(sinner_card->gpio_spk_pa, on);
++	}
++
++	return 0;
++}
++static const struct snd_soc_dapm_widget sirf_inner_dapm_widgets[] = {
++	SND_SOC_DAPM_HP("Hp", sirf_inner_hp_event),
++	SND_SOC_DAPM_SPK("Ext Spk", sirf_inner_spk_event),
++	SND_SOC_DAPM_MIC("Ext Mic", NULL),
++};
++
++static const struct snd_soc_dapm_route intercon[] = {
++	{"Hp", NULL, "HPOUTL"},
++	{"Hp", NULL, "HPOUTR"},
++	{"Ext Spk", NULL, "SPKOUT"},
++	{"MICIN1", NULL, "Mic Bias"},
++	{"Mic Bias", NULL, "Ext Mic"},
++};
++
++/* Digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link sirf_inner_dai_links[] = {
++	{
++		.name = "SiRF inner",
++		.stream_name = "SiRF inner",
++		.codec_dai_name = "sirf-soc-inner",
++		.platform_name = "sirf-pcm-audio.1",
++	},
++};
++
++/* Audio machine driver */
++static struct snd_soc_card snd_soc_sirf_inner_card = {
++	.name = "SiRF inner",
++	.owner = THIS_MODULE,
++	.dai_link = sirf_inner_dai_links,
++	.num_links = ARRAY_SIZE(sirf_inner_dai_links),
++	.dapm_widgets = sirf_inner_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(sirf_inner_dapm_widgets),
++	.dapm_routes = intercon,
++	.num_dapm_routes = ARRAY_SIZE(intercon),
++};
++
++static int sirf_inner_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &snd_soc_sirf_inner_card;
++	struct sirf_inner_card *sinner_card;
++	int ret;
++
++	sinner_card = devm_kzalloc(&pdev->dev, sizeof(struct sirf_inner_card),
++			GFP_KERNEL);
++	if (sinner_card == NULL)
++		return -ENOMEM;
++
++	sinner_card->sirf_inner_device = platform_device_alloc("soc-audio", -1);
++	if (!sinner_card->sirf_inner_device)
++		return -ENOMEM;
++
++	sirf_inner_dai_links[0].cpu_of_node =
++		of_parse_phandle(pdev->dev.of_node, "sirf,inner-platform", 0);
++	sirf_inner_dai_links[0].codec_of_node =
++		of_parse_phandle(pdev->dev.of_node, "sirf,inner-codec", 0);
++	sinner_card->gpio_spk_pa = of_get_named_gpio(pdev->dev.of_node,
++			"spk-pa-gpios", 0);
++	sinner_card->gpio_hp_pa =  of_get_named_gpio(pdev->dev.of_node,
++			"hp-pa-gpios", 0);
++	if (gpio_is_valid(sinner_card->gpio_spk_pa))
++		gpio_request(sinner_card->gpio_spk_pa, "SPA_PA_SD");
++	if (gpio_is_valid(sinner_card->gpio_hp_pa))
++		gpio_request(sinner_card->gpio_hp_pa, "HP_PA_SD");
++
++	card->dev = &pdev->dev;
++	snd_soc_card_set_drvdata(card, sinner_card);
++	platform_set_drvdata(pdev, card);
++	if (gpio_is_valid(sinner_card->gpio_hp_pa))
++		gpio_direction_output(sinner_card->gpio_hp_pa, 0);
++	if (gpio_is_valid(sinner_card->gpio_spk_pa))
++		gpio_direction_output(sinner_card->gpio_spk_pa, 0);
++
++	platform_set_drvdata(sinner_card->sirf_inner_device,
++			&snd_soc_sirf_inner_card);
++
++	ret =  platform_device_add(sinner_card->sirf_inner_device);
++	if (ret) {
++		platform_device_put(sinner_card->sirf_inner_device);
++		return ret;
++	}
++
++	sinner_card->extcon_info.extcon_data.name = "h2w";
++	sinner_card->extcon_info.extcon_data.debounce =
++		SIRF_JACK_GPIO_DEBOUNCE_TIME;
++	sinner_card->extcon_info.extcon_data.irq_flags =
++		IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_SHARED;
++	sinner_card->extcon_info.extcon_data.state_on = "0";
++	sinner_card->extcon_info.extcon_data.state_off = "1";
++	sinner_card->extcon_info.extcon_data.gpio =
++		of_get_named_gpio(pdev->dev.of_node,
++		"hp-switch-gpios", 0);
++
++	sinner_card->extcon_info.pdev.name = "extcon-gpio";
++	sinner_card->extcon_info.pdev.id = pdev->id;
++	sinner_card->extcon_info.pdev.dev.platform_data =
++		&sinner_card->extcon_info.extcon_data;
++
++	return platform_device_register(&sinner_card->extcon_info.pdev);
++}
++
++static int sirf_inner_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
++
++	if (gpio_is_valid(sinner_card->gpio_hp_pa))
++		gpio_free(sinner_card->gpio_hp_pa);
++	if (gpio_is_valid(sinner_card->gpio_spk_pa))
++		gpio_free(sinner_card->gpio_spk_pa);
++
++	platform_device_put(sinner_card->sirf_inner_device);
++	return 0;
++}
++
++#ifdef CONFIG_PM_SLEEP
++static int sirf_inner_resume(struct device *dev)
++{
++	struct snd_soc_card *card = dev_get_drvdata(dev);
++	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
++	struct extcon_dev *edev;
++	int state;
++
++	edev = extcon_get_extcon_dev(sinner_card->extcon_info.extcon_data.name);
++	state = gpio_get_value(sinner_card->extcon_info.extcon_data.gpio);
++	if (state != sinner_card->extcon_info.last_state) {
++		sinner_card->extcon_info.state_changed = 1;
++		sinner_card->extcon_info.last_state = state;
++		extcon_set_state(edev, state);
++	}
++	return 0;
++}
++
++static int sirf_inner_suspend(struct device *dev)
++{
++	struct snd_soc_card *card = dev_get_drvdata(dev);
++	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
++	sinner_card->extcon_info.last_state = gpio_get_value(sinner_card->extcon_info.extcon_data.gpio);
++	if (gpio_is_valid(sinner_card->gpio_spk_pa))
++		gpio_direction_output(sinner_card->gpio_spk_pa, 0);
++	return 0;
++}
++#endif
++
++static const struct of_device_id sirf_inner_of_match[] = {
++	{.compatible = "sirf,sirf-inner", },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, sirf_inner_of_match);
++
++static const struct dev_pm_ops sirf_inner_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(sirf_inner_suspend, sirf_inner_resume)
++};
++
++static struct platform_driver sirf_inner_driver = {
++	.driver = {
++		.name = "sirf-inner",
++		.owner = THIS_MODULE,
++		.pm = &sirf_inner_pm_ops,
++		.of_match_table = sirf_inner_of_match,
++	},
++	.probe = sirf_inner_probe,
++	.remove = sirf_inner_remove,
++};
++module_platform_driver(sirf_inner_driver);
++
++MODULE_AUTHOR("RongJun Ying <RongJun.Ying@csr.com>");
++MODULE_DESCRIPTION("ALSA SoC SIRF inner AUDIO driver");
++MODULE_LICENSE("GPL v2");
+-- 
+1.8.2.3
