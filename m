@@ -1,133 +1,36 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH v2 2/6] ASoC: sirf: add I2S CPU DAI driver
-Date: Mon, 28 Oct 2013 16:58:41 +0800
-Message-ID: <CAGsJ_4wzFeDB=9GX4ZcV=cZ5Oo4GDPtVu_bQ2os8OY-UwqDxxw@mail.gmail.com>
-References: <1382913424-28626-1-git-send-email-Baohua.Song@csr.com>
- <526E08D1.4040009@metafoo.de>
- <CAGsJ_4xHHD9XqLMdepUgRL7_X5Xg3_AQ2K83pbCxiFhV8cX4zg@mail.gmail.com>
- <526E24EE.70402@metafoo.de>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC] ASoC: core: Allow DAI links to be specified
+ by using ACPI names
+Date: Mon, 28 Oct 2013 11:53:14 +0000
+Message-ID: <1382961194.2334.23.camel@loki>
+References: <1380803636-24079-1-git-send-email-jarkko.nikula@linux.intel.com>
+	 <20131024095118.GH31415@sirena.org.uk> <526A1568.9010100@linux.intel.com>
+	 <20131025100618.GR18506@sirena.org.uk> <526A4B11.5000802@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
- [209.85.220.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 173082610C2
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 09:59:04 +0100 (CET)
-Received: by mail-pa0-f48.google.com with SMTP id kq14so2153217pab.35
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 01:59:04 -0700 (PDT)
-In-Reply-To: <526E24EE.70402@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, DL-SHA-WorkGroupLinux <workgroup.linux@csr.com>, Rongjun Ying <Rongjun.Ying@csr.com>, Mark Brown <broonie@kernel.org>, Barry Song <Baohua.Song@csr.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <526A4B11.5000802@linux.intel.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-2013/10/28 Lars-Peter Clausen <lars@metafoo.de>:
-> On 10/28/2013 09:32 AM, Barry Song wrote:
->> 2013/10/28 Lars-Peter Clausen <lars@metafoo.de>:
->>> On 10/27/2013 11:37 PM, Barry Song wrote:
->>>> +struct snd_soc_dai_ops sirfsoc_i2s_dai_ops = {
->>>
->>> static const
->>>
->>> Building your driver with sparse (`make C=2 ...`) will tell you these things.
->>>
->>>> +     .startup        = sirf_i2s_startup,
->>>> +     .shutdown       = sirf_i2s_shutdown,
->>>> +     .trigger        = sirf_i2s_trigger,
->>>> +     .hw_params      = sirf_i2s_hw_params,
->>>> +     .set_fmt        = sirf_i2s_set_dai_fmt,
->>>> +     .set_clkdiv     = sirf_i2s_set_clkdiv,
->>>> +};
->>>> +
->>> [...]
->>>> +
->>>> +static int sirf_i2s_probe(struct platform_device *pdev)
->>>> +{
->>>> +     struct sirf_i2s *si2s;
->>>> +     u32 rx_dma_ch, tx_dma_ch;
->>>> +     int ret;
->>>> +     struct resource mem_res;
->>>> +
->>>> +     si2s = devm_kzalloc(&pdev->dev, sizeof(struct sirf_i2s),
->>>> +                     GFP_KERNEL);
->>>> +     if (!si2s)
->>>> +             return -ENOMEM;
->>>> +
->>>> +     si2s->sirf_pcm_pdev = platform_device_register_simple("sirf-pcm-audio",
->>>> +                     0, NULL, 0);
->>>> +     if (IS_ERR(si2s->sirf_pcm_pdev))
->>>> +             return PTR_ERR(si2s->sirf_pcm_pdev);
->>>> +
->>>> +     platform_set_drvdata(pdev, si2s);
->>>> +
->>>> +     spin_lock_init(&si2s->lock);
->>>> +
->>>> +     ret = of_property_read_u32(pdev->dev.of_node,
->>>> +                     "sirf,i2s-dma-rx-channel", &rx_dma_ch);
->>>> +     if (ret < 0) {
->>>> +             dev_err(&pdev->dev, "Unable to USP0 rx dma channel\n");
->>>> +             return ret;
->>>> +     }
->>>> +     ret = of_property_read_u32(pdev->dev.of_node,
->>>> +                     "sirf,i2s-dma-tx-channel", &tx_dma_ch);
->>>> +     if (ret < 0) {
->>>> +             dev_err(&pdev->dev, "Unable to USP0 tx dma channel\n");
->>>> +             return ret;
->>>> +     }
->>>> +
->>>> +     dma_data[0].filter_data = (void *)tx_dma_ch;
->>>> +     dma_data[1].filter_data = (void *)rx_dma_ch;
->>>
->>> This should be using the standard DMA OF bindings. This combind with the
->>> recent changes to the generic dmaengine PCM driver, which added support for
->>> querying certain parameters (like max period length) from the dmaengine
->>> driver, will allow you to completely remove your custom PCM code. You'd
->>> basically just need to call "snd_dmaengine_pcm_register(&pdev->dev, NULL)"
->>> here in the I2S driver.
->>>
->>> This will require some changes to your dmaengine driver though. You need to
->>> implement the of_xlate callback for the generic DMA bindings and the
->>> device_slave_caps API for being able to query the capabilities from the driver.
->>
->> i am really happy to have that as for clock, gpio, pinctrl, all of
->> them we have the binding.
->> here the problem is we can't implement this in this driver as there
->> are still many drivers depending on the sirf-dma changes.
->>
->> so our point is keeping the things as is here. and we have another
->> patchset of dt binding for sirf-dma and all drivers depending sirf-dma
->> driver.
->
-> I don't think this is a good idea. Adding of_xlate support to the DMA driver
-> is a 10 line patch at most. And there is no compile time dependency between
-> the DMA driver changes and using the generic DMA bindings in this driver, so
-> this driver does not have to wait for the changes to the DMA driver to be
-> merged first.
+On Fri, 2013-10-25 at 13:42 +0300, Jarkko Nikula wrote:
+> On 10/25/2013 01:06 PM, Mark Brown wrote:
+> > OK, I was asking because I was thinking of applying the patch for now; 
+> > it's not that it's a bad idea it just seems like it's something that 
+> > might might make sense solved at that level. Equally well I don't know 
+> > if these systems will work with v3.13 anyway so perhaps it's not so 
+> > urgent. 
+> Yes, I don't see any urgent reason to push this hack in. Better to check 
+> dev_name change first. What I'm going to propose there is "spix.y" to 
+> "spi-INTABCD:xy" and "x-00yz" to "i2c-INTABCD:xy"
+> 
 
-if we don't wait dma driver and other drivers using sirf-dma to be
-merged before merging sound, it is ok to me to have of_xlate support
-at first.
+We probably need to be able to match on ACPI name alone as some BIOS
+settings can change the I2C bus number and break the name match used at
+bind time. e.g. on Haswell the codec can either be on I2C bus 0 or 7.
 
->
-> I'm fine with having the device_slave_caps stuff added in a later patch, but
-> adding custom DMA bindings at this point is in my opinion a no-go.
-> Especially if you consider that DT bindings are considered ABI by some people.
->
-> Btw. the DT bindings documentation for this driver seems to be missing.
+Liam
 
-fine. take it into v3 then.
-
->
-> - Lars
->
-
--barry
