@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5/5] ASoC: DAPM: Return -ENOMEM in
-	snd_soc_dapm_new_dai_widgets()
-Date: Mon, 28 Oct 2013 14:21:50 +0100
-Message-ID: <1382966510-13075-6-git-send-email-tiwai@suse.de>
+Subject: [PATCH 3/5] ASoC: DAPM: Fix uninitialized return value
+	from snd_soc_dai_link_event()
+Date: Mon, 28 Oct 2013 14:21:48 +0100
+Message-ID: <1382966510-13075-4-git-send-email-tiwai@suse.de>
 References: <1382966510-13075-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DD45261640
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D46D26163E
  for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 14:19:06 +0100 (CET)
 In-Reply-To: <1382966510-13075-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,9 +25,10 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-... instead of NULL dereferences.
+In a slightest path (both source and sink hw_params are NULL), the
+function may return an uninitialized value.
 
-Spotted by coverity CID 402004.
+Spotted by coverity CID 703453.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
@@ -35,24 +36,17 @@ Signed-off-by: Takashi Iwai <tiwai@suse.de>
  1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 8ab2b35..458c672 100644
+index d2ff080..c21c8e7 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -3528,6 +3528,7 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- 		if (!w) {
- 			dev_err(dapm->dev, "ASoC: Failed to create %s widget\n",
- 				dai->driver->playback.stream_name);
-+			return -ENOMEM;
+@@ -3428,6 +3428,8 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 				goto out;
+ 			}
  		}
++
++		ret = 0;
+ 		break;
  
- 		w->priv = dai;
-@@ -3546,6 +3547,7 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- 		if (!w) {
- 			dev_err(dapm->dev, "ASoC: Failed to create %s widget\n",
- 				dai->driver->capture.stream_name);
-+			return -ENOMEM;
- 		}
- 
- 		w->priv = dai;
+ 	case SND_SOC_DAPM_POST_PMU:
 -- 
 1.8.4.1
