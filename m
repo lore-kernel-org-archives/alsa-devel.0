@@ -1,53 +1,68 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/5] ASoC: Use strlcpy() for copying in
-	snd_soc_info_enum_double()
-Date: Mon, 28 Oct 2013 14:21:46 +0100
-Message-ID: <1382966510-13075-2-git-send-email-tiwai@suse.de>
-References: <1382966510-13075-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [RFC] ASoC: core: Allow DAI links to be specified
+ by using ACPI names
+Date: Mon, 28 Oct 2013 08:06:39 -0700
+Message-ID: <20131028150639.GA10936@sirena.org.uk>
+References: <1380803636-24079-1-git-send-email-jarkko.nikula@linux.intel.com>
+ <20131024095118.GH31415@sirena.org.uk>
+ <526A1568.9010100@linux.intel.com>
+ <20131025100618.GR18506@sirena.org.uk>
+ <526A4B11.5000802@linux.intel.com>
+ <1382961194.2334.23.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A474261661
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 14:19:06 +0100 (CET)
-In-Reply-To: <1382966510-13075-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
+Return-path: <linux-acpi-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1382961194.2334.23.camel@loki>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>, linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The provided texts aren't guaranteed to be in the fixed size.
-Spotted by coverity CID 139318.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/soc-core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+--Dxnq1zWXvFF0Q93v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index afc3fa8..bdc1d74 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2551,8 +2551,9 @@ int snd_soc_info_enum_double(struct snd_kcontrol *kcontrol,
- 
- 	if (uinfo->value.enumerated.item > e->max - 1)
- 		uinfo->value.enumerated.item = e->max - 1;
--	strcpy(uinfo->value.enumerated.name,
--		e->texts[uinfo->value.enumerated.item]);
-+	strlcpy(uinfo->value.enumerated.name,
-+		e->texts[uinfo->value.enumerated.item],
-+		sizeof(uinfo->value.enumerated.name));
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_soc_info_enum_double);
--- 
-1.8.4.1
+On Mon, Oct 28, 2013 at 11:53:14AM +0000, Liam Girdwood wrote:
+> On Fri, 2013-10-25 at 13:42 +0300, Jarkko Nikula wrote:
+
+> > Yes, I don't see any urgent reason to push this hack in. Better to chec=
+k=20
+> > dev_name change first. What I'm going to propose there is "spix.y" to=
+=20
+> > "spi-INTABCD:xy" and "x-00yz" to "i2c-INTABCD:xy"
+
+> We probably need to be able to match on ACPI name alone as some BIOS
+> settings can change the I2C bus number and break the name match used at
+> bind time. e.g. on Haswell the codec can either be on I2C bus 0 or 7.
+
+Indeed.  The way I initially read the suggestion above the idea was to
+replace the bus number with the ACPI name for the device which seemed
+sensible but now I reread the bus number is still there.
+
+--Dxnq1zWXvFF0Q93v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSbn11AAoJELSic+t+oim9NH0P/03Ba96/mhYjEIa5OxlL+JKx
+rA1KiLKyaX3YO1CNYNCxzBUGVNWenrjmlBoD+LZVe6WDhLCwOEiyUNgn8ZESJpvG
++7git4Xz53+qEJQYbicxn+hMBhRRDGgET1nAR1mAdL1uMYo6zppDL+VpQqzLvQsi
+d0nk1YabVjaSJurMBoHZ0JSSVCjslcwa/8Ex9566emfNYmhASJ+Rj2OvMh33v4jT
+xQ0lsauaVxvHP9EWYVH/6qgZWuGrf/K7jKoXSrb5GGuPUhjOFvZGQoSt/9JxHgPx
+aR4SU6arni5stn4lP7SRMtsKjk+qcl5uQlbVaYcRXZ3fjE3QQJruj3+9rB2rDYLQ
+9W/SqSeM/bCmwakHZYwxPbYfxwpRKof7og4rfVh/3YK/sNkoG/N+LtBGOKr5dR5q
+VvzaCDiD590KhAuw/Ij0nNqzu24uGKm1wk+6HWBKS5I6Jp8578oNQPs0HDMgezZh
+hVSWhGqMqO4SUPc+HBKh6mxgmqd9zNaYxpHDxplcmDY97eMf8Zqh0RD6NJj4e5zU
+94K8rqK54FK7GiRmgkHjzjm+8b28YWmbNpMmCkn8aB2+mo0hC14++no2+1K4CPiR
+ZO+VoTwbfyAZYCzW0yosWCZmQgDF5yjh4HhRI26mNbiki0N/6x0V+o+MEwZrfQuE
+5Kvt2t42JazyT6TDCsLO
+=eMif
+-----END PGP SIGNATURE-----
+
+--Dxnq1zWXvFF0Q93v--
