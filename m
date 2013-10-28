@@ -1,21 +1,17 @@
-From: Xiubo Li-B47053 <B47053@freescale.com>
-Subject: Re: [PATCHv1 1/8] ALSA: Add SAI SoC Digital Audio
-	Interface driver.
-Date: Mon, 28 Oct 2013 07:15:14 +0000
-Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F8286A4FA@039-SN2MPN1-013.039d.mgd.msft.net>
-References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
- <1382000477-17304-2-git-send-email-Li.Xiubo@freescale.com>
- <20131024110543.GA18506@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: include/uapi/firewire.h for other firewire drivers
+Date: Mon, 28 Oct 2013 09:29:47 +0100
+Message-ID: <526E207B.5060301@ladisch.de>
+References: <526A6092.4030709@sakamocchi.jp> <526A6C50.2000901@ladisch.de>
+ <526B5017.8010106@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db9outboundpool.messaging.microsoft.com
- (mail-db9lp0252.outbound.messaging.microsoft.com [213.199.154.252])
- by alsa0.perex.cz (Postfix) with ESMTP id 3585626030E
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 08:15:19 +0100 (CET)
-In-Reply-To: <20131024110543.GA18506@sirena.org.uk>
-Content-Language: en-US
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 0A3582610A5
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 09:29:49 +0100 (CET)
+In-Reply-To: <526B5017.8010106@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,122 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Wang Huan-B18965 <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, Guo Shawn-R65073 <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Chen Guangyu-B42378 <B42378@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "oskar@scara.com" <oskar@scara.>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-> > +static struct snd_pcm_hardware snd_fsl_hardware = {
-> > +	.info = SNDRV_PCM_INFO_INTERLEAVED |
-> > +		SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> > +		SNDRV_PCM_INFO_MMAP |
-> > +		SNDRV_PCM_INFO_MMAP_VALID |
-> > +		SNDRV_PCM_INFO_PAUSE |
-> > +		SNDRV_PCM_INFO_RESUME,
-> > +	.formats = SNDRV_PCM_FMTBIT_S16_LE,
-> > +	.rate_min = 8000,
-> > +	.channels_min = 2,
-> > +	.channels_max = 2,
-> > +	.buffer_bytes_max = FSL_SAI_DMABUF_SIZE,
-> > +	.period_bytes_min = 4096,
-> > +	.period_bytes_max = FSL_SAI_DMABUF_SIZE / TCD_NUMBER,
-> > +	.periods_min = TCD_NUMBER,
-> > +	.periods_max = TCD_NUMBER,
-> > +	.fifo_size = 0,
-> > +};
-> 
-> There's a patch in -next that lets the generic dmaengine code figure out
-> some settings from the dmacontroller rather than requiring the driver to
-> explicitly provide configuration - it's "ASoC: dmaengine-pcm: Provide
-> default config".  Please update your driver to use this, or let's work
-> out what it doesn't do any try to fix it.
+Takashi Sakamoto wrote:
+>> Because every device can have settings that should not be changed
+>> while streaming.
 >
-
-I will do a research.
- 
-> > +	ret = fsl_sai_set_dai_sysclk_tr(cpu_dai, clk_id, freq,
-> > +					FSL_FMT_TRANSMITTER);
-> > +	if (ret) {
-> > +		dev_err(cpu_dai->dev,
-> > +				"Cannot set sai's transmitter sysclk: %d\n",
-> > +				ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = fsl_sai_set_dai_sysclk_tr(cpu_dai, clk_id, freq,
-> > +					FSL_FMT_RECEIVER);
-> 
-> As other people have commented these should be exposed as separate clocks
-> rather than set in sync, unless there's some hardware reason they need to
-> be identical.  If that is the case then a comment explaining the
-> limitation would be good.
-> 
-> Similarly with several of the other functions.
-> 
-
-As I have replied before, there is one function couldn't be separated for the hardware limitation.
-
-> > +int fsl_sai_dai_remove(struct snd_soc_dai *dai) {
-> > +	struct fsl_sai *sai = dev_get_drvdata(dai->dev);
-> > +
-> > +	clk_disable_unprepare(sai->clk);
-> 
-> It'd be a bit nicer to only enable the clock while the driver is actively
-> being used rather than all the time the system is powered up but it's not
-> a blocker for merge.
-> 
-Actully there are to "XXX_probe" functions and two "XXX_remove" functions:
-
-fsl_sai_dai_probe() and fsl_sai_dai_remove() are callbacks of the ASoC subsystem.
-And in fsl_sai_dai_probe() needs to read/write the SAI controller's registers, so
-the clk_enable_prepare() must be here and clk_disable_unprepare() in fsl_sai_dai_remove().
-
-fsl_sai_probe() and fsl_sai_remove() are the driver's probe and remove interfaces.
-
-So the "+	clk_disable_unprepare(sai->clk);" sentence in fsl_sai_remove() will be removed later.
-
-
-> > +	ret = snd_soc_register_component(&pdev->dev, &fsl_component,
-> > +			&fsl_sai_dai, 1);
-> > +	if (ret)
-> > +		return ret;
-> 
-> There's a devm_snd_soc_register_component() in -next, please use that.
-> 
-See the next version.
-
-> > +
-> > +	ret = fsl_pcm_dma_init(pdev);
-> > +	if (ret)
-> > +		goto out;
-> > +
-> > +	platform_set_drvdata(pdev, sai);
-> 
-> These should go before the driver is registered with the subsystem
-> otherwise you've got a race where something might try to use the driver
-> before init is finished.
-> 
-> > +static int fsl_sai_remove(struct platform_device *pdev) {
-> > +	struct fsl_sai *sai = platform_get_drvdata(pdev);
-> > +
-> > +	fsl_pcm_dma_exit(pdev);
-> > +
-> > +	snd_soc_unregister_component(&pdev->dev);
-> 
-> Similarly here, unregister from the subsystem then clean up after.
-> 
-
-See the next version.
-
-> > +#define SAI_CR5_FBT(x)		((x) << 8)
-> > +#define SAI_CR5_FBT_MASK	(0x1f << 8)
-> > +
-> > +/* SAI audio dividers */
-> > +#define FSL_SAI_TX_DIV		0
-> > +#define FSL_SAI_RX_DIV		1
-> 
-> Make the namespacing consistent please - for preference use FSL_SAI
-> always.
+> Currently my Fireworks/BeBoB driver give Control interfaces for these
+> settings, like changing sampling rate, switching digital interface.
+> The primarry purpose of these is the same, a prevention from stopping
+> streaming. The secondary purpose is debug codes for these functionality.
 >
+> But based on firewire.h interface, it is the applications'
+> responsibility, not drivers'. Is my understanding correct?
 
-See the next version.
+Yes; the intent is for the kernel driver to handle only those settings
+that would be impossible or very difficult to handle with a separate
+user space process.  (For example, the sample rate is set by the
+application on the ALSA device; it would be a bad idea for the driver to
+_ask_ the control panel application to change it.)
+
+> Here some devices has "write-only" settings. For such device, my
+> driver remember these settings. If the applications has such
+> responsibility, there may be some inconsistency.
+
+This is another example of a setting that must be in the kernel driver.
+
+
+Regards,
+Clemens
