@@ -1,20 +1,24 @@
-From: Nikolay Martynov <mar.kolya@gmail.com>
-Subject: Re: [PATCH v4 00/15] ALSA: usb-audio: fix
-	playback/capture concurrent usage
-Date: Mon, 28 Oct 2013 13:45:11 -0400
-Message-ID: <CALGY4ftG1hZR0QKE7Xm7FWri1TKJWjh5gprPsO4RKaX1jHCAqw@mail.gmail.com>
-References: <1381091480-23636-1-git-send-email-eldad@fogrefinery.com>
+From: Andre Heider <a.heider@gmail.com>
+Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
+ multi-channel and HBR support
+Date: Mon, 28 Oct 2013 18:52:07 +0100
+Message-ID: <20131028175206.GA70365@localhost>
+References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
+ <s5hli1imfsi.wl%tiwai@suse.de>
+ <20131025165452.GA89428@deflower.internal>
+ <526AA924.5070508@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ve0-f177.google.com (mail-ve0-f177.google.com
- [209.85.128.177])
- by alsa0.perex.cz (Postfix) with ESMTP id AE45D26171F
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 18:45:12 +0100 (CET)
-Received: by mail-ve0-f177.google.com with SMTP id oz11so5105060veb.8
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 10:45:11 -0700 (PDT)
-In-Reply-To: <1381091480-23636-1-git-send-email-eldad@fogrefinery.com>
+Received: from mail-ea0-f172.google.com (mail-ea0-f172.google.com
+ [209.85.215.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98706261A88
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 18:52:13 +0100 (CET)
+Received: by mail-ea0-f172.google.com with SMTP id r16so2390007ead.17
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 10:52:13 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <526AA924.5070508@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,103 +28,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Eldad Zack <eldad@fogrefinery.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: Takashi Iwai <tiwai@suse.de>, Olivier Langlois <olivier@trillion01.com>, alsa-devel@alsa-project.org, Peter =?iso-8859-1?Q?Fr=FChberger?= <fritsch@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
+On Fri, Oct 25, 2013 at 08:23:48PM +0300, Anssi Hannula wrote:
+> 25.10.2013 19:54, Andre Heider kirjoitti:
+> > cat /proc/asound/card0/eld\#0.0
+> > 	monitor_present		1
+> > 	eld_valid		0
+> 
+> However, this should have eld_valid=1 and contain more info. To get a
+> hint on whether it is a bug in audio or video driver, could you give a
+> log with CONFIG_SND_DEBUG ?
+> 
+> AFAICS the sound git master tree should have the necessary support in
+> the radeon video driver to allow the audio driver to generate a valid
+> ELD with your card.
 
-I've tried this series applied against 3.11.6 in ubuntu with MS headset -
-seems to be working fine with Skype.
+With CONFIG_SND_DEBUG=y I get a bunch of
+"HDMI ATI/AMD: no speaker allocation for ELD"
+but afaics that's about it.
 
-Thanks!
-
-
-2013/10/6 Eldad Zack <eldad@fogrefinery.com>
-
-> Hi,
->
-> This patch series attempts to fix a long standing problem with the
-> concurrent
-> usage of playback and capture on implicit feedback devices.
->
-> Now the following work properly on my system:
-> * Full-duplex with jack :)
->
-> * All tests I ran with my tool. Will post it in case anyone want to try it,
->   it takes about 15 minutes to run all the tests.
->
-> * Starting a capture-only jackd instance, e.g.:
->     jackd -n 1 -d alsa -d hw:2,0 -C
->   and then playback-only:
->     jackd -n 2 -d alsa -d hw:2,0 -P
->   and then stop and start the playback.
->   The same with playback running and restarting capture.
->
-> * Trying to start a second substream with parameter mismatch (rate or
->   period bytes is all I can test with my device) will fail,
->   without ill effects.
->
-> With this series applied there are now 3 usage tracking variables:
->  - substream usage flag
->  - endpoint param_set (to protect the parameters until the endpoint is
-> started)
->  - the existing endpoint use_count
->
-> Changes from v3:
-> * Added substream "used" flag, to prevent failure in some combinations of
-> ops. (#13)
-> * Moved start_endpoints for capture to prepare (#14)
-> * Added more constraints to the endpoint_may_set_params function (#10)
-> * Cleanups (#12, #15)
->
-> v3:
->
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-August/065744.html
->
-> Applies against for-next, tested on upstream 3.12-rc3 (needs Alan Stern's
-> recent
-> patch "improve buffer size computations for USB PCM audio" to apply cleanly
-> on current mainline).
->
-> Daniel and Nikolay: if you can test again with this series I'd appreciate
-> it.
->
-> Cheers,
-> Eldad
->
-> Eldad Zack (15):
->   ALSA: usb-audio: remove unused parameter from sync_ep_set_params
->   ALSA: usb-audio: remove deactivate_endpoints()
->   ALSA: usb-audio: prevent NULL dereference on stop trigger
->   ALSA: usb-audio: don't deactivate URBs on in-use EP
->   ALSA: usb-audio: void return type of snd_usb_endpoint_deactivate()
->   ALSA: usb-audio: clear SUBSTREAM_FLAG_SYNC_EP_STARTED on error
->   ALSA: usb-audio: correct ep use_count semantics (add set_param flag)
->   ALSA: usb-audio: rename alt_idx to altsetting
->   ALSA: usb-audio: conditional interface altsetting
->   ALSA: usb-audio: conditional concurrent usage of endpoint
->   ALSA: usb-audio: remove altset_idx from snd_usb_substream
->   ALSA: usb-audio: remove unused endpoint flag EP_FLAG_ACTIVATED
->   ALSA: usb-audio: clear sync subs hw_params
->   ALSA: usb-audio: always wait in start_endpoints
->   ALSA: usb-audio: improve logging messages
->
->  sound/usb/card.h     |   9 ++-
->  sound/usb/endpoint.c | 122 ++++++++++++++++++++---------
->  sound/usb/endpoint.h |  13 +++-
->  sound/usb/pcm.c      | 214
-> ++++++++++++++++++++++++++++++++++++---------------
->  sound/usb/pcm.h      |   2 +
->  sound/usb/proc.c     |   4 +-
->  6 files changed, 258 insertions(+), 106 deletions(-)
->
-> --
-> 1.8.1.5
->
->
-
-
--- 
-Martynov Nikolay.
-Email: mar.kolya@gmail.com
+Regards,
+Andre
