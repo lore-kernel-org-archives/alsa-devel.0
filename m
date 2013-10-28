@@ -1,78 +1,104 @@
-From: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Subject: Re: [RFC 1/2] i2c: Use stable dev_name for ACPI enumerated I2C slaves
-Date: Mon, 28 Oct 2013 15:15:25 +0200
-Message-ID: <526E636D.3070005@linux.intel.com>
-References: <1382703540-3769-1-git-send-email-jarkko.nikula@linux.intel.com> <98785510.yWYAtabkbj@vostro.rjw.lan> <526A726F.1030407@linux.intel.com> <2889412.bEKBLJtgSW@vostro.rjw.lan>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 2/5] ASoC: DAPM: Fix use after free in error
+	path
+Date: Mon, 28 Oct 2013 14:21:47 +0100
+Message-ID: <1382966510-13075-3-git-send-email-tiwai@suse.de>
+References: <1382966510-13075-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <2889412.bEKBLJtgSW-sKB8Sp2ER+y1GS7QM15AGw@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 101452615F3
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 14:19:06 +0100 (CET)
+In-Reply-To: <1382966510-13075-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rafael
+The error message in dapm_create_or_share_mixmux_kcontrol() refers to
+the string "name", which may be "long_name" that has been already
+freed.  Delay the release of long_name to the place just before return.
 
-On 10/25/2013 05:08 PM, Rafael J. Wysocki wrote:
-> On Friday, October 25, 2013  04:30:23 PM Jarkko Nikula wrote:
- >>>
- >> Hmm, not only. Referencing to dev field in struct acpi_device by
- >> dev_name(&adev->dev) here will fail too.
- >
- > Well, something is not quite right here.
- >
- > One of the *reasons* for having ACPI_HANDLE() defined this way is to
- > avoid using explicit CONFIG_ACPI checks, so if that doesn't work,
- > then all of that becomes a bit pointless.
- >
-One possible thing to do is to let structure definitions to be available 
-for non-ACPI builds. Then compiler won't fail on structure access which 
-will be anyway optimized away by later compiler stages.
+Spotted by coverity CID 1042678.
 
-With a quick test below vmlinux section sizes don't change for couple 
-non-ACPI build tests and allow to get rid off IS_ENABLED(CONFIG_ACPI) 
-test in this patch. It's very minimal as it only moves the CONFIG_ACPI 
-test just after the struct acpi_device definition and defines 
-acpi_bus_get_device for non-ACPI case.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/soc-dapm.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-What I don't know how consistent it is as there are still couple 
-structure definitions under CONFIG_ACPI, doesn't touch other acpi 
-headers and requires to include acpi_bus.h in driver (or move acpi_bus.h 
-include in linux/acpi.h currently under CONFIG_ACPI).
-
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 2fb0b72..d2ff080 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -687,7 +687,7 @@ static int dapm_create_or_share_mixmux_kcontrol(struct snd_soc_dapm_widget *w,
+ 	int shared;
+ 	struct snd_kcontrol *kcontrol;
+ 	bool wname_in_long_name, kcname_in_long_name;
+-	char *long_name;
++	char *long_name = NULL;
+ 	const char *name;
+ 	int ret;
+ 
+@@ -745,24 +745,23 @@ static int dapm_create_or_share_mixmux_kcontrol(struct snd_soc_dapm_widget *w,
+ 
+ 			name = long_name;
+ 		} else if (wname_in_long_name) {
+-			long_name = NULL;
+ 			name = w->name + prefix_len;
+ 		} else {
+-			long_name = NULL;
+ 			name = w->kcontrol_news[kci].name;
+ 		}
+ 
+ 		kcontrol = snd_soc_cnew(&w->kcontrol_news[kci], NULL, name,
+ 					prefix);
+-		kfree(long_name);
+-		if (!kcontrol)
+-			return -ENOMEM;
++		if (!kcontrol) {
++			ret = -ENOMEM;
++			goto error;
++		}
+ 		kcontrol->private_free = dapm_kcontrol_free;
+ 
+ 		ret = dapm_kcontrol_data_alloc(w, kcontrol);
+ 		if (ret) {
+ 			snd_ctl_free_one(kcontrol);
+-			return ret;
++			goto error;
+ 		}
+ 
+ 		ret = snd_ctl_add(card, kcontrol);
+@@ -770,16 +769,18 @@ static int dapm_create_or_share_mixmux_kcontrol(struct snd_soc_dapm_widget *w,
+ 			dev_err(dapm->dev,
+ 				"ASoC: failed to add widget %s dapm kcontrol %s: %d\n",
+ 				w->name, name, ret);
+-			return ret;
++			goto error;
+ 		}
+ 	}
+ 
+ 	ret = dapm_kcontrol_add_widget(kcontrol, w);
+ 	if (ret)
+-		return ret;
++		goto error;
+ 
+ 	w->kcontrols[kci] = kcontrol;
+ 
++ error:
++	kfree(long_name);
+ 	return 0;
+ }
+ 
 -- 
-Jarkko
-
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index d901982..7ab7870 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -66,8 +66,6 @@ bool acpi_ata_match(acpi_handle handle);
-  bool acpi_bay_match(acpi_handle handle);
-  bool acpi_dock_match(acpi_handle handle);
-
--#ifdef CONFIG_ACPI
--
-  #include <linux/proc_fs.h>
-
-  #define ACPI_BUS_FILE_ROOT    "acpi"
-@@ -314,6 +312,8 @@ struct acpi_device {
-      void (*remove)(struct acpi_device *);
-  };
-
-+#if IS_ENABLED(CONFIG_ACPI)
-+
-  static inline void *acpi_driver_data(struct acpi_device *d)
-  {
-      return d->driver_data;
-@@ -531,6 +531,8 @@ static inline bool acpi_device_can_poweroff(struct 
-acpi_device *adev)
-
-  static inline int register_acpi_bus_type(void *bus) { return 0; }
-  static inline int unregister_acpi_bus_type(void *bus) { return 0; }
-+static inline int acpi_bus_get_device(acpi_handle handle,
-+                      struct acpi_device **device) { return 0; }
-
-  #endif                /* CONFIG_ACPI */
+1.8.4.1
