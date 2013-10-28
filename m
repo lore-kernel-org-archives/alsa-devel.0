@@ -1,16 +1,27 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 3/6] ASoC: usp-pcm: add CPU DAI driver
- for PCM simulated from USP
-Date: Mon, 28 Oct 2013 14:31:05 -0700
-Message-ID: <20131028213105.GB20960@sirena.org.uk>
-References: <1382914576-4785-1-git-send-email-Baohua.Song@csr.com>
+From: Andre Heider <a.heider@gmail.com>
+Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
+ multi-channel and HBR support
+Date: Mon, 28 Oct 2013 23:00:46 +0100
+Message-ID: <20131028220045.GA71497@localhost>
+References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
+ <s5hli1imfsi.wl%tiwai@suse.de>
+ <20131025165452.GA89428@deflower.internal>
+ <526AA924.5070508@iki.fi> <20131028175206.GA70365@localhost>
+ <526EA91B.3090607@iki.fi> <20131028181743.GA70502@localhost>
+ <526EAC12.5000905@iki.fi> <20131028183554.GB70502@localhost>
+ <526ECAAC.306@iki.fi>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0772803756036097311=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 26BEE260320
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 22:31:15 +0100 (CET)
-In-Reply-To: <1382914576-4785-1-git-send-email-Baohua.Song@csr.com>
+Received: from mail-ea0-f180.google.com (mail-ea0-f180.google.com
+ [209.85.215.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C97A260320
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 23:00:52 +0100 (CET)
+Received: by mail-ea0-f180.google.com with SMTP id l9so2034801eaj.11
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 15:00:52 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <526ECAAC.306@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,92 +31,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, workgroup.linux@csr.com, Rongjun Ying <Rongjun.Ying@csr.com>, Barry Song <Baohua.Song@csr.com>, linux-arm-kernel@lists.infradead.org
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Peter =?iso-8859-1?Q?Fr=FChberger?= <fritsch@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Oct 28, 2013 at 10:35:56PM +0200, Anssi Hannula wrote:
+> 28.10.2013 20:35, Andre Heider kirjoitti:
+> > On Mon, Oct 28, 2013 at 08:25:22PM +0200, Anssi Hannula wrote:
+> >> 28.10.2013 20:17, Andre Heider kirjoitti:
+> >>> On Mon, Oct 28, 2013 at 08:12:43PM +0200, Anssi Hannula wrote:
+> >>>> 28.10.2013 19:52, Andre Heider kirjoitti:
+> >>>>> On Fri, Oct 25, 2013 at 08:23:48PM +0300, Anssi Hannula wrote:
+> >>>>>> 25.10.2013 19:54, Andre Heider kirjoitti:
+> >>>>>>> cat /proc/asound/card0/eld\#0.0
+> >>>>>>> 	monitor_present		1
+> >>>>>>> 	eld_valid		0
+> >>>>>>
+> >>>>>> However, this should have eld_valid=1 and contain more info. To get a
+> >>>>>> hint on whether it is a bug in audio or video driver, could you give a
+> >>>>>> log with CONFIG_SND_DEBUG ?
+> >>>>>>
+> >>>>>> AFAICS the sound git master tree should have the necessary support in
+> >>>>>> the radeon video driver to allow the audio driver to generate a valid
+> >>>>>> ELD with your card.
+> >>>>>
+> >>>>> With CONFIG_SND_DEBUG=y I get a bunch of
+> >>>>> "HDMI ATI/AMD: no speaker allocation for ELD"
+> >>>>> but afaics that's about it.
+> >>>>
+> >>>> Thanks, that is exactly what I was looking for.
+> >>>>
+> >>>> Looks like a radeon driver issue - it does not seem to setup the speaker
+> >>>> allocation registers properly (so that ALSA could read them from there),
+> >>>> and I verified that the EDID you posted has a valid speaker allocation
+> >>>> byte 0x4f.
+> >>>>
+> >>>> Just to recheck - you are running sound git master, or something else?
+> >>>
+> >>> This is from 3.12-rc7 with today's sound/master (3fbdaf9b) merged on top.
+> >>>
+> >>
+> >> Ah, OK, that certainly explains it. 3.12-x has this one:
+> >> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/drivers/gpu/drm/radeon?id=555b1b651acf44bf27ebbb04235d38a8fd2d58dc
+> >>
+> >> Could you revert that for testing, just to see if you get proper ELD
+> >> info then?
+> > 
+> > Blergh, guess that's my fault for not just using sound/master.
+> > 
+> > But that looks better:
+> > 
+> > cat /proc/asound/card0/eld\#0.0
+> > 	monitor_present		1
+> > 	eld_valid		1
+> > 	monitor_name		
+> > 	connection_type		HDMI
+> > 	eld_version		[0x2] CEA-861D or below
+> > 	edid_version		[0x0] no CEA EDID Timing Extension block present
+> > 	manufacture_id		0x0
+> > 	product_id		0x0
+> > 	port_id			0x0
+> > 	support_hdcp		0
+> > 	support_ai		0
+> > 	audio_sync_delay	0
+> > 	speakers		[0x4f] FL/FR LFE FC RL/RR RLC/RRC
+> > 	sad_count		4
+> > 	sad0_coding_type	[0x1] LPCM
+> > 	sad0_channels		2
+> > 	sad0_rates		[0x1ee0] 32000 44100 48000 88200 96000 176400 192000
+> > 	sad0_bits		[0xe0000] 16 20 24
+> 
+> Thanks.
+> 
+> Hmm, seems we have bug in the radeon driver, we are missing the
+> 8-channel PCM SAD here.
+> 
+> Can you try the attached patch?
 
---===============0772803756036097311==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gatW/ieO32f1wygP"
-Content-Disposition: inline
+Sure, with that patch I get:
 
+	monitor_present		1
+	eld_valid		1
+	monitor_name		
+	connection_type		HDMI
+	eld_version		[0x2] CEA-861D or below
+	edid_version		[0x0] no CEA EDID Timing Extension block present
+	manufacture_id		0x0
+	product_id		0x0
+	port_id			0x0
+	support_hdcp		0
+	support_ai		0
+	audio_sync_delay	0
+	speakers		[0x4f] FL/FR LFE FC RL/RR RLC/RRC
+	sad_count		5
+	sad0_coding_type	[0x1] LPCM
+	sad0_channels		8
+	sad0_rates		[0x6e0] 32000 44100 48000 88200 96000
+	sad0_bits		[0xe0000] 16 20 24
+	sad1_coding_type	[0x1] LPCM
+	sad1_channels		2
+	sad1_rates		[0x1ee0] 32000 44100 48000 88200 96000 176400 192000
+	sad1_bits		[0xe0000] 16 20 24
+	sad2_coding_type	[0x2] AC-3
+	sad2_channels		8
+	sad2_rates		[0xe0] 32000 44100 48000
+	sad2_max_bitrate	640000
+	sad3_coding_type	[0x6] AAC-LC
+	sad3_channels		8
+	sad3_rates		[0xe0] 32000 44100 48000
+	sad3_max_bitrate	640000
+	sad4_coding_type	[0x7] DTS
+	sad4_channels		8
+	sad4_rates		[0xe0] 32000 44100 48000
+	sad4_max_bitrate	1536000
 
---gatW/ieO32f1wygP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Those are supposed to be hardware capabilities, right? Because I'm
+pretty sure this dated receiver doesn't support AAC bitstreams.
 
-On Mon, Oct 28, 2013 at 06:56:16AM +0800, Barry Song wrote:
-
-> +static int sirf_usp_pcm_divider(struct snd_soc_dai *dai, int div_id, int rate)
-> +{
-> +	struct sirf_usp *susp = snd_soc_dai_get_drvdata(dai);
-> +	u32 clk_rate, clk_div, clk_div_hi, clk_div_lo;
-> +
-> +	if (div_id != SIRF_USP_DIV_MCLK)
-> +		return -EINVAL;
-
-This is fine as far as it goes but why is this something that can't be
-calculated automatically at runtime based on the sample rate the driver
-is given?
-
-> +	/* Congiure TX FIFO Level Check register */
-
-Typo.
-
-> +static int sirf_usp_pcm_runtime_resume(struct device *dev)
-> +{
-> +	struct sirf_usp *susp = dev_get_drvdata(dev);
-> +	clk_prepare_enable(susp->clk);
-
-Should check the return value here.
-
-> +	clk_prepare_enable(susp->clk);
-
-Should check the return value.
-
-> +	ret = snd_soc_register_component(&pdev->dev, &sirf_usp_component,
-> +		&sirf_usp_pcm_dai, 1);
-
-devm_snd_soc_register_component() please.
-
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Register Audio SoC dai failed.\n");
-> +		goto err;
-> +	}
-> +	pm_runtime_enable(&pdev->dev);
-
-This needs to happen prior to registration.
-
---gatW/ieO32f1wygP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSbtePAAoJELSic+t+oim9EAQP/1vCqGkkWaLac/AHAaZg+Xz5
-xDUp4PbwzyN6xgrAm4M3xbXf4QCxxCWf0FmI//FzJ/mKeQdqsEndtjJz5U4IQm5+
-X27aiPgRUIy0/tXS3aBeFUUOGIImpUPJ2SjunCXXst7so1NRq9R18BfFyCU1jKp2
-lCU9HJFkhyvCJZmjXWvdYmJt3BSMJB3y6mT7YPtpyHnVfaF6QkEEr6L9g2EVRGAL
-VpnDJhTbGfyO2wE6Zu8/SDYc33Tg3j1vLLgG0r6yOEl8bjsIrPQmzE7DKTb/tzfi
-c5mH96ry1ka+OeKLacgzcx3GIHj9wt2oGSRXuSQgeOkPoJk5sgoZmaBeu6K55xFn
-f+u6eVKfVi1/YyqBB+L0YbQdjLF8X3HyziZrPF1WXIXx089A+I173m7HzJM8Q/Q6
-whtGHjRyUjpnn6qL4vfnz8dB6N2FEMyHkHZQBOvEyB21RPxo80+DKp8Cmr+5weHR
-vXXpiq/EKEMrDNG7bCMO9uTZiKB/JtgSjlqlekXMM3C3sD8FHYB6Ku2I1u74zdeW
-gylwuPuvRQRP+XK4yP9PdcKKHiXC/x9ZLGsMB9SUx+IPityWaXMmkuMvSvH7kN4V
-VQ2zuPtqy4KARHRqmNhHXXrkuMMpk4Raw9hSytP1hwxaH4qrCedTu4d0CYgzHYwD
-V6iJ52/z73nkCKfyqgaX
-=SSNK
------END PGP SIGNATURE-----
-
---gatW/ieO32f1wygP--
-
---===============0772803756036097311==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0772803756036097311==--
+Thanks,
+Andre
