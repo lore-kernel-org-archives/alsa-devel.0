@@ -1,54 +1,69 @@
-From: Andre Heider <a.heider@gmail.com>
-Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
- multi-channel and HBR support
-Date: Mon, 28 Oct 2013 18:52:07 +0100
-Message-ID: <20131028175206.GA70365@localhost>
-References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
- <s5hli1imfsi.wl%tiwai@suse.de>
- <20131025165452.GA89428@deflower.internal>
- <526AA924.5070508@iki.fi>
+From: Sebastian Reichel <sre@debian.org>
+Subject: Re: [RFC 3/4] ASoC: Allow Aux Codecs to be specified using DT
+Date: Mon, 28 Oct 2013 18:53:42 +0100
+Message-ID: <20131028175341.GA28136@earth.universe>
+References: <1382909086-10493-1-git-send-email-sre@debian.org>
+ <1382909086-10493-4-git-send-email-sre@debian.org>
+ <20131028163721.GJ13643@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f172.google.com (mail-ea0-f172.google.com
- [209.85.215.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 98706261A88
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 18:52:13 +0100 (CET)
-Received: by mail-ea0-f172.google.com with SMTP id r16so2390007ead.17
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2013 10:52:13 -0700 (PDT)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
+Return-path: <linux-doc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <526AA924.5070508@iki.fi>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Takashi Iwai <tiwai@suse.de>, Olivier Langlois <olivier@trillion01.com>, alsa-devel@alsa-project.org, Peter =?iso-8859-1?Q?Fr=FChberger?= <fritsch@xbmc.org>
+In-Reply-To: <20131028163721.GJ13643@sirena.org.uk>
+Sender: linux-doc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Landley <rob@landley.net>, Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grant Likely <grant.likely@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 25, 2013 at 08:23:48PM +0300, Anssi Hannula wrote:
-> 25.10.2013 19:54, Andre Heider kirjoitti:
-> > cat /proc/asound/card0/eld\#0.0
-> > 	monitor_present		1
-> > 	eld_valid		0
-> 
-> However, this should have eld_valid=1 and contain more info. To get a
-> hint on whether it is a bug in audio or video driver, could you give a
-> log with CONFIG_SND_DEBUG ?
-> 
-> AFAICS the sound git master tree should have the necessary support in
-> the radeon video driver to allow the audio driver to generate a valid
-> ELD with your card.
 
-With CONFIG_SND_DEBUG=y I get a bunch of
-"HDMI ATI/AMD: no speaker allocation for ELD"
-but afaics that's about it.
+--gKMricLos+KVdGMg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
-Andre
+On Mon, Oct 28, 2013 at 09:37:21AM -0700, Mark Brown wrote:
+> On Sun, Oct 27, 2013 at 10:24:45PM +0100, Sebastian Reichel wrote:
+> > This patch adds support for specifying auxiliary codecs and
+> > codec configuration via device tree phandles.
+>=20
+> This doesn't apply against current git, please check and resend.
+
+Can you give me a git url to rebase against? I used current git
+master from torvalds.
+
+> Please also consider your CC list more carefully, there's an awful lot
+> of people on this...
+
+I added exactly those recipients, that were returned by
+=2E/scripts/get_maintainer.pl for the patchset.
+
+The list of involved people is quite long, because the patchset
+touches devicetree, documentation, boardcode, asoc and the specific
+driver.
+
+-- Sebastian
+
+--gKMricLos+KVdGMg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.15 (GNU/Linux)
+
+iQIcBAEBCAAGBQJSbqSlAAoJENju1/PIO/qaluYQAJv4mQoI/HEx6KKDzuESNbNk
+30kLQO8ZSUOJlyxTTqGqX47V/xqS8WSnDX9VpZuPUeKh2QUAxjCCokcGIAkq1hng
+Ff913f5hbATBPcXhzyjXDkPGBlu/GS/eI5b2d76BwEAAQYfwND7Kz4FHVSDS3Kt4
+36RsKMYCd3O+9Vb6WMW/0AjsNO7vXBLSRjCuXj3+1KyhcCoRzckEjtPyadh5kE4o
+m7rgrHfYN1ZX1zzzsVDKG2cyI0kKaEHXku5e+UL49dJOd/Yu458y8FAsAwWztmSL
+yLr8Dg5mHL7FxCAl677c83nbdCQHVuUcw+0xjxOatlDcCJo/R51vnD7NRpKFHFW0
+TT0EDPw/2hYR4GsDsmipALRTRSvho38nLmJYH7wLbLx/FXWQ1Nz6pvtajNMxr658
+98f68/L2Uq3hVl0ZCird6bbkwoeQ30ByGsdsiSxAs+WUc30eRN7K6C20ALucon7i
+iQileFKS0lPenfKyEIiR7v1me1Zdb0eo6K/wGWFKGPPy6hSIgCsCvlJ0KIHyUsbm
+k96g4Up6hgmmu03jLqjjAXqllOq8kGPSizAQqtm8svuWMDXVRxr3c8la1ukeq0/k
+aihPi+OCtLTSjcVtEaVvMHNpxzDvsIF4Bu8+fxuO//uhitFPFHHs/Si4TOlP9Ziq
+wKGwo4V/abcb3iSp5TpD
+=L4OE
+-----END PGP SIGNATURE-----
+
+--gKMricLos+KVdGMg--
