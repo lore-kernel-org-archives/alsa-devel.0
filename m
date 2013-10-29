@@ -1,82 +1,111 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8962: Fix null pointer pdata
- access in I2C probe()
-Date: Tue, 29 Oct 2013 09:35:56 -0700
-Message-ID: <20131029163556.GI16686@sirena.org.uk>
-References: <1383037587-19439-1-git-send-email-b42378@freescale.com>
+From: Matt Sealey <neko-HhXTZounMxbZATc7fWT8Dg@public.gmane.org>
+Subject: Re: [PATCHv7][ 2/5] ASoC: eukrea-tlv320: Add DT support.
+Date: Tue, 29 Oct 2013 11:56:54 -0500
+Message-ID: <CAHCPf3vHWt5XJCwvGDMfX9rTPKqHU43SHORqpxLtLaDL6RGb8A@mail.gmail.com>
+References: <1382616832-23593-1-git-send-email-denis@eukrea.com>
+	<1382616832-23593-2-git-send-email-denis@eukrea.com>
+	<20131025191513.5345BC4042C@trevor.secretlab.ca>
+	<20131026114840.GX2443@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8410806732849364727=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 5645F2610CE
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 17:36:24 +0100 (CET)
-In-Reply-To: <1383037587-19439-1-git-send-email-b42378@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20131026114840.GX2443-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, =?ISO-8859-1?Q?Eric_B=E9nard?= <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, Oct 26, 2013 at 6:48 AM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+> On Fri, Oct 25, 2013 at 08:15:13PM +0100, Grant Likely wrote:
+>> On Thu, 24 Oct 2013 14:13:49 +0200, Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org> wrote:
+>
+>> > +- mux-int-port : The internal port of the i.MX audio muxer (AUDMUX).
+>> > +- mux-ext-port : The external port of the i.MX audio muxer.
+>
+>> > +Note: The AUDMUX port numbering should start at 1, which is consistent with
+>> > +hardware manual.
+>
+>> Looks okay to me. I've not been following the sound bindings very
+>> closely. Are the described properties a common pattern for sound complex
+>> bindings?
+>
+> They're standard for i.MX - it's a mux within the SoC.
 
---===============8410806732849364727==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VkVuOCYP9O7H3CXI"
-Content-Disposition: inline
+And these bindings all suck, which is not a fault of Eukrea. There
+shouldn't be yet another duplication of the sound{} node though.
 
+There is nothing specific to Eukrea in any of this. This is a TI audio
+codec connected via i.MX SSI and routed through the SoC fabric by one
+or another i.MX AUDMUX port.
 
---VkVuOCYP9O7H3CXI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Maybe this is a reasonable place to ask since I am holding off on
+doing any audio support for the i.MX platform I want to push a DT for,
+and I am still bashing my head over the logic in this. Why is this so
+much more complicated than it needs to be? I can see codec specific
+and Linux-specific things floating in trees. I can see redundancy in
+property naming and misplacement of properties.. this whole thing
+needs to be cleaned up because it's been done as "binding a Linux
+driver into the device tree" and this is another example of the same
+thing - taking the way ASoC is working right now and dumping platform
+data externally.
 
-On Tue, Oct 29, 2013 at 05:06:27PM +0800, Nicolin Chen wrote:
-> When using DT binding to pass private data, there would be Kernel panic
-> occuring due to NULL pointer access in wm8962_i2c_probe(). Thus fix it.
+The existing MXS and IMX SGTL5000 bindings are not SGTL5000 specific.
+The sound node references a phandle for a codec - those properties
+should be present in the codec node. In this vein, Eukrea's bindings
+should not be codec or platform specific at all. This is a TI audio
+codec being referenced in an SoC-specific audio fabric definition.
 
-Applied, thanks, so it makes v3.13 though...
+The better way of thinking here is to stop being so insular with
+bindings. One binding for all these SoCs would suffice; codecs are
+codec-specific and codec properties like audio routing from mixers to
+pins should not be in the audio fabric definition. You can find the
+codec from the existing binding; you can find the controller. One
+thing it NEVER refers to is the audmux controller.. but it does
+magically specify the internal and external ports required.. and all
+the drivers (so far, sgtl5000 and wm8962) magically know what they're
+doing here.
 
-> -	for (i = 0; i < ARRAY_SIZE(pdata->gpio_init); i++)
-> -		if (pdata->gpio_init[i]) {
-> +	for (i = 0; i < ARRAY_SIZE(wm8962->pdata.gpio_init); i++)
-> +		if (wm8962->pdata.gpio_init[i]) {
+It is NOT some kind of undefined, unholy evil to reach outside of the
+node you found the compatible property of to look elsewhere - the
+fabric driver in this case has all the capability to dereference the
+codec, controller, audiomux etc. nodes it's got phandles to, and find
+the properties it needs to stuff into the handoff data for dai and
+dapm. Sure, you can have a generic driver have some codec-specific
+stuff in there where it has to be handled externally to a codec
+driver.. This just shows there should be another level in the driver
+subsystem (actually there sort of is already, isn't there?).
 
-...it'd be neater to just ensure that pdata is always initialised.
+As it stands; Neither imx-sgtl5000.c or imx-wm8962.c do anything with
+the controller or codec nodes except to stuff it into a handoff data
+structure for the rest of the subsystem to glue ASoC together.
+eukrea-tlv320.c is the same way even in this patch and imx-mc13783 is
+languishing..
 
---VkVuOCYP9O7H3CXI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+They are essentially line-for-line identical except a couple hacks
+here and there - things that are understandably outside of the control
+of the codec driver itself.  Some of it could even be driven down to
+lower levels of the subsystem.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+What we should have is something simpler and more "realistic" vs.
+hardware design, and imx-sgtl5000, imx-wm8962, imx-mc13783, and
+eukrea-tlv320 should be merged into a single fabric driver with a
+single all-encompassing and altogether simpler binding.Please don't
+continue to layer crappier parts of the Linux abstractions into the
+device tree. The device tree should present the structure and layout
+of the devices - not of the OS subsystems involved. Parsing the device
+tree at various points in the subsystems - even if you end up doing it
+3 times over - is the correct way. Not to try and consolidate and
+optimize your tree to make your drivers smaller.
 
-iQIcBAEBAgAGBQJSb+PpAAoJELSic+t+oim9KEoQAJ5+L+rVrHWnQn3rtnjudnaI
-c1MGCeoPbczgWDeBdw/2XIgXcdaMpZR2HPhEOdz/wq/jBm4T5pQ7sVzvWh/2SS1O
-8nS/vhTLRMmr3ADqH2VpiyGRC+VMzQtHvoyTI1gjpTvP3qmoJEwv5fc0mMz9LMfU
-so8i7nNiEicaPVkFbniHBvl6a5X0gQfHkNcFSlNqASTDM/o19IzJP4lmfamnECjO
-KPDzCFz2wMI1V2DZt72B+tjLgSu+H6rtli+QdUk91eeiRM7cmM97ra8A6S3o2lNU
-f8+dD4rSOiggu2Ey7gZlHPikvYI+r2kW98LMDmepdKKLMkfDe1NAhv8Gfspv0C5S
-Tr8J0NI+R93RdYRjXvO9Ga5R7/a9lNMgl/BNOm7oJ7lwhPGgebsf+M7+gAwen4PP
-RfOqe27nyEaKD9j97lUSWyZ9vWdNaBNh/8+sCViONrs51XnKljqeKcw99D5A1gvL
-neWJmcDx6JOUr2iclSWmZJOBTDCd/iZ6dGMot3Fum99gdasOmK/J6jp8pmnbGEQK
-zc889IHoQxfsqBE76UH9r6ZtDUDSrROE/I+UcWTJsDZoDRs23cWvehraLvCFbscA
-jowgihWbk9cPbjNF8/ZX+34Ybv5a6KjtxMzhpnboloejEpiOn3UbcrJQpRnmBNfk
-yz6jnqMtics/jSNB3GHk
-=iayW
------END PGP SIGNATURE-----
+As it stands this could be easily changed right now with a couple
+tweaks; compatibility can be maintained with the older bindings, too.
+I'll write it up (binding def at least, I can't fix the drivers in a
+reasonable time, unfortunately) and throw it out tonight if we're all
+agreeable..
 
---VkVuOCYP9O7H3CXI--
-
---===============8410806732849364727==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8410806732849364727==--
+-- 
+Matt Sealey <neko-HhXTZounMxbZATc7fWT8Dg@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
