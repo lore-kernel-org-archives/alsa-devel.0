@@ -1,21 +1,16 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH v2 4/6] ASoC: sirf-soc-inner: add drivers
- for both CPU and Codec DAIs
-Date: Tue, 29 Oct 2013 16:32:21 +0800
-Message-ID: <CAGsJ_4xG6KaxrrrsaWJi9K3444JFT5h6sB-qV2VK8++NXuXkaQ@mail.gmail.com>
-References: <1383001534-20703-1-git-send-email-Baohua.Song@csr.com>
- <20131028233603.GA16686@sirena.org.uk>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH] ASoC: wm8962: Fix null pointer pdata access in
+	I2C probe()
+Date: Tue, 29 Oct 2013 17:06:27 +0800
+Message-ID: <1383037587-19439-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f47.google.com (mail-pb0-f47.google.com
- [209.85.160.47])
- by alsa0.perex.cz (Postfix) with ESMTP id F03DE2610A2
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 09:32:42 +0100 (CET)
-Received: by mail-pb0-f47.google.com with SMTP id rq2so7630337pbb.34
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 01:32:41 -0700 (PDT)
-In-Reply-To: <20131028233603.GA16686@sirena.org.uk>
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe001.messaging.microsoft.com [207.46.163.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id E63222610A9
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 10:06:33 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,24 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, DL-SHA-WorkGroupLinux <workgroup.linux@csr.com>, Rongjun Ying <Rongjun.Ying@csr.com>, Barry Song <Baohua.Song@csr.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-2013/10/29 Mark Brown <broonie@kernel.org>:
-> On Tue, Oct 29, 2013 at 07:05:34AM +0800, Barry Song wrote:
->> From: Rongjun Ying <Rongjun.Ying@csr.com>
->>
->> there is an internal codec embedded in the SiRF SoC. this is not
->
-> I've only got patch 4 - where are the other patches?
-sorry i got some network problems and made some misoperations. others
-have been in your mailboxs:
-[PATCH v2 1/6] ASoC: sirf: add sirf platform driver which provides DMA
-http://www.spinics.net/lists/arm-kernel/msg282590.html
-[PATCH v2 2/6] ASoC: sirf: add I2S CPU DAI driver
-http://www.spinics.net/lists/arm-kernel/msg282591.html
-[PATCH v2 3/6] ASoC: usp-pcm: add CPU DAI driver for PCM simulated from USP
-http://www.spinics.net/lists/arm-kernel/msg282592.html
-...
--barry
+When using DT binding to pass private data, there would be Kernel panic
+occuring due to NULL pointer access in wm8962_i2c_probe(). Thus fix it.
+
+Signed-off-by: Nicolin Chen <b42378@freescale.com>
+---
+ sound/soc/codecs/wm8962.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 2bf9ee7..7dd79c4 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3616,28 +3616,28 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 			   0);
+ 
+ 	/* Apply static configuration for GPIOs */
+-	for (i = 0; i < ARRAY_SIZE(pdata->gpio_init); i++)
+-		if (pdata->gpio_init[i]) {
++	for (i = 0; i < ARRAY_SIZE(wm8962->pdata.gpio_init); i++)
++		if (wm8962->pdata.gpio_init[i]) {
+ 			wm8962_set_gpio_mode(wm8962, i + 1);
+ 			regmap_write(wm8962->regmap, 0x200 + i,
+-				     pdata->gpio_init[i] & 0xffff);
++				     wm8962->pdata.gpio_init[i] & 0xffff);
+ 		}
+ 
+ 
+ 	/* Put the speakers into mono mode? */
+-	if (pdata->spk_mono)
++	if (wm8962->pdata.spk_mono)
+ 		regmap_update_bits(wm8962->regmap, WM8962_CLASS_D_CONTROL_2,
+ 				   WM8962_SPK_MONO_MASK, WM8962_SPK_MONO);
+ 
+ 	/* Micbias setup, detection enable and detection
+ 	 * threasholds. */
+-	if (pdata->mic_cfg)
++	if (wm8962->pdata.mic_cfg)
+ 		regmap_update_bits(wm8962->regmap, WM8962_ADDITIONAL_CONTROL_4,
+ 				   WM8962_MICDET_ENA |
+ 				   WM8962_MICDET_THR_MASK |
+ 				   WM8962_MICSHORT_THR_MASK |
+ 				   WM8962_MICBIAS_LVL,
+-				   pdata->mic_cfg);
++				   wm8962->pdata.mic_cfg);
+ 
+ 	/* Latch volume update bits */
+ 	regmap_update_bits(wm8962->regmap, WM8962_LEFT_INPUT_VOLUME,
+@@ -3682,7 +3682,7 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 
+ 	if (wm8962->irq) {
+-		if (pdata->irq_active_low) {
++		if (wm8962->pdata.irq_active_low) {
+ 			trigger = IRQF_TRIGGER_LOW;
+ 			irq_pol = WM8962_IRQ_POL;
+ 		} else {
+-- 
+1.8.4
