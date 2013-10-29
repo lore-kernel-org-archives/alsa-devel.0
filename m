@@ -1,24 +1,24 @@
-From: Chen Guangyu-B42378 <B42378@freescale.com>
-Subject: Re: [PATCH] ASoC: fsl_ssi: separately enable and
- disable TIE/RIE in trigger()
-Date: Tue, 29 Oct 2013 13:16:52 +0000
-Message-ID: <df3ajlgpavhroiiray67at4q.1383052621653@email.android.com>
-References: <1383044688-28596-1-git-send-email-b42378@freescale.com>
- <526FA330.3080209@tabi.org> <20131029115711.GA9605@MrMyself>
- <526FA78D.2090601@tabi.org>
- <20131029121330.GB9605@MrMyself>,<526FACC1.7010909@tabi.org>
- <50y5h8hi19x5t2r9jhjrk097.1383051600782@email.android.com>,
- <526FB499.5090506@tabi.org>
+From: Vishal Agrawal <visagrawal@gmail.com>
+Subject: Re: [PATCH - alsa-lib] pcm/ioplug: Add mutex in
+	snd_pcm_ioplug_hw_ptr_update
+Date: Tue, 29 Oct 2013 19:02:20 +0530
+Message-ID: <CAKGKwYqKv1AZoVpMfoKYMsROAtPegtM7VYqMu-hYqKfVqyFQeQ@mail.gmail.com>
+References: <CAKGKwYpB0BHUnPWuBH3H_agG0xF=gFoGk-siw-segP8Zk1NMFw@mail.gmail.com>
+ <s5hvc0guznr.wl%tiwai@suse.de>
+ <CAKGKwYpWDFZiH1SzKSSgFu=zss2UYMuX7-gZN=DjTXSeGr1=6g@mail.gmail.com>
+ <s5hob68uwh4.wl%tiwai@suse.de>
+ <CAKGKwYq3OnSocO9pZprMRp+yjLFTDqS3_+EMMnZ9ig6W+hGJWw@mail.gmail.com>
+ <s5hli1cuu52.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe005.messaging.microsoft.com [207.46.163.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 23A27261B1B
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 14:17:53 +0100 (CET)
-In-Reply-To: <526FB499.5090506@tabi.org>
-Content-Language: en-US
+Received: from mail-wg0-f52.google.com (mail-wg0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCDA1261B1B
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 14:32:20 +0100 (CET)
+Received: by mail-wg0-f52.google.com with SMTP id k14so3434986wgh.7
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 06:32:20 -0700 (PDT)
+In-Reply-To: <s5hli1cuu52.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,27 +28,179 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As you wish, sir.
-
-Sent by Android device.
-
-Timur Tabi <timur@tabi.org> wrote:
+I checked the latest GStreamer code they have taken care of this.
+Thanks for your time Takashi.
 
 
-Chen Guangyu-B42378 wrote:
-> I mean there is a possibility.
+On Tue, Oct 29, 2013 at 6:11 PM, Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Tue, 29 Oct 2013 17:23:30 +0530,
+> Vishal Agrawal wrote:
+> >
+> > [1  <text/plain; ISO-8859-1 (7bit)>]
+> > Hi Takashi,
+> >
+> > Thanks again.
+> > So basically it means ALSA APIs are not thread safe?
+> >
+> > In the http://www.alsa-project.org/main/index.php/SMP_Design its
+> mentioned
+> > that -
+> > "The snd_*_open() calls are thread safe. The use of returned handles must
+> > be serialized in the application using own locking scheme. Standalone
+> (not
+> > handle related) functions in alsa-lib should be fully thread safe."
+> >
+> > I could not understand what are "Standalone (not handle related)
+> functions"?
+> > Can you please give me an example? My understanding was apart from
+> > snd_*_open() and snd_*_close() all other functions are thread safe.
 >
->   I'm sorry if my patch is kinda annoying and it really bother you, sir. I also want to make things better.
-
-It does not bother me.  I'm glad people are working on my driver.  I
-just want to make sure that my driver does not get bloated.
-
+> The functions that are not handle-related are the functions that don't
+> have arguments with a handle pointer like snd_pcm_t.  All these
+> functions are thread unsafe.
 >
-> If you really don't like it, we can drop it. It's all your call.
-
-I think this patch should be dropped, because I don't see any real
-reason for it.
+>
+> Takashi
+>
+> >
+> > Thanks,
+> > Vishal Agrawal
+> >
+> >
+> >
+> >
+> > On Tue, Oct 29, 2013 at 5:20 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > > At Tue, 29 Oct 2013 17:09:38 +0530,
+> > > Vishal Agrawal wrote:
+> > > >
+> > > > Hi Takashi,
+> > > >
+> > > > Thanks for the reply.
+> > > > I saw the race between "delay" and "avail_update" function.
+> > > > >From GStreamer stack these two function gets called from different
+> > > threads.
+> > > >
+> > > > Caller is calling two different function here it doesn't know about
+> race
+> > > > condition.
+> > > > And this race condition doesn't happen with HW plug-in, Its only with
+> > > > ioplug plug-in.
+> > >
+> > > It doesn't justify to put the hack in ioplug plugin.
+> > >
+> > > The similar problem may happen in every plugin; i.e. calling these two
+> > > in different threads aren't guaranteed to work without protection in
+> > > the caller side.
+> > >
+> > >
+> > > Takashi
+> > >
+> > > > Thanks,
+> > > > Vishal Agrawal
+> > > >
+> > > >
+> > > > On Tue, Oct 29, 2013 at 4:12 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> > > >
+> > > > > At Tue, 29 Oct 2013 15:52:16 +0530,
+> > > > > Vishal Agrawal wrote:
+> > > > > >
+> > > > > > Function snd_pcm_ioplug_hw_ptr_update can be called from many
+> > > threads, we
+> > > > > > need to protect the hw_ptr. I came across this issue with
+> GStreamer
+> > > and
+> > > > > > Jackd. Function will be called from the thread doing
+> snd_pcm_write
+> > > and
+> > > > > > another would be to get the playback position for the track bar.
+> > > > > >
+> > > > > > Change in itself is very minimum, but it took me a lot of time to
+> > > debug.
+> > > > >
+> > > > > We'd like to avoid mutex in the alsa-lib code as much as possible.
+> > > > > In which code paths did you get the race?  In general, the code
+> paths
+> > > > > involved with hw_ptr_update() are known to be thread-unsafe, so
+> it's
+> > > > > the responsibility of the caller side to protect the race.
+> > > > >
+> > > > >
+> > > > > thanks,
+> > > > >
+> > > > > Takashi
+> > > > >
+> > > > > >
+> > > > > > Thanks,
+> > > > > > Vishal Agrawal
+> > > > > > [1.2  <text/html; ISO-8859-1 (quoted-printable)>]
+> > > > > >
+> > > > > > [2
+> 0001-pcm-ioplug-Add-mutex-in-snd_pcm_ioplug_hw_ptr_update.patch
+> > > > > <text/x-patch; US-ASCII (base64)>]
+> > > > > > From b826b1f28c50bd4a414cf50751be4ac74b4e4174 Mon Sep 17 00:00:00
+> > > 2001
+> > > > > > From: Vishal Agrawal <visagrawal@gmail.com>
+> > > > > > Date: Mon, 28 Oct 2013 18:01:14 +0530
+> > > > > > Subject: [PATCH - alsa-lib] pcm/ioplug: Add mutex in
+> > > > > >  snd_pcm_ioplug_hw_ptr_update
+> > > > > >
+> > > > > > snd_pcm_ioplug_hw_ptr_update() can be called from different
+> > > > > > threads, it needs to be protected by mutex
+> > > > > >
+> > > > > > Signed-off-by: Vishal Agrawal <visagrawal@gmail.com>
+> > > > > >
+> > > > > > diff --git a/src/pcm/pcm_ioplug.c b/src/pcm/pcm_ioplug.c
+> > > > > > index a90c844..23dbee3 100644
+> > > > > > --- a/src/pcm/pcm_ioplug.c
+> > > > > > +++ b/src/pcm/pcm_ioplug.c
+> > > > > > @@ -26,6 +26,7 @@
+> > > > > >   *
+> > > > > >   */
+> > > > > >
+> > > > > > +#include <pthread.h>
+> > > > > >  #include "pcm_local.h"
+> > > > > >  #include "pcm_ioplug.h"
+> > > > > >  #include "pcm_ext_parm.h"
+> > > > > > @@ -47,12 +48,15 @@ typedef struct snd_pcm_ioplug_priv {
+> > > > > >       snd_htimestamp_t trigger_tstamp;
+> > > > > >  } ioplug_priv_t;
+> > > > > >
+> > > > > > +static pthread_mutex_t hw_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
+> > > > > > +
+> > > > > >  /* update the hw pointer */
+> > > > > >  static void snd_pcm_ioplug_hw_ptr_update(snd_pcm_t *pcm)
+> > > > > >  {
+> > > > > >       ioplug_priv_t *io = pcm->private_data;
+> > > > > >       snd_pcm_sframes_t hw;
+> > > > > >
+> > > > > > +     pthread_mutex_lock(&hw_ptr_mutex);
+> > > > > >       hw = io->data->callback->pointer(io->data);
+> > > > > >       if (hw >= 0) {
+> > > > > >               unsigned int delta;
+> > > > > > @@ -64,6 +68,7 @@ static void
+> snd_pcm_ioplug_hw_ptr_update(snd_pcm_t
+> > > > > *pcm)
+> > > > > >               io->last_hw = hw;
+> > > > > >       } else
+> > > > > >               io->data->state = SNDRV_PCM_STATE_XRUN;
+> > > > > > +     pthread_mutex_unlock(&hw_ptr_mutex);
+> > > > > >  }
+> > > > > >
+> > > > > >  static int snd_pcm_ioplug_info(snd_pcm_t *pcm, snd_pcm_info_t
+> *info)
+> > > > > > --
+> > > > > > 1.7.9.5
+> > > > > >
+> > > > >
+> > > > [2  <text/html; ISO-8859-1 (quoted-printable)>]
+> > > >
+> > >
+> > [2  <text/html; ISO-8859-1 (quoted-printable)>]
+> >
+>
