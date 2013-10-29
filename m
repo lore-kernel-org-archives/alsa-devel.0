@@ -1,20 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv7][ 2/5] ASoC: eukrea-tlv320: Add DT
-	support.
-Date: Tue, 29 Oct 2013 10:44:45 -0700
-Message-ID: <20131029174445.GB20251@sirena.org.uk>
-References: <1382616832-23593-1-git-send-email-denis@eukrea.com>
- <1382616832-23593-2-git-send-email-denis@eukrea.com>
- <20131025191513.5345BC4042C@trevor.secretlab.ca>
- <20131026114840.GX2443@sirena.org.uk>
- <CAHCPf3vHWt5XJCwvGDMfX9rTPKqHU43SHORqpxLtLaDL6RGb8A@mail.gmail.com>
+From: LANGLOIS Olivier PIS -EXT <olivier.pis.langlois@transport.alstom.com>
+Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
+ multi-channel and HBR support
+Date: Tue, 29 Oct 2013 19:52:30 +0000
+Message-ID: <89F8E4011FD7234ABFE48744E300CBC206B7FFCA@041-DB3MPN1-092.041d.mgd.msft.net>
+References: <20131025165452.GA89428@deflower.internal>
+ <526AA924.5070508@iki.fi> <20131028175206.GA70365@localhost>
+ <526EA91B.3090607@iki.fi> <20131028181743.GA70502@localhost>
+ <526EAC12.5000905@iki.fi> <20131028183554.GB70502@localhost>
+ <526ECAAC.306@iki.fi> <20131028220045.GA71497@localhost>
+ <526EE844.4030608@iki.fi> <20131028231552.GA72034@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4184442163318913689=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E346C2615CC
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 18:44:58 +0100 (CET)
-In-Reply-To: <CAHCPf3vHWt5XJCwvGDMfX9rTPKqHU43SHORqpxLtLaDL6RGb8A@mail.gmail.com>
+Received: from as-smtp2.itc.alstom.com (as-smtp2.itc.alstom.com
+ [159.245.16.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 17B022615D1
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 20:52:35 +0100 (CET)
+In-Reply-To: <20131028231552.GA72034@localhost>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,78 +28,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Sealey <neko@bakuhatsu.net>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org, Sascha Hauer <kernel@pengutronix.de>, Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@secretlab.ca>, Denis Carikli <denis@eukrea.com>, Eric =?iso-8859-1?Q?B=E9nard?= <eric@eukrea.com>, Shawn Guo <shawn.guo@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Andre Heider <a.heider@gmail.com>, Anssi Hannula <anssi.hannula@iki.fi>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, =?iso-8859-1?Q?Peter_Fr=FChberger?= <fritsch@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
+> >
+> > Yep. I did manually verify that your EDID really claims AAC support,
+> > though. It could be wrong I guess, and the reported max_bitrate is
+> > suspiciously the same as for AC-3.
+> >
+> > If you want to try AAC bitstreaming, you can download this:
+> > http://onse.fi/files/testi.aac.lc.unconfirmed.spdif
+> > and play it back using:
+> > aplay -Dhdmi:CARD=Generic,DEV=0,AES0=6 -r44100 -f s16_le -c2 \
+> >     testi.aac.lc.unconfirmed.spdif
+> >
+> > (file unconfirmed as I don't have AAC HW)
+>
+> That looks like its playing something, but there's no sound at all. The receiver
+> claims there's a Dolby Digital stream active while that aplay command is
+> running... so yeah, looks like the EDID is lying.
+> (Same with another raw AAC LE file I just googled).
+>
+> But on the good side, multichannel AC3 and DTS passthrough is working
+> flawlessly with XBMC ;)
+>
+> Thanks again,
+> Andre
 
---===============4184442163318913689==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Fba/0zbH8Xs+Fj9o"
-Content-Disposition: inline
+Just throwing an idea like this. There is a small voice telling me that maybe HDMI receiver supporting AAC expect it wrapped inside ADTS packets rather than just raw AAC stream.
 
+Also note that ffmpeg report formatting problem:
 
---Fba/0zbH8Xs+Fj9o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Oct 29, 2013 at 11:56:54AM -0500, Matt Sealey wrote:
-
-> Maybe this is a reasonable place to ask since I am holding off on
-> doing any audio support for the i.MX platform I want to push a DT for,
-> and I am still bashing my head over the logic in this. Why is this so
-> much more complicated than it needs to be? I can see codec specific
-> and Linux-specific things floating in trees. I can see redundancy in
-> property naming and misplacement of properties.. this whole thing
-> needs to be cleaned up because it's been done as "binding a Linux
-> driver into the device tree" and this is another example of the same
-> thing - taking the way ASoC is working right now and dumping platform
-> data externally.
-
-Can you be more specific about all these points please?  It's hard to
-engage without concrete technical discussion which there is very little
-of in your rather lengthy mail.  Please also take a look at the previous
-discussions on this stuff and make sure you understand the needs of more
-advanced audio subsystems like those found in smartphones.
-
-> should not be codec or platform specific at all. This is a TI audio
-> codec being referenced in an SoC-specific audio fabric definition.
-
-Please take a look at Morimoto-san's work on the generic sound card if
-you want to work on a generic card, it'd be good if some of the people
-complaining about this stuff could help him work on that as he doesn't
-seem to be getting any help or review from anyone. =20
-
---Fba/0zbH8Xs+Fj9o
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSb/QKAAoJELSic+t+oim9rsUP/ReqMf5CB+1is955/ROmyhea
-MlJBqo2Uza3MH/iYb9kE83XiZxnfsMxb9LetXG6oU9DJCBRyGhsTG/FUWheFrxLW
-vVIdA4c3Pynmpy3HQpejWmOHXDFE638Dra4dfXXvjezbxRUgfYABpIV6uXI7klDA
-tYVDcDNhJA736WHOXLcexsMXStxIJlS636cUKNe9UTFQgUfJ6GzSI8aEIL/zy7FC
-HU4TTt3nFRQZQ6gUU3UZRldaM61UoBh3lgJaKHEdkWlv4F1WUFvDAHihQWcuXoZu
-IyQYD2NR8eYZclmvT/EXfOqhZ/DSR6KT37SMeMnD8lPDNa0SDr4XBDInEGs8+0L5
-BUFJHAS0ouOW8K4tzJygRgfpN7bItmaurHVBXv148ePPyciGukTbnNUwTEXnPyTo
-KFnLiymgR4aST/rWgQGu8sqiiIGlEk2v0zxkTU89TdS6mPZNyrng5FOqK/YK8ucz
-Km9yzw8sA53q7e5EmOfBAinSwL97ZV0JC9Q2kNPTVI91FRqhSsAOwYUIuF4nlnD0
-hJ0Y1NBu4sYv2OntFy5Ld7m/msVotvG9LF9Ypi3Tcp+GzOfNiW0lZNRoYP21fHAk
-gs7SWiA8oehFdbYlxThFKS5Dec5qVu7DUqADDYJ+i5GO8ahvoL65veISnIcbxNg1
-mVA73sBWYm6s8On7MO1P
-=q6jK
------END PGP SIGNATURE-----
-
---Fba/0zbH8Xs+Fj9o--
-
---===============4184442163318913689==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+lano1106@hpmini ~ $ ffprobe testi.aac.lc.unconfirmed.spdif
+ffprobe version 2.1 Copyright (c) 2007-2013 the FFmpeg developers
+  built on Oct 29 2013 15:37:36 with gcc 4.8.2 (GCC)
+  configuration: --prefix=/usr --disable-debug --disable-static --enable-avresample --enable-dxva2 --enable-fontconfig --enable-gnutls --enable-gpl --enable-libass --enable-libfreetype --enable-libgsm --enable-libmodplug --enable-libmp3lame --enable-libopencore_amrnb --enable-libopencore_amrwb --enable-libopenjpeg --enable-libopus --enable-libpulse --enable-librtmp --enable-libschroedinger --enable-libspeex --enable-libtheora --enable-libv4l2 --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libxvid --enable-pic --enable-postproc --enable-runtime-cpudetect --enable-shared --enable-swresample --disable-vdpau --disable-vaapi --arch=native --cpu=native --enable-version3 --enable-x11grab
+  libavutil      52. 48.100 / 52. 48.100
+  libavcodec     55. 39.100 / 55. 39.100
+  libavformat    55. 19.104 / 55. 19.104
+  libavdevice    55.  5.100 / 55.  5.100
+  libavfilter     3. 90.100 /  3. 90.100
+  libavresample   1.  1.  0 /  1.  1.  0
+  libswscale      2.  5.101 /  2.  5.101
+  libswresample   0. 17.104 /  0. 17.104
+  libpostproc    52.  3.100 / 52.  3.100
+[spdif @ 0x8afc6b0] Invalid AAC packet in IEC 61937
+testi.aac.lc.unconfirmed.spdif: Invalid data found when processing input
 
 
---===============4184442163318913689==--
+________________________________
+CONFIDENTIALITY : This e-mail and any attachments are confidential and may be privileged. If you are not a named recipient, please notify the sender immediately and do not disclose the contents to another person, use it for any purpose or store or copy the information in any medium.
