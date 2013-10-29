@@ -1,40 +1,26 @@
 From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH] ASoC: fsl_ssi: separately enable and
- disable TIE/RIE in trigger()
-Date: Tue, 29 Oct 2013 07:40:33 -0500
-Message-ID: <526FACC1.7010909@tabi.org>
-References: <1383044688-28596-1-git-send-email-b42378@freescale.com>
- <526FA330.3080209@tabi.org> <20131029115711.GA9605@MrMyself>
- <526FA78D.2090601@tabi.org> <20131029121330.GB9605@MrMyself>
+Subject: Re: [PATCH 2/3] ASoC: fsl_ssi: Add dual fifo mode support
+Date: Tue, 29 Oct 2013 07:42:41 -0500
+Message-ID: <526FAD41.2000805@tabi.org>
+References: <cover.1383047327.git.b42378@freescale.com> <02f8867363ed3038a0a70703856e4b642fef4339.1383047327.git.b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muin.pair.com (muin.pair.com [209.68.1.55])
- by alsa0.perex.cz (Postfix) with ESMTP id B8130261ACB
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 13:40:35 +0100 (CET)
-In-Reply-To: <20131029121330.GB9605@MrMyself>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <02f8867363ed3038a0a70703856e4b642fef4339.1383047327.git.b42378@freescale.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: Nicolin Chen <b42378@freescale.com>, shawn.guo@linaro.org, broonie@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, s.hauer@pengutronix.de, b32955@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
 Nicolin Chen wrote:
-> The DMA request might be remaining high if not disabling it.
+> By enabling dual fifo mode, it would allow SSI enter a better performance
+> to transimit/receive data without occasional hardware underrun/overrun.
 
-Might?  Are you just guessing?
+Have you measured any real performance gain with this patch?  I 
+considered adding dual-FIFO support when I originally wrote this driver, 
+but it didn't appear to have any real benefit, but it used twice as many 
+DMA channels.
 
-> This would
-> cause SDMA re-check this request, while it has no BD existing. For the
-> other interrupts, if you don't like it, I can drop it. Just modification
-> to the driver might not be less complicated.
-
-I'm only talking about this particular patch.
+I'm concerned that this is another patch that just enables a useless 
+feature.
