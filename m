@@ -1,51 +1,127 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH] ASoC: Add pinctrl PM to components of
-	active DAIs
-Date: Tue, 29 Oct 2013 10:06:34 +0800
-Message-ID: <20131029020633.GA8386@MrMyself>
-References: <1382695544-20946-1-git-send-email-b42378@freescale.com>
- <20131028164405.GK13643@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 68BCB2652BE
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 03:11:38 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20131028164405.GK13643@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org, lgirdwood@gmail.com
+From: Masanari Iida <standby24x7@gmail.com>
+Subject: [PATCH 2/2] [trivial]doc:alsa: Fix typo in documentation/alsa
+Date: Tue, 29 Oct 2013 12:05:02 +0900
+Message-ID: <1383015902-29410-1-git-send-email-standby24x7@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: trivial@kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.de, alsa-devel@alsa-project.org, perex@perex.cz
+Cc: rdunlap@infradead.org, Masanari Iida <standby24x7@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 28, 2013 at 09:44:05AM -0700, Mark Brown wrote:
-> > +	for (i = 0; i < card->num_rtd; i++) {
-> > +		struct snd_soc_pcm_runtime *rtd = &card->rtd[i];
-> > +		struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-> > +		pinctrl_pm_select_default_state(cpu_dai->dev);
-> > +	}
-> > +
-> 
-> This is going to put the pins into the default state during resume,
-> that'll mean that if we're resuming a device which wasn't in use over
-> suspend it'll be left in the default state after resume instead of in
-> the idle state.
-> 
-> I'd expect the selection of the default state to be part of starting an
-> audio stream and to only do something to active streams on suspend and
-> resume.
+Correct spelling typo in documentation/alsa
 
-You're right. I'll refine it soon.
+Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+---
+ Documentation/sound/alsa/ALSA-Configuration.txt | 2 +-
+ Documentation/sound/alsa/Audiophile-Usb.txt     | 2 +-
+ Documentation/sound/alsa/CMIPCI.txt             | 2 +-
+ Documentation/sound/alsa/compress_offload.txt   | 6 +++---
+ Documentation/sound/alsa/soc/DPCM.txt           | 4 ++--
+ Documentation/sound/alsa/soc/dapm.txt           | 4 ++--
+ 6 files changed, 10 insertions(+), 10 deletions(-)
 
-Thank you,
-Nicolin Chen
+diff --git a/Documentation/sound/alsa/ALSA-Configuration.txt b/Documentation/sound/alsa/ALSA-Configuration.txt
+index 95731a0..b8dd0df 100644
+--- a/Documentation/sound/alsa/ALSA-Configuration.txt
++++ b/Documentation/sound/alsa/ALSA-Configuration.txt
+@@ -616,7 +616,7 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
+ 
+     As default, snd-dummy drivers doesn't allocate the real buffers
+     but either ignores read/write or mmap a single dummy page to all
+-    buffer pages, in order to save the resouces.  If your apps need
++    buffer pages, in order to save the resources.  If your apps need
+     the read/ written buffer data to be consistent, pass fake_buffer=0
+     option.
+ 
+diff --git a/Documentation/sound/alsa/Audiophile-Usb.txt b/Documentation/sound/alsa/Audiophile-Usb.txt
+index 654dd3b..e7a5ed4 100644
+--- a/Documentation/sound/alsa/Audiophile-Usb.txt
++++ b/Documentation/sound/alsa/Audiophile-Usb.txt
+@@ -232,7 +232,7 @@ The parameter can be given:
+    # modprobe snd-usb-audio index=1 device_setup=0x09
+ 
+  * Or while configuring the modules options in your modules configuration file
+-   (tipically a .conf file in /etc/modprobe.d/ directory:
++   (typically a .conf file in /etc/modprobe.d/ directory:
+        alias snd-card-1 snd-usb-audio
+        options snd-usb-audio index=1 device_setup=0x09
+ 
+diff --git a/Documentation/sound/alsa/CMIPCI.txt b/Documentation/sound/alsa/CMIPCI.txt
+index 16935c8..4e36e6e 100644
+--- a/Documentation/sound/alsa/CMIPCI.txt
++++ b/Documentation/sound/alsa/CMIPCI.txt
+@@ -87,7 +87,7 @@ with 4 channels,
+ 
+ and use the interleaved 4 channel data.
+ 
+-There are some control switchs affecting to the speaker connections:
++There are some control switches affecting to the speaker connections:
+ 
+ "Line-In Mode"	- an enum control to change the behavior of line-in
+ 	jack.  Either "Line-In", "Rear Output" or "Bass Output" can
+diff --git a/Documentation/sound/alsa/compress_offload.txt b/Documentation/sound/alsa/compress_offload.txt
+index fd74ff2..630c492 100644
+--- a/Documentation/sound/alsa/compress_offload.txt
++++ b/Documentation/sound/alsa/compress_offload.txt
+@@ -217,12 +217,12 @@ Not supported:
+   would be enabled with ALSA kcontrols.
+ 
+ - Audio policy/resource management. This API does not provide any
+-  hooks to query the utilization of the audio DSP, nor any premption
++  hooks to query the utilization of the audio DSP, nor any preemption
+   mechanisms.
+ 
+-- No notion of underun/overrun. Since the bytes written are compressed
++- No notion of underrun/overrun. Since the bytes written are compressed
+   in nature and data written/read doesn't translate directly to
+-  rendered output in time, this does not deal with underrun/overun and
++  rendered output in time, this does not deal with underrun/overrun and
+   maybe dealt in user-library
+ 
+ Credits:
+diff --git a/Documentation/sound/alsa/soc/DPCM.txt b/Documentation/sound/alsa/soc/DPCM.txt
+index aa8546f..0110180 100644
+--- a/Documentation/sound/alsa/soc/DPCM.txt
++++ b/Documentation/sound/alsa/soc/DPCM.txt
+@@ -192,7 +192,7 @@ This BE DAI link connects DAI0 to the codec (in this case RT5460 AIF1). It sets
+ the "no_pcm" flag to mark it has a BE and sets flags for supported stream
+ directions using "dpcm_playback" and "dpcm_capture" above.
+ 
+-The BE has also flags set for ignoreing suspend and PM down time. This allows
++The BE has also flags set for ignoring suspend and PM down time. This allows
+ the BE to work in a hostless mode where the host CPU is not transferring data
+ like a BT phone call :-
+ 
+@@ -328,7 +328,7 @@ The host can control the hostless link either by :-
+     between both DAIs.
+ 
+  2) Hostless FE. This FE has a virtual connection to the BE DAI links on the DAPM
+-    graph. Control is then carried out by the FE as regualar PCM operations.
++    graph. Control is then carried out by the FE as regular PCM operations.
+     This method gives more control over the DAI links, but requires much more
+     userspace code to control the link. Its recommended to use CODEC<->CODEC
+     unless your HW needs more fine grained sequencing of the PCM ops.
+diff --git a/Documentation/sound/alsa/soc/dapm.txt b/Documentation/sound/alsa/soc/dapm.txt
+index 7dfd88c..6faab48 100644
+--- a/Documentation/sound/alsa/soc/dapm.txt
++++ b/Documentation/sound/alsa/soc/dapm.txt
+@@ -30,7 +30,7 @@ There are 4 power domains within DAPM
+       machine driver and responds to asynchronous events e.g when HP
+       are inserted
+ 
+-   3. Path domain - audio susbsystem signal paths
++   3. Path domain - audio subsystem signal paths
+       Automatically set when mixer and mux settings are changed by the user.
+       e.g. alsamixer, amixer.
+ 
+@@ -64,7 +64,7 @@ Audio DAPM widgets fall into a number of types:-
+  o Speaker    - Speaker
+  o Supply     - Power or clock supply widget used by other widgets.
+  o Regulator  - External regulator that supplies power to audio components.
+- o Clock      -	External clock that supplies clock to audio componnents.
++ o Clock      -	External clock that supplies clock to audio components.
+  o AIF IN     - Audio Interface Input (with TDM slot mask).
+  o AIF OUT    - Audio Interface Output (with TDM slot mask).
+  o Siggen     - Signal Generator.
+-- 
+1.8.4.1.600.g3d092bf
