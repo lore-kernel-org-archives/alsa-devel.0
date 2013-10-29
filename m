@@ -1,47 +1,82 @@
-From: Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: [PATCH 0/3] Add dual-fifo mode support of i.MX ssi
-Date: Tue, 29 Oct 2013 20:33:14 +0800
-Message-ID: <cover.1383047327.git.b42378@freescale.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH 2/3] ASoC: fsl_ssi: Add dual fifo mode support
+Date: Tue, 29 Oct 2013 20:33:16 +0800
+Message-ID: <02f8867363ed3038a0a70703856e4b642fef4339.1383047327.git.b42378@freescale.com>
+References: <cover.1383047327.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: timur-N01EOCouUvQ@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, b32955-KZfg59tc24xl57MIdRCFDg@public.gmane.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1383047327.git.b42378@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: timur@tabi.org, shawn.guo@linaro.org, broonie@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, s.hauer@pengutronix.de, b32955@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-Changelog
-v1:
- * SSI can reduce hardware overrun/underrun possibility when using dual
- * fifo mode. To support this mode, we need to first update sdma sciprt
- * list, and then enable dual fifo BIT in SSI driver, and last update DT
- * bindings of i.MX series.
- *
- * ! This series of patches has a direct dependency between them. When
- * ! applying them, we need to apply in one single branch. Otherwise,
- * ! it would break currect branches.
+By enabling dual fifo mode, it would allow SSI enter a better performance
+to transimit/receive data without occasional hardware underrun/overrun.
 
-Nicolin Chen (3):
-  dma: imx-sdma: Add ssi dual fifo script support
-  ASoC: fsl_ssi: Add dual fifo mode support
-  ARM: dts: imx: use dual-fifo sdma script for ssi
+[ Passed compile-test with mpc85xx_defconfig ]
 
- .../devicetree/bindings/dma/fsl-imx-sdma.txt       |  1 +
- arch/arm/boot/dts/imx51.dtsi                       |  4 ++--
- arch/arm/boot/dts/imx53.dtsi                       |  4 ++--
- arch/arm/boot/dts/imx6qdl.dtsi                     | 12 +++++------
- arch/arm/boot/dts/imx6sl.dtsi                      | 12 +++++------
- drivers/dma/imx-sdma.c                             |  6 +++++-
- include/linux/platform_data/dma-imx-sdma.h         |  2 ++
- include/linux/platform_data/dma-imx.h              |  1 +
- sound/soc/fsl/fsl_ssi.c                            | 24 +++++++++++++++++++++-
- 9 files changed, 48 insertions(+), 18 deletions(-)
+Signed-off-by: Nicolin Chen <b42378@freescale.com>
+---
+ sound/soc/fsl/fsl_ssi.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 3797bf0..7ad01ce 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -146,6 +146,7 @@ struct fsl_ssi_private {
+ 	bool ssi_on_imx;
+ 	bool imx_ac97;
+ 	bool use_dma;
++	bool use_dual_fifo;
+ 	struct clk *clk;
+ 	struct snd_dmaengine_dai_dma_data dma_params_tx;
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+@@ -416,6 +417,16 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
+ 		write_ssi(CCSR_SSI_SOR_WAIT(3), &ssi->sor);
+ 	}
+ 
++	if (ssi_private->use_dual_fifo) {
++		write_ssi_mask(&ssi->srcr, 0, CCSR_SSI_SRCR_RFEN1);
++		write_ssi_mask(&ssi->stcr, 0, CCSR_SSI_STCR_TFEN1);
++		write_ssi_mask(&ssi->scr, 0, CCSR_SSI_SCR_TCH_EN);
++	} else {
++		write_ssi_mask(&ssi->srcr, CCSR_SSI_SRCR_RFEN1, 0);
++		write_ssi_mask(&ssi->stcr, CCSR_SSI_STCR_TFEN1, 0);
++		write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_TCH_EN, 0);
++	}
++
+ 	return 0;
+ }
+ 
+@@ -952,7 +963,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		ssi_private->fifo_depth = 8;
+ 
+ 	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx21-ssi")) {
+-		u32 dma_events[2];
++		u32 dma_events[2], dmas[4];
+ 		ssi_private->ssi_on_imx = true;
+ 
+ 		ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
+@@ -1006,6 +1017,17 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 			dma_events[0], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
+ 		imx_pcm_dma_params_init_data(&ssi_private->filter_data_rx,
+ 			dma_events[1], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
++		if (!of_property_read_u32_array(pdev->dev.of_node, "dmas", dmas, 4)
++				&& dmas[2] == IMX_DMATYPE_SSI_DUAL) {
++			ssi_private->use_dual_fifo = true;
++			/* When using dual fifo mode, we need to keep watermark
++			 * as even numbers due to dma script limitation.
++			 */
++			ssi_private->dma_params_tx.maxburst /= 2;
++			ssi_private->dma_params_tx.maxburst *= 2;
++			ssi_private->dma_params_rx.maxburst /= 2;
++			ssi_private->dma_params_rx.maxburst *= 2;
++		}
+ 	} else if (ssi_private->use_dma) {
+ 		/* The 'name' should not have any slashes in it. */
+ 		ret = devm_request_irq(&pdev->dev, ssi_private->irq,
 -- 
 1.8.4
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
