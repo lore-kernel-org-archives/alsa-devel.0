@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 01/10] ALSA: opl3: Fix possible negative array
-	index access
-Date: Tue, 29 Oct 2013 17:00:24 +0100
-Message-ID: <1383062433-9388-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 05/10] ALSA: ad1889: Fix right attenuation proc
+	output
+Date: Tue, 29 Oct 2013 17:00:28 +0100
+Message-ID: <1383062433-9388-6-git-send-email-tiwai@suse.de>
 References: <1383062433-9388-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CE1BC2610AA
+ by alsa0.perex.cz (Postfix) with ESMTP id D21162610CE
  for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 16:57:48 +0100 (CET)
 Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 9FDCAA6074
+ by mx2.suse.de (Postfix) with ESMTP id 9FB6AA5FE2
  for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 16:57:48 +0100 (CET)
 In-Reply-To: <1383062433-9388-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,28 +27,27 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Spotted by coverity CID 115196.
+The right attenuation bits aren't needed to be shifted.
+
+Spotted by coverity CID 11427.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/opl3/opl3_midi.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/pci/ad1889.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/drivers/opl3/opl3_midi.c b/sound/drivers/opl3/opl3_midi.c
-index 0c796bcbc0a3..6c6d09a51f42 100644
---- a/sound/drivers/opl3/opl3_midi.c
-+++ b/sound/drivers/opl3/opl3_midi.c
-@@ -390,6 +390,11 @@ void snd_opl3_note_on(void *p, int note, int vel, struct snd_midi_channel *chan)
- 		voice = snd_opl3_oss_map[chan->number];		
- 	}
- 
-+	if (voice < 0) {
-+		spin_unlock_irqrestore(&opl3->voice_lock, flags);
-+		return;
-+	}
-+
- 	if (voice < MAX_OPL2_VOICES) {
- 		/* Left register block for voices 0 .. 8 */
- 		reg_side = OPL3_LEFT;
+diff --git a/sound/pci/ad1889.c b/sound/pci/ad1889.c
+index d2b9d617aee5..b680d03e2419 100644
+--- a/sound/pci/ad1889.c
++++ b/sound/pci/ad1889.c
+@@ -739,7 +739,7 @@ snd_ad1889_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffe
+ 	reg = ad1889_readw(chip, AD_DS_WADA);
+ 	snd_iprintf(buffer, "Right: %s, -%d dB\n",
+ 			(reg & AD_DS_WADA_RWAM) ? "mute" : "unmute",
+-			((reg & AD_DS_WADA_RWAA) >> 8) * 3);
++			(reg & AD_DS_WADA_RWAA) * 3);
+ 	
+ 	reg = ad1889_readw(chip, AD_DS_WAS);
+ 	snd_iprintf(buffer, "Wave samplerate: %u Hz\n", reg);
 -- 
 1.8.4.1
