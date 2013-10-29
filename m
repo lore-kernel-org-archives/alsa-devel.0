@@ -1,83 +1,55 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 1/3] dma: imx-sdma: Add ssi dual fifo script support
-Date: Tue, 29 Oct 2013 14:51:43 +0100
-Message-ID: <20131029135142.GT30088@pengutronix.de>
-References: <cover.1383047327.git.b42378@freescale.com>
- <9ed025d4e98f716ba80b27acaaa98f43ad3bd75a.1383047327.git.b42378@freescale.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 03/10] ALSA: Limit the fallback card id string
+	size
+Date: Tue, 29 Oct 2013 17:00:26 +0100
+Message-ID: <1383062433-9388-4-git-send-email-tiwai@suse.de>
+References: <1383062433-9388-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <9ed025d4e98f716ba80b27acaaa98f43ad3bd75a.1383047327.git.b42378@freescale.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: timur@tabi.org, shawn.guo@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, b32955@freescale.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9E1E26109A
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 16:57:48 +0100 (CET)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 9F86AA591F
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 16:57:48 +0100 (CET)
+In-Reply-To: <1383062433-9388-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 29, 2013 at 08:33:15PM +0800, Nicolin Chen wrote:
-> There's a script for SSI missing in current sdma script list. Thus add it.
-> This script would allow SSI use its dual fifo mode to transimit/receive
-> data without occasional hardware underrun/overrun.
-> 
-> This patch also fixed a counting error for total number of scripts.
+When no proper id string is given, the driver tries to fall back to
+copy the proc_root name string via strcpy(), but this might overflow
+the fixed string size.  Let's use strlcpy().
 
-Look at drivers/dma/imx-sdma.c:
+Spotted by coverity CID 139008.
 
-> /**
->  * struct sdma_firmware_header - Layout of the firmware image
->  *
->  * @magic		"SDMA"
->  * @version_major	increased whenever layout of struct
->  * sdma_script_start_addrs
->  *			changes.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Can you image why this firmware has a version field? Right, it's because
-it encodes the layout of struct sdma_script_start_addrs.
-
-As the comment clearly states you have to *increase this field* when you
-add scripts.
-
-Obviously you missed that, as the firmware on lkml posted recently
-shows:
-
-> 00000000: 414d4453 00000001 00000001 0000001c SDMA............
-                     ^^^^^^^^
-                     Still '1'
-
-> 00000010: 00000026 000000b4 0000067a 00000282 &.......z.......
-> 00000020: ffffffff 00000000 ffffffff ffffffff ................
-> 00000030: ffffffff ffffffff ffffffff ffffffff ................
-> 00000040: ffffffff ffffffff 00001a6a ffffffff ........j.......
-> 00000050: 000002eb 000018bb ffffffff 00000408 ................
-> 00000060: ffffffff 000003c0 ffffffff ffffffff ................
-> 00000070: ffffffff 000002ab ffffffff 0000037b ............{...
-> 00000080: ffffffff ffffffff 0000044c 0000046e ........L...n...
-> 00000090: ffffffff 00001800 ffffffff ffffffff ................
-> 000000a0: 00000000 00001800 00001862 00001a16 ........b.......
-                              ^^^^^^^^^^^^^^^^^
-                              new script addresses introduced
-
-
-> -#define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V1	34
-> +#define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V1	37
-
-And no, this is not a bug. It's your firmware header that is buggy.
-
-What you need is:
-
-#define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V2      37
-
-You (you as a company, not you as a person) knew that it was me who
-created this firmware format. So it was absolutely unnecessary to create
-an incompatible firmware instead of dropping me a short note.
-
-Please add a version check to the driver as necessary and provide a proper
-firmware.
-
-Sascha
-
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 01a89383a062..1351f22f651c 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -597,7 +597,7 @@ static void snd_card_set_id_no_lock(struct snd_card *card, const char *src,
+ 	/* last resort... */
+ 	snd_printk(KERN_ERR "unable to set card id (%s)\n", id);
+ 	if (card->proc_root->name)
+-		strcpy(card->id, card->proc_root->name);
++		strlcpy(card->id, card->proc_root->name, sizeof(card->id));
+ }
+ 
+ /**
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.8.4.1
