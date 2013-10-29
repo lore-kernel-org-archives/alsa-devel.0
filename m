@@ -1,19 +1,18 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 04/10] ALSA: Use strlcpy() instead of strncpy()
-Date: Tue, 29 Oct 2013 17:00:27 +0100
-Message-ID: <1383062433-9388-5-git-send-email-tiwai@suse.de>
-References: <1383062433-9388-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: Add pinctrl PM to components of
+ active DAIs
+Date: Tue, 29 Oct 2013 09:19:59 -0700
+Message-ID: <20131029161959.GF16686@sirena.org.uk>
+References: <1383016374-30919-1-git-send-email-b42378@freescale.com>
+ <CAH9JG2X3HHLYLuyPzT3TPX4N0nwJR7xU4yhnkFWyMxHeEV3mbg@mail.gmail.com>
+ <20131029032512.GA8812@MrMyself> <20131029034220.GB8812@MrMyself>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0722302534860869091=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 065982616C2
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 16:57:49 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id AAE82A611E
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 16:57:48 +0100 (CET)
-In-Reply-To: <1383062433-9388-1-git-send-email-tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE01B26109A
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 17:20:19 +0100 (CET)
+In-Reply-To: <20131029034220.GB8812@MrMyself>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,112 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: alsa-devel@alsa-project.org, Kyungmin Park <kmpark@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-We tend to make stupid mistakes with strncpy().  Let's take a safer
-one, strlcpy().
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/arm/pxa2xx-ac97.c                  | 2 +-
- sound/i2c/other/ak4xxx-adda.c            | 2 +-
- sound/pci/cs5535audio/cs5535audio_olpc.c | 4 ++--
- sound/pci/ice1712/psc724.c               | 4 ++--
- sound/pci/ice1712/wm8776.c               | 2 +-
- sound/pci/rme9652/hdspm.c                | 2 +-
- 6 files changed, 8 insertions(+), 8 deletions(-)
+--===============0722302534860869091==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oFbHfjnMgUMsrGjO"
+Content-Disposition: inline
 
-diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
-index 5066a3768b28..9a2ac1e0f77a 100644
---- a/sound/arm/pxa2xx-ac97.c
-+++ b/sound/arm/pxa2xx-ac97.c
-@@ -185,7 +185,7 @@ static int pxa2xx_ac97_probe(struct platform_device *dev)
- 		goto err;
- 
- 	card->dev = &dev->dev;
--	strncpy(card->driver, dev->dev.driver->name, sizeof(card->driver));
-+	strlcpy(card->driver, dev->dev.driver->name, sizeof(card->driver));
- 
- 	ret = pxa2xx_pcm_new(card, &pxa2xx_ac97_pcm_client, &pxa2xx_ac97_pcm);
- 	if (ret)
-diff --git a/sound/i2c/other/ak4xxx-adda.c b/sound/i2c/other/ak4xxx-adda.c
-index ed726d1569e8..f3735e64791c 100644
---- a/sound/i2c/other/ak4xxx-adda.c
-+++ b/sound/i2c/other/ak4xxx-adda.c
-@@ -583,7 +583,7 @@ static int ak4xxx_capture_source_info(struct snd_kcontrol *kcontrol,
- 	if (idx >= num_names)
- 		return -EINVAL;
- 	input_names = ak->adc_info[mixer_ch].input_names;
--	strncpy(uinfo->value.enumerated.name, input_names[idx],
-+	strlcpy(uinfo->value.enumerated.name, input_names[idx],
- 		sizeof(uinfo->value.enumerated.name));
- 	return 0;
- }
-diff --git a/sound/pci/cs5535audio/cs5535audio_olpc.c b/sound/pci/cs5535audio/cs5535audio_olpc.c
-index da1cb9c4c76c..e6a44507d557 100644
---- a/sound/pci/cs5535audio/cs5535audio_olpc.c
-+++ b/sound/pci/cs5535audio/cs5535audio_olpc.c
-@@ -161,13 +161,13 @@ int olpc_quirks(struct snd_card *card, struct snd_ac97 *ac97)
- 	/* drop the original AD1888 HPF control */
- 	memset(&elem, 0, sizeof(elem));
- 	elem.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
--	strncpy(elem.name, "High Pass Filter Enable", sizeof(elem.name));
-+	strlcpy(elem.name, "High Pass Filter Enable", sizeof(elem.name));
- 	snd_ctl_remove_id(card, &elem);
- 
- 	/* drop the original V_REFOUT control */
- 	memset(&elem, 0, sizeof(elem));
- 	elem.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
--	strncpy(elem.name, "V_REFOUT Enable", sizeof(elem.name));
-+	strlcpy(elem.name, "V_REFOUT Enable", sizeof(elem.name));
- 	snd_ctl_remove_id(card, &elem);
- 
- 	/* add the OLPC-specific controls */
-diff --git a/sound/pci/ice1712/psc724.c b/sound/pci/ice1712/psc724.c
-index 302ac6ddd545..4019cf27d117 100644
---- a/sound/pci/ice1712/psc724.c
-+++ b/sound/pci/ice1712/psc724.c
-@@ -203,12 +203,12 @@ static void psc724_set_jack_state(struct snd_ice1712 *ice, bool hp_connected)
- 	/* notify about master speaker mute change */
- 	memset(&elem_id, 0, sizeof(elem_id));
- 	elem_id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
--	strncpy(elem_id.name, "Master Speakers Playback Switch",
-+	strlcpy(elem_id.name, "Master Speakers Playback Switch",
- 						sizeof(elem_id.name));
- 	kctl = snd_ctl_find_id(ice->card, &elem_id);
- 	snd_ctl_notify(ice->card, SNDRV_CTL_EVENT_MASK_VALUE, &kctl->id);
- 	/* and headphone mute change */
--	strncpy(elem_id.name, spec->wm8776.ctl[WM8776_CTL_HP_SW].name,
-+	strlcpy(elem_id.name, spec->wm8776.ctl[WM8776_CTL_HP_SW].name,
- 						sizeof(elem_id.name));
- 	kctl = snd_ctl_find_id(ice->card, &elem_id);
- 	snd_ctl_notify(ice->card, SNDRV_CTL_EVENT_MASK_VALUE, &kctl->id);
-diff --git a/sound/pci/ice1712/wm8776.c b/sound/pci/ice1712/wm8776.c
-index a3c05fe5daf9..5227cb08247f 100644
---- a/sound/pci/ice1712/wm8776.c
-+++ b/sound/pci/ice1712/wm8776.c
-@@ -52,7 +52,7 @@ static void snd_wm8776_activate_ctl(struct snd_wm8776 *wm,
- 	unsigned int index_offset;
- 
- 	memset(&elem_id, 0, sizeof(elem_id));
--	strncpy(elem_id.name, ctl_name, sizeof(elem_id.name));
-+	strlcpy(elem_id.name, ctl_name, sizeof(elem_id.name));
- 	elem_id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 	kctl = snd_ctl_find_id(card, &elem_id);
- 	if (!kctl)
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 2907e68150cb..e98dc008de0b 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -6400,7 +6400,7 @@ static int snd_hdspm_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
- 		memset(&hdspm_version, 0, sizeof(hdspm_version));
- 
- 		hdspm_version.card_type = hdspm->io_type;
--		strncpy(hdspm_version.cardname, hdspm->card_name,
-+		strlcpy(hdspm_version.cardname, hdspm->card_name,
- 				sizeof(hdspm_version.cardname));
- 		hdspm_version.serial = hdspm->serial;
- 		hdspm_version.firmware_rev = hdspm->firmware_rev;
--- 
-1.8.4.1
+
+--oFbHfjnMgUMsrGjO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Oct 29, 2013 at 11:42:20AM +0800, Nicolin Chen wrote:
+
+> So I think maybe I was right at the first place that it's okay not to set
+> a condition here? Since the card is going to suspend, why do we need to
+> care codec's behavior? Please correct me if I'm wrong.
+
+There's no reason CODECs can't implement pinctrl if they want to.
+
+--oFbHfjnMgUMsrGjO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSb+AsAAoJELSic+t+oim9FsIP/jQMlcwrvUDrzwEaHkvzkF5R
+YvEphai5ne6Fltc0xlK2cEZpS0Fe7pObCsrmGkjrbniDkHTQy7u3RNo6+c+jsIk3
+iFwzZW2xaftcQDFQfetrnkLEZ8TExuCX1/BQ1vnzKIifqqthdyCOWlybhOPZWv9A
+corCSopNOM4Eap9JOBNIf75A54HMD3w/VizA9W7Mjkc2XcCGuJgIE9534OFI08U6
+nVbI5Vf6BJw5iOviJFUyl0Fnp+bwTni+npkpUNWv/xhcU+S8Ag2y5I8aSEzwouIa
+AvqElim4ZK4VEnfLkD2iVEY8rLttnWfeoe3D7dShjmEBjCAskxBNsxthW2OyJOMP
+dDsmhKoWR3dInnxvZhjhJ48BUzCwSnuNpEXl9Ma0T8Tg3C/F5cR+5WH1ZTIt8K9i
+ANifI5nWRClAPoTWE59Ua6XgIuvZlX4Rz1pZZL074Uqaez1F7ay6OO23jMc1IV6h
+01I0BNdWvX+ihUrdsOkfrg6Au+I3QAat0Fs55Dg8NTDvJTdR2BB6K7PQ2gU1KS89
+GyzHd8KNtdPvDvQSfmclEsKMwqYEp6SznDNNsSkkVQhQx7jT6P6pf60y9aAjXDUa
+CO5Mje97oMr+IbqdI6INEDqwVdkAHdz8g8N1X2uCY5DhTF4XCQ6xc0JoDcQazBse
+xclu4ty3Q5eOuOeF4ihJ
+=gBB8
+-----END PGP SIGNATURE-----
+
+--oFbHfjnMgUMsrGjO--
+
+--===============0722302534860869091==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0722302534860869091==--
