@@ -1,16 +1,20 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH] ASoC: fsl_ssi: separately enable and disable
-	TIE/RIE in trigger()
-Date: Tue, 29 Oct 2013 19:04:48 +0800
-Message-ID: <1383044688-28596-1-git-send-email-b42378@freescale.com>
+From: Vishal Agrawal <visagrawal@gmail.com>
+Subject: Re: [PATCH - alsa-lib] pcm/ioplug: Add mutex in
+	snd_pcm_ioplug_hw_ptr_update
+Date: Tue, 29 Oct 2013 17:09:38 +0530
+Message-ID: <CAKGKwYpWDFZiH1SzKSSgFu=zss2UYMuX7-gZN=DjTXSeGr1=6g@mail.gmail.com>
+References: <CAKGKwYpB0BHUnPWuBH3H_agG0xF=gFoGk-siw-segP8Zk1NMFw@mail.gmail.com>
+ <s5hvc0guznr.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
- by alsa0.perex.cz (Postfix) with ESMTP id 4182A2608D8
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 12:04:47 +0100 (CET)
+Received: from mail-wg0-f52.google.com (mail-wg0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B1E42608D8
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 12:39:40 +0100 (CET)
+Received: by mail-wg0-f52.google.com with SMTP id k14so3273594wgh.19
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 04:39:38 -0700 (PDT)
+In-Reply-To: <s5hvc0guznr.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,84 +24,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, timur@tabi.org
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch enables Tx-related SIER_FLAGS only when direction is PLAYBACK
-and does same thing for CAPTURE. Also, after TRIGGER_STOP/PAUSE, it will
-disable SIER_xFLAGS for symmetric.
+Hi Takashi,
 
-[ Passed compile-test with mpc85xx_defconfig ]
+Thanks for the reply.
+I saw the race between "delay" and "avail_update" function.
+>From GStreamer stack these two function gets called from different threads.
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
- sound/soc/fsl/fsl_ssi.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+Caller is calling two different function here it doesn't know about race
+condition.
+And this race condition doesn't happen with HW plug-in, Its only with
+ioplug plug-in.
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 35e2773..3797bf0 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -107,11 +107,14 @@ static inline void write_ssi_mask(u32 __iomem *addr, u32 clear, u32 set)
- #endif
- 
- /* SIER bitflag of interrupts to enable */
--#define SIER_FLAGS (CCSR_SSI_SIER_TFRC_EN | CCSR_SSI_SIER_TDMAE | \
-+#define SIER_TFLAGS (CCSR_SSI_SIER_TFRC_EN | CCSR_SSI_SIER_TDMAE | \
- 		    CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TUE0_EN | \
--		    CCSR_SSI_SIER_TUE1_EN | CCSR_SSI_SIER_RFRC_EN | \
--		    CCSR_SSI_SIER_RDMAE | CCSR_SSI_SIER_RIE | \
--		    CCSR_SSI_SIER_ROE0_EN | CCSR_SSI_SIER_ROE1_EN)
-+		    CCSR_SSI_SIER_TUE1_EN)
-+#define SIER_RFLAGS (CCSR_SSI_SIER_RFRC_EN | CCSR_SSI_SIER_RDMAE | \
-+		    CCSR_SSI_SIER_RIE | CCSR_SSI_SIER_ROE0_EN | \
-+		    CCSR_SSI_SIER_ROE1_EN)
-+
-+#define SIER_FLAGS (SIER_TFLAGS | SIER_RFLAGS)
- 
- /**
-  * fsl_ssi_private: per-SSI private data
-@@ -560,12 +563,12 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		if (ssi_private->use_dma)
--			sier_bits = SIER_FLAGS;
-+			sier_bits = SIER_TFLAGS;
- 		else
- 			sier_bits = CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TFE0_EN;
- 	} else {
- 		if (ssi_private->use_dma)
--			sier_bits = SIER_FLAGS;
-+			sier_bits = SIER_RFLAGS;
- 		else
- 			sier_bits = CCSR_SSI_SIER_RIE | CCSR_SSI_SIER_RFF0_EN;
- 	}
-@@ -579,6 +582,8 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 		else
- 			write_ssi_mask(&ssi->scr, 0,
- 				CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_RE);
-+
-+		write_ssi_mask(&ssi->sier, 0, sier_bits);
- 		break;
- 
- 	case SNDRV_PCM_TRIGGER_STOP:
-@@ -591,14 +596,14 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 		if (!ssi_private->imx_ac97 && (read_ssi(&ssi->scr) &
- 					(CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE)) == 0)
- 			write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_SSIEN, 0);
-+
-+		write_ssi_mask(&ssi->sier, sier_bits, 0);
- 		break;
- 
- 	default:
- 		return -EINVAL;
- 	}
- 
--	write_ssi(sier_bits, &ssi->sier);
--
- 	return 0;
- }
- 
--- 
-1.8.4
+Thanks,
+Vishal Agrawal
+
+
+On Tue, Oct 29, 2013 at 4:12 PM, Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Tue, 29 Oct 2013 15:52:16 +0530,
+> Vishal Agrawal wrote:
+> >
+> > Function snd_pcm_ioplug_hw_ptr_update can be called from many threads, we
+> > need to protect the hw_ptr. I came across this issue with GStreamer and
+> > Jackd. Function will be called from the thread doing snd_pcm_write and
+> > another would be to get the playback position for the track bar.
+> >
+> > Change in itself is very minimum, but it took me a lot of time to debug.
+>
+> We'd like to avoid mutex in the alsa-lib code as much as possible.
+> In which code paths did you get the race?  In general, the code paths
+> involved with hw_ptr_update() are known to be thread-unsafe, so it's
+> the responsibility of the caller side to protect the race.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> >
+> > Thanks,
+> > Vishal Agrawal
+> > [1.2  <text/html; ISO-8859-1 (quoted-printable)>]
+> >
+> > [2 0001-pcm-ioplug-Add-mutex-in-snd_pcm_ioplug_hw_ptr_update.patch
+> <text/x-patch; US-ASCII (base64)>]
+> > From b826b1f28c50bd4a414cf50751be4ac74b4e4174 Mon Sep 17 00:00:00 2001
+> > From: Vishal Agrawal <visagrawal@gmail.com>
+> > Date: Mon, 28 Oct 2013 18:01:14 +0530
+> > Subject: [PATCH - alsa-lib] pcm/ioplug: Add mutex in
+> >  snd_pcm_ioplug_hw_ptr_update
+> >
+> > snd_pcm_ioplug_hw_ptr_update() can be called from different
+> > threads, it needs to be protected by mutex
+> >
+> > Signed-off-by: Vishal Agrawal <visagrawal@gmail.com>
+> >
+> > diff --git a/src/pcm/pcm_ioplug.c b/src/pcm/pcm_ioplug.c
+> > index a90c844..23dbee3 100644
+> > --- a/src/pcm/pcm_ioplug.c
+> > +++ b/src/pcm/pcm_ioplug.c
+> > @@ -26,6 +26,7 @@
+> >   *
+> >   */
+> >
+> > +#include <pthread.h>
+> >  #include "pcm_local.h"
+> >  #include "pcm_ioplug.h"
+> >  #include "pcm_ext_parm.h"
+> > @@ -47,12 +48,15 @@ typedef struct snd_pcm_ioplug_priv {
+> >       snd_htimestamp_t trigger_tstamp;
+> >  } ioplug_priv_t;
+> >
+> > +static pthread_mutex_t hw_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
+> > +
+> >  /* update the hw pointer */
+> >  static void snd_pcm_ioplug_hw_ptr_update(snd_pcm_t *pcm)
+> >  {
+> >       ioplug_priv_t *io = pcm->private_data;
+> >       snd_pcm_sframes_t hw;
+> >
+> > +     pthread_mutex_lock(&hw_ptr_mutex);
+> >       hw = io->data->callback->pointer(io->data);
+> >       if (hw >= 0) {
+> >               unsigned int delta;
+> > @@ -64,6 +68,7 @@ static void snd_pcm_ioplug_hw_ptr_update(snd_pcm_t
+> *pcm)
+> >               io->last_hw = hw;
+> >       } else
+> >               io->data->state = SNDRV_PCM_STATE_XRUN;
+> > +     pthread_mutex_unlock(&hw_ptr_mutex);
+> >  }
+> >
+> >  static int snd_pcm_ioplug_info(snd_pcm_t *pcm, snd_pcm_info_t *info)
+> > --
+> > 1.7.9.5
+> >
+>
