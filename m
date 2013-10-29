@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rcar: remove original filter from
-	rsnd_dma_init()
-Date: Tue, 29 Oct 2013 09:30:00 -0700
-Message-ID: <20131029163000.GH16686@sirena.org.uk>
-References: <878uxc7bv4.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: wm8962: Fix null pointer pdata
+ access in I2C probe()
+Date: Tue, 29 Oct 2013 09:35:56 -0700
+Message-ID: <20131029163556.GI16686@sirena.org.uk>
+References: <1383037587-19439-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1710851725983704374=="
+Content-Type: multipart/mixed; boundary="===============8410806732849364727=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D9CB82610CE
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 17:30:17 +0100 (CET)
-In-Reply-To: <878uxc7bv4.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5645F2610CE
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 17:36:24 +0100 (CET)
+In-Reply-To: <1383037587-19439-1-git-send-email-b42378@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +20,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Nicolin Chen <b42378@freescale.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1710851725983704374==
+--===============8410806732849364727==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qM81t570OJUP5TU/"
+	protocol="application/pgp-signature"; boundary="VkVuOCYP9O7H3CXI"
 Content-Disposition: inline
 
 
---qM81t570OJUP5TU/
+--VkVuOCYP9O7H3CXI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Oct 29, 2013 at 12:52:19AM -0700, Kuninori Morimoto wrote:
-> Remove original filter from rsnd_dma_init(),
-> and use SH-DMA suitable filter.
-> This new style can be used from Device Tree.
+On Tue, Oct 29, 2013 at 05:06:27PM +0800, Nicolin Chen wrote:
+> When using DT binding to pass private data, there would be Kernel panic
+> occuring due to NULL pointer access in wm8962_i2c_probe(). Thus fix it.
 
-Applied, thanks.
+Applied, thanks, so it makes v3.13 though...
 
---qM81t570OJUP5TU/
+> -	for (i = 0; i < ARRAY_SIZE(pdata->gpio_init); i++)
+> -		if (pdata->gpio_init[i]) {
+> +	for (i = 0; i < ARRAY_SIZE(wm8962->pdata.gpio_init); i++)
+> +		if (wm8962->pdata.gpio_init[i]) {
+
+...it'd be neater to just ensure that pdata is always initialised.
+
+--VkVuOCYP9O7H3CXI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSb+J/AAoJELSic+t+oim9yOMQAIUmXz7WrDScFb7OHO6NiGJ2
-cyJxzWpBVMVF4UBtlDjvmXV63f0yY5xmuHn4W1ijAtRRjUeaXdiPYIJ9FB4s8hfy
-5yUii+dFj/Rtr0J8T2XVFIsUJXgyiE3ktopHAlS8ycZdnLAQMtcSpAbauzKTsIGk
-mBBsveu0aERHTiJ1uksiHt459JFeC4FcfM+gba/ON8Hm5GvBpIUHmN5Mhdpo85g6
-sbnHw/2nduQ13eQuvQJmQbKN8FSZzrSmoJueF6Do71FXdPjfS4tLvejWUGkO1ul+
-tuC0ztaKQibo9G+KjMwJT1SnrNHonbtF7lX0iX7Rqk/cdO83rG6IgTtCbGOD9tSy
-+QwYifDSdsy1fcLkwpOOzLvEek25jrs/YxcnjwnYimKRrfHJe4tre/i0eRenYMmc
-CnvA+0WECNUJ1mEFFjiFNt6Cenb7xRNhz7Z8UCPMXxxs0ZgpqB6tZPzJ+Jx3cO17
-b/XCLnTnxew8Tws72rT/WtYmNkbe+bjTnQ/8gl1LUI6aFPFdXN41hhTal35sqURA
-PUkSlSaEl++25elyb3JlY39thGc8D9y62+5bfOI0GKNglY2PN3vOIjl8A2VBqfwa
-3c309ixCHXySCfHIFET0cNFAsPDwTruNd3MgB1QsATb7Ht6mIH3wOgSVgfDM8MGi
-jJSCqDe5Z/oiuJtOUrqq
-=n82E
+iQIcBAEBAgAGBQJSb+PpAAoJELSic+t+oim9KEoQAJ5+L+rVrHWnQn3rtnjudnaI
+c1MGCeoPbczgWDeBdw/2XIgXcdaMpZR2HPhEOdz/wq/jBm4T5pQ7sVzvWh/2SS1O
+8nS/vhTLRMmr3ADqH2VpiyGRC+VMzQtHvoyTI1gjpTvP3qmoJEwv5fc0mMz9LMfU
+so8i7nNiEicaPVkFbniHBvl6a5X0gQfHkNcFSlNqASTDM/o19IzJP4lmfamnECjO
+KPDzCFz2wMI1V2DZt72B+tjLgSu+H6rtli+QdUk91eeiRM7cmM97ra8A6S3o2lNU
+f8+dD4rSOiggu2Ey7gZlHPikvYI+r2kW98LMDmepdKKLMkfDe1NAhv8Gfspv0C5S
+Tr8J0NI+R93RdYRjXvO9Ga5R7/a9lNMgl/BNOm7oJ7lwhPGgebsf+M7+gAwen4PP
+RfOqe27nyEaKD9j97lUSWyZ9vWdNaBNh/8+sCViONrs51XnKljqeKcw99D5A1gvL
+neWJmcDx6JOUr2iclSWmZJOBTDCd/iZ6dGMot3Fum99gdasOmK/J6jp8pmnbGEQK
+zc889IHoQxfsqBE76UH9r6ZtDUDSrROE/I+UcWTJsDZoDRs23cWvehraLvCFbscA
+jowgihWbk9cPbjNF8/ZX+34Ybv5a6KjtxMzhpnboloejEpiOn3UbcrJQpRnmBNfk
+yz6jnqMtics/jSNB3GHk
+=iayW
 -----END PGP SIGNATURE-----
 
---qM81t570OJUP5TU/--
+--VkVuOCYP9O7H3CXI--
 
---===============1710851725983704374==
+--===============8410806732849364727==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1710851725983704374==--
+--===============8410806732849364727==--
