@@ -1,11 +1,18 @@
-From: Vishal Agrawal <visagrawal@gmail.com>
-Subject: [PATCH - alsa-lib] pcm/ioplug: Add mutex in
-	snd_pcm_ioplug_hw_ptr_update
-Date: Tue, 29 Oct 2013 15:52:16 +0530
-Message-ID: <CAKGKwYpB0BHUnPWuBH3H_agG0xF=gFoGk-siw-segP8Zk1NMFw@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: memalloc: Make
+	snd_{malloc|free}_dev_iram() static
+Date: Tue, 29 Oct 2013 12:04:28 +0100
+Message-ID: <1383044669-16999-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=f46d044283c041592c04e9de971f
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75C65260376
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 12:01:43 +0100 (CET)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id EF425A5E71
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 12:01:39 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -15,61 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Vishal Agrawal <visagrawal@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---f46d044283c041592c04e9de971f
-Content-Type: text/plain; charset=ISO-8859-1
+These are used only locally.
 
-Function snd_pcm_ioplug_hw_ptr_update can be called from many threads, we
-need to protect the hw_ptr. I came across this issue with GStreamer and
-Jackd. Function will be called from the thread doing snd_pcm_write and
-another would be to get the playback position for the track bar.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/memalloc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Change in itself is very minimum, but it took me a lot of time to debug.
-
-Thanks,
-Vishal Agrawal
-
---f46d044283c041592c04e9de971f
-Content-Type: text/x-patch; charset=US-ASCII;
-	name="0001-pcm-ioplug-Add-mutex-in-snd_pcm_ioplug_hw_ptr_update.patch"
-Content-Disposition: attachment;
-	filename="0001-pcm-ioplug-Add-mutex-in-snd_pcm_ioplug_hw_ptr_update.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hncz6v2p0
-
-RnJvbSBiODI2YjFmMjhjNTBiZDRhNDE0Y2Y1MDc1MWJlNGFjNzRiNGU0MTc0IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBWaXNoYWwgQWdyYXdhbCA8dmlzYWdyYXdhbEBnbWFpbC5jb20+
-CkRhdGU6IE1vbiwgMjggT2N0IDIwMTMgMTg6MDE6MTQgKzA1MzAKU3ViamVjdDogW1BBVENIIC0g
-YWxzYS1saWJdIHBjbS9pb3BsdWc6IEFkZCBtdXRleCBpbgogc25kX3BjbV9pb3BsdWdfaHdfcHRy
-X3VwZGF0ZQoKc25kX3BjbV9pb3BsdWdfaHdfcHRyX3VwZGF0ZSgpIGNhbiBiZSBjYWxsZWQgZnJv
-bSBkaWZmZXJlbnQKdGhyZWFkcywgaXQgbmVlZHMgdG8gYmUgcHJvdGVjdGVkIGJ5IG11dGV4CgpT
-aWduZWQtb2ZmLWJ5OiBWaXNoYWwgQWdyYXdhbCA8dmlzYWdyYXdhbEBnbWFpbC5jb20+CgpkaWZm
-IC0tZ2l0IGEvc3JjL3BjbS9wY21faW9wbHVnLmMgYi9zcmMvcGNtL3BjbV9pb3BsdWcuYwppbmRl
-eCBhOTBjODQ0Li4yM2RiZWUzIDEwMDY0NAotLS0gYS9zcmMvcGNtL3BjbV9pb3BsdWcuYworKysg
-Yi9zcmMvcGNtL3BjbV9pb3BsdWcuYwpAQCAtMjYsNiArMjYsNyBAQAogICoKICAqLwogICAKKyNp
-bmNsdWRlIDxwdGhyZWFkLmg+CiAjaW5jbHVkZSAicGNtX2xvY2FsLmgiCiAjaW5jbHVkZSAicGNt
-X2lvcGx1Zy5oIgogI2luY2x1ZGUgInBjbV9leHRfcGFybS5oIgpAQCAtNDcsMTIgKzQ4LDE1IEBA
-IHR5cGVkZWYgc3RydWN0IHNuZF9wY21faW9wbHVnX3ByaXYgewogCXNuZF9odGltZXN0YW1wX3Qg
-dHJpZ2dlcl90c3RhbXA7CiB9IGlvcGx1Z19wcml2X3Q7CiAKK3N0YXRpYyBwdGhyZWFkX211dGV4
-X3QgaHdfcHRyX211dGV4ID0gUFRIUkVBRF9NVVRFWF9JTklUSUFMSVpFUjsKKwogLyogdXBkYXRl
-IHRoZSBodyBwb2ludGVyICovCiBzdGF0aWMgdm9pZCBzbmRfcGNtX2lvcGx1Z19od19wdHJfdXBk
-YXRlKHNuZF9wY21fdCAqcGNtKQogewogCWlvcGx1Z19wcml2X3QgKmlvID0gcGNtLT5wcml2YXRl
-X2RhdGE7CiAJc25kX3BjbV9zZnJhbWVzX3QgaHc7CiAKKwlwdGhyZWFkX211dGV4X2xvY2soJmh3
-X3B0cl9tdXRleCk7CiAJaHcgPSBpby0+ZGF0YS0+Y2FsbGJhY2stPnBvaW50ZXIoaW8tPmRhdGEp
-OwogCWlmIChodyA+PSAwKSB7CiAJCXVuc2lnbmVkIGludCBkZWx0YTsKQEAgLTY0LDYgKzY4LDcg
-QEAgc3RhdGljIHZvaWQgc25kX3BjbV9pb3BsdWdfaHdfcHRyX3VwZGF0ZShzbmRfcGNtX3QgKnBj
-bSkKIAkJaW8tPmxhc3RfaHcgPSBodzsKIAl9IGVsc2UKIAkJaW8tPmRhdGEtPnN0YXRlID0gU05E
-UlZfUENNX1NUQVRFX1hSVU47CisJcHRocmVhZF9tdXRleF91bmxvY2soJmh3X3B0cl9tdXRleCk7
-CiB9CiAKIHN0YXRpYyBpbnQgc25kX3BjbV9pb3BsdWdfaW5mbyhzbmRfcGNtX3QgKnBjbSwgc25k
-X3BjbV9pbmZvX3QgKmluZm8pCi0tIAoxLjcuOS41Cgo=
---f46d044283c041592c04e9de971f
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---f46d044283c041592c04e9de971f--
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index 809fd79ecad6..278248b8f22a 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -167,7 +167,7 @@ static void snd_free_dev_pages(struct device *dev, size_t size, void *ptr,
+  *
+  * This function requires iram phandle provided via of_node
+  */
+-void snd_malloc_dev_iram(struct snd_dma_buffer *dmab, size_t size)
++static void snd_malloc_dev_iram(struct snd_dma_buffer *dmab, size_t size)
+ {
+ 	struct device *dev = dmab->dev.dev;
+ 	struct gen_pool *pool = NULL;
+@@ -192,7 +192,7 @@ void snd_malloc_dev_iram(struct snd_dma_buffer *dmab, size_t size)
+  * snd_free_dev_iram - free allocated specific memory from on-chip internal ram
+  * @dmab: buffer allocation record to store the allocated data
+  */
+-void snd_free_dev_iram(struct snd_dma_buffer *dmab)
++static void snd_free_dev_iram(struct snd_dma_buffer *dmab)
+ {
+ 	struct gen_pool *pool = dmab->private_data;
+ 
+-- 
+1.8.4.1
