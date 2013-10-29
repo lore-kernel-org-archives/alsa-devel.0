@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 02/10] ALSA: pcsp: Fix initialization with
-	nopcm=1
-Date: Tue, 29 Oct 2013 17:00:25 +0100
-Message-ID: <1383062433-9388-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 06/10] ALSA: ali5451: Drop unused variable
+Date: Tue, 29 Oct 2013 17:00:29 +0100
+Message-ID: <1383062433-9388-7-git-send-email-tiwai@suse.de>
 References: <1383062433-9388-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D57492610D3
+ by alsa0.perex.cz (Postfix) with ESMTP id D7C31261178
  for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 16:57:48 +0100 (CET)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 9FA4BA5FCA
+ by mx2.suse.de (Postfix) with ESMTP id 9FC99A5FE3
  for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2013 16:57:48 +0100 (CET)
 In-Reply-To: <1383062433-9388-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,32 +26,35 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When nopcm=1 is set, some initializations based on hrtimer resolution
-might be bogus because the driver checks the resolution only when
-nopcm=0.  Simply get the resolution always at first for fixing the
-bug.
+The variable runtime is never used, and this might be even a source of
+NULL-dereference.  Nothing better than killing it.
 
-Spotted by coverity CID 139740.
+Spotted by coverity CID 100862.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/pcsp/pcsp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/ali5451/ali5451.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/drivers/pcsp/pcsp.c b/sound/drivers/pcsp/pcsp.c
-index 1c19cd7ad26e..f664bae3b9b0 100644
---- a/sound/drivers/pcsp/pcsp.c
-+++ b/sound/drivers/pcsp/pcsp.c
-@@ -46,8 +46,9 @@ static int snd_pcsp_create(struct snd_card *card)
- 	int err;
- 	int div, min_div, order;
+diff --git a/sound/pci/ali5451/ali5451.c b/sound/pci/ali5451/ali5451.c
+index 3dfa12b670eb..c6835a3d64fb 100644
+--- a/sound/pci/ali5451/ali5451.c
++++ b/sound/pci/ali5451/ali5451.c
+@@ -855,7 +855,6 @@ static void snd_ali_disable_spdif_out(struct snd_ali *codec)
+ static void snd_ali_update_ptr(struct snd_ali *codec, int channel)
+ {
+ 	struct snd_ali_voice *pvoice;
+-	struct snd_pcm_runtime *runtime;
+ 	struct snd_ali_channel_control *pchregs;
+ 	unsigned int old, mask;
+ #ifdef ALI_DEBUG
+@@ -872,7 +871,6 @@ static void snd_ali_update_ptr(struct snd_ali *codec, int channel)
+ 		return;
  
-+	hrtimer_get_res(CLOCK_MONOTONIC, &tp);
-+
- 	if (!nopcm) {
--		hrtimer_get_res(CLOCK_MONOTONIC, &tp);
- 		if (tp.tv_sec || tp.tv_nsec > PCSP_MAX_PERIOD_NS) {
- 			printk(KERN_ERR "PCSP: Timer resolution is not sufficient "
- 				"(%linS)\n", tp.tv_nsec);
+ 	pvoice = &codec->synth.voices[channel];
+-	runtime = pvoice->substream->runtime;
+ 
+ 	udelay(100);
+ 	spin_lock(&codec->reg_lock);
 -- 
 1.8.4.1
