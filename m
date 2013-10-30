@@ -1,20 +1,22 @@
 From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH] ASoC: wm8962: Fix null pointer pdata
- access in I2C probe()
-Date: Wed, 30 Oct 2013 09:31:51 +0800
-Message-ID: <20131030013150.GC9605@MrMyself>
-References: <1383037587-19439-1-git-send-email-b42378@freescale.com>
- <20131029163556.GI16686@sirena.org.uk>
+Subject: Re: [PATCH v2] ASoC: Add pinctrl PM to components of
+ active DAIs
+Date: Wed, 30 Oct 2013 09:47:30 +0800
+Message-ID: <20131030014729.GD9605@MrMyself>
+References: <1383016374-30919-1-git-send-email-b42378@freescale.com>
+ <CAH9JG2X3HHLYLuyPzT3TPX4N0nwJR7xU4yhnkFWyMxHeEV3mbg@mail.gmail.com>
+ <20131029032512.GA8812@MrMyself> <20131029034220.GB8812@MrMyself>
+ <20131029161959.GF16686@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db8outboundpool.messaging.microsoft.com
- (mail-db8lp0185.outbound.messaging.microsoft.com [213.199.154.185])
- by alsa0.perex.cz (Postfix) with ESMTP id B99A6261AE4
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 02:38:53 +0100 (CET)
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe002.messaging.microsoft.com [216.32.180.185])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26E26261AA1
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 02:56:34 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20131029163556.GI16686@sirena.org.uk>
+In-Reply-To: <20131029161959.GF16686@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,20 +27,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, Kyungmin Park <kmpark@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 29, 2013 at 09:35:56AM -0700, Mark Brown wrote:
-> > -	for (i = 0; i < ARRAY_SIZE(pdata->gpio_init); i++)
-> > -		if (pdata->gpio_init[i]) {
-> > +	for (i = 0; i < ARRAY_SIZE(wm8962->pdata.gpio_init); i++)
-> > +		if (wm8962->pdata.gpio_init[i]) {
+On Tue, Oct 29, 2013 at 09:19:59AM -0700, Mark Brown wrote:
+> On Tue, Oct 29, 2013 at 11:42:20AM +0800, Nicolin Chen wrote:
 > 
-> ...it'd be neater to just ensure that pdata is always initialised.
+> > So I think maybe I was right at the first place that it's okay not to set
+> > a condition here? Since the card is going to suspend, why do we need to
+> > care codec's behavior? Please correct me if I'm wrong.
+> 
+> There's no reason CODECs can't implement pinctrl if they want to.
 
-I considered about that, and the patch could be neater. But then I
-just found the code around this part are all using wm8962>pdata.*
-pattern. So I stick the modification to it.
+Hmm..Sorry, I'm little confused. What should I do? Adding a pinctrl_pm
+for codec_dai->pins? Or a condition like "if (!codec_dai->active)"?
 
 Thank you,
 Nicolin Chen
