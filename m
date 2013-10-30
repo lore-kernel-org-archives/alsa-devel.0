@@ -1,65 +1,88 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH] asoc-tools: Render png image instead of jpeg
-	in vizdapm.sh
-Date: Wed, 30 Oct 2013 16:54:30 +0200
-Message-ID: <1383144870-20294-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH 1/4] ALSA: hda - hdmi: Add ATI/AMD multi-channel audio support
+Date: Wed, 30 Oct 2013 16:35:20 +0100
+Message-ID: <CACna6ryr37WRvKbMFmLEGt_A2zUD46rZOtJMVom+B_xK9WNLuw@mail.gmail.com>
+References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>
+	<1380659456-3746-2-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 61FEF265351
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 15:55:47 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1380659456-3746-2-git-send-email-anssi.hannula@iki.fi>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?Q?Peter_Fr=C3=BChberger?= <fritsch@xbmc.org>, Olivier Langlois <olivier@trillion01.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Lossless png image suits better to technical drawings than jpeg which may
-even have artifacts around sharp objects.
+2013/10/1 Anssi Hannula <anssi.hannula@iki.fi>:
+> ATI/AMD codecs do not support all the standard HDA HDMI/DP functions,
+> instead various vendor-specific verbs are provided.
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
-For git://opensource.wolfsonmicro.com/asoc-tools.git
----
- bin/vizdapm.sh | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+I've just tried my HD6970M (BARTS, DCE5) in my Samsung NP700G7A-S01PL.
 
-diff --git a/bin/vizdapm.sh b/bin/vizdapm.sh
-index 11d1361..8d61dd2 100755
---- a/bin/vizdapm.sh
-+++ b/bin/vizdapm.sh
-@@ -16,7 +16,7 @@
- usage()
- {
- cat << EOF
--usage: $0 <dapm-debugfs-directory> <graph-dot-file> <graph-jpg-file>
-+usage: $0 <dapm-debugfs-directory> <graph-dot-file> <graph-png-file>
- EOF
- exit 1
- }
-@@ -29,7 +29,7 @@ active=
- curpath=`pwd`
- dapm_debugfs="$1"
- graph_file=${curpath}"/$2"
--graph_file_jpg=${curpath}"/$3"
-+graph_file_png=${curpath}"/$3"
- 
- trap "{ [ -f "$graph_file" ] && rm -f "$graph_file"; exit; }" SIGINT SIGTERM
- 
-@@ -62,4 +62,4 @@ done
- popd >/dev/null
- 
- echo "}" >> "$graph_file"
--dot -Kfdp -Tjpg "$graph_file" -o "$graph_file_jpg"
-+dot -Kfdp -Tpng "$graph_file" -o "$graph_file_png"
--- 
-1.8.4.rc3
+> cat /proc/asound/card1/eld#0.0
+monitor_present 1
+eld_valid 1
+monitor_name
+connection_type HDMI
+eld_version [0x2] CEA-861D or below
+edid_version [0x0] no CEA EDID Timing Extension block present
+manufacture_id 0x0
+product_id 0x0
+port_id 0x0
+support_hdcp 0
+support_ai 0
+audio_sync_delay 0
+speakers [0x5f] FL/FR LFE FC RL/RR RC RLC/RRC
+sad_count 6
+sad0_coding_type [0x1] LPCM
+sad0_channels 8
+sad0_rates [0x1ee0] 32000 44100 48000 88200 96000 176400 192000
+sad0_bits [0xe0000] 16 20 24
+sad1_coding_type [0x2] AC-3
+sad1_channels 6
+sad1_rates [0xe0] 32000 44100 48000
+sad1_max_bitrate 640000
+sad2_coding_type [0x7] DTS
+sad2_channels 6
+sad2_rates [0x6c0] 44100 48000 88200 96000
+sad2_max_bitrate 1536000
+sad3_coding_type [0xa] E-AC-3/DD+ (Dolby Digital Plus)
+sad3_channels 8
+sad3_rates [0xc0] 44100 48000
+sad4_coding_type [0xb] DTS-HD
+sad4_channels 8
+sad4_rates [0x1ec0] 44100 48000 88200 96000 176400 192000
+sad5_coding_type [0xc] MLP (Dolby TrueHD)
+sad5_channels 8
+sad5_rates [0x1ec0] 44100 48000 88200 96000 176400 192000
+
+Command:
+speaker-test -D hdmi:CARD=Generic,DEV=0 -c8 -r192000 -F S16_LE
+works, I just have 5.1 (not 7.1), so Side left goes to the Read left
+and Side right goes to the Rear right. But they were working!
+
+Next I've used howto from
+http://phoronix.com/forums/showthread.php?27348-TrueHD-DTS-HD-E-AC3-Over-HDMI-On-Linux
+to test DTS MA and TrueHD.
+
+In the file from howto I've used:
+card Generic
+and then tested:
+
+zajec@linux-samsung700g7a:~> aplay -D hdmihdtest0 -c8 -fs16_le
+-r192000 thd.spdif
+Playing raw data 'thd.spdif' : Signed 16 bit Little Endian, Rate
+192000 Hz, Channels 8
+zajec@linux-samsung700g7a:~> aplay -D hdmihdtest0 -c8 -fs16_le
+-r192000 dts.spdif
+Playing raw data 'dts.spdif' : Signed 16 bit Little Endian, Rate
+192000 Hz, Channels 8
+
+Hooray! I got
+DOLBY HD
+and
+DTS-HD MA
+on my Denon 1912 display!
+
+Now the main question... do you have any experience on using DTS-HD MA
+(or TrueHD) with mplayer? :|
