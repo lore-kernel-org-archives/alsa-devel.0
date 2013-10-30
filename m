@@ -1,18 +1,17 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Add extra chmap for 2.1 outputs on
-	ASUS laptops
-Date: Wed, 30 Oct 2013 17:44:56 +0100
-Message-ID: <1383151496-31684-1-git-send-email-tiwai@suse.de>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/3] ASoC: wm_adsp: Add support for grouped
+	ALSA binary controls
+Date: Wed, 30 Oct 2013 16:54:29 +0000
+Message-ID: <1383152069-8646-2-git-send-email-dp@opensource.wolfsonmicro.com>
+References: <1383152069-8646-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 399BC26546B
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 17:42:08 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 14413A59A8
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 17:42:08 +0100 (CET)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E5ABA265468
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 17:54:31 +0100 (CET)
+In-Reply-To: <1383152069-8646-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,80 +21,155 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-ASUS N56VZ and N76VZ laptops have a bass speaker but its output comes
-only from the right channel.  This patch adds the extra chmap specific
-to these models.
+Currently the ALSA ABI imposes a hard limit of 512 bytes per binary
+control.  To support coefficient data blocks of larger sizes we carve up
+this space into multiple alsa controls.  All of these controls are
+identified by a common prefix and suffix of the form ":<blk id>".
 
-Bugzilla: https://bugzilla.novell.com/show_bug.cgi?id=846531
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Control groupings can also consist of a single block in which case the
+suffix ":0" is used.
+
+Change-Id: Ib8560bbd98425b1732b2ccf372a53102bdeb7d7f
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
- sound/pci/hda/patch_realtek.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 59 +++++++++++++++++++++++++++++++++++++++-------
+ sound/soc/codecs/wm_adsp.h |  1 +
+ 2 files changed, 52 insertions(+), 8 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 13ad49ca9357..2d7c86d81196 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4426,6 +4426,25 @@ static void alc272_fixup_mario(struct hda_codec *codec,
- 		       "hda_codec: failed to override amp caps for NID 0x2\n");
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index cd007cc..b3fbe4a 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -714,7 +714,6 @@ static void wm_adsp_ctl_work(struct work_struct *work)
+ 
+ static int wm_adsp_create_control(struct wm_adsp *dsp,
+ 				  const struct wm_adsp_alg_region *region)
+-
+ {
+ 	struct wm_coeff_ctl *ctl;
+ 	struct wmfw_ctl_work *ctl_work;
+@@ -746,8 +745,8 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
+ 		return -EINVAL;
+ 	}
+ 
+-	snprintf(name, PAGE_SIZE, "DSP%d %s %x",
+-		 dsp->num, region_name, region->alg);
++	snprintf(name, PAGE_SIZE, "DSP%d %s %x:%d",
++		 dsp->num, region_name, region->alg, region->block);
+ 
+ 	list_for_each_entry(ctl, &dsp->ctl_list,
+ 			    list) {
+@@ -808,6 +807,50 @@ err_name:
+ 	return ret;
  }
  
-+static const struct snd_pcm_chmap_elem asus_pcm_2_1_chmaps[] = {
-+	{ .channels = 2,
-+	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
-+	{ .channels = 4,
-+	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR,
-+		   SNDRV_CHMAP_NA, SNDRV_CHMAP_LFE } }, /* LFE only on right */
-+	{ }
-+};
-+
-+/* override the 2.1 chmap */
-+static void alc662_fixup_bass_chmap(struct hda_codec *codec,
-+				    const struct hda_fixup *fix, int action)
++static int wm_adsp_create_grouped_control(struct wm_adsp *dsp,
++					  struct wm_adsp_alg_region *region)
 +{
-+	if (action == HDA_FIXUP_ACT_BUILD) {
-+		struct alc_spec *spec = codec->spec;
-+		spec->gen.pcm_rec[0].stream[0].chmap = asus_pcm_2_1_chmaps;
-+	}
++	size_t len = region->len, offset = 0;
++	struct wm_adsp_alg_region *r;
++	int ret;
++
++	region->block = 0;
++	/* This is the quick case for control groups of a single block */
++	if (region->len <= 512)
++		return wm_adsp_create_control(dsp, region);
++
++	/* The passed `region' is already in the list
++	 * of algorithm regions so just create the control for it and don't
++	 * add it to the list */
++	region->len = 512;
++	ret = wm_adsp_create_control(dsp, region);
++	if (ret < 0)
++		return ret;
++	offset += 512;
++
++	/* Carve up the entire region into 512-byte chunks */
++	do {
++		r = kzalloc(sizeof(*r), GFP_KERNEL);
++		if (!r)
++			return -ENOMEM;
++		r->block = offset / 512;
++		r->type = region->type;
++		r->alg = region->alg;
++		r->base = region->base + offset;
++		if (len - offset > 512)
++			r->len = 512;
++		else
++			r->len = len - offset;
++		offset += r->len;
++		list_add_tail(&r->list, &dsp->alg_regions);
++		ret = wm_adsp_create_control(dsp, r);
++		if (ret < 0)
++			return ret;
++	} while (offset < len);
++
++	return 0;
 +}
 +
- enum {
- 	ALC662_FIXUP_ASPIRE,
- 	ALC662_FIXUP_IDEAPAD,
-@@ -4446,6 +4465,7 @@ enum {
- 	ALC662_FIXUP_INV_DMIC,
- 	ALC668_FIXUP_DELL_MIC_NO_PRESENCE,
- 	ALC668_FIXUP_HEADSET_MODE,
-+	ALC662_FIXUP_BASS_CHMAP,
- };
+ static int wm_adsp_setup_algs(struct wm_adsp *dsp)
+ {
+ 	struct regmap *regmap = dsp->regmap;
+@@ -983,7 +1026,7 @@ static int wm_adsp_setup_algs(struct wm_adsp *dsp)
+ 			if (i + 1 < algs) {
+ 				region->len = be32_to_cpu(adsp1_alg[i + 1].dm);
+ 				region->len -= be32_to_cpu(adsp1_alg[i].dm);
+-				wm_adsp_create_control(dsp, region);
++				wm_adsp_create_grouped_control(dsp, region);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region DM with ID %x\n",
+ 					  be32_to_cpu(adsp1_alg[i].alg.id));
+@@ -1000,7 +1043,7 @@ static int wm_adsp_setup_algs(struct wm_adsp *dsp)
+ 			if (i + 1 < algs) {
+ 				region->len = be32_to_cpu(adsp1_alg[i + 1].zm);
+ 				region->len -= be32_to_cpu(adsp1_alg[i].zm);
+-				wm_adsp_create_control(dsp, region);
++				wm_adsp_create_grouped_control(dsp, region);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region ZM with ID %x\n",
+ 					  be32_to_cpu(adsp1_alg[i].alg.id));
+@@ -1029,7 +1072,7 @@ static int wm_adsp_setup_algs(struct wm_adsp *dsp)
+ 			if (i + 1 < algs) {
+ 				region->len = be32_to_cpu(adsp2_alg[i + 1].xm);
+ 				region->len -= be32_to_cpu(adsp2_alg[i].xm);
+-				wm_adsp_create_control(dsp, region);
++				wm_adsp_create_grouped_control(dsp, region);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region XM with ID %x\n",
+ 					  be32_to_cpu(adsp2_alg[i].alg.id));
+@@ -1046,7 +1089,7 @@ static int wm_adsp_setup_algs(struct wm_adsp *dsp)
+ 			if (i + 1 < algs) {
+ 				region->len = be32_to_cpu(adsp2_alg[i + 1].ym);
+ 				region->len -= be32_to_cpu(adsp2_alg[i].ym);
+-				wm_adsp_create_control(dsp, region);
++				wm_adsp_create_grouped_control(dsp, region);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region YM with ID %x\n",
+ 					  be32_to_cpu(adsp2_alg[i].alg.id));
+@@ -1063,7 +1106,7 @@ static int wm_adsp_setup_algs(struct wm_adsp *dsp)
+ 			if (i + 1 < algs) {
+ 				region->len = be32_to_cpu(adsp2_alg[i + 1].zm);
+ 				region->len -= be32_to_cpu(adsp2_alg[i].zm);
+-				wm_adsp_create_control(dsp, region);
++				wm_adsp_create_grouped_control(dsp, region);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region ZM with ID %x\n",
+ 					  be32_to_cpu(adsp2_alg[i].alg.id));
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 7603167..60a7482 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -27,6 +27,7 @@ struct wm_adsp_region {
  
- static const struct hda_fixup alc662_fixups[] = {
-@@ -4620,6 +4640,12 @@ static const struct hda_fixup alc662_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_headset_mode_alc668,
- 	},
-+	[ALC662_FIXUP_BASS_CHMAP] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc662_fixup_bass_chmap,
-+		.chained = true,
-+		.chain_id = ALC662_FIXUP_ASUS_MODE4
-+	},
- };
- 
- static const struct snd_pci_quirk alc662_fixup_tbl[] = {
-@@ -4633,8 +4659,8 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
--	SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ", ALC662_FIXUP_ASUS_MODE4),
--	SND_PCI_QUIRK(0x1043, 0x1bf3, "ASUS N76VZ", ALC662_FIXUP_ASUS_MODE4),
-+	SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ", ALC662_FIXUP_BASS_CHMAP),
-+	SND_PCI_QUIRK(0x1043, 0x1bf3, "ASUS N76VZ", ALC662_FIXUP_BASS_CHMAP),
- 	SND_PCI_QUIRK(0x1043, 0x8469, "ASUS mobo", ALC662_FIXUP_NO_JACK_DETECT),
- 	SND_PCI_QUIRK(0x105b, 0x0cd6, "Foxconn", ALC662_FIXUP_ASUS_MODE2),
- 	SND_PCI_QUIRK(0x144d, 0xc051, "Samsung R720", ALC662_FIXUP_IDEAPAD),
+ struct wm_adsp_alg_region {
+ 	struct list_head list;
++	unsigned int block;
+ 	unsigned int alg;
+ 	int type;
+ 	unsigned int base;
 -- 
-1.8.4.1
+1.8.4.2
