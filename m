@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 6/9] ASoC: max98095: Add missing negative
-	channel checks
-Date: Wed, 30 Oct 2013 08:35:04 +0100
-Message-ID: <1383118507-21503-7-git-send-email-tiwai@suse.de>
+Subject: [PATCH 7/9] ASoC: ml26124: Fix negative array index
+	read
+Date: Wed, 30 Oct 2013 08:35:05 +0100
+Message-ID: <1383118507-21503-8-git-send-email-tiwai@suse.de>
 References: <1383118507-21503-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B74D264F13
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DEBC264F3F
  for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 08:32:34 +0100 (CET)
 In-Reply-To: <1383118507-21503-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,35 +25,27 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Otherwise it'd lead to negative array index read.
-Spotted by coverity CIDs 143182, 143184.
+get_coeff() may return an error.
+
+Spotted by coverity CID 703394.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/max98095.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/codecs/ml26124.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-index 8fb072455802..bffcf4e6a2a2 100644
---- a/sound/soc/codecs/max98095.c
-+++ b/sound/soc/codecs/max98095.c
-@@ -1740,6 +1740,8 @@ static int max98095_put_eq_enum(struct snd_kcontrol *kcontrol,
- 	int fs, best, best_val, i;
- 	int regmask, regsave;
+diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
+index 26118828782b..4725aa445cc8 100644
+--- a/sound/soc/codecs/ml26124.c
++++ b/sound/soc/codecs/ml26124.c
+@@ -342,6 +342,8 @@ static int ml26124_hw_params(struct snd_pcm_substream *substream,
+ 	struct ml26124_priv *priv = snd_soc_codec_get_drvdata(codec);
+ 	int i = get_coeff(priv->mclk, params_rate(hw_params));
  
-+	if (channel < 0)
-+		return channel;
- 	BUG_ON(channel > 1);
- 
- 	if (!pdata || !max98095->eq_textcnt)
-@@ -1798,6 +1800,8 @@ static int max98095_get_eq_enum(struct snd_kcontrol *kcontrol,
- 	int channel = max98095_get_eq_channel(kcontrol->id.name);
- 	struct max98095_cdata *cdata;
- 
-+	if (channel < 0)
-+		return channel;
- 	cdata = &max98095->dai[channel];
- 	ucontrol->value.enumerated.item[0] = cdata->eq_sel;
++	if (i < 0)
++		return -EINVAL;
+ 	priv->substream = substream;
+ 	priv->rate = params_rate(hw_params);
  
 -- 
 1.8.4.1
