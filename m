@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Disable AA-loopback on ALC283
-	Chromebook
-Date: Wed, 30 Oct 2013 07:53:59 +0100
-Message-ID: <1383116039-29895-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH 6/9] ASoC: max98095: Add missing negative
+	channel checks
+Date: Wed, 30 Oct 2013 08:35:04 +0100
+Message-ID: <1383118507-21503-7-git-send-email-tiwai@suse.de>
+References: <1383118507-21503-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7378A2625F3
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 07:51:11 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 482A8A57B7
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 07:51:11 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B74D264F13
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 08:32:34 +0100 (CET)
+In-Reply-To: <1383118507-21503-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,32 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-ALC283-based Chromebook suffers from occasional white noise, and it
-turned out that this comes from AA-loopback.  Disable this output path
-by just clearing mixer_nid, then the generic parser will skip the
-creation of AA-loopback path.
+Otherwise it'd lead to negative array index read.
+Spotted by coverity CIDs 143182, 143184.
 
-Reported-and-tested-by: Kailang Yang <kailang@realtek.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/max98095.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 894703532ab7..c516fa93ee63 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3445,6 +3445,8 @@ static void alc283_fixup_chromebook(struct hda_codec *codec,
- 	switch (action) {
- 	case HDA_FIXUP_ACT_PRE_PROBE:
- 		alc283_chromebook_caps(codec);
-+		/* Disable AA-loopback as it causes white noise */
-+		spec->gen.mixer_nid = 0;
- 		spec->gen.hp_automute_hook = alc283_hp_automute_hook;
- 		/* MIC2-VREF control */
- 		/* Set to manual mode */
+diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
+index 8fb072455802..bffcf4e6a2a2 100644
+--- a/sound/soc/codecs/max98095.c
++++ b/sound/soc/codecs/max98095.c
+@@ -1740,6 +1740,8 @@ static int max98095_put_eq_enum(struct snd_kcontrol *kcontrol,
+ 	int fs, best, best_val, i;
+ 	int regmask, regsave;
+ 
++	if (channel < 0)
++		return channel;
+ 	BUG_ON(channel > 1);
+ 
+ 	if (!pdata || !max98095->eq_textcnt)
+@@ -1798,6 +1800,8 @@ static int max98095_get_eq_enum(struct snd_kcontrol *kcontrol,
+ 	int channel = max98095_get_eq_channel(kcontrol->id.name);
+ 	struct max98095_cdata *cdata;
+ 
++	if (channel < 0)
++		return channel;
+ 	cdata = &max98095->dai[channel];
+ 	ucontrol->value.enumerated.item[0] = cdata->eq_sel;
+ 
 -- 
 1.8.4.1
