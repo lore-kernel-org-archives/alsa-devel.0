@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 7/9] ASoC: ml26124: Fix negative array
-	index read
-Date: Wed, 30 Oct 2013 14:33:49 -0700
-Message-ID: <20131030213349.GP2493@sirena.org.uk>
-References: <1383118507-21503-1-git-send-email-tiwai@suse.de>
- <1383118507-21503-8-git-send-email-tiwai@suse.de>
- <20131030164838.GH2493@sirena.org.uk>
- <s5h4n7yk68b.wl%tiwai@suse.de>
+Subject: Re: [PATCH 1/2 v2] ASoC: wm_adsp: Print error when
+ regmap reads/writes fail
+Date: Wed, 30 Oct 2013 14:38:52 -0700
+Message-ID: <20131030213851.GR2493@sirena.org.uk>
+References: <1383152204-8773-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7382899646602257033=="
+Content-Type: multipart/mixed; boundary="===============0364573083285227096=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 54CAC261740
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 22:34:03 +0100 (CET)
-In-Reply-To: <s5h4n7yk68b.wl%tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D1832616E9
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 22:39:08 +0100 (CET)
+In-Reply-To: <1383152204-8773-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7382899646602257033==
+--===============0364573083285227096==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WYfJCIN5rqlfy3K0"
+	protocol="application/pgp-signature"; boundary="vvRocJ6whMXXNc9q"
 Content-Disposition: inline
 
 
---WYfJCIN5rqlfy3K0
+--vvRocJ6whMXXNc9q
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Oct 30, 2013 at 06:40:04PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
+On Wed, Oct 30, 2013 at 04:56:43PM +0000, Dimitris Papastamos wrote:
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-> > This is ignoring the supplied error code, I'd expect to see the error
-> > code being passed back (and fixed at the point where it's injected if
-> > it's just returning -1 or something).
+This doesn't apply against current code, please check and resend.
 
-> Ah right.  The revised patch is attached below.
-
-Applied, thanks.
-
---WYfJCIN5rqlfy3K0
+--vvRocJ6whMXXNc9q
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJScXs6AAoJELSic+t+oim9Y2IP/0345Gqxxu2AiJ6SxyMkEoiX
-gs8yrm3PnVonwzRm/qy5eFykqAG5aM8+AxoGLavIPSmvgPHhjP3pNwjJjDor4ELn
-Qt3gp7yc+3+9nlVWapR77LIYp8tw4xYrEK3UxVhCLGCPp3CUlw/NH98ZEjiwtGIT
-6a1F6mfsYejhfT9LmIHDH6HEX7NNcRyG4DaEVOdcm7mKTkPMSGVYvTxJhX8J/c3L
-HRvqlutuistC8T1znnDSZIM5es8nE+qDi5eJhYh5EonNrITFhVMlJqE2s83oAfjY
-adQlqG9ej6Lg2iPEAgQfZPfjz1hFgJ9Fyxiikr80zmFCOwX3/ida5mMMC+Fb9CKR
-f+k9xA7nLKVjcIxE7seyXKG2aE8khYqgq5ZBEzQGo/jN1nxM1q8oTEnp3WsR/Ait
-68Roidb8OecohTy7dLZWBktjoy0fFziFV+0/KVX7YlsLbN3haJyd7auwNaVEneMs
-Ik8PDF5lOkZXV500Gb9ktiMs/W00qpc9iKpCL77kSOI3k2UHqOHqoCStsiiMeuMx
-gCVVddJZuc7WjjzMjckxM4K44WyNpVpIi1odmbLsSKt72FuAIWe/dZq5uIp48Mt3
-ZGdJB5W9LZRnEr+zGrVT1KKjuIllCn9jFdbke6QifwA7RLcKQukhlhfoAjKjFA+V
-LIUl3ESTaTUmAAf6ovYX
-=8c3w
+iQIcBAEBAgAGBQJScXxoAAoJELSic+t+oim9dAwP/1TJmHJ0DcO4SeGvTQI1T1Ga
+Dp4HoL9ul1CsOXlm5SYM6//c2OUfKE/vrfsEzLOdnbG3qw0aqCpbGVTv0vJ/U3ib
+KGVit/YjvYmoLihtFX939jBk+qzza2sm9NqS0AOrzRr7NREdw5t/RERgMdLFnlHa
+8/2gWEqT8+UNbRObneL1XF4YR2KzpGBW7N3st4EZmRFsiJ/TVspNNiZ5XZXQd2QR
+l25xGsz9WXSOOf/mRsyL7q/p4fIy1aqxwT/V2ywmVWhlFR7Q7aqEjjBH3p/KfWBj
+l8L4kls4iDuG/yEv3TaBFUajX2+Tx2fu3FesJePoQIrxV9dsiccwGOjuZ2VT0cMW
+VUosV7qUUmyfRvvo9Uh8zOA67vnqfoGWOyqbuRzWktwKPEmMV5u9LhnPLNEJ/nQ/
+5lRaN0hiBP7kr5IsiAOdlpRYThdcNzQk9ijGamE/SqGyezK1IFdWLA3HnLvGOgNw
+ThKJqsJ8lC3DVvpgwnawHQuF22D1Ayv3xjbBZ22LtUZRkZa6PV+kHFV/cNy9kfoG
++LclQSFcfm0eixIjfGNkj9TE4a7oyEeavJVxi1ktXdR1QhspDpOvF+Gg4wkLdV28
+ICag5xquijaEewG5OmHMpDKNNOjhGiatfeZ9cyai2nGDINKZIgNxhMukv1+SJB2Q
+jlPtlNfWcRQ+CICtlWIe
+=kk7r
 -----END PGP SIGNATURE-----
 
---WYfJCIN5rqlfy3K0--
+--vvRocJ6whMXXNc9q--
 
---===============7382899646602257033==
+--===============0364573083285227096==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7382899646602257033==--
+--===============0364573083285227096==--
