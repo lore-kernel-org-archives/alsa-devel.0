@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2 v2] ASoC: wm_adsp: Print error when
- regmap reads/writes fail
-Date: Wed, 30 Oct 2013 14:38:52 -0700
-Message-ID: <20131030213851.GR2493@sirena.org.uk>
-References: <1383152204-8773-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: Re: ASoC fixes for v3.12
+Date: Wed, 30 Oct 2013 14:40:00 -0700
+Message-ID: <20131030214000.GS2493@sirena.org.uk>
+References: <20131030172553.GA8065@sirena.org.uk>
+ <s5h1u32k5yq.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0364573083285227096=="
+Content-Type: multipart/mixed; boundary="===============2626960386159022085=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4D1832616E9
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 22:39:08 +0100 (CET)
-In-Reply-To: <1383152204-8773-1-git-send-email-dp@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 25C9B2616E9
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 22:40:15 +0100 (CET)
+In-Reply-To: <s5h1u32k5yq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +20,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0364573083285227096==
+--===============2626960386159022085==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vvRocJ6whMXXNc9q"
+	protocol="application/pgp-signature"; boundary="3ig5MTpp3LwprTX9"
 Content-Disposition: inline
 
 
---vvRocJ6whMXXNc9q
+--3ig5MTpp3LwprTX9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Oct 30, 2013 at 04:56:43PM +0000, Dimitris Papastamos wrote:
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+On Wed, Oct 30, 2013 at 06:45:49PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-This doesn't apply against current code, please check and resend.
+> > A few of the Coverity fixes from Takashi, one of which (the wm_hubs one)
+> > is particularly noticable.
 
---vvRocJ6whMXXNc9q
+> Thanks, pulled.  But I already sent a pull request to Linus early
+> today. Will try again maybe on tomorrow or Saturday.
+
+None of them are super urgent, even the hubs one was sitting there for
+years without anyone noticing.
+
+--3ig5MTpp3LwprTX9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJScXxoAAoJELSic+t+oim9dAwP/1TJmHJ0DcO4SeGvTQI1T1Ga
-Dp4HoL9ul1CsOXlm5SYM6//c2OUfKE/vrfsEzLOdnbG3qw0aqCpbGVTv0vJ/U3ib
-KGVit/YjvYmoLihtFX939jBk+qzza2sm9NqS0AOrzRr7NREdw5t/RERgMdLFnlHa
-8/2gWEqT8+UNbRObneL1XF4YR2KzpGBW7N3st4EZmRFsiJ/TVspNNiZ5XZXQd2QR
-l25xGsz9WXSOOf/mRsyL7q/p4fIy1aqxwT/V2ywmVWhlFR7Q7aqEjjBH3p/KfWBj
-l8L4kls4iDuG/yEv3TaBFUajX2+Tx2fu3FesJePoQIrxV9dsiccwGOjuZ2VT0cMW
-VUosV7qUUmyfRvvo9Uh8zOA67vnqfoGWOyqbuRzWktwKPEmMV5u9LhnPLNEJ/nQ/
-5lRaN0hiBP7kr5IsiAOdlpRYThdcNzQk9ijGamE/SqGyezK1IFdWLA3HnLvGOgNw
-ThKJqsJ8lC3DVvpgwnawHQuF22D1Ayv3xjbBZ22LtUZRkZa6PV+kHFV/cNy9kfoG
-+LclQSFcfm0eixIjfGNkj9TE4a7oyEeavJVxi1ktXdR1QhspDpOvF+Gg4wkLdV28
-ICag5xquijaEewG5OmHMpDKNNOjhGiatfeZ9cyai2nGDINKZIgNxhMukv1+SJB2Q
-jlPtlNfWcRQ+CICtlWIe
-=kk7r
+iQIcBAEBAgAGBQJScXytAAoJELSic+t+oim9u98P/j/2L272amAFyLugz1Tq6is6
+bOnqNgVm1oxgkeTtSY9bTWMasrZZZ2DcdwAChLGCfv+7wqZwmfT+uqOWrD3ySQE6
+lIojTJk4ChkgweAJHmLov4EsWmMJgJYWa6mZFqHrLzPtBuB2SFaDgKVozLXzg3Bz
+1p8p3BOfa9kvVsHfvqlEBUTUxwt+Q6bEPfltzyUPo8mFs/bq1LbtcBSydq+kSQyG
+0jHz5oSV+Yl+t+ssDs2yAVm+SteS8UWLAcdzv07eaeuyv1J9DouCKz31ks/NEWJy
+U92zlIlAjpSw4cF6l86YMw1abK3JMrVhBrJKf0+J1WmSEH9Y/rVlNsSxWVXLaZUL
+D25zEieJmwJN2Rgim3uNLzQAPbmFG753pDMtobvwhAN9OUnhjrD3dzhTrB29G5c9
+8/Djx8qpndtqoJ1ezkYC8obLjiuygIbMIJjuBck9emQhsEJwHjBHNcjylt9adcgH
+/2wNPLlc5ENd9A7WF4vVlkjnXgwT64yfKMimBfVr43PUUl6B/bwr3sd0XzUYmWul
+I0zwgqc7Lgm4+jGvR4ah26ERKSluSsrh/vO5WZwZs7qf59RVHNmPCSM1iWitp2Qs
+sEfTtNhmy29eEGOPy63R4MEI7r475WG0oX8N29/nFzV5UQNo6hxAXf1YVIbMuZ6r
+JXdfvgKIDu2NCvtMKhbw
+=6sA1
 -----END PGP SIGNATURE-----
 
---vvRocJ6whMXXNc9q--
+--3ig5MTpp3LwprTX9--
 
---===============0364573083285227096==
+--===============2626960386159022085==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0364573083285227096==--
+--===============2626960386159022085==--
