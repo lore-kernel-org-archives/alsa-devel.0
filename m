@@ -1,113 +1,66 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH 1/4] ALSA: hda - hdmi: Add ATI/AMD multi-channel audio  support
-Date: Wed, 30 Oct 2013 17:59:01 +0200
-Message-ID: <07e8973b4665cc23c3f4a77e9c7e2b7c@mail.onse.fi>
-References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>
- <1380659456-3746-2-git-send-email-anssi.hannula@iki.fi>
- <CACna6ryr37WRvKbMFmLEGt_A2zUD46rZOtJMVom+B_xK9WNLuw@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v3] ALSA: compress: fix drain calls
+ blocking other compress functions
+Date: Wed, 30 Oct 2013 20:48:40 +0530
+Message-ID: <20131030151840.GD18788@intel.com>
+References: <1382600141-9866-1-git-send-email-vinod.koul@intel.com>
+ <1382612851-18058-1-git-send-email-vinod.koul@intel.com>
+ <s5heh72u86m.wl%tiwai@suse.de> <20131030145811.GC18788@intel.com>
+ <s5h8uxau4rh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CACna6ryr37WRvKbMFmLEGt_A2zUD46rZOtJMVom+B_xK9WNLuw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?Q?Peter_Fr=C3=BChberger?= <fritsch@xbmc.org>, Olivier Langlois <olivier@trillion01.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 850F1265463
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 17:13:20 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h8uxau4rh.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Rafa=C5=82 Mi=C5=82ecki kirjoitti 2013-10-30 17:35:
-> 2013/10/1 Anssi Hannula <anssi.hannula@iki.fi>:
-> ATI/AMD codecs do not support all the standard HDA HDMI/DP functions,
-> instead various vendor-specific verbs are provided.
->=20
-> I've just tried my HD6970M (BARTS, DCE5) in my Samsung NP700G7A-S01PL=
-=2E
->=20
-> cat /proc/asound/card1/eld#0.0
-> monitor_present 1
-> eld_valid 1
-> monitor_name
-> connection_type HDMI
-> eld_version [0x2] CEA-861D or below
-> edid_version [0x0] no CEA EDID Timing Extension block present
-> manufacture_id 0x0
-> product_id 0x0
-> port_id 0x0
-> support_hdcp 0
-> support_ai 0
-> audio_sync_delay 0
-> speakers [0x5f] FL/FR LFE FC RL/RR RC RLC/RRC
-> sad_count 6
-> sad0_coding_type [0x1] LPCM
-> sad0_channels 8
-> sad0_rates [0x1ee0] 32000 44100 48000 88200 96000 176400 192000
-> sad0_bits [0xe0000] 16 20 24
-> sad1_coding_type [0x2] AC-3
-> sad1_channels 6
-> sad1_rates [0xe0] 32000 44100 48000
-> sad1_max_bitrate 640000
-> sad2_coding_type [0x7] DTS
-> sad2_channels 6
-> sad2_rates [0x6c0] 44100 48000 88200 96000
-> sad2_max_bitrate 1536000
-> sad3_coding_type [0xa] E-AC-3/DD+ (Dolby Digital Plus)
-> sad3_channels 8
-> sad3_rates [0xc0] 44100 48000
-> sad4_coding_type [0xb] DTS-HD
-> sad4_channels 8
-> sad4_rates [0x1ec0] 44100 48000 88200 96000 176400 192000
-> sad5_coding_type [0xc] MLP (Dolby TrueHD)
-> sad5_channels 8
-> sad5_rates [0x1ec0] 44100 48000 88200 96000 176400 192000
->=20
-> Command:
-> speaker-test -D hdmi:CARD=3DGeneric,DEV=3D0 -c8 -r192000 -F S16_LE
-> works, I just have 5.1 (not 7.1), so Side left goes to the Read left
-> and Side right goes to the Rear right. But they were working!
+On Wed, Oct 30, 2013 at 05:01:38PM +0100, Takashi Iwai wrote:
+ 
+> > > > +static int snd_compress_wait_for_drain(struct snd_compr_stream *stream)
+> > > > +{
+> > > > +	/*
+> > > > +	 * We are called with lock held. So drop the lock while we wait for
+> > > > +	 * drain complete notfication from the driver
+> > > > +	 *
+> > > > +	 * It is expected that driver will notify the drain completion and then
+> > > > +	 * stream will be moved to SETUP state, even if draining resulted in an
+> > > > +	 * error. We can trigger next track after this.
+> > > > +	 */
+> > > > +	stream->runtime->state = SNDRV_PCM_STATE_DRAINING;
+> > > > +	mutex_unlock(&stream->device->lock);
+> > > > +
+> > > > +	wait_event(stream->runtime->wait, stream->runtime->drain_wake);
+> > > 
+> > > Don't you really want the interruption?
+> > > Or use wait_event_interruptible() and return error appropriately.
+> > any interruption from usermode should trigger the compress_stop/compress_free
+> 
+> ... but how?
+> 
+> > which will unblock this. I dont see the need to have interruptible here
+> 
+> Suppose you're running a single thread program.  Then who triggers the
+> stop?
+Your signal catcher which should be registered for signals intrested and then
+calls stop or free. Assuming this should be considered single threaded. IIRC,
+this is how you do in aplay, right?
 
-Good :)
-
-BTW, there is a newer version (which was actually applied) of this=20
-patchset in alsa-devel@, seems you were missing from CC on that one.
-
-> Next I've used howto from
-> http://phoronix.com/forums/showthread.php?27348-TrueHD-DTS-HD-E-AC3-O=
-ver-HDMI-On-Linux
-> to test DTS MA and TrueHD.
->=20
-> In the file from howto I've used:
-> card Generic
-> and then tested:
->=20
-> zajec@linux-samsung700g7a:~> aplay -D hdmihdtest0 -c8 -fs16_le
-> -r192000 thd.spdif
-> Playing raw data 'thd.spdif' : Signed 16 bit Little Endian, Rate
-> 192000 Hz, Channels 8
-> zajec@linux-samsung700g7a:~> aplay -D hdmihdtest0 -c8 -fs16_le
-> -r192000 dts.spdif
-> Playing raw data 'dts.spdif' : Signed 16 bit Little Endian, Rate
-> 192000 Hz, Channels 8
-
-=46or the record, the "howto" is mostly a workaround for missing=20
-DEV=3D[1..3] on (now) very old systems, instead of messing around with=20
-asoundrc you can just use "-D hdmi:CARD=3DGeneric,DEV=3D0,AES0=3D6" ins=
-tead of=20
--DhdmihdtestX. (in AES0 the 0x2 is non-PCM flag, 0x4 is non-copyright=20
-flag IIRC - ALSA default is 0x4).
-
-> Hooray! I got
-> DOLBY HD
-> and
-> DTS-HD MA
-> on my Denon 1912 display!
->=20
-> Now the main question... do you have any experience on using DTS-HD M=
-A
-> (or TrueHD) with mplayer? :|
-
-Nope (well, any that I still remember). Support is there, though, so I=20
-guess it should work.
-
---=20
-Anssi Hannula
+Btw am okay to make it interruptible, but since can be done in usermode and
+closed which unblocks this I would prefer this way. Pls do let me know :)
+--
+~Vinod
