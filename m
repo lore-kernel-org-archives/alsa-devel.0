@@ -1,88 +1,216 @@
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH 1/4] ALSA: hda - hdmi: Add ATI/AMD multi-channel audio support
-Date: Wed, 30 Oct 2013 16:35:20 +0100
-Message-ID: <CACna6ryr37WRvKbMFmLEGt_A2zUD46rZOtJMVom+B_xK9WNLuw@mail.gmail.com>
-References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>
-	<1380659456-3746-2-git-send-email-anssi.hannula@iki.fi>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v3] ALSA: compress: fix drain calls
+ blocking other compress functions
+Date: Wed, 30 Oct 2013 20:28:11 +0530
+Message-ID: <20131030145811.GC18788@intel.com>
+References: <1382600141-9866-1-git-send-email-vinod.koul@intel.com>
+ <1382612851-18058-1-git-send-email-vinod.koul@intel.com>
+ <s5heh72u86m.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1380659456-3746-2-git-send-email-anssi.hannula@iki.fi>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?Q?Peter_Fr=C3=BChberger?= <fritsch@xbmc.org>, Olivier Langlois <olivier@trillion01.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F664265454
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 16:52:48 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5heh72u86m.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-2013/10/1 Anssi Hannula <anssi.hannula@iki.fi>:
-> ATI/AMD codecs do not support all the standard HDA HDMI/DP functions,
-> instead various vendor-specific verbs are provided.
+On Wed, Oct 30, 2013 at 03:47:45PM +0100, Takashi Iwai wrote:
+> At Thu, 24 Oct 2013 16:37:31 +0530,
+> Vinod Koul wrote:
+> > 
+> > The drain and drain_notify callback were blocked by low level driver untill the
+> > draining was complete. Due to this being invoked with big fat mutex held, others
+> > ops like reading timestamp, calling pause, drop were blocked.
+> > 
+> > So to fix this we add a new snd_compr_drain_notify() API. This would be required
+> > to be invoked by low level driver when drain or partial drain has been completed
+> > by the DSP. Thus we make the drain and partial_drain callback as non blocking
+> > and driver returns immediately after notifying DSP.
+> > The waiting is done while relasing the lock so that other ops can go ahead.
+> > 
+> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> > CC: stable@vger.kernel.org
+> > ---
+> > v3:
+> >  call snd_compr_drain_notify from compress_stop()
+> >  rename draining -> drain_wake
+> >  add some comments on state transistion after drain
+> > 
+> > v2:
+> >  fix the 80 line warn
+> >  move the state change to compress_drain()
+> > 
+> > 
+> >  include/sound/compress_driver.h |   12 +++++++++++
+> >  sound/core/compress_offload.c   |   41 ++++++++++++++++++++++++++++++++++++--
+> >  2 files changed, 50 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+> > index 9031a26..175ab32 100644
+> > --- a/include/sound/compress_driver.h
+> > +++ b/include/sound/compress_driver.h
+> > @@ -48,6 +48,8 @@ struct snd_compr_ops;
+> >   *	the ring buffer
+> >   * @total_bytes_transferred: cumulative bytes transferred by offload DSP
+> >   * @sleep: poll sleep
+> > + * @wait: drain wait queue
+> > + * @drain_wake: condition for drain wake
+> >   */
+> >  struct snd_compr_runtime {
+> >  	snd_pcm_state_t state;
+> > @@ -59,6 +61,8 @@ struct snd_compr_runtime {
+> >  	u64 total_bytes_available;
+> >  	u64 total_bytes_transferred;
+> >  	wait_queue_head_t sleep;
+> > +	wait_queue_head_t wait;
+> > +	unsigned int drain_wake;
+> >  	void *private_data;
+> >  };
+> >  
+> > @@ -171,4 +175,12 @@ static inline void snd_compr_fragment_elapsed(struct snd_compr_stream *stream)
+> >  	wake_up(&stream->runtime->sleep);
+> >  }
+> >  
+> > +static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
+> > +{
+> > +	snd_BUG_ON(!stream);
+> 
+> Should return, otherwise you'll get Oops:
+> 
+> 	if (snd_BUG_ON(!stream))
+> 		return;
+ah, missed that!
 
-I've just tried my HD6970M (BARTS, DCE5) in my Samsung NP700G7A-S01PL.
+> > +
+> > +	stream->runtime->drain_wake = 1;
+> > +	wake_up(&stream->runtime->wait);
+> > +}
+> > +
+> >  #endif
+> > diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+> > index bea523a..3eb47d0 100644
+> > --- a/sound/core/compress_offload.c
+> > +++ b/sound/core/compress_offload.c
+> > @@ -123,6 +123,7 @@ static int snd_compr_open(struct inode *inode, struct file *f)
+> >  	}
+> >  	runtime->state = SNDRV_PCM_STATE_OPEN;
+> >  	init_waitqueue_head(&runtime->sleep);
+> > +	init_waitqueue_head(&runtime->wait);
+> >  	data->stream.runtime = runtime;
+> >  	f->private_data = (void *)data;
+> >  	mutex_lock(&compr->lock);
+> > @@ -682,12 +683,34 @@ static int snd_compr_stop(struct snd_compr_stream *stream)
+> >  	if (!retval) {
+> >  		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
+> >  		wake_up(&stream->runtime->sleep);
+> > +		snd_compr_drain_notify(stream);
+> >  		stream->runtime->total_bytes_available = 0;
+> >  		stream->runtime->total_bytes_transferred = 0;
+> >  	}
+> >  	return retval;
+> >  }
+> >  
+> > +static int snd_compress_wait_for_drain(struct snd_compr_stream *stream)
+> > +{
+> > +	/*
+> > +	 * We are called with lock held. So drop the lock while we wait for
+> > +	 * drain complete notfication from the driver
+> > +	 *
+> > +	 * It is expected that driver will notify the drain completion and then
+> > +	 * stream will be moved to SETUP state, even if draining resulted in an
+> > +	 * error. We can trigger next track after this.
+> > +	 */
+> > +	stream->runtime->state = SNDRV_PCM_STATE_DRAINING;
+> > +	mutex_unlock(&stream->device->lock);
+> > +
+> > +	wait_event(stream->runtime->wait, stream->runtime->drain_wake);
+> 
+> Don't you really want the interruption?
+> Or use wait_event_interruptible() and return error appropriately.
+any interruption from usermode should trigger the compress_stop/compress_free
+which will unblock this. I dont see the need to have interruptible here
 
-> cat /proc/asound/card1/eld#0.0
-monitor_present 1
-eld_valid 1
-monitor_name
-connection_type HDMI
-eld_version [0x2] CEA-861D or below
-edid_version [0x0] no CEA EDID Timing Extension block present
-manufacture_id 0x0
-product_id 0x0
-port_id 0x0
-support_hdcp 0
-support_ai 0
-audio_sync_delay 0
-speakers [0x5f] FL/FR LFE FC RL/RR RC RLC/RRC
-sad_count 6
-sad0_coding_type [0x1] LPCM
-sad0_channels 8
-sad0_rates [0x1ee0] 32000 44100 48000 88200 96000 176400 192000
-sad0_bits [0xe0000] 16 20 24
-sad1_coding_type [0x2] AC-3
-sad1_channels 6
-sad1_rates [0xe0] 32000 44100 48000
-sad1_max_bitrate 640000
-sad2_coding_type [0x7] DTS
-sad2_channels 6
-sad2_rates [0x6c0] 44100 48000 88200 96000
-sad2_max_bitrate 1536000
-sad3_coding_type [0xa] E-AC-3/DD+ (Dolby Digital Plus)
-sad3_channels 8
-sad3_rates [0xc0] 44100 48000
-sad4_coding_type [0xb] DTS-HD
-sad4_channels 8
-sad4_rates [0x1ec0] 44100 48000 88200 96000 176400 192000
-sad5_coding_type [0xc] MLP (Dolby TrueHD)
-sad5_channels 8
-sad5_rates [0x1ec0] 44100 48000 88200 96000 176400 192000
+> > +
+> > +	wake_up(&stream->runtime->sleep);
+> > +	mutex_lock(&stream->device->lock);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int snd_compr_drain(struct snd_compr_stream *stream)
+> >  {
+> >  	int retval;
+> > @@ -695,11 +718,17 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
+> >  	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
+> >  			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
+> >  		return -EPERM;
+> > +
+> > +	stream->runtime->drain_wake = 0;
+> >  	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_DRAIN);
+> > -	if (!retval) {
+> > -		stream->runtime->state = SNDRV_PCM_STATE_DRAINING;
+> > +	if (retval) {
+> > +		pr_err("SND_COMPR_TRIGGER_DRAIN failed %d\n", retval);
+> 
+> I don't think spamming such an error is good.  The trigger error can
+> happen often repeatedly once when it happens.  Such a message is at
+> most a debug message, so use pr_debug(), if you still want to keep it
+> in the core code.
+Sure...
 
-Command:
-speaker-test -D hdmi:CARD=Generic,DEV=0 -c8 -r192000 -F S16_LE
-works, I just have 5.1 (not 7.1), so Side left goes to the Read left
-and Side right goes to the Rear right. But they were working!
+Thanks for the quick review, will send v4 before I hit the bed today!
 
-Next I've used howto from
-http://phoronix.com/forums/showthread.php?27348-TrueHD-DTS-HD-E-AC3-Over-HDMI-On-Linux
-to test DTS MA and TrueHD.
+--
+~Vinod
+> >  		wake_up(&stream->runtime->sleep);
+> > +		return retval;
+> >  	}
+> > +
+> > +	retval = snd_compress_wait_for_drain(stream);
+> > +	stream->runtime->state = SNDRV_PCM_STATE_SETUP;
+> >  	return retval;
+> >  }
+> >  
+> > @@ -735,10 +764,16 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
+> >  	if (stream->next_track == false)
+> >  		return -EPERM;
+> >  
+> > +	stream->runtime->drain_wake = 0;
+> >  	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_PARTIAL_DRAIN);
+> > +	if (retval) {
+> > +		pr_err("Partial drain returned failure\n");
+> 
+> Ditto.
+> 
+> > +		wake_up(&stream->runtime->sleep);
+> > +		return retval;
+> > +	}
+> >  
+> >  	stream->next_track = false;
+> > -	return retval;
+> > +	return snd_compress_wait_for_drain(stream);
+> >  }
+> >  
+> >  static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+> > -- 
+> > 1.7.0.4
+> > 
+> 
+> 
+> Takashi
 
-In the file from howto I've used:
-card Generic
-and then tested:
-
-zajec@linux-samsung700g7a:~> aplay -D hdmihdtest0 -c8 -fs16_le
--r192000 thd.spdif
-Playing raw data 'thd.spdif' : Signed 16 bit Little Endian, Rate
-192000 Hz, Channels 8
-zajec@linux-samsung700g7a:~> aplay -D hdmihdtest0 -c8 -fs16_le
--r192000 dts.spdif
-Playing raw data 'dts.spdif' : Signed 16 bit Little Endian, Rate
-192000 Hz, Channels 8
-
-Hooray! I got
-DOLBY HD
-and
-DTS-HD MA
-on my Denon 1912 display!
-
-Now the main question... do you have any experience on using DTS-HD MA
-(or TrueHD) with mplayer? :|
+-- 
