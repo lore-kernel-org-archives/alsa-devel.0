@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5/9] ASoC: wm0010: Fix possible out-of-bounds
-	array read
-Date: Wed, 30 Oct 2013 08:35:03 +0100
-Message-ID: <1383118507-21503-6-git-send-email-tiwai@suse.de>
+Subject: [PATCH 3/9] ASoC: ab8500: Fix invalid cast to long
+	pointer
+Date: Wed, 30 Oct 2013 08:35:01 +0100
+Message-ID: <1383118507-21503-4-git-send-email-tiwai@suse.de>
 References: <1383118507-21503-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 73FE0265274
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A5192652E5
  for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2013 08:32:34 +0100 (CET)
 In-Reply-To: <1383118507-21503-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,32 +25,65 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Spotted by coverity CID 744701.
+Don't cast to long pointers blindly just for using find_first_bit()
+and co.  This is certainly not portable at all.
+
+Reimplement the code with ffs() and fls() instead.  This is a slight
+optimization, too.
+
+Spotted by coverity CID 1056484 and 1056485.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm0010.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/ab8500-codec.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-index d5ebcb00019b..bf7804a12863 100644
---- a/sound/soc/codecs/wm0010.c
-+++ b/sound/soc/codecs/wm0010.c
-@@ -793,11 +793,11 @@ static int wm0010_set_sysclk(struct snd_soc_codec *codec, int source,
- 		wm0010->max_spi_freq = 0;
- 	} else {
- 		for (i = 0; i < ARRAY_SIZE(pll_clock_map); i++)
--			if (freq >= pll_clock_map[i].max_sysclk)
-+			if (freq >= pll_clock_map[i].max_sysclk) {
-+				wm0010->max_spi_freq = pll_clock_map[i].max_pll_spi_speed;
-+				wm0010->pll_clkctrl1 = pll_clock_map[i].pll_clkctrl1;
- 				break;
--
--		wm0010->max_spi_freq = pll_clock_map[i].max_pll_spi_speed;
--		wm0010->pll_clkctrl1 = pll_clock_map[i].pll_clkctrl1;
-+			}
- 	}
- 
- 	return 0;
+diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
+index 0693faf7effb..272df538c1d5 100644
+--- a/sound/soc/codecs/ab8500-codec.c
++++ b/sound/soc/codecs/ab8500-codec.c
+@@ -2301,17 +2301,17 @@ static int ab8500_codec_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ 	case 0:
+ 		break;
+ 	case 1:
+-		slot = find_first_bit((unsigned long *)&tx_mask, 32);
++		slot = ffs(tx_mask);
+ 		snd_soc_update_bits(codec, AB8500_DASLOTCONF1, mask, slot);
+ 		snd_soc_update_bits(codec, AB8500_DASLOTCONF3, mask, slot);
+ 		snd_soc_update_bits(codec, AB8500_DASLOTCONF2, mask, slot);
+ 		snd_soc_update_bits(codec, AB8500_DASLOTCONF4, mask, slot);
+ 		break;
+ 	case 2:
+-		slot = find_first_bit((unsigned long *)&tx_mask, 32);
++		slot = ffs(tx_mask);
+ 		snd_soc_update_bits(codec, AB8500_DASLOTCONF1, mask, slot);
+ 		snd_soc_update_bits(codec, AB8500_DASLOTCONF3, mask, slot);
+-		slot = find_next_bit((unsigned long *)&tx_mask, 32, slot + 1);
++		slot = fls(tx_mask);
+ 		snd_soc_update_bits(codec, AB8500_DASLOTCONF2, mask, slot);
+ 		snd_soc_update_bits(codec, AB8500_DASLOTCONF4, mask, slot);
+ 		break;
+@@ -2342,18 +2342,18 @@ static int ab8500_codec_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ 	case 0:
+ 		break;
+ 	case 1:
+-		slot = find_first_bit((unsigned long *)&rx_mask, 32);
++		slot = ffs(rx_mask);
+ 		snd_soc_update_bits(codec, AB8500_ADSLOTSEL(slot),
+ 				AB8500_MASK_SLOT(slot),
+ 				AB8500_ADSLOTSELX_AD_OUT_TO_SLOT(AB8500_AD_OUT3, slot));
+ 		break;
+ 	case 2:
+-		slot = find_first_bit((unsigned long *)&rx_mask, 32);
++		slot = ffs(rx_mask);
+ 		snd_soc_update_bits(codec,
+ 				AB8500_ADSLOTSEL(slot),
+ 				AB8500_MASK_SLOT(slot),
+ 				AB8500_ADSLOTSELX_AD_OUT_TO_SLOT(AB8500_AD_OUT3, slot));
+-		slot = find_next_bit((unsigned long *)&rx_mask, 32, slot + 1);
++		slot = fls(rx_mask);
+ 		snd_soc_update_bits(codec,
+ 				AB8500_ADSLOTSEL(slot),
+ 				AB8500_MASK_SLOT(slot),
 -- 
 1.8.4.1
