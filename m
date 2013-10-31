@@ -1,55 +1,85 @@
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH 1/4] ALSA: hda - hdmi: Add ATI/AMD multi-channel audio support
-Date: Fri, 1 Nov 2013 00:51:37 +0100
-Message-ID: <CACna6rxuSUA9_1HXnY8yPhQ8BDeEnMvoX6i0WvTtst7UTvcgHA@mail.gmail.com>
-References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>
-	<1380659456-3746-2-git-send-email-anssi.hannula@iki.fi>
-	<CACna6ryr37WRvKbMFmLEGt_A2zUD46rZOtJMVom+B_xK9WNLuw@mail.gmail.com>
-	<07e8973b4665cc23c3f4a77e9c7e2b7c@mail.onse.fi>
-	<CACna6ryFtmZHAhmCPEsoxZc5h4mLuM4ajnKGsp=q0jag2f_SYw@mail.gmail.com>
-	<5272BCE1.7010700@iki.fi>
-	<CACna6rzejyTOF2Fvvw1m2SAob7uU5-hJ+yRVk6HS5pDTz7+JWg@mail.gmail.com>
-	<5272E920.6030606@iki.fi>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [PATCH] drm/radeon/audio: fix missing multichannel PCM SAD in
+	some cases
+Date: Fri, 01 Nov 2013 01:52:52 +0200
+Message-ID: <5272ED54.2020400@iki.fi>
+References: <526EE844.4030608@iki.fi>	<1383002356-2479-1-git-send-email-anssi.hannula@iki.fi>
+	<CACna6rzvZd-6s5gBLJnqFUfBCQuSKgCmJ7mNPhaEGuPscfxqqA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5272E920.6030606@iki.fi>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?Q?Peter_Fr=C3=BChberger?= <fritsch@xbmc.org>, Olivier Langlois <olivier@trillion01.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <CACna6rzvZd-6s5gBLJnqFUfBCQuSKgCmJ7mNPhaEGuPscfxqqA@mail.gmail.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Sender: dri-devel-bounces@lists.freedesktop.org
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, dri-devel <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-2013/11/1 Anssi Hannula <anssi.hannula@iki.fi>:
-> Just to check, is the display mode 720p50 or higher (as per HDMI spec
-> 7.3.3)? Though I guess too small mode would cause something else, not
-> this...
-
-I'm using 1080p all the time. Do you think that
-HDMI_AUDIO_PACKETS_PER_LINE may have anything to do with this issue
-(see evergreen_hdmi.c)?
-
-
-> Also, does DTS-HD/TrueHD work with this receiver (interesting since
-> those require 8-channel 192kHz link)?
-
-Both are working for me. I've tested it using 2 movies:
-1) English TrueHD.5.1 @ 1417 kbps
-2) Audio
-Codec................: DTSHD-MA
-Bitrate..............: 3718 kbps
-kHz/bit..............: 24-bit
-Channels.............: 5.1
-Language.............: English
-
-
-> Would be interesting to check if this works in Windows I guess (or ma=
-ybe
-> even just fglrx, though I can't think of a reason it'd make a differe=
-nce).
-
-Installing fglrx is an option, I can try that. Not a big chance for
-Windows here.
-
---=20
-Rafa=C5=82
+MDEuMTEuMjAxMyAwMTozOCwgUmFmYcWCIE1pxYJlY2tpIGtpcmpvaXR0aToKPiAyMDEzLzEwLzI5
+IEFuc3NpIEhhbm51bGEgPGFuc3NpLmhhbm51bGFAaWtpLmZpPjoKPj4gQmVjYXVzZSBvZiB0aGlz
+LCBvbmx5IHRoZSAyLWNoYW5uZWwgU0FEIG1heSBiZSB1c2VkIGlmIGl0IGFwcGVhcnMgYmVmb3Jl
+Cj4+IHRoZSA4LWNoYW5uZWwgU0FELiBVbmxlc3Mgb3RoZXIgU0FEcyByZXF1aXJlIG90aGVyd2lz
+ZSwgdGhpcyBtYXkgY2F1c2UKPj4gdGhlIEFMU0EgSERBIGRyaXZlciB0byBhbGxvdyBzdGVyZW8g
+cGxheWJhY2sgb25seS4KPiAKPiBJIGNhbiBjb25maXJtIHRoYXQgdGhlIHByb2JsZW0gZXhpc3Rz
+LiBNeSBTQURzIChPbmt5byBUWC1TUjYwNSk6Cj4gRm9ybWF0OiAxIChQQ00pICAgICAgICBDaGFu
+bmVsczoxICAgIEZyZXE6MHg3RiAoMzItMTkyKSAgICBCMjoweDA3ICgxNi0yNGIpCj4gRm9ybWF0
+OiAxIChQQ00pICAgICAgICBDaGFubmVsczo3ICAgIEZyZXE6MHg3RiAoMzItMTkyKSAgICBCMjow
+eDA3ICgxNi0yNGIpCj4gRm9ybWF0OiAyIChBQzMpICAgICAgICBDaGFubmVsczo3ICAgIEZyZXE6
+MHgwNyAoMzItNDgpICAgIEIyOjB4NTAgKDY0MD8pCj4gRm9ybWF0OiA3IChEVFMpICAgICAgICBD
+aGFubmVsczo3ICAgIEZyZXE6MHgwNiAoNDQtNDgpICAgIEIyOjB4QzAgKDE1MzY/KQo+IEZvcm1h
+dDogMTAgKEVBQzMpICAgIENoYW5uZWxzOjcgICAgRnJlcToweDA2ICg0NC00OCkgICAgQjI6MHgw
+MAo+IEZvcm1hdDogMTEgKERUU19IRCkgICAgQ2hhbm5lbHM6NyAgICBGcmVxOjB4N0UgKDQ0LTE5
+MikgICAgQjI6MHgwMQo+IEZvcm1hdDogMTIgKE1MUCkgICAgQ2hhbm5lbHM6NyAgICBGcmVxOjB4
+MUUgKDQ0LTk2KSAgICBCMjoweDAwCj4gCj4gVW5mb3J0dW5hdGVseSBJIGdldCBvbmx5IDEgZW11
+bGF0ZWQgU0FEIGVudHJ5IGZvciBQQ00KPiAoL3Byb2MvYXNvdW5kL2NhcmQxL2VsZCMwLjApOgo+
+IHNhZDBfY29kaW5nX3R5cGUgICAgICAgIFsweDFdIExQQ00KPiBzYWQwX2NoYW5uZWxzICAgICAg
+ICAgICAyCj4gc2FkMF9yYXRlcyAgICAgICAgICAgICAgWzB4MWVlMF0gMzIwMDAgNDQxMDAgNDgw
+MDAgODgyMDAgOTYwMDAgMTc2NDAwIDE5MjAwMAo+IHNhZDBfYml0cyAgICAgICAgICAgICAgIFsw
+eGUwMDAwXSAxNiAyMCAyNAo+IAo+IFNvIEkgY2FuIG5vdCBwbGF5IDggY2hhbm5lbCBMUENNICJs
+ZWdhbGx5IiAod2l0aG91dCBmb3JjaW5nIHBsYXllciB0byBkbyBzbykuCj4gCj4gCj4+IEZpeCB0
+aGUgY29kZSB0byBwaWNrIHRoZSBQQ00gU0FEIHdpdGggdGhlIGhpZ2hlc3QgbnVtYmVyIG9mIGNo
+YW5uZWxzLAo+PiB3aGlsZSBtZXJnaW5nIHRoZSByYXRlIG1hc2tzIG9mIFBDTSBTQURzIHdpdGgg
+bG93ZXIgYW1vdW50IG9mIGNoYW5uZWxzCj4+IGludG8gdGhlIGFkZGl0aW9uYWwgc3RlcmVvIHJh
+dGUgbWFzayBieXRlLgo+IAo+IERvZXMgaXQgbWVhbiB0aGF0IG5vdyBpbnN0ZWFkIG9mIDIgcmVh
+bCBTQURzOgo+IDEpIDE5MmtIeiBzdXBwb3J0IGZvciAyIGNoYW5uZWxzCj4gMikgOTZrSHogc3Vw
+cG9ydCBmb3IgOCBjaGFubmVscwo+IHlvdSB3aWxsIG9ubHkgZ2V0Ogo+IDEpIDE5MmtIeiBzdXBw
+b3J0IGZvciA4IGNoYW5uZWxzCj4gPwoKTm8sIHRoZSBTQURzIHdpbGwgYmUgc2VwYXJhdGVkIGFn
+YWluIGJ5IHRoZSBBVEkvQU1EIEVMRCBnZW5lcmF0b3IgaW4KaGRhX2VsZC5jIChhcyB0aGUgNHRo
+IGJ5dGUgaW4gdGhlIHJlZ2lzdGVyIGNvbnRhaW5zIHRoZSBQQ00gc3RlcmVvIHJhdGUKbWFzayku
+CgpJLmUuLCBhc3N1bWluZyBhIHJlY2VpdmVyIHdpdGggOTZrSHogUENNIG11bHRpY2hhbm5lbCBs
+aW1pdGF0aW9uLCB3aXRoCnRoZSBwYXRjaCB0aGUgdmlkZW8tc2lkZSBzZXRzIHRoZSB0aHJlZSBz
+dGFuZGFyZCBTQUQgYnl0ZXMgYWNjb3JkaW5nIHRvCnRoZSBTQUQgd2l0aCB0aGUgaGlnaGVzdCBu
+dW1iZXIgb2YgY2hhbm5lbHMgKDhjaCs5NmtIeisyNGIpLCBhbmQgdGhlCmV4dHJhIGJ5dGUgY29u
+dGFpbnMgdGhlIG9yJ2VkIHJhdGUgbWFzayBvZiBhbGwgUENNIFNBRHMgKGkuZS4gMTkya0h6KS4K
+VGhlIGF1ZGlvLXNpZGUgdGhlbiBub3RpY2VzIHRoYXQgOTZrSHogKGluIFNBRCkgIT0gMTkya0h6
+IChpbiBleHRyYQpieXRlKSBhbmQgZ2VuZXJhdGVzIHR3byBTQURzLCBvbmUgd2l0aCA4Y2ggOTZr
+SHogYW5kIG9uZSB3aXRoIDJjaCAxOTJrSHouCgo+IERvZXMgaXQgbWVhbiBhbHNhIG1heSB0cnkg
+dG8gcGxheSA4Y2hhbm5lbHMgYXVkaW8gYXQgMTkya0h6IGFuZCBmYWlsIGF0IHRoaXM/Cj4gVGhh
+dCBkb2Vzbid0IHNvdW5kIGdvb2QsIGJ1dCBvbiB0aGUgb3RoZXIgaGFuZCBJIGNhbid0IHByb3Bv
+c2UKPiBhbnl0aGluZyBiZXR0ZXIgOnwKCldlbGwsIEFMU0EgZG9lcyBub3QgcmVzdHJpY3QgdGhh
+dCBjdXJyZW50bHkgaW4gYW55IGNhc2UgKHRoZSBBTFNBIEhETUkKY29kZSBjdXJyZW50bHkgb25s
+eSB0YWtlcyB0aGUgbWF4aW11bSBjaGFubmVscy9yYXRlL2V0YyBpbnRvIGFjY291bnQsIGl0CmRv
+ZXNuJ3QgY2hlY2sgaWYgdGhlIHNwZWNpZmljIGNvbWJpbmF0aW9uIGlzIGFsbG93ZWQgYnkgU0FE
+cyksIGJ1dCB0aGF0CmlzIG1vc3RseSBqdXN0IGJlY2F1c2Ugbm9ib2R5IGhhcyBhZGRlZCBzdWNo
+IGNvZGUgeWV0LgoKPiBPdXQgb2YgY3VyaW9zaXR5LCB3aGF0IGRvZXMgZmdscnggc2V0IGluIHRo
+ZSB2ZXJicz8KCkkgZG9uJ3Qga25vdywgdGhvdWdoIEknZCBleHBlY3QgaXQgdG8gcHV0IHRoZSBz
+YW1lIHZhbHVlcyB0aGF0IGdldCBwdXQKdGhlcmUgd2l0aCB0aGlzIHBhdGNoLgoKPj4gVGVjaG5p
+Y2FsbHkgdGhlcmUgYXJlIGV2ZW4gbW9yZSBjYXNlcyB0byBoYW5kbGUgKG11bHRpcGxlIG5vbi1Q
+Q00gU0FEcwo+PiBvZiB0aGUgc2FtZSB0eXBlLCBtb3JlIHRoYW4gdHdvIFBDTSBTQURzIHdpdGgg
+dmFyeWluZyBjaGFubmVsIGNvdW50cywKPj4gZXRjKSwgYnV0IHRob3NlIGhhdmUgbm90IGFjdHVh
+bGx5IGJlZW4gZW5jb3VudGVyZWQgaW4gdGhlIGZpZWxkIGFuZAo+PiBoYW5kbGluZyB0aGVtIHdv
+dWxkIGJlIG5vbi10cml2aWFsLgo+Pgo+PiBFeGFtcGxlIGFmZmVjdGVkIEVESUQgZnJvbSBPbmt5
+byBUWC1TUjY3NCBzcGVjaWZ5aW5nIDE5MmtIeiBzdGVyZW8KPj4gc3VwcG9ydCBhbmQgOTZrSHog
+OC1jaGFubmVsIHN1cHBvcnQgKGFuZCBvdGhlciA4LWNoYW5uZWwgY29tcHJlc3NlZAo+PiBmb3Jt
+YXRzKToKPiAKCi0tIApBbnNzaSBIYW5udWxhCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3Rz
+LmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlz
+dGluZm8vZHJpLWRldmVsCg==
