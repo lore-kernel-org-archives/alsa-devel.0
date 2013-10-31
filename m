@@ -1,24 +1,18 @@
-From: Aidan Schurr <aidan.schurr@gmail.com>
-Subject: Digidesign Eleven Rack support
-Date: Thu, 31 Oct 2013 11:13:54 +0000 (UTC)
-Message-ID: <loom.20131031T120700-144@post.gmane.org>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] asoc-tools: Render png image instead of
+	jpeg in	vizdapm.sh
+Date: Thu, 31 Oct 2013 11:32:51 +0000
+Message-ID: <20131031113251.GA18820@opensource.wolfsonmicro.com>
+References: <1383144870-20294-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id E5BF9265681
- for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2013 12:20:05 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1VbqIF-0008AU-4g
- for alsa-devel@alsa-project.org; Thu, 31 Oct 2013 12:20:03 +0100
-Received: from c211-28-218-41.brasd3.vic.optusnet.com.au ([211.28.218.41])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2013 12:20:03 +0100
-Received: from aidan.schurr by c211-28-218-41.brasd3.vic.optusnet.com.au with
- local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2013 12:20:03 +0100
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A3CD8265691
+ for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2013 12:32:53 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1383144870-20294-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,16 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys, am wondering if support for the Digidesign Eleven Rack is on the 
-cards for the future at all? Alsa mixer currently recognises it but lists 
-it as having no available controls, while aplay -l and arecord -l miss it 
-altogether.
+On Wed, Oct 30, 2013 at 04:54:30PM +0200, Jarkko Nikula wrote:
+> Lossless png image suits better to technical drawings than jpeg which may
+> even have artifacts around sharp objects.
+> 
+> Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 
-I found one thread from around 18 months ago that mentions it uses a non 
-standard implementation of USB audio; does this pretty much preclude it 
-from getting up and finding running?
-
-Happy to be a beta tester of that could help in any way. 
+Applied both, thanks.
