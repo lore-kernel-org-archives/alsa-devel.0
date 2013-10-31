@@ -1,99 +1,104 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: [PATCH] ALSA: fix oops in snd_pcm_info() caused by
-	ASoC DPCM
-Date: Thu, 31 Oct 2013 15:01:37 +0000
-Message-ID: <20131031150137.GA16735@n2100.arm.linux.org.uk>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 2/3] dma: edma: Add support for Cyclic DMA
+Date: Thu, 31 Oct 2013 19:40:12 +0530
+Message-ID: <20131031141012.GJ18788@intel.com>
+References: <1379977515-3794-1-git-send-email-joelf@ti.com>
+ <1379977515-3794-3-git-send-email-joelf@ti.com>
+ <20131021065319.GM14013@intel.com>
+ <52669A23.2080805@ti.com>
+ <20131024163829.GA21230@intel.com>
+ <52695F6E.4030002@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 9390426164C
- for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2013 16:01:54 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+In-Reply-To: <52695F6E.4030002@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Joel Fernandes <joelf@ti.com>
+Cc: dmaengine@vger.kernel.org, Matt Porter <matt@ohporter.com>, Russell King <linux@arm.linux.org.uk>, Dan Williams <djbw@fb.com>, Jyri Sarha <jsarha@ti.com>, Lars Peter-Clausen <lars@metafoo.de>, Linux OMAP List <linux-omap@vger.kernel.org>, Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>, Linux DaVinci Kernel List <davinci-linux-open-source@linux.davincidsp.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Liam, Mark,
+On Thu, Oct 24, 2013 at 12:57:02PM -0500, Joel Fernandes wrote:
+> Rebased on slave-dma/next branch and reapplied:
+Looks like your MUA caused lines to get wrapped and patch is corrupt, can you
+pls resend again using git-send email. I tried even the patch from
+patchworks but that too failed!
+> 
+> ----8<---
+> From: Joel Fernandes <joelf@ti.com>
+> Subject: [PATCH v2] dma: edma: Add support for Cyclic DMA
+> 
+> Using the PaRAM configuration function that we split for reuse by the
+> different DMA types, we implement Cyclic DMA support.
+> For the cyclic case, we pass different configuration parameters to this
+> function, and handle all the Cyclic-specific functionality separately.
+> 
+> Callbacks to the DMA users are handled using vchan_cyclic_callback in
+> the virt-dma layer. Linking is handled the same way as the slave SG case
+> except for the last slot where we link it back to the first one in a
+> cyclic fashion.
+> 
+> For continuity, we check for cases where no.of periods is great than the
+> MAX number of slots the driver can allocate for a particular descriptor
+> and error out on such cases.
+> 
+> Signed-off-by: Joel Fernandes <joelf@ti.com>
+> ---
+>  drivers/dma/edma.c | 159 ++++++++++++++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 151 insertions(+), 8 deletions(-)
+> 
 
-As discussed privately, here's the fix for the ASoC oops I've been seeing
-with DPCM in ALSA.  This avoids unnecessarily exposing the ASoC internal
-PCM devices to userspace, which is complimentary to your patch fixing the
-deref of the PCM ops.
+>  	struct edma_chan *echan = data;
+> @@ -464,24 +602,28 @@ static void edma_callback(unsigned ch_num, u16 ch_status,
+> void *data)
+This seems bad
+>  	unsigned long flags;
+>  	struct edmacc_param p;
+> 
+> -	/* Pause the channel */
+> -	edma_pause(echan->ch_num);
+> +	edesc = echan->edesc;
+> +
+> +	/* Pause the channel for non-cyclic */
+> +	if (!edesc || (edesc && !edesc->cyclic))
+> +		edma_pause(echan->ch_num);
+> 
+>  	switch (ch_status) {
+>  	case DMA_COMPLETE:
+>  		spin_lock_irqsave(&echan->vchan.lock, flags);
+> 
+> -		edesc = echan->edesc;
+>  		if (edesc) {
+> -			if (edesc->processed == edesc->pset_nr) {
+> +			if (edesc->cyclic) {
+> +				vchan_cyclic_callback(&edesc->vdesc);
+> +			} else if (edesc->processed == edesc->pset_nr) {
+>  				dev_dbg(dev, "Transfer complete, stopping channel %d\n", ch_num);
+>  				edma_stop(echan->ch_num);
+>  				vchan_cookie_complete(&edesc->vdesc);
+> +				edma_execute(echan);
+>  			} else {
+>  				dev_dbg(dev, "Intermediate transfer complete on channel %d\n", ch_num);
+> +				edma_execute(echan);
+>  			}
+> -
+> -			edma_execute(echan);
+>  		}
+> 
+>  		spin_unlock_irqrestore(&echan->vchan.lock, flags);
+> @@ -677,6 +819,7 @@ static void edma_dma_init(struct edma_cc *ecc, struct
+> dma_device *dma,
+ditto and few other which checkpatch was not happy about!
+>  			  struct device *dev)
+>  {
+>  	dma->device_prep_slave_sg = edma_prep_slave_sg;
+> +	dma->device_prep_dma_cyclic = edma_prep_dma_cyclic;
+>  	dma->device_alloc_chan_resources = edma_alloc_chan_resources;
+>  	dma->device_free_chan_resources = edma_free_chan_resources;
+>  	dma->device_issue_pending = edma_issue_pending;
+> -- 
+> 1.8.1.2
+> 
 
-8<========
-From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH] ALSA: fix oops in snd_pcm_info() caused by ASoC DPCM
-
-Unable to handle kernel NULL pointer dereference at virtual address 00000008
-pgd = d5300000
-[00000008] *pgd=0d265831, *pte=00000000, *ppte=00000000
-Internal error: Oops: 17 [#1] PREEMPT ARM
-CPU: 0 PID: 2295 Comm: vlc Not tainted 3.11.0+ #755
-task: dee74800 ti: e213c000 task.ti: e213c000
-PC is at snd_pcm_info+0xc8/0xd8
-LR is at 0x30232065
-pc : [<c031b52c>]    lr : [<30232065>]    psr: a0070013
-sp : e213dea8  ip : d81cb0d0  fp : c05f7678
-r10: c05f7770  r9 : fffffdfd  r8 : 00000000
-r7 : d8a968a8  r6 : d8a96800  r5 : d8a96200  r4 : d81cb000
-r3 : 00000000  r2 : d81cb000  r1 : 00000001  r0 : d8a96200
-Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
-Control: 10c5387d  Table: 15300019  DAC: 00000015
-Process vlc (pid: 2295, stack limit = 0xe213c248)
-[<c031b52c>] (snd_pcm_info) from [<c031b570>] (snd_pcm_info_user+0x34/0x9c)
-[<c031b570>] (snd_pcm_info_user) from [<c03164a4>] (snd_pcm_control_ioctl+0x274/0x280)
-[<c03164a4>] (snd_pcm_control_ioctl) from [<c0311458>] (snd_ctl_ioctl+0xc0/0x55c)
-[<c0311458>] (snd_ctl_ioctl) from [<c00eca84>] (do_vfs_ioctl+0x80/0x31c)
-[<c00eca84>] (do_vfs_ioctl) from [<c00ecd5c>] (SyS_ioctl+0x3c/0x60)
-[<c00ecd5c>] (SyS_ioctl) from [<c000e500>] (ret_fast_syscall+0x0/0x48)
-Code: e1a00005 e59530dc e3a01001 e1a02004 (e5933008)
----[ end trace cb3d9bdb8dfefb3c ]---
-
-This is provoked when the ASoC front end is open along with its backend,
-(which causes the backend to have a runtime assigned to it) and then the
-SNDRV_CTL_IOCTL_PCM_INFO is requested for the (visible) backend device.
-
-Resolve this by ensuring that ASoC internal backend devices are not
-visible to userspace, just as the commentry for snd_pcm_new_internal()
-says it should be.
-
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
----
- sound/core/pcm.c |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
-
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 17f45e8aa89c..e1e9e0c999fe 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -49,6 +49,8 @@ static struct snd_pcm *snd_pcm_get(struct snd_card *card, int device)
- 	struct snd_pcm *pcm;
- 
- 	list_for_each_entry(pcm, &snd_pcm_devices, list) {
-+		if (pcm->internal)
-+			continue;
- 		if (pcm->card == card && pcm->device == device)
- 			return pcm;
- 	}
-@@ -60,6 +62,8 @@ static int snd_pcm_next(struct snd_card *card, int device)
- 	struct snd_pcm *pcm;
- 
- 	list_for_each_entry(pcm, &snd_pcm_devices, list) {
-+		if (pcm->internal)
-+			continue;
- 		if (pcm->card == card && pcm->device > device)
- 			return pcm->device;
- 		else if (pcm->card->number > card->number)
--- 
-1.7.4.4
+--
+~Vinod
