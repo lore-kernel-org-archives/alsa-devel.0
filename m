@@ -1,92 +1,66 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH 1/4] ALSA: hda - hdmi: Add ATI/AMD multi-channel audio
- support
-Date: Fri, 01 Nov 2013 01:34:56 +0200
-Message-ID: <5272E920.6030606@iki.fi>
-References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>	<1380659456-3746-2-git-send-email-anssi.hannula@iki.fi>	<CACna6ryr37WRvKbMFmLEGt_A2zUD46rZOtJMVom+B_xK9WNLuw@mail.gmail.com>	<07e8973b4665cc23c3f4a77e9c7e2b7c@mail.onse.fi>	<CACna6ryFtmZHAhmCPEsoxZc5h4mLuM4ajnKGsp=q0jag2f_SYw@mail.gmail.com>	<5272BCE1.7010700@iki.fi> <CACna6rzejyTOF2Fvvw1m2SAob7uU5-hJ+yRVk6HS5pDTz7+JWg@mail.gmail.com>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH] drm/radeon/audio: fix missing multichannel PCM SAD in
+	some cases
+Date: Fri, 1 Nov 2013 00:38:02 +0100
+Message-ID: <CACna6rzvZd-6s5gBLJnqFUfBCQuSKgCmJ7mNPhaEGuPscfxqqA@mail.gmail.com>
+References: <526EE844.4030608@iki.fi>
+	<1383002356-2479-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CACna6rzejyTOF2Fvvw1m2SAob7uU5-hJ+yRVk6HS5pDTz7+JWg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?B?UGV0ZXIgRnLDvGhiZXJnZXI=?= <fritsch@xbmc.org>, Olivier Langlois <olivier@trillion01.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <1383002356-2479-1-git-send-email-anssi.hannula@iki.fi>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Sender: dri-devel-bounces@lists.freedesktop.org
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: Alex Deucher <alexander.deucher@amd.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, dri-devel <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-01.11.2013 01:25, Rafa=C5=82 Mi=C5=82ecki kirjoitti:
-> 2013/10/31 Anssi Hannula <anssi.hannula@iki.fi>:
->>> But I can hear sound for rear right and rear left only :(
->>>
->>> Is there anything more I can provide to help resolve this? Do you h=
-ave
->>> any idea how we can resolve this?
->>
->> According to the below the receiver has separate PCM SADs for 2-chan=
-nel
->> and multichannel playback. However, due to a radeon driver bug (see
->> "[PATCH] drm/radeon/audio: fix missing multichannel PCM SAD in some
->> cases", you were CCd) the multichannel SAD is lost and not shown bel=
-ow.
->>
->> However, that is not (or at least should not be) the reason you are =
-not
->> getting audio.
->> I suspect that the receiver does not support 192kHz multichannel aud=
-io
->> (which would be indicated in the missing multichannel PCM SAD). Does=
- it
->> work with 48kHz or 96kHz?
->> (TODO: refuse PCM playback in such cases)
->>
->> If it does not work with 48kHz or 96kHz either, then we have a bug t=
-o
->> solve :)
->=20
-> First of all, you're right about 2 SADs for PCM.
->=20
-> The weird thing is that 192kHz support... According to the EDID (SADs=
-)
-> it should be supported:
-> Format: 1 (PCM)        Channels:1    Freq:0x7F (32-192)    B2:0x07 (1=
-6-24b)
-> Format: 1 (PCM)        Channels:7    Freq:0x7F (32-192)    B2:0x07 (1=
-6-24b)
-> Format: 2 (AC3)        Channels:7    Freq:0x07 (32-48)    B2:0x50 (64=
-0?)
-> Format: 7 (DTS)        Channels:7    Freq:0x06 (44-48)    B2:0xC0 (15=
-36?)
-> Format: 10 (EAC3)    Channels:7    Freq:0x06 (44-48)    B2:0x00
-> Format: 11 (DTS_HD)    Channels:7    Freq:0x7E (44-192)    B2:0x01
-> Format: 12 (MLP)    Channels:7    Freq:0x1E (44-96)    B2:0x00
->=20
-> So I performed more tests and:
->=20
-> 1) speaker-test -D hdmi:CARD=3DGeneric,DEV=3D0 -c6 -r192000 -F S16_LE
-> A nice noise for rear right and rear left, silent for the rest
->=20
-> 2) speaker-test -D hdmi:CARD=3DGeneric,DEV=3D0 -c6 -r176400 -F S16_LE
-> A nice noise for rear right and rear left, short "bump" sound for the=
- rest
->=20
-> 3) speaker-test -D hdmi:CARD=3DGeneric,DEV=3D0 -c6 -r96000 -F S16_LE
-> A nice noise for all speakers (the same applies to 88200, 48000, 4410=
-0, 32000)
->=20
-> I don't get it. Onkyo reports support for 192kHz and it supports it,
-> but only for 2 rear speakers... does it make any sense do you?
-
-Just to check, is the display mode 720p50 or higher (as per HDMI spec
-7.3.3)? Though I guess too small mode would cause something else, not
-this...
-
-Also, does DTS-HD/TrueHD work with this receiver (interesting since
-those require 8-channel 192kHz link)?
-
-Would be interesting to check if this works in Windows I guess (or mayb=
-e
-even just fglrx, though I can't think of a reason it'd make a differenc=
-e).
-
---=20
-Anssi Hannula
+MjAxMy8xMC8yOSBBbnNzaSBIYW5udWxhIDxhbnNzaS5oYW5udWxhQGlraS5maT46Cj4gQmVjYXVz
+ZSBvZiB0aGlzLCBvbmx5IHRoZSAyLWNoYW5uZWwgU0FEIG1heSBiZSB1c2VkIGlmIGl0IGFwcGVh
+cnMgYmVmb3JlCj4gdGhlIDgtY2hhbm5lbCBTQUQuIFVubGVzcyBvdGhlciBTQURzIHJlcXVpcmUg
+b3RoZXJ3aXNlLCB0aGlzIG1heSBjYXVzZQo+IHRoZSBBTFNBIEhEQSBkcml2ZXIgdG8gYWxsb3cg
+c3RlcmVvIHBsYXliYWNrIG9ubHkuCgpJIGNhbiBjb25maXJtIHRoYXQgdGhlIHByb2JsZW0gZXhp
+c3RzLiBNeSBTQURzIChPbmt5byBUWC1TUjYwNSk6CkZvcm1hdDogMSAoUENNKSAgICAgICAgQ2hh
+bm5lbHM6MSAgICBGcmVxOjB4N0YgKDMyLTE5MikgICAgQjI6MHgwNyAoMTYtMjRiKQpGb3JtYXQ6
+IDEgKFBDTSkgICAgICAgIENoYW5uZWxzOjcgICAgRnJlcToweDdGICgzMi0xOTIpICAgIEIyOjB4
+MDcgKDE2LTI0YikKRm9ybWF0OiAyIChBQzMpICAgICAgICBDaGFubmVsczo3ICAgIEZyZXE6MHgw
+NyAoMzItNDgpICAgIEIyOjB4NTAgKDY0MD8pCkZvcm1hdDogNyAoRFRTKSAgICAgICAgQ2hhbm5l
+bHM6NyAgICBGcmVxOjB4MDYgKDQ0LTQ4KSAgICBCMjoweEMwICgxNTM2PykKRm9ybWF0OiAxMCAo
+RUFDMykgICAgQ2hhbm5lbHM6NyAgICBGcmVxOjB4MDYgKDQ0LTQ4KSAgICBCMjoweDAwCkZvcm1h
+dDogMTEgKERUU19IRCkgICAgQ2hhbm5lbHM6NyAgICBGcmVxOjB4N0UgKDQ0LTE5MikgICAgQjI6
+MHgwMQpGb3JtYXQ6IDEyIChNTFApICAgIENoYW5uZWxzOjcgICAgRnJlcToweDFFICg0NC05Nikg
+ICAgQjI6MHgwMAoKVW5mb3J0dW5hdGVseSBJIGdldCBvbmx5IDEgZW11bGF0ZWQgU0FEIGVudHJ5
+IGZvciBQQ00KKC9wcm9jL2Fzb3VuZC9jYXJkMS9lbGQjMC4wKToKc2FkMF9jb2RpbmdfdHlwZSAg
+ICAgICAgWzB4MV0gTFBDTQpzYWQwX2NoYW5uZWxzICAgICAgICAgICAyCnNhZDBfcmF0ZXMgICAg
+ICAgICAgICAgIFsweDFlZTBdIDMyMDAwIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3NjQwMCAx
+OTIwMDAKc2FkMF9iaXRzICAgICAgICAgICAgICAgWzB4ZTAwMDBdIDE2IDIwIDI0CgpTbyBJIGNh
+biBub3QgcGxheSA4IGNoYW5uZWwgTFBDTSAibGVnYWxseSIgKHdpdGhvdXQgZm9yY2luZyBwbGF5
+ZXIgdG8gZG8gc28pLgoKCj4gRml4IHRoZSBjb2RlIHRvIHBpY2sgdGhlIFBDTSBTQUQgd2l0aCB0
+aGUgaGlnaGVzdCBudW1iZXIgb2YgY2hhbm5lbHMsCj4gd2hpbGUgbWVyZ2luZyB0aGUgcmF0ZSBt
+YXNrcyBvZiBQQ00gU0FEcyB3aXRoIGxvd2VyIGFtb3VudCBvZiBjaGFubmVscwo+IGludG8gdGhl
+IGFkZGl0aW9uYWwgc3RlcmVvIHJhdGUgbWFzayBieXRlLgoKRG9lcyBpdCBtZWFuIHRoYXQgbm93
+IGluc3RlYWQgb2YgMiByZWFsIFNBRHM6CjEpIDE5MmtIeiBzdXBwb3J0IGZvciAyIGNoYW5uZWxz
+CjIpIDk2a0h6IHN1cHBvcnQgZm9yIDggY2hhbm5lbHMKeW91IHdpbGwgb25seSBnZXQ6CjEpIDE5
+MmtIeiBzdXBwb3J0IGZvciA4IGNoYW5uZWxzCj8KRG9lcyBpdCBtZWFuIGFsc2EgbWF5IHRyeSB0
+byBwbGF5IDhjaGFubmVscyBhdWRpbyBhdCAxOTJrSHogYW5kIGZhaWwgYXQgdGhpcz8KVGhhdCBk
+b2Vzbid0IHNvdW5kIGdvb2QsIGJ1dCBvbiB0aGUgb3RoZXIgaGFuZCBJIGNhbid0IHByb3Bvc2UK
+YW55dGhpbmcgYmV0dGVyIDp8Ck91dCBvZiBjdXJpb3NpdHksIHdoYXQgZG9lcyBmZ2xyeCBzZXQg
+aW4gdGhlIHZlcmJzPwoKCj4gVGVjaG5pY2FsbHkgdGhlcmUgYXJlIGV2ZW4gbW9yZSBjYXNlcyB0
+byBoYW5kbGUgKG11bHRpcGxlIG5vbi1QQ00gU0FEcwo+IG9mIHRoZSBzYW1lIHR5cGUsIG1vcmUg
+dGhhbiB0d28gUENNIFNBRHMgd2l0aCB2YXJ5aW5nIGNoYW5uZWwgY291bnRzLAo+IGV0YyksIGJ1
+dCB0aG9zZSBoYXZlIG5vdCBhY3R1YWxseSBiZWVuIGVuY291bnRlcmVkIGluIHRoZSBmaWVsZCBh
+bmQKPiBoYW5kbGluZyB0aGVtIHdvdWxkIGJlIG5vbi10cml2aWFsLgo+Cj4gRXhhbXBsZSBhZmZl
+Y3RlZCBFRElEIGZyb20gT25reW8gVFgtU1I2NzQgc3BlY2lmeWluZyAxOTJrSHogc3RlcmVvCj4g
+c3VwcG9ydCBhbmQgOTZrSHogOC1jaGFubmVsIHN1cHBvcnQgKGFuZCBvdGhlciA4LWNoYW5uZWwg
+Y29tcHJlc3NlZAo+IGZvcm1hdHMpOgoKLS0gClJhZmHFggpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZl
+bEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
