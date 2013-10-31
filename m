@@ -1,17 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: include/uapi/firewire.h for other firewire drivers
-Date: Thu, 31 Oct 2013 17:30:20 +0900
-Message-ID: <5272151C.2010208@sakamocchi.jp>
-References: <526A6092.4030709@sakamocchi.jp> <526A6C50.2000901@ladisch.de>
- <526B5017.8010106@sakamocchi.jp> <526E207B.5060301@ladisch.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - Add extra chmap for 2.1
+ outputs on ASUS laptops
+Date: Thu, 31 Oct 2013 09:32:53 +0100
+Message-ID: <527215B5.7070805@canonical.com>
+References: <1383151496-31684-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FB02265681
- for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2013 09:30:32 +0100 (CET)
-In-Reply-To: <526E207B.5060301@ladisch.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3F2A2656E2
+ for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2013 09:32:55 +0100 (CET)
+In-Reply-To: <1383151496-31684-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +22,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksIENsZW1lbnMsCgpJIGhhdmUgdHdvIG1vcmUgcXVlc3Rpb25zLgoKPiAoRm9yIGV4YW1wbGUs
-IHRoZSBzYW1wbGUgcmF0ZSBpcyBzZXQgYnkgdGhlIGFwcGxpY2F0aW9uIG9uIHRoZQo+IEFMU0Eg
-ZGV2aWNlOyBpdCB3b3VsZCBiZSBhIGJhZCBpZGVhIGZvciB0aGUgZHJpdmVyCj4gdG8gX2Fza18g
-dGhlIGNvbnRyb2wgcGFuZWwgYXBwbGljYXRpb24gdG8gY2hhbmdlIGl0LikKCkkgaGFkIGEgZG91
-YnQgdGhhdCBhbGwgb2YgbW9kZWxzIGNhbiBmb2xsb3cgdGhpcyBydWxlIGJlY2F1c2UgdGhlcmUg
-YXJlIApzb21lIG1vZGVscyB3aGljaCBpcyBub3QgZGVzaWduZWQgZm9yIHN0YW5kLWFsb25lIHVz
-ZS4gVGhpcyB0eXBlIG9mIApkZXZpY2UgY2Fubm90IHdvcmsgd2l0aG91dCBjb25uZWN0aW9uL3N0
-cmVhbXMgc28gSSBhc3N1bWVkIHRoYXQgY2hhbmdpbmcgCnNhbXBsaW5nIHJhdGUgb3IgY2xvY2sg
-c291cmNlIGJyaW5ncyBzb21lIGJhZCBzaXR1YXRpb25zLgoKQnV0IG5vdyBJIGNvbmZpcm1lZCBh
-bGwgb2YgbW9kZWxzIHdoaWNoIEkgaGF2ZSBjYW4gZm9sbG93IHRoaXMgcnVsZS4KClJlbGF0ZWQg
-dG8gdGhpcywgbXkgZHJpdmVycyBoYXZlIFBDTSBydWxlcyBmb3IgYXV0by1hZGp1c3RtZW50IG9m
-IApyYXRlL2NoYW5uZWxzLiBTaG91bGQgSSByZW1vdmUgdGhlbSBhbmQgZml4IHJhdGUvY2hhbm5l
-bHMgYWNjb3JkaW5nIHRvIApjdXJyZW50IHNhbXBsaW5nIHJhdGU/Cgo+IFRoaXMgaXMgYW5vdGhl
-ciBleGFtcGxlIG9mIGEgc2V0dGluZyB0aGF0IG11c3QgYmUgaW4gdGhlCj4ga2VybmVsIGRyaXZl
-ci4KCkFzIGxvbmcgYXMgSSBrbm93LCB0aGlzIHR5cGUgb2YgZGV2aWNlIGNoYW5nZXMgaXRzIGNo
-YW5uZWwgZm9ybWF0aW9uIG9mIApBTURUUCBzdHJlYW0gYWNjb3JkaW5nIHRvICBjdXJyZW50IHNh
-bXBsaW5nIHJhdGUgYW5kIGN1cnJlbnQgZGlnaXRhbCAKaW5wdXQgaW50ZXJmYWNlLiBUaGUgZHJp
-dmVyIGNhbiBnZXQgY3VycmVudCBzYW1wbGluZyByYXRlIGJ5IEFWL0MgCmNvbW1hbmQgYnV0ICBj
-YW5ub3QgZ2V0IGN1cnJlbnQgZGlnaXRhbCBpbnB1dCBpbnRlcmZhY2UgYmVjYXVzZSBpdCdzIAon
-d3JpdGUtb25seScuCgpGb3IgdGhpcyBzZXR0aW5nLCB3aGljaCBpcyBiZXR0ZXIgZm9yIGNvbnRy
-b2wgcGFuZWwvbWl4ZXIgYXBwbGljYXRpb24sIApjb250cm9sIGludGVyZmFjZSBvciBod2RlcCBp
-bnRlcmZhY2Ugd2l0aCBmaXJld2lyZS5oPwoKClRoYW5rcyBmb3IgeW91ciBwYXRpZW5jZSB0byBh
-bnN3ZXIgbXkgcXVlc3Rpb25zLgoKVGFrYXNoaSBTYWthbW90bwoKCigyMDEz5bm0MTDmnIgyOOaX
-pSAxNzoyOSksIENsZW1lbnMgTGFkaXNjaCB3cm90ZToKPiBUYWthc2hpIFNha2Ftb3RvIHdyb3Rl
-Ogo+Pj4gQmVjYXVzZSBldmVyeSBkZXZpY2UgY2FuIGhhdmUgc2V0dGluZ3MgdGhhdCBzaG91bGQg
-bm90IGJlIGNoYW5nZWQKPj4+IHdoaWxlIHN0cmVhbWluZy4KPj4KPj4gQ3VycmVudGx5IG15IEZp
-cmV3b3Jrcy9CZUJvQiBkcml2ZXIgZ2l2ZSBDb250cm9sIGludGVyZmFjZXMgZm9yIHRoZXNlCj4+
-IHNldHRpbmdzLCBsaWtlIGNoYW5naW5nIHNhbXBsaW5nIHJhdGUsIHN3aXRjaGluZyBkaWdpdGFs
-IGludGVyZmFjZS4KPj4gVGhlIHByaW1hcnJ5IHB1cnBvc2Ugb2YgdGhlc2UgaXMgdGhlIHNhbWUs
-IGEgcHJldmVudGlvbiBmcm9tIHN0b3BwaW5nCj4+IHN0cmVhbWluZy4gVGhlIHNlY29uZGFyeSBw
-dXJwb3NlIGlzIGRlYnVnIGNvZGVzIGZvciB0aGVzZSBmdW5jdGlvbmFsaXR5Lgo+Pgo+PiBCdXQg
-YmFzZWQgb24gZmlyZXdpcmUuaCBpbnRlcmZhY2UsIGl0IGlzIHRoZSBhcHBsaWNhdGlvbnMnCj4+
-IHJlc3BvbnNpYmlsaXR5LCBub3QgZHJpdmVycycuIElzIG15IHVuZGVyc3RhbmRpbmcgY29ycmVj
-dD8KPgo+IFllczsgdGhlIGludGVudCBpcyBmb3IgdGhlIGtlcm5lbCBkcml2ZXIgdG8gaGFuZGxl
-IG9ubHkgdGhvc2Ugc2V0dGluZ3MKPiB0aGF0IHdvdWxkIGJlIGltcG9zc2libGUgb3IgdmVyeSBk
-aWZmaWN1bHQgdG8gaGFuZGxlIHdpdGggYSBzZXBhcmF0ZQo+IHVzZXIgc3BhY2UgcHJvY2Vzcy4g
-IChGb3IgZXhhbXBsZSwgdGhlIHNhbXBsZSByYXRlIGlzIHNldCBieSB0aGUKPiBhcHBsaWNhdGlv
-biBvbiB0aGUgQUxTQSBkZXZpY2U7IGl0IHdvdWxkIGJlIGEgYmFkIGlkZWEgZm9yIHRoZSBkcml2
-ZXIgdG8KPiBfYXNrXyB0aGUgY29udHJvbCBwYW5lbCBhcHBsaWNhdGlvbiB0byBjaGFuZ2UgaXQu
-KQo+Cj4+IEhlcmUgc29tZSBkZXZpY2VzIGhhcyAid3JpdGUtb25seSIgc2V0dGluZ3MuIEZvciBz
-dWNoIGRldmljZSwgbXkKPj4gZHJpdmVyIHJlbWVtYmVyIHRoZXNlIHNldHRpbmdzLiBJZiB0aGUg
-YXBwbGljYXRpb25zIGhhcyBzdWNoCj4+IHJlc3BvbnNpYmlsaXR5LCB0aGVyZSBtYXkgYmUgc29t
-ZSBpbmNvbnNpc3RlbmN5Lgo+Cj4gVGhpcyBpcyBhbm90aGVyIGV4YW1wbGUgb2YgYSBzZXR0aW5n
-IHRoYXQgbXVzdCBiZSBpbiB0aGUga2VybmVsIGRyaXZlci4KPgo+Cj4gUmVnYXJkcywKPiBDbGVt
-ZW5zCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 10/30/2013 05:44 PM, Takashi Iwai wrote:
+> ASUS N56VZ and N76VZ laptops have a bass speaker but its output comes
+> only from the right channel.  This patch adds the extra chmap specific
+> to these models.
+> 
+> Bugzilla: https://bugzilla.novell.com/show_bug.cgi?id=846531
+
+Hmm, according to the bug report, the chmap (before this patch) was FL,
+FR, RL, RR.
+
+I thought this was already fixed; but if it isn't, it should probably be
+fixed on a more generic level: e g, whenever there is a "Bass Speaker"
+control, the chmap should also be changed.
+
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/patch_realtek.c | 30 ++++++++++++++++++++++++++++--
+>  1 file changed, 28 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 13ad49ca9357..2d7c86d81196 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -4426,6 +4426,25 @@ static void alc272_fixup_mario(struct hda_codec *codec,
+>  		       "hda_codec: failed to override amp caps for NID 0x2\n");
+>  }
+>  
+> +static const struct snd_pcm_chmap_elem asus_pcm_2_1_chmaps[] = {
+> +	{ .channels = 2,
+> +	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
+> +	{ .channels = 4,
+> +	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR,
+> +		   SNDRV_CHMAP_NA, SNDRV_CHMAP_LFE } }, /* LFE only on right */
+> +	{ }
+> +};
+> +
+> +/* override the 2.1 chmap */
+> +static void alc662_fixup_bass_chmap(struct hda_codec *codec,
+> +				    const struct hda_fixup *fix, int action)
+> +{
+> +	if (action == HDA_FIXUP_ACT_BUILD) {
+> +		struct alc_spec *spec = codec->spec;
+> +		spec->gen.pcm_rec[0].stream[0].chmap = asus_pcm_2_1_chmaps;
+> +	}
+> +}
+> +
+>  enum {
+>  	ALC662_FIXUP_ASPIRE,
+>  	ALC662_FIXUP_IDEAPAD,
+> @@ -4446,6 +4465,7 @@ enum {
+>  	ALC662_FIXUP_INV_DMIC,
+>  	ALC668_FIXUP_DELL_MIC_NO_PRESENCE,
+>  	ALC668_FIXUP_HEADSET_MODE,
+> +	ALC662_FIXUP_BASS_CHMAP,
+>  };
+>  
+>  static const struct hda_fixup alc662_fixups[] = {
+> @@ -4620,6 +4640,12 @@ static const struct hda_fixup alc662_fixups[] = {
+>  		.type = HDA_FIXUP_FUNC,
+>  		.v.func = alc_fixup_headset_mode_alc668,
+>  	},
+> +	[ALC662_FIXUP_BASS_CHMAP] = {
+> +		.type = HDA_FIXUP_FUNC,
+> +		.v.func = alc662_fixup_bass_chmap,
+> +		.chained = true,
+> +		.chain_id = ALC662_FIXUP_ASUS_MODE4
+> +	},
+>  };
+>  
+>  static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+> @@ -4633,8 +4659,8 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+>  	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+>  	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+>  	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
+> -	SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ", ALC662_FIXUP_ASUS_MODE4),
+> -	SND_PCI_QUIRK(0x1043, 0x1bf3, "ASUS N76VZ", ALC662_FIXUP_ASUS_MODE4),
+> +	SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ", ALC662_FIXUP_BASS_CHMAP),
+> +	SND_PCI_QUIRK(0x1043, 0x1bf3, "ASUS N76VZ", ALC662_FIXUP_BASS_CHMAP),
+>  	SND_PCI_QUIRK(0x1043, 0x8469, "ASUS mobo", ALC662_FIXUP_NO_JACK_DETECT),
+>  	SND_PCI_QUIRK(0x105b, 0x0cd6, "Foxconn", ALC662_FIXUP_ASUS_MODE2),
+>  	SND_PCI_QUIRK(0x144d, 0xc051, "Samsung R720", ALC662_FIXUP_IDEAPAD),
+> 
+
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
