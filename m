@@ -1,76 +1,26 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH v4 3/4] ASoC: fsl_ssi: Add dual fifo mode support
-Date: Thu, 31 Oct 2013 21:44:15 +0800
-Message-ID: <dda0bc1221f053405da616192577228c51821040.1383226444.git.b42378@freescale.com>
-References: <cover.1383226444.git.b42378@freescale.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [RFC 4/4] ASoC: RX-51: Add DT support to sound driver
+Date: Thu, 31 Oct 2013 07:44:22 -0700
+Message-ID: <CACRpkdb1dAiDCeZkOiZ6inbDruaUwLgk3joWwuQmSRNZ9WkDGw@mail.gmail.com>
+References: <1382909086-10493-1-git-send-email-sre@debian.org>
+	<1382909086-10493-5-git-send-email-sre@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1383226444.git.b42378@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: timur@tabi.org, shawn.guo@linaro.org, broonie@kernel.org, s.hauer@pengutronix.de
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1382909086-10493-5-git-send-email-sre@debian.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Sebastian Reichel <sre@debian.org>
+Cc: Sebastian Reichel <sre@ring0.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Landley <rob@landley.net>, Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grant Likely <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux-OMAP <linux-omap@vger.>
 List-Id: alsa-devel@alsa-project.org
 
-By enabling dual fifo mode, it would allow SSI enter a better performance
-to transimit/receive data without occasional hardware underrun/overrun.
+On Sun, Oct 27, 2013 at 2:24 PM, Sebastian Reichel <sre@debian.org> wrote:
 
-[ Passed compile-test with mpc85xx_defconfig ]
+> +- eci-sw-gpio: GPIO for ECI SW
+> +- speaker-amp-gpio: GPIO for Speaker Amp
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
- sound/soc/fsl/fsl_ssi.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+Can you please spell out the acronyms? ECI? SW? Amp?
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 35e2773..0892111 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -143,6 +143,7 @@ struct fsl_ssi_private {
- 	bool ssi_on_imx;
- 	bool imx_ac97;
- 	bool use_dma;
-+	bool use_dual_fifo;
- 	struct clk *clk;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
-@@ -413,6 +414,12 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
- 		write_ssi(CCSR_SSI_SOR_WAIT(3), &ssi->sor);
- 	}
- 
-+	if (ssi_private->use_dual_fifo) {
-+		write_ssi_mask(&ssi->srcr, 0, CCSR_SSI_SRCR_RFEN1);
-+		write_ssi_mask(&ssi->stcr, 0, CCSR_SSI_STCR_TFEN1);
-+		write_ssi_mask(&ssi->scr, 0, CCSR_SSI_SCR_TCH_EN);
-+	}
-+
- 	return 0;
- }
- 
-@@ -947,7 +954,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		ssi_private->fifo_depth = 8;
- 
- 	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx21-ssi")) {
--		u32 dma_events[2];
-+		u32 dma_events[2], dmas[4];
- 		ssi_private->ssi_on_imx = true;
- 
- 		ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
-@@ -1001,6 +1008,15 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 			dma_events[0], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
- 		imx_pcm_dma_params_init_data(&ssi_private->filter_data_rx,
- 			dma_events[1], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
-+		if (!of_property_read_u32_array(pdev->dev.of_node, "dmas", dmas, 4)
-+				&& dmas[2] == IMX_DMATYPE_SSI_DUAL) {
-+			ssi_private->use_dual_fifo = true;
-+			/* When using dual fifo mode, we need to keep watermark
-+			 * as even numbers due to dma script limitation.
-+			 */
-+			ssi_private->dma_params_tx.maxburst &= ~0x1;
-+			ssi_private->dma_params_rx.maxburst &= ~0x1;
-+		}
- 	} else if (ssi_private->use_dma) {
- 		/* The 'name' should not have any slashes in it. */
- 		ret = devm_request_irq(&pdev->dev, ssi_private->irq,
--- 
-1.8.4
+I guess SW=switch, Amp=amplifier, but ECI beats me.
+
+Yours,
+Linus Walleij
