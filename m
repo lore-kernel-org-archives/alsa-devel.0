@@ -1,42 +1,49 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Realtek HD-A codec ALC262: How to unmute mixer node
- 0x24 Amp-In for Mic Pin 0x18
-Date: Thu, 31 Oct 2013 06:17:29 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8013DDC28@SHSMSX101.ccr.corp.intel.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH v2 0/4] Add dual-fifo mode support of i.MX ssi
+Date: Thu, 31 Oct 2013 14:32:02 +0800
+Message-ID: <cover.1383197521.git.b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id BD54A265025
- for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2013 07:17:36 +0100 (CET)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kailang <kailang@realtek.com>, Pshou <pshou@realtek.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: s.hauer@pengutronix.de, timur@tabi.org, shawn.guo@linaro.org, broonie@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Changelog
+v2:
+ * Instead of adding rogue scripts to current SDMA driver based on firmware
+ * V1, we define the new SDMA firmware as version 2 and bisect the PATCH-1
+ * to two patches: The first is to add version check code to the SDMA driver;
+ * And the second is to add SSI dual FIFO DMATYPE.
+ *
+ * Nothing changes for the last two patches.
+v1:
+ * SSI can reduce hardware overrun/underrun possibility when using dual
+ * fifo mode. To support this mode, we need to first update sdma sciprt
+ * list, and then enable dual fifo BIT in SSI driver, and last update DT
+ * bindings of i.MX series.
+ *
+ * ! This series of patches has a direct dependency between them. When
+ * ! applying them, we need to apply in one single branch. Otherwise,
+ * ! it would break currect branches.
 
-We found when recording on ALC262, the audio mixer node 0x24 mutes the input from Mic Pin node 0x18, so we get silent data.
-Would someone please give me some advice to solve this?
+Nicolin Chen (4):
+  dma: imx-sdma: Add sdma firmware version 2 support
+  dma: imx-sdma: Add new dma type for ssi dual fifo script
+  ASoC: fsl_ssi: Add dual fifo mode support
+  ARM: dts: imx: use dual-fifo sdma script for ssi
 
-Node 0x24 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 9
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x0b
+ .../devicetree/bindings/dma/fsl-imx-sdma.txt       |  1 +
+ arch/arm/boot/dts/imx51.dtsi                       |  4 ++--
+ arch/arm/boot/dts/imx53.dtsi                       |  4 ++--
+ arch/arm/boot/dts/imx6qdl.dtsi                     | 12 +++++------
+ arch/arm/boot/dts/imx6sl.dtsi                      | 12 +++++------
+ drivers/dma/imx-sdma.c                             | 19 ++++++++++++++++-
+ include/linux/platform_data/dma-imx-sdma.h         |  3 +++
+ include/linux/platform_data/dma-imx.h              |  1 +
+ sound/soc/fsl/fsl_ssi.c                            | 24 +++++++++++++++++++++-
+ 9 files changed, 62 insertions(+), 18 deletions(-)
 
-I cannot find user-space amixer controls to unmute node 0x18.
-
-The recording data flows from Mic Pin 0x18 -> Mixer 0x24 -> audio input 0x07. The Amp-In value on pin 0x18 (Rear Mic Boost) and input 0x07 (Capture Volume) are okay.
-
-Thanks
-Mengdong
+-- 
+1.8.4
