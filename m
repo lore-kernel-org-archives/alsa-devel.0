@@ -1,46 +1,55 @@
 From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] drm/radeon/audio: fix missing multichannel PCM SAD in
-	some cases
-Date: Fri, 1 Nov 2013 00:46:48 +0100
-Message-ID: <CACna6ryN99oVSpAuV3DDzF+U6R8XP80q2JY61d45yf4PMFXYmw@mail.gmail.com>
-References: <526EE844.4030608@iki.fi>
-	<1383002356-2479-1-git-send-email-anssi.hannula@iki.fi>
-	<CACna6rzvZd-6s5gBLJnqFUfBCQuSKgCmJ7mNPhaEGuPscfxqqA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ALSA: hda - hdmi: Add ATI/AMD multi-channel audio support
+Date: Fri, 1 Nov 2013 00:51:37 +0100
+Message-ID: <CACna6rxuSUA9_1HXnY8yPhQ8BDeEnMvoX6i0WvTtst7UTvcgHA@mail.gmail.com>
+References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>
+	<1380659456-3746-2-git-send-email-anssi.hannula@iki.fi>
+	<CACna6ryr37WRvKbMFmLEGt_A2zUD46rZOtJMVom+B_xK9WNLuw@mail.gmail.com>
+	<07e8973b4665cc23c3f4a77e9c7e2b7c@mail.onse.fi>
+	<CACna6ryFtmZHAhmCPEsoxZc5h4mLuM4ajnKGsp=q0jag2f_SYw@mail.gmail.com>
+	<5272BCE1.7010700@iki.fi>
+	<CACna6rzejyTOF2Fvvw1m2SAob7uU5-hJ+yRVk6HS5pDTz7+JWg@mail.gmail.com>
+	<5272E920.6030606@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <CACna6rzvZd-6s5gBLJnqFUfBCQuSKgCmJ7mNPhaEGuPscfxqqA@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-Errors-To: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5272E920.6030606@iki.fi>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Alex Deucher <alexander.deucher@amd.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, dri-devel <dri-devel@lists.freedesktop.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?Q?Peter_Fr=C3=BChberger?= <fritsch@xbmc.org>, Olivier Langlois <olivier@trillion01.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMy8xMS8xIFJhZmHFgiBNacWCZWNraSA8emFqZWM1QGdtYWlsLmNvbT46Cj4gMjAxMy8xMC8y
-OSBBbnNzaSBIYW5udWxhIDxhbnNzaS5oYW5udWxhQGlraS5maT46Cj4+IEZpeCB0aGUgY29kZSB0
-byBwaWNrIHRoZSBQQ00gU0FEIHdpdGggdGhlIGhpZ2hlc3QgbnVtYmVyIG9mIGNoYW5uZWxzLAo+
-PiB3aGlsZSBtZXJnaW5nIHRoZSByYXRlIG1hc2tzIG9mIFBDTSBTQURzIHdpdGggbG93ZXIgYW1v
-dW50IG9mIGNoYW5uZWxzCj4+IGludG8gdGhlIGFkZGl0aW9uYWwgc3RlcmVvIHJhdGUgbWFzayBi
-eXRlLgo+Cj4gRG9lcyBpdCBtZWFuIHRoYXQgbm93IGluc3RlYWQgb2YgMiByZWFsIFNBRHM6Cj4g
-MSkgMTkya0h6IHN1cHBvcnQgZm9yIDIgY2hhbm5lbHMKPiAyKSA5NmtIeiBzdXBwb3J0IGZvciA4
-IGNoYW5uZWxzCj4geW91IHdpbGwgb25seSBnZXQ6Cj4gMSkgMTkya0h6IHN1cHBvcnQgZm9yIDgg
-Y2hhbm5lbHMKPiA/Cj4gRG9lcyBpdCBtZWFuIGFsc2EgbWF5IHRyeSB0byBwbGF5IDhjaGFubmVs
-cyBhdWRpbyBhdCAxOTJrSHogYW5kIGZhaWwgYXQgdGhpcz8KPiBUaGF0IGRvZXNuJ3Qgc291bmQg
-Z29vZCwgYnV0IG9uIHRoZSBvdGhlciBoYW5kIEkgY2FuJ3QgcHJvcG9zZQo+IGFueXRoaW5nIGJl
-dHRlciA6fAoKQWhoLCB3YWl0LiBJIGp1c3Qgbm90aWNlZCB5b3UncmUgdXNpbmcgU1VQUE9SVEVE
-X0ZSRVFVRU5DSUVTIGFuZAooZGlmZmVyZW50IG9uZSkgU1VQUE9SVEVEX0ZSRVFVRU5DSUVTX1NU
-RVJFTyB0aGVyZS4gU29ycnkgSSBtaXNzZWQKdGhhdCBlYXJsaWVyLgoKWWVhaCwganVzdCBjb2Rl
-IG1ha2VzIG11Y2ggbW9yZSBzZW5zZSwgSSBqdXN0IHRoaW5rIHRoZSBsb2dpYyBpbgpzZXR0aW5n
-IHRoYXQgZnJlcXVlbmN5IG1heSBiZSBhIGJpdCBiYWQuLi4gTGV0IG1lIHRoaW5rIGFib3V0IHRo
-aXMKY2xlYXJseSB0b21vcnJvdyBhbmQgSSdsbCBsZXQgeW91IGtub3cgOikKCi0tIApSYWZhxYIK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
-cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+2013/11/1 Anssi Hannula <anssi.hannula@iki.fi>:
+> Just to check, is the display mode 720p50 or higher (as per HDMI spec
+> 7.3.3)? Though I guess too small mode would cause something else, not
+> this...
+
+I'm using 1080p all the time. Do you think that
+HDMI_AUDIO_PACKETS_PER_LINE may have anything to do with this issue
+(see evergreen_hdmi.c)?
+
+
+> Also, does DTS-HD/TrueHD work with this receiver (interesting since
+> those require 8-channel 192kHz link)?
+
+Both are working for me. I've tested it using 2 movies:
+1) English TrueHD.5.1 @ 1417 kbps
+2) Audio
+Codec................: DTSHD-MA
+Bitrate..............: 3718 kbps
+kHz/bit..............: 24-bit
+Channels.............: 5.1
+Language.............: English
+
+
+> Would be interesting to check if this works in Windows I guess (or ma=
+ybe
+> even just fglrx, though I can't think of a reason it'd make a differe=
+nce).
+
+Installing fglrx is an option, I can try that. Not a big chance for
+Windows here.
+
+--=20
+Rafa=C5=82
