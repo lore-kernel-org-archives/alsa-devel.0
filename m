@@ -1,59 +1,99 @@
 From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 19/51] DMA-API: media: dt3155v4l: replace
-	dma_set_mask()+dma_set_coherent_mask() with new helper
-Date: Thu, 31 Oct 2013 14:49:30 +0000
-Message-ID: <20131031144929.GC25039@n2100.arm.linux.org.uk>
-References: <20130919212235.GD12758@n2100.arm.linux.org.uk> <E1VMm13-0007hO-9l@rmk-PC.arm.linux.org.uk> <5249673B.5020705@xs4all.nl> <20131031094640.205840a2@samsung.com>
+Subject: [PATCH] ALSA: fix oops in snd_pcm_info() caused by
+	ASoC DPCM
+Date: Thu, 31 Oct 2013 15:01:37 +0000
+Message-ID: <20131031150137.GA16735@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-crypto-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 9390426164C
+ for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2013 16:01:54 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20131031094640.205840a2@samsung.com>
-Sender: linux-crypto-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <m.chehab@samsung.com>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-nvme@lists.infradead.org, linux-ide@vger.kernel.org, devel@driverdev.osuosl.org, linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org, e1000-devel@lists.sourceforge.net, b43-dev@lists.infradead.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Solarflare linux maintainers <linux-net-drivers@solarflare.com>, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linux-crypto@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 31, 2013 at 09:46:40AM -0200, Mauro Carvalho Chehab wrote:
-> Hi Russell,
-> 
-> Em Mon, 30 Sep 2013 13:57:47 +0200
-> Hans Verkuil <hverkuil@xs4all.nl> escreveu:
-> 
-> > On 09/19/2013 11:44 PM, Russell King wrote:
-> > > Replace the following sequence:
-> > > 
-> > > 	dma_set_mask(dev, mask);
-> > > 	dma_set_coherent_mask(dev, mask);
-> > > 
-> > > with a call to the new helper dma_set_mask_and_coherent().
-> > > 
-> > > Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
-> > 
-> > Acked-by: Hans Verkuil <hans.verkuil@cisco.com>
-> 
-> Somehow, I lost your original post (I got unsubscribed on a few days 
-> from all vger mailing lists at the end of september).
-> 
-> I suspect that you want to sent this via your tree, right?
+Liam, Mark,
 
-Yes please.
+As discussed privately, here's the fix for the ASoC oops I've been seeing
+with DPCM in ALSA.  This avoids unnecessarily exposing the ASoC internal
+PCM devices to userspace, which is complimentary to your patch fixing the
+deref of the PCM ops.
 
-> If so:
-> 
-> Acked-by: Mauro Carvalho Chehab <m.chehab@samsung.com>
+8<========
+From: Russell King <rmk+kernel@arm.linux.org.uk>
+Subject: [PATCH] ALSA: fix oops in snd_pcm_info() caused by ASoC DPCM
 
-Added, thanks.
+Unable to handle kernel NULL pointer dereference at virtual address 00000008
+pgd = d5300000
+[00000008] *pgd=0d265831, *pte=00000000, *ppte=00000000
+Internal error: Oops: 17 [#1] PREEMPT ARM
+CPU: 0 PID: 2295 Comm: vlc Not tainted 3.11.0+ #755
+task: dee74800 ti: e213c000 task.ti: e213c000
+PC is at snd_pcm_info+0xc8/0xd8
+LR is at 0x30232065
+pc : [<c031b52c>]    lr : [<30232065>]    psr: a0070013
+sp : e213dea8  ip : d81cb0d0  fp : c05f7678
+r10: c05f7770  r9 : fffffdfd  r8 : 00000000
+r7 : d8a968a8  r6 : d8a96800  r5 : d8a96200  r4 : d81cb000
+r3 : 00000000  r2 : d81cb000  r1 : 00000001  r0 : d8a96200
+Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+Control: 10c5387d  Table: 15300019  DAC: 00000015
+Process vlc (pid: 2295, stack limit = 0xe213c248)
+[<c031b52c>] (snd_pcm_info) from [<c031b570>] (snd_pcm_info_user+0x34/0x9c)
+[<c031b570>] (snd_pcm_info_user) from [<c03164a4>] (snd_pcm_control_ioctl+0x274/0x280)
+[<c03164a4>] (snd_pcm_control_ioctl) from [<c0311458>] (snd_ctl_ioctl+0xc0/0x55c)
+[<c0311458>] (snd_ctl_ioctl) from [<c00eca84>] (do_vfs_ioctl+0x80/0x31c)
+[<c00eca84>] (do_vfs_ioctl) from [<c00ecd5c>] (SyS_ioctl+0x3c/0x60)
+[<c00ecd5c>] (SyS_ioctl) from [<c000e500>] (ret_fast_syscall+0x0/0x48)
+Code: e1a00005 e59530dc e3a01001 e1a02004 (e5933008)
+---[ end trace cb3d9bdb8dfefb3c ]---
 
-> > > -	err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
-> > > -	if (err)
-> > > -		return -ENODEV;
-> > > -	err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
-> > > +	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
-> > >  	if (err)
-> > >  		return -ENODEV;
+This is provoked when the ASoC front end is open along with its backend,
+(which causes the backend to have a runtime assigned to it) and then the
+SNDRV_CTL_IOCTL_PCM_INFO is requested for the (visible) backend device.
 
-One thing I've just noticed is that return should be "return err" not
-"return -ENODEV" - are you okay for me to change that in this patch?
+Resolve this by ensuring that ASoC internal backend devices are not
+visible to userspace, just as the commentry for snd_pcm_new_internal()
+says it should be.
 
-Thanks.
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+ sound/core/pcm.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index 17f45e8aa89c..e1e9e0c999fe 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -49,6 +49,8 @@ static struct snd_pcm *snd_pcm_get(struct snd_card *card, int device)
+ 	struct snd_pcm *pcm;
+ 
+ 	list_for_each_entry(pcm, &snd_pcm_devices, list) {
++		if (pcm->internal)
++			continue;
+ 		if (pcm->card == card && pcm->device == device)
+ 			return pcm;
+ 	}
+@@ -60,6 +62,8 @@ static int snd_pcm_next(struct snd_card *card, int device)
+ 	struct snd_pcm *pcm;
+ 
+ 	list_for_each_entry(pcm, &snd_pcm_devices, list) {
++		if (pcm->internal)
++			continue;
+ 		if (pcm->card == card && pcm->device > device)
+ 			return pcm->device;
+ 		else if (pcm->card->number > card->number)
+-- 
+1.7.4.4
