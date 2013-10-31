@@ -1,107 +1,63 @@
-From: "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>
-Subject: Re: [RFC 1/2] i2c: Use stable dev_name for ACPI enumerated I2C slaves
-Date: Fri, 01 Nov 2013 01:08:47 +0100
-Message-ID: <1433914.mn8USodCgb@vostro.rjw.lan>
-References: <1382703540-3769-1-git-send-email-jarkko.nikula@linux.intel.com> <2889412.bEKBLJtgSW@vostro.rjw.lan> <526E636D.3070005@linux.intel.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [PATCH 1/4] ALSA: hda - hdmi: Add ATI/AMD multi-channel audio
+ support
+Date: Fri, 01 Nov 2013 01:58:36 +0200
+Message-ID: <5272EEAC.6020405@iki.fi>
+References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>	<1380659456-3746-2-git-send-email-anssi.hannula@iki.fi>	<CACna6ryr37WRvKbMFmLEGt_A2zUD46rZOtJMVom+B_xK9WNLuw@mail.gmail.com>	<07e8973b4665cc23c3f4a77e9c7e2b7c@mail.onse.fi>	<CACna6ryFtmZHAhmCPEsoxZc5h4mLuM4ajnKGsp=q0jag2f_SYw@mail.gmail.com>	<5272BCE1.7010700@iki.fi>	<CACna6rzejyTOF2Fvvw1m2SAob7uU5-hJ+yRVk6HS5pDTz7+JWg@mail.gmail.com>	<5272E920.6030606@iki.fi> <CACna6rxuSUA9_1HXnY8yPhQ8BDeEnMvoX6i0WvTtst7UTvcgHA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <526E636D.3070005-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CACna6rxuSUA9_1HXnY8yPhQ8BDeEnMvoX6i0WvTtst7UTvcgHA@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?B?UGV0ZXIgRnLDvGhiZXJnZXI=?= <fritsch@xbmc.org>, Olivier Langlois <olivier@trillion01.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday, October 28, 2013 03:15:25 PM Jarkko Nikula wrote:
-> Hi Rafael
-> 
-> On 10/25/2013 05:08 PM, Rafael J. Wysocki wrote:
-> > On Friday, October 25, 2013  04:30:23 PM Jarkko Nikula wrote:
->  >>>
->  >> Hmm, not only. Referencing to dev field in struct acpi_device by
->  >> dev_name(&adev->dev) here will fail too.
->  >
->  > Well, something is not quite right here.
->  >
->  > One of the *reasons* for having ACPI_HANDLE() defined this way is to
->  > avoid using explicit CONFIG_ACPI checks, so if that doesn't work,
->  > then all of that becomes a bit pointless.
->  >
+01.11.2013 01:51, Rafa=C5=82 Mi=C5=82ecki kirjoitti:
+> 2013/11/1 Anssi Hannula <anssi.hannula@iki.fi>:
+>> Just to check, is the display mode 720p50 or higher (as per HDMI spe=
+c
+>> 7.3.3)? Though I guess too small mode would cause something else, no=
+t
+>> this...
+>=20
+> I'm using 1080p all the time. Do you think that
+> HDMI_AUDIO_PACKETS_PER_LINE may have anything to do with this issue
+> (see evergreen_hdmi.c)?
 
-Can you please send patches inline instead of using inline attachments,
-so that people don't have to paste your patches back to comment them?
+Well, anything is possible, but that stuff seems unlikely here, since
+apparently some channels get through fine. In multichannel HDMI one
+sample of each channel is carried in each audio sample packet, so just
+straight "packet loss" shouldn't cause this.
 
-> One possible thing to do is to let structure definitions to be available 
-> for non-ACPI builds. Then compiler won't fail on structure access which 
-> will be anyway optimized away by later compiler stages.
+>> Also, does DTS-HD/TrueHD work with this receiver (interesting since
+>> those require 8-channel 192kHz link)?
+>=20
+> Both are working for me. I've tested it using 2 movies:
+> 1) English TrueHD.5.1 @ 1417 kbps
+> 2) Audio
+> Codec................: DTSHD-MA
+> Bitrate..............: 3718 kbps
+> kHz/bit..............: 24-bit
+> Channels.............: 5.1
+> Language.............: English
 
-Yes, we can do that, but as I said that means we're giving up on the "why
-ACPI_HANDLE() doesn't work as expected" front.  For now, I'd like to
-understand what's up before making that change.  Moreover ->
+Which makes it even stranger, since HBR packets look exactly like ASP
+packets with a few flipped bits.
 
-> With a quick test below vmlinux section sizes don't change for couple 
-> non-ACPI build tests and allow to get rid off IS_ENABLED(CONFIG_ACPI) 
-> test in this patch. It's very minimal as it only moves the CONFIG_ACPI 
-> test just after the struct acpi_device definition and defines 
-> acpi_bus_get_device for non-ACPI case.
-> 
-> What I don't know how consistent it is as there are still couple 
-> structure definitions under CONFIG_ACPI, doesn't touch other acpi 
-> headers and requires to include acpi_bus.h in driver (or move acpi_bus.h 
-> include in linux/acpi.h currently under CONFIG_ACPI).
->
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index d901982..7ab7870 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -66,8 +66,6 @@ bool acpi_ata_match(acpi_handle handle);
-> 
->   bool acpi_bay_match(acpi_handle handle);
->   bool acpi_dock_match(acpi_handle handle);
-> 
-> -#ifdef CONFIG_ACPI
-> -
-> 
->   #include <linux/proc_fs.h>
->   
->   #define ACPI_BUS_FILE_ROOT    "acpi"
-> 
-> @@ -314,6 +312,8 @@ struct acpi_device {
-> 
->       void (*remove)(struct acpi_device *);
->   
->   };
-> 
-> +#if IS_ENABLED(CONFIG_ACPI)
-> +
-> 
->   static inline void *acpi_driver_data(struct acpi_device *d)
->   {
->   
->       return d->driver_data;
-> 
-> @@ -531,6 +531,8 @@ static inline bool acpi_device_can_poweroff(struct
-> acpi_device *adev)
-> 
->   static inline int register_acpi_bus_type(void *bus) { return 0; }
->   static inline int unregister_acpi_bus_type(void *bus) { return 0; }
-> 
-> +static inline int acpi_bus_get_device(acpi_handle handle,
-> +                      struct acpi_device **device) { return 0; }
+Hm, the earlier non-working speaker-test commands were with -c6. What
+about -c8?
 
-This has to return an error code, because otherwise the caller can assume
-*device to be a valid pointer after it returns which may not be the case.
+>> Would be interesting to check if this works in Windows I guess (or m=
+aybe
+>> even just fglrx, though I can't think of a reason it'd make a differ=
+ence).
+>=20
+> Installing fglrx is an option, I can try that. Not a big chance for
+> Windows here.
+>=20
 
-> 
->   #endif                /* CONFIG_ACPI */
 
-Thanks!
-
--- 
-I speak only for myself.
-Rafael J. Wysocki, Intel Open Source Technology Center.
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--=20
+Anssi Hannula
