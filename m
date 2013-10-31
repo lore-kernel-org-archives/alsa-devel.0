@@ -1,82 +1,50 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH v2 3/4] ASoC: fsl_ssi: Add dual fifo mode support
-Date: Thu, 31 Oct 2013 14:32:05 +0800
-Message-ID: <0e947536358af7bd6e179559006a3526801a1abe.1383197521.git.b42378@freescale.com>
-References: <cover.1383197521.git.b42378@freescale.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Realtek HD-A codec ALC262: How to unmute mixer
+	node 0x24 Amp-In forMic Pin 0x18
+Date: Thu, 31 Oct 2013 14:35:40 +0800
+Message-ID: <16CC6A26CE0E452AB8BBE7BF10AD9FBE@realtek.com.tw>
+References: <F46914AEC2663F4A9BB62374E5EEF8F8013DDC28@SHSMSX101.ccr.corp.intel.com>
+Reply-To: Kailang <kailang@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1383197521.git.b42378@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: s.hauer@pengutronix.de, timur@tabi.org, shawn.guo@linaro.org, broonie@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE4FA265072
+ for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2013 07:35:46 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Lin, Mengdong" <mengdong.lin@intel.com>, alsa-devel@alsa-project.org, Pshou <pshou@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-By enabling dual fifo mode, it would allow SSI enter a better performance
-to transimit/receive data without occasional hardware underrun/overrun.
-
-[ Passed compile-test with mpc85xx_defconfig ]
-
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
- sound/soc/fsl/fsl_ssi.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 35e2773..0dfb7d6 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -143,6 +143,7 @@ struct fsl_ssi_private {
- 	bool ssi_on_imx;
- 	bool imx_ac97;
- 	bool use_dma;
-+	bool use_dual_fifo;
- 	struct clk *clk;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
-@@ -413,6 +414,16 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
- 		write_ssi(CCSR_SSI_SOR_WAIT(3), &ssi->sor);
- 	}
- 
-+	if (ssi_private->use_dual_fifo) {
-+		write_ssi_mask(&ssi->srcr, 0, CCSR_SSI_SRCR_RFEN1);
-+		write_ssi_mask(&ssi->stcr, 0, CCSR_SSI_STCR_TFEN1);
-+		write_ssi_mask(&ssi->scr, 0, CCSR_SSI_SCR_TCH_EN);
-+	} else {
-+		write_ssi_mask(&ssi->srcr, CCSR_SSI_SRCR_RFEN1, 0);
-+		write_ssi_mask(&ssi->stcr, CCSR_SSI_STCR_TFEN1, 0);
-+		write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_TCH_EN, 0);
-+	}
-+
- 	return 0;
- }
- 
-@@ -947,7 +958,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		ssi_private->fifo_depth = 8;
- 
- 	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx21-ssi")) {
--		u32 dma_events[2];
-+		u32 dma_events[2], dmas[4];
- 		ssi_private->ssi_on_imx = true;
- 
- 		ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
-@@ -1001,6 +1012,17 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 			dma_events[0], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
- 		imx_pcm_dma_params_init_data(&ssi_private->filter_data_rx,
- 			dma_events[1], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
-+		if (!of_property_read_u32_array(pdev->dev.of_node, "dmas", dmas, 4)
-+				&& dmas[2] == IMX_DMATYPE_SSI_DUAL) {
-+			ssi_private->use_dual_fifo = true;
-+			/* When using dual fifo mode, we need to keep watermark
-+			 * as even numbers due to dma script limitation.
-+			 */
-+			ssi_private->dma_params_tx.maxburst /= 2;
-+			ssi_private->dma_params_tx.maxburst *= 2;
-+			ssi_private->dma_params_rx.maxburst /= 2;
-+			ssi_private->dma_params_rx.maxburst *= 2;
-+		}
- 	} else if (ssi_private->use_dma) {
- 		/* The 'name' should not have any slashes in it. */
- 		ret = devm_request_irq(&pdev->dev, ssi_private->irq,
--- 
-1.8.4
+SGkgTWVuZ2RvbmcsCgpDb3VsZCB5b3UgcG9zdCBmdWxsIGNvZGVjIGluZm9tYXRpb24gdG8gdXM/
+CgpCUiwKS2FpbGFuZwogIC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0gCiAg5a+E5Lu26ICF
+OiBMaW4sIE1lbmdkb25nIAogIOaUtuS7tuiAhTogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+IDsgS2FpbGFuZyA7IFBzaG91IAogIOWCs+mAgeaXpeacnzogMjAxM+W5tDEw5pyIMzHml6Ug5LiL
+5Y2IIDAyOjE3CiAg5Li75peoOiBSZWFsdGVrIEhELUEgY29kZWMgQUxDMjYyOiBIb3cgdG8gdW5t
+dXRlIG1peGVyIG5vZGUgMHgyNCBBbXAtSW4gZm9yTWljIFBpbiAweDE4CgoKICBIaSwKCiAgIAoK
+ICBXZSBmb3VuZCB3aGVuIHJlY29yZGluZyBvbiBBTEMyNjIsIHRoZSBhdWRpbyBtaXhlciBub2Rl
+IDB4MjQgbXV0ZXMgdGhlIGlucHV0IGZyb20gTWljIFBpbiBub2RlIDB4MTgsIHNvIHdlIGdldCBz
+aWxlbnQgZGF0YS4KCiAgV291bGQgc29tZW9uZSBwbGVhc2UgZ2l2ZSBtZSBzb21lIGFkdmljZSB0
+byBzb2x2ZSB0aGlzPwoKICAgCgogIE5vZGUgMHgyNCBbQXVkaW8gTWl4ZXJdIHdjYXBzIDB4MjAw
+MTBiOiBTdGVyZW8gQW1wLUluCgogICAgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgw
+MCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCgogICAgQW1wLUluIHZhbHM6ICBbMHg4MCAweDgwXSBb
+MHg4MCAweDgwXSBbMHgwMCAweDAwXSBbMHg4MCAweDgwXSBbMHg4MCAweDgwXSBbMHg4MCAweDgw
+XSBbMHg4MCAweDgwXSBbMHg4MCAweDgwXSBbMHg4MCAweDgwXQoKICAgIENvbm5lY3Rpb246IDkK
+CiAgICAgICAweDE4IDB4MTkgMHgxYSAweDFiIDB4MWMgMHgxZCAweDE0IDB4MTUgMHgwYgoKICAg
+CgogIEkgY2Fubm90IGZpbmQgdXNlci1zcGFjZSBhbWl4ZXIgY29udHJvbHMgdG8gdW5tdXRlIG5v
+ZGUgMHgxOC4KCiAgIAoKICBUaGUgcmVjb3JkaW5nIGRhdGEgZmxvd3MgZnJvbSBNaWMgUGluIDB4
+MTggLT4gTWl4ZXIgMHgyNCAtPiBhdWRpbyBpbnB1dCAweDA3LiBUaGUgQW1wLUluIHZhbHVlIG9u
+IHBpbiAweDE4IChSZWFyIE1pYyBCb29zdCkgYW5kIGlucHV0IDB4MDcgKENhcHR1cmUgVm9sdW1l
+KSBhcmUgb2theS4KCiAgIAoKICBUaGFua3MKCiAgTWVuZ2RvbmcKCgogIC0tLS0tLVBsZWFzZSBj
+b25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMgZS1tYWlsLgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
