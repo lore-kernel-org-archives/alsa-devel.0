@@ -1,151 +1,153 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH 1/4] ALSA: hda - hdmi: Add ATI/AMD multi-channel audio
- support
-Date: Thu, 31 Oct 2013 22:26:09 +0200
-Message-ID: <5272BCE1.7010700@iki.fi>
-References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>	<1380659456-3746-2-git-send-email-anssi.hannula@iki.fi>	<CACna6ryr37WRvKbMFmLEGt_A2zUD46rZOtJMVom+B_xK9WNLuw@mail.gmail.com>	<07e8973b4665cc23c3f4a77e9c7e2b7c@mail.onse.fi> <CACna6ryFtmZHAhmCPEsoxZc5h4mLuM4ajnKGsp=q0jag2f_SYw@mail.gmail.com>
+From: Matt Sealey <neko@bakuhatsu.net>
+Subject: Re: [PATCHv7][ 2/5] ASoC: eukrea-tlv320: Add DT
+	support.
+Date: Thu, 31 Oct 2013 16:19:05 -0500
+Message-ID: <CAHCPf3tt8sbXnABUomg_w1ttBTgBQL=VNwsRoFazzuVdgzzO=g@mail.gmail.com>
+References: <1382616832-23593-2-git-send-email-denis@eukrea.com>
+ <20131025191513.5345BC4042C@trevor.secretlab.ca>
+ <20131026114840.GX2443@sirena.org.uk>
+ <CAHCPf3vHWt5XJCwvGDMfX9rTPKqHU43SHORqpxLtLaDL6RGb8A@mail.gmail.com>
+ <20131029174445.GB20251@sirena.org.uk>
+ <CAHCPf3sm9BawgCKrPH_mbD-Mhb-uXzSyZTjxhJf1W25pG3wZUA@mail.gmail.com>
+ <20131030212927.GM2493@sirena.org.uk>
+ <CAHCPf3s46E=s85ohfqajr-VbavAM+gernXkkYeSwd4NYN8AEHw@mail.gmail.com>
+ <20131031012830.GZ2493@sirena.org.uk>
+ <CAHCPf3vUvg6w-OYO5yM8wj1Gr3p0xQZ=+bZ29ZKrZiQGAYektA@mail.gmail.com>
+ <20131031174549.GG2493@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CACna6ryFtmZHAhmCPEsoxZc5h4mLuM4ajnKGsp=q0jag2f_SYw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?B?UGV0ZXIgRnLDvGhiZXJnZXI=?= <fritsch@xbmc.org>, Olivier Langlois <olivier@trillion01.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pb0-f48.google.com (mail-pb0-f48.google.com
+ [209.85.160.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2834E260202
+ for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2013 22:19:06 +0100 (CET)
+Received: by mail-pb0-f48.google.com with SMTP id mc17so3337160pbc.7
+ for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2013 14:19:05 -0700 (PDT)
+In-Reply-To: <20131031174549.GG2493@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org, Sascha Hauer <kernel@pengutronix.de>, Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@secretlab.ca>, Denis Carikli <denis@eukrea.com>, =?ISO-8859-1?Q?Eric_B=E9nard?= <eric@eukrea.com>, Shawn Guo <shawn.guo@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-31.10.2013 18:22, Rafa=C5=82 Mi=C5=82ecki kirjoitti:
-> 2013/10/30 Anssi Hannula <anssi.hannula@iki.fi>:
->> BTW, there is a newer version (which was actually applied) of this p=
-atchset
->> in alsa-devel@, seems you were missing from CC on that one.
->=20
-> I didn't try that updated version yet, but I'm afraid I discovered
-> some problem. I've switched from my Denon 1912 to the older Onkyo
-> TX-SR605 and there is problem with multichannel playback. I've tried:
->> speaker-test -D hdmi:CARD=3DGeneric,DEV=3D0 -c6 -r192000 -F S16_LE
->=20
-> speaker-test 1.0.25
->=20
-> Playback device is hdmi:CARD=3DGeneric,DEV=3D0
-> Stream parameters are 192000Hz, S16_LE, 6 channels
-> Using 16 octaves of pink noise
-> Rate set to 192000Hz (requested 192000Hz)
-> Buffer size range from 64 to 87360
-> Period size range from 32 to 43680
-> Using max buffer size 87360
-> Periods =3D 4
-> was set period_size =3D 17472
-> was set buffer_size =3D 87360
-> 0 - Front Left
-> 4 - Center
-> 1 - Front Right
-> 3 - Rear Right
-> 2 - Rear Left
-> 5 - LFE
-> Time per period =3D 17.027360
->=20
-> But I can hear sound for rear right and rear left only :(
->=20
-> Is there anything more I can provide to help resolve this? Do you hav=
-e
-> any idea how we can resolve this?
+On Thu, Oct 31, 2013 at 12:45 PM, Mark Brown <broonie@kernel.org> wrote:
+>
+>> Why some of those internal names don't match the manuals despite the
+>> binding saying they do. It's because if you go through history of the
+>
+> Do you see any specific issues here?  It sounds like you're perfectly
+> aware of what the bindings are supposed to be doing with routing signals
+> to and from CODECs and have found some errors but you haven't told us
+> what those are.
 
-According to the below the receiver has separate PCM SADs for 2-channel
-and multichannel playback. However, due to a radeon driver bug (see
-"[PATCH] drm/radeon/audio: fix missing multichannel PCM SAD in some
-cases", you were CCd) the multichannel SAD is lost and not shown below.
+Yes, I can make a big list and even send a patch, but I think it's
+putting a band-aid on a non-surgical limb amputation.
 
-However, that is not (or at least should not be) the reason you are not
-getting audio.
-I suspect that the receiver does not support 192kHz multichannel audio
-(which would be indicated in the missing multichannel PCM SAD). Does it
-work with 48kHz or 96kHz?
-(TODO: refuse PCM playback in such cases)
+In summary, concisely:
 
-If it does not work with 48kHz or 96kHz either, then we have a bug to
-solve :)
+* The internal components don't match the manuals they say they
+follow, and that is if they even say they follow them at all.
+* The external components names in the routing paths have arbitrary,
+potentially non-real-life names and are hardcoded into the driver at
+certain DAPM widgets, in order for the DAPM paths to work
 
-> zajec@linux-samsung700g7a:/proc/asound/card1> cat eld#0.0
-> monitor_present         1
-> eld_valid               1
-> monitor_name
-> connection_type         HDMI
-> eld_version             [0x2] CEA-861D or below
-> edid_version            [0x0] no CEA EDID Timing Extension block pres=
-ent
-> manufacture_id          0x0
-> product_id              0x0
-> port_id                 0x0
-> support_hdcp            0
-> support_ai              0
-> audio_sync_delay        0
-> speakers                [0x4f] FL/FR LFE FC RL/RR RLC/RRC
-> sad_count               6
-> sad0_coding_type        [0x1] LPCM
-> sad0_channels           2
-> sad0_rates              [0x1ee0] 32000 44100 48000 88200 96000 176400=
- 192000
-> sad0_bits               [0xe0000] 16 20 24
-> sad1_coding_type        [0x2] AC-3
-> sad1_channels           8
-> sad1_rates              [0xe0] 32000 44100 48000
-> sad1_max_bitrate        640000
-> sad2_coding_type        [0x7] DTS
-> sad2_channels           8
-> sad2_rates              [0xc0] 44100 48000
-> sad2_max_bitrate        1536000
-> sad3_coding_type        [0xa] E-AC-3/DD+ (Dolby Digital Plus)
-> sad3_channels           8
-> sad3_rates              [0xc0] 44100 48000
-> sad4_coding_type        [0xb] DTS-HD
-> sad4_channels           8
-> sad4_rates              [0x1ec0] 44100 48000 88200 96000 176400 19200=
-0
-> sad5_coding_type        [0xc] MLP (Dolby TrueHD)
-> sad5_channels           8
-> sad5_rates              [0x6c0] 44100 48000 88200 96000
-> zajec@linux-samsung700g7a:/proc/asound/card1> ls
-> codec#0  eld#0.0  id  pcm3p
-> zajec@linux-samsung700g7a:/proc/asound/card1> cat codec#0
-> Codec: ATI R6xx HDMI
-> Address: 0
-> AFG Function Id: 0x1 (unsol 0)
-> Vendor Id: 0x1002aa01
-> Subsystem Id: 0x00aa0100
-> Revision Id: 0x100200
-> No Modem Function Group found
-> Default PCM:
->     rates [0x70]: 32000 44100 48000
->     bits [0x2]: 16
->     formats [0x1]: PCM
-> Default Amp-In caps: N/A
-> Default Amp-Out caps: N/A
-> State of AFG node 0x01:
->   Power states:  D0 D3
->   Power: setting=3DD0, actual=3DD0
-> GPIO: io=3D0, o=3D0, i=3D0, unsolicited=3D0, wake=3D0
-> Node 0x02 [Audio Output] wcaps 0x201: Stereo Digital
->   Converter: stream=3D0, channel=3D0
->   Digital: Enabled GenLevel
->   Digital category: 0x2
->   IEC Coding Type: 0x0
-> Node 0x03 [Pin Complex] wcaps 0x400381: Stereo Digital
->   Control: name=3D"HDMI/DP,pcm=3D3 Jack", index=3D0, device=3D0
->   Control: name=3D"IEC958 Playback Con Mask", index=3D0, device=3D0
->   Control: name=3D"IEC958 Playback Pro Mask", index=3D0, device=3D0
->   Control: name=3D"IEC958 Playback Default", index=3D0, device=3D0
->   Control: name=3D"IEC958 Playback Switch", index=3D0, device=3D0
->   Control: name=3D"ELD", index=3D0, device=3D3
->   Pincap 0x00000094: OUT Detect HDMI
->   Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
->     Conn =3D Digital, Color =3D Unknown
->     DefAssociation =3D 0x1, Sequence =3D 0x0
->   Pin-ctls: 0x40: OUT
->   Unsolicited: tag=3D01, enabled=3D1
->   Connection: 1
->      0x02
-[...]
+What I've got going right now is, respectively:
 
---=20
-Anssi Hannula
+* a 90% done rewrite of these bindings with no functional changes
+(i.e. documentation clarification ONLY)
+* a fully complete addition to the bindings and a patch to the drivers
+that rationalizes the internal path name strings to the manuals (i.e.
+documentation AND binding change with code to match)
+
+That's basically the band-aid, but the second one is like rubbing salt
+on the wound first because of the binding change. Given that "make
+arbitrary strings less arbitrary" constitutes a binding change, this
+is what both annoys and worries the piss out of me with the current
+bindings.
+
+What I am trying to figure out is a way to have real component names
+for the external ones, and somehow codify the internal path naming, so
+that if a binding change comes in, it's worth it, and drivers don't
+need to include string names of parts of the chips in question, when
+they're stuffed way, way down into some abstracted sub-layer anyway.
+
+Close.. not there yet.
+
+> Like I keep saying, do concrete things to move things forwards.
+
+I don't want to be the source of an incremental, agile binding change
+going on for every merge window, just because I didn't fully grasp one
+issue right at the start.
+
+>> All of which exist here. There are levels of indirection for a good
+>> reason, I understand that, but in this implementation
+>> card->set_bias_level calls functions which do purely codec-level
+>> operations (set fll/mclk/sysclk), codec->set_bias_level does it's
+>> obviously purely codec-level operations, and then
+>> card->set_bias_level_post finishes up by doing some, again,
+>> codec-level operations.
+>
+> To repeat myself yet again: what is done to the CODEC here is system
+> dependent.  This includes interaction with other components in the
+> system.
+
+In this particular use case (init setting sysclk, and bias_level
+callbacks setting sysclk and pll for WM8962), there is no system
+dependency except a fixed, unchanging parent clock (it's fixed at card
+init and NEVER updated) which the DT binding can solve really easily
+by using the existing clock bindings. The only other example I can
+find is the "Cragganmore 6410" board support (which mentions wm8692 in
+passing, it seems) vs. specific speyside/wm8996/wm9081/wm1250/wm0010
+audio support (which mostly all has your name at the top) and it
+doesn't do anything "system dependent", either, except defining it in
+the card layer, and doing things which only affect register changes at
+the codec level. It doesn't even use or set data at the card layer.
+
+If every implementation eventually gets down to a call inside the
+actual codec driver, making the extra abstraction just something
+that's fuzzing the issue, and reproducing the same layering in
+separate drivers doing almost the same thing - only different by some
+clock id and direction - is a lot of code with the potential for
+consolidation under one roof with a DT binding that takes it into
+account.
+
+For the SGTL5000 case, setting the sysclk on init is overridden by the
+DT provided clock anyway inside the codec driver (it gets the clock in
+both places, and shoves the value) so this is a compatibility stub for
+non-DT boards (none of which should exist by now).. it shouldn't do
+anything if it's on devicetree (or at least, in every implementation
+existing, it's basically pointless), which is a patch in itself I
+should add to the list.
+
+BTW speyside is a good demonstration of a pre-DT "hardcoded strings"
+issue. The DAPM widgets get hardcoded and that's where those route
+strings come from in the bindings (as above, they don't exist in the
+drivers anymore).. it's entirely board-specific because that card
+driver is board-specific, but for a single SoC, or even where SoCs use
+codecs in exactly the same way, we shouldn't need to entertain a whole
+new card driver where that information can be ascertained from the
+device tree - that's what device trees are for! If it ever goes DT,
+porting this to the DT bindings just means moving the audio routing
+table from the middle of the driver into the tree, except this bit:
+
+        { "MICB2", NULL, "Headset Mic", speyside_get_micbias },
+
+.. which can't be represented and would mean parsing the routing
+property, then hacking that callback in afterwards.
+
+After that, it's ditching all the very-board-specific i2c addressing,
+and it shows the same "system dependent" clocking and bias level
+setting which essentially all calls down to the codec level. Would you
+consider it a good example of the kind of linking of codecs and audio
+interfaces you're talking about? Is there a block diagram? :)
+
+Thanks,
+Matt Sealey <neko@bakuhatsu.net>
