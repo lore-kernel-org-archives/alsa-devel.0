@@ -1,51 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH][RESEND 7/8] ASoC: davinci: use gen_pool_dma_alloc() in
- davinci-pcm.c
-Date: Fri, 1 Nov 2013 11:07:52 -0700
-Message-ID: <20131101180752.GA2493@sirena.org.uk>
+Subject: Re: [PATCH][RESEND 8/8] ASoC: pxa: use gen_pool_dma_alloc() to
+ allocate dma buffer
+Date: Fri, 1 Nov 2013 11:08:21 -0700
+Message-ID: <20131101180821.GB2493@sirena.org.uk>
 References: <cover.1383306365.git.b42378@freescale.com>
- <8bd26b17552315f0a3ea63c166a97a938c88dcf0.1383306365.git.b42378@freescale.com>
+ <290c4ed99f88c1d07544bf5f8f0c9a1d09395bed.1383306365.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5LK7OEqpP/xdrAG9"
+	protocol="application/pgp-signature"; boundary="WnjMQ0y5QpAQNNgT"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <8bd26b17552315f0a3ea63c166a97a938c88dcf0.1383306365.git.b42378@freescale.com>
+In-Reply-To: <290c4ed99f88c1d07544bf5f8f0c9a1d09395bed.1383306365.git.b42378@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Nicolin Chen <b42378@freescale.com>
 Cc: akpm@linux-foundation.org, joe@perches.com, nsekhar@ti.com, khilman@deeprootsystems.com, linux@arm.linux.org.uk, dan.j.williams@intel.com, vinod.koul@intel.com, m.chehab@samsung.com, hjk@hansjkoch.de, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com, rmk+kernel@arm.linux.org.uk, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---5LK7OEqpP/xdrAG9
+--WnjMQ0y5QpAQNNgT
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Nov 01, 2013 at 07:48:20PM +0800, Nicolin Chen wrote:
+On Fri, Nov 01, 2013 at 07:48:21PM +0800, Nicolin Chen wrote:
 > Since gen_pool_dma_alloc() is introduced, we implement it to simplify code.
 
 Acked-by: Mark Brown <broonie@linaro.org>
 
---5LK7OEqpP/xdrAG9
+--WnjMQ0y5QpAQNNgT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSc+31AAoJELSic+t+oim9HQcP/17w98BBi7pQE/a20dgRpCgZ
-c+Qni+Mh2n5hOtsJwChvnOiSuhJ110Ca6g72KEMwB+gMHsJTBnRLxTit6mm9NqLm
-M52dqcZe0Ze0Q76zV3S4PFxVJYw59YuCAG0BtPrxlZH2zt9y74/l3c9BSBKktXKL
-nirgQhvY0aiTiUSnqofr4VKoAnxHNUlbxVBD7zVWwIDHnb8y7qpjB+87L52KY19L
-4pbxK6jYubQFCnHh6/h8idf1DUNe6/NOyC8GpLOvLE6YUpFSzRjvUc58sxtNWVIY
-fynbQt/VSZBa2Y6FV+1rk95Z3CQSyW6cBBolOFO8vNG+oOi2ppmWM1nmCkS5txs0
-enmKl01e8v+bnmd9hYKIB/vW6crBr0EjA+8NlS1xcmiTovnmWtAICBfqhDumP2pQ
-tLbDlFkCK/uRaWX/rhbMY5xPXzf4qOhq4E5+4W62+MgS8Y0hy6eZNQAFYnNgQgdj
-T+5RaNKw9Ypc5C1XG9l8ygQXc5xD/9DxvLvTQSTh+XhXjeOfrqrgjzyoJtKwEcEA
-A3miyeVqvkrvIcnC/MHxmhGZddwzk/m47zpIXnVJgTcb9tQgDxubxdamlaJXTgxz
-5wstJ9EEknCJSoBS2PA1kEm4YH+1BoYW++bKr2wL6CnMh0ModKcoCEKeCqb+lYch
-N6a2Efm/vEWRCEXNF2BI
-=dC0e
+iQIcBAEBAgAGBQJSc+4SAAoJELSic+t+oim9w6sP/3GwUimdfWM6fWiK2wkrtCta
+AO2WgBvYkjvFVzA3kjqeoD2CYSuBfItuwpjRT7v4SGziPDJGMNZY/6gQUr/3jtef
+qnXP8TlcklLskOu4Y6UAf4cO3/onuwwTfJlgFI9E+9UCcyFzRj0PDInixX1Fvyrz
+MjfQMRCVnyzICuN85FZqM27jbrGjZoaoe13QkQDnoCBXFpLArK9XmJZ+pRpReSxX
+8xwZCt673ABzMdjoZcPYCRZqRYOZXFjALHwHW0RtdI0jPEWYUCjzCKeOiYjnZA1R
+kIyWV4lpen7blglGtCn4r6Z/rX2JCLWGVwa/+XIxD65E+bzz+92yVi9SQITwtqBK
+YpR6nuH/F1ncly4rrhzc2j+dzIms8IRDGRGJpE9hZ1cqWJWXbUfK6YyiXAY40yS8
+YurvZKmaIjMpjdk5dykvgeLqFDgePLH3IUZYHliV309IWqpMcgZ4ZeCYpMKOgTvq
+GKgK/XXV+QJoGDAwepmvUHcguD0XTFGIWXiumK56giky6izggAcu+R7cu7g2AcHa
+SvFMdeLgluL/WgxPfqfsHYia/1KC1ltON3OPohbKU1UXm8ZpNwz2UFTK4jE8cbl3
+HaQ3hvThmt8m7/pFHp4AxbaARHciBHg+0Zi0WsNmDu3URWoH4DDqIA6hGNVMO1kd
+zU484RpgqGukceGnM8hF
+=SJ9Q
 -----END PGP SIGNATURE-----
 
---5LK7OEqpP/xdrAG9--
+--WnjMQ0y5QpAQNNgT--
