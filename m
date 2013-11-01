@@ -1,51 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH][RESEND 8/8] ASoC: pxa: use gen_pool_dma_alloc() to
- allocate dma buffer
-Date: Fri, 1 Nov 2013 11:08:21 -0700
-Message-ID: <20131101180821.GB2493@sirena.org.uk>
-References: <cover.1383306365.git.b42378@freescale.com>
- <290c4ed99f88c1d07544bf5f8f0c9a1d09395bed.1383306365.git.b42378@freescale.com>
+Subject: Re: [PATCH v3] ASoC: Add pinctrl PM to components of active DAIs
+Date: Fri, 1 Nov 2013 11:11:59 -0700
+Message-ID: <20131101181159.GC2493@sirena.org.uk>
+References: <1383308175-5053-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WnjMQ0y5QpAQNNgT"
+	protocol="application/pgp-signature"; boundary="oMfk58fZ06Sy4zVm"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <290c4ed99f88c1d07544bf5f8f0c9a1d09395bed.1383306365.git.b42378@freescale.com>
+In-Reply-To: <1383308175-5053-1-git-send-email-b42378@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Nicolin Chen <b42378@freescale.com>
-Cc: akpm@linux-foundation.org, joe@perches.com, nsekhar@ti.com, khilman@deeprootsystems.com, linux@arm.linux.org.uk, dan.j.williams@intel.com, vinod.koul@intel.com, m.chehab@samsung.com, hjk@hansjkoch.de, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com, rmk+kernel@arm.linux.org.uk, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: lgirdwood@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---WnjMQ0y5QpAQNNgT
+--oMfk58fZ06Sy4zVm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Nov 01, 2013 at 07:48:21PM +0800, Nicolin Chen wrote:
-> Since gen_pool_dma_alloc() is introduced, we implement it to simplify code.
+On Fri, Nov 01, 2013 at 08:16:15PM +0800, Nicolin Chen wrote:
+> It's quite popular that more drivers are using pinctrl PM, for example:
+> (Documentation/devicetree/bindings/arm/primecell.txt). Just like what
+> runtime PM does, it would de-active and en-active pin group depending
+> on whether it's being used or not.
 
-Acked-by: Mark Brown <broonie@linaro.org>
+Applied, thanks.
 
---WnjMQ0y5QpAQNNgT
+--oMfk58fZ06Sy4zVm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSc+4SAAoJELSic+t+oim9w6sP/3GwUimdfWM6fWiK2wkrtCta
-AO2WgBvYkjvFVzA3kjqeoD2CYSuBfItuwpjRT7v4SGziPDJGMNZY/6gQUr/3jtef
-qnXP8TlcklLskOu4Y6UAf4cO3/onuwwTfJlgFI9E+9UCcyFzRj0PDInixX1Fvyrz
-MjfQMRCVnyzICuN85FZqM27jbrGjZoaoe13QkQDnoCBXFpLArK9XmJZ+pRpReSxX
-8xwZCt673ABzMdjoZcPYCRZqRYOZXFjALHwHW0RtdI0jPEWYUCjzCKeOiYjnZA1R
-kIyWV4lpen7blglGtCn4r6Z/rX2JCLWGVwa/+XIxD65E+bzz+92yVi9SQITwtqBK
-YpR6nuH/F1ncly4rrhzc2j+dzIms8IRDGRGJpE9hZ1cqWJWXbUfK6YyiXAY40yS8
-YurvZKmaIjMpjdk5dykvgeLqFDgePLH3IUZYHliV309IWqpMcgZ4ZeCYpMKOgTvq
-GKgK/XXV+QJoGDAwepmvUHcguD0XTFGIWXiumK56giky6izggAcu+R7cu7g2AcHa
-SvFMdeLgluL/WgxPfqfsHYia/1KC1ltON3OPohbKU1UXm8ZpNwz2UFTK4jE8cbl3
-HaQ3hvThmt8m7/pFHp4AxbaARHciBHg+0Zi0WsNmDu3URWoH4DDqIA6hGNVMO1kd
-zU484RpgqGukceGnM8hF
-=SJ9Q
+iQIcBAEBAgAGBQJSc+7sAAoJELSic+t+oim9FcIQAIE73n/cYVLHkjzGd856TUFi
+wDAVEjA67YHt6Mm8FTwZxHudjV4wqBLKSFxaTqMmdTTXjeMxrU0Td4GYAGZMhT63
+Xkk+w1wrZbQsv4FlLGnIIjZJ3LUAzimPugQEqnA8sTEjqR/6UFQhKXTntGmwscZB
+qifvrGztT78d4mGR915sLHC3YMqALAXH9RXBW66PE5KYAcPorerUNSPXQFenWgmd
+f1JiXefPIfTFFFooMvvhvh9CbNRZu/R91jKh4i51SafQHHVN8k2cNuKjYTmeAs48
+H4L7QDO+iV4K0xXagX+lRVwVw9p/0KfjHDrN1EleHKGOcFNhWmmjzJj4fJdKfxWu
+l6coJqHSgxl0vAu3IwzRKQwHL0dSHZU9aYTIZef9WZRG6yiMF2bMAtGZyNA8mNnV
+saocQNMDsepCM5Fh1Lsp+dvJpuj89C+INH3wfGtTUXNKAXK2JX8vd3sqOtlO6MTm
+6s+gkAu8hByYpGEQtOhh5dLeEy/tbr7tKCFmUEf1JQWlnm9wPz5Zi5KYbcIbVonk
+VKrTkGviRxng7cHwsv86ZxqgOOUWlTRS7P1nfegesPIKXw/JMe/uvv8uylo63T0a
+1s0wQxuYhbiZdKlOpjBzdmHiWPzPbB5jZwyPkI/bPFcjfrZl/BGRVsTzngHC/MY3
+c+v2j8dM2bXJDWbMMsGy
+=l/tR
 -----END PGP SIGNATURE-----
 
---WnjMQ0y5QpAQNNgT--
+--oMfk58fZ06Sy4zVm--
