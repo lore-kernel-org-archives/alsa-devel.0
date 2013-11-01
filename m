@@ -1,54 +1,51 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCHv2 3/3] spi: Use stable dev_name for ACPI enumerated SPI
- slaves
-Date: Fri, 1 Nov 2013 11:03:50 -0700
-Message-ID: <20131101180350.GZ2493@sirena.org.uk>
-References: <1382703540-3769-1-git-send-email-jarkko.nikula@linux.intel.com>
- <1383309356-25430-1-git-send-email-jarkko.nikula@linux.intel.com>
- <1383309356-25430-4-git-send-email-jarkko.nikula@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH][RESEND 7/8] ASoC: davinci: use gen_pool_dma_alloc() in
+ davinci-pcm.c
+Date: Fri, 1 Nov 2013 11:07:52 -0700
+Message-ID: <20131101180752.GA2493@sirena.org.uk>
+References: <cover.1383306365.git.b42378@freescale.com>
+ <8bd26b17552315f0a3ea63c166a97a938c88dcf0.1383306365.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oUI2l+Vq7ILP1REU"
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="5LK7OEqpP/xdrAG9"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1383309356-25430-4-git-send-email-jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Cc: "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+In-Reply-To: <8bd26b17552315f0a3ea63c166a97a938c88dcf0.1383306365.git.b42378@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: akpm@linux-foundation.org, joe@perches.com, nsekhar@ti.com, khilman@deeprootsystems.com, linux@arm.linux.org.uk, dan.j.williams@intel.com, vinod.koul@intel.com, m.chehab@samsung.com, hjk@hansjkoch.de, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com, rmk+kernel@arm.linux.org.uk, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---oUI2l+Vq7ILP1REU
+--5LK7OEqpP/xdrAG9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Nov 01, 2013 at 02:35:56PM +0200, Jarkko Nikula wrote:
-> Current spi bus_num.chip_select "spix.y" based device naming scheme may not
-> be stable enough to be used in name based matching, for instance within
-> ALSA SoC subsystem.
+On Fri, Nov 01, 2013 at 07:48:20PM +0800, Nicolin Chen wrote:
+> Since gen_pool_dma_alloc() is introduced, we implement it to simplify code.
 
-Acked-by: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Acked-by: Mark Brown <broonie@linaro.org>
 
---oUI2l+Vq7ILP1REU
+--5LK7OEqpP/xdrAG9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSc+0DAAoJELSic+t+oim9pjUP/A3CU3qwzt7SqqNPap12rnmU
-qDODftHjvUe5f3t94baKnezoHkVEscYMFbNLRAjW4KRB5t45oNmzDhPyQ/ATPnKR
-qWa2FYG25o/hWSlvg18m9tIam62A8LpQaub0y1Wf6Kpob2T5aPsSTj7NBg/NY96O
-/pW8ZSc4ZTZA/cVp8jtEx+SDfmJ7g4oBu/7L0NLFJYq4dI0uPzZTzPVJIyXVMO1M
-CsGvTtctnqzoIJHTXeT2yAzDhVN4wsyaBOIRsmxlRRqpTcM3PGJE1UbjfjADDNo9
-O7+65zkNNV+mXXLjzuK1x+W8sVhFM6KqpFiEp963fft7nFjN1BaZrYqV++rh8qx4
-XQtl3sCbi8iHkMGKdNhp2As7zP6d1ohXPpJ5VDZOtJJ72Q5zqfgmegPJQa07eI3s
-aETW7vmIk/h4UZAX1h4WrJeUMXPtCtip6cFmZGd0ZLIC1itrPJDIemR98kx9Jw7o
-4wTILL5Ae5cfWpOmIN+ZnKhwsYWIucNUHSNd6Z2OSF+vLZX69JSimsfq5DOWCU7m
-eh9D1Y78vA5GS0ZLnhwzdjsORdiXJVkxwTGT/phhrWCD/UOEey0ZsSahxDbxns0r
-EEEBcptqyWtyWbAihNqVbqDgBn9F9AfniefNHxil0iBmEJrahWJB1oasRV0609L9
-BYHohzPZp0unq+mF6mC8
-=7XG3
+iQIcBAEBAgAGBQJSc+31AAoJELSic+t+oim9HQcP/17w98BBi7pQE/a20dgRpCgZ
+c+Qni+Mh2n5hOtsJwChvnOiSuhJ110Ca6g72KEMwB+gMHsJTBnRLxTit6mm9NqLm
+M52dqcZe0Ze0Q76zV3S4PFxVJYw59YuCAG0BtPrxlZH2zt9y74/l3c9BSBKktXKL
+nirgQhvY0aiTiUSnqofr4VKoAnxHNUlbxVBD7zVWwIDHnb8y7qpjB+87L52KY19L
+4pbxK6jYubQFCnHh6/h8idf1DUNe6/NOyC8GpLOvLE6YUpFSzRjvUc58sxtNWVIY
+fynbQt/VSZBa2Y6FV+1rk95Z3CQSyW6cBBolOFO8vNG+oOi2ppmWM1nmCkS5txs0
+enmKl01e8v+bnmd9hYKIB/vW6crBr0EjA+8NlS1xcmiTovnmWtAICBfqhDumP2pQ
+tLbDlFkCK/uRaWX/rhbMY5xPXzf4qOhq4E5+4W62+MgS8Y0hy6eZNQAFYnNgQgdj
+T+5RaNKw9Ypc5C1XG9l8ygQXc5xD/9DxvLvTQSTh+XhXjeOfrqrgjzyoJtKwEcEA
+A3miyeVqvkrvIcnC/MHxmhGZddwzk/m47zpIXnVJgTcb9tQgDxubxdamlaJXTgxz
+5wstJ9EEknCJSoBS2PA1kEm4YH+1BoYW++bKr2wL6CnMh0ModKcoCEKeCqb+lYch
+N6a2Efm/vEWRCEXNF2BI
+=dC0e
 -----END PGP SIGNATURE-----
 
---oUI2l+Vq7ILP1REU--
+--5LK7OEqpP/xdrAG9--
