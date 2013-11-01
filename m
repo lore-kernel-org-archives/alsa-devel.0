@@ -1,69 +1,50 @@
 From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH][RESEND 0/8] Add and implement gen_pool_dma_alloc()
-Date: Fri, 1 Nov 2013 19:48:13 +0800
-Message-ID: <cover.1383306365.git.b42378@freescale.com>
+Subject: [PATCH][RESEND 2/8] ARM: davinci: use gen_pool_dma_alloc() to sram.c
+Date: Fri, 1 Nov 2013 19:48:15 +0800
+Message-ID: <9536ee2bbb1a8463ebb21068a750b61fa59900df.1383306365.git.b42378@freescale.com>
+References: <cover.1383306365.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1383306365.git.b42378@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: akpm@linux-foundation.org, joe@perches.com, nsekhar@ti.com, khilman@deeprootsystems.com, linux@arm.linux.org.uk, dan.j.williams@intel.com, vinod.koul@intel.com, m.chehab@samsung.com, hjk@hansjkoch.de, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, rmk+kernel@arm.linux.org.uk, eric.y.miao@gmail.com, haojian.zhuang@gmail.com
 Cc: linux-kernel@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Previously, we don't have a specific gen_pool_alloc() for DMA usage;
-Instead, we need to use gen_pool_virt_to_phys() to convert the addr
-returned from gen_pool_alloc(). So each implementation of this has
-duplicated code. Thus add new helper function -- gen_pool_dma_alloc().
+Since gen_pool_dma_alloc() is introduced, we implement it to simplify code.
 
-After gen_pool_dma_alloc() is introduced, we can replace the original
-combination of gen_pool_alloc()+gen_pool_virt_to_phys() with this new
-helper function. Thus this patch implement the helper function to all
-the current drivers which use gen_pool_virt_to_phys().
+Signed-off-by: Nicolin Chen <b42378@freescale.com>
+---
+ arch/arm/mach-davinci/sram.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-!!-------------------important------------------!!
-
-The later 7 patches need all related driver owner to test. We can
-here define a simple rule:
-1, If one driver owner or maintainer doesn't like the mofication
-   to his/her driver, just let me know. I would drop that patch.
-2, If there's a bug and issue found after patch-testing, please
-   reply the mail so that I can fix and refine the patch.
-3, If one driver owner or maintainer is too busy and doesn't have
-   bandwidth to test the patch, I would drop that patch from this
-   series. We can reimplement it till there's someone test it.
-
-!!-------------------current progress-----------!!
-
-  lib/genalloc: [Okay]
-  ARM: davinci: [Untested]
-  dma: mmp_tdma: [Untested]
-  [media] coda: [Untested]
-  uio: uio_pruss: [Untested]
-  ALSA: memalloc: [Tested] by Nicolin Chen with i.MX6Q SabreSD
-  ASoC: davinci: [Untested]
-  ASoC: pxa: use [Untested]
-
-
-Nicolin Chen (8):
-  lib/genalloc: add a helper function for DMA buffer allocation
-  ARM: davinci: use gen_pool_dma_alloc() to sram.c
-  dma: mmp_tdma: use gen_pool_dma_alloc() to allocate descriptor
-  [media] coda: use gen_pool_dma_alloc() to allocate iram buffer
-  uio: uio_pruss: use gen_pool_dma_alloc() to allocate sram memory
-  ALSA: memalloc: use gen_pool_dma_alloc() to allocate iram buffer
-  ASoC: davinci: use gen_pool_dma_alloc() in davinci-pcm.c
-  ASoC: pxa: use gen_pool_dma_alloc() to allocate dma buffer
-
- arch/arm/mach-davinci/sram.c    |  9 +--------
- drivers/dma/mmp_tdma.c          |  7 +------
- drivers/media/platform/coda.c   |  5 ++---
- drivers/uio/uio_pruss.c         |  6 ++----
- include/linux/genalloc.h        |  2 ++
- lib/genalloc.c                  | 28 ++++++++++++++++++++++++++++
- sound/core/memalloc.c           |  6 +-----
- sound/soc/davinci/davinci-pcm.c |  3 +--
- sound/soc/pxa/mmp-pcm.c         |  3 +--
- 9 files changed, 39 insertions(+), 30 deletions(-)
-
+diff --git a/arch/arm/mach-davinci/sram.c b/arch/arm/mach-davinci/sram.c
+index f18928b..8540ddd 100644
+--- a/arch/arm/mach-davinci/sram.c
++++ b/arch/arm/mach-davinci/sram.c
+@@ -25,7 +25,6 @@ struct gen_pool *sram_get_gen_pool(void)
+ 
+ void *sram_alloc(size_t len, dma_addr_t *dma)
+ {
+-	unsigned long vaddr;
+ 	dma_addr_t dma_base = davinci_soc_info.sram_dma;
+ 
+ 	if (dma)
+@@ -33,13 +32,7 @@ void *sram_alloc(size_t len, dma_addr_t *dma)
+ 	if (!sram_pool || (dma && !dma_base))
+ 		return NULL;
+ 
+-	vaddr = gen_pool_alloc(sram_pool, len);
+-	if (!vaddr)
+-		return NULL;
+-
+-	if (dma)
+-		*dma = gen_pool_virt_to_phys(sram_pool, vaddr);
+-	return (void *)vaddr;
++	return gen_pool_dma_alloc(sram_pool, len, dma);
+ 
+ }
+ EXPORT_SYMBOL(sram_alloc);
 -- 
 1.8.4
