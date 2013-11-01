@@ -1,68 +1,324 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ASoC: wm8962: Move register initialisation to I2C
-	probe()
-Date: Fri, 1 Nov 2013 13:33:48 +0300
-Message-ID: <20131101103348.GO29795@longonot.mountain>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: Re: [PATCHv2 6/8] ASoC: fsl: add SGTL5000 based audio machine driver.
+Date: Fri, 1 Nov 2013 18:28:05 +0800
+Message-ID: <20131101102805.GG28401@MrMyself>
+References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
+ <1383289495-24523-7-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
- by alsa0.perex.cz (Postfix) with ESMTP id BF80C2655A0
- for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 11:36:52 +0100 (CET)
+Return-path: <linux-doc-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@linaro.org
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <1383289495-24523-7-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: Xiubo Li <Li.Xiubo@freescale.com>, shawn.guo@linaro.org
+Cc: r65073@freescale.com, timur@tabi.org, lgirdwood@gmail.com, broonie@kernel.org, r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark Brown,
+Hi Xiubo,
 
-This is a semi-automatic email about new static checker warnings.
+On Fri, Nov 01, 2013 at 03:04:53PM +0800, Xiubo Li wrote:
+> This is the SGTL5000 codec based audio driver supported with both
+> playback and capture dai link implemention.
+> 
+> This implementation is only compatible with device tree definition.
+> 
+> Signed-off-by: Alison Wang <b18965@freescale.com
+> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+> 
+> Conflicts:
+> 	sound/soc/fsl/Makefile
+> ---
+>  sound/soc/fsl/Kconfig              |  10 ++
+>  sound/soc/fsl/Makefile             |   2 +
 
-The patch 78b78f5c019e: "ASoC: wm8962: Move register initialisation 
-to I2C probe()" from Oct 17, 2013, leads to the following Smatch 
-complaint:
+>  sound/soc/fsl/fsl-sgtl5000-vf610.c | 208 +++++++++++++++++++++++++++++++++++++
 
-sound/soc/codecs/wm8962.c:3620 wm8962_i2c_probe()
-	 error: we previously assumed 'pdata' could be null (see line 3537)
+I just doubt if this file naming is appropriate. Even if we might not have
+rigor rule for the file names, according to existing ones, they are all in
+a same pattern: [SoC name]-[codec name].c
 
-sound/soc/codecs/wm8962.c
-  3531          /* If platform data was supplied, update the default data in priv */
-  3532          if (pdata) {
-                    ^^^^^
-Existing check.
+"imx-sgtl5000.c" for example
 
-  3533                  memcpy(&wm8962->pdata, pdata, sizeof(struct wm8962_pdata));
-  3534          } else if (i2c->dev.of_node) {
-  3535                  ret = wm8962_set_pdata_from_of(i2c, &wm8962->pdata);
-  3536			if (ret != 0)
-  3537				return ret;
-  3538		}
+I think it would make user less confused about what this file exactly is if
+this machine driver also follow the pattern: vf610-sgtl5000.c
 
-[snip]
 
-  3613		/* Ensure that the oscillator and PLLs are disabled */
-  3614		regmap_update_bits(wm8962->regmap, WM8962_PLL2,
-  3615				   WM8962_OSC_ENA | WM8962_PLL2_ENA | WM8962_PLL3_ENA,
-  3616				   0);
-  3617	
-  3618		/* Apply static configuration for GPIOs */
-  3619		for (i = 0; i < ARRAY_SIZE(pdata->gpio_init); i++)
-  3620			if (pdata->gpio_init[i]) {
-                            ^^^^^^^^^^^^^^^^^^
-Patch introduces unchecked dereference.
+@Shawn
 
-  3621				wm8962_set_gpio_mode(wm8962, i + 1);
-  3622				regmap_write(wm8962->regmap, 0x200 + i,
+What do you think about the file name?
 
-regards,
-dan carpenter
+>  3 files changed, 220 insertions(+)
+>  create mode 100644 sound/soc/fsl/fsl-sgtl5000-vf610.c
+> 
+> diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+> index 9a8851e..1b835ba 100644
+> --- a/sound/soc/fsl/Kconfig
+> +++ b/sound/soc/fsl/Kconfig
+> @@ -228,4 +228,14 @@ config SND_SOC_FSL_SAI
+>  	tristate
+>  	select SND_SOC_GENERIC_DMAENGINE_PCM
+>  
+> +config SND_SOC_FSL_SGTL5000_VF610
+
+Same problem with the this define.
+
+> +	tristate "SoC Audio support for FSL boards with sgtl5000"
+
+And 'FSL' here confuses me a lot. Because those boards based on i.MX series
+also could be called FSL boards.
+
+> +	depends on OF && I2C
+> +	select SND_SOC_FSL_SAI
+> +	select SND_SOC_FSL_PCM
+> +	select SND_SOC_SGTL5000
+> +	help
+> +	  Say Y if you want to add support for SoC audio on an FSL board with
+> +	  a sgtl5000 codec.
+> +
+>  endif # SND_FSL_SOC
+> diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+> index e5acc03..26fc551 100644
+> --- a/sound/soc/fsl/Makefile
+> +++ b/sound/soc/fsl/Makefile
+> @@ -59,5 +59,7 @@ obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
+>  
+>  # FSL ARM SAI/SGT15000 Platform Support
+>  snd-soc-fsl-sai-objs := fsl-sai.o
+> +snd-soc-fsl-sgtl5000-vf610-objs := fsl-sgtl5000-vf610.o
+>  
+>  obj-$(CONFIG_SND_SOC_FSL_SAI) += snd-soc-fsl-sai.o
+> +obj-$(CONFIG_SND_SOC_FSL_SGTL5000_VF610) += snd-soc-fsl-sgtl5000-vf610.o
+> diff --git a/sound/soc/fsl/fsl-sgtl5000-vf610.c b/sound/soc/fsl/fsl-sgtl5000-vf610.c
+> new file mode 100644
+> index 0000000..f535b42
+> --- /dev/null
+> +++ b/sound/soc/fsl/fsl-sgtl5000-vf610.c
+> @@ -0,0 +1,208 @@
+> +/*
+> + * Freeacale ALSA SoC Audio using SGT1500 as codec.
+> + *
+> + * Copyright 2012-2013 Freescale Semiconductor, Inc.
+> + *
+> + * The code contained herein is licensed under the GNU General Public
+> + * License. You may obtain a copy of the GNU General Public License
+> + * Version 2 or later at the following locations:
+> + *
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/i2c.h>
+> +#include <linux/clk.h>
+> +
+> +#include "../codecs/sgtl5000.h"
+> +#include "fsl-sai.h"
+> +
+> +static unsigned int sysclk_rate;
+> +
+> +static int fsl_sgtl5000_dai_init(struct snd_soc_pcm_runtime *rtd)
+
+Naming issue here again.
+
+At least from my point of view, if you actually merged imx-sgtl5000 with
+vf610-sgtl5000 and made it also compatible to other freescale SoCs, you
+could then fairly call it fsl_sgtl5000_xxxx.
+
+Well, I might be a little picky here because it's a static function and
+won't conflict others. Just the name here doesn't look so explicit to me.
+
+Please reconsider about this whole file's naming.
+
+Best regards,
+Nicolin Chen
+
+> +{
+> +	int ret;
+> +	struct device *dev = rtd->card->dev;
+> +
+> +	ret = snd_soc_dai_set_sysclk(rtd->codec_dai, SGTL5000_SYSCLK,
+> +				     sysclk_rate, SND_SOC_CLOCK_IN);
+> +	if (ret) {
+> +		dev_err(dev, "could not set codec driver clock params :%d\n",
+> +				ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = snd_soc_dai_set_sysclk(rtd->cpu_dai, FSL_SAI_CLK_BUS,
+> +				     sysclk_rate, SND_SOC_CLOCK_OUT);
+> +	if (ret) {
+> +		dev_err(dev, "could not set cpu dai driver clock params :%d\n",
+> +				ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int sgtl5000_params(struct snd_pcm_substream *substream,
+> +		struct snd_pcm_hw_params *params)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> +	unsigned int channels = params_channels(params);
+> +
+> +	/* TODO: The SAI driver should figure this out for us */
+> +	switch (channels) {
+> +	case 2:
+> +		snd_soc_dai_set_tdm_slot(cpu_dai, 0xfffffffc, 0xfffffffc, 2, 0);
+> +		break;
+> +	case 1:
+> +		snd_soc_dai_set_tdm_slot(cpu_dai, 0xfffffffe, 0xfffffffe, 1, 0);
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static struct snd_soc_ops fsl_sgtl5000_hifi_ops = {
+> +	.hw_params = sgtl5000_params,
+> +};
+> +
+> +static struct snd_soc_dai_link fsl_sgtl5000_dai = {
+> +	.name = "HiFi",
+> +	.stream_name = "HiFi",
+> +	.codec_dai_name = "sgtl5000",
+> +	.init = &fsl_sgtl5000_dai_init,
+> +	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+> +		SND_SOC_DAIFMT_CBM_CFM,
+> +	.ops = &fsl_sgtl5000_hifi_ops,
+> +};
+> +
+> +static const struct snd_soc_dapm_widget fsl_sgtl5000_dapm_widgets[] = {
+> +	SND_SOC_DAPM_MIC("Mic Jack", NULL),
+> +	SND_SOC_DAPM_LINE("Line In Jack", NULL),
+> +	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+> +	SND_SOC_DAPM_SPK("Line Out Jack", NULL),
+> +	SND_SOC_DAPM_SPK("Ext Spk", NULL),
+> +};
+> +
+> +static struct snd_soc_card fsl_sgt1500_card = {
+> +	.owner = THIS_MODULE,
+> +	.num_links = 1,
+> +	.dai_link = &fsl_sgtl5000_dai,
+> +	.dapm_widgets = fsl_sgtl5000_dapm_widgets,
+> +	.num_dapm_widgets = ARRAY_SIZE(fsl_sgtl5000_dapm_widgets),
+> +};
+> +
+> +static int fsl_sgtl5000_parse_dt(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +	struct device_node *sai_np, *codec_np;
+> +	struct clk *codec_clk;
+> +	struct i2c_client *codec_dev;
+> +	struct device_node *np = pdev->dev.of_node;
+> +
+> +	ret = snd_soc_of_parse_card_name(&fsl_sgt1500_card, "model");
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = snd_soc_of_parse_audio_routing(&fsl_sgt1500_card,
+> +			"audio-routing");
+> +	if (ret)
+> +		return ret;
+> +
+> +	sai_np = of_parse_phandle(np, "saif-controller", 0);
+> +	if (!sai_np) {
+> +		dev_err(&pdev->dev, "\"saif-controller\" phandle missing or "
+> +				"invalid\n");
+> +		return -EINVAL;
+> +	}
+> +	fsl_sgtl5000_dai.cpu_of_node = sai_np;
+> +	fsl_sgtl5000_dai.platform_of_node = sai_np;
+> +
+> +	codec_np = of_parse_phandle(np, "audio-codec", 0);
+> +	if (!codec_np) {
+> +		dev_err(&pdev->dev, "\"audio-codec\" phandle missing or "
+> +				"invalid\n");
+> +		ret = -EINVAL;
+> +		goto sai_np_fail;
+> +	}
+> +	fsl_sgtl5000_dai.codec_of_node = codec_np;
+> +
+> +	codec_dev = of_find_i2c_device_by_node(codec_np);
+> +	if (!codec_dev) {
+> +		dev_err(&pdev->dev, "failed to find codec platform device\n");
+> +		ret = PTR_ERR(codec_dev);
+> +		goto codec_np_fail;
+> +	}
+> +
+> +	codec_clk = devm_clk_get(&codec_dev->dev, NULL);
+> +	if (IS_ERR(codec_clk)) {
+> +		dev_err(&pdev->dev, "failed to get codec clock\n");
+> +		ret = PTR_ERR(codec_clk);
+> +		goto codec_np_fail;
+> +	}
+> +
+> +	sysclk_rate = clk_get_rate(codec_clk);
+> +
+> +codec_np_fail:
+> +	of_node_put(codec_np);
+> +sai_np_fail:
+> +	of_node_put(sai_np);
+> +
+> +	return ret;
+> +}
+> +
+> +static int fsl_sgtl5000_probe(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +
+> +	fsl_sgt1500_card.dev = &pdev->dev;
+> +
+> +	ret = fsl_sgtl5000_parse_dt(pdev);
+> +	if (ret) {
+> +		dev_err(&pdev->dev,
+> +				"parse sgtl5000 device tree failed :%d\n",
+> +				ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = devm_snd_soc_register_card(&pdev->dev, &fsl_sgt1500_card);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "register soc sound card failed :%d\n",
+> +				ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int fsl_sgtl5000_remove(struct platform_device *pdev)
+> +{
+> +	snd_soc_unregister_card(&fsl_sgt1500_card);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id fsl_sgtl5000_dt_ids[] = {
+> +	{ .compatible = "fsl,vf610-sgtl5000", },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, fsl_sgtl5000_dt_ids);
+> +
+> +static struct platform_driver fsl_sgtl5000_driver = {
+> +	.driver = {
+> +		.name = "fsl-sgtl5000",
+> +		.owner = THIS_MODULE,
+> +		.of_match_table = fsl_sgtl5000_dt_ids,
+> +	},
+> +	.probe = fsl_sgtl5000_probe,
+> +	.remove = fsl_sgtl5000_remove,
+> +};
+> +module_platform_driver(fsl_sgtl5000_driver);
+> +
+> +MODULE_AUTHOR("Xiubo Li <Li.Xiubo@freescale.com>");
+> +MODULE_DESCRIPTION("Freescale SGTL5000 ASoC driver");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 1.8.4
+> 
+
+
