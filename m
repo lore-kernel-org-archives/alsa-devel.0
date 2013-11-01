@@ -1,16 +1,16 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/6] ASoC: wm_adsp: Add debug info on
-	get()/put() transfers
-Date: Fri,  1 Nov 2013 15:56:55 +0000
-Message-ID: <1383321417-1133-5-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: [PATCH 6/6] ASoC: wm_adsp: Print out the firmware
+	version
+Date: Fri,  1 Nov 2013 15:56:57 +0000
+Message-ID: <1383321417-1133-7-git-send-email-dp@opensource.wolfsonmicro.com>
 References: <1383321417-1133-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C366265852
- for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 16:57:02 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EA37526585C
+ for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 16:57:04 +0100 (CET)
 In-Reply-To: <1383321417-1133-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,28 +27,20 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm_adsp.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/wm_adsp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 4039d05..79dc4aa 100644
+index 1761f65..df95e5a 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -401,6 +401,7 @@ static int wm_coeff_write_control(struct snd_kcontrol *kcontrol,
- 		kfree(scratch);
- 		return ret;
+@@ -570,6 +570,7 @@ static int wm_adsp_load(struct wm_adsp *dsp)
+ 			 file, header->ver);
+ 		goto out_fw;
  	}
-+	adsp_dbg(adsp, "Wrote %zu bytes to %x\n", ctl->len, reg);
++	adsp_info(dsp, "Firmware version: %d\n", header->ver);
  
- 	kfree(scratch);
- 
-@@ -455,6 +456,7 @@ static int wm_coeff_read_control(struct snd_kcontrol *kcontrol,
- 		kfree(scratch);
- 		return ret;
- 	}
-+	adsp_dbg(adsp, "Read %zu bytes from %x\n", ctl->len, reg);
- 
- 	memcpy(buf, scratch, ctl->len);
- 	kfree(scratch);
+ 	if (header->core != dsp->type) {
+ 		adsp_err(dsp, "%s: invalid core %d != %d\n",
 -- 
 1.8.4.2
