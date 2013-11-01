@@ -1,7 +1,7 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: wm8962: Add ALC coefficient support
-Date: Fri, 1 Nov 2013 10:02:10 +0000
-Message-ID: <20131101100210.GB1901@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: wm8962: Add EQ coefficient support
+Date: Fri, 1 Nov 2013 10:02:58 +0000
+Message-ID: <20131101100258.GC1901@opensource.wolfsonmicro.com>
 References: <20131101100051.GA1901@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -16,24 +16,22 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8962.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+ sound/soc/codecs/wm8962.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index c9ff713..2b04497 100644
+index 2b04497..150d003 100644
 --- a/sound/soc/codecs/wm8962.c
 +++ b/sound/soc/codecs/wm8962.c
-@@ -1774,6 +1774,11 @@ WM8962_DSP2_ENABLE("HPF2 Switch", WM8962_HPF2_ENA_SHIFT),
- SND_SOC_BYTES("HPF Coefficients", WM8962_LHPF2, 1),
- WM8962_DSP2_ENABLE("HD Bass Switch", WM8962_HDBASS_ENA_SHIFT),
- SND_SOC_BYTES("HD Bass Coefficients", WM8962_HDBASS_AI_1, 30),
+@@ -1757,6 +1757,9 @@ SOC_DOUBLE_R_TLV("EQ4 Volume", WM8962_EQ3, WM8962_EQ23,
+ 		 WM8962_EQL_B4_GAIN_SHIFT, 31, 0, eq_tlv),
+ SOC_DOUBLE_R_TLV("EQ5 Volume", WM8962_EQ3, WM8962_EQ23,
+ 		 WM8962_EQL_B5_GAIN_SHIFT, 31, 0, eq_tlv),
++SND_SOC_BYTES("EQL Coefficients", WM8962_EQ4, 18),
++SND_SOC_BYTES("EQR Coefficients", WM8962_EQ24, 18),
 +
-+SOC_DOUBLE("ALC Switch", WM8962_ALC1, WM8962_ALCL_ENA_SHIFT,
-+		WM8962_ALCR_ENA_SHIFT, 1, 0),
-+SND_SOC_BYTES_MASK("ALC Coefficients", WM8962_ALC1, 4,
-+		WM8962_ALCL_ENA_MASK | WM8962_ALCR_ENA_MASK),
- };
  
- static const struct snd_kcontrol_new wm8962_spk_mono_controls[] = {
+ SOC_SINGLE("3D Switch", WM8962_THREED1, 0, 1, 0),
+ SND_SOC_BYTES_MASK("3D Coefficients", WM8962_THREED1, 4, WM8962_THREED_ENA),
 -- 
 1.7.2.5
