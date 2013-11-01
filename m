@@ -1,23 +1,16 @@
-From: Tobias Klausmann <klausman-alsa@schwarzvogel.de>
-Subject: Re: Audinst HUD-mx2 covertly muting itself
-Date: Fri, 1 Nov 2013 14:58:39 +0100
-Message-ID: <20131101135839.GA90732@skade.schwarzvogel.de>
-References: <20131031101137.GA75354@skade.schwarzvogel.de>
- <52727D15.90907@ladisch.de>
- <20131031161517.GA53495@skade.schwarzvogel.de>
- <52728486.2060506@ladisch.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [RFC] ALSA: usb: supply channel maps even when
+	wChannelConfig is unspecified
+Date: Fri,  1 Nov 2013 16:38:59 +0100
+Message-ID: <1383320339-22666-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.schwarzvogel.de (skade.schwarzvogel.de [144.76.18.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DC702657B7
- for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 14:58:39 +0100 (CET)
-Received: from klausman by mail.schwarzvogel.de with local (Exim 4.82)
- (envelope-from <klausman@schwarzvogel.de>) id 1VcFFH-000OGk-BE
- for alsa-devel@alsa-project.org; Fri, 01 Nov 2013 14:58:39 +0100
-Content-Disposition: inline
-In-Reply-To: <52728486.2060506@ladisch.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id C3ADC2657FA
+ for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 16:38:58 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,41 +20,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi! 
+If wChannelconfig is given for some formats but not others, userspace
+might not be able to set the channel map.
 
-On Thu, 31 Oct 2013, Clemens Ladisch wrote:
-> Tobias Klausmann wrote:
-> > I have gotten a temporary workaround: use the secondary PCM
-> > device (hw:0,1) instead of the primary (hw:0,0)
-> 
-> Oops, I didn't notice that there are two devices.
-> 
-> The first PCM device is only for Dolby-encoded data, so muting the
-> analog output would be correct.
-> 
-> > Maybe something along the lines of PCI device "quirks" would be
-> > the right thing to do? I.e. swapping the two PCM devices from
-> > ALSA's point of view.
-> 
-> The driver should never make the non-PCM device the first one.
+This is RFC because I'm not sure what the best behaviour is - to guess
+the channel map from the given number of channels (it's quite likely
+that one channel is MONO and two channels is FL FR), or just to supply
+UNKNOWN for all channels.
 
-My concern is just that I have found at least 5 different forum,
-blog and mailing list posts where people were unable to diagnose
-this or fix it. There was exactly one thread that shed light:
+But the complete lack of channel map for a format leads userspace to
+believe that the format is not available at all. Or am I
+misunderstanding how this should be used?
 
-http://comments.gmane.org/gmane.linux.alsa.devel/109855
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/usb/stream.c |   18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-The fix (using hw:0,1 as default) is not obvious to the average
-person and sort-of forcing them to dig around the internet and
-happen upon that thread strikes me as not exactly user friendly.
-
-Don't get me wrong, I understand that the way things are has
-mostly to do with the myriad of ways in which USB audio devices
-are built. But making it easy/easier for user to get them working
-properly "out of the box" seems worthwile.
-
-Regards,
-Tobias
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index c4339f9..b43b6ee 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -281,8 +281,6 @@ static struct snd_pcm_chmap_elem *convert_chmap(int channels, unsigned int bits,
+ 	const unsigned int *maps;
+ 	int c;
+ 
+-	if (!bits)
+-		return NULL;
+ 	if (channels > ARRAY_SIZE(chmap->map))
+ 		return NULL;
+ 
+@@ -293,9 +291,19 @@ static struct snd_pcm_chmap_elem *convert_chmap(int channels, unsigned int bits,
+ 	maps = protocol == UAC_VERSION_2 ? uac2_maps : uac1_maps;
+ 	chmap->channels = channels;
+ 	c = 0;
+-	for (; bits && *maps; maps++, bits >>= 1) {
+-		if (bits & 1)
+-			chmap->map[c++] = *maps;
++
++	if (bits) {
++		for (; bits && *maps; maps++, bits >>= 1)
++			if (bits & 1)
++				chmap->map[c++] = *maps;
++	} else {
++		/* If we're missing wChannelConfig, then guess something
++		    to make sure the channel map is not skipped entirely */
++		if (channels == 1)
++			chmap->map[c++] = SNDRV_CHMAP_MONO;
++		else
++			for (; c < channels && *maps; maps++)
++				chmap->map[c++] = *maps;
+ 	}
+ 
+ 	for (; c < channels; c++)
+-- 
+1.7.9.5
