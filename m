@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ak4642: prevent un-necessary changes
-	to SG_SL1
-Date: Thu, 31 Oct 2013 23:45:53 -0700
-Message-ID: <20131101064553.GO2493@sirena.org.uk>
-References: <87vc0cy7u8.wl%kuninori.morimoto.gx@renesas.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] hda-emu: Implement tpacpi_set_led
+Date: Fri,  1 Nov 2013 08:17:27 +0100
+Message-ID: <1383290247-6852-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3913006523487906305=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 063B7265002
- for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 07:46:21 +0100 (CET)
-In-Reply-To: <87vc0cy7u8.wl%kuninori.morimoto.gx@renesas.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id C28A82650DA
+ for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 08:17:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +19,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Phil Edworthy <phil.edworthy@renesas.com>, Simon <horms@verge.net.au>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+This allows for testing the feature as well as avoiding a warning
+when testing the relevant codecs.
 
---===============3913006523487906305==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="80d3ujMCT5hHQAFF"
-Content-Disposition: inline
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ include/wrapper.h |    3 +--
+ snd-wrapper.c     |    7 +++++++
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
+Note: the i915 power well functions probably needs implementing as well now
+that symbol_request is changed, but this does not seem to be a problem here,
+maybe because hda_i915 is not in the kernel/Makefile.am file?
 
---80d3ujMCT5hHQAFF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Oct 31, 2013 at 11:06:17PM -0700, Kuninori Morimoto wrote:
-> From: Phil Edworthy <phil.edworthy@renesas.com>
->=20
-> If you record the sound during playback,
-> the playback sound becomes silent.
-
-Applied, thanks.
-
---80d3ujMCT5hHQAFF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSc04dAAoJELSic+t+oim9J1QP/3nXRMH7ZgUuo2jiOX6JSTOf
-EsGM4966hLmGDfP7EdSJoUnRHIBqNiE9qDE6XsNJnO6jlur1jC1Nr2BhWzDF9UfB
-ijIaLZsH+ZbZtH7pa0cdkxDilRfQ4QAOp5NAPxDfgSVZ5lYamTmfmAZNGQtNmn0f
-rcAAAZE4tpvlcbIdX+QHzmQAnv9HkynE2QU+m+zTHlRG8jAN8/A7I7Rz/OpIdfpY
-T5HMgwynuYD5vIgoI3ZhIM3O1ye1JxZBq8boeJEQ7DUZN7BQg/mzkUg4hhOctx+I
-3sz8v/nIhvQMDxjIlY/WhUo/a6LRBTLmOU8HgvkgwAIh64DXg2OmSfR5QYz1MCeA
-id3bZO9VpgXW9pQ2aDEeeeXGCNN/c7r6ZJFNb6y+YVaPyEaNgeoTMHiZJlJufRbi
-S0OhKgKnCx69hhlS9MaMRKQtOqnywI+k4QKt6Rgpj8ZRJJ2ydIT2NIa0n/b7GSKd
-Qwhxsu/yLUY06618BXZDYZ7fK/gmTMV4KyigqFUsj4xOnRM5qVJXk139xv6+RdON
-QoAF6O2YOYSsJtSnc/MnVbvImmiO1N5f5nhZ70JhADqfSD7x9c8ekHZX6WGDVDeb
-TayppUOZGEWW/6GG1M2y3H8NI/ehk/U6kfMx+zY3rULSCIN9sHClv4/rFnf7Eyae
-KC/xLUnOThvPkVyfz+x9
-=TIXj
------END PGP SIGNATURE-----
-
---80d3ujMCT5hHQAFF--
-
---===============3913006523487906305==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3913006523487906305==--
+diff --git a/include/wrapper.h b/include/wrapper.h
+index f7dd65d..93a9f93 100644
+--- a/include/wrapper.h
++++ b/include/wrapper.h
+@@ -238,8 +238,7 @@ void mylock_write_unlock(int *lock, const char *file, int line);
+ /* FIXME */
+ #define IS_ENABLED(x)		1
+ 
+-/* FIXME */
+-#define symbol_request(x)	NULL
++#define symbol_request(x)	x
+ #define symbol_put(x)
+ 
+ static inline long copy_from_user(void *to, const void __user *from, unsigned long n)
+diff --git a/snd-wrapper.c b/snd-wrapper.c
+index 1ec8a49..dbc62c5 100644
+--- a/snd-wrapper.c
++++ b/snd-wrapper.c
+@@ -720,3 +720,10 @@ int snd_pcm_add_chmap_ctls(struct snd_pcm *pcm, int stream,
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_pcm_add_chmap_ctls);
++
++int tpacpi_led_set(int whichled, bool on)
++{
++	hda_log(HDA_LOG_INFO, "Setting thinkpad LED %d to %s\n", whichled, on ? "on" : "off" );
++	return 0;
++}
++
+-- 
+1.7.9.5
