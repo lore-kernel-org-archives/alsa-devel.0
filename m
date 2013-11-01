@@ -1,42 +1,71 @@
-From: "Oskar Schirmer" <oskar@scara.com>
-Subject: Re: [PATCHv2 6/8] ASoC: fsl: add SGTL5000 based audio machine driver.
-Date: 1 Nov 2013 10:17:50 +0000
-Message-ID: <20131101101750.GB16492@curry>
-References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
- <1383289495-24523-7-git-send-email-Li.Xiubo@freescale.com>
+From: mengdong.lin@intel.com
+Subject: [PATCH v2] ALSA: hda - not choose assigned converters
+	for unused pins of Valleyview
+Date: Thu, 31 Oct 2013 23:22:47 -0400
+Message-ID: <1383276167-20762-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <1383289495-24523-7-git-send-email-Li.Xiubo@freescale.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, tiwai@suse.de, b18965@freescale.com, timur@tabi.org, perex@perex.cz, r65073@freescale.com, LW@KARO-electronics.de, linux@arm.linux.org.uk, b42378@freescale.com, grant.likely@linaro.org, devicetree@vger.kernel.org, ian.campbell@citrix.com, pawel.moll@arm.com, swarren@wwwdotorg.org, rob.herring@calxeda.com, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, fabio.estevam@freescale.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, rob@landley.net, r64188@freescale.com, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC52A2654CF
+ for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 11:20:14 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Not that it would improve functionality, but:
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-On Fri, Nov 01, 2013 at 15:04:53 +0800, Xiubo Li wrote:
-[...]
-> diff --git a/sound/soc/fsl/fsl-sgtl5000-vf610.c b/sound/soc/fsl/fsl-sgtl5000-vf610.c
-> new file mode 100644
-> index 0000000..f535b42
-> --- /dev/null
-> +++ b/sound/soc/fsl/fsl-sgtl5000-vf610.c
-> @@ -0,0 +1,208 @@
-> +/*
-> + * Freeacale ALSA SoC Audio using SGT1500 as codec.
-          ^                             ^   ^
-     "Freescale"                    "SGTL5000"
+For Valleyview display codec, if an unused pin chooses an assgined converter
+selected by a used pin, playback on the unused pin can also give sound to the
+output device of the used pin. It's because data flows from the same convertor
+to the display port of the used pin. This issue is same as Haswell.
 
-regards,
-  Oskar
+So this patch avoids using assinged convertors for unused pins.
+The related function haswell_config_cvts() is renamed for code reuse.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index e332db8..5487a56 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -45,6 +45,7 @@ module_param(static_hdmi_pcm, bool, 0644);
+ MODULE_PARM_DESC(static_hdmi_pcm, "Don't restrict PCM parameters per ELD info");
+ 
+ #define is_haswell(codec)  ((codec)->vendor_id == 0x80862807)
++#define is_valleyview(codec) ((codec)->vendor_id == 0x80862882)
+ 
+ struct hdmi_spec_per_cvt {
+ 	hda_nid_t cvt_nid;
+@@ -1148,7 +1149,7 @@ static int hdmi_choose_cvt(struct hda_codec *codec,
+ 	return 0;
+ }
+ 
+-static void haswell_config_cvts(struct hda_codec *codec,
++static void not_share_assigned_cvt(struct hda_codec *codec,
+ 			hda_nid_t pin_nid, int mux_idx)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+@@ -1226,8 +1227,8 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+ 			    mux_idx);
+ 
+ 	/* configure unused pins to choose other converters */
+-	if (is_haswell(codec))
+-		haswell_config_cvts(codec, per_pin->pin_nid, mux_idx);
++	if (is_haswell(codec) || is_valleyview(codec))
++		not_share_assigned_cvt(codec, per_pin->pin_nid, mux_idx);
+ 
+ 	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
+ 
+-- 
+1.8.1.2
