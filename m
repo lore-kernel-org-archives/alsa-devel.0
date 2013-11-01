@@ -1,46 +1,69 @@
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH 1/4] ALSA: hda - hdmi: Add ATI/AMD multi-channel audio support
-Date: Fri, 1 Nov 2013 12:29:47 +0100
-Message-ID: <CACna6rymYy6hfpH6reknpa0QPHy31EwngOx4-d7JW4roANNQbQ@mail.gmail.com>
-References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>
-	<1380659456-3746-2-git-send-email-anssi.hannula@iki.fi>
-	<CACna6ryr37WRvKbMFmLEGt_A2zUD46rZOtJMVom+B_xK9WNLuw@mail.gmail.com>
-	<07e8973b4665cc23c3f4a77e9c7e2b7c@mail.onse.fi>
-	<CACna6ryFtmZHAhmCPEsoxZc5h4mLuM4ajnKGsp=q0jag2f_SYw@mail.gmail.com>
-	<5272BCE1.7010700@iki.fi>
-	<CACna6rzejyTOF2Fvvw1m2SAob7uU5-hJ+yRVk6HS5pDTz7+JWg@mail.gmail.com>
-	<5272E920.6030606@iki.fi>
-	<CACna6rxuSUA9_1HXnY8yPhQ8BDeEnMvoX6i0WvTtst7UTvcgHA@mail.gmail.com>
-	<5272EEAC.6020405@iki.fi>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH 0/8] Add and implement gen_pool_dma_alloc()
+Date: Fri, 1 Nov 2013 19:35:58 +0800
+Message-ID: <cover.1383303752.git.b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5272EEAC.6020405@iki.fi>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?Q?Peter_Fr=C3=BChberger?= <fritsch@xbmc.org>, Olivier Langlois <olivier@trillion01.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: akpm@linux-foundation.org, joe@perches.com, nsekhar@ti.com, khilman@deeprootsystems.com, linux@arm.linux.org.uk, dan.j.williams@intel.com, vinod.koul@intel.com, m.chehab@samsung.com, hjk@hansjkoch.de, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, rmk+kernel@arm.linux.org.uk, eric.y.miao@gmail.com, haojian.zhuang@gmail.com
+Cc: linux-kernel@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2013/11/1 Anssi Hannula <anssi.hannula@iki.fi>:
->> Both are working for me. I've tested it using 2 movies:
->> 1) English TrueHD.5.1 @ 1417 kbps
->> 2) Audio
->> Codec................: DTSHD-MA
->> Bitrate..............: 3718 kbps
->> kHz/bit..............: 24-bit
->> Channels.............: 5.1
->> Language.............: English
->
-> Which makes it even stranger, since HBR packets look exactly like ASP
-> packets with a few flipped bits.
->
-> Hm, the earlier non-working speaker-test commands were with -c6. What
-> about -c8?
+Previously, we don't have a specific gen_pool_alloc() for DMA usage;
+Instead, we need to use gen_pool_virt_to_phys() to convert the addr
+returned from gen_pool_alloc(). So each implementation of this has
+duplicated code. Thus add new helper function -- gen_pool_dma_alloc().
 
-Side right behaves just like rear right
-Side left behaves just like a rear left
-No other differences.
+After gen_pool_dma_alloc() is introduced, we can replace the original
+combination of gen_pool_alloc()+gen_pool_virt_to_phys() with this new
+helper function. Thus this patch implement the helper function to all
+the current drivers which use gen_pool_virt_to_phys().
 
---=20
-Rafa=C5=82
+!!-------------------important------------------!!
+
+The later 7 patches need all related driver owner to test. We can
+here define a simple rule:
+1, If one driver owner or maintainer doesn't like the mofication
+   to his/her driver, just let me know. I would drop that patch.
+2, If there's a bug and issue found after patch-testing, please
+   reply the mail so that I can fix and refine the patch.
+3, If one driver owner or maintainer is too busy and doesn't have
+   bandwidth to test the patch, I would drop that patch from this
+   series. We can reimplement it till there's someone test it.
+
+!!-------------------current progress-----------!!
+
+  lib/genalloc: [Okay]
+  ARM: davinci: [Untested]
+  dma: mmp_tdma: [Untested]
+  [media] coda: [Untested]
+  uio: uio_pruss: [Untested]
+  ALSA: memalloc: [Tested] by Nicolin Chen with i.MX6Q SabreSD
+  ASoC: davinci: [Untested]
+  ASoC: pxa: use [Untested]
+
+
+Nicolin Chen (8):
+  lib/genalloc: add a helper function for DMA buffer allocation
+  ARM: davinci: use gen_pool_dma_alloc() to sram.c
+  dma: mmp_tdma: use gen_pool_dma_alloc() to allocate descriptor
+  [media] coda: use gen_pool_dma_alloc() to allocate iram buffer
+  uio: uio_pruss: use gen_pool_dma_alloc() to allocate sram memory
+  ALSA: memalloc: use gen_pool_dma_alloc() to allocate iram buffer
+  ASoC: davinci: use gen_pool_dma_alloc() in davinci-pcm.c
+  ASoC: pxa: use gen_pool_dma_alloc() to allocate dma buffer
+
+ arch/arm/mach-davinci/sram.c    |  9 +--------
+ drivers/dma/mmp_tdma.c          |  7 +------
+ drivers/media/platform/coda.c   |  5 ++---
+ drivers/uio/uio_pruss.c         |  6 ++----
+ include/linux/genalloc.h        |  2 ++
+ lib/genalloc.c                  | 28 ++++++++++++++++++++++++++++
+ sound/core/memalloc.c           |  6 +-----
+ sound/soc/davinci/davinci-pcm.c |  3 +--
+ sound/soc/pxa/mmp-pcm.c         |  3 +--
+ 9 files changed, 39 insertions(+), 30 deletions(-)
+
+-- 
+1.8.4
