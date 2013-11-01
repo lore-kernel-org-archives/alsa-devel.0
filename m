@@ -1,52 +1,86 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: Add pinctrl PM to components of active DAIs
-Date: Fri, 1 Nov 2013 11:11:59 -0700
-Message-ID: <20131101181159.GC2493@sirena.org.uk>
-References: <1383308175-5053-1-git-send-email-b42378@freescale.com>
+Subject: Re: [PATCHv2 1/8] ALSA: Add SAI SoC Digital Audio Interface driver.
+Date: Fri, 1 Nov 2013 11:25:14 -0700
+Message-ID: <20131101182514.GE2493@sirena.org.uk>
+References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
+ <1383289495-24523-2-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oMfk58fZ06Sy4zVm"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="hjFmXiTvfEJBEd4m"
+Return-path: <linux-doc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1383308175-5053-1-git-send-email-b42378@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: lgirdwood@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1383289495-24523-2-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: r65073@freescale.com, timur@tabi.org, lgirdwood@gmail.com, r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com, shawn.guo@linaro.org, b42378@freescale.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 
---oMfk58fZ06Sy4zVm
+--hjFmXiTvfEJBEd4m
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Nov 01, 2013 at 08:16:15PM +0800, Nicolin Chen wrote:
-> It's quite popular that more drivers are using pinctrl PM, for example:
-> (Documentation/devicetree/bindings/arm/primecell.txt). Just like what
-> runtime PM does, it would de-active and en-active pin group depending
-> on whether it's being used or not.
+On Fri, Nov 01, 2013 at 03:04:48PM +0800, Xiubo Li wrote:
 
-Applied, thanks.
+> +static int fsl_sai_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+> +		int div_id, int div)
+> +{
+> +	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+> +	u32 tcr2, rcr2;
+> +
+> +	if (div_id == FSL_SAI_TX_DIV) {
+> +		tcr2 = readl(sai->base + FSL_SAI_TCR2);
+> +		tcr2 &= ~FSL_SAI_CR2_DIV_MASK;
+> +		tcr2 |= FSL_SAI_CR2_DIV(div);
+> +		writel(tcr2, sai->base + FSL_SAI_TCR2);
 
---oMfk58fZ06Sy4zVm
+What is this divider and why does the user have to set it manually?
+
+> +	} else
+> +		return -EINVAL;
+> +
+
+Coding style?
+
+> +static int fsl_sai_dai_probe(struct snd_soc_dai *dai)
+> +{
+> +	int ret;
+> +	struct fsl_sai *sai = dev_get_drvdata(dai->dev);
+> +
+> +	ret = clk_prepare_enable(sai->clk);
+> +	if (ret)
+> +		return ret;
+
+It'd be nicer to only enable the clock while the device is in active
+use.
+
+> +	ret = snd_dmaengine_pcm_register(&pdev->dev, NULL,
+> +			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
+> +	if (ret)
+> +		return ret;
+
+We should have a devm_ version of this.
+
+--hjFmXiTvfEJBEd4m
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSc+7sAAoJELSic+t+oim9FcIQAIE73n/cYVLHkjzGd856TUFi
-wDAVEjA67YHt6Mm8FTwZxHudjV4wqBLKSFxaTqMmdTTXjeMxrU0Td4GYAGZMhT63
-Xkk+w1wrZbQsv4FlLGnIIjZJ3LUAzimPugQEqnA8sTEjqR/6UFQhKXTntGmwscZB
-qifvrGztT78d4mGR915sLHC3YMqALAXH9RXBW66PE5KYAcPorerUNSPXQFenWgmd
-f1JiXefPIfTFFFooMvvhvh9CbNRZu/R91jKh4i51SafQHHVN8k2cNuKjYTmeAs48
-H4L7QDO+iV4K0xXagX+lRVwVw9p/0KfjHDrN1EleHKGOcFNhWmmjzJj4fJdKfxWu
-l6coJqHSgxl0vAu3IwzRKQwHL0dSHZU9aYTIZef9WZRG6yiMF2bMAtGZyNA8mNnV
-saocQNMDsepCM5Fh1Lsp+dvJpuj89C+INH3wfGtTUXNKAXK2JX8vd3sqOtlO6MTm
-6s+gkAu8hByYpGEQtOhh5dLeEy/tbr7tKCFmUEf1JQWlnm9wPz5Zi5KYbcIbVonk
-VKrTkGviRxng7cHwsv86ZxqgOOUWlTRS7P1nfegesPIKXw/JMe/uvv8uylo63T0a
-1s0wQxuYhbiZdKlOpjBzdmHiWPzPbB5jZwyPkI/bPFcjfrZl/BGRVsTzngHC/MY3
-c+v2j8dM2bXJDWbMMsGy
-=l/tR
+iQIcBAEBAgAGBQJSc/IHAAoJELSic+t+oim9rBkP/A0JFjGit6Y3Zo+3J28ul2QB
+PvJCI/B5f6vmMxp5NWemjLgvSf+X7Vazu/v80gBZuVFM3nei+N9ReysV0eTahsj1
+bCRpEPRkeNEl2w3S0135kF3yDUJfehrZaGRQwt8yNUh/VZA28SSA4qlMt0q5XdDd
+Dxg9aHXBqnQ1C2jVRvkqV9aN30qxJC0FsW6amVu8hd7YYBDZV4shswE27E2UevLa
+9soL8GPTjlLdntQMkaRjkuUHKhxCYfAlIB4JSL11YOKl8ZyXtNt3wcSaZZy5Rtfw
++lq5ZRLQkepfxOu9ImR98Bds+HbUAxoXQlDdBpBuSGs4icbHRISYTU4DEONN55px
+C0Y7r815ruXcjq0Hn8zLVGytgna8mb0KiwaTCvYQ7X2Mw8dp6zgMgYqNVpNPt9LF
+WA03+IGRe6+WWHeCYSYRY4fh9DFh1wQ+are8qY0tJTCoNaoVW1am3D2+0gJKECZg
+Gytfdn8UIV8RYLEuD+F1pMGu8ik9iFoCVmGFBeYDClJTGmSDAolqJr70YBs9t6S5
+CWAZvH+yZLodn6Doid6LydZLZE4A5hxZUAOW/c8m3Z75Z+nD8sbNeVPLgnQ58wai
+WSZdyFjrNh9XUbFAySSmlJ3aYA7T8fIKIHCtcPZAX5hYGpagpWG9sgVHkAKO16+v
+eGM2IulA5cJGsLmk7YAh
+=Sj0u
 -----END PGP SIGNATURE-----
 
---oMfk58fZ06Sy4zVm--
+--hjFmXiTvfEJBEd4m--
