@@ -1,63 +1,71 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv2 5/8] ASoC: SGTL5000: Enhance the SGTL5000 codec driver
- about regulator.
-Date: Fri, 1 Nov 2013 11:50:45 -0700
-Message-ID: <20131101185045.GG2493@sirena.org.uk>
-References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
- <1383289495-24523-6-git-send-email-Li.Xiubo@freescale.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [RFC/RFT] HDMI/DP CEA-861-E+ channel allocations 0x20+
+Date: Fri, 01 Nov 2013 23:43:12 +0200
+Message-ID: <52742070.1080904@iki.fi>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="W0QGcccuECrPGiFB"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1383289495-24523-6-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: r65073@freescale.com, timur@tabi.org, lgirdwood@gmail.com, r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com, shawn.guo@linaro.org, b42378@freescale.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
+ [83.102.40.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7CB6C2658BC
+ for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 22:43:17 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Fengguang Wu <fengguang.wu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi all!
 
---W0QGcccuECrPGiFB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Currently we allow the use of CA values up to 0x31 as defined in
+CEA-861-E/F. However, only CA values up to 0x19 are defined in
+CEA-861-B/C/D.
 
-On Fri, Nov 01, 2013 at 03:04:52PM +0800, Xiubo Li wrote:
-> On VF610 series there are no regulators used, and now whether the
-> CONFIG_REGULATOR mirco is enabled or not, for the VF610 audio
-> patch series, the board cannot be probe successfully.
-> And this patch will solve this issue.
+HDMI specification 1.4b specifies that the CA field is to be filled
+according to CEA-861-D, and DisplayPort 1.1a according to CEA-861-C.
 
-I don't understand what this is for at all, you're just saying there is
-a problem you're trying to solve but you don't explain anything about
-what the problem is or how your changes address it.
+The ELD (EDID-Like Data) format as specified by Intel HDA specification
+1.0a has a speaker allocation bitmask that only accommodates speakers
+present in CEA-861-D; all of the 0x20+ CAs contain speakers that do not
+have a corresponding bit in ELD.
 
-> +#ifndef CONFIG_SND_SOC_FSL_SGTL5000_VF610
->  static int ldo_regulator_register(struct snd_soc_codec *codec,
+Using a CA value unsupported by sink will cause either a completely
+silent output or stereo output, so I think we should try to prevent
+selecting such channel maps, if feasible.
 
-This is definitely broken, it won't work with multi-platform kernels,
-and I don't understand what this is supposed to do - what is the reason
-for making this change?
+However, before doing anything, I wonder if they are actually supported
+by some newer receivers (mine is 4 years old). It'd be good if someone
+with a newish receiver could try the below :)
+To test this, one can run (replacing XX and YY with appropriate values
+from "aplay -L") on *sound git master*:
+speaker-test -c6 -Dhdmi:CARD=XX,DEV=YY -m FL,FR,RL,RR,FLH,FRH
+If you get some output for the RL/RR speakers, that should mean that
+0x20+ CAs are supported. If there is no output except on FL/FR and there
+is proper output without the "-m FL,FR,RL,RR,FLH,FRH", this means that
+0x20+ CAs are not supported.
 
---W0QGcccuECrPGiFB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I think there are about these options for us to take:
+a) drop 0x20+ CAs from channel_allocations altogether
+b) put the 0x20+ CAs under a module parameter
+c) only allow 0x20+ CAs if any CEA-861-E+ only speakers are specified
+   in EDID. However, as ELD doesn't have bits for these, we'd have to
+   employ some non-standard bits in ELD or communicate directly with
+   video driver.
+d) do nothing, allow the 0x20+ CAs.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+IMHO we should do something, since players using ALSA channel mapping
+could just automatically select a manual channel map that uses an
+unsupported 0x20+ CA if the source audio stream contains such channels...
 
-iQIcBAEBAgAGBQJSc/gBAAoJELSic+t+oim9Nt4P/RNfAEEOA7DMMZvrmhAOlI0I
-9G5EyWOsbCUGOMOjwDMp/DY3i06MjBFY+HskbGTLpCWwdLGDSKP13mTR2duksur6
-PN4GJTPrcba7U6BRKnZrXuWQYRg/VRaJiVY0uSYdhhm1rH0IzEM+i+tWC77AzLWG
-9ZNxTwwVfXo2ZNStmewW6VqxtvV9K44UvpSXOw8pM+2p6cdEfMtUtdaSs6khFI3/
-OBil5mdkAAfWL3MLiiXvTyaJNGVoxlaqSlWBcgbWvHtrmXvgqqIuCoV0tnqpg/Cm
-5DuOsSwYYjpaM5vwm9YDG7ubdEMDoJybJds2qjh5RZV4FEaw2mx/lve2ZdoN3xyX
-x0jBTPsBbLIkOp/3qbsAkHDwcXneVwnnVmbD9dKVCOkI3Fg9kjksX+gbR9Inohrl
-7JTZWASuCVPMQvFSDH6yQvsZCsZrVT6vTfCJL/iBx9UwpkdYCWXyKj/E+fwH3r44
-UHL1JK2a4qVlJiIJ98l3AUJ0FkuJuEt+qnKQe2OQKajlgV8mr+YTKBFNNOiJTBN8
-YDFCGymYN8FTKjTCvGobe++mu1UESawUrVghlxgPtCbzqWQEg+oTVddQszYoDmpd
-o2tdV1rtVwWOov1AOcYUTKivdH1DbFD6uJjRnif6pL8dlhDX3wlVs3G14UAeQjBE
-N6ZZ9FKNT50SjIPKU/0R
-=rxDU
------END PGP SIGNATURE-----
+WDYT?
 
---W0QGcccuECrPGiFB--
+-- 
+Anssi Hannula
