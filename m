@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/6] ASoC: wm_adsp: Print error when regmap
- reads/writes fail
-Date: Fri, 1 Nov 2013 10:48:44 -0700
-Message-ID: <20131101174844.GQ2493@sirena.org.uk>
+Subject: Re: [PATCH 2/6] ASoC: wm_adsp: Release firmware on
+ memory allocation failure
+Date: Fri, 1 Nov 2013 10:48:58 -0700
+Message-ID: <20131101174858.GR2493@sirena.org.uk>
 References: <1383321417-1133-1-git-send-email-dp@opensource.wolfsonmicro.com>
- <1383321417-1133-2-git-send-email-dp@opensource.wolfsonmicro.com>
+ <1383321417-1133-3-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4604098527339633409=="
+Content-Type: multipart/mixed; boundary="===============1029048426648057194=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 737E2265049
- for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 18:49:06 +0100 (CET)
-In-Reply-To: <1383321417-1133-2-git-send-email-dp@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B3A10265852
+ for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 18:49:15 +0100 (CET)
+In-Reply-To: <1383321417-1133-3-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,50 +26,50 @@ Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4604098527339633409==
+--===============1029048426648057194==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5ltdm4mkXNgScZ66"
+	protocol="application/pgp-signature"; boundary="2fV3mxwFPWhsKHyX"
 Content-Disposition: inline
 
 
---5ltdm4mkXNgScZ66
+--2fV3mxwFPWhsKHyX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Nov 01, 2013 at 03:56:52PM +0000, Dimitris Papastamos wrote:
+On Fri, Nov 01, 2013 at 03:56:53PM +0000, Dimitris Papastamos wrote:
 > Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
 Applied, thanks.
 
---5ltdm4mkXNgScZ66
+--2fV3mxwFPWhsKHyX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSc+l5AAoJELSic+t+oim94I0P/3n1wllrE24zFwdu1Btp2e7v
-VFqJOhjaH4mnhSZQmuUagjwYSbkcnI3DCG84tiHZGjfEJYQW0QVcQG0VA+ZFpm76
-QQ8U23tcf+5a0coOnUyR/3XOZIWy3NYIX1PEU/oxtFwra/lbYn0USUdqGl3NJoKd
-9EVM6gJFuGv/gKocxXgBDHDId7t13HxyHZrM5RWmtxLnBaU36AncADhLftsc2vH4
-+0Y+/UWrMyMSCyrmCcFiElff90p0fNw6OX4kVCYZJuFD5sMtQzRH4LrbqcuoV/UN
-VYwpsdh/85hT8kEp7q1dcR5EpsyDy+49gPQzRgS9rrI3dmg/LcBhPUomN0y96Oc0
-LhsqOK0I27WiT11YnhfNWZT9WMkSmlGtG1biaRHqrAU0Y5LAENaDepe4pNEBLoro
-1p1C/jb4UsiOwoVCQ8poUZ+67OrYSUxJhXz/ysw6PZty97v3crqpouSsXVyx1SCb
-s4KwPmtZaeWR1ynk8Xc3mFTeIETsCqcsv7xSLpima3ZZ0Q+olMjkIRyisPGNXA/R
-2sKR1QlBcSDoVVVKykXBeyuNECGbBJOVgX8w2WAr2OuzgzuXomPPyvDleEhuVoMu
-ACqp1g7R4eZ1GzMjIT5PBUckRZTUXddB0NQ8fDeEid58GEkEDeJtuV9Uubc4RmVe
-ZwGm5wJeXVRdgt6RdI/s
-=jJ0m
+iQIcBAEBAgAGBQJSc+mHAAoJELSic+t+oim9Gy0QAIblIOFLdXJ7olyRxAqRVRUs
+uK1DxWdCrpb6o0//hiRLL85JGbvTY88AEErOWUzWNwNlXQ3Na+mDoQo/wh5zCH66
+EcdOTHFpB4LltSO3qJ3T76wvxgSv26540nf/9/YBXilWoFDsp7oPF99B+yK5jr/0
+zlgXuLsNqpAkenwbTS9j6LfG6jJhBSnV2knVfydi4iSsSx6vKtMPJdIJiKkjJj7t
+bFN8p/NBaykVsCvJB5GQwh6HzHfwMTa9M60rCe9SAkIJobLbxiU6NbN52Q5KOO6s
+6J+Ob1QgPdhS7TXpaHZWr0a1MfTB7OdE44gtI5oGCohw4H3HSSZvGF3AjJGZwZiu
+AoyxyGoarZ1q9nFw1Eh0ZQyaH7jsT0gJ+N1lZDpT7YEBsceAA7aEvwKN+MH4tEUZ
+dV4tuVpE1AfBZYMjk+fVbz2rmBBa4lMbNkbva6+iAAQfurDxtH4Alp+a6koklzNP
+BaBl+tUoVPZa34H1OuYqikDEeGfJrBwoHuLd6/bqg00lTPEmB1diEl/IXDexprtT
+jIaGH4p7gNCAMV3hi5AhzxhkfrWXTlRj/mn8NYZvoBIi9Nmamz0HrAtP7CK1pKqu
+senGJP5wQ2n9eGUbC3EJVkyjJil0jJPUODOWvqqlX7wrFQnxWjVrY7yW9T/mDTyz
+GsLJ+abXUd78MqFLbHoS
+=a3IF
 -----END PGP SIGNATURE-----
 
---5ltdm4mkXNgScZ66--
+--2fV3mxwFPWhsKHyX--
 
---===============4604098527339633409==
+--===============1029048426648057194==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4604098527339633409==--
+--===============1029048426648057194==--
