@@ -1,7 +1,7 @@
 From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH][RESEND 3/8] dma: mmp_tdma: use gen_pool_dma_alloc() to allocate descriptor
-Date: Fri, 1 Nov 2013 19:48:16 +0800
-Message-ID: <b7d5dce9fcc118a60261824196c820de6fb434a2.1383306365.git.b42378@freescale.com>
+Subject: [PATCH][RESEND 5/8] uio: uio_pruss: use gen_pool_dma_alloc() to allocate sram memory
+Date: Fri, 1 Nov 2013 19:48:18 +0800
+Message-ID: <f26a7fd466d22aaaeae9cf32d3c4c43c333e0b35.1383306365.git.b42378@freescale.com>
 References: <cover.1383306365.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -16,26 +16,29 @@ Since gen_pool_dma_alloc() is introduced, we implement it to simplify code.
 
 Signed-off-by: Nicolin Chen <b42378@freescale.com>
 ---
- drivers/dma/mmp_tdma.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/uio/uio_pruss.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/dma/mmp_tdma.c b/drivers/dma/mmp_tdma.c
-index 2b4026d..3ddacc1 100644
---- a/drivers/dma/mmp_tdma.c
-+++ b/drivers/dma/mmp_tdma.c
-@@ -378,12 +378,7 @@ struct mmp_tdma_desc *mmp_tdma_alloc_descriptor(struct mmp_tdma_chan *tdmac)
- 	if (!gpool)
- 		return NULL;
+diff --git a/drivers/uio/uio_pruss.c b/drivers/uio/uio_pruss.c
+index f519da9..96c4a19 100644
+--- a/drivers/uio/uio_pruss.c
++++ b/drivers/uio/uio_pruss.c
+@@ -158,14 +158,12 @@ static int pruss_probe(struct platform_device *dev)
+ 	if (pdata->sram_pool) {
+ 		gdev->sram_pool = pdata->sram_pool;
+ 		gdev->sram_vaddr =
+-			gen_pool_alloc(gdev->sram_pool, sram_pool_sz);
++			(unsigned long)gen_pool_dma_alloc(gdev->sram_pool,
++					sram_pool_sz, &gdev->sram_paddr);
+ 		if (!gdev->sram_vaddr) {
+ 			dev_err(&dev->dev, "Could not allocate SRAM pool\n");
+ 			goto out_free;
+ 		}
+-		gdev->sram_paddr =
+-			gen_pool_virt_to_phys(gdev->sram_pool,
+-					      gdev->sram_vaddr);
+ 	}
  
--	tdmac->desc_arr = (void *)gen_pool_alloc(gpool, size);
--	if (!tdmac->desc_arr)
--		return NULL;
--
--	tdmac->desc_arr_phys = gen_pool_virt_to_phys(gpool,
--			(unsigned long)tdmac->desc_arr);
-+	tdmac->desc_arr = gen_pool_dma_alloc(gpool, size, &tdmac->desc_arr_phys);
- 
- 	return tdmac->desc_arr;
- }
+ 	gdev->ddr_vaddr = dma_alloc_coherent(&dev->dev, extram_pool_sz,
 -- 
 1.8.4
