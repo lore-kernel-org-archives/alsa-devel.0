@@ -1,94 +1,148 @@
-From: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
-Subject: Re: [PATCHv2 0/3] I2C and SPI dev_name change for ACPI enumerated
- slaves
-Date: Fri, 1 Nov 2013 14:20:48 +0100
-Message-ID: <20131101132048.GD6734@katana>
-References: <1382703540-3769-1-git-send-email-jarkko.nikula@linux.intel.com>
- <1383309356-25430-1-git-send-email-jarkko.nikula@linux.intel.com>
- <1601125.4tFOPicoTX@vostro.rjw.lan>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH 1/4] ALSA: hda - hdmi: Add ATI/AMD multi-channel audio support
+Date: Fri, 1 Nov 2013 13:22:12 +0000
+Message-ID: <CACna6rw-xwQk0Ff38cY+HSEM-s7uAWgsPWk10j029jpyE6i3gQ@mail.gmail.com>
+References: <1380659456-3746-1-git-send-email-anssi.hannula@iki.fi>
+	<1380659456-3746-2-git-send-email-anssi.hannula@iki.fi>
+	<CACna6ryr37WRvKbMFmLEGt_A2zUD46rZOtJMVom+B_xK9WNLuw@mail.gmail.com>
+	<07e8973b4665cc23c3f4a77e9c7e2b7c@mail.onse.fi>
+	<CACna6ryFtmZHAhmCPEsoxZc5h4mLuM4ajnKGsp=q0jag2f_SYw@mail.gmail.com>
+	<5272BCE1.7010700@iki.fi>
+	<CACna6rzejyTOF2Fvvw1m2SAob7uU5-hJ+yRVk6HS5pDTz7+JWg@mail.gmail.com>
+	<5272E920.6030606@iki.fi>
+	<CACna6rxuSUA9_1HXnY8yPhQ8BDeEnMvoX6i0WvTtst7UTvcgHA@mail.gmail.com>
+	<5272EEAC.6020405@iki.fi>
+	<CACna6rymYy6hfpH6reknpa0QPHy31EwngOx4-d7JW4roANNQbQ@mail.gmail.com>
+	<52739B79.3030006@iki.fi>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rz+pwK2yUstbofK6"
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1601125.4tFOPicoTX-sKB8Sp2ER+y1GS7QM15AGw@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>
-Cc: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <52739B79.3030006@iki.fi>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?Q?Peter_Fr=C3=BChberger?= <fritsch@xbmc.org>, Olivier Langlois <olivier@trillion01.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+2013/11/1 Anssi Hannula <anssi.hannula@iki.fi>:
+> Strange. One other thing to check (in addition to trying fglrx) would=
+ be
+> to try 192kHz 8ch audio with a different (non-ATI/AMD) card altogethe=
+r,
+> to see if this is a receiver issue.
 
---rz+pwK2yUstbofK6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What about this:
+01:00.0 VGA compatible controller [0300]: NVIDIA Corporation GF108
+[GeForce GT 540M] [10de:0df4] (rev a1)
+01:00.1 Audio device [0403]: NVIDIA Corporation GF108 High Definition
+Audio Controller [10de:0bea] (rev a1)
+? Chip & family:
+[    2.738343] nouveau  [  DEVICE][0000:01:00.0] BOOT0  : 0x0c1a00a1
+[    2.738347] nouveau  [  DEVICE][0000:01:00.0] Chipset: GF108 (NVC1)
+[    2.738348] nouveau  [  DEVICE][0000:01:00.0] Family : NVC0
 
-On Fri, Nov 01, 2013 at 02:18:06PM +0100, Rafael J. Wysocki wrote:
-> On Friday, November 01, 2013 02:35:53 PM Jarkko Nikula wrote:
-> > Hi
-> >=20
-> > Second version of the set that changes I2C and SPI slave device names
-> > to be generated from stable ACPI device names on ACPI 5 based systems
-> > instead of using bus numbers which could change.
-> >=20
-> > Slave device name change goes as
-> >=20
-> > 	"x-00yz" -> "i2c-INTABCD:ij"
-> > 	"spix.y" -> "spi-INTABCD:ij"
-> >=20
-> > This version adds patch to include/acpi/acpi_bus.h that allow us to
-> > remove #if IS_ENABLED(CONFIG_ACPI) checks that were added in the
-> > first version.
-> >=20
-> > Set goes on top linux-pm/linux-next commit e56b4d2.
-> >=20
-> > First version here:
-> > http://mailman.alsa-project.org/pipermail/alsa-devel/2013-October/06773=
-7.html
-> >=20
-> > Jarkko Nikula (3):
-> >   ACPI: Expose struct acpi_device and acpi_bus_get_device() to non-ACPI
-> >     builds
-> >   i2c: Use stable dev_name for ACPI enumerated I2C slaves
-> >   spi: Use stable dev_name for ACPI enumerated SPI slaves
-> >=20
-> >  drivers/i2c/i2c-core.c  | 24 ++++++++++++++++++++----
-> >  drivers/spi/spi.c       | 20 +++++++++++++++++---
-> >  include/acpi/acpi_bus.h |  9 +++++++--
-> >  3 files changed, 44 insertions(+), 9 deletions(-)
->=20
-> Looks good to me.  If there are no objections, I can merge these through =
-my tree.
+> cat /proc/asound/card1/eld#1.0
+monitor_present         1
+eld_valid               1
+monitor_name            TX-SR605
+connection_type         HDMI
+eld_version             [0x2] CEA-861D or below
+edid_version            [0x3] CEA-861-B, C or D
+manufacture_id          0xcb3d
+product_id              0x761
+port_id                 0x0
+support_hdcp            0
+support_ai              1
+audio_sync_delay        0
+speakers                [0x4f] FL/FR LFE FC RL/RR RLC/RRC
+sad_count               7
+sad0_coding_type        [0x1] LPCM
+sad0_channels           2
+sad0_rates              [0x1ee0] 32000 44100 48000 88200 96000 176400 1=
+92000
+sad0_bits               [0xe0000] 16 20 24
+sad1_coding_type        [0x1] LPCM
+sad1_channels           8
+sad1_rates              [0x1ee0] 32000 44100 48000 88200 96000 176400 1=
+92000
+sad1_bits               [0xe0000] 16 20 24
+sad2_coding_type        [0x2] AC-3
+sad2_channels           8
+sad2_rates              [0xe0] 32000 44100 48000
+sad2_max_bitrate        640000
+sad3_coding_type        [0x7] DTS
+sad3_channels           8
+sad3_rates              [0xc0] 44100 48000
+sad3_max_bitrate        1536000
+sad4_coding_type        [0xa] E-AC-3/DD+ (Dolby Digital Plus)
+sad4_channels           8
+sad4_rates              [0xc0] 44100 48000
+sad5_coding_type        [0xb] DTS-HD
+sad5_channels           8
+sad5_rates              [0x1ec0] 44100 48000 88200 96000 176400 192000
+sad6_coding_type        [0xc] MLP (Dolby TrueHD)
+sad6_channels           8
+sad6_rates              [0x6c0] 44100 48000 88200 96000
 
-Which is basically fine with me. Do you want to have it in 3.13 already?
-I mean renaming the devices could lead to regressions, so I'd rather be
-conservative and aim for 3.14.
+> aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: PCH [HDA Intel PCH], device 0: ALC275 Analog [ALC275 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 1: ALC275 Digital [ALC275 Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: NVidia [HDA NVidia], device 3: HDMI 0 [HDMI 0]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: NVidia [HDA NVidia], device 7: HDMI 0 [HDMI 0]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+card 1: NVidia [HDA NVidia], device 8: HDMI 0 [HDMI 0]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: NVidia [HDA NVidia], device 9: HDMI 0 [HDMI 0]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
+Unfortunately speaker-test fails :|
 
---rz+pwK2yUstbofK6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+linux@linux:~> speaker-test -D hdmi:CARD=3DNVidia,DEV=3D0 -c6 -r 48000 =
+-F S16_LE
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
+speaker-test 1.0.26
 
-iQIcBAEBAgAGBQJSc6qvAAoJEBQN5MwUoCm2HFQP/0uLnvgKp9uYEBWNhNOh9FvQ
-DBvMlyIgbspPgZIax+P3DR3+qPwR8F3OjeCEYnMH1Gjd+6bc/RG91tmzgU4bO323
-6Ylkn9NoSfHRjlzw/+LxQ7doe9MB1kLmypPBLyBsRpgcmPlDdtob13SbGYe7Iv8/
-XPCdpyTSkQjWgQyQwmgAvJjigMBFdMNcoWnGZzD/zR8D93hRrlFJBC2OGuTRfWT3
-c8BdOy0ZDnR/yKHT9qsteZU+x0wQsPqQcUJ86NRc1qJa94sQiPthEgRY87LFITpT
-WbYYuyhpMlo8z3vQ9Dtp0SI7E1DKAZgHQ0pOAl79WNY0LAN0lSsbb/yzkNTuxJEn
-bkpOmnc6d0NIptlu53+pqw24PZG5PQmxhrCzuCotdvPqNlwyWKL/mVkm4plMlxyx
-XKSyY8N8L4Snt1mzmiJd3o7NSTHw2EZ9pNYhEEF3xQP2j3Tn2ISrXfyKXi/F1IXF
-+mqM+8Nwzqv68QboWARiJl8BU+c+0HI/Dr2e10p+b6R1nejzjaz659LzRFaEX9eb
-DIIW0TL6PyFRT+ysXWWYr/4EYQF+TI3esXdVzPxN5TbZALhbOPw3FASaXsn9uAMD
-7VSYNk51waOMtqIXVahBYHbWSNNPS/tFVERmo1G+d2VRlTp/27PYcXNc18umXTdk
-6fZQL7Qj+cBPTm7tMkhf
-=+71p
------END PGP SIGNATURE-----
+Playback device is hdmi:CARD=3DNVidia,DEV=3D0
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 64 to 87360
+Period size range from 32 to 43680
+Using max buffer size 87360
+Periods =3D 4
+was set period_size =3D 17472
+was set buffer_size =3D 87360
+*** Error in `speaker-test': corrupted double-linked list:
+0x0000000000cc48a0 ***
+^C
+linux@linux:~> speaker-test -D hdmi:CARD=3DNVidia,DEV=3D1 -c6 -r 48000 =
+-F S16_LE
 
---rz+pwK2yUstbofK6--
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+speaker-test 1.0.26
+
+Playback device is hdmi:CARD=3DNVidia,DEV=3D1
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 64 to 87360
+Period size range from 32 to 43680
+Using max buffer size 87360
+Periods =3D 4
+was set period_size =3D 17472
+was set buffer_size =3D 87360
+*** Error in `speaker-test': corrupted double-linked list:
+0x0000000001e428a0 ***
+^C
+
+--=20
+Rafa=C5=82
