@@ -1,18 +1,16 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH v2] ALSA: hda - not choose assigned
- converters for unused pins of Valleyview
-Date: Fri, 1 Nov 2013 10:25:29 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8013DF6A5@SHSMSX101.ccr.corp.intel.com>
-References: <1383276167-20762-1-git-send-email-mengdong.lin@intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: ASoC: wm8962: Move register initialisation to I2C
+	probe()
+Date: Fri, 1 Nov 2013 13:33:48 +0300
+Message-ID: <20131101103348.GO29795@longonot.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AF5D2652EB
- for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 11:25:33 +0100 (CET)
-In-Reply-To: <1383276167-20762-1-git-send-email-mengdong.lin@intel.com>
-Content-Language: en-US
+Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF80C2655A0
+ for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 11:36:52 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>
+To: broonie@linaro.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Hello Mark Brown,
 
-The function name should be "not_share_assigned_cvt".
-The original function name "not_share_unassigned_cvt" gives the opposite meaning.
+This is a semi-automatic email about new static checker warnings.
 
-Would you please revert v1 patch?
-I'm sorry to cause the unnecessary work.
+The patch 78b78f5c019e: "ASoC: wm8962: Move register initialisation 
+to I2C probe()" from Oct 17, 2013, leads to the following Smatch 
+complaint:
 
-Regards
-Mengdong
+sound/soc/codecs/wm8962.c:3620 wm8962_i2c_probe()
+	 error: we previously assumed 'pdata' could be null (see line 3537)
 
-> -----Original Message-----
-> From: Lin, Mengdong
-> Sent: Friday, November 01, 2013 11:23 AM
-> To: alsa-devel@alsa-project.org; tiwai@suse.de
-> Cc: Lin, Mengdong
-> Subject: [PATCH v2] ALSA: hda - not choose assigned converters for unused pins
-> of Valleyview
-> 
-> From: Mengdong Lin <mengdong.lin@intel.com>
-> 
-> For Valleyview display codec, if an unused pin chooses an assgined converter
-> selected by a used pin, playback on the unused pin can also give sound to the
-> output device of the used pin. It's because data flows from the same convertor
-> to the display port of the used pin. This issue is same as Haswell.
-> 
-> So this patch avoids using assinged convertors for unused pins.
-> The related function haswell_config_cvts() is renamed for code reuse.
-> 
-> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-> 
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c index
-> e332db8..5487a56 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -45,6 +45,7 @@ module_param(static_hdmi_pcm, bool, 0644);
-> MODULE_PARM_DESC(static_hdmi_pcm, "Don't restrict PCM parameters per
-> ELD info");
-> 
->  #define is_haswell(codec)  ((codec)->vendor_id == 0x80862807)
-> +#define is_valleyview(codec) ((codec)->vendor_id == 0x80862882)
-> 
->  struct hdmi_spec_per_cvt {
->  	hda_nid_t cvt_nid;
-> @@ -1148,7 +1149,7 @@ static int hdmi_choose_cvt(struct hda_codec *codec,
->  	return 0;
->  }
-> 
-> -static void haswell_config_cvts(struct hda_codec *codec,
-> +static void not_share_assigned_cvt(struct hda_codec *codec,
->  			hda_nid_t pin_nid, int mux_idx)
->  {
->  	struct hdmi_spec *spec = codec->spec;
-> @@ -1226,8 +1227,8 @@ static int hdmi_pcm_open(struct hda_pcm_stream
-> *hinfo,
->  			    mux_idx);
-> 
->  	/* configure unused pins to choose other converters */
-> -	if (is_haswell(codec))
-> -		haswell_config_cvts(codec, per_pin->pin_nid, mux_idx);
-> +	if (is_haswell(codec) || is_valleyview(codec))
-> +		not_share_assigned_cvt(codec, per_pin->pin_nid, mux_idx);
-> 
->  	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
-> 
-> --
-> 1.8.1.2
+sound/soc/codecs/wm8962.c
+  3531          /* If platform data was supplied, update the default data in priv */
+  3532          if (pdata) {
+                    ^^^^^
+Existing check.
+
+  3533                  memcpy(&wm8962->pdata, pdata, sizeof(struct wm8962_pdata));
+  3534          } else if (i2c->dev.of_node) {
+  3535                  ret = wm8962_set_pdata_from_of(i2c, &wm8962->pdata);
+  3536			if (ret != 0)
+  3537				return ret;
+  3538		}
+
+[snip]
+
+  3613		/* Ensure that the oscillator and PLLs are disabled */
+  3614		regmap_update_bits(wm8962->regmap, WM8962_PLL2,
+  3615				   WM8962_OSC_ENA | WM8962_PLL2_ENA | WM8962_PLL3_ENA,
+  3616				   0);
+  3617	
+  3618		/* Apply static configuration for GPIOs */
+  3619		for (i = 0; i < ARRAY_SIZE(pdata->gpio_init); i++)
+  3620			if (pdata->gpio_init[i]) {
+                            ^^^^^^^^^^^^^^^^^^
+Patch introduces unchecked dereference.
+
+  3621				wm8962_set_gpio_mode(wm8962, i + 1);
+  3622				regmap_write(wm8962->regmap, 0x200 + i,
+
+regards,
+dan carpenter
