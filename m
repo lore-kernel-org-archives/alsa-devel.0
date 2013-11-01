@@ -1,55 +1,69 @@
 From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH 3/8] dma: mmp_tdma: use gen_pool_dma_alloc() to
-	allocate descriptor
-Date: Fri, 1 Nov 2013 19:36:01 +0800
-Message-ID: <b7d5dce9fcc118a60261824196c820de6fb434a2.1383303752.git.b42378@freescale.com>
-References: <cover.1383303752.git.b42378@freescale.com>
+Subject: [PATCH][RESEND 0/8] Add and implement gen_pool_dma_alloc()
+Date: Fri, 1 Nov 2013 19:48:13 +0800
+Message-ID: <cover.1383306365.git.b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe002.messaging.microsoft.com [207.46.163.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 82A232657A7
- for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2013 12:36:38 +0100 (CET)
-In-Reply-To: <cover.1383303752.git.b42378@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: akpm@linux-foundation.org, joe@perches.com, nsekhar@ti.com, khilman@deeprootsystems.com, linux@arm.linux.org.uk, dan.j.williams@intel.com, vinod.koul@intel.com, m.chehab@samsung.com, hjk@hansjkoch.de, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, rmk+kernel@arm.linux.org.uk, eric.y.miao@gmail.com, haojian.zhuang@gmail.com
-Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Since gen_pool_dma_alloc() is introduced, we implement it to simplify code.
+Previously, we don't have a specific gen_pool_alloc() for DMA usage;
+Instead, we need to use gen_pool_virt_to_phys() to convert the addr
+returned from gen_pool_alloc(). So each implementation of this has
+duplicated code. Thus add new helper function -- gen_pool_dma_alloc().
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
- drivers/dma/mmp_tdma.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+After gen_pool_dma_alloc() is introduced, we can replace the original
+combination of gen_pool_alloc()+gen_pool_virt_to_phys() with this new
+helper function. Thus this patch implement the helper function to all
+the current drivers which use gen_pool_virt_to_phys().
 
-diff --git a/drivers/dma/mmp_tdma.c b/drivers/dma/mmp_tdma.c
-index 2b4026d..3ddacc1 100644
---- a/drivers/dma/mmp_tdma.c
-+++ b/drivers/dma/mmp_tdma.c
-@@ -378,12 +378,7 @@ struct mmp_tdma_desc *mmp_tdma_alloc_descriptor(struct mmp_tdma_chan *tdmac)
- 	if (!gpool)
- 		return NULL;
- 
--	tdmac->desc_arr = (void *)gen_pool_alloc(gpool, size);
--	if (!tdmac->desc_arr)
--		return NULL;
--
--	tdmac->desc_arr_phys = gen_pool_virt_to_phys(gpool,
--			(unsigned long)tdmac->desc_arr);
-+	tdmac->desc_arr = gen_pool_dma_alloc(gpool, size, &tdmac->desc_arr_phys);
- 
- 	return tdmac->desc_arr;
- }
+!!-------------------important------------------!!
+
+The later 7 patches need all related driver owner to test. We can
+here define a simple rule:
+1, If one driver owner or maintainer doesn't like the mofication
+   to his/her driver, just let me know. I would drop that patch.
+2, If there's a bug and issue found after patch-testing, please
+   reply the mail so that I can fix and refine the patch.
+3, If one driver owner or maintainer is too busy and doesn't have
+   bandwidth to test the patch, I would drop that patch from this
+   series. We can reimplement it till there's someone test it.
+
+!!-------------------current progress-----------!!
+
+  lib/genalloc: [Okay]
+  ARM: davinci: [Untested]
+  dma: mmp_tdma: [Untested]
+  [media] coda: [Untested]
+  uio: uio_pruss: [Untested]
+  ALSA: memalloc: [Tested] by Nicolin Chen with i.MX6Q SabreSD
+  ASoC: davinci: [Untested]
+  ASoC: pxa: use [Untested]
+
+
+Nicolin Chen (8):
+  lib/genalloc: add a helper function for DMA buffer allocation
+  ARM: davinci: use gen_pool_dma_alloc() to sram.c
+  dma: mmp_tdma: use gen_pool_dma_alloc() to allocate descriptor
+  [media] coda: use gen_pool_dma_alloc() to allocate iram buffer
+  uio: uio_pruss: use gen_pool_dma_alloc() to allocate sram memory
+  ALSA: memalloc: use gen_pool_dma_alloc() to allocate iram buffer
+  ASoC: davinci: use gen_pool_dma_alloc() in davinci-pcm.c
+  ASoC: pxa: use gen_pool_dma_alloc() to allocate dma buffer
+
+ arch/arm/mach-davinci/sram.c    |  9 +--------
+ drivers/dma/mmp_tdma.c          |  7 +------
+ drivers/media/platform/coda.c   |  5 ++---
+ drivers/uio/uio_pruss.c         |  6 ++----
+ include/linux/genalloc.h        |  2 ++
+ lib/genalloc.c                  | 28 ++++++++++++++++++++++++++++
+ sound/core/memalloc.c           |  6 +-----
+ sound/soc/davinci/davinci-pcm.c |  3 +--
+ sound/soc/pxa/mmp-pcm.c         |  3 +--
+ 9 files changed, 39 insertions(+), 30 deletions(-)
+
 -- 
 1.8.4
