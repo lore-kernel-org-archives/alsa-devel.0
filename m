@@ -1,8 +1,8 @@
 From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 Subject: Re: [PATCH] drm/radeon/audio: fix missing multichannel PCM SAD in
 	some cases
-Date: Sat, 2 Nov 2013 02:01:26 +0100
-Message-ID: <CACna6ryJjHJwu7_=rHfff8f8=f3BFEDrDcKgx-kTEofoJDn3Fg@mail.gmail.com>
+Date: Sat, 2 Nov 2013 02:03:48 +0100
+Message-ID: <CACna6ryPcbUKGX83LfTZ+=SOmROiVU07NgOc8=z4cnTdFx8Q6Q@mail.gmail.com>
 References: <526EE844.4030608@iki.fi>
 	<1383002356-2479-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
@@ -24,15 +24,30 @@ Cc: Alex Deucher <alexander.deucher@amd.com>, Takashi Iwai <tiwai@suse.de>, alsa
 List-Id: alsa-devel@alsa-project.org
 
 2013/10/29 Anssi Hannula <anssi.hannula@iki.fi>:
-> Fix the code to pick the PCM SAD with the highest number of channels,
-> while merging the rate masks of PCM SADs with lower amount of channels
-> into the additional stereo rate mask byte.
+> +                               if (sad->channels > max_channels) {
+> +                                       value = MAX_CHANNELS(sad->channels) |
+> +                                               DESCRIPTOR_BYTE_2(sad->byte2) |
+> +                                               SUPPORTED_FREQUENCIES(sad->freq);
+> +                                       max_channels = sad->channels;
+> +                               }
 
-Don't you think that we should use SUPPORTED_FREQUENCIES_STEREO for
-stereo frequencies only?
+Just for a record. I was wondering if fglrx sets both:
+SUPPORTED_FREQUENCIES and SUPPORTED_FREQUENCIES_STEREO for receiver
+with LPCM stereo only. It does:
+00005f84 07070701 (117901057)
+00005f88 00000000 (0)
+00005f8c 00000000 (0)
+00005f90 00000000 (0)
+00005f94 00000000 (0)
+00005f98 00000000 (0)
+00005f9c 00000000 (0)
+00005fa0 00000000 (0)
+00005fa4 00000000 (0)
+00005fa8 00000000 (0)
+00005fac 00000000 (0)
+00005fb0 00000000 (0)
+00005fb4 00000000 (0)
+00005fb8 00000000 (0)
 
-
->                                 if (sad->format == HDMI_AUDIO_CODING_TYPE_PCM)
-> +                                       stereo_freqs |= sad->freq;
-
-I mean making that (... && sad->channels == 1)
+So with the above code we'll be compatible with fglrx about that.
+Nice. Just wanted to note that :)
