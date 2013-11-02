@@ -1,15 +1,17 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 Subject: Re: [PATCH] drm/radeon/audio: fix missing multichannel PCM SAD in
 	some cases
-Date: Sat, 02 Nov 2013 03:08:10 +0200
-Message-ID: <5274507A.707@iki.fi>
-References: <526EE844.4030608@iki.fi>	<1383002356-2479-1-git-send-email-anssi.hannula@iki.fi>
+Date: Sat, 2 Nov 2013 02:15:22 +0100
+Message-ID: <CACna6rwpakv-dKUweFA06RkD2n7Ra4Kb+06OVyYWbn7_UFmxbQ@mail.gmail.com>
+References: <526EE844.4030608@iki.fi>
+	<1383002356-2479-1-git-send-email-anssi.hannula@iki.fi>
 	<CACna6ryJjHJwu7_=rHfff8f8=f3BFEDrDcKgx-kTEofoJDn3Fg@mail.gmail.com>
+	<5274507A.707@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <CACna6ryJjHJwu7_=rHfff8f8=f3BFEDrDcKgx-kTEofoJDn3Fg@mail.gmail.com>
+In-Reply-To: <5274507A.707@iki.fi>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
 	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
@@ -19,29 +21,21 @@ List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
 	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Sender: dri-devel-bounces@lists.freedesktop.org
 Errors-To: dri-devel-bounces@lists.freedesktop.org
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Anssi Hannula <anssi.hannula@iki.fi>
 Cc: Alex Deucher <alexander.deucher@amd.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, dri-devel <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-MDIuMTEuMjAxMyAwMzowMSwgUmFmYcWCIE1pxYJlY2tpIGtpcmpvaXR0aToKPiAyMDEzLzEwLzI5
-IEFuc3NpIEhhbm51bGEgPGFuc3NpLmhhbm51bGFAaWtpLmZpPjoKPj4gRml4IHRoZSBjb2RlIHRv
-IHBpY2sgdGhlIFBDTSBTQUQgd2l0aCB0aGUgaGlnaGVzdCBudW1iZXIgb2YgY2hhbm5lbHMsCj4+
-IHdoaWxlIG1lcmdpbmcgdGhlIHJhdGUgbWFza3Mgb2YgUENNIFNBRHMgd2l0aCBsb3dlciBhbW91
-bnQgb2YgY2hhbm5lbHMKPj4gaW50byB0aGUgYWRkaXRpb25hbCBzdGVyZW8gcmF0ZSBtYXNrIGJ5
-dGUuCj4gCj4gRG9uJ3QgeW91IHRoaW5rIHRoYXQgd2Ugc2hvdWxkIHVzZSBTVVBQT1JURURfRlJF
-UVVFTkNJRVNfU1RFUkVPIGZvcgo+IHN0ZXJlbyBmcmVxdWVuY2llcyBvbmx5Pwo+IAo+IAo+PiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChzYWQtPmZvcm1hdCA9PSBIRE1JX0FV
-RElPX0NPRElOR19UWVBFX1BDTSkKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHN0ZXJlb19mcmVxcyB8PSBzYWQtPmZyZXE7Cj4gCj4gSSBtZWFuIG1ha2luZyB0aGF0
-ICguLi4gJiYgc2FkLT5jaGFubmVscyA9PSAxKQo+IAoKU0FEIHdpdGggY2hhbm5lbHM9NixmcmVx
-cz0zMi4uOTZrSHosYml0cz0xNi4uMjQgaW1wbGllcyB0aGF0IHRob3NlIGZyZXFzCmFuZCBicHMg
-YXJlIHN1cHBvcnRlZCBmb3IgYWxsIGNoYW5uZWwgY291bnRzIHVwIHRvIDYgKHNpbmNlIGl0IGlz
-ICJNYXgKTnVtYmVyIG9mIGNoYW5uZWxzIikuIFRoZXJlZm9yZSB0aGUgc3BlY2lmaWVkIHJhdGVz
-IGFyZSBzdXBwb3J0ZWQgaW4Kc3RlcmVvIG1vZGUgYXMgd2VsbCBhbmQgSSBiZWxpZXZlIHNob3Vs
-ZCBiZSBpbmNsdWRlZCBpbiB0aGUgc3RlcmVvIGJpdG1hc2suCgpBcyBwZXIgQU1EIEhEQSBWZXJi
-cyBkb2N1bWVudGF0aW9uIHRoZSA0dGggYnl0ZSBpcyAiUmF0ZXMgc3VwcG9ydGVkIGZvcgpzdGVy
-ZW8iLiBBbmQgc2luY2UgdGhvc2UgcmF0ZXMgX2FyZV8gc3VwcG9ydGVkIGJ5IHN0ZXJlbywgSU1P
-IHRoZXkKc2hvdWxkIGJlIHRoZXJlLgoKLS0gCkFuc3NpIEhhbm51bGEKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApk
-cmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+MjAxMy8xMS8yIEFuc3NpIEhhbm51bGEgPGFuc3NpLmhhbm51bGFAaWtpLmZpPjoKPiBTQUQgd2l0
+aCBjaGFubmVscz02LGZyZXFzPTMyLi45NmtIeixiaXRzPTE2Li4yNCBpbXBsaWVzIHRoYXQgdGhv
+c2UgZnJlcXMKPiBhbmQgYnBzIGFyZSBzdXBwb3J0ZWQgZm9yIGFsbCBjaGFubmVsIGNvdW50cyB1
+cCB0byA2IChzaW5jZSBpdCBpcyAiTWF4Cj4gTnVtYmVyIG9mIGNoYW5uZWxzIikuIFRoZXJlZm9y
+ZSB0aGUgc3BlY2lmaWVkIHJhdGVzIGFyZSBzdXBwb3J0ZWQgaW4KPiBzdGVyZW8gbW9kZSBhcyB3
+ZWxsIGFuZCBJIGJlbGlldmUgc2hvdWxkIGJlIGluY2x1ZGVkIGluIHRoZSBzdGVyZW8gYml0bWFz
+ay4KPgo+IEFzIHBlciBBTUQgSERBIFZlcmJzIGRvY3VtZW50YXRpb24gdGhlIDR0aCBieXRlIGlz
+ICJSYXRlcyBzdXBwb3J0ZWQgZm9yCj4gc3RlcmVvIi4gQW5kIHNpbmNlIHRob3NlIHJhdGVzIF9h
+cmVfIHN1cHBvcnRlZCBieSBzdGVyZW8sIElNTyB0aGV5Cj4gc2hvdWxkIGJlIHRoZXJlLgoKT0ss
+IHRoYXQgc291bmRzIHNhbmUuIFRoYW5rcyBmb3IgZXhwbGFpbmluZy4KCkFja2VkLWJ5OiBSYWZh
+xYIgTWnFgmVja2kgPHphamVjNUBnbWFpbC5jb20+CgotLSAKUmFmYcWCCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QK
+ZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Au
+b3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
