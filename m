@@ -1,68 +1,81 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
- multi-channel and HBR support
-Date: Sat, 02 Nov 2013 17:32:20 +0200
-Message-ID: <52751B04.9090806@iki.fi>
-References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCHv2 1/3] ACPI: Expose struct acpi_device and acpi_bus_get_device() to non-ACPI builds
+Date: Sat, 02 Nov 2013 23:18:31 +0100
+Message-ID: <3858838.4tAO673dDi@vostro.rjw.lan>
+References: <1382703540-3769-1-git-send-email-jarkko.nikula@linux.intel.com> <1383309356-25430-1-git-send-email-jarkko.nikula@linux.intel.com> <1383309356-25430-2-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
- [83.102.40.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EA152615DD
- for <alsa-devel@alsa-project.org>; Sat,  2 Nov 2013 16:32:25 +0100 (CET)
-In-Reply-To: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Olivier Langlois <olivier@trillion01.com>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Peter_Fr=FChberger?= <fritsch@xbmc.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <1383309356-25430-2-git-send-email-jarkko.nikula@linux.intel.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@the-dreams.de>, linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-24.10.2013 21:10, Anssi Hannula kirjoitti:
-> Hi all!
+On Friday, November 01, 2013 02:35:54 PM Jarkko Nikula wrote:
+> We may find use for struct acpi_device and acpi_bus_get_device() in generic
+> code without wanting to add #if IS_ENABLED(CONFIG_ACPI) churn there.
 > 
-> Here's another revision of the ATI/AMD multichannel+HBR patchset.
+> Code can use ACPI_HANDLE() test to let compiler optimize out code blocks
+> that are not used in !CONFIG_ACPI builds but structure definitions and
+> function stubs must be available.
 > 
-> Changes:
-> - added customizable callbacks instead of polluting generic code
-> - fixed wrong codec id in rev3+ check (as previously noted)
-> - cosmetics
+> This patch moves CONFIG_ACPI test so that struct acpi_device definition
+> is available for all builds that include acpi_bus.h and provides a stub for
+> acpi_bus_get_device().
 > 
-> I've only tested this on NVIDIA/Intel, but I'd guess at least Peter
-> should be able to test this on AMD in a few days or so. The earlier
-> revisions were tested to fully work.
+> Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 
-The pairwise channel remapping code seems to indeed still work fine per
-testing on Peter's system.
+This turns out the cause build problems to happen on some architectures.
 
-> Combined patch can be found at: http://onse.fi/files/atihdmi5.patch
-> However, this patchset is on top recent sound-next commits so it does not
-> directly apply on older kernels.
-> 
-> Olivier, I hope you will be able to test this at some point as well
-> (same things as last time), even though it will be a bit more work :)
-> 
-> Anssi Hannula (5):
->       ALSA: hda - hdmi: Allow HDA patches to customize more operations
->       ALSA: hda - hdmi: Add ATI/AMD multi-channel audio support
->       ALSA: hda - hdmi: Add ELD emulation for ATI/AMD codecs
->       ALSA: hda - hdmi: Add HBR bitstreaming support for ATI/AMD HDMI codecs
->       ALSA: hda - hdmi: Disable ramp-up/down for non-PCM on AMD codecs
-> 
->  sound/pci/hda/hda_eld.c    | 151 +++++++++++
->  sound/pci/hda/hda_local.h  |   4 +
->  sound/pci/hda/patch_hdmi.c | 643 +++++++++++++++++++++++++++++++++++++--------
->  3 files changed, 689 insertions(+), 109 deletions(-)
-> 
+I guess it's sufficient to simply define a stub struct acpi_device as
 
+struct acpi_device {
+	struct device dev;
+};
 
+for !CONFIG_ACPI instead.
+
+> ---
+>  include/acpi/acpi_bus.h | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 15100f6..232b37d3 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -66,8 +66,6 @@ bool acpi_ata_match(acpi_handle handle);
+>  bool acpi_bay_match(acpi_handle handle);
+>  bool acpi_dock_match(acpi_handle handle);
+>  
+> -#ifdef CONFIG_ACPI
+> -
+>  #include <linux/proc_fs.h>
+>  
+>  #define ACPI_BUS_FILE_ROOT	"acpi"
+> @@ -315,6 +313,8 @@ struct acpi_device {
+>  	void (*remove)(struct acpi_device *);
+>  };
+>  
+> +#if IS_ENABLED(CONFIG_ACPI)
+> +
+>  static inline void *acpi_driver_data(struct acpi_device *d)
+>  {
+>  	return d->driver_data;
+> @@ -532,6 +532,11 @@ static inline bool acpi_device_can_poweroff(struct acpi_device *adev)
+>  
+>  static inline int register_acpi_bus_type(void *bus) { return 0; }
+>  static inline int unregister_acpi_bus_type(void *bus) { return 0; }
+> +static inline int acpi_bus_get_device(acpi_handle handle,
+> +				      struct acpi_device **device)
+> +{
+> +	return -ENODEV;
+> +}
+>  
+>  #endif				/* CONFIG_ACPI */
+>  
+> 
 -- 
-Anssi Hannula
+I speak only for myself.
+Rafael J. Wysocki, Intel Open Source Technology Center.
