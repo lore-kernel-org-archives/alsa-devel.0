@@ -1,18 +1,18 @@
 From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [RFC/RFT] HDMI/DP CEA-861-E+ channel allocations
- 0x20+
-Date: Sat, 02 Nov 2013 17:29:41 +0200
-Message-ID: <52751A65.3090705@iki.fi>
-References: <52742070.1080904@iki.fi>
+Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
+ multi-channel and HBR support
+Date: Sat, 02 Nov 2013 17:32:20 +0200
+Message-ID: <52751B04.9090806@iki.fi>
+References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
- [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id D23302615DD
- for <alsa-devel@alsa-project.org>; Sat,  2 Nov 2013 16:29:46 +0100 (CET)
-In-Reply-To: <52742070.1080904@iki.fi>
+Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
+ [83.102.40.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6EA152615DD
+ for <alsa-devel@alsa-project.org>; Sat,  2 Nov 2013 16:32:25 +0100 (CET)
+In-Reply-To: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Fengguang Wu <fengguang.wu@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Olivier Langlois <olivier@trillion01.com>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Peter_Fr=FChberger?= <fritsch@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
-01.11.2013 23:43, Anssi Hannula kirjoitti:
+24.10.2013 21:10, Anssi Hannula kirjoitti:
 > Hi all!
 > 
-> Currently we allow the use of CA values up to 0x31 as defined in
-> CEA-861-E/F. However, only CA values up to 0x19 are defined in
-> CEA-861-B/C/D.
+> Here's another revision of the ATI/AMD multichannel+HBR patchset.
 > 
-> HDMI specification 1.4b specifies that the CA field is to be filled
-> according to CEA-861-D, and DisplayPort 1.1a according to CEA-861-C.
+> Changes:
+> - added customizable callbacks instead of polluting generic code
+> - fixed wrong codec id in rev3+ check (as previously noted)
+> - cosmetics
 > 
-> The ELD (EDID-Like Data) format as specified by Intel HDA specification
-> 1.0a has a speaker allocation bitmask that only accommodates speakers
-> present in CEA-861-D; all of the 0x20+ CAs contain speakers that do not
-> have a corresponding bit in ELD.
-> 
-> Using a CA value unsupported by sink will cause either a completely
-> silent output or stereo output, so I think we should try to prevent
-> selecting such channel maps, if feasible.
-> 
-> However, before doing anything, I wonder if they are actually supported
-> by some newer receivers (mine is 4 years old). It'd be good if someone
-> with a newish receiver could try the below :)
-> To test this, one can run (replacing XX and YY with appropriate values
-> from "aplay -L") on *sound git master*:
-> speaker-test -c6 -Dhdmi:CARD=XX,DEV=YY -m FL,FR,RL,RR,FLH,FRH
-> If you get some output for the RL/RR speakers, that should mean that
-> 0x20+ CAs are supported. If there is no output except on FL/FR and there
-> is proper output without the "-m FL,FR,RL,RR,FLH,FRH", this means that
-> 0x20+ CAs are not supported.
+> I've only tested this on NVIDIA/Intel, but I'd guess at least Peter
+> should be able to test this on AMD in a few days or so. The earlier
+> revisions were tested to fully work.
 
-We tested with Peter's Marantz NR1402 (introduced 2011), and it does
-seem to support 0x20+ CAs (it drops unmappable channels, but doesn't
-fall back to stereo only either so it clearly recognizes the mappings).
+The pairwise channel remapping code seems to indeed still work fine per
+testing on Peter's system.
 
-> I think there are about these options for us to take:
-> a) drop 0x20+ CAs from channel_allocations altogether
-> b) put the 0x20+ CAs under a module parameter
-> c) only allow 0x20+ CAs if any CEA-861-E+ only speakers are specified
->    in EDID. However, as ELD doesn't have bits for these, we'd have to
->    employ some non-standard bits in ELD or communicate directly with
->    video driver.
-> d) do nothing, allow the 0x20+ CAs.
+> Combined patch can be found at: http://onse.fi/files/atihdmi5.patch
+> However, this patchset is on top recent sound-next commits so it does not
+> directly apply on older kernels.
 > 
-> IMHO we should do something, since players using ALSA channel mapping
-> could just automatically select a manual channel map that uses an
-> unsupported 0x20+ CA if the source audio stream contains such channels...
-
-So I guess dropping them completely would be not be very nice... not
-immediately sure what would be the best way forward, then, though...
-
-> WDYT?
+> Olivier, I hope you will be able to test this at some point as well
+> (same things as last time), even though it will be a bit more work :)
+> 
+> Anssi Hannula (5):
+>       ALSA: hda - hdmi: Allow HDA patches to customize more operations
+>       ALSA: hda - hdmi: Add ATI/AMD multi-channel audio support
+>       ALSA: hda - hdmi: Add ELD emulation for ATI/AMD codecs
+>       ALSA: hda - hdmi: Add HBR bitstreaming support for ATI/AMD HDMI codecs
+>       ALSA: hda - hdmi: Disable ramp-up/down for non-PCM on AMD codecs
+> 
+>  sound/pci/hda/hda_eld.c    | 151 +++++++++++
+>  sound/pci/hda/hda_local.h  |   4 +
+>  sound/pci/hda/patch_hdmi.c | 643 +++++++++++++++++++++++++++++++++++++--------
+>  3 files changed, 689 insertions(+), 109 deletions(-)
 > 
 
 
