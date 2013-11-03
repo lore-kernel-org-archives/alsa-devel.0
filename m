@@ -1,18 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: include/uapi/firewire.h for other firewire drivers
-Date: Sun, 03 Nov 2013 23:20:58 +0900
-Message-ID: <52765BCA.5000400@sakamocchi.jp>
-References: <526A6092.4030709@sakamocchi.jp> <526A6C50.2000901@ladisch.de>
- <526B5017.8010106@sakamocchi.jp> <526E207B.5060301@ladisch.de>
- <5272151C.2010208@sakamocchi.jp> <5273681E.6010701@ladisch.de>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [PATCH] ALSA: hda - hdmi: Disallow unsupported 2ch
+	remapping on NVIDIA codecs
+Date: Sun,  3 Nov 2013 17:15:00 +0200
+Message-ID: <1383491700-2477-1-git-send-email-anssi.hannula@iki.fi>
+References: <s5hmwlrjmhm.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 81B8F2610B7
- for <alsa-devel@alsa-project.org>; Sun,  3 Nov 2013 15:21:05 +0100 (CET)
-In-Reply-To: <5273681E.6010701@ladisch.de>
+Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
+ [83.102.40.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 904A72610B7
+ for <alsa-devel@alsa-project.org>; Sun,  3 Nov 2013 16:15:08 +0100 (CET)
+In-Reply-To: <s5hmwlrjmhm.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,49 +22,141 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Aaron Plattner <aplattner@nvidia.com>, Juho Teperi <juho.teperi@iki.fi>
 List-Id: alsa-devel@alsa-project.org
 
-PiBXaGVuIHRoZSBjbG9jayBzb3VyY2UgaXMgaW50ZXJuYWwgb3IgdGhlIFBDLCB0aGUgZHJpdmVy
-IGNhbiBjaGFuZ2UKPiB0aGUgc2FtcGxlIHJhdGUuICBXaGVuIHRoZSBjbG9jayBzb3VyY2UgaXMg
-ZXh0ZXJuYWwsIHRoZSByYXRlIGlzCj4gY29uc3RyYWluZWQuCgpPSy4gVGhhdCdzIHJlYXNvbmFi
-bGUuCgo+IEZvciBzZXR0aW5ncyAobGlrZSB0aGlzKSB0aGF0IHRoZSBrZXJuZWwgZHJpdmVyIGtu
-b3dzIGFib3V0LCBpdCBzaG91bGQKPiB1c2UgYSBtaXhlciBjb250cm9sLCBiZWNhdXNlIHRoZSBj
-b250cm9sIGludGVyZmFjZSBhbHJlYWR5IGhhcyBtZWNoYW5pc21zCj4gdG8gbm90aWZ5IG90aGVy
-cyBvZiBjaGFuZ2VzLCBhbmQgdG8gbG9jayBjb250cm9scy4KCk9LLiBJIHNlbGVjdCBjb250cm9s
-IGludGVyZmFjZSB3aXRoIHRoZSBzYW1lIHJlYXNvbnMuCgo+IFRoZSBod2RlcCBpbnRlcmZhY2Ug
-aXMgYXBwcm9wcmlhdGUgZm9yIGNvbW1hbmRzIHRoYXQgbXVzdCBnbyB0aHJvdWdoIHRoZQo+IGRy
-aXZlciBmb3IgdGVjaG5pY2FsIHJlYXNvbnMgKHN1Y2ggYXMgRUZDJ3MgcmVzcG9uc2UgYWRkcmVz
-cyksIGJ1dCB3aGVyZQo+IHRoZSBkcml2ZXIgZG9lcyBub3QgY2FyZSBhYm91dCB0aGUgYWN0dWFs
-IG1lYW5pbmcgb2YgdGhlIGNvbW1hbmQuCj4KPiAoRm9yIG90aGVyIGNvbW1hbmRzLCBsaWtlIEEv
-VkMsIHRoZSBhcHBsaWNhdGlvbiBjYW4gZ28gZGlyZWN0bHkgdGhyb3VnaAo+IC9kZXYvZncqLikK
-Ck9LLiBJIHN0YXJ0IHRvIHdvcmsgZm9yIGh3ZGVwIGZvciBFRkMuIEkgbWF5IGFzayB0aGUgb3Ro
-ZXIgcXVlc3Rpb25zIApsYXRlciBpZiBJIGhhdmUuCgoKVGhhbmtzIGEgbG90CgpUYWthc2hpIFNh
-a2Ftb3RvCgoKKDIwMTPlubQxMeaciDAx5pelIDE3OjM2KSwgQ2xlbWVucyBMYWRpc2NoIHdyb3Rl
-Ogo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+IG15IGRyaXZlcnMgaGF2ZSBQQ00gcnVsZXMg
-Zm9yIGF1dG8tYWRqdXN0bWVudCBvZiByYXRlL2NoYW5uZWxzLiBTaG91bGQKPj4gSSByZW1vdmUg
-dGhlbSBhbmQgZml4IHJhdGUvY2hhbm5lbHMgYWNjb3JkaW5nIHRvIGN1cnJlbnQgc2FtcGxpbmcg
-cmF0ZT8KPgo+IFdoZW4gdGhlIGNsb2NrIHNvdXJjZSBpcyBpbnRlcm5hbCBvciB0aGUgUEMsIHRo
-ZSBkcml2ZXIgY2FuIGNoYW5nZSB0aGUKPiBzYW1wbGUgcmF0ZS4gIFdoZW4gdGhlIGNsb2NrIHNv
-dXJjZSBpcyBleHRlcm5hbCwgdGhlIHJhdGUgaXMgY29uc3RyYWluZWQuCj4KPj4gQXMgbG9uZyBh
-cyBJIGtub3csIHRoaXMgdHlwZSBvZiBkZXZpY2UgY2hhbmdlcyBpdHMgY2hhbm5lbCBmb3JtYXRp
-b24KPj4gb2YgQU1EVFAgc3RyZWFtIGFjY29yZGluZyB0byBjdXJyZW50IHNhbXBsaW5nIHJhdGUg
-YW5kIGN1cnJlbnQgZGlnaXRhbAo+PiBpbnB1dCBpbnRlcmZhY2UuIFRoZSBkcml2ZXIgY2FuIGdl
-dCBjdXJyZW50IHNhbXBsaW5nIHJhdGUgYnkgQVYvQwo+PiBjb21tYW5kIGJ1dCBjYW5ub3QgZ2V0
-IGN1cnJlbnQgZGlnaXRhbCBpbnB1dCBpbnRlcmZhY2UgYmVjYXVzZSBpdCdzCj4+ICd3cml0ZS1v
-bmx5Jy4KPj4KPj4gRm9yIHRoaXMgc2V0dGluZywgd2hpY2ggaXMgYmV0dGVyIGZvciBjb250cm9s
-IHBhbmVsL21peGVyIGFwcGxpY2F0aW9uLAo+PiBjb250cm9sIGludGVyZmFjZSBvciBod2RlcCBp
-bnRlcmZhY2Ugd2l0aCBmaXJld2lyZS5oPwo+Cj4gRm9yIHNldHRpbmdzIChsaWtlIHRoaXMpIHRo
-YXQgdGhlIGtlcm5lbCBkcml2ZXIga25vd3MgYWJvdXQsIGl0IHNob3VsZAo+IHVzZSBhIG1peGVy
-IGNvbnRyb2wsIGJlY2F1c2UgdGhlIGNvbnRyb2wgaW50ZXJmYWNlIGFscmVhZHkgaGFzIG1lY2hh
-bmlzbXMKPiB0byBub3RpZnkgb3RoZXJzIG9mIGNoYW5nZXMsIGFuZCB0byBsb2NrIGNvbnRyb2xz
-Lgo+Cj4gVGhlIGh3ZGVwIGludGVyZmFjZSBpcyBhcHByb3ByaWF0ZSBmb3IgY29tbWFuZHMgdGhh
-dCBtdXN0IGdvIHRocm91Z2ggdGhlCj4gZHJpdmVyIGZvciB0ZWNobmljYWwgcmVhc29ucyAoc3Vj
-aCBhcyBFRkMncyByZXNwb25zZSBhZGRyZXNzKSwgYnV0IHdoZXJlCj4gdGhlIGRyaXZlciBkb2Vz
-IG5vdCBjYXJlIGFib3V0IHRoZSBhY3R1YWwgbWVhbmluZyBvZiB0aGUgY29tbWFuZC4KPgo+IChG
-b3Igb3RoZXIgY29tbWFuZHMsIGxpa2UgQS9WQywgdGhlIGFwcGxpY2F0aW9uIGNhbiBnbyBkaXJl
-Y3RseSB0aHJvdWdoCj4gL2Rldi9mdyouKQo+Cj4KPiBSZWdhcmRzLAo+IENsZW1lbnMKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+NVIDIA HDMI codecs do not seem to follow the Audio Sample Packet (ASP)
+channel mapping (as set by verb F32h per HDA specification 7.3.3.41)
+when playing back 2-channel audio (CEA CA 0x00).
+
+Basically this means that specifying swapped channels for stereo audio
+(FR,FL) does not take effect, and e.g. this command plays back on the
+wrong channel:
+speaker-test -c2 -Dhdmi:CARD=NVidia,DEV=0 -m FR,FL -s1
+
+Multichannel audio is not affected.
+
+This issue has been confirmed to exist on codec 0x10de0015 by me and on
+0x10de0040 by Juho Teperi.
+
+Disable 2ch FL/FR channel swapping on all NVIDIA HDMI codecs that use
+the standard HDA channel mapping system. Since this is a very minor
+functionality loss, we err on the side of disabling it for newer codecs
+as well until any future testing confirms that this issue has been
+fixed.
+
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+Helped-by: Juho Teperi <juho.teperi@iki.fi>
+Cc: Aaron Plattner <aplattner@nvidia.com>
+---
+ sound/pci/hda/patch_hdmi.c | 86 +++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 63 insertions(+), 23 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index d61cc2ab52af..c3e3537b3196 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2787,6 +2787,46 @@ static int patch_nvhdmi_8ch_7x(struct hda_codec *codec)
+ }
+ 
+ /*
++ * NVIDIA codecs ignore ASP mapping for 2ch - confirmed on:
++ * - 0x10de0015
++ * - 0x10de0040
++ */
++static int nvhdmi_chmap_cea_alloc_validate_get_type(struct cea_channel_speaker_allocation *cap,
++						    int channels)
++{
++	if (cap->ca_index == 0x00 && channels == 2)
++		return SNDRV_CTL_TLVT_CHMAP_FIXED;
++
++	return hdmi_chmap_cea_alloc_validate_get_type(cap, channels);
++}
++
++static int nvhdmi_chmap_validate(int ca, int chs, unsigned char *map)
++{
++	if (ca == 0x00 && (map[0] != SNDRV_CHMAP_FL || map[1] != SNDRV_CHMAP_FR))
++		return -EINVAL;
++
++	return 0;
++}
++
++static int patch_nvhdmi(struct hda_codec *codec)
++{
++	struct hdmi_spec *spec;
++	int err;
++
++	err = patch_generic_hdmi(codec);
++	if (err)
++		return err;
++
++	spec = codec->spec;
++
++	spec->ops.chmap_cea_alloc_validate_get_type =
++		nvhdmi_chmap_cea_alloc_validate_get_type;
++	spec->ops.chmap_validate = nvhdmi_chmap_validate;
++
++	return 0;
++}
++
++/*
+  * ATI/AMD-specific implementations
+  */
+ 
+@@ -3167,30 +3207,30 @@ static const struct hda_codec_preset snd_hda_preset_hdmi[] = {
+ { .id = 0x10de0005, .name = "MCP77/78 HDMI",	.patch = patch_nvhdmi_8ch_7x },
+ { .id = 0x10de0006, .name = "MCP77/78 HDMI",	.patch = patch_nvhdmi_8ch_7x },
+ { .id = 0x10de0007, .name = "MCP79/7A HDMI",	.patch = patch_nvhdmi_8ch_7x },
+-{ .id = 0x10de000a, .name = "GPU 0a HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de000b, .name = "GPU 0b HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de000c, .name = "MCP89 HDMI",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de000d, .name = "GPU 0d HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0010, .name = "GPU 10 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0011, .name = "GPU 11 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0012, .name = "GPU 12 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0013, .name = "GPU 13 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0014, .name = "GPU 14 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0015, .name = "GPU 15 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0016, .name = "GPU 16 HDMI/DP",	.patch = patch_generic_hdmi },
++{ .id = 0x10de000a, .name = "GPU 0a HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de000b, .name = "GPU 0b HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de000c, .name = "MCP89 HDMI",	.patch = patch_nvhdmi },
++{ .id = 0x10de000d, .name = "GPU 0d HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0010, .name = "GPU 10 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0011, .name = "GPU 11 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0012, .name = "GPU 12 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0013, .name = "GPU 13 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0014, .name = "GPU 14 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0015, .name = "GPU 15 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0016, .name = "GPU 16 HDMI/DP",	.patch = patch_nvhdmi },
+ /* 17 is known to be absent */
+-{ .id = 0x10de0018, .name = "GPU 18 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0019, .name = "GPU 19 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de001a, .name = "GPU 1a HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de001b, .name = "GPU 1b HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de001c, .name = "GPU 1c HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0040, .name = "GPU 40 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0041, .name = "GPU 41 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0042, .name = "GPU 42 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0043, .name = "GPU 43 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0044, .name = "GPU 44 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0051, .name = "GPU 51 HDMI/DP",	.patch = patch_generic_hdmi },
+-{ .id = 0x10de0060, .name = "GPU 60 HDMI/DP",	.patch = patch_generic_hdmi },
++{ .id = 0x10de0018, .name = "GPU 18 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0019, .name = "GPU 19 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de001a, .name = "GPU 1a HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de001b, .name = "GPU 1b HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de001c, .name = "GPU 1c HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0040, .name = "GPU 40 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0041, .name = "GPU 41 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0042, .name = "GPU 42 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0043, .name = "GPU 43 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0044, .name = "GPU 44 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0051, .name = "GPU 51 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0060, .name = "GPU 60 HDMI/DP",	.patch = patch_nvhdmi },
+ { .id = 0x10de0067, .name = "MCP67 HDMI",	.patch = patch_nvhdmi_2ch },
+ { .id = 0x10de8001, .name = "MCP73 HDMI",	.patch = patch_nvhdmi_2ch },
+ { .id = 0x11069f80, .name = "VX900 HDMI/DP",	.patch = patch_via_hdmi },
+-- 
+1.8.1.5
