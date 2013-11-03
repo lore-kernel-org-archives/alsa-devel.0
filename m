@@ -1,81 +1,126 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCHv2 1/3] ACPI: Expose struct acpi_device and acpi_bus_get_device() to non-ACPI builds
-Date: Sat, 02 Nov 2013 23:18:31 +0100
-Message-ID: <3858838.4tAO673dDi@vostro.rjw.lan>
-References: <1382703540-3769-1-git-send-email-jarkko.nikula@linux.intel.com> <1383309356-25430-1-git-send-email-jarkko.nikula@linux.intel.com> <1383309356-25430-2-git-send-email-jarkko.nikula@linux.intel.com>
+From: "Dagg Stompler" <daggs@gmx.com>
+Subject: Re: [Alsa-user]  hdmi sound rerouted?
+Date: Sun, 03 Nov 2013 08:50:55 +0100
+Message-ID: <20131103075055.215710@gmx.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <1383309356-25430-2-git-send-email-jarkko.nikula@linux.intel.com>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@the-dreams.de>, linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id B65A2261589
+ for <alsa-devel@alsa-project.org>; Sun,  3 Nov 2013 08:50:56 +0100 (CET)
+Received: from mailout-eu.gmx.com ([10.1.101.211]) by mrigmx.server.lan
+ (mrigmx001) with ESMTP (Nemesis) id 0M9tl0-1VWJwW1h28-00B4hs for
+ <alsa-devel@alsa-project.org>; Sun, 03 Nov 2013 08:50:56 +0100
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Deucher, Alexander" <Alexander.Deucher@amd.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org, Clemens Ladisch <cladisch@googlemail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday, November 01, 2013 02:35:54 PM Jarkko Nikula wrote:
-> We may find use for struct acpi_device and acpi_bus_get_device() in generic
-> code without wanting to add #if IS_ENABLED(CONFIG_ACPI) churn there.
-> 
-> Code can use ACPI_HANDLE() test to let compiler optimize out code blocks
-> that are not used in !CONFIG_ACPI builds but structure definitions and
-> function stubs must be available.
-> 
-> This patch moves CONFIG_ACPI test so that struct acpi_device definition
-> is available for all builds that include acpi_bus.h and provides a stub for
-> acpi_bus_get_device().
-> 
-> Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-
-This turns out the cause build problems to happen on some architectures.
-
-I guess it's sufficient to simply define a stub struct acpi_device as
-
-struct acpi_device {
-	struct device dev;
-};
-
-for !CONFIG_ACPI instead.
-
-> ---
->  include/acpi/acpi_bus.h | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index 15100f6..232b37d3 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -66,8 +66,6 @@ bool acpi_ata_match(acpi_handle handle);
->  bool acpi_bay_match(acpi_handle handle);
->  bool acpi_dock_match(acpi_handle handle);
->  
-> -#ifdef CONFIG_ACPI
-> -
->  #include <linux/proc_fs.h>
->  
->  #define ACPI_BUS_FILE_ROOT	"acpi"
-> @@ -315,6 +313,8 @@ struct acpi_device {
->  	void (*remove)(struct acpi_device *);
->  };
->  
-> +#if IS_ENABLED(CONFIG_ACPI)
-> +
->  static inline void *acpi_driver_data(struct acpi_device *d)
->  {
->  	return d->driver_data;
-> @@ -532,6 +532,11 @@ static inline bool acpi_device_can_poweroff(struct acpi_device *adev)
->  
->  static inline int register_acpi_bus_type(void *bus) { return 0; }
->  static inline int unregister_acpi_bus_type(void *bus) { return 0; }
-> +static inline int acpi_bus_get_device(acpi_handle handle,
-> +				      struct acpi_device **device)
-> +{
-> +	return -ENODEV;
-> +}
->  
->  #endif				/* CONFIG_ACPI */
->  
-> 
--- 
-I speak only for myself.
-Rafael J. Wysocki, Intel Open Source Technology Center.
+PiAtLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogRGV1Y2hlciwgQWxleGFuZGVy
+Cj4gU2VudDogMTAvMTkvMTMgMDM6NTkgUE0KPiBUbzogRGFnZyBTdG9tcGxlciwgVGFrYXNoaSBJ
+d2FpCj4gU3ViamVjdDogUkU6IFthbHNhLWRldmVsXSBbQWxzYS11c2VyXSDCoGhkbWkgc291bmQg
+cmVyb3V0ZWQ/Cj4gCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IAo+ID4gRnJvbTog
+RGFnZyBTdG9tcGxlciBbbWFpbHRvOmRhZ2dzQGdteC5jb21dCj4gCj4gPiBTZW50OiBTYXR1cmRh
+eSwgT2N0b2JlciAxOSwgMjAxMyA1OjQ5IEFNCj4gCj4gPiBUbzogVGFrYXNoaSBJd2FpOyBEZXVj
+aGVyLCBBbGV4YW5kZXIKPiAKPiA+IENjOiBDbGVtZW5zIExhZGlzY2g7IGFsc2EtdXNlckBsaXN0
+cy5zb3VyY2Vmb3JnZS5uZXQ7IGFsc2EtZGV2ZWxAYWxzYS0KPiAKPiA+IHByb2plY3Qub3JnCj4g
+Cj4gPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtBbHNhLXVzZXJdIGhkbWkgc291bmQgcmVy
+b3V0ZWQ/Cj4gCj4gPiAKPiAKPiA+ID4gLS0tLS0gT3JpZ2luYWwgTWVzc2FnZSAtLS0tLQo+IAo+
+ID4gPiBGcm9tOiBUYWthc2hpIEl3YWkKPiAKPiA+ID4gU2VudDogMTAvMDgvMTMgMTA6NDkgQU0K
+PiAKPiA+ID4gVG86IERldWNoZXIsIEFsZXhhbmRlcgo+IAo+ID4gPiBTdWJqZWN0OiBSZTogW2Fs
+c2EtZGV2ZWxdIFtBbHNhLXVzZXJdIMKgaGRtaSBzb3VuZCByZXJvdXRlZD8KPiAKPiA+ID4KPiAK
+PiA+ID4gQXQgTW9uLCA3IE9jdCAyMDEzIDEzOjM2OjI0ICswMDAwLAo+IAo+ID4gPiBEZXVjaGVy
+LCBBbGV4YW5kZXIgd3JvdGU6Cj4gCj4gPiA+ID4KPiAKPiA+ID4gPiA+IC0tLS0tT3JpZ2luYWwg
+TWVzc2FnZS0tLS0tCj4gCj4gPiA+ID4gPiBGcm9tOiBUYWthc2hpIEl3YWkgW21haWx0bzp0aXdh
+aUBzdXNlLmRlXQo+IAo+ID4gPiA+ID4gU2VudDogTW9uZGF5LCBTZXB0ZW1iZXIgMzAsIDIwMTMg
+NToxOCBBTQo+IAo+ID4gPiA+ID4gVG86IERldWNoZXIsIEFsZXhhbmRlcgo+IAo+ID4gPiA+ID4g
+Q2M6IENsZW1lbnMgTGFkaXNjaDsgRGFnZyBTdG9tcGxlcjsgYWxzYS11c2VyQGxpc3RzLnNvdXJj
+ZWZvcmdlLm5ldDsKPiAKPiA+IGFsc2EtCj4gCj4gPiA+ID4gPiBkZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCj4gCj4gPiA+ID4gPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtBbHNhLXVzZXJdIGhk
+bWkgc291bmQgcmVyb3V0ZWQ/Cj4gCj4gPiA+ID4gPgo+IAo+ID4gPiA+ID4gQXQgTW9uLCAzMCBT
+ZXAgMjAxMyAwMjoyMzoyMiArMDAwMCwKPiAKPiA+ID4gPiA+IERldWNoZXIsIEFsZXhhbmRlciB3
+cm90ZToKPiAKPiA+ID4gPiA+ID4KPiAKPiA+ID4gPiA+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3Nh
+Z2UtLS0tLQo+IAo+ID4gPiA+ID4gPiA+IEZyb206IENsZW1lbnMgTGFkaXNjaCBbbWFpbHRvOmNs
+YWRpc2NoQGdvb2dsZW1haWwuY29tXQo+IAo+ID4gPiA+ID4gPiA+IFNlbnQ6IFNhdHVyZGF5LCBT
+ZXB0ZW1iZXIgMjgsIDIwMTMgNjozMyBQTQo+IAo+ID4gPiA+ID4gPiA+IFRvOiBEYWdnIFN0b21w
+bGVyCj4gCj4gPiA+ID4gPiA+ID4gQ2M6IGFsc2EtdXNlckBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQ7
+IERldWNoZXIsIEFsZXhhbmRlcjsgYWxzYS0KPiAKPiA+ID4gPiA+IGRldmVsQGFsc2EtCj4gCj4g
+PiA+ID4gPiA+ID4gcHJvamVjdC5vcmcKPiAKPiA+ID4gPiA+ID4gPiBTdWJqZWN0OiBSZTogW0Fs
+c2EtdXNlcl0gW2Fsc2EtZGV2ZWxdIGhkbWkgc291bmQgcmVyb3V0ZWQ/Cj4gCj4gPiA+ID4gPiA+
+ID4KPiAKPiA+ID4gPiA+ID4gPiBEYWdnIFN0b21wbGVyIHdyb3RlOgo+IAo+ID4gPiA+ID4gPiA+
+ID4+IGRhZ2dzQGdteC5jb20gd3JvdGU6Cj4gCj4gPiA+ID4gPiA+ID4gPj4+IGNhcmQgMDogUENI
+IFtIREEgSW50ZWwgUENIXSwgZGV2aWNlIDM6IEhETUkgMCBbSERNSSAwXQo+IAo+ID4gPiA+ID4g
+PiA+ID4+PiBjYXJkIDE6IEdlbmVyaWMgW0hELUF1ZGlvIEdlbmVyaWNdLCBkZXZpY2UgMzogSERN
+SSAwIFtIRE1JIDBdCj4gCj4gPiA+ID4gPiA+ID4gPj4+IGNhcmQgMjogSERNSSBbSERBIEFUSSBI
+RE1JXSwgZGV2aWNlIDM6IEhETUkgMCBbSERNSSAwXQo+IAo+ID4gPiA+ID4gPiA+ID4+Cj4gCj4g
+PiA+ID4gPiA+ID4gPj4gVGhlIHNlY29uZCBvbmUgaXMgY2FsbGVkICJHZW5lcmljIiBiZWNhdXNl
+IHlvdXIga2VybmVsIGRvZXMgbm90Cj4gCj4gPiAoeWV0KQo+IAo+ID4gPiA+ID4gPiA+ID4+IGtu
+b3cgdGhlIGhhcmR3YXJlLgo+IAo+ID4gPiA+ID4gPiA+ID4+Cj4gCj4gPiA+ID4gPiA+ID4gPj4+
+IDAxOjAwLjEgQXVkaW8gZGV2aWNlOiBBZHZhbmNlZCBNaWNybyBEZXZpY2VzLCBJbmMuIFtBTUQv
+QVRJXQo+IAo+ID4gQ2VkYXIKPiAKPiA+ID4gPiA+ID4gPiBIRE1JIEF1ZGlvIFtSYWRlb24gSEQg
+NTQwMC82MzAwIFNlcmllc10KPiAKPiA+ID4gPiA+ID4gPiA+Pj4gMDY6MDAuMSBBdWRpbyBkZXZp
+Y2U6IEFkdmFuY2VkIE1pY3JvIERldmljZXMsIEluYy4gW0FNRC9BVEldCj4gCj4gPiBSVjYzNQo+
+IAo+ID4gPiA+ID4gPiA+IEhETUkgQXVkaW8gW1JhZGVvbiBIRCAzNjAwIFNlcmllc10KPiAKPiA+
+ID4gPiA+ID4gPiA+Pgo+IAo+ID4gPiA+ID4gPiA+ID4+IFRoZXNlIGFyZSB0aGUgSERNSSBvdXRw
+dXRzIG9mICp0d28qIGdyYXBoaWNzIGNhcmRzLiBUaGUgZmlyc3QKPiAKPiA+IG9uZSdzCj4gCj4g
+PiA+ID4gPiA+ID4gPj4gbW9kZWwgaXMgc28gbmV3IHRoYXQgdGhlIGRyaXZlciBkb2Vzbid0IGtu
+b3cgaXQuCj4gCj4gPiA+ID4gPiA+ID4gPgo+IAo+ID4gPiA+ID4gPiA+ID4gdGhlIDM2MDAgZG9l
+c24ndCBoYXZlIGhkbWkgc29ja2V0IHNvIEkgdGhpbmsgaXQgaXMgaXJyZWxldmFudCBmb3IgbXkK
+PiAKPiA+IGlzc3VlLgo+IAo+ID4gPiA+ID4gPiA+Cj4gCj4gPiA+ID4gPiA+ID4gVGhlIFJWNjM1
+IGNoaXAgZG9lcyBzdXBwb3J0IEhETUkgb3V0cHV0cyAoZXZlbiBpZiBub25lIGFyZQo+IAo+ID4g
+YWN0dWFsbHkKPiAKPiA+ID4gPiA+ID4gPiBjb25uZWN0ZWQpLCBzbyB0aGUgY29ycmVzcG9uZGlu
+ZyBQQ0kgZGV2aWNlIHNob3dzIHVwIGhlcmUuCj4gCj4gPiA+ID4gPiA+ID4KPiAKPiA+ID4gPiA+
+ID4gPiA+Pj4gSWYgeW91IHVwZGF0ZSB0aGUga2VybmVsLCB5b3Ugd2lsbCBnZXQgdHdvIGRldmlj
+ZXMgbmFtZWQgIkhEQQo+IAo+ID4gQVRJCj4gCj4gPiA+ID4gPiA+ID4gSERNSSIuCj4gCj4gPiA+
+ID4gPiA+ID4gPgo+IAo+ID4gPiA+ID4gPiA+ID4gdXBncmFkZSB0byB3aGVyZT8KPiAKPiA+ID4g
+PiA+ID4gPgo+IAo+ID4gPiA+ID4gPiA+IE9vcHMuIEV2ZW4gdGhlIGxhdGVzdCBkcml2ZXIgbGFj
+a3MgdGhlIFBDSSBJRHMgb2YgbWFueSBIRE1JIEhEQQo+IAo+ID4gZGV2aWNlcwo+IAo+ID4gPiA+
+ID4gPiA+IChhYTUwL2FhNTgvYWE2MC9hYTY4L2FhODAvYWE4OC9hYTkwL2FhOTg6Cj4gCj4gPiA+
+ID4gPiA+ID4gQ3lwcmVzcy9KdW5pcGVyL1JlZHdvb2QvQ2VkYXIvCj4gCj4gPiA+ID4gPiA+ID4g
+Q2F5bWFuK0FudGlsbGVzL0JhcnRzL1R1cmtzL0NhaWNvcykuCj4gCj4gPiA+ID4gPiA+ID4KPiAK
+PiA+ID4gPiA+ID4gPiBBbGV4LCBhcmUgdGhlc2UgZGV2aWNlcyB0aGF0IHJlcXVpcmUgZGlzYWJs
+aW5nIHNub29waW5nPwo+IAo+ID4gPiA+ID4gPgo+IAo+ID4gPiA+ID4gPiBTb3JyeSB3aGF0IGRv
+ZXMgc25vb3BpbmcgbWVhbiBpbiB0aGlzIGNvbnRleHQ/Cj4gCj4gPiA+ID4gPgo+IAo+ID4gPiA+
+ID4gTW9zdCBvZiBIRC1hdWRpbyBjb250cm9sbGVyIGhhdmUgYSBzbm9vcCBjb250cm9sLCBidXQg
+dGhlIHJlY2VudCBBTUQKPiAKPiA+ID4gPiA+IEhETUkgYXVkaW8gY29udHJvbGxlciBkb24ndCBo
+YXZlIHRoZSBmZWF0dXJlLCB0aHVzIHRoZSBkcml2ZXIgbXVzdCB1c2UKPiAKPiA+ID4gPiA+IHRo
+ZSBub24tY2FjaGVkIHBhZ2VzLiBBdCBsZWFzdCwgUENJIElEIDEwMDI6YWFhMCwgYWFhOCBhbmQg
+YWFiMCBhcmUKPiAKPiA+ID4gPiA+IGtub3duIHRvIHJlcXVpcmUgc3VjaC4KPiAKPiA+ID4gPiA+
+Cj4gCj4gPiA+ID4gPiBOb3cgdGhlIHF1ZXN0aW9uIGlzIHdoZXRoZXIgYWxsIG5ldyBjaGlwcyBh
+Ym92ZSAoYWE1MCwuLi4pIHJlcXVpcmUgdGhlCj4gCj4gPiA+ID4gPiBzYW1lIHdvcmthcm91bmQs
+IHRvby4gQ291bGQgeW91IGNoZWNrIHRoaXMgb3IgZm9yd2FyZCB0aGUgaW5xdWlyeSB0bwo+IAo+
+ID4gPiA+ID4gc29tZW9uZSBpbiBBTUQ/Cj4gCj4gPiA+ID4KPiAKPiA+ID4gPiBBY2NvcmRpbmcg
+dG8gb3VyIGludGVybmFsIHRlYW1zLCBkaXNhYmxpbmcgc25vb3BpbmcgaXMgb25seSByZXF1aXJl
+ZCBvbgo+IAo+ID4gdGhlIGF1ZGlvIHBhcnRzIGluY2x1ZGVkIGluIEV2ZXJncmVlbiBhbmQgTm9y
+dGhlcm4gSXNsYW5kcyBHUFVzLiBPbGRlciBjaGlwcwo+IAo+ID4gbGlrZSBSN3h4IChhYTQ4KSBh
+bmQgbmV3ZXIgY2hpcHMgbGlrZSBTb3V0aGVybiBJc2xhbmRzIChhYWEwKSBhcmUgYWJsZSB0byB1
+c2UKPiAKPiA+IHNub29waW5nLiBJJ20gbm90IHJlYWwgZmFtaWxpYXIgd2l0aCB0aGUgYXVkaW8g
+cG9ydGlvbnMgb2YgdGhlIEdQVXMgc28gaWYgeW91Cj4gCj4gPiBuZWVkIGZ1cnRoZXIgY2xhcmlm
+aWNhdGlvbiwgbGV0IG1lIGtub3cuCj4gCj4gPiA+Cj4gCj4gPiA+IFRoYW5rcyBmb3IgdGhlIGlu
+Zm9ybWF0aW9uLgo+IAo+ID4gPgo+IAo+ID4gPiBUaG91Z2gsIGl0J3Mgc3RyYW5nZSB0aGF0IHRo
+ZSBpbmZvcm1hdGlvbiBkb2Vzbid0IG1hdGNoIHdpdGggd2hhdCBJJ3ZlCj4gCj4gPiA+IGhlYXJk
+IChhbmQgYWxzbyB3aXRoIHdoYXQgSSd2ZSB0ZXN0ZWQgd2l0aCBhIGxhcHRvcCkuIEkndmUgaGVh
+cmQgdGhhdAo+IAo+ID4gPiBpdCdzIFNvdXRoZXJuIElzbGFuZCBIRE1JIHRoYXQgbmVlZHMgdGhl
+IHNub29wLWRpc2FibGVtZW50Lgo+IAo+ID4gPgo+IAo+ID4gPiBDb3VsZCB5b3UgYXNrIGFnYWlu
+IHdoZXRoZXIgaXQncyByZWFsbHkgRXZlcmdyZWVuIC8gTm90aGVybiBJc2xhbmRzPwo+IAo+ID4g
+Pgo+IAo+ID4gPgo+IAo+ID4gPiB0aGFua3MsCj4gCj4gPiA+Cj4gCj4gPiA+IFRha2FzaGkKPiAK
+PiA+ID4KPiAKPiA+ID4gPgo+IAo+ID4gPiA+IEFsZXgKPiAKPiA+ID4gPgo+IAo+ID4gPiA+ID4K
+PiAKPiA+ID4gPiA+IEZXSVcsIHN1Y2ggYSBjaGlwIG5lZWRzIHRvIHNldCBBWlhfRFJJVkVSX0FU
+SUhETUlfTlMgYml0cyBpbgo+IAo+ID4gPiA+ID4gZHJpdmVyX2RhdGEgb2YgcGNpIGVudHJpZXMg
+aW4gc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYy4KPiAKPiA+ID4gPiA+Cj4gCj4gPiA+ID4gPgo+
+IAo+ID4gPiA+ID4gdGhhbmtzLAo+IAo+ID4gPiA+ID4KPiAKPiA+ID4gPiA+IFRha2FzaGkKPiAK
+PiA+ID4gPgo+IAo+ID4gPiA+Cj4gCj4gPiAKPiAKPiA+IGFueSB1cGRhdGVzIG9uIHRoZSBtYXR0
+ZXIgZ3V5cz8KPiAKPiAKPiAKPiAKPiAKPiBIYXZlbid0IGhlYXJkIGJhY2suIEknbGwgcGluZyB0
+aGVtIGFnYWluLgo+IAo+IAo+IAo+IEFsZXgKCnNvcnJ5IGZvciBudWRnaW5nLCBhbnkgdXBkYXRl
+cz8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
