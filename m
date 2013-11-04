@@ -1,20 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: hda - Add sanity check of vmaster
-	slave dB steps
-Date: Mon,  4 Nov 2013 17:08:30 +0100
-Message-ID: <1383581310-9947-2-git-send-email-tiwai@suse.de>
-References: <1383581310-9947-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Introduce the bitmask for
+	excluding output volume
+Date: Mon,  4 Nov 2013 17:09:06 +0100
+Message-ID: <1383581346-10018-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (unknown [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 822E5264E9D
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 17:08:50 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 4E21FA60D0
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 17:08:30 +0100 (CET)
-In-Reply-To: <1383581310-9947-1-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7DF1F264FD7
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 17:09:26 +0100 (CET)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 5EF27A60D0
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 17:09:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,62 +25,72 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Check whether all vmaster slaves have the same dB steps.  Otherwise
-the behavior would become inconsistent.
+Add a bitmask to hda_gen_spec indicating NIDs to exclude from the
+possible volume controls.  That is, when the bit is set, the NID
+corresponding to the bit won't be picked as an output volume control
+any longer.
 
+Basically this is just a band-aid for working around the issue found
+with CS4208 codec, where only the headphone pin has a volume AMP with
+different dB steps.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=60811
+Cc: <stable@vger.kernel.org> [v3.12+]
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ sound/pci/hda/hda_generic.c  | 8 ++++++--
+ sound/pci/hda/hda_generic.h  | 3 +++
+ sound/pci/hda/patch_cirrus.c | 2 ++
+ 3 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 33c01d551aa4..dd5403d40830 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -2661,7 +2661,7 @@ static int check_slave_present(void *data, struct snd_kcontrol *sctl)
- }
- 
- /* guess the value corresponding to 0dB */
--static int get_kctl_0dB_offset(struct snd_kcontrol *kctl)
-+static int get_kctl_0dB_offset(struct snd_kcontrol *kctl, int *step_to_check)
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index b7c89dff7066..276f6e759bac 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -549,11 +549,15 @@ static hda_nid_t look_for_out_mute_nid(struct hda_codec *codec,
+ static hda_nid_t look_for_out_vol_nid(struct hda_codec *codec,
+ 				      struct nid_path *path)
  {
- 	int _tlv[4];
- 	const int *tlv = NULL;
-@@ -2681,6 +2681,12 @@ static int get_kctl_0dB_offset(struct snd_kcontrol *kctl)
- 		step &= ~TLV_DB_SCALE_MUTE;
- 		if (!step)
- 			return -1;
-+		if (*step_to_check && *step_to_check != step) {
-+			snd_printk(KERN_ERR "hda_codec: Mismatching dB step for vmaster slave (%d!=%d)\n",
-+				   *step_to_check, step);
-+			return -1;
-+		}
-+		*step_to_check = step;
- 		val = -tlv[2] / step;
++	struct hda_gen_spec *spec = codec->spec;
+ 	int i;
+ 
+ 	for (i = path->depth - 1; i >= 0; i--) {
+-		if (nid_has_volume(codec, path->path[i], HDA_OUTPUT))
+-			return path->path[i];
++		hda_nid_t nid = path->path[i];
++		if ((spec->out_vol_mask >> nid) & 1)
++			continue;
++		if (nid_has_volume(codec, nid, HDA_OUTPUT))
++			return nid;
  	}
- 	return val;
-@@ -2703,7 +2709,7 @@ static int put_kctl_with_value(struct snd_kcontrol *kctl, int val)
- /* initialize the slave volume with 0dB */
- static int init_slave_0dB(void *data, struct snd_kcontrol *slave)
- {
--	int offset = get_kctl_0dB_offset(slave);
-+	int offset = get_kctl_0dB_offset(slave, data);
- 	if (offset > 0)
- 		put_kctl_with_value(slave, offset);
  	return 0;
-@@ -2764,9 +2770,11 @@ int __snd_hda_add_vmaster(struct hda_codec *codec, char *name,
+ }
+diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
+index 48d44026705b..7e45cb44d151 100644
+--- a/sound/pci/hda/hda_generic.h
++++ b/sound/pci/hda/hda_generic.h
+@@ -242,6 +242,9 @@ struct hda_gen_spec {
+ 	/* additional mute flags (only effective with auto_mute_via_amp=1) */
+ 	u64 mute_bits;
  
- 	/* init with master mute & zero volume */
- 	put_kctl_with_value(kctl, 0);
--	if (init_slave_vol)
-+	if (init_slave_vol) {
-+		int step = 0;
- 		map_slaves(codec, slaves, suffix,
--			   tlv ? init_slave_0dB : init_slave_unmute, kctl);
-+			   tlv ? init_slave_0dB : init_slave_unmute, &step);
-+	}
++	/* bitmask for skipping volume controls */
++	u64 out_vol_mask;
++
+ 	/* badness tables for output path evaluations */
+ 	const struct badness_table *main_out_badness;
+ 	const struct badness_table *extra_out_badness;
+diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
+index 18d972501585..38d073ed4bcc 100644
+--- a/sound/pci/hda/patch_cirrus.c
++++ b/sound/pci/hda/patch_cirrus.c
+@@ -660,6 +660,8 @@ static int patch_cs4208(struct hda_codec *codec)
+ 		return -ENOMEM;
  
- 	if (ctl_ret)
- 		*ctl_ret = kctl;
+ 	spec->gen.automute_hook = cs_automute;
++	/* exclude NID 0x10 (HP) from output volumes due to different steps */
++	spec->gen.out_vol_mask = 1ULL << 0x10;
+ 
+ 	snd_hda_pick_fixup(codec, cs4208_models, cs4208_fixup_tbl,
+ 			   cs4208_fixups);
 -- 
 1.8.4.2
