@@ -1,18 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Introduce the bitmask for
-	excluding output volume
-Date: Mon,  4 Nov 2013 17:09:06 +0100
-Message-ID: <1383581346-10018-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: What about symmetric_channels and
+	symmetric_samplebits?
+Date: Mon, 4 Nov 2013 08:17:03 -0800
+Message-ID: <20131104161703.GJ2493@sirena.org.uk>
+References: <20131104110250.GA2652@MrMyself>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4409186481023593987=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (unknown [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7DF1F264FD7
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 17:09:26 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5EF27A60D0
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 17:09:06 +0100 (CET)
+Received: from cassiel.sirena.org.uk (unknown [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id B70E5262629
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 17:17:55 +0100 (CET)
+In-Reply-To: <20131104110250.GA2652@MrMyself>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,75 +20,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add a bitmask to hda_gen_spec indicating NIDs to exclude from the
-possible volume controls.  That is, when the bit is set, the NID
-corresponding to the bit won't be picked as an output volume control
-any longer.
 
-Basically this is just a band-aid for working around the issue found
-with CS4208 codec, where only the headphone pin has a volume AMP with
-different dB steps.
+--===============4409186481023593987==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vFj1JTFBn4Zx1dEI"
+Content-Disposition: inline
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=60811
-Cc: <stable@vger.kernel.org> [v3.12+]
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_generic.c  | 8 ++++++--
- sound/pci/hda/hda_generic.h  | 3 +++
- sound/pci/hda/patch_cirrus.c | 2 ++
- 3 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index b7c89dff7066..276f6e759bac 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -549,11 +549,15 @@ static hda_nid_t look_for_out_mute_nid(struct hda_codec *codec,
- static hda_nid_t look_for_out_vol_nid(struct hda_codec *codec,
- 				      struct nid_path *path)
- {
-+	struct hda_gen_spec *spec = codec->spec;
- 	int i;
- 
- 	for (i = path->depth - 1; i >= 0; i--) {
--		if (nid_has_volume(codec, path->path[i], HDA_OUTPUT))
--			return path->path[i];
-+		hda_nid_t nid = path->path[i];
-+		if ((spec->out_vol_mask >> nid) & 1)
-+			continue;
-+		if (nid_has_volume(codec, nid, HDA_OUTPUT))
-+			return nid;
- 	}
- 	return 0;
- }
-diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 48d44026705b..7e45cb44d151 100644
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -242,6 +242,9 @@ struct hda_gen_spec {
- 	/* additional mute flags (only effective with auto_mute_via_amp=1) */
- 	u64 mute_bits;
- 
-+	/* bitmask for skipping volume controls */
-+	u64 out_vol_mask;
-+
- 	/* badness tables for output path evaluations */
- 	const struct badness_table *main_out_badness;
- 	const struct badness_table *extra_out_badness;
-diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
-index 18d972501585..38d073ed4bcc 100644
---- a/sound/pci/hda/patch_cirrus.c
-+++ b/sound/pci/hda/patch_cirrus.c
-@@ -660,6 +660,8 @@ static int patch_cs4208(struct hda_codec *codec)
- 		return -ENOMEM;
- 
- 	spec->gen.automute_hook = cs_automute;
-+	/* exclude NID 0x10 (HP) from output volumes due to different steps */
-+	spec->gen.out_vol_mask = 1ULL << 0x10;
- 
- 	snd_hda_pick_fixup(codec, cs4208_models, cs4208_fixup_tbl,
- 			   cs4208_fixups);
--- 
-1.8.4.2
+--vFj1JTFBn4Zx1dEI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Nov 04, 2013 at 07:02:51PM +0800, Nicolin Chen wrote:
+
+> In soc-pcm.c, we have soc_pcm_apply_symmetry() to solve unmatched
+> sample rates situation for simultaneous playback and capture. But
+> we don't have one for channels. Is that reasonable to add a similar
+> one for it?
+
+Yes.
+
+> Likewise, we can treat symmetric_rate as a solution for those SoCs
+> or CODECs which can not handle asymmetrical LRCLK. But it's also
+> impossible for them to handle asymmetrical BCLK. And accodring to
+> BCLK = LRCLK * channel number * slot size(fixed or sample bits),
+> sample bits might also be a problem if they are not using a fixed
+> slot size.
+
+We could add core support for that constraint too, yes.
+
+--vFj1JTFBn4Zx1dEI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSd8h8AAoJELSic+t+oim9UYwP/3fbU2D07UmfILfzznqllj/N
+HDsvLm5zDlWikOvbA+yzsreGKrgrc7WFOkzxVDdvuqnSkeCkjgFBV7JCV9Muf8cd
++5NTV7+7saMySiFK+fDltCcWWrOw4Rxntz4+FMQ8GkzKvP18knQpPEEZFXdeSdLg
+RRCPAmMvpM9OnkrJSvFzAg6TOY10Dqp2+q4Do3He12aoxQwY/UaDFeQm1LeOEry0
+znKIrtG2bGvR8WVL/FbrjMRq+ZoqI8XPyQCjtNaeYdkURKt40Gsy/bM3i9uCkqhM
+71yMOij5SJNSJH65i5F7hO7Bppi1HNLtc0SXIuJUWVBjRpmhiKVH3yvUd2J+clXv
+IAR37E3Vb6YhBKZANRrVhOOIdx3zENE0QWsITBa7LEbKoSmCLFJmbxErRcNiZfVM
+MvETmdafv4gjyZgW8imVLmMSwKVxtOIK0QCqKWLPMoiUoxo8zEq6OG3hTqXeSibu
+m82QAf9kIi88CcspXrgupouzGqG9FHxhFMy/pDR2s/BHzPy2ziDiHZ/aUlYP30cx
+Kp3+QJtrcfA/YJAHM4iCEkm9q1YXAATNoLhOZLP+6iiP+EgZvrJNAVr7dY6Fm+hq
+ui00zhmUBleXX7JfKFTWcgMAaWTsyjs9GF1ahDUTt2FukRw0mZVmLsa57QzRTiBt
+Yw/YbUgKQ81OOBGB8MH/
+=xwUh
+-----END PGP SIGNATURE-----
+
+--vFj1JTFBn4Zx1dEI--
+
+--===============4409186481023593987==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4409186481023593987==--
