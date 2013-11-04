@@ -1,19 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [RFC] ALSA: usb: supply channel maps even when
- wChannelConfig is unspecified
-Date: Mon, 04 Nov 2013 10:47:18 +0100
-Message-ID: <52776D26.5060007@canonical.com>
-References: <1383320339-22666-1-git-send-email-david.henningsson@canonical.com>	<s5hzjpkr1ai.wl%tiwai@suse.de>	<527766CC.2050609@canonical.com>
- <s5hr4awqzr4.wl%tiwai@suse.de>
+From: Li Xiubo <B47053@freescale.com>
+Subject: Re: [PATCHv2 6/8] ASoC: fsl: add SGTL5000 based audio
+ machine driver.
+Date: Mon, 4 Nov 2013 09:52:44 +0000
+Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F82874583@039-SN2MPN1-013.039d.mgd.msft.net>
+References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
+ <1383289495-24523-7-git-send-email-Li.Xiubo@freescale.com>
+ <20131101184008.GF2493@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id EF2C4260795
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 10:47:21 +0100 (CET)
-In-Reply-To: <s5hr4awqzr4.wl%tiwai@suse.de>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe006.messaging.microsoft.com [216.32.180.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id 827962608CA
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 10:52:49 +0100 (CET)
+In-Reply-To: <20131101184008.GF2493@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,90 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Huan Wang <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, Shawn Guo <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Guangyu Chen <B42378@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "oskar@scara.com" <oskar@scara.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/04/2013 10:31 AM, Takashi Iwai wrote:
-> At Mon, 04 Nov 2013 10:20:12 +0100,
-> David Henningsson wrote:
->>
->> On 11/04/2013 09:58 AM, Takashi Iwai wrote:
->>> At Fri,  1 Nov 2013 16:38:59 +0100,
->>> David Henningsson wrote:
->>>>
->>>> If wChannelconfig is given for some formats but not others, userspace
->>>> might not be able to set the channel map.
->>>>
->>>> This is RFC because I'm not sure what the best behaviour is - to guess
->>>> the channel map from the given number of channels (it's quite likely
->>>> that one channel is MONO and two channels is FL FR), or just to supply
->>>> UNKNOWN for all channels.
->>>>
->>>
->>> In the case of USB-audio, I guess this is OK to fill the guessed
->>> chmaps, especially for the mono channel.  So I can take this patch if
->>> you already tested on your device.
->>>
->>>> But the complete lack of channel map for a format leads userspace to
->>>> believe that the format is not available at all. Or am I
->>>> misunderstanding how this should be used?
->>>
->>> The chmap is just an optional information, thus excluding the format
->>> due to the lack of chmap doesn't sound right.  The lack of chmap means
->>> merely that the hardware doesn't give the chmap information, but the
->>> format itself must be available.
->>>
->>> So, in the case of PA, I'd expect it handles such a format as is of
->>> now, just guessing / using the pre-defined chmaps.
->>
->> Ok, can you clarify this (theoretical) example:
->>
->> I wanted to use the channel mapping API to distinguish between 2.1
->> surround and 4.0 surround.
->> Now assume we're connected to some device, successfully set hw params to
->> four output channels.
->> When then asking for maps through query_chmaps, it returns one chmap
->> only, and its value is "FL FR".
-> 
-> Was this the case with USB-audio?  Or which device did you see this
-> behavior?
-> 
->> What should PA do in this situation?
->>
->>  1) Skip both 2.1 and 4.0 surround, after all, it supports only FL FR chmap.
->>
->>  2) Allow both 2.1 and 4.0 surround, since we did not get a chmap that
->> had the same amount of channels as we set the hwparams to.
->>
->>  3) Either option 1 or 2, but also complain loudly about the fact that
->> we set the hwparams to 4 channels but got a chmap that wasn't 4
->> channels, and ask ALSA developers to fix the driver.
-> 
-> In that case, I'd take 1.  If the driver returns any valid chmap
-> information associated with the given PCM, it should cover all cases.
-> OTOH, I'd add a flag to ignore the chmap information in PA, too, in
-> case the driver (or hardware) returns bogus information.
-> 
-> IMO, in such a case, it's fairly unlikely a driver problem.
-> At least for the driver like USB-audio and HD-audio.  It's the
-> situation where hardware doesn't inform which chmaps are available,
-> thus the driver cannot advertise as well.  If so, there is no reason
-> that driver must apply any policy.  Rather it's free for user-space
-> how to interpret it.
 
-So, my USB headset supplies wChannelConfig, but not for all cases. I've
-posted lsusb -v here: http://bpaste.net/show/146566/ if you're interested.
+> > Conflicts:
+> > 	sound/soc/fsl/Makefile
+> 
+> Ahem.
+> 
 
-So while the stream supported both mono and stereo output, only the
-stereo output had chmap information, so when I set the hwparams channels
-to 1, I only got "FL FR" back as chmap information. So my situation was
-similar to the above scenario.
+This will be removed.
 
-So, as a conclusion, if 1) is the right choice above, then I think my
-patch makes sense. I should probably test it first though, which I was
-too lazy to do on a Friday afternoon last week. :-)
+> > +static int fsl_sgtl5000_remove(struct platform_device *pdev) {
+> > +	snd_soc_unregister_card(&fsl_sgt1500_card);
+> > +
+> > +	return 0;
+> > +}
+> 
+> You're using snd_soc_unregister_card() so you don't need to do this.
+>
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+See the next version.
