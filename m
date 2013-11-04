@@ -1,169 +1,99 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH v4] ASoC: Add pinctrl PM to components of active DAIs
-Date: Mon, 4 Nov 2013 14:57:31 +0800
-Message-ID: <1383548251-17655-1-git-send-email-b42378@freescale.com>
+From: Li Xiubo <B47053@freescale.com>
+Subject: Re: [PATCHv2 1/8] ALSA: Add SAI SoC Digital Audio
+	Interface driver.
+Date: Mon, 4 Nov 2013 07:35:12 +0000
+Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F8287439D@039-SN2MPN1-013.039d.mgd.msft.net>
+References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
+ <1383289495-24523-2-git-send-email-Li.Xiubo@freescale.com>
+ <20131101182514.GE2493@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe001.messaging.microsoft.com [216.32.180.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59B172617B8
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 08:35:19 +0100 (CET)
+In-Reply-To: <20131101182514.GE2493@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Huan Wang <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, Shawn Guo <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Guangyu Chen <B42378@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "oskar@scara.com" <oskar@scara.com>
 List-Id: alsa-devel@alsa-project.org
 
-It's quite popular that more drivers are using pinctrl PM, for example:
-(Documentation/devicetree/bindings/arm/primecell.txt). Just like what
-runtime PM does, it would deactivate and activate pin group depending
-on whether it's being used or not.
+> > +static int fsl_sai_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+> > +		int div_id, int div)
+> > +{
+> > +	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+> > +	u32 tcr2, rcr2;
+> > +
+> > +	if (div_id == FSL_SAI_TX_DIV) {
+> > +		tcr2 = readl(sai->base + FSL_SAI_TCR2);
+> > +		tcr2 &= ~FSL_SAI_CR2_DIV_MASK;
+> > +		tcr2 |= FSL_SAI_CR2_DIV(div);
+> > +		writel(tcr2, sai->base + FSL_SAI_TCR2);
+> 
+> What is this divider and why does the user have to set it manually?
+> 
 
-And this pinctrl PM might be also beneficial to cpu dai drivers because
-they might have actual pinctrl so as to sleep their pins and wake them
-up as needed.
+This is the bit clock divider. I'll add some comments or rename them to be more readable.
+>From the IP spec:
+++++++
+Bit Clock Divide
+Divides down the audio master clock to generate the bit clock when configured for an internal bit clock.
+------
 
-To achieve this goal, this patch sets pins to the default state during
-resume or startup; While during suspend and shutdown, it would set pins
-to the sleep state.
+>From the ASoC subsystem comments we can see that:
+++++++
+Configures the clock dividers. This is used to derive the best DAI bit and
+frame clocks from the system or master clock. It's best to set the DAI bit
+and frame clocks as low as possible to save system power.
+------
 
-As pinctrl PM would return zero if there is no such pinctrl sleep state
-settings, this patch would not break current ASoC subsystem directly.
 
-[ However, there is still an exception that the patch can not handle,
-that is, when cpu dai driver does not have pinctrl property but another
-device has it. (The AUDMUX <-> SSI on Freescale i.MX6 series for example.
-SSI as a cpu dai doesn't contain pinctrl property while AUDMUX, an Audio
-Multiplexer, has it). In this case, this kind of cpu dai driver needs to
-find a way to obtain the pinctrl property as its own, by moving property
-from AUDMUX to SSI, or creating a pins link/dependency between these two
-devices, or using a more decent way after we figure it out. ]
+> > +static int fsl_sai_dai_probe(struct snd_soc_dai *dai) {
+> > +	int ret;
+> > +	struct fsl_sai *sai = dev_get_drvdata(dai->dev);
+> > +
+> > +	ret = clk_prepare_enable(sai->clk);
+> > +	if (ret)
+> > +		return ret;
+> 
+> It'd be nicer to only enable the clock while the device is in active use.
+> 
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
-Changelog:
-v4:
- * Fix build break happened to x86 (missing header file)
-v3:
- * Add pinctrl_pm() for codec_dai/codec
- * Add more proper active check for each pinctrl_pm_select_xx()
-v2:
- * Add cpu_dai->active check
+While if the module clock is not enabled here, the followed registers cannot read/write in the same function.
+And this _probe function is the _dai_probe not the driver's module _probe.
 
- sound/soc/soc-core.c | 33 +++++++++++++++++++++++++++++++++
- sound/soc/soc-pcm.c  | 11 +++++++++++
- 2 files changed, 44 insertions(+)
+If the clk_prepare_enable(sai->clk) is not here, where should it be will be nicer ?
+One of the following functions ?
+        .set_sysclk     = fsl_sai_set_dai_sysclk,
+        .set_clkdiv     = fsl_sai_set_dai_clkdiv,
+        .set_fmt        = fsl_sai_set_dai_fmt,
+        .set_tdm_slot   = fsl_sai_set_dai_tdm_slot,
+        .hw_params      = fsl_sai_hw_params,
+        .trigger        = fsl_sai_trigger,
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index bdc1d74..4e53d87 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -662,6 +662,8 @@ int snd_soc_suspend(struct device *dev)
- 				codec->cache_sync = 1;
- 				if (codec->using_regmap)
- 					regcache_mark_dirty(codec->control_data);
-+				/* deactivate pins to sleep state */
-+				pinctrl_pm_select_sleep_state(codec->dev);
- 				break;
- 			default:
- 				dev_dbg(codec->dev,
-@@ -679,6 +681,9 @@ int snd_soc_suspend(struct device *dev)
- 
- 		if (cpu_dai->driver->suspend && cpu_dai->driver->ac97_control)
- 			cpu_dai->driver->suspend(cpu_dai);
-+
-+		/* deactivate pins to sleep state */
-+		pinctrl_pm_select_sleep_state(cpu_dai->dev);
- 	}
- 
- 	if (card->suspend_post)
-@@ -807,6 +812,16 @@ int snd_soc_resume(struct device *dev)
- 	if (list_empty(&card->codec_dev_list))
- 		return 0;
- 
-+	/* activate pins from sleep state */
-+	for (i = 0; i < card->num_rtd; i++) {
-+		struct snd_soc_dai *cpu_dai = card->rtd[i].cpu_dai;
-+		struct snd_soc_dai *codec_dai = card->rtd[i].codec_dai;
-+		if (cpu_dai->active)
-+			pinctrl_pm_select_default_state(cpu_dai->dev);
-+		if (codec_dai->active)
-+			pinctrl_pm_select_default_state(codec_dai->dev);
-+	}
-+
- 	/* AC97 devices might have other drivers hanging off them so
- 	 * need to resume immediately.  Other drivers don't have that
- 	 * problem and may take a substantial amount of time to resume
-@@ -1929,6 +1944,14 @@ int snd_soc_poweroff(struct device *dev)
- 
- 	snd_soc_dapm_shutdown(card);
- 
-+	/* deactivate pins to sleep state */
-+	for (i = 0; i < card->num_rtd; i++) {
-+		struct snd_soc_dai *cpu_dai = card->rtd[i].cpu_dai;
-+		struct snd_soc_dai *codec_dai = card->rtd[i].codec_dai;
-+		pinctrl_pm_select_sleep_state(codec_dai->dev);
-+		pinctrl_pm_select_sleep_state(cpu_dai->dev);
-+	}
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_soc_poweroff);
-@@ -3767,6 +3790,16 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 	if (ret != 0)
- 		soc_cleanup_card_debugfs(card);
- 
-+	/* deactivate pins to sleep state */
-+	for (i = 0; i < card->num_rtd; i++) {
-+		struct snd_soc_dai *cpu_dai = card->rtd[i].cpu_dai;
-+		struct snd_soc_dai *codec_dai = card->rtd[i].codec_dai;
-+		if (!codec_dai->active)
-+			pinctrl_pm_select_sleep_state(codec_dai->dev);
-+		if (!cpu_dai->active)
-+			pinctrl_pm_select_sleep_state(cpu_dai->dev);
-+	}
-+
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_soc_register_card);
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index d81b792..3a7e78f 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -19,6 +19,7 @@
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
-+#include <linux/pinctrl/consumer.h>
- #include <linux/pm_runtime.h>
- #include <linux/slab.h>
- #include <linux/workqueue.h>
-@@ -183,6 +184,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	struct snd_soc_dai_driver *codec_dai_drv = codec_dai->driver;
- 	int ret = 0;
- 
-+	pinctrl_pm_select_default_state(cpu_dai->dev);
-+	pinctrl_pm_select_default_state(codec_dai->dev);
- 	pm_runtime_get_sync(cpu_dai->dev);
- 	pm_runtime_get_sync(codec_dai->dev);
- 	pm_runtime_get_sync(platform->dev);
-@@ -317,6 +320,10 @@ out:
- 	pm_runtime_put(platform->dev);
- 	pm_runtime_put(codec_dai->dev);
- 	pm_runtime_put(cpu_dai->dev);
-+	if (!codec_dai->active)
-+		pinctrl_pm_select_sleep_state(codec_dai->dev);
-+	if (!cpu_dai->active)
-+		pinctrl_pm_select_sleep_state(cpu_dai->dev);
- 
- 	return ret;
- }
-@@ -426,6 +433,10 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
- 	pm_runtime_put(platform->dev);
- 	pm_runtime_put(codec_dai->dev);
- 	pm_runtime_put(cpu_dai->dev);
-+	if (!codec_dai->active)
-+		pinctrl_pm_select_sleep_state(codec_dai->dev);
-+	if (!cpu_dai->active)
-+		pinctrl_pm_select_sleep_state(cpu_dai->dev);
- 
- 	return 0;
- }
--- 
-1.8.4
+
+> > +	ret = snd_dmaengine_pcm_register(&pdev->dev, NULL,
+> > +			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
+> > +	if (ret)
+> > +		return ret;
+> 
+> We should have a devm_ version of this.
+
+Sorry, is there one patch for adding the devm_ version of snd_dmaengine_pcm_register() already ?
+In the -next and other topics branches I could not find it.
+
+
+
+Best Regards,
+Xiubo
