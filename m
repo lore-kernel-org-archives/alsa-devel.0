@@ -1,162 +1,96 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: [PATCH] ALSA: hda - hdmi: Disallow unsupported 2ch
-	remapping on NVIDIA codecs
-Date: Sun,  3 Nov 2013 17:15:00 +0200
-Message-ID: <1383491700-2477-1-git-send-email-anssi.hannula@iki.fi>
-References: <s5hmwlrjmhm.wl%tiwai@suse.de>
+From: "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>
+Subject: Re: [PATCHv2 1/3] ACPI: Expose struct acpi_device and acpi_bus_get_device() to non-ACPI builds
+Date: Mon, 04 Nov 2013 02:00:45 +0100
+Message-ID: <5990097.jCz86Yqdpc@vostro.rjw.lan>
+References: <1382703540-3769-1-git-send-email-jarkko.nikula@linux.intel.com> <1383309356-25430-2-git-send-email-jarkko.nikula@linux.intel.com> <3858838.4tAO673dDi@vostro.rjw.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
- [83.102.40.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 904A72610B7
- for <alsa-devel@alsa-project.org>; Sun,  3 Nov 2013 16:15:08 +0100 (CET)
-In-Reply-To: <s5hmwlrjmhm.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Aaron Plattner <aplattner@nvidia.com>, Juho Teperi <juho.teperi@iki.fi>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <3858838.4tAO673dDi-sKB8Sp2ER+y1GS7QM15AGw@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-NVIDIA HDMI codecs do not seem to follow the Audio Sample Packet (ASP)
-channel mapping (as set by verb F32h per HDA specification 7.3.3.41)
-when playing back 2-channel audio (CEA CA 0x00).
+On Saturday, November 02, 2013 11:18:31 PM Rafael J. Wysocki wrote:
+> On Friday, November 01, 2013 02:35:54 PM Jarkko Nikula wrote:
+> > We may find use for struct acpi_device and acpi_bus_get_device() in generic
+> > code without wanting to add #if IS_ENABLED(CONFIG_ACPI) churn there.
+> > 
+> > Code can use ACPI_HANDLE() test to let compiler optimize out code blocks
+> > that are not used in !CONFIG_ACPI builds but structure definitions and
+> > function stubs must be available.
+> > 
+> > This patch moves CONFIG_ACPI test so that struct acpi_device definition
+> > is available for all builds that include acpi_bus.h and provides a stub for
+> > acpi_bus_get_device().
+> > 
+> > Signed-off-by: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+> 
+> This turns out the cause build problems to happen on some architectures.
+> 
+> I guess it's sufficient to simply define a stub struct acpi_device as
+> 
+> struct acpi_device {
+> 	struct device dev;
+> };
+> 
+> for !CONFIG_ACPI instead.
 
-Basically this means that specifying swapped channels for stereo audio
-(FR,FL) does not take effect, and e.g. this command plays back on the
-wrong channel:
-speaker-test -c2 -Dhdmi:CARD=NVidia,DEV=0 -m FR,FL -s1
+Generally, it is a bad idea to #include acpi_bus.h for !CONFIG_ACPI.
 
-Multichannel audio is not affected.
+The appended patch works for me, sorry for stealing part of your changelog.
 
-This issue has been confirmed to exist on codec 0x10de0015 by me and on
-0x10de0040 by Juho Teperi.
+Thanks,
+Rafael
 
-Disable 2ch FL/FR channel swapping on all NVIDIA HDMI codecs that use
-the standard HDA channel mapping system. Since this is a very minor
-functionality loss, we err on the side of disabling it for newer codecs
-as well until any future testing confirms that this issue has been
-fixed.
 
-Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
-Helped-by: Juho Teperi <juho.teperi@iki.fi>
-Cc: Aaron Plattner <aplattner@nvidia.com>
 ---
- sound/pci/hda/patch_hdmi.c | 86 +++++++++++++++++++++++++++++++++-------------
- 1 file changed, 63 insertions(+), 23 deletions(-)
+From: Rafael J. Wysocki <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: ACPI: Define struct acpi_device for CONFIG_ACPI unset
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index d61cc2ab52af..c3e3537b3196 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2787,6 +2787,46 @@ static int patch_nvhdmi_8ch_7x(struct hda_codec *codec)
+We may find use for struct acpi_device and acpi_bus_get_device() in
+generic code without wanting to add #if IS_ENABLED(CONFIG_ACPI) churn
+there.
+
+Code can use ACPI_HANDLE() test to let compiler optimize out code
+blocks that are not used in !CONFIG_ACPI builds but structure
+definitions and function stubs must be available.
+
+Define a stub struct acpi_device for CONFIG_ACPI unset containing dev
+as the only member and a stub acpi_bus_get_device() always returning
+an error code.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+---
+ include/linux/acpi.h |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+Index: linux-pm/include/linux/acpi.h
+===================================================================
+--- linux-pm.orig/include/linux/acpi.h
++++ linux-pm/include/linux/acpi.h
+@@ -472,7 +472,17 @@ static inline bool acpi_driver_match_dev
  }
  
- /*
-+ * NVIDIA codecs ignore ASP mapping for 2ch - confirmed on:
-+ * - 0x10de0015
-+ * - 0x10de0040
-+ */
-+static int nvhdmi_chmap_cea_alloc_validate_get_type(struct cea_channel_speaker_allocation *cap,
-+						    int channels)
-+{
-+	if (cap->ca_index == 0x00 && channels == 2)
-+		return SNDRV_CTL_TLVT_CHMAP_FIXED;
-+
-+	return hdmi_chmap_cea_alloc_validate_get_type(cap, channels);
-+}
-+
-+static int nvhdmi_chmap_validate(int ca, int chs, unsigned char *map)
-+{
-+	if (ca == 0x00 && (map[0] != SNDRV_CHMAP_FL || map[1] != SNDRV_CHMAP_FR))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static int patch_nvhdmi(struct hda_codec *codec)
-+{
-+	struct hdmi_spec *spec;
-+	int err;
-+
-+	err = patch_generic_hdmi(codec);
-+	if (err)
-+		return err;
-+
-+	spec = codec->spec;
-+
-+	spec->ops.chmap_cea_alloc_validate_get_type =
-+		nvhdmi_chmap_cea_alloc_validate_get_type;
-+	spec->ops.chmap_validate = nvhdmi_chmap_validate;
-+
-+	return 0;
-+}
-+
-+/*
-  * ATI/AMD-specific implementations
-  */
+ #define ACPI_PTR(_ptr)	(NULL)
++typedef void * acpi_handle;
  
-@@ -3167,30 +3207,30 @@ static const struct hda_codec_preset snd_hda_preset_hdmi[] = {
- { .id = 0x10de0005, .name = "MCP77/78 HDMI",	.patch = patch_nvhdmi_8ch_7x },
- { .id = 0x10de0006, .name = "MCP77/78 HDMI",	.patch = patch_nvhdmi_8ch_7x },
- { .id = 0x10de0007, .name = "MCP79/7A HDMI",	.patch = patch_nvhdmi_8ch_7x },
--{ .id = 0x10de000a, .name = "GPU 0a HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de000b, .name = "GPU 0b HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de000c, .name = "MCP89 HDMI",	.patch = patch_generic_hdmi },
--{ .id = 0x10de000d, .name = "GPU 0d HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0010, .name = "GPU 10 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0011, .name = "GPU 11 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0012, .name = "GPU 12 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0013, .name = "GPU 13 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0014, .name = "GPU 14 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0015, .name = "GPU 15 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0016, .name = "GPU 16 HDMI/DP",	.patch = patch_generic_hdmi },
-+{ .id = 0x10de000a, .name = "GPU 0a HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de000b, .name = "GPU 0b HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de000c, .name = "MCP89 HDMI",	.patch = patch_nvhdmi },
-+{ .id = 0x10de000d, .name = "GPU 0d HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0010, .name = "GPU 10 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0011, .name = "GPU 11 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0012, .name = "GPU 12 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0013, .name = "GPU 13 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0014, .name = "GPU 14 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0015, .name = "GPU 15 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0016, .name = "GPU 16 HDMI/DP",	.patch = patch_nvhdmi },
- /* 17 is known to be absent */
--{ .id = 0x10de0018, .name = "GPU 18 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0019, .name = "GPU 19 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de001a, .name = "GPU 1a HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de001b, .name = "GPU 1b HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de001c, .name = "GPU 1c HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0040, .name = "GPU 40 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0041, .name = "GPU 41 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0042, .name = "GPU 42 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0043, .name = "GPU 43 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0044, .name = "GPU 44 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0051, .name = "GPU 51 HDMI/DP",	.patch = patch_generic_hdmi },
--{ .id = 0x10de0060, .name = "GPU 60 HDMI/DP",	.patch = patch_generic_hdmi },
-+{ .id = 0x10de0018, .name = "GPU 18 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0019, .name = "GPU 19 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de001a, .name = "GPU 1a HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de001b, .name = "GPU 1b HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de001c, .name = "GPU 1c HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0040, .name = "GPU 40 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0041, .name = "GPU 41 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0042, .name = "GPU 42 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0043, .name = "GPU 43 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0044, .name = "GPU 44 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0051, .name = "GPU 51 HDMI/DP",	.patch = patch_nvhdmi },
-+{ .id = 0x10de0060, .name = "GPU 60 HDMI/DP",	.patch = patch_nvhdmi },
- { .id = 0x10de0067, .name = "MCP67 HDMI",	.patch = patch_nvhdmi_2ch },
- { .id = 0x10de8001, .name = "MCP73 HDMI",	.patch = patch_nvhdmi_2ch },
- { .id = 0x11069f80, .name = "VX900 HDMI/DP",	.patch = patch_via_hdmi },
--- 
-1.8.1.5
++struct acpi_device {
++	struct device dev;
++};
++
++static inline int acpi_bus_get_device(acpi_handle handle,
++				      struct acpi_device **device)
++{
++	return -ENODEV;
++}
+ #endif	/* !CONFIG_ACPI */
+ 
+ #ifdef CONFIG_ACPI
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
