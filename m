@@ -1,134 +1,79 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv2 1/8] ALSA: Add SAI SoC Digital Audio Interface driver.
-Date: Mon, 4 Nov 2013 08:15:37 -0800
-Message-ID: <20131104161537.GI2493@sirena.org.uk>
-References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
- <1383289495-24523-2-git-send-email-Li.Xiubo@freescale.com>
- <20131101182514.GE2493@sirena.org.uk>
- <1DD289F6464F0949A2FCA5AA6DC23F8287439D@039-SN2MPN1-013.039d.mgd.msft.net>
+Subject: Re: [PATCH v2] ASoC: wm_adsp: Interpret ADSP memory
+ region lengths as 32 bit words
+Date: Mon, 4 Nov 2013 08:58:42 -0800
+Message-ID: <20131104165842.GL2493@sirena.org.uk>
+References: <1383566624-9242-1-git-send-email-dp@opensource.wolfsonmicro.com>
+ <1383566624-9242-2-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4958729407327593446=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1DD289F6464F0949A2FCA5AA6DC23F8287439D@039-SN2MPN1-013.039d.mgd.msft.net>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Li Xiubo <B47053@freescale.com>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Huan Wang <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "perex@perex.cz" <perex@perex.cz>, Shawn Guo <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Guangyu Chen <B42378@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, oskar@scara.com
+Content-Type: multipart/mixed; boundary="===============8804124370131331241=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (unknown [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB6DF262629
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 17:59:15 +0100 (CET)
+In-Reply-To: <1383566624-9242-2-git-send-email-dp@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4958729407327593446==
+--===============8804124370131331241==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9jVH9MMcXWLfwoO6"
+	protocol="application/pgp-signature"; boundary="RVLHdg3qhy1T2deX"
 Content-Disposition: inline
 
 
---9jVH9MMcXWLfwoO6
+--RVLHdg3qhy1T2deX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 04, 2013 at 07:35:12AM +0000, Li Xiubo wrote:
-
-> From the ASoC subsystem comments we can see that:
-> ++++++
-> Configures the clock dividers. This is used to derive the best DAI bit and
-> frame clocks from the system or master clock. It's best to set the DAI bit
-> and frame clocks as low as possible to save system power.
-> ------
-
-You should never use this unless you have to, there is no point in every
-single machine driver using your driver having to duplicate the same
-calculations.
-
+On Mon, Nov 04, 2013 at 12:03:44PM +0000, Dimitris Papastamos wrote:
+> From: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
 >=20
-> > > +static int fsl_sai_dai_probe(struct snd_soc_dai *dai) {
-> > > +	int ret;
-> > > +	struct fsl_sai *sai =3D dev_get_drvdata(dai->dev);
-> > > +
-> > > +	ret =3D clk_prepare_enable(sai->clk);
-> > > +	if (ret)
-> > > +		return ret;
+> Pad the ADSP word (3 bytes) to 4 bytes in the kernel and calculate
+> lengths based on padded ADSP words instead of treating them as bytes
 
-> > It'd be nicer to only enable the clock while the device is in active us=
-e.
+Applied, thanks.
 
-> While if the module clock is not enabled here, the followed registers can=
-not read/write in the same function.
-> And this _probe function is the _dai_probe not the driver's module _probe.
-
-So you can enable the clock when you explicitly need to write to the
-registers...
-
-> If the clk_prepare_enable(sai->clk) is not here, where should it be will =
-be nicer ?
-> One of the following functions ?
->         .set_sysclk     =3D fsl_sai_set_dai_sysclk,
->         .set_clkdiv     =3D fsl_sai_set_dai_clkdiv,
->         .set_fmt        =3D fsl_sai_set_dai_fmt,
->         .set_tdm_slot   =3D fsl_sai_set_dai_tdm_slot,
->         .hw_params      =3D fsl_sai_hw_params,
->         .trigger        =3D fsl_sai_trigger,
-
-It could be in any or all of them except trigger (where the core should
-hold a runtime PM reference anyway).  You can always take a reference
-for the duration of the function if you're concerned it may be called
-when the referent isn't otherwise held.
-
-> > > +	ret =3D snd_dmaengine_pcm_register(&pdev->dev, NULL,
-> > > +			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
-> > > +	if (ret)
-> > > +		return ret;
-
-> > We should have a devm_ version of this.
-
-> Sorry, is there one patch for adding the devm_ version of snd_dmaengine_p=
-cm_register() already ?
-> In the -next and other topics branches I could not find it.
-
-No, there isn't one but there should be one.
-
---9jVH9MMcXWLfwoO6
+--RVLHdg3qhy1T2deX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSd8gmAAoJELSic+t+oim9AZMQAIefObmkvnzc13/Qx9sJCNa0
-47Mt+0tfJFdjadPL6ocKpX0tYxvxdeY30L/zOL7mq8Ehdvdp3PXQHWret3dHovwI
-w4CYGja+2GenT711PAFfz9jYqlTEj17NhPMsfDc7gf4TSNSt+MztlejKcIpsXO+3
-Mcbhl9n4j++Tr2p3PcT60KJEArAJSYxdu0JybxEdSv04dQcLCm3atqnMjJx8/C6W
-w3HTaHtggsa6fa/hlgMGH9cGghtSPnISCtr60mc8/Kp9xa6p6RHNJx+DMYsDfgf2
-OFA84thNFynw6hh54NaBhelaAGGydM2BuybD7C+Tik5V0mS2quFgTVS28EU6YlL8
-xzCnt7CgmieVHwsKJ7Aq4tKrAvCf+ojub5mlXJAMnrv3Sp77i9rU94ICu7wGw+UG
-vQ5bcmeYfLgrfxTtGjo/bp/mhvpI9/oNFJn/8NbiZ++XIjEsLp8VpZoPhMp3orI/
-zuK8cfR5oSNVmYvn8xrQCqge1sUziYEJvANqDI3XiqOm5t9LIdrO/1Uc3x2vy7g1
-VCcEk14w8HZWKZqu4zBKkiE9ezXSD5ZI1IEGLAM+1o0V1B1+bUuZv8olcPyS0XSq
-m2j/ch+sbCR6MaHB817WVyICYDS85pOB4VeB1Fk7R5frmiWajqqsyPipZKZT/Kw2
-Z3AO4y0D8GQT16dJL1a0
-=YZgo
+iQIcBAEBAgAGBQJSd9I6AAoJELSic+t+oim96coQAIUhVjx5/BVUAZ9XVRtn4nJW
+RNTh7zPXC1cLpT4WjskOvxfmUeXHT9KClDCLLKyWclysbILv61XdjKFZd+q2rlat
+Di6IqREPGKInCrrJCoCgfBP05P1COa9LJ+8dxuObvxLiMOwyj3WuO+YQ2ESUb5t7
+DKKDeMTlE/jCS4vJcyw5ewmoqGNrE1nAgD0tXLOQls9sYSSYk7dT1hePm2aCEbnx
+W1SpGGod+e/ZDhDIoYoQ1jlUhN8QTBNx18x4FBDsqo/X6s8ix2wJ8Ppe6ZFcOs8c
+sfTwR+EdorWu34ddLB+N3RPuyByVYNYA2D7i3cx12AEQOIQ9BYfW+mN5q5ezrAss
+LAJ3jmJ2aBdyjxt0L0iccAdcsSVaSffexo94Cq1gC8W+0MKDq8GMmDOp/WqxMUY2
+Jm0Lu6r6zsTyM0sexW1A2HNcpIgVtjN7LJkGmp4twHYcbqe7hqspKlofU4CYyT6+
+7KSI9FKtmdMr1Ce5BZdJhit/HMu0MWbICNDvnK5/LgD6HdLExR2XyZ0caBeqHu5p
+QiJcPOT7fK+Mfui8BetCuxqRM+bNdGNH0+wQ4lswiRX+t+VRIwSvwgAnIrfZ2GdR
+MmEqhrROtwJ3QnBoYOCCs/2waLdd1c7QzKWfePHUZUhETpt9FlCusAndH3uC6TvA
+MGF+VuKnRFQStdCm+075
+=n7dF
 -----END PGP SIGNATURE-----
 
---9jVH9MMcXWLfwoO6--
+--RVLHdg3qhy1T2deX--
 
-
---===============4958729407327593446==
+--===============8804124370131331241==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============4958729407327593446==--
+--===============8804124370131331241==--
