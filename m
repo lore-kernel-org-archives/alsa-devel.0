@@ -1,52 +1,64 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4] ASoC: Add pinctrl PM to components of active DAIs
-Date: Mon, 4 Nov 2013 09:09:50 -0800
-Message-ID: <20131104170950.GO2493@sirena.org.uk>
-References: <1383548251-17655-1-git-send-email-b42378@freescale.com>
+From: "Dagg Stompler" <daggs@gmx.com>
+Subject: Re: [Alsa-user]  hdmi sound rerouted?
+Date: Mon, 04 Nov 2013 19:53:42 +0100
+Message-ID: <20131104185343.215740@gmx.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hND5PKUeuErErcgH"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1383548251-17655-1-git-send-email-b42378@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: lgirdwood@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7ECA3264F47
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 19:53:44 +0100 (CET)
+Received: from mailout-eu.gmx.com ([10.1.101.213]) by mrigmx.server.lan
+ (mrigmx002) with ESMTP (Nemesis) id 0MP3Jh-1VX61H0bQt-006OO3 for
+ <alsa-devel@alsa-project.org>; Mon, 04 Nov 2013 19:53:44 +0100
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org, Clemens Ladisch <cladisch@googlemail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---hND5PKUeuErErcgH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Nov 04, 2013 at 02:57:31PM +0800, Nicolin Chen wrote:
-> It's quite popular that more drivers are using pinctrl PM, for example:
-> (Documentation/devicetree/bindings/arm/primecell.txt). Just like what
-> runtime PM does, it would deactivate and activate pin group depending
-> on whether it's being used or not.
-
-Applied, thanks.
-
---hND5PKUeuErErcgH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSd9TbAAoJELSic+t+oim9jYMP/02gbCuXf3yuEO0cpIHEO6hE
-4HCkFOhpbiQlSzJWbgBVaeSUfX5GZT12t6lv2AyeUjP9Mj9riWS/tzldoBlg+Me4
-StQ3BeYTHWLL0gFR2DMpKnfLMlB/EHEUR4zYDWbL6FqYBBrUAFQZcdmsjQd5GmJI
-NCE3bQvewitpfKT+1VIPEoRVYWbLTNA5bH6qDuVL1q8rPpZfnYdy7YO8DbU5FHYs
-XSrzBPL4DTwZHD49Ej0Eju6UplSTGoW4SJ3ik2oDo66igEjr9oClFRqzbUdlYgAu
-V0jhFAicNs5VQCVBo7Ap0X/BA9sYfZGh9IR86gH2IRb3ZwxY30HC2VBP2Xgg6Izi
-QylnF0ZLtfkkGewlnleXZJylIeWbRORZmpoCiv5B5H4LWRV0hXOSbqOKP2mw+2PC
-FarOChe5w17DrHd8YJfMNPMp7owbdWM5aqN3LGfhtPF1aDWAlwXgxZFrGHASmZIZ
-KphEvh+LvTzQiRV2DXvrpzL27UiGPf/d8eAUtHgEOJdkmNSOhM4borIVsx/JnOfb
-/irGV23O1cYwNowuzv6PdMdGulsDGGm0opKV177imOg/IeNihmCDmJW4IPuZc7DT
-6en+xMNP/bOHeQ6v6fZdpgAS9sDa9kQPV/77YLkSrjMmA2MUg4t8WJHkshlnixMv
-AzmaGP7tja1feSDMYBet
-=snMs
------END PGP SIGNATURE-----
-
---hND5PKUeuErErcgH--
+Cgo+IC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiBUYWthc2hpIEl3YWkKPiBT
+ZW50OiAxMS8wNC8xMyAwNDowNiBQTQo+IFRvOiBEZXVjaGVyLCBBbGV4YW5kZXIKPiBTdWJqZWN0
+OiBSZTogW2Fsc2EtZGV2ZWxdIFtBbHNhLXVzZXJdIMKgaGRtaSBzb3VuZCByZXJvdXRlZD8KPiAK
+PiBBdCBNb24sIDQgTm92IDIwMTMgMTM6NDc6NTQgKzAwMDAsCj4gRGV1Y2hlciwgQWxleGFuZGVy
+IHdyb3RlOgo+ID4gCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gPiA+IEZyb206
+IFRha2FzaGkgSXdhaSBbbWFpbHRvOnRpd2FpQHN1c2UuZGVdCj4gPiA+IFNlbnQ6IE1vbmRheSwg
+Tm92ZW1iZXIgMDQsIDIwMTMgODowNSBBTQo+ID4gPiBUbzogZGFnZ3NAZ214LmNvbQo+ID4gPiBD
+YzogRGV1Y2hlciwgQWxleGFuZGVyOyBDbGVtZW5zIExhZGlzY2g7IGFsc2EtdXNlckBsaXN0cy5z
+b3VyY2Vmb3JnZS5uZXQ7Cj4gPiA+IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+ID4gPiBT
+dWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtBbHNhLXVzZXJdIGhkbWkgc291bmQgcmVyb3V0ZWQ/
+Cj4gPiA+IAo+ID4gPiBBdCBNb24sIDA0IE5vdiAyMDEzIDEzOjIxOjI1ICswMTAwLAo+ID4gPiBk
+YWdnc0BnbXguY29tIHdyb3RlOgo+ID4gPiA+Cj4gPiA+ID4gdGhlIG9yaWdpbmFsIGlzc3VlIGlz
+IHRoYXQgd2VuIHVzaW5nIGFuIEFUSSBncHUgd2l0aCBoZG1pIGluIGl0LCByZXJvdXRpbmcgdGhl
+Cj4gPiA+IHNvdW5kIHZpYSB0aGUgYXRpIGhkbWkgY2FyZCBkb2Vzbid0IHdvcmssIG9ubHkgdmlh
+IHRoZSBnZW5lcmljLgo+ID4gPiA+Cj4gPiA+ID4gYWxzYSBkZXZzIHBvaW50ZWQgb3V0IHRoYXQg
+dGhlIGF0aSBjYXJkcyBsaXN0ZWQgaW4gaW50ZWxfaGRhLmMgYXJlbid0IHVwZGF0ZWQKPiA+ID4g
+d2l0aCBsYXRlc3QgY2FyZHMgZHVlIHRvIGluc3VmZmljaWVudCBpbmZvIG9uIGFib3V0IHRoZSBj
+YXJkcy4KPiA+ID4gPgo+ID4gPiA+IEFsZXggRGV1Y2hlciBmcm9tIEFNRCdzIGRldiBhbnN3ZXJl
+ZCB0aGF0IGhlIHdpbGwgcXVlcnkgdGhlIHJpZ2h0IHRlYW0KPiA+ID4gaW4gaGlzIHdvcmtwbGFj
+ZSBidXQgbm8gcmVzcG9uc2Ugd2FzIHJlY2VpdmVkIGZybyBoaW0geWV0Lgo+ID4gPiAKPiA+ID4g
+T0ssIHRoZW4gY291bGQgeW91IGFsc2EtaW5mby5zaCBvdXRwdXQ/Cj4gPiA+IAo+ID4gPiBUaGUg
+c2l0dWF0aW9uIGluIHRoZSB1cHN0cmVhbSBoYXMgY2hhbmdlZCBzaW5jZSB3ZSBoYXZlIGEgbG90
+IG1vcmUKPiA+ID4gQU1ELXNwZWNpZmljIEhETUkgY29kZXMgaW4gdGhlIGxhdGVzdCBkcml2ZXIg
+Zm9yIDMuMTMga2VybmVsLiBTbywKPiA+ID4gaXQncyBub3Qgb25seSBhIG1hdHRlciBvZiBzbm9v
+cCBmbGFnLgo+ID4gCj4gPiBJIHdhcyBzcGVjaWZpY2FsbHkgdHJ5aW5nIHRvIGdldCBjbGFyaWZp
+Y2F0aW9uIG9uIHdoaWNoIHBhcnRzIG5lZWRlZCB0aGUgc25vb3AgZmxhZy4gSXMgdGhlcmUgc29t
+ZSBvdGhlciBsYXJnZXIgaXNzdWU/IEZyb20gdGhlIGZlZWRiYWNrIEkndmUgc2VlbiBsYXRlbHks
+IGF1ZGlvIGhhcyBiZWVuIHdvcmtpbmcgcHJldHR5IHdlbGwgb24gQU1EIEdQVXMgd2l0aCBBbnNz
+aSdzIHBhdGNoZXMuCj4gCj4gVGhhdCdzIHdoeSBJIHN0YXJ0ZWQgYXNraW5nIDopIFRoZSByZWNl
+bnQgY29kZSBzaG91bGQgY292ZXIga25vd24KPiBpc3N1ZXMgb2YgQU1EIEhETUkgY29kZWNzLCBh
+dCBsZWFzdC4gQnV0IGlmIHRoZXJlIGlzIGEgbmV3IGNoaXAsIHdlJ2QKPiBuZWVkIHRvIHRlc3Qg
+YW5kIGFkZCB0aGUgY29ycmVzcG9uZGluZyBlbnRyeS4KPiAKPiAKPiBUYWthc2hpCgphbHNhIGlu
+Zm8gY2FuIGJlIGZvdW5kIGF0IGh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj01OTBj
+YjM1M2RkOTNlOWVhNWY5ZGEzZTA3MmNkY2Q1ZDQ2NGU4NjA5CmhvcGUgaXQgaGVscHMKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
