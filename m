@@ -1,17 +1,18 @@
-From: "Dagg Stompler" <daggs@gmx.com>
-Subject: Re: [Alsa-user]  hdmi sound rerouted?
-Date: Mon, 04 Nov 2013 19:53:42 +0100
-Message-ID: <20131104185343.215740@gmx.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Enable SPDIF for Acer TravelMate
+	6293
+Date: Mon,  4 Nov 2013 21:10:37 +0100
+Message-ID: <1383595837-18166-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
- by alsa0.perex.cz (Postfix) with ESMTP id 7ECA3264F47
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 19:53:44 +0100 (CET)
-Received: from mailout-eu.gmx.com ([10.1.101.213]) by mrigmx.server.lan
- (mrigmx002) with ESMTP (Nemesis) id 0MP3Jh-1VX61H0bQt-006OO3 for
- <alsa-devel@alsa-project.org>; Mon, 04 Nov 2013 19:53:44 +0100
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id C70F62619E0
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 21:10:37 +0100 (CET)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 96D2DA5E71
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 21:10:37 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,44 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org, Clemens Ladisch <cladisch@googlemail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Cgo+IC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiBUYWthc2hpIEl3YWkKPiBT
-ZW50OiAxMS8wNC8xMyAwNDowNiBQTQo+IFRvOiBEZXVjaGVyLCBBbGV4YW5kZXIKPiBTdWJqZWN0
-OiBSZTogW2Fsc2EtZGV2ZWxdIFtBbHNhLXVzZXJdIMKgaGRtaSBzb3VuZCByZXJvdXRlZD8KPiAK
-PiBBdCBNb24sIDQgTm92IDIwMTMgMTM6NDc6NTQgKzAwMDAsCj4gRGV1Y2hlciwgQWxleGFuZGVy
-IHdyb3RlOgo+ID4gCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gPiA+IEZyb206
-IFRha2FzaGkgSXdhaSBbbWFpbHRvOnRpd2FpQHN1c2UuZGVdCj4gPiA+IFNlbnQ6IE1vbmRheSwg
-Tm92ZW1iZXIgMDQsIDIwMTMgODowNSBBTQo+ID4gPiBUbzogZGFnZ3NAZ214LmNvbQo+ID4gPiBD
-YzogRGV1Y2hlciwgQWxleGFuZGVyOyBDbGVtZW5zIExhZGlzY2g7IGFsc2EtdXNlckBsaXN0cy5z
-b3VyY2Vmb3JnZS5uZXQ7Cj4gPiA+IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+ID4gPiBT
-dWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtBbHNhLXVzZXJdIGhkbWkgc291bmQgcmVyb3V0ZWQ/
-Cj4gPiA+IAo+ID4gPiBBdCBNb24sIDA0IE5vdiAyMDEzIDEzOjIxOjI1ICswMTAwLAo+ID4gPiBk
-YWdnc0BnbXguY29tIHdyb3RlOgo+ID4gPiA+Cj4gPiA+ID4gdGhlIG9yaWdpbmFsIGlzc3VlIGlz
-IHRoYXQgd2VuIHVzaW5nIGFuIEFUSSBncHUgd2l0aCBoZG1pIGluIGl0LCByZXJvdXRpbmcgdGhl
-Cj4gPiA+IHNvdW5kIHZpYSB0aGUgYXRpIGhkbWkgY2FyZCBkb2Vzbid0IHdvcmssIG9ubHkgdmlh
-IHRoZSBnZW5lcmljLgo+ID4gPiA+Cj4gPiA+ID4gYWxzYSBkZXZzIHBvaW50ZWQgb3V0IHRoYXQg
-dGhlIGF0aSBjYXJkcyBsaXN0ZWQgaW4gaW50ZWxfaGRhLmMgYXJlbid0IHVwZGF0ZWQKPiA+ID4g
-d2l0aCBsYXRlc3QgY2FyZHMgZHVlIHRvIGluc3VmZmljaWVudCBpbmZvIG9uIGFib3V0IHRoZSBj
-YXJkcy4KPiA+ID4gPgo+ID4gPiA+IEFsZXggRGV1Y2hlciBmcm9tIEFNRCdzIGRldiBhbnN3ZXJl
-ZCB0aGF0IGhlIHdpbGwgcXVlcnkgdGhlIHJpZ2h0IHRlYW0KPiA+ID4gaW4gaGlzIHdvcmtwbGFj
-ZSBidXQgbm8gcmVzcG9uc2Ugd2FzIHJlY2VpdmVkIGZybyBoaW0geWV0Lgo+ID4gPiAKPiA+ID4g
-T0ssIHRoZW4gY291bGQgeW91IGFsc2EtaW5mby5zaCBvdXRwdXQ/Cj4gPiA+IAo+ID4gPiBUaGUg
-c2l0dWF0aW9uIGluIHRoZSB1cHN0cmVhbSBoYXMgY2hhbmdlZCBzaW5jZSB3ZSBoYXZlIGEgbG90
-IG1vcmUKPiA+ID4gQU1ELXNwZWNpZmljIEhETUkgY29kZXMgaW4gdGhlIGxhdGVzdCBkcml2ZXIg
-Zm9yIDMuMTMga2VybmVsLiBTbywKPiA+ID4gaXQncyBub3Qgb25seSBhIG1hdHRlciBvZiBzbm9v
-cCBmbGFnLgo+ID4gCj4gPiBJIHdhcyBzcGVjaWZpY2FsbHkgdHJ5aW5nIHRvIGdldCBjbGFyaWZp
-Y2F0aW9uIG9uIHdoaWNoIHBhcnRzIG5lZWRlZCB0aGUgc25vb3AgZmxhZy4gSXMgdGhlcmUgc29t
-ZSBvdGhlciBsYXJnZXIgaXNzdWU/IEZyb20gdGhlIGZlZWRiYWNrIEkndmUgc2VlbiBsYXRlbHks
-IGF1ZGlvIGhhcyBiZWVuIHdvcmtpbmcgcHJldHR5IHdlbGwgb24gQU1EIEdQVXMgd2l0aCBBbnNz
-aSdzIHBhdGNoZXMuCj4gCj4gVGhhdCdzIHdoeSBJIHN0YXJ0ZWQgYXNraW5nIDopIFRoZSByZWNl
-bnQgY29kZSBzaG91bGQgY292ZXIga25vd24KPiBpc3N1ZXMgb2YgQU1EIEhETUkgY29kZWNzLCBh
-dCBsZWFzdC4gQnV0IGlmIHRoZXJlIGlzIGEgbmV3IGNoaXAsIHdlJ2QKPiBuZWVkIHRvIHRlc3Qg
-YW5kIGFkZCB0aGUgY29ycmVzcG9uZGluZyBlbnRyeS4KPiAKPiAKPiBUYWthc2hpCgphbHNhIGlu
-Zm8gY2FuIGJlIGZvdW5kIGF0IGh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj01OTBj
-YjM1M2RkOTNlOWVhNWY5ZGEzZTA3MmNkY2Q1ZDQ2NGU4NjA5CmhvcGUgaXQgaGVscHMKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+BIOS on Acer TravelMate 6293 doesn't set up the SPDIF output pin
+correctly as default, so enable it via a fixup entry.
+
+Reported-and-tested-by: Hagen Heiduck <heiduck.suse@fmail.postpro.net>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 2d7c86d81196..01bf812455a2 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2386,6 +2386,7 @@ static const struct hda_verb alc268_beep_init_verbs[] = {
+ enum {
+ 	ALC268_FIXUP_INV_DMIC,
+ 	ALC268_FIXUP_HP_EAPD,
++	ALC268_FIXUP_SPDIF,
+ };
+ 
+ static const struct hda_fixup alc268_fixups[] = {
+@@ -2400,6 +2401,13 @@ static const struct hda_fixup alc268_fixups[] = {
+ 			{}
+ 		}
+ 	},
++	[ALC268_FIXUP_SPDIF] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x1e, 0x014b1180 }, /* enable SPDIF out */
++			{}
++		}
++	},
+ };
+ 
+ static const struct hda_model_fixup alc268_fixup_models[] = {
+@@ -2409,6 +2417,7 @@ static const struct hda_model_fixup alc268_fixup_models[] = {
+ };
+ 
+ static const struct snd_pci_quirk alc268_fixup_tbl[] = {
++	SND_PCI_QUIRK(0x1025, 0x0139, "Acer TravelMate 6293", ALC268_FIXUP_SPDIF),
+ 	SND_PCI_QUIRK(0x1025, 0x015b, "Acer AOA 150 (ZG5)", ALC268_FIXUP_INV_DMIC),
+ 	/* below is codec SSID since multiple Toshiba laptops have the
+ 	 * same PCI SSID 1179:ff00
+-- 
+1.8.4.2
