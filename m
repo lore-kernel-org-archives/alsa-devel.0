@@ -1,41 +1,38 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: [PATCHv2 1/3] ACPI: Expose struct acpi_device and
- acpi_bus_get_device() to non-ACPI builds
-Date: Mon, 4 Nov 2013 23:15:59 +0200
-Message-ID: <20131104211559.GA12144@mylly>
-References: <1382703540-3769-1-git-send-email-jarkko.nikula@linux.intel.com>
- <1383309356-25430-2-git-send-email-jarkko.nikula@linux.intel.com>
- <3858838.4tAO673dDi@vostro.rjw.lan>
- <5990097.jCz86Yqdpc@vostro.rjw.lan>
+From: David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH trivial] include: uapi: standard all files'
+	macro prefix and suffix, excluding "linux/" sub-directory
+Date: Mon, 04 Nov 2013 22:03:44 +0000
+Message-ID: <11907.1383602624@warthog.procyon.org.uk>
+References: <51FB6216.6010008@asianux.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5990097.jCz86Yqdpc@vostro.rjw.lan>
-Sender: linux-acpi-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@the-dreams.de>, linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <51FB6216.6010008@asianux.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces@lists.freedesktop.org
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+To: Chen Gang <gang.chen@asianux.com>, 'Jiri Kosina' <trivial@kernel.org>
+Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie, daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, perex@perex.cz, "dhowells@redhat.com" <dhowells@redhat.com>, thierry.reding@gmail.com, linux-mtd@lists.infradead.org, sean.hefty@intel.com, virtualization@lists.linux-foundation.org, Linux-Arch <linux-arch@vger.kernel.org>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com, jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, roland@purestorage.com, Takashi Iwai <tiwai@suse.de>, Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com, fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>, "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>, swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com, linux-samsun
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 04, 2013 at 02:00:45AM +0100, Rafael J. Wysocki wrote:
-> On Saturday, November 02, 2013 11:18:31 PM Rafael J. Wysocki wrote:
-> > This turns out the cause build problems to happen on some architectures.
-> > 
-> > I guess it's sufficient to simply define a stub struct acpi_device as
-> > 
-> > struct acpi_device {
-> > 	struct device dev;
-> > };
-> > 
-> > for !CONFIG_ACPI instead.
-> 
-> Generally, it is a bad idea to #include acpi_bus.h for !CONFIG_ACPI.
-> 
-Ouch, indeed.
+Chen Gang <gang.chen@asianux.com> wrote:
 
-> The appended patch works for me, sorry for stealing part of your changelog.
+> For "include/uapi/*", excluding "linux/" sub-directory, let all files'
+> macro prefix match the standard format, and give related stand comments
+> for their macro suffix.
 > 
-No problem. Thanks for fixing this up.
+> The related standard format is:
+> 
+>   "_SUBDIRNAME_SUBDIRNAME[_SUBDIRNAME]_FILENAME" (1st _SUBDIRNAME is _UAPI), and use '_' instead of '.' and '-'.
 
--- 
-Jarkko
+I strongly recommend _against_ this without very careful consideration.
+Userspace sometimes depends on the name in the guard macro:-/
+
+David
