@@ -1,15 +1,17 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 Subject: [PATCH v2] ASoC: wm_adsp: Interpret ADSP memory region
 	lengths as 32 bit words
-Date: Mon,  4 Nov 2013 12:03:43 +0000
-Message-ID: <1383566624-9242-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Date: Mon,  4 Nov 2013 12:03:44 +0000
+Message-ID: <1383566624-9242-2-git-send-email-dp@opensource.wolfsonmicro.com>
+References: <1383566624-9242-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 362912619F7
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 13:03:46 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 42564261A63
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 13:03:47 +0100 (CET)
+In-Reply-To: <1383566624-9242-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
