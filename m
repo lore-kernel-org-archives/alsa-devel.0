@@ -1,21 +1,16 @@
-From: Li Xiubo <B47053@freescale.com>
-Subject: Re: [PATCHv2 6/8] ASoC: fsl: add SGTL5000 based audio
- machine driver.
-Date: Mon, 4 Nov 2013 09:52:44 +0000
-Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F82874583@039-SN2MPN1-013.039d.mgd.msft.net>
-References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
- <1383289495-24523-7-git-send-email-Li.Xiubo@freescale.com>
- <20131101184008.GF2493@sirena.org.uk>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: What about symmetric_channels and symmetric_samplebits?
+Date: Mon, 4 Nov 2013 19:02:51 +0800
+Message-ID: <20131104110250.GA2652@MrMyself>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co1outboundpool.messaging.microsoft.com
- (co1ehsobe006.messaging.microsoft.com [216.32.180.189])
- by alsa0.perex.cz (Postfix) with ESMTP id 827962608CA
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 10:52:49 +0100 (CET)
-In-Reply-To: <20131101184008.GF2493@sirena.org.uk>
-Content-Language: en-US
+Received: from db8outboundpool.messaging.microsoft.com
+ (mail-db8lp0187.outbound.messaging.microsoft.com [213.199.154.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id 645AB2608EA
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 12:04:06 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,26 +20,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Huan Wang <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, Shawn Guo <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Guangyu Chen <B42378@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "oskar@scara.com" <oskar@scara.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-> > Conflicts:
-> > 	sound/soc/fsl/Makefile
-> 
-> Ahem.
-> 
+As far as I know, some SoCs can only work in mono or stereo mode at
+one time. So if we let them capture a mono stream while playing a
+stereo stream, there might be a problem occur to one of these two
+streams: double-paced or slowed down.
 
-This will be removed.
+I just want to ask: Is there any existing solution for the case?
 
-> > +static int fsl_sgtl5000_remove(struct platform_device *pdev) {
-> > +	snd_soc_unregister_card(&fsl_sgt1500_card);
-> > +
-> > +	return 0;
-> > +}
-> 
-> You're using snd_soc_unregister_card() so you don't need to do this.
->
+In soc-pcm.c, we have soc_pcm_apply_symmetry() to solve unmatched
+sample rates situation for simultaneous playback and capture. But
+we don't have one for channels. Is that reasonable to add a similar
+one for it?
 
-See the next version.
+Likewise, we can treat symmetric_rate as a solution for those SoCs
+or CODECs which can not handle asymmetrical LRCLK. But it's also
+impossible for them to handle asymmetrical BCLK. And accodring to
+BCLK = LRCLK * channel number * slot size(fixed or sample bits),
+sample bits might also be a problem if they are not using a fixed
+slot size.
+
+Thank you,
+Nicolin Chen
