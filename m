@@ -1,96 +1,107 @@
-From: "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>
-Subject: Re: [PATCHv2 1/3] ACPI: Expose struct acpi_device and acpi_bus_get_device() to non-ACPI builds
-Date: Mon, 04 Nov 2013 02:00:45 +0100
-Message-ID: <5990097.jCz86Yqdpc@vostro.rjw.lan>
-References: <1382703540-3769-1-git-send-email-jarkko.nikula@linux.intel.com> <1383309356-25430-2-git-send-email-jarkko.nikula@linux.intel.com> <3858838.4tAO673dDi@vostro.rjw.lan>
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: [PATCH v2 5/6] ASoC: sirf-inner: add mach driver
+ for SiRFSoC internal codec
+Date: Mon, 4 Nov 2013 08:50:19 +0800
+Message-ID: <CAGsJ_4z-_nmQh5MXv9c2fv66c97H2KXTQdptnOc6FCZQtVRp5w@mail.gmail.com>
+References: <1383002159-29273-1-git-send-email-Baohua.Song@csr.com>
+ <20131029220953.GA11424@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <3858838.4tAO673dDi-sKB8Sp2ER+y1GS7QM15AGw@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
+ [209.85.220.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DD882616F6
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 01:50:40 +0100 (CET)
+Received: by mail-pa0-f47.google.com with SMTP id lf10so6225997pab.20
+ for <alsa-devel@alsa-project.org>; Sun, 03 Nov 2013 16:50:39 -0800 (PST)
+In-Reply-To: <20131029220953.GA11424@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, DL-SHA-WorkGroupLinux <workgroup.linux@csr.com>, Rongjun Ying <Rongjun.Ying@csr.com>, Barry Song <Baohua.Song@csr.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday, November 02, 2013 11:18:31 PM Rafael J. Wysocki wrote:
-> On Friday, November 01, 2013 02:35:54 PM Jarkko Nikula wrote:
-> > We may find use for struct acpi_device and acpi_bus_get_device() in generic
-> > code without wanting to add #if IS_ENABLED(CONFIG_ACPI) churn there.
-> > 
-> > Code can use ACPI_HANDLE() test to let compiler optimize out code blocks
-> > that are not used in !CONFIG_ACPI builds but structure definitions and
-> > function stubs must be available.
-> > 
-> > This patch moves CONFIG_ACPI test so that struct acpi_device definition
-> > is available for all builds that include acpi_bus.h and provides a stub for
-> > acpi_bus_get_device().
-> > 
-> > Signed-off-by: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-> 
-> This turns out the cause build problems to happen on some architectures.
-> 
-> I guess it's sufficient to simply define a stub struct acpi_device as
-> 
-> struct acpi_device {
-> 	struct device dev;
-> };
-> 
-> for !CONFIG_ACPI instead.
+2013/10/30 Mark Brown <broonie@kernel.org>:
+> On Tue, Oct 29, 2013 at 07:15:59AM +0800, Barry Song wrote:
+>
+>> +     if (sinner_card->extcon_info.state_changed) {
+>> +             sinner_card->extcon_info.state_changed = 0;
+>> +             if (!sinner_card->extcon_info.last_state)
+>> +                     gpio_direction_output(sinner_card->gpio_spk_pa, 0);
+>> +             else
+>> +                     gpio_direction_output(sinner_card->gpio_spk_pa, 1);
+>
+> What's this extcon stuff all about?
 
-Generally, it is a bad idea to #include acpi_bus.h for !CONFIG_ACPI.
+the story of the extcon is we will want to keep this both linux and
+android compatible as your previous comments in v1.
 
-The appended patch works for me, sorry for stealing part of your changelog.
+>
+>> +     sinner_card->sirf_inner_device = platform_device_alloc("soc-audio", -1);
+>> +     if (!sinner_card->sirf_inner_device)
+>> +             return -ENOMEM;
+>
+> You shouldn't be using soc-audio - use devm_snd_soc_register_card() for
+> new drivers.
+>
+>> +     sirf_inner_dai_links[0].cpu_of_node =
+>> +             of_parse_phandle(pdev->dev.of_node, "sirf,inner-platform", 0);
+>
+> You need to add binding documents for new bindings.
+>
+>> +     if (gpio_is_valid(sinner_card->gpio_spk_pa))
+>> +             gpio_request(sinner_card->gpio_spk_pa, "SPA_PA_SD");
+>> +     if (gpio_is_valid(sinner_card->gpio_hp_pa))
+>> +             gpio_request(sinner_card->gpio_hp_pa, "HP_PA_SD");
+>
+> devm_gpio_request_one().
+>
+>> +     sinner_card->extcon_info.pdev.name = "extcon-gpio";
+>> +     sinner_card->extcon_info.pdev.id = pdev->id;
+>> +     sinner_card->extcon_info.pdev.dev.platform_data =
+>> +             &sinner_card->extcon_info.extcon_data;
+>
+> Use the ASoC jack support so this behaves like other cards.  Hooking the
+> ALSA core jack support into extcon would be a good idea but it should be
+> done there.
+>
+it looks it makes more senses if we move these codes into a generic
+extcon driver.
 
-Thanks,
-Rafael
+>> +#ifdef CONFIG_PM_SLEEP
+>> +static int sirf_inner_resume(struct device *dev)
+>> +{
+>> +     struct snd_soc_card *card = dev_get_drvdata(dev);
+>> +     struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
+>> +     struct extcon_dev *edev;
+>> +     int state;
+>> +
+>> +     edev = extcon_get_extcon_dev(sinner_card->extcon_info.extcon_data.name);
+>> +     state = gpio_get_value(sinner_card->extcon_info.extcon_data.gpio);
+>> +     if (state != sinner_card->extcon_info.last_state) {
+>> +             sinner_card->extcon_info.state_changed = 1;
+>> +             sinner_card->extcon_info.last_state = state;
+>> +             extcon_set_state(edev, state);
+>
+> Even if you're using extcon this looks like something that extcon-gpio
+> ought to be handling...
+>
+>> +static int sirf_inner_suspend(struct device *dev)
+>> +{
+>> +     struct snd_soc_card *card = dev_get_drvdata(dev);
+>> +     struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
+>> +     sinner_card->extcon_info.last_state = gpio_get_value(sinner_card->extcon_info.extcon_data.gpio);
+>> +     if (gpio_is_valid(sinner_card->gpio_spk_pa))
+>> +             gpio_direction_output(sinner_card->gpio_spk_pa, 0);
+>
+> DAPM will do this for you.
 
-
----
-From: Rafael J. Wysocki <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Subject: ACPI: Define struct acpi_device for CONFIG_ACPI unset
-
-We may find use for struct acpi_device and acpi_bus_get_device() in
-generic code without wanting to add #if IS_ENABLED(CONFIG_ACPI) churn
-there.
-
-Code can use ACPI_HANDLE() test to let compiler optimize out code
-blocks that are not used in !CONFIG_ACPI builds but structure
-definitions and function stubs must be available.
-
-Define a stub struct acpi_device for CONFIG_ACPI unset containing dev
-as the only member and a stub acpi_bus_get_device() always returning
-an error code.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
----
- include/linux/acpi.h |   10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-Index: linux-pm/include/linux/acpi.h
-===================================================================
---- linux-pm.orig/include/linux/acpi.h
-+++ linux-pm/include/linux/acpi.h
-@@ -472,7 +472,17 @@ static inline bool acpi_driver_match_dev
- }
- 
- #define ACPI_PTR(_ptr)	(NULL)
-+typedef void * acpi_handle;
- 
-+struct acpi_device {
-+	struct device dev;
-+};
-+
-+static inline int acpi_bus_get_device(acpi_handle handle,
-+				      struct acpi_device **device)
-+{
-+	return -ENODEV;
-+}
- #endif	/* !CONFIG_ACPI */
- 
- #ifdef CONFIG_ACPI
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-barry
