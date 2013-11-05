@@ -1,63 +1,159 @@
-From: Chen Gang <gang.chen@asianux.com>
-Subject: Re: [PATCH trivial] include: uapi: standard all files' macro prefix
-	and suffix, excluding "linux/" sub-directory
-Date: Tue, 05 Nov 2013 20:05:12 +0800
-Message-ID: <5278DEF8.2030101@asianux.com>
-References: <52786742.1080509@asianux.com> <51FB6216.6010008@asianux.com>
-	<11907.1383602624@warthog.procyon.org.uk>
-	<13981.1383649896@warthog.procyon.org.uk>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Enable Thinkpad mute/micmute LEDs
+	for Realtek
+Date: Tue,  5 Nov 2013 13:11:37 +0100
+Message-ID: <1383653497-9715-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <virtualization-bounces@lists.linux-foundation.org>
-In-Reply-To: <13981.1383649896@warthog.procyon.org.uk>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/virtualization>,
-	<mailto:virtualization-request@lists.linux-foundation.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/virtualization/>
-List-Post: <mailto:virtualization@lists.linux-foundation.org>
-List-Help: <mailto:virtualization-request@lists.linux-foundation.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/virtualization>,
-	<mailto:virtualization-request@lists.linux-foundation.org?subject=subscribe>
-Sender: virtualization-bounces@lists.linux-foundation.org
-Errors-To: virtualization-bounces@lists.linux-foundation.org
-To: David Howells <dhowells@redhat.com>
-Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie, daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, perex@perex.cz, thierry.reding@gmail.com, linux-mtd@lists.infradead.org, sean.hefty@intel.com, virtualization@lists.linux-foundation.org, Linux-Arch <linux-arch@vger.kernel.org>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com, jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, roland@purestorage.com, Takashi Iwai <tiwai@suse.de>, Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com, fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>, "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>, swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28B592651A0
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 13:11:38 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: hui.wang@canonical.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/05/2013 07:11 PM, David Howells wrote:
-> Chen Gang <gang.chen@asianux.com> wrote:
-> 
->>> Userspace sometimes depends on the name in the guard macro:-/
->>
->> "the guard macro" is only for prevent itself from being included by
->> multiple times (an id used by itself -- like a handle), it is not an id
->> to let other files know about it (it is not a normal using way).
-> 
-> Whilst that *should* be true, it isn't actually true.  See:
-> 
-> 	grep -r _LINUX_.*_H /usr/include/ | grep -v ^/usr/include/linux/
-> 
-> for example.  Also who knows what all those autoconf scripts out there look
-> for?
-> 
+Same as we already have for Conexant. Right now it's only enabled
+for one machine.
 
-Oh... the real world is really not quite perfect. :-/
+Tested-by: Hui Wang <hui.wang@canonical.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |   83 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 81 insertions(+), 2 deletions(-)
 
-
-> However, thinking about it some more, you're probably safe with respect to
-> userspace as scripts/headers_install.h strips off the _UAPI prefix on the
-> guard macros - just as long as you don't change the rest of the macro name.
-> 
-
-In honest, I really did not think more about it.
-
-Only adding _UAPI (not touch others) can completely fix one style issue:
-separate "uapi/*" from other sub-directories in "include/*"
-
-So for me, we can continue improve this patch: add "_UAPI" for all guard
-macro under "include/uapi/*" (also include "include/uapi/linux").
-
-
-Thanks.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 01bf812..02071a5 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -829,7 +829,11 @@ static inline void alc_shutup(struct hda_codec *codec)
+ 		snd_hda_shutup_pins(codec);
+ }
+ 
+-#define alc_free	snd_hda_gen_free
++static void alc_free(struct hda_codec *codec)
++{
++	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_FREE);
++	snd_hda_gen_free(codec);
++}
+ 
+ #ifdef CONFIG_PM
+ static void alc_power_eapd(struct hda_codec *codec)
+@@ -3527,6 +3531,74 @@ static void alc290_fixup_mono_speakers(struct hda_codec *codec,
+ 		snd_hda_override_wcaps(codec, 0x03, 0);
+ }
+ 
++#if IS_ENABLED(CONFIG_THINKPAD_ACPI)
++
++#include <linux/thinkpad_acpi.h>
++
++static int (*led_set_func)(int, bool);
++
++static void update_tpacpi_mute_led(void *private_data, int enabled)
++{
++	if (led_set_func)
++		led_set_func(TPACPI_LED_MUTE, !enabled);
++}
++
++static void update_tpacpi_micmute_led(struct hda_codec *codec,
++				      struct snd_ctl_elem_value *ucontrol)
++{
++	if (!ucontrol || !led_set_func)
++		return;
++	if (strcmp("Capture Switch", ucontrol->id.name) == 0 && ucontrol->id.index == 0) {
++		/* TODO: How do I verify if it's a mono or stereo here? */
++		bool val = ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1];
++		led_set_func(TPACPI_LED_MICMUTE, !val);
++	}
++}
++
++static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
++				  const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++	bool removefunc = false;
++
++	if (action == HDA_FIXUP_ACT_PROBE) {
++		if (!led_set_func)
++			led_set_func = symbol_request(tpacpi_led_set);
++		if (!led_set_func) {
++			snd_printk(KERN_WARNING "Failed to find thinkpad-acpi symbol tpacpi_led_set\n");
++			return;
++		}
++
++		removefunc = true;
++		if (led_set_func(TPACPI_LED_MUTE, false) >= 0) {
++			spec->gen.vmaster_mute.hook = update_tpacpi_mute_led;
++			removefunc = false;
++		}
++		if (led_set_func(TPACPI_LED_MICMUTE, false) >= 0) {
++			if (spec->gen.num_adc_nids > 1)
++				snd_printdd("Skipping micmute LED control due to several ADCs");
++			else {
++				spec->gen.cap_sync_hook = update_tpacpi_micmute_led;
++				removefunc = false;
++			}
++		}
++	}
++
++	if (led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
++		symbol_put(tpacpi_led_set);
++		led_set_func = NULL;
++	}
++}
++
++#else
++
++static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
++				  const struct hda_fixup *fix, int action)
++{
++}
++
++#endif
++
+ enum {
+ 	ALC269_FIXUP_SONY_VAIO,
+ 	ALC275_FIXUP_SONY_VAIO_GPIO2,
+@@ -3570,6 +3642,7 @@ enum {
+ 	ALC282_FIXUP_ASUS_TX300,
+ 	ALC283_FIXUP_INT_MIC,
+ 	ALC290_FIXUP_MONO_SPEAKERS,
++	ALC269_FIXUP_THINKPAD_ACPI,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -3867,6 +3940,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_DELL3_MIC_NO_PRESENCE,
+ 	},
++	[ALC269_FIXUP_THINKPAD_ACPI] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_thinkpad_acpi,
++		.chained = true,
++		.chain_id = ALC269_FIXUP_LIMIT_INT_MIC_BOOST
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -3950,7 +4029,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x2208, "Thinkpad T431s", ALC269_FIXUP_LENOVO_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x220c, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x2212, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+-	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
++	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad", ALC269_FIXUP_THINKPAD_ACPI),
+ 	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x501a, "Thinkpad", ALC283_FIXUP_INT_MIC),
 -- 
-Chen Gang
+1.7.9.5
