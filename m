@@ -1,50 +1,63 @@
-From: "Nicolo'" <nicolopiazzalunga@gmail.com>
-Subject: Microphones not working on Apple macbook Air 1,
- 1 (Early 2008) under 3.2.0-55-generic-pae Linux
-Date: Tue, 5 Nov 2013 12:34:25 +0100
-Message-ID: <CABru_zU54A2dbr0eLLVCsqXvNBparaMaeM4bWfmro56QHHBOPQ@mail.gmail.com>
+From: Chen Gang <gang.chen@asianux.com>
+Subject: Re: [PATCH trivial] include: uapi: standard all files' macro prefix
+	and suffix, excluding "linux/" sub-directory
+Date: Tue, 05 Nov 2013 20:05:12 +0800
+Message-ID: <5278DEF8.2030101@asianux.com>
+References: <52786742.1080509@asianux.com> <51FB6216.6010008@asianux.com>
+	<11907.1383602624@warthog.procyon.org.uk>
+	<13981.1383649896@warthog.procyon.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f176.google.com (mail-we0-f176.google.com
- [74.125.82.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 402FB265186
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 12:34:47 +0100 (CET)
-Received: by mail-we0-f176.google.com with SMTP id w62so3288574wes.35
- for <alsa-devel@alsa-project.org>; Tue, 05 Nov 2013 03:34:45 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa <alsa-devel@alsa-project.org>
+Return-path: <virtualization-bounces@lists.linux-foundation.org>
+In-Reply-To: <13981.1383649896@warthog.procyon.org.uk>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/virtualization>,
+	<mailto:virtualization-request@lists.linux-foundation.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/virtualization/>
+List-Post: <mailto:virtualization@lists.linux-foundation.org>
+List-Help: <mailto:virtualization-request@lists.linux-foundation.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/virtualization>,
+	<mailto:virtualization-request@lists.linux-foundation.org?subject=subscribe>
+Sender: virtualization-bounces@lists.linux-foundation.org
+Errors-To: virtualization-bounces@lists.linux-foundation.org
+To: David Howells <dhowells@redhat.com>
+Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie, daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, perex@perex.cz, thierry.reding@gmail.com, linux-mtd@lists.infradead.org, sean.hefty@intel.com, virtualization@lists.linux-foundation.org, Linux-Arch <linux-arch@vger.kernel.org>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com, jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, roland@purestorage.com, Takashi Iwai <tiwai@suse.de>, Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com, fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>, "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>, swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger>
 List-Id: alsa-devel@alsa-project.org
 
-Hello List,
+On 11/05/2013 07:11 PM, David Howells wrote:
+> Chen Gang <gang.chen@asianux.com> wrote:
+> 
+>>> Userspace sometimes depends on the name in the guard macro:-/
+>>
+>> "the guard macro" is only for prevent itself from being included by
+>> multiple times (an id used by itself -- like a handle), it is not an id
+>> to let other files know about it (it is not a normal using way).
+> 
+> Whilst that *should* be true, it isn't actually true.  See:
+> 
+> 	grep -r _LINUX_.*_H /usr/include/ | grep -v ^/usr/include/linux/
+> 
+> for example.  Also who knows what all those autoconf scripts out there look
+> for?
+> 
 
-from time to time I spend time on this problem. (Of course, it is not
-related to muting or capturing in alsamixer, or pulseaudio stuff, since
-that was already tried.)
-
-I can't get the mics to work, neither the internal one nor the external;
-note that the same jack works both for HP and ext MIC, I think it's called
-TRRS, and it's the same as the one used e.g. on iphones.
-
-I tried also with more recent kernels, and playing with hda-jack-retask,
-but with no success up to now.
-
-alsa script result at https://www.dropbox.com/l/HHLkdCW4Shcak8gq2rBSY8
-
-A curious fact, I found this alsa script result
-http://www.alsa-project.org/db/?f=3ca8243c0626844f0264a3faad0aa72018bc14f4from
-a guy running Arch on the same machine, where actually some Mic
-appears in codec#0: do you think it is relevant?
+Oh... the real world is really not quite perfect. :-/
 
 
-Thanks and best,
-Nicolo'
+> However, thinking about it some more, you're probably safe with respect to
+> userspace as scripts/headers_install.h strips off the _UAPI prefix on the
+> guard macros - just as long as you don't change the rest of the macro name.
+> 
+
+In honest, I really did not think more about it.
+
+Only adding _UAPI (not touch others) can completely fix one style issue:
+separate "uapi/*" from other sub-directories in "include/*"
+
+So for me, we can continue improve this patch: add "_UAPI" for all guard
+macro under "include/uapi/*" (also include "include/uapi/linux").
+
+
+Thanks.
+-- 
+Chen Gang
