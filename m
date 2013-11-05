@@ -1,18 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 1/3] ALSA: usb: supply channel maps even when
-	wChannelConfig is unspecified
-Date: Tue,  5 Nov 2013 04:41:06 +0100
-Message-ID: <1383622868-2596-2-git-send-email-david.henningsson@canonical.com>
-References: <1383622868-2596-1-git-send-email-david.henningsson@canonical.com>
+From: Li Xiubo <B47053@freescale.com>
+Subject: Re: [PATCHv2 6/8] ASoC: fsl: add SGTL5000 based audio
+ machine driver.
+Date: Tue, 5 Nov 2013 03:50:07 +0000
+Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F82875503@039-SN2MPN1-013.039d.mgd.msft.net>
+References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
+ <1383289495-24523-7-git-send-email-Li.Xiubo@freescale.com>
+ <20131101102805.GG28401@MrMyself>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 784E4264F0B
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 04:41:12 +0100 (CET)
-In-Reply-To: <1383622868-2596-1-git-send-email-david.henningsson@canonical.com>
+Received: from db9outboundpool.messaging.microsoft.com
+ (mail-db9lp0249.outbound.messaging.microsoft.com [213.199.154.249])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AC94261A3B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 04:50:14 +0100 (CET)
+In-Reply-To: <20131101102805.GG28401@MrMyself>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +25,142 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: Guangyu Chen <B42378@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Huan Wang <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Shawn Guo <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "broonie@kernel.org" <bro>
 List-Id: alsa-devel@alsa-project.org
 
-If wChannelconfig is given for some formats but not others, userspace
-might not be able to set the channel map.
+Hi Nicolin,
 
-This is RFC because I'm not sure what the best behaviour is - to guess
-the channel map from the given number of channels (it's quite likely
-that one channel is MONO and two channels is FL FR), or just to supply
-UNKNOWN for all channels.
 
-But the complete lack of channel map for a format leads userspace to
-believe that the format is not available at all. Or am I
-misunderstanding how this should be used?
+> > This is the SGTL5000 codec based audio driver supported with both
+> > playback and capture dai link implemention.
+> >
+> > This implementation is only compatible with device tree definition.
+> >
+> > Signed-off-by: Alison Wang <b18965@freescale.com
+> > Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+> >
+> > Conflicts:
+> > 	sound/soc/fsl/Makefile
+> > ---
+> >  sound/soc/fsl/Kconfig              |  10 ++
+> >  sound/soc/fsl/Makefile             |   2 +
+> 
+> >  sound/soc/fsl/fsl-sgtl5000-vf610.c | 208
+> > +++++++++++++++++++++++++++++++++++++
+> 
+> I just doubt if this file naming is appropriate. Even if we might not
+> have rigor rule for the file names, according to existing ones, they are
+> all in a same pattern: [SoC name]-[codec name].c
+> 
+> "imx-sgtl5000.c" for example
+> 
+> I think it would make user less confused about what this file exactly is
+> if this machine driver also follow the pattern: vf610-sgtl5000.c
+> 
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/usb/stream.c |   18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+Yes, it looks nicer.
 
-diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index c4339f9..b43b6ee 100644
---- a/sound/usb/stream.c
-+++ b/sound/usb/stream.c
-@@ -281,8 +281,6 @@ static struct snd_pcm_chmap_elem *convert_chmap(int channels, unsigned int bits,
- 	const unsigned int *maps;
- 	int c;
- 
--	if (!bits)
--		return NULL;
- 	if (channels > ARRAY_SIZE(chmap->map))
- 		return NULL;
- 
-@@ -293,9 +291,19 @@ static struct snd_pcm_chmap_elem *convert_chmap(int channels, unsigned int bits,
- 	maps = protocol == UAC_VERSION_2 ? uac2_maps : uac1_maps;
- 	chmap->channels = channels;
- 	c = 0;
--	for (; bits && *maps; maps++, bits >>= 1) {
--		if (bits & 1)
--			chmap->map[c++] = *maps;
-+
-+	if (bits) {
-+		for (; bits && *maps; maps++, bits >>= 1)
-+			if (bits & 1)
-+				chmap->map[c++] = *maps;
-+	} else {
-+		/* If we're missing wChannelConfig, then guess something
-+		    to make sure the channel map is not skipped entirely */
-+		if (channels == 1)
-+			chmap->map[c++] = SNDRV_CHMAP_MONO;
-+		else
-+			for (; c < channels && *maps; maps++)
-+				chmap->map[c++] = *maps;
- 	}
- 
- 	for (; c < channels; c++)
--- 
-1.7.9.5
+> 
+> @Shawn
+> 
+> What do you think about the file name?
+> 
+> >  3 files changed, 220 insertions(+)
+> >  create mode 100644 sound/soc/fsl/fsl-sgtl5000-vf610.c
+> >
+> > diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig index
+> > 9a8851e..1b835ba 100644
+> > --- a/sound/soc/fsl/Kconfig
+> > +++ b/sound/soc/fsl/Kconfig
+> > @@ -228,4 +228,14 @@ config SND_SOC_FSL_SAI
+> >  	tristate
+> >  	select SND_SOC_GENERIC_DMAENGINE_PCM
+> >
+> > +config SND_SOC_FSL_SGTL5000_VF610
+> 
+> Same problem with the this define.
+> 
+> > +	tristate "SoC Audio support for FSL boards with sgtl5000"
+> 
+> And 'FSL' here confuses me a lot. Because those boards based on i.MX
+> series also could be called FSL boards.
+> 
+
+Yes, this should be VF610.
+
+> > +	depends on OF && I2C
+> > +	select SND_SOC_FSL_SAI
+> > +	select SND_SOC_FSL_PCM
+> > +	select SND_SOC_SGTL5000
+> > +	help
+> > +	  Say Y if you want to add support for SoC audio on an FSL board
+> with
+> > +	  a sgtl5000 codec.
+> > +
+> >  endif # SND_FSL_SOC
+> > diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile index
+> > e5acc03..26fc551 100644
+> > --- a/sound/soc/fsl/Makefile
+> > +++ b/sound/soc/fsl/Makefile
+> > @@ -59,5 +59,7 @@ obj-$(CONFIG_SND_SOC_IMX_MC13783) +=
+> > snd-soc-imx-mc13783.o
+> >
+> >  # FSL ARM SAI/SGT15000 Platform Support  snd-soc-fsl-sai-objs :=
+> > fsl-sai.o
+> > +snd-soc-fsl-sgtl5000-vf610-objs := fsl-sgtl5000-vf610.o
+> >
+> >  obj-$(CONFIG_SND_SOC_FSL_SAI) += snd-soc-fsl-sai.o
+> > +obj-$(CONFIG_SND_SOC_FSL_SGTL5000_VF610) +=
+> > +snd-soc-fsl-sgtl5000-vf610.o
+> > diff --git a/sound/soc/fsl/fsl-sgtl5000-vf610.c
+> > b/sound/soc/fsl/fsl-sgtl5000-vf610.c
+> > new file mode 100644
+> > index 0000000..f535b42
+> > --- /dev/null
+> > +++ b/sound/soc/fsl/fsl-sgtl5000-vf610.c
+> > @@ -0,0 +1,208 @@
+> > +/*
+> > + * Freeacale ALSA SoC Audio using SGT1500 as codec.
+> > + *
+> > + * Copyright 2012-2013 Freescale Semiconductor, Inc.
+> > + *
+> > + * The code contained herein is licensed under the GNU General Public
+> > + * License. You may obtain a copy of the GNU General Public License
+> > + * Version 2 or later at the following locations:
+> > + *
+> > + */
+> > +
+> > +#include <linux/module.h>
+> > +#include <linux/of.h>
+> > +#include <linux/of_platform.h>
+> > +#include <linux/i2c.h>
+> > +#include <linux/clk.h>
+> > +
+> > +#include "../codecs/sgtl5000.h"
+> > +#include "fsl-sai.h"
+> > +
+> > +static unsigned int sysclk_rate;
+> > +
+> > +static int fsl_sgtl5000_dai_init(struct snd_soc_pcm_runtime *rtd)
+> 
+> Naming issue here again.
+> 
+> At least from my point of view, if you actually merged imx-sgtl5000 with
+> vf610-sgtl5000 and made it also compatible to other freescale SoCs, you
+> could then fairly call it fsl_sgtl5000_xxxx.
+> 
+> Well, I might be a little picky here because it's a static function and
+> won't conflict others. Just the name here doesn't look so explicit to me.
+> 
+> Please reconsider about this whole file's naming.
+> 
+
+Yes, I still not very sure the names of the functions and files, from your replies,
+I have got many information about the rules and others, I'll think it over and do some
+research, Please see the next version.
+
+
+
+Best regards,
+Xiubo
