@@ -1,55 +1,50 @@
-From: nb <nb@dagami.org>
-Subject: message to the list still waiting for approval
-Date: Tue, 05 Nov 2013 11:47:50 +0100
-Message-ID: <c48ab3e59b6d14a1d02f3e2ace3940ad@webmail.dagami.org>
+From: David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH trivial] include: uapi: standard all files' macro prefix
+ and suffix, excluding "linux/" sub-directory
+Date: Tue, 05 Nov 2013 11:11:36 +0000
+Message-ID: <13981.1383649896@warthog.procyon.org.uk>
+References: <52786742.1080509@asianux.com> <51FB6216.6010008@asianux.com>
+ <11907.1383602624@warthog.procyon.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dagami.org (colibri.dagami.org [82.226.230.20])
- by alsa0.perex.cz (Postfix) with ESMTP id CD9FD26517A
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 11:47:51 +0100 (CET)
-Received: from www-data by dagami.org with local (Exim 4.80)
- (envelope-from <nb@dagami.org>) id 1VdeAo-0000Yv-FJ
- for alsa-devel@alsa-project.org; Tue, 05 Nov 2013 11:47:50 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org>
+In-Reply-To: <52786742.1080509@asianux.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org
+To: Chen Gang <gang.chen@asianux.com>
+Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie, daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, perex@perex.cz, dhowells@redhat.com, thierry.reding@gmail.com, linux-mtd@lists.infradead.org, sean.hefty@intel.com, virtualization@lists.linux-foundation.org, Linux-Arch <linux-arch@vger.kernel.org>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com, jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, roland@purestorage.com, Takashi Iwai <tiwai@suse.de>, Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com, fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>, "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>, swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com"linux-samsung-soc@vger.kernel.org" <lin>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-Since yesterday I have a message waiting for approval.
+Chen Gang <gang.chen@asianux.com> wrote:
 
-I've received the following bounce:
+> > Userspace sometimes depends on the name in the guard macro:-/
+> 
+> "the guard macro" is only for prevent itself from being included by
+> multiple times (an id used by itself -- like a handle), it is not an id
+> to let other files know about it (it is not a normal using way).
 
-"Your mail to 'Alsa-devel' with the subject
+Whilst that *should* be true, it isn't actually true.  See:
 
-     snd-hda-intel with ALC880 on a ASUS W5A since patch
-67b6ec3196da235317ff1b9474f17379b78f3294
+	grep -r _LINUX_.*_H /usr/include/ | grep -v ^/usr/include/linux/
 
-Is being held until the list moderator can review it for approval.
+for example.  Also who knows what all those autoconf scripts out there look
+for?
 
-The reason it is being held:
+However, thinking about it some more, you're probably safe with respect to
+userspace as scripts/headers_install.h strips off the _UAPI prefix on the
+guard macros - just as long as you don't change the rest of the macro name.
 
-     Message body is too big: 66980 bytes with a limit of 60 KB
+David
 
-Either the message will get posted to the list, or you will receive
-notification of the moderator's decision.  If you would like to cancel
-this posting, please visit the following URL:
-
-     
-http://mailman.alsa-project.org/mailman/confirm/alsa-devel/6f80968d8c7db3d472d00fa0f17b5c6833a850fd"
-
-Can someone unlock the message please.
-
-Regards
-
-nb
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
