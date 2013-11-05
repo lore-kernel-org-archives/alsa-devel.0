@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 26/31] ASoC: wm8958: Replace BUG() with
+Subject: [PATCH 27/31] ASoC: wm8962: Replace BUG() with
 	snd_BUG()
-Date: Tue,  5 Nov 2013 18:40:13 +0100
-Message-ID: <1383673218-18405-27-git-send-email-tiwai@suse.de>
+Date: Tue,  5 Nov 2013 18:40:14 +0100
+Message-ID: <1383673218-18405-28-git-send-email-tiwai@suse.de>
 References: <1383673218-18405-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E80E265259
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DA97265253
  for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 18:40:42 +0100 (CET)
 In-Reply-To: <1383673218-18405-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,20 +32,56 @@ purpose, it'd be more convenient to use snd_BUG() instead.
 Cc: patches@opensource.wolfsonmicro.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8958-dsp2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm8962.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
-index b0710d817a65..a6952e6b9fe3 100644
---- a/sound/soc/codecs/wm8958-dsp2.c
-+++ b/sound/soc/codecs/wm8958-dsp2.c
-@@ -348,7 +348,7 @@ static void wm8958_dsp_apply(struct snd_soc_codec *codec, int path, int start)
- 		aif = 1;
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 3a2f96c5442c..21e2f3cb3407 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -1853,7 +1853,7 @@ static int cp_event(struct snd_soc_dapm_widget *w,
+ 		break;
+ 
+ 	default:
+-		BUG();
++		snd_BUG();
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1945,7 +1945,7 @@ static int hp_event(struct snd_soc_dapm_widget *w,
+ 		break;
+ 
+ 	default:
+-		BUG();
++		snd_BUG();
+ 		return -EINVAL;
+ 	
+ 	}
+@@ -1974,7 +1974,7 @@ static int out_pga_event(struct snd_soc_dapm_widget *w,
+ 		reg = WM8962_SPKOUTL_VOLUME;
  		break;
  	default:
 -		BUG();
 +		snd_BUG();
- 		return;
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1982,7 +1982,7 @@ static int out_pga_event(struct snd_soc_dapm_widget *w,
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		return snd_soc_write(codec, reg, snd_soc_read(codec, reg));
+ 	default:
+-		BUG();
++		snd_BUG();
+ 		return -EINVAL;
+ 	}
+ }
+@@ -2005,7 +2005,7 @@ static int dsp2_event(struct snd_soc_dapm_widget *w,
+ 		break;
+ 
+ 	default:
+-		BUG();
++		snd_BUG();
+ 		return -EINVAL;
  	}
  
 -- 
