@@ -1,50 +1,50 @@
-From: David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH trivial] include: uapi: standard all files' macro prefix
- and suffix, excluding "linux/" sub-directory
-Date: Tue, 05 Nov 2013 11:11:36 +0000
-Message-ID: <13981.1383649896@warthog.procyon.org.uk>
-References: <52786742.1080509@asianux.com> <51FB6216.6010008@asianux.com>
- <11907.1383602624@warthog.procyon.org.uk>
+From: "Nicolo'" <nicolopiazzalunga@gmail.com>
+Subject: Microphones not working on Apple macbook Air 1,
+ 1 (Early 2008) under 3.2.0-55-generic-pae Linux
+Date: Tue, 5 Nov 2013 12:34:25 +0100
+Message-ID: <CABru_zU54A2dbr0eLLVCsqXvNBparaMaeM4bWfmro56QHHBOPQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org>
-In-Reply-To: <52786742.1080509@asianux.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org
-To: Chen Gang <gang.chen@asianux.com>
-Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie, daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, perex@perex.cz, dhowells@redhat.com, thierry.reding@gmail.com, linux-mtd@lists.infradead.org, sean.hefty@intel.com, virtualization@lists.linux-foundation.org, Linux-Arch <linux-arch@vger.kernel.org>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com, jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, roland@purestorage.com, Takashi Iwai <tiwai@suse.de>, Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com, fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>, "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>, swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com"linux-samsung-soc@vger.kernel.org" <lin>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-we0-f176.google.com (mail-we0-f176.google.com
+ [74.125.82.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 402FB265186
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 12:34:47 +0100 (CET)
+Received: by mail-we0-f176.google.com with SMTP id w62so3288574wes.35
+ for <alsa-devel@alsa-project.org>; Tue, 05 Nov 2013 03:34:45 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hello List,
 
-Chen Gang <gang.chen@asianux.com> wrote:
+from time to time I spend time on this problem. (Of course, it is not
+related to muting or capturing in alsamixer, or pulseaudio stuff, since
+that was already tried.)
 
-> > Userspace sometimes depends on the name in the guard macro:-/
-> 
-> "the guard macro" is only for prevent itself from being included by
-> multiple times (an id used by itself -- like a handle), it is not an id
-> to let other files know about it (it is not a normal using way).
+I can't get the mics to work, neither the internal one nor the external;
+note that the same jack works both for HP and ext MIC, I think it's called
+TRRS, and it's the same as the one used e.g. on iphones.
 
-Whilst that *should* be true, it isn't actually true.  See:
+I tried also with more recent kernels, and playing with hda-jack-retask,
+but with no success up to now.
 
-	grep -r _LINUX_.*_H /usr/include/ | grep -v ^/usr/include/linux/
+alsa script result at https://www.dropbox.com/l/HHLkdCW4Shcak8gq2rBSY8
 
-for example.  Also who knows what all those autoconf scripts out there look
-for?
+A curious fact, I found this alsa script result
+http://www.alsa-project.org/db/?f=3ca8243c0626844f0264a3faad0aa72018bc14f4from
+a guy running Arch on the same machine, where actually some Mic
+appears in codec#0: do you think it is relevant?
 
-However, thinking about it some more, you're probably safe with respect to
-userspace as scripts/headers_install.h strips off the _UAPI prefix on the
-guard macros - just as long as you don't change the rest of the macro name.
 
-David
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Thanks and best,
+Nicolo'
