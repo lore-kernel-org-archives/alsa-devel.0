@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/5] ALSA: sparc/cs4231: Use WARN_ON() instead
+Subject: [PATCH 4/5] ALSA: mips/ad1843: Use WARN_ON() instead
 	of BUG_ON()
-Date: Tue,  5 Nov 2013 18:10:41 +0100
-Message-ID: <1383671443-13707-4-git-send-email-tiwai@suse.de>
+Date: Tue,  5 Nov 2013 18:10:42 +0100
+Message-ID: <1383671443-13707-5-git-send-email-tiwai@suse.de>
 References: <1383671443-13707-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 150DD265074
+ by alsa0.perex.cz (Postfix) with ESMTP id 19379265117
  for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 18:10:47 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E1714A67EA
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id E20F0A67F6
  for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 18:10:46 +0100 (CET)
 In-Reply-To: <1383671443-13707-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,32 +32,21 @@ Use WARN_ON() and handle the error cases accordingly.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/sparc/cs4231.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/mips/ad1843.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/sparc/cs4231.c b/sound/sparc/cs4231.c
-index 54aaad2a10f5..b47f6fe6277f 100644
---- a/sound/sparc/cs4231.c
-+++ b/sound/sparc/cs4231.c
-@@ -429,7 +429,8 @@ static void snd_cs4231_advance_dma(struct cs4231_dma_control *dma_cont,
- 		unsigned int period_size = snd_pcm_lib_period_bytes(substream);
- 		unsigned int offset = period_size * (*periods_sent);
- 
--		BUG_ON(period_size >= (1 << 24));
-+		if (WARN_ON(period_size >= (1 << 24)))
-+			return;
- 
- 		if (dma_cont->request(dma_cont,
- 				      runtime->dma_addr + offset, period_size))
-@@ -912,7 +913,8 @@ static int snd_cs4231_playback_prepare(struct snd_pcm_substream *substream)
- 	chip->image[CS4231_IFACE_CTRL] &= ~(CS4231_PLAYBACK_ENABLE |
- 					    CS4231_PLAYBACK_PIO);
- 
--	BUG_ON(runtime->period_size > 0xffff + 1);
-+	if (WARN_ON(runtime->period_size > 0xffff + 1))
-+		return -EINVAL;
- 
- 	chip->p_periods_sent = 0;
- 	spin_unlock_irqrestore(&chip->lock, flags);
+diff --git a/sound/mips/ad1843.c b/sound/mips/ad1843.c
+index c624510ec374..586907500ca5 100644
+--- a/sound/mips/ad1843.c
++++ b/sound/mips/ad1843.c
+@@ -276,7 +276,7 @@ static void ad1843_write_multi(struct snd_ad1843 *ad1843, int argcount, ...)
+ 		if (reg == -1)
+ 			reg = fp->reg;
+ 		else
+-			BUG_ON(reg != fp->reg);
++			WARN_ON(reg != fp->reg);
+ 		m = ((1 << fp->nbits) - 1) << fp->lo_bit;
+ 		mask |= m;
+ 		bits |= (value << fp->lo_bit) & m;
 -- 
 1.8.4.2
