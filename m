@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 17/31] ASoC: s6000: Use WARN_ON() instead of
+Subject: [PATCH 18/31] ASoC: rcar: Use WARN_ON() instead of
 	BUG_ON()
-Date: Tue,  5 Nov 2013 18:40:04 +0100
-Message-ID: <1383673218-18405-18-git-send-email-tiwai@suse.de>
+Date: Tue,  5 Nov 2013 18:40:05 +0100
+Message-ID: <1383673218-18405-19-git-send-email-tiwai@suse.de>
 References: <1383673218-18405-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 62D4D265264
+ by alsa0.perex.cz (Postfix) with ESMTP id 74F1D265273
  for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 18:40:42 +0100 (CET)
 In-Reply-To: <1383673218-18405-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,30 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 BUG_ON() is rather useless for debugging as it leads to panic().
 Use WARN_ON() and handle the error cases accordingly.
 
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/s6000/s6000-pcm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/scu.c | 3 ++-
+ sound/soc/sh/rcar/ssi.c | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/s6000/s6000-pcm.c b/sound/soc/s6000/s6000-pcm.c
-index d0740a762963..5cfaa5464eba 100644
---- a/sound/soc/s6000/s6000-pcm.c
-+++ b/sound/soc/s6000/s6000-pcm.c
-@@ -90,7 +90,8 @@ static void s6000_pcm_enqueue_dma(struct snd_pcm_substream *substream)
- 		return;
- 	}
+diff --git a/sound/soc/sh/rcar/scu.c b/sound/soc/sh/rcar/scu.c
+index 1ab1bce6be7f..f4453e33a847 100644
+--- a/sound/soc/sh/rcar/scu.c
++++ b/sound/soc/sh/rcar/scu.c
+@@ -198,7 +198,8 @@ static struct rsnd_mod_ops rsnd_scu_ops = {
  
--	BUG_ON(period_size & 15);
-+	if (WARN_ON(period_size & 15))
-+		return;
- 	s6dmac_put_fifo(DMA_MASK_DMAC(channel), DMA_INDEX_CHNL(channel),
- 			src, dst, period_size);
+ struct rsnd_mod *rsnd_scu_mod_get(struct rsnd_priv *priv, int id)
+ {
+-	BUG_ON(id < 0 || id >= rsnd_scu_nr(priv));
++	if (WARN_ON(id < 0 || id >= rsnd_scu_nr(priv)))
++		id = 0;
  
+ 	return &((struct rsnd_scu *)(priv->scu) + id)->mod;
+ }
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index b71cf9d7dd3f..5ac20cd5e006 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -611,7 +611,8 @@ struct rsnd_mod *rsnd_ssi_mod_get_frm_dai(struct rsnd_priv *priv,
+ 
+ struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id)
+ {
+-	BUG_ON(id < 0 || id >= rsnd_ssi_nr(priv));
++	if (WARN_ON(id < 0 || id >= rsnd_ssi_nr(priv)))
++		id = 0;
+ 
+ 	return &(((struct rsnd_ssiu *)(priv->ssiu))->ssi + id)->mod;
+ }
 -- 
 1.8.4.2
