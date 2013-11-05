@@ -1,16 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [Alsa-user] hdmi sound rerouted?
-Date: Tue, 05 Nov 2013 09:27:10 +0100
-Message-ID: <5278ABDE.3030006@ladisch.de>
-References: <20131104185343.215740@gmx.com> <s5hvc07fhgn.wl%tiwai@suse.de>
+From: Qiao Zhou <zhouqiao@marvell.com>
+Subject: [PATCH V0] ASoC: pxa-ssp: add TISSP mode support
+Date: Tue, 5 Nov 2013 16:30:08 +0800
+Message-ID: <1383640208-11919-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 58C42265072
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 09:27:13 +0100 (CET)
-In-Reply-To: <s5hvc07fhgn.wl%tiwai@suse.de>
+Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
+ [67.231.148.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6184265072
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 09:30:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,54 +19,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Deucher, Alexander" <Alexander.Deucher@amd.com>, alsa-user@lists.sourceforge.net, Dagg Stompler <daggs@gmx.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, alsa-devel@alsa-project.org, chao.xie@marvell.com, trinity.qiao.zhou@gmail.com
+Cc: Qiao Zhou <zhouqiao@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> You wanted to play back via this HDMI and it didn't work?
+add TISSP mode support. with this mode enabled, ssp controller
+works in TI-ssp protocol automatically and doesn't need to
+configure sspsp register to set the timing for tx/rx.
 
-The ATI card did not show up as "ATI", but the other ATI card without
-HDMI did: <http://thread.gmane.org/gmane.linux.alsa.user/37732>.
+Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
+---
+ include/sound/soc-dai.h |    1 +
+ sound/soc/pxa/pxa-ssp.c |    8 ++++++++
+ 2 files changed, 9 insertions(+), 0 deletions(-)
 
-Anyway, let's close this thread:
-
---8<---------------------------------------------------------------->8--
-ALSA: hda: add device IDs for AMD Evergreen/Northern Islands HDMI
-
-The device IDs of the AMD Cypress/Juniper/Redwood/Cedar/Cayman/Antilles/
-Barts/Turks/Caicos HDMI HDA controllers were missing for some reason.
-Add them so that the name shows up properly as "ATI HDMI" instead of
-"Generic", and so that the driver does not try to detect nonexistent
-codecs.
-
-According to Takashi's tests and the lack of complaints, these devices
-work fine without disabling snooping.
-
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
-
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -4079,6 +4079,22 @@
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
- 	{ PCI_DEVICE(0x1002, 0xaa48),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-+	{ PCI_DEVICE(0x1002, 0xaa50),
-+	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-+	{ PCI_DEVICE(0x1002, 0xaa58),
-+	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-+	{ PCI_DEVICE(0x1002, 0xaa60),
-+	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-+	{ PCI_DEVICE(0x1002, 0xaa68),
-+	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-+	{ PCI_DEVICE(0x1002, 0xaa80),
-+	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-+	{ PCI_DEVICE(0x1002, 0xaa88),
-+	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-+	{ PCI_DEVICE(0x1002, 0xaa90),
-+	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-+	{ PCI_DEVICE(0x1002, 0xaa98),
-+	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
- 	{ PCI_DEVICE(0x1002, 0x9902),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI },
- 	{ PCI_DEVICE(0x1002, 0xaaa0),
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index ae9a227..43fc5d0 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -33,6 +33,7 @@ struct snd_compr_stream;
+ #define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
+ #define SND_SOC_DAIFMT_AC97		6 /* AC97 */
+ #define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
++#define SND_SOC_DAIFMT_SSP		8 /* SSP mode */
+ 
+ /* left and right justified also known as MSB and LSB respectively */
+ #define SND_SOC_DAIFMT_MSB		SND_SOC_DAIFMT_LEFT_J
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index a3119a0..effa8d1 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -505,6 +505,14 @@ static int pxa_ssp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		sscr0 |= SSCR0_MOD | SSCR0_PSP;
+ 		sscr1 |= SSCR1_TRAIL | SSCR1_RWOT;
+ 		break;
++	/*
++	 * add TISSP protocol support. setting to this mode, ssp controller
++	 * works in TI-ssp mode, and need not set psp register to conf
++	 * detailed timing.
++	 */
++	case SND_SOC_DAIFMT_SSP:
++		sscr0 |= SSCR0_TISSP;
++		sscr1 |= SSCR1_RWOT;
+ 
+ 	default:
+ 		return -EINVAL;
+-- 
+1.7.0.4
