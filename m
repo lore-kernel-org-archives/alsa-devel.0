@@ -1,17 +1,17 @@
-From: "Dagg Stompler" <daggs@gmx.com>
-Subject: Re: [Alsa-user] hdmi sound rerouted?
-Date: Tue, 05 Nov 2013 10:49:56 +0100
-Message-ID: <20131105094956.135600@gmx.com>
+From: nb <nb@dagami.org>
+Subject: message to the list still waiting for approval
+Date: Tue, 05 Nov 2013 11:47:50 +0100
+Message-ID: <c48ab3e59b6d14a1d02f3e2ace3940ad@webmail.dagami.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AB2226505A
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 10:49:59 +0100 (CET)
-Received: from mailout-eu.gmx.com ([10.1.101.210]) by mrigmx.server.lan
- (mrigmx001) with ESMTP (Nemesis) id 0M8npK-1VTgaY3sYm-00CCQ9 for
- <alsa-devel@alsa-project.org>; Tue, 05 Nov 2013 10:49:58 +0100
+Received: from dagami.org (colibri.dagami.org [82.226.230.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD9FD26517A
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 11:47:51 +0100 (CET)
+Received: from www-data by dagami.org with local (Exim 4.80)
+ (envelope-from <nb@dagami.org>) id 1VdeAo-0000Yv-FJ
+ for alsa-devel@alsa-project.org; Tue, 05 Nov 2013 11:47:50 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,83 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
-Cc: "Deucher, Alexander" <Alexander.Deucher@amd.com>, alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> ----- Original Message -----
-> From: Takashi Iwai
-> Sent: 11/05/13 10:49 AM
-> To: Clemens Ladisch
-> Subject: Re: [alsa-devel] [Alsa-user] hdmi sound rerouted?
-> 
-> At Tue, 05 Nov 2013 09:27:10 +0100,
-> Clemens Ladisch wrote:
-> > 
-> > Takashi Iwai wrote:
-> > > You wanted to play back via this HDMI and it didn't work?
-> > 
-> > The ATI card did not show up as "ATI", but the other ATI card without
-> > HDMI did: <http://thread.gmane.org/gmane.linux.alsa.user/37732>.
-> > 
-> > Anyway, let's close this thread:
-> > 
-> > --8<---------------------------------------------------------------->8--
-> > ALSA: hda: add device IDs for AMD Evergreen/Northern Islands HDMI
-> > 
-> > The device IDs of the AMD Cypress/Juniper/Redwood/Cedar/Cayman/Antilles/
-> > Barts/Turks/Caicos HDMI HDA controllers were missing for some reason.
-> > Add them so that the name shows up properly as "ATI HDMI" instead of
-> > "Generic", and so that the driver does not try to detect nonexistent
-> > codecs.
-> 
-> Well, there is no actual behavior difference between
-> AZX_DRIVER_ATIHDMI and AZX_DRIVER_GENERIC about AMD HDMI chips. The
-> codec-probing is pretty same. The only difference in the current code
-> is the driver name string and the fallback of number of streams, but
-> the latter is valid only when GCAP register doesn't give proper
-> values, and it shouldn't happen with a proper chip.
-> 
-> That being said, the entries weren't added intentionally just because
-> they aren't needed to be added explicitly. The generic entry suffices
-> from the functionality POV.
-> 
-> But it seems that people misunderstand, so I think it's fine to apply
-> your patch to give a more clear name.
-> 
-> 
-> Takashi
-> 
-> > According to Takashi's tests and the lack of complaints, these devices
-> > work fine without disabling snooping.
-> > 
-> > Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
-> > 
-> > --- a/sound/pci/hda/hda_intel.c
-> > +++ b/sound/pci/hda/hda_intel.c
-> > @@ -4079,6 +4079,22 @@
-> > .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-> > { PCI_DEVICE(0x1002, 0xaa48),
-> > .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-> > + { PCI_DEVICE(0x1002, 0xaa50),
-> > + .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-> > + { PCI_DEVICE(0x1002, 0xaa58),
-> > + .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-> > + { PCI_DEVICE(0x1002, 0xaa60),
-> > + .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-> > + { PCI_DEVICE(0x1002, 0xaa68),
-> > + .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-> > + { PCI_DEVICE(0x1002, 0xaa80),
-> > + .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-> > + { PCI_DEVICE(0x1002, 0xaa88),
-> > + .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-> > + { PCI_DEVICE(0x1002, 0xaa90),
-> > + .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-> > + { PCI_DEVICE(0x1002, 0xaa98),
-> > + .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
-> > { PCI_DEVICE(0x1002, 0x9902),
-> > .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI },
-> > { PCI_DEVICE(0x1002, 0xaaa0),
-> >
+Hello,
 
-I'll apply the patch against 3.12 and will report back if it works.
+Since yesterday I have a message waiting for approval.
+
+I've received the following bounce:
+
+"Your mail to 'Alsa-devel' with the subject
+
+     snd-hda-intel with ALC880 on a ASUS W5A since patch
+67b6ec3196da235317ff1b9474f17379b78f3294
+
+Is being held until the list moderator can review it for approval.
+
+The reason it is being held:
+
+     Message body is too big: 66980 bytes with a limit of 60 KB
+
+Either the message will get posted to the list, or you will receive
+notification of the moderator's decision.  If you would like to cancel
+this posting, please visit the following URL:
+
+     
+http://mailman.alsa-project.org/mailman/confirm/alsa-devel/6f80968d8c7db3d472d00fa0f17b5c6833a850fd"
+
+Can someone unlock the message please.
+
+Regards
+
+nb
