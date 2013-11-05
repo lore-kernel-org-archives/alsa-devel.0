@@ -1,18 +1,18 @@
 From: nb <nb@dagami.org>
 Subject: snd-hda-intel with ALC880 on a ASUS W5A since patch
 	67b6ec3196da235317ff1b9474f17379b78f3294
-Date: Mon, 04 Nov 2013 23:17:35 +0100
-Message-ID: <49f961629c875a3a72b8528a9c967b66@webmail.dagami.org>
+Date: Tue, 05 Nov 2013 13:51:51 +0100
+Message-ID: <3f978affcc44bfcb004ccaf93330b0ee@webmail.dagami.org>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="=_2488461ff0e3a0c985cbb9fadbecca26"
+ boundary="=_c54dab1fcb1ac66ffba982c59f2272cf"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dagami.org (colibri.dagami.org [82.226.230.20])
- by alsa0.perex.cz (Postfix) with ESMTP id BBA292619E6
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2013 23:17:37 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A88B52651AE
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 13:51:51 +0100 (CET)
 Received: from www-data by dagami.org with local (Exim 4.80)
- (envelope-from <nb@dagami.org>) id 1VdSSl-00056n-SK
- for alsa-devel@alsa-project.org; Mon, 04 Nov 2013 23:17:35 +0100
+ (envelope-from <nb@dagami.org>) id 1Vdg6p-00011G-7t
+ for alsa-devel@alsa-project.org; Tue, 05 Nov 2013 13:51:51 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,7 +25,7 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---=_2488461ff0e3a0c985cbb9fadbecca26
+--=_c54dab1fcb1ac66ffba982c59f2272cf
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset=UTF-8;
  format=flowed
@@ -59,8 +59,7 @@ If you need more informations, please let me know.
 Regards
 
 nb
-
---=_2488461ff0e3a0c985cbb9fadbecca26
+--=_c54dab1fcb1ac66ffba982c59f2272cf
 Content-Transfer-Encoding: base64
 Content-Type: text/plain;
  name=3.2working_kernel_alsa-info.log
@@ -609,7 +608,7 @@ cyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9pbnB1dC9pbnB1dDgKWyAgICA3LjQ0
 MTI5MF0gcGNtY2lhX3NvY2tldCBwY21jaWFfc29ja2V0MDogY3M6IElPIHBvcnQgcHJvYmUgMHgx
 MDAtMHgzYWY6IGV4Y2x1ZGluZyAweDE3MC0weDE3NyAweDFmMC0weDFmNyAweDM3MC0weDM3NwoK
 Cg==
---=_2488461ff0e3a0c985cbb9fadbecca26
+--=_c54dab1fcb1ac66ffba982c59f2272cf
 Content-Transfer-Encoding: base64
 Content-Type: text/plain;
  name=non_working_kernel_alsa-info.log
@@ -937,11 +936,11 @@ UmVzb3VyY2UgY29uZmxpY3QocykgZm91bmQgYWZmZWN0aW5nIGdwaW9faWNoClsgICAgNi4xMzU1
 NDBdIHNuZF9oZGFfaW50ZWwgMDAwMDowMDoxYi4wOiBpcnEgNDAgZm9yIE1TSS9NU0ktWApbICAg
 IDYuMTM5MDI5XSBhc3VzX2xhcHRvcDogQXN1cyBMYXB0b3AgU3VwcG9ydCB2ZXJzaW9uIDAuNDIK
 Cgo=
---=_2488461ff0e3a0c985cbb9fadbecca26
+--=_c54dab1fcb1ac66ffba982c59f2272cf
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---=_2488461ff0e3a0c985cbb9fadbecca26--
+--=_c54dab1fcb1ac66ffba982c59f2272cf--
