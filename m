@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 27/31] ASoC: wm8962: Replace BUG() with
-	snd_BUG()
-Date: Tue,  5 Nov 2013 18:40:14 +0100
-Message-ID: <1383673218-18405-28-git-send-email-tiwai@suse.de>
+Subject: [PATCH 20/31] ASoC: txx9: Use WARN_ON() instead of
+	BUG_ON()
+Date: Tue,  5 Nov 2013 18:40:07 +0100
+Message-ID: <1383673218-18405-21-git-send-email-tiwai@suse.de>
 References: <1383673218-18405-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DA97265253
+ by alsa0.perex.cz (Postfix) with ESMTP id 4921326524F
  for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 18:40:42 +0100 (CET)
 In-Reply-To: <1383673218-18405-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,67 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-BUG() used in the driver is just to spit the stack trace on buggy
-points, not really needed to stop the whole operation.  For that
-purpose, it'd be more convenient to use snd_BUG() instead.
+BUG_ON() is rather useless for debugging as it leads to panic().
+Use WARN_ON() and handle the error cases accordingly.
 
-Cc: patches@opensource.wolfsonmicro.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8962.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/txx9/txx9aclc.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 3a2f96c5442c..21e2f3cb3407 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -1853,7 +1853,7 @@ static int cp_event(struct snd_soc_dapm_widget *w,
- 		break;
- 
- 	default:
--		BUG();
-+		snd_BUG();
- 		return -EINVAL;
+diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
+index 45a6428cba8d..fbd077f4de72 100644
+--- a/sound/soc/txx9/txx9aclc.c
++++ b/sound/soc/txx9/txx9aclc.c
+@@ -115,8 +115,8 @@ static void txx9aclc_dma_complete(void *arg)
+ 	spin_lock_irqsave(&dmadata->dma_lock, flags);
+ 	if (dmadata->frag_count >= 0) {
+ 		dmadata->dmacount--;
+-		BUG_ON(dmadata->dmacount < 0);
+-		tasklet_schedule(&dmadata->tasklet);
++		if (!WARN_ON(dmadata->dmacount < 0))
++			tasklet_schedule(&dmadata->tasklet);
  	}
- 
-@@ -1945,7 +1945,7 @@ static int hp_event(struct snd_soc_dapm_widget *w,
- 		break;
- 
- 	default:
--		BUG();
-+		snd_BUG();
- 		return -EINVAL;
- 	
- 	}
-@@ -1974,7 +1974,7 @@ static int out_pga_event(struct snd_soc_dapm_widget *w,
- 		reg = WM8962_SPKOUTL_VOLUME;
- 		break;
- 	default:
--		BUG();
-+		snd_BUG();
- 		return -EINVAL;
- 	}
- 
-@@ -1982,7 +1982,7 @@ static int out_pga_event(struct snd_soc_dapm_widget *w,
- 	case SND_SOC_DAPM_POST_PMU:
- 		return snd_soc_write(codec, reg, snd_soc_read(codec, reg));
- 	default:
--		BUG();
-+		snd_BUG();
- 		return -EINVAL;
- 	}
+ 	spin_unlock_irqrestore(&dmadata->dma_lock, flags);
  }
-@@ -2005,7 +2005,7 @@ static int dsp2_event(struct snd_soc_dapm_widget *w,
- 		break;
- 
- 	default:
--		BUG();
-+		snd_BUG();
- 		return -EINVAL;
+@@ -181,7 +181,10 @@ static void txx9aclc_dma_tasklet(unsigned long data)
+ 		spin_unlock_irqrestore(&dmadata->dma_lock, flags);
+ 		return;
  	}
- 
+-	BUG_ON(dmadata->dmacount >= NR_DMA_CHAIN);
++	if (WARN_ON(dmadata->dmacount >= NR_DMA_CHAIN)) {
++		spin_unlock_irqrestore(&dmadata->dma_lock, flags);
++		return;
++	}
+ 	while (dmadata->dmacount < NR_DMA_CHAIN) {
+ 		dmadata->dmacount++;
+ 		spin_unlock_irqrestore(&dmadata->dma_lock, flags);
 -- 
 1.8.4.2
