@@ -1,66 +1,50 @@
-From: Chen Gang <gang.chen@asianux.com>
-Subject: Re: [PATCH trivial] include: uapi: standard all files' macro prefix
- and suffix, excluding "linux/" sub-directory
-Date: Tue, 05 Nov 2013 11:34:26 +0800
-Message-ID: <52786742.1080509@asianux.com>
-References: <51FB6216.6010008@asianux.com>
- <11907.1383602624@warthog.procyon.org.uk>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 0/3] ALSA: usb channel map fixes
+Date: Tue,  5 Nov 2013 04:41:05 +0100
+Message-ID: <1383622868-2596-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <11907.1383602624@warthog.procyon.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: David Howells <dhowells@redhat.com>
-Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie, daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, perex@perex.cz, thierry.reding@gmail.com, linux-mtd@lists.infradead.org, sean.hefty@intel.com, virtualization@lists.linux-foundation.org, Linux-Arch <linux-arch@vger.kernel.org>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com, jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, roland@purestorage.com, Takashi Iwai <tiwai@suse.de>, Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com, fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>, "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>, swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.k>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73753261A3B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 04:41:12 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/05/2013 06:03 AM, David Howells wrote:
-> Chen Gang <gang.chen@asianux.com> wrote:
-> 
->> For "include/uapi/*", excluding "linux/" sub-directory, let all files'
->> macro prefix match the standard format, and give related stand comments
->> for their macro suffix.
->>
->> The related standard format is:
->>
->>   "_SUBDIRNAME_SUBDIRNAME[_SUBDIRNAME]_FILENAME" (1st _SUBDIRNAME is _UAPI), and use '_' instead of '.' and '-'.
-> 
-> I strongly recommend _against_ this without very careful consideration.
+Ok, so I actually tested my patch, and it turned out things were slightly
+more complex than expected - the original patch is still needed, but in addition,
+we also need to build the channel map after the format parse, because the format
+of the descriptor is not always the same as the format of the input terminal.
+These two fixes made the mono chmap show up on my logitech USB headset, on both
+output and input side.
 
-All first-send interface related patches are not for applying, they are
-only for discussing.
+I also tested my patches with another USB device. This device is UAC2, and when
+looking at lsusb I found that in UAC2 the streaming descriptor has a channel config too.
+Given what I found on the headset, it seems reasonable to use this channel config
+instead of the input terminal's channel config, although in my case it made no
+practical difference.
 
+David Henningsson (3):
+  ALSA: usb: supply channel maps even when wChannelConfig is
+    unspecified
+  ALSA: usb - For class 2 devices, use channel map from altsettings
+  ALSA: usb - Don't trust the channel config if the channel count
+    changed
 
-> Userspace sometimes depends on the name in the guard macro:-/
-> 
+ sound/usb/stream.c |   29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
 
-"the guard macro" is only for prevent itself from being included by
-multiple times (an id used by itself -- like a handle), it is not an id
-to let other files know about it (it is not a normal using way).
-
-If we really want to check "a file id", normally we will check some
-macros which already defined in this header file (or in some scripts,
-check file path) instead of checking "its file id"
-
-Using the standard format can be sure of file id is always unique in the
-future, and it also can let our interface (Linux's address) more cleaner
-and beautiful.
-
-
-Hmm.. do you mean as an interface, if really have unusual(incorrect)
-using ways, we have to bear and compatible with them -- although the
-interface never says "it will not be changed in the future".
-
-
-Thanks.
 -- 
-Chen Gang
+1.7.9.5
