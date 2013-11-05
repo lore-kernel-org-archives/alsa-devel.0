@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 31/31] ASoC: max98095: Add missing negative
-	channel checks
-Date: Tue,  5 Nov 2013 18:40:18 +0100
-Message-ID: <1383673218-18405-32-git-send-email-tiwai@suse.de>
+Subject: [PATCH 25/31] ASoC: wm8904: Replace BUG() with
+	snd_BUG()
+Date: Tue,  5 Nov 2013 18:40:12 +0100
+Message-ID: <1383673218-18405-26-git-send-email-tiwai@suse.de>
 References: <1383673218-18405-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E7A7265255
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BA63265251
  for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 18:40:42 +0100 (CET)
 In-Reply-To: <1383673218-18405-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,38 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Otherwise it'd lead to negative array index read.
-Spotted by coverity CIDs 143182, 143184.
+BUG() used in the driver is just to spit the stack trace on buggy
+points, not really needed to stop the whole operation.  For that
+purpose, it'd be more convenient to use snd_BUG() instead.
 
+Cc: patches@opensource.wolfsonmicro.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/max98095.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm8904.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-index 67244315c721..a70f35cc652e 100644
---- a/sound/soc/codecs/max98095.c
-+++ b/sound/soc/codecs/max98095.c
-@@ -1743,7 +1743,7 @@ static int max98095_put_eq_enum(struct snd_kcontrol *kcontrol,
- 	int fs, best, best_val, i;
- 	int regmask, regsave;
- 
--	if (WARN_ON(channel > 1))
-+	if (WARN_ON(channel < 0 || channel > 1))
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index c173ab3cd18a..a667726fa79d 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -741,7 +741,7 @@ static int out_pga_event(struct snd_soc_dapm_widget *w,
+ 		dcs_r = 3;
+ 		break;
+ 	default:
+-		BUG();
++		snd_BUG();
  		return -EINVAL;
- 
- 	if (!pdata || !max98095->eq_textcnt)
-@@ -1802,6 +1802,8 @@ static int max98095_get_eq_enum(struct snd_kcontrol *kcontrol,
- 	int channel = max98095_get_eq_channel(kcontrol->id.name);
- 	struct max98095_cdata *cdata;
- 
-+	if (WARN_ON(channel < 0 || channel > 1))
-+		return -EINVAL;
- 	cdata = &max98095->dai[channel];
- 	ucontrol->value.enumerated.item[0] = cdata->eq_sel;
+ 	}
  
 -- 
 1.8.4.2
