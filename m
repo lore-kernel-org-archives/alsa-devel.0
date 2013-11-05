@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 21/31] ASoC: dapm: Use WARN_ON() instead of
-	BUG_ON()
-Date: Tue,  5 Nov 2013 18:40:08 +0100
-Message-ID: <1383673218-18405-22-git-send-email-tiwai@suse.de>
+Subject: [PATCH 31/31] ASoC: max98095: Add missing negative
+	channel checks
+Date: Tue,  5 Nov 2013 18:40:18 +0100
+Message-ID: <1383673218-18405-32-git-send-email-tiwai@suse.de>
 References: <1383673218-18405-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B1A626520A
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E7A7265255
  for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2013 18:40:42 +0100 (CET)
 In-Reply-To: <1383673218-18405-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,56 +25,35 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-BUG_ON() is rather useless for debugging as it leads to panic().
-Use WARN_ON() and handle the error cases accordingly.
+Otherwise it'd lead to negative array index read.
+Spotted by coverity CIDs 143182, 143184.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/soc-dapm.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ sound/soc/codecs/max98095.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index cc36caaf6443..c89bbe5a65e7 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1460,7 +1460,8 @@ static void dapm_seq_run_coalesced(struct snd_soc_card *card,
- 			       power_list)->reg;
+diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
+index 67244315c721..a70f35cc652e 100644
+--- a/sound/soc/codecs/max98095.c
++++ b/sound/soc/codecs/max98095.c
+@@ -1743,7 +1743,7 @@ static int max98095_put_eq_enum(struct snd_kcontrol *kcontrol,
+ 	int fs, best, best_val, i;
+ 	int regmask, regsave;
  
- 	list_for_each_entry(w, pending, power_list) {
--		BUG_ON(reg != w->reg);
-+		if (WARN_ON(reg != w->reg))
-+			return;
- 		w->power = w->new_power;
+-	if (WARN_ON(channel > 1))
++	if (WARN_ON(channel < 0 || channel > 1))
+ 		return -EINVAL;
  
- 		mask |= w->mask << w->shift;
-@@ -3359,8 +3360,10 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 	u64 fmt;
- 	int ret;
+ 	if (!pdata || !max98095->eq_textcnt)
+@@ -1802,6 +1802,8 @@ static int max98095_get_eq_enum(struct snd_kcontrol *kcontrol,
+ 	int channel = max98095_get_eq_channel(kcontrol->id.name);
+ 	struct max98095_cdata *cdata;
  
--	BUG_ON(!config);
--	BUG_ON(list_empty(&w->sources) || list_empty(&w->sinks));
-+	if (WARN_ON(!config))
++	if (WARN_ON(channel < 0 || channel > 1))
 +		return -EINVAL;
-+	if (WARN_ON(list_empty(&w->sources) || list_empty(&w->sinks)))
-+		return -EINVAL;
+ 	cdata = &max98095->dai[channel];
+ 	ucontrol->value.enumerated.item[0] = cdata->eq_sel;
  
- 	/* We only support a single source and sink, pick the first */
- 	source_p = list_first_entry(&w->sources, struct snd_soc_dapm_path,
-@@ -3368,9 +3371,12 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 	sink_p = list_first_entry(&w->sinks, struct snd_soc_dapm_path,
- 				  list_source);
- 
--	BUG_ON(!source_p || !sink_p);
--	BUG_ON(!sink_p->source || !source_p->sink);
--	BUG_ON(!source_p->source || !sink_p->sink);
-+	if (WARN_ON(!source_p || !sink_p))
-+		return -EINVAL;
-+	if (WARN_ON(!sink_p->source || !source_p->sink))
-+		return -EINVAL;
-+	if (WARN_ON(!source_p->source || !sink_p->sink))
-+		return -EINVAL;
- 
- 	source = source_p->source->priv;
- 	sink = sink_p->sink->priv;
 -- 
 1.8.4.2
