@@ -1,113 +1,38 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [RFC] ALSA: hda - check for mute/micmute LEDs on all
-	Lenovo machines (Realtek)
-Date: Wed,  6 Nov 2013 14:21:36 +0100
-Message-ID: <1383744096-7510-1-git-send-email-david.henningsson@canonical.com>
+From: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>
+Subject: Re: [RFC 1/4] ASoC: omap: rx51: Use snd_soc_register_card
+Date: Wed, 6 Nov 2013 15:17:57 +0100
+Message-ID: <20131106141757.GA15551@amd.pavel.ucw.cz>
+References: <1382909086-10493-1-git-send-email-sre@debian.org>
+ <1382909086-10493-2-git-send-email-sre@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 3854C2616F4
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 14:21:37 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de, alex.hung@canonical.com
-Cc: hui.wang@canonical.com, yk@canonical.com, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1382909086-10493-2-git-send-email-sre-8fiUuRrzOP0dnm+yROfE0A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sebastian Reichel <sre-8fiUuRrzOP0dnm+yROfE0A@public.gmane.org>
+Cc: Sebastian Reichel <sre-GFxCN5SEZAc@public.gmane.org>, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Rob Landley <rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jarkko Nikula <jarkko.nikula-FVTvWyuFUl3QT0dZR+AlfA@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-There are many Lenovo machines with mute and/or mic-mute LEDs, so
-a quirk list with every SSID would be a lot of maintenance.
+On Sun 2013-10-27 22:24:43, Sebastian Reichel wrote:
+> From: Pali Roh=E1r <pali.rohar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>=20
+> This patch converts the rx51 ASoC module to use
+> snd_soc_register_card. It also adds module alias
+> to support driver autoloading.
+>=20
+> Signed-off-by: Pali Roh=E1r <pali.rohar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> Signed-off-by: Sebastian Reichel <sre-8fiUuRrzOP0dnm+yROfE0A@public.gmane.org>
 
-Instead make a vendor quirk in combination with letting the most
-common existing quirks also chain to the thinkpad_acpi quirk.
+Reviewed-by: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-@Takashi,
-So, when we had a look at which machines we wanted to add support for, we found
-about 10 - 15 machines right away, and that's just the tip of the iceberg. So
-adding machine quirks just doesn't seem like the right way to go.
-
-I think our quirking system is becoming a bit limited here - as the "limit mic
-boost" quirk was used by several vendors I did an hackish chain instead of the
-normal .chain method. Open for less hackish solutions if you have any?
-
-@Alex Hung,
-this will start to hit Ideapads also, not only Thinkpads. Do you think
-there is any harm in that happening to Ideapads and similar, or do we have a
-good way to avoid machines that are not Thinkpads (and thus shouldn't call
-thinkpad-acpi, I assume)?
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 215db60..ce30bc4 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3424,6 +3424,10 @@ static void alc269_fixup_limit_int_mic_boost(struct hda_codec *codec,
- 	struct auto_pin_cfg *cfg = &spec->gen.autocfg;
- 	int i;
- 
-+	/* Chain to thinkpad_acpi, only if Lenovo */
-+	if (codec->bus->pci->subsystem_vendor == 0x17aa)
-+		alc_fixup_thinkpad_acpi(codec, fix, action);
-+
- 	/* The mic boosts on level 2 and 3 are too noisy
- 	   on the internal mic input.
- 	   Therefore limit the boost to 0 or 1. */
-@@ -3697,6 +3701,8 @@ static const struct hda_fixup alc269_fixups[] = {
- 	[ALC269_FIXUP_SKU_IGNORE] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_sku_ignore,
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
- 	},
- 	[ALC269_FIXUP_ASUS_G73JW] = {
- 		.type = HDA_FIXUP_PINS,
-@@ -3823,6 +3829,8 @@ static const struct hda_fixup alc269_fixups[] = {
- 	[ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
- 	},
- 	[ALC269_FIXUP_DELL1_MIC_NO_PRESENCE] = {
- 		.type = HDA_FIXUP_PINS,
-@@ -3970,8 +3978,6 @@ static const struct hda_fixup alc269_fixups[] = {
- 	[ALC269_FIXUP_THINKPAD_ACPI] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_thinkpad_acpi,
--		.chained = true,
--		.chain_id = ALC269_FIXUP_LIMIT_INT_MIC_BOOST
- 	},
- };
- 
-@@ -4057,7 +4063,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x2208, "Thinkpad T431s", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x220c, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x2212, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
--	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad", ALC269_FIXUP_THINKPAD_ACPI),
-+	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x501a, "Thinkpad", ALC283_FIXUP_INT_MIC),
-@@ -4065,6 +4071,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
- 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
-+	SND_PCI_QUIRK_VENDOR(0x17aa, "Lenovo", ALC269_FIXUP_THINKPAD_ACPI),
- 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
- 
- #if 0
--- 
-1.7.9.5
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses=
+/blog.html
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
