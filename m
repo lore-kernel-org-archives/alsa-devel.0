@@ -1,16 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 30/31] ASoC: Replace BUG() with snd_BUG()
-Date: Wed, 6 Nov 2013 09:39:47 +0000
-Message-ID: <20131106093947.GD11602@sirena.org.uk>
-References: <1383673218-18405-1-git-send-email-tiwai@suse.de>
- <1383673218-18405-31-git-send-email-tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 1/2] ALSA: hda - Force buffer alignment for
+ Haswell HDMI controllers
+Date: Wed, 06 Nov 2013 10:42:02 +0100
+Message-ID: <527A0EEA.5000601@canonical.com>
+References: <1383670831-12067-1-git-send-email-tiwai@suse.de>	<5279FA77.3060102@canonical.com>
+ <s5h38naeydh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3887797654787888875=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B27A2610A1
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 10:39:52 +0100 (CET)
-In-Reply-To: <1383673218-18405-31-git-send-email-tiwai@suse.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 15B6B2608CA
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 10:42:03 +0100 (CET)
+In-Reply-To: <s5h38naeydh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 11/06/2013 09:19 AM, Takashi Iwai wrote:
+> At Wed, 06 Nov 2013 09:14:47 +0100,
+> David Henningsson wrote:
+>>
+>> On 11/05/2013 06:00 PM, Takashi Iwai wrote:
+>>> Haswell HDMI audio controllers seem to get stuck when unaligned buffer
+>>> size is used.  Let's enable the buffer alignment for the corresponding
+>>> entries.
+>>>
+>>> Since AZX_DCAPS_INTEL_PCH contains AZX_DCAPS_BUFSIZE that disables the
+>>> buffer alignment forcibly, define AZX_DCAPS_INTEL_HASWELL and put the
+>>> necessary AZX_DCAPS bits there.
+>>
+>> A name question - haswell for me is both the HDMI controller and the
+>> controller for analog codecs.
+> 
+> The analog codecs are on LynxPoint or such, not directly connected to
+> Haswell CPU.
 
---===============3887797654787888875==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XvKFcGCOAo53UbWW"
-Content-Disposition: inline
-
-
---XvKFcGCOAo53UbWW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Nov 05, 2013 at 06:40:17PM +0100, Takashi Iwai wrote:
-> BUG() used in the driver is just to spit the stack trace on buggy
-> points, not really needed to stop the whole operation.  For that
-> purpose, it'd be more convenient to use snd_BUG() instead.
-
-snd_BUG() doesn't look like it's quite doing what was desired here -
-it's conditional on SND_DEBUG but these are all for really bad problems
-which should never happen and will generally cause serious problems if
-they don't happen.  It seems better to replace them (or at least most of
-them) with the direct WARN() instead.
-
---XvKFcGCOAo53UbWW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSeg5gAAoJELSic+t+oim9aG8P/AgPafInVkqkRrlMeEyyLI99
-jwOuzHMfzxQK50pKwXiNMxpK7Po11smiXO0fdxRu+8xe1XFJ+21TQQlhANv3EbZ3
-m4SPtXiMg2TyegGWVekBwcRRTz+rsRp0YtnZzRbSyqLEmBUzDdZdzbYa1T9KDzsZ
-ftZmDIXO/4DJ8KrZTY/mVCIwvOOCtkY3W+hexpR+iNSGzwhe0ZgkilStNBa94mvJ
-WexSM7MYtvcQLsjWfn24AOOaznqGChdqnCPlKymvybpOkS9cKuuI8088KyVom3xw
-X1QSn3MYx5EYsnrXkhsFOVkOHqfyUUNlAh7YSVZxARSrZOptsi7kIMr5tWTBY3KE
-Gq0vC5wZfuBWMHMPNi82D+Ur8jzQV/UKEsUApDdr5LUOdtOgwiu7+KZddgKKlj18
-gLnujF5RU7XHxQ+NQ8zsNTIJcgzve+OsQBteXcPawtUoFr2tr5vvdvHNlCxv5yga
-GXwaxmCV523GT6HkBhMacM472xgUhDhxDpdLtdzGVhebwoLtjf86Anm9tg5Qy5lN
-PiB8RgAAUoxdaRO+yfcO7M/vjqHaVR/07vosiGiLC6YdqAz9g1V3fjX2pVxPK4Hy
-+LsKPuuHNn8xrJKS88g3aR6STVaYxCHuH4J40+e1i/W9wwzq5yIeh7T3cOoamLYR
-o46E4mgjCMMAL5/c2wSX
-=p6t6
------END PGP SIGNATURE-----
-
---XvKFcGCOAo53UbWW--
-
---===============3887797654787888875==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Fair enough, I stand corrected. I guess I just usually bunk the entire
+platform together and call it "Haswell".
 
 
---===============3887797654787888875==--
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
