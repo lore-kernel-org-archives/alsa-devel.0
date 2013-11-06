@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/31] ASoC: blackfin: Use WARN_ON()
-	instead of BUG_ON()
-Date: Wed, 6 Nov 2013 10:00:55 +0000
-Message-ID: <20131106100055.GH11602@sirena.org.uk>
-References: <1383673218-18405-1-git-send-email-tiwai@suse.de>
- <1383673218-18405-2-git-send-email-tiwai@suse.de>
+Subject: Re: [PATCHv2 5/8] ASoC: SGTL5000: Enhance the SGTL5000
+ codec driver about regulator.
+Date: Wed, 6 Nov 2013 10:03:05 +0000
+Message-ID: <20131106100305.GI11602@sirena.org.uk>
+References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
+ <1383289495-24523-6-git-send-email-Li.Xiubo@freescale.com>
+ <20131101185045.GG2493@sirena.org.uk>
+ <1DD289F6464F0949A2FCA5AA6DC23F82876EFF@039-SN2MPN1-013.039d.mgd.msft.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1681666649032896761=="
+Content-Type: multipart/mixed; boundary="===============2817226714879845084=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C4B42610CF
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 11:00:59 +0100 (CET)
-In-Reply-To: <1383673218-18405-2-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 316612610CF
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 11:03:44 +0100 (CET)
+In-Reply-To: <1DD289F6464F0949A2FCA5AA6DC23F82876EFF@039-SN2MPN1-013.039d.mgd.msft.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Li Xiubo <B47053@freescale.com>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Huan Wang <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, Shawn Guo <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Guangyu Chen <B42378@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "oskar@scara.com" <oskar@scara.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1681666649032896761==
+--===============2817226714879845084==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LZFKeWUZP29EKQNE"
+	protocol="application/pgp-signature"; boundary="2xeD/fx0+7k8I/QN"
 Content-Disposition: inline
 
 
---LZFKeWUZP29EKQNE
+--2xeD/fx0+7k8I/QN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Nov 05, 2013 at 06:39:48PM +0100, Takashi Iwai wrote:
-> BUG_ON() is rather useless for debugging as it leads to panic().
-> Use WARN_ON() and handle the error cases accordingly.
+On Wed, Nov 06, 2013 at 08:59:53AM +0000, Li Xiubo wrote:
 
-Applied, thanks.
+Please fix your mailer to word wrap within paragraphs.
 
---LZFKeWUZP29EKQNE
+> The SGTL5000 is based on regulators and when it is disabled, there
+> will be an error returns directly while the SGTL5000 codec is probing.
+
+What makes you say this?  That's not how the regulator API works.  Have
+you actually seen any problems?
+
+--2xeD/fx0+7k8I/QN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSehNTAAoJELSic+t+oim9wUsP+QHeuezmm1EDiwZWlZUGKbYF
-sD5QcnRzyxZBEfKcgxYE5w9X44SHpjM1YXHv3H9uZFu5QWtPRj7XbsL4n6Y80T/2
-rwFobmyIgMQl8DXOJHuxjGCb4IchpBFXmm9DXvXEgc/MMfniyGIEfGIcGg0HnKJe
-R/DoQVe5VjHH81p5a7fdoYNHrHEmVjfc17rr9IkgsqOlj3rVuUxhTlYrZWcU7yRM
-+WoldTfnshogd+oKHflzWUKyd4q+zPBfBfTjDM0ah2amXIFU3fwc8rSwIXJQ4OuD
-ZxqSeAWIaobSKiotFTrzA7aOVcNaKVVWQIidcuUHT6pREmlFjomopjPUI4MNcfV/
-ZKXg3s5cjcYB/JX0V0Lqo/cNRXWlA9RkufKFtvTBsj+dmBOqm/nu5p+2JjYxBdoF
-gBnUebzVKC/48TSo+nWRB4iGhOa0hVznO0XcVaN0MK0EXd+7uGlF2a9pCTNHTtXo
-GbotW4+K/gBLjxnq3/cr/rD6IwQRRl5yEL8C2M/EjpaVjriZwy/HPmffG+uXV4+f
-k2zqHfAmot1OMs1RMz4HNUyinPxlsmsHl9mDY13sMI5Awzhq4Cy9BS1E4JhSKn30
-tR28gf5rZx9KMA+G43NMRFSWMfohi+PKhtrY6CbUeLODPTVzRzAvOe2KaiuEJ0wk
-PgJW5SfJdeEkZd9FKogo
-=CNVM
+iQIcBAEBAgAGBQJSehPWAAoJELSic+t+oim99j8P/0Q5VxOl7Cz2kOdpkUtx05aO
+zfsY9qshNzATK+jYfwNtZpX1HNqQqNLyb9Yrbwcwt/w0fHG3TNOlX22yN1B0zNP3
+31rbjJ8j8VlYknZU9Ht8wxixe9MiUgZfZFxZD+m9J5PJm3kRD47eM5KGUq4J42B4
+ZmlEjfTXyhfeIkZmK2UYQmqIFmNLsN4geLH3KdyeKpGIMG7SJpKkEnt21MtvdCXP
+dv3Im3P1/+GJDaC9ygXvZrBhmKenQyxnOk7aBshU4n8nRdU5Cx2aa+DYPMocA/8t
+zFNguQriZQk5T9RaOGv8LxXNhuCUpTMpiKGaKt/4v3/KbtuuZRHXiFWYZKAqcYcR
+jYMmpzIanQGedpAndpM/NsdqzhuEf5pmj43wwzeJY0ky3sn6jPEqBVRiPNJ0mRir
+/zOxppmx4OKeBsAxsiHMBcyqcr1xgZqHhjCzz7UB0aeSZAhHgHgTf/AmvAYF+/XZ
+hC/NQcojgd3ik/nFATsSIiW0ByDgMzWWt+7xssB4eZ8TvGnwQMUvK354NLODPRzr
+bOwTmbavXmhjziSQhqZe98VD4SAp8xL63RIxfQO/0Qc1KtoyQZ5/RFdRNA+vjbcQ
+Oa3EbyyltfT8SbF+uZr0Pxnby+YTN42AbTj2PrefRNJ1CngTxvzKcjkdrxWa++SJ
+aKaPNTTIaZfBZXE2HIBG
+=lgFY
 -----END PGP SIGNATURE-----
 
---LZFKeWUZP29EKQNE--
+--2xeD/fx0+7k8I/QN--
 
---===============1681666649032896761==
+--===============2817226714879845084==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1681666649032896761==--
+--===============2817226714879845084==--
