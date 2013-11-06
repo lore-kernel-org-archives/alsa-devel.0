@@ -1,19 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 21/31] ASoC: dapm: Use WARN_ON() instead of
-	BUG_ON()
-Date: Wed, 6 Nov 2013 11:15:29 +0000
-Message-ID: <20131106111529.GH11602@sirena.org.uk>
-References: <1383673218-18405-1-git-send-email-tiwai@suse.de>
- <1383673218-18405-22-git-send-email-tiwai@suse.de>
- <20131106102431.GM11602@sirena.org.uk>
- <s5htxfpvlib.wl%tiwai@suse.de>
+Subject: Re: [PATCH V0] ASoC: pxa-ssp: add TISSP mode support
+Date: Wed, 6 Nov 2013 11:24:21 +0000
+Message-ID: <20131106112421.GI11602@sirena.org.uk>
+References: <1383640208-11919-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0971620001400617417=="
+Content-Type: multipart/mixed; boundary="===============8525835727743186941=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 388B32619E7
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 12:15:32 +0100 (CET)
-In-Reply-To: <s5htxfpvlib.wl%tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E61A2619DA
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 12:24:25 +0100 (CET)
+In-Reply-To: <1383640208-11919-1-git-send-email-zhouqiao@marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,72 +19,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Qiao Zhou <zhouqiao@marvell.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, trinity.qiao.zhou@gmail.com, chao.xie@marvell.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0971620001400617417==
+--===============8525835727743186941==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KiOS11rrlPLUJaFM"
+	protocol="application/pgp-signature"; boundary="x7gJcYyRf5ZnuMVj"
 Content-Disposition: inline
 
 
---KiOS11rrlPLUJaFM
+--x7gJcYyRf5ZnuMVj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 06, 2013 at 12:05:00PM +0100, Takashi Iwai wrote:
+On Tue, Nov 05, 2013 at 04:30:08PM +0800, Qiao Zhou wrote:
+> add TISSP mode support. with this mode enabled, ssp controller
+> works in TI-ssp protocol automatically and doesn't need to
+> configure sspsp register to set the timing for tx/rx.
 
-> BUG_ON() is rather useless for debugging as it leads to panic().
-> Use WARN_ON() and handle the error cases accordingly.
+What is TISSP mode in an audio context?
 
-Please fix the comment about BUG_ON() being useless; it does exactly
-what it's supposed to do.
+> +	/*
+> +	 * add TISSP protocol support. setting to this mode, ssp controller
+> +	 * works in TI-ssp mode, and need not set psp register to conf
+> +	 * detailed timing.
+> +	 */
+> +	case SND_SOC_DAIFMT_SSP:
+> +		sscr0 |=3D SSCR0_TISSP;
+> +		sscr1 |=3D SSCR1_RWOT;
+> =20
+>  	default:
+>  		return -EINVAL;
 
-> Also another WARN_ON() check is added in dapm_seq_run_coalesced()
-> since now the show goes on after the first WARN_ON().
+I don't think this code has been tested...
 
-Why?
-
->  	list_for_each_entry(w, pending, power_list) {
-> +		if (WARN_ON(reg != w->reg))
-> +			continue;
->  		dapm_seq_check_event(card, w, SND_SOC_DAPM_POST_PMU);
->  		dapm_seq_check_event(card, w, SND_SOC_DAPM_POST_PMD);
->  	}
-
-We're not using reg here...
-
---KiOS11rrlPLUJaFM
+--x7gJcYyRf5ZnuMVj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSeiTOAAoJELSic+t+oim9/LwP/RCcAXkp0U2cH2FWDaM3wcII
-yS8TQmgIQPWCJfDqzz7uwmepc6thjyHdh2LIVG+vQoAiR8NtKGutxRraUJIYSgQF
-0hrPhDghXpKG4OTpQbcHM2po+XQ9k1ghIqiVZ84W2jFW44ks6nDV1ErExriyVYvG
-nnswKcv/cZn0I4Moe/wQ10BY37vbpEMa994oZt/PAhOhiEzUJws0toHKXE85pWKT
-uC9o8tQmxsXf0UcO8mfSYVOS8McZ/nxe2s+BQLPQKcOXGuCP4rgL3hu9R4jKFQHe
-6g8G7qculfk2NFDE2HdUV9G8xQDoLhIHB+7qw7ZygvWrnr3RasnveP5g4XTM7xMn
-CjSP75cim+gnS0JGMj1epOaXcAiAj1sFLKZvxIiFyEpvrie153bOJAGoV+hXrydi
-LbukpjEQQccVd2TAfgH9ZMo5+ZJ8p3ZIYxwZUEU7Jb+I3HombPWMd7qG9vgjm4bU
-BHRhFunrLv9Sw01h+y0coz3LaR3y9BgtQbzCWGLABaGWxZf0R6fl9PFqhlX+nKai
-vhhuMljBwc4HvvpRjAAWMKZ7ZttzL8bId+o9sUe66OX4roCc90Vuw2oIXXacojnn
-kBfikstaz5CBK4hynoyjl1CG72T/YLh8h42gh7/Zg5r4L+9huawdA+pBLfY8FWo4
-ZpKj7wMVhrTuopRiLdnr
-=/ouE
+iQIcBAEBAgAGBQJSeibiAAoJELSic+t+oim95NUP/i7piUElCO6O59ipGndQtF0b
+Vtjsvn7jpsZMvBmK0oOJMNJrIsYGEnhs4wYACGxFtX++ojyRevOHHYlWK2SZs9bC
+E9Dp68tvNnDyyOXBhf00I0iM8gt7LB1sch9ns2yCfQw+w0uVH9RinzeoLF1Dkz8s
+wkvpAu5fPsICPWjUOp8WWlosuqQU4xhfdzHfsbps0YtOwdqsE50Vu9YRzig6fkky
+6qPCK948yeICf/WIVcnW9AVGt89ziUH54y3kLZCE2Yz52TDuk24oWkl9rAFEAlv3
+e4H5Gi9adqXNGr3vlTe43Utf7tbMkbOtvpDmuR0tlNLZRnyDO+pgT77zKTSBJuau
++CV9wtMVzCOBa4iybzOzKo206wwGch+KXVS0nKR9mFHJKnNn7lg/Vkl+uraXMT2F
+9n4yAfay5yWt5mhhgr7QGv4hoztydmQxKAy2Qcz/70er+ffYDtFoNUvRWv4qyAQQ
+wqpYysFMIRt2mUDxKLn0Xl1eGIjcaKJ4bQrxky5k07HXVnnD/lYk+c/k36Nw6QDQ
+YBilH3QRil2SoFNhnSiqxuKOVcIfWktg7HqzpmmoA08m9JOoSH2lIJHxyWRT3rUC
+mbzoQRLmwoftYYBSH3jvyn9ZOZ5m5oIEM6zNE7yMcMkuQKplKTunAgmdZHfrcz84
+CrIe8zqsdAiIQFQa7yzh
+=bFU2
 -----END PGP SIGNATURE-----
 
---KiOS11rrlPLUJaFM--
+--x7gJcYyRf5ZnuMVj--
 
---===============0971620001400617417==
+--===============8525835727743186941==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0971620001400617417==--
+--===============8525835727743186941==--
