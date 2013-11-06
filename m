@@ -1,33 +1,67 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: [RFC 4/4] ASoC: RX-51: Add DT support to sound driver
-Date: Wed, 6 Nov 2013 15:32:48 +0100
-Message-ID: <20131106143248.GD15551@amd.pavel.ucw.cz>
-References: <1382909086-10493-1-git-send-email-sre@debian.org>
- <1382909086-10493-5-git-send-email-sre@debian.org>
+From: Dolevo Jay <cmst@live.com>
+Subject: How to apply rate conversion in asound.conf
+Date: Wed, 6 Nov 2013 15:02:33 +0000
+Message-ID: <DUB122-W45C29A2FD0EE3B2FC1A459AAF00@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1382909086-10493-5-git-send-email-sre@debian.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sebastian Reichel <sre@debian.org>
-Cc: Sebastian Reichel <sre@ring0.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Landley <rob@landley.net>, Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grant Likely <grant.likely@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dub0-omc3-s2.dub0.hotmail.com (dub0-omc3-s2.dub0.hotmail.com
+ [157.55.2.11]) by alsa0.perex.cz (Postfix) with ESMTP id A521C261AA6
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 16:02:34 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+Hi experts,
 
-> This patch adds device tree support to the Nokia N900 audio driver.
+I am currently using the following asound.conf, which is pretty much
+copy-paste from the link below.
 
-Note, N900 audio driver.
+asound.conf
+-------------------------------------
+pcm.!default {
+	type plug
+	slave.pcm multi
+}
 
-> +- compatible: "nokia,rx51-audio"
+pcm.multi {
+        type multi;
+        slaves.a.pcm "hw:0,1";
+        slaves.a.channels 2;
+        slaves.b.pcm "hw:1,1";
+        slaves.b.channels 2;
 
-Still, it is rx51-audio. If it is feasible, could we move away from
-rx51 naming and into n900 naming that is familiar to mere humans?
+        bindings.0.slave a;
+        bindings.0.channel 0;
+        bindings.1.slave a;
+        bindings.1.channel 1;
+        bindings.2.slave b;
+        bindings.2.channel 0;
+        bindings.3.slave b;
+        bindings.3.channel 1;
+}
+-------------------------------------
 
-We can rename the sources later, but I guess we should get dts binding
-right first time...
-									Pavel
--- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+http://www.alsa-project.org/main/index.php/Asoundrc#Virtual_multi_channel_devices
+-------------------------------------
+
+My purpose is to apply rate conversion to the "hw:1,1" and have 44100 rate
+out. There is a sample conversion like: 
+
+pcm.rate_convert {
+	type rate
+	slave sl2
+}
+
+but how can I attach this rate_convert code to the multi code?
+
+Thanks. 		 	   		  
