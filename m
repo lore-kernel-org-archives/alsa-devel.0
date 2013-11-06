@@ -1,14 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4/9] ASoC: wm8904: Replace BUG() with WARN()
-Date: Wed,  6 Nov 2013 11:07:14 +0100
-Message-ID: <1383732439-31441-5-git-send-email-tiwai@suse.de>
+Subject: [PATCH 5/9] ASoC: wm8958: Replace BUG() with WARN()
+Date: Wed,  6 Nov 2013 11:07:15 +0100
+Message-ID: <1383732439-31441-6-git-send-email-tiwai@suse.de>
 References: <1383732439-31441-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E6428261645
+ by alsa0.perex.cz (Postfix) with ESMTP id D4BD62615DF
  for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 11:07:22 +0100 (CET)
 In-Reply-To: <1383732439-31441-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,20 +32,20 @@ error information.
 Cc: patches@opensource.wolfsonmicro.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8904.c | 2 +-
+ sound/soc/codecs/wm8958-dsp2.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index c173ab3cd18a..3938fb1c203e 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -741,7 +741,7 @@ static int out_pga_event(struct snd_soc_dapm_widget *w,
- 		dcs_r = 3;
+diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
+index b0710d817a65..b7488f190d2b 100644
+--- a/sound/soc/codecs/wm8958-dsp2.c
++++ b/sound/soc/codecs/wm8958-dsp2.c
+@@ -348,7 +348,7 @@ static void wm8958_dsp_apply(struct snd_soc_codec *codec, int path, int start)
+ 		aif = 1;
  		break;
  	default:
 -		BUG();
-+		WARN(1, "Invalid reg %d\n", reg);
- 		return -EINVAL;
++		WARN(1, "Invalid path %d\n", path);
+ 		return;
  	}
  
 -- 
