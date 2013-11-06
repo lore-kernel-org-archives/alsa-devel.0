@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 11/13] ASoC: ux500: Store DMA data in the DAI differently in the pdata and DT case
-Date: Wed,  6 Nov 2013 10:16:23 +0000
-Message-ID: <1383732985-18928-12-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 07/13] ASoC: ux500_pcm: Extract MSP IDs from Device Tree
+Date: Wed,  6 Nov 2013 10:16:19 +0000
+Message-ID: <1383732985-18928-8-git-send-email-lee.jones@linaro.org>
 References: <1383732985-18928-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1383732985-18928-1-git-send-email-lee.jones@linaro.org>
@@ -10,91 +10,32 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-In this patch we do two things. Firstly, instead of open coding the
-store of DMA data in to the DAI for later use, we use the API provided.
-Secondly we create and store similar DMA data for the DT case, only
-this time we use 'struct snd_dmaengine_dai_dma_data' which is provided
-by the core for this very reason.
+This is required for indexing pre-defined channel configuration structures.
 
 Cc: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@kernel.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/ux500_msp_dai.c | 41 +++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 39 insertions(+), 2 deletions(-)
+ sound/soc/ux500/ux500_msp_i2s.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
-index c6fb5cc..35187d8 100644
---- a/sound/soc/ux500/ux500_msp_dai.c
-+++ b/sound/soc/ux500/ux500_msp_dai.c
-@@ -17,12 +17,14 @@
- #include <linux/bitops.h>
- #include <linux/platform_device.h>
- #include <linux/clk.h>
-+#include <linux/of.h>
- #include <linux/regulator/consumer.h>
- #include <linux/mfd/dbx500-prcmu.h>
- #include <linux/platform_data/asoc-ux500-msp.h>
- 
- #include <sound/soc.h>
- #include <sound/soc-dai.h>
-+#include <sound/dmaengine_pcm.h>
- 
- #include "ux500_msp_i2s.h"
- #include "ux500_msp_dai.h"
-@@ -654,16 +656,51 @@ static int ux500_msp_dai_trigger(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
-+static int ux500_msp_dai_of_probe(struct snd_soc_dai *dai)
-+{
-+	struct snd_dmaengine_dai_dma_data *playback_dma_data;
-+	struct snd_dmaengine_dai_dma_data *capture_dma_data;
+diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
+index 1ca8b08..0a99372 100644
+--- a/sound/soc/ux500/ux500_msp_i2s.c
++++ b/sound/soc/ux500/ux500_msp_i2s.c
+@@ -665,6 +665,13 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
+ 				sizeof(struct msp_i2s_platform_data), GFP_KERNEL);
+ 			if (!platform_data)
+ 				return -ENOMEM;
 +
-+	playback_dma_data = devm_kzalloc(dai->dev,
-+					 sizeof(*playback_dma_data),
-+					 GFP_KERNEL);
-+	if (!playback_dma_data)
-+		return -ENOMEM;
-+
-+	capture_dma_data = devm_kzalloc(dai->dev,
-+					sizeof(*capture_dma_data),
-+					GFP_KERNEL);
-+	if (!capture_dma_data)
-+		return -ENOMEM;
-+
-+	playback_dma_data->addr = drvdata->msp->playback_dma_data.tx_rx_addr;
-+	capture_dma_data->addr = drvdata->msp->capture_dma_data.tx_rx_addr;
-+
-+	playback_dma_data->maxburst = 4;
-+	capture_dma_data->maxburst = 4;
-+
-+	snd_soc_dai_init_dma_data(dai, playback_dma_data, capture_dma_data);
-+
-+	return 0;
-+}
-+
- static int ux500_msp_dai_probe(struct snd_soc_dai *dai)
- {
- 	struct ux500_msp_i2s_drvdata *drvdata = dev_get_drvdata(dai->dev);
-+	struct device_node *np = dai->dev->of_node;
-+	int ret;
- 
--	dai->playback_dma_data = &drvdata->msp->playback_dma_data;
--	dai->capture_dma_data = &drvdata->msp->capture_dma_data;
-+	if (np) {
-+		ret = ux500_msp_dai_of_probe(dai);
-+		return ret;
-+	}
- 
- 	drvdata->msp->playback_dma_data.data_size = drvdata->slot_width;
- 	drvdata->msp->capture_dma_data.data_size = drvdata->slot_width;
- 
-+	snd_soc_dai_init_dma_data(dai,
-+				  &drvdata->msp->playback_dma_data,
-+				  &drvdata->msp->capture_dma_data);
- 	return 0;
- }
- 
++			if (!of_property_read_u32(np, "id",
++						  &platform_data->id)) {
++				dev_err(&pdev->dev,
++					"No 'id' property found in DT\n");
++				return -EINVAL;
++			}
+ 		}
+ 	} else
+ 		if (!platform_data)
 -- 
 1.8.1.2
