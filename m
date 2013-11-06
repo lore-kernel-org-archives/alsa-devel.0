@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 18/31] ASoC: rcar: Use WARN_ON() instead of
+Subject: Re: [PATCH 19/31] ASoC: sh: Use WARN_ON() instead of
 	BUG_ON()
-Date: Wed, 6 Nov 2013 10:34:54 +0000
-Message-ID: <20131106103454.GZ11602@sirena.org.uk>
+Date: Wed, 6 Nov 2013 10:35:06 +0000
+Message-ID: <20131106103506.GA11602@sirena.org.uk>
 References: <1383673218-18405-1-git-send-email-tiwai@suse.de>
- <1383673218-18405-19-git-send-email-tiwai@suse.de>
+ <1383673218-18405-20-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8207769976886966926=="
+Content-Type: multipart/mixed; boundary="===============1951500154059386596=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A86B32619D5
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 11:34:57 +0100 (CET)
-In-Reply-To: <1383673218-18405-19-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 436DE261A19
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 11:35:09 +0100 (CET)
+In-Reply-To: <1383673218-18405-20-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +26,51 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Kuninori M
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8207769976886966926==
+--===============1951500154059386596==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JefYhWJ8RkX3aR0a"
+	protocol="application/pgp-signature"; boundary="Jsn5+Lu/ZvzbAGtZ"
 Content-Disposition: inline
 
 
---JefYhWJ8RkX3aR0a
+--Jsn5+Lu/ZvzbAGtZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Nov 05, 2013 at 06:40:05PM +0100, Takashi Iwai wrote:
+On Tue, Nov 05, 2013 at 06:40:06PM +0100, Takashi Iwai wrote:
 > BUG_ON() is rather useless for debugging as it leads to panic().
 > Use WARN_ON() and handle the error cases accordingly.
 
 Applied, thanks.
 
---JefYhWJ8RkX3aR0a
+--Jsn5+Lu/ZvzbAGtZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSehtLAAoJELSic+t+oim9T6kP/3XAqCdSBrirb7LA0n9bBONz
-Qw3Yuev0UgCi0y3QBIF32aW9aR6JHjdFysdkKdAe5y5pyOQviYNS/yqWe9btMVpE
-HeMi0cVEWzIP8AsNgjJy1h8TmBWDmuOgLr6WkTZBF/V4LWDy2XKRuBqg2YZCTYhQ
-vZMIfI7LV17M5omRt1FiLFFfOQ3bWFFDpOlaaWcyy7sqLHtLGNR4ODrwwcp12gez
-5ON/T4dMaMfWvT6bpb9VpwQWTac3R8F7tFENgd408Ok5cJtQ2nQcwyyk3g3+EKCO
-MyqM5JwKB47Go6Q0SJN+FhsrEmDdflyWebm1ohTqbEJoQNdDRaxndbqX0UItaTfA
-3XeP/371iT7YeQOA4qgOxDt2XIrPg59rW0YZZ/oHekEwtNg/qI7RgjXMMbsm0M5B
-0kGweJlE68VfgCLsH0WD5lpn2d8iNOZWr7mz1RkzDeCm//hBJERWpVYc0YTMGv/P
-R36hjEqn25SJ9XcEfH0MgZUhqEAU5DeO6tMmaKEwVzBGma7IdKwXan35Lej16n7C
-49UkmgduC5/FZHMoW8/Zcht+Uo4/O+zA3hZCgUvuxug2sAClt3iDG6iAU6L67Xn3
-r7frPJawkiIfLPvupx3iUIfKNce1iAFQc/Ul9QEH9w9hR9X3NuCo9rWq79ts8ThN
-NkTxkhhjXrlIGshXRazw
-=yCxa
+iQIcBAEBAgAGBQJSehtXAAoJELSic+t+oim9ehYP/AkC0KoFiEBR1ZI91dsinY+d
+3L3p4UCk6TMNNfK7WCFr09dRUhXk+JOyuvL7mleFcajhtwrXm0R5Gb7rEn3XM9ta
+sAMm6ZEOo1qEWAJ2jucWX8kojuahi5Z1xcpZmgxxFEwK3H+Gq5e0BBdRHYMYKLGb
+MIIQKRnDl2Gi9ldrhuJ3ENVD53eyH2GBcP+rvbEN0mDGc0y7kMtHkBkGVW5kCEbA
+rmdbYlotoScSB2qckBdwySn8xzTFkeFi4MbsU+XHROvHY7Vr0kLRFRc5p/8RtmBG
+dput2QJGdpYIWCP9AY8j0/YIws4DTwQaR6uv+F7vXzTMtWTu+jH5YGSFaPIy4/rF
+7HSvkJBL3SczNwuJQv3OwfeNpNJOg4KxrhfwFUkHvx52DZarrAGxJuduKD2/ru9f
+AnFDJZvBl3C3uB/XxVpo+QUOn5B47JMoU9CEqTPtjOuPwDs5bFa00t/RVesJ/gsu
+8Srs72yufVXR+c3nlcV6C0xztojaHAkvOcHGf9qJ8k/5rnF2X5bkrTA53qQpoMHy
+uZ9aHVdH3a21SdBBJDOktDSlLSjMLyVCOIuZ//kxOANVxvFCzN8u9AYf23Sn2lQ0
+8XwzH0qIHg4SkEVB1GJTOyEAwEQPgkURh8s1zL/HeLxbIm4gn4DsB+yMScUTvjzc
+2XCGa6BpdTYOrjkbJAEr
+=bIZk
 -----END PGP SIGNATURE-----
 
---JefYhWJ8RkX3aR0a--
+--Jsn5+Lu/ZvzbAGtZ--
 
---===============8207769976886966926==
+--===============1951500154059386596==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8207769976886966926==--
+--===============1951500154059386596==--
