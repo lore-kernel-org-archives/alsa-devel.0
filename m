@@ -1,124 +1,61 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 10/13] ASoC: ux500_pcm: Extend Device Tree support to deal with DMA data
-Date: Wed,  6 Nov 2013 10:16:22 +0000
-Message-ID: <1383732985-18928-11-git-send-email-lee.jones@linaro.org>
-References: <1383732985-18928-1-git-send-email-lee.jones@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1383732985-18928-1-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - Make sure mute LEDs stay on
+ during runtime suspend (Realtek)
+Date: Wed, 06 Nov 2013 11:17:23 +0100
+Message-ID: <527A1733.2080907@canonical.com>
+References: <1383731444-6487-1-git-send-email-david.henningsson@canonical.com>
+ <s5hr4atet6f.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id E1CB0261740
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 11:17:24 +0100 (CET)
+In-Reply-To: <s5hr4atet6f.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, 1248465@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-Soon we will strip out pdata support from the Ux500 set of ASoC drivers.
-When this happens it will have to supply a DMA slave_config to the
-dmaengine. At the moment a great deal of this comes from pdata via
-AUXDATA. We need to become independent of this soon. This patch starts
-the process by allocating memory for the associated data structures and
-fetches the MSP id used for const struct indexing.
+On 11/06/2013 11:11 AM, Takashi Iwai wrote:
+> At Wed,  6 Nov 2013 10:50:44 +0100,
+> David Henningsson wrote:
+>>
+>> Some HP machines with Realtek codecs have mute LEDs connected to VREF pins.
+>> However when these go into runtime suspend, the pin powers down and its
+>> pin control is disabled, thus disabling the LED too.
+>>
+>> This patch fixes that issue by making sure that the pin stays in D0 with
+>> correct pin control.
+>>
+>> Cc: stable@kernel.org
+>> BugLink: https://bugs.launchpad.net/bugs/1248465
+>> Tested-by: Franz Hsieh <franz.hsieh@canonical.com>
+>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+> 
+> Thanks, applied.
+> 
+> I do wonder, though, whether the LED survives even after turning AFG
+> to D3.  With IDT codecs, we had to keep AFG D0 just for keeping this
+> VREF stuff.  Maybe Realtek codecs behave differently.
 
-Cc: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- sound/soc/ux500/ux500_msp_i2s.c | 68 ++++++++++++++++++++++++++++-------------
- 1 file changed, 47 insertions(+), 21 deletions(-)
+Well, the patch was tested by Franz and found working, so it seems
+indeed that AFG can be in D3 and the LED still works.
 
-diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
-index 0a99372..2e916d1 100644
---- a/sound/soc/ux500/ux500_msp_i2s.c
-+++ b/sound/soc/ux500/ux500_msp_i2s.c
-@@ -646,6 +646,41 @@ int ux500_msp_i2s_close(struct ux500_msp *msp, unsigned int dir)
- 
- }
- 
-+int ux500_msp_i2s_of_init_msp(struct platform_device *pdev,
-+			      struct ux500_msp *msp,
-+			      struct msp_i2s_platform_data **platform_data)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct msp_i2s_platform_data *pdata;
-+
-+	*platform_data = devm_kzalloc(&pdev->dev,
-+				     sizeof(struct msp_i2s_platform_data),
-+				     GFP_KERNEL);
-+	pdata = *platform_data;
-+	if (!pdata)
-+		return -ENOMEM;
-+
-+	msp->playback_dma_data.dma_cfg = devm_kzalloc(&pdev->dev,
-+					sizeof(struct stedma40_chan_cfg),
-+					GFP_KERNEL);
-+	if (!msp->playback_dma_data.dma_cfg)
-+		return -ENOMEM;
-+
-+	msp->capture_dma_data.dma_cfg = devm_kzalloc(&pdev->dev,
-+					sizeof(struct stedma40_chan_cfg),
-+					GFP_KERNEL);
-+	if (!msp->capture_dma_data.dma_cfg)
-+		return -ENOMEM;
-+
-+	if (of_property_read_u32(np, "id", &pdata->id)) {
-+		dev_err(&pdev->dev,
-+			"No 'id' property found in DT\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- int ux500_msp_i2s_init_msp(struct platform_device *pdev,
- 			struct ux500_msp **msp_p,
- 			struct msp_i2s_platform_data *platform_data)
-@@ -653,37 +688,28 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
- 	struct resource *res = NULL;
- 	struct device_node *np = pdev->dev.of_node;
- 	struct ux500_msp *msp;
-+	int ret;
- 
- 	*msp_p = devm_kzalloc(&pdev->dev, sizeof(struct ux500_msp), GFP_KERNEL);
- 	msp = *msp_p;
- 	if (!msp)
- 		return -ENOMEM;
- 
--	if (np) {
--		if (!platform_data) {
--			platform_data = devm_kzalloc(&pdev->dev,
--				sizeof(struct msp_i2s_platform_data), GFP_KERNEL);
--			if (!platform_data)
--				return -ENOMEM;
--
--			if (!of_property_read_u32(np, "id",
--						  &platform_data->id)) {
--				dev_err(&pdev->dev,
--					"No 'id' property found in DT\n");
--				return -EINVAL;
--			}
--		}
--	} else
--		if (!platform_data)
-+	if (!platform_data) {
-+		if (np) {
-+			ret = ux500_msp_i2s_of_init_msp(pdev, msp,
-+							&platform_data);
-+			if (ret)
-+				return ret;
-+		} else
- 			return -EINVAL;
--
--	dev_dbg(&pdev->dev, "%s: Enter (name: %s, id: %d).\n", __func__,
--		pdev->name, platform_data->id);
-+	} else {
-+		msp->playback_dma_data.dma_cfg = platform_data->msp_i2s_dma_tx;
-+		msp->capture_dma_data.dma_cfg = platform_data->msp_i2s_dma_rx;
-+	}
- 
- 	msp->id = platform_data->id;
- 	msp->dev = &pdev->dev;
--	msp->playback_dma_data.dma_cfg = platform_data->msp_i2s_dma_tx;
--	msp->capture_dma_data.dma_cfg = platform_data->msp_i2s_dma_rx;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (res == NULL) {
+(Actually it could even be the other way around - maybe even the pin can
+remain in D3 and still have vref output, as long as the pin ctl is set.
+I never tested that explicitly.)
+
 -- 
-1.8.1.2
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
