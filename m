@@ -1,18 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: cmi8328: Fix compile warnings
-	without CONFIG_PM
-Date: Wed,  6 Nov 2013 17:58:05 +0100
-Message-ID: <1383757086-21220-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH 2/2] ALSA: lx6464es: Fix pointer cast compile
+	warnings
+Date: Wed,  6 Nov 2013 17:58:06 +0100
+Message-ID: <1383757086-21220-2-git-send-email-tiwai@suse.de>
+References: <1383757086-21220-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BC0D265284
+ by alsa0.perex.cz (Postfix) with ESMTP id 68BBE26516A
  for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 17:58:06 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 44B01A6F04
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 45686A6F06
  for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 17:58:06 +0100 (CET)
+In-Reply-To: <1383757086-21220-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,25 +27,48 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SnVzdCBhZGQgYW4gaWZkZWYgQ09ORklHX1BNIHRvIHNodXQgdXAgdGhlIHdhcm5pbmdzOgoKICBz
-b3VuZC9pc2EvY21pODMyOC5jOjEyOToxMzogd2FybmluZzog4oCYc25kX2NtaTgzMjhfY2ZnX3Nh
-dmXigJkgZGVmaW5lZCBidXQgbm90IHVzZWQgWy1XdW51c2VkLWZ1bmN0aW9uXQogIHNvdW5kL2lz
-YS9jbWk4MzI4LmM6MTM2OjEzOiB3YXJuaW5nOiDigJhzbmRfY21pODMyOF9jZmdfcmVzdG9yZeKA
-mSBkZWZpbmVkIGJ1dCBub3QgdXNlZCBbLVd1bnVzZWQtZnVuY3Rpb25dCgpTaWduZWQtb2ZmLWJ5
-OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Ci0tLQogc291bmQvaXNhL2NtaTgzMjguYyB8
-IDIgKysKIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9zb3Vu
-ZC9pc2EvY21pODMyOC5jIGIvc291bmQvaXNhL2NtaTgzMjguYwppbmRleCBmODRmMDczZmMxZTgu
-LmFiNmIyZGMwNDNmMSAxMDA2NDQKLS0tIGEvc291bmQvaXNhL2NtaTgzMjguYworKysgYi9zb3Vu
-ZC9pc2EvY21pODMyOC5jCkBAIC0xMjYsNiArMTI2LDcgQEAgc3RhdGljIHZvaWQgc25kX2NtaTgz
-MjhfY2ZnX3dyaXRlKHUxNiBwb3J0LCB1OCByZWcsIHU4IHZhbCkKIAlvdXRiKHZhbCwgcG9ydCAr
-IDMpOwkvKiB5ZXMsIHZhbHVlIGdvZXMgdG8gdGhlIHNhbWUgcG9ydCBhcyBpbmRleCAqLwogfQog
-CisjaWZkZWYgQ09ORklHX1BNCiBzdGF0aWMgdm9pZCBzbmRfY21pODMyOF9jZmdfc2F2ZSh1MTYg
-cG9ydCwgdTggY2ZnW10pCiB7CiAJY2ZnWzBdID0gc25kX2NtaTgzMjhfY2ZnX3JlYWQocG9ydCwg
-Q0ZHMSk7CkBAIC0xMzksNiArMTQwLDcgQEAgc3RhdGljIHZvaWQgc25kX2NtaTgzMjhfY2ZnX3Jl
-c3RvcmUodTE2IHBvcnQsIHU4IGNmZ1tdKQogCXNuZF9jbWk4MzI4X2NmZ193cml0ZShwb3J0LCBD
-RkcyLCBjZmdbMV0pOwogCXNuZF9jbWk4MzI4X2NmZ193cml0ZShwb3J0LCBDRkczLCBjZmdbMl0p
-OwogfQorI2VuZGlmIC8qIENPTkZJR19QTSAqLwogCiBzdGF0aWMgaW50IHNuZF9jbWk4MzI4X21p
-eGVyKHN0cnVjdCBzbmRfd3NzICpjaGlwKQogewotLSAKMS44LjQuMgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+The warnings are really harmless but annoying.  Since they are only
+about debug prints, and it's at most 32bit DMA, let's just cast to
+unsigned long.
+
+  sound/pci/lx6464es/lx6464es.c:457:22: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+  sound/pci/lx6464es/lx_core.c:1195:21: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/lx6464es/lx6464es.c | 4 ++--
+ sound/pci/lx6464es/lx_core.c  | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/pci/lx6464es/lx6464es.c b/sound/pci/lx6464es/lx6464es.c
+index 3230e57f246c..3e9d3a863049 100644
+--- a/sound/pci/lx6464es/lx6464es.c
++++ b/sound/pci/lx6464es/lx6464es.c
+@@ -453,8 +453,8 @@ static void lx_trigger_start(struct lx6464es *chip, struct lx_stream *lx_stream)
+ 				     lower_32_bits(buf), upper_32_bits(buf),
+ 				     &buffer_index);
+ 
+-		snd_printdd(LXP "starting: buffer index %x on %p (%d bytes)\n",
+-			    buffer_index, (void *)buf, period_bytes);
++		snd_printdd(LXP "starting: buffer index %x on %lx (%d bytes)\n",
++			    buffer_index, (unsigned long)buf, period_bytes);
+ 		buf += period_bytes;
+ 	}
+ 
+diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.c
+index 633c8607d053..626ecad4dae7 100644
+--- a/sound/pci/lx6464es/lx_core.c
++++ b/sound/pci/lx6464es/lx_core.c
+@@ -1191,8 +1191,8 @@ static int lx_interrupt_request_new_buffer(struct lx6464es *chip,
+ 	unpack_pointer(buf, &buf_lo, &buf_hi);
+ 	err = lx_buffer_give(chip, 0, is_capture, period_bytes, buf_lo, buf_hi,
+ 			     &buffer_index);
+-	snd_printdd(LXP "interrupt: gave buffer index %x on %p (%d bytes)\n",
+-		    buffer_index, (void *)buf, period_bytes);
++	snd_printdd(LXP "interrupt: gave buffer index %x on 0x%lx (%d bytes)\n",
++		    buffer_index, (unsigned long)buf, period_bytes);
+ 
+ 	lx_stream->frame_pos = next_pos;
+ 	spin_unlock_irqrestore(&chip->lock, flags);
+-- 
+1.8.4.2
