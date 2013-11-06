@@ -1,16 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 1/1] ALSA: HDA - Limit mic boost and add mute
-	LED for an HP machine
-Date: Wed,  6 Nov 2013 11:20:01 +0100
-Message-ID: <1383733202-6615-1-git-send-email-david.henningsson@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 21/31] ASoC: dapm: Use WARN_ON() instead of
+	BUG_ON()
+Date: Wed, 6 Nov 2013 10:24:31 +0000
+Message-ID: <20131106102431.GM11602@sirena.org.uk>
+References: <1383673218-18405-1-git-send-email-tiwai@suse.de>
+ <1383673218-18405-22-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2022471020197889667=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D28C265001
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 11:20:02 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 055B7261A57
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 11:24:34 +0100 (CET)
+In-Reply-To: <1383673218-18405-22-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,51 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1248476@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This machine has a mute LED as well as a noisy internal mic. Hence it needs
-quirks for both limiting the mic boost as well as enabling the LED.
 
-BugLink: https://bugs.launchpad.net/bugs/1248476
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+--===============2022471020197889667==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="bPrm2PuLP7ysUh6c"
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 01bf812..a51f48c 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3565,6 +3565,7 @@ enum {
- 	ALC271_FIXUP_HP_GATE_MIC_JACK,
- 	ALC269_FIXUP_ACER_AC700,
- 	ALC269_FIXUP_LIMIT_INT_MIC_BOOST,
-+	ALC269_FIXUP_LIMIT_INT_MIC_BOOST_MUTE_LED,
- 	ALC269VB_FIXUP_ORDISSIMO_EVE2,
- 	ALC283_FIXUP_CHROME_BOOK,
- 	ALC282_FIXUP_ASUS_TX300,
-@@ -3834,6 +3835,12 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc269_fixup_limit_int_mic_boost,
- 	},
-+	[ALC269_FIXUP_LIMIT_INT_MIC_BOOST_MUTE_LED] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc269_fixup_limit_int_mic_boost,
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HP_MUTE_LED_MIC1,
-+	},
- 	[ALC269VB_FIXUP_ORDISSIMO_EVE2] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -3915,6 +3922,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x18e6, "HP", ALC269_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x1973, "HP Pavilion", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x1983, "HP Pavilion", ALC269_FIXUP_HP_MUTE_LED_MIC1),
-+	SND_PCI_QUIRK(0x103c, 0x218b, "HP", ALC269_FIXUP_LIMIT_INT_MIC_BOOST_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x21ed, "HP Falco Chromebook", ALC283_FIXUP_CHROME_BOOK),
- 	SND_PCI_QUIRK_VENDOR(0x103c, "HP", ALC269_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
--- 
-1.7.9.5
+
+--bPrm2PuLP7ysUh6c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 05, 2013 at 06:40:08PM +0100, Takashi Iwai wrote:
+
+>  	list_for_each_entry(w, pending, power_list) {
+> -		BUG_ON(reg != w->reg);
+> +		if (WARN_ON(reg != w->reg))
+> +			return;
+>  		w->power = w->new_power;
+
+This doesn't seem at all sensible - it's going to suddenly abort the
+entire sequence run over the error which if we're actually trying to
+continue is just going to make things worse.  I'd expect to at most skip
+over the entry.
+
+--bPrm2PuLP7ysUh6c
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSehjcAAoJELSic+t+oim9o+oQAIEixISWJjtUXHx8dmRzPBoh
+GK1ugxnlv1j6vivPOSxf1YRpIIAOP41PfVtA50yZ22hIpqXljiBEUadxgga2D5f3
+HRSOvkjFJmxWwyXZQolG3yDb8qd9ZoPqb03rhyHnOYP8LEMPIL0rH9PvVwMMYQn8
+R4CwYbDR7SBXYwbYIYss02Dxdt39wHXDQPjn88iEv6h71OEj5+bDq/blZPLZVToT
+RqdSpAg1mCuhi33SU4/re7klbUkYeS+knboyJGgtHcrKnyjZH9tvflVeP6EOfzg8
+xkuY8/zq7jgK9c/sOPbIOfSPjvKRts9g2n8VVtn80nCnYhjEL334/cwUqPXYOxwO
+CcHYvIAeqfZujmjKfkzJok31WOCf38gFTS5G8P2Jnca+fSG6XOsihTz/oeOZhYM9
+DEyVvT19lLxyz35nsRkc6Bl2sE+DBBYyO+xFlzUNYxbdjRYTMC04+25s9OrjFrRs
+SeHckVEbSs+xOfgzSkFuCyNOroKDrScDVwa7faSfb5VUkz9AllPkMLix4Bx3e1ra
+TYsYXU6Gtxf9qcZmd14KOxu6kv3rFr2N864YjVh3X+I/mUWyA/NmqhMdieybl0jY
+TW0ClvREjnFJdbPLk6zTT4mZFE830qh5X8rCRF13uSIX/IxIBWhLydDvgGIQZVu9
+WW7iL1pMZFW77PlyHaHQ
+=TM/p
+-----END PGP SIGNATURE-----
+
+--bPrm2PuLP7ysUh6c--
+
+--===============2022471020197889667==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2022471020197889667==--
