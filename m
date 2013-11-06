@@ -1,19 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Make sure mute LEDs stay on
- during runtime suspend (Realtek)
-Date: Wed, 06 Nov 2013 11:17:23 +0100
-Message-ID: <527A1733.2080907@canonical.com>
-References: <1383731444-6487-1-git-send-email-david.henningsson@canonical.com>
- <s5hr4atet6f.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 03/31] ASoC: max98095: Use WARN_ON()
+	instead of BUG_ON()
+Date: Wed, 6 Nov 2013 10:17:58 +0000
+Message-ID: <20131106101758.GJ11602@sirena.org.uk>
+References: <1383673218-18405-1-git-send-email-tiwai@suse.de>
+ <1383673218-18405-4-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7506894292925678516=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id E1CB0261740
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 11:17:24 +0100 (CET)
-In-Reply-To: <s5hr4atet6f.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id F185E261737
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 11:18:00 +0100 (CET)
+In-Reply-To: <1383673218-18405-4-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,38 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, 1248465@bugs.launchpad.net
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/06/2013 11:11 AM, Takashi Iwai wrote:
-> At Wed,  6 Nov 2013 10:50:44 +0100,
-> David Henningsson wrote:
->>
->> Some HP machines with Realtek codecs have mute LEDs connected to VREF pins.
->> However when these go into runtime suspend, the pin powers down and its
->> pin control is disabled, thus disabling the LED too.
->>
->> This patch fixes that issue by making sure that the pin stays in D0 with
->> correct pin control.
->>
->> Cc: stable@kernel.org
->> BugLink: https://bugs.launchpad.net/bugs/1248465
->> Tested-by: Franz Hsieh <franz.hsieh@canonical.com>
->> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
-> 
-> Thanks, applied.
-> 
-> I do wonder, though, whether the LED survives even after turning AFG
-> to D3.  With IDT codecs, we had to keep AFG D0 just for keeping this
-> VREF stuff.  Maybe Realtek codecs behave differently.
 
-Well, the patch was tested by Franz and found working, so it seems
-indeed that AFG can be in D3 and the LED still works.
+--===============7506894292925678516==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="QnBU6tTI9sljzm9u"
+Content-Disposition: inline
 
-(Actually it could even be the other way around - maybe even the pin can
-remain in D3 and still have vref output, as long as the pin ctl is set.
-I never tested that explicitly.)
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+--QnBU6tTI9sljzm9u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 05, 2013 at 06:39:50PM +0100, Takashi Iwai wrote:
+> BUG_ON() is rather useless for debugging as it leads to panic().
+
+That doesn't really follow, they print out an obvious error message and
+force people to pay attention to it.  Sometimes that's the desired
+effect.
+
+Anyway, applied.
+
+--QnBU6tTI9sljzm9u
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSehdTAAoJELSic+t+oim95e8P/iq7eOoZ15/dU4cnjXajjRbp
++GKwjExcCcqRITH0SICiGqLyRbfcnGMkLsx14BJDxj0ztEjprXxtH3YNGasLjMlm
+pKFJ2bJzOxLurHb0qds9F7fdUp8mUIfdDkqEDCQciWvEXcxpk4mocnklcANxPlPE
+wsz/rOKnSviAZpiM5foktx5ixopUKyPJUguzlQmu5eerVy34u9seo9gIkWIlly7L
+w1YYZSFKj8cYO62HHzi2SXnMcV24grUnzmwwdiJUb6fOlruyZWVtmRVeWLbD8AHC
+HCTwK8B3JXGiaVZTYFaFy/5niNICNYtc7TnHyimpaXiL48CSMo4rdfIYWlVJj5Cp
+VHiRrkuDIS6Iqi6IXuWiRm2M8stZhPyxUCu1i8Wi9pJYvXLlxWlop4xDrWXnutTE
+tXP0Yr9ShNpZqeMLXMWcgR0puHtbJwPSdssOFJfPdmMERN0v+viqPbQ7yvQpeF6F
+JVCqT52utNwXoDXkHIciSy0dzq2lZsOtCxVQQQkAMxgN0qFTWdvZ/cO4JkHS+ZEj
+SLMet/7XI3Mbcr9NpRyw/JL4lMXTht6vvREWj8H2/TgFqcg2P1xrbUiLH490JXv3
+dPjEwRFE+HEgil1g8+EPFPxZ+4okgjjS1BOewPGrZcWgUYjGO6qJeGABi99dph9z
+9sXNmjScx+q2Po/wr1CE
+=jKW2
+-----END PGP SIGNATURE-----
+
+--QnBU6tTI9sljzm9u--
+
+--===============7506894292925678516==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7506894292925678516==--
