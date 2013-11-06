@@ -1,26 +1,18 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCHv2 1/8] ALSA: Add SAI SoC Digital Audio
-	Interface driver.
-Date: Wed, 6 Nov 2013 16:12:59 +0800
-Message-ID: <20131106081257.GR19770@S2101-09.ap.freescale.net>
-References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
- <1383289495-24523-2-git-send-email-Li.Xiubo@freescale.com>
- <20131101085904.GC28401@MrMyself>
- <1DD289F6464F0949A2FCA5AA6DC23F82874201@039-SN2MPN1-013.039d.mgd.msft.net>
- <5278F1FA.1060706@tabi.org>
- <1DD289F6464F0949A2FCA5AA6DC23F82876A53@039-SN2MPN1-013.039d.mgd.msft.net>
- <5279B822.9010401@tabi.org>
- <1DD289F6464F0949A2FCA5AA6DC23F82876B08@039-SN2MPN1-013.039d.mgd.msft.net>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 1/2] ALSA: hda - Force buffer alignment for
+ Haswell HDMI controllers
+Date: Wed, 06 Nov 2013 09:14:47 +0100
+Message-ID: <5279FA77.3060102@canonical.com>
+References: <1383670831-12067-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db9outboundpool.messaging.microsoft.com
- (mail-db9lp0252.outbound.messaging.microsoft.com [213.199.154.252])
- by alsa0.perex.cz (Postfix) with ESMTP id 18A162608CA
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 09:12:43 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1DD289F6464F0949A2FCA5AA6DC23F82876B08@039-SN2MPN1-013.039d.mgd.msft.net>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EF862608CA
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 09:14:49 +0100 (CET)
+In-Reply-To: <1383670831-12067-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,36 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Li Xiubo <B47053@freescale.com>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Huan Wang <B18965@freescale.com>, Timur Tabi <timur@tabi.org>, Shawn Guo <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Guangyu Chen <B42378@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "broonie@kernel.org" <broonie@kernel.org>, oskar@scara.co
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 06, 2013 at 03:53:24AM +0000, Li Xiubo wrote:
-> > >> If there are any comments that say PPC but are not PPC-specific, that
-> > >> >should be fixed.
-> > > Yes, find it.
-> > >
-> > > The comments is in "sound/soc/fsl/Makefile" :
-> > > +++++++++++
-> > > "# Freescale PowerPC SSI/DMA Platform Support"
-> > > -----------
-> > >
-> > > But fsl-spdif.o is also under it.
-> > > And this is also support ARM and PowerPC platforms at the same time ?
-> > > If so, the comments should be modified to :
-> > > +++++++++++
-> > > "# Freescale PowerPC and ARM SSI/DMA Platform Support"
-> > > -----------
-> > 
-> > Yes, this should be changed.
-> > 
+On 11/05/2013 06:00 PM, Takashi Iwai wrote:
+> Haswell HDMI audio controllers seem to get stuck when unaligned buffer
+> size is used.  Let's enable the buffer alignment for the corresponding
+> entries.
 > 
-> How about :
-> +++++++++
-> "# Freescale PowerPC and ARM SSI/DMA/SAI/SPDIF Platform Support"	
-> ---------
->  ?
+> Since AZX_DCAPS_INTEL_PCH contains AZX_DCAPS_BUFSIZE that disables the
+> buffer alignment forcibly, define AZX_DCAPS_INTEL_HASWELL and put the
+> necessary AZX_DCAPS bits there.
 
-Or we can just drop 'PowerPC and ARM'?
+A name question - haswell for me is both the HDMI controller and the
+controller for analog codecs.
 
-Shawn
+How about AZX_DCAPS_HASWELL_HDMI instead?
+
+> 
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=60769
+> Reported-by: Alexander E. Patrakov <patrakov@gmail.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/hda_intel.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index d6dcec768594..9cbd1259a5be 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -613,6 +613,11 @@ enum {
+>  #define AZX_DCAPS_INTEL_PCH \
+>  	(AZX_DCAPS_INTEL_PCH_NOPM | AZX_DCAPS_PM_RUNTIME)
+>  
+> +#define AZX_DCAPS_INTEL_HASWELL \
+> +	(AZX_DCAPS_SCH_SNOOP | AZX_DCAPS_ALIGN_BUFSIZE | \
+> +	 AZX_DCAPS_COUNT_LPIB_DELAY | AZX_DCAPS_PM_RUNTIME | \
+> +	 AZX_DCAPS_I915_POWERWELL)
+> +
+>  /* quirks for ATI SB / AMD Hudson */
+>  #define AZX_DCAPS_PRESET_ATI_SB \
+>  	(AZX_DCAPS_ATI_SNOOP | AZX_DCAPS_NO_TCSEL | \
+> @@ -3992,14 +3997,11 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
+>  	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
+>  	/* Haswell */
+>  	{ PCI_DEVICE(0x8086, 0x0a0c),
+> -	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH |
+> -	  AZX_DCAPS_I915_POWERWELL },
+> +	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_HASWELL },
+>  	{ PCI_DEVICE(0x8086, 0x0c0c),
+> -	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH |
+> -	  AZX_DCAPS_I915_POWERWELL },
+> +	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_HASWELL },
+>  	{ PCI_DEVICE(0x8086, 0x0d0c),
+> -	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH |
+> -	  AZX_DCAPS_I915_POWERWELL },
+> +	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_HASWELL },
+>  	/* 5 Series/3400 */
+>  	{ PCI_DEVICE(0x8086, 0x3b56),
+>  	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_NOPM },
+> 
+
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
