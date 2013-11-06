@@ -1,81 +1,138 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv2 1/8] ALSA: Add SAI SoC Digital Audio
-	Interface driver.
-Date: Wed, 6 Nov 2013 09:53:38 +0000
-Message-ID: <20131106095338.GG11602@sirena.org.uk>
-References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
- <1383289495-24523-2-git-send-email-Li.Xiubo@freescale.com>
- <20131101182514.GE2493@sirena.org.uk>
- <1DD289F6464F0949A2FCA5AA6DC23F8287439D@039-SN2MPN1-013.039d.mgd.msft.net>
- <20131104161537.GI2493@sirena.org.uk>
- <1DD289F6464F0949A2FCA5AA6DC23F82875482@039-SN2MPN1-013.039d.mgd.msft.net>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2826641297338348364=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 3AF7A2610CF
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 10:54:43 +0100 (CET)
-In-Reply-To: <1DD289F6464F0949A2FCA5AA6DC23F82875482@039-SN2MPN1-013.039d.mgd.msft.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Li Xiubo <B47053@freescale.com>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Huan Wang <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, Shawn Guo <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Guangyu Chen <B42378@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "oskar@scara.com" <oskar@scara.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 2/2] ASoC: ab8500: Revert "ASoC: ab8500: Convert register I/O to regmap"
+Date: Wed,  6 Nov 2013 09:54:45 +0000
+Message-ID: <1383731685-18441-2-git-send-email-lee.jones@linaro.org>
+References: <1383731685-18441-1-git-send-email-lee.jones@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1383731685-18441-1-git-send-email-lee.jones@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+This reverts commit ff795d614bfa62a3c6fc0bcb75cb8842e5a87892, as this
+is one of two patches which stop audio from working on Snowball.
 
---===============2826641297338348364==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JbKQpFqZXJ2T76Sg"
-Content-Disposition: inline
+Cc: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@linaro.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ sound/soc/codecs/ab8500-codec.c | 64 ++++++++++++++++++++++-------------------
+ 1 file changed, 34 insertions(+), 30 deletions(-)
 
-
---JbKQpFqZXJ2T76Sg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Nov 05, 2013 at 03:21:49AM +0000, Li Xiubo wrote:
-
-> As your opinions, should I move the four register writing operations to .set_sysclk/set_clkdiv/... functions too ?
-> Or just add a clk_disable_unprepare() after them here, and then add clk_prepare_enable in one of .set_sysclk/set_clkdiv/...?
-
-The latter.
-
---JbKQpFqZXJ2T76Sg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSehGeAAoJELSic+t+oim9WUUP/Ax7GnAFra3plXuggkpCC7no
-LSUiyDh4EDSRG7BgpC3qpaeJls0wMwMz0D6nM7Pj6Gx5VgLepd9L+LM0+GHKqir4
-KtIJic+2QSCA30cbcY/+m6DPkL+ZNPQL9VqQnzSxUD+BHEZHhC8wvD/CW84Cud8c
-vEQDukAQmvMF0HMn4djX+afFwbuLfDI90LiVvKqskRNuKapbQlx2QsZWajnsBcE4
-MuLTtT2SClFy7Wd4FVUDH/FgrPrYVy9xAqWdd0uNSNLvhIACH0u1Y6/u9gZQHHx6
-SzPid8xhjHvFMcninvghAHLyQqGITN1UFceddqscQaIVtIhC+GRAGGDFz29Ct56Z
-xBy3HwCeESdJOBcMCqVyOZdqk9nuRtLDXe8cfgCHy+XELbZctb+PYJNig0IcscdK
-oEomtNsNU0agV4QtKcbqeRIgJHy6unVy4l/2f/AbtczcNCSWj6JYEvSLibsnhNxh
-syKetHrt5bsIa4Ki2ufhL3breEeRQ6Wj7X0hU3eZ7TA9o7jolcLNLU7W9a7Y8VPW
-KZnxRCjcP3je3dgawJq4fw/e9IOWBjG5Dwtic29+bZc+cyjTX1jN+5qceDnA2Ubp
-DdUXaRjYJ1ffFEF4KsH7Xyb0IzfiX2gaDTkiTNwoF6H2RDs0ZRo217unJq0pE6+Z
-sVC8mJvgcTvmX1/5LqwJ
-=AUrm
------END PGP SIGNATURE-----
-
---JbKQpFqZXJ2T76Sg--
-
---===============2826641297338348364==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2826641297338348364==--
+diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
+index ca500fd..7990217 100644
+--- a/sound/soc/codecs/ab8500-codec.c
++++ b/sound/soc/codecs/ab8500-codec.c
+@@ -126,8 +126,6 @@ struct ab8500_codec_drvdata_dbg {
+ 
+ /* Private data for AB8500 device-driver */
+ struct ab8500_codec_drvdata {
+-	struct regmap *regmap;
+-
+ 	/* Sidetone */
+ 	long *sid_fir_values;
+ 	enum sid_state sid_status;
+@@ -168,34 +166,48 @@ static inline const char *amic_type_str(enum amic_type type)
+  */
+ 
+ /* Read a register from the audio-bank of AB8500 */
+-static int ab8500_codec_read_reg(void *context, unsigned int reg,
+-				 unsigned int *value)
++static unsigned int ab8500_codec_read_reg(struct snd_soc_codec *codec,
++					unsigned int reg)
+ {
+-	struct device *dev = context;
+ 	int status;
++	unsigned int value = 0;
+ 
+ 	u8 value8;
+-	status = abx500_get_register_interruptible(dev, AB8500_AUDIO,
+-						   reg, &value8);
+-	*value = (unsigned int)value8;
++	status = abx500_get_register_interruptible(codec->dev, AB8500_AUDIO,
++						reg, &value8);
++	if (status < 0) {
++		dev_err(codec->dev,
++			"%s: ERROR: Register (0x%02x:0x%02x) read failed (%d).\n",
++			__func__, (u8)AB8500_AUDIO, (u8)reg, status);
++	} else {
++		dev_dbg(codec->dev,
++			"%s: Read 0x%02x from register 0x%02x:0x%02x\n",
++			__func__, value8, (u8)AB8500_AUDIO, (u8)reg);
++		value = (unsigned int)value8;
++	}
+ 
+-	return status;
++	return value;
+ }
+ 
+ /* Write to a register in the audio-bank of AB8500 */
+-static int ab8500_codec_write_reg(void *context, unsigned int reg,
+-				  unsigned int value)
++static int ab8500_codec_write_reg(struct snd_soc_codec *codec,
++				unsigned int reg, unsigned int value)
+ {
+-	struct device *dev = context;
++	int status;
+ 
+-	return abx500_set_register_interruptible(dev, AB8500_AUDIO,
+-						 reg, value);
+-}
++	status = abx500_set_register_interruptible(codec->dev, AB8500_AUDIO,
++						reg, value);
++	if (status < 0)
++		dev_err(codec->dev,
++			"%s: ERROR: Register (%02x:%02x) write failed (%d).\n",
++			__func__, (u8)AB8500_AUDIO, (u8)reg, status);
++	else
++		dev_dbg(codec->dev,
++			"%s: Wrote 0x%02x into register %02x:%02x\n",
++			__func__, (u8)value, (u8)AB8500_AUDIO, (u8)reg);
+ 
+-static const struct regmap_config ab8500_codec_regmap = {
+-	.reg_read = ab8500_codec_read_reg,
+-	.reg_write = ab8500_codec_write_reg,
+-};
++	return status;
++}
+ 
+ /*
+  * Controls - DAPM
+@@ -2476,8 +2488,6 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
+ 	/* Setup AB8500 according to board-settings */
+ 	pdata = dev_get_platdata(dev->parent);
+ 
+-	codec->control_data = drvdata->regmap;
+-
+ 	if (np) {
+ 		if (!pdata)
+ 			pdata = devm_kzalloc(dev,
+@@ -2555,6 +2565,9 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
+ 
+ static struct snd_soc_codec_driver ab8500_codec_driver = {
+ 	.probe =		ab8500_codec_probe,
++	.read =			ab8500_codec_read_reg,
++	.write =		ab8500_codec_write_reg,
++	.reg_word_size =	sizeof(u8),
+ 	.controls =		ab8500_ctrls,
+ 	.num_controls =		ARRAY_SIZE(ab8500_ctrls),
+ 	.dapm_widgets =		ab8500_dapm_widgets,
+@@ -2577,15 +2590,6 @@ static int ab8500_codec_driver_probe(struct platform_device *pdev)
+ 	drvdata->anc_status = ANC_UNCONFIGURED;
+ 	dev_set_drvdata(&pdev->dev, drvdata);
+ 
+-	drvdata->regmap = devm_regmap_init(&pdev->dev, NULL, &pdev->dev,
+-					   &ab8500_codec_regmap);
+-	if (IS_ERR(drvdata->regmap)) {
+-		status = PTR_ERR(drvdata->regmap);
+-		dev_err(&pdev->dev, "%s: Failed to allocate regmap: %d\n",
+-			__func__, status);
+-		return status;
+-	}
+-
+ 	dev_dbg(&pdev->dev, "%s: Register codec.\n", __func__);
+ 	status = snd_soc_register_codec(&pdev->dev, &ab8500_codec_driver,
+ 				ab8500_codec_dai,
+-- 
+1.8.1.2
