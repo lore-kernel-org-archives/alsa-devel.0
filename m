@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/9] ASoC: wm5100: Replace BUG() with WARN()
-Date: Wed,  6 Nov 2013 11:07:11 +0100
-Message-ID: <1383732439-31441-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 3/9] ASoC: wm8900: Replace BUG() with WARN()
+Date: Wed,  6 Nov 2013 11:07:13 +0100
+Message-ID: <1383732439-31441-4-git-send-email-tiwai@suse.de>
 References: <1383732439-31441-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id F1DF526164C
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 11:07:22 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FE57261677
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 11:07:23 +0100 (CET)
 In-Reply-To: <1383732439-31441-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,21 +32,22 @@ error information.
 Cc: patches@opensource.wolfsonmicro.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm5100.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm8900.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
-index 4cf91deabc02..288e0ff33a2b 100644
---- a/sound/soc/codecs/wm5100.c
-+++ b/sound/soc/codecs/wm5100.c
-@@ -1621,7 +1621,7 @@ static int wm5100_set_sysclk(struct snd_soc_codec *codec, int clk_id,
+diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
+index de67e74dca0c..734209e252c3 100644
+--- a/sound/soc/codecs/wm8900.c
++++ b/sound/soc/codecs/wm8900.c
+@@ -279,7 +279,8 @@ static int wm8900_hp_event(struct snd_soc_dapm_widget *w,
  		break;
  
  	default:
 -		BUG();
-+		WARN(1, "Invalid freq %d\n", freq);
- 		audio_rate = 0;
- 		break;
++		WARN(1, "Invalid event %d\n", event);
++		break;
  	}
+ 
+ 	return 0;
 -- 
 1.8.4.2
