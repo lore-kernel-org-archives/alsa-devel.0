@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 07/13] ASoC: ux500_pcm: Extract MSP IDs from Device Tree
-Date: Wed,  6 Nov 2013 10:16:19 +0000
-Message-ID: <1383732985-18928-8-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 13/13] ASoC: ux500_pcm: Take out pointless dev_dbg() call
+Date: Wed,  6 Nov 2013 10:16:25 +0000
+Message-ID: <1383732985-18928-14-git-send-email-lee.jones@linaro.org>
 References: <1383732985-18928-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1383732985-18928-1-git-send-email-lee.jones@linaro.org>
@@ -10,32 +10,31 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is required for indexing pre-defined channel configuration structures.
-
 Cc: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@kernel.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/ux500_msp_i2s.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/ux500/ux500_pcm.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
-index 1ca8b08..0a99372 100644
---- a/sound/soc/ux500/ux500_msp_i2s.c
-+++ b/sound/soc/ux500/ux500_msp_i2s.c
-@@ -665,6 +665,13 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
- 				sizeof(struct msp_i2s_platform_data), GFP_KERNEL);
- 			if (!platform_data)
- 				return -ENOMEM;
-+
-+			if (!of_property_read_u32(np, "id",
-+						  &platform_data->id)) {
-+				dev_err(&pdev->dev,
-+					"No 'id' property found in DT\n");
-+				return -EINVAL;
-+			}
- 		}
- 	} else
- 		if (!platform_data)
+diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
+index acfec98..fd7f12e 100644
+--- a/sound/soc/ux500/ux500_pcm.c
++++ b/sound/soc/ux500/ux500_pcm.c
+@@ -65,14 +65,10 @@ static struct dma_chan *ux500_pcm_request_chan(struct snd_soc_pcm_runtime *rtd,
+ 	struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_dai *dai = rtd->cpu_dai;
+-	struct device *dev = dai->dev;
+ 	u16 per_data_width, mem_data_width;
+ 	struct stedma40_chan_cfg *dma_cfg;
+ 	struct ux500_msp_dma_params *dma_params;
+ 
+-	dev_dbg(dev, "%s: MSP %d (%s): Enter.\n", __func__, dai->id,
+-		snd_pcm_stream_str(substream));
+-
+ 	dma_params = snd_soc_dai_get_dma_data(dai, substream);
+ 	dma_cfg = dma_params->dma_cfg;
+ 
 -- 
 1.8.1.2
