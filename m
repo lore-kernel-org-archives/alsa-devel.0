@@ -1,16 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 8/9] ASoC: wm_hubs: Replace BUG() with WARN()
-Date: Wed,  6 Nov 2013 11:07:18 +0100
-Message-ID: <1383732439-31441-9-git-send-email-tiwai@suse.de>
-References: <1383732439-31441-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH 0/9] Kill BUG() for ASoC
+Date: Wed,  6 Nov 2013 11:07:10 +0100
+Message-ID: <1383732439-31441-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 13A5C261685
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F59A261664
  for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2013 11:07:23 +0100 (CET)
-In-Reply-To: <1383732439-31441-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,29 +22,23 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-BUG() used in the driver is just to spit the stack trace on buggy
-points, not really needed to stop the whole operation.  For that
-purpose, it'd be more convenient to use WARN() instead with more
-error information.
+Hi,
 
-Cc: patches@opensource.wolfsonmicro.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/codecs/wm_hubs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+this is the revised patches for replacing BUG() with WARN().
+Indeed this gives even better information than a simple BUG(),
+so drop the previous patches to replace snd_BUG().
 
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index 01daf655e20b..b371066dd5bc 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -611,7 +611,7 @@ static int earpiece_event(struct snd_soc_dapm_widget *w,
- 		break;
- 
- 	default:
--		BUG();
-+		WARN(1, "Invalid event %d\n", event);
- 		break;
- 	}
- 
--- 
-1.8.4.2
+ [PATCH 1/9] ASoC: wm5100: Replace BUG() with WARN()
+ [PATCH 2/9] ASoC: wm8350: Replace BUG() with WARN()
+ [PATCH 3/9] ASoC: wm8900: Replace BUG() with WARN()
+ [PATCH 4/9] ASoC: wm8904: Replace BUG() with WARN()
+ [PATCH 5/9] ASoC: wm8958: Replace BUG() with WARN()
+ [PATCH 6/9] ASoC: wm8962: Replace BUG() with WARN()
+ [PATCH 7/9] ASoC: wm8996: Replace BUG() with WARN()
+ [PATCH 8/9] ASoC: wm_hubs: Replace BUG() with WARN()
+ [PATCH 9/9] ASoC: Replace BUG() with WARN()
+
+
+thanks,
+
+Takashi
