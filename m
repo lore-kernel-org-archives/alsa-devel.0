@@ -1,15 +1,19 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Another Dell headset quirk
-Date: Thu,  7 Nov 2013 09:28:59 +0100
-Message-ID: <1383812939-5084-1-git-send-email-david.henningsson@canonical.com>
+Subject: Re: [RFC] ALSA: hda - check for mute/micmute LEDs on
+ all Lenovo machines (Realtek)
+Date: Thu, 07 Nov 2013 09:34:14 +0100
+Message-ID: <527B5086.7070106@canonical.com>
+References: <1383744096-7510-1-git-send-email-david.henningsson@canonical.com>	<s5hy551v3s7.wl%tiwai@suse.de>	<s5htxfpv33f.wl%tiwai@suse.de>
+ <CAJ=jquZ0iir2e59d+afdj91JBYe2MiXsrQdam1PrS4BfKOdBmw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id E3448265098
- for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2013 09:29:01 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EF34260376
+ for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2013 09:34:15 +0100 (CET)
+In-Reply-To: <CAJ=jquZ0iir2e59d+afdj91JBYe2MiXsrQdam1PrS4BfKOdBmw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,29 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1248856@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
+To: Alex Hung <alex.hung@canonical.com>, Takashi Iwai <tiwai@suse.de>
+Cc: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, YK <yk@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-This machine has a multi-function headset jack.
+On 11/07/2013 02:58 AM, Alex Hung wrote:
+> @Takashi and David,
+> 
+> DMI is a good way to check models, and we may not need to check the
+> years as older Thinkpads with no mute led do not have "MMTS" and
+> "SSMS" control methods in ACPI DSDT. Checking their existence before
+> making the actual calls in thinkpad-acpi avoids this problems.
 
-BugLink: https://bugs.launchpad.net/bugs/1248856
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+So, the only thing we want to avoid is to load the module if it should
+not be loaded, and the symbol_request call will always load the module.
+So we want to avoid calling symbol_request if it's not a hardware that
+is supported by thinkpad-acpi (and I assume that means Ideapads).
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 44f1210..daf7205 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4796,6 +4796,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x038b, "Acer Aspire 8943G", ALC662_FIXUP_ASPIRE),
- 	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x0626, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
- 	SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ", ALC662_FIXUP_BASS_CHMAP),
- 	SND_PCI_QUIRK(0x1043, 0x1bf3, "ASUS N76VZ", ALC662_FIXUP_BASS_CHMAP),
+Should we check the DMI information to distinguish between Thinkpads and
+Ideapads (and potentially others), and what DMI string would be best to
+look for?
+
 -- 
-1.7.9.5
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
