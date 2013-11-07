@@ -1,19 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v5] ALSA: compress: fix drain calls
- blocking other compress functions
-Date: Thu, 7 Nov 2013 12:56:47 +0530
-Message-ID: <20131107072647.GA2990@intel.com>
-References: <1383803409-2269-1-git-send-email-vinod.koul@intel.com>
- <s5hd2mcelu1.wl%tiwai@suse.de>
+Subject: [PATCHi v6] ALSA: compress: fix drain calls blocking
+	other compress functions
+Date: Thu,  7 Nov 2013 12:57:30 +0530
+Message-ID: <1383809250-5703-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id C4485260376
- for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2013 09:21:54 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hd2mcelu1.wl%tiwai@suse.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F2412654D6
+ for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2013 09:22:33 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,77 +19,152 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 07, 2013 at 08:02:14AM +0100, Takashi Iwai wrote:
-> At Thu,  7 Nov 2013 11:20:09 +0530,
-> Vinod Koul wrote:
-> > 
-> > The drain and drain_notify callback were blocked by low level driver untill the
-> > draining was complete. Due to this being invoked with big fat mutex held, others
-> > ops like reading timestamp, calling pause, drop were blocked.
-> > 
-> > So to fix this we add a new snd_compr_drain_notify() API. This would be required
-> > to be invoked by low level driver when drain or partial drain has been completed
-> > by the DSP. Thus we make the drain and partial_drain callback as non blocking
-> > and driver returns immediately after notifying DSP.
-> > The waiting is done while relasing the lock so that other ops can go ahead.
-> > 
-> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> > CC: stable@vger.kernel.org
-> > ---
-> > v5:
-> >  remove the drain_wake and wait queue and use the existing wait queue
-> >  make wait in draining state as interruptible
-> > 
-> > v4:
-> >  move pr_err -> pr_debug to avoid spamming kernel log
-> >  make wait in drain interruptible
-> > v3:
-> >  call snd_compr_drain_notify from compress_stop()
-> >  rename draining -> drain_wake
-> >  add some comments on state transistion after drain
-> > v2:
-> >  fix the 80 line warn
-> >  move the state change to compress_drain()
-> > 
-> > include/sound/compress_driver.h |    9 ++++++
-> >  sound/core/compress_offload.c   |   52 ++++++++++++++++++++++++++++++++++++---
-> >  2 files changed, 57 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-> > index 9031a26..ae6c3b8 100644
-> > --- a/include/sound/compress_driver.h
-> > +++ b/include/sound/compress_driver.h
-> > @@ -171,4 +171,13 @@ static inline void snd_compr_fragment_elapsed(struct snd_compr_stream *stream)
-> >  	wake_up(&stream->runtime->sleep);
-> >  }
-> >  
-> > +static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
-> > +{
-> > +	if (snd_BUG_ON(!stream))
-> > +		return;
-> > +
-> > +	stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-> > +	wake_up(&stream->runtime->sleep);
-> > +}
-> > +
-> >  #endif
-> > diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-> > index bea523a..e60e0c9 100644
-> > --- a/sound/core/compress_offload.c
-> > +++ b/sound/core/compress_offload.c
-> > @@ -682,12 +682,48 @@ static int snd_compr_stop(struct snd_compr_stream *stream)
-> >  	if (!retval) {
-> >  		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-> >  		wake_up(&stream->runtime->sleep);
-> > +		snd_compr_drain_notify(stream);
-> 
-> The two lines above this do the exactly same as
-> snd_compr_drain_notify(), thus it can be dropped here.
-ah yes will send updated one..
+The drain and drain_notify callback were blocked by low level driver untill the
+draining was complete. Due to this being invoked with big fat mutex held, others
+ops like reading timestamp, calling pause, drop were blocked.
 
---
-~Vinod
+So to fix this we add a new snd_compr_drain_notify() API. This would be required
+to be invoked by low level driver when drain or partial drain has been completed
+by the DSP. Thus we make the drain and partial_drain callback as non blocking
+and driver returns immediately after notifying DSP.
+The waiting is done while relasing the lock so that other ops can go ahead.
+
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+CC: stable@vger.kernel.org
+---
+v6:
+ remove code handled in snd_compr_drain_notify
+
+v5:
+ remove the drain_wake and wait queue and use the existing wait queue
+ make wait in draining state as interruptible
+
+v4:
+ move pr_err -> pr_debug to avoid spamming kernel log
+ make wait in drain interruptible
+v3:
+ call snd_compr_drain_notify from compress_stop()
+ rename draining -> drain_wake
+ add some comments on state transistion after drain
+v2:
+ fix the 80 line warn
+ move the state change to compress_drain()
+
+include/sound/compress_driver.h |    9 ++++++
+ sound/core/compress_offload.c   |   54 ++++++++++++++++++++++++++++++++++----
+ 2 files changed, 57 insertions(+), 6 deletions(-)
+
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index 9031a26..ae6c3b8 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -171,4 +171,13 @@ static inline void snd_compr_fragment_elapsed(struct snd_compr_stream *stream)
+ 	wake_up(&stream->runtime->sleep);
+ }
+ 
++static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
++{
++	if (snd_BUG_ON(!stream))
++		return;
++
++	stream->runtime->state = SNDRV_PCM_STATE_SETUP;
++	wake_up(&stream->runtime->sleep);
++}
++
+ #endif
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index bea523a..d9af638 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -680,14 +680,48 @@ static int snd_compr_stop(struct snd_compr_stream *stream)
+ 		return -EPERM;
+ 	retval = stream->ops->trigger(stream, SNDRV_PCM_TRIGGER_STOP);
+ 	if (!retval) {
+-		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
+-		wake_up(&stream->runtime->sleep);
++		snd_compr_drain_notify(stream);
+ 		stream->runtime->total_bytes_available = 0;
+ 		stream->runtime->total_bytes_transferred = 0;
+ 	}
+ 	return retval;
+ }
+ 
++static int snd_compress_wait_for_drain(struct snd_compr_stream *stream)
++{
++	int ret;
++
++	/*
++	 * We are called with lock held. So drop the lock while we wait for
++	 * drain complete notfication from the driver
++	 *
++	 * It is expected that driver will notify the drain completion and then
++	 * stream will be moved to SETUP state, even if draining resulted in an
++	 * error. We can trigger next track after this.
++	 */
++	stream->runtime->state = SNDRV_PCM_STATE_DRAINING;
++	mutex_unlock(&stream->device->lock);
++
++	/* we wait for drain to complete here, drain can return when
++	 * interruption occurred, wait returned error or success.
++	 * For the first two cases we don't do anything different here and
++	 * return after waking up
++	 */
++
++	ret = wait_event_interruptible(stream->runtime->sleep,
++			(stream->runtime->state != SNDRV_PCM_STATE_DRAINING));
++	if (ret == -ERESTARTSYS)
++		pr_debug("wait aborted by a signal");
++	else if (ret)
++		pr_debug("wait for drain failed with %d\n", ret);
++
++
++	wake_up(&stream->runtime->sleep);
++	mutex_lock(&stream->device->lock);
++
++	return ret;
++}
++
+ static int snd_compr_drain(struct snd_compr_stream *stream)
+ {
+ 	int retval;
+@@ -695,12 +729,15 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
+ 	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
+ 			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
+ 		return -EPERM;
++
+ 	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_DRAIN);
+-	if (!retval) {
+-		stream->runtime->state = SNDRV_PCM_STATE_DRAINING;
++	if (retval) {
++		pr_debug("SND_COMPR_TRIGGER_DRAIN failed %d\n", retval);
+ 		wake_up(&stream->runtime->sleep);
++		return retval;
+ 	}
+-	return retval;
++
++	return snd_compress_wait_for_drain(stream);
+ }
+ 
+ static int snd_compr_next_track(struct snd_compr_stream *stream)
+@@ -736,9 +773,14 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
+ 		return -EPERM;
+ 
+ 	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_PARTIAL_DRAIN);
++	if (retval) {
++		pr_debug("Partial drain returned failure\n");
++		wake_up(&stream->runtime->sleep);
++		return retval;
++	}
+ 
+ 	stream->next_track = false;
+-	return retval;
++	return snd_compress_wait_for_drain(stream);
+ }
+ 
+ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+-- 
+1.7.0.4
