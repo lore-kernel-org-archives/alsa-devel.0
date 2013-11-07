@@ -1,19 +1,19 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Add multifunction jack support
-	for ALC255
-Date: Thu, 07 Nov 2013 14:32:23 +0100
-Message-ID: <527B9667.4010404@canonical.com>
-References: <1383829721-3220-1-git-send-email-david.henningsson@canonical.com>
- <s5hob5wtkhs.wl%tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCHi v6] ALSA: compress: fix drain calls
+ blocking other compress functions
+Date: Thu, 7 Nov 2013 19:13:25 +0530
+Message-ID: <20131107134325.GA8834@intel.com>
+References: <1383809250-5703-1-git-send-email-vinod.koul@intel.com>
+ <s5hhabova4i.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 66D3126550E
- for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2013 14:32:26 +0100 (CET)
-In-Reply-To: <s5hob5wtkhs.wl%tiwai@suse.de>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9DCD265578
+ for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2013 15:38:53 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hhabova4i.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,113 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, kailang@realtek.com
-Cc: alsa-devel@alsa-project.org, 1248949@bugs.launchpad.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thu, Nov 07, 2013 at 10:23:09AM +0100, Takashi Iwai wrote:
+> At Thu,  7 Nov 2013 12:57:30 +0530,
+> Vinod Koul wrote:
+> > 
+> > The drain and drain_notify callback were blocked by low level driver untill the
+> > draining was complete. Due to this being invoked with big fat mutex held, others
+> > ops like reading timestamp, calling pause, drop were blocked.
+> > 
+> > So to fix this we add a new snd_compr_drain_notify() API. This would be required
+> > to be invoked by low level driver when drain or partial drain has been completed
+> > by the DSP. Thus we make the drain and partial_drain callback as non blocking
+> > and driver returns immediately after notifying DSP.
+> > The waiting is done while relasing the lock so that other ops can go ahead.
+> > 
+> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> > CC: stable@vger.kernel.org
+> 
+> Thanks, I apply this.
+> 
+> Though...  I found that I already applied your earlier version
+> accidentally, and pushed it out a few weeks ago.  If it were just a
+> few commits, I'd rebase, but this was way too deep, so rebasing isn't
+> good at all.
+> 
+> In the end, I applied the patch correcting to the final version.
+> The downside would be that you'll get two stable commit
+> notifications.  So, please beware of that.
+> 
+> Sorry for confusions!
+Np, I will cherry-pick both.
 
-I can certainly rewrite coef_idx to use coefef_idx (I think that's a
-good idea), but for the comments, I know as little as you do about these
-verbs.
+Now i will send you bunch of trvial chnages in compressed core which I wanted to
+send once this one was done
 
-Kailang, is it possible for you to add more comments to your patch so it
-can be applied upstream?
-
-Thanks,
-  David
-
-On 11/07/2013 02:22 PM, Takashi Iwai wrote:
-> At Thu,  7 Nov 2013 14:08:41 +0100,
-> David Henningsson wrote:
->>
->> From: Kailang Yang <kailang@realtek.com>
->>
->> The new codec ALC255 needs its own set of verbs to enable
->> multifunction jacks.
->>
->> (Context and whitespace adjustments by David Henningsson)
->>
->> BugLink: https://bugs.launchpad.net/bugs/1248949
->> Tested-by: Doro Wu <doro.wu@canonical.com>
->> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->> ---
->>  sound/pci/hda/patch_realtek.c |   91 +++++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 91 insertions(+)
->>
->> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
->> index daf7205..ceadd65 100644
->> --- a/sound/pci/hda/patch_realtek.c
->> +++ b/sound/pci/hda/patch_realtek.c
->> @@ -588,6 +588,18 @@ static int alc_read_coef_idx(struct hda_codec *codec,
->>  	return val;
->>  }
->>  
->> +static int alc_read_coefex_idx(struct hda_codec *codec,
->> +					hda_nid_t nid,
->> +					unsigned int coef_idx)
->> +{
->> +	unsigned int val;
->> +	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_COEF_INDEX,
->> +			    coef_idx);
->> +	val = snd_hda_codec_read(codec, nid, 0,
->> +				 AC_VERB_GET_PROC_COEF, 0);
->> +	return val;
->> +}
-> 
-> Rewrite alc_read_coef_idx() using this new function, too, e.g.
-> 
-> #define alc_write_coef_idx(codec, idx, val) \
-> 	alc_read_coefex_idx(codec, 0x20, idx, val)
-> 
->>  static void alc_write_coef_idx(struct hda_codec *codec, unsigned int coef_idx,
->>  							unsigned int coef_val)
->>  {
->> @@ -597,6 +609,15 @@ static void alc_write_coef_idx(struct hda_codec *codec, unsigned int coef_idx,
->>  			    coef_val);
->>  }
->>  
->> +static void alc_write_coefex_idx(struct hda_codec *codec, hda_nid_t nid,
->> +				 unsigned int coef_idx, unsigned int coef_val)
->> +{
->> +	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_COEF_INDEX,
->> +			    coef_idx);
->> +	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_PROC_COEF,
->> +			    coef_val);
->> +}
-> 
-> Ditto.
-> 
->> +
->>  /* a special bypass for COEF 0; read the cached value at the second time */
->>  static unsigned int alc_get_coef0(struct hda_codec *codec)
->>  {
->> @@ -3109,6 +3130,14 @@ static void alc_headset_mode_unplugged(struct hda_codec *codec)
->>  	int val;
->>  
->>  	switch (codec->vendor_id) {
->> +	case 0x10ec0255:
->> +		alc_write_coef_idx(codec, 0x1b, 0x0c0b);
->> +		alc_write_coef_idx(codec, 0x45, 0xd089);
->> +		val = alc_read_coefex_idx(codec, 0x57, 0x05);
->> +		alc_write_coefex_idx(codec, 0x57, 0x05, val & ~(1<<14));
->> +		alc_write_coef_idx(codec, 0x06, 0x6104);
->> +		alc_write_coefex_idx(codec, 0x57, 0x03, 0x8aa6);
-> 
-> Try to comment what these actually do.  Not necessarily too detailed,
-> but we need to have some ideas.
-> 
-> I regret to have merged the former Realtek headset patches that have
-> lots of such verbs without certain comments.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-
-
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+--
+~Vinod
