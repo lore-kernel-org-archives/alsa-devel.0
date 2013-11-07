@@ -1,8 +1,8 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/3] ALSA: hda - Add a block_report flag to
-	jacks
-Date: Thu,  7 Nov 2013 13:38:24 +0100
-Message-ID: <1383827905-2618-3-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH 1/3] ALSA: hda - Delay HDMI presence reports
+	while waiting for ELD information
+Date: Thu,  7 Nov 2013 13:38:23 +0100
+Message-ID: <1383827905-2618-2-git-send-email-david.henningsson@canonical.com>
 References: <1383827905-2618-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B0512616E1
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D11826550E
  for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2013 13:38:29 +0100 (CET)
 In-Reply-To: <1383827905-2618-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -23,42 +23,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-If the jack should not be reported to userspace (e g, because it is
-in some transitional state), one can set this flag.
+From: Takashi Iwai <tiwai@suse.de>
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/pci/hda/hda_jack.c | 2 +-
- sound/pci/hda/hda_jack.h | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_hdmi.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
-index 05b3e3e..afe5944 100644
---- a/sound/pci/hda/hda_jack.c
-+++ b/sound/pci/hda/hda_jack.c
-@@ -286,7 +286,7 @@ void snd_hda_jack_report_sync(struct hda_codec *codec)
- 	jack = codec->jacktbl.list;
- 	for (i = 0; i < codec->jacktbl.used; i++, jack++)
- 		if (jack->nid) {
--			if (!jack->kctl)
-+			if (!jack->kctl || jack->block_report)
- 				continue;
- 			state = get_jack_plug_state(jack->pin_sense);
- 			snd_kctl_jack_report(codec->bus->card, jack->kctl, state);
-diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
-index 379420c..46e1ea8 100644
---- a/sound/pci/hda/hda_jack.h
-+++ b/sound/pci/hda/hda_jack.h
-@@ -28,6 +28,7 @@ struct hda_jack_tbl {
- 	unsigned int jack_detect:1;	/* capable of jack-detection? */
- 	unsigned int jack_dirty:1;	/* needs to update? */
- 	unsigned int phantom_jack:1;    /* a fixed, always present port? */
-+	unsigned int block_report:1;    /* in a transitional state - do not report to userspace */
- 	hda_nid_t gating_jack;		/* valid when gating jack plugged */
- 	hda_nid_t gated_jack;		/* gated is dependent on this jack */
- 	struct snd_kcontrol *kctl;	/* assigned kctl for jack-detection */
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index e22323f..497e84d 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1140,7 +1140,7 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+  * Unsolicited events
+  */
+ 
+-static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll);
++static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll);
+ 
+ static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
+ {
+@@ -1166,8 +1166,8 @@ static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
+ 	if (pin_idx < 0)
+ 		return;
+ 
+-	hdmi_present_sense(get_pin(spec, pin_idx), 1);
+-	snd_hda_jack_report_sync(codec);
++	if (hdmi_present_sense(get_pin(spec, pin_idx), 1))
++		snd_hda_jack_report_sync(codec);
+ }
+ 
+ static void hdmi_non_intrinsic_event(struct hda_codec *codec, unsigned int res)
+@@ -1475,7 +1475,7 @@ static int hdmi_read_pin_conn(struct hda_codec *codec, int pin_idx)
+ 	return 0;
+ }
+ 
+-static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
++static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ {
+ 	struct hda_codec *codec = per_pin->codec;
+ 	struct hdmi_spec *spec = codec->spec;
+@@ -1493,6 +1493,7 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ 	int present = snd_hda_pin_sense(codec, pin_nid);
+ 	bool update_eld = false;
+ 	bool eld_changed = false;
++	bool ret;
+ 
+ 	mutex_lock(&per_pin->lock);
+ 	pin_eld->monitor_present = !!(present & AC_PINSENSE_PRESENCE);
+@@ -1559,7 +1560,12 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ 			       SNDRV_CTL_EVENT_MASK_VALUE | SNDRV_CTL_EVENT_MASK_INFO,
+ 			       &per_pin->eld_ctl->id);
+  unlock:
++	if ((codec->vendor_id & 0xffff0000) == 0x10020000)
++		ret = true; /* FIXME: implement fake ELD for AMD */
++	else
++		ret = !repoll || !pin_eld->monitor_present || pin_eld->eld_valid;
+ 	mutex_unlock(&per_pin->lock);
++	return ret;
+ }
+ 
+ static void hdmi_repoll_eld(struct work_struct *work)
+@@ -1570,7 +1576,8 @@ static void hdmi_repoll_eld(struct work_struct *work)
+ 	if (per_pin->repoll_count++ > 6)
+ 		per_pin->repoll_count = 0;
+ 
+-	hdmi_present_sense(per_pin, per_pin->repoll_count);
++	if (hdmi_present_sense(per_pin, per_pin->repoll_count))
++		snd_hda_jack_report_sync(per_pin->codec);
+ }
+ 
+ static void intel_haswell_fixup_connect_list(struct hda_codec *codec,
 -- 
 1.8.4.2
