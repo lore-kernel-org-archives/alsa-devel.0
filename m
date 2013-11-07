@@ -1,77 +1,70 @@
-From: Chen Gang <gang.chen@asianux.com>
-Subject: Re: [PATCH trivial] include: uapi: standard all files'
- macro prefix and suffix, excluding "linux/" sub-directory
-Date: Thu, 07 Nov 2013 10:53:16 +0800
-Message-ID: <527B009C.4060905@asianux.com>
-References: <52786742.1080509@asianux.com> <51FB6216.6010008@asianux.com>
-	<11907.1383602624@warthog.procyon.org.uk>
-	<13981.1383649896@warthog.procyon.org.uk>
-	<5278DEF8.2030101@asianux.com>
+From: Li Xiubo <Li.Xiubo@freescale.com>
+Subject: Re: [PATCHv2 5/8] ASoC: SGTL5000: Enhance the SGTL5000
+ codec driver about regulator.
+Date: Thu, 7 Nov 2013 03:01:02 +0000
+Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F828783E6@039-SN2MPN1-013.039d.mgd.msft.net>
+References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
+ <1383289495-24523-6-git-send-email-Li.Xiubo@freescale.com>
+ <20131101185045.GG2493@sirena.org.uk>
+ <1DD289F6464F0949A2FCA5AA6DC23F82876EFF@039-SN2MPN1-013.039d.mgd.msft.net>
+ <20131106100305.GI11602@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <5278DEF8.2030101@asianux.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Sender: intel-gfx-bounces@lists.freedesktop.org
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-To: David Howells <dhowells@redhat.com>
-Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie, daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, perex@perex.cz, thierry.reding@gmail.com, linux-mtd@lists.infradead.org, sean.hefty@intel.com, virtualization@lists.linux-foundation.org, Linux-Arch <linux-arch@vger.kernel.org>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com, jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, roland@purestorage.com, Takashi Iwai <tiwai@suse.de>, Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com, fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>, "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>, swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from db9outboundpool.messaging.microsoft.com
+ (mail-db9lp0251.outbound.messaging.microsoft.com [213.199.154.251])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82A5D2650AF
+ for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2013 04:01:06 +0100 (CET)
+In-Reply-To: <20131106100305.GI11602@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "timur@tabi.org" <timur@tabi.org>, Huan Wang <Huan.Wang@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Shawn Guo <Shawn.Guo@freescale.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, Zhengxiong Jin <Jason.Jin@freescale.com>, "oskar@scara.com" <oskar@scara.com>, Fab
 List-Id: alsa-devel@alsa-project.org
 
-On 11/05/2013 08:05 PM, Chen Gang wrote:
-> On 11/05/2013 07:11 PM, David Howells wrote:
->> Chen Gang <gang.chen@asianux.com> wrote:
->>
->>>> Userspace sometimes depends on the name in the guard macro:-/
->>>
->>> "the guard macro" is only for prevent itself from being included by
->>> multiple times (an id used by itself -- like a handle), it is not an id
->>> to let other files know about it (it is not a normal using way).
->>
->> Whilst that *should* be true, it isn't actually true.  See:
->>
->> 	grep -r _LINUX_.*_H /usr/include/ | grep -v ^/usr/include/linux/
->>
->> for example.  Also who knows what all those autoconf scripts out there look
->> for?
->>
+> > The SGTL5000 is based on regulators and when it is disabled, there
+> > will be an error returns directly while the SGTL5000 codec is probing.
 > 
-> Oh... the real world is really not quite perfect. :-/
-> 
-> 
->> However, thinking about it some more, you're probably safe with respect to
->> userspace as scripts/headers_install.h strips off the _UAPI prefix on the
->> guard macros - just as long as you don't change the rest of the macro name.
->>
-> 
+> What makes you say this?  
+>
 
-I will preparing the patch for it, it will cover "include/uapi/*" and
-"arch/*/include/uapi/*", the patch will only add "_UAPI" for the guard
-macros which miss it.
+>From the code:
+File path: "sound/soc/codecs/sgtl5000.c"
+==================
+#ifdef CONFIG_REGULATOR
+.....
+#else
+static int ldo_regulator_register(struct snd_soc_codec *codec,
+                                struct regulator_init_data *init_data,
+                                int voltage)
+{
+        dev_err(codec->dev, "this setup needs regulator support in the kernel\n");
+        return -EINVAL;
+}
 
-Welcome any additional suggestions and completions.
+static int ldo_regulator_remove(struct snd_soc_codec *codec)
+{
+        return 0;
+}
+#endif
+-------------------
 
-Thanks.
-
-> In honest, I really did not think more about it.
-> 
-> Only adding _UAPI (not touch others) can completely fix one style issue:
-> separate "uapi/*" from other sub-directories in "include/*"
-> 
-> So for me, we can continue improve this patch: add "_UAPI" for all guard
-> macro under "include/uapi/*" (also include "include/uapi/linux").
-> 
-> 
-> Thanks.
-> 
+sgtl5000_probe() -->
+sgtl5000_enable_regulators() -->
+sgtl5000_replace_vddd_with_ldo() -->
+ldo_regulator_register().
 
 
--- 
-Chen Gang
+> That's not how the regulator API works.  Have
+> you actually seen any problems?
+
+There are some regulator APIs implemented by SGTL5000 driver, not the regulator subsystem APIs.
