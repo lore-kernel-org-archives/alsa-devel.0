@@ -1,16 +1,18 @@
-From: Joe Perches <joe@perches.com>
-Subject: [RFC PATCH] hda_intel: ratelimit "spurious response"
-	message
-Date: Thu, 07 Nov 2013 11:55:15 -0800
-Message-ID: <1383854115.9263.21.camel@joe-AO722>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2][RESEND] ASoC: generic-dmaengine-pcm:
+ Use SNDRV_DMA_TYPE_DEV_IRAM as default
+Date: Thu, 7 Nov 2013 19:56:14 +0000
+Message-ID: <20131107195614.GY2493@sirena.org.uk>
+References: <1383806716-23469-1-git-send-email-b42378@freescale.com>
+ <20131107113218.GU2493@sirena.org.uk>
+ <s5hy550tp39.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8532985890951637338=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay.hostedemail.com (smtprelay0170.hostedemail.com
- [216.40.44.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 9506E2602AD
- for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2013 20:55:11 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2432C2602AD
+ for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2013 20:56:28 +0100 (CET)
+In-Reply-To: <s5hy550tp39.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,42 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, lars@metafoo.de, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-dmesg here has a 100+ consecutive lines of:
 
-[ 1464.219446] hda-intel 0000:00:14.2: spurious response 0x0:0x0, last cmd=0x170500
-[ 1464.219451] hda-intel 0000:00:14.2: spurious response 0x0:0x0, last cmd=0x170500
-[ 1464.219454] hda-intel 0000:00:14.2: spurious response 0x0:0x0, last cmd=0x170500
-...
+--===============8532985890951637338==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+1tcKVLXPU0QafK6"
+Content-Disposition: inline
 
-Ratelimit the message to reduce the dmesg log noise.
 
-Coalesce the format while at it.
+--+1tcKVLXPU0QafK6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- sound/pci/hda/hda_intel.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On Thu, Nov 07, 2013 at 12:42:50PM +0100, Takashi Iwai wrote:
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 6e61a01..6e444ca 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -906,12 +906,12 @@ static void azx_update_rirb(struct azx *chip)
- 			chip->rirb.res[addr] = res;
- 			smp_wmb();
- 			chip->rirb.cmds[addr]--;
--		} else
--			snd_printk(KERN_ERR SFX "%s: spurious response %#x:%#x, "
--				   "last cmd=%#08x\n",
-+		} else if (printk_ratelimit()) {
-+			snd_printk(KERN_ERR SFX "%s: spurious response %#x:%#x, last cmd=%#08x\n",
- 				   pci_name(chip->pci),
- 				   res, res_ex,
- 				   chip->last_cmd[addr]);
-+		}
- 	}
- }
- 
+> It's an ASoC helper, so would you take into your tree?
+> Lars already gave an Ack.
+
+I can do but it depends on the IRAM stuff which is only in your tree
+until the merge window is done - seems better to either just apply there
+or wait for the merge window to finish rather than have me merge in the
+changes?
+
+--+1tcKVLXPU0QafK6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSe/BVAAoJELSic+t+oim9CK4P/1KCgFrORIF7KRSb2yjLoLj3
+LbLxeX8/S0KnCDyAYXP93aqRiXWJVEOFKB9roWruB+5LHdcp7hfvsPkSNonQJgp4
+DIfVZtViKoi+GGv8SHW2qR91f44ViZVVx3O4f2Iaz7ur9/pICo7zFIBdAoAyYpnn
+x5STeXXuUZYAGHv+HshcXBLHeqrV+qRLZGW/chvoXMwk494Xq5QB+Jjh4yoK4iqg
+drGOdcRUiYbatOlUJJGYQsJSQwcJBCkAvCq2pI7ZLqCYNIcSpkaS2SFSXxlmG6w5
+MvBge3iNGBw1/YXuB2R8UlNWSZ8cAaU2sra6iS60E64dchVI5SpF6WIBm7dQXFXd
+D+lgfPbTi6QTTkgpcieg+jTEX5fSCFrLEiAWiYYbVO51pdrprRnwr5Yb//YsLpTl
+CKLFx1uEz1AT/3x5K/bu1wBu8cVAjHEI3cxnPa5+qcEB1KzesWY3q2rg5zKotW0u
+V894j4wgnpqnQDEAVxjozP7LCWSOh0YTOFmTqDpe000daxqNYNCF5WzNeRfNZZug
+ePBrN/Q/Zp0vX2H8co4vq/NAqxxEqZYmzzIKK7qWYZrtgc54lix8UFYul1ftZaTc
+h7ieY34CAxqDQxl6VWM4byb8FtY4aqvsrHS5MiX3h4D1+BBW4G7MutEmrfwZRyA2
+mRs+LOiNdgc+PeZ9N16l
+=iMSQ
+-----END PGP SIGNATURE-----
+
+--+1tcKVLXPU0QafK6--
+
+--===============8532985890951637338==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8532985890951637338==--
