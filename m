@@ -1,144 +1,64 @@
-From: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>
-Subject: Re: [RFC 3/4] ASoC: Allow Aux Codecs to be specified using DT
-Date: Thu, 7 Nov 2013 13:26:55 +0100
-Message-ID: <20131107122655.GA7110@amd.pavel.ucw.cz>
-References: <1382909086-10493-1-git-send-email-sre@debian.org>
- <1382909086-10493-4-git-send-email-sre@debian.org>
- <20131106142559.GC15551@amd.pavel.ucw.cz>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 2/3] ALSA: hda - Add a block_report flag to
+	jacks
+Date: Thu,  7 Nov 2013 13:38:24 +0100
+Message-ID: <1383827905-2618-3-git-send-email-david.henningsson@canonical.com>
+References: <1383827905-2618-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20131106142559.GC15551-tWAi6jLit6GreWDznjuHag@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sebastian Reichel <sre-8fiUuRrzOP0dnm+yROfE0A@public.gmane.org>
-Cc: Sebastian Reichel <sre-GFxCN5SEZAc@public.gmane.org>, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Rob Landley <rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jarkko Nikula <jarkko.nikula-FVTvWyuFUl3QT0dZR+AlfA@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B0512616E1
+ for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2013 13:38:29 +0100 (CET)
+In-Reply-To: <1383827905-2618-1-git-send-email-david.henningsson@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+If the jack should not be reported to userspace (e g, because it is
+in some transitional state), one can set this flag.
 
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_jack.c | 2 +-
+ sound/pci/hda/hda_jack.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-> So in (error) case of ! aux_dev->codec_of_node && ! aux_dev->codec_name 
-> we match first possible codec?
-> 
-> Given code similarity between this and the one above, should there be
-> helper function that does the comparison (or even walks the list)?
-
-Something like this? soc_probe_aux_dev now looks better... (Only
-compile tested).
-
-Signed-off-by: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 392f479..3097e17 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1526,69 +1526,65 @@ static void soc_unregister_ac97_dai_link(struct snd_soc_codec *codec)
- }
- #endif
- 
--static int soc_check_aux_dev(struct snd_soc_card *card, int num)
-+struct snd_soc_codec *soc_find_matching_codec(struct snd_soc_card *card, int num)
- {
- 	struct snd_soc_aux_dev *aux_dev = &card->aux_dev[num];
--	const char *codecname = aux_dev->codec_name;
- 	struct snd_soc_codec *codec;
- 
--	/* find CODEC from registered CODECs*/
-+	/* find CODEC from registered CODECs */
- 	list_for_each_entry(codec, &codec_list, list) {
--		if (aux_dev->codec_of_node &&
--				codec->dev->of_node == aux_dev->codec_of_node)
--			return 0;
--		if (aux_dev->codec_name &&
--				!strcmp(codec->name, aux_dev->codec_name))
--			return 0;
-+		if (aux_dev->codec_of_node && 
-+		    (codec->dev->of_node != aux_dev->codec_of_node))
-+			continue;
-+		if (aux_dev->codec_name && strcmp(codec->name, aux_dev->codec_name))
-+			continue;
-+		return codec;
- 	}
-+	return NULL;
-+}
- 
-+static int soc_check_aux_dev(struct snd_soc_card *card, int num)
-+{
-+	struct snd_soc_aux_dev *aux_dev = &card->aux_dev[num];
-+	const char *codecname = aux_dev->codec_name;
-+	struct snd_soc_codec *codec = soc_find_matching_codec(card, num);
-+
-+	if (codec)
-+		return 0;
- 	if (aux_dev->codec_of_node)
- 		codecname = of_node_full_name(aux_dev->codec_of_node);
- 
- 	dev_err(card->dev, "ASoC: %s not registered\n", codecname);
--
- 	return -EPROBE_DEFER;
- }
- 
-+
- static int soc_probe_aux_dev(struct snd_soc_card *card, int num)
- {
- 	struct snd_soc_aux_dev *aux_dev = &card->aux_dev[num];
--	struct snd_soc_codec *codec;
- 	const char *codecname = aux_dev->codec_name;
- 	int ret = -ENODEV;
-+	struct snd_soc_codec *codec = soc_find_matching_codec(card, num);
- 
--	/* find CODEC from registered CODECs*/
--	list_for_each_entry(codec, &codec_list, list) {
--		if (aux_dev->codec_of_node &&
--				codec->dev->of_node != aux_dev->codec_of_node)
--			continue;
--		if (aux_dev->codec_name &&
--				strcmp(codec->name, aux_dev->codec_name))
--			continue;
-+	if (!codec) {
-+		if (aux_dev->codec_of_node)
-+			codecname = of_node_full_name(aux_dev->codec_of_node);
- 
--		if (codec->probed) {
--			dev_err(codec->dev, "ASoC: codec already probed");
--			ret = -EBUSY;
--			goto out;
--		}
--		goto found;
-+		/* codec not found */
-+		dev_err(card->dev, "ASoC: codec %s not found", codecname);
-+		return -EPROBE_DEFER;
- 	}
- 
--	if (aux_dev->codec_of_node)
--		codecname = of_node_full_name(aux_dev->codec_of_node);
--
--	/* codec not found */
--	dev_err(card->dev, "ASoC: codec %s not found", codecname);
--	return -EPROBE_DEFER;
-+	if (codec->probed) {
-+		dev_err(codec->dev, "ASoC: codec already probed");
-+		return -EBUSY;
-+	}
- 
--found:
- 	ret = soc_probe_codec(card, codec);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = soc_post_component_init(card, codec, num, 1);
--
--out:
- 	return ret;
- }
- 
-
-
+diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
+index 05b3e3e..afe5944 100644
+--- a/sound/pci/hda/hda_jack.c
++++ b/sound/pci/hda/hda_jack.c
+@@ -286,7 +286,7 @@ void snd_hda_jack_report_sync(struct hda_codec *codec)
+ 	jack = codec->jacktbl.list;
+ 	for (i = 0; i < codec->jacktbl.used; i++, jack++)
+ 		if (jack->nid) {
+-			if (!jack->kctl)
++			if (!jack->kctl || jack->block_report)
+ 				continue;
+ 			state = get_jack_plug_state(jack->pin_sense);
+ 			snd_kctl_jack_report(codec->bus->card, jack->kctl, state);
+diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
+index 379420c..46e1ea8 100644
+--- a/sound/pci/hda/hda_jack.h
++++ b/sound/pci/hda/hda_jack.h
+@@ -28,6 +28,7 @@ struct hda_jack_tbl {
+ 	unsigned int jack_detect:1;	/* capable of jack-detection? */
+ 	unsigned int jack_dirty:1;	/* needs to update? */
+ 	unsigned int phantom_jack:1;    /* a fixed, always present port? */
++	unsigned int block_report:1;    /* in a transitional state - do not report to userspace */
+ 	hda_nid_t gating_jack;		/* valid when gating jack plugged */
+ 	hda_nid_t gated_jack;		/* gated is dependent on this jack */
+ 	struct snd_kcontrol *kctl;	/* assigned kctl for jack-detection */
 -- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.8.4.2
