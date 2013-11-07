@@ -1,65 +1,114 @@
 From: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH 2/2] dt: binding: sound cs42l52 driver
-Date: Thu, 7 Nov 2013 14:22:17 -0600
-Message-ID: <1383855737-8499-2-git-send-email-brian.austin@cirrus.com>
-References: <1383855737-8499-1-git-send-email-brian.austin@cirrus.com>
+Subject: [PATCH 1/2] ASoC: cs42l52: Add Device Tree support for CS42L52
+Date: Thu, 7 Nov 2013 14:22:16 -0600
+Message-ID: <1383855737-8499-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1383855737-8499-1-git-send-email-brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add Device Tree Binding for the CS42L52 Codec
+This patch adds support for DT platform data and I2C/RST initialization
+support
 
 Signed-off-by: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 ---
- .../devicetree/bindings/sound/cs42l52.txt          | 34 ++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cs42l52.txt
+ sound/soc/codecs/cs42l52.c | 51 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 49 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/cs42l52.txt b/Documentation/devicetree/bindings/sound/cs42l52.txt
-new file mode 100644
-index 0000000..7540198
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/cs42l52.txt
-@@ -0,0 +1,34 @@
-+CS42L52 audio CODEC
+diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
+index 8b427c9..c8078c7 100644
+--- a/sound/soc/codecs/cs42l52.c
++++ b/sound/soc/codecs/cs42l52.c
+@@ -17,7 +17,7 @@
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
+-#include <linux/gpio.h>
++#include <linux/of_gpio.h>
+ #include <linux/pm.h>
+ #include <linux/i2c.h>
+ #include <linux/input.h>
+@@ -1174,6 +1174,7 @@ static int cs42l52_i2c_probe(struct i2c_client *i2c_client,
+ 	struct cs42l52_private *cs42l52;
+ 	struct cs42l52_platform_data *pdata = dev_get_platdata(&i2c_client->dev);
+ 	int ret;
++	u32 val32;
+ 	unsigned int devid = 0;
+ 	unsigned int reg;
+ 
+@@ -1190,8 +1191,47 @@ static int cs42l52_i2c_probe(struct i2c_client *i2c_client,
+ 		return ret;
+ 	}
+ 
+-	if (pdata)
++	if (pdata) {
+ 		cs42l52->pdata = *pdata;
++	} else {
++		pdata = devm_kzalloc(&i2c_client->dev,
++				     sizeof(struct cs42l52_platform_data),
++				GFP_KERNEL);
++		if (!pdata) {
++			dev_err(&i2c_client->dev, "could not allocate pdata\n");
++			return -ENOMEM;
++		}
++		if (i2c_client->dev.of_node) {
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"mica_cfg", &val32) >= 0)
++				pdata->mica_cfg = val32;
 +
-+Required properties:
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"micb_cfg", &val32) >= 0)
++				pdata->micb_cfg = val32;
 +
-+  - compatible : "cirrus,cs42l52"
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"mica_sel", &val32) >= 0)
++				pdata->mica_sel = val32;
 +
-+  - reg : the I2C address of the device for I2C
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"micb_sel", &val32) >= 0)
++				pdata->micb_sel = val32;
 +
-+Optional properties:
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"micbias_lvl", &val32) >= 0)
++				pdata->micbias_lvl = val32;
 +
-+  - reset_gpio : a GPIO spec for the reset pin.
-+  - chgfreq    : Charge Pump Frequency values 0x00-0x0F
-+  - mica_sel   : MIC A single ended input select MIC1/MIC2
-+  - micb_sel   : MIC B single ended input select MIC1/MIC2
-+  - mica_cfg   : MIC A single-ended or differential select
-+  - micb_cfg   : MIC A single-ended or differential select
-+  - micbias_lvl: Set the output voltage level on the MICBIAS Pin
-+		 0x00 = 0.5 x VA
-+		 0x01 = 0.6 x VA
-+		 0x02 = 0.7 x VA
-+		 0x03 = 0.8 x VA
-+		 0x04 = 0.83 x VA
-+		 0x05 = 0.91 x VA
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"chgfreq", &val32) >= 0)
++				pdata->chgfreq = val32;
 +
-+Example:
-+
-+codec: cs42l52@4a {
-+	compatible = "cirrus,cs42l52";
-+	reg = <0x4a>;
-+	reset_gpio = <&gpio 10 0>;
-+	chgfreq = <0x05>;
-+	mica_sel = <0x01>;
-+	micbias_lvl = <0x05>;
++			pdata->reset_gpio =
++				of_get_named_gpio(i2c_client->dev.of_node,
++						"reset_gpio", 0);
++		}
++		cs42l52->pdata = *pdata;
++	}
+ 
+ 	if (cs42l52->pdata.reset_gpio) {
+ 		ret = gpio_request_one(cs42l52->pdata.reset_gpio,
+@@ -1274,6 +1314,12 @@ static int cs42l52_i2c_remove(struct i2c_client *client)
+ 	return 0;
+ }
+ 
++static const struct of_device_id cs42l52_of_match[] = {
++	{ .compatible = "cirrus,cs42l52", },
++	{},
 +};
++MODULE_DEVICE_TABLE(of, cs42l52_of_match);
++
+ static const struct i2c_device_id cs42l52_id[] = {
+ 	{ "cs42l52", 0 },
+ 	{ }
+@@ -1284,6 +1330,7 @@ static struct i2c_driver cs42l52_i2c_driver = {
+ 	.driver = {
+ 		.name = "cs42l52",
+ 		.owner = THIS_MODULE,
++		.of_match_table = cs42l52_of_match,
+ 	},
+ 	.id_table = cs42l52_id,
+ 	.probe =    cs42l52_i2c_probe,
 -- 
 1.8.4.rc3
 
