@@ -1,76 +1,50 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl: imx-pcm-fiq: Remove unused
-	'runtime' variable
-Date: Fri, 8 Nov 2013 10:21:33 +0000
-Message-ID: <20131108102133.GF2493@sirena.org.uk>
-References: <1383879300-19947-1-git-send-email-festevam@gmail.com>
- <20131108075611.GA5473@curry>
+Subject: Re: [patch] ASoC: fsl: imx-wm8962: remove an unneeded check
+Date: Fri, 8 Nov 2013 10:22:19 +0000
+Message-ID: <20131108102219.GG2493@sirena.org.uk>
+References: <20131108095444.GM27977@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8401705212838085359=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A04B265646
- for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 11:21:43 +0100 (CET)
-In-Reply-To: <20131108075611.GA5473@curry>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oskar Schirmer <oskar@scara.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="6u7lpXof/8C/+w+8"
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20131108095444.GM27977@elgon.mountain>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Grant Likely <grant.likely@linaro.org>, Rob Herring <rob.herring@calxeda.com>, Nicolin Chen <b42378@freescale.com>, Wolfram Sang <wsa@the-dreams.de>, Lars-Peter Clausen <lars@metafoo.de>, Fabio Estevam <fabio.estevam@freescale.com>, Sachin Kamat <sachin.kamat@linaro.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8401705212838085359==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ou2/pFdZC1wHLsdF"
-Content-Disposition: inline
-
-
---ou2/pFdZC1wHLsdF
+--6u7lpXof/8C/+w+8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Nov 08, 2013 at 07:56:11AM +0000, Oskar Schirmer wrote:
-
-> Acked-by: Oskar Schirmer <oskar@scara.com>
+On Fri, Nov 08, 2013 at 12:54:44PM +0300, Dan Carpenter wrote:
+> "data->codec_clk" can't be an ERR_PTR here so I have removed the
+> superflous check.
 
 Applied, thanks.
 
---ou2/pFdZC1wHLsdF
+--6u7lpXof/8C/+w+8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSfLsqAAoJELSic+t+oim96pEP/2qLymFWLl6lBxNGkVeFPXQb
-4P0lSyX5Q4Ba8LOsc5ZeFwjtcaUH+BpYPqspSUpI4jVpXYGplDx0w6p4j2qgjkpu
-LR5fNjzYeIx2/WhvifAH2hZL5Hu5HJRgc5ijY9jMdITQ4vuz0vJNo3DuNrqoV9aj
-5Vje2n45AWC19GbbDfKi2Ih5/Xmbwr6K7SCrIMUxFJz7gUaRh1gPhKeDsPxEXivL
-bE/rSaK7kfX1EdFgL16e9r3Ozfin9L5plltNksvRLy73Dp09p4TZ3vBuHnIXQ6GD
-8zDYsY6nZxq/SF3wn1qqUXBcVJXesb9GoN6dwu3Rr8Lvob4NSJXq9fiWriBJh+US
-6lgSKqpINTWOciepUTbwTkKMhhK2j7dVjCHn5wAGhD3aeYzP9xJu9rXAo9xofJqt
-6uqa6w5K0YqQu6J40zAMqLsOcTHifPI1ZHrPZDP0kFuwBQCCB5kcoSxIudklV8+8
-alwgr8e2/kqCYJDuOJvWW/IQJZA1zG7mvAtbtwLCi7dXdC8PdJoIAYYxPqhQqZFw
-4Xfef1vCHTahwa6QopBnt2Po18/KFSRhQSm+h9NgecNIJKPhMAxz5DAgUHIBYHT9
-szzTkgMNxvzWXBzGXZ5Cegm6fQaifKhl+R7DKJVTP8PvpC4HSpaZLZuvd4CHtHEf
-wzNGz6OcwfsDkEAnFzof
-=2Lbw
+iQIcBAEBAgAGBQJSfLtYAAoJELSic+t+oim910EP/RwPfoJroRKzAhtw3KtifUwf
+kky8eSZUNqNBEsYEbOdf0NccaENLT5iMmEHASGMhO5BHLv95N26rwEO0noHbOFPb
+5hAhgl/s0YqR2mdVmI6UlxhEpaNIvbKNWMOUbmysMLhrqbHJ/zZUthr2nXQrmCfP
+g2SvvKWnzh50jeg0wTOwJU/2xvRjsh7tuajI8XNMu51r2HSeEI6uFQ/xmA8Qcb1g
+bQW5FOQgVuwCTjwKUZo9OOjR2XkOUjCg+Y4jOUhm521EIuMaVk4980t3oLTXWML6
+OBAkRcw0/4NhwQgzvJV+zakQ2LccDJrR6pegRlkuP21l9yAWVWUvnU+2De3YbtTG
+AiQLWZu+IjMI5ctzSe1bFa+uMx9Wcq6xJnJpTPaN/k9Q6gSVNN6UFyR5c0JMuW+q
+f2ESFndbHAqEYI07CGzhH5flOzWLew2/UCEcVxve8i9ZJX12k9gc6rwANbJefq8w
+rBrHPPo5rnnEqV2te7GziC/4J6mDPt50FWOYzt5F4nrgYevdE2ySeW1dZYdm1NwI
+lviFNxBrA/npGjqC26K3vSfaiPqRBs+yx4sny93MJ89V1YYji5DL4qaGN4Cmk/I5
+lAqtWr2bbaszKOVEyzq74xzVq4Jc+ik1fczkNqwkXKvyEHRtcr2qb63XXH6mxhes
+MFI8OxGgBFT1kbyKdvI1
+=aU3/
 -----END PGP SIGNATURE-----
 
---ou2/pFdZC1wHLsdF--
-
---===============8401705212838085359==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8401705212838085359==--
+--6u7lpXof/8C/+w+8--
