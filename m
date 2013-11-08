@@ -1,17 +1,17 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 1/2] alsa-lib: conf.c: use portable way to
- initialize recursive mutex
-Date: Fri, 08 Nov 2013 14:57:58 +0100
-Message-ID: <527CEDE6.9040005@perex.cz>
-References: <527CE136.3090500@barfooze.de>
+Subject: Re: [PATCH 2/2] alsa-utils: pcmjob.c: use portable way
+ to initialize recursive mutex
+Date: Fri, 08 Nov 2013 14:58:31 +0100
+Message-ID: <527CEE07.3080505@perex.cz>
+References: <527CE138.9060805@barfooze.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id E703E2656EA
- for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 14:58:01 +0100 (CET)
-In-Reply-To: <527CE136.3090500@barfooze.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 348952656F6
+ for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 14:58:32 +0100 (CET)
+In-Reply-To: <527CE138.9060805@barfooze.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,15 +26,11 @@ Cc: alsa-devel <alsa-devel@alsa-project.org>, =?UTF-8?B?VGltbyBUZXLDpHM=?= <timo
 List-Id: alsa-devel@alsa-project.org
 
 Date 8.11.2013 14:03, John Spencer wrote:
-> attaching the patch, as i currently have problems with git-send-email,
-> and it would force me to use the wrong author name.
-> 
-> got the OK from Timo on IRC to send his patch.
+> attaching the patch, as i currently have problems with git-send-email.
 
-Applied. Thanks.
+Applied to our repo. Thanks.
 
-				Jaroslav
-
+					Jaroslav
 
 -- 
 Jaroslav Kysela <perex@perex.cz>
