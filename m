@@ -1,78 +1,60 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
- multi-channel and HBR support
-Date: Fri, 08 Nov 2013 12:27:11 +0200
-Message-ID: <527CBC7F.4000805@iki.fi>
-References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>	
- <5269665E.9050102@iki.fi> <1383887323.6455.37.camel@Wailaba2>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH v4 0/4] Add dual-fifo mode support of i.MX ssi
+Date: Fri, 8 Nov 2013 18:49:32 +0800
+Message-ID: <cover.1383907685.git.b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
- [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 065BD265656
- for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 11:27:17 +0100 (CET)
-In-Reply-To: <1383887323.6455.37.camel@Wailaba2>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Olivier Langlois <olivier@trillion01.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Peter_Fr=FChberger?= <fritsch@xbmc.org>
+Content-Type: text/plain
+Return-path: <linux-doc-owner@vger.kernel.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: vinod.koul@intel.com, dan.j.williams@intel.com, s.hauer@pengutronix.de, timur@tabi.org, shawn.guo@linaro.org, broonie@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-08.11.2013 07:08, Olivier Langlois kirjoitti:
-> On Thu, 2013-10-24 at 21:26 +0300, Anssi Hannula wrote:
->> 24.10.2013 21:10, Anssi Hannula kirjoitti:
->>> Hi all!
->>>
->>> Here's another revision of the ATI/AMD multichannel+HBR patchset.
->>>
->>> Changes:
->>> - added customizable callbacks instead of polluting generic code
->>> - fixed wrong codec id in rev3+ check (as previously noted)
->>> - cosmetics
->>>
->>> I've only tested this on NVIDIA/Intel, but I'd guess at least Peter
->>> should be able to test this on AMD in a few days or so. The earlier
->>> revisions were tested to fully work.
->>>
->>> Combined patch can be found at: http://onse.fi/files/atihdmi5.patch
->>> However, this patchset is on top recent sound-next commits so it does not
->>> directly apply on older kernels.
->>
->> Aand that would be http://onse.fi/files/atihdmi6.patch not 5.
->>
->>> Olivier, I hope you will be able to test this at some point as well
->>> (same things as last time), even though it will be a bit more work :)
->>
-> Anssi,
-> 
-> I have tried to patch 3.11.7 and the code in patch_hdmi.c looks too
-> different to be able to able to manually merge the rejected hunks.
-> 
-> What is sound-next? A git branch? Where can I get it?
+ * ! This series of patches has a direct dependency between them. When
+ * ! applying them, we need to apply to one single branch. Otherwise,
+ * ! it would break currect branches.
 
-The sound tree is at:
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/
+Changelog
+v4:
+ * PATCH-3: Add period size constraint when using dual fifo mode
+ *
+ * Nothing changes for PATCH-1, PATCH-2 and PATCH-4
+v3:
+ * PATCH-1: Add comments to indicate the end of v1 and v2 array.
+ * PATCH-3: Use better way to keep watermark as even number.
+ *
+ * Nothing changes for PATCH-2 and PATCH-4
+v2:
+ * Instead of adding rogue scripts to current SDMA driver based on firmware
+ * V1, we define the new SDMA firmware as version 2 and bisect the PATCH-1
+ * to two patches: The first is to add version check code to the SDMA driver;
+ * And the second is to add SSI dual FIFO DMATYPE.
+ *
+ * Nothing changes for the last two patches.
+v1:
+ * SSI can reduce hardware overrun/underrun possibility when using dual
+ * fifo mode. To support this mode, we need to first update sdma sciprt
+ * list, and then enable dual fifo BIT in SSI driver, and last update DT
+ * bindings of i.MX series.
 
-You can use the master branch now, it has been merged there.
+Nicolin Chen (4):
+  dma: imx-sdma: Add sdma firmware version 2 support
+  dma: imx-sdma: Add new dma type for ssi dual fifo script
+  ASoC: fsl_ssi: Add dual fifo mode support
+  ARM: dts: imx: use dual-fifo sdma script for ssi
 
-> How independant is the sound subsystem from the rest of the kernel? My
-> guess is that it is not that tightly coupled with the rest and dropping
-> sound-next version of patch_hdmi.c into my 3.11.7 source tree could work
-> or require minimal work. Will upgrade to 3.12 in a couple of day....
-
-Often you can just copy the sound/pci/hda directory from a newer kernel
-and then build the modules for the current kernel
-("make -C/lib/modules/$(uname -r)/build M=$PWD") with only minimal
-changes and possibly disabling unused modules in Makefile.
+ .../devicetree/bindings/dma/fsl-imx-sdma.txt       |  1 +
+ arch/arm/boot/dts/imx51.dtsi                       |  4 ++--
+ arch/arm/boot/dts/imx53.dtsi                       |  4 ++--
+ arch/arm/boot/dts/imx6qdl.dtsi                     | 12 +++++-----
+ arch/arm/boot/dts/imx6sl.dtsi                      | 12 +++++-----
+ drivers/dma/imx-sdma.c                             | 19 ++++++++++++++-
+ include/linux/platform_data/dma-imx-sdma.h         |  5 ++++
+ include/linux/platform_data/dma-imx.h              |  1 +
+ sound/soc/fsl/fsl_ssi.c                            | 27 +++++++++++++++++++++-
+ 9 files changed, 67 insertions(+), 18 deletions(-)
 
 -- 
-Anssi Hannula
+1.8.4
+
+
