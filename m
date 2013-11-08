@@ -1,7 +1,7 @@
 From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH v5 4/4] ARM: dts: imx: use dual-fifo sdma script for ssi
-Date: Fri, 8 Nov 2013 19:32:54 +0800
-Message-ID: <086ab5d4ad12e1bf8b4a8a2e1fb38108b5728919.1383910029.git.b42378@freescale.com>
+Subject: [PATCH v5 2/4] dma: imx-sdma: Add new dma type for ssi dual fifo script
+Date: Fri, 8 Nov 2013 19:32:52 +0800
+Message-ID: <ea134688ce580e1159a22a9c5666b3e568f23963.1383910029.git.b42378@freescale.com>
 References: <cover.1383910029.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,119 +12,56 @@ To: vinod.koul@intel.com, dan.j.williams@intel.com, s.hauer@pengutronix.de, timu
 Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Use dual-fifo sdma scripts instead of shared scripts for ssi on i.MX series.
+This patch adds a new DMA_TYPE for SSI dual FIFO script, included
+in SDMA firmware version 2. This script would allow SSI use dual
+fifo mode to transimit/receive data without occasional hardware
+underrun/overrun.
 
 Signed-off-by: Nicolin Chen <b42378@freescale.com>
 ---
- arch/arm/boot/dts/imx51.dtsi   |  4 ++--
- arch/arm/boot/dts/imx53.dtsi   |  4 ++--
- arch/arm/boot/dts/imx6qdl.dtsi | 12 ++++++------
- arch/arm/boot/dts/imx6sl.dtsi  | 12 ++++++------
- 4 files changed, 16 insertions(+), 16 deletions(-)
+ Documentation/devicetree/bindings/dma/fsl-imx-sdma.txt | 1 +
+ drivers/dma/imx-sdma.c                                 | 4 ++++
+ include/linux/platform_data/dma-imx.h                  | 1 +
+ 3 files changed, 6 insertions(+)
 
-diff --git a/arch/arm/boot/dts/imx51.dtsi b/arch/arm/boot/dts/imx51.dtsi
-index 54cee65..1a71eac 100644
---- a/arch/arm/boot/dts/imx51.dtsi
-+++ b/arch/arm/boot/dts/imx51.dtsi
-@@ -154,8 +154,8 @@
- 					reg = <0x70014000 0x4000>;
- 					interrupts = <30>;
- 					clocks = <&clks 49>;
--					dmas = <&sdma 24 1 0>,
--					       <&sdma 25 1 0>;
-+					dmas = <&sdma 24 22 0>,
-+					       <&sdma 25 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					fsl,ssi-dma-events = <25 24 23 22>; /* TX0 RX0 TX1 RX1 */
-diff --git a/arch/arm/boot/dts/imx53.dtsi b/arch/arm/boot/dts/imx53.dtsi
-index 4307e80..7208fde 100644
---- a/arch/arm/boot/dts/imx53.dtsi
-+++ b/arch/arm/boot/dts/imx53.dtsi
-@@ -153,8 +153,8 @@
- 					reg = <0x50014000 0x4000>;
- 					interrupts = <30>;
- 					clocks = <&clks 49>;
--					dmas = <&sdma 24 1 0>,
--					       <&sdma 25 1 0>;
-+					dmas = <&sdma 24 22 0>,
-+					       <&sdma 25 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					fsl,ssi-dma-events = <25 24 23 22>; /* TX0 RX0 TX1 RX1 */
-diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
-index 57e9c38..6e096ca 100644
---- a/arch/arm/boot/dts/imx6qdl.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl.dtsi
-@@ -223,8 +223,8 @@
- 					reg = <0x02028000 0x4000>;
- 					interrupts = <0 46 0x04>;
- 					clocks = <&clks 178>;
--					dmas = <&sdma 37 1 0>,
--					       <&sdma 38 1 0>;
-+					dmas = <&sdma 37 22 0>,
-+					       <&sdma 38 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					fsl,ssi-dma-events = <38 37>;
-@@ -236,8 +236,8 @@
- 					reg = <0x0202c000 0x4000>;
- 					interrupts = <0 47 0x04>;
- 					clocks = <&clks 179>;
--					dmas = <&sdma 41 1 0>,
--					       <&sdma 42 1 0>;
-+					dmas = <&sdma 41 22 0>,
-+					       <&sdma 42 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					fsl,ssi-dma-events = <42 41>;
-@@ -249,8 +249,8 @@
- 					reg = <0x02030000 0x4000>;
- 					interrupts = <0 48 0x04>;
- 					clocks = <&clks 180>;
--					dmas = <&sdma 45 1 0>,
--					       <&sdma 46 1 0>;
-+					dmas = <&sdma 45 22 0>,
-+					       <&sdma 46 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					fsl,ssi-dma-events = <46 45>;
-diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
-index c46651e..b32ba99 100644
---- a/arch/arm/boot/dts/imx6sl.dtsi
-+++ b/arch/arm/boot/dts/imx6sl.dtsi
-@@ -195,8 +195,8 @@
- 					reg = <0x02028000 0x4000>;
- 					interrupts = <0 46 0x04>;
- 					clocks = <&clks IMX6SL_CLK_SSI1>;
--					dmas = <&sdma 37 1 0>,
--					       <&sdma 38 1 0>;
-+					dmas = <&sdma 37 22 0>,
-+					       <&sdma 38 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					status = "disabled";
-@@ -207,8 +207,8 @@
- 					reg = <0x0202c000 0x4000>;
- 					interrupts = <0 47 0x04>;
- 					clocks = <&clks IMX6SL_CLK_SSI2>;
--					dmas = <&sdma 41 1 0>,
--					       <&sdma 42 1 0>;
-+					dmas = <&sdma 41 22 0>,
-+					       <&sdma 42 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					status = "disabled";
-@@ -219,8 +219,8 @@
- 					reg = <0x02030000 0x4000>;
- 					interrupts = <0 48 0x04>;
- 					clocks = <&clks IMX6SL_CLK_SSI3>;
--					dmas = <&sdma 45 1 0>,
--					       <&sdma 46 1 0>;
-+					dmas = <&sdma 45 22 0>,
-+					       <&sdma 46 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					status = "disabled";
+diff --git a/Documentation/devicetree/bindings/dma/fsl-imx-sdma.txt b/Documentation/devicetree/bindings/dma/fsl-imx-sdma.txt
+index 4fa814d..68b83ec 100644
+--- a/Documentation/devicetree/bindings/dma/fsl-imx-sdma.txt
++++ b/Documentation/devicetree/bindings/dma/fsl-imx-sdma.txt
+@@ -42,6 +42,7 @@ The full ID of peripheral types can be found below.
+ 	19	IPU Memory
+ 	20	ASRC
+ 	21	ESAI
++	22	SSI Dual FIFO	(needs firmware ver >= 2)
+ 
+ The third cell specifies the transfer priority as below.
+ 
+diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+index c7ece8d..efaa9a9 100644
+--- a/drivers/dma/imx-sdma.c
++++ b/drivers/dma/imx-sdma.c
+@@ -725,6 +725,10 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
+ 		per_2_emi = sdma->script_addrs->app_2_mcu_addr;
+ 		emi_2_per = sdma->script_addrs->mcu_2_app_addr;
+ 		break;
++	case IMX_DMATYPE_SSI_DUAL:
++		per_2_emi = sdma->script_addrs->ssish_2_mcu_addr;
++		emi_2_per = sdma->script_addrs->mcu_2_ssish_addr;
++		break;
+ 	case IMX_DMATYPE_SSI_SP:
+ 	case IMX_DMATYPE_MMC:
+ 	case IMX_DMATYPE_SDHC:
+diff --git a/include/linux/platform_data/dma-imx.h b/include/linux/platform_data/dma-imx.h
+index beac6b8..bcbc6c3 100644
+--- a/include/linux/platform_data/dma-imx.h
++++ b/include/linux/platform_data/dma-imx.h
+@@ -39,6 +39,7 @@ enum sdma_peripheral_type {
+ 	IMX_DMATYPE_IPU_MEMORY,	/* IPU Memory */
+ 	IMX_DMATYPE_ASRC,	/* ASRC */
+ 	IMX_DMATYPE_ESAI,	/* ESAI */
++	IMX_DMATYPE_SSI_DUAL,	/* SSI Dual FIFO */
+ };
+ 
+ enum imx_dma_prio {
 -- 
 1.8.4
