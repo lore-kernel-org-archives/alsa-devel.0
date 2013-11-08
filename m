@@ -1,86 +1,43 @@
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: [RFC PATCH] MAINTAINERS: Remove Jaroslav Kysela
-Date: Fri, 8 Nov 2013 09:24:37 +0100
-Message-ID: <CAFLxGvynCXqu2xQaQyaH=U0cB4Z4GO83Fp=OPEGbUxR=Wdkang@mail.gmail.com>
-References: <1383854696.9263.25.camel@joe-AO722>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ASoC: rcar: off by one in rsnd_scu_set_route()
+Date: Fri, 8 Nov 2013 12:46:10 +0300
+Message-ID: <20131108094610.GE27977@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1383854696.9263.25.camel@joe-AO722>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Joe Perches <joe@perches.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id B69EB265611
+ for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 10:46:22 +0100 (CET)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 7, 2013 at 9:04 PM, Joe Perches <joe@perches.com> wrote:
-> Jaroslav hasn't acked or signed a patch in quite awhile.
->
-> Mark ISAPnp and HP VG/AnyLAN driver as orphan.
->
-> Add sound to his CREDITS entry.
+If "id == ARRAY_SIZE(routes)" then we read one space beyond the end of
+the routes[] array.
 
-...didn't know that we have a maintainer police.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
->  CREDITS     | 1 +
->  MAINTAINERS | 7 ++-----
->  2 files changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/CREDITS b/CREDITS
-> index 0640e16..01a1b34 100644
-> --- a/CREDITS
-> +++ b/CREDITS
-> @@ -2021,6 +2021,7 @@ E: perex@perex.cz
->  W: http://www.perex.cz
->  D: Original Author and Maintainer for HP 10/100 Mbit Network Adapters
->  D: ISA PnP
-> +D: ALSA/Sound
->  S: Sindlovy Dvory 117
->  S: 370 01  Ceske Budejovice
->  S: Czech Republic
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 831b869..8706839 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3983,8 +3983,7 @@ S:        Orphan
->  F:     drivers/platform/x86/tc1100-wmi.c
->
->  HP100: Driver for HP 10/100 Mbit/s Voice Grade Network Adapter Series
-> -M:     Jaroslav Kysela <perex@perex.cz>
-> -S:     Maintained
-> +S:     Orphan
->  F:     drivers/net/ethernet/hp/hp100.*
->
->  HPET:  High Precision Event Timers driver
-> @@ -4600,8 +4599,7 @@ F:        include/linux/irqdomain.h
->  F:     kernel/irq/irqdomain.c
->
->  ISAPNP
-> -M:     Jaroslav Kysela <perex@perex.cz>
-> -S:     Maintained
-> +S:     Orphan
->  F:     Documentation/isapnp.txt
->  F:     drivers/pnp/isapnp/
->  F:     include/linux/isapnp.h
-> @@ -7818,7 +7816,6 @@ S:        Maintained
->  F:     drivers/memstick/core/ms_block.*
->
->  SOUND
-> -M:     Jaroslav Kysela <perex@perex.cz>
->  M:     Takashi Iwai <tiwai@suse.de>
->  L:     alsa-devel@alsa-project.org (moderated for non-subscribers)
->  W:     http://www.alsa-project.org/
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
-
-
-
--- 
-Thanks,
-//richard
+diff --git a/sound/soc/sh/rcar/scu.c b/sound/soc/sh/rcar/scu.c
+index 1ab1bce..5e46ef2 100644
+--- a/sound/soc/sh/rcar/scu.c
++++ b/sound/soc/sh/rcar/scu.c
+@@ -68,7 +68,7 @@ static int rsnd_scu_set_route(struct rsnd_priv *priv,
+ 		return 0;
+ 
+ 	id = rsnd_mod_id(mod);
+-	if (id < 0 || id > ARRAY_SIZE(routes))
++	if (id < 0 || id >= ARRAY_SIZE(routes))
+ 		return -EIO;
+ 
+ 	/*
