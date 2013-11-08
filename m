@@ -1,16 +1,23 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [RFC PATCH] MAINTAINERS: Remove Jaroslav Kysela
-Date: Fri, 08 Nov 2013 08:28:09 +0100
-Message-ID: <527C9289.5000409@perex.cz>
-References: <1383854696.9263.25.camel@joe-AO722>
+From: "Oskar Schirmer" <oskar@scara.com>
+Subject: Re: [PATCH] ASoC: fsl: imx-pcm-fiq: Remove unused
+	'runtime' variable
+Date: 8 Nov 2013 07:56:11 +0000
+Message-ID: <20131108075611.GA5473@curry>
+References: <1383879300-19947-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id EC95D26560F
- for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 08:28:09 +0100 (CET)
-In-Reply-To: <1383854696.9263.25.camel@joe-AO722>
+Received: from skyrme.org (skyrme.org [193.175.80.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id 344C8265615
+ for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 08:56:14 +0100 (CET)
+Received: from p5b3071f2.dip0.t-ipconnect.de ([91.48.113.242]
+ helo=curry.scara.com)
+ by skyrme.org with esmtpsa (TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32)
+ (Exim 4.63) (envelope-from <oskar@scara.com>) id 1VegvO-0004z4-6d
+ for alsa-devel@alsa-project.org; Fri, 08 Nov 2013 07:56:14 +0000
+Content-Disposition: inline
+In-Reply-To: <1383879300-19947-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,77 +27,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Joe Perches <joe@perches.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 7.11.2013 21:04, Joe Perches wrote:
-> Jaroslav hasn't acked or signed a patch in quite awhile.
-
-It does not mean that I'm not willing to continue the kernel code
-maintenance when Takashi is offline. Keep me in. You may reorder M: lines.
-
-> Mark ISAPnp and HP VG/AnyLAN driver as orphan.
-
-I agree.
-
+On Fri, Nov 08, 2013 at 00:55:00 -0200, Fabio Estevam wrote:
+> Commit 68f9672b (ASoC: fsl: imx-pcm-fiq: remove bogus period delta calculation)
+> introduced the following build warning:
 > 
-> Add sound to his CREDITS entry.
+> sound/soc/fsl/imx-pcm-fiq.c:53:26: warning: unused variable 'runtime' [-Wunused-variable]
 > 
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
->  CREDITS     | 1 +
->  MAINTAINERS | 7 ++-----
->  2 files changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/CREDITS b/CREDITS
-> index 0640e16..01a1b34 100644
-> --- a/CREDITS
-> +++ b/CREDITS
-> @@ -2021,6 +2021,7 @@ E: perex@perex.cz
->  W: http://www.perex.cz
->  D: Original Author and Maintainer for HP 10/100 Mbit Network Adapters
->  D: ISA PnP
-> +D: ALSA/Sound
->  S: Sindlovy Dvory 117
->  S: 370 01  Ceske Budejovice
->  S: Czech Republic
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 831b869..8706839 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3983,8 +3983,7 @@ S:	Orphan
->  F:	drivers/platform/x86/tc1100-wmi.c
->  
->  HP100:	Driver for HP 10/100 Mbit/s Voice Grade Network Adapter Series
-> -M:	Jaroslav Kysela <perex@perex.cz>
-> -S:	Maintained
-> +S:	Orphan
->  F:	drivers/net/ethernet/hp/hp100.*
->  
->  HPET:	High Precision Event Timers driver
-> @@ -4600,8 +4599,7 @@ F:	include/linux/irqdomain.h
->  F:	kernel/irq/irqdomain.c
->  
->  ISAPNP
-> -M:	Jaroslav Kysela <perex@perex.cz>
-> -S:	Maintained
-> +S:	Orphan
->  F:	Documentation/isapnp.txt
->  F:	drivers/pnp/isapnp/
->  F:	include/linux/isapnp.h
-> @@ -7818,7 +7816,6 @@ S:	Maintained
->  F:	drivers/memstick/core/ms_block.*
->  
->  SOUND
-> -M:	Jaroslav Kysela <perex@perex.cz>
->  M:	Takashi Iwai <tiwai@suse.de>
->  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
->  W:	http://www.alsa-project.org/
-> 
+> Remove the unused 'runtime' variable.
 
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+Acked-by: Oskar Schirmer <oskar@scara.com>
