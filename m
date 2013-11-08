@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: fsl: imx-pcm-fiq: Remove unused
 	'runtime' variable
-Date: Fri, 8 Nov 2013 10:20:59 +0000
-Message-ID: <20131108102059.GE2493@sirena.org.uk>
+Date: Fri, 8 Nov 2013 10:21:33 +0000
+Message-ID: <20131108102133.GF2493@sirena.org.uk>
 References: <1383879300-19947-1-git-send-email-festevam@gmail.com>
+ <20131108075611.GA5473@curry>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5771489267986266534=="
+Content-Type: multipart/mixed; boundary="===============8401705212838085359=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E129265636
- for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 11:21:09 +0100 (CET)
-In-Reply-To: <1383879300-19947-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A04B265646
+ for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 11:21:43 +0100 (CET)
+In-Reply-To: <20131108075611.GA5473@curry>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, oskar@scara.com
+To: Oskar Schirmer <oskar@scara.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5771489267986266534==
+--===============8401705212838085359==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tfudkhBUqbdcU4Ca"
+	protocol="application/pgp-signature"; boundary="ou2/pFdZC1wHLsdF"
 Content-Disposition: inline
 
 
---tfudkhBUqbdcU4Ca
+--ou2/pFdZC1wHLsdF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 08, 2013 at 12:55:00AM -0200, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> Commit 68f9672b (ASoC: fsl: imx-pcm-fiq: remove bogus period delta calcul=
-ation)
-> introduced the following build warning:
+On Fri, Nov 08, 2013 at 07:56:11AM +0000, Oskar Schirmer wrote:
+
+> Acked-by: Oskar Schirmer <oskar@scara.com>
 
 Applied, thanks.
 
---tfudkhBUqbdcU4Ca
+--ou2/pFdZC1wHLsdF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSfLsIAAoJELSic+t+oim9y78P/1vEOOvixZ/6ldvzmpaCLf6M
-+aAmIFfBn971X864FIGGNop7bVjbYAZz17siLfRBXDTxioQKlDDVzCpbY8OLh/Aq
-0npH/VAhqw0liHZCDEi2aMWXSrT58XBLRVBH+aYDYtfJa1R46L/xB4TIKAaOsCIJ
-EWibIs5Qg+EvRZ0oWuiSOf2vmP3ozi/QvXkag7pB6aSQosOoSkyjQ2GPA0baaTkf
-HYMAZoKe467lqjRQEFC9Uc+v00HbbW5wNrsS2P2vG60aOm3/qh9tKpi1KyUvr785
-qJ0VMdSBmXQy3ODrpcs51e3QCKEWcxrf3hhI9Cug0dtK8pMzhP+LdNQVS/4FrfgV
-ReJ4sPGXcdkwVrhm31qnArjPijNI8Eejf0QSHSvVH2oLDNbzJB0oE2c1EsTyGxfU
-YWjvKgJk7mnf18D3pgTyZ/ncBTFOEf+macKf6I0EtkTU/GSCTL/uSWFu/ntMhfGS
-/eN/9ojZ2DD5SOh3GqUYJTlkzXfGEXudej+8ZKUXiHYjL07v1GBD7YQAOObQke7n
-Eud/H9byCSFkms3IZcn9Ol6NbUiisHGDYFnPb1xwtEFGItMHdCi6miI2h8GANlva
-jCtMITFi8Zjp2A2Vk74G1m7t7juaOtTArSy0G+j2fRCBTzlRypg/MSK2bBLBLAkf
-ZxB7C68W3FFppfYlskU+
-=dkI4
+iQIcBAEBAgAGBQJSfLsqAAoJELSic+t+oim96pEP/2qLymFWLl6lBxNGkVeFPXQb
+4P0lSyX5Q4Ba8LOsc5ZeFwjtcaUH+BpYPqspSUpI4jVpXYGplDx0w6p4j2qgjkpu
+LR5fNjzYeIx2/WhvifAH2hZL5Hu5HJRgc5ijY9jMdITQ4vuz0vJNo3DuNrqoV9aj
+5Vje2n45AWC19GbbDfKi2Ih5/Xmbwr6K7SCrIMUxFJz7gUaRh1gPhKeDsPxEXivL
+bE/rSaK7kfX1EdFgL16e9r3Ozfin9L5plltNksvRLy73Dp09p4TZ3vBuHnIXQ6GD
+8zDYsY6nZxq/SF3wn1qqUXBcVJXesb9GoN6dwu3Rr8Lvob4NSJXq9fiWriBJh+US
+6lgSKqpINTWOciepUTbwTkKMhhK2j7dVjCHn5wAGhD3aeYzP9xJu9rXAo9xofJqt
+6uqa6w5K0YqQu6J40zAMqLsOcTHifPI1ZHrPZDP0kFuwBQCCB5kcoSxIudklV8+8
+alwgr8e2/kqCYJDuOJvWW/IQJZA1zG7mvAtbtwLCi7dXdC8PdJoIAYYxPqhQqZFw
+4Xfef1vCHTahwa6QopBnt2Po18/KFSRhQSm+h9NgecNIJKPhMAxz5DAgUHIBYHT9
+szzTkgMNxvzWXBzGXZ5Cegm6fQaifKhl+R7DKJVTP8PvpC4HSpaZLZuvd4CHtHEf
+wzNGz6OcwfsDkEAnFzof
+=2Lbw
 -----END PGP SIGNATURE-----
 
---tfudkhBUqbdcU4Ca--
+--ou2/pFdZC1wHLsdF--
 
---===============5771489267986266534==
+--===============8401705212838085359==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5771489267986266534==--
+--===============8401705212838085359==--
