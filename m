@@ -1,50 +1,78 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [patch] ASoC: fsl: imx-wm8962: remove an unneeded check
-Date: Fri, 8 Nov 2013 10:22:19 +0000
-Message-ID: <20131108102219.GG2493@sirena.org.uk>
-References: <20131108095444.GM27977@elgon.mountain>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
+ multi-channel and HBR support
+Date: Fri, 08 Nov 2013 12:27:11 +0200
+Message-ID: <527CBC7F.4000805@iki.fi>
+References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>	
+ <5269665E.9050102@iki.fi> <1383887323.6455.37.camel@Wailaba2>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6u7lpXof/8C/+w+8"
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20131108095444.GM27977@elgon.mountain>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Grant Likely <grant.likely@linaro.org>, Rob Herring <rob.herring@calxeda.com>, Nicolin Chen <b42378@freescale.com>, Wolfram Sang <wsa@the-dreams.de>, Lars-Peter Clausen <lars@metafoo.de>, Fabio Estevam <fabio.estevam@freescale.com>, Sachin Kamat <sachin.kamat@linaro.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
+ [83.102.40.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 065BD265656
+ for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 11:27:17 +0100 (CET)
+In-Reply-To: <1383887323.6455.37.camel@Wailaba2>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Olivier Langlois <olivier@trillion01.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Peter_Fr=FChberger?= <fritsch@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
+08.11.2013 07:08, Olivier Langlois kirjoitti:
+> On Thu, 2013-10-24 at 21:26 +0300, Anssi Hannula wrote:
+>> 24.10.2013 21:10, Anssi Hannula kirjoitti:
+>>> Hi all!
+>>>
+>>> Here's another revision of the ATI/AMD multichannel+HBR patchset.
+>>>
+>>> Changes:
+>>> - added customizable callbacks instead of polluting generic code
+>>> - fixed wrong codec id in rev3+ check (as previously noted)
+>>> - cosmetics
+>>>
+>>> I've only tested this on NVIDIA/Intel, but I'd guess at least Peter
+>>> should be able to test this on AMD in a few days or so. The earlier
+>>> revisions were tested to fully work.
+>>>
+>>> Combined patch can be found at: http://onse.fi/files/atihdmi5.patch
+>>> However, this patchset is on top recent sound-next commits so it does not
+>>> directly apply on older kernels.
+>>
+>> Aand that would be http://onse.fi/files/atihdmi6.patch not 5.
+>>
+>>> Olivier, I hope you will be able to test this at some point as well
+>>> (same things as last time), even though it will be a bit more work :)
+>>
+> Anssi,
+> 
+> I have tried to patch 3.11.7 and the code in patch_hdmi.c looks too
+> different to be able to able to manually merge the rejected hunks.
+> 
+> What is sound-next? A git branch? Where can I get it?
 
---6u7lpXof/8C/+w+8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The sound tree is at:
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/
 
-On Fri, Nov 08, 2013 at 12:54:44PM +0300, Dan Carpenter wrote:
-> "data->codec_clk" can't be an ERR_PTR here so I have removed the
-> superflous check.
+You can use the master branch now, it has been merged there.
 
-Applied, thanks.
+> How independant is the sound subsystem from the rest of the kernel? My
+> guess is that it is not that tightly coupled with the rest and dropping
+> sound-next version of patch_hdmi.c into my 3.11.7 source tree could work
+> or require minimal work. Will upgrade to 3.12 in a couple of day....
 
---6u7lpXof/8C/+w+8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Often you can just copy the sound/pci/hda directory from a newer kernel
+and then build the modules for the current kernel
+("make -C/lib/modules/$(uname -r)/build M=$PWD") with only minimal
+changes and possibly disabling unused modules in Makefile.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSfLtYAAoJELSic+t+oim910EP/RwPfoJroRKzAhtw3KtifUwf
-kky8eSZUNqNBEsYEbOdf0NccaENLT5iMmEHASGMhO5BHLv95N26rwEO0noHbOFPb
-5hAhgl/s0YqR2mdVmI6UlxhEpaNIvbKNWMOUbmysMLhrqbHJ/zZUthr2nXQrmCfP
-g2SvvKWnzh50jeg0wTOwJU/2xvRjsh7tuajI8XNMu51r2HSeEI6uFQ/xmA8Qcb1g
-bQW5FOQgVuwCTjwKUZo9OOjR2XkOUjCg+Y4jOUhm521EIuMaVk4980t3oLTXWML6
-OBAkRcw0/4NhwQgzvJV+zakQ2LccDJrR6pegRlkuP21l9yAWVWUvnU+2De3YbtTG
-AiQLWZu+IjMI5ctzSe1bFa+uMx9Wcq6xJnJpTPaN/k9Q6gSVNN6UFyR5c0JMuW+q
-f2ESFndbHAqEYI07CGzhH5flOzWLew2/UCEcVxve8i9ZJX12k9gc6rwANbJefq8w
-rBrHPPo5rnnEqV2te7GziC/4J6mDPt50FWOYzt5F4nrgYevdE2ySeW1dZYdm1NwI
-lviFNxBrA/npGjqC26K3vSfaiPqRBs+yx4sny93MJ89V1YYji5DL4qaGN4Cmk/I5
-lAqtWr2bbaszKOVEyzq74xzVq4Jc+ik1fczkNqwkXKvyEHRtcr2qb63XXH6mxhes
-MFI8OxGgBFT1kbyKdvI1
-=aU3/
------END PGP SIGNATURE-----
-
---6u7lpXof/8C/+w+8--
+-- 
+Anssi Hannula
