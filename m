@@ -1,18 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda/realtek - Make fixup regs persist
-	after resume
-Date: Fri,  8 Nov 2013 08:11:00 +0100
-Message-ID: <1383894660-13460-1-git-send-email-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [RFC PATCH] MAINTAINERS: Remove Jaroslav Kysela
+Date: Fri, 08 Nov 2013 08:28:09 +0100
+Message-ID: <527C9289.5000409@perex.cz>
+References: <1383854696.9263.25.camel@joe-AO722>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C58E26560F
- for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 08:11:01 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id F0212A6772
- for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 08:11:00 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC95D26560F
+ for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 08:28:09 +0100 (CET)
+In-Reply-To: <1383854696.9263.25.camel@joe-AO722>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +20,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Joe Perches <joe@perches.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Kailang Yang <kailang@realtek.com>
+Date 7.11.2013 21:04, Joe Perches wrote:
+> Jaroslav hasn't acked or signed a patch in quite awhile.
 
-Upon suspend / resume, the fixup register settings are lost because
-sending HDA_FIXUP_ACT_PRE_PROBE is not part of the resume path. Instead,
-write our registers in response to the HDA_FIXUP_ACT_INIT, which happens
-after initial probe and upon resume.
+It does not mean that I'm not willing to continue the kernel code
+maintenance when Takashi is offline. Keep me in. You may reorder M: lines.
 
-Signed-off-by: Kailang Yang <kailang@realtek.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
+> Mark ISAPnp and HP VG/AnyLAN driver as orphan.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index daf720502385..6a214662700e 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3503,6 +3503,8 @@ static void alc283_fixup_chromebook(struct hda_codec *codec,
- 		/* Disable AA-loopback as it causes white noise */
- 		spec->gen.mixer_nid = 0;
- 		spec->gen.hp_automute_hook = alc283_hp_automute_hook;
-+		break;
-+	case HDA_FIXUP_ACT_INIT:
- 		/* MIC2-VREF control */
- 		/* Set to manual mode */
- 		val = alc_read_coef_idx(codec, 0x06);
+I agree.
+
+> 
+> Add sound to his CREDITS entry.
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+>  CREDITS     | 1 +
+>  MAINTAINERS | 7 ++-----
+>  2 files changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/CREDITS b/CREDITS
+> index 0640e16..01a1b34 100644
+> --- a/CREDITS
+> +++ b/CREDITS
+> @@ -2021,6 +2021,7 @@ E: perex@perex.cz
+>  W: http://www.perex.cz
+>  D: Original Author and Maintainer for HP 10/100 Mbit Network Adapters
+>  D: ISA PnP
+> +D: ALSA/Sound
+>  S: Sindlovy Dvory 117
+>  S: 370 01  Ceske Budejovice
+>  S: Czech Republic
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 831b869..8706839 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3983,8 +3983,7 @@ S:	Orphan
+>  F:	drivers/platform/x86/tc1100-wmi.c
+>  
+>  HP100:	Driver for HP 10/100 Mbit/s Voice Grade Network Adapter Series
+> -M:	Jaroslav Kysela <perex@perex.cz>
+> -S:	Maintained
+> +S:	Orphan
+>  F:	drivers/net/ethernet/hp/hp100.*
+>  
+>  HPET:	High Precision Event Timers driver
+> @@ -4600,8 +4599,7 @@ F:	include/linux/irqdomain.h
+>  F:	kernel/irq/irqdomain.c
+>  
+>  ISAPNP
+> -M:	Jaroslav Kysela <perex@perex.cz>
+> -S:	Maintained
+> +S:	Orphan
+>  F:	Documentation/isapnp.txt
+>  F:	drivers/pnp/isapnp/
+>  F:	include/linux/isapnp.h
+> @@ -7818,7 +7816,6 @@ S:	Maintained
+>  F:	drivers/memstick/core/ms_block.*
+>  
+>  SOUND
+> -M:	Jaroslav Kysela <perex@perex.cz>
+>  M:	Takashi Iwai <tiwai@suse.de>
+>  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+>  W:	http://www.alsa-project.org/
+> 
+
+
 -- 
-1.8.4.2
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
