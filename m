@@ -1,38 +1,37 @@
-From: Guangyu Chen <guangyu.chen@freescale.com>
-Subject: Re: [PATCH v4 0/4] Add dual-fifo mode support of i.MX ssi
-Date: Fri, 8 Nov 2013 11:52:48 +0000
-Message-ID: <qhujk71bqaj71qtkkasql3ga.1383911576584@email.android.com>
-References: <cover.1383907685.git.b42378@freescale.com>
- <20131108112919.GA5159@MrMyself>,<20131108114441.GM2493@sirena.org.uk>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [RFC PATCH] MAINTAINERS: Remove Jaroslav Kysela
+Date: Fri, 08 Nov 2013 03:54:11 -0800
+Message-ID: <1383911651.2639.8.camel@joe-AO722>
+References: <1383854696.9263.25.camel@joe-AO722> <527C9289.5000409@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <20131108114441.GM2493@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-doc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Guangyu Chen <guangyu.chen@freescale.com>, "vinod.koul@intel.com" <vinod.koul@intel.com>, "dan.j.williams@intel.com" <dan.j.williams@intel.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "timur@tabi.org" <timur@tabi.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@li>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <527C9289.5000409@perex.cz>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Oh,  I am sorry about that.
+On Fri, 2013-11-08 at 08:28 +0100, Jaroslav Kysela wrote:
+> Date 7.11.2013 21:04, Joe Perches wrote:
+> > Jaroslav hasn't acked or signed a patch in quite awhile.
+> 
+> It does not mean that I'm not willing to continue the kernel code
+> maintenance when Takashi is offline. Keep me in. You may reorder M: lines.
+> 
+> > Mark ISAPnp and HP VG/AnyLAN driver as orphan.
+> 
+> I agree.
 
-I will follow the rule next time.
+Please submit whatever patch you think appropriate.
 
-Thank you.
+I only did this to get a discussion going because I
+submitted a trivial sound patch and you were listed
+as a maintainer without having signed anything while
+Takashi had signed about 1000 patches.
 
-Sent by Android device.
-
-Mark Brown <broonie@kernel.org> wrote:
-
-
-On Fri, Nov 08, 2013 at 07:29:20PM +0800, Nicolin Chen wrote:
-
-> Sorry all, I mistook the version number. It should be version 5.
-
-> Please ignore this series version.
-
-There is no need to resend for things like getting the version number
-wrong in the subject line, that's just noise.  Please only resend things
-if there's a change in the actual patches.
-
+That kind of inactivity is generally a sign you've
+dropped off.  Also your credits entry for www.perez.cz
+seemed not to be an active website, it redirected to
+your webhost until just now.  nice bike/ride btw.
