@@ -1,15 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: wm8974: Convert to direct regmap API
-	usage
-Date: Fri,  8 Nov 2013 14:02:06 +0000
-Message-ID: <1383919326-13470-1-git-send-email-broonie@kernel.org>
+From: Dolevo Jay <cmst@live.com>
+Subject: Re: How to apply rate conversion in asound.conf
+Date: Fri, 8 Nov 2013 14:15:30 +0000
+Message-ID: <DUB122-W40354113C10D5F94B582F2AAF20@phx.gbl>
+References: <DUB122-W45C29A2FD0EE3B2FC1A459AAF00@phx.gbl>,
+ <527A6EA1.4080909@ladisch.de>, <DUB122-W390A38324ACF50DA28405BAAF20@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id F0944265704
- for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 15:02:15 +0100 (CET)
+Received: from dub0-omc3-s28.dub0.hotmail.com (dub0-omc3-s28.dub0.hotmail.com
+ [157.55.2.37]) by alsa0.perex.cz (Postfix) with ESMTP id B121926570B
+ for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2013 15:15:34 +0100 (CET)
+In-Reply-To: <DUB122-W390A38324ACF50DA28405BAAF20@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,124 +21,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@linaro.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
 
-Moves us towards removing the ASoC level I/O functions.
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/codecs/wm8974.c | 54 +++++++++++++++++++++++++++++------------------
- 1 file changed, 33 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
-index a2d01d1..15f45c7 100644
---- a/sound/soc/codecs/wm8974.c
-+++ b/sound/soc/codecs/wm8974.c
-@@ -17,6 +17,7 @@
- #include <linux/delay.h>
- #include <linux/pm.h>
- #include <linux/i2c.h>
-+#include <linux/regmap.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -27,22 +28,22 @@
+
+> Date: Wed, 6 Nov 2013 17:30:25 +0100
+> From: clemens@ladisch.de
+> To: cmst@live.com; alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] How to apply rate conversion in asound.conf
+> 
+> Dolevo Jay wrote:
+> > pcm.!default {
+> > 	type plug
+> > 	slave.pcm multi
+> > }
+> >
+> > pcm.multi {
+> >         slaves.a.pcm "hw:0,1";
+> >         slaves.b.pcm "hw:1,1";
+> > ...
+> >
+> > My purpose is to apply rate conversion to the "hw:1,1" and have 44100 rate
+> > out.
+> 
+> All slaves must use the same rate.
+> 
+> The easiest way is apply this to the plug plugin:
+> 
+> pcm.!default {
+> 	type plug
+> 	slave {
+> 		pcm multi
+> 		rate 44100
+> 	}
+> }
+> 
+> 
+> Regards,
+> Clemens
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+Hi,
+
+What you suggested worked perfect but I implemented the rate conversion in my software for some specific reasons.
+What I need to do now is to have a aosund.conf which has dmix into multi plugins together. 
+So, here is my multi configuration:
+--------------------------------
+pcm.!default {
+	type plug
+	slave.pcm multi
+}
  
- #include "wm8974.h"
+pcm.multi {
+        type multi;
+        slaves.a.pcm "hw:0,1";
+        slaves.a.channels 2;
+        slaves.b.pcm "hw:1,1";
+        slaves.b.channels 2;
  
--static const u16 wm8974_reg[WM8974_CACHEREGNUM] = {
--	0x0000, 0x0000, 0x0000, 0x0000,
--	0x0050, 0x0000, 0x0140, 0x0000,
--	0x0000, 0x0000, 0x0000, 0x00ff,
--	0x0000, 0x0000, 0x0100, 0x00ff,
--	0x0000, 0x0000, 0x012c, 0x002c,
--	0x002c, 0x002c, 0x002c, 0x0000,
--	0x0032, 0x0000, 0x0000, 0x0000,
--	0x0000, 0x0000, 0x0000, 0x0000,
--	0x0038, 0x000b, 0x0032, 0x0000,
--	0x0008, 0x000c, 0x0093, 0x00e9,
--	0x0000, 0x0000, 0x0000, 0x0000,
--	0x0003, 0x0010, 0x0000, 0x0000,
--	0x0000, 0x0002, 0x0000, 0x0000,
--	0x0000, 0x0000, 0x0039, 0x0000,
--	0x0000,
-+static const struct reg_default wm8974_reg_defaults[] = {
-+	{  0, 0x0000 }, {  1, 0x0000 }, {  2, 0x0000 }, {  3, 0x0000 },
-+	{  4, 0x0050 }, {  5, 0x0000 }, {  6, 0x0140 }, {  7, 0x0000 },
-+	{  8, 0x0000 }, {  9, 0x0000 }, { 10, 0x0000 }, { 11, 0x00ff },
-+	{ 12, 0x0000 }, { 13, 0x0000 }, { 14, 0x0100 }, { 15, 0x00ff },
-+	{ 16, 0x0000 }, { 17, 0x0000 }, { 18, 0x012c }, { 19, 0x002c },
-+	{ 20, 0x002c }, { 21, 0x002c }, { 22, 0x002c }, { 23, 0x0000 },
-+	{ 24, 0x0032 }, { 25, 0x0000 }, { 26, 0x0000 }, { 27, 0x0000 },
-+	{ 28, 0x0000 }, { 29, 0x0000 }, { 30, 0x0000 }, { 31, 0x0000 },
-+	{ 32, 0x0038 }, { 33, 0x000b }, { 34, 0x0032 }, { 35, 0x0000 },
-+	{ 36, 0x0008 }, { 37, 0x000c }, { 38, 0x0093 }, { 39, 0x00e9 },
-+	{ 40, 0x0000 }, { 41, 0x0000 }, { 42, 0x0000 }, { 43, 0x0000 },
-+	{ 44, 0x0003 }, { 45, 0x0010 }, { 46, 0x0000 }, { 47, 0x0000 },
-+	{ 48, 0x0000 }, { 49, 0x0002 }, { 50, 0x0000 }, { 51, 0x0000 },
-+	{ 52, 0x0000 }, { 53, 0x0000 }, { 54, 0x0039 }, { 55, 0x0000 },
-+	{ 56, 0x0000 },
- };
- 
- #define WM8974_POWER1_BIASEN  0x08
-@@ -514,7 +515,7 @@ static int wm8974_set_bias_level(struct snd_soc_codec *codec,
- 		power1 |= WM8974_POWER1_BIASEN | WM8974_POWER1_BUFIOEN;
- 
- 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
--			snd_soc_cache_sync(codec);
-+			regcache_sync(dev_get_regmap(codec->dev, NULL));
- 
- 			/* Initial cap charge at VMID 5k */
- 			snd_soc_write(codec, WM8974_POWER1, power1 | 0x3);
-@@ -579,11 +580,20 @@ static int wm8974_resume(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
-+static const struct regmap_config wm8974_regmap = {
-+	.reg_bits = 7,
-+	.val_bits = 9,
-+
-+	.max_register = WM8974_MONOMIX,
-+	.reg_defaults = wm8974_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(wm8974_reg_defaults),
-+};
-+
- static int wm8974_probe(struct snd_soc_codec *codec)
- {
- 	int ret = 0;
- 
--	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_I2C);
-+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
- 	if (ret < 0) {
- 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
- 		return ret;
-@@ -613,9 +623,6 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8974 = {
- 	.suspend = 	wm8974_suspend,
- 	.resume =	wm8974_resume,
- 	.set_bias_level = wm8974_set_bias_level,
--	.reg_cache_size = ARRAY_SIZE(wm8974_reg),
--	.reg_word_size = sizeof(u16),
--	.reg_cache_default = wm8974_reg,
- 
- 	.controls = wm8974_snd_controls,
- 	.num_controls = ARRAY_SIZE(wm8974_snd_controls),
-@@ -628,8 +635,13 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8974 = {
- static int wm8974_i2c_probe(struct i2c_client *i2c,
- 			    const struct i2c_device_id *id)
- {
-+	struct regmap *regmap;
- 	int ret;
- 
-+	regmap = devm_regmap_init_i2c(i2c, &wm8974_regmap);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
- 	ret = snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_wm8974, &wm8974_dai, 1);
- 
--- 
-1.8.4.2
+        bindings.0.slave a;
+        bindings.0.channel 0;
+        bindings.1.slave a;
+        bindings.1.channel 1;
+        bindings.2.slave b;
+        bindings.2.channel 0;
+        bindings.3.slave b;
+        bindings.3.channel 1;
+}
+
+--------------------------------
+The following dmix runs ok for 1,1 hardware:
+--------------------------------
+pcm.dmixer {
+    type dmix
+    ipc_key 2048
+    slave {
+        pcm "hw:1,1"
+    }
+    bindings {
+        0 0
+        1 1
+    }
+}
+
+pcm.!default {
+    type plug
+    slave.pcm dmixer
+}
+--------------------------------
+
+Could you please tell me how I can implement the second configuration with dmixer into the first one which has multi. 
+So, basically how can I call a plugin inside of another plugin?
+
+Thanks a lot.
+
+ 		 	   		   		 	   		  
