@@ -1,64 +1,115 @@
-From: <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [alsa-devel] no reset_resume for driver snd-usb-audio for logitech
- headset H600
-Date: Sun, 10 Nov 2013 16:43:50 +0100
-Message-ID: <BLU0-SMTP29704B99E3902B15F73DC41A1FC0@phx.gbl>
-References: <BLU0-SMTP368B73167BF4C991BFDCE6A11C0@phx.gbl>	<Pine.LNX.4.44L0.1310081335400.1102-100000@iolanthe.rowland.org>	<s5hwqlmc1y7.wl%tiwai@suse.de>	<525516D5.6030200@ladisch.de>	<s5hob6ybyd3.wl%tiwai@suse.de>	<s5hmwmiby8c.wl%tiwai@suse.de>	<BLU0-SMTP81EAAFDB9BB4E4600757CCA1000@phx.gbl> <s5hr4bfpqwe.wl%tiwai@suse.de>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Duplicated/weird SND_CHMAP_xx positions
+Date: Sun, 10 Nov 2013 18:19:26 +0200
+Message-ID: <527FB20E.2010606@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <s5hr4bfpqwe.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
+ [83.102.40.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id A608F261178
+ for <alsa-devel@alsa-project.org>; Sun, 10 Nov 2013 17:19:30 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 2013-10-20 23:35, Takashi Iwai wrote:
-> At Sun, 20 Oct 2013 23:18:13 +0200,
-> <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org> wrote:
->>
->> On 2013-10-09 11:16 (CEST,UTC+2), Takashi Iwai wrote:
->>>>>> diff --git a/sound/usb/card.c b/sound/usb/card.c
->>>>>> index 9d9de8d..c591a83 100644
->>>>>> --- a/sound/usb/card.c
->>>>>> +++ b/sound/usb/card.c
->>>>>> @@ -747,6 +747,7 @@ static struct usb_driver usb_audio_driver = {
->>>>>>    	.disconnect =	usb_audio_disconnect,
->>>>>>    	.suspend =	usb_audio_suspend,
->>>>>>    	.resume =	usb_audio_resume,
->>>>>> +	.reset_resume =	usb_audio_resume,
->>>>>>    	.id_table =	usb_audio_ids,
->>>>>>    	.supports_autosuspend = 1,
->>>>>>    };
->>
->> Shall I add the line in b/sound/usb/card.c and try it? Which kernel version shall I use?
->
-> It doesn't matter which kernel version is.
-> The error message should disappear, but I don't know whether any other
-> positive effect you get.  As Clemens pointed, there can be some
-> negative effects by this, so it cannot be taken as is.  But at least,
-> it'd be good to know the result...
->
->
-> thanks,
->
-> Takashi
+Hi,
 
-I have tested the patch with kernel 3.12.0 with suspend and hibernate, and the problem is gone.
+I see we have both:
+        SND_CHMAP_FLH,          /**< front left high */
+        SND_CHMAP_FCH,          /**< front center high */
+        SND_CHMAP_FRH,          /**< front right high */
+and
+        SND_CHMAP_TFL,          /**< top front left */
+        SND_CHMAP_TFR,          /**< top front right */
+        SND_CHMAP_TFC,          /**< top front center */
 
-No messages "no reset_resume for driver snd-usb-audio?" or other negative effects/messages.
+However, these are actually exactly the same AFAICS, both are the
+speakers above the front speakers (CEA/HDMI uses "high" and USB audio
+uses "top" nomenclature).
 
-After resume, the usb_audio_device (Headset) is the master channel in KDE Mixer, as it should be.
+I guess we should deprecate one set?
+I can't think of anything else than adding comments saying they are
+deprecated, though...
 
-=> So the problem is solved for me.
+I guess I'd prefer to deprecate the "high" ones since we have many other
+"top" and "bottom" channels.
 
-Can you please add the patch to the latest kernels and LTS-kernels or whitelist the workaround for my device (ID 046d:0a29 Logitech, Inc. H600 [Wireless Headset])
-
-Thanks, Bernhard
+Also, the only in-kernel use of "high" is by HDA HDMI and it only will
+start working in 3.13-rcX.
 
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+We have also these:
+        SND_CHMAP_BC,           /**< bottom center */
+        SND_CHMAP_BLC,          /**< bottom left center */
+        SND_CHMAP_BRC,          /**< bottom right center */
+
+I guess "bottom center" is "under the listener" (USB audio v2 spec
+doesn't clarify, but clearly doesn't use the "Front" specifier as in
+"front bottom center").
+
+However, the last two ones are weird. The descriptions do not make sense
+to me (under the listener to the left? wouldn't that be "bottom side
+left" instead?).
+
+It seems like they were added by mistake - the only user is the USB
+audio driver which wrongly uses them for "back left/right center"
+instead of correct RLC/RRC.
+
+
+
+For reference, the complete current position list is:
+/** channel positions */
+enum snd_pcm_chmap_position {
+        SND_CHMAP_UNKNOWN = 0,  /**< unspecified */
+        SND_CHMAP_NA,           /**< N/A, silent */
+        SND_CHMAP_MONO,         /**< mono stream */
+        SND_CHMAP_FL,           /**< front left */
+        SND_CHMAP_FR,           /**< front right */
+        SND_CHMAP_RL,           /**< rear left */
+        SND_CHMAP_RR,           /**< rear right */
+        SND_CHMAP_FC,           /**< front center */
+        SND_CHMAP_LFE,          /**< LFE */
+        SND_CHMAP_SL,           /**< side left */
+        SND_CHMAP_SR,           /**< side right */
+        SND_CHMAP_RC,           /**< rear center */
+        SND_CHMAP_FLC,          /**< front left center */
+        SND_CHMAP_FRC,          /**< front right center */
+        SND_CHMAP_RLC,          /**< rear left center */
+        SND_CHMAP_RRC,          /**< rear right center */
+        SND_CHMAP_FLW,          /**< front left wide */
+        SND_CHMAP_FRW,          /**< front right wide */
+        SND_CHMAP_FLH,          /**< front left high */
+        SND_CHMAP_FCH,          /**< front center high */
+        SND_CHMAP_FRH,          /**< front right high */
+        SND_CHMAP_TC,           /**< top center */
+        SND_CHMAP_TFL,          /**< top front left */
+        SND_CHMAP_TFR,          /**< top front right */
+        SND_CHMAP_TFC,          /**< top front center */
+        SND_CHMAP_TRL,          /**< top rear left */
+        SND_CHMAP_TRR,          /**< top rear right */
+        SND_CHMAP_TRC,          /**< top rear center */
+        SND_CHMAP_TFLC,         /**< top front left center */
+        SND_CHMAP_TFRC,         /**< top front right center */
+        SND_CHMAP_TSL,          /**< top side left */
+        SND_CHMAP_TSR,          /**< top side right */
+        SND_CHMAP_LLFE,         /**< left LFE */
+        SND_CHMAP_RLFE,         /**< right LFE */
+        SND_CHMAP_BC,           /**< bottom center */
+        SND_CHMAP_BLC,          /**< bottom left center */
+        SND_CHMAP_BRC,          /**< bottom right center */
+        SND_CHMAP_LAST = SND_CHMAP_BRC,
+};
+
+
+-- 
+Anssi Hannula
