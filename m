@@ -1,15 +1,19 @@
 From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Duplicated/weird SND_CHMAP_xx positions
-Date: Sun, 10 Nov 2013 18:19:26 +0200
-Message-ID: <527FB20E.2010606@iki.fi>
+Subject: [PATCH 2/3] speaker-test: Always show chmap channel
+	names if available
+Date: Sun, 10 Nov 2013 20:29:18 +0200
+Message-ID: <1384108159-3421-2-git-send-email-anssi.hannula@iki.fi>
+References: <527F34D3.40209@iki.fi>
+ <1384108159-3421-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
- [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id A608F261178
- for <alsa-devel@alsa-project.org>; Sun, 10 Nov 2013 17:19:30 +0100 (CET)
+Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
+ [83.102.40.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2172261AD8
+ for <alsa-devel@alsa-project.org>; Sun, 10 Nov 2013 19:29:40 +0100 (CET)
+In-Reply-To: <1384108159-3421-1-git-send-email-anssi.hannula@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,97 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Olivier Langlois <olivier@trillion01.com>, =?UTF-8?q?Peter=20Fr=C3=BChberger?= <fritsch@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Currently speaker-test only uses channel names retrieved by
+snd_pcm_chmap_long_name() when a channel map has been manually set.
 
-I see we have both:
-        SND_CHMAP_FLH,          /**< front left high */
-        SND_CHMAP_FCH,          /**< front center high */
-        SND_CHMAP_FRH,          /**< front right high */
-and
-        SND_CHMAP_TFL,          /**< top front left */
-        SND_CHMAP_TFR,          /**< top front right */
-        SND_CHMAP_TFC,          /**< top front center */
+However, the device may provide a default (or fixed) channel map that
+differs from the traditional ALSA map, in which case wrong channel names
+are shown.
 
-However, these are actually exactly the same AFAICS, both are the
-speakers above the front speakers (CEA/HDMI uses "high" and USB audio
-uses "top" nomenclature).
+Fix that by always using the name from the channel map when a channel
+map is present.
 
-I guess we should deprecate one set?
-I can't think of anything else than adding comments saying they are
-deprecated, though...
+Note that the names retrieved by snd_pcm_chmap_long_name() are not
+currently localized via gettext.
 
-I guess I'd prefer to deprecate the "high" ones since we have many other
-"top" and "bottom" channels.
+Also note that Linux kernel HDMI driver reported wrong default channel
+maps before 56cac413dd6d43af8355f5d1f90a199b540f73fc ("ALSA: hda - hdmi:
+Fix reported channel map on common default layouts").
 
-Also, the only in-kernel use of "high" is by HDA HDMI and it only will
-start working in 3.13-rcX.
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+---
+ speaker-test/speaker-test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-We have also these:
-        SND_CHMAP_BC,           /**< bottom center */
-        SND_CHMAP_BLC,          /**< bottom left center */
-        SND_CHMAP_BRC,          /**< bottom right center */
-
-I guess "bottom center" is "under the listener" (USB audio v2 spec
-doesn't clarify, but clearly doesn't use the "Front" specifier as in
-"front bottom center").
-
-However, the last two ones are weird. The descriptions do not make sense
-to me (under the listener to the left? wouldn't that be "bottom side
-left" instead?).
-
-It seems like they were added by mistake - the only user is the USB
-audio driver which wrongly uses them for "back left/right center"
-instead of correct RLC/RRC.
-
-
-
-For reference, the complete current position list is:
-/** channel positions */
-enum snd_pcm_chmap_position {
-        SND_CHMAP_UNKNOWN = 0,  /**< unspecified */
-        SND_CHMAP_NA,           /**< N/A, silent */
-        SND_CHMAP_MONO,         /**< mono stream */
-        SND_CHMAP_FL,           /**< front left */
-        SND_CHMAP_FR,           /**< front right */
-        SND_CHMAP_RL,           /**< rear left */
-        SND_CHMAP_RR,           /**< rear right */
-        SND_CHMAP_FC,           /**< front center */
-        SND_CHMAP_LFE,          /**< LFE */
-        SND_CHMAP_SL,           /**< side left */
-        SND_CHMAP_SR,           /**< side right */
-        SND_CHMAP_RC,           /**< rear center */
-        SND_CHMAP_FLC,          /**< front left center */
-        SND_CHMAP_FRC,          /**< front right center */
-        SND_CHMAP_RLC,          /**< rear left center */
-        SND_CHMAP_RRC,          /**< rear right center */
-        SND_CHMAP_FLW,          /**< front left wide */
-        SND_CHMAP_FRW,          /**< front right wide */
-        SND_CHMAP_FLH,          /**< front left high */
-        SND_CHMAP_FCH,          /**< front center high */
-        SND_CHMAP_FRH,          /**< front right high */
-        SND_CHMAP_TC,           /**< top center */
-        SND_CHMAP_TFL,          /**< top front left */
-        SND_CHMAP_TFR,          /**< top front right */
-        SND_CHMAP_TFC,          /**< top front center */
-        SND_CHMAP_TRL,          /**< top rear left */
-        SND_CHMAP_TRR,          /**< top rear right */
-        SND_CHMAP_TRC,          /**< top rear center */
-        SND_CHMAP_TFLC,         /**< top front left center */
-        SND_CHMAP_TFRC,         /**< top front right center */
-        SND_CHMAP_TSL,          /**< top side left */
-        SND_CHMAP_TSR,          /**< top side right */
-        SND_CHMAP_LLFE,         /**< left LFE */
-        SND_CHMAP_RLFE,         /**< right LFE */
-        SND_CHMAP_BC,           /**< bottom center */
-        SND_CHMAP_BLC,          /**< bottom left center */
-        SND_CHMAP_BRC,          /**< bottom right center */
-        SND_CHMAP_LAST = SND_CHMAP_BRC,
-};
-
-
+diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c
+index 274007d..82cc3b1 100644
+--- a/speaker-test/speaker-test.c
++++ b/speaker-test/speaker-test.c
+@@ -254,7 +254,7 @@ static int get_speaker_channel(int chn)
+ static const char *get_channel_name(int chn)
+ {
+ #ifdef CONFIG_SUPPORT_CHMAP
+-  if (channel_map_set && chn < channel_map->channels) {
++  if (channel_map && chn < channel_map->channels) {
+     const char *name = snd_pcm_chmap_long_name(channel_map->pos[chn]);
+     return name ? name : "Unknown";
+   }
 -- 
-Anssi Hannula
+1.8.1.5
