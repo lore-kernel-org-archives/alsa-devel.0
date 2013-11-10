@@ -1,95 +1,64 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V0] ASoC: pxa-ssp: add TISSP mode support
-Date: Sun, 10 Nov 2013 11:10:21 +0000
-Message-ID: <20131110111021.GB878@sirena.org.uk>
-References: <1383640208-11919-1-git-send-email-zhouqiao@marvell.com>
- <20131106112421.GI11602@sirena.org.uk>
- <527C43D0.2030301@marvell.com>
- <20131108101948.GD2493@sirena.org.uk>
- <527EE65D.3070804@marvell.com>
+From: <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [alsa-devel] no reset_resume for driver snd-usb-audio for logitech
+ headset H600
+Date: Sun, 10 Nov 2013 16:43:50 +0100
+Message-ID: <BLU0-SMTP29704B99E3902B15F73DC41A1FC0@phx.gbl>
+References: <BLU0-SMTP368B73167BF4C991BFDCE6A11C0@phx.gbl>	<Pine.LNX.4.44L0.1310081335400.1102-100000@iolanthe.rowland.org>	<s5hwqlmc1y7.wl%tiwai@suse.de>	<525516D5.6030200@ladisch.de>	<s5hob6ybyd3.wl%tiwai@suse.de>	<s5hmwmiby8c.wl%tiwai@suse.de>	<BLU0-SMTP81EAAFDB9BB4E4600757CCA1000@phx.gbl> <s5hr4bfpqwe.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5818618337266457891=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 474F0261ACA
- for <alsa-devel@alsa-project.org>; Sun, 10 Nov 2013 12:10:32 +0100 (CET)
-In-Reply-To: <527EE65D.3070804@marvell.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Qiao Zhou <zhouqiao@marvell.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, "trinity.qiao.zhou@gmail.com" <trinity.qiao.zhou@gmail.com>, Chao Xie <cxie4@marvell.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <s5hr4bfpqwe.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On 2013-10-20 23:35, Takashi Iwai wrote:
+> At Sun, 20 Oct 2013 23:18:13 +0200,
+> <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org> wrote:
+>>
+>> On 2013-10-09 11:16 (CEST,UTC+2), Takashi Iwai wrote:
+>>>>>> diff --git a/sound/usb/card.c b/sound/usb/card.c
+>>>>>> index 9d9de8d..c591a83 100644
+>>>>>> --- a/sound/usb/card.c
+>>>>>> +++ b/sound/usb/card.c
+>>>>>> @@ -747,6 +747,7 @@ static struct usb_driver usb_audio_driver = {
+>>>>>>    	.disconnect =	usb_audio_disconnect,
+>>>>>>    	.suspend =	usb_audio_suspend,
+>>>>>>    	.resume =	usb_audio_resume,
+>>>>>> +	.reset_resume =	usb_audio_resume,
+>>>>>>    	.id_table =	usb_audio_ids,
+>>>>>>    	.supports_autosuspend = 1,
+>>>>>>    };
+>>
+>> Shall I add the line in b/sound/usb/card.c and try it? Which kernel version shall I use?
+>
+> It doesn't matter which kernel version is.
+> The error message should disappear, but I don't know whether any other
+> positive effect you get.  As Clemens pointed, there can be some
+> negative effects by this, so it cannot be taken as is.  But at least,
+> it'd be good to know the result...
+>
+>
+> thanks,
+>
+> Takashi
 
---===============5818618337266457891==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tsOsTdHNUZQcU9Ye"
-Content-Disposition: inline
+I have tested the patch with kernel 3.12.0 with suspend and hibernate, and the problem is gone.
 
+No messages "no reset_resume for driver snd-usb-audio?" or other negative effects/messages.
 
---tsOsTdHNUZQcU9Ye
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+After resume, the usb_audio_device (Headset) is the master channel in KDE Mixer, as it should be.
 
-On Sun, Nov 10, 2013 at 09:50:21AM +0800, Qiao Zhou wrote:
-> On 11/08/2013 06:19 PM, Mark Brown wrote:
+=> So the problem is solved for me.
 
-> The SPI/NSM are not used for audio usage, and currently only PSP
-> mode is used pxa-ssp driver. We have the requirement now to support
-> this SSP mode. The benefit is that we don't need to configure
-> detailed timing in transmit/receiving since HW handles it
-> automatically.
+Can you please add the patch to the latest kernels and LTS-kernels or whitelist the workaround for my device (ID 046d:0a29 Logitech, Inc. H600 [Wireless Headset])
 
-> The SSP mode is something like the PCM format for mono stream for
-> voice related scenario. In current audio format definition and
-> pxa-ssp driver implementation, I don't find suitable way to handle
-> it. so I add such SSP-format to differentiate it from PSP mode. Do I
-> make a confusion of SSP mode and audio frame format? please help
-> comment. thanks.
-
-If this is just about programming the hardware better rather than
-changing the externally visible symbols then as Daniel says it should be
-handled transparently by the driver, replacing the current code for
-whatever formats are handled.  Normally the same DAI format should be
-configured for both CODEC and CPU so unless a new format should also be
-used by CODEC drivers the update ought to be internal to the driver.
-
---tsOsTdHNUZQcU9Ye
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSf2maAAoJELSic+t+oim9Rk8P+QE1n8H6KXfiHpVBFAC83AMg
-9esMLPBbayGFkp82325shjDWxd5PEAHx3D57e3CtHTsEjsbUyFleC3e3u2JW2VPC
-ySeKHHDWGoKSuhLR6iNVWTO9FRMkDURpTheE5uSdlrBl/tFDG+7H2jkpa1X3WWOf
-/imQmTKp646vl0Va1ikAJnBwJ9ckJ/bSJlbF2Y2cm6rjAJiTpPn/c5/rUwZ3YYBL
-2+c3WzuX3ebNeS1PjrvK6QnYO9VfkpMjZrqFqbFWMEz/TJpZCapbgeXVi6lSmm1d
-g8YqpDsLGA+nSr5v4M/7VfMUo+2Y2H812U5KJeVWZ4DgIQNnOQYGYjgdtk6lBWd1
-ceSCq6LHRw4yYBrJWsviwLceu+7aAjkP2AF0gfGtRXs85rFueVA120rGRMxpYOV8
-gOknvUhLQ8mD1bjizV26ZETuxTiOQ8m1FhcUAoAFVpBO3TqnjoKSSFbIOLIjj2Oo
-/RLGvS19uaJ5gk4vXPcIn9erw1kzfGnE+1xlN7VPCY/Jm19MLydTa+0NsaUaxGDC
-nNA9TLi9n0DImZF7ZSzeUoD5yqjFL2RxG/lHahGZKq014Rc1FaFEc6lH6sqrecZj
-C35i6Z8u8GGXDgAmq6/iMOKKOL2WoW4jA6LSLc7z/bjKcap8z+Jfrk0AaA4/P02j
-l7kOsuTTFR0q04IQQHV1
-=oH2i
------END PGP SIGNATURE-----
-
---tsOsTdHNUZQcU9Ye--
-
---===============5818618337266457891==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thanks, Bernhard
 
 
---===============5818618337266457891==--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
