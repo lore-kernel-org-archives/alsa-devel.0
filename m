@@ -1,19 +1,15 @@
-From: Qiao Zhou <zhouqiao@marvell.com>
-Subject: Re: [PATCH V0] ASoC: pxa-ssp: add TISSP mode support
-Date: Sun, 10 Nov 2013 09:50:21 +0800
-Message-ID: <527EE65D.3070804@marvell.com>
-References: <1383640208-11919-1-git-send-email-zhouqiao@marvell.com>
- <20131106112421.GI11602@sirena.org.uk> <527C43D0.2030301@marvell.com>
- <20131108101948.GD2493@sirena.org.uk>
+From: Divya S via LinkedIn <member@linkedin.com>
+Subject: abdul, please add me to your LinkedIn network
+Date: Sun, 10 Nov 2013 02:47:38 +0000 (UTC)
+Message-ID: <2128015661.4004754.1384051658483.JavaMail.app@ela4-app0061.prod>
+Reply-To: Divya S <mailtosdivya@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
- [67.231.148.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 13F22261A90
- for <alsa-devel@alsa-project.org>; Sun, 10 Nov 2013 02:50:29 +0100 (CET)
-In-Reply-To: <20131108101948.GD2493@sirena.org.uk>
+Received: from mailb-fa.linkedin.com (mailb-fa.linkedin.com [199.101.162.71])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AD3B2619DD
+ for <alsa-devel@alsa-project.org>; Sun, 10 Nov 2013 03:47:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, "trinity.qiao.zhou@gmail.com" <trinity.qiao.zhou@gmail.com>, Chao Xie <cxie4@marvell.com>
+To: abdul moiz <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/08/2013 06:19 PM, Mark Brown wrote:
-> On Fri, Nov 08, 2013 at 09:52:16AM +0800, Qiao Zhou wrote:
->> On 11/06/2013 07:24 PM, Mark Brown wrote:
->
->>> What is TISSP mode in an audio context?
->
->> It's normal SSP mode, and it has a pulse of one bit clock width,
->
-> OK, what is SSP mode?
-SSP mode is just one frame format defined in sscr0 register, and there 
-are 3 other mode, such as SPI mode, National Semiconductor 
-Microwire(NSM) mode, Programmable Serial Protocol(PSP) mode.
-The SPI/NSM are not used for audio usage, and currently only PSP mode is 
-used pxa-ssp driver. We have the requirement now to support this SSP 
-mode. The benefit is that we don't need to configure detailed timing in 
-transmit/receiving since HW handles it automatically.
-The SSP mode is something like the PCM format for mono stream for voice 
-related scenario. In current audio format definition and pxa-ssp driver 
-implementation, I don't find suitable way to handle it. so I add such 
-SSP-format to differentiate it from PSP mode. Do I make a confusion of 
-SSP mode and audio frame format? please help comment. thanks.
->
+LinkedIn
+------------
 
 
--- 
 
-Best Regards
-Qiao
+
+    Divya S requested to add you as a connection on LinkedIn:
+  
+
+------------------------------------------
+
+abdul,
+
+I'd like to add you to my professional network on LinkedIn.
+
+- Divya
+
+Accept invitation from Divya S
+http://www.linkedin.com/e/jpxkk3-hntomefz-3b/uii-rtptP1H4ViCg9YiBUOvto1r4_5GcrJPkip6lXT/blk/I449302237_135/e39SrCAJoS5vrCAJoyRJtCVFnSRJrScJr6RBfnhv9ClRsDgZp6lQs6lzoQ5AomZIpn8_djcNnPsPcz8McPAQd4ALdDwOiS5ql54LcPcMcP8Tc3cVdP4LrCBxbOYWrSlI/eml-comm_invm-b-in_ac-inv28/?hs=false&tok=1ne1cOySe7-RY1
+
+View profile of Divya S
+http://www.linkedin.com/e/jpxkk3-hntomefz-3b/rso/160331204/t2zH/name/138036396_I449302237_135/?hs=false&tok=0kT-TeYvG7-RY1
+------------------------------------------
+You are receiving Invitation emails.
+
+
+This email was intended for abdul moiz.
+Learn why this is included: http://www.linkedin.com/e/jpxkk3-hntomefz-3b/plh/http%3A%2F%2Fhelp%2Elinkedin%2Ecom%2Fapp%2Fanswers%2Fdetail%2Fa_id%2F4788/-GXI/?hs=false&tok=0H8tHypIS7-RY1
+
+(c) 2012, LinkedIn Corporation. 2029 Stierlin Ct, Mountain View, CA 94043, USA.
+
+
+  
