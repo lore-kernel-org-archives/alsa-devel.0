@@ -1,92 +1,121 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
- multi-channel and HBR support
-Date: Sun, 10 Nov 2013 08:01:10 +0200
-Message-ID: <527F2126.50006@iki.fi>
-References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>	
- <5269665E.9050102@iki.fi> <1383887323.6455.37.camel@Wailaba2>	
- <527CBC7F.4000805@iki.fi> <1383934622.22680.2.camel@Wailaba2>	
- <1383946119.1089.4.camel@Wailaba2> <527D5FB4.6090603@iki.fi>
- <1384062124.29274.8.camel@Wailaba2>
+From: Bharat Bhushan <Bharat.Bhushan@freescale.com>
+Subject: RE: [PATCH v4 1/4] dma: imx-sdma: Add sdma firmware version 2
+ support
+Date: Sun, 10 Nov 2013 06:57:08 +0000
+Message-ID: <6A3DF150A5B70D4F9B66A25E3F7C888D071EDFC5@039-SN2MPN1-013.039d.mgd.msft.net>
+References: <cover.1383907685.git.b42378@freescale.com>
+ <1524b725cecd208ad63741f0b7214d0039608ac0.1383907685.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
- [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id E90782619E1
- for <alsa-devel@alsa-project.org>; Sun, 10 Nov 2013 07:03:11 +0100 (CET)
-In-Reply-To: <1384062124.29274.8.camel@Wailaba2>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Olivier Langlois <olivier@trillion01.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Peter_Fr=FChberger?= <fritsch@xbmc.org>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <1524b725cecd208ad63741f0b7214d0039608ac0.1383907685.git.b42378@freescale.com>
+Content-Language: en-US
+Sender: linux-doc-owner@vger.kernel.org
+To: Guangyu Chen <guangyu.chen@freescale.com>, "vinod.koul@intel.com" <vinod.koul@intel.com>, "dan.j.williams@intel.com" <dan.j.williams@intel.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "timur@tabi.org" <timur@tabi.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-10.11.2013 07:42, Olivier Langlois kirjoitti:
-> Hi Anssi,
-> 
-> On Sat, 2013-11-09 at 00:03 +0200, Anssi Hannula wrote:
-> 
->>
->> You mean you just downloaded the files and put them in-tree, right?
-> 
-> Right. Here are the files that I have replaced in 3.11.7 tree:
-> 
-> lano1106@whippet2 ~/dev/linux-ck/src/linux-3.11/sound/pci/hda $ ls
-> *.orig
-> hda_codec.c.orig  hda_codec.h.orig  hda_eld.c.orig  hda_jack.c.orig
-> hda_jack.h.orig  hda_local.h.orig  patch_hdmi.c.orig
-> 
-> 
->>
->> If it built without warnings, it is probably OK...
-> 
-> It has built flawlessly.
-> 
->>
->> OK, this is pretty weird indeed. Could you apply the attached debugging
->> prints and then provide dmesg?
->>
->>
-> Sure, here is the output:
-> 
-> [   78.384821] ALSA sound/pci/hda/patch_hdmi.c:1167 HDMI hot plug event:
-> Codec=0 Pin=3 Device=0 Inactive=0 Presence_Detect=0 ELD_Valid=1
-> [   78.384834] ALSA sound/pci/hda/patch_hdmi.c:1512 HDMI status: Codec=0
-> Pin=3 Presence_Detect=1 ELD_Valid=1
-> [  128.437676] ALSA sound/pci/hda/patch_hdmi.c:678 HDMI: select CA 0x13
-> for 8-channel allocation:  FL/FR LFE FC RL/RR RLC/RRC
-> [  128.437797] CA XX 19 => 8
-> [  128.437799] XX hdmi_map 00
-> [  128.437801] XX hdmi_map 11
-> [  128.437802] XX hdmi_map 26
-> [  128.437804] XX hdmi_map 37
-> [  128.437806] XX hdmi_map 43
-> [  128.437807] XX hdmi_map 52
-> [  128.437809] XX hdmi_map 64
-> [  128.437810] XX hdmi_map 75
-> [  128.437957] ALSA sound/pci/hda/patch_hdmi.c:3108
-> atihdmi_pin_hbr_setup: NID=0x3, hbr-ctl=0x1
-> 
-> This is looking good. Maybe this is coming from how the channel mapping
-> is communicated to speaker-test through ALSA API but I don't know much
-> about that.
-> 
-> I'll try to understand as well on my side what is going on.
 
-Hmm seems I can reproduce this issue just fine on my side now on
-non-AMD, so I'm going to look into this myself as well. Looks a bit like
-a speaker-test bug to me (since the printed channel numbers are
-duplicated, and amixer shows proper chmap), though if that is the case I
-wonder why I didn't see this before... I'll take a look.
 
--- 
-Anssi Hannula
+> -----Original Message-----
+> From: Linuxppc-dev [mailto:linuxppc-dev-
+> bounces+bharat.bhushan=freescale.com@lists.ozlabs.org] On Behalf Of Nicolin Chen
+> Sent: Friday, November 08, 2013 4:20 PM
+> To: vinod.koul@intel.com; dan.j.williams@intel.com; s.hauer@pengutronix.de;
+> timur@tabi.org; shawn.guo@linaro.org; broonie@kernel.org
+> Cc: mark.rutland@arm.com; devicetree@vger.kernel.org; alsa-devel@alsa-
+> project.org; pawel.moll@arm.com; linux-doc@vger.kernel.org;
+> swarren@wwwdotorg.org; linux-kernel@vger.kernel.org; rob.herring@calxeda.com;
+> dmaengine@vger.kernel.org; ijc+devicetree@hellion.org.uk; linuxppc-
+> dev@lists.ozlabs.org; linux-arm-kernel@lists.infradead.org
+> Subject: [PATCH v4 1/4] dma: imx-sdma: Add sdma firmware version 2 support
+> 
+> On i.MX5/6 series, SDMA is using new version firmware to support SSI dual FIFO
+> feature and HDMI Audio (i.MX6Q/DL only). Thus add it.
+> 
+> Signed-off-by: Nicolin Chen <b42378@freescale.com>
+> ---
+>  drivers/dma/imx-sdma.c                     | 15 ++++++++++++++-
+>  include/linux/platform_data/dma-imx-sdma.h |  5 +++++
+>  2 files changed, 19 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c index
+> fc43603..c7ece8d 100644
+> --- a/drivers/dma/imx-sdma.c
+> +++ b/drivers/dma/imx-sdma.c
+> @@ -323,6 +323,7 @@ struct sdma_engine {
+>  	struct clk			*clk_ipg;
+>  	struct clk			*clk_ahb;
+>  	spinlock_t			channel_0_lock;
+> +	u32				script_number;
+>  	struct sdma_script_start_addrs	*script_addrs;
+>  	const struct sdma_driver_data	*drvdata;
+>  };
+> @@ -1238,6 +1239,7 @@ static void sdma_issue_pending(struct dma_chan *chan)  }
+> 
+>  #define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V1	34
+> +#define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V2	38
+> 
+>  static void sdma_add_scripts(struct sdma_engine *sdma,
+>  		const struct sdma_script_start_addrs *addr) @@ -1246,7 +1248,7 @@
+> static void sdma_add_scripts(struct sdma_engine *sdma,
+>  	s32 *saddr_arr = (u32 *)sdma->script_addrs;
+>  	int i;
+> 
+> -	for (i = 0; i < SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V1; i++)
+> +	for (i = 0; i < sdma->script_number; i++)
+>  		if (addr_arr[i] > 0)
+>  			saddr_arr[i] = addr_arr[i];
+>  }
+> @@ -1272,6 +1274,17 @@ static void sdma_load_firmware(const struct firmware *fw,
+> void *context)
+>  		goto err_firmware;
+>  	if (header->ram_code_start + header->ram_code_size > fw->size)
+>  		goto err_firmware;
+> +	switch (header->version_major) {
+> +		case 1:
+> +			sdma->script_number = SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V1;
+> +			break;
+> +		case 2:
+> +			sdma->script_number = SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V2;
+> +			break;
+> +		default:
+> +			dev_err(sdma->dev, "unknown firmware version\n");
+> +			return;
+
+Why return and not "goto err_firmware" ?
+
+-Bharat
+
+> +	}
+> 
+>  	addr = (void *)header + header->script_addrs_start;
+>  	ram_code = (void *)header + header->ram_code_start; diff --git
+> a/include/linux/platform_data/dma-imx-sdma.h b/include/linux/platform_data/dma-
+> imx-sdma.h
+> index 3a39428..eabac4e 100644
+> --- a/include/linux/platform_data/dma-imx-sdma.h
+> +++ b/include/linux/platform_data/dma-imx-sdma.h
+> @@ -43,6 +43,11 @@ struct sdma_script_start_addrs {
+>  	s32 dptc_dvfs_addr;
+>  	s32 utra_addr;
+>  	s32 ram_code_start_addr;
+> +	/* End of v1 array */
+> +	s32 mcu_2_ssish_addr;
+> +	s32 ssish_2_mcu_addr;
+> +	s32 hdmi_dma_addr;
+> +	/* End of v2 array */
+>  };
+> 
+>  /**
+> --
+> 1.8.4
+> 
+> 
+> _______________________________________________
+> Linuxppc-dev mailing list
+> Linuxppc-dev@lists.ozlabs.org
+> https://lists.ozlabs.org/listinfo/linuxppc-dev
+
+
