@@ -1,18 +1,18 @@
 From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: [PATCH 1/2] ALSA: hda - hdmi: Use TFx channel
-	positions instead of FxH
-Date: Sun, 10 Nov 2013 21:24:04 +0200
-Message-ID: <1384111445-16751-1-git-send-email-anssi.hannula@iki.fi>
-References: <527FB20E.2010606@iki.fi>
+Subject: [PATCH 3/3 v2] ALSA: hda - hdmi: Fix wrong baseline
+	length in ATI/AMD generated ELD
+Date: Sun, 10 Nov 2013 22:57:42 +0200
+Message-ID: <1384117062-4952-1-git-send-email-anssi.hannula@iki.fi>
+References: <1384109772-7614-4-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
  [83.102.40.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 70926261B26
- for <alsa-devel@alsa-project.org>; Sun, 10 Nov 2013 20:24:12 +0100 (CET)
-In-Reply-To: <527FB20E.2010606@iki.fi>
+ by alsa0.perex.cz (Postfix) with ESMTP id 52225261B26
+ for <alsa-devel@alsa-project.org>; Sun, 10 Nov 2013 21:57:51 +0100 (CET)
+In-Reply-To: <1384109772-7614-4-git-send-email-anssi.hannula@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,40 +26,43 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Channel map positions FLH, FCH, FRH duplicate positions TFL, TFC, TFR.
-Both are the speakers above the front speakers (CEA uses "high" and USB
-audio uses "top" nomenclature).
+According to the HDA specification the baseline ELD length is counted in
+DW of 4 bytes instead of in bytes.
 
-Since the USB audio code has used the TFx positions since v3.8
-(04324ccc75f96, "ALSA: usb-audio: add channel map support") but the HDMI
-code only just started using FxH in a5b7d510b2220cccb ("ALSA: hda -
-hdmi: Fix channel maps with less common speakers") which is not yet in
-any released kernel, standardize on TFx instead.
+Fix the code accordingly.
+
+Baseline length is not used by the kernel so only the ELD exported to
+userspace was affected. No issues have been reported.
+
+v2: Fixed so that eld_size is adjusted upwards accordingly as well.
 
 Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
 ---
- sound/pci/hda/patch_hdmi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/pci/hda/hda_eld.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index fe3b150f97d9..4ad8c055c221 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -763,12 +763,12 @@ static struct channel_map_table map_tables[] = {
- 	{ SNDRV_CHMAP_RC,	RC },
- 	{ SNDRV_CHMAP_FLC,	FLC },
- 	{ SNDRV_CHMAP_FRC,	FRC },
--	{ SNDRV_CHMAP_FLH,	FLH },
--	{ SNDRV_CHMAP_FRH,	FRH },
-+	{ SNDRV_CHMAP_TFL,	FLH },
-+	{ SNDRV_CHMAP_TFR,	FRH },
- 	{ SNDRV_CHMAP_FLW,	FLW },
- 	{ SNDRV_CHMAP_FRW,	FRW },
- 	{ SNDRV_CHMAP_TC,	TC },
--	{ SNDRV_CHMAP_FCH,	FCH },
-+	{ SNDRV_CHMAP_TFC,	FCH },
- 	{} /* terminator */
- };
+diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
+index 9b697a28cf53..79ca80f6c77a 100644
+--- a/sound/pci/hda/hda_eld.c
++++ b/sound/pci/hda/hda_eld.c
+@@ -792,12 +792,15 @@ int snd_hdmi_get_eld_ati(struct hda_codec *codec, hda_nid_t nid,
+ 		/* else unknown/invalid or 0ms or video ahead of audio, so use zero */
+ 	}
  
+-	/* Baseline length */
+-	buf[2] = pos - 4;
+-
+ 	/* SAD count */
+ 	buf[5] |= ((pos - ELD_FIXED_BYTES - sink_desc_len) / 3) << 4;
+ 
++	/* Baseline ELD block length is 4-byte aligned */
++	pos = round_up(pos, 4);
++
++	/* Baseline ELD length (4-byte header is not counted in) */
++	buf[2] = (pos - 4) / 4;
++
+ 	*eld_size = pos;
+ 
+ 	return 0;
 -- 
 1.8.1.5
