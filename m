@@ -1,19 +1,20 @@
 From: Qiao Zhou <zhouqiao@marvell.com>
 Subject: Re: [PATCH V0] ASoC: pxa-ssp: add TISSP mode support
-Date: Mon, 11 Nov 2013 09:59:07 +0800
-Message-ID: <528039EB.70803@marvell.com>
+Date: Mon, 11 Nov 2013 10:03:46 +0800
+Message-ID: <52803B02.6000008@marvell.com>
 References: <1383640208-11919-1-git-send-email-zhouqiao@marvell.com>
  <20131106112421.GI11602@sirena.org.uk> <527C43D0.2030301@marvell.com>
- <527F51E2.7010401@zonque.org>
+ <20131108101948.GD2493@sirena.org.uk> <527EE65D.3070804@marvell.com>
+ <20131110111021.GB878@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
  [67.231.148.174])
- by alsa0.perex.cz (Postfix) with ESMTP id EFAAA26072A
- for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2013 02:59:16 +0100 (CET)
-In-Reply-To: <527F51E2.7010401@zonque.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id ADA0E260815
+ for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2013 03:03:55 +0100 (CET)
+In-Reply-To: <20131110111021.GB878@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>, "trinity.qiao.zhou@gmail.com" <trinity.qiao.zhou@gmail.com>, Chao Xie <cxie4@marvell.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, "trinity.qiao.zhou@gmail.com" <trinity.qiao.zhou@gmail.com>, Chao Xie <cxie4@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/10/2013 05:29 PM, Daniel Mack wrote:
-> On 11/08/2013 02:52 AM, Qiao Zhou wrote:
->> On 11/06/2013 07:24 PM, Mark Brown wrote:
->>> On Tue, Nov 05, 2013 at 04:30:08PM +0800, Qiao Zhou wrote:
->>>> add TISSP mode support. with this mode enabled, ssp controller
->>>> works in TI-ssp protocol automatically and doesn't need to
->>>> configure sspsp register to set the timing for tx/rx.
->>>
->>> What is TISSP mode in an audio context?
->> It's normal SSP mode, and it has a pulse of one bit clock width, which
->> is the frame start signal. previously it's mainly used for voice call
->> which is mono stream. current I2S or DSP_x format use PSP, which
->> configures the details of transmit/receive timing. we can also use PSP
->> to suit this SSP format. But since the SSP controller provides such HW
->> convenience, so we want to add it. I'm not sure it's proper, and want to
->> ask for suggestions.
+On 11/10/2013 07:10 PM, Mark Brown wrote:
+> On Sun, Nov 10, 2013 at 09:50:21AM +0800, Qiao Zhou wrote:
+>> On 11/08/2013 06:19 PM, Mark Brown wrote:
 >
-> This sounds like a special case you want to address, rather than
-> something that should be recognized by the core.
+>> The SPI/NSM are not used for audio usage, and currently only PSP
+>> mode is used pxa-ssp driver. We have the requirement now to support
+>> this SSP mode. The benefit is that we don't need to configure
+>> detailed timing in transmit/receiving since HW handles it
+>> automatically.
 >
-> The question is what you want to achive here. What kind of peripheral do
-> you have connected to the other side of the PXA, and why does it need
-> this special needle peak on the frame clock rather than a 50% duty-cycle?
-The frame format is like the DSP Mode A in WM8994 spec, and the 
-peripheral is a normal codec interface for voice call usage, 
-mono-stream, 16 bits.
-Here I want to add such SSP mode support in pxa-ssp driver, instead of 
-using PSP mode to configure detailed data format in PSP register.
-should I handle it under DSP_A case with extra param notifying whether 
-it's SSP mode or PSP mode? on the peripheral side, the configuration of 
-CODEC DAI should be the same.
+>> The SSP mode is something like the PCM format for mono stream for
+>> voice related scenario. In current audio format definition and
+>> pxa-ssp driver implementation, I don't find suitable way to handle
+>> it. so I add such SSP-format to differentiate it from PSP mode. Do I
+>> make a confusion of SSP mode and audio frame format? please help
+>> comment. thanks.
+>
+> If this is just about programming the hardware better rather than
+> changing the externally visible symbols then as Daniel says it should be
+> handled transparently by the driver, replacing the current code for
+> whatever formats are handled.  Normally the same DAI format should be
+> configured for both CODEC and CPU so unless a new format should also be
+> used by CODEC drivers the update ought to be internal to the driver.
+>
+Yes, it should be an improvement of current driver. The format is not a 
+new one, and the DSP_A mode is suitable for it. The question here is to 
+handle both PSP and SSP mode here. should I pass another parameter here 
+to support it?
 
-below are the modes definition in pxa2xx_ssp.h
-#define SSCR0_TISSP	(1 << 4)	/* TI Sync Serial Protocol */
-#define SSCR0_PSP	(3 << 4)	/* PSP - Programmable Serial Protocol */
->
-> Also, I vaguely remember huge problems we had in setting up the SSP
-> controller of a PXA SoC. The SSP IP would do all sort of things instead
-> of what's described in the docs. Which silicon are you working on?
-The silicon now I'm working on is pxa-9xx chips, but it's the same back 
-to pxa-3xx chips.
->
->
-> Thanks,
-> Daniel
->
 -- 
 
 Best Regards
