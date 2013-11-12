@@ -1,77 +1,82 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [TINYCOMPRESS][PATCH] compress: compress_wait()
- must return error if timed out
-Date: Tue, 12 Nov 2013 10:31:14 +0530
-Message-ID: <20131112050114.GJ8834@intel.com>
-References: <20131022105158.GA12320@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCHv1 1/8] ALSA: Add SAI SoC Digital Audio
+ Interface driver.
+Date: Tue, 12 Nov 2013 10:32:26 +0530
+Message-ID: <20131112050226.GK8834@intel.com>
+References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
+ <1382000477-17304-2-git-send-email-Li.Xiubo@freescale.com>
+ <526021B0.6050206@metafoo.de>
+ <1DD289F6464F0949A2FCA5AA6DC23F8286A385@039-SN2MPN1-013.039d.mgd.msft.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id C5618261685
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2013 06:56:47 +0100 (CET)
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
 Content-Disposition: inline
-In-Reply-To: <20131022105158.GA12320@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.jf.intel.com, elaurent@google.com
+In-Reply-To: <1DD289F6464F0949A2FCA5AA6DC23F8286A385@039-SN2MPN1-013.039d.mgd.msft.net>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Xiubo Li-B47053 <B47053@freescale.com>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, Wang Huan-B18965 <B18965@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Guo Shawn-R65073 <r65073@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, Lars-Peter Clausen <lars@metafoo.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Chen Guangyu-B42378 <B42378@freescale.com>, "oskar@scara.com" <oskar@scara.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, rob.herring@calxeda.co
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 22, 2013 at 11:51:58AM +0100, Richard Fitzgerald wrote:
-> The caller must be certain that a return of 0 really means
-> that compress is ready for more data, so when poll() returns
-> 0 for a timeout we must report that as an error.
-Applied, thanks
+On Mon, Oct 28, 2013 at 05:58:42AM +0000, Xiubo Li-B47053 wrote:
+> Hi Dan, Vinod,
+> 
+> 
+> > > +static int fsl_sai_probe(struct platform_device *pdev) {
+> > [...]
+> > > +
+> > > +	sai->dma_params_rx.addr = res->start + SAI_RDR;
+> > > +	sai->dma_params_rx.maxburst = 6;
+> > > +	index = of_property_match_string(np, "dma-names", "rx");
+> > > +	ret = of_parse_phandle_with_args(np, "dmas", "#dma-cells", index,
+> > > +				&dma_args);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +	sai->dma_params_rx.slave_id = dma_args.args[1];
+> > > +
+> > > +	sai->dma_params_tx.addr = res->start + SAI_TDR;
+> > > +	sai->dma_params_tx.maxburst = 6;
+> > > +	index = of_property_match_string(np, "dma-names", "tx");
+> > > +	ret = of_parse_phandle_with_args(np, "dmas", "#dma-cells", index,
+> > > +				&dma_args);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +	sai->dma_params_tx.slave_id = dma_args.args[1];
+> > 
+> > The driver should not have to manually parse the dma devicetree
+> > properties, this is something that should be handled by the dma engine
+> > driver.
+> > 
+> 
+> What do you think about the DMA slave_id ?
+> I have been noticed by one colleague that this should be parsed here, which
+> is from your opinions ?
+Sure slave_id can be parsed here, but IMO it should be programmed via the
+dma_slave_confog into the respective channel
 
 --
 ~Vinod
 > 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> ---
->  compress.c |   18 ++++++++++--------
->  1 files changed, 10 insertions(+), 8 deletions(-)
 > 
-> diff --git a/compress.c b/compress.c
-> index 5cd0966..d1a2283 100644
-> --- a/compress.c
-> +++ b/compress.c
-> @@ -616,15 +616,17 @@ int compress_wait(struct compress *compress, int timeout_ms)
->  	fds.events = POLLOUT | POLLIN;
->  
->  	ret = poll(&fds, 1, timeout_ms);
-> -	if (fds.revents & POLLERR) {
-> -		return oops(compress, EIO, "poll returned error!");
-> +	if (ret > 0) {
-> +		if (fds.revents & POLLERR)
-> +			return oops(compress, EIO, "poll returned error!");
-> +		if (fds.revents & (POLLOUT | POLLIN))
-> +			return 0;
->  	}
-> -	/* A pause will cause -EBADFD or zero. */
-> -	if ((ret < 0) && (ret != -EBADFD))
-> +	if (ret == 0)
-> +		return oops(compress, ETIME, "poll timed out");
-> +	if (ret < 0)
->  		return oops(compress, errno, "poll error");
-> -	if (fds.revents & (POLLOUT | POLLIN)) {
-> -		return 0;
-> -	}
-> -	return ret;
-> +
-> +	return oops(compress, EIO, "poll signalled unhandled event");
->  }
->  
-> -- 
-> 1.7.2.5
+> > > +
+> > > +	ret = snd_soc_register_component(&pdev->dev, &fsl_component,
+> > > +			&fsl_sai_dai, 1);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	ret = fsl_pcm_dma_init(pdev);
+> > > +	if (ret)
+> > > +		goto out;
+> 
 > 
 
 -- 
