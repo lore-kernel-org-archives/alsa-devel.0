@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rcar: fixup mod access before
-	checking
-Date: Tue, 12 Nov 2013 11:19:04 +0000
-Message-ID: <20131112111904.GK2674@sirena.org.uk>
-References: <20131108100206.GP27977@elgon.mountain>
- <87habjda6g.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: wm8997: Correct typo in ISRC mux
+	routes
+Date: Tue, 12 Nov 2013 11:29:36 +0000
+Message-ID: <20131112112936.GM2674@sirena.org.uk>
+References: <1384253530-4123-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1247169406926011960=="
+Content-Type: multipart/mixed; boundary="===============7999501909179035629=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 49FBC26171E
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2013 12:19:12 +0100 (CET)
-In-Reply-To: <87habjda6g.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 77BFF2610AA
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2013 12:29:39 +0100 (CET)
+In-Reply-To: <1384253530-4123-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1247169406926011960==
+--===============7999501909179035629==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rnP2AJ7yb1j09OW/"
+	protocol="application/pgp-signature"; boundary="HVCoas+krw6dou6l"
 Content-Disposition: inline
 
 
---rnP2AJ7yb1j09OW/
+--HVCoas+krw6dou6l
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Nov 10, 2013 at 05:00:42PM -0800, Kuninori Morimoto wrote:
-> rsnd_dai_connect() is using mod before NULL checking.
-> This patch fixes it up
+On Tue, Nov 12, 2013 at 10:52:10AM +0000, Charles Keepax wrote:
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
 Applied, thanks.
 
---rnP2AJ7yb1j09OW/
+--HVCoas+krw6dou6l
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSgg6lAAoJELSic+t+oim92CQP/2GCokTmZc6fuNXDoGfMvabA
-8aKEOzsCgvmiH49s1wv76/VEa1LvrHNCguQs0YK/9Pe8vVv3DfvRjEqHziWCiVG/
-vTN2prJ23tjqyfYRaD7Od0eYNfJaZpAoXu86MGkFcq8SIxeRs+oCeQqeJ8D4c2p8
-op0g9lEhwKCCBSUC++pmVBukEZ+KrZMCD3YC3h+OwoJb3Fvk8xFSXghoM+7gg9SV
-/gqhbTcM5Q5nJq6nlkfhQ3bCu0gxOSRm1SiyFSlSeTWZxXqfTGVPZVebYgIvPc//
-DUswdH6I09Pv4vQxBySQ73+gHvH7TVtci+4KW4uTZHWHtsEAWRrhkVJM26H3PSh3
-dz3A82itDGrsTdKFewH/toEwbD1aLk8oDkXIW2NkcM59GDkwdRGhtq4O3fE2xck/
-aaD3WU4Zj9yQzDX4F7cH9aku8FOalZHWTJ9u+7Sk6hgZCerCKgVxKn1w+ClyRLTl
-ICQc9oTfS9O1JLXP6oR1j2vWmoTvn67VSzaNmNmQlxkkDnGqmj+sun+jFUJ4aDUq
-1f5LCvsd/0P2vopMNGAvTRDZA2Zzmp6kdVyUUF/6cyvtQ1ignFTBr08M1f1pi1Ct
-sj5gLQcnyT2biUycCT+cPOaoFowwYKsZK2QeCKdFILSGfUkCoK3088rIt7MjWycc
-7hbIEdnFiOkamaFH5c2G
-=eyOT
+iQIcBAEBAgAGBQJSghEdAAoJELSic+t+oim9Fk4QAJJnCjps57I5eX+m23sb+5FV
+RG2+ZdjmHQTCezZVylcgNBuC5cEPYXiRmHuZ9iVkq1HgFGWWp3wZ0pUsuLen5FDb
+259+pW6xts0/tZejpjDJB8oYEXylUyblHBXw2/85Vkry+ciwMn2sjvSC2FzrlaGl
+5M6vVsVNwroZ5nqbJIQQaNaahTLOdzRCNL88u6xKKHdxJ1vbpcYo7JFTc08Wn59R
+V5Zco1J+PdBkXXbNu5GaDZgJEaytXoPo0oFRoL6mi3q1C9ZzYOAMJwuAhRQg2z1j
+uPCD/gDJxR0OCbJqCxhqy0drEbzoqd8QDzNLGH8HOhcrZielU9IOjmlW3+vLXT6t
+o0DCq3uq88zFC9M6Fj/80SH8+uu6V3w+pKtUQ9PFz56lbuVnQMeWWlkat2CKYIcD
++N1c1KeE0i0LrR27i31SphMz1tt+E6WqgG1F8z4FpG1Fee3lZDHhlQt61r3zKtJ7
+VJWylPajHs3w9VEbBjAA9SIX79ApKKLiu9gnTjrmpcZ0+O2xMZuCyJlD+Y16r6L9
+X0P1XRysCuXHJqkMAgTHwrA9wk4RWEyPhA5Uwoiu3cEkvU0py31QXtrvdiTH7RSR
+xEfUhT6WZnzt6JVQNDzwzLTv+4S4x+EpdhIVuIDfIgDVsEpBmPng4eNXkwY+bN7D
+sg7/zo+MllFnsvJFCm7C
+=M+OY
 -----END PGP SIGNATURE-----
 
---rnP2AJ7yb1j09OW/--
+--HVCoas+krw6dou6l--
 
---===============1247169406926011960==
+--===============7999501909179035629==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1247169406926011960==--
+--===============7999501909179035629==--
