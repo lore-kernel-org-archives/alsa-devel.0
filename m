@@ -1,24 +1,34 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH][RESEND 3/8] dma: mmp_tdma: use gen_pool_dma_alloc() to
- allocate descriptor
-Date: Tue, 12 Nov 2013 09:20:35 +0530
-Message-ID: <20131112035035.GD8834@intel.com>
-References: <cover.1383306365.git.b42378@freescale.com>
- <b7d5dce9fcc118a60261824196c820de6fb434a2.1383306365.git.b42378@freescale.com>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH 1/2] ARM: Rename ARCH_SHMOBILE to ARCH_SHMOBILE_LEGACY
+Date: Tue, 12 Nov 2013 14:11:37 +0900
+Message-ID: <20131112051137.GB28649@verge.net.au>
+References: <1384000429-3590-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+ <1384000429-3590-2-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-media-owner@vger.kernel.org>
+Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <b7d5dce9fcc118a60261824196c820de6fb434a2.1383306365.git.b42378@freescale.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: akpm@linux-foundation.org, joe@perches.com, nsekhar@ti.com, khilman@deeprootsystems.com, linux@arm.linux.org.uk, dan.j.williams@intel.com, m.chehab@samsung.com, hjk@hansjkoch.de, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, rmk+kernel@arm.linux.org.uk, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <1384000429-3590-2-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Cc: linux-sh@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 01, 2013 at 07:48:16PM +0800, Nicolin Chen wrote:
-> Since gen_pool_dma_alloc() is introduced, we implement it to simplify code.
+On Sat, Nov 09, 2013 at 01:33:48PM +0100, Laurent Pinchart wrote:
+> SH-Mobile platforms are transitioning from non-multiplatform to
+> multiplatform kernel. A new ARCH_SHMOBILE_MULTI configuration symbol has
+> been created to group all multiplatform-enabled SH-Mobile SoCs. The
+> existing ARCH_SHMOBILE configuration symbol groups SoCs that haven't
+> been converted yet.
+> 
+> This arrangement works fine for the arch/ code, but lots of drivers
+> needed on both ARCH_SHMOBILE and ARCH_SHMOBILE_MULTI depend on
+> ARCH_SHMOBILE only. In order to avoid changing them, rename
+> ARCH_SHMOBILE to ARCH_SHMOBILE_LEGACY, and create a new boolean
+> ARCH_SHMOBILE configuration symbol that is selected by both
+> ARCH_SHMOBILE_LEGACY and ARCH_SHMOBILE_MULTI.
+> 
+> Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> Acked-by: Magnus Damm <damm@opensource.se>
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-
---
-~Vinod
+Thanks, I have queued this up.
