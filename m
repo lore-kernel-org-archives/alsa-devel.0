@@ -1,43 +1,67 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH 1/2] ARM: Rename ARCH_SHMOBILE to ARCH_SHMOBILE_LEGACY
-Date: Tue, 12 Nov 2013 14:26:25 +0900
-Message-ID: <20131112052625.GC28649@verge.net.au>
-References: <1384000429-3590-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
- <1384000429-3590-2-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
- <20131112051137.GB28649@verge.net.au>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [COMPRESS] [PATCH] ALSA: compress_core: don't
+ return -EBADFD from poll if paused
+Date: Tue, 12 Nov 2013 10:27:46 +0530
+Message-ID: <20131112045746.GI8834@intel.com>
+References: <20131022102631.GA7466@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id E5F5C261664
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2013 06:53:27 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20131112051137.GB28649@verge.net.au>
-Sender: linux-sh-owner@vger.kernel.org
-To: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Cc: linux-sh@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+In-Reply-To: <20131022102631.GA7466@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 12, 2013 at 02:11:37PM +0900, Simon Horman wrote:
-> On Sat, Nov 09, 2013 at 01:33:48PM +0100, Laurent Pinchart wrote:
-> > SH-Mobile platforms are transitioning from non-multiplatform to
-> > multiplatform kernel. A new ARCH_SHMOBILE_MULTI configuration symbol has
-> > been created to group all multiplatform-enabled SH-Mobile SoCs. The
-> > existing ARCH_SHMOBILE configuration symbol groups SoCs that haven't
-> > been converted yet.
-> > 
-> > This arrangement works fine for the arch/ code, but lots of drivers
-> > needed on both ARCH_SHMOBILE and ARCH_SHMOBILE_MULTI depend on
-> > ARCH_SHMOBILE only. In order to avoid changing them, rename
-> > ARCH_SHMOBILE to ARCH_SHMOBILE_LEGACY, and create a new boolean
-> > ARCH_SHMOBILE configuration symbol that is selected by both
-> > ARCH_SHMOBILE_LEGACY and ARCH_SHMOBILE_MULTI.
-> > 
-> > Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> > Acked-by: Magnus Damm <damm@opensource.se>
+On Tue, Oct 22, 2013 at 11:26:48AM +0100, Richard Fitzgerald wrote:
+> Pausing audio playback is not an illegal state so it doesn't
+> seem sensible for poll() to return -EBADFD on a paused stream.
+> There's also no reason to assume that we can't write more data
+> to the DSP while playback is paused. Remove the -EBADFD so that
+> a stream in paused state will still report the buffer
+> availability from poll(). It is up to the user process to
+> manage its state so that it knows whether it is paused or not.
 > 
-> Thanks, I have queued this up.
+> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Acked-by VInod Koul <vinod.koul@intel.com>
 
-I have dropped this for now as it seems that all of the
-shmobile defconfigs now need to be updated to use ARCH_SHMOBILE_LEGACY
-instead of ARCH_SHMOBILE.
+Takashi, looks like I missed checking this earlier..
 
-It seems to me that needs to be part of this patch to avoid
-breaking bisecatability. Any thoughts?
+--
+~Vinod
+> ---
+>  sound/core/compress_offload.c |    3 +--
+>  1 files changed, 1 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+> index bea523a..30ca133 100644
+> --- a/sound/core/compress_offload.c
+> +++ b/sound/core/compress_offload.c
+> @@ -384,8 +384,7 @@ static unsigned int snd_compr_poll(struct file *f, poll_table *wait)
+>  		return -EFAULT;
+>  
+>  	mutex_lock(&stream->device->lock);
+> -	if (stream->runtime->state == SNDRV_PCM_STATE_PAUSED ||
+> -			stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
+> +	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
+>  		retval = -EBADFD;
+>  		goto out;
+>  	}
+> -- 
+> 1.7.2.5
+> 
+
+-- 
