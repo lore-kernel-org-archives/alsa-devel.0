@@ -1,100 +1,76 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH] ASoC: fsl-ssi: fix SDMA starvation
-Date: Tue, 12 Nov 2013 12:17:36 +0100
-Message-ID: <1384255056-25673-1-git-send-email-mpa@pengutronix.de>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, Juergen Beisert <jbe@pengutronix.de>, stable@vger.kernel.org, Markus Pargmann <mpa@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rcar: fixup mod access before
+	checking
+Date: Tue, 12 Nov 2013 11:19:04 +0000
+Message-ID: <20131112111904.GK2674@sirena.org.uk>
+References: <20131108100206.GP27977@elgon.mountain>
+ <87habjda6g.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============1247169406926011960=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49FBC26171E
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2013 12:19:12 +0100 (CET)
+In-Reply-To: <87habjda6g.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Juergen Beisert <jbe@pengutronix.de>
 
-In cases when capturing is already running and someone enables also
-playback, the SDMA unit of the i.MX SoC does not see an edge on its TX DMA
-request line. This is due to the TX FIFOs are empty, and this request line is
-active all the time, when the CCSR_SSI_SIER_TDMAE bit is set.
-In this case also the TX FIFO underrun interrupt will flood the system forever.
-
-To ensure the first edge happens after enabling the TX side of the SSI unit and
-to trigger the SDMA unit successfully enable the CCSR_SSI_SIER_TDMAE on
-demand only. To be sure, this patch does the same for the CCSR_SSI_SIER_RDMAE
-(RX side) bit.
-
-Signed-off-by: Juergen Beisert <jbe@pengutronix.de>
-Cc: stable@vger.kernel.org
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
----
-Hi,
-
-The patch is based on Mark's "fix/fsl" branch.
-
-Regards,
-
-Markus Pargmann
+--===============1247169406926011960==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="rnP2AJ7yb1j09OW/"
+Content-Disposition: inline
 
 
- sound/soc/fsl/fsl_ssi.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+--rnP2AJ7yb1j09OW/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 6b81d0c..8c94632 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -107,10 +107,9 @@ static inline void write_ssi_mask(u32 __iomem *addr, u32 clear, u32 set)
- #endif
- 
- /* SIER bitflag of interrupts to enable */
--#define SIER_FLAGS (CCSR_SSI_SIER_TFRC_EN | CCSR_SSI_SIER_TDMAE | \
--		    CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TUE0_EN | \
--		    CCSR_SSI_SIER_TUE1_EN | CCSR_SSI_SIER_RFRC_EN | \
--		    CCSR_SSI_SIER_RDMAE | CCSR_SSI_SIER_RIE | \
-+#define SIER_FLAGS (CCSR_SSI_SIER_TFRC_EN | CCSR_SSI_SIER_TIE | \
-+		    CCSR_SSI_SIER_TUE0_EN | CCSR_SSI_SIER_TUE1_EN | \
-+		    CCSR_SSI_SIER_RFRC_EN | CCSR_SSI_SIER_RIE | \
- 		    CCSR_SSI_SIER_ROE0_EN | CCSR_SSI_SIER_ROE1_EN)
- 
- /**
-@@ -548,6 +547,9 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
-  *
-  * The DMA channel is in external master start and pause mode, which
-  * means the SSI completely controls the flow of data.
-+ *
-+ * To use the i.MX's SDMA unit it is important to create an edge on the
-+ * corresponding request line. Otherwise the request will be ignored!
-  */
- static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 			   struct snd_soc_dai *dai)
-@@ -580,20 +582,26 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 			write_ssi_mask(&ssi->scr, 0,
- 				CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE);
--		else
-+			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_TDMAE);
-+		} else {
- 			write_ssi_mask(&ssi->scr, 0,
- 				CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_RE);
-+			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_RDMAE);
-+		}
- 		break;
- 
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 			write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_TE, 0);
--		else
-+			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_TDMAE, 0);
-+		} else {
- 			write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_RE, 0);
-+			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_RDMAE, 0);
-+		}
- 
- 		if (!ssi_private->imx_ac97 && (read_ssi(&ssi->scr) &
- 					(CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE)) == 0)
--- 
-1.8.4.2
+On Sun, Nov 10, 2013 at 05:00:42PM -0800, Kuninori Morimoto wrote:
+> rsnd_dai_connect() is using mod before NULL checking.
+> This patch fixes it up
+
+Applied, thanks.
+
+--rnP2AJ7yb1j09OW/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSgg6lAAoJELSic+t+oim92CQP/2GCokTmZc6fuNXDoGfMvabA
+8aKEOzsCgvmiH49s1wv76/VEa1LvrHNCguQs0YK/9Pe8vVv3DfvRjEqHziWCiVG/
+vTN2prJ23tjqyfYRaD7Od0eYNfJaZpAoXu86MGkFcq8SIxeRs+oCeQqeJ8D4c2p8
+op0g9lEhwKCCBSUC++pmVBukEZ+KrZMCD3YC3h+OwoJb3Fvk8xFSXghoM+7gg9SV
+/gqhbTcM5Q5nJq6nlkfhQ3bCu0gxOSRm1SiyFSlSeTWZxXqfTGVPZVebYgIvPc//
+DUswdH6I09Pv4vQxBySQ73+gHvH7TVtci+4KW4uTZHWHtsEAWRrhkVJM26H3PSh3
+dz3A82itDGrsTdKFewH/toEwbD1aLk8oDkXIW2NkcM59GDkwdRGhtq4O3fE2xck/
+aaD3WU4Zj9yQzDX4F7cH9aku8FOalZHWTJ9u+7Sk6hgZCerCKgVxKn1w+ClyRLTl
+ICQc9oTfS9O1JLXP6oR1j2vWmoTvn67VSzaNmNmQlxkkDnGqmj+sun+jFUJ4aDUq
+1f5LCvsd/0P2vopMNGAvTRDZA2Zzmp6kdVyUUF/6cyvtQ1ignFTBr08M1f1pi1Ct
+sj5gLQcnyT2biUycCT+cPOaoFowwYKsZK2QeCKdFILSGfUkCoK3088rIt7MjWycc
+7hbIEdnFiOkamaFH5c2G
+=eyOT
+-----END PGP SIGNATURE-----
+
+--rnP2AJ7yb1j09OW/--
+
+--===============1247169406926011960==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1247169406926011960==--
