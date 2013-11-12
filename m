@@ -1,88 +1,71 @@
-From: Olivier Langlois <olivier@trillion01.com>
-Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
- multi-channel and HBR support
-Date: Tue, 12 Nov 2013 01:35:11 -0500
-Message-ID: <1384238111.21913.12.camel@Wailaba2>
-References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
- <5269665E.9050102@iki.fi> <1383887323.6455.37.camel@Wailaba2>
- <527CBC7F.4000805@iki.fi> <1383934622.22680.2.camel@Wailaba2>
- <1383946119.1089.4.camel@Wailaba2> <527D5FB4.6090603@iki.fi>
- <1384062124.29274.8.camel@Wailaba2> <527F2126.50006@iki.fi>
+From: Li Xiubo <Li.Xiubo@freescale.com>
+Subject: RE: [alsa-devel] [PATCHv1 1/8] ALSA: Add SAI SoC Digital Audio
+ Interface driver.
+Date: Tue, 12 Nov 2013 07:35:55 +0000
+Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F8287E87B@039-SN2MPN1-013.039d.mgd.msft.net>
+References: <1382000477-17304-1-git-send-email-Li.Xiubo@freescale.com>
+ <1382000477-17304-2-git-send-email-Li.Xiubo@freescale.com>
+ <526021B0.6050206@metafoo.de>
+ <1DD289F6464F0949A2FCA5AA6DC23F8286A385@039-SN2MPN1-013.039d.mgd.msft.net>
+ <20131112050226.GK8834@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from oproxy17-pub.mail.unifiedlayer.com
- (oproxy17-pub.mail.unifiedlayer.com [74.220.201.171])
- by alsa0.perex.cz (Postfix) with SMTP id 022C0260840
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2013 07:35:14 +0100 (CET)
-In-Reply-To: <527F2126.50006@iki.fi>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Peter =?ISO-8859-1?Q?Fr=FChberger?= <fritsch@xbmc.org>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <20131112050226.GK8834@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "timur@tabi.org" <timur@tabi.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Huan Wang <Huan.Wang@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, Lars-Peter Clausen <lars@metafoo.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, Shawn Guo <Shawn.Guo@freescale.com>, "djbw@fb.com" <djbw@fb.com>, rob.
 List-Id: alsa-devel@alsa-project.org
 
-Anssi,
-
-With your speaker-test patch (v1), I have been able to make sure that I
-could use the 8 channels with my AMD card.
-
-for the ramp up/down testing. I have the same result than with v2 of
-your patch.
-
-eld#0.0 file content is identical as well.
-
-DTS-HD and Dolby True-HD are sent correctly and recognized by the
-receiver by using the files from:
-
-http://phoronix.com/forums/showthread.php?27348-TrueHD-DTS-HD-E-AC3-Over-HDMI-On-Linux
-
-with the command:s
-
-aplay -Dhdmi:CARD=HDMI,DEV=0,AES0=6 -c8  -r192000 -f s16_le thd.spdif
-aplay -Dhdmi:CARD=HDMI,DEV=0,AES0=6 -c8  -r192000 -f s16_le dts.spdif
-
-
-
-> >>
-> >>
-> > Sure, here is the output:
-> > 
-> > [   78.384821] ALSA sound/pci/hda/patch_hdmi.c:1167 HDMI hot plug event:
-> > Codec=0 Pin=3 Device=0 Inactive=0 Presence_Detect=0 ELD_Valid=1
-> > [   78.384834] ALSA sound/pci/hda/patch_hdmi.c:1512 HDMI status: Codec=0
-> > Pin=3 Presence_Detect=1 ELD_Valid=1
-> > [  128.437676] ALSA sound/pci/hda/patch_hdmi.c:678 HDMI: select CA 0x13
-> > for 8-channel allocation:  FL/FR LFE FC RL/RR RLC/RRC
-> > [  128.437797] CA XX 19 => 8
-> > [  128.437799] XX hdmi_map 00
-> > [  128.437801] XX hdmi_map 11
-> > [  128.437802] XX hdmi_map 26
-> > [  128.437804] XX hdmi_map 37
-> > [  128.437806] XX hdmi_map 43
-> > [  128.437807] XX hdmi_map 52
-> > [  128.437809] XX hdmi_map 64
-> > [  128.437810] XX hdmi_map 75
-> > [  128.437957] ALSA sound/pci/hda/patch_hdmi.c:3108
-> > atihdmi_pin_hbr_setup: NID=0x3, hbr-ctl=0x1
-> > 
-> > This is looking good. Maybe this is coming from how the channel mapping
-> > is communicated to speaker-test through ALSA API but I don't know much
-> > about that.
-> > 
-> > I'll try to understand as well on my side what is going on.
+> > > > +static int fsl_sai_probe(struct platform_device *pdev) {
+> > > [...]
+> > > > +
+> > > > +	sai->dma_params_rx.addr = res->start + SAI_RDR;
+> > > > +	sai->dma_params_rx.maxburst = 6;
+> > > > +	index = of_property_match_string(np, "dma-names", "rx");
+> > > > +	ret = of_parse_phandle_with_args(np, "dmas", "#dma-cells",
+> index,
+> > > > +				&dma_args);
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > +	sai->dma_params_rx.slave_id = dma_args.args[1];
+> > > > +
+> > > > +	sai->dma_params_tx.addr = res->start + SAI_TDR;
+> > > > +	sai->dma_params_tx.maxburst = 6;
+> > > > +	index = of_property_match_string(np, "dma-names", "tx");
+> > > > +	ret = of_parse_phandle_with_args(np, "dmas", "#dma-cells",
+> index,
+> > > > +				&dma_args);
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > +	sai->dma_params_tx.slave_id = dma_args.args[1];
+> > >
+> > > The driver should not have to manually parse the dma devicetree
+> > > properties, this is something that should be handled by the dma
+> > > engine driver.
+> > >
+> >
+> > What do you think about the DMA slave_id ?
+> > I have been noticed by one colleague that this should be parsed here,
+> > which is from your opinions ?
+> Sure slave_id can be parsed here, but IMO it should be programmed via the
+> dma_slave_confog into the respective channel
 > 
-> Hmm seems I can reproduce this issue just fine on my side now on
-> non-AMD, so I'm going to look into this myself as well. Looks a bit like
-> a speaker-test bug to me (since the printed channel numbers are
-> duplicated, and amixer shows proper chmap), though if that is the case I
-> wonder why I didn't see this before... I'll take a look.
-> 
+
+Actually, these are parsed for cpu_dai->playback_dma_data and cpu_dai->capture_dma_data dynamically, whose type is struct dma_slave_config.
+
+And now I must parse them here, because the platform eDMA driver's newest version will check and use the slave_ids to select and configure the eDMA channels via dma_device->device_control(). 
+
+--
+Xiubo
