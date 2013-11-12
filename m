@@ -1,197 +1,110 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/2] ASoC: samsung: Use ASoC dmaengine code where possible
-Date: Tue, 12 Nov 2013 13:48:40 +0000
-Message-ID: <1384264120-24750-2-git-send-email-broonie@kernel.org>
-References: <1384264120-24750-1-git-send-email-broonie@kernel.org>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1384264120-24750-1-git-send-email-broonie@kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>
-Cc: linux-samsung-soc@vger.kernel.org, linaro-kernel@lists.linaro.org, alsa-devel@alsa-project.org, Padmavathi Venna <padma.v@samsung.com>, Mark Brown <broonie@linaro.org>
+From: "Oskar Schirmer" <oskar@scara.com>
+Subject: [PATCH] ASoC: fsl: imx-pcm-fiq: omit fiq counter to avoid harm in unbalanced situations
+Date: 12 Nov 2013 15:46:38 +0000
+Message-ID: <1384271198-18974-1-git-send-email-oskar@scara.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Oskar Schirmer <oskar@scara.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+Unbalanced calls to snd_imx_pcm_trigger() may result in endless
+FIQ activity and thus provoke eternal sound. While on the first glance,
+the switch statement looks pretty symmetric, the SUSPEND/RESUME
+pair is not: the suspend case comes along snd_pcm_suspend_all(),
+which for fsl/imx-pcm-fiq is called only at snd_soc_suspend(),
+but the resume case originates straight from the SNDRV_PCM_IOCTL_RESUME.
+This way userland may provoke an unbalanced resume, which might cause
+the fiq_enable counter to increase and never return to zero again,
+so eventually imx_pcm_fiq is never disabled.
 
-Since all Exynos platforms have been converted to dmaengine and many of
-the older platforms are in the process of conversion they do not need to
-use the legacy s3c-dma APIs for DMA but can instead use the standard ASoC
-dmaengine helpers. This both allows them to benefit from improvements
-implemented in the generic code and supports multiplatform.
+Simply removing the fiq_enable will solve the problem, as long as
+one never goes play and capture game simultaneously, but beware
+trying both at once, the early TRIGGER_STOP will cut off the other
+activity prematurely. So now playing and capturing is scrutinized
+separately, instead of by counting.
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
+Signed-off-by: Oskar Schirmer <oskar@scara.com>
 ---
+ sound/soc/fsl/imx-pcm-fiq.c |   29 +++++++++++++++++------------
+ 1 file changed, 17 insertions(+), 12 deletions(-)
 
-This depends on Tomasz's s3c64xx dmaengine conversion since that is how
-I've tested it - if possible I'd like to get that merged into ASoC and
-SPI early after -rc1, since I maintian both trees it's possibly easiest
-if I go ahead any apply it?
-
- sound/soc/samsung/Kconfig     | 13 +++++--
- sound/soc/samsung/Makefile    |  6 ++--
- sound/soc/samsung/dma.h       |  3 ++
- sound/soc/samsung/dmaengine.c | 82 +++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 100 insertions(+), 4 deletions(-)
- create mode 100644 sound/soc/samsung/dmaengine.c
-
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 6afcf9d..cd21a8e 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -1,13 +1,22 @@
- config SND_SOC_SAMSUNG
- 	tristate "ASoC support for Samsung"
- 	depends on PLAT_SAMSUNG || COMPILE_TEST
--	select S3C64XX_DMA if ARCH_S3C64XX
--	select S3C24XX_DMA if ARCH_S3C24XX
-+	select S3C2410_DMA if ARCH_S3C24XX
-+	select S3C64XX_PL080 if ARCH_S3C64XX
-+	select SND_S3C_DMA if !ARCH_S3C24XX
-+	select SND_S3C_DMA_LEGACY if ARCH_S3C24XX
-+	select SND_SOC_GENERIC_DMAENGINE_PCM if !ARCH_S3C24XX
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the Samsung SoCs' Audio interfaces. You will also need to
- 	  select the audio interfaces to support below.
- 
-+config SND_S3C_DMA
-+	tristate
-+
-+config SND_S3C_DMA_LEGACY
-+	tristate
-+
- config SND_S3C24XX_I2S
- 	tristate
- 	select S3C2410_DMA
-diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
-index 709f605..86715d8 100644
---- a/sound/soc/samsung/Makefile
-+++ b/sound/soc/samsung/Makefile
-@@ -1,5 +1,6 @@
- # S3c24XX Platform Support
--snd-soc-s3c24xx-objs := dma.o
-+snd-soc-s3c-dma-objs := dmaengine.o
-+snd-soc-s3c-dma-legacy-objs := dma.o
- snd-soc-idma-objs := idma.o
- snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
- snd-soc-s3c2412-i2s-objs := s3c2412-i2s.o
-@@ -9,7 +10,8 @@ snd-soc-samsung-spdif-objs := spdif.o
- snd-soc-pcm-objs := pcm.o
- snd-soc-i2s-objs := i2s.o
- 
--obj-$(CONFIG_SND_SOC_SAMSUNG) += snd-soc-s3c24xx.o
-+obj-$(CONFIG_SND_S3C_DMA) += snd-soc-s3c-dma.o
-+obj-$(CONFIG_SND_S3C_DMA_LEGACY) += snd-soc-s3c-dma-legacy.o
- obj-$(CONFIG_SND_S3C24XX_I2S) += snd-soc-s3c24xx-i2s.o
- obj-$(CONFIG_SND_SAMSUNG_AC97) += snd-soc-ac97.o
- obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
-diff --git a/sound/soc/samsung/dma.h b/sound/soc/samsung/dma.h
-index fb09a1c..225e537 100644
---- a/sound/soc/samsung/dma.h
-+++ b/sound/soc/samsung/dma.h
-@@ -12,6 +12,8 @@
- #ifndef _S3C_AUDIO_H
- #define _S3C_AUDIO_H
- 
-+#include <sound/dmaengine_pcm.h>
-+
- struct s3c_dma_params {
- 	struct s3c2410_dma_client *client;	/* stream identifier */
- 	int channel;				/* Channel ID */
-@@ -20,6 +22,7 @@ struct s3c_dma_params {
- 	unsigned ch;
- 	struct samsung_dma_ops *ops;
- 	char *ch_name;
-+	struct snd_dmaengine_dai_dma_data dma_data;
+diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
+index 10e3305..f00b512 100644
+--- a/sound/soc/fsl/imx-pcm-fiq.c
++++ b/sound/soc/fsl/imx-pcm-fiq.c
+@@ -42,7 +42,8 @@ struct imx_pcm_runtime_data {
+ 	struct hrtimer hrt;
+ 	int poll_time_ns;
+ 	struct snd_pcm_substream *substream;
+-	atomic_t running;
++	atomic_t playing;
++	atomic_t capturing;
  };
  
- void samsung_asoc_init_dma_data(struct snd_soc_dai *dai,
-diff --git a/sound/soc/samsung/dmaengine.c b/sound/soc/samsung/dmaengine.c
-new file mode 100644
-index 0000000..ad0a371
---- /dev/null
-+++ b/sound/soc/samsung/dmaengine.c
-@@ -0,0 +1,82 @@
-+/*
-+ * dmaengine.c - Samsung dmaengine wrapper
-+ *
-+ * Author: Mark Brown <broonie@linaro.org>
-+ * Copyright 2013 Linaro
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ */
+ static enum hrtimer_restart snd_hrtimer_callback(struct hrtimer *hrt)
+@@ -52,7 +53,7 @@ static enum hrtimer_restart snd_hrtimer_callback(struct hrtimer *hrt)
+ 	struct snd_pcm_substream *substream = iprtd->substream;
+ 	struct pt_regs regs;
+ 
+-	if (!atomic_read(&iprtd->running))
++	if (!atomic_read(&iprtd->playing) && !atomic_read(&iprtd->capturing))
+ 		return HRTIMER_NORESTART;
+ 
+ 	get_fiq_regs(&regs);
+@@ -106,7 +107,6 @@ static int snd_imx_pcm_prepare(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static int fiq_enable;
+ static int imx_pcm_fiq;
+ 
+ static int snd_imx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+@@ -118,23 +118,27 @@ static int snd_imx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		atomic_set(&iprtd->running, 1);
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			atomic_set(&iprtd->playing, 1);
++		else
++			atomic_set(&iprtd->capturing, 1);
+ 		hrtimer_start(&iprtd->hrt, ns_to_ktime(iprtd->poll_time_ns),
+ 		      HRTIMER_MODE_REL);
+-		if (++fiq_enable == 1)
+-			enable_fiq(imx_pcm_fiq);
+-
++		enable_fiq(imx_pcm_fiq);
+ 		break;
+ 
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		atomic_set(&iprtd->running, 0);
+-
+-		if (--fiq_enable == 0)
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			atomic_set(&iprtd->playing, 0);
++		else
++			atomic_set(&iprtd->capturing, 0);
++		if (!atomic_read(&iprtd->playing) &&
++				!atomic_read(&iprtd->capturing))
+ 			disable_fiq(imx_pcm_fiq);
+-
+ 		break;
 +
-+#include <linux/module.h>
-+#include <linux/amba/pl08x.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/dmaengine_pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
-+
-+#include "dma.h"
-+
-+#ifdef CONFIG_ARCH_S3C64XX
-+#define filter_fn pl08x_filter_id
-+#else
-+#define filter_fn NULL
-+#endif
-+
-+static const struct snd_dmaengine_pcm_config samsung_dmaengine_pcm_config = {
-+	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-+	.compat_filter_fn = filter_fn,
-+};
-+
-+void samsung_asoc_init_dma_data(struct snd_soc_dai *dai,
-+				struct s3c_dma_params *playback,
-+				struct s3c_dma_params *capture)
-+{
-+	struct snd_dmaengine_dai_dma_data *playback_data = NULL;
-+	struct snd_dmaengine_dai_dma_data *capture_data = NULL;
-+
-+	if (playback) {
-+		playback_data = &playback->dma_data;
-+		playback_data->filter_data = (void *)playback->channel;
-+		playback_data->chan_name = playback->ch_name;
-+		playback_data->addr = playback->dma_addr;
-+		playback_data->addr_width = playback->dma_size;
-+	}
-+	if (capture) {
-+		capture_data = &capture->dma_data;
-+		capture_data->filter_data = (void *)capture->channel;
-+		capture_data->chan_name = capture->ch_name;
-+		capture_data->addr = capture->dma_addr;
-+		capture_data->addr_width = capture->dma_size;
-+	}
-+
-+	snd_soc_dai_init_dma_data(dai, playback_data, capture_data);
-+}
-+EXPORT_SYMBOL_GPL(samsung_asoc_init_dma_data);
-+
-+int samsung_asoc_dma_platform_register(struct device *dev)
-+{
-+	return snd_dmaengine_pcm_register(dev, &samsung_dmaengine_pcm_config,
-+					  SND_DMAENGINE_PCM_FLAG_COMPAT);
-+}
-+EXPORT_SYMBOL_GPL(samsung_asoc_dma_platform_register);
-+
-+void samsung_asoc_dma_platform_unregister(struct device *dev)
-+{
-+	return snd_dmaengine_pcm_unregister(dev);
-+}
-+EXPORT_SYMBOL_GPL(samsung_asoc_dma_platform_unregister);
-+
-+MODULE_AUTHOR("Mark Brown <broonie@linaro.org>");
-+MODULE_DESCRIPTION("Samsung dmaengine ASoC driver");
-+MODULE_LICENSE("GPL");
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -182,7 +186,8 @@ static int snd_imx_open(struct snd_pcm_substream *substream)
+ 
+ 	iprtd->substream = substream;
+ 
+-	atomic_set(&iprtd->running, 0);
++	atomic_set(&iprtd->playing, 0);
++	atomic_set(&iprtd->capturing, 0);
+ 	hrtimer_init(&iprtd->hrt, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+ 	iprtd->hrt.function = snd_hrtimer_callback;
+ 
 -- 
-1.8.4.3
+1.7.9.5
