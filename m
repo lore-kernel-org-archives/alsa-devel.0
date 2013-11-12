@@ -1,141 +1,24 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [RFC] ASoC: fsl-ssi: Missing DMA-Request workaround
-Date: Tue, 12 Nov 2013 10:30:34 +0800
-Message-ID: <20131112023033.GA23243@MrMyself>
-References: <1384185816-7730-1-git-send-email-mpa@pengutronix.de>
- <20131112014913.GE11083@S2101-09.ap.freescale.net>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH][RESEND 3/8] dma: mmp_tdma: use gen_pool_dma_alloc() to
+ allocate descriptor
+Date: Tue, 12 Nov 2013 09:20:35 +0530
+Message-ID: <20131112035035.GD8834@intel.com>
+References: <cover.1383306365.git.b42378@freescale.com>
+ <b7d5dce9fcc118a60261824196c820de6fb434a2.1383306365.git.b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe003.messaging.microsoft.com [216.32.180.13])
- by alsa0.perex.cz (Postfix) with ESMTP id F37352615AE
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2013 03:50:21 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-media-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20131112014913.GE11083@S2101-09.ap.freescale.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, shawn.guo@linaro.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <b7d5dce9fcc118a60261824196c820de6fb434a2.1383306365.git.b42378@freescale.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: akpm@linux-foundation.org, joe@perches.com, nsekhar@ti.com, khilman@deeprootsystems.com, linux@arm.linux.org.uk, dan.j.williams@intel.com, m.chehab@samsung.com, hjk@hansjkoch.de, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, rmk+kernel@arm.linux.org.uk, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Markus,
+On Fri, Nov 01, 2013 at 07:48:16PM +0800, Nicolin Chen wrote:
+> Since gen_pool_dma_alloc() is introduced, we implement it to simplify code.
 
-On Tue, Nov 12, 2013 at 09:49:16AM +0800, Shawn Guo wrote:
-> Copy Nicolin.
-> 
-> Shawn
-> 
-> On Mon, Nov 11, 2013 at 05:03:36PM +0100, Markus Pargmann wrote:
-> > There is a hardware issue when using capture and playback at the same
-> > time. In the tested scenario, the capture stream was started slightly
-> > before the playback stream. The first time the application starts after
-> > a powerup, there is a high probability that the SSI unit does not send a
-> > request to the SDMA unit. The playback does not work. I tested this on
-> > i.MX53 with SSI unit 2 kernel 3.10.10.
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
-I've been tested SSI with WM8962 on i.MX6 series for a while, and never met
-this issue, well, not with 3.10.10 original code and i.MX53 though.
-
-Could you please provide me a reproducible flow? 
-
-If playback first and capture later, would this also reproduce the issue?
-
-Is there any command must be executed before the arecord | aplay, or just
-run it after system boot-up?
-
-By trying to reproduce it on i.MX6, we can confirm if it's a common issue
-to the IP or its driver, or just a hardware defect within i.MX53.
-
-Thank you,
-Nicolin Chen
-
----
-
-> > 
-> > Here is a register dump of the situation:
-> > SDMA
-> > 0x63fb0000
-> > 00000000: c0040000 00000000 0000001e 00000000
-> > 00000010: 00000001 ffffffff 00000000 e03efa41
-> > 00000020: 00000000 00000000 00000000 00000000
-> > 00000030: 00000064 00000000 00000003 00000000
-> > 00000040: 00000000 00000000 00000000 00006000
-> > 00000050: 00000000 00000000 00000001 00004050
-> > 00000060: 01208000 00000000 00000000 00000000 /* 0x60: EVT_MIRROR showing all received DMA requests */
-> >            ^ This should be a 3 instead. Bits 24 and 25 are the DMA requests for
-> >              RX and TX. Bit 25 is not set, DMA request 25 is missing.
-> > 
-> > SSI
-> > 0x50014000
-> > 00000000: 00000000 00000000 0000005f 00000000
-> > 00000010: 00000457 000050c1 01f80f00 0000028d /* 0x14: ISR Interrupt status register */
-> >                           ^
-> > 	     At 0x14 we can clearly see the last bit is set (0x1) which
-> > 	     is TFE0, Transmit FIFO 0 empty. So it should automatically
-> > 	     request data from the DMA engine, but it doesn't.
-> > 
-> > 00000020: 0000028d 0004e000 00040000 000010dd
-> > 00000030: 00001f1f 00000000 00000000 00000000
-> > 00000040: 00000000 00000000 00000000 00000000
-> > 00000050: 00000000 00000000 ........
-> > STATS (/sys/bus/platform/devices/50014000.ssi/statistics)
-> > rfrc=0
-> > tfrc=0
-> > roe1=0
-> > roe0=0
-> > tue1=0
-> > tue0=1094475
-> > 
-> > I could solve this issue by filling the transmit FIFO with data. After
-> > that, the SDMA unit receives DMA request 25 again and audio playback
-> > works.
-> > 
-> > This patch adds TUE0 interrupt handler which fills FIFO0 with arbitrary data.
-> > 
-> > Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> > ---
-> > 
-> > Hi,
-> > 
-> > does anyone have an idea why the SSI unit does not request DMA by its own at
-> > the beginning? Or is it a hardware errata that is not listed yet?
-> > 
-> > Regards,
-> > 
-> > Markus Pargmann
-> > 
-> > 
-> >  sound/soc/fsl/fsl_ssi.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> > index 6b81d0c..8faf2b5 100644
-> > --- a/sound/soc/fsl/fsl_ssi.c
-> > +++ b/sound/soc/fsl/fsl_ssi.c
-> > @@ -269,9 +269,14 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
-> >  	}
-> >  
-> >  	if (sisr & CCSR_SSI_SISR_TUE0) {
-> > +		int i;
-> > +
-> >  		ssi_private->stats.tue0++;
-> >  		sisr2 |= CCSR_SSI_SISR_TUE0;
-> >  		ret = IRQ_HANDLED;
-> > +
-> > +		for (i = 0; i != ssi_private->fifo_depth; ++i)
-> > +			write_ssi(0x0, &ssi->stx0);
-> >  	}
-> >  
-> >  	if (sisr & CCSR_SSI_SISR_TFS) {
-> > -- 
-> > 1.8.4.2
-> > 
+--
+~Vinod
