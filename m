@@ -1,110 +1,45 @@
 From: "Oskar Schirmer" <oskar@scara.com>
-Subject: [PATCH] ASoC: fsl: imx-pcm-fiq: omit fiq counter to avoid harm in unbalanced situations
-Date: 12 Nov 2013 15:46:38 +0000
-Message-ID: <1384271198-18974-1-git-send-email-oskar@scara.com>
+Subject: [PATCH] ALSA: pcm: retrieve true appl_ptr where stream was unlocked
+Date: 12 Nov 2013 16:14:17 +0000
+Message-ID: <1384272857-24473-1-git-send-email-oskar@scara.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Oskar Schirmer <oskar@scara.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>, Oskar Schirmer <oskar@scara.com>
 List-Id: alsa-devel@alsa-project.org
 
-Unbalanced calls to snd_imx_pcm_trigger() may result in endless
-FIQ activity and thus provoke eternal sound. While on the first glance,
-the switch statement looks pretty symmetric, the SUSPEND/RESUME
-pair is not: the suspend case comes along snd_pcm_suspend_all(),
-which for fsl/imx-pcm-fiq is called only at snd_soc_suspend(),
-but the resume case originates straight from the SNDRV_PCM_IOCTL_RESUME.
-This way userland may provoke an unbalanced resume, which might cause
-the fiq_enable counter to increase and never return to zero again,
-so eventually imx_pcm_fiq is never disabled.
+Calculated for data transfer, the local variable appl_ptr is reused,
+changed and written back later, though the lock was not held during
+the transfer earlier. Admitted, destiny of the lock is not obvious
+at all, but this looks much like a race condition candidate, so make
+sure to have some original appl_ptr value to work on.
 
-Simply removing the fiq_enable will solve the problem, as long as
-one never goes play and capture game simultaneously, but beware
-trying both at once, the early TRIGGER_STOP will cut off the other
-activity prematurely. So now playing and capturing is scrutinized
-separately, instead of by counting.
+Two occurences.
 
 Signed-off-by: Oskar Schirmer <oskar@scara.com>
 ---
- sound/soc/fsl/imx-pcm-fiq.c |   29 +++++++++++++++++------------
- 1 file changed, 17 insertions(+), 12 deletions(-)
+ sound/core/pcm_lib.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index 10e3305..f00b512 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -42,7 +42,8 @@ struct imx_pcm_runtime_data {
- 	struct hrtimer hrt;
- 	int poll_time_ns;
- 	struct snd_pcm_substream *substream;
--	atomic_t running;
-+	atomic_t playing;
-+	atomic_t capturing;
- };
- 
- static enum hrtimer_restart snd_hrtimer_callback(struct hrtimer *hrt)
-@@ -52,7 +53,7 @@ static enum hrtimer_restart snd_hrtimer_callback(struct hrtimer *hrt)
- 	struct snd_pcm_substream *substream = iprtd->substream;
- 	struct pt_regs regs;
- 
--	if (!atomic_read(&iprtd->running))
-+	if (!atomic_read(&iprtd->playing) && !atomic_read(&iprtd->capturing))
- 		return HRTIMER_NORESTART;
- 
- 	get_fiq_regs(&regs);
-@@ -106,7 +107,6 @@ static int snd_imx_pcm_prepare(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static int fiq_enable;
- static int imx_pcm_fiq;
- 
- static int snd_imx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-@@ -118,23 +118,27 @@ static int snd_imx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		atomic_set(&iprtd->running, 1);
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			atomic_set(&iprtd->playing, 1);
-+		else
-+			atomic_set(&iprtd->capturing, 1);
- 		hrtimer_start(&iprtd->hrt, ns_to_ktime(iprtd->poll_time_ns),
- 		      HRTIMER_MODE_REL);
--		if (++fiq_enable == 1)
--			enable_fiq(imx_pcm_fiq);
--
-+		enable_fiq(imx_pcm_fiq);
- 		break;
- 
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		atomic_set(&iprtd->running, 0);
--
--		if (--fiq_enable == 0)
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			atomic_set(&iprtd->playing, 0);
-+		else
-+			atomic_set(&iprtd->capturing, 0);
-+		if (!atomic_read(&iprtd->playing) &&
-+				!atomic_read(&iprtd->capturing))
- 			disable_fiq(imx_pcm_fiq);
--
- 		break;
-+
- 	default:
- 		return -EINVAL;
- 	}
-@@ -182,7 +186,8 @@ static int snd_imx_open(struct snd_pcm_substream *substream)
- 
- 	iprtd->substream = substream;
- 
--	atomic_set(&iprtd->running, 0);
-+	atomic_set(&iprtd->playing, 0);
-+	atomic_set(&iprtd->capturing, 0);
- 	hrtimer_init(&iprtd->hrt, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
- 	iprtd->hrt.function = snd_hrtimer_callback;
- 
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 6e03b46..47e836a 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -2051,6 +2051,7 @@ static snd_pcm_sframes_t snd_pcm_lib_write1(struct snd_pcm_substream *substream,
+ 		default:
+ 			break;
+ 		}
++		appl_ptr = runtime->control->appl_ptr;
+ 		appl_ptr += frames;
+ 		if (appl_ptr >= runtime->boundary)
+ 			appl_ptr -= runtime->boundary;
+@@ -2283,6 +2284,7 @@ static snd_pcm_sframes_t snd_pcm_lib_read1(struct snd_pcm_substream *substream,
+ 		default:
+ 			break;
+ 		}
++		appl_ptr = runtime->control->appl_ptr;
+ 		appl_ptr += frames;
+ 		if (appl_ptr >= runtime->boundary)
+ 			appl_ptr -= runtime->boundary;
 -- 
 1.7.9.5
