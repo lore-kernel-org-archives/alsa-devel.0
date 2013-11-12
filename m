@@ -1,19 +1,21 @@
-From: Markus Pargmann <mpa@pengutronix.de>
+From: Nicolin Chen <b42378@freescale.com>
 Subject: Re: [RFC] ASoC: fsl-ssi: Missing DMA-Request workaround
-Date: Tue, 12 Nov 2013 11:57:38 +0100
-Message-ID: <20131112105738.GF30263@pengutronix.de>
+Date: Tue, 12 Nov 2013 18:42:59 +0800
+Message-ID: <20131112104258.GB23243@MrMyself>
 References: <1384185816-7730-1-git-send-email-mpa@pengutronix.de>
  <20131112014913.GE11083@S2101-09.ap.freescale.net>
  <20131112023033.GA23243@MrMyself>
+ <20131112105738.GF30263@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 48D6F2616F3
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2013 11:57:47 +0100 (CET)
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe001.messaging.microsoft.com [216.32.180.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C1AD2616F3
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2013 12:00:19 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20131112023033.GA23243@MrMyself>
+In-Reply-To: <20131112105738.GF30263@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,91 +25,209 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
+To: Markus Pargmann <mpa@pengutronix.de>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, shawn.guo@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBUdWUsIE5vdiAxMiwgMjAxMyBhdCAxMDozMDozNEFNICswODAwLCBOaWNvbGluIENo
-ZW4gd3JvdGU6Cj4gSGkgTWFya3VzLAo+IAo+IE9uIFR1ZSwgTm92IDEyLCAyMDEzIGF0IDA5OjQ5
-OjE2QU0gKzA4MDAsIFNoYXduIEd1byB3cm90ZToKPiA+IENvcHkgTmljb2xpbi4KPiA+IAo+ID4g
-U2hhd24KPiA+IAo+ID4gT24gTW9uLCBOb3YgMTEsIDIwMTMgYXQgMDU6MDM6MzZQTSArMDEwMCwg
-TWFya3VzIFBhcmdtYW5uIHdyb3RlOgo+ID4gPiBUaGVyZSBpcyBhIGhhcmR3YXJlIGlzc3VlIHdo
-ZW4gdXNpbmcgY2FwdHVyZSBhbmQgcGxheWJhY2sgYXQgdGhlIHNhbWUKPiA+ID4gdGltZS4gSW4g
-dGhlIHRlc3RlZCBzY2VuYXJpbywgdGhlIGNhcHR1cmUgc3RyZWFtIHdhcyBzdGFydGVkIHNsaWdo
-dGx5Cj4gPiA+IGJlZm9yZSB0aGUgcGxheWJhY2sgc3RyZWFtLiBUaGUgZmlyc3QgdGltZSB0aGUg
-YXBwbGljYXRpb24gc3RhcnRzIGFmdGVyCj4gPiA+IGEgcG93ZXJ1cCwgdGhlcmUgaXMgYSBoaWdo
-IHByb2JhYmlsaXR5IHRoYXQgdGhlIFNTSSB1bml0IGRvZXMgbm90IHNlbmQgYQo+ID4gPiByZXF1
-ZXN0IHRvIHRoZSBTRE1BIHVuaXQuIFRoZSBwbGF5YmFjayBkb2VzIG5vdCB3b3JrLiBJIHRlc3Rl
-ZCB0aGlzIG9uCj4gPiA+IGkuTVg1MyB3aXRoIFNTSSB1bml0IDIga2VybmVsIDMuMTAuMTAuCj4g
-Cj4gSSd2ZSBiZWVuIHRlc3RlZCBTU0kgd2l0aCBXTTg5NjIgb24gaS5NWDYgc2VyaWVzIGZvciBh
-IHdoaWxlLCBhbmQgbmV2ZXIgbWV0Cj4gdGhpcyBpc3N1ZSwgd2VsbCwgbm90IHdpdGggMy4xMC4x
-MCBvcmlnaW5hbCBjb2RlIGFuZCBpLk1YNTMgdGhvdWdoLgo+IAo+IENvdWxkIHlvdSBwbGVhc2Ug
-cHJvdmlkZSBtZSBhIHJlcHJvZHVjaWJsZSBmbG93PyAKPiAKPiBJZiBwbGF5YmFjayBmaXJzdCBh
-bmQgY2FwdHVyZSBsYXRlciwgd291bGQgdGhpcyBhbHNvIHJlcHJvZHVjZSB0aGUgaXNzdWU/Cj4g
-Cj4gSXMgdGhlcmUgYW55IGNvbW1hbmQgbXVzdCBiZSBleGVjdXRlZCBiZWZvcmUgdGhlIGFyZWNv
-cmQgfCBhcGxheSwgb3IganVzdAo+IHJ1biBpdCBhZnRlciBzeXN0ZW0gYm9vdC11cD8KPiAKPiBC
-eSB0cnlpbmcgdG8gcmVwcm9kdWNlIGl0IG9uIGkuTVg2LCB3ZSBjYW4gY29uZmlybSBpZiBpdCdz
-IGEgY29tbW9uIGlzc3VlCj4gdG8gdGhlIElQIG9yIGl0cyBkcml2ZXIsIG9yIGp1c3QgYSBoYXJk
-d2FyZSBkZWZlY3Qgd2l0aGluIGkuTVg1My4KCkkganVzdCB0ZXN0ZWQgYSBwYXRjaCBmcm9tIErD
-vHJnZW4gQmVpc2VydCAiZml4IFNETUEgc3RhcnZhdGlvbiIgWzFdLiBJdApzb2x2ZXMgZXhhY3Rs
-eSB0aGlzIGlzc3VlIGJ1dCB3YXMgbm90IGFwcGxpZWQuIEkgd2lsbCByZWJhc2UgdGhlIHBhdGNo
-Cm9udG8gdGhlIGxhdGVzdCBzb3VuZCB0cmVlIGFuZCByZXNlbmQgaXQuCgpUaGFua3MsCgpNYXJr
-dXMgUGFyZ21hbm4KClsxXSBodHRwOi8vdGhyZWFkLmdtYW5lLm9yZy9nbWFuZS5saW51eC5zb3Vu
-ZC8xNzI0Cgo+IAo+IFRoYW5rIHlvdSwKPiBOaWNvbGluIENoZW4KPiAKPiAtLS0KPiAKPiA+ID4g
-Cj4gPiA+IEhlcmUgaXMgYSByZWdpc3RlciBkdW1wIG9mIHRoZSBzaXR1YXRpb246Cj4gPiA+IFNE
-TUEKPiA+ID4gMHg2M2ZiMDAwMAo+ID4gPiAwMDAwMDAwMDogYzAwNDAwMDAgMDAwMDAwMDAgMDAw
-MDAwMWUgMDAwMDAwMDAKPiA+ID4gMDAwMDAwMTA6IDAwMDAwMDAxIGZmZmZmZmZmIDAwMDAwMDAw
-IGUwM2VmYTQxCj4gPiA+IDAwMDAwMDIwOiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAw
-MDAwMAo+ID4gPiAwMDAwMDAzMDogMDAwMDAwNjQgMDAwMDAwMDAgMDAwMDAwMDMgMDAwMDAwMDAK
-PiA+ID4gMDAwMDAwNDA6IDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDA2MDAwCj4gPiA+
-IDAwMDAwMDUwOiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMSAwMDAwNDA1MAo+ID4gPiAwMDAw
-MDA2MDogMDEyMDgwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgLyogMHg2MDogRVZUX01J
-UlJPUiBzaG93aW5nIGFsbCByZWNlaXZlZCBETUEgcmVxdWVzdHMgKi8KPiA+ID4gICAgICAgICAg
-ICBeIFRoaXMgc2hvdWxkIGJlIGEgMyBpbnN0ZWFkLiBCaXRzIDI0IGFuZCAyNSBhcmUgdGhlIERN
-QSByZXF1ZXN0cyBmb3IKPiA+ID4gICAgICAgICAgICAgIFJYIGFuZCBUWC4gQml0IDI1IGlzIG5v
-dCBzZXQsIERNQSByZXF1ZXN0IDI1IGlzIG1pc3NpbmcuCj4gPiA+IAo+ID4gPiBTU0kKPiA+ID4g
-MHg1MDAxNDAwMAo+ID4gPiAwMDAwMDAwMDogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwNWYgMDAw
-MDAwMDAKPiA+ID4gMDAwMDAwMTA6IDAwMDAwNDU3IDAwMDA1MGMxIDAxZjgwZjAwIDAwMDAwMjhk
-IC8qIDB4MTQ6IElTUiBJbnRlcnJ1cHQgc3RhdHVzIHJlZ2lzdGVyICovCj4gPiA+ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgXgo+ID4gPiAJICAgICBBdCAweDE0IHdlIGNhbiBjbGVhcmx5IHNl
-ZSB0aGUgbGFzdCBiaXQgaXMgc2V0ICgweDEpIHdoaWNoCj4gPiA+IAkgICAgIGlzIFRGRTAsIFRy
-YW5zbWl0IEZJRk8gMCBlbXB0eS4gU28gaXQgc2hvdWxkIGF1dG9tYXRpY2FsbHkKPiA+ID4gCSAg
-ICAgcmVxdWVzdCBkYXRhIGZyb20gdGhlIERNQSBlbmdpbmUsIGJ1dCBpdCBkb2Vzbid0Lgo+ID4g
-PiAKPiA+ID4gMDAwMDAwMjA6IDAwMDAwMjhkIDAwMDRlMDAwIDAwMDQwMDAwIDAwMDAxMGRkCj4g
-PiA+IDAwMDAwMDMwOiAwMDAwMWYxZiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMAo+ID4gPiAw
-MDAwMDA0MDogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKPiA+ID4gMDAwMDAw
-NTA6IDAwMDAwMDAwIDAwMDAwMDAwIC4uLi4uLi4uCj4gPiA+IFNUQVRTICgvc3lzL2J1cy9wbGF0
-Zm9ybS9kZXZpY2VzLzUwMDE0MDAwLnNzaS9zdGF0aXN0aWNzKQo+ID4gPiByZnJjPTAKPiA+ID4g
-dGZyYz0wCj4gPiA+IHJvZTE9MAo+ID4gPiByb2UwPTAKPiA+ID4gdHVlMT0wCj4gPiA+IHR1ZTA9
-MTA5NDQ3NQo+ID4gPiAKPiA+ID4gSSBjb3VsZCBzb2x2ZSB0aGlzIGlzc3VlIGJ5IGZpbGxpbmcg
-dGhlIHRyYW5zbWl0IEZJRk8gd2l0aCBkYXRhLiBBZnRlcgo+ID4gPiB0aGF0LCB0aGUgU0RNQSB1
-bml0IHJlY2VpdmVzIERNQSByZXF1ZXN0IDI1IGFnYWluIGFuZCBhdWRpbyBwbGF5YmFjawo+ID4g
-PiB3b3Jrcy4KPiA+ID4gCj4gPiA+IFRoaXMgcGF0Y2ggYWRkcyBUVUUwIGludGVycnVwdCBoYW5k
-bGVyIHdoaWNoIGZpbGxzIEZJRk8wIHdpdGggYXJiaXRyYXJ5IGRhdGEuCj4gPiA+IAo+ID4gPiBT
-aWduZWQtb2ZmLWJ5OiBNYXJrdXMgUGFyZ21hbm4gPG1wYUBwZW5ndXRyb25peC5kZT4KPiA+ID4g
-LS0tCj4gPiA+IAo+ID4gPiBIaSwKPiA+ID4gCj4gPiA+IGRvZXMgYW55b25lIGhhdmUgYW4gaWRl
-YSB3aHkgdGhlIFNTSSB1bml0IGRvZXMgbm90IHJlcXVlc3QgRE1BIGJ5IGl0cyBvd24gYXQKPiA+
-ID4gdGhlIGJlZ2lubmluZz8gT3IgaXMgaXQgYSBoYXJkd2FyZSBlcnJhdGEgdGhhdCBpcyBub3Qg
-bGlzdGVkIHlldD8KPiA+ID4gCj4gPiA+IFJlZ2FyZHMsCj4gPiA+IAo+ID4gPiBNYXJrdXMgUGFy
-Z21hbm4KPiA+ID4gCj4gPiA+IAo+ID4gPiAgc291bmQvc29jL2ZzbC9mc2xfc3NpLmMgfCA1ICsr
-KysrCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspCj4gPiA+IAo+ID4gPiBk
-aWZmIC0tZ2l0IGEvc291bmQvc29jL2ZzbC9mc2xfc3NpLmMgYi9zb3VuZC9zb2MvZnNsL2ZzbF9z
-c2kuYwo+ID4gPiBpbmRleCA2YjgxZDBjLi44ZmFmMmI1IDEwMDY0NAo+ID4gPiAtLS0gYS9zb3Vu
-ZC9zb2MvZnNsL2ZzbF9zc2kuYwo+ID4gPiArKysgYi9zb3VuZC9zb2MvZnNsL2ZzbF9zc2kuYwo+
-ID4gPiBAQCAtMjY5LDkgKzI2OSwxNCBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgZnNsX3NzaV9pc3Io
-aW50IGlycSwgdm9pZCAqZGV2X2lkKQo+ID4gPiAgCX0KPiA+ID4gIAo+ID4gPiAgCWlmIChzaXNy
-ICYgQ0NTUl9TU0lfU0lTUl9UVUUwKSB7Cj4gPiA+ICsJCWludCBpOwo+ID4gPiArCj4gPiA+ICAJ
-CXNzaV9wcml2YXRlLT5zdGF0cy50dWUwKys7Cj4gPiA+ICAJCXNpc3IyIHw9IENDU1JfU1NJX1NJ
-U1JfVFVFMDsKPiA+ID4gIAkJcmV0ID0gSVJRX0hBTkRMRUQ7Cj4gPiA+ICsKPiA+ID4gKwkJZm9y
-IChpID0gMDsgaSAhPSBzc2lfcHJpdmF0ZS0+Zmlmb19kZXB0aDsgKytpKQo+ID4gPiArCQkJd3Jp
-dGVfc3NpKDB4MCwgJnNzaS0+c3R4MCk7Cj4gPiA+ICAJfQo+ID4gPiAgCj4gPiA+ICAJaWYgKHNp
-c3IgJiBDQ1NSX1NTSV9TSVNSX1RGUykgewo+ID4gPiAtLSAKPiA+ID4gMS44LjQuMgo+ID4gPiAK
-PiAKPiAKPiAKCi0tIApQZW5ndXRyb25peCBlLksuICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfApJbmR1c3RyaWFsIExpbnV4IFNvbHV0aW9u
-cyAgICAgICAgICAgICAgICAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlLyAgfApQZWluZXIg
-U3RyLiA2LTgsIDMxMTM3IEhpbGRlc2hlaW0sIEdlcm1hbnkgfCBQaG9uZTogKzQ5LTUxMjEtMjA2
-OTE3LTAgICAgfApBbXRzZ2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4NiAgICAgICAgICAgfCBG
-YXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, Nov 12, 2013 at 11:57:38AM +0100, Markus Pargmann wrote:
+> Hi,
+> =
+
+> On Tue, Nov 12, 2013 at 10:30:34AM +0800, Nicolin Chen wrote:
+> > Hi Markus,
+> > =
+
+> > On Tue, Nov 12, 2013 at 09:49:16AM +0800, Shawn Guo wrote:
+> > > Copy Nicolin.
+> > > =
+
+> > > Shawn
+> > > =
+
+> > > On Mon, Nov 11, 2013 at 05:03:36PM +0100, Markus Pargmann wrote:
+> > > > There is a hardware issue when using capture and playback at the sa=
+me
+> > > > time. In the tested scenario, the capture stream was started slight=
+ly
+> > > > before the playback stream. The first time the application starts a=
+fter
+> > > > a powerup, there is a high probability that the SSI unit does not s=
+end a
+> > > > request to the SDMA unit. The playback does not work. I tested this=
+ on
+> > > > i.MX53 with SSI unit 2 kernel 3.10.10.
+> > =
+
+> > I've been tested SSI with WM8962 on i.MX6 series for a while, and never=
+ met
+> > this issue, well, not with 3.10.10 original code and i.MX53 though.
+> > =
+
+> > Could you please provide me a reproducible flow? =
+
+> > =
+
+> > If playback first and capture later, would this also reproduce the issu=
+e?
+> > =
+
+> > Is there any command must be executed before the arecord | aplay, or ju=
+st
+> > run it after system boot-up?
+> > =
+
+> > By trying to reproduce it on i.MX6, we can confirm if it's a common iss=
+ue
+> > to the IP or its driver, or just a hardware defect within i.MX53.
+> =
+
+> I just tested a patch from J=FCrgen Beisert "fix SDMA starvation" [1]. It
+> solves exactly this issue but was not applied. I will rebase the patch
+> onto the latest sound tree and resend it.
+
+Great news!
+
+Thank you
+Nicolin Chen
+
+---
+
+> =
+
+> Thanks,
+> =
+
+> Markus Pargmann
+> =
+
+> [1] http://thread.gmane.org/gmane.linux.sound/1724
+> =
+
+> > =
+
+> > Thank you,
+> > Nicolin Chen
+> > =
+
+> > ---
+> > =
+
+> > > > =
+
+> > > > Here is a register dump of the situation:
+> > > > SDMA
+> > > > 0x63fb0000
+> > > > 00000000: c0040000 00000000 0000001e 00000000
+> > > > 00000010: 00000001 ffffffff 00000000 e03efa41
+> > > > 00000020: 00000000 00000000 00000000 00000000
+> > > > 00000030: 00000064 00000000 00000003 00000000
+> > > > 00000040: 00000000 00000000 00000000 00006000
+> > > > 00000050: 00000000 00000000 00000001 00004050
+> > > > 00000060: 01208000 00000000 00000000 00000000 /* 0x60: EVT_MIRROR s=
+howing all received DMA requests */
+> > > >            ^ This should be a 3 instead. Bits 24 and 25 are the DMA=
+ requests for
+> > > >              RX and TX. Bit 25 is not set, DMA request 25 is missin=
+g.
+> > > > =
+
+> > > > SSI
+> > > > 0x50014000
+> > > > 00000000: 00000000 00000000 0000005f 00000000
+> > > > 00000010: 00000457 000050c1 01f80f00 0000028d /* 0x14: ISR Interrup=
+t status register */
+> > > >                           ^
+> > > > 	     At 0x14 we can clearly see the last bit is set (0x1) which
+> > > > 	     is TFE0, Transmit FIFO 0 empty. So it should automatically
+> > > > 	     request data from the DMA engine, but it doesn't.
+> > > > =
+
+> > > > 00000020: 0000028d 0004e000 00040000 000010dd
+> > > > 00000030: 00001f1f 00000000 00000000 00000000
+> > > > 00000040: 00000000 00000000 00000000 00000000
+> > > > 00000050: 00000000 00000000 ........
+> > > > STATS (/sys/bus/platform/devices/50014000.ssi/statistics)
+> > > > rfrc=3D0
+> > > > tfrc=3D0
+> > > > roe1=3D0
+> > > > roe0=3D0
+> > > > tue1=3D0
+> > > > tue0=3D1094475
+> > > > =
+
+> > > > I could solve this issue by filling the transmit FIFO with data. Af=
+ter
+> > > > that, the SDMA unit receives DMA request 25 again and audio playback
+> > > > works.
+> > > > =
+
+> > > > This patch adds TUE0 interrupt handler which fills FIFO0 with arbit=
+rary data.
+> > > > =
+
+> > > > Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+> > > > ---
+> > > > =
+
+> > > > Hi,
+> > > > =
+
+> > > > does anyone have an idea why the SSI unit does not request DMA by i=
+ts own at
+> > > > the beginning? Or is it a hardware errata that is not listed yet?
+> > > > =
+
+> > > > Regards,
+> > > > =
+
+> > > > Markus Pargmann
+> > > > =
+
+> > > > =
+
+> > > >  sound/soc/fsl/fsl_ssi.c | 5 +++++
+> > > >  1 file changed, 5 insertions(+)
+> > > > =
+
+> > > > diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> > > > index 6b81d0c..8faf2b5 100644
+> > > > --- a/sound/soc/fsl/fsl_ssi.c
+> > > > +++ b/sound/soc/fsl/fsl_ssi.c
+> > > > @@ -269,9 +269,14 @@ static irqreturn_t fsl_ssi_isr(int irq, void *=
+dev_id)
+> > > >  	}
+> > > >  =
+
+> > > >  	if (sisr & CCSR_SSI_SISR_TUE0) {
+> > > > +		int i;
+> > > > +
+> > > >  		ssi_private->stats.tue0++;
+> > > >  		sisr2 |=3D CCSR_SSI_SISR_TUE0;
+> > > >  		ret =3D IRQ_HANDLED;
+> > > > +
+> > > > +		for (i =3D 0; i !=3D ssi_private->fifo_depth; ++i)
+> > > > +			write_ssi(0x0, &ssi->stx0);
+> > > >  	}
+> > > >  =
+
+> > > >  	if (sisr & CCSR_SSI_SISR_TFS) {
+> > > > -- =
+
+> > > > 1.8.4.2
+> > > > =
+
+> > =
+
+> > =
+
+> > =
+
+> =
+
+> -- =
+
+> Pengutronix e.K.                           |                             |
+> Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> =
