@@ -1,44 +1,100 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8997: Correct typo in ISRC mux routes
-Date: Tue, 12 Nov 2013 10:52:10 +0000
-Message-ID: <1384253530-4123-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EAC972616FA
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2013 12:07:05 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, lgirdwood@gmail.com
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH] ASoC: fsl-ssi: fix SDMA starvation
+Date: Tue, 12 Nov 2013 12:17:36 +0100
+Message-ID: <1384255056-25673-1-git-send-email-mpa@pengutronix.de>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, Juergen Beisert <jbe@pengutronix.de>, stable@vger.kernel.org, Markus Pargmann <mpa@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8997.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+From: Juergen Beisert <jbe@pengutronix.de>
 
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index 6ec3de3..2e886ca 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -887,7 +887,7 @@ static const struct snd_soc_dapm_route wm8997_dapm_routes[] = {
- 	ARIZONA_MIXER_ROUTES("Mic Mute Mixer", "Mic"),
+In cases when capturing is already running and someone enables also
+playback, the SDMA unit of the i.MX SoC does not see an edge on its TX DMA
+request line. This is due to the TX FIFOs are empty, and this request line is
+active all the time, when the CCSR_SSI_SIER_TDMAE bit is set.
+In this case also the TX FIFO underrun interrupt will flood the system forever.
+
+To ensure the first edge happens after enabling the TX side of the SSI unit and
+to trigger the SDMA unit successfully enable the CCSR_SSI_SIER_TDMAE on
+demand only. To be sure, this patch does the same for the CCSR_SSI_SIER_RDMAE
+(RX side) bit.
+
+Signed-off-by: Juergen Beisert <jbe@pengutronix.de>
+Cc: stable@vger.kernel.org
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+---
+Hi,
+
+The patch is based on Mark's "fix/fsl" branch.
+
+Regards,
+
+Markus Pargmann
+
+
+ sound/soc/fsl/fsl_ssi.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 6b81d0c..8c94632 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -107,10 +107,9 @@ static inline void write_ssi_mask(u32 __iomem *addr, u32 clear, u32 set)
+ #endif
  
- 	ARIZONA_MUX_ROUTES("ISRC1INT1", "ISRC1INT1"),
--	ARIZONA_MUX_ROUTES("ISRC1INT2", "ISRC2INT2"),
-+	ARIZONA_MUX_ROUTES("ISRC1INT2", "ISRC1INT2"),
+ /* SIER bitflag of interrupts to enable */
+-#define SIER_FLAGS (CCSR_SSI_SIER_TFRC_EN | CCSR_SSI_SIER_TDMAE | \
+-		    CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TUE0_EN | \
+-		    CCSR_SSI_SIER_TUE1_EN | CCSR_SSI_SIER_RFRC_EN | \
+-		    CCSR_SSI_SIER_RDMAE | CCSR_SSI_SIER_RIE | \
++#define SIER_FLAGS (CCSR_SSI_SIER_TFRC_EN | CCSR_SSI_SIER_TIE | \
++		    CCSR_SSI_SIER_TUE0_EN | CCSR_SSI_SIER_TUE1_EN | \
++		    CCSR_SSI_SIER_RFRC_EN | CCSR_SSI_SIER_RIE | \
+ 		    CCSR_SSI_SIER_ROE0_EN | CCSR_SSI_SIER_ROE1_EN)
  
- 	ARIZONA_MUX_ROUTES("ISRC1DEC1", "ISRC1DEC1"),
- 	ARIZONA_MUX_ROUTES("ISRC1DEC2", "ISRC1DEC2"),
+ /**
+@@ -548,6 +547,9 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+  *
+  * The DMA channel is in external master start and pause mode, which
+  * means the SSI completely controls the flow of data.
++ *
++ * To use the i.MX's SDMA unit it is important to create an edge on the
++ * corresponding request line. Otherwise the request will be ignored!
+  */
+ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			   struct snd_soc_dai *dai)
+@@ -580,20 +582,26 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			write_ssi_mask(&ssi->scr, 0,
+ 				CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE);
+-		else
++			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_TDMAE);
++		} else {
+ 			write_ssi_mask(&ssi->scr, 0,
+ 				CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_RE);
++			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_RDMAE);
++		}
+ 		break;
+ 
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_TE, 0);
+-		else
++			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_TDMAE, 0);
++		} else {
+ 			write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_RE, 0);
++			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_RDMAE, 0);
++		}
+ 
+ 		if (!ssi_private->imx_ac97 && (read_ssi(&ssi->scr) &
+ 					(CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE)) == 0)
 -- 
-1.7.2.5
+1.8.4.2
