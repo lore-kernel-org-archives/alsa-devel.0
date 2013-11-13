@@ -1,69 +1,60 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH v7 2/4] dma: imx-sdma: Add new dma type for ssi dual fifo script
-Date: Wed, 13 Nov 2013 22:55:25 +0800
-Message-ID: <5dde8bd3ac0ff25335d896fd617429aa75d0dcd6.1384352281.git.b42378@freescale.com>
-References: <cover.1384352281.git.b42378@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] dmaengine: Add support for BCM2835.
+Date: Wed, 13 Nov 2013 14:54:41 +0000
+Message-ID: <20131113145441.GQ878@sirena.org.uk>
+References: <527D1DDA.2040004@koalo.de>
+ <20131108181743.GR2493@sirena.org.uk>
+ <20131113050017.GO8834@intel.com>
+ <20131113125111.GE878@sirena.org.uk>
+ <20131113133536.GZ8834@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="i13qRg9tmWEwo36p"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1384352281.git.b42378@freescale.com>
+Content-Disposition: inline
+In-Reply-To: <20131113133536.GZ8834@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: vinod.koul@intel.com, dan.j.williams@intel.com, s.hauer@pengutronix.de, timur@tabi.org, shawn.guo@linaro.org, broonie@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Florian Meier <florian.meier@koalo.de>, Stephen Warren <swarren@wwwdotorg.org>, Dan Williams <dan.j.williams@intel.com>, linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Martin Sperl <martin@sperl.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a new DMA_TYPE for SSI dual FIFO script, included
-in SDMA firmware version 2. This script would allow SSI use dual
-fifo mode to transimit/receive data without occasional hardware
-underrun/overrun.
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
-Acked-by: Kumar Gala <galak@codeaurora.org>
-Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- Documentation/devicetree/bindings/dma/fsl-imx-sdma.txt | 1 +
- drivers/dma/imx-sdma.c                                 | 4 ++++
- include/linux/platform_data/dma-imx.h                  | 1 +
- 3 files changed, 6 insertions(+)
+--i13qRg9tmWEwo36p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/Documentation/devicetree/bindings/dma/fsl-imx-sdma.txt b/Documentation/devicetree/bindings/dma/fsl-imx-sdma.txt
-index 4fa814d..68b83ec 100644
---- a/Documentation/devicetree/bindings/dma/fsl-imx-sdma.txt
-+++ b/Documentation/devicetree/bindings/dma/fsl-imx-sdma.txt
-@@ -42,6 +42,7 @@ The full ID of peripheral types can be found below.
- 	19	IPU Memory
- 	20	ASRC
- 	21	ESAI
-+	22	SSI Dual FIFO	(needs firmware ver >= 2)
- 
- The third cell specifies the transfer priority as below.
- 
-diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-index 43a8441..efe9d6a 100644
---- a/drivers/dma/imx-sdma.c
-+++ b/drivers/dma/imx-sdma.c
-@@ -725,6 +725,10 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
- 		per_2_emi = sdma->script_addrs->app_2_mcu_addr;
- 		emi_2_per = sdma->script_addrs->mcu_2_app_addr;
- 		break;
-+	case IMX_DMATYPE_SSI_DUAL:
-+		per_2_emi = sdma->script_addrs->ssish_2_mcu_addr;
-+		emi_2_per = sdma->script_addrs->mcu_2_ssish_addr;
-+		break;
- 	case IMX_DMATYPE_SSI_SP:
- 	case IMX_DMATYPE_MMC:
- 	case IMX_DMATYPE_SDHC:
-diff --git a/include/linux/platform_data/dma-imx.h b/include/linux/platform_data/dma-imx.h
-index beac6b8..bcbc6c3 100644
---- a/include/linux/platform_data/dma-imx.h
-+++ b/include/linux/platform_data/dma-imx.h
-@@ -39,6 +39,7 @@ enum sdma_peripheral_type {
- 	IMX_DMATYPE_IPU_MEMORY,	/* IPU Memory */
- 	IMX_DMATYPE_ASRC,	/* ASRC */
- 	IMX_DMATYPE_ESAI,	/* ESAI */
-+	IMX_DMATYPE_SSI_DUAL,	/* SSI Dual FIFO */
- };
- 
- enum imx_dma_prio {
--- 
-1.8.4
+On Wed, Nov 13, 2013 at 07:05:36PM +0530, Vinod Koul wrote:
+> On Wed, Nov 13, 2013 at 12:51:11PM +0000, Mark Brown wrote:
+
+> > I'm probably going to be looking at that at some point, though perhaps
+> > Martin will get to it since he seems to be looking at this.
+
+> Okay sounds good. This will also help in streamline the implementations..
+
+Yes, though I think some of the stuff Martin was talking about will need
+changes to the dmaengine APIs.  He was wanting to reuse DMA lists which
+currently dmaengine needs to have built up each time.
+
+--i13qRg9tmWEwo36p
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSg5KtAAoJELSic+t+oim9qqIP/iOXfikITADNLFePu4CDZIMB
+csTTt9lhu0Q59fH03aXc2F5JdiUzuVohkH7jK8tFXuxDZ0rCqdm6Zh0FwxL/peIm
+B7fKc6/qRvq3d2gaRBEcRB/aCO9GG8WoKFKdgqWlIl5yEIVmgPPyrePayXXBgf4A
+RA+BiIbC5XrWzIrCWgPqkg8izNZbWvOAF7/THvp7vDleyHeFMWSCn53kczUKye8a
+XVa4Nc4NV4sUWWDfy/5i5w3JcQDEa3KHR10MlRcucNWLqtc+qHY7RQ8k2azerL13
+5IH69j39vNqlD8jfvmJE19nIc8fuSzGBvBX095GkAAEs/oaJoLojTB9aWjvrjeVj
+2KnXOXHdq0Nhu5o8ho0IARU0/IbzEKqUhQ197H0iGB32+UQ1egyAmZQC3yzjzSJF
+Yg5Namq9Wzkv7ZiQsHSmPLWZ7/DV031Es6RmE/x+eMjf07dMn6V8HUn4OnKRisDn
+8nVWz9+Gph14lRHcK3CY+QFby6OpyTkSsjtoBvQWUqYSZu1JoYafCaZxGZRdyrbS
+AluMKSjvFsuFEA02Yl0A7zaoXs1ApHSORpW7UQCrKATI70GXYoetAsv601D7/AFl
+zvb7Zs+jCNDmuou9l49SinH/RX5j6FYP9JXOG/IPqJiO03UFrw35/IDJVQ5pMoHw
+qRWrm8zlEree18mu6K1r
+=gLfd
+-----END PGP SIGNATURE-----
+
+--i13qRg9tmWEwo36p--
