@@ -1,20 +1,16 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [PATCHv4] dmaengine: Add support for BCM2835
-Date: Wed, 13 Nov 2013 21:39:10 +0100
-Message-ID: <2049375.GR9Xb2zuek@flatron>
-References: <5283BC93.1090801@koalo.de> <3722902.ByNK8Ptc5Y@flatron>
- <5283D47A.7060503@koalo.de>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: [PATCH] ASoC: cs42l52: Reorganize MICA/B Config and
+	Select
+Date: Wed, 13 Nov 2013 16:05:40 -0600
+Message-ID: <1384380340-19074-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f172.google.com (mail-ea0-f172.google.com
- [209.85.215.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 538FC26084C
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 21:39:12 +0100 (CET)
-Received: by mail-ea0-f172.google.com with SMTP id h11so441028eaj.3
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 12:39:12 -0800 (PST)
-In-Reply-To: <5283D47A.7060503@koalo.de>
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe001.messaging.microsoft.com [216.32.180.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE96A2615F2
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 23:02:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,150 +20,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Florian Meier <florian.meier@koalo.de>
-Cc: devicetree <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>, dmaengine <dmaengine@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Brian Austin <brian.austin@cirrus.com>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 13 of November 2013 20:35:22 Florian Meier wrote:
-> On 13.11.2013 19:43, Tomasz Figa wrote:
-> > Hi Florian,
-> > 
-> > Seems like I accidentally replied to some old version of this patch.
-> > Not sure how many of those comments were still relevant for V3, but
-> > let me look at this version and see whether we can still improve things
-> > a bit. Please see my comments inline.
-> 
-> Some were still helpful (especially the idea to use the chan_init
-> function for setting the irq), thanks.
+This patch reworks the MICA an MICB config for single-ended or
+differential and the selection of which MIC for the single config
 
-Good. You're welcome.
+Signed-off-by: Brian Austin <brian.austin@cirrus.com>
+---
+ include/sound/cs42l52.h    |  6 ------
+ sound/soc/codecs/cs42l52.c | 25 ++++---------------------
+ 2 files changed, 4 insertions(+), 27 deletions(-)
 
-> 
-> >> ....
-> >> diff --git a/Documentation/devicetree/bindings/dma/bcm2835-dma.txt b/Documentation/devicetree/bindings/dma/bcm2835-dma.txt
-> >> new file mode 100644
-> >> index 0000000..bca5e84
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/dma/bcm2835-dma.txt
-> >> @@ -0,0 +1,59 @@
-> >> +* BCM2835 DMA controller
-> >> +
-> >> +Required properties:
-> >> +- compatible: Should be "brcm,bcm2835-dma".
-> >> +- reg: Should contain DMA registers location and length.
-> >> +- interrupts: Should contain the DMA interrupts associated
-> >> +		to the DMA channels in ascending order.
-> >> +		First cell is the IRQ bank.
-> >> +		Second cell is the IRQ number.
-> >> +- #dma-cells: Must be <1>, used to represent the number of integer cells in
-> >> +		the dmas property of client devices.
-> >> +- dma-channels: Maximum number of DMA channels available.
-> >> +- dma-requests: Number of DMA Requests.
-> > 
-> > The two properties above do not seem to be used anywhere in the driver.
-> 
-> Aren't they necessary for the DMA engine core?
-
-Honestly, looking at the DMA bindings documentation, these two are quite
-a mystery for me. They don't seem to be used in DMA engine core, but
-instead several drivers use them for private purposes.
-
-So, since they are optional and you don't seem to need them, I wouldn't
-list them.
-
-> 
-> >> +- brcm,dma-channel-mask: Bit mask representing the channels available.
-> > 
-> > What does the value of this property depend on? Could you describe the
-> > structure of this DMA controller?
-> > 
-> >> +
-> >> +Example:
-> >> +
-> >> +dma: dma@7e007000 {
-> >> +	compatible = "brcm,bcm2835-dma";
-> >> +	reg = <0x7e007000 0xf00>;
-> >> +	interrupts = <1 16
-> >> +		      1 17
-> >> +		      1 18
-> >> +		      1 19
-> >> +		      1 20
-> >> +		      1 21
-> >> +		      1 22
-> >> +		      1 23
-> >> +		      1 24
-> >> +		      1 25
-> >> +		      1 26
-> >> +		      1 27
-> >> +		      1 28>;
-> > 
-> > There are 13 interrupts specified here, but...
-> > 
-> >> +
-> >> +	#dma-cells = <1>;
-> >> +	dma-channels = <16>;
-> > 
-> > ...16 channels here...
-> > 
-> >> +	dma-requests = <32>;
-> >> +	brcm,dma-channel-mask = <0x7f35>;
-> > 
-> > ...and 11 set bits here. May I ask you to explain this to me, please?
-> 
-> How I understand this DMA controller:
-> There are 16 DMA channels in the DMA controller, but only 13 interrupts
-> are available at the IRQ controller. Therefore, the upper DMA channels
-> can just not be used. Maybe because there are to many other IRQs and
-> they didn't want to implement another IRQ bank.
-> Furthermore, some of the DMA channels are already used by the
-> VideoCore/GPU/firmware. This is what dma-channel-mask indicates. This
-> should be automatically set by the firmware in the future.
-> Finally, there are some channels with special functionality that should
-> not be used by DMA engine, too. Therefore, these lines:
-> 		/* do not use the FIQ and BULK channels */
-> 		chans_available &= ~0xD;
-
-OK, this makes it much more clear.
-
-So, my only comment remaining here is that you shouldn't include the
-channels without interrupt signal in the mask. This would allow you
-to define it as a mask of channels that are operable and then just
-iterate over all set bits in the driver, instead of using tricks with
-interrupt resources. What do you think?
-
-> 
-> > [snip]
-> >> diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
-> >> new file mode 100644
-> >> index 0000000..baf072e
-> >> --- /dev/null
-> >> +++ b/drivers/dma/bcm2835-dma.c
-> > [snip]
-> >> +static int bcm2835_dma_probe(struct platform_device *pdev)
-> >> +{
-> >> +	struct bcm2835_dmadev *od;
-> >> +	struct resource *dma_res = NULL;
-> >> +	void __iomem *dma_base = NULL;
-> >> +	int rc = 0;
-> >> +	int i = 0;
-> >> +	int irq;
-> >> +	uint32_t chans_available;
-> > [snip]
-> >> +	if (pdev->dev.of_node) {
-> > 
-> > Is this driver supposed to support non-DT based instantation (aka board
-> > files)? If not, maybe it would be cleaner to simply check for
-> > !pdev->dev.of_node at the beginning of probe and return an error?
-> 
-> I would like to maintain the possibility for board file based
-> instatiation, because the Raspberry Pi downstream kernel still doesn't
-> support device tree. If this is a no-go, I will accept that.
-
-Sure, you are free to do so.
-
-What I meant is that your probe won't call bcm2835_dma_chan_init() at all
-if there is no pdev->dev.of_node, because the loop iterating over channels
-is under the if clause.
-
-Best regards,
-Tomasz
+diff --git a/include/sound/cs42l52.h b/include/sound/cs42l52.h
+index 7c2be4a..daa91f3 100644
+--- a/include/sound/cs42l52.h
++++ b/include/sound/cs42l52.h
+@@ -22,12 +22,6 @@ struct cs42l52_platform_data {
+ 	/* MICB mode selection 0=Single 1=Differential */
+ 	unsigned int micb_cfg;
+ 
+-	/* MICA Select 0=MIC1A 1=MIC2A */
+-	unsigned int mica_sel;
+-
+-	/* MICB Select 0=MIC2A 1=MIC2B */
+-	unsigned int micb_sel;
+-
+ 	/* Charge Pump Freq. Check datasheet Pg73 */
+ 	unsigned int chgfreq;
+ 
+diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
+index 8b427c9..5af8306 100644
+--- a/sound/soc/codecs/cs42l52.c
++++ b/sound/soc/codecs/cs42l52.c
+@@ -233,7 +233,7 @@ static const struct soc_enum mic_bias_level_enum =
+ 	SOC_ENUM_SINGLE(CS42L52_IFACE_CTL2, 0,
+ 			ARRAY_SIZE(mic_bias_level_text), mic_bias_level_text);
+ 
+-static const char * const cs42l52_mic_text[] = { "Single", "Differential" };
++static const char * const cs42l52_mic_text[] = { "MIC1", "MIC2" };
+ 
+ static const struct soc_enum mica_enum =
+ 	SOC_ENUM_SINGLE(CS42L52_MICA_CTL, 5,
+@@ -243,12 +243,6 @@ static const struct soc_enum micb_enum =
+ 	SOC_ENUM_SINGLE(CS42L52_MICB_CTL, 5,
+ 			ARRAY_SIZE(cs42l52_mic_text), cs42l52_mic_text);
+ 
+-static const struct snd_kcontrol_new mica_mux =
+-	SOC_DAPM_ENUM("Left Mic Input Capture Mux", mica_enum);
+-
+-static const struct snd_kcontrol_new micb_mux =
+-	SOC_DAPM_ENUM("Right Mic Input Capture Mux", micb_enum);
+-
+ static const char * const digital_output_mux_text[] = {"ADC", "DSP"};
+ 
+ static const struct soc_enum digital_output_mux_enum =
+@@ -425,6 +419,9 @@ static const struct snd_kcontrol_new cs42l52_snd_controls[] = {
+ 
+ 	SOC_DOUBLE("Bypass Mute", CS42L52_MISC_CTL, 4, 5, 1, 0),
+ 
++	SOC_ENUM("MICA Select", mica_enum),
++	SOC_ENUM("MICB Select", micb_enum),
++
+ 	SOC_DOUBLE_R_TLV("MIC Gain Volume", CS42L52_MICA_CTL,
+ 			      CS42L52_MICB_CTL, 0, 0x10, 0, mic_tlv),
+ 
+@@ -550,9 +547,6 @@ static const struct snd_soc_dapm_widget cs42l52_dapm_widgets[] = {
+ 	SND_SOC_DAPM_AIF_OUT("AIFOUTR", NULL,  0,
+ 			SND_SOC_NOPM, 0, 0),
+ 
+-	SND_SOC_DAPM_MUX("MICA Mux", SND_SOC_NOPM, 0, 0, &mica_mux),
+-	SND_SOC_DAPM_MUX("MICB Mux", SND_SOC_NOPM, 0, 0, &micb_mux),
+-
+ 	SND_SOC_DAPM_ADC("ADC Left", NULL, CS42L52_PWRCTL1, 1, 1),
+ 	SND_SOC_DAPM_ADC("ADC Right", NULL, CS42L52_PWRCTL1, 2, 1),
+ 	SND_SOC_DAPM_PGA("PGA Left", CS42L52_PWRCTL1, 3, 1, NULL, 0),
+@@ -1239,17 +1233,6 @@ static int cs42l52_i2c_probe(struct i2c_client *i2c_client,
+ 				cs42l52->pdata.micb_cfg <<
+ 				CS42L52_MIC_CTL_TYPE_SHIFT);
+ 
+-	if (cs42l52->pdata.mica_sel)
+-		regmap_update_bits(cs42l52->regmap, CS42L52_MICA_CTL,
+-				   CS42L52_MIC_CTL_MIC_SEL_MASK,
+-				cs42l52->pdata.mica_sel <<
+-				CS42L52_MIC_CTL_MIC_SEL_SHIFT);
+-	if (cs42l52->pdata.micb_sel)
+-		regmap_update_bits(cs42l52->regmap, CS42L52_MICB_CTL,
+-				   CS42L52_MIC_CTL_MIC_SEL_MASK,
+-				cs42l52->pdata.micb_sel <<
+-				CS42L52_MIC_CTL_MIC_SEL_SHIFT);
+-
+ 	if (cs42l52->pdata.chgfreq)
+ 		regmap_update_bits(cs42l52->regmap, CS42L52_CHARGE_PUMP,
+ 				   CS42L52_CHARGE_PUMP_MASK,
+-- 
+1.8.4.3
