@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] dt: binding: sound cs42l52 driver
-Date: Wed, 13 Nov 2013 18:16:22 +0000
-Message-ID: <20131113181622.GZ878@sirena.org.uk>
-References: <1384357474-28653-1-git-send-email-brian.austin@cirrus.com>
- <1485256.GGQxcSNhvH@flatron> <20131113164328.GW878@sirena.org.uk>
- <1783157.vhfWvslFgW@flatron>
+Subject: Re: [PATCH] ASoC: blackfin: Fix missing break
+Date: Wed, 13 Nov 2013 18:21:55 +0000
+Message-ID: <20131113182155.GA878@sirena.org.uk>
+References: <1384359300-21219-1-git-send-email-tiwai@suse.de>
+ <20131113164715.GX878@sirena.org.uk> <s5h7gccb5i7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2427103298150034790=="
+Content-Type: multipart/mixed; boundary="===============3891110401182155203=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id BD4252602F3
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 19:16:31 +0100 (CET)
-In-Reply-To: <1783157.vhfWvslFgW@flatron>
+ by alsa0.perex.cz (Postfix) with ESMTP id 04A102602F3
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 19:21:59 +0100 (CET)
+In-Reply-To: <s5h7gccb5i7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,81 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, rob.herring@calxeda.com, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2427103298150034790==
+--===============3891110401182155203==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2+IDmuKgu0wSQZlt"
+	protocol="application/pgp-signature"; boundary="XsxFkDPDWfsXVt/M"
 Content-Disposition: inline
 
 
---2+IDmuKgu0wSQZlt
+--XsxFkDPDWfsXVt/M
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Nov 13, 2013 at 05:47:07PM +0100, Tomasz Figa wrote:
-> On Wednesday 13 of November 2013 16:43:28 Mark Brown wrote:
+On Wed, Nov 13, 2013 at 06:01:20PM +0100, Takashi Iwai wrote:
 
-> > The best practice on this one seems to vary somewhat randomly -
-> > sometimes it's a requirement, sometimes it isn't.
+> Bugzilla or BugLink tags are rather popular tags, IMO.
 
-> AFAIR we decided on ARM Mini Summit to mandate this, but maybe my memory
-> is misleading me.
+I did take a look through the logs, at least Bugzilla appears to be
+specific to the graphics guys and you.  I hadn't noticed BugLink before
+but that appears to be specific to Cannoical (essentially all the uses
+are links to Launchpad).
 
-OK, I hadn't heard that - it's good that folks made their mind up.
+> They've been used constantly for years.  Maybe embedded guys don't
+> know of this just because they hate bug trackers ;)
 
-> > Is this a constructive thing from a style point of view?  We're not
-> > allowed to actually do anything useful with the value at runtime so
-> > people may as well choose what they like.
+Not terribly widely...
 
-> This is what ePAPR says and I believe this is reasonable, because looking
-> at device tree sources you don't need to think what kind of hardware
-> a cs42l52 is. The information that it's a cs42l52 is still contained
-> inside compatible string.
+> Reported-by tag can be added only with reporter's permission, and the
+> link to the bug tracker or ML archive is often far more useful of list
+> of random people.
 
-Given that a meaningful name was already specified for the handle it's
-really not going to help anything - it's just going to duplicate that
-most likely.  Given that it can't be actually used for anything it seems
-better to just let people write whatever they feel like in there (even
-if it's just a single letter to keep the parser happy) rather than
-nitpick over their choices.
+If someone reports a bug off-list I'd not credit them without asking but
+if it's reported in public that seems a bit crazy.
 
-Really it looks like one of those silly things standards makers do where
-they start specifying a feature (in this case device classes) but don't
-define any useful behaviour for it.
-
---2+IDmuKgu0wSQZlt
+--XsxFkDPDWfsXVt/M
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSg8HuAAoJELSic+t+oim9gSMP+gPoEBGquJuKG+teTLTJJwPf
-9obX0Xl9Kskx/D52l4NL5EWINnN6KWauV41BT4k5p8OYEeaGZ7ypqEp3bAvaZcK+
-s1drK3JredTRbEcRZUJB/qB5aHUY1+no/AmalxpX589nN0lrO4ykBDPb0Ncg1Edt
-XrOymDkvOgrnoeAoRspxBdM/VNWbo4/LckP3COFmOo5llhdD2kdDhZmeGWyeuhdx
-JpB1wss1vpbbZNHzKo9NSTeisSZKsWMLThgAgNBLkj4va/34QjKSvDvhHn0e6qwl
-l9LZLLoQqa/xpQTwPL53FZrN+UM8M5/hvNSUZH3OWho37rCMzf9eLTcdB0OyeTXq
-qFCJN8CyzLs9uOlDllnyhC33uFD+O+iHbuJvw6dtMlxW76jeESawUrziedbaVFmP
-ISc3ib+qxY/BqaY+eeppY1gIQmmzq6PGfZM693tzQoaiRLb55V7/c9A4vWgF0/Ir
-WAC+ziwh4msDe75cDkn2Oa1Knq5VafWj/FYM44V6TPECQcydNR8HAiUIx3NIITp6
-wgm1VPdx2VGnHsVSN0vtt7FTJ61w3E5+Hfw/hsWuleDO9Rdb0RdQ46F11AzbAOKg
-EM4MdWKojANAA/6drbRR9RMEj8AM1Mnr/e6r9y4Ul12UGNDLZbvv5jvTS/6LK2Su
-FtHt+w8N2gV7s0X7wnbq
-=eNrW
+iQIcBAEBAgAGBQJSg8NAAAoJELSic+t+oim9mrIP/1uVd52cdyVQJP8WONMg53/S
+0BpWEG53B0RvQbJA7JZW9bFSWqfMtxvoHClKGNaqPJk/UJW2ROHjqw9KsgkVzgTV
+IP3z0VWXRTQftS8QhURjGJti0l7j40yhc/W7tg0JtlNO4ZxF+nD9qSvSa9zPE/GU
+ga6UMwy42mR40hKRhRejgq/PrtTI4qBuw2Bf+XFigDlea2HE5xlfTBjp0vg7r8rt
+7ANBZAQENNmEAigqdtgDv5TrlBrr988KMN5rpWP4P+6MQt3SnApQ2WIoT9NV+SKS
+zZK+Fw9b4uXJKymkoJP1y9NbOW61Dmmrp9BpEhG9zKYNn4HEMr1em+4FIkV3bnJI
+KN7Lz1SaN6u0Hw+QvO0P44zcWy9Yyul3DP1eq3ALqNXgOk07biTkSAO0akVLogAx
+mnxNVlVTfbhBStsqnTpW5xR21HBT9eWk9mIbKBmqE6o5Q05kqV1ToZxSKUF/Kb77
+CidRfOORw8qdUCHEAVl5dhAcaNMeZItjgUmc7UiR+cznlbY528FmQ0I02TZmXlJo
+WzxOTX2KvbJSCt8qIgmyR/nis5sppPeM1+PS72n5BUAtMCc6eTpaBjHc6LBa5lOZ
+hOioF2yeIiSsDqMtkd86wkwu4sqKUEt28IJkAm5149MSwWxD4cIBlOPjVd30/gNi
+Xaq1B6w1wI2HKv+2U/TM
+=uUHf
 -----END PGP SIGNATURE-----
 
---2+IDmuKgu0wSQZlt--
+--XsxFkDPDWfsXVt/M--
 
---===============2427103298150034790==
+--===============3891110401182155203==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2427103298150034790==--
+--===============3891110401182155203==--
