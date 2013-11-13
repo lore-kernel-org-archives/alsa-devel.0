@@ -1,52 +1,81 @@
-From: Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v2 2/2] dt: binding: sound cs42l52 driver
-Date: Wed, 13 Nov 2013 17:47:07 +0100
-Message-ID: <1783157.vhfWvslFgW@flatron>
-References: <1384357474-28653-1-git-send-email-brian.austin@cirrus.com> <1485256.GGQxcSNhvH@flatron> <20131113164328.GW878@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: blackfin: Fix missing break
+Date: Wed, 13 Nov 2013 16:47:15 +0000
+Message-ID: <20131113164715.GX878@sirena.org.uk>
+References: <1384359300-21219-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20131113164328.GW878-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============5286617299710990963=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id E170E264FFF
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 17:47:20 +0100 (CET)
+In-Reply-To: <1384359300-21219-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 13 of November 2013 16:43:28 Mark Brown wrote:
-> On Wed, Nov 13, 2013 at 05:33:30PM +0100, Tomasz Figa wrote:
-> > On Wednesday 13 of November 2013 09:44:34 Brian Austin wrote:
-> 
-> > > +  - reset-gpio : GPIO controller's phandle and the number
-> > > +		 of the GPIO used to reset the codec.
-> 
-> > As Kumar has already mentioned, all device-specific properties should be
-> > prefixed with vendor prefix, "cirrus," in this case.
-> 
-> The best practice on this one seems to vary somewhat randomly -
-> sometimes it's a requirement, sometimes it isn't.
 
-AFAIR we decided on ARM Mini Summit to mandate this, but maybe my memory
-is misleading me.
+--===============5286617299710990963==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="IfhPODtivl1BCmut"
+Content-Disposition: inline
 
-> 
-> > > +codec: cs42l52@4a {
-> 
-> > coding style: Node name should be generic, i.e. codec@4a.
-> 
-> Is this a constructive thing from a style point of view?  We're not
-> allowed to actually do anything useful with the value at runtime so
-> people may as well choose what they like.
 
-This is what ePAPR says and I believe this is reasonable, because looking
-at device tree sources you don't need to think what kind of hardware
-a cs42l52 is. The information that it's a cs42l52 is still contained
-inside compatible string.
+--IfhPODtivl1BCmut
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Best regards,
-Tomasz
+On Wed, Nov 13, 2013 at 05:15:00PM +0100, Takashi Iwai wrote:
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=60768
+> Fixes: 4b2ffc205cb9 ('ASoC: Blackfin I2S: add 8-bit sample support')
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Applied, though if you're going to include quite that many tags you
+should probably be including something human readable as well.  At first
+glance this looked like something sent by mistake.  This is partly
+because of the bugzilla tag which is a bit of an innovation, it's only
+been used by a few graphics things (and probably ought to have a
+matching Reported-by if it is ever used).
+
+--IfhPODtivl1BCmut
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSg60QAAoJELSic+t+oim98tkP/iV+3FDzlQpETaHohCwriABN
+DXyePLLyhv5CPA3pXVFamJzBx1bBb8S2U6X8MxD8VWpEwNn6P8ndojKv6loM1Gqo
+8o1lkUGFy6tdi7q9UpaN68MOJhdC7LKAP5FSSoj4QkWSE43Z88Sbu4U3x28TjLnd
+N3RLb2JgK6Ec0yS/31/qEAEx4pWzGtQ7TVPFG8FRKpNo0wj9L07HGWGDgTZtL1/n
+khK8DHe7Zq7vYuske5DlZ3cbaHxDEYy4yBl74E3c5nFHcS/83oL3FEshXy5v6A6M
+STCNGBFt5QSyXHKBoLm0r+ghn2QOzjsnc7biENOFVdgnqjjK6QLpbukayKmg1RBd
+1prcdgQJFkPOAD6H+go40JC73kpdSIlghc4e6Qo00RTefrAKW0oZTy4RzVKZmJFF
+hqZ7tMesQ54HYSJ1XbtII/zxQ8uQiBUj85TEgGMxIw7272If3x3S7n+4Vsg71ReY
+l+hSlYb8ozQPZrbyWm7V1Df/9E/Dmh+EghHIjT2J534O8GELBqc6Dv1bO74bjcIM
+xhDVgM9Rnfgt9HH4EeEFO6hI4JBQpvdovertzdCCCwWay/NEq4xFPb+FpggyikWv
+ZCYW6idCJL7gLup+jp6pfCzFpl19yUuG8E+6Ujrger1pYXuMw2B/i5eL27cDspcr
+xUxIQHjYT7m0P/K/6vb+
+=quS9
+-----END PGP SIGNATURE-----
+
+--IfhPODtivl1BCmut--
+
+--===============5286617299710990963==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5286617299710990963==--
