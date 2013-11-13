@@ -1,16 +1,17 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Can HD-A codec Realtek ALC898 support 20/24 bit
- playback and recording? How to verify this?
-Date: Wed, 13 Nov 2013 06:39:27 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80140667B@SHSMSX101.ccr.corp.intel.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Can HD-A codec Realtek ALC898 support 20/24 bit
+	playback andrecording? How to verify this?
+Date: Wed, 13 Nov 2013 14:52:03 +0800
+Message-ID: <EC68D0B4B6E04F4DA518CC8EDE4124DD@realtek.com.tw>
+References: <F46914AEC2663F4A9BB62374E5EEF8F80140667B@SHSMSX101.ccr.corp.intel.com>
+Reply-To: Kailang <kailang@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id DF214261630
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 07:39:35 +0100 (CET)
-Content-Language: en-US
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id F38CD26165C
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 07:52:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,477 +21,353 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kailang
- (kailang@realtek.com)" <kailang@realtek.com>
+To: "Lin, Mengdong" <mengdong.lin@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I have a ALC898 codec. Can it support 20bit and 24bit playback or recording?
-If yes, how can I verify this?
-
-The audio input/output nodes show PCM bits [0xe]: 16 20 24
-
-But I get error when using "-D hw" to record or play S24_LE format:
-$ arecord -D hw:1,0 -r 48000 -f S24_LE -c 2 test.wav
-Recording WAVE 'test.wav' : Signed 24 bit Little Endian, Rate 48000 Hz, Stereo
-arecord: set_params:1081: Sample format non available
-Available formats:
-- S16_LE
-- S32_LE
-
-$ aplay -t wav -D hw:1,0 test.wav
-Playing WAVE 'test.wav' : Signed 24 bit Little Endian, Rate 48000 Hz, Stereo
-aplay: set_params:1081: Sample format non available
-Available formats:
-- S16_LE
-- S32_LE
-
-
-Here is the codec info:
-Codec: Realtek ALC898
-Address: 2
-AFG Function Id: 0x1 (unsol 1)
-Vendor Id: 0x10ec0899
-Subsystem Id: 0x80862046
-Revision Id: 0x100003
-No Modem Function Group found
-Default PCM:
-    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-State of AFG node 0x01:
-  Power states:  D0 D1 D2 D3 CLKSTOP EPSS
-  Power: setting=D0, actual=D0
-GPIO: io=2, o=0, i=0, unsolicited=1, wake=0
-  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-Node 0x02 [Audio Output] wcaps 0x411: Stereo
-  Device: name="ALC898 Analog", type="Audio", device=0
-  Converter: stream=8, channel=0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x03 [Audio Output] wcaps 0x411: Stereo
-  Converter: stream=8, channel=0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x04 [Audio Output] wcaps 0x411: Stereo
-  Converter: stream=8, channel=0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x05 [Audio Output] wcaps 0x411: Stereo
-  Converter: stream=8, channel=0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x06 [Audio Output] wcaps 0x611: Stereo Digital
-  Converter: stream=8, channel=0
-  Digital:
-  Digital category: 0x0
-  IEC Coding Type: 0x0
-  PCM:
-    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x07 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Control: name="Capture Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Capture Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Device: name="ALC898 Analog", type="Audio", device=0
-  Amp-In caps: ofs=0x17, nsteps=0x3f, stepsize=0x02, mute=1
-  Amp-In vals:  [0x27 0x27]
-  Converter: stream=4, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x24
-Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Control: name="Capture Volume", index=1, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Capture Switch", index=1, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Device: name="ALC898 Alt Analog", type="Audio", device=2
-  Amp-In caps: ofs=0x17, nsteps=0x3f, stepsize=0x02, mute=1
-  Amp-In vals:  [0x80 0x80]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x23
-Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Control: name="Capture Volume", index=2, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Capture Switch", index=2, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x17, nsteps=0x3f, stepsize=0x02, mute=1
-  Amp-In vals:  [0x80 0x80]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x22
-Node 0x0a [Audio Input] wcaps 0x100791: Stereo Digital
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  Digital:
-  Digital category: 0x0
-  IEC Coding Type: 0x0
-  PCM:
-    rates [0x570]: 32000 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x1f
-Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Control: name="Front Mic Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=1, ofs=0
-  Control: name="Front Mic Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=1, ofs=0
-  Control: name="Rear Mic Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Rear Mic Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Line Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=2, ofs=0
-  Control: name="Line Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=2, ofs=0
-  Control: name="Beep Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=5, ofs=0
-  Control: name="Beep Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=5, ofs=0
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 10
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17
-Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Control: name="Front Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
-  Amp-Out vals:  [0x3b 0x3b]
-  Connection: 2
-     0x02 0x0b
-Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Control: name="Surround Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 2
-     0x03 0x0b
-Node 0x0e [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Control: name="Center Playback Volume", index=0, device=0
-    ControlAmp: chs=1, dir=Out, idx=0, ofs=0
-  Control: name="LFE Playback Volume", index=0, device=0
-    ControlAmp: chs=2, dir=Out, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 2
-     0x04 0x0b
-Node 0x0f [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Control: name="Headphone Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
-  Amp-Out vals:  [0x3b 0x3b]
-  Connection: 2
-     0x05 0x0b
-Node 0x10 [Audio Output] wcaps 0x611: Stereo Digital
-  Control: name="IEC958 Playback Con Mask", index=0, device=0
-  Control: name="IEC958 Playback Pro Mask", index=0, device=0
-  Control: name="IEC958 Playback Default", index=0, device=0
-  Control: name="IEC958 Playback Switch", index=0, device=0
-  Control: name="IEC958 Default PCM Playback Switch", index=0, device=0
-  Device: name="ALC898 Digital", type="SPDIF", device=1
-  Converter: stream=8, channel=0
-  Digital:
-  Digital category: 0x0
-  IEC Coding Type: 0x0
-  PCM:
-    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x11 [Pin Complex] wcaps 0x400701: Stereo Digital
-  Control: name="SPDIF Phantom Jack", index=0, device=0
-  Pincap 0x00000010: OUT
-  Pin Default 0x01451120: [Jack] SPDIF Out at Ext Rear
-    Conn = Optical, Color = Black
-    DefAssociation = 0x2, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x10
-Node 0x12 [Pin Complex] wcaps 0x400401: Stereo
-  Pincap 0x00000020: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x14 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Control: name="Front Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Control: name="Line Out Front Jack", index=0, device=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0001003c: IN OUT HP EAPD Detect
-  EAPD 0x2: EAPD
-  Pin Default 0x01014410: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Unsolicited: tag=05, enabled=1
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x15 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Control: name="Surround Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Control: name="Line Out Surround Jack", index=0, device=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000003c: IN OUT HP Detect
-  Pin Default 0x01011412: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x1, Sequence = 0x2
-  Pin-ctls: 0x00:
-  Unsolicited: tag=06, enabled=1
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 5
-     0x0c 0x0d* 0x0e 0x0f 0x26
-Node 0x16 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Control: name="Center Playback Switch", index=0, device=0
-    ControlAmp: chs=1, dir=Out, idx=0, ofs=0
-  Control: name="LFE Playback Switch", index=0, device=0
-    ControlAmp: chs=2, dir=Out, idx=0, ofs=0
-  Control: name="Line Out CLFE Jack", index=0, device=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000003c: IN OUT HP Detect
-  Pin Default 0x01016411: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Orange
-    DefAssociation = 0x1, Sequence = 0x1
-  Pin-ctls: 0x00:
-  Unsolicited: tag=07, enabled=1
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 5
-     0x0c 0x0d 0x0e* 0x0f 0x26
-Node 0x17 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000003c: IN OUT HP Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 5
-     0x0c 0x0d 0x0e 0x0f* 0x26
-Node 0x18 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-  Control: name="Rear Mic Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Rear Mic Jack", index=0, device=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000373c: IN OUT HP Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x01a19c40: [Jack] Mic at Ext Rear
-    Conn = 1/8, Color = Pink
-    DefAssociation = 0x4, Sequence = 0x0
-  Pin-ctls: 0x21: IN VREF_50
-  Unsolicited: tag=03, enabled=1
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x19 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-  Control: name="Front Mic Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Front Mic Jack", index=0, device=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000373c: IN OUT HP Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x02a19c41: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-    DefAssociation = 0x4, Sequence = 0x1
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=02, enabled=1
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x1a [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-  Control: name="Line Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Line Jack", index=0, device=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000373c: IN OUT HP Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x0181344f: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-    DefAssociation = 0x4, Sequence = 0xf
-  Pin-ctls: 0x20: IN VREF_HIZ
-  Unsolicited: tag=04, enabled=1
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x1b [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-  Control: name="Headphone Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Control: name="Front Headphone Jack", index=0, device=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0001373c: IN OUT HP EAPD Detect
-    Vref caps: HIZ 50 GRD 80 100
-  EAPD 0x2: EAPD
-  Pin Default 0x02214450: [Jack] HP Out at Ext Front
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x5, Sequence = 0x0
-  Pin-ctls: 0xc0: OUT HP VREF_HIZ
-  Unsolicited: tag=01, enabled=1
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 5
-     0x0c 0x0d 0x0e 0x0f* 0x26
-Node 0x1c [Pin Complex] wcaps 0x400481: Stereo
-  Pincap 0x00000024: IN Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x1d [Pin Complex] wcaps 0x400400: Mono
-  Pincap 0x00000020: IN
-  Pin Default 0x4016f601: [N/A] Speaker at Ext N/A
-    Conn = Digital, Color = Other
-    DefAssociation = 0x0, Sequence = 0x1
-  Pin-ctls: 0x20: IN
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x1e [Pin Complex] wcaps 0x400701: Stereo Digital
-  Control: name="SPDIF Phantom Jack", index=1, device=0
-  Pincap 0x00000010: OUT
-  Pin Default 0x90460130: [Fixed] SPDIF Out at Int N/A
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x3, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x06
-Node 0x1f [Pin Complex] wcaps 0x400681: Stereo Digital
-  Pincap 0x00000020: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-  Processing caps: benign=0, ncoeff=28
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 11
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
-Node 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 11
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
-Node 0x24 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 12
-     0x18 0x19* 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b 0x12
-Node 0x25 [Audio Output] wcaps 0x411: Stereo
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x26 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80]
-  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
-  Amp-Out vals:  [0x57 0x57]
-  Connection: 2
-     0x25 0x0b
-
-
-Regards
-Mengdong
+MjAgYW5kIDI0IHdhcyB0aGUgaGFyZHdhcmUgZGF0YSBmb3JtYXQuClN5c3RlbSBwY20gZGF0YSBm
+b3JtYXQgZm9yIDIwIGFuZCAyNCB3ZXJlIFMzMl9MRS4KCmFwbGF5IC10IHdhdiAtRCBwbHVnaHc6
+MSwwIHRlc3Qud2F2ICA9PiBJdCBuZWVkIHRvIGFkZCBwbHVnIGZvciAtRC4gSXQgd2lsbCBkbyB0
+aGUgU1JDLgogIC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0gCiAg5a+E5Lu26ICFOiBMaW4s
+IE1lbmdkb25nIAogIOaUtuS7tuiAhTogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnIDsgS2Fp
+bGFuZyAoa2FpbGFuZ0ByZWFsdGVrLmNvbSkgCiAg5YKz6YCB5pel5pyfOiAyMDEz5bm0MTHmnIgx
+M+aXpSDkuIvljYggMDI6MzkKICDkuLvml6g6IENhbiBIRC1BIGNvZGVjIFJlYWx0ZWsgQUxDODk4
+IHN1cHBvcnQgMjAvMjQgYml0IHBsYXliYWNrIGFuZHJlY29yZGluZz8gSG93IHRvIHZlcmlmeSB0
+aGlzPwoKCiAgSGksCgogICAKCiAgSSBoYXZlIGEgQUxDODk4IGNvZGVjLiBDYW4gaXQgc3VwcG9y
+dCAyMGJpdCBhbmQgMjRiaXQgcGxheWJhY2sgb3IgcmVjb3JkaW5nPwoKICBJZiB5ZXMsIGhvdyBj
+YW4gSSB2ZXJpZnkgdGhpcz8KCiAgIAoKICBUaGUgYXVkaW8gaW5wdXQvb3V0cHV0IG5vZGVzIHNo
+b3cgUENNIGJpdHMgWzB4ZV06IDE2IDIwIDI0CgogICAKCiAgQnV0IEkgZ2V0IGVycm9yIHdoZW4g
+dXNpbmcg4oCcLUQgaHfigJ0gdG8gcmVjb3JkIG9yIHBsYXkgUzI0X0xFIGZvcm1hdDoKCiAgJCBh
+cmVjb3JkIC1EIGh3OjEsMCAtciA0ODAwMCAtZiBTMjRfTEUgLWMgMiB0ZXN0LndhdgoKICBSZWNv
+cmRpbmcgV0FWRSAndGVzdC53YXYnIDogU2lnbmVkIDI0IGJpdCBMaXR0bGUgRW5kaWFuLCBSYXRl
+IDQ4MDAwIEh6LCBTdGVyZW8KCiAgYXJlY29yZDogc2V0X3BhcmFtczoxMDgxOiBTYW1wbGUgZm9y
+bWF0IG5vbiBhdmFpbGFibGUKCiAgQXZhaWxhYmxlIGZvcm1hdHM6CgogIC0gUzE2X0xFCgogIC0g
+UzMyX0xFCgogICAKCiAgJCBhcGxheSAtdCB3YXYgLUQgaHc6MSwwIHRlc3Qud2F2IAoKICBQbGF5
+aW5nIFdBVkUgJ3Rlc3Qud2F2JyA6IFNpZ25lZCAyNCBiaXQgTGl0dGxlIEVuZGlhbiwgUmF0ZSA0
+ODAwMCBIeiwgU3RlcmVvCgogIGFwbGF5OiBzZXRfcGFyYW1zOjEwODE6IFNhbXBsZSBmb3JtYXQg
+bm9uIGF2YWlsYWJsZQoKICBBdmFpbGFibGUgZm9ybWF0czoKCiAgLSBTMTZfTEUKCiAgLSBTMzJf
+TEUKCiAgIAoKICAgCgogIEhlcmUgaXMgdGhlIGNvZGVjIGluZm86CgogIENvZGVjOiBSZWFsdGVr
+IEFMQzg5OAoKICBBZGRyZXNzOiAyCgogIEFGRyBGdW5jdGlvbiBJZDogMHgxICh1bnNvbCAxKQoK
+ICBWZW5kb3IgSWQ6IDB4MTBlYzA4OTkKCiAgU3Vic3lzdGVtIElkOiAweDgwODYyMDQ2CgogIFJl
+dmlzaW9uIElkOiAweDEwMDAwMwoKICBObyBNb2RlbSBGdW5jdGlvbiBHcm91cCBmb3VuZAoKICBE
+ZWZhdWx0IFBDTToKCiAgICAgIHJhdGVzIFsweDVmMF06IDMyMDAwIDQ0MTAwIDQ4MDAwIDg4MjAw
+IDk2MDAwIDE5MjAwMAoKICAgICAgYml0cyBbMHhlXTogMTYgMjAgMjQKCiAgICAgIGZvcm1hdHMg
+WzB4MV06IFBDTQoKICBEZWZhdWx0IEFtcC1JbiBjYXBzOiBOL0EKCiAgRGVmYXVsdCBBbXAtT3V0
+IGNhcHM6IE4vQQoKICBTdGF0ZSBvZiBBRkcgbm9kZSAweDAxOgoKICAgIFBvd2VyIHN0YXRlczog
+IEQwIEQxIEQyIEQzIENMS1NUT1AgRVBTUwoKICAgIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9
+RDAKCiAgR1BJTzogaW89Miwgbz0wLCBpPTAsIHVuc29saWNpdGVkPTEsIHdha2U9MAoKICAgIElP
+WzBdOiBlbmFibGU9MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5zb2w9MAoK
+ICAgIElPWzFdOiBlbmFibGU9MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5z
+b2w9MAoKICBOb2RlIDB4MDIgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MTE6IFN0ZXJlbwoKICAg
+IERldmljZTogbmFtZT0iQUxDODk4IEFuYWxvZyIsIHR5cGU9IkF1ZGlvIiwgZGV2aWNlPTAKCiAg
+ICBDb252ZXJ0ZXI6IHN0cmVhbT04LCBjaGFubmVsPTAKCiAgICBQQ006CgogICAgICByYXRlcyBb
+MHg1ZTBdOiA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMCAxOTIwMDAKCiAgICAgIGJpdHMgWzB4ZV06
+IDE2IDIwIDI0CgogICAgICBmb3JtYXRzIFsweDFdOiBQQ00KCiAgICBQb3dlciBzdGF0ZXM6ICBE
+MCBEMSBEMiBEMyBFUFNTCgogICAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAoKICBOb2Rl
+IDB4MDMgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MTE6IFN0ZXJlbwoKICAgIENvbnZlcnRlcjog
+c3RyZWFtPTgsIGNoYW5uZWw9MAoKICAgIFBDTToKCiAgICAgIHJhdGVzIFsweDVlMF06IDQ0MTAw
+IDQ4MDAwIDg4MjAwIDk2MDAwIDE5MjAwMAoKICAgICAgYml0cyBbMHhlXTogMTYgMjAgMjQKCiAg
+ICAgIGZvcm1hdHMgWzB4MV06IFBDTQoKICAgIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQ
+U1MKCiAgICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCgogIE5vZGUgMHgwNCBbQXVkaW8g
+T3V0cHV0XSB3Y2FwcyAweDQxMTogU3RlcmVvCgogICAgQ29udmVydGVyOiBzdHJlYW09OCwgY2hh
+bm5lbD0wCgogICAgUENNOgoKICAgICAgcmF0ZXMgWzB4NWUwXTogNDQxMDAgNDgwMDAgODgyMDAg
+OTYwMDAgMTkyMDAwCgogICAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAoKICAgICAgZm9ybWF0cyBb
+MHgxXTogUENNCgogICAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwoKICAgIFBvd2Vy
+OiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKCiAgTm9kZSAweDA1IFtBdWRpbyBPdXRwdXRdIHdjYXBz
+IDB4NDExOiBTdGVyZW8KCiAgICBDb252ZXJ0ZXI6IHN0cmVhbT04LCBjaGFubmVsPTAKCiAgICBQ
+Q006CgogICAgICByYXRlcyBbMHg1ZTBdOiA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMCAxOTIwMDAK
+CiAgICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CgogICAgICBmb3JtYXRzIFsweDFdOiBQQ00KCiAg
+ICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCgogICAgUG93ZXI6IHNldHRpbmc9RDAs
+IGFjdHVhbD1EMAoKICBOb2RlIDB4MDYgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg2MTE6IFN0ZXJl
+byBEaWdpdGFsCgogICAgQ29udmVydGVyOiBzdHJlYW09OCwgY2hhbm5lbD0wCgogICAgRGlnaXRh
+bDoKCiAgICBEaWdpdGFsIGNhdGVnb3J5OiAweDAKCiAgICBJRUMgQ29kaW5nIFR5cGU6IDB4MAoK
+ICAgIFBDTToKCiAgICAgIHJhdGVzIFsweDVmMF06IDMyMDAwIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2
+MDAwIDE5MjAwMAoKICAgICAgYml0cyBbMHhlXTogMTYgMjAgMjQKCiAgICAgIGZvcm1hdHMgWzB4
+MV06IFBDTQoKICAgIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKCiAgICBQb3dlcjog
+c2V0dGluZz1EMCwgYWN0dWFsPUQwCgogIE5vZGUgMHgwNyBbQXVkaW8gSW5wdXRdIHdjYXBzIDB4
+MTAwNTFiOiBTdGVyZW8gQW1wLUluCgogICAgQ29udHJvbDogbmFtZT0iQ2FwdHVyZSBWb2x1bWUi
+LCBpbmRleD0wLCBkZXZpY2U9MAoKICAgICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4
+PTAsIG9mcz0wCgogICAgQ29udHJvbDogbmFtZT0iQ2FwdHVyZSBTd2l0Y2giLCBpbmRleD0wLCBk
+ZXZpY2U9MAoKICAgICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTAsIG9mcz0wCgog
+ICAgRGV2aWNlOiBuYW1lPSJBTEM4OTggQW5hbG9nIiwgdHlwZT0iQXVkaW8iLCBkZXZpY2U9MAoK
+ICAgIEFtcC1JbiBjYXBzOiBvZnM9MHgxNywgbnN0ZXBzPTB4M2YsIHN0ZXBzaXplPTB4MDIsIG11
+dGU9MQoKICAgIEFtcC1JbiB2YWxzOiAgWzB4MjcgMHgyN10KCiAgICBDb252ZXJ0ZXI6IHN0cmVh
+bT00LCBjaGFubmVsPTAKCiAgICBTREktU2VsZWN0OiAwCgogICAgUENNOgoKICAgICAgcmF0ZXMg
+WzB4NWUwXTogNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAgMTkyMDAwCgogICAgICBiaXRzIFsweGVd
+OiAxNiAyMCAyNAoKICAgICAgZm9ybWF0cyBbMHgxXTogUENNCgogICAgUG93ZXIgc3RhdGVzOiAg
+RDAgRDEgRDIgRDMgRVBTUwoKICAgIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKCiAgICBD
+b25uZWN0aW9uOiAxCgogICAgICAgMHgyNAoKICBOb2RlIDB4MDggW0F1ZGlvIElucHV0XSB3Y2Fw
+cyAweDEwMDUxYjogU3RlcmVvIEFtcC1JbgoKICAgIENvbnRyb2w6IG5hbWU9IkNhcHR1cmUgVm9s
+dW1lIiwgaW5kZXg9MSwgZGV2aWNlPTAKCiAgICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4s
+IGlkeD0wLCBvZnM9MAoKICAgIENvbnRyb2w6IG5hbWU9IkNhcHR1cmUgU3dpdGNoIiwgaW5kZXg9
+MSwgZGV2aWNlPTAKCiAgICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0wLCBvZnM9
+MAoKICAgIERldmljZTogbmFtZT0iQUxDODk4IEFsdCBBbmFsb2ciLCB0eXBlPSJBdWRpbyIsIGRl
+dmljZT0yCgogICAgQW1wLUluIGNhcHM6IG9mcz0weDE3LCBuc3RlcHM9MHgzZiwgc3RlcHNpemU9
+MHgwMiwgbXV0ZT0xCgogICAgQW1wLUluIHZhbHM6ICBbMHg4MCAweDgwXQoKICAgIENvbnZlcnRl
+cjogc3RyZWFtPTAsIGNoYW5uZWw9MAoKICAgIFNESS1TZWxlY3Q6IDAKCiAgICBQQ006CgogICAg
+ICByYXRlcyBbMHg1ZTBdOiA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMCAxOTIwMDAKCiAgICAgIGJp
+dHMgWzB4ZV06IDE2IDIwIDI0CgogICAgICBmb3JtYXRzIFsweDFdOiBQQ00KCiAgICBQb3dlciBz
+dGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCgogICAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1E
+MAoKICAgIENvbm5lY3Rpb246IDEKCiAgICAgICAweDIzCgogIE5vZGUgMHgwOSBbQXVkaW8gSW5w
+dXRdIHdjYXBzIDB4MTAwNTFiOiBTdGVyZW8gQW1wLUluCgogICAgQ29udHJvbDogbmFtZT0iQ2Fw
+dHVyZSBWb2x1bWUiLCBpbmRleD0yLCBkZXZpY2U9MAoKICAgICAgQ29udHJvbEFtcDogY2hzPTMs
+IGRpcj1JbiwgaWR4PTAsIG9mcz0wCgogICAgQ29udHJvbDogbmFtZT0iQ2FwdHVyZSBTd2l0Y2gi
+LCBpbmRleD0yLCBkZXZpY2U9MAoKICAgICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4
+PTAsIG9mcz0wCgogICAgQW1wLUluIGNhcHM6IG9mcz0weDE3LCBuc3RlcHM9MHgzZiwgc3RlcHNp
+emU9MHgwMiwgbXV0ZT0xCgogICAgQW1wLUluIHZhbHM6ICBbMHg4MCAweDgwXQoKICAgIENvbnZl
+cnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAoKICAgIFNESS1TZWxlY3Q6IDAKCiAgICBQQ006Cgog
+ICAgICByYXRlcyBbMHg1ZTBdOiA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMCAxOTIwMDAKCiAgICAg
+IGJpdHMgWzB4ZV06IDE2IDIwIDI0CgogICAgICBmb3JtYXRzIFsweDFdOiBQQ00KCiAgICBQb3dl
+ciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCgogICAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVh
+bD1EMAoKICAgIENvbm5lY3Rpb246IDEKCiAgICAgICAweDIyCgogIE5vZGUgMHgwYSBbQXVkaW8g
+SW5wdXRdIHdjYXBzIDB4MTAwNzkxOiBTdGVyZW8gRGlnaXRhbAoKICAgIENvbnZlcnRlcjogc3Ry
+ZWFtPTAsIGNoYW5uZWw9MAoKICAgIFNESS1TZWxlY3Q6IDAKCiAgICBEaWdpdGFsOgoKICAgIERp
+Z2l0YWwgY2F0ZWdvcnk6IDB4MAoKICAgIElFQyBDb2RpbmcgVHlwZTogMHgwCgogICAgUENNOgoK
+ICAgICAgcmF0ZXMgWzB4NTcwXTogMzIwMDAgNDQxMDAgNDgwMDAgOTYwMDAgMTkyMDAwCgogICAg
+ICBiaXRzIFsweGVdOiAxNiAyMCAyNAoKICAgICAgZm9ybWF0cyBbMHgxXTogUENNCgogICAgVW5z
+b2xpY2l0ZWQ6IHRhZz0wMCwgZW5hYmxlZD0wCgogICAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIg
+RDMgRVBTUwoKICAgIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKCiAgICBDb25uZWN0aW9u
+OiAxCgogICAgICAgMHgxZgoKICBOb2RlIDB4MGIgW0F1ZGlvIE1peGVyXSB3Y2FwcyAweDIwMDEw
+YjogU3RlcmVvIEFtcC1JbgoKICAgIENvbnRyb2w6IG5hbWU9IkZyb250IE1pYyBQbGF5YmFjayBW
+b2x1bWUiLCBpbmRleD0wLCBkZXZpY2U9MAoKICAgICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1J
+biwgaWR4PTEsIG9mcz0wCgogICAgQ29udHJvbDogbmFtZT0iRnJvbnQgTWljIFBsYXliYWNrIFN3
+aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCgogICAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUlu
+LCBpZHg9MSwgb2ZzPTAKCiAgICBDb250cm9sOiBuYW1lPSJSZWFyIE1pYyBQbGF5YmFjayBWb2x1
+bWUiLCBpbmRleD0wLCBkZXZpY2U9MAoKICAgICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1Jbiwg
+aWR4PTAsIG9mcz0wCgogICAgQ29udHJvbDogbmFtZT0iUmVhciBNaWMgUGxheWJhY2sgU3dpdGNo
+IiwgaW5kZXg9MCwgZGV2aWNlPTAKCiAgICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlk
+eD0wLCBvZnM9MAoKICAgIENvbnRyb2w6IG5hbWU9IkxpbmUgUGxheWJhY2sgVm9sdW1lIiwgaW5k
+ZXg9MCwgZGV2aWNlPTAKCiAgICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0yLCBv
+ZnM9MAoKICAgIENvbnRyb2w6IG5hbWU9IkxpbmUgUGxheWJhY2sgU3dpdGNoIiwgaW5kZXg9MCwg
+ZGV2aWNlPTAKCiAgICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0yLCBvZnM9MAoK
+ICAgIENvbnRyb2w6IG5hbWU9IkJlZXAgUGxheWJhY2sgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNl
+PTAKCiAgICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD01LCBvZnM9MAoKICAgIENv
+bnRyb2w6IG5hbWU9IkJlZXAgUGxheWJhY2sgU3dpdGNoIiwgaW5kZXg9MCwgZGV2aWNlPTAKCiAg
+ICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD01LCBvZnM9MAoKICAgIEFtcC1JbiBj
+YXBzOiBvZnM9MHgxNywgbnN0ZXBzPTB4MWYsIHN0ZXBzaXplPTB4MDUsIG11dGU9MQoKICAgIEFt
+cC1JbiB2YWxzOiAgWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4
+MF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4ODAg
+MHg4MF0gWzB4ODAgMHg4MF0KCiAgICBDb25uZWN0aW9uOiAxMAoKICAgICAgIDB4MTggMHgxOSAw
+eDFhIDB4MWIgMHgxYyAweDFkIDB4MTQgMHgxNSAweDE2IDB4MTcKCiAgTm9kZSAweDBjIFtBdWRp
+byBNaXhlcl0gd2NhcHMgMHgyMDAxMGY6IFN0ZXJlbyBBbXAtSW4gQW1wLU91dAoKICAgIENvbnRy
+b2w6IG5hbWU9IkZyb250IFBsYXliYWNrIFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCgogICAg
+ICBDb250cm9sQW1wOiBjaHM9MywgZGlyPU91dCwgaWR4PTAsIG9mcz0wCgogICAgQW1wLUluIGNh
+cHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCgogICAgQW1w
+LUluIHZhbHM6ICBbMHgwMCAweDAwXSBbMHgwMCAweDAwXQoKICAgIEFtcC1PdXQgY2Fwczogb2Zz
+PTB4NTcsIG5zdGVwcz0weDU3LCBzdGVwc2l6ZT0weDAyLCBtdXRlPTAKCiAgICBBbXAtT3V0IHZh
+bHM6ICBbMHgzYiAweDNiXQoKICAgIENvbm5lY3Rpb246IDIKCiAgICAgICAweDAyIDB4MGIKCiAg
+Tm9kZSAweDBkIFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDAxMGY6IFN0ZXJlbyBBbXAtSW4gQW1w
+LU91dAoKICAgIENvbnRyb2w6IG5hbWU9IlN1cnJvdW5kIFBsYXliYWNrIFZvbHVtZSIsIGluZGV4
+PTAsIGRldmljZT0wCgogICAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPU91dCwgaWR4PTAsIG9m
+cz0wCgogICAgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgw
+MCwgbXV0ZT0xCgogICAgQW1wLUluIHZhbHM6ICBbMHgwMCAweDAwXSBbMHgwMCAweDAwXQoKICAg
+IEFtcC1PdXQgY2Fwczogb2ZzPTB4NTcsIG5zdGVwcz0weDU3LCBzdGVwc2l6ZT0weDAyLCBtdXRl
+PTAKCiAgICBBbXAtT3V0IHZhbHM6ICBbMHgwMCAweDAwXQoKICAgIENvbm5lY3Rpb246IDIKCiAg
+ICAgICAweDAzIDB4MGIKCiAgTm9kZSAweDBlIFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDAxMGY6
+IFN0ZXJlbyBBbXAtSW4gQW1wLU91dAoKICAgIENvbnRyb2w6IG5hbWU9IkNlbnRlciBQbGF5YmFj
+ayBWb2x1bWUiLCBpbmRleD0wLCBkZXZpY2U9MAoKICAgICAgQ29udHJvbEFtcDogY2hzPTEsIGRp
+cj1PdXQsIGlkeD0wLCBvZnM9MAoKICAgIENvbnRyb2w6IG5hbWU9IkxGRSBQbGF5YmFjayBWb2x1
+bWUiLCBpbmRleD0wLCBkZXZpY2U9MAoKICAgICAgQ29udHJvbEFtcDogY2hzPTIsIGRpcj1PdXQs
+IGlkeD0wLCBvZnM9MAoKICAgIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0
+ZXBzaXplPTB4MDAsIG11dGU9MQoKICAgIEFtcC1JbiB2YWxzOiAgWzB4MDAgMHgwMF0gWzB4MDAg
+MHgwMF0KCiAgICBBbXAtT3V0IGNhcHM6IG9mcz0weDU3LCBuc3RlcHM9MHg1Nywgc3RlcHNpemU9
+MHgwMiwgbXV0ZT0wCgogICAgQW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0KCiAgICBDb25uZWN0
+aW9uOiAyCgogICAgICAgMHgwNCAweDBiCgogIE5vZGUgMHgwZiBbQXVkaW8gTWl4ZXJdIHdjYXBz
+IDB4MjAwMTBmOiBTdGVyZW8gQW1wLUluIEFtcC1PdXQKCiAgICBDb250cm9sOiBuYW1lPSJIZWFk
+cGhvbmUgUGxheWJhY2sgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKCiAgICAgIENvbnRyb2xB
+bXA6IGNocz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKCiAgICBBbXAtSW4gY2Fwczogb2ZzPTB4
+MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKCiAgICBBbXAtSW4gdmFsczog
+IFsweDAwIDB4MDBdIFsweDAwIDB4MDBdCgogICAgQW1wLU91dCBjYXBzOiBvZnM9MHg1NywgbnN0
+ZXBzPTB4NTcsIHN0ZXBzaXplPTB4MDIsIG11dGU9MAoKICAgIEFtcC1PdXQgdmFsczogIFsweDNi
+IDB4M2JdCgogICAgQ29ubmVjdGlvbjogMgoKICAgICAgIDB4MDUgMHgwYgoKICBOb2RlIDB4MTAg
+W0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg2MTE6IFN0ZXJlbyBEaWdpdGFsCgogICAgQ29udHJvbDog
+bmFtZT0iSUVDOTU4IFBsYXliYWNrIENvbiBNYXNrIiwgaW5kZXg9MCwgZGV2aWNlPTAKCiAgICBD
+b250cm9sOiBuYW1lPSJJRUM5NTggUGxheWJhY2sgUHJvIE1hc2siLCBpbmRleD0wLCBkZXZpY2U9
+MAoKICAgIENvbnRyb2w6IG5hbWU9IklFQzk1OCBQbGF5YmFjayBEZWZhdWx0IiwgaW5kZXg9MCwg
+ZGV2aWNlPTAKCiAgICBDb250cm9sOiBuYW1lPSJJRUM5NTggUGxheWJhY2sgU3dpdGNoIiwgaW5k
+ZXg9MCwgZGV2aWNlPTAKCiAgICBDb250cm9sOiBuYW1lPSJJRUM5NTggRGVmYXVsdCBQQ00gUGxh
+eWJhY2sgU3dpdGNoIiwgaW5kZXg9MCwgZGV2aWNlPTAKCiAgICBEZXZpY2U6IG5hbWU9IkFMQzg5
+OCBEaWdpdGFsIiwgdHlwZT0iU1BESUYiLCBkZXZpY2U9MQoKICAgIENvbnZlcnRlcjogc3RyZWFt
+PTgsIGNoYW5uZWw9MAoKICAgIERpZ2l0YWw6CgogICAgRGlnaXRhbCBjYXRlZ29yeTogMHgwCgog
+ICAgSUVDIENvZGluZyBUeXBlOiAweDAKCiAgICBQQ006CgogICAgICByYXRlcyBbMHg1ZjBdOiAz
+MjAwMCA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMCAxOTIwMDAKCiAgICAgIGJpdHMgWzB4ZV06IDE2
+IDIwIDI0CgogICAgICBmb3JtYXRzIFsweDFdOiBQQ00KCiAgICBQb3dlciBzdGF0ZXM6ICBEMCBE
+MSBEMiBEMyBFUFNTCgogICAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAoKICBOb2RlIDB4
+MTEgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDcwMTogU3RlcmVvIERpZ2l0YWwKCiAgICBDb250
+cm9sOiBuYW1lPSJTUERJRiBQaGFudG9tIEphY2siLCBpbmRleD0wLCBkZXZpY2U9MAoKICAgIFBp
+bmNhcCAweDAwMDAwMDEwOiBPVVQKCiAgICBQaW4gRGVmYXVsdCAweDAxNDUxMTIwOiBbSmFja10g
+U1BESUYgT3V0IGF0IEV4dCBSZWFyCgogICAgICBDb25uID0gT3B0aWNhbCwgQ29sb3IgPSBCbGFj
+awoKICAgICAgRGVmQXNzb2NpYXRpb24gPSAweDIsIFNlcXVlbmNlID0gMHgwCgogICAgICBNaXNj
+ID0gTk9fUFJFU0VOQ0UKCiAgICBQaW4tY3RsczogMHg0MDogT1VUCgogICAgUG93ZXIgc3RhdGVz
+OiAgRDAgRDEgRDIgRDMgRVBTUwoKICAgIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKCiAg
+ICBDb25uZWN0aW9uOiAxCgogICAgICAgMHgxMAoKICBOb2RlIDB4MTIgW1BpbiBDb21wbGV4XSB3
+Y2FwcyAweDQwMDQwMTogU3RlcmVvCgogICAgUGluY2FwIDB4MDAwMDAwMjA6IElOCgogICAgUGlu
+IERlZmF1bHQgMHg0MTExMTFmMDogW04vQV0gU3BlYWtlciBhdCBFeHQgUmVhcgoKICAgICAgQ29u
+biA9IDEvOCwgQ29sb3IgPSBCbGFjawoKICAgICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVl
+bmNlID0gMHgwCgogICAgICBNaXNjID0gTk9fUFJFU0VOQ0UKCiAgICBQaW4tY3RsczogMHgwMDoK
+CiAgICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCgogICAgUG93ZXI6IHNldHRpbmc9
+RDAsIGFjdHVhbD1EMAoKICBOb2RlIDB4MTMgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMg
+MHhmMDAwMDA6IE1vbm8KCiAgTm9kZSAweDE0IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA1OGQ6
+IFN0ZXJlbyBBbXAtT3V0CgogICAgQ29udHJvbDogbmFtZT0iRnJvbnQgUGxheWJhY2sgU3dpdGNo
+IiwgaW5kZXg9MCwgZGV2aWNlPTAKCiAgICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9T3V0LCBp
+ZHg9MCwgb2ZzPTAKCiAgICBDb250cm9sOiBuYW1lPSJMaW5lIE91dCBGcm9udCBKYWNrIiwgaW5k
+ZXg9MCwgZGV2aWNlPTAKCiAgICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwg
+c3RlcHNpemU9MHgwMCwgbXV0ZT0xCgogICAgQW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0KCiAg
+ICBQaW5jYXAgMHgwMDAxMDAzYzogSU4gT1VUIEhQIEVBUEQgRGV0ZWN0CgogICAgRUFQRCAweDI6
+IEVBUEQKCiAgICBQaW4gRGVmYXVsdCAweDAxMDE0NDEwOiBbSmFja10gTGluZSBPdXQgYXQgRXh0
+IFJlYXIKCiAgICAgIENvbm4gPSAxLzgsIENvbG9yID0gR3JlZW4KCiAgICAgIERlZkFzc29jaWF0
+aW9uID0gMHgxLCBTZXF1ZW5jZSA9IDB4MAoKICAgIFBpbi1jdGxzOiAweDAwOgoKICAgIFVuc29s
+aWNpdGVkOiB0YWc9MDUsIGVuYWJsZWQ9MQoKICAgIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQz
+IEVQU1MKCiAgICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCgogICAgQ29ubmVjdGlvbjog
+NQoKICAgICAgIDB4MGMqIDB4MGQgMHgwZSAweDBmIDB4MjYKCiAgTm9kZSAweDE1IFtQaW4gQ29t
+cGxleF0gd2NhcHMgMHg0MDA1OGQ6IFN0ZXJlbyBBbXAtT3V0CgogICAgQ29udHJvbDogbmFtZT0i
+U3Vycm91bmQgUGxheWJhY2sgU3dpdGNoIiwgaW5kZXg9MCwgZGV2aWNlPTAKCiAgICAgIENvbnRy
+b2xBbXA6IGNocz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKCiAgICBDb250cm9sOiBuYW1lPSJM
+aW5lIE91dCBTdXJyb3VuZCBKYWNrIiwgaW5kZXg9MCwgZGV2aWNlPTAKCiAgICBBbXAtT3V0IGNh
+cHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCgogICAgQW1w
+LU91dCB2YWxzOiAgWzB4ODAgMHg4MF0KCiAgICBQaW5jYXAgMHgwMDAwMDAzYzogSU4gT1VUIEhQ
+IERldGVjdAoKICAgIFBpbiBEZWZhdWx0IDB4MDEwMTE0MTI6IFtKYWNrXSBMaW5lIE91dCBhdCBF
+eHQgUmVhcgoKICAgICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawoKICAgICAgRGVmQXNzb2Np
+YXRpb24gPSAweDEsIFNlcXVlbmNlID0gMHgyCgogICAgUGluLWN0bHM6IDB4MDA6CgogICAgVW5z
+b2xpY2l0ZWQ6IHRhZz0wNiwgZW5hYmxlZD0xCgogICAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIg
+RDMgRVBTUwoKICAgIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKCiAgICBDb25uZWN0aW9u
+OiA1CgogICAgICAgMHgwYyAweDBkKiAweDBlIDB4MGYgMHgyNgoKICBOb2RlIDB4MTYgW1BpbiBD
+b21wbGV4XSB3Y2FwcyAweDQwMDU4ZDogU3RlcmVvIEFtcC1PdXQKCiAgICBDb250cm9sOiBuYW1l
+PSJDZW50ZXIgUGxheWJhY2sgU3dpdGNoIiwgaW5kZXg9MCwgZGV2aWNlPTAKCiAgICAgIENvbnRy
+b2xBbXA6IGNocz0xLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKCiAgICBDb250cm9sOiBuYW1lPSJM
+RkUgUGxheWJhY2sgU3dpdGNoIiwgaW5kZXg9MCwgZGV2aWNlPTAKCiAgICAgIENvbnRyb2xBbXA6
+IGNocz0yLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKCiAgICBDb250cm9sOiBuYW1lPSJMaW5lIE91
+dCBDTEZFIEphY2siLCBpbmRleD0wLCBkZXZpY2U9MAoKICAgIEFtcC1PdXQgY2Fwczogb2ZzPTB4
+MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKCiAgICBBbXAtT3V0IHZhbHM6
+ICBbMHg4MCAweDgwXQoKICAgIFBpbmNhcCAweDAwMDAwMDNjOiBJTiBPVVQgSFAgRGV0ZWN0Cgog
+ICAgUGluIERlZmF1bHQgMHgwMTAxNjQxMTogW0phY2tdIExpbmUgT3V0IGF0IEV4dCBSZWFyCgog
+ICAgICBDb25uID0gMS84LCBDb2xvciA9IE9yYW5nZQoKICAgICAgRGVmQXNzb2NpYXRpb24gPSAw
+eDEsIFNlcXVlbmNlID0gMHgxCgogICAgUGluLWN0bHM6IDB4MDA6CgogICAgVW5zb2xpY2l0ZWQ6
+IHRhZz0wNywgZW5hYmxlZD0xCgogICAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwoK
+ICAgIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKCiAgICBDb25uZWN0aW9uOiA1CgogICAg
+ICAgMHgwYyAweDBkIDB4MGUqIDB4MGYgMHgyNgoKICBOb2RlIDB4MTcgW1BpbiBDb21wbGV4XSB3
+Y2FwcyAweDQwMDU4ZDogU3RlcmVvIEFtcC1PdXQKCiAgICBBbXAtT3V0IGNhcHM6IG9mcz0weDAw
+LCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCgogICAgQW1wLU91dCB2YWxzOiAg
+WzB4ODAgMHg4MF0KCiAgICBQaW5jYXAgMHgwMDAwMDAzYzogSU4gT1VUIEhQIERldGVjdAoKICAg
+IFBpbiBEZWZhdWx0IDB4NDExMTExZjA6IFtOL0FdIFNwZWFrZXIgYXQgRXh0IFJlYXIKCiAgICAg
+IENvbm4gPSAxLzgsIENvbG9yID0gQmxhY2sKCiAgICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBT
+ZXF1ZW5jZSA9IDB4MAoKICAgICAgTWlzYyA9IE5PX1BSRVNFTkNFCgogICAgUGluLWN0bHM6IDB4
+MjA6IElOCgogICAgVW5zb2xpY2l0ZWQ6IHRhZz0wMCwgZW5hYmxlZD0wCgogICAgUG93ZXIgc3Rh
+dGVzOiAgRDAgRDEgRDIgRDMgRVBTUwoKICAgIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAK
+CiAgICBDb25uZWN0aW9uOiA1CgogICAgICAgMHgwYyAweDBkIDB4MGUgMHgwZiogMHgyNgoKICBO
+b2RlIDB4MTggW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDU4ZjogU3RlcmVvIEFtcC1JbiBBbXAt
+T3V0CgogICAgQ29udHJvbDogbmFtZT0iUmVhciBNaWMgQm9vc3QgVm9sdW1lIiwgaW5kZXg9MCwg
+ZGV2aWNlPTAKCiAgICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0wLCBvZnM9MAoK
+ICAgIENvbnRyb2w6IG5hbWU9IlJlYXIgTWljIEphY2siLCBpbmRleD0wLCBkZXZpY2U9MAoKICAg
+IEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDMsIHN0ZXBzaXplPTB4MjcsIG11dGU9
+MAoKICAgIEFtcC1JbiB2YWxzOiAgWzB4MDAgMHgwMF0KCiAgICBBbXAtT3V0IGNhcHM6IG9mcz0w
+eDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCgogICAgQW1wLU91dCB2YWxz
+OiAgWzB4ODAgMHg4MF0KCiAgICBQaW5jYXAgMHgwMDAwMzczYzogSU4gT1VUIEhQIERldGVjdAoK
+ICAgICAgVnJlZiBjYXBzOiBISVogNTAgR1JEIDgwIDEwMAoKICAgIFBpbiBEZWZhdWx0IDB4MDFh
+MTljNDA6IFtKYWNrXSBNaWMgYXQgRXh0IFJlYXIKCiAgICAgIENvbm4gPSAxLzgsIENvbG9yID0g
+UGluawoKICAgICAgRGVmQXNzb2NpYXRpb24gPSAweDQsIFNlcXVlbmNlID0gMHgwCgogICAgUGlu
+LWN0bHM6IDB4MjE6IElOIFZSRUZfNTAKCiAgICBVbnNvbGljaXRlZDogdGFnPTAzLCBlbmFibGVk
+PTEKCiAgICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCgogICAgUG93ZXI6IHNldHRp
+bmc9RDAsIGFjdHVhbD1EMAoKICAgIENvbm5lY3Rpb246IDUKCiAgICAgICAweDBjKiAweDBkIDB4
+MGUgMHgwZiAweDI2CgogIE5vZGUgMHgxOSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNThmOiBT
+dGVyZW8gQW1wLUluIEFtcC1PdXQKCiAgICBDb250cm9sOiBuYW1lPSJGcm9udCBNaWMgQm9vc3Qg
+Vm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKCiAgICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9
+SW4sIGlkeD0wLCBvZnM9MAoKICAgIENvbnRyb2w6IG5hbWU9IkZyb250IE1pYyBKYWNrIiwgaW5k
+ZXg9MCwgZGV2aWNlPTAKCiAgICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAzLCBz
+dGVwc2l6ZT0weDI3LCBtdXRlPTAKCiAgICBBbXAtSW4gdmFsczogIFsweDAwIDB4MDBdCgogICAg
+QW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9
+MQoKICAgIEFtcC1PdXQgdmFsczogIFsweDgwIDB4ODBdCgogICAgUGluY2FwIDB4MDAwMDM3M2M6
+IElOIE9VVCBIUCBEZXRlY3QKCiAgICAgIFZyZWYgY2FwczogSElaIDUwIEdSRCA4MCAxMDAKCiAg
+ICBQaW4gRGVmYXVsdCAweDAyYTE5YzQxOiBbSmFja10gTWljIGF0IEV4dCBGcm9udAoKICAgICAg
+Q29ubiA9IDEvOCwgQ29sb3IgPSBQaW5rCgogICAgICBEZWZBc3NvY2lhdGlvbiA9IDB4NCwgU2Vx
+dWVuY2UgPSAweDEKCiAgICBQaW4tY3RsczogMHgyNDogSU4gVlJFRl84MAoKICAgIFVuc29saWNp
+dGVkOiB0YWc9MDIsIGVuYWJsZWQ9MQoKICAgIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQ
+U1MKCiAgICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCgogICAgQ29ubmVjdGlvbjogNQoK
+ICAgICAgIDB4MGMqIDB4MGQgMHgwZSAweDBmIDB4MjYKCiAgTm9kZSAweDFhIFtQaW4gQ29tcGxl
+eF0gd2NhcHMgMHg0MDA1OGY6IFN0ZXJlbyBBbXAtSW4gQW1wLU91dAoKICAgIENvbnRyb2w6IG5h
+bWU9IkxpbmUgQm9vc3QgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKCiAgICAgIENvbnRyb2xB
+bXA6IGNocz0zLCBkaXI9SW4sIGlkeD0wLCBvZnM9MAoKICAgIENvbnRyb2w6IG5hbWU9IkxpbmUg
+SmFjayIsIGluZGV4PTAsIGRldmljZT0wCgogICAgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3Rl
+cHM9MHgwMywgc3RlcHNpemU9MHgyNywgbXV0ZT0wCgogICAgQW1wLUluIHZhbHM6ICBbMHgwMCAw
+eDAwXQoKICAgIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0w
+eDAwLCBtdXRlPTEKCiAgICBBbXAtT3V0IHZhbHM6ICBbMHg4MCAweDgwXQoKICAgIFBpbmNhcCAw
+eDAwMDAzNzNjOiBJTiBPVVQgSFAgRGV0ZWN0CgogICAgICBWcmVmIGNhcHM6IEhJWiA1MCBHUkQg
+ODAgMTAwCgogICAgUGluIERlZmF1bHQgMHgwMTgxMzQ0ZjogW0phY2tdIExpbmUgSW4gYXQgRXh0
+IFJlYXIKCiAgICAgIENvbm4gPSAxLzgsIENvbG9yID0gQmx1ZQoKICAgICAgRGVmQXNzb2NpYXRp
+b24gPSAweDQsIFNlcXVlbmNlID0gMHhmCgogICAgUGluLWN0bHM6IDB4MjA6IElOIFZSRUZfSEla
+CgogICAgVW5zb2xpY2l0ZWQ6IHRhZz0wNCwgZW5hYmxlZD0xCgogICAgUG93ZXIgc3RhdGVzOiAg
+RDAgRDEgRDIgRDMgRVBTUwoKICAgIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKCiAgICBD
+b25uZWN0aW9uOiA1CgogICAgICAgMHgwYyogMHgwZCAweDBlIDB4MGYgMHgyNgoKICBOb2RlIDB4
+MWIgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDU4ZjogU3RlcmVvIEFtcC1JbiBBbXAtT3V0Cgog
+ICAgQ29udHJvbDogbmFtZT0iSGVhZHBob25lIFBsYXliYWNrIFN3aXRjaCIsIGluZGV4PTAsIGRl
+dmljZT0wCgogICAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPU91dCwgaWR4PTAsIG9mcz0wCgog
+ICAgQ29udHJvbDogbmFtZT0iRnJvbnQgSGVhZHBob25lIEphY2siLCBpbmRleD0wLCBkZXZpY2U9
+MAoKICAgIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDMsIHN0ZXBzaXplPTB4Mjcs
+IG11dGU9MAoKICAgIEFtcC1JbiB2YWxzOiAgWzB4MDAgMHgwMF0KCiAgICBBbXAtT3V0IGNhcHM6
+IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCgogICAgQW1wLU91
+dCB2YWxzOiAgWzB4MDAgMHgwMF0KCiAgICBQaW5jYXAgMHgwMDAxMzczYzogSU4gT1VUIEhQIEVB
+UEQgRGV0ZWN0CgogICAgICBWcmVmIGNhcHM6IEhJWiA1MCBHUkQgODAgMTAwCgogICAgRUFQRCAw
+eDI6IEVBUEQKCiAgICBQaW4gRGVmYXVsdCAweDAyMjE0NDUwOiBbSmFja10gSFAgT3V0IGF0IEV4
+dCBGcm9udAoKICAgICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBHcmVlbgoKICAgICAgRGVmQXNzb2Np
+YXRpb24gPSAweDUsIFNlcXVlbmNlID0gMHgwCgogICAgUGluLWN0bHM6IDB4YzA6IE9VVCBIUCBW
+UkVGX0hJWgoKICAgIFVuc29saWNpdGVkOiB0YWc9MDEsIGVuYWJsZWQ9MQoKICAgIFBvd2VyIHN0
+YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKCiAgICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQw
+CgogICAgQ29ubmVjdGlvbjogNQoKICAgICAgIDB4MGMgMHgwZCAweDBlIDB4MGYqIDB4MjYKCiAg
+Tm9kZSAweDFjIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA0ODE6IFN0ZXJlbwoKICAgIFBpbmNh
+cCAweDAwMDAwMDI0OiBJTiBEZXRlY3QKCiAgICBQaW4gRGVmYXVsdCAweDQxMTExMWYwOiBbTi9B
+XSBTcGVha2VyIGF0IEV4dCBSZWFyCgogICAgICBDb25uID0gMS84LCBDb2xvciA9IEJsYWNrCgog
+ICAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAweDAKCiAgICAgIE1pc2MgPSBO
+T19QUkVTRU5DRQoKICAgIFBpbi1jdGxzOiAweDIwOiBJTgoKICAgIFVuc29saWNpdGVkOiB0YWc9
+MDAsIGVuYWJsZWQ9MAoKICAgIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKCiAgICBQ
+b3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCgogIE5vZGUgMHgxZCBbUGluIENvbXBsZXhdIHdj
+YXBzIDB4NDAwNDAwOiBNb25vCgogICAgUGluY2FwIDB4MDAwMDAwMjA6IElOCgogICAgUGluIERl
+ZmF1bHQgMHg0MDE2ZjYwMTogW04vQV0gU3BlYWtlciBhdCBFeHQgTi9BCgogICAgICBDb25uID0g
+RGlnaXRhbCwgQ29sb3IgPSBPdGhlcgoKICAgICAgRGVmQXNzb2NpYXRpb24gPSAweDAsIFNlcXVl
+bmNlID0gMHgxCgogICAgUGluLWN0bHM6IDB4MjA6IElOCgogICAgUG93ZXIgc3RhdGVzOiAgRDAg
+RDEgRDIgRDMgRVBTUwoKICAgIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKCiAgTm9kZSAw
+eDFlIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA3MDE6IFN0ZXJlbyBEaWdpdGFsCgogICAgQ29u
+dHJvbDogbmFtZT0iU1BESUYgUGhhbnRvbSBKYWNrIiwgaW5kZXg9MSwgZGV2aWNlPTAKCiAgICBQ
+aW5jYXAgMHgwMDAwMDAxMDogT1VUCgogICAgUGluIERlZmF1bHQgMHg5MDQ2MDEzMDogW0ZpeGVk
+XSBTUERJRiBPdXQgYXQgSW50IE4vQQoKICAgICAgQ29ubiA9IERpZ2l0YWwsIENvbG9yID0gVW5r
+bm93bgoKICAgICAgRGVmQXNzb2NpYXRpb24gPSAweDMsIFNlcXVlbmNlID0gMHgwCgogICAgICBN
+aXNjID0gTk9fUFJFU0VOQ0UKCiAgICBQaW4tY3RsczogMHg0MDogT1VUCgogICAgUG93ZXIgc3Rh
+dGVzOiAgRDAgRDEgRDIgRDMgRVBTUwoKICAgIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAK
+CiAgICBDb25uZWN0aW9uOiAxCgogICAgICAgMHgwNgoKICBOb2RlIDB4MWYgW1BpbiBDb21wbGV4
+XSB3Y2FwcyAweDQwMDY4MTogU3RlcmVvIERpZ2l0YWwKCiAgICBQaW5jYXAgMHgwMDAwMDAyMDog
+SU4KCiAgICBQaW4gRGVmYXVsdCAweDQxMTExMWYwOiBbTi9BXSBTcGVha2VyIGF0IEV4dCBSZWFy
+CgogICAgICBDb25uID0gMS84LCBDb2xvciA9IEJsYWNrCgogICAgICBEZWZBc3NvY2lhdGlvbiA9
+IDB4ZiwgU2VxdWVuY2UgPSAweDAKCiAgICAgIE1pc2MgPSBOT19QUkVTRU5DRQoKICAgIFBpbi1j
+dGxzOiAweDIwOiBJTgoKICAgIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAoKICAgIFBv
+d2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKCiAgICBQb3dlcjogc2V0dGluZz1EMCwgYWN0
+dWFsPUQwCgogIE5vZGUgMHgyMCBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDA0
+MDogTW9ubwoKICAgIFByb2Nlc3NpbmcgY2FwczogYmVuaWduPTAsIG5jb2VmZj0yOAoKICBOb2Rl
+IDB4MjEgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KCiAgTm9k
+ZSAweDIyIFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDAxMGI6IFN0ZXJlbyBBbXAtSW4KCiAgICBB
+bXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEK
+CiAgICBBbXAtSW4gdmFsczogIFsweDgwIDB4ODBdIFsweDAwIDB4MDBdIFsweDgwIDB4ODBdIFsw
+eDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBd
+IFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdCgogICAgQ29ubmVjdGlvbjogMTEK
+CiAgICAgICAweDE4IDB4MTkgMHgxYSAweDFiIDB4MWMgMHgxZCAweDE0IDB4MTUgMHgxNiAweDE3
+IDB4MGIKCiAgTm9kZSAweDIzIFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDAxMGI6IFN0ZXJlbyBB
+bXAtSW4KCiAgICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0w
+eDAwLCBtdXRlPTEKCiAgICBBbXAtSW4gdmFsczogIFsweDgwIDB4ODBdIFsweDAwIDB4MDBdIFsw
+eDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBd
+IFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdCgogICAgQ29u
+bmVjdGlvbjogMTEKCiAgICAgICAweDE4IDB4MTkgMHgxYSAweDFiIDB4MWMgMHgxZCAweDE0IDB4
+MTUgMHgxNiAweDE3IDB4MGIKCiAgTm9kZSAweDI0IFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgz
+MDAxMDE6IFN0ZXJlbwoKICAgIENvbm5lY3Rpb246IDEyCgogICAgICAgMHgxOCAweDE5KiAweDFh
+IDB4MWIgMHgxYyAweDFkIDB4MTQgMHgxNSAweDE2IDB4MTcgMHgwYiAweDEyCgogIE5vZGUgMHgy
+NSBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDQxMTogU3RlcmVvCgogICAgQ29udmVydGVyOiBzdHJl
+YW09MCwgY2hhbm5lbD0wCgogICAgUENNOgoKICAgICAgcmF0ZXMgWzB4NWUwXTogNDQxMDAgNDgw
+MDAgODgyMDAgOTYwMDAgMTkyMDAwCgogICAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAoKICAgICAg
+Zm9ybWF0cyBbMHgxXTogUENNCgogICAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwoK
+ICAgIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKCiAgTm9kZSAweDI2IFtBdWRpbyBNaXhl
+cl0gd2NhcHMgMHgyMDAxMGY6IFN0ZXJlbyBBbXAtSW4gQW1wLU91dAoKICAgIEFtcC1JbiBjYXBz
+OiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQoKICAgIEFtcC1J
+biB2YWxzOiAgWzB4MDAgMHgwMF0gWzB4ODAgMHg4MF0KCiAgICBBbXAtT3V0IGNhcHM6IG9mcz0w
+eDU3LCBuc3RlcHM9MHg1Nywgc3RlcHNpemU9MHgwMiwgbXV0ZT0wCgogICAgQW1wLU91dCB2YWxz
+OiAgWzB4NTcgMHg1N10KCiAgICBDb25uZWN0aW9uOiAyCgogICAgICAgMHgyNSAweDBiCgogICAK
+CiAgIAoKICBSZWdhcmRzCgogIE1lbmdkb25nCgoKICAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhl
+IGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
