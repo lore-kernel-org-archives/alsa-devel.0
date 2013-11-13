@@ -1,59 +1,173 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH [alsa-utils] 1/2] alsaconf: support newer m-i-t
-	and kmod
-Date: Wed, 13 Nov 2013 13:23:47 -0500
-Message-ID: <1384367028-750-1-git-send-email-vapier@gentoo.org>
+From: Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCHv4] dmaengine: Add support for BCM2835
+Date: Wed, 13 Nov 2013 19:43:13 +0100
+Message-ID: <3722902.ByNK8Ptc5Y@flatron>
+References: <5283BC93.1090801@koalo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
- by alsa0.perex.cz (Postfix) with ESMTP id CE29C260307
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 19:23:50 +0100 (CET)
-Received: from localhost.localdomain (localhost [127.0.0.1])
- by smtp.gentoo.org (Postfix) with ESMTP id 74B5433F355
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 18:23:48 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 7Bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <5283BC93.1090801-oZ8rN/sblLk@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The m-i-t package made it up to 3.10 versions before ending, so update
-the glob to handle those too.
+Hi Florian,
 
-Most distros are moving on to kmod, so we also want to handle the version
-string that package outputs.
+Seems like I accidentally replied to some old version of this patch.
+Not sure how many of those comments were still relevant for V3, but
+let me look at this version and see whether we can still improve things
+a bit. Please see my comments inline.
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- alsaconf/alsaconf.in | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+On Wednesday 13 of November 2013 18:53:23 Florian Meier wrote:
+> Add support for DMA controller of BCM2835 as used in the Raspberry Pi.
+> Currently it only supports cyclic DMA.
+> 
+> Signed-off-by: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+> ---
+> 
+> Besides of many minor improvements (thanks to your helpful comments),
+> this fourth version does the assignment of the virtual to the hardware
+> channel already in probe. This simplifies things a lot
+> (first of all the complex alloc_chan_resources is now gone).
+> 
+> Regarding the maximum segment size: 0x3FFFFFFF is the maximum possible
+> DMA transfer length value and I have no evidence that the maximum
+> segment size is smaller.
+> 
+>  .../devicetree/bindings/dma/bcm2835-dma.txt        |   59 ++
+>  drivers/dma/Kconfig                                |    6 +
+>  drivers/dma/Makefile                               |    1 +
+>  drivers/dma/bcm2835-dma.c                          |  750 ++++++++++++++++++++
+>  4 files changed, 816 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dma/bcm2835-dma.txt
+>  create mode 100644 drivers/dma/bcm2835-dma.c
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/bcm2835-dma.txt b/Documentation/devicetree/bindings/dma/bcm2835-dma.txt
+> new file mode 100644
+> index 0000000..bca5e84
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/bcm2835-dma.txt
+> @@ -0,0 +1,59 @@
+> +* BCM2835 DMA controller
+> +
+> +Required properties:
+> +- compatible: Should be "brcm,bcm2835-dma".
+> +- reg: Should contain DMA registers location and length.
+> +- interrupts: Should contain the DMA interrupts associated
+> +		to the DMA channels in ascending order.
+> +		First cell is the IRQ bank.
+> +		Second cell is the IRQ number.
+> +- #dma-cells: Must be <1>, used to represent the number of integer cells in
+> +		the dmas property of client devices.
+> +- dma-channels: Maximum number of DMA channels available.
+> +- dma-requests: Number of DMA Requests.
 
-diff --git a/alsaconf/alsaconf.in b/alsaconf/alsaconf.in
-index 5c23787..59f25d1 100644
---- a/alsaconf/alsaconf.in
-+++ b/alsaconf/alsaconf.in
-@@ -308,9 +308,11 @@ elif [ "$kernel" = "new" ]; then
-     cfgout="/etc/modprobe.d/50-sound.conf"
-     cfgoldout="/etc/modprobe.d/sound"
-     if [ ! -f $cfgout ]; then
--	modver=$(modprobe -V | sed -e's/^module-init-tools version //')
--	case "$modver" in
--	3.[789]*)
-+	case "$(modprobe -V)" in
-+	"module-init-tools version "3.[789]*|\
-+	"module-init-tools version "3.1[0-9]*)
-+	  ;;
-+	"kmod version "*)
- 	  ;;
- 	*)
- 	  cfgout="/etc/modprobe.d/sound"
--- 
-1.8.3.2
+The two properties above do not seem to be used anywhere in the driver.
+
+> +- brcm,dma-channel-mask: Bit mask representing the channels available.
+
+What does the value of this property depend on? Could you describe the
+structure of this DMA controller?
+
+> +
+> +Example:
+> +
+> +dma: dma@7e007000 {
+> +	compatible = "brcm,bcm2835-dma";
+> +	reg = <0x7e007000 0xf00>;
+> +	interrupts = <1 16
+> +		      1 17
+> +		      1 18
+> +		      1 19
+> +		      1 20
+> +		      1 21
+> +		      1 22
+> +		      1 23
+> +		      1 24
+> +		      1 25
+> +		      1 26
+> +		      1 27
+> +		      1 28>;
+
+There are 13 interrupts specified here, but...
+
+> +
+> +	#dma-cells = <1>;
+> +	dma-channels = <16>;
+
+...16 channels here...
+
+> +	dma-requests = <32>;
+> +	brcm,dma-channel-mask = <0x7f35>;
+
+...and 11 set bits here. May I ask you to explain this to me, please?
+
+[snip]
+> diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
+> new file mode 100644
+> index 0000000..baf072e
+> --- /dev/null
+> +++ b/drivers/dma/bcm2835-dma.c
+[snip]
+> +static int bcm2835_dma_probe(struct platform_device *pdev)
+> +{
+> +	struct bcm2835_dmadev *od;
+> +	struct resource *dma_res = NULL;
+> +	void __iomem *dma_base = NULL;
+> +	int rc = 0;
+> +	int i = 0;
+> +	int irq;
+> +	uint32_t chans_available;
+[snip]
+> +	if (pdev->dev.of_node) {
+
+Is this driver supposed to support non-DT based instantation (aka board
+files)? If not, maybe it would be cleaner to simply check for
+!pdev->dev.of_node at the beginning of probe and return an error?
+
+> +		const void *chan_mask;
+> +
+> +		/* Device-tree DMA controller registration */
+> +		rc = of_dma_controller_register(pdev->dev.of_node,
+> +				bcm2835_dma_xlate, od);
+> +		if (rc) {
+> +			dev_err(&pdev->dev, "Failed to register DMA controller\n");
+> +			dma_async_device_unregister(&od->ddev);
+> +			bcm2835_dma_free(od);
+> +			return rc;
+> +		}
+> +
+> +		/* Request DMA channel mask from device tree */
+> +		chan_mask = of_get_property(pdev->dev.of_node,
+> +				"brcm,dma-channel-mask", NULL);
+> +
+> +		if (!chan_mask) {
+> +			dev_err(&pdev->dev, "Failed to get channel mask\n");
+> +			dma_async_device_unregister(&od->ddev);
+> +			bcm2835_dma_free(od);
+> +			return -EINVAL;
+> +		}
+> +
+> +		chans_available = be32_to_cpup(chan_mask);
+
+You can use of_property_read_u32(), which will do both of_get_property()
+and be32_to_cpup() for you.
+
+> +
+> +		/* do not use the FIQ and BULK channels */
+> +		chans_available &= ~0xD;
+
+I'm clearly lacking the information about hardware here, but it would be
+nice to hear what these channels are.
+
+Otherwise, the driver looks pretty good.
+
+Best regards,
+Tomasz
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
