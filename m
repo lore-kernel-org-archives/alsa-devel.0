@@ -1,112 +1,66 @@
-From: Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v2 2/2] dt: binding: sound cs42l52 driver
-Date: Wed, 13 Nov 2013 17:33:30 +0100
-Message-ID: <1485256.GGQxcSNhvH@flatron>
-References: <1384357474-28653-1-git-send-email-brian.austin@cirrus.com> <1384357474-28653-2-git-send-email-brian.austin@cirrus.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] dmaengine: Add support for BCM2835.
+Date: Wed, 13 Nov 2013 16:30:55 +0000
+Message-ID: <20131113163055.GV878@sirena.org.uk>
+References: <527D1DDA.2040004@koalo.de>
+ <20131108181743.GR2493@sirena.org.uk>
+ <20131113050017.GO8834@intel.com>
+ <20131113125111.GE878@sirena.org.uk>
+ <20131113133536.GZ8834@intel.com>
+ <20131113145441.GQ878@sirena.org.uk>
+ <20131113143101.GD8834@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="9o1Xi4ZMQ45MudWG"
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1384357474-28653-2-git-send-email-brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20131113143101.GD8834-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
+To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Cc: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Martin Sperl <martin-d5rIkyn9cnPYtjvyW6yDsg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Brian,
 
-On Wednesday 13 of November 2013 09:44:34 Brian Austin wrote:
-> Add Device Tree Binding for the CS42L52 Codec
-> 
-> v2 Adds clearer explaination of mic configs and select.
-> Renames bindings to '-' instead of '_'.
-> Definition of GPIO for reset pin.
-> 
-> Signed-off-by: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/cs42l52.txt          | 48 ++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/cs42l52.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/cs42l52.txt b/Documentation/devicetree/bindings/sound/cs42l52.txt
-> new file mode 100644
-> index 0000000..bd91ecf
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/cs42l52.txt
-> @@ -0,0 +1,48 @@
-> +CS42L52 audio CODEC
-> +
-> +Required properties:
-> +
-> +  - compatible : "cirrus,cs42l52"
-> +
-> +  - reg : the I2C address of the device for I2C
-> +
-> +Optional properties:
-> +
-> +  - reset-gpio : GPIO controller's phandle and the number
-> +		 of the GPIO used to reset the codec.
+--9o1Xi4ZMQ45MudWG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-As Kumar has already mentioned, all device-specific properties should be
-prefixed with vendor prefix, "cirrus," in this case.
+On Wed, Nov 13, 2013 at 08:01:01PM +0530, Vinod Koul wrote:
+> On Wed, Nov 13, 2013 at 02:54:41PM +0000, Mark Brown wrote:
 
-> +  - chgfreq    : Charge Pump Frequency values. Allowable values of
-> +		 0x00 through 0x0F.
-> +		 Frequency = (64xFs)/(N+2)
+> > Yes, though I think some of the stuff Martin was talking about will need
+> > changes to the dmaengine APIs.  He was wanting to reuse DMA lists which
+> > currently dmaengine needs to have built up each time.
 
-I suppose N means the value of chgfreq property here, but this should be
-clearly stated. Same for Fs - I suppose it is sampling frequency, but
-is it default, minimum, maximum or maybe something else?
+> Can you elobrate a bit more on what you guys want to do here?
 
-Personally I don't like this kind of raw values being passed using Device
-Tree, but this one can't be really represented reasonably in a generic
-way (such as in Hz units) without too much effort to calculate original
-value in the driver, then it's fine.
+He wants to be able to submit a descriptor to the hardware more than
+once to save on the costs of of constructing the descriptor.  I'm not
+convinced this is a huge benefit most of the time.
 
-> +  - mica-cfg   : MIC A single-ended or differential select.
-> +		 0x00 = Single-Ended
-> +		 0x01 = Differential
+--9o1Xi4ZMQ45MudWG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-I'd rather make it boolean and call it cirrus,mic-a-differential.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-> +  - micb-cfg   : MIC B single-ended or differential select.
-> +		 0x00 = Single-Ended
-> +		 0x01 = Differential
+iQIcBAEBAgAGBQJSg6k8AAoJELSic+t+oim9+joP/2v+7ur1ArziF81LX0Mb3ujr
+fDLROLY/aglhlbTL/giThm+O/wdqmcA2yndlZIrVH5tdIJhGSurwQrkuuFNidL/v
+tEu+RbPar9dKcNKJgUHYVNWkh6Yz5JxJkNQj5HV8vgVkG1XSqU82PTCH4FBUJl0l
+vErAYNk2gd09dQqZ9xzIiIjbBuFbXVGpfi+VxocGRgwc5L2+NhypGk9n1w/QjcTY
+wCFNcodvKg//Y9i4GZzaOoGbAqX7awZYom1LECZrNRJGjkloxDb+1Bcdx2zvAZts
+RXxJayHEjF/UHrHoOgSxLm2jtmFo1v9B5H3T4+W/52k8mHMc3B2CmmmKEpTbOsCZ
+pOGl9r8vddum+ZGrGdR342pDbcaWb5eVoW3SS+SNAykwAY+MJ/A4jnepLUtsGcrs
+yDIXMkb2v1fmFpsu3iCF9iS+ptnzP3xcxsj2m/FVtstncA0AdgsY114BSY7EUI5C
+XozE9k5xr653d7k8aQgcEJgdIu7T7Y5lTmR+WLUIaIf8ZvXMTVjISMG7Oe0z93hR
+DIuvocD5unnqg5iZffAR792UpMYlW6/UTz0ubLHyDba/HfFdXTjsclT97rKNO9Od
+ciiXrsWeH8+BGFjfTTcAY+WnYMMuug7DBWI14zNcNlTm75E3hNg8j/d2iTbyCD7a
+AzuzjGapsEAP4zCG+wsm
+=o5Dd
+-----END PGP SIGNATURE-----
 
-Ditto.
-
-> +  - mica-sel   : MIC A single ended input select.  For Single-Ended
-> +		 configuration, select which MIC to use.
-> +		 0x00 = MIC1
-> +		 0x01 = MIC2
-> +  - micb-sel   : MIC B single ended input select.  For Single-Ended
-> +		 configuration, select which MIC to use.
-> +		 0x00 = MIC1
-> +		 0x01 = MIC2
-
-Could you explain what are MIC A, MIC B, MIC1 and MIC2?
-
-> +  - micbias-lvl: Set the output voltage level on the MICBIAS Pin
-> +		 0x00 = 0.5 x VA
-> +		 0x01 = 0.6 x VA
-> +		 0x02 = 0.7 x VA
-> +		 0x03 = 0.8 x VA
-> +		 0x04 = 0.83 x VA
-> +		 0x05 = 0.91 x VA
-
-For such small range of values, decimal representation is preferred from
-readability reasons.
-
-> +
-> +Example:
-> +
-> +codec: cs42l52@4a {
-
-coding style: Node name should be generic, i.e. codec@4a.
-
-Best regards,
-Tomasz
-
+--9o1Xi4ZMQ45MudWG--
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
