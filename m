@@ -1,69 +1,121 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] dmaengine: Add support for BCM2835.
-Date: Wed, 13 Nov 2013 20:01:01 +0530
-Message-ID: <20131113143101.GD8834@intel.com>
-References: <527D1DDA.2040004@koalo.de>
- <20131108181743.GR2493@sirena.org.uk>
- <20131113050017.GO8834@intel.com>
- <20131113125111.GE878@sirena.org.uk>
- <20131113133536.GZ8834@intel.com>
- <20131113145441.GQ878@sirena.org.uk>
+From: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v2 1/2] ASoC: cs42l52: Add DeviceTree Support for CS42L52
+Date: Wed, 13 Nov 2013 09:44:33 -0600
+Message-ID: <1384357474-28653-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gr/z0/N6AeWAPJVB"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20131113145441.GQ878@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Florian Meier <florian.meier@koalo.de>, Stephen Warren <swarren@wwwdotorg.org>, Dan Williams <dan.j.williams@intel.com>, linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Martin Sperl <martin@sperl.org>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+This patch adds device tree support for the CS42L52 CODEC
 
---gr/z0/N6AeWAPJVB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+v2 changes dt bindings to use '-' instead of '_'.
+reset_gpio = reset-gpio. Pdata variables are not changed.
 
-On Wed, Nov 13, 2013 at 02:54:41PM +0000, Mark Brown wrote:
-> On Wed, Nov 13, 2013 at 07:05:36PM +0530, Vinod Koul wrote:
-> > On Wed, Nov 13, 2013 at 12:51:11PM +0000, Mark Brown wrote:
->=20
-> > > I'm probably going to be looking at that at some point, though perhaps
-> > > Martin will get to it since he seems to be looking at this.
->=20
-> > Okay sounds good. This will also help in streamline the implementations=
-=2E.
->=20
-> Yes, though I think some of the stuff Martin was talking about will need
-> changes to the dmaengine APIs.  He was wanting to reuse DMA lists which
-> currently dmaengine needs to have built up each time.
-Can you elobrate a bit more on what you guys want to do here?
+Signed-off-by: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+---
+ sound/soc/codecs/cs42l52.c | 51 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 49 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
+index 8b427c9..ea55ee5 100644
+--- a/sound/soc/codecs/cs42l52.c
++++ b/sound/soc/codecs/cs42l52.c
+@@ -17,7 +17,7 @@
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
+-#include <linux/gpio.h>
++#include <linux/of_gpio.h>
+ #include <linux/pm.h>
+ #include <linux/i2c.h>
+ #include <linux/input.h>
+@@ -1174,6 +1174,7 @@ static int cs42l52_i2c_probe(struct i2c_client *i2c_client,
+ 	struct cs42l52_private *cs42l52;
+ 	struct cs42l52_platform_data *pdata = dev_get_platdata(&i2c_client->dev);
+ 	int ret;
++	u32 val32;
+ 	unsigned int devid = 0;
+ 	unsigned int reg;
+ 
+@@ -1190,8 +1191,47 @@ static int cs42l52_i2c_probe(struct i2c_client *i2c_client,
+ 		return ret;
+ 	}
+ 
+-	if (pdata)
++	if (pdata) {
+ 		cs42l52->pdata = *pdata;
++	} else {
++		pdata = devm_kzalloc(&i2c_client->dev,
++				     sizeof(struct cs42l52_platform_data),
++				GFP_KERNEL);
++		if (!pdata) {
++			dev_err(&i2c_client->dev, "could not allocate pdata\n");
++			return -ENOMEM;
++		}
++		if (i2c_client->dev.of_node) {
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"mica-cfg", &val32) >= 0)
++				pdata->mica_cfg = val32;
++
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"micb-cfg", &val32) >= 0)
++				pdata->micb_cfg = val32;
++
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"mica-sel", &val32) >= 0)
++				pdata->mica_sel = val32;
++
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"micb-sel", &val32) >= 0)
++				pdata->micb_sel = val32;
++
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"micbias-lvl", &val32) >= 0)
++				pdata->micbias_lvl = val32;
++
++			if (of_property_read_u32(i2c_client->dev.of_node,
++				"chgfreq", &val32) >= 0)
++				pdata->chgfreq = val32;
++
++			pdata->reset_gpio =
++				of_get_named_gpio(i2c_client->dev.of_node,
++						"reset-gpio", 0);
++		}
++		cs42l52->pdata = *pdata;
++	}
+ 
+ 	if (cs42l52->pdata.reset_gpio) {
+ 		ret = gpio_request_one(cs42l52->pdata.reset_gpio,
+@@ -1274,6 +1314,12 @@ static int cs42l52_i2c_remove(struct i2c_client *client)
+ 	return 0;
+ }
+ 
++static const struct of_device_id cs42l52_of_match[] = {
++	{ .compatible = "cirrus,cs42l52", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, cs42l52_of_match);
++
+ static const struct i2c_device_id cs42l52_id[] = {
+ 	{ "cs42l52", 0 },
+ 	{ }
+@@ -1284,6 +1330,7 @@ static struct i2c_driver cs42l52_i2c_driver = {
+ 	.driver = {
+ 		.name = "cs42l52",
+ 		.owner = THIS_MODULE,
++		.of_match_table = cs42l52_of_match,
+ 	},
+ 	.id_table = cs42l52_id,
+ 	.probe =    cs42l52_i2c_probe,
+-- 
+1.8.4.rc3
+
 
 --
-~Vinod
-
---gr/z0/N6AeWAPJVB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSg40kAAoJEHwUBw8lI4NH/LcQAKJW7QeAHamIiq7jqWWlBkXl
-NIOetfjVqPJwMRjH2vcLm62EFARE9x4Q/V88Suz+vd+j6iIcB+jgQK3MpGU2Xl4U
-lg+tl6XUyA0aA6AVKOApyQQhm6jpkGDrZNX5tSYXpMYKa0/fkKozmtrCSXDilmle
-fezBaRO7WJ8rZyEV/N57pxb/724bKPfkdBIslNM2lCnkm7DJWjnI2HjtetXpXETY
-DEIfsSADBWu/jizmK1BWa+Tknx/vUV5vnCzESSavFEkEGHhLjBUYNlaBltgAzE3F
-1S0RrlUM5nqdEN0cf2Cl0Xjn4CFX5RrATTg/+XlnH/Q+OdmJ6/h89VLRR+BKDv7B
-SwYaaBfFbBfvcDkvfl42Bwy4gHEpjW4PRbv1WuG5kjGLXkN0TVEnzsuLenuCSTz3
-Ba/V0pu1EueDf4BmgbjZ5Fsg1JpwNha5Ri8Ez5kKaFG699GWCADr0ZLWmn1hwh1n
-OM2WxbtQqbY747qUqdiGv0/63kgix/4C9IeOPRyoDoxeNuGIpRcerI1r7EaTIHuT
-TNc8PXrCi4rDzvA0KhciIBVabEafCMJkxNQ6mXuG7DMm369xq3SeNozcN8zKaTol
-p+/LVRzgcOcnX8C0E18mlcamP0Vhi7FcHINyvKrk/hCSX2MwyRLkxpoXE/Ojx86l
-yZpJCrd1qxloExr7idgJ
-=/PA/
------END PGP SIGNATURE-----
-
---gr/z0/N6AeWAPJVB--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
