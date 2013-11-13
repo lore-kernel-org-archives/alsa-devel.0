@@ -1,133 +1,232 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH v7 4/4] ARM: dts: imx: use dual-fifo sdma script for ssi
-Date: Wed, 13 Nov 2013 22:55:27 +0800
-Message-ID: <5bfdcb2bc7f0cd6064a3c05e592fa361bf1fe444.1384352281.git.b42378@freescale.com>
-References: <cover.1384352281.git.b42378@freescale.com>
+From: Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH] dmaengine: Add support for BCM2835.
+Date: Wed, 13 Nov 2013 16:02:16 +0100
+Message-ID: <4133885.XyqaHYljiZ@flatron>
+References: <527D1DDA.2040004@koalo.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <cover.1384352281.git.b42378@freescale.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: vinod.koul@intel.com, dan.j.williams@intel.com, s.hauer@pengutronix.de, timur@tabi.org, shawn.guo@linaro.org, broonie@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <527D1DDA.2040004-oZ8rN/sblLk@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Use dual-fifo sdma scripts instead of shared scripts for ssi on i.MX series.
+Hi Florian,
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
----
- arch/arm/boot/dts/imx51.dtsi   |  4 ++--
- arch/arm/boot/dts/imx53.dtsi   |  4 ++--
- arch/arm/boot/dts/imx6qdl.dtsi | 12 ++++++------
- arch/arm/boot/dts/imx6sl.dtsi  | 12 ++++++------
- 4 files changed, 16 insertions(+), 16 deletions(-)
+Most of technical issues have been already mentioned by Russell, but let
+me also point those that I found. Please see my comments inline.
 
-diff --git a/arch/arm/boot/dts/imx51.dtsi b/arch/arm/boot/dts/imx51.dtsi
-index 54cee65..1a71eac 100644
---- a/arch/arm/boot/dts/imx51.dtsi
-+++ b/arch/arm/boot/dts/imx51.dtsi
-@@ -154,8 +154,8 @@
- 					reg = <0x70014000 0x4000>;
- 					interrupts = <30>;
- 					clocks = <&clks 49>;
--					dmas = <&sdma 24 1 0>,
--					       <&sdma 25 1 0>;
-+					dmas = <&sdma 24 22 0>,
-+					       <&sdma 25 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					fsl,ssi-dma-events = <25 24 23 22>; /* TX0 RX0 TX1 RX1 */
-diff --git a/arch/arm/boot/dts/imx53.dtsi b/arch/arm/boot/dts/imx53.dtsi
-index 4307e80..7208fde 100644
---- a/arch/arm/boot/dts/imx53.dtsi
-+++ b/arch/arm/boot/dts/imx53.dtsi
-@@ -153,8 +153,8 @@
- 					reg = <0x50014000 0x4000>;
- 					interrupts = <30>;
- 					clocks = <&clks 49>;
--					dmas = <&sdma 24 1 0>,
--					       <&sdma 25 1 0>;
-+					dmas = <&sdma 24 22 0>,
-+					       <&sdma 25 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					fsl,ssi-dma-events = <25 24 23 22>; /* TX0 RX0 TX1 RX1 */
-diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
-index 57e9c38..6e096ca 100644
---- a/arch/arm/boot/dts/imx6qdl.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl.dtsi
-@@ -223,8 +223,8 @@
- 					reg = <0x02028000 0x4000>;
- 					interrupts = <0 46 0x04>;
- 					clocks = <&clks 178>;
--					dmas = <&sdma 37 1 0>,
--					       <&sdma 38 1 0>;
-+					dmas = <&sdma 37 22 0>,
-+					       <&sdma 38 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					fsl,ssi-dma-events = <38 37>;
-@@ -236,8 +236,8 @@
- 					reg = <0x0202c000 0x4000>;
- 					interrupts = <0 47 0x04>;
- 					clocks = <&clks 179>;
--					dmas = <&sdma 41 1 0>,
--					       <&sdma 42 1 0>;
-+					dmas = <&sdma 41 22 0>,
-+					       <&sdma 42 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					fsl,ssi-dma-events = <42 41>;
-@@ -249,8 +249,8 @@
- 					reg = <0x02030000 0x4000>;
- 					interrupts = <0 48 0x04>;
- 					clocks = <&clks 180>;
--					dmas = <&sdma 45 1 0>,
--					       <&sdma 46 1 0>;
-+					dmas = <&sdma 45 22 0>,
-+					       <&sdma 46 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					fsl,ssi-dma-events = <46 45>;
-diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
-index c46651e..b32ba99 100644
---- a/arch/arm/boot/dts/imx6sl.dtsi
-+++ b/arch/arm/boot/dts/imx6sl.dtsi
-@@ -195,8 +195,8 @@
- 					reg = <0x02028000 0x4000>;
- 					interrupts = <0 46 0x04>;
- 					clocks = <&clks IMX6SL_CLK_SSI1>;
--					dmas = <&sdma 37 1 0>,
--					       <&sdma 38 1 0>;
-+					dmas = <&sdma 37 22 0>,
-+					       <&sdma 38 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					status = "disabled";
-@@ -207,8 +207,8 @@
- 					reg = <0x0202c000 0x4000>;
- 					interrupts = <0 47 0x04>;
- 					clocks = <&clks IMX6SL_CLK_SSI2>;
--					dmas = <&sdma 41 1 0>,
--					       <&sdma 42 1 0>;
-+					dmas = <&sdma 41 22 0>,
-+					       <&sdma 42 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					status = "disabled";
-@@ -219,8 +219,8 @@
- 					reg = <0x02030000 0x4000>;
- 					interrupts = <0 48 0x04>;
- 					clocks = <&clks IMX6SL_CLK_SSI3>;
--					dmas = <&sdma 45 1 0>,
--					       <&sdma 46 1 0>;
-+					dmas = <&sdma 45 22 0>,
-+					       <&sdma 46 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					status = "disabled";
--- 
-1.8.4
+On Friday 08 of November 2013 18:22:34 Florian Meier wrote:
+> Add support for DMA controller of BCM2835 as used in the Raspberry Pi.
+> Currently it only supports cyclic DMA for serving the I2S driver.
+> 
+> Signed-off-by: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+> ---
+>  arch/arm/boot/dts/bcm2835.dtsi |   22 +
+>  drivers/dma/Kconfig            |    6 +
+>  drivers/dma/Makefile           |    1 +
+>  drivers/dma/bcm2835-dma.c      |  880 ++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 909 insertions(+)
+>  create mode 100644 drivers/dma/bcm2835-dma.c
+> 
+> diff --git a/arch/arm/boot/dts/bcm2835.dtsi b/arch/arm/boot/dts/bcm2835.dtsi
+> index 1e12aef..1514198 100644
+> --- a/arch/arm/boot/dts/bcm2835.dtsi
+> +++ b/arch/arm/boot/dts/bcm2835.dtsi
+> @@ -103,6 +103,28 @@
+>  			clocks = <&clk_mmc>;
+>  			status = "disabled";
+>  		};
+> +
+> +		dma: dma@7e007000 {
+> +			compatible = "brcm,bcm2835-dma";
+> +			reg = <0x7e007000 0xf00>;
+> +			interrupts = <1 16
+> +				      1 17
+> +				      1 18
+> +				      1 19
+> +				      1 20
+> +				      1 21
+> +				      1 22
+> +				      1 23
+> +				      1 24
+> +				      1 25
+> +				      1 26
+> +				      1 27
+> +				      1 28>;
+> +
+> +			#dma-cells = <1>;
+> +			dma-channels = <15>;   /* DMA channel 15 is not handled yet */
 
+This should represent the real configuration of the hardware, regardless
+of what the driver supports.
 
+> +			dma-requests = <32>;
+> +		};
+>  	};
+>  
+>  	clocks {
+
+This should be a separate patch, following the one adding the driver.
+
+In addition, you are introducing a new device tree binding with this
+patch, so you should document it in appropriate location under
+Documentation/devicetree/bindings.
+
+> diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
+> new file mode 100644
+> index 0000000..c3e53b3
+> --- /dev/null
+> +++ b/drivers/dma/bcm2835-dma.c
+> @@ -0,0 +1,880 @@
+[snip]
+> +struct bcm2835_dma_cb {
+> +	unsigned long info;
+> +	unsigned long src;
+> +	unsigned long dst;
+> +	unsigned long length;
+> +	unsigned long stride;
+> +	unsigned long next;
+> +	unsigned long pad[2];
+> +};
+
+Is unsigned long really what you want here, not some explicitly sized
+types, such as u32 or uint32_t? This seems to be some kind of hardware
+interface, so the latter sounds more reasonable to me.
+
+[snip]
+> +#if defined(CONFIG_OF)
+> +static const struct of_device_id bcm2835_dma_of_match[] = {
+> +	{
+> +		.compatible = "brcm,bcm2835-dma",
+> +	}
+
+A dummy terminating entry is needed here.
+
+> +};
+> +MODULE_DEVICE_TABLE(of, bcm2835_dma_of_match);
+> +#endif
+> +
+> +static int bcm2835_dma_probe(struct platform_device *pdev)
+> +{
+> +	struct bcm2835_dmadev *od;
+> +	struct resource *dma_res = NULL;
+> +	void __iomem *dma_base = NULL;
+> +	int rc = 0;
+> +	int i;
+> +	struct resource *irq;
+> +	int irq_resources;
+> +
+> +	od = devm_kzalloc(&pdev->dev, sizeof(*od), GFP_KERNEL);
+> +	if (!od)
+> +		return -ENOMEM;
+> +
+> +	dma_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	dma_base = devm_ioremap_resource(&pdev->dev, dma_res);
+> +	if (IS_ERR(dma_base))
+> +		return PTR_ERR(dma_base);
+> +
+> +	od->dma_base = dma_base;
+> +	od->chans_available = BCM2835_DMA_CHANNEL_MASK;
+> +
+> +	dma_cap_set(DMA_SLAVE, od->ddev.cap_mask);
+> +	dma_cap_set(DMA_CYCLIC, od->ddev.cap_mask);
+> +	od->ddev.device_alloc_chan_resources = bcm2835_dma_alloc_chan_resources;
+> +	od->ddev.device_free_chan_resources = bcm2835_dma_free_chan_resources;
+> +	od->ddev.device_tx_status = bcm2835_dma_tx_status;
+> +	od->ddev.device_issue_pending = bcm2835_dma_issue_pending;
+> +	od->ddev.device_prep_dma_cyclic = bcm2835_dma_prep_dma_cyclic;
+> +	od->ddev.device_control = bcm2835_dma_control;
+> +	od->ddev.dev = &pdev->dev;
+> +	INIT_LIST_HEAD(&od->ddev.channels);
+> +	INIT_LIST_HEAD(&od->pending);
+> +	spin_lock_init(&od->lock);
+> +
+> +	tasklet_init(&od->task, bcm2835_dma_sched, (unsigned long)od);
+
+Just a question out of curiosity, as I don't really know much about the
+DMA engine subsystem:
+
+What is the reason to use tasklets here instead of, let's say, a workqueue?
+
+> +
+> +	irq_resources = 0;
+> +
+> +	for (i = 0; i < pdev->num_resources; i++) {
+> +		if (IORESOURCE_IRQ == resource_type(&pdev->resource[i]))
+> +			irq_resources++;
+> +	}
+> +
+> +	od->dma_irq_numbers = devm_kzalloc(&pdev->dev,
+> +			irq_resources*sizeof(int), GFP_KERNEL);
+> +	if (!od)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < irq_resources; i++) {
+
+You could call platform_get_irq() here and break out of the loop if it
+fails with -ENXIO. Then the IRQ number could be passed to
+bcm2835_dma_chan_init() and stored in per-channel struct. This way you
+could remove the ugly IRQ counting code above and IRQ array allocation.
+
+> +		rc = bcm2835_dma_chan_init(od, i);
+> +		if (rc) {
+> +			bcm2835_dma_free(od);
+> +			return rc;
+> +		}
+> +
+> +		irq = platform_get_resource(pdev, IORESOURCE_IRQ, i);
+
+There is platform_get_irq() for reading IRQ resources specifically.
+
+> +		if (!irq) {
+> +			dev_err(&pdev->dev,
+> +					"No IRQ resource for channel %i\n", i);
+> +			return -ENODEV;
+> +		}
+> +		od->dma_irq_numbers[i] = irq->start;
+> +	}
+> +
+> +	rc = dma_async_device_register(&od->ddev);
+
+This should be called at the end of probe, to ensure that any potential
+users can start generating requests to your DMA engine as soon as
+it is registered.
+
+> +	if (rc) {
+> +		dev_err(&pdev->dev,
+> +			"Failed to register slave DMA engine device: %d\n", rc);
+> +		bcm2835_dma_free(od);
+> +		return rc;
+> +	}
+> +
+> +	platform_set_drvdata(pdev, od);
+[snip]
+> +
+> +static const struct platform_device_info bcm2835_dma_dev_info = {
+> +	.name = "bcm2835-dma",
+> +	.id = -1,
+> +	.dma_mask = DMA_BIT_MASK(32),
+> +};
+
+What's this?
+
+> +
+> +static int bcm2835_dma_init(void)
+> +{
+> +	int rc = platform_driver_register(&bcm2835_dma_driver);
+> +	return rc;
+> +}
+> +subsys_initcall(bcm2835_dma_init);
+
+Do you really need subsys_initcall here?
+
+Best regards,
+Tomasz
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
