@@ -1,273 +1,134 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [RFC][PATCH v1] ASoC: soc-pcm: add symmetry for
-	channels and sample bits
-Date: Wed, 13 Nov 2013 18:56:24 +0800
-Message-ID: <1384340184-4381-1-git-send-email-b42378@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe002.messaging.microsoft.com [213.199.154.205])
- by alsa0.perex.cz (Postfix) with ESMTP id 26CAE26165C
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 11:56:19 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+From: Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Subject: Re: [PATCHv3] dmaengine: Add support for BCM2835
+Date: Wed, 13 Nov 2013 04:57:07 -0600
+Message-ID: <2B888C9F-DA6A-472C-AF14-95FB9CF1D41A@codeaurora.org>
+References: <528154A1.1050303@koalo.de>
+Mime-Version: 1.0 (Mac OS X Mail 7.0 \(1822\))
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <528154A1.1050303-oZ8rN/sblLk@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Some SoCs can only work in mono or stereo mode at one time. So if
-we let them capture a mono stream while playing a stereo stream,
-there might be a problem occur to one of these two streams: double
-paced or slowed down.
 
-In soc-pcm.c, we have soc_pcm_apply_symmetry() to apply the rate
-symmetry. But we don't have one for channels.
+On Nov 11, 2013, at 4:05 PM, Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org> wro=
+te:
 
-Likewise, we can treat symmetric_rate as a solution for those SoCs
-or CODECs which can not handle asymmetrical LRCLK. But it's also
-impossible for them to handle asymmetrical BCLK. And accodring to
-BCLK = LRCLK * channel number * slot size(fixed or sample bits),
-sample bits might also be a problem if they are not using a fixed
-slot size.
+> Add support for DMA controller of BCM2835 as used in the Raspberry Pi=
+=2E
+> Currently it only supports cyclic DMA.
+>=20
+> Signed-off-by: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+> ---
+>=20
+> Thank you for your comments!
+> I hope I have now removed all leftovers of the sg struct.
+> Regarding the endian-ness: I have not found any hint about that in th=
+e datasheet. Therefore, I chose uint32_t. If you think fixed le32 is mo=
+re likely I will change it.
+> The PAD fields do not seem to be used, but the datasheet states they =
+should be set to 0.
+>=20
+>=20
+> .../devicetree/bindings/dma/bcm2835-dma.txt        |   57 ++
+> arch/arm/boot/dts/bcm2835.dtsi                     |   23 +
+> drivers/dma/Kconfig                                |    6 +
+> drivers/dma/Makefile                               |    1 +
+> drivers/dma/bcm2835-dma.c                          |  810 +++++++++++=
++++++++++
+> 5 files changed, 897 insertions(+)
+> create mode 100644 Documentation/devicetree/bindings/dma/bcm2835-dma.=
+txt
+> create mode 100644 drivers/dma/bcm2835-dma.c
+>=20
+> diff --git a/Documentation/devicetree/bindings/dma/bcm2835-dma.txt b/=
+Documentation/devicetree/bindings/dma/bcm2835-dma.txt
+> new file mode 100644
+> index 0000000..9542ac8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/bcm2835-dma.txt
+> @@ -0,0 +1,57 @@
+> +* BCM2835 DMA controller
+> +
+> +Required properties:
+> +- compatible: Should be "brcm,bcm2835-dma".
+> +- reg: Should contain DMA registers location and length.
+> +- interrupts: Should contain all DMA interrupts. First cell is the I=
+RQ bank
+> +		Second cell is the IRQ number.
 
-Thus, this patch applys symmetry for channels and sample bits.
+Can you be more specific about what you mean by =91all DMA interrupts=92=
+?
 
-Meanwhile, there might be a race between two substreams if starting
-simultaneously. Previously, we only added warning to compalin but
-still using conservative way to let it carry on. However, this patch
-rejects the second stream with any unmatched parameter to make sure
-the first existing stream won't be broken.
+> +- #dma-cells: Must be <1>, used to represent the number of integer c=
+ells in
+> +the dmas property of client devices.
+> +- dma-channels: Maximum number of DMA channels available
+> +- dma-requests: Number of DMA Requests.=20
+> +- dma-channel-mask: Bit mask representing the channels available.
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
- include/sound/soc-dai.h |   6 +++
- include/sound/soc.h     |   2 +
- sound/soc/soc-pcm.c     | 130 +++++++++++++++++++++++++++++++++++++++---------
- 3 files changed, 115 insertions(+), 23 deletions(-)
+Should be brcm,dma-channel-mask
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 800c101..243d3b6 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -220,6 +220,8 @@ struct snd_soc_dai_driver {
- 	struct snd_soc_pcm_stream capture;
- 	struct snd_soc_pcm_stream playback;
- 	unsigned int symmetric_rates:1;
-+	unsigned int symmetric_channels:1;
-+	unsigned int symmetric_samplebits:1;
- 
- 	/* probe ordering - for components with runtime dependencies */
- 	int probe_order;
-@@ -244,6 +246,8 @@ struct snd_soc_dai {
- 	unsigned int capture_active:1;		/* stream is in use */
- 	unsigned int playback_active:1;		/* stream is in use */
- 	unsigned int symmetric_rates:1;
-+	unsigned int symmetric_channels:1;
-+	unsigned int symmetric_samplebits:1;
- 	struct snd_pcm_runtime *runtime;
- 	unsigned int active;
- 	unsigned char probed:1;
-@@ -258,6 +262,8 @@ struct snd_soc_dai {
- 
- 	/* Symmetry data - only valid if symmetry is being enforced */
- 	unsigned int rate;
-+	unsigned int channels;
-+	unsigned int sample_bits;
- 
- 	/* parent platform/codec */
- 	struct snd_soc_platform *platform;
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 1f741cb..1cda7d3 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -879,6 +879,8 @@ struct snd_soc_dai_link {
- 
- 	/* Symmetry requirements */
- 	unsigned int symmetric_rates:1;
-+	unsigned int symmetric_channels:1;
-+	unsigned int symmetric_samplebits:1;
- 
- 	/* Do not create a PCM for this DAI link (Backend link) */
- 	unsigned int no_pcm:1;
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index d449872..e1c5a00 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -83,30 +83,97 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	int ret;
- 
--	if (!soc_dai->driver->symmetric_rates &&
--	    !rtd->dai_link->symmetric_rates)
--		return 0;
-+	if (soc_dai->rate && (soc_dai->driver->symmetric_rates ||
-+				rtd->dai_link->symmetric_rates)) {
-+		dev_dbg(soc_dai->dev, "ASoC: Symmetry forces %dHz rate\n",
-+				soc_dai->rate);
-+
-+		ret = snd_pcm_hw_constraint_minmax(substream->runtime,
-+						SNDRV_PCM_HW_PARAM_RATE,
-+						soc_dai->rate, soc_dai->rate);
-+		if (ret < 0) {
-+			dev_err(soc_dai->dev,
-+				"ASoC: Unable to apply rate constraint: %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
- 
--	/* This can happen if multiple streams are starting simultaneously -
--	 * the second can need to get its constraints before the first has
--	 * picked a rate.  Complain and allow the application to carry on.
--	 */
--	if (!soc_dai->rate) {
--		dev_warn(soc_dai->dev,
--			 "ASoC: Not enforcing symmetric_rates due to race\n");
--		return 0;
-+	if (soc_dai->channels && (soc_dai->driver->symmetric_channels ||
-+				rtd->dai_link->symmetric_channels)) {
-+		dev_dbg(soc_dai->dev, "ASoC: Symmetry forces %d channel(s)\n",
-+				soc_dai->channels);
-+
-+		ret = snd_pcm_hw_constraint_minmax(substream->runtime,
-+						SNDRV_PCM_HW_PARAM_CHANNELS,
-+						soc_dai->channels,
-+						soc_dai->channels);
-+		if (ret < 0) {
-+			dev_err(soc_dai->dev,
-+				"ASoC: Unable to apply channel symmetry constraint: %d\n",
-+				ret);
-+			return ret;
-+		}
- 	}
- 
--	dev_dbg(soc_dai->dev, "ASoC: Symmetry forces %dHz rate\n", soc_dai->rate);
-+	if (soc_dai->sample_bits && (soc_dai->driver->symmetric_samplebits ||
-+				rtd->dai_link->symmetric_samplebits)) {
-+		dev_dbg(soc_dai->dev, "ASoC: Symmetry forces %d sample bits\n",
-+				soc_dai->sample_bits);
- 
--	ret = snd_pcm_hw_constraint_minmax(substream->runtime,
--					   SNDRV_PCM_HW_PARAM_RATE,
--					   soc_dai->rate, soc_dai->rate);
--	if (ret < 0) {
--		dev_err(soc_dai->dev,
--			"ASoC: Unable to apply rate symmetry constraint: %d\n",
--			ret);
--		return ret;
-+		ret = snd_pcm_hw_constraint_minmax(substream->runtime,
-+						SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
-+						soc_dai->sample_bits,
-+						soc_dai->sample_bits);
-+		if (ret < 0) {
-+			dev_err(soc_dai->dev,
-+				"ASoC: Unable to apply sample bits symmetry constraint: %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	unsigned int rate, channels, sample_bits, symmetry;
-+
-+	rate = params_rate(params);
-+	channels = params_channels(params);
-+	sample_bits = snd_pcm_format_physical_width(params_format(params));
-+
-+	/* reject unmatched parameters when applying symmetry */
-+	symmetry = cpu_dai->driver->symmetric_rates ||
-+		codec_dai->driver->symmetric_rates ||
-+		rtd->dai_link->symmetric_rates;
-+	if (symmetry && cpu_dai->rate && cpu_dai->rate != rate) {
-+		dev_err(rtd->dev, "ASoC: unmatched rate symmetry: %d - %d\n",
-+				cpu_dai->rate, rate);
-+		return -EINVAL;
-+	}
-+
-+	symmetry = cpu_dai->driver->symmetric_channels ||
-+		codec_dai->driver->symmetric_channels ||
-+		rtd->dai_link->symmetric_channels;
-+	if (symmetry && cpu_dai->channels && cpu_dai->channels != channels) {
-+		dev_err(rtd->dev, "ASoC: unmatched channel symmetry: %d - %d\n",
-+				cpu_dai->channels, channels);
-+		return -EINVAL;
-+	}
-+
-+	symmetry = cpu_dai->driver->symmetric_samplebits ||
-+		codec_dai->driver->symmetric_samplebits ||
-+		rtd->dai_link->symmetric_samplebits;
-+	if (symmetry && cpu_dai->sample_bits && cpu_dai->sample_bits != sample_bits) {
-+		dev_err(rtd->dev, "ASoC: unmatched sample bits symmetry: %d - %d\n",
-+				cpu_dai->sample_bits, sample_bits);
-+		return -EINVAL;
- 	}
- 
- 	return 0;
-@@ -377,11 +444,17 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
- 	codec->active--;
- 
- 	/* clear the corresponding DAIs rate when inactive */
--	if (!cpu_dai->active)
-+	if (!cpu_dai->active) {
- 		cpu_dai->rate = 0;
-+		cpu_dai->channels = 0;
-+		cpu_dai->sample_bits = 0;
-+	}
- 
--	if (!codec_dai->active)
-+	if (!codec_dai->active) {
- 		codec_dai->rate = 0;
-+		cpu_dai->channels = 0;
-+		cpu_dai->sample_bits = 0;
-+	}
- 
- 	/* Muting the DAC suppresses artifacts caused during digital
- 	 * shutdown, for example from stopping clocks.
-@@ -514,6 +587,10 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
-+	ret = soc_pcm_params_symmetry(substream, params);
-+	if (ret)
-+		goto out;
-+
- 	if (rtd->dai_link->ops && rtd->dai_link->ops->hw_params) {
- 		ret = rtd->dai_link->ops->hw_params(substream, params);
- 		if (ret < 0) {
-@@ -550,9 +627,16 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 		}
- 	}
- 
--	/* store the rate for each DAIs */
-+	/* store the parameters for each DAIs */
- 	cpu_dai->rate = params_rate(params);
-+	cpu_dai->channels = params_channels(params);
-+	cpu_dai->sample_bits =
-+		snd_pcm_format_physical_width(params_format(params));
-+
- 	codec_dai->rate = params_rate(params);
-+	codec_dai->channels = params_channels(params);
-+	codec_dai->sample_bits =
-+		snd_pcm_format_physical_width(params_format(params));
- 
- out:
- 	mutex_unlock(&rtd->pcm_mutex);
--- 
-1.8.4
+> +
+> +Example:
+> +
+> +dma: dma@7e007000 {
+> +	compatible =3D "brcm,bcm2835-dma";
+> +	reg =3D <0x7e007000 0xf00>;
+> +	interrupts =3D <1 16
+> +		      1 17
+> +		      1 18
+> +		      1 19
+> +		      1 20
+> +		      1 21
+> +		      1 22
+> +		      1 23
+> +		      1 24
+> +		      1 25
+> +		      1 26
+> +		      1 27
+> +		      1 28>;
+> +=09
+> +	#dma-cells =3D <1>;
+> +	dma-channels =3D <15>;
+> +	dma-requests =3D <32>;
+> +	dma-channel-mask =3D <0x7f35>;
+> +};
+> +
+> +DMA clients connected to the BCM2835 DMA controller must use the for=
+mat
+> +described in the dma.txt file, using a two-cell specifier for each c=
+hannel:
+> +a phandle plus one integer cells.
+> +The two cells in order are:
+> +
+> +1. A phandle pointing to the DMA controller.
+> +2. The DREQ number.
+> +
+> +Example:
+> +
+> +bcm2835_i2s: i2s@7e203000 {
+> +	compatible =3D "brcm,bcm2835-i2s";
+> +	reg =3D <	0x7e203000 0x20
+> +		0x7e101098 0x02>;
+> +
+> +	dmas =3D <&dma 2
+> +		&dma 3>;
+> +	dma-names =3D "tx", "rx";
+> +};
+
+- k
+
+--=20
+Employee of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, host=
+ed by The Linux Foundation
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
