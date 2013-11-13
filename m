@@ -1,73 +1,71 @@
-From: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] dmaengine: Add support for BCM2835.
-Date: Wed, 13 Nov 2013 19:05:36 +0530
-Message-ID: <20131113133536.GZ8834@intel.com>
-References: <527D1DDA.2040004@koalo.de>
- <20131108181743.GR2493@sirena.org.uk>
- <20131113050017.GO8834@intel.com>
- <20131113125111.GE878@sirena.org.uk>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH v7 0/4] Add dual-fifo mode support of i.MX ssi
+Date: Wed, 13 Nov 2013 22:55:23 +0800
+Message-ID: <cover.1384352281.git.b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IrhDeMKUP4DT/M7F"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20131113125111.GE878-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Martin Sperl <martin-d5rIkyn9cnPYtjvyW6yDsg@public.gmane.org>
+Content-Type: text/plain
+Return-path: <linux-doc-owner@vger.kernel.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: vinod.koul@intel.com, dan.j.williams@intel.com, s.hauer@pengutronix.de, timur@tabi.org, shawn.guo@linaro.org, broonie@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk
 List-Id: alsa-devel@alsa-project.org
 
+ * ! This series of patches has a direct dependency between them. When
+ * ! applying them, we need to apply to one single branch. Otherwise,
+ * ! it would break currect branches.
 
---IrhDeMKUP4DT/M7F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changelog
+v7:
+ * Appended missing Acked-by to all four patches.
+ * Sorry that I didn't add them at the first place.
+v6:
+ * PATCH-1: Use goto err_firmware instead of return directly.
+ *
+ * Nothing changes for the other three ack-ed patches
+v5:
+ * PATCH-3: Add period size constraint when using dual fifo mode
+ *
+ * Nothing changes for the other three patches
+v4:
+ * PATCH-3: Drop useless register configuration.
+ *
+ * Nothing changes for the other three patches
+v3:
+ * PATCH-1: Add comments to indicate the end of v1 and v2 array.
+ * PATCH-3: Use better way to keep watermark as even number.
+ *
+ * Nothing changes for PATCH-2 and PATCH-4
+v2:
+ * Instead of adding rogue scripts to current SDMA driver based on firmware
+ * V1, we define the new SDMA firmware as version 2 and bisect the PATCH-1
+ * to two patches: The first is to add version check code to the SDMA driver;
+ * And the second is to add SSI dual FIFO DMATYPE.
+ *
+ * Nothing changes for the last two patches.
+v1:
+ * SSI can reduce hardware overrun/underrun possibility when using dual
+ * fifo mode. To support this mode, we need to first update sdma sciprt
+ * list, and then enable dual fifo BIT in SSI driver, and last update DT
+ * bindings of i.MX series.
 
-On Wed, Nov 13, 2013 at 12:51:11PM +0000, Mark Brown wrote:
-> On Wed, Nov 13, 2013 at 10:30:17AM +0530, Vinod Koul wrote:
-> > On Fri, Nov 08, 2013 at 06:17:43PM +0000, Mark Brown wrote:
->=20
-> > > Adding in Martin Sperl who's been looking at DMA with regard to the S=
-PI
-> > > controller (which will want non-cyclic mode but I guess there's a lot=
- of
-> > > shared code).
->=20
-> > Is there a plan to add a library in SPI for dma ops, on lines of what
-> > is done in sound?
->=20
-> I'm probably going to be looking at that at some point, though perhaps
-> Martin will get to it since he seems to be looking at this.
-Okay sounds good. This will also help in streamline the implementations..
+Nicolin Chen (4):
+  dma: imx-sdma: Add sdma firmware version 2 support
+  dma: imx-sdma: Add new dma type for ssi dual fifo script
+  ASoC: fsl_ssi: Add dual fifo mode support
+  ARM: dts: imx: use dual-fifo sdma script for ssi
 
---
-~Vinod
+ .../devicetree/bindings/dma/fsl-imx-sdma.txt       |  1 +
+ arch/arm/boot/dts/imx51.dtsi                       |  4 ++--
+ arch/arm/boot/dts/imx53.dtsi                       |  4 ++--
+ arch/arm/boot/dts/imx6qdl.dtsi                     | 12 +++++-----
+ arch/arm/boot/dts/imx6sl.dtsi                      | 12 +++++-----
+ drivers/dma/imx-sdma.c                             | 19 ++++++++++++++-
+ include/linux/platform_data/dma-imx-sdma.h         |  5 ++++
+ include/linux/platform_data/dma-imx.h              |  1 +
+ sound/soc/fsl/fsl_ssi.c                            | 27 +++++++++++++++++++++-
+ 9 files changed, 67 insertions(+), 18 deletions(-)
 
---IrhDeMKUP4DT/M7F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+-- 
+1.8.4
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSg4AoAAoJEHwUBw8lI4NHxJwP/iL+nkFcKmg18yC6Vav+mtc1
-mqEMa2wU7W/moUxuckpzPhnuPo2OjP6QYyt7NboQHtOTH5xCJXOtD1s5P6QJvFow
-dziG2YW9uFbLlDOeGTdRTJeOVZtbFg2V+mC0/prVwvAPhYmJQu7ScMpRagpe1//5
-d+/g0ZEbrxfap0S4oMJVL/tsRWT0UtlPCja0kCwFgqtF4lk8A9PIg9Il6WbVaVKu
-hDSlgapGU7VpvWE0rPA9qc5AGxJcILGUFM0Rt+nj0+8wqLhr9XmNNr8Ppb3euzc2
-tjLrHGhreuntGkD2nU/t82OZ0e/nODYIZRoSuwaA2xKIPPo6OCUIMFM9jrye2tz0
-qSsPB6h2oXtjq3k4ffxRtdT/6GaSe5u58OSPRim0lXjm8YhPypIbvAz3yoA/ThyC
-rnC3PwspK7MZY4r3uP6IBQZeJgR9yjMaiYaOwfMqQ9zRodpZLuKlrkiynRleeUR9
-q/SP9bp0GVdrXsKjbR07QJLe8I8JkNk0tk1Qfcs/UHiinc0grY9qmJdwYPIIvqB2
-wcnQX3dXRj6Jm97kU2B7amryy+WRuCCvNwF5kJrRR1/Nna6xPa4dtd2iOherMSJ5
-1307zGfAGokY3nM5L/20C4/SCXg37FpPdWIBdkqiQvbXXi/25ZSdG2wqkaFeJ7i3
-SVC8cFBvO9+CXRg2UuWi
-=FCN3
------END PGP SIGNATURE-----
-
---IrhDeMKUP4DT/M7F--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
