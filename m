@@ -1,52 +1,31 @@
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: snd-aoa: two copy and paste bugs
-Date: Wed, 13 Nov 2013 10:45:20 +0300
-Message-ID: <20131113074520.GD25541@elgon.mountain>
+Subject: [patch] ALSA: isa: not allocating enough space
+Date: Wed, 13 Nov 2013 10:58:38 +0300
+Message-ID: <20131113075838.GK25541@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id A5A4426167D
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 08:45:47 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, kernel-janitors@vger.kernel.org, Michael Ellerman <michael@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Bill Pemberton <wfp5p@virginia.edu>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-These functions were cut and paste and the tests for NULL weren't
-updated properly.
+We allocate only 4 bytes here "sizeof(int)" instead of WF_MSAMPLE_BYTES
+(259) which was intended.
 
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-diff --git a/sound/aoa/fabrics/layout.c b/sound/aoa/fabrics/layout.c
-index 61ab640..9dc5806 100644
---- a/sound/aoa/fabrics/layout.c
-+++ b/sound/aoa/fabrics/layout.c
-@@ -644,7 +644,7 @@ static int n##_control_put(struct snd_kcontrol *kcontrol,		\
- 			   struct snd_ctl_elem_value *ucontrol)		\
- {									\
- 	struct gpio_runtime *gpio = snd_kcontrol_chip(kcontrol);	\
--	if (gpio->methods && gpio->methods->get_##n)			\
-+	if (gpio->methods && gpio->methods->set_##n)			\
- 		gpio->methods->set_##n(gpio,				\
- 			!!ucontrol->value.integer.value[0]);		\
- 	return 1;							\
-@@ -1135,7 +1135,7 @@ static int aoa_fabric_layout_resume(struct soundbus_dev *sdev)
- {
- 	struct layout_dev *ldev = dev_get_drvdata(&sdev->ofdev.dev);
+diff --git a/sound/isa/wavefront/wavefront_synth.c b/sound/isa/wavefront/wavefront_synth.c
+index a2f87f9..e5db001 100644
+--- a/sound/isa/wavefront/wavefront_synth.c
++++ b/sound/isa/wavefront/wavefront_synth.c
+@@ -1196,7 +1196,7 @@ wavefront_send_multisample (snd_wavefront_t *dev, wavefront_patch_info *header)
+ 	int num_samples;
+ 	unsigned char *msample_hdr;
  
--	if (ldev->gpio.methods && ldev->gpio.methods->all_amps_off)
-+	if (ldev->gpio.methods && ldev->gpio.methods->all_amps_restore)
- 		ldev->gpio.methods->all_amps_restore(&ldev->gpio);
+-	msample_hdr = kmalloc(sizeof(WF_MSAMPLE_BYTES), GFP_KERNEL);
++	msample_hdr = kmalloc(WF_MSAMPLE_BYTES, GFP_KERNEL);
+ 	if (! msample_hdr)
+ 		return -ENOMEM;
  
- 	return 0;
