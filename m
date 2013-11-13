@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: blackfin: Fix missing break
-Date: Wed, 13 Nov 2013 18:47:51 +0000
-Message-ID: <20131113184751.GB878@sirena.org.uk>
-References: <1384359300-21219-1-git-send-email-tiwai@suse.de>
- <20131113164715.GX878@sirena.org.uk> <s5h7gccb5i7.wl%tiwai@suse.de>
- <s5h61rwb5e5.wl%tiwai@suse.de>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: Re: [PATCH v2 2/2] dt: binding: sound cs42l52 driver
+Date: Wed, 13 Nov 2013 12:58:28 -0600
+Message-ID: <alpine.DEB.2.10.1311131248290.28828@heelrod.ad.cirrus.com>
+References: <1384357474-28653-1-git-send-email-brian.austin@cirrus.com>
+ <1384357474-28653-2-git-send-email-brian.austin@cirrus.com>
+ <1485256.GGQxcSNhvH@flatron>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3109580728791685123=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A84D82602F3
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 19:48:02 +0100 (CET)
-In-Reply-To: <s5h61rwb5e5.wl%tiwai@suse.de>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe005.messaging.microsoft.com [213.199.154.208])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FB252602F3
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 19:55:41 +0100 (CET)
+In-Reply-To: <1485256.GGQxcSNhvH@flatron>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +23,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, rob.herring@calxeda.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+>> +  - compatible : "cirrus,cs42l52"
+>> +
+>> +  - reg : the I2C address of the device for I2C
+>> +
+>> +Optional properties:
+>> +
+>> +  - reset-gpio : GPIO controller's phandle and the number
+>> +		 of the GPIO used to reset the codec.
+>
+> As Kumar has already mentioned, all device-specific properties should be
+> prefixed with vendor prefix, "cirrus," in this case.
+>
 
---===============3109580728791685123==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8p/3hdGJBHAENZPK"
-Content-Disposition: inline
-
-
---8p/3hdGJBHAENZPK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Nov 13, 2013 at 06:03:46PM +0100, Takashi Iwai wrote:
-
-> BTW, do you have an account on bugzilla.kernel.org?
-> If not, please create it.  I have a gift for you.
->   https://bugzilla.kernel.org/show_bug.cgi?id=64741
-
-That looks to be an issue that's very specific to OMAP4 - you need
-someone who works on OMAP4 to have a look at it.
-
---8p/3hdGJBHAENZPK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSg8lUAAoJELSic+t+oim9938P/3oX4zLNT8di4ZD49+MHFVKc
-wscj+hB4bW68fdkynFeruwkxwNTH1W3FZGUVB4w01Uu/WtpsRbxH9CNkhvyBrxa/
-spZ2XTJQ1vv4ROmYMtKm7tsNdZKv/VsgT4kcEsZ2QkOtHb8+qudqdlIsn2rW/ZcQ
-ZuHoOlRLsMspYK+cPNSi+ftEYbdYcWh0SXQe3W6IcbkmfEgF6+XPBB4uWCGtlI3C
-jISO2zKq8GEESEYcTzSvjgumpWzPYyEycCNBQPzq7KzAcA/b7sQr6S6kBaHcD+UY
-SegyI/2aTfP1Oe5yvC/RFuaV2sSkQ4ZOamtwxGSc1vnwBwl91VH/WfVL1FsisUJ1
-5uBhfFwntZ7A81IXzGkZ42/xBJDGFakVKaJQGNHIa6hWdoVusvXzrsP/277cwoFS
-t6AFoAP3uWc35et7Zmg8yCnSnFJQKzpSwWFXquAdEE3EC36/IcDeCqR7pn0gdXhM
-l9uNHVdM6ifZxv+IJblhdH7mVNaB74ij3mFbHTdiEmqKNyvqdjGwMxOeSAze9h3m
-Taeb+N9nEZ0GIO9rozKjWrkvenSgbnoTV4C5dY5hK69qIUUFwXFKkRva4xHRmZfw
-6katV6jv9j2SITd7kMgvv3UMdRiSXaiAQihFzvEfPXnpEG9UKnCB3suhsi7X6tpB
-4JzgDvfib1OUuZDBZZ4/
-=70Nc
------END PGP SIGNATURE-----
-
---8p/3hdGJBHAENZPK--
-
---===============3109580728791685123==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I can do that, Thanks
 
 
---===============3109580728791685123==--
+>> +  - chgfreq    : Charge Pump Frequency values. Allowable values of
+>> +		 0x00 through 0x0F.
+>> +		 Frequency = (64xFs)/(N+2)
+>
+> I suppose N means the value of chgfreq property here, but this should be
+> clearly stated. Same for Fs - I suppose it is sampling frequency, but
+> is it default, minimum, maximum or maybe something else?
+>
+Frequency = (64xFs)/(N+2)
+N = chgfreq value
+Fs = sample rate
+
+
+> Personally I don't like this kind of raw values being passed using Device
+> Tree, but this one can't be really represented reasonably in a generic
+> way (such as in Hz units) without too much effort to calculate original
+> value in the driver, then it's fine.
+>
+>> +  - mica-cfg   : MIC A single-ended or differential select.
+>> +		 0x00 = Single-Ended
+>> +		 0x01 = Differential
+>
+> I'd rather make it boolean and call it cirrus,mic-a-differential.
+>
+>> +  - micb-cfg   : MIC B single-ended or differential select.
+>> +		 0x00 = Single-Ended
+>> +		 0x01 = Differential
+>
+> Ditto.
+>
+
+I can do that as well. Thanks
+
+>> +  - mica-sel   : MIC A single ended input select.  For Single-Ended
+>> +		 configuration, select which MIC to use.
+>> +		 0x00 = MIC1
+>> +		 0x01 = MIC2
+>> +  - micb-sel   : MIC B single ended input select.  For Single-Ended
+>> +		 configuration, select which MIC to use.
+>> +		 0x00 = MIC1
+>> +		 0x01 = MIC2
+>
+> Could you explain what are MIC A, MIC B, MIC1 and MIC2?
+>
+I can add a little more but it is best explained in the datasheet. I can 
+add a little more explaination and reference the datasheet section. I feel 
+this file might be the wrong place to go into too much depth of the pieces 
+of the device when the datasheet could be referenced. Would a reference be 
+OK?
+
+
+>> +  - micbias-lvl: Set the output voltage level on the MICBIAS Pin
+>> +		 0x00 = 0.5 x VA
+>> +		 0x01 = 0.6 x VA
+>> +		 0x02 = 0.7 x VA
+>> +		 0x03 = 0.8 x VA
+>> +		 0x04 = 0.83 x VA
+>> +		 0x05 = 0.91 x VA
+>
+> For such small range of values, decimal representation is preferred from
+> readability reasons.
+>
+OK, Thanks
+>> +
+>> +Example:
+>> +
+>> +codec: cs42l52@4a {
+>
+> coding style: Node name should be generic, i.e. codec@4a.
+
+I can change this as well.  While we are talking about coding style, is 
+there a new format document somewhere with the style that was agreed to at 
+the conference just recently?
+
+Thanks,
+Brian
