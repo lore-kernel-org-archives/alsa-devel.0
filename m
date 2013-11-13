@@ -1,232 +1,69 @@
-From: Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+From: Vinod Koul <vinod.koul@intel.com>
 Subject: Re: [PATCH] dmaengine: Add support for BCM2835.
-Date: Wed, 13 Nov 2013 16:02:16 +0100
-Message-ID: <4133885.XyqaHYljiZ@flatron>
+Date: Wed, 13 Nov 2013 20:01:01 +0530
+Message-ID: <20131113143101.GD8834@intel.com>
 References: <527D1DDA.2040004@koalo.de>
+ <20131108181743.GR2493@sirena.org.uk>
+ <20131113050017.GO8834@intel.com>
+ <20131113125111.GE878@sirena.org.uk>
+ <20131113133536.GZ8834@intel.com>
+ <20131113145441.GQ878@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <527D1DDA.2040004-oZ8rN/sblLk@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
-Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gr/z0/N6AeWAPJVB"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20131113145441.GQ878@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Florian Meier <florian.meier@koalo.de>, Stephen Warren <swarren@wwwdotorg.org>, Dan Williams <dan.j.williams@intel.com>, linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Martin Sperl <martin@sperl.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Florian,
 
-Most of technical issues have been already mentioned by Russell, but let
-me also point those that I found. Please see my comments inline.
+--gr/z0/N6AeWAPJVB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Friday 08 of November 2013 18:22:34 Florian Meier wrote:
-> Add support for DMA controller of BCM2835 as used in the Raspberry Pi.
-> Currently it only supports cyclic DMA for serving the I2S driver.
-> 
-> Signed-off-by: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
-> ---
->  arch/arm/boot/dts/bcm2835.dtsi |   22 +
->  drivers/dma/Kconfig            |    6 +
->  drivers/dma/Makefile           |    1 +
->  drivers/dma/bcm2835-dma.c      |  880 ++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 909 insertions(+)
->  create mode 100644 drivers/dma/bcm2835-dma.c
-> 
-> diff --git a/arch/arm/boot/dts/bcm2835.dtsi b/arch/arm/boot/dts/bcm2835.dtsi
-> index 1e12aef..1514198 100644
-> --- a/arch/arm/boot/dts/bcm2835.dtsi
-> +++ b/arch/arm/boot/dts/bcm2835.dtsi
-> @@ -103,6 +103,28 @@
->  			clocks = <&clk_mmc>;
->  			status = "disabled";
->  		};
-> +
-> +		dma: dma@7e007000 {
-> +			compatible = "brcm,bcm2835-dma";
-> +			reg = <0x7e007000 0xf00>;
-> +			interrupts = <1 16
-> +				      1 17
-> +				      1 18
-> +				      1 19
-> +				      1 20
-> +				      1 21
-> +				      1 22
-> +				      1 23
-> +				      1 24
-> +				      1 25
-> +				      1 26
-> +				      1 27
-> +				      1 28>;
-> +
-> +			#dma-cells = <1>;
-> +			dma-channels = <15>;   /* DMA channel 15 is not handled yet */
-
-This should represent the real configuration of the hardware, regardless
-of what the driver supports.
-
-> +			dma-requests = <32>;
-> +		};
->  	};
->  
->  	clocks {
-
-This should be a separate patch, following the one adding the driver.
-
-In addition, you are introducing a new device tree binding with this
-patch, so you should document it in appropriate location under
-Documentation/devicetree/bindings.
-
-> diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
-> new file mode 100644
-> index 0000000..c3e53b3
-> --- /dev/null
-> +++ b/drivers/dma/bcm2835-dma.c
-> @@ -0,0 +1,880 @@
-[snip]
-> +struct bcm2835_dma_cb {
-> +	unsigned long info;
-> +	unsigned long src;
-> +	unsigned long dst;
-> +	unsigned long length;
-> +	unsigned long stride;
-> +	unsigned long next;
-> +	unsigned long pad[2];
-> +};
-
-Is unsigned long really what you want here, not some explicitly sized
-types, such as u32 or uint32_t? This seems to be some kind of hardware
-interface, so the latter sounds more reasonable to me.
-
-[snip]
-> +#if defined(CONFIG_OF)
-> +static const struct of_device_id bcm2835_dma_of_match[] = {
-> +	{
-> +		.compatible = "brcm,bcm2835-dma",
-> +	}
-
-A dummy terminating entry is needed here.
-
-> +};
-> +MODULE_DEVICE_TABLE(of, bcm2835_dma_of_match);
-> +#endif
-> +
-> +static int bcm2835_dma_probe(struct platform_device *pdev)
-> +{
-> +	struct bcm2835_dmadev *od;
-> +	struct resource *dma_res = NULL;
-> +	void __iomem *dma_base = NULL;
-> +	int rc = 0;
-> +	int i;
-> +	struct resource *irq;
-> +	int irq_resources;
-> +
-> +	od = devm_kzalloc(&pdev->dev, sizeof(*od), GFP_KERNEL);
-> +	if (!od)
-> +		return -ENOMEM;
-> +
-> +	dma_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	dma_base = devm_ioremap_resource(&pdev->dev, dma_res);
-> +	if (IS_ERR(dma_base))
-> +		return PTR_ERR(dma_base);
-> +
-> +	od->dma_base = dma_base;
-> +	od->chans_available = BCM2835_DMA_CHANNEL_MASK;
-> +
-> +	dma_cap_set(DMA_SLAVE, od->ddev.cap_mask);
-> +	dma_cap_set(DMA_CYCLIC, od->ddev.cap_mask);
-> +	od->ddev.device_alloc_chan_resources = bcm2835_dma_alloc_chan_resources;
-> +	od->ddev.device_free_chan_resources = bcm2835_dma_free_chan_resources;
-> +	od->ddev.device_tx_status = bcm2835_dma_tx_status;
-> +	od->ddev.device_issue_pending = bcm2835_dma_issue_pending;
-> +	od->ddev.device_prep_dma_cyclic = bcm2835_dma_prep_dma_cyclic;
-> +	od->ddev.device_control = bcm2835_dma_control;
-> +	od->ddev.dev = &pdev->dev;
-> +	INIT_LIST_HEAD(&od->ddev.channels);
-> +	INIT_LIST_HEAD(&od->pending);
-> +	spin_lock_init(&od->lock);
-> +
-> +	tasklet_init(&od->task, bcm2835_dma_sched, (unsigned long)od);
-
-Just a question out of curiosity, as I don't really know much about the
-DMA engine subsystem:
-
-What is the reason to use tasklets here instead of, let's say, a workqueue?
-
-> +
-> +	irq_resources = 0;
-> +
-> +	for (i = 0; i < pdev->num_resources; i++) {
-> +		if (IORESOURCE_IRQ == resource_type(&pdev->resource[i]))
-> +			irq_resources++;
-> +	}
-> +
-> +	od->dma_irq_numbers = devm_kzalloc(&pdev->dev,
-> +			irq_resources*sizeof(int), GFP_KERNEL);
-> +	if (!od)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < irq_resources; i++) {
-
-You could call platform_get_irq() here and break out of the loop if it
-fails with -ENXIO. Then the IRQ number could be passed to
-bcm2835_dma_chan_init() and stored in per-channel struct. This way you
-could remove the ugly IRQ counting code above and IRQ array allocation.
-
-> +		rc = bcm2835_dma_chan_init(od, i);
-> +		if (rc) {
-> +			bcm2835_dma_free(od);
-> +			return rc;
-> +		}
-> +
-> +		irq = platform_get_resource(pdev, IORESOURCE_IRQ, i);
-
-There is platform_get_irq() for reading IRQ resources specifically.
-
-> +		if (!irq) {
-> +			dev_err(&pdev->dev,
-> +					"No IRQ resource for channel %i\n", i);
-> +			return -ENODEV;
-> +		}
-> +		od->dma_irq_numbers[i] = irq->start;
-> +	}
-> +
-> +	rc = dma_async_device_register(&od->ddev);
-
-This should be called at the end of probe, to ensure that any potential
-users can start generating requests to your DMA engine as soon as
-it is registered.
-
-> +	if (rc) {
-> +		dev_err(&pdev->dev,
-> +			"Failed to register slave DMA engine device: %d\n", rc);
-> +		bcm2835_dma_free(od);
-> +		return rc;
-> +	}
-> +
-> +	platform_set_drvdata(pdev, od);
-[snip]
-> +
-> +static const struct platform_device_info bcm2835_dma_dev_info = {
-> +	.name = "bcm2835-dma",
-> +	.id = -1,
-> +	.dma_mask = DMA_BIT_MASK(32),
-> +};
-
-What's this?
-
-> +
-> +static int bcm2835_dma_init(void)
-> +{
-> +	int rc = platform_driver_register(&bcm2835_dma_driver);
-> +	return rc;
-> +}
-> +subsys_initcall(bcm2835_dma_init);
-
-Do you really need subsys_initcall here?
-
-Best regards,
-Tomasz
+On Wed, Nov 13, 2013 at 02:54:41PM +0000, Mark Brown wrote:
+> On Wed, Nov 13, 2013 at 07:05:36PM +0530, Vinod Koul wrote:
+> > On Wed, Nov 13, 2013 at 12:51:11PM +0000, Mark Brown wrote:
+>=20
+> > > I'm probably going to be looking at that at some point, though perhaps
+> > > Martin will get to it since he seems to be looking at this.
+>=20
+> > Okay sounds good. This will also help in streamline the implementations=
+=2E.
+>=20
+> Yes, though I think some of the stuff Martin was talking about will need
+> changes to the dmaengine APIs.  He was wanting to reuse DMA lists which
+> currently dmaengine needs to have built up each time.
+Can you elobrate a bit more on what you guys want to do here?
 
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+~Vinod
+
+--gr/z0/N6AeWAPJVB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSg40kAAoJEHwUBw8lI4NH/LcQAKJW7QeAHamIiq7jqWWlBkXl
+NIOetfjVqPJwMRjH2vcLm62EFARE9x4Q/V88Suz+vd+j6iIcB+jgQK3MpGU2Xl4U
+lg+tl6XUyA0aA6AVKOApyQQhm6jpkGDrZNX5tSYXpMYKa0/fkKozmtrCSXDilmle
+fezBaRO7WJ8rZyEV/N57pxb/724bKPfkdBIslNM2lCnkm7DJWjnI2HjtetXpXETY
+DEIfsSADBWu/jizmK1BWa+Tknx/vUV5vnCzESSavFEkEGHhLjBUYNlaBltgAzE3F
+1S0RrlUM5nqdEN0cf2Cl0Xjn4CFX5RrATTg/+XlnH/Q+OdmJ6/h89VLRR+BKDv7B
+SwYaaBfFbBfvcDkvfl42Bwy4gHEpjW4PRbv1WuG5kjGLXkN0TVEnzsuLenuCSTz3
+Ba/V0pu1EueDf4BmgbjZ5Fsg1JpwNha5Ri8Ez5kKaFG699GWCADr0ZLWmn1hwh1n
+OM2WxbtQqbY747qUqdiGv0/63kgix/4C9IeOPRyoDoxeNuGIpRcerI1r7EaTIHuT
+TNc8PXrCi4rDzvA0KhciIBVabEafCMJkxNQ6mXuG7DMm369xq3SeNozcN8zKaTol
+p+/LVRzgcOcnX8C0E18mlcamP0Vhi7FcHINyvKrk/hCSX2MwyRLkxpoXE/Ojx86l
+yZpJCrd1qxloExr7idgJ
+=/PA/
+-----END PGP SIGNATURE-----
+
+--gr/z0/N6AeWAPJVB--
