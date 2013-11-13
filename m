@@ -1,60 +1,133 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] dmaengine: Add support for BCM2835.
-Date: Wed, 13 Nov 2013 14:54:41 +0000
-Message-ID: <20131113145441.GQ878@sirena.org.uk>
-References: <527D1DDA.2040004@koalo.de>
- <20131108181743.GR2493@sirena.org.uk>
- <20131113050017.GO8834@intel.com>
- <20131113125111.GE878@sirena.org.uk>
- <20131113133536.GZ8834@intel.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH v7 4/4] ARM: dts: imx: use dual-fifo sdma script for ssi
+Date: Wed, 13 Nov 2013 22:55:27 +0800
+Message-ID: <5bfdcb2bc7f0cd6064a3c05e592fa361bf1fe444.1384352281.git.b42378@freescale.com>
+References: <cover.1384352281.git.b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="i13qRg9tmWEwo36p"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20131113133536.GZ8834@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Florian Meier <florian.meier@koalo.de>, Stephen Warren <swarren@wwwdotorg.org>, Dan Williams <dan.j.williams@intel.com>, linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Martin Sperl <martin@sperl.org>
+Content-Type: text/plain
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <cover.1384352281.git.b42378@freescale.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: vinod.koul@intel.com, dan.j.williams@intel.com, s.hauer@pengutronix.de, timur@tabi.org, shawn.guo@linaro.org, broonie@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk
 List-Id: alsa-devel@alsa-project.org
 
+Use dual-fifo sdma scripts instead of shared scripts for ssi on i.MX series.
 
---i13qRg9tmWEwo36p
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Nicolin Chen <b42378@freescale.com>
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
+---
+ arch/arm/boot/dts/imx51.dtsi   |  4 ++--
+ arch/arm/boot/dts/imx53.dtsi   |  4 ++--
+ arch/arm/boot/dts/imx6qdl.dtsi | 12 ++++++------
+ arch/arm/boot/dts/imx6sl.dtsi  | 12 ++++++------
+ 4 files changed, 16 insertions(+), 16 deletions(-)
 
-On Wed, Nov 13, 2013 at 07:05:36PM +0530, Vinod Koul wrote:
-> On Wed, Nov 13, 2013 at 12:51:11PM +0000, Mark Brown wrote:
+diff --git a/arch/arm/boot/dts/imx51.dtsi b/arch/arm/boot/dts/imx51.dtsi
+index 54cee65..1a71eac 100644
+--- a/arch/arm/boot/dts/imx51.dtsi
++++ b/arch/arm/boot/dts/imx51.dtsi
+@@ -154,8 +154,8 @@
+ 					reg = <0x70014000 0x4000>;
+ 					interrupts = <30>;
+ 					clocks = <&clks 49>;
+-					dmas = <&sdma 24 1 0>,
+-					       <&sdma 25 1 0>;
++					dmas = <&sdma 24 22 0>,
++					       <&sdma 25 22 0>;
+ 					dma-names = "rx", "tx";
+ 					fsl,fifo-depth = <15>;
+ 					fsl,ssi-dma-events = <25 24 23 22>; /* TX0 RX0 TX1 RX1 */
+diff --git a/arch/arm/boot/dts/imx53.dtsi b/arch/arm/boot/dts/imx53.dtsi
+index 4307e80..7208fde 100644
+--- a/arch/arm/boot/dts/imx53.dtsi
++++ b/arch/arm/boot/dts/imx53.dtsi
+@@ -153,8 +153,8 @@
+ 					reg = <0x50014000 0x4000>;
+ 					interrupts = <30>;
+ 					clocks = <&clks 49>;
+-					dmas = <&sdma 24 1 0>,
+-					       <&sdma 25 1 0>;
++					dmas = <&sdma 24 22 0>,
++					       <&sdma 25 22 0>;
+ 					dma-names = "rx", "tx";
+ 					fsl,fifo-depth = <15>;
+ 					fsl,ssi-dma-events = <25 24 23 22>; /* TX0 RX0 TX1 RX1 */
+diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
+index 57e9c38..6e096ca 100644
+--- a/arch/arm/boot/dts/imx6qdl.dtsi
++++ b/arch/arm/boot/dts/imx6qdl.dtsi
+@@ -223,8 +223,8 @@
+ 					reg = <0x02028000 0x4000>;
+ 					interrupts = <0 46 0x04>;
+ 					clocks = <&clks 178>;
+-					dmas = <&sdma 37 1 0>,
+-					       <&sdma 38 1 0>;
++					dmas = <&sdma 37 22 0>,
++					       <&sdma 38 22 0>;
+ 					dma-names = "rx", "tx";
+ 					fsl,fifo-depth = <15>;
+ 					fsl,ssi-dma-events = <38 37>;
+@@ -236,8 +236,8 @@
+ 					reg = <0x0202c000 0x4000>;
+ 					interrupts = <0 47 0x04>;
+ 					clocks = <&clks 179>;
+-					dmas = <&sdma 41 1 0>,
+-					       <&sdma 42 1 0>;
++					dmas = <&sdma 41 22 0>,
++					       <&sdma 42 22 0>;
+ 					dma-names = "rx", "tx";
+ 					fsl,fifo-depth = <15>;
+ 					fsl,ssi-dma-events = <42 41>;
+@@ -249,8 +249,8 @@
+ 					reg = <0x02030000 0x4000>;
+ 					interrupts = <0 48 0x04>;
+ 					clocks = <&clks 180>;
+-					dmas = <&sdma 45 1 0>,
+-					       <&sdma 46 1 0>;
++					dmas = <&sdma 45 22 0>,
++					       <&sdma 46 22 0>;
+ 					dma-names = "rx", "tx";
+ 					fsl,fifo-depth = <15>;
+ 					fsl,ssi-dma-events = <46 45>;
+diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
+index c46651e..b32ba99 100644
+--- a/arch/arm/boot/dts/imx6sl.dtsi
++++ b/arch/arm/boot/dts/imx6sl.dtsi
+@@ -195,8 +195,8 @@
+ 					reg = <0x02028000 0x4000>;
+ 					interrupts = <0 46 0x04>;
+ 					clocks = <&clks IMX6SL_CLK_SSI1>;
+-					dmas = <&sdma 37 1 0>,
+-					       <&sdma 38 1 0>;
++					dmas = <&sdma 37 22 0>,
++					       <&sdma 38 22 0>;
+ 					dma-names = "rx", "tx";
+ 					fsl,fifo-depth = <15>;
+ 					status = "disabled";
+@@ -207,8 +207,8 @@
+ 					reg = <0x0202c000 0x4000>;
+ 					interrupts = <0 47 0x04>;
+ 					clocks = <&clks IMX6SL_CLK_SSI2>;
+-					dmas = <&sdma 41 1 0>,
+-					       <&sdma 42 1 0>;
++					dmas = <&sdma 41 22 0>,
++					       <&sdma 42 22 0>;
+ 					dma-names = "rx", "tx";
+ 					fsl,fifo-depth = <15>;
+ 					status = "disabled";
+@@ -219,8 +219,8 @@
+ 					reg = <0x02030000 0x4000>;
+ 					interrupts = <0 48 0x04>;
+ 					clocks = <&clks IMX6SL_CLK_SSI3>;
+-					dmas = <&sdma 45 1 0>,
+-					       <&sdma 46 1 0>;
++					dmas = <&sdma 45 22 0>,
++					       <&sdma 46 22 0>;
+ 					dma-names = "rx", "tx";
+ 					fsl,fifo-depth = <15>;
+ 					status = "disabled";
+-- 
+1.8.4
 
-> > I'm probably going to be looking at that at some point, though perhaps
-> > Martin will get to it since he seems to be looking at this.
 
-> Okay sounds good. This will also help in streamline the implementations..
-
-Yes, though I think some of the stuff Martin was talking about will need
-changes to the dmaengine APIs.  He was wanting to reuse DMA lists which
-currently dmaengine needs to have built up each time.
-
---i13qRg9tmWEwo36p
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSg5KtAAoJELSic+t+oim9qqIP/iOXfikITADNLFePu4CDZIMB
-csTTt9lhu0Q59fH03aXc2F5JdiUzuVohkH7jK8tFXuxDZ0rCqdm6Zh0FwxL/peIm
-B7fKc6/qRvq3d2gaRBEcRB/aCO9GG8WoKFKdgqWlIl5yEIVmgPPyrePayXXBgf4A
-RA+BiIbC5XrWzIrCWgPqkg8izNZbWvOAF7/THvp7vDleyHeFMWSCn53kczUKye8a
-XVa4Nc4NV4sUWWDfy/5i5w3JcQDEa3KHR10MlRcucNWLqtc+qHY7RQ8k2azerL13
-5IH69j39vNqlD8jfvmJE19nIc8fuSzGBvBX095GkAAEs/oaJoLojTB9aWjvrjeVj
-2KnXOXHdq0Nhu5o8ho0IARU0/IbzEKqUhQ197H0iGB32+UQ1egyAmZQC3yzjzSJF
-Yg5Namq9Wzkv7ZiQsHSmPLWZ7/DV031Es6RmE/x+eMjf07dMn6V8HUn4OnKRisDn
-8nVWz9+Gph14lRHcK3CY+QFby6OpyTkSsjtoBvQWUqYSZu1JoYafCaZxGZRdyrbS
-AluMKSjvFsuFEA02Yl0A7zaoXs1ApHSORpW7UQCrKATI70GXYoetAsv601D7/AFl
-zvb7Zs+jCNDmuou9l49SinH/RX5j6FYP9JXOG/IPqJiO03UFrw35/IDJVQ5pMoHw
-qRWrm8zlEree18mu6K1r
-=gLfd
------END PGP SIGNATURE-----
-
---i13qRg9tmWEwo36p--
