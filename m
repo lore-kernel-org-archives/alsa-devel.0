@@ -1,89 +1,57 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: Fix typo in name of EQ coefficient controls
-Date: Wed, 13 Nov 2013 13:01:49 +0000
-Message-ID: <20131113130149.GA7665@opensource.wolfsonmicro.com>
+From: ranjith vs <ranjithvs@iwavesystems.com>
+Subject: ERROR:PCM WRITE ASSRTION FAILED
+Date: Wed, 13 Nov 2013 18:31:47 +0530 (IST)
+Message-ID: <198199338.90738.1384347707434.JavaMail.zimbra@iwavesystems.com>
+References: <1556389142.90737.1384347631653.JavaMail.zimbra@iwavesystems.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.iwavesystems.com (unknown [124.124.219.236])
+ by alsa0.perex.cz (Postfix) with ESMTP id E270E2616A0
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 14:02:41 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by smtp.iwavesystems.com (Postfix) with ESMTP id 26A811E2BEC
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 18:32:03 +0530 (IST)
+Received: from smtp.iwavesystems.com ([127.0.0.1])
+ by localhost (smtp.iwavesystems.com [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id qVwnG9WnjPRm for <alsa-devel@alsa-project.org>;
+ Wed, 13 Nov 2013 18:31:47 +0530 (IST)
+Received: from localhost (localhost [127.0.0.1])
+ by smtp.iwavesystems.com (Postfix) with ESMTP id DA0B11E2C10
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 18:31:47 +0530 (IST)
+Received: from smtp.iwavesystems.com ([127.0.0.1])
+ by localhost (smtp.iwavesystems.com [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id KJjXaBw8H5TR for <alsa-devel@alsa-project.org>;
+ Wed, 13 Nov 2013 18:31:47 +0530 (IST)
+Received: from smtp.iwavesystems.com (smtp.iwavesystems.com [124.124.219.236])
+ by smtp.iwavesystems.com (Postfix) with ESMTP id B8E3E1E2BEC
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 18:31:47 +0530 (IST)
+In-Reply-To: <1556389142.90737.1384347631653.JavaMail.zimbra@iwavesystems.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+hi,
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm5102.c |    8 ++++----
- sound/soc/codecs/wm5110.c |    8 ++++----
- sound/soc/codecs/wm8997.c |    8 ++++----
- 3 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 8bbddc1..a08e8bf 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -685,13 +685,13 @@ ARIZONA_MIXER_CONTROLS("EQ2", ARIZONA_EQ2MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("EQ3", ARIZONA_EQ3MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("EQ4", ARIZONA_EQ4MIX_INPUT_1_SOURCE),
- 
--SND_SOC_BYTES_MASK("EQ1 Coefficeints", ARIZONA_EQ1_1, 21,
-+SND_SOC_BYTES_MASK("EQ1 Coefficients", ARIZONA_EQ1_1, 21,
- 		   ARIZONA_EQ1_ENA_MASK),
--SND_SOC_BYTES_MASK("EQ2 Coefficeints", ARIZONA_EQ2_1, 21,
-+SND_SOC_BYTES_MASK("EQ2 Coefficients", ARIZONA_EQ2_1, 21,
- 		   ARIZONA_EQ2_ENA_MASK),
--SND_SOC_BYTES_MASK("EQ3 Coefficeints", ARIZONA_EQ3_1, 21,
-+SND_SOC_BYTES_MASK("EQ3 Coefficients", ARIZONA_EQ3_1, 21,
- 		   ARIZONA_EQ3_ENA_MASK),
--SND_SOC_BYTES_MASK("EQ4 Coefficeints", ARIZONA_EQ4_1, 21,
-+SND_SOC_BYTES_MASK("EQ4 Coefficients", ARIZONA_EQ4_1, 21,
- 		   ARIZONA_EQ4_ENA_MASK),
- 
- SOC_SINGLE_TLV("EQ1 B1 Volume", ARIZONA_EQ1_1, ARIZONA_EQ1_B1_GAIN_SHIFT,
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index bbd6438..b67ba33 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -101,13 +101,13 @@ ARIZONA_MIXER_CONTROLS("EQ2", ARIZONA_EQ2MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("EQ3", ARIZONA_EQ3MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("EQ4", ARIZONA_EQ4MIX_INPUT_1_SOURCE),
- 
--SND_SOC_BYTES_MASK("EQ1 Coefficeints", ARIZONA_EQ1_1, 21,
-+SND_SOC_BYTES_MASK("EQ1 Coefficients", ARIZONA_EQ1_1, 21,
- 		   ARIZONA_EQ1_ENA_MASK),
--SND_SOC_BYTES_MASK("EQ2 Coefficeints", ARIZONA_EQ2_1, 21,
-+SND_SOC_BYTES_MASK("EQ2 Coefficients", ARIZONA_EQ2_1, 21,
- 		   ARIZONA_EQ2_ENA_MASK),
--SND_SOC_BYTES_MASK("EQ3 Coefficeints", ARIZONA_EQ3_1, 21,
-+SND_SOC_BYTES_MASK("EQ3 Coefficients", ARIZONA_EQ3_1, 21,
- 		   ARIZONA_EQ3_ENA_MASK),
--SND_SOC_BYTES_MASK("EQ4 Coefficeints", ARIZONA_EQ4_1, 21,
-+SND_SOC_BYTES_MASK("EQ4 Coefficients", ARIZONA_EQ4_1, 21,
- 		   ARIZONA_EQ4_ENA_MASK),
- 
- SOC_SINGLE_TLV("EQ1 B1 Volume", ARIZONA_EQ1_1, ARIZONA_EQ1_B1_GAIN_SHIFT,
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index 2e886ca..1392bb3 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -170,13 +170,13 @@ ARIZONA_MIXER_CONTROLS("EQ2", ARIZONA_EQ2MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("EQ3", ARIZONA_EQ3MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("EQ4", ARIZONA_EQ4MIX_INPUT_1_SOURCE),
- 
--SND_SOC_BYTES_MASK("EQ1 Coefficeints", ARIZONA_EQ1_1, 21,
-+SND_SOC_BYTES_MASK("EQ1 Coefficients", ARIZONA_EQ1_1, 21,
- 		   ARIZONA_EQ1_ENA_MASK),
--SND_SOC_BYTES_MASK("EQ2 Coefficeints", ARIZONA_EQ2_1, 21,
-+SND_SOC_BYTES_MASK("EQ2 Coefficients", ARIZONA_EQ2_1, 21,
- 		   ARIZONA_EQ2_ENA_MASK),
--SND_SOC_BYTES_MASK("EQ3 Coefficeints", ARIZONA_EQ3_1, 21,
-+SND_SOC_BYTES_MASK("EQ3 Coefficients", ARIZONA_EQ3_1, 21,
- 		   ARIZONA_EQ3_ENA_MASK),
--SND_SOC_BYTES_MASK("EQ4 Coefficeints", ARIZONA_EQ4_1, 21,
-+SND_SOC_BYTES_MASK("EQ4 Coefficients", ARIZONA_EQ4_1, 21,
- 		   ARIZONA_EQ4_ENA_MASK),
- 
- SOC_SINGLE_TLV("EQ1 B1 Volume", ARIZONA_EQ1_1, ARIZONA_EQ1_B1_GAIN_SHIFT,
--- 
-1.7.2.5
+I am getting following errors while writing to speaker
+
+" snd_pcm_writei: Assertion `pcm' failed."
+
+
+what might be the reasons for that and is there any solutions.
+
+
+thanks & regards,
+
+
+Ranjith
