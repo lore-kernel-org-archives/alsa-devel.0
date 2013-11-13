@@ -1,71 +1,95 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH v7 0/4] Add dual-fifo mode support of i.MX ssi
-Date: Wed, 13 Nov 2013 22:55:23 +0800
-Message-ID: <cover.1384352281.git.b42378@freescale.com>
+From: Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Subject: [PATCH v7 1/4] dma: imx-sdma: Add sdma firmware version 2 support
+Date: Wed, 13 Nov 2013 22:55:24 +0800
+Message-ID: <6873b986169d4ee18608b1bd7ea48c2ffd523864.1384352281.git.b42378@freescale.com>
+References: <cover.1384352281.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-doc-owner@vger.kernel.org>
-Sender: linux-doc-owner@vger.kernel.org
-To: vinod.koul@intel.com, dan.j.williams@intel.com, s.hauer@pengutronix.de, timur@tabi.org, shawn.guo@linaro.org, broonie@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <cover.1384352281.git.b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
- * ! This series of patches has a direct dependency between them. When
- * ! applying them, we need to apply to one single branch. Otherwise,
- * ! it would break currect branches.
+On i.MX5/6 series, SDMA is using new version firmware to support SSI
+dual FIFO feature and HDMI Audio (i.MX6Q/DL only). Thus add it.
 
-Changelog
-v7:
- * Appended missing Acked-by to all four patches.
- * Sorry that I didn't add them at the first place.
-v6:
- * PATCH-1: Use goto err_firmware instead of return directly.
- *
- * Nothing changes for the other three ack-ed patches
-v5:
- * PATCH-3: Add period size constraint when using dual fifo mode
- *
- * Nothing changes for the other three patches
-v4:
- * PATCH-3: Drop useless register configuration.
- *
- * Nothing changes for the other three patches
-v3:
- * PATCH-1: Add comments to indicate the end of v1 and v2 array.
- * PATCH-3: Use better way to keep watermark as even number.
- *
- * Nothing changes for PATCH-2 and PATCH-4
-v2:
- * Instead of adding rogue scripts to current SDMA driver based on firmware
- * V1, we define the new SDMA firmware as version 2 and bisect the PATCH-1
- * to two patches: The first is to add version check code to the SDMA driver;
- * And the second is to add SSI dual FIFO DMATYPE.
- *
- * Nothing changes for the last two patches.
-v1:
- * SSI can reduce hardware overrun/underrun possibility when using dual
- * fifo mode. To support this mode, we need to first update sdma sciprt
- * list, and then enable dual fifo BIT in SSI driver, and last update DT
- * bindings of i.MX series.
+Signed-off-by: Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Acked-by: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+---
+ drivers/dma/imx-sdma.c                     | 15 ++++++++++++++-
+ include/linux/platform_data/dma-imx-sdma.h |  5 +++++
+ 2 files changed, 19 insertions(+), 1 deletion(-)
 
-Nicolin Chen (4):
-  dma: imx-sdma: Add sdma firmware version 2 support
-  dma: imx-sdma: Add new dma type for ssi dual fifo script
-  ASoC: fsl_ssi: Add dual fifo mode support
-  ARM: dts: imx: use dual-fifo sdma script for ssi
-
- .../devicetree/bindings/dma/fsl-imx-sdma.txt       |  1 +
- arch/arm/boot/dts/imx51.dtsi                       |  4 ++--
- arch/arm/boot/dts/imx53.dtsi                       |  4 ++--
- arch/arm/boot/dts/imx6qdl.dtsi                     | 12 +++++-----
- arch/arm/boot/dts/imx6sl.dtsi                      | 12 +++++-----
- drivers/dma/imx-sdma.c                             | 19 ++++++++++++++-
- include/linux/platform_data/dma-imx-sdma.h         |  5 ++++
- include/linux/platform_data/dma-imx.h              |  1 +
- sound/soc/fsl/fsl_ssi.c                            | 27 +++++++++++++++++++++-
- 9 files changed, 67 insertions(+), 18 deletions(-)
-
+diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+index fc43603..43a8441 100644
+--- a/drivers/dma/imx-sdma.c
++++ b/drivers/dma/imx-sdma.c
+@@ -323,6 +323,7 @@ struct sdma_engine {
+ 	struct clk			*clk_ipg;
+ 	struct clk			*clk_ahb;
+ 	spinlock_t			channel_0_lock;
++	u32				script_number;
+ 	struct sdma_script_start_addrs	*script_addrs;
+ 	const struct sdma_driver_data	*drvdata;
+ };
+@@ -1238,6 +1239,7 @@ static void sdma_issue_pending(struct dma_chan *chan)
+ }
+ 
+ #define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V1	34
++#define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V2	38
+ 
+ static void sdma_add_scripts(struct sdma_engine *sdma,
+ 		const struct sdma_script_start_addrs *addr)
+@@ -1246,7 +1248,7 @@ static void sdma_add_scripts(struct sdma_engine *sdma,
+ 	s32 *saddr_arr = (u32 *)sdma->script_addrs;
+ 	int i;
+ 
+-	for (i = 0; i < SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V1; i++)
++	for (i = 0; i < sdma->script_number; i++)
+ 		if (addr_arr[i] > 0)
+ 			saddr_arr[i] = addr_arr[i];
+ }
+@@ -1272,6 +1274,17 @@ static void sdma_load_firmware(const struct firmware *fw, void *context)
+ 		goto err_firmware;
+ 	if (header->ram_code_start + header->ram_code_size > fw->size)
+ 		goto err_firmware;
++	switch (header->version_major) {
++		case 1:
++			sdma->script_number = SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V1;
++			break;
++		case 2:
++			sdma->script_number = SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V2;
++			break;
++		default:
++			dev_err(sdma->dev, "unknown firmware version\n");
++			goto err_firmware;
++	}
+ 
+ 	addr = (void *)header + header->script_addrs_start;
+ 	ram_code = (void *)header + header->ram_code_start;
+diff --git a/include/linux/platform_data/dma-imx-sdma.h b/include/linux/platform_data/dma-imx-sdma.h
+index 3a39428..eabac4e 100644
+--- a/include/linux/platform_data/dma-imx-sdma.h
++++ b/include/linux/platform_data/dma-imx-sdma.h
+@@ -43,6 +43,11 @@ struct sdma_script_start_addrs {
+ 	s32 dptc_dvfs_addr;
+ 	s32 utra_addr;
+ 	s32 ram_code_start_addr;
++	/* End of v1 array */
++	s32 mcu_2_ssish_addr;
++	s32 ssish_2_mcu_addr;
++	s32 hdmi_dma_addr;
++	/* End of v2 array */
+ };
+ 
+ /**
 -- 
 1.8.4
 
 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
