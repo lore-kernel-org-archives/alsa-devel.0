@@ -1,52 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: arizona: Fix typo in name of EQ coefficient
- controls
-Date: Wed, 13 Nov 2013 13:27:29 +0000
-Message-ID: <20131113132729.GJ878@sirena.org.uk>
-References: <20131113130149.GA7665@opensource.wolfsonmicro.com>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: fsl-ssi: fix SDMA starvation
+Date: Wed, 13 Nov 2013 14:38:41 +0100
+Message-ID: <20131113133841.GI30263@pengutronix.de>
+References: <1384255056-25673-1-git-send-email-mpa@pengutronix.de>
+ <52822529.5090502@tabi.org>
+ <20131112132441.GG30263@pengutronix.de>
+ <CAOZdJXUWv3_ZV6p9VQ+zYqwUDVQC6BMb-VhVoVtEh1yC23VuTg@mail.gmail.com>
+ <20131113121630.GH30263@pengutronix.de>
+ <52837A59.5070508@tabi.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+Hr//EUsa8//ouuB"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Return-path: <stable-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20131113130149.GA7665@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <52837A59.5070508@tabi.org>
+Sender: stable-owner@vger.kernel.org
+To: Timur Tabi <timur@tabi.org>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Juergen Beisert <jbe@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, stable@vger.kernel.org, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Nov 13, 2013 at 07:10:49AM -0600, Timur Tabi wrote:
+> Markus Pargmann wrote:
+> >>>Can you change the code so that the interrupts are enabled only on
+> >>>i.MX?  On PowerPC, the interrupts are used only for debugging.
+> 
+> >Why is this necessary? The interrupts were enabled for all
+> >architectures before.
+> 
+> My concern is with these lines:
+> 
+> 	write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_TDMAE);
+> ...
+> 	write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_TDMAE, 0);
+> 
+> This toggles the TDMAE interrupt on PowerPC, which I believe is
+> VITAL to making it work.  The SSI and the DMA controller talk to
+> each other automatically, and if I'm reading the documentation
+> correctly, that communication depends on TDMAE and RDMAE.
 
---+Hr//EUsa8//ouuB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Is it necessary to keep TDMAE enabled the whole time? In the patch we
+enable it when playback starts and disable when it stops, so the
+communication between DMA and SSI shouldn't be disturbed.
 
-On Wed, Nov 13, 2013 at 01:01:49PM +0000, Richard Fitzgerald wrote:
->=20
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Regards,
 
-Applied, thanks.
+Markus
 
---+Hr//EUsa8//ouuB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSg34+AAoJELSic+t+oim9p78P/1A9B6a5gNMQCZYBq6Hgs3Ga
-ZcDQE1TSGdonN7amNLZi0bxKjtjhNfKPzMhv2Ap1rAVTKnn048jWZX3vLellgUEb
-y+HoUTdc1CWMVtiztiMwYKjB42j7XsopyJhx8H/3pByBQslJd5nBgNEcZJru5/ea
-/6maJ9pFJi5FZz+A4eDe3bxgiqNxREMnJip2TLq1imw/gM46qkQ0MBlRjfXphkpo
-KRKjns86e23a9HjJ4LUiv5ZtlEWxU/hbUHseZXKJ12CblwrjwDiQGH1zi0+P+ai8
-/Tdgr756Z/NWotaysFis0GG7AtrdDW07jyYhhS/yWhy4bZw6CV/9b26WnWxJ/2sq
-sE0lPLTMzQ6IeI6lBam8m55hoD7FKrKa8KYfPaaXF79+El6yxzMwRXbMRXUAIM1Q
-O9689M+Vv2+H/aH+frtREVDX34C09dfwqS0i4+igAYglma539ltOd2H96E1ysZbw
-HfFIiFkFYt1AP/a5dLfkjCiAwQcswtOg15ky3UNlhmcgh6EyHDZ/yDiJppinuQG+
-tjv7gklOTcaG+q3uuvAS3PWdH51JfhZc1bbTC2kh1Vxvi4RF9e0SIlT2vLKD4MKZ
-1TAftuRTpsPL2kYZoK64/NmjVQdgXRvh1UXvC12n3eUBtq5XFKfIdAVDIMCrdJ/l
-G7SMbAna1wtvTrz8MmDu
-=9+Wf
------END PGP SIGNATURE-----
-
---+Hr//EUsa8//ouuB--
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
