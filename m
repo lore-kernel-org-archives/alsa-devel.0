@@ -1,136 +1,92 @@
-From: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
-Subject: Re: [PATCHv4] dmaengine: Add support for BCM2835
-Date: Wed, 13 Nov 2013 20:35:22 +0100
-Message-ID: <5283D47A.7060503@koalo.de>
-References: <5283BC93.1090801@koalo.de> <3722902.ByNK8Ptc5Y@flatron>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 2/2] dt: binding: sound cs42l52 driver
+Date: Wed, 13 Nov 2013 19:49:15 +0000
+Message-ID: <20131113194915.GF878@sirena.org.uk>
+References: <1384357474-28653-1-git-send-email-brian.austin@cirrus.com>
+ <1783157.vhfWvslFgW@flatron> <20131113181622.GZ878@sirena.org.uk>
+ <1799362.QSDMu6GHtU@flatron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <3722902.ByNK8Ptc5Y@flatron>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============0078566276078532656=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id E092D260323
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 20:49:23 +0100 (CET)
+In-Reply-To: <1799362.QSDMu6GHtU@flatron>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, rob.herring@calxeda.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 13.11.2013 19:43, Tomasz Figa wrote:
-> Hi Florian,
-> 
-> Seems like I accidentally replied to some old version of this patch.
-> Not sure how many of those comments were still relevant for V3, but
-> let me look at this version and see whether we can still improve things
-> a bit. Please see my comments inline.
 
-Some were still helpful (especially the idea to use the chan_init
-function for setting the irq), thanks.
+--===============0078566276078532656==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="czsrKamv0OtYjSMr"
+Content-Disposition: inline
 
->> ....
->> diff --git a/Documentation/devicetree/bindings/dma/bcm2835-dma.txt b/Documentation/devicetree/bindings/dma/bcm2835-dma.txt
->> new file mode 100644
->> index 0000000..bca5e84
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/dma/bcm2835-dma.txt
->> @@ -0,0 +1,59 @@
->> +* BCM2835 DMA controller
->> +
->> +Required properties:
->> +- compatible: Should be "brcm,bcm2835-dma".
->> +- reg: Should contain DMA registers location and length.
->> +- interrupts: Should contain the DMA interrupts associated
->> +		to the DMA channels in ascending order.
->> +		First cell is the IRQ bank.
->> +		Second cell is the IRQ number.
->> +- #dma-cells: Must be <1>, used to represent the number of integer cells in
->> +		the dmas property of client devices.
->> +- dma-channels: Maximum number of DMA channels available.
->> +- dma-requests: Number of DMA Requests.
-> 
-> The two properties above do not seem to be used anywhere in the driver.
 
-Aren't they necessary for the DMA engine core?
+--czsrKamv0OtYjSMr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->> +- brcm,dma-channel-mask: Bit mask representing the channels available.
-> 
-> What does the value of this property depend on? Could you describe the
-> structure of this DMA controller?
-> 
->> +
->> +Example:
->> +
->> +dma: dma@7e007000 {
->> +	compatible = "brcm,bcm2835-dma";
->> +	reg = <0x7e007000 0xf00>;
->> +	interrupts = <1 16
->> +		      1 17
->> +		      1 18
->> +		      1 19
->> +		      1 20
->> +		      1 21
->> +		      1 22
->> +		      1 23
->> +		      1 24
->> +		      1 25
->> +		      1 26
->> +		      1 27
->> +		      1 28>;
-> 
-> There are 13 interrupts specified here, but...
-> 
->> +
->> +	#dma-cells = <1>;
->> +	dma-channels = <16>;
-> 
-> ...16 channels here...
-> 
->> +	dma-requests = <32>;
->> +	brcm,dma-channel-mask = <0x7f35>;
-> 
-> ...and 11 set bits here. May I ask you to explain this to me, please?
+On Wed, Nov 13, 2013 at 07:24:04PM +0100, Tomasz Figa wrote:
 
-How I understand this DMA controller:
-There are 16 DMA channels in the DMA controller, but only 13 interrupts
-are available at the IRQ controller. Therefore, the upper DMA channels
-can just not be used. Maybe because there are to many other IRQs and
-they didn't want to implement another IRQ bank.
-Furthermore, some of the DMA channels are already used by the
-VideoCore/GPU/firmware. This is what dma-channel-mask indicates. This
-should be automatically set by the firmware in the future.
-Finally, there are some channels with special functionality that should
-not be used by DMA engine, too. Therefore, these lines:
-		/* do not use the FIQ and BULK channels */
-		chans_available &= ~0xD;
+> Well, the label is just for the parser and it does not get into the DTB.
+> This is where the DTS author can make things up just for their own
+> convenience (like main_codec, aux_codec or even cs42l52).=20
 
-> [snip]
->> diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
->> new file mode 100644
->> index 0000000..baf072e
->> --- /dev/null
->> +++ b/drivers/dma/bcm2835-dma.c
-> [snip]
->> +static int bcm2835_dma_probe(struct platform_device *pdev)
->> +{
->> +	struct bcm2835_dmadev *od;
->> +	struct resource *dma_res = NULL;
->> +	void __iomem *dma_base = NULL;
->> +	int rc = 0;
->> +	int i = 0;
->> +	int irq;
->> +	uint32_t chans_available;
-> [snip]
->> +	if (pdev->dev.of_node) {
-> 
-> Is this driver supposed to support non-DT based instantation (aka board
-> files)? If not, maybe it would be cleaner to simply check for
-> !pdev->dev.of_node at the beginning of probe and return an error?
+If only we could have comments :)
 
-I would like to maintain the possibility for board file based
-instatiation, because the Raspberry Pi downstream kernel still doesn't
-support device tree. If this is a no-go, I will accept that.
+> I know this is really more bikeshedding than anything useful, but I'd
+> rather try to follow the written rules in ePAPR, instead of nothing at
+> all. At least just to make things more consistent.
 
-Greetings,
-Florian
+My feeling here is that we should be looking more critically at ePAPR -
+if we're picking people up for having what's essentially a comment
+that's too specific we're probably doing something wrong especially
+since the corrected example would look something like:
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+	codec: codec@12 {
+
+which is a bit redundant.
+
+--czsrKamv0OtYjSMr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSg9e4AAoJELSic+t+oim95BYP/iY/IhQOQcn1BaCcOWbxo7R2
+16qfIGKflNtpY3wQfeR/Rnaz6NEKbnHEXhl+BnUVpoluqX0BmJRYOsu1hpjB0tJD
+bjbPSdELdCVIl+/tmnpp0lyNnDERU6XkdGUl4wZxgrOf7EBVhTrMA9jSr9d1AqbX
+/WGskc34HAzyzaTkw8C2VTIY9sXfA9O4XvfmrwYqeCKyt1CM+Z4k3WzPhznM7DK5
+cxE7HZrf+IT8fXMhovV8e2+Ie1GSKlbotmuOob8hhRRfWuci/R9fy0cY7qNTbeI8
+vhXFKon0hCPCJ5Yhwdeucuf1lwNwLG/7zSgYJZafTw9xItja2PMmAR+qEhKksPD1
+jWJbPPU2QsuNyY4uDG/wmXHz1e79NfJ8ef17IqyqMKrFWldHY9L19RDslRQVQ5UF
+Vt3ZU+P1YV6ZSSIrQb9PI+6vytJAX/1HrZLFGg5E37Co+74L4P7vsJaCd/4RuR5r
+CJ0GfkfcHH0Gmgo39/VsK3sZdP+FVh3MzhIjldbtoaGIgmlc7m75ENB3k0LIivi7
+YKmGFoWvKcZRGpeqg9jFytRXM30FzqNdZfe3yqaoEl9/sxqt09PKBjsyua2vmF5a
+p2EipuTHB/Rf2n/VbVh1YYpBLKv4RNZYXROIhMqayE0qCzpBHCPHTSFW8eoF/oOk
+njfuFk//Z3JojUQMH5Nx
+=1QEd
+-----END PGP SIGNATURE-----
+
+--czsrKamv0OtYjSMr--
+
+--===============0078566276078532656==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0078566276078532656==--
