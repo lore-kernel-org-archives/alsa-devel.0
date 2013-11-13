@@ -1,57 +1,32 @@
-From: ranjith vs <ranjithvs@iwavesystems.com>
-Subject: ERROR:PCM WRITE ASSRTION FAILED
-Date: Wed, 13 Nov 2013 18:31:47 +0530 (IST)
-Message-ID: <198199338.90738.1384347707434.JavaMail.zimbra@iwavesystems.com>
-References: <1556389142.90737.1384347631653.JavaMail.zimbra@iwavesystems.com>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: fsl-ssi: fix SDMA starvation
+Date: Wed, 13 Nov 2013 07:10:49 -0600
+Message-ID: <52837A59.5070508@tabi.org>
+References: <1384255056-25673-1-git-send-email-mpa@pengutronix.de> <52822529.5090502@tabi.org> <20131112132441.GG30263@pengutronix.de> <CAOZdJXUWv3_ZV6p9VQ+zYqwUDVQC6BMb-VhVoVtEh1yC23VuTg@mail.gmail.com> <20131113121630.GH30263@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.iwavesystems.com (unknown [124.124.219.236])
- by alsa0.perex.cz (Postfix) with ESMTP id E270E2616A0
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 14:02:41 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by smtp.iwavesystems.com (Postfix) with ESMTP id 26A811E2BEC
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 18:32:03 +0530 (IST)
-Received: from smtp.iwavesystems.com ([127.0.0.1])
- by localhost (smtp.iwavesystems.com [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id qVwnG9WnjPRm for <alsa-devel@alsa-project.org>;
- Wed, 13 Nov 2013 18:31:47 +0530 (IST)
-Received: from localhost (localhost [127.0.0.1])
- by smtp.iwavesystems.com (Postfix) with ESMTP id DA0B11E2C10
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 18:31:47 +0530 (IST)
-Received: from smtp.iwavesystems.com ([127.0.0.1])
- by localhost (smtp.iwavesystems.com [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id KJjXaBw8H5TR for <alsa-devel@alsa-project.org>;
- Wed, 13 Nov 2013 18:31:47 +0530 (IST)
-Received: from smtp.iwavesystems.com (smtp.iwavesystems.com [124.124.219.236])
- by smtp.iwavesystems.com (Postfix) with ESMTP id B8E3E1E2BEC
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 18:31:47 +0530 (IST)
-In-Reply-To: <1556389142.90737.1384347631653.JavaMail.zimbra@iwavesystems.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20131113121630.GH30263@pengutronix.de>
+Sender: stable-owner@vger.kernel.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Juergen Beisert <jbe@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, stable@vger.kernel.org, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-hi,
+Markus Pargmann wrote:
+>> >Can you change the code so that the interrupts are enabled only on
+>> >i.MX?  On PowerPC, the interrupts are used only for debugging.
 
+> Why is this necessary? The interrupts were enabled for all
+> architectures before.
 
-I am getting following errors while writing to speaker
+My concern is with these lines:
 
-" snd_pcm_writei: Assertion `pcm' failed."
+	write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_TDMAE);
+...
+	write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_TDMAE, 0);
 
-
-what might be the reasons for that and is there any solutions.
-
-
-thanks & regards,
-
-
-Ranjith
+This toggles the TDMAE interrupt on PowerPC, which I believe is VITAL to 
+making it work.  The SSI and the DMA controller talk to each other 
+automatically, and if I'm reading the documentation correctly, that 
+communication depends on TDMAE and RDMAE.
