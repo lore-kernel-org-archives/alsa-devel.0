@@ -1,109 +1,214 @@
-From: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH v2 2/2] dt: binding: sound cs42l52 driver
-Date: Wed, 13 Nov 2013 13:10:51 -0600
-Message-ID: <alpine.DEB.2.10.1311131306150.28828@heelrod.ad.cirrus.com>
-References: <1384357474-28653-1-git-send-email-brian.austin@cirrus.com> <1485256.GGQxcSNhvH@flatron> <alpine.DEB.2.10.1311131248290.28828@heelrod.ad.cirrus.com> <2417485.xV8Ic1G59x@flatron>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"; format=flowed
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <2417485.xV8Ic1G59x@flatron>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
+From: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Subject: [PATCH 3/3] ASOC: tegra: fix AC97 clock handling
+Date: Wed, 13 Nov 2013 20:17:23 +0100
+Message-ID: <1384370243-17178-3-git-send-email-dev@lynxeye.de>
+References: <1384370243-17178-1-git-send-email-dev@lynxeye.de>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1384370243-17178-1-git-send-email-dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Cc: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 13 Nov 2013, Tomasz Figa wrote:
+This corrects the Tegra AC97 clock handling to be in line with
+the devicetree. Audio PLL is controlled by the machine driver, only
+AC97 host controller clock remains to be independent.
 
->>>> +		 0x00 through 0x0F.
->>>> +		 Frequency = (64xFs)/(N+2)
->>>
->>> I suppose N means the value of chgfreq property here, but this should be
->>> clearly stated. Same for Fs - I suppose it is sampling frequency, but
->>> is it default, minimum, maximum or maybe something else?
->>>
->> Frequency = (64xFs)/(N+2)
->> N = chgfreq value
->> Fs = sample rate
->
-> As I mentioned in second part of my comment, is it default, minimum,
-> maximum or what kind of sample rate? Or is the sample rate fixed?
->
-ah! Sorry, the rate is fixed for the stream. So it varies for what rate is 
-being used.
-
-
->>
->>
->>> Personally I don't like this kind of raw values being passed using Device
->>> Tree, but this one can't be really represented reasonably in a generic
->>> way (such as in Hz units) without too much effort to calculate original
->>> value in the driver, then it's fine.
->>>
->>>> +  - mica-cfg   : MIC A single-ended or differential select.
->>>> +		 0x00 = Single-Ended
->>>> +		 0x01 = Differential
->>>
->>> I'd rather make it boolean and call it cirrus,mic-a-differential.
->>>
->>>> +  - micb-cfg   : MIC B single-ended or differential select.
->>>> +		 0x00 = Single-Ended
->>>> +		 0x01 = Differential
->>>
->>> Ditto.
->>>
->>
->> I can do that as well. Thanks
->>
->>>> +  - mica-sel   : MIC A single ended input select.  For Single-Ended
->>>> +		 configuration, select which MIC to use.
->>>> +		 0x00 = MIC1
->>>> +		 0x01 = MIC2
->>>> +  - micb-sel   : MIC B single ended input select.  For Single-Ended
->>>> +		 configuration, select which MIC to use.
->>>> +		 0x00 = MIC1
->>>> +		 0x01 = MIC2
->>>
->>> Could you explain what are MIC A, MIC B, MIC1 and MIC2?
->>>
->> I can add a little more but it is best explained in the datasheet. I can
->> add a little more explaination and reference the datasheet section. I feel
->> this file might be the wrong place to go into too much depth of the pieces
->> of the device when the datasheet could be referenced. Would a reference be
->> OK?
->>
->
-> I meant just explaining to me, for the purpose of this review. However it
-> seems like the datasheet is publicly available, so let me just check this
-> there.
->
-Sorry about that.
-
-The CS42L52 has multiple input selections for microphones. Single-ended 
-and differential inputs are allowed for both Left Channel (MICA) and Right 
-Channel (MICB). The +- pins can be used for stereo or mono mics.
-
->>>> +Example:
->>>> +
->>>> +codec: cs42l52@4a {
->>>
->>> coding style: Node name should be generic, i.e. codec@4a.
->>
->> I can change this as well.  While we are talking about coding style, is
->> there a new format document somewhere with the style that was agreed to at
->> the conference just recently?
->
-> I believe that the latest document is in the works, but as for style
-> guidelines, most of recommendations are to be taken from ePAPR[1].
->
-> [1] https://www.power.org/wp-content/uploads/2012/06/Power_ePAPR_APPROVED_v1.1.pdf
->
-Thank you very much. I will take a look at this now.
-
-Thanks again,
-Brian
-
-
+Signed-off-by: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+CC: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+CC: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+CC: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+
+This is basically a v2 of "ASOC: tegra: move AC97 clock defines to the
+controller node" incorporating the feedback I got from both Stephen and Mark.
+---
+ sound/soc/tegra/tegra20_ac97.c | 32 ++++++++++----------------------
+ sound/soc/tegra/tegra20_ac97.h |  1 -
+ sound/soc/tegra/tegra_wm9712.c | 17 ++++++++++++++++-
+ 3 files changed, 26 insertions(+), 24 deletions(-)
+
+diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
+index ae27bcd..584d8c3 100644
+--- a/sound/soc/tegra/tegra20_ac97.c
++++ b/sound/soc/tegra/tegra20_ac97.c
+@@ -37,7 +37,6 @@
+ #include <sound/soc.h>
+ #include <sound/dmaengine_pcm.h>
+ 
+-#include "tegra_asoc_utils.h"
+ #include "tegra20_ac97.h"
+ 
+ #define DRV_NAME "tegra20-ac97"
+@@ -337,7 +336,7 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	regs = devm_ioremap_resource(&pdev->dev, mem);
+ 	if (IS_ERR(regs)) {
+ 		ret = PTR_ERR(regs);
+-		goto err_clk_put;
++		goto err;
+ 	}
+ 
+ 	ac97->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
+@@ -345,7 +344,7 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	if (IS_ERR(ac97->regmap)) {
+ 		dev_err(&pdev->dev, "regmap init failed\n");
+ 		ret = PTR_ERR(ac97->regmap);
+-		goto err_clk_put;
++		goto err;
+ 	}
+ 
+ 	if (of_property_read_u32_array(pdev->dev.of_node,
+@@ -353,7 +352,7 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 				       of_dma, 2) < 0) {
+ 		dev_err(&pdev->dev, "No DMA resource\n");
+ 		ret = -ENODEV;
+-		goto err_clk_put;
++		goto err;
+ 	}
+ 
+ 	ac97->reset_gpio = of_get_named_gpio(pdev->dev.of_node,
+@@ -363,18 +362,18 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 					    GPIOF_OUT_INIT_HIGH, "codec-reset");
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "could not get codec-reset GPIO\n");
+-			goto err_clk_put;
++			goto err;
+ 		}
+ 	} else {
+ 		dev_err(&pdev->dev, "no codec-reset GPIO supplied\n");
+-		goto err_clk_put;
++		goto err;
+ 	}
+ 
+ 	ac97->sync_gpio = of_get_named_gpio(pdev->dev.of_node,
+ 					    "nvidia,codec-sync-gpio", 0);
+ 	if (!gpio_is_valid(ac97->sync_gpio)) {
+ 		dev_err(&pdev->dev, "no codec-sync GPIO supplied\n");
+-		goto err_clk_put;
++		goto err;
+ 	}
+ 
+ 	ac97->capture_dma_data.addr = mem->start + TEGRA20_AC97_FIFO_RX1;
+@@ -387,24 +386,18 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	ac97->playback_dma_data.maxburst = 4;
+ 	ac97->playback_dma_data.slave_id = of_dma[1];
+ 
+-	ret = tegra_asoc_utils_init(&ac97->util_data, &pdev->dev);
+-	if (ret)
+-		goto err_clk_put;
+-
+-	ret = tegra_asoc_utils_set_ac97_rate(&ac97->util_data);
+-	if (ret)
+-		goto err_asoc_utils_fini;
++	ret = clk_set_rate(ac97->clk_ac97, 24576000);
+ 
+ 	ret = clk_prepare_enable(ac97->clk_ac97);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "clk_enable failed: %d\n", ret);
+-		goto err_asoc_utils_fini;
++		goto err;
+ 	}
+ 
+ 	ret = snd_soc_set_ac97_ops(&tegra20_ac97_ops);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to set AC'97 ops: %d\n", ret);
+-		goto err_asoc_utils_fini;
++		goto err;
+ 	}
+ 
+ 	ret = snd_soc_register_component(&pdev->dev, &tegra20_ac97_component,
+@@ -412,7 +405,7 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
+ 		ret = -ENOMEM;
+-		goto err_asoc_utils_fini;
++		goto err;
+ 	}
+ 
+ 	ret = tegra_pcm_platform_register(&pdev->dev);
+@@ -428,9 +421,6 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 
+ err_unregister_component:
+ 	snd_soc_unregister_component(&pdev->dev);
+-err_asoc_utils_fini:
+-	tegra_asoc_utils_fini(&ac97->util_data);
+-err_clk_put:
+ err:
+ 	snd_soc_set_ac97_ops(NULL);
+ 	return ret;
+@@ -443,8 +433,6 @@ static int tegra20_ac97_platform_remove(struct platform_device *pdev)
+ 	tegra_pcm_platform_unregister(&pdev->dev);
+ 	snd_soc_unregister_component(&pdev->dev);
+ 
+-	tegra_asoc_utils_fini(&ac97->util_data);
+-
+ 	clk_disable_unprepare(ac97->clk_ac97);
+ 
+ 	snd_soc_set_ac97_ops(NULL);
+diff --git a/sound/soc/tegra/tegra20_ac97.h b/sound/soc/tegra/tegra20_ac97.h
+index 4acb3aa..0a39d82 100644
+--- a/sound/soc/tegra/tegra20_ac97.h
++++ b/sound/soc/tegra/tegra20_ac97.h
+@@ -90,6 +90,5 @@ struct tegra20_ac97 {
+ 	struct regmap *regmap;
+ 	int reset_gpio;
+ 	int sync_gpio;
+-	struct tegra_asoc_utils_data util_data;
+ };
+ #endif /* __TEGRA20_AC97_H__ */
+diff --git a/sound/soc/tegra/tegra_wm9712.c b/sound/soc/tegra/tegra_wm9712.c
+index 45b5789..25a7f82 100644
+--- a/sound/soc/tegra/tegra_wm9712.c
++++ b/sound/soc/tegra/tegra_wm9712.c
+@@ -29,10 +29,13 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ 
++#include "tegra_asoc_utils.h"
++
+ #define DRV_NAME "tegra-snd-wm9712"
+ 
+ struct tegra_wm9712 {
+ 	struct platform_device *codec;
++	struct tegra_asoc_utils_data util_data;
+ };
+ 
+ static const struct snd_soc_dapm_widget tegra_wm9712_dapm_widgets[] = {
+@@ -118,15 +121,25 @@ static int tegra_wm9712_driver_probe(struct platform_device *pdev)
+ 
+ 	tegra_wm9712_dai.platform_of_node = tegra_wm9712_dai.cpu_of_node;
+ 
++	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
++	if (ret)
++		goto codec_unregister;
++
++	ret = tegra_asoc_utils_set_ac97_rate(&machine->util_data);
++	if (ret)
++		goto asoc_utils_fini;
++
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
+ 			ret);
+-		goto codec_unregister;
++		goto asoc_utils_fini;
+ 	}
+ 
+ 	return 0;
+ 
++asoc_utils_fini:
++	tegra_asoc_utils_fini(&machine->util_data);
+ codec_unregister:
+ 	platform_device_del(machine->codec);
+ codec_put:
+@@ -141,6 +154,8 @@ static int tegra_wm9712_driver_remove(struct platform_device *pdev)
+ 
+ 	snd_soc_unregister_card(card);
+ 
++	tegra_asoc_utils_fini(&machine->util_data);
++
+ 	platform_device_unregister(machine->codec);
+ 
+ 	return 0;
+-- 
+1.8.3.1
