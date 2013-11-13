@@ -1,84 +1,134 @@
-From: Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v2 2/2] dt: binding: sound cs42l52 driver
-Date: Wed, 13 Nov 2013 20:29:04 +0100
-Message-ID: <4248019.0NvEHjb6IO@flatron>
-References: <1384357474-28653-1-git-send-email-brian.austin@cirrus.com> <2417485.xV8Ic1G59x@flatron> <alpine.DEB.2.10.1311131306150.28828@heelrod.ad.cirrus.com>
+From: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Subject: Re: [PATCHv4] dmaengine: Add support for BCM2835
+Date: Wed, 13 Nov 2013 20:35:22 +0100
+Message-ID: <5283D47A.7060503@koalo.de>
+References: <5283BC93.1090801@koalo.de> <3722902.ByNK8Ptc5Y@flatron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <alpine.DEB.2.10.1311131306150.28828-QCF2GsvuTPME07tKKVU2gpqQE7yCjDx5@public.gmane.org>
+In-Reply-To: <3722902.ByNK8Ptc5Y@flatron>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
+To: Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 13 of November 2013 13:10:51 Brian Austin wrote:
-> On Wed, 13 Nov 2013, Tomasz Figa wrote:
+On 13.11.2013 19:43, Tomasz Figa wrote:
+> Hi Florian,
 > 
-> >>>> +		 0x00 through 0x0F.
-> >>>> +		 Frequency = (64xFs)/(N+2)
-> >>>
-> >>> I suppose N means the value of chgfreq property here, but this should be
-> >>> clearly stated. Same for Fs - I suppose it is sampling frequency, but
-> >>> is it default, minimum, maximum or maybe something else?
-> >>>
-> >> Frequency = (64xFs)/(N+2)
-> >> N = chgfreq value
-> >> Fs = sample rate
-> >
-> > As I mentioned in second part of my comment, is it default, minimum,
-> > maximum or what kind of sample rate? Or is the sample rate fixed?
-> >
-> ah! Sorry, the rate is fixed for the stream. So it varies for what rate is 
-> being used.
+> Seems like I accidentally replied to some old version of this patch.
+> Not sure how many of those comments were still relevant for V3, but
+> let me look at this version and see whether we can still improve things
+> a bit. Please see my comments inline.
+
+Some were still helpful (especially the idea to use the chan_init
+function for setting the irq), thanks.
+
+>> ....
+>> diff --git a/Documentation/devicetree/bindings/dma/bcm2835-dma.txt b/Documentation/devicetree/bindings/dma/bcm2835-dma.txt
+>> new file mode 100644
+>> index 0000000..bca5e84
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/dma/bcm2835-dma.txt
+>> @@ -0,0 +1,59 @@
+>> +* BCM2835 DMA controller
+>> +
+>> +Required properties:
+>> +- compatible: Should be "brcm,bcm2835-dma".
+>> +- reg: Should contain DMA registers location and length.
+>> +- interrupts: Should contain the DMA interrupts associated
+>> +		to the DMA channels in ascending order.
+>> +		First cell is the IRQ bank.
+>> +		Second cell is the IRQ number.
+>> +- #dma-cells: Must be <1>, used to represent the number of integer cells in
+>> +		the dmas property of client devices.
+>> +- dma-channels: Maximum number of DMA channels available.
+>> +- dma-requests: Number of DMA Requests.
 > 
+> The two properties above do not seem to be used anywhere in the driver.
 
-OK, so the charge pump frequency varies with sampling rate. Well, I guess
-that's fine to provide a raw register value then. The name is still a bit
-misleading, though.
+Aren't they necessary for the DMA engine core?
 
-Maybe calling it cirrus,chgfreq-divisor would be better instead? Also the
-description in binding documentation should explicitly state that it's the
-raw value that needs to be written to the CHGFREQ register.
-
-> >>>> +  - mica-sel   : MIC A single ended input select.  For Single-Ended
-> >>>> +		 configuration, select which MIC to use.
-> >>>> +		 0x00 = MIC1
-> >>>> +		 0x01 = MIC2
-> >>>> +  - micb-sel   : MIC B single ended input select.  For Single-Ended
-> >>>> +		 configuration, select which MIC to use.
-> >>>> +		 0x00 = MIC1
-> >>>> +		 0x01 = MIC2
-> >>>
-> >>> Could you explain what are MIC A, MIC B, MIC1 and MIC2?
-> >>>
-> >> I can add a little more but it is best explained in the datasheet. I can
-> >> add a little more explaination and reference the datasheet section. I feel
-> >> this file might be the wrong place to go into too much depth of the pieces
-> >> of the device when the datasheet could be referenced. Would a reference be
-> >> OK?
-> >>
-> >
-> > I meant just explaining to me, for the purpose of this review. However it
-> > seems like the datasheet is publicly available, so let me just check this
-> > there.
-> >
-> Sorry about that.
+>> +- brcm,dma-channel-mask: Bit mask representing the channels available.
 > 
-> The CS42L52 has multiple input selections for microphones. Single-ended 
-> and differential inputs are allowed for both Left Channel (MICA) and Right 
-> Channel (MICB). The +- pins can be used for stereo or mono mics.
+> What does the value of this property depend on? Could you describe the
+> structure of this DMA controller?
+> 
+>> +
+>> +Example:
+>> +
+>> +dma: dma@7e007000 {
+>> +	compatible = "brcm,bcm2835-dma";
+>> +	reg = <0x7e007000 0xf00>;
+>> +	interrupts = <1 16
+>> +		      1 17
+>> +		      1 18
+>> +		      1 19
+>> +		      1 20
+>> +		      1 21
+>> +		      1 22
+>> +		      1 23
+>> +		      1 24
+>> +		      1 25
+>> +		      1 26
+>> +		      1 27
+>> +		      1 28>;
+> 
+> There are 13 interrupts specified here, but...
+> 
+>> +
+>> +	#dma-cells = <1>;
+>> +	dma-channels = <16>;
+> 
+> ...16 channels here...
+> 
+>> +	dma-requests = <32>;
+>> +	brcm,dma-channel-mask = <0x7f35>;
+> 
+> ...and 11 set bits here. May I ask you to explain this to me, please?
 
-OK. After looking at the datasheet for a bit, I'm pretty much convinced
-that these two properties should be rather represented as mixer controls
-instead, for the purpose of channel mixing.
+How I understand this DMA controller:
+There are 16 DMA channels in the DMA controller, but only 13 interrupts
+are available at the IRQ controller. Therefore, the upper DMA channels
+can just not be used. Maybe because there are to many other IRQs and
+they didn't want to implement another IRQ bank.
+Furthermore, some of the DMA channels are already used by the
+VideoCore/GPU/firmware. This is what dma-channel-mask indicates. This
+should be automatically set by the firmware in the future.
+Finally, there are some channels with special functionality that should
+not be used by DMA engine, too. Therefore, these lines:
+		/* do not use the FIQ and BULK channels */
+		chans_available &= ~0xD;
 
-Whether the "Mic X Sel" control would be present in the mixer or not would
-be implied by mic-X-differential property in DT.
+> [snip]
+>> diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
+>> new file mode 100644
+>> index 0000000..baf072e
+>> --- /dev/null
+>> +++ b/drivers/dma/bcm2835-dma.c
+> [snip]
+>> +static int bcm2835_dma_probe(struct platform_device *pdev)
+>> +{
+>> +	struct bcm2835_dmadev *od;
+>> +	struct resource *dma_res = NULL;
+>> +	void __iomem *dma_base = NULL;
+>> +	int rc = 0;
+>> +	int i = 0;
+>> +	int irq;
+>> +	uint32_t chans_available;
+> [snip]
+>> +	if (pdev->dev.of_node) {
+> 
+> Is this driver supposed to support non-DT based instantation (aka board
+> files)? If not, maybe it would be cleaner to simply check for
+> !pdev->dev.of_node at the beginning of probe and return an error?
 
-Best regards,
-Tomasz
+I would like to maintain the possibility for board file based
+instatiation, because the Raspberry Pi downstream kernel still doesn't
+support device tree. If this is a no-go, I will accept that.
+
+Greetings,
+Florian
 
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
