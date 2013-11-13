@@ -1,17 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] dt: binding: sound cs42l52 driver
-Date: Wed, 13 Nov 2013 19:49:15 +0000
-Message-ID: <20131113194915.GF878@sirena.org.uk>
-References: <1384357474-28653-1-git-send-email-brian.austin@cirrus.com>
- <1783157.vhfWvslFgW@flatron> <20131113181622.GZ878@sirena.org.uk>
- <1799362.QSDMu6GHtU@flatron>
+From: Robin Gareus <robin@gareus.org>
+Subject: Linux Audio Conference 2014 - Call for Participation
+Date: Wed, 13 Nov 2013 21:00:26 +0100
+Message-ID: <5283DA5A.4050100@gareus.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0078566276078532656=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E092D260323
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 20:49:23 +0100 (CET)
-In-Reply-To: <1799362.QSDMu6GHtU@flatron>
+Received: from mo-p00-ob.rzone.de (mo-p00-ob.rzone.de [81.169.146.162])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8CD3260795
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 21:00:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,72 +18,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, rob.herring@calxeda.com, lgirdwood@gmail.com
+To: p1k53l workshop <piksel@piksel.no>, sc-users@lists.bham.ac.uk, alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+[Sorry for cross-posting, please distribute]
 
---===============0078566276078532656==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="czsrKamv0OtYjSMr"
-Content-Disposition: inline
+We are happy to announce the next issue of the Linux Audio Conference
+(LAC), May 1-4, 2014 @ ZKM | Institute for Music and Acoustics, in
+Karlsruhe, Germnany.
 
+  http://lac.linuxaudio.org/2014/
 
---czsrKamv0OtYjSMr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The Linux Audio Conference is an international conference that brings
+together musicians, sound artists, software developers and researchers,
+working with Linux as an open, stable, professional platform for audio
+and media research and music production. LAC includes paper sessions,
+workshops, and a diverse program of electronic music.
 
-On Wed, Nov 13, 2013 at 07:24:04PM +0100, Tomasz Figa wrote:
+*Call for Papers, Workshops, Music and Installations*
 
-> Well, the label is just for the parser and it does not get into the DTB.
-> This is where the DTS author can make things up just for their own
-> convenience (like main_codec, aux_codec or even cs42l52).=20
+We invite submissions of papers addressing all areas of audio processing
+and media creation based on Linux. Papers can focus on technical,
+artistic and scientific issues and should target developers or users. In
+our call for music, we are looking for works that have been produced or
+composed entirely/mostly using Linux.
 
-If only we could have comments :)
+The online submission of papers, workshops, music and installations is
+now open at http://lac.linuxaudio.org/2014/participation
 
-> I know this is really more bikeshedding than anything useful, but I'd
-> rather try to follow the written rules in ePAPR, instead of nothing at
-> all. At least just to make things more consistent.
+The Deadline for all submissions is January 27th, 2014 (23:59 HAST).
 
-My feeling here is that we should be looking more critically at ePAPR -
-if we're picking people up for having what's essentially a comment
-that's too specific we're probably doing something wrong especially
-since the corrected example would look something like:
+You are invited to register for participation on our conference website.
+There you will find up-to-date instructions, as well as important
+information about dates, travel, lodging, and so on.
 
-	codec: codec@12 {
+This year's conference is hosted by the ZKM | Institute for Music und
+Acoustics (IMA). The IMA is a forum for international discourse and
+exchange and combines artistic work with research and development in the
+context of electroacoustic music. By holding concerts, symposia and
+festivals on a regular basis it brings together composers, musicians,
+musicologists, music software developers and listeners interested in
+contemporary music. Artists in Residence and software developers work on
+their productions in studios at the institute. With digital sound
+synthesis, algorithmic composition, live-electronics up to radio plays,
+interactive sound installations and audiovisual productions their
+creations cover a broad range of what digital technology can inspire the
+musical fantasy to.
 
-which is a bit redundant.
+The ZKM is proud to be the place of the LAC for the fifth time after
+having initiated the conference in 2003.
 
---czsrKamv0OtYjSMr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+  http://www.zkm.de/musik
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+We look forward to seeing you in Karlsruhe in May!
 
-iQIcBAEBAgAGBQJSg9e4AAoJELSic+t+oim95BYP/iY/IhQOQcn1BaCcOWbxo7R2
-16qfIGKflNtpY3wQfeR/Rnaz6NEKbnHEXhl+BnUVpoluqX0BmJRYOsu1hpjB0tJD
-bjbPSdELdCVIl+/tmnpp0lyNnDERU6XkdGUl4wZxgrOf7EBVhTrMA9jSr9d1AqbX
-/WGskc34HAzyzaTkw8C2VTIY9sXfA9O4XvfmrwYqeCKyt1CM+Z4k3WzPhznM7DK5
-cxE7HZrf+IT8fXMhovV8e2+Ie1GSKlbotmuOob8hhRRfWuci/R9fy0cY7qNTbeI8
-vhXFKon0hCPCJ5Yhwdeucuf1lwNwLG/7zSgYJZafTw9xItja2PMmAR+qEhKksPD1
-jWJbPPU2QsuNyY4uDG/wmXHz1e79NfJ8ef17IqyqMKrFWldHY9L19RDslRQVQ5UF
-Vt3ZU+P1YV6ZSSIrQb9PI+6vytJAX/1HrZLFGg5E37Co+74L4P7vsJaCd/4RuR5r
-CJ0GfkfcHH0Gmgo39/VsK3sZdP+FVh3MzhIjldbtoaGIgmlc7m75ENB3k0LIivi7
-YKmGFoWvKcZRGpeqg9jFytRXM30FzqNdZfe3yqaoEl9/sxqt09PKBjsyua2vmF5a
-p2EipuTHB/Rf2n/VbVh1YYpBLKv4RNZYXROIhMqayE0qCzpBHCPHTSFW8eoF/oOk
-njfuFk//Z3JojUQMH5Nx
-=1QEd
------END PGP SIGNATURE-----
-
---czsrKamv0OtYjSMr--
-
---===============0078566276078532656==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0078566276078532656==--
+Sincerely,
+The LAC 2014 Organizing Team
