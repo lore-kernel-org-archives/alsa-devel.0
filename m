@@ -1,76 +1,55 @@
-From: Robin Gareus <robin@gareus.org>
-Subject: Linux Audio Conference 2014 - Call for Participation
-Date: Wed, 13 Nov 2013 21:00:26 +0100
-Message-ID: <5283DA5A.4050100@gareus.org>
+From: Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v2 2/2] dt: binding: sound cs42l52 driver
+Date: Wed, 13 Nov 2013 21:13:38 +0100
+Message-ID: <3836312.jpzaMFU2re@flatron>
+References: <1384357474-28653-1-git-send-email-brian.austin@cirrus.com> <1799362.QSDMu6GHtU@flatron> <20131113194915.GF878@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo-p00-ob.rzone.de (mo-p00-ob.rzone.de [81.169.146.162])
- by alsa0.perex.cz (Postfix) with ESMTP id C8CD3260795
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 21:00:35 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: p1k53l workshop <piksel@piksel.no>, sc-users@lists.bham.ac.uk, alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
+Content-Transfer-Encoding: 7Bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20131113194915.GF878-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-[Sorry for cross-posting, please distribute]
+On Wednesday 13 of November 2013 19:49:15 Mark Brown wrote:
+> On Wed, Nov 13, 2013 at 07:24:04PM +0100, Tomasz Figa wrote:
+> 
+> > Well, the label is just for the parser and it does not get into the DTB.
+> > This is where the DTS author can make things up just for their own
+> > convenience (like main_codec, aux_codec or even cs42l52). 
+> 
+> If only we could have comments :)
 
-We are happy to announce the next issue of the Linux Audio Conference
-(LAC), May 1-4, 2014 @ ZKM | Institute for Music and Acoustics, in
-Karlsruhe, Germnany.
+Comments in DTB? That would be at least interesting. ;)
 
-  http://lac.linuxaudio.org/2014/
+> 
+> > I know this is really more bikeshedding than anything useful, but I'd
+> > rather try to follow the written rules in ePAPR, instead of nothing at
+> > all. At least just to make things more consistent.
+> 
+> My feeling here is that we should be looking more critically at ePAPR -
+> if we're picking people up for having what's essentially a comment
+> that's too specific we're probably doing something wrong especially
+> since the corrected example would look something like:
+> 
+> 	codec: codec@12 {
+> 
+> which is a bit redundant.
 
-The Linux Audio Conference is an international conference that brings
-together musicians, sound artists, software developers and researchers,
-working with Linux as an open, stable, professional platform for audio
-and media research and music production. LAC includes paper sessions,
-workshops, and a diverse program of electronic music.
+Still, this is not a comment, because it's also available in the
+resulting binary representation.
 
-*Call for Papers, Workshops, Music and Installations*
+Well, maybe I'm a bit too strict. I wouldn't probably notice this if
+I didn't have other comments, so let's say that was just a nitpick of
+mine, fixing of which doesn't cost anything, since another version will
+have to be spinned anyway.
 
-We invite submissions of papers addressing all areas of audio processing
-and media creation based on Linux. Papers can focus on technical,
-artistic and scientific issues and should target developers or users. In
-our call for music, we are looking for works that have been produced or
-composed entirely/mostly using Linux.
+Best regards,
+Tomasz
 
-The online submission of papers, workshops, music and installations is
-now open at http://lac.linuxaudio.org/2014/participation
-
-The Deadline for all submissions is January 27th, 2014 (23:59 HAST).
-
-You are invited to register for participation on our conference website.
-There you will find up-to-date instructions, as well as important
-information about dates, travel, lodging, and so on.
-
-This year's conference is hosted by the ZKM | Institute for Music und
-Acoustics (IMA). The IMA is a forum for international discourse and
-exchange and combines artistic work with research and development in the
-context of electroacoustic music. By holding concerts, symposia and
-festivals on a regular basis it brings together composers, musicians,
-musicologists, music software developers and listeners interested in
-contemporary music. Artists in Residence and software developers work on
-their productions in studios at the institute. With digital sound
-synthesis, algorithmic composition, live-electronics up to radio plays,
-interactive sound installations and audiovisual productions their
-creations cover a broad range of what digital technology can inspire the
-musical fantasy to.
-
-The ZKM is proud to be the place of the LAC for the fifth time after
-having initiated the conference in 2003.
-
-  http://www.zkm.de/musik
-
-We look forward to seeing you in Karlsruhe in May!
-
-Sincerely,
-The LAC 2014 Organizing Team
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
