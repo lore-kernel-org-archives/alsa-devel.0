@@ -1,19 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 19/20] ASoC: davinci-mcasp: Support for fck
-	reparenting
-Date: Thu, 14 Nov 2013 14:59:19 +0200
-Message-ID: <5284C927.2040404@ti.com>
-References: <1384421737-4467-1-git-send-email-peter.ujfalusi@ti.com>
- <1384421737-4467-20-git-send-email-peter.ujfalusi@ti.com>
- <20131114115110.GH26614@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl: imx-pcm-fiq: omit fiq counter
+ to avoid harm in unbalanced situations
+Date: Thu, 14 Nov 2013 13:02:40 +0000
+Message-ID: <20131114130240.GQ26614@sirena.org.uk>
+References: <1384271198-18974-1-git-send-email-oskar@scara.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============2587988200500102511=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 9679E2616F1
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 13:59:21 +0100 (CET)
-In-Reply-To: <20131114115110.GH26614@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98A6A261A1F
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 14:02:48 +0100 (CET)
+In-Reply-To: <1384271198-18974-1-git-send-email-oskar@scara.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,37 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Michal Bachraty <michal.bachraty@streamunlimited.com>, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, jsarha@ti.com, Daniel Mack <zonque@gmail.com>, gururaja.hebbar@ti.com
+To: Oskar Schirmer <oskar@scara.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/14/2013 01:51 PM, Mark Brown wrote:
-> On Thu, Nov 14, 2013 at 11:35:35AM +0200, Peter Ujfalusi wrote:
-> =
 
->> +- fck_parent : Should contain a valid clock name which will be used as =
-parent
->> +	       for the McASP fck
-> =
+--===============2587988200500102511==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4SRTEifjNkXp0Rce"
+Content-Disposition: inline
 
-> I'd expect this to be specified using standard clock tree bindings?
 
-As of now we do not have (AM33xx/AM43xx/DRA7xx) clocks in DT so the standard
-clock tree bindings can not be added (no phandle to link).
-In arch OMAP we have another issue coming from legacy: omap-hwmod will treat
-the standard clock bindings as optional clocks and when the device got enab=
-led
-it enables the main fck and also the optional clocks. This will not cause b=
-ig
-issue at the end, but the prepare/enable count for the parent clock will be
-doubled. fck enable will enable the branch (including parent) and the
-omap-hwmod code will enable the optional clocks, which includes the parent
-clock :o
+--4SRTEifjNkXp0Rce
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-For now I would keep the parent clock name and when we have the standard cl=
-ock
-bindings ready I can switch to use to that.
+On Tue, Nov 12, 2013 at 03:46:38PM +0000, Oskar Schirmer wrote:
+> Unbalanced calls to snd_imx_pcm_trigger() may result in endless
+> FIQ activity and thus provoke eternal sound. While on the first glance,
+> the switch statement looks pretty symmetric, the SUSPEND/RESUME
 
--- =
+Applied, thanks.
 
-P=E9ter
+--4SRTEifjNkXp0Rce
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJShMnsAAoJELSic+t+oim9TIAQAJOcYOS1vFXVLpISAKKT7Br6
+0NAdB03z356Zoi6Z71GFETBP6H9rZlRGCA3AK4WKFSixYVvxanBHC4DHwxJTkLl6
+WsOYg47PBjsE4VhKlrau6oYNGjKOscgxcC++8Lj7Fp/cArnhMRxU+efNwpAB7uMO
+egdkXJ2iUrYtQbAMPGu/MmRkY1TCsUHmmeuLdRePiHuFnKAzpVZMI+b6AVqr8+ew
+6ZmSRGbz3BH5Q9/FRNqy2yX+ZxZLiECCgyCLSFWUZ/35uGjHm50kTkj4tROap2MV
+cl7Rd55veQlodmQBZJjtR83kcvtewO6hOccHBBx5vcCf0YwLG61GateWy8cWzpA3
+DsOiHgoCZ0HvGRbPAf7IJufdgYLVkyIgLXH2xTUbS3Q48EOamxrTcqDqsgqwKaE4
+UVidDoihStyVjLAQ3hjjGPQ07MS2aY/r7KYks79RpbzAg3x9v4MEVSCh8umsCI5y
+bA3I0N86diF7Y4dwK0NMRVshiFkCv6Tg1VvL3tyuLlbvpOqK9TytKrx4aByH2GVt
+l2OyVfR7eY4QhGYnYwznQQaozDAGVu6WMcp77b/OdGDZL+xjKIf6jkJBA7ieHneL
+87T1Xo6oAt+57YM7VD3/n5Rwu/7w5G5r5ca9KX+gJ0XnUrAL8oZD1742PHw3fTTv
+DZYhGtHqB33VeePMmLdu
+=xCkV
+-----END PGP SIGNATURE-----
+
+--4SRTEifjNkXp0Rce--
+
+--===============2587988200500102511==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2587988200500102511==--
