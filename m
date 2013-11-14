@@ -1,213 +1,184 @@
-From: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
-Subject: Re: [PATCHv4] dmaengine: Add support for BCM2835
-Date: Thu, 14 Nov 2013 16:41:56 +0100
-Message-ID: <CABDT8WyUH=z67_bOy-DF9NQn6R0eKsGJPDWSwijrhLRyNLvaSQ@mail.gmail.com>
-References: <5283BC93.1090801@koalo.de>
-	<5235663.VIm8z9qphx@flatron>
-	<CABDT8Wz4r0iN-Ady41tpdZgPF1wC=Qap5_jNGmKbSYQmRdPAHg@mail.gmail.com>
-	<4043887.oz5IYRs5go@flatron>
+From: Ivailo Monev <xakepa10@gmail.com>
+Subject: Re: udev rules prefix
+Date: Thu, 14 Nov 2013 18:49:02 +0000
+Message-ID: <52851B1E.80101@gmail.com>
+References: <CABdmW1cQmesQfC2Kwt4CBOJzrVGBdaC2m2KFb4XeQZYhJAzfMQ@mail.gmail.com>
+ <s5hr4ajqy5d.wl%tiwai@suse.de> <5284BD4F.8080205@gmail.com>
+ <s5hwqkb9v5i.wl%tiwai@suse.de> <5284CF21.6070105@gmail.com>
+ <s5hr4aj9ryp.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <4043887.oz5IYRs5go@flatron>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f54.google.com (mail-bk0-f54.google.com
+ [209.85.214.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id F37C6261A2F
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 16:50:48 +0100 (CET)
+Received: by mail-bk0-f54.google.com with SMTP id 6so1156659bkj.13
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 07:50:48 -0800 (PST)
+Received: from [31.211.147.156] ([31.211.147.156])
+ by mx.google.com with ESMTPSA id zl3sm3826108bkb.4.2013.11.14.07.50.46
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Thu, 14 Nov 2013 07:50:47 -0800 (PST)
+In-Reply-To: <s5hr4aj9ryp.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2013/11/14 Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>:
-> On Thursday 14 of November 2013 15:44:05 Florian Meier wrote:
->> 2013/11/14 Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>:
->> > On Thursday 14 of November 2013 08:12:46 Florian Meier wrote:
->> >> On 13.11.2013 21:39, Tomasz Figa wrote:
->> >> > On Wednesday 13 of November 2013 20:35:22 Florian Meier wrote:
->> >> >>>> +- brcm,dma-channel-mask: Bit mask representing the channels available.
->> >> >>>
->> >> >>> What does the value of this property depend on? Could you describe the
->> >> >>> structure of this DMA controller?
->> >> >>>
->> >> >>>> +
->> >> >>>> +Example:
->> >> >>>> +
->> >> >>>> +dma: dma@7e007000 {
->> >> >>>> +        compatible = "brcm,bcm2835-dma";
->> >> >>>> +        reg = <0x7e007000 0xf00>;
->> >> >>>> +        interrupts = <1 16
->> >> >>>> +                      1 17
->> >> >>>> +                      1 18
->> >> >>>> +                      1 19
->> >> >>>> +                      1 20
->> >> >>>> +                      1 21
->> >> >>>> +                      1 22
->> >> >>>> +                      1 23
->> >> >>>> +                      1 24
->> >> >>>> +                      1 25
->> >> >>>> +                      1 26
->> >> >>>> +                      1 27
->> >> >>>> +                      1 28>;
->> >> >>>
->> >> >>> There are 13 interrupts specified here, but...
->> >> >>>
->> >> >>>> +
->> >> >>>> +        #dma-cells = <1>;
->> >> >>>> +        dma-channels = <16>;
->> >> >>>
->> >> >>> ...16 channels here...
->> >> >>>
->> >> >>>> +        dma-requests = <32>;
->> >> >>>> +        brcm,dma-channel-mask = <0x7f35>;
->> >> >>>
->> >> >>> ...and 11 set bits here. May I ask you to explain this to me, please?
->> >> >>
->> >> >> How I understand this DMA controller:
->> >> >> There are 16 DMA channels in the DMA controller, but only 13 interrupts
->> >> >> are available at the IRQ controller. Therefore, the upper DMA channels
->> >> >> can just not be used. Maybe because there are to many other IRQs and
->> >> >> they didn't want to implement another IRQ bank.
->> >> >> Furthermore, some of the DMA channels are already used by the
->> >> >> VideoCore/GPU/firmware. This is what dma-channel-mask indicates. This
->> >> >> should be automatically set by the firmware in the future.
->> >> >> Finally, there are some channels with special functionality that should
->> >> >> not be used by DMA engine, too. Therefore, these lines:
->> >> >>            /* do not use the FIQ and BULK channels */
->> >> >>            chans_available &= ~0xD;
->> >> >
->> >> > OK, this makes it much more clear.
->> >> >
->> >> > So, my only comment remaining here is that you shouldn't include the
->> >> > channels without interrupt signal in the mask. This would allow you
->> >> > to define it as a mask of channels that are operable and then just
->> >> > iterate over all set bits in the driver, instead of using tricks with
->> >> > interrupt resources. What do you think?
->> >>
->> >> Since the mask will come directly from the firmware, this would require
->> >> patching the firmware. I think that is not worth the effort.
->> >
->> > Now I'm slightly confused. Do you already have code in your firmware that
->> > adds this property to your device tree?
->> >
->> > Otherwise in what circumstances such patching would take place? On given
->> > hardware (unless it's an FPGA) the configuration of available DMA channels
->> > that have interrupt signals should not change.
+On 11/14/13 10:51, Takashi Iwai wrote:
+> At Thu, 14 Nov 2013 13:24:49 +0000,
+> Ivailo Monev wrote:
+>> On 11/14/13 09:42, Takashi Iwai wrote:
+>>> At Thu, 14 Nov 2013 12:08:47 +0000,
+>>> Ivailo Monev wrote:
+>>>> On 11/14/13 02:48, David Henningsson wrote:
+>>>>> On 11/13/2013 09:36 PM, Ivailo wrote:
+>>>>>> Hello,
+>>>>>>
+>>>>>> the default prefix for alsa-utils is /usr however the udev rules directory
+>>>>>> is /lib/udev/rules.d thus on setups with separate partition for /usr the
+>>>>>> binaries, from /usr/bin and /usr/sbin, will likely not be available during
+>>>>>> the boot process and the udev rule will fail to restore the state.
+>>>>>>
+>>>>>> I suggest that the udev rules directory follows the prefix or append /usr
+>>>>>> to it to resolve this.
+>>>>>>
+>>>>>> Cheers!
+>>>>> Hi,
+>>>>>
+>>>>> ALSA merely follows what udev dictates, so I think your
+>>>>> question/suggestion is better redirected on the udev (now systemd)
+>>>>> mailinglist. Or potentially that of your distro.
+>>>>>
+>>>> Actually, you are not following what udev dictates (unless I'm missing
+>>>> something).
+>>>> By default, systemd (and more importantly udev) will be installed with
+>>>> /usr prefix
+>>>> (which is wrong in it self because it blindly assumes that /usr has been
+>>>> mounted
+>>>> via initrd/initramfs where separate /usr partition is in use but let's
+>>>> not talk about
+>>>> this here).
+>>>>
+>>>>
+>>>> On 11/14/13 06:45, Takashi Iwai wrote:
+>>>>> At Wed, 13 Nov 2013 20:36:48 +0000,
+>>>>> Ivailo wrote:
+>>>>>> Hello,
+>>>>>>
+>>>>>> the default prefix for alsa-utils is /usr however the udev rules directory
+>>>>>> is /lib/udev/rules.d thus on setups with separate partition for /usr the
+>>>>>> binaries, from /usr/bin and /usr/sbin, will likely not be available during
+>>>>>> the boot process and the udev rule will fail to restore the state.
+>>>>> Not true.  /lib must be always present at boot even if /usr isn't
+>>>>> mounted.  That's the reason why /lib/udev was chosen as default in the
+>>>>> past.
+>>>>>
+>>>>>
+>>>>> Takashi
+>>>> You got me wrong, I know that /lib should be available on early boot
+>>>> (unless it's a
+>>>> symlink, like in Arch Linux) but the point is that since the alsa-utils
+>>>> binaries are
+>>>> installed in /usr so should be the udev rules otherwise during boot
+>>>> without /usr
+>>>> being mounted you will see error message about /usr/sbin/alsactl.
+>>> Theoretically yes, but this has been rather less problems than
+>>> creating a non-existing /usr/lib/udev in the past.  That's the very
+>>> reason of hard-coded /lib/udev.  Changing the default behavior is
+>>> often worse unless you really do it carefully with consideration of
+>>> compatibility with old systems.
+>>>
+>>> So, if you want to change the default, don't hard code again.  Make
+>>> configure to guess the right place.  A patch achieving it is welcome.
+>>>
+>>>
+>>> Takashi
+>> Ok, here is the patch:
 >>
->> It is very confusing. I agree.
->> There is already a DMA driver with a proprietary API in the downstream
->> kernel. The firmware already creates this mask and passes it to this
->> proprietary driver.
->> There was already a discussion about this in the first version thread
->> that (as long as I understand it) resulted in "we should pass this
->> mask on to the driver via device tree". So I did that. I have no idea
->> about how this firmware->devicetree interface will take place, but
->> since I didn't want to run in circles I hardcoded it in the device
->> tree.
+>>   From 74faeceb26c4730d6150e726792f6eb1f257b03e Mon Sep 17 00:00:00 2001
+>> From: Ivailo Monev <xakepa10@gmail.com>
+>> Date: Thu, 14 Nov 2013 13:13:43 +0000
+>> Subject: [PATCH 1/1] detect udevdir via pkg-config
 >>
+>> ---
+>>    configure.in | 2 +-
+>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/configure.in b/configure.in
+>> index 3ae3209..74b891e 100644
+>> --- a/configure.in
+>> +++ b/configure.in
+>> @@ -121,7 +121,7 @@ AM_CONDITIONAL(USE_XMLTO, test x"$xmlto" = xyes)
+>>    AC_ARG_WITH(
+>>            [udev-rules-dir],
+>>            AS_HELP_STRING([--with-udev-rules-dir],[Directory where to
+>> install udev rules to (defaults to /lib/udev/rules.d)]),
+>> -        [udevrulesdir=$withval], [udevrulesdir="/lib/udev/rules.d"])
+>> +        [udevrulesdir=$withval], [udevrulesdir=$($PKG_CONFIG udev
+>> --variable=udevdir)"/rules.d"])
+>>    AC_SUBST(udevrulesdir)
+> This pkg-config option isn't always available.  Make sure to have a
+> proper fallback to /lib/udev/rules.d.  Also, update the help text,
+> too.
 >
-> OK. So the firmware defines what set and clear bits in the mask mean.
-> It's fine then.
-
-Yes, this mask is actually an "I am not using this channel"-mask.
-
-
-
->> >> >>> [snip]
->> >> >>>> diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
->> >> >>>> new file mode 100644
->> >> >>>> index 0000000..baf072e
->> >> >>>> --- /dev/null
->> >> >>>> +++ b/drivers/dma/bcm2835-dma.c
->> >> >>> [snip]
->> >> >>>> +static int bcm2835_dma_probe(struct platform_device *pdev)
->> >> >>>> +{
->> >> >>>> +        struct bcm2835_dmadev *od;
->> >> >>>> +        struct resource *dma_res = NULL;
->> >> >>>> +        void __iomem *dma_base = NULL;
->> >> >>>> +        int rc = 0;
->> >> >>>> +        int i = 0;
->> >> >>>> +        int irq;
->> >> >>>> +        uint32_t chans_available;
->> >> >>> [snip]
->> >> >>>> +        if (pdev->dev.of_node) {
->> >> >>>
->> >> >>> Is this driver supposed to support non-DT based instantation (aka board
->> >> >>> files)? If not, maybe it would be cleaner to simply check for
->> >> >>> !pdev->dev.of_node at the beginning of probe and return an error?
->> >> >>
->> >> >> I would like to maintain the possibility for board file based
->> >> >> instatiation, because the Raspberry Pi downstream kernel still doesn't
->> >> >> support device tree. If this is a no-go, I will accept that.
->> >> >
->> >> > Sure, you are free to do so.
->> >> >
->> >> > What I meant is that your probe won't call bcm2835_dma_chan_init() at all
->> >> > if there is no pdev->dev.of_node, because the loop iterating over channels
->> >> > is under the if clause.
->> >>
->> >> Yes you are right, but I think it will make the patching easier, later.
->> >> Currently, nothing bad happens without device tree - it just allocates
->> >> no channels.
->> >
->> > But isn't it really an error condition, if no channels are allocated?
->>
->> A fridge is still a working fridge, even if no beer is inside ;-)
->> Ok, bad example, but you will get an error message anyway when you try
->> to get a channel.
->>
->> > Anyway, back to my point about leaving non-DT support in a driver, the
->> > point is still valid only for drivers, not for platforms/boards. So if
->> > there are no boards supported using board files in mainline that could
->> > benefit from this driver, then this driver can be safely made DT-only,
->> > because no new non-DT platforms/boards can be added.
->>
->> I don't have a telling argument against this, but just thought writing
->> it this way will
->> make the migration of the downstream kernel to upstream easier, but if you say I
->> should change it, I will of course do that.
 >
-> I'm just presenting you the possible options. You are still free to have
-> non-DT support in the driver, but if you don't need it (because you can't
-> have any new non-DT platforms in mainline) then you can simplify some
-> code.
+> thanks,
 >
-> However the driver shouldn't be left with illusionary support for non-DT
-> platforms until you decide to implement that. Instead, if you don't want
-> to add non-DT support now, just make the driver DT-only, while keeping
-> its design in a way allowing you to add non-DT support in future.
+> Takashi
+I'm not an autotools guru but there is PKG_PROG_PKG_CONFIG in
+configure.in which is supposed to ensure that pkg-config is installed,
+right? Besides, with_systemdsystemunitdir uses almost the same
+method as in my patch which I looked at before submitting it.
 
-This statement hits the nail on the head. Thank you!
+Anyway, here is an updated patch that keeps things more like the
+other tests in configure.in:
 
-> In other words, a driver should not be able to probe using board files
-> if support for such probing method is not available in it yet.
+ From b30824ef1682f3040d53c1495dae308f51a4f380 Mon Sep 17 00:00:00 2001
+From: Ivailo Monev <xakepa10@gmail.com>
+Date: Thu, 14 Nov 2013 18:41:55 +0000
+Subject: [PATCH 1/1] detect udevdir via pkg-config
 
-That is meaningful. So would the following be ok?
+---
+  configure.in | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
-+ .....
-+       if (pdev->dev.of_node) {
-+ .....
-+       } else {
-+               dev_err(&pdev->dev,
-+                       "Failed to initialize channels, because device
-tree not available: %d\n", rc);
-+               bcm2835_dma_free(od);
-+               return rc;
-+      }
-+
-+       dev_dbg(&pdev->dev, "Initialized %i DMA channels\n", i);
-+
-+ .....
+diff --git a/configure.in b/configure.in
+index 3ae3209..e8e1e82 100644
+--- a/configure.in
++++ b/configure.in
+@@ -120,8 +120,8 @@ AM_CONDITIONAL(USE_XMLTO, test x"$xmlto" = xyes)
 
->> I am becoming desperate anyway that this migration will ever fully
->> take place....
->
-> Why not? It's just a matter of people like you working on this (and
-> addressing some review comments ;)).
+  AC_ARG_WITH(
+          [udev-rules-dir],
+-        AS_HELP_STRING([--with-udev-rules-dir],[Directory where to 
+install udev rules to (defaults to /lib/udev/rules.d)]),
+-        [udevrulesdir=$withval], [udevrulesdir="/lib/udev/rules.d"])
++        AS_HELP_STRING([--with-udev-rules-dir=DIR],[Directory where to 
+install udev rules to (default=auto)]),
++        [udevrulesdir="$withval"], [udevrulesdir=$($PKG_CONFIG udev 
+--variable=udevdir)/rules.d])
+  AC_SUBST(udevrulesdir)
 
-The most common comment about this is that people will not put effort in
-the upstream kernel as long as there is no comfortable way for debugging
-in the upstream kernel (i.e. at least USB support).......
+  dnl Checks for header files.
+-- 
+1.8.3.4
 
-Greetings,
-Florian
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+If you are not happy with my patch you can write your own based
+which uses the pkg-config approach without hesitation, I will not
+get upset.
+
+And still, will you do something about separate /usr or not? Just
+asking. As stated before, this patch will not solve it but replace
+the path hard coding with a flexible method.
+
+Cheers!
