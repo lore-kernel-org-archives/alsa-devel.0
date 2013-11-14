@@ -1,54 +1,82 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCHv3 3/3] spi: Use stable dev_name for ACPI enumerated SPI
- slaves
-Date: Thu, 14 Nov 2013 10:10:22 +0000
-Message-ID: <20131114101022.GD26614@sirena.org.uk>
-References: <1383309356-25430-1-git-send-email-jarkko.nikula@linux.intel.com>
- <1384419661-28293-1-git-send-email-jarkko.nikula@linux.intel.com>
- <1384419661-28293-4-git-send-email-jarkko.nikula@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: blackfin: Fix missing break
+Date: Thu, 14 Nov 2013 10:08:06 +0000
+Message-ID: <20131114100806.GC26614@sirena.org.uk>
+References: <1384359300-21219-1-git-send-email-tiwai@suse.de>
+ <20131113164715.GX878@sirena.org.uk> <s5h7gccb5i7.wl%tiwai@suse.de>
+ <s5h61rwb5e5.wl%tiwai@suse.de> <20131113184751.GB878@sirena.org.uk>
+ <s5hwqkbqzf6.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VV4b6MQE+OnNyhkM"
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1384419661-28293-4-git-send-email-jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Cc: "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============3603101323823416332=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7753261A11
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 11:24:31 +0100 (CET)
+In-Reply-To: <s5hwqkbqzf6.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---VV4b6MQE+OnNyhkM
+--===============3603101323823416332==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="1SQmhf2mF2YjsYvc"
+Content-Disposition: inline
+
+
+--1SQmhf2mF2YjsYvc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 14, 2013 at 11:01:01AM +0200, Jarkko Nikula wrote:
-> Current spi bus_num.chip_select "spix.y" based device naming scheme may not
-> be stable enough to be used in name based matching, for instance within
-> ALSA SoC subsystem.
+On Thu, Nov 14, 2013 at 07:18:21AM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-Acked-by: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+> > That looks to be an issue that's very specific to OMAP4 - you need
+> > someone who works on OMAP4 to have a look at it.
 
---VV4b6MQE+OnNyhkM
+> OK, then could you assign to an appropriate person?
+> You must have a better clue.
+
+Peter Ujfalusi at a guess.
+
+--1SQmhf2mF2YjsYvc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJShKGLAAoJELSic+t+oim9r/wP/0fwpqZAHy+j4Nc0mWkxxzvx
-bzNVcn2T55pxN5oRr6Dq2PIS/iEPq7Jnsjwp0HIUvser06Z9TyCpulNOC3JdBar7
-MP4ydZ++uTCQclTosY/Rp0yxFL34zZXTM9OBHfzTtyC0+rZMdRDe1TPSZGcng+Cx
-XkQpxLHhiGH3zreGtPFprkIGJvpY+ifEU+zMqOumw/Zwp6zlP/trDmZRY08WYqMV
-bd+PxVbx3+2nvi3Hw4pj2yfNpKaVd2ks7+fCi31/GuVJ06ys//0PFktAelQHwG+y
-/3ozto/11RIU+cfoXcwRFScv4pamzMgCHKeZ1j0ibysAG4leLyFQpE8RiX/86wiL
-XlFWs9uDW3qPVdGkxUMKI9f960TfjOaCTKmrwSf31P8yRb1f+pDIHPVPEqcgmf5X
-a4G36+zSJafbjLe3WgFvdToPcHW6uwrBDE6FHR3lNxsr+HyTfDUf6e162EVkKMVt
-QLxyJzwVM0eX1afvw8CM74JD5kiB4Gu23IkS/NFGWqGwafTlvZAsU0s4SXRz+yVo
-JS1Y3oMqxEwQgkAyr6mqXOAiSHafz+4B4CY1WxWZmJlWgPX5Pku8CS3AoWWrJEDd
-yOBe9LLhrLGpTsb/J3dXGQX0abr34pHuff6eSehL2eWsCkUSgUZqhd6cpaHu+6Ax
-WKmY1n5by9XDazWrHG4i
-=FLVO
+iQIcBAEBAgAGBQJShKD9AAoJELSic+t+oim9TekP/11XrB2QDnUW6MmUykVQQ7y5
+pleICamfG0bI+pDbUjv91rX0VqATpTCUvyNRrQfPV6U7hKUcyiOrpOcBdqE78Ue6
+nndvKr5FspfPiJhhEDF2okKCHCeaRBfVEHqZ+q28Ec2fnI/vqR9MJ+CSP98yHN1L
+8WcV/rOFU4fLEL0EXX9lH6eJLpg1B1oqciV/0BkNgXPmcy0LyGTNsIHQNuCXADji
+ciyBVoFB7WKDwSV5F+QmoPL8hzjBBlcppPrFNYvW3HPvoA3RYNCbtFPIHBLyBg/9
+tqebYIwDPbfC4/RtZdb3/Avd9mHwP72ZIrEfAFpws2ZRryZQtKAB1zrUvIocMKcH
+eoz7o1v/UkUmS0ePdWT6oyf72RCeO/edWroUTwey6VSjUoTgvwit64PA8D85g5O7
+Z/OfIT5C+qO5MJAdDroVvwrzmmjjuyV/KgQF2mmJX15zZGvYe71zSS0gKt5rcOHd
+8ivQVKtOEqSMqR5+S6qeO36n+KQnCC0AC4BfDKn112SVDEFylw0JsINo7goMX8hx
+4nZAwCV6OVnyq+wpQti9vVnvWrQ+d5O/FW7EA9trugnybpHENNKIsfnibImJN0ge
+PwIxWs2PGGtwKUK37hhtc15SVzPhLVKq6kE2NkK/owdvh8lcO7JxUQm0KWwnwSA3
+5ApwFI4nS5WEpXfoZRU0
+=sZw6
 -----END PGP SIGNATURE-----
 
---VV4b6MQE+OnNyhkM--
+--1SQmhf2mF2YjsYvc--
+
+--===============3603101323823416332==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3603101323823416332==--
