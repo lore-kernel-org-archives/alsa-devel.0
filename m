@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 09/20] ASoC: davinci-mcasp: Move register
-	definitions to header file
-Date: Thu, 14 Nov 2013 11:35:25 +0200
-Message-ID: <1384421737-4467-10-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 10/20] ASoC: davinci-mcasp: Move private struct
+	definition to source file
+Date: Thu, 14 Nov 2013 11:35:26 +0200
+Message-ID: <1384421737-4467-11-git-send-email-peter.ujfalusi@ti.com>
 References: <1384421737-4467-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 84766261A22
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 10:36:01 +0100 (CET)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D44E261A27
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 10:36:04 +0100 (CET)
 In-Reply-To: <1384421737-4467-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,570 +25,106 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Michal Bachraty <michal.bachraty@streamunlimited.com>, nsekhar@ti.com, jsarha@ti.com, gururaja.hebbar@ti.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-It is better for readability to have the register definitions out from the
-source file.
+Since it is a private struct strictly used by the davinci-mcasp driver it
+can be moved from header file to the source file.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/davinci/davinci-mcasp.c | 267 --------------------------------------
- sound/soc/davinci/davinci-mcasp.h | 267 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 267 insertions(+), 267 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 30 ++++++++++++++++++++++++++++++
+ sound/soc/davinci/davinci-mcasp.h | 35 -----------------------------------
+ 2 files changed, 30 insertions(+), 35 deletions(-)
 
 diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 6cde1ba..1c1585e 100644
+index 1c1585e..7010795 100644
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -35,273 +35,6 @@
- #include "davinci-pcm.h"
- #include "davinci-mcasp.h"
+@@ -37,6 +37,36 @@
  
--/*
-- * McASP register definitions
-- */
--#define DAVINCI_MCASP_PID_REG		0x00
--#define DAVINCI_MCASP_PWREMUMGT_REG	0x04
--
--#define DAVINCI_MCASP_PFUNC_REG		0x10
--#define DAVINCI_MCASP_PDIR_REG		0x14
--#define DAVINCI_MCASP_PDOUT_REG		0x18
--#define DAVINCI_MCASP_PDSET_REG		0x1c
--
--#define DAVINCI_MCASP_PDCLR_REG		0x20
--
--#define DAVINCI_MCASP_TLGC_REG		0x30
--#define DAVINCI_MCASP_TLMR_REG		0x34
--
--#define DAVINCI_MCASP_GBLCTL_REG	0x44
--#define DAVINCI_MCASP_AMUTE_REG		0x48
--#define DAVINCI_MCASP_LBCTL_REG		0x4c
--
--#define DAVINCI_MCASP_TXDITCTL_REG	0x50
--
--#define DAVINCI_MCASP_GBLCTLR_REG	0x60
--#define DAVINCI_MCASP_RXMASK_REG	0x64
--#define DAVINCI_MCASP_RXFMT_REG		0x68
--#define DAVINCI_MCASP_RXFMCTL_REG	0x6c
--
--#define DAVINCI_MCASP_ACLKRCTL_REG	0x70
--#define DAVINCI_MCASP_AHCLKRCTL_REG	0x74
--#define DAVINCI_MCASP_RXTDM_REG		0x78
--#define DAVINCI_MCASP_EVTCTLR_REG	0x7c
--
--#define DAVINCI_MCASP_RXSTAT_REG	0x80
--#define DAVINCI_MCASP_RXTDMSLOT_REG	0x84
--#define DAVINCI_MCASP_RXCLKCHK_REG	0x88
--#define DAVINCI_MCASP_REVTCTL_REG	0x8c
--
--#define DAVINCI_MCASP_GBLCTLX_REG	0xa0
--#define DAVINCI_MCASP_TXMASK_REG	0xa4
--#define DAVINCI_MCASP_TXFMT_REG		0xa8
--#define DAVINCI_MCASP_TXFMCTL_REG	0xac
--
--#define DAVINCI_MCASP_ACLKXCTL_REG	0xb0
--#define DAVINCI_MCASP_AHCLKXCTL_REG	0xb4
--#define DAVINCI_MCASP_TXTDM_REG		0xb8
--#define DAVINCI_MCASP_EVTCTLX_REG	0xbc
--
--#define DAVINCI_MCASP_TXSTAT_REG	0xc0
--#define DAVINCI_MCASP_TXTDMSLOT_REG	0xc4
--#define DAVINCI_MCASP_TXCLKCHK_REG	0xc8
--#define DAVINCI_MCASP_XEVTCTL_REG	0xcc
--
--/* Left(even TDM Slot) Channel Status Register File */
--#define DAVINCI_MCASP_DITCSRA_REG	0x100
--/* Right(odd TDM slot) Channel Status Register File */
--#define DAVINCI_MCASP_DITCSRB_REG	0x118
--/* Left(even TDM slot) User Data Register File */
--#define DAVINCI_MCASP_DITUDRA_REG	0x130
--/* Right(odd TDM Slot) User Data Register File */
--#define DAVINCI_MCASP_DITUDRB_REG	0x148
--
--/* Serializer n Control Register */
--#define DAVINCI_MCASP_XRSRCTL_BASE_REG	0x180
--#define DAVINCI_MCASP_XRSRCTL_REG(n)	(DAVINCI_MCASP_XRSRCTL_BASE_REG + \
--						(n << 2))
--
--/* Transmit Buffer for Serializer n */
--#define DAVINCI_MCASP_TXBUF_REG		0x200
--/* Receive Buffer for Serializer n */
--#define DAVINCI_MCASP_RXBUF_REG		0x280
--
--/* McASP FIFO Registers */
--#define DAVINCI_MCASP_WFIFOCTL		(0x1010)
--#define DAVINCI_MCASP_WFIFOSTS		(0x1014)
--#define DAVINCI_MCASP_RFIFOCTL		(0x1018)
--#define DAVINCI_MCASP_RFIFOSTS		(0x101C)
--#define MCASP_VER3_WFIFOCTL		(0x1000)
--#define MCASP_VER3_WFIFOSTS		(0x1004)
--#define MCASP_VER3_RFIFOCTL		(0x1008)
--#define MCASP_VER3_RFIFOSTS		(0x100C)
--
--/*
-- * DAVINCI_MCASP_PWREMUMGT_REG - Power Down and Emulation Management
-- *     Register Bits
-- */
--#define MCASP_FREE	BIT(0)
--#define MCASP_SOFT	BIT(1)
--
--/*
-- * DAVINCI_MCASP_PFUNC_REG - Pin Function / GPIO Enable Register Bits
-- */
--#define AXR(n)		(1<<n)
--#define PFUNC_AMUTE	BIT(25)
--#define ACLKX		BIT(26)
--#define AHCLKX		BIT(27)
--#define AFSX		BIT(28)
--#define ACLKR		BIT(29)
--#define AHCLKR		BIT(30)
--#define AFSR		BIT(31)
--
--/*
-- * DAVINCI_MCASP_PDIR_REG - Pin Direction Register Bits
-- */
--#define AXR(n)		(1<<n)
--#define PDIR_AMUTE	BIT(25)
--#define ACLKX		BIT(26)
--#define AHCLKX		BIT(27)
--#define AFSX		BIT(28)
--#define ACLKR		BIT(29)
--#define AHCLKR		BIT(30)
--#define AFSR		BIT(31)
--
--/*
-- * DAVINCI_MCASP_TXDITCTL_REG - Transmit DIT Control Register Bits
-- */
--#define DITEN	BIT(0)	/* Transmit DIT mode enable/disable */
--#define VA	BIT(2)
--#define VB	BIT(3)
--
--/*
-- * DAVINCI_MCASP_TXFMT_REG - Transmit Bitstream Format Register Bits
-- */
--#define TXROT(val)	(val)
--#define TXSEL		BIT(3)
--#define TXSSZ(val)	(val<<4)
--#define TXPBIT(val)	(val<<8)
--#define TXPAD(val)	(val<<13)
--#define TXORD		BIT(15)
--#define FSXDLY(val)	(val<<16)
--
--/*
-- * DAVINCI_MCASP_RXFMT_REG - Receive Bitstream Format Register Bits
-- */
--#define RXROT(val)	(val)
--#define RXSEL		BIT(3)
--#define RXSSZ(val)	(val<<4)
--#define RXPBIT(val)	(val<<8)
--#define RXPAD(val)	(val<<13)
--#define RXORD		BIT(15)
--#define FSRDLY(val)	(val<<16)
--
--/*
-- * DAVINCI_MCASP_TXFMCTL_REG -  Transmit Frame Control Register Bits
-- */
--#define FSXPOL		BIT(0)
--#define AFSXE		BIT(1)
--#define FSXDUR		BIT(4)
--#define FSXMOD(val)	(val<<7)
--
--/*
-- * DAVINCI_MCASP_RXFMCTL_REG - Receive Frame Control Register Bits
-- */
--#define FSRPOL		BIT(0)
--#define AFSRE		BIT(1)
--#define FSRDUR		BIT(4)
--#define FSRMOD(val)	(val<<7)
--
--/*
-- * DAVINCI_MCASP_ACLKXCTL_REG - Transmit Clock Control Register Bits
-- */
--#define ACLKXDIV(val)	(val)
--#define ACLKXE		BIT(5)
--#define TX_ASYNC	BIT(6)
--#define ACLKXPOL	BIT(7)
--#define ACLKXDIV_MASK	0x1f
--
--/*
-- * DAVINCI_MCASP_ACLKRCTL_REG Receive Clock Control Register Bits
-- */
--#define ACLKRDIV(val)	(val)
--#define ACLKRE		BIT(5)
--#define RX_ASYNC	BIT(6)
--#define ACLKRPOL	BIT(7)
--#define ACLKRDIV_MASK	0x1f
--
--/*
-- * DAVINCI_MCASP_AHCLKXCTL_REG - High Frequency Transmit Clock Control
-- *     Register Bits
-- */
--#define AHCLKXDIV(val)	(val)
--#define AHCLKXPOL	BIT(14)
--#define AHCLKXE		BIT(15)
--#define AHCLKXDIV_MASK	0xfff
--
--/*
-- * DAVINCI_MCASP_AHCLKRCTL_REG - High Frequency Receive Clock Control
-- *     Register Bits
-- */
--#define AHCLKRDIV(val)	(val)
--#define AHCLKRPOL	BIT(14)
--#define AHCLKRE		BIT(15)
--#define AHCLKRDIV_MASK	0xfff
--
--/*
-- * DAVINCI_MCASP_XRSRCTL_BASE_REG -  Serializer Control Register Bits
-- */
--#define MODE(val)	(val)
--#define DISMOD		(val)(val<<2)
--#define TXSTATE		BIT(4)
--#define RXSTATE		BIT(5)
--#define SRMOD_MASK	3
--#define SRMOD_INACTIVE	0
--
--/*
-- * DAVINCI_MCASP_LBCTL_REG - Loop Back Control Register Bits
-- */
--#define LBEN		BIT(0)
--#define LBORD		BIT(1)
--#define LBGENMODE(val)	(val<<2)
--
--/*
-- * DAVINCI_MCASP_TXTDMSLOT_REG - Transmit TDM Slot Register configuration
-- */
--#define TXTDMS(n)	(1<<n)
--
--/*
-- * DAVINCI_MCASP_RXTDMSLOT_REG - Receive TDM Slot Register configuration
-- */
--#define RXTDMS(n)	(1<<n)
--
--/*
-- * DAVINCI_MCASP_GBLCTL_REG -  Global Control Register Bits
-- */
--#define RXCLKRST	BIT(0)	/* Receiver Clock Divider Reset */
--#define RXHCLKRST	BIT(1)	/* Receiver High Frequency Clock Divider */
--#define RXSERCLR	BIT(2)	/* Receiver Serializer Clear */
--#define RXSMRST		BIT(3)	/* Receiver State Machine Reset */
--#define RXFSRST		BIT(4)	/* Frame Sync Generator Reset */
--#define TXCLKRST	BIT(8)	/* Transmitter Clock Divider Reset */
--#define TXHCLKRST	BIT(9)	/* Transmitter High Frequency Clock Divider*/
--#define TXSERCLR	BIT(10)	/* Transmit Serializer Clear */
--#define TXSMRST		BIT(11)	/* Transmitter State Machine Reset */
--#define TXFSRST		BIT(12)	/* Frame Sync Generator Reset */
--
--/*
-- * DAVINCI_MCASP_AMUTE_REG -  Mute Control Register Bits
-- */
--#define MUTENA(val)	(val)
--#define MUTEINPOL	BIT(2)
--#define MUTEINENA	BIT(3)
--#define MUTEIN		BIT(4)
--#define MUTER		BIT(5)
--#define MUTEX		BIT(6)
--#define MUTEFSR		BIT(7)
--#define MUTEFSX		BIT(8)
--#define MUTEBADCLKR	BIT(9)
--#define MUTEBADCLKX	BIT(10)
--#define MUTERXDMAERR	BIT(11)
--#define MUTETXDMAERR	BIT(12)
--
--/*
-- * DAVINCI_MCASP_REVTCTL_REG - Receiver DMA Event Control Register bits
-- */
--#define RXDATADMADIS	BIT(0)
--
--/*
-- * DAVINCI_MCASP_XEVTCTL_REG - Transmitter DMA Event Control Register bits
-- */
--#define TXDATADMADIS	BIT(0)
--
--/*
-- * DAVINCI_MCASP_W[R]FIFOCTL - Write/Read FIFO Control Register bits
-- */
--#define FIFO_ENABLE	BIT(16)
--#define NUMEVT_MASK	(0xFF << 8)
--#define NUMDMA_MASK	(0xFF)
--
  #define DAVINCI_MCASP_NUM_SERIALIZER	16
  
++struct davinci_audio_dev {
++	struct davinci_pcm_dma_params dma_params[2];
++	void __iomem *base;
++	struct device *dev;
++
++	/* McASP specific data */
++	int	tdm_slots;
++	u8	op_mode;
++	u8	num_serializer;
++	u8	*serial_dir;
++	u8	version;
++	u16	bclk_lrclk_ratio;
++
++	/* McASP FIFO related */
++	u8	txnumevt;
++	u8	rxnumevt;
++
++#ifdef CONFIG_PM_SLEEP
++	struct {
++		u32	txfmtctl;
++		u32	rxfmtctl;
++		u32	txfmt;
++		u32	rxfmt;
++		u32	aclkxctl;
++		u32	aclkrctl;
++		u32	pdir;
++	} context;
++#endif
++};
++
  static inline void mcasp_set_bits(void __iomem *reg, u32 val)
+ {
+ 	__raw_writel(__raw_readl(reg) | val, reg);
 diff --git a/sound/soc/davinci/davinci-mcasp.h b/sound/soc/davinci/davinci-mcasp.h
-index 70b089b..619b98b 100644
+index 619b98b..80e5a18 100644
 --- a/sound/soc/davinci/davinci-mcasp.h
 +++ b/sound/soc/davinci/davinci-mcasp.h
-@@ -23,6 +23,273 @@
+@@ -18,11 +18,6 @@
+ #ifndef DAVINCI_MCASP_H
+ #define DAVINCI_MCASP_H
  
- #include "davinci-pcm.h"
+-#include <linux/io.h>
+-#include <linux/platform_data/davinci_asp.h>
+-
+-#include "davinci-pcm.h"
+-
+ /*
+  * McASP register definitions
+  */
+@@ -290,34 +285,4 @@
+ #define NUMEVT_MASK	(0xFF << 8)
+ #define NUMDMA_MASK	(0xFF)
  
-+/*
-+ * McASP register definitions
-+ */
-+#define DAVINCI_MCASP_PID_REG		0x00
-+#define DAVINCI_MCASP_PWREMUMGT_REG	0x04
-+
-+#define DAVINCI_MCASP_PFUNC_REG		0x10
-+#define DAVINCI_MCASP_PDIR_REG		0x14
-+#define DAVINCI_MCASP_PDOUT_REG		0x18
-+#define DAVINCI_MCASP_PDSET_REG		0x1c
-+
-+#define DAVINCI_MCASP_PDCLR_REG		0x20
-+
-+#define DAVINCI_MCASP_TLGC_REG		0x30
-+#define DAVINCI_MCASP_TLMR_REG		0x34
-+
-+#define DAVINCI_MCASP_GBLCTL_REG	0x44
-+#define DAVINCI_MCASP_AMUTE_REG		0x48
-+#define DAVINCI_MCASP_LBCTL_REG		0x4c
-+
-+#define DAVINCI_MCASP_TXDITCTL_REG	0x50
-+
-+#define DAVINCI_MCASP_GBLCTLR_REG	0x60
-+#define DAVINCI_MCASP_RXMASK_REG	0x64
-+#define DAVINCI_MCASP_RXFMT_REG		0x68
-+#define DAVINCI_MCASP_RXFMCTL_REG	0x6c
-+
-+#define DAVINCI_MCASP_ACLKRCTL_REG	0x70
-+#define DAVINCI_MCASP_AHCLKRCTL_REG	0x74
-+#define DAVINCI_MCASP_RXTDM_REG		0x78
-+#define DAVINCI_MCASP_EVTCTLR_REG	0x7c
-+
-+#define DAVINCI_MCASP_RXSTAT_REG	0x80
-+#define DAVINCI_MCASP_RXTDMSLOT_REG	0x84
-+#define DAVINCI_MCASP_RXCLKCHK_REG	0x88
-+#define DAVINCI_MCASP_REVTCTL_REG	0x8c
-+
-+#define DAVINCI_MCASP_GBLCTLX_REG	0xa0
-+#define DAVINCI_MCASP_TXMASK_REG	0xa4
-+#define DAVINCI_MCASP_TXFMT_REG		0xa8
-+#define DAVINCI_MCASP_TXFMCTL_REG	0xac
-+
-+#define DAVINCI_MCASP_ACLKXCTL_REG	0xb0
-+#define DAVINCI_MCASP_AHCLKXCTL_REG	0xb4
-+#define DAVINCI_MCASP_TXTDM_REG		0xb8
-+#define DAVINCI_MCASP_EVTCTLX_REG	0xbc
-+
-+#define DAVINCI_MCASP_TXSTAT_REG	0xc0
-+#define DAVINCI_MCASP_TXTDMSLOT_REG	0xc4
-+#define DAVINCI_MCASP_TXCLKCHK_REG	0xc8
-+#define DAVINCI_MCASP_XEVTCTL_REG	0xcc
-+
-+/* Left(even TDM Slot) Channel Status Register File */
-+#define DAVINCI_MCASP_DITCSRA_REG	0x100
-+/* Right(odd TDM slot) Channel Status Register File */
-+#define DAVINCI_MCASP_DITCSRB_REG	0x118
-+/* Left(even TDM slot) User Data Register File */
-+#define DAVINCI_MCASP_DITUDRA_REG	0x130
-+/* Right(odd TDM Slot) User Data Register File */
-+#define DAVINCI_MCASP_DITUDRB_REG	0x148
-+
-+/* Serializer n Control Register */
-+#define DAVINCI_MCASP_XRSRCTL_BASE_REG	0x180
-+#define DAVINCI_MCASP_XRSRCTL_REG(n)	(DAVINCI_MCASP_XRSRCTL_BASE_REG + \
-+						(n << 2))
-+
-+/* Transmit Buffer for Serializer n */
-+#define DAVINCI_MCASP_TXBUF_REG		0x200
-+/* Receive Buffer for Serializer n */
-+#define DAVINCI_MCASP_RXBUF_REG		0x280
-+
-+/* McASP FIFO Registers */
-+#define DAVINCI_MCASP_WFIFOCTL		(0x1010)
-+#define DAVINCI_MCASP_WFIFOSTS		(0x1014)
-+#define DAVINCI_MCASP_RFIFOCTL		(0x1018)
-+#define DAVINCI_MCASP_RFIFOSTS		(0x101C)
-+#define MCASP_VER3_WFIFOCTL		(0x1000)
-+#define MCASP_VER3_WFIFOSTS		(0x1004)
-+#define MCASP_VER3_RFIFOCTL		(0x1008)
-+#define MCASP_VER3_RFIFOSTS		(0x100C)
-+
-+/*
-+ * DAVINCI_MCASP_PWREMUMGT_REG - Power Down and Emulation Management
-+ *     Register Bits
-+ */
-+#define MCASP_FREE	BIT(0)
-+#define MCASP_SOFT	BIT(1)
-+
-+/*
-+ * DAVINCI_MCASP_PFUNC_REG - Pin Function / GPIO Enable Register Bits
-+ */
-+#define AXR(n)		(1<<n)
-+#define PFUNC_AMUTE	BIT(25)
-+#define ACLKX		BIT(26)
-+#define AHCLKX		BIT(27)
-+#define AFSX		BIT(28)
-+#define ACLKR		BIT(29)
-+#define AHCLKR		BIT(30)
-+#define AFSR		BIT(31)
-+
-+/*
-+ * DAVINCI_MCASP_PDIR_REG - Pin Direction Register Bits
-+ */
-+#define AXR(n)		(1<<n)
-+#define PDIR_AMUTE	BIT(25)
-+#define ACLKX		BIT(26)
-+#define AHCLKX		BIT(27)
-+#define AFSX		BIT(28)
-+#define ACLKR		BIT(29)
-+#define AHCLKR		BIT(30)
-+#define AFSR		BIT(31)
-+
-+/*
-+ * DAVINCI_MCASP_TXDITCTL_REG - Transmit DIT Control Register Bits
-+ */
-+#define DITEN	BIT(0)	/* Transmit DIT mode enable/disable */
-+#define VA	BIT(2)
-+#define VB	BIT(3)
-+
-+/*
-+ * DAVINCI_MCASP_TXFMT_REG - Transmit Bitstream Format Register Bits
-+ */
-+#define TXROT(val)	(val)
-+#define TXSEL		BIT(3)
-+#define TXSSZ(val)	(val<<4)
-+#define TXPBIT(val)	(val<<8)
-+#define TXPAD(val)	(val<<13)
-+#define TXORD		BIT(15)
-+#define FSXDLY(val)	(val<<16)
-+
-+/*
-+ * DAVINCI_MCASP_RXFMT_REG - Receive Bitstream Format Register Bits
-+ */
-+#define RXROT(val)	(val)
-+#define RXSEL		BIT(3)
-+#define RXSSZ(val)	(val<<4)
-+#define RXPBIT(val)	(val<<8)
-+#define RXPAD(val)	(val<<13)
-+#define RXORD		BIT(15)
-+#define FSRDLY(val)	(val<<16)
-+
-+/*
-+ * DAVINCI_MCASP_TXFMCTL_REG -  Transmit Frame Control Register Bits
-+ */
-+#define FSXPOL		BIT(0)
-+#define AFSXE		BIT(1)
-+#define FSXDUR		BIT(4)
-+#define FSXMOD(val)	(val<<7)
-+
-+/*
-+ * DAVINCI_MCASP_RXFMCTL_REG - Receive Frame Control Register Bits
-+ */
-+#define FSRPOL		BIT(0)
-+#define AFSRE		BIT(1)
-+#define FSRDUR		BIT(4)
-+#define FSRMOD(val)	(val<<7)
-+
-+/*
-+ * DAVINCI_MCASP_ACLKXCTL_REG - Transmit Clock Control Register Bits
-+ */
-+#define ACLKXDIV(val)	(val)
-+#define ACLKXE		BIT(5)
-+#define TX_ASYNC	BIT(6)
-+#define ACLKXPOL	BIT(7)
-+#define ACLKXDIV_MASK	0x1f
-+
-+/*
-+ * DAVINCI_MCASP_ACLKRCTL_REG Receive Clock Control Register Bits
-+ */
-+#define ACLKRDIV(val)	(val)
-+#define ACLKRE		BIT(5)
-+#define RX_ASYNC	BIT(6)
-+#define ACLKRPOL	BIT(7)
-+#define ACLKRDIV_MASK	0x1f
-+
-+/*
-+ * DAVINCI_MCASP_AHCLKXCTL_REG - High Frequency Transmit Clock Control
-+ *     Register Bits
-+ */
-+#define AHCLKXDIV(val)	(val)
-+#define AHCLKXPOL	BIT(14)
-+#define AHCLKXE		BIT(15)
-+#define AHCLKXDIV_MASK	0xfff
-+
-+/*
-+ * DAVINCI_MCASP_AHCLKRCTL_REG - High Frequency Receive Clock Control
-+ *     Register Bits
-+ */
-+#define AHCLKRDIV(val)	(val)
-+#define AHCLKRPOL	BIT(14)
-+#define AHCLKRE		BIT(15)
-+#define AHCLKRDIV_MASK	0xfff
-+
-+/*
-+ * DAVINCI_MCASP_XRSRCTL_BASE_REG -  Serializer Control Register Bits
-+ */
-+#define MODE(val)	(val)
-+#define DISMOD		(val)(val<<2)
-+#define TXSTATE		BIT(4)
-+#define RXSTATE		BIT(5)
-+#define SRMOD_MASK	3
-+#define SRMOD_INACTIVE	0
-+
-+/*
-+ * DAVINCI_MCASP_LBCTL_REG - Loop Back Control Register Bits
-+ */
-+#define LBEN		BIT(0)
-+#define LBORD		BIT(1)
-+#define LBGENMODE(val)	(val<<2)
-+
-+/*
-+ * DAVINCI_MCASP_TXTDMSLOT_REG - Transmit TDM Slot Register configuration
-+ */
-+#define TXTDMS(n)	(1<<n)
-+
-+/*
-+ * DAVINCI_MCASP_RXTDMSLOT_REG - Receive TDM Slot Register configuration
-+ */
-+#define RXTDMS(n)	(1<<n)
-+
-+/*
-+ * DAVINCI_MCASP_GBLCTL_REG -  Global Control Register Bits
-+ */
-+#define RXCLKRST	BIT(0)	/* Receiver Clock Divider Reset */
-+#define RXHCLKRST	BIT(1)	/* Receiver High Frequency Clock Divider */
-+#define RXSERCLR	BIT(2)	/* Receiver Serializer Clear */
-+#define RXSMRST		BIT(3)	/* Receiver State Machine Reset */
-+#define RXFSRST		BIT(4)	/* Frame Sync Generator Reset */
-+#define TXCLKRST	BIT(8)	/* Transmitter Clock Divider Reset */
-+#define TXHCLKRST	BIT(9)	/* Transmitter High Frequency Clock Divider*/
-+#define TXSERCLR	BIT(10)	/* Transmit Serializer Clear */
-+#define TXSMRST		BIT(11)	/* Transmitter State Machine Reset */
-+#define TXFSRST		BIT(12)	/* Frame Sync Generator Reset */
-+
-+/*
-+ * DAVINCI_MCASP_AMUTE_REG -  Mute Control Register Bits
-+ */
-+#define MUTENA(val)	(val)
-+#define MUTEINPOL	BIT(2)
-+#define MUTEINENA	BIT(3)
-+#define MUTEIN		BIT(4)
-+#define MUTER		BIT(5)
-+#define MUTEX		BIT(6)
-+#define MUTEFSR		BIT(7)
-+#define MUTEFSX		BIT(8)
-+#define MUTEBADCLKR	BIT(9)
-+#define MUTEBADCLKX	BIT(10)
-+#define MUTERXDMAERR	BIT(11)
-+#define MUTETXDMAERR	BIT(12)
-+
-+/*
-+ * DAVINCI_MCASP_REVTCTL_REG - Receiver DMA Event Control Register bits
-+ */
-+#define RXDATADMADIS	BIT(0)
-+
-+/*
-+ * DAVINCI_MCASP_XEVTCTL_REG - Transmitter DMA Event Control Register bits
-+ */
-+#define TXDATADMADIS	BIT(0)
-+
-+/*
-+ * DAVINCI_MCASP_W[R]FIFOCTL - Write/Read FIFO Control Register bits
-+ */
-+#define FIFO_ENABLE	BIT(16)
-+#define NUMEVT_MASK	(0xFF << 8)
-+#define NUMDMA_MASK	(0xFF)
-+
- struct davinci_audio_dev {
- 	struct davinci_pcm_dma_params dma_params[2];
- 	void __iomem *base;
+-struct davinci_audio_dev {
+-	struct davinci_pcm_dma_params dma_params[2];
+-	void __iomem *base;
+-	struct device *dev;
+-
+-	/* McASP specific data */
+-	int	tdm_slots;
+-	u8	op_mode;
+-	u8	num_serializer;
+-	u8	*serial_dir;
+-	u8	version;
+-	u16	bclk_lrclk_ratio;
+-
+-	/* McASP FIFO related */
+-	u8	txnumevt;
+-	u8	rxnumevt;
+-
+-#ifdef CONFIG_PM_SLEEP
+-	struct {
+-		u32	txfmtctl;
+-		u32	rxfmtctl;
+-		u32	txfmt;
+-		u32	rxfmt;
+-		u32	aclkxctl;
+-		u32	aclkrctl;
+-		u32	pdir;
+-	} context;
+-#endif
+-};
+-
+ #endif	/* DAVINCI_MCASP_H */
 -- 
 1.8.4.2
