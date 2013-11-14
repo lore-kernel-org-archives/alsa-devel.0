@@ -1,82 +1,50 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH 2/2] ASoC: fsl_ssi: Add monaural audio support for non-ac97 interface
-Date: Thu, 14 Nov 2013 19:07:10 +0800
-Message-ID: <1384427230-979-3-git-send-email-b42378@freescale.com>
-References: <1384427230-979-1-git-send-email-b42378@freescale.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCHv3 1/3] ACPI: Provide struct acpi_device stub
+ for !CONFIG_ACPI builds
+Date: Thu, 14 Nov 2013 13:14:17 +0200
+Message-ID: <5284B089.1020209@linux.intel.com>
+References: <1383309356-25430-1-git-send-email-jarkko.nikula@linux.intel.com> <1384419661-28293-1-git-send-email-jarkko.nikula@linux.intel.com> <1384419661-28293-2-git-send-email-jarkko.nikula@linux.intel.com> <s5hvbzv9u6g.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1384427230-979-1-git-send-email-b42378@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: timur@tabi.org, shawn.guo@linaro.org, broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, linux@arm.linux.org.uk, ijc+devicetree@hellion.org.uk, swarren@wwwdotorg.org, mark.rutland@arm.com, pawel.moll@arm.com, rob.herring@calxeda.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <s5hvbzv9u6g.wl%tiwai@suse.de>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@the-dreams.de>, linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, linux-i2c@vger.kernel.org, linux-spi@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The normal mode of SSI allows it to send/receive data to/from the first
-slot of each period. So we can use this normal mode to trick I2S signal
-by puting/getting data to/from the first slot only (the left channel)
-so as to support monaural audio playback and recording.
+On 11/14/2013 12:03 PM, Takashi Iwai wrote:
+> At Thu, 14 Nov 2013 11:00:59 +0200,
+> Jarkko Nikula wrote:
+>> We have a few cases where we want to access struct device dev field in
+>> struct acpi_device from generic code that is build also without CONFIG_ACPI.
+>>
+>> Provide here a minimal struct acpi_device stub that allows to build such a
+>> code without adding new #ifdef CONFIG_ACPI churn. This should not increase
+>> section sizes if code is protected by ACPI_COMPANION() runtime checks as
+>> those will be optimized out by later compiler stages in case CONFIG_ACPI is
+>> not set.
+>>
+>> Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+>> ---
+>> Rafael, instead of this we could also have an accessor but adev->dev looked
+>> better in actual code and size vmlinux didn't change for x86_64_defconfig
+>> with CONFIG_ACPI is not set nor for omap2plus_defconfig.
+> This looks too hackish, IMO.  Defining a different dummy struct often
+> gives more headaches.  Thinking of the potential risk by misuses, it'd
+> be simpler and safer to define a macro like acpi_dev_name() instead.
+>
+> BTW, is linux/device.h already included in !CONFIG_ACPI case?
+>
+It is included unconditionally in include/linux/acpi.h.
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
- sound/soc/fsl/fsl_ssi.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+Your acpi_dev_name() proposal may be good enough for now as adev->dev 
+access in generic code (now under CONFIG_ACPI) seems to be anyway around 
+dev_name, using only pointer to struct acpi_device or has more things 
+that prevents immediate #ifdef CONFIG_ACPI removal there.
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index f43be6d..ccf1d38 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -517,10 +517,12 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
-+	unsigned int channels = params_channels(hw_params);
- 	unsigned int sample_size =
- 		snd_pcm_format_width(params_format(hw_params));
- 	u32 wl = CCSR_SSI_SxCCR_WL(sample_size);
- 	int enabled = read_ssi(&ssi->scr) & CCSR_SSI_SCR_SSIEN;
-+	static u8 i2s_mode;
- 
- 	/*
- 	 * If we're in synchronous mode, and the SSI is already enabled,
-@@ -546,6 +548,21 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 	else
- 		write_ssi_mask(&ssi->srccr, CCSR_SSI_SxCCR_WL_MASK, wl);
- 
-+	if (ssi_private->imx_ac97)
-+		return 0;
-+
-+	/* Save i2s mode configuration so that we can restore it later */
-+	switch (read_ssi(&ssi->scr) & CCSR_SSI_SCR_I2S_MODE_MASK) {
-+	case CCSR_SSI_SCR_I2S_MODE_SLAVE:
-+	case CCSR_SSI_SCR_I2S_MODE_MASTER:
-+		i2s_mode = read_ssi(&ssi->scr) & CCSR_SSI_SCR_I2S_MODE_MASK;
-+	default:
-+		break;
-+	}
-+
-+	write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_NET | CCSR_SSI_SCR_I2S_MODE_MASK,
-+			channels == 1 ? 0 : CCSR_SSI_SCR_NET | i2s_mode);
-+
- 	return 0;
- }
- 
-@@ -658,14 +675,13 @@ static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
- static struct snd_soc_dai_driver fsl_ssi_dai_template = {
- 	.probe = fsl_ssi_dai_probe,
- 	.playback = {
--		/* The SSI does not support monaural audio. */
--		.channels_min = 2,
-+		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = FSLSSI_I2S_RATES,
- 		.formats = FSLSSI_I2S_FORMATS,
- 	},
- 	.capture = {
--		.channels_min = 2,
-+		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = FSLSSI_I2S_RATES,
- 		.formats = FSLSSI_I2S_FORMATS,
+But one problem at time. I'll cook a version with acpi_dev_name.
+
 -- 
-1.8.4
+Jarkko
