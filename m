@@ -1,16 +1,23 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: [PATCH] ASoC: cs42l52: Reorganize MICA/B Config and
-	Select
-Date: Wed, 13 Nov 2013 16:05:40 -0600
-Message-ID: <1384380340-19074-1-git-send-email-brian.austin@cirrus.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
+ multi-channel and HBR support
+Date: Thu, 14 Nov 2013 02:04:10 +0200
+Message-ID: <5284137A.8070200@iki.fi>
+References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
+ <5269665E.9050102@iki.fi> <1383887323.6455.37.camel@Wailaba2>
+ <527CBC7F.4000805@iki.fi> <1383934622.22680.2.camel@Wailaba2>
+ <1383946119.1089.4.camel@Wailaba2> <527D5FB4.6090603@iki.fi>
+ <1384062124.29274.8.camel@Wailaba2> <527F2126.50006@iki.fi>
+ <1384238111.21913.12.camel@Wailaba2>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe001.messaging.microsoft.com [216.32.180.11])
- by alsa0.perex.cz (Postfix) with ESMTP id CE96A2615F2
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2013 23:02:54 +0100 (CET)
+Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
+ [83.102.40.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 399EB26167D
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 01:04:21 +0100 (CET)
+In-Reply-To: <1384238111.21913.12.camel@Wailaba2>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,99 +27,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Brian Austin <brian.austin@cirrus.com>, broonie@kernel.org, lgirdwood@gmail.com
+To: Olivier Langlois <olivier@trillion01.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Peter_Fr=FChberger?= <fritsch@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch reworks the MICA an MICB config for single-ended or
-differential and the selection of which MIC for the single config
+12.11.2013 08:35, Olivier Langlois kirjoitti:
+> Anssi,
+> 
+> With your speaker-test patch (v1), I have been able to make sure that I
+> could use the 8 channels with my AMD card.
+> 
+> for the ramp up/down testing. I have the same result than with v2 of
+> your patch.
+> 
+> eld#0.0 file content is identical as well.
+> 
+> DTS-HD and Dolby True-HD are sent correctly and recognized by the
+> receiver by using the files from:
+> 
+> http://phoronix.com/forums/showthread.php?27348-TrueHD-DTS-HD-E-AC3-Over-HDMI-On-Linux
+> 
+> with the command:s
+> 
+> aplay -Dhdmi:CARD=HDMI,DEV=0,AES0=6 -c8  -r192000 -f s16_le thd.spdif
+> aplay -Dhdmi:CARD=HDMI,DEV=0,AES0=6 -c8  -r192000 -f s16_le dts.spdif
 
-Signed-off-by: Brian Austin <brian.austin@cirrus.com>
----
- include/sound/cs42l52.h    |  6 ------
- sound/soc/codecs/cs42l52.c | 25 ++++---------------------
- 2 files changed, 4 insertions(+), 27 deletions(-)
+OK, good.
 
-diff --git a/include/sound/cs42l52.h b/include/sound/cs42l52.h
-index 7c2be4a..daa91f3 100644
---- a/include/sound/cs42l52.h
-+++ b/include/sound/cs42l52.h
-@@ -22,12 +22,6 @@ struct cs42l52_platform_data {
- 	/* MICB mode selection 0=Single 1=Differential */
- 	unsigned int micb_cfg;
- 
--	/* MICA Select 0=MIC1A 1=MIC2A */
--	unsigned int mica_sel;
--
--	/* MICB Select 0=MIC2A 1=MIC2B */
--	unsigned int micb_sel;
--
- 	/* Charge Pump Freq. Check datasheet Pg73 */
- 	unsigned int chgfreq;
- 
-diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index 8b427c9..5af8306 100644
---- a/sound/soc/codecs/cs42l52.c
-+++ b/sound/soc/codecs/cs42l52.c
-@@ -233,7 +233,7 @@ static const struct soc_enum mic_bias_level_enum =
- 	SOC_ENUM_SINGLE(CS42L52_IFACE_CTL2, 0,
- 			ARRAY_SIZE(mic_bias_level_text), mic_bias_level_text);
- 
--static const char * const cs42l52_mic_text[] = { "Single", "Differential" };
-+static const char * const cs42l52_mic_text[] = { "MIC1", "MIC2" };
- 
- static const struct soc_enum mica_enum =
- 	SOC_ENUM_SINGLE(CS42L52_MICA_CTL, 5,
-@@ -243,12 +243,6 @@ static const struct soc_enum micb_enum =
- 	SOC_ENUM_SINGLE(CS42L52_MICB_CTL, 5,
- 			ARRAY_SIZE(cs42l52_mic_text), cs42l52_mic_text);
- 
--static const struct snd_kcontrol_new mica_mux =
--	SOC_DAPM_ENUM("Left Mic Input Capture Mux", mica_enum);
--
--static const struct snd_kcontrol_new micb_mux =
--	SOC_DAPM_ENUM("Right Mic Input Capture Mux", micb_enum);
--
- static const char * const digital_output_mux_text[] = {"ADC", "DSP"};
- 
- static const struct soc_enum digital_output_mux_enum =
-@@ -425,6 +419,9 @@ static const struct snd_kcontrol_new cs42l52_snd_controls[] = {
- 
- 	SOC_DOUBLE("Bypass Mute", CS42L52_MISC_CTL, 4, 5, 1, 0),
- 
-+	SOC_ENUM("MICA Select", mica_enum),
-+	SOC_ENUM("MICB Select", micb_enum),
-+
- 	SOC_DOUBLE_R_TLV("MIC Gain Volume", CS42L52_MICA_CTL,
- 			      CS42L52_MICB_CTL, 0, 0x10, 0, mic_tlv),
- 
-@@ -550,9 +547,6 @@ static const struct snd_soc_dapm_widget cs42l52_dapm_widgets[] = {
- 	SND_SOC_DAPM_AIF_OUT("AIFOUTR", NULL,  0,
- 			SND_SOC_NOPM, 0, 0),
- 
--	SND_SOC_DAPM_MUX("MICA Mux", SND_SOC_NOPM, 0, 0, &mica_mux),
--	SND_SOC_DAPM_MUX("MICB Mux", SND_SOC_NOPM, 0, 0, &micb_mux),
--
- 	SND_SOC_DAPM_ADC("ADC Left", NULL, CS42L52_PWRCTL1, 1, 1),
- 	SND_SOC_DAPM_ADC("ADC Right", NULL, CS42L52_PWRCTL1, 2, 1),
- 	SND_SOC_DAPM_PGA("PGA Left", CS42L52_PWRCTL1, 3, 1, NULL, 0),
-@@ -1239,17 +1233,6 @@ static int cs42l52_i2c_probe(struct i2c_client *i2c_client,
- 				cs42l52->pdata.micb_cfg <<
- 				CS42L52_MIC_CTL_TYPE_SHIFT);
- 
--	if (cs42l52->pdata.mica_sel)
--		regmap_update_bits(cs42l52->regmap, CS42L52_MICA_CTL,
--				   CS42L52_MIC_CTL_MIC_SEL_MASK,
--				cs42l52->pdata.mica_sel <<
--				CS42L52_MIC_CTL_MIC_SEL_SHIFT);
--	if (cs42l52->pdata.micb_sel)
--		regmap_update_bits(cs42l52->regmap, CS42L52_MICB_CTL,
--				   CS42L52_MIC_CTL_MIC_SEL_MASK,
--				cs42l52->pdata.micb_sel <<
--				CS42L52_MIC_CTL_MIC_SEL_SHIFT);
--
- 	if (cs42l52->pdata.chgfreq)
- 		regmap_update_bits(cs42l52->regmap, CS42L52_CHARGE_PUMP,
- 				   CS42L52_CHARGE_PUMP_MASK,
+Thanks a lot for testing :)
+
+> 
+> 
+>>>>
+>>>>
+>>> Sure, here is the output:
+>>>
+>>> [   78.384821] ALSA sound/pci/hda/patch_hdmi.c:1167 HDMI hot plug event:
+>>> Codec=0 Pin=3 Device=0 Inactive=0 Presence_Detect=0 ELD_Valid=1
+>>> [   78.384834] ALSA sound/pci/hda/patch_hdmi.c:1512 HDMI status: Codec=0
+>>> Pin=3 Presence_Detect=1 ELD_Valid=1
+>>> [  128.437676] ALSA sound/pci/hda/patch_hdmi.c:678 HDMI: select CA 0x13
+>>> for 8-channel allocation:  FL/FR LFE FC RL/RR RLC/RRC
+>>> [  128.437797] CA XX 19 => 8
+>>> [  128.437799] XX hdmi_map 00
+>>> [  128.437801] XX hdmi_map 11
+>>> [  128.437802] XX hdmi_map 26
+>>> [  128.437804] XX hdmi_map 37
+>>> [  128.437806] XX hdmi_map 43
+>>> [  128.437807] XX hdmi_map 52
+>>> [  128.437809] XX hdmi_map 64
+>>> [  128.437810] XX hdmi_map 75
+>>> [  128.437957] ALSA sound/pci/hda/patch_hdmi.c:3108
+>>> atihdmi_pin_hbr_setup: NID=0x3, hbr-ctl=0x1
+>>>
+>>> This is looking good. Maybe this is coming from how the channel mapping
+>>> is communicated to speaker-test through ALSA API but I don't know much
+>>> about that.
+>>>
+>>> I'll try to understand as well on my side what is going on.
+>>
+>> Hmm seems I can reproduce this issue just fine on my side now on
+>> non-AMD, so I'm going to look into this myself as well. Looks a bit like
+>> a speaker-test bug to me (since the printed channel numbers are
+>> duplicated, and amixer shows proper chmap), though if that is the case I
+>> wonder why I didn't see this before... I'll take a look.
+>>
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+
+
 -- 
-1.8.4.3
+Anssi Hannula
