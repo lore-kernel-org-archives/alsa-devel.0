@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 19/20] ASoC: davinci-mcasp: Support for fck
-	reparenting
-Date: Thu, 14 Nov 2013 11:51:10 +0000
-Message-ID: <20131114115110.GH26614@sirena.org.uk>
+Subject: Re: [PATCH 00/21] ASoC: davinci: Code cleanups and
+	support for DRA7xx
+Date: Thu, 14 Nov 2013 11:52:08 +0000
+Message-ID: <20131114115208.GI26614@sirena.org.uk>
 References: <1384421737-4467-1-git-send-email-peter.ujfalusi@ti.com>
- <1384421737-4467-20-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7169386735074429693=="
+Content-Type: multipart/mixed; boundary="===============9033437637638869754=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D9CF26170E
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 12:51:16 +0100 (CET)
-In-Reply-To: <1384421737-4467-20-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F1FF126170E
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 12:52:11 +0100 (CET)
+In-Reply-To: <1384421737-4467-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,52 +25,51 @@ Cc: alsa-devel@alsa-project.org, Michal Bachraty <michal.bachraty@streamunlimite
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7169386735074429693==
+--===============9033437637638869754==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="J/zg8ciPNcraoWb6"
+	protocol="application/pgp-signature"; boundary="0XMZdl/q8hSSmFeD"
 Content-Disposition: inline
 
 
---J/zg8ciPNcraoWb6
+--0XMZdl/q8hSSmFeD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 14, 2013 at 11:35:35AM +0200, Peter Ujfalusi wrote:
+On Thu, Nov 14, 2013 at 11:35:16AM +0200, Peter Ujfalusi wrote:
 
-> +- fck_parent : Should contain a valid clock name which will be used as parent
-> +	       for the McASP fck
+> In this series:
 
-I'd expect this to be specified using standard clock tree bindings?
+Applied 1-18, thanks!
 
---J/zg8ciPNcraoWb6
+--0XMZdl/q8hSSmFeD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJShLkrAAoJELSic+t+oim985sP/0rwpWA4DhMqXh6uAxlDqilH
-DdO1oMJYjyePInwIdrrh2KDAqmchnyXo8u38KxT0iANPvQVx74+3LUBAkUdasl0v
-LCraswNq+QcoEnYRjXHV4oN63MdnsXOTW+rlx3JkH7rzAd9xlW3XWfEP0cqOo7St
-Pi+2jjDWnOYZ6EBjZiMOLutwdQUhVG2V4mHFY9qJXqDnDIaUXh6ATjEkDCMk/hGY
-sgPNY9lRO4027bto8B8zUeuMaZ0iQB4EBJbI2AM5y3Ciidh9Mbbxd+aK6hTalTfY
-qa0j8CaPEEAXiKGtWvt0KbFF/S7MI5HUQvSGUqPrs8TqrpeIAxicqOS0Gb7eVgjX
-Ep/nN75NQiGDsGxAHHTORHsHLMbxPnGkZHUi1zs3iyvrgEDrUZLjU578CF81H+ns
-UNqX2ilaDz0cJsbLFJsW/pe/TNY8OaNAx7HqJmeVzB5b0txhQS7aMddwMf4l5Z6f
-iJB4xjN4AVL6YQooNL+vBv5/4C6U3FPyoPKr3ePM6DnD2U5UuUbyljbwOLDmj4vm
-bYe1mZAbPB8mQQ7esVkPi5Ee3pAIZ3TMA4wZMrUc/5dCj1vCn6Bj6Xs97S6CIsIN
-WlEm0KXEQFnF0PKfu8SBeA6KXFqGaRs62YOGxSgiDv7rhoRvcvDEG9y0Svn8ol1k
-UqyDQoDSK7JDzRSAipjX
-=AGUQ
+iQIcBAEBAgAGBQJShLlkAAoJELSic+t+oim9FX4QAJ3CYTx28lQsmktrxuWh+LpX
+JDazRtka/N+N/xtj8ALReFlT3NnE1ZBxhu9SXx/Yp+cr67U6YYB3L2XwBtl64mfF
+U+6kDi18Vkzb8ShlDlBm8KAasBptJxNpFyJV5rUNVJb3f+kdp/ht1YvoHL+jAgYC
+iixpAIWV8opurXnDcbp6NY8CAQ5fYBmud6Q5FBjlpGQOs/x3HmVcQnGOXnk8hvNd
+58hPeS477E2XvJxGWL38WjfrnnxGd6Nei0oWHpdhT5uSgYPwYLIfLIe6PmTxPF2Q
+0SIeObjeGeHuWGRWqnKV9A9i9l8kxFOoSHL4pf+MQrn3jAr4Zuk3Jt8/O05bx0Wd
+Moc2BGW0/ekSdYHKP3WO2lJPv9EqYANetFTm84C0o+IrMPisDT52m6tRKsZqpHw3
+ckxxDXT8Ovay28WbK4SEa4L7fUow9XLkD/yCZYxXPPNPD0WSwVpKEGfYMNWkGIml
+tJ94u5Nec+84EyB4HTcwArqSM1JnA6tbnTB/p12z0zmAAHnq8hFGt9EgnrJWFRdZ
+ZkWgpWGcUwPjDFVNUPV+UffIh9xpqSqTZckNGsIXQv9Q2oxhKIyd0Z1Gqb5fFKjA
+Je/6SDC857M7pM4pi8hwnC/2SoXh6IxqZauxAGlRI0mEe6L2qxPBoVDEX7qGzWbv
+MxpJ/q6binlrEa80ipsR
+=Cm1F
 -----END PGP SIGNATURE-----
 
---J/zg8ciPNcraoWb6--
+--0XMZdl/q8hSSmFeD--
 
---===============7169386735074429693==
+--===============9033437637638869754==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7169386735074429693==--
+--===============9033437637638869754==--
