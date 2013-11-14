@@ -1,21 +1,17 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [RFC PATCH] hda_intel: ratelimit "spurious
-	response" message
-Date: Thu, 14 Nov 2013 09:52:34 -0800
-Message-ID: <1384451554.15774.18.camel@joe-AO722>
-References: <1383854115.9263.21.camel@joe-AO722>
- <s5h61s4dkqs.wl%tiwai@suse.de> <1383856098.9263.28.camel@joe-AO722>
- <s5hwqkjrwg0.wl%tiwai@suse.de> <1383972094.2860.2.camel@joe-AO722>
- <s5heh6i99kd.wl%tiwai@suse.de>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [ALSA UCM] Help me obtain complete document of
+ alsa ucm
+Date: Thu, 14 Nov 2013 19:23:05 +0000
+Message-ID: <1384456985.2305.155.camel@loki>
+References: <CAHa2TOYc5cVeQYJF6d7CKJC0YFh6zFvp0cF5awZ=a50=rzZXSg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay.hostedemail.com (smtprelay0156.hostedemail.com
- [216.40.44.156])
- by alsa0.perex.cz (Postfix) with ESMTP id BF60C2651F3
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 18:52:35 +0100 (CET)
-In-Reply-To: <s5heh6i99kd.wl%tiwai@suse.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 67858261A7B
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 20:23:12 +0100 (CET)
+In-Reply-To: <CAHa2TOYc5cVeQYJF6d7CKJC0YFh6zFvp0cF5awZ=a50=rzZXSg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,297 +21,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Xavier Hsu <xavier.hsu@linaro.org>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2013-11-14 at 18:28 +0100, Takashi Iwai wrote:
-> At Fri, 08 Nov 2013 20:41:34 -0800,
-> Joe Perches wrote:
-[]
-> > !!HDA-Intel Codec information
-> > !!---------------------------
-> > --startcollapse--
-> > 
-> > Codec: ATI ID aa01
+On Thu, 2013-11-07 at 16:55 +0800, Xavier Hsu wrote:
+> Hi,
+> When I develop ALSA UCM for my target platform. 
+> I've stocked by lack syntax description.
 > 
-> You didn't enable CONFIG_SND_HDA_CODEC_HDMI, right?
-
-No, it's enabled.
-
-> Build with it, at least.
-
-$ grep CONFIG_SND_HDA_CODEC_HDMI /boot/config-3.12.0 
-CONFIG_SND_HDA_CODEC_HDMI=y
-
-> Hrm, the codec proc for the analog audio isn't seen here.
-> Maybe the codec communication was already screwed up at this point.
 > 
-> Can you have a good output by any chance (showing the right contents
-> of /proc/asound/card1/codec#*)?
+> 
+> I already know how to use some syntax of alsa ucm like
+> "EnableSequence" and "DisableSequence" in "SectionVerb".
+> So I can use alsa commands like
+> 
+> alsaucm -c EVB set _verb HiFi set _enadev Headphones
+> 
+> alsaucm -c EVB set _verb HiFi set _disdev Headphones
+> 
+> 
+> 
+> to enable or disable our Headphones devices.
+> 
+> 
+> In addition to, I add some setting like
+> ATTRS{id}=="EVBsnd", RUN+="/usr/bin/alsaucm -c MB8AC0300 set _verb
+> HiFi"
+> ATTRS{id}=="EVBsnd", RUN+="/usr/bin/alsaucm -c MB8AC0300 set _verb
+> Record"
+> in 90-alsa-ucm.rules file.
+> 
+> 
+> But I don't know how to correctly use some syntax (such as
+> "ConflictingDevice", "TransitionSequence", "Value" and so on) of alsa
+> ucm.
 
-Using the linux version I've normally used:
+ConflictingDevice means that the current Device/Modifier is not
+compatible with the specified device.
 
-$ cat /proc/version
-Linux version 3.11.0-031100rc2-generic (apw@gomeisa) (gcc version 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu5) ) #201307211535 SMP Sun Jul 21 19:45:33 UTC 201
+TransitionSequence is a sequence of commands (mixer settings etc) that
+can be used to transition from one verb/device/modifier to another.
 
-$ cat /proc/asound/card1/codec#0 
-Codec: Realtek ALC271X
-Address: 0
-AFG Function Id: 0x1 (unsol 1)
-Vendor Id: 0x10ec0269
-Subsystem Id: 0x10250740
-Revision Id: 0x100100
-No Modem Function Group found
-Default PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-State of AFG node 0x01:
-  Power states:  D0 D1 D2 D3 CLKSTOP EPSS
-  Power: setting=D0, actual=D0
-GPIO: io=2, o=0, i=0, unsolicited=1, wake=0
-  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-Node 0x02 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Control: name="Headphone Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Device: name="ALC271X Analog", type="Audio", device=0
-  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Converter: stream=8, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x03 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Control: name="Speaker Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Converter: stream=8, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  IEC Coding Type: 0x0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x07 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x08 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Control: name="Capture Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Capture Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Device: name="ALC271X Analog", type="Audio", device=0
-  Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x13 0x13]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Connection: 1
-     0x23
-Node 0x09 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x8b 0x8b]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Connection: 1
-     0x22
-Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Control: name="Internal Mic Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=3, ofs=0
-  Control: name="Internal Mic Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=3, ofs=0
-  Control: name="Mic Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=1, ofs=0
-  Control: name="Mic Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=1, ofs=0
-  Control: name="Beep Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=4, ofs=0
-  Control: name="Beep Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=4, ofs=0
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 5
-     0x18 0x19 0x1a 0x1b 0x1d
-Node 0x0c [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x02 0x0b
-Node 0x0d [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x03 0x0b
-Node 0x0e [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0f [Audio Mixer] wcaps 0x20010a: Mono Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00] [0x80]
-  Connection: 2
-     0x02 0x0b
-Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x12 [Pin Complex] wcaps 0x40000b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x2f, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Pincap 0x00000020: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Control: name="Speaker Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Control: name="Speaker Phantom Jack", index=0, device=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x00010014: OUT EAPD Detect
-  EAPD 0x2: EAPD
-  Pin Default 0x90170110: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c 0x0d*
-Node 0x15 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x16 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x17 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Pincap 0x00000010: OUT
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x0f
-Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x2f, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x00001734: IN OUT Detect
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x0d
-Node 0x19 [Pin Complex] wcaps 0x40008b: Stereo Amp-In
-  Control: name="Mic Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Mic Jack", index=0, device=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x2f, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Pincap 0x00001724: IN Detect
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=02, enabled=1
-Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x2f, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000003c: IN OUT HP Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Internal Mic Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Internal Mic Phantom Jack", index=0, device=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x2f, mute=0
-  Amp-In vals:  [0x03 0x03]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x00000034: IN OUT Detect
-  Pin Default 0x90a70920: [Fixed] Mic at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0x2, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1d [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x00000020: IN
-  Pin Default 0x4017992d: [N/A] Speaker at Ext N/A
-    Conn = Analog, Color = Pink
-    DefAssociation = 0x2, Sequence = 0xd
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-Node 0x1e [Pin Complex] wcaps 0x400381: Stereo Digital
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x06
-Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-  Processing caps: benign=0, ncoeff=25
-Node 0x21 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Control: name="Headphone Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Control: name="Headphone Jack", index=0, device=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000001c: OUT HP Detect
-  Pin Default 0x0321401f: [Jack] HP Out at Ext Left
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x1, Sequence = 0xf
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=01, enabled=1
-  Connection: 2
-     0x0c* 0x0d
-Node 0x22 [Audio Selector] wcaps 0x30010b: Stereo Amp-In
-  Amp-In caps: N/A
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
-  Connection: 7
-     0x18* 0x19 0x1a 0x1b 0x1d 0x0b 0x12
-Node 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80]
-  Connection: 6
-     0x18 0x19 0x1a 0x1b 0x1d 0x0b
+Value is used to set default values for verb, devices and modifier.
+
+Arun has created some UCM config file for the Galaxy Nexus:-
+
+http://cgit.collabora.com/git/android/platform/external/collabora/pulseaudio-android.git/tree/data/alsa/ucm/Tuna/HiFi
+
+Best to use these files as an example atm.
+
+> I refer to Use Case Manager in ALSA document.
+> 
+> http://www.alsa-project.org/main/index.php/Use_Case_Manager
+> 
+> Unfortunately, it cannot resolve my questions.
+> 
+
+Sorry, documentation is lacking atm. I'm currently writing some more
+detailed docs but there are not yet finished. 
+> 
+> Do you have more detail information about ALSA UCM syntax usage
+> documentation or example?
+> Thank you very much.
+> 
+The best place to look at the moment is in alsa-lib/src/ucm/parser.c
+
+http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/ucm/parser.c;h=d7517f69e84b2467d24d4331580ae5be374ff58f;hb=refs/heads/master
+
+The source has examples of what the parser is looking for.
+
+Liam
+> 
+> -Xavier Hsu-
