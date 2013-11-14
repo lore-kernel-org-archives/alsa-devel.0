@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 15/20] ASoC: davinci-mcasp: Simplify FIFO
-	configuration code
-Date: Thu, 14 Nov 2013 11:35:31 +0200
-Message-ID: <1384421737-4467-16-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 16/20] ASoC: davinci-mcasp: Data source (bus)
+	selection support
+Date: Thu, 14 Nov 2013 11:35:32 +0200
+Message-ID: <1384421737-4467-17-git-send-email-peter.ujfalusi@ti.com>
 References: <1384421737-4467-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 89768265171
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 10:36:16 +0100 (CET)
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 117A1261A40
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 10:36:18 +0100 (CET)
 In-Reply-To: <1384421737-4467-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,208 +25,115 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Michal Bachraty <michal.bachraty@streamunlimited.com>, nsekhar@ti.com, jsarha@ti.com, gururaja.hebbar@ti.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The FIFO registers base address is different in dm646x compared to newer
-SoCs with McASP IP. Instead of using two paths (switch/case) to handle the
-difference we can simply pick the correct base address beforehand and use
-offsets to address the register we need to configure.
-With this change the indentation depth can be reduced as well.
+The audio data to/from McASP can be sent/received via two method:
+Via the data port (preferred) or via the configuration bus.
+Currently the driver assumes that all data communication will be done via
+the data port.
+This patch adds support for selecting the configuration port as data
+interface.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/davinci/davinci-mcasp.c | 101 +++++++++++---------------------------
- sound/soc/davinci/davinci-mcasp.h |  16 +++---
- 2 files changed, 38 insertions(+), 79 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 38 ++++++++++++++++++++++++++++----------
+ 1 file changed, 28 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 1341f327..72ea458 100644
+index 72ea458..35a6292 100644
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -38,6 +38,7 @@
- struct davinci_mcasp {
- 	struct davinci_pcm_dma_params dma_params[2];
- 	void __iomem *base;
-+	u32 fifo_base;
- 	struct device *dev;
+@@ -53,6 +53,8 @@ struct davinci_mcasp {
+ 	u8	txnumevt;
+ 	u8	rxnumevt;
  
- 	/* McASP specific data */
-@@ -153,38 +154,20 @@ static void mcasp_start_tx(struct davinci_mcasp *mcasp)
- 
- static void davinci_mcasp_start(struct davinci_mcasp *mcasp, int stream)
++	bool	dat_port;
++
+ #ifdef CONFIG_PM_SLEEP
+ 	struct {
+ 		u32	txfmtctl;
+@@ -482,6 +484,7 @@ static void davinci_hw_param(struct davinci_mcasp *mcasp, int stream)
  {
-+	u32 reg;
+ 	int i, active_slots;
+ 	u32 mask = 0;
++	u32 busel = 0;
+ 
+ 	active_slots = (mcasp->tdm_slots > 31) ? 32 : mcasp->tdm_slots;
+ 	for (i = 0; i < active_slots; i++)
+@@ -489,11 +492,15 @@ static void davinci_hw_param(struct davinci_mcasp *mcasp, int stream)
+ 
+ 	mcasp_clr_bits(mcasp->base + DAVINCI_MCASP_ACLKXCTL_REG, TX_ASYNC);
+ 
++	if (!mcasp->dat_port)
++		busel = TXSEL;
 +
  	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		if (mcasp->txnumevt) {	/* enable FIFO */
--			switch (mcasp->version) {
--			case MCASP_VERSION_3:
--				mcasp_clr_bits(mcasp->base + MCASP_VER3_WFIFOCTL,
--					       FIFO_ENABLE);
--				mcasp_set_bits(mcasp->base + MCASP_VER3_WFIFOCTL,
--					       FIFO_ENABLE);
--				break;
--			default:
--				mcasp_clr_bits(mcasp->base +
--					DAVINCI_MCASP_WFIFOCTL,	FIFO_ENABLE);
--				mcasp_set_bits(mcasp->base +
--					DAVINCI_MCASP_WFIFOCTL,	FIFO_ENABLE);
--			}
-+			reg = mcasp->fifo_base + MCASP_WFIFOCTL_OFFSET;
-+			mcasp_clr_bits(mcasp->base + reg, FIFO_ENABLE);
-+			mcasp_set_bits(mcasp->base + reg, FIFO_ENABLE);
- 		}
- 		mcasp_start_tx(mcasp);
+ 		/* bit stream is MSB first  with no delay */
+ 		/* DSP_B mode */
+ 		mcasp_set_reg(mcasp->base + DAVINCI_MCASP_TXTDM_REG, mask);
+-		mcasp_set_bits(mcasp->base + DAVINCI_MCASP_TXFMT_REG, TXORD);
++		mcasp_set_bits(mcasp->base + DAVINCI_MCASP_TXFMT_REG,
++			       busel | TXORD);
+ 
+ 		if ((mcasp->tdm_slots >= 2) && (mcasp->tdm_slots <= 32))
+ 			mcasp_mod_bits(mcasp->base + DAVINCI_MCASP_TXFMCTL_REG,
+@@ -504,7 +511,8 @@ static void davinci_hw_param(struct davinci_mcasp *mcasp, int stream)
  	} else {
- 		if (mcasp->rxnumevt) {	/* enable FIFO */
--			switch (mcasp->version) {
--			case MCASP_VERSION_3:
--				mcasp_clr_bits(mcasp->base + MCASP_VER3_RFIFOCTL,
--					       FIFO_ENABLE);
--				mcasp_set_bits(mcasp->base + MCASP_VER3_RFIFOCTL,
--					       FIFO_ENABLE);
--				break;
--			default:
--				mcasp_clr_bits(mcasp->base +
--					DAVINCI_MCASP_RFIFOCTL,	FIFO_ENABLE);
--				mcasp_set_bits(mcasp->base +
--					DAVINCI_MCASP_RFIFOCTL,	FIFO_ENABLE);
--			}
-+			reg = mcasp->fifo_base + MCASP_RFIFOCTL_OFFSET;
-+			mcasp_clr_bits(mcasp->base + reg, FIFO_ENABLE);
-+			mcasp_set_bits(mcasp->base + reg, FIFO_ENABLE);
- 		}
- 		mcasp_start_rx(mcasp);
- 	}
-@@ -204,31 +187,18 @@ static void mcasp_stop_tx(struct davinci_mcasp *mcasp)
+ 		/* bit stream is MSB first with no delay */
+ 		/* DSP_B mode */
+-		mcasp_set_bits(mcasp->base + DAVINCI_MCASP_RXFMT_REG, RXORD);
++		mcasp_set_bits(mcasp->base + DAVINCI_MCASP_RXFMT_REG,
++			       busel | RXORD);
+ 		mcasp_set_reg(mcasp->base + DAVINCI_MCASP_RXTDM_REG, mask);
  
- static void davinci_mcasp_stop(struct davinci_mcasp *mcasp, int stream)
- {
-+	u32 reg;
-+
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		if (mcasp->txnumevt) {	/* disable FIFO */
--			switch (mcasp->version) {
--			case MCASP_VERSION_3:
--				mcasp_clr_bits(mcasp->base + MCASP_VER3_WFIFOCTL,
--					       FIFO_ENABLE);
--				break;
--			default:
--				mcasp_clr_bits(mcasp->base +
--					DAVINCI_MCASP_WFIFOCTL,	FIFO_ENABLE);
--			}
-+			reg = mcasp->fifo_base + MCASP_WFIFOCTL_OFFSET;
-+			mcasp_clr_bits(mcasp->base + reg, FIFO_ENABLE);
- 		}
- 		mcasp_stop_tx(mcasp);
- 	} else {
- 		if (mcasp->rxnumevt) {	/* disable FIFO */
--			switch (mcasp->version) {
--			case MCASP_VERSION_3:
--				mcasp_clr_bits(mcasp->base + MCASP_VER3_RFIFOCTL,
--					       FIFO_ENABLE);
--			break;
--
--			default:
--				mcasp_clr_bits(mcasp->base +
--					DAVINCI_MCASP_RFIFOCTL,	FIFO_ENABLE);
--			}
-+			reg = mcasp->fifo_base + MCASP_RFIFOCTL_OFFSET;
-+			mcasp_clr_bits(mcasp->base + reg, FIFO_ENABLE);
- 		}
- 		mcasp_stop_rx(mcasp);
- 	}
-@@ -438,6 +408,7 @@ static int davinci_hw_common_param(struct davinci_mcasp *mcasp, int stream,
- 	u8 ser;
- 	u8 slots = mcasp->tdm_slots;
- 	u8 max_active_serializers = (channels + slots - 1) / slots;
-+	u32 reg;
- 	/* Default configuration */
- 	mcasp_set_bits(mcasp->base + DAVINCI_MCASP_PWREMUMGT_REG, MCASP_SOFT);
- 
-@@ -488,37 +459,20 @@ static int davinci_hw_common_param(struct davinci_mcasp *mcasp, int stream,
- 		if (mcasp->txnumevt * tx_ser > 64)
- 			mcasp->txnumevt = 1;
- 
--		switch (mcasp->version) {
--		case MCASP_VERSION_3:
--			mcasp_mod_bits(mcasp->base + MCASP_VER3_WFIFOCTL, tx_ser,
--								NUMDMA_MASK);
--			mcasp_mod_bits(mcasp->base + MCASP_VER3_WFIFOCTL,
--				((mcasp->txnumevt * tx_ser) << 8), NUMEVT_MASK);
--			break;
--		default:
--			mcasp_mod_bits(mcasp->base + DAVINCI_MCASP_WFIFOCTL,
--							tx_ser,	NUMDMA_MASK);
--			mcasp_mod_bits(mcasp->base + DAVINCI_MCASP_WFIFOCTL,
--				((mcasp->txnumevt * tx_ser) << 8), NUMEVT_MASK);
--		}
-+		reg = mcasp->fifo_base + MCASP_WFIFOCTL_OFFSET;
-+		mcasp_mod_bits(mcasp->base + reg, tx_ser, NUMDMA_MASK);
-+		mcasp_mod_bits(mcasp->base + reg,
-+			       ((mcasp->txnumevt * tx_ser) << 8), NUMEVT_MASK);
- 	}
- 
- 	if (mcasp->rxnumevt && stream == SNDRV_PCM_STREAM_CAPTURE) {
- 		if (mcasp->rxnumevt * rx_ser > 64)
- 			mcasp->rxnumevt = 1;
--		switch (mcasp->version) {
--		case MCASP_VERSION_3:
--			mcasp_mod_bits(mcasp->base + MCASP_VER3_RFIFOCTL, rx_ser,
--								NUMDMA_MASK);
--			mcasp_mod_bits(mcasp->base + MCASP_VER3_RFIFOCTL,
--				((mcasp->rxnumevt * rx_ser) << 8), NUMEVT_MASK);
--			break;
--		default:
--			mcasp_mod_bits(mcasp->base + DAVINCI_MCASP_RFIFOCTL,
--							rx_ser,	NUMDMA_MASK);
--			mcasp_mod_bits(mcasp->base + DAVINCI_MCASP_RFIFOCTL,
--				((mcasp->rxnumevt * rx_ser) << 8), NUMEVT_MASK);
--		}
-+
-+		reg = mcasp->fifo_base + MCASP_RFIFOCTL_OFFSET;
-+		mcasp_mod_bits(mcasp->base + reg, rx_ser, NUMDMA_MASK);
-+		mcasp_mod_bits(mcasp->base + reg,
-+			       ((mcasp->rxnumevt * rx_ser) << 8), NUMEVT_MASK);
- 	}
- 
- 	return 0;
-@@ -974,6 +928,11 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 		if ((mcasp->tdm_slots >= 2) && (mcasp->tdm_slots <= 32))
+@@ -928,23 +936,22 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
  	mcasp->version = pdata->version;
  	mcasp->txnumevt = pdata->txnumevt;
  	mcasp->rxnumevt = pdata->rxnumevt;
-+	if (mcasp->version < MCASP_VERSION_3)
-+		mcasp->fifo_base = DAVINCI_MCASP_V2_AFIFO_BASE;
-+	else
-+		mcasp->fifo_base = DAVINCI_MCASP_V3_AFIFO_BASE;
-+
+-	if (mcasp->version < MCASP_VERSION_3)
+-		mcasp->fifo_base = DAVINCI_MCASP_V2_AFIFO_BASE;
+-	else
+-		mcasp->fifo_base = DAVINCI_MCASP_V3_AFIFO_BASE;
+ 
  	mcasp->dev = &pdev->dev;
  
  	dat = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dat");
-diff --git a/sound/soc/davinci/davinci-mcasp.h b/sound/soc/davinci/davinci-mcasp.h
-index 80e5a18..8fed757 100644
---- a/sound/soc/davinci/davinci-mcasp.h
-+++ b/sound/soc/davinci/davinci-mcasp.h
-@@ -90,14 +90,14 @@
- #define DAVINCI_MCASP_RXBUF_REG		0x280
+-	if (!dat)
+-		dat = mem;
++	if (dat)
++		mcasp->dat_port = true;
  
- /* McASP FIFO Registers */
--#define DAVINCI_MCASP_WFIFOCTL		(0x1010)
--#define DAVINCI_MCASP_WFIFOSTS		(0x1014)
--#define DAVINCI_MCASP_RFIFOCTL		(0x1018)
--#define DAVINCI_MCASP_RFIFOSTS		(0x101C)
--#define MCASP_VER3_WFIFOCTL		(0x1000)
--#define MCASP_VER3_WFIFOSTS		(0x1004)
--#define MCASP_VER3_RFIFOCTL		(0x1008)
--#define MCASP_VER3_RFIFOSTS		(0x100C)
-+#define DAVINCI_MCASP_V2_AFIFO_BASE	(0x1010)
-+#define DAVINCI_MCASP_V3_AFIFO_BASE	(0x1000)
+ 	dma_data = &mcasp->dma_params[SNDRV_PCM_STREAM_PLAYBACK];
+ 	dma_data->asp_chan_q = pdata->asp_chan_q;
+ 	dma_data->ram_chan_q = pdata->ram_chan_q;
+ 	dma_data->sram_pool = pdata->sram_pool;
+ 	dma_data->sram_size = pdata->sram_size_playback;
+-	dma_data->dma_addr = dat->start + pdata->tx_dma_offset;
++	if (dat)
++		dma_data->dma_addr = dat->start;
++	else
++		dma_data->dma_addr = mem->start + pdata->tx_dma_offset;
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+ 	if (res)
+@@ -957,7 +964,18 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	dma_data->ram_chan_q = pdata->ram_chan_q;
+ 	dma_data->sram_pool = pdata->sram_pool;
+ 	dma_data->sram_size = pdata->sram_size_capture;
+-	dma_data->dma_addr = dat->start + pdata->rx_dma_offset;
++	if (dat)
++		dma_data->dma_addr = dat->start;
++	else
++		dma_data->dma_addr = mem->start + pdata->rx_dma_offset;
 +
-+/* FIFO register offsets from AFIFO base */
-+#define MCASP_WFIFOCTL_OFFSET		(0x0)
-+#define MCASP_WFIFOSTS_OFFSET		(0x4)
-+#define MCASP_RFIFOCTL_OFFSET		(0x8)
-+#define MCASP_RFIFOSTS_OFFSET		(0xc)
++	if (mcasp->version < MCASP_VERSION_3) {
++		mcasp->fifo_base = DAVINCI_MCASP_V2_AFIFO_BASE;
++		/* dma_data->dma_addr is pointing to the data port address */
++		mcasp->dat_port = true;
++	} else {
++		mcasp->fifo_base = DAVINCI_MCASP_V3_AFIFO_BASE;
++	}
  
- /*
-  * DAVINCI_MCASP_PWREMUMGT_REG - Power Down and Emulation Management
+ 	res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+ 	if (res)
 -- 
 1.8.4.2
