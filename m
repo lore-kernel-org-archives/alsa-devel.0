@@ -1,50 +1,66 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCHv3 1/3] ACPI: Provide struct acpi_device stub
- for !CONFIG_ACPI builds
-Date: Thu, 14 Nov 2013 13:14:17 +0200
-Message-ID: <5284B089.1020209@linux.intel.com>
-References: <1383309356-25430-1-git-send-email-jarkko.nikula@linux.intel.com> <1384419661-28293-1-git-send-email-jarkko.nikula@linux.intel.com> <1384419661-28293-2-git-send-email-jarkko.nikula@linux.intel.com> <s5hvbzv9u6g.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: blackfin: Fix missing break
+Date: Thu, 14 Nov 2013 13:26:08 +0200
+Message-ID: <5284B350.4040402@ti.com>
+References: <1384359300-21219-1-git-send-email-tiwai@suse.de>	<20131113164715.GX878@sirena.org.uk>	<s5h7gccb5i7.wl%tiwai@suse.de>	<s5h61rwb5e5.wl%tiwai@suse.de>	<20131113184751.GB878@sirena.org.uk>	<s5hwqkbqzf6.wl%tiwai@suse.de>	<20131114100806.GC26614@sirena.org.uk>
+ <s5hsiuz9s23.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <s5hvbzv9u6g.wl%tiwai@suse.de>
-Sender: linux-acpi-owner@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B5C2261A1C
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 12:26:09 +0100 (CET)
+In-Reply-To: <s5hsiuz9s23.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@the-dreams.de>, linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, linux-i2c@vger.kernel.org, linux-spi@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/14/2013 12:03 PM, Takashi Iwai wrote:
-> At Thu, 14 Nov 2013 11:00:59 +0200,
-> Jarkko Nikula wrote:
->> We have a few cases where we want to access struct device dev field in
->> struct acpi_device from generic code that is build also without CONFIG_ACPI.
+Hi Takashi,
+
+On 11/14/2013 12:49 PM, Takashi Iwai wrote:
+> At Thu, 14 Nov 2013 10:08:06 +0000,
+> Mark Brown wrote:
 >>
->> Provide here a minimal struct acpi_device stub that allows to build such a
->> code without adding new #ifdef CONFIG_ACPI churn. This should not increase
->> section sizes if code is protected by ACPI_COMPANION() runtime checks as
->> those will be optimized out by later compiler stages in case CONFIG_ACPI is
->> not set.
+>> On Thu, Nov 14, 2013 at 07:18:21AM +0100, Takashi Iwai wrote:
+>>> Mark Brown wrote:
 >>
->> Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
->> ---
->> Rafael, instead of this we could also have an accessor but adev->dev looked
->> better in actual code and size vmlinux didn't change for x86_64_defconfig
->> with CONFIG_ACPI is not set nor for omap2plus_defconfig.
-> This looks too hackish, IMO.  Defining a different dummy struct often
-> gives more headaches.  Thinking of the potential risk by misuses, it'd
-> be simpler and safer to define a macro like acpi_dev_name() instead.
->
-> BTW, is linux/device.h already included in !CONFIG_ACPI case?
->
-It is included unconditionally in include/linux/acpi.h.
+>>>> That looks to be an issue that's very specific to OMAP4 - you need
+>>>> someone who works on OMAP4 to have a look at it.
+>>
+>>> OK, then could you assign to an appropriate person?
+>>> You must have a better clue.
+>>
+>> Peter Ujfalusi at a guess.
+> =
 
-Your acpi_dev_name() proposal may be good enough for now as adev->dev 
-access in generic code (now under CONFIG_ACPI) seems to be anyway around 
-dev_name, using only pointer to struct acpi_device or has more things 
-that prevents immediate #ifdef CONFIG_ACPI removal there.
+> Peter, could you care the bug report below?
+>   https://bugzilla.kernel.org/show_bug.cgi?id=3D64741
 
-But one problem at time. I'll cook a version with acpi_dev_name.
+Sure.
+Platforms using McPDM+twl6040 codec (OMAP4/5) supports 96KHz only at the mo=
+ment.
+This is hardware limitation and the only way to get 44.1/48 KHz supported is
+to use AESS on these platforms. Unfortunately I only have AESS support out =
+of
+tree in my personal branch since it has dependency on Liam's out of tree
+dynamic firmware set (which I'm rolling from kernel version to kernel versi=
+on).
+To use AESS one need to have the firmware as well which is again not upstre=
+am
+currently.
+I only have 3.12-rc1 based version of AESS support, but I'm planning to have
+one for 3.12 and also for 3.13-rc1 when it comes out.
 
--- 
-Jarkko
+-- =
+
+P=E9ter
