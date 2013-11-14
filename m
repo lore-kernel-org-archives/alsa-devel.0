@@ -1,18 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: blackfin: Fix missing break
-Date: Thu, 14 Nov 2013 10:08:06 +0000
-Message-ID: <20131114100806.GC26614@sirena.org.uk>
-References: <1384359300-21219-1-git-send-email-tiwai@suse.de>
- <20131113164715.GX878@sirena.org.uk> <s5h7gccb5i7.wl%tiwai@suse.de>
- <s5h61rwb5e5.wl%tiwai@suse.de> <20131113184751.GB878@sirena.org.uk>
- <s5hwqkbqzf6.wl%tiwai@suse.de>
+From: Ivailo Monev <xakepa10@gmail.com>
+Subject: Re: udev rules prefix
+Date: Thu, 14 Nov 2013 13:24:49 +0000
+Message-ID: <5284CF21.6070105@gmail.com>
+References: <CABdmW1cQmesQfC2Kwt4CBOJzrVGBdaC2m2KFb4XeQZYhJAzfMQ@mail.gmail.com>
+ <s5hr4ajqy5d.wl%tiwai@suse.de> <5284BD4F.8080205@gmail.com>
+ <s5hwqkb9v5i.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3603101323823416332=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E7753261A11
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 11:24:31 +0100 (CET)
-In-Reply-To: <s5hwqkbqzf6.wl%tiwai@suse.de>
+Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
+ [209.85.214.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39ED6261A18
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 11:26:35 +0100 (CET)
+Received: by mail-bk0-f48.google.com with SMTP id v10so373931bkz.7
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 02:26:34 -0800 (PST)
+Received: from [31.211.147.156] ([31.211.147.156])
+ by mx.google.com with ESMTPSA id b6sm2228573bko.16.2013.11.14.02.26.33
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Thu, 14 Nov 2013 02:26:34 -0800 (PST)
+In-Reply-To: <s5hwqkb9v5i.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +30,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 11/14/13 09:42, Takashi Iwai wrote:
+> At Thu, 14 Nov 2013 12:08:47 +0000,
+> Ivailo Monev wrote:
+>> On 11/14/13 02:48, David Henningsson wrote:
+>>> On 11/13/2013 09:36 PM, Ivailo wrote:
+>>>> Hello,
+>>>>
+>>>> the default prefix for alsa-utils is /usr however the udev rules directory
+>>>> is /lib/udev/rules.d thus on setups with separate partition for /usr the
+>>>> binaries, from /usr/bin and /usr/sbin, will likely not be available during
+>>>> the boot process and the udev rule will fail to restore the state.
+>>>>
+>>>> I suggest that the udev rules directory follows the prefix or append /usr
+>>>> to it to resolve this.
+>>>>
+>>>> Cheers!
+>>> Hi,
+>>>
+>>> ALSA merely follows what udev dictates, so I think your
+>>> question/suggestion is better redirected on the udev (now systemd)
+>>> mailinglist. Or potentially that of your distro.
+>>>
+>> Actually, you are not following what udev dictates (unless I'm missing
+>> something).
+>> By default, systemd (and more importantly udev) will be installed with
+>> /usr prefix
+>> (which is wrong in it self because it blindly assumes that /usr has been
+>> mounted
+>> via initrd/initramfs where separate /usr partition is in use but let's
+>> not talk about
+>> this here).
+>>
+>>
+>> On 11/14/13 06:45, Takashi Iwai wrote:
+>>> At Wed, 13 Nov 2013 20:36:48 +0000,
+>>> Ivailo wrote:
+>>>> Hello,
+>>>>
+>>>> the default prefix for alsa-utils is /usr however the udev rules directory
+>>>> is /lib/udev/rules.d thus on setups with separate partition for /usr the
+>>>> binaries, from /usr/bin and /usr/sbin, will likely not be available during
+>>>> the boot process and the udev rule will fail to restore the state.
+>>> Not true.  /lib must be always present at boot even if /usr isn't
+>>> mounted.  That's the reason why /lib/udev was chosen as default in the
+>>> past.
+>>>
+>>>
+>>> Takashi
+>> You got me wrong, I know that /lib should be available on early boot
+>> (unless it's a
+>> symlink, like in Arch Linux) but the point is that since the alsa-utils
+>> binaries are
+>> installed in /usr so should be the udev rules otherwise during boot
+>> without /usr
+>> being mounted you will see error message about /usr/sbin/alsactl.
+> Theoretically yes, but this has been rather less problems than
+> creating a non-existing /usr/lib/udev in the past.  That's the very
+> reason of hard-coded /lib/udev.  Changing the default behavior is
+> often worse unless you really do it carefully with consideration of
+> compatibility with old systems.
+>
+> So, if you want to change the default, don't hard code again.  Make
+> configure to guess the right place.  A patch achieving it is welcome.
+>
+>
+> Takashi
+Ok, here is the patch:
 
---===============3603101323823416332==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1SQmhf2mF2YjsYvc"
-Content-Disposition: inline
+ From 74faeceb26c4730d6150e726792f6eb1f257b03e Mon Sep 17 00:00:00 2001
+From: Ivailo Monev <xakepa10@gmail.com>
+Date: Thu, 14 Nov 2013 13:13:43 +0000
+Subject: [PATCH 1/1] detect udevdir via pkg-config
 
+---
+  configure.in | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
---1SQmhf2mF2YjsYvc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+diff --git a/configure.in b/configure.in
+index 3ae3209..74b891e 100644
+--- a/configure.in
++++ b/configure.in
+@@ -121,7 +121,7 @@ AM_CONDITIONAL(USE_XMLTO, test x"$xmlto" = xyes)
+  AC_ARG_WITH(
+          [udev-rules-dir],
+          AS_HELP_STRING([--with-udev-rules-dir],[Directory where to 
+install udev rules to (defaults to /lib/udev/rules.d)]),
+-        [udevrulesdir=$withval], [udevrulesdir="/lib/udev/rules.d"])
++        [udevrulesdir=$withval], [udevrulesdir=$($PKG_CONFIG udev 
+--variable=udevdir)"/rules.d"])
+  AC_SUBST(udevrulesdir)
 
-On Thu, Nov 14, 2013 at 07:18:21AM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
+  dnl Checks for header files.
+-- 
+1.8.3.4
 
-> > That looks to be an issue that's very specific to OMAP4 - you need
-> > someone who works on OMAP4 to have a look at it.
-
-> OK, then could you assign to an appropriate person?
-> You must have a better clue.
-
-Peter Ujfalusi at a guess.
-
---1SQmhf2mF2YjsYvc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJShKD9AAoJELSic+t+oim9TekP/11XrB2QDnUW6MmUykVQQ7y5
-pleICamfG0bI+pDbUjv91rX0VqATpTCUvyNRrQfPV6U7hKUcyiOrpOcBdqE78Ue6
-nndvKr5FspfPiJhhEDF2okKCHCeaRBfVEHqZ+q28Ec2fnI/vqR9MJ+CSP98yHN1L
-8WcV/rOFU4fLEL0EXX9lH6eJLpg1B1oqciV/0BkNgXPmcy0LyGTNsIHQNuCXADji
-ciyBVoFB7WKDwSV5F+QmoPL8hzjBBlcppPrFNYvW3HPvoA3RYNCbtFPIHBLyBg/9
-tqebYIwDPbfC4/RtZdb3/Avd9mHwP72ZIrEfAFpws2ZRryZQtKAB1zrUvIocMKcH
-eoz7o1v/UkUmS0ePdWT6oyf72RCeO/edWroUTwey6VSjUoTgvwit64PA8D85g5O7
-Z/OfIT5C+qO5MJAdDroVvwrzmmjjuyV/KgQF2mmJX15zZGvYe71zSS0gKt5rcOHd
-8ivQVKtOEqSMqR5+S6qeO36n+KQnCC0AC4BfDKn112SVDEFylw0JsINo7goMX8hx
-4nZAwCV6OVnyq+wpQti9vVnvWrQ+d5O/FW7EA9trugnybpHENNKIsfnibImJN0ge
-PwIxWs2PGGtwKUK37hhtc15SVzPhLVKq6kE2NkK/owdvh8lcO7JxUQm0KWwnwSA3
-5ApwFI4nS5WEpXfoZRU0
-=sZw6
------END PGP SIGNATURE-----
-
---1SQmhf2mF2YjsYvc--
-
---===============3603101323823416332==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3603101323823416332==--
+However, since udev must reside on root (/) in the first place
+the alsa-utils rules will still be installed in /lib/udev/rules.d. So
+this patch will improve the current rules placement but will
+not solve the separate /usr issue I'm talking about. I know
+that hard coding paths is not a good idea in general but the
+way I see it it's the best option and this patch should not be
+used. I'm providing it just in case you don't agree with me on
+using /usr/lib/udev/rules.d as default rules placement directory.
