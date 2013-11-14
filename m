@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/21] ASoC: davinci: Code cleanups and
-	support for DRA7xx
-Date: Thu, 14 Nov 2013 11:52:08 +0000
-Message-ID: <20131114115208.GI26614@sirena.org.uk>
+Subject: Re: [PATCH 20/20] ASoC: davinci-mcasp: Change IO
+ functions parameter list
+Date: Thu, 14 Nov 2013 11:54:40 +0000
+Message-ID: <20131114115440.GJ26614@sirena.org.uk>
 References: <1384421737-4467-1-git-send-email-peter.ujfalusi@ti.com>
+ <1384421737-4467-21-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9033437637638869754=="
+Content-Type: multipart/mixed; boundary="===============4237671799208111487=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id F1FF126170E
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 12:52:11 +0100 (CET)
-In-Reply-To: <1384421737-4467-1-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C5A5426170E
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 12:54:44 +0100 (CET)
+In-Reply-To: <1384421737-4467-21-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,51 +26,54 @@ Cc: alsa-devel@alsa-project.org, Michal Bachraty <michal.bachraty@streamunlimite
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9033437637638869754==
+--===============4237671799208111487==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0XMZdl/q8hSSmFeD"
+	protocol="application/pgp-signature"; boundary="ONvqYzh+7ST5RsLk"
 Content-Disposition: inline
 
 
---0XMZdl/q8hSSmFeD
+--ONvqYzh+7ST5RsLk
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 14, 2013 at 11:35:16AM +0200, Peter Ujfalusi wrote:
+On Thu, Nov 14, 2013 at 11:35:36AM +0200, Peter Ujfalusi wrote:
+> Instead of passing __iomem address (mcasp->base + register_offset) pass
+> the main mcasp structure and only access the mcasp->base in the low level
+> IO functions.
+> In most cases this helps with code readability and it will make it easier
+> to switch over to regmap in the future.
 
-> In this series:
+Applied, thanks.
 
-Applied 1-18, thanks!
-
---0XMZdl/q8hSSmFeD
+--ONvqYzh+7ST5RsLk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJShLlkAAoJELSic+t+oim9FX4QAJ3CYTx28lQsmktrxuWh+LpX
-JDazRtka/N+N/xtj8ALReFlT3NnE1ZBxhu9SXx/Yp+cr67U6YYB3L2XwBtl64mfF
-U+6kDi18Vkzb8ShlDlBm8KAasBptJxNpFyJV5rUNVJb3f+kdp/ht1YvoHL+jAgYC
-iixpAIWV8opurXnDcbp6NY8CAQ5fYBmud6Q5FBjlpGQOs/x3HmVcQnGOXnk8hvNd
-58hPeS477E2XvJxGWL38WjfrnnxGd6Nei0oWHpdhT5uSgYPwYLIfLIe6PmTxPF2Q
-0SIeObjeGeHuWGRWqnKV9A9i9l8kxFOoSHL4pf+MQrn3jAr4Zuk3Jt8/O05bx0Wd
-Moc2BGW0/ekSdYHKP3WO2lJPv9EqYANetFTm84C0o+IrMPisDT52m6tRKsZqpHw3
-ckxxDXT8Ovay28WbK4SEa4L7fUow9XLkD/yCZYxXPPNPD0WSwVpKEGfYMNWkGIml
-tJ94u5Nec+84EyB4HTcwArqSM1JnA6tbnTB/p12z0zmAAHnq8hFGt9EgnrJWFRdZ
-ZkWgpWGcUwPjDFVNUPV+UffIh9xpqSqTZckNGsIXQv9Q2oxhKIyd0Z1Gqb5fFKjA
-Je/6SDC857M7pM4pi8hwnC/2SoXh6IxqZauxAGlRI0mEe6L2qxPBoVDEX7qGzWbv
-MxpJ/q6binlrEa80ipsR
-=Cm1F
+iQIcBAEBAgAGBQJShLn9AAoJELSic+t+oim9PB8P/j0a1ovun46BE5+M84Kj/5df
+f3EPg96VVf0bgl/WC8xitNuJQ/oOLHUNysD0e8PT1Gs+gXnX6bhzVXhHXdLYfGGn
+mbT2N3Rg3IbVS66OU6oJLJktVymVH8m5MqEsW+RuTJHlES7kDGQlYMSVhTOEnsD2
+NVZ3kFeZAxhAxi4/D1EVFKsBm2qi4Rg20orLnnbUMlLh9J3MiqUQ/mhba+9iLumJ
+Nk02xrFn7JCXgQz4ag7Jrpp9d3mrZ+EPJi+pFhKUHs9Ki/lCWkqA6U0m+iWRPNDj
+bUunbmkKdjkVNzs5MPmkvvd2mNB4qPKIX+CV96TSNUYvki77hkdA0bIAFpMry0t6
+B72dlufHe+QgOyuTpSjmIx0p4EEkserpFeBWVzV7FPjfXkqpt3NdxJQkMAYFHtNm
+t1ueCDJ+G/o4IKTjtVTLBXk2LJpB/kWWcEhkRKzGDDRssZqDlVku5I7EBnZmuicI
+YRLlltTZ6XaaN/JEUkFWN/BG6NrSt+DNbtgNmytTAZVupSR54/pw6N4BowO6jSdv
+5qHAnqDXoiClEaxRdwo7uH+wfDC7/vqL66ufADv744t0AbNrZ8HKpOP0slfcpzwI
+/7vn+tFVv4zeeonevpt+XzhY2QsvK54sP8EdH6o0gBjG89qHV+oIeeURFshp+qba
+2HXStr/MrP6aJFVzW6y6
+=EobZ
 -----END PGP SIGNATURE-----
 
---0XMZdl/q8hSSmFeD--
+--ONvqYzh+7ST5RsLk--
 
---===============9033437637638869754==
+--===============4237671799208111487==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9033437637638869754==--
+--===============4237671799208111487==--
