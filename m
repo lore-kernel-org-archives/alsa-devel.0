@@ -1,17 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [ALSA UCM] Help me obtain complete document of
- alsa ucm
-Date: Thu, 14 Nov 2013 19:23:05 +0000
-Message-ID: <1384456985.2305.155.camel@loki>
-References: <CAHa2TOYc5cVeQYJF6d7CKJC0YFh6zFvp0cF5awZ=a50=rzZXSg@mail.gmail.com>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: [PATCH 2/2] ASoC: cs42l52: Correct MIC CTL mask
+Date: Thu, 14 Nov 2013 13:27:51 -0600
+Message-ID: <1384457271-2011-2-git-send-email-brian.austin@cirrus.com>
+References: <1384457271-2011-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 67858261A7B
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 20:23:12 +0100 (CET)
-In-Reply-To: <CAHa2TOYc5cVeQYJF6d7CKJC0YFh6zFvp0cF5awZ=a50=rzZXSg@mail.gmail.com>
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe005.messaging.microsoft.com [216.32.180.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BD14261A7B
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 20:25:01 +0100 (CET)
+In-Reply-To: <1384457271-2011-1-git-send-email-brian.austin@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,76 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xavier Hsu <xavier.hsu@linaro.org>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: Brian Austin <brian.austin@cirrus.com>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2013-11-07 at 16:55 +0800, Xavier Hsu wrote:
-> Hi,
-> When I develop ALSA UCM for my target platform. 
-> I've stocked by lack syntax description.
-> 
-> 
-> 
-> I already know how to use some syntax of alsa ucm like
-> "EnableSequence" and "DisableSequence" in "SectionVerb".
-> So I can use alsa commands like
-> 
-> alsaucm -c EVB set _verb HiFi set _enadev Headphones
-> 
-> alsaucm -c EVB set _verb HiFi set _disdev Headphones
-> 
-> 
-> 
-> to enable or disable our Headphones devices.
-> 
-> 
-> In addition to, I add some setting like
-> ATTRS{id}=="EVBsnd", RUN+="/usr/bin/alsaucm -c MB8AC0300 set _verb
-> HiFi"
-> ATTRS{id}=="EVBsnd", RUN+="/usr/bin/alsaucm -c MB8AC0300 set _verb
-> Record"
-> in 90-alsa-ucm.rules file.
-> 
-> 
-> But I don't know how to correctly use some syntax (such as
-> "ConflictingDevice", "TransitionSequence", "Value" and so on) of alsa
-> ucm.
+The mask for CS42L52_MIC_CTL_TYPE_MASK was wrong keeping the mic config
+from being set correctly.
 
-ConflictingDevice means that the current Device/Modifier is not
-compatible with the specified device.
+Signed-off-by: Brian Austin <brian.austin@cirrus.com>
+---
+ sound/soc/codecs/cs42l52.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-TransitionSequence is a sequence of commands (mixer settings etc) that
-can be used to transition from one verb/device/modifier to another.
-
-Value is used to set default values for verb, devices and modifier.
-
-Arun has created some UCM config file for the Galaxy Nexus:-
-
-http://cgit.collabora.com/git/android/platform/external/collabora/pulseaudio-android.git/tree/data/alsa/ucm/Tuna/HiFi
-
-Best to use these files as an example atm.
-
-> I refer to Use Case Manager in ALSA document.
-> 
-> http://www.alsa-project.org/main/index.php/Use_Case_Manager
-> 
-> Unfortunately, it cannot resolve my questions.
-> 
-
-Sorry, documentation is lacking atm. I'm currently writing some more
-detailed docs but there are not yet finished. 
-> 
-> Do you have more detail information about ALSA UCM syntax usage
-> documentation or example?
-> Thank you very much.
-> 
-The best place to look at the moment is in alsa-lib/src/ucm/parser.c
-
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/ucm/parser.c;h=d7517f69e84b2467d24d4331580ae5be374ff58f;hb=refs/heads/master
-
-The source has examples of what the parser is looking for.
-
-Liam
-> 
-> -Xavier Hsu-
+diff --git a/sound/soc/codecs/cs42l52.h b/sound/soc/codecs/cs42l52.h
+index 1a9412d..6fb8f00 100644
+--- a/sound/soc/codecs/cs42l52.h
++++ b/sound/soc/codecs/cs42l52.h
+@@ -179,7 +179,7 @@
+ #define CS42L52_MICB_CTL			0x11
+ #define	CS42L52_MIC_CTL_MIC_SEL_MASK		0xBF
+ #define	CS42L52_MIC_CTL_MIC_SEL_SHIFT		6
+-#define CS42L52_MIC_CTL_TYPE_MASK		0xDF
++#define CS42L52_MIC_CTL_TYPE_MASK		0x20
+ #define CS42L52_MIC_CTL_TYPE_SHIFT		5
+ 
+ 
+-- 
+1.8.4.3
