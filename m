@@ -1,17 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: blackfin: Fix missing break
-Date: Thu, 14 Nov 2013 13:26:08 +0200
-Message-ID: <5284B350.4040402@ti.com>
-References: <1384359300-21219-1-git-send-email-tiwai@suse.de>	<20131113164715.GX878@sirena.org.uk>	<s5h7gccb5i7.wl%tiwai@suse.de>	<s5h61rwb5e5.wl%tiwai@suse.de>	<20131113184751.GB878@sirena.org.uk>	<s5hwqkbqzf6.wl%tiwai@suse.de>	<20131114100806.GC26614@sirena.org.uk>
- <s5hsiuz9s23.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 19/20] ASoC: davinci-mcasp: Support for fck
+	reparenting
+Date: Thu, 14 Nov 2013 11:51:10 +0000
+Message-ID: <20131114115110.GH26614@sirena.org.uk>
+References: <1384421737-4467-1-git-send-email-peter.ujfalusi@ti.com>
+ <1384421737-4467-20-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============7169386735074429693=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B5C2261A1C
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 12:26:09 +0100 (CET)
-In-Reply-To: <s5hsiuz9s23.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D9CF26170E
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 12:51:16 +0100 (CET)
+In-Reply-To: <1384421737-4467-20-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,46 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Michal Bachraty <michal.bachraty@streamunlimited.com>, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, jsarha@ti.com, Daniel Mack <zonque@gmail.com>, gururaja.hebbar@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-On 11/14/2013 12:49 PM, Takashi Iwai wrote:
-> At Thu, 14 Nov 2013 10:08:06 +0000,
-> Mark Brown wrote:
->>
->> On Thu, Nov 14, 2013 at 07:18:21AM +0100, Takashi Iwai wrote:
->>> Mark Brown wrote:
->>
->>>> That looks to be an issue that's very specific to OMAP4 - you need
->>>> someone who works on OMAP4 to have a look at it.
->>
->>> OK, then could you assign to an appropriate person?
->>> You must have a better clue.
->>
->> Peter Ujfalusi at a guess.
-> =
+--===============7169386735074429693==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="J/zg8ciPNcraoWb6"
+Content-Disposition: inline
 
-> Peter, could you care the bug report below?
->   https://bugzilla.kernel.org/show_bug.cgi?id=3D64741
 
-Sure.
-Platforms using McPDM+twl6040 codec (OMAP4/5) supports 96KHz only at the mo=
-ment.
-This is hardware limitation and the only way to get 44.1/48 KHz supported is
-to use AESS on these platforms. Unfortunately I only have AESS support out =
-of
-tree in my personal branch since it has dependency on Liam's out of tree
-dynamic firmware set (which I'm rolling from kernel version to kernel versi=
-on).
-To use AESS one need to have the firmware as well which is again not upstre=
-am
-currently.
-I only have 3.12-rc1 based version of AESS support, but I'm planning to have
-one for 3.12 and also for 3.13-rc1 when it comes out.
+--J/zg8ciPNcraoWb6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- =
+On Thu, Nov 14, 2013 at 11:35:35AM +0200, Peter Ujfalusi wrote:
 
-P=E9ter
+> +- fck_parent : Should contain a valid clock name which will be used as parent
+> +	       for the McASP fck
+
+I'd expect this to be specified using standard clock tree bindings?
+
+--J/zg8ciPNcraoWb6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJShLkrAAoJELSic+t+oim985sP/0rwpWA4DhMqXh6uAxlDqilH
+DdO1oMJYjyePInwIdrrh2KDAqmchnyXo8u38KxT0iANPvQVx74+3LUBAkUdasl0v
+LCraswNq+QcoEnYRjXHV4oN63MdnsXOTW+rlx3JkH7rzAd9xlW3XWfEP0cqOo7St
+Pi+2jjDWnOYZ6EBjZiMOLutwdQUhVG2V4mHFY9qJXqDnDIaUXh6ATjEkDCMk/hGY
+sgPNY9lRO4027bto8B8zUeuMaZ0iQB4EBJbI2AM5y3Ciidh9Mbbxd+aK6hTalTfY
+qa0j8CaPEEAXiKGtWvt0KbFF/S7MI5HUQvSGUqPrs8TqrpeIAxicqOS0Gb7eVgjX
+Ep/nN75NQiGDsGxAHHTORHsHLMbxPnGkZHUi1zs3iyvrgEDrUZLjU578CF81H+ns
+UNqX2ilaDz0cJsbLFJsW/pe/TNY8OaNAx7HqJmeVzB5b0txhQS7aMddwMf4l5Z6f
+iJB4xjN4AVL6YQooNL+vBv5/4C6U3FPyoPKr3ePM6DnD2U5UuUbyljbwOLDmj4vm
+bYe1mZAbPB8mQQ7esVkPi5Ee3pAIZ3TMA4wZMrUc/5dCj1vCn6Bj6Xs97S6CIsIN
+WlEm0KXEQFnF0PKfu8SBeA6KXFqGaRs62YOGxSgiDv7rhoRvcvDEG9y0Svn8ol1k
+UqyDQoDSK7JDzRSAipjX
+=AGUQ
+-----END PGP SIGNATURE-----
+
+--J/zg8ciPNcraoWb6--
+
+--===============7169386735074429693==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7169386735074429693==--
