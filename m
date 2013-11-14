@@ -1,175 +1,40 @@
-From: Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCHv4] dmaengine: Add support for BCM2835
-Date: Thu, 14 Nov 2013 14:48:10 +0100
-Message-ID: <5235663.VIm8z9qphx@flatron>
-References: <5283BC93.1090801@koalo.de> <2049375.GR9Xb2zuek@flatron> <528477EE.4060407@koalo.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: SPI PCM capture device examples please
+Date: Thu, 14 Nov 2013 15:12:10 +0100
+Message-ID: <5284DA3A.9030602@ladisch.de>
+References: <52836B6B.3070703@flatmax.org> <528420DD.6070506@flatmax.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <528477EE.4060407-oZ8rN/sblLk@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
-Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id C3223261A1F
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 15:12:12 +0100 (CET)
+In-Reply-To: <528420DD.6070506@flatmax.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Matt Flax <flatmax@flatmax.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 14 of November 2013 08:12:46 Florian Meier wrote:
-> On 13.11.2013 21:39, Tomasz Figa wrote:
-> > On Wednesday 13 of November 2013 20:35:22 Florian Meier wrote:
-> >> On 13.11.2013 19:43, Tomasz Figa wrote:
-> >>>> ....
-> >>>> diff --git a/Documentation/devicetree/bindings/dma/bcm2835-dma.txt b/Documentation/devicetree/bindings/dma/bcm2835-dma.txt
-> >>>> new file mode 100644
-> >>>> index 0000000..bca5e84
-> >>>> --- /dev/null
-> >>>> +++ b/Documentation/devicetree/bindings/dma/bcm2835-dma.txt
-> >>>> @@ -0,0 +1,59 @@
-> >>>> +* BCM2835 DMA controller
-> >>>> +
-> >>>> +Required properties:
-> >>>> +- compatible: Should be "brcm,bcm2835-dma".
-> >>>> +- reg: Should contain DMA registers location and length.
-> >>>> +- interrupts: Should contain the DMA interrupts associated
-> >>>> +		to the DMA channels in ascending order.
-> >>>> +		First cell is the IRQ bank.
-> >>>> +		Second cell is the IRQ number.
-> >>>> +- #dma-cells: Must be <1>, used to represent the number of integer cells in
-> >>>> +		the dmas property of client devices.
-> >>>> +- dma-channels: Maximum number of DMA channels available.
-> >>>> +- dma-requests: Number of DMA Requests.
-> >>>
-> >>> The two properties above do not seem to be used anywhere in the driver.
-> >>
-> >> Aren't they necessary for the DMA engine core?
-> > 
-> > Honestly, looking at the DMA bindings documentation, these two are quite
-> > a mystery for me. They don't seem to be used in DMA engine core, but
-> > instead several drivers use them for private purposes.
-> > 
-> > So, since they are optional and you don't seem to need them, I wouldn't
-> > list them.
-> 
-> Ok
-> 
-> >>>> +- brcm,dma-channel-mask: Bit mask representing the channels available.
-> >>>
-> >>> What does the value of this property depend on? Could you describe the
-> >>> structure of this DMA controller?
-> >>>
-> >>>> +
-> >>>> +Example:
-> >>>> +
-> >>>> +dma: dma@7e007000 {
-> >>>> +	compatible = "brcm,bcm2835-dma";
-> >>>> +	reg = <0x7e007000 0xf00>;
-> >>>> +	interrupts = <1 16
-> >>>> +		      1 17
-> >>>> +		      1 18
-> >>>> +		      1 19
-> >>>> +		      1 20
-> >>>> +		      1 21
-> >>>> +		      1 22
-> >>>> +		      1 23
-> >>>> +		      1 24
-> >>>> +		      1 25
-> >>>> +		      1 26
-> >>>> +		      1 27
-> >>>> +		      1 28>;
-> >>>
-> >>> There are 13 interrupts specified here, but...
-> >>>
-> >>>> +
-> >>>> +	#dma-cells = <1>;
-> >>>> +	dma-channels = <16>;
-> >>>
-> >>> ...16 channels here...
-> >>>
-> >>>> +	dma-requests = <32>;
-> >>>> +	brcm,dma-channel-mask = <0x7f35>;
-> >>>
-> >>> ...and 11 set bits here. May I ask you to explain this to me, please?
-> >>
-> >> How I understand this DMA controller:
-> >> There are 16 DMA channels in the DMA controller, but only 13 interrupts
-> >> are available at the IRQ controller. Therefore, the upper DMA channels
-> >> can just not be used. Maybe because there are to many other IRQs and
-> >> they didn't want to implement another IRQ bank.
-> >> Furthermore, some of the DMA channels are already used by the
-> >> VideoCore/GPU/firmware. This is what dma-channel-mask indicates. This
-> >> should be automatically set by the firmware in the future.
-> >> Finally, there are some channels with special functionality that should
-> >> not be used by DMA engine, too. Therefore, these lines:
-> >> 		/* do not use the FIQ and BULK channels */
-> >> 		chans_available &= ~0xD;
-> > 
-> > OK, this makes it much more clear.
-> > 
-> > So, my only comment remaining here is that you shouldn't include the
-> > channels without interrupt signal in the mask. This would allow you
-> > to define it as a mask of channels that are operable and then just
-> > iterate over all set bits in the driver, instead of using tricks with
-> > interrupt resources. What do you think?
-> 
-> Since the mask will come directly from the firmware, this would require
-> patching the firmware. I think that is not worth the effort.
+Matt Flax wrote:
+>> Is it possible to write an ALSA driver for a device which already has an SPI driver ?
 
-Now I'm slightly confused. Do you already have code in your firmware that
-adds this property to your device tree?
+Yes, this is possible.
 
-Otherwise in what circumstances such patching would take place? On given
-hardware (unless it's an FPGA) the configuration of available DMA channels
-that have interrupt signals should not change.
+Audio codecs typcially do not use SPI, so no such driver has been
+written yet.
 
-> 
-> >>> [snip]
-> >>>> diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
-> >>>> new file mode 100644
-> >>>> index 0000000..baf072e
-> >>>> --- /dev/null
-> >>>> +++ b/drivers/dma/bcm2835-dma.c
-> >>> [snip]
-> >>>> +static int bcm2835_dma_probe(struct platform_device *pdev)
-> >>>> +{
-> >>>> +	struct bcm2835_dmadev *od;
-> >>>> +	struct resource *dma_res = NULL;
-> >>>> +	void __iomem *dma_base = NULL;
-> >>>> +	int rc = 0;
-> >>>> +	int i = 0;
-> >>>> +	int irq;
-> >>>> +	uint32_t chans_available;
-> >>> [snip]
-> >>>> +	if (pdev->dev.of_node) {
-> >>>
-> >>> Is this driver supposed to support non-DT based instantation (aka board
-> >>> files)? If not, maybe it would be cleaner to simply check for
-> >>> !pdev->dev.of_node at the beginning of probe and return an error?
-> >>
-> >> I would like to maintain the possibility for board file based
-> >> instatiation, because the Raspberry Pi downstream kernel still doesn't
-> >> support device tree. If this is a no-go, I will accept that.
-> > 
-> > Sure, you are free to do so.
-> > 
-> > What I meant is that your probe won't call bcm2835_dma_chan_init() at all
-> > if there is no pdev->dev.of_node, because the loop iterating over channels
-> > is under the if clause.
-> 
-> Yes you are right, but I think it will make the patching easier, later.
-> Currently, nothing bad happens without device tree - it just allocates
-> no channels.
+> I guess that IIO support for ASLA is not on the cards ?
 
-But isn't it really an error condition, if no channels are allocated?
+Well, that depends on whether you are going to write that driver ...
 
-Anyway, back to my point about leaving non-DT support in a driver, the
-point is still valid only for drivers, not for platforms/boards. So if
-there are no boards supported using board files in mainline that could
-benefit from this driver, then this driver can be safely made DT-only,
-because no new non-DT platforms/boards can be added.
 
-Best regards,
-Tomasz
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Regards,
+Clemens
