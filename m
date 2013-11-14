@@ -1,71 +1,86 @@
-From: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Subject: [PATCHv3 3/3] spi: Use stable dev_name for ACPI enumerated SPI slaves
-Date: Thu, 14 Nov 2013 11:01:01 +0200
-Message-ID: <1384419661-28293-4-git-send-email-jarkko.nikula@linux.intel.com>
-References: <1383309356-25430-1-git-send-email-jarkko.nikula@linux.intel.com>
- <1384419661-28293-1-git-send-email-jarkko.nikula@linux.intel.com>
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1384419661-28293-1-git-send-email-jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
-Cc: linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+From: Ivailo Monev <xakepa10@gmail.com>
+Subject: Re: udev rules prefix
+Date: Thu, 14 Nov 2013 12:08:47 +0000
+Message-ID: <5284BD4F.8080205@gmail.com>
+References: <CABdmW1cQmesQfC2Kwt4CBOJzrVGBdaC2m2KFb4XeQZYhJAzfMQ@mail.gmail.com>
+ <s5hr4ajqy5d.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f53.google.com (mail-bk0-f53.google.com
+ [209.85.214.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E6F02616E1
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 10:10:32 +0100 (CET)
+Received: by mail-bk0-f53.google.com with SMTP id na10so848599bkb.26
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 01:10:32 -0800 (PST)
+Received: from [31.211.147.156] ([31.211.147.156])
+ by mx.google.com with ESMTPSA id b7sm1662051bkg.1.2013.11.14.01.10.30
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Thu, 14 Nov 2013 01:10:31 -0800 (PST)
+In-Reply-To: <s5hr4ajqy5d.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Current spi bus_num.chip_select "spix.y" based device naming scheme may not
-be stable enough to be used in name based matching, for instance within
-ALSA SoC subsystem.
+On 11/14/13 02:48, David Henningsson wrote:
+> On 11/13/2013 09:36 PM, Ivailo wrote:
+>> Hello,
+>>
+>> the default prefix for alsa-utils is /usr however the udev rules directory
+>> is /lib/udev/rules.d thus on setups with separate partition for /usr the
+>> binaries, from /usr/bin and /usr/sbin, will likely not be available during
+>> the boot process and the udev rule will fail to restore the state.
+>>
+>> I suggest that the udev rules directory follows the prefix or append /usr
+>> to it to resolve this.
+>>
+>> Cheers!
+> Hi,
+>
+> ALSA merely follows what udev dictates, so I think your
+> question/suggestion is better redirected on the udev (now systemd)
+> mailinglist. Or potentially that of your distro.
+>
+Actually, you are not following what udev dictates (unless I'm missing 
+something).
+By default, systemd (and more importantly udev) will be installed with 
+/usr prefix
+(which is wrong in it self because it blindly assumes that /usr has been 
+mounted
+via initrd/initramfs where separate /usr partition is in use but let's 
+not talk about
+this here).
 
-This can be problem in PC kind of platforms if there are changes in SPI bus
-configuration, amount of busses or probe order.
 
-This patch addresses the problem by using the ACPI device name with
-"spi-" prefix for ACPI enumerated SPI slave. For them device name
-"spix.y" becomes "spi-INTABCD:ij".
-
-Signed-off-by: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
----
- drivers/spi/spi.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index af4f971..d9140bb 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -352,6 +352,19 @@ struct spi_device *spi_alloc_device(struct spi_master *master)
- }
- EXPORT_SYMBOL_GPL(spi_alloc_device);
- 
-+static void spi_dev_set_name(struct spi_device *spi)
-+{
-+	struct acpi_device *adev = ACPI_COMPANION(&spi->dev);
-+
-+	if (adev) {
-+		dev_set_name(&spi->dev, "spi-%s", dev_name(&adev->dev));
-+		return;
-+	}
-+
-+	dev_set_name(&spi->dev, "%s.%u", dev_name(&spi->master->dev),
-+		     spi->chip_select);
-+}
-+
- /**
-  * spi_add_device - Add spi_device allocated with spi_alloc_device
-  * @spi: spi_device to register
-@@ -378,9 +391,7 @@ int spi_add_device(struct spi_device *spi)
- 	}
- 
- 	/* Set the bus ID string */
--	dev_set_name(&spi->dev, "%s.%u", dev_name(&spi->master->dev),
--			spi->chip_select);
--
-+	spi_dev_set_name(spi);
- 
- 	/* We need to make sure there's no other device with this
- 	 * chipselect **BEFORE** we call setup(), else we'll trash
--- 
-1.8.4.2
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On 11/14/13 06:45, Takashi Iwai wrote:
+> At Wed, 13 Nov 2013 20:36:48 +0000,
+> Ivailo wrote:
+>> Hello,
+>>
+>> the default prefix for alsa-utils is /usr however the udev rules directory
+>> is /lib/udev/rules.d thus on setups with separate partition for /usr the
+>> binaries, from /usr/bin and /usr/sbin, will likely not be available during
+>> the boot process and the udev rule will fail to restore the state.
+> Not true.  /lib must be always present at boot even if /usr isn't
+> mounted.  That's the reason why /lib/udev was chosen as default in the
+> past.
+>
+>
+> Takashi
+You got me wrong, I know that /lib should be available on early boot 
+(unless it's a
+symlink, like in Arch Linux) but the point is that since the alsa-utils 
+binaries are
+installed in /usr so should be the udev rules otherwise during boot 
+without /usr
+being mounted you will see error message about /usr/sbin/alsactl.
