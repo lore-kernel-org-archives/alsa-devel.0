@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 18/20] ASoC: davinci-mcasp: Support for McASP
-	version found in DRA7xx
-Date: Thu, 14 Nov 2013 11:35:34 +0200
-Message-ID: <1384421737-4467-19-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 21/21] ASoC: davinci-mcasp: Correct am33xx
+	snd_platform_data name
+Date: Thu, 14 Nov 2013 11:35:37 +0200
+Message-ID: <1384421737-4467-22-git-send-email-peter.ujfalusi@ti.com>
 References: <1384421737-4467-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id AFA48265182
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 10:36:24 +0100 (CET)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id EDF3826518D
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 10:36:32 +0100 (CET)
 In-Reply-To: <1384421737-4467-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,191 +25,36 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Michal Bachraty <michal.bachraty@streamunlimited.com>, nsekhar@ti.com, jsarha@ti.com, gururaja.hebbar@ti.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The IP in DRA7xx is similar to the IP found in TI81xxAM3xxx/AM4xxx type of
-SoCs but it is is integrated with sDMA instead of eDMA. The suitable pcm
-driver for DRA7xx is the omap-pcm driver which is using dmaengine.
-In the driver we can configure both dma related structures used for eDMA and
-sDMA. The only thing we need to make sure that we set the correct dma_data
-at startup with snd_soc_dai_set_dma_data()
+An earlier patch overlooked this when the compatible has been changed from
+omap2 -> am33x.
+Rename omap2_mcasp_pdata to am33xx_mcasp_pdata.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- .../bindings/sound/davinci-mcasp-audio.txt         |  1 +
- include/linux/platform_data/davinci_asp.h          |  1 +
- sound/soc/davinci/davinci-mcasp.c                  | 52 +++++++++++++++++++---
- 3 files changed, 47 insertions(+), 7 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-index 1eed972..990fa71 100644
---- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-+++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-@@ -5,6 +5,7 @@ Required properties:
- 	"ti,dm646x-mcasp-audio"	: for DM646x platforms
- 	"ti,da830-mcasp-audio"	: for both DA830 & DA850 platforms
- 	"ti,am33xx-mcasp-audio"	: for AM33xx platforms (AM33xx, AM43xx, TI81xx)
-+	"ti,dra7-mcasp-audio"	: for DRA7xx platforms
- 
- - reg : Should contain reg specifiers for the entries in the reg-names property.
- - reg-names : Should contain:
-diff --git a/include/linux/platform_data/davinci_asp.h b/include/linux/platform_data/davinci_asp.h
-index 689a856..5245992 100644
---- a/include/linux/platform_data/davinci_asp.h
-+++ b/include/linux/platform_data/davinci_asp.h
-@@ -92,6 +92,7 @@ enum {
- 	MCASP_VERSION_1 = 0,	/* DM646x */
- 	MCASP_VERSION_2,	/* DA8xx/OMAPL1x */
- 	MCASP_VERSION_3,        /* TI81xx/AM33xx */
-+	MCASP_VERSION_4,	/* DRA7xxx */
- };
- 
- enum mcbsp_clk_input_pin {
 diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 93f2e29..fc8c13d 100644
+index 36a4b9a..b7858bf 100644
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -31,12 +31,14 @@
- #include <sound/pcm_params.h>
- #include <sound/initval.h>
- #include <sound/soc.h>
-+#include <sound/dmaengine_pcm.h>
- 
- #include "davinci-pcm.h"
- #include "davinci-mcasp.h"
- 
- struct davinci_mcasp {
- 	struct davinci_pcm_dma_params dma_params[2];
-+	struct snd_dmaengine_dai_dma_data dma_data[2];
- 	void __iomem *base;
- 	u32 fifo_base;
- 	struct device *dev;
-@@ -458,7 +460,9 @@ static int davinci_hw_common_param(struct davinci_mcasp *mcasp, int stream,
- 	u8 max_active_serializers = (channels + slots - 1) / slots;
- 	u32 reg;
- 	/* Default configuration */
--	mcasp_set_bits(mcasp->base + DAVINCI_MCASP_PWREMUMGT_REG, MCASP_SOFT);
-+	if (mcasp->version != MCASP_VERSION_4)
-+		mcasp_set_bits(mcasp->base + DAVINCI_MCASP_PWREMUMGT_REG,
-+			       MCASP_SOFT);
- 
- 	/* All PINS as McASP */
- 	mcasp_set_reg(mcasp->base + DAVINCI_MCASP_PFUNC_REG, 0x00000000);
-@@ -605,6 +609,8 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct davinci_pcm_dma_params *dma_params =
- 					&mcasp->dma_params[substream->stream];
-+	struct snd_dmaengine_dai_dma_data *dma_data =
-+					&mcasp->dma_data[substream->stream];
- 	int word_length;
- 	u8 fifo_level;
- 	u8 slots = mcasp->tdm_slots;
-@@ -666,6 +672,8 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 		dma_params->acnt = dma_params->data_type;
- 
- 	dma_params->fifo_level = fifo_level;
-+	dma_data->maxburst = fifo_level;
-+
- 	davinci_config_channel_size(mcasp, word_length);
- 
- 	return 0;
-@@ -711,7 +719,12 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
- {
- 	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
- 
--	snd_soc_dai_set_dma_data(dai, substream, mcasp->dma_params);
-+	if (mcasp->version == MCASP_VERSION_4)
-+		snd_soc_dai_set_dma_data(dai, substream,
-+					&mcasp->dma_data[substream->stream]);
-+	else
-+		snd_soc_dai_set_dma_data(dai, substream, mcasp->dma_params);
-+
- 	return 0;
- }
- 
-@@ -794,6 +807,13 @@ static struct snd_platform_data omap2_mcasp_pdata = {
- 	.version = MCASP_VERSION_3,
+@@ -789,7 +789,7 @@ static struct snd_platform_data da830_mcasp_pdata = {
+ 	.version = MCASP_VERSION_2,
  };
  
-+static struct snd_platform_data dra7_mcasp_pdata = {
-+	.tx_dma_offset = 0x200,
-+	.rx_dma_offset = 0x284,
-+	.asp_chan_q = EVENTQ_0,
-+	.version = MCASP_VERSION_4,
-+};
-+
- static const struct of_device_id mcasp_dt_ids[] = {
- 	{
- 		.compatible = "ti,dm646x-mcasp-audio",
-@@ -807,6 +827,10 @@ static const struct of_device_id mcasp_dt_ids[] = {
- 		.compatible = "ti,am33xx-mcasp-audio",
- 		.data = &omap2_mcasp_pdata,
+-static struct snd_platform_data omap2_mcasp_pdata = {
++static struct snd_platform_data am33xx_mcasp_pdata = {
+ 	.tx_dma_offset = 0,
+ 	.rx_dma_offset = 0,
+ 	.asp_chan_q = EVENTQ_0,
+@@ -814,7 +814,7 @@ static const struct of_device_id mcasp_dt_ids[] = {
  	},
-+	{
-+		.compatible = "ti,dra7-mcasp-audio",
-+		.data = &dra7_mcasp_pdata,
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mcasp_dt_ids);
-@@ -999,6 +1023,9 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	else
- 		dma_data->dma_addr = mem->start + pdata->tx_dma_offset;
- 
-+	/* Unconditional dmaengine stuff */
-+	mcasp->dma_data[SNDRV_PCM_STREAM_PLAYBACK].addr = dma_data->dma_addr;
-+
- 	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (res)
- 		dma_data->channel = res->start;
-@@ -1015,6 +1042,9 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	else
- 		dma_data->dma_addr = mem->start + pdata->rx_dma_offset;
- 
-+	/* Unconditional dmaengine stuff */
-+	mcasp->dma_data[SNDRV_PCM_STREAM_CAPTURE].addr = dma_data->dma_addr;
-+
- 	if (mcasp->version < MCASP_VERSION_3) {
- 		mcasp->fifo_base = DAVINCI_MCASP_V2_AFIFO_BASE;
- 		/* dma_data->dma_addr is pointing to the data port address */
-@@ -1029,6 +1059,10 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	else
- 		dma_data->channel = pdata->rx_dma_channel;
- 
-+	/* Unconditional dmaengine stuff */
-+	mcasp->dma_data[SNDRV_PCM_STREAM_PLAYBACK].filter_data = "tx";
-+	mcasp->dma_data[SNDRV_PCM_STREAM_CAPTURE].filter_data = "rx";
-+
- 	dev_set_drvdata(&pdev->dev, mcasp);
- 	ret = snd_soc_register_component(&pdev->dev, &davinci_mcasp_component,
- 					 &davinci_mcasp_dai[pdata->op_mode], 1);
-@@ -1036,10 +1070,12 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	if (ret != 0)
- 		goto err_release_clk;
- 
--	ret = davinci_soc_platform_register(&pdev->dev);
--	if (ret) {
--		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
--		goto err_unregister_component;
-+	if (mcasp->version != MCASP_VERSION_4) {
-+		ret = davinci_soc_platform_register(&pdev->dev);
-+		if (ret) {
-+			dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
-+			goto err_unregister_component;
-+		}
- 	}
- 
- 	return 0;
-@@ -1054,9 +1090,11 @@ err_release_clk:
- 
- static int davinci_mcasp_remove(struct platform_device *pdev)
- {
-+	struct davinci_mcasp *mcasp = dev_get_drvdata(&pdev->dev);
- 
- 	snd_soc_unregister_component(&pdev->dev);
--	davinci_soc_platform_unregister(&pdev->dev);
-+	if (mcasp->version != MCASP_VERSION_4)
-+		davinci_soc_platform_unregister(&pdev->dev);
- 
- 	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
+ 	{
+ 		.compatible = "ti,am33xx-mcasp-audio",
+-		.data = &omap2_mcasp_pdata,
++		.data = &am33xx_mcasp_pdata,
+ 	},
+ 	{
+ 		.compatible = "ti,dra7-mcasp-audio",
 -- 
 1.8.4.2
