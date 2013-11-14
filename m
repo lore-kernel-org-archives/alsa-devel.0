@@ -1,75 +1,47 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cs42l52: Reorganize MICA/B Config
-	and Select
-Date: Thu, 14 Nov 2013 12:01:01 +0000
-Message-ID: <20131114120101.GM26614@sirena.org.uk>
-References: <1384380340-19074-1-git-send-email-brian.austin@cirrus.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4288533612785115479=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 870AB26170E
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2013 13:01:05 +0100 (CET)
-In-Reply-To: <1384380340-19074-1-git-send-email-brian.austin@cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+From: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: [PATCHv4 0/3] I2C and SPI dev_name change for ACPI enumerated slaves
+Date: Thu, 14 Nov 2013 14:03:50 +0200
+Message-ID: <1384430633-23426-1-git-send-email-jarkko.nikula@linux.intel.com>
+References: <1384419661-28293-1-git-send-email-jarkko.nikula@linux.intel.com>
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1384419661-28293-1-git-send-email-jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
+Cc: linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+v4:
+This version adds and uses acpi_dev_name() accessor instead defining
+struct acpi_device stub for !CONFIG_ACPI 
 
---===============4288533612785115479==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Z1Z8UV8BNhgCynIS"
-Content-Disposition: inline
+v3:
+Third version of the set that changes I2C and SPI slave device names
+to be generated from stable ACPI device names on ACPI 5 based systems
+instead of using bus numbers which could change.
 
+Slave device name change goes as
 
---Z1Z8UV8BNhgCynIS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	"x-00yz" -> "i2c-INTABCD:ij"
+	"spix.y" -> "spi-INTABCD:ij"
 
-On Wed, Nov 13, 2013 at 04:05:40PM -0600, Brian Austin wrote:
-> This patch reworks the MICA an MICB config for single-ended or
-> differential and the selection of which MIC for the single config
+This version is actually a bit cleaner thanks to Rafael's
+"ACPI / driver core: Store an ACPI device pointer in struct acpi_dev_node"
+in git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
 
-Applied, thanks
+Set goes on top of linux-pm/linux-next due dependency to 1/3. As we are now
+in merge-window I'm fine if 1/3 goes in first and I queue 2-3/3 later
+to i2c and spi trees.
 
---Z1Z8UV8BNhgCynIS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Jarkko Nikula (3):
+  ACPI: Provide acpi_dev_name accessor for struct acpi_device device
+    name
+  i2c: Use stable dev_name for ACPI enumerated I2C slaves
+  spi: Use stable dev_name for ACPI enumerated SPI slaves
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+ drivers/i2c/i2c-core.c | 21 +++++++++++++++++----
+ drivers/spi/spi.c      | 17 ++++++++++++++---
+ include/linux/acpi.h   | 10 ++++++++++
+ 3 files changed, 41 insertions(+), 7 deletions(-)
 
-iQIcBAEBAgAGBQJShLt6AAoJELSic+t+oim9RQoQAJJsfuebno8iFt8DM7M0swcO
-RFnOHOZtibXI1GpeKoi7tAqZL5QMUcxEDsrDCZ6vqlI+i7xbo757dNw9YxJh6dJ6
-ADj4Vqxkk7nPiFLfLQXuLGp9Usi5bcFMOIY6E0W+uoPu5NabY0eZoYHpsP3cdXbH
-LcM/xJKqDrofIWRM59aw6nygOduFJ9atZeEM2XrXzu4xmB9uIaPgk1T7ujfDTxso
-wGrRvtwd67q9DODlZ1DYrqhPzZ3vtc5IMlTUwc0OaoKuNL1zxFkNIYFD/xWiosY4
-ujRX3R9Azr9M+2ylvSsX4xKMgCAoFt19c5syXxGgcpkprrn3KrDbqv0WQxxbaCuq
-ZvPXaEEAajPorvqQVPhmQTMQUEfPki3c3QZg6wsUXmMAOyxaGu0F7tmqZ+p0rJAu
-KvfyNxM1GNAXKf0UexpKnG7zwJdUF4YHiwfShOUBhPFHPS0LzL3DxzVgcV9JndsE
-WDXnf18hRfOU57g8xK86lWm7QjhkS+MgP6dcWnN3+fcuDIoHD3hA+EC7v8xzVNjB
-rJEu+VoYDuITTLKZKaRXM5D0aa9NQh2sRHCuXz3Th5cXpzL7PGowOtzfqHhKxoSd
-01fAxQJkYhehVGPZtFdTsJsuWpMOTtOM263BzlN8gL5YMpS44gNhl9luFy4tmYwf
-/qCCxQpjGv+akM9L0djl
-=alGv
------END PGP SIGNATURE-----
-
---Z1Z8UV8BNhgCynIS--
-
---===============4288533612785115479==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4288533612785115479==--
+-- 
+1.8.4.2
