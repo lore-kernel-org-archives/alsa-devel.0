@@ -1,21 +1,18 @@
-From: Qiao Zhou <zhouqiao@marvell.com>
-Subject: Re: [PATCH V0] ASoC: pxa-ssp: add TISSP mode support
-Date: Fri, 15 Nov 2013 16:57:23 +0800
-Message-ID: <5285E1F3.9010406@marvell.com>
-References: <1383640208-11919-1-git-send-email-zhouqiao@marvell.com>
- <20131106112421.GI11602@sirena.org.uk> <527C43D0.2030301@marvell.com>
- <20131108101948.GD2493@sirena.org.uk> <527EE65D.3070804@marvell.com>
- <20131110111021.GB878@sirena.org.uk> <52803B02.6000008@marvell.com>
- <20131111112115.GF2674@sirena.org.uk>
+From: Knut Petersen <Knut_Petersen@t-online.de>
+Subject: Re: [PATCH 07/10] ALSA: rme96: Return error code in
+ PCM copy ops
+Date: Fri, 15 Nov 2013 10:40:07 +0100
+Message-ID: <5285EBF7.7080109@t-online.de>
+References: <1383062433-9388-1-git-send-email-tiwai@suse.de>
+ <1383062433-9388-8-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
- [67.231.148.174])
- by alsa0.perex.cz (Postfix) with ESMTP id AA8A1260323
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2013 09:57:29 +0100 (CET)
-In-Reply-To: <20131111112115.GF2674@sirena.org.uk>
+Received: from mailout03.t-online.de (mailout03.t-online.de [194.25.134.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 580B526030E
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2013 10:40:10 +0100 (CET)
+In-Reply-To: <1383062433-9388-8-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,26 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, "trinity.qiao.zhou@gmail.com" <trinity.qiao.zhou@gmail.com>, Chao Xie <cxie4@marvell.com>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/11/2013 07:21 PM, Mark Brown wrote:
-> On Mon, Nov 11, 2013 at 10:03:46AM +0800, Qiao Zhou wrote:
+On 29.10.2013 17:00, Takashi Iwai wrote:
+> Just pass the error code returned from copy_from_user_toio() and
+> copy_to_user_fromio() helpers.
 >
->> Yes, it should be an improvement of current driver. The format is
->> not a new one, and the DSP_A mode is suitable for it. The question
->> here is to handle both PSP and SSP mode here. should I pass another
->> parameter here to support it?
+> Spotted by coverity CID 114119.
 >
-> Can't the driver just do whatever is best automatically - why would the
-> user need to configure things?
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>   sound/pci/rme96.c | 10 ++++------
+>   1 file changed, 4 insertions(+), 6 deletions(-)
 >
-Hi Mark,
+> diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
+> index bb9ebc5543d7..0236363c301f 100644
+> --- a/sound/pci/rme96.c
+> +++ b/sound/pci/rme96.c
+> @@ -350,9 +350,8 @@ snd_rme96_playback_copy(struct snd_pcm_substream *substream,
+>   	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
+>   	count <<= rme96->playback_frlog;
+>   	pos <<= rme96->playback_frlog;
+> -	copy_from_user_toio(rme96->iobase + RME96_IO_PLAY_BUFFER + pos, src,
+> -			    count);
+> -	return 0;
+> +	return copy_from_user_toio(rme96->iobase + RME96_IO_PLAY_BUFFER + pos, src,
+> +				   count);
 
-I'll check and replace the PSP mode setting with SSP for DSP_x mode. 
-Thanks a lot for the instruction.
--- 
+Under which circumstances could copy_from_user_toio() fail?
+>   }
+>   
+>   static int
+> @@ -365,9 +364,8 @@ snd_rme96_capture_copy(struct snd_pcm_substream *substream,
+>   	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
+>   	count <<= rme96->capture_frlog;
+>   	pos <<= rme96->capture_frlog;
+> -	copy_to_user_fromio(dst, rme96->iobase + RME96_IO_REC_BUFFER + pos,
+> -			    count);
+> -        return 0;
+> +	return copy_to_user_fromio(dst, rme96->iobase + RME96_IO_REC_BUFFER + pos,
+> +				   count);
+When will copy_to_user_fromio() fail?
 
-Best Regards
-Qiao
+
+cu,
+  Knut
+>   }
+>   
+>   /*
