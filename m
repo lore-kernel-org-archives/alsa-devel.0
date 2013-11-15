@@ -1,16 +1,15 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [RFC 4/9] ASoC: fsl-ssi: Add imx50-ssi and
-	of_device_id matching
-Date: Fri, 15 Nov 2013 16:49:39 +0100
-Message-ID: <1384530584-31273-5-git-send-email-mpa@pengutronix.de>
+Subject: [RFC 1/9] ASoC: fsl-ssi: Drop AC97 debug register usage
+Date: Fri, 15 Nov 2013 16:49:36 +0100
+Message-ID: <1384530584-31273-2-git-send-email-mpa@pengutronix.de>
 References: <1384530584-31273-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 47D56261AE9
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2013 16:52:27 +0100 (CET)
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 1D3E5261B17
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2013 16:52:29 +0100 (CET)
 In-Reply-To: <1384530584-31273-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,92 +24,39 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur 
 Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-There is a small but significant difference between imx21-ssi and
-imx50-ssi and above. imx21-ssi does not allow online reconfiguration of
-some registers. They have to be configured at the beginning.
-
-imx50-ssi has to reconfigure the SSI unit while it is running. Otherwise
-it would not be possible to have two streams in parallel. The new SDMA
-unit in imx50 and above has to be configured before the first DMA
-request arrives. Therefor we need to setup TDMAE/RDMAE just before
-starting the stream.
-
-This patch introduces distinct imx50-ssi as compatible and adds
-of_device_id matching in the probe function.
+In i.MX27 reference manual the SOR register is listed for debugging
+purpose only. In mx50 and later, this register is not even listed
+anymore. We shouldn't use a debug register for normal operation.
 
 Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 30 ++++++++++++++++++++++--------
- 1 file changed, 22 insertions(+), 8 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index c1de0c2..c909edf 100644
+index 35e2773..1570139 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -190,6 +190,20 @@ struct fsl_ssi_private {
- 	char name[1];
- };
+@@ -409,8 +409,6 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
+ 		 */
+ 		write_ssi_mask(&ssi->scr, 0, CCSR_SSI_SCR_SSIEN |
+ 				CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE);
+-
+-		write_ssi(CCSR_SSI_SOR_WAIT(3), &ssi->sor);
+ 	}
  
-+enum fsl_ssi_type {
-+	FSL_SSI_MCP8610,
-+	FSL_SSI_MX21,
-+	FSL_SSI_MX50,
-+};
-+
-+static const struct of_device_id fsl_ssi_ids[] = {
-+	{ .compatible = "fsl,mpc8610-ssi", .data = (void *) FSL_SSI_MCP8610},
-+	{ .compatible = "fsl,imx21-ssi", .data = (void *) FSL_SSI_MX21},
-+	{ .compatible = "fsl,imx50-ssi", .data = (void *) FSL_SSI_MX50},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
-+
- #if IS_ENABLED(CONFIG_DEBUG_FS)
- /**
-  * fsl_ssi_isr: SSI interrupt handler
-@@ -918,6 +932,8 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	int ret = 0;
- 	struct device_attribute *dev_attr = NULL;
- 	struct device_node *np = pdev->dev.of_node;
-+	const struct of_device_id *of_id;
-+	enum fsl_ssi_type hw_type;
- 	const char *p, *sprop;
- 	const uint32_t *iprop;
- 	struct resource res;
-@@ -932,6 +948,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	if (!of_device_is_available(np))
- 		return -ENODEV;
+ 	return 0;
+@@ -700,11 +698,6 @@ static int fsl_ssi_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		return -EINVAL;
+ 	}
  
-+	of_id = of_match_device(fsl_ssi_ids, &pdev->dev);
-+	if (!of_id)
-+		return -EINVAL;
-+	hw_type = (enum fsl_ssi_type) of_id->data;
-+
- 	/* We only support the SSI in "I2S Slave" mode */
- 	sprop = of_get_property(np, "fsl,mode", NULL);
- 	if (!sprop) {
-@@ -1005,7 +1026,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
-                 /* Older 8610 DTs didn't have the fifo-depth property */
- 		ssi_private->fifo_depth = 8;
- 
--	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx21-ssi")) {
-+	if (hw_type == FSL_SSI_MX21 || hw_type == FSL_SSI_MX50) {
- 		u32 dma_events[2];
- 		ssi_private->ssi_on_imx = true;
- 
-@@ -1200,13 +1221,6 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		write_ssi(CCSR_SSI_SOR_TX_CLR, &ssi->sor);
+-	else
+-		write_ssi(CCSR_SSI_SOR_RX_CLR, &ssi->sor);
+-
  	return 0;
  }
  
--static const struct of_device_id fsl_ssi_ids[] = {
--	{ .compatible = "fsl,mpc8610-ssi", },
--	{ .compatible = "fsl,imx21-ssi", },
--	{}
--};
--MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
--
- static struct platform_driver fsl_ssi_driver = {
- 	.driver = {
- 		.name = "fsl-ssi-dai",
 -- 
 1.8.4.2
