@@ -1,22 +1,102 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: use clk_disable_unprepare instead of clk_disable
-Date: Fri, 15 Nov 2013 09:39:37 -0700
-Message-ID: <52864E49.2080801@wwwdotorg.org>
-References: <CAPgLHd84PK+6b0OfnRqBppvBk9i3Xy=ZEiPQO8ZCPz+NW9g4Uw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CAPgLHd84PK+6b0OfnRqBppvBk9i3Xy=ZEiPQO8ZCPz+NW9g4Uw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Wei Yongjun <weiyj.lk-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org
-Cc: yongjun_wei-zrsr2BFq86L20UzCJQGyNP8+0UxHXcjY@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+From: "Oskar Schirmer" <oskar@scara.com>
+Subject: [PATCH] ASoC: fsl: imx-ssi: omit ssi counter to avoid harm in unbalanced situation
+Date: 15 Nov 2013 16:44:23 +0000
+Message-ID: <1384533863-14288-1-git-send-email-oskar@scara.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Mark Brown <broonie@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Oskar Schirmer <oskar@scara.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/15/2013 02:53 AM, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei-zrsr2BFq86L20UzCJQGyNP8+0UxHXcjY@public.gmane.org>
-> 
-> clk_prepare_enable() is used so clk_disable_unprepare() should be
-> used instead of clk_disable() in the error handling path.
+Unbalanced calls to imx_ssi_trigger() may result in endless
+SSI activity and thus provoke eternal sound. While on the first glance,
+the switch statement looks pretty symmetric, the SUSPEND/RESUME
+pair is not: the suspend case comes along snd_pcm_suspend_all(),
+which for fsl/imx-pcm-fiq is called only at snd_soc_suspend(),
+but the resume case originates straight from the SNDRV_PCM_IOCTL_RESUME.
+This way userland may provoke an unbalanced resume, which might cause
+the ssi->enabled counter to increase and never return to zero again,
+so eventually SSI_SCR_SSIEN is never disabled.
 
-Acked-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Simply removing the ssi->enabled will solve the problem, as long as
+one never goes play and capture game simultaneously, but beware
+trying both at once, the early TRIGGER_STOP will cut off the other
+activity prematurely. So now playing and capturing is scrutinized
+separately, instead of by counting.
+
+This is essentially the same stuff as in sound/soc/fsl/imx-pcm-fiq.c
+which I send a patch for three days ago. Astonishing enough this
+highly fragile scheme is used twice in parallel to serve the very
+same control function, synchronously: Once out of sync you are lost
+until reboot.
+
+Note, that these fixes wont prevent state machine distortion on alsa
+level to cut sound or the like. It just makes sure we have a chance
+to synchronise again later on.
+
+Signed-off-by: Oskar Schirmer <oskar@scara.com>
+---
+ sound/soc/fsl/imx-ssi.c |   19 ++++++++++++-------
+ sound/soc/fsl/imx-ssi.h |    3 ++-
+ 2 files changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
+index f5f248c..c68499b 100644
+--- a/sound/soc/fsl/imx-ssi.c
++++ b/sound/soc/fsl/imx-ssi.c
+@@ -298,27 +298,32 @@ static int imx_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			scr |= SSI_SCR_TE;
+-		else
++			ssi->playing = 1;
++		} else {
+ 			scr |= SSI_SCR_RE;
++			ssi->capturing = 1;
++		}
+ 		sier |= sier_bits;
+ 
+-		if (++ssi->enabled == 1)
+-			scr |= SSI_SCR_SSIEN;
++		scr |= SSI_SCR_SSIEN;
+ 
+ 		break;
+ 
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			scr &= ~SSI_SCR_TE;
+-		else
++			ssi->playing = 0;
++		} else {
+ 			scr &= ~SSI_SCR_RE;
++			ssi->capturing = 0;
++		}
+ 		sier &= ~sier_bits;
+ 
+-		if (--ssi->enabled == 0)
++		if (!ssi->playing && !ssi->capturing)
+ 			scr &= ~SSI_SCR_SSIEN;
+ 
+ 		break;
+diff --git a/sound/soc/fsl/imx-ssi.h b/sound/soc/fsl/imx-ssi.h
+index 560c40f..a3c90d5 100644
+--- a/sound/soc/fsl/imx-ssi.h
++++ b/sound/soc/fsl/imx-ssi.h
+@@ -213,7 +213,8 @@ struct imx_ssi {
+ 
+ 	int fiq_init;
+ 	int dma_init;
+-	int enabled;
++	int playing;
++	int capturing;
+ };
+ 
+ #endif /* _IMX_SSI_H */
+-- 
+1.7.9.5
