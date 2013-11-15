@@ -1,16 +1,28 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: cs42l52: Correct MIC CTL mask
-Date: Fri, 15 Nov 2013 10:17:25 +0000
-Message-ID: <20131115101725.GW26614@sirena.org.uk>
-References: <1384451172-1532-1-git-send-email-brian.austin@cirrus.com>
- <1384451172-1532-2-git-send-email-brian.austin@cirrus.com>
+From: Ivailo Monev <xakepa10@gmail.com>
+Subject: Re: udev rules prefix
+Date: Fri, 15 Nov 2013 13:16:41 +0000
+Message-ID: <52861EB9.8010006@gmail.com>
+References: <CABdmW1cQmesQfC2Kwt4CBOJzrVGBdaC2m2KFb4XeQZYhJAzfMQ@mail.gmail.com>
+ <s5hr4ajqy5d.wl%tiwai@suse.de> <5284BD4F.8080205@gmail.com>
+ <s5hwqkb9v5i.wl%tiwai@suse.de> <5284CF21.6070105@gmail.com>
+ <s5hr4aj9ryp.wl%tiwai@suse.de> <52851B1E.80101@gmail.com>
+ <s5hsiuz7yfv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1363991438965353549=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 30C9126030E
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2013 11:17:34 +0100 (CET)
-In-Reply-To: <1384451172-1532-2-git-send-email-brian.austin@cirrus.com>
+Received: from mail-bk0-f46.google.com (mail-bk0-f46.google.com
+ [209.85.214.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96976261A0F
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2013 11:18:28 +0100 (CET)
+Received: by mail-bk0-f46.google.com with SMTP id u15so281139bkz.19
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2013 02:18:28 -0800 (PST)
+Received: from [31.211.147.156] ([31.211.147.156])
+ by mx.google.com with ESMTPSA id b6sm6541160bko.16.2013.11.15.02.18.26
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Fri, 15 Nov 2013 02:18:26 -0800 (PST)
+In-Reply-To: <s5hsiuz7yfv.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +32,172 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: alsa-devel@alsa-project.org, lgridwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 11/14/13 16:14, Takashi Iwai wrote:
+> At Thu, 14 Nov 2013 18:49:02 +0000,
+> Ivailo Monev wrote:
+>> On 11/14/13 10:51, Takashi Iwai wrote:
+>>> At Thu, 14 Nov 2013 13:24:49 +0000,
+>>> Ivailo Monev wrote:
+>>>> On 11/14/13 09:42, Takashi Iwai wrote:
+>>>>> At Thu, 14 Nov 2013 12:08:47 +0000,
+>>>>> Ivailo Monev wrote:
+>>>>>> On 11/14/13 02:48, David Henningsson wrote:
+>>>>>>> On 11/13/2013 09:36 PM, Ivailo wrote:
+>>>>>>>> Hello,
+>>>>>>>>
+>>>>>>>> the default prefix for alsa-utils is /usr however the udev rules directory
+>>>>>>>> is /lib/udev/rules.d thus on setups with separate partition for /usr the
+>>>>>>>> binaries, from /usr/bin and /usr/sbin, will likely not be available during
+>>>>>>>> the boot process and the udev rule will fail to restore the state.
+>>>>>>>>
+>>>>>>>> I suggest that the udev rules directory follows the prefix or append /usr
+>>>>>>>> to it to resolve this.
+>>>>>>>>
+>>>>>>>> Cheers!
+>>>>>>> Hi,
+>>>>>>>
+>>>>>>> ALSA merely follows what udev dictates, so I think your
+>>>>>>> question/suggestion is better redirected on the udev (now systemd)
+>>>>>>> mailinglist. Or potentially that of your distro.
+>>>>>>>
+>>>>>> Actually, you are not following what udev dictates (unless I'm missing
+>>>>>> something).
+>>>>>> By default, systemd (and more importantly udev) will be installed with
+>>>>>> /usr prefix
+>>>>>> (which is wrong in it self because it blindly assumes that /usr has been
+>>>>>> mounted
+>>>>>> via initrd/initramfs where separate /usr partition is in use but let's
+>>>>>> not talk about
+>>>>>> this here).
+>>>>>>
+>>>>>>
+>>>>>> On 11/14/13 06:45, Takashi Iwai wrote:
+>>>>>>> At Wed, 13 Nov 2013 20:36:48 +0000,
+>>>>>>> Ivailo wrote:
+>>>>>>>> Hello,
+>>>>>>>>
+>>>>>>>> the default prefix for alsa-utils is /usr however the udev rules directory
+>>>>>>>> is /lib/udev/rules.d thus on setups with separate partition for /usr the
+>>>>>>>> binaries, from /usr/bin and /usr/sbin, will likely not be available during
+>>>>>>>> the boot process and the udev rule will fail to restore the state.
+>>>>>>> Not true.  /lib must be always present at boot even if /usr isn't
+>>>>>>> mounted.  That's the reason why /lib/udev was chosen as default in the
+>>>>>>> past.
+>>>>>>>
+>>>>>>>
+>>>>>>> Takashi
+>>>>>> You got me wrong, I know that /lib should be available on early boot
+>>>>>> (unless it's a
+>>>>>> symlink, like in Arch Linux) but the point is that since the alsa-utils
+>>>>>> binaries are
+>>>>>> installed in /usr so should be the udev rules otherwise during boot
+>>>>>> without /usr
+>>>>>> being mounted you will see error message about /usr/sbin/alsactl.
+>>>>> Theoretically yes, but this has been rather less problems than
+>>>>> creating a non-existing /usr/lib/udev in the past.  That's the very
+>>>>> reason of hard-coded /lib/udev.  Changing the default behavior is
+>>>>> often worse unless you really do it carefully with consideration of
+>>>>> compatibility with old systems.
+>>>>>
+>>>>> So, if you want to change the default, don't hard code again.  Make
+>>>>> configure to guess the right place.  A patch achieving it is welcome.
+>>>>>
+>>>>>
+>>>>> Takashi
+>>>> Ok, here is the patch:
+>>>>
+>>>>    From 74faeceb26c4730d6150e726792f6eb1f257b03e Mon Sep 17 00:00:00 2001
+>>>> From: Ivailo Monev <xakepa10@gmail.com>
+>>>> Date: Thu, 14 Nov 2013 13:13:43 +0000
+>>>> Subject: [PATCH 1/1] detect udevdir via pkg-config
+>>>>
+>>>> ---
+>>>>     configure.in | 2 +-
+>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/configure.in b/configure.in
+>>>> index 3ae3209..74b891e 100644
+>>>> --- a/configure.in
+>>>> +++ b/configure.in
+>>>> @@ -121,7 +121,7 @@ AM_CONDITIONAL(USE_XMLTO, test x"$xmlto" = xyes)
+>>>>     AC_ARG_WITH(
+>>>>             [udev-rules-dir],
+>>>>             AS_HELP_STRING([--with-udev-rules-dir],[Directory where to
+>>>> install udev rules to (defaults to /lib/udev/rules.d)]),
+>>>> -        [udevrulesdir=$withval], [udevrulesdir="/lib/udev/rules.d"])
+>>>> +        [udevrulesdir=$withval], [udevrulesdir=$($PKG_CONFIG udev
+>>>> --variable=udevdir)"/rules.d"])
+>>>>     AC_SUBST(udevrulesdir)
+>>> This pkg-config option isn't always available.  Make sure to have a
+>>> proper fallback to /lib/udev/rules.d.  Also, update the help text,
+>>> too.
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>> I'm not an autotools guru but there is PKG_PROG_PKG_CONFIG in
+>> configure.in which is supposed to ensure that pkg-config is installed,
+>> right? Besides, with_systemdsystemunitdir uses almost the same
+>> method as in my patch which I looked at before submitting it.
+> udev.pc is no hard requirement for alsa-utils, thus there is no
+> guarantee that "pkg-config udev" works as you expected.  If it's not
+> installed, pkg-config doesn't complain but just gives an empty
+> string.
+>
+>
+>> Anyway, here is an updated patch that keeps things more like the
+>> other tests in configure.in:
+>>
+>>   From b30824ef1682f3040d53c1495dae308f51a4f380 Mon Sep 17 00:00:00 2001
+>> From: Ivailo Monev <xakepa10@gmail.com>
+>> Date: Thu, 14 Nov 2013 18:41:55 +0000
+>> Subject: [PATCH 1/1] detect udevdir via pkg-config
+>>
+>> ---
+>>    configure.in | 4 ++--
+>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/configure.in b/configure.in
+>> index 3ae3209..e8e1e82 100644
+>> --- a/configure.in
+>> +++ b/configure.in
+>> @@ -120,8 +120,8 @@ AM_CONDITIONAL(USE_XMLTO, test x"$xmlto" = xyes)
+>>
+>>    AC_ARG_WITH(
+>>            [udev-rules-dir],
+>> -        AS_HELP_STRING([--with-udev-rules-dir],[Directory where to
+>> install udev rules to (defaults to /lib/udev/rules.d)]),
+>> -        [udevrulesdir=$withval], [udevrulesdir="/lib/udev/rules.d"])
+>> +        AS_HELP_STRING([--with-udev-rules-dir=DIR],[Directory where to
+>> install udev rules to (default=auto)]),
+>> +        [udevrulesdir="$withval"], [udevrulesdir=$($PKG_CONFIG udev
+>> --variable=udevdir)/rules.d])
+>>    AC_SUBST(udevrulesdir)
+>>
+>>    dnl Checks for header files.
+>> -- 
+>> 1.8.3.4
+>>
+>> If you are not happy with my patch you can write your own based
+>> which uses the pkg-config approach without hesitation, I will not
+>> get upset.
+>>
+>> And still, will you do something about separate /usr or not? Just
+>> asking. As stated before, this patch will not solve it but replace
+>> the path hard coding with a flexible method.
+> It's matter distributors decide.  The default value is just some
+> value that might work.  Users and distros must read the document and
+> give the proper configure options.
+>
+>
+> Takashi
+Sorry for the late reply.
 
---===============1363991438965353549==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ou5B7nmexOOGXbzo"
-Content-Disposition: inline
-
-
---Ou5B7nmexOOGXbzo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Nov 14, 2013 at 11:46:12AM -0600, Brian Austin wrote:
-> The mask for CS42L52_MIC_CTL_TYPE_MASK was wrong keeping the mic config
-> from being set correctly.
-
-Applied, thanks.
-
---Ou5B7nmexOOGXbzo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJShfSyAAoJELSic+t+oim9AOMP/1cO9R6OqPBZtSD7E/8G1+qj
-4bfQMLpoLku63lJQzyeYFW0izIzOvUtP8q8ahRzsazlRZmQ96IgSe4WeLAchwYjo
-9FBNxa7apLZxcj/b+Er9iwD7d4pgdyRkRJlYWMfY+HXvjRBk5Dd21YWps12onRh0
-hr1aMyQ2ZbYvftw50djSguBaH3Vt04u8wrBDVBpd1Er8WY7tGM2yM1hWs1zQYI8M
-OVr+VVxf/L4zstxGjZ9RCSyJH3YS6Os6/U/ub1uSx0IZ/aj0bKjrog/RJwxR6e4f
-LEIfjqvSyRIB4JQL37YHXsObhsCKFNVXctlaHMW6BEXwYB2996r6SQ7P3fIoK+MH
-Gj1QiKncY6wFTPjbD7r875X6SSjyESCDWoWSVK7bvTD53Csw0MEdGRpDy/7XWjbi
-EkpczmYzcLBjhmhivZ1EKtUP9/74HiFIbFBrqSgY7JwrU9dflV7mcKnSVMqfwrUr
-DeM0WBdvw+c7PoLuw583hd1NvgmIvumBpTPkpysiALl7sduTv+VnzM9yllR/5+PE
-mxfeKIw5+aY6ZhxYM0gr46ybNnbA4e2N0LpMVzQuBH4of0ba4rCspgPRbbYoW52o
-LG8flwU9YZceDmOQuVK6YV/nsBjmMZQ+ZZy0BF/lewC5idR6pmXUCNbLzyCtcONv
-S4Ley1S6e59AABpJjL75
-=0rFA
------END PGP SIGNATURE-----
-
---Ou5B7nmexOOGXbzo--
-
---===============1363991438965353549==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1363991438965353549==--
+So, I get that there is a variation from distribution to distribution.
+But what if udevrulesdir respects the default prefix
+(AC_PREFIX_DEFAULT)? That way, the issue in my first email will
+be solved. Will a patch for it be accepted?
