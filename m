@@ -1,102 +1,176 @@
-From: "Oskar Schirmer" <oskar@scara.com>
-Subject: [PATCH] ASoC: fsl: imx-ssi: omit ssi counter to avoid harm in unbalanced situation
-Date: 15 Nov 2013 16:44:23 +0000
-Message-ID: <1384533863-14288-1-git-send-email-oskar@scara.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Mark Brown <broonie@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Oskar Schirmer <oskar@scara.com>
+From: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCHv5] dmaengine: Add support for BCM2835
+Date: Fri, 15 Nov 2013 09:03:36 -0800
+Message-ID: <1384535016.18739.23.camel@joe-AO722>
+References: <52864BBC.7000506@koalo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <52864BBC.7000506-oZ8rN/sblLk@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Unbalanced calls to imx_ssi_trigger() may result in endless
-SSI activity and thus provoke eternal sound. While on the first glance,
-the switch statement looks pretty symmetric, the SUSPEND/RESUME
-pair is not: the suspend case comes along snd_pcm_suspend_all(),
-which for fsl/imx-pcm-fiq is called only at snd_soc_suspend(),
-but the resume case originates straight from the SNDRV_PCM_IOCTL_RESUME.
-This way userland may provoke an unbalanced resume, which might cause
-the ssi->enabled counter to increase and never return to zero again,
-so eventually SSI_SCR_SSIEN is never disabled.
+On Fri, 2013-11-15 at 17:28 +0100, Florian Meier wrote:
+> Add support for DMA controller of BCM2835 as used in the Raspberry Pi.
+> Currently it only supports cyclic DMA.
 
-Simply removing the ssi->enabled will solve the problem, as long as
-one never goes play and capture game simultaneously, but beware
-trying both at once, the early TRIGGER_STOP will cut off the other
-activity prematurely. So now playing and capturing is scrutinized
-separately, instead of by counting.
+trivial style notes:
 
-This is essentially the same stuff as in sound/soc/fsl/imx-pcm-fiq.c
-which I send a patch for three days ago. Astonishing enough this
-highly fragile scheme is used twice in parallel to serve the very
-same control function, synchronously: Once out of sync you are lost
-until reboot.
+> diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
+[]
+> +/* DMA CS Control and Status bits */
+> +#define BCM2835_DMA_ACTIVE	(1 << 0)
+> +#define BCM2835_DMA_INT	(1 << 2)
+> +#define BCM2835_DMA_ISPAUSED	(1 << 4)  /* Pause requested or not active */
+> +#define BCM2835_DMA_ISHELD	(1 << 5)  /* Is held by DREQ flow control */
+> +#define BCM2835_DMA_ERR	(1 << 8)
+> +#define BCM2835_DMA_ABORT	(1 << 30) /* stop current CB, go to next, WO */
+> +#define BCM2835_DMA_RESET	(1 << 31) /* WO, self clearing */
 
-Note, that these fixes wont prevent state machine distortion on alsa
-level to cut sound or the like. It just makes sure we have a chance
-to synchronise again later on.
+These could use the BIT macro
 
-Signed-off-by: Oskar Schirmer <oskar@scara.com>
----
- sound/soc/fsl/imx-ssi.c |   19 ++++++++++++-------
- sound/soc/fsl/imx-ssi.h |    3 ++-
- 2 files changed, 14 insertions(+), 8 deletions(-)
+> +#define BCM2835_DMA_DATA_TYPE_S8 1
+> +#define BCM2835_DMA_DATA_TYPE_S16 2
+> +#define BCM2835_DMA_DATA_TYPE_S32 4
+> +#define BCM2835_DMA_DATA_TYPE_S128 16
 
-diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-index f5f248c..c68499b 100644
---- a/sound/soc/fsl/imx-ssi.c
-+++ b/sound/soc/fsl/imx-ssi.c
-@@ -298,27 +298,32 @@ static int imx_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 			scr |= SSI_SCR_TE;
--		else
-+			ssi->playing = 1;
-+		} else {
- 			scr |= SSI_SCR_RE;
-+			ssi->capturing = 1;
-+		}
- 		sier |= sier_bits;
- 
--		if (++ssi->enabled == 1)
--			scr |= SSI_SCR_SSIEN;
-+		scr |= SSI_SCR_SSIEN;
- 
- 		break;
- 
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 			scr &= ~SSI_SCR_TE;
--		else
-+			ssi->playing = 0;
-+		} else {
- 			scr &= ~SSI_SCR_RE;
-+			ssi->capturing = 0;
-+		}
- 		sier &= ~sier_bits;
- 
--		if (--ssi->enabled == 0)
-+		if (!ssi->playing && !ssi->capturing)
- 			scr &= ~SSI_SCR_SSIEN;
- 
- 		break;
-diff --git a/sound/soc/fsl/imx-ssi.h b/sound/soc/fsl/imx-ssi.h
-index 560c40f..a3c90d5 100644
---- a/sound/soc/fsl/imx-ssi.h
-+++ b/sound/soc/fsl/imx-ssi.h
-@@ -213,7 +213,8 @@ struct imx_ssi {
- 
- 	int fiq_init;
- 	int dma_init;
--	int enabled;
-+	int playing;
-+	int capturing;
- };
- 
- #endif /* _IMX_SSI_H */
--- 
-1.7.9.5
+Are these sizeof(s8), sizeof(s16), sizeof(s32)?
+Is there a S64's?  Are there any s128's?
+
+> +static int bcm2835_dma_abort(void __iomem *dma_chan_base)
+> +{
+> +	unsigned long int cs;
+> +	int rc = 0;
+
+Perhaps better without using an automatic for rc
+and using direct returns.
+
+> +
+> +	cs = readl(dma_chan_base + BCM2835_DMA_CS);
+> +
+> +	if (BCM2835_DMA_ACTIVE & cs) {
+
+	if (!(cs & BCM2835_DMA_ACTIVE))
+		return 0;
+
+and avoid the indent level and use consistent
+(cs & bit) style through the routine instead
+of mixing (bit & cs) and (cs & bit)
+
+> +		long int timeout = 10000;
+
+Move timeout to start of routine.
+
+> +		/* write 0 to the active bit - pause the DMA */
+> +		writel(0, dma_chan_base + BCM2835_DMA_CS);
+> +
+> +		/* wait for any current AXI transfer to complete */
+> +		while ((cs & BCM2835_DMA_ISPAUSED) && --timeout >= 0)
+> +			cs = readl(dma_chan_base + BCM2835_DMA_CS);
+> +
+> +		if (cs & BCM2835_DMA_ISPAUSED) {
+> +			/* we'll un-pause when we set of our next DMA */
+> +			rc = -ETIMEDOUT;
+
+	return -ETIMEDOUT;
+
+and avoid another indentation level.
+
+> +
+> +		} else if (BCM2835_DMA_ACTIVE & cs) {
+> +			/* terminate the control block chain */
+> +			writel(0, dma_chan_base + BCM2835_DMA_NEXTCB);
+> +
+> +			/* abort the whole DMA */
+> +			writel(BCM2835_DMA_ABORT | BCM2835_DMA_ACTIVE,
+> +			       dma_chan_base + BCM2835_DMA_CS);
+> +		}
+> +	}
+> +
+> +	return rc;
+> +}
+
+So perhaps this becomes:
+
+static int bcm2835_dma_abort(void __iomem *dma_chan_base)
+{
+	unsigned long int cs;
+	long timeout;
+
+	cs = readl(dma_chan_base + BCM2835_DMA_CS);
++       if (!(cs & BCM2835_DMA_ACTIVE))
+		return 0;
+	
+	/* write 0 to the active bit - pause the DMA */
+	writel(0, dma_chan_base + BCM2835_DMA_CS);
+
+	/* wait for any current AXI transfer to complete */
+	timeout = 10000;
+	while ((cs & BCM2835_DMA_ISPAUSED) && --timeout >= 0)
+		cs = readl(dma_chan_base + BCM2835_DMA_CS);
+
+	/* we'll un-pause when we set of our next DMA */
+	if (cs & BCM2835_DMA_ISPAUSED)
+		return -ETIMEDOUT;
+
+	if (!(cs & BCM2835_DMA_ACTIVE))
+		return 0;
+
+	/* terminate the control block chain */
+	writel(0, dma_chan_base + BCM2835_DMA_NEXTCB);
+	/* abort the whole DMA */
+	writel(BCM2835_DMA_ABORT | BCM2835_DMA_ACTIVE,
+	       dma_chan_base + BCM2835_DMA_CS);
+
+	return 0;
+}
+
+[]
+
+> +static size_t bcm2835_dma_desc_size_pos(struct bcm2835_desc *d, dma_addr_t addr)
+> +{
+> +	unsigned i;
+> +	size_t size;
+
+Please set size to 0 here and not in the for loop
+> +
+> +	for (size = i = 0; i < d->frames; i++) {
+
+[]
+
+> +static struct dma_async_tx_descriptor *bcm2835_dma_prep_dma_cyclic(
+> +	struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
+> +	size_t period_len, enum dma_transfer_direction direction,
+> +	unsigned long flags, void *context)
+> +{
+
+> +	/* Allocate memory for control blocks */
+> +	d->control_block_size = d->frames * sizeof(struct bcm2835_dma_cb);
+> +	d->control_block_base = dma_alloc_coherent(chan->device->dev,
+> +			d->control_block_size, &d->control_block_base_phys,
+> +			GFP_NOWAIT);
+> +
+> +	if (!d->control_block_base) {
+> +		kfree(d);
+> +		dev_err(chan->device->dev,
+> +				"%s: Memory allocation error\n", __func__);
+
+Please use dma_zalloc_coherent and the OOM message
+isn't necessary as dma_alloc_coherent has a generic
+OOM message.
+
+> +		return NULL;
+> +	}
+> +
+> +	memset(d->control_block_base, 0, d->control_block_size);
+
+unnecessary with dma_zalloc_coherent
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
