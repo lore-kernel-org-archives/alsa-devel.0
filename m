@@ -1,164 +1,75 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [RFC 9/9] ARM: DTS: imx5* imx6*, use imx50-ssi
-Date: Fri, 15 Nov 2013 16:49:44 +0100
-Message-ID: <1384530584-31273-10-git-send-email-mpa@pengutronix.de>
-References: <1384530584-31273-1-git-send-email-mpa@pengutronix.de>
+From: Cedric Le Goater <clg@fr.ibm.com>
+Subject: Re: [PATCH 16/51] DMA-API: ppc: vio.c: replace dma_set_mask()+dma_set_coherent_mask()
+ with new helper
+Date: Fri, 15 Nov 2013 17:16:55 +0100
+Message-ID: <528648F7.20900@fr.ibm.com>
+References: <20130919212235.GD12758@n2100.arm.linux.org.uk> <E1VMly8-0007gy-Ru@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 939E426531A
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2013 16:52:44 +0100 (CET)
-In-Reply-To: <1384530584-31273-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>
-Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-crypto-owner@vger.kernel.org>
+In-Reply-To: <E1VMly8-0007gy-Ru@rmk-PC.arm.linux.org.uk>
+Sender: linux-crypto-owner@vger.kernel.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, b43-dev@lists.infradead.org, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, e1000-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-ide@vger.kernel.org, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, linux-nvme@lists.infradead.org, linux-omap@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org, linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, Solarflare linux maintainers <linux-net-drivers@solarflare.com>, uclinux-dist-devel@blackfin.uclinux.org, Paul Mackerras <paulus@samba.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
 List-Id: alsa-devel@alsa-project.org
 
-imx50-ssi and imx21-ssi are different IPs. imx50-ssi supports online
-reconfiguration and needs this for correct interaction with SDMA. Move
-from imx21-ssi to imx50-ssi for all imx5/imx6 SoCs.
+Hi,=20
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+On 09/19/2013 11:41 PM, Russell King wrote:
+> Replace the following sequence:
+>=20
+> 	dma_set_mask(dev, mask);
+> 	dma_set_coherent_mask(dev, mask);
+>=20
+> with a call to the new helper dma_set_mask_and_coherent().
+>=20
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> ---
+>  arch/powerpc/kernel/vio.c |    3 +--
+>  1 files changed, 1 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/arch/powerpc/kernel/vio.c b/arch/powerpc/kernel/vio.c
+> index 78a3506..96b6c97 100644
+> --- a/arch/powerpc/kernel/vio.c
+> +++ b/arch/powerpc/kernel/vio.c
+> @@ -1413,8 +1413,7 @@ struct vio_dev *vio_register_device_node(struct=
+ device_node *of_node)
+>=20
+>  		/* needed to ensure proper operation of coherent allocations
+>  		 * later, in case driver doesn't set it explicitly */
+> -		dma_set_mask(&viodev->dev, DMA_BIT_MASK(64));
+> -		dma_set_coherent_mask(&viodev->dev, DMA_BIT_MASK(64));
+> +		dma_set_mask_and_coherent(&viodev->dev, DMA_BIT_MASK(64));
+>  	}
+>=20
+>  	/* register with generic device framework */
+>=20
+
+The new helper routine dma_set_mask_and_coherent() breaks the=20
+initialization of the pseries vio devices which do not have an=20
+initial dev->dma_mask. I think we need to use dma_coerce_mask_and_coher=
+ent()
+instead.
+
+Signed-off-by: C=E9dric Le Goater <clg@fr.ibm.com>
 ---
- arch/arm/boot/dts/imx51.dtsi   | 6 +++---
- arch/arm/boot/dts/imx53.dtsi   | 6 +++---
- arch/arm/boot/dts/imx6qdl.dtsi | 6 +++---
- arch/arm/boot/dts/imx6sl.dtsi  | 6 +++---
- 4 files changed, 12 insertions(+), 12 deletions(-)
+ arch/powerpc/kernel/vio.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/imx51.dtsi b/arch/arm/boot/dts/imx51.dtsi
-index 54cee65..22d4dbe 100644
---- a/arch/arm/boot/dts/imx51.dtsi
-+++ b/arch/arm/boot/dts/imx51.dtsi
-@@ -150,7 +150,7 @@
- 				};
- 
- 				ssi2: ssi@70014000 {
--					compatible = "fsl,imx51-ssi", "fsl,imx21-ssi";
-+					compatible = "fsl,imx51-ssi", "fsl,imx50-ssi";
- 					reg = <0x70014000 0x4000>;
- 					interrupts = <30>;
- 					clocks = <&clks 49>;
-@@ -427,7 +427,7 @@
- 			};
- 
- 			ssi1: ssi@83fcc000 {
--				compatible = "fsl,imx51-ssi", "fsl,imx21-ssi";
-+				compatible = "fsl,imx51-ssi", "fsl,imx50-ssi";
- 				reg = <0x83fcc000 0x4000>;
- 				interrupts = <29>;
- 				clocks = <&clks 48>;
-@@ -479,7 +479,7 @@
- 			};
- 
- 			ssi3: ssi@83fe8000 {
--				compatible = "fsl,imx51-ssi", "fsl,imx21-ssi";
-+				compatible = "fsl,imx51-ssi", "fsl,imx50-ssi";
- 				reg = <0x83fe8000 0x4000>;
- 				interrupts = <96>;
- 				clocks = <&clks 50>;
-diff --git a/arch/arm/boot/dts/imx53.dtsi b/arch/arm/boot/dts/imx53.dtsi
-index 4307e80..f1077f2 100644
---- a/arch/arm/boot/dts/imx53.dtsi
-+++ b/arch/arm/boot/dts/imx53.dtsi
-@@ -149,7 +149,7 @@
- 				};
- 
- 				ssi2: ssi@50014000 {
--					compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
-+					compatible = "fsl,imx53-ssi", "fsl,imx50-ssi";
- 					reg = <0x50014000 0x4000>;
- 					interrupts = <30>;
- 					clocks = <&clks 49>;
-@@ -1049,7 +1049,7 @@
- 			};
- 
- 			ssi1: ssi@63fcc000 {
--				compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
-+				compatible = "fsl,imx53-ssi", "fsl,imx50-ssi";
- 				reg = <0x63fcc000 0x4000>;
- 				interrupts = <29>;
- 				clocks = <&clks 48>;
-@@ -1076,7 +1076,7 @@
- 			};
- 
- 			ssi3: ssi@63fe8000 {
--				compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
-+				compatible = "fsl,imx53-ssi", "fsl,imx50-ssi";
- 				reg = <0x63fe8000 0x4000>;
- 				interrupts = <96>;
- 				clocks = <&clks 50>;
-diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
-index ccd55c2..30d455e 100644
---- a/arch/arm/boot/dts/imx6qdl.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl.dtsi
-@@ -201,7 +201,7 @@
- 				};
- 
- 				ssi1: ssi@02028000 {
--					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
-+					compatible = "fsl,imx6q-ssi","fsl,imx50-ssi";
- 					reg = <0x02028000 0x4000>;
- 					interrupts = <0 46 0x04>;
- 					clocks = <&clks 178>;
-@@ -214,7 +214,7 @@
- 				};
- 
- 				ssi2: ssi@0202c000 {
--					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
-+					compatible = "fsl,imx6q-ssi","fsl,imx50-ssi";
- 					reg = <0x0202c000 0x4000>;
- 					interrupts = <0 47 0x04>;
- 					clocks = <&clks 179>;
-@@ -227,7 +227,7 @@
- 				};
- 
- 				ssi3: ssi@02030000 {
--					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
-+					compatible = "fsl,imx6q-ssi","fsl,imx50-ssi";
- 					reg = <0x02030000 0x4000>;
- 					interrupts = <0 48 0x04>;
- 					clocks = <&clks 180>;
-diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
-index c46651e..1b19319 100644
---- a/arch/arm/boot/dts/imx6sl.dtsi
-+++ b/arch/arm/boot/dts/imx6sl.dtsi
-@@ -191,7 +191,7 @@
- 				};
- 
- 				ssi1: ssi@02028000 {
--					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
-+					compatible = "fsl,imx6sl-ssi","fsl,imx50-ssi";
- 					reg = <0x02028000 0x4000>;
- 					interrupts = <0 46 0x04>;
- 					clocks = <&clks IMX6SL_CLK_SSI1>;
-@@ -203,7 +203,7 @@
- 				};
- 
- 				ssi2: ssi@0202c000 {
--					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
-+					compatible = "fsl,imx6sl-ssi","fsl,imx50-ssi";
- 					reg = <0x0202c000 0x4000>;
- 					interrupts = <0 47 0x04>;
- 					clocks = <&clks IMX6SL_CLK_SSI2>;
-@@ -215,7 +215,7 @@
- 				};
- 
- 				ssi3: ssi@02030000 {
--					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
-+					compatible = "fsl,imx6sl-ssi","fsl,imx50-ssi";
- 					reg = <0x02030000 0x4000>;
- 					interrupts = <0 48 0x04>;
- 					clocks = <&clks IMX6SL_CLK_SSI3>;
--- 
-1.8.4.2
+diff --git a/arch/powerpc/kernel/vio.c b/arch/powerpc/kernel/vio.c
+index e7d0c88f..76a6482 100644
+--- a/arch/powerpc/kernel/vio.c
++++ b/arch/powerpc/kernel/vio.c
+@@ -1419,7 +1419,7 @@ struct vio_dev *vio_register_device_node(struct d=
+evice_node *of_node)
+=20
+ 		/* needed to ensure proper operation of coherent allocations
+ 		 * later, in case driver doesn't set it explicitly */
+-		dma_set_mask_and_coherent(&viodev->dev, DMA_BIT_MASK(64));
++		dma_coerce_mask_and_coherent(&viodev->dev, DMA_BIT_MASK(64));
+ 	}
+=20
+ 	/* register with generic device framework */
+--=20
+1.7.10.4
