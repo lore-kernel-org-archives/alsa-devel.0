@@ -1,24 +1,17 @@
 From: Andrey Mazo <mazo@telum.ru>
-Subject: alsa-lib changes in pcm file plugin
-Date: Sun, 17 Nov 2013 01:11:53 +0400
-Message-ID: <1384636316-26706-1-git-send-email-mazo@telum.ru>
+Subject: [PATCH 1/3] pcm_file: fix SEGFAULT if file option is
+	missing while infile is not.
+Date: Sun, 17 Nov 2013 01:11:54 +0400
+Message-ID: <1384636316-26706-2-git-send-email-mazo@telum.ru>
+References: <1384636316-26706-1-git-send-email-mazo@telum.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.telum.ru (mail.telum.ru [62.141.76.179])
- by alsa0.perex.cz (Postfix) with ESMTP id AA1502610A1
- for <alsa-devel@alsa-project.org>; Sat, 16 Nov 2013 22:12:40 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by mail.telum.ru (Postfix) with ESMTP id 8F95F481154
- for <alsa-devel@alsa-project.org>; Sun, 17 Nov 2013 01:12:39 +0400 (MSK)
-Received: from mail.telum.ru ([127.0.0.1])
- by localhost (mail.telum.ru [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id 2vLdosXMGD5i for <alsa-devel@alsa-project.org>;
- Sun, 17 Nov 2013 01:12:38 +0400 (MSK)
-Received: from hippo.telum.ru (hippo.telum.ru [192.168.0.14])
- by mail.telum.ru (Postfix) with ESMTPSA id 02BCE480185
- for <alsa-devel@alsa-project.org>; Sun, 17 Nov 2013 01:12:38 +0400 (MSK)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5AAB02610C4
+ for <alsa-devel@alsa-project.org>; Sat, 16 Nov 2013 22:13:02 +0100 (CET)
+In-Reply-To: <1384636316-26706-1-git-send-email-mazo@telum.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,10 +24,31 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Commit 5c5f1358123af69155267463a0b6254ad9cbecc4 requires both file and
+infile options to be missing to report a failure.
+In fact, only file option is mandatory and should be checked there.
+Otherwise, NULL file triggers segfault in
+snd_pcm_file_replace_fname() called from
+snd_pcm_file_open_output_file().
+infile option is optional, so don't report fatal error if it's missing.
 
-This short patch series contains three independent changes in pcm file plugin.
-The first two of them are trivial fixes and should not cause any behavior changes and regressions.
-The third one contains changes to make pcm_file.c access input/output files only when needed and thus to make its behavior more intuitive (from my point of view) (i.e., write to output file only on playback and read from input file only on capture).
+Signed-off-by: Andrey Mazo <mazo@telum.ru>
+---
+ src/pcm/pcm_file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The patches should apply cleanly against current HEAD (ae035b7fe5620fcaf4f5ea33ecabcf93b8e056cd).
+diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
+index 5950401..3d14090 100644
+--- a/src/pcm/pcm_file.c
++++ b/src/pcm/pcm_file.c
+@@ -948,7 +948,7 @@ int _snd_pcm_file_open(snd_pcm_t **pcmp, const char *name,
+ 	err = snd_pcm_slave_conf(root, slave, &sconf, 0);
+ 	if (err < 0)
+ 		return err;
+-	if ((!fname || strlen(fname) == 0) && fd < 0 && !ifname) {
++	if ((!fname || strlen(fname) == 0) && fd < 0) {
+ 		snd_config_delete(sconf);
+ 		SNDERR("file is not defined");
+ 		return -EINVAL;
+-- 
+1.8.4
