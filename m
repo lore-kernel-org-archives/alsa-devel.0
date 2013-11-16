@@ -1,54 +1,54 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 19/31] ASoC: tegra: convert to standard DMA DT bindings
-Date: Sat, 16 Nov 2013 10:05:39 +0000
-Message-ID: <20131116100539.GI15393@sirena.org.uk>
-References: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org>
- <1384548866-13141-20-git-send-email-swarren@wwwdotorg.org>
+From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 15/31] ASoC: dmaengine: add custom DMA config
+ to snd_dmaengine_pcm_config
+Date: Sat, 16 Nov 2013 11:43:29 +0100
+Message-ID: <52874C51.30807@metafoo.de>
+References: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org> <1384548866-13141-16-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZOudaV4lSIjFTlHv"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1384548866-13141-20-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+In-Reply-To: <1384548866-13141-16-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
 Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-
---ZOudaV4lSIjFTlHv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Nov 15, 2013 at 01:54:14PM -0700, Stephen Warren wrote:
+On 11/15/2013 09:54 PM, Stephen Warren wrote:
 > From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->=20
-> By passing no flags when calling snd_dmaengine_pcm_register() from
-> tegra_pcm.c, we end up using dma_request_slave_channel() rather than
+> 
+> Add fields to struct snd_dmaengine_pcm_config to allow custom:
+> 
+> - DMA channel names.
+> 
+>   This is useful when the default "tx" and "rx" channel names don't
+>   apply, for example if a HW module supports multiple channels, each
+>   having different DMA channel names. This is the case with the FIFOs
+>   in Tegra's AHUB. This new facility can replace
+>   SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME.
+> 
+> - DMA device
+> 
+>   This allows requesting DMA channels for a device other than the device
+>   which is registering the "PCM" driver. This is quite unusual, but is
+>   currently useful on Tegra. In much HW, and in Tegra20, each DAI HW
+>   module contains its own FIFOs which DMA writes to. However, in Tegra30,
+>   the DMA FIFOs were split out AHUB HW module, which then routes the data
+>   through a cross-bar, and into the DAI HW modules. However, the current
+>   ASoC driver structure does not expose this detail, and acts as if the
+>   FIFOs are still part of the DAI HW modules. Consequently, the "PCM"
+>   driver is registered with the DAI HW module, yet the DMA channels must
+>   be looked up in the AHUB HW module's device tree node. This new config
+>   field allows that to happen. Eventually, the Tegra drivers will be
+>   reworked to fully expose the AHUB, and this config field can be
+>   removed.
+> 
+> Cc: treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org
+> Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+> Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+> Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-Acked-by: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-
---ZOudaV4lSIjFTlHv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSh0NwAAoJELSic+t+oim9la0QAJx8IVE5JaHjxSZ/73ff9nTD
-NzFhS5dR2Frd+fu5bicXSs5b++/4IFE90Riq1AnoiH0qxUnR8Cp51JCpQaMLrT1H
-aLt0Irz8KlZt2kfkLlkZXLjYLdIx+anDRqb2C9brYzeuSTpT1TfKc9Z9uQYb6cJa
-fMgVjVHLZRqb3EynUVVnJ9yp7335oAXJEJAHxHRmNeBsIfrEI2xvAbZ5vyz8jL4d
-7OfU4iXAbDLn0WDOuHcguvVHcoDXc15EyV5tCAwljg1gxTR1DzW53Usw4W9xiPgm
-m9frMotFuTNEerUk7WfxmUwNQ/I21qdtFeYk72eE4EVdlEUc+whaG2vV4mL9aGyk
-sd93qtZ3qEosqKXDwrBn2dLI6GPiHwwlzjST/9vr+TF694+/PZVmZ2H+dSa68hJy
-vKuHTjxwPrDmpV+oahtGN70xsqOw6LCjQ5/L6PK2Y+aZxdK/yrqulqSo43dUw4MF
-RWYle2D1bXxp02zPUpj38blQzAM4CoO1/xDYSorctVCEBlzmy7I3W6Ul+3omAgst
-fBXwlmgjV8TjEfz6bAY1+oQuPr9B2ygaQQubGcdO2/f1lrqEY5RFmnfpVK5ycVSY
-b5W1O4VQ5LAD0vkEi+VnBsLZlm+GtHABnoWFPjGO1O5d52KklxDXEkrnbMrekBO+
-9+bSdTfcmvxOjZGdEPM5
-=Cnbw
------END PGP SIGNATURE-----
-
---ZOudaV4lSIjFTlHv--
+Acked-by: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
