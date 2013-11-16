@@ -1,49 +1,103 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCHv4 0/3] I2C and SPI dev_name change for ACPI enumerated slaves
-Date: Sat, 16 Nov 2013 02:30:02 +0100
-Message-ID: <1555543.PnMRFYHnJ2@vostro.rjw.lan>
-References: <1384419661-28293-1-git-send-email-jarkko.nikula@linux.intel.com> <1384430633-23426-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: "Oskar Schirmer" <oskar@scara.com>
+Subject: [PATCHv2] ASoC: fsl: imx-ssi: omit ssi counter to
+	avoid harm in unbalanced situation
+Date: 16 Nov 2013 07:52:25 +0000
+Message-ID: <1384588345-22276-1-git-send-email-oskar@scara.com>
+References: <1384533863-14288-1-git-send-email-oskar@scara.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <1384430633-23426-1-git-send-email-jarkko.nikula@linux.intel.com>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@the-dreams.de>, linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from skyrme.org (skyrme.org [193.175.80.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id 130C6262625
+ for <alsa-devel@alsa-project.org>; Sat, 16 Nov 2013 08:52:28 +0100 (CET)
+Received: from p4ff18d8a.dip0.t-ipconnect.de ([79.241.141.138]
+ helo=curry.scara.com)
+ by skyrme.org with esmtpsa (TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32)
+ (Exim 4.63) (envelope-from <oskar@curry.scara.com>)
+ id 1Vhag8-00010r-6P
+ for alsa-devel@alsa-project.org; Sat, 16 Nov 2013 07:52:28 +0000
+In-Reply-To: <1384533863-14288-1-git-send-email-oskar@scara.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Oskar Schirmer <oskar@scara.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday, November 14, 2013 02:03:50 PM Jarkko Nikula wrote:
-> v4:
-> This version adds and uses acpi_dev_name() accessor instead defining
-> struct acpi_device stub for !CONFIG_ACPI 
-> 
-> v3:
-> Third version of the set that changes I2C and SPI slave device names
-> to be generated from stable ACPI device names on ACPI 5 based systems
-> instead of using bus numbers which could change.
-> 
-> Slave device name change goes as
-> 
-> 	"x-00yz" -> "i2c-INTABCD:ij"
-> 	"spix.y" -> "spi-INTABCD:ij"
-> 
-> This version is actually a bit cleaner thanks to Rafael's
-> "ACPI / driver core: Store an ACPI device pointer in struct acpi_dev_node"
-> in git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-> 
-> Set goes on top of linux-pm/linux-next due dependency to 1/3. As we are now
-> in merge-window I'm fine if 1/3 goes in first and I queue 2-3/3 later
-> to i2c and spi trees.
-> 
-> Jarkko Nikula (3):
->   ACPI: Provide acpi_dev_name accessor for struct acpi_device device
->     name
->   i2c: Use stable dev_name for ACPI enumerated I2C slaves
->   spi: Use stable dev_name for ACPI enumerated SPI slaves
+Unbalanced calls to imx_ssi_trigger() may result in endless
+SSI activity and thus provoke eternal sound. While on the first glance,
+the switch statement looks pretty symmetric, the SUSPEND/RESUME
+pair is not: the suspend case comes along snd_pcm_suspend_all(),
+which for fsl/imx-pcm-fiq is called only at snd_soc_suspend(),
+but the resume case originates straight from the SNDRV_PCM_IOCTL_RESUME.
+This way userland may provoke an unbalanced resume, which might cause
+the ssi->enabled counter to increase and never return to zero again,
+so eventually SSI_SCR_SSIEN is never disabled.
 
-All three queued up for the next ACPI pull request, thanks!
+As the information on whether to enable the SSI or not is contained
+in the two bits for TE/RE, we save all the software mirroring of
+hardware state here and simply use the hardware register itself
+to keep the state of whether someone is currently playing or capturing.
 
+This is essentially the same stuff as in sound/soc/fsl/imx-pcm-fiq.c
+which I send a patch for three days ago. Astonishing enough this
+highly fragile scheme is used twice in parallel to serve the very
+same control function, synchronously: Once out of sync you are lost
+until reboot.
+
+Note, that these fixes wont prevent state machine distortion on alsa
+level to cut sound or the like. It just makes sure we have a chance
+to synchronise again later on.
+
+Signed-off-by: Oskar Schirmer <oskar@scara.com>
+---
+v2: drop all software flag handling in favour of hardware registers
+
+ sound/soc/fsl/imx-ssi.c |    5 ++---
+ sound/soc/fsl/imx-ssi.h |    1 -
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
+index f5f248c..2eb2691 100644
+--- a/sound/soc/fsl/imx-ssi.c
++++ b/sound/soc/fsl/imx-ssi.c
+@@ -304,8 +304,7 @@ static int imx_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			scr |= SSI_SCR_RE;
+ 		sier |= sier_bits;
+ 
+-		if (++ssi->enabled == 1)
+-			scr |= SSI_SCR_SSIEN;
++		scr |= SSI_SCR_SSIEN;
+ 
+ 		break;
+ 
+@@ -318,7 +317,7 @@ static int imx_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			scr &= ~SSI_SCR_RE;
+ 		sier &= ~sier_bits;
+ 
+-		if (--ssi->enabled == 0)
++		if (!(scr & (SSI_SCR_TE | SSI_SCR_RE)))
+ 			scr &= ~SSI_SCR_SSIEN;
+ 
+ 		break;
+diff --git a/sound/soc/fsl/imx-ssi.h b/sound/soc/fsl/imx-ssi.h
+index 560c40f..be65623 100644
+--- a/sound/soc/fsl/imx-ssi.h
++++ b/sound/soc/fsl/imx-ssi.h
+@@ -213,7 +213,6 @@ struct imx_ssi {
+ 
+ 	int fiq_init;
+ 	int dma_init;
+-	int enabled;
+ };
+ 
+ #endif /* _IMX_SSI_H */
 -- 
-I speak only for myself.
-Rafael J. Wysocki, Intel Open Source Technology Center.
+1.7.9.5
