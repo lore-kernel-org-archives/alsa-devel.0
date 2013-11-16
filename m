@@ -1,252 +1,269 @@
-From: Ivailo Monev <xakepa10@gmail.com>
-Subject: Re: udev rules prefix
-Date: Sat, 16 Nov 2013 14:00:19 +0000
-Message-ID: <52877A73.8000502@gmail.com>
-References: <CABdmW1cQmesQfC2Kwt4CBOJzrVGBdaC2m2KFb4XeQZYhJAzfMQ@mail.gmail.com>
- <s5hr4ajqy5d.wl%tiwai@suse.de> <5284BD4F.8080205@gmail.com>
- <s5hwqkb9v5i.wl%tiwai@suse.de> <5284CF21.6070105@gmail.com>
- <s5hr4aj9ryp.wl%tiwai@suse.de> <52851B1E.80101@gmail.com>
- <s5hsiuz7yfv.wl%tiwai@suse.de> <52861EB9.8010006@gmail.com>
- <s5hzjp6ot4b.wl%tiwai@suse.de>
+From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Subject: Re: [alsa-devel] [RFCv2] ASoC: Add support for BCM2835
+Date: Sat, 16 Nov 2013 12:17:59 +0100
+Message-ID: <52875467.7000604@metafoo.de>
+References: <52827644.1090708@koalo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f179.google.com (mail-ea0-f179.google.com
- [209.85.215.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 3022A2608D7
- for <alsa-devel@alsa-project.org>; Sat, 16 Nov 2013 12:02:08 +0100 (CET)
-Received: by mail-ea0-f179.google.com with SMTP id r15so1451148ead.38
- for <alsa-devel@alsa-project.org>; Sat, 16 Nov 2013 03:02:07 -0800 (PST)
-Received: from [31.211.147.156] ([31.211.147.156])
- by mx.google.com with ESMTPSA id z2sm15647213eee.7.2013.11.16.03.02.06
- for <alsa-devel@alsa-project.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Sat, 16 Nov 2013 03:02:07 -0800 (PST)
-In-Reply-To: <s5hzjp6ot4b.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <52827644.1090708-oZ8rN/sblLk@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/15/13 10:29, Takashi Iwai wrote:
-> At Fri, 15 Nov 2013 13:16:41 +0000,
-> Ivailo Monev wrote:
->> On 11/14/13 16:14, Takashi Iwai wrote:
->>> At Thu, 14 Nov 2013 18:49:02 +0000,
->>> Ivailo Monev wrote:
->>>> On 11/14/13 10:51, Takashi Iwai wrote:
->>>>> At Thu, 14 Nov 2013 13:24:49 +0000,
->>>>> Ivailo Monev wrote:
->>>>>> On 11/14/13 09:42, Takashi Iwai wrote:
->>>>>>> At Thu, 14 Nov 2013 12:08:47 +0000,
->>>>>>> Ivailo Monev wrote:
->>>>>>>> On 11/14/13 02:48, David Henningsson wrote:
->>>>>>>>> On 11/13/2013 09:36 PM, Ivailo wrote:
->>>>>>>>>> Hello,
->>>>>>>>>>
->>>>>>>>>> the default prefix for alsa-utils is /usr however the udev rules directory
->>>>>>>>>> is /lib/udev/rules.d thus on setups with separate partition for /usr the
->>>>>>>>>> binaries, from /usr/bin and /usr/sbin, will likely not be available during
->>>>>>>>>> the boot process and the udev rule will fail to restore the state.
->>>>>>>>>>
->>>>>>>>>> I suggest that the udev rules directory follows the prefix or append /usr
->>>>>>>>>> to it to resolve this.
->>>>>>>>>>
->>>>>>>>>> Cheers!
->>>>>>>>> Hi,
->>>>>>>>>
->>>>>>>>> ALSA merely follows what udev dictates, so I think your
->>>>>>>>> question/suggestion is better redirected on the udev (now systemd)
->>>>>>>>> mailinglist. Or potentially that of your distro.
->>>>>>>>>
->>>>>>>> Actually, you are not following what udev dictates (unless I'm missing
->>>>>>>> something).
->>>>>>>> By default, systemd (and more importantly udev) will be installed with
->>>>>>>> /usr prefix
->>>>>>>> (which is wrong in it self because it blindly assumes that /usr has been
->>>>>>>> mounted
->>>>>>>> via initrd/initramfs where separate /usr partition is in use but let's
->>>>>>>> not talk about
->>>>>>>> this here).
->>>>>>>>
->>>>>>>>
->>>>>>>> On 11/14/13 06:45, Takashi Iwai wrote:
->>>>>>>>> At Wed, 13 Nov 2013 20:36:48 +0000,
->>>>>>>>> Ivailo wrote:
->>>>>>>>>> Hello,
->>>>>>>>>>
->>>>>>>>>> the default prefix for alsa-utils is /usr however the udev rules directory
->>>>>>>>>> is /lib/udev/rules.d thus on setups with separate partition for /usr the
->>>>>>>>>> binaries, from /usr/bin and /usr/sbin, will likely not be available during
->>>>>>>>>> the boot process and the udev rule will fail to restore the state.
->>>>>>>>> Not true.  /lib must be always present at boot even if /usr isn't
->>>>>>>>> mounted.  That's the reason why /lib/udev was chosen as default in the
->>>>>>>>> past.
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> Takashi
->>>>>>>> You got me wrong, I know that /lib should be available on early boot
->>>>>>>> (unless it's a
->>>>>>>> symlink, like in Arch Linux) but the point is that since the alsa-utils
->>>>>>>> binaries are
->>>>>>>> installed in /usr so should be the udev rules otherwise during boot
->>>>>>>> without /usr
->>>>>>>> being mounted you will see error message about /usr/sbin/alsactl.
->>>>>>> Theoretically yes, but this has been rather less problems than
->>>>>>> creating a non-existing /usr/lib/udev in the past.  That's the very
->>>>>>> reason of hard-coded /lib/udev.  Changing the default behavior is
->>>>>>> often worse unless you really do it carefully with consideration of
->>>>>>> compatibility with old systems.
->>>>>>>
->>>>>>> So, if you want to change the default, don't hard code again.  Make
->>>>>>> configure to guess the right place.  A patch achieving it is welcome.
->>>>>>>
->>>>>>>
->>>>>>> Takashi
->>>>>> Ok, here is the patch:
->>>>>>
->>>>>>     From 74faeceb26c4730d6150e726792f6eb1f257b03e Mon Sep 17 00:00:00 2001
->>>>>> From: Ivailo Monev <xakepa10@gmail.com>
->>>>>> Date: Thu, 14 Nov 2013 13:13:43 +0000
->>>>>> Subject: [PATCH 1/1] detect udevdir via pkg-config
->>>>>>
->>>>>> ---
->>>>>>      configure.in | 2 +-
->>>>>>      1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/configure.in b/configure.in
->>>>>> index 3ae3209..74b891e 100644
->>>>>> --- a/configure.in
->>>>>> +++ b/configure.in
->>>>>> @@ -121,7 +121,7 @@ AM_CONDITIONAL(USE_XMLTO, test x"$xmlto" = xyes)
->>>>>>      AC_ARG_WITH(
->>>>>>              [udev-rules-dir],
->>>>>>              AS_HELP_STRING([--with-udev-rules-dir],[Directory where to
->>>>>> install udev rules to (defaults to /lib/udev/rules.d)]),
->>>>>> -        [udevrulesdir=$withval], [udevrulesdir="/lib/udev/rules.d"])
->>>>>> +        [udevrulesdir=$withval], [udevrulesdir=$($PKG_CONFIG udev
->>>>>> --variable=udevdir)"/rules.d"])
->>>>>>      AC_SUBST(udevrulesdir)
->>>>> This pkg-config option isn't always available.  Make sure to have a
->>>>> proper fallback to /lib/udev/rules.d.  Also, update the help text,
->>>>> too.
->>>>>
->>>>>
->>>>> thanks,
->>>>>
->>>>> Takashi
->>>> I'm not an autotools guru but there is PKG_PROG_PKG_CONFIG in
->>>> configure.in which is supposed to ensure that pkg-config is installed,
->>>> right? Besides, with_systemdsystemunitdir uses almost the same
->>>> method as in my patch which I looked at before submitting it.
->>> udev.pc is no hard requirement for alsa-utils, thus there is no
->>> guarantee that "pkg-config udev" works as you expected.  If it's not
->>> installed, pkg-config doesn't complain but just gives an empty
->>> string.
->>>
->>>
->>>> Anyway, here is an updated patch that keeps things more like the
->>>> other tests in configure.in:
->>>>
->>>>    From b30824ef1682f3040d53c1495dae308f51a4f380 Mon Sep 17 00:00:00 2001
->>>> From: Ivailo Monev <xakepa10@gmail.com>
->>>> Date: Thu, 14 Nov 2013 18:41:55 +0000
->>>> Subject: [PATCH 1/1] detect udevdir via pkg-config
->>>>
->>>> ---
->>>>     configure.in | 4 ++--
->>>>     1 file changed, 2 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/configure.in b/configure.in
->>>> index 3ae3209..e8e1e82 100644
->>>> --- a/configure.in
->>>> +++ b/configure.in
->>>> @@ -120,8 +120,8 @@ AM_CONDITIONAL(USE_XMLTO, test x"$xmlto" = xyes)
->>>>
->>>>     AC_ARG_WITH(
->>>>             [udev-rules-dir],
->>>> -        AS_HELP_STRING([--with-udev-rules-dir],[Directory where to
->>>> install udev rules to (defaults to /lib/udev/rules.d)]),
->>>> -        [udevrulesdir=$withval], [udevrulesdir="/lib/udev/rules.d"])
->>>> +        AS_HELP_STRING([--with-udev-rules-dir=DIR],[Directory where to
->>>> install udev rules to (default=auto)]),
->>>> +        [udevrulesdir="$withval"], [udevrulesdir=$($PKG_CONFIG udev
->>>> --variable=udevdir)/rules.d])
->>>>     AC_SUBST(udevrulesdir)
->>>>
->>>>     dnl Checks for header files.
->>>> -- 
->>>> 1.8.3.4
->>>>
->>>> If you are not happy with my patch you can write your own based
->>>> which uses the pkg-config approach without hesitation, I will not
->>>> get upset.
->>>>
->>>> And still, will you do something about separate /usr or not? Just
->>>> asking. As stated before, this patch will not solve it but replace
->>>> the path hard coding with a flexible method.
->>> It's matter distributors decide.  The default value is just some
->>> value that might work.  Users and distros must read the document and
->>> give the proper configure options.
->>>
->>>
->>> Takashi
->> Sorry for the late reply.
->>
->> So, I get that there is a variation from distribution to distribution.
->> But what if udevrulesdir respects the default prefix
->> (AC_PREFIX_DEFAULT)? That way, the issue in my first email will
->> be solved. Will a patch for it be accepted?
-> It'd break the previously working behavior.
->
-> Simply fallback to the old value (/lib/udev/) when pkg-config gives an
-> empty string.  That should suffice for both cases.
->
->
-> Takashi
- From 8bfe323092f08e8326dddbb6c15029845556f468 Mon Sep 17 00:00:00 2001
-From: Ivailo Monev <xakepa10@gmail.com>
-Date: Fri, 15 Nov 2013 14:05:02 +0000
-Subject: [PATCH] detect udevdir via pkg-config, fallback to 
-/lib/udev/rules.d
+On 11/12/2013 07:41 PM, Florian Meier wrote:
+> This driver adds support for digital audio (I2S)
+> for the BCM2835 SoC that is used by the
+> Raspberry Pi. External audio codecs can be
+> connected to the Raspberry Pi via P5 header.
+> 
+> It relies on cyclic DMA engine support for BCM2835.
+> 
+> Signed-off-by: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
 
-Signed-off-by: Ivailo Monev <xakepa10@gmail.com>
----
-  configure.in | 10 ++++++++--
-  1 file changed, 8 insertions(+), 2 deletions(-)
+Looks mostly good in my opinion. A few comments on minor bits and pieces.
 
-diff --git a/configure.in b/configure.in
-index 3ae3209..60da1fa 100644
---- a/configure.in
-+++ b/configure.in
-@@ -120,8 +120,14 @@ AM_CONDITIONAL(USE_XMLTO, test x"$xmlto" = xyes)
+> diff --git a/sound/soc/bcm/Kconfig b/sound/soc/bcm/Kconfig
+> new file mode 100644
+> index 0000000..93619ec
+> --- /dev/null
+> +++ b/sound/soc/bcm/Kconfig
+> @@ -0,0 +1,15 @@
+> +config SND_BCM2835_SOC_I2S
+> +	tristate
+> +
+> +config SND_BCM2835_SOC
+> +	tristate "SoC Audio support for the Broadcom BCM2835 I2S module"
+> +	depends on ARCH_BCM2835
 
-  AC_ARG_WITH(
-          [udev-rules-dir],
--        AS_HELP_STRING([--with-udev-rules-dir],[Directory where to 
-install udev rules to (defaults to /lib/udev/rules.d)]),
--        [udevrulesdir=$withval], [udevrulesdir="/lib/udev/rules.d"])
-+        AS_HELP_STRING([--with-udev-rules-dir=DIR],[Directory where to 
-install udev rules to (default=auto)]),
-+        [udevrulesdir="$withval"],
-+        [udevdir=$($PKG_CONFIG udev --variable=udevdir)
-+        if test "x$udevdir" = "x"; then
-+            udevrulesdir="/lib/udev/rules.d"
-+        else
-+            udevrulesdir="$udevdir/rules.d"
-+        fi])
-  AC_SUBST(udevrulesdir)
+I think there is no compile time dependency on ARCH_BCM2835. Changing this
+to 'depends on ARCH_BCM2835 || COMPILE_TEST' allows to archive better build
+test coverage for the driver.
 
-  dnl Checks for header files.
--- 
-1.8.3.4
+> +	select SND_SOC_DMAENGINE_PCM
+> +	select DMADEVICES
+> +	select DMA_BCM2835
 
-Cheers!
+I don't think its a good idea to select DMADEVICES or DMA_BCM2835 here,
+since those are user selectable symbols from another subsystem. Either
+'depends on DMA_BCM2835' or nothing. Will I think nothing is better since
+there is no compile time dependency.
+
+> +	select SND_SOC_GENERIC_DMAENGINE_PCM
+> +	select REGMAP_MMIO
+> +	help
+> +	  Say Y or M if you want to add support for codecs attached to
+> +	  the BCM2835 I2S interface. You will also need
+> +	  to select the audio interfaces to support below.
+[...]
+
+> +static void bcm2835_i2s_clear_fifos(struct bcm2835_i2s_dev *dev,
+> +				    bool tx, bool rx)
+> +{
+> +	int timeout = 1000;
+> +	uint32_t syncval;
+> +	uint32_t csreg;
+> +	uint32_t i2s_active_state;
+> +	uint32_t clkreg;
+> +	uint32_t clk_active_state;
+> +	uint32_t off;
+> +	uint32_t clr;
+> +
+> +	off =  tx ? BCM2835_I2S_TXON : 0;
+> +	off |= rx ? BCM2835_I2S_RXON : 0;
+> +
+> +	clr =  tx ? BCM2835_I2S_TXCLR : 0;
+> +	clr |= rx ? BCM2835_I2S_RXCLR : 0;
+> +
+> +	/* Backup the current state */
+> +	regmap_read(dev->i2s_regmap, BCM2835_I2S_CS_A_REG, &csreg);
+> +	i2s_active_state = csreg & (BCM2835_I2S_RXON | BCM2835_I2S_TXON);
+> +
+> +	regmap_read(dev->clk_regmap, BCM2835_CLK_PCMCTL_REG, &clkreg);
+> +	clk_active_state = clkreg & BCM2835_CLK_ENAB;
+> +
+> +	/* Start clock if not running */
+> +	if (!clk_active_state) {
+> +		regmap_update_bits(dev->clk_regmap, BCM2835_CLK_PCMCTL_REG,
+> +			BCM2835_CLK_PASSWD_MASK | BCM2835_CLK_ENAB,
+> +			BCM2835_CLK_PASSWD | BCM2835_CLK_ENAB);
+> +	}
+> +
+> +	/* Stop I2S module */
+> +	regmap_update_bits(dev->i2s_regmap, BCM2835_I2S_CS_A_REG, off, 0);
+> +
+> +	/*
+> +	 * Clear the FIFOs
+> +	 * Requires at least 2 PCM clock cycles to take effect
+> +	 */
+> +	regmap_update_bits(dev->i2s_regmap, BCM2835_I2S_CS_A_REG, clr, -1);
+
+I think the -1 can be confusing. Better use either clr or 0xffffffff. Same
+applies to a few other places in the driver.
+
+> +
+> +	/* Wait for 2 PCM clock cycles */
+> +
+> +	/*
+> +	 * Toggle the SYNC flag - after 2 PCM clock cycles it can be read back
+> +	 * FIXME: This does not seem to work for slave mode!
+> +	 */
+> +	regmap_read(dev->i2s_regmap, BCM2835_I2S_CS_A_REG, &syncval);
+> +	syncval &= BCM2835_I2S_SYNC;
+> +
+> +	regmap_update_bits(dev->i2s_regmap, BCM2835_I2S_CS_A_REG,
+> +			BCM2835_I2S_SYNC, ~syncval);
+> +
+> +	/* Wait for the SYNC flag changing it's state */
+> +	while (timeout > 0) {
+> +		timeout--;
+> +
+> +		regmap_read(dev->i2s_regmap, BCM2835_I2S_CS_A_REG, &csreg);
+> +		if ((csreg & BCM2835_I2S_SYNC) != syncval)
+> +			break;
+> +	}
+> +
+> +	if (timeout <= 0)
+> +		dev_err(dev->dev, "I2S SYNC error!\n");
+> +
+> +	/* Stop clock if it was not running before */
+> +	if (!clk_active_state)
+> +		bcm2835_i2s_stop_clock(dev);
+> +
+> +	/* Restore I2S state */
+> +	regmap_update_bits(dev->i2s_regmap, BCM2835_I2S_CS_A_REG,
+> +			BCM2835_I2S_RXON | BCM2835_I2S_TXON, i2s_active_state);
+> +}
+> +
+[...]
+> +static int bcm2835_i2s_dai_probe(struct snd_soc_dai *dai)
+> +{
+> +	struct bcm2835_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
+> +
+> +	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].addr_width =
+> +		DMA_SLAVE_BUSWIDTH_4_BYTES;
+> +	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].addr_width =
+> +		DMA_SLAVE_BUSWIDTH_4_BYTES;
+> +
+> +	/* TODO other burst parameters possible? */
+> +	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].maxburst = 2;
+> +	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].maxburst = 2;
+
+I'd move the initialization of dma_data to the driver probe() function.
+
+> +
+> +	dai->playback_dma_data = &dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK];
+> +	dai->capture_dma_data = &dev->dma_data[SNDRV_PCM_STREAM_CAPTURE];
+
+snd_soc_dai_init_dma_data()
+
+> +
+> +	return 0;
+> +}
+> +
+[...]
+> +
+> +static int bcm2835_i2s_probe(struct platform_device *pdev)
+> +{
+> +	struct bcm2835_i2s_dev *dev;
+> +	int i;
+> +	int ret;
+> +	struct regmap *regmap[2];
+> +	struct resource *mem[2];
+> +
+> +	/* request both ioareas */
+> +	for (i = 0; i <= 1; i++) {
+> +		void __iomem *base;
+> +
+> +		mem[i] = platform_get_resource(pdev, IORESOURCE_MEM, i);
+> +		if (!mem[i]) {
+> +			dev_err(&pdev->dev, "I2S probe: Memory resource could not be found.\n");
+> +			return -ENODEV;
+> +		}
+> +
+> +		base = devm_ioremap_resource(&pdev->dev, mem[i]);
+> +		if (!base) {
+> +			dev_err(&pdev->dev, "I2S probe: ioremap failed.\n");
+> +			return -ENOMEM;
+> +		}
+> +
+> +		regmap[i] = devm_regmap_init_mmio(&pdev->dev, base,
+> +					    &bcm2835_regmap_config[i]);
+> +		if (IS_ERR(regmap[i])) {
+> +			dev_err(&pdev->dev, "I2S probe: regmap init failed\n");
+> +			return PTR_ERR(regmap[i]);
+> +		}
+> +	}
+> +
+> +	dev = devm_kzalloc(&pdev->dev, sizeof(struct bcm2835_i2s_dev),
+
+sizeof(*dev)
+
+> +			   GFP_KERNEL);
+> +	if (!dev) {
+> +		dev_err(&pdev->dev, "I2S probe: kzalloc failed.\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	dev->i2s_regmap = regmap[0];
+> +	dev->clk_regmap = regmap[1];
+> +
+> +	/* Set the DMA address */
+> +	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].addr =
+> +		(dma_addr_t)mem[0]->start + BCM2835_I2S_FIFO_A_REG
+> +					  + BCM2835_VCMMU_SHIFT;
+> +
+> +	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].addr =
+> +		(dma_addr_t)mem[0]->start + BCM2835_I2S_FIFO_A_REG
+> +					  + BCM2835_VCMMU_SHIFT;
+> +
+> +	/* Store the pdev */
+> +	dev->dev = &pdev->dev;
+> +	dev_set_drvdata(&pdev->dev, dev);
+> +
+> +	ret = snd_soc_register_component(&pdev->dev,
+> +			&bcm2835_i2s_component, &bcm2835_i2s_dai, 1);
+> +
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
+> +		ret = -ENOMEM;
+> +		return ret;
+> +	}
+> +
+> +	ret = bcm2835_pcm_platform_register(&pdev->dev);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
+> +		snd_soc_unregister_component(&pdev->dev);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id bcm2835_i2s_of_match[] = {
+> +	{ .compatible = "brcm,bcm2835-i2s", },
+
+Bindings documentation is missing.
+
+> +	{},
+> +};
+[...]
+> +
+> +int bcm2835_pcm_platform_register(struct device *dev)
+> +{
+> +	return snd_dmaengine_pcm_register(dev, NULL, 0);
+
+Now that these functions are just simple wrappers for
+snd_dmaengine_pcm_{register,unregister}() there is really no need to keep
+them around. Just remove bcm2835-pcm.h and .c and call them directly from
+the i2s driver.
+
+> +}
+> +EXPORT_SYMBOL_GPL(bcm2835_pcm_platform_register);
+[...]
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
