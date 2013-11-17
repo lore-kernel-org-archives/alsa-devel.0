@@ -1,48 +1,101 @@
-From: Andrey Mazo <mazo@telum.ru>
-Subject: [PATCH] pcm_file: document new argument to
-	snd_pcm_file_open().
-Date: Sun, 17 Nov 2013 19:45:19 +0400
-Message-ID: <1384703119-6856-1-git-send-email-mazo@telum.ru>
-References: <1384636316-26706-1-git-send-email-mazo@telum.ru>
+From: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCHv7] dmaengine: Add support for BCM2835
+Date: Sun, 17 Nov 2013 08:02:03 -0800
+Message-ID: <1384704123.2727.8.camel@joe-AO722>
+References: <5288E327.8050809@koalo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.telum.ru (mail.telum.ru [62.141.76.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 37BE4261680
- for <alsa-devel@alsa-project.org>; Sun, 17 Nov 2013 16:45:50 +0100 (CET)
-In-Reply-To: <1384636316-26706-1-git-send-email-mazo@telum.ru>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <5288E327.8050809-oZ8rN/sblLk@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Document function argument, added in commit
-4081be0b87ab9fa53a8906e66bc240f18a7a9a54.
+On Sun, 2013-11-17 at 16:39 +0100, Florian Meier wrote:
+> Add support for DMA controller of BCM2835 as used in the Raspberry Pi.
+> Currently it only supports cyclic DMA.
+[]
+> diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
+[]
+> +static int bcm2835_dma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
+> +	unsigned long arg)
+> +{
+> +	struct bcm2835_chan *c = to_bcm2835_dma_chan(chan);
+> +	int ret;
+> +
+> +	switch (cmd) {
+> +	case DMA_SLAVE_CONFIG:
+> +		return bcm2835_dma_slave_config(c,
+> +				(struct dma_slave_config *)arg);
+> +
+> +	case DMA_TERMINATE_ALL:
+> +		bcm2835_dma_terminate_all(c);
+> +		break;
+> +
+> +	default:
+> +		ret = -ENXIO;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
 
-Signed-off-by: Andrey Mazo <mazo@telum.ru>
----
- src/pcm/pcm_file.c | 1 +
- 1 file changed, 1 insertion(+)
+case DMA_TERMINATE_ALL returns an uninitialized ret;
 
-diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
-index 25055d0..7123025 100644
---- a/src/pcm/pcm_file.c
-+++ b/src/pcm/pcm_file.c
-@@ -714,6 +714,7 @@ static const snd_pcm_fast_ops_t snd_pcm_file_fast_ops = {
-  * \param perm File permission
-  * \param slave Slave PCM handle
-  * \param close_slave When set, the slave PCM handle is closed with copy PCM
-+ * \param stream the direction of PCM stream
-  * \retval zero on success otherwise a negative error code
-  * \warning Using of this function might be dangerous in the sense
-  *          of compatibility reasons. The prototype might be freely
--- 
-1.8.4
+[]
+
+> +static struct dma_chan *bcm2835_dma_xlate(struct of_phandle_args *spec,
+> +					   struct of_dma *ofdma)
+> +{
+> +	struct bcm2835_dmadev *d = ofdma->of_dma_data;
+> +	struct dma_chan *chan, *candidate;
+> +
+> +retry:
+> +	candidate = NULL;
+> +
+> +	/* Walk the list of channels registered with the current instance and
+> +	 * find one that is currently unused */
+> +	list_for_each_entry(chan, &d->ddev.channels, device_node)
+> +		if (chan->client_count == 0) {
+> +			candidate = chan;
+> +			break;
+> +		}
+> +
+> +	if (!candidate)
+> +		return NULL;
+> +
+> +	/* dma_get_slave_channel will return NULL if we lost a race between
+> +	 * the lookup and the reservation */
+> +	chan = dma_get_slave_channel(candidate);
+
+Can that race happen consistently?
+Does this avoid being a tight loop?
+
+> +	if (chan) {
+> +		struct bcm2835_chan *c = to_bcm2835_dma_chan(chan);
+> +
+> +		/* Set DREQ from param */
+> +		c->dreq = spec->args[0];
+> +
+> +		return chan;
+> +	}
+> +
+> +	goto retry;
+> +}
+
+Also, I think this would be better as:
+
+	if (!chan)
+		goto retry;
+
+	to_bcm2835_dma_chan(chan)->dreq = spec->args[0];
+
+	return chan;
+}
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
