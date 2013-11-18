@@ -1,76 +1,115 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [RFC 9/9] ARM: DTS: imx5* imx6*, use imx50-ssi
-Date: Mon, 18 Nov 2013 14:42:26 +0100
-Message-ID: <20131118134226.GM30263@pengutronix.de>
-References: <1384530584-31273-1-git-send-email-mpa@pengutronix.de>
- <1384530584-31273-10-git-send-email-mpa@pengutronix.de>
- <20131118020233.GN11014@S2101-09.ap.freescale.net>
+From: Rob Herring <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v4] ASoC: simple-card: add Device Tree support
+Date: Mon, 18 Nov 2013 08:12:06 -0600
+Message-ID: <CAL_JsqKLd4CbfD6PifXrwWxbyJqnvAViYkXQ63TBniQBPPzp4g@mail.gmail.com>
+References: <87eh97sqw7.wl%kuninori.morimoto.gx@renesas.com>
+	<87txharb3o.wl%kuninori.morimoto.gx@renesas.com>
+	<8738oiog00.wl%kuninori.morimoto.gx@renesas.com>
+	<20131003104248.GI27287@sirena.org.uk>
+	<87fvsh2966.wl%kuninori.morimoto.gx@renesas.com>
+	<20131024171758.GA2461@kartoffel>
+	<87iowm9jwv.wl%kuninori.morimoto.gx@renesas.com>
+	<20131115155028.GE24831@e106331-lin.cambridge.arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 26D85261718
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 14:42:48 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20131118020233.GN11014@S2101-09.ap.freescale.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20131115155028.GE24831-NuALmloUBlrZROr8t4l/smS4ubULX0JqMm0uRHvK7Nw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Pawel Moll <Pawel.Moll-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shawn,
+On Fri, Nov 15, 2013 at 9:50 AM, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org> wrote:
+> On Fri, Oct 25, 2013 at 03:14:20AM +0100, Kuninori Morimoto wrote:
+>> Support for loading the simple-card module via DeviceTree.
+>> It requests CPU/CODEC information.
+>>
+>> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+>> ---
+>> v3 -> v4
+>>
+>>  - explain detail of each properties on simple-card.txt
+>>  - fixup odd examples on simple-card.txt
+>>  - remove "simple-card,card-name". create it from cpu/codec name
+>>  - use of_get_child_by_name()
+>>  - remove odd pointer info from dev_dbg()
+>>  - remove subnode format which are no longer needed
+>>
+>> This is based on asoc/topic/simple branch
+>>
+>>  .../devicetree/bindings/sound/simple-card.txt      |   73 +++++++++
+>>  sound/soc/generic/simple-card.c                    |  156 +++++++++++++++++++-
+>>  2 files changed, 223 insertions(+), 6 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/sound/simple-card.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+>> new file mode 100644
+>> index 0000000..4871e91
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+>> @@ -0,0 +1,73 @@
+>> +Simple-Card:
+>> +
+>> +Simple-Card specifies audio DAI connection of SoC <-> codec.
+>> +
+>> +Required properties:
+>> +
+>> +- compatible                         : "simple-audio"
 
-On Mon, Nov 18, 2013 at 10:02:35AM +0800, Shawn Guo wrote:
-> On Fri, Nov 15, 2013 at 04:49:44PM +0100, Markus Pargmann wrote:
-> > imx50-ssi and imx21-ssi are different IPs. imx50-ssi supports online
-> > reconfiguration and needs this for correct interaction with SDMA. Move
-> > from imx21-ssi to imx50-ssi for all imx5/imx6 SoCs.
-> > 
-> > Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> > ---
-> >  arch/arm/boot/dts/imx51.dtsi   | 6 +++---
-> >  arch/arm/boot/dts/imx53.dtsi   | 6 +++---
-> >  arch/arm/boot/dts/imx6qdl.dtsi | 6 +++---
-> >  arch/arm/boot/dts/imx6sl.dtsi  | 6 +++---
-> >  4 files changed, 12 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/arch/arm/boot/dts/imx51.dtsi b/arch/arm/boot/dts/imx51.dtsi
-> > index 54cee65..22d4dbe 100644
-> > --- a/arch/arm/boot/dts/imx51.dtsi
-> > +++ b/arch/arm/boot/dts/imx51.dtsi
-> > @@ -150,7 +150,7 @@
-> >  				};
-> >  
-> >  				ssi2: ssi@70014000 {
-> > -					compatible = "fsl,imx51-ssi", "fsl,imx21-ssi";
-> > +					compatible = "fsl,imx51-ssi", "fsl,imx50-ssi";
-> 
-> Instead of replacing "fsl,imx21-ssi" with "fsl,imx50-ssi", we may want
-> to just add "fsl,imx50-ssi" in the middle to maintain the compatible
-> history.  Note, it only works with the change I suggested on
-> of_device_id table order.  The bonus point of doing so is that we will
-> not have git bisect issue to worry about with merging this patch and
-> others in the series via different tree.
+Still not really a fan of this generic name. Can we define in the
+description above what simple means.
 
-Thanks, I changed the id table order and added imx21-ssi as compatible
-again.
+>> +
+>> +Optional properties:
+>> +
+>> +- simple-audio,format                        : CPU/CODEC common audio format.
+>> +                                     "i2s", "right_j", "left_j" , "dsp_a"
+>> +                                     "dsp_b", "ac97", "pdm", "msb", "lsb"
+>> +Required subnodes:
+>> +
+>> +- simple-audio,cpu                   : CPU   sub-node
+>> +- simple-audio,codec                 : CODEC sub-node
+>> +
+>> +Required CPU/CODEC subnodes properties:
+>> +
+>> +- sound-dai                          : phandle and port of CPU/CODEC
+>
+> Is there a class binding for audio devices this derives from?
+>
+>> +
+>> +Optional CPU/CODEC subnodes properties:
+>
+> Do these all apply to both sub-nodes?
+>
+>> +- frame-master                               : bool property. add this if subnode was frame master
+>> +- bitclock-master                    : bool property. add this if subnode was bitclock master
+>
+> s/was/is/
+>
+>> +- bitclock-inversion                 : bool property. add this if subnode has clock inversion
+>> +- frame-inversion                    : bool property. add this if subnode has frame inversion
+>> +- clocks / system-clock-frequency    : specify subnode's clock if needed.
+>> +                                       it can be specified via "clocks" if system has clock node,
+>> +                                          or "system-clock-frequency" if system doesn't have it.
+>
+> What does "if system doesn't have it" mean? If it doesn't have a clock,
+> how does said non-existent clock have a frequency?
+>
+> It would be possible to use a fixed-clock in place of
+> system-clock-frequency, which would make the binding more consistent and
+> the driver simpler, at the cost of making the dt marginally more
+> complex.
 
-Regards,
+Just plain "clock-frequency" is fairly standard, so please use that
+instead. Unless there is need for a fixed-clock to be routed to
+several nodes, then I think using the more simple clock-frequency here
+is fine.
 
-Markus
+Can both sub-nodes really have different clocks? Seems like that would
+exceed the definition of simple.
 
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Rob
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
