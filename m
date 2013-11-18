@@ -1,46 +1,99 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH 17/31] ASoC: tegra: call pm_runtime APIs around register
- accesses
-Date: Mon, 18 Nov 2013 10:25:46 -0700
-Message-ID: <528A4D9A.10809@wwwdotorg.org>
-References: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org> <1384548866-13141-18-git-send-email-swarren@wwwdotorg.org> <20131116100205.GG15393@sirena.org.uk>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: Audio Mini Conference Minutes - Edinburgh 21st
+ October 2013
+Date: Mon, 18 Nov 2013 17:35:42 +0000
+Message-ID: <1384796142.2319.12.camel@loki>
+References: <1382985876.2334.64.camel@loki>
+ <CA+v+29hOBcuH-teW+5si8qj9QD7o3bsMYFj8v-YfKJRM0XVn8w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20131116100205.GG15393-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 978B0260818
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 18:35:48 +0100 (CET)
+In-Reply-To: <CA+v+29hOBcuH-teW+5si8qj9QD7o3bsMYFj8v-YfKJRM0XVn8w@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Wang Xingchao <wangxingchao2011@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, wangxingchao@xiaomi.com, ruyi@xiaomi.com, Eric Laurent <elaurent@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/16/2013 03:02 AM, Mark Brown wrote:
-> On Fri, Nov 15, 2013 at 01:54:12PM -0700, Stephen Warren wrote:
->> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->>
->> Call pm_runtime_get_sync() before all register accesses; the HW requires
->> clocks to be running when accessing registers.
->>
->> This hasn't been needed to date, since all register IO was performed
->> while playback was active, and hence the ASoC core had already called
->> pm_runtime_get(). However, an imminent future commit will allocate and
->> set up the FIFOs and routing during probe(), when that "protection"
->> won't be in place.
+Hi Xingchao,
+
+On Sat, 2013-11-16 at 17:01 +0800, Wang Xingchao wrote:
+> Hi Liam,
 > 
-> Acked-by: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+> Very exciting meeting, very nice meeting minutes, thanks very much!
+> I'm quite interested with the "24 Bit HiRes Audio for Android" part,
+> see comments inline.
 > 
-> However should we fix this at the regmap level in the same way that we
-> do for clocks?  That would need to be using _put_autosuspend() to avoid
-> being horrific.
+> 2013/10/29 Liam Girdwood <liam.r.girdwood@linux.intel.com>:
 
-I did wonder about that, but it seemed like rather a lot of overhead?
+> >
+> >
+> > 24 Bit HiRes Audio for Android
+> > ------------------------------
+> >
+> > How do we handle 24 bit audio at fast rates e.g. 192kHz. Being pushed by market.
+> > Flac suggested as source media and not PCM.
+> >
+> > We could use offload, on roadmap for Hires audio on android PCM,
+> > maybe float instead of 24 bit. Need for 192kHz, Probably not use effects.
+> >
+> 
+> Now i'm working on Xiaomi TV and it's a very cool product,see page
+> introduction here:
+> http://www.xiaomi.com/mitv
+> (Sorry here's only Chinese page yet, no english version. But hopefully
+> you're attracted with the pictures)
+> 
+> It's running Android with Qualcom&Mstar's chipset. i hope we can
+> support High Bit Rate audio with HDMI output
+> in next generation, so i would see more update about this in Android.
+> 
+> Does android support HBR audio now? As i know from Dolby guys, no
+> customers in Android area are buying Dolby TrueHD license, so i guess
+> the answer is NO. Most of the customers are from AV receivers and
+> BlueRay players.
 
-> Or alternatively should the driver be making the device
-> cache only when runtime PM is disabled?
+Afaik, no one is using high Bit rate audio atm, but there is increasing
+interest amongst Android OEMs.
 
-The regmap is already cache-only when runtime-suspended. However the
-registers don't get flushed during resume. I suppose that would require
-only adding one extra call to the PM resume function?
+> 
+> Intel HDA claimed support HBR audio but i donot know if there's any
+> ARM based chipset vendor claim supporting HBR audio with their HDMI controller.
+> Even the ARM HDMI controller supports HBR transferring, seems Android
+> software doesnot support yet. So given some vendors support HBR audio
+> under
+> Android, they're using private APIs, and the code maybe not in upstream yet.
+> 
 
-For some reason, my gut prefers this current solution, but I could be
-persuaded.
+Most of the x86 and ARM HW will support HBR audio over ASoC PCM DAIs and
+HDA, but I'm not sure about which HDMI audio devices support HBR in HW
+atm...
+
+ALSA certainly has support in the SW stack, so we probably looking at
+having HBR added to the Android audio stack. 
+
+> For TV and set-top boxes in home theater, users have higher quality
+> requirement, just as you mentioned above. I would like xiaomi could
+> know more schedule about this feature implementation and ready to make
+> some contribution. we have plenty of users for testing every week of
+> such cool features, so if any guys have codes ready for test under
+> Android, it's really a good chance.
+> 
+
+It's probably best if you speak privately with Eric about helping with
+development and testing of HBR audio.
+
+Regards
+
+Liam
