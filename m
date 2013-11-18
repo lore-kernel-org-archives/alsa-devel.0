@@ -1,60 +1,44 @@
-From: Wessel Dirksen <wdirksen@gmail.com>
-Subject: Re: icon utrack pro usb audio interface
-Date: Mon, 18 Nov 2013 21:09:01 +0000 (UTC)
-Message-ID: <loom.20131118T220420-577@post.gmane.org>
-References: <4DF356F0.6010701@stochastique.net>
- <4DF61CE8.9000202@stochastique.net>
+From: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCHv7] dmaengine: Add support for BCM2835
+Date: Mon, 18 Nov 2013 14:18:48 -0800
+Message-ID: <1384813128.17783.3.camel@joe-AO722>
+References: <5288E327.8050809@koalo.de> <1384768816.14845.186.camel@smile>
+	 <528A051A.7000703@koalo.de> <1384785017.14845.214.camel@smile>
+	 <20131118145400.GE16735@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A7D2260799
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 22:10:04 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1ViW54-00051F-TP
- for alsa-devel@alsa-project.org; Mon, 18 Nov 2013 22:10:03 +0100
-Received: from 541864FC.cm-5-1b.dynamic.ziggo.nl ([84.24.100.252])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 22:10:02 +0100
-Received: from wdirksen by 541864FC.cm-5-1b.dynamic.ziggo.nl with local
- (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 22:10:02 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20131118145400.GE16735-l+eeeJia6m9vn6HldHNs0ANdhmdF6hFW@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Cc: Andy Shevchenko <andriy.shevchenko-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, "Koul, Vinod" <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, "Williams, Dan J" <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Adrien Plisson <aplisson+music <at> stochastique.net> writes:
+On Mon, 2013-11-18 at 14:54 +0000, Russell King - ARM Linux wrote:
+> On Mon, Nov 18, 2013 at 04:30:17PM +0200, Andy Shevchenko wrote:
+> > On Mon, 2013-11-18 at 13:16 +0100, Florian Meier wrote:
+> > > >> +	uint32_t chans_available;
+> > > > 
+> > > > Why uint32_t?
+> > > 
+> > > Because it is a bit mask of fixed length that directly comes from the
+> > > firmware.
+> > 
+> > Like one already told you in your i2s patch, please, change that to
+> > corresponding u* value, namely u32.
+> 
+> There's no problem with uint32_t vs u32 - either will do.  u32 is the
+> pre-stdint.h Linux definition of a 32-bit unsigned integer.  There's
+> no reason why uint32_t isn't perfectly acceptable.  It's a matter of
+> author taste which gets used.  (Except where modifications are to an
+> existing chunk of code using one or the other - where consistency then
+> matters more.)
 
-> 
-> On 06/11/2011 01:52 PM, Adrien Plisson wrote:
-> >it seems that the
-> > firewire interface uses the bridgeco BeBoB chipset. given that some
-> > versions of BeBoB supports both firewire and usb, i suppose (but i may
-> > be wrong) that the "utrack pro" is also based on BeBoB.
-> 
-> upon further investigation (involving a screwdriver), the icon utrack 
-> pro usb audio interface does not use a bridgeco bebob chipset: it uses a 
-> xilinx spartan3 fpga and a cypress CY7C68013A-100AXC EZ-USB FX2LP usb 
-> microcontroller.
-> 
-> i fear that i need to write a specific module to support this 
-> hardware... any advice before i start ?
-> 
-> regards,
-> 
+https://lkml.org/lkml/2006/5/2/258
 
-I just bought one of these as well. Would love linux support if possible. I
-would be willing to help with this effort except that my linux skills are
-not dev level. Let me know if I can help and if this is going anywhere.
 
-REgards
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
