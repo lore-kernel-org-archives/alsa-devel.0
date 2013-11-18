@@ -1,18 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [RFC 16/23] ASoC: omap: mcbsp, mcpdm,
- dmic: raw read and write endian fix
-Date: Mon, 18 Nov 2013 12:30:42 +0200
-Message-ID: <5289EC52.2060803@ti.com>
-References: <1384560086-11994-1-git-send-email-taras.kondratiuk@linaro.org>
- <1384560086-11994-17-git-send-email-taras.kondratiuk@linaro.org>
+From: "Andrey Mazo" <mazo@telum.ru>
+Subject: Re: [PATCH] pcm_file: document new argument to
+ snd_pcm_file_open().
+Date: Mon, 18 Nov 2013 14:38:21 +0400
+Message-ID: <op.w6qqh7k5vp3tvr@hippo.telum.ru>
+References: <1384636316-26706-1-git-send-email-mazo@telum.ru>
+ <1384703119-6856-1-git-send-email-mazo@telum.ru>
+ <s5hsiuuyve1.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DEBB260840
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 11:30:37 +0100 (CET)
-In-Reply-To: <1384560086-11994-17-git-send-email-taras.kondratiuk@linaro.org>
+Received: from mail.telum.ru (mail.telum.ru [62.141.76.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 054C92610D3
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 11:38:20 +0100 (CET)
+In-Reply-To: <s5hsiuuyve1.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,141 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Taras Kondratiuk <taras.kondratiuk@linaro.org>, linux-omap@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Victor Kamensky <victor.kamensky@linaro.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linaro-networking@linaro.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/16/2013 02:01 AM, Taras Kondratiuk wrote:
-> From: Victor Kamensky <victor.kamensky@linaro.org>
-> =
+Thank you very much!
+Sorry, I've missed that in the first place.
 
-> All OMAP IP blocks expect LE data, but CPU may operate in BE mode.
-> Need to use endian neutral functions to read/write h/w registers.
-> I.e instead of __raw_read[lw] and __raw_write[lw] functions code
-> need to use read[lw]_relaxed and write[lw]_relaxed functions.
-> If the first simply reads/writes register, the second will byteswap
-> it if host operates in BE mode.
-> =
+On Mon, 18 Nov 2013 12:19:34 +0400, Takashi Iwai <tiwai@suse.de> wrote:
 
-> Changes are trivial sed like replacement of __raw_xxx functions
-> with xxx_relaxed variant.
-> =
+> At Sun, 17 Nov 2013 19:45:19 +0400,
+> Andrey Mazo wrote:
+>>
+>> Document function argument, added in commit
+>> 4081be0b87ab9fa53a8906e66bc240f18a7a9a54.
+>>
+>> Signed-off-by: Andrey Mazo <mazo@telum.ru>
+>
+> Thanks, applied.
+>
+>
+> Takashi
+>
+>> ---
+>>  src/pcm/pcm_file.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
+>> index 25055d0..7123025 100644
+>> --- a/src/pcm/pcm_file.c
+>> +++ b/src/pcm/pcm_file.c
+>> @@ -714,6 +714,7 @@ static const snd_pcm_fast_ops_t snd_pcm_file_fast_ops = {
+>>   * \param perm File permission
+>>   * \param slave Slave PCM handle
+>>   * \param close_slave When set, the slave PCM handle is closed with copy PCM
+>> + * \param stream the direction of PCM stream
+>>   * \retval zero on success otherwise a negative error code
+>>   * \warning Using of this function might be dangerous in the sense
+>>   *          of compatibility reasons. The prototype might be freely
+>> --
+>> 1.8.4
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-> Signed-off-by: Victor Kamensky <victor.kamensky@linaro.org>
-> Signed-off-by: Taras Kondratiuk <taras.kondratiuk@linaro.org>
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
-> ---
->  sound/soc/omap/mcbsp.c      |   12 ++++++------
->  sound/soc/omap/omap-dmic.c  |    4 ++--
->  sound/soc/omap/omap-mcpdm.c |    4 ++--
->  3 files changed, 10 insertions(+), 10 deletions(-)
-> =
-
-> diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
-> index 83433fd..86c7538 100644
-> --- a/sound/soc/omap/mcbsp.c
-> +++ b/sound/soc/omap/mcbsp.c
-> @@ -36,10 +36,10 @@ static void omap_mcbsp_write(struct omap_mcbsp *mcbsp=
-, u16 reg, u32 val)
->  =
-
->  	if (mcbsp->pdata->reg_size =3D=3D 2) {
->  		((u16 *)mcbsp->reg_cache)[reg] =3D (u16)val;
-> -		__raw_writew((u16)val, addr);
-> +		writew_relaxed((u16)val, addr);
->  	} else {
->  		((u32 *)mcbsp->reg_cache)[reg] =3D val;
-> -		__raw_writel(val, addr);
-> +		writel_relaxed(val, addr);
->  	}
->  }
->  =
-
-> @@ -48,22 +48,22 @@ static int omap_mcbsp_read(struct omap_mcbsp *mcbsp, =
-u16 reg, bool from_cache)
->  	void __iomem *addr =3D mcbsp->io_base + reg * mcbsp->pdata->reg_step;
->  =
-
->  	if (mcbsp->pdata->reg_size =3D=3D 2) {
-> -		return !from_cache ? __raw_readw(addr) :
-> +		return !from_cache ? readw_relaxed(addr) :
->  				     ((u16 *)mcbsp->reg_cache)[reg];
->  	} else {
-> -		return !from_cache ? __raw_readl(addr) :
-> +		return !from_cache ? readl_relaxed(addr) :
->  				     ((u32 *)mcbsp->reg_cache)[reg];
->  	}
->  }
->  =
-
->  static void omap_mcbsp_st_write(struct omap_mcbsp *mcbsp, u16 reg, u32 v=
-al)
->  {
-> -	__raw_writel(val, mcbsp->st_data->io_base_st + reg);
-> +	writel_relaxed(val, mcbsp->st_data->io_base_st + reg);
->  }
->  =
-
->  static int omap_mcbsp_st_read(struct omap_mcbsp *mcbsp, u16 reg)
->  {
-> -	return __raw_readl(mcbsp->st_data->io_base_st + reg);
-> +	return readl_relaxed(mcbsp->st_data->io_base_st + reg);
->  }
->  =
-
->  #define MCBSP_READ(mcbsp, reg) \
-> diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
-> index 12e566b..1bd531d 100644
-> --- a/sound/soc/omap/omap-dmic.c
-> +++ b/sound/soc/omap/omap-dmic.c
-> @@ -61,12 +61,12 @@ struct omap_dmic {
->  =
-
->  static inline void omap_dmic_write(struct omap_dmic *dmic, u16 reg, u32 =
-val)
->  {
-> -	__raw_writel(val, dmic->io_base + reg);
-> +	writel_relaxed(val, dmic->io_base + reg);
->  }
->  =
-
->  static inline int omap_dmic_read(struct omap_dmic *dmic, u16 reg)
->  {
-> -	return __raw_readl(dmic->io_base + reg);
-> +	return readl_relaxed(dmic->io_base + reg);
->  }
->  =
-
->  static inline void omap_dmic_start(struct omap_dmic *dmic)
-> diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-> index 90d2a7c..653ba1c 100644
-> --- a/sound/soc/omap/omap-mcpdm.c
-> +++ b/sound/soc/omap/omap-mcpdm.c
-> @@ -74,12 +74,12 @@ struct omap_mcpdm {
->  =
-
->  static inline void omap_mcpdm_write(struct omap_mcpdm *mcpdm, u16 reg, u=
-32 val)
->  {
-> -	__raw_writel(val, mcpdm->io_base + reg);
-> +	writel_relaxed(val, mcpdm->io_base + reg);
->  }
->  =
-
->  static inline int omap_mcpdm_read(struct omap_mcpdm *mcpdm, u16 reg)
->  {
-> -	return __raw_readl(mcpdm->io_base + reg);
-> +	return readl_relaxed(mcpdm->io_base + reg);
->  }
->  =
-
->  #ifdef DEBUG
-> =
-
-
-
--- =
-
-P=E9ter
+-- 
+Andrey Mazo.
