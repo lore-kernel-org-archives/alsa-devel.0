@@ -1,150 +1,146 @@
-From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v4] ASoC: simple-card: add Device Tree
- support
-Date: Mon, 18 Nov 2013 11:36:18 +0000
-Message-ID: <20131118113617.GC30853@e106331-lin.cambridge.arm.com>
-References: <87eh97sqw7.wl%kuninori.morimoto.gx@renesas.com>
- <87txharb3o.wl%kuninori.morimoto.gx@renesas.com>
- <8738oiog00.wl%kuninori.morimoto.gx@renesas.com>
- <20131003104248.GI27287@sirena.org.uk>
- <87fvsh2966.wl%kuninori.morimoto.gx@renesas.com>
- <20131024171758.GA2461@kartoffel>
- <87iowm9jwv.wl%kuninori.morimoto.gx@renesas.com>
- <20131115155028.GE24831@e106331-lin.cambridge.arm.com>
- <87li0m7d7c.wl%kuninori.morimoto.gx@renesas.com>
+From: "Shevchenko, Andriy" <andriy.shevchenko-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCHv3] ASoC: Add support for BCM2835
+Date: Mon, 18 Nov 2013 12:08:22 +0000
+Message-ID: <1384776479.14845.208.camel@smile>
+References: <5289F9DF.8060406@koalo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
- [217.140.96.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 73E7A2615AE
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 12:36:19 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <87li0m7d7c.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Pawel Moll <Pawel.Moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <5289F9DF.8060406-oZ8rN/sblLk@public.gmane.org>
+Content-Language: en-US
+Content-ID: <6DB828C271FD3848B21FBB4ED8069004-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 18, 2013 at 12:42:23AM +0000, Kuninori Morimoto wrote:
-> 
-> Hi Mark Rutland
-> 
-> Thank you for your feedback
-> 
-> > > +- frame-master				: bool property. add this if subnode was frame master
-> > > +- bitclock-master			: bool property. add this if subnode was bitclock master
-> > 
-> > s/was/is/
-> 
-> Oops, I will fix it on v5
-> 
-> > > +- bitclock-inversion			: bool property. add this if subnode has clock inversion
-> > > +- frame-inversion			: bool property. add this if subnode has frame inversion
-> > > +- clocks / system-clock-frequency	: specify subnode's clock if needed.
-> > > +					  it can be specified via "clocks" if system has clock node,
-> > > +                                          or "system-clock-frequency" if system doesn't have it.
-> > 
-> > What does "if system doesn't have it" mean? If it doesn't have a clock,
-> > how does said non-existent clock have a frequency?
-> 
-> It means "if system doesn't support common clock".
-> I will fix it
+T24gTW9uLCAyMDEzLTExLTE4IGF0IDEyOjI4ICswMTAwLCBGbG9yaWFuIE1laWVyIHdyb3RlOg0K
+PiBUaGlzIGRyaXZlciBhZGRzIHN1cHBvcnQgZm9yIGRpZ2l0YWwgYXVkaW8gKEkyUykNCj4gZm9y
+IHRoZSBCQ00yODM1IFNvQyB0aGF0IGlzIHVzZWQgYnkgdGhlDQo+IFJhc3BiZXJyeSBQaS4gRXh0
+ZXJuYWwgYXVkaW8gY29kZWNzIGNhbiBiZQ0KPiBjb25uZWN0ZWQgdG8gdGhlIFJhc3BiZXJyeSBQ
+aSB2aWEgUDUgaGVhZGVyLg0KPiANCj4gSXQgcmVsaWVzIG9uIGN5Y2xpYyBETUEgZW5naW5lIHN1
+cHBvcnQgZm9yIEJDTTI4MzUuDQoNCkZldyBjb21tZW50cyBiZWxvdy4NCg0KW10NCg0KPiArc3Rh
+dGljIHZvaWQgYmNtMjgzNV9pMnNfc3RvcF9jbG9jayhzdHJ1Y3QgYmNtMjgzNV9pMnNfZGV2ICpk
+ZXYpDQo+ICt7DQo+ICsJdWludDMyX3QgY2xrcmVnOw0KPiArCWludCB0aW1lb3V0ID0gMTAwMDsN
+Cj4gKw0KPiArCS8qIFN0b3AgY2xvY2sgKi8NCj4gKwlyZWdtYXBfdXBkYXRlX2JpdHMoZGV2LT5j
+bGtfcmVnbWFwLCBCQ00yODM1X0NMS19QQ01DVExfUkVHLA0KPiArCQkJQkNNMjgzNV9DTEtfUEFT
+U1dEX01BU0sgfCBCQ00yODM1X0NMS19FTkFCLA0KPiArCQkJQkNNMjgzNV9DTEtfUEFTU1dEKTsN
+Cj4gKw0KPiArCS8qIFdhaXQgZm9yIHRoZSBCVVNZIGZsYWcgZ29pbmcgZG93biAqLw0KPiArCXdo
+aWxlICh0aW1lb3V0ID4gMCkgew0KPiArCQl0aW1lb3V0LS07DQoNCndoaWxlICgtLXRpbWVvdXQp
+IHsNCg0KPiArDQo+ICsJCXJlZ21hcF9yZWFkKGRldi0+Y2xrX3JlZ21hcCwgQkNNMjgzNV9DTEtf
+UENNQ1RMX1JFRywgJmNsa3JlZyk7DQo+ICsJCWlmICghKGNsa3JlZyAmIEJDTTI4MzVfQ0xLX0JV
+U1kpKQ0KPiArCQkJYnJlYWs7DQo+ICsJfQ0KPiArDQo+ICsJaWYgKHRpbWVvdXQgPD0gMCkgew0K
+DQppZiAoIXRpbWVvdXQpIHsNCg0KW10NCg0KPiArc3RhdGljIHZvaWQgYmNtMjgzNV9pMnNfY2xl
+YXJfZmlmb3Moc3RydWN0IGJjbTI4MzVfaTJzX2RldiAqZGV2LA0KPiArCQkJCSAgICBib29sIHR4
+LCBib29sIHJ4KQ0KPiArew0KDQpbXQ0KDQo+ICsJLyogV2FpdCBmb3IgdGhlIFNZTkMgZmxhZyBj
+aGFuZ2luZyBpdCdzIHN0YXRlICovDQo+ICsJd2hpbGUgKHRpbWVvdXQgPiAwKSB7DQo+ICsJCXRp
+bWVvdXQtLTsNCg0Kd2hpbGUgKC0tdGltZW91dCkgew0KDQo+ICsJCXJlZ21hcF9yZWFkKGRldi0+
+aTJzX3JlZ21hcCwgQkNNMjgzNV9JMlNfQ1NfQV9SRUcsICZjc3JlZyk7DQo+ICsJCWlmICgoY3Ny
+ZWcgJiBCQ00yODM1X0kyU19TWU5DKSAhPSBzeW5jdmFsKQ0KPiArCQkJYnJlYWs7DQo+ICsJfQ0K
+PiArDQo+ICsJaWYgKHRpbWVvdXQgPD0gMCkNCg0KaWYgKCF0aW1lb3V0KQ0KDQpbXQ0KDQo+ICtz
+dGF0aWMgaW50IGJjbTI4MzVfaTJzX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0g
+KnN1YnN0cmVhbSwNCj4gKwkJCQkgc3RydWN0IHNuZF9wY21faHdfcGFyYW1zICpwYXJhbXMsDQo+
+ICsJCQkJIHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpKQ0KPiArew0KPiArCXN0cnVjdCBiY20yODM1
+X2kyc19kZXYgKmRldiA9IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRhKGRhaSk7DQo+ICsNCj4gKwl1
+bnNpZ25lZCBpbnQgc2FtcGxpbmdfcmF0ZSA9IHBhcmFtc19yYXRlKHBhcmFtcyk7DQo+ICsJdW5z
+aWduZWQgaW50IGRhdGFfbGVuZ3RoLCBkYXRhX2RlbGF5LCBiY2xrX3JhdGlvOw0KPiArCXVuc2ln
+bmVkIGludCBjaDFwb3MsIGNoMnBvcywgbW9kZSwgZm9ybWF0Ow0KPiArCXVuc2lnbmVkIGludCBt
+YXNoID0gQkNNMjgzNV9DTEtfTUFTSF8xOw0KPiArCXVuc2lnbmVkIGludCBkaXZpLCBkaXZmLCB0
+YXJnZXRfZnJlcXVlbmN5Ow0KPiArCWludCBjbGtfc3JjID0gLTE7DQo+ICsJdW5zaWduZWQgaW50
+IG1hc3RlciA9IGRldi0+Zm10ICYgU05EX1NPQ19EQUlGTVRfTUFTVEVSX01BU0s7DQo+ICsJdWlu
+dDMyX3QgYml0X21hc3RlciA9CShtYXN0ZXIgPT0gU05EX1NPQ19EQUlGTVRfQ0JTX0NGUw0KPiAr
+CQkJCQl8fCBtYXN0ZXIgPT0gU05EX1NPQ19EQUlGTVRfQ0JTX0NGTSk7DQoNCmJvb2wgPw0KDQo+
+ICsNCj4gKwl1aW50MzJfdCBmcmFtZV9tYXN0ZXIgPQkobWFzdGVyID09IFNORF9TT0NfREFJRk1U
+X0NCU19DRlMNCg0KU28sIGlmIG1hc3RlciA9PSBTTkRfU09DX0RBSUZNVF9DQlNfQ0ZTIGJvdGgg
+Yml0X21hc3RlciBhbmQgZnJhbWVfbWFzdGVyDQp3aWxsIGJlIHRydWUuIElzIGl0IGNvcnJlY3Q/
+DQoNCj4gKwkJCQkJfHwgbWFzdGVyID09IFNORF9TT0NfREFJRk1UX0NCTV9DRlMpOw0KDQpEaXR0
+by4NCg0KPiArCXVpbnQzMl90IGNzcmVnOw0KPiArDQo+ICsJLyoNCj4gKwkgKiBJZiBhIHN0cmVh
+bSBpcyBhbHJlYWR5IGVuYWJsZWQsDQo+ICsJICogdGhlIHJlZ2lzdGVycyBhcmUgYWxyZWFkeSBz
+ZXQgcHJvcGVybHkuDQo+ICsJICovDQo+ICsJcmVnbWFwX3JlYWQoZGV2LT5pMnNfcmVnbWFwLCBC
+Q00yODM1X0kyU19DU19BX1JFRywgJmNzcmVnKTsNCj4gKw0KPiArCWlmIChjc3JlZyAmIChCQ00y
+ODM1X0kyU19UWE9OIHwgQkNNMjgzNV9JMlNfUlhPTikpDQo+ICsJCXJldHVybiAwOw0KPiArDQoN
+Cj4gKwlpZiAoYmNtMjgzNV9jbGtfZnJlcVtjbGtfc3JjXSAlIHRhcmdldF9mcmVxdWVuY3kgPT0g
+MA0KPiArCQkJJiYgYml0X21hc3RlciAmJiBmcmFtZV9tYXN0ZXIpIHsNCj4gKwkJZGl2aSA9IGJj
+bTI4MzVfY2xrX2ZyZXFbY2xrX3NyY10vdGFyZ2V0X2ZyZXF1ZW5jeTsNCj4gKwkJZGl2ZiA9IDA7
+DQo+ICsJfSBlbHNlIHsNCj4gKwkJdWludDY0X3QgZGl2aWRlbmQ7DQo+ICsNCj4gKwkJaWYgKCFk
+ZXYtPmJjbGtfcmF0aW8pIHsNCj4gKwkJCS8qDQo+ICsJCQkgKiBPdmVyd3JpdGUgYmNsa19yYXRp
+bywgYmVjYXVzZSB0aGUNCj4gKwkJCSAqIGFib3ZlIHRyaWNrIGlzIG5vdCBuZWVkZWQgb3IgY2Fu
+DQo+ICsJCQkgKiBub3QgYmUgdXNlZC4NCj4gKwkJCSAqLw0KPiArCQkJYmNsa19yYXRpbyA9IDIq
+ZGF0YV9sZW5ndGg7DQoNCj0gMiAqIGRhdGFfbGVuZ3RoOw0KDQo+ICsJCX0NCj4gKw0KPiArCQl0
+YXJnZXRfZnJlcXVlbmN5ID0gc2FtcGxpbmdfcmF0ZSpiY2xrX3JhdGlvOw0KPiArDQo+ICsJCWNs
+a19zcmMgPSBCQ00yODM1X0NMS19TUkNfUExMRDsNCj4gKwkJbWFzaCA9IEJDTTI4MzVfQ0xLX01B
+U0hfMTsNCj4gKw0KPiArCQlkaXZpZGVuZCA9IGJjbTI4MzVfY2xrX2ZyZXFbY2xrX3NyY107DQo+
+ICsJCWRpdmlkZW5kICo9IDEwMjQ7DQo+ICsJCWRvX2RpdihkaXZpZGVuZCwgdGFyZ2V0X2ZyZXF1
+ZW5jeSk7DQo+ICsJCWRpdmkgPSBkaXZpZGVuZCAvIDEwMjQ7DQo+ICsJCWRpdmYgPSBkaXZpZGVu
+ZCAlIDEwMjQ7DQoNCjEwMjQgaXMgYSBtYWdpYyBudW1iZXI/DQpDb3VsZCB5b3UgdXNlIHNoaWZ0
+cyBhbmQgYml0d2lzZSBBTkRzIGhlcmU/DQoNCj4gKwljaDFwb3MgPSBkYXRhX2RlbGF5Ow0KPiAr
+CWNoMnBvcyA9IGJjbGtfcmF0aW8vMitkYXRhX2RlbGF5Ow0KDQonIC8gMiArICcNCg0KW10NCg0K
+PiArCW1vZGUgfD0gQkNNMjgzNV9JMlNfRkxFTihiY2xrX3JhdGlvLTEpOw0KPiArCW1vZGUgfD0g
+QkNNMjgzNV9JMlNfRlNMRU4oYmNsa19yYXRpby8yKTsNCg0KRGl0dG8uIFNwYWNlcyBhcmUgbWlz
+c2VkLg0KDQpbXQ0KDQo+ICsJY2FzZSBTTkRfU09DX0RBSUZNVF9JQl9JRjoNCj4gKwkJLyogQm90
+aCAtIHRoZXJlZm9yZSwgbm9uZSBmb3IgQkNNKi8NCg0KJ00gKi8nDQoNCj4gKwkJYnJlYWs7DQo+
+ICsJY2FzZSBTTkRfU09DX0RBSUZNVF9OQl9JRjoNCj4gKwkJLyoNCj4gKwkJICogSW52ZXJ0IG9u
+bHkgZnJhbWUgc3luYyAtIHRoZXJlZm9yZSwNCj4gKwkJICogSW52ZXJ0IG9ubHkgYml0IGNsb2Nr
+IGZvciBCQ00NCg0KU29tZXRoaW5nIHdyb25nIHdpdGggY2FzaW5nIGluIHRoZSBjb21tZW50YXJ5
+Lg0KDQo+ICsJCSAqLw0KPiArCQltb2RlIHw9IEJDTTI4MzVfSTJTX0NMS0k7DQo+ICsJCWJyZWFr
+Ow0KPiArCWNhc2UgU05EX1NPQ19EQUlGTVRfSUJfTkY6DQo+ICsJCS8qDQo+ICsJCSAqIEludmVy
+dCBvbmx5IGJpdCBjbG9jayAtIHRoZXJlZm9yZSwNCj4gKwkJICogSW52ZXJ0IG9ubHkgZnJhbWUg
+c3luYyBmb3IgQkNNDQoNCkRpdHRvLg0KDQo+ICsJCSAqLw0KPiArCQltb2RlIHw9IEJDTTI4MzVf
+STJTX0ZTSTsNCj4gKwkJYnJlYWs7DQo+ICsJZGVmYXVsdDoNCj4gKwkJcmV0dXJuIC1FSU5WQUw7
+DQo+ICsJfQ0KPiArDQo+ICsJcmVnbWFwX3dyaXRlKGRldi0+aTJzX3JlZ21hcCwgQkNNMjgzNV9J
+MlNfTU9ERV9BX1JFRywgbW9kZSk7DQo+ICsNCj4gKw0KDQpSZWR1bmRhbnQgZW1wdHkgbGluZS4N
+Cg0KW10NCg0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gKw0KDQpEaXR0by4NCg0K
+W10NCg0KPiArc3RhdGljIGludCBiY20yODM1X2kyc19zdGFydHVwKHN0cnVjdCBzbmRfcGNtX3N1
+YnN0cmVhbSAqc3Vic3RyZWFtLA0KPiArCQkJICAgICAgIHN0cnVjdCBzbmRfc29jX2RhaSAqZGFp
+KQ0KPiArew0KPiArCXN0cnVjdCBiY20yODM1X2kyc19kZXYgKmRldiA9IHNuZF9zb2NfZGFpX2dl
+dF9kcnZkYXRhKGRhaSk7DQo+ICsNCj4gKwlpZiAoIWRhaS0+YWN0aXZlKSB7DQo+ICsJCS8qIFNo
+b3VsZCB0aGlzIHN0aWxsIGJlIHJ1bm5pbmcgc3RvcCBpdCAqLw0KPiArCQliY20yODM1X2kyc19z
+dG9wX2Nsb2NrKGRldik7DQo+ICsNCj4gKwkJLyogRW5hYmxlIFBDTSBibG9jayAqLw0KPiArCQly
+ZWdtYXBfdXBkYXRlX2JpdHMoZGV2LT5pMnNfcmVnbWFwLCBCQ00yODM1X0kyU19DU19BX1JFRywN
+Cj4gKwkJCQlCQ00yODM1X0kyU19FTiwgQkNNMjgzNV9JMlNfRU4pOw0KPiArDQo+ICsJCS8qDQo+
+ICsJCSAqIERpc2FibGUgU1RCWQ0KDQpEb3QgaXMgbWlzc2luZz8NCg0KPiArCQkgKiBSZXF1aXJl
+cyBhdCBsZWFzdCA0IFBDTSBjbG9jayBjeWNsZXMgdG8gdGFrZSBlZmZlY3QNCj4gKwkJICovDQo+
+ICsJCXJlZ21hcF91cGRhdGVfYml0cyhkZXYtPmkyc19yZWdtYXAsIEJDTTI4MzVfSTJTX0NTX0Ff
+UkVHLA0KPiArCQkJCUJDTTI4MzVfSTJTX1NUQlksIEJDTTI4MzVfSTJTX1NUQlkpOw0KPiArCX0N
+Cj4gKw0KPiArCXJldHVybiAwOw0KPiArfQ0KDQoNCg0KPiArc3RhdGljIHZvaWQgYmNtMjgzNV9p
+MnNfc2h1dGRvd24oc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sDQo+ICsJCXN0
+cnVjdCBzbmRfc29jX2RhaSAqZGFpKQ0KPiArew0KPiArCXN0cnVjdCBiY20yODM1X2kyc19kZXYg
+KmRldiA9IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRhKGRhaSk7DQo+ICsNCj4gKwliY20yODM1X2ky
+c19zdG9wKGRldiwgc3Vic3RyZWFtLCBkYWkpOw0KPiArDQo+ICsJLyogSWYgYm90aCBzdHJlYW1z
+IGFyZSBzdG9wcGVkLCBkaXNhYmxlIG1vZHVsZSBhbmQgY2xvY2sgKi8NCj4gKwlpZiAoIWRhaS0+
+YWN0aXZlKSB7DQoNCmlmIChkYWktPmFjdGl2ZSkNCiByZXR1cm47DQoNCj4gKwkJLyogRGlzYWJs
+ZSB0aGUgbW9kdWxlICovDQo+ICsJCXJlZ21hcF91cGRhdGVfYml0cyhkZXYtPmkyc19yZWdtYXAs
+IEJDTTI4MzVfSTJTX0NTX0FfUkVHLA0KPiArCQkJCUJDTTI4MzVfSTJTX0VOLCAwKTsNCj4gKw0K
+PiArCQkvKg0KPiArCQkgKiBTdG9wcGluZyBjbG9jayBpcyBuZWNlc3NhcnksIGJlY2F1c2Ugc3Rv
+cCBkb2VzDQo+ICsJCSAqIG5vdCBzdG9wIHRoZSBjbG9jayB3aGVuIFNORF9TT0NfREFJRk1UX0NP
+TlQNCj4gKwkJICovDQo+ICsJCWJjbTI4MzVfaTJzX3N0b3BfY2xvY2soZGV2KTsNCj4gKwl9DQo+
+ICt9DQo+ICsNCg0KW10NCg0KPiArc3RhdGljIGludCBiY20yODM1X2kyc19wcm9iZShzdHJ1Y3Qg
+cGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiArew0KPiArCXN0cnVjdCBiY20yODM1X2kyc19kZXYg
+KmRldjsNCj4gKwlpbnQgaTsNCj4gKwlpbnQgcmV0Ow0KPiArCXN0cnVjdCByZWdtYXAgKnJlZ21h
+cFsyXTsNCj4gKwlzdHJ1Y3QgcmVzb3VyY2UgKm1lbVsyXTsNCj4gKw0KPiArCS8qIFJlcXVlc3Qg
+Ym90aCBpb2FyZWFzICovDQo+ICsJZm9yIChpID0gMDsgaSA8PSAxOyBpKyspIHsNCj4gKwkJdm9p
+ZCBfX2lvbWVtICpiYXNlOw0KPiArDQo+ICsJCW1lbVtpXSA9IHBsYXRmb3JtX2dldF9yZXNvdXJj
+ZShwZGV2LCBJT1JFU09VUkNFX01FTSwgaSk7DQoNCj4gKwkJaWYgKCFtZW1baV0pIHsNCj4gKwkJ
+CWRldl9lcnIoJnBkZXYtPmRldiwgIkkyUyBwcm9iZTogTWVtb3J5IHJlc291cmNlIGNvdWxkIG5v
+dCBiZSBmb3VuZC5cbiIpOw0KPiArCQkJcmV0dXJuIC1FTk9ERVY7DQo+ICsJCX0NCg0KVW5uZWVk
+ZWQgbWVzc2FnaW5nIGFuZCBjaGVjay4NCg0KPiArDQo+ICsJCWJhc2UgPSBkZXZtX2lvcmVtYXBf
+cmVzb3VyY2UoJnBkZXYtPmRldiwgbWVtW2ldKTsNCj4gKwkJaWYgKCFiYXNlKSB7DQoNCkl0IHJl
+dHVybnMgRVJSX1BUUi4NClRodXMsDQoNCmlmIChJU19FUlIoYmFzZSkNCnJldHVybiBQVFJfRVJS
+KGJhc2UpDQoNCg0KPiArCQkJZGV2X2VycigmcGRldi0+ZGV2LCAiSTJTIHByb2JlOiBpb3JlbWFw
+IGZhaWxlZC5cbiIpOw0KDQpVbm5lZWRlZCBtZXNzYWdpbmcuDQoNCj4gKwkJCXJldHVybiAtRU5P
+TUVNOw0KDQpXcm9uZyBlcnJvciBjb2RlLiBTZWUgYWJvdmUuDQoNCg0KLS0gDQpBbmR5IFNoZXZj
+aGVua28gPGFuZHJpeS5zaGV2Y2hlbmtvQGludGVsLmNvbT4NCkludGVsIEZpbmxhbmQgT3kNCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQpJbnRlbCBGaW5sYW5kIE95ClJlZ2lzdGVyZWQgQWRkcmVzczogUEwgMjgxLCAw
+MDE4MSBIZWxzaW5raSAKQnVzaW5lc3MgSWRlbnRpdHkgQ29kZTogMDM1NzYwNiAtIDQgCkRvbWlj
+aWxlZCBpbiBIZWxzaW5raSAKClRoaXMgZS1tYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgbWF5IGNv
+bnRhaW4gY29uZmlkZW50aWFsIG1hdGVyaWFsIGZvcgp0aGUgc29sZSB1c2Ugb2YgdGhlIGludGVu
+ZGVkIHJlY2lwaWVudChzKS4gQW55IHJldmlldyBvciBkaXN0cmlidXRpb24KYnkgb3RoZXJzIGlz
+IHN0cmljdGx5IHByb2hpYml0ZWQuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZApyZWNpcGll
+bnQsIHBsZWFzZSBjb250YWN0IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSBhbGwgY29waWVzLgo=
 
-When you say "doesn't support common clock", you mean the code for that
-platform is incompatible with the common clock framework? It seems very
-messy to allow a Linux-internal implementation detail (which is expected
-to change) to leak into a binding...
-
-> 
-> > > +static int
-> > > +asoc_simple_card_sub_parse_of(struct device_node *np,
-> > > +			      struct asoc_simple_dai *dai,
-> > > +			      struct device_node **node)
-> > > +{
-> > > +	struct clk *clk;
-> > > +	int ret;
-> > > +
-> > > +	/*
-> > > +	 * get node via "sound-dai = <&phandle port>"
-> > > +	 * it will be used as xxx_of_node on soc_bind_dai_link()
-> > > +	 */
-> > > +	*node = of_parse_phandle(np, "sound-dai", 0);
-> > > +	if (!*node)
-> > > +		return -ENODEV;
-> > > +
-> > > +	/* get dai->name */
-> > > +	ret = snd_soc_of_get_dai_name(np, &dai->name);
-> > > +	if (ret < 0)
-> > > +		goto parse_error;
-> > > +
-> > > +	/*
-> > > +	 * bitclock-inversion, frame-inversion
-> > > +	 * bitclock-master,    frame-master
-> > > +	 * and specific "format" if it has
-> > > +	 */
-> > 
-> > This comment looks confusing to me. I'm not sure it's all that helpful.
-> > 
-> > > +	dai->fmt = snd_soc_of_parse_daifmt(np, NULL);
-> > 
-> > As a general note, I'm surprised there isn't a helper that does all of
-> > the above, from of_parse_phandle to here.
-> 
-> snd_soc_of_parse_daifmt() is the helper fucntion,
-> and above comment is explaining it.
-> Or, am I misunderstanding your review ?
-> 
-
-What I meant was that I am surprised there isn't a helper doing all of:
-* of_parse_phandle
-* snd_soc_of_get_dai_name
-* snd_soc_of_parse_daifmt
-
-It looks like a common pattern that could be factored out.
-
-> > > +	/*
-> > > +	 * dai->sysclk come from
-> > > +	 *  "clolks = <&xxx>" or "system-clock-frequency = <xxx>"
-> > 
-> > s/clolks/clocks/
-> 
-> Grr, thank you
-> 
-> > > +	clk = of_clk_get(np, 0);
-> > > +	if (IS_ERR(clk))
-> > > +		of_property_read_u32(np,
-> > > +				     "system-clock-frequency",
-> > > +				     &dai->sysclk);
-> > 
-> > What it this isn't present?
-> 
-> If sysclk doesn't have common clock support
-
-Huh? That's not what I asked.
-
-What if the dt has neither a clock or a system-clock-frequency property?
-
-> 
-> > > +	/* simple-card assumes platform == cpu */
-> > > +	*of_platform = *of_cpu;
-> > 
-> > Why? What does this imply?
-> 
-> This is the one of reason why this driver is "simple" card
-
-The issue here is that I'm almost totally unfamiliar with audio
-hardware, nor the ASoC bindings. If this makes sense to you and Mark
-Brown then I'm happy to continue not understanding either. :)
-
-Thanks,
-Mark.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
