@@ -1,58 +1,242 @@
-From: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+From: Mark Rutland <mark.rutland@arm.com>
 Subject: Re: [PATCHv7] dmaengine: Add support for BCM2835
-Date: Mon, 18 Nov 2013 15:37:01 +0100
-Message-ID: <528A260D.7090807@koalo.de>
-References: <5288E327.8050809@koalo.de> <1384768816.14845.186.camel@smile>	 <528A051A.7000703@koalo.de> <1384785017.14845.214.camel@smile>
+Date: Mon, 18 Nov 2013 14:41:55 +0000
+Message-ID: <20131118144155.GJ30853@e106331-lin.cambridge.arm.com>
+References: <5288E327.8050809@koalo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1384785017.14845.214.camel@smile>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Andy Shevchenko <andriy.shevchenko-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, "Koul, Vinod" <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, "Williams, Dan J" <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
+ [217.140.96.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B5B9260815
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 15:41:56 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <5288E327.8050809@koalo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Florian Meier <florian.meier@koalo.de>
+Cc: devicetree <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>, dmaengine <dmaengine@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
->>>> +static enum dma_status bcm2835_dma_tx_status(struct dma_chan *chan,
->>>> +	dma_cookie_t cookie, struct dma_tx_state *txstate)
->>>> +{
->>>
->>> []
->>>
->>>> +	} else {
->>>> +		txstate->residue = 0;
->>>
->>> Useless assignment since dmaengine will do this for you in
->>> dma_cookie_status.
->>
->> I agree that it is useless, but I think otherwise it might be concealed
->> that there is a third case left that uses a residue of 0. Do you think a
->> comment is better? E.g.:
->>
->> +	} else {
->> +		/* residue = 0 per default */
+On Sun, Nov 17, 2013 at 03:39:19PM +0000, Florian Meier wrote:
+> Add support for DMA controller of BCM2835 as used in the Raspberry Pi.
+> Currently it only supports cyclic DMA.
 > 
-> I think like in many other DMA drivers either you have separate function
-> to get residue, which returns 0, or just not include this case.
-
-You mean like in the omap-dma.c? ;-P
-
->>>> +static int bcm2835_dma_probe(struct platform_device *pdev)
->>>> +{
+> Signed-off-by: Florian Meier <florian.meier@koalo.de>
+> ---
 > 
->>>> +	uint32_t chans_available;
->>>
->>> Why uint32_t?
->>
->> Because it is a bit mask of fixed length that directly comes from the
->> firmware.
+> This version includes some more style improvements
+> suggested in the previous thread.
 > 
-> Like one already told you in your i2s patch, please, change that to
-> corresponding u* value, namely u32.
+>  .../devicetree/bindings/dma/bcm2835-dma.txt        |   56 ++
+>  drivers/dma/Kconfig                                |    6 +
+>  drivers/dma/Makefile                               |    1 +
+>  drivers/dma/bcm2835-dma.c                          |  736 ++++++++++++++++++++
+>  4 files changed, 799 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dma/bcm2835-dma.txt
+>  create mode 100644 drivers/dma/bcm2835-dma.c
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/bcm2835-dma.txt b/Documentation/devicetree/bindings/dma/bcm2835-dma.txt
+> new file mode 100644
+> index 0000000..7d91019
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/bcm2835-dma.txt
+> @@ -0,0 +1,56 @@
+> +* BCM2835 DMA controller
+> +
+> +Required properties:
+> +- compatible: Should be "brcm,bcm2835-dma".
+> +- reg: Should contain DMA registers location and length.
+> +- interrupts: Should contain the DMA interrupts associated
+> +               to the DMA channels in ascending order.
+> +               First cell is the IRQ bank.
+> +               Second cell is the IRQ number.
 
-I have no problem with changing that, but why?
+The format of the cells is a property of the interrupt parent, not of
+the DMA controller. It shouldn't be described here.
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> +- #dma-cells: Must be <1>, used to represent the number of integer cells in
+> +               the dmas property of client devices.
+
+A brief description of the set of sane values of the dma-specifier cell
+would be better.
+
+How many channels does the DMA controller have?
+
+> +- brcm,dma-channel-mask: Bit mask representing the channels
+> +                        not used by the firmware.
+
+Which bits correspond to which channels?
+
+How many channels are likely to be reserved out of how many in total?
+
+Are they likely to be an arbitrary set, or some contiguous range?
+
+> +
+> +Example:
+> +
+> +dma: dma@7e007000 {
+> +       compatible = "brcm,bcm2835-dma";
+> +       reg = <0x7e007000 0xf00>;
+> +       interrupts = <1 16
+> +                     1 17
+> +                     1 18
+> +                     1 19
+> +                     1 20
+> +                     1 21
+> +                     1 22
+> +                     1 23
+> +                     1 24
+> +                     1 25
+> +                     1 26
+> +                     1 27
+> +                     1 28>;
+
+Please bracket these individually.
+
+> +
+> +       #dma-cells = <1>;
+> +       brcm,dma-channel-mask = <0x7f35>;
+> +};
+> +
+> +DMA clients connected to the BCM2835 DMA controller must use the format
+> +described in the dma.txt file, using a two-cell specifier for each channel:
+> +a phandle plus one integer cells.
+> +The two cells in order are:
+> +
+> +1. A phandle pointing to the DMA controller.
+> +2. The DREQ number.
+
+This description is unnecessary, and technically wrong (the phandle
+isn't part of the specifier, as the specifier goes with the phandle).
+
+> +
+> +Example:
+> +
+> +bcm2835_i2s: i2s@7e203000 {
+> +       compatible = "brcm,bcm2835-i2s";
+> +       reg = < 0x7e203000 0x20
+> +               0x7e101098 0x02>;
+> +
+> +       dmas = <&dma 2
+> +               &dma 3>;
+
+Brackets please.
+
+[...]
+
+> +struct bcm2835_dma_cb {
+> +       uint32_t info;
+> +       uint32_t src;
+> +       uint32_t dst;
+> +       uint32_t length;
+> +       uint32_t stride;
+> +       uint32_t next;
+> +       uint32_t pad[2];
+
+s/uint32_t/u32/ here and elsewhere.
+
+[...]
+
+> +static void bcm2835_dma_start_desc(struct bcm2835_chan *c)
+> +{
+> +       struct virt_dma_desc *vd = vchan_next_desc(&c->vc);
+> +       struct bcm2835_desc *d;
+> +
+> +       if (!vd) {
+> +               c->desc = NULL;
+> +               return;
+> +       }
+> +
+> +       list_del(&vd->node);
+> +
+> +       c->desc = d = to_bcm2835_dma_desc(&vd->tx);
+> +
+> +       dsb();  /* ARM data synchronization (push) operation */
+
+We all know what a dsb is. What you should explain is _why_ the dsb is
+here. As this is sat under drivers, it would be nicer to use an
+architecture generic barrier rather than dsb() directly.
+
+> +
+> +       writel(d->control_block_base_phys, c->chan_base + BCM2835_DMA_ADDR);
+> +       writel(BCM2835_DMA_ACTIVE, c->chan_base + BCM2835_DMA_CS);
+> +}
+> +
+> +static irqreturn_t bcm2835_dma_callback(int irq, void *data)
+> +{
+> +       struct bcm2835_chan *c = data;
+> +       struct bcm2835_desc *d;
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&c->vc.lock, flags);
+> +
+> +       /* Acknowledge interrupt */
+> +       writel(BCM2835_DMA_INT, c->chan_base + BCM2835_DMA_CS);
+> +
+> +       d = c->desc;
+> +
+> +       if (d) {
+> +               /* TODO Only works for cyclic DMA */
+> +               vchan_cyclic_callback(&d->vd);
+> +       }
+> +
+> +       /* Keep the DMA engine running */
+> +       dsb(); /* ARM synchronization barrier */
+
+Better explanation please.
+
+> +       writel(BCM2835_DMA_ACTIVE, c->chan_base + BCM2835_DMA_CS);
+> +
+> +       spin_unlock_irqrestore(&c->vc.lock, flags);
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+> +static int bcm2835_dma_alloc_chan_resources(struct dma_chan *chan)
+> +{
+> +       struct bcm2835_chan *c = to_bcm2835_dma_chan(chan);
+> +
+> +       dev_dbg(c->vc.chan.device->dev,
+> +                       "Allocating DMA channel %i\n", c->ch);
+
+Why not %d? It's far more common...
+
+
+[...]
+
+> +       if (pdev->dev.of_node) {
+> +               /* Request DMA channel mask from device tree */
+> +               if (of_property_read_u32(pdev->dev.of_node,
+> +                               "brcm,dma-channel-mask",
+> +                               &chans_available)) {
+> +                       dev_err(&pdev->dev, "Failed to get channel mask\n");
+> +                       bcm2835_dma_free(od);
+> +                       return -EINVAL;
+> +               }
+
+As of_property_read_u32 has an implicit check on np, you don't need to
+first check pdev->dev.of_node.
+
+> +       } else {
+> +               dev_err(&pdev->dev, "Failed to get channel mask. No device tree.\n");
+> +               bcm2835_dma_free(od);
+> +               return -EINVAL;
+> +       }
+> +
+> +       /* Do not use the FIQ and BULK channels */
+> +       chans_available &= ~0xD;
+
+A couple of #defines would be nice, along with an explanation as to
+why...
+
+Thanks,
+Mark.
