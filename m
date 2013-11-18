@@ -1,18 +1,18 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Select FW_LOADER from
-	CONFIG_SND_HDA_CODEC_CA0132_DSP
-Date: Mon, 18 Nov 2013 17:14:39 +0100
-Message-ID: <1384791279-4080-1-git-send-email-tiwai@suse.de>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH 16/31] ASoC: tegra: use reset framework
+Date: Mon, 18 Nov 2013 10:21:16 -0700
+Message-ID: <528A4C8C.3030200@wwwdotorg.org>
+References: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org>
+ <1384548866-13141-17-git-send-email-swarren@wwwdotorg.org>
+ <20131116095529.GF15393@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 43486260845
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 17:14:40 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B83AAA79B7
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 17:14:39 +0100 (CET)
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FFF5260815
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 18:21:22 +0100 (CET)
+In-Reply-To: <20131116095529.GF15393@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, pdeschrijver@nvidia.com, Liam Girdwood <lgirdwood@gmail.com>, linux-tegra@vger.kernel.org, treding@nvidia.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Use select FW_LOADER instead of depends on.  It's more intuitive and
-more consistent with other entries.
+On 11/16/2013 02:55 AM, Mark Brown wrote:
+> On Fri, Nov 15, 2013 at 01:54:11PM -0700, Stephen Warren wrote:
+> 
+>> @@ -1,6 +1,8 @@ config SND_SOC_TEGRA tristate "SoC Audio for the
+>> Tegra System-on-Chip" depends on (ARCH_TEGRA && TEGRA20_APB_DMA)
+>> || COMPILE_TEST +	depends on COMMON_CLK +	depends on
+>> RESET_CONTROLLER
+> 
+> Do you depend on COMMON_CLK here?  I only noticed reset controller
+> API dependencies here but perhaps I missed this (or it's fixing a
+> dependency that should be there already).
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+It's fixing a dependency that should already be there, in the
+COMPILE_TEST case. In the (ARCH_TEGRA && TEGRA20_APB_DMA) case,
+COMMON_CLOCK is always selected.
 
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index 8de66ccd7279..4cdd9ded4563 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -209,8 +209,9 @@ config SND_HDA_CODEC_CA0132
- 
- config SND_HDA_CODEC_CA0132_DSP
- 	bool "Support new DSP code for CA0132 codec"
--	depends on SND_HDA_CODEC_CA0132 && FW_LOADER
-+	depends on SND_HDA_CODEC_CA0132
- 	select SND_HDA_DSP_LOADER
-+	select FW_LOADER
- 	help
- 	  Say Y here to enable the DSP for Creative CA0132 for extended
- 	  features like equalizer or echo cancellation.
--- 
-1.8.4.3
+Do you want me to split this out into a separate patch? If so, I'd
+prefer not to apply that separate patch immediately to 3.13 as a fix,
+since then it'd delay applying this series until after -rc2 is out,
+unless you can get the fix into -rc1 quickly...
