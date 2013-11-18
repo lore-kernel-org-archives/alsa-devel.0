@@ -1,19 +1,16 @@
-From: "Andrey Mazo" <mazo@telum.ru>
-Subject: Re: [PATCH] pcm_file: document new argument to
- snd_pcm_file_open().
-Date: Mon, 18 Nov 2013 14:38:21 +0400
-Message-ID: <op.w6qqh7k5vp3tvr@hippo.telum.ru>
-References: <1384636316-26706-1-git-send-email-mazo@telum.ru>
- <1384703119-6856-1-git-send-email-mazo@telum.ru>
- <s5hsiuuyve1.wl%tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Enable mute/mic-mute LEDs for more
+	Thinkpads with Realtek codec
+Date: Mon, 18 Nov 2013 11:51:47 +0100
+Message-ID: <1384771907-2936-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.telum.ru (mail.telum.ru [62.141.76.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 054C92610D3
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 11:38:20 +0100 (CET)
-In-Reply-To: <s5hsiuuyve1.wl%tiwai@suse.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 248E826157F
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 11:51:50 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,51 +20,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org, hui.wang@canonical.com
+Cc: Alex Hung <alex.hung@canonical.com>, yk@canonical.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thank you very much!
-Sorry, I've missed that in the first place.
+We're using the ACPI interface to detect whether we're dealing with a Thinkpad
+or not. This way we're not loading the thinkpad_acpi module when we're not on
+a Thinkpad, but at the same time, we give the opportunity to check for, and
+potentially enable, both present and future Thinkpad with mute/micmute LEDs.
 
-On Mon, 18 Nov 2013 12:19:34 +0400, Takashi Iwai <tiwai@suse.de> wrote:
+At least those running the ALC269 family (269 to 299) of Realtek codecs.
 
-> At Sun, 17 Nov 2013 19:45:19 +0400,
-> Andrey Mazo wrote:
->>
->> Document function argument, added in commit
->> 4081be0b87ab9fa53a8906e66bc240f18a7a9a54.
->>
->> Signed-off-by: Andrey Mazo <mazo@telum.ru>
->
-> Thanks, applied.
->
->
-> Takashi
->
->> ---
->>  src/pcm/pcm_file.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
->> index 25055d0..7123025 100644
->> --- a/src/pcm/pcm_file.c
->> +++ b/src/pcm/pcm_file.c
->> @@ -714,6 +714,7 @@ static const snd_pcm_fast_ops_t snd_pcm_file_fast_ops = {
->>   * \param perm File permission
->>   * \param slave Slave PCM handle
->>   * \param close_slave When set, the slave PCM handle is closed with copy PCM
->> + * \param stream the direction of PCM stream
->>   * \retval zero on success otherwise a negative error code
->>   * \warning Using of this function might be dangerous in the sense
->>   *          of compatibility reasons. The prototype might be freely
->> --
->> 1.8.4
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Cc: Alex Hung <alex.hung@canonical.com>
+Tested-by: Hui Wang <hui.wang@canonical.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |   29 ++++++++++++++++++++++++++---
+ 1 file changed, 26 insertions(+), 3 deletions(-)
 
+Hi Takashi,
+
+Sorry I'm late with this one. I'm hoping that you can still merge it for 3.13,
+but if you can't, we'll just backport it into the Ubuntu 3.13 kernel instead,
+so not the end of the world I guess.
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 04d1e6b..05987ff 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3652,9 +3652,29 @@ static void alc290_fixup_mono_speakers(struct hda_codec *codec,
+ #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
+ 
+ #include <linux/thinkpad_acpi.h>
++#include <acpi/acpi.h>
+ 
+ static int (*led_set_func)(int, bool);
+ 
++static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void *context,
++				 void **rv)
++{
++	bool *found = context;
++	*found = true;
++	return AE_OK;
++}
++
++static bool is_thinkpad(struct hda_codec *codec)
++{
++	bool found = false;
++	if (codec->subsystem_id >> 16 != 0x17aa)
++		return false;
++	if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb, &found, NULL)) && found)
++		return true;
++	found = false;
++	return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb, &found, NULL)) && found;
++}
++
+ static void update_tpacpi_mute_led(void *private_data, int enabled)
+ {
+ 	if (led_set_func)
+@@ -3680,6 +3700,8 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
+ 	bool removefunc = false;
+ 
+ 	if (action == HDA_FIXUP_ACT_PROBE) {
++		if (!is_thinkpad(codec))
++			return;
+ 		if (!led_set_func)
+ 			led_set_func = symbol_request(tpacpi_led_set);
+ 		if (!led_set_func) {
+@@ -4027,6 +4049,8 @@ static const struct hda_fixup alc269_fixups[] = {
+ 	[ALC269_FIXUP_LIMIT_INT_MIC_BOOST] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_limit_int_mic_boost,
++		.chained = true,
++		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
+ 	},
+ 	[ALC269_FIXUP_LIMIT_INT_MIC_BOOST_MUTE_LED] = {
+ 		.type = HDA_FIXUP_FUNC,
+@@ -4070,8 +4094,6 @@ static const struct hda_fixup alc269_fixups[] = {
+ 	[ALC269_FIXUP_THINKPAD_ACPI] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_thinkpad_acpi,
+-		.chained = true,
+-		.chain_id = ALC269_FIXUP_LIMIT_INT_MIC_BOOST
+ 	},
+ 	[ALC255_FIXUP_DELL1_MIC_NO_PRESENCE] = {
+ 		.type = HDA_FIXUP_PINS,
+@@ -4173,7 +4195,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x2208, "Thinkpad T431s", ALC269_FIXUP_LENOVO_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x220c, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x2212, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+-	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad", ALC269_FIXUP_THINKPAD_ACPI),
++	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x501a, "Thinkpad", ALC283_FIXUP_INT_MIC),
+@@ -4181,6 +4203,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+ 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
++	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", ALC269_FIXUP_THINKPAD_ACPI),
+ 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
+ 
+ #if 0
 -- 
-Andrey Mazo.
+1.7.9.5
