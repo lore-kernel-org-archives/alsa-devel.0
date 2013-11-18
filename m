@@ -1,146 +1,162 @@
-From: "Shevchenko, Andriy" <andriy.shevchenko-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCHv7] dmaengine: Add support for BCM2835
-Date: Mon, 18 Nov 2013 10:00:39 +0000
-Message-ID: <1384768816.14845.186.camel@smile>
-References: <5288E327.8050809@koalo.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [RFC 16/23] ASoC: omap: mcbsp, mcpdm,
+ dmic: raw read and write endian fix
+Date: Mon, 18 Nov 2013 12:30:42 +0200
+Message-ID: <5289EC52.2060803@ti.com>
+References: <1384560086-11994-1-git-send-email-taras.kondratiuk@linaro.org>
+ <1384560086-11994-17-git-send-email-taras.kondratiuk@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <5288E327.8050809-oZ8rN/sblLk@public.gmane.org>
-Content-Language: en-US
-Content-ID: <9486B9A003155540AE6BC062580E7C78-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
-Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, "Koul, Vinod" <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, "Williams, Dan J" <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DEBB260840
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 11:30:37 +0100 (CET)
+In-Reply-To: <1384560086-11994-17-git-send-email-taras.kondratiuk@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Taras Kondratiuk <taras.kondratiuk@linaro.org>, linux-omap@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Victor Kamensky <victor.kamensky@linaro.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linaro-networking@linaro.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCAyMDEzLTExLTE3IGF0IDE2OjM5ICswMTAwLCBGbG9yaWFuIE1laWVyIHdyb3RlOg0K
-PiBBZGQgc3VwcG9ydCBmb3IgRE1BIGNvbnRyb2xsZXIgb2YgQkNNMjgzNSBhcyB1c2VkIGluIHRo
-ZSBSYXNwYmVycnkgUGkuDQo+IEN1cnJlbnRseSBpdCBvbmx5IHN1cHBvcnRzIGN5Y2xpYyBETUEu
-DQoNCkZldyBjb21tZW50cyBiZWxvdy4NCg0KPiArKysgYi9kcml2ZXJzL2RtYS9iY20yODM1LWRt
-YS5jDQo+IEBAIC0wLDAgKzEsNzM2IEBADQoNCj4gK3N0YXRpYyBpbnQgYmNtMjgzNV9kbWFfYWJv
-cnQodm9pZCBfX2lvbWVtICpjaGFuX2Jhc2UpDQo+ICt7DQo+ICsJdW5zaWduZWQgbG9uZyBpbnQg
-Y3M7DQo+ICsJbG9uZyBpbnQgdGltZW91dCA9IDEwMDAwOw0KPiArDQo+ICsJY3MgPSByZWFkbChj
-aGFuX2Jhc2UgKyBCQ00yODM1X0RNQV9DUyk7DQo+ICsJaWYgKCEoY3MgJiBCQ00yODM1X0RNQV9B
-Q1RJVkUpKQ0KPiArCQlyZXR1cm4gMDsNCj4gKw0KPiArCS8qIFdyaXRlIDAgdG8gdGhlIGFjdGl2
-ZSBiaXQgLSBQYXVzZSB0aGUgRE1BICovDQo+ICsJd3JpdGVsKDAsIGNoYW5fYmFzZSArIEJDTTI4
-MzVfRE1BX0NTKTsNCj4gKw0KPiArCS8qIFdhaXQgZm9yIGFueSBjdXJyZW50IEFYSSB0cmFuc2Zl
-ciB0byBjb21wbGV0ZSAqLw0KPiArCXdoaWxlICgoY3MgJiBCQ00yODM1X0RNQV9JU1BBVVNFRCkg
-JiYgLS10aW1lb3V0ID49IDApDQo+ICsJCWNzID0gcmVhZGwoY2hhbl9iYXNlICsgQkNNMjgzNV9E
-TUFfQ1MpOw0KDQpJIGFjdHVhbGx5IGRvbid0IHNlZSB0aW1lb3V0IGhlcmUuIHRpbWVvdXQgbWVh
-bnMgY291bnRlciBpbiB5b3VyIGNhc2UuDQpNaWdodCBiZSBiZXR0ZXIgdG8gaGF2ZSBzb21ldGhp
-bmcgbGlrZQ0KDQp3aGlsZSAocmVhZGwoLi4uKSAmIEJDTTI4MzVfRE1BX0lTUEFVU0VEICYmIC0t
-dGltZW91dCkNCmNwdV9yZWxheCgpOw0KDQo/DQoNCj4gKwkvKiBXZSdsbCB1bi1wYXVzZSB3aGVu
-IHdlIHNldCBvZiBvdXIgbmV4dCBETUEgKi8NCj4gKwlpZiAoY3MgJiBCQ00yODM1X0RNQV9JU1BB
-VVNFRCkNCg0KaWYgKCF0aW1lb3V0KQ0KDQo+ICsJCXJldHVybiAtRVRJTUVET1VUOw0KDQoNCj4g
-Kw0KPiArCWlmICghKGNzICYgQkNNMjgzNV9ETUFfQUNUSVZFKSkNCj4gKwkJcmV0dXJuIDA7DQoN
-CkR1cGxpY2F0ZSBjb2RlLiBQZXJoYXBzDQpzdGF0aWMgaW5saW5lIGJvb2wgaXNfY2hhbl9ub3Rf
-YWN0aXZlKHVuc2lnbmVkIGxvbmcgY3MpDQp7DQpyZXR1cm4gIShjcyAmIEJDTTI4MzVfRE1BX0FD
-VElWRSk7DQp9DQoNCltdDQoNCj4gK3N0YXRpYyBpcnFyZXR1cm5fdCBiY20yODM1X2RtYV9jYWxs
-YmFjayhpbnQgaXJxLCB2b2lkICpkYXRhKQ0KPiArew0KDQpbXQ0KDQo+ICsJd3JpdGVsKEJDTTI4
-MzVfRE1BX0FDVElWRSwgYy0+Y2hhbl9iYXNlICsgQkNNMjgzNV9ETUFfQ1MpOw0KDQpTaW5jZSBp
-dCdzIGR1cGxpY2F0ZSBjb2RlLCBwZXJoYXBzDQoNCnN0YXRpYyBpbmxpbmUgdm9pZCBzZXRfY2hh
-bl9hY3RpdmUodm9pZCBfX2lvbWVtICpiYXNlKQ0Kew0Kd3JpdGVsKEJDTTI4MzVfRE1BX0FDVElW
-RSwgYmFzZSArIEJDTTI4MzVfRE1BX0NTKTsNCn0NCg0KW10NCg0KPiArc3RhdGljIHNpemVfdCBi
-Y20yODM1X2RtYV9kZXNjX3NpemVfcG9zKHN0cnVjdCBiY20yODM1X2Rlc2MgKmQsIGRtYV9hZGRy
-X3QgYWRkcikNCj4gK3sNCj4gKwl1bnNpZ25lZCBpOw0KDQpJbiBzb21lIGNhc2VzIHlvdSB1c2Ug
-J3Vuc2lnbmVkIGxvbmcgaW50JyBmb3IgJ3Vuc2lnbmVkIGxvbmcnLCBmb3INCmV4YW1wbGUsIGJ1
-dCBoZXJlICd1bnNpZ25lZCcgaW5zdGVhZCBvZiAndW5zaWduZWQgaW50Jy4gUGxlYXNlLCBhbGln
-bg0Kc3R5bGUgd2l0aCBjZXJ0YWluIGNob2ljZS4NCg0KW10NCg0KPiArc3RhdGljIGVudW0gZG1h
-X3N0YXR1cyBiY20yODM1X2RtYV90eF9zdGF0dXMoc3RydWN0IGRtYV9jaGFuICpjaGFuLA0KPiAr
-CWRtYV9jb29raWVfdCBjb29raWUsIHN0cnVjdCBkbWFfdHhfc3RhdGUgKnR4c3RhdGUpDQo+ICt7
-DQoNCltdDQoNCj4gKwl9IGVsc2Ugew0KPiArCQl0eHN0YXRlLT5yZXNpZHVlID0gMDsNCg0KVXNl
-bGVzcyBhc3NpZ25tZW50IHNpbmNlIGRtYWVuZ2luZSB3aWxsIGRvIHRoaXMgZm9yIHlvdSBpbg0K
-ZG1hX2Nvb2tpZV9zdGF0dXMuDQoNCltdDQoNCj4gK3N0YXRpYyBzdHJ1Y3QgZG1hX2FzeW5jX3R4
-X2Rlc2NyaXB0b3IgKmJjbTI4MzVfZG1hX3ByZXBfZG1hX2N5Y2xpYygNCj4gKwlzdHJ1Y3QgZG1h
-X2NoYW4gKmNoYW4sIGRtYV9hZGRyX3QgYnVmX2FkZHIsIHNpemVfdCBidWZfbGVuLA0KPiArCXNp
-emVfdCBwZXJpb2RfbGVuLCBlbnVtIGRtYV90cmFuc2Zlcl9kaXJlY3Rpb24gZGlyZWN0aW9uLA0K
-PiArCXVuc2lnbmVkIGxvbmcgZmxhZ3MsIHZvaWQgKmNvbnRleHQpDQo+ICt7DQoNCltdDQoNCj4g
-KwkvKiBHcmFiIGNvbmZpZ3VyYXRpb24gKi8NCj4gKwlpZiAoZGlyZWN0aW9uID09IERNQV9ERVZf
-VE9fTUVNKSB7DQo+ICsJCWRldl9hZGRyID0gYy0+Y2ZnLnNyY19hZGRyOw0KPiArCQlkZXZfd2lk
-dGggPSBjLT5jZmcuc3JjX2FkZHJfd2lkdGg7DQo+ICsJCXN5bmNfdHlwZSA9IEJDTTI4MzVfRE1B
-X1NfRFJFUTsNCj4gKwl9IGVsc2UgaWYgKGRpcmVjdGlvbiA9PSBETUFfTUVNX1RPX0RFVikgew0K
-PiArCQlkZXZfYWRkciA9IGMtPmNmZy5kc3RfYWRkcjsNCj4gKwkJZGV2X3dpZHRoID0gYy0+Y2Zn
-LmRzdF9hZGRyX3dpZHRoOw0KPiArCQlzeW5jX3R5cGUgPSBCQ00yODM1X0RNQV9EX0RSRVE7DQo+
-ICsJfSBlbHNlIHsNCj4gKwkJZGV2X2VycihjaGFuLT5kZXZpY2UtPmRldiwgIiVzOiBiYWQgZGly
-ZWN0aW9uP1xuIiwgX19mdW5jX18pOw0KPiArCQlyZXR1cm4gTlVMTDsNCj4gKwl9DQoNCllvdSBt
-aWdodCB1c2UgZm9sbG93aW5nIGFzIHdlbGwNCg0KaWYgKCFpc19zbGF2ZV9kaXJlY3Rpb24pIHsN
-CiBkZXZfZXJyKC4uLik7DQogcmV0dXJuIE5VTEw7DQp9DQoNCmlmIChkaXJlY3Rpb24gPT0gRE1B
-X0RFVl9UT19NRU0pDQp7DQouLi4NCn0gZWxzZSB7DQouLi4NCn0NCg0KPw0KDQpBdCBsZWFzdCBp
-dCB3aWxsIGJlIGFsaWduZWQgd2l0aCB3aGF0IHlvdSBoYXZlIGZ1cnRoZXIgaW4gdGhpcyBmdW5j
-dGlvbi4NCg0KPiArCS8qIEJ1cyB3aWR0aCB0cmFuc2xhdGVzIHRvIHRoZSBlbGVtZW50IHNpemUg
-KEVTKSAqLw0KPiArCXN3aXRjaCAoZGV2X3dpZHRoKSB7DQo+ICsJY2FzZSBETUFfU0xBVkVfQlVT
-V0lEVEhfNF9CWVRFUzoNCj4gKwkJZXMgPSBCQ00yODM1X0RNQV9EQVRBX1RZUEVfUzMyOw0KPiAr
-CQlicmVhazsNCj4gKwlkZWZhdWx0Og0KPiArCQlyZXR1cm4gTlVMTDsNCj4gKwl9DQoNClNvLCB5
-b3UgdXNlIHN3aXRjaC1jYXNlIG9uIGhvcGUgdG8gZXh0ZW5kIGl0IGxhdGVyLCBjb3JyZWN0Pw0K
-DQpbXQ0KDQo+ICtzdGF0aWMgaW50IGJjbTI4MzVfZG1hX3Rlcm1pbmF0ZV9hbGwoc3RydWN0IGJj
-bTI4MzVfY2hhbiAqYykNCj4gK3sNCj4gKwlzdHJ1Y3QgYmNtMjgzNV9kbWFkZXYgKmQgPSB0b19i
-Y20yODM1X2RtYV9kZXYoYy0+dmMuY2hhbi5kZXZpY2UpOw0KPiArCXVuc2lnbmVkIGxvbmcgZmxh
-Z3M7DQo+ICsJaW50IHRpbWVvdXQgPSAxMDAwOw0KPiArCUxJU1RfSEVBRChoZWFkKTsNCg0KW10N
-Cg0KPiArCWlmIChjLT5kZXNjKSB7DQo+ICsJCWMtPmRlc2MgPSBOVUxMOw0KPiArCQliY20yODM1
-X2RtYV9hYm9ydChjLT5jaGFuX2Jhc2UpOw0KPiArDQo+ICsJCS8qIFdhaXQgZm9yIHN0b3BwaW5n
-ICovDQo+ICsJCXdoaWxlICh0aW1lb3V0ID4gMCkgew0KPiArCQkJdGltZW91dC0tOw0KDQp3aGls
-ZSAoLS10aW1lb3V0KQ0KDQo+ICsJCQlpZiAoIShyZWFkbChjLT5jaGFuX2Jhc2UgKyBCQ00yODM1
-X0RNQV9DUykgJg0KPiArCQkJCQkJQkNNMjgzNV9ETUFfQUNUSVZFKSkNCj4gKwkJCQlicmVhazsN
-Cj4gKw0KPiArCQkJY3B1X3JlbGF4KCk7DQo+ICsJCX0NCj4gKw0KPiArCQlpZiAodGltZW91dCA8
-PSAwKQ0KDQppZiAoIXRpbWVvdXQpDQoNCltdDQoNCj4gK3N0YXRpYyBzdHJ1Y3QgZG1hX2NoYW4g
-KmJjbTI4MzVfZG1hX3hsYXRlKHN0cnVjdCBvZl9waGFuZGxlX2FyZ3MgKnNwZWMsDQo+ICsJCQkJ
-CSAgIHN0cnVjdCBvZl9kbWEgKm9mZG1hKQ0KPiArew0KPiArCXN0cnVjdCBiY20yODM1X2RtYWRl
-diAqZCA9IG9mZG1hLT5vZl9kbWFfZGF0YTsNCj4gKwlzdHJ1Y3QgZG1hX2NoYW4gKmNoYW4sICpj
-YW5kaWRhdGU7DQo+ICsNCj4gK3JldHJ5Og0KPiArCWNhbmRpZGF0ZSA9IE5VTEw7DQo+ICsNCj4g
-KwkvKiBXYWxrIHRoZSBsaXN0IG9mIGNoYW5uZWxzIHJlZ2lzdGVyZWQgd2l0aCB0aGUgY3VycmVu
-dCBpbnN0YW5jZSBhbmQNCj4gKwkgKiBmaW5kIG9uZSB0aGF0IGlzIGN1cnJlbnRseSB1bnVzZWQg
-Ki8NCj4gKwlsaXN0X2Zvcl9lYWNoX2VudHJ5KGNoYW4sICZkLT5kZGV2LmNoYW5uZWxzLCBkZXZp
-Y2Vfbm9kZSkNCj4gKwkJaWYgKGNoYW4tPmNsaWVudF9jb3VudCA9PSAwKSB7DQo+ICsJCQljYW5k
-aWRhdGUgPSBjaGFuOw0KPiArCQkJYnJlYWs7DQo+ICsJCX0NCj4gKw0KPiArCWlmICghY2FuZGlk
-YXRlKQ0KPiArCQlyZXR1cm4gTlVMTDsNCj4gKw0KPiArCS8qIGRtYV9nZXRfc2xhdmVfY2hhbm5l
-bCB3aWxsIHJldHVybiBOVUxMIGlmIHdlIGxvc3QgYSByYWNlIGJldHdlZW4NCj4gKwkgKiB0aGUg
-bG9va3VwIGFuZCB0aGUgcmVzZXJ2YXRpb24gKi8NCj4gKwljaGFuID0gZG1hX2dldF9zbGF2ZV9j
-aGFubmVsKGNhbmRpZGF0ZSk7DQo+ICsNCj4gKwlpZiAoY2hhbikgew0KDQpQZXJoYXBzDQoNCmlm
-ICghY2hhbikNCmdvdG8gcmV0cnk7DQoNCg0KPiArCQlzdHJ1Y3QgYmNtMjgzNV9jaGFuICpjID0g
-dG9fYmNtMjgzNV9kbWFfY2hhbihjaGFuKTsNCj4gKw0KPiArCQkvKiBTZXQgRFJFUSBmcm9tIHBh
-cmFtICovDQo+ICsJCWMtPmRyZXEgPSBzcGVjLT5hcmdzWzBdOw0KPiArDQo+ICsJCXJldHVybiBj
-aGFuOw0KPiArCX0NCj4gKw0KPiArCWdvdG8gcmV0cnk7DQo+ICt9DQoNCj4gK3N0YXRpYyBpbnQg
-YmNtMjgzNV9kbWFfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gK3sNCj4g
-KwlzdHJ1Y3QgYmNtMjgzNV9kbWFkZXYgKm9kOw0KPiArCXN0cnVjdCByZXNvdXJjZSAqcmVzOw0K
-PiArCXZvaWQgX19pb21lbSAqYmFzZTsNCj4gKwlpbnQgcmM7DQo+ICsJaW50IGk7DQo+ICsJaW50
-IGlycTsNCj4gKwl1aW50MzJfdCBjaGFuc19hdmFpbGFibGU7DQoNCldoeSB1aW50MzJfdD8NCg0K
-W10NCg0KPiArCWlmIChwZGV2LT5kZXYub2Zfbm9kZSkgew0KDQpQZXJoYXBzDQoNCmlmICghLi4u
-b2Zfbm9kZSkgew0KIC4uLg0KIHJldHVybiAtRUlOVkFMOw0KfQ0KDQo+ICsJCS8qIFJlcXVlc3Qg
-RE1BIGNoYW5uZWwgbWFzayBmcm9tIGRldmljZSB0cmVlICovDQo+ICsJCWlmIChvZl9wcm9wZXJ0
-eV9yZWFkX3UzMihwZGV2LT5kZXYub2Zfbm9kZSwNCj4gKwkJCQkiYnJjbSxkbWEtY2hhbm5lbC1t
-YXNrIiwNCj4gKwkJCQkmY2hhbnNfYXZhaWxhYmxlKSkgew0KPiArCQkJZGV2X2VycigmcGRldi0+
-ZGV2LCAiRmFpbGVkIHRvIGdldCBjaGFubmVsIG1hc2tcbiIpOw0KPiArCQkJYmNtMjgzNV9kbWFf
-ZnJlZShvZCk7DQo+ICsJCQlyZXR1cm4gLUVJTlZBTDsNCj4gKwkJfQ0KPiArCX0gZWxzZSB7DQo+
-ICsJCWRldl9lcnIoJnBkZXYtPmRldiwgIkZhaWxlZCB0byBnZXQgY2hhbm5lbCBtYXNrLiBObyBk
-ZXZpY2UgdHJlZS5cbiIpOw0KPiArCQliY20yODM1X2RtYV9mcmVlKG9kKTsNCj4gKwkJcmV0dXJu
-IC1FSU5WQUw7DQo+ICsJfQ0KDQo+ICsJZGV2X2RiZygmcGRldi0+ZGV2LCAiSW5pdGlhbGl6ZWQg
-JWkgRE1BIGNoYW5uZWxzXG4iLCBpKTsNCj4gKw0KPiArCWlmIChwZGV2LT5kZXYub2Zfbm9kZSkg
-ew0KDQpEb2VzIGl0IG1ha2Ugc2Vuc2U/DQoNCj4gKwkJLyogRGV2aWNlLXRyZWUgRE1BIGNvbnRy
-b2xsZXIgcmVnaXN0cmF0aW9uICovDQo+ICsJCXJjID0gb2ZfZG1hX2NvbnRyb2xsZXJfcmVnaXN0
-ZXIocGRldi0+ZGV2Lm9mX25vZGUsDQo+ICsJCQkJYmNtMjgzNV9kbWFfeGxhdGUsIG9kKTsNCj4g
-KwkJaWYgKHJjKSB7DQo+ICsJCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJGYWlsZWQgdG8gcmVnaXN0
-ZXIgRE1BIGNvbnRyb2xsZXJcbiIpOw0KPiArCQkJYmNtMjgzNV9kbWFfZnJlZShvZCk7DQo+ICsJ
-CQlyZXR1cm4gcmM7DQoNCmdvdG8gZXJyX25vX2RtYTsNCg0KPiArCQl9DQo+ICsJfQ0KPiArDQo+
-ICsJcmMgPSBkbWFfYXN5bmNfZGV2aWNlX3JlZ2lzdGVyKCZvZC0+ZGRldik7DQo+ICsJaWYgKHJj
-KSB7DQo+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwNCj4gKwkJCSJGYWlsZWQgdG8gcmVnaXN0ZXIg
-c2xhdmUgRE1BIGVuZ2luZSBkZXZpY2U6ICVkXG4iLCByYyk7DQo+ICsJCWJjbTI4MzVfZG1hX2Zy
-ZWUob2QpOw0KPiArCQlyZXR1cm4gcmM7DQoNCmdvdG8gZXJyX25vX2RtYTsNCg0KPiArCX0NCj4g
-Kw0KPiArCWRldl9kYmcoJnBkZXYtPmRldiwgIkxvYWQgQkNNMjgzNSBETUEgZW5naW5lIGRyaXZl
-clxuIik7DQoNCg0KPiArCXJldHVybiByYzsNCg0KcmV0dXJuIDA7DQoNCmVycl9ub19kbWE6DQpi
-Y20yODM1X2RtYV9mcmVlKG9kKTsNCnJldHVybiByYzsNCg0KPw0KDQoNCi0tIA0KQW5keSBTaGV2
-Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0BpbnRlbC5jb20+DQpJbnRlbCBGaW5sYW5kIE95DQot
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KSW50ZWwgRmlubGFuZCBPeQpSZWdpc3RlcmVkIEFkZHJlc3M6IFBMIDI4MSwg
-MDAxODEgSGVsc2lua2kgCkJ1c2luZXNzIElkZW50aXR5IENvZGU6IDAzNTc2MDYgLSA0IApEb21p
-Y2lsZWQgaW4gSGVsc2lua2kgCgpUaGlzIGUtbWFpbCBhbmQgYW55IGF0dGFjaG1lbnRzIG1heSBj
-b250YWluIGNvbmZpZGVudGlhbCBtYXRlcmlhbCBmb3IKdGhlIHNvbGUgdXNlIG9mIHRoZSBpbnRl
-bmRlZCByZWNpcGllbnQocykuIEFueSByZXZpZXcgb3IgZGlzdHJpYnV0aW9uCmJ5IG90aGVycyBp
-cyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQKcmVjaXBp
-ZW50LCBwbGVhc2UgY29udGFjdCB0aGUgc2VuZGVyIGFuZCBkZWxldGUgYWxsIGNvcGllcy4K
+On 11/16/2013 02:01 AM, Taras Kondratiuk wrote:
+> From: Victor Kamensky <victor.kamensky@linaro.org>
+> =
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> All OMAP IP blocks expect LE data, but CPU may operate in BE mode.
+> Need to use endian neutral functions to read/write h/w registers.
+> I.e instead of __raw_read[lw] and __raw_write[lw] functions code
+> need to use read[lw]_relaxed and write[lw]_relaxed functions.
+> If the first simply reads/writes register, the second will byteswap
+> it if host operates in BE mode.
+> =
+
+> Changes are trivial sed like replacement of __raw_xxx functions
+> with xxx_relaxed variant.
+> =
+
+> Signed-off-by: Victor Kamensky <victor.kamensky@linaro.org>
+> Signed-off-by: Taras Kondratiuk <taras.kondratiuk@linaro.org>
+
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+> ---
+>  sound/soc/omap/mcbsp.c      |   12 ++++++------
+>  sound/soc/omap/omap-dmic.c  |    4 ++--
+>  sound/soc/omap/omap-mcpdm.c |    4 ++--
+>  3 files changed, 10 insertions(+), 10 deletions(-)
+> =
+
+> diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
+> index 83433fd..86c7538 100644
+> --- a/sound/soc/omap/mcbsp.c
+> +++ b/sound/soc/omap/mcbsp.c
+> @@ -36,10 +36,10 @@ static void omap_mcbsp_write(struct omap_mcbsp *mcbsp=
+, u16 reg, u32 val)
+>  =
+
+>  	if (mcbsp->pdata->reg_size =3D=3D 2) {
+>  		((u16 *)mcbsp->reg_cache)[reg] =3D (u16)val;
+> -		__raw_writew((u16)val, addr);
+> +		writew_relaxed((u16)val, addr);
+>  	} else {
+>  		((u32 *)mcbsp->reg_cache)[reg] =3D val;
+> -		__raw_writel(val, addr);
+> +		writel_relaxed(val, addr);
+>  	}
+>  }
+>  =
+
+> @@ -48,22 +48,22 @@ static int omap_mcbsp_read(struct omap_mcbsp *mcbsp, =
+u16 reg, bool from_cache)
+>  	void __iomem *addr =3D mcbsp->io_base + reg * mcbsp->pdata->reg_step;
+>  =
+
+>  	if (mcbsp->pdata->reg_size =3D=3D 2) {
+> -		return !from_cache ? __raw_readw(addr) :
+> +		return !from_cache ? readw_relaxed(addr) :
+>  				     ((u16 *)mcbsp->reg_cache)[reg];
+>  	} else {
+> -		return !from_cache ? __raw_readl(addr) :
+> +		return !from_cache ? readl_relaxed(addr) :
+>  				     ((u32 *)mcbsp->reg_cache)[reg];
+>  	}
+>  }
+>  =
+
+>  static void omap_mcbsp_st_write(struct omap_mcbsp *mcbsp, u16 reg, u32 v=
+al)
+>  {
+> -	__raw_writel(val, mcbsp->st_data->io_base_st + reg);
+> +	writel_relaxed(val, mcbsp->st_data->io_base_st + reg);
+>  }
+>  =
+
+>  static int omap_mcbsp_st_read(struct omap_mcbsp *mcbsp, u16 reg)
+>  {
+> -	return __raw_readl(mcbsp->st_data->io_base_st + reg);
+> +	return readl_relaxed(mcbsp->st_data->io_base_st + reg);
+>  }
+>  =
+
+>  #define MCBSP_READ(mcbsp, reg) \
+> diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
+> index 12e566b..1bd531d 100644
+> --- a/sound/soc/omap/omap-dmic.c
+> +++ b/sound/soc/omap/omap-dmic.c
+> @@ -61,12 +61,12 @@ struct omap_dmic {
+>  =
+
+>  static inline void omap_dmic_write(struct omap_dmic *dmic, u16 reg, u32 =
+val)
+>  {
+> -	__raw_writel(val, dmic->io_base + reg);
+> +	writel_relaxed(val, dmic->io_base + reg);
+>  }
+>  =
+
+>  static inline int omap_dmic_read(struct omap_dmic *dmic, u16 reg)
+>  {
+> -	return __raw_readl(dmic->io_base + reg);
+> +	return readl_relaxed(dmic->io_base + reg);
+>  }
+>  =
+
+>  static inline void omap_dmic_start(struct omap_dmic *dmic)
+> diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+> index 90d2a7c..653ba1c 100644
+> --- a/sound/soc/omap/omap-mcpdm.c
+> +++ b/sound/soc/omap/omap-mcpdm.c
+> @@ -74,12 +74,12 @@ struct omap_mcpdm {
+>  =
+
+>  static inline void omap_mcpdm_write(struct omap_mcpdm *mcpdm, u16 reg, u=
+32 val)
+>  {
+> -	__raw_writel(val, mcpdm->io_base + reg);
+> +	writel_relaxed(val, mcpdm->io_base + reg);
+>  }
+>  =
+
+>  static inline int omap_mcpdm_read(struct omap_mcpdm *mcpdm, u16 reg)
+>  {
+> -	return __raw_readl(mcpdm->io_base + reg);
+> +	return readl_relaxed(mcpdm->io_base + reg);
+>  }
+>  =
+
+>  #ifdef DEBUG
+> =
+
+
+
+-- =
+
+P=E9ter
