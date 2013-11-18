@@ -1,19 +1,26 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH 15/31] ASoC: dmaengine: add custom DMA
-	config to snd_dmaengine_pcm_config
-Date: Mon, 18 Nov 2013 11:45:17 -0700
-Message-ID: <528A603D.2000307@wwwdotorg.org>
-References: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org>
- <1384548866-13141-16-git-send-email-swarren@wwwdotorg.org>
- <20131116094412.GD15393@sirena.org.uk>
+From: Wessel Dirksen <wdirksen@gmail.com>
+Subject: Re: icon utrack pro usb audio interface
+Date: Mon, 18 Nov 2013 21:09:01 +0000 (UTC)
+Message-ID: <loom.20131118T220420-577@post.gmane.org>
+References: <4DF356F0.6010701@stochastique.net>
+ <4DF61CE8.9000202@stochastique.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 57A6E260320
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 19:45:22 +0100 (CET)
-In-Reply-To: <20131116094412.GD15393@sirena.org.uk>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A7D2260799
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 22:10:04 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1ViW54-00051F-TP
+ for alsa-devel@alsa-project.org; Mon, 18 Nov 2013 22:10:03 +0100
+Received: from 541864FC.cm-5-1b.dynamic.ziggo.nl ([84.24.100.252])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 22:10:02 +0100
+Received: from wdirksen by 541864FC.cm-5-1b.dynamic.ziggo.nl with local
+ (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 22:10:02 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,54 +30,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-tegra@vger.kernel.org, treding@nvidia.com, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/16/2013 02:44 AM, Mark Brown wrote:
-> On Fri, Nov 15, 2013 at 01:54:10PM -0700, Stephen Warren wrote:
+Adrien Plisson <aplisson+music <at> stochastique.net> writes:
+
 > 
->> - DMA device
+> On 06/11/2011 01:52 PM, Adrien Plisson wrote:
+> >it seems that the
+> > firewire interface uses the bridgeco BeBoB chipset. given that some
+> > versions of BeBoB supports both firewire and usb, i suppose (but i may
+> > be wrong) that the "utrack pro" is also based on BeBoB.
 > 
->> This allows requesting DMA channels for a device other than the 
->> device which is registering the "PCM" driver. This is quite 
->> unusual, but is currently useful on Tegra. In much HW, and in 
->> Tegra20, each DAI HW
-...
-> I'm a bit concerned about anything actually using dma_dev since it
->  indicates that something is being worked around, it'd be a bit 
-> nicer to print a warning when doing this to give people a hint
-> that they might not be doing the right thing if they use it
-> (unless someone comes up with a system that has a clear use case
-> for it).
+> upon further investigation (involving a screwdriver), the icon utrack 
+> pro usb audio interface does not use a bridgeco bebob chipset: it uses a 
+> xilinx spartan3 fpga and a cypress CY7C68013A-100AXC EZ-USB FX2LP usb 
+> microcontroller.
+> 
+> i fear that i need to write a specific module to support this 
+> hardware... any advice before i start ?
+> 
+> regards,
+> 
 
-What if I squash the following into that patch:
+I just bought one of these as well. Would love linux support if possible. I
+would be willing to help with this effort except that my linux skills are
+not dev level. Let me know if I can help and if this is going anywhere.
 
-> diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-> index 1160d1cba133..0e2645dee96a 100644
-> --- a/sound/soc/soc-generic-dmaengine-pcm.c
-> +++ b/sound/soc/soc-generic-dmaengine-pcm.c
-> @@ -296,8 +296,17 @@ static int dmaengine_pcm_request_chan_of(struct dmaengine_pcm *pcm,
->  	    !dev->of_node)
->  		return 0;
->  
-> -	if (config->dma_dev)
-> +	if (config->dma_dev) {
-> +		/*
-> +		 * If this warning is seen, it probably means that your Linux
-> +		 * device structure does not match your HW device structure.
-> +		 * It would be best to refactor the Linux device structure to
-> +		 * correctly match the HW structure.
-> +		 */
-> +		dev_warn(dev, "DMA channels sourced from device %s",
-> +			 dev_name(config->dma_dev));
->  		dev = config->dma_dev;
-> +	}
->  
->  	for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_CAPTURE;
->  	     i++) {
-
-(a few patches later) That yields the following warning on Tegra, for
-example:
-
-> [    2.629623] tegra30-i2s 70080400.i2s: DMA channels sourced from device 70080000.ahub
+REgards
