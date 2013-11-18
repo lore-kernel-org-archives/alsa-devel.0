@@ -1,68 +1,76 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 17/31] ASoC: tegra: call pm_runtime APIs around register
- accesses
-Date: Mon, 18 Nov 2013 18:39:47 +0000
-Message-ID: <20131118183947.GS2674@sirena.org.uk>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH 15/31] ASoC: dmaengine: add custom DMA
+	config to snd_dmaengine_pcm_config
+Date: Mon, 18 Nov 2013 11:45:17 -0700
+Message-ID: <528A603D.2000307@wwwdotorg.org>
 References: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org>
- <1384548866-13141-18-git-send-email-swarren@wwwdotorg.org>
- <20131116100205.GG15393@sirena.org.uk>
- <528A4D9A.10809@wwwdotorg.org>
+ <1384548866-13141-16-git-send-email-swarren@wwwdotorg.org>
+ <20131116094412.GD15393@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="H88uUF932U8Oj0a6"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <528A4D9A.10809-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57A6E260320
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 19:45:22 +0100 (CET)
+In-Reply-To: <20131116094412.GD15393@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-tegra@vger.kernel.org, treding@nvidia.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On 11/16/2013 02:44 AM, Mark Brown wrote:
+> On Fri, Nov 15, 2013 at 01:54:10PM -0700, Stephen Warren wrote:
+> 
+>> - DMA device
+> 
+>> This allows requesting DMA channels for a device other than the 
+>> device which is registering the "PCM" driver. This is quite 
+>> unusual, but is currently useful on Tegra. In much HW, and in 
+>> Tegra20, each DAI HW
+...
+> I'm a bit concerned about anything actually using dma_dev since it
+>  indicates that something is being worked around, it'd be a bit 
+> nicer to print a warning when doing this to give people a hint
+> that they might not be doing the right thing if they use it
+> (unless someone comes up with a system that has a clear use case
+> for it).
 
---H88uUF932U8Oj0a6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+What if I squash the following into that patch:
 
-On Mon, Nov 18, 2013 at 10:25:46AM -0700, Stephen Warren wrote:
-> On 11/16/2013 03:02 AM, Mark Brown wrote:
+> diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+> index 1160d1cba133..0e2645dee96a 100644
+> --- a/sound/soc/soc-generic-dmaengine-pcm.c
+> +++ b/sound/soc/soc-generic-dmaengine-pcm.c
+> @@ -296,8 +296,17 @@ static int dmaengine_pcm_request_chan_of(struct dmaengine_pcm *pcm,
+>  	    !dev->of_node)
+>  		return 0;
+>  
+> -	if (config->dma_dev)
+> +	if (config->dma_dev) {
+> +		/*
+> +		 * If this warning is seen, it probably means that your Linux
+> +		 * device structure does not match your HW device structure.
+> +		 * It would be best to refactor the Linux device structure to
+> +		 * correctly match the HW structure.
+> +		 */
+> +		dev_warn(dev, "DMA channels sourced from device %s",
+> +			 dev_name(config->dma_dev));
+>  		dev = config->dma_dev;
+> +	}
+>  
+>  	for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_CAPTURE;
+>  	     i++) {
 
-> > Or alternatively should the driver be making the device
-> > cache only when runtime PM is disabled?
+(a few patches later) That yields the following warning on Tegra, for
+example:
 
-> The regmap is already cache-only when runtime-suspended. However the
-> registers don't get flushed during resume. I suppose that would require
-> only adding one extra call to the PM resume function?
-
-Yup, should probably do that anyway since that's going to bite someone
-otherwise.  We probably want a single operation to flush and enable
-writes now I think about it, it's the common case.
-
-> For some reason, my gut prefers this current solution, but I could be
-> persuaded.
-
-I'm not dead set against doing it this way, it's just that it feels like
-if it's required something's not working as well as it should.
-
---H88uUF932U8Oj0a6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSil7wAAoJELSic+t+oim9yyAP/1V3yQAqbXTbrnQmmdxLW6xh
-uvKUTl3bACiksAZPoFCfMPjWeY7vVtb4zfn0J7lbD7B74sGRIS/s93DAxsjn9KjF
-8Kqq53IwhHbFdFgP1If58RmSlvS450l+pubt+yckGxYgPHJg73KOnkx+9lX9Yiir
-PlU+CrMKL7FlmraU/BASAtCHlmGwcykHNR3xD2RKbYdaCEBPeJnGBY4Oumswk8HL
-xl2ZNuiqL97dP86rYDMBSyPiSPEe4mTM5EGoBmRoC/x0DFR56FD6398HGmnBojhF
-rF9GmhEYSsHqb/h+7RCNlOWUbdfNbh5eD4sPHQLS0KPj4CQDPrl9KVpoVAt5QM7a
-32+i2A8i3dN+DZcJgJkeCOJqhmPyGLZaMUdaqZuoAmfAcFmEbsR+xfEkjOEWD6ro
-klzxkZKMzu5/bDqU2K35ZIRgEHbRZhmA/iF7wNdOAR6OOf+kNPpqS2mFxt//u6KC
-Y0DOjaRbPTQEKWFGeDTtxbOOVb0/SCx5sbFy0mx3cVbeml+0+J9edqPQ3Sh90kWt
-XwNEmHDCtREt/WvZa94pSKKMjsoJfFgo2xUzPwUpjIWzMgjX647zy2Tjh/yYXAs/
-SU2bQq8cxxLN+B3UyBP7QRQ0cK6m3t9/9gUrIwKBV5iC12J4xgXdrd2MDsiM7SGk
-mHUOkZPQqL1C0fQVd9Aa
-=DvO8
------END PGP SIGNATURE-----
-
---H88uUF932U8Oj0a6--
+> [    2.629623] tegra30-i2s 70080400.i2s: DMA channels sourced from device 70080000.ahub
