@@ -1,302 +1,146 @@
-From: Jonathan Cameron <jic23@cam.ac.uk>
-Subject: Re: [PATCH 2/2] ASoC: wm8940: Convert to direct regmap
-	API usage
-Date: Sun, 17 Nov 2013 18:27:43 +0000
-Message-ID: <52890A9F.6020702@cam.ac.uk>
-References: <1383931413-8943-1-git-send-email-broonie@kernel.org>
- <1383931413-8943-2-git-send-email-broonie@kernel.org>
+From: "Shevchenko, Andriy" <andriy.shevchenko-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCHv7] dmaengine: Add support for BCM2835
+Date: Mon, 18 Nov 2013 10:00:39 +0000
+Message-ID: <1384768816.14845.186.camel@smile>
+References: <5288E327.8050809@koalo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ppsw-32.csi.cam.ac.uk (ppsw-32.csi.cam.ac.uk [131.111.8.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 084B826168B
- for <alsa-devel@alsa-project.org>; Sun, 17 Nov 2013 18:26:40 +0100 (CET)
-In-Reply-To: <1383931413-8943-2-git-send-email-broonie@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <5288E327.8050809-oZ8rN/sblLk@public.gmane.org>
+Content-Language: en-US
+Content-ID: <9486B9A003155540AE6BC062580E7C78-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, "Koul, Vinod" <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, "Williams, Dan J" <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/08/13 17:23, Mark Brown wrote:
-> From: Mark Brown <broonie@linaro.org>
-> 
-> This helps move us towards being able to remove the ASoC level I/O code.
-> 
-> Signed-off-by: Mark Brown <broonie@linaro.org>
-Again, looks fine to me but can't test.
+T24gU3VuLCAyMDEzLTExLTE3IGF0IDE2OjM5ICswMTAwLCBGbG9yaWFuIE1laWVyIHdyb3RlOg0K
+PiBBZGQgc3VwcG9ydCBmb3IgRE1BIGNvbnRyb2xsZXIgb2YgQkNNMjgzNSBhcyB1c2VkIGluIHRo
+ZSBSYXNwYmVycnkgUGkuDQo+IEN1cnJlbnRseSBpdCBvbmx5IHN1cHBvcnRzIGN5Y2xpYyBETUEu
+DQoNCkZldyBjb21tZW50cyBiZWxvdy4NCg0KPiArKysgYi9kcml2ZXJzL2RtYS9iY20yODM1LWRt
+YS5jDQo+IEBAIC0wLDAgKzEsNzM2IEBADQoNCj4gK3N0YXRpYyBpbnQgYmNtMjgzNV9kbWFfYWJv
+cnQodm9pZCBfX2lvbWVtICpjaGFuX2Jhc2UpDQo+ICt7DQo+ICsJdW5zaWduZWQgbG9uZyBpbnQg
+Y3M7DQo+ICsJbG9uZyBpbnQgdGltZW91dCA9IDEwMDAwOw0KPiArDQo+ICsJY3MgPSByZWFkbChj
+aGFuX2Jhc2UgKyBCQ00yODM1X0RNQV9DUyk7DQo+ICsJaWYgKCEoY3MgJiBCQ00yODM1X0RNQV9B
+Q1RJVkUpKQ0KPiArCQlyZXR1cm4gMDsNCj4gKw0KPiArCS8qIFdyaXRlIDAgdG8gdGhlIGFjdGl2
+ZSBiaXQgLSBQYXVzZSB0aGUgRE1BICovDQo+ICsJd3JpdGVsKDAsIGNoYW5fYmFzZSArIEJDTTI4
+MzVfRE1BX0NTKTsNCj4gKw0KPiArCS8qIFdhaXQgZm9yIGFueSBjdXJyZW50IEFYSSB0cmFuc2Zl
+ciB0byBjb21wbGV0ZSAqLw0KPiArCXdoaWxlICgoY3MgJiBCQ00yODM1X0RNQV9JU1BBVVNFRCkg
+JiYgLS10aW1lb3V0ID49IDApDQo+ICsJCWNzID0gcmVhZGwoY2hhbl9iYXNlICsgQkNNMjgzNV9E
+TUFfQ1MpOw0KDQpJIGFjdHVhbGx5IGRvbid0IHNlZSB0aW1lb3V0IGhlcmUuIHRpbWVvdXQgbWVh
+bnMgY291bnRlciBpbiB5b3VyIGNhc2UuDQpNaWdodCBiZSBiZXR0ZXIgdG8gaGF2ZSBzb21ldGhp
+bmcgbGlrZQ0KDQp3aGlsZSAocmVhZGwoLi4uKSAmIEJDTTI4MzVfRE1BX0lTUEFVU0VEICYmIC0t
+dGltZW91dCkNCmNwdV9yZWxheCgpOw0KDQo/DQoNCj4gKwkvKiBXZSdsbCB1bi1wYXVzZSB3aGVu
+IHdlIHNldCBvZiBvdXIgbmV4dCBETUEgKi8NCj4gKwlpZiAoY3MgJiBCQ00yODM1X0RNQV9JU1BB
+VVNFRCkNCg0KaWYgKCF0aW1lb3V0KQ0KDQo+ICsJCXJldHVybiAtRVRJTUVET1VUOw0KDQoNCj4g
+Kw0KPiArCWlmICghKGNzICYgQkNNMjgzNV9ETUFfQUNUSVZFKSkNCj4gKwkJcmV0dXJuIDA7DQoN
+CkR1cGxpY2F0ZSBjb2RlLiBQZXJoYXBzDQpzdGF0aWMgaW5saW5lIGJvb2wgaXNfY2hhbl9ub3Rf
+YWN0aXZlKHVuc2lnbmVkIGxvbmcgY3MpDQp7DQpyZXR1cm4gIShjcyAmIEJDTTI4MzVfRE1BX0FD
+VElWRSk7DQp9DQoNCltdDQoNCj4gK3N0YXRpYyBpcnFyZXR1cm5fdCBiY20yODM1X2RtYV9jYWxs
+YmFjayhpbnQgaXJxLCB2b2lkICpkYXRhKQ0KPiArew0KDQpbXQ0KDQo+ICsJd3JpdGVsKEJDTTI4
+MzVfRE1BX0FDVElWRSwgYy0+Y2hhbl9iYXNlICsgQkNNMjgzNV9ETUFfQ1MpOw0KDQpTaW5jZSBp
+dCdzIGR1cGxpY2F0ZSBjb2RlLCBwZXJoYXBzDQoNCnN0YXRpYyBpbmxpbmUgdm9pZCBzZXRfY2hh
+bl9hY3RpdmUodm9pZCBfX2lvbWVtICpiYXNlKQ0Kew0Kd3JpdGVsKEJDTTI4MzVfRE1BX0FDVElW
+RSwgYmFzZSArIEJDTTI4MzVfRE1BX0NTKTsNCn0NCg0KW10NCg0KPiArc3RhdGljIHNpemVfdCBi
+Y20yODM1X2RtYV9kZXNjX3NpemVfcG9zKHN0cnVjdCBiY20yODM1X2Rlc2MgKmQsIGRtYV9hZGRy
+X3QgYWRkcikNCj4gK3sNCj4gKwl1bnNpZ25lZCBpOw0KDQpJbiBzb21lIGNhc2VzIHlvdSB1c2Ug
+J3Vuc2lnbmVkIGxvbmcgaW50JyBmb3IgJ3Vuc2lnbmVkIGxvbmcnLCBmb3INCmV4YW1wbGUsIGJ1
+dCBoZXJlICd1bnNpZ25lZCcgaW5zdGVhZCBvZiAndW5zaWduZWQgaW50Jy4gUGxlYXNlLCBhbGln
+bg0Kc3R5bGUgd2l0aCBjZXJ0YWluIGNob2ljZS4NCg0KW10NCg0KPiArc3RhdGljIGVudW0gZG1h
+X3N0YXR1cyBiY20yODM1X2RtYV90eF9zdGF0dXMoc3RydWN0IGRtYV9jaGFuICpjaGFuLA0KPiAr
+CWRtYV9jb29raWVfdCBjb29raWUsIHN0cnVjdCBkbWFfdHhfc3RhdGUgKnR4c3RhdGUpDQo+ICt7
+DQoNCltdDQoNCj4gKwl9IGVsc2Ugew0KPiArCQl0eHN0YXRlLT5yZXNpZHVlID0gMDsNCg0KVXNl
+bGVzcyBhc3NpZ25tZW50IHNpbmNlIGRtYWVuZ2luZSB3aWxsIGRvIHRoaXMgZm9yIHlvdSBpbg0K
+ZG1hX2Nvb2tpZV9zdGF0dXMuDQoNCltdDQoNCj4gK3N0YXRpYyBzdHJ1Y3QgZG1hX2FzeW5jX3R4
+X2Rlc2NyaXB0b3IgKmJjbTI4MzVfZG1hX3ByZXBfZG1hX2N5Y2xpYygNCj4gKwlzdHJ1Y3QgZG1h
+X2NoYW4gKmNoYW4sIGRtYV9hZGRyX3QgYnVmX2FkZHIsIHNpemVfdCBidWZfbGVuLA0KPiArCXNp
+emVfdCBwZXJpb2RfbGVuLCBlbnVtIGRtYV90cmFuc2Zlcl9kaXJlY3Rpb24gZGlyZWN0aW9uLA0K
+PiArCXVuc2lnbmVkIGxvbmcgZmxhZ3MsIHZvaWQgKmNvbnRleHQpDQo+ICt7DQoNCltdDQoNCj4g
+KwkvKiBHcmFiIGNvbmZpZ3VyYXRpb24gKi8NCj4gKwlpZiAoZGlyZWN0aW9uID09IERNQV9ERVZf
+VE9fTUVNKSB7DQo+ICsJCWRldl9hZGRyID0gYy0+Y2ZnLnNyY19hZGRyOw0KPiArCQlkZXZfd2lk
+dGggPSBjLT5jZmcuc3JjX2FkZHJfd2lkdGg7DQo+ICsJCXN5bmNfdHlwZSA9IEJDTTI4MzVfRE1B
+X1NfRFJFUTsNCj4gKwl9IGVsc2UgaWYgKGRpcmVjdGlvbiA9PSBETUFfTUVNX1RPX0RFVikgew0K
+PiArCQlkZXZfYWRkciA9IGMtPmNmZy5kc3RfYWRkcjsNCj4gKwkJZGV2X3dpZHRoID0gYy0+Y2Zn
+LmRzdF9hZGRyX3dpZHRoOw0KPiArCQlzeW5jX3R5cGUgPSBCQ00yODM1X0RNQV9EX0RSRVE7DQo+
+ICsJfSBlbHNlIHsNCj4gKwkJZGV2X2VycihjaGFuLT5kZXZpY2UtPmRldiwgIiVzOiBiYWQgZGly
+ZWN0aW9uP1xuIiwgX19mdW5jX18pOw0KPiArCQlyZXR1cm4gTlVMTDsNCj4gKwl9DQoNCllvdSBt
+aWdodCB1c2UgZm9sbG93aW5nIGFzIHdlbGwNCg0KaWYgKCFpc19zbGF2ZV9kaXJlY3Rpb24pIHsN
+CiBkZXZfZXJyKC4uLik7DQogcmV0dXJuIE5VTEw7DQp9DQoNCmlmIChkaXJlY3Rpb24gPT0gRE1B
+X0RFVl9UT19NRU0pDQp7DQouLi4NCn0gZWxzZSB7DQouLi4NCn0NCg0KPw0KDQpBdCBsZWFzdCBp
+dCB3aWxsIGJlIGFsaWduZWQgd2l0aCB3aGF0IHlvdSBoYXZlIGZ1cnRoZXIgaW4gdGhpcyBmdW5j
+dGlvbi4NCg0KPiArCS8qIEJ1cyB3aWR0aCB0cmFuc2xhdGVzIHRvIHRoZSBlbGVtZW50IHNpemUg
+KEVTKSAqLw0KPiArCXN3aXRjaCAoZGV2X3dpZHRoKSB7DQo+ICsJY2FzZSBETUFfU0xBVkVfQlVT
+V0lEVEhfNF9CWVRFUzoNCj4gKwkJZXMgPSBCQ00yODM1X0RNQV9EQVRBX1RZUEVfUzMyOw0KPiAr
+CQlicmVhazsNCj4gKwlkZWZhdWx0Og0KPiArCQlyZXR1cm4gTlVMTDsNCj4gKwl9DQoNClNvLCB5
+b3UgdXNlIHN3aXRjaC1jYXNlIG9uIGhvcGUgdG8gZXh0ZW5kIGl0IGxhdGVyLCBjb3JyZWN0Pw0K
+DQpbXQ0KDQo+ICtzdGF0aWMgaW50IGJjbTI4MzVfZG1hX3Rlcm1pbmF0ZV9hbGwoc3RydWN0IGJj
+bTI4MzVfY2hhbiAqYykNCj4gK3sNCj4gKwlzdHJ1Y3QgYmNtMjgzNV9kbWFkZXYgKmQgPSB0b19i
+Y20yODM1X2RtYV9kZXYoYy0+dmMuY2hhbi5kZXZpY2UpOw0KPiArCXVuc2lnbmVkIGxvbmcgZmxh
+Z3M7DQo+ICsJaW50IHRpbWVvdXQgPSAxMDAwOw0KPiArCUxJU1RfSEVBRChoZWFkKTsNCg0KW10N
+Cg0KPiArCWlmIChjLT5kZXNjKSB7DQo+ICsJCWMtPmRlc2MgPSBOVUxMOw0KPiArCQliY20yODM1
+X2RtYV9hYm9ydChjLT5jaGFuX2Jhc2UpOw0KPiArDQo+ICsJCS8qIFdhaXQgZm9yIHN0b3BwaW5n
+ICovDQo+ICsJCXdoaWxlICh0aW1lb3V0ID4gMCkgew0KPiArCQkJdGltZW91dC0tOw0KDQp3aGls
+ZSAoLS10aW1lb3V0KQ0KDQo+ICsJCQlpZiAoIShyZWFkbChjLT5jaGFuX2Jhc2UgKyBCQ00yODM1
+X0RNQV9DUykgJg0KPiArCQkJCQkJQkNNMjgzNV9ETUFfQUNUSVZFKSkNCj4gKwkJCQlicmVhazsN
+Cj4gKw0KPiArCQkJY3B1X3JlbGF4KCk7DQo+ICsJCX0NCj4gKw0KPiArCQlpZiAodGltZW91dCA8
+PSAwKQ0KDQppZiAoIXRpbWVvdXQpDQoNCltdDQoNCj4gK3N0YXRpYyBzdHJ1Y3QgZG1hX2NoYW4g
+KmJjbTI4MzVfZG1hX3hsYXRlKHN0cnVjdCBvZl9waGFuZGxlX2FyZ3MgKnNwZWMsDQo+ICsJCQkJ
+CSAgIHN0cnVjdCBvZl9kbWEgKm9mZG1hKQ0KPiArew0KPiArCXN0cnVjdCBiY20yODM1X2RtYWRl
+diAqZCA9IG9mZG1hLT5vZl9kbWFfZGF0YTsNCj4gKwlzdHJ1Y3QgZG1hX2NoYW4gKmNoYW4sICpj
+YW5kaWRhdGU7DQo+ICsNCj4gK3JldHJ5Og0KPiArCWNhbmRpZGF0ZSA9IE5VTEw7DQo+ICsNCj4g
+KwkvKiBXYWxrIHRoZSBsaXN0IG9mIGNoYW5uZWxzIHJlZ2lzdGVyZWQgd2l0aCB0aGUgY3VycmVu
+dCBpbnN0YW5jZSBhbmQNCj4gKwkgKiBmaW5kIG9uZSB0aGF0IGlzIGN1cnJlbnRseSB1bnVzZWQg
+Ki8NCj4gKwlsaXN0X2Zvcl9lYWNoX2VudHJ5KGNoYW4sICZkLT5kZGV2LmNoYW5uZWxzLCBkZXZp
+Y2Vfbm9kZSkNCj4gKwkJaWYgKGNoYW4tPmNsaWVudF9jb3VudCA9PSAwKSB7DQo+ICsJCQljYW5k
+aWRhdGUgPSBjaGFuOw0KPiArCQkJYnJlYWs7DQo+ICsJCX0NCj4gKw0KPiArCWlmICghY2FuZGlk
+YXRlKQ0KPiArCQlyZXR1cm4gTlVMTDsNCj4gKw0KPiArCS8qIGRtYV9nZXRfc2xhdmVfY2hhbm5l
+bCB3aWxsIHJldHVybiBOVUxMIGlmIHdlIGxvc3QgYSByYWNlIGJldHdlZW4NCj4gKwkgKiB0aGUg
+bG9va3VwIGFuZCB0aGUgcmVzZXJ2YXRpb24gKi8NCj4gKwljaGFuID0gZG1hX2dldF9zbGF2ZV9j
+aGFubmVsKGNhbmRpZGF0ZSk7DQo+ICsNCj4gKwlpZiAoY2hhbikgew0KDQpQZXJoYXBzDQoNCmlm
+ICghY2hhbikNCmdvdG8gcmV0cnk7DQoNCg0KPiArCQlzdHJ1Y3QgYmNtMjgzNV9jaGFuICpjID0g
+dG9fYmNtMjgzNV9kbWFfY2hhbihjaGFuKTsNCj4gKw0KPiArCQkvKiBTZXQgRFJFUSBmcm9tIHBh
+cmFtICovDQo+ICsJCWMtPmRyZXEgPSBzcGVjLT5hcmdzWzBdOw0KPiArDQo+ICsJCXJldHVybiBj
+aGFuOw0KPiArCX0NCj4gKw0KPiArCWdvdG8gcmV0cnk7DQo+ICt9DQoNCj4gK3N0YXRpYyBpbnQg
+YmNtMjgzNV9kbWFfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gK3sNCj4g
+KwlzdHJ1Y3QgYmNtMjgzNV9kbWFkZXYgKm9kOw0KPiArCXN0cnVjdCByZXNvdXJjZSAqcmVzOw0K
+PiArCXZvaWQgX19pb21lbSAqYmFzZTsNCj4gKwlpbnQgcmM7DQo+ICsJaW50IGk7DQo+ICsJaW50
+IGlycTsNCj4gKwl1aW50MzJfdCBjaGFuc19hdmFpbGFibGU7DQoNCldoeSB1aW50MzJfdD8NCg0K
+W10NCg0KPiArCWlmIChwZGV2LT5kZXYub2Zfbm9kZSkgew0KDQpQZXJoYXBzDQoNCmlmICghLi4u
+b2Zfbm9kZSkgew0KIC4uLg0KIHJldHVybiAtRUlOVkFMOw0KfQ0KDQo+ICsJCS8qIFJlcXVlc3Qg
+RE1BIGNoYW5uZWwgbWFzayBmcm9tIGRldmljZSB0cmVlICovDQo+ICsJCWlmIChvZl9wcm9wZXJ0
+eV9yZWFkX3UzMihwZGV2LT5kZXYub2Zfbm9kZSwNCj4gKwkJCQkiYnJjbSxkbWEtY2hhbm5lbC1t
+YXNrIiwNCj4gKwkJCQkmY2hhbnNfYXZhaWxhYmxlKSkgew0KPiArCQkJZGV2X2VycigmcGRldi0+
+ZGV2LCAiRmFpbGVkIHRvIGdldCBjaGFubmVsIG1hc2tcbiIpOw0KPiArCQkJYmNtMjgzNV9kbWFf
+ZnJlZShvZCk7DQo+ICsJCQlyZXR1cm4gLUVJTlZBTDsNCj4gKwkJfQ0KPiArCX0gZWxzZSB7DQo+
+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwgIkZhaWxlZCB0byBnZXQgY2hhbm5lbCBtYXNrLiBObyBk
+ZXZpY2UgdHJlZS5cbiIpOw0KPiArCQliY20yODM1X2RtYV9mcmVlKG9kKTsNCj4gKwkJcmV0dXJu
+IC1FSU5WQUw7DQo+ICsJfQ0KDQo+ICsJZGV2X2RiZygmcGRldi0+ZGV2LCAiSW5pdGlhbGl6ZWQg
+JWkgRE1BIGNoYW5uZWxzXG4iLCBpKTsNCj4gKw0KPiArCWlmIChwZGV2LT5kZXYub2Zfbm9kZSkg
+ew0KDQpEb2VzIGl0IG1ha2Ugc2Vuc2U/DQoNCj4gKwkJLyogRGV2aWNlLXRyZWUgRE1BIGNvbnRy
+b2xsZXIgcmVnaXN0cmF0aW9uICovDQo+ICsJCXJjID0gb2ZfZG1hX2NvbnRyb2xsZXJfcmVnaXN0
+ZXIocGRldi0+ZGV2Lm9mX25vZGUsDQo+ICsJCQkJYmNtMjgzNV9kbWFfeGxhdGUsIG9kKTsNCj4g
+KwkJaWYgKHJjKSB7DQo+ICsJCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJGYWlsZWQgdG8gcmVnaXN0
+ZXIgRE1BIGNvbnRyb2xsZXJcbiIpOw0KPiArCQkJYmNtMjgzNV9kbWFfZnJlZShvZCk7DQo+ICsJ
+CQlyZXR1cm4gcmM7DQoNCmdvdG8gZXJyX25vX2RtYTsNCg0KPiArCQl9DQo+ICsJfQ0KPiArDQo+
+ICsJcmMgPSBkbWFfYXN5bmNfZGV2aWNlX3JlZ2lzdGVyKCZvZC0+ZGRldik7DQo+ICsJaWYgKHJj
+KSB7DQo+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwNCj4gKwkJCSJGYWlsZWQgdG8gcmVnaXN0ZXIg
+c2xhdmUgRE1BIGVuZ2luZSBkZXZpY2U6ICVkXG4iLCByYyk7DQo+ICsJCWJjbTI4MzVfZG1hX2Zy
+ZWUob2QpOw0KPiArCQlyZXR1cm4gcmM7DQoNCmdvdG8gZXJyX25vX2RtYTsNCg0KPiArCX0NCj4g
+Kw0KPiArCWRldl9kYmcoJnBkZXYtPmRldiwgIkxvYWQgQkNNMjgzNSBETUEgZW5naW5lIGRyaXZl
+clxuIik7DQoNCg0KPiArCXJldHVybiByYzsNCg0KcmV0dXJuIDA7DQoNCmVycl9ub19kbWE6DQpi
+Y20yODM1X2RtYV9mcmVlKG9kKTsNCnJldHVybiByYzsNCg0KPw0KDQoNCi0tIA0KQW5keSBTaGV2
+Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0BpbnRlbC5jb20+DQpJbnRlbCBGaW5sYW5kIE95DQot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KSW50ZWwgRmlubGFuZCBPeQpSZWdpc3RlcmVkIEFkZHJlc3M6IFBMIDI4MSwg
+MDAxODEgSGVsc2lua2kgCkJ1c2luZXNzIElkZW50aXR5IENvZGU6IDAzNTc2MDYgLSA0IApEb21p
+Y2lsZWQgaW4gSGVsc2lua2kgCgpUaGlzIGUtbWFpbCBhbmQgYW55IGF0dGFjaG1lbnRzIG1heSBj
+b250YWluIGNvbmZpZGVudGlhbCBtYXRlcmlhbCBmb3IKdGhlIHNvbGUgdXNlIG9mIHRoZSBpbnRl
+bmRlZCByZWNpcGllbnQocykuIEFueSByZXZpZXcgb3IgZGlzdHJpYnV0aW9uCmJ5IG90aGVycyBp
+cyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQKcmVjaXBp
+ZW50LCBwbGVhc2UgY29udGFjdCB0aGUgc2VuZGVyIGFuZCBkZWxldGUgYWxsIGNvcGllcy4K
 
-Acked-by: Jonathan Cameron <jic23@kernel.org>
-> ---
->  sound/soc/codecs/wm8940.c | 193 +++++++++++++++++++++++++++++-----------------
->  1 file changed, 121 insertions(+), 72 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
-> index 4858b5c..b404c26 100644
-> --- a/sound/soc/codecs/wm8940.c
-> +++ b/sound/soc/codecs/wm8940.c
-> @@ -28,7 +28,7 @@
->  #include <linux/delay.h>
->  #include <linux/pm.h>
->  #include <linux/i2c.h>
-> -#include <linux/spi/spi.h>
-> +#include <linux/regmap.h>
->  #include <linux/slab.h>
->  #include <sound/core.h>
->  #include <sound/pcm.h>
-> @@ -41,78 +41,116 @@
->  
->  struct wm8940_priv {
->  	unsigned int sysclk;
-> -	enum snd_soc_control_type control_type;
-> +	struct regmap *regmap;
->  };
->  
-> -static int wm8940_volatile_register(struct snd_soc_codec *codec,
-> -				    unsigned int reg)
-> +static bool wm8940_volatile_register(struct device *dev, unsigned int reg)
->  {
->  	switch (reg) {
->  	case WM8940_SOFTRESET:
-> -		return 1;
-> +		return true;
->  	default:
-> -		return 0;
-> +		return false;
-> +	}
-> +}
-> +
-> +static bool wm8940_readable_register(struct device *dev, unsigned int reg)
-> +{
-> +	switch (reg) {
-> +	case WM8940_SOFTRESET:
-> +	case WM8940_POWER1:
-> +	case WM8940_POWER2:
-> +	case WM8940_POWER3:
-> +	case WM8940_IFACE:
-> +	case WM8940_COMPANDINGCTL:
-> +	case WM8940_CLOCK:
-> +	case WM8940_ADDCNTRL:
-> +	case WM8940_GPIO:
-> +	case WM8940_CTLINT:
-> +	case WM8940_DAC:
-> +	case WM8940_DACVOL:
-> +	case WM8940_ADC:
-> +	case WM8940_ADCVOL:
-> +	case WM8940_NOTCH1:
-> +	case WM8940_NOTCH2:
-> +	case WM8940_NOTCH3:
-> +	case WM8940_NOTCH4:
-> +	case WM8940_NOTCH5:
-> +	case WM8940_NOTCH6:
-> +	case WM8940_NOTCH7:
-> +	case WM8940_NOTCH8:
-> +	case WM8940_DACLIM1:
-> +	case WM8940_DACLIM2:
-> +	case WM8940_ALC1:
-> +	case WM8940_ALC2:
-> +	case WM8940_ALC3:
-> +	case WM8940_NOISEGATE:
-> +	case WM8940_PLLN:
-> +	case WM8940_PLLK1:
-> +	case WM8940_PLLK2:
-> +	case WM8940_PLLK3:
-> +	case WM8940_ALC4:
-> +	case WM8940_INPUTCTL:
-> +	case WM8940_PGAGAIN:
-> +	case WM8940_ADCBOOST:
-> +	case WM8940_OUTPUTCTL:
-> +	case WM8940_SPKMIX:
-> +	case WM8940_SPKVOL:
-> +	case WM8940_MONOMIX:
-> +		return true;
-> +	default:
-> +		return false;
->  	}
->  }
->  
-> -static u16 wm8940_reg_defaults[] = {
-> -	0x8940, /* Soft Reset */
-> -	0x0000, /* Power 1 */
-> -	0x0000, /* Power 2 */
-> -	0x0000, /* Power 3 */
-> -	0x0010, /* Interface Control */
-> -	0x0000, /* Companding Control */
-> -	0x0140, /* Clock Control */
-> -	0x0000, /* Additional Controls */
-> -	0x0000, /* GPIO Control */
-> -	0x0002, /* Auto Increment Control */
-> -	0x0000, /* DAC Control */
-> -	0x00FF, /* DAC Volume */
-> -	0,
-> -	0,
-> -	0x0100, /* ADC Control */
-> -	0x00FF, /* ADC Volume */
-> -	0x0000, /* Notch Filter 1 Control 1 */
-> -	0x0000, /* Notch Filter 1 Control 2 */
-> -	0x0000, /* Notch Filter 2 Control 1 */
-> -	0x0000, /* Notch Filter 2 Control 2 */
-> -	0x0000, /* Notch Filter 3 Control 1 */
-> -	0x0000, /* Notch Filter 3 Control 2 */
-> -	0x0000, /* Notch Filter 4 Control 1 */
-> -	0x0000, /* Notch Filter 4 Control 2 */
-> -	0x0032, /* DAC Limit Control 1 */
-> -	0x0000, /* DAC Limit Control 2 */
-> -	0,
-> -	0,
-> -	0,
-> -	0,
-> -	0,
-> -	0,
-> -	0x0038, /* ALC Control 1 */
-> -	0x000B, /* ALC Control 2 */
-> -	0x0032, /* ALC Control 3 */
-> -	0x0000, /* Noise Gate */
-> -	0x0041, /* PLLN */
-> -	0x000C, /* PLLK1 */
-> -	0x0093, /* PLLK2 */
-> -	0x00E9, /* PLLK3 */
-> -	0,
-> -	0,
-> -	0x0030, /* ALC Control 4 */
-> -	0,
-> -	0x0002, /* Input Control */
-> -	0x0050, /* PGA Gain */
-> -	0,
-> -	0x0002, /* ADC Boost Control */
-> -	0,
-> -	0x0002, /* Output Control */
-> -	0x0000, /* Speaker Mixer Control */
-> -	0,
-> -	0,
-> -	0,
-> -	0x0079, /* Speaker Volume */
-> -	0,
-> -	0x0000, /* Mono Mixer Control */
-> +static const struct reg_default wm8940_reg_defaults[] = {
-> +	{  0x1, 0x0000 }, /* Power 1 */
-> +	{  0x2, 0x0000 }, /* Power 2 */
-> +	{  0x3, 0x0000 }, /* Power 3 */
-> +	{  0x4, 0x0010 }, /* Interface Control */
-> +	{  0x5, 0x0000 }, /* Companding Control */
-> +	{  0x6, 0x0140 }, /* Clock Control */
-> +	{  0x7, 0x0000 }, /* Additional Controls */
-> +	{  0x8, 0x0000 }, /* GPIO Control */
-> +	{  0x9, 0x0002 }, /* Auto Increment Control */
-> +	{  0xa, 0x0000 }, /* DAC Control */
-> +	{  0xb, 0x00FF }, /* DAC Volume */
-> +
-> +	{  0xe, 0x0100 }, /* ADC Control */
-> +	{  0xf, 0x00FF }, /* ADC Volume */
-> +	{ 0x10, 0x0000 }, /* Notch Filter 1 Control 1 */
-> +	{ 0x11, 0x0000 }, /* Notch Filter 1 Control 2 */
-> +	{ 0x12, 0x0000 }, /* Notch Filter 2 Control 1 */
-> +	{ 0x13, 0x0000 }, /* Notch Filter 2 Control 2 */
-> +	{ 0x14, 0x0000 }, /* Notch Filter 3 Control 1 */
-> +	{ 0x15, 0x0000 }, /* Notch Filter 3 Control 2 */
-> +	{ 0x16, 0x0000 }, /* Notch Filter 4 Control 1 */
-> +	{ 0x17, 0x0000 }, /* Notch Filter 4 Control 2 */
-> +	{ 0x18, 0x0032 }, /* DAC Limit Control 1 */
-> +	{ 0x19, 0x0000 }, /* DAC Limit Control 2 */
-> +
-> +	{ 0x20, 0x0038 }, /* ALC Control 1 */
-> +	{ 0x21, 0x000B }, /* ALC Control 2 */
-> +	{ 0x22, 0x0032 }, /* ALC Control 3 */
-> +	{ 0x23, 0x0000 }, /* Noise Gate */
-> +	{ 0x24, 0x0041 }, /* PLLN */
-> +	{ 0x25, 0x000C }, /* PLLK1 */
-> +	{ 0x26, 0x0093 }, /* PLLK2 */
-> +	{ 0x27, 0x00E9 }, /* PLLK3 */
-> +
-> +	{ 0x2a, 0x0030 }, /* ALC Control 4 */
-> +
-> +	{ 0x2c, 0x0002 }, /* Input Control */
-> +	{ 0x2d, 0x0050 }, /* PGA Gain */
-> +
-> +	{ 0x2f, 0x0002 }, /* ADC Boost Control */
-> +
-> +	{ 0x31, 0x0002 }, /* Output Control */
-> +	{ 0x32, 0x0000 }, /* Speaker Mixer Control */
-> +
-> +	{ 0x36, 0x0079 }, /* Speaker Volume */
-> +
-> +	{ 0x38, 0x0000 }, /* Mono Mixer Control */
->  };
->  
->  static const char *wm8940_companding[] = { "Off", "NC", "u-law", "A-law" };
-> @@ -431,6 +469,7 @@ static int wm8940_mute(struct snd_soc_dai *dai, int mute)
->  static int wm8940_set_bias_level(struct snd_soc_codec *codec,
->  				 enum snd_soc_bias_level level)
->  {
-> +	struct wm8940_priv *wm8940 = snd_soc_codec_get_drvdata(codec);
->  	u16 val;
->  	u16 pwr_reg = snd_soc_read(codec, WM8940_POWER1) & 0x1F0;
->  	int ret = 0;
-> @@ -454,7 +493,7 @@ static int wm8940_set_bias_level(struct snd_soc_codec *codec,
->  		break;
->  	case SND_SOC_BIAS_STANDBY:
->  		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
-> -			ret = snd_soc_cache_sync(codec);
-> +			ret = regcache_sync(wm8940->regmap);
->  			if (ret < 0) {
->  				dev_err(codec->dev, "Failed to sync cache: %d\n", ret);
->  				return ret;
-> @@ -669,12 +708,11 @@ static int wm8940_resume(struct snd_soc_codec *codec)
->  
->  static int wm8940_probe(struct snd_soc_codec *codec)
->  {
-> -	struct wm8940_priv *wm8940 = snd_soc_codec_get_drvdata(codec);
->  	struct wm8940_setup_data *pdata = codec->dev->platform_data;
->  	int ret;
->  	u16 reg;
->  
-> -	ret = snd_soc_codec_set_cache_io(codec, 8, 16, wm8940->control_type);
-> +	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
->  	if (ret < 0) {
->  		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
->  		return ret;
-> @@ -722,10 +760,18 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8940 = {
->  	.num_dapm_widgets = ARRAY_SIZE(wm8940_dapm_widgets),
->  	.dapm_routes =  wm8940_dapm_routes,
->  	.num_dapm_routes = ARRAY_SIZE(wm8940_dapm_routes),
-> -	.reg_cache_size = ARRAY_SIZE(wm8940_reg_defaults),
-> -	.reg_word_size = sizeof(u16),
-> -	.reg_cache_default = wm8940_reg_defaults,
-> -	.volatile_register = wm8940_volatile_register,
-> +};
-> +
-> +static const struct regmap_config wm8940_regmap = {
-> +	.reg_bits = 8,
-> +	.val_bits = 16,
-> +
-> +	.max_register = WM8940_MONOMIX,
-> +	.reg_defaults = wm8940_reg_defaults,
-> +	.num_reg_defaults = ARRAY_SIZE(wm8940_reg_defaults),
-> +
-> +	.readable_reg = wm8940_readable_register,
-> +	.volatile_reg = wm8940_volatile_register,
->  };
->  
->  static int wm8940_i2c_probe(struct i2c_client *i2c,
-> @@ -739,8 +785,11 @@ static int wm8940_i2c_probe(struct i2c_client *i2c,
->  	if (wm8940 == NULL)
->  		return -ENOMEM;
->  
-> +	wm8940->regmap = devm_regmap_init_i2c(i2c, &wm8940_regmap);
-> +	if (IS_ERR(wm8940->regmap))
-> +		return PTR_ERR(wm8940->regmap);
-> +
->  	i2c_set_clientdata(i2c, wm8940);
-> -	wm8940->control_type = SND_SOC_I2C;
->  
->  	ret = snd_soc_register_codec(&i2c->dev,
->  			&soc_codec_dev_wm8940, &wm8940_dai, 1);
-> 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
