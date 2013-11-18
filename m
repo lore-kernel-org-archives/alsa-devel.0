@@ -1,44 +1,52 @@
-From: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
-Subject: Re: [PATCHv3] ASoC: Add support for BCM2835
-Date: Mon, 18 Nov 2013 16:56:33 +0100
-Message-ID: <528A38B1.5010107@koalo.de>
-References: <5289F9DF.8060406@koalo.de> <1384776479.14845.208.camel@smile>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Select FW_LOADER from
+	CONFIG_SND_HDA_CODEC_CA0132_DSP
+Date: Mon, 18 Nov 2013 17:14:39 +0100
+Message-ID: <1384791279-4080-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1384776479.14845.208.camel@smile>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Shevchenko, Andriy" <andriy.shevchenko-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43486260845
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 17:14:40 +0100 (CET)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id B83AAA79B7
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 17:14:39 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->> +static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
->> +				 struct snd_pcm_hw_params *params,
->> +				 struct snd_soc_dai *dai)
->> +{
->> +	struct bcm2835_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
->> +
->> +	unsigned int sampling_rate = params_rate(params);
->> +	unsigned int data_length, data_delay, bclk_ratio;
->> +	unsigned int ch1pos, ch2pos, mode, format;
->> +	unsigned int mash = BCM2835_CLK_MASH_1;
->> +	unsigned int divi, divf, target_frequency;
->> +	int clk_src = -1;
->> +	unsigned int master = dev->fmt & SND_SOC_DAIFMT_MASTER_MASK;
->> +	uint32_t bit_master =	(master == SND_SOC_DAIFMT_CBS_CFS
->> +					|| master == SND_SOC_DAIFMT_CBS_CFM);
->> +
->> +	uint32_t frame_master =	(master == SND_SOC_DAIFMT_CBS_CFS
-> 
-> So, if master == SND_SOC_DAIFMT_CBS_CFS both bit_master and frame_master
-> will be true. Is it correct?
+Use select FW_LOADER instead of depends on.  It's more intuitive and
+more consistent with other entries.
 
-Yes. That is exactly what CBS_CFS expresses:
-Codec Bit Slave and Codec Frame Slave
-So the interface is bit master as well as frame master.
-Did I miss anything?
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+index 8de66ccd7279..4cdd9ded4563 100644
+--- a/sound/pci/hda/Kconfig
++++ b/sound/pci/hda/Kconfig
+@@ -209,8 +209,9 @@ config SND_HDA_CODEC_CA0132
+ 
+ config SND_HDA_CODEC_CA0132_DSP
+ 	bool "Support new DSP code for CA0132 codec"
+-	depends on SND_HDA_CODEC_CA0132 && FW_LOADER
++	depends on SND_HDA_CODEC_CA0132
+ 	select SND_HDA_DSP_LOADER
++	select FW_LOADER
+ 	help
+ 	  Say Y here to enable the DSP for Creative CA0132 for extended
+ 	  features like equalizer or echo cancellation.
+-- 
+1.8.4.3
