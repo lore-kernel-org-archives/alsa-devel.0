@@ -1,16 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Enable mute/mic-mute LEDs for more
-	Thinkpads with Realtek codec
-Date: Mon, 18 Nov 2013 11:51:47 +0100
-Message-ID: <1384771907-2936-1-git-send-email-david.henningsson@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC 16/23] ASoC: omap: mcbsp, mcpdm,
+ dmic: raw read and write endian fix
+Date: Mon, 18 Nov 2013 11:15:22 +0000
+Message-ID: <20131118111522.GC10877@sirena.org.uk>
+References: <1384560086-11994-1-git-send-email-taras.kondratiuk@linaro.org>
+ <1384560086-11994-17-git-send-email-taras.kondratiuk@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8392656600557136467=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 248E826157F
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 11:51:50 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2146F2610D3
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 12:15:39 +0100 (CET)
+In-Reply-To: <1384560086-11994-17-git-send-email-taras.kondratiuk@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,107 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org, hui.wang@canonical.com
-Cc: Alex Hung <alex.hung@canonical.com>, yk@canonical.com, David Henningsson <david.henningsson@canonical.com>
+To: Taras Kondratiuk <taras.kondratiuk@linaro.org>
+Cc: alsa-devel@alsa-project.org, Victor Kamensky <victor.kamensky@linaro.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, linaro-networking@linaro.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-We're using the ACPI interface to detect whether we're dealing with a Thinkpad
-or not. This way we're not loading the thinkpad_acpi module when we're not on
-a Thinkpad, but at the same time, we give the opportunity to check for, and
-potentially enable, both present and future Thinkpad with mute/micmute LEDs.
 
-At least those running the ALC269 family (269 to 299) of Realtek codecs.
+--===============8392656600557136467==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VMt1DrMGOVs3KQwf"
+Content-Disposition: inline
 
-Cc: Alex Hung <alex.hung@canonical.com>
-Tested-by: Hui Wang <hui.wang@canonical.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |   29 ++++++++++++++++++++++++++---
- 1 file changed, 26 insertions(+), 3 deletions(-)
 
-Hi Takashi,
+--VMt1DrMGOVs3KQwf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sorry I'm late with this one. I'm hoping that you can still merge it for 3.13,
-but if you can't, we'll just backport it into the Ubuntu 3.13 kernel instead,
-so not the end of the world I guess.
+On Sat, Nov 16, 2013 at 02:01:19AM +0200, Taras Kondratiuk wrote:
+> From: Victor Kamensky <victor.kamensky@linaro.org>
+>=20
+> All OMAP IP blocks expect LE data, but CPU may operate in BE mode.
+> Need to use endian neutral functions to read/write h/w registers.
+> I.e instead of __raw_read[lw] and __raw_write[lw] functions code
+> need to use read[lw]_relaxed and write[lw]_relaxed functions.
+> If the first simply reads/writes register, the second will byteswap
+> it if host operates in BE mode.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 04d1e6b..05987ff 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3652,9 +3652,29 @@ static void alc290_fixup_mono_speakers(struct hda_codec *codec,
- #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
- 
- #include <linux/thinkpad_acpi.h>
-+#include <acpi/acpi.h>
- 
- static int (*led_set_func)(int, bool);
- 
-+static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void *context,
-+				 void **rv)
-+{
-+	bool *found = context;
-+	*found = true;
-+	return AE_OK;
-+}
-+
-+static bool is_thinkpad(struct hda_codec *codec)
-+{
-+	bool found = false;
-+	if (codec->subsystem_id >> 16 != 0x17aa)
-+		return false;
-+	if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb, &found, NULL)) && found)
-+		return true;
-+	found = false;
-+	return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb, &found, NULL)) && found;
-+}
-+
- static void update_tpacpi_mute_led(void *private_data, int enabled)
- {
- 	if (led_set_func)
-@@ -3680,6 +3700,8 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
- 	bool removefunc = false;
- 
- 	if (action == HDA_FIXUP_ACT_PROBE) {
-+		if (!is_thinkpad(codec))
-+			return;
- 		if (!led_set_func)
- 			led_set_func = symbol_request(tpacpi_led_set);
- 		if (!led_set_func) {
-@@ -4027,6 +4049,8 @@ static const struct hda_fixup alc269_fixups[] = {
- 	[ALC269_FIXUP_LIMIT_INT_MIC_BOOST] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc269_fixup_limit_int_mic_boost,
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
- 	},
- 	[ALC269_FIXUP_LIMIT_INT_MIC_BOOST_MUTE_LED] = {
- 		.type = HDA_FIXUP_FUNC,
-@@ -4070,8 +4094,6 @@ static const struct hda_fixup alc269_fixups[] = {
- 	[ALC269_FIXUP_THINKPAD_ACPI] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_thinkpad_acpi,
--		.chained = true,
--		.chain_id = ALC269_FIXUP_LIMIT_INT_MIC_BOOST
- 	},
- 	[ALC255_FIXUP_DELL1_MIC_NO_PRESENCE] = {
- 		.type = HDA_FIXUP_PINS,
-@@ -4173,7 +4195,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x2208, "Thinkpad T431s", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x220c, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x2212, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
--	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad", ALC269_FIXUP_THINKPAD_ACPI),
-+	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x501a, "Thinkpad", ALC283_FIXUP_INT_MIC),
-@@ -4181,6 +4203,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
- 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
-+	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", ALC269_FIXUP_THINKPAD_ACPI),
- 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
- 
- #if 0
--- 
-1.7.9.5
+Applied, thanks.
+
+--VMt1DrMGOVs3KQwf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSifbHAAoJELSic+t+oim9bZwP/0VR95R4lczYwmThvtn5zfGF
+21fJVSTfe2V4oxx/oNKkbx4S0Bk+vbTmHzYV9f5qD4FbV/x6Iud6G5GLXpX3Nw5F
+lHalWJ+79JHOPoBGKL2YGORoNHMnYUVvAN42mA93h/Z7P0t2r8zE94UIW44za1r1
+0r9lePznWK1XzHNFngHDuLdT1OHlvaWSYhxppWaoDdUhBOrtYbT6zWXrpEmqGLuB
+HwZcqj7Ne8dBE9RpC5GL0MGA+4KPzO6/OG0rHIG5A7r7OyrlOt/Hwoyzu2uVEDsy
+tapaznfpyOGa7fqbiNO6hRhvXwf/eJYoOc93qDEZGo7TgdrDF2GMwOKsFNbsUDfn
+XDB/exDaJWub3TtY6bNB+GG9oZd7cwTqWs9L4vaYYFW6DwAGmFjt8pVoNTmVYbs1
+r0qe9Ynxmhb4dESvBhRK6QvfsApgEmt+WeUbYH/gTsiuXU+tj96O1J6lyV3tSSz2
+3KsLiPoDeGFTGzF1hprJ08a+ZhFjvZQz4O/zt+KyDZKL01142G1CDf8dJCJEabTp
+loUkS1Zsz1lY7ePrVf0Wzrgb7aqpl822s3gAatwJA3KcTWf0Hb8VbPMspb0F6wzz
+qXomOS7QUattqOyZjZLdxnDUjgbUpD705f2KpV9A0jnIhzt0t5EM+Q9kg5OlhNi9
+SCkNYvET7VltPeazcx/F
+=cG8q
+-----END PGP SIGNATURE-----
+
+--VMt1DrMGOVs3KQwf--
+
+--===============8392656600557136467==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8392656600557136467==--
