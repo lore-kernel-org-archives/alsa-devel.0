@@ -1,48 +1,50 @@
-From: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-Subject: Re: [PATCHv7] dmaengine: Add support for BCM2835
-Date: Mon, 18 Nov 2013 15:04:28 +0000
-Message-ID: <20131118150428.GK30853@e106331-lin.cambridge.arm.com>
-References: <5288E327.8050809@koalo.de>
- <1384768816.14845.186.camel@smile>
- <528A051A.7000703@koalo.de>
- <1384785017.14845.214.camel@smile>
- <20131118145400.GE16735@n2100.arm.linux.org.uk>
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCHv3] ASoC: Add support for BCM2835
+Date: Mon, 18 Nov 2013 15:06:19 +0000
+Message-ID: <20131118150619.GL30853@e106331-lin.cambridge.arm.com>
+References: <5289F9DF.8060406@koalo.de>
+ <20131118141637.GI30853@e106331-lin.cambridge.arm.com>
+ <528A232B.9070402@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
+ [217.140.96.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 912D4260815
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2013 16:06:20 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20131118145400.GE16735-l+eeeJia6m9vn6HldHNs0ANdhmdF6hFW@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Cc: Andy Shevchenko <andriy.shevchenko-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, "Koul, Vinod" <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, "Williams, Dan J" <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <528A232B.9070402@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: devicetree <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@wwwdotorg.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>, dmaengine <dmaengine@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 18, 2013 at 02:54:00PM +0000, Russell King - ARM Linux wrote:
-> On Mon, Nov 18, 2013 at 04:30:17PM +0200, Andy Shevchenko wrote:
-> > On Mon, 2013-11-18 at 13:16 +0100, Florian Meier wrote:
-> > > >> +	uint32_t chans_available;
-> > > > 
-> > > > Why uint32_t?
-> > > 
-> > > Because it is a bit mask of fixed length that directly comes from the
-> > > firmware.
+On Mon, Nov 18, 2013 at 02:24:43PM +0000, Lars-Peter Clausen wrote:
+> On 11/18/2013 03:16 PM, Mark Rutland wrote:
 > > 
-> > Like one already told you in your i2s patch, please, change that to
-> > corresponding u* value, namely u32.
+> >> +static void bcm2835_i2s_stop_clock(struct bcm2835_i2s_dev *dev)
+> >> +{
+> >> +       uint32_t clkreg;
+> > 
+> > s/uint32_t/u32/ (and elsewhere...)
 > 
-> There's no problem with uint32_t vs u32 - either will do.  u32 is the
-> pre-stdint.h Linux definition of a 32-bit unsigned integer.  There's
-> no reason why uint32_t isn't perfectly acceptable.  It's a matter of
-> author taste which gets used.  (Except where modifications are to an
-> existing chunk of code using one or the other - where consistency then
-> matters more.)
+> Please don't do that.
+> 
 
-Sorry for being a source of confusion here. I won't push this point in
-future.
+I was under the impression that there was a preference for uXX types
+over uintXX_t types, but the replies and Documentation/CodingStyle have
+taught me otherwise.
+
+Apologies for the confusion here.
 
 Thanks,
 Mark.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
