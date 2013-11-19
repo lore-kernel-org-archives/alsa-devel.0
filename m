@@ -1,138 +1,58 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 2/2] ASoC: ab8500: Revert "ASoC: ab8500: Convert register I/O to regmap"
-Date: Tue, 19 Nov 2013 10:58:18 +0000
-Message-ID: <1384858698-19027-2-git-send-email-lee.jones@linaro.org>
-References: <1384858698-19027-1-git-send-email-lee.jones@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1384858698-19027-1-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 05/10] ASoC: Ux500: Match platform by device
+	node when booting Device Tree
+Date: Tue, 19 Nov 2013 11:07:44 +0000
+Message-ID: <1384859269-19801-6-git-send-email-lee.jones@linaro.org>
+References: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oa0-f51.google.com (mail-oa0-f51.google.com
+ [209.85.219.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id C4A642615B9
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 12:08:14 +0100 (CET)
+Received: by mail-oa0-f51.google.com with SMTP id i7so3404493oag.24
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 03:08:14 -0800 (PST)
+In-Reply-To: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: linus.walleij@linaro.org, Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit ff795d614bfa62a3c6fc0bcb75cb8842e5a87892, as this
-is one of two patches which stop audio from working on Snowball.
+We're getting closer to fully enabling the Ux500 ASoC driver for Device
+Tree. When we switch over from using AUXDATA we'll need to match platform
+by only Device Tree nodes. In this patch we NULL out the platform_name,
+and supply nodes for each platform device.
 
 Cc: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@kernel.org>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/codecs/ab8500-codec.c | 64 ++++++++++++++++++++++-------------------
- 1 file changed, 34 insertions(+), 30 deletions(-)
+ sound/soc/ux500/mop500.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index ca500fd..7990217 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -126,8 +126,6 @@ struct ab8500_codec_drvdata_dbg {
- 
- /* Private data for AB8500 device-driver */
- struct ab8500_codec_drvdata {
--	struct regmap *regmap;
--
- 	/* Sidetone */
- 	long *sid_fir_values;
- 	enum sid_state sid_status;
-@@ -168,34 +166,48 @@ static inline const char *amic_type_str(enum amic_type type)
-  */
- 
- /* Read a register from the audio-bank of AB8500 */
--static int ab8500_codec_read_reg(void *context, unsigned int reg,
--				 unsigned int *value)
-+static unsigned int ab8500_codec_read_reg(struct snd_soc_codec *codec,
-+					unsigned int reg)
- {
--	struct device *dev = context;
- 	int status;
-+	unsigned int value = 0;
- 
- 	u8 value8;
--	status = abx500_get_register_interruptible(dev, AB8500_AUDIO,
--						   reg, &value8);
--	*value = (unsigned int)value8;
-+	status = abx500_get_register_interruptible(codec->dev, AB8500_AUDIO,
-+						reg, &value8);
-+	if (status < 0) {
-+		dev_err(codec->dev,
-+			"%s: ERROR: Register (0x%02x:0x%02x) read failed (%d).\n",
-+			__func__, (u8)AB8500_AUDIO, (u8)reg, status);
-+	} else {
-+		dev_dbg(codec->dev,
-+			"%s: Read 0x%02x from register 0x%02x:0x%02x\n",
-+			__func__, value8, (u8)AB8500_AUDIO, (u8)reg);
-+		value = (unsigned int)value8;
-+	}
- 
--	return status;
-+	return value;
- }
- 
- /* Write to a register in the audio-bank of AB8500 */
--static int ab8500_codec_write_reg(void *context, unsigned int reg,
--				  unsigned int value)
-+static int ab8500_codec_write_reg(struct snd_soc_codec *codec,
-+				unsigned int reg, unsigned int value)
- {
--	struct device *dev = context;
-+	int status;
- 
--	return abx500_set_register_interruptible(dev, AB8500_AUDIO,
--						 reg, value);
--}
-+	status = abx500_set_register_interruptible(codec->dev, AB8500_AUDIO,
-+						reg, value);
-+	if (status < 0)
-+		dev_err(codec->dev,
-+			"%s: ERROR: Register (%02x:%02x) write failed (%d).\n",
-+			__func__, (u8)AB8500_AUDIO, (u8)reg, status);
-+	else
-+		dev_dbg(codec->dev,
-+			"%s: Wrote 0x%02x into register %02x:%02x\n",
-+			__func__, (u8)value, (u8)AB8500_AUDIO, (u8)reg);
- 
--static const struct regmap_config ab8500_codec_regmap = {
--	.reg_read = ab8500_codec_read_reg,
--	.reg_write = ab8500_codec_write_reg,
--};
-+	return status;
-+}
- 
- /*
-  * Controls - DAPM
-@@ -2476,8 +2488,6 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
- 	/* Setup AB8500 according to board-settings */
- 	pdata = dev_get_platdata(dev->parent);
- 
--	codec->control_data = drvdata->regmap;
--
- 	if (np) {
- 		if (!pdata)
- 			pdata = devm_kzalloc(dev,
-@@ -2555,6 +2565,9 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
- 
- static struct snd_soc_codec_driver ab8500_codec_driver = {
- 	.probe =		ab8500_codec_probe,
-+	.read =			ab8500_codec_read_reg,
-+	.write =		ab8500_codec_write_reg,
-+	.reg_word_size =	sizeof(u8),
- 	.controls =		ab8500_ctrls,
- 	.num_controls =		ARRAY_SIZE(ab8500_ctrls),
- 	.dapm_widgets =		ab8500_dapm_widgets,
-@@ -2577,15 +2590,6 @@ static int ab8500_codec_driver_probe(struct platform_device *pdev)
- 	drvdata->anc_status = ANC_UNCONFIGURED;
- 	dev_set_drvdata(&pdev->dev, drvdata);
- 
--	drvdata->regmap = devm_regmap_init(&pdev->dev, NULL, &pdev->dev,
--					   &ab8500_codec_regmap);
--	if (IS_ERR(drvdata->regmap)) {
--		status = PTR_ERR(drvdata->regmap);
--		dev_err(&pdev->dev, "%s: Failed to allocate regmap: %d\n",
--			__func__, status);
--		return status;
--	}
--
- 	dev_dbg(&pdev->dev, "%s: Register codec.\n", __func__);
- 	status = snd_soc_register_codec(&pdev->dev, &ab8500_codec_driver,
- 				ab8500_codec_dai,
+diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+index 178d1ba..b3b66aa 100644
+--- a/sound/soc/ux500/mop500.c
++++ b/sound/soc/ux500/mop500.c
+@@ -91,6 +91,8 @@ static int mop500_of_probe(struct platform_device *pdev,
+ 	for (i = 0; i < 2; i++) {
+ 		mop500_dai_links[i].cpu_of_node = msp_np[i];
+ 		mop500_dai_links[i].cpu_dai_name = NULL;
++		mop500_dai_links[i].platform_of_node = msp_np[i];
++		mop500_dai_links[i].platform_name = NULL;
+ 		mop500_dai_links[i].codec_of_node = codec_np;
+ 		mop500_dai_links[i].codec_name = NULL;
+ 	}
 -- 
 1.8.1.2
