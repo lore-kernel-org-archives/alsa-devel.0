@@ -1,138 +1,266 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/4] mfd: wm5110: Make DSP memories readable
-Date: Tue, 19 Nov 2013 16:03:32 +0000
-Message-ID: <1384877015-5596-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/4] ASoC: wm5110: Add basic support for ISRCs
+Date: Tue, 19 Nov 2013 16:03:34 +0000
+Message-ID: <1384877015-5596-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1384877015-5596-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 295EF2610B1
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 17:04:51 +0100 (CET)
 In-Reply-To: <1384877015-5596-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org, lee.jones@linaro.org
-Cc: lgirdwood@gmail.com, sameo@linux.intel.com, patches@opensource.wolfsonmico.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: patches@opensource.wolfsonmico.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, sameo@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Expose the memory regions used by the DSP cores on WM5110 as readable
-and volatile.
+Add support for the ISRCs that matches the current support on the w5102.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- drivers/mfd/wm5110-tables.c |   69 ++++++++++++++++++++++++++++++++++++++++--
- 1 files changed, 65 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm5110.c |  178 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 178 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mfd/wm5110-tables.c b/drivers/mfd/wm5110-tables.c
-index 3113e39..4430404 100644
---- a/drivers/mfd/wm5110-tables.c
-+++ b/drivers/mfd/wm5110-tables.c
-@@ -14,6 +14,7 @@
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index d5ecdd2..c4da1bd 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -258,6 +258,10 @@ SOC_ENUM("LHPF2 Mode", arizona_lhpf2_mode),
+ SOC_ENUM("LHPF3 Mode", arizona_lhpf3_mode),
+ SOC_ENUM("LHPF4 Mode", arizona_lhpf4_mode),
  
- #include <linux/mfd/arizona/core.h>
- #include <linux/mfd/arizona/registers.h>
-+#include <linux/device.h>
- 
- #include "arizona.h"
- 
-@@ -1336,6 +1337,64 @@ static const struct reg_default wm5110_reg_default[] = {
- 	{ 0x00001404, 0x0000 },    /* R5124  - DSP4 Status 1 */
- };
- 
-+static bool wm5110_is_rev_b_adsp_memory(unsigned int reg)
-+{
-+	if ((reg >= 0x100000 && reg < 0x103000) ||
-+	    (reg >= 0x180000 && reg < 0x181000) ||
-+	    (reg >= 0x190000 && reg < 0x192000) ||
-+	    (reg >= 0x1a8000 && reg < 0x1a9000) ||
-+	    (reg >= 0x200000 && reg < 0x209000) ||
-+	    (reg >= 0x280000 && reg < 0x281000) ||
-+	    (reg >= 0x290000 && reg < 0x29a000) ||
-+	    (reg >= 0x2a8000 && reg < 0x2aa000) ||
-+	    (reg >= 0x300000 && reg < 0x30f000) ||
-+	    (reg >= 0x380000 && reg < 0x382000) ||
-+	    (reg >= 0x390000 && reg < 0x39e000) ||
-+	    (reg >= 0x3a8000 && reg < 0x3b6000) ||
-+	    (reg >= 0x400000 && reg < 0x403000) ||
-+	    (reg >= 0x480000 && reg < 0x481000) ||
-+	    (reg >= 0x490000 && reg < 0x492000) ||
-+	    (reg >= 0x4a8000 && reg < 0x4a9000))
-+		return true;
-+	else
-+		return false;
-+}
++SOC_VALUE_ENUM("ISRC1 FSL", arizona_isrc_fsl[0]),
++SOC_VALUE_ENUM("ISRC2 FSL", arizona_isrc_fsl[1]),
++SOC_VALUE_ENUM("ISRC3 FSL", arizona_isrc_fsl[2]),
 +
-+static bool wm5110_is_rev_d_adsp_memory(unsigned int reg)
-+{
-+	if ((reg >= 0x100000 && reg < 0x106000) ||
-+	    (reg >= 0x180000 && reg < 0x182000) ||
-+	    (reg >= 0x190000 && reg < 0x198000) ||
-+	    (reg >= 0x1a8000 && reg < 0x1aa000) ||
-+	    (reg >= 0x200000 && reg < 0x20f000) ||
-+	    (reg >= 0x280000 && reg < 0x282000) ||
-+	    (reg >= 0x290000 && reg < 0x29c000) ||
-+	    (reg >= 0x2a6000 && reg < 0x2b4000) ||
-+	    (reg >= 0x300000 && reg < 0x30f000) ||
-+	    (reg >= 0x380000 && reg < 0x382000) ||
-+	    (reg >= 0x390000 && reg < 0x3a2000) ||
-+	    (reg >= 0x3a6000 && reg < 0x3b4000) ||
-+	    (reg >= 0x400000 && reg < 0x406000) ||
-+	    (reg >= 0x480000 && reg < 0x482000) ||
-+	    (reg >= 0x490000 && reg < 0x498000) ||
-+	    (reg >= 0x4a8000 && reg < 0x4aa000))
-+		return true;
-+	else
-+		return false;
-+}
+ ARIZONA_MIXER_CONTROLS("DSP1L", ARIZONA_DSP1LMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("DSP1R", ARIZONA_DSP1RMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("DSP2L", ARIZONA_DSP2LMIX_INPUT_1_SOURCE),
+@@ -474,6 +478,36 @@ ARIZONA_MUX_ENUMS(ASRC1R, ARIZONA_ASRC1RMIX_INPUT_1_SOURCE);
+ ARIZONA_MUX_ENUMS(ASRC2L, ARIZONA_ASRC2LMIX_INPUT_1_SOURCE);
+ ARIZONA_MUX_ENUMS(ASRC2R, ARIZONA_ASRC2RMIX_INPUT_1_SOURCE);
+ 
++ARIZONA_MUX_ENUMS(ISRC1INT1, ARIZONA_ISRC1INT1MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC1INT2, ARIZONA_ISRC1INT2MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC1INT3, ARIZONA_ISRC1INT3MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC1INT4, ARIZONA_ISRC1INT4MIX_INPUT_1_SOURCE);
 +
-+static bool wm5110_is_adsp_memory(struct device *dev, unsigned int reg)
-+{
-+	struct arizona *arizona = dev_get_drvdata(dev);
++ARIZONA_MUX_ENUMS(ISRC1DEC1, ARIZONA_ISRC1DEC1MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC1DEC2, ARIZONA_ISRC1DEC2MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC1DEC3, ARIZONA_ISRC1DEC3MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC1DEC4, ARIZONA_ISRC1DEC4MIX_INPUT_1_SOURCE);
 +
-+	switch (arizona->rev) {
-+	case 0 ... 2:
-+		return wm5110_is_rev_b_adsp_memory(reg);
-+	default:
-+		return wm5110_is_rev_d_adsp_memory(reg);
-+	}
-+}
++ARIZONA_MUX_ENUMS(ISRC2INT1, ARIZONA_ISRC2INT1MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC2INT2, ARIZONA_ISRC2INT2MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC2INT3, ARIZONA_ISRC2INT3MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC2INT4, ARIZONA_ISRC2INT4MIX_INPUT_1_SOURCE);
 +
- static bool wm5110_readable_register(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-@@ -2308,7 +2367,7 @@ static bool wm5110_readable_register(struct device *dev, unsigned int reg)
- 	case ARIZONA_DSP4_STATUS_3:
- 		return true;
- 	default:
--		return false;
-+		return wm5110_is_adsp_memory(dev, reg);
- 	}
- }
- 
-@@ -2368,16 +2427,18 @@ static bool wm5110_volatile_register(struct device *dev, unsigned int reg)
- 	case ARIZONA_DSP4_STATUS_3:
- 		return true;
- 	default:
--		return false;
-+		return wm5110_is_adsp_memory(dev, reg);
- 	}
- }
- 
-+#define WM5110_MAX_REGISTER 0x4a9fff
++ARIZONA_MUX_ENUMS(ISRC2DEC1, ARIZONA_ISRC2DEC1MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC2DEC2, ARIZONA_ISRC2DEC2MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC2DEC3, ARIZONA_ISRC2DEC3MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC2DEC4, ARIZONA_ISRC2DEC4MIX_INPUT_1_SOURCE);
 +
- const struct regmap_config wm5110_spi_regmap = {
- 	.reg_bits = 32,
- 	.pad_bits = 16,
- 	.val_bits = 16,
++ARIZONA_MUX_ENUMS(ISRC3INT1, ARIZONA_ISRC3INT1MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC3INT2, ARIZONA_ISRC3INT2MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC3INT3, ARIZONA_ISRC3INT3MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC3INT4, ARIZONA_ISRC3INT4MIX_INPUT_1_SOURCE);
++
++ARIZONA_MUX_ENUMS(ISRC3DEC1, ARIZONA_ISRC3DEC1MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC3DEC2, ARIZONA_ISRC3DEC2MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC3DEC3, ARIZONA_ISRC3DEC3MIX_INPUT_1_SOURCE);
++ARIZONA_MUX_ENUMS(ISRC3DEC4, ARIZONA_ISRC3DEC4MIX_INPUT_1_SOURCE);
++
+ static const char *wm5110_aec_loopback_texts[] = {
+ 	"HPOUT1L", "HPOUT1R", "HPOUT2L", "HPOUT2R", "HPOUT3L", "HPOUT3R",
+ 	"SPKOUTL", "SPKOUTR", "SPKDAT1L", "SPKDAT1R", "SPKDAT2L", "SPKDAT2R",
+@@ -619,6 +653,60 @@ WM_ADSP2("DSP2", 1),
+ WM_ADSP2("DSP3", 2),
+ WM_ADSP2("DSP4", 3),
  
--	.max_register = ARIZONA_DSP1_STATUS_2,
-+	.max_register = WM5110_MAX_REGISTER,
- 	.readable_reg = wm5110_readable_register,
- 	.volatile_reg = wm5110_volatile_register,
++SND_SOC_DAPM_PGA("ISRC1INT1", ARIZONA_ISRC_1_CTRL_3,
++		 ARIZONA_ISRC1_INT0_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC1INT2", ARIZONA_ISRC_1_CTRL_3,
++		 ARIZONA_ISRC1_INT1_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC1INT3", ARIZONA_ISRC_1_CTRL_3,
++		 ARIZONA_ISRC1_INT2_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC1INT4", ARIZONA_ISRC_1_CTRL_3,
++		 ARIZONA_ISRC1_INT3_ENA_SHIFT, 0, NULL, 0),
++
++SND_SOC_DAPM_PGA("ISRC1DEC1", ARIZONA_ISRC_1_CTRL_3,
++		 ARIZONA_ISRC1_DEC0_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC1DEC2", ARIZONA_ISRC_1_CTRL_3,
++		 ARIZONA_ISRC1_DEC1_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC1DEC3", ARIZONA_ISRC_1_CTRL_3,
++		 ARIZONA_ISRC1_DEC2_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC1DEC4", ARIZONA_ISRC_1_CTRL_3,
++		 ARIZONA_ISRC1_DEC3_ENA_SHIFT, 0, NULL, 0),
++
++SND_SOC_DAPM_PGA("ISRC2INT1", ARIZONA_ISRC_2_CTRL_3,
++		 ARIZONA_ISRC2_INT0_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC2INT2", ARIZONA_ISRC_2_CTRL_3,
++		 ARIZONA_ISRC2_INT1_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC2INT3", ARIZONA_ISRC_2_CTRL_3,
++		 ARIZONA_ISRC2_INT2_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC2INT4", ARIZONA_ISRC_2_CTRL_3,
++		 ARIZONA_ISRC2_INT3_ENA_SHIFT, 0, NULL, 0),
++
++SND_SOC_DAPM_PGA("ISRC2DEC1", ARIZONA_ISRC_2_CTRL_3,
++		 ARIZONA_ISRC2_DEC0_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC2DEC2", ARIZONA_ISRC_2_CTRL_3,
++		 ARIZONA_ISRC2_DEC1_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC2DEC3", ARIZONA_ISRC_2_CTRL_3,
++		 ARIZONA_ISRC2_DEC2_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC2DEC4", ARIZONA_ISRC_2_CTRL_3,
++		 ARIZONA_ISRC2_DEC3_ENA_SHIFT, 0, NULL, 0),
++
++SND_SOC_DAPM_PGA("ISRC3INT1", ARIZONA_ISRC_3_CTRL_3,
++		 ARIZONA_ISRC3_INT0_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC3INT2", ARIZONA_ISRC_3_CTRL_3,
++		 ARIZONA_ISRC3_INT1_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC3INT3", ARIZONA_ISRC_3_CTRL_3,
++		 ARIZONA_ISRC3_INT2_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC3INT4", ARIZONA_ISRC_3_CTRL_3,
++		 ARIZONA_ISRC3_INT3_ENA_SHIFT, 0, NULL, 0),
++
++SND_SOC_DAPM_PGA("ISRC3DEC1", ARIZONA_ISRC_3_CTRL_3,
++		 ARIZONA_ISRC3_DEC0_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC3DEC2", ARIZONA_ISRC_3_CTRL_3,
++		 ARIZONA_ISRC3_DEC1_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC3DEC3", ARIZONA_ISRC_3_CTRL_3,
++		 ARIZONA_ISRC3_DEC2_ENA_SHIFT, 0, NULL, 0),
++SND_SOC_DAPM_PGA("ISRC3DEC4", ARIZONA_ISRC_3_CTRL_3,
++		 ARIZONA_ISRC3_DEC3_ENA_SHIFT, 0, NULL, 0),
++
+ SND_SOC_DAPM_VALUE_MUX("AEC Loopback", ARIZONA_DAC_AEC_CONTROL_1,
+ 		       ARIZONA_AEC_LOOPBACK_ENA_SHIFT, 0,
+ 		       &wm5110_aec_loopback_mux),
+@@ -826,6 +914,36 @@ ARIZONA_DSP_WIDGETS(DSP2, "DSP2"),
+ ARIZONA_DSP_WIDGETS(DSP3, "DSP3"),
+ ARIZONA_DSP_WIDGETS(DSP4, "DSP4"),
  
-@@ -2391,7 +2452,7 @@ const struct regmap_config wm5110_i2c_regmap = {
- 	.reg_bits = 32,
- 	.val_bits = 16,
++ARIZONA_MUX_WIDGETS(ISRC1DEC1, "ISRC1DEC1"),
++ARIZONA_MUX_WIDGETS(ISRC1DEC2, "ISRC1DEC2"),
++ARIZONA_MUX_WIDGETS(ISRC1DEC3, "ISRC1DEC3"),
++ARIZONA_MUX_WIDGETS(ISRC1DEC4, "ISRC1DEC4"),
++
++ARIZONA_MUX_WIDGETS(ISRC1INT1, "ISRC1INT1"),
++ARIZONA_MUX_WIDGETS(ISRC1INT2, "ISRC1INT2"),
++ARIZONA_MUX_WIDGETS(ISRC1INT3, "ISRC1INT3"),
++ARIZONA_MUX_WIDGETS(ISRC1INT4, "ISRC1INT4"),
++
++ARIZONA_MUX_WIDGETS(ISRC2DEC1, "ISRC2DEC1"),
++ARIZONA_MUX_WIDGETS(ISRC2DEC2, "ISRC2DEC2"),
++ARIZONA_MUX_WIDGETS(ISRC2DEC3, "ISRC2DEC3"),
++ARIZONA_MUX_WIDGETS(ISRC2DEC4, "ISRC2DEC4"),
++
++ARIZONA_MUX_WIDGETS(ISRC2INT1, "ISRC2INT1"),
++ARIZONA_MUX_WIDGETS(ISRC2INT2, "ISRC2INT2"),
++ARIZONA_MUX_WIDGETS(ISRC2INT3, "ISRC2INT3"),
++ARIZONA_MUX_WIDGETS(ISRC2INT4, "ISRC2INT4"),
++
++ARIZONA_MUX_WIDGETS(ISRC3DEC1, "ISRC3DEC1"),
++ARIZONA_MUX_WIDGETS(ISRC3DEC2, "ISRC3DEC2"),
++ARIZONA_MUX_WIDGETS(ISRC3DEC3, "ISRC3DEC3"),
++ARIZONA_MUX_WIDGETS(ISRC3DEC4, "ISRC3DEC4"),
++
++ARIZONA_MUX_WIDGETS(ISRC3INT1, "ISRC3INT1"),
++ARIZONA_MUX_WIDGETS(ISRC3INT2, "ISRC3INT2"),
++ARIZONA_MUX_WIDGETS(ISRC3INT3, "ISRC3INT3"),
++ARIZONA_MUX_WIDGETS(ISRC3INT4, "ISRC3INT4"),
++
+ SND_SOC_DAPM_OUTPUT("HPOUT1L"),
+ SND_SOC_DAPM_OUTPUT("HPOUT1R"),
+ SND_SOC_DAPM_OUTPUT("HPOUT2L"),
+@@ -895,6 +1013,30 @@ SND_SOC_DAPM_OUTPUT("MICSUPP"),
+ 	{ name, "ASRC1R", "ASRC1R" }, \
+ 	{ name, "ASRC2L", "ASRC2L" }, \
+ 	{ name, "ASRC2R", "ASRC2R" }, \
++	{ name, "ISRC1DEC1", "ISRC1DEC1" }, \
++	{ name, "ISRC1DEC2", "ISRC1DEC2" }, \
++	{ name, "ISRC1DEC3", "ISRC1DEC3" }, \
++	{ name, "ISRC1DEC4", "ISRC1DEC4" }, \
++	{ name, "ISRC1INT1", "ISRC1INT1" }, \
++	{ name, "ISRC1INT2", "ISRC1INT2" }, \
++	{ name, "ISRC1INT3", "ISRC1INT3" }, \
++	{ name, "ISRC1INT4", "ISRC1INT4" }, \
++	{ name, "ISRC2DEC1", "ISRC2DEC1" }, \
++	{ name, "ISRC2DEC2", "ISRC2DEC2" }, \
++	{ name, "ISRC2DEC3", "ISRC2DEC3" }, \
++	{ name, "ISRC2DEC4", "ISRC2DEC4" }, \
++	{ name, "ISRC2INT1", "ISRC2INT1" }, \
++	{ name, "ISRC2INT2", "ISRC2INT2" }, \
++	{ name, "ISRC2INT3", "ISRC2INT3" }, \
++	{ name, "ISRC2INT4", "ISRC2INT4" }, \
++	{ name, "ISRC3DEC1", "ISRC3DEC1" }, \
++	{ name, "ISRC3DEC2", "ISRC3DEC2" }, \
++	{ name, "ISRC3DEC3", "ISRC3DEC3" }, \
++	{ name, "ISRC3DEC4", "ISRC3DEC4" }, \
++	{ name, "ISRC3INT1", "ISRC3INT1" }, \
++	{ name, "ISRC3INT2", "ISRC3INT2" }, \
++	{ name, "ISRC3INT3", "ISRC3INT3" }, \
++	{ name, "ISRC3INT4", "ISRC3INT4" }, \
+ 	{ name, "DSP1.1", "DSP1" }, \
+ 	{ name, "DSP1.2", "DSP1" }, \
+ 	{ name, "DSP1.3", "DSP1" }, \
+@@ -1117,6 +1259,36 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
+ 	ARIZONA_DSP_ROUTES("DSP3"),
+ 	ARIZONA_DSP_ROUTES("DSP4"),
  
--	.max_register = ARIZONA_DSP1_STATUS_2,
-+	.max_register = WM5110_MAX_REGISTER,
- 	.readable_reg = wm5110_readable_register,
- 	.volatile_reg = wm5110_volatile_register,
++	ARIZONA_MUX_ROUTES("ISRC1INT1", "ISRC1INT1"),
++	ARIZONA_MUX_ROUTES("ISRC1INT2", "ISRC1INT2"),
++	ARIZONA_MUX_ROUTES("ISRC1INT3", "ISRC1INT3"),
++	ARIZONA_MUX_ROUTES("ISRC1INT4", "ISRC1INT4"),
++
++	ARIZONA_MUX_ROUTES("ISRC1DEC1", "ISRC1DEC1"),
++	ARIZONA_MUX_ROUTES("ISRC1DEC2", "ISRC1DEC2"),
++	ARIZONA_MUX_ROUTES("ISRC1DEC3", "ISRC1DEC3"),
++	ARIZONA_MUX_ROUTES("ISRC1DEC4", "ISRC1DEC4"),
++
++	ARIZONA_MUX_ROUTES("ISRC2INT1", "ISRC2INT1"),
++	ARIZONA_MUX_ROUTES("ISRC2INT2", "ISRC2INT2"),
++	ARIZONA_MUX_ROUTES("ISRC2INT3", "ISRC2INT3"),
++	ARIZONA_MUX_ROUTES("ISRC2INT4", "ISRC2INT4"),
++
++	ARIZONA_MUX_ROUTES("ISRC2DEC1", "ISRC2DEC1"),
++	ARIZONA_MUX_ROUTES("ISRC2DEC2", "ISRC2DEC2"),
++	ARIZONA_MUX_ROUTES("ISRC2DEC3", "ISRC2DEC3"),
++	ARIZONA_MUX_ROUTES("ISRC2DEC4", "ISRC2DEC4"),
++
++	ARIZONA_MUX_ROUTES("ISRC3INT1", "ISRC3INT1"),
++	ARIZONA_MUX_ROUTES("ISRC3INT2", "ISRC3INT2"),
++	ARIZONA_MUX_ROUTES("ISRC3INT3", "ISRC3INT3"),
++	ARIZONA_MUX_ROUTES("ISRC3INT4", "ISRC3INT4"),
++
++	ARIZONA_MUX_ROUTES("ISRC3DEC1", "ISRC3DEC1"),
++	ARIZONA_MUX_ROUTES("ISRC3DEC2", "ISRC3DEC2"),
++	ARIZONA_MUX_ROUTES("ISRC3DEC3", "ISRC3DEC3"),
++	ARIZONA_MUX_ROUTES("ISRC3DEC4", "ISRC3DEC4"),
++
+ 	{ "AEC Loopback", "HPOUT1L", "OUT1L" },
+ 	{ "AEC Loopback", "HPOUT1R", "OUT1R" },
+ 	{ "HPOUT1L", NULL, "OUT1L" },
+@@ -1419,6 +1591,12 @@ static int wm5110_probe(struct platform_device *pdev)
+ 			 ARIZONA_IRQ_FLL2_LOCK, ARIZONA_IRQ_FLL2_CLOCK_OK,
+ 			 &wm5110->fll[1]);
+ 
++	/* SR2 fixed at 8kHz, SR3 fixed at 16kHz */
++	regmap_update_bits(arizona->regmap, ARIZONA_SAMPLE_RATE_2,
++			   ARIZONA_SAMPLE_RATE_2_MASK, 0x11);
++	regmap_update_bits(arizona->regmap, ARIZONA_SAMPLE_RATE_3,
++			   ARIZONA_SAMPLE_RATE_3_MASK, 0x12);
++
+ 	for (i = 0; i < ARRAY_SIZE(wm5110_dai); i++)
+ 		arizona_init_dai(&wm5110->core, i);
  
 -- 
 1.7.2.5
