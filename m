@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 09/10] ASoC: ux500_pcm: Take out pointless dev_dbg() call
-Date: Tue, 19 Nov 2013 11:07:48 +0000
-Message-ID: <1384859269-19801-10-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 08/10] ASoC: ux500_pcm: Differentiate between pdata and DT initialisation
+Date: Tue, 19 Nov 2013 11:07:47 +0000
+Message-ID: <1384859269-19801-9-git-send-email-lee.jones@linaro.org>
 References: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
@@ -10,32 +10,63 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+If booting with full DT support (i.e. DMA too, the last piece of the
+puzzle), then we don't need to use the compatible request channel call
+back and, due to the work we laid down earlier in this patch-set, we
+can use core function calls to populate the DMA slave_config. We also
+require slightly different flags to inform the core that we 'are'
+booting with DT.
+
 Cc: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@kernel.org>
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/ux500_pcm.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/ux500/ux500_pcm.c | 28 +++++++++++++++++++++++-----
+ 1 file changed, 23 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
-index acfec98..fd7f12e 100644
+index ce554de..acfec98 100644
 --- a/sound/soc/ux500/ux500_pcm.c
 +++ b/sound/soc/ux500/ux500_pcm.c
-@@ -65,14 +65,10 @@ static struct dma_chan *ux500_pcm_request_chan(struct snd_soc_pcm_runtime *rtd,
- 	struct snd_pcm_substream *substream)
+@@ -139,15 +139,33 @@ static const struct snd_dmaengine_pcm_config ux500_dmaengine_pcm_config = {
+ 	.prepare_slave_config = ux500_pcm_prepare_slave_config,
+ };
+ 
++static const struct snd_dmaengine_pcm_config ux500_dmaengine_of_pcm_config = {
++	.pcm_hardware = &ux500_pcm_hw,
++	.prealloc_buffer_size = 128 * 1024,
++	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
++};
++
+ int ux500_pcm_register_platform(struct platform_device *pdev)
  {
- 	struct snd_soc_dai *dai = rtd->cpu_dai;
--	struct device *dev = dai->dev;
- 	u16 per_data_width, mem_data_width;
- 	struct stedma40_chan_cfg *dma_cfg;
- 	struct ux500_msp_dma_params *dma_params;
++	const struct snd_dmaengine_pcm_config *pcm_config;
++	struct device_node *np = pdev->dev.of_node;
++	unsigned int pcm_flags;
+ 	int ret;
  
--	dev_dbg(dev, "%s: MSP %d (%s): Enter.\n", __func__, dai->id,
--		snd_pcm_stream_str(substream));
--
- 	dma_params = snd_soc_dai_get_dma_data(dai, substream);
- 	dma_cfg = dma_params->dma_cfg;
- 
+-	ret = snd_dmaengine_pcm_register(&pdev->dev,
+-			&ux500_dmaengine_pcm_config,
+-			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+-			SND_DMAENGINE_PCM_FLAG_COMPAT |
+-			SND_DMAENGINE_PCM_FLAG_NO_DT);
++	if (np) {
++		pcm_config = &ux500_dmaengine_of_pcm_config;
++
++		pcm_flags = SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
++			SND_DMAENGINE_PCM_FLAG_COMPAT;
++	} else {
++		pcm_config = &ux500_dmaengine_pcm_config;
++
++		pcm_flags = SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
++			SND_DMAENGINE_PCM_FLAG_NO_DT |
++			SND_DMAENGINE_PCM_FLAG_COMPAT;
++	}
++
++	ret = snd_dmaengine_pcm_register(&pdev->dev, pcm_config, pcm_flags);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev,
+ 			"%s: ERROR: Failed to register platform '%s' (%d)!\n",
 -- 
 1.8.1.2
