@@ -1,68 +1,76 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 08/10] ASoC: ux500_pcm: Differentiate between pdata and
- DT initialisation
-Date: Tue, 19 Nov 2013 20:09:57 +0000
-Message-ID: <20131119200957.GS2674@sirena.org.uk>
-References: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
- <1384859269-19801-9-git-send-email-lee.jones@linaro.org>
- <20131119184829.GF2674@sirena.org.uk>
- <20131119193341.GC19953@lee--X1>
- <528BBE90.4020802@metafoo.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/2] snd-oxygen: Changes for oxygen driver
+ to fix the Xonar DG card
+Date: Tue, 19 Nov 2013 23:23:41 +0100
+Message-ID: <528BE4ED.4050105@ladisch.de>
+References: <20131119182617.0bbae792@v1ron-desktop>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Wty5iWagpjJlozQq"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <528BBE90.4020802@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 2768A2608D8
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 23:24:27 +0100 (CET)
+In-Reply-To: <20131119182617.0bbae792@v1ron-desktop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Roman Volkov <v1ron@mail.ru>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Many thanks for doing all this work!
 
---Wty5iWagpjJlozQq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+However, there are still a few small problems.
 
-On Tue, Nov 19, 2013 at 08:40:00PM +0100, Lars-Peter Clausen wrote:
-> On 11/19/2013 08:33 PM, Lee Jones wrote:
+Roman Volkov wrote:
+> This patch does some preparation of existing Oxygen driver.
 
-> > Despite the '+'s, I'm not actually adding these parameters, I'm
-> > duplicating the pdata version and removing the stuff I 'know' that's
-> > not required. I don't know what happens when/if these two parameters
-> > are removed. I can add this to my TODO when I rip out platform data
-> > support, which will happen when this stuff lands.
+This patch should be separated into four logical changes.
 
-> I think the patch is fine for now. Once non-DT support has been removed for
-> ux500 we should be able to remove the whole ux500_pcm.c file (Assuming that
-> the ux500 DMA engine driver gains dma_slave_caps support).
+> +++ linux-3.12-my/sound/pci/oxygen/cs4245.h	2013-11-15 15:46:40.000000000 +0400
+> -#define CS4245_SPI_ADDRESS	(0x9e << 16)
+> -#define CS4245_SPI_WRITE	(0 << 16)
+> +#define CS4245_SPI_ADDRESS	0x9e
+> +#define CS4245_SPI_WRITE	0
+> +#define CS4245_SPI_READ		1
 
-Yeah, it shouldn't break anything but I'd rather at least have a comment
-on any new code that specifies these things by hand explaining why the
-automatic stuff doesn't work, it's much nicer to not have to specify the
-magic numbers by hand and this will help encourage new code to do the
-right thing.
+This is only part of a logical change; applying this patch alone would
+break the driver.
 
---Wty5iWagpjJlozQq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> +++ linux-3.12-my/sound/pci/oxygen/oxygen_io.c	2013-11-19 00:56:12.000000000 +0400
+> -	wait_event_timeout(chip->ac97_waitqueue,
+> -			   ({ status |= oxygen_read8(chip, OXYGEN_AC97_INTERRUPT_STATUS);
+> +	wait_event_timeout(chip->ac97_waitqueue, ({ status |= oxygen_read8(chip,
+> +					OXYGEN_AC97_INTERRUPT_STATUS);
+>  			      status & mask; }),
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+Why this change?
 
-iQIcBAEBAgAGBQJSi8WSAAoJELSic+t+oim9AfwP/A5T/uMCQuIbPFnlv+KB5IxG
-cwcrjQiGBWZAD7i97nGnc8WjFFbSK+aLiUSfVpOLJB2P6X80+yUapaC9Tb1Sa1aX
-LLghUl+o5a8su/OSkyDsVC8vzug5fjzZdavbcPVP79WWYnQusqVvxmDqafkQ10GL
-O+XvGcRfssNBJf7AWZ82sTfaVUydbiHz6qaShGhLvI5ptK10l7AS1AnlwT4V2CK4
-wRrRiKr2qfS2U8JWtrrALqvTWJwbgqtVCEMcHj9UQCVLHBJNlvbPZyYUu9qeniz6
-NRLZEgorbV1EbYCrcSmXREpWQHcxdmYaUe56toagNFmQnSHNJOppMUwjcDeM6HAJ
-ZmRV+zVpkoSrab2Jtx2Q2I4hS86u+BUKENLNRZR2kLRugdA+jbOdGZYWPcolZNdW
-SItGM4mdSzFneAubFZzOAPATDam4wANVd12HOwSzk5VjEZhqZpe7VH8BoiP23AL5
-vJWHPOm0iLSBRIRajXw+Xu1+06GoAytLFi215XIK1rh1UbKPu4sfSlZUGmZnyWbk
-sAdlDfSvXTKvV8eKWL+vB0JNAvYXeMm7GkVmbxItmu3MyfjU/1RnHCBiLAZhe/dB
-MwZlej3vA5e+a4joA3COGAh2ILVL/AF1vz6rx6sxwFvE4RTvNGEMomE6y8rB7DmV
-68OUPq3jg6ZFr72x4g9j
-=+bhE
------END PGP SIGNATURE-----
+> +int oxygen_wait_spi(struct oxygen *chip)
+>  ...
+> -		udelay(4);
+> +		udelay(1);
 
---Wty5iWagpjJlozQq--
+Please don't reduce this delay; the CMI8788 has a bug that can crash the
+machine if this register is polled too often.
+
+> +EXPORT_SYMBOL(oxygen_wait_spi);
+
+Why this export?
+
+> +++ linux-3.12-my/sound/pci/oxygen/oxygen_mixer.c	2013-11-18 14:03:54.000000000 +0400
+
+> +EXPORT_SYMBOL(oxygen_update_dac_routing);
+
+This should be integrated into the patch that adds the actual call.
+
+
+Regards,
+Clemens
