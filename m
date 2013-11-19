@@ -1,55 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 07/10] ASoC: ux500: Store DMA data in the DAI differently
- in the pdata and DT case
-Date: Tue, 19 Nov 2013 18:51:06 +0000
-Message-ID: <20131119185106.GI2674@sirena.org.uk>
+Subject: Re: [PATCH 09/10] ASoC: ux500_pcm: Take out pointless dev_dbg() call
+Date: Tue, 19 Nov 2013 18:51:30 +0000
+Message-ID: <20131119185130.GJ2674@sirena.org.uk>
 References: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
- <1384859269-19801-8-git-send-email-lee.jones@linaro.org>
+ <1384859269-19801-10-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1IYcr18XUmgwOrO2"
+	protocol="application/pgp-signature"; boundary="mjUDp/cLGeqUhYyE"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1384859269-19801-8-git-send-email-lee.jones@linaro.org>
+In-Reply-To: <1384859269-19801-10-git-send-email-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Lee Jones <lee.jones@linaro.org>
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---1IYcr18XUmgwOrO2
+--mjUDp/cLGeqUhYyE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Nov 19, 2013 at 11:07:46AM +0000, Lee Jones wrote:
-> In this patch we do two things. Firstly, instead of open coding the
-> store of DMA data in to the DAI for later use, we use the API provided.
-> Secondly we create and store similar DMA data for the DT case, only
-> this time we use 'struct snd_dmaengine_dai_dma_data' which is provided
-> by the core for this very reason.
+On Tue, Nov 19, 2013 at 11:07:48AM +0000, Lee Jones wrote:
+> Cc: alsa-devel@alsa-project.org
+> Cc: Mark Brown <broonie@kernel.org>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
 Applied, thanks.
 
---1IYcr18XUmgwOrO2
+--mjUDp/cLGeqUhYyE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSi7MWAAoJELSic+t+oim97TIP/RYJrwHpHTHs47UaBuycd/Bx
-iYV2kAxg+T5HB4QhJ/A0O9KNPoCzSQqWFtFR2htNoCD3wqYx/78igxuCF2XBtqVE
-r9hXdjazV+D1hBNVzUaFfINYenCGdBxBIP/TCA10JxIoPqLweVci+fum31h1qUiJ
-63gdIDixIhYE/0k/+PNj67cKjiJx2lgtHcCsF7Cup11TcOxRZy/doJ50frJf7Lw2
-E0xiPbuNEzhi1zFyyekjS8SWYZwkAtrfj6IIDP5yZ9Hrqe/T/riVZKLCA/RpkhV3
-ad1QVZ/A/ywE4QE9010k6eYsXIMrBF7jwzwXczNTgpkjanpzZK2LS6y4u54wOndO
-WgppGO0Lyz0n9BMjnLSVBsjMRZgdEK5BS7Yx39R8rQO8jwnkbVLlYkYhy2ML3gf3
-1xIkGiPkPpoKlgJBc7WdH27OWCn4BpyZ7Hg8ogq6r9+l3/+VB1Zpv7bYpKRxJ3Bl
-ZN4nF4a7dRLAxiuZzrB2EzTkm5wQPdvjGvsv1T7bj3qRa7A1UjGueooFiKUoiF0h
-DXaIIyxfFUMHzzvVb6KAF4NL0f0HeO7rk0oI52tv4LatTBKs6UEUh/91FbW1AJgY
-sA64DVXlyz6LgXX3rajEvamXIfXtt1hGQW/NpILvba7droMwzhEOSnM81mA3ZLwO
-SlsMyH1gGw9XoDwVkKOc
-=Ht2p
+iQIcBAEBAgAGBQJSi7MvAAoJELSic+t+oim9yZYQAJwh40DRLyqMf9m3klSEVzMa
+Qi3cQS+zQCABaqJbI5ArMkfyc4ipKEPLwa4o3LtTwtEkgXlG1PY1XJej+nCwVKwO
+8LUxisrdUDscKjLk3i7t7qF9TjDHkNxxoXS0+jcLITzj9MW+Q+LJrSYsWH+1hVfH
+T2DPSDaorAbl26Dsd/HDAzUKKX0q+rm5c2xw3uoa6AnhoAMks/5vfayEkzy4cOZp
+/pQLjWx+UY5p5Gmn2wmpuO1NZMs1k3J4sr/O3PaS99Ii4KNu6zw0LUT4gWbep/we
+q2OxxOqNEm092pqvVix5HwvKTVfkjdnIuJ+t/QYNIWFz1MWUter4oxvebs46Zhu4
+d1tuYXJI/hnLMoEQFvtCgBYfPq4HUH7561MVwpK9wM7gI05N2i4qaRB5hQvFzjGg
+ELXCPO75h/xauwQk7KMKxRlpvplw1QyJkzkLguD0JUtZPMfSC/++jq/6DdbyPciK
+diMAhEzDUe6IcSmwcOlUqXWLoywimCxvEy2LSoAbKz4NYlAhzHuKquin9WzrdoAW
+qAg3GrQUYj7VvTMLJjV81ksFIHnFhWRV88iyO9uLWErX1x9DkCM7L4U1qwCF1K4b
+Ume3peOgptmofky9D2+c7CBzMAxE1BROC/CiOrC8APT82QVl63m5am7ktj5IiWAw
+07sH7mnP7HxhIWZcR7wy
+=CvO1
 -----END PGP SIGNATURE-----
 
---1IYcr18XUmgwOrO2--
+--mjUDp/cLGeqUhYyE--
