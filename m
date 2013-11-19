@@ -1,41 +1,37 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH RFC] ARM/dts: am335x-boneblack: Add HDMI
-	audio support
-Date: Tue, 19 Nov 2013 15:29:26 +0200
-Message-ID: <528B67B6.6040706@ti.com>
-References: <cover.1384863282.git.jsarha@ti.com>
- <18d71a32fb46d34197fd2e0ec5dc8ebc36371704.1384863282.git.jsarha@ti.com>
- <528B617A.4080102@baylibre.com>
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: Re: [PATCH RFC 3/9] ASoC: davinci-evm: HDMI audio support for
+ TDA998x trough McASP I2S bus
+Date: Tue, 19 Nov 2013 16:07:54 +0100
+Message-ID: <20131119160754.7307a763@skate>
+References: <cover.1384862950.git.jsarha@ti.com>
+	<737bab348e15c6c2aba01ecd91e84c870aafe242.1384862950.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 531BF261981
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 14:29:23 +0100 (CET)
-In-Reply-To: <528B617A.4080102@baylibre.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Benoit Cousson <bcousson@baylibre.com>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <737bab348e15c6c2aba01ecd91e84c870aafe242.1384862950.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, detheridge@ti.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/19/2013 03:02 PM, Benoit Cousson wrote:
-> A side question related to audio cape support on BBB. In the "official"
-> 3.8.13 CircuitCo version the HDMI audio support was breaking the
-> audio-cape support due to some bad hacks in the mcasp driver.
->
-> Is this still the case with you series?
+Dear Jyri Sarha,
 
-My patches do not touch davinci-mcasp at all and the davinci-evm changes 
-should be backwards compatible. So if the audio-cape was working before 
-my patches should not break it.
+On Tue, 19 Nov 2013 14:12:23 +0200, Jyri Sarha wrote:
 
-Best regards,
-Jyri
+> -- compatible : "ti,da830-evm-audio" : forDM365/DA8xx/OMAPL1x/AM33xx
+> +- compatible : "ti,da830-evm-audio" : for DM365/DA8xx/OMAPL1x/AM33xx
+> +               "ti,am33xx-beaglebone-black" : for Beaglebone-black HDMI audio
+
+The compatible string namespace is a global namespace, and in the
+compatible string you've chosen, there's nothing that makes it specific
+to audio. "ti,am33xx-beaglebone-black" could be used for any other
+device, or even for the board as a whole, no? Maybe you need to suffix
+it with "-audio", like the existing compatible string for audio in this
+driver.
+
+Thomas
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
