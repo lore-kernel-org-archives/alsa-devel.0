@@ -1,36 +1,53 @@
-From: "Zhong Li" <zql@glomationinc.com>
-Subject: RE: [alsa-devel] Bug? Sound support for at91sam9x5-wm8731 based boards
-Date: Tue, 19 Nov 2013 13:09:26 -0500
-Message-ID: <033601cee552$7c2c2570$74847050$@com>
-References: <1384878685-1515-1-git-send-email-tony@atomide.com>
- <1384878685-1515-3-git-send-email-tony@atomide.com>
- <031f01cee547$950b5670$bf220350$@com>
- <CACQ1gAgykmgPKY4SHujnNtm4Sr=wt5knLkQL-MRS_pC73bOi4Q@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RFC 2/9] ASoC: davinci-evm: Add named clock reference to
+ DT bindings
+Date: Tue, 19 Nov 2013 18:18:17 +0000
+Message-ID: <20131119181817.GC2674@sirena.org.uk>
+References: <cover.1384862950.git.jsarha@ti.com>
+ <f1a36fea1ea4f452fd716c70a4fb2fb6d6186e1a.1384862950.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CACQ1gAgykmgPKY4SHujnNtm4Sr=wt5knLkQL-MRS_pC73bOi4Q@mail.gmail.com>
-Content-Language: en-us
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: 'Richard Genoud' <richard.genoud@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pgNHpQPJFoUYTAIP"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <f1a36fea1ea4f452fd716c70a4fb2fb6d6186e1a.1384862950.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-> Can you give a little more background ? :
-> - What kernel ?
-> - Command line to reproduce ?
-> 
-> Richard.
 
-One of the testing hardware is the Atmel at91sam9g25-ek (the CPU module and the carrier board).  We tried both the 2.6.39 patched with the Atmel patches and the mainline 3.12-rc.  The command to test the sound is just the simple aplay <sound-test-file>.  The wav file is available here, https://drive.google.com/file/d/0B3TSFX4Mq9PoeTdJOGVaZk5rTWM/edit?usp=sharing.
+--pgNHpQPJFoUYTAIP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks
+On Tue, Nov 19, 2013 at 02:12:22PM +0200, Jyri Sarha wrote:
+
+>  .../bindings/sound/davinci-evm-audio.txt           |    9 ++-
+>  sound/soc/davinci/davinci-evm.c                    |   60 +++++++++++++++++++-
+
+Again this looks sensible but ought to go to the DT folks.
+
+--pgNHpQPJFoUYTAIP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSi6tmAAoJELSic+t+oim9Tl0QAIDLrbZrZWpuluqaYkoIcwJ6
+Fim3WpWmeI0JcvfnUnmjLgTAE4yy4yInfqSAXKjrPrKZoe6GDm8ICV8MXSwkUuuE
+p1Jn+OBufuTyet3yCxsf9CKynMIPsU2SuICDy2sg9+ROwm9ILztJ7cEnmuBDeUDa
+M2QlgOZdE9lFiHEmE6tPiWZzk+ctk0sWK7m1ZxZpsUV7eES15dK6d6X6Hmzk5q3d
+Tk8MMmJOraSO9NCMCtOC5+uGdeGhK1X3UuNgSXUUsGfpWpNM2MTyE6bdHYAApq2f
+7S7lvVdIJxiziHJMerGTLRvr3mWYruvDqehdFriiaLeLrI2I5ZtmgR+Rm4lpkVdt
+M/tf4V5x89a01jfYNOy2Zc0wjbLjrZyV5yei0cadMZryXca0hFe1wrWc7zQ/TDwI
+5LNLAM9GndSb3AdMHA7v6RrEEdRoYoh49kyW4OMGARn9QkkWPI3TQSeqG1/u4wvR
+gKJ+9pwCYHUIqBO5jw7p92O0xyDI1ENezDDuo96pOuqLxG/TfuZXV23o1wXthaF2
+1W5c/Bc6qC6BKoSm63F+KIqNQQJiE2aUWpBsU8PDRqNoyVPNZmHmXb2j5CKwP9Qs
+pxG8/q/gLwtBVqjYVx+N6lmcZaINachZQ/vNj34zMiK4naic1Ns5UAowuxyJxPYD
+iDYwh9VAWYZplaVrFH1V
+=nSaa
+-----END PGP SIGNATURE-----
+
+--pgNHpQPJFoUYTAIP--
