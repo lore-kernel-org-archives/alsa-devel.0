@@ -1,20 +1,20 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 07/10] ASoC: ux500: Store DMA data in the DAI
-	differently in the pdata and DT case
-Date: Tue, 19 Nov 2013 11:07:46 +0000
-Message-ID: <1384859269-19801-8-git-send-email-lee.jones@linaro.org>
-References: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
+From: Simone Camporeale <simone.camporeale@gmail.com>
+Subject: Re: [PATCH] Maya44+ Support in ALSA
+Date: Tue, 19 Nov 2013 12:42:16 +0100
+Message-ID: <CAK+n=GVA7YqYiECvDo6E4Ls6K6hQv=w78XQA9gsoo75iSFDQsA@mail.gmail.com>
+References: <CAK+n=GUBR=bt_YLg0Gzg9xax93H0cgvO12Nwz7r=YmULnfqpSQ@mail.gmail.com>
+ <5287B3A9.2050008@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f42.google.com (mail-oa0-f42.google.com
- [209.85.219.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 998D02616CF
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 12:08:18 +0100 (CET)
-Received: by mail-oa0-f42.google.com with SMTP id i4so2987781oah.1
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 03:08:17 -0800 (PST)
-In-Reply-To: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
+Received: from mail-pb0-f47.google.com (mail-pb0-f47.google.com
+ [209.85.160.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 058B7261700
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 12:42:17 +0100 (CET)
+Received: by mail-pb0-f47.google.com with SMTP id um1so1763901pbc.20
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 03:42:17 -0800 (PST)
+In-Reply-To: <5287B3A9.2050008@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,97 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: linus.walleij@linaro.org, Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In this patch we do two things. Firstly, instead of open coding the
-store of DMA data in to the DAI for later use, we use the API provided.
-Secondly we create and store similar DMA data for the DT case, only
-this time we use 'struct snd_dmaengine_dai_dma_data' which is provided
-by the core for this very reason.
+Hi Clements,
+this is lsub output
 
-Cc: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- sound/soc/ux500/ux500_msp_dai.c | 42 +++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 40 insertions(+), 2 deletions(-)
+[simone@ubuntu: ~]$ lsusb
+Bus 007 Device 002: ID 046d:c03e Logitech, Inc. Premium Optical Wheel Mouse
+Bus 007 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 004 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 008 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 006 Device 002: ID 2573:0008
+Bus 006 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 005 Device 002: ID 0a5c:5800 Broadcom Corp.
+Bus 005 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 003 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
 
-diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
-index c6fb5cc..8d1b01f 100644
---- a/sound/soc/ux500/ux500_msp_dai.c
-+++ b/sound/soc/ux500/ux500_msp_dai.c
-@@ -17,12 +17,14 @@
- #include <linux/bitops.h>
- #include <linux/platform_device.h>
- #include <linux/clk.h>
-+#include <linux/of.h>
- #include <linux/regulator/consumer.h>
- #include <linux/mfd/dbx500-prcmu.h>
- #include <linux/platform_data/asoc-ux500-msp.h>
- 
- #include <sound/soc.h>
- #include <sound/soc-dai.h>
-+#include <sound/dmaengine_pcm.h>
- 
- #include "ux500_msp_i2s.h"
- #include "ux500_msp_dai.h"
-@@ -654,16 +656,52 @@ static int ux500_msp_dai_trigger(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
-+static int ux500_msp_dai_of_probe(struct snd_soc_dai *dai)
-+{
-+	struct ux500_msp_i2s_drvdata *drvdata = dev_get_drvdata(dai->dev);
-+	struct snd_dmaengine_dai_dma_data *playback_dma_data;
-+	struct snd_dmaengine_dai_dma_data *capture_dma_data;
-+
-+	playback_dma_data = devm_kzalloc(dai->dev,
-+					 sizeof(*playback_dma_data),
-+					 GFP_KERNEL);
-+	if (!playback_dma_data)
-+		return -ENOMEM;
-+
-+	capture_dma_data = devm_kzalloc(dai->dev,
-+					sizeof(*capture_dma_data),
-+					GFP_KERNEL);
-+	if (!capture_dma_data)
-+		return -ENOMEM;
-+
-+	playback_dma_data->addr = drvdata->msp->playback_dma_data.tx_rx_addr;
-+	capture_dma_data->addr = drvdata->msp->capture_dma_data.tx_rx_addr;
-+
-+	playback_dma_data->maxburst = 4;
-+	capture_dma_data->maxburst = 4;
-+
-+	snd_soc_dai_init_dma_data(dai, playback_dma_data, capture_dma_data);
-+
-+	return 0;
-+}
-+
- static int ux500_msp_dai_probe(struct snd_soc_dai *dai)
- {
- 	struct ux500_msp_i2s_drvdata *drvdata = dev_get_drvdata(dai->dev);
-+	struct device_node *np = dai->dev->of_node;
-+	int ret;
- 
--	dai->playback_dma_data = &drvdata->msp->playback_dma_data;
--	dai->capture_dma_data = &drvdata->msp->capture_dma_data;
-+	if (np) {
-+		ret = ux500_msp_dai_of_probe(dai);
-+		return ret;
-+	}
- 
- 	drvdata->msp->playback_dma_data.data_size = drvdata->slot_width;
- 	drvdata->msp->capture_dma_data.data_size = drvdata->slot_width;
- 
-+	snd_soc_dai_init_dma_data(dai,
-+				  &drvdata->msp->playback_dma_data,
-+				  &drvdata->msp->capture_dma_data);
- 	return 0;
- }
- 
+Best Regards,
+Simone
+
+
+On Sat, Nov 16, 2013 at 7:04 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+
+> Simone Camporeale wrote:
+> > I found some problems on Maya44+ USB support in linux.
+> > Only 2 of 4 channels work and they are mixed .
+> > To fix this problem i found on google a patch for Reloop device. I
+> chanaged
+> > VID and PID for MAYA44+ and now it works .
+>
+> What is the output of "lsusb -v" for this device?
+>
+>
+> Regards,
+> Clemens
+>
+
+
+
 -- 
-1.8.1.2
+Dott. Simone Camporeale
