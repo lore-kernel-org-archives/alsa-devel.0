@@ -1,72 +1,120 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 08/10] ASoC: ux500_pcm: Differentiate between pdata and DT initialisation
-Date: Tue, 19 Nov 2013 11:07:47 +0000
-Message-ID: <1384859269-19801-9-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 07/10] ASoC: ux500: Store DMA data in the DAI
+	differently in the pdata and DT case
+Date: Tue, 19 Nov 2013 11:07:46 +0000
+Message-ID: <1384859269-19801-8-git-send-email-lee.jones@linaro.org>
 References: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oa0-f42.google.com (mail-oa0-f42.google.com
+ [209.85.219.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 998D02616CF
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 12:08:18 +0100 (CET)
+Received: by mail-oa0-f42.google.com with SMTP id i4so2987781oah.1
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 03:08:17 -0800 (PST)
 In-Reply-To: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: linus.walleij@linaro.org, Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-If booting with full DT support (i.e. DMA too, the last piece of the
-puzzle), then we don't need to use the compatible request channel call
-back and, due to the work we laid down earlier in this patch-set, we
-can use core function calls to populate the DMA slave_config. We also
-require slightly different flags to inform the core that we 'are'
-booting with DT.
+In this patch we do two things. Firstly, instead of open coding the
+store of DMA data in to the DAI for later use, we use the API provided.
+Secondly we create and store similar DMA data for the DT case, only
+this time we use 'struct snd_dmaengine_dai_dma_data' which is provided
+by the core for this very reason.
 
 Cc: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@kernel.org>
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/ux500_pcm.c | 28 +++++++++++++++++++++++-----
- 1 file changed, 23 insertions(+), 5 deletions(-)
+ sound/soc/ux500/ux500_msp_dai.c | 42 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 40 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
-index ce554de..acfec98 100644
---- a/sound/soc/ux500/ux500_pcm.c
-+++ b/sound/soc/ux500/ux500_pcm.c
-@@ -139,15 +139,33 @@ static const struct snd_dmaengine_pcm_config ux500_dmaengine_pcm_config = {
- 	.prepare_slave_config = ux500_pcm_prepare_slave_config,
- };
+diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
+index c6fb5cc..8d1b01f 100644
+--- a/sound/soc/ux500/ux500_msp_dai.c
++++ b/sound/soc/ux500/ux500_msp_dai.c
+@@ -17,12 +17,14 @@
+ #include <linux/bitops.h>
+ #include <linux/platform_device.h>
+ #include <linux/clk.h>
++#include <linux/of.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/mfd/dbx500-prcmu.h>
+ #include <linux/platform_data/asoc-ux500-msp.h>
  
-+static const struct snd_dmaengine_pcm_config ux500_dmaengine_of_pcm_config = {
-+	.pcm_hardware = &ux500_pcm_hw,
-+	.prealloc_buffer_size = 128 * 1024,
-+	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-+};
+ #include <sound/soc.h>
+ #include <sound/soc-dai.h>
++#include <sound/dmaengine_pcm.h>
+ 
+ #include "ux500_msp_i2s.h"
+ #include "ux500_msp_dai.h"
+@@ -654,16 +656,52 @@ static int ux500_msp_dai_trigger(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
++static int ux500_msp_dai_of_probe(struct snd_soc_dai *dai)
++{
++	struct ux500_msp_i2s_drvdata *drvdata = dev_get_drvdata(dai->dev);
++	struct snd_dmaengine_dai_dma_data *playback_dma_data;
++	struct snd_dmaengine_dai_dma_data *capture_dma_data;
 +
- int ux500_pcm_register_platform(struct platform_device *pdev)
++	playback_dma_data = devm_kzalloc(dai->dev,
++					 sizeof(*playback_dma_data),
++					 GFP_KERNEL);
++	if (!playback_dma_data)
++		return -ENOMEM;
++
++	capture_dma_data = devm_kzalloc(dai->dev,
++					sizeof(*capture_dma_data),
++					GFP_KERNEL);
++	if (!capture_dma_data)
++		return -ENOMEM;
++
++	playback_dma_data->addr = drvdata->msp->playback_dma_data.tx_rx_addr;
++	capture_dma_data->addr = drvdata->msp->capture_dma_data.tx_rx_addr;
++
++	playback_dma_data->maxburst = 4;
++	capture_dma_data->maxburst = 4;
++
++	snd_soc_dai_init_dma_data(dai, playback_dma_data, capture_dma_data);
++
++	return 0;
++}
++
+ static int ux500_msp_dai_probe(struct snd_soc_dai *dai)
  {
-+	const struct snd_dmaengine_pcm_config *pcm_config;
-+	struct device_node *np = pdev->dev.of_node;
-+	unsigned int pcm_flags;
- 	int ret;
+ 	struct ux500_msp_i2s_drvdata *drvdata = dev_get_drvdata(dai->dev);
++	struct device_node *np = dai->dev->of_node;
++	int ret;
  
--	ret = snd_dmaengine_pcm_register(&pdev->dev,
--			&ux500_dmaengine_pcm_config,
--			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
--			SND_DMAENGINE_PCM_FLAG_COMPAT |
--			SND_DMAENGINE_PCM_FLAG_NO_DT);
+-	dai->playback_dma_data = &drvdata->msp->playback_dma_data;
+-	dai->capture_dma_data = &drvdata->msp->capture_dma_data;
 +	if (np) {
-+		pcm_config = &ux500_dmaengine_of_pcm_config;
-+
-+		pcm_flags = SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
-+			SND_DMAENGINE_PCM_FLAG_COMPAT;
-+	} else {
-+		pcm_config = &ux500_dmaengine_pcm_config;
-+
-+		pcm_flags = SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
-+			SND_DMAENGINE_PCM_FLAG_NO_DT |
-+			SND_DMAENGINE_PCM_FLAG_COMPAT;
++		ret = ux500_msp_dai_of_probe(dai);
++		return ret;
 +	}
-+
-+	ret = snd_dmaengine_pcm_register(&pdev->dev, pcm_config, pcm_flags);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev,
- 			"%s: ERROR: Failed to register platform '%s' (%d)!\n",
+ 
+ 	drvdata->msp->playback_dma_data.data_size = drvdata->slot_width;
+ 	drvdata->msp->capture_dma_data.data_size = drvdata->slot_width;
+ 
++	snd_soc_dai_init_dma_data(dai,
++				  &drvdata->msp->playback_dma_data,
++				  &drvdata->msp->capture_dma_data);
+ 	return 0;
+ }
+ 
 -- 
 1.8.1.2
