@@ -1,58 +1,112 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 05/10] ASoC: Ux500: Match platform by device
-	node when booting Device Tree
-Date: Tue, 19 Nov 2013 11:07:44 +0000
-Message-ID: <1384859269-19801-6-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 06/10] ASoC: ux500_pcm: Extend Device Tree support to deal with DMA data
+Date: Tue, 19 Nov 2013 11:07:45 +0000
+Message-ID: <1384859269-19801-7-git-send-email-lee.jones@linaro.org>
 References: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f51.google.com (mail-oa0-f51.google.com
- [209.85.219.51])
- by alsa0.perex.cz (Postfix) with ESMTP id C4A642615B9
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 12:08:14 +0100 (CET)
-Received: by mail-oa0-f51.google.com with SMTP id i7so3404493oag.24
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 03:08:14 -0800 (PST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: linus.walleij@linaro.org, Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org
+Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-We're getting closer to fully enabling the Ux500 ASoC driver for Device
-Tree. When we switch over from using AUXDATA we'll need to match platform
-by only Device Tree nodes. In this patch we NULL out the platform_name,
-and supply nodes for each platform device.
+Soon we will strip out pdata support from the Ux500 set of ASoC drivers.
+When this happens it will have to supply a DMA slave_config to the
+dmaengine. At the moment a great deal of this comes from pdata via
+AUXDATA. We need to become independent of this soon. This patch starts
+the process by allocating memory for the associated data structures and
+fetches the MSP id used for const struct indexing.
 
 Cc: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@kernel.org>
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/mop500.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/ux500/ux500_msp_i2s.c | 56 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 41 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
-index 178d1ba..b3b66aa 100644
---- a/sound/soc/ux500/mop500.c
-+++ b/sound/soc/ux500/mop500.c
-@@ -91,6 +91,8 @@ static int mop500_of_probe(struct platform_device *pdev,
- 	for (i = 0; i < 2; i++) {
- 		mop500_dai_links[i].cpu_of_node = msp_np[i];
- 		mop500_dai_links[i].cpu_dai_name = NULL;
-+		mop500_dai_links[i].platform_of_node = msp_np[i];
-+		mop500_dai_links[i].platform_name = NULL;
- 		mop500_dai_links[i].codec_of_node = codec_np;
- 		mop500_dai_links[i].codec_name = NULL;
- 	}
+diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
+index 1ca8b08..7f2a4ac 100644
+--- a/sound/soc/ux500/ux500_msp_i2s.c
++++ b/sound/soc/ux500/ux500_msp_i2s.c
+@@ -646,6 +646,34 @@ int ux500_msp_i2s_close(struct ux500_msp *msp, unsigned int dir)
+ 
+ }
+ 
++int ux500_msp_i2s_of_init_msp(struct platform_device *pdev,
++			      struct ux500_msp *msp,
++			      struct msp_i2s_platform_data **platform_data)
++{
++	struct msp_i2s_platform_data *pdata;
++
++	*platform_data = devm_kzalloc(&pdev->dev,
++				     sizeof(struct msp_i2s_platform_data),
++				     GFP_KERNEL);
++	pdata = *platform_data;
++	if (!pdata)
++		return -ENOMEM;
++
++	msp->playback_dma_data.dma_cfg = devm_kzalloc(&pdev->dev,
++					sizeof(struct stedma40_chan_cfg),
++					GFP_KERNEL);
++	if (!msp->playback_dma_data.dma_cfg)
++		return -ENOMEM;
++
++	msp->capture_dma_data.dma_cfg = devm_kzalloc(&pdev->dev,
++					sizeof(struct stedma40_chan_cfg),
++					GFP_KERNEL);
++	if (!msp->capture_dma_data.dma_cfg)
++		return -ENOMEM;
++
++	return 0;
++}
++
+ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
+ 			struct ux500_msp **msp_p,
+ 			struct msp_i2s_platform_data *platform_data)
+@@ -653,30 +681,28 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
+ 	struct resource *res = NULL;
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct ux500_msp *msp;
++	int ret;
+ 
+ 	*msp_p = devm_kzalloc(&pdev->dev, sizeof(struct ux500_msp), GFP_KERNEL);
+ 	msp = *msp_p;
+ 	if (!msp)
+ 		return -ENOMEM;
+ 
+-	if (np) {
+-		if (!platform_data) {
+-			platform_data = devm_kzalloc(&pdev->dev,
+-				sizeof(struct msp_i2s_platform_data), GFP_KERNEL);
+-			if (!platform_data)
+-				return -ENOMEM;
+-		}
+-	} else
+-		if (!platform_data)
++	if (!platform_data) {
++		if (np) {
++			ret = ux500_msp_i2s_of_init_msp(pdev, msp,
++							&platform_data);
++			if (ret)
++				return ret;
++		} else
+ 			return -EINVAL;
++	} else {
++		msp->playback_dma_data.dma_cfg = platform_data->msp_i2s_dma_tx;
++		msp->capture_dma_data.dma_cfg = platform_data->msp_i2s_dma_rx;
++		msp->id = platform_data->id;
++	}
+ 
+-	dev_dbg(&pdev->dev, "%s: Enter (name: %s, id: %d).\n", __func__,
+-		pdev->name, platform_data->id);
+-
+-	msp->id = platform_data->id;
+ 	msp->dev = &pdev->dev;
+-	msp->playback_dma_data.dma_cfg = platform_data->msp_i2s_dma_tx;
+-	msp->capture_dma_data.dma_cfg = platform_data->msp_i2s_dma_rx;
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (res == NULL) {
 -- 
 1.8.1.2
