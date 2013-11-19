@@ -1,15 +1,17 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [TINYCOMPRESS PATCH 1/2] crec: Initial version of a
-	compressed capture utility
-Date: Tue, 19 Nov 2013 16:46:18 +0000
-Message-ID: <1384879579-7790-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [TINYCOMPRESS PATCH 2/2] crec: Add primitive exception
+	handling
+Date: Tue, 19 Nov 2013 16:46:19 +0000
+Message-ID: <1384879579-7790-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1384879579-7790-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 821C826086C
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ABB5E2608D8
  for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2013 17:47:33 +0100 (CET)
+In-Reply-To: <1384879579-7790-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,517 +25,156 @@ To: vinod.koul@linux.intel.com
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-This version only supports capture of PCM streams over a compressed
-device and saves these as WAV files.
+Add very primitive signal handling, we will not attempt to drain any
+remaining data etc. simply save out what we have to a file.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- Android.mk     |   10 ++
- crec.c         |  425 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- makefile.linux |   20 ++-
- 3 files changed, 448 insertions(+), 7 deletions(-)
- create mode 100644 crec.c
+ crec.c |   90 ++++++++++++++++++++++++++++++++++++++++++++++++++++++---------
+ 1 files changed, 77 insertions(+), 13 deletions(-)
 
-diff --git a/Android.mk b/Android.mk
-index 104dfef..3cdd3d0 100644
---- a/Android.mk
-+++ b/Android.mk
-@@ -20,3 +20,13 @@ LOCAL_MODULE_TAGS := optional
- 
- include $(BUILD_EXECUTABLE)
- 
-+include $(CLEAR_VARS)
-+
-+LOCAL_C_INCLUDES:= $(LOCAL_PATH)/include
-+LOCAL_SRC_FILES:= crec.c
-+LOCAL_MODULE := crec
-+LOCAL_SHARED_LIBRARIES:= libcutils libutils libtinycompress
-+LOCAL_MODULE_TAGS := optional
-+
-+include $(BUILD_EXECUTABLE)
-+
 diff --git a/crec.c b/crec.c
-new file mode 100644
-index 0000000..d2fd873
---- /dev/null
+index d2fd873..73b2630 100644
+--- a/crec.c
 +++ b/crec.c
-@@ -0,0 +1,425 @@
-+/*
-+ * BSD LICENSE
-+ *
-+ * crec command line recorder for compress audio record in alsa
-+ * Copyright (c) 2011-2012, Intel Corporation
-+ * Copyright (c) 2013, Wolfson Microelectronic Ltd.
-+ * All rights reserved.
-+ *
-+ * Author: Vinod Koul <vinod.koul@linux.intel.com>
-+ * Author: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-+ *
-+ * Redistribution and use in source and binary forms, with or without
-+ * modification, are permitted provided that the following conditions are met:
-+ *
-+ * Redistributions of source code must retain the above copyright notice,
-+ * this list of conditions and the following disclaimer.
-+ * Redistributions in binary form must reproduce the above copyright notice,
-+ * this list of conditions and the following disclaimer in the documentation
-+ * and/or other materials provided with the distribution.
-+ * Neither the name of Intel Corporation nor the names of its contributors
-+ * may be used to endorse or promote products derived from this software
-+ * without specific prior written permission.
-+ *
-+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
-+ * THE POSSIBILITY OF SUCH DAMAGE.
-+ *
-+ * LGPL LICENSE
-+ *
-+ * crec command line recorder for compress audio record in alsa
-+ * Copyright (c) 2011-2012, Intel Corporation
-+ * Copyright (c) 2013, Wolfson Microelectronic Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms and conditions of the GNU Lesser General Public License,
-+ * version 2.1, as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
-+ * License for more details.
-+ *
-+ * You should have received a copy of the GNU Lesser General Public License
-+ * along with this program; if not, write to
-+ * the Free Software Foundation, Inc.,
-+ * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+
-+#include <stdint.h>
-+#include <linux/types.h>
-+#include <fcntl.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <stdbool.h>
-+#include <getopt.h>
-+#include <sys/time.h>
-+#define __force
-+#define __bitwise
-+#define __user
-+#include "sound/compress_params.h"
-+#include "sound/compress_offload.h"
-+#include "tinycompress/tinycompress.h"
-+
-+static int verbose;
-+
-+static const unsigned int DEFAULT_CHANNELS = 1;
-+static const unsigned int DEFAULT_RATE = 44100;
-+static const unsigned int DEFAULT_FORMAT = SNDRV_PCM_FORMAT_S16_LE;
-+
-+struct riff_chunk {
-+	char desc[4];
-+	uint32_t size;
-+} __attribute__((__packed__));
-+
-+struct wave_header {
-+	struct {
-+		struct riff_chunk chunk;
-+		char format[4];
-+	} __attribute__((__packed__)) riff;
-+
-+	struct {
-+		struct riff_chunk chunk;
-+		uint16_t type;
-+		uint16_t channels;
-+		uint32_t rate;
-+		uint32_t byterate;
-+		uint16_t blockalign;
-+		uint16_t samplebits;
-+	} __attribute__((__packed__)) fmt;
-+
-+	struct {
-+		struct riff_chunk chunk;
-+	} __attribute__((__packed__)) data;
-+} __attribute__((__packed__));
-+
-+const struct wave_header blank_wave_header = {
-+	.riff = {
-+		.chunk = {
-+			.desc = "RIFF",
-+		},
-+		.format = "WAVE",
-+	},
-+	.fmt = {
-+		.chunk = {
-+			.desc = "fmt ", /* Note the space is important here */
-+			.size = sizeof(blank_wave_header.fmt) -
-+				sizeof(blank_wave_header.fmt.chunk),
-+		},
-+		.type = 0x01,   /* PCM */
-+	},
-+	.data = {
-+		.chunk = {
-+			.desc = "data",
-+		},
-+	},
-+};
-+
-+static void init_wave_header(struct wave_header *header, uint16_t channels,
-+			     uint32_t rate, uint16_t samplebits)
+@@ -74,6 +74,7 @@
+ #include "tinycompress/tinycompress.h"
+ 
+ static int verbose;
++static FILE *file;
+ 
+ static const unsigned int DEFAULT_CHANNELS = 1;
+ static const unsigned int DEFAULT_RATE = 44100;
+@@ -183,6 +184,62 @@ static int print_time(struct compress *compress)
+ 	return 0;
+ }
+ 
++static int finish_record()
 +{
-+	memcpy(header, &blank_wave_header, sizeof(blank_wave_header));
-+
-+	header->fmt.channels = channels;
-+	header->fmt.rate = rate;
-+	header->fmt.byterate = channels * rate * (samplebits / 8);
-+	header->fmt.blockalign = channels * (samplebits / 8);
-+	header->fmt.samplebits = samplebits;
-+}
-+
-+static void size_wave_header(struct wave_header *header, uint32_t size)
-+{
-+	header->riff.chunk.size = sizeof(*header) -
-+				  sizeof(header->riff.chunk) + size;
-+	header->data.chunk.size = size;
-+}
-+
-+static void usage(void)
-+{
-+	fprintf(stderr, "usage: crec [OPTIONS] filename\n"
-+		"-c\tcard number\n"
-+		"-d\tdevice node\n"
-+		"-b\tbuffer size\n"
-+		"-f\tfragments\n"
-+		"-v\tverbose mode\n"
-+		"-l\tlength of record in seconds\n"
-+		"-h\tPrints this help list\n\n"
-+		"-C\tSpecify the number of channels (default %u)\n"
-+		"-R\tSpecify the sample rate (default %u)\n"
-+		"-F\tSpecify the format: S16_LE, S32_LE (default S16_LE)\n\n"
-+		"Example:\n"
-+		"\tcrec -c 1 -d 2 test.wav\n"
-+		"\tcrec -f 5 test.wav\n",
-+		DEFAULT_CHANNELS, DEFAULT_RATE);
-+
-+	exit(EXIT_FAILURE);
-+}
-+
-+static int print_time(struct compress *compress)
-+{
-+	unsigned int avail;
-+	struct timespec tstamp;
-+
-+	if (compress_get_hpointer(compress, &avail, &tstamp) != 0) {
-+		fprintf(stderr, "Error querying timestamp\n");
-+		fprintf(stderr, "ERR: %s\n", compress_get_error(compress));
-+		return -1;
-+	} else {
-+		printf("DSP recorded %jd.%jd\n",
-+		       (intmax_t)tstamp.tv_sec, (intmax_t)tstamp.tv_nsec*1000);
-+	}
-+	return 0;
-+}
-+
-+void capture_samples(char *name, unsigned int card, unsigned int device,
-+		     unsigned long buffer_size, unsigned int frag,
-+		     unsigned int length, unsigned int rate,
-+		     unsigned int channels, unsigned int format)
-+{
-+	struct compr_config config;
-+	struct snd_codec codec;
-+	struct compress *compress;
 +	struct wave_header header;
-+	FILE *file;
-+	char *buffer;
-+	size_t written;
-+	int read, ret;
-+	unsigned int size, total_read = 0;
-+	unsigned int samplebits;
++	int ret;
++	size_t read, written;
 +
-+	switch (format) {
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		samplebits = 32;
-+		break;
-+	default:
-+		samplebits = 16;
-+		break;
++	if (!file)
++		return -ENOENT;
++
++	/* Get amount of data written to file */
++	ret = fseek(file, 0, SEEK_END);
++	if (ret < 0)
++		goto seek_error;
++	ret = ftell(file);
++	if (ret < 0) {
++		fprintf(stderr, "Error reading file position: %s\n",
++			strerror(errno));
++		return errno;
++	}
++	written = ret;
++	if (written < sizeof(header)) {
++		fprintf(stderr, "No data recorded!\n");
++		return -ENOENT;
++	}
++	written -= sizeof(header);
++
++	/* Sync file header from file */
++	ret = fseek(file, 0, SEEK_SET);
++	if (ret < 0)
++		goto seek_error;
++	read = fread(&header, sizeof(header), 1, file);
++	if (read != 1) {
++		ret = ferror(file);
++		fprintf(stderr, "Error reading output file header: %d\n", ret);
++		return ret;
 +	}
 +
-+	/* Convert length from seconds to bytes */
-+	length = length * rate * (samplebits / 8) * channels;
++	/* Update file header */
++	ret = fseek(file, 0, SEEK_SET);
++	if (ret < 0)
++		goto seek_error;
++	size_wave_header(&header, written);
++	written = fwrite(&header, sizeof(header), 1, file);
++	if (written != 1) {
++		ret = ferror(file);
++		fprintf(stderr, "Error updating output file header: %d\n", ret);
++		return ret;
++	}
 +
-+	if (verbose)
-+		printf("%s: entry, reading %u bytes\n", __func__, length);
++	return 0;
 +
-+	file = fopen(name, "w+b");
-+	if (!file) {
-+		fprintf(stderr, "Unable to open file '%s'\n", name);
++seek_error:
++	fprintf(stderr, "Error seeking: %s\n", strerror(errno));
++	return errno;
++}
++
+ void capture_samples(char *name, unsigned int card, unsigned int device,
+ 		     unsigned long buffer_size, unsigned int frag,
+ 		     unsigned int length, unsigned int rate,
+@@ -192,7 +249,6 @@ void capture_samples(char *name, unsigned int card, unsigned int device,
+ 	struct snd_codec codec;
+ 	struct compress *compress;
+ 	struct wave_header header;
+-	FILE *file;
+ 	char *buffer;
+ 	size_t written;
+ 	int read, ret;
+@@ -318,25 +374,16 @@ void capture_samples(char *name, unsigned int card, unsigned int device,
+ 		fprintf(stderr, "ERR: %s\n", compress_get_error(compress));
+ 	}
+ 
+-	/* Update file header now we know file size */
+-	size_wave_header(&header, total_read);
+-	ret = fseek(file, 0, SEEK_SET);
+-	if (ret < 0) {
+-		fprintf(stderr, "Error seeking: %s\n", stderror(errno));
++	ret = finish_record();
++	if (ret < 0)
+ 		goto buf_exit;
+-	}
+-	written = fwrite(&header, sizeof(header), 1, file);
+-	if (written != 1) {
+-		fprintf(stderr, "Error updating output file header: %d\n",
+-			ferror(file));
+-		goto buf_exit;
+-	}
+ 
+ 	if (verbose)
+ 		printf("%s: exit success\n", __func__);
+ 
+ 	free(buffer);
+ 	fclose(file);
++	file = NULL;
+ 
+ 	compress_close(compress);
+ 
+@@ -354,6 +401,18 @@ file_exit:
+ 	exit(EXIT_FAILURE);
+ }
+ 
++static void sig_handler(int signum __attribute__ ((unused)))
++{
++	printf("Interrupted, saving what we have!\n");
++
++	finish_record();
++
++	if (file)
++		fclose(file);
++
++	_exit(EXIT_FAILURE);
++}
++
+ int main(int argc, char **argv)
+ {
+ 	char *file;
+@@ -363,6 +422,11 @@ int main(int argc, char **argv)
+ 	unsigned int rate = DEFAULT_RATE, channels = DEFAULT_CHANNELS;
+ 	unsigned int format = DEFAULT_FORMAT;
+ 
++	if (signal(SIGINT, sig_handler) == SIG_ERR) {
++		fprintf(stderr, "Error registering signal handler\n");
 +		exit(EXIT_FAILURE);
 +	}
 +
-+	/* Write a header, will update with size once record is complete */
-+	init_wave_header(&header, channels, rate, samplebits);
-+	written = fwrite(&header, sizeof(header), 1, file);
-+	if (written != 1) {
-+		fprintf(stderr, "Error writing output file header: %d\n",
-+			ferror(file));
-+		goto file_exit;
-+	}
-+
-+	codec.id = SND_AUDIOCODEC_PCM;
-+	codec.ch_in = channels;
-+	codec.ch_out = channels;
-+	codec.sample_rate = compress_get_alsa_rate(rate);
-+	if (!codec.sample_rate) {
-+		fprintf(stderr, "invalid sample rate %d\n", rate);
-+		goto file_exit;
-+	}
-+	codec.bit_rate = 0;
-+	codec.rate_control = 0;
-+	codec.profile = 0;
-+	codec.level = 0;
-+	codec.ch_mode = 0;
-+	codec.format = format;
-+	if ((buffer_size != 0) && (frag != 0)) {
-+		config.fragment_size = buffer_size/frag;
-+		config.fragments = frag;
-+	} else {
-+		/* use driver defaults */
-+		config.fragment_size = 0;
-+		config.fragments = 0;
-+	}
-+	config.codec = &codec;
-+
-+	compress = compress_open(card, device, COMPRESS_OUT, &config);
-+	if (!compress || !is_compress_ready(compress)) {
-+		fprintf(stderr, "Unable to open Compress device %d:%d\n",
-+			card, device);
-+		fprintf(stderr, "ERR: %s\n", compress_get_error(compress));
-+		goto file_exit;
-+	};
-+
-+	if (verbose)
-+		printf("%s: Opened compress device\n", __func__);
-+
-+	size = config.fragment_size;
-+	buffer = malloc(size * config.fragments);
-+	if (!buffer) {
-+		fprintf(stderr, "Unable to allocate %d bytes\n", size);
-+		goto comp_exit;
-+	}
-+
-+	printf("Recording file %s On Card %u device %u, with buffer of %lu bytes\n",
-+	       name, card, device, buffer_size);
-+	printf("Format %u Channels %u, %u Hz\n",
-+	       codec.id, codec.ch_out, rate);
-+
-+	compress_start(compress);
-+
-+	if (verbose)
-+		printf("%s: Capturing audio NOW!!!\n", __func__);
-+
-+	do {
-+		if (length && size > length - total_read)
-+			size = length - total_read;
-+
-+		read = compress_read(compress, buffer, size);
-+		if (read < 0) {
-+			fprintf(stderr, "Error reading sample\n");
-+			fprintf(stderr, "ERR: %s\n", compress_get_error(compress));
-+			goto buf_exit;
-+		}
-+		if ((unsigned int)read != size) {
-+			fprintf(stderr, "We read %d, DSP sent %d\n",
-+				size, read);
-+		}
-+
-+		if (read > 0) {
-+			total_read += read;
-+
-+			written = fwrite(buffer, 1, read, file);
-+			if (written != (size_t)read) {
-+				fprintf(stderr, "Error writing output file: %d\n",
-+					ferror(file));
-+				goto buf_exit;
-+			}
-+			if (verbose) {
-+				print_time(compress);
-+				printf("%s: read %d\n", __func__, read);
-+			}
-+		}
-+	} while (!length || total_read < length);
-+
-+	ret = compress_stop(compress);
-+	if (ret < 0) {
-+		fprintf(stderr, "Error closing stream\n");
-+		fprintf(stderr, "ERR: %s\n", compress_get_error(compress));
-+	}
-+
-+	/* Update file header now we know file size */
-+	size_wave_header(&header, total_read);
-+	ret = fseek(file, 0, SEEK_SET);
-+	if (ret < 0) {
-+		fprintf(stderr, "Error seeking: %s\n", stderror(errno));
-+		goto buf_exit;
-+	}
-+	written = fwrite(&header, sizeof(header), 1, file);
-+	if (written != 1) {
-+		fprintf(stderr, "Error updating output file header: %d\n",
-+			ferror(file));
-+		goto buf_exit;
-+	}
-+
-+	if (verbose)
-+		printf("%s: exit success\n", __func__);
-+
-+	free(buffer);
-+	fclose(file);
-+
-+	compress_close(compress);
-+
-+	return;
-+buf_exit:
-+	free(buffer);
-+comp_exit:
-+	compress_close(compress);
-+file_exit:
-+	fclose(file);
-+
-+	if (verbose)
-+		printf("%s: exit failure\n", __func__);
-+
-+	exit(EXIT_FAILURE);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	char *file;
-+	unsigned long buffer_size = 0;
-+	int c;
-+	unsigned int card = 0, device = 0, frag = 0, length = 0;
-+	unsigned int rate = DEFAULT_RATE, channels = DEFAULT_CHANNELS;
-+	unsigned int format = DEFAULT_FORMAT;
-+
-+	if (argc < 2)
-+		usage();
-+
-+	verbose = 0;
-+	while ((c = getopt(argc, argv, "hvl:R:C:F:b:f:c:d:")) != -1) {
-+		switch (c) {
-+		case 'h':
-+			usage();
-+			break;
-+		case 'b':
-+			buffer_size = strtol(optarg, NULL, 0);
-+			break;
-+		case 'f':
-+			frag = strtol(optarg, NULL, 10);
-+			break;
-+		case 'c':
-+			card = strtol(optarg, NULL, 10);
-+			break;
-+		case 'd':
-+			device = strtol(optarg, NULL, 10);
-+			break;
-+		case 'v':
-+			verbose = 1;
-+			break;
-+		case 'l':
-+			length = strtol(optarg, NULL, 10);
-+			break;
-+		case 'R':
-+			rate = strtol(optarg, NULL, 10);
-+			break;
-+		case 'C':
-+			channels = strtol(optarg, NULL, 10);
-+			break;
-+		case 'F':
-+			if (strcmp(optarg, "S16_LE") == 0) {
-+				format = SNDRV_PCM_FORMAT_S16_LE;
-+			} else if (strcmp(optarg, "S32_LE") == 0) {
-+				format = SNDRV_PCM_FORMAT_S32_LE;
-+			} else {
-+				fprintf(stderr, "Unrecognised format: %s\n",
-+					optarg);
-+				usage();
-+			}
-+			break;
-+		default:
-+			exit(EXIT_FAILURE);
-+		}
-+	}
-+	if (optind >= argc)
-+		usage();
-+
-+	file = argv[optind];
-+
-+	capture_samples(file, card, device, buffer_size, frag, length,
-+			rate, channels, format);
-+
-+	printf("Finish capturing... Close Normally\n");
-+	exit(EXIT_SUCCESS);
-+}
-+
-diff --git a/makefile.linux b/makefile.linux
-index 677878d..81782d0 100644
---- a/makefile.linux
-+++ b/makefile.linux
-@@ -1,10 +1,13 @@
- LIB = libtinycompress
--BIN = cplay
- VER = 0.1
- LIBSRC = compress.c
--SRC = cplay.c utils.c
-+PLAYBIN = cplay
-+RECBIN = crec
-+PLAYSRC = cplay.c utils.c
-+RECSRC = crec.c utils.c
- LIBOBJ = ${LIBSRC:.c=.o}
--OBJ = ${SRC:.c=.o}
-+PLAYOBJ = ${PLAYSRC:.c=.o}
-+RECOBJ = ${RECSRC:.c=.o}
+ 	if (argc < 2)
+ 		usage();
  
- CC = gcc
- CROSS_COMPILE =
-@@ -13,23 +16,26 @@ CFLAGS += -std=c99 -Wall -Wextra -Wunused -DVERSION=\"${VER}\" -I./include
- LDFLAGS += -L. -ltinycompress
- LIBLDFLAGS = -lasound
- 
--all: libtinycompress cplay
-+all: libtinycompress cplay crec
- 
- $(LIB): ${LIBOBJ}
- 	@echo "  LD	"$@
- 	@${CROSS_COMPILE}${CC} ${CFLAGS} -shared -Wl,-soname,$@.so -o $@.so ${LIBOBJ} ${LIBLDFLAGS}
- 
--$(BIN): ${OBJ} ${LIB}
-+$(PLAYBIN): ${PLAYOBJ} ${LIB}
- 	@echo "  LD	"$@
--	@${CROSS_COMPILE}${CC} ${CFLAGS} -o $@ ${OBJ} ${LDFLAGS}
-+	@${CROSS_COMPILE}${CC} ${CFLAGS} -o $@ ${PLAYOBJ} ${LDFLAGS}
- 
-+$(RECBIN): ${RECOBJ} ${LIB}
-+	@echo "  LD	"$@
-+	@${CROSS_COMPILE}${CC} ${CFLAGS} -o $@ ${RECOBJ} ${LDFLAGS}
- 
- %.o: %.c
- 	@echo "  CC	"$<
- 	@${CROSS_COMPILE}${CC} ${CFLAGS} -c -fPIC -o $@ $<
- 
- clean:
--	@rm -rf ${BIN} ${OBJ} ${LIB}.so ${LIBOBJ}
-+	@rm -rf ${BIN} ${PLAYOBJ} ${RECOBJ} ${LIB}.so ${LIBOBJ}
- 
- 
- .PHONY: all clean
 -- 
 1.7.2.5
