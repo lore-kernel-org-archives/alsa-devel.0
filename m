@@ -1,18 +1,14 @@
-From: Richard Genoud <richard.genoud@gmail.com>
-Subject: Re: [alsa-devel] Bug? Sound support for at91sam9x5-wm8731 based boards
-Date: Wed, 20 Nov 2013 17:23:56 +0100
-Message-ID: <CACQ1gAh7UAkT1s_=gOKpzEt5bm9FAGf0gL-yM6=r5ch7bMksBA@mail.gmail.com>
-References: <1384878685-1515-1-git-send-email-tony@atomide.com>
- <1384878685-1515-3-git-send-email-tony@atomide.com>
- <031f01cee547$950b5670$bf220350$@com>
- <CACQ1gAgykmgPKY4SHujnNtm4Sr=wt5knLkQL-MRS_pC73bOi4Q@mail.gmail.com>
- <033601cee552$7c2c2570$74847050$@com>
- <CACQ1gAhvS7PSbK0SuhrB8TPS8Rkd-AdqZ-=T+Ntjyx7PsR7XaQ@mail.gmail.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH 00/31] ARM: tegra: use common reset and DMA bindings
+Date: Wed, 20 Nov 2013 09:45:17 -0700
+Message-ID: <528CE71D.5090300@wwwdotorg.org>
+References: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org>
+ <201311201637.36733.arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CACQ1gAhvS7PSbK0SuhrB8TPS8Rkd-AdqZ-=T+Ntjyx7PsR7XaQ@mail.gmail.com>
+In-Reply-To: <201311201637.36733.arnd@arndb.de>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -22,50 +18,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Zhong Li <zql@glomationinc.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Bo Shen <voice.shen@atmel.com>
-Cc: alsa-devel@alsa-project.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org
+Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Wolfram Sang <wsa@the-dreams.de>, David Airlie <airlied@linux.ie>, linux-pci@vger.kernel.org, dri-devel@lists.freedesktop.org, Marc Dietrich <marvin24@gmx.de>, Bjorn Helgaas <bhelgaas@google.com>, linux-i2c@vger.kernel.org, ac100@lists.launchpad.net, devel@driverdev.osuosl.org, Stephen Warren <swarren@nvidia.com>, Mike Turquette <mturquette@linaro.org>, Alan Stern <stern@rowland.harvard.edu>, linux-serial@vger.kernel.org, linux-input@vger.kernel.org, treding@nvidia.com, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Julian Andres Klode <jak@jak-linux.org>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>, linux-tegra@vger.kernel.org, =?UTF-8?B?VGVyamUgQmVyZ3N0csO2bQ==?= <tbergstrom@>
 List-Id: alsa-devel@alsa-project.org
 
-2013/11/20 Richard Genoud <richard.genoud@gmail.com>:
-> [added Nicolas Ferre and Bo Shen ]
->
-> 2013/11/19 Zhong Li <zql@glomationinc.com>:
->>
->> One of the testing hardware is the Atmel at91sam9g25-ek (the CPU module and the carrier board).  We tried both the 2.6.39 patched with the Atmel patches and the mainline 3.12-rc.  The command to test the sound is just the simple aplay <sound-test-file>.  The wav file is available here, https://drive.google.com/file/d/0B3TSFX4Mq9PoeTdJOGVaZk5rTWM/edit?usp=sharing.
->>
->> Thanks
->
-> Ok, I reproduce the bug on g35-ek with a v3.11.7+(sam9x5 sound patches) kernel
->
-> So, *sometimes*,  the left and right channel are swapped. ( I found
-> also the ratio 1 out of 6 (but once it has happened, it seems to be
-> more often))
-> I tested that with the file given by Zhong Li, and with a file I
-> created with audacity (440Hz only on right channel).
-> I could see at the scope that the channels are swapped before the
-> w8731 codec (the data on the TD line are sometime on the low edge of
-> TF, instead of always being on the high edge (I2S mode)).
-> There's, in both cases, a clock period (TK) between the rising/falling
-> edge of TF and the 1st data bit on TD, so the mode is always I2S, and
-> the channel data are swapped.
->
-> I'll try to have a look (but I don't have much time right now)
->
-> If someone could test that on a sam9g20 or a WM8904 based board, since
-> they share the same DAI format, they may have the same problem.
+On 11/20/2013 08:37 AM, Arnd Bergmann wrote:
+> On Friday 15 November 2013, Stephen Warren wrote:
+>> This series implements a common reset framework driver for Tegra, and
+>> updates all relevant Tegra drivers to use it. It also removes the custom
+>> DMA bindings and replaced them with the standard DMA DT bindings.
+> 
+> The series is rather long, so I may have missed it, but I think you need one
+> more patch to the apbdma binding to document the use of #dma-cells, what
+> value it has, and what the format of the dma specifiers in slave drivers
+> needs to be.
 
-After reading the sources (mainly sound/soc/atmel/atmel_ssc_dai.c), I
-don't understand how the right and left channel are synchronized.
-(which one will be on TF rising edge, and which one on TF falling edge
-?)
-In the SSC_TCMR register, the start event is TF_FALLING when there
-only one channel (i.e. mono source always on left channel)
-With a stereo source, it's TF_EDGE (Detection of any edge on TF
-signal) ; so the samples are transferred on rising and falling edge.
-I didn't see anything in the SSC what could synchronize the first
-sample with a TF falling edge.
-Or I missed something ?
+Yes, you're right. I will fold the following into "ARM: tegra: document
+use of standard DMA DT bindings":
 
-Nicolas, Bo, any idea ?
-
-Richard.
+> diff --git a/Documentation/devicetree/bindings/dma/tegra20-apbdma.txt b/Documentation/devicetree/bindings/dma/tegra20-apbdma.txt
+> index 0b1e577ab9d3..0b0f9498e265 100644
+> --- a/Documentation/devicetree/bindings/dma/tegra20-apbdma.txt
+> +++ b/Documentation/devicetree/bindings/dma/tegra20-apbdma.txt
+> @@ -11,6 +11,10 @@ Required properties:
+>    See ../reset/reset.txt for details.
+>  - reset-names : Must include the following entries:
+>    - dma
+> +- #iommu-cells : Must be <1>. This dictates the length of DMA specifiers in
+> +  client nodes' dmas properties. The specifier represents the DMA request
+> +  select value for the peripheral. For more details, consult the Tegra TRM's
+> +  documentation of the APB DMA channel control register REQ_SEL field.
+>  
+>  Examples:
+>  
+> @@ -36,4 +40,5 @@ apbdma: dma@6000a000 {
+>  	clocks = <&tegra_car 34>;
+>  	resets = <&tegra_car 34>;
+>  	reset-names = "dma";
+> +	#iommu-cells = <1>;
+>  };
