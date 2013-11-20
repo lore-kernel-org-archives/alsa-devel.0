@@ -1,16 +1,15 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH 6/8] ASoC: fsl-ssi: Move RX/TX configuration to
-	seperate functions
-Date: Wed, 20 Nov 2013 10:04:20 +0100
-Message-ID: <1384938262-20554-7-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH 8/8] ARM: DTS: imx5* imx6*, use imx50-ssi
+Date: Wed, 20 Nov 2013 10:04:22 +0100
+Message-ID: <1384938262-20554-9-git-send-email-mpa@pengutronix.de>
 References: <1384938262-20554-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 29867265019
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 10:04:59 +0100 (CET)
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 02AAE264ED5
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 10:05:00 +0100 (CET)
 In-Reply-To: <1384938262-20554-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,170 +24,161 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur 
 Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch defines the appropriate register values for different
-oparation modes and IP versions. We have to handle DMA/FIQ, AC97,
-DEBUG-IRQs and offline/online configuration support.
-
-With this patch we cleanup some driver code that was not reference
-manual conform and try to cleanup the whole trigger function to seperate
-the actual register values from the enable/disable logic, which is now
-hidden in fsl_ssi_config helpers.
+imx50-ssi and imx21-ssi are different IPs. imx50-ssi supports online
+reconfiguration and needs this for correct interaction with SDMA. This
+patch adds imx50-ssi before each imx21-ssi for all imx5/imx6 SoCs.
 
 Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 93 +++++++++++++++++++++++++------------------------
- 1 file changed, 48 insertions(+), 45 deletions(-)
+ arch/arm/boot/dts/imx51.dtsi   | 10 +++++++---
+ arch/arm/boot/dts/imx53.dtsi   | 10 +++++++---
+ arch/arm/boot/dts/imx6qdl.dtsi | 12 +++++++++---
+ arch/arm/boot/dts/imx6sl.dtsi  | 12 +++++++++---
+ 4 files changed, 32 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 45279e6..c2bd7cd 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -107,12 +107,6 @@ static inline void write_ssi_mask(u32 __iomem *addr, u32 clear, u32 set)
- 	 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S24_LE)
- #endif
+diff --git a/arch/arm/boot/dts/imx51.dtsi b/arch/arm/boot/dts/imx51.dtsi
+index 54cee65..706bdf3 100644
+--- a/arch/arm/boot/dts/imx51.dtsi
++++ b/arch/arm/boot/dts/imx51.dtsi
+@@ -150,7 +150,9 @@
+ 				};
  
--/* SIER bitflag of interrupts to enable */
--#define SIER_FLAGS (CCSR_SSI_SIER_TFRC_EN | CCSR_SSI_SIER_TDMAE | \
--		    CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TUE0_EN | \
--		    CCSR_SSI_SIER_TUE1_EN | CCSR_SSI_SIER_RFRC_EN | \
--		    CCSR_SSI_SIER_RDMAE | CCSR_SSI_SIER_RIE | \
--		    CCSR_SSI_SIER_ROE0_EN | CCSR_SSI_SIER_ROE1_EN)
- #if IS_ENABLED(CONFIG_DEBUG_FS)
- #define FSLSSI_SIER_DBG_RX_FLAGS (CCSR_SSI_SIER_RFF0_EN | \
- 		CCSR_SSI_SIER_RLS_EN | CCSR_SSI_SIER_RFS_EN | \
-@@ -567,6 +561,43 @@ static void fsl_ssi_tx_config(struct fsl_ssi_private *ssi_private, bool enable)
- 	fsl_ssi_config(ssi_private, enable, &ssi_private->rxtx_reg_val.tx);
- }
+ 				ssi2: ssi@70014000 {
+-					compatible = "fsl,imx51-ssi", "fsl,imx21-ssi";
++					compatible = "fsl,imx51-ssi",
++							"fsl,imx50-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x70014000 0x4000>;
+ 					interrupts = <30>;
+ 					clocks = <&clks 49>;
+@@ -427,7 +429,8 @@
+ 			};
  
-+/*
-+ * Setup rx/tx register values used to enable/disable the streams. These will
-+ * be used later in fsl_ssi_config to setup the streams without the need to
-+ * check for all different SSI modes.
-+ */
-+static void fsl_ssi_setup_reg_vals(struct fsl_ssi_private *ssi_private)
-+{
-+	struct fsl_ssi_rxtx_reg_val *reg = &ssi_private->rxtx_reg_val;
-+
-+	reg->rx.sier = CCSR_SSI_SIER_RFF0_EN;
-+	reg->rx.srcr = CCSR_SSI_SRCR_RFEN0;
-+	reg->rx.scr = 0;
-+	reg->tx.sier = CCSR_SSI_SIER_TFE0_EN;
-+	reg->tx.stcr = CCSR_SSI_STCR_TFEN0;
-+	reg->tx.scr = 0;
-+
-+	if (!ssi_private->imx_ac97) {
-+		reg->rx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_RE;
-+		reg->rx.sier |= CCSR_SSI_SIER_RFF0_EN;
-+		reg->tx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE;
-+		reg->tx.sier |= CCSR_SSI_SIER_TFE0_EN;
-+	}
-+
-+	if (ssi_private->use_dma) {
-+		reg->rx.sier |= CCSR_SSI_SIER_RDMAE;
-+		reg->tx.sier |= CCSR_SSI_SIER_TDMAE;
-+	} else {
-+		reg->rx.sier |= CCSR_SSI_SIER_RIE;
-+		reg->tx.sier |= CCSR_SSI_SIER_TIE;
-+	}
-+
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	reg->rx.sier |= FSLSSI_SIER_DBG_RX_FLAGS;
-+	reg->tx.sier |= FSLSSI_SIER_DBG_TX_FLAGS;
-+#endif
-+}
-+
- static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
- {
- 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
-@@ -604,6 +635,8 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
- 	u8 wm;
- 	int synchronous = ssi_private->cpu_dai_drv.symmetric_rates;
+ 			ssi1: ssi@83fcc000 {
+-				compatible = "fsl,imx51-ssi", "fsl,imx21-ssi";
++				compatible = "fsl,imx51-ssi", "fsl,imx50-ssi",
++						"fsl,imx21-ssi";
+ 				reg = <0x83fcc000 0x4000>;
+ 				interrupts = <29>;
+ 				clocks = <&clks 48>;
+@@ -479,7 +482,8 @@
+ 			};
  
-+	fsl_ssi_setup_reg_vals(ssi_private);
-+
- 	if (ssi_private->imx_ac97)
- 		i2s_mode = CCSR_SSI_SCR_I2S_MODE_NORMAL | CCSR_SSI_SCR_NET;
- 	else
-@@ -627,13 +660,12 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
- 		i2s_mode |
- 		(synchronous ? CCSR_SSI_SCR_SYN : 0));
+ 			ssi3: ssi@83fe8000 {
+-				compatible = "fsl,imx51-ssi", "fsl,imx21-ssi";
++				compatible = "fsl,imx51-ssi", "fsl,imx50-ssi",
++						"fsl,imx21-ssi";
+ 				reg = <0x83fe8000 0x4000>;
+ 				interrupts = <96>;
+ 				clocks = <&clks 50>;
+diff --git a/arch/arm/boot/dts/imx53.dtsi b/arch/arm/boot/dts/imx53.dtsi
+index 4307e80..1f5c622 100644
+--- a/arch/arm/boot/dts/imx53.dtsi
++++ b/arch/arm/boot/dts/imx53.dtsi
+@@ -149,7 +149,9 @@
+ 				};
  
--	write_ssi(CCSR_SSI_STCR_TXBIT0 | CCSR_SSI_STCR_TFEN0 |
--		 CCSR_SSI_STCR_TFSI | CCSR_SSI_STCR_TEFS |
--		 CCSR_SSI_STCR_TSCKP, &ssi->stcr);
-+	write_ssi(CCSR_SSI_STCR_TXBIT0 | CCSR_SSI_STCR_TFSI |
-+			CCSR_SSI_STCR_TEFS | CCSR_SSI_STCR_TSCKP, &ssi->stcr);
-+
-+	write_ssi(CCSR_SSI_SRCR_RXBIT0 | CCSR_SSI_SRCR_RFSI |
-+			CCSR_SSI_SRCR_REFS | CCSR_SSI_SRCR_RSCKP, &ssi->srcr);
+ 				ssi2: ssi@50014000 {
+-					compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
++					compatible = "fsl,imx53-ssi",
++							"fsl,imx50-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x50014000 0x4000>;
+ 					interrupts = <30>;
+ 					clocks = <&clks 49>;
+@@ -1049,7 +1051,8 @@
+ 			};
  
--	write_ssi(CCSR_SSI_SRCR_RXBIT0 | CCSR_SSI_SRCR_RFEN0 |
--		 CCSR_SSI_SRCR_RFSI | CCSR_SSI_SRCR_REFS |
--		 CCSR_SSI_SRCR_RSCKP, &ssi->srcr);
- 	/*
- 	 * The DC and PM bits are only used if the SSI is the clock master.
- 	 */
-@@ -800,57 +832,28 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(rtd->cpu_dai);
--	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
--	unsigned int sier_bits;
--
--	/*
--	 *  Enable only the interrupts and DMA requests
--	 *  that are needed for the channel. As the fiq
--	 *  is polling for this bits, we have to ensure
--	 *  that this are aligned with the preallocated
--	 *  buffers
--	 */
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		if (ssi_private->use_dma)
--			sier_bits = SIER_FLAGS;
--		else
--			sier_bits = CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TFE0_EN;
--	} else {
--		if (ssi_private->use_dma)
--			sier_bits = SIER_FLAGS;
--		else
--			sier_bits = CCSR_SSI_SIER_RIE | CCSR_SSI_SIER_RFF0_EN;
--	}
+ 			ssi1: ssi@63fcc000 {
+-				compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
++				compatible = "fsl,imx53-ssi", "fsl,imx50-ssi",
++						"fsl,imx21-ssi";
+ 				reg = <0x63fcc000 0x4000>;
+ 				interrupts = <29>;
+ 				clocks = <&clks 48>;
+@@ -1076,7 +1079,8 @@
+ 			};
  
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--			write_ssi_mask(&ssi->scr, 0,
--				CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE);
-+			fsl_ssi_tx_config(ssi_private, true);
- 		else
--			write_ssi_mask(&ssi->scr, 0,
--				CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_RE);
-+			fsl_ssi_rx_config(ssi_private, true);
- 		break;
+ 			ssi3: ssi@63fe8000 {
+-				compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
++				compatible = "fsl,imx53-ssi", "fsl,imx50-ssi",
++						"fsl,imx21-ssi";
+ 				reg = <0x63fe8000 0x4000>;
+ 				interrupts = <96>;
+ 				clocks = <&clks 50>;
+diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
+index ccd55c2..26dc080 100644
+--- a/arch/arm/boot/dts/imx6qdl.dtsi
++++ b/arch/arm/boot/dts/imx6qdl.dtsi
+@@ -201,7 +201,9 @@
+ 				};
  
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--			write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_TE, 0);
-+			fsl_ssi_tx_config(ssi_private, false);
- 		else
--			write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_RE, 0);
--
--		if (!ssi_private->imx_ac97 && (read_ssi(&ssi->scr) &
--					(CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE)) == 0)
--			write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_SSIEN, 0);
-+			fsl_ssi_rx_config(ssi_private, false);
- 		break;
+ 				ssi1: ssi@02028000 {
+-					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6q-ssi",
++							"fsl,imx50-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x02028000 0x4000>;
+ 					interrupts = <0 46 0x04>;
+ 					clocks = <&clks 178>;
+@@ -214,7 +216,9 @@
+ 				};
  
- 	default:
- 		return -EINVAL;
- 	}
+ 				ssi2: ssi@0202c000 {
+-					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6q-ssi",
++							"fsl,imx50-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x0202c000 0x4000>;
+ 					interrupts = <0 47 0x04>;
+ 					clocks = <&clks 179>;
+@@ -227,7 +231,9 @@
+ 				};
  
--	write_ssi(sier_bits, &ssi->sier);
+ 				ssi3: ssi@02030000 {
+-					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6q-ssi",
++							"fsl,imx50-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x02030000 0x4000>;
+ 					interrupts = <0 48 0x04>;
+ 					clocks = <&clks 180>;
+diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
+index c46651e..22cec8b 100644
+--- a/arch/arm/boot/dts/imx6sl.dtsi
++++ b/arch/arm/boot/dts/imx6sl.dtsi
+@@ -191,7 +191,9 @@
+ 				};
  
- 	return 0;
- }
+ 				ssi1: ssi@02028000 {
+-					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6sl-ssi",
++							"fsl,imx50-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x02028000 0x4000>;
+ 					interrupts = <0 46 0x04>;
+ 					clocks = <&clks IMX6SL_CLK_SSI1>;
+@@ -203,7 +205,9 @@
+ 				};
+ 
+ 				ssi2: ssi@0202c000 {
+-					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6sl-ssi",
++							"fsl,imx50-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x0202c000 0x4000>;
+ 					interrupts = <0 47 0x04>;
+ 					clocks = <&clks IMX6SL_CLK_SSI2>;
+@@ -215,7 +219,9 @@
+ 				};
+ 
+ 				ssi3: ssi@02030000 {
+-					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6sl-ssi",
++							"fsl,imx50-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x02030000 0x4000>;
+ 					interrupts = <0 48 0x04>;
+ 					clocks = <&clks IMX6SL_CLK_SSI3>;
 -- 
 1.8.4.2
