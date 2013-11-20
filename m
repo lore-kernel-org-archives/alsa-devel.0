@@ -1,7 +1,7 @@
 From: Fabio Estevam <festevam@gmail.com>
 Subject: [PATCH 04/11] adav80x: Use IS_ENABLED() macro
-Date: Wed, 20 Nov 2013 15:37:45 -0200
-Message-ID: <1384969072-25906-6-git-send-email-festevam@gmail.com>
+Date: Wed, 20 Nov 2013 15:37:44 -0200
+Message-ID: <1384969072-25906-5-git-send-email-festevam@gmail.com>
 References: <1384969072-25906-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,10 +9,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-yh0-f45.google.com (mail-yh0-f45.google.com
  [209.85.213.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 80E13262606
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 18:38:10 +0100 (CET)
-Received: by mail-yh0-f45.google.com with SMTP id i7so5582848yha.32
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 09:38:09 -0800 (PST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F166261B2B
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 18:38:09 +0100 (CET)
+Received: by mail-yh0-f45.google.com with SMTP id i7so5582815yha.32
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 09:38:08 -0800 (PST)
 In-Reply-To: <1384969072-25906-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
