@@ -1,59 +1,74 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH RFC 4/9] ASoC: hdmi-codec: Add devicetree binding with
- documentation
-Date: Wed, 20 Nov 2013 10:23:42 +0100
-Message-ID: <20131120102342.7befe75e@armhf>
-References: <cover.1384862950.git.jsarha@ti.com>
-	<829968f1a6b34176de8a04dd4ad473b2b37be783.1384862950.git.jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 07/12] ASoC: rcar: rename GEN2_SRU to
+	GEN2_SCU
+Date: Wed, 20 Nov 2013 09:44:19 +0000
+Message-ID: <20131120094419.GT2674@sirena.org.uk>
+References: <87zjp0dam4.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <829968f1a6b34176de8a04dd4ad473b2b37be783.1384862950.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, broonie@kernel.org
+Content-Type: multipart/mixed; boundary="===============3640121630489922564=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2333264ED5
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 10:44:25 +0100 (CET)
+In-Reply-To: <87zjp0dam4.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19 Nov 2013 14:12:24 +0200
-Jyri Sarha <jsarha@ti.com> wrote:
 
-> Signed-off-by: Jyri Sarha <jsarha@ti.com>
-> ---
->  Documentation/devicetree/bindings/sound/hdmi.txt |   17 ++++++++++++=
-+++++
->  sound/soc/codecs/hdmi.c                          |   10 ++++++++++
->  2 files changed, 27 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/hdmi.txt
-	[snip]
+--===============3640121630489922564==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fDWuavwabVZ6mXOJ"
+Content-Disposition: inline
 
-A couple of months ago, I proposed a 'generic DT based simple
-codec' (http://www.spinics.net/lists/arm-kernel/msg274322.html) which
-was supposed to replace all of the `empty` codecs in a DT context.
-These codecs do nothing except defining some audio parameters.
-They are mainly spdif tx/rx, hdmi, bt-sco, dmic, wm8727 and wm8782.
 
-This generic codec would have been used for the tda998x which is the
-HDMI transmitter of the Cubox. But, as its utility was not clear yet,
-I switched to the 'spdif transmitter' codec which has DT support. This
-last codec works fine without change, with either i2s or spdif input in
-the tda998x. It is well suited to the Cubox because the Marvell Armada
-510 audio subsystem does not support sound recording (nor does the
-tda998x while the 'hdmi' code provides recording), and also because it
-supports a wider range of rates than the 'hdmi'codec (I have no problem
-with 22.05kHz audio).
+--fDWuavwabVZ6mXOJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-But now, I am wondering again about these `empty`codecs:
-- in a DT context, should we continue to add / modify such codecs?
-- what do you think about my generic DT codec? (indeed, I would do a ne=
-w
-  version according to the previous remarks)
+On Tue, Nov 19, 2013 at 01:06:15AM -0800, Kuninori Morimoto wrote:
+> Gen2 has SCU. SRU is for Gen1
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Applied, thanks.
+
+--fDWuavwabVZ6mXOJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSjIRwAAoJELSic+t+oim9cyoQAICJHA8j0OQe3ETT/vCuKCPW
+qPzElYd6pypvkxx1Kr6sgwfQ8/h1ZHL05pIRazgW0cxRIl6HHvKtUeseGEwwt8cb
+GOciVAjIGmvF5mw+l3r7t9nBGIiS+HT/B5Gbi1h4uFqH13/mfvs7rj/1Tu7eZsiL
+LW0QLYKdAKZsDgOba6IT9Rg3TJfcD57xEIHuF9d8jE/cb7JVybEBhHIoQg/7PE3z
+UOa7slE6VjPU47JrCwsmC6DHg6ZLTXHNxElWjuVMSZuoHLrPem49EdW6qQpFqsR6
+WOyBxt3Fpc0Hi24opB3Lhqfx+8n//bmTLqUWZZ2c9i6QRHPsMLgGAdWAn/p8Zt+3
+aKbZUGRD9JgToggYN5adlPsD6+qvPRVvTUftVQu7lruqjJDSM2194bdv8miY2fL7
+TmD4y5iP0TdWbL2vJoSB+QjWXR3RVTmxR/FPd7ehx5650emCnkuOZc0qEgj+IWpQ
+0IKeKz6Uh4ZBamK+BfMmaCHiyjLndMtmOUK1dHWv8rMGaFbUTbSn9FV1XIKEg4Nu
+Yi5kaAki3Q6pzmZSMMc/J1+bL9C75Cfkp2PQWtCx3B3tb3JE/hCMlp48NkPKNNH/
+y/DkY5hUoW16G99LtszeU4Eyc5pw3waWVKo+Zz/uEKWKD0cpinIQcEOTVgVmtQQn
+qztWFh0BHQhn0p22UBFw
+=KiGY
+-----END PGP SIGNATURE-----
+
+--fDWuavwabVZ6mXOJ--
+
+--===============3640121630489922564==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3640121630489922564==--
