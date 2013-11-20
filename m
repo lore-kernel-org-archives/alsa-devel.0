@@ -1,18 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] ASoC: wm5110: Expose input high pass
-	filter controls
-Date: Wed, 20 Nov 2013 10:20:45 +0000
-Message-ID: <20131120102045.GW2674@sirena.org.uk>
-References: <1384877043-5640-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1384877043-5640-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20131120091636.GA30012@lee--X1>
+From: Richard Genoud <richard.genoud@gmail.com>
+Subject: Re: Bug? Sound support for at91sam9x5-wm8731 based
+	boards
+Date: Wed, 20 Nov 2013 11:22:10 +0100
+Message-ID: <CACQ1gAhvS7PSbK0SuhrB8TPS8Rkd-AdqZ-=T+Ntjyx7PsR7XaQ@mail.gmail.com>
+References: <1384878685-1515-1-git-send-email-tony@atomide.com>
+ <1384878685-1515-3-git-send-email-tony@atomide.com>
+ <031f01cee547$950b5670$bf220350$@com>
+ <CACQ1gAgykmgPKY4SHujnNtm4Sr=wt5knLkQL-MRS_pC73bOi4Q@mail.gmail.com>
+ <033601cee552$7c2c2570$74847050$@com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5223296300344874410=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id AD5D32610D0
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 11:20:49 +0100 (CET)
-In-Reply-To: <20131120091636.GA30012@lee--X1>
+Received: from mail-la0-f47.google.com (mail-la0-f47.google.com
+ [209.85.215.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 51D802615F3
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 11:22:31 +0100 (CET)
+Received: by mail-la0-f47.google.com with SMTP id ep20so7040584lab.20
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 02:22:30 -0800 (PST)
+In-Reply-To: <033601cee552$7c2c2570$74847050$@com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +28,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Zhong Li <zql@glomationinc.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Bo Shen <voice.shen@atmel.com>
+Cc: alsa-devel@alsa-project.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+[added Nicolas Ferre and Bo Shen ]
 
---===============5223296300344874410==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1VhaNAE4Hwu38Ubd"
-Content-Disposition: inline
+2013/11/19 Zhong Li <zql@glomationinc.com>:
+>> Can you give a little more background ? :
+>> - What kernel ?
+>> - Command line to reproduce ?
+>>
+>> Richard.
+>
+> One of the testing hardware is the Atmel at91sam9g25-ek (the CPU module and the carrier board).  We tried both the 2.6.39 patched with the Atmel patches and the mainline 3.12-rc.  The command to test the sound is just the simple aplay <sound-test-file>.  The wav file is available here, https://drive.google.com/file/d/0B3TSFX4Mq9PoeTdJOGVaZk5rTWM/edit?usp=sharing.
+>
+> Thanks
 
+Ok, I reproduce the bug on g35-ek with a v3.11.7+(sam9x5 sound patches) kernel
 
---1VhaNAE4Hwu38Ubd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So, *sometimes*,  the left and right channel are swapped. ( I found
+also the ratio 1 out of 6 (but once it has happened, it seems to be
+more often))
+I tested that with the file given by Zhong Li, and with a file I
+created with audacity (440Hz only on right channel).
+I could see at the scope that the channels are swapped before the
+w8731 codec (the data on the TD line are sometime on the low edge of
+TF, instead of always being on the high edge (I2S mode)).
+There's, in both cases, a clock period (TK) between the rising/falling
+edge of TF and the 1st data bit on TD, so the mode is always I2S, and
+the channel data are swapped.
 
-On Wed, Nov 20, 2013 at 09:16:36AM +0000, Lee Jones wrote:
+I'll try to have a look (but I don't have much time right now)
 
-> For the MFD parts: Acked-by: Lee Jones <lee.jones@linaro.org>
+If someone could test that on a sam9g20 or a WM8904 based board, since
+they share the same DAI format, they may have the same problem.
 
-> How do you want to play this ASoC?
+Thanks !
+Richard
 
-I expect this to collide with future changes from Wolfson so it'll need
-to go via ASoC.
-
---1VhaNAE4Hwu38Ubd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSjIz6AAoJELSic+t+oim9dWEP/0oiRjEOt8GxmvXEdhd2e1of
-hDPw5FvvmmSxqYqRhX7Scd6ay8ipiyiNFmNflJGvGUEm/ocGwchC7TEU7iQaHTPj
-JMyZu6l4rTk1wT+xF9eH/i2vdVfwwp66aOI+G/oz7EI1Qam5Fgng1+FNCHZ/4v3/
-kp1V3z1XlORfWRPqJzcO9PoRZZ+ofOWf4Jxb3ZkLm/m6TxfUnT2qtQ4kx8P2IUiV
-QXDx3+ysZodsWvs/768ZZl0rnuKZQxQ5JIF7fi1Xtf3fJd/cVk2j38JdCNHnmeoQ
-d7Hn8NnLYJ88tzJxpQTWOvcJdSABVESdeGUr0U1fOMaspCYlLsuNBODjo4o1/1is
-CYtd0GNpq9o/zJa+MVuQG1pMNF7aa81g4VV2VXivDNACQec5JVyjOPiwhVmgDoB4
-2LuuBX2SskIopp3031bxdyuH04ZXyRDZrglEF932bc7idBqTQrYZRSDLDdK10COl
-Svl75jsIjjPo4/mDVt7r/M0daq0TqCvW9ovCQlIMEKxipLMs7a4DjW7arDCb19H8
-MWWsz1GoX4ZOE3ts9P3xgrgI7wvhausy/vZdIHIRWHB+k6rcqTEv+z7RqtRfmyY8
-lcLBZ97QcPiwQcOftDc50uGjm9X0QrNU/1G7t5wvoykdk5vTaLLBa3eqgqiXDE8K
-RBLEV8PnA1lWzT4FNiOM
-=HqVM
------END PGP SIGNATURE-----
-
---1VhaNAE4Hwu38Ubd--
-
---===============5223296300344874410==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5223296300344874410==--
+-- 
+for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
