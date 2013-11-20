@@ -1,71 +1,46 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 05/11] ak4642: Use IS_ENABLED() macro
-Date: Wed, 20 Nov 2013 15:37:46 -0200
-Message-ID: <1384969072-25906-7-git-send-email-festevam@gmail.com>
-References: <1384969072-25906-1-git-send-email-festevam@gmail.com>
+From: "Zhong Li" <zql@glomationinc.com>
+Subject: RE: [alsa-devel] Bug? Sound support for at91sam9x5-wm8731 based boards
+Date: Wed, 20 Nov 2013 12:41:13 -0500
+Message-ID: <045e01cee617$b53cf3b0$1fb6db10$@com>
+References: <1384878685-1515-1-git-send-email-tony@atomide.com>
+ <1384878685-1515-3-git-send-email-tony@atomide.com>
+ <031f01cee547$950b5670$bf220350$@com>
+ <CACQ1gAgykmgPKY4SHujnNtm4Sr=wt5knLkQL-MRS_pC73bOi4Q@mail.gmail.com>
+ <033601cee552$7c2c2570$74847050$@com>
+ <CACQ1gAhvS7PSbK0SuhrB8TPS8Rkd-AdqZ-=T+Ntjyx7PsR7XaQ@mail.gmail.com>
+ <CACQ1gAh7UAkT1s_=gOKpzEt5bm9FAGf0gL-yM6=r5ch7bMksBA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f44.google.com (mail-yh0-f44.google.com
- [209.85.213.44])
- by alsa0.perex.cz (Postfix) with ESMTP id EDF04261A1F
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 18:38:11 +0100 (CET)
-Received: by mail-yh0-f44.google.com with SMTP id f64so1952438yha.3
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 09:38:11 -0800 (PST)
-In-Reply-To: <1384969072-25906-1-git-send-email-festevam@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <CACQ1gAh7UAkT1s_=gOKpzEt5bm9FAGf0gL-yM6=r5ch7bMksBA@mail.gmail.com>
+Content-Language: en-us
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: 'Richard Genoud' <richard.genoud@gmail.com>, 'Nicolas Ferre' <nicolas.ferre@atmel.com>, 'Bo Shen' <voice.shen@atmel.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+> 
+> After reading the sources (mainly sound/soc/atmel/atmel_ssc_dai.c), I
+> don't understand how the right and left channel are synchronized.
+> (which one will be on TF rising edge, and which one on TF falling edge
+> ?)
+> In the SSC_TCMR register, the start event is TF_FALLING when there only
+> one channel (i.e. mono source always on left channel) With a stereo
+> source, it's TF_EDGE (Detection of any edge on TF
+> signal) ; so the samples are transferred on rising and falling edge.
+> I didn't see anything in the SSC what could synchronize the first
+> sample with a TF falling edge.
+> Or I missed something ?
+> 
 
-Using the IS_ENABLED() macro can make the code shorter and simpler.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/codecs/ak4642.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
-index 090d499..2f861c9 100644
---- a/sound/soc/codecs/ak4642.c
-+++ b/sound/soc/codecs/ak4642.c
-@@ -511,7 +511,7 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4648 = {
- 	.num_dapm_routes	= ARRAY_SIZE(ak4642_intercon),
- };
- 
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-+#if IS_ENABLED(CONFIG_I2C)
- static struct of_device_id ak4642_of_match[];
- static int ak4642_i2c_probe(struct i2c_client *i2c,
- 			    const struct i2c_device_id *id)
-@@ -576,7 +576,7 @@ static struct i2c_driver ak4642_i2c_driver = {
- static int __init ak4642_modinit(void)
- {
- 	int ret = 0;
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-+#if IS_ENABLED(CONFIG_I2C)
- 	ret = i2c_add_driver(&ak4642_i2c_driver);
- #endif
- 	return ret;
-@@ -586,7 +586,7 @@ module_init(ak4642_modinit);
- 
- static void __exit ak4642_exit(void)
- {
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-+#if IS_ENABLED(CONFIG_I2C)
- 	i2c_del_driver(&ak4642_i2c_driver);
- #endif
- 
--- 
-1.8.1.2
+The codec seems to be set to I2S mode based on the parameter name.  And the FSOS field in the TFMR is set to be negative pulse.  So it matches the I2S mode diagram (Figure 27 of WM8731 datasheet).  The high to low on DACLRC (TF line aka PA25 pin) indicate start of the left channel data.  Looks like the TF signal is automatically generated by the SSC controller according to the TFMR settings.
