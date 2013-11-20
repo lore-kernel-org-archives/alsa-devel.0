@@ -1,17 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Disable runtime PM on
- LynxPoint(-LP) controllers
-Date: Wed, 20 Nov 2013 09:54:42 +0100
-Message-ID: <528C78D2.6020207@canonical.com>
-References: <s5h38msqqqg.wl%tiwai@suse.de>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH 3/8] ASoC: fsl-ssi: Add imx50-ssi and
+	of_device_id matching
+Date: Wed, 20 Nov 2013 10:04:17 +0100
+Message-ID: <1384938262-20554-4-git-send-email-mpa@pengutronix.de>
+References: <1384938262-20554-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040001040206030705040901"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FDC1261ABF
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 09:54:49 +0100 (CET)
-In-Reply-To: <s5h38msqqqg.wl%tiwai@suse.de>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 87C2E261ABF
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 10:04:36 +0100 (CET)
+In-Reply-To: <1384938262-20554-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,150 +21,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040001040206030705040901
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+There is a small but significant difference between imx21-ssi and
+imx50-ssi and above. imx21-ssi does not allow online reconfiguration of
+some registers. They have to be configured at the beginning.
 
-(Adding Mengdong to cc)
+imx50-ssi has to reconfigure the SSI unit while it is running. Otherwise
+it would not be possible to have two streams in parallel. The new SDMA
+unit in imx50 and above has to be configured before the first DMA
+request arrives. Therefor we need to setup TDMAE/RDMAE just before
+starting the stream.
 
-On 11/19/2013 05:51 PM, Takashi Iwai wrote:
-> We got bug reports of the stalled HD-audio, typically after S3 or S4,
-> and it turned out that they seemed triggered by runtime PM on Lynx
-> Point and Lynx Point-LP controllers.  As there is no way to recover
-> properly from the stalled controller, it's safer to disable the
-> runtime PM support on these chips for now.
+This patch introduces distinct imx50-ssi as compatible and adds
+of_device_id matching in the probe function.
 
-Oh, this is a bit sad news. Have you talked to Intel about it?
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+---
+ sound/soc/fsl/fsl_ssi.c | 30 ++++++++++++++++++++++--------
+ 1 file changed, 22 insertions(+), 8 deletions(-)
 
-Anyway, I saw something similar a while ago, but never with access to
-the hardware, and then it was difficult to reproduce for the person on
-the other side. Nevertheless, when I read through the PM code I found
-that the GCTL register was sometimes accessed with readb (although it is
-a 32 bit register), so I wrote a patch for that, but the testing results
-of this patch were a bit inconclusive, so I never upstreamed it.
-
-Anyway, I'm attaching the draft patch. Do you think it could be related?
-
-> 
-> Further notes:
-> I actually could reproduce this on a few HP laptops here.
-> Go to S3 after runtime suspend, then the next playback fails,
-> resulting in either a codec stall or repeated sounds.
-> 
-> The problem seems lying in a deeper level.  The complete stall could
-> be avoided by disabling the call of azx_stop_chip() in
-> azx_runtime_suspend().  More specifically, it's the disablement of
-> CORB/RIRB in azx_free_cmd_io().  After removing this call, the sound
-> is resumed.
-> 
-> However, even with that workaround, the first playback after resume
-> stalls due to the missing RIRB interrupts (so you get "switch to
-> polling mode" kernel warning).  Interestingly, the codec communication
-> in the resume procedure does work.  The system goes to runtime suspend
-> immediately after resume, then something gets broken at that point.
-> 
-> This missing interrupt problem happens even if you do nothing in
-> runtime suspend/resume callback with empty callbacks.  This implies
-> that it's an issue in the underlying layer.  So, the only feasible
-> "fix" in the sound driver side to suppress the runtime PM, so far.
-> 
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
-> 
-> Yet another note: the patch is based on v3.12, not on linux-next, so
-> that it can be backported cleanly for 3.12 and earlier kernels.
-> 
->  sound/pci/hda/hda_intel.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 6e61a019aa5e..27fc33e54a50 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -3973,7 +3973,7 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
->  	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
->  	/* Lynx Point */
->  	{ PCI_DEVICE(0x8086, 0x8c20),
-> -	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
->  	/* Wellsburg */
->  	{ PCI_DEVICE(0x8086, 0x8d20),
->  	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-> @@ -3981,10 +3981,10 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
->  	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
->  	/* Lynx Point-LP */
->  	{ PCI_DEVICE(0x8086, 0x9c20),
-> -	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
->  	/* Lynx Point-LP */
->  	{ PCI_DEVICE(0x8086, 0x9c21),
-> -	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
->  	/* Haswell */
->  	{ PCI_DEVICE(0x8086, 0x0a0c),
->  	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH |
-> 
-
-
-
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index c2fc031..d493d2d 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -190,6 +190,20 @@ struct fsl_ssi_private {
+ 	char name[1];
+ };
+ 
++enum fsl_ssi_type {
++	FSL_SSI_MCP8610,
++	FSL_SSI_MX21,
++	FSL_SSI_MX50,
++};
++
++static const struct of_device_id fsl_ssi_ids[] = {
++	{ .compatible = "fsl,mpc8610-ssi", .data = (void *) FSL_SSI_MCP8610},
++	{ .compatible = "fsl,imx50-ssi", .data = (void *) FSL_SSI_MX50},
++	{ .compatible = "fsl,imx21-ssi", .data = (void *) FSL_SSI_MX21},
++	{}
++};
++MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
++
+ #if IS_ENABLED(CONFIG_DEBUG_FS)
+ /**
+  * fsl_ssi_isr: SSI interrupt handler
+@@ -925,6 +939,8 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	int ret = 0;
+ 	struct device_attribute *dev_attr = NULL;
+ 	struct device_node *np = pdev->dev.of_node;
++	const struct of_device_id *of_id;
++	enum fsl_ssi_type hw_type;
+ 	const char *p, *sprop;
+ 	const uint32_t *iprop;
+ 	struct resource res;
+@@ -939,6 +955,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	if (!of_device_is_available(np))
+ 		return -ENODEV;
+ 
++	of_id = of_match_device(fsl_ssi_ids, &pdev->dev);
++	if (!of_id)
++		return -EINVAL;
++	hw_type = (enum fsl_ssi_type) of_id->data;
++
+ 	/* We only support the SSI in "I2S Slave" mode */
+ 	sprop = of_get_property(np, "fsl,mode", NULL);
+ 	if (!sprop) {
+@@ -1012,7 +1033,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+                 /* Older 8610 DTs didn't have the fifo-depth property */
+ 		ssi_private->fifo_depth = 8;
+ 
+-	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx21-ssi")) {
++	if (hw_type == FSL_SSI_MX21 || hw_type == FSL_SSI_MX50) {
+ 		u32 dma_events[2];
+ 		ssi_private->ssi_on_imx = true;
+ 
+@@ -1207,13 +1228,6 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static const struct of_device_id fsl_ssi_ids[] = {
+-	{ .compatible = "fsl,mpc8610-ssi", },
+-	{ .compatible = "fsl,imx21-ssi", },
+-	{}
+-};
+-MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
+-
+ static struct platform_driver fsl_ssi_driver = {
+ 	.driver = {
+ 		.name = "fsl-ssi-dai",
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
-
---------------040001040206030705040901
-Content-Type: text/x-patch;
- name="gctl.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="gctl.patch"
-
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index a0a06f7..3725020 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1138,7 +1138,7 @@ static void azx_enter_link_reset(struct azx *chip)
- 	azx_writel(chip, GCTL, azx_readl(chip, GCTL) & ~ICH6_GCTL_RESET);
- 
- 	timeout = jiffies + msecs_to_jiffies(100);
--	while ((azx_readb(chip, GCTL) & ICH6_GCTL_RESET) &&
-+	while ((azx_readl(chip, GCTL) & ICH6_GCTL_RESET) &&
- 			time_before(jiffies, timeout))
- 		usleep_range(500, 1000);
- }
-@@ -1148,10 +1148,10 @@ static void azx_exit_link_reset(struct azx *chip)
- {
- 	unsigned long timeout;
- 
--	azx_writeb(chip, GCTL, azx_readb(chip, GCTL) | ICH6_GCTL_RESET);
-+	azx_writel(chip, GCTL, azx_readl(chip, GCTL) | ICH6_GCTL_RESET);
- 
- 	timeout = jiffies + msecs_to_jiffies(100);
--	while (!azx_readb(chip, GCTL) &&
-+	while (!azx_readl(chip, GCTL) &&
- 			time_before(jiffies, timeout))
- 		usleep_range(500, 1000);
- }
-@@ -1181,7 +1181,7 @@ static int azx_reset(struct azx *chip, int full_reset)
- 
-       __skip:
- 	/* check to see if controller is ready */
--	if (!azx_readb(chip, GCTL)) {
-+	if (!(azx_readl(chip, GCTL) & ICH6_GCTL_RESET)) {
- 		snd_printd(SFX "%s: azx_reset: controller not ready!\n", pci_name(chip->pci));
- 		return -EBUSY;
- 	}
-
---------------040001040206030705040901
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------040001040206030705040901--
+1.8.4.2
