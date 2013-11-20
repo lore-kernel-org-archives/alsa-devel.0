@@ -1,55 +1,102 @@
-From: Rob Herring <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v4] ASoC: simple-card: add Device Tree support
-Date: Wed, 20 Nov 2013 08:20:19 -0600
-Message-ID: <CAL_Jsq+ZsrU5S6B_V8ruLK141LxTR2fd9Re5EWmp47LY+ALDow@mail.gmail.com>
-References: <87eh97sqw7.wl%kuninori.morimoto.gx@renesas.com>
-	<87txharb3o.wl%kuninori.morimoto.gx@renesas.com>
-	<8738oiog00.wl%kuninori.morimoto.gx@renesas.com>
-	<20131003104248.GI27287@sirena.org.uk>
-	<87fvsh2966.wl%kuninori.morimoto.gx@renesas.com>
-	<20131024171758.GA2461@kartoffel>
-	<87iowm9jwv.wl%kuninori.morimoto.gx@renesas.com>
-	<20131115155028.GE24831@e106331-lin.cambridge.arm.com>
-	<CAL_JsqKLd4CbfD6PifXrwWxbyJqnvAViYkXQ63TBniQBPPzp4g@mail.gmail.com>
-	<87li0ldso8.wl%kuninori.morimoto.gx@renesas.com>
+From: Roman Volkov <v1ron@mail.ru> (by way of Roman Volkov <v1ron@mail.ru>)
+Subject: Re: [PATCH 2/2] snd-oxygen: Fixes for the Xonar DG card
+Date: Wed, 20 Nov 2013 17:15:23 +0400
+Message-ID: <20131120171523.20772639@v1ron-desktop>
+References: <20131119183112.4079e9e9@v1ron-desktop>
+ <528BE4FA.4060402@ladisch.de>
+ <20131120141242.1c43dbcd@v1ron-desktop>
+ <528CAB1E.7030303@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <87li0ldso8.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Pawel Moll <Pawel.Moll-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp24.mail.ru (smtp24.mail.ru [94.100.176.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2363261AB2
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 15:26:13 +0100 (CET)
+Received: from [213.87.140.72] (port=65078 helo=v1ron-desktop)
+ by smtp24.mail.ru with esmtpa (envelope-from <v1ron@mail.ru>)
+ id 1Vj8jL-000642-Om
+ for alsa-devel@alsa-project.org; Wed, 20 Nov 2013 18:26:13 +0400
+In-Reply-To: <528CAB1E.7030303@ladisch.de>
+Resent-Message-ID: <20131120182550.6548a725@v1ron-desktop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 18, 2013 at 8:36 PM, Kuninori Morimoto
-<kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org> wrote:
->
-> Hi Rob, Mark
->
->> >> +Required properties:
->> >> +
->> >> +- compatible                         : "simple-audio"
->>
->> Still not really a fan of this generic name. Can we define in the
->> description above what simple means.
->
-> So, how about "simple-audio-card" ?
-
-That's missing my point. First, I think you should be defining the
-actual h/w in the DT and doing the mapping of that to a simple audio
-driver in the kernel. Otherwise how do you fix some quirk on a
-particular platform later on without updating the DTB? I'm fine with
-this being the default compatible string, but you should also require
-a more specific name. Perhaps it is just <soc>-simple-audio or
-<board>-simple-audio.
-
-Second, you need to define in this binding document what simple means.
-What properties of the audio subsystem make it simple? The h/w has and
-doesn't have what? How do I decide if my platform can or should use
-this binding?
-
-Rob
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+0JIgV2VkLCAyMCBOb3YgMjAxMyAxMzoyOToxOCArMDEwMApDbGVtZW5zIExhZGlzY2ggPGNsZW1l
+bnNAbGFkaXNjaC5kZT4g0L/QuNGI0LXRgjoKCj4gUm9tYW4gVm9sa292IHdyb3RlOgo+ID4gQ2xl
+bWVucyBMYWRpc2NoIDxjbGVtZW5zQGxhZGlzY2guZGU+INC/0LjRiNC10YI6Cj4gPj4gUm9tYW4g
+Vm9sa292IHdyb3RlOgo+ID4+PiArICogMTI4a0h6IGRvZXNuJ3Qgd29yayBmb3IgQ1M0MzYxICht
+dWx0aWNoYW5uZWwgcGxheWJhY2spCj4gPj4KPiA+PiBXaHkgZG8geW91IGV4cGVjdCAxMjgga0h6
+IHRvIHdvcms/Cj4gPgo+ID4gMTI4a0h6IHdpbGwgbm90IHdvcmsgYmVjYXVzZSAuLi4KPiAKPiAu
+Li4gdGhlIENNSTg3ODggZG9lcyBub3Qgc3VwcG9ydCAxMjgga0h6IGluIHRoZSBmaXJzdCBwbGFj
+ZS4KPiAKPiA+IEFuZCBwZXJoYXBzIG15IGFudGktcG9wIGRlbGF5IG9mIDEgc2Vjb25kIGlzIHRv
+byBsb25nLgo+IAo+IFRoZSBXaW5kb3dzIGRyaXZlciB1c2VzIDIuNSBzZWNvbmRzLgo+IAo+ID4+
+IElzIHRoZSByZXNldCBwaW4gYWN0dWFsbHkgY29ubmVjdGVkPyAgRG9lcyB0aGUgV2luZG93cyBk
+cml2ZXIgZG8KPiA+PiB0aGlzPwo+ID4KPiA+IFNob3VsZCBiZSwgb3RoZXJ3aXNlIHRoaXMgaXMg
+YmFkIGRlc2lnbi4KPiAKPiBUaGlzIGRyaXZlciBpcyBub3QgZm9yIGEgdGhlb3JldGljYWwsIG9w
+dGltYWxseSBkZXNpZ25lZCBjYXJkOyBpdCBpcwo+IGZvciB0aGUgYWN0dWFsIGNhcmQgdGhhdCBB
+c3VzIGJ1aWxkcy4gIElmIHRoZSBXaW5kb3dzIGRyaXZlciBkb2VzIG5vdAo+IHRvdWNoIHRoZSBy
+ZXNldCBwaW4sIHdlIHNob3VsZCBub3QgZG8gdGhpcyBlaXRoZXIgKGJlY2F1c2UgaXQgbWlnaHQg
+YmUKPiBjb25uZWN0ZWQgdG8gdGhlIHNlbGYtZGVzdHJ1Y3QgdHJpZ2dlcikuCj4gCj4gPiBzb21l
+dGltZXMgKHJhcmVseSkgSSBnZXQgY29tcGxldGVseSBkaXN0b3J0ZWQgc291bmQgd2hlbiBJIHBv
+d2VyIHVwCj4gPiB0aGUgV2luZG93cyBtYWNoaW5lLgo+IAo+IEFmdGVyIGEgY29sZCBib290Pwo+
+IAo+IFRoaXMgYWxzbyBoYXBwZW5lZCBmb3Igc29tZSBvdGhlciBYb25hciBjYXJkIHdoZW4gdGhl
+IExpbnV4IGRyaXZlciBkaWQKPiB0aGluZ3MgZGlmZmVyZW50bHkgYW5kIGRpZCBub3QgcmVzZXQg
+dGhlc2Ugc2V0dGluZ3Mgd2hlbiBzaHV0dGluZwo+IGRvd24uCj4gCj4gPj4gVXNlIG1kZWxheSgp
+IG9ubHkgd2hlbiBzbGVlcGluZyBpcyBub3QgcG9zc2libGU7IHVzZSBtc2xlZXAoKQo+ID4+IGlu
+c3RlYWQuCj4gPgo+ID4gbXNsZWVwKCkgaXMgbm90IHJlY29tbWVuZGVkIGZvciBzbWFsbCBkZWxh
+eXMgKDFtcy0yMG1zKS4KPiAKPiBPbmx5IGJlY2F1c2UgaXQgaXNuJ3QgdmVyeSBhY2N1cmF0ZS4g
+IEJ1dCB1c2luZyBtZGVsYXkoKSBpcyBldmVuIHdvcnNlCj4gYmVjYXVzZSBpdCBidXN5LWxvb3Bz
+Lgo+IAo+ID4+PiArCWNhc2UgUExBWUJBQ0tfRFNUXzIwX0NIOgo+ID4+PiArCWNhc2UgUExBWUJB
+Q0tfRFNUXzQwX0NIOgo+ID4+PiArCWNhc2UgUExBWUJBQ0tfRFNUXzUxX0NIOgo+ID4+Cj4gPj4g
+V2h5IGlzIGl0IG5lY2Vzc2FyeSB0byBkaWZmZXJlbnRpYXRlIGJldHdlZW4gdGhvc2U/ICBUaGVy
+ZSBzaG91bGQKPiA+PiBiZSBubyBtaXhlciBjb250cm9sOyB0aGUgZHJpdmVyIGNhbiBhdXRvbWF0
+aWNhbGx5IGRldGVjdCB3aGF0Cj4gPj4gZm9ybWF0IGlzIHVzZWQuIEFuZCB0aGlzIHNob3VsZCBu
+b3QgbWFrZSBhbnkgZGlmZmVyZW5jZSBiZWNhdXNlCj4gPj4gdGhlIHVudXNlZCBjaGFubmVscyB3
+aWxsIGJlIHNpbGVudCBhbnl3YXkuCj4gPgo+ID4gSnVzdCBhcyBpbiB0aGUgd2luZG93cyBkcml2
+ZXIuCj4gCj4gVGhpcyBpcyBub3QgbmVjZXNzYXJpbHkgYSByZWFzb24gdG8gaW1wbGVtZW50IHRo
+ZSBzYW1lIGluIHRoZSBMaW51eAo+IGRyaXZlciwgZXNwZWNpYWxseSBpZiBpdCdzIG5vdCByZXF1
+aXJlZCBieSB0aGUgYWN0dWFsIGhhcmR3YXJlLCBhbmQKPiByZWR1Y2VzIHVzYWJpbGl0eS4KPiAK
+PiA+IFNob3VsZCBJIGNoYW5nZSB0aGlzIHRvICJIUFxIUCBGUFxTcGVha2VycyI/Cj4gCj4gWWVz
+Lgo+IAo+ID4+PiArLyogUHV0IHRoZSBjb2RlYyBpbnRvIGxvdyBwb3dlciBtb2RlLCBkaXNhYmxl
+IGF1ZGlvIG91dHB1dCwgc2F2ZQo+ID4+PiByZWdpc3RlcnMgKi8KPiA+Pgo+ID4+IERvZXMgdGhl
+IFdpbmRvd3MgZHJpdmVyIGltcGxlbWVudCB0aGlzPwo+ID4KPiA+IEkgZG9uJ3Qga25vdy4gTGlu
+dXggZG9jcyBzYXlzIEkgc2hvdWxkIHB1dCBteSBoYXJkd2FyZSBpbnRvIGxvdwo+ID4gcG93ZXIg
+bW9kZSBhbmQgSSBkbyB0aGF0Lgo+IAo+IEFzIGZhciBhcyBJIGtub3csIG5vbmUgb2YgdGhlIFhv
+bmFyIGNhcmRzIGhhdmUgYW55IHJlYWwgcG93ZXItc2F2aW5nCj4gZnVuY3Rpb25hbGl0eTsgdGhl
+eSByZWx5IG9uIHRoZSBlbnRpcmUgUENJIHNsb3QgYmVpbmcgcG93ZXJlZCBkb3duLgo+IAo+IEZv
+ciBwcmFjdGljYWwgcHVycG9zZXMsIHN1c3BlbmQvcmVzdW1lIGp1c3QgbWVhbnMgdGhhdCB5b3Ug
+aGF2ZSB0bwo+IHJlc3RvcmUgdGhlIHJlZ2lzdGVycy4KPiAKPiA+Pj4gLQkuZnVuY3Rpb25fZmxh
+Z3MgPSBPWFlHRU5fRlVOQ1RJT05fU1BJLAo+ID4+PiArCS5mdW5jdGlvbl9mbGFncyA9IE9YWUdF
+Tl9GVU5DVElPTl9TUEkgfAo+ID4+PiBPWFlHRU5fRlVOQ1RJT05fRU5BQkxFX1NQSV80XzUsCj4g
+Pj4KPiA+PiBXaHk/Cj4gPgo+ID4gQmVjYXVzZSB0aGlzIGp1c3Qgd29ya3MgYW5kIGFzIGluIHRo
+ZSBXaW5kb3dzIGRyaXZlci4KPiAKPiBJZiBub3RoaW5nIGlzIGNvbm5lY3RlZCB0byB0aG9zZSBw
+aW5zLCBpdCBkb2Vzbid0IG1hdHRlci4gIFRoaXMgY29kZQo+IGluIHRoZSBXaW5kb3dzIGRyaXZl
+ciBwcm9iYWJseSB3YXMganVzdCBjb3B5L3Bhc3RlZCBmcm9tIHRoZSBEMiBjb2RlLgo+IAo+ID4+
+PiArKysgbGludXgtMy4xMi1teS9zb3VuZC9wY2kvb3h5Z2VuL3hvbmFyX2RnLmgKPiA+Pgo+ID4+
+IFRoaXMgZmlsZSB3YXMgaW50ZW5kZWQgYXMgdGhlIGludGVyZmFjZSBiZXR3ZWVuIHhvbmFyX2Rn
+LmMgYW5kIHRoZQo+ID4+IGdlbmVyaWMgb3h5Z2VuLmMgZHJpdmVyLgo+ID4+Cj4gPj4gVGhhdCB5
+b3UgaGF2ZSB0byBhZGQgc28gbXVjaCBzdHVmZiBpbmRpY2F0ZXMgdGhhdCB4b25hcl9kZy5jIGFu
+ZAo+ID4+IHhvbmFyX2RnX21peGVyLmMgYXJlIG5vdCB2ZXJ5IGluZGVwZW5kZW50IGFuZCBtYXli
+ZSBzaG91bGQgaGF2ZQo+ID4+IHN0YXllZCBhIHNpbmdsZSBmaWxlLgo+ID4KPiA+IEJ1dCBtb3Zp
+bmcgbWl4ZXIgdG8gYW5vdGhlciBmaWxlIHNvIHNpbXBsaWZpZXMgdGhpbmdzLi4uCj4gCj4gWW91
+ciBjaG9pY2UuICBCdXQgaXQgbWFrZXMgaXQgaGFyZCB0byByZXZpZXcgY2hhbmdlcyB3aGVuIHlv
+dSBtb3ZlIHRoZQo+IGNvZGUgYXJvdW5kIGluIHRoZSBzYW1lIHBhdGNoLgo+IAo+IAo+IFJlZ2Fy
+ZHMsCj4gQ2xlbWVucwo+IAoKT2theSwgSSB3b24ndCBhcmd1ZS4gSWYgdGhlIGRyaXZlciB3aWxs
+IHdvcmsgd2l0aCB0aGUgY2hhbmdlcywgSQpkb24ndCBjYXJlLiBIb3cgc2hvdWxkIEkgbmFtZSB0
+aGUgc3ViamVjdD8gU2hvdWxkIEkgbWFyayB0aGlzIHdpdGgKIlJFU0VORCIgb3IgIlVQREFURSIg
+b3IgbGVhdmUgdGhlIHN1YmplY3QgbmFtZWQgbGlrZSAiW1BBVENIIDIvMl0Kc25kLW94eWdlbjog
+Rml4ZXMgZm9yIHRoZSBYb25hciBERyBjYXJkIj8KCi0tIApLaW5kIHJlZ2FyZHMsClJvbWFuIFZv
+bGtvdiwKdjFyb25AbWFpbC5ydQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
