@@ -1,64 +1,55 @@
-From: Roman Volkov <v1ron@mail.ru> (by way of Roman Volkov <v1ron@mail.ru>)
-Subject: Re: [PATCH 1/2] snd-oxygen: Changes for oxygen driver
- to fix the Xonar DG card
-Date: Wed, 20 Nov 2013 12:21:12 +0400
-Message-ID: <20131120122112.41c80d5c@v1ron-desktop>
-References: <20131119182617.0bbae792@v1ron-desktop>
- <528BE4ED.4050105@ladisch.de>
+From: Rob Herring <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v4] ASoC: simple-card: add Device Tree support
+Date: Wed, 20 Nov 2013 08:20:19 -0600
+Message-ID: <CAL_Jsq+ZsrU5S6B_V8ruLK141LxTR2fd9Re5EWmp47LY+ALDow@mail.gmail.com>
+References: <87eh97sqw7.wl%kuninori.morimoto.gx@renesas.com>
+	<87txharb3o.wl%kuninori.morimoto.gx@renesas.com>
+	<8738oiog00.wl%kuninori.morimoto.gx@renesas.com>
+	<20131003104248.GI27287@sirena.org.uk>
+	<87fvsh2966.wl%kuninori.morimoto.gx@renesas.com>
+	<20131024171758.GA2461@kartoffel>
+	<87iowm9jwv.wl%kuninori.morimoto.gx@renesas.com>
+	<20131115155028.GE24831@e106331-lin.cambridge.arm.com>
+	<CAL_JsqKLd4CbfD6PifXrwWxbyJqnvAViYkXQ63TBniQBPPzp4g@mail.gmail.com>
+	<87li0ldso8.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp33.i.mail.ru (smtp33.i.mail.ru [94.100.177.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 6AC722615F3
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 15:13:16 +0100 (CET)
-Received: from [213.87.140.72] (port=63787 helo=v1ron-desktop)
- by smtp33.i.mail.ru with esmtpa (envelope-from <v1ron@mail.ru>)
- id 1Vj8Wp-0002L2-Hj
- for alsa-devel@alsa-project.org; Wed, 20 Nov 2013 18:13:16 +0400
-In-Reply-To: <528BE4ED.4050105@ladisch.de>
-Resent-Message-ID: <20131120181308.6c98f1e0@v1ron-desktop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <87li0ldso8.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Pawel Moll <Pawel.Moll-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-0JIgVHVlLCAxOSBOb3YgMjAxMyAyMzoyMzo0MSArMDEwMApDbGVtZW5zIExhZGlzY2ggPGNsZW1l
-bnNAbGFkaXNjaC5kZT4g0L/QuNGI0LXRgjoKCj4gTWFueSB0aGFua3MgZm9yIGRvaW5nIGFsbCB0
-aGlzIHdvcmshCj4gSG93ZXZlciwgdGhlcmUgYXJlIHN0aWxsIGEgZmV3IHNtYWxsIHByb2JsZW1z
-Lgo+IAo+IFJvbWFuIFZvbGtvdiB3cm90ZToKPiA+IFRoaXMgcGF0Y2ggZG9lcyBzb21lIHByZXBh
-cmF0aW9uIG9mIGV4aXN0aW5nIE94eWdlbiBkcml2ZXIuCj4gCj4gVGhpcyBwYXRjaCBzaG91bGQg
-YmUgc2VwYXJhdGVkIGludG8gZm91ciBsb2dpY2FsIGNoYW5nZXMuCgpPa2F5LCB3aWxsIHNwbGl0
-IHRoaXMgYW5kIHNlbmQgYWdhaW4sIGNvbnNpZGVyaW5nIGFsbCB5b3VyIGNvbW1lbnRzLgoKPiAK
-PiA+ICsrKyBsaW51eC0zLjEyLW15L3NvdW5kL3BjaS9veHlnZW4vb3h5Z2VuX2lvLmMJMjAxMy0x
-MS0xOQo+ID4gMDA6NTY6MTIuMDAwMDAwMDAwICswNDAwCj4gPiAtCXdhaXRfZXZlbnRfdGltZW91
-dChjaGlwLT5hYzk3X3dhaXRxdWV1ZSwKPiA+IC0JCQkgICAoeyBzdGF0dXMgfD0gb3h5Z2VuX3Jl
-YWQ4KGNoaXAsCj4gPiBPWFlHRU5fQUM5N19JTlRFUlJVUFRfU1RBVFVTKTsKPiA+ICsJd2FpdF9l
-dmVudF90aW1lb3V0KGNoaXAtPmFjOTdfd2FpdHF1ZXVlLCAoeyBzdGF0dXMgfD0KPiA+IG94eWdl
-bl9yZWFkOChjaGlwLAo+ID4gKwo+ID4gT1hZR0VOX0FDOTdfSU5URVJSVVBUX1NUQVRVUyk7IHN0
-YXR1cyAmIG1hc2s7IH0pLAo+IAo+IFdoeSB0aGlzIGNoYW5nZT8KCkp1c3QgY2hlY2twYXRjaC5w
-bCBwb3BwZWQgbWUgYSB3YXJuaW5nICg4MCBjb2x1bW5zIGV4Y2VlZGVkKSwKYW5kIEkgb2NjYXNp
-b25hbGx5IGNoYW5nZWQgdGhpcy4gV2lsbCByZXZlcnQgdGhpcyBhcyB0aGlzIGNvZGUKaXMgYWxy
-ZWFkeSBpbiB0aGUga2VybmVsLgoKPiA+ICtpbnQgb3h5Z2VuX3dhaXRfc3BpKHN0cnVjdCBveHln
-ZW4gKmNoaXApCj4gPiAgLi4uCj4gPiAtCQl1ZGVsYXkoNCk7Cj4gPiArCQl1ZGVsYXkoMSk7Cj4g
-Cj4gUGxlYXNlIGRvbid0IHJlZHVjZSB0aGlzIGRlbGF5OyB0aGUgQ01JODc4OCBoYXMgYSBidWcg
-dGhhdCBjYW4gY3Jhc2gKPiB0aGUgbWFjaGluZSBpZiB0aGlzIHJlZ2lzdGVyIGlzIHBvbGxlZCB0
-b28gb2Z0ZW4uCj4gCj4gPiArRVhQT1JUX1NZTUJPTChveHlnZW5fd2FpdF9zcGkpOwo+IAo+IFdo
-eSB0aGlzIGV4cG9ydD8KCkhvd2V2ZXIgeWVzLCB3aGVuIEkgbW92ZWQgd2FpdCBjYWxsIHRvIHRo
-ZSBlbmQgb2Ygb3h5Z2VuX3dyaXRlX3NwaSgpLAphZGRpdGlvbmFsIHdhaXRpbmcgaXMgbm90IG5l
-Y2Vzc2FyeS4gV2lsbCBiZSB0aGUgc3RhdGljIGZ1bmN0aW9uLgoKPiA+ICsrKyBsaW51eC0zLjEy
-LW15L3NvdW5kL3BjaS9veHlnZW4vb3h5Z2VuX21peGVyLmMJMjAxMy0xMS0xOAo+ID4gMTQ6MDM6
-NTQuMDAwMDAwMDAwICswNDAwCj4gCj4gPiArRVhQT1JUX1NZTUJPTChveHlnZW5fdXBkYXRlX2Rh
-Y19yb3V0aW5nKTsKPiAKPiBUaGlzIHNob3VsZCBiZSBpbnRlZ3JhdGVkIGludG8gdGhlIHBhdGNo
-IHRoYXQgYWRkcyB0aGUgYWN0dWFsIGNhbGwuCj4gCj4gCj4gUmVnYXJkcywKPiBDbGVtZW5zCj4g
-CgpLaW5kIHJlZ2FyZHMsClJvbWFuIFZvbGtvdgp2MXJvbkBtYWlsLnJ1Cl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Nov 18, 2013 at 8:36 PM, Kuninori Morimoto
+<kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org> wrote:
+>
+> Hi Rob, Mark
+>
+>> >> +Required properties:
+>> >> +
+>> >> +- compatible                         : "simple-audio"
+>>
+>> Still not really a fan of this generic name. Can we define in the
+>> description above what simple means.
+>
+> So, how about "simple-audio-card" ?
+
+That's missing my point. First, I think you should be defining the
+actual h/w in the DT and doing the mapping of that to a simple audio
+driver in the kernel. Otherwise how do you fix some quirk on a
+particular platform later on without updating the DTB? I'm fine with
+this being the default compatible string, but you should also require
+a more specific name. Perhaps it is just <soc>-simple-audio or
+<board>-simple-audio.
+
+Second, you need to define in this binding document what simple means.
+What properties of the audio subsystem make it simple? The h/w has and
+doesn't have what? How do I decide if my platform can or should use
+this binding?
+
+Rob
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
