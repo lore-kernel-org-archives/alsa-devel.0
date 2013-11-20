@@ -1,61 +1,54 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 0/8] ARM: s3c64xx: Let amba-pl08x driver handle DMA
-Date: Wed, 20 Nov 2013 12:31:52 +0000
-Message-ID: <20131120123152.GZ2674@sirena.org.uk>
-References: <1381950659-12703-1-git-send-email-tomasz.figa@gmail.com>
- <20131017102201.GK2443@sirena.org.uk>
- <52644563.1000203@samsung.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH RFC 4/9] ASoC: hdmi-codec: Add devicetree binding with
+ documentation
+Date: Wed, 20 Nov 2013 13:34:58 +0100
+Message-ID: <20131120133458.3822a165@armhf>
+References: <cover.1384862950.git.jsarha@ti.com>
+	<829968f1a6b34176de8a04dd4ad473b2b37be783.1384862950.git.jsarha@ti.com>
+	<20131120102342.7befe75e@armhf>
+	<20131120100959.GV2674@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YNEMMPJXay2VNSoy"
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <52644563.1000203-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kukjin Kim <kgene.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mike Turquette <mturquette-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Padmavathi Venna <padma.v-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Sachin Kamat <sachin.kamat-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Sangbeom Kim <sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Ben Dooks <ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20131120100959.GV2674@sirena.org.uk>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jyri Sarha <jsarha@ti.com>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 20 Nov 2013 10:09:59 +0000
+Mark Brown <broonie@kernel.org> wrote:
 
---YNEMMPJXay2VNSoy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On Wed, Nov 20, 2013 at 10:23:42AM +0100, Jean-Francois Moine wrote:
+>=20
+> > But now, I am wondering again about these `empty`codecs:
+> > - in a DT context, should we continue to add / modify such codecs?
+> > - what do you think about my generic DT codec? (indeed, I would do =
+a new
+> >   version according to the previous remarks)
+>=20
+> We still want to be able to have users just name the CODEC on their
+> board rather than have to type in all the details from the datasheet,
+> if we're going to try to amalgamate the drivers it should still let
+> people do that.
 
-On Mon, Oct 21, 2013 at 06:04:35AM +0900, Kukjin Kim wrote:
+OK. But it seems to me that the codec is not tied to the board, but
+rather to the audio connector / transmitter.
 
-> Applied this whole series.
+In the case of the tda998x HDMI transmitter, either i2s or s/pdif may
+be used, thanks to the actual codecs 'hdmi' and 'spdif tx'. But they
+don't work the same way: the 'hdmi' codec handles both playback and
+record, and recording is disabled by program in the sound device,
+while the 'spdif tx' codec is selected by the codec-dai-name
+("dit-hifi" - it is "dir-hifi" for recording). It would be nice if
+these codecs would have the same behaviour...
 
-This didn't seem to make it into -next or your tree, it'd be really
-helpful to be able to merge into both ASoC and SPI so they can be used
-for some framework work (I already have some patches for ASoC).  Would
-it be possible to get the changes published on a separate branch or
-signed tag so I can pull it into those subsystems for the next merge
-window?
-
---YNEMMPJXay2VNSoy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSjKu0AAoJELSic+t+oim9uQwQAJaqm3gH0lG3H8u4ljnv3H9T
-JntYWgAT8Vn5XqPKAbAJjLGhSNAFn423efSeIOv6XeOcDVbbXBZzxi731IbBXdOt
-NdAA7nZmY09TdGdb/s3FYu8xi66yqvLTAT6jct3ov6Mm3s+xkKozerwUUmM21Uy0
-Itydavphmn8XpdieQJVaYWSk0iKdb+HcPq865xsKgF9wU6F6sLtILkw9qf/Ly0IF
-EFWnNa13e67sRwOnQOKT1mcWjaLJ5UWVmHtF1AvQ87QP9U0kkdHanyLYJTqC556I
-+rN6euxf/MhthlRN/SooJNwf4mqEQafYqntc9zoY2hcUoM1ncrPf9GdoSZB/6jRQ
-BGPQEIyCGHl6GArWLr51TBiD5KeEeu92kvvb6ybNkD/G9tpIZ+k/gvsP8Z+tYrJX
-hVI4n9M7FNyGeIa4swhImt6AHANVHSB8lYxyWTyMs69KHoIdv4Q6yl5XT5A4buf2
-bbuIF9zJ4949S6NmM2CtYxrYSPMBS3qYhO7Qc9hvvUVgQQAqPU4aMM/6Eg6nQzqm
-tFrFYkBj40Gix7Do9wZlWFpeQTV7LdvrqXlcwUcK+QvOxwJTj577dPpQsGkBOFQq
-OqAmmo35OqvYUV5tKnXYKzju4Wk5puj2wKqrSha1XmqF9OLZ1KbSxMuR/Ea5MqVn
-fojeHEFQ7KWfASg2E9Cd
-=dwHS
------END PGP SIGNATURE-----
-
---YNEMMPJXay2VNSoy--
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
 --
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
