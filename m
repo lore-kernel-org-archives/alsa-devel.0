@@ -1,50 +1,38 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - A casual Dell Headset quirk
-Date: Wed, 20 Nov 2013 11:43:30 +0100
-Message-ID: <1384944210-4406-1-git-send-email-david.henningsson@canonical.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 4/4] ASoC: wm5110: Expose input high pass filter controls
+Date: Wed, 20 Nov 2013 10:45:26 +0000
+Message-ID: <20131120104526.GA30524@lee--X1>
+References: <1384877043-5640-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1384877043-5640-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20131120091636.GA30012@lee--X1>
+ <20131120102045.GW2674@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id B920D260786
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 11:43:32 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1253038@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20131120102045.GW2674@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-You're looking at a casual headset patch,
-for a specific hardware it will match,
-and suddenly, the headset jack will work,
-so please apply this simple quirk!
+On Wed, 20 Nov 2013, Mark Brown wrote:
 
-BugLink: https://bugs.launchpad.net/bugs/1253038
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+> On Wed, Nov 20, 2013 at 09:16:36AM +0000, Lee Jones wrote:
+>=20
+> > For the MFD parts: Acked-by: Lee Jones <lee.jones@linaro.org>
+>=20
+> > How do you want to play this ASoC?
+>=20
+> I expect this to collide with future changes from Wolfson so it'll ne=
+ed
+> to go via ASoC.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 8593d4e..a90bfab 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4915,6 +4915,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x038b, "Acer Aspire 8943G", ALC662_FIXUP_ASPIRE),
- 	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x0625, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0626, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
- 	SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ", ALC662_FIXUP_BASS_CHMAP),
--- 
-1.7.9.5
+Okay, what if I make you a branch to pull from? Or visa-versa?
+
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
