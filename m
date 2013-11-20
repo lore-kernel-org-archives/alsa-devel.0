@@ -1,35 +1,59 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 1/4] mfd: wm5110: Make DSP memories readable
-Date: Wed, 20 Nov 2013 09:17:32 +0000
-Message-ID: <20131120091732.GB30012@lee--X1>
-References: <1384877043-5640-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1384877043-5640-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH RFC 4/9] ASoC: hdmi-codec: Add devicetree binding with
+ documentation
+Date: Wed, 20 Nov 2013 10:23:42 +0100
+Message-ID: <20131120102342.7befe75e@armhf>
+References: <cover.1384862950.git.jsarha@ti.com>
+	<829968f1a6b34176de8a04dd4ad473b2b37be783.1384862950.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1384877043-5640-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <829968f1a6b34176de8a04dd4ad473b2b37be783.1384862950.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19 Nov 2013, Charles Keepax wrote:
+On Tue, 19 Nov 2013 14:12:24 +0200
+Jyri Sarha <jsarha@ti.com> wrote:
 
-> Expose the memory regions used by the DSP cores on WM5110 as readable
-> and volatile.
->=20
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
 > ---
->  drivers/mfd/wm5110-tables.c |   69 +++++++++++++++++++++++++++++++++=
-+++++++--
->  1 files changed, 65 insertions(+), 4 deletions(-)
+>  Documentation/devicetree/bindings/sound/hdmi.txt |   17 ++++++++++++=
++++++
+>  sound/soc/codecs/hdmi.c                          |   10 ++++++++++
+>  2 files changed, 27 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/hdmi.txt
+	[snip]
 
-Applied, thanks.
+A couple of months ago, I proposed a 'generic DT based simple
+codec' (http://www.spinics.net/lists/arm-kernel/msg274322.html) which
+was supposed to replace all of the `empty` codecs in a DT context.
+These codecs do nothing except defining some audio parameters.
+They are mainly spdif tx/rx, hdmi, bt-sco, dmic, wm8727 and wm8782.
+
+This generic codec would have been used for the tda998x which is the
+HDMI transmitter of the Cubox. But, as its utility was not clear yet,
+I switched to the 'spdif transmitter' codec which has DT support. This
+last codec works fine without change, with either i2s or spdif input in
+the tda998x. It is well suited to the Cubox because the Marvell Armada
+510 audio subsystem does not support sound recording (nor does the
+tda998x while the 'hdmi' code provides recording), and also because it
+supports a wider range of rates than the 'hdmi'codec (I have no problem
+with 22.05kHz audio).
+
+But now, I am wondering again about these `empty`codecs:
+- in a DT context, should we continue to add / modify such codecs?
+- what do you think about my generic DT codec? (indeed, I would do a ne=
+w
+  version according to the previous remarks)
 
 --=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
