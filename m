@@ -1,38 +1,43 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: question about aplay fails on arm 64
-Date: Wed, 20 Nov 2013 13:48:04 +0100
-Message-ID: <528CAF84.20307@ladisch.de>
-References: <CA+ai60gtVtXhZ2m+BuJXV8W9tkd+=9_t8kEsM1-i7E+S_64oZw@mail.gmail.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/1] ASoC: arizona: Set FLL to free-run before disabling
+Date: Wed, 20 Nov 2013 13:15:47 +0000
+Message-ID: <20131120131547.GA7357@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 1324E2615F3
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 13:48:06 +0100 (CET)
-In-Reply-To: <CA+ai60gtVtXhZ2m+BuJXV8W9tkd+=9_t8kEsM1-i7E+S_64oZw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?5pu56IO95Y2O?= <cosmo.ustc@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-5pu56IO95Y2OIHdyb3RlOgo+IFJlY2VudGx5LCBpIGVuY291bnRlciBhcGxheSBmYWlsZWQgb24g
-YXJtIDY0IGJpdHMgY29yZS4KCkkgd2Fzbid0IGF3YXJlIHRoYXQgQUxTQSdzIG1tYXAgY29kZSBo
-YWQgYmVlbiBwb3J0ZWQgdG8gQVJNNjQuCgo+IFsgICA4Ny40MDMxNDZdIDgyMyAoYXBsYXkpIEJh
-ZCBtb2RlIGluIEVycm9yIGhhbmRsZXIgZGV0ZWN0ZWQsIGNvZGUgMHhiZjAwMDAwMAo+IFsgICA4
-Ny41NzMyMDFdIDgyMyAoYXBsYXkpIEJhZCBtb2RlIGluIFN5bmNocm9ub3VzIEFib3J0IGhhbmRs
-ZXIgZGV0ZWN0ZWQsIGNvZGUgMHg4NjAwMDAwNwo+IFsgICA4Ny43NDMxMjZdIDgyMyAoYXBsYXkp
-IEludGVybmFsIGVycm9yOiBPb3BzIC0gYmFkIG1vZGU6IDAgWyMxXSBQUkVFTVBUCgpXaGF0IGRv
-ZXMgImJhZCBtb2RlIiBtZWFuPyAgSXMgdGhpcyBhIHJlYWwgQ1BVPyAgRG9lcyBpdCBiZWhhdmUg
-Y29ycmVjdGx5PwoKClJlZ2FyZHMsCkNsZW1lbnMKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 6f05b17..fea9910 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1529,6 +1529,8 @@ static void arizona_enable_fll(struct arizona_fll *fll,
+ 	try_wait_for_completion(&fll->ok);
+ 
+ 	regmap_update_bits(arizona->regmap, fll->base + 1,
++			   ARIZONA_FLL1_FREERUN, 0);
++	regmap_update_bits(arizona->regmap, fll->base + 1,
+ 			   ARIZONA_FLL1_ENA, ARIZONA_FLL1_ENA);
+ 	if (use_sync)
+ 		regmap_update_bits(arizona->regmap, fll->base + 0x11,
+@@ -1546,6 +1548,8 @@ static void arizona_disable_fll(struct arizona_fll *fll)
+ 	struct arizona *arizona = fll->arizona;
+ 	bool change;
+ 
++	regmap_update_bits(arizona->regmap, fll->base + 1,
++			   ARIZONA_FLL1_FREERUN, ARIZONA_FLL1_FREERUN);
+ 	regmap_update_bits_check(arizona->regmap, fll->base + 1,
+ 				 ARIZONA_FLL1_ENA, 0, &change);
+ 	regmap_update_bits(arizona->regmap, fll->base + 0x11,
+-- 
+1.7.2.5
