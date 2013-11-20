@@ -1,75 +1,92 @@
-From: Bill Pringlemeir <bpringlemeir@nbsps.com>
-Subject: Re: [PATCHv2 3/8] ARM: dts: Enables SAI ALSA SoC DAI device for
- Vybrid VF610 TOWER board.
-Date: Wed, 20 Nov 2013 11:04:02 -0500
-Message-ID: <87hab7hxfx.fsf@nbsps.com>
-References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
- <1383289495-24523-4-git-send-email-Li.Xiubo@freescale.com>
- <87bo1hk2i7.fsf@nbsps.com>
- <1DD289F6464F0949A2FCA5AA6DC23F828AD451@039-SN2MPN1-012.039d.mgd.msft.net>
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v4] ASoC: simple-card: add Device Tree
+ support
+Date: Wed, 20 Nov 2013 16:24:03 +0000
+Message-ID: <20131120162403.GA22479@e106331-lin.cambridge.arm.com>
+References: <87txharb3o.wl%kuninori.morimoto.gx@renesas.com>
+ <8738oiog00.wl%kuninori.morimoto.gx@renesas.com>
+ <20131003104248.GI27287@sirena.org.uk>
+ <87fvsh2966.wl%kuninori.morimoto.gx@renesas.com>
+ <20131024171758.GA2461@kartoffel>
+ <87iowm9jwv.wl%kuninori.morimoto.gx@renesas.com>
+ <20131115155028.GE24831@e106331-lin.cambridge.arm.com>
+ <87li0m7d7c.wl%kuninori.morimoto.gx@renesas.com>
+ <20131118113617.GC30853@e106331-lin.cambridge.arm.com>
+ <87mwl1du71.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1DD289F6464F0949A2FCA5AA6DC23F828AD451@039-SN2MPN1-012.039d.mgd.msft.net>
- (Li Xiubo's message of "Wed, 20 Nov 2013 03:14:09 +0000")
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Li Xiubo <Li.Xiubo@freescale.com>
-Cc: alsa-devel@alsa-project.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
+ [217.140.96.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1DB12608D8
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 17:24:05 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <87mwl1du71.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Pawel Moll <Pawel.Moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Takashi Iwai <tiwai@suse.de>, Simon <horms@verge.net.au>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Nov 19, 2013 at 02:03:21AM +0000, Kuninori Morimoto wrote:
+> 
+> Hi Mark Rutland
+> 
+> Thank you for your feedback
+> 
+> > > It means "if system doesn't support common clock".
+> > > I will fix it
+> > 
+> > When you say "doesn't support common clock", you mean the code for that
+> > platform is incompatible with the common clock framework? It seems very
+> > messy to allow a Linux-internal implementation detail (which is expected
+> > to change) to leak into a binding...
+> 
+> Some CPU doesn't support common clock, like PowerPC (?)
+> This is Mark (Brown) comment
+> 
+> --------------------
+> So, ideally.  However we have to consider the fact that the clock API
+> isn't reliably available makes this harder than it should be.  Even
+> among the DT using platforms at least PowerPC still uses a custom clock
+> API.  We could just use this as a carrot to push people to convert
+> though.
+> ---------------------
 
-[sorry, I should have copied alsa-devel@alsa-project.org previously].
+I would be happier if we could unify the common clock infrastructure, it
+would make this kind of thing a lot lessy messy. However, I'm not
+against the system-clock-frequency property for now.
 
-On 19 Nov 2013, Li.Xiubo@freescale.com wrote:
+> 
+> 
+> > > > > +		of_property_read_u32(np,
+> > > > > +				     "system-clock-frequency",
+> > > > > +				     &dai->sysclk);
+> > > > 
+> > > > What it this isn't present?
+> > > 
+> > > If sysclk doesn't have common clock support
+> > 
+> > Huh? That's not what I asked.
+> > 
+> > What if the dt has neither a clock or a system-clock-frequency property?
+> 
+> OK, sorry for my English
 
->>> This patch add and enable SAI device.
->>>
->>> arch/arm/boot/dts/vf610-twr.dts | 6 ++++++
->>> 1 file changed, 6 insertions(+)
->>>
->>> diff --git a/arch/arm/boot/dts/vf610-twr.dts
->>> b/arch/arm/boot/dts/vf610-twr.dts index 1a58678..e4106dd 100644
->>> --- a/arch/arm/boot/dts/vf610-twr.dts
->>> +++ b/arch/arm/boot/dts/vf610-twr.dts
->>>>> -57,6 +57,12 @@
->>> 	status = "okay";
->>> };
->>
->> Should we put a comment here that a TWR-AUDIO-SGTL board is needed?  Or
->> is this better in a menuconfig?  I guess TWR-AUDIO-SGTL is needed as this
->> codec is not on the VF610-TWR main board?
->>
->
-> Yes, the SGTL5000 codec is not on the VF610-TWR main board, and needs an extra
-> 	TWR-AUDIO-SGTL board.
->
-> IMO, puting this comment in the menuconfig is much better.
+Sorry for the confusion, I'll try to be less ambiguous in future :)
 
-I agree.  I guess the patch set 6 makes more sense.  Also, you might
-consider adding a printk in the 'fsl_sgtl5000_probe()'.  I guess that
-devm_snd_soc_register_card() will fail if the board is not present?  As
-the board is not 'standard' people may come asking why the audio fails
-on the 'VF610-TWR'.
+What I was trying to get at here is that if there is neither a clock or
+a system-clock-frequency property in the device tree, dai->sysclk will
+not have been initialised in this path. Is this a valid case, and will
+dai->sysclk have a well-defined, sane value?
 
-+	ret = devm_snd_soc_register_card(&pdev->dev, &fsl_sgt1500_card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "register soc sound card failed :%d\n"
-+                               "TWR-AUDIO-SGTL board required.\n",
-+				ret);
-+		return ret;
-+	}
-
-Especially, you can make one kernel that handles both cases w/wo
-TWR-AUDIO-SGTL board attached.
-
-Thanks for your work.
-Bill Pringlemeir.
+Thanks,
+Mark.
