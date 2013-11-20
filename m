@@ -1,19 +1,16 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Disable runtime PM
- on	LynxPoint(-LP) controllers
-Date: Wed, 20 Nov 2013 14:35:09 +0100
-Message-ID: <528CBA8D.8020907@canonical.com>
-References: <s5h38msqqqg.wl%tiwai@suse.de>	<528C78D2.6020207@canonical.com>	<s5hli0jp9bw.wl%tiwai@suse.de>
- <s5hiovnp5b7.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/1] ASoC: arizona: Set FLL to free-run
+	before disabling
+Date: Wed, 20 Nov 2013 13:36:59 +0000
+Message-ID: <20131120133659.GD2674@sirena.org.uk>
+References: <20131120131547.GA7357@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0597353641912543790=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id F11FE2616E1
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 14:35:10 +0100 (CET)
-In-Reply-To: <s5hiovnp5b7.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 017AE2615F3
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 14:37:03 +0100 (CET)
+In-Reply-To: <20131120131547.GA7357@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,68 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, alsa-devel@alsa-project.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 11/20/2013 02:32 PM, Takashi Iwai wrote:
-> At Wed, 20 Nov 2013 13:05:23 +0100,
-> Takashi Iwai wrote:
->>
->> At Wed, 20 Nov 2013 09:54:42 +0100,
->> David Henningsson wrote:
->>>
->>> (Adding Mengdong to cc)
->>>
->>> On 11/19/2013 05:51 PM, Takashi Iwai wrote:
->>>> We got bug reports of the stalled HD-audio, typically after S3 or S4,
->>>> and it turned out that they seemed triggered by runtime PM on Lynx
->>>> Point and Lynx Point-LP controllers.  As there is no way to recover
->>>> properly from the stalled controller, it's safer to disable the
->>>> runtime PM support on these chips for now.
->>>
->>> Oh, this is a bit sad news. Have you talked to Intel about it?
->>>
->>> Anyway, I saw something similar a while ago, but never with access to
->>> the hardware, and then it was difficult to reproduce for the person on
->>> the other side. Nevertheless, when I read through the PM code I found
->>> that the GCTL register was sometimes accessed with readb (although it is
->>> a 32 bit register), so I wrote a patch for that, but the testing results
->>> of this patch were a bit inconclusive, so I never upstreamed it.
->>>
->>> Anyway, I'm attaching the draft patch. Do you think it could be related?
->>
->> It didn't change the behavior although the change looks good.
 
-It looks good indeed, but it's always scary to do subtle changes without
-testing on all the 50+ controllers we support...do you think I should
-submit a proper patch for it?
-
->>
->> After a long debugging session in this morning, I finally nailed
->> down.  This was the fault in the sound driver after all, shamefully :)
->>
->> The fix patch is below.
->>
->> The code needs a bit clean up, and I have it, but will apply this for
->> 3.14.
->>
->>
->> Takashi
->>
->> ===
->>
->> From: Takashi Iwai <tiwai@suse.de>
->> Subject: [PATCH 1/2] ALSA: hda - Fix unbalanced runtime PM notification at
->>  resume
-> 
-> BTW, it's marked as 1/2 just because of the clean up patch I mentioned
-> above.  Only this one is needed for now.
-
-Ok, thanks for the clarification, and glad you finally found it! And so
-are you I guess :-)
+--===============0597353641912543790==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="j4ivd53YxxNwCQqF"
+Content-Disposition: inline
 
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+--j4ivd53YxxNwCQqF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 20, 2013 at 01:15:47PM +0000, Richard Fitzgerald wrote:
+>=20
+> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+
+Why?  Is this a bug fix or a feature?
+
+--j4ivd53YxxNwCQqF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSjLr3AAoJELSic+t+oim9QWUP/2324Xi6nl8hy8JIptDlycKm
+xqhtsGQteD091sg7HfGTfikPrB2zzuFqDWYUzmC1eIHKMYhVqTMyWIqNm5avSze+
+BJo+1VFwFjUEek1n1XBtUdPrkSDiM+9SgFwHYI8Q7fwZ+93keT+YdvmToraDMpse
+WTJNxlQogI4HBeJN3cFgFAzdca1pw8Cw9Q4h+bvqYebVjOQOx+OLtN/dulg+4UYa
+sLUTaRcV5VMUW9oLjYM8BIzkvqMxgIb7oA4XzZwtd/+2pSbABWPftF67qq6XJiqv
+SMtdFdjwbJEA8DBOibjdPowFjvIwUcdfqxDYu+uI1L/3wtakvuYjbLXFUVqhBDfL
+LFuZ8dc5ZFSHY9DnCkv1h8uWWiBxV9evfG3ERfnwFXZpDZeyi3dzHmzhdquFLGoy
+FqZnxf9+6ZgCvRDAuk22/zE+eDxlOeV91x9AMLZ9HubE9a1+zHGVV8s3Uh3X/whI
+hzETSm0P43NKbznSdNf5kpXd4O3ybYDkPD3D3Lfvbl4qtBsPeMEB4P6AqV169PMD
+p/9Tt6jEQiBd9cmGRxzYe2qSqY7MyCKyhV2sX5VzAGflVbV2LaZp87T4/g6f5nLI
+PVU5R29XdqRrD5uRj41FoJ2/mS5/d9jr5UEIzrOh/QoIGB2MGZHHIkGxsVWOtw3Y
+17RVIW/jkp+jJKgKvPLg
+=qRor
+-----END PGP SIGNATURE-----
+
+--j4ivd53YxxNwCQqF--
+
+--===============0597353641912543790==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0597353641912543790==--
