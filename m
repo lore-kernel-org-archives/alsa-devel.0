@@ -1,16 +1,15 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH][topic/symmetry] ASoC: soc-pcm: move DAIs
-	parameters cleaning into hw_free()
-Date: Wed, 20 Nov 2013 18:37:09 +0800
-Message-ID: <1384943829-9005-1-git-send-email-b42378@freescale.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - A casual Dell Headset quirk
+Date: Wed, 20 Nov 2013 11:43:30 +0100
+Message-ID: <1384944210-4406-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db9outboundpool.messaging.microsoft.com
- (mail-db9lp0252.outbound.messaging.microsoft.com [213.199.154.252])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A52D260786
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 11:37:02 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id B920D260786
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2013 11:43:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,73 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: 1253038@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-We're now applying soc_hw_params_symmetry() to reject unmatched parameters
-while we clear parameters in soc_pcm_close(). So here's a use case might be
-broken by this mechanism: aplay -Dhw:0 44100.wav 48000.wav 32000.wav
+You're looking at a casual headset patch,
+for a specific hardware it will match,
+and suddenly, the headset jack will work,
+so please apply this simple quirk!
 
-In this case, we call soc_pcm_open()->soc_pcm_hw_params()->soc_pcm_hw_free()
-->soc_pcm_hw_params()->soc_pcm_hw_free()->soc_pcm_close() in order. As we
-only clear parameters in soc_pcm_close(). The parameters would be remained
-in the system even if the playback of 44100.wav is finished.
-
-Thus, this patch is trying to move parameters cleaning into hw_free() so that
-the system can continue to serve this kind of use case.
-
-Also, since we set them in hw_params(), it should be better to clear them in
-hw_free() for symmetry.
-
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
+BugLink: https://bugs.launchpad.net/bugs/1253038
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/soc/soc-pcm.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 60d9cfb..d519757 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -443,19 +443,6 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
- 	codec_dai->active--;
- 	codec->active--;
- 
--	/* clear the corresponding DAIs rate when inactive */
--	if (!cpu_dai->active) {
--		cpu_dai->rate = 0;
--		cpu_dai->channels = 0;
--		cpu_dai->sample_bits = 0;
--	}
--
--	if (!codec_dai->active) {
--		codec_dai->rate = 0;
--		codec_dai->channels = 0;
--		codec_dai->sample_bits = 0;
--	}
--
- 	/* Muting the DAC suppresses artifacts caused during digital
- 	 * shutdown, for example from stopping clocks.
- 	 */
-@@ -671,6 +658,19 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
-+	/* clear the corresponding DAIs parameters when going to be inactive */
-+	if (cpu_dai->active == 1) {
-+		cpu_dai->rate = 0;
-+		cpu_dai->channels = 0;
-+		cpu_dai->sample_bits = 0;
-+	}
-+
-+	if (codec_dai->active == 1) {
-+		codec_dai->rate = 0;
-+		codec_dai->channels = 0;
-+		codec_dai->sample_bits = 0;
-+	}
-+
- 	/* apply codec digital mute */
- 	if (!codec->active)
- 		snd_soc_dai_digital_mute(codec_dai, 1, substream->stream);
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8593d4e..a90bfab 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4915,6 +4915,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x038b, "Acer Aspire 8943G", ALC662_FIXUP_ASPIRE),
+ 	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x0625, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0626, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
+ 	SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ", ALC662_FIXUP_BASS_CHMAP),
 -- 
-1.8.4
+1.7.9.5
