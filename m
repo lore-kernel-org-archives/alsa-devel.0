@@ -1,7 +1,7 @@
-From: Lee Jones <lee.jones@linaro.org>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [GIT PULL] mfd: Immutable branch for ASoC
-Date: Thu, 21 Nov 2013 12:27:00 +0000
-Message-ID: <20131121122700.GF23067@lee--X1>
+Date: Thu, 21 Nov 2013 12:59:47 +0000
+Message-ID: <20131121125947.GP2674@sirena.org.uk>
 References: <1384877043-5640-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
  <1384877043-5640-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
  <20131120091636.GA30012@lee--X1>
@@ -10,59 +10,57 @@ References: <1384877043-5640-1-git-send-email-ckeepax@opensource.wolfsonmicro.co
  <20131120113400.GY2674@sirena.org.uk>
  <20131121090724.GB19368@lee--X1>
  <20131121114105.GO2674@sirena.org.uk>
+ <20131121122700.GF23067@lee--X1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="T6OnZCvW5HcnivXR"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20131121114105.GO2674@sirena.org.uk>
+In-Reply-To: <20131121122700.GF23067@lee--X1>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
+To: Lee Jones <lee.jones@linaro.org>
 Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> I was expecting patch 1 in the series as well (the DSP stuff won't wo=
-rk
-> properly without the register map updates to go with it).
 
-Try this instead:
+--T6OnZCvW5HcnivXR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The following changes since commit 5e01dc7b26d9f24f39abace5da98ccbd6a5c=
-eb52:
+On Thu, Nov 21, 2013 at 12:27:00PM +0000, Lee Jones wrote:
 
-  Linux 3.12 (2013-11-03 15:41:51 -0800)
+> The following changes since commit 5e01dc7b26d9f24f39abace5da98ccbd6a5ceb=
+52:
+>=20
+>   Linux 3.12 (2013-11-03 15:41:51 -0800)
+>=20
+> are available in the git repository at:
+>=20
+>   git://git.linaro.org/people/ljones/mfd.git tags/ib-asoc-1
 
-are available in the git repository at:
+Pulled, thanks.
 
-  git://git.linaro.org/people/ljones/mfd.git tags/ib-asoc-1
+--T6OnZCvW5HcnivXR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-for you to fetch changes up to 254dc326dbfd23c2678fafad1b84fc0e42ac4374=
-:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-  ASoC: wm5110: Expose input high pass filter controls (2013-11-21 12:2=
-3:21 +0000)
+iQIcBAEBAgAGBQJSjgO/AAoJELSic+t+oim9+oEP/RkRKyAwfZLF9Co5ctraA9Z4
+gMVOkSVu+6N/yKAdMyUKnAkoiTtHdMw8Wh8LKEeNNokcU9Za04Y/9BxW5YUMR6sQ
+oRvPTDyow0ciOZ8KcD9ifNY6aKaKXIjwzMGIRan9Sfq9zC5inqiJPg7njfigrgR7
+GR0hFMBwEeQjiDFwLD/GN2VOXo4U6PNZrhUai+ESkoGDoFFgaJ0wikn7iPNKo98J
+dYQB0LRi6aoEKOqoX4acRsz4PrigFqHGlB40LWeEidwO2GiHH3BKnGWJeRrRMm+v
+ngGHhQLcSidlGlk/ZeV2D1c7NrohRY0XryVufgXCxxFNYYiq7FUTe/BZzFt8oPig
+a/iPbsSJHFXOlJxr8U582YXfPcNmtStWgqpgpo4/dfhjCGhBdcml3qrdrvVgOrbH
+WWdfz3ecMVUO89TTZgB7CHa1LYBgl+dBlZXgZRnpE33zrcuTQ1d7MkeBEA4lazqX
+AXDdz39i4NJu89OkFLtX4Kh0ifnaK//VH/dmAcLJbqt1ZtJSbu8J6eZsK6Vz/kNi
+E5kPDf0j2YVBFGq17OQxYLVdG/oSB15pncLYrHS4uqRbHnOlWmNQZLJqUe5ONzKG
+1xMzfQNcCDr19f6hEAdI+Ha/L2cNb8883kc6jfPsUbWPr46qZ4Znlsil9EYVhj8j
+47RudsV7JEbtxdHgasce
+=VPrv
+-----END PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Immutable branch for ASoC, as requested by Mark Brown
-
-----------------------------------------------------------------
-Charles Keepax (2):
-      mfd: wm5110: Make DSP memories readable
-      ASoC: wm5110: Expose input high pass filter controls
-
- drivers/mfd/wm5110-tables.c           | 73 +++++++++++++++++++++++++++=
-++++++++++++++++++++++++++++++++++++++++++----
- include/linux/mfd/arizona/registers.h | 37 +++++++++++++++++++++++++++=
-++++++++++
- sound/soc/codecs/arizona.c            | 10 ++++++++++
- sound/soc/codecs/arizona.h            |  1 +
- sound/soc/codecs/wm5110.c             | 19 +++++++++++++++++++
- 5 files changed, 136 insertions(+), 4 deletions(-)
-
-
-
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+--T6OnZCvW5HcnivXR--
