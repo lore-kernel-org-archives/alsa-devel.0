@@ -1,15 +1,15 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH 17/18] ASoC: wm8995:
-Date: Thu, 21 Nov 2013 12:38:55 -0200
-Message-ID: <1385044736-14911-19-git-send-email-fabio.estevam@freescale.com>
+Subject: [PATCH 15/18] ASoC: wm8988: Use IS_ENABLED() macro
+Date: Thu, 21 Nov 2013 12:38:53 -0200
+Message-ID: <1385044736-14911-17-git-send-email-fabio.estevam@freescale.com>
 References: <1385044736-14911-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from db9outboundpool.messaging.microsoft.com
- (mail-db9lp0253.outbound.messaging.microsoft.com [213.199.154.253])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B52F2619F0
+ (mail-db9lp0248.outbound.messaging.microsoft.com [213.199.154.248])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CF712619F1
  for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 15:39:37 +0100 (CET)
 In-Reply-To: <1385044736-14911-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,40 +25,42 @@ To: broonie@kernel.org
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Using the IS_ENABLED() macro can make the code shorter and simpler.
+
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/codecs/wm8995.c | 6 +++---
+ sound/soc/codecs/wm8988.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
-index da2899e6..4300caf 100644
---- a/sound/soc/codecs/wm8995.c
-+++ b/sound/soc/codecs/wm8995.c
-@@ -2293,7 +2293,7 @@ static struct spi_driver wm8995_spi_driver = {
+diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
+index 39b9acc..a55e1c2 100644
+--- a/sound/soc/codecs/wm8988.c
++++ b/sound/soc/codecs/wm8988.c
+@@ -912,7 +912,7 @@ static struct spi_driver wm8988_spi_driver = {
  };
- #endif
+ #endif /* CONFIG_SPI_MASTER */
  
 -#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 +#if IS_ENABLED(CONFIG_I2C)
- static int wm8995_i2c_probe(struct i2c_client *i2c,
+ static int wm8988_i2c_probe(struct i2c_client *i2c,
  			    const struct i2c_device_id *id)
  {
-@@ -2350,7 +2350,7 @@ static int __init wm8995_modinit(void)
+@@ -964,7 +964,7 @@ static struct i2c_driver wm8988_i2c_driver = {
+ static int __init wm8988_modinit(void)
  {
  	int ret = 0;
- 
 -#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 +#if IS_ENABLED(CONFIG_I2C)
- 	ret = i2c_add_driver(&wm8995_i2c_driver);
- 	if (ret) {
- 		printk(KERN_ERR "Failed to register wm8995 I2C driver: %d\n",
-@@ -2371,7 +2371,7 @@ module_init(wm8995_modinit);
+ 	ret = i2c_add_driver(&wm8988_i2c_driver);
+ 	if (ret != 0) {
+ 		printk(KERN_ERR "Failed to register WM8988 I2C driver: %d\n",
+@@ -984,7 +984,7 @@ module_init(wm8988_modinit);
  
- static void __exit wm8995_exit(void)
+ static void __exit wm8988_exit(void)
  {
 -#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 +#if IS_ENABLED(CONFIG_I2C)
- 	i2c_del_driver(&wm8995_i2c_driver);
+ 	i2c_del_driver(&wm8988_i2c_driver);
  #endif
  #if defined(CONFIG_SPI_MASTER)
 -- 
