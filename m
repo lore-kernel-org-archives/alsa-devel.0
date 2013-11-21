@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: ASoC fixes for v3.13
-Date: Thu, 21 Nov 2013 14:49:31 +0000
-Message-ID: <20131121144931.GB8120@sirena.org.uk>
-References: <20131121140456.GS2674@sirena.org.uk>
- <s5hli0hom0v.wl%tiwai@suse.de>
+Subject: Re: [PATCH 16/18] ASoC: wm8990:
+Date: Thu, 21 Nov 2013 14:49:53 +0000
+Message-ID: <20131121144953.GC8120@sirena.org.uk>
+References: <1385044736-14911-1-git-send-email-fabio.estevam@freescale.com>
+ <1385044736-14911-18-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5594505544279850888=="
+Content-Type: multipart/mixed; boundary="===============1846276845589312185=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 131082650E5
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 15:49:34 +0100 (CET)
-In-Reply-To: <s5hli0hom0v.wl%tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id AF1522650BE
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 15:49:55 +0100 (CET)
+In-Reply-To: <1385044736-14911-18-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,67 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5594505544279850888==
+--===============1846276845589312185==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZfOjI3PrQbgiZnxM"
+	protocol="application/pgp-signature"; boundary="R+My9LyyhiUvIEro"
 Content-Disposition: inline
 
 
---ZfOjI3PrQbgiZnxM
+--R+My9LyyhiUvIEro
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 21, 2013 at 03:41:04PM +0100, Takashi Iwai wrote:
+On Thu, Nov 21, 2013 at 12:38:54PM -0200, Fabio Estevam wrote:
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 
-> +#else
-> +static inline int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
-> +					 struct snd_soc_jack_gpio *gpios)
-> +{
-> +	return 0;
-> +}
-> +static inline void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
-> +					   struct snd_soc_jack_gpio *gpios)
-> +{
-> +}
->  #endif
+Please supply subject lines for your patches.
 
-This stubbing seems fine (with a blank between those two).  Can you send
-a patch please?
-
---ZfOjI3PrQbgiZnxM
+--R+My9LyyhiUvIEro
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSjh14AAoJELSic+t+oim98M8P/RUGo+Iw0AIiVwDjtZi0rlqV
-SQLifFuN9CBYFjM47J5vTAVvWj9v80Su0z7BQCpA0UPNGIZWvpmXSD19cwQ7GxCq
-rJjRekn/eR2oGODJq2J1+GiSnc9gEjDeOkj/sAdDAdvW0KTABrvt4/+x998ZeVUT
-ACNpcpxLOZt/0Lq2E4rxjNcYbNRjGpmulfhIOftZZL3KM3rDD7uANaDNE/tj0WXC
-Q21xg1NSEF7h1EOIfkc7Nd6D0GPYMJcIQN58s3pGdvqwsXZ2Uvsdd/yPW4m6uLGr
-28jRLETxy7BSCYq9dzX6an/kwzUuVEdu6EzUQU5nMQnUZISSt4B1xvwqGlKltIaD
-gS6s6vaULmu6b48HukuPGUW77QgYi22fjiXJvDxENMK43ugfafRSqUjdQctQ01LS
-dMdKtql1/BU2HSajqdfX6q4bi5oke5LnvFl56QBAsAprnd3xO5wVWFzwILtaJm6m
-xfjzi4Ru1Au6ja7JjYIotEUIOa8efDSK84yb7NlF+vF7+YDvlVd1H7//kNNybolU
-mmYG5y/ONaxH4uU7rAmQp6A0nE3LP4gkbj8Q1hkPWwbBbzbaqeVHSrWytsGOHMb0
-dY9+uLP5V8kvh67Wu6FtwwK31Ur/YUOFukqO3eAs+SUPejm2y+8Xjd8LGnYE04AY
-09fXig+a3urZrdh1gCs1
-=vmxW
+iQIcBAEBAgAGBQJSjh2OAAoJELSic+t+oim91eIP/258iFVuTDfF6B0TTq+t6e+N
+lXt1hy84TpSrE/IwYM3Gx9SihIitQ3PvA5jldXjMZq9XgOlJ1t7G0cE8hjoDB4IT
+jBwQZGcdRDoNSPJ0Yjzy84CUhhFw2BBF45arhC5Mbb2JIst+i41st7VrImeJrOBa
+Seh296F99Ux5Gqnfx522vxU/8Nya+XMMc6FzSF+P/a1z7DVkFi8KoAA/to+reSJk
+/rzCnVY4ieSf2mRNIrfcbHLPAyOYXsJ7IlH8MF3+6PpMb11brxs1SyW8JxfiG1eD
+Fnj+0FudsAdFXUObJ6/t/CWc0MG5p7nzgNqaq4kYONuZUNtOZ4YV4GMQH/uNIEZ0
+x1gV8ey8YIGDApArSGwK6MEuvNwG2zKqtpfZ5xKKuY8DmKpVCoXnFrxADKZ0+sZ2
+wCfPaEj135T9DYIMEFCFKPqLhydrPWn1G/ZNSfyqJRMeEkvbYRbz3RV0C49LSTwh
+cWrKgdkA6aerMnkD55GTL9kKUEEP8OGWv3mF5Efcp2EF5dTSak9s/PcSIyMzT2hf
+gporNzJSHnMYNzy8Pra5fD+rxgDg9C4VRdIa3aFpk4+cJ6ivOFP1FwH/D37PrZs2
+TipCbwWkzXyMm4j6nc3bnWOkR+BwGCUd8wrNFCmFq6sadPVnbpD8b6WQ8VZ5m+vj
+1GSZs3/jxooTYUvJi5ak
+=w5tg
 -----END PGP SIGNATURE-----
 
---ZfOjI3PrQbgiZnxM--
+--R+My9LyyhiUvIEro--
 
---===============5594505544279850888==
+--===============1846276845589312185==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5594505544279850888==--
+--===============1846276845589312185==--
