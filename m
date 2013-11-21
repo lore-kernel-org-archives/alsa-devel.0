@@ -1,66 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] mfd: Immutable branch for ASoC
-Date: Thu, 21 Nov 2013 12:59:47 +0000
-Message-ID: <20131121125947.GP2674@sirena.org.uk>
-References: <1384877043-5640-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1384877043-5640-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20131120091636.GA30012@lee--X1>
- <20131120102045.GW2674@sirena.org.uk>
- <20131120104526.GA30524@lee--X1>
- <20131120113400.GY2674@sirena.org.uk>
- <20131121090724.GB19368@lee--X1>
- <20131121114105.GO2674@sirena.org.uk>
- <20131121122700.GF23067@lee--X1>
+Subject: Re: [PATCH 06/11] wm8728: Use IS_ENABLED() macro
+Date: Thu, 21 Nov 2013 13:09:45 +0000
+Message-ID: <20131121130945.GQ2674@sirena.org.uk>
+References: <1384969072-25906-1-git-send-email-festevam@gmail.com>
+ <1384969072-25906-8-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T6OnZCvW5HcnivXR"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20131121122700.GF23067@lee--X1>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============3322480479644598315=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id D614426072A
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 14:09:50 +0100 (CET)
+In-Reply-To: <1384969072-25906-8-git-send-email-festevam@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---T6OnZCvW5HcnivXR
+--===============3322480479644598315==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="k1RcuuA4CmYq3pph"
+Content-Disposition: inline
+
+
+--k1RcuuA4CmYq3pph
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 21, 2013 at 12:27:00PM +0000, Lee Jones wrote:
-
-> The following changes since commit 5e01dc7b26d9f24f39abace5da98ccbd6a5ceb=
-52:
+On Wed, Nov 20, 2013 at 03:37:47PM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
 >=20
->   Linux 3.12 (2013-11-03 15:41:51 -0800)
->=20
-> are available in the git repository at:
->=20
->   git://git.linaro.org/people/ljones/mfd.git tags/ib-asoc-1
+> Using the IS_ENABLED() macro can make the code shorter and simpler.
 
-Pulled, thanks.
+Applied, thanks.
 
---T6OnZCvW5HcnivXR
+--k1RcuuA4CmYq3pph
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSjgO/AAoJELSic+t+oim9+oEP/RkRKyAwfZLF9Co5ctraA9Z4
-gMVOkSVu+6N/yKAdMyUKnAkoiTtHdMw8Wh8LKEeNNokcU9Za04Y/9BxW5YUMR6sQ
-oRvPTDyow0ciOZ8KcD9ifNY6aKaKXIjwzMGIRan9Sfq9zC5inqiJPg7njfigrgR7
-GR0hFMBwEeQjiDFwLD/GN2VOXo4U6PNZrhUai+ESkoGDoFFgaJ0wikn7iPNKo98J
-dYQB0LRi6aoEKOqoX4acRsz4PrigFqHGlB40LWeEidwO2GiHH3BKnGWJeRrRMm+v
-ngGHhQLcSidlGlk/ZeV2D1c7NrohRY0XryVufgXCxxFNYYiq7FUTe/BZzFt8oPig
-a/iPbsSJHFXOlJxr8U582YXfPcNmtStWgqpgpo4/dfhjCGhBdcml3qrdrvVgOrbH
-WWdfz3ecMVUO89TTZgB7CHa1LYBgl+dBlZXgZRnpE33zrcuTQ1d7MkeBEA4lazqX
-AXDdz39i4NJu89OkFLtX4Kh0ifnaK//VH/dmAcLJbqt1ZtJSbu8J6eZsK6Vz/kNi
-E5kPDf0j2YVBFGq17OQxYLVdG/oSB15pncLYrHS4uqRbHnOlWmNQZLJqUe5ONzKG
-1xMzfQNcCDr19f6hEAdI+Ha/L2cNb8883kc6jfPsUbWPr46qZ4Znlsil9EYVhj8j
-47RudsV7JEbtxdHgasce
-=VPrv
+iQIcBAEBAgAGBQJSjgYWAAoJELSic+t+oim9F7UP/102Q1q1B6bS4rSU2Nyz+Jxj
+sstTbunO742LDKfLs9Dpls7e2RGr5cABIkE0eKJz1qU9sCc4gLBgbnPEtOoZ/WqD
+7nzcvSJvpy9V+jfA8KgcokkCH46SG51uD1PHNmKfLkbUq6A8cZ7oIpCPTekoQoNn
+A3m8j4gZHQsbKIk6taJVrWvz2g+hy3XYMH4YkOTX5xEHsPa1HZ3Bi9+SlhR7K+QQ
+K7ziubWPpQ5VHlkPe/daXPDRU6b2gLRahYmSXKt2SeE0Mq2gnVgQgO/XavYvolku
+lLhUR9XOMKTSxyhKl1FKViIVLBKZLE62J6B56/GEJpLHqFh6WJ3GBJe8mptIrf2e
+jqunPaubynU0F7dB/2DeHsbIqRp298gfkrgJa+SU9SXWm7lYBbot09FVShWBq3lE
+Y7KOQR4eUx33SAdsUnn4NR6XvqxQX5QIky/hOVSwM72b6gvSaNhhr9skPEmm08Ay
+7tceDYg2t+JZDQok6ZgsaVhrZMTXhbbDMN8lvanOWSDOY2njsNp6Z9qmZWFiiK9p
+dO+oJpWhiMyDXaR2EDQ8GUAqCZf1QdBW1f3ZT/WSXEFpP6NwTlvdkYjlsg0l+75N
+O4d4q2evtzfimryBahSOrft7L/iy7vPCv3jew2PSTojo0SErSgIpveibSf2vQsMt
+YUp5mmtOVBv9a4KvsGFb
+=mGcY
 -----END PGP SIGNATURE-----
 
---T6OnZCvW5HcnivXR--
+--k1RcuuA4CmYq3pph--
+
+--===============3322480479644598315==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3322480479644598315==--
