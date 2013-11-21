@@ -1,15 +1,15 @@
 From: Roman Volkov <v1ron@mail.ru>
-Subject: [PATCH v2 1/4] ALSA: oxygen: Change SPI
-	writing/waiting logic
-Date: Thu, 21 Nov 2013 19:22:38 +0400
-Message-ID: <20131121192238.211b13da@v1ron-desktop>
+Subject: [PATCH v2 2/4]: ALSA: oxygen: Add mute mask to the
+	header file
+Date: Thu, 21 Nov 2013 19:24:46 +0400
+Message-ID: <20131121192446.5fe8fe7a@v1ron-desktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2.mail.ru (smtp2.mail.ru [94.100.176.130])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D43E260786
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 16:22:48 +0100 (CET)
+Received: from smtp45.i.mail.ru (smtp45.i.mail.ru [94.100.177.105])
+ by alsa0.perex.cz (Postfix) with ESMTP id C02052608B8
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 16:24:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,67 +23,21 @@ To: clemens@ladisch.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Move waiting logic into separate function, wait after triggering the transaction (not before), increase the wait timeout, error handling. Should not affect other card models.
+I need this mask to mute unnecessary channels
 
 Signed-off-by: Roman I. Volkov <v1ron@mail.ru>
 ---
-diff -uprN linux-3.12/sound/pci/oxygen/oxygen.h linux-3.12-my/sound/pci/oxygen/oxygen.h
---- linux-3.12/sound/pci/oxygen/oxygen.h	2013-11-04 03:41:51.000000000 +0400
-+++ linux-3.12-my/sound/pci/oxygen/oxygen.h	2013-11-20 22:20:44.000000000 +0400
-@@ -198,7 +198,7 @@ void oxygen_write_ac97(struct oxygen *ch
- void oxygen_write_ac97_masked(struct oxygen *chip, unsigned int codec,
- 			      unsigned int index, u16 data, u16 mask);
- 
--void oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data);
-+int oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data);
- void oxygen_write_i2c(struct oxygen *chip, u8 device, u8 map, u8 data);
- 
- void oxygen_reset_uart(struct oxygen *chip);
-diff -uprN linux-3.12/sound/pci/oxygen/oxygen_io.c linux-3.12-my/sound/pci/oxygen/oxygen_io.c
---- linux-3.12/sound/pci/oxygen/oxygen_io.c	2013-11-04 03:41:51.000000000 +0400
-+++ linux-3.12-my/sound/pci/oxygen/oxygen_io.c	2013-11-20 15:34:14.000000000 +0400
-@@ -194,23 +194,34 @@ void oxygen_write_ac97_masked(struct oxy
- }
- EXPORT_SYMBOL(oxygen_write_ac97_masked);
- 
--void oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data)
-+static int oxygen_wait_spi(struct oxygen *chip)
- {
--	unsigned int count;
-+	/* Higher interval to be sure - 400 microseconds */
-+	unsigned int count = 100;
- 
--	/* should not need more than 30.72 us (24 * 1.28 us) */
--	count = 10;
--	while ((oxygen_read8(chip, OXYGEN_SPI_CONTROL) & OXYGEN_SPI_BUSY)
--	       && count > 0) {
-+	for (;;) {
-+		if ((oxygen_read8(chip, OXYGEN_SPI_CONTROL) &
-+						OXYGEN_SPI_BUSY) == 0)
-+			break;
-+		if (count == 0) {
-+			snd_printk(KERN_ERR "oxygen: spi wait timeout\n");
-+			return -EIO;
-+		}
- 		udelay(4);
--		--count;
-+		count--;
- 	}
-+	return 0;
-+}
- 
-+int oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data)
-+{
- 	oxygen_write8(chip, OXYGEN_SPI_DATA1, data);
- 	oxygen_write8(chip, OXYGEN_SPI_DATA2, data >> 8);
- 	if (control & OXYGEN_SPI_DATA_LENGTH_3)
- 		oxygen_write8(chip, OXYGEN_SPI_DATA3, data >> 16);
- 	oxygen_write8(chip, OXYGEN_SPI_CONTROL, control);
-+
-+	return oxygen_wait_spi(chip);
- }
- EXPORT_SYMBOL(oxygen_write_spi);
- 
+diff -uprN linux-3.12/sound/pci/oxygen/oxygen_regs.h linux-3.12-my/sound/pci/oxygen/oxygen_regs.h
+--- linux-3.12/sound/pci/oxygen/oxygen_regs.h	2013-11-04 03:41:51.000000000 +0400
++++ linux-3.12-my/sound/pci/oxygen/oxygen_regs.h	2013-11-20 12:08:07.000000000 +0400
+@@ -318,6 +318,7 @@
+ #define  OXYGEN_PLAY_MUTE23		0x0002
+ #define  OXYGEN_PLAY_MUTE45		0x0004
+ #define  OXYGEN_PLAY_MUTE67		0x0008
++#define  OXYGEN_PLAY_MUTE_MASK		0x000f
+ #define  OXYGEN_PLAY_MULTICH_MASK	0x0010
+ #define  OXYGEN_PLAY_MULTICH_I2S_DAC	0x0000
+ #define  OXYGEN_PLAY_MULTICH_AC97	0x0010
 -- 
 Kind regards,
 Roman Volkov,
