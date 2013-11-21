@@ -1,16 +1,16 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH 16/18] ASoC: wm8990:
-Date: Thu, 21 Nov 2013 12:38:54 -0200
-Message-ID: <1385044736-14911-18-git-send-email-fabio.estevam@freescale.com>
+Subject: [PATCH 18/18] AsoC: wm9081:
+Date: Thu, 21 Nov 2013 12:38:56 -0200
+Message-ID: <1385044736-14911-20-git-send-email-fabio.estevam@freescale.com>
 References: <1385044736-14911-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe004.messaging.microsoft.com [216.32.180.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 02D92260307
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 15:39:32 +0100 (CET)
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id BEA5C2610A0
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 15:39:33 +0100 (CET)
 In-Reply-To: <1385044736-14911-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,39 +27,21 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/codecs/wm8990.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm9081.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
-index 253c88b..34f0020 100644
---- a/sound/soc/codecs/wm8990.c
-+++ b/sound/soc/codecs/wm8990.c
-@@ -1376,7 +1376,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8990 = {
- 	.volatile_register = wm8990_volatile_register,
+diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+index 630b3d7..0982c1d 100644
+--- a/sound/soc/codecs/wm9081.c
++++ b/sound/soc/codecs/wm9081.c
+@@ -1326,7 +1326,7 @@ static const struct regmap_config wm9081_regmap = {
+ 	.cache_type = REGCACHE_RBTREE,
  };
  
 -#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 +#if IS_ENABLED(CONFIG_I2C)
- static int wm8990_i2c_probe(struct i2c_client *i2c,
+ static int wm9081_i2c_probe(struct i2c_client *i2c,
  			    const struct i2c_device_id *id)
  {
-@@ -1423,7 +1423,7 @@ static struct i2c_driver wm8990_i2c_driver = {
- static int __init wm8990_modinit(void)
- {
- 	int ret = 0;
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-+#if IS_ENABLED(CONFIG_I2C)
- 	ret = i2c_add_driver(&wm8990_i2c_driver);
- 	if (ret != 0) {
- 		printk(KERN_ERR "Failed to register wm8990 I2C driver: %d\n",
-@@ -1436,7 +1436,7 @@ module_init(wm8990_modinit);
- 
- static void __exit wm8990_exit(void)
- {
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-+#if IS_ENABLED(CONFIG_I2C)
- 	i2c_del_driver(&wm8990_i2c_driver);
- #endif
- }
 -- 
 1.8.1.2
