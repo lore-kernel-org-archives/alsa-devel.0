@@ -1,25 +1,27 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: [GIT PULL] mfd: Immutable branch for ASoC
-Date: Thu, 21 Nov 2013 09:07:24 +0000
-Message-ID: <20131121090724.GB19368@lee--X1>
-References: <1384877043-5640-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1384877043-5640-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20131120091636.GA30012@lee--X1>
- <20131120102045.GW2674@sirena.org.uk>
- <20131120104526.GA30524@lee--X1>
- <20131120113400.GY2674@sirena.org.uk>
+From: Richard Genoud <richard.genoud@gmail.com>
+Subject: Re: Bug? Sound support for at91sam9x5-wm8731 based
+	boards
+Date: Thu, 21 Nov 2013 10:51:05 +0100
+Message-ID: <CACQ1gAio-OEPoPqO8dFJ05dJiAxRSdVMsW-MFjf9tpwTsv67UQ@mail.gmail.com>
+References: <1384878685-1515-1-git-send-email-tony@atomide.com>
+ <1384878685-1515-3-git-send-email-tony@atomide.com>
+ <031f01cee547$950b5670$bf220350$@com>
+ <CACQ1gAgykmgPKY4SHujnNtm4Sr=wt5knLkQL-MRS_pC73bOi4Q@mail.gmail.com>
+ <033601cee552$7c2c2570$74847050$@com>
+ <CACQ1gAhvS7PSbK0SuhrB8TPS8Rkd-AdqZ-=T+Ntjyx7PsR7XaQ@mail.gmail.com>
+ <CACQ1gAh7UAkT1s_=gOKpzEt5bm9FAGf0gL-yM6=r5ch7bMksBA@mail.gmail.com>
+ <045e01cee617$b53cf3b0$1fb6db10$@com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f50.google.com (mail-pb0-f50.google.com
- [209.85.160.50])
- by alsa0.perex.cz (Postfix) with ESMTP id E74892607C8
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 10:07:32 +0100 (CET)
-Received: by mail-pb0-f50.google.com with SMTP id rr13so4770589pbb.23
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 01:07:31 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20131120113400.GY2674@sirena.org.uk>
+Received: from mail-la0-f49.google.com (mail-la0-f49.google.com
+ [209.85.215.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 480552607D7
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 10:51:26 +0100 (CET)
+Received: by mail-la0-f49.google.com with SMTP id er20so8170485lab.22
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 01:51:25 -0800 (PST)
+In-Reply-To: <045e01cee617$b53cf3b0$1fb6db10$@com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,31 +31,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Zhong Li <zql@glomationinc.com>
+Cc: alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-PiBTdXJlLCBhZGQgbXkgYWNrIGFuZCBnaXZlIG1lIGEgc2lnbmVkIHRhZyB0byBwdWxsIGZyb20g
-cGxlYXNlLgoKVGhlIGZvbGxvd2luZyBjaGFuZ2VzIHNpbmNlIGNvbW1pdCA1ZTAxZGM3YjI2ZDlm
-MjRmMzlhYmFjZTVkYTk4Y2NiZDZhNWNlYjUyOgoKICBMaW51eCAzLjEyICgyMDEzLTExLTAzIDE1
-OjQxOjUxIC0wODAwKQoKYXJlIGF2YWlsYWJsZSBpbiB0aGUgZ2l0IHJlcG9zaXRvcnkgYXQ6Cgog
-IGdpdDovL2dpdC5saW5hcm8ub3JnL3Blb3BsZS9sam9uZXMvbWZkLmdpdCB0YWdzL2liLWFzb2Mt
-MQoKZm9yIHlvdSB0byBmZXRjaCBjaGFuZ2VzIHVwIHRvIDkzNDE1NjYzOWRjMDgwMmE4OTBhZWJh
-NjA1N2Y3ZGU3ZGU4NGUwMmQ6CgogIEFTb0M6IHdtNTExMDogRXhwb3NlIGlucHV0IGhpZ2ggcGFz
-cyBmaWx0ZXIgY29udHJvbHMgKDIwMTMtMTEtMjEgMDg6NTk6NTcgKzAwMDApCgotLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkFT
-b0MgaW1tdXRhYmxlIGJyYW5jaCwgYXMgcmVxdWVzdGVkIGJ5IE1hcmsgQnJvd24uCi0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-Q2hhcmxlcyBLZWVwYXggKDEpOgogICAgICBBU29DOiB3bTUxMTA6IEV4cG9zZSBpbnB1dCBoaWdo
-IHBhc3MgZmlsdGVyIGNvbnRyb2xzCgogZHJpdmVycy9tZmQvd201MTEwLXRhYmxlcy5jICAgICAg
-ICAgICB8ICA0ICsrKysKIGluY2x1ZGUvbGludXgvbWZkL2FyaXpvbmEvcmVnaXN0ZXJzLmggfCAz
-NyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCiBzb3VuZC9zb2MvY29kZWNz
-L2FyaXpvbmEuYyAgICAgICAgICAgIHwgMTAgKysrKysrKysrKwogc291bmQvc29jL2NvZGVjcy9h
-cml6b25hLmggICAgICAgICAgICB8ICAxICsKIHNvdW5kL3NvYy9jb2RlY3Mvd201MTEwLmMgICAg
-ICAgICAgICAgfCAxOSArKysrKysrKysrKysrKysrKysrCiA1IGZpbGVzIGNoYW5nZWQsIDcxIGlu
-c2VydGlvbnMoKykKCgotLSAKTGVlIEpvbmVzCkxpbmFybyBTVE1pY3JvZWxlY3Ryb25pY3MgTGFu
-ZGluZyBUZWFtIExlYWQKTGluYXJvLm9yZyDilIIgT3BlbiBzb3VyY2Ugc29mdHdhcmUgZm9yIEFS
-TSBTb0NzCkZvbGxvdyBMaW5hcm86IEZhY2Vib29rIHwgVHdpdHRlciB8IEJsb2cKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+2013/11/20 Zhong Li <zql@glomationinc.com>:
+>>
+>> After reading the sources (mainly sound/soc/atmel/atmel_ssc_dai.c), I
+>> don't understand how the right and left channel are synchronized.
+>> (which one will be on TF rising edge, and which one on TF falling edge
+>> ?)
+>> In the SSC_TCMR register, the start event is TF_FALLING when there only
+>> one channel (i.e. mono source always on left channel) With a stereo
+>> source, it's TF_EDGE (Detection of any edge on TF
+>> signal) ; so the samples are transferred on rising and falling edge.
+>> I didn't see anything in the SSC what could synchronize the first
+>> sample with a TF falling edge.
+>> Or I missed something ?
+>>
+>
+>
+> The codec seems to be set to I2S mode based on the parameter name.  And the FSOS field in the TFMR is set to be negative pulse.  So it matches the I2S mode diagram (Figure 27 of WM8731 datasheet).  The high to low on DACLRC (TF line aka PA25 pin) indicate start of the left channel data.  Looks like the TF signal is automatically generated by the SSC controller according to the TFMR settings.
+
+Yes, we use the I2S mode as in wm8731-figure27.
+But the WM8731 is in master mode (wm8731-figure3). So it provides BCLK
+(TK) and frame clock (DACLRC (TF)).
+That's set in sam9x5_wm8731.c :
+dai->dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+SND_SOC_DAIFMT_CBM_CFM;
+DAIFMT_I2S : I2S mode obviously (wm8731 reg 7 bit 0:1 = 2)
+DAIFMT_NB_NF : clock frames phasing (wm8731 reg7 bit4=0, bit7=0 : Left
+channel when DAC is low and BCKL not inverted)
+DAIFMT_CBM_CFM : master mode (wm8731 reg7 bit6=1 )
+
+And I think you read the wrong value for the FSOS field of TFMR
+register : in the I2S + CBM_CFM case, it's set to 0 because TF pin is
+an input for the SSC.
+
+So yes, the wm8731 generates the TK and TF signals and the SSC is
+configured to send 16bits data on every TF edge (SSC_START_EDGE_RF).
+The SSC_FSEDGE_POSITIVE flag will trigger the TXSYN interrupt on a TF
+positive edge.
+That's a way to get the sync between right/left channel I think :
+If we set SSC_FSEDGE_POSITIVE, and enable the TXSYN interrupt, at the
+first interrupt received we could start the DMA transfer (and disable
+the interrupt).
+The SSC will then send the 1st data (left data) on the next TF edge
+which will be a negative edge (left channel).
+
+Richard
