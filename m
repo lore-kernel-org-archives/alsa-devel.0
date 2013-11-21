@@ -1,14 +1,21 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH] ASoC: Rename mid-x86 directory to intel
-Date: Thu, 21 Nov 2013 13:32:24 +0200
-Message-ID: <1385033544-19455-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] mfd: Immutable branch for ASoC
+Date: Thu, 21 Nov 2013 11:41:05 +0000
+Message-ID: <20131121114105.GO2674@sirena.org.uk>
+References: <1384877043-5640-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1384877043-5640-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20131120091636.GA30012@lee--X1>
+ <20131120102045.GW2674@sirena.org.uk>
+ <20131120104526.GA30524@lee--X1>
+ <20131120113400.GY2674@sirena.org.uk>
+ <20131121090724.GB19368@lee--X1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8605061505160845832=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id E7A372602F3
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 12:32:34 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76CF4260307
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 12:41:10 +0100 (CET)
+In-Reply-To: <20131121090724.GB19368@lee--X1>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,82 +25,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-We have other Intel platforms coming having the Smart Sound Technology (SST)
-so rename the mid-x86 directory to intel as originally directory name
-reflected only Intel MID platform.
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/Kconfig                           | 2 +-
- sound/soc/Makefile                          | 2 +-
- sound/soc/{mid-x86 => intel}/Kconfig        | 0
- sound/soc/{mid-x86 => intel}/Makefile       | 0
- sound/soc/{mid-x86 => intel}/mfld_machine.c | 0
- sound/soc/{mid-x86 => intel}/sst_dsp.h      | 0
- sound/soc/{mid-x86 => intel}/sst_platform.c | 0
- sound/soc/{mid-x86 => intel}/sst_platform.h | 0
- 8 files changed, 2 insertions(+), 2 deletions(-)
- rename sound/soc/{mid-x86 => intel}/Kconfig (100%)
- rename sound/soc/{mid-x86 => intel}/Makefile (100%)
- rename sound/soc/{mid-x86 => intel}/mfld_machine.c (100%)
- rename sound/soc/{mid-x86 => intel}/sst_dsp.h (100%)
- rename sound/soc/{mid-x86 => intel}/sst_platform.c (100%)
- rename sound/soc/{mid-x86 => intel}/sst_platform.h (100%)
+--===============8605061505160845832==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wmfuW8osuO2pi9jF"
+Content-Disposition: inline
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 5138b8493051..463a9e25e04f 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -42,7 +42,7 @@ source "sound/soc/jz4740/Kconfig"
- source "sound/soc/nuc900/Kconfig"
- source "sound/soc/omap/Kconfig"
- source "sound/soc/kirkwood/Kconfig"
--source "sound/soc/mid-x86/Kconfig"
-+source "sound/soc/intel/Kconfig"
- source "sound/soc/mxs/Kconfig"
- source "sound/soc/pxa/Kconfig"
- source "sound/soc/samsung/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 8b9e70105dd2..ff291d3e60af 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -16,7 +16,7 @@ obj-$(CONFIG_SND_SOC)	+= davinci/
- obj-$(CONFIG_SND_SOC)	+= dwc/
- obj-$(CONFIG_SND_SOC)	+= fsl/
- obj-$(CONFIG_SND_SOC)	+= jz4740/
--obj-$(CONFIG_SND_SOC)	+= mid-x86/
-+obj-$(CONFIG_SND_SOC)	+= intel/
- obj-$(CONFIG_SND_SOC)	+= mxs/
- obj-$(CONFIG_SND_SOC)	+= nuc900/
- obj-$(CONFIG_SND_SOC)	+= omap/
-diff --git a/sound/soc/mid-x86/Kconfig b/sound/soc/intel/Kconfig
-similarity index 100%
-rename from sound/soc/mid-x86/Kconfig
-rename to sound/soc/intel/Kconfig
-diff --git a/sound/soc/mid-x86/Makefile b/sound/soc/intel/Makefile
-similarity index 100%
-rename from sound/soc/mid-x86/Makefile
-rename to sound/soc/intel/Makefile
-diff --git a/sound/soc/mid-x86/mfld_machine.c b/sound/soc/intel/mfld_machine.c
-similarity index 100%
-rename from sound/soc/mid-x86/mfld_machine.c
-rename to sound/soc/intel/mfld_machine.c
-diff --git a/sound/soc/mid-x86/sst_dsp.h b/sound/soc/intel/sst_dsp.h
-similarity index 100%
-rename from sound/soc/mid-x86/sst_dsp.h
-rename to sound/soc/intel/sst_dsp.h
-diff --git a/sound/soc/mid-x86/sst_platform.c b/sound/soc/intel/sst_platform.c
-similarity index 100%
-rename from sound/soc/mid-x86/sst_platform.c
-rename to sound/soc/intel/sst_platform.c
-diff --git a/sound/soc/mid-x86/sst_platform.h b/sound/soc/intel/sst_platform.h
-similarity index 100%
-rename from sound/soc/mid-x86/sst_platform.h
-rename to sound/soc/intel/sst_platform.h
--- 
-1.8.4.2
+
+--wmfuW8osuO2pi9jF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Nov 21, 2013 at 09:07:24AM +0000, Lee Jones wrote:
+
+> ----------------------------------------------------------------
+> ASoC immutable branch, as requested by Mark Brown.
+> ----------------------------------------------------------------
+> Charles Keepax (1):
+>       ASoC: wm5110: Expose input high pass filter controls
+
+I was expecting patch 1 in the series as well (the DSP stuff won't work
+properly without the register map updates to go with it).
+
+--wmfuW8osuO2pi9jF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSjfFNAAoJELSic+t+oim9DNkP/2StAuJpqUh0K5t56xqyZzxn
+NuFZvXfL3SxFfPgLX4B1Gzhndv+zwRX80qOqA13fB4ba5idxLfzAPGpPNugtsEjJ
+SInyY+1lhCmINwxfZTe+NAjQC7Nhw/e65ygr+JagTnWlDvuOxWj2DipjcEN5tq3b
+H/j0oFc/NHbcTRea+TpxtdwLGhMzVDALaURwBD5ry24pOiBRGj6P0t/9EuvakVQJ
+HlTb2sqCA5VXyZo8E1DLKYiMlWrXF9dVot60oOwToBCGE0tgo/C66HMqlN1oqLNj
+Vawza2TrnIgaeSSG94mZpB2UhQ5BkczNZ12p+dippa6cf65JbQHaDrc3dEY1Am7r
+hhzd1IugX3i8J+0zDVSQOGDQksiD+2XQPdqZD3vdIw2Z9YZ72qcWOezHF5PMHrtj
+BOC32UjRHFSK5/kpoOadqlhjOaa0zplCDHqTKMA+O/i+jnST46Tbs7DzYmuulxJN
+mlFIvEgM1qW+EqjEhfdBK/syXjdZEwLtQdh39io8PJyGqR4qLGAceFi83K5vnihd
+6D3JBT49oy8kZR1aHOIkTmagW3UM2zD2JZ+0v5qOMIzRsmEuY/r+gEyZRpminf6c
+YGZ79OUHjDBdey0KzK0QEDEt1sfeb+udX73o1qGlB6PYHrnBlViUmCaY3mngr1/q
+XUPLwtZve3XNf7FcMPvW
+=vkOe
+-----END PGP SIGNATURE-----
+
+--wmfuW8osuO2pi9jF--
+
+--===============8605061505160845832==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8605061505160845832==--
