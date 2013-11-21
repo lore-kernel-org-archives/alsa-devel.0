@@ -1,16 +1,16 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH 05/18] ASoC: wm8731: Use IS_ENABLED() macro
-Date: Thu, 21 Nov 2013 12:38:43 -0200
-Message-ID: <1385044736-14911-7-git-send-email-fabio.estevam@freescale.com>
+Subject: [PATCH 07/18] ASoC:: wm8741: Use IS_ENABLED() macro
+Date: Thu, 21 Nov 2013 12:38:45 -0200
+Message-ID: <1385044736-14911-9-git-send-email-fabio.estevam@freescale.com>
 References: <1385044736-14911-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db9outboundpool.messaging.microsoft.com
- (mail-db9lp0248.outbound.messaging.microsoft.com [213.199.154.248])
- by alsa0.perex.cz (Postfix) with ESMTP id DBED8260320
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 15:39:19 +0100 (CET)
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe004.messaging.microsoft.com [216.32.181.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5E3A2615E9
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 15:39:20 +0100 (CET)
 In-Reply-To: <1385044736-14911-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,39 +29,39 @@ Using the IS_ENABLED() macro can make the code shorter and simpler.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/codecs/wm8731.c | 6 +++---
+ sound/soc/codecs/wm8741.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 456bb8c..6117107 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -732,7 +732,7 @@ static struct spi_driver wm8731_spi_driver = {
+diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+index b18813c..2895c8d 100644
+--- a/sound/soc/codecs/wm8741.c
++++ b/sound/soc/codecs/wm8741.c
+@@ -500,7 +500,7 @@ static const struct regmap_config wm8741_regmap = {
+ 	.readable_reg = wm8741_readable,
  };
- #endif /* CONFIG_SPI_MASTER */
  
 -#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 +#if IS_ENABLED(CONFIG_I2C)
- static int wm8731_i2c_probe(struct i2c_client *i2c,
+ static int wm8741_i2c_probe(struct i2c_client *i2c,
  			    const struct i2c_device_id *id)
  {
-@@ -791,7 +791,7 @@ static struct i2c_driver wm8731_i2c_driver = {
- static int __init wm8731_modinit(void)
+@@ -617,7 +617,7 @@ static int __init wm8741_modinit(void)
  {
  	int ret = 0;
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-+#if IS_ENABLED(CONFIG_I2C)
- 	ret = i2c_add_driver(&wm8731_i2c_driver);
- 	if (ret != 0) {
- 		printk(KERN_ERR "Failed to register WM8731 I2C driver: %d\n",
-@@ -811,7 +811,7 @@ module_init(wm8731_modinit);
  
- static void __exit wm8731_exit(void)
- {
 -#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 +#if IS_ENABLED(CONFIG_I2C)
- 	i2c_del_driver(&wm8731_i2c_driver);
- #endif
+ 	ret = i2c_add_driver(&wm8741_i2c_driver);
+ 	if (ret != 0)
+ 		pr_err("Failed to register WM8741 I2C driver: %d\n", ret);
+@@ -639,7 +639,7 @@ static void __exit wm8741_exit(void)
  #if defined(CONFIG_SPI_MASTER)
+ 	spi_unregister_driver(&wm8741_spi_driver);
+ #endif
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++#if IS_ENABLED(CONFIG_I2C)
+ 	i2c_del_driver(&wm8741_i2c_driver);
+ #endif
+ }
 -- 
 1.8.1.2
