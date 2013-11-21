@@ -1,19 +1,19 @@
 From: Oleksij Rempel <linux@rempel-privat.de>
 Subject: Re: acceptable noise level for mic boost
-Date: Thu, 21 Nov 2013 17:02:19 +0100
-Message-ID: <528E2E8B.9090805@rempel-privat.de>
+Date: Thu, 21 Nov 2013 17:26:52 +0100
+Message-ID: <528E344C.2030503@rempel-privat.de>
 References: <528E2838.8050208@rempel-privat.de> <s5ha9gxoj7f.wl%tiwai@suse.de>
  <528E2B7D.6080305@rempel-privat.de> <s5h7gc1oiq9.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
- by alsa0.perex.cz (Postfix) with ESMTP id EECAD2608B8
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 17:02:23 +0100 (CET)
-Received: from [192.168.1.138] ([93.218.98.132]) by mail.gmx.com (mrgmx003)
- with ESMTPSA (Nemesis) id 0MK0ur-1VihMO2OqT-001S6u for
- <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 17:02:21 +0100
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0331E260376
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 17:26:54 +0100 (CET)
+Received: from [192.168.1.138] ([93.218.98.132]) by mail.gmx.com (mrgmx102)
+ with ESMTPSA (Nemesis) id 0M5a9E-1VUKcn2fsm-00xau3 for
+ <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 17:26:53 +0100
 In-Reply-To: <s5h7gc1oiq9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -71,7 +71,8 @@ Am 21.11.2013 16:52, schrieb Takashi Iwai:
 > 
 > Give it 1, just like the function above does.
 
-It means i should provide at least 1 level mic boost?
+Hmm... patch_ca0132.c avoid mic boost for dmics. May be it is better way?
+
 
 -- 
 Regards,
