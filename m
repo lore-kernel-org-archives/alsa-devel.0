@@ -1,16 +1,16 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH 14/18] ASoC: wm8985: Use IS_ENABLED() macro
-Date: Thu, 21 Nov 2013 12:38:52 -0200
-Message-ID: <1385044736-14911-16-git-send-email-fabio.estevam@freescale.com>
+Subject: [PATCH 16/18] ASoC: wm8990:
+Date: Thu, 21 Nov 2013 12:38:54 -0200
+Message-ID: <1385044736-14911-18-git-send-email-fabio.estevam@freescale.com>
 References: <1385044736-14911-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe003.messaging.microsoft.com [207.46.163.26])
- by alsa0.perex.cz (Postfix) with ESMTP id F02F12616C9
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 15:39:28 +0100 (CET)
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe004.messaging.microsoft.com [216.32.180.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id 02D92260307
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 15:39:32 +0100 (CET)
 In-Reply-To: <1385044736-14911-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,43 +25,41 @@ To: broonie@kernel.org
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Using the IS_ENABLED() macro can make the code shorter and simpler.
-
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/codecs/wm8985.c | 6 +++---
+ sound/soc/codecs/wm8990.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
-index 18f2bab..271b517 100644
---- a/sound/soc/codecs/wm8985.c
-+++ b/sound/soc/codecs/wm8985.c
-@@ -1148,7 +1148,7 @@ static struct spi_driver wm8985_spi_driver = {
+diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
+index 253c88b..34f0020 100644
+--- a/sound/soc/codecs/wm8990.c
++++ b/sound/soc/codecs/wm8990.c
+@@ -1376,7 +1376,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8990 = {
+ 	.volatile_register = wm8990_volatile_register,
  };
- #endif
  
 -#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 +#if IS_ENABLED(CONFIG_I2C)
- static int wm8985_i2c_probe(struct i2c_client *i2c,
+ static int wm8990_i2c_probe(struct i2c_client *i2c,
  			    const struct i2c_device_id *id)
  {
-@@ -1201,7 +1201,7 @@ static int __init wm8985_modinit(void)
+@@ -1423,7 +1423,7 @@ static struct i2c_driver wm8990_i2c_driver = {
+ static int __init wm8990_modinit(void)
  {
  	int ret = 0;
- 
 -#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 +#if IS_ENABLED(CONFIG_I2C)
- 	ret = i2c_add_driver(&wm8985_i2c_driver);
- 	if (ret) {
- 		printk(KERN_ERR "Failed to register wm8985 I2C driver: %d\n",
-@@ -1221,7 +1221,7 @@ module_init(wm8985_modinit);
+ 	ret = i2c_add_driver(&wm8990_i2c_driver);
+ 	if (ret != 0) {
+ 		printk(KERN_ERR "Failed to register wm8990 I2C driver: %d\n",
+@@ -1436,7 +1436,7 @@ module_init(wm8990_modinit);
  
- static void __exit wm8985_exit(void)
+ static void __exit wm8990_exit(void)
  {
 -#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 +#if IS_ENABLED(CONFIG_I2C)
- 	i2c_del_driver(&wm8985_i2c_driver);
+ 	i2c_del_driver(&wm8990_i2c_driver);
  #endif
- #if defined(CONFIG_SPI_MASTER)
+ }
 -- 
 1.8.1.2
