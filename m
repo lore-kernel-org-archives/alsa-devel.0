@@ -1,64 +1,91 @@
-From: wangbiao <biao.wang@intel.com>
-Subject: [PATCH] wm8994: avoid to enable dcs done irq before init
- completion dcs_done
-Date: Thu, 21 Nov 2013 09:22:58 +0800
-Message-ID: <1384996978.19494.7.camel@wangbiao>
+From: Li Xiubo <Li.Xiubo@freescale.com>
+Subject: Re: [PATCHv2 3/8] ARM: dts: Enables SAI ALSA SoC DAI
+ device for Vybrid VF610 TOWER board.
+Date: Thu, 21 Nov 2013 02:58:22 +0000
+Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F828B5046@039-SN2MPN1-012.039d.mgd.msft.net>
+References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
+ <1383289495-24523-4-git-send-email-Li.Xiubo@freescale.com>
+ <87bo1hk2i7.fsf@nbsps.com>
+ <1DD289F6464F0949A2FCA5AA6DC23F828AD451@039-SN2MPN1-012.039d.mgd.msft.net>
+ <87hab7hxfx.fsf@nbsps.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Dan Carpenter <dan.carpenter@oracle.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: mingo@elte.hu, a.p.zijlstra@chello.nl, akpm@linux-foundation.org, biao.wang@intel.com, di.zhang@intel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from db8outboundpool.messaging.microsoft.com
+ (mail-db8lp0189.outbound.messaging.microsoft.com [213.199.154.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B847260799
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 03:58:31 +0100 (CET)
+In-Reply-To: <87hab7hxfx.fsf@nbsps.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bill Pringlemeir <bpringlemeir@nbsps.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: wang, biao <biao.wang@intel.com>
-Date: Wed, 20 Nov 2013 17:53:28 +0800
-Subject: [PATCH] wm8994: avoid to enable dcs done irq before init completion dcs_done
 
-once code return from request_threaded_irq, irq was setup enabled by
-default, but completion var dcs_done not got initialized yet, if then a
-dcs done irq was raised, system will got hung as the sync mechanism is
-invalid now.
+> >>> This patch add and enable SAI device.
+> >>>
+> >>> arch/arm/boot/dts/vf610-twr.dts | 6 ++++++
+> >>> 1 file changed, 6 insertions(+)
+> >>>
+> >>> diff --git a/arch/arm/boot/dts/vf610-twr.dts
+> >>> b/arch/arm/boot/dts/vf610-twr.dts index 1a58678..e4106dd 100644
+> >>> --- a/arch/arm/boot/dts/vf610-twr.dts
+> >>> +++ b/arch/arm/boot/dts/vf610-twr.dts
+> >>>>> -57,6 +57,12 @@
+> >>> 	status = "okay";
+> >>> };
+> >>
+> >> Should we put a comment here that a TWR-AUDIO-SGTL board is needed?
+> >> Or is this better in a menuconfig?  I guess TWR-AUDIO-SGTL is needed
+> >> as this codec is not on the VF610-TWR main board?
+> >>
+> >
+> > Yes, the SGTL5000 codec is not on the VF610-TWR main board, and needs
+> an extra
+> > 	TWR-AUDIO-SGTL board.
+> >
+> > IMO, puting this comment in the menuconfig is much better.
+> 
+> I agree.  I guess the patch set 6 makes more sense.  Also, you might
+> consider adding a printk in the 'fsl_sgtl5000_probe()'.  I guess that
+> devm_snd_soc_register_card() will fail if the board is not present?  
+>
 
-so this patch try not enable irq when request it until we got things
-ready.
+Yes, you are right.
+The logs:
++++++++++++
+vf610-sgtl5000 sound.3: ASoC: CODEC (null) not registered
+vf610-sgtl5000 sound.3: register soc sound card failed :-517
+-----------
 
-Signed-off-by: wang, biao <biao.wang@intel.com>
-Signed-off-by: Zhang, Di <di.zhang@intel.com>
----
- sound/soc/codecs/wm8994.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 86426a1..d7e59dd 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -3981,6 +3981,7 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 	struct wm8994 *control = dev_get_drvdata(codec->dev->parent);
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	unsigned int dcs_done_irq;
- 	unsigned int reg;
- 	int ret, i;
- 
-@@ -4077,6 +4078,9 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 	wm8994_request_irq(wm8994->wm8994, WM8994_IRQ_TEMP_SHUT,
- 			   wm8994_temp_shut, "Thermal shutdown", codec);
- 
-+	dcs_done_irq = regmap_irq_get_virq(wm8994->wm8994->irq_data,
-+					   WM8994_IRQ_DCS_DONE);
-+	irq_set_status_flags(dcs_done_irq, IRQ_NOAUTOEN);
- 	ret = wm8994_request_irq(wm8994->wm8994, WM8994_IRQ_DCS_DONE,
- 				 wm_hubs_dcs_done, "DC servo done",
- 				 &wm8994->hubs);
-@@ -4313,6 +4317,7 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 	}
- 
- 	wm_hubs_add_analogue_routes(codec, 0, 0);
-+	enable_irq(dcs_done_irq);
- 	snd_soc_dapm_add_routes(dapm, intercon, ARRAY_SIZE(intercon));
- 
- 	switch (control->type) {
--- 
-1.7.0.4
+> +	ret = devm_snd_soc_register_card(&pdev->dev, &fsl_sgt1500_card);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "register soc sound card failed :%d\n"
+> +                               "TWR-AUDIO-SGTL board required.\n",
+> +				ret);
+> +		return ret;
+> +	}
+> 
+> Especially, you can make one kernel that handles both cases w/wo TWR-
+> AUDIO-SGTL board attached.
+> 
+
+Yes, it looks nicer.
+
+Well, as one log about the CODEC already exists? Should the "TWR-AUDIO-SGTL board required.\n" log is still needed here ?
+
+
+--
+Best Regards,
+Xiubo
