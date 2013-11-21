@@ -1,15 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Rename mid-x86 directory to intel
-Date: Thu, 21 Nov 2013 19:18:57 +0000
-Message-ID: <20131121191857.GI8120@sirena.org.uk>
-References: <1385033544-19455-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: Audio Mini Conference Minutes - Edinburgh 21st
+ October 2013
+Date: Thu, 21 Nov 2013 21:58:10 +0200
+Message-ID: <528E65D2.7010507@iki.fi>
+References: <1382985876.2334.64.camel@loki>
+ <CA+v+29hOBcuH-teW+5si8qj9QD7o3bsMYFj8v-YfKJRM0XVn8w@mail.gmail.com>
+ <1384796142.2319.12.camel@loki> <20131121182211.GD8120@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0406307988597707169=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 511202610AB
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 20:19:02 +0100 (CET)
-In-Reply-To: <1385033544-19455-1-git-send-email-jarkko.nikula@linux.intel.com>
+Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
+ [83.102.40.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id ABB992610AB
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 20:58:19 +0100 (CET)
+In-Reply-To: <20131121182211.GD8120@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,58 +24,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, wangxingchao@xiaomi.com, Wang Xingchao <wangxingchao2011@gmail.com>, ruyi@xiaomi.com, Eric Laurent <elaurent@google.com>
 List-Id: alsa-devel@alsa-project.org
 
+21.11.2013 20:22, Mark Brown kirjoitti:
+> On Mon, Nov 18, 2013 at 05:35:42PM +0000, Liam Girdwood wrote:
+>> On Sat, 2013-11-16 at 17:01 +0800, Wang Xingchao wrote:
+> 
+>>>> We could use offload, on roadmap for Hires audio on android PCM,
+>>>> maybe float instead of 24 bit. Need for 192kHz, Probably not use effects.
+> 
+>>> Does android support HBR audio now? As i know from Dolby guys, no
+>>> customers in Android area are buying Dolby TrueHD license, so i guess
+>>> the answer is NO. Most of the customers are from AV receivers and
+>>> BlueRay players.
+> 
+>> Afaik, no one is using high Bit rate audio atm, but there is increasing
+>> interest amongst Android OEMs.
+> 
+> There's a few things shipped doing 192kHz/24 bit - the LG G2 was one of
+> the first IIRC.
 
---===============0406307988597707169==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QDIl5R72YNOeCxaP"
-Content-Disposition: inline
+At least Wang Xingchao seems to be talking specifically about HBR in
+relation to HDMI specification, i.e. compressed audio, not PCM...
 
+HBR audio is the way high-bitrate (over 6.144Mbps) compressed IEC 61937
+streams are bitstreamed through HDMI. The only such formats supported by
+IEC 61937 are DTS-HD MA and Dolby TrueHD (MAT), used on e.g. Blu-ray discs.
 
---QDIl5R72YNOeCxaP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The only in-tree ALSA driver supporting HDMI HBR is HDA, AFAICS.
 
-On Thu, Nov 21, 2013 at 01:32:24PM +0200, Jarkko Nikula wrote:
-> We have other Intel platforms coming having the Smart Sound Technology (SST)
-> so rename the mid-x86 directory to intel as originally directory name
-> reflected only Intel MID platform.
+>> Most of the x86 and ARM HW will support HBR audio over ASoC PCM DAIs and
+>> HDA, but I'm not sure about which HDMI audio devices support HBR in HW
+>> atm...
+> 
+> It should be relatively common I suppose given that video sources have
+> tended to use HBR for a long time (even DVDs do it as standard), though
+> it's possible the mobile
+> chipsets are limited in some way.
 
-This looks good but I'll apply it after the merge window so I don't have
-to worry about rebasing it.
+Video DVDs only do PCM, AC-3, DTS and MP2.
 
---QDIl5R72YNOeCxaP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSjlydAAoJELSic+t+oim99MoP/RsVF9fQCMWJI+FEvK1RE5WA
-Rskb5Iym/j5is+WCs5fbCkkErZ+Nvcjys9uYh6gAbdhxhwCWTxIZhFVOIew6d8jw
-A6bd35wP6CwV4uhKpslM4Dj+8Sgbv5r9QVtRTnkj8AF0tUQWS4tB11dmCmOpu/pm
-1+lopvQkfootWrH+XPJFQr+2Kf5m64RnNiCJAen0CllrLNcJ+7mDcHqFmDsDCoKR
-CMhFqd1+sPz/LmwHDcsZoClUpaObTpZqIfYYauiYgJs8HfkvPFUK36EEDVnav0cg
-ui2LoVozyWu9et32RG7wRS5WxiPFbUBEroTmZOCN8tVnpsb7r6cR3olihsv1m8da
-GfPj80G8v92Y9tCyuulXai5JRaa4F3i2OVoGv2a6ooiZfOudI6hB15iRc9mma7DB
-ZC21kOpnbwQu+3gNCiZV4DSqgP0/ZAI3nQZbwA8HbZ19tDc7bKBQccQISgoOcVBO
-LOhKi4Ju6PAtBPbJIVAUyzS/6eCbFZzJpA5BfEJFzuGVzd3Xg5eLDi6awXgWnBgY
-ZL2ewilYLOUfX90GoICCjau6NCnTwOXU++9INqAF+P2QEyps9cmxEL6eTNNQHUyx
-4IJgRVYD1gYn0Al1+Vk0jw4lXcOiXSbeqFjnN/Z5XCyJt8/sdgl4nUskB8i10uR1
-reFI0GBkZyE7R8iFd5C8
-=CAaY
------END PGP SIGNATURE-----
-
---QDIl5R72YNOeCxaP--
-
---===============0406307988597707169==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0406307988597707169==--
+-- 
+-- 
+Anssi Hannula
