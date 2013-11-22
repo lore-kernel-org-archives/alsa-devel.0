@@ -1,55 +1,76 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Use SND_SOC_DAPM_INIT_REG_VAL in
- SND_SOC_DAPM_MUX
-Date: Fri, 22 Nov 2013 19:48:05 +0000
-Message-ID: <20131122194805.GR14725@sirena.org.uk>
-References: <1385141358-21956-1-git-send-email-swarren@wwwdotorg.org>
- <20131122183216.GP14725@sirena.org.uk>
- <528FA3DD.8030507@wwwdotorg.org>
+From: Jason Mancine <jason@mancine.net>
+Subject: Re: Zoom R16
+Date: Fri, 22 Nov 2013 20:31:10 +0000 (UTC)
+Message-ID: <loom.20131122T212507-512@post.gmane.org>
+References: <CAPrbH=vnQ-xXsRDoj30nra7hB_hDEaF6u3ov0XuDG_ZpFzb3bA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZaW/dtY/7oMe/vLp"
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <528FA3DD.8030507@wwwdotorg.org>
-Sender: stable-owner@vger.kernel.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, ac100@lists.launchpad.net, Stephen Warren <swarren@nvidia.com>, stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id D358426517E
+ for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 21:35:05 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1VjxRQ-0007Qi-AC
+ for alsa-devel@alsa-project.org; Fri, 22 Nov 2013 21:35:04 +0100
+Received: from bb-205-209-90-54.gwi.net ([205.209.90.54])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 21:35:04 +0100
+Received: from jason by bb-205-209-90-54.gwi.net with local (Gmexim 0.1
+ (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 21:35:04 +0100
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Well, I solved part of my own problem -- by removing the .endpoint and 
+.ep_addr settings from the quirk it now works for capture under .ifnum=1. In 
+fact, I now see the interface in JACK listed as hw:R16(#1) which it never 
+had done before. 
 
---ZaW/dtY/7oMe/vLp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+MIDI is also working properly on .ifnum=3
 
-On Fri, Nov 22, 2013 at 11:35:09AM -0700, Stephen Warren wrote:
+So, I am now certain that interface 2 is playback...  however, playback does 
+not work with the following:
 
-> I think it's not the mux values/routing that matter, but the mux power
-> gating.
+{ 
+                                .ifnum = 2, 
+                                .type = QUIRK_AUDIO_FIXED_ENDPOINT, 
+                                .data = & (const struct audioformat) { 
+                                        .formats = SNDRV_PCM_FMTBIT_S24_LE, 
+                                        .channels = 2, 
+                                        .iface = 1, 
+                                        .altsetting = 1, 
+                                        .altset_idx = 1, 
+                                        .attributes = 
+UAC_EP_CS_ATTR_SAMPLE_RATE, 
+                                        .rates = SNDRV_PCM_RATE_44100 | 
+                                                 SNDRV_PCM_RATE_48000 | 
+                                                 SNDRV_PCM_RATE_88200 | 
+                                                 SNDRV_PCM_RATE_96000, 
+                                        .rate_min = 44100, 
+                                        .rate_max = 96000, 
+                                        .nr_rates = 4, 
+                                        .rate_table = (unsigned int[]) { 
+                                                        44100, 48000, 88200, 
+96000 
+                                        } 
+                                } 
+                        }, 
 
-Ah, that mask - yes, none of the devices I've been testing with have
-power control for their muxes.
 
---ZaW/dtY/7oMe/vLp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+This totally freezes the computer...  I am certain that the device is 24 
+bit, supports all four sample rates, and is capable of full duplex 
+operation.  Any suggestions for this playback section?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSj7TyAAoJELSic+t+oim9Vk4QAIxHBixVKeJOurcHhbXcudUA
-9meXVmC0WwMZ4QcATHFS4z3A5Lorqiy59RxTSbc1fTiFUvAd5g0GqTNbsisKJNkL
-tVwV2RHrDujqOAUB7eBJPZ0aCwO9EoBs5A45Q0Tk7svqZDI8PM7V91ogOGziHlko
-RAVvLIGer5uqR0DBQIW8gXG7rDA1N3Q34LcxqVBQ+/7UnTMsgnt3X7iyB+S2Lu1C
-bEdgtC9KKNZKkQO4K9HQowlMGRwXvd+1H5Qrid6b8vIKKUe9JyxLMVBYPTwT5GJj
-vXTMpAXVR7Yfuj3VArCo7SfOpiAOn+F7jVbW7HMbje54KagG8dEVAYJcuo08LqhN
-4h0YcL9NSTmZcJRtvn1B5bEECCmL73iz09kjVkuCyA4CqUnNKmiKcgtt/PuEABQi
-Fa/fC6aA10XNex5ojUD1YMAO88vK2IJHOKQvjnu5aVewEMmTVonRrZoEljJxQWFN
-wYy/GYmbCpGlAgATyfyB9t2WVI2b4CxaO7RSdQnAIoia4jO1eCAn0pS71QWxViiG
-ZUQ2y3W3tx/oea2VX6M4bNuzy+2yOkpooP1GBDlqiSN7DRvxTjHWgyzS0rbnIp55
-pgrb1LqsXfYr5VjMuO23YIcnd0zuQe6gRFrCBpi522jj4BVImQVbTiPWLEmqfOWU
-4/KnvS/DHtKLdiMIm91n
-=6clV
------END PGP SIGNATURE-----
-
---ZaW/dtY/7oMe/vLp--
+Thanks,
+Jason
