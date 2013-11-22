@@ -1,16 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Use SND_SOC_DAPM_INIT_REG_VAL
- in SND_SOC_DAPM_MUX
-Date: Fri, 22 Nov 2013 18:32:16 +0000
-Message-ID: <20131122183216.GP14725@sirena.org.uk>
-References: <1385141358-21956-1-git-send-email-swarren@wwwdotorg.org>
+Subject: Re: [PATCH 2/8] ASoC: fsl-ssi: Move sysfs stats to
+	debugfs
+Date: Fri, 22 Nov 2013 18:33:56 +0000
+Message-ID: <20131122183356.GQ14725@sirena.org.uk>
+References: <1384938262-20554-1-git-send-email-mpa@pengutronix.de>
+ <1384938262-20554-3-git-send-email-mpa@pengutronix.de>
+ <20131121142208.GU2674@sirena.org.uk>
+ <20131122164204.GB5893@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8276838007530616567=="
+Content-Type: multipart/mixed; boundary="===============2981551345852175018=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 332C7265163
- for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 19:32:22 +0100 (CET)
-In-Reply-To: <1385141358-21956-1-git-send-email-swarren@wwwdotorg.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id DA2DE265163
+ for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 19:34:00 +0100 (CET)
+In-Reply-To: <20131122164204.GB5893@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,67 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, stable@vger.kernel.org, ac100@lists.launchpad.net
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8276838007530616567==
+--===============2981551345852175018==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/DkgDsqJFFamjKX0"
+	protocol="application/pgp-signature"; boundary="6tPipYVl+OcoAvSh"
 Content-Disposition: inline
 
 
---/DkgDsqJFFamjKX0
+--6tPipYVl+OcoAvSh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 22, 2013 at 10:29:18AM -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
->=20
-> SND_SOC_DAPM_MUX() doesn't currently initialize the .mask field. This
-> results in the mux never affecting HW, since no bits are ever set or
-> cleared. Fix SND_SOC_DAPM_MUX() to use SND_SOC_DAPM_INIT_REG_VAL() to
-> set up the reg, shift, on_val, and off_val fields like almost all other
-> SND_SOC_xxx() macros. It looks like this was a "typo" in the fixed
-> commit linked below.
+On Fri, Nov 22, 2013 at 05:42:04PM +0100, Markus Pargmann wrote:
+> On Thu, Nov 21, 2013 at 02:22:08PM +0000, Mark Brown wrote:
+> > On Wed, Nov 20, 2013 at 10:04:16AM +0100, Markus Pargmann wrote:
 
-Hrm.  Why has nobody else noticed this?  I've been doing plenty of
-testing that involved changing muxes...  The patch and reasoning makes
-sense but I can't immediately see why any of the testing I've been doing
-recently would've worked without it since it all relies on muxes being
-configured to make any noise.
+> > > This patch moves the statistics to debugfs and disables interrupts
+> > > completely if the kernel is build without DEBUG_FS enabled.
 
---/DkgDsqJFFamjKX0
+> > We can still see the error counts through /proc/interrupts even without
+> > the debugfs file.
+
+> The interrupts are visible without the debugfs file when enabled through
+> SIER register. But it does not show the specific reason for the interrupts.
+
+> I am not sure what you suggest. To remove the stats file completely and
+> always disable interrupts?
+
+No, I'm suggesting not disabling interrupts completely when debugfs is
+disabled.  Since we can still see the interrupts happening even if
+debugfs is not enabled we're still getting diagnostics.
+
+--6tPipYVl+OcoAvSh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSj6MtAAoJELSic+t+oim9FtMQAIJ8j8Pnnf3ZV9d/gC3Jeh+K
-dDWRMhDn6EHCALFOEp9nAFSUAnkgnwpRbaTM+tTD0xBiPdjCV2Ka7CbasfLouRj5
-rSD9uWQVrEXLcrexnns9i6ZAQz0RRdEFS2h3/A5FnezvbWpgzSgW9rTyWy03WxVu
-b6eJ4SrMweyxWe8WhETfMmtDcmoyci1Ek7OltHpBpHULX9FZgWmvIsGlr57s0w88
-mcA4tHeGSlmFND8XWNvhLp6kIa4Xjv1eya3X6NPeZa//2KaIaCLaAU0ao2uRnO2q
-lkL3Qn+9e2bLLR1fwuDPakyLbQYxIuH7rrMtNYDR28wvArIdaeC2JAjOpd9+1X9r
-j/veuOW/tojOoj6+7DBxlkuDpA7wPZkBO1zLxVhQ9dRKz8sa+G7h+uW3wWpfPvmF
-3HLIL5Axg75J083erlzSm7NmWz4gAfYBKTiVlcx2RqA+ZxhSRl4X/Qhrfk1E3P/h
-TOmFNuZ+fCO1xH2kV/a7xLMXQrY74EwXIshZixKFEySB4PbM0r/1kPY144MnN78f
-lDfAJM4zU2LnlfvwsLixiBmF7zvU/a0T47OZvxHEvbtnnxmiP1HkIbFRTIh4tfM+
-zLkwMhCXYa5fNUs2U6MhHyP0zJfl7NZQ3ouq4mcK+H58HYcZ1HIM8nrOJaBMY/Oq
-IypsupJM7mQQNg5++AJ5
-=94dU
+iQIcBAEBAgAGBQJSj6ORAAoJELSic+t+oim9AbAP/1UjE6FddQfZ5an3G+vQRVZX
+ZcVKm9ujvs5iQpow2hMPWCkAKlm92b/O0imQCl1wNz+2laWFySyfq4E6F7/YDWKo
+YTIoTcYKd7nJmYxsD83PFCz118dVWU15a+vTbQsDPjKEgBGyGVkeCYcwy6NNrHEA
+bwmSQdhfESoKrvoLBwGrn6MB+ankxEy1nbtovuzbBuZDpUH9BlVcy+r2+GpDklYL
+rgaC6aqCv85qKU7YzCejco3/6p4Nz7rBoPcJqFVSz0afyeueCsBTETEG5g6kylzr
+DuZnh8wWfE5PMxMHvSe1QhE96wvDpZMlE2jquByvQcvOZhAkC+Hpya5f+o+U7AVu
+zrW9T3y/ua/wOahYKc7SVDQkljcBaYgZred4OhD7DYauu1RdPwKEAX1obVp97ipj
+eHjaVKVbzXFTYsQ1KsnMam3kqodlbwnYfCOAhcE5zZ1kSfwioqrCURzTzMDKhxwA
+sgEUVDtElxBfoldy1f5LFkYzInqiKEcE99wlHzC+1Cw/TlBtYJ5rePURX6fctBYS
+OuVXbtDI3Wi1Cq4InxFIn+rynQuiHDb+lgwbrs56xTl1cBVRAtOHo4uIXOLBM5Mm
+/KFMEm1vGgI8bm/Pf4oI6H24qeRuSgtN1W4ulz/qDOvEqurR3lvx+zqxORklYids
+iC2aXRQQ6D+V8jbHyaW4
+=cHNm
 -----END PGP SIGNATURE-----
 
---/DkgDsqJFFamjKX0--
+--6tPipYVl+OcoAvSh--
 
---===============8276838007530616567==
+--===============2981551345852175018==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8276838007530616567==--
+--===============2981551345852175018==--
