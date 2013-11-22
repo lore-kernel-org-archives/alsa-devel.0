@@ -1,26 +1,15 @@
-From: Bill Pringlemeir <bpringlemeir@nbsps.com>
-Subject: Re: [PATCHv2 3/8] ARM: dts: Enables SAI ALSA SoC DAI
-	device for Vybrid VF610 TOWER board.
-Date: Fri, 22 Nov 2013 10:09:59 -0500
-Message-ID: <87r4a879rs.fsf@nbsps.com>
-References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
- <1383289495-24523-4-git-send-email-Li.Xiubo@freescale.com>
- <87bo1hk2i7.fsf@nbsps.com>
- <1DD289F6464F0949A2FCA5AA6DC23F828AD451@039-SN2MPN1-012.039d.mgd.msft.net>
- <87hab7hxfx.fsf@nbsps.com>
- <1DD289F6464F0949A2FCA5AA6DC23F828B5046@039-SN2MPN1-012.039d.mgd.msft.net>
- <87wqk1hkiv.fsf@nbsps.com>
- <1DD289F6464F0949A2FCA5AA6DC23F828C79F5@039-SN2MPN1-012.039d.mgd.msft.net>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: ak4641: Convert to direct regmap API
+	usage
+Date: Fri, 22 Nov 2013 15:15:59 +0000
+Message-ID: <1385133359-8934-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nsa.nbspaymentsolutions.com
- (71-19-161-253.dedicated.allstream.net [71.19.161.253])
- by alsa0.perex.cz (Postfix) with ESMTP id C4046265011
- for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 16:15:08 +0100 (CET)
-In-Reply-To: <1DD289F6464F0949A2FCA5AA6DC23F828C79F5@039-SN2MPN1-012.039d.mgd.msft.net>
- (Li Xiubo's message of "Fri, 22 Nov 2013 06:46:49 +0000")
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19EA6265011
+ for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 16:16:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,109 +19,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Li Xiubo <Li.Xiubo@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 22 Nov 2013, Li.Xiubo@freescale.com wrote:
+From: Mark Brown <broonie@linaro.org>
 
->> I think that people will understand,
+We're trying to remove the ASoC level I/O functions.
 
->>> vf610-sgtl5000 sound.3: ASoC: CODEC (null) not registered
->>> vf610-sgtl5000 sound.3: TWR-AUDIO-SGTL board required.
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/ak4641.c | 38 +++++++++++++++++++++++++-------------
+ 1 file changed, 25 insertions(+), 13 deletions(-)
 
->> As oppose to the typical 'dev_err()' of "register soc sound card
->> failed :XXX".  This message looks like something abnormal went wrong.  At
->> least 'dev_err()' maybe the wrong level?
-
->> With just the error code, people will have to look through code to
->> diagnose this and may just think that something is wrong with the driver.
->> It will be a very common case that a user will not have this board.  I
->> just think the message could be more explicit to avoid confusion.
-
-> Yes, I agree.  Well, maybe it not very explicitly points out the
-> actual failling message. And for the tower, the TWR-AUDIO-SGTL board
-> maybe the most likely error case.
-
-> From the ASoC subsystem, we can see that there are more than 2
-> situations that will return the numeric '-517', and before that there
-> will be one explicit failing message printing out as we have seen.
-
-> How about putting this comment in the menuconfig ?
-
-> The following logs are the situation:
-> 1, Plug in the TWR-AUDIO-SGTL sub-board.
-> 2, Enable the SGTL5000 driver.
-> 3, Disable the CPU DAI driver, here it's the SAI driver.
-> ++++++++++++
-> sgtl5000 0-000a: sgtl5000 revision 0x11
-> vf610-sgtl5000 sound.3: ASoC: CPU DAI (null) not registered
-> vf610-sgtl5000 sound.3: register soc sound card failed :-517
-> ------------
-
-> And the failed numeric is '-517' too.
-
-Won't that be prevented by,
-
-+config SND_SOC_FSL_SGTL5000_VF610
-+	tristate "SoC Audio support for FSL boards with sgtl5000"
-+	depends on OF && I2C
-+	select SND_SOC_FSL_SAI
-
-Or do you have to manually edit the '.config' to get this?  Maybe you
-could also get this message by messing with the vf610-twr.dts 'sound'
-stanza.  Maybe these people are a little more use to being bitten?
-
->> That is just a suggestion.  I know when I booted the TimeSys version of
->> Linux and before I looked at the schematic, I didn't know why the codec
->> failed to register and I thought I had a u-boot issue and/or the code was
->> not working for my board.
-
->> PS: For those not familiar with the tower.  The VF610-TWR has riser cards
->> at the sides and different boards can be connected.  The TWR-AUDIO-SGTL
->> is another board that needs to be plugged in.
-
-I look for other places that a board has an optional daughter board.  For
-the most part, the menuconfig had an option to include the driver and
-then platform initialization code 'probed' the device and provide a
-message.
-
-For instance, the 3ds_debugboard.c in mxc_expio_init() has a message,
-
- pr_info("3-Stack Debug board not detected\n");
-
-I don't know if there is an Alsa standard mechanism for handling this or
-something in the device tree infrastructure.  However, I am pretty sure
-that we could say the board is not there if the i2c device doesn't
-respond with it's id.  But maybe this is hidden by the ASOC
-infrastructure?
-
-It will be quite common for people to run a 'imx_v6_v7_defconfig' with
-the 'vf610-twr.dts'.  These people won't read a menu config; in fact the
-binary maybe delivered to them.
-
-I read the error as 'EPROBE_DEFER'.  We have this in the SGTL5000 codec
-and soc_core.c.  The sgtl5000_i2c_probe() will never be called if the
-board is not present.  So I think the error is from soc_bind_dai_link(),
-
-	if (!rtd->codec) {
-		dev_err(card->dev, "ASoC: CODEC %s not registered\n",
-			dai_link->codec_name);
-		return -EPROBE_DEFER;
-	}
-
-I guess the issue is the order of the sub-system initialization and the
-soc-core doesn't want to make any assumptions about this.  I am not sure
-if there is some way an SOC machine file can look to see if a codec is
-not populated in it's probe.  Or if it is expected that the machine file
-will be probed multiple times when '-EPROBE_DEFER' is returned.  This
-maybe for either the DAI or the codec and is abnormal for the machine.
-
-In any case, an "TWR-AUDIO-SGTL board required.\n" would be fairly
-obvious to anyone reading the logs.  They should be able to see if they
-have this board or not.  If they have it, then the error -517 is from
-something else.  I agree that always printing this out is not the most
-elegant, but I think it is the more pragmatic than not having it.
-
-Fwiw,
-Bill Pringlemeir.
+diff --git a/sound/soc/codecs/ak4641.c b/sound/soc/codecs/ak4641.c
+index 49cc5f6d6dba..94cbe508dd37 100644
+--- a/sound/soc/codecs/ak4641.c
++++ b/sound/soc/codecs/ak4641.c
+@@ -17,6 +17,7 @@
+ #include <linux/gpio.h>
+ #include <linux/pm.h>
+ #include <linux/i2c.h>
++#include <linux/regmap.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -30,6 +31,7 @@
+ 
+ /* codec private data */
+ struct ak4641_priv {
++	struct regmap *regmap;
+ 	unsigned int sysclk;
+ 	int deemph;
+ 	int playback_fs;
+@@ -38,12 +40,12 @@ struct ak4641_priv {
+ /*
+  * ak4641 register cache
+  */
+-static const u8 ak4641_reg[AK4641_CACHEREGNUM] = {
+-	0x00, 0x80, 0x00, 0x80,
+-	0x02, 0x00, 0x11, 0x05,
+-	0x00, 0x00, 0x36, 0x10,
+-	0x00, 0x00, 0x57, 0x00,
+-	0x88, 0x88, 0x08, 0x08
++static const struct reg_default ak4641_reg_defaults[] = {
++	{  0, 0x00 }, {  1, 0x80 }, {  2, 0x00 }, {  3, 0x80 },
++	{  4, 0x02 }, {  5, 0x00 }, {  6, 0x11 }, {  7, 0x05 },
++	{  8, 0x00 }, {  9, 0x00 }, { 10, 0x36 }, { 11, 0x10 },
++	{ 12, 0x00 }, { 13, 0x00 }, { 14, 0x57 }, { 15, 0x00 },
++	{ 16, 0x88 }, { 17, 0x88 }, { 18, 0x08 }, { 19, 0x08 }
+ };
+ 
+ static const int deemph_settings[] = {44100, 0, 48000, 32000};
+@@ -396,6 +398,7 @@ static int ak4641_mute(struct snd_soc_dai *dai, int mute)
+ static int ak4641_set_bias_level(struct snd_soc_codec *codec,
+ 	enum snd_soc_bias_level level)
+ {
++	struct ak4641_priv *ak4641 = snd_soc_codec_get_drvdata(codec);
+ 	struct ak4641_platform_data *pdata = codec->dev->platform_data;
+ 	int ret;
+ 
+@@ -417,7 +420,7 @@ static int ak4641_set_bias_level(struct snd_soc_codec *codec,
+ 				gpio_set_value(pdata->gpio_npdn, 1);
+ 			mdelay(1);
+ 
+-			ret = snd_soc_cache_sync(codec);
++			ret = regcache_sync(ak4641->regmap);
+ 			if (ret) {
+ 				dev_err(codec->dev,
+ 					"Failed to sync cache: %d\n", ret);
+@@ -433,7 +436,7 @@ static int ak4641_set_bias_level(struct snd_soc_codec *codec,
+ 			gpio_set_value(pdata->gpio_npdn, 0);
+ 		if (pdata && gpio_is_valid(pdata->gpio_power))
+ 			gpio_set_value(pdata->gpio_power, 0);
+-		codec->cache_sync = 1;
++		regcache_mark_dirty(ak4641->regmap);
+ 		break;
+ 	}
+ 	codec->dapm.bias_level = level;
+@@ -518,7 +521,7 @@ static int ak4641_probe(struct snd_soc_codec *codec)
+ {
+ 	int ret;
+ 
+-	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
++	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
+ 	if (ret != 0) {
+ 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+ 		return ret;
+@@ -550,12 +553,17 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4641 = {
+ 	.dapm_routes		= ak4641_audio_map,
+ 	.num_dapm_routes	= ARRAY_SIZE(ak4641_audio_map),
+ 	.set_bias_level		= ak4641_set_bias_level,
+-	.reg_cache_size		= ARRAY_SIZE(ak4641_reg),
+-	.reg_word_size		= sizeof(u8),
+-	.reg_cache_default	= ak4641_reg,
+-	.reg_cache_step		= 1,
+ };
+ 
++static const struct regmap_config ak4641_regmap = {
++	.reg_bits = 8,
++	.val_bits = 8,
++
++	.max_register = AK4641_BTIF,
++	.reg_defaults = ak4641_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(ak4641_reg_defaults),
++	.cache_type = REGCACHE_RBTREE,
++};
+ 
+ static int ak4641_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+@@ -569,6 +577,10 @@ static int ak4641_i2c_probe(struct i2c_client *i2c,
+ 	if (!ak4641)
+ 		return -ENOMEM;
+ 
++	ak4641->regmap = devm_regmap_init_i2c(i2c, &ak4641_regmap);
++	if (IS_ERR(ak4641->regmap))
++		return PTR_ERR(ak4641->regmap);
++
+ 	if (pdata) {
+ 		if (gpio_is_valid(pdata->gpio_power)) {
+ 			ret = gpio_request_one(pdata->gpio_power,
+-- 
+1.8.4.4
