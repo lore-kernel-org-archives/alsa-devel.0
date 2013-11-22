@@ -1,20 +1,23 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
+From: Wang Xingchao <wangxingchao2011@gmail.com>
 Subject: Re: Audio Mini Conference Minutes - Edinburgh 21st
  October 2013
-Date: Thu, 21 Nov 2013 21:58:10 +0200
-Message-ID: <528E65D2.7010507@iki.fi>
+Date: Fri, 22 Nov 2013 09:39:36 +0800
+Message-ID: <CA+v+29ihKm6xjhKtV5BZrf8NzEgy3zUi46V3BouG4v=7S+MWuA@mail.gmail.com>
 References: <1382985876.2334.64.camel@loki>
  <CA+v+29hOBcuH-teW+5si8qj9QD7o3bsMYFj8v-YfKJRM0XVn8w@mail.gmail.com>
  <1384796142.2319.12.camel@loki> <20131121182211.GD8120@sirena.org.uk>
+ <528E65D2.7010507@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
- [83.102.40.134])
- by alsa0.perex.cz (Postfix) with ESMTP id ABB992610AB
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 20:58:19 +0100 (CET)
-In-Reply-To: <20131121182211.GD8120@sirena.org.uk>
+Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
+ [209.85.192.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CB532615DC
+ for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 02:39:58 +0100 (CET)
+Received: by mail-pd0-f182.google.com with SMTP id v10so560065pde.13
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2013 17:39:57 -0800 (PST)
+In-Reply-To: <528E65D2.7010507@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,48 +27,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, wangxingchao@xiaomi.com, Wang Xingchao <wangxingchao2011@gmail.com>, ruyi@xiaomi.com, Eric Laurent <elaurent@google.com>
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, wangxingchao@xiaomi.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Eric Laurent <elaurent@google.com>, ruyi@xiaomi.com
 List-Id: alsa-devel@alsa-project.org
 
-21.11.2013 20:22, Mark Brown kirjoitti:
-> On Mon, Nov 18, 2013 at 05:35:42PM +0000, Liam Girdwood wrote:
->> On Sat, 2013-11-16 at 17:01 +0800, Wang Xingchao wrote:
-> 
->>>> We could use offload, on roadmap for Hires audio on android PCM,
->>>> maybe float instead of 24 bit. Need for 192kHz, Probably not use effects.
-> 
->>> Does android support HBR audio now? As i know from Dolby guys, no
->>> customers in Android area are buying Dolby TrueHD license, so i guess
->>> the answer is NO. Most of the customers are from AV receivers and
->>> BlueRay players.
-> 
->> Afaik, no one is using high Bit rate audio atm, but there is increasing
->> interest amongst Android OEMs.
-> 
-> There's a few things shipped doing 192kHz/24 bit - the LG G2 was one of
-> the first IIRC.
-
-At least Wang Xingchao seems to be talking specifically about HBR in
-relation to HDMI specification, i.e. compressed audio, not PCM...
-
-HBR audio is the way high-bitrate (over 6.144Mbps) compressed IEC 61937
-streams are bitstreamed through HDMI. The only such formats supported by
-IEC 61937 are DTS-HD MA and Dolby TrueHD (MAT), used on e.g. Blu-ray discs.
-
-The only in-tree ALSA driver supporting HDMI HBR is HDA, AFAICS.
-
->> Most of the x86 and ARM HW will support HBR audio over ASoC PCM DAIs and
->> HDA, but I'm not sure about which HDMI audio devices support HBR in HW
->> atm...
-> 
-> It should be relatively common I suppose given that video sources have
-> tended to use HBR for a long time (even DVDs do it as standard), though
-> it's possible the mobile
-> chipsets are limited in some way.
-
-Video DVDs only do PCM, AC-3, DTS and MP2.
-
--- 
--- 
-Anssi Hannula
+SGkgQW5zc2kgSGFubnVsYSDvvIwKCjIwMTMvMTEvMjIgQW5zc2kgSGFubnVsYSA8YW5zc2kuaGFu
+bnVsYUBpa2kuZmk+Ogo+IDIxLjExLjIwMTMgMjA6MjIsIE1hcmsgQnJvd24ga2lyam9pdHRpOgo+
+PiBPbiBNb24sIE5vdiAxOCwgMjAxMyBhdCAwNTozNTo0MlBNICswMDAwLCBMaWFtIEdpcmR3b29k
+IHdyb3RlOgo+Pj4gT24gU2F0LCAyMDEzLTExLTE2IGF0IDE3OjAxICswODAwLCBXYW5nIFhpbmdj
+aGFvIHdyb3RlOgo+Pgo+Pj4+PiBXZSBjb3VsZCB1c2Ugb2ZmbG9hZCwgb24gcm9hZG1hcCBmb3Ig
+SGlyZXMgYXVkaW8gb24gYW5kcm9pZCBQQ00sCj4+Pj4+IG1heWJlIGZsb2F0IGluc3RlYWQgb2Yg
+MjQgYml0LiBOZWVkIGZvciAxOTJrSHosIFByb2JhYmx5IG5vdCB1c2UgZWZmZWN0cy4KPj4KPj4+
+PiBEb2VzIGFuZHJvaWQgc3VwcG9ydCBIQlIgYXVkaW8gbm93PyBBcyBpIGtub3cgZnJvbSBEb2xi
+eSBndXlzLCBubwo+Pj4+IGN1c3RvbWVycyBpbiBBbmRyb2lkIGFyZWEgYXJlIGJ1eWluZyBEb2xi
+eSBUcnVlSEQgbGljZW5zZSwgc28gaSBndWVzcwo+Pj4+IHRoZSBhbnN3ZXIgaXMgTk8uIE1vc3Qg
+b2YgdGhlIGN1c3RvbWVycyBhcmUgZnJvbSBBViByZWNlaXZlcnMgYW5kCj4+Pj4gQmx1ZVJheSBw
+bGF5ZXJzLgo+Pgo+Pj4gQWZhaWssIG5vIG9uZSBpcyB1c2luZyBoaWdoIEJpdCByYXRlIGF1ZGlv
+IGF0bSwgYnV0IHRoZXJlIGlzIGluY3JlYXNpbmcKPj4+IGludGVyZXN0IGFtb25nc3QgQW5kcm9p
+ZCBPRU1zLgo+Pgo+PiBUaGVyZSdzIGEgZmV3IHRoaW5ncyBzaGlwcGVkIGRvaW5nIDE5MmtIei8y
+NCBiaXQgLSB0aGUgTEcgRzIgd2FzIG9uZSBvZgo+PiB0aGUgZmlyc3QgSUlSQy4KPgo+IEF0IGxl
+YXN0IFdhbmcgWGluZ2NoYW8gc2VlbXMgdG8gYmUgdGFsa2luZyBzcGVjaWZpY2FsbHkgYWJvdXQg
+SEJSIGluCj4gcmVsYXRpb24gdG8gSERNSSBzcGVjaWZpY2F0aW9uLCBpLmUuIGNvbXByZXNzZWQg
+YXVkaW8sIG5vdCBQQ00uLi4KPgo+IEhCUiBhdWRpbyBpcyB0aGUgd2F5IGhpZ2gtYml0cmF0ZSAo
+b3ZlciA2LjE0NE1icHMpIGNvbXByZXNzZWQgSUVDIDYxOTM3Cj4gc3RyZWFtcyBhcmUgYml0c3Ry
+ZWFtZWQgdGhyb3VnaCBIRE1JLiBUaGUgb25seSBzdWNoIGZvcm1hdHMgc3VwcG9ydGVkIGJ5Cj4g
+SUVDIDYxOTM3IGFyZSBEVFMtSEQgTUEgYW5kIERvbGJ5IFRydWVIRCAoTUFUKSwgdXNlZCBvbiBl
+LmcuIEJsdS1yYXkgZGlzY3MuCj4KPiBUaGUgb25seSBpbi10cmVlIEFMU0EgZHJpdmVyIHN1cHBv
+cnRpbmcgSERNSSBIQlIgaXMgSERBLCBBRkFJQ1MuCgpJIHRoaW5rIHRoYXQgZGVwZW5kcyBvbiB2
+ZW5kb3IncyBIRE1JIGNvbnRyb2xsZXIsIG5vdCBvbmx5IHRoZSBIRE1JClNwZWNpZmljYXRpb24g
+dmVyc2lvbi4KQW5kIEhEQSBzZWVtcyB0aGUgZmlyc3Qgb25lIGNsYWltcyBzdXBwb3J0aW5nIEhC
+UiwgaSBkb25vdCBzZWUgYW55Cm90aGVyIEFSTSBiYXNlZCBTb2MKaGFzIHN1Y2ggY2xhaW0uCgpM
+b3RzIG9mIEhEIHZpZGVvIHNvdXJjZXMgYXJlIHVzaW5nIEhCUiBhdWRpbywgYW5kIGxvdHMgb2Yg
+c2V0LXRvcApib3hlcy9UVihBUk0gYmFzZWQpIGhhdmUKdGhlIHJlcXVpcmVtZW50cyB0byBwYWx5
+IEhCUiBhdWRpbyBpbiBIRE1JIHBhc3N0aHJvdWdoIG1vZGUuIEN1cnJlbnRseQp0aGUgc29sdXRp
+b24gaXMgZnJvbSB2ZW5kb3Igc3BlY2lmaWMsIHRoZXkgZG93bm1peCBIQlIgYXVkaW8KaW50byA1
+LjEgb3IgU3RlcmVvLgoKdGhhbmtzCi0teGluZ2NoYW8KPgo+Pj4gTW9zdCBvZiB0aGUgeDg2IGFu
+ZCBBUk0gSFcgd2lsbCBzdXBwb3J0IEhCUiBhdWRpbyBvdmVyIEFTb0MgUENNIERBSXMgYW5kCj4+
+PiBIREEsIGJ1dCBJJ20gbm90IHN1cmUgYWJvdXQgd2hpY2ggSERNSSBhdWRpbyBkZXZpY2VzIHN1
+cHBvcnQgSEJSIGluIEhXCj4+PiBhdG0uLi4KPj4KPj4gSXQgc2hvdWxkIGJlIHJlbGF0aXZlbHkg
+Y29tbW9uIEkgc3VwcG9zZSBnaXZlbiB0aGF0IHZpZGVvIHNvdXJjZXMgaGF2ZQo+PiB0ZW5kZWQg
+dG8gdXNlIEhCUiBmb3IgYSBsb25nIHRpbWUgKGV2ZW4gRFZEcyBkbyBpdCBhcyBzdGFuZGFyZCks
+IHRob3VnaAo+PiBpdCdzIHBvc3NpYmxlIHRoZSBtb2JpbGUKPj4gY2hpcHNldHMgYXJlIGxpbWl0
+ZWQgaW4gc29tZSB3YXkuCj4KPiBWaWRlbyBEVkRzIG9ubHkgZG8gUENNLCBBQy0zLCBEVFMgYW5k
+IE1QMi4KPgo+IC0tCj4gLS0KPiBBbnNzaSBIYW5udWxhCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
