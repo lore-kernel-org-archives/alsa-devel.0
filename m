@@ -1,14 +1,25 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: firewire-lib: an issue to generate packet with 'no
- data' in blocking mode
-Date: Fri, 22 Nov 2013 14:59:58 +0900
-Message-ID: <528EF2DE.9060700@sakamocchi.jp>
+From: Li Xiubo <Li.Xiubo@freescale.com>
+Subject: Re: [PATCHv2 3/8] ARM: dts: Enables SAI ALSA SoC DAI
+ device for Vybrid VF610 TOWER board.
+Date: Fri, 22 Nov 2013 06:46:49 +0000
+Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F828C79F5@039-SN2MPN1-012.039d.mgd.msft.net>
+References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
+ <1383289495-24523-4-git-send-email-Li.Xiubo@freescale.com>
+ <87bo1hk2i7.fsf@nbsps.com>
+ <1DD289F6464F0949A2FCA5AA6DC23F828AD451@039-SN2MPN1-012.039d.mgd.msft.net>
+ <87hab7hxfx.fsf@nbsps.com>
+ <1DD289F6464F0949A2FCA5AA6DC23F828B5046@039-SN2MPN1-012.039d.mgd.msft.net>
+ <87wqk1hkiv.fsf@nbsps.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090005030205020404040004"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F26B261622
- for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 07:00:05 +0100 (CET)
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe004.messaging.microsoft.com [213.199.154.207])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB57D261646
+ for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 07:46:56 +0100 (CET)
+In-Reply-To: <87wqk1hkiv.fsf@nbsps.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,153 +29,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Bill Pringlemeir <bpringlemeir@nbsps.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090005030205020404040004
-Content-Type: text/plain; charset=ISO-2022-JP
-Content-Transfer-Encoding: 7bit
 
-Clemens,
+> >> +	ret = devm_snd_soc_register_card(&pdev->dev, &fsl_sgt1500_card);
+> >> +	if (ret) {
+> >> + dev_err(&pdev->dev, "register soc sound card failed :%d\n"
+> >> +                               "TWR-AUDIO-SGTL board required.\n",
+> >> +				ret);
+> >> +		return ret;
+> >> +	}
+> 
+> >> Especially, you can make one kernel that handles both cases w/wo TWR-
+> >> AUDIO-SGTL board attached.
+> 
+> > Yes, it looks nicer.
+> 
+> > Well, as one log about the CODEC already exists? Should the "TWR-AUDIO-
+> SGTL
+> > 	board required.\n" log is still needed here ?
+> 
+> I think that people will understand,
+> 
+> > vf610-sgtl5000 sound.3: ASoC: CODEC (null) not registered
+> > vf610-sgtl5000 sound.3: TWR-AUDIO-SGTL board required.
+> 
+> As oppose to the typical 'dev_err()' of "register soc sound card
+> failed :XXX".  This message looks like something abnormal went wrong.  At
+> least 'dev_err()' maybe the wrong level?
+> 
+> With just the error code, people will have to look through code to
+> diagnose this and may just think that something is wrong with the driver.
+> It will be a very common case that a user will not have this board.  I
+> just think the message could be more explicit to avoid confusion.
+>
 
-I have a question about generate packet with 'no data' in blocking mode.
-I think there is out of specification in current firewire-lib.
+Yes, I agree.
+Well, maybe it not very explicitly points out the actual failling message. And for the tower, the TWR-AUDIO-SGTL board maybe the most likely error case.
 
-If this is a qurk for some devices, I'll prepare patches to switch
-generating mode because BeBoB cannot sound with current firewire-lib. If
-this is a bug, then I want to discuss which is better for firewire-lib.
+>From the ASoC subsystem, we can see that there are more than 2 situations that will return the numeric '-517', and before that there will be one explicit failing message printing out as we have seen.
 
+How about putting this comment in the menuconfig ?
 
-In my understanding of IEC 61883-6, there are two ways:
+>
+> I am not sure if the numeric '-517' will always return in this case; if so,
+> the message could be conditional.
+> 
 
-1. generate 'empty packet' defined in IEC 61883-1
-   - size of packet is 2 quadlets
-   - FDF = sfc
-   - packet includes just CIP headers
-
-2. generate 'special non-empty packet' defined in IEC 61883-6
-   - size of packet is following to blocking mode
-   - FDF = 0xff ('NO-DATA' code)
-   - packet includes dummy data
-
-But current implementation is a strange combination of them.
- - size of packet is 2 (way 1)
- - FDF = 0xff (way 2)
-
-I attach two patches. 'empty.patch' is for 1 and 'special.patch' is for 2.
-
-
-Regards
-
-Takashi Sakamoto
-
---------------090005030205020404040004
-Content-Type: text/x-patch;
- name="empty.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="empty.patch"
-
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index d322689..a387fff 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -442,7 +442,7 @@ static void queue_out_packet(struct amdtp_out_stream *s, unsigned int cycle)
- 			data_blocks = s->syt_interval;
- 		} else {
- 			data_blocks = 0;
--			syt = 0xffffff;
-+			syt = 0xffff;
- 		}
- 	}
+The following logs are the situation:
+1, Plug in the TWR-AUDIO-SGTL sub-board.
+2, Enable the SGTL5000 driver.
+3, Disable the CPU DAI driver, here it's the SAI driver.
+++++++++++++
+sgtl5000 0-000a: sgtl5000 revision 0x11
+vf610-sgtl5000 sound.3: ASoC: CPU DAI (null) not registered
+vf610-sgtl5000 sound.3: register soc sound card failed :-517
+------------
  
-
---------------090005030205020404040004
-Content-Type: text/x-patch;
- name="special.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="special.patch"
-
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index d322689..92bb9bb 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -425,8 +425,8 @@ static void amdtp_fill_midi(struct amdtp_out_stream *s,
- static void queue_out_packet(struct amdtp_out_stream *s, unsigned int cycle)
- {
- 	__be32 *buffer;
--	unsigned int index, data_blocks, syt, ptr;
--	struct snd_pcm_substream *pcm;
-+	unsigned int index, data_blocks, fdf, syt, ptr;
-+	struct snd_pcm_substream *pcm = NULL;
- 	struct fw_iso_packet packet;
- 	int err;
- 
-@@ -435,34 +435,37 @@ static void queue_out_packet(struct amdtp_out_stream *s, unsigned int cycle)
- 	index = s->packet_index;
- 
- 	syt = calculate_syt(s, cycle);
--	if (!(s->flags & CIP_BLOCKING)) {
-+
-+	/* this module uses 'special non-empty packet' for 'no data' packet */
-+	if (syt == 0xffff)
-+		fdf = 0xff;	/* 'NO-DATA' FDF */
-+	else
-+		fdf = s->sfc;
-+
-+	if (!(s->flags & CIP_BLOCKING))
- 		data_blocks = calculate_data_blocks(s);
--	} else {
--		if (syt != 0xffff) {
--			data_blocks = s->syt_interval;
--		} else {
--			data_blocks = 0;
--			syt = 0xffffff;
--		}
--	}
-+	else
-+		data_blocks = s->syt_interval;
- 
- 	buffer = s->buffer.packets[index].buffer;
- 	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
- 				(s->data_block_quadlets << 16) |
- 				s->data_block_counter);
- 	buffer[1] = cpu_to_be32(CIP_EOH | CIP_FMT_AM | AMDTP_FDF_AM824 |
--				(s->sfc << AMDTP_FDF_SFC_SHIFT) | syt);
-+				(fdf << AMDTP_FDF_SFC_SHIFT) | syt);
- 	buffer += 2;
- 
--	pcm = ACCESS_ONCE(s->pcm);
--	if (pcm)
--		s->transfer_samples(s, pcm, buffer, data_blocks);
--	else
--		amdtp_fill_pcm_silence(s, buffer, data_blocks);
--	if (s->midi_ports)
--		amdtp_fill_midi(s, buffer, data_blocks);
-+	if (fdf == 0xff) {
-+		pcm = ACCESS_ONCE(s->pcm);
-+		if (pcm)
-+			s->transfer_samples(s, pcm, buffer, data_blocks);
-+		else
-+			amdtp_fill_pcm_silence(s, buffer, data_blocks);
-+		if (s->midi_ports)
-+			amdtp_fill_midi(s, buffer, data_blocks);
- 
--	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
-+		s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
-+	}
- 
- 	packet.payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
- 	packet.interrupt = IS_ALIGNED(index + 1, INTERRUPT_INTERVAL);
-
---------------090005030205020404040004
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+And the failed numeric is '-517' too.
 
 
---------------090005030205020404040004--
+
+> That is just a suggestion.  I know when I booted the TimeSys version of
+> Linux and before I looked at the schematic, I didn't know why the codec
+> failed to register and I thought I had a u-boot issue and/or the code was
+> not working for my board.
+> 
+> Fwiw,
+> Bill Pringlemeir.
+> 
+> PS: For those not familiar with the tower.  The VF610-TWR has riser cards
+> at the sides and different boards can be connected.  The TWR-AUDIO-SGTL
+> is another board that needs to be plugged in.
