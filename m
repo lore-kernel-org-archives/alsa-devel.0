@@ -1,56 +1,45 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH 2/8] ASoC: fsl-ssi: Move sysfs stats to
-	debugfs
-Date: Fri, 22 Nov 2013 17:42:04 +0100
-Message-ID: <20131122164204.GB5893@pengutronix.de>
-References: <1384938262-20554-1-git-send-email-mpa@pengutronix.de>
- <1384938262-20554-3-git-send-email-mpa@pengutronix.de>
- <20131121142208.GU2674@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B45A22616AC
- for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 17:42:13 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20131121142208.GU2674@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: [PATCH] ASoC: dapm: Use SND_SOC_DAPM_INIT_REG_VAL in SND_SOC_DAPM_MUX
+Date: Fri, 22 Nov 2013 10:29:18 -0700
+Message-ID: <1385141358-21956-1-git-send-email-swarren@wwwdotorg.org>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, ac100@lists.launchpad.net, Stephen Warren <swarren@nvidia.com>, stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Stephen Warren <swarren@nvidia.com>
 
-On Thu, Nov 21, 2013 at 02:22:08PM +0000, Mark Brown wrote:
-> On Wed, Nov 20, 2013 at 10:04:16AM +0100, Markus Pargmann wrote:
-> 
-> > This patch moves the statistics to debugfs and disables interrupts
-> > completely if the kernel is build without DEBUG_FS enabled.
-> 
-> We can still see the error counts through /proc/interrupts even without
-> the debugfs file.
+SND_SOC_DAPM_MUX() doesn't currently initialize the .mask field. This
+results in the mux never affecting HW, since no bits are ever set or
+cleared. Fix SND_SOC_DAPM_MUX() to use SND_SOC_DAPM_INIT_REG_VAL() to
+set up the reg, shift, on_val, and off_val fields like almost all other
+SND_SOC_xxx() macros. It looks like this was a "typo" in the fixed
+commit linked below.
 
-The interrupts are visible without the debugfs file when enabled through
-SIER register. But it does not show the specific reason for the interrupts.
+This makes the speakers on the Toshiba AC100 (PAZ00) laptop work again.
 
-I am not sure what you suggest. To remove the stats file completely and
-always disable interrupts?
+Fixes: de9ba98b6d26 ("ASoC: dapm: Make widget power register settings more flexible")
+Cc: <stable@vger.kernel.org> # v3.12+
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+---
+ include/sound/soc-dapm.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Regards,
-
-Markus
-
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 2037c45adfe6..56ebdfca6273 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -104,7 +104,8 @@ struct device;
+ 	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+ 	.kcontrol_news = wcontrols, .num_kcontrols = 1}
+ #define SND_SOC_DAPM_MUX(wname, wreg, wshift, winvert, wcontrols) \
+-{	.id = snd_soc_dapm_mux, .name = wname, .reg = wreg, \
++{	.id = snd_soc_dapm_mux, .name = wname, \
++	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+ 	.kcontrol_news = wcontrols, .num_kcontrols = 1}
+ #define SND_SOC_DAPM_VIRT_MUX(wname, wreg, wshift, winvert, wcontrols) \
+ {	.id = snd_soc_dapm_virt_mux, .name = wname, \
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.8.1.5
