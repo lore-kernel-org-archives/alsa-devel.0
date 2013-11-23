@@ -1,122 +1,93 @@
-From: Oleksij Rempel <linux@rempel-privat.de>
-Subject: Re: acceptable noise level for mic boost
-Date: Sat, 23 Nov 2013 15:35:04 +0100
-Message-ID: <5290BD18.1040401@rempel-privat.de>
-References: <528E29CF.3030101@rempel-privat.de>
-	<1385138883.2564.8.camel@tkkaskin-mobl2.ger.corp.intel.com>
-	<528F958E.4000709@rempel-privat.de>
-Reply-To: General PulseAudio Discussion
-	<pulseaudio-discuss@lists.freedesktop.org>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
+ multi-channel and HBR support
+Date: Sat, 23 Nov 2013 17:45:00 +0200
+Message-ID: <5290CD7C.7020907@iki.fi>
+References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
+ <loom.20131122T215246-90@post.gmane.org> <529004F8.7070801@iki.fi>
+ <20131123154009.6c8c6e97@symphony.aura-online.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <528F958E.4000709@rempel-privat.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Sender: pulseaudio-discuss-bounces@lists.freedesktop.org
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-To: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
+ [83.102.40.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id C4BB3261693
+ for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 16:45:04 +0100 (CET)
+In-Reply-To: <20131123154009.6c8c6e97@symphony.aura-online.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: James Le Cuirot <chewi@aura-online.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am 22.11.2013 18:34, schrieb Oleksij Rempel:
-> Am 22.11.2013 17:48, schrieb Tanu Kaskinen:
->> On Thu, 2013-11-21 at 16:42 +0100, Oleksij Rempel wrote:
->>> Hello all,
+23.11.2013 17:40, James Le Cuirot kirjoitti:
+> On Sat, 23 Nov 2013 03:29:28 +0200
+> Anssi Hannula <anssi.hannula@iki.fi> wrote:
+> 
+>> 23.11.2013 03:05, James Le Cuirot kirjoitti:
+>>> Anssi Hannula <anssi.hannula <at> iki.fi> writes:
 >>>
->>> i posted this email to ALSA, but probably PA devs have some ideas too.
+>>>> Here's another revision of the ATI/AMD multichannel+HBR patchset.
 >>>
->>> ======================================================================
->>> Hello Takashi,
+>>> Hi Anssi. Many thanks for your work on this. I am very keen to test
+>>> this new code but have so far been unsuccessful. I have a Radeon
+>>> 4670 (Sapphire branded) connected to a Yamaha RX-V773. I am running
+>>> the sound/for-next kernel (82755ab) with your "missing PCM SAD"
+>>> patch applied.
 >>>
->>> what is acceptable noise level for mic boost?
->>> My laptop has three levels of mic boost (+36dB). Level 3 is useless
->>> since noise level will be about 0db. With level 1 i get -12dB noise, so
->>> there is almost 12dB room for data... but it is not enough for normal
->>> speech, which is about 20dB.
+>>> The new kernel has allowed ALSA to recognise the card as
+>>> multichannel and I can issue the following speaker-test command but
+>>> I still only hear "Front Left" and "Front Right" and the Yahama
+>>> seems to report the signal as stereo.
 >>>
->>> Are there any ALSA guide for HW designers, which will say some thing
->>> like acceptable levels are 90-20dB?
->>> There are some Skype and Microsoft prescriptions for certification.
->>> For example M$ prescribe 18dB or more for speech to noise ration for
->>> build in mics. It sound like good number to start.
->>>
->>> In my case, i need to remove mic boost completely to guarantee minimum
->>> 18dB SpNR. Suddenly i didn't found correct way to do it.
->>> I will be thankful for some tip.
->>>
->>> =====================================================================
->>>
->>> So my question to PA devs. Do pulse audio need to know about noise level
->>> of microphone? Will it help to make correct decisions? Especial for VoIP
->>> and automatic gain control.
+>>> # speaker-test -Dhdmi:CARD=HDMI,DEV=0 -c6 -t wav
 >>
->> We don't currently have any idea of the noise level, so we don't have
->> code for adjusting our decisions based on that information either. So,
->> I'd say that pulseaudio doesn't *need* to know about the noise level. Of
->> course, if someone someday complains that pulseaudio does bad decisions
->> because it doesn't take the noise level into account, then we would need
->> that information.
+>> I guess it is the same without "-t wav"?
+> 
+> Yes.
+> 
+>>> I have the HDMI cable plugged
+>>> into the secondary output as my speakerless DVI monitor is plugged
+>>> into the primary but I have also tried the HDMI cable in the
+>>> primary output by itself.
 >>
+>> Hmm, I'm not sure what the behavior is supposed to be with multiple
+>> video outputs when we have only a single audio output (HDA pin)...
+>>
+>> What happens if you plug both of your outputs to the A/V receiver,
+>> will only one output get audio?
 > 
-> Thank you for your response.
-> I have more questions:
-> Skype continuously trying to adjust record level. If there is a silence
-> it will try to push the input volume as close to 0dB (in pulseaudio
-> terms) as possible.
-> For my laptop 0dB(in PA) will mean some thing +68dB over base volume
-> (ALSA). The noise will reach 0dBFS.
-> Well, it wont kill any one, but it sound bad.
+> I tried this and as I expected, it sent the same audio to both outputs.
+> Still stereo only though.
 > 
-> What 0dB mean in pulseaudio?
-> Why pulseaudio has capture volume range -130 - +11dB? Is it possible to
-> fit this gain to 16-bit PCM?
-
-to answer this question by my self.
-If i understand correctly pulseaudio trying to imitate professional
-mixer settings. The difference is, usual mixer has 0dB settings as point
-for preconfigured sound. You need to use "Gain" or "Trim" control to
-configure it to acceptable level.
-
-0dB in PulseAudio looks for me incorrect, if no preconfigurable available.
-
-Here is one example:
-http://www.youtube.com/watch?v=YXSJ1oOQ9tY
-
-> Now to my hardware. I can blacklist in the driver 2 "mic boost" steps
-> without introducing any regressions. Which will guaranty maximal noise
-> level = -12dBFS. But it is still not optimal. Best experience i had with
-> limit to -24dB. In this case i need to remove Mic Boost completely but
-> pulseaudio will fail to make a difference between internal and external mic.
+>> ELD stuff is not necessary for playback, it is mostly for information
+>> (and providing the necessary info for ELD is disabled on radeon DRI
+>> drivers on some kernels on some GPUs ATM due to some issues).
+>>
+>> Is there anything interesting in "dmesg"?
 > 
-> What is best solution in this case? Fix pulse or leave at least one step
-> for mic boost?
+> I have attached my dmesg. I enabled ALSA debug and verbose printk but
+> disabled the on-board HDA audio in the BIOS to make it less confusing,
+> and also to see if it made any difference, which it didn't. The only
+> entry I find noteworthy is about the ELD but you say this isn't
+> required.
+> 
+> There seems to be little to go on here. Would it be worth enabling
+> CONFIG_SND_DEBUG_VERBOSE? I gather it's very noisy but maybe that level
+> of detail is needed. Hopefully you have a better idea.
 
-After some more testing, i'm sure it should be fixed in pulseaudio.
-Blacklisting microfone setting is just quick dirty hack. It will work
-for internal mic. But fail on external. There is no way, ALSA can
-predict some thing about it. The best thing ALSA can do here is to
-provide all possible controls.
+Yeah, that would be useful.
 
-> The microphone on this laptop is a digital mic. Do it make sense to use
-> hardware amp? Or is it possible to get better results with software?
+Also, forgot to mention, but next time please indicate the part of the
+log where you start the multichannel speaker-test command (e.g. timestamps).
 
-Theoretically, Skype or Empathy or any other app with auto gain control
-should us 0dB as target.
-But since ALSA or PulseAudio can't automatically detect correct point,
-PuleAudio should provide possibility to override 0dB offset.
-
-For build in microphones can be used ALSA quirk list or some kind of
-database for pulseaudio with per device default values to make better
-default experience.
-
-IMO, current solution with blacklists in ALSA is wrong.
 -- 
-Regards,
-Oleksij
+Anssi Hannula
