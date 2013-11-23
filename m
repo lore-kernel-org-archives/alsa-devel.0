@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 02/17] firewire-lib: Add macros instead of
-	fixed value for AMDTP
-Date: Sat, 23 Nov 2013 15:07:49 +0900
-Message-ID: <1385186884-8259-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 04/17] firewire-lib: Split some codes into
+	functions to reuse in future
+Date: Sat, 23 Nov 2013 15:07:51 +0900
+Message-ID: <1385186884-8259-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 26A9C2619D9
+ by alsa0.perex.cz (Postfix) with ESMTP id 2003C2618EE
  for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 07:08:10 +0100 (CET)
 In-Reply-To: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,49 +25,238 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCBhZGRzIHNvbWUgbWFjcm9zIGluc3RlYWQgb2YgZml4ZWQgdmFsdWUgZm9yIEFN
-RFRQIGluIElFQyA2MTg4My02LgpUaGVzZSBtYWNyb3Mgd2lsbCBhbHNvIGJlIHVzZWQgYnkgZm9s
-bG93ZWQgcGF0Y2hlcy4KClNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNo
-aUBzYWthbW9jY2hpLmpwPgotLS0KIHNvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgfCAzMCArKysrKysr
-KysrKysrKysrKysrKysrKy0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCsp
-LCA3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgYi9z
-b3VuZC9maXJld2lyZS9hbWR0cC5jCmluZGV4IGM5YjQ1YTAuLmZiZDI0ZGIgMTAwNjQ0Ci0tLSBh
-L3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKKysrIGIvc291bmQvZmlyZXdpcmUvYW1kdHAuYwpAQCAt
-MjAsMTIgKzIwLDI4IEBACiAKICNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElDS1MJMHgyZTAwIC8q
-IDQ3OS4xNyDCtXMgKi8KIAorLyogaXNvY2hyb25vdXMgaGVhZGVyIHBhcmFtZXRlcnMgKi8KKyNk
-ZWZpbmUgSVNPX0RBVEFfTEVOR1RIX1NISUZUCTE2CiAjZGVmaW5lIFRBR19DSVAJCQkxCiAKKy8q
-IGNvbW1vbiBpc29jaHJvbm91cyBwYWNrZXQgaGVhZGVyIHBhcmFtZXRlcnMgKi8KICNkZWZpbmUg
-Q0lQX0VPSAkJCSgxdSA8PCAzMSkKKyNkZWZpbmUgQ0lQX0VPSF9NQVNLCQkweDgwMDAwMDAwCiAj
-ZGVmaW5lIENJUF9GTVRfQU0JCSgweDEwIDw8IDI0KQotI2RlZmluZSBBTURUUF9GREZfQU04MjQJ
-CSgwIDw8IDE5KQotI2RlZmluZSBBTURUUF9GREZfU0ZDX1NISUZUCTE2CisjZGVmaW5lIENJUF9G
-TVRfTUFTSwkJMHgzZjAwMDAwMAorI2RlZmluZSBDSVBfU1lUX01BU0sJCTB4MDAwMGZmZmYKKyNk
-ZWZpbmUgQ0lQX1NZVF9OT19JTkZPCQkweGZmZmYKKyNkZWZpbmUgQ0lQX0ZERl9NQVNLCQkweDAw
-ZmYwMDAwCisjZGVmaW5lIENJUF9GREZfU0ZDX1NISUZUCTE2CisKKy8qCisgKiBBdWRpbyBhbmQg
-TXVzaWMgdHJhbnNmZXIgcHJvdG9jb2wgc3BlY2lmaWMgcGFyYW1ldGVycworICogb25seSAiQ2xv
-Y2stYmFzZWQgcmF0ZSBjb250cm9sbCBtb2RlIiBpcyBzdXBwb3J0ZWQKKyAqLworI2RlZmluZSBB
-TURUUF9GREZfQU04MjQJCSgwIDw8IChDSVBfRkRGX1NGQ19TSElGVCArIDMpKQorI2RlZmluZSBB
-TURUUF9EQlNfTUFTSwkJMHgwMGZmMDAwMAorI2RlZmluZSBBTURUUF9EQlNfU0hJRlQJCTE2Cisj
-ZGVmaW5lIEFNRFRQX0RCQ19NQVNLCQkweDAwMDAwMGZmCiAKIC8qIFRPRE86IG1ha2UgdGhlc2Ug
-Y29uZmlndXJhYmxlICovCiAjZGVmaW5lIElOVEVSUlVQVF9JTlRFUlZBTAkxNgpAQCAtMjgwLDkg
-KzI5Niw5IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgY2FsY3VsYXRlX3N5dChzdHJ1Y3QgYW1kdHBf
-c3RyZWFtICpzLAogCQlzeXQgPSAoY3ljbGUgKyBzeXRfb2Zmc2V0IC8gVElDS1NfUEVSX0NZQ0xF
-KSA8PCAxMjsKIAkJc3l0ICs9IHN5dF9vZmZzZXQgJSBUSUNLU19QRVJfQ1lDTEU7CiAKLQkJcmV0
-dXJuIHN5dCAmIDB4ZmZmZjsKKwkJcmV0dXJuIHN5dCAmIENJUF9TWVRfTUFTSzsKIAl9IGVsc2Ug
-ewotCQlyZXR1cm4gMHhmZmZmOyAvKiBubyBpbmZvICovCisJCXJldHVybiBDSVBfU1lUX05PX0lO
-Rk87IC8qIG5vIGluZm8gKi8KIAl9CiB9CiAKQEAgLTQzOCwxNyArNDU0LDE3IEBAIHN0YXRpYyB2
-b2lkIHF1ZXVlX291dF9wYWNrZXQoc3RydWN0IGFtZHRwX3N0cmVhbSAqcywgdW5zaWduZWQgaW50
-IGN5Y2xlKQogCXN5dCA9IGNhbGN1bGF0ZV9zeXQocywgY3ljbGUpOwogCWlmICghKHMtPmZsYWdz
-ICYgQ0lQX0JMT0NLSU5HKSkKIAkJZGF0YV9ibG9ja3MgPSBjYWxjdWxhdGVfZGF0YV9ibG9ja3Mo
-cyk7Ci0JZWxzZSBpZiAoc3l0ICE9IDB4ZmZmZikKKwllbHNlIGlmIChzeXQgIT0gQ0lQX1NZVF9O
-T19JTkZPKQogCQlkYXRhX2Jsb2NrcyA9IHMtPnN5dF9pbnRlcnZhbDsKIAllbHNlCiAJCWRhdGFf
-YmxvY2tzID0gMDsKIAogCWJ1ZmZlciA9IHMtPmJ1ZmZlci5wYWNrZXRzW2luZGV4XS5idWZmZXI7
-CiAJYnVmZmVyWzBdID0gY3B1X3RvX2JlMzIoQUNDRVNTX09OQ0Uocy0+c291cmNlX25vZGVfaWRf
-ZmllbGQpIHwKLQkJCQkocy0+ZGF0YV9ibG9ja19xdWFkbGV0cyA8PCAxNikgfAorCQkJCShzLT5k
-YXRhX2Jsb2NrX3F1YWRsZXRzIDw8IEFNRFRQX0RCU19TSElGVCkgfAogCQkJCXMtPmRhdGFfYmxv
-Y2tfY291bnRlcik7CiAJYnVmZmVyWzFdID0gY3B1X3RvX2JlMzIoQ0lQX0VPSCB8IENJUF9GTVRf
-QU0gfCBBTURUUF9GREZfQU04MjQgfAotCQkJCShzLT5zZmMgPDwgQU1EVFBfRkRGX1NGQ19TSElG
-VCkgfCBzeXQpOworCQkJCShzLT5zZmMgPDwgQ0lQX0ZERl9TRkNfU0hJRlQpIHwgc3l0KTsKIAli
-dWZmZXIgKz0gMjsKIAogCXBjbSA9IEFDQ0VTU19PTkNFKHMtPnBjbSk7Ci0tIAoxLjguMy4yCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Some codes can be reused in handling transmitted stream. This commit adds new
+functions. This commit also renames some functions to keep naming consistency.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp.c | 158 ++++++++++++++++++++++++++-----------------------
+ 1 file changed, 83 insertions(+), 75 deletions(-)
+
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index 5d94252..c32d75d 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -47,6 +47,8 @@
+ #define INTERRUPT_INTERVAL	16
+ #define QUEUE_LENGTH		48
+ 
++#define TRANSMIT_PACKET_HEADER_SIZE	4
++
+ static void pcm_period_tasklet(unsigned long data);
+ 
+ /**
+@@ -440,13 +442,74 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 						cpu_to_be32(0x80000000);
+ }
+ 
+-static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
++static void check_pcm_pointer(struct amdtp_stream *s,
++			      struct snd_pcm_substream *pcm,
++			      unsigned int frames)
++{	unsigned int ptr;
++
++	if (s->dual_wire)
++		frames *= 2;
++
++	ptr = s->pcm_buffer_pointer + frames;
++	if (ptr >= pcm->runtime->buffer_size)
++		ptr -= pcm->runtime->buffer_size;
++	ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
++
++	s->pcm_period_pointer += frames;
++	if (s->pcm_period_pointer >= pcm->runtime->period_size) {
++		s->pcm_period_pointer -= pcm->runtime->period_size;
++		s->pointer_flush = false;
++		tasklet_hi_schedule(&s->period_tasklet);
++	}
++}
++
++static void pcm_period_tasklet(unsigned long data)
++{
++	struct amdtp_stream *s = (void *)data;
++	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
++
++	if (pcm)
++		snd_pcm_period_elapsed(pcm);
++}
++
++static int queue_packet(struct amdtp_stream *s,
++			unsigned int header_length,
++			unsigned int payload_length, bool skip)
++{
++	struct fw_iso_packet p = {0};
++	int err;
++
++	p.interrupt = IS_ALIGNED(s->packet_index + 1, INTERRUPT_INTERVAL);
++	p.tag = TAG_CIP;
++	p.header_length = header_length;
++	p.payload_length = (!skip) ? payload_length : 0;
++	p.skip = (!skip) ? 0: 1;
++	err = fw_iso_context_queue(s->context, &p, &s->buffer.iso_buffer,
++				   s->buffer.packets[s->packet_index].offset);
++	if (err < 0) {
++		dev_err(&s->unit->device, "queueing error: %d\n", err);
++		s->packet_index = -1;
++		goto end;
++	}
++
++	if (++s->packet_index >= QUEUE_LENGTH)
++		s->packet_index = 0;
++end:
++	return err;
++}
++
++static inline int queue_out_packet(struct amdtp_stream *s,
++				   unsigned int payload_length, bool skip)
++{
++	return queue_packet(s, RECEIVE_PACKET_HEADER_SIZE,
++			    payload_length, skip);
++}
++
++static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
+ {
+ 	__be32 *buffer;
+-	unsigned int index, data_blocks, syt, ptr;
++	unsigned int index, data_blocks, syt, payload_length;
+ 	struct snd_pcm_substream *pcm;
+-	struct fw_iso_packet packet;
+-	int err;
+ 
+ 	if (s->packet_index < 0)
+ 		return;
+@@ -479,55 +542,19 @@ static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
+ 
+ 	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
+ 
+-	packet.payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
+-	packet.interrupt = IS_ALIGNED(index + 1, INTERRUPT_INTERVAL);
+-	packet.skip = 0;
+-	packet.tag = TAG_CIP;
+-	packet.sy = 0;
+-	packet.header_length = 0;
+-
+-	err = fw_iso_context_queue(s->context, &packet, &s->buffer.iso_buffer,
+-				   s->buffer.packets[index].offset);
+-	if (err < 0) {
+-		dev_err(&s->unit->device, "queueing error: %d\n", err);
+-		s->packet_index = -1;
++	payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
++	if (queue_out_packet(s, payload_length, false) < 0) {
+ 		amdtp_stream_pcm_abort(s);
+ 		return;
+ 	}
+ 
+-	if (++index >= QUEUE_LENGTH)
+-		index = 0;
+-	s->packet_index = index;
+-
+-	if (pcm) {
+-		if (s->dual_wire)
+-			data_blocks *= 2;
+-
+-		ptr = s->pcm_buffer_pointer + data_blocks;
+-		if (ptr >= pcm->runtime->buffer_size)
+-			ptr -= pcm->runtime->buffer_size;
+-		ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
+-
+-		s->pcm_period_pointer += data_blocks;
+-		if (s->pcm_period_pointer >= pcm->runtime->period_size) {
+-			s->pcm_period_pointer -= pcm->runtime->period_size;
+-			s->pointer_flush = false;
+-			tasklet_hi_schedule(&s->period_tasklet);
+-		}
+-	}
+-}
+-
+-static void pcm_period_tasklet(unsigned long data)
+-{
+-	struct amdtp_stream *s = (void *)data;
+-	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
+-
+ 	if (pcm)
+-		snd_pcm_period_elapsed(pcm);
++		check_pcm_pointer(s, pcm, data_blocks);
+ }
+ 
+-static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
+-			size_t header_length, void *header, void *private_data)
++static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
++				size_t header_length, void *header,
++				void *private_data)
+ {
+ 	struct amdtp_stream *s = private_data;
+ 	unsigned int i, packets = header_length / 4;
+@@ -540,31 +567,10 @@ static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
+ 	cycle += QUEUE_LENGTH - packets;
+ 
+ 	for (i = 0; i < packets; ++i)
+-		queue_out_packet(s, ++cycle);
++		handle_out_packet(s, ++cycle);
+ 	fw_iso_context_queue_flush(s->context);
+ }
+ 
+-static int queue_initial_skip_packets(struct amdtp_stream *s)
+-{
+-	struct fw_iso_packet skip_packet = {
+-		.skip = 1,
+-	};
+-	unsigned int i;
+-	int err;
+-
+-	for (i = 0; i < QUEUE_LENGTH; ++i) {
+-		skip_packet.interrupt = IS_ALIGNED(s->packet_index + 1,
+-						   INTERRUPT_INTERVAL);
+-		err = fw_iso_context_queue(s->context, &skip_packet, NULL, 0);
+-		if (err < 0)
+-			return err;
+-		if (++s->packet_index >= QUEUE_LENGTH)
+-			s->packet_index = 0;
+-	}
+-
+-	return 0;
+-}
+-
+ /**
+  * amdtp_stream_start - start sending packets
+  * @s: the AMDTP stream to start
+@@ -594,7 +600,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	mutex_lock(&s->mutex);
+ 
+ 	if (WARN_ON(amdtp_stream_running(s) ||
+-		    (!s->pcm_channels && !s->midi_ports))) {
++		    (s->data_block_quadlets < 1))) {
+ 		err = -EBADFD;
+ 		goto err_unlock;
+ 	}
+@@ -612,8 +618,8 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
+ 					   FW_ISO_CONTEXT_TRANSMIT,
+ 					   channel, speed, 0,
+-					   out_packet_callback, s);
+-	if (IS_ERR(s->context)) {
++					   out_stream_callback, s);
++	if (!amdtp_stream_running(s)) {
+ 		err = PTR_ERR(s->context);
+ 		if (err == -EBUSY)
+ 			dev_err(&s->unit->device,
+@@ -624,11 +630,13 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	amdtp_stream_update(s);
+ 
+ 	s->packet_index = 0;
+-	s->data_block_counter = 0;
+-	err = queue_initial_skip_packets(s);
+-	if (err < 0)
+-		goto err_context;
++	do {
++		err = queue_out_packet(s, 0, true);
++		if (err < 0)
++			goto err_context;
++	} while (s->packet_index > 0);
+ 
++	s->data_block_counter = 0;
+ 	err = fw_iso_context_start(s->context, -1, 0, 0);
+ 	if (err < 0)
+ 		goto err_context;
+-- 
+1.8.3.2
