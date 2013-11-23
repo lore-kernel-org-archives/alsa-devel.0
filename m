@@ -1,15 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 06/13] bebob: Add PCM interface
-Date: Sat, 23 Nov 2013 15:09:18 +0900
-Message-ID: <1385186965-8303-7-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/13] bebob: Add support for Focusrite
+	Saffire/SaffirePro series
+Date: Sat, 23 Nov 2013 15:09:22 +0900
+Message-ID: <1385186965-8303-11-git-send-email-o-takashi@sakamocchi.jp>
 References: <1385186965-8303-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id D1ED126530E
- for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 07:09:36 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2715926530F
+ for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 07:09:37 +0100 (CET)
 In-Reply-To: <1385186965-8303-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,88 +25,150 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds the functionality to capture/playback PCM samples.
+This commit allows this driver to support all of models which Focusrite
+produces with BeBoB chipset. They are:
+ - Saffire
+ - Saffire LE
+ - SaffirePro 10
+ - SaffirePro26
 
-PCM samples are multiplexed/demultiplexed into AMDTP stream safely with stream
-helper functions.
+This commit adds Focusrite specific operations, quirks for its four
+functionalities.
+
+1. Switching source of clock
+2. Change sampling frequency
+3. Check clock synchronization
+4. Get metering information
+
+The driver uses these functionalities to read/write specific address by async
+transaction.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig           |   1 +
- sound/firewire/bebob/Makefile    |   2 +-
- sound/firewire/bebob/bebob.c     |   4 +
- sound/firewire/bebob/bebob.h     |   4 +
- sound/firewire/bebob/bebob_pcm.c | 411 +++++++++++++++++++++++++++++++++++++++
- 5 files changed, 421 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/bebob/bebob_pcm.c
+ sound/firewire/Kconfig                 |   1 +
+ sound/firewire/bebob/Makefile          |   2 +-
+ sound/firewire/bebob/bebob.c           |  34 ++-
+ sound/firewire/bebob/bebob.h           |   4 +
+ sound/firewire/bebob/bebob_focusrite.c | 390 +++++++++++++++++++++++++++++++++
+ 5 files changed, 429 insertions(+), 2 deletions(-)
+ create mode 100644 sound/firewire/bebob/bebob_focusrite.c
 
 diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index c7987a0..7641772 100644
+index 427def7..b8d7fb5 100644
 --- a/sound/firewire/Kconfig
 +++ b/sound/firewire/Kconfig
-@@ -64,6 +64,7 @@ config SND_SCS1X
- config SND_BEBOB
- 	tristate "BridgeCo BeBoB chipset support"
- 	select SND_RAWMIDI
-+	select SND_PCM
- 	select SND_FIREWIRE_LIB
-         help
- 	 Say Y here to include support for FireWire devices based
+@@ -82,6 +82,7 @@ config SND_BEBOB
+ 	  * BridgeCo RDAudio1/Audio5
+ 	  * M-Audio Firewire410/AudioPhile/Solo/Ozonic/NRV10
+ 	  * M-Audio Firewire1814/ProjectMix IO/ProfireLightBridge
++	  * Focusrite Saffire/Saffire LE/SaffirePro10 IO/SaffirePro26 IO
+ 
+           To compile this driver as a module, choose M here: the module
+           will be called snd-fireworks.
 diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
-index c7aeef7..30e79e6 100644
+index 2e87d02..96f8e92 100644
 --- a/sound/firewire/bebob/Makefile
 +++ b/sound/firewire/bebob/Makefile
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
  snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_control.o \
--		  bebob_midi.o \
-+		  bebob_midi.o bebob_pcm.o \
+ 		  bebob_midi.o bebob_pcm.o bebob_hwdep.o \
+-		  bebob_maudio.o \
++		  bebob_maudio.o bebob_focusrite.o \
  		  bebob.o
  obj-m += snd-bebob.o
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 89dc45b..2fdd14b 100644
+index 576d801..6382b49 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -177,6 +177,10 @@ snd_bebob_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
+@@ -52,10 +52,12 @@ static unsigned int devices_used;
+ #define VEN_PHONIC	0x00001496
+ #define VEN_MAUDIO1	0x00000d6c
+ #define VEN_MAUDIO2	0x000007f5
++#define VEN_FOCUSRITE	0x0000130e
  
-+	err = snd_bebob_create_pcm_devices(bebob);
-+	if (err < 0)
-+		goto error;
+ #define MODEL_MAUDIO_AUDIOPHILE_BOTH	0x00010060
+ #define MODEL_MAUDIO_FW1814		0x00010071
+ #define MODEL_MAUDIO_PROJECTMIX		0x00010091
++#define MODEL_FOCUSRITE_SAFFIRE_BOTH	0x00000000
+ 
+ static int
+ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+@@ -157,6 +159,21 @@ check_audiophile_booted(struct fw_unit *unit)
+ 		return true;
+ }
+ 
++static const struct snd_bebob_spec *
++get_saffire_spec(struct fw_unit *unit)
++{
++	char name[24] = {0};
 +
- 	if ((bebob->midi_input_ports > 0) ||
- 	    (bebob->midi_output_ports > 0)) {
- 		err = snd_bebob_create_midi_devices(bebob);
++	if (fw_csr_string(unit->directory, CSR_MODEL, name, sizeof(name)) < 0)
++		return NULL;
++
++	if (strcmp(name, "SaffireLE") == 0)
++		return &saffire_le_spec;
++	else
++		return &saffire_spec;
++}
++
++
+ static int
+ snd_bebob_probe(struct fw_unit *unit,
+ 		const struct ieee1394_device_id *entry)
+@@ -179,7 +196,15 @@ snd_bebob_probe(struct fw_unit *unit,
+ 		goto end;
+ 	}
+ 
+-	spec = (const struct snd_bebob_spec *)entry->driver_data;
++	if (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH)
++		spec = get_saffire_spec(unit);
++	else
++		spec = (const struct snd_bebob_spec *)entry->driver_data;
++
++	if (spec == NULL) {
++		err = -EIO;
++		goto end;
++	}
+ 
+ 	/* if needed, load firmware and exit */
+ 	if ((spec->load) &&
+@@ -362,6 +387,13 @@ static const struct ieee1394_device_id snd_bebob_id_table[] = {
+ 						maudio_special_spec),
+ 	/* M-Audio, ProFireLightbridge */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x000100a1, spec_normal),
++	/* Focusrite, SaffirePro 26 I/O */
++	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, 0x00000003, saffirepro_26_spec),
++	/* Focusrite, SaffirePro 10 I/O */
++	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, 0x00000006, saffirepro_10_spec),
++	/* Focusrite, Saffire(no label and LE) */
++	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
++			    saffire_spec),
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(ieee1394, snd_bebob_id_table);
 diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 2775a73..04842b2 100644
+index fb9d99d..90b37eb 100644
 --- a/sound/firewire/bebob/bebob.h
 +++ b/sound/firewire/bebob/bebob.h
-@@ -32,6 +32,8 @@
- #include <sound/info.h>
- #include <sound/control.h>
- #include <sound/rawmidi.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
+@@ -234,6 +234,10 @@ extern struct snd_bebob_spec maudio_fw410_spec;
+ extern struct snd_bebob_spec maudio_audiophile_spec;
+ extern struct snd_bebob_spec maudio_solo_spec;
+ extern struct snd_bebob_spec maudio_ozonic_spec;
++extern struct snd_bebob_spec saffirepro_26_spec;
++extern struct snd_bebob_spec saffirepro_10_spec;
++extern struct snd_bebob_spec saffire_le_spec;
++extern struct snd_bebob_spec saffire_spec;
  
- #include "../packets-buffer.h"
- #include "../iso-resources.h"
-@@ -156,6 +158,8 @@ int snd_bebob_create_control_devices(struct snd_bebob *bebob);
- 
- int snd_bebob_create_midi_devices(struct snd_bebob *bebob);
- 
-+int snd_bebob_create_pcm_devices(struct snd_bebob *bebob);
-+
- #define SND_BEBOB_DEV_ENTRY(vendor, model) \
+ #define SND_BEBOB_DEV_ENTRY(vendor, model, private_data) \
  { \
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
+diff --git a/sound/firewire/bebob/bebob_focusrite.c b/sound/firewire/bebob/bebob_focusrite.c
 new file mode 100644
-index 0000000..04913b2
+index 0000000..c4c7805
 --- /dev/null
-+++ b/sound/firewire/bebob/bebob_pcm.c
-@@ -0,0 +1,411 @@
++++ b/sound/firewire/bebob/bebob_focusrite.c
+@@ -0,0 +1,390 @@
 +/*
-+ * bebob_pcm.c - a part of driver for BeBoB based devices
++ * bebob_focusrite.c - a part of driver for BeBoB based devices
 + *
 + * Copyright (c) 2013 Takashi Sakamoto
 + *
@@ -123,397 +186,376 @@ index 0000000..04913b2
 +
 +#include "./bebob.h"
 +
-+static int
-+hw_rule_rate(struct snd_pcm_hw_params *params, struct snd_pcm_hw_rule *rule,
-+	     struct snd_bebob *bebob,
-+	     struct snd_bebob_stream_formation *formations)
-+{
-+	struct snd_interval *r =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	const struct snd_interval *c =
-+			hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1
-+	};
-+	unsigned int i;
++#define ANA_IN	"Analog In"
++#define DIG_IN	"Digital In"
++#define ANA_OUT	"Analog Out"
++#define DIG_OUT	"Digital Out"
++#define STM_IN	"Stream In"
 +
-+	for (i = 0; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
-+		/* entry is invalid */
-+		if (formations[i].pcm == 0)
-+			continue;
++#define SAFFIRE_ADDRESS_BASE			0x000100000000
 +
-+		if (!snd_interval_test(c, formations[i].pcm))
-+			continue;
++#define SAFFIRE_OFFSET_CLOCK_SOURCE		0x0000000000f8
++#define SAFFIREPRO_OFFSET_CLOCK_SOURCE		0x000000000174
 +
-+		t.min = min(t.min, snd_bebob_rate_table[i]);
-+		t.max = max(t.max, snd_bebob_rate_table[i]);
++/* whether sync to external device or not */
++#define SAFFIRE_OFFSET_CLOCK_SYNC_EXT		0x00000000013c
++#define SAFFIRE_LE_OFFSET_CLOCK_SYNC_EXT	0x000000000432
++#define SAFFIREPRO_OFFSET_CLOCK_SYNC_EXT	0x000000000164
 +
-+	}
-+	return snd_interval_refine(r, &t);
-+}
++#define SAFFIRE_CLOCK_SOURCE_INTERNAL		0
++#define SAFFIRE_CLOCK_SOURCE_SPDIF		1
 +
-+static int
-+hw_rule_channels(struct snd_pcm_hw_params *params, struct snd_pcm_hw_rule *rule,
-+		 struct snd_bebob *bebob,
-+		 struct snd_bebob_stream_formation *formations)
-+{
-+	struct snd_interval *c =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	const struct snd_interval *r =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1
-+	};
++/* '1' is absent, why... */
++#define SAFFIREPRO_CLOCK_SOURCE_INTERNAL	0
++#define SAFFIREPRO_CLOCK_SOURCE_SPDIF		2
++#define SAFFIREPRO_CLOCK_SOURCE_ADAT1		3
++#define SAFFIREPRO_CLOCK_SOURCE_ADAT2		4
++#define SAFFIREPRO_CLOCK_SOURCE_WORDCLOCK	5
 +
-+	unsigned int i;
++/* S/PDIF, ADAT1, ADAT2 is enabled or not. three quadlets */
++#define SAFFIREPRO_ENABLE_DIG_IFACES		0x0000000001a4
 +
-+	for (i = 0; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
-+		/* entry is invalid */
-+		if (formations[i].pcm == 0)
-+			continue;
++/* saffirepro has its own parameter for sampling frequency */
++#define SAFFIREPRO_RATE_NOREBOOT		0x0000000001cc
++/* index is the value for this register */
++const static unsigned int rates[] = {
++	[0] = 0,
++	[1] = 44100,
++	[2] = 48000,
++	[3] = 88200,
++	[4] = 96000,
++	[5] = 176400,
++	[6] = 192000
++};
 +
-+		if (!snd_interval_test(r, snd_bebob_rate_table[i]))
-+			continue;
-+
-+		t.min = min(t.min, formations[i].pcm);
-+		t.max = max(t.max, formations[i].pcm);
-+	}
-+
-+	return snd_interval_refine(c, &t);
-+}
++/* saffire(no label)/saffire LE has metering */
++#define SAFFIRE_OFFSET_METER			0x000000000100
++#define SAFFIRE_LE_OFFSET_METER			0x000000000168
 +
 +static inline int
-+hw_rule_capture_rate(struct snd_pcm_hw_params *params,
-+				struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_bebob *bebob = rule->private;
-+	return hw_rule_rate(params, rule, bebob,
-+				bebob->tx_stream_formations);
-+}
-+
-+static inline int
-+hw_rule_playback_rate(struct snd_pcm_hw_params *params,
-+				struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_bebob *bebob = rule->private;
-+	return hw_rule_rate(params, rule, bebob,
-+				bebob->rx_stream_formations);
-+}
-+
-+static inline int
-+hw_rule_capture_channels(struct snd_pcm_hw_params *params,
-+				struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_bebob *bebob = rule->private;
-+	return hw_rule_channels(params, rule, bebob,
-+				bebob->tx_stream_formations);
-+}
-+
-+static inline int
-+hw_rule_playback_channels(struct snd_pcm_hw_params *params,
-+				struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_bebob *bebob = rule->private;
-+	return hw_rule_channels(params, rule, bebob,
-+				bebob->rx_stream_formations);
-+}
-+
-+static void
-+prepare_channels(struct snd_pcm_hardware *hw,
-+	  struct snd_bebob_stream_formation *formations)
++saffire_read_block(struct snd_bebob *bebob, u64 offset,
++		   u32 *buf, unsigned int size)
 +{
 +	unsigned int i;
-+
-+	for (i = 0; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
-+		/* entry has no PCM channels */
-+		if (formations[i].pcm == 0)
-+			continue;
-+
-+		hw->channels_min = min(hw->channels_min, formations[i].pcm);
-+		hw->channels_max = max(hw->channels_max, formations[i].pcm);
-+	}
-+
-+	return;
-+}
-+
-+static void
-+prepare_rates(struct snd_pcm_hardware *hw,
-+	  struct snd_bebob_stream_formation *formations)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
-+		/* entry has no PCM channels */
-+		if (formations[i].pcm == 0)
-+			continue;
-+
-+		hw->rate_min = min(hw->rate_min, snd_bebob_rate_table[i]);
-+		hw->rate_max = max(hw->rate_max, snd_bebob_rate_table[i]);
-+		hw->rates |= snd_pcm_rate_to_rate_bit(snd_bebob_rate_table[i]);
-+	}
-+
-+	return;
-+}
-+
-+static int
-+pcm_init_hw_params(struct snd_bebob *bebob,
-+			struct snd_pcm_substream *substream)
-+{
 +	int err;
++	__be32 *tmp = (__be32 *)buf;
 +
-+	static const struct snd_pcm_hardware hw = {
-+		.info = SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_BATCH |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_SYNC_START |
-+			SNDRV_PCM_INFO_FIFO_IN_FRAMES |
-+			SNDRV_PCM_INFO_JOINT_DUPLEX |
-+			/* for Open Sound System compatibility */
-+			SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_BLOCK_TRANSFER,
-+		/* set up later */
-+		.rates = 0,
-+		.rate_min = UINT_MAX,
-+		.rate_max = 0,
-+		/* set up later */
-+		.channels_min = UINT_MAX,
-+		.channels_max = 0,
-+		.buffer_bytes_max = 1024 * 1024 * 1024,
-+		.period_bytes_min = 256,
-+		.period_bytes_max = 1024 * 1024 * 1024 / 2,
-+		.periods_min = 2,
-+		.periods_max = 32,
-+		.fifo_size = 0,
-+	};
-+
-+	substream->runtime->hw = hw;
-+	substream->runtime->delay = substream->runtime->hw.fifo_size;
-+
-+	/* add rule between channels and sampling rate */
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		prepare_rates(&substream->runtime->hw, bebob->tx_stream_formations);
-+		prepare_channels(&substream->runtime->hw, bebob->tx_stream_formations);
-+		substream->runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
-+		snd_pcm_hw_rule_add(substream->runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				hw_rule_capture_channels, bebob,
-+				SNDRV_PCM_HW_PARAM_RATE, -1);
-+		snd_pcm_hw_rule_add(substream->runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				hw_rule_capture_rate, bebob,
-+				SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	} else {
-+		prepare_rates(&substream->runtime->hw, bebob->rx_stream_formations);
-+		prepare_channels(&substream->runtime->hw, bebob->rx_stream_formations);
-+		substream->runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
-+		snd_pcm_hw_rule_add(substream->runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				hw_rule_playback_channels, bebob,
-+				SNDRV_PCM_HW_PARAM_RATE, -1);
-+		snd_pcm_hw_rule_add(substream->runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				hw_rule_playback_rate, bebob,
-+				SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	}
-+
-+	/* AM824 in IEC 61883-6 can deliver 24bit data */
-+	err = snd_pcm_hw_constraint_msbits(substream->runtime, 0, 32, 24);
++	err =  snd_fw_transaction(bebob->unit, TCODE_READ_BLOCK_REQUEST,
++				  SAFFIRE_ADDRESS_BASE + offset,
++				  tmp, size, 0);
 +	if (err < 0)
 +		goto end;
 +
-+	/* 
-+	 * AMDTP functionality in firewire-lib require periods to be aligned to
-+	 * 16 bit, or 24bit inner 32bit.
-+	 */
-+	err = snd_pcm_hw_constraint_step(substream->runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
-+	if (err < 0)
-+		goto end;
-+
-+	/* time for period constraint */
-+	err = snd_pcm_hw_constraint_minmax(substream->runtime,
-+					SNDRV_PCM_HW_PARAM_PERIOD_TIME,
-+					500, UINT_MAX);
-+	if (err < 0)
-+		goto end;
-+
-+	err = 0;
++	for (i = 0; i < size / sizeof(u32); i++)
++		buf[i] = be32_to_cpu(tmp[i]);
 +end:
 +	return err;
 +}
 +
-+static int
-+pcm_open(struct snd_pcm_substream *substream)
++static inline int
++saffire_read_quad(struct snd_bebob *bebob, u64 offset, u32 *value)
 +{
-+	struct snd_bebob *bebob = substream->private_data;
-+	unsigned int sampling_rate;
 +	int err;
++	__be32 tmp;
 +
-+	err = pcm_init_hw_params(bebob, substream);
++	err = snd_fw_transaction(bebob->unit, TCODE_READ_QUADLET_REQUEST,
++				 SAFFIRE_ADDRESS_BASE + offset,
++				 &tmp, sizeof(u32), 0);
 +	if (err < 0)
 +		goto end;
 +
-+	if (amdtp_stream_pcm_running(&bebob->tx_stream) ||
-+	    amdtp_stream_pcm_running(&bebob->rx_stream)) {
-+		err = snd_bebob_stream_get_rate(bebob, &sampling_rate);
++	*value = be32_to_cpu(tmp);
++end:
++	return err;
++}
++
++static inline int
++saffire_write_quad(struct snd_bebob *bebob, u64 offset, u32 value)
++{
++	value = cpu_to_be32(value);
++
++	return snd_fw_transaction(bebob->unit, TCODE_WRITE_QUADLET_REQUEST,
++				  SAFFIRE_ADDRESS_BASE + offset,
++				  &value, sizeof(u32), 0);
++}
++
++static char *saffirepro_26_clk_src_labels[] = {
++	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF", "ADAT1", "ADAT2", "Word Clock"
++};
++
++static char *saffirepro_10_clk_src_labels[] = {
++	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF", "Word Clock"
++};
++static int
++saffirepro_both_clk_freq_get(struct snd_bebob *bebob, unsigned int *rate)
++{
++	u32 id;
++	int err;
++
++	err = saffire_read_quad(bebob, SAFFIREPRO_RATE_NOREBOOT, &id);
++	if (err < 0)
++		goto end;
++	if (id >= ARRAY_SIZE(rates)) {
++		err = -EIO;
++		goto end;
++	}
++
++	*rate = rates[id];
++end:
++	return err;
++}
++static int
++saffirepro_both_clk_freq_set(struct snd_bebob *bebob, unsigned int rate)
++{
++	u32 id;
++	bool flag;
++
++	flag = false;
++	for (id = 0; id < ARRAY_SIZE(rates); id++) {
++		if (rates[id] == rate)
++			flag = true;
++	}
++	if (!flag)
++		return -EINVAL;
++
++	return saffire_write_quad(bebob, SAFFIREPRO_RATE_NOREBOOT, id);
++}
++static int
++saffirepro_both_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
++{
++	int err;
++	u32 value;
++
++	err = saffire_read_quad(bebob, SAFFIREPRO_OFFSET_CLOCK_SOURCE, &value);
++	if (err < 0)
++		goto end;
++
++	if (bebob->spec->clock->labels == saffirepro_10_clk_src_labels) {
++		if (value == SAFFIREPRO_CLOCK_SOURCE_WORDCLOCK)
++			*id = 2;
++		else if (value == SAFFIREPRO_CLOCK_SOURCE_SPDIF)
++			*id = 1;
++	} else if (value > 1)
++		*id = value - 1;
++end:
++	return err;
++}
++static int
++saffirepro_both_clk_src_set(struct snd_bebob *bebob, unsigned int id)
++{
++	int err;
++	u32 values[3];
++
++	if (bebob->spec->clock->labels == saffirepro_10_clk_src_labels) {
++		if (id == 2)
++			id = 5;
++		else if (id == 1)
++			id = 2;
++	} else if (id > 0)
++		id++;
++
++	/* if requesting digital input, check whether it's enabled or not */
++	/* TODO: consider to add switch for these digital inputs */
++	if ((id > 1) && (id < 5)) {
++		err = saffire_read_block(bebob, SAFFIREPRO_ENABLE_DIG_IFACES,
++					 values, sizeof(values));
 +		if (err < 0)
 +			goto end;
-+
-+		substream->runtime->hw.rate_min = sampling_rate;
-+		substream->runtime->hw.rate_max = sampling_rate;
++		if (values[id - 2] == 0)
++			goto end;
 +	}
 +
-+	snd_pcm_set_sync(substream);
-+
++	err = saffire_write_quad(bebob, SAFFIREPRO_OFFSET_CLOCK_SOURCE, id);
 +end:
 +	return err;
 +}
-+
 +static int
-+pcm_close(struct snd_pcm_substream *substream)
++saffirepro_both_clk_synced(struct snd_bebob *bebob, bool *synced)
 +{
-+	return 0;
-+}
-+
-+static int
-+pcm_hw_params(struct snd_pcm_substream *substream,
-+	      struct snd_pcm_hw_params *hw_params)
-+{
-+	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+						params_buffer_bytes(hw_params));
-+}
-+
-+static int
-+pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_bebob *bebob = substream->private_data;
-+
-+	snd_bebob_stream_stop_duplex(bebob);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+
-+static int
-+pcm_capture_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_bebob *bebob = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
++	unsigned int clock;
++	u32 value;
 +	int err;
 +
-+	err = snd_bebob_stream_start_duplex(bebob, &bebob->tx_stream,
-+					    runtime->rate);
++	err = saffirepro_both_clk_src_get(bebob, &clock);
++	if (err < 0)
++		goto end;
++	/* internal */
++	if (clock == 0) {
++		*synced = true;
++		goto end;
++	}
++
++	err = saffire_read_quad(bebob,
++				SAFFIREPRO_OFFSET_CLOCK_SYNC_EXT, &value);
 +	if (err < 0)
 +		goto end;
 +
-+	amdtp_stream_set_pcm_format(&bebob->tx_stream, runtime->format);
-+	amdtp_stream_pcm_prepare(&bebob->tx_stream);
-+end:
-+	return err;
-+}
-+static int
-+pcm_playback_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_bebob *bebob = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	err = snd_bebob_stream_start_duplex(bebob, &bebob->rx_stream,
-+					    runtime->rate);
-+	if (err < 0)
-+		goto end;
-+
-+	amdtp_stream_set_pcm_format(&bebob->rx_stream, runtime->format);
-+	amdtp_stream_pcm_prepare(&bebob->rx_stream);
++	*synced = (value & 0x01);
 +end:
 +	return err;
 +}
 +
-+static int
-+pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_bebob *bebob = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&bebob->tx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&bebob->tx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+static int
-+pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_bebob *bebob = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&bebob->rx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&bebob->rx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t
-+pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_bebob *bebob = sbstrm->private_data;
-+	return amdtp_stream_pcm_pointer(&bebob->tx_stream);
-+}
-+static snd_pcm_uframes_t
-+pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_bebob *bebob = sbstrm->private_data;
-+	return amdtp_stream_pcm_pointer(&bebob->rx_stream);
-+}
-+
-+static struct snd_pcm_ops pcm_capture_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_hw_params,
-+	.hw_free	= pcm_hw_free,
-+	.prepare	= pcm_capture_prepare,
-+	.trigger	= pcm_capture_trigger,
-+	.pointer	= pcm_capture_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
++struct snd_bebob_spec saffire_le_spec;
++static char *saffire_both_clk_src_labels[] = {
++	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF"
 +};
-+static struct snd_pcm_ops pcm_playback_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_hw_params,
-+	.hw_free	= pcm_hw_free,
-+	.prepare	= pcm_playback_prepare,
-+	.trigger	= pcm_playback_trigger,
-+	.pointer	= pcm_playback_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+	.mmap		= snd_pcm_lib_mmap_vmalloc,
-+};
-+
-+int snd_bebob_create_pcm_devices(struct snd_bebob *bebob)
++static int
++saffire_both_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
 +{
-+	struct snd_pcm *pcm;
 +	int err;
++	u32 value;
 +
-+	err = snd_pcm_new(bebob->card, bebob->card->driver, 0, 1, 1, &pcm);
++	err = saffire_read_quad(bebob, SAFFIRE_OFFSET_CLOCK_SOURCE, &value);
 +	if (err < 0)
 +		goto end;
 +
-+	pcm->private_data = bebob;
-+	snprintf(pcm->name, sizeof(pcm->name), "%s PCM", bebob->card->shortname);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
++	*id = 0xff & value;
++end:
++	return err;
++};
++static int
++saffire_both_clk_src_set(struct snd_bebob *bebob, unsigned int id)
++{
++	return saffire_write_quad(bebob, SAFFIRE_OFFSET_CLOCK_SOURCE, id);
++};
++static int
++saffire_both_clk_synced(struct snd_bebob *bebob, bool *synced)
++{
++	int err;
++	u64 offset;
++	u32 value;
++
++	err = saffire_both_clk_src_get(bebob, &value);
++	if (err < 0)
++		goto end;
++	/* internal */
++	if (value == 0) {
++		*synced = true;
++		goto end;
++	}
++
++	if (bebob->spec == &saffire_le_spec)
++		offset = SAFFIRE_LE_OFFSET_CLOCK_SYNC_EXT;
++	else
++		offset = SAFFIRE_OFFSET_CLOCK_SYNC_EXT;
++
++	err = saffire_read_quad(bebob, offset, &value);
++	if (err < 0)
++		goto end;
++
++	*synced = (0x01 & value);
++end:
++	return err;
++}
++static char *saffire_le_meter_labels[] = {
++	ANA_IN, ANA_IN, DIG_IN,
++	ANA_OUT, ANA_OUT, ANA_OUT, ANA_OUT,
++	STM_IN, STM_IN
++};
++#define SWAP(a, b) \
++	tmp = a; \
++	a = b; \
++	b = tmp
++static int
++saffire_le_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
++{
++	int err;
++	u32 tmp;
++
++	if (size < sizeof(saffire_le_meter_labels) * sizeof(u32))
++		return -EIO;
++
++	err = saffire_read_block(bebob, SAFFIRE_LE_OFFSET_METER, buf, size);
++	if (err < 0)
++		goto end;
++
++	SWAP(buf[1], buf[3]);
++	SWAP(buf[2], buf[3]);
++	SWAP(buf[3], buf[4]);
++
++	SWAP(buf[7], buf[10]);
++	SWAP(buf[8], buf[10]);
++	SWAP(buf[9], buf[11]);
++	SWAP(buf[11], buf[12]);
++
++	SWAP(buf[15], buf[16]);
 +
 +end:
 +	return err;
 +}
++static char *saffire_meter_labels[] = {
++	ANA_IN, ANA_IN,
++	STM_IN, STM_IN, STM_IN, STM_IN, STM_IN,
++};
++static int
++saffire_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
++{
++	return saffire_read_block(bebob, SAFFIRE_OFFSET_METER, buf, size);
++}
++
++/* Saffire Pro 26 I/O  */
++static struct snd_bebob_clock_spec saffirepro_26_clk_spec = {
++	.num		= ARRAY_SIZE(saffirepro_26_clk_src_labels),
++	.labels		= saffirepro_26_clk_src_labels,
++	.get_src	= &saffirepro_both_clk_src_get,
++	.set_src	= &saffirepro_both_clk_src_set,
++	.get_freq	= &saffirepro_both_clk_freq_get,
++	.set_freq	= &saffirepro_both_clk_freq_set,
++	.synced		= &saffirepro_both_clk_synced
++};
++struct snd_bebob_spec saffirepro_26_spec = {
++	.load	= NULL,
++	.clock	= &saffirepro_26_clk_spec,
++	.meter	= NULL
++};
++
++/* Saffire Pro 10 I/O */
++static struct snd_bebob_clock_spec saffirepro_10_clk_spec = {
++	.num		= ARRAY_SIZE(saffirepro_10_clk_src_labels),
++	.labels		= saffirepro_10_clk_src_labels,
++	.get_src	= &saffirepro_both_clk_src_get,
++	.set_src	= &saffirepro_both_clk_src_set,
++	.get_freq	= &saffirepro_both_clk_freq_get,
++	.set_freq	= &saffirepro_both_clk_freq_set,
++	.synced		= &saffirepro_both_clk_synced
++};
++struct snd_bebob_spec saffirepro_10_spec = {
++	.load	= NULL,
++	.clock	= &saffirepro_10_clk_spec,
++	.meter	= NULL
++};
++
++struct snd_bebob_clock_spec saffire_both_clk_spec= {
++	.num		= ARRAY_SIZE(saffire_both_clk_src_labels),
++	.labels		= saffire_both_clk_src_labels,
++	.get_src	= &saffire_both_clk_src_get,
++	.set_src	= &saffire_both_clk_src_set,
++	.get_freq	= &snd_bebob_stream_get_rate,
++	.set_freq	= &snd_bebob_stream_set_rate,
++	.synced		= &saffire_both_clk_synced
++};
++
++/* Saffire LE */
++struct snd_bebob_meter_spec saffire_le_meter_spec = {
++	.num	= ARRAY_SIZE(saffire_le_meter_labels),
++	.labels	= saffire_le_meter_labels,
++	.get	= &saffire_le_meter_get,
++};
++struct snd_bebob_spec saffire_le_spec = {
++	.load	= NULL,
++	.clock	= &saffire_both_clk_spec,
++	.meter	= &saffire_le_meter_spec
++};
++/* Saffire */
++struct snd_bebob_meter_spec saffire_meter_spec = {
++	.num	= ARRAY_SIZE(saffire_meter_labels),
++	.labels	= saffire_meter_labels,
++	.get	= &saffire_meter_get,
++};
++struct snd_bebob_spec saffire_spec ={
++	.load	= NULL,
++	.clock	= &saffire_both_clk_spec,
++	.meter	= &saffire_meter_spec
++};
 -- 
 1.8.3.2
