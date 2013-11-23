@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/17] firewire-lib: Split some codes into
-	functions to reuse in future
-Date: Sat, 23 Nov 2013 15:07:51 +0900
-Message-ID: <1385186884-8259-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 01/17] firewire-lib: Rename functions, structure,
+	member for both direction
+Date: Sat, 23 Nov 2013 15:07:48 +0900
+Message-ID: <1385186884-8259-2-git-send-email-o-takashi@sakamocchi.jp>
 References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 2003C2618EE
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B3652617A6
  for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 07:08:10 +0100 (CET)
 In-Reply-To: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,238 +25,876 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Some codes can be reused in handling transmitted stream. This commit adds new
-functions. This commit also renames some functions to keep naming consistency.
+This patch renames some functions, structure and member to reuse them in both
+AMDTP in/out stream.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 158 ++++++++++++++++++++++++++-----------------------
- 1 file changed, 83 insertions(+), 75 deletions(-)
+ sound/firewire/amdtp.c    | 152 +++++++++++++++++++++++-----------------------
+ sound/firewire/amdtp.h    |  78 +++++++++++++++---------
+ sound/firewire/dice.c     |  46 +++++++-------
+ sound/firewire/speakers.c |  47 +++++++-------
+ 4 files changed, 172 insertions(+), 151 deletions(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 5d94252..c32d75d 100644
+index 9048777..c9b45a0 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -47,6 +47,8 @@
- #define INTERRUPT_INTERVAL	16
- #define QUEUE_LENGTH		48
- 
-+#define TRANSMIT_PACKET_HEADER_SIZE	4
-+
+@@ -34,13 +34,13 @@
  static void pcm_period_tasklet(unsigned long data);
  
  /**
-@@ -440,13 +442,74 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
+- * amdtp_out_stream_init - initialize an AMDTP output stream structure
+- * @s: the AMDTP output stream to initialize
++ * amdtp_stream_init - initialize an AMDTP stream structure
++ * @s: the AMDTP stream to initialize
+  * @unit: the target of the stream
+  * @flags: the packet transmission method to use
+  */
+-int amdtp_out_stream_init(struct amdtp_out_stream *s, struct fw_unit *unit,
+-			  enum cip_out_flags flags)
++int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
++		      enum cip_flags flags)
+ {
+ 	s->unit = fw_unit_get(unit);
+ 	s->flags = flags;
+@@ -51,19 +51,19 @@ int amdtp_out_stream_init(struct amdtp_out_stream *s, struct fw_unit *unit,
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL(amdtp_out_stream_init);
++EXPORT_SYMBOL(amdtp_stream_init);
+ 
+ /**
+- * amdtp_out_stream_destroy - free stream resources
+- * @s: the AMDTP output stream to destroy
++ * amdtp_stream_destroy - free stream resources
++ * @s: the AMDTP stream to destroy
+  */
+-void amdtp_out_stream_destroy(struct amdtp_out_stream *s)
++void amdtp_stream_destroy(struct amdtp_stream *s)
+ {
+-	WARN_ON(amdtp_out_stream_running(s));
++	WARN_ON(amdtp_stream_running(s));
+ 	mutex_destroy(&s->mutex);
+ 	fw_unit_put(s->unit);
+ }
+-EXPORT_SYMBOL(amdtp_out_stream_destroy);
++EXPORT_SYMBOL(amdtp_stream_destroy);
+ 
+ const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT] = {
+ 	[CIP_SFC_32000]  =  8,
+@@ -77,8 +77,8 @@ const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT] = {
+ EXPORT_SYMBOL(amdtp_syt_intervals);
+ 
+ /**
+- * amdtp_out_stream_set_parameters - set stream parameters
+- * @s: the AMDTP output stream to configure
++ * amdtp_stream_set_parameters - set stream parameters
++ * @s: the AMDTP stream to configure
+  * @rate: the sample rate
+  * @pcm_channels: the number of PCM samples in each data block, to be encoded
+  *                as AM824 multi-bit linear audio
+@@ -87,10 +87,10 @@ EXPORT_SYMBOL(amdtp_syt_intervals);
+  * The parameters must be set before the stream is started, and must not be
+  * changed while the stream is running.
+  */
+-void amdtp_out_stream_set_parameters(struct amdtp_out_stream *s,
+-				     unsigned int rate,
+-				     unsigned int pcm_channels,
+-				     unsigned int midi_ports)
++void amdtp_stream_set_parameters(struct amdtp_stream *s,
++				 unsigned int rate,
++				 unsigned int pcm_channels,
++				 unsigned int midi_ports)
+ {
+ 	static const unsigned int rates[] = {
+ 		[CIP_SFC_32000]  =  32000,
+@@ -103,7 +103,7 @@ void amdtp_out_stream_set_parameters(struct amdtp_out_stream *s,
+ 	};
+ 	unsigned int sfc;
+ 
+-	if (WARN_ON(amdtp_out_stream_running(s)))
++	if (WARN_ON(amdtp_stream_running(s)))
+ 		return;
+ 
+ 	for (sfc = 0; sfc < CIP_SFC_COUNT; ++sfc)
+@@ -132,47 +132,47 @@ sfc_found:
+ 		/* additional buffering needed to adjust for no-data packets */
+ 		s->transfer_delay += TICKS_PER_SECOND * s->syt_interval / rate;
+ }
+-EXPORT_SYMBOL(amdtp_out_stream_set_parameters);
++EXPORT_SYMBOL(amdtp_stream_set_parameters);
+ 
+ /**
+- * amdtp_out_stream_get_max_payload - get the stream's packet size
+- * @s: the AMDTP output stream
++ * amdtp_stream_get_max_payload - get the stream's packet size
++ * @s: the AMDTP stream
+  *
+  * This function must not be called before the stream has been configured
+- * with amdtp_out_stream_set_parameters().
++ * with amdtp_stream_set_parameters().
+  */
+-unsigned int amdtp_out_stream_get_max_payload(struct amdtp_out_stream *s)
++unsigned int amdtp_stream_get_max_payload(struct amdtp_stream *s)
+ {
+ 	return 8 + s->syt_interval * s->data_block_quadlets * 4;
+ }
+-EXPORT_SYMBOL(amdtp_out_stream_get_max_payload);
++EXPORT_SYMBOL(amdtp_stream_get_max_payload);
+ 
+-static void amdtp_write_s16(struct amdtp_out_stream *s,
++static void amdtp_write_s16(struct amdtp_stream *s,
+ 			    struct snd_pcm_substream *pcm,
+ 			    __be32 *buffer, unsigned int frames);
+-static void amdtp_write_s32(struct amdtp_out_stream *s,
++static void amdtp_write_s32(struct amdtp_stream *s,
+ 			    struct snd_pcm_substream *pcm,
+ 			    __be32 *buffer, unsigned int frames);
+-static void amdtp_write_s16_dualwire(struct amdtp_out_stream *s,
++static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
+ 				     struct snd_pcm_substream *pcm,
+ 				     __be32 *buffer, unsigned int frames);
+-static void amdtp_write_s32_dualwire(struct amdtp_out_stream *s,
++static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
+ 				     struct snd_pcm_substream *pcm,
+ 				     __be32 *buffer, unsigned int frames);
+ 
+ /**
+- * amdtp_out_stream_set_pcm_format - set the PCM format
+- * @s: the AMDTP output stream to configure
++ * amdtp_stream_set_pcm_format - set the PCM format
++ * @s: the AMDTP stream to configure
+  * @format: the format of the ALSA PCM device
+  *
+  * The sample format must be set after the other paramters (rate/PCM channels/
+  * MIDI) and before the stream is started, and must not be changed while the
+  * stream is running.
+  */
+-void amdtp_out_stream_set_pcm_format(struct amdtp_out_stream *s,
+-				     snd_pcm_format_t format)
++void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
++				 snd_pcm_format_t format)
+ {
+-	if (WARN_ON(amdtp_out_stream_running(s)))
++	if (WARN_ON(amdtp_stream_running(s)))
+ 		return;
+ 
+ 	switch (format) {
+@@ -193,24 +193,24 @@ void amdtp_out_stream_set_pcm_format(struct amdtp_out_stream *s,
+ 		break;
+ 	}
+ }
+-EXPORT_SYMBOL(amdtp_out_stream_set_pcm_format);
++EXPORT_SYMBOL(amdtp_stream_set_pcm_format);
+ 
+ /**
+- * amdtp_out_stream_pcm_prepare - prepare PCM device for running
+- * @s: the AMDTP output stream
++ * amdtp_stream_pcm_prepare - prepare PCM device for running
++ * @s: the AMDTP stream
+  *
+  * This function should be called from the PCM device's .prepare callback.
+  */
+-void amdtp_out_stream_pcm_prepare(struct amdtp_out_stream *s)
++void amdtp_stream_pcm_prepare(struct amdtp_stream *s)
+ {
+ 	tasklet_kill(&s->period_tasklet);
+ 	s->pcm_buffer_pointer = 0;
+ 	s->pcm_period_pointer = 0;
+ 	s->pointer_flush = true;
+ }
+-EXPORT_SYMBOL(amdtp_out_stream_pcm_prepare);
++EXPORT_SYMBOL(amdtp_stream_pcm_prepare);
+ 
+-static unsigned int calculate_data_blocks(struct amdtp_out_stream *s)
++static unsigned int calculate_data_blocks(struct amdtp_stream *s)
+ {
+ 	unsigned int phase, data_blocks;
+ 
+@@ -243,7 +243,7 @@ static unsigned int calculate_data_blocks(struct amdtp_out_stream *s)
+ 	return data_blocks;
+ }
+ 
+-static unsigned int calculate_syt(struct amdtp_out_stream *s,
++static unsigned int calculate_syt(struct amdtp_stream *s,
+ 				  unsigned int cycle)
+ {
+ 	unsigned int syt_offset, phase, index, syt;
+@@ -286,7 +286,7 @@ static unsigned int calculate_syt(struct amdtp_out_stream *s,
+ 	}
+ }
+ 
+-static void amdtp_write_s32(struct amdtp_out_stream *s,
++static void amdtp_write_s32(struct amdtp_stream *s,
+ 			    struct snd_pcm_substream *pcm,
+ 			    __be32 *buffer, unsigned int frames)
+ {
+@@ -312,7 +312,7 @@ static void amdtp_write_s32(struct amdtp_out_stream *s,
+ 	}
+ }
+ 
+-static void amdtp_write_s16(struct amdtp_out_stream *s,
++static void amdtp_write_s16(struct amdtp_stream *s,
+ 			    struct snd_pcm_substream *pcm,
+ 			    __be32 *buffer, unsigned int frames)
+ {
+@@ -338,7 +338,7 @@ static void amdtp_write_s16(struct amdtp_out_stream *s,
+ 	}
+ }
+ 
+-static void amdtp_write_s32_dualwire(struct amdtp_out_stream *s,
++static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
+ 				     struct snd_pcm_substream *pcm,
+ 				     __be32 *buffer, unsigned int frames)
+ {
+@@ -369,7 +369,7 @@ static void amdtp_write_s32_dualwire(struct amdtp_out_stream *s,
+ 	}
+ }
+ 
+-static void amdtp_write_s16_dualwire(struct amdtp_out_stream *s,
++static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
+ 				     struct snd_pcm_substream *pcm,
+ 				     __be32 *buffer, unsigned int frames)
+ {
+@@ -400,7 +400,7 @@ static void amdtp_write_s16_dualwire(struct amdtp_out_stream *s,
+ 	}
+ }
+ 
+-static void amdtp_fill_pcm_silence(struct amdtp_out_stream *s,
++static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
+ 				   __be32 *buffer, unsigned int frames)
+ {
+ 	unsigned int i, c;
+@@ -412,7 +412,7 @@ static void amdtp_fill_pcm_silence(struct amdtp_out_stream *s,
+ 	}
+ }
+ 
+-static void amdtp_fill_midi(struct amdtp_out_stream *s,
++static void amdtp_fill_midi(struct amdtp_stream *s,
+ 			    __be32 *buffer, unsigned int frames)
+ {
+ 	unsigned int i;
+@@ -422,7 +422,7 @@ static void amdtp_fill_midi(struct amdtp_out_stream *s,
  						cpu_to_be32(0x80000000);
  }
  
--static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
-+static void check_pcm_pointer(struct amdtp_stream *s,
-+			      struct snd_pcm_substream *pcm,
-+			      unsigned int frames)
-+{	unsigned int ptr;
-+
-+	if (s->dual_wire)
-+		frames *= 2;
-+
-+	ptr = s->pcm_buffer_pointer + frames;
-+	if (ptr >= pcm->runtime->buffer_size)
-+		ptr -= pcm->runtime->buffer_size;
-+	ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
-+
-+	s->pcm_period_pointer += frames;
-+	if (s->pcm_period_pointer >= pcm->runtime->period_size) {
-+		s->pcm_period_pointer -= pcm->runtime->period_size;
-+		s->pointer_flush = false;
-+		tasklet_hi_schedule(&s->period_tasklet);
-+	}
-+}
-+
-+static void pcm_period_tasklet(unsigned long data)
-+{
-+	struct amdtp_stream *s = (void *)data;
-+	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
-+
-+	if (pcm)
-+		snd_pcm_period_elapsed(pcm);
-+}
-+
-+static int queue_packet(struct amdtp_stream *s,
-+			unsigned int header_length,
-+			unsigned int payload_length, bool skip)
-+{
-+	struct fw_iso_packet p = {0};
-+	int err;
-+
-+	p.interrupt = IS_ALIGNED(s->packet_index + 1, INTERRUPT_INTERVAL);
-+	p.tag = TAG_CIP;
-+	p.header_length = header_length;
-+	p.payload_length = (!skip) ? payload_length : 0;
-+	p.skip = (!skip) ? 0: 1;
-+	err = fw_iso_context_queue(s->context, &p, &s->buffer.iso_buffer,
-+				   s->buffer.packets[s->packet_index].offset);
-+	if (err < 0) {
-+		dev_err(&s->unit->device, "queueing error: %d\n", err);
-+		s->packet_index = -1;
-+		goto end;
-+	}
-+
-+	if (++s->packet_index >= QUEUE_LENGTH)
-+		s->packet_index = 0;
-+end:
-+	return err;
-+}
-+
-+static inline int queue_out_packet(struct amdtp_stream *s,
-+				   unsigned int payload_length, bool skip)
-+{
-+	return queue_packet(s, RECEIVE_PACKET_HEADER_SIZE,
-+			    payload_length, skip);
-+}
-+
-+static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
+-static void queue_out_packet(struct amdtp_out_stream *s, unsigned int cycle)
++static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
  {
  	__be32 *buffer;
--	unsigned int index, data_blocks, syt, ptr;
-+	unsigned int index, data_blocks, syt, payload_length;
- 	struct snd_pcm_substream *pcm;
--	struct fw_iso_packet packet;
--	int err;
- 
- 	if (s->packet_index < 0)
- 		return;
-@@ -479,55 +542,19 @@ static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
- 
- 	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
- 
--	packet.payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
--	packet.interrupt = IS_ALIGNED(index + 1, INTERRUPT_INTERVAL);
--	packet.skip = 0;
--	packet.tag = TAG_CIP;
--	packet.sy = 0;
--	packet.header_length = 0;
--
--	err = fw_iso_context_queue(s->context, &packet, &s->buffer.iso_buffer,
--				   s->buffer.packets[index].offset);
--	if (err < 0) {
--		dev_err(&s->unit->device, "queueing error: %d\n", err);
--		s->packet_index = -1;
-+	payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
-+	if (queue_out_packet(s, payload_length, false) < 0) {
- 		amdtp_stream_pcm_abort(s);
+ 	unsigned int index, data_blocks, syt, ptr;
+@@ -473,7 +473,7 @@ static void queue_out_packet(struct amdtp_out_stream *s, unsigned int cycle)
+ 	if (err < 0) {
+ 		dev_err(&s->unit->device, "queueing error: %d\n", err);
+ 		s->packet_index = -1;
+-		amdtp_out_stream_pcm_abort(s);
++		amdtp_stream_pcm_abort(s);
  		return;
  	}
  
--	if (++index >= QUEUE_LENGTH)
--		index = 0;
--	s->packet_index = index;
--
--	if (pcm) {
--		if (s->dual_wire)
--			data_blocks *= 2;
--
--		ptr = s->pcm_buffer_pointer + data_blocks;
--		if (ptr >= pcm->runtime->buffer_size)
--			ptr -= pcm->runtime->buffer_size;
--		ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
--
--		s->pcm_period_pointer += data_blocks;
--		if (s->pcm_period_pointer >= pcm->runtime->period_size) {
--			s->pcm_period_pointer -= pcm->runtime->period_size;
--			s->pointer_flush = false;
--			tasklet_hi_schedule(&s->period_tasklet);
--		}
--	}
--}
--
--static void pcm_period_tasklet(unsigned long data)
--{
--	struct amdtp_stream *s = (void *)data;
--	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
--
+@@ -501,7 +501,7 @@ static void queue_out_packet(struct amdtp_out_stream *s, unsigned int cycle)
+ 
+ static void pcm_period_tasklet(unsigned long data)
+ {
+-	struct amdtp_out_stream *s = (void *)data;
++	struct amdtp_stream *s = (void *)data;
+ 	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
+ 
  	if (pcm)
--		snd_pcm_period_elapsed(pcm);
-+		check_pcm_pointer(s, pcm, data_blocks);
+@@ -509,9 +509,9 @@ static void pcm_period_tasklet(unsigned long data)
  }
  
--static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
--			size_t header_length, void *header, void *private_data)
-+static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
-+				size_t header_length, void *header,
-+				void *private_data)
+ static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
+-				size_t header_length, void *header, void *data)
++			size_t header_length, void *header, void *private_data)
  {
- 	struct amdtp_stream *s = private_data;
+-	struct amdtp_out_stream *s = data;
++	struct amdtp_stream *s = private_data;
  	unsigned int i, packets = header_length / 4;
-@@ -540,31 +567,10 @@ static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
- 	cycle += QUEUE_LENGTH - packets;
  
- 	for (i = 0; i < packets; ++i)
--		queue_out_packet(s, ++cycle);
-+		handle_out_packet(s, ++cycle);
+ 	/*
+@@ -526,7 +526,7 @@ static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
  	fw_iso_context_queue_flush(s->context);
  }
  
--static int queue_initial_skip_packets(struct amdtp_stream *s)
--{
--	struct fw_iso_packet skip_packet = {
--		.skip = 1,
--	};
--	unsigned int i;
--	int err;
--
--	for (i = 0; i < QUEUE_LENGTH; ++i) {
--		skip_packet.interrupt = IS_ALIGNED(s->packet_index + 1,
--						   INTERRUPT_INTERVAL);
--		err = fw_iso_context_queue(s->context, &skip_packet, NULL, 0);
--		if (err < 0)
--			return err;
--		if (++s->packet_index >= QUEUE_LENGTH)
--			s->packet_index = 0;
--	}
--
--	return 0;
--}
--
+-static int queue_initial_skip_packets(struct amdtp_out_stream *s)
++static int queue_initial_skip_packets(struct amdtp_stream *s)
+ {
+ 	struct fw_iso_packet skip_packet = {
+ 		.skip = 1,
+@@ -548,16 +548,16 @@ static int queue_initial_skip_packets(struct amdtp_out_stream *s)
+ }
+ 
  /**
-  * amdtp_stream_start - start sending packets
-  * @s: the AMDTP stream to start
-@@ -594,7 +600,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+- * amdtp_out_stream_start - start sending packets
+- * @s: the AMDTP output stream to start
++ * amdtp_stream_start - start sending packets
++ * @s: the AMDTP stream to start
+  * @channel: the isochronous channel on the bus
+  * @speed: firewire speed code
+  *
+  * The stream cannot be started until it has been configured with
+- * amdtp_out_stream_set_parameters() and amdtp_out_stream_set_pcm_format(),
++ * amdtp_stream_set_parameters() and amdtp_stream_set_pcm_format(),
+  * and it must be started before any PCM or MIDI device can be started.
+  */
+-int amdtp_out_stream_start(struct amdtp_out_stream *s, int channel, int speed)
++int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ {
+ 	static const struct {
+ 		unsigned int data_block;
+@@ -575,7 +575,7 @@ int amdtp_out_stream_start(struct amdtp_out_stream *s, int channel, int speed)
+ 
  	mutex_lock(&s->mutex);
  
- 	if (WARN_ON(amdtp_stream_running(s) ||
--		    (!s->pcm_channels && !s->midi_ports))) {
-+		    (s->data_block_quadlets < 1))) {
+-	if (WARN_ON(amdtp_out_stream_running(s) ||
++	if (WARN_ON(amdtp_stream_running(s) ||
+ 		    (!s->pcm_channels && !s->midi_ports))) {
  		err = -EBADFD;
  		goto err_unlock;
- 	}
-@@ -612,8 +618,8 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
- 					   FW_ISO_CONTEXT_TRANSMIT,
- 					   channel, speed, 0,
--					   out_packet_callback, s);
--	if (IS_ERR(s->context)) {
-+					   out_stream_callback, s);
-+	if (!amdtp_stream_running(s)) {
+@@ -586,7 +586,7 @@ int amdtp_out_stream_start(struct amdtp_out_stream *s, int channel, int speed)
+ 	s->last_syt_offset = TICKS_PER_CYCLE;
+ 
+ 	err = iso_packets_buffer_init(&s->buffer, s->unit, QUEUE_LENGTH,
+-				      amdtp_out_stream_get_max_payload(s),
++				      amdtp_stream_get_max_payload(s),
+ 				      DMA_TO_DEVICE);
+ 	if (err < 0)
+ 		goto err_unlock;
+@@ -599,11 +599,11 @@ int amdtp_out_stream_start(struct amdtp_out_stream *s, int channel, int speed)
  		err = PTR_ERR(s->context);
  		if (err == -EBUSY)
  			dev_err(&s->unit->device,
-@@ -624,11 +630,13 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	amdtp_stream_update(s);
+-				"no free output stream on this controller\n");
++				"no free stream on this controller\n");
+ 		goto err_buffer;
+ 	}
+ 
+-	amdtp_out_stream_update(s);
++	amdtp_stream_update(s);
  
  	s->packet_index = 0;
--	s->data_block_counter = 0;
--	err = queue_initial_skip_packets(s);
--	if (err < 0)
--		goto err_context;
-+	do {
-+		err = queue_out_packet(s, 0, true);
-+		if (err < 0)
-+			goto err_context;
-+	} while (s->packet_index > 0);
+ 	s->data_block_counter = 0;
+@@ -629,15 +629,15 @@ err_unlock:
  
-+	s->data_block_counter = 0;
- 	err = fw_iso_context_start(s->context, -1, 0, 0);
+ 	return err;
+ }
+-EXPORT_SYMBOL(amdtp_out_stream_start);
++EXPORT_SYMBOL(amdtp_stream_start);
+ 
+ /**
+- * amdtp_out_stream_pcm_pointer - get the PCM buffer position
+- * @s: the AMDTP output stream that transports the PCM data
++ * amdtp_stream_pcm_pointer - get the PCM buffer position
++ * @s: the AMDTP stream that transports the PCM data
+  *
+  * Returns the current buffer position, in frames.
+  */
+-unsigned long amdtp_out_stream_pcm_pointer(struct amdtp_out_stream *s)
++unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s)
+ {
+ 	/* this optimization is allowed to be racy */
+ 	if (s->pointer_flush)
+@@ -647,31 +647,31 @@ unsigned long amdtp_out_stream_pcm_pointer(struct amdtp_out_stream *s)
+ 
+ 	return ACCESS_ONCE(s->pcm_buffer_pointer);
+ }
+-EXPORT_SYMBOL(amdtp_out_stream_pcm_pointer);
++EXPORT_SYMBOL(amdtp_stream_pcm_pointer);
+ 
+ /**
+- * amdtp_out_stream_update - update the stream after a bus reset
+- * @s: the AMDTP output stream
++ * amdtp_stream_update - update the stream after a bus reset
++ * @s: the AMDTP stream
+  */
+-void amdtp_out_stream_update(struct amdtp_out_stream *s)
++void amdtp_stream_update(struct amdtp_stream *s)
+ {
+ 	ACCESS_ONCE(s->source_node_id_field) =
+ 		(fw_parent_device(s->unit)->card->node_id & 0x3f) << 24;
+ }
+-EXPORT_SYMBOL(amdtp_out_stream_update);
++EXPORT_SYMBOL(amdtp_stream_update);
+ 
+ /**
+- * amdtp_out_stream_stop - stop sending packets
+- * @s: the AMDTP output stream to stop
++ * amdtp_stream_stop - stop sending packets
++ * @s: the AMDTP stream to stop
+  *
+  * All PCM and MIDI devices of the stream must be stopped before the stream
+  * itself can be stopped.
+  */
+-void amdtp_out_stream_stop(struct amdtp_out_stream *s)
++void amdtp_stream_stop(struct amdtp_stream *s)
+ {
+ 	mutex_lock(&s->mutex);
+ 
+-	if (!amdtp_out_stream_running(s)) {
++	if (!amdtp_stream_running(s)) {
+ 		mutex_unlock(&s->mutex);
+ 		return;
+ 	}
+@@ -684,16 +684,16 @@ void amdtp_out_stream_stop(struct amdtp_out_stream *s)
+ 
+ 	mutex_unlock(&s->mutex);
+ }
+-EXPORT_SYMBOL(amdtp_out_stream_stop);
++EXPORT_SYMBOL(amdtp_stream_stop);
+ 
+ /**
+- * amdtp_out_stream_pcm_abort - abort the running PCM device
++ * amdtp_stream_pcm_abort - abort the running PCM device
+  * @s: the AMDTP stream about to be stopped
+  *
+  * If the isochronous stream needs to be stopped asynchronously, call this
+  * function first to stop the PCM device.
+  */
+-void amdtp_out_stream_pcm_abort(struct amdtp_out_stream *s)
++void amdtp_stream_pcm_abort(struct amdtp_stream *s)
+ {
+ 	struct snd_pcm_substream *pcm;
+ 
+@@ -705,4 +705,4 @@ void amdtp_out_stream_pcm_abort(struct amdtp_out_stream *s)
+ 		snd_pcm_stream_unlock_irq(pcm);
+ 	}
+ }
+-EXPORT_SYMBOL(amdtp_out_stream_pcm_abort);
++EXPORT_SYMBOL(amdtp_stream_pcm_abort);
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index 2746ecd..757ea6c 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -8,7 +8,7 @@
+ #include "packets-buffer.h"
+ 
+ /**
+- * enum cip_out_flags - describes details of the streaming protocol
++ * enum cip_flags - describes details of the streaming protocol
+  * @CIP_NONBLOCKING: In non-blocking mode, each packet contains
+  *	sample_rate/8000 samples, with rounding up or down to adjust
+  *	for clock skew and left-over fractional samples.  This should
+@@ -21,7 +21,7 @@
+  *	two samples of a channel are stored consecutively in the packet.
+  *	Requires blocking mode and SYT_INTERVAL-aligned PCM buffer size.
+  */
+-enum cip_out_flags {
++enum cip_flags {
+ 	CIP_NONBLOCKING	= 0x00,
+ 	CIP_BLOCKING	= 0x01,
+ 	CIP_HI_DUALWIRE	= 0x02,
+@@ -48,9 +48,9 @@ struct fw_unit;
+ struct fw_iso_context;
+ struct snd_pcm_substream;
+ 
+-struct amdtp_out_stream {
++struct amdtp_stream {
+ 	struct fw_unit *unit;
+-	enum cip_out_flags flags;
++	enum cip_flags flags;
+ 	struct fw_iso_context *context;
+ 	struct mutex mutex;
+ 
+@@ -59,7 +59,7 @@ struct amdtp_out_stream {
+ 	unsigned int data_block_quadlets;
+ 	unsigned int pcm_channels;
+ 	unsigned int midi_ports;
+-	void (*transfer_samples)(struct amdtp_out_stream *s,
++	void (*transfer_samples)(struct amdtp_stream *s,
+ 				 struct snd_pcm_substream *pcm,
+ 				 __be32 *buffer, unsigned int frames);
+ 
+@@ -84,56 +84,76 @@ struct amdtp_out_stream {
+ 	bool pointer_flush;
+ };
+ 
+-int amdtp_out_stream_init(struct amdtp_out_stream *s, struct fw_unit *unit,
+-			  enum cip_out_flags flags);
+-void amdtp_out_stream_destroy(struct amdtp_out_stream *s);
++int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
++		      enum cip_flags flags);
++void amdtp_stream_destroy(struct amdtp_stream *s);
+ 
+-void amdtp_out_stream_set_parameters(struct amdtp_out_stream *s,
+-				     unsigned int rate,
+-				     unsigned int pcm_channels,
+-				     unsigned int midi_ports);
+-unsigned int amdtp_out_stream_get_max_payload(struct amdtp_out_stream *s);
++void amdtp_stream_set_parameters(struct amdtp_stream *s,
++				 unsigned int rate,
++				 unsigned int pcm_channels,
++				 unsigned int midi_ports);
++unsigned int amdtp_stream_get_max_payload(struct amdtp_stream *s);
+ 
+-int amdtp_out_stream_start(struct amdtp_out_stream *s, int channel, int speed);
+-void amdtp_out_stream_update(struct amdtp_out_stream *s);
+-void amdtp_out_stream_stop(struct amdtp_out_stream *s);
++int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed);
++void amdtp_stream_update(struct amdtp_stream *s);
++void amdtp_stream_stop(struct amdtp_stream *s);
+ 
+-void amdtp_out_stream_set_pcm_format(struct amdtp_out_stream *s,
+-				     snd_pcm_format_t format);
+-void amdtp_out_stream_pcm_prepare(struct amdtp_out_stream *s);
+-unsigned long amdtp_out_stream_pcm_pointer(struct amdtp_out_stream *s);
+-void amdtp_out_stream_pcm_abort(struct amdtp_out_stream *s);
++void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
++				 snd_pcm_format_t format);
++void amdtp_stream_pcm_prepare(struct amdtp_stream *s);
++unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s);
++void amdtp_stream_pcm_abort(struct amdtp_stream *s);
+ 
+ extern const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT];
+ 
+-static inline bool amdtp_out_stream_running(struct amdtp_out_stream *s)
++/**
++ * amdtp_stream_running - check stream is running or not
++ * @s: the AMDTP stream
++ *
++ * If this function returns true, the stream is running.
++ */
++static inline bool amdtp_stream_running(struct amdtp_stream *s)
+ {
+ 	return !IS_ERR(s->context);
+ }
+ 
+ /**
+- * amdtp_out_streaming_error - check for streaming error
+- * @s: the AMDTP output stream
++ * amdtp_stream_set_pcm - configure format of PCM samples
++ * @s: the AMDTP stream to be configured
++ * @pcm_channels: the number of PCM samples in each data block, to be encoded
++ *                as AM824 multi-bit linear audio
++ *
++ * This function must not be called while the stream is running.
++ */
++static inline void amdtp_stream_set_pcm(struct amdtp_stream *s,
++					unsigned int pcm_channels)
++{
++	s->pcm_channels = pcm_channels;
++}
++
++/**
++ * amdtp_streaming_error - check for streaming error
++ * @s: the AMDTP stream
+  *
+  * If this function returns true, the stream's packet queue has stopped due to
+  * an asynchronous error.
+  */
+-static inline bool amdtp_out_streaming_error(struct amdtp_out_stream *s)
++static inline bool amdtp_streaming_error(struct amdtp_stream *s)
+ {
+ 	return s->packet_index < 0;
+ }
+ 
+ /**
+- * amdtp_out_stream_pcm_trigger - start/stop playback from a PCM device
+- * @s: the AMDTP output stream
++ * amdtp_stream_pcm_trigger - start/stop playback from a PCM device
++ * @s: the AMDTP stream
+  * @pcm: the PCM device to be started, or %NULL to stop the current device
+  *
+  * Call this function on a running isochronous stream to enable the actual
+  * transmission of PCM data.  This function should be called from the PCM
+  * device's .trigger callback.
+  */
+-static inline void amdtp_out_stream_pcm_trigger(struct amdtp_out_stream *s,
+-						struct snd_pcm_substream *pcm)
++static inline void amdtp_stream_pcm_trigger(struct amdtp_stream *s,
++					    struct snd_pcm_substream *pcm)
+ {
+ 	ACCESS_ONCE(s->pcm) = pcm;
+ }
+diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
+index 6feee66..c76c519 100644
+--- a/sound/firewire/dice.c
++++ b/sound/firewire/dice.c
+@@ -51,7 +51,7 @@ struct dice {
+ 	wait_queue_head_t hwdep_wait;
+ 	u32 notification_bits;
+ 	struct fw_iso_resources resources;
+-	struct amdtp_out_stream stream;
++	struct amdtp_stream stream;
+ };
+ 
+ MODULE_DESCRIPTION("DICE driver");
+@@ -460,17 +460,17 @@ static int dice_stream_start_packets(struct dice *dice)
+ {
+ 	int err;
+ 
+-	if (amdtp_out_stream_running(&dice->stream))
++	if (amdtp_stream_running(&dice->stream))
+ 		return 0;
+ 
+-	err = amdtp_out_stream_start(&dice->stream, dice->resources.channel,
+-				     fw_parent_device(dice->unit)->max_speed);
++	err = amdtp_stream_start(&dice->stream, dice->resources.channel,
++				 fw_parent_device(dice->unit)->max_speed);
  	if (err < 0)
- 		goto err_context;
+ 		return err;
+ 
+ 	err = dice_enable_set(dice);
+ 	if (err < 0) {
+-		amdtp_out_stream_stop(&dice->stream);
++		amdtp_stream_stop(&dice->stream);
+ 		return err;
+ 	}
+ 
+@@ -484,7 +484,7 @@ static int dice_stream_start(struct dice *dice)
+ 
+ 	if (!dice->resources.allocated) {
+ 		err = fw_iso_resources_allocate(&dice->resources,
+-				amdtp_out_stream_get_max_payload(&dice->stream),
++				amdtp_stream_get_max_payload(&dice->stream),
+ 				fw_parent_device(dice->unit)->max_speed);
+ 		if (err < 0)
+ 			goto error;
+@@ -516,9 +516,9 @@ error:
+ 
+ static void dice_stream_stop_packets(struct dice *dice)
+ {
+-	if (amdtp_out_stream_running(&dice->stream)) {
++	if (amdtp_stream_running(&dice->stream)) {
+ 		dice_enable_clear(dice);
+-		amdtp_out_stream_stop(&dice->stream);
++		amdtp_stream_stop(&dice->stream);
+ 	}
+ }
+ 
+@@ -581,12 +581,12 @@ static int dice_hw_params(struct snd_pcm_substream *substream,
+ 		return err;
+ 
+ 	mode = rate_index_to_mode(rate_index);
+-	amdtp_out_stream_set_parameters(&dice->stream,
+-					params_rate(hw_params),
+-					params_channels(hw_params),
+-					dice->rx_midi_ports[mode]);
+-	amdtp_out_stream_set_pcm_format(&dice->stream,
+-					params_format(hw_params));
++	amdtp_stream_set_parameters(&dice->stream,
++				    params_rate(hw_params),
++				    params_channels(hw_params),
++				    dice->rx_midi_ports[mode]);
++	amdtp_stream_set_pcm_format(&dice->stream,
++				    params_format(hw_params));
+ 
+ 	return 0;
+ }
+@@ -609,7 +609,7 @@ static int dice_prepare(struct snd_pcm_substream *substream)
+ 
+ 	mutex_lock(&dice->mutex);
+ 
+-	if (amdtp_out_streaming_error(&dice->stream))
++	if (amdtp_streaming_error(&dice->stream))
+ 		dice_stream_stop_packets(dice);
+ 
+ 	err = dice_stream_start(dice);
+@@ -620,7 +620,7 @@ static int dice_prepare(struct snd_pcm_substream *substream)
+ 
+ 	mutex_unlock(&dice->mutex);
+ 
+-	amdtp_out_stream_pcm_prepare(&dice->stream);
++	amdtp_stream_pcm_prepare(&dice->stream);
+ 
+ 	return 0;
+ }
+@@ -640,7 +640,7 @@ static int dice_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	amdtp_out_stream_pcm_trigger(&dice->stream, pcm);
++	amdtp_stream_pcm_trigger(&dice->stream, pcm);
+ 
+ 	return 0;
+ }
+@@ -649,7 +649,7 @@ static snd_pcm_uframes_t dice_pointer(struct snd_pcm_substream *substream)
+ {
+ 	struct dice *dice = substream->private_data;
+ 
+-	return amdtp_out_stream_pcm_pointer(&dice->stream);
++	return amdtp_stream_pcm_pointer(&dice->stream);
+ }
+ 
+ static int dice_create_pcm(struct dice *dice)
+@@ -1104,7 +1104,7 @@ static void dice_card_free(struct snd_card *card)
+ {
+ 	struct dice *dice = card->private_data;
+ 
+-	amdtp_out_stream_destroy(&dice->stream);
++	amdtp_stream_destroy(&dice->stream);
+ 	fw_core_remove_address_handler(&dice->notification_handler);
+ 	mutex_destroy(&dice->mutex);
+ }
+@@ -1360,8 +1360,8 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+ 		goto err_owner;
+ 	dice->resources.channels_mask = 0x00000000ffffffffuLL;
+ 
+-	err = amdtp_out_stream_init(&dice->stream, unit,
+-				    CIP_BLOCKING | CIP_HI_DUALWIRE);
++	err = amdtp_stream_init(&dice->stream, unit,
++				CIP_BLOCKING | CIP_HI_DUALWIRE);
+ 	if (err < 0)
+ 		goto err_resources;
+ 
+@@ -1417,7 +1417,7 @@ static void dice_remove(struct fw_unit *unit)
+ {
+ 	struct dice *dice = dev_get_drvdata(&unit->device);
+ 
+-	amdtp_out_stream_pcm_abort(&dice->stream);
++	amdtp_stream_pcm_abort(&dice->stream);
+ 
+ 	snd_card_disconnect(dice->card);
+ 
+@@ -1443,7 +1443,7 @@ static void dice_bus_reset(struct fw_unit *unit)
+ 	 * to stop so that the application can restart them in an orderly
+ 	 * manner.
+ 	 */
+-	amdtp_out_stream_pcm_abort(&dice->stream);
++	amdtp_stream_pcm_abort(&dice->stream);
+ 
+ 	mutex_lock(&dice->mutex);
+ 
+diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
+index cc8bc3a..fc11c0f 100644
+--- a/sound/firewire/speakers.c
++++ b/sound/firewire/speakers.c
+@@ -51,7 +51,8 @@ struct fwspk {
+ 	const struct device_info *device_info;
+ 	struct mutex mutex;
+ 	struct cmp_connection connection;
+-	struct amdtp_out_stream stream;
++	struct amdtp_stream stream;
++	bool stream_running;
+ 	bool mute;
+ 	s16 volume[6];
+ 	s16 volume_min;
+@@ -187,8 +188,8 @@ static int fwspk_close(struct snd_pcm_substream *substream)
+ 
+ static void fwspk_stop_stream(struct fwspk *fwspk)
+ {
+-	if (amdtp_out_stream_running(&fwspk->stream)) {
+-		amdtp_out_stream_stop(&fwspk->stream);
++	if (fwspk->stream_running) {
++		amdtp_stream_stop(&fwspk->stream);
+ 		cmp_connection_break(&fwspk->connection);
+ 	}
+ }
+@@ -244,13 +245,13 @@ static int fwspk_hw_params(struct snd_pcm_substream *substream,
+ 	if (err < 0)
+ 		goto error;
+ 
+-	amdtp_out_stream_set_parameters(&fwspk->stream,
+-					params_rate(hw_params),
+-					params_channels(hw_params),
+-					0);
++	amdtp_stream_set_parameters(&fwspk->stream,
++				    params_rate(hw_params),
++				    params_channels(hw_params),
++				    0);
+ 
+-	amdtp_out_stream_set_pcm_format(&fwspk->stream,
+-					params_format(hw_params));
++	amdtp_stream_set_pcm_format(&fwspk->stream,
++				    params_format(hw_params));
+ 
+ 	err = fwspk_set_rate(fwspk, fwspk->stream.sfc);
+ 	if (err < 0)
+@@ -282,25 +283,25 @@ static int fwspk_prepare(struct snd_pcm_substream *substream)
+ 
+ 	mutex_lock(&fwspk->mutex);
+ 
+-	if (amdtp_out_streaming_error(&fwspk->stream))
++	if (amdtp_streaming_error(&fwspk->stream))
+ 		fwspk_stop_stream(fwspk);
+ 
+-	if (!amdtp_out_stream_running(&fwspk->stream)) {
++	if (!amdtp_stream_running(&fwspk->stream)) {
+ 		err = cmp_connection_establish(&fwspk->connection,
+-			amdtp_out_stream_get_max_payload(&fwspk->stream));
++			amdtp_stream_get_max_payload(&fwspk->stream));
+ 		if (err < 0)
+ 			goto err_mutex;
+ 
+-		err = amdtp_out_stream_start(&fwspk->stream,
+-					fwspk->connection.resources.channel,
+-					fwspk->connection.speed);
++		err = amdtp_stream_start(&fwspk->stream,
++					 fwspk->connection.resources.channel,
++					 fwspk->connection.speed);
+ 		if (err < 0)
+ 			goto err_connection;
+ 	}
+ 
+ 	mutex_unlock(&fwspk->mutex);
+ 
+-	amdtp_out_stream_pcm_prepare(&fwspk->stream);
++	amdtp_stream_pcm_prepare(&fwspk->stream);
+ 
+ 	return 0;
+ 
+@@ -327,7 +328,7 @@ static int fwspk_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	amdtp_out_stream_pcm_trigger(&fwspk->stream, pcm);
++	amdtp_stream_pcm_trigger(&fwspk->stream, pcm);
+ 	return 0;
+ }
+ 
+@@ -335,7 +336,7 @@ static snd_pcm_uframes_t fwspk_pointer(struct snd_pcm_substream *substream)
+ {
+ 	struct fwspk *fwspk = substream->private_data;
+ 
+-	return amdtp_out_stream_pcm_pointer(&fwspk->stream);
++	return amdtp_stream_pcm_pointer(&fwspk->stream);
+ }
+ 
+ static int fwspk_create_pcm(struct fwspk *fwspk)
+@@ -653,7 +654,7 @@ static void fwspk_card_free(struct snd_card *card)
+ {
+ 	struct fwspk *fwspk = card->private_data;
+ 
+-	amdtp_out_stream_destroy(&fwspk->stream);
++	amdtp_stream_destroy(&fwspk->stream);
+ 	cmp_connection_destroy(&fwspk->connection);
+ 	fw_unit_put(fwspk->unit);
+ 	mutex_destroy(&fwspk->mutex);
+@@ -683,7 +684,7 @@ static int fwspk_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto err_unit;
+ 
+-	err = amdtp_out_stream_init(&fwspk->stream, unit, CIP_NONBLOCKING);
++	err = amdtp_stream_init(&fwspk->stream, unit, CIP_NONBLOCKING);
+ 	if (err < 0)
+ 		goto err_connection;
+ 
+@@ -733,21 +734,21 @@ static void fwspk_bus_reset(struct fw_unit *unit)
+ 	fcp_bus_reset(fwspk->unit);
+ 
+ 	if (cmp_connection_update(&fwspk->connection) < 0) {
+-		amdtp_out_stream_pcm_abort(&fwspk->stream);
++		amdtp_stream_pcm_abort(&fwspk->stream);
+ 		mutex_lock(&fwspk->mutex);
+ 		fwspk_stop_stream(fwspk);
+ 		mutex_unlock(&fwspk->mutex);
+ 		return;
+ 	}
+ 
+-	amdtp_out_stream_update(&fwspk->stream);
++	amdtp_stream_update(&fwspk->stream);
+ }
+ 
+ static void fwspk_remove(struct fw_unit *unit)
+ {
+ 	struct fwspk *fwspk = dev_get_drvdata(&unit->device);
+ 
+-	amdtp_out_stream_pcm_abort(&fwspk->stream);
++	amdtp_stream_pcm_abort(&fwspk->stream);
+ 	snd_card_disconnect(fwspk->card);
+ 
+ 	mutex_lock(&fwspk->mutex);
 -- 
 1.8.3.2
