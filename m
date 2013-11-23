@@ -1,14 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 00/17] Enhancement for firewire-lib
-Date: Sat, 23 Nov 2013 15:07:47 +0900
-Message-ID: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 02/17] firewire-lib: Add macros instead of
+	fixed value for AMDTP
+Date: Sat, 23 Nov 2013 15:07:49 +0900
+Message-ID: <1385186884-8259-3-git-send-email-o-takashi@sakamocchi.jp>
+References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 235D72619D6
+ by alsa0.perex.cz (Postfix) with ESMTP id 26A9C2619D9
  for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 07:08:10 +0100 (CET)
+In-Reply-To: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,45 +25,49 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This series of patch extend functionalities of current firewire-lib:
- - support for both in/out AMDTP stream
- - support for duplex stream synchronization (blocking mode only)
- - support for both MIDI/PCM stream
- - support for both in/out CMP
- - support for some AV/C general commands
-
-Additionally, at the last of this series, some quirks for Fireworks are added.
-
-I'm happy to receive your comments, especially for sort processing.
-
-Takashi Sakamoto (17):
-  firewire-lib: Rename functions, structure, member for both direction
-  firewire-lib: Add macros instead of fixed value for AMDTP
-  firewire-lib: Add 'direction' member to 'amdtp_stream' structure
-  firewire-lib: Split some codes into functions to reuse in future
-  firewire-lib: Add support for AMDTP transmit stream and PCM capture
-  firewire-lib: Add support for MIDI capture/playback
-  firewire-lib: give syt value to handle_out_packet()
-  firewire-lib: Add support for duplex streams with synchronization
-  firewire-lib: Add sort function for transmitted packet
-  firewire-lib: Add transfer delay to synchronized duplex streams
-  firewire-lib: Add support for channel mapping
-  firewire-lib: Rename macros, variables and functions for CMP
-  firewire-lib: Add 'direction' member to 'cmp_connection' structure
-  firewire-lib: Add handling output connection by CMP
-  firewire-lib: Add a new function to check others' connection
-  firewire-lib: Add some AV/C general commands
-  firewire-lib: Add quirks for Fireworks chipset
-
- sound/firewire/amdtp.c    | 1014 +++++++++++++++++++++++++++++++++++----------
- sound/firewire/amdtp.h    |  161 +++++--
- sound/firewire/cmp.c      |  217 +++++++---
- sound/firewire/cmp.h      |   14 +-
- sound/firewire/dice.c     |   46 +-
- sound/firewire/fcp.c      |  149 +++++++
- sound/firewire/fcp.h      |   16 +
- sound/firewire/speakers.c |   94 ++---
- 8 files changed, 1319 insertions(+), 392 deletions(-)
-
--- 
-1.8.3.2
+VGhpcyBwYXRjaCBhZGRzIHNvbWUgbWFjcm9zIGluc3RlYWQgb2YgZml4ZWQgdmFsdWUgZm9yIEFN
+RFRQIGluIElFQyA2MTg4My02LgpUaGVzZSBtYWNyb3Mgd2lsbCBhbHNvIGJlIHVzZWQgYnkgZm9s
+bG93ZWQgcGF0Y2hlcy4KClNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNo
+aUBzYWthbW9jY2hpLmpwPgotLS0KIHNvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgfCAzMCArKysrKysr
+KysrKysrKysrKysrKysrKy0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCsp
+LCA3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgYi9z
+b3VuZC9maXJld2lyZS9hbWR0cC5jCmluZGV4IGM5YjQ1YTAuLmZiZDI0ZGIgMTAwNjQ0Ci0tLSBh
+L3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKKysrIGIvc291bmQvZmlyZXdpcmUvYW1kdHAuYwpAQCAt
+MjAsMTIgKzIwLDI4IEBACiAKICNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElDS1MJMHgyZTAwIC8q
+IDQ3OS4xNyDCtXMgKi8KIAorLyogaXNvY2hyb25vdXMgaGVhZGVyIHBhcmFtZXRlcnMgKi8KKyNk
+ZWZpbmUgSVNPX0RBVEFfTEVOR1RIX1NISUZUCTE2CiAjZGVmaW5lIFRBR19DSVAJCQkxCiAKKy8q
+IGNvbW1vbiBpc29jaHJvbm91cyBwYWNrZXQgaGVhZGVyIHBhcmFtZXRlcnMgKi8KICNkZWZpbmUg
+Q0lQX0VPSAkJCSgxdSA8PCAzMSkKKyNkZWZpbmUgQ0lQX0VPSF9NQVNLCQkweDgwMDAwMDAwCiAj
+ZGVmaW5lIENJUF9GTVRfQU0JCSgweDEwIDw8IDI0KQotI2RlZmluZSBBTURUUF9GREZfQU04MjQJ
+CSgwIDw8IDE5KQotI2RlZmluZSBBTURUUF9GREZfU0ZDX1NISUZUCTE2CisjZGVmaW5lIENJUF9G
+TVRfTUFTSwkJMHgzZjAwMDAwMAorI2RlZmluZSBDSVBfU1lUX01BU0sJCTB4MDAwMGZmZmYKKyNk
+ZWZpbmUgQ0lQX1NZVF9OT19JTkZPCQkweGZmZmYKKyNkZWZpbmUgQ0lQX0ZERl9NQVNLCQkweDAw
+ZmYwMDAwCisjZGVmaW5lIENJUF9GREZfU0ZDX1NISUZUCTE2CisKKy8qCisgKiBBdWRpbyBhbmQg
+TXVzaWMgdHJhbnNmZXIgcHJvdG9jb2wgc3BlY2lmaWMgcGFyYW1ldGVycworICogb25seSAiQ2xv
+Y2stYmFzZWQgcmF0ZSBjb250cm9sbCBtb2RlIiBpcyBzdXBwb3J0ZWQKKyAqLworI2RlZmluZSBB
+TURUUF9GREZfQU04MjQJCSgwIDw8IChDSVBfRkRGX1NGQ19TSElGVCArIDMpKQorI2RlZmluZSBB
+TURUUF9EQlNfTUFTSwkJMHgwMGZmMDAwMAorI2RlZmluZSBBTURUUF9EQlNfU0hJRlQJCTE2Cisj
+ZGVmaW5lIEFNRFRQX0RCQ19NQVNLCQkweDAwMDAwMGZmCiAKIC8qIFRPRE86IG1ha2UgdGhlc2Ug
+Y29uZmlndXJhYmxlICovCiAjZGVmaW5lIElOVEVSUlVQVF9JTlRFUlZBTAkxNgpAQCAtMjgwLDkg
+KzI5Niw5IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgY2FsY3VsYXRlX3N5dChzdHJ1Y3QgYW1kdHBf
+c3RyZWFtICpzLAogCQlzeXQgPSAoY3ljbGUgKyBzeXRfb2Zmc2V0IC8gVElDS1NfUEVSX0NZQ0xF
+KSA8PCAxMjsKIAkJc3l0ICs9IHN5dF9vZmZzZXQgJSBUSUNLU19QRVJfQ1lDTEU7CiAKLQkJcmV0
+dXJuIHN5dCAmIDB4ZmZmZjsKKwkJcmV0dXJuIHN5dCAmIENJUF9TWVRfTUFTSzsKIAl9IGVsc2Ug
+ewotCQlyZXR1cm4gMHhmZmZmOyAvKiBubyBpbmZvICovCisJCXJldHVybiBDSVBfU1lUX05PX0lO
+Rk87IC8qIG5vIGluZm8gKi8KIAl9CiB9CiAKQEAgLTQzOCwxNyArNDU0LDE3IEBAIHN0YXRpYyB2
+b2lkIHF1ZXVlX291dF9wYWNrZXQoc3RydWN0IGFtZHRwX3N0cmVhbSAqcywgdW5zaWduZWQgaW50
+IGN5Y2xlKQogCXN5dCA9IGNhbGN1bGF0ZV9zeXQocywgY3ljbGUpOwogCWlmICghKHMtPmZsYWdz
+ICYgQ0lQX0JMT0NLSU5HKSkKIAkJZGF0YV9ibG9ja3MgPSBjYWxjdWxhdGVfZGF0YV9ibG9ja3Mo
+cyk7Ci0JZWxzZSBpZiAoc3l0ICE9IDB4ZmZmZikKKwllbHNlIGlmIChzeXQgIT0gQ0lQX1NZVF9O
+T19JTkZPKQogCQlkYXRhX2Jsb2NrcyA9IHMtPnN5dF9pbnRlcnZhbDsKIAllbHNlCiAJCWRhdGFf
+YmxvY2tzID0gMDsKIAogCWJ1ZmZlciA9IHMtPmJ1ZmZlci5wYWNrZXRzW2luZGV4XS5idWZmZXI7
+CiAJYnVmZmVyWzBdID0gY3B1X3RvX2JlMzIoQUNDRVNTX09OQ0Uocy0+c291cmNlX25vZGVfaWRf
+ZmllbGQpIHwKLQkJCQkocy0+ZGF0YV9ibG9ja19xdWFkbGV0cyA8PCAxNikgfAorCQkJCShzLT5k
+YXRhX2Jsb2NrX3F1YWRsZXRzIDw8IEFNRFRQX0RCU19TSElGVCkgfAogCQkJCXMtPmRhdGFfYmxv
+Y2tfY291bnRlcik7CiAJYnVmZmVyWzFdID0gY3B1X3RvX2JlMzIoQ0lQX0VPSCB8IENJUF9GTVRf
+QU0gfCBBTURUUF9GREZfQU04MjQgfAotCQkJCShzLT5zZmMgPDwgQU1EVFBfRkRGX1NGQ19TSElG
+VCkgfCBzeXQpOworCQkJCShzLT5zZmMgPDwgQ0lQX0ZERl9TRkNfU0hJRlQpIHwgc3l0KTsKIAli
+dWZmZXIgKz0gMjsKIAogCXBjbSA9IEFDQ0VTU19PTkNFKHMtPnBjbSk7Ci0tIAoxLjguMy4yCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
