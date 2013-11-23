@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 11/13] bebob: Add support for Terratec PHASE
-	series
-Date: Sat, 23 Nov 2013 15:09:23 +0900
-Message-ID: <1385186965-8303-12-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/13] bebob: Add hwdep interface to
+	lock/unlock streaming
+Date: Sat, 23 Nov 2013 15:09:19 +0900
+Message-ID: <1385186965-8303-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <1385186965-8303-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 31A2D265312
- for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 07:09:37 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D0F8E26530D
+ for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 07:09:36 +0100 (CET)
 In-Reply-To: <1385186965-8303-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,111 +25,153 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit allows this driver to support all of models which Terratec produced
-with BeBoB chipset. They are:
- - PHASE 24 FW
- - PHASE X24 FW
- - PHASE 88 Rack FW
-
-This commit adds Terratec specific operations, quirks for three functionalities.
-
-1. Switching source of clock
-2. Change sampling frequency
-3. Check clock synchronization
-
-The driver uses these functionalities with AV/C vendor specific commands and
-AV/C Audio Subunit commands.
+This is for mixer/control application in user land. The application can
+lock/unlock kernel streaming or get notification at starting kernel streaming
+to use hwdep interface.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig                |   1 +
- sound/firewire/bebob/Makefile         |   2 +-
- sound/firewire/bebob/bebob.c          |   9 +++
- sound/firewire/bebob/bebob.h          |   2 +
- sound/firewire/bebob/bebob_terratec.c | 143 ++++++++++++++++++++++++++++++++++
- 5 files changed, 156 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/bebob/bebob_terratec.c
+ include/uapi/sound/asound.h         |   3 +-
+ include/uapi/sound/firewire.h       |   1 +
+ sound/firewire/Kconfig              |   1 +
+ sound/firewire/bebob/Makefile       |   2 +-
+ sound/firewire/bebob/bebob.c        |   5 +
+ sound/firewire/bebob/bebob.h        |  13 +++
+ sound/firewire/bebob/bebob_hwdep.c  | 207 ++++++++++++++++++++++++++++++++++++
+ sound/firewire/bebob/bebob_midi.c   |  10 ++
+ sound/firewire/bebob/bebob_pcm.c    |  14 ++-
+ sound/firewire/bebob/bebob_stream.c |  39 +++++++
+ 10 files changed, 290 insertions(+), 5 deletions(-)
+ create mode 100644 sound/firewire/bebob/bebob_hwdep.c
 
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 9fc6219..d8bc723 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -94,9 +94,10 @@ enum {
+ 	SNDRV_HWDEP_IFACE_HDA,		/* HD-audio */
+ 	SNDRV_HWDEP_IFACE_USB_STREAM,	/* direct access to usb stream */
+ 	SNDRV_HWDEP_IFACE_FW_DICE,	/* TC DICE FireWire device */
++	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based Device */
+ 
+ 	/* Don't forget to change the following: */
+-	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_DICE
++	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_BEBOB
+ };
+ 
+ struct snd_hwdep_info {
+diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
+index 59f5961..c600b143 100644
+--- a/include/uapi/sound/firewire.h
++++ b/include/uapi/sound/firewire.h
+@@ -34,6 +34,7 @@ union snd_firewire_event {
+ #define SNDRV_FIREWIRE_IOCTL_UNLOCK    _IO('H', 0xfa)
+ 
+ #define SNDRV_FIREWIRE_TYPE_DICE	1
++#define SNDRV_FIREWIRE_TYPE_BEBOB	2
+ /* Fireworks, AV/C, RME, MOTU, ... */
+ 
+ struct snd_firewire_get_info {
 diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index b8d7fb5..502dce9 100644
+index 7641772..c46578e 100644
 --- a/sound/firewire/Kconfig
 +++ b/sound/firewire/Kconfig
-@@ -83,6 +83,7 @@ config SND_BEBOB
- 	  * M-Audio Firewire410/AudioPhile/Solo/Ozonic/NRV10
- 	  * M-Audio Firewire1814/ProjectMix IO/ProfireLightBridge
- 	  * Focusrite Saffire/Saffire LE/SaffirePro10 IO/SaffirePro26 IO
-+	  * TerraTec PHASE 24 FW/PHASE X24 FW/PHASE 88 Rack FW
- 
-           To compile this driver as a module, choose M here: the module
-           will be called snd-fireworks.
+@@ -65,6 +65,7 @@ config SND_BEBOB
+ 	tristate "BridgeCo BeBoB chipset support"
+ 	select SND_RAWMIDI
+ 	select SND_PCM
++	select SND_HWDEP
+ 	select SND_FIREWIRE_LIB
+         help
+ 	 Say Y here to include support for FireWire devices based
 diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
-index 96f8e92..2fefcec 100644
+index 30e79e6..81e14fa 100644
 --- a/sound/firewire/bebob/Makefile
 +++ b/sound/firewire/bebob/Makefile
-@@ -1,5 +1,5 @@
+@@ -1,4 +1,4 @@
  snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_control.o \
- 		  bebob_midi.o bebob_pcm.o bebob_hwdep.o \
--		  bebob_maudio.o bebob_focusrite.o \
-+		  bebob_maudio.o bebob_focusrite.o bebob_terratec.o \
+-		  bebob_midi.o bebob_pcm.o \
++		  bebob_midi.o bebob_pcm.o bebob_hwdep.o \
  		  bebob.o
  obj-m += snd-bebob.o
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 6382b49..7c5576d 100644
+index 2fdd14b..219eac7 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -53,6 +53,7 @@ static unsigned int devices_used;
- #define VEN_MAUDIO1	0x00000d6c
- #define VEN_MAUDIO2	0x000007f5
- #define VEN_FOCUSRITE	0x0000130e
-+#define VEN_TERRATEC	0x00000aac
+@@ -171,12 +171,17 @@ snd_bebob_probe(struct fw_unit *unit,
+ 	bebob->card_index = -1;
+ 	mutex_init(&bebob->mutex);
+ 	spin_lock_init(&bebob->lock);
++	init_waitqueue_head(&bebob->hwdep_wait);
  
- #define MODEL_MAUDIO_AUDIOPHILE_BOTH	0x00010060
- #define MODEL_MAUDIO_FW1814		0x00010071
-@@ -92,6 +93,8 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
- 		strcpy(vendor, "Phonic");
- 	else if ((vendor_id == VEN_MAUDIO1) || (vendor_id == VEN_MAUDIO2))
- 		strcpy(vendor, "M-Audio");
-+	else if (vendor_id == VEN_TERRATEC)
-+		strcpy(vendor, "Terratec");
+ 	/* name device with communication */
+ 	err = name_device(bebob, entry->vendor_id);
+ 	if (err < 0)
+ 		goto error;
  
- 	/* get model name */
- 	err = fw_csr_string(bebob->unit->directory, CSR_MODEL,
-@@ -394,6 +397,12 @@ static const struct ieee1394_device_id snd_bebob_id_table[] = {
- 	/* Focusrite, Saffire(no label and LE) */
- 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
- 			    saffire_spec),
-+	/* TerraTecElectronic GmbH, PHASE 88 Rack FW */
-+	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000003, phase88_rack_spec),
-+	/* TerraTecElectronic GmbH, PHASE 24 FW */
-+	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000004, phase24_series_spec),
-+	/* TerraTecElectronic GmbH, Phase X24 FW */
-+	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000007, phase24_series_spec),
- 	{}
- };
- MODULE_DEVICE_TABLE(ieee1394, snd_bebob_id_table);
++	err = snd_bebob_create_hwdep_device(bebob);
++	if (err < 0)
++		goto error;
++
+ 	err = snd_bebob_create_pcm_devices(bebob);
+ 	if (err < 0)
+ 		goto error;
 diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 90b37eb..6a92f43 100644
+index 04842b2..3950b02 100644
 --- a/sound/firewire/bebob/bebob.h
 +++ b/sound/firewire/bebob/bebob.h
-@@ -238,6 +238,8 @@ extern struct snd_bebob_spec saffirepro_26_spec;
- extern struct snd_bebob_spec saffirepro_10_spec;
- extern struct snd_bebob_spec saffire_le_spec;
- extern struct snd_bebob_spec saffire_spec;
-+extern struct snd_bebob_spec phase88_rack_spec;
-+extern struct snd_bebob_spec phase24_series_spec;
+@@ -34,6 +34,8 @@
+ #include <sound/rawmidi.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
++#include <sound/firewire.h>
++#include <sound/hwdep.h>
  
- #define SND_BEBOB_DEV_ENTRY(vendor, model, private_data) \
+ #include "../packets-buffer.h"
+ #include "../iso-resources.h"
+@@ -79,6 +81,11 @@ struct snd_bebob {
+ 		rx_stream_formations[SND_BEBOB_STRM_FMT_ENTRIES];
+ 
+ 	struct snd_ctl_elem_id *ctl_id_freq;
++
++        /* for uapi */
++        int dev_lock_count;
++        bool dev_lock_changed;
++        wait_queue_head_t hwdep_wait;
+ };
+ 
+ static inline int
+@@ -152,6 +159,10 @@ int snd_bebob_stream_stop_duplex(struct snd_bebob *bebob);
+ void snd_bebob_stream_update_duplex(struct snd_bebob *bebob);
+ void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob);
+ 
++void snd_bebob_stream_lock_changed(struct snd_bebob *bebob);
++int snd_bebob_stream_lock_try(struct snd_bebob *bebob);
++void snd_bebob_stream_lock_release(struct snd_bebob *bebob);
++
+ void snd_bebob_proc_init(struct snd_bebob *bebob);
+ 
+ int snd_bebob_create_control_devices(struct snd_bebob *bebob);
+@@ -160,6 +171,8 @@ int snd_bebob_create_midi_devices(struct snd_bebob *bebob);
+ 
+ int snd_bebob_create_pcm_devices(struct snd_bebob *bebob);
+ 
++int snd_bebob_create_hwdep_device(struct snd_bebob *bebob);
++
+ #define SND_BEBOB_DEV_ENTRY(vendor, model) \
  { \
-diff --git a/sound/firewire/bebob/bebob_terratec.c b/sound/firewire/bebob/bebob_terratec.c
+ 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
+diff --git a/sound/firewire/bebob/bebob_hwdep.c b/sound/firewire/bebob/bebob_hwdep.c
 new file mode 100644
-index 0000000..149507a
+index 0000000..be423b7
 --- /dev/null
-+++ b/sound/firewire/bebob/bebob_terratec.c
-@@ -0,0 +1,143 @@
++++ b/sound/firewire/bebob/bebob_hwdep.c
+@@ -0,0 +1,207 @@
 +/*
-+ * bebob_terratec.c - a part of driver for BeBoB based devices
++ * fireworks_hwdep.c - a part of driver for Fireworks based devices
 + *
 + * Copyright (c) 2013 Takashi Sakamoto
++ *
 + *
 + * This driver is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License, version 2.
@@ -143,131 +185,328 @@ index 0000000..149507a
 + * along with this driver; if not, see <http://www.gnu.org/licenses/>.
 + */
 +
-+#include "./bebob.h"
++/*
++ * This codes give three functionality.
++ * 
++ * 1.get firewire node reference
++ * 2.lock/unlock stream
++ *  dice driver implements the same functionality.
++ */
 +
-+static char *phase88_rack_clk_src_labels[] = {
-+	SND_BEBOB_CLOCK_INTERNAL, "Digital In", "Word Clock"
++#include "bebob.h"
++
++static long
++hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
++	   loff_t *offset)
++{
++	struct snd_bebob *bebob = hwdep->private_data;
++	DEFINE_WAIT(wait);
++	union snd_firewire_event event;
++
++	spin_lock_irq(&bebob->lock);
++
++	while (!bebob->dev_lock_changed) {
++		prepare_to_wait(&bebob->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
++		spin_unlock_irq(&bebob->lock);
++		schedule();
++		finish_wait(&bebob->hwdep_wait, &wait);
++		if (signal_pending(current))
++			return -ERESTARTSYS;
++		spin_lock_irq(&bebob->lock);
++	}
++
++	memset(&event, 0, sizeof(event));
++	if (bebob->dev_lock_changed) {
++		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
++		event.lock_status.status = (bebob->dev_lock_count > 0);
++		bebob->dev_lock_changed = false;
++
++		count = min(count, (long)sizeof(event.lock_status));
++	} 
++
++	spin_unlock_irq(&bebob->lock);
++
++	if (copy_to_user(buf, &event, count))
++		return -EFAULT;
++
++	return count;
++}
++
++static unsigned int
++hwdep_poll(struct snd_hwdep *hwdep, struct file *file, poll_table *wait)
++{
++	struct snd_bebob *bebob = hwdep->private_data;
++	unsigned int events;
++
++	poll_wait(file, &bebob->hwdep_wait, wait);
++
++	spin_lock_irq(&bebob->lock);
++	if (bebob->dev_lock_changed)
++		events = POLLIN | POLLRDNORM;
++	else
++		events = 0;
++	spin_unlock_irq(&bebob->lock);
++
++	return events;
++}
++
++static int
++hwdep_get_info(struct snd_bebob *bebob, void __user *arg)
++{
++	struct fw_device *dev = fw_parent_device(bebob->unit);
++	struct snd_firewire_get_info info;
++
++	memset(&info, 0, sizeof(info));
++	info.type = SNDRV_FIREWIRE_TYPE_BEBOB;
++	info.card = dev->card->index;
++	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
++	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
++	strlcpy(info.device_name, dev_name(&dev->device),
++		sizeof(info.device_name));
++
++	if (copy_to_user(arg, &info, sizeof(info)))
++		return -EFAULT;
++
++	return 0;
++}
++
++static int
++hwdep_lock(struct snd_bebob *bebob)
++{
++	int err;
++
++	spin_lock_irq(&bebob->lock);
++
++	if (bebob->dev_lock_count == 0) {
++		bebob->dev_lock_count = -1;
++		err = 0;
++	} else
++		err = -EBUSY;
++
++	spin_unlock_irq(&bebob->lock);
++
++	return err;
++}
++
++static int
++hwdep_unlock(struct snd_bebob *bebob)
++{
++	int err;
++
++	spin_lock_irq(&bebob->lock);
++
++	if (bebob->dev_lock_count == -1) {
++		bebob->dev_lock_count = 0;
++		err = 0;
++	} else
++		err = -EBADFD;
++
++	spin_unlock_irq(&bebob->lock);
++
++	return err;
++}
++
++static int
++hwdep_release(struct snd_hwdep *hwdep, struct file *file)
++{
++	struct snd_bebob *bebob = hwdep->private_data;
++
++	spin_lock_irq(&bebob->lock);
++	if (bebob->dev_lock_count == -1)
++		bebob->dev_lock_count = 0;
++	spin_unlock_irq(&bebob->lock);
++
++	return 0;
++}
++
++static int
++hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
++	    unsigned int cmd, unsigned long arg)
++{
++	struct snd_bebob *bebob = hwdep->private_data;
++
++	switch (cmd) {
++	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
++		return hwdep_get_info(bebob, (void __user *)arg);
++	case SNDRV_FIREWIRE_IOCTL_LOCK:
++		return hwdep_lock(bebob);
++	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
++		return hwdep_unlock(bebob);
++	default:
++		return -ENOIOCTLCMD;
++	}
++}
++
++#ifdef CONFIG_COMPAT
++static int
++hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
++		   unsigned int cmd, unsigned long arg)
++{
++	return hwdep_ioctl(hwdep, file, cmd,
++			   (unsigned long)compat_ptr(arg));
++}
++#else
++#define hwdep_compat_ioctl NULL
++#endif
++
++static const struct snd_hwdep_ops hwdep_ops = {
++	.read		= hwdep_read,
++	.release	= hwdep_release,
++	.poll		= hwdep_poll,
++	.ioctl		= hwdep_ioctl,
++	.ioctl_compat	= hwdep_compat_ioctl,
 +};
-+static int
-+phase88_rack_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
++
++int snd_bebob_create_hwdep_device(struct snd_bebob *bebob)
 +{
-+	unsigned int enable_ext, enable_word;
++	struct snd_hwdep *hwdep;
 +	int err;
 +
-+	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_ext);
++	err = snd_hwdep_new(bebob->card, "BeBoB", 0, &hwdep);
 +	if (err < 0)
 +		goto end;
-+	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_word);
-+	if (err < 0)
-+		goto end;
-+
-+	*id = (enable_ext & 0x01) || ((enable_word & 0x01) << 1);
-+end:
-+	return err;
-+}
-+static int
-+phase88_rack_clk_src_set(struct snd_bebob *bebob, unsigned int id)
-+{
-+	unsigned int enable_ext, enable_word;
-+	int err;
-+
-+	enable_ext = id & 0x01;
-+	enable_word = (id >> 1) & 0x01;
-+
-+	err = avc_audio_set_selector(bebob->unit, 0, 9, enable_ext);
-+	if (err < 0)
-+		goto end;
-+	err = avc_audio_set_selector(bebob->unit, 0, 8, enable_word);
-+	if (err < 0)
-+		goto end;
++	strcpy(hwdep->name, "BeBoB");
++	hwdep->iface = SNDRV_HWDEP_IFACE_FW_BEBOB;
++	hwdep->ops = hwdep_ops;
++	hwdep->private_data = bebob;
++	hwdep->exclusive = true;
 +end:
 +	return err;
 +}
 +
-+static int
-+phase88_rack_clk_synced(struct snd_bebob *bebob, bool *synced)
-+{
-+	int err;
-+	u8 *buf;
-+
-+	buf = kmalloc(8, GFP_KERNEL);
-+	if (buf == NULL)
-+		return -ENOMEM;
-+
-+	buf[0]  = 0x01;	/* STATUS */
-+	buf[1]  = 0xff;	/* UNIT */
-+	buf[2]  = 0x00;	/* Vendor Dependent */
-+	buf[3]  = 0x00; /* Company ID high */
-+	buf[4]  = 0x0a;	/* Company ID middle */
-+	buf[5]  = 0xac; /* Company ID low */
-+	buf[6]  = 0x21;	/* subfunction */
-+	buf[7]  = 0xff;	/* the state */
-+
-+	/* do transaction and check buf[1-6] are the same against command */
-+	err = fcp_avc_transaction(bebob->unit, buf, 8, buf, 8,
-+				  BIT(1) | BIT(2) | BIT(3) | BIT(4) |
-+				  BIT(5) | BIT(6));
+diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
+index 56c7115..a5a4028 100644
+--- a/sound/firewire/bebob/bebob_midi.c
++++ b/sound/firewire/bebob/bebob_midi.c
+@@ -26,6 +26,10 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
+ 	struct snd_bebob *bebob = substream->rmidi->private_data;
+ 	int err;
+ 
++	err = snd_bebob_stream_lock_try(bebob);
 +	if (err < 0)
 +		goto end;
-+	/* IMPLEMENTED/STABLE is OK */
-+	if ((err < 6) || (buf[0] != 0x0c)) {
-+		dev_err(&bebob->unit->device,
-+			"fail to execute Terratek command: %02X\n",
-+			buf[0]);
-+		err = -EIO;
++
+ 	err = snd_bebob_stream_start_duplex(bebob, &bebob->tx_stream, 0);
+ 	if (err < 0)
+ 		goto end;
+@@ -40,6 +44,10 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
+ 	struct snd_bebob *bebob = substream->rmidi->private_data;
+ 	int err;
+ 
++	err = snd_bebob_stream_lock_try(bebob);
++	if (err < 0)
++		goto end;
++
+ 	err = snd_bebob_stream_start_duplex(bebob, &bebob->rx_stream, 0);
+ 	if (err < 0)
+ 		goto end;
+@@ -55,6 +63,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
+ 
+ 	amdtp_stream_midi_remove(&bebob->tx_stream, substream);
+ 	snd_bebob_stream_stop_duplex(bebob);
++	snd_bebob_stream_lock_release(bebob);
+ 
+ 	return 0;
+ }
+@@ -65,6 +74,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
+ 
+ 	amdtp_stream_midi_remove(&bebob->rx_stream, substream);
+ 	snd_bebob_stream_stop_duplex(bebob);
++	snd_bebob_stream_lock_release(bebob);
+ 
+ 	return 0;
+ }
+diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
+index 04913b2..c7cca80 100644
+--- a/sound/firewire/bebob/bebob_pcm.c
++++ b/sound/firewire/bebob/bebob_pcm.c
+@@ -239,29 +239,37 @@ pcm_open(struct snd_pcm_substream *substream)
+ 	unsigned int sampling_rate;
+ 	int err;
+ 
+-	err = pcm_init_hw_params(bebob, substream);
++	err = snd_bebob_stream_lock_try(bebob);
+ 	if (err < 0)
+ 		goto end;
+ 
++	err = pcm_init_hw_params(bebob, substream);
++	if (err < 0)
++		goto err_locked;
++
+ 	if (amdtp_stream_pcm_running(&bebob->tx_stream) ||
+ 	    amdtp_stream_pcm_running(&bebob->rx_stream)) {
+ 		err = snd_bebob_stream_get_rate(bebob, &sampling_rate);
+ 		if (err < 0)
+-			goto end;
++			goto err_locked;
+ 
+ 		substream->runtime->hw.rate_min = sampling_rate;
+ 		substream->runtime->hw.rate_max = sampling_rate;
+ 	}
+ 
+ 	snd_pcm_set_sync(substream);
+-
+ end:
+ 	return err;
++err_locked:
++	snd_bebob_stream_lock_release(bebob);
++	return err;
+ }
+ 
+ static int
+ pcm_close(struct snd_pcm_substream *substream)
+ {
++	struct snd_bebob *bebob = substream->private_data;
++	snd_bebob_stream_lock_release(bebob);
+ 	return 0;
+ }
+ 
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 773dffb..f2527bf 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -666,3 +666,42 @@ int snd_bebob_stream_discover(struct snd_bebob *bebob)
+ end:
+ 	return err;
+ }
++
++void snd_bebob_stream_lock_changed(struct snd_bebob *bebob)
++{
++	bebob->dev_lock_changed = true;
++	wake_up(&bebob->hwdep_wait);
++}
++
++int snd_bebob_stream_lock_try(struct snd_bebob *bebob)
++{
++	int err;
++
++	spin_lock_irq(&bebob->lock);
++
++	/* user land lock this */
++	if (bebob->dev_lock_count < 0) {
++		err = -EBUSY;
 +		goto end;
 +	}
 +
-+	*synced = (buf[7] = 0x01);
++	/* this is the first time */
++	if (bebob->dev_lock_count++ == 0)
++		snd_bebob_stream_lock_changed(bebob);
++	err = 0;
 +end:
-+	kfree(buf);
++	spin_unlock_irq(&bebob->lock);
 +	return err;
 +}
 +
-+static char *phase24_series_clk_src_labels[] = {
-+	SND_BEBOB_CLOCK_INTERNAL, "Digital In"
-+};
-+static int
-+phase24_series_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
++void snd_bebob_stream_lock_release(struct snd_bebob *bebob)
 +{
-+	return avc_audio_get_selector(bebob->unit, 0, 4, id);
-+}
-+static int
-+phase24_series_clk_src_set(struct snd_bebob *bebob, unsigned int id)
-+{
-+	return avc_audio_set_selector(bebob->unit, 0, 4, id);
-+}
++	spin_lock_irq(&bebob->lock);
 +
-+/* PHASE 88 Rack FW */
-+struct snd_bebob_clock_spec phase88_rack_clk = {
-+	.num		= ARRAY_SIZE(phase88_rack_clk_src_labels),
-+	.labels		= phase88_rack_clk_src_labels,
-+	.get_src	= &phase88_rack_clk_src_get,
-+	.set_src	= &phase88_rack_clk_src_set,
-+	.get_freq	= &snd_bebob_stream_get_rate,
-+	.set_freq	= &snd_bebob_stream_set_rate,
-+	.synced		= &phase88_rack_clk_synced
-+};
-+struct snd_bebob_spec phase88_rack_spec = {
-+	.load	= NULL,
-+	.clock	= &phase88_rack_clk,
-+	.meter	= NULL
-+};
-+
-+/* 'PHASE 24 FW' and 'PHASE X24 FW' */
-+struct snd_bebob_clock_spec phase24_series_clk = {
-+	.num		= ARRAY_SIZE(phase24_series_clk_src_labels),
-+	.labels		= phase24_series_clk_src_labels,
-+	.get_src	= &phase24_series_clk_src_get,
-+	.set_src	= &phase24_series_clk_src_set,
-+	.get_freq	= &snd_bebob_stream_get_rate,
-+	.set_freq	= &snd_bebob_stream_set_rate,
-+	.synced		= NULL
-+};
-+struct snd_bebob_spec phase24_series_spec = {
-+	.load	= NULL,
-+	.clock	= &phase24_series_clk,
-+	.meter	= NULL
-+};
++	if (WARN_ON(bebob->dev_lock_count <= 0))
++		goto end;
++	if (--bebob->dev_lock_count == 0)
++		snd_bebob_stream_lock_changed(bebob);
++end:
++	spin_unlock_irq(&bebob->lock);
++}
 -- 
 1.8.3.2
