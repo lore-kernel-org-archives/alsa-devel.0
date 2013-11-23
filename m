@@ -1,25 +1,26 @@
-From: Jason Mancine <jason@mancine.net>
-Subject: Re: Zoom R16
-Date: Fri, 22 Nov 2013 20:31:10 +0000 (UTC)
-Message-ID: <loom.20131122T212507-512@post.gmane.org>
-References: <CAPrbH=vnQ-xXsRDoj30nra7hB_hDEaF6u3ov0XuDG_ZpFzb3bA@mail.gmail.com>
+From: James Le Cuirot <chewi@aura-online.co.uk>
+Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
+	multi-channel and HBR support
+Date: Sat, 23 Nov 2013 01:05:15 +0000 (UTC)
+Message-ID: <loom.20131122T215246-90@post.gmane.org>
+References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id D358426517E
- for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 21:35:05 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D97D226179C
+ for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 02:10:06 +0100 (CET)
 Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1VjxRQ-0007Qi-AC
- for alsa-devel@alsa-project.org; Fri, 22 Nov 2013 21:35:04 +0100
-Received: from bb-205-209-90-54.gwi.net ([205.209.90.54])
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Vk1jX-0003C0-2I
+ for alsa-devel@alsa-project.org; Sat, 23 Nov 2013 02:10:03 +0100
+Received: from 154.189.187.81.in-addr.arpa ([81.187.189.154])
  by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
  id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 21:35:04 +0100
-Received: from jason by bb-205-209-90-54.gwi.net with local (Gmexim 0.1
+ for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 02:10:03 +0100
+Received: from chewi by 154.189.187.81.in-addr.arpa with local (Gmexim 0.1
  (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2013 21:35:04 +0100
+ for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 02:10:03 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,45 +33,97 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Well, I solved part of my own problem -- by removing the .endpoint and 
-.ep_addr settings from the quirk it now works for capture under .ifnum=1. In 
-fact, I now see the interface in JACK listed as hw:R16(#1) which it never 
-had done before. 
+Anssi Hannula <anssi.hannula <at> iki.fi> writes:
 
-MIDI is also working properly on .ifnum=3
+> Here's another revision of the ATI/AMD multichannel+HBR patchset.
 
-So, I am now certain that interface 2 is playback...  however, playback does 
-not work with the following:
+Hi Anssi. Many thanks for your work on this. I am very keen to test this 
+new code but have so far been unsuccessful. I have a Radeon 4670 (Sapphire 
+branded) connected to a Yamaha RX-V773. I am running the sound/for-next 
+kernel (82755ab) with your "missing PCM SAD" patch applied.
 
-{ 
-                                .ifnum = 2, 
-                                .type = QUIRK_AUDIO_FIXED_ENDPOINT, 
-                                .data = & (const struct audioformat) { 
-                                        .formats = SNDRV_PCM_FMTBIT_S24_LE, 
-                                        .channels = 2, 
-                                        .iface = 1, 
-                                        .altsetting = 1, 
-                                        .altset_idx = 1, 
-                                        .attributes = 
-UAC_EP_CS_ATTR_SAMPLE_RATE, 
-                                        .rates = SNDRV_PCM_RATE_44100 | 
-                                                 SNDRV_PCM_RATE_48000 | 
-                                                 SNDRV_PCM_RATE_88200 | 
-                                                 SNDRV_PCM_RATE_96000, 
-                                        .rate_min = 44100, 
-                                        .rate_max = 96000, 
-                                        .nr_rates = 4, 
-                                        .rate_table = (unsigned int[]) { 
-                                                        44100, 48000, 88200, 
-96000 
-                                        } 
-                                } 
-                        }, 
+The new kernel has allowed ALSA to recognise the card as multichannel and I 
+can issue the following speaker-test command but I still only hear "Front 
+Left" and "Front Right" and the Yahama seems to report the signal as stereo.
 
+# speaker-test -Dhdmi:CARD=HDMI,DEV=0 -c6 -t wav
 
-This totally freezes the computer...  I am certain that the device is 24 
-bit, supports all four sample rates, and is capable of full duplex 
-operation.  Any suggestions for this playback section?
+speaker-test 1.0.27.2
+
+Playback device is hdmi:CARD=HDMI,DEV=0
+Stream parameters are 48000Hz, S16_LE, 6 channels
+WAV file(s)
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 64 to 5440
+Period size range from 32 to 2720
+Using max buffer size 5440
+Periods = 4
+was set period_size = 1088
+was set buffer_size = 5440
+ 0 - Front Left
+ 4 - Center
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+ 5 - LFE
+
+I have tried various sample rates. I have the HDMI cable plugged into the 
+secondary output as my speakerless DVI monitor is plugged into the primary 
+but I have also tried the HDMI cable in the primary output by itself. I 
+even bought the "official" HIS HHDMI4071 adapter as the unbranded one that 
+came with my card looked quite different. None of these things have helped. 
+I must admit that I don't fully understand what this ELD stuff is about but 
+I can tell you that it's not looking too good on my system.
+
+/proc/asound/HDMI/eld#0.0:
+monitor_present	    1
+eld_valid           0
+
+I'm guessing the codec file may provide some useful information.
+
+/proc/asound/HDMI/codec#0:
+Codec: ATI R6xx HDMI
+Address: 0
+AFG Function Id: 0x1 (unsol 0)
+Vendor Id: 0x1002aa01
+Subsystem Id: 0x00aa0100
+Revision Id: 0x100100
+No Modem Function Group found
+Default PCM:
+    rates [0x70]: 32000 44100 48000
+    bits [0x2]: 16
+    formats [0x1]: PCM
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+State of AFG node 0x01:
+  Power states:  D0 D3
+  Power: setting=D0, actual=D0
+GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
+Node 0x02 [Audio Output] wcaps 0x201: Stereo Digital
+  Converter: stream=1, channel=0
+  Digital: Enabled
+  Digital category: 0x0
+  IEC Coding Type: 0x0
+Node 0x03 [Pin Complex] wcaps 0x400381: Stereo Digital
+  Control: name="HDMI/DP,pcm=3 Jack", index=0, device=0
+  Control: name="IEC958 Playback Con Mask", index=0, device=0
+  Control: name="IEC958 Playback Pro Mask", index=0, device=0
+  Control: name="IEC958 Playback Default", index=0, device=0
+  Control: name="IEC958 Playback Switch", index=0, device=0
+  Control: name="ELD", index=0, device=3
+  Pincap 0x00000094: OUT Detect HDMI
+  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=01, enabled=1
+  Connection: 1
+     0x02
+
+If it rules anything out, I have had the ALSA a52 plugin working but 
+obviously this isn't an ideal solution. Any help would be appreciated and 
+I'll gladly provide more information. I've done some light kernel hacking 
+but I'm no expert.
 
 Thanks,
-Jason
+James
