@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 05/17] firewire-lib: Add support for AMDTP
-	transmit stream and PCM capture
-Date: Sat, 23 Nov 2013 15:07:52 +0900
-Message-ID: <1385186884-8259-6-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 12/17] firewire-lib: Rename macros,
+	variables and functions for CMP
+Date: Sat, 23 Nov 2013 15:07:59 +0900
+Message-ID: <1385186884-8259-13-git-send-email-o-takashi@sakamocchi.jp>
 References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id A045F2619FB
- for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 07:08:12 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FA122651C6
+ for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 07:08:13 +0100 (CET)
 In-Reply-To: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,365 +25,232 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-For capturing PCM, this commit adds the functionality to handle transmitted
-stream. This is also applied for dual-wire mode.
+Referring to IEC 61883-1, oMPR and iMPR, oPCR and iPCR have some fields with
+the same role in the same position. This patch renames some macros, variables
+and function arguments with "i" in its prefix to reuse them between oMPR and
+iMPR, oPCR and iPCR.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 263 +++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 253 insertions(+), 10 deletions(-)
+ sound/firewire/cmp.c | 91 ++++++++++++++++++++++++++--------------------------
+ sound/firewire/cmp.h |  6 ++--
+ 2 files changed, 49 insertions(+), 48 deletions(-)
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index c32d75d..456eb64 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -48,6 +48,7 @@
- #define QUEUE_LENGTH		48
+diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
+index efdbf58..17ad4f2 100644
+--- a/sound/firewire/cmp.c
++++ b/sound/firewire/cmp.c
+@@ -14,18 +14,20 @@
+ #include "iso-resources.h"
+ #include "cmp.h"
  
- #define TRANSMIT_PACKET_HEADER_SIZE	4
-+#define RECEIVE_PACKET_HEADER_SIZE	0
+-#define IMPR_SPEED_MASK		0xc0000000
+-#define IMPR_SPEED_SHIFT	30
+-#define IMPR_XSPEED_MASK	0x00000060
+-#define IMPR_XSPEED_SHIFT	5
+-#define IMPR_PLUGS_MASK		0x0000001f
+-
+-#define IPCR_ONLINE		0x80000000
+-#define IPCR_BCAST_CONN		0x40000000
+-#define IPCR_P2P_CONN_MASK	0x3f000000
+-#define IPCR_P2P_CONN_SHIFT	24
+-#define IPCR_CHANNEL_MASK	0x003f0000
+-#define IPCR_CHANNEL_SHIFT	16
++/* MPR common fields */
++#define MPR_SPEED_MASK		0xc0000000
++#define MPR_SPEED_SHIFT		30
++#define MPR_XSPEED_MASK		0x00000060
++#define MPR_XSPEED_SHIFT	5
++#define MPR_PLUGS_MASK		0x0000001f
++
++/* PCR common fields */
++#define PCR_ONLINE		0x80000000
++#define PCR_BCAST_CONN		0x40000000
++#define PCR_P2P_CONN_MASK	0x3f000000
++#define PCR_P2P_CONN_SHIFT	24
++#define PCR_CHANNEL_MASK	0x003f0000
++#define PCR_CHANNEL_SHIFT	16
  
- static void pcm_period_tasklet(unsigned long data);
+ enum bus_reset_handling {
+ 	ABORT_ON_BUS_RESET,
+@@ -88,24 +90,24 @@ static int pcr_modify(struct cmp_connection *c,
+  * cmp_connection_init - initializes a connection manager
+  * @c: the connection manager to initialize
+  * @unit: a unit of the target device
+- * @ipcr_index: the index of the iPCR on the target device
++ * @pcr_index: the index of the iPCR/oPCR on the target device
+  */
+ int cmp_connection_init(struct cmp_connection *c,
+ 			struct fw_unit *unit,
+-			unsigned int ipcr_index)
++			unsigned int pcr_index)
+ {
+-	__be32 impr_be;
+-	u32 impr;
++	__be32 mpr_be;
++	u32 mpr;
+ 	int err;
  
-@@ -179,6 +180,18 @@ static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
- static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
- 				     struct snd_pcm_substream *pcm,
- 				     __be32 *buffer, unsigned int frames);
-+static void amdtp_read_s16(struct amdtp_stream *s,
-+			   struct snd_pcm_substream *pcm,
-+			   __be32 *buffer, unsigned int frames);
-+static void amdtp_read_s32(struct amdtp_stream *s,
-+			   struct snd_pcm_substream *pcm,
-+			   __be32 *buffer, unsigned int frames);
-+static void amdtp_read_s16_dualwire(struct amdtp_stream *s,
-+				    struct snd_pcm_substream *pcm,
-+				    __be32 *buffer, unsigned int frames);
-+static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
-+				    struct snd_pcm_substream *pcm,
-+				    __be32 *buffer, unsigned int frames);
+ 	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
+ 				 CSR_REGISTER_BASE + CSR_IMPR,
+-				 &impr_be, 4, 0);
++				 &mpr_be, 4, 0);
+ 	if (err < 0)
+ 		return err;
+-	impr = be32_to_cpu(impr_be);
++	mpr = be32_to_cpu(mpr_be);
  
- /**
-  * amdtp_stream_set_pcm_format - set the PCM format
-@@ -200,13 +213,23 @@ void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
- 		WARN_ON(1);
- 		/* fall through */
- 	case SNDRV_PCM_FORMAT_S16:
--		if (s->dual_wire)
-+		if (s->direction == AMDTP_TRANSMIT_STREAM) {
-+			if (s->dual_wire)
-+				s->transfer_samples = amdtp_read_s16_dualwire;
-+			else
-+				s->transfer_samples = amdtp_read_s16;
-+		} else if (s->dual_wire)
- 			s->transfer_samples = amdtp_write_s16_dualwire;
- 		else
- 			s->transfer_samples = amdtp_write_s16;
- 		break;
- 	case SNDRV_PCM_FORMAT_S32:
--		if (s->dual_wire)
-+		if (s->direction == AMDTP_TRANSMIT_STREAM) {
-+			if (s->dual_wire)
-+				s->transfer_samples = amdtp_read_s32_dualwire;
-+			else
-+				s->transfer_samples = amdtp_read_s32;
-+		} else if (s->dual_wire)
- 			s->transfer_samples = amdtp_write_s32_dualwire;
- 		else
- 			s->transfer_samples = amdtp_write_s32;
-@@ -420,6 +443,114 @@ static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
+-	if (ipcr_index >= (impr & IMPR_PLUGS_MASK))
++	if (pcr_index >= (mpr & MPR_PLUGS_MASK))
+ 		return -EINVAL;
+ 
+ 	err = fw_iso_resources_init(&c->resources, unit);
+@@ -115,10 +117,10 @@ int cmp_connection_init(struct cmp_connection *c,
+ 	c->connected = false;
+ 	mutex_init(&c->mutex);
+ 	c->last_pcr_value = cpu_to_be32(0x80000000);
+-	c->pcr_index = ipcr_index;
+-	c->max_speed = (impr & IMPR_SPEED_MASK) >> IMPR_SPEED_SHIFT;
++	c->pcr_index = pcr_index;
++	c->max_speed = (mpr & MPR_SPEED_MASK) >> MPR_SPEED_SHIFT;
+ 	if (c->max_speed == SCODE_BETA)
+-		c->max_speed += (impr & IMPR_XSPEED_MASK) >> IMPR_XSPEED_SHIFT;
++		c->max_speed += (mpr & MPR_XSPEED_MASK) >> MPR_XSPEED_SHIFT;
+ 
+ 	return 0;
+ }
+@@ -139,23 +141,23 @@ EXPORT_SYMBOL(cmp_connection_destroy);
+ 
+ static __be32 ipcr_set_modify(struct cmp_connection *c, __be32 ipcr)
+ {
+-	ipcr &= ~cpu_to_be32(IPCR_BCAST_CONN |
+-			     IPCR_P2P_CONN_MASK |
+-			     IPCR_CHANNEL_MASK);
+-	ipcr |= cpu_to_be32(1 << IPCR_P2P_CONN_SHIFT);
+-	ipcr |= cpu_to_be32(c->resources.channel << IPCR_CHANNEL_SHIFT);
++	ipcr &= ~cpu_to_be32(PCR_BCAST_CONN |
++			     PCR_P2P_CONN_MASK |
++			     PCR_CHANNEL_MASK);
++	ipcr |= cpu_to_be32(1 << PCR_P2P_CONN_SHIFT);
++	ipcr |= cpu_to_be32(c->resources.channel << PCR_CHANNEL_SHIFT);
+ 
+ 	return ipcr;
+ }
+ 
+-static int ipcr_set_check(struct cmp_connection *c, __be32 ipcr)
++static int pcr_set_check(struct cmp_connection *c, __be32 pcr)
+ {
+-	if (ipcr & cpu_to_be32(IPCR_BCAST_CONN |
+-			       IPCR_P2P_CONN_MASK)) {
++	if (pcr & cpu_to_be32(PCR_BCAST_CONN |
++			       PCR_P2P_CONN_MASK)) {
+ 		cmp_error(c, "plug is already in use\n");
+ 		return -EBUSY;
  	}
- }
+-	if (!(ipcr & cpu_to_be32(IPCR_ONLINE))) {
++	if (!(pcr & cpu_to_be32(PCR_ONLINE))) {
+ 		cmp_error(c, "plug is not on-line\n");
+ 		return -ECONNREFUSED;
+ 	}
+@@ -170,9 +172,9 @@ static int ipcr_set_check(struct cmp_connection *c, __be32 ipcr)
+  *
+  * This function establishes a point-to-point connection from the local
+  * computer to the target by allocating isochronous resources (channel and
+- * bandwidth) and setting the target's input plug control register.  When this
+- * function succeeds, the caller is responsible for starting transmitting
+- * packets.
++ * bandwidth) and setting the target's input/output plug control register.
++ * When this function succeeds, the caller is responsible for starting
++ * transmitting packets.
+  */
+ int cmp_connection_establish(struct cmp_connection *c,
+ 			     unsigned int max_payload_bytes)
+@@ -193,7 +195,7 @@ retry_after_bus_reset:
+ 	if (err < 0)
+ 		goto err_mutex;
  
-+static void amdtp_read_s32(struct amdtp_stream *s,
-+			   struct snd_pcm_substream *pcm,
-+			   __be32 *buffer, unsigned int frames)
-+{
-+	struct snd_pcm_runtime *runtime = pcm->runtime;
-+	unsigned int remaining_frames, i, c;
-+	u32 *dst;
-+
-+	dst  = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < s->pcm_channels; ++c) {
-+			*dst = be32_to_cpu(buffer[c]) << 8;
-+			dst++;
-+		}
-+		buffer += s->data_block_quadlets;
-+		if (--remaining_frames == 0)
-+			dst = (void *)runtime->dma_area;
-+	}
-+}
-+
-+static void amdtp_read_s16(struct amdtp_stream *s,
-+			   struct snd_pcm_substream *pcm,
-+			   __be32 *buffer, unsigned int frames)
-+{
-+	struct snd_pcm_runtime *runtime = pcm->runtime;
-+	unsigned int remaining_frames, i, c;
-+	u16 *dst;
-+
-+	dst = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < s->pcm_channels; ++c) {
-+			*dst = be32_to_cpu(buffer[c]) << 8;
-+			dst++;
-+		}
-+		buffer +=s->data_block_quadlets;
-+		if (--remaining_frames == 0)
-+			dst = (void *)runtime->dma_area;
-+	}
-+}
-+
-+static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
-+				     struct snd_pcm_substream *pcm,
-+				     __be32 *buffer, unsigned int frames)
-+{
-+	struct snd_pcm_runtime *runtime = pcm->runtime;
-+	unsigned int channels, remaining_frames, i, c;
-+	u32 *dst;
-+
-+	dst = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+	channels = s->pcm_channels / 2;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			*dst =
-+			     be32_to_cpu(buffer[c]) << 8;
-+			dst++;
-+		}
-+		buffer += 1;
-+		for (c = 0; c < channels; ++c) {
-+			*dst =
-+			     be32_to_cpu(buffer[c]) << 8;
-+			dst++;
-+		}
-+		buffer += s->data_block_quadlets - 1;
-+		if (--remaining_frames == 0)
-+			dst = (void *)runtime->dma_area;
-+	}
-+}
-+
-+static void amdtp_read_s16_dualwire(struct amdtp_stream *s,
-+				     struct snd_pcm_substream *pcm,
-+				     __be32 *buffer, unsigned int frames)
-+{
-+	struct snd_pcm_runtime *runtime = pcm->runtime;
-+	unsigned int channels, remaining_frames, i, c;
-+	u16 *dst;
-+
-+	dst = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+	channels = s->pcm_channels / 2;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			*dst =
-+			     be32_to_cpu(buffer[c]) << 8;
-+			dst++;
-+		}
-+		buffer += 1;
-+		for (c = 0; c < channels; ++c) {
-+			*dst =
-+			     be32_to_cpu(buffer[c]) << 8;
-+			dst++;
-+		}
-+		buffer += s->data_block_quadlets - 1;
-+		if (--remaining_frames == 0)
-+			dst = (void *)runtime->dma_area;
-+	}
-+}
-+
- static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
- 				   __be32 *buffer, unsigned int frames)
+-	err = pcr_modify(c, ipcr_set_modify, ipcr_set_check,
++	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+ 			 ABORT_ON_BUS_RESET);
+ 	if (err == -EAGAIN) {
+ 		fw_iso_resources_free(&c->resources);
+@@ -221,8 +223,8 @@ EXPORT_SYMBOL(cmp_connection_establish);
+  * cmp_connection_update - update the connection after a bus reset
+  * @c: the connection manager
+  *
+- * This function must be called from the driver's .update handler to reestablish
+- * any connection that might have been active.
++ * This function must be called from the driver's .update handler to
++ * reestablish any connection that might have been active.
+  *
+  * Returns zero on success, or a negative error code.  On an error, the
+  * connection is broken and the caller must stop transmitting iso packets.
+@@ -242,7 +244,7 @@ int cmp_connection_update(struct cmp_connection *c)
+ 	if (err < 0)
+ 		goto err_unconnect;
+ 
+-	err = pcr_modify(c, ipcr_set_modify, ipcr_set_check,
++	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+ 			 SUCCEED_ON_BUS_RESET);
+ 	if (err < 0)
+ 		goto err_resources;
+@@ -261,19 +263,18 @@ err_unconnect:
+ }
+ EXPORT_SYMBOL(cmp_connection_update);
+ 
+-
+-static __be32 ipcr_break_modify(struct cmp_connection *c, __be32 ipcr)
++static __be32 pcr_break_modify(struct cmp_connection *c, __be32 pcr)
  {
-@@ -505,6 +636,12 @@ static inline int queue_out_packet(struct amdtp_stream *s,
- 			    payload_length, skip);
+-	return ipcr & ~cpu_to_be32(IPCR_BCAST_CONN | IPCR_P2P_CONN_MASK);
++	return pcr & ~cpu_to_be32(PCR_BCAST_CONN | PCR_P2P_CONN_MASK);
  }
  
-+static inline int queue_in_packet(struct amdtp_stream *s)
-+{
-+	return queue_packet(s, TRANSMIT_PACKET_HEADER_SIZE,
-+			    amdtp_stream_get_max_payload(s), false);
-+}
-+
- static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
- {
- 	__be32 *buffer;
-@@ -552,6 +689,66 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
- 		check_pcm_pointer(s, pcm, data_blocks);
- }
- 
-+static void handle_in_packet(struct amdtp_stream *s,
-+			     unsigned int payload_quadlets,
-+			     __be32 *buffer)
-+{
-+	u32 cip_header[2];
-+	unsigned int data_block_quadlets, data_blocks, data_block_counter;
-+	struct snd_pcm_substream *pcm;
-+
-+	cip_header[0] = be32_to_cpu(buffer[0]);
-+	cip_header[1] = be32_to_cpu(buffer[1]);
-+
-+	/*
-+	 * This module supports 'Two-quadlet CIP header with SYT field'.
-+	 * For convinience, also check FMT field is AM824 or not.
-+	 */
-+	if (((cip_header[0] & CIP_EOH_MASK) == CIP_EOH) ||
-+	    ((cip_header[1] & CIP_EOH_MASK) != CIP_EOH) ||
-+	    ((cip_header[1] & CIP_FMT_MASK) != CIP_FMT_AM)) {
-+		dev_info(&s->unit->device,
-+			 "Invalid CIP header for AMDTP: %08X:%08X\n",
-+			 cip_header[0], cip_header[1]);
-+		return;
-+	}
-+
-+	if ((payload_quadlets < 3) ||
-+	     ((s->flags & CIP_BLOCKING) &&
-+	      ((cip_header[1] & CIP_SYT_MASK) == CIP_SYT_NO_INFO)))
-+		return;
-+
-+	data_block_quadlets =
-+			(cip_header[1] & AMDTP_DBS_MASK) >> AMDTP_DBS_SHIFT;
-+	/* avoid division by zero */
-+	if (data_block_quadlets == 0) {
-+		dev_info(&s->unit->device,
-+			 "Detect invalid value in dbs field: %08X\n",
-+			 data_block_quadlets);
-+		return;
-+	}
-+
-+	data_blocks = (payload_quadlets - 2) / data_block_quadlets;
-+	data_block_counter = (cip_header[1] & AMDTP_DBC_MASK);
-+
-+	/* check packet continuity */
-+	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
-+	if (s->data_block_counter != data_block_counter) {
-+		dev_err(&s->unit->device,
-+			"Detect uncontinuity of CIP packets\n");
-+		s->data_block_counter = data_block_counter;
-+		return;
-+	}
-+
-+	buffer += 2;
-+
-+	pcm = ACCESS_ONCE(s->pcm);
-+	if (pcm) {
-+		s->transfer_samples(s, pcm, buffer, data_blocks);
-+		check_pcm_pointer(s, pcm, data_blocks);
-+	}
-+}
-+
- static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
- 				size_t header_length, void *header,
- 				void *private_data)
-@@ -571,6 +768,35 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
- 	fw_iso_context_queue_flush(s->context);
- }
- 
-+static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
-+			       size_t header_length, void *header,
-+			       void *private_data)
-+{
-+	struct amdtp_stream *s = private_data;
-+	unsigned int p, packets, data_quadlets;
-+	__be32 *buffer, *headers = header;
-+
-+	/* The number of packets in buffer */
-+	packets = header_length / TRANSMIT_PACKET_HEADER_SIZE;
-+
-+	for (p = 0; p < packets; p++) {
-+		buffer = s->buffer.packets[s->packet_index].buffer;
-+
-+		/* The number of quadlets in this packet */
-+		data_quadlets =
-+			(be32_to_cpu(headers[p]) >> ISO_DATA_LENGTH_SHIFT) / 4;
-+		/* handle each packet data */
-+		handle_in_packet(s, data_quadlets, buffer);
-+
-+		if (queue_in_packet(s) < 0) {
-+			amdtp_stream_pcm_abort(s);
-+			return;
-+		}
-+	}
-+
-+	fw_iso_context_queue_flush(s->context);
-+}
-+
  /**
-  * amdtp_stream_start - start sending packets
-  * @s: the AMDTP stream to start
-@@ -595,7 +821,10 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 		[CIP_SFC_88200]  = {  0,   67 },
- 		[CIP_SFC_176400] = {  0,   67 },
- 	};
--	int err;
-+	unsigned int header_size;
-+	enum dma_data_direction dir;
-+	fw_iso_callback_t cb;
-+	int type, err;
+  * cmp_connection_break - break the connection to the target
+  * @c: the connection manager
+  *
+- * This function deactives the connection in the target's input plug control
+- * register, and frees the isochronous resources of the connection.  Before
+- * calling this function, the caller should cease transmitting packets.
++ * This function deactives the connection in the target's input/output plug
++ * control register, and frees the isochronous resources of the connection.
++ * Before calling this function, the caller should cease transmitting packets.
+  */
+ void cmp_connection_break(struct cmp_connection *c)
+ {
+@@ -286,7 +287,7 @@ void cmp_connection_break(struct cmp_connection *c)
+ 		return;
+ 	}
  
- 	mutex_lock(&s->mutex);
- 
-@@ -609,16 +838,26 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	s->syt_offset_state = initial_state[s->sfc].syt_offset;
- 	s->last_syt_offset = TICKS_PER_CYCLE;
- 
-+	/* initialize packet buffer */
-+	if (s->direction == AMDTP_TRANSMIT_STREAM) {
-+		dir = DMA_FROM_DEVICE;
-+		type = FW_ISO_CONTEXT_RECEIVE;
-+		header_size = TRANSMIT_PACKET_HEADER_SIZE;
-+		cb = in_stream_callback;
-+	} else {
-+		dir = DMA_TO_DEVICE;
-+		type = FW_ISO_CONTEXT_TRANSMIT;
-+		header_size = RECEIVE_PACKET_HEADER_SIZE;
-+		cb = out_stream_callback;
-+	}
- 	err = iso_packets_buffer_init(&s->buffer, s->unit, QUEUE_LENGTH,
--				      amdtp_stream_get_max_payload(s),
--				      DMA_TO_DEVICE);
-+				      amdtp_stream_get_max_payload(s), dir);
+-	err = pcr_modify(c, ipcr_break_modify, NULL, SUCCEED_ON_BUS_RESET);
++	err = pcr_modify(c, pcr_break_modify, NULL, SUCCEED_ON_BUS_RESET);
  	if (err < 0)
- 		goto err_unlock;
+ 		cmp_error(c, "plug is still connected\n");
  
- 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
--					   FW_ISO_CONTEXT_TRANSMIT,
--					   channel, speed, 0,
--					   out_stream_callback, s);
-+					   type, channel, speed, header_size,
-+					   cb, s);
- 	if (!amdtp_stream_running(s)) {
- 		err = PTR_ERR(s->context);
- 		if (err == -EBUSY)
-@@ -631,13 +870,17 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+diff --git a/sound/firewire/cmp.h b/sound/firewire/cmp.h
+index f47de08..2320cd4 100644
+--- a/sound/firewire/cmp.h
++++ b/sound/firewire/cmp.h
+@@ -11,8 +11,8 @@ struct fw_unit;
+  * struct cmp_connection - manages an isochronous connection to a device
+  * @speed: the connection's actual speed
+  *
+- * This structure manages (using CMP) an isochronous stream from the local
+- * computer to a device's input plug (iPCR).
++ * This structure manages (using CMP) an isochronous stream between the local
++ * computer and a device's input plug (iPCR) and output plug (oPCR).
+  *
+  * There is no corresponding oPCR created on the local computer, so it is not
+  * possible to overlay connections on top of this one.
+@@ -30,7 +30,7 @@ struct cmp_connection {
  
- 	s->packet_index = 0;
- 	do {
--		err = queue_out_packet(s, 0, true);
-+		if (s->direction == AMDTP_TRANSMIT_STREAM)
-+			err = queue_in_packet(s);
-+		else
-+			err = queue_out_packet(s, 0, true);
- 		if (err < 0)
- 			goto err_context;
- 	} while (s->packet_index > 0);
+ int cmp_connection_init(struct cmp_connection *connection,
+ 			struct fw_unit *unit,
+-			unsigned int ipcr_index);
++			unsigned int pcr_index);
+ void cmp_connection_destroy(struct cmp_connection *connection);
  
-+	/* NOTE: TAG1 matches CIP. This just affects in stream */
- 	s->data_block_counter = 0;
--	err = fw_iso_context_start(s->context, -1, 0, 0);
-+	err = fw_iso_context_start(s->context, -1, 0, FW_ISO_CONTEXT_MATCH_TAG1);
- 	if (err < 0)
- 		goto err_context;
- 
+ int cmp_connection_establish(struct cmp_connection *connection,
 -- 
 1.8.3.2
