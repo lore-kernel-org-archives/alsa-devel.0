@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 03/17] firewire-lib: Add 'direction' member to
-	'amdtp_stream' structure
-Date: Sat, 23 Nov 2013 15:07:50 +0900
-Message-ID: <1385186884-8259-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/17] firewire-lib: Add transfer delay to
+	synchronized duplex streams
+Date: Sat, 23 Nov 2013 15:07:57 +0900
+Message-ID: <1385186884-8259-11-git-send-email-o-takashi@sakamocchi.jp>
 References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A5492619E3
- for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 07:08:10 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id F28742651A0
+ for <alsa-devel@alsa-project.org>; Sat, 23 Nov 2013 07:08:12 +0100 (CET)
 In-Reply-To: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,98 +25,46 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds 'direction' member to amdtp_stream structure to indicate its
-direction. This patch also adds 'direction' argument to amdtp_stream_init()
-function to determine its direction.
+Currently, when duplex streams with synchronization mode, this module just pass
+'presentation timestamp' from transmitted packets to out packets. This is
+enough to handle actual device but logically it should include 'transfer delay'
+and 'processing time'. This means the timestamp in out packet should be at
+future.
 
-The amdtp_stream_init() function is exported and used by firewire-speakers and
-dice so this patch also affects them.
-
-This patch just add them. Actual implementation will be done by followed
-patches.
+To be simple, this commit add only 'transfer delay'.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c    | 4 +++-
- sound/firewire/amdtp.h    | 7 +++++++
- sound/firewire/dice.c     | 2 +-
- sound/firewire/speakers.c | 3 ++-
- 4 files changed, 13 insertions(+), 3 deletions(-)
+ sound/firewire/amdtp.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index fbd24db..5d94252 100644
+index d02ccac..bc21276 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -53,12 +53,14 @@ static void pcm_period_tasklet(unsigned long data);
-  * amdtp_stream_init - initialize an AMDTP stream structure
-  * @s: the AMDTP stream to initialize
-  * @unit: the target of the stream
-+ * @dir: the direction of stream
-  * @flags: the packet transmission method to use
-  */
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--		      enum cip_flags flags)
-+		      enum amdtp_stream_direction dir, enum cip_flags flags)
- {
- 	s->unit = fw_unit_get(unit);
-+	s->direction = dir;
- 	s->flags = flags;
- 	s->context = ERR_PTR(-1);
- 	mutex_init(&s->mutex);
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 757ea6c..6d7aa36 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -48,9 +48,15 @@ struct fw_unit;
- struct fw_iso_context;
- struct snd_pcm_substream;
+@@ -856,6 +856,15 @@ static void packet_sort(struct sort_table *tbl, unsigned int len)
+ 	} while (i < len);
+ }
  
-+enum amdtp_stream_direction {
-+	AMDTP_RECEIVE_STREAM = 0,
-+	AMDTP_TRANSMIT_STREAM
-+};
++static inline void add_transfer_delay(struct amdtp_stream *s, unsigned int *syt)
++{
++	if (*syt != CIP_SYT_NO_INFO) {
++		*syt += (s->transfer_delay / TICKS_PER_CYCLE) << 12;
++		*syt += s->transfer_delay % TICKS_PER_CYCLE;
++		*syt &= CIP_SYT_MASK;
++	}
++}
 +
- struct amdtp_stream {
- 	struct fw_unit *unit;
- 	enum cip_flags flags;
-+	enum amdtp_stream_direction direction;
- 	struct fw_iso_context *context;
- 	struct mutex mutex;
- 
-@@ -85,6 +91,7 @@ struct amdtp_stream {
- };
- 
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
-+		      enum amdtp_stream_direction dir,
- 		      enum cip_flags flags);
- void amdtp_stream_destroy(struct amdtp_stream *s);
- 
-diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index c76c519..d5b01e2 100644
---- a/sound/firewire/dice.c
-+++ b/sound/firewire/dice.c
-@@ -1360,7 +1360,7 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- 		goto err_owner;
- 	dice->resources.channels_mask = 0x00000000ffffffffuLL;
- 
--	err = amdtp_stream_init(&dice->stream, unit,
-+	err = amdtp_stream_init(&dice->stream, unit, AMDTP_RECEIVE_STREAM,
- 				CIP_BLOCKING | CIP_HI_DUALWIRE);
- 	if (err < 0)
- 		goto err_resources;
-diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
-index fc11c0f..8f0257e 100644
---- a/sound/firewire/speakers.c
-+++ b/sound/firewire/speakers.c
-@@ -684,7 +684,8 @@ static int fwspk_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto err_unit;
- 
--	err = amdtp_stream_init(&fwspk->stream, unit, CIP_NONBLOCKING);
-+	err = amdtp_stream_init(&fwspk->stream, unit, AMDTP_RECEIVE_STREAM,
-+				CIP_NONBLOCKING);
- 	if (err < 0)
- 		goto err_connection;
- 
+ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 				size_t header_length, void *header,
+ 				void *private_data)
+@@ -927,6 +936,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 			    (s->flags & CIP_SYNC_TO_DEVICE) &&
+ 			    s->sync_slave->callbacked) {
+ 				syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
++				add_transfer_delay(s, &syt);
+ 				handle_out_packet(s->sync_slave, syt);
+ 			}
+ 			handle_in_packet(s, tbl[i].payload_size / 4, buffer);
 -- 
 1.8.3.2
