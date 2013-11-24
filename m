@@ -1,18 +1,15 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 6/6] ASoC: mxs: Use
-	devm_snd_dmaengine_pcm_register()
-Date: Sun, 24 Nov 2013 14:21:02 +0100
-Message-ID: <1385299262-24304-6-git-send-email-lars@metafoo.de>
-References: <1385299262-24304-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH] ASoC: fsl_ssi: Add missing __iomem annotations
+Date: Sun, 24 Nov 2013 14:36:43 +0100
+Message-ID: <1385300203-24850-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-164.synserver.de (smtp-out-220.synserver.de
  [212.40.185.220])
- by alsa0.perex.cz (Postfix) with ESMTP id 24E3B261717
- for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2013 14:20:42 +0100 (CET)
-In-Reply-To: <1385299262-24304-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id CD9292616FB
+ for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2013 14:36:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,76 +20,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Mallon <rmallon@gmail.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Timur Tabi <timur@tabi.org>, H Hartley Sweeten <hsweeten@visionengravers.com>, Lars-Peter Clausen <lars@metafoo.de>, Bo Shen <voice.shen@atmel.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Timur Tabi <timur@tabi.org>
 List-Id: alsa-devel@alsa-project.org
 
-Makes the code shorter.
+There are two places in the fsl_ssi driver where the pointer to the register set
+is missing the __iomem annotation. Adding it fixes the following warnings from
+sparse:
+	sound/soc/fsl/fsl_ssi.c:747:45: warning: incorrect type in initializer (different address spaces)
+	sound/soc/fsl/fsl_ssi.c:747:45:    expected struct ccsr_ssi *ssi
+	sound/soc/fsl/fsl_ssi.c:747:45:    got struct ccsr_ssi [noderef] <asn:2>*ssi
+	sound/soc/fsl/fsl_ssi.c:756:9: warning: incorrect type in argument 2 (different address spaces)
+	sound/soc/fsl/fsl_ssi.c:756:9:    expected void volatile [noderef] <asn:2>*addr
+	sound/soc/fsl/fsl_ssi.c:756:9:    got unsigned int *<noident>
+	sound/soc/fsl/fsl_ssi.c:759:9: warning: incorrect type in argument 2 (different address spaces)
+	sound/soc/fsl/fsl_ssi.c:759:9:    expected void volatile [noderef] <asn:2>*addr
+	sound/soc/fsl/fsl_ssi.c:759:9:    got unsigned int *<noident>
+	sound/soc/fsl/fsl_ssi.c:761:25: warning: incorrect type in argument 1 (different address spaces)
+	sound/soc/fsl/fsl_ssi.c:761:25:    expected unsigned int [noderef] [usertype] <asn:2>*addr
+	sound/soc/fsl/fsl_ssi.c:761:25:    got unsigned int *<noident>
+	sound/soc/fsl/fsl_ssi.c:769:45: warning: incorrect type in initializer (different address spaces)
+	sound/soc/fsl/fsl_ssi.c:769:45:    expected struct ccsr_ssi *ssi
+	sound/soc/fsl/fsl_ssi.c:769:45:    got struct ccsr_ssi [noderef] <asn:2>*ssi
+	sound/soc/fsl/fsl_ssi.c:775:9: warning: incorrect type in argument 2 (different address spaces)
+	sound/soc/fsl/fsl_ssi.c:775:9:    expected void volatile [noderef] <asn:2>*addr
+	sound/soc/fsl/fsl_ssi.c:775:9:    got unsigned int *<noident>
+	sound/soc/fsl/fsl_ssi.c:776:25: warning: incorrect type in argument 1 (different address spaces)
+	sound/soc/fsl/fsl_ssi.c:776:25:    expected unsigned int [noderef] [usertype] <asn:2>*addr
+	sound/soc/fsl/fsl_ssi.c:776:25:    got unsigned int *<noident>
+	sound/soc/fsl/fsl_ssi.c:781:16: warning: incorrect type in argument 1 (different address spaces)
+	sound/soc/fsl/fsl_ssi.c:781:16:    expected void const volatile [noderef] <asn:2>*addr
+	sound/soc/fsl/fsl_ssi.c:781:16:    got unsigned int *<noident>
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/mxs/mxs-pcm.c  | 8 +-------
- sound/soc/mxs/mxs-pcm.h  | 1 -
- sound/soc/mxs/mxs-saif.c | 8 --------
- 3 files changed, 1 insertion(+), 16 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
-index b16abbb..04a6b0d 100644
---- a/sound/soc/mxs/mxs-pcm.c
-+++ b/sound/soc/mxs/mxs-pcm.c
-@@ -56,16 +56,10 @@ static const struct snd_dmaengine_pcm_config mxs_dmaengine_pcm_config = {
- 
- int mxs_pcm_platform_register(struct device *dev)
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 3df0318..1a9521a 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -751,7 +751,7 @@ static void fsl_ssi_ac97_init(void)
+ static void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
+ 		unsigned short val)
  {
--	return snd_dmaengine_pcm_register(dev, &mxs_dmaengine_pcm_config,
-+	return devm_snd_dmaengine_pcm_register(dev, &mxs_dmaengine_pcm_config,
- 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
- 		SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX);
- }
- EXPORT_SYMBOL_GPL(mxs_pcm_platform_register);
+-	struct ccsr_ssi *ssi = fsl_ac97_data->ssi;
++	struct ccsr_ssi __iomem *ssi = fsl_ac97_data->ssi;
+ 	unsigned int lreg;
+ 	unsigned int lval;
  
--void mxs_pcm_platform_unregister(struct device *dev)
--{
--	snd_dmaengine_pcm_unregister(dev);
--}
--EXPORT_SYMBOL_GPL(mxs_pcm_platform_unregister);
--
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/mxs/mxs-pcm.h b/sound/soc/mxs/mxs-pcm.h
-index bc685b6..035ea04 100644
---- a/sound/soc/mxs/mxs-pcm.h
-+++ b/sound/soc/mxs/mxs-pcm.h
-@@ -20,6 +20,5 @@
- #define _MXS_PCM_H
+@@ -773,7 +773,7 @@ static void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
+ static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
+ 		unsigned short reg)
+ {
+-	struct ccsr_ssi *ssi = fsl_ac97_data->ssi;
++	struct ccsr_ssi __iomem *ssi = fsl_ac97_data->ssi;
  
- int mxs_pcm_platform_register(struct device *dev);
--void mxs_pcm_platform_unregister(struct device *dev);
- 
- #endif
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 54e622a..92db74d 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -804,13 +804,6 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int mxs_saif_remove(struct platform_device *pdev)
--{
--	mxs_pcm_platform_unregister(&pdev->dev);
--
--	return 0;
--}
--
- static const struct of_device_id mxs_saif_dt_ids[] = {
- 	{ .compatible = "fsl,imx28-saif", },
- 	{ /* sentinel */ }
-@@ -819,7 +812,6 @@ MODULE_DEVICE_TABLE(of, mxs_saif_dt_ids);
- 
- static struct platform_driver mxs_saif_driver = {
- 	.probe = mxs_saif_probe,
--	.remove = mxs_saif_remove,
- 
- 	.driver = {
- 		.name = "mxs-saif",
+ 	unsigned short val = -1;
+ 	unsigned int lreg;
 -- 
 1.8.0
