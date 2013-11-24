@@ -1,55 +1,83 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Use SND_SOC_DAPM_INIT_REG_VAL in
- SND_SOC_DAPM_MUX
-Date: Sun, 24 Nov 2013 13:55:31 +0000
-Message-ID: <20131124135531.GY14725@sirena.org.uk>
-References: <1385141358-21956-1-git-send-email-swarren@wwwdotorg.org>
+From: James Le Cuirot <chewi@aura-online.co.uk>
+Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
+ multi-channel and HBR support
+Date: Sun, 24 Nov 2013 14:57:37 +0000
+Message-ID: <20131124145737.22056256@symphony.aura-online.co.uk>
+References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
+ <loom.20131122T215246-90@post.gmane.org> <529004F8.7070801@iki.fi>
+ <20131123154009.6c8c6e97@symphony.aura-online.co.uk>
+ <5290CD7C.7020907@iki.fi>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sT0SRK93LqpGW452"
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1385141358-21956-1-git-send-email-swarren@wwwdotorg.org>
-Sender: stable-owner@vger.kernel.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, ac100@lists.launchpad.net, Stephen Warren <swarren@nvidia.com>, stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 49FDF2616FB
+ for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2013 15:57:43 +0100 (CET)
+In-Reply-To: <5290CD7C.7020907@iki.fi>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 23 Nov 2013 17:45:00 +0200
+Anssi Hannula <anssi.hannula@iki.fi> wrote:
 
---sT0SRK93LqpGW452
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> 23.11.2013 17:40, James Le Cuirot kirjoitti:
+> > On Sat, 23 Nov 2013 03:29:28 +0200
+> > Anssi Hannula <anssi.hannula@iki.fi> wrote:
+> > 
+> >> 23.11.2013 03:05, James Le Cuirot kirjoitti:
+> >>> Anssi Hannula <anssi.hannula <at> iki.fi> writes:
+> >>>
+> >>>> Here's another revision of the ATI/AMD multichannel+HBR patchset.
+> >>>
+> >>> Hi Anssi. Many thanks for your work on this. I am very keen to
+> >>> test this new code but have so far been unsuccessful. I have a
+> >>> Radeon 4670 (Sapphire branded) connected to a Yamaha RX-V773. I
+> >>> am running the sound/for-next kernel (82755ab) with your "missing
+> >>> PCM SAD" patch applied.
+> >>>
+> >>> The new kernel has allowed ALSA to recognise the card as
+> >>> multichannel and I can issue the following speaker-test command
+> >>> but I still only hear "Front Left" and "Front Right" and the
+> >>> Yahama seems to report the signal as stereo.
+> >>>
+> >>> # speaker-test -Dhdmi:CARD=HDMI,DEV=0 -c6 -t wav
+> > 
+> > 
+> >> ELD stuff is not necessary for playback, it is mostly for
+> >> information (and providing the necessary info for ELD is disabled
+> >> on radeon DRI drivers on some kernels on some GPUs ATM due to some
+> >> issues).
+> >>
+> >> Is there anything interesting in "dmesg"?
+> > 
+> > I have attached my dmesg. I enabled ALSA debug and verbose printk
+> > but disabled the on-board HDA audio in the BIOS to make it less
+> > confusing, and also to see if it made any difference, which it
+> > didn't. The only entry I find noteworthy is about the ELD but you
+> > say this isn't required.
+> > 
+> > There seems to be little to go on here. Would it be worth enabling
+> > CONFIG_SND_DEBUG_VERBOSE? I gather it's very noisy but maybe that
+> > level of detail is needed. Hopefully you have a better idea.
+> 
+> Yeah, that would be useful.
 
-On Fri, Nov 22, 2013 at 10:29:18AM -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
->=20
-> SND_SOC_DAPM_MUX() doesn't currently initialize the .mask field. This
-> results in the mux never affecting HW, since no bits are ever set or
-> cleared. Fix SND_SOC_DAPM_MUX() to use SND_SOC_DAPM_INIT_REG_VAL() to
+I have now done that. It was not as noisy as I expected and only added a
+few more messages. I broke the message size limit last time so I have
+posted the log to Gist instead. The timings are noted there.
 
-Applied, thanks.
+https://gist.github.com/chewi/7628058
 
---sT0SRK93LqpGW452
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSkgVQAAoJELSic+t+oim9HJAQAJbqWebgSS++XbX7cUEBpx8L
-1SNtEEKq+uqJeK3c11gXTvczl0uzHpGzp8/d2crx1Nl56cVdtecKzV74Reg9l6bS
-ssfH51qWbRS3Gyka9RicCk8xZkQ9sfDKPufMO9odj0iDiRyrICfCho6RLtbn7zJP
-GcAOJdUxSFZKwbdCZdQ/yv1ASoYSHmk5lXd0DiXCmcTCoKjATXHgr8sKlE7uyXM0
-YxrngVvKxfLG6EukrJrzTwTIzLATxlNHjwyQXg5wkwpYsbug6MnlpYu/peHKaqpO
-MCObknja73V//O0vtKYwrPSzx7jlayO/ZOqYpkWpcimJK7XTlbINKYMt3XDbLaVy
-ON/m1wg/anuPzY9LBEsKlFfVqeQGr/rgR63WiyyaPwsih0L9O074n8Xrr7pjuXpZ
-D/5FAvwVhTJ7Cg219u+tWUPHdOivmMdhy2Nq6/HgEZmla9W1TNVTIX7LEQ/NPhz6
-CtaO1d3VCI85uhOGPRVrUunra6U//8Du/KWsvKbbusXEwxO6iWAdh3KExG8DRvWU
-frzm2Rgl0pf5ZPq7tFNWgmvdJ7WZFTN3VyXXBcuB65+1JYQCa6va1jNCv4Zi7EvE
-XB+yIEDdaaqg7ZfpSWY1d64jky/4Jf89V69AIAjIFcJAgbbEQB0+ihQZGOfFdLzH
-Dzsh+3ZT1wUHc9Nx31oM
-=BiMh
------END PGP SIGNATURE-----
-
---sT0SRK93LqpGW452--
+Regards,
+James
