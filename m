@@ -1,15 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: fsl_ssi: Add missing __iomem annotations
-Date: Sun, 24 Nov 2013 14:36:43 +0100
-Message-ID: <1385300203-24850-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/4] ASoC: wm5110: Add basic support for
+	ISRCs
+Date: Sun, 24 Nov 2013 13:38:05 +0000
+Message-ID: <20131124133805.GT14725@sirena.org.uk>
+References: <1384877043-5640-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1384877043-5640-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4365648008555719808=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-164.synserver.de (smtp-out-220.synserver.de
- [212.40.185.220])
- by alsa0.perex.cz (Postfix) with ESMTP id CD9292616FB
- for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2013 14:36:21 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3FCD2616FB
+ for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2013 14:38:09 +0100 (CET)
+In-Reply-To: <1384877043-5640-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,64 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Timur Tabi <timur@tabi.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-There are two places in the fsl_ssi driver where the pointer to the register set
-is missing the __iomem annotation. Adding it fixes the following warnings from
-sparse:
-	sound/soc/fsl/fsl_ssi.c:747:45: warning: incorrect type in initializer (different address spaces)
-	sound/soc/fsl/fsl_ssi.c:747:45:    expected struct ccsr_ssi *ssi
-	sound/soc/fsl/fsl_ssi.c:747:45:    got struct ccsr_ssi [noderef] <asn:2>*ssi
-	sound/soc/fsl/fsl_ssi.c:756:9: warning: incorrect type in argument 2 (different address spaces)
-	sound/soc/fsl/fsl_ssi.c:756:9:    expected void volatile [noderef] <asn:2>*addr
-	sound/soc/fsl/fsl_ssi.c:756:9:    got unsigned int *<noident>
-	sound/soc/fsl/fsl_ssi.c:759:9: warning: incorrect type in argument 2 (different address spaces)
-	sound/soc/fsl/fsl_ssi.c:759:9:    expected void volatile [noderef] <asn:2>*addr
-	sound/soc/fsl/fsl_ssi.c:759:9:    got unsigned int *<noident>
-	sound/soc/fsl/fsl_ssi.c:761:25: warning: incorrect type in argument 1 (different address spaces)
-	sound/soc/fsl/fsl_ssi.c:761:25:    expected unsigned int [noderef] [usertype] <asn:2>*addr
-	sound/soc/fsl/fsl_ssi.c:761:25:    got unsigned int *<noident>
-	sound/soc/fsl/fsl_ssi.c:769:45: warning: incorrect type in initializer (different address spaces)
-	sound/soc/fsl/fsl_ssi.c:769:45:    expected struct ccsr_ssi *ssi
-	sound/soc/fsl/fsl_ssi.c:769:45:    got struct ccsr_ssi [noderef] <asn:2>*ssi
-	sound/soc/fsl/fsl_ssi.c:775:9: warning: incorrect type in argument 2 (different address spaces)
-	sound/soc/fsl/fsl_ssi.c:775:9:    expected void volatile [noderef] <asn:2>*addr
-	sound/soc/fsl/fsl_ssi.c:775:9:    got unsigned int *<noident>
-	sound/soc/fsl/fsl_ssi.c:776:25: warning: incorrect type in argument 1 (different address spaces)
-	sound/soc/fsl/fsl_ssi.c:776:25:    expected unsigned int [noderef] [usertype] <asn:2>*addr
-	sound/soc/fsl/fsl_ssi.c:776:25:    got unsigned int *<noident>
-	sound/soc/fsl/fsl_ssi.c:781:16: warning: incorrect type in argument 1 (different address spaces)
-	sound/soc/fsl/fsl_ssi.c:781:16:    expected void const volatile [noderef] <asn:2>*addr
-	sound/soc/fsl/fsl_ssi.c:781:16:    got unsigned int *<noident>
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/fsl/fsl_ssi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--===============4365648008555719808==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5tINJiUS2/Dn5Rhr"
+Content-Disposition: inline
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 3df0318..1a9521a 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -751,7 +751,7 @@ static void fsl_ssi_ac97_init(void)
- static void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
- 		unsigned short val)
- {
--	struct ccsr_ssi *ssi = fsl_ac97_data->ssi;
-+	struct ccsr_ssi __iomem *ssi = fsl_ac97_data->ssi;
- 	unsigned int lreg;
- 	unsigned int lval;
- 
-@@ -773,7 +773,7 @@ static void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
- static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
- 		unsigned short reg)
- {
--	struct ccsr_ssi *ssi = fsl_ac97_data->ssi;
-+	struct ccsr_ssi __iomem *ssi = fsl_ac97_data->ssi;
- 
- 	unsigned short val = -1;
- 	unsigned int lreg;
--- 
-1.8.0
+
+--5tINJiUS2/Dn5Rhr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 19, 2013 at 04:04:02PM +0000, Charles Keepax wrote:
+> Add support for the ISRCs that matches the current support on the w5102.
+
+Applied, thanks.
+
+--5tINJiUS2/Dn5Rhr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSkgE5AAoJELSic+t+oim9OPAP/3ki0iuu3r6wiijEBTKRO62h
+C0KMbP55KjgqtF+ReAO04mngbSrO452GDRDn7tqG1u7CukRwkfhleqrqu/baDWDz
+ttOzdnrzz0eUej31zNAaLPP2XLebZHyWe4DX8ETEvA1DTzb95zOvc4OLg0WmLNXr
+0AzGH8/oKQQPkJ8aT6g04yZdNN1M3G1jBoTilaDAbu5RdH2dAQGIGGmSNe/qf4h7
+WJqljqrDk96z4rjtaEQu4g910TN6lg2N1slJssvdbmD3sM+XvrU5RU69FXbN3yBp
+zJcjsIk0FlvNiHsX+9YUmCTX3zpunQb3DSWohaBm2Lt6m6M0SxedVv11jUB409+e
+BhInrbAiMDbXa4sKcF8B4TjierYl8D+TjChBlBI7vL9Vn//PCMwkHwj8Dx61GlTj
+qPsZjOKKpNrujzpK3AuGoIp1PyNC+cPMgW9GL+McqzwKJ/khuX4igYRzNEjW2FYd
+yIoOm+kh8YVAuBjaTV+h0rTxqOS9yYWcu0h3sDr5QWALyjU+5qZn8LmVfGGd2VUc
+KU/8gno76g4ygeiGyLbZq2zoI4aO2CjqSDrihP71F/RItRyVrg1NiB4ktqb9YkQX
+KPt5a28uY3vmOMr07ZAuhYq7vqlNTBsdU36Aw4UZwouSEACyAH6yl6LIl2LJWkB+
+nBGISZ+fEGS0c7wxVgff
+=sRsJ
+-----END PGP SIGNATURE-----
+
+--5tINJiUS2/Dn5Rhr--
+
+--===============4365648008555719808==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4365648008555719808==--
