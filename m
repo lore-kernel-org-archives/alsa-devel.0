@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/6] ASoC: atmel: Use
+Subject: [PATCH 4/6] ASoC: fsl: Use
 	devm_snd_dmaengine_pcm_register()
-Date: Sun, 24 Nov 2013 14:20:58 +0100
-Message-ID: <1385299262-24304-2-git-send-email-lars@metafoo.de>
+Date: Sun, 24 Nov 2013 14:21:00 +0100
+Message-ID: <1385299262-24304-4-git-send-email-lars@metafoo.de>
 References: <1385299262-24304-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-164.synserver.de (smtp-out-220.synserver.de
  [212.40.185.220])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FE6B261700
+ by alsa0.perex.cz (Postfix) with ESMTP id 80D3226167D
  for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2013 14:20:39 +0100 (CET)
 In-Reply-To: <1385299262-24304-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,68 +30,118 @@ Makes the code shorter.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/atmel/atmel-pcm-dma.c | 8 +-------
- sound/soc/atmel/atmel-pcm.h     | 4 ----
- sound/soc/atmel/atmel_ssc_dai.c | 4 +---
- 3 files changed, 2 insertions(+), 14 deletions(-)
+ sound/soc/fsl/fsl_spdif.c   | 8 --------
+ sound/soc/fsl/fsl_ssi.c     | 4 ----
+ sound/soc/fsl/imx-pcm-dma.c | 9 ++-------
+ sound/soc/fsl/imx-pcm.h     | 5 -----
+ sound/soc/fsl/imx-ssi.c     | 3 ---
+ 5 files changed, 2 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
-index 06082e5..7dbc0e9 100644
---- a/sound/soc/atmel/atmel-pcm-dma.c
-+++ b/sound/soc/atmel/atmel-pcm-dma.c
-@@ -129,17 +129,11 @@ static const struct snd_dmaengine_pcm_config atmel_dmaengine_pcm_config = {
- 
- int atmel_pcm_dma_platform_register(struct device *dev)
- {
--	return snd_dmaengine_pcm_register(dev, &atmel_dmaengine_pcm_config,
-+	return devm_snd_dmaengine_pcm_register(dev, &atmel_dmaengine_pcm_config,
- 			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 55193a5..4d075f1 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1181,13 +1181,6 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+ 	return ret;
  }
- EXPORT_SYMBOL(atmel_pcm_dma_platform_register);
  
--void atmel_pcm_dma_platform_unregister(struct device *dev)
+-static int fsl_spdif_remove(struct platform_device *pdev)
 -{
--	snd_dmaengine_pcm_unregister(dev);
--}
--EXPORT_SYMBOL(atmel_pcm_dma_platform_unregister);
+-	imx_pcm_dma_exit(pdev);
 -
- MODULE_AUTHOR("Bo Shen <voice.shen@atmel.com>");
- MODULE_DESCRIPTION("Atmel DMA based PCM module");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/atmel/atmel-pcm.h b/sound/soc/atmel/atmel-pcm.h
-index 12ae814..bb71069 100644
---- a/sound/soc/atmel/atmel-pcm.h
-+++ b/sound/soc/atmel/atmel-pcm.h
-@@ -105,15 +105,11 @@ static inline void atmel_pcm_pdc_platform_unregister(struct device *dev)
- #if defined(CONFIG_SND_ATMEL_SOC_DMA) || \
- 	defined(CONFIG_SND_ATMEL_SOC_DMA_MODULE)
- int atmel_pcm_dma_platform_register(struct device *dev);
--void atmel_pcm_dma_platform_unregister(struct device *dev);
- #else
- static inline int atmel_pcm_dma_platform_register(struct device *dev)
- {
+-	return 0;
+-}
+-
+ static const struct of_device_id fsl_spdif_dt_ids[] = {
+ 	{ .compatible = "fsl,imx35-spdif", },
+ 	{}
+@@ -1201,7 +1194,6 @@ static struct platform_driver fsl_spdif_driver = {
+ 		.of_match_table = fsl_spdif_dt_ids,
+ 	},
+ 	.probe = fsl_spdif_probe,
+-	.remove = fsl_spdif_remove,
+ };
+ 
+ module_platform_driver(fsl_spdif_driver);
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index fb8f52a..3df0318 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1109,8 +1109,6 @@ done:
  	return 0;
+ 
+ error_dai:
+-	if (ssi_private->ssi_on_imx)
+-		imx_pcm_dma_exit(pdev);
+ 	snd_soc_unregister_component(&pdev->dev);
+ 
+ error_dev:
+@@ -1132,8 +1130,6 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+ 
+ 	if (!ssi_private->new_binding)
+ 		platform_device_unregister(ssi_private->pdev);
+-	if (ssi_private->ssi_on_imx)
+-		imx_pcm_dma_exit(pdev);
+ 	snd_soc_unregister_component(&pdev->dev);
+ 	device_remove_file(&pdev->dev, &ssi_private->dev_attr);
+ 	if (ssi_private->ssi_on_imx)
+diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
+index aee2307..c5e47f8 100644
+--- a/sound/soc/fsl/imx-pcm-dma.c
++++ b/sound/soc/fsl/imx-pcm-dma.c
+@@ -61,16 +61,11 @@ static const struct snd_dmaengine_pcm_config imx_dmaengine_pcm_config = {
+ 
+ int imx_pcm_dma_init(struct platform_device *pdev)
+ {
+-	return snd_dmaengine_pcm_register(&pdev->dev, &imx_dmaengine_pcm_config,
++	return devm_snd_dmaengine_pcm_register(&pdev->dev,
++		&imx_dmaengine_pcm_config,
+ 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+ 		SND_DMAENGINE_PCM_FLAG_COMPAT);
  }
--static inline void atmel_pcm_dma_platform_unregister(struct device *dev)
+ EXPORT_SYMBOL_GPL(imx_pcm_dma_init);
+ 
+-void imx_pcm_dma_exit(struct platform_device *pdev)
+-{
+-	snd_dmaengine_pcm_unregister(&pdev->dev);
+-}
+-EXPORT_SYMBOL_GPL(imx_pcm_dma_exit);
+-
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
+index 5d5b733..c79cb27 100644
+--- a/sound/soc/fsl/imx-pcm.h
++++ b/sound/soc/fsl/imx-pcm.h
+@@ -40,16 +40,11 @@ struct imx_pcm_fiq_params {
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_IMX_PCM_DMA)
+ int imx_pcm_dma_init(struct platform_device *pdev);
+-void imx_pcm_dma_exit(struct platform_device *pdev);
+ #else
+ static inline int imx_pcm_dma_init(struct platform_device *pdev)
+ {
+ 	return -ENODEV;
+ }
+-
+-static inline void imx_pcm_dma_exit(struct platform_device *pdev)
 -{
 -}
  #endif
  
- #endif /* _ATMEL_PCM_H */
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 8697ced..13aaa7d 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -792,9 +792,7 @@ static void asoc_ssc_exit(struct device *dev)
- 	struct platform_device *pdev = to_platform_device(dev);
- 	struct ssc_device *ssc = platform_get_drvdata(pdev);
+ #if IS_ENABLED(CONFIG_SND_SOC_IMX_PCM_FIQ)
+diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
+index f5f248c..cc7376f 100644
+--- a/sound/soc/fsl/imx-ssi.c
++++ b/sound/soc/fsl/imx-ssi.c
+@@ -624,9 +624,6 @@ static int imx_ssi_remove(struct platform_device *pdev)
+ {
+ 	struct imx_ssi *ssi = platform_get_drvdata(pdev);
  
--	if (ssc->pdata->use_dma)
--		atmel_pcm_dma_platform_unregister(dev);
--	else
-+	if (!ssc->pdata->use_dma)
- 		atmel_pcm_pdc_platform_unregister(dev);
+-	if (!ssi->dma_init)
+-		imx_pcm_dma_exit(pdev);
+-
+ 	if (!ssi->fiq_init)
+ 		imx_pcm_fiq_exit(pdev);
  
- 	snd_soc_unregister_component(dev);
 -- 
 1.8.0
