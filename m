@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/6] ASoC: Add resource managed
- snd_dmaengine_pcm_register()
-Date: Mon, 25 Nov 2013 18:23:44 +0000
-Message-ID: <20131125182344.GS14725@sirena.org.uk>
-References: <1385299262-24304-1-git-send-email-lars@metafoo.de>
- <20131125171922.GO14725@sirena.org.uk>
- <52938C20.5030906@metafoo.de>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: ASOC: stream widget created two times
+Date: Mon, 25 Nov 2013 18:48:02 +0000
+Message-ID: <1385405282.2479.8.camel@loki>
+References: <A4ED9057F6AB394EB1BF089A056089A853220EBBA8@SAFEX1MAIL5.st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1800163087062008339=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C91B261B08
- for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 19:24:03 +0100 (CET)
-In-Reply-To: <52938C20.5030906@metafoo.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id F381F261B11
+ for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 19:48:06 +0100 (CET)
+In-Reply-To: <A4ED9057F6AB394EB1BF089A056089A853220EBBA8@SAFEX1MAIL5.st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,60 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Mallon <rmallon@gmail.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, H Hartley Sweeten <hsweeten@visionengravers.com>, Bo Shen <voice.shen@atmel.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+To: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@cassiel.sirena.org.uk" <broonie@cassiel.sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2013-11-22 at 15:19 +0100, Arnaud POULIQUEN wrote:
+> Hello,
+> I 'm newbie on asoc dev. I'm trying to develop a driver based on dynamic
+> PCM implementation with backend and frontend. I'm working on 3.10
+> 
+> I have declared a FE  :
+> {
+>             .name = "MMDL0",
+>             .stream_name = "MM DL0 Frontend",
+>             .cpu_dai_name = "mm_dl0",
+> 
+>             .codec_name = "snd-soc-dummy",
+>             .codec_dai_name = "snd-soc-dummy-dai",
+> 
+>             .dynamic=1,
+>             .trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+>             .ignore_pmdown_time = 1, /* Power down without delay */
+>             .init = sti_dummy_init,
+> },
+> 
+> CPU DAI associated:
+> static struct snd_soc_dai_driver sti_frontend_cpu_dais[] = {
+>             {
+>                         .name = "mm_dl0",
+>                         .playback = {
+>                                     .stream_name = "MM_DL0",
+>                                     .channels_min = 1,
+>                                     .channels_max = 8,
+>                                     .rates = SNDRV_PCM_RATE_48000,
+>                                     .formats = SNDRV_PCM_FMTBIT_S16_LE
+>                         },
+>                         .probe = sti_frontend_dai_probe,
+>                         .probe_order = SND_SOC_COMP_ORDER_FIRST,
+>             },
+> }
+> Platform is declared using platform_of_node using DTS.
+> I have also declared a BE and the route that links the FE cpu dai widget with
+> the BE codec dai widget.
+> 
+> My concern is that MM_DL0 widget is created 2 times. One time in soc_probe_link_dais
+> and one time in soc_probe_platform.
 
---===============1800163087062008339==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Qf878oECjVTnCF6M"
-Content-Disposition: inline
+This bug has been fixed in later kernel. Can you cherry pick commit
+ae10e7e8f1c9d021c8daca750d743cc3baa12e6d from 3.12.
 
+Thanks
 
---Qf878oECjVTnCF6M
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Nov 25, 2013 at 06:42:56PM +0100, Lars-Peter Clausen wrote:
-
-> I didn't put it there because it has a dependency on
-> SND_SOC_GENERIC_DMAENGINE_PCM. Sothe options were to either add
-> ifdefery to soc-devres.c or to put the managed function in
-> soc-generic-dmaengine-pcm.c.
-
-Hrm, OK though I'd probably have gone with the ifdefs on this one.  I'll
-wait for more testing anyway.
-
---Qf878oECjVTnCF6M
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSk5WtAAoJELSic+t+oim96+QQAJF4hhhOGDJb7qP5ZkMB5cKW
-GV5zivn+cte61QLRKWqR9PCV9dukdLPjvO8FtFbOvEfc4/9MiSa9uqwPEV5HWUEn
-D8kryWmvzQA/BII3vRZiaMl/ckMG87surXAttqdvN2jYSGSHjRr/s1hhMx/ZFoO8
-Aq5+kj3iHk79/w+LZjds4AQvRnOipz+fWuunf/WdvnhPRF3wlLOMNRcA09I/Tq36
-ascoLAdLJM/Sv9QLQSelvkuuM4On+W7Wi7IV4Aw9XJw7VHWztIAIBpiROR+/GjCr
-HHBYQe2bqP5EdrnLYtsznytJ13mtOJ2ljieC2/peLP+/L70u540JMHzAZHMzzD8e
-f723ItCskFX0fsdiH5/TYmuyG/YniPfxansFY1e5sf27ucH4suYVU9j0PDOzh8Y9
-U6R3nR+xiyqTLq0ffXt2/GwXCt8aDD7E0MCClrh7X4grQM+oQM+t7Nqenc7mxtlW
-ypqWAbg6vIJOLU4zqUzzVBb700bDeU48HFlIIMD95WL/BCZM/7OThEc0ERJAcnr2
-GyMhW0WRfJo66rrpXH6d1q3+dcU84OfoC+8gjr65jeKEylY9m0MtfkacRXG6Tojq
-lESwJ6xcWzju2q8kJYtcB7MB0s83alMr+GwZj3WjYO1FMsB/knxXydn9ChsCsaP7
-jMBdebngWahK1IlQZ2a6
-=xdEA
------END PGP SIGNATURE-----
-
---Qf878oECjVTnCF6M--
-
---===============1800163087062008339==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1800163087062008339==--
+Liam
