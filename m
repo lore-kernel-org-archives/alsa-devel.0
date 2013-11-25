@@ -1,80 +1,68 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-devel] [PATCH 06/17] firewire-lib: Add support for MIDI
-	capture/playback
-Date: Mon, 25 Nov 2013 16:27:43 +0100
-Message-ID: <52936C6F.1030200@ladisch.de>
-References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
-	<1385186884-8259-7-git-send-email-o-takashi@sakamocchi.jp>
+From: James Le Cuirot <chewi@aura-online.co.uk>
+Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
+ multi-channel and HBR support
+Date: Mon, 25 Nov 2013 15:32:12 +0000
+Message-ID: <20131125153212.3c162da7@red>
+References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
+ <loom.20131122T215246-90@post.gmane.org>
+ <CAN8cciacG0fUyEuSOMF2iXp8CUzqyTAPDNpK1q6Lu0u+gtV6zQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1385186884-8259-7-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 873C9261AB7
+ for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 16:32:20 +0100 (CET)
+In-Reply-To: <CAN8cciacG0fUyEuSOMF2iXp8CUzqyTAPDNpK1q6Lu0u+gtV6zQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> For capturing/playbacking MIDI message, this commit adds the functionality to
-> multiplex/demultiplex MIDI messages into AMDTP sream in IEC 61883-6. As a
-> result, the number of MIDI ports is limited by 16 ports, for my convinience.
+On Mon, 25 Nov 2013 23:07:09 +0800
+Raymond Yau <superquad.vortex2@gmail.com> wrote:
 
-> +++ b/sound/firewire/amdtp.h
-> +/*
-> + * This module supports maximum 2 MIDI channels.
-> + * Then AMDTP packets include maximum 16 MIDI streams multiplexed.
-> + * This is for our convinience.
-> + */
-> +#define AMDTP_MAX_CHANNELS_FOR_MIDI	2
+> >
+> > I have a Radeon 4670 (Sapphire
+> > branded) connected to a Yamaha RX-V773. I am running the
+> > sound/for-next kernel (82755ab) with your "missing PCM SAD" patch
+> > applied.
+> >
+> > The new kernel has allowed ALSA to recognise the card as
+> > multichannel and
+> I
+> > can issue the following speaker-test command but I still only hear
+> > "Front Left" and "Front Right" and the Yahama seems to report the
+> > signal as
+> stereo.
+> >
+> > # speaker-test -Dhdmi:CARD=HDMI,DEV=0 -c6 -t wav
+> 
+> Why do you use -c6 when your HDMI codec only support stereo
+> 
+> Node 0x02 [Audio Output] wcaps 0x201: Stereo Digital
+>    Converter: stream=1, channel=0
+> Node 0x03 [Pin Complex] wcaps 0x400381: Stereo Digital
 
-This does not look like 16 ports ...
+I was under the impression that this card, and all cards in the
+Radeon 4000 series, are capable of 7.1 LPCM. Are you suggesting
+otherwise? Either it really isn't, or this information is being wrongly
+detected, and that could point to the source of the problem.
 
-> -	unsigned int midi_ports;
-> +	unsigned int midi_channels;
-
-... and "MIDI channels" means something different.  The RP-027 document
-defines things like "MIDI data stream", "MIDI Conformant Data Channel",
-and "MPX-MIDI Data Channel"; please clarify which one you mean.
-
-> IEC 61883-6 refers to AMEI/MMA RP-027 for implementation of MIDI conformant
-> data. This module implement 'MIDI1.0-1x-SPEED' mode. In the specification,
-> 'MIDI1.0-2x/3x-SPEED' mode is defined with 'negotiation procedure' and
-> 'encapsulation details'. But I cannot find specifications about them.
-
-The 2x/3x speed modes are not specified.
-
->  static void amdtp_fill_midi(struct amdtp_stream *s,
->  			    __be32 *buffer, unsigned int frames)
-
-> +			if ((s->midi[port] != NULL) &&
-> +			    test_bit(port, &s->midi_triggered)) {
-
-The stream pointer (s->midi[]) is not needed when the stream is not
-active (triggered).  So you could drop the midi_triggered field and
-just update the stream pointer when triggering (like s->pcm).
-
-> +			buffer[s->pcm_channels + c] =
-> +				be32_to_cpu((b[0] << 24) | (b[1] << 16));
-
-Endian conversions are required only for values that occupy more than
-one byte.  You should make 'buffer' a byte pointer so that you can copy
-b[] directly.
-
+I was not aware of the significance of these lines before so thanks
+for pointing this out. Before I tried the new kernel, ALSA wouldn't let
+me do 6 channel output at all and PulseAudio detected the card as stereo
+only. Now ALSA doesn't complain and PA detects it as 5.1 so I figured it
+should work now. Having said that, I'm not sure why PA doesn't report
+7.1 but I only have 5.1 speakers anyway.
 
 Regards,
-Clemens
-
-------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+James
