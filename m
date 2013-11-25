@@ -1,86 +1,192 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v2 0/9] ASoC: fsl-ssi: offline/online
-	configuration and cleanups
-Date: Mon, 25 Nov 2013 12:13:36 +0100
-Message-ID: <1385378025-1262-1-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v2 6/9] ASoC: fsl-ssi: Move RX/TX configuration to seperate
+ functions
+Date: Mon, 25 Nov 2013 12:13:42 +0100
+Message-ID: <1385378025-1262-7-git-send-email-mpa@pengutronix.de>
+References: <1385378025-1262-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 5BA35261A6C
- for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 12:14:22 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1385378025-1262-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>
 Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This patch defines the appropriate register values for different
+oparation modes and IP versions. We have to handle DMA/FIQ, AC97,
+DEBUG-IRQs and offline/online configuration support.
 
-This patch series fixes some fsl-ssi code that does not act exactly as it is
-described in the reference manuals.
+With this patch we cleanup some driver code that was not reference
+manual conform and try to cleanup the whole trigger function to seperate
+the actual register values from the enable/disable logic, which is now
+hidden in fsl_ssi_config helpers.
 
-The reference manuals before imx50 do mention that some register bits,
-including TDMAE/RDMAE, should not be changed while the SSI unit is enabled
-(SSIEN). At the same time the SDMA unit has a undefined request handling if
-there are DMA requests before the SDMA engine and its channel is configured.
-The reference manual states that SSI DMA requests are sent as soon as the FIFO
-and the DMAE bits are enabled. It does not mention a dependency to SCR's TE/RE
-bit.
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+---
+ sound/soc/fsl/fsl_ssi.c | 94 +++++++++++++++++++++++++------------------------
+ 1 file changed, 48 insertions(+), 46 deletions(-)
 
-To avoid sending DMA requests before a channel is configured, we have to
-seperate the fsl-ssi behavior into offline and online configuration. SoCs
-before imx50 have to use offline configuration while later SoC versions can use
-online reconfiguration.
-
-This series adds support for online configuration and cleans up the
-configuration register code especially in fsl_ssi_trigger. At the end we have a
-seperation between enable/disable logic and the actual configuration register
-values used to enable/disable TX/RX.
-
-I tested this series on mx53.
-
-The series is based on Mark Brown's topic/fsl branch.
-
-Regards,
-
-Markus
-
-Changes in v2:
- - Enable fsl-ssi interrupts independent of CONFIG_DEBUG_FS.
- - Move irq mapping fix into seperate patch (was in "Move sysfs stats to debugfs")
- - Rebased on v3.13-rc1 topic/fsl branch.
-
-Changes in v1:
- - Not removing imx21-ssi from the compatible array in the DTS patch.
- - Dropped "ASoC: fsl-ssi: Drop AC97 debug register usage" for the moment as I
-   don't have time to setup AC97 hardware for some tests
-
-Markus Pargmann (9):
-  ASoC: fsl-ssi: Move sysfs stats to debugfs
-  ASoC: fsl-ssi: Fix interrupt mapping and release
-  ASoC: fsl-ssi: Add imx50-ssi and of_device_id matching
-  ASoC: fsl-ssi: Add offline_config flag
-  ASoC: fsl-ssi: Add configuration helper functions
-  ASoC: fsl-ssi: Move RX/TX configuration to seperate functions
-  ASoC: fsl-ssi: Drop ac97 specific trigger function
-  ARM: DTS: imx5* imx6*, use imx50-ssi
-  ASoC: fsl-ssi: Drop AC97 debug register usage
-
- arch/arm/boot/dts/imx51.dtsi   |  10 +-
- arch/arm/boot/dts/imx53.dtsi   |  10 +-
- arch/arm/boot/dts/imx6qdl.dtsi |  12 +-
- arch/arm/boot/dts/imx6sl.dtsi  |  12 +-
- sound/soc/fsl/fsl_ssi.c        | 521 +++++++++++++++++++++++++++--------------
- 5 files changed, 371 insertions(+), 194 deletions(-)
-
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index e0594e9..21b300c 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -107,13 +107,6 @@ static inline void write_ssi_mask(u32 __iomem *addr, u32 clear, u32 set)
+ 	 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S24_LE)
+ #endif
+ 
+-/* SIER bitflag of interrupts to enable */
+-#define SIER_FLAGS (CCSR_SSI_SIER_TFRC_EN | CCSR_SSI_SIER_TDMAE | \
+-		    CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TUE0_EN | \
+-		    CCSR_SSI_SIER_TUE1_EN | CCSR_SSI_SIER_RFRC_EN | \
+-		    CCSR_SSI_SIER_RDMAE | CCSR_SSI_SIER_RIE | \
+-		    CCSR_SSI_SIER_ROE0_EN | CCSR_SSI_SIER_ROE1_EN)
+-
+ #define FSLSSI_SIER_DBG_RX_FLAGS (CCSR_SSI_SIER_RFF0_EN | \
+ 		CCSR_SSI_SIER_RLS_EN | CCSR_SSI_SIER_RFS_EN | \
+ 		CCSR_SSI_SIER_ROE0_EN | CCSR_SSI_SIER_RFRC_EN)
+@@ -564,6 +557,43 @@ static void fsl_ssi_tx_config(struct fsl_ssi_private *ssi_private, bool enable)
+ 	fsl_ssi_config(ssi_private, enable, &ssi_private->rxtx_reg_val.tx);
+ }
+ 
++/*
++ * Setup rx/tx register values used to enable/disable the streams. These will
++ * be used later in fsl_ssi_config to setup the streams without the need to
++ * check for all different SSI modes.
++ */
++static void fsl_ssi_setup_reg_vals(struct fsl_ssi_private *ssi_private)
++{
++	struct fsl_ssi_rxtx_reg_val *reg = &ssi_private->rxtx_reg_val;
++
++	reg->rx.sier = CCSR_SSI_SIER_RFF0_EN;
++	reg->rx.srcr = CCSR_SSI_SRCR_RFEN0;
++	reg->rx.scr = 0;
++	reg->tx.sier = CCSR_SSI_SIER_TFE0_EN;
++	reg->tx.stcr = CCSR_SSI_STCR_TFEN0;
++	reg->tx.scr = 0;
++
++	if (!ssi_private->imx_ac97) {
++		reg->rx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_RE;
++		reg->rx.sier |= CCSR_SSI_SIER_RFF0_EN;
++		reg->tx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE;
++		reg->tx.sier |= CCSR_SSI_SIER_TFE0_EN;
++	}
++
++	if (ssi_private->use_dma) {
++		reg->rx.sier |= CCSR_SSI_SIER_RDMAE;
++		reg->tx.sier |= CCSR_SSI_SIER_TDMAE;
++	} else {
++		reg->rx.sier |= CCSR_SSI_SIER_RIE;
++		reg->tx.sier |= CCSR_SSI_SIER_TIE;
++	}
++
++#if IS_ENABLED(CONFIG_DEBUG_FS)
++	reg->rx.sier |= FSLSSI_SIER_DBG_RX_FLAGS;
++	reg->tx.sier |= FSLSSI_SIER_DBG_TX_FLAGS;
++#endif
++}
++
+ static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
+ {
+ 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+@@ -601,6 +631,8 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
+ 	u8 wm;
+ 	int synchronous = ssi_private->cpu_dai_drv.symmetric_rates;
+ 
++	fsl_ssi_setup_reg_vals(ssi_private);
++
+ 	if (ssi_private->imx_ac97)
+ 		i2s_mode = CCSR_SSI_SCR_I2S_MODE_NORMAL | CCSR_SSI_SCR_NET;
+ 	else
+@@ -624,13 +656,12 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
+ 		i2s_mode |
+ 		(synchronous ? CCSR_SSI_SCR_SYN : 0));
+ 
+-	write_ssi(CCSR_SSI_STCR_TXBIT0 | CCSR_SSI_STCR_TFEN0 |
+-		 CCSR_SSI_STCR_TFSI | CCSR_SSI_STCR_TEFS |
+-		 CCSR_SSI_STCR_TSCKP, &ssi->stcr);
++	write_ssi(CCSR_SSI_STCR_TXBIT0 | CCSR_SSI_STCR_TFSI |
++			CCSR_SSI_STCR_TEFS | CCSR_SSI_STCR_TSCKP, &ssi->stcr);
++
++	write_ssi(CCSR_SSI_SRCR_RXBIT0 | CCSR_SSI_SRCR_RFSI |
++			CCSR_SSI_SRCR_REFS | CCSR_SSI_SRCR_RSCKP, &ssi->srcr);
+ 
+-	write_ssi(CCSR_SSI_SRCR_RXBIT0 | CCSR_SSI_SRCR_RFEN0 |
+-		 CCSR_SSI_SRCR_RFSI | CCSR_SSI_SRCR_REFS |
+-		 CCSR_SSI_SRCR_RSCKP, &ssi->srcr);
+ 	/*
+ 	 * The DC and PM bits are only used if the SSI is the clock master.
+ 	 */
+@@ -797,57 +828,28 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+-	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+-	unsigned int sier_bits;
+-
+-	/*
+-	 *  Enable only the interrupts and DMA requests
+-	 *  that are needed for the channel. As the fiq
+-	 *  is polling for this bits, we have to ensure
+-	 *  that this are aligned with the preallocated
+-	 *  buffers
+-	 */
+-
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		if (ssi_private->use_dma)
+-			sier_bits = SIER_FLAGS;
+-		else
+-			sier_bits = CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TFE0_EN;
+-	} else {
+-		if (ssi_private->use_dma)
+-			sier_bits = SIER_FLAGS;
+-		else
+-			sier_bits = CCSR_SSI_SIER_RIE | CCSR_SSI_SIER_RFF0_EN;
+-	}
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-			write_ssi_mask(&ssi->scr, 0,
+-				CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE);
++			fsl_ssi_tx_config(ssi_private, true);
+ 		else
+-			write_ssi_mask(&ssi->scr, 0,
+-				CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_RE);
++			fsl_ssi_rx_config(ssi_private, true);
+ 		break;
+ 
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-			write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_TE, 0);
++			fsl_ssi_tx_config(ssi_private, false);
+ 		else
+-			write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_RE, 0);
+-
+-		if (!ssi_private->imx_ac97 && (read_ssi(&ssi->scr) &
+-					(CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE)) == 0)
+-			write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_SSIEN, 0);
++			fsl_ssi_rx_config(ssi_private, false);
+ 		break;
+ 
+ 	default:
+ 		return -EINVAL;
+ 	}
+ 
+-	write_ssi(sier_bits, &ssi->sier);
+ 
+ 	return 0;
+ }
 -- 
 1.8.4.2
