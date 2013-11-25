@@ -1,18 +1,17 @@
-From: Sonic Zhang <sonic.adi@gmail.com>
-Subject: [PATCH] alsa-lib: dlmisc: Add a fake dl lib head file
-	when dl lib is not supported by the toolchain.
-Date: Mon, 25 Nov 2013 15:36:32 +0800
-Message-ID: <1385364992-24653-1-git-send-email-sonic.adi@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Commit:ce6cfaf1 query for shared control
+Date: Mon, 25 Nov 2013 08:45:46 +0100
+Message-ID: <5293002A.9040505@metafoo.de>
+References: <CAES_P+-+CmRw5YYWeDPLd8-tn8tVCHmvJgWu9SS=TdeTnWzNUA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f49.google.com (mail-pb0-f49.google.com
- [209.85.160.49])
- by alsa0.perex.cz (Postfix) with ESMTP id E368C261A5E
- for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 08:37:00 +0100 (CET)
-Received: by mail-pb0-f49.google.com with SMTP id jt11so5129585pbb.36
- for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2013 23:36:59 -0800 (PST)
+Received: from smtp-out-025.synserver.de (smtp-out-038.synserver.de
+ [212.40.185.38])
+ by alsa0.perex.cz (Postfix) with ESMTP id 514BA261A66
+ for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 08:45:17 +0100 (CET)
+In-Reply-To: <CAES_P+-+CmRw5YYWeDPLd8-tn8tVCHmvJgWu9SS=TdeTnWzNUA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,83 +21,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
-Cc: u-boot@lists.denx.de, Sonic Zhang <sonic.adi@gmail.com>, Gustavo Zacarias <gustavo@zacarias.com.ar>
+To: noman pouigt <variksla@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: sonic <sonic@htpc.(none)>
+On 11/25/2013 08:12 AM, noman pouigt wrote:
+> Hello Lars,
+> 
+> I was wondering if you can enlighten me
+> on below query.
+> 
+> Commit:ce6cfaf1
+> 
+> From the commit text "The input and
+> output paths for each widgets are only
+> updated though during the respective run
+> for that widget".
+> 
+> Does this commit text mean: when mux
+> or mixer_power_update is called then only
+> the widget is powered and it's peer- widget
+> source(path source) and widget sink(path sink)?
 
-The FLAT GNU toolchain doesn't include the dlfcn.h header file.
+Hi,
 
-Signed-off-by: Sonic Zhang <sonic.adi@gmail.com>
----
- include/dlmisc.h               |   24 ++++++++++++++++++++++++
- modules/mixer/simple/sbasedl.c |    4 ++++
- src/mixer/simple_abst.c        |    4 ++++
- 3 files changed, 32 insertions(+)
- create mode 100644 include/dlmisc.h
+What the commit does is to make sure that if a control is shared between
+multiple mixers/muxes to apply all the changes in the same update sequence.
+Instead of, as it was done before, to run a update sequence for each mixer/mux.
 
-diff --git a/include/dlmisc.h b/include/dlmisc.h
-new file mode 100644
-index 0000000..3be8d43
---- /dev/null
-+++ b/include/dlmisc.h
-@@ -0,0 +1,24 @@
-+/*
-+ *   This library is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU Lesser General Public License as
-+ *   published by the Free Software Foundation; either version 2.1 of
-+ *   the License, or (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU Lesser General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU Lesser General Public
-+ *   License along with this library; if not, write to the Free Software
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ *
-+ */
-+
-+#ifndef __ALSA_DLMISC_H
-+#define __ALSA_DLMISC_H
-+
-+#define RTLD_NOW	0x00002
-+#define RTLD_GLOBAL	0x00100
-+
-+#endif
-diff --git a/modules/mixer/simple/sbasedl.c b/modules/mixer/simple/sbasedl.c
-index 494802f..511bebf 100644
---- a/modules/mixer/simple/sbasedl.c
-+++ b/modules/mixer/simple/sbasedl.c
-@@ -27,7 +27,11 @@
- #include <fcntl.h>
- #include <sys/ioctl.h>
- #include <math.h>
-+#ifdef HAVE_LIBDL
- #include <dlfcn.h>
-+#else
-+#include <dlmisc.h>
-+#endif
- #include "config.h"
- #include "asoundlib.h"
- #include "mixer_abst.h"
-diff --git a/src/mixer/simple_abst.c b/src/mixer/simple_abst.c
-index 9e9aaf5..dd951fe 100644
---- a/src/mixer/simple_abst.c
-+++ b/src/mixer/simple_abst.c
-@@ -34,7 +34,11 @@
- #include <fcntl.h>
- #include <sys/ioctl.h>
- #include <math.h>
-+#ifdef HAVE_LIBDL
- #include <dlfcn.h>
-+#else
-+#include <dlmisc.h>
-+#endif
- #include "config.h"
- #include "asoundlib.h"
- #include "mixer_simple.h"
--- 
-1.7.9.5
+> 
+>               +------+
+>      A1 ------|      |
+>               | MUX1 |----- C1
+>      B1 ------|      |
+>               +------+
+>                  |
+>       control ---+
+>                  |
+>               +------+
+>      A2 ------|      |
+>               | MUX2 |----- C2
+>      B2 ------|      |
+>               +------+
+> 
+> Can I represent the above diagram as below:
+> 
+> char *input_text_1[] = {
+>         "A1", "B1"
+> };
+> 
+> struct soc_enum input_enum_1 =
+>  SOC_ENUM_SINGLE(some_register, some_bit,
+>                     2, input_text_1);
+> 
+> char *input_text_2[] = {
+>         "A2", "B2"
+> };
+> struct soc_enum input_enum_2 =
+>  SOC_ENUM_SINGLE(some_register, some_bit,
+>                   2, input_text_2);
+> 
+> 
+> struct snd_kcontrol_new input_mux =
+>    SOC_DAPM_ENUM("C1", input_enum_1);
+> struct snd_kcontrol_new input_mux =
+>    SOC_DAPM_ENUM("C2", input_enum_2);
+> 
+> dapm_route[] {
+> "A1", "control","C1"
+> "B1", "control","C1"
+> "A2", "control","C2"
+> "B2", "control","C2"
+> };
+
+The control part needs to have the name of one of the enum items. So this
+would be { "A1", "A1", "C1" } and so on.
+
+- Lars
