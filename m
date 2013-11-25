@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 17/18] ASoC: wm8995: Use IS_ENABLED()
-	macro
-Date: Mon, 25 Nov 2013 17:14:38 +0000
-Message-ID: <20131125171438.GM14725@sirena.org.uk>
-References: <1385045312-15092-1-git-send-email-fabio.estevam@freescale.com>
- <1385045312-15092-2-git-send-email-fabio.estevam@freescale.com>
+Subject: Re: [PATCHv5] ASoC: Add support for BCM2835
+Date: Mon, 25 Nov 2013 17:17:48 +0000
+Message-ID: <20131125171748.GN14725@sirena.org.uk>
+References: <528F7718.5@koalo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7751742789364053143=="
+Content-Type: multipart/mixed; boundary="===============3062391100104055097=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E1A462625E0
- for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 18:14:40 +0100 (CET)
-In-Reply-To: <1385045312-15092-2-git-send-email-fabio.estevam@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D6EAB261AF9
+ for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 18:17:53 +0100 (CET)
+In-Reply-To: <528F7718.5@koalo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@freescale.com>
-Cc: alsa-devel@alsa-project.org
+To: Florian Meier <florian.meier@koalo.de>
+Cc: devicetree <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>, dmaengine <dmaengine@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7751742789364053143==
+--===============3062391100104055097==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="np3HfElajyDBpWGr"
+	protocol="application/pgp-signature"; boundary="6AFz5yWxU/FsGPwt"
 Content-Disposition: inline
 
 
---np3HfElajyDBpWGr
+--6AFz5yWxU/FsGPwt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 21, 2013 at 12:48:31PM -0200, Fabio Estevam wrote:
-> Using the IS_ENABLED() macro can make the code shorter and simpler.
+On Fri, Nov 22, 2013 at 04:24:08PM +0100, Florian Meier wrote:
+> This driver adds support for digital audio (I2S)
+> for the BCM2835 SoC that is used by the
+> Raspberry Pi. External audio codecs can be
+> connected to the Raspberry Pi via P5 header.
 
 Applied, thanks.
 
---np3HfElajyDBpWGr
+--6AFz5yWxU/FsGPwt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSk4V7AAoJELSic+t+oim99K0P/ji5Hs+kHEDEg1joOMJZoS5I
-TqmsbaWpYI50RaMjwWdgq0C2ELayp0X37Rn0IxEg0wIVSN5t4PLfyiHwUmOSsFf9
-ZUfazg7e4GJr3Csu7IklyHqU7/A7Kg24LZPigJpWTaouEIiHg7BQFeimT/d1iQgf
-pJNsr1eo7xVsHpTcC2qks9Yl0+5aE8QYhNjHt7dEHaerXsxdWIrvlWJUgizLE9sS
-uaxiCZk2KuQbKxhpvdJJ+ySfleu1j8a9GuFXexhlqMmv42KiFg2zm8jR4qjEeIE8
-doEWii5HATJwYGpuKmEN3D0Yoe/YwU/tXplGL4k0mLpXx+VdFfERShk2h9MJCB8Y
-TbcPi6pRhr90INEOGEJcxwXPyeIyKSn5mILKnU5QEN+vvnxZLE2Fd/ghABNuDv3v
-rQJW+RjyXxPuD2JhYcBTzdBFTwuMonbzmoGxP2V69gfQe6z91gZt7mt7sGk1Yndy
-hvYrKOOUMZOR8KxuiwPbJzXVHI7f6uhI9G9hA3BBwP4oygp49N6T/RUK2ZSUD0aD
-75ShcljuITet0IR16+ZSktCx61ll9NI2sd8qtItrKvfzndqehl4kaNmfthI7ZPb+
-TWj+tuyEtdMM2wlTPXn5o/zQ9X8XVOQvm07KAiBRytK+xkj/S4BM/U+IV39Pdv86
-2+lGXn9nc0oo6BWqrO2h
-=Kla1
+iQIcBAEBAgAGBQJSk4Y5AAoJELSic+t+oim9xTwP/2H4HxBqj2l3uI3ZECB/qS7X
+vA4P7R2Z78t8wol9zSl4RSxAOUT+qxgrVJmgTG2O1g9wA1MXrD+n2HU+VDzhXyAM
+gM/fKCCmfMX2/5X/QXyA9h7N561Gu8OK0z87Plu+V6sDPgN4UKYNrggR7m/rZjaN
+qVOPu8vQyNGyOwheh3uQRz2qcyFvubdPImhztpj5FYar6FQfCbnhXzBLSI7Eqh96
+14ZU4k3GD3N+8C6bWBTPr0zRr6RTiDcNXqgKzyJ7QCQTK4FIZ2DRihumGRs0GMCi
+ckAStfkEA7Axlrl87uP9U2K3Its0PKS7Ccrg/nHZpzymj54axTNCsJB7CJDcEyzV
+tnTH1WixGE/a6L3KafSbmOGPJC7B66Va5+BioKwbKTO9Df0ouxlH5L403ynlu9/A
+0u4OLlcVnpbyAiiu71jZCy1nzig66jr5twfOHG3C3rww5MJw+aF4UoIxdMA7R+ge
+ILggcMowf60h+apV966yXpeymqnFZ5G16QlPVYMdYQJMnkleeEXFn6Ufmjy0YhY+
+mAlFAjpoZydnHSpYAvgJU3VjIe6HpH9Mx/jhScn1c0Vlbnl+Pjr9Dn/pK046Xdit
+7BPhAxXCLQEa5K5MXPD5q30T6eND666pEJEUOc0uJqSODWHvjZMJ/ks63L4ZuhFI
+3U0BfyFugiwfg9pRgRsk
+=yKcQ
 -----END PGP SIGNATURE-----
 
---np3HfElajyDBpWGr--
+--6AFz5yWxU/FsGPwt--
 
---===============7751742789364053143==
+--===============3062391100104055097==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7751742789364053143==--
+--===============3062391100104055097==--
