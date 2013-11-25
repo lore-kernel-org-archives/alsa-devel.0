@@ -1,19 +1,17 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: [PATCH 5/6] ASoC: spear: Use
-	devm_snd_dmaengine_pcm_register
-Date: Mon, 25 Nov 2013 09:44:20 +0530
-Message-ID: <5292CE9C.90006@st.com>
-References: <1385299262-24304-1-git-send-email-lars@metafoo.de>
- <1385299262-24304-5-git-send-email-lars@metafoo.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: HD-audio runtime PM
+Date: Mon, 25 Nov 2013 07:32:57 +0100
+Message-ID: <5292EF19.1040900@canonical.com>
+References: <s5hli0gmyxt.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog111.obsmtp.com (eu1sys200aog111.obsmtp.com
- [207.126.144.131])
- by alsa0.perex.cz (Postfix) with ESMTP id BD2B5261A28
- for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 05:14:28 +0100 (CET)
-In-Reply-To: <1385299262-24304-5-git-send-email-lars@metafoo.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 311A5261A28
+ for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 07:32:59 +0100 (CET)
+In-Reply-To: <s5hli0gmyxt.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,21 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Ryan Mallon <rmallon@gmail.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, H Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Bo Shen <voice.shen@atmel.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/24/2013 6:51 PM, Lars-Peter Clausen wrote:
-> snd_dmaengine_pcm_register(&pdev->dev,
->   		&spear_dmaengine_pcm_config,
->   		SND_DMAENGINE_PCM_FLAG_NO_DT |
->   		SND_DMAENGINE_PCM_FLAG_COMPAT);
->   }
->
-> -static int spear_soc_platform_remove(struct platform_device *pdev)
-> -{
-> -	snd_dmaengine_pcm_unregister(&pdev->dev);
-> -	return 0;
-> -}
+On 11/22/2013 12:57 PM, Takashi Iwai wrote:
+> Hi,
+> 
+> after my previous fix, the runtime PM seems working stably finally.
+> However, there seem still some glitches:
+> 
+> 1. The wakeup via jack or HDMI/DP detection doesn't seem to work on my
+>   test machines.  WAKEEN is set properly.  And its value can be read
+>   correctly at the point of runtime resume, too.
 
-Acked-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Hi and thanks for working on this.
+
+I've been trying to reproduce the above, but I can't seem to activate
+runtime PM at all. I can't seem to get a callback to runtime_suspend,
+and further investigation shows that
+/sys/class/sound/card0/power/runtime_status shows "unsupported".
+
+And this is on 3.13-rc1, and there *shouldn't* be any Ubuntu specific
+stuff or configuration in that kernel.
+
+Any ideas? (Sorry if this is a newbie question..)
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
