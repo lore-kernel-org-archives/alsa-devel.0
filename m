@@ -1,55 +1,40 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
- multi-channel and HBR support
-Date: Mon, 25 Nov 2013 21:35:56 +0200
-Message-ID: <5293A69C.7060706@iki.fi>
-References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
- <loom.20131122T215246-90@post.gmane.org>
- <CAN8cciacG0fUyEuSOMF2iXp8CUzqyTAPDNpK1q6Lu0u+gtV6zQ@mail.gmail.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH 16/31] ASoC: tegra: use reset framework
+Date: Mon, 25 Nov 2013 14:56:23 -0700
+Message-ID: <5293C787.1030005@wwwdotorg.org>
+References: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org> <1384548866-13141-17-git-send-email-swarren@wwwdotorg.org> <20131116095529.GF15393@sirena.org.uk> <528A4C8C.3030200@wwwdotorg.org> <20131118183716.GR2674@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
- [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D040261B11
- for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 20:36:00 +0100 (CET)
-In-Reply-To: <CAN8cciacG0fUyEuSOMF2iXp8CUzqyTAPDNpK1q6Lu0u+gtV6zQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org, James Le Cuirot <chewi@aura-online.co.uk>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20131118183716.GR2674-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, pdeschrijver-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-25.11.2013 17:07, Raymond Yau kirjoitti:
->>
->> I have a Radeon 4670 (Sapphire
->> branded) connected to a Yamaha RX-V773. I am running the sound/for-next
->> kernel (82755ab) with your "missing PCM SAD" patch applied.
->>
->> The new kernel has allowed ALSA to recognise the card as multichannel and
-> I
->> can issue the following speaker-test command but I still only hear "Front
->> Left" and "Front Right" and the Yahama seems to report the signal as
-> stereo.
->>
->> # speaker-test -Dhdmi:CARD=HDMI,DEV=0 -c6 -t wav
+On 11/18/2013 11:37 AM, Mark Brown wrote:
+> On Mon, Nov 18, 2013 at 10:21:16AM -0700, Stephen Warren wrote:
 > 
-> Why do you use -c6 when your HDMI codec only support stereo
+>> It's fixing a dependency that should already be there, in the 
+>> COMPILE_TEST case. In the (ARCH_TEGRA && TEGRA20_APB_DMA) case, 
+>> COMMON_CLOCK is always selected.
 > 
-> Node 0x02 [Audio Output] wcaps 0x201: Stereo Digital
->    Converter: stream=1, channel=0
-> Node 0x03 [Pin Complex] wcaps 0x400381: Stereo Digital
+>> Do you want me to split this out into a separate patch? If so,
+>> I'd prefer not to apply that separate patch immediately to 3.13
+>> as a fix, since then it'd delay applying this series until after
+>> -rc2 is out, unless you can get the fix into -rc1 quickly...
+> 
+> I don't really care, it was just that I was looking for something
+> to do with clocks in the patch and couldn't find anything.  Perhaps
+> a note in the changelog if you need to respin so I don't forget and
+> say the same thing again.
 
-All ATI/AMD HDMI codecs report stereo only here, their multichannel
-support is non-standard (probably predates the HDA spec).
+I added the following to the changelog:
 
--- 
-Anssi Hannula
+----------
+Note: The addition of "depends COMMON_CLOCK" is something that was
+missing before, not a new requirement.
+----------
+
+You didn't ack this one patch; I assume that was just an oversight?
