@@ -1,19 +1,16 @@
-From: James Le Cuirot <chewi@aura-online.co.uk>
-Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
- multi-channel and HBR support
-Date: Mon, 25 Nov 2013 15:32:12 +0000
-Message-ID: <20131125153212.3c162da7@red>
-References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
- <loom.20131122T215246-90@post.gmane.org>
- <CAN8cciacG0fUyEuSOMF2iXp8CUzqyTAPDNpK1q6Lu0u+gtV6zQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RESEND] ASoC: clk: probe defer when clock
+	not yet ready
+Date: Mon, 25 Nov 2013 17:11:06 +0000
+Message-ID: <20131125171106.GJ14725@sirena.org.uk>
+References: <20131125093849.5fadc450@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6717480875084952509=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 873C9261AB7
- for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 16:32:20 +0100 (CET)
-In-Reply-To: <CAN8cciacG0fUyEuSOMF2iXp8CUzqyTAPDNpK1q6Lu0u+gtV6zQ@mail.gmail.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D8BF261AB7
+ for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 18:11:12 +0100 (CET)
+In-Reply-To: <20131125093849.5fadc450@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,46 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mike Turquette <mturquette@linaro.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@linaro.org>, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 25 Nov 2013 23:07:09 +0800
-Raymond Yau <superquad.vortex2@gmail.com> wrote:
 
-> >
-> > I have a Radeon 4670 (Sapphire
-> > branded) connected to a Yamaha RX-V773. I am running the
-> > sound/for-next kernel (82755ab) with your "missing PCM SAD" patch
-> > applied.
-> >
-> > The new kernel has allowed ALSA to recognise the card as
-> > multichannel and
-> I
-> > can issue the following speaker-test command but I still only hear
-> > "Front Left" and "Front Right" and the Yahama seems to report the
-> > signal as
-> stereo.
-> >
-> > # speaker-test -Dhdmi:CARD=HDMI,DEV=0 -c6 -t wav
-> 
-> Why do you use -c6 when your HDMI codec only support stereo
-> 
-> Node 0x02 [Audio Output] wcaps 0x201: Stereo Digital
->    Converter: stream=1, channel=0
-> Node 0x03 [Pin Complex] wcaps 0x400381: Stereo Digital
+--===============6717480875084952509==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gVeFDRGtAQ0W7qcm"
+Content-Disposition: inline
 
-I was under the impression that this card, and all cards in the
-Radeon 4000 series, are capable of 7.1 LPCM. Are you suggesting
-otherwise? Either it really isn't, or this information is being wrongly
-detected, and that could point to the source of the problem.
 
-I was not aware of the significance of these lines before so thanks
-for pointing this out. Before I tried the new kernel, ALSA wouldn't let
-me do 6 channel output at all and PulseAudio detected the card as stereo
-only. Now ALSA doesn't complain and PA detects it as 5.1 so I figured it
-should work now. Having said that, I'm not sure why PA doesn't report
-7.1 but I only have 5.1 speakers anyway.
+--gVeFDRGtAQ0W7qcm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
-James
+On Mon, Nov 25, 2013 at 09:38:49AM +0100, Jean-Francois Moine wrote:
+> At probe time, a clock device may not be ready when some other device
+> wants to use it.=20
+
+The patch subject starts of "ASoC:" but this is a patch for the clock
+API only (it does then say clk:) - you probably want to fix that, it's
+not going to help get it noticed.
+
+--gVeFDRGtAQ0W7qcm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSk4SnAAoJELSic+t+oim90loP/iM0gN4L0B0pe/2wTKw6Xl5g
+RHuP07yc34pGhkTbmwoRV91wtUvebxDmVvQVezplUpafLKvg5x5D2iPX24HjJCc/
+XvRCKXVFXO0nCwGOhXMY0GScjNE4wDT7qihgPbsQ5XyFEZKJFhTsn9AhQlSdHPZA
+YaYBHB/nC67Z++0zbZnbgcqbDzU81/TfffftLgoA6gQ2ypgGsYk2YbYVa/YY+RQf
+nT6QiWb6reJ58oVmZlP9FsO1BofqhVNkYhgkJI/tnViaRqCyDFJIHPzna/ZrF6GY
+kqKmA7gL8c4Kxhw4FMGLX6IEk1QnbBzUmLgweYMTE4Yl0/beaSprUknrRhgjLlTe
+y6e708CoK6dibuQe6V0yrcgZnZv9QQQrVNNoFGJFxXsVLb1rYtsqxOnlw6WX2vs1
+P8zs0QtOUTeaQdtl+WH3siAOyEHBmNyw+4Xxa8WOOGvMOxzpnK3P67R7hOuQOykf
+t0U5fa0EEUGl/AZ1DuO0+dliIShG08egk4hgFYs78PnXqGKwBTjDQoY875Hw8/TQ
+e6bhFcjVxuZ5XFDewFYiJp7MlyGL7sgs20vOcZ8YFxfSFgIZWfHNFrs9E3pww8Gn
+on9BhQMWE7LAy00NdpU+A+xjx38hbFBgyuhT4e1UrtYX+4hPsTD0+4W8LQXjNZ7B
+Tmo3dnDyfIPKJ8v5mf47
+=2sED
+-----END PGP SIGNATURE-----
+
+--gVeFDRGtAQ0W7qcm--
+
+--===============6717480875084952509==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6717480875084952509==--
