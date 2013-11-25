@@ -1,192 +1,119 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v2 5/9] ASoC: fsl-ssi: Add configuration helper
-	functions
-Date: Mon, 25 Nov 2013 12:13:41 +0100
-Message-ID: <1385378025-1262-6-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v2 7/9] ASoC: fsl-ssi: Drop ac97 specific trigger function
+Date: Mon, 25 Nov 2013 12:13:43 +0100
+Message-ID: <1385378025-1262-8-git-send-email-mpa@pengutronix.de>
 References: <1385378025-1262-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 336EB261AD8
- for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2013 12:14:23 +0100 (CET)
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <1385378025-1262-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>
 Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a struct 'fsl_ssi_rxtx_reg_val' which holds register
-values necessary to enable rx/tx. Based on those preset register values,
-the added configuration functions will cleanly enable/disable different
-parts of the SSI IP while supporting online/offline configuration.
-Different operating modes can be setup directly as different register
-values in fsl_ssi_reg_val.
-
-These functions and structs will help to cleanup and simplify the
-trigger function to support many different IP versions (online/offline
-configuration) and different operating modes.
+The normal trigger function can now be used for AC97. Drop AC97 trigger
+function.
 
 Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 122 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 122 insertions(+)
+ sound/soc/fsl/fsl_ssi.c | 61 ++++++-------------------------------------------
+ 1 file changed, 7 insertions(+), 54 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index abe6172..e0594e9 100644
+index 21b300c..cf55da0 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -122,6 +122,18 @@ static inline void write_ssi_mask(u32 __iomem *addr, u32 clear, u32 set)
- 		CCSR_SSI_SIER_TUE0_EN | CCSR_SSI_SIER_TFRC_EN)
- #define FSLSSI_SISR_MASK (FSLSSI_SIER_DBG_RX_FLAGS | FSLSSI_SIER_DBG_TX_FLAGS)
+@@ -850,6 +850,12 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		return -EINVAL;
+ 	}
  
-+struct fsl_ssi_reg_val {
-+	u32 sier;
-+	u32 srcr;
-+	u32 stcr;
-+	u32 scr;
-+};
-+
-+struct fsl_ssi_rxtx_reg_val {
-+	struct fsl_ssi_reg_val rx;
-+	struct fsl_ssi_reg_val tx;
-+};
-+
- /**
-  * fsl_ssi_private: per-SSI private data
-  *
-@@ -158,6 +170,8 @@ struct fsl_ssi_private {
- 	struct imx_dma_data filter_data_tx;
- 	struct imx_dma_data filter_data_rx;
- 	struct imx_pcm_fiq_params fiq_params;
-+	/* Register values for rx/tx configuration */
-+	struct fsl_ssi_rxtx_reg_val rxtx_reg_val;
++	if (ssi_private->imx_ac97) {
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			write_ssi(CCSR_SSI_SOR_TX_CLR, &ssi->sor);
++		else
++			write_ssi(CCSR_SSI_SOR_RX_CLR, &ssi->sor);
++	}
  
- 	struct {
- 		unsigned int rfrc;
-@@ -442,6 +456,114 @@ static void fsl_ssi_debugfs_remove(struct fsl_ssi_private *ssi_private)
+ 	return 0;
+ }
+@@ -913,59 +919,6 @@ static const struct snd_soc_component_driver fsl_ssi_component = {
+ 	.name		= "fsl-ssi",
+ };
  
- #endif /* IS_ENABLED(CONFIG_DEBUG_FS) */
+-/**
+- * fsl_ssi_ac97_trigger: start and stop the AC97 receive/transmit.
+- *
+- * This function is called by ALSA to start, stop, pause, and resume the
+- * transfer of data.
+- */
+-static int fsl_ssi_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
+-			   struct snd_soc_dai *dai)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(
+-			rtd->cpu_dai);
+-	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+-
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_TIE |
+-					CCSR_SSI_SIER_TFE0_EN);
+-		else
+-			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_RIE |
+-					CCSR_SSI_SIER_RFF0_EN);
+-		break;
+-
+-	case SNDRV_PCM_TRIGGER_STOP:
+-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_TIE |
+-					CCSR_SSI_SIER_TFE0_EN, 0);
+-		else
+-			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_RIE |
+-					CCSR_SSI_SIER_RFF0_EN, 0);
+-		break;
+-
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		write_ssi(CCSR_SSI_SOR_TX_CLR, &ssi->sor);
+-	else
+-		write_ssi(CCSR_SSI_SOR_RX_CLR, &ssi->sor);
+-
+-	return 0;
+-}
+-
+-static const struct snd_soc_dai_ops fsl_ssi_ac97_dai_ops = {
+-	.startup	= fsl_ssi_startup,
+-	.shutdown	= fsl_ssi_shutdown,
+-	.trigger	= fsl_ssi_ac97_trigger,
+-};
+-
+ static struct snd_soc_dai_driver fsl_ssi_ac97_dai = {
+ 	.ac97_control = 1,
+ 	.playback = {
+@@ -982,7 +935,7 @@ static struct snd_soc_dai_driver fsl_ssi_ac97_dai = {
+ 		.rates = SNDRV_PCM_RATE_48000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+-	.ops = &fsl_ssi_ac97_dai_ops,
++	.ops = &fsl_ssi_dai_ops,
+ };
  
-+/*
-+ * Enable/Disable all rx/tx config flags at once.
-+ */
-+static void fsl_ssi_rxtx_config(struct fsl_ssi_private *ssi_private,
-+		bool enable)
-+{
-+	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
-+	struct fsl_ssi_rxtx_reg_val *vals = &ssi_private->rxtx_reg_val;
-+
-+	if (enable) {
-+		write_ssi_mask(&ssi->sier, 0, vals->rx.sier | vals->tx.sier);
-+		write_ssi_mask(&ssi->srcr, 0, vals->rx.srcr | vals->tx.srcr);
-+		write_ssi_mask(&ssi->stcr, 0, vals->rx.stcr | vals->tx.stcr);
-+	} else {
-+		write_ssi_mask(&ssi->srcr, vals->rx.srcr | vals->tx.srcr, 0);
-+		write_ssi_mask(&ssi->stcr, vals->rx.stcr | vals->tx.stcr, 0);
-+		write_ssi_mask(&ssi->sier, vals->rx.sier | vals->tx.sier, 0);
-+	}
-+}
-+
-+/*
-+ * Enable/Disable a ssi configuration. You have to pass either
-+ * ssi_private->rxtx_reg_val.rx or tx as vals parameter.
-+ */
-+static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
-+		struct fsl_ssi_reg_val *vals)
-+{
-+	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
-+	struct fsl_ssi_reg_val *avals;
-+	u32 scr_val = read_ssi(&ssi->scr);
-+	int nr_active_streams = !!(scr_val & CCSR_SSI_SCR_TE) +
-+				!!(scr_val & CCSR_SSI_SCR_RE);
-+
-+	/* Find the other direction values rx or tx which we do not want to
-+	 * modify */
-+	if (&ssi_private->rxtx_reg_val.rx == vals)
-+		avals = &ssi_private->rxtx_reg_val.tx;
-+	else
-+		avals = &ssi_private->rxtx_reg_val.rx;
-+
-+	/* If vals should be disabled, start with disabling the unit */
-+	if (!enable) {
-+		u32 scr = vals->scr & (vals->scr ^ avals->scr);
-+		write_ssi_mask(&ssi->scr, scr, 0);
-+	}
-+
-+	/*
-+	 * We are running on a SoC which does not support online SSI
-+	 * reconfiguration, so we have to enable all necessary flags at once
-+	 * even if we do not use them later (capture and playback configuration)
-+	 */
-+	if (ssi_private->offline_config) {
-+		if ((enable && !nr_active_streams) ||
-+				(!enable && nr_active_streams == 1))
-+			fsl_ssi_rxtx_config(ssi_private, enable);
-+
-+		goto config_done;
-+	}
-+
-+	/*
-+	 * Configure single direction units while the SSI unit is running
-+	 * (online configuration)
-+	 */
-+	if (enable) {
-+		write_ssi_mask(&ssi->sier, 0, vals->sier);
-+		write_ssi_mask(&ssi->srcr, 0, vals->srcr);
-+		write_ssi_mask(&ssi->stcr, 0, vals->stcr);
-+	} else {
-+		u32 sier;
-+		u32 srcr;
-+		u32 stcr;
-+
-+		/*
-+		 * Disabling the necessary flags for one of rx/tx while the
-+		 * other stream is active is a little bit more difficult. We
-+		 * have to disable only those flags that differ between both
-+		 * streams (rx XOR tx) and that are set in the stream that is
-+		 * disabled now. Otherwise we could alter flags of the other
-+		 * stream
-+		 */
-+
-+		/* These assignments are simply vals without bits set in avals*/
-+		sier = vals->sier & (vals->sier ^ avals->sier);
-+		srcr = vals->srcr & (vals->srcr ^ avals->srcr);
-+		stcr = vals->stcr & (vals->stcr ^ avals->stcr);
-+
-+		write_ssi_mask(&ssi->srcr, srcr, 0);
-+		write_ssi_mask(&ssi->stcr, stcr, 0);
-+		write_ssi_mask(&ssi->sier, sier, 0);
-+	}
-+
-+config_done:
-+	/* Enabling of subunits is done after configuration */
-+	if (enable)
-+		write_ssi_mask(&ssi->scr, 0, vals->scr);
-+}
-+
-+
-+static void fsl_ssi_rx_config(struct fsl_ssi_private *ssi_private, bool enable)
-+{
-+	fsl_ssi_config(ssi_private, enable, &ssi_private->rxtx_reg_val.rx);
-+}
-+
-+static void fsl_ssi_tx_config(struct fsl_ssi_private *ssi_private, bool enable)
-+{
-+	fsl_ssi_config(ssi_private, enable, &ssi_private->rxtx_reg_val.tx);
-+}
-+
- static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
- {
- 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+ 
 -- 
 1.8.4.2
