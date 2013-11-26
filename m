@@ -1,19 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 07/17] firewire-lib: give syt value to
-	handle_out_packet()
-Date: Tue, 26 Nov 2013 19:59:12 +0900
-Message-ID: <52947F00.9010306@sakamocchi.jp>
-References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
- <1385186884-8259-8-git-send-email-o-takashi@sakamocchi.jp>
- <52936C78.1050204@ladisch.de>
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+Subject: Re: [PATCHv1] ASoC: SGTL5000: Fix kernel failed while
+ getting regulator consumers
+Date: Tue, 26 Nov 2013 11:59:33 +0100
+Message-ID: <20131126115933.74840d1a@ipc1.ka-ro>
+References: <1385459713-6778-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 86CAB26509E
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 11:59:14 +0100 (CET)
-In-Reply-To: <52936C78.1050204@ladisch.de>
+Received: from mail.karo-electronics.de (mail.karo-electronics.de
+ [81.173.242.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 794CF26509E
+ for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 12:00:23 +0100 (CET)
+In-Reply-To: <1385459713-6778-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,23 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, oskar@scara.com
 List-Id: alsa-devel@alsa-project.org
 
-(Nov 26 2013 00:27), Clemens Ladisch wrote:
->> +	for (i = 0; i < packets; ++i) {
->> +		syt = calculate_syt(s, ++cycle);
->>   		handle_out_packet(s, ++cycle);
->> +	}
->
-> The syt is thrown away, and cycle is incremented twice.
-
-Yes. This is my fault to create patches...
-
-> ... I'll review the other patches later.
-
-Thank you
-
-
-Takashi Sakamoto
+SGksCgpYaXVibyBMaSB3cm90ZToKPiBTR1RMNTAwMCBjb2RlYyBhbGxvd3MgdG8gdXNlIHRoZSBp
+bnRlcm5hbCBMRE8gaW5zdGVhZCBvZiBWRERELCBpZiB0aGUKPiBpbnRlcm5hbCBMRE8gaXMgdXNl
+ZCwgdGhpcyBjYXVzZWQgdGhlIGZvbGxvd2luZyBrZXJuZWwgZmFpbGVkIHdoaWxlIHRyeWluZwo+
+IHRvIGdldCB0aGUgZXh0ZXJuYWwgVkRERCByZWd1bGF0b3IgY29uc3VtZXIuCj4gCj4gQWRkaW5n
+IHNndGw1MDAwX2V4dGVybmFsX3ZkZGRfdXNlZCgpIHRvIGZpeCBpdC4gQW5kIHRoaXMgaGFzIGJl
+ZW4gdGVzdGVkIG9uCj4gVkY2MTAtVFdSIGJvYXJkLgo+IAo+IHNndGw1MDAwIDAtMDAwYTogRmFp
+bGVkIHRvIGdldCBzdXBwbHkgJ1ZEREQnOiAtMTkKPiAKPiBTaWduZWQtb2ZmLWJ5OiBYaXVibyBM
+aSA8TGkuWGl1Ym9AZnJlZXNjYWxlLmNvbT4KPiAtLS0KPiAKPiAgc291bmQvc29jL2NvZGVjcy9z
+Z3RsNTAwMC5jIHwgMTggKysrKysrKysrKysrKysrLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAxNSBp
+bnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
+Y29kZWNzL3NndGw1MDAwLmMgYi9zb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMKPiBpbmRleCAx
+ZjQwOTNmLi4xYTJkMzVhIDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAu
+Ywo+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAuYwo+IEBAIC0xMjk4LDYgKzEyOTgs
+MjAgQEAgc3RhdGljIGludCBzZ3RsNTAwMF9yZXBsYWNlX3ZkZGRfd2l0aF9sZG8oc3RydWN0IHNu
+ZF9zb2NfY29kZWMgKmNvZGVjKQo+ICAJcmV0dXJuIDA7Cj4gIH0KPiAgCj4gK3N0YXRpYyBpbnQg
+c2d0bDUwMDBfZXh0ZXJuYWxfdmRkZF91c2VkKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykK
+PiArewo+ICsJc3RydWN0IHJlZ3VsYXRvciAqY29uc3VtZXI7Cj4gKwlzdHJ1Y3Qgc2d0bDUwMDBf
+cHJpdiAqc2d0bDUwMDAgPSBzbmRfc29jX2NvZGVjX2dldF9kcnZkYXRhKGNvZGVjKTsKPiArCj4g
+Kwljb25zdW1lciA9IHJlZ3VsYXRvcl9nZXQoY29kZWMtPmRldiwgc2d0bDUwMDAtPnN1cHBsaWVz
+W1ZERERdLnN1cHBseSk7Cj4gKwlpZiAoSVNfRVJSKGNvbnN1bWVyKSkgewo+ICsJCXJldHVybiAw
+Owo+ICsJfQo+ICsJcmVndWxhdG9yX3B1dChjb25zdW1lcik7Cj4gKwo+ICsJcmV0dXJuIDE7Cj4g
+K30KPiArCj4gIHN0YXRpYyBpbnQgc2d0bDUwMDBfZW5hYmxlX3JlZ3VsYXRvcnMoc3RydWN0IHNu
+ZF9zb2NfY29kZWMgKmNvZGVjKQo+ICB7Cj4gIAlpbnQgcmVnOwo+IEBAIC0xMzEwLDkgKzEzMjQs
+NyBAQCBzdGF0aWMgaW50IHNndGw1MDAwX2VuYWJsZV9yZWd1bGF0b3JzKHN0cnVjdCBzbmRfc29j
+X2NvZGVjICpjb2RlYykKPiAgCWZvciAoaSA9IDA7IGkgPCBBUlJBWV9TSVpFKHNndGw1MDAwLT5z
+dXBwbGllcyk7IGkrKykKPiAgCQlzZ3RsNTAwMC0+c3VwcGxpZXNbaV0uc3VwcGx5ID0gc3VwcGx5
+X25hbWVzW2ldOwo+ICAKPiAtCXJldCA9IHJlZ3VsYXRvcl9idWxrX2dldChjb2RlYy0+ZGV2LCBB
+UlJBWV9TSVpFKHNndGw1MDAwLT5zdXBwbGllcyksCj4gLQkJCQlzZ3RsNTAwMC0+c3VwcGxpZXMp
+Owo+IC0JaWYgKCFyZXQpCj4gKwlpZiAoc2d0bDUwMDBfZXh0ZXJuYWxfdmRkZF91c2VkKGNvZGVj
+KSkKPiAgCQlleHRlcm5hbF92ZGRkID0gMTsKPiAgCWVsc2Ugewo+ICAJCXJldCA9IHNndGw1MDAw
+X3JlcGxhY2VfdmRkZF93aXRoX2xkbyhjb2RlYyk7Cj4KWW91IGNvdWxkIGZpeCB0aGUgY29kaW5n
+IHN0eWxlIGlzc3VlIChicmFjZXMgb24gYm90aCBicmFuY2hlcwpvZiB0aGUgaWYgY2xhdXNlKSBo
+ZXJlIHRvby4KCgpMb3RoYXIgV2HDn21hbm4KLS0gCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCgpLYS1SbyBlbGVjdHJvbmljcyBHbWJI
+IHwgUGFzY2Fsc3RyYcOfZSAyMiB8IEQgLSA1MjA3NiBBYWNoZW4KUGhvbmU6ICs0OSAyNDA4IDE0
+MDItMCB8IEZheDogKzQ5IDI0MDggMTQwMi0xMApHZXNjaMOkZnRzZsO8aHJlcjogTWF0dGhpYXMg
+S2F1c3NlbgpIYW5kZWxzcmVnaXN0ZXJlaW50cmFnOiBBbXRzZ2VyaWNodCBBYWNoZW4sIEhSQiA0
+OTk2Cgp3d3cua2Fyby1lbGVjdHJvbmljcy5kZSB8IGluZm9Aa2Fyby1lbGVjdHJvbmljcy5kZQpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
