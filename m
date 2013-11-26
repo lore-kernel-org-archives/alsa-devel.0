@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/5] ALSA: hda - Split the generic parser as an
-	individual module
-Date: Tue, 26 Nov 2013 09:29:09 +0100
-Message-ID: <1385454553-12000-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 3/5] ALSA: hda - Refactor pm notification in
+	hda_codec.c
+Date: Tue, 26 Nov 2013 09:29:11 +0100
+Message-ID: <1385454553-12000-4-git-send-email-tiwai@suse.de>
 References: <1385454553-12000-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CB82526158B
+ by alsa0.perex.cz (Postfix) with ESMTP id C60142608A2
  for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 09:29:26 +0100 (CET)
 Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id A2DA7A7B63
+ by mx2.suse.de (Postfix) with ESMTP id A5E5CA7B65
  for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 09:29:26 +0100 (CET)
 In-Reply-To: <1385454553-12000-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,219 +27,142 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Drop the hard dependency on the generic parser code and load / unload
-the generic parser code dynamically if built as a module.  This allows
-us to avoid the generic parser if only HDMI/DP codecs are found.
+No functional change.
+
+- codec->pm_down_notified flag is renamed to codec->pm_up_notified
+  flag (and takes the reversed meaning), which is managed solely in
+  hda_call_pm_notify() now.
+
+- The explicit call of hda_call_pm_notify() is moved into
+  hda_keep_power_on().
+
+- Removed a redundant call of hda_call_pm_notify() in
+  snd_hda_power_up(), as it's called in hda_call_codec_resume()
+  anyway.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/Makefile      |  5 +++-
- sound/pci/hda/hda_codec.c   | 67 +++++++++++++++++++++++++++++++++------------
- sound/pci/hda/hda_codec.h   |  1 +
- sound/pci/hda/hda_generic.c |  4 +++
- sound/pci/hda/hda_local.h   |  7 -----
- 5 files changed, 58 insertions(+), 26 deletions(-)
+ sound/pci/hda/hda_codec.c | 37 ++++++++++++++-----------------------
+ sound/pci/hda/hda_codec.h |  2 +-
+ 2 files changed, 15 insertions(+), 24 deletions(-)
 
-diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
-index c091438286a3..5a40c652df41 100644
---- a/sound/pci/hda/Makefile
-+++ b/sound/pci/hda/Makefile
-@@ -3,7 +3,6 @@ snd-hda-intel-objs := hda_intel.o
- snd-hda-intel-$(CONFIG_SND_HDA_I915) +=	hda_i915.o
- 
- snd-hda-codec-y := hda_codec.o hda_jack.o hda_auto_parser.o
--snd-hda-codec-$(CONFIG_SND_HDA_GENERIC) += hda_generic.o
- snd-hda-codec-$(CONFIG_PROC_FS) += hda_proc.o
- snd-hda-codec-$(CONFIG_SND_HDA_HWDEP) += hda_hwdep.o
- snd-hda-codec-$(CONFIG_SND_HDA_INPUT_BEEP) += hda_beep.o
-@@ -12,6 +11,7 @@ snd-hda-codec-$(CONFIG_SND_HDA_INPUT_BEEP) += hda_beep.o
- CFLAGS_hda_codec.o := -I$(src)
- CFLAGS_hda_intel.o := -I$(src)
- 
-+snd-hda-codec-generic-objs :=	hda_generic.o
- snd-hda-codec-realtek-objs :=	patch_realtek.o
- snd-hda-codec-cmedia-objs :=	patch_cmedia.o
- snd-hda-codec-analog-objs :=	patch_analog.o
-@@ -28,6 +28,9 @@ snd-hda-codec-hdmi-objs :=	patch_hdmi.o hda_eld.o
- obj-$(CONFIG_SND_HDA_INTEL) := snd-hda-codec.o
- 
- # codec drivers (note: CONFIG_SND_HDA_CODEC_XXX are booleans)
-+ifdef CONFIG_SND_HDA_GENERIC
-+obj-$(CONFIG_SND_HDA_INTEL) += snd-hda-codec-generic.o
-+endif
- ifdef CONFIG_SND_HDA_CODEC_REALTEK
- obj-$(CONFIG_SND_HDA_INTEL) += snd-hda-codec-realtek.o
- endif
 diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 69178c4f4113..4d3f46329eb5 100644
+index bada677df8a7..8f7295bdccbd 100644
 --- a/sound/pci/hda/hda_codec.c
 +++ b/sound/pci/hda/hda_codec.c
-@@ -945,9 +945,6 @@ find_codec_preset(struct hda_codec *codec)
- 	const struct hda_codec_preset *preset;
- 	unsigned int mod_requested = 0;
- 
--	if (is_generic_config(codec))
--		return NULL; /* use the generic parser */
--
-  again:
- 	mutex_lock(&preset_mutex);
- 	list_for_each_entry(tbl, &hda_preset_tables, list) {
-@@ -1330,6 +1327,28 @@ get_hda_cvt_setup(struct hda_codec *codec, hda_nid_t nid)
+@@ -99,16 +99,24 @@ EXPORT_SYMBOL_HDA(snd_hda_delete_codec_preset);
+ static void hda_power_work(struct work_struct *work);
+ static void hda_keep_power_on(struct hda_codec *codec);
+ #define hda_codec_is_power_on(codec)	((codec)->power_on)
+-static inline void hda_call_pm_notify(struct hda_bus *bus, bool power_up)
++
++static void hda_call_pm_notify(struct hda_codec *codec, bool power_up)
+ {
++	struct hda_bus *bus = codec->bus;
++
++	if ((power_up && codec->pm_up_notified) ||
++	    (!power_up && !codec->pm_up_notified))
++		return;
+ 	if (bus->ops.pm_notify)
+ 		bus->ops.pm_notify(bus, power_up);
++	codec->pm_up_notified = power_up;
  }
- 
- /*
-+ * Dynamic symbol binding for the codec parsers
-+ */
-+#ifdef MODULE
-+#define load_parser_sym(sym)		((int (*)(struct hda_codec *))symbol_request(sym))
-+#define unload_parser_addr(addr)	symbol_put_addr(addr)
-+#else
-+#define load_parser_sym(sym)		(sym)
-+#define unload_parser_addr(addr)	do {} while (0)
-+#endif
 +
-+#define load_parser(codec, sym) \
-+	((codec)->parser = load_parser_sym(sym))
-+
-+static void unload_parser(struct hda_codec *codec)
-+{
-+	if (codec->parser) {
-+		unload_parser_addr(codec->parser);
-+		codec->parser = NULL;
-+	}
-+}
-+
-+/*
-  * codec destructor
-  */
- static void snd_hda_codec_free(struct hda_codec *codec)
-@@ -1356,6 +1375,7 @@ static void snd_hda_codec_free(struct hda_codec *codec)
- 	if (!codec->pm_down_notified) /* cancel leftover refcounts */
- 		hda_call_pm_notify(codec->bus, false);
+ #else
+ #define codec_in_pm(codec)	0
+ static inline void hda_keep_power_on(struct hda_codec *codec) {}
+ #define hda_codec_is_power_on(codec)	1
+-#define hda_call_pm_notify(bus, state) {}
++#define hda_call_pm_notify(codec, state) {}
  #endif
-+	unload_parser(codec);
+ 
+ /**
+@@ -1371,10 +1379,7 @@ static void snd_hda_codec_free(struct hda_codec *codec)
+ 	codec->bus->caddr_tbl[codec->addr] = NULL;
+ 	if (codec->patch_ops.free)
+ 		codec->patch_ops.free(codec);
+-#ifdef CONFIG_PM
+-	if (!codec->pm_down_notified) /* cancel leftover refcounts */
+-		hda_call_pm_notify(codec->bus, false);
+-#endif
++	hda_call_pm_notify(codec, false); /* cancel leftover refcounts */
+ 	unload_parser(codec);
  	module_put(codec->owner);
  	free_hda_cache(&codec->amp_cache);
- 	free_hda_cache(&codec->cmd_cache);
-@@ -1548,6 +1568,7 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_update_widgets);
-  */
- int snd_hda_codec_configure(struct hda_codec *codec)
- {
-+	int (*patch)(struct hda_codec *) = NULL;
- 	int err;
+@@ -1453,7 +1458,6 @@ int snd_hda_codec_new(struct hda_bus *bus,
+ 	 * phase.
+ 	 */
+ 	hda_keep_power_on(codec);
+-	hda_call_pm_notify(bus, true);
+ #endif
  
- 	codec->preset = find_codec_preset(codec);
-@@ -1557,29 +1578,38 @@ int snd_hda_codec_configure(struct hda_codec *codec)
- 			return err;
- 	}
- 
--	if (is_generic_config(codec)) {
--		err = snd_hda_parse_generic_codec(codec);
--		goto patched;
+ 	if (codec->bus->modelname) {
+@@ -4058,10 +4062,6 @@ static void hda_call_codec_resume(struct hda_codec *codec)
+ 	 * in the resume / power-save sequence
+ 	 */
+ 	hda_keep_power_on(codec);
+-	if (codec->pm_down_notified) {
+-		codec->pm_down_notified = 0;
+-		hda_call_pm_notify(codec->bus, true);
 -	}
--	if (codec->preset && codec->preset->patch) {
--		err = codec->preset->patch(codec);
--		goto patched;
-+	if (!is_generic_config(codec) && codec->preset)
-+		patch = codec->preset->patch;
-+	if (!patch) {
-+		unload_parser(codec); /* to be sure */
-+#ifdef CONFIG_SND_HDA_GENERIC
-+		if (!patch)
-+			patch = load_parser(codec, snd_hda_parse_generic_codec);
-+#endif
-+		if (!patch) {
-+			printk(KERN_ERR "hda-codec: No codec parser is available\n");
-+			return -ENODEV;
-+		}
- 	}
+ 	hda_set_power_state(codec, AC_PWRST_D0);
+ 	restore_shutup_pins(codec);
+ 	hda_exec_init_verbs(codec);
+@@ -4935,11 +4935,8 @@ static void hda_power_work(struct work_struct *work)
+ 	spin_unlock(&codec->power_lock);
  
--	/* call the default parser */
--	err = snd_hda_parse_generic_codec(codec);
--	if (err < 0)
--		printk(KERN_ERR "hda-codec: No codec parser is available\n");
-+	err = patch(codec);
-+	if (err < 0) {
-+		unload_parser(codec);
-+		return err;
-+	}
- 
-- patched:
--	if (!err && codec->patch_ops.unsol_event)
-+	if (codec->patch_ops.unsol_event) {
- 		err = init_unsol_queue(codec->bus);
-+		if (err < 0)
-+			return err;
-+	}
-+
- 	/* audio codec should override the mixer name */
--	if (!err && (codec->afg || !*codec->bus->card->mixername))
-+	if (codec->afg || !*codec->bus->card->mixername)
- 		snprintf(codec->bus->card->mixername,
- 			 sizeof(codec->bus->card->mixername),
- 			 "%s %s", codec->vendor_name, codec->chip_name);
--	return err;
-+	return 0;
+ 	state = hda_call_codec_suspend(codec, true);
+-	if (!codec->pm_down_notified &&
+-	    !bus->power_keep_link_on && (state & AC_PWRST_CLK_STOP_OK)) {
+-		codec->pm_down_notified = 1;
+-		hda_call_pm_notify(bus, false);
+-	}
++	if (!bus->power_keep_link_on && (state & AC_PWRST_CLK_STOP_OK))
++		hda_call_pm_notify(codec, false);
  }
- EXPORT_SYMBOL_HDA(snd_hda_codec_configure);
  
-@@ -2610,6 +2640,7 @@ int snd_hda_codec_reset(struct hda_codec *codec)
- 	codec->preset = NULL;
- 	codec->slave_dig_outs = NULL;
- 	codec->spdif_status_reset = 0;
-+	unload_parser(codec);
- 	module_put(codec->owner);
- 	codec->owner = NULL;
+ static void hda_keep_power_on(struct hda_codec *codec)
+@@ -4949,6 +4946,7 @@ static void hda_keep_power_on(struct hda_codec *codec)
+ 	codec->power_on = 1;
+ 	codec->power_jiffies = jiffies;
+ 	spin_unlock(&codec->power_lock);
++	hda_call_pm_notify(codec, true);
+ }
  
+ /* update the power on/off account with the current jiffies */
+@@ -4968,8 +4966,6 @@ void snd_hda_update_power_acct(struct hda_codec *codec)
+ /* call this with codec->power_lock held! */
+ static void __snd_hda_power_up(struct hda_codec *codec, bool wait_power_down)
+ {
+-	struct hda_bus *bus = codec->bus;
+-
+ 	/* Return if power_on or transitioning to power_on, unless currently
+ 	 * powering down. */
+ 	if ((codec->power_on || codec->power_transition > 0) &&
+@@ -4996,11 +4992,6 @@ static void __snd_hda_power_up(struct hda_codec *codec, bool wait_power_down)
+ 	codec->power_transition = 1; /* avoid reentrance */
+ 	spin_unlock(&codec->power_lock);
+ 
+-	if (codec->pm_down_notified) {
+-		codec->pm_down_notified = 0;
+-		hda_call_pm_notify(bus, true);
+-	}
+-
+ 	hda_call_codec_resume(codec);
+ 
+ 	spin_lock(&codec->power_lock);
 diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 77db69480c19..a45eaeebb4ec 100644
+index a45eaeebb4ec..6190d3f0d452 100644
 --- a/sound/pci/hda/hda_codec.h
 +++ b/sound/pci/hda/hda_codec.h
-@@ -835,6 +835,7 @@ struct hda_codec {
- 	/* detected preset */
- 	const struct hda_codec_preset *preset;
- 	struct module *owner;
-+	int (*parser)(struct hda_codec *codec);
- 	const char *vendor_name;	/* codec vendor name */
- 	const char *chip_name;		/* codec chip name */
- 	const char *modelname;	/* model name for preset */
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 3067ed4fe3b2..9b251456f2a0 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -28,6 +28,7 @@
- #include <linux/ctype.h>
- #include <linux/string.h>
- #include <linux/bitops.h>
-+#include <linux/module.h>
- #include <sound/core.h>
- #include <sound/jack.h>
- #include "hda_codec.h"
-@@ -5291,3 +5292,6 @@ error:
- 	return err;
- }
- EXPORT_SYMBOL_HDA(snd_hda_parse_generic_codec);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Generic HD-audio codec parser");
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index d398b648bb5d..4d571a6d9230 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -352,14 +352,7 @@ int snd_hda_multi_out_analog_cleanup(struct hda_codec *codec,
- /*
-  * generic codec parser
-  */
--#ifdef CONFIG_SND_HDA_GENERIC
- int snd_hda_parse_generic_codec(struct hda_codec *codec);
--#else
--static inline int snd_hda_parse_generic_codec(struct hda_codec *codec)
--{
--	return -ENODEV;
--}
--#endif
- 
- /*
-  * generic proc interface
+@@ -909,7 +909,7 @@ struct hda_codec {
+ #ifdef CONFIG_PM
+ 	unsigned int power_on :1;	/* current (global) power-state */
+ 	unsigned int d3_stop_clk:1;	/* support D3 operation without BCLK */
+-	unsigned int pm_down_notified:1; /* PM notified to controller */
++	unsigned int pm_up_notified:1;	/* PM notified to controller */
+ 	unsigned int in_pm:1;		/* suspend/resume being performed */
+ 	int power_transition;	/* power-state in transition */
+ 	int power_count;	/* current (global) power refcount */
 -- 
 1.8.4.3
