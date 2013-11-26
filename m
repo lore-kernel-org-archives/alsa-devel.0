@@ -1,20 +1,14 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH v2 3/9] ASoC: fsl-ssi: Add imx50-ssi and
- of_device_id matching
-Date: Tue, 26 Nov 2013 10:35:57 +0100
-Message-ID: <20131126093557.GD13532@pengutronix.de>
-References: <1385378025-1262-1-git-send-email-mpa@pengutronix.de>
- <1385378025-1262-4-git-send-email-mpa@pengutronix.de>
- <20131126043355.GI30476@S2101-09.ap.freescale.net>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: [PATCH] ASoC: kirkwood: Fix invalid SPDIF format
+Date: Tue, 26 Nov 2013 10:41:40 +0100
+Message-ID: <20131126104140.16e3eb87@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 3948C260844
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 10:36:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20131126043355.GI30476@S2101-09.ap.freescale.net>
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE4BF260844
+ for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 10:39:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,29 +18,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jason Cooper <jason@lakedaemon.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Tue, Nov 26, 2013 at 12:33:57PM +0800, Shawn Guo wrote:
-> On Mon, Nov 25, 2013 at 12:13:39PM +0100, Markus Pargmann wrote:
-> > There is a small but significant difference between imx21-ssi and
-> > imx50-ssi and above.
-> 
-> Haven't we already agreed that imx51-ssi should be used in naming and
-> compatible, since imx51 comes to the world earlier than imx50?
-
-Yes of course, sorry. Seems I have lost those fixups somewhere. I
-will resend this series.
-
-Thanks,
-
-Markus
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+VGhpcyBwYXRjaCByZW1vdmVzIHRoZSAzMiBiaXRzIGZvcm1hdCB3aGljaCBpcyBub3Qgc3VwcG9y
+dGVkIGJ5IFMvUERJRgpvdXRwdXQuCgpTaWduZWQtb2ZmLWJ5OiBKZWFuLUZyYW5jb2lzIE1vaW5l
+IDxtb2luZWpmQGZyZWUuZnI+Ci0tLQogc291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5j
+IHwgMTIgKysrKysrKystLS0tCiAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCA0IGRl
+bGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMu
+YyBiL3NvdW5kL3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMuYwppbmRleCBiMjdmODI2Li4wYjE4
+ZjY1IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mva2lya3dvb2Qva2lya3dvb2QtaTJzLmMKKysrIGIv
+c291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5jCkBAIC0zMyw2ICszMywxMCBAQAogCSBT
+TkRSVl9QQ01fRk1UQklUX1MyNF9MRSB8IFwKIAkgU05EUlZfUENNX0ZNVEJJVF9TMzJfTEUpCiAK
+KyNkZWZpbmUgS0lSS1dPT0RfU1BESUZfRk9STUFUUyBcCisJKFNORFJWX1BDTV9GTVRCSVRfUzE2
+X0xFIHwgXAorCSBTTkRSVl9QQ01fRk1UQklUX1MyNF9MRSkKKwogc3RhdGljIGludCBraXJrd29v
+ZF9pMnNfc2V0X2ZtdChzdHJ1Y3Qgc25kX3NvY19kYWkgKmNwdV9kYWksCiAJCXVuc2lnbmVkIGlu
+dCBmbXQpCiB7CkBAIC00NDksMTQgKzQ1MywxNCBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFp
+X2RyaXZlciBraXJrd29vZF9pMnNfZGFpWzJdID0gewogCQkuY2hhbm5lbHNfbWF4ID0gMiwKIAkJ
+LnJhdGVzID0gU05EUlZfUENNX1JBVEVfNDQxMDAgfCBTTkRSVl9QQ01fUkFURV80ODAwMCB8CiAJ
+CQkJU05EUlZfUENNX1JBVEVfOTYwMDAsCi0JCS5mb3JtYXRzID0gS0lSS1dPT0RfSTJTX0ZPUk1B
+VFMsCisJCS5mb3JtYXRzID0gS0lSS1dPT0RfU1BESUZfRk9STUFUUywKIAl9LAogCS5jYXB0dXJl
+ID0gewogCQkuY2hhbm5lbHNfbWluID0gMSwKIAkJLmNoYW5uZWxzX21heCA9IDIsCiAJCS5yYXRl
+cyA9IFNORFJWX1BDTV9SQVRFXzQ0MTAwIHwgU05EUlZfUENNX1JBVEVfNDgwMDAgfAogCQkJCVNO
+RFJWX1BDTV9SQVRFXzk2MDAwLAotCQkuZm9ybWF0cyA9IEtJUktXT09EX0kyU19GT1JNQVRTLAor
+CQkuZm9ybWF0cyA9IEtJUktXT09EX1NQRElGX0ZPUk1BVFMsCiAJfSwKIAkub3BzID0gJmtpcmt3
+b29kX2kyc19kYWlfb3BzLAogICAgIH0sCkBAIC00OTMsNyArNDk3LDcgQEAgc3RhdGljIHN0cnVj
+dCBzbmRfc29jX2RhaV9kcml2ZXIga2lya3dvb2RfaTJzX2RhaV9leHRjbGtbMl0gPSB7CiAJCS5y
+YXRlcyA9IFNORFJWX1BDTV9SQVRFXzgwMDBfMTkyMDAwIHwKIAkJCSBTTkRSVl9QQ01fUkFURV9D
+T05USU5VT1VTIHwKIAkJCSBTTkRSVl9QQ01fUkFURV9LTk9ULAotCQkuZm9ybWF0cyA9IEtJUktX
+T09EX0kyU19GT1JNQVRTLAorCQkuZm9ybWF0cyA9IEtJUktXT09EX1NQRElGX0ZPUk1BVFMsCiAJ
+fSwKIAkuY2FwdHVyZSA9IHsKIAkJLmNoYW5uZWxzX21pbiA9IDEsCkBAIC01MDEsNyArNTA1LDcg
+QEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIga2lya3dvb2RfaTJzX2RhaV9leHRj
+bGtbMl0gPSB7CiAJCS5yYXRlcyA9IFNORFJWX1BDTV9SQVRFXzgwMDBfMTkyMDAwIHwKIAkJCSBT
+TkRSVl9QQ01fUkFURV9DT05USU5VT1VTIHwKIAkJCSBTTkRSVl9QQ01fUkFURV9LTk9ULAotCQku
+Zm9ybWF0cyA9IEtJUktXT09EX0kyU19GT1JNQVRTLAorCQkuZm9ybWF0cyA9IEtJUktXT09EX1NQ
+RElGX0ZPUk1BVFMsCiAJfSwKIAkub3BzID0gJmtpcmt3b29kX2kyc19kYWlfb3BzLAogICAgIH0s
+CgotLSAKS2VuIGFyIGMnaGVudGHDsQl8CSAgICAgICoqIEJyZWl6aCBoYSBMaW51eCBhdGF2ISAq
+KgpKZWYJCXwJCWh0dHA6Ly9tb2luZWpmLmZyZWUuZnIvCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
