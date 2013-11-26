@@ -1,51 +1,51 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH 2/2] ASoC: atmel: sam9x5_wm8731: remove
-	platform_set_drvdata
-Date: Tue, 26 Nov 2013 12:17:52 +0800
-Message-ID: <1385439472-23352-2-git-send-email-voice.shen@atmel.com>
-References: <1385439472-23352-1-git-send-email-voice.shen@atmel.com>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: samsung: Provide helper for DMA init
+Date: Tue, 26 Nov 2013 10:54:57 +0530
+Message-ID: <CAAgF-BdUWGun6m2+zxMhUU1_DpZviHg-REnsGvh+bWgpm2NuLg@mail.gmail.com>
+References: <1384264120-24750-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A26B260818
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 05:45:30 +0100 (CET)
-In-Reply-To: <1385439472-23352-1-git-send-email-voice.shen@atmel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, richard.genoud@gmail.com, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1384264120-24750-1-git-send-email-broonie@kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Mark Brown <broonie@linaro.org>, linaro-kernel@lists.linaro.org, Padmavathi Venna <padma.v@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-When call snd_soc_register_card, it will set driver data to this
-device through dev_set_drvdata, then in driver, no need to call
-platform_set_drvdata again, so remove it.
+Hi Mark,
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
----
- sound/soc/atmel/sam9x5_wm8731.c |    2 --
- 1 file changed, 2 deletions(-)
+On Tue, Nov 12, 2013 at 7:18 PM, Mark Brown <broonie@kernel.org> wrote:
+> From: Mark Brown <broonie@linaro.org>
+>
+> In preparation for using the dmaengine helpers in ASoC rather than the
+> dmaengine wrappers for the Samsung API wrap the configuration of dma_data.
+> The dmaengine code expects different data to that used by the legacy API.
+>
+> Signed-off-by: Mark Brown <broonie@linaro.org>
+> ---
+>  sound/soc/samsung/ac97.c | 51 +++++++++++++++---------------------------------
+>  sound/soc/samsung/dma.c  |  8 ++++++++
+>  sound/soc/samsung/dma.h  |  3 +++
+>  sound/soc/samsung/i2s.c  |  2 +-
+>  sound/soc/samsung/pcm.c  | 18 +++++++++--------
+>  5 files changed, 38 insertions(+), 44 deletions(-)
+>
 
-diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
-index 6dc33ac..4af6836 100644
---- a/sound/soc/atmel/sam9x5_wm8731.c
-+++ b/sound/soc/atmel/sam9x5_wm8731.c
-@@ -154,8 +154,6 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
- 	of_node_put(codec_np);
- 	of_node_put(cpu_np);
- 
--	platform_set_drvdata(pdev, card);
--
- 	ret = snd_soc_register_card(card);
- 	if (ret) {
- 		dev_err(&pdev->dev,
--- 
-1.7.9.5
+[snip]
+
+> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+> index a5cbdb4..67d9fa9 100644
+> --- a/sound/soc/samsung/i2s.c
+> +++ b/sound/soc/samsung/i2s.c
+> @@ -963,7 +963,7 @@ static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
+>         }
+>         clk_prepare_enable(i2s->clk);
+>
+> -       snd_soc_dai_init_dma_data(dai, &i2s->dma_playback, &i2s->dma_capture);
+> +       samsung_asoc_init_dma_data(dai, &i2s->dma_playback, &i2s->dma_capture);
+
+we have to initialize the dma data for i2s secondary dai also
+otherwise there is a crash in dmaengine_pcm_new during probe.
+
+Thanks
+Padma
