@@ -1,72 +1,74 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: HD-Audio: Is it okay to delay resuming codecs when
- resuming from S3?
-Date: Tue, 26 Nov 2013 12:16:47 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80141AF13@SHSMSX101.ccr.corp.intel.com>
-References: <F46914AEC2663F4A9BB62374E5EEF8F801419994@SHSMSX101.ccr.corp.intel.com>
- <s5hbo17y69q.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: samsung: Use ASoC dmaengine code
+ where possible
+Date: Tue, 26 Nov 2013 12:20:31 +0000
+Message-ID: <20131126122031.GA14725@sirena.org.uk>
+References: <1384264120-24750-1-git-send-email-broonie@kernel.org>
+ <1384264120-24750-2-git-send-email-broonie@kernel.org>
+ <CAAgF-BcJZrwwHYtk6pKj_-+CzmbhhV4V_Z02kjHveObOR6oiFQ@mail.gmail.com>
+ <20131126102311.GW14725@sirena.org.uk>
+ <CAAgF-BdWLXeLyVZv-durSxxVEm4hHaC7sXQuz_pGLLY-x7XS+w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id EF0AA2607D7
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 13:16:59 +0100 (CET)
-In-Reply-To: <s5hbo17y69q.wl%tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CXwywHnYJ7GE90zd"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAAgF-BdWLXeLyVZv-durSxxVEm4hHaC7sXQuz_pGLLY-x7XS+w@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Padma Venkat <padma.kvr@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, linaro-kernel@lists.linaro.org, Padmavathi Venna <padma.v@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, November 26, 2013 3:25 PM
-> To: Lin, Mengdong
-> Cc: alsa-devel@alsa-project.org
-> Subject: Re: HD-Audio: Is it okay to delay resuming codecs when resuming
-> from S3?
-> 
-> At Tue, 26 Nov 2013 07:16:59 +0000,
-> Lin, Mengdong wrote:
-> >
-> > Hi Takashi,
-> >
-> > Is it okay to delay resuming codecs when resuming from S3? i.e. skip
-> snd_hda_resume() in azx_resume()?
-> >
-> > This would reduce driver resume time from S3. And the codecs will be
-> resumed when being used for the 1st time after S3.
-> >
-> > Resuming a codec may cost more than 100ms. So even if we parallel
-> resuming codecs in snd_hda_resume(), driver resume time on some
-> platforms is still a bit long.
-> 
-> This causes problems on some hardware, e.g. inconsistent mute LEDs.
-> So you cannot do it unconditionally.  We did it in the past, but had to
-> switch the forced resume later.
 
-Thanks for the info!
-Are these problems caused by inconsistency between system assumption after S3 and audio codec HW status in D3?
+--CXwywHnYJ7GE90zd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Why the mute LED can be inconsistent?
-Is the LED controlled by audio codec HW? If yes, the LED status when codec in D3 can be inconsistent from mute status before S3. 
-But if the LED is controlled by software, there seems no inconsistency.
+On Tue, Nov 26, 2013 at 04:18:41PM +0530, Padma Venkat wrote:
 
-> Maybe we can add a flag indicating that the codec resume may be delayed.
-> Then the bus resume checks the flags and skips the codec resume if it's
-> set.
+> I tried this on linux-samsung tree by applying all the patches from
+> you and Lars.
 
-Okay. 
-And is it okay to parallel resuming multiple codecs, also using the bus work queue to parallel suspending codecs?
+Can you use -next plus the posted patches please in case there's
+something been misplaced, it'll help if we're working from the same code
+base?
 
-Regards
-Mengdong
+> I initialised the dma_data for secondary dai as there is a crash with out that.
+
+Can you please send a patch for that if you find it's needed?  Like I
+said in reply to your earlier mail it looks like this doesn't work
+anyway so mainline ought to be fixed.
+
+> Then I used aplay after running the mixer settings.
+> ./aplay /mars/share/sounds/alsa/Front_Center.wav
+
+So this is 16 bit stereo or something, and did it work beforehand?  Like
+I say I suspect the DMA is ending up being configured with the wrong
+transfer size, can you check what actually happens there please - what's
+different about the configuration that the DMA controller gets?  I don't
+have any Exynos systems with mainline audio support so I can't test
+anything myself.
+
+--CXwywHnYJ7GE90zd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSlJIMAAoJELSic+t+oim9by4P/2sUipayD6COz2TXKNtQ9E6T
+rcpr0pPArGjEE+4XVGdBe+qsITL+Kh6P4N8BXm5LRpZEvTZJ3Hy7nPE5odmef5YK
+6PZkD79wrJhEPgmNu9Xxsm0AX3JAd7aY+ito8IAHRH4gWuqQ7MFYFTNA8fbO/8ZW
+LK1OshegthEQ6OWy0sTd3Q2XIYPn7CISNquoX30xveNGfxA+T1/y214+0aVUpJKM
++ZU5HxoVIgYEcSepN4gmbCrzO0Op6Xy2FDzs6PPQp5qdxdF2SC1VhQlumvJ5Mt9w
+1mWm7NDZxPomm0sYYrwbusUVT3JPkYeo9A1Q604hKsv1Y1aPFQQjDy2c5jRfWQRl
+uCIHqkn0vqtKhr5RHTtx+eajFGnr3o+VVBv1Duvgt50X+zlx36wY/rTaD3bCFTxv
+TqVSWM8rXQuulV0znygtorqhDVHP16mCqLJ99qUXF0qoLFj/Tm0PmwSde71CwqHp
+EoQwwfT/3DcbvvlIkrVXrAznIC4SasUFPN/yaK09OOboM5NdbcpL+Q2rtpMkuka+
+y4sZYYYOkBJBW03KKeEvEzBYw2MJyu2ncTYUL8PBRLthGoAllg2XgHv0e3Qg/tn4
+1M7zIy6p7v4D92BLvUM2FTaQMAcIEr6zfY8DFyqeDc62D+jytUb/2AtnP0HM2u/4
+Aw9ZlYbcN64zfb9tkUZT
+=G+K6
+-----END PGP SIGNATURE-----
+
+--CXwywHnYJ7GE90zd--
