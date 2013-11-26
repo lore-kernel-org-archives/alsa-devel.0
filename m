@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 02/17] firewire-lib: Add macros instead of
- fixed value for AMDTP
-Date: Tue, 26 Nov 2013 18:50:08 +0900
-Message-ID: <52946ED0.8090203@sakamocchi.jp>
+Subject: Re: [PATCH 03/17] firewire-lib: Add 'direction' member
+ to 'amdtp_stream' structure
+Date: Tue, 26 Nov 2013 19:01:51 +0900
+Message-ID: <5294718F.6050103@sakamocchi.jp>
 References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
- <1385186884-8259-3-git-send-email-o-takashi@sakamocchi.jp>
- <52936C44.7070606@ladisch.de>
+ <1385186884-8259-4-git-send-email-o-takashi@sakamocchi.jp>
+ <52936C4C.9030800@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F629260844
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 10:50:12 +0100 (CET)
-In-Reply-To: <52936C44.7070606@ladisch.de>
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3132A260844
+ for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 11:01:54 +0100 (CET)
+In-Reply-To: <52936C4C.9030800@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,30 +27,30 @@ To: Clemens Ladisch <clemens@ladisch.de>, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
-
 (Nov 26 2013 00:27), Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> This patch adds some macros instead of fixed value for AMDTP in IEC 61883-6.
->> These macros will also be used by followed patches.
+>> +enum amdtp_stream_direction {
+>> +	AMDTP_RECEIVE_STREAM = 0,
+>> +	AMDTP_TRANSMIT_STREAM
+>> +};
 >
->> +++ b/sound/firewire/amdtp.c
+> We have two FireWire nodes, the PC and the audio device.  Both streams
+> are transmitted by a node and received by a node, so these names does
+> not actually specify a direction.
 >
->> +/*
->> + * Audio and Music transfer protocol specific parameters
->> + * only "Clock-based rate controll mode" is supported
->                               ^^^^^^^^
->                               control
+> The DMA API uses names like DMA_FROM/TO_DEVICE for this.  Alternatively,
+> you could use something like PLAYBACK/CAPTURE.
 
-OK. It's my typo.
+OK. This is related to patch 04. How is to use 'in/out' like this?
 
->> -		return 0xffff; /* no info */
->> +		return CIP_SYT_NO_INFO; /* no info */
->
-> The comment is now superfluous.
+enum amdtp_stream_direction {
+	AMDTP_IN_STREAM,
+	AMDTP_OUT_STREAM
+};
 
-Oops. I forget to remove it when I applied git-rebase to include my 
-patch about empty packet...
+#define IN_PACKET_HEADER_SIZE	4
+#define OUT_PACKET_HEADER_SIZE	0
+
+Here I choice 'in/out' because of characters.
 
 Thank you.
 
