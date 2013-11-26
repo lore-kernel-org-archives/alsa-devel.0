@@ -1,20 +1,21 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: hda/realtek - Set pcbeep amp for
-	ALC668
-Date: Tue, 26 Nov 2013 09:41:12 +0100
-Message-ID: <1385455272-13202-2-git-send-email-tiwai@suse.de>
-References: <1385455272-13202-1-git-send-email-tiwai@suse.de>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: HD-audio runtime PM
+Date: Tue, 26 Nov 2013 08:53:00 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801419B71@SHSMSX101.ccr.corp.intel.com>
+References: <s5hli0gmyxt.wl%tiwai@suse.de>
+ <CA+v+29hKbtTBLh=qNRBVqd-NUfXRVBBokoypDh_0RMRQ_VjYvw@mail.gmail.com>
+ <s5hiovfy9ji.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F80141992D@SHSMSX101.ccr.corp.intel.com>
+ <s5ha9gry640.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D4E02610D7
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 09:41:13 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id CE153A7B6A
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 09:41:12 +0100 (CET)
-In-Reply-To: <1385455272-13202-1-git-send-email-tiwai@suse.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7C47260885
+ for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 09:53:08 +0100 (CET)
+In-Reply-To: <s5ha9gry640.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,31 +25,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <wangxingchao2011@gmail.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Kailang Yang <kailang@realtek.com>
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, November 26, 2013 3:28 PM
+> To: Lin, Mengdong
+> Cc: Wang Xingchao; Alsa-devel@alsa-project.org; David Henningsson
+> Subject: Re: [alsa-devel] HD-audio runtime PM
+> 
+> At Tue, 26 Nov 2013 06:56:12 +0000,
+> Lin, Mengdong wrote:
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Tuesday, November 26, 2013 2:14 PM
+> > > To: Wang Xingchao
+> >
+> > > > I test WAKEEN feature on Haswell machines before, it could really
+> > > > wakeup system from D3.
+> > >
+> > > But the runtime suspend doesn't power down to D3 by itself.
+> > > Did you test really with D3?
+> >
+> > I will double check this on Haswell with sound git tree for-linus branch.
+> > We've tried Android on Haswell-ULT last week, the display HD-A
+> controller can enter D3 and HDMI cable plug-in can wake up the controller
+> and codec. The code base is v3.9 with various driver patches.
+> 
+> Hrm, but as I mentioned, we have no D3 call in runtime suspend callback.
+> How does it reach to D3 then?  Maybe that part is patched in your side?
+> 
+> > For non-Haswell platforms, hardware team suggest that unless all of the
+> codecs on the HD-A link support EPSS and ClkStopOK, runtime PM of the
+> controller should not be enabled on the controller. Otherwise,
+> functionality will be lost and there are likely going to be audio artifacts.
+> 
+> Is EPSS mandatory?  We have already a check of ClkStopOK bit, but EPSS
+> influences only on the wait time, so far.
 
-Set the missing pcbeep default amp for ALC668.
+It's a suggestion based on Windows experience. 
+So maybe we can add this check at the moment. How do you think?
 
-Signed-off-by: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 60973fd6eb82..c4ad9d198068 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5118,6 +5118,7 @@ static int patch_alc662(struct hda_codec *codec)
- 		case 0x10ec0272:
- 		case 0x10ec0663:
- 		case 0x10ec0665:
-+		case 0x10ec0668:
- 			set_beep_amp(spec, 0x0b, 0x04, HDA_INPUT);
- 			break;
- 		case 0x10ec0273:
--- 
-1.8.4.3
+Regards
+Mengdong
+ 
