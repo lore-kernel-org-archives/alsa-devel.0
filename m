@@ -1,18 +1,19 @@
-From: Jean-Francois Moine <moinejf@free.fr>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Subject: Re: KNOT / CONTINUOUS (was: [PATCH] ASoC: kirkwood:
- Fix invalid SPDIF format)
-Date: Tue, 26 Nov 2013 20:09:16 +0100
-Message-ID: <20131126200916.47a45929@armhf>
-References: <20131126104140.16e3eb87@armhf>
- <s5h8uwba2gv.wl%tiwai@suse.de>
+	Fix invalid	SPDIF format)
+Date: Tue, 26 Nov 2013 19:32:47 +0000
+Message-ID: <20131126193246.GH16735@n2100.arm.linux.org.uk>
+References: <20131126104140.16e3eb87@armhf> <s5h8uwba2gv.wl%tiwai@suse.de>
+ <20131126200916.47a45929@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 697AF261643
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 20:07:12 +0100 (CET)
-In-Reply-To: <s5h8uwba2gv.wl%tiwai@suse.de>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id E9836261675
+ for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 20:33:08 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20131126200916.47a45929@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,46 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Jassi Brar <jassi.brar@samsung.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Jason Cooper <jason@lakedaemon.net>
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Jassi Brar <jassi.brar@samsung.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyNiBOb3YgMjAxMyAxMToyMDo0OCArMDEwMApUYWthc2hpIEl3YWkgPHRpd2FpQHN1
-c2UuZGU+IHdyb3RlOgoKPiBOb3QgYWdhaW5zdCB0aGUgcGF0Y2ggaXRzZWxmLCBidXQganVzdCBm
-b3VuZCBsb29raW5nIHRocm91Z2ggaXQ6Cj4gCj4gPiBAQCAtNDkzLDcgKzQ5Nyw3IEBAIHN0YXRp
-YyBzdHJ1Y3Qgc25kX3NvY19kYWlfZHJpdmVyIGtpcmt3b29kX2kyc19kYWlfZXh0Y2xrWzJdID0g
-ewo+ID4gIAkJLnJhdGVzID0gU05EUlZfUENNX1JBVEVfODAwMF8xOTIwMDAgfAo+ID4gIAkJCSBT
-TkRSVl9QQ01fUkFURV9DT05USU5VT1VTIHwKPiA+ICAJCQkgU05EUlZfUENNX1JBVEVfS05PVCwK
-PiAKPiBTZXR0aW5nIGJvdGggQ09OVElOVU9VUyBhbmQgS05PVCBkb2Vzbid0IG1ha2Ugc2Vuc2Uu
-CgpIaSBUYWthc2hpLAoKSSB1bmRlcnN0YW5kICdjb250aW51b3VzJywgYnV0IEkgY291bGQgbm90
-IGZpbmQgYW55IGNsZWFyIGRlZmluaXRpb24gb2YKJ2tub3QnLiBNYXkgeW91IGV4cGxhaW4gd2hh
-dCBpcyBpdHMgcHVycG9zZT8KCkJUVywgaWYgeW91IG1heSBoZWxwIG1lLCB3aGlsZSBsb29raW5n
-IGZvciBTTkRSVl9QQ01fUkFURV9LTk9ULApJIGZvdW5kIHRoaXMgc2VxdWVuY2UgaW4gc29jLXBj
-bS5jOgoKCWlmIChjb2RlY19zdHJlYW0tPnJhdGVzCgkJJiAoU05EUlZfUENNX1JBVEVfS05PVCB8
-IFNORFJWX1BDTV9SQVRFX0NPTlRJTlVPVVMpKQoJCWh3LT5yYXRlcyB8PSBjcHVfc3RyZWFtLT5y
-YXRlczsKCWlmIChjcHVfc3RyZWFtLT5yYXRlcwoJCSYgKFNORFJWX1BDTV9SQVRFX0tOT1QgfCBT
-TkRSVl9QQ01fUkFURV9DT05USU5VT1VTKSkKCQlody0+cmF0ZXMgfD0gY29kZWNfc3RyZWFtLT5y
-YXRlczsKCmFuZCBpdCBzZWVtcyByZWxhdGVkIHRvIHRoZSBwcm9ibGVtIEkgaGF2ZToKCi0gdGhl
-IGNwdSBkYWkgKGtpcmt3b29kIGkycykgbWF5IGdlbmVyYXRlIGFueSBjb250aW51b3VzIHJhdGUK
-ICA4MDAwLi4xOTIwMDAgYXMgc2hvd24gaW4gdGhlIHBhdGNoLgoKLSB0aGUgSERNSSB0cmFuc21p
-dHRlciAodGRhOTk4eCkgYWNjZXB0cyBlaXRoZXIgaTJzIG9yIHMvcGRpZiBhdWRpbwogIGlucHV0
-IGF0IGFueSBjb250aW51b3VzIHJhdGUsIGJ1dCB3aGVuIGdldHRpbmcgYXVkaW8gZnJvbSBzL3Bk
-aWYsIHRoZQogIGxvd2VzdCByYXRlIGlzIDIyLjA2a0h6LgoKSW4gdGhlIGFzc29jaWF0ZWQgY29k
-ZWMsIGlmIEkgZGVmaW5lOgoKCS5yYXRlcyA9IFNORFJWX1BDTV9SQVRFXzIyMDUwIHwKCQlTTkRS
-Vl9QQ01fUkFURV8zMjAwMCB8CgkJLi4uCgkJU05EUlZfUENNX1JBVEVfMTkyMDAwIHwKCQlTTkRS
-Vl9QQ01fUkFURV9DT05USU5VT1VTLAoKYXVkaW8gd29ya3MgZmluZSB3aXRoIHN0cmVhbXMgYXQg
-MzMuMDc1a0h6ICh0aGUga2lya3dvb2QgY2xvY2sgaXMKZXhhY3RseSAzMy4wNzVrSHopLiBCdXQg
-d2hlbiBJIHdhbnQgYSBzdHJlYW0gYXQgNzg1MEh6LCB0aGUga2lya3dvb2QKaTJzIGRyaXZlciBn
-ZXRzIGEgY2xvY2sgYXQgODAwMEh6IGFuZCB0aGUgdGRhOTk4eCBjYW5ub3QgZG8gYXVkaW8Kb3V0
-cHV0LgoKT3RoZXJ3aXNlLCByZW1vdmluZyBTTkRSVl9QQ01fUkFURV9DT05USU5VT1VTIGluIHRo
-ZSBjb2RlYywgSSBjYW4gaGVhcgp0aGUgNzg1MEh6IHN0cmVhbSB3aGljaCBpcyBjb252ZXJ0ZWQg
-dG8gMjIuMDUga0h6IGJ5IHZsYywgYnV0IHdoZW4gSQp3YW50IGEgc3RyZWFtIGF0IDMzLjA3NWtI
-eiwgdmxjIGNvbnZlcnRzIGl0IHRvIDMya0h6LgoKU28sIHdpdGggdGhlIGNvbW1pdCBkOWFkNjI5
-NmVjM2I0YTU1YiAiQVNvQzogUENNX1JBVEU6IENoZWNrIGZvciBLTk9UCmFuZCBDT05USU5VT1VT
-IGZsYWdzIiwgSSBjYW5ub3QgZ2V0IHRoZSBleGFjdCBjbG9jayBJIHdhbnQuCgpEbyB5b3Uga25v
-dyB0aGUgcmVhc29uIG9mIHRoaXMgcGF0Y2gsIGFuZCwgaWYgaXQgbXVzdCBzdGF5LCBpcyB0aGVy
-ZQphbnkgcG9zc2libGUgYnlwYXNzPwoKVGhhbmtzLgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkg
-ICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5m
-cmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, Nov 26, 2013 at 08:09:16PM +0100, Jean-Francois Moine wrote:
+> Otherwise, removing SNDRV_PCM_RATE_CONTINUOUS in the codec, I can hear
+> the 7850Hz stream which is converted to 22.05 kHz by vlc, but when I
+> want a stream at 33.075kHz, vlc converts it to 32kHz.
+
+What is your fascination with doing stuff outside the specifications?
+The HDMI spec is quite clear:
+
+"An HDMI Source is permitted to transmit L-PCM audio data at sample rates
+of 32kHz, 44.1kHz, 48kHz, 88.2kHz, 96kHz, 176.4kHz or 192kHz."
+
+It goes on to say:
+
+"An HDMI Sink may accept L-PCM audio at sample rates of 32kHz, 44.1kHz,
+48kHz, 88.2kHz, 96kHz, 176.4kHz or 192kHz, and should indicate these
+capabilities in the E-EDID data structure."
+
+That doesn't say that 8kHz, 22.05kHz etc are valid sample rates for
+HDMI.  It may work for some devices but it's non-standard.
