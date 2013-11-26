@@ -1,22 +1,178 @@
-From: Li Xiubo <Li.Xiubo@freescale.com>
-Subject: RE: [PATCHv1] ASoC: SGTL5000: Fix kernel failed while getting
- regulator consumers
-Date: Wed, 27 Nov 2013 04:16:07 +0000
-Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F828CE014@039-SN2MPN1-012.039d.mgd.msft.net>
-References: <1385459713-6778-1-git-send-email-Li.Xiubo@freescale.com>
- <20131126115933.74840d1a@ipc1.ka-ro>
+From: mengdong.lin@intel.com
+Subject: [PATCH v3] ALSA: hda - suspend codecs in parallel
+Date: Tue, 26 Nov 2013 16:23:40 -0500
+Message-ID: <c189f56e72c77535ea3b394438525e75c0d9ad5e.1385496561.git.mengdong.lin@intel.com>
+References: <80986b9a2c4a68e7d537a3c3010cdecda1f8f9fc.1385446616.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20131126115933.74840d1a@ipc1.ka-ro>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?utf-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, Fabio Estevam <Fabio.Estevam@freescale.com>, "oskar@scara.com" <oskar@scara.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFC03261AC4
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 05:20:06 +0100 (CET)
+In-Reply-To: <80986b9a2c4a68e7d537a3c3010cdecda1f8f9fc.1385446616.git.mengdong.lin@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-DQo+ID4gIAllbHNlIHsNCj4gPiAgCQlyZXQgPSBzZ3RsNTAwMF9yZXBsYWNlX3ZkZGRfd2l0aF9s
-ZG8oY29kZWMpOw0KPiA+DQo+IFlvdSBjb3VsZCBmaXggdGhlIGNvZGluZyBzdHlsZSBpc3N1ZSAo
-YnJhY2VzIG9uIGJvdGggYnJhbmNoZXMgb2YgdGhlIGlmDQo+IGNsYXVzZSkgaGVyZSB0b28uDQo+
-IA0KPiANClllcywgSSB3aWxsLg0KDQpUaGFua3MuDQoNCg0K
+From: Mengdong Lin <mengdong.lin@intel.com>
+
+The time to suspend a single codec may be several hundreds of ms. When runtime
+power saving is disabled, driver suspend time can be long especially when there
+are more than one codec on the bus.
+
+To reduce driver suspend time, this patch creates a work queue for the bus, and
+suspends the codecs in parallel if there are multiple codecs on the bus.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index cb0c776..21c241c 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -104,6 +104,7 @@ static inline void hda_call_pm_notify(struct hda_bus *bus, bool power_up)
+ 	if (bus->ops.pm_notify)
+ 		bus->ops.pm_notify(bus, power_up);
+ }
++static void hda_pm_work(struct work_struct *work);
+ #else
+ #define codec_in_pm(codec)	0
+ static inline void hda_keep_power_on(struct hda_codec *codec) {}
+@@ -826,11 +827,18 @@ static int snd_hda_bus_free(struct hda_bus *bus)
+ 		kfree(bus->unsol);
+ 	list_for_each_entry_safe(codec, n, &bus->codec_list, list) {
+ 		snd_hda_codec_free(codec);
++		bus->num_codecs--;
+ 	}
+ 	if (bus->ops.private_free)
+ 		bus->ops.private_free(bus);
+ 	if (bus->workq)
+ 		destroy_workqueue(bus->workq);
++
++#ifdef CONFIG_PM
++	if (bus->pm_wq)
++		destroy_workqueue(bus->pm_wq);
++#endif
++
+ 	kfree(bus);
+ 	return 0;
+ }
+@@ -875,6 +883,7 @@ int snd_hda_bus_new(struct snd_card *card,
+ 		.dev_register = snd_hda_bus_dev_register,
+ 		.dev_free = snd_hda_bus_dev_free,
+ 	};
++	char tmp[32];
+ 
+ 	if (snd_BUG_ON(!temp))
+ 		return -EINVAL;
+@@ -911,6 +920,16 @@ int snd_hda_bus_new(struct snd_card *card,
+ 		return -ENOMEM;
+ 	}
+ 
++#ifdef CONFIG_PM
++	sprintf(tmp, "hda-pm-wq-card%d", card->number);
++	bus->pm_wq = create_workqueue(tmp);
++	if (!bus->pm_wq) {
++		snd_printk(KERN_ERR "cannot create PM workqueue\n");
++		snd_hda_bus_free(bus);
++		return -ENOMEM;
++	}
++#endif
++
+ 	err = snd_device_new(card, SNDRV_DEV_BUS, bus, &dev_ops);
+ 	if (err < 0) {
+ 		snd_hda_bus_free(bus);
+@@ -1428,6 +1447,7 @@ int snd_hda_codec_new(struct hda_bus *bus,
+ #ifdef CONFIG_PM
+ 	spin_lock_init(&codec->power_lock);
+ 	INIT_DELAYED_WORK(&codec->power_work, hda_power_work);
++	INIT_WORK(&codec->pm_work, hda_pm_work);
+ 	/* snd_hda_codec_new() marks the codec as power-up, and leave it as is.
+ 	 * the caller has to power down appropriatley after initialization
+ 	 * phase.
+@@ -1445,6 +1465,9 @@ int snd_hda_codec_new(struct hda_bus *bus,
+ 	}
+ 
+ 	list_add_tail(&codec->list, &bus->codec_list);
++	bus->num_codecs++;
++	workqueue_set_max_active(bus->pm_wq, bus->num_codecs);
++
+ 	bus->caddr_tbl[codec_addr] = codec;
+ 
+ 	codec->vendor_id = snd_hda_param_read(codec, AC_NODE_ROOT,
+@@ -5032,6 +5055,14 @@ int snd_hda_check_amp_list_power(struct hda_codec *codec,
+ 	return 0;
+ }
+ EXPORT_SYMBOL_HDA(snd_hda_check_amp_list_power);
++
++static void hda_pm_work(struct work_struct *work)
++{
++	struct hda_codec *codec =
++		container_of(work, struct hda_codec, pm_work);
++
++	hda_call_codec_suspend(codec, false);
++}
+ #endif
+ 
+ /*
+@@ -5598,9 +5629,17 @@ int snd_hda_suspend(struct hda_bus *bus)
+ 
+ 	list_for_each_entry(codec, &bus->codec_list, list) {
+ 		cancel_delayed_work_sync(&codec->jackpoll_work);
+-		if (hda_codec_is_power_on(codec))
+-			hda_call_codec_suspend(codec, false);
++		if (hda_codec_is_power_on(codec)) {
++			if (bus->num_codecs > 1)
++				queue_work(bus->pm_wq, &codec->pm_work);
++			else
++				hda_call_codec_suspend(codec, false);
++			}
+ 	}
++
++	if (bus->num_codecs > 1)
++		flush_workqueue(bus->pm_wq);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_HDA(snd_hda_suspend);
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 7aa9870..82807ef 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -673,6 +673,7 @@ struct hda_bus {
+ 
+ 	/* codec linked list */
+ 	struct list_head codec_list;
++	unsigned int num_codecs;
+ 	/* link caddr -> codec */
+ 	struct hda_codec *caddr_tbl[HDA_MAX_CODEC_ADDRESS + 1];
+ 
+@@ -683,6 +684,9 @@ struct hda_bus {
+ 	struct hda_bus_unsolicited *unsol;
+ 	char workq_name[16];
+ 	struct workqueue_struct *workq;	/* common workqueue for codecs */
++#ifdef CONFIG_PM
++	struct workqueue_struct *pm_wq;	/* workqueue to parallel codec PM */
++#endif
+ 
+ 	/* assigned PCMs */
+ 	DECLARE_BITMAP(pcm_dev_bits, SNDRV_PCM_DEVICES);
+@@ -916,6 +920,7 @@ struct hda_codec {
+ 	unsigned long power_off_acct;
+ 	unsigned long power_jiffies;
+ 	spinlock_t power_lock;
++	struct work_struct pm_work; /* task to parallel multi-codec PM */
+ #endif
+ 
+ 	/* filter the requested power state per nid */
+-- 
+1.8.1.2
