@@ -1,79 +1,60 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Drop bus->avoid_link_reset flag
-Date: Tue, 26 Nov 2013 12:01:22 +0100
-Message-ID: <1385463682-16558-1-git-send-email-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 05/17] firewire-lib: Add support for AMDTP transmit stream
+	and PCM capture
+Date: Tue, 26 Nov 2013 20:17:15 +0900
+Message-ID: <5294833B.2040308@sakamocchi.jp>
+References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
+	<1385186884-8259-6-git-send-email-o-takashi@sakamocchi.jp>
+	<52936C65.9020602@ladisch.de> <52947CF1.3000004@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A34E726509E
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 12:01:22 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 80F30A7B44
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 12:01:22 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <52947CF1.3000004@sakamocchi.jp>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Use bus->power_keep_link_on instead.  The controller shouldn't go to
-D3 when the link isn't reset, so essentially avoiding the link reset
-means avoiding the runtime PM.
+(Nov 26 2013 19:50), Takashi Sakamoto wrote:
+>>> +    s->data_block_counter = (s->data_block_counter + data_blocks) &
+>>> 0xff;
+>>> +    if (s->data_block_counter != data_block_counter) {
+>>> +        dev_err(&s->unit->device,
+>>> +            "Detect uncontinuity of CIP packets\n");
+>>> +        s->data_block_counter = data_block_counter;
+>>> +        return;
+>>> +    }
+>>
+>> The correct thing to do would be to insert the missing samples, or to
+>> stop the stream.
+>
+> OK. But I remember there are some devices which transmits packets with
+> 0x0000 in its SYT field (Digidesign 003 Rack, I don't touch its
+> development.). So I want to remove these codes if possible.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_codec.h      | 1 -
- sound/pci/hda/hda_intel.c      | 3 +--
- sound/pci/hda/patch_sigmatel.c | 3 ++-
- 3 files changed, 3 insertions(+), 4 deletions(-)
+Oops! I was confused between DBC and SYT. Digidesign 003 Rack transmits 
+DBC correctly. Please forget my reply about this...
 
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 77db69480c19..7aa9870040c1 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -698,7 +698,6 @@ struct hda_bus {
- 	unsigned int in_reset:1;	/* during reset operation */
- 	unsigned int power_keep_link_on:1; /* don't power off HDA link */
- 	unsigned int no_response_fallback:1; /* don't fallback at RIRB error */
--	unsigned int avoid_link_reset:1; /* don't reset link at runtime PM */
- 
- 	int primary_dig_out_type;	/* primary digital out PCM type */
- };
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 7a09404579a7..c6d230193da6 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2994,8 +2994,7 @@ static int azx_runtime_suspend(struct device *dev)
- 		  STATESTS_INT_MASK);
- 
- 	azx_stop_chip(chip);
--	if (!chip->bus->avoid_link_reset)
--		azx_enter_link_reset(chip);
-+	azx_enter_link_reset(chip);
- 	azx_clear_irq_pending(chip);
- 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
- 		hda_display_power(false);
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index d2cc0041d9d3..088a5afbd1b9 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -2094,7 +2094,8 @@ static void stac92hd83xxx_fixup_hp_mic_led(struct hda_codec *codec,
- 
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
- 		spec->mic_mute_led_gpio = 0x08; /* GPIO3 */
--		codec->bus->avoid_link_reset = 1;
-+		/* resetting controller clears GPIO, so we need to keep on */
-+		codec->bus->power_keep_link_on = 1;
- 	}
- }
- 
--- 
-1.8.4.3
+Here I think it better to insert the missing samples. Then just output 
+information and continue to handle samples.
+
+
+Thank you
+
+Takashi Sakamoto
+
+
+------------------------------------------------------------------------------
+Shape the Mobile Experience: Free Subscription
+Software experts and developers: Be at the forefront of tech innovation.
+Intel(R) Software Adrenaline delivers strategic insight and game-changing 
+conversations that shape the rapidly evolving mobile landscape. Sign up now. 
+http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
