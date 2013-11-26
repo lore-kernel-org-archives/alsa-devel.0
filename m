@@ -1,20 +1,17 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v2 3/9] ASoC: fsl-ssi: Add imx50-ssi and
- of_device_id matching
-Date: Tue, 26 Nov 2013 12:33:57 +0800
-Message-ID: <20131126043355.GI30476@S2101-09.ap.freescale.net>
-References: <1385378025-1262-1-git-send-email-mpa@pengutronix.de>
- <1385378025-1262-4-git-send-email-mpa@pengutronix.de>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [PATCH 2/2] ASoC: atmel: sam9x5_wm8731: remove
+	platform_set_drvdata
+Date: Tue, 26 Nov 2013 12:17:52 +0800
+Message-ID: <1385439472-23352-2-git-send-email-voice.shen@atmel.com>
+References: <1385439472-23352-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B1B7260818
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 05:31:35 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1385378025-1262-4-git-send-email-mpa@pengutronix.de>
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A26B260818
+ for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 05:45:30 +0100 (CET)
+In-Reply-To: <1385439472-23352-1-git-send-email-voice.shen@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,105 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, richard.genoud@gmail.com, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 25, 2013 at 12:13:39PM +0100, Markus Pargmann wrote:
-> There is a small but significant difference between imx21-ssi and
-> imx50-ssi and above.
+When call snd_soc_register_card, it will set driver data to this
+device through dev_set_drvdata, then in driver, no need to call
+platform_set_drvdata again, so remove it.
 
-Haven't we already agreed that imx51-ssi should be used in naming and
-compatible, since imx51 comes to the world earlier than imx50?
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
+---
+ sound/soc/atmel/sam9x5_wm8731.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-Shawn
-
-> imx21-ssi does not allow online reconfiguration of
-> some registers. They have to be configured at the beginning.
-> 
-> imx50-ssi has to reconfigure the SSI unit while it is running. Otherwise
-> it would not be possible to have two streams in parallel. The new SDMA
-> unit in imx50 and above has to be configured before the first DMA
-> request arrives. Therefor we need to setup TDMAE/RDMAE just before
-> starting the stream.
-> 
-> This patch introduces distinct imx50-ssi as compatible and adds
-> of_device_id matching in the probe function.
-> 
-> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> ---
->  sound/soc/fsl/fsl_ssi.c | 30 ++++++++++++++++++++++--------
->  1 file changed, 22 insertions(+), 8 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index 57e331f..5e95244 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -187,6 +187,20 @@ struct fsl_ssi_private {
->  	char name[1];
->  };
->  
-> +enum fsl_ssi_type {
-> +	FSL_SSI_MCP8610,
-> +	FSL_SSI_MX21,
-> +	FSL_SSI_MX50,
-> +};
-> +
-> +static const struct of_device_id fsl_ssi_ids[] = {
-> +	{ .compatible = "fsl,mpc8610-ssi", .data = (void *) FSL_SSI_MCP8610},
-> +	{ .compatible = "fsl,imx50-ssi", .data = (void *) FSL_SSI_MX50},
-> +	{ .compatible = "fsl,imx21-ssi", .data = (void *) FSL_SSI_MX21},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
-> +
->  /**
->   * fsl_ssi_isr: SSI interrupt handler
->   *
-> @@ -922,6 +936,8 @@ static int fsl_ssi_probe(struct platform_device *pdev)
->  	int ret = 0;
->  	struct device_attribute *dev_attr = NULL;
->  	struct device_node *np = pdev->dev.of_node;
-> +	const struct of_device_id *of_id;
-> +	enum fsl_ssi_type hw_type;
->  	const char *p, *sprop;
->  	const uint32_t *iprop;
->  	struct resource res;
-> @@ -936,6 +952,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
->  	if (!of_device_is_available(np))
->  		return -ENODEV;
->  
-> +	of_id = of_match_device(fsl_ssi_ids, &pdev->dev);
-> +	if (!of_id)
-> +		return -EINVAL;
-> +	hw_type = (enum fsl_ssi_type) of_id->data;
-> +
->  	/* We only support the SSI in "I2S Slave" mode */
->  	sprop = of_get_property(np, "fsl,mode", NULL);
->  	if (!sprop) {
-> @@ -1009,7 +1030,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
->                  /* Older 8610 DTs didn't have the fifo-depth property */
->  		ssi_private->fifo_depth = 8;
->  
-> -	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx21-ssi")) {
-> +	if (hw_type == FSL_SSI_MX21 || hw_type == FSL_SSI_MX50) {
->  		u32 dma_events[2];
->  		ssi_private->ssi_on_imx = true;
->  
-> @@ -1199,13 +1220,6 @@ static int fsl_ssi_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -static const struct of_device_id fsl_ssi_ids[] = {
-> -	{ .compatible = "fsl,mpc8610-ssi", },
-> -	{ .compatible = "fsl,imx21-ssi", },
-> -	{}
-> -};
-> -MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
-> -
->  static struct platform_driver fsl_ssi_driver = {
->  	.driver = {
->  		.name = "fsl-ssi-dai",
-> -- 
-> 1.8.4.2
-> 
+diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
+index 6dc33ac..4af6836 100644
+--- a/sound/soc/atmel/sam9x5_wm8731.c
++++ b/sound/soc/atmel/sam9x5_wm8731.c
+@@ -154,8 +154,6 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+ 	of_node_put(codec_np);
+ 	of_node_put(cpu_np);
+ 
+-	platform_set_drvdata(pdev, card);
+-
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+ 		dev_err(&pdev->dev,
+-- 
+1.7.9.5
