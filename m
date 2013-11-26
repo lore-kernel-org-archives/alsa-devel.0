@@ -1,43 +1,98 @@
-From: Richard Genoud <richard.genoud@gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: atmel: sam9x5_wm8731: remove platform_set_drvdata
-Date: Tue, 26 Nov 2013 12:42:40 +0100
-Message-ID: <CACQ1gAjdvo3WevirwpjmExiWN2raOENfPJjrrzOXVMRc9-=QnQ@mail.gmail.com>
-References: <1385439472-23352-1-git-send-email-voice.shen@atmel.com> <1385439472-23352-2-git-send-email-voice.shen@atmel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 06/17] firewire-lib: Add support for MIDI
+	capture/playback
+Date: Tue, 26 Nov 2013 21:04:08 +0900
+Message-ID: <52948E38.4090601@sakamocchi.jp>
+References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1385186884-8259-7-git-send-email-o-takashi@sakamocchi.jp>
+ <52936C6F.1030200@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <1385439472-23352-2-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E2632607B6
+ for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 13:04:11 +0100 (CET)
+In-Reply-To: <52936C6F.1030200@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-2013/11/26 Bo Shen <voice.shen@atmel.com>:
-> When call snd_soc_register_card, it will set driver data to this
-> device through dev_set_drvdata, then in driver, no need to call
-> platform_set_drvdata again, so remove it.
+(Nov 26 2013 00:27), Clemens Ladisch wrote:
+>> +++ b/sound/firewire/amdtp.h
+>> +/*
+>> + * This module supports maximum 2 MIDI channels.
+>> + * Then AMDTP packets include maximum 16 MIDI streams multiplexed.
+>> + * This is for our convinience.
+>> + */
+>> +#define AMDTP_MAX_CHANNELS_FOR_MIDI	2
 >
-> Signed-off-by: Bo Shen <voice.shen@atmel.com>
-> ---
->  sound/soc/atmel/sam9x5_wm8731.c |    2 --
->  1 file changed, 2 deletions(-)
+> This does not look like 16 ports ...
 >
-> diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
-> index 6dc33ac..4af6836 100644
-> --- a/sound/soc/atmel/sam9x5_wm8731.c
-> +++ b/sound/soc/atmel/sam9x5_wm8731.c
-> @@ -154,8 +154,6 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
->         of_node_put(codec_np);
->         of_node_put(cpu_np);
+>> -	unsigned int midi_ports;
+>> +	unsigned int midi_channels;
 >
-> -       platform_set_drvdata(pdev, card);
-> -
->         ret = snd_soc_register_card(card);
->         if (ret) {
->                 dev_err(&pdev->dev,
-> --
-> 1.7.9.5
->
-Ok for me
+> ... and "MIDI channels" means something different.  The RP-027 document
+> defines things like "MIDI data stream", "MIDI Conformant Data Channel",
+> and "MPX-MIDI Data Channel"; please clarify which one you mean.
 
-Tested-by: Richard Genoud <richard.genoud@gmail.com>
+In my understanding of RP-027:
+'MIDI data stream' is a data stream to/from each MIDI ports
+'MPX-MIDI data channel' is a data channel for each 'MIDI data stream'
+'MIDI comformant data channel' has multiplexed 8 'MPX-MIDI data channel's
+
+So I should write:
+
+/*
+  * This module supports maximum 2 MIDI comformant data channels.
+  * Each MIDI comformant data channels include 8 MPX-MIDI data stream.
+  * Each MPX-MIDI data streams includes data stream from/to MIDI ports.
+  * Then AMDTP packets include maximum 16 MIDI streams.
+  * This limitation is for our convinience.
+  */
+
+Is this OK?
+
+>> IEC 61883-6 refers to AMEI/MMA RP-027 for implementation of MIDI conformant
+>> data. This module implement 'MIDI1.0-1x-SPEED' mode. In the specification,
+>> 'MIDI1.0-2x/3x-SPEED' mode is defined with 'negotiation procedure' and
+>> 'encapsulation details'. But I cannot find specifications about them.
+>
+> The 2x/3x speed modes are not specified.
+
+OK. I'll add it in comment.
+
+>>   static void amdtp_fill_midi(struct amdtp_stream *s,
+>>   			    __be32 *buffer, unsigned int frames)
+>
+>> +			if ((s->midi[port] != NULL) &&
+>> +			    test_bit(port, &s->midi_triggered)) {
+>
+> The stream pointer (s->midi[]) is not needed when the stream is not
+> active (triggered).  So you could drop the midi_triggered field and
+> just update the stream pointer when triggering (like s->pcm).
+
+Oh. That's better.
+
+>> +			buffer[s->pcm_channels + c] =
+>> +				be32_to_cpu((b[0] << 24) | (b[1] << 16));
+>
+> Endian conversions are required only for values that occupy more than
+> one byte.  You should make 'buffer' a byte pointer so that you can copy
+> b[] directly.
+
+OK.
+
+
+Thank you
+
+Takashi Sakamoto
