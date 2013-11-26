@@ -1,56 +1,51 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 16/31] ASoC: tegra: use reset framework
-Date: Tue, 26 Nov 2013 13:14:10 +0000
-Message-ID: <20131126131410.GK14725@sirena.org.uk>
-References: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org>
- <1384548866-13141-17-git-send-email-swarren@wwwdotorg.org>
- <20131116095529.GF15393@sirena.org.uk>
- <528A4C8C.3030200@wwwdotorg.org>
- <20131118183716.GR2674@sirena.org.uk>
- <5293C787.1030005@wwwdotorg.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: atmel: sam9x5_wm8731: fix oops when unload
+ module
+Date: Tue, 26 Nov 2013 13:22:44 +0000
+Message-ID: <20131126132244.GP14725@sirena.org.uk>
+References: <1385439472-23352-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TgMkQZ2qGgUcJEW2"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="NsYpzUZ4z5mp8BBz"
+Return-path: <linux-sound-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <5293C787.1030005-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, pdeschrijver-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+In-Reply-To: <1385439472-23352-1-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com, richard.genoud@gmail.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---TgMkQZ2qGgUcJEW2
+--NsYpzUZ4z5mp8BBz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Nov 25, 2013 at 02:56:23PM -0700, Stephen Warren wrote:
+On Tue, Nov 26, 2013 at 12:17:51PM +0800, Bo Shen wrote:
 
-> You didn't ack this one patch; I assume that was just an oversight?
+> +	card->drvdata = priv;
 
-No, it was because it looked incorrect based on the lack of tie in
-between the description and the code.
+You should use snd_soc_card_set_drvdata() for this.
 
---TgMkQZ2qGgUcJEW2
+--NsYpzUZ4z5mp8BBz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSlJ6eAAoJELSic+t+oim9diIP/AkSZVy0d9HJKCtnkTmdpq1c
-j1AVxszF8xSFl+MiX7683cqKVBlYgzJp10HEQ5z3GwwkAklO4RrUxG2eUC7H1E6b
-R68eiaKWzNaShZ47EV2dZkarcDJ4D1iRXhcqWWobIspIPE8NOYWJ+WM1cJMoBUBe
-hT6Zv/txE01fnL+cd0J/kO3/qfIL4PzFfQb3TfvDOIt9OAEODbvXPbFxbteNy6Zz
-k73rQ5ik3D6TSjLC5FX17aCiripdu0zbQHlgq37OasfBekojmdFdJ5o+wu87vvaR
-VGS59EpxaKfwRkxp7XKzCJaVkqWjsXMELNkmJcfBuWy+MtLpkS9Zn0pWI+JoqMcq
-KZtBluv5vdVC8xbSWpfXba/+GhhTv+z7o+Dt4WT02k2DOy6FyCDhNMzDZpnNflrS
-65KLNK6yTb4alUktE1ffgCGKzs5qzEW2kanoJYS3jgijOoAOCYyRYeL0DfCtbItu
-bfuJYSh1Dj2HZE2UpOnEx2ez0PR457JE2P6pLNr7/qa/aUps9x+PkEep4jHIrGC1
-od4U4yOSXK0qfdD67ZpxCwhj63QrifdGh9eEWnoz0G8a2WboeZAWSS+jcxS3bLoC
-4lQXuolvZL+iNl+AwoKyOwv7YM0BnK+3Ds4s1g9T4r/xEzyWfnspMhLjyjNkmkYI
-gV0Gmo5M9oGbabnzWnUr
-=V0gA
+iQIcBAEBAgAGBQJSlKChAAoJELSic+t+oim9Td4P/0j9JI9GEx4dHiwErfQXWYjQ
+DSPIPWF01OT4JEBHHQ4BFVxEmlu7tPpwGjRS3pRGllQnbMMy4SeMRqq//QIkJQ0U
+870Hck6vhtYcuG51tuuYExUfoBWwMF5wKU9bU+ToRZSHtNhZTZL9vzCePAsbWlX/
++BFeRHm/zyZnTglxxi0a2Gxy2aT3QXtKlSlUlSiaq1UFt/zFao7bREv+vbjC/H7R
+1LKXdcXF/ZLNkmZYmzUopZ5Bvg9I8a+6hZdP2XJVmdsU0SfG9PlIIQNJ8pCiVIhC
+0Ha98cfZR8nWCSaJKxbUF3aVKNpM72hAmVclM6KemupUC+OdMPPaPWaiGDe3ltdD
+gXZzgx3uv6vfZmOfIYq9GHqcZQtYB46aqzcOl7DaqYP1mZgBCmJuE4iLrHybkO2U
+7E88MgqeDg3Pk6FsSOaRIbsyV6LCsH2yPNPxl3OUoLqBhmZB1jByeF1qVFGP3bbV
+KuU2ioI7dgWBTF3MTp4m/IC/2xAE4W5RoO4uvd9/tnF6s9IBiWfZsX5kc5DJK1Xy
+mxnavw0QeUxVVesPBLy9ZLTSJ8MW7tJxKldvmP6QfYN9LekdTwdzMk8usPYJZOTj
+HIoK7/22Z3pTtZehmpGkFn10LFwrxOrnoT4K5MZqYXNPLeptXH6fsz2zf+FEWLz8
+81BwxmUBPMr5ilq4YLBr
+=LeXy
 -----END PGP SIGNATURE-----
 
---TgMkQZ2qGgUcJEW2--
+--NsYpzUZ4z5mp8BBz--
