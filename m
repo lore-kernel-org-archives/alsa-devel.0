@@ -1,14 +1,19 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH] ASoC: kirkwood: Fix invalid SPDIF format
-Date: Tue, 26 Nov 2013 10:41:40 +0100
-Message-ID: <20131126104140.16e3eb87@armhf>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 02/17] firewire-lib: Add macros instead of
+ fixed value for AMDTP
+Date: Tue, 26 Nov 2013 18:50:08 +0900
+Message-ID: <52946ED0.8090203@sakamocchi.jp>
+References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1385186884-8259-3-git-send-email-o-takashi@sakamocchi.jp>
+ <52936C44.7070606@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
- by alsa0.perex.cz (Postfix) with ESMTP id CE4BF260844
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 10:39:32 +0100 (CET)
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F629260844
+ for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 10:50:12 +0100 (CET)
+In-Reply-To: <52936C44.7070606@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,44 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jason Cooper <jason@lakedaemon.net>
+To: Clemens Ladisch <clemens@ladisch.de>, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCByZW1vdmVzIHRoZSAzMiBiaXRzIGZvcm1hdCB3aGljaCBpcyBub3Qgc3VwcG9y
-dGVkIGJ5IFMvUERJRgpvdXRwdXQuCgpTaWduZWQtb2ZmLWJ5OiBKZWFuLUZyYW5jb2lzIE1vaW5l
-IDxtb2luZWpmQGZyZWUuZnI+Ci0tLQogc291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5j
-IHwgMTIgKysrKysrKystLS0tCiAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCA0IGRl
-bGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMu
-YyBiL3NvdW5kL3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMuYwppbmRleCBiMjdmODI2Li4wYjE4
-ZjY1IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mva2lya3dvb2Qva2lya3dvb2QtaTJzLmMKKysrIGIv
-c291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5jCkBAIC0zMyw2ICszMywxMCBAQAogCSBT
-TkRSVl9QQ01fRk1UQklUX1MyNF9MRSB8IFwKIAkgU05EUlZfUENNX0ZNVEJJVF9TMzJfTEUpCiAK
-KyNkZWZpbmUgS0lSS1dPT0RfU1BESUZfRk9STUFUUyBcCisJKFNORFJWX1BDTV9GTVRCSVRfUzE2
-X0xFIHwgXAorCSBTTkRSVl9QQ01fRk1UQklUX1MyNF9MRSkKKwogc3RhdGljIGludCBraXJrd29v
-ZF9pMnNfc2V0X2ZtdChzdHJ1Y3Qgc25kX3NvY19kYWkgKmNwdV9kYWksCiAJCXVuc2lnbmVkIGlu
-dCBmbXQpCiB7CkBAIC00NDksMTQgKzQ1MywxNCBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFp
-X2RyaXZlciBraXJrd29vZF9pMnNfZGFpWzJdID0gewogCQkuY2hhbm5lbHNfbWF4ID0gMiwKIAkJ
-LnJhdGVzID0gU05EUlZfUENNX1JBVEVfNDQxMDAgfCBTTkRSVl9QQ01fUkFURV80ODAwMCB8CiAJ
-CQkJU05EUlZfUENNX1JBVEVfOTYwMDAsCi0JCS5mb3JtYXRzID0gS0lSS1dPT0RfSTJTX0ZPUk1B
-VFMsCisJCS5mb3JtYXRzID0gS0lSS1dPT0RfU1BESUZfRk9STUFUUywKIAl9LAogCS5jYXB0dXJl
-ID0gewogCQkuY2hhbm5lbHNfbWluID0gMSwKIAkJLmNoYW5uZWxzX21heCA9IDIsCiAJCS5yYXRl
-cyA9IFNORFJWX1BDTV9SQVRFXzQ0MTAwIHwgU05EUlZfUENNX1JBVEVfNDgwMDAgfAogCQkJCVNO
-RFJWX1BDTV9SQVRFXzk2MDAwLAotCQkuZm9ybWF0cyA9IEtJUktXT09EX0kyU19GT1JNQVRTLAor
-CQkuZm9ybWF0cyA9IEtJUktXT09EX1NQRElGX0ZPUk1BVFMsCiAJfSwKIAkub3BzID0gJmtpcmt3
-b29kX2kyc19kYWlfb3BzLAogICAgIH0sCkBAIC00OTMsNyArNDk3LDcgQEAgc3RhdGljIHN0cnVj
-dCBzbmRfc29jX2RhaV9kcml2ZXIga2lya3dvb2RfaTJzX2RhaV9leHRjbGtbMl0gPSB7CiAJCS5y
-YXRlcyA9IFNORFJWX1BDTV9SQVRFXzgwMDBfMTkyMDAwIHwKIAkJCSBTTkRSVl9QQ01fUkFURV9D
-T05USU5VT1VTIHwKIAkJCSBTTkRSVl9QQ01fUkFURV9LTk9ULAotCQkuZm9ybWF0cyA9IEtJUktX
-T09EX0kyU19GT1JNQVRTLAorCQkuZm9ybWF0cyA9IEtJUktXT09EX1NQRElGX0ZPUk1BVFMsCiAJ
-fSwKIAkuY2FwdHVyZSA9IHsKIAkJLmNoYW5uZWxzX21pbiA9IDEsCkBAIC01MDEsNyArNTA1LDcg
-QEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIga2lya3dvb2RfaTJzX2RhaV9leHRj
-bGtbMl0gPSB7CiAJCS5yYXRlcyA9IFNORFJWX1BDTV9SQVRFXzgwMDBfMTkyMDAwIHwKIAkJCSBT
-TkRSVl9QQ01fUkFURV9DT05USU5VT1VTIHwKIAkJCSBTTkRSVl9QQ01fUkFURV9LTk9ULAotCQku
-Zm9ybWF0cyA9IEtJUktXT09EX0kyU19GT1JNQVRTLAorCQkuZm9ybWF0cyA9IEtJUktXT09EX1NQ
-RElGX0ZPUk1BVFMsCiAJfSwKIAkub3BzID0gJmtpcmt3b29kX2kyc19kYWlfb3BzLAogICAgIH0s
-CgotLSAKS2VuIGFyIGMnaGVudGHDsQl8CSAgICAgICoqIEJyZWl6aCBoYSBMaW51eCBhdGF2ISAq
-KgpKZWYJCXwJCWh0dHA6Ly9tb2luZWpmLmZyZWUuZnIvCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi Clemens,
+
+(Nov 26 2013 00:27), Clemens Ladisch wrote:
+> Takashi Sakamoto wrote:
+>> This patch adds some macros instead of fixed value for AMDTP in IEC 61883-6.
+>> These macros will also be used by followed patches.
+>
+>> +++ b/sound/firewire/amdtp.c
+>
+>> +/*
+>> + * Audio and Music transfer protocol specific parameters
+>> + * only "Clock-based rate controll mode" is supported
+>                               ^^^^^^^^
+>                               control
+
+OK. It's my typo.
+
+>> -		return 0xffff; /* no info */
+>> +		return CIP_SYT_NO_INFO; /* no info */
+>
+> The comment is now superfluous.
+
+Oops. I forget to remove it when I applied git-rebase to include my 
+patch about empty packet...
+
+Thank you.
+
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
