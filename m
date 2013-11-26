@@ -1,60 +1,51 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 05/17] firewire-lib: Add support for AMDTP transmit stream
-	and PCM capture
-Date: Tue, 26 Nov 2013 20:17:15 +0900
-Message-ID: <5294833B.2040308@sakamocchi.jp>
-References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
-	<1385186884-8259-6-git-send-email-o-takashi@sakamocchi.jp>
-	<52936C65.9020602@ladisch.de> <52947CF1.3000004@sakamocchi.jp>
+From: Richard Genoud <richard.genoud@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: atmel: sam9x5_wm8731: fix oops when unload module
+Date: Tue, 26 Nov 2013 12:32:23 +0100
+Message-ID: <CACQ1gAh3W3vyTpFv8CkbO8hFJtU_SDjVuh2pRSFWCbUZPmidsw@mail.gmail.com>
+References: <1385439472-23352-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <52947CF1.3000004@sakamocchi.jp>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <clemens@ladisch.de>, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <1385439472-23352-1-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-(Nov 26 2013 19:50), Takashi Sakamoto wrote:
->>> +    s->data_block_counter = (s->data_block_counter + data_blocks) &
->>> 0xff;
->>> +    if (s->data_block_counter != data_block_counter) {
->>> +        dev_err(&s->unit->device,
->>> +            "Detect uncontinuity of CIP packets\n");
->>> +        s->data_block_counter = data_block_counter;
->>> +        return;
->>> +    }
->>
->> The correct thing to do would be to insert the missing samples, or to
->> stop the stream.
+2013/11/26 Bo Shen <voice.shen@atmel.com>:
+> As the priv is not assigned to card->drvdata, it is NULL, so when
+> unload module, it will cause NULL pointer oops.
+> Assign priv to card->drvdata to fix this issue.
 >
-> OK. But I remember there are some devices which transmits packets with
-> 0x0000 in its SYT field (Digidesign 003 Rack, I don't touch its
-> development.). So I want to remove these codes if possible.
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> ---
+>  sound/soc/atmel/sam9x5_wm8731.c |    1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
+> index 992ae38..6dc33ac 100644
+> --- a/sound/soc/atmel/sam9x5_wm8731.c
+> +++ b/sound/soc/atmel/sam9x5_wm8731.c
+> @@ -99,6 +99,7 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+>
+>         card->dev = &pdev->dev;
+>         card->owner = THIS_MODULE;
+> +       card->drvdata = priv;
+>         card->dai_link = dai;
+>         card->num_links = 1;
+>         card->dapm_widgets = sam9x5_dapm_widgets;
+> --
+> 1.7.9.5
+>
+There's no oops any more !
 
-Oops! I was confused between DBC and SYT. Digidesign 003 Rack transmits 
-DBC correctly. Please forget my reply about this...
+Tested-by: Richard Genoud <richard.genoud@gmail.com>
 
-Here I think it better to insert the missing samples. Then just output 
-information and continue to handle samples.
+This should also go in -stable don't you think ?
 
+Maybe it's a bug on my kernel, but did you try to reload the module
+and play something ?
+On my board once I unload/reload it, there's no sound comming out
+(at least, it's better than a oops ! :) )
 
-Thank you
-
-Takashi Sakamoto
-
-
-------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+Richard.
