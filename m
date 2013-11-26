@@ -1,19 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 06/17] firewire-lib: Add support for MIDI
-	capture/playback
-Date: Tue, 26 Nov 2013 21:04:08 +0900
-Message-ID: <52948E38.4090601@sakamocchi.jp>
-References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
- <1385186884-8259-7-git-send-email-o-takashi@sakamocchi.jp>
- <52936C6F.1030200@ladisch.de>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: HD-Audio: Is it okay to delay resuming codecs when
+ resuming from S3?
+Date: Tue, 26 Nov 2013 12:16:47 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80141AF13@SHSMSX101.ccr.corp.intel.com>
+References: <F46914AEC2663F4A9BB62374E5EEF8F801419994@SHSMSX101.ccr.corp.intel.com>
+ <s5hbo17y69q.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E2632607B6
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 13:04:11 +0100 (CET)
-In-Reply-To: <52936C6F.1030200@ladisch.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF0AA2607D7
+ for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 13:16:59 +0100 (CET)
+In-Reply-To: <s5hbo17y69q.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,76 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-(Nov 26 2013 00:27), Clemens Ladisch wrote:
->> +++ b/sound/firewire/amdtp.h
->> +/*
->> + * This module supports maximum 2 MIDI channels.
->> + * Then AMDTP packets include maximum 16 MIDI streams multiplexed.
->> + * This is for our convinience.
->> + */
->> +#define AMDTP_MAX_CHANNELS_FOR_MIDI	2
->
-> This does not look like 16 ports ...
->
->> -	unsigned int midi_ports;
->> +	unsigned int midi_channels;
->
-> ... and "MIDI channels" means something different.  The RP-027 document
-> defines things like "MIDI data stream", "MIDI Conformant Data Channel",
-> and "MPX-MIDI Data Channel"; please clarify which one you mean.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, November 26, 2013 3:25 PM
+> To: Lin, Mengdong
+> Cc: alsa-devel@alsa-project.org
+> Subject: Re: HD-Audio: Is it okay to delay resuming codecs when resuming
+> from S3?
+> 
+> At Tue, 26 Nov 2013 07:16:59 +0000,
+> Lin, Mengdong wrote:
+> >
+> > Hi Takashi,
+> >
+> > Is it okay to delay resuming codecs when resuming from S3? i.e. skip
+> snd_hda_resume() in azx_resume()?
+> >
+> > This would reduce driver resume time from S3. And the codecs will be
+> resumed when being used for the 1st time after S3.
+> >
+> > Resuming a codec may cost more than 100ms. So even if we parallel
+> resuming codecs in snd_hda_resume(), driver resume time on some
+> platforms is still a bit long.
+> 
+> This causes problems on some hardware, e.g. inconsistent mute LEDs.
+> So you cannot do it unconditionally.  We did it in the past, but had to
+> switch the forced resume later.
 
-In my understanding of RP-027:
-'MIDI data stream' is a data stream to/from each MIDI ports
-'MPX-MIDI data channel' is a data channel for each 'MIDI data stream'
-'MIDI comformant data channel' has multiplexed 8 'MPX-MIDI data channel's
+Thanks for the info!
+Are these problems caused by inconsistency between system assumption after S3 and audio codec HW status in D3?
 
-So I should write:
+Why the mute LED can be inconsistent?
+Is the LED controlled by audio codec HW? If yes, the LED status when codec in D3 can be inconsistent from mute status before S3. 
+But if the LED is controlled by software, there seems no inconsistency.
 
-/*
-  * This module supports maximum 2 MIDI comformant data channels.
-  * Each MIDI comformant data channels include 8 MPX-MIDI data stream.
-  * Each MPX-MIDI data streams includes data stream from/to MIDI ports.
-  * Then AMDTP packets include maximum 16 MIDI streams.
-  * This limitation is for our convinience.
-  */
+> Maybe we can add a flag indicating that the codec resume may be delayed.
+> Then the bus resume checks the flags and skips the codec resume if it's
+> set.
 
-Is this OK?
+Okay. 
+And is it okay to parallel resuming multiple codecs, also using the bus work queue to parallel suspending codecs?
 
->> IEC 61883-6 refers to AMEI/MMA RP-027 for implementation of MIDI conformant
->> data. This module implement 'MIDI1.0-1x-SPEED' mode. In the specification,
->> 'MIDI1.0-2x/3x-SPEED' mode is defined with 'negotiation procedure' and
->> 'encapsulation details'. But I cannot find specifications about them.
->
-> The 2x/3x speed modes are not specified.
-
-OK. I'll add it in comment.
-
->>   static void amdtp_fill_midi(struct amdtp_stream *s,
->>   			    __be32 *buffer, unsigned int frames)
->
->> +			if ((s->midi[port] != NULL) &&
->> +			    test_bit(port, &s->midi_triggered)) {
->
-> The stream pointer (s->midi[]) is not needed when the stream is not
-> active (triggered).  So you could drop the midi_triggered field and
-> just update the stream pointer when triggering (like s->pcm).
-
-Oh. That's better.
-
->> +			buffer[s->pcm_channels + c] =
->> +				be32_to_cpu((b[0] << 24) | (b[1] << 16));
->
-> Endian conversions are required only for values that occupy more than
-> one byte.  You should make 'buffer' a byte pointer so that you can copy
-> b[] directly.
-
-OK.
-
-
-Thank you
-
-Takashi Sakamoto
+Regards
+Mengdong
