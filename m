@@ -1,34 +1,67 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH 16/31] ASoC: tegra: use reset framework
-Date: Tue, 26 Nov 2013 11:45:50 -0700
-Message-ID: <5294EC5E.3050207@wwwdotorg.org>
-References: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org> <1384548866-13141-17-git-send-email-swarren@wwwdotorg.org> <20131116095529.GF15393@sirena.org.uk> <528A4C8C.3030200@wwwdotorg.org> <20131118183716.GR2674@sirena.org.uk> <5293C787.1030005@wwwdotorg.org> <20131126131410.GK14725@sirena.org.uk> <5294CCDD.30803@wwwdotorg.org> <20131126183739.GR14725@sirena.org.uk>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: KNOT / CONTINUOUS (was: [PATCH] ASoC: kirkwood:
+ Fix invalid SPDIF format)
+Date: Tue, 26 Nov 2013 20:09:16 +0100
+Message-ID: <20131126200916.47a45929@armhf>
+References: <20131126104140.16e3eb87@armhf>
+ <s5h8uwba2gv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20131126183739.GR14725-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, pdeschrijver-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 697AF261643
+ for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 20:07:12 +0100 (CET)
+In-Reply-To: <s5h8uwba2gv.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Jason Cooper <jason@lakedaemon.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/26/2013 11:37 AM, Mark Brown wrote:
-> On Tue, Nov 26, 2013 at 09:31:25AM -0700, Stephen Warren wrote:
-> 
->> ... so, I thought you were OK with that one issue. Were there
->> other issues you didn't mention before?
-> 
-> Probably not but I'd need to reread it, I don't think I got that
-> much further than noticing that there weren't any clock changes
-> (the fact that the clock dependency was getting added in a DMA
-> series set off alarm bells).  To be honest given the number of
-> revisions that seem to be required I'd been expecting to see a
-> respin of the series, the ASoC generic DMA changes did need a
-> respin before they can be merged and I do want to get them into the
-> ASoC tree.
-
-OK, I'll repost.
-
-I'm waiting to repost the ASoC core changes until the dmaengine API
-change settles. Hopefully very soon.
+T24gVHVlLCAyNiBOb3YgMjAxMyAxMToyMDo0OCArMDEwMApUYWthc2hpIEl3YWkgPHRpd2FpQHN1
+c2UuZGU+IHdyb3RlOgoKPiBOb3QgYWdhaW5zdCB0aGUgcGF0Y2ggaXRzZWxmLCBidXQganVzdCBm
+b3VuZCBsb29raW5nIHRocm91Z2ggaXQ6Cj4gCj4gPiBAQCAtNDkzLDcgKzQ5Nyw3IEBAIHN0YXRp
+YyBzdHJ1Y3Qgc25kX3NvY19kYWlfZHJpdmVyIGtpcmt3b29kX2kyc19kYWlfZXh0Y2xrWzJdID0g
+ewo+ID4gIAkJLnJhdGVzID0gU05EUlZfUENNX1JBVEVfODAwMF8xOTIwMDAgfAo+ID4gIAkJCSBT
+TkRSVl9QQ01fUkFURV9DT05USU5VT1VTIHwKPiA+ICAJCQkgU05EUlZfUENNX1JBVEVfS05PVCwK
+PiAKPiBTZXR0aW5nIGJvdGggQ09OVElOVU9VUyBhbmQgS05PVCBkb2Vzbid0IG1ha2Ugc2Vuc2Uu
+CgpIaSBUYWthc2hpLAoKSSB1bmRlcnN0YW5kICdjb250aW51b3VzJywgYnV0IEkgY291bGQgbm90
+IGZpbmQgYW55IGNsZWFyIGRlZmluaXRpb24gb2YKJ2tub3QnLiBNYXkgeW91IGV4cGxhaW4gd2hh
+dCBpcyBpdHMgcHVycG9zZT8KCkJUVywgaWYgeW91IG1heSBoZWxwIG1lLCB3aGlsZSBsb29raW5n
+IGZvciBTTkRSVl9QQ01fUkFURV9LTk9ULApJIGZvdW5kIHRoaXMgc2VxdWVuY2UgaW4gc29jLXBj
+bS5jOgoKCWlmIChjb2RlY19zdHJlYW0tPnJhdGVzCgkJJiAoU05EUlZfUENNX1JBVEVfS05PVCB8
+IFNORFJWX1BDTV9SQVRFX0NPTlRJTlVPVVMpKQoJCWh3LT5yYXRlcyB8PSBjcHVfc3RyZWFtLT5y
+YXRlczsKCWlmIChjcHVfc3RyZWFtLT5yYXRlcwoJCSYgKFNORFJWX1BDTV9SQVRFX0tOT1QgfCBT
+TkRSVl9QQ01fUkFURV9DT05USU5VT1VTKSkKCQlody0+cmF0ZXMgfD0gY29kZWNfc3RyZWFtLT5y
+YXRlczsKCmFuZCBpdCBzZWVtcyByZWxhdGVkIHRvIHRoZSBwcm9ibGVtIEkgaGF2ZToKCi0gdGhl
+IGNwdSBkYWkgKGtpcmt3b29kIGkycykgbWF5IGdlbmVyYXRlIGFueSBjb250aW51b3VzIHJhdGUK
+ICA4MDAwLi4xOTIwMDAgYXMgc2hvd24gaW4gdGhlIHBhdGNoLgoKLSB0aGUgSERNSSB0cmFuc21p
+dHRlciAodGRhOTk4eCkgYWNjZXB0cyBlaXRoZXIgaTJzIG9yIHMvcGRpZiBhdWRpbwogIGlucHV0
+IGF0IGFueSBjb250aW51b3VzIHJhdGUsIGJ1dCB3aGVuIGdldHRpbmcgYXVkaW8gZnJvbSBzL3Bk
+aWYsIHRoZQogIGxvd2VzdCByYXRlIGlzIDIyLjA2a0h6LgoKSW4gdGhlIGFzc29jaWF0ZWQgY29k
+ZWMsIGlmIEkgZGVmaW5lOgoKCS5yYXRlcyA9IFNORFJWX1BDTV9SQVRFXzIyMDUwIHwKCQlTTkRS
+Vl9QQ01fUkFURV8zMjAwMCB8CgkJLi4uCgkJU05EUlZfUENNX1JBVEVfMTkyMDAwIHwKCQlTTkRS
+Vl9QQ01fUkFURV9DT05USU5VT1VTLAoKYXVkaW8gd29ya3MgZmluZSB3aXRoIHN0cmVhbXMgYXQg
+MzMuMDc1a0h6ICh0aGUga2lya3dvb2QgY2xvY2sgaXMKZXhhY3RseSAzMy4wNzVrSHopLiBCdXQg
+d2hlbiBJIHdhbnQgYSBzdHJlYW0gYXQgNzg1MEh6LCB0aGUga2lya3dvb2QKaTJzIGRyaXZlciBn
+ZXRzIGEgY2xvY2sgYXQgODAwMEh6IGFuZCB0aGUgdGRhOTk4eCBjYW5ub3QgZG8gYXVkaW8Kb3V0
+cHV0LgoKT3RoZXJ3aXNlLCByZW1vdmluZyBTTkRSVl9QQ01fUkFURV9DT05USU5VT1VTIGluIHRo
+ZSBjb2RlYywgSSBjYW4gaGVhcgp0aGUgNzg1MEh6IHN0cmVhbSB3aGljaCBpcyBjb252ZXJ0ZWQg
+dG8gMjIuMDUga0h6IGJ5IHZsYywgYnV0IHdoZW4gSQp3YW50IGEgc3RyZWFtIGF0IDMzLjA3NWtI
+eiwgdmxjIGNvbnZlcnRzIGl0IHRvIDMya0h6LgoKU28sIHdpdGggdGhlIGNvbW1pdCBkOWFkNjI5
+NmVjM2I0YTU1YiAiQVNvQzogUENNX1JBVEU6IENoZWNrIGZvciBLTk9UCmFuZCBDT05USU5VT1VT
+IGZsYWdzIiwgSSBjYW5ub3QgZ2V0IHRoZSBleGFjdCBjbG9jayBJIHdhbnQuCgpEbyB5b3Uga25v
+dyB0aGUgcmVhc29uIG9mIHRoaXMgcGF0Y2gsIGFuZCwgaWYgaXQgbXVzdCBzdGF5LCBpcyB0aGVy
+ZQphbnkgcG9zc2libGUgYnlwYXNzPwoKVGhhbmtzLgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkg
+ICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5m
+cmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
