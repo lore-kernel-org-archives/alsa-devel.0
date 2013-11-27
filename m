@@ -1,19 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Commit:ce6cfaf1 query for shared control
-Date: Wed, 27 Nov 2013 08:41:05 +0100
-Message-ID: <5295A211.9050801@metafoo.de>
-References: <CAES_P+-+CmRw5YYWeDPLd8-tn8tVCHmvJgWu9SS=TdeTnWzNUA@mail.gmail.com>
- <5293002A.9040505@metafoo.de>
- <CAES_P+8p3-RdGRj70XjghKZP2NGUbd_+08LPgMU=xM5aca_6ig@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs
+ for more Thinkpads with Conexant codec
+Date: Wed, 27 Nov 2013 08:49:44 +0100
+Message-ID: <5295A418.5010704@canonical.com>
+References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-025.synserver.de (smtp-out-112.synserver.de
- [212.40.185.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DE9F261B17
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 08:40:34 +0100 (CET)
-In-Reply-To: <CAES_P+8p3-RdGRj70XjghKZP2NGUbd_+08LPgMU=xM5aca_6ig@mail.gmail.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 344022619F0
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 08:49:45 +0100 (CET)
+In-Reply-To: <1385534846-20829-1-git-send-email-hui.wang@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,99 +22,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: noman pouigt <variksla@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: hui.wang@canonical.com, alex.hung@canonical.com, yk@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-On 11/25/2013 11:57 PM, noman pouigt wrote:
-> On Sun, Nov 24, 2013 at 11:45 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
->> On 11/25/2013 08:12 AM, noman pouigt wrote:
->>> Hello Lars,
->>>
->>> I was wondering if you can enlighten me
->>> on below query.
->>>
->>> Commit:ce6cfaf1
->>>
->>> From the commit text "The input and
->>> output paths for each widgets are only
->>> updated though during the respective run
->>> for that widget".
-> Thanks for replying.Probably my query was
-> not clear.I wanted to understand the commit
-> text which i quoted above.And my understanding
-> of that commit text is below:
+On 11/27/2013 07:47 AM, Hui Wang wrote:
+> Most Thinkpad Edge series laptops use conexant codec, so far although
+> the codecs have different minor Vendor Id and minor Subsystem Id,
+> they all belong to the cxt5066 family, this change can make the
+> mute/mic-mute LEDs support more generic among cxt_5066 family.
+> 
+> This design refers to the similar solution for the realtek codec
+> ALC269 family in the patch_realtek.c.
 
-The text just describes the behavior as it was before the commit, which was
-separate power-up/power-down sequence for each widget.
+Looks good to me!
 
->>> Does this commit text mean: when mux
->>> or mixer_power_update is called then only
->>> the widget is powered and it's peer- widget
->>> source(path source) and widget sink(path sink)?
->>
->> Hi,
->>
->> What the commit does is to make sure that if a control is shared between
->> multiple mixers/muxes to apply all the changes in the same update sequence.
->> Instead of, as it was done before, to run a update sequence for each mixer/mux.
-> I understood this as you have clearly mentioned it with a nice
-> diagram.
->>
->>>
->>>               +------+
->>>      A1 ------|      |
->>>               | MUX1 |----- C1
->>>      B1 ------|      |
->>>               +------+
->>>                  |
->>>       control ---+
->>>                  |
->>>               +------+
->>>      A2 ------|      |
->>>               | MUX2 |----- C2
->>>      B2 ------|      |
->>>               +------+
->>>
->>> Can I represent the above diagram as below:
->>>
->>> char *input_text_1[] = {
->>>         "A1", "B1"
->>> };
->>>
->>> struct soc_enum input_enum_1 =
->>>  SOC_ENUM_SINGLE(some_register, some_bit,
->>>                     2, input_text_1);
->>>
->>> char *input_text_2[] = {
->>>         "A2", "B2"
->>> };
->>> struct soc_enum input_enum_2 =
->>>  SOC_ENUM_SINGLE(some_register, some_bit,
->>>                   2, input_text_2);
->>>
->>>
->>> struct snd_kcontrol_new input_mux =
->>>    SOC_DAPM_ENUM("C1", input_enum_1);
->>> struct snd_kcontrol_new input_mux =
->>>    SOC_DAPM_ENUM("C2", input_enum_2);
->>>
->>> dapm_route[] {
->>> "A1", "control","C1"
->>> "B1", "control","C1"
->>> "A2", "control","C2"
->>> "B2", "control","C2"
->>> };
->>
->> The control part needs to have the name of one of the enum items. So this
->> would be { "A1", "A1", "C1" } and so on.
-> Yes makes sense as then only it will know
-> which widget to connect to as it has multiple
-> widgets.
->>
->> - Lars
->>
->>
->>
->>
->>
+Acked-by: David Henningsson <david.henningsson@canonical.com>
+
+> 
+> Cc: Alex Hung <alex.hung@canonical.com>
+> Cc: David Henningsson <david.henningsson@canonical.com>
+> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> ---
+>  sound/pci/hda/patch_conexant.c | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+> 
+> diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+> index c205bb1..1f2717f 100644
+> --- a/sound/pci/hda/patch_conexant.c
+> +++ b/sound/pci/hda/patch_conexant.c
+> @@ -3244,9 +3244,29 @@ enum {
+>  #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
+>  
+>  #include <linux/thinkpad_acpi.h>
+> +#include <acpi/acpi.h>
+>  
+>  static int (*led_set_func)(int, bool);
+>  
+> +static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void *context,
+> +				 void **rv)
+> +{
+> +	bool *found = context;
+> +	*found = true;
+> +	return AE_OK;
+> +}
+> +
+> +static bool is_thinkpad(struct hda_codec *codec)
+> +{
+> +	bool found = false;
+> +	if (codec->subsystem_id >> 16 != 0x17aa)
+> +		return false;
+> +	if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb, &found, NULL)) && found)
+> +		return true;
+> +	found = false;
+> +	return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb, &found, NULL)) && found;
+> +}
+> +
+>  static void update_tpacpi_mute_led(void *private_data, int enabled)
+>  {
+>  	struct hda_codec *codec = private_data;
+> @@ -3279,6 +3299,8 @@ static void cxt_fixup_thinkpad_acpi(struct hda_codec *codec,
+>  	bool removefunc = false;
+>  
+>  	if (action == HDA_FIXUP_ACT_PROBE) {
+> +		if (!is_thinkpad(codec))
+> +			return;
+>  		if (!led_set_func)
+>  			led_set_func = symbol_request(tpacpi_led_set);
+>  		if (!led_set_func) {
+> @@ -3494,6 +3516,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
+>  	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),
+>  	SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310", CXT_FIXUP_STEREO_DMIC),
+>  	SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205", CXT_FIXUP_STEREO_DMIC),
+> +	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", CXT_FIXUP_THINKPAD_ACPI),
+>  	SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004", CXT_PINCFG_LEMOTE_A1004),
+>  	SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205", CXT_PINCFG_LEMOTE_A1205),
+>  	{}
+> 
+
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
