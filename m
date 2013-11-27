@@ -1,16 +1,17 @@
-From: Denis Carikli <denis@eukrea.com>
-Subject: [PATCHv8][ 2/5] ARM: dts: mbimxsd25: Add sound support.
-Date: Wed, 27 Nov 2013 16:54:21 +0100
-Message-ID: <1385567664-758-2-git-send-email-denis@eukrea.com>
-References: <1385567664-758-1-git-send-email-denis@eukrea.com>
+From: Oleksij Rempel <linux@rempel-privat.de>
+Subject: [PATCH] ALSA: hda - limit mic boost on Asus UX31[A, E]
+Date: Wed, 27 Nov 2013 17:12:03 +0100
+Message-ID: <1385568723-4412-1-git-send-email-linux@rempel-privat.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
- by alsa0.perex.cz (Postfix) with ESMTP id 306082650AF
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 16:54:45 +0100 (CET)
-In-Reply-To: <1385567664-758-1-git-send-email-denis@eukrea.com>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id 852DD2625F7
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 17:12:15 +0100 (CET)
+Received: from ultralex.lan ([93.218.84.124]) by mail.gmx.com (mrgmx003) with
+ ESMTPSA (Nemesis) id 0MNZ9u-1VivlE4AbS-007DiV for
+ <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 17:12:15 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,33 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, =?UTF-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>, Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Denis Carikli <denis@eukrea.com>, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Oleksij Rempel <linux@rempel-privat.de>
 List-Id: alsa-devel@alsa-project.org
 
-Q2M6IFJvYiBIZXJyaW5nIDxyb2IuaGVycmluZ0BjYWx4ZWRhLmNvbT4KQ2M6IFBhd2VsIE1vbGwg
-PHBhd2VsLm1vbGxAYXJtLmNvbT4KQ2M6IE1hcmsgUnV0bGFuZCA8bWFyay5ydXRsYW5kQGFybS5j
-b20+CkNjOiBTdGVwaGVuIFdhcnJlbiA8c3dhcnJlbkB3d3dkb3Rvcmcub3JnPgpDYzogSWFuIENh
-bXBiZWxsIDxpamMrZGV2aWNldHJlZUBoZWxsaW9uLm9yZy51az4KQ2M6IGRldmljZXRyZWVAdmdl
-ci5rZXJuZWwub3JnCkNjOiBMaWFtIEdpcmR3b29kIDxsZ2lyZHdvb2RAZ21haWwuY29tPgpDYzog
-TWFyayBCcm93biA8YnJvb25pZUBrZXJuZWwub3JnPgpDYzogYWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCkNjOiBTYXNjaGEgSGF1ZXIgPGtlcm5lbEBwZW5ndXRyb25peC5kZT4KQ2M6IEVyaWMg
-QsOpbmFyZCA8ZXJpY0BldWtyZWEuY29tPgpTaWduZWQtb2ZmLWJ5OiBEZW5pcyBDYXJpa2xpIDxk
-ZW5pc0BldWtyZWEuY29tPgotLS0KQ2hhbmdlTG9nIHY3LT52ODoKLSBBanVzdGVkIHRvIG1hdGNo
-IHRoZSBkcml2ZXIgY2hhbmdlcy4KLS0tCiAuLi4vYm9vdC9kdHMvaW14MjUtZXVrcmVhLW1iaW14
-c2QyNS1iYXNlYm9hcmQuZHRzICB8ICAgIDkgKysrKysrKysrCiAxIGZpbGUgY2hhbmdlZCwgOSBp
-bnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vYm9vdC9kdHMvaW14MjUtZXVrcmVh
-LW1iaW14c2QyNS1iYXNlYm9hcmQuZHRzIGIvYXJjaC9hcm0vYm9vdC9kdHMvaW14MjUtZXVrcmVh
-LW1iaW14c2QyNS1iYXNlYm9hcmQuZHRzCmluZGV4IGZhZDY4NDcuLjgxM2ExMTQgMTAwNjQ0Ci0t
-LSBhL2FyY2gvYXJtL2Jvb3QvZHRzL2lteDI1LWV1a3JlYS1tYmlteHNkMjUtYmFzZWJvYXJkLmR0
-cworKysgYi9hcmNoL2FybS9ib290L2R0cy9pbXgyNS1ldWtyZWEtbWJpbXhzZDI1LWJhc2Vib2Fy
-ZC5kdHMKQEAgLTQzLDYgKzQzLDE0IEBACiAJCQlsaW51eCxkZWZhdWx0LXRyaWdnZXIgPSAiaGVh
-cnRiZWF0IjsKIAkJfTsKIAl9OworCisJc291bmQgeworCQljb21wYXRpYmxlID0gImV1a3JlYSxh
-c29jLXRsdjMyMCI7CisJCWV1a3JlYSxtb2RlbCA9ICJpbXgyNS1ldWtyZWEtdGx2MzIwYWljMjMi
-OworCQlzc2ktY29udHJvbGxlciA9IDwmc3NpMT47CisJCWZzbCxtdXgtaW50LXBvcnQgPSA8MT47
-CisJCWZzbCxtdXgtZXh0LXBvcnQgPSA8NT47CisJfTsKIH07CiAKICZhdWRtdXggewpAQCAtOTgs
-NiArMTA2LDcgQEAKIH07CiAKICZzc2kxIHsKKwljb2RlYy1oYW5kbGUgPSA8JnRsdjMyMGFpYzIz
-PjsKIAlmc2wsbW9kZSA9ICJpMnMtc2xhdmUiOwogCXN0YXR1cyA9ICJva2F5IjsKIH07Ci0tIAox
-LjcuOS41CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+This both devices need limit for internal dmic.
+
+Signed-off-by: Oleksij Rempel <linux@rempel-privat.de>
+---
+ sound/pci/hda/patch_realtek.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index c4ad9d1..b617aa4 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3798,6 +3798,7 @@ enum {
+ 	ALC271_FIXUP_HP_GATE_MIC_JACK,
+ 	ALC269_FIXUP_ACER_AC700,
+ 	ALC269_FIXUP_LIMIT_INT_MIC_BOOST,
++	ALC269VB_FIXUP_LIMIT_INT_DMIC_BOOST,
+ 	ALC269_FIXUP_LIMIT_INT_MIC_BOOST_MUTE_LED,
+ 	ALC269VB_FIXUP_ORDISSIMO_EVE2,
+ 	ALC283_FIXUP_CHROME_BOOK,
+@@ -4075,6 +4076,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
+ 	},
++	[ALC269VB_FIXUP_LIMIT_INT_DMIC_BOOST] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc269_fixup_limit_int_mic_boost,
++		.chained = true,
++		.chain_id = ALC269VB_FIXUP_DMIC,
++	},
+ 	[ALC269_FIXUP_LIMIT_INT_MIC_BOOST_MUTE_LED] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_limit_int_mic_boost,
+@@ -4189,8 +4196,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+ 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x1043, 0x115d, "Asus 1015E", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+-	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_DMIC),
+-	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_DMIC),
++	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_LIMIT_INT_DMIC_BOOST),
++	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_LIMIT_INT_DMIC_BOOST),
+ 	SND_PCI_QUIRK(0x1043, 0x16e3, "ASUS UX50", ALC269_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
+ 	SND_PCI_QUIRK(0x1043, 0x1b13, "Asus U41SV", ALC269_FIXUP_INV_DMIC),
+-- 
+1.8.3.2
