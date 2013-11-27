@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm5110: Remove output OSR and PGA
-	volume controls
-Date: Wed, 27 Nov 2013 16:30:40 +0000
-Message-ID: <20131127163040.GF14725@sirena.org.uk>
-References: <1385565733-8347-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: soc_pcm_init_runtime_hw: Fix
+ rate_max calculation
+Date: Wed, 27 Nov 2013 16:42:21 +0000
+Message-ID: <20131127164221.GI14725@sirena.org.uk>
+References: <1385542698-13362-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3924731871771910404=="
+Content-Type: multipart/mixed; boundary="===============7742097703049211366=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 07EE4264FBB
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 17:30:43 +0100 (CET)
-In-Reply-To: <1385565733-8347-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B2DF2264F23
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 17:42:25 +0100 (CET)
+In-Reply-To: <1385542698-13362-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3924731871771910404==
+--===============7742097703049211366==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Sa8Wro6pbQmO8/rE"
+	protocol="application/pgp-signature"; boundary="l7s6Pb57gD/AGupR"
 Content-Disposition: inline
 
 
---Sa8Wro6pbQmO8/rE
+--l7s6Pb57gD/AGupR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Nov 27, 2013 at 03:22:13PM +0000, Charles Keepax wrote:
-> These are managed automatically in current revisions.
+On Wed, Nov 27, 2013 at 09:58:17AM +0100, Lars-Peter Clausen wrote:
+> In order to make sure that the sample rate is in the supported range of both
+> components the maximum rate of the card should be the minimum of the maximum
+> rate of each components. There is one special case to consider though, if
+> max_rate is set to 0 this means there is no maximum specified, so use
+> min_not_zero() macro which will give use the desired result.
 
 Applied, thanks.
 
---Sa8Wro6pbQmO8/rE
+--l7s6Pb57gD/AGupR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSlh4tAAoJELSic+t+oim9vJIQAIHSNcMCjnEyMTCk+q3UZaA/
-9j+GUmRu2lcnLABSfLUpjm2tfi2z+HlZqF64+BXOm8mRyjoIuQVsruS+M2Xj5eot
-CmnTYPUh0rZn7kJ4qow5//bI1tfTU/MYX76lRiUnT4RANJINHbIp334LfDbyQ8Gm
-HbnRaXAppHQlKDXsKhfxQ36kTCqhJ7M+zwyhdNxSc4r+W9zjCtr65MHSphnXd2ke
-tu9oMmblC4dUMx5a1UcYcSarsa1CIJ2QYRqLqrGl5GB6hhiYA8IfbjJwrTan2LRZ
-aRdrbymhJpIMXpftEBx+A/QAmTS9Fy6LTxCdcnvvregzw0ggpGIcncCIoKlceDdC
-FjfJ9jDZSe3h8ukwdbOtvrs6n0jbGdM72Uulv0L200P5gWnZVXgnKaOH0GEukstS
-vsYR2i2DW2kfo6YXg3IXQy8hkQRSMG4Mhvu2kRA200UZ3dSLRnWEt5CchRp8NfZP
-UDJIT+Dg2TIN519w/8cWmRoCP5ppG7wmVJC0XIPJ/5pupuzVhKk3V5/8l6lcjTeV
-T854JiHd/LwZoC2eg+kjtwhVT1mCrVlGIjJH8vB6JVwS9EBm4enP4seOZvSLvaRH
-KbS/PjjtopKBDddUVFf2YJptfxcoVrLWP9000xzkRjB5S76HrMDVXOZtIBY4o/ls
-SdH26xR22SKKInyO4CCM
-=5ljY
+iQIcBAEBAgAGBQJSliDqAAoJELSic+t+oim913kP/2CK10/XoQjnS/oaRtW258tL
+2JjK+iP0pZf8dcUxrZeyf0Wcfu59weVeKuXveVqmY7xGkHBTpGtLLAwKT/VNZWwh
+SbOG3GzI7l0irJM/Dkq1l9Upb9BX/dvDdjzMuWTysIuQt6aHfxxl62TwZ/Vw6YWU
+BcumrcprxqiFjVJ15rTPmrd86MZgM4Z27F7vv1I+CHWi2yfJTiCe9XAjXiaxnT2u
+4z7BSw5MfwNF4gkTpjYKbwYAW06HiM1gTw2NXagjqQbU3JYA8eY+SlRW2yH2BuJW
+C/p3nSTio7RvwjTrz2yVuWiOtyBzObzlWow3Q+Vy/3TKNald+V9AAVitLyTmAtKH
+Q/GelZE5Av0s5kLFGRjAp7qi8Pw4epMS6lZXY+IbEhzaIswskAyCIE4YGMLE+Et9
+MzTW4W9aux2KSo8zCHKi+1k+MVzAvlLd15LBP9AetO4wUY3c3anrtqWpHKhFlYIF
+VxJ5wck0pPJC6eFm3jAn5WIzNTsScloC6Mc+Te0Nuw6JczNYyZfUUf+1/uA/Viju
++i1aBVRrQUyI1PrPQCC7W+x6rpb6CAUhn1c+6yS1u3iVCgpJctEkWrYsy9RyhXi+
+E6LhfWsHU21vZh/2TJn3Qr3YhTNjydKK57prVd1A0GxhDxyzge239MZuUr1aQvO9
+9f+tEaSsjoJwYOgvvPsV
+=1MbN
 -----END PGP SIGNATURE-----
 
---Sa8Wro6pbQmO8/rE--
+--l7s6Pb57gD/AGupR--
 
---===============3924731871771910404==
+--===============7742097703049211366==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3924731871771910404==--
+--===============7742097703049211366==--
