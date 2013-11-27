@@ -1,77 +1,52 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm5110: Remove output OSR and PGA volume
-	controls
-Date: Wed, 27 Nov 2013 15:22:13 +0000
-Message-ID: <1385565733-8347-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [Patch v2 1/2] ASoC: atmel: sam9x5_wm8731: fix oops when unload
+ module
+Date: Wed, 27 Nov 2013 15:50:23 +0000
+Message-ID: <20131127155023.GB14725@sirena.org.uk>
+References: <1385546710-11308-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0675E261AB2
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 16:25:02 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Nu+X7QXugUj78Xnb"
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1385546710-11308-1-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com, richard.genoud@gmail.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-These are managed automatically in current revisions.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm5110.c |   25 -------------------------
- 1 files changed, 0 insertions(+), 25 deletions(-)
+--Nu+X7QXugUj78Xnb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 0e63d8c..9eb8517 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -309,19 +309,6 @@ ARIZONA_MIXER_CONTROLS("SPKDAT1R", ARIZONA_OUT5RMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("SPKDAT2L", ARIZONA_OUT6LMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("SPKDAT2R", ARIZONA_OUT6RMIX_INPUT_1_SOURCE),
- 
--SOC_SINGLE("HPOUT1 High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_1L,
--	   ARIZONA_OUT1_OSR_SHIFT, 1, 0),
--SOC_SINGLE("HPOUT2 High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_2L,
--	   ARIZONA_OUT2_OSR_SHIFT, 1, 0),
--SOC_SINGLE("HPOUT3 High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_3L,
--	   ARIZONA_OUT3_OSR_SHIFT, 1, 0),
--SOC_SINGLE("Speaker High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_4L,
--	   ARIZONA_OUT4_OSR_SHIFT, 1, 0),
--SOC_SINGLE("SPKDAT1 High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_5L,
--	   ARIZONA_OUT5_OSR_SHIFT, 1, 0),
--SOC_SINGLE("SPKDAT2 High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_6L,
--	   ARIZONA_OUT6_OSR_SHIFT, 1, 0),
--
- SOC_DOUBLE_R("HPOUT1 Digital Switch", ARIZONA_DAC_DIGITAL_VOLUME_1L,
- 	     ARIZONA_DAC_DIGITAL_VOLUME_1R, ARIZONA_OUT1L_MUTE_SHIFT, 1, 1),
- SOC_DOUBLE_R("HPOUT2 Digital Switch", ARIZONA_DAC_DIGITAL_VOLUME_2L,
-@@ -354,18 +341,6 @@ SOC_DOUBLE_R_TLV("SPKDAT2 Digital Volume", ARIZONA_DAC_DIGITAL_VOLUME_6L,
- 		 ARIZONA_DAC_DIGITAL_VOLUME_6R, ARIZONA_OUT6L_VOL_SHIFT,
- 		 0xbf, 0, digital_tlv),
- 
--SOC_DOUBLE_R_RANGE_TLV("HPOUT1 Volume", ARIZONA_OUTPUT_PATH_CONFIG_1L,
--		       ARIZONA_OUTPUT_PATH_CONFIG_1R,
--		       ARIZONA_OUT1L_PGA_VOL_SHIFT,
--		       0x34, 0x40, 0, ana_tlv),
--SOC_DOUBLE_R_RANGE_TLV("HPOUT2 Volume", ARIZONA_OUTPUT_PATH_CONFIG_2L,
--		       ARIZONA_OUTPUT_PATH_CONFIG_2R,
--		       ARIZONA_OUT2L_PGA_VOL_SHIFT,
--		       0x34, 0x40, 0, ana_tlv),
--SOC_DOUBLE_R_RANGE_TLV("HPOUT3 Volume", ARIZONA_OUTPUT_PATH_CONFIG_3L,
--		       ARIZONA_OUTPUT_PATH_CONFIG_3R,
--		       ARIZONA_OUT3L_PGA_VOL_SHIFT, 0x34, 0x40, 0, ana_tlv),
--
- SOC_DOUBLE("SPKDAT1 Switch", ARIZONA_PDM_SPK1_CTRL_1, ARIZONA_SPK1L_MUTE_SHIFT,
- 	   ARIZONA_SPK1R_MUTE_SHIFT, 1, 1),
- SOC_DOUBLE("SPKDAT2 Switch", ARIZONA_PDM_SPK2_CTRL_1, ARIZONA_SPK2L_MUTE_SHIFT,
--- 
-1.7.2.5
+On Wed, Nov 27, 2013 at 06:05:09PM +0800, Bo Shen wrote:
+> As the priv is not assigned to card->drvdata, it is NULL, so when
+> unload module, it will cause NULL pointer oops.
+> Assign priv to card->drvdata to fix this issue.
+
+Applied, thanks.
+
+--Nu+X7QXugUj78Xnb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSlhS8AAoJELSic+t+oim92eEQAJPSHkuM7E5V7N5DOgO7w4va
+RJVMuJtgbfiYpCWPcpnWWUFO3+pDsolZU1f1dRMeczi52fFI4O9vrGK+9nqagJJX
+64xwrzoephkIxK5l+YBQeA0TBqqQQqGZqHGMRFURjnK3znn6UJx58URc1QM9Z0c3
+3fkzFTWaOqdkqFA+1ovihtxC4+1Np0sdgkDWvktNhxKgY8rCWJQg0jshBkXx9Ayq
+H6+IaT6tXuds4jca3fvAfo/SMXl7JrDtTaJ9a94ziQUdiCZS86VervjwhTzby3PV
+LEmdKVlhBlyPXap2oX3j0sfsVaVpv0pu8Nl58IJeekbt+DZhWb01ToJwfSHCggaP
+y3ZfEvMXLE3mByVyrqR0H4lCG3PODB/+Jzdg3zVluPZk4oMMuSh/Y7G+qRezgvwA
+ImuBD/dJYQ0ovS7Bd5E6wJNl36XG6tWJb3wgRt8u3rxAaJEilD8vLJQe4DTcF6AO
+34eTfqFQaBeV2hvVbevA3BQIUf2xvWFEBhbyMlmSUp2SYZFUiGs9r2+d2BFA9RAS
+uu6VrgfnK+MKh47lnH7c5onlsvF7K+ThLIf+sUui6pCMchXal8Nu7e5d4VVSBgIl
+a/0U+acIbgS6JyzaBz6kyXUjqX2RESAbfvyXLgW60OSK3gxdieOkwGMon3PQ0qnJ
+JiHEyTeuWAUJGhAA/i1T
+=vvUF
+-----END PGP SIGNATURE-----
+
+--Nu+X7QXugUj78Xnb--
