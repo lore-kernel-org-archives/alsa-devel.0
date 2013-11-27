@@ -1,22 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: samsung: Use ASoC dmaengine code
- where possible
-Date: Wed, 27 Nov 2013 15:05:34 +0000
-Message-ID: <20131127150534.GW14725@sirena.org.uk>
-References: <1384264120-24750-1-git-send-email-broonie@kernel.org>
- <1384264120-24750-2-git-send-email-broonie@kernel.org>
- <CAAgF-BcJZrwwHYtk6pKj_-+CzmbhhV4V_Z02kjHveObOR6oiFQ@mail.gmail.com>
- <20131126102311.GW14725@sirena.org.uk>
- <CAAgF-BdWLXeLyVZv-durSxxVEm4hHaC7sXQuz_pGLLY-x7XS+w@mail.gmail.com>
- <20131126122031.GA14725@sirena.org.uk>
- <CAAgF-Bc5mEmOBFZak2rSuCqs+xjcrNqnVNZc=zno8F3VOCuuwA@mail.gmail.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm5110: Remove output OSR and PGA volume
+	controls
+Date: Wed, 27 Nov 2013 15:22:13 +0000
+Message-ID: <1385565733-8347-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3836422542178709929=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id CEE90261AB2
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 16:05:40 +0100 (CET)
-In-Reply-To: <CAAgF-Bc5mEmOBFZak2rSuCqs+xjcrNqnVNZc=zno8F3VOCuuwA@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0675E261AB2
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 16:25:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,80 +19,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Padma Venkat <padma.kvr@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Padmavathi Venna <padma.v@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, linaro-kernel@lists.linaro.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+These are managed automatically in current revisions.
 
---===============3836422542178709929==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HRz4dlJa0zmFsB3a"
-Content-Disposition: inline
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm5110.c |   25 -------------------------
+ 1 files changed, 0 insertions(+), 25 deletions(-)
 
-
---HRz4dlJa0zmFsB3a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Nov 27, 2013 at 06:08:47PM +0530, Padma Venkat wrote:
-> On Tue, Nov 26, 2013 at 5:50 PM, Mark Brown <broonie@kernel.org> wrote:
-
-> > So this is 16 bit stereo or something, and did it work beforehand?  Like
-> > I say I suspect the DMA is ending up being configured with the wrong
-> > transfer size, can you check what actually happens there please - what's
-> > different about the configuration that the DMA controller gets?  I don't
-> > have any Exynos systems with mainline audio support so I can't test
-> > anything myself.
-
-> This stream was working before. dma_size in i2s_hw_params not getting
-> effected as dma_data is getting initialized only at dai probe time. So
-> by default the dma_size is always 4 which is initialized at driver
-> probe time. The fifo_size of dai is also always 0. It is not getting
-> passed from dai driver. I just hard coded the dma_size to 2 and
-
-But if it's initialised at probe time then when is it getting
-overwritten?  This must be something triggered by DT which unfortunately
-I can't test.  It's a bit of a shame that the flows are different
-between the DT and non-DT cases.
-
-The FIFO size looks like a difference between the pl330 and pl080, it
-doesn't seem to matter for pl080.  We just need to set it though.
-
-> fifo_size to 32 then I can hear the audio only on right ear phone.
-> Still underrun error message appears.
-
-Are you sure that dma_size should be 2?  The i2s DAI driver seems to be
-hard coding it to 4.
-
---HRz4dlJa0zmFsB3a
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSlgo7AAoJELSic+t+oim9Zx4P/13EyND/WVeCdcaA2K0xUeEc
-Eu9QdSHVpHGIOaMqabe6t77GOcdnRAFhr9VVPAeZj/L8lpyMLerhy8rf1uUMicnI
-torF+fKs8VMiq3mPVUY/kRi19JryGyLzMWozYPlgg2LtNMZQfeyWw6uyVKnwUed5
-p/pJFJvvXZMGg08395fcJVit7//A5Ijhuv8Wd1dcVNcQwJ1IlswYCmp7znW1zpr6
-qOy87RU9KeCdxK4SzULKdHxNlg7LNiH2o5tKIRZBYr5REIa8K7whxgXhFe8lbugP
-Ps9Xq/QZS+etvSPRtgpa2yiFxZgqbu2roV28rSQkFPpr9LWMYV21YPygP1J6eWCB
-K7+rSmAduAYtCx3c1wFZqTllHQJG5EXS+JrVgXC0yYSzBcqjyVwasA+lg3Zyulbr
-faDpXLVEyHEFYMfKSRQ4rafTunPVShyZ8h/t8zCelIfEyWDp2KEOXegiBBIG8W7i
-tCI5+CShkFdlheQD9bvq3z/aO6yQvhQhUIET/4CMBPlfcFjDrse7CtoyT1+W/kZI
-kVCnHTriAO1N+MronT0gxRiUGQ+lqyPbQdyQG1akaZ0IneuWl6tIW9lLvmyxNerZ
-6dnwF2RZcSsGcAWsPELMv2q+dKJfNwyjyRP1mvvV8LAv2cJdqLfQ77w3gj/dwP8o
-j1Q6aUBdSXaTNNZcK8LM
-=DtKw
------END PGP SIGNATURE-----
-
---HRz4dlJa0zmFsB3a--
-
---===============3836422542178709929==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3836422542178709929==--
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 0e63d8c..9eb8517 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -309,19 +309,6 @@ ARIZONA_MIXER_CONTROLS("SPKDAT1R", ARIZONA_OUT5RMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("SPKDAT2L", ARIZONA_OUT6LMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("SPKDAT2R", ARIZONA_OUT6RMIX_INPUT_1_SOURCE),
+ 
+-SOC_SINGLE("HPOUT1 High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_1L,
+-	   ARIZONA_OUT1_OSR_SHIFT, 1, 0),
+-SOC_SINGLE("HPOUT2 High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_2L,
+-	   ARIZONA_OUT2_OSR_SHIFT, 1, 0),
+-SOC_SINGLE("HPOUT3 High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_3L,
+-	   ARIZONA_OUT3_OSR_SHIFT, 1, 0),
+-SOC_SINGLE("Speaker High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_4L,
+-	   ARIZONA_OUT4_OSR_SHIFT, 1, 0),
+-SOC_SINGLE("SPKDAT1 High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_5L,
+-	   ARIZONA_OUT5_OSR_SHIFT, 1, 0),
+-SOC_SINGLE("SPKDAT2 High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_6L,
+-	   ARIZONA_OUT6_OSR_SHIFT, 1, 0),
+-
+ SOC_DOUBLE_R("HPOUT1 Digital Switch", ARIZONA_DAC_DIGITAL_VOLUME_1L,
+ 	     ARIZONA_DAC_DIGITAL_VOLUME_1R, ARIZONA_OUT1L_MUTE_SHIFT, 1, 1),
+ SOC_DOUBLE_R("HPOUT2 Digital Switch", ARIZONA_DAC_DIGITAL_VOLUME_2L,
+@@ -354,18 +341,6 @@ SOC_DOUBLE_R_TLV("SPKDAT2 Digital Volume", ARIZONA_DAC_DIGITAL_VOLUME_6L,
+ 		 ARIZONA_DAC_DIGITAL_VOLUME_6R, ARIZONA_OUT6L_VOL_SHIFT,
+ 		 0xbf, 0, digital_tlv),
+ 
+-SOC_DOUBLE_R_RANGE_TLV("HPOUT1 Volume", ARIZONA_OUTPUT_PATH_CONFIG_1L,
+-		       ARIZONA_OUTPUT_PATH_CONFIG_1R,
+-		       ARIZONA_OUT1L_PGA_VOL_SHIFT,
+-		       0x34, 0x40, 0, ana_tlv),
+-SOC_DOUBLE_R_RANGE_TLV("HPOUT2 Volume", ARIZONA_OUTPUT_PATH_CONFIG_2L,
+-		       ARIZONA_OUTPUT_PATH_CONFIG_2R,
+-		       ARIZONA_OUT2L_PGA_VOL_SHIFT,
+-		       0x34, 0x40, 0, ana_tlv),
+-SOC_DOUBLE_R_RANGE_TLV("HPOUT3 Volume", ARIZONA_OUTPUT_PATH_CONFIG_3L,
+-		       ARIZONA_OUTPUT_PATH_CONFIG_3R,
+-		       ARIZONA_OUT3L_PGA_VOL_SHIFT, 0x34, 0x40, 0, ana_tlv),
+-
+ SOC_DOUBLE("SPKDAT1 Switch", ARIZONA_PDM_SPK1_CTRL_1, ARIZONA_SPK1L_MUTE_SHIFT,
+ 	   ARIZONA_SPK1R_MUTE_SHIFT, 1, 1),
+ SOC_DOUBLE("SPKDAT2 Switch", ARIZONA_PDM_SPK2_CTRL_1, ARIZONA_SPK2L_MUTE_SHIFT,
+-- 
+1.7.2.5
