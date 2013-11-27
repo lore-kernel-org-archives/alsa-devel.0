@@ -1,16 +1,18 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH v3] ALSA: hda - suspend codecs in parallel
-Date: Tue, 26 Nov 2013 16:23:40 -0500
-Message-ID: <c189f56e72c77535ea3b394438525e75c0d9ad5e.1385496561.git.mengdong.lin@intel.com>
-References: <80986b9a2c4a68e7d537a3c3010cdecda1f8f9fc.1385446616.git.mengdong.lin@intel.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - Enable mute/mic-mute LEDs for
+ more Thinkpads with Conexant codec
+Date: Wed, 27 Nov 2013 06:17:16 +0100
+Message-ID: <5295805C.8060104@canonical.com>
+References: <1385522812-29678-1-git-send-email-hui.wang@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id BFC03261AC4
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 05:20:06 +0100 (CET)
-In-Reply-To: <80986b9a2c4a68e7d537a3c3010cdecda1f8f9fc.1385446616.git.mengdong.lin@intel.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FF72261AC4
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 06:17:20 +0100 (CET)
+In-Reply-To: <1385522812-29678-1-git-send-email-hui.wang@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,159 +22,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+To: Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: hui.wang@canonical.com, alex.hung@canonical.com, yk@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+On 11/27/2013 04:26 AM, Hui Wang wrote:
+> Most Thinkpad Edge series laptops use conexant codec, so far although
+> the codecs have different minor Vendor Id and minor Subsystem Id, but
+> they all belong to the cxt_5066 family, this change can make the
+> mute/mic-mute LEDs support more generic among cxt_5066 family.
 
-The time to suspend a single codec may be several hundreds of ms. When runtime
-power saving is disabled, driver suspend time can be long especially when there
-are more than one codec on the bus.
+Hi Hui and thanks for your patch!
 
-To reduce driver suspend time, this patch creates a work queue for the bus, and
-suspends the codecs in parallel if there are multiple codecs on the bus.
+It's also nice that you have tested the patch on several machines and
+found it to be working.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+As for the actual implementation - as the rest of the thinkpad-acpi code
+is copy-pasted between patch_realtek and patch_conexant, I think this
+would also apply here, i e, no code in hda_local.h, instead copy from
+patch_realtek to patch_conexant as necessary.
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index cb0c776..21c241c 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -104,6 +104,7 @@ static inline void hda_call_pm_notify(struct hda_bus *bus, bool power_up)
- 	if (bus->ops.pm_notify)
- 		bus->ops.pm_notify(bus, power_up);
- }
-+static void hda_pm_work(struct work_struct *work);
- #else
- #define codec_in_pm(codec)	0
- static inline void hda_keep_power_on(struct hda_codec *codec) {}
-@@ -826,11 +827,18 @@ static int snd_hda_bus_free(struct hda_bus *bus)
- 		kfree(bus->unsol);
- 	list_for_each_entry_safe(codec, n, &bus->codec_list, list) {
- 		snd_hda_codec_free(codec);
-+		bus->num_codecs--;
- 	}
- 	if (bus->ops.private_free)
- 		bus->ops.private_free(bus);
- 	if (bus->workq)
- 		destroy_workqueue(bus->workq);
-+
-+#ifdef CONFIG_PM
-+	if (bus->pm_wq)
-+		destroy_workqueue(bus->pm_wq);
-+#endif
-+
- 	kfree(bus);
- 	return 0;
- }
-@@ -875,6 +883,7 @@ int snd_hda_bus_new(struct snd_card *card,
- 		.dev_register = snd_hda_bus_dev_register,
- 		.dev_free = snd_hda_bus_dev_free,
- 	};
-+	char tmp[32];
- 
- 	if (snd_BUG_ON(!temp))
- 		return -EINVAL;
-@@ -911,6 +920,16 @@ int snd_hda_bus_new(struct snd_card *card,
- 		return -ENOMEM;
- 	}
- 
-+#ifdef CONFIG_PM
-+	sprintf(tmp, "hda-pm-wq-card%d", card->number);
-+	bus->pm_wq = create_workqueue(tmp);
-+	if (!bus->pm_wq) {
-+		snd_printk(KERN_ERR "cannot create PM workqueue\n");
-+		snd_hda_bus_free(bus);
-+		return -ENOMEM;
-+	}
-+#endif
-+
- 	err = snd_device_new(card, SNDRV_DEV_BUS, bus, &dev_ops);
- 	if (err < 0) {
- 		snd_hda_bus_free(bus);
-@@ -1428,6 +1447,7 @@ int snd_hda_codec_new(struct hda_bus *bus,
- #ifdef CONFIG_PM
- 	spin_lock_init(&codec->power_lock);
- 	INIT_DELAYED_WORK(&codec->power_work, hda_power_work);
-+	INIT_WORK(&codec->pm_work, hda_pm_work);
- 	/* snd_hda_codec_new() marks the codec as power-up, and leave it as is.
- 	 * the caller has to power down appropriatley after initialization
- 	 * phase.
-@@ -1445,6 +1465,9 @@ int snd_hda_codec_new(struct hda_bus *bus,
- 	}
- 
- 	list_add_tail(&codec->list, &bus->codec_list);
-+	bus->num_codecs++;
-+	workqueue_set_max_active(bus->pm_wq, bus->num_codecs);
-+
- 	bus->caddr_tbl[codec_addr] = codec;
- 
- 	codec->vendor_id = snd_hda_param_read(codec, AC_NODE_ROOT,
-@@ -5032,6 +5055,14 @@ int snd_hda_check_amp_list_power(struct hda_codec *codec,
- 	return 0;
- }
- EXPORT_SYMBOL_HDA(snd_hda_check_amp_list_power);
-+
-+static void hda_pm_work(struct work_struct *work)
-+{
-+	struct hda_codec *codec =
-+		container_of(work, struct hda_codec, pm_work);
-+
-+	hda_call_codec_suspend(codec, false);
-+}
- #endif
- 
- /*
-@@ -5598,9 +5629,17 @@ int snd_hda_suspend(struct hda_bus *bus)
- 
- 	list_for_each_entry(codec, &bus->codec_list, list) {
- 		cancel_delayed_work_sync(&codec->jackpoll_work);
--		if (hda_codec_is_power_on(codec))
--			hda_call_codec_suspend(codec, false);
-+		if (hda_codec_is_power_on(codec)) {
-+			if (bus->num_codecs > 1)
-+				queue_work(bus->pm_wq, &codec->pm_work);
-+			else
-+				hda_call_codec_suspend(codec, false);
-+			}
- 	}
-+
-+	if (bus->num_codecs > 1)
-+		flush_workqueue(bus->pm_wq);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_HDA(snd_hda_suspend);
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 7aa9870..82807ef 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -673,6 +673,7 @@ struct hda_bus {
- 
- 	/* codec linked list */
- 	struct list_head codec_list;
-+	unsigned int num_codecs;
- 	/* link caddr -> codec */
- 	struct hda_codec *caddr_tbl[HDA_MAX_CODEC_ADDRESS + 1];
- 
-@@ -683,6 +684,9 @@ struct hda_bus {
- 	struct hda_bus_unsolicited *unsol;
- 	char workq_name[16];
- 	struct workqueue_struct *workq;	/* common workqueue for codecs */
-+#ifdef CONFIG_PM
-+	struct workqueue_struct *pm_wq;	/* workqueue to parallel codec PM */
-+#endif
- 
- 	/* assigned PCMs */
- 	DECLARE_BITMAP(pcm_dev_bits, SNDRV_PCM_DEVICES);
-@@ -916,6 +920,7 @@ struct hda_codec {
- 	unsigned long power_off_acct;
- 	unsigned long power_jiffies;
- 	spinlock_t power_lock;
-+	struct work_struct pm_work; /* task to parallel multi-codec PM */
- #endif
- 
- 	/* filter the requested power state per nid */
+While copy-pasting code is not the most elegant of solutions, I got the
+impression from Takashi that he preferred that for now.
+
+> 
+> Cc: Alex Hung <alex.hung@canonical.com>
+> Cc: David Henningsson <david.henningsson@canonical.com>
+> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> ---
+>  sound/pci/hda/hda_local.h      | 22 ++++++++++++++++++++++
+>  sound/pci/hda/patch_conexant.c |  3 +++
+>  sound/pci/hda/patch_realtek.c  | 20 --------------------
+>  3 files changed, 25 insertions(+), 20 deletions(-)
+> 
+> diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
+> index d398b64..1155958 100644
+> --- a/sound/pci/hda/hda_local.h
+> +++ b/sound/pci/hda/hda_local.h
+> @@ -777,4 +777,26 @@ void snd_hdmi_write_eld_info(struct hdmi_eld *eld,
+>  #define SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE 80
+>  void snd_print_channel_allocation(int spk_alloc, char *buf, int buflen);
+>  
+> +#if IS_ENABLED(CONFIG_THINKPAD_ACPI)
+> +#include <acpi/acpi.h>
+> +
+> +static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void *context,
+> +				 void **rv)
+> +{
+> +	bool *found = context;
+> +	*found = true;
+> +	return AE_OK;
+> +}
+> +
+> +static inline bool is_thinkpad(struct hda_codec *codec)
+> +{
+> +	bool found = false;
+> +	if (codec->subsystem_id >> 16 != 0x17aa)
+> +		return false;
+> +	if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb, &found, NULL)) && found)
+> +		return true;
+> +	found = false;
+> +	return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb, &found, NULL)) && found;
+> +}
+> +#endif
+>  #endif /* __SOUND_HDA_LOCAL_H */
+> diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+> index c205bb1..8063ae9 100644
+> --- a/sound/pci/hda/patch_conexant.c
+> +++ b/sound/pci/hda/patch_conexant.c
+> @@ -3279,6 +3279,8 @@ static void cxt_fixup_thinkpad_acpi(struct hda_codec *codec,
+>  	bool removefunc = false;
+>  
+>  	if (action == HDA_FIXUP_ACT_PROBE) {
+> +		if (!is_thinkpad(codec))
+> +			return;
+>  		if (!led_set_func)
+>  			led_set_func = symbol_request(tpacpi_led_set);
+>  		if (!led_set_func) {
+> @@ -3494,6 +3496,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
+>  	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),
+>  	SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310", CXT_FIXUP_STEREO_DMIC),
+>  	SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205", CXT_FIXUP_STEREO_DMIC),
+> +	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", CXT_FIXUP_THINKPAD_ACPI),
+>  	SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004", CXT_PINCFG_LEMOTE_A1004),
+>  	SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205", CXT_PINCFG_LEMOTE_A1205),
+>  	{}
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 5e42059..bedf35f 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -3673,29 +3673,9 @@ static void alc290_fixup_mono_speakers(struct hda_codec *codec,
+>  #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
+>  
+>  #include <linux/thinkpad_acpi.h>
+> -#include <acpi/acpi.h>
+>  
+>  static int (*led_set_func)(int, bool);
+>  
+> -static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void *context,
+> -				 void **rv)
+> -{
+> -	bool *found = context;
+> -	*found = true;
+> -	return AE_OK;
+> -}
+> -
+> -static bool is_thinkpad(struct hda_codec *codec)
+> -{
+> -	bool found = false;
+> -	if (codec->subsystem_id >> 16 != 0x17aa)
+> -		return false;
+> -	if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb, &found, NULL)) && found)
+> -		return true;
+> -	found = false;
+> -	return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb, &found, NULL)) && found;
+> -}
+> -
+>  static void update_tpacpi_mute_led(void *private_data, int enabled)
+>  {
+>  	if (led_set_func)
+> 
+
+
+
 -- 
-1.8.1.2
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
