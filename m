@@ -1,15 +1,19 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ALSA: Add ALSA driver for Atmel Audio Bitstream DAC
-Date: Wed, 27 Nov 2013 14:57:32 +0300
-Message-ID: <20131127112447.GA10524@elgon.mountain>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: pcm: Always honor DAI min and
+ max sample rate constraints
+Date: Wed, 27 Nov 2013 12:21:53 +0000
+Message-ID: <20131127122153.GU14725@sirena.org.uk>
+References: <1385542698-13362-1-git-send-email-lars@metafoo.de>
+ <1385542698-13362-2-git-send-email-lars@metafoo.de>
+ <s5hk3fu6sqt.wl%tiwai@suse.de> <5295D500.50607@metafoo.de>
+ <s5h7gbu6q6y.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0417922263034483877=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
- by alsa0.perex.cz (Postfix) with ESMTP id 109C92625D7
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 12:57:58 +0100 (CET)
-Content-Disposition: inline
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id D4A252616B8
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 13:21:57 +0100 (CET)
+In-Reply-To: <s5h7gbu6q6y.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,59 +23,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: hans-christian.egtvedt@atmel.com
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Hans-Christian Egtvedt,
 
-The patch e4967d6016b7: "ALSA: Add ALSA driver for Atmel Audio 
-Bitstream DAC" from Feb 5, 2009, leads to the following
-static checker warning: "sound/atmel/abdac.c:373 set_sample_rates()
-	 error: buffer overflow 'dac->rates' 6 <= 6"
+--===============0417922263034483877==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YgseLHR9uOh11QTZ"
+Content-Disposition: inline
 
-sound/atmel/abdac.c
-   354          /* we start at 192 kHz and work our way down to 5112 Hz */
-   355          while (new_rate >= RATE_MIN && index < (MAX_NUM_RATES + 1)) {
 
-index == MAX_NUM_RATES + 1 so index is 7.
+--YgseLHR9uOh11QTZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   356                  new_rate = clk_round_rate(dac->sample_clk, 256 * new_rate);
-   357                  if (new_rate < 0)
-   358                          break;
-   359                  /* make sure we are below the ABDAC clock */
-   360                  if (new_rate <= clk_get_rate(dac->pclk)) {
-   361                          dac->rates[index] = new_rate / 256;
+On Wed, Nov 27, 2013 at 12:26:29PM +0100, Takashi Iwai wrote:
+> Lars-Peter Clausen wrote:
 
-index == MAX_NUM_RATES is off by one.
+> > My thinking as well. There are some driver which do set CONTINUOUS or KNOT,
+> > but don't specify a minimum and maximum rate and probably rely on the fact
+> > that we always call snd_pcm_limit_hw_rates() (E.g. the kirkwood drivers do
+> > this). In my opinion those drivers should be fixed and once that is done we
+> > can add a check that skips snd_pcm_limit_hw_rates() if KNOT or CONTINUOUS is
+> > set. The current behavior isn't optimal e.g. if a driver sets
+> > SNDRV_PCM_RATE_CONTINUOUS and SNDRV_PCM_RATE_8000_192000 and rate_max to
+> > 384000, we'd still end up with a maximum rate of 192000 because of
+> > snd_pcm_limit_hw_rates().
 
-   362                          index++;
-   363                  }
-   364                  /* divide by 256 and then by two to get next rate */
-   365                  new_rate /= 256 * 2;
-   366          }
-   367  
-   368          if (index) {
-   369                  int i;
-   370  
-   371                  /* reverse array, smallest go first */
-   372                  for (i = 0; i < (index / 2); i++) {
-   373                          unsigned int tmp = dac->rates[index - 1 - i];
+> Right.  We should catch all them once, then add a sanity check
+> something like
 
-7 - 1 - 0 is 6, but dac->rates[] only has 6 elements so we are
-potentially reading beyond the end of the array here.
+It seems neater if snd_pcm_limit_hw_rates() does the right thing no
+matter what the rates are - this centralises the logic for handling this
+which reduces the complexity for drivers.
 
-   374                          dac->rates[index - 1 - i] = dac->rates[i];
-   375                          dac->rates[i] = tmp;
-   376                  }
-   377  
-   378                  dac->constraints_rates.count = index;
-   379                  dac->constraints_rates.list = dac->rates;
-   380                  dac->constraints_rates.mask = 0;
-   381                  dac->rates_num = index;
-   382  
-   383                  retval = 0;
-   384          }
+> 	WARN_ON((rates & SNDRV_PCM_RATE_KNOT) && \
+> 		(rates & ~SNDRV_PCM_RATE_KNOT));
+> 	WARN_ON((rates & SNDRV_PCM_RATE_CONTINUOUS) && \
+> 		(rates & ~SNDRV_PCM_RATE_CONTINUOUS));
 
-regards,
-dan carpenter
+This does make sense, though we'll need to change the constraint merging
+code in ASoC since right now it assumes that combining the masks will do
+the merge which won't be the case if you have devices with one of these
+flags together with any other flags (either specific rates or the other
+non-bitmask one).  It would be nice if we were just throwing the device
+constraints into the core constraint code and letting it merge them
+together.
+
+--YgseLHR9uOh11QTZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSlePeAAoJELSic+t+oim93sUP/1sE1hJezjWBGXhOCOPeOwEd
+RUFfEN42c+gccK+JTGoXw8cVbFf4lINmqLzVYSv1zoPH4tBv6C/2/DGwkhwLVIjx
+PJrF3JBDtDHN7IXYJGpcqqdZvTZZZkXyN2VKtmgNUn210uaHlR4Z22+zOTiKyRSn
+iz93vL2gZ4try8XkkvR2Lxzr1pxeNoRAN/llXEs/Q7Ifz8t2CmAQ7Y96Cqtq1lid
+VVzhDJemhrsjn4Eyj0LAXb9WocSHFDLhXS/CLn4dm94+UC26Oq5fqLtBiL+NsOoN
+ILegYifaPEorKTFB3ySsO9Wo/Q8OJbeLumDviFQGYTk+WzNiMij8jtGbxzcqmcS2
+G0GBzuWNCdlieHnzrqjLuMl35EsnxkyLnqlFVE7QvRdZV8VAY5dH+FTN2fQk2oR8
+NqDm9/BABy1BJ2fTJkGW0ugr92PVRp5bsaLRjCvLqPvNWrcR5e739p8q54utYPxK
+CQF7tfGVPkQKSurdstFF+LZAhddOcbu/sRDy1GM6XMEPXoNhaVdnKqdwwy7gFObQ
+b1GEh+gc/3ZcauXWTwBHQWRWlJjq46RlbMJ0Dky0NlCPyzUpEox751Ec+/SL7744
+8nTqJw8QRENzC7iB2xS7zsLczwGF1gwVSPiHv7mXiER8EX95H0qEWNi6vqwkgaKZ
+ulEULvqsM+m7xIYi7ePk
+=xa3d
+-----END PGP SIGNATURE-----
+
+--YgseLHR9uOh11QTZ--
+
+--===============0417922263034483877==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0417922263034483877==--
