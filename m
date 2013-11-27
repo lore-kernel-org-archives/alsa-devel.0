@@ -1,83 +1,108 @@
-From: Padmavathi Venna <padma.v@samsung.com>
-Subject: [PATCH] ASoC: samsung: Initialize the dma_data for secondary dai
-Date: Thu, 28 Nov 2013 15:32:12 +0530
-Message-ID: <1385632932-16579-1-git-send-email-padma.v@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.v@samsung.com, padma.kvr@gmail.com
-Cc: broonie@kernel.org, kgene.kim@samsung.com, tomasz.figa@gmail.com, lars@metafoo.de
+From: Aaron Wu <aaron.wu@analog.com>
+Subject: [PATCH] Add nommu support for alsa-utils
+Date: Wed, 27 Nov 2013 18:03:59 +0800
+Message-ID: <1385546639-14041-1-git-send-email-aaron.wu@analog.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe003.messaging.microsoft.com [207.46.163.26])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BC512652DA
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 11:06:16 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: thomas.petazzoni@free-electrons.com, sonic.zhang@analog.com, arnout@mind.be, adi-buildroot-devel@lists.sourceforge.net, alsa-devel@alsa-project.org
+Cc: Aaron Wu <aaron.wu@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch initializes the dma_data for the secondary dai.
-Without this patch there is crash due to NULL pointer
-dereference during boot time on systems where secondary dai
-is initialized.
+Signed-off-by: Aaron Wu <aaron.wu@analog.com>
 
-Below is the crash log:
-[    1.630000] smdk-audio-wm8894 sound.7:  wm8994-aif1 <-> 3830000.i2s mapping ok
-[    1.630000] Unable to handle kernel NULL pointer dereference at virtual address 00000010
-[    1.630000] pgd = c0004000
-[    1.630000] [00000010] *pgd=00000000
-[    1.630000] Internal error: Oops: 5 [#1] PREEMPT SMP ARM
-[    1.630000] Modules linked in:
-...
-...
-[<c0342d6c>] (dmaengine_pcm_new+0x284/0x2ac) from [<c0341ae8>] (soc_new_pcm+0x2fc/0x3f4)
-[<c0341ae8>] (soc_new_pcm+0x2fc/0x3f4) from [<c0338558>] (snd_soc_register_card+0x1898/0x18d8)
-[<c0338558>] (snd_soc_register_card+0x1898/0x18d8) from [<c034cc34>] (smdk_audio_probe+0xa8/0xe8)
-[<c034cc34>] (smdk_audio_probe+0xa8/0xe8) from [<c0252368>] (platform_drv_probe+0x18/0x1c)
-[<c0252368>] (platform_drv_probe+0x18/0x1c) from [<c02510a4>] (driver_probe_device+0xf4/0x204)
-[<c02510a4>] (driver_probe_device+0xf4/0x204) from [<c0251240>] (__driver_attach+0x8c/0x90)
-[<c0251240>] (__driver_attach+0x8c/0x90) from [<c024f70c>] (bus_for_each_dev+0x54/0x88)
-[<c024f70c>] (bus_for_each_dev+0x54/0x88) from [<c0250724>] (bus_add_driver+0xe0/0x2b8)
-[<c0250724>] (bus_add_driver+0xe0/0x2b8) from [<c0251868>] (driver_register+0x78/0xf4)
-[<c0251868>] (driver_register+0x78/0xf4) from [<c00086e8>] (do_one_initcall+0x34/0x150)
-[<c00086e8>] (do_one_initcall+0x34/0x150) from [<c0543c30>] (kernel_init_freeable+0x12c/0x1d0)
-[<c0543c30>] (kernel_init_freeable+0x12c/0x1d0) from [<c03ebf9c>] (kernel_init+0x8/0xe8)
-[<c03ebf9c>] (kernel_init+0x8/0xe8) from [<c000e978>] (ret_from_fork+0x14/0x3c)
-
-Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
+Add nommu support for alsa-utils mainly for Blackfin
 ---
-This is made based on Mark Brown for-next branch of sound.git
-This patch is based on Mark Brown below patches for
-generic dma engine support for samsung audio IPs.
-ASoC: samsung: Use ASoC dmaengine code where possible
-ASoC: samsung: Provide helper for DMA init
+ package/alsa-utils/alsa-utils-nommu.patch |   54 +++++++++++++++++++++++++++++
+ package/alsa-utils/alsa-utils.mk          |    1 +
+ 2 files changed, 55 insertions(+)
+ create mode 100644 package/alsa-utils/alsa-utils-nommu.patch
 
- sound/soc/samsung/dmaengine.c |    3 ++-
- sound/soc/samsung/i2s.c       |    5 ++++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/samsung/dmaengine.c b/sound/soc/samsung/dmaengine.c
-index ad0a371..3f60479 100644
---- a/sound/soc/samsung/dmaengine.c
-+++ b/sound/soc/samsung/dmaengine.c
-@@ -67,7 +67,8 @@ EXPORT_SYMBOL_GPL(samsung_asoc_init_dma_data);
- int samsung_asoc_dma_platform_register(struct device *dev)
- {
- 	return snd_dmaengine_pcm_register(dev, &samsung_dmaengine_pcm_config,
--					  SND_DMAENGINE_PCM_FLAG_COMPAT);
-+					  SND_DMAENGINE_PCM_FLAG_COMPAT |
-+				SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME);
- }
- EXPORT_SYMBOL_GPL(samsung_asoc_dma_platform_register);
- 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 67d9fa9..0bcd7fb 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -946,8 +946,11 @@ static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
- 	struct i2s_dai *i2s = to_info(dai);
- 	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
- 
--	if (other && other->clk) /* If this is probe on secondary */
-+	if (other && other->clk) { /* If this is probe on secondary */
-+		samsung_asoc_init_dma_data(dai, &other->sec_dai->dma_playback,
-+						NULL);
- 		goto probe_exit;
-+	}
- 
- 	i2s->addr = ioremap(i2s->base, 0x100);
- 	if (i2s->addr == NULL) {
+diff --git a/package/alsa-utils/alsa-utils-nommu.patch b/package/alsa-utils/alsa-utils-nommu.patch
+new file mode 100644
+index 0000000..c0227f5
+--- /dev/null
++++ b/package/alsa-utils/alsa-utils-nommu.patch
+@@ -0,0 +1,54 @@
++diff -Nur alsa-utils-1.0.26/alsactl/init_utils_run.c alsa-utils-1.0.26-new/alsactl/init_utils_run.c
++--- alsa-utils-1.0.26/alsactl/init_utils_run.c	2012-09-06 15:52:57.000000000 +0800
+++++ alsa-utils-1.0.26-new/alsactl/init_utils_run.c	2013-10-22 02:19:06.210649921 +0800
++@@ -88,8 +88,11 @@
++ 		strlcat(program, argv[0], sizeof(program));
++ 		argv[0] = program;
++ 	}
++-
+++#ifdef HAVE_FORK
++ 	pid = fork();
+++#else
+++	pid = vfork();
+++#endif
++ 	switch(pid) {
++ 	case 0:
++ 		/* child closes parent ends of pipes */
++diff -Nur alsa-utils-1.0.26/alsaloop/alsaloop.c alsa-utils-1.0.26-new/alsaloop/alsaloop.c
++--- alsa-utils-1.0.26/alsaloop/alsaloop.c	2012-09-06 15:52:57.000000000 +0800
+++++ alsa-utils-1.0.26-new/alsaloop/alsaloop.c	2013-10-22 02:21:26.994650695 +0800
++@@ -850,14 +850,22 @@
++ 			logit(LOG_CRIT, "daemon() failed: %s\n", strerror(errno));
++ 			exit(EXIT_FAILURE);
++ 		}
+++		#ifdef HAVE_FORK
++ 		i = fork();
+++		#else
+++		i = vfork();
+++		#endif
++ 		if (i < 0) {
++ 			logit(LOG_CRIT, "fork() failed: %s\n", strerror(errno));
++ 			exit(EXIT_FAILURE);
++ 		}
++ 		if (i > 0) {
++ 			/* wait(&i); */
+++			#ifdef HAVE_FORK
++ 			exit(EXIT_SUCCESS);
+++			#else
+++			_exit(EXIT_SUCCESS);
+++			#endif
++ 		}
++ 	}
++ 
++diff -Nur alsa-utils-1.0.26/configure.in alsa-utils-1.0.26-new/configure.in
++--- alsa-utils-1.0.26/configure.in	2012-09-06 16:45:44.000000000 +0800
+++++ alsa-utils-1.0.26-new/configure.in	2013-10-23 02:25:40.391127379 +0800
++@@ -23,6 +23,8 @@
++   AC_MSG_RESULT($CC)
++ fi
++ 
+++
+++AC_CHECK_FUNC([fork])
++ AC_PROG_CC
++ dnl AC_PROG_CXX
++ AC_PROG_INSTALL
+diff --git a/package/alsa-utils/alsa-utils.mk b/package/alsa-utils/alsa-utils.mk
+index b951112..4956e04 100644
+--- a/package/alsa-utils/alsa-utils.mk
++++ b/package/alsa-utils/alsa-utils.mk
+@@ -9,6 +9,7 @@ ALSA_UTILS_SOURCE = alsa-utils-$(ALSA_UTILS_VERSION).tar.bz2
+ ALSA_UTILS_SITE = http://alsa.cybermirror.org/utils
+ ALSA_UTILS_LICENSE = GPLv2
+ ALSA_UTILS_LICENSE_FILES = COPYING
++ALSA_UTILS_AUTORECONF = YES
+ ALSA_UTILS_INSTALL_STAGING = YES
+ ALSA_UTILS_DEPENDENCIES = host-gettext alsa-lib \
+ 	$(if $(BR2_PACKAGE_NCURSES),ncurses)
 -- 
-1.7.4.4
+1.7.9.5
