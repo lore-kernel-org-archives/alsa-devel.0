@@ -1,18 +1,21 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [TINYCOMPRESS PATCH 1/2] crec: Initial version of
- a compressed capture utility
-Date: Wed, 27 Nov 2013 13:38:24 +0530
-Message-ID: <20131127080824.GL8834@intel.com>
-References: <1384879579-7790-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: HD-audio runtime PM
+Date: Wed, 27 Nov 2013 09:37:17 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80141CF98@SHSMSX101.ccr.corp.intel.com>
+References: <s5hli0gmyxt.wl%tiwai@suse.de>
+ <CA+v+29hKbtTBLh=qNRBVqd-NUfXRVBBokoypDh_0RMRQ_VjYvw@mail.gmail.com>
+ <s5hiovfy9ji.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F80141992D@SHSMSX101.ccr.corp.intel.com>
+ <s5ha9gry640.wl%tiwai@suse.de> <s5hzjorwouu.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FBC026260F
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 10:06:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1384879579-7790-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C6312625D3
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 10:37:28 +0100 (CET)
+In-Reply-To: <s5hzjorwouu.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,124 +25,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, vinod.koul@linux.jf.intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <wangxingchao2011@gmail.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 19, 2013 at 04:46:18PM +0000, Charles Keepax wrote:
-> This version only supports capture of PCM streams over a compressed
-> device and saves these as WAV files.
-Thanks for posting this :) I was about to ping you ad get these done if you were
-busy...
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, November 26, 2013 4:26 PM
 
+> > > > -----Original Message-----
+> > > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > Sent: Tuesday, November 26, 2013 2:14 PM
+> > > > To: Wang Xingchao
+> > >
+> > > > > I test WAKEEN feature on Haswell machines before, it could
+> > > > > really wakeup system from D3.
+> > > >
+> > > > But the runtime suspend doesn't power down to D3 by itself.
+> > > > Did you test really with D3?
+> > >
+> > > I will double check this on Haswell with sound git tree for-linus branch.
+> > > We've tried Android on Haswell-ULT last week, the display HD-A
+> controller can enter D3 and HDMI cable plug-in can wake up the controller
+> and codec. The code base is v3.9 with various driver patches.
+> >
+> > Hrm, but as I mentioned, we have no D3 call in runtime suspend
+> > callback.  How does it reach to D3 then?  Maybe that part is patched
+> > in your side?
 
-> +static void usage(void)
-> +{
-> +	fprintf(stderr, "usage: crec [OPTIONS] filename\n"
-> +		"-c\tcard number\n"
-> +		"-d\tdevice node\n"
-> +		"-b\tbuffer size\n"
-> +		"-f\tfragments\n"
-> +		"-v\tverbose mode\n"
-> +		"-l\tlength of record in seconds\n"
-perhaps it would be more intutive for time. We cant use d here :(
+Hi,
 
-> +		"-h\tPrints this help list\n\n"
-> +		"-C\tSpecify the number of channels (default %u)\n"
-> +		"-R\tSpecify the sample rate (default %u)\n"
-can these be lower case?
+I've checked two Haswell-ULT platforms with sound git tree for-linus branch, under Ubuntu:
+- ELD cannot refresh properly.
+- HDMI hot-plug cannot wake up the audio controller.
 
-> +		"-F\tSpecify the format: S16_LE, S32_LE (default S16_LE)\n\n"
-> +		"Example:\n"
-> +		"\tcrec -c 1 -d 2 test.wav\n"
-> +		"\tcrec -f 5 test.wav\n",
-> +		DEFAULT_CHANNELS, DEFAULT_RATE);
-> +
-> +	exit(EXIT_FAILURE);
-> +}
-> +
-> +static int print_time(struct compress *compress)
-> +{
-> +	unsigned int avail;
-> +	struct timespec tstamp;
-> +
-> +	if (compress_get_hpointer(compress, &avail, &tstamp) != 0) {
-> +		fprintf(stderr, "Error querying timestamp\n");
-> +		fprintf(stderr, "ERR: %s\n", compress_get_error(compress));
-> +		return -1;
-> +	} else {
-> +		printf("DSP recorded %jd.%jd\n",
-> +		       (intmax_t)tstamp.tv_sec, (intmax_t)tstamp.tv_nsec*1000);
-> +	}
-> +	return 0;
-> +}
-> +
-> +void capture_samples(char *name, unsigned int card, unsigned int device,
-> +		     unsigned long buffer_size, unsigned int frag,
-> +		     unsigned int length, unsigned int rate,
-> +		     unsigned int channels, unsigned int format)
-> +{
-> +	struct compr_config config;
-> +	struct snd_codec codec;
-> +	struct compress *compress;
-> +	struct wave_header header;
-> +	FILE *file;
-> +	char *buffer;
-> +	size_t written;
-> +	int read, ret;
-> +	unsigned int size, total_read = 0;
-> +	unsigned int samplebits;
-> +
-> +	switch (format) {
-> +	case SNDRV_PCM_FORMAT_S32_LE:
-> +		samplebits = 32;
-> +		break;
-> +	default:
-> +		samplebits = 16;
-> +		break;
-> +	}
-> +
-> +	/* Convert length from seconds to bytes */
-> +	length = length * rate * (samplebits / 8) * channels;
-> +
-> +	if (verbose)
-> +		printf("%s: entry, reading %u bytes\n", __func__, length);
-> +
-> +	file = fopen(name, "w+b");
-why w+?
+The controller is suspended when idle timeout and put in D3 by PCI driver. Here is the status shown by lspci -vvvv as root:
+00:03.0 Audio device: Intel Corporation Device 0a0c (rev 09)
+	Capabilities: [50] Power Management version 2
+		Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
+		Status: D3 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+... Status: D3 mean the device is in D3.
 
-> +	if (!file) {
-> +		fprintf(stderr, "Unable to open file '%s'\n", name);
-> +		exit(EXIT_FAILURE);
-> +	}
-> +
-> +	/* Write a header, will update with size once record is complete */
-> +	init_wave_header(&header, channels, rate, samplebits);
-> +	written = fwrite(&header, sizeof(header), 1, file);
-> +	if (written != 1) {
-> +		fprintf(stderr, "Error writing output file header: %d\n",
-> +			ferror(file));
-> +		goto file_exit;
-> +	}
-> +
-> +	codec.id = SND_AUDIOCODEC_PCM;
-> +	codec.ch_in = channels;
-> +	codec.ch_out = channels;
-> +	codec.sample_rate = compress_get_alsa_rate(rate);
-> +	if (!codec.sample_rate) {
-> +		fprintf(stderr, "invalid sample rate %d\n", rate);
-> +		goto file_exit;
-> +	}
-> +	codec.bit_rate = 0;
-> +	codec.rate_control = 0;
-> +	codec.profile = 0;
-> +	codec.level = 0;
-> +	codec.ch_mode = 0;
-> +	codec.format = format;
-why not do memset of the codec and configure only what we need...
+I guess maybe the latest display driver does not handle hot-plug properly which affect both ELD and device wakeup.
 
+For Android on Haswell, the kernel code base and BIOS are different.
 
-rest looks okay to me
+I'll further check this issue. Is it very urgent?
+I cannot work full time on this now due to some timing optimization task for Baytrail at the same time.
 
---
-~Vinod
+Regards
+Mengdong
