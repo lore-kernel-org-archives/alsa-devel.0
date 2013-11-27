@@ -1,34 +1,72 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: KNOT / CONTINUOUS
-Date: Tue, 26 Nov 2013 21:27:22 +0100
-Message-ID: <5295042A.1000302@metafoo.de>
-References: <20131126104140.16e3eb87@armhf> <s5h8uwba2gv.wl%tiwai@suse.de>
- <20131126200916.47a45929@armhf> <5294F85C.4000105@metafoo.de>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [PATCH 1/2] ASoC: atmel: sam9x5_wm8731: fix oops when unload
+ module
+Date: Wed, 27 Nov 2013 09:13:29 +0800
+Message-ID: <52954739.1090501@atmel.com>
+References: <1385439472-23352-1-git-send-email-voice.shen@atmel.com> <CACQ1gAh3W3vyTpFv8CkbO8hFJtU_SDjVuh2pRSFWCbUZPmidsw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-025.synserver.de (smtp-out-054.synserver.de
- [212.40.185.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C01226165C
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 21:26:51 +0100 (CET)
-In-Reply-To: <5294F85C.4000105@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Jassi Brar <jassi.brar@samsung.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <CACQ1gAh3W3vyTpFv8CkbO8hFJtU_SDjVuh2pRSFWCbUZPmidsw@mail.gmail.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Richard Genoud <richard.genoud@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-[...]
-> In your codec driver you should specify the minimum and maximum supported
-> rate by calling snd_pcm_hw_constraint_minmax() in the DAI startup callback.
+Hi Richard,
 
-It is also possible to set the min and max rate directly in the dai_driver
-struct.
+On 11/26/2013 07:32 PM, Richard Genoud wrote:
+> 2013/11/26 Bo Shen <voice.shen@atmel.com>:
+>> As the priv is not assigned to card->drvdata, it is NULL, so when
+>> unload module, it will cause NULL pointer oops.
+>> Assign priv to card->drvdata to fix this issue.
+>>
+>> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+>> ---
+>>   sound/soc/atmel/sam9x5_wm8731.c |    1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
+>> index 992ae38..6dc33ac 100644
+>> --- a/sound/soc/atmel/sam9x5_wm8731.c
+>> +++ b/sound/soc/atmel/sam9x5_wm8731.c
+>> @@ -99,6 +99,7 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+>>
+>>          card->dev = &pdev->dev;
+>>          card->owner = THIS_MODULE;
+>> +       card->drvdata = priv;
+>>          card->dai_link = dai;
+>>          card->num_links = 1;
+>>          card->dapm_widgets = sam9x5_dapm_widgets;
+>> --
+>> 1.7.9.5
+>>
+> There's no oops any more !
+>
+> Tested-by: Richard Genoud <richard.genoud@gmail.com>
+>
+> This should also go in -stable don't you think ?
+
+After this patch go into mainline tree, I think we can ask it to go in 
+-stable tree.
+
+> Maybe it's a bug on my kernel, but did you try to reload the module
+> and play something ?
+
+When we reload the module, as the codec is not configured outside, so it 
+use default value, the 'Output Mixer HiFi Playback Switch' is in off 
+state.If you want to play something, you need make it in on state. 
+Please take the following command as a reference:
+--->8---
+amixer cset numid=14,iface=MIXER,name='Output Mixer HiFi Playback Switch' on
+---8<---
+
+> On my board once I unload/reload it, there's no sound comming out
+> (at least, it's better than a oops ! :) )
+>
+> Richard.
+>
+
+Best Regards,
+Bo Shen
