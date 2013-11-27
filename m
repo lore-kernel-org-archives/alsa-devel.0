@@ -1,14 +1,23 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH] ALSA: hda - resume codecs in parallel
-Date: Tue, 26 Nov 2013 23:32:23 -0500
-Message-ID: <f41bb56ff9142ab400fca482bdefb5273ead0e93.1385526316.git.mengdong.lin@intel.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: HD-audio runtime PM
+Date: Wed, 27 Nov 2013 11:32:00 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80141D1C7@SHSMSX101.ccr.corp.intel.com>
+References: <s5hli0gmyxt.wl%tiwai@suse.de>
+ <CA+v+29hKbtTBLh=qNRBVqd-NUfXRVBBokoypDh_0RMRQ_VjYvw@mail.gmail.com>
+ <s5hiovfy9ji.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F80141992D@SHSMSX101.ccr.corp.intel.com>
+ <s5ha9gry640.wl%tiwai@suse.de>	<s5hzjorwouu.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F80141CF98@SHSMSX101.ccr.corp.intel.com>
+ <s5heh626rnh.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id A39D5261AA5
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 12:28:47 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7238B2616B8
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 12:32:22 +0100 (CET)
+In-Reply-To: <s5heh626rnh.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,110 +27,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <wangxingchao2011@gmail.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Wednesday, November 27, 2013 6:55 PM
+> To: Lin, Mengdong
+> Cc: Wang Xingchao; Alsa-devel@alsa-project.org; David Henningsson
+> Subject: Re: [alsa-devel] HD-audio runtime PM
+> 
+> At Wed, 27 Nov 2013 09:37:17 +0000,
+> Lin, Mengdong wrote:
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Tuesday, November 26, 2013 4:26 PM
+> >
+> > > > > > -----Original Message-----
+> > > > > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > > > Sent: Tuesday, November 26, 2013 2:14 PM
+> > > > > > To: Wang Xingchao
+> > > > >
+> > > > > > > I test WAKEEN feature on Haswell machines before, it could
+> > > > > > > really wakeup system from D3.
+> > > > > >
+> > > > > > But the runtime suspend doesn't power down to D3 by itself.
+> > > > > > Did you test really with D3?
+> > > > >
+> > > > > I will double check this on Haswell with sound git tree for-linus
+> branch.
+> > > > > We've tried Android on Haswell-ULT last week, the display HD-A
+> > > controller can enter D3 and HDMI cable plug-in can wake up the
+> > > controller and codec. The code base is v3.9 with various driver patches.
+> > > >
+> > > > Hrm, but as I mentioned, we have no D3 call in runtime suspend
+> > > > callback.  How does it reach to D3 then?  Maybe that part is
+> > > > patched in your side?
+> >
+> > Hi,
+> >
+> > I've checked two Haswell-ULT platforms with sound git tree for-linus
+> branch, under Ubuntu:
+> > - ELD cannot refresh properly.
+> > - HDMI hot-plug cannot wake up the audio controller.
+> >
+> > The controller is suspended when idle timeout and put in D3 by PCI
+> driver. Here is the status shown by lspci -vvvv as root:
+> > 00:03.0 Audio device: Intel Corporation Device 0a0c (rev 09)
+> > 	Capabilities: [50] Power Management version 2
+> > 		Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+> PME(D0-,D1-,D2-,D3hot-,D3cold-)
+> > 		Status: D3 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME- ...
+> Status:
+> > D3 mean the device is in D3.
+> >
+> > I guess maybe the latest display driver does not handle hot-plug
+> properly which affect both ELD and device wakeup.
+> >
+> > For Android on Haswell, the kernel code base and BIOS are different.
+> >
+> > I'll further check this issue. Is it very urgent?
+> 
+> Not that urgent, but if it's a regression, we must fix it.
+> If it's no regression, the urgency decreases, of course.
+> 
+> > I cannot work full time on this now due to some timing optimization
+> task for Baytrail at the same time.
+> 
+> At least, it'd be helpful if you can confirm whether it still works with
+> vanilla 3.9.x kernel (or whatever version) you tested in the past -- i.e. to
+> know whether it's a regression or not.
 
-To reduce driver resume time, this patch resumes the codecs in parallel
-if there are multiple codecs on the bus.
+Okay, I'll try kernels close to when Xingchao enable this wake-up feature.
 
-- The PM workqueue of bus is also used to parallel resuming multiple codecs.
-- The work item 'pm_work' is renamed to 'suspend_work' to parallel suspending
-  codecs.
-- Add a work item 'resume_work' to parallel resuming codecs.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 60ff45a..1e04a20 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -104,7 +104,8 @@ static inline void hda_call_pm_notify(struct hda_bus *bus, bool power_up)
- 	if (bus->ops.pm_notify)
- 		bus->ops.pm_notify(bus, power_up);
- }
--static void hda_pm_work(struct work_struct *work);
-+static void hda_suspend_work(struct work_struct *work);
-+static void hda_resume_work(struct work_struct *work);
- #else
- #define codec_in_pm(codec)	0
- static inline void hda_keep_power_on(struct hda_codec *codec) {}
-@@ -1447,7 +1448,8 @@ int snd_hda_codec_new(struct hda_bus *bus,
- #ifdef CONFIG_PM
- 	spin_lock_init(&codec->power_lock);
- 	INIT_DELAYED_WORK(&codec->power_work, hda_power_work);
--	INIT_WORK(&codec->pm_work, hda_pm_work);
-+	INIT_WORK(&codec->suspend_work, hda_suspend_work);
-+	INIT_WORK(&codec->resume_work, hda_resume_work);
- 	/* snd_hda_codec_new() marks the codec as power-up, and leave it as is.
- 	 * the caller has to power down appropriatley after initialization
- 	 * phase.
-@@ -5058,13 +5060,21 @@ int snd_hda_check_amp_list_power(struct hda_codec *codec,
- }
- EXPORT_SYMBOL_HDA(snd_hda_check_amp_list_power);
- 
--static void hda_pm_work(struct work_struct *work)
-+static void hda_suspend_work(struct work_struct *work)
- {
- 	struct hda_codec *codec =
--		container_of(work, struct hda_codec, pm_work);
-+		container_of(work, struct hda_codec, suspend_work);
- 
- 	hda_call_codec_suspend(codec, false);
- }
-+
-+static void hda_resume_work(struct work_struct *work)
-+{
-+	struct hda_codec *codec =
-+		container_of(work, struct hda_codec, resume_work);
-+
-+	hda_call_codec_resume(codec);
-+}
- #endif
- 
- /*
-@@ -5633,7 +5643,7 @@ int snd_hda_suspend(struct hda_bus *bus)
- 		cancel_delayed_work_sync(&codec->jackpoll_work);
- 		if (hda_codec_is_power_on(codec)) {
- 			if (bus->num_codecs > 1)
--				queue_work(bus->pm_wq, &codec->pm_work);
-+				queue_work(bus->pm_wq, &codec->suspend_work);
- 			else
- 				hda_call_codec_suspend(codec, false);
- 		}
-@@ -5659,9 +5669,15 @@ int snd_hda_resume(struct hda_bus *bus)
- 	printk("snd_hda_resume, pci device 0x%04x\n", bus->pci->device);
- 
- 	list_for_each_entry(codec, &bus->codec_list, list) {
--		hda_call_codec_resume(codec);
-+		if (bus->num_codecs > 1)
-+			queue_work(bus->pm_wq, &codec->resume_work);
-+		else
-+			hda_call_codec_resume(codec);
- 	}
- 
-+	if (bus->num_codecs > 1)
-+		flush_workqueue(bus->pm_wq);
-+
- 	printk("snd_hda_resume ok, pci device 0x%04x\n", bus->pci->device);
- 	return 0;
- }
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 82807ef..bedb436 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -920,7 +920,9 @@ struct hda_codec {
- 	unsigned long power_off_acct;
- 	unsigned long power_jiffies;
- 	spinlock_t power_lock;
--	struct work_struct pm_work; /* task to parallel multi-codec PM */
-+	/* tasks to parallel multi-codec suspend/resume */
-+	struct work_struct suspend_work;
-+	struct work_struct resume_work;
- #endif
- 
- 	/* filter the requested power state per nid */
--- 
-1.8.1.2
+Thanks
+Mengdong
