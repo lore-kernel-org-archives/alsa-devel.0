@@ -1,105 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: pcm: Always honor DAI min and
- max sample rate constraints
-Date: Wed, 27 Nov 2013 12:21:53 +0000
-Message-ID: <20131127122153.GU14725@sirena.org.uk>
-References: <1385542698-13362-1-git-send-email-lars@metafoo.de>
- <1385542698-13362-2-git-send-email-lars@metafoo.de>
- <s5hk3fu6sqt.wl%tiwai@suse.de> <5295D500.50607@metafoo.de>
- <s5h7gbu6q6y.wl%tiwai@suse.de>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: samsung: Use ASoC dmaengine code
+ where possible
+Date: Wed, 27 Nov 2013 18:08:47 +0530
+Message-ID: <CAAgF-Bc5mEmOBFZak2rSuCqs+xjcrNqnVNZc=zno8F3VOCuuwA@mail.gmail.com>
+References: <1384264120-24750-1-git-send-email-broonie@kernel.org>
+	<1384264120-24750-2-git-send-email-broonie@kernel.org>
+	<CAAgF-BcJZrwwHYtk6pKj_-+CzmbhhV4V_Z02kjHveObOR6oiFQ@mail.gmail.com>
+	<20131126102311.GW14725@sirena.org.uk>
+	<CAAgF-BdWLXeLyVZv-durSxxVEm4hHaC7sXQuz_pGLLY-x7XS+w@mail.gmail.com>
+	<20131126122031.GA14725@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0417922263034483877=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D4A252616B8
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 13:21:57 +0100 (CET)
-In-Reply-To: <s5h7gbu6q6y.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20131126122031.GA14725@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, linaro-kernel@lists.linaro.org, Padmavathi Venna <padma.v@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---===============0417922263034483877==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YgseLHR9uOh11QTZ"
-Content-Disposition: inline
+On Tue, Nov 26, 2013 at 5:50 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Nov 26, 2013 at 04:18:41PM +0530, Padma Venkat wrote:
+>
+>> I tried this on linux-samsung tree by applying all the patches from
+>> you and Lars.
+>
+> Can you use -next plus the posted patches please in case there's
+> something been misplaced, it'll help if we're working from the same code
+> base?
 
+Sound tree has some booting issue on smdk5420 so I tried this on
+linux-samsung tree.
 
---YgseLHR9uOh11QTZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+>
+>> I initialised the dma_data for secondary dai as there is a crash with out that.
+>
+> Can you please send a patch for that if you find it's needed?  Like I
+> said in reply to your earlier mail it looks like this doesn't work
+> anyway so mainline ought to be fixed.
 
-On Wed, Nov 27, 2013 at 12:26:29PM +0100, Takashi Iwai wrote:
-> Lars-Peter Clausen wrote:
+Okay. I will send a patch.
 
-> > My thinking as well. There are some driver which do set CONTINUOUS or KNOT,
-> > but don't specify a minimum and maximum rate and probably rely on the fact
-> > that we always call snd_pcm_limit_hw_rates() (E.g. the kirkwood drivers do
-> > this). In my opinion those drivers should be fixed and once that is done we
-> > can add a check that skips snd_pcm_limit_hw_rates() if KNOT or CONTINUOUS is
-> > set. The current behavior isn't optimal e.g. if a driver sets
-> > SNDRV_PCM_RATE_CONTINUOUS and SNDRV_PCM_RATE_8000_192000 and rate_max to
-> > 384000, we'd still end up with a maximum rate of 192000 because of
-> > snd_pcm_limit_hw_rates().
+>
+>> Then I used aplay after running the mixer settings.
+>> ./aplay /mars/share/sounds/alsa/Front_Center.wav
+>
+> So this is 16 bit stereo or something, and did it work beforehand?  Like
+> I say I suspect the DMA is ending up being configured with the wrong
+> transfer size, can you check what actually happens there please - what's
+> different about the configuration that the DMA controller gets?  I don't
+> have any Exynos systems with mainline audio support so I can't test
+> anything myself.
 
-> Right.  We should catch all them once, then add a sanity check
-> something like
+This stream was working before. dma_size in i2s_hw_params not getting
+effected as dma_data is getting initialized only at dai probe time. So
+by default the dma_size is always 4 which is initialized at driver
+probe time. The fifo_size of dai is also always 0. It is not getting
+passed from dai driver. I just hard coded the dma_size to 2 and
+fifo_size to 32 then I can hear the audio only on right ear phone.
+Still underrun error message appears.
 
-It seems neater if snd_pcm_limit_hw_rates() does the right thing no
-matter what the rates are - this centralises the logic for handling this
-which reduces the complexity for drivers.
-
-> 	WARN_ON((rates & SNDRV_PCM_RATE_KNOT) && \
-> 		(rates & ~SNDRV_PCM_RATE_KNOT));
-> 	WARN_ON((rates & SNDRV_PCM_RATE_CONTINUOUS) && \
-> 		(rates & ~SNDRV_PCM_RATE_CONTINUOUS));
-
-This does make sense, though we'll need to change the constraint merging
-code in ASoC since right now it assumes that combining the masks will do
-the merge which won't be the case if you have devices with one of these
-flags together with any other flags (either specific rates or the other
-non-bitmask one).  It would be nice if we were just throwing the device
-constraints into the core constraint code and letting it merge them
-together.
-
---YgseLHR9uOh11QTZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSlePeAAoJELSic+t+oim93sUP/1sE1hJezjWBGXhOCOPeOwEd
-RUFfEN42c+gccK+JTGoXw8cVbFf4lINmqLzVYSv1zoPH4tBv6C/2/DGwkhwLVIjx
-PJrF3JBDtDHN7IXYJGpcqqdZvTZZZkXyN2VKtmgNUn210uaHlR4Z22+zOTiKyRSn
-iz93vL2gZ4try8XkkvR2Lxzr1pxeNoRAN/llXEs/Q7Ifz8t2CmAQ7Y96Cqtq1lid
-VVzhDJemhrsjn4Eyj0LAXb9WocSHFDLhXS/CLn4dm94+UC26Oq5fqLtBiL+NsOoN
-ILegYifaPEorKTFB3ySsO9Wo/Q8OJbeLumDviFQGYTk+WzNiMij8jtGbxzcqmcS2
-G0GBzuWNCdlieHnzrqjLuMl35EsnxkyLnqlFVE7QvRdZV8VAY5dH+FTN2fQk2oR8
-NqDm9/BABy1BJ2fTJkGW0ugr92PVRp5bsaLRjCvLqPvNWrcR5e739p8q54utYPxK
-CQF7tfGVPkQKSurdstFF+LZAhddOcbu/sRDy1GM6XMEPXoNhaVdnKqdwwy7gFObQ
-b1GEh+gc/3ZcauXWTwBHQWRWlJjq46RlbMJ0Dky0NlCPyzUpEox751Ec+/SL7744
-8nTqJw8QRENzC7iB2xS7zsLczwGF1gwVSPiHv7mXiER8EX95H0qEWNi6vqwkgaKZ
-ulEULvqsM+m7xIYi7ePk
-=xa3d
------END PGP SIGNATURE-----
-
---YgseLHR9uOh11QTZ--
-
---===============0417922263034483877==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0417922263034483877==--
+Thanks
+Padma
