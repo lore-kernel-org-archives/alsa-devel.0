@@ -1,54 +1,80 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH V2] ASoC: tegra: use reset framework
-Date: Wed, 27 Nov 2013 17:14:39 +0000
-Message-ID: <20131127171439.GM14725@sirena.org.uk>
-References: <1385496767-8307-1-git-send-email-swarren@wwwdotorg.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: kirkwood: Fix erroneous double
+	output while playing
+Date: Wed, 27 Nov 2013 17:16:48 +0000
+Message-ID: <20131127171648.GN14725@sirena.org.uk>
+References: <20131125201905.0d009921@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5kKFnMzJ1rlmqP2F"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1385496767-8307-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, pdeschrijver-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============0449941531621486175=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id C32D82619E1
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 18:16:50 +0100 (CET)
+In-Reply-To: <20131125201905.0d009921@armhf>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Jason Cooper <jason@lakedaemon.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---5kKFnMzJ1rlmqP2F
+--===============0449941531621486175==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="AS/cuf48TUvH8DlA"
+Content-Disposition: inline
+
+
+--AS/cuf48TUvH8DlA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 26, 2013 at 01:12:47PM -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->=20
-> Tegra's clock driver now provides an implementation of the common
-> reset API (include/linux/reset.h). Use this instead of the old Tegra-
-> specific API; that will soon be removed.
+On Mon, Nov 25, 2013 at 08:19:05PM +0100, Jean-Francois Moine wrote:
+> This patch fixes the setting of the register KIRKWOOD_PLAYCTL which did
+> always streaming on both I2S and SPDIF, ignoring the DAI ID.
 
-Acked-by: Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Applied, thanks.
 
---5kKFnMzJ1rlmqP2F
+> The bug was introduced by the commit 75b9b65ee5a
+>  "ASoC: kirkwood: add S/PDIF support"
+
+There's the "Fixes:" tag for that now.
+
+--AS/cuf48TUvH8DlA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSlih8AAoJELSic+t+oim9lkwP/2cZUbBRs1DwyIDCR0bpOCfs
-9hrWGgqhkF4dnXTuojCGOuuYZXy9gwEsymPetjXUbizbf87JmPYn4e8k8LopmFhQ
-asrEfUBqVMD/El6SOFyvsmo8mscWNi80W2mzypW+VGjiH7nMPkwCrOR9HFCnzMjY
-PZ0td+mEBkgtxrdvU3oPCPzcurrcJLb8i/O0sHxo1wQHJGYDS6W5hOPINiGrdfWH
-saq+Fc2wbic8k+d5l+ZBM9tcnUiI3Ls6Z5Cmc6x6lh6qek+9TltGjRrCdFfE0Jfb
-XUVC4nxktFgVQ7Clfs6n+EYI9YHm/I1mA4e+iexG8Ebi2L9qh3gSvm2wSFMkI5j7
-4KIsoZJBo3cGdSBy0ynxeXQc7qa7xdsy68hGYWLNKBt1b0LK0JRn1MNsN3J/XDYQ
-P96sCw289VIO24TFM1BrMLWHF2Y1CeR1OqbIes0T89jr6OH4yqkyKAMgMNbIvMeq
-0HGhbgJyL3iw5jKeJn0RNkmz9PxsWvz0aVzkfgD9lrBqep0Y4igtknDEIj9cGwy4
-WaFFarj+6P7s7MZk10KuzC1vdzSeUCuDFbknyZCZ8eZNIbLlhkrPVCaCFm7JKPtR
-YnE0V9khAMUdutQRGXsG1kr67EfCnzmhtXoZw+0L/XjtxzaWHnAv+PFlImPayPnL
-htIYtznFXFpy60I59IHd
-=vuZo
+iQIcBAEBAgAGBQJSlij9AAoJELSic+t+oim9IWIP/0vgOw+w+Ac9rt+zQM8Xm4Bn
+TOgZJS8pXc7TFbsdLFKkOrzuQlS3Z+OTPR63J6UlnhLTLtBRICXslbLhENY7Ng9m
+SWTADpU+D/KsuyTmzCYsebREnF1ca5MQSl/nZO+bolkpGHaz/908+1ClSk0RAsI/
+68UKUH9hRvDq7S6U8yhM4k8IU+dAsA/f0B0T+evhm+n2wv7mMmVSheO0yx3qjkFF
+72OIfLCIO3Cqiyf700RfZtCFmwz2sBgjP+KHUp4bNuwuVokkZluP4Ik8WIwHMg/w
+QdCeat1wbNl8FpnGcWlWcsLmN66Sr09BwcszeLZvfFWkRXXAZ2wv99ZOlR5eVdkm
+ihtwvl/k0I9EaG/uOSsCxUk1yFqXQCeZIp1vFJH//xVm8ZjaAzGsi2fR39gMZLXW
+Dun53Ha+mZMW7/jtoyPqx8JFTKeMiq7g3g97IgWv5oV4ZsZA1iasAlX8ZIZYJV2E
+kitEICEd+EkJeYLyGSWjNcEfrGUkGxGSNkJRmnhhj0F+xdiq7EP28Sdl+uO693l2
+Qpd6K+q2nHQM7XLuR7Wmr37nmlLzU72HgOlAwK+0lcVgYJEP5wvxrzc6R33RvBX1
+ZAZl8QFeX/bkOI9VB94IK37vOz0NlVGET0uq3UTddj8ALKH3zeKRLpUaQjHVws+o
+nApygoesnmYh7HG5g30y
+=spff
 -----END PGP SIGNATURE-----
 
---5kKFnMzJ1rlmqP2F--
+--AS/cuf48TUvH8DlA--
+
+--===============0449941531621486175==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0449941531621486175==--
