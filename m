@@ -1,16 +1,20 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH v4] ALSA: hda - suspend codecs in parallel
-Date: Tue, 26 Nov 2013 23:00:51 -0500
-Message-ID: <e369925d30c6b613c1e9b1241dfdb1acdd085a44.1385524759.git.mengdong.lin@intel.com>
-References: <c189f56e72c77535ea3b394438525e75c0d9ad5e.1385496561.git.mengdong.lin@intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/2] ASoC: pcm: Always honor DAI min and
+ max sample rate constraints
+Date: Wed, 27 Nov 2013 12:18:24 +0100
+Message-ID: <5295D500.50607@metafoo.de>
+References: <1385542698-13362-1-git-send-email-lars@metafoo.de>
+ <1385542698-13362-2-git-send-email-lars@metafoo.de>
+ <s5hk3fu6sqt.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id BADE4261640
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 11:57:17 +0100 (CET)
-In-Reply-To: <c189f56e72c77535ea3b394438525e75c0d9ad5e.1385496561.git.mengdong.lin@intel.com>
+Received: from smtp-out-025.synserver.de (smtp-out-121.synserver.de
+ [212.40.185.121])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB52D2625C2
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 12:17:50 +0100 (CET)
+In-Reply-To: <s5hk3fu6sqt.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,163 +24,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+On 11/27/2013 11:31 AM, Takashi Iwai wrote:
+> At Wed, 27 Nov 2013 09:58:18 +0100,
+> Lars-Peter Clausen wrote:
+>>
+>> snd_pcm_limit_hw_rates() will initialize the minimum and maximum sample rate for
+>> the PCM stream based on the rates specified in the rates field. Since we call
+>> snd_pcm_limit_hw_rates() after soc_pcm_init_runtime_hw() it will essentially
+>> overwrite the min and max rate set in soc_pcm_init_runtime_hw(). This may cause
+>> the minimum or maximum rate to be set to a value outside the range of one of the
+>> components if one of the components sets either SNDRV_PCM_RATE_CONTINUOUS or
+>> SNDRV_PCM_RATE_KNOT and the other component specified a discrete rate via
+>> SNDRV_PCM_RATE_[0-9]* that is outside of the first component's rate range. To
+>> fix this first calculate the minimum and maximum rates using
+>> snd_pcm_limit_hw_rates() and then on top of that apply the contraints specified
+>> in the snd_soc_pcm_stream structs.
+>>
+>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+>> ---
+>>  sound/soc/soc-pcm.c | 18 ++++++++++++------
+>>  1 file changed, 12 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+>> index c4ef880..22af038 100644
+>> --- a/sound/soc/soc-pcm.c
+>> +++ b/sound/soc/soc-pcm.c
+>> @@ -215,12 +215,12 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream,
+>>  	}
+>>  }
+>>  
+>> -static void soc_pcm_init_runtime_hw(struct snd_pcm_hardware *hw,
+>> +static void soc_pcm_init_runtime_hw(struct snd_pcm_runtime *runtime,
+>>  	struct snd_soc_pcm_stream *codec_stream,
+>>  	struct snd_soc_pcm_stream *cpu_stream)
+>>  {
+>> -	hw->rate_min = max(codec_stream->rate_min, cpu_stream->rate_min);
+>> -	hw->rate_max = min_not_zero(codec_stream->rate_max, cpu_stream->rate_max);
+>> +	struct snd_pcm_hardware *hw = &runtime->hw;
+>> +
+>>  	hw->channels_min = max(codec_stream->channels_min,
+>>  		cpu_stream->channels_min);
+>>  	hw->channels_max = min(codec_stream->channels_max,
+>> @@ -233,6 +233,13 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_hardware *hw,
+>>  	if (cpu_stream->rates
+>>  		& (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
+>>  		hw->rates |= codec_stream->rates;
+>> +
+>> +	snd_pcm_limit_hw_rates(runtime);
+> 
+> Strictly speaking, snd_pcm_limit_hw_rates() should be applied only in
+> case without KNOT nor CONTINUOUS flag.  But, I guess this would work
+> better as is since there might be drivers that don't give proper
+> rate_min and rate_max but rely on the rate bits, and min_not_zero()
+> does the right thing in the code below.
 
-The time to suspend a single codec may be several hundreds of ms. When runtime
-power saving is disabled, driver suspend time can be long especially when there
-are more than one codec on the bus.
+My thinking as well. There are some driver which do set CONTINUOUS or KNOT,
+but don't specify a minimum and maximum rate and probably rely on the fact
+that we always call snd_pcm_limit_hw_rates() (E.g. the kirkwood drivers do
+this). In my opinion those drivers should be fixed and once that is done we
+can add a check that skips snd_pcm_limit_hw_rates() if KNOT or CONTINUOUS is
+set. The current behavior isn't optimal e.g. if a driver sets
+SNDRV_PCM_RATE_CONTINUOUS and SNDRV_PCM_RATE_8000_192000 and rate_max to
+384000, we'd still end up with a maximum rate of 192000 because of
+snd_pcm_limit_hw_rates().
 
-To reduce driver suspend time, this patch creates a work queue for the bus, and
-suspends the codecs in parallel if there are multiple codecs on the bus.
+> 
+> The only missing thing is the conflict between CONTINUOUS and KNOT.
+> Could you put the fix I suggested into this series, too?
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+ok.
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index cb0c776..60ff45a 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -104,6 +104,7 @@ static inline void hda_call_pm_notify(struct hda_bus *bus, bool power_up)
- 	if (bus->ops.pm_notify)
- 		bus->ops.pm_notify(bus, power_up);
- }
-+static void hda_pm_work(struct work_struct *work);
- #else
- #define codec_in_pm(codec)	0
- static inline void hda_keep_power_on(struct hda_codec *codec) {}
-@@ -831,6 +832,12 @@ static int snd_hda_bus_free(struct hda_bus *bus)
- 		bus->ops.private_free(bus);
- 	if (bus->workq)
- 		destroy_workqueue(bus->workq);
-+
-+#ifdef CONFIG_PM
-+	if (bus->pm_wq)
-+		destroy_workqueue(bus->pm_wq);
-+#endif
-+
- 	kfree(bus);
- 	return 0;
- }
-@@ -875,6 +882,7 @@ int snd_hda_bus_new(struct snd_card *card,
- 		.dev_register = snd_hda_bus_dev_register,
- 		.dev_free = snd_hda_bus_dev_free,
- 	};
-+	char tmp[16];
- 
- 	if (snd_BUG_ON(!temp))
- 		return -EINVAL;
-@@ -911,6 +919,16 @@ int snd_hda_bus_new(struct snd_card *card,
- 		return -ENOMEM;
- 	}
- 
-+#ifdef CONFIG_PM
-+	sprintf(tmp, "hda-pm-wq-%d", card->number);
-+	bus->pm_wq = create_workqueue(tmp);
-+	if (!bus->pm_wq) {
-+		snd_printk(KERN_ERR "cannot create PM workqueue\n");
-+		snd_hda_bus_free(bus);
-+		return -ENOMEM;
-+	}
-+#endif
-+
- 	err = snd_device_new(card, SNDRV_DEV_BUS, bus, &dev_ops);
- 	if (err < 0) {
- 		snd_hda_bus_free(bus);
-@@ -1363,6 +1381,7 @@ static void snd_hda_codec_free(struct hda_codec *codec)
- 	kfree(codec->chip_name);
- 	kfree(codec->modelname);
- 	kfree(codec->wcaps);
-+	codec->bus->num_codecs--;
- 	kfree(codec);
- }
- 
-@@ -1428,6 +1447,7 @@ int snd_hda_codec_new(struct hda_bus *bus,
- #ifdef CONFIG_PM
- 	spin_lock_init(&codec->power_lock);
- 	INIT_DELAYED_WORK(&codec->power_work, hda_power_work);
-+	INIT_WORK(&codec->pm_work, hda_pm_work);
- 	/* snd_hda_codec_new() marks the codec as power-up, and leave it as is.
- 	 * the caller has to power down appropriatley after initialization
- 	 * phase.
-@@ -1445,6 +1465,11 @@ int snd_hda_codec_new(struct hda_bus *bus,
- 	}
- 
- 	list_add_tail(&codec->list, &bus->codec_list);
-+	bus->num_codecs++;
-+#ifdef CONFIG_PM
-+	workqueue_set_max_active(bus->pm_wq, bus->num_codecs);
-+#endif
-+
- 	bus->caddr_tbl[codec_addr] = codec;
- 
- 	codec->vendor_id = snd_hda_param_read(codec, AC_NODE_ROOT,
-@@ -5032,6 +5057,14 @@ int snd_hda_check_amp_list_power(struct hda_codec *codec,
- 	return 0;
- }
- EXPORT_SYMBOL_HDA(snd_hda_check_amp_list_power);
-+
-+static void hda_pm_work(struct work_struct *work)
-+{
-+	struct hda_codec *codec =
-+		container_of(work, struct hda_codec, pm_work);
-+
-+	hda_call_codec_suspend(codec, false);
-+}
- #endif
- 
- /*
-@@ -5598,9 +5631,17 @@ int snd_hda_suspend(struct hda_bus *bus)
- 
- 	list_for_each_entry(codec, &bus->codec_list, list) {
- 		cancel_delayed_work_sync(&codec->jackpoll_work);
--		if (hda_codec_is_power_on(codec))
--			hda_call_codec_suspend(codec, false);
-+		if (hda_codec_is_power_on(codec)) {
-+			if (bus->num_codecs > 1)
-+				queue_work(bus->pm_wq, &codec->pm_work);
-+			else
-+				hda_call_codec_suspend(codec, false);
-+		}
- 	}
-+
-+	if (bus->num_codecs > 1)
-+		flush_workqueue(bus->pm_wq);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_HDA(snd_hda_suspend);
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 7aa9870..82807ef 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -673,6 +673,7 @@ struct hda_bus {
- 
- 	/* codec linked list */
- 	struct list_head codec_list;
-+	unsigned int num_codecs;
- 	/* link caddr -> codec */
- 	struct hda_codec *caddr_tbl[HDA_MAX_CODEC_ADDRESS + 1];
- 
-@@ -683,6 +684,9 @@ struct hda_bus {
- 	struct hda_bus_unsolicited *unsol;
- 	char workq_name[16];
- 	struct workqueue_struct *workq;	/* common workqueue for codecs */
-+#ifdef CONFIG_PM
-+	struct workqueue_struct *pm_wq;	/* workqueue to parallel codec PM */
-+#endif
- 
- 	/* assigned PCMs */
- 	DECLARE_BITMAP(pcm_dev_bits, SNDRV_PCM_DEVICES);
-@@ -916,6 +920,7 @@ struct hda_codec {
- 	unsigned long power_off_acct;
- 	unsigned long power_jiffies;
- 	spinlock_t power_lock;
-+	struct work_struct pm_work; /* task to parallel multi-codec PM */
- #endif
- 
- 	/* filter the requested power state per nid */
--- 
-1.8.1.2
+- Lars
