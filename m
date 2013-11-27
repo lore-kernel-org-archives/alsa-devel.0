@@ -1,17 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 18/18] AsoC: wm9081: Use IS_ENABLED()
-	macro
-Date: Wed, 27 Nov 2013 18:22:31 +0000
-Message-ID: <20131127182231.GE14725@sirena.org.uk>
-References: <1385045312-15092-1-git-send-email-fabio.estevam@freescale.com>
- <1385045312-15092-3-git-send-email-fabio.estevam@freescale.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: [PATCH] ASoC: kirkwood: Fix the CPU DAI rates
+Date: Wed, 27 Nov 2013 21:10:24 +0100
+Message-ID: <20131127211024.52e5ae1b@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0062434679035424451=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id EA8822651E5
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 19:22:33 +0100 (CET)
-In-Reply-To: <1385045312-15092-3-git-send-email-fabio.estevam@freescale.com>
+Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id 74E7F2651A4
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 21:08:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +18,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@freescale.com>
-Cc: alsa-devel@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============0062434679035424451==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="npS0ES1SXSoP8oeu"
-Content-Disposition: inline
-
-
---npS0ES1SXSoP8oeu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Nov 21, 2013 at 12:48:32PM -0200, Fabio Estevam wrote:
-> Using the IS_ENABLED() macro can make the code shorter and simpler.
-
-Applied, thanks.
-
---npS0ES1SXSoP8oeu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSljhkAAoJELSic+t+oim985UP/32uX0Fq4KI/+nj/S0Dyc+wa
-HLiA5FE/FDd8vFjeX6Hfq3MQW2liQivmrhcqBCU0ovmg0RNqGQlhEVrISWOtWnKc
-pbTstxGaY1NobSHKXZyrlu77us2wB4TxMlDMWxY035+wYxmL2/JP2RnYopQ59AU+
-7YgB6S23GxD4N1xDyTLaf5Orp46ASC3mdbtkwHyKhYC1IFcdfVrVbtrnBkhfzJSH
-+VDBtCXzaJ/12nHRqcDf2PXFgiM2CqUsCTXqcyjT/hn2O7KSpEVt2/asxaxuRvHX
-OLtrq8HOcJ2GoQ3pkRELzrF9l94hwyNC+QWAml5vMecVmGAZVqYWiHgRD5ObljPP
-Gb3/ywwVpTcLdYtJwm+XmIxuAsPqo3yx99HtxemSX/+FCMi6cw4xIUbTHg2P+HjB
-dFT99/xj3rvkLFVg1bOPAt89i5HCs/LKUAJUHrcI5bVRCu107VfQGhrkQds25oy+
-gMdjj+2P9Y2aut0U7VjJtsBQ7h+sXgblK86AU2jJ+atKSgksx4FBwOTgfAUAqQJE
-AprYkg1ZnVlZExIP+xEqiUwPMw4xkkNMrLZE4cFxqi1sufJ1FDplREuLOVmj/l71
-fHrG0oLmPR/oixdysAj7RsdR8AKxpGrY2n9A8V6rmdAU/NcojFkOt867/jwFl53L
-zmLkKlsbxL0VIUvml5pr
-=8zlg
------END PGP SIGNATURE-----
-
---npS0ES1SXSoP8oeu--
-
---===============0062434679035424451==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0062434679035424451==--
+VGhpcyBwYXRjaCBmaXhlcyB0aGUgcmF0ZXMgZGVjbGFyZWQgaW4gdGhlIENQVSBEQUkgcGFyYW1l
+dGVyczoKLSBTTkRSVl9QQ01fUkFURV9LTk9UIGFuZCB0aGUgZGlzY3JldGUgcmF0ZXMgU05EUlZf
+UENNX1JBVEVfeHh4IHNob3VsZAogIG5vdCBiZSB1c2VkIHdpdGggU05EUlZfUENNX1JBVEVfQ09O
+VElOVU9VUywKLSBTTkRSVl9QQ01fUkFURV9DT05USU5VT1VTIGFza3MgZm9yIHJhdGVfbWluIGFu
+ZCByYXRlX21heCwKLSB0aGUgZGV2aWNlIG1heSBkbyBzdHJlYW1pbmcgZG93biB0byA1NTEySHou
+CgpTaWduZWQtb2ZmLWJ5OiBKZWFuLUZyYW5jb2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Ci0t
+LQogc291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5jIHwgMjQgKysrKysrKysrKystLS0t
+LS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKyksIDEyIGRlbGV0aW9ucygt
+KQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMuYyBiL3NvdW5k
+L3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMuYwppbmRleCAwYjE4ZjY1Li4zOTIwYTVlIDEwMDY0
+NAotLS0gYS9zb3VuZC9zb2Mva2lya3dvb2Qva2lya3dvb2QtaTJzLmMKKysrIGIvc291bmQvc29j
+L2tpcmt3b29kL2tpcmt3b29kLWkycy5jCkBAIC00NzMsMTcgKzQ3MywxNyBAQCBzdGF0aWMgc3Ry
+dWN0IHNuZF9zb2NfZGFpX2RyaXZlciBraXJrd29vZF9pMnNfZGFpX2V4dGNsa1syXSA9IHsKIAku
+cGxheWJhY2sgPSB7CiAJCS5jaGFubmVsc19taW4gPSAxLAogCQkuY2hhbm5lbHNfbWF4ID0gMiwK
+LQkJLnJhdGVzID0gU05EUlZfUENNX1JBVEVfODAwMF8xOTIwMDAgfAotCQkJIFNORFJWX1BDTV9S
+QVRFX0NPTlRJTlVPVVMgfAotCQkJIFNORFJWX1BDTV9SQVRFX0tOT1QsCisJCS5yYXRlcyA9IFNO
+RFJWX1BDTV9SQVRFX0NPTlRJTlVPVVMsCisJCS5yYXRlX21pbiA9IDU1MTIsCisJCS5yYXRlX21h
+eCA9IDE5MjAwMCwKIAkJLmZvcm1hdHMgPSBLSVJLV09PRF9JMlNfRk9STUFUUywKIAl9LAogCS5j
+YXB0dXJlID0gewogCQkuY2hhbm5lbHNfbWluID0gMSwKIAkJLmNoYW5uZWxzX21heCA9IDIsCi0J
+CS5yYXRlcyA9IFNORFJWX1BDTV9SQVRFXzgwMDBfMTkyMDAwIHwKLQkJCSBTTkRSVl9QQ01fUkFU
+RV9DT05USU5VT1VTIHwKLQkJCSBTTkRSVl9QQ01fUkFURV9LTk9ULAorCQkucmF0ZXMgPSBTTkRS
+Vl9QQ01fUkFURV9DT05USU5VT1VTLAorCQkucmF0ZV9taW4gPSA1NTEyLAorCQkucmF0ZV9tYXgg
+PSAxOTIwMDAsCiAJCS5mb3JtYXRzID0gS0lSS1dPT0RfSTJTX0ZPUk1BVFMsCiAJfSwKIAkub3Bz
+ID0gJmtpcmt3b29kX2kyc19kYWlfb3BzLApAQCAtNDk0LDE3ICs0OTQsMTcgQEAgc3RhdGljIHN0
+cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIga2lya3dvb2RfaTJzX2RhaV9leHRjbGtbMl0gPSB7CiAJ
+LnBsYXliYWNrID0gewogCQkuY2hhbm5lbHNfbWluID0gMSwKIAkJLmNoYW5uZWxzX21heCA9IDIs
+Ci0JCS5yYXRlcyA9IFNORFJWX1BDTV9SQVRFXzgwMDBfMTkyMDAwIHwKLQkJCSBTTkRSVl9QQ01f
+UkFURV9DT05USU5VT1VTIHwKLQkJCSBTTkRSVl9QQ01fUkFURV9LTk9ULAorCQkucmF0ZXMgPSBT
+TkRSVl9QQ01fUkFURV9DT05USU5VT1VTLAorCQkucmF0ZV9taW4gPSA1NTEyLAorCQkucmF0ZV9t
+YXggPSAxOTIwMDAsCiAJCS5mb3JtYXRzID0gS0lSS1dPT0RfU1BESUZfRk9STUFUUywKIAl9LAog
+CS5jYXB0dXJlID0gewogCQkuY2hhbm5lbHNfbWluID0gMSwKIAkJLmNoYW5uZWxzX21heCA9IDIs
+Ci0JCS5yYXRlcyA9IFNORFJWX1BDTV9SQVRFXzgwMDBfMTkyMDAwIHwKLQkJCSBTTkRSVl9QQ01f
+UkFURV9DT05USU5VT1VTIHwKLQkJCSBTTkRSVl9QQ01fUkFURV9LTk9ULAorCQkucmF0ZXMgPSBT
+TkRSVl9QQ01fUkFURV9DT05USU5VT1VTLAorCQkucmF0ZV9taW4gPSA1NTEyLAorCQkucmF0ZV9t
+YXggPSAxOTIwMDAsCiAJCS5mb3JtYXRzID0gS0lSS1dPT0RfU1BESUZfRk9STUFUUywKIAl9LAog
+CS5vcHMgPSAma2lya3dvb2RfaTJzX2RhaV9vcHMsCgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkg
+ICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5m
+cmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
