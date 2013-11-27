@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 12/18] ASoC: wm8900: Use IS_ENABLED() macro
-Date: Wed, 27 Nov 2013 18:19:34 +0000
-Message-ID: <20131127181934.GA14725@sirena.org.uk>
+Subject: Re: [PATCH 13/18] ASoC: wm8983: Use IS_ENABLED() macro
+Date: Wed, 27 Nov 2013 18:20:09 +0000
+Message-ID: <20131127182009.GB14725@sirena.org.uk>
 References: <1385044736-14911-1-git-send-email-fabio.estevam@freescale.com>
- <1385044736-14911-14-git-send-email-fabio.estevam@freescale.com>
+ <1385044736-14911-15-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3426988928742097481=="
+Content-Type: multipart/mixed; boundary="===============6970307969919713438=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id BC5562651A8
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 19:19:36 +0100 (CET)
-In-Reply-To: <1385044736-14911-14-git-send-email-fabio.estevam@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 83F60265463
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 19:20:11 +0100 (CET)
+In-Reply-To: <1385044736-14911-15-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,50 +25,50 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3426988928742097481==
+--===============6970307969919713438==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TH+WuvBP3vzEx0cV"
+	protocol="application/pgp-signature"; boundary="An7d4yYHBiG6jn3w"
 Content-Disposition: inline
 
 
---TH+WuvBP3vzEx0cV
+--An7d4yYHBiG6jn3w
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 21, 2013 at 12:38:50PM -0200, Fabio Estevam wrote:
+On Thu, Nov 21, 2013 at 12:38:51PM -0200, Fabio Estevam wrote:
 > Using the IS_ENABLED() macro can make the code shorter and simpler.
 
 Applied, thanks.
 
---TH+WuvBP3vzEx0cV
+--An7d4yYHBiG6jn3w
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSljezAAoJELSic+t+oim9RSAP/3Vy9e7khlnu2eVZD0DQNslp
-6kgbIf/lMZmdmRWQM0U5pCkbMCE5BrnHWJSEnFOUh0UIDNQxGQuVoNrrAr9FSmp+
-OkLiGTHeHAl6/AJks0eme0sPoMmIQtAlZ15SPIFNZtWEAxr9OnBTlt7wrz0CHLIW
-h4EzG0NRaRp80OLKmBSHifXXNaCj0m51pQDDLN39E1PbxMgJ/OkYucagT41xz2Rg
-Lh+cgI8+OZG53r5+qLiy6GeG0mWFfuqQhK+80rz3Y9E6hjfnduFMomJAVJ1q8wCm
-efhOcrPjfIWCPNX6xK6W8vR1sE862pNzmI2WEO3OFXj7XxaDsLCIm9NMQeq4VLrW
-434GLbMtvN3PVslZxq0P92dTRFqN7KfFdIjd8n0ROb970dLkPYWvk9kIjtnAwRTb
-+pRielBbGuPD5m4dDmnj1CUGXbCmka15tsxuHTmL8ymNgYPIr7LKA6SJoUXHTgF0
-kOvvDwz64ebrP1UWxW3T2sv5BcmNuj40+0awr9jiY4lIyy1Ciuotbhv4LjxwGT9U
-DeHZnrdedv580oSIqaDUqB9fX3nPLCWe7MHtZrHFXSgZnudVBiSAXzPZUZ233KZb
-ZtiyE3Bk3ZhsUJCLmXCE4efuCl6ojIFYnbZSY0XzZEFEirl6TouEPAV63i/z0otd
-XdGB/ajaEOMzjE+z81LX
-=hDqY
+iQIcBAEBAgAGBQJSljfWAAoJELSic+t+oim9RGUP/1YH46lam6oTc3ZFLTgMKeFo
+/HqUVYi3E7Ap8wwdRbmBoqTbZJfYlEo3xLz2OTaf9dNNOeWpdoHSh0LChXcGgb7r
+vhEgaAxBSqoZITUSrTjkYwUSkbIgv0L4mm9nNqy5lYy+j1L4UzeXoK8oN2MRER9d
+PykYuPqhYHW3K7HKdP0oTQKF31gFPoHCSKaQ3PrvVrYP9uPpwIwIsudVbGUGiNQw
+0LWBw7ERCNKhi2YoXqSI3AN9vufyWS0WHfWqUSlsTiJ9try6NOCewGjyQbyVhkou
+zUPTEZZZnNjPeFgaMDMV6ufqW+guEQ6rvR3E4slHof0ciUdI5KPLEs+NF78bllOF
+dVo6wxVxmdMR5WYQb63Y+q3CJqUUTtvyiHdtmQ9Gm1Cj475ZnJHuEpjeOnuqaqND
+r8FCB4hNdXq4cBQwdmuU1pFA8y53tzB5I51SfWov0RXz63EIqzq1y2uhgiq1ODSu
+6ffYwHJoqNSWfbPdC1PRaA9o8ZqwHNWVHhVnE5b4acH3AZelTJgjgLART8iTbbnx
+z6btKMRigVSUHGWBj7dzsE/pESUWnuK0SRIumsbTLZZeOYu8n6i4GkM5C/eHDxfW
+bg7vZkQ6mtoeoRxOTX4/racpRkAtNP8sVRmiCzZP9/euLm4JWMzHsGB2uztjkuKd
+U84nSaBm89SOD1aJ6O93
+=eARD
 -----END PGP SIGNATURE-----
 
---TH+WuvBP3vzEx0cV--
+--An7d4yYHBiG6jn3w--
 
---===============3426988928742097481==
+--===============6970307969919713438==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3426988928742097481==--
+--===============6970307969919713438==--
