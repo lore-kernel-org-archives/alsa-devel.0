@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: soc_pcm_init_runtime_hw: Fix
- rate_max calculation
-Date: Wed, 27 Nov 2013 16:42:21 +0000
-Message-ID: <20131127164221.GI14725@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: pcm: Always honor DAI min and
+ max sample rate constraints
+Date: Wed, 27 Nov 2013 16:43:28 +0000
+Message-ID: <20131127164328.GJ14725@sirena.org.uk>
 References: <1385542698-13362-1-git-send-email-lars@metafoo.de>
+ <1385542698-13362-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7742097703049211366=="
+Content-Type: multipart/mixed; boundary="===============2843304581227771130=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B2DF2264F23
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 17:42:25 +0100 (CET)
-In-Reply-To: <1385542698-13362-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 27AD6264F23
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 17:43:31 +0100 (CET)
+In-Reply-To: <1385542698-13362-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,54 +26,52 @@ Cc: Takashi Iwai <tiwai@suse.de>, Jean-Francois Moine <moinejf@free.fr>, alsa-de
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7742097703049211366==
+--===============2843304581227771130==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="l7s6Pb57gD/AGupR"
+	protocol="application/pgp-signature"; boundary="CGHixilj3wKyHuKx"
 Content-Disposition: inline
 
 
---l7s6Pb57gD/AGupR
+--CGHixilj3wKyHuKx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Nov 27, 2013 at 09:58:17AM +0100, Lars-Peter Clausen wrote:
-> In order to make sure that the sample rate is in the supported range of both
-> components the maximum rate of the card should be the minimum of the maximum
-> rate of each components. There is one special case to consider though, if
-> max_rate is set to 0 this means there is no maximum specified, so use
-> min_not_zero() macro which will give use the desired result.
+On Wed, Nov 27, 2013 at 09:58:18AM +0100, Lars-Peter Clausen wrote:
+> snd_pcm_limit_hw_rates() will initialize the minimum and maximum sample rate for
+> the PCM stream based on the rates specified in the rates field. Since we call
+> snd_pcm_limit_hw_rates() after soc_pcm_init_runtime_hw() it will essentially
 
 Applied, thanks.
 
---l7s6Pb57gD/AGupR
+--CGHixilj3wKyHuKx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSliDqAAoJELSic+t+oim913kP/2CK10/XoQjnS/oaRtW258tL
-2JjK+iP0pZf8dcUxrZeyf0Wcfu59weVeKuXveVqmY7xGkHBTpGtLLAwKT/VNZWwh
-SbOG3GzI7l0irJM/Dkq1l9Upb9BX/dvDdjzMuWTysIuQt6aHfxxl62TwZ/Vw6YWU
-BcumrcprxqiFjVJ15rTPmrd86MZgM4Z27F7vv1I+CHWi2yfJTiCe9XAjXiaxnT2u
-4z7BSw5MfwNF4gkTpjYKbwYAW06HiM1gTw2NXagjqQbU3JYA8eY+SlRW2yH2BuJW
-C/p3nSTio7RvwjTrz2yVuWiOtyBzObzlWow3Q+Vy/3TKNald+V9AAVitLyTmAtKH
-Q/GelZE5Av0s5kLFGRjAp7qi8Pw4epMS6lZXY+IbEhzaIswskAyCIE4YGMLE+Et9
-MzTW4W9aux2KSo8zCHKi+1k+MVzAvlLd15LBP9AetO4wUY3c3anrtqWpHKhFlYIF
-VxJ5wck0pPJC6eFm3jAn5WIzNTsScloC6Mc+Te0Nuw6JczNYyZfUUf+1/uA/Viju
-+i1aBVRrQUyI1PrPQCC7W+x6rpb6CAUhn1c+6yS1u3iVCgpJctEkWrYsy9RyhXi+
-E6LhfWsHU21vZh/2TJn3Qr3YhTNjydKK57prVd1A0GxhDxyzge239MZuUr1aQvO9
-9f+tEaSsjoJwYOgvvPsV
-=1MbN
+iQIcBAEBAgAGBQJSliEtAAoJELSic+t+oim9XjIP/ih/zkqED1Id6G2PhpaFN2l5
+48dlZ2KAVsBc+GaXT2NF5PRz36w/OpLAkJ3Zq7/lW+kEF4zQXMpQE8Vs05V5nPPo
+zd956A5OWbj2aPw6b7O/CXuDlMe/BHrpEihoIX6BczRYMivxRHsdUt0IS0kM7IH4
+gibnL3Gz3AEHE2+Fd8+C/SRyUpJLFPHcuFPEnzRzOtQhScwLaf0NhyxF85cX8ozK
+jFGKafE5s0ZngT29SPNkWIvVixl2xuOe0VTPNv3NTtangA+JLja0Llagn7wPwd1J
+eUMCMnQXf+fyfu5K5EoKdZ+zaG8v0cIFKbo7rIWYmTJ7Kcti9mdwsUoKed9XjNRN
+nSUi64ON6cTBFQmcIDqtFuiovv+3i5t/xxcPCRaMshu1BhsaoZqC3vgm5ybc+Qa4
+oAQlJjLRN1YDWhI7ZTKgWZcjP/lCwyTf2IVUwCiHIa0K3mBpmNQ68F902eS620+N
+Ox66sY5ZfXLYsMGkdaUtI1xxFO/6rCfO6tbgKDg8FK56XTgYB0unDHj5oxlzD4K3
+mD7FPIMfyG3l2X8eGydt3xyNxutSBWdGfuGiBB1oOmRKnAOwjv+10CC5wNtk4cXf
+1uBEaapPEa8tm/TpSKTc1ks6Gdk2Wh9c9N+IZK/j7JBuAweVuTNz2b6G4iAJW8FD
+yc6KnVdIwvvqkplkQDVl
+=HzaU
 -----END PGP SIGNATURE-----
 
---l7s6Pb57gD/AGupR--
+--CGHixilj3wKyHuKx--
 
---===============7742097703049211366==
+--===============2843304581227771130==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7742097703049211366==--
+--===============2843304581227771130==--
