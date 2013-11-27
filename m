@@ -1,18 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/2] ASoC: pcm: Always honor DAI min and max
-	sample rate constraints
-Date: Wed, 27 Nov 2013 09:58:18 +0100
-Message-ID: <1385542698-13362-2-git-send-email-lars@metafoo.de>
-References: <1385542698-13362-1-git-send-email-lars@metafoo.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [TINYCOMPRESS PATCH 1/2] crec: Initial version of
+ a compressed capture utility
+Date: Wed, 27 Nov 2013 13:38:24 +0530
+Message-ID: <20131127080824.GL8834@intel.com>
+References: <1384879579-7790-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-025.synserver.de (smtp-out-115.synserver.de
- [212.40.185.115])
- by alsa0.perex.cz (Postfix) with ESMTP id BE1BC26260F
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 09:57:48 +0100 (CET)
-In-Reply-To: <1385542698-13362-1-git-send-email-lars@metafoo.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FBC026260F
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 10:06:08 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1384879579-7790-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,78 +22,124 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, vinod.koul@linux.jf.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-snd_pcm_limit_hw_rates() will initialize the minimum and maximum sample rate for
-the PCM stream based on the rates specified in the rates field. Since we call
-snd_pcm_limit_hw_rates() after soc_pcm_init_runtime_hw() it will essentially
-overwrite the min and max rate set in soc_pcm_init_runtime_hw(). This may cause
-the minimum or maximum rate to be set to a value outside the range of one of the
-components if one of the components sets either SNDRV_PCM_RATE_CONTINUOUS or
-SNDRV_PCM_RATE_KNOT and the other component specified a discrete rate via
-SNDRV_PCM_RATE_[0-9]* that is outside of the first component's rate range. To
-fix this first calculate the minimum and maximum rates using
-snd_pcm_limit_hw_rates() and then on top of that apply the contraints specified
-in the snd_soc_pcm_stream structs.
+On Tue, Nov 19, 2013 at 04:46:18PM +0000, Charles Keepax wrote:
+> This version only supports capture of PCM streams over a compressed
+> device and saves these as WAV files.
+Thanks for posting this :) I was about to ping you ad get these done if you were
+busy...
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-pcm.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index c4ef880..22af038 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -215,12 +215,12 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream,
- 	}
- }
- 
--static void soc_pcm_init_runtime_hw(struct snd_pcm_hardware *hw,
-+static void soc_pcm_init_runtime_hw(struct snd_pcm_runtime *runtime,
- 	struct snd_soc_pcm_stream *codec_stream,
- 	struct snd_soc_pcm_stream *cpu_stream)
- {
--	hw->rate_min = max(codec_stream->rate_min, cpu_stream->rate_min);
--	hw->rate_max = min_not_zero(codec_stream->rate_max, cpu_stream->rate_max);
-+	struct snd_pcm_hardware *hw = &runtime->hw;
-+
- 	hw->channels_min = max(codec_stream->channels_min,
- 		cpu_stream->channels_min);
- 	hw->channels_max = min(codec_stream->channels_max,
-@@ -233,6 +233,13 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_hardware *hw,
- 	if (cpu_stream->rates
- 		& (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
- 		hw->rates |= codec_stream->rates;
-+
-+	snd_pcm_limit_hw_rates(runtime);
-+
-+	hw->rate_min = max(hw->rate_min, cpu_stream->rate_min);
-+	hw->rate_min = max(hw->rate_min, codec_stream->rate_min);
-+	hw->rate_max = min_not_zero(hw->rate_max, cpu_stream->rate_max);
-+	hw->rate_max = min_not_zero(hw->rate_max, codec_stream->rate_max);
- }
- 
- /*
-@@ -302,15 +309,14 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 
- 	/* Check that the codec and cpu DAIs are compatible */
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		soc_pcm_init_runtime_hw(&runtime->hw, &codec_dai_drv->playback,
-+		soc_pcm_init_runtime_hw(runtime, &codec_dai_drv->playback,
- 			&cpu_dai_drv->playback);
- 	} else {
--		soc_pcm_init_runtime_hw(&runtime->hw, &codec_dai_drv->capture,
-+		soc_pcm_init_runtime_hw(runtime, &codec_dai_drv->capture,
- 			&cpu_dai_drv->capture);
- 	}
- 
- 	ret = -EINVAL;
--	snd_pcm_limit_hw_rates(runtime);
- 	if (!runtime->hw.rates) {
- 		printk(KERN_ERR "ASoC: %s <-> %s No matching rates\n",
- 			codec_dai->name, cpu_dai->name);
--- 
-1.8.0
+> +static void usage(void)
+> +{
+> +	fprintf(stderr, "usage: crec [OPTIONS] filename\n"
+> +		"-c\tcard number\n"
+> +		"-d\tdevice node\n"
+> +		"-b\tbuffer size\n"
+> +		"-f\tfragments\n"
+> +		"-v\tverbose mode\n"
+> +		"-l\tlength of record in seconds\n"
+perhaps it would be more intutive for time. We cant use d here :(
+
+> +		"-h\tPrints this help list\n\n"
+> +		"-C\tSpecify the number of channels (default %u)\n"
+> +		"-R\tSpecify the sample rate (default %u)\n"
+can these be lower case?
+
+> +		"-F\tSpecify the format: S16_LE, S32_LE (default S16_LE)\n\n"
+> +		"Example:\n"
+> +		"\tcrec -c 1 -d 2 test.wav\n"
+> +		"\tcrec -f 5 test.wav\n",
+> +		DEFAULT_CHANNELS, DEFAULT_RATE);
+> +
+> +	exit(EXIT_FAILURE);
+> +}
+> +
+> +static int print_time(struct compress *compress)
+> +{
+> +	unsigned int avail;
+> +	struct timespec tstamp;
+> +
+> +	if (compress_get_hpointer(compress, &avail, &tstamp) != 0) {
+> +		fprintf(stderr, "Error querying timestamp\n");
+> +		fprintf(stderr, "ERR: %s\n", compress_get_error(compress));
+> +		return -1;
+> +	} else {
+> +		printf("DSP recorded %jd.%jd\n",
+> +		       (intmax_t)tstamp.tv_sec, (intmax_t)tstamp.tv_nsec*1000);
+> +	}
+> +	return 0;
+> +}
+> +
+> +void capture_samples(char *name, unsigned int card, unsigned int device,
+> +		     unsigned long buffer_size, unsigned int frag,
+> +		     unsigned int length, unsigned int rate,
+> +		     unsigned int channels, unsigned int format)
+> +{
+> +	struct compr_config config;
+> +	struct snd_codec codec;
+> +	struct compress *compress;
+> +	struct wave_header header;
+> +	FILE *file;
+> +	char *buffer;
+> +	size_t written;
+> +	int read, ret;
+> +	unsigned int size, total_read = 0;
+> +	unsigned int samplebits;
+> +
+> +	switch (format) {
+> +	case SNDRV_PCM_FORMAT_S32_LE:
+> +		samplebits = 32;
+> +		break;
+> +	default:
+> +		samplebits = 16;
+> +		break;
+> +	}
+> +
+> +	/* Convert length from seconds to bytes */
+> +	length = length * rate * (samplebits / 8) * channels;
+> +
+> +	if (verbose)
+> +		printf("%s: entry, reading %u bytes\n", __func__, length);
+> +
+> +	file = fopen(name, "w+b");
+why w+?
+
+> +	if (!file) {
+> +		fprintf(stderr, "Unable to open file '%s'\n", name);
+> +		exit(EXIT_FAILURE);
+> +	}
+> +
+> +	/* Write a header, will update with size once record is complete */
+> +	init_wave_header(&header, channels, rate, samplebits);
+> +	written = fwrite(&header, sizeof(header), 1, file);
+> +	if (written != 1) {
+> +		fprintf(stderr, "Error writing output file header: %d\n",
+> +			ferror(file));
+> +		goto file_exit;
+> +	}
+> +
+> +	codec.id = SND_AUDIOCODEC_PCM;
+> +	codec.ch_in = channels;
+> +	codec.ch_out = channels;
+> +	codec.sample_rate = compress_get_alsa_rate(rate);
+> +	if (!codec.sample_rate) {
+> +		fprintf(stderr, "invalid sample rate %d\n", rate);
+> +		goto file_exit;
+> +	}
+> +	codec.bit_rate = 0;
+> +	codec.rate_control = 0;
+> +	codec.profile = 0;
+> +	codec.level = 0;
+> +	codec.ch_mode = 0;
+> +	codec.format = format;
+why not do memset of the codec and configure only what we need...
+
+
+rest looks okay to me
+
+--
+~Vinod
