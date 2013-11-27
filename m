@@ -1,7 +1,7 @@
 From: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCHv8][ 5/5] ARM: dts: mbimxsd53: Add sound support.
-Date: Wed, 27 Nov 2013 16:54:24 +0100
-Message-ID: <1385567664-758-5-git-send-email-denis@eukrea.com>
+Subject: [PATCHv8][ 4/5] ARM: dts: mbimxsd51: Add sound support.
+Date: Wed, 27 Nov 2013 16:54:23 +0100
+Message-ID: <1385567664-758-4-git-send-email-denis@eukrea.com>
 References: <1385567664-758-1-git-send-email-denis@eukrea.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -27,92 +27,39 @@ Cc: Eric B=C3=A9nard <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
 Signed-off-by: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
 ---
 ChangeLog v7->v8:
-- New patch.
+- Ajusted to match the driver changes.
 ---
- .../boot/dts/imx53-eukrea-mbimxsd53-baseboard.dts  |   43 ++++++++++++=
-++++++++
- 1 file changed, 43 insertions(+)
+ .../boot/dts/imx51-eukrea-mbimxsd51-baseboard.dts  |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm/boot/dts/imx53-eukrea-mbimxsd53-baseboard.dts b/a=
-rch/arm/boot/dts/imx53-eukrea-mbimxsd53-baseboard.dts
-index 95929aa..b14cc3d 100644
---- a/arch/arm/boot/dts/imx53-eukrea-mbimxsd53-baseboard.dts
-+++ b/arch/arm/boot/dts/imx53-eukrea-mbimxsd53-baseboard.dts
-@@ -51,8 +51,21 @@
- 		regulator-max-microvolt =3D <3300000>;
- 		regulator-always-on;
+diff --git a/arch/arm/boot/dts/imx51-eukrea-mbimxsd51-baseboard.dts b/a=
+rch/arm/boot/dts/imx51-eukrea-mbimxsd51-baseboard.dts
+index cf2e0d8..6774c66 100644
+--- a/arch/arm/boot/dts/imx51-eukrea-mbimxsd51-baseboard.dts
++++ b/arch/arm/boot/dts/imx51-eukrea-mbimxsd51-baseboard.dts
+@@ -48,6 +48,14 @@
+ 			linux,default-trigger =3D "heartbeat";
+ 		};
  	};
 +
 +	sound {
 +		compatible =3D "eukrea,asoc-tlv320";
-+		eukrea,model =3D "imx53-eukrea-tlv320aic23";
++		eukrea,model =3D "imx51-eukrea-tlv320aic23";
 +		ssi-controller =3D <&ssi2>;
 +		fsl,mux-int-port =3D <2>;
-+		fsl,mux-ext-port =3D <4>;
++		fsl,mux-ext-port =3D <3>;
 +	};
  };
 =20
-+&audmux {
-+	pinctrl-names =3D "default";
-+	pinctrl-0 =3D <&pinctrl_audmux>;
-+	status =3D "okay";
-+};
+ &audmux {
+@@ -125,6 +133,7 @@
+ };
 =20
- &esdhc1 {
- 	pinctrl-names =3D "default";
-@@ -63,8 +76,28 @@
+ &ssi2 {
++	codec-handle =3D <&tlv320aic23>;
+ 	fsl,mode =3D "i2s-slave";
  	status =3D "okay";
  };
-=20
-+&i2c2 {
-+	pinctrl-names =3D "default";
-+	pinctrl-0 =3D <&pinctrl_i2c2>;
-+	status =3D "okay";
-+
-+	tlv320aic23: codec@1a {
-+		compatible =3D "ti,tlv320aic23";
-+		clocks =3D <&clks IMX5_CLK_SSI_EXT1_GATE>;
-+		reg =3D <0x1a>;
-+	};
-+};
-+
- &iomuxc {
- 	imx53-eukrea {
-+		pinctrl_hog: hoggrp {
-+			fsl,pins =3D <MX53_PAD_PATA_DA_0__GPIO7_6 0x80000000>;
-+		};
-+
-+		pinctrl_audmux: audmuxgrp {
-+			fsl,pins =3D <MX53_AUDMUX_PINGRP2>;
-+		};
-+
- 		pinctrl_esdhc1: esdhc1 {
- 			fsl,pins =3D <MX53_ESDHC1_PINGRP1>;
- 		};
-@@ -81,6 +114,10 @@
- 			fsl,pins =3D <MX53_PAD_KEY_ROW4__GPIO4_15 0x80000000>;
- 		};
-=20
-+		pinctrl_i2c2: i2c2grp {
-+			fsl,pins =3D <MX53_I2C2_PINGRP1>;
-+		};
-+
- 		pinctrl_uart1: uart1grp {
- 			fsl,pins =3D <MX53_UART1_PINGRP2>;
- 		};
-@@ -91,6 +128,12 @@
- 	};
- };
-=20
-+&ssi2 {
-+	codec-handle =3D <&tlv320aic23>;
-+	fsl,mode =3D "i2s-slave";
-+	status =3D "okay";
-+};
-+
- &uart1 {
- 	pinctrl-names =3D "default";
- 	pinctrl-0 =3D <&pinctrl_uart1>;
 --=20
 1.7.9.5
 
