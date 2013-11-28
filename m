@@ -1,19 +1,23 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: hda - Add LFE chmap to ASUS ET2700
-Date: Thu, 28 Nov 2013 15:26:39 +0100
-Message-ID: <1385648799-9212-2-git-send-email-tiwai@suse.de>
-References: <1385648799-9212-1-git-send-email-tiwai@suse.de>
+From: Jason Mancine <jason@mancine.net>
+Subject: Re: Zoom R16
+Date: Thu, 28 Nov 2013 09:42:05 -0500
+Message-ID: <CAPrbH=tu0jTctOAegkT7tnq1VSGOui4cESA2rYJFfgCa3=tQDg@mail.gmail.com>
+References: <CAPrbH=vnQ-xXsRDoj30nra7hB_hDEaF6u3ov0XuDG_ZpFzb3bA@mail.gmail.com>
+ <20131124130335.GA23126@tamtam.fritz.box>
+ <CAPrbH=tGph7__rgx-5BsBSi9-E95FpsTL9Yy0zbum0TccTPbyQ@mail.gmail.com>
+ <20131124141803.GC23126@tamtam.fritz.box>
+ <CAPrbH=sA5ppp8z3bqdaDnk4U+DZ093ukXpDgiT6DEixGi1tdZA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 47AB2265283
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 15:26:41 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 40A98A7DA1
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 15:26:40 +0100 (CET)
-In-Reply-To: <1385648799-9212-1-git-send-email-tiwai@suse.de>
+Received: from mail-we0-f169.google.com (mail-we0-f169.google.com
+ [74.125.82.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id D28812651A0
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 15:42:25 +0100 (CET)
+Received: by mail-we0-f169.google.com with SMTP id w61so2635282wes.0
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 06:42:25 -0800 (PST)
+In-Reply-To: <CAPrbH=sA5ppp8z3bqdaDnk4U+DZ093ukXpDgiT6DEixGi1tdZA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,80 +27,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Mack <daniel@zonque.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As the previous commit 1f0bbf03cb82 added the pin config for the bass
-speaker, this patch adds the corresponding LFE-only channel map on
-ASUS ET2700.
+I was able to compile 3.11.9 for AVLinux.  The quirk does not work, dmesg
+returns this:
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=65961
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+[   40.759383] usb 2-8: New USB device found, idVendor=1686, idProduct=00dd
+[   40.759387] usb 2-8: New USB device strings: Mfr=1, Product=2,
+SerialNumber=3
+[   40.759390] usb 2-8: Product: R16
+[   40.759393] usb 2-8: Manufacturer: ZOOM Corporation
+[   40.759396] usb 2-8: SerialNumber: 0
+[   40.760214] snd-usb-audio: probe of 2-8:1.0 failed with error -5
+[   45.760206] 6:1:1: cannot get freq at ep 0x3
+[   55.761231] 6:2:1: cannot get freq at ep 0x84
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index fd835c52618e..c770bdba6531 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -1783,6 +1783,7 @@ enum {
- 	ALC882_FIXUP_INV_DMIC,
- 	ALC882_FIXUP_NO_PRIMARY_HP,
- 	ALC887_FIXUP_ASUS_BASS,
-+	ALC887_FIXUP_BASS_CHMAP,
- };
- 
- static void alc889_fixup_coef(struct hda_codec *codec,
-@@ -1916,6 +1917,9 @@ static void alc882_fixup_no_primary_hp(struct hda_codec *codec,
- 	}
- }
- 
-+static void alc_fixup_bass_chmap(struct hda_codec *codec,
-+				 const struct hda_fixup *fix, int action);
-+
- static const struct hda_fixup alc882_fixups[] = {
- 	[ALC882_FIXUP_ABIT_AW9D_MAX] = {
- 		.type = HDA_FIXUP_PINS,
-@@ -2112,6 +2116,12 @@ static const struct hda_fixup alc882_fixups[] = {
- 			{0x16, 0x99130130}, /* bass speaker */
- 			{}
- 		},
-+		.chained = true,
-+		.chain_id = ALC887_FIXUP_BASS_CHMAP,
-+	},
-+	[ALC887_FIXUP_BASS_CHMAP] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_bass_chmap,
- 	},
- };
- 
-@@ -4731,7 +4741,7 @@ static const struct snd_pcm_chmap_elem asus_pcm_2_1_chmaps[] = {
- };
- 
- /* override the 2.1 chmap */
--static void alc662_fixup_bass_chmap(struct hda_codec *codec,
-+static void alc_fixup_bass_chmap(struct hda_codec *codec,
- 				    const struct hda_fixup *fix, int action)
- {
- 	if (action == HDA_FIXUP_ACT_BUILD) {
-@@ -4939,7 +4949,7 @@ static const struct hda_fixup alc662_fixups[] = {
- 	},
- 	[ALC662_FIXUP_BASS_CHMAP] = {
- 		.type = HDA_FIXUP_FUNC,
--		.v.func = alc662_fixup_bass_chmap,
-+		.v.func = alc_fixup_bass_chmap,
- 		.chained = true,
- 		.chain_id = ALC662_FIXUP_ASUS_MODE4
- 	},
-@@ -4952,7 +4962,7 @@ static const struct hda_fixup alc662_fixups[] = {
- 	},
- 	[ALC662_FIXUP_BASS_1A_CHMAP] = {
- 		.type = HDA_FIXUP_FUNC,
--		.v.func = alc662_fixup_bass_chmap,
-+		.v.func = alc_fixup_bass_chmap,
- 		.chained = true,
- 		.chain_id = ALC662_FIXUP_BASS_1A,
- 	},
--- 
-1.8.4.4
+
+
+
+On Tue, Nov 26, 2013 at 1:22 PM, Jason Mancine <jason@mancine.net> wrote:
+
+> Can't seem to compile 3.11 or 3.12 for the distro I am using (AVLInux)...
+> tested it in Ubuntu Studio 13.10 and the quirk didn't seem to have any
+> effect.  The output of lsusb is the same, but the device doesn't show up as
+> a sound card.
+>
+>
+> On Sun, Nov 24, 2013 at 9:18 AM, Daniel Mack <daniel@zonque.org> wrote:
+>
+>> On Sun, Nov 24, 2013 at 09:03:47AM -0500, Jason Mancine wrote:
+>> > Thanks, I will give it a try.  By recent kernel do you mean latest
+>> mainline
+>> > or should my distro's 3.6.11 be new enough?
+>>
+>> Anything >= 3.11 should do.
+>>
+>> In further replies, please do not drop the alsa-devel mailing list.
+>>
+>>
+>> Thanks,
+>> Daniel
+>>
+>
+>
