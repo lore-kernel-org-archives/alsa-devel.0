@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/6] ASoC: spear: Use
-	devm_snd_dmaengine_pcm_register
-Date: Thu, 28 Nov 2013 13:36:31 +0000
-Message-ID: <20131128133631.GH27568@sirena.org.uk>
-References: <1385625037-24973-1-git-send-email-lars@metafoo.de>
- <1385625037-24973-5-git-send-email-lars@metafoo.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: hda - Initialize missing bass
+	speaker pin for ASUS AIO ET2700
+Date: Thu, 28 Nov 2013 15:26:38 +0100
+Message-ID: <1385648799-9212-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6501433124900929559=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E85C265300
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 14:36:47 +0100 (CET)
-In-Reply-To: <1385625037-24973-5-git-send-email-lars@metafoo.de>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 474A6265263
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 15:26:41 +0100 (CET)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 40918A7D9E
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 15:26:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Mallon <rmallon@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, H Hartley Sweeten <hsweeten@visionengravers.com>, Florian Meier <florian.meier@koalo.de>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Add a fixup entry for the missing bass speaker pin 0x16 on ASUS ET2700
+AiO desktop.  The channel map will be added in the next patch, so that
+this can be backported easily to stable kernels.
 
---===============6501433124900929559==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3ecMC0kzqsE2ddMN"
-Content-Disposition: inline
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=65961
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-
---3ecMC0kzqsE2ddMN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Nov 28, 2013 at 08:50:36AM +0100, Lars-Peter Clausen wrote:
-> Makes the code slightly shorter.
-
-Applied, thanks.
-
---3ecMC0kzqsE2ddMN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSl0bcAAoJELSic+t+oim9hygP/0qzXBlbAvhBl+I4hhWlA9/g
-DjEdw3mOL4kooP9iMFUFQnLWuTmIUEpg/K3dUoTQrPtYJ3biy3FOL9zNRx7TnBSC
-KJSqMw5/qCvg4iR0HBzcisJox4Ji03iZWkDUnFbmDGT8cJSAmhgmtAdVsEdX/RCn
-gjar2t6Cr/n8R4E/c4F4Vg2xWffGGWf0GKOpS+8EeCFe0aNiPXmOwjJFgU4FSBs1
-tUTnprWTyiAitC+dmxc447HtzYpegg39KGujkp3hZOK1Jp+1yAuiOtDQMoLFtMBO
-lmRr59S0t9dIRHUi1wLsbzrfyzPh8V7wRQup1O2OC6+v2tdfGqGaaYmX+kTn90y8
-bnUO5TE79AWKjIiZypJexJiRgUsjl1xP4nNHgsVtw3L1XnpgVb//8IrMzs+AatbU
-WMPF3Igyd98qmXtZREQME9FzrBGyYgVJob+LC9SQdiMGrJmAZCvgRgMHwaht3LmT
-MRuCjHh/4EaVWwyqpcAmRHjZpRXVBr/IeDK4B52PnPxdY4pkedTTawSR23PjgRne
-HBtWWleZljuY6yVfInnv1FBzKIEXpe+Lnjcv2J+Dipw01fBILdig6Fay9dm3Dn4i
-4ZEgpgMMmD0+HlwqtnkJReVcbpRL02gKSobJWPjW2qRzgr5rPnSgdT2oHYM9hxIS
-xH5xKN7aN7nZicbJk/6H
-=Y/hh
------END PGP SIGNATURE-----
-
---3ecMC0kzqsE2ddMN--
-
---===============6501433124900929559==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6501433124900929559==--
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 3a9a1b0c1dbe..fd835c52618e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1782,6 +1782,7 @@ enum {
+ 	ALC889_FIXUP_IMAC91_VREF,
+ 	ALC882_FIXUP_INV_DMIC,
+ 	ALC882_FIXUP_NO_PRIMARY_HP,
++	ALC887_FIXUP_ASUS_BASS,
+ };
+ 
+ static void alc889_fixup_coef(struct hda_codec *codec,
+@@ -2105,6 +2106,13 @@ static const struct hda_fixup alc882_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc882_fixup_no_primary_hp,
+ 	},
++	[ALC887_FIXUP_ASUS_BASS] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{0x16, 0x99130130}, /* bass speaker */
++			{}
++		},
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+@@ -2138,6 +2146,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1873, "ASUS W90V", ALC882_FIXUP_ASUS_W90V),
+ 	SND_PCI_QUIRK(0x1043, 0x1971, "Asus W2JC", ALC882_FIXUP_ASUS_W2JC),
+ 	SND_PCI_QUIRK(0x1043, 0x835f, "Asus Eee 1601", ALC888_FIXUP_EEE1601),
++	SND_PCI_QUIRK(0x1043, 0x84bc, "ASUS ET2700", ALC887_FIXUP_ASUS_BASS),
+ 	SND_PCI_QUIRK(0x104d, 0x9047, "Sony Vaio TT", ALC889_FIXUP_VAIO_TT),
+ 	SND_PCI_QUIRK(0x104d, 0x905a, "Sony Vaio Z", ALC882_FIXUP_NO_PRIMARY_HP),
+ 	SND_PCI_QUIRK(0x104d, 0x9043, "Sony Vaio VGC-LN51JGB", ALC882_FIXUP_NO_PRIMARY_HP),
+-- 
+1.8.4.4
