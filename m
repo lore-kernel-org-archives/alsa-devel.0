@@ -1,15 +1,15 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm_adsp: Stop region iteration when the
-	desired region is found
-Date: Thu, 28 Nov 2013 16:37:51 +0000
-Message-ID: <1385656671-18519-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/3] ASoC: ak4642: Convert to
+	module_i2c_driver()
+Date: Thu, 28 Nov 2013 18:04:46 +0000
+Message-ID: <1385661888-11924-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C8772619D8
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 17:40:53 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 15E6D265263
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 19:04:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,31 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Kuninori Morimoto <morimoto.kuninori@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-When locating the memory region relating to a coefficient block written
-through a bin file we keep processing the list of regions even after we
-have found the region we require. This patch adds a break, so we don't
-process redundant list items.
+From: Mark Brown <broonie@linaro.org>
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+The device does not support anything other than I2C (at least with the
+current driver) so save code.
+
+Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/wm_adsp.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ sound/soc/codecs/ak4642.c | 22 +---------------------
+ 1 file changed, 1 insertion(+), 21 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 46ec0e9..b42f9af 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1286,6 +1286,7 @@ static int wm_adsp_load_coeff(struct wm_adsp *dsp)
- 					reg = wm_adsp_region_to_reg(mem,
- 								    reg);
- 					reg += offset;
-+					break;
- 				}
- 			}
+diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+index 2f861c9b1d69..5bb18e913fa5 100644
+--- a/sound/soc/codecs/ak4642.c
++++ b/sound/soc/codecs/ak4642.c
+@@ -511,7 +511,6 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4648 = {
+ 	.num_dapm_routes	= ARRAY_SIZE(ak4642_intercon),
+ };
  
+-#if IS_ENABLED(CONFIG_I2C)
+ static struct of_device_id ak4642_of_match[];
+ static int ak4642_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+@@ -571,27 +570,8 @@ static struct i2c_driver ak4642_i2c_driver = {
+ 	.remove		= ak4642_i2c_remove,
+ 	.id_table	= ak4642_i2c_id,
+ };
+-#endif
+ 
+-static int __init ak4642_modinit(void)
+-{
+-	int ret = 0;
+-#if IS_ENABLED(CONFIG_I2C)
+-	ret = i2c_add_driver(&ak4642_i2c_driver);
+-#endif
+-	return ret;
+-
+-}
+-module_init(ak4642_modinit);
+-
+-static void __exit ak4642_exit(void)
+-{
+-#if IS_ENABLED(CONFIG_I2C)
+-	i2c_del_driver(&ak4642_i2c_driver);
+-#endif
+-
+-}
+-module_exit(ak4642_exit);
++module_i2c_driver(ak4642_i2c_driver);
+ 
+ MODULE_DESCRIPTION("Soc AK4642 driver");
+ MODULE_AUTHOR("Kuninori Morimoto <morimoto.kuninori@renesas.com>");
 -- 
-1.7.2.5
+1.8.4.4
