@@ -1,8 +1,10 @@
 From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Subject: [PATCH 1/4] dt: Add bindings documentation for the ADI AXI-I2S controller
-Date: Thu, 28 Nov 2013 20:02:49 +0100
-Message-ID: <1385665372-29477-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 3/4] dt: Add bindings documentation for the ADI AXI-SPDIF audio controller
+Date: Thu, 28 Nov 2013 20:02:51 +0100
+Message-ID: <1385665372-29477-3-git-send-email-lars@metafoo.de>
+References: <1385665372-29477-1-git-send-email-lars@metafoo.de>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1385665372-29477-1-git-send-email-lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
@@ -13,7 +15,7 @@ controller. The controller has:
  * One set of memory mapped register
  * Two clocks, one for the memory mapped register interface, one used as the
    audio reference clock
- * One DMA interface each for the transmit and receive data
+ * A DMA interface for the transmit data
 
 Signed-off-by: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
 Cc: Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>
@@ -23,28 +25,28 @@ Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
 Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
 Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 ---
- .../devicetree/bindings/sound/adi,axi-i2s.txt      | 29 ++++++++++++++++++++++
+ .../devicetree/bindings/sound/adi,axi-spdif-tx.txt | 29 ++++++++++++++++++++++
  1 file changed, 29 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/adi,axi-spdif-tx.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
+diff --git a/Documentation/devicetree/bindings/sound/adi,axi-spdif-tx.txt b/Documentation/devicetree/bindings/sound/adi,axi-spdif-tx.txt
 new file mode 100644
-index 0000000..d9c0e53
+index 0000000..489ba9be
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/adi,axi-spdif-tx.txt
 @@ -0,0 +1,29 @@
-+ADI AXI-I2S controller
++ADI AXI-SPDIF controller
 +
 +Required properties:
-+ - compatible : Must be "adi,axi-i2s-1.00.a"
-+ - reg : Must contain I2S registers location and length
++ - compatible : Must be "adi,axi-spdif-1.00.a"
++ - reg : Must contain SPDIF registers location and length
 + - clocks : Clock specifier providing a handle to the controller's clocks. The
 +   controller expects two clocks, the clock used for the AXI interface and the
-+   clock used as thei sampling rate reference clock sample.
-+ - clock-names : "axi" for the clock to the AXI interface, "ref" for the sample
++   clock used as the sample rate reference clock.
++ - clock-names: "axi" for the clock to the AXI interface, "ref" for the sample
 +   rate reference clock.
-+ - dma : Specifiers for the DMA channels that are used by the core.
-+ - dma-names : "tx" for the transmit channel, "rx" for the receive channel.
++ - dma : Phandle to the dma channels for the transmit DMA.
++ - dma-names : Must be "tx"
 +
 +For more details on the 'dma', 'dma-names', 'clock' and 'clock-names' properties
 +please check:
@@ -54,13 +56,13 @@ index 0000000..d9c0e53
 +
 +Example:
 +
-+	i2s: i2s@0x77600000 {
-+		compatible = "adi,axi-i2s-1.00.a";
++	spdif: spdif@0x77400000 {
++		compatible = "adi,axi-spdif-tx-1.00.a";
 +		reg = <0x77600000 0x1000>;
 +		clocks = <&clk 15 &audio_clock>;
 +		clock-names = "axi", "ref";
-+		dmas = <&ps7_dma 0 &ps7_dma 1>;
-+		dma-names = "tx", "rx";
++		dmas = <&ps7_dma 0>;
++		dma-names = "tx";
 +	};
 -- 
 1.8.0
