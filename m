@@ -1,43 +1,81 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Intermittent cut out on the video
-Date: Thu, 28 Nov 2013 09:29:45 +0100
-Message-ID: <5296FEF9.2020604@ladisch.de>
-References: <DUB122-W30D40465C0A432A2147375AAEC0@phx.gbl>
- <DUB122-W83C8D065397526DB034BAAAEE0@phx.gbl>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v7 0/4] Add dual-fifo mode support of i.MX ssi
+Date: Thu, 28 Nov 2013 14:11:09 +0530
+Message-ID: <20131128084108.GZ8834@intel.com>
+References: <cover.1384352281.git.b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id F2BD32651DB
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 09:29:47 +0100 (CET)
-In-Reply-To: <DUB122-W83C8D065397526DB034BAAAEE0@phx.gbl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dolevo Jay <cmst@live.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <cover.1384352281.git.b42378@freescale.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: dan.j.williams@intel.com, s.hauer@pengutronix.de, timur@tabi.org, shawn.guo@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, rob.herring@calxeda.com, mark.rutland@arm.com, swarren@wwwdotorg.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Dolevo Jay wrote:
-> I have two sound cards on my system and I use the [multi plugin] to
-> have audio from two jacks simultaneously.
->
-> The audio coming from the jack on the pc is cutting out intermittently.
-> It just cuts out for a fraction of a second and continues as normal
-> and after some time it happens again.
+On Wed, Nov 13, 2013 at 10:55:23PM +0800, Nicolin Chen wrote:
+>  * ! This series of patches has a direct dependency between them. When
+>  * ! applying them, we need to apply to one single branch. Otherwise,
+>  * ! it would break currect branches.
+Applied, thanks
 
-The two cards use different sample clocks, so it is not possible to feed
-them reliably from the same stream.
+--
+~Vinod
+> 
+> Changelog
+> v7:
+>  * Appended missing Acked-by to all four patches.
+>  * Sorry that I didn't add them at the first place.
+> v6:
+>  * PATCH-1: Use goto err_firmware instead of return directly.
+>  *
+>  * Nothing changes for the other three ack-ed patches
+> v5:
+>  * PATCH-3: Add period size constraint when using dual fifo mode
+>  *
+>  * Nothing changes for the other three patches
+> v4:
+>  * PATCH-3: Drop useless register configuration.
+>  *
+>  * Nothing changes for the other three patches
+> v3:
+>  * PATCH-1: Add comments to indicate the end of v1 and v2 array.
+>  * PATCH-3: Use better way to keep watermark as even number.
+>  *
+>  * Nothing changes for PATCH-2 and PATCH-4
+> v2:
+>  * Instead of adding rogue scripts to current SDMA driver based on firmware
+>  * V1, we define the new SDMA firmware as version 2 and bisect the PATCH-1
+>  * to two patches: The first is to add version check code to the SDMA driver;
+>  * And the second is to add SSI dual FIFO DMATYPE.
+>  *
+>  * Nothing changes for the last two patches.
+> v1:
+>  * SSI can reduce hardware overrun/underrun possibility when using dual
+>  * fifo mode. To support this mode, we need to first update sdma sciprt
+>  * list, and then enable dual fifo BIT in SSI driver, and last update DT
+>  * bindings of i.MX series.
+> 
+> Nicolin Chen (4):
+>   dma: imx-sdma: Add sdma firmware version 2 support
+>   dma: imx-sdma: Add new dma type for ssi dual fifo script
+>   ASoC: fsl_ssi: Add dual fifo mode support
+>   ARM: dts: imx: use dual-fifo sdma script for ssi
+> 
+>  .../devicetree/bindings/dma/fsl-imx-sdma.txt       |  1 +
+>  arch/arm/boot/dts/imx51.dtsi                       |  4 ++--
+>  arch/arm/boot/dts/imx53.dtsi                       |  4 ++--
+>  arch/arm/boot/dts/imx6qdl.dtsi                     | 12 +++++-----
+>  arch/arm/boot/dts/imx6sl.dtsi                      | 12 +++++-----
+>  drivers/dma/imx-sdma.c                             | 19 ++++++++++++++-
+>  include/linux/platform_data/dma-imx-sdma.h         |  5 ++++
+>  include/linux/platform_data/dma-imx.h              |  1 +
+>  sound/soc/fsl/fsl_ssi.c                            | 27 +++++++++++++++++++++-
+>  9 files changed, 67 insertions(+), 18 deletions(-)
+> 
+> -- 
+> 1.8.4
+> 
+> 
 
-You would need software that measures that actual sample rate of both
-devices and resamples its output appropriately.  Try using PulseAudio.
-
-
-Regards,
-Clemens
+-- 
