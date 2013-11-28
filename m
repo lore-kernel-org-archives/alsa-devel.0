@@ -1,15 +1,15 @@
 From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: HD-Audio: How to reduce driver initializaton time if
- multiple codecs present on the bus?
-Date: Thu, 28 Nov 2013 14:57:22 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80141EEE6@SHSMSX101.ccr.corp.intel.com>
+Subject: HD-Audio: can msleep in hda_set_power_state() to D3 be
+	optional?
+Date: Thu, 28 Nov 2013 15:07:48 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80141EF7F@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BC1C261A1B
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 15:57:33 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id B97852651A0
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 16:07:53 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,30 +26,16 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi Takashi,
 
-We're trying to reduce the HD-A driver initialization time when more than one codecs are connected to the bus, but are blocked.
-Would you please share some advices on this?
+In hda_set_power_state(), there is a mandatory sleep up to 100ms before setting state to D3.
 
-Usually, there is one HD-A controller connecting to two codecs: one on-board codec and one integrated display codec.
-During initialization, the codecs are created and configured in a serial way.
+/* this delay seems necessary to avoid click noise at power-down */
+if (power_state == AC_PWRST_D3) {
+                   msleep(codec->epss ? 10 : 100);   ... Could this be optional for specific codecs?
+                   flags = HDA_RW_NO_RESPONSE_FALLBACK;
+}
 
-Creating a codec may cost 6~20ms, and then building controls make cost about 15~30ms.
-So I had thought it's helpful to build controls for different codecs in parallel in function snd_hda_build_controls(), as we did in driver suspend/resume.
-
-But the test shows this doesn't work:
-
-(1)     Using a workqueue without WQ_UNBOUND, the work items, which calls snd_hda_codec_build_controls(), are processed one after one
-
-(I think because there is no explicit sleep in the work function). So the total time does not change.
-
-
-
-(2)     Using an unbouned work queue for the bus or using separate kthreads for each codec, the work items for different codecs are processed in parallel.
-
-However, the total time is still the sum of two codec as that without parallel.
-I think that because snd_hda_codec_read() are used during initialization, the command execution on bus is serialized in the low level.
-So even if we parallel initializing two codecs in high level, commands on bus are still processed one by one so the total time cannot reduce.
-
-We're blocked here. Is there any other means to reduce the time?
+Some codecs implement their own sleep in patch_ops.suspend() to avoid the noise.
+So is it okay to add a codec flag to decide whether the sleep is necessary here?
 
 Thanks
 Mengdong
