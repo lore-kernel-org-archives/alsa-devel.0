@@ -1,64 +1,60 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH] ASoC: kirkwood: Fix the CPU DAI rates
-Date: Wed, 27 Nov 2013 21:10:24 +0100
-Message-ID: <20131127211024.52e5ae1b@armhf>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [PATCH 1/2] ASoC: atmel: sam9x5_wm8731: fix oops when unload
+ module
+Date: Thu, 28 Nov 2013 09:20:16 +0800
+Message-ID: <52969A50.3030601@atmel.com>
+References: <1385439472-23352-1-git-send-email-voice.shen@atmel.com> <CACQ1gAh3W3vyTpFv8CkbO8hFJtU_SDjVuh2pRSFWCbUZPmidsw@mail.gmail.com> <52954739.1090501@atmel.com> <5295C4CB.2060003@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
- by alsa0.perex.cz (Postfix) with ESMTP id 74E7F2651A4
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 21:08:13 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <5295C4CB.2060003@gmail.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Richard Genoud <richard.genoud@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCBmaXhlcyB0aGUgcmF0ZXMgZGVjbGFyZWQgaW4gdGhlIENQVSBEQUkgcGFyYW1l
-dGVyczoKLSBTTkRSVl9QQ01fUkFURV9LTk9UIGFuZCB0aGUgZGlzY3JldGUgcmF0ZXMgU05EUlZf
-UENNX1JBVEVfeHh4IHNob3VsZAogIG5vdCBiZSB1c2VkIHdpdGggU05EUlZfUENNX1JBVEVfQ09O
-VElOVU9VUywKLSBTTkRSVl9QQ01fUkFURV9DT05USU5VT1VTIGFza3MgZm9yIHJhdGVfbWluIGFu
-ZCByYXRlX21heCwKLSB0aGUgZGV2aWNlIG1heSBkbyBzdHJlYW1pbmcgZG93biB0byA1NTEySHou
-CgpTaWduZWQtb2ZmLWJ5OiBKZWFuLUZyYW5jb2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Ci0t
-LQogc291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWkycy5jIHwgMjQgKysrKysrKysrKystLS0t
-LS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKyksIDEyIGRlbGV0aW9ucygt
-KQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMuYyBiL3NvdW5k
-L3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMuYwppbmRleCAwYjE4ZjY1Li4zOTIwYTVlIDEwMDY0
-NAotLS0gYS9zb3VuZC9zb2Mva2lya3dvb2Qva2lya3dvb2QtaTJzLmMKKysrIGIvc291bmQvc29j
-L2tpcmt3b29kL2tpcmt3b29kLWkycy5jCkBAIC00NzMsMTcgKzQ3MywxNyBAQCBzdGF0aWMgc3Ry
-dWN0IHNuZF9zb2NfZGFpX2RyaXZlciBraXJrd29vZF9pMnNfZGFpX2V4dGNsa1syXSA9IHsKIAku
-cGxheWJhY2sgPSB7CiAJCS5jaGFubmVsc19taW4gPSAxLAogCQkuY2hhbm5lbHNfbWF4ID0gMiwK
-LQkJLnJhdGVzID0gU05EUlZfUENNX1JBVEVfODAwMF8xOTIwMDAgfAotCQkJIFNORFJWX1BDTV9S
-QVRFX0NPTlRJTlVPVVMgfAotCQkJIFNORFJWX1BDTV9SQVRFX0tOT1QsCisJCS5yYXRlcyA9IFNO
-RFJWX1BDTV9SQVRFX0NPTlRJTlVPVVMsCisJCS5yYXRlX21pbiA9IDU1MTIsCisJCS5yYXRlX21h
-eCA9IDE5MjAwMCwKIAkJLmZvcm1hdHMgPSBLSVJLV09PRF9JMlNfRk9STUFUUywKIAl9LAogCS5j
-YXB0dXJlID0gewogCQkuY2hhbm5lbHNfbWluID0gMSwKIAkJLmNoYW5uZWxzX21heCA9IDIsCi0J
-CS5yYXRlcyA9IFNORFJWX1BDTV9SQVRFXzgwMDBfMTkyMDAwIHwKLQkJCSBTTkRSVl9QQ01fUkFU
-RV9DT05USU5VT1VTIHwKLQkJCSBTTkRSVl9QQ01fUkFURV9LTk9ULAorCQkucmF0ZXMgPSBTTkRS
-Vl9QQ01fUkFURV9DT05USU5VT1VTLAorCQkucmF0ZV9taW4gPSA1NTEyLAorCQkucmF0ZV9tYXgg
-PSAxOTIwMDAsCiAJCS5mb3JtYXRzID0gS0lSS1dPT0RfSTJTX0ZPUk1BVFMsCiAJfSwKIAkub3Bz
-ID0gJmtpcmt3b29kX2kyc19kYWlfb3BzLApAQCAtNDk0LDE3ICs0OTQsMTcgQEAgc3RhdGljIHN0
-cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIga2lya3dvb2RfaTJzX2RhaV9leHRjbGtbMl0gPSB7CiAJ
-LnBsYXliYWNrID0gewogCQkuY2hhbm5lbHNfbWluID0gMSwKIAkJLmNoYW5uZWxzX21heCA9IDIs
-Ci0JCS5yYXRlcyA9IFNORFJWX1BDTV9SQVRFXzgwMDBfMTkyMDAwIHwKLQkJCSBTTkRSVl9QQ01f
-UkFURV9DT05USU5VT1VTIHwKLQkJCSBTTkRSVl9QQ01fUkFURV9LTk9ULAorCQkucmF0ZXMgPSBT
-TkRSVl9QQ01fUkFURV9DT05USU5VT1VTLAorCQkucmF0ZV9taW4gPSA1NTEyLAorCQkucmF0ZV9t
-YXggPSAxOTIwMDAsCiAJCS5mb3JtYXRzID0gS0lSS1dPT0RfU1BESUZfRk9STUFUUywKIAl9LAog
-CS5jYXB0dXJlID0gewogCQkuY2hhbm5lbHNfbWluID0gMSwKIAkJLmNoYW5uZWxzX21heCA9IDIs
-Ci0JCS5yYXRlcyA9IFNORFJWX1BDTV9SQVRFXzgwMDBfMTkyMDAwIHwKLQkJCSBTTkRSVl9QQ01f
-UkFURV9DT05USU5VT1VTIHwKLQkJCSBTTkRSVl9QQ01fUkFURV9LTk9ULAorCQkucmF0ZXMgPSBT
-TkRSVl9QQ01fUkFURV9DT05USU5VT1VTLAorCQkucmF0ZV9taW4gPSA1NTEyLAorCQkucmF0ZV9t
-YXggPSAxOTIwMDAsCiAJCS5mb3JtYXRzID0gS0lSS1dPT0RfU1BESUZfRk9STUFUUywKIAl9LAog
-CS5vcHMgPSAma2lya3dvb2RfaTJzX2RhaV9vcHMsCgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkg
-ICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5m
-cmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Richard,
+
+On 11/27/2013 06:09 PM, Richard Genoud wrote:
+
+[Snip]
+
+> dma dma0chan4: prep_dma_cyclic: TO DEVICE buf@0x27950000 - 8 (65536/8192)
+> dma dma0chan4: scanned 1 descriptors on freelist
+> dma dma0chan4: scanned 1 descriptors on freelist
+> dma dma0chan4: scanned 1 descriptors on freelist
+> dma dma0chan4: scanned 1 descriptors on freelist
+> dma dma0chan4: scanned 1 descriptors on freelist
+> dma dma0chan4: scanned 1 descriptors on freelist
+> dma dma0chan4: scanned 1 descriptors on freelist
+> dma dma0chan4: scanned 1 descriptors on freelist
+> dma dma0chan4: tx_submit: started 2
+> dma dma0chan4:   channel 4 : imr = 0xff00ff, chsr = 0xff0000
+> dma dma0chan4:   channel: s0x27b3eb20 d0xf0010024 ctrl0x91000590:0x20200010 cfg0x100022dd l0x27981d10
+> dma dma0chan4:   channel 4 : imr = 0xff00ff, chsr = 0xff0010
+> dma dma0chan4:   channel: s0x27950010 d0xf0010024 ctrl0x11000008:0x20200010 cfg0x100022dd l0x27a58344
+> dma dma0chan4: issue_pending
+> [ blocks here forever (or at least a looooong time) ]
+
+How can I reproduce this issue? Please help provide detail information 
+about your operation.
+
+On my side, I just do:
+--->8---
+while true;
+do
+	insmod snd-soc-atmel-pcm-dma.ko && insmod snd-soc-atmel_ssc_dai.ko && 
+insmod snd-soc-wm8731.ko && insmod snd-soc-sam9x5-wm8731.ko;
+	amixer cset numid=14,iface=MIXER,name='Output Mixer HiFi Playback 
+Switch' on;
+	aplay sample.wav;
+	rmmod snd-soc-sam9x5-wm8731.ko && rmmod snd-soc-wm8731.ko && rmmod 
+snd-soc-atmel_ssc_dai.ko && rmmod snd-soc-atmel-pcm-dma.ko;
+done
+---8<---
+
+It works well on my side on at91sam9g35ek board, based on v3.13-rc1
+
+Best Regards,
+Bo Shen
