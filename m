@@ -1,24 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: samsung: Use ASoC dmaengine code
- where possible
-Date: Thu, 28 Nov 2013 11:53:51 +0000
-Message-ID: <20131128115351.GC27568@sirena.org.uk>
-References: <1384264120-24750-1-git-send-email-broonie@kernel.org>
- <1384264120-24750-2-git-send-email-broonie@kernel.org>
- <CAAgF-BcJZrwwHYtk6pKj_-+CzmbhhV4V_Z02kjHveObOR6oiFQ@mail.gmail.com>
- <20131126102311.GW14725@sirena.org.uk>
- <CAAgF-BdWLXeLyVZv-durSxxVEm4hHaC7sXQuz_pGLLY-x7XS+w@mail.gmail.com>
- <20131126122031.GA14725@sirena.org.uk>
- <CAAgF-Bc5mEmOBFZak2rSuCqs+xjcrNqnVNZc=zno8F3VOCuuwA@mail.gmail.com>
- <20131127150534.GW14725@sirena.org.uk>
- <CAAgF-BcoKDt=u51tqiWyxveb4iJSXKuV49X1VmOsWiRsSGKKpg@mail.gmail.com>
+Subject: Re: [PATCH 1/6] ASoC: Add resource managed
+ snd_dmaengine_pcm_register()
+Date: Thu, 28 Nov 2013 13:36:10 +0000
+Message-ID: <20131128133610.GG27568@sirena.org.uk>
+References: <1385625037-24973-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3445045470172597962=="
+Content-Type: multipart/mixed; boundary="===============0472071604421813614=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1285D265300
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 12:53:57 +0100 (CET)
-In-Reply-To: <CAAgF-BcoKDt=u51tqiWyxveb4iJSXKuV49X1VmOsWiRsSGKKpg@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C7AAD2651A0
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 14:36:33 +0100 (CET)
+In-Reply-To: <1385625037-24973-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,95 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Padma Venkat <padma.kvr@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Padmavathi Venna <padma.v@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, linaro-kernel@lists.linaro.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Mallon <rmallon@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, H Hartley Sweeten <hsweeten@visionengravers.com>, Florian Meier <florian.meier@koalo.de>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3445045470172597962==
+--===============0472071604421813614==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DSayHWYpDlRfCAAQ"
+	protocol="application/pgp-signature"; boundary="VACxsDaSTfeluoxK"
 Content-Disposition: inline
 
 
---DSayHWYpDlRfCAAQ
+--VACxsDaSTfeluoxK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 28, 2013 at 03:29:31PM +0530, Padma Venkat wrote:
-> On Wed, Nov 27, 2013 at 8:35 PM, Mark Brown <broonie@kernel.org> wrote:
+On Thu, Nov 28, 2013 at 08:50:32AM +0100, Lars-Peter Clausen wrote:
+> For many drivers using the generic dmaengine PCM driver one of the few (or the
+> only) things left to do in the drivers remove function is to unregister the PCM
 
-> > But if it's initialised at probe time then when is it getting
-> > overwritten?  This must be something triggered by DT which unfortunately
-> > I can't test.  It's a bit of a shame that the flows are different
-> > between the DT and non-DT cases.
+Applied, thanks.
 
-> it's getting overwritten in i2s_hw_params which is happening after
-> dma_data got initialized in dai probe. Based on mono or stereo channel
-> this value getting initialized to 2 or 4 respectively in
-> i2s_hw_params. This value is not triggered by DT now.
-
-OK, so we can probably just reinitialise the dmaengine data after we
-reset it?  Like below
-
-> > Are you sure that dma_size should be 2?  The i2s DAI driver seems to be
-> > hard coding it to 4.
-
-> I think for mono files the dma_size should be 2 only. Right now based
-> on mono or stereo this value getting overwritten in i2s_hw_params.
-> Initially it is hardcoded to 4. Due to this commit "ASoC: samsung:
-> Allow mono in i2s driver" which was not there earlier, I got confused.
-> Now it seems clear except that underrun message which I am still
-> debugging.
-
-Yeah, that's now confusing - I'll send a patch to remove the
-initialisation on probe() since it's getting overwritten later.
-
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 67d9fa91fdb9..ba24a954b9e4 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -702,6 +702,8 @@ static int i2s_hw_params(struct snd_pcm_substream *subs=
-tream,
- 	}
- 	writel(mod, i2s->addr + I2SMOD);
-=20
-+	samsung_asoc_init_dma_data(dai, &i2s->dma_playback, &i2s->dma_capture);
-+
- 	i2s->frmclk =3D params_rate(params);
-=20
- 	return 0;
-
---DSayHWYpDlRfCAAQ
+--VACxsDaSTfeluoxK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSly7MAAoJELSic+t+oim9+b0QAIJ1DfvT7uvXyF1xnfo+Pl7P
-KppMNIEj0V7qr4VYak0M8i1Ed7+9VUvL1C0Lkj+l914cBYVLZD711PnKkrX34h7I
-LbAB51PxZfit9qbAtn00NxFniXry/kvCpbi8dwJNFk/bu1d7UX60T/gwaS9DIN+X
-/pewriPcPSrpo1LT2QSXnFtgXSeyt39SqRWVlhFajD5qDt9wP9IXmIbJlJGdczg1
-IFLkGNc6z8047YPa0uRMaAB4nibyegBn4PCbWCipZrEHKWQGAlbGbddW7s3WyD5V
-5MXRMIS8iTDWDN9V8rJTCBZ8do491ucajslJbJ4IuwkEhxU2M1dVXFLDgucZqlSY
-5W81pmQgrg1MSVRQSAvI815NIdvB0gggrfXFZKkscDGprzq6Ye6Hdw5kdufgZRmr
-z8/PHM4r+7Al9kSilJpX0t9PEWdasd/WI1sM6XDdy9QSM3pDt7ZWOaiZTX4ZSIjp
-UtuYkqtEMFW5Wi5pVhNj12S1YsuGkqtD4Lj08rbMgrHS3F9C8FI4/E2ePnRIC3bp
-mWNUt670thLH7v6swFPtzLQMw6UR+ycDlI1HhSyQnc5NqUxzUVCnDggwSk5vlGgG
-vYrsxMVrXlAO5szUbKpManfVqVjQgXfgFrg1j+pGksQSW1Gvsf2owG3cEOlcW/0M
-epqXzPalWV7c6KbdUioE
-=bwgJ
+iQIcBAEBAgAGBQJSl0bGAAoJELSic+t+oim9JkEP/i5g9KGhyOSOaoAAwikXa8yQ
+H8zKsenoIx4UJxiIc/JQizDdwMQ0gRENK64FO3He/kObn3c7vUHgnH21ArX896qR
+ocwddyCWlvd8Y7ksQlvQfGhMeNRVfNmVZCXaA+ssSEnn6JtNRtENAtLP3p3v1OOn
+Wm+ToyguTYQn8jjlb96vo8d4Xr27xD94eP4DmQ8HFfBMXzu+iXgqsafMQsLa5zOK
+AWF+CVaPvI+lgxBe7cG8RNWDTh+2L3Oyj4krnkoMhJE0ZA+qvqMGtt7c8CTSIp85
+JuOGQe3aav4f6ZZHIo5V1XULnAxPGbTL9shb7Og6lvqtK4qnvhm/23I/1U3hFoKX
+mgCYnerNm7Lg45zneOU2on4gHN5bz2aygpq5JzLmlzb4ACtRY+RiHcPs7RtxOd5/
+lt6ioJOJMdLg+uaMG4ySN1T5+HbKUdYnT2f0EHOUJVCMoI6hMlF2GFu1/T2az29p
+zFjUWvoyu7yGpZI6uRIBXGENtmbOBHoekcpQyKEnb2KDKvRp2mcEFxIKAOBrpwME
+5170mYqhAbv1ghe/Txd7pATMoiPKBfYLS+rkQXNH/dOXGpajAgVjU1GDP3YeWf6A
+qRlm/1JtoRm4Weo0YUDWY79PZiyHP3zgDfoF7xO7d0oXb+oks3iiH3iyDGrxAAQV
+jkugLD88itG+eeRSLHcW
+=RSKu
 -----END PGP SIGNATURE-----
 
---DSayHWYpDlRfCAAQ--
+--VACxsDaSTfeluoxK--
 
---===============3445045470172597962==
+--===============0472071604421813614==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3445045470172597962==--
+--===============0472071604421813614==--
