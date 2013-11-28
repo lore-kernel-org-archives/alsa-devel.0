@@ -1,60 +1,65 @@
-From: Dolevo Jay <cmst@live.com>
-Subject: Re: Intermittent cut out on the video
-Date: Thu, 28 Nov 2013 05:47:12 +0000
-Message-ID: <DUB122-W83C8D065397526DB034BAAAEE0@phx.gbl>
-References: <DUB122-W30D40465C0A432A2147375AAEC0@phx.gbl>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/1] ASoC: soc_compress: Add set_metadata
+Date: Thu, 28 Nov 2013 11:49:43 +0530
+Message-ID: <20131128061943.GS8834@intel.com>
+References: <20131125101648.GA1818@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dub0-omc3-s22.dub0.hotmail.com (dub0-omc3-s22.dub0.hotmail.com
- [157.55.2.31]) by alsa0.perex.cz (Postfix) with ESMTP id E4C552651B4
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 06:47:12 +0100 (CET)
-In-Reply-To: <DUB122-W30D40465C0A432A2147375AAEC0@phx.gbl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20131125101648.GA1818@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Dear all,
+On Mon, Nov 25, 2013 at 10:16:48AM +0000, Richard Fitzgerald wrote:
+> 
+> Pass the set_metadata() calls through to the codec driver.
+> 
+> Signed-off-by: Zhao Weijia <weijia.zhao@capelabs.com>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/soc-compress.c |   18 +++++++++++++++++-
+>  1 files changed, 17 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+> index 53c9ecd..186802b 100644
+> --- a/sound/soc/soc-compress.c
+> +++ b/sound/soc/soc-compress.c
+> @@ -318,6 +318,21 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+>  	mutex_unlock(&rtd->pcm_mutex);
+>  	return 0;
+>  }
+> +static int soc_compr_set_metadata(struct snd_compr_stream *cstream,
+> +			struct snd_compr_metadata *metadata)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+> +	struct snd_soc_platform *platform = rtd->platform;
+> +
+> +	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +
+> +	if (platform->driver->compr_ops && platform->driver->compr_ops->set_metadata)
+> +		 platform->driver->compr_ops->set_metadata(cstream, metadata);
+> +
+> +	mutex_unlock(&rtd->pcm_mutex);
+> +	return 0;
+> +}
+> +
+>  
+>  static int soc_compr_copy(struct snd_compr_stream *cstream,
+>  			  char __user *buf, size_t count)
+> @@ -372,7 +387,8 @@ static struct snd_compr_ops soc_compr_ops = {
+>  	.pointer	= soc_compr_pointer,
+>  	.ack		= soc_compr_ack,
+>  	.get_caps	= soc_compr_get_caps,
+> -	.get_codec_caps = soc_compr_get_codec_caps
+> +	.get_codec_caps = soc_compr_get_codec_caps,
+> +	.set_metadata = soc_compr_set_metadata,
+Sorry am confused by this and the patch description? The set_metadata call
+exists so how is this propogating to codec? Also which tree has this been
+generated against?
 
-I'd appreciate if you could at least comment on the issue.
-
-Thanks.
-
-> From: cmst@live.com
-> To: alsa-devel@alsa-project.org
-> Date: Tue, 26 Nov 2013 16:38:25 +0000
-> Subject: [alsa-devel] Intermittent cut out on the video
-> 
-> Hi experts, 
-> 
-> In my system, I use two headphone jacks to connect my speakers, one is to the jack on the pc itself and the other one is to the jack located on the monitor which I connect to the same pc with hdmi cable. I have two sound cards on my system and I use the following asound.conf to have audio from two jacks simultaneously. 
-> http://pastebin.com/2yd6EW8C
-> 
-> As you see, I also use dmix because I have multiple of audio sources coming and I mix them.
-> 
-> However, I now have the following problem. I connect two speakers to the each jack and start hearing an audio stream. The audio coming from the jack on the pc is cutting out intermittently. It just cuts out for a fraction of a second and continues as normal and after some time it happens again. The frequency of the occurrence increases over time.  I have absolutely no problem with the audio from the jack on the display. 
-> Could anyone shed some light on this issue? In my opinion, this is a sort of configuration issue since I have no problem at one source while having at the other source.
-> 
-> Thanks in advance,
-> Regards,
-> 
-> Dolevo
-> 
-> 
-> 
-> 
->  		 	   		  
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
- 		 	   		  
+--
+~Vinod
+-- 
