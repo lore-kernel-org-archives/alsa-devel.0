@@ -1,78 +1,71 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm_adsp: Stop region iteration when
- the desired region is found
-Date: Thu, 28 Nov 2013 18:19:43 +0000
-Message-ID: <20131128181943.GO27568@sirena.org.uk>
-References: <1385656671-18519-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3263031456903678357=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D0163261A59
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 19:19:46 +0100 (CET)
-In-Reply-To: <1385656671-18519-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Subject: [PATCH 1/4] dt: Add bindings documentation for the ADI AXI-I2S controller
+Date: Thu, 28 Nov 2013 20:02:49 +0100
+Message-ID: <1385665372-29477-1-git-send-email-lars@metafoo.de>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+This patch adds the devicetree documentation for the ADI AXI-SPDIF audio
+controller. The controller has:
+ * One set of memory mapped register
+ * Two clocks, one for the memory mapped register interface, one used as the
+   audio reference clock
+ * One DMA interface each for the transmit and receive data
 
---===============3263031456903678357==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HFD/Dq8JdnjNvyuv"
-Content-Disposition: inline
+Signed-off-by: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Cc: Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>
+Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+---
+ .../devicetree/bindings/sound/adi,axi-i2s.txt      | 29 ++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
 
+diff --git a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
+new file mode 100644
+index 0000000..d9c0e53
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
+@@ -0,0 +1,29 @@
++ADI AXI-I2S controller
++
++Required properties:
++ - compatible : Must be "adi,axi-i2s-1.00.a"
++ - reg : Must contain I2S registers location and length
++ - clocks : Clock specifier providing a handle to the controller's clocks. The
++   controller expects two clocks, the clock used for the AXI interface and the
++   clock used as thei sampling rate reference clock sample.
++ - clock-names : "axi" for the clock to the AXI interface, "ref" for the sample
++   rate reference clock.
++ - dma : Specifiers for the DMA channels that are used by the core.
++ - dma-names : "tx" for the transmit channel, "rx" for the receive channel.
++
++For more details on the 'dma', 'dma-names', 'clock' and 'clock-names' properties
++please check:
++	* resource-names.txt
++	* clock/clock-bindings.txt
++	* dma/dma.txt
++
++Example:
++
++	i2s: i2s@0x77600000 {
++		compatible = "adi,axi-i2s-1.00.a";
++		reg = <0x77600000 0x1000>;
++		clocks = <&clk 15 &audio_clock>;
++		clock-names = "axi", "ref";
++		dmas = <&ps7_dma 0 &ps7_dma 1>;
++		dma-names = "tx", "rx";
++	};
+-- 
+1.8.0
 
---HFD/Dq8JdnjNvyuv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Nov 28, 2013 at 04:37:51PM +0000, Charles Keepax wrote:
-> When locating the memory region relating to a coefficient block written
-> through a bin file we keep processing the list of regions even after we
-> have found the region we require. This patch adds a break, so we don't
-> process redundant list items.
-
-Applied, thanks.  I didn't look but does the same issue exist in the
-main firmware load, it's probably following the same pattern?
-
---HFD/Dq8JdnjNvyuv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSl4k8AAoJELSic+t+oim9yKoP/RqtqDtkhYq7h1ywR/uU3nLq
-A69vGJnBzBiw7mxsMBNFthuzn0OKZYJRg66a4cxcDnxSXgRJFMLvF338ehTeXrzb
-EjR5l074eOENqpkjP6HsVLdyiqX47Vv6Kf58iqfF6cahliR8DeCGq2elz5fxon4I
-C427iOQJFcORNkuQf3+WM4Wr7+OEswXekA4ALeCbpEHoctopz13H8E8c9BtlLw8k
-5+J0JKNc3ddeNhTXP7NPwTzt1qXG/xGHOD5xXcehJq/ovHPIo29E1Fs4XCUNVtN/
-FH3O44DCP2h0kptKWDpkV6d2u5JyA91t4syuYTl2q/ASLtiO2m59MwN76rH1zgL5
-ZpqDpcZ1dYzmJHkKHBGNhDZvZfHW3fVhfBpYLUv3dxpIyN9Sf96ZaA2IYzrDaMcK
-0to0Tg+bB3u7kRo965mvKkSYTsv1zAdgYt1/BtRxQxnYRPLgbZTsz5dYTDAUn6yK
-Ft98TmMhVdUTxVJQZkLMT0R8FPI46v3Vk2lxT3d2T7nw3Y+GB05Bto3Pu6HzZ1Ny
-jsGWJHWk7vGtaxmC/I0Zt6SOpYXrDpBUCQ2sn1A869OlmyUW6ywrKIjL+ZpzUgKl
-GsRfsN/s7vBO3dAPOrNM+SsgaIKCzCfmWXujNonZvZyU9ZqhOw07oY631Zp/kXo5
-G8gXViSR+E1L0CMp6Uyo
-=Y31E
------END PGP SIGNATURE-----
-
---HFD/Dq8JdnjNvyuv--
-
---===============3263031456903678357==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3263031456903678357==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
