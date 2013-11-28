@@ -1,89 +1,120 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH v2] ASoC: SGTL5000: Fix kernel failed while trying to get optional VDDD supply.
-Date: Thu, 28 Nov 2013 14:46:59 +0800
-Message-ID: <1385621219-20652-1-git-send-email-Li.Xiubo@freescale.com>
+From: Li Xiubo <Li.Xiubo@freescale.com>
+Subject: Re: [PATCHv2 3/8] ARM: dts: Enables SAI ALSA SoC DAI
+ device for Vybrid VF610 TOWER board.
+Date: Thu, 28 Nov 2013 07:45:54 +0000
+Message-ID: <1DD289F6464F0949A2FCA5AA6DC23F828CFA43@039-SN2MPN1-012.039d.mgd.msft.net>
+References: <1383289495-24523-1-git-send-email-Li.Xiubo@freescale.com>
+ <1383289495-24523-4-git-send-email-Li.Xiubo@freescale.com>
+ <87bo1hk2i7.fsf@nbsps.com>
+ <1DD289F6464F0949A2FCA5AA6DC23F828AD451@039-SN2MPN1-012.039d.mgd.msft.net>
+ <87hab7hxfx.fsf@nbsps.com>
+ <1DD289F6464F0949A2FCA5AA6DC23F828B5046@039-SN2MPN1-012.039d.mgd.msft.net>
+ <87wqk1hkiv.fsf@nbsps.com>
+ <1DD289F6464F0949A2FCA5AA6DC23F828C79F5@039-SN2MPN1-012.039d.mgd.msft.net>
+ <87r4a879rs.fsf@nbsps.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe002.messaging.microsoft.com [216.32.180.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09FD6261A3A
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 08:46:00 +0100 (CET)
+In-Reply-To: <87r4a879rs.fsf@nbsps.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bill Pringlemeir <bpringlemeir@nbsps.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-The SGTL5000 requires 2 external power supplies: VDDA and VDDIO. An optional
-third external power supply VDDD may be provided externally to achieve lower
-power.If an external supply is not used for VDDD, the SGTL5000 driver will
-register it's own regulator device, and then provides the VDDD supply consumer,
-and now there will be two regulator devices exist, local regulator for VDDD
-and platform regulator for VDDIO, VDDA.
 
-*******************
-*                 *---------|3.3V VDDIO
-*                 *
-*  SGTL5000 codec *---x   VDDD
-*                 *
-*                 *---------|3.3V VDDA
-*******************
+> > The following logs are the situation:
+> > 1, Plug in the TWR-AUDIO-SGTL sub-board.
+> > 2, Enable the SGTL5000 driver.
+> > 3, Disable the CPU DAI driver, here it's the SAI driver.
+> > ++++++++++++
+> > sgtl5000 0-000a: sgtl5000 revision 0x11
+> > vf610-sgtl5000 sound.3: ASoC: CPU DAI (null) not registered
+> > vf610-sgtl5000 sound.3: register soc sound card failed :-517
+> > ------------
+> 
+> > And the failed numeric is '-517' too.
+> 
+> Won't that be prevented by,
+> 
+> +config SND_SOC_FSL_SGTL5000_VF610
+> +	tristate "SoC Audio support for FSL boards with sgtl5000"
+> +	depends on OF && I2C
+> +	select SND_SOC_FSL_SAI
+> 
+> Or do you have to manually edit the '.config' to get this?
 
-If an external supply is not used for VDDD, in the DT or architecture-specific
-file, only "VDDA-supply" and "VDDIO-supply" properties will be presented.
-This caused the following kernel failed while trying to get the external VDDD
-supply before trying to register it's own regulator device.
+Yes, it is.
 
-sgtl5000 0-000a: Failed to get supply 'VDDD': -19
 
-Here use regulator_get_optional() trying to look at the fact that whether the
-external VDDD supply is used or not.
+> >> That is just a suggestion.  I know when I booted the TimeSys version of
+> >> Linux and before I looked at the schematic, I didn't know why the codec
+> >> failed to register and I thought I had a u-boot issue and/or the code
+> was
+> >> not working for my board.
+> 
+> >> PS: For those not familiar with the tower.  The VF610-TWR has riser
+> cards
+> >> at the sides and different boards can be connected.  The TWR-AUDIO-SGTL
+> >> is another board that needs to be plugged in.
+> 
+> I look for other places that a board has an optional daughter board.  For
+> the most part, the menuconfig had an option to include the driver and
+> then platform initialization code 'probed' the device and provide a
+> message.
+> 
+> For instance, the 3ds_debugboard.c in mxc_expio_init() has a message,
+> 
+>  pr_info("3-Stack Debug board not detected\n");
+> 
+> I don't know if there is an Alsa standard mechanism for handling this or
+> something in the device tree infrastructure.  However, I am pretty sure
+> that we could say the board is not there if the i2c device doesn't
+> respond with it's id.  But maybe this is hidden by the ASOC
+> infrastructure?
+> 
+> It will be quite common for people to run a 'imx_v6_v7_defconfig' with
+> the 'vf610-twr.dts'.  These people won't read a menu config; in fact the
+> binary maybe delivered to them.
+> 
+> I read the error as 'EPROBE_DEFER'.  We have this in the SGTL5000 codec
+> and soc_core.c.  The sgtl5000_i2c_probe() will never be called if the
+> board is not present.  So I think the error is from soc_bind_dai_link(),
+> 
+> 	if (!rtd->codec) {
+> 		dev_err(card->dev, "ASoC: CODEC %s not registered\n",
+> 			dai_link->codec_name);
+> 		return -EPROBE_DEFER;
+> 	}
+> 
+> I guess the issue is the order of the sub-system initialization and the
+> soc-core doesn't want to make any assumptions about this.  I am not sure
+> if there is some way an SOC machine file can look to see if a codec is
+> not populated in it's probe.  Or if it is expected that the machine file
+> will be probed multiple times when '-EPROBE_DEFER' is returned.  This
+> maybe for either the DAI or the codec and is abnormal for the machine.
+> 
+> In any case, an "TWR-AUDIO-SGTL board required.\n" would be fairly
+> obvious to anyone reading the logs.  They should be able to see if they
+> have this board or not.  If they have it, then the error -517 is from
+> something else.  I agree that always printing this out is not the most
+> elegant, but I think it is the more pragmatic than not having it.
+> 
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
----
- sound/soc/codecs/sgtl5000.c | 25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
+Okey, I will think it over and revise this.
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 1f4093f..90d6d1e 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1298,6 +1298,21 @@ static int sgtl5000_replace_vddd_with_ldo(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
-+static int sgtl5000_external_vddd_used(struct snd_soc_codec *codec)
-+{
-+	struct regulator *consumer;
-+	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
-+
-+	consumer = regulator_get_optional(codec->dev,
-+			sgtl5000->supplies[VDDD].supply);
-+	if (IS_ERR(consumer))
-+		return 0;
-+
-+	regulator_put(consumer);
-+
-+	return 1;
-+}
-+
- static int sgtl5000_enable_regulators(struct snd_soc_codec *codec)
- {
- 	int reg;
-@@ -1310,11 +1325,15 @@ static int sgtl5000_enable_regulators(struct snd_soc_codec *codec)
- 	for (i = 0; i < ARRAY_SIZE(sgtl5000->supplies); i++)
- 		sgtl5000->supplies[i].supply = supply_names[i];
- 
--	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(sgtl5000->supplies),
-+	if (sgtl5000_external_vddd_used(codec)) {
-+		ret = regulator_bulk_get(codec->dev,
-+				ARRAY_SIZE(sgtl5000->supplies),
- 				sgtl5000->supplies);
--	if (!ret)
-+		if (ret)
-+			return ret;
-+
- 		external_vddd = 1;
--	else {
-+	} else {
- 		ret = sgtl5000_replace_vddd_with_ldo(codec);
- 		if (ret)
- 			return ret;
--- 
-1.8.4
+--
+Best Regards,
