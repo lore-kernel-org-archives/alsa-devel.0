@@ -1,14 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: adsp: Use async writes where possible
-Date: Thu, 28 Nov 2013 18:12:15 +0000
-Message-ID: <1385662335-12172-1-git-send-email-broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm_adsp: Stop region iteration when
+ the desired region is found
+Date: Thu, 28 Nov 2013 18:19:43 +0000
+Message-ID: <20131128181943.GO27568@sirena.org.uk>
+References: <1385656671-18519-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3263031456903678357=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2EA36265263
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 19:12:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D0163261A59
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 19:19:46 +0100 (CET)
+In-Reply-To: <1385656671-18519-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,63 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
 
-This will allow a marginal speed improvement when used with a bus that
-supports async I/O by reducing the amount of context thrashing between
-writes, allowing the bus to be more fully utilised.
+--===============3263031456903678357==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HFD/Dq8JdnjNvyuv"
+Content-Disposition: inline
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/codecs/wm_adsp.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 46ec0e9744d4..6b1c01c66e64 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1468,8 +1468,8 @@ static int wm_adsp2_ena(struct wm_adsp *dsp)
- 	unsigned int val;
- 	int ret, count;
- 
--	ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
--				 ADSP2_SYS_ENA, ADSP2_SYS_ENA);
-+	ret = regmap_update_bits_async(dsp->regmap, dsp->base + ADSP2_CONTROL,
-+				       ADSP2_SYS_ENA, ADSP2_SYS_ENA);
- 	if (ret != 0)
- 		return ret;
- 
-@@ -1521,9 +1521,9 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		val = (val & ARIZONA_SYSCLK_FREQ_MASK)
- 			>> ARIZONA_SYSCLK_FREQ_SHIFT;
- 
--		ret = regmap_update_bits(dsp->regmap,
--					 dsp->base + ADSP2_CLOCKING,
--					 ADSP2_CLK_SEL_MASK, val);
-+		ret = regmap_update_bits_async(dsp->regmap,
-+					       dsp->base + ADSP2_CLOCKING,
-+					       ADSP2_CLK_SEL_MASK, val);
- 		if (ret != 0) {
- 			adsp_err(dsp, "Failed to set clock rate: %d\n",
- 				 ret);
-@@ -1586,10 +1586,10 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		if (ret != 0)
- 			goto err;
- 
--		ret = regmap_update_bits(dsp->regmap,
--					 dsp->base + ADSP2_CONTROL,
--					 ADSP2_CORE_ENA | ADSP2_START,
--					 ADSP2_CORE_ENA | ADSP2_START);
-+		ret = regmap_update_bits_async(dsp->regmap,
-+					       dsp->base + ADSP2_CONTROL,
-+					       ADSP2_CORE_ENA | ADSP2_START,
-+					       ADSP2_CORE_ENA | ADSP2_START);
- 		if (ret != 0)
- 			goto err;
- 
--- 
-1.8.4.4
+--HFD/Dq8JdnjNvyuv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Nov 28, 2013 at 04:37:51PM +0000, Charles Keepax wrote:
+> When locating the memory region relating to a coefficient block written
+> through a bin file we keep processing the list of regions even after we
+> have found the region we require. This patch adds a break, so we don't
+> process redundant list items.
+
+Applied, thanks.  I didn't look but does the same issue exist in the
+main firmware load, it's probably following the same pattern?
+
+--HFD/Dq8JdnjNvyuv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSl4k8AAoJELSic+t+oim9yKoP/RqtqDtkhYq7h1ywR/uU3nLq
+A69vGJnBzBiw7mxsMBNFthuzn0OKZYJRg66a4cxcDnxSXgRJFMLvF338ehTeXrzb
+EjR5l074eOENqpkjP6HsVLdyiqX47Vv6Kf58iqfF6cahliR8DeCGq2elz5fxon4I
+C427iOQJFcORNkuQf3+WM4Wr7+OEswXekA4ALeCbpEHoctopz13H8E8c9BtlLw8k
+5+J0JKNc3ddeNhTXP7NPwTzt1qXG/xGHOD5xXcehJq/ovHPIo29E1Fs4XCUNVtN/
+FH3O44DCP2h0kptKWDpkV6d2u5JyA91t4syuYTl2q/ASLtiO2m59MwN76rH1zgL5
+ZpqDpcZ1dYzmJHkKHBGNhDZvZfHW3fVhfBpYLUv3dxpIyN9Sf96ZaA2IYzrDaMcK
+0to0Tg+bB3u7kRo965mvKkSYTsv1zAdgYt1/BtRxQxnYRPLgbZTsz5dYTDAUn6yK
+Ft98TmMhVdUTxVJQZkLMT0R8FPI46v3Vk2lxT3d2T7nw3Y+GB05Bto3Pu6HzZ1Ny
+jsGWJHWk7vGtaxmC/I0Zt6SOpYXrDpBUCQ2sn1A869OlmyUW6ywrKIjL+ZpzUgKl
+GsRfsN/s7vBO3dAPOrNM+SsgaIKCzCfmWXujNonZvZyU9ZqhOw07oY631Zp/kXo5
+G8gXViSR+E1L0CMp6Uyo
+=Y31E
+-----END PGP SIGNATURE-----
+
+--HFD/Dq8JdnjNvyuv--
+
+--===============3263031456903678357==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3263031456903678357==--
