@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 6/6] ASoC: mxs: Use
+Subject: [PATCH 4/6] ASoC: fsl: Use
 	devm_snd_dmaengine_pcm_register()
-Date: Thu, 28 Nov 2013 08:50:37 +0100
-Message-ID: <1385625037-24973-6-git-send-email-lars@metafoo.de>
+Date: Thu, 28 Nov 2013 08:50:35 +0100
+Message-ID: <1385625037-24973-4-git-send-email-lars@metafoo.de>
 References: <1385625037-24973-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-025.synserver.de (smtp-out-014.synserver.de
  [212.40.185.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A1E12652C2
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 08:50:19 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 59DB82652A2
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 08:50:15 +0100 (CET)
 In-Reply-To: <1385625037-24973-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,69 +32,118 @@ Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
 No changes since v1
 ---
- sound/soc/mxs/mxs-pcm.c  | 8 +-------
- sound/soc/mxs/mxs-pcm.h  | 1 -
- sound/soc/mxs/mxs-saif.c | 8 --------
- 3 files changed, 1 insertion(+), 16 deletions(-)
+ sound/soc/fsl/fsl_spdif.c   | 8 --------
+ sound/soc/fsl/fsl_ssi.c     | 4 ----
+ sound/soc/fsl/imx-pcm-dma.c | 9 ++-------
+ sound/soc/fsl/imx-pcm.h     | 5 -----
+ sound/soc/fsl/imx-ssi.c     | 3 ---
+ 5 files changed, 2 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
-index b16abbb..04a6b0d 100644
---- a/sound/soc/mxs/mxs-pcm.c
-+++ b/sound/soc/mxs/mxs-pcm.c
-@@ -56,16 +56,10 @@ static const struct snd_dmaengine_pcm_config mxs_dmaengine_pcm_config = {
- 
- int mxs_pcm_platform_register(struct device *dev)
- {
--	return snd_dmaengine_pcm_register(dev, &mxs_dmaengine_pcm_config,
-+	return devm_snd_dmaengine_pcm_register(dev, &mxs_dmaengine_pcm_config,
- 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
- 		SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX);
- }
- EXPORT_SYMBOL_GPL(mxs_pcm_platform_register);
- 
--void mxs_pcm_platform_unregister(struct device *dev)
--{
--	snd_dmaengine_pcm_unregister(dev);
--}
--EXPORT_SYMBOL_GPL(mxs_pcm_platform_unregister);
--
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/mxs/mxs-pcm.h b/sound/soc/mxs/mxs-pcm.h
-index bc685b6..035ea04 100644
---- a/sound/soc/mxs/mxs-pcm.h
-+++ b/sound/soc/mxs/mxs-pcm.h
-@@ -20,6 +20,5 @@
- #define _MXS_PCM_H
- 
- int mxs_pcm_platform_register(struct device *dev);
--void mxs_pcm_platform_unregister(struct device *dev);
- 
- #endif
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 54e622a..92db74d 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -804,13 +804,6 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	return 0;
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 55193a5..4d075f1 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1181,13 +1181,6 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+ 	return ret;
  }
  
--static int mxs_saif_remove(struct platform_device *pdev)
+-static int fsl_spdif_remove(struct platform_device *pdev)
 -{
--	mxs_pcm_platform_unregister(&pdev->dev);
+-	imx_pcm_dma_exit(pdev);
 -
 -	return 0;
 -}
 -
- static const struct of_device_id mxs_saif_dt_ids[] = {
- 	{ .compatible = "fsl,imx28-saif", },
- 	{ /* sentinel */ }
-@@ -819,7 +812,6 @@ MODULE_DEVICE_TABLE(of, mxs_saif_dt_ids);
+ static const struct of_device_id fsl_spdif_dt_ids[] = {
+ 	{ .compatible = "fsl,imx35-spdif", },
+ 	{}
+@@ -1201,7 +1194,6 @@ static struct platform_driver fsl_spdif_driver = {
+ 		.of_match_table = fsl_spdif_dt_ids,
+ 	},
+ 	.probe = fsl_spdif_probe,
+-	.remove = fsl_spdif_remove,
+ };
  
- static struct platform_driver mxs_saif_driver = {
- 	.probe = mxs_saif_probe,
--	.remove = mxs_saif_remove,
+ module_platform_driver(fsl_spdif_driver);
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index fb8f52a..3df0318 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1109,8 +1109,6 @@ done:
+ 	return 0;
  
- 	.driver = {
- 		.name = "mxs-saif",
+ error_dai:
+-	if (ssi_private->ssi_on_imx)
+-		imx_pcm_dma_exit(pdev);
+ 	snd_soc_unregister_component(&pdev->dev);
+ 
+ error_dev:
+@@ -1132,8 +1130,6 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+ 
+ 	if (!ssi_private->new_binding)
+ 		platform_device_unregister(ssi_private->pdev);
+-	if (ssi_private->ssi_on_imx)
+-		imx_pcm_dma_exit(pdev);
+ 	snd_soc_unregister_component(&pdev->dev);
+ 	device_remove_file(&pdev->dev, &ssi_private->dev_attr);
+ 	if (ssi_private->ssi_on_imx)
+diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
+index aee2307..c5e47f8 100644
+--- a/sound/soc/fsl/imx-pcm-dma.c
++++ b/sound/soc/fsl/imx-pcm-dma.c
+@@ -61,16 +61,11 @@ static const struct snd_dmaengine_pcm_config imx_dmaengine_pcm_config = {
+ 
+ int imx_pcm_dma_init(struct platform_device *pdev)
+ {
+-	return snd_dmaengine_pcm_register(&pdev->dev, &imx_dmaengine_pcm_config,
++	return devm_snd_dmaengine_pcm_register(&pdev->dev,
++		&imx_dmaengine_pcm_config,
+ 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+ 		SND_DMAENGINE_PCM_FLAG_COMPAT);
+ }
+ EXPORT_SYMBOL_GPL(imx_pcm_dma_init);
+ 
+-void imx_pcm_dma_exit(struct platform_device *pdev)
+-{
+-	snd_dmaengine_pcm_unregister(&pdev->dev);
+-}
+-EXPORT_SYMBOL_GPL(imx_pcm_dma_exit);
+-
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
+index 5d5b733..c79cb27 100644
+--- a/sound/soc/fsl/imx-pcm.h
++++ b/sound/soc/fsl/imx-pcm.h
+@@ -40,16 +40,11 @@ struct imx_pcm_fiq_params {
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_IMX_PCM_DMA)
+ int imx_pcm_dma_init(struct platform_device *pdev);
+-void imx_pcm_dma_exit(struct platform_device *pdev);
+ #else
+ static inline int imx_pcm_dma_init(struct platform_device *pdev)
+ {
+ 	return -ENODEV;
+ }
+-
+-static inline void imx_pcm_dma_exit(struct platform_device *pdev)
+-{
+-}
+ #endif
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_IMX_PCM_FIQ)
+diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
+index f5f248c..cc7376f 100644
+--- a/sound/soc/fsl/imx-ssi.c
++++ b/sound/soc/fsl/imx-ssi.c
+@@ -624,9 +624,6 @@ static int imx_ssi_remove(struct platform_device *pdev)
+ {
+ 	struct imx_ssi *ssi = platform_get_drvdata(pdev);
+ 
+-	if (!ssi->dma_init)
+-		imx_pcm_dma_exit(pdev);
+-
+ 	if (!ssi->fiq_init)
+ 		imx_pcm_fiq_exit(pdev);
+ 
 -- 
 1.8.0
