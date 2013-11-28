@@ -1,18 +1,31 @@
-From: Hui Wang <jason77.wang@gmail.com>
-Subject: [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs for
-	more Thinkpads with Conexant codec
-Date: Wed, 27 Nov 2013 14:47:26 +0800
-Message-ID: <1385534846-20829-1-git-send-email-hui.wang@canonical.com>
+From: Madhu Pavan <kmp@linux.vnet.ibm.com>
+Subject: alsa-lib-1.0.27.2 not compatible with ppc64le
+	architecture
+Date: Thu, 28 Nov 2013 11:17:26 +0530
+Message-ID: <5296D8EE.7070104@linux.vnet.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f50.google.com (mail-pb0-f50.google.com
- [209.85.160.50])
- by alsa0.perex.cz (Postfix) with ESMTP id B9E40261AED
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2013 07:49:56 +0100 (CET)
-Received: by mail-pb0-f50.google.com with SMTP id rr13so9744848pbb.37
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2013 22:49:55 -0800 (PST)
+Received: from e28smtp04.in.ibm.com (e28smtp04.in.ibm.com [122.248.162.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id B88A72651B4
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 06:47:37 +0100 (CET)
+Received: from /spool/local
+ by e28smtp04.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <alsa-devel@alsa-project.org> from <kmp@linux.vnet.ibm.com>;
+ Thu, 28 Nov 2013 11:17:31 +0530
+Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
+ by d28dlp03.in.ibm.com (Postfix) with ESMTP id 83DD81258051
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 11:18:27 +0530 (IST)
+Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
+ by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+ rAS5lK9F1769972
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 11:17:21 +0530
+Received: from d28av05.in.ibm.com (localhost [127.0.0.1])
+ by d28av05.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+ rAS5lQF1020578
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 11:17:26 +0530
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,75 +35,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: hui.wang@canonical.com, alex.hung@canonical.com, yk@canonical.com, david.henningsson@canonical.com
+To: alsa-devel@alsa-project.org
+Cc: deepakcs@linux.vnet.ibm.com, athunugu@linux.vnet.ibm.com
 List-Id: alsa-devel@alsa-project.org
 
-Most Thinkpad Edge series laptops use conexant codec, so far although
-the codecs have different minor Vendor Id and minor Subsystem Id,
-they all belong to the cxt5066 family, this change can make the
-mute/mic-mute LEDs support more generic among cxt_5066 family.
+Hi,
 
-This design refers to the similar solution for the realtek codec
-ALC269 family in the patch_realtek.c.
+We are in the process of adding support for new arch (ppc64le) and as 
+part of that we wanted to send patches for config.guess and configure as 
+appropriate.
 
-Cc: Alex Hung <alex.hung@canonical.com>
-Cc: David Henningsson <david.henningsson@canonical.com>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_conexant.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+alsa-lib-1.0.27.2 could not be built on ppc64le because it had an 
+outdated configure/config.guess/libtool.m4. Since your pkg uses libtool 
+and the latest tarball of your pkg didn't build on ppc64le due to 
+outdated libtool present on your system. We wanted to request you to 
+upgrade your libtool to the alpha release of libtool which has all the 
+bits and pieces needed for ppc64le support.
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index c205bb1..1f2717f 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -3244,9 +3244,29 @@ enum {
- #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
- 
- #include <linux/thinkpad_acpi.h>
-+#include <acpi/acpi.h>
- 
- static int (*led_set_func)(int, bool);
- 
-+static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void *context,
-+				 void **rv)
-+{
-+	bool *found = context;
-+	*found = true;
-+	return AE_OK;
-+}
-+
-+static bool is_thinkpad(struct hda_codec *codec)
-+{
-+	bool found = false;
-+	if (codec->subsystem_id >> 16 != 0x17aa)
-+		return false;
-+	if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb, &found, NULL)) && found)
-+		return true;
-+	found = false;
-+	return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb, &found, NULL)) && found;
-+}
-+
- static void update_tpacpi_mute_led(void *private_data, int enabled)
- {
- 	struct hda_codec *codec = private_data;
-@@ -3279,6 +3299,8 @@ static void cxt_fixup_thinkpad_acpi(struct hda_codec *codec,
- 	bool removefunc = false;
- 
- 	if (action == HDA_FIXUP_ACT_PROBE) {
-+		if (!is_thinkpad(codec))
-+			return;
- 		if (!led_set_func)
- 			led_set_func = symbol_request(tpacpi_led_set);
- 		if (!led_set_func) {
-@@ -3494,6 +3516,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310", CXT_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205", CXT_FIXUP_STEREO_DMIC),
-+	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", CXT_FIXUP_THINKPAD_ACPI),
- 	SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004", CXT_PINCFG_LEMOTE_A1004),
- 	SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205", CXT_PINCFG_LEMOTE_A1205),
- 	{}
--- 
-1.8.1.2
+In that context, I wanted to confirm the below
+
+1) Should we send patches to this mailing list or there is some other 
+mailing list ?
+
+2) New libtool alpha release which supports ppc64le arch is available, 
+you may  pick up the alpha release from either of the below :
+
+ftp://alpha.gnu.org/gnu/libtool/libtool-2.4.2.418.tar.gz (1.6MB)
+
+ftp://alpha.gnu.org/gnu/libtool/libtool-2.4.2.418.tar.xz (920KB)
+
+It would be great if you can install this new libtool which supports 
+ppc64le, and spin the pkg and let us know the new tar availability. We 
+can test it on ppc64le architecture for you.
+Please let me know if you are planning to release or spin newer version.
+
+Currently I used
+
+http://www.alsa-project.org/main/index.php/Main_Page
+
+Which does not have ppc64le support.
+
+Your response is highly appreciated.
+
+Thanks in advance,
+Madhu Pavan Kothapally
