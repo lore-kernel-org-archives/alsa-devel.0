@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 5/6] ASoC: spear: Use
-	devm_snd_dmaengine_pcm_register
-Date: Thu, 28 Nov 2013 08:50:36 +0100
-Message-ID: <1385625037-24973-5-git-send-email-lars@metafoo.de>
+Subject: [PATCH 2/6] ASoC: bcm2835-i2s: Use
+	devm_snd_dmaengine_pcm_register()
+Date: Thu, 28 Nov 2013 08:50:33 +0100
+Message-ID: <1385625037-24973-2-git-send-email-lars@metafoo.de>
 References: <1385625037-24973-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-025.synserver.de (smtp-out-014.synserver.de
  [212.40.185.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FC8F2652BB
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 08:50:17 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FE0C2651DB
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2013 08:50:14 +0100 (CET)
 In-Reply-To: <1385625037-24973-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,44 +29,40 @@ List-Id: alsa-devel@alsa-project.org
 Makes the code slightly shorter.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
 ---
-No changes since v1
+New in v2
 ---
- sound/soc/spear/spear_pcm.c | 9 +--------
+ sound/soc/bcm/bcm2835-i2s.c | 9 +--------
  1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/sound/soc/spear/spear_pcm.c b/sound/soc/spear/spear_pcm.c
-index 4707f2b..9a02141 100644
---- a/sound/soc/spear/spear_pcm.c
-+++ b/sound/soc/spear/spear_pcm.c
-@@ -49,18 +49,12 @@ static const struct snd_dmaengine_pcm_config spear_dmaengine_pcm_config = {
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index f49b007..2685fe4 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -848,7 +848,7 @@ static int bcm2835_i2s_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
- static int spear_soc_platform_probe(struct platform_device *pdev)
- {
--	return snd_dmaengine_pcm_register(&pdev->dev,
-+	return devm_snd_dmaengine_pcm_register(&pdev->dev,
- 		&spear_dmaengine_pcm_config,
- 		SND_DMAENGINE_PCM_FLAG_NO_DT |
- 		SND_DMAENGINE_PCM_FLAG_COMPAT);
- }
+-	ret = snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
+ 		return ret;
+@@ -862,15 +862,8 @@ static const struct of_device_id bcm2835_i2s_of_match[] = {
+ 	{},
+ };
  
--static int spear_soc_platform_remove(struct platform_device *pdev)
+-static int bcm2835_i2s_remove(struct platform_device *pdev)
 -{
 -	snd_dmaengine_pcm_unregister(&pdev->dev);
 -	return 0;
 -}
 -
- static struct platform_driver spear_pcm_driver = {
- 	.driver = {
- 		.name = "spear-pcm-audio",
-@@ -68,7 +62,6 @@ static struct platform_driver spear_pcm_driver = {
- 	},
- 
- 	.probe = spear_soc_platform_probe,
--	.remove = spear_soc_platform_remove,
- };
- 
- module_platform_driver(spear_pcm_driver);
+ static struct platform_driver bcm2835_i2s_driver = {
+ 	.probe		= bcm2835_i2s_probe,
+-	.remove		= bcm2835_i2s_remove,
+ 	.driver		= {
+ 		.name	= "bcm2835-i2s",
+ 		.owner	= THIS_MODULE,
 -- 
 1.8.0
