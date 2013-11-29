@@ -1,160 +1,63 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [RFC] ALSA: add new alsa control byte extended
-Date: Fri, 29 Nov 2013 10:40:51 +0100
-Message-ID: <52986123.5040004@perex.cz>
-References: <1385699397-18662-1-git-send-email-vinod.koul@intel.com>
- <s5hbo13fy6c.wl%tiwai@suse.de> <20131129074459.GE8834@intel.com>
- <s5hzjoneft5.wl%tiwai@suse.de>
+From: walter harms <wharms@bfs.de>
+Subject: Re: [patch] ALSA: dice: fix array limits in dice_proc_read()
+Date: Fri, 29 Nov 2013 10:48:28 +0100
+Message-ID: <529862EC.60104@bfs.de>
+References: <20131129081409.GA3490@elgon.mountain>
+Reply-To: wharms@bfs.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id AFD4F26552B
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 10:40:53 +0100 (CET)
-In-Reply-To: <s5hzjoneft5.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <20131129081409.GA3490@elgon.mountain>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 29.11.2013 10:08, Takashi Iwai wrote:
-> At Fri, 29 Nov 2013 13:14:59 +0530,
-> Vinod Koul wrote:
->>
->> On Fri, Nov 29, 2013 at 08:46:03AM +0100, Takashi Iwai wrote:
->>> At Fri, 29 Nov 2013 09:59:57 +0530,
->>> Vinod Koul wrote:
->>>>
->>>> As discussed in the last Audio uConf we need to improve byte controls to allow
->>>> larger size data to be sent to DSPs  The modern DSPs require alsa byte controls
->>>> size which far exceeds the today 512bytes limit. In order for usermode to send
->>>> larger sizes (few 100s of KBs) along with size information we add extended byte
->>>> control interface which sends any size bytes parameter buffer for DSPs to use
->>>> Obviosly the size must be supported by the device and would be required to
->>>> inform the max size allowed for the control.
->>>
->>> My primary question is -- must this be a control element?
->> I think yes. With controls we have an easy way to send parameter bytes and a
->> good support from both kernel and usermode, so leveraging that would make sense.
-> 
-> But it means that we have to extend / fix allover places using the
-> control elements.  And the variable size isn't handled there, so far.
-> It's the biggest concern.
-> 
-> For example, how would you read such a control element?  Currently,
-> all the control element values have the same static size, so the data
-> is just there to read.  OTOH, if you read data with an unknown size,
-> you have to query the size at first, allocate the buffer, then read
-> the data.  It's a completely different flow.
-> 
->> Mostly here the limit of 512 is hitting folks and IMO arbitrarily increasing
->> size doesn't help. For DSPs the algorithm coefficients can be larger 
-> 
-> Well, it's basically a kind of abuse of control elements, IMO...
 
-I basically agree, but... I believe that these chunks can be divided to
-the 512 limit using continuous indexes (kcontrol->count) and a simple
-rule in the driver "write all to a DSP when the last control (index) is
-touched" may be enough. No API extensions are required. The question is:
-Do you rellay need 100+KB for coefficients? Do you expect to handle
-these data in standard tools like alsactl?
 
->> Here i was thinking of just adding a new API in libraries to access this new
->> control type so that users can send large parameter blobs.
->>
->> mixer_ctl_set_bytes_ext(struct mixer_ctl *ctl, const void *data, size_t len)
->> {
->> 	struct snd_ctl_elem_value ev;
->>
->> 	/*usual init code */
->>
->> 	switch (ctl->info->type) {
->> 	case SNDRV_CTL_ELEM_TYPE_BYTES_EXT:
->> 		ev.value.bytes_ext.size = len;
->> 		ev.value.bytes_ext.data = (__u64)data;
->> 	break;
->> 	default:
->> 		return -EINVAL;
->> 	}
->> 	return ioctl(ctl->mixer->fd, SNDRV_CTL_IOCTL_ELEM_WRITE, &ev);
->> }
->>
->> in kernel-side, the .put handler for kcontrol implemented in drivers would then
->> copy the userdata and send it to DSPs.
+Am 29.11.2013 09:14, schrieb Dan Carpenter:
+> The array limits are supposed to be in units of u32 instead of in bytes.
+> The current code has a potential array overflow.
 > 
-> If you create a new API function, why we need to stick with the
-> control elements?
+> Fixes: c614475b0ea9 ('ALSA: dice: add a proc file to show device information')
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
->> So in that respect this becomes quite simple to implement without adding lots of
->> parallel code and uses the infrastruture we already have.
->>
->>> Why it can't be implemented in hwdep, for example?  In the past, we
->>> already implemented DSP firmware loader in the hwdep side.  It's a bit
->>> complicated (and limited) for a few driver usages, but it was more or
->>> less standardized for them.
->>>
->>> My concern extending control element is that it'd need the rewrite in
->>> the whole control API in user-space side, too.  alsactl accesses the
->>> whole control elements and save/restore them, for example.
->> I am not sure I got your comment on rewriting control API. I though the union
->> here makes the ABI itself not to change so existing implementations which don't
->> use this new control type will not be impacted and for newer DSP we can add new
->> APIs like above to take benifit.
-> 
-> You'll change SNDRV_CTL_ELEM_TYPE_LAST.  It means you'll need to look
-> over all codes that refer to this and fix them.  (Not only in
-> alsa-lib.)  That is, it's difficult to know how an old app reacts when
-> it received an unknown data type.
-> 
-> I just don't want to go the way "let's break and wait to see whether
-> people start whining".  At least for the old rock solid stuff.
-> 
->> For save-restore part (though i havent looked at alsactl so might be wrong here)
->> yes, for this new control type, we would have to allocate buffers and then
->> destroy on restore. Eventually we will need to do so if we need alsactl suppport
->> for such devices. But shouldnt the change be less intrusive as it would be
->> limited to one control type.
-> 
-> So, you'd suggest to do save/restore unlimited size of data via
-> alsactl?
-> 
->>> Also, sharing scalar data and a reference pointer in the same union is
->>> a bit error-prone.
->> Can you elobrate a bit here and if we go down this path then how do we go about
->> it
-> 
-> Currently the data are stored in the fixed size of union.  You can
-> read the all data there.  If a program sets some wrong type or value
-> in the data, nothing severe would happen.  Just a wrong data is
-> transferred.  But, with a reference pointer, a wrong data triggers the
-> segfault, crashes the whole program.
-> 
->> One orthogonal question: why do we have bunch of deprecated pointers in the
->> unions and is anyone still using it? I guess this would be bit of history lesson
->> :)
-> 
-> No it's never used in reality, and this was a big pain in the kernel
-> side because we had to convert the data for the 32/64bit compatible
-> ioctls.  That's why it was deprecated.  The data field remains there
-> just for ABI compatibility reason.
+> diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
+> index 57bcd31fcc12..c0aa64941cee 100644
+> --- a/sound/firewire/dice.c
+> +++ b/sound/firewire/dice.c
+> @@ -1019,7 +1019,7 @@ static void dice_proc_read(struct snd_info_entry *entry,
+>  
+>  	if (dice_proc_read_mem(dice, &tx_rx_header, sections[2], 2) < 0)
+>  		return;
+> -	quadlets = min_t(u32, tx_rx_header.size, sizeof(buf.tx));
+> +	quadlets = min_t(u32, tx_rx_header.size, sizeof(buf.tx) / 4);
 
-I and Abramo though it may be useful, but until 2008 no one required
-these big data so you removed this without complains.. But ... the room
-for this extension is available or it may be implemented using another
-WRITE_LARGE_BYTES ioctl to satisfy the 32/64 bit conversions.
+it is a bit late but ...
 
-					Jaroslav
+sizeof(buf.tx) / 4  looks like ARRAY_SIZE(buf.tx)
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+If yes i suggest ARRAY_SIZE() because it gets rid of the "magic" 4.
+
+re,
+ wh
+
+
+>  	for (stream = 0; stream < tx_rx_header.number; ++stream) {
+>  		if (dice_proc_read_mem(dice, &buf.tx, sections[2] + 2 +
+>  				       stream * tx_rx_header.size,
+> @@ -1045,7 +1045,7 @@ static void dice_proc_read(struct snd_info_entry *entry,
+>  
+>  	if (dice_proc_read_mem(dice, &tx_rx_header, sections[4], 2) < 0)
+>  		return;
+> -	quadlets = min_t(u32, tx_rx_header.size, sizeof(buf.rx));
+> +	quadlets = min_t(u32, tx_rx_header.size, sizeof(buf.rx) / 4);
+>  	for (stream = 0; stream < tx_rx_header.number; ++stream) {
+>  		if (dice_proc_read_mem(dice, &buf.rx, sections[4] + 2 +
+>  				       stream * tx_rx_header.size,
+> --
+> To unsubscribe from this list: send the line "unsubscribe kernel-janitors" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
