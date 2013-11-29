@@ -1,15 +1,18 @@
-From: =?utf-8?B?TGFtYnJlY2h0IErDvHJnZW4=?= <J.Lambrecht@TELEVIC.com>
-Subject: [PATCH] ASoC mc13783 codec: correct names
-Date: Fri, 29 Nov 2013 11:28:07 +0100
-Message-ID: <1385720887-1114-1-git-send-email-J.Lambrecht@televic.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC] ALSA: add new alsa control byte extended
+Date: Fri, 29 Nov 2013 11:05:49 +0000
+Message-ID: <20131129110549.GQ27568@sirena.org.uk>
+References: <1385699397-18662-1-git-send-email-vinod.koul@intel.com>
+ <s5hbo13fy6c.wl%tiwai@suse.de> <20131129074459.GE8834@intel.com>
+ <s5hzjoneft5.wl%tiwai@suse.de> <52986123.5040004@perex.cz>
+ <s5hsiufedxu.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0006173608166093123=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ip2.televic.com (ip2.televic.com [81.82.194.222])
- by alsa0.perex.cz (Postfix) with ESMTP id A8081265558
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 11:28:12 +0100 (CET)
-Content-Language: en-US
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78053265558
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 12:05:55 +0100 (CET)
+In-Reply-To: <s5hsiufedxu.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,76 +22,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "philippe.retornaz@epfl.ch" <philippe.retornaz@epfl.ch>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "kernel@pengutronix.de" <kernel@pengutronix.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Q29ycmVjdCBuYW1lcyB0byByZWFsaXR5IGFuZCBmb3IgY29uc2lzdGVuY3k6DQogLSAiU3BlYWtl
-ciBBbXAgU3dpdGNoIi0+IlNwZWFrZXIgQW1wIg0KIC0gIkVhcnBpZWNlIEFtcCBTd2l0Y2giLT4i
-U3BlYWtlciBBbXAgU3dpdGNoIg0KIC0gIkxvdWRzcGVha2VyIGVuYWJsZSItPiJMb3Vkc3BlYWtl
-ciBBbXAgU3dpdGNoIg0KIC0gIi4uQ2FwdHVyZS4uIi0+Ii4uUGxheWJhY2siIChMaW5lIGluLi4u
-LCBDT0RFQy4uLiwgLi4uTWl4aW4gU3dpdGNoKQ0KIC0gbW92ZSAiUENNIENhcHR1cmUgVm9sdW1l
-IiB0byBib3R0b20gd2l0aCBvdGhlciBDYXB0dXJlIGNvbnRyb2xzDQoNClNpZ25lZC1vZmYtYnk6
-IErDvHJnZW4gTGFtYnJlY2h0IDxKLkxhbWJyZWNodEB0ZWxldmljLmNvbT4NCi0tLQ0KIHNvdW5k
-L3NvYy9jb2RlY3MvbWMxMzc4My5jIHwgICAyNSArKysrKysrKysrKysrLS0tLS0tLS0tLS0tDQog
-MSBmaWxlIGNoYW5nZWQsIDEzIGluc2VydGlvbnMoKyksIDEyIGRlbGV0aW9ucygtKQ0KDQpkaWZm
-IC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9tYzEzNzgzLmMgYi9zb3VuZC9zb2MvY29kZWNzL21j
-MTM3ODMuYw0KaW5kZXggMDhmYjAyMi4uODc4ZTNlNSAxMDA2NDQNCi0tLSBhL3NvdW5kL3NvYy9j
-b2RlY3MvbWMxMzc4My5jDQorKysgYi9zb3VuZC9zb2MvY29kZWNzL21jMTM3ODMuYw0KQEAgLTUz
-NCw3ICs1MzQsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXQgbWMx
-Mzc4M19kYXBtX3dpZGdldHNbXSA9IHsNCiANCiAJU05EX1NPQ19EQVBNX1NXSVRDSCgiQ0RDT1VU
-IFN3aXRjaCIsIE1DMTM3ODNfQVVESU9fUlgwLCAxOCwgMCwNCiAJCQkmY2Rjb3V0X2N0bCksDQot
-CVNORF9TT0NfREFQTV9TV0lUQ0goIlNwZWFrZXIgQW1wIFN3aXRjaCIsIE1DMTM3ODNfQVVESU9f
-UlgwLCAzLCAwLA0KKwlTTkRfU09DX0RBUE1fU1dJVENIKCJTcGVha2VyIEFtcCIsIE1DMTM3ODNf
-QVVESU9fUlgwLCAzLCAwLA0KIAkJCSZzYW1wX2N0bCksDQogCVNORF9TT0NfREFQTV9TV0lUQ0go
-IkxvdWRzcGVha2VyIEFtcCIsIFNORF9TT0NfTk9QTSwgMCwgMCwgJmxhbXBfY3RsKSwNCiAJU05E
-X1NPQ19EQVBNX1NXSVRDSCgiSGVhZHNldCBBbXAgTGVmdCIsIE1DMTM3ODNfQVVESU9fUlgwLCAx
-MCwgMCwNCkBAIC01OTAsNyArNTkwLDcgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhcG1fcm91
-dGUgbWMxMzc4M19yb3V0ZXNbXSA9IHsNCiAJeyAiSFNSIiwgTlVMTCwgIkhlYWRzZXQgQW1wIFJp
-Z2h0In0sDQogCXsgIlJYT1VUTCIsIE5VTEwsICJMaW5lIG91dCBBbXAgTGVmdCJ9LA0KIAl7ICJS
-WE9VVFIiLCBOVUxMLCAiTGluZSBvdXQgQW1wIFJpZ2h0In0sDQotCXsgIlNQIiwgIlNwZWFrZXIg
-QW1wIFN3aXRjaCIsICJTcGVha2VyIEFtcCBTb3VyY2UgTVVYIn0sDQorCXsgIlNQIiwgIlNwZWFr
-ZXIgQW1wIiwgIlNwZWFrZXIgQW1wIFNvdXJjZSBNVVgifSwNCiAJeyAiTFNQIiwgIkxvdWRzcGVh
-a2VyIEFtcCIsICJMb3Vkc3BlYWtlciBBbXAgU291cmNlIE1VWCJ9LA0KIAl7ICJIU0wiLCAiSGVh
-ZHNldCBBbXAgTGVmdCIsICJIZWFkc2V0IEFtcCBTb3VyY2UgTVVYIn0sDQogCXsgIkhTUiIsICJI
-ZWFkc2V0IEFtcCBSaWdodCIsICJIZWFkc2V0IEFtcCBTb3VyY2UgTVVYIn0sDQpAQCAtNjA5LDI2
-ICs2MDksMjcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzb2NfZW51bSBtYzEzNzgzX2VudW1fM2Rf
-bWl4ZXIgPQ0KIAkJCW1jMTM3ODNfM2RfbWl4ZXIpOw0KIA0KIHN0YXRpYyBzdHJ1Y3Qgc25kX2tj
-b250cm9sX25ldyBtYzEzNzgzX2NvbnRyb2xfbGlzdFtdID0gew0KLQlTT0NfU0lOR0xFKCJMb3Vk
-c3BlYWtlciBlbmFibGUiLCBNQzEzNzgzX0FVRElPX1JYMCwgNSwgMSwgMCksDQogCVNPQ19TSU5H
-TEUoIlBDTSBQbGF5YmFjayBWb2x1bWUiLCBNQzEzNzgzX0FVRElPX1JYMSwgNiwgMTUsIDApLA0K
-IAlTT0NfU0lOR0xFKCJQQ00gUGxheWJhY2sgU3dpdGNoIiwgTUMxMzc4M19BVURJT19SWDEsIDUs
-IDEsIDApLA0KLQlTT0NfRE9VQkxFKCJQQ00gQ2FwdHVyZSBWb2x1bWUiLCBNQzEzNzgzX0FVRElP
-X1RYLCAxOSwgMTQsIDMxLCAwKSwNCiAJU09DX0VOVU0oIjNEIENvbnRyb2wiLCBtYzEzNzgzX2Vu
-dW1fM2RfbWl4ZXIpLA0KIA0KIAlTT0NfU0lOR0xFKCJDRENPVVQgU3dpdGNoIiwgTUMxMzc4M19B
-VURJT19SWDAsIDE4LCAxLCAwKSwNCi0JU09DX1NJTkdMRSgiRWFycGllY2UgQW1wIFN3aXRjaCIs
-IE1DMTM3ODNfQVVESU9fUlgwLCAzLCAxLCAwKSwNCisJU09DX1NJTkdMRSgiU3BlYWtlciBBbXAg
-U3dpdGNoIiwgTUMxMzc4M19BVURJT19SWDAsIDMsIDEsIDApLA0KKwlTT0NfU0lOR0xFKCJMb3Vk
-c3BlYWtlciBBbXAgU3dpdGNoIiwgTUMxMzc4M19BVURJT19SWDAsIDUsIDEsIDApLA0KIAlTT0Nf
-RE9VQkxFKCJIZWFkc2V0IEFtcCBTd2l0Y2giLCBNQzEzNzgzX0FVRElPX1JYMCwgMTAsIDksIDEs
-IDApLA0KIAlTT0NfRE9VQkxFKCJMaW5lIG91dCBBbXAgU3dpdGNoIiwgTUMxMzc4M19BVURJT19S
-WDAsIDE2LCAxNSwgMSwgMCksDQogDQotCVNPQ19TSU5HTEUoIkNPREVDIENhcHR1cmUgTWl4aW4g
-U3dpdGNoIiwgTUMxMzc4M19BVURJT19SWDAsIDIxLCAxLCAwKSwNCi0JU09DX1NJTkdMRSgiUENN
-IENhcHR1cmUgTWl4aW4gU3dpdGNoIiwgTUMxMzc4M19BVURJT19SWDAsIDIyLCAxLCAwKSwNCi0J
-U09DX1NJTkdMRSgiTGluZSBpbiBDYXB0dXJlIE1peGluIFN3aXRjaCIsIE1DMTM3ODNfQVVESU9f
-UlgwLCAyMywgMSwgMCksDQorCVNPQ19TSU5HTEUoIkNPREVDIFBsYXliYWNrIE1peGluIFN3aXRj
-aCIsIE1DMTM3ODNfQVVESU9fUlgwLCAyMSwgMSwgMCksDQorCVNPQ19TSU5HTEUoIlBDTSBQbGF5
-YmFjayBNaXhpbiBTd2l0Y2giLCBNQzEzNzgzX0FVRElPX1JYMCwgMjIsIDEsIDApLA0KKwlTT0Nf
-U0lOR0xFKCJMaW5lIGluIFBsYXliYWNrIE1peGluIFN3aXRjaCIsIE1DMTM3ODNfQVVESU9fUlgw
-LCAyMywgMSwgMCksDQorDQorCVNPQ19TSU5HTEUoIkNPREVDIFBsYXliYWNrIFZvbHVtZSIsIE1D
-MTM3ODNfQVVESU9fUlgxLCAxLCAxNSwgMCksDQorCVNPQ19TSU5HTEUoIkNPREVDIFBsYXliYWNr
-IFN3aXRjaCIsIE1DMTM3ODNfQVVESU9fUlgxLCAwLCAxLCAwKSwNCiANCi0JU09DX1NJTkdMRSgi
-Q09ERUMgQ2FwdHVyZSBWb2x1bWUiLCBNQzEzNzgzX0FVRElPX1JYMSwgMSwgMTUsIDApLA0KLQlT
-T0NfU0lOR0xFKCJDT0RFQyBDYXB0dXJlIFN3aXRjaCIsIE1DMTM3ODNfQVVESU9fUlgxLCAwLCAx
-LCAwKSwNCisJU09DX1NJTkdMRSgiTGluZSBpbiBQbGF5YmFjayBWb2x1bWUiLCBNQzEzNzgzX0FV
-RElPX1JYMSwgMTIsIDE1LCAwKSwNCisJU09DX1NJTkdMRSgiTGluZSBpbiBQbGF5YmFjayBTd2l0
-Y2giLCBNQzEzNzgzX0FVRElPX1JYMSwgMTAsIDEsIDApLA0KIA0KLQlTT0NfU0lOR0xFKCJMaW5l
-IGluIENhcHR1cmUgVm9sdW1lIiwgTUMxMzc4M19BVURJT19SWDEsIDEyLCAxNSwgMCksDQotCVNP
-Q19TSU5HTEUoIkxpbmUgaW4gQ2FwdHVyZSBTd2l0Y2giLCBNQzEzNzgzX0FVRElPX1JYMSwgMTAs
-IDEsIDApLA0KKwlTT0NfRE9VQkxFKCJQQ00gQ2FwdHVyZSBWb2x1bWUiLCBNQzEzNzgzX0FVRElP
-X1RYLCAxOSwgMTQsIDMxLCAwKSwNCiANCiAJU09DX1NJTkdMRSgiTUMxIENhcHR1cmUgQmlhcyBT
-d2l0Y2giLCBNQzEzNzgzX0FVRElPX1RYLCAwLCAxLCAwKSwNCiAJU09DX1NJTkdMRSgiTUMyIENh
-cHR1cmUgQmlhcyBTd2l0Y2giLCBNQzEzNzgzX0FVRElPX1RYLCAxLCAxLCAwKSwNCi0tIA0KMS43
-LjEwLjQNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+--===============0006173608166093123==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gblAvmLjk8yGG9If"
+Content-Disposition: inline
+
+
+--gblAvmLjk8yGG9If
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Nov 29, 2013 at 10:48:29AM +0100, Takashi Iwai wrote:
+> Jaroslav Kysela wrote:
+
+> > I basically agree, but... I believe that these chunks can be divided to
+> > the 512 limit using continuous indexes (kcontrol->count) and a simple
+> > rule in the driver "write all to a DSP when the last control (index) is
+> > touched" may be enough. No API extensions are required. The question is:
+> > Do you rellay need 100+KB for coefficients? Do you expect to handle
+> > these data in standard tools like alsactl?
+
+It's certianly possible to do something like that while maintianing the
+ABI, however if we were going to do that we'd probably want to extend
+alsa-lib and tinyalsa to do this transparently and devise a naming
+scheme for the controls to trigger that behaviour.  The main thing is
+the API offered to users.
+
+> Yeah, I suggested a similar workaround when the issue came up ago
+> (IIRC, it was about WM codecs).  But it's certainly ugly, indeed.
+
+No, that was originally for Qualcomm - they were wanting to download
+megabytes of data.  There were some patches from Wolfson more recently
+though they're for much smaller data sizes.
+
+--gblAvmLjk8yGG9If
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSmHUJAAoJELSic+t+oim9r78P/1OpEq1g0NnGBED07FdMtJJz
+W7rHmQE9g1JelpjHEtIj5gAiRio1LaTidqhfKPjkMlf0JWfI/R6u8hpQifciVpLm
+5uUoR1Dl1JpGnaznCk/KNkyqTzZQlxGh4FmwakZPVFPoq6ZtWx8QoXlYadOptdii
+nsL8zkqcrQN879KCL2dJhP+Ecqhhm8raTVyrHtI6h6EPWZLPDUx7omm8tA2wDxhS
+qdMUdyeJxL/VsNR1TTTULB33NXSwsfy+KkoFPnMDPEB1No1Jk2K/vJUIRf77V0Yc
+Ayi3ON3U+NXNHhY/B/4FtQ8LCHi5H5QiqEdRFGWIEwUjCbDM0nbgW+/P7uPafXfE
+2L5n6C+cODhpS38ir23+MsCMn7tH1y6vgD7zf1r99ZYCtfL/Il7wkqkROwPu1EQV
+m3WRpqrAskSv/ghz+O5LpvFi+VqdRsvT1tePLvMwqpJMwJWYlCNgpDMRHwW5F4AQ
+xQEX/LqhqhpU2FNKuzHpc/7NXpKm8pLHvD6lZIxLyXyOZszTKxYnq3xB0kjeR+s1
+nIK8Jc3iE42YFPO62wZ4wGIPGpe5LF7BLgswZLXdOpbupzx+bUZvCG+ysTco4dim
+jJ+nuG/FoiCYPgLS+X/kImzw9x2oU88BRHVgk7n6xHwC4WIzfGSPE6D+cx4Q701r
+0+816A4P5ZzEH2s/Rsjd
+=/1yP
+-----END PGP SIGNATURE-----
+
+--gblAvmLjk8yGG9If--
+
+--===============0006173608166093123==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0006173608166093123==--
