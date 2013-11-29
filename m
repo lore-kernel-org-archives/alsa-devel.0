@@ -1,20 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] ALSA: add new alsa control byte extended
-Date: Fri, 29 Nov 2013 12:27:19 +0000
-Message-ID: <20131129122719.GW27568@sirena.org.uk>
-References: <1385699397-18662-1-git-send-email-vinod.koul@intel.com>
- <s5hbo13fy6c.wl%tiwai@suse.de> <20131129074459.GE8834@intel.com>
- <s5hzjoneft5.wl%tiwai@suse.de> <52986123.5040004@perex.cz>
- <s5hsiufedxu.wl%tiwai@suse.de> <52986823.1050600@perex.cz>
- <20131129112505.GR27568@sirena.org.uk>
- <s5hpppjbg12.wl%tiwai@suse.de>
+From: mengdong.lin@intel.com
+Subject: [PATCH 1/2] ALSA: hda/realtek - Remove depop delay for
+	suspend and resume if applicable
+Date: Fri, 29 Nov 2013 00:35:26 -0500
+Message-ID: <6b1ded4b9b806846c363a508ebbb9dc859ae1787.1385703143.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4816096092834218094=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 43DDB26556D
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 13:27:25 +0100 (CET)
-In-Reply-To: <s5hpppjbg12.wl%tiwai@suse.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id BAB0B26556D
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 13:32:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,70 +19,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>, Kailang Yang <kailang@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Kailang Yang <kailang@realtek.com>
 
---===============4816096092834218094==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MrbiU6dcJfOZ616B"
-Content-Disposition: inline
+This patch defines a flag "no_depop_delay" in alc_spec. If this flag is set,
+delay in alc_eapd_shutup and alc_resume will be skipped.
 
+Machine-specific fixup can set this flag to reduce suspend/resume time, if
+the codec and hardware analog design can avoid pop noise without this delay.
 
---MrbiU6dcJfOZ616B
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
-On Fri, Nov 29, 2013 at 12:31:37PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > I'd expect them to be handleable with standard tools, from a user
-> > perspective these things are just another setting that gets applied when
-> > changing use case like volumes and routing so manipulating the settings
-> > in a separate place seems wrong - at the level where you're applying
-> > them it's all part of the same set of data.
-
-> Basically agreed, but OTOH, size matters, too.  What if there are a
-> few MB data for several different control elements?  I don't think
-> managing them in the same text alsa.state file is so sensible.
-
-That's definitely something people doing tooling would need to consider
-- there's also things like only saving changes or splitting the
-  configuration up into reusable components rather than having complete
-configs for each use case in order to keep the sizes down.  Even without
-worrying about coefficients the sizes of the configuration files can get
-large very quickly with a naive implementation.
-
---MrbiU6dcJfOZ616B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSmIgjAAoJELSic+t+oim94MsP/0gVQXBoYpssukgbYxuhWSJ5
-afiQnKuoF31AjBzGLMEWevZl/acMFK8zqQgIURG2X+B8YFe1WJJZ43oYjGxMB2/u
-0IKmwY78F8g758EK/R+hCAzKbKSEQID/GG2V9c3pzlSVgp9UrszsUfcP+FfhW89w
-odqJJf0cN/vsdCx4ubamBXhrgeQ/gJa4/SUUKHyFNFwlzBHflc7WOt7BOjQNwxHH
-AYjgsfzahWUqSW5T1r4W+xkVxE0PO837mo1FJtTrTklIrqC3r2eDY0XOxpERVTuG
-Ywjof0kpGtYqB+1OdmkMPGJ/hxKtza6guzEhvMYWMgXVXniLGC3dMyQRkPAms3N9
-eGvFr3471PgmDP4IiqJlknLq8hO2tgNJ2+0CNiiZ8+TIBCcblnRFtPs6gIYAeBc9
-TB+9XGeKSkocPfgOreEjDE/tWyBDiZznUD3KthXkHlgeewnBbvEWjEqBkVpkX7tL
-0XmZvf+eKmzGmyH3hYA2owAR/zSM1HIWX4EpKi6iD1J2Basu2diXejSvBm5BPLba
-KRnNxIuTU5prpPajI9ux9s85L29GzXbqHEPyBFb9ENmfp873r6Ad0AtPkEw58/7o
-8Vi2ZwkXVz9LRtrTlGWOJ4IIap2EC3+BRdFDxZxXEECzJqYlkl8kdz7S+wUR9k5t
-RJDdH1ys7HRZ0N3n+vRo
-=ZDPJ
------END PGP SIGNATURE-----
-
---MrbiU6dcJfOZ616B--
-
---===============4816096092834218094==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4816096092834218094==--
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6366a66..503cf78 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -118,7 +118,8 @@ struct alc_spec {
+ 
+ 	int init_amp;
+ 	int codec_variant;	/* flag for other variants */
+-	bool has_alc5505_dsp;
++	unsigned int has_alc5505_dsp:1;
++	unsigned int no_depop_delay:1;
+ 
+ 	/* for PLL fix */
+ 	hda_nid_t pll_nid;
+@@ -280,8 +281,11 @@ static void alc_auto_setup_eapd(struct hda_codec *codec, bool on)
+  */
+ static void alc_eapd_shutup(struct hda_codec *codec)
+ {
++	struct alc_spec *spec = codec->spec;
++
+ 	alc_auto_setup_eapd(codec, false);
+-	msleep(200);
++	if (!spec->no_depop_delay)
++		msleep(200);
+ 	snd_hda_shutup_pins(codec);
+ }
+ 
+@@ -863,7 +867,10 @@ static int alc_suspend(struct hda_codec *codec)
+ #ifdef CONFIG_PM
+ static int alc_resume(struct hda_codec *codec)
+ {
+-	msleep(150); /* to avoid pop noise */
++	struct alc_spec *spec = codec->spec;
++
++	if (!spec->no_depop_delay)
++		msleep(150); /* to avoid pop noise */
+ 	codec->patch_ops.init(codec);
+ 	snd_hda_codec_resume_amp(codec);
+ 	snd_hda_codec_resume_cache(codec);
+@@ -4448,7 +4455,7 @@ static int patch_alc269(struct hda_codec *codec)
+ 	}
+ 
+ 	if (snd_hda_codec_read(codec, 0x51, 0, AC_VERB_PARAMETERS, 0) == 0x10ec5505) {
+-		spec->has_alc5505_dsp = true;
++		spec->has_alc5505_dsp = 1;
+ 		spec->init_hook = alc5505_dsp_init;
+ 	}
+ 
+-- 
+1.8.1.2
