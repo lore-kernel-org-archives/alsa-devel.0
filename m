@@ -1,41 +1,46 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: dice: fix array limits in dice_proc_read()
-Date: Fri, 29 Nov 2013 11:14:09 +0300
-Message-ID: <20131129081409.GA3490@elgon.mountain>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [RFC] ALSA: add new alsa control byte extended
+Date: Fri, 29 Nov 2013 12:48:02 +0530
+Message-ID: <20131129071802.GD8834@intel.com>
+References: <1385699397-18662-1-git-send-email-vinod.koul@intel.com>
+ <529841D9.7060301@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id B98572602F3
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 09:15:26 +0100 (CET)
 Content-Disposition: inline
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+In-Reply-To: <529841D9.7060301@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The array limits are supposed to be in units of u32 instead of in bytes.
-The current code has a potential array overflow.
+On Fri, Nov 29, 2013 at 09:27:21AM +0200, Jarkko Nikula wrote:
+> Hi
+> 
+> On 11/29/2013 06:29 AM, Vinod Koul wrote:
+> >@@ -891,6 +892,11 @@ struct snd_ctl_elem_value {
+> >  			unsigned char data[512];
+> >  			unsigned char *data_ptr;	/* obsoleted */
+> >  		} bytes;
+> >+		struct {
+> >+			unsigned long size;	/* size of buffer */
+> >+			__u64 data;	i	/* user data pointer */
+> >
+> Typo here? (__u64 data;    i)
+yup :( I aligned the comment in patch and looks like this got added. Thanks for
+pointing...
 
-Fixes: c614475b0ea9 ('ALSA: dice: add a proc file to show device information')
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index 57bcd31fcc12..c0aa64941cee 100644
---- a/sound/firewire/dice.c
-+++ b/sound/firewire/dice.c
-@@ -1019,7 +1019,7 @@ static void dice_proc_read(struct snd_info_entry *entry,
- 
- 	if (dice_proc_read_mem(dice, &tx_rx_header, sections[2], 2) < 0)
- 		return;
--	quadlets = min_t(u32, tx_rx_header.size, sizeof(buf.tx));
-+	quadlets = min_t(u32, tx_rx_header.size, sizeof(buf.tx) / 4);
- 	for (stream = 0; stream < tx_rx_header.number; ++stream) {
- 		if (dice_proc_read_mem(dice, &buf.tx, sections[2] + 2 +
- 				       stream * tx_rx_header.size,
-@@ -1045,7 +1045,7 @@ static void dice_proc_read(struct snd_info_entry *entry,
- 
- 	if (dice_proc_read_mem(dice, &tx_rx_header, sections[4], 2) < 0)
- 		return;
--	quadlets = min_t(u32, tx_rx_header.size, sizeof(buf.rx));
-+	quadlets = min_t(u32, tx_rx_header.size, sizeof(buf.rx) / 4);
- 	for (stream = 0; stream < tx_rx_header.number; ++stream) {
- 		if (dice_proc_read_mem(dice, &buf.rx, sections[4] + 2 +
- 				       stream * tx_rx_header.size,
+--
+~Vinod
