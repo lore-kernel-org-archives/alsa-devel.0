@@ -1,17 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [RFC] ALSA: add new alsa control byte extended
-Date: Fri, 29 Nov 2013 11:10:43 +0100
-Message-ID: <52986823.1050600@perex.cz>
-References: <1385699397-18662-1-git-send-email-vinod.koul@intel.com>	<s5hbo13fy6c.wl%tiwai@suse.de>	<20131129074459.GE8834@intel.com>	<s5hzjoneft5.wl%tiwai@suse.de>	<52986123.5040004@perex.cz>
- <s5hsiufedxu.wl%tiwai@suse.de>
+From: =?utf-8?B?TGFtYnJlY2h0IErDvHJnZW4=?= <J.Lambrecht@TELEVIC.com>
+Subject: [PATCH] ASoC mc13783 codec: complete capture mux
+Date: Fri, 29 Nov 2013 11:26:43 +0100
+Message-ID: <1385720803-1039-1-git-send-email-J.Lambrecht@televic.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F84A265558
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 11:10:44 +0100 (CET)
-In-Reply-To: <s5hsiufedxu.wl%tiwai@suse.de>
+Received: from ip2.televic.com (ip2.televic.com [81.82.194.222])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5318226555A
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 11:27:24 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,68 +19,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "philippe.retornaz@epfl.ch" <philippe.retornaz@epfl.ch>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "kernel@pengutronix.de" <kernel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Date 29.11.2013 10:48, Takashi Iwai wrote:
-> At Fri, 29 Nov 2013 10:40:51 +0100,
-> Jaroslav Kysela wrote:
->>
->> Date 29.11.2013 10:08, Takashi Iwai wrote:
->>> At Fri, 29 Nov 2013 13:14:59 +0530,
->>> Vinod Koul wrote:
->>>>
->>>> On Fri, Nov 29, 2013 at 08:46:03AM +0100, Takashi Iwai wrote:
->>>>> At Fri, 29 Nov 2013 09:59:57 +0530,
->>>>> Vinod Koul wrote:
->>>>>>
->>>>>> As discussed in the last Audio uConf we need to improve byte controls to allow
->>>>>> larger size data to be sent to DSPs  The modern DSPs require alsa byte controls
->>>>>> size which far exceeds the today 512bytes limit. In order for usermode to send
->>>>>> larger sizes (few 100s of KBs) along with size information we add extended byte
->>>>>> control interface which sends any size bytes parameter buffer for DSPs to use
->>>>>> Obviosly the size must be supported by the device and would be required to
->>>>>> inform the max size allowed for the control.
->>>>>
->>>>> My primary question is -- must this be a control element?
->>>> I think yes. With controls we have an easy way to send parameter bytes and a
->>>> good support from both kernel and usermode, so leveraging that would make sense.
->>>
->>> But it means that we have to extend / fix allover places using the
->>> control elements.  And the variable size isn't handled there, so far.
->>> It's the biggest concern.
->>>
->>> For example, how would you read such a control element?  Currently,
->>> all the control element values have the same static size, so the data
->>> is just there to read.  OTOH, if you read data with an unknown size,
->>> you have to query the size at first, allocate the buffer, then read
->>> the data.  It's a completely different flow.
->>>
->>>> Mostly here the limit of 512 is hitting folks and IMO arbitrarily increasing
->>>> size doesn't help. For DSPs the algorithm coefficients can be larger 
->>>
->>> Well, it's basically a kind of abuse of control elements, IMO...
->>
->> I basically agree, but... I believe that these chunks can be divided to
->> the 512 limit using continuous indexes (kcontrol->count) and a simple
->> rule in the driver "write all to a DSP when the last control (index) is
->> touched" may be enough. No API extensions are required. The question is:
->> Do you rellay need 100+KB for coefficients? Do you expect to handle
->> these data in standard tools like alsactl?
-> 
-> Yeah, I suggested a similar workaround when the issue came up ago
-> (IIRC, it was about WM codecs).  But it's certainly ugly, indeed.
-
-I wouldn't mark it as ugly, because the overhead is small in this
-solution (except the allocated space for the whole message in the hw
-driver). But if these large data are static and they are not expected to
-be saved (alsactl), the control API may be extended using a new ioctl or
-the hwdep interface with some custom tools may be used.
-
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+Y29kZWMgYWRjIChjYXB0dXJlKSBtdXggd2FzIG5vdCBjb21wbGV0ZToNCiAgICogZml4IG5hbWlu
+ZyBvZiBUWElOL1RYDQogICAqIHJlb3JkZXIgUlhJTiBhbmQgVFhJTiB0byBzaG93IG11eGluZyBw
+cmlvcml0eQ0KICAgKiBpbXBsZW1lbnQgUlhJTi9SWCAoUiBhbmQgTCBhcmUgdGhlIHNhbWUgY29u
+dHJvbCkNCg0KU2lnbmVkLW9mZi1ieTogSsO8cmdlbiBMYW1icmVjaHQgPEouTGFtYnJlY2h0QHRl
+bGV2aWMuY29tPg0KLS0tDQogc291bmQvc29jL2NvZGVjcy9tYzEzNzgzLmMgfCAgIDIyICsrKysr
+KysrKysrKysrLS0tLS0tLS0NCiAxIGZpbGUgY2hhbmdlZCwgMTQgaW5zZXJ0aW9ucygrKSwgOCBk
+ZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvbWMxMzc4My5jIGIv
+c291bmQvc29jL2NvZGVjcy9tYzEzNzgzLmMNCmluZGV4IGJhZTYwMTYuLmFmN2JjNTUgMTAwNjQ0
+DQotLS0gYS9zb3VuZC9zb2MvY29kZWNzL21jMTM3ODMuYw0KKysrIGIvc291bmQvc29jL2NvZGVj
+cy9tYzEzNzgzLmMNCkBAIC00MDEsMTEgKzQwMSwxNCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNu
+ZF9rY29udHJvbF9uZXcgbWMyX2FtcF9jdGwgPQ0KIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tj
+b250cm9sX25ldyBhdHhfYW1wX2N0bCA9DQogCVNPQ19EQVBNX1NJTkdMRSgiU3dpdGNoIiwgTUMx
+Mzc4M19BVURJT19UWCwgMTEsIDEsIDApOw0KIA0KK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tj
+b250cm9sX25ldyByeF9zZWxfY3RsID0NCisJU09DX0RBUE1fU0lOR0xFKCJTd2l0Y2giLCBNQzEz
+NzgzX0FVRElPX1RYLCAxMywgMSwgMCk7DQorDQogDQogLyogVmlydHVhbCBtdXguIFRoZSBjaGlw
+IGRvZXMgdGhlIGlucHV0IHNlbGVjdGlvbiBhdXRvbWF0aWNhbGx5DQogICogYXMgc29vbiBhcyB3
+ZSBlbmFibGUgb25lIGlucHV0LiAqLw0KIHN0YXRpYyBjb25zdCBjaGFyICogY29uc3QgYWRjbF9l
+bnVtX3RleHRbXSA9IHsNCi0JIk1DMUwiLCAiUlhJTkwiLA0KKwkiTUMxTCIsICJSWEwiLA0KIH07
+DQogDQogc3RhdGljIGNvbnN0IHN0cnVjdCBzb2NfZW51bSBhZGNsX2VudW0gPQ0KQEAgLTQxNSw3
+ICs0MTgsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgbGVmdF9pbnB1
+dF9tdXggPQ0KIAlTT0NfREFQTV9FTlVNX1ZJUlQoIlJvdXRlIiwgYWRjbF9lbnVtKTsNCiANCiBz
+dGF0aWMgY29uc3QgY2hhciAqIGNvbnN0IGFkY3JfZW51bV90ZXh0W10gPSB7DQotCSJNQzFSIiwg
+Ik1DMiIsICJSWElOUiIsICJUWElOIiwNCisJIk1DMVIiLCAiTUMyIiwgIlRYIiwgIlJYUiIsDQog
+fTsNCiANCiBzdGF0aWMgY29uc3Qgc3RydWN0IHNvY19lbnVtIGFkY3JfZW51bSA9DQpAQCAtNDcw
+LDkgKzQ3Myw5IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBtYzEz
+NzgzX2RhcG1fd2lkZ2V0c1tdID0gew0KIAlTTkRfU09DX0RBUE1fSU5QVVQoIk1DMUxJTiIpLA0K
+IAlTTkRfU09DX0RBUE1fSU5QVVQoIk1DMVJJTiIpLA0KIAlTTkRfU09DX0RBUE1fSU5QVVQoIk1D
+MklOIiksDQorCVNORF9TT0NfREFQTV9JTlBVVCgiVFhJTiIpLA0KIAlTTkRfU09DX0RBUE1fSU5Q
+VVQoIlJYSU5SIiksDQogCVNORF9TT0NfREFQTV9JTlBVVCgiUlhJTkwiKSwNCi0JU05EX1NPQ19E
+QVBNX0lOUFVUKCJUWElOIiksDQogDQogCVNORF9TT0NfREFQTV9TVVBQTFkoIk1DMSBCaWFzIiwg
+TUMxMzc4M19BVURJT19UWCwgMCwgMCwgTlVMTCwgMCksDQogCVNORF9TT0NfREFQTV9TVVBQTFko
+Ik1DMiBCaWFzIiwgTUMxMzc4M19BVURJT19UWCwgMSwgMCwgTlVMTCwgMCksDQpAQCAtNDgwLDcg
+KzQ4Myw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBtYzEzNzgz
+X2RhcG1fd2lkZ2V0c1tdID0gew0KIAlTTkRfU09DX0RBUE1fU1dJVENIKCJNQzFMIEFtcCIsIE1D
+MTM3ODNfQVVESU9fVFgsIDcsIDAsICZtYzFsX2FtcF9jdGwpLA0KIAlTTkRfU09DX0RBUE1fU1dJ
+VENIKCJNQzFSIEFtcCIsIE1DMTM3ODNfQVVESU9fVFgsIDUsIDAsICZtYzFyX2FtcF9jdGwpLA0K
+IAlTTkRfU09DX0RBUE1fU1dJVENIKCJNQzIgQW1wIiwgTUMxMzc4M19BVURJT19UWCwgOSwgMCwg
+Jm1jMl9hbXBfY3RsKSwNCi0JU05EX1NPQ19EQVBNX1NXSVRDSCgiVFhJTiBBbXAiLCBNQzEzNzgz
+X0FVRElPX1RYLCAxMSwgMCwgJmF0eF9hbXBfY3RsKSwNCisJU05EX1NPQ19EQVBNX1NXSVRDSCgi
+VFggQW1wIiwgTUMxMzc4M19BVURJT19UWCwgMTEsIDAsICZhdHhfYW1wX2N0bCksDQorCVNORF9T
+T0NfREFQTV9TV0lUQ0goIlJYIFNlbCIsIE1DMTM3ODNfQVVESU9fVFgsIDEzLCAwLCAmcnhfc2Vs
+X2N0bCksDQogDQogCVNORF9TT0NfREFQTV9WSVJUX01VWCgiUEdBIExlZnQgSW5wdXQgTXV4Iiwg
+U05EX1NPQ19OT1BNLCAwLCAwLA0KIAkJCSAgICAgICZsZWZ0X2lucHV0X211eCksDQpAQCAtNTM3
+LDE0ICs1NDEsMTYgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhcG1fcm91dGUgbWMxMzc4M19y
+b3V0ZXNbXSA9IHsNCiAJeyAiTUMxTCBBbXAiLCBOVUxMLCAiTUMxTElOIn0sDQogCXsgIk1DMVIg
+QW1wIiwgTlVMTCwgIk1DMVJJTiIgfSwNCiAJeyAiTUMyIEFtcCIsIE5VTEwsICJNQzJJTiIgfSwN
+Ci0JeyAiVFhJTiBBbXAiLCBOVUxMLCAiVFhJTiJ9LA0KKwl7ICJUWCBBbXAiLCBOVUxMLCAiVFhJ
+TiJ9LA0KKwl7ICJSWCBTZWwiLCBOVUxMLCAiUlhJTlIifSwNCisJeyAiUlggU2VsIiwgTlVMTCwg
+IlJYSU5MIn0sIC8qIGluZGVlZCBzYW1lIGNvbnRyb2wgYml0IGZvciBSWElOUiBhbmQgUlhJTkwg
+Ki8NCiANCiAJeyAiUEdBIExlZnQgSW5wdXQgTXV4IiwgIk1DMUwiLCAiTUMxTCBBbXAiIH0sDQot
+CXsgIlBHQSBMZWZ0IElucHV0IE11eCIsICJSWElOTCIsICJSWElOTCJ9LA0KKwl7ICJQR0EgTGVm
+dCBJbnB1dCBNdXgiLCAiUlhMIiwgIlJYIFNlbCJ9LA0KIAl7ICJQR0EgUmlnaHQgSW5wdXQgTXV4
+IiwgIk1DMVIiLCAiTUMxUiBBbXAiIH0sDQogCXsgIlBHQSBSaWdodCBJbnB1dCBNdXgiLCAiTUMy
+IiwgICJNQzIgQW1wIn0sDQotCXsgIlBHQSBSaWdodCBJbnB1dCBNdXgiLCAiVFhJTiIsICJUWElO
+IEFtcCJ9LA0KLQl7ICJQR0EgUmlnaHQgSW5wdXQgTXV4IiwgIlJYSU5SIiwgIlJYSU5SIn0sDQor
+CXsgIlBHQSBSaWdodCBJbnB1dCBNdXgiLCAiVFgiLCAiVFggQW1wIn0sDQorCXsgIlBHQSBSaWdo
+dCBJbnB1dCBNdXgiLCAiUlhSIiwgIlJYIFNlbCJ9LA0KIA0KIAl7ICJQR0EgTGVmdCBJbnB1dCIs
+IE5VTEwsICJQR0EgTGVmdCBJbnB1dCBNdXgifSwNCiAJeyAiUEdBIFJpZ2h0IElucHV0IiwgTlVM
+TCwgIlBHQSBSaWdodCBJbnB1dCBNdXgifSwNCi0tIA0KMS43LjEwLjQNCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
