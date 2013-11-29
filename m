@@ -1,15 +1,14 @@
-From: Kailang <kailang@realtek.com>
-Subject: Remove depop delay for suspend and resume
-Date: Fri, 29 Nov 2013 10:48:20 +0800
-Message-ID: <F59E396CBAC34485AD04AEDF69643CB9@realtek.com.tw>
-Reply-To: Kailang <kailang@realtek.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [RFC] ALSA: add new alsa control byte extended
+Date: Fri, 29 Nov 2013 09:59:57 +0530
+Message-ID: <1385699397-18662-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=_NextPart_000_0040_01CEECF0.851057B0"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C6172654AA
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 03:48:22 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8AF9C2654CA
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 06:27:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,67 +18,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-------=_NextPart_000_0040_01CEECF0.851057B0
-Content-Type: text/plain; format=flowed; charset="big5"; reply-type=original
-Content-Transfer-Encoding: 7bit
+As discussed in the last Audio uConf we need to improve byte controls to allow
+larger size data to be sent to DSPs  The modern DSPs require alsa byte controls
+size which far exceeds the today 512bytes limit. In order for usermode to send
+larger sizes (few 100s of KBs) along with size information we add extended byte
+control interface which sends any size bytes parameter buffer for DSPs to use
+Obviosly the size must be supported by the device and would be required to
+inform the max size allowed for the control.
 
-Hi Takashi,
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/uapi/sound/asound.h |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
 
-Intel test alc262.
-They find the suspend and resume time were > 50ms.
-So, I delete the delay for alc_eapd_shutup and alc_resume.
-If we want to have depop functions, we will follow like alc283.
-
-Thanks.
-Kailang
-------=_NextPart_000_0040_01CEECF0.851057B0
-Content-Type: application/octet-stream; name="0000-remove-depop-delay.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment; filename="0000-remove-depop-delay.patch"
-
->From 11a85d67e65326065bc0648f0750fe14925b2a03 Mon Sep 17 00:00:00 2001=0A=
-From: Kailang Yang <kailang@realtek.com>=0A=
-Date: Thu, 28 Nov 2013 13:55:26 +0800=0A=
-Subject: [PATCH] ALSA: hda/realtek - Remove depop delay for suspend and =
-resume=0A=
-=0A=
-Remove common alc_suspend for alc_eapd_shutup and alc_resume delay.=0A=
-We could add the depop functions like ALC283.=0A=
-=0A=
-Signed-off-by: Kailang Yang <kailang@realtek.com>=0A=
-=0A=
-diff --git a/sound/pci/hda/patch_realtek.c =
-b/sound/pci/hda/patch_realtek.c=0A=
-index c4ad9d1..fbb32d1 100644=0A=
---- a/sound/pci/hda/patch_realtek.c=0A=
-+++ b/sound/pci/hda/patch_realtek.c=0A=
-@@ -281,7 +281,6 @@ static void alc_auto_setup_eapd(struct hda_codec =
-*codec, bool on)=0A=
- static void alc_eapd_shutup(struct hda_codec *codec)=0A=
- {=0A=
- 	alc_auto_setup_eapd(codec, false);=0A=
--	msleep(200);=0A=
- 	snd_hda_shutup_pins(codec);=0A=
- }=0A=
- =0A=
-@@ -863,7 +862,6 @@ static int alc_suspend(struct hda_codec *codec)=0A=
- #ifdef CONFIG_PM=0A=
- static int alc_resume(struct hda_codec *codec)=0A=
- {=0A=
--	msleep(150); /* to avoid pop noise */=0A=
- 	codec->patch_ops.init(codec);=0A=
- 	snd_hda_codec_resume_amp(codec);=0A=
- 	snd_hda_codec_resume_cache(codec);=0A=
-
-------=_NextPart_000_0040_01CEECF0.851057B0
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
-------=_NextPart_000_0040_01CEECF0.851057B0--
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 9fc6219..8c10359 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -782,7 +782,8 @@ typedef int __bitwise snd_ctl_elem_type_t;
+ #define	SNDRV_CTL_ELEM_TYPE_BYTES	((__force snd_ctl_elem_type_t) 4) /* byte array */
+ #define	SNDRV_CTL_ELEM_TYPE_IEC958	((__force snd_ctl_elem_type_t) 5) /* IEC958 (S/PDIF) setup */
+ #define	SNDRV_CTL_ELEM_TYPE_INTEGER64	((__force snd_ctl_elem_type_t) 6) /* 64-bit integer type */
+-#define	SNDRV_CTL_ELEM_TYPE_LAST	SNDRV_CTL_ELEM_TYPE_INTEGER64
++#define SNDRV_CTL_ELEM_TYPE_BYTES_EXT	((__force snd_ctl_elem_type_t) 7) /* bytes array extended */
++#define	SNDRV_CTL_ELEM_TYPE_LAST	SNDRV_CTL_ELEM_TYPE_BYTES_EXT
+ 
+ typedef int __bitwise snd_ctl_elem_iface_t;
+ #define	SNDRV_CTL_ELEM_IFACE_CARD	((__force snd_ctl_elem_iface_t) 0) /* global control */
+@@ -891,6 +892,11 @@ struct snd_ctl_elem_value {
+ 			unsigned char data[512];
+ 			unsigned char *data_ptr;	/* obsoleted */
+ 		} bytes;
++		struct {
++			unsigned long size;	/* size of buffer */
++			__u64 data;	i	/* user data pointer */
++		} bytes_ext;
++
+ 		struct snd_aes_iec958 iec958;
+ 	} value;		/* RO */
+ 	struct timespec tstamp;
+-- 
+1.7.0.4
