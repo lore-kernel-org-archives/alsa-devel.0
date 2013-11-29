@@ -1,95 +1,103 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/4] ASoC: Add support for the Analog
-	Devices AXI-I2S core
-Date: Fri, 29 Nov 2013 14:27:50 +0000
-Message-ID: <20131129142750.GB27568@sirena.org.uk>
-References: <1385665372-29477-1-git-send-email-lars@metafoo.de>
- <1385665372-29477-2-git-send-email-lars@metafoo.de>
- <20131129115830.GT27568@sirena.org.uk>
- <529890F0.7090100@metafoo.de>
+From: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH 18/31] ASoC: tegra: allocate AHUB FIFO during probe() not
+ startup()
+Date: Fri, 29 Nov 2013 15:40:27 +0100
+Message-ID: <20131129144025.GA9712@ulmo.nvidia.com>
+References: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org>
+ <1384548866-13141-19-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1619311326887632329=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E79AD261700
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 15:27:52 +0100 (CET)
-In-Reply-To: <529890F0.7090100@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1384548866-13141-19-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1619311326887632329==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6PtN/jU//tuarfdA"
-Content-Disposition: inline
-
-
---6PtN/jU//tuarfdA
+--/04w6evG8XlLl3ft
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 29, 2013 at 02:04:48PM +0100, Lars-Peter Clausen wrote:
+On Fri, Nov 15, 2013 at 01:54:13PM -0700, Stephen Warren wrote:
+> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+>=20
+> Teh Tegra30 I2S driver currently allocates DMA FIFOs from the AHUB only
 
-> We only use it on ZYNQ and Microblaze though. And people have complained in
-> the past about symbols that are viable on their platform, but are not
-> relevant for their platform. And to use the core on a different FPGA
-> platform will most likely require changes to the core, unless the other FPGA
-> also has a PL330 DMA interface. So I'd prefer to only make it avaiable on
-> ZYNQ and Microblaze right now.
+s/Teh/The/
 
-Is it really restricted to PL330 at the hardware level?  I don't recall
-anything too fancy in the datasheet there.
+> when an audio stream starts playback. This is theoretically nice for
+> resource sharing, but makes no practical difference for any configuration
+> the drivers currently support. However, this deferral prevents conversion
+> to the standard DMA DT bindings, since conversion requires knowledge of
+> the specific DMA channel to be allocated, which in turn depends on which
+> specific FIFO was allocated.
+>=20
+> For this reason, move the FIFO allocate into probe() to allow later
 
-> >> +	frame_size = AXI_I2S_BITS_PER_FRAME / 2 - 1;
+s/allocate/allocation/?
 
-> > This isn't obvious - usually the frame size is the number of bits per
-> > frame.  Looking at the code I guess the hardware is more flexible than
-> > the driver allows at the minute?
+[...]
+> +	i2s->playback_dma_data.addr_width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
+> +	i2s->playback_dma_data.maxburst =3D 4;
+> +	ret =3D tegra30_ahub_allocate_tx_fifo(&i2s->playback_fifo_cif,
+> +					    &i2s->playback_dma_data.addr,
+> +					    &i2s->playback_dma_data.slave_id);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Could not alloc TX FIFO: %d\n", ret);
+> +		goto err_suspend;
+> +	}
+> +	ret =3D tegra30_ahub_set_rx_cif_source(i2s->playback_i2s_cif,
+> +					     i2s->playback_fifo_cif);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Could not route TX FIFO: %d\n", ret);
+> +		goto err_free_tx_fifo;
+> +	}
+> +
+> +	i2s->capture_dma_data.addr_width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
+> +	i2s->capture_dma_data.maxburst =3D 4;
+> +	ret =3D tegra30_ahub_allocate_rx_fifo(&i2s->capture_fifo_cif,
+> +					    &i2s->capture_dma_data.addr,
+> +					    &i2s->capture_dma_data.slave_id);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Could not alloc RX FIFO: %d\n", ret);
+> +		goto err_unroute_tx_fifo;
+> +	}
+> +	ret =3D tegra30_ahub_set_rx_cif_source(i2s->capture_fifo_cif,
+> +					     i2s->capture_i2s_cif);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Could not route TX FIFO: %d\n", ret);
+> +		goto err_free_rx_fifo;
+> +	}
+> +
 
-> that feature at the moment. But I'll add a comment explaining this. And
-> maybe rename the variable from framesize to wordsize.
+It could be useful to have these in a separate function so as not to
+make the .probe() any larger. It's already pretty big as it is.
 
-It definitely needs to be changed to word size.
+Thierry
 
---6PtN/jU//tuarfdA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+--/04w6evG8XlLl3ft
+Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSmKRiAAoJELSic+t+oim9sM8QAJbczwFCdGjwRRCFow0OseU2
-OzO+uofnzEJCx2lyBSmwlF5RxrEwtk2N3g0IA/Y4lrCJJfcQyd2VtYUcCYqaaA7h
-S1yTk90R6vhkjh6lUOGge1e7cmrBMkJUcMz3n8YBNIWY0YMHfYnaE1dyOa7/3ZRe
-y/jD1o1JqYoApQXc6KQHpUhBf+55r6RQmDw+X0/iEQNh+mnl9u5xTsR9EQ1mDICm
-/PIP/UfWWfxjUmIpCrWx1FcstMTYRzMkqNZo4Bd6Zm7OuPUtxcK5b60uZFiU4CRz
-V6ZM2Fvh5mrTuXmRdpuMdeopLBgIU/mXSEIJkZwWS4oO7+Z0rtclMl4rOi+Kbukf
-E/QvoccBIZdlzR4XLAtwZt+sf6+e260hWXyZJCwoMZjL9gw16R9/cpJFeQ6P0rBB
-Vsvxj0a848BgbXHdLz7mAUVrc7vUjwGHRd0GWgKv1x/nkQsS6hraoYxKljgZgSU1
-jKqq9k3Bs0F6gP1lhJaKmFx3qCSjEjt7bpsXt/O+SC7KlQU+MJN/qBcnkbnQ3MvJ
-MwPnJoC2KlECXi2sgfBjeU9A10j+ReJ2gbfpaVLMrVk2o36cid8dC1mq1k6+OHcE
-GJyU1D9Sx6ziG2n5GUY1i1YksscpzzescMNa6u/JsRZzJgNdS68Xhokp/9OiMQ4H
-QYwYK4o6hn4saTF5I3/a
-=GhfH
+iQIcBAEBAgAGBQJSmKdZAAoJEN0jrNd/PrOhENUP/iGKSGTY1gGiV0/ljyTANg9m
+AaR12bP1FbvAfPu4xn6UYzeFRzVNqSivlJ6St/mE1z+Hmf6nGPNS1cysermVarci
+X3cMWB4S1KyMHu+G3Odf21Zi1aun5QofO6A0qlqUUNdHQaLmVXnfJ/DNVvNYd7QX
+rErDhiZGQA0IjKcTs6EJ+V311Dhfyu/vTvEiuGY3E0VVzQviEJ+qbSSL23HFrkCG
+qdAKomHWWog2+ujprb7Ds92WMcyyq37q0iMsR8PXxO9zf++VNOiAIXZtk15qKvDL
+WUoSMRZBwoB/vc1xz2jH4YrxHgCmsEKAutQg9nr7N4XkOhUdi5EG64GeaHRTlKv1
+H0n5rDb5N/XD/XJeV3IhRLHMOQPBiTJ9yZrbcGQRqkYVuoZs7Tt2K5hyBhQmI6ra
+AlWSNStTJRU77V21XjTKzfIIoNuPumMg879e+8VkhGOMTStzmDOSkviHhuVsHOFy
+icaqujxrtx1Lqagk6c3uMlz3xgvTsWBP8ZaJqy7lpeeqiKfhWFAb7H2dJtrQi7R4
+2XYQpIBbfCw6lZVCt2489q7MRPhMamjHktY33HvSu20IAItQXfYalyMPoArAGHyF
+ISg5qD7GxE3UeF052EWyYXEDrGonnFNCu7laBigksAwKoiNy+qINW7hoAyh9wDYo
+lkThyoHIgF+Hy+vu/7dU
+=1cks
 -----END PGP SIGNATURE-----
 
---6PtN/jU//tuarfdA--
-
---===============1619311326887632329==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1619311326887632329==--
+--/04w6evG8XlLl3ft--
