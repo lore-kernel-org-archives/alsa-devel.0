@@ -1,77 +1,43 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix silent output on ASUS W7J
-	laptop
-Date: Fri, 29 Nov 2013 16:20:16 +0100
-Message-ID: <1385738416-4994-1-git-send-email-tiwai@suse.de>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 3/5] MFD: twl6040: reg_defaults support for regmap
+Date: Fri, 29 Nov 2013 16:00:32 +0000
+Message-ID: <20131129160032.GC26982@lee--X1>
+References: <1385733827-19831-1-git-send-email-peter.ujfalusi@ti.com>
+ <1385733827-19831-4-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id ADFCB261676
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 16:20:18 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 8B975A7D9D
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 16:20:16 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1385733827-19831-4-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The recent kernels got regressions on ASUS W7J with ALC660 codec where
-no sound comes out.  After a long debugging session, we found out that
-setting the pin control on the unused NID 0x10 is mandatory for the
-outputs.  And, it was found out that another magic of NID 0x0f that is
-required for other ASUS laptops isn't needed on this machine.
+On Fri, 29 Nov 2013, Peter Ujfalusi wrote:
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=66081
-Reported-and-tested-by: Andrey Lipaev <lipaev@mail.ru>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+> Add reg_defaults to regmap and at the same time implement proper powe=
+r state
+> handling with using regcache_cache_only(), regcache_sync() and
+> regcache_mark_dirty().
+> This will make sure that we do not need to do restore operations in c=
+hild
+> drivers anymore.
+>=20
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>  drivers/mfd/twl6040.c | 92 +++++++++++++++++++++++++++++++++++++++++=
+++++++++--
+>  1 file changed, 89 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 6366a6683e22..a98f3296b891 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4494,6 +4494,7 @@ enum {
- 	ALC861_FIXUP_AMP_VREF_0F,
- 	ALC861_FIXUP_NO_JACK_DETECT,
- 	ALC861_FIXUP_ASUS_A6RP,
-+	ALC660_FIXUP_ASUS_W7J,
- };
- 
- /* On some laptops, VREF of pin 0x0f is abused for controlling the main amp */
-@@ -4543,10 +4544,21 @@ static const struct hda_fixup alc861_fixups[] = {
- 		.v.func = alc861_fixup_asus_amp_vref_0f,
- 		.chained = true,
- 		.chain_id = ALC861_FIXUP_NO_JACK_DETECT,
-+	},
-+	[ALC660_FIXUP_ASUS_W7J] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			/* ASUS W7J needs a magic pin setup on unused NID 0x10
-+			 * for enabling outputs
-+			 */
-+			{0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24},
-+			{ }
-+		},
- 	}
- };
- 
- static const struct snd_pci_quirk alc861_fixup_tbl[] = {
-+	SND_PCI_QUIRK(0x1043, 0x1253, "ASUS W7J", ALC660_FIXUP_ASUS_W7J),
- 	SND_PCI_QUIRK(0x1043, 0x1393, "ASUS A6Rp", ALC861_FIXUP_ASUS_A6RP),
- 	SND_PCI_QUIRK_VENDOR(0x1043, "ASUS laptop", ALC861_FIXUP_AMP_VREF_0F),
- 	SND_PCI_QUIRK(0x1462, 0x7254, "HP DX2200", ALC861_FIXUP_NO_JACK_DETECT),
--- 
-1.8.4.4
+The code looks fine to me (me =3D !regmap expert), so with Mark's Ack I
+will apply.
+
+Mark, is an immutable branch required for this patch?
+
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
