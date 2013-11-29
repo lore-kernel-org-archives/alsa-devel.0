@@ -1,7 +1,7 @@
-From: Vinod Koul <vinod.koul@intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: [RFC] ALSA: add new alsa control byte extended
-Date: Fri, 29 Nov 2013 14:04:51 +0530
-Message-ID: <20131129083451.GF8834@intel.com>
+Date: Fri, 29 Nov 2013 10:40:51 +0100
+Message-ID: <52986123.5040004@perex.cz>
 References: <1385699397-18662-1-git-send-email-vinod.koul@intel.com>
  <s5hbo13fy6c.wl%tiwai@suse.de> <20131129074459.GE8834@intel.com>
  <s5hzjoneft5.wl%tiwai@suse.de>
@@ -9,10 +9,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 9189226552B
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 10:32:08 +0100 (CET)
-Content-Disposition: inline
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id AFD4F26552B
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 10:40:53 +0100 (CET)
 In-Reply-To: <s5hzjoneft5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,29 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 29, 2013 at 10:08:06AM +0100, Takashi Iwai wrote:
+Date 29.11.2013 10:08, Takashi Iwai wrote:
 > At Fri, 29 Nov 2013 13:14:59 +0530,
 > Vinod Koul wrote:
-> > 
-> > On Fri, Nov 29, 2013 at 08:46:03AM +0100, Takashi Iwai wrote:
-> > > At Fri, 29 Nov 2013 09:59:57 +0530,
-> > > Vinod Koul wrote:
-> > > > 
-> > > > As discussed in the last Audio uConf we need to improve byte controls to allow
-> > > > larger size data to be sent to DSPs  The modern DSPs require alsa byte controls
-> > > > size which far exceeds the today 512bytes limit. In order for usermode to send
-> > > > larger sizes (few 100s of KBs) along with size information we add extended byte
-> > > > control interface which sends any size bytes parameter buffer for DSPs to use
-> > > > Obviosly the size must be supported by the device and would be required to
-> > > > inform the max size allowed for the control.
-> > > 
-> > > My primary question is -- must this be a control element?
-> > I think yes. With controls we have an easy way to send parameter bytes and a
-> > good support from both kernel and usermode, so leveraging that would make sense.
+>>
+>> On Fri, Nov 29, 2013 at 08:46:03AM +0100, Takashi Iwai wrote:
+>>> At Fri, 29 Nov 2013 09:59:57 +0530,
+>>> Vinod Koul wrote:
+>>>>
+>>>> As discussed in the last Audio uConf we need to improve byte controls to allow
+>>>> larger size data to be sent to DSPs  The modern DSPs require alsa byte controls
+>>>> size which far exceeds the today 512bytes limit. In order for usermode to send
+>>>> larger sizes (few 100s of KBs) along with size information we add extended byte
+>>>> control interface which sends any size bytes parameter buffer for DSPs to use
+>>>> Obviosly the size must be supported by the device and would be required to
+>>>> inform the max size allowed for the control.
+>>>
+>>> My primary question is -- must this be a control element?
+>> I think yes. With controls we have an easy way to send parameter bytes and a
+>> good support from both kernel and usermode, so leveraging that would make sense.
 > 
 > But it means that we have to extend / fix allover places using the
 > control elements.  And the variable size isn't handled there, so far.
@@ -57,68 +56,59 @@ On Fri, Nov 29, 2013 at 10:08:06AM +0100, Takashi Iwai wrote:
 > you have to query the size at first, allocate the buffer, then read
 > the data.  It's a completely different flow.
 > 
-> > Mostly here the limit of 512 is hitting folks and IMO arbitrarily increasing
-> > size doesn't help. For DSPs the algorithm coefficients can be larger 
+>> Mostly here the limit of 512 is hitting folks and IMO arbitrarily increasing
+>> size doesn't help. For DSPs the algorithm coefficients can be larger 
 > 
 > Well, it's basically a kind of abuse of control elements, IMO...
 
-well we can go off and do another API for parameters by adding a new
-ioctl and then add support in current usermode code for this new interface.
-Your concerns and compatiblity questions are certainly valid, i was hoping that
-we could still manage to use control interface and keep reuse of existing
-infrastructure.
+I basically agree, but... I believe that these chunks can be divided to
+the 512 limit using continuous indexes (kcontrol->count) and a simple
+rule in the driver "write all to a DSP when the last control (index) is
+touched" may be enough. No API extensions are required. The question is:
+Do you rellay need 100+KB for coefficients? Do you expect to handle
+these data in standard tools like alsactl?
 
-Btw would it be posssible that we still ensumerate the "parameter" element as
-control but use different read-write mechanism for variable size data. I am
-thinking No, but if think something is doable here then it would be good.
-
---
-~Vinod
-
-
-
-> 
-> > Here i was thinking of just adding a new API in libraries to access this new
-> > control type so that users can send large parameter blobs.
-> > 
-> > mixer_ctl_set_bytes_ext(struct mixer_ctl *ctl, const void *data, size_t len)
-> > {
-> > 	struct snd_ctl_elem_value ev;
-> > 
-> > 	/*usual init code */
-> > 
-> > 	switch (ctl->info->type) {
-> > 	case SNDRV_CTL_ELEM_TYPE_BYTES_EXT:
-> > 		ev.value.bytes_ext.size = len;
-> > 		ev.value.bytes_ext.data = (__u64)data;
-> > 	break;
-> > 	default:
-> > 		return -EINVAL;
-> > 	}
-> > 	return ioctl(ctl->mixer->fd, SNDRV_CTL_IOCTL_ELEM_WRITE, &ev);
-> > }
-> > 
-> > in kernel-side, the .put handler for kcontrol implemented in drivers would then
-> > copy the userdata and send it to DSPs.
+>> Here i was thinking of just adding a new API in libraries to access this new
+>> control type so that users can send large parameter blobs.
+>>
+>> mixer_ctl_set_bytes_ext(struct mixer_ctl *ctl, const void *data, size_t len)
+>> {
+>> 	struct snd_ctl_elem_value ev;
+>>
+>> 	/*usual init code */
+>>
+>> 	switch (ctl->info->type) {
+>> 	case SNDRV_CTL_ELEM_TYPE_BYTES_EXT:
+>> 		ev.value.bytes_ext.size = len;
+>> 		ev.value.bytes_ext.data = (__u64)data;
+>> 	break;
+>> 	default:
+>> 		return -EINVAL;
+>> 	}
+>> 	return ioctl(ctl->mixer->fd, SNDRV_CTL_IOCTL_ELEM_WRITE, &ev);
+>> }
+>>
+>> in kernel-side, the .put handler for kcontrol implemented in drivers would then
+>> copy the userdata and send it to DSPs.
 > 
 > If you create a new API function, why we need to stick with the
 > control elements?
 > 
-> > So in that respect this becomes quite simple to implement without adding lots of
-> > parallel code and uses the infrastruture we already have.
-> > 
-> > > Why it can't be implemented in hwdep, for example?  In the past, we
-> > > already implemented DSP firmware loader in the hwdep side.  It's a bit
-> > > complicated (and limited) for a few driver usages, but it was more or
-> > > less standardized for them.
-> > > 
-> > > My concern extending control element is that it'd need the rewrite in
-> > > the whole control API in user-space side, too.  alsactl accesses the
-> > > whole control elements and save/restore them, for example.
-> > I am not sure I got your comment on rewriting control API. I though the union
-> > here makes the ABI itself not to change so existing implementations which don't
-> > use this new control type will not be impacted and for newer DSP we can add new
-> > APIs like above to take benifit.
+>> So in that respect this becomes quite simple to implement without adding lots of
+>> parallel code and uses the infrastruture we already have.
+>>
+>>> Why it can't be implemented in hwdep, for example?  In the past, we
+>>> already implemented DSP firmware loader in the hwdep side.  It's a bit
+>>> complicated (and limited) for a few driver usages, but it was more or
+>>> less standardized for them.
+>>>
+>>> My concern extending control element is that it'd need the rewrite in
+>>> the whole control API in user-space side, too.  alsactl accesses the
+>>> whole control elements and save/restore them, for example.
+>> I am not sure I got your comment on rewriting control API. I though the union
+>> here makes the ABI itself not to change so existing implementations which don't
+>> use this new control type will not be impacted and for newer DSP we can add new
+>> APIs like above to take benifit.
 > 
 > You'll change SNDRV_CTL_ELEM_TYPE_LAST.  It means you'll need to look
 > over all codes that refer to this and fix them.  (Not only in
@@ -128,19 +118,19 @@ thinking No, but if think something is doable here then it would be good.
 > I just don't want to go the way "let's break and wait to see whether
 > people start whining".  At least for the old rock solid stuff.
 > 
-> > For save-restore part (though i havent looked at alsactl so might be wrong here)
-> > yes, for this new control type, we would have to allocate buffers and then
-> > destroy on restore. Eventually we will need to do so if we need alsactl suppport
-> > for such devices. But shouldnt the change be less intrusive as it would be
-> > limited to one control type.
+>> For save-restore part (though i havent looked at alsactl so might be wrong here)
+>> yes, for this new control type, we would have to allocate buffers and then
+>> destroy on restore. Eventually we will need to do so if we need alsactl suppport
+>> for such devices. But shouldnt the change be less intrusive as it would be
+>> limited to one control type.
 > 
 > So, you'd suggest to do save/restore unlimited size of data via
 > alsactl?
 > 
-> > > Also, sharing scalar data and a reference pointer in the same union is
-> > > a bit error-prone.
-> > Can you elobrate a bit here and if we go down this path then how do we go about
-> > it
+>>> Also, sharing scalar data and a reference pointer in the same union is
+>>> a bit error-prone.
+>> Can you elobrate a bit here and if we go down this path then how do we go about
+>> it
 > 
 > Currently the data are stored in the fixed size of union.  You can
 > read the all data there.  If a program sets some wrong type or value
@@ -148,16 +138,23 @@ thinking No, but if think something is doable here then it would be good.
 > transferred.  But, with a reference pointer, a wrong data triggers the
 > segfault, crashes the whole program.
 > 
-> > One orthogonal question: why do we have bunch of deprecated pointers in the
-> > unions and is anyone still using it? I guess this would be bit of history lesson
-> > :)
+>> One orthogonal question: why do we have bunch of deprecated pointers in the
+>> unions and is anyone still using it? I guess this would be bit of history lesson
+>> :)
 > 
 > No it's never used in reality, and this was a big pain in the kernel
 > side because we had to convert the data for the 32/64bit compatible
 > ioctls.  That's why it was deprecated.  The data field remains there
 > just for ABI compatibility reason.
-> 
-> 
-> Takashi
+
+I and Abramo though it may be useful, but until 2008 no one required
+these big data so you removed this without complains.. But ... the room
+for this extension is available or it may be implemented using another
+WRITE_LARGE_BYTES ioctl to satisfy the 32/64 bit conversions.
+
+					Jaroslav
 
 -- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
