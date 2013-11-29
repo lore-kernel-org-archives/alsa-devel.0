@@ -1,115 +1,60 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/5] ASoC: twl6040: Custom caching for sensitive DL1/2 path registers
-Date: Fri, 29 Nov 2013 16:03:44 +0200
-Message-ID: <1385733827-19831-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 1/5] ASoC: twl6040: Rename
+	twl6040_is_path_unmuted -> twl6040_can_write_to_chip
+Date: Fri, 29 Nov 2013 16:03:43 +0200
+Message-ID: <1385733827-19831-2-git-send-email-peter.ujfalusi@ti.com>
 References: <1385733827-19831-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF13E261701
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 15:03:49 +0100 (CET)
 In-Reply-To: <1385733827-19831-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Introduce a small register cache for registers which needs special caching
-to reduce pop noise:
-TWL6040_REG_HSLCTL, TWL6040_REG_HSRCTL, TWL6040_REG_EARCTL, TWL6040_REG_HFLCTL
-and TWL6040_REG_HFRCTL.
-Switch over and use the new small cache for these registers instead of the
-main reg_cache.
-This is in preparation to remove the local ASoC reg_cache from the driver.
+Matches more precisely of the functionality.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl6040.c | 51 ++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 49 insertions(+), 2 deletions(-)
+ sound/soc/codecs/twl6040.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index ef13a50..fb8c65b 100644
+index f2f4bcb..ef13a50 100644
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
-@@ -72,6 +72,7 @@ struct twl6040_data {
- 	int hs_power_mode_locked;
- 	bool dl1_unmuted;
- 	bool dl2_unmuted;
-+	u8 dl12_cache[TWL6040_REG_HFRCTL - TWL6040_REG_HSLCTL + 1];
- 	unsigned int clk_in;
- 	unsigned int sysclk;
- 	struct twl6040_jack_data hs_jack;
-@@ -174,18 +175,62 @@ static struct snd_pcm_hw_constraint_list sysclk_constraints[] = {
- 	{ .count = ARRAY_SIZE(hp_rates), .list = hp_rates, },
- };
+@@ -219,8 +219,8 @@ static int twl6040_read_reg_volatile(struct snd_soc_codec *codec,
+ 	return value;
+ }
  
-+static inline int twl6040_read_dl12_cache(struct snd_soc_codec *codec,
-+					   u8 reg, u8 *value)
-+{
-+	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
-+	int ret = 0;
-+
-+	switch (reg) {
-+	case TWL6040_REG_HSLCTL:
-+	case TWL6040_REG_HSRCTL:
-+	case TWL6040_REG_EARCTL:
-+	case TWL6040_REG_HFLCTL:
-+	case TWL6040_REG_HFRCTL:
-+		*value = priv->dl12_cache[reg - TWL6040_REG_HSLCTL];
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
- /*
-  * read twl6040 register cache
-  */
- static inline unsigned int twl6040_read_reg_cache(struct snd_soc_codec *codec,
--						unsigned int reg)
-+						  unsigned int reg)
+-static bool twl6040_is_path_unmuted(struct snd_soc_codec *codec,
+-				    unsigned int reg)
++static bool twl6040_can_write_to_chip(struct snd_soc_codec *codec,
++				  unsigned int reg)
  {
- 	u8 *cache = codec->reg_cache;
-+	u8 value;
+ 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
  
- 	if (reg >= TWL6040_CACHEREGNUM)
+@@ -250,7 +250,7 @@ static int twl6040_write(struct snd_soc_codec *codec,
  		return -EIO;
  
--	return cache[reg];
-+	if (twl6040_read_dl12_cache(codec, reg, &value))
-+		value = cache[reg];
-+
-+	return value;
-+}
-+
-+static inline void twl6040_update_dl12_cache(struct snd_soc_codec *codec,
-+					     u8 reg, u8 value)
-+{
-+	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (reg) {
-+	case TWL6040_REG_HSLCTL:
-+	case TWL6040_REG_HSRCTL:
-+	case TWL6040_REG_EARCTL:
-+	case TWL6040_REG_HFLCTL:
-+	case TWL6040_REG_HFRCTL:
-+		priv->dl12_cache[reg - TWL6040_REG_HSLCTL] = value;
-+		break;
-+	default:
-+		break;
-+	}
- }
- 
- /*
-@@ -199,6 +244,8 @@ static inline void twl6040_write_reg_cache(struct snd_soc_codec *codec,
- 	if (reg >= TWL6040_CACHEREGNUM)
- 		return;
- 	cache[reg] = value;
-+
-+	twl6040_update_dl12_cache(codec, reg, value);
- }
- 
- /*
+ 	twl6040_write_reg_cache(codec, reg, value);
+-	if (twl6040_is_path_unmuted(codec, reg))
++	if (twl6040_can_write_to_chip(codec, reg))
+ 		return twl6040_reg_write(twl6040, reg, value);
+ 	else
+ 		return 0;
 -- 
 1.8.4.2
