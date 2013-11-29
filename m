@@ -1,58 +1,80 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/5] ASoC/MFD: twl6040: Remove codec driver local reg
- cache
-Date: Fri, 29 Nov 2013 14:49:43 +0000
-Message-ID: <20131129144943.GC27568@sirena.org.uk>
-References: <1385733827-19831-1-git-send-email-peter.ujfalusi@ti.com>
+From: Richard Genoud <richard.genoud@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: atmel: sam9x5_wm8731: fix oops when unload
+ module
+Date: Fri, 29 Nov 2013 15:59:02 +0100
+Message-ID: <5298ABB6.3030303@gmail.com>
+References: <1385439472-23352-1-git-send-email-voice.shen@atmel.com> <CACQ1gAh3W3vyTpFv8CkbO8hFJtU_SDjVuh2pRSFWCbUZPmidsw@mail.gmail.com> <52954739.1090501@atmel.com> <5295C4CB.2060003@gmail.com> <52969A50.3030601@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JAtnJwvplI04zgov"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1385733827-19831-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <52969A50.3030601@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+On 28/11/2013 02:20, Bo Shen wrote:
+> Hi Richard,
+> 
+> On 11/27/2013 06:09 PM, Richard Genoud wrote:
+> 
+> [Snip]
+> 
+>> dma dma0chan4: prep_dma_cyclic: TO DEVICE buf@0x27950000 - 8 (65536/8192)
+>> dma dma0chan4: scanned 1 descriptors on freelist
+>> dma dma0chan4: scanned 1 descriptors on freelist
+>> dma dma0chan4: scanned 1 descriptors on freelist
+>> dma dma0chan4: scanned 1 descriptors on freelist
+>> dma dma0chan4: scanned 1 descriptors on freelist
+>> dma dma0chan4: scanned 1 descriptors on freelist
+>> dma dma0chan4: scanned 1 descriptors on freelist
+>> dma dma0chan4: scanned 1 descriptors on freelist
+>> dma dma0chan4: tx_submit: started 2
+>> dma dma0chan4:   channel 4 : imr = 0xff00ff, chsr = 0xff0000
+>> dma dma0chan4:   channel: s0x27b3eb20 d0xf0010024
+>> ctrl0x91000590:0x20200010 cfg0x100022dd l0x27981d10
+>> dma dma0chan4:   channel 4 : imr = 0xff00ff, chsr = 0xff0010
+>> dma dma0chan4:   channel: s0x27950010 d0xf0010024
+>> ctrl0x11000008:0x20200010 cfg0x100022dd l0x27a58344
+>> dma dma0chan4: issue_pending
+>> [ blocks here forever (or at least a looooong time) ]
+> 
+> How can I reproduce this issue? Please help provide detail information
+> about your operation.
+> 
+> On my side, I just do:
+> --->8---
+> while true;
+> do
+>     insmod snd-soc-atmel-pcm-dma.ko && insmod snd-soc-atmel_ssc_dai.ko
+> && insmod snd-soc-wm8731.ko && insmod snd-soc-sam9x5-wm8731.ko;
+>     amixer cset numid=14,iface=MIXER,name='Output Mixer HiFi Playback
+> Switch' on;
+>     aplay sample.wav;
+>     rmmod snd-soc-sam9x5-wm8731.ko && rmmod snd-soc-wm8731.ko && rmmod
+> snd-soc-atmel_ssc_dai.ko && rmmod snd-soc-atmel-pcm-dma.ko;
+> done
+> ---8<---
+> 
+> It works well on my side on at91sam9g35ek board, based on v3.13-rc1
+Ok, it's working with your script.
 
---JAtnJwvplI04zgov
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I was doing:
+modprobe snd-soc-wm8731
+modprobe snd-soc-sam9x5-wm8731
+amixer cset numid=14,iface=MIXER,name='Output Mixer HiFi Playback Switch' on
+aplay sample.wav # works ok
+rmmod snd-soc-sam9x5-wm8731
+insmod /lib/modules/3.13.0-rc1/kernel/sound/soc/atmel/snd-soc-sam9x5-wm8731.ko
+amixer cset numid=14,iface=MIXER,name='Output Mixer HiFi Playback Switch' on
+aplay sample.wav # error
+aplay: pcm_write:1737: write error: Input/output error
 
-On Fri, Nov 29, 2013 at 04:03:42PM +0200, Peter Ujfalusi wrote:
+=> I wasn't unloading snd-soc-wm8731
 
-> Is this close enough of what you had in mind when asked me to look at this?
 
-Yes, this is exactly the sort of thing I was looking for - thanks!
+Thanks for your time !
 
-> twl4030 codec is going to be a bit more complicated AFAIK but it will come
-> eventually.
-
-Yup, they're both more complicated than most of these devices otherwise
-I'd have thrown some changes out myself - all the fiddling around inside
-the cache data makes them more difficult to work with.
-
---JAtnJwvplI04zgov
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSmKmDAAoJELSic+t+oim9AvkP/R1oa4xSjeTzguylhziNPmi6
-PwJj+cxioIB7BkOkuSliLKBeoLqy3OraJsT3p673LJGfuCwJlDYNYhX7HHoWJ57Y
-ct+Qcw6SMGIpAhDOdT8AggSTW36FBg2LJ+Jej4KIdT+FWnBAG+6mmcVoX8mQEo3S
-xztLmZSy7qO8t3wE9uMLnIr70rbgsxdsR5uBDsp5cUODdeoxaQZXTp00tVOpY3VZ
-nPn0t7OGVwzPIOm6SJUrktnST4yHQg/z4gHns6G+1t+4AfunjUj+O9VlGKIR84S1
-/8wi1AWfWGc8o74J9L5FI9Ki175gtMkNm7zwGH2hWkLNXG+Ry6WXkarNxLpi3TqT
-ZixPqIlXbaFZAFcP0mslBBm9UsVRDDSVeh8B9mViAel159ifNQ3Bn5LMUH3ZVMZQ
-oVE6+YIoANtuG2L+1665LXKX5dpQknEZfEhkwiCZ7LxFkmSZbMFozdFdUYUcUhHt
-8H/5Jioajv8NA28K4l3aNJP5EiCwqMFs4gWCpzRASiEvAx21d2wro7hx7QZU1nVc
-uP87usJsMo+q6YGb2EzdkBBmrORNzif7vIhpXioDGdgAprTpabYsYeir8z3oxtpx
-W2q4wGAlWL/yVXltrPaABzPjUxmWUNIbq9FBd8NIoL/FSBPoLlYsW3oVnRgziCO+
-yvrKpunUQayC0mWNHVb0
-=UAgv
------END PGP SIGNATURE-----
-
---JAtnJwvplI04zgov--
+Richard.
