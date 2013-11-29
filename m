@@ -1,103 +1,112 @@
-From: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH 18/31] ASoC: tegra: allocate AHUB FIFO during probe() not
- startup()
-Date: Fri, 29 Nov 2013 15:40:27 +0100
-Message-ID: <20131129144025.GA9712@ulmo.nvidia.com>
-References: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org>
- <1384548866-13141-19-git-send-email-swarren@wwwdotorg.org>
+From: "Oskar Schirmer" <oskar@scara.com>
+Subject: Re: [PATCHv2] ASoC: fsl: imx-ssi: omit ssi counter to
+	avoid harm in unbalanced situation
+Date: 29 Nov 2013 14:49:25 +0000
+Message-ID: <20131129144925.GA29715@curry>
+References: <1384533863-14288-1-git-send-email-oskar@scara.com>
+ <1384588345-22276-1-git-send-email-oskar@scara.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from skyrme.org (skyrme.org [193.175.80.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id 261ED261700
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 15:49:28 +0100 (CET)
+Received: from p5b3076ab.dip0.t-ipconnect.de ([91.48.118.171]
+ helo=curry.scara.com)
+ by skyrme.org with esmtpsa (TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32)
+ (Exim 4.63) (envelope-from <oskar@scara.com>) id 1VmPNo-0004dk-Im
+ for alsa-devel@alsa-project.org; Fri, 29 Nov 2013 14:49:28 +0000
 Content-Disposition: inline
-In-Reply-To: <1384548866-13141-19-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+In-Reply-To: <1384588345-22276-1-git-send-email-oskar@scara.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, 	Fabio Estevam <fabio.estevam@freescale.com>, 	Mark Brown <broonie@kernel.org>
+Cc: stable@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Someone around who would like to add his acked-by?
 
---/04w6evG8XlLl3ft
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+thanks,
+  Oskar
 
-On Fri, Nov 15, 2013 at 01:54:13PM -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->=20
-> Teh Tegra30 I2S driver currently allocates DMA FIFOs from the AHUB only
-
-s/Teh/The/
-
-> when an audio stream starts playback. This is theoretically nice for
-> resource sharing, but makes no practical difference for any configuration
-> the drivers currently support. However, this deferral prevents conversion
-> to the standard DMA DT bindings, since conversion requires knowledge of
-> the specific DMA channel to be allocated, which in turn depends on which
-> specific FIFO was allocated.
->=20
-> For this reason, move the FIFO allocate into probe() to allow later
-
-s/allocate/allocation/?
-
-[...]
-> +	i2s->playback_dma_data.addr_width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
-> +	i2s->playback_dma_data.maxburst =3D 4;
-> +	ret =3D tegra30_ahub_allocate_tx_fifo(&i2s->playback_fifo_cif,
-> +					    &i2s->playback_dma_data.addr,
-> +					    &i2s->playback_dma_data.slave_id);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Could not alloc TX FIFO: %d\n", ret);
-> +		goto err_suspend;
-> +	}
-> +	ret =3D tegra30_ahub_set_rx_cif_source(i2s->playback_i2s_cif,
-> +					     i2s->playback_fifo_cif);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Could not route TX FIFO: %d\n", ret);
-> +		goto err_free_tx_fifo;
-> +	}
-> +
-> +	i2s->capture_dma_data.addr_width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
-> +	i2s->capture_dma_data.maxburst =3D 4;
-> +	ret =3D tegra30_ahub_allocate_rx_fifo(&i2s->capture_fifo_cif,
-> +					    &i2s->capture_dma_data.addr,
-> +					    &i2s->capture_dma_data.slave_id);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Could not alloc RX FIFO: %d\n", ret);
-> +		goto err_unroute_tx_fifo;
-> +	}
-> +	ret =3D tegra30_ahub_set_rx_cif_source(i2s->capture_fifo_cif,
-> +					     i2s->capture_i2s_cif);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Could not route TX FIFO: %d\n", ret);
-> +		goto err_free_rx_fifo;
-> +	}
-> +
-
-It could be useful to have these in a separate function so as not to
-make the .probe() any larger. It's already pretty big as it is.
-
-Thierry
-
---/04w6evG8XlLl3ft
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSmKdZAAoJEN0jrNd/PrOhENUP/iGKSGTY1gGiV0/ljyTANg9m
-AaR12bP1FbvAfPu4xn6UYzeFRzVNqSivlJ6St/mE1z+Hmf6nGPNS1cysermVarci
-X3cMWB4S1KyMHu+G3Odf21Zi1aun5QofO6A0qlqUUNdHQaLmVXnfJ/DNVvNYd7QX
-rErDhiZGQA0IjKcTs6EJ+V311Dhfyu/vTvEiuGY3E0VVzQviEJ+qbSSL23HFrkCG
-qdAKomHWWog2+ujprb7Ds92WMcyyq37q0iMsR8PXxO9zf++VNOiAIXZtk15qKvDL
-WUoSMRZBwoB/vc1xz2jH4YrxHgCmsEKAutQg9nr7N4XkOhUdi5EG64GeaHRTlKv1
-H0n5rDb5N/XD/XJeV3IhRLHMOQPBiTJ9yZrbcGQRqkYVuoZs7Tt2K5hyBhQmI6ra
-AlWSNStTJRU77V21XjTKzfIIoNuPumMg879e+8VkhGOMTStzmDOSkviHhuVsHOFy
-icaqujxrtx1Lqagk6c3uMlz3xgvTsWBP8ZaJqy7lpeeqiKfhWFAb7H2dJtrQi7R4
-2XYQpIBbfCw6lZVCt2489q7MRPhMamjHktY33HvSu20IAItQXfYalyMPoArAGHyF
-ISg5qD7GxE3UeF052EWyYXEDrGonnFNCu7laBigksAwKoiNy+qINW7hoAyh9wDYo
-lkThyoHIgF+Hy+vu/7dU
-=1cks
------END PGP SIGNATURE-----
-
---/04w6evG8XlLl3ft--
+On Sat, Nov 16, 2013 at 07:52:25 +0000, Oskar Schirmer wrote:
+> Unbalanced calls to imx_ssi_trigger() may result in endless
+> SSI activity and thus provoke eternal sound. While on the first glance,
+> the switch statement looks pretty symmetric, the SUSPEND/RESUME
+> pair is not: the suspend case comes along snd_pcm_suspend_all(),
+> which for fsl/imx-pcm-fiq is called only at snd_soc_suspend(),
+> but the resume case originates straight from the SNDRV_PCM_IOCTL_RESUME.
+> This way userland may provoke an unbalanced resume, which might cause
+> the ssi->enabled counter to increase and never return to zero again,
+> so eventually SSI_SCR_SSIEN is never disabled.
+> 
+> As the information on whether to enable the SSI or not is contained
+> in the two bits for TE/RE, we save all the software mirroring of
+> hardware state here and simply use the hardware register itself
+> to keep the state of whether someone is currently playing or capturing.
+> 
+> This is essentially the same stuff as in sound/soc/fsl/imx-pcm-fiq.c
+> which I send a patch for three days ago. Astonishing enough this
+> highly fragile scheme is used twice in parallel to serve the very
+> same control function, synchronously: Once out of sync you are lost
+> until reboot.
+> 
+> Note, that these fixes wont prevent state machine distortion on alsa
+> level to cut sound or the like. It just makes sure we have a chance
+> to synchronise again later on.
+> 
+> Signed-off-by: Oskar Schirmer <oskar@scara.com>
+> ---
+> v2: drop all software flag handling in favour of hardware registers
+> 
+>  sound/soc/fsl/imx-ssi.c |    5 ++---
+>  sound/soc/fsl/imx-ssi.h |    1 -
+>  2 files changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
+> index f5f248c..2eb2691 100644
+> --- a/sound/soc/fsl/imx-ssi.c
+> +++ b/sound/soc/fsl/imx-ssi.c
+> @@ -304,8 +304,7 @@ static int imx_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+>  			scr |= SSI_SCR_RE;
+>  		sier |= sier_bits;
+>  
+> -		if (++ssi->enabled == 1)
+> -			scr |= SSI_SCR_SSIEN;
+> +		scr |= SSI_SCR_SSIEN;
+>  
+>  		break;
+>  
+> @@ -318,7 +317,7 @@ static int imx_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+>  			scr &= ~SSI_SCR_RE;
+>  		sier &= ~sier_bits;
+>  
+> -		if (--ssi->enabled == 0)
+> +		if (!(scr & (SSI_SCR_TE | SSI_SCR_RE)))
+>  			scr &= ~SSI_SCR_SSIEN;
+>  
+>  		break;
+> diff --git a/sound/soc/fsl/imx-ssi.h b/sound/soc/fsl/imx-ssi.h
+> index 560c40f..be65623 100644
+> --- a/sound/soc/fsl/imx-ssi.h
+> +++ b/sound/soc/fsl/imx-ssi.h
+> @@ -213,7 +213,6 @@ struct imx_ssi {
+>  
+>  	int fiq_init;
+>  	int dma_init;
+> -	int enabled;
+>  };
+>  
+>  #endif /* _IMX_SSI_H */
+> -- 
+> 1.7.9.5
+> 
+> 
