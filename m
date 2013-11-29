@@ -1,86 +1,63 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH 2/2] ALSA: hda - fixup ALC262 to remove depop
-	delay on Intel BayleyBay board
-Date: Fri, 29 Nov 2013 00:35:35 -0500
-Message-ID: <723de287700bfd07eeadb2c7e010747ef273f7af.1385703143.git.mengdong.lin@intel.com>
-References: <6b1ded4b9b806846c363a508ebbb9dc859ae1787.1385703143.git.mengdong.lin@intel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v5] ASoC: simple-card: add Device Tree support
+Date: Fri, 29 Nov 2013 12:33:42 +0000
+Message-ID: <20131129123342.GY27568@sirena.org.uk>
+References: <87eh97sqw7.wl%kuninori.morimoto.gx@renesas.com>
+ <87txharb3o.wl%kuninori.morimoto.gx@renesas.com>
+ <8738oiog00.wl%kuninori.morimoto.gx@renesas.com>
+ <20131003104248.GI27287@sirena.org.uk>
+ <87fvsh2966.wl%kuninori.morimoto.gx@renesas.com>
+ <20131024171758.GA2461@kartoffel>
+ <87iowm9jwv.wl%kuninori.morimoto.gx@renesas.com>
+ <20131115155028.GE24831@e106331-lin.cambridge.arm.com>
+ <87bo1i75xp.wl%kuninori.morimoto.gx@renesas.com>
+ <8761rc57wd.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 334B0265577
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 13:32:08 +0100 (CET)
-In-Reply-To: <6b1ded4b9b806846c363a508ebbb9dc859ae1787.1385703143.git.mengdong.lin@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SBKwXYz1xY/kcGv0"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <8761rc57wd.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Pawel Moll <Pawel.Moll-5wv7dgnIgG8@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
 
-This patch defines a fixup 'alc_fixup_no_depop_delay', which sets alc_spec flag
-'no_depop_delay' to indicate skipping delay in Realtek codec suspend/resume.
+--SBKwXYz1xY/kcGv0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-And Intel Baytrail BayleyBay board applies this fixup to reduce driver
-suspend/resume time.
+On Thu, Nov 28, 2013 at 05:11:34PM -0800, Kuninori Morimoto wrote:
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+> I would like to know current status of this patch
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 503cf78..46822e0 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -369,6 +369,15 @@ static void alc_fixup_sku_ignore(struct hda_codec *codec,
- 	}
- }
- 
-+static void alc_fixup_no_depop_delay(struct hda_codec *codec,
-+				    const struct hda_fixup *fix, int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+
-+	if (action == HDA_FIXUP_ACT_PROBE)
-+		spec->no_depop_delay = 1;
-+}
-+
- static int alc_auto_parse_customize_define(struct hda_codec *codec)
- {
- 	unsigned int ass, tmp, i;
-@@ -2298,6 +2307,7 @@ enum {
- 	ALC262_FIXUP_BENQ,
- 	ALC262_FIXUP_BENQ_T31,
- 	ALC262_FIXUP_INV_DMIC,
-+	ALC262_FIXUP_INTEL_BAYLEYBAY,
- };
- 
- static const struct hda_fixup alc262_fixups[] = {
-@@ -2362,6 +2372,10 @@ static const struct hda_fixup alc262_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_inv_dmic_0x12,
- 	},
-+	[ALC262_FIXUP_INTEL_BAYLEYBAY] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_no_depop_delay,
-+	},
- };
- 
- static const struct snd_pci_quirk alc262_fixup_tbl[] = {
-@@ -2373,6 +2387,7 @@ static const struct snd_pci_quirk alc262_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x384e, "Lenovo 3000", ALC262_FIXUP_LENOVO_3000),
- 	SND_PCI_QUIRK(0x17ff, 0x0560, "Benq ED8", ALC262_FIXUP_BENQ),
- 	SND_PCI_QUIRK(0x17ff, 0x058d, "Benq T31-16", ALC262_FIXUP_BENQ_T31),
-+	SND_PCI_QUIRK(0x8086, 0x7270, "BayleyBay", ALC262_FIXUP_INTEL_BAYLEYBAY),
- 	{}
- };
- 
--- 
-1.8.1.2
+Still hoping for DT review :/
+
+--SBKwXYz1xY/kcGv0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSmImjAAoJELSic+t+oim9KFkP/REq248w4BbIngZ9qw2M7zGZ
+QkELUiHEe4C/+ZYxAYqYD6Psv98GIDgQqXjDoT7OZBEHdcpqs4s0dusF2fjfRP+8
+acv5XssA6fbX/Xo11LMZC0OiYR9rxMgqPoIQXhIQO9h4AKcDottFRYs0I06lIB/c
+ubWBiy7z2c8QImJmb9r7KRkCGb2wmxZclkjNYndzE2UIqpQtirpwsO54QG4365B1
+JjMfVbT2eVjTg/WhJ4dwJqHKCCCqnBaGUY84OKwyIA+c7tkfT83VFoNpI+TW/eDS
+HUHbPGv5Rzp9xR/I+MnWokMc9ONh/QGrEDELQzkF+EsyPQP86FARLBiRzw3ZqVmC
+xhYvaoC/qDhot88f+d3wajeuN2tD29WzTR9whlqYfYvx7dIIsgSJrI9TS0GX3zGr
+/NGfT/JNTPx70u9RZwq87KijLu4fXx+3lULcSniTeOUJz7xVPk2jNUqLWzEri3su
+kPTmT9/e7Q2b8DERQCxVr99tT8UThk5yyROfx0P6wQDXiNs7xXKvIO1yfFrMmfT+
+omCBHoaqhq2ilhDYaMzwSl5AaizjMjCmu/KuOOIJRehr+S/qSfXpHSlJ2L9f0gub
+QaUglKC9X9YUR5t1Q2ApCcXftu2XY77i+nGq0qj2xuzpFxjoXKfVNvKP6H06qiXc
+Rki+gLAVK6/tWORKeQFB
+=QNr0
+-----END PGP SIGNATURE-----
+
+--SBKwXYz1xY/kcGv0--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
