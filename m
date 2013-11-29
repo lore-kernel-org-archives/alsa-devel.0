@@ -1,7 +1,7 @@
-From: Mark Brown <broonie@kernel.org>
+From: Vinod Koul <vinod.koul@intel.com>
 Subject: Re: [RFC] ALSA: add new alsa control byte extended
-Date: Fri, 29 Nov 2013 14:17:55 +0000
-Message-ID: <20131129141755.GA27568@sirena.org.uk>
+Date: Fri, 29 Nov 2013 18:58:25 +0530
+Message-ID: <20131129132825.GI8834@intel.com>
 References: <1385699397-18662-1-git-send-email-vinod.koul@intel.com>
  <s5hbo13fy6c.wl%tiwai@suse.de> <20131129074459.GE8834@intel.com>
  <s5hzjoneft5.wl%tiwai@suse.de> <52986123.5040004@perex.cz>
@@ -10,11 +10,13 @@ References: <1385699397-18662-1-git-send-email-vinod.koul@intel.com>
  <20131129102937.GG8834@intel.com>
  <20131129131153.GF10013@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3609011243014258205=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BD85261721
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 15:18:02 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00CEA261700
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 15:25:49 +0100 (CET)
+Content-Disposition: inline
 In-Reply-To: <20131129131153.GF10013@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,61 +28,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-
---===============3609011243014258205==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VSfbCJd5UFatzzNC"
-Content-Disposition: inline
-
-
---VSfbCJd5UFatzzNC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
 On Fri, Nov 29, 2013 at 01:11:53PM +0000, Charles Keepax wrote:
+> > I am leading more towards adding new ioctl for this along with new ones for
+> > enumerating controls. Then additional support for alsa-lib and tinyalsa.
+> > That way existing tinymix, amxier can see these as controls while not disturbing
+> > existing apps. I dont think we need save and restor, then alsactl need not be
+> > modified.
+> 
+> It does feel a little odd to have this data set through a
+> different interface to other existing control data, but I guess
+> anything we do does have to be very careful around upsetting
+> existing user-space code.
+Am thinking users and driver shouldn't feel that it is different. The approach i
+am leaning now is adding three ioctls, for enumerating, reading and then
+writing. The tinyalsa and alsa-lib should also enumerate these new ones.  But we
+don't impact ABI so old users/apps won't change.  Similarly on kernel side we
+still treat these as kcontrols and drivers use existing infrastructure to manage
+these...
 
-> We haven't done a lot of investigation into the latency of this
-> at this time but it is certainly something that is coming up in
-> discussions and I would expect we will be starting to worry more
-> about it in the near future. I will endeavour to share what
-> results I can as we get into this more.
-
-Given that you're working with devices that aren't memory mapped I'd
-expect we'd have to be doing something appauling for it to register -
-the costs of doing I/O really ought to dwarf anything else for them.
-
---VSfbCJd5UFatzzNC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSmKIQAAoJELSic+t+oim9xIwP/2HcFwWxM/hqcMWulEHwWxDu
-BDDT9teNGYZG0U/JLkjBVSirrIoOxD75ftNIPouJ6SlOipsL/AlzwuG5F5ePYT6X
-d2BNCc6NF74F2AJcSLAcX6ER1YJYtxAsbDeTcEJG3ViKx1up2mflQCG8dUk9vdg1
-ez1gOWNvwuFr4fwmvkdAkDEQhkhFgxkzzNkAGwnmBA3y7N7gGvcVCgDkJZF/aYLT
-CETCSzZuSsX19kmqNzNxK/mmkiPu/TNuof+W+XNW8LPZHMli73K2FgjCHSEC8Azr
-9BJnJJuhBXVKDSMBG0R/oAGiMbtXKt9EiLOoah/fu8yxhZDejD4Ayt/AbtYAE7Fm
-xJSTnv43FOrAGWxwEjZDct8GTLFBjWfXX4hYTYeJQIjqG7sMPQfKOVYsV3ywE7KQ
-+bZIqMh6CbE6PjLNfbmuy8680RkhTM0RG27mfK1T1zSGchcJbFOaUxsQ8c4kES2x
-Osu3f7kGObIl8IIfOErNldaZlZ7w7fsbwVhkdgeoVeewxz7f4xLasvz6Ovf30XJy
-eZdx+DAUxmO0UrzXIujRVktRtlb0ScRjoEgn5wKkMRx3+W4gETJqQRTTP06BokA8
-lsjln2Wo2JGqrZK9NGv2X1wFy/zCaSCBD43e+HRwT/VBs6JdjQkoYmVc1E187oHc
-Y3ul2LcaYGjmK3PUJ2nL
-=DREv
------END PGP SIGNATURE-----
-
---VSfbCJd5UFatzzNC--
-
---===============3609011243014258205==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3609011243014258205==--
+-- 
+~Vinod
