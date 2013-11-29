@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] ASoC: Add support for the Analog
- Devices AXI-SPDIF driver
-Date: Fri, 29 Nov 2013 12:06:29 +0000
-Message-ID: <20131129120629.GU27568@sirena.org.uk>
-References: <1385665372-29477-1-git-send-email-lars@metafoo.de>
- <1385665372-29477-4-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 0/6] ASoC: rcar: add Gen2 support
+Date: Fri, 29 Nov 2013 12:10:08 +0000
+Message-ID: <20131129121008.GV27568@sirena.org.uk>
+References: <87zjoo3p4r.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2472299853773091013=="
+Content-Type: multipart/mixed; boundary="===============3194123205616079561=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B01C26556D
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 13:06:32 +0100 (CET)
-In-Reply-To: <1385665372-29477-4-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 89BFC26556D
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2013 13:10:12 +0100 (CET)
+In-Reply-To: <87zjoo3p4r.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2472299853773091013==
+--===============3194123205616079561==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Pq8tEKHpn00JYbZk"
+	protocol="application/pgp-signature"; boundary="7OjtA+nCOeniMjk8"
 Content-Disposition: inline
 
 
---Pq8tEKHpn00JYbZk
+--7OjtA+nCOeniMjk8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 28, 2013 at 08:02:52PM +0100, Lars-Peter Clausen wrote:
-> This patch adds a ASoC driver for the AXI-SPDIF core. The core implements a
-> simple SPDIF transmitter and is used on some Analog Devices' reference designs
-> for various FPGA platforms. For now the driver only support the PL330 as the the
-> DMA controller.
+On Thu, Nov 28, 2013 at 06:42:16PM -0800, Kuninori Morimoto wrote:
+>=20
+> Hi Mark
+>=20
+> These patches add Gen2 PIO transfer support for Renesas sound driver.
+> DMA transfer will be supported.
 
-Similar comments to the I2S driver here.  I'd probably apply them but
-I'm holding off in case there is review of the DT bindings.
+Applied all, htanks.
 
---Pq8tEKHpn00JYbZk
+--7OjtA+nCOeniMjk8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSmINCAAoJELSic+t+oim9KqcQAJYXP7JElDOEu5Tzpl7pFQFi
-FxYyN2/r0DhIb21t1O6MJe6HCGxZ6DPSxDOJSzUWvyp3TSd86pQljzVzj8Ofa/Z2
-K2vvNpTHQp3i4NVRtd/UcdRC5bYlp9PreoY6IXDWvNlcSUC8WHwK1bY4UKrNeXKn
-6QHt4+SQKCF252QIkn6ARTohg9i3CdsvQkp+z18HvXtQ1z+4C6gPhoHRzPdsNZBE
-O0eh/6jss/cOYDQgQcOQJSBY+nlqsS3sn9ZYmvS8yGvrA4aThHakqrodFUBtnMu5
-hEpy6kUmQU3bj2BE7CTUi0e40yUjxk6RPjQ1F6W6o8oJk7a1f5tAHA3gYRLXvsN5
-Gbup26tMqpTN8V2simAGNmcgGgpplxjYHdAjsENeVenHmo94xluKbqRPS0YSDqd1
-duwDnQ+g/CbaGmnPkqv4J2Z4xles9eeCRbUo+ezIezJXQk9AZCplbViHPhWzaZIV
-lgFQmXVJlLAe8Q7RJ89ll/YxO7//2daiZiqXeoVE5Bnu44MRZ7Yyb7oE+zMtFxV7
-vNY0BJeaT7+oNi5yRYcnnou+Ah4UfIEw40+Ij8Dd2Nx9V3MwFJYTsVWb0k59ySFW
-rRx3Lmlq0Ca04LSCgrAeuBYZLtwuqyQBnMGVNpHrFg4aAIbvXW9EagfGKky1WZ1o
-xwdprQu4Ai/ElywRKOxs
-=izkP
+iQIcBAEBAgAGBQJSmIQdAAoJELSic+t+oim9XWwP/jm04gq4SRl5jkEAcdnlIFz8
+5a3kDby/5JMVCaIDXk8xo8SUoGxBDIMnhg+CMXtZm43E2k9mPWFWe2rhYT+GZn58
+Qq1GOYkY3Ek85CRDlYktWYEVy8N0h7e/CEJikOeCa42Kevs+5xyLzNl6KCrEYuqI
+1FKEAfp5Ays6xX1IjI9usIG1/cEBv6Ex6NnTs9bvYTMt3zrgFXecJKB57RdoP9PF
+PpJ+pBNm2U9Qle+fPLk2zDn3ut2FPJ5nfPawVf2Hcv3UWsDtovnE5nZypQPxsRur
+Oq2zmJ0PE1UHmdHkB8x1dvXfe30YJHtGvpkDbNgwtZRHPGfZ5Y+XtsmuTrxBBKH3
+TbYo4g2lQKoJub+DD2eEB7titWT63BdXG3SVCM9SGekRMpI/9NnVoYUBbBOKkjEk
+CDqV/SPW/3nmcGkM2sdqed/GkFCi2Fs3X8O+SVxUhTQ9hzj2Pc1q2AItphYUociV
+uxje/oSeAoplLPT4d2PjJVOWIwen3ZDxYzRuJ90eQ2eCdnFPZvCjYXZKGqMEuZM5
+uBWjIIBzdK4n93GCWXcnsnIEqHIspMXs3/D+KMvne1InWvJNe39ZZfugPq8ZVoUF
+McGyByOCra3NrTIQl30qICeKsL706Ks4FvNdGGmGJCr93gfQZ3TcIwv4mWKCdn+R
+y78CwcNJzehH7aSMtBaZ
+=uA6/
 -----END PGP SIGNATURE-----
 
---Pq8tEKHpn00JYbZk--
+--7OjtA+nCOeniMjk8--
 
---===============2472299853773091013==
+--===============3194123205616079561==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2472299853773091013==--
+--===============3194123205616079561==--
