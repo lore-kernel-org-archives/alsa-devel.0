@@ -1,16 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: generic-dmaengine-pcm: Set BATCH flag
-	when residue reporting is not supported
-Date: Sat, 30 Nov 2013 18:00:45 +0100
-Message-ID: <1385830845-30517-1-git-send-email-lars@metafoo.de>
+From: Daniel Wagner <wagi@monom.org>
+Subject: Re: [FFADO-devel] [RFC][PATCH 00/13] bebob: a new
+ driver for BridgeCo BeBoB based device
+Date: Sat, 30 Nov 2013 18:55:29 +0100
+Message-ID: <529A2691.4000401@monom.org>
+References: <1385186965-8303-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-136.synserver.de (smtp-out-237.synserver.de
- [212.40.185.237])
- by alsa0.perex.cz (Postfix) with ESMTP id 97C362616E1
- for <alsa-devel@alsa-project.org>; Sat, 30 Nov 2013 18:00:09 +0100 (CET)
+Received: from hotel311.server4you.de (hotel311.server4you.de [85.25.146.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED55A261A4D
+ for <alsa-devel@alsa-project.org>; Sat, 30 Nov 2013 18:55:30 +0100 (CET)
+In-Reply-To: <1385186965-8303-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,32 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-For dmaengine drivers which do not support transfer residue reporting we update
-the PCM pointer with period granularity. Set the SNDRV_PCM_INFO_BATCH flag in
-this case to let userspace know about this.
+Hi Takashi,
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-generic-dmaengine-pcm.c | 3 +++
- 1 file changed, 3 insertions(+)
+On 11/23/2013 07:09 AM, Takashi Sakamoto wrote:
+> In previous series of patch, I showed enhancement of current firewire-lib. So
+> I should show the way to use new functions in each driver side. This driver is
+> under development but functionalities for streaming seems to be fixed.  I'm
+> happy to receive your comments.
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index cbc9c96..87e8635 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -137,6 +137,9 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
- 	hw.buffer_bytes_max = SIZE_MAX;
- 	hw.fifo_size = dma_data->fifo_size;
- 
-+	if (pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_RESIDUE)
-+		hw.info |= SNDRV_PCM_INFO_BATCH;
-+
- 	ret = dma_get_slave_caps(chan, &dma_caps);
- 	if (ret == 0) {
- 		if (dma_caps.cmd_pause)
--- 
-1.8.0
+I have tried this series (incl. the bug fix you recommend) on a FA-66. 
+While I see some output in alsa-info, pulseaudio didn't pick it up. I
+also noted that some logs in the dmesg. I am not sure what is supposed
+to work already or not.
+
+Here are my logs
+
+http://www.monom.org/misc/alsa-firewire/2013-11-30
+
+cheers,
+daniel
