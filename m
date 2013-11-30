@@ -1,80 +1,40 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: SGTL5000: Fix kernel failed while trying to get
- optional VDDD supply.
-Date: Fri, 29 Nov 2013 18:38:55 +0000
-Message-ID: <20131129183855.GI27568@sirena.org.uk>
-References: <1385621219-20652-1-git-send-email-Li.Xiubo@freescale.com>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [RFC 4/4] ASoC: RX-51: Add DT support to sound driver
+Date: Sat, 30 Nov 2013 15:28:02 +0200
+Message-ID: <5299E7E2.8040206@bitmer.com>
+References: <1382909086-10493-1-git-send-email-sre@debian.org> <1382909086-10493-5-git-send-email-sre@debian.org> <20131106143248.GD15551@amd.pavel.ucw.cz>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Vo48LVc30GAQuLuW"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1385621219-20652-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20131106143248.GD15551@amd.pavel.ucw.cz>
+Sender: linux-omap-owner@vger.kernel.org
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Sebastian Reichel <sre@debian.org>, Sebastian Reichel <sre@ring0.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Landley <rob@landley.net>, Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Grant Likely <grant.likely@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
---Vo48LVc30GAQuLuW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 11/06/2013 04:32 PM, Pavel Machek wrote:
+> Hi!
+> 
+>> This patch adds device tree support to the Nokia N900 audio driver.
+> 
+> Note, N900 audio driver.
+> 
+>> +- compatible: "nokia,rx51-audio"
+> 
+> Still, it is rx51-audio. If it is feasible, could we move away from
+> rx51 naming and into n900 naming that is familiar to mere humans?
+> 
+> We can rename the sources later, but I guess we should get dts binding
+> right first time...
 
-On Thu, Nov 28, 2013 at 02:46:59PM +0800, Xiubo Li wrote:
+Sorry the long response. I definitely would like n900 naming more in dts.
 
-> +static int sgtl5000_external_vddd_used(struct snd_soc_codec *codec)
-> +{
-> +	struct regulator *consumer;
-> +	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
-> +
-> +	consumer = regulator_get_optional(codec->dev,
-> +			sgtl5000->supplies[VDDD].supply);
-> +	if (IS_ERR(consumer))
-> +		return 0;
-> +
-> +	regulator_put(consumer);
-> +
-> +	return 1;
-> +}
+History is that the basic board file for N900 went to mainline before
+sales started and used the hw name in sources and Kconfig. Audio machine
+driver then followed the same rx51 hw naming scheme with rest of sources.
 
-This is broken with respect to deferred probe, deferred probe returns
-an error when an external regulator is in use but not yet registered.
-The driver needs to at least handle -EPROBE_DEFER specially here.
-
-It's also not nice to get the regulator, release it and get it again
-which you end up needing to do because...
-
-> -	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(sgtl5000->supplies),
-> +	if (sgtl5000_external_vddd_used(codec)) {
-> +		ret = regulator_bulk_get(codec->dev,
-> +				ARRAY_SIZE(sgtl5000->supplies),
->  				sgtl5000->supplies);
-
-...I think my previous comments about this code being poorly structured
-in the existing driver stand.  The bulk get should be used for the
-supplies that are always needed and a separate optional get should be
-used for this one.
-
---Vo48LVc30GAQuLuW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSmN87AAoJELSic+t+oim9A4wP/iMAtV26UeHAzFwiBIrDyv3F
-rjnMxzqBbGUlwtsAzj+W6Lq9QNYw9PYbjQpK1jUaV3yi+X48deGxMtsitD3o+INA
-aebVjrCvoyxRS6WZmeQLGHQxLOgqL4/mBQRHoywKkLvC1EamGWiscPK3pMpLl9ZH
-JEvaKBl/0cLuYdXHjmBJUuBVtVKrBFJ1Hp5rxU0m0kaq7cnj8zqxac3AW2QSdKXU
-joetOIFevBCYwEi88KRyM13ywAirqRhZJxZSywUibP9HaNtStmWCW8wgNXvRlfW6
-Nfa/JzNH5jkJaekLMoFZeJpM25FNQvcvpWsjCj8wlY96W5LNvncaMKpD4ZpL/Ujx
-bxpXKFoQrdtVwKEibkyRY6uGI9YH87coGFD6MbSd3vZdkFobqyIVHNsw1Pq40aYd
-sCCKh45oY4YXZ3MFBP4AG1gHYRBwlGuGgr3X5kDjQfQ2iOcWLDFAVRswtMHGtMy0
-aW/MmOAbIluRECA4JhcS3ajzop9AL2UAe6k5O7MKAWYjdPmTipDZnLKq9KHyQp1L
-QUrBs/PQKAzEwR1Eid5xyzFPhmYkb14S8nodoB2/nSqrHLH6GP+gN6up0ja7/uxp
-RphXSAGh/rGlYszajxi/nA+pmAcdeoOz/7wnLU7mlldhK8vZFI5pfHi+z+VYBZb4
-0bQ0w3bThK3qmUrbTjwA
-=K+bz
------END PGP SIGNATURE-----
-
---Vo48LVc30GAQuLuW--
+-- 
+Jarkko
