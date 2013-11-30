@@ -1,15 +1,16 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: [PATCH] ASoC: omap: n810: Convert to
-	clk_prepare_enable/clk_disable_unprepare
-Date: Sat, 30 Nov 2013 18:05:28 +0200
-Message-ID: <1385827528-32149-1-git-send-email-jarkko.nikula@bitmer.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: Set SNDRV_PCM_INFO_JOINT_DUPLEX for PCMs
+	with symmetry constraints
+Date: Sat, 30 Nov 2013 17:38:58 +0100
+Message-ID: <1385829538-26355-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (bitmer.com [213.157.87.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 39BCD2616E1
- for <alsa-devel@alsa-project.org>; Sat, 30 Nov 2013 17:05:45 +0100 (CET)
+Received: from smtp-out-136.synserver.de (smtp-out-237.synserver.de
+ [212.40.185.237])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F12F2616E1
+ for <alsa-devel@alsa-project.org>; Sat, 30 Nov 2013 17:53:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,47 +20,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Florian Meier <florian.meier@koalo.de>
 List-Id: alsa-devel@alsa-project.org
 
-N810 audio driver has stopped working at some point. Probably when
-OMAP2 was converted to common clock framework since now call to clk_enable
-dumps the stack trace in drivers/clk/clk.c: __clk_enable() due
-clk->prepare_count is zero.
+If there are symmetry constraints between the playback and the capture channel
+set the SNDRV_PCM_INFO_JOINT_DUPLEX flag to let userspace know about this.
 
-Fix this by converting clk_enable/_disable calls to those that take care
-of clock prepare/unprepare.
-
-I'm not queueing this to linux-stable since OMAP2 common clock framework
-conversion in commit ed1ebc4948fd ("ARM: OMAP2: clock: Convert to common clk")
-happened before N810 was really usable in mainline and user base for N810 is
-anyway small. Potential linux-stable candidates are only those after
-commit 3d3a6d18abc6 ("watchdog: introduce retu_wdt driver").
-
-Signed-off-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/omap/n810.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/soc-pcm.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
-index 6d216cb6c19b..3fde9e402710 100644
---- a/sound/soc/omap/n810.c
-+++ b/sound/soc/omap/n810.c
-@@ -100,12 +100,12 @@ static int n810_startup(struct snd_pcm_substream *substream)
- 				     SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
- 
- 	n810_ext_control(&codec->dapm);
--	return clk_enable(sys_clkout2);
-+	return clk_prepare_enable(sys_clkout2);
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 22af038..eb340a8 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -180,6 +180,21 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
+ 	return 0;
  }
  
- static void n810_shutdown(struct snd_pcm_substream *substream)
- {
--	clk_disable(sys_clkout2);
-+	clk_disable_unprepare(sys_clkout2);
- }
++static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai_driver *cpu_driver = rtd->cpu_dai->driver;
++	struct snd_soc_dai_driver *codec_driver = rtd->codec_dai->driver;
++	struct snd_soc_dai_link *link = rtd->dai_link;
++
++	return cpu_driver->symmetric_rates || codec_driver->symmetric_rates ||
++		link->symmetric_rates || cpu_driver->symmetric_channels ||
++		codec_driver->symmetric_channels || link->symmetric_channels ||
++		cpu_driver->symmetric_samplebits ||
++		codec_driver->symmetric_samplebits ||
++		link->symmetric_samplebits;
++}
++
+ /*
+  * List of sample sizes that might go over the bus for parameter
+  * application.  There ought to be a wildcard sample size for things
+@@ -316,6 +331,9 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 			&cpu_dai_drv->capture);
+ 	}
  
- static int n810_hw_params(struct snd_pcm_substream *substream,
++	if (soc_pcm_has_symmetry(substream))
++		runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
++
+ 	ret = -EINVAL;
+ 	if (!runtime->hw.rates) {
+ 		printk(KERN_ERR "ASoC: %s <-> %s No matching rates\n",
 -- 
-1.8.4.3
+1.8.0
