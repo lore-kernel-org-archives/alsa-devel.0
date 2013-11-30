@@ -1,40 +1,65 @@
 From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [RFC 4/4] ASoC: RX-51: Add DT support to sound driver
-Date: Sat, 30 Nov 2013 15:28:02 +0200
-Message-ID: <5299E7E2.8040206@bitmer.com>
-References: <1382909086-10493-1-git-send-email-sre@debian.org> <1382909086-10493-5-git-send-email-sre@debian.org> <20131106143248.GD15551@amd.pavel.ucw.cz>
+Subject: [PATCH] ASoC: omap: n810: Convert to
+	clk_prepare_enable/clk_disable_unprepare
+Date: Sat, 30 Nov 2013 18:05:28 +0200
+Message-ID: <1385827528-32149-1-git-send-email-jarkko.nikula@bitmer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20131106143248.GD15551@amd.pavel.ucw.cz>
-Sender: linux-omap-owner@vger.kernel.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: Sebastian Reichel <sre@debian.org>, Sebastian Reichel <sre@ring0.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Landley <rob@landley.net>, Tony Lindgren <tony@atomide.com>, Russell King <linux@arm.linux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Grant Likely <grant.likely@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39BCD2616E1
+ for <alsa-devel@alsa-project.org>; Sat, 30 Nov 2013 17:05:45 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+N810 audio driver has stopped working at some point. Probably when
+OMAP2 was converted to common clock framework since now call to clk_enable
+dumps the stack trace in drivers/clk/clk.c: __clk_enable() due
+clk->prepare_count is zero.
 
-On 11/06/2013 04:32 PM, Pavel Machek wrote:
-> Hi!
-> 
->> This patch adds device tree support to the Nokia N900 audio driver.
-> 
-> Note, N900 audio driver.
-> 
->> +- compatible: "nokia,rx51-audio"
-> 
-> Still, it is rx51-audio. If it is feasible, could we move away from
-> rx51 naming and into n900 naming that is familiar to mere humans?
-> 
-> We can rename the sources later, but I guess we should get dts binding
-> right first time...
+Fix this by converting clk_enable/_disable calls to those that take care
+of clock prepare/unprepare.
 
-Sorry the long response. I definitely would like n900 naming more in dts.
+I'm not queueing this to linux-stable since OMAP2 common clock framework
+conversion in commit ed1ebc4948fd ("ARM: OMAP2: clock: Convert to common clk")
+happened before N810 was really usable in mainline and user base for N810 is
+anyway small. Potential linux-stable candidates are only those after
+commit 3d3a6d18abc6 ("watchdog: introduce retu_wdt driver").
 
-History is that the basic board file for N900 went to mainline before
-sales started and used the hw name in sources and Kconfig. Audio machine
-driver then followed the same rx51 hw naming scheme with rest of sources.
+Signed-off-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+---
+ sound/soc/omap/n810.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index 6d216cb6c19b..3fde9e402710 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -100,12 +100,12 @@ static int n810_startup(struct snd_pcm_substream *substream)
+ 				     SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
+ 
+ 	n810_ext_control(&codec->dapm);
+-	return clk_enable(sys_clkout2);
++	return clk_prepare_enable(sys_clkout2);
+ }
+ 
+ static void n810_shutdown(struct snd_pcm_substream *substream)
+ {
+-	clk_disable(sys_clkout2);
++	clk_disable_unprepare(sys_clkout2);
+ }
+ 
+ static int n810_hw_params(struct snd_pcm_substream *substream,
 -- 
-Jarkko
+1.8.4.3
