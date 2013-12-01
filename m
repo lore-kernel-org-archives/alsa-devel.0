@@ -1,73 +1,100 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH 00/13] bebob: a new driver for
- BridgeCo BeBoB based device
-Date: Sun, 01 Dec 2013 13:42:55 +0900
-Message-ID: <529ABE4F.6070406@sakamocchi.jp>
-References: <1385186965-8303-1-git-send-email-o-takashi@sakamocchi.jp>
- <529A2691.4000401@monom.org>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: What-did-you-plugin-dialog
+Date: Sun, 1 Dec 2013 10:51:29 +0600
+Message-ID: <CAN_LGv0F6g6L41Se72zdaq4u0DAPJzRc4ZwCMqPPJ06TCFS=qA@mail.gmail.com>
+References: <52947A6E.6010302@canonical.com>
+	<1385470453.2226.26.camel@tkkaskin-mobl2.ger.corp.intel.com>
+	<52949CCA.2060601@canonical.com>
+	<1385473638.2226.48.camel@tkkaskin-mobl2.ger.corp.intel.com>
+	<52951347.9000200@canonical.com> <5295A121.2010202@gmail.com>
+	<5295A7C2.2090100@canonical.com>
+	<CAN_LGv1F4cTB2cK+rL30N3nbbwyxi23cLYHR6emMC5CbNLP4jQ@mail.gmail.com>
+	<CAN_LGv0y2WcYMn8M5rjT1d-2jahh_u-W2D_LnRkMsXXD=ENzdA@mail.gmail.com>
+	<CAN8cciZ-y397dLGV_xC3xibo3PY9aE-RYQEB4_dkwRtzN+JnqQ@mail.gmail.com>
+	<CAN_LGv02cPydDkvP-AZ+EzkF9TVvm1ij0-6vjzp0YWbieg7_fQ@mail.gmail.com>
+	<CAN8cciYnQZQzyRmz_=gLLF6w7p3CZbZPKwYZtJpTHEaN3UOt_Q@mail.gmail.com>
+Reply-To: General PulseAudio Discussion
+	<pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 755072608ED
- for <alsa-devel@alsa-project.org>; Sun,  1 Dec 2013 05:43:11 +0100 (CET)
-In-Reply-To: <529A2691.4000401@monom.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Wagner <wagi@monom.org>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <CAN8cciYnQZQzyRmz_=gLLF6w7p3CZbZPKwYZtJpTHEaN3UOt_Q@mail.gmail.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@lists.freedesktop.org
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
-
-Thanks for your testing.
-
-At first, I describe our system to test. I use Ubuntu 13.10. You use 
-Fedora 19.
-
-(Dec 01 2013 02:55), Daniel Wagner wrote:
-> I have tried this series (incl. the bug fix you recommend) on a FA-66.
-> While I see some output in alsa-info, pulseaudio didn't pick it up. I
-> also noted that some logs in the dmesg. I am not sure what is supposed
-> to work already or not.
+2013/12/1 Raymond Yau <superquad.vortex2@gmail.com>:
+> :
+>>
+>>
+>> > can post the output of alsa-info.sh after jack retasking ?
+>>
+>> Before retasking:
+>>
+>> http://www.alsa-project.org/db/?f=fd97b8194e205b4f91127bca74ad7c9b2cd93ab9
+>>
+>> After retasking blue line in, pin ID 0x1a as Line out (Side):
+>>
+>> http://www.alsa-project.org/db/?f=d56f9a6d0692c9a8d5c88f43100a6cb78407c163
+>>
+>> Note that retasking did not work: attempting to play a 8-channel wav
+>> file through hw:1,0 resulted in an "Invalid argument" error.
+>>
+>> FWIW, here is what hdajackretask printed to the console:
+>>
+>> 0x11 0x99430130
+>> 0x12 0x4037c540
+>> 0x14 0x01014010
+>> 0x15 0x01011012
+>> 0x16 0x01016011
+>> 0x17 0x411111f0
+>> 0x18 0x01a19050
+>> 0x19 0x02a19060
+>> 0x1a 0x01014413
+>> 0x1b 0x02214020
+>> 0x1c 0x411111f0
+>> 0x1d 0x4045e601
+>> 0x1e 0x01452140
+>> 0x1f 0x411111f0
+>> 1
+>>
 >
-> Here are my logs
+> you need root privilege for hdajackretask to write the firmware file to
+> /lib/firmware and modify /etc/modprobe.d/alsa-lbase.conf to use the firmware
+> file
 >
-> http://www.monom.org/misc/alsa-firewire/2013-11-30
+> can you try the patch which add "channel mode" control which allow you to
+> switch from 6ch to 8ch
 
-1.pulseaudio
-PulseAudio can automatically load 'module-alsa-card' with 
-'module-udev-detect' (utilizing sysfs/dbus). But for snd-bebob, this 
-mecanism doesn't work because PulseAudio cannot decide profiles for the 
-card even if success to detect.
+I have tested the patch. In 8ch mode, it works without any overrides
+in the sense that the side channels go to the blue jack if I choose
+8ch mode. In the 6ch mode, the line input also works (tested by using
+headphones as a very bad microphone-like source).
 
-For this problem, I have a need to commit some codes for PulseAudio but 
-this may be my future work.
+Here is alsa-info in the 6ch mode:
 
-Well, when I test with PulseAudio, I always directly load 
-'module-alsa-sink' or 'module-alsa-source' by these lines:
-$ pactl load-module module-alsa-sink device=hw:X,X
-$ pactl load-module module-alsa-source device=hw:X,X
+http://www.alsa-project.org/db/?f=d152698d4b2d9589d4c5f14e0c8e6d4978c8fbd0
 
-See in detail:
-http://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/Modules/#index4h3
+And in 8ch mode:
 
-2.dmesg
-Hm. I want to know which asynchronous transaction is failed.
-[  446.796563] snd-bebob fw1.0: transaction failed: no ack
-[  446.838567] snd-bebob fw1.0: transaction failed: no ack
+http://www.alsa-project.org/db/?f=4d5d14fbb559819fd82e7731e656be7efcfab439
 
-Would you investigate which transactions cannot get 'no ack'?
+Pulseaudio is not smart enough to decide by itself that it can toggle
+the control and add 7.1 profiles. If I toggle the control manually and
+restart pulseaudio, they appear.
 
+If the role of the "Line jack" control is still unclear, just say so
+and tell me what to do to figure it out.
 
-Thank you
-
-Takashi Sakamoto
+-- 
+Alexander E. Patrakov
