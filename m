@@ -1,21 +1,18 @@
-From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Subject: Re: caiaq driver: audio 4 dj and jackd
-Date: Wed, 04 Dec 2013 20:11:51 -0800
-Message-ID: <529FFD07.5040408@gmail.com>
-References: <529BF843.6000608@gmail.com>
- <20131202095948.GA2886@tamtam.fritz.box> <529CA3FC.1040301@gmail.com>
- <529CAE8D.6020003@zonque.org>
+From: Angus McInnes <angus@amcinnes.info>
+Subject: Bug: plugging in a new sound card causes mixer state
+ of other sound cards to be changed
+Date: Sun, 1 Dec 2013 12:27:25 +0200
+Message-ID: <CACdZ0c8-7eqhShFwQJfaMis-AtK5Sh-_nZuyhHY61wJ-CjzbNg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f177.google.com (mail-pd0-f177.google.com
- [209.85.192.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D3782654DE
- for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2013 05:11:55 +0100 (CET)
-Received: by mail-pd0-f177.google.com with SMTP id q10so23460279pdj.8
- for <alsa-devel@alsa-project.org>; Wed, 04 Dec 2013 20:11:54 -0800 (PST)
-In-Reply-To: <529CAE8D.6020003@zonque.org>
+Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
+ [209.85.192.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D7BB260844
+ for <alsa-devel@alsa-project.org>; Sun,  1 Dec 2013 11:27:27 +0100 (CET)
+Received: by mail-pd0-f169.google.com with SMTP id v10so16299550pde.0
+ for <alsa-devel@alsa-project.org>; Sun, 01 Dec 2013 02:27:26 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,35 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Antonio Ospite <ao2@amarulasolutions.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/02/2013 08:00 AM, Daniel Mack wrote:
->>> Technically yes, but changing that would mean breakage for all other
->>> users, and making it configurable would result in yet another moving
->>> part which makes things even more complex.
->>
->> How would this cause breakage?  Users that use 2 stereo substreams could
->> still work normally.
->
-> Yes, unless you opened the first subdevice with more than 2 channels.
-> Then an existing user for the second stream breaks. IOW: the possible
-> configuration and usage for subdevice 1 changes depending on that of
-> subdevice 0.
+Hi,
 
-Suppose a 2nd PCM device is added that would allow 1-4 channel 
-playback/capture (call it "Multichannel Audio" or something).  This pcm1 
-would be mutually exclusive with pcm0 (I.e. while one is open you can't 
-use the other).
+When I plug in my USB sound card, the mixer settings of the internal
+sound card are changed. I don't want this to happen.
 
-Existing applications using hw:n,0,0 and hw:n,0,1 see the exact same 
-interface/behavior.  The only failure mode is if the multichannel PCM is 
-in use.
+I believe the problem is with this commit:
 
-Applications using multichannel work-flows would use hw:n,1.
+http://git.alsa-project.org/?p=alsa-utils.git;a=blobdiff;f=alsactl/90-alsa-restore.rules.in;h=3ce9a6540d551cdfe1d10a43e7f767c27c551fe7;hp=fe0e1ed0ae248d810f433a2af5c72e86e17dfaf0;hb=8b34bf25c02693899b03768b0eef628eb1d7bb6e;hpb=611249ae26f435429dbe1894e210704a723ee277
 
-While it's not a "just works" solution -- directing users to hw:n,1 is a 
-whole lot better than teaching them how to set up a multi plugin.
+The card number $attr{number} comes from the card* device. Since
+KERNELS=="card*" was changed to KERNELS!="card*", alsactl restore is
+run with no card number attribute, so it restores the state of all
+cards.
 
--gabe
+If I change the != back to ==, alsactl restore is run with a card
+number and the problem seems to be resolved.
+
+(By the way, your bug tracker at
+https://bugtrack.alsa-project.org/alsa-bug seems to be down.)
+
+Regards,
+Angus McInnes
