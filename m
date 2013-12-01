@@ -1,7 +1,7 @@
 From: "Alexander E. Patrakov" <patrakov@gmail.com>
 Subject: Re: What-did-you-plugin-dialog
-Date: Sun, 1 Dec 2013 12:11:14 +0600
-Message-ID: <CAN_LGv2+vmTu_Fu6ONo8UwQFejC2K7ZFUKvODb34kronqAZf=A@mail.gmail.com>
+Date: Sun, 1 Dec 2013 16:11:26 +0600
+Message-ID: <CAN_LGv19AYX211k5kT+O3d_sW=zZcrPoXrcYGM1EAJ=S-EtULQ@mail.gmail.com>
 References: <52947A6E.6010302@canonical.com>
 	<1385470453.2226.26.camel@tkkaskin-mobl2.ger.corp.intel.com>
 	<52949CCA.2060601@canonical.com>
@@ -36,83 +36,16 @@ Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa
 List-Id: alsa-devel@alsa-project.org
 
 2013/12/1 Raymond Yau <superquad.vortex2@gmail.com>:
->>>
->>
->> >> Before retasking:
->> >>
->> >>
->> >> http://www.alsa-project.org/db/?f=fd97b8194e205b4f91127bca74ad7c9b2cd93ab9
->> >>
->> >> After retasking blue line in, pin ID 0x1a as Line out (Side):
->> >>
->> >>
->> >> http://www.alsa-project.org/db/?f=d56f9a6d0692c9a8d5c88f43100a6cb78407c163
->> >>
->> >> Note that retasking did not work: attempting to play a 8-channel wav
->> >> file through hw:1,0 resulted in an "Invalid argument" error.
->> >>
->> >> FWIW, here is what hdajackretask printed to the console:
->> >>
->> >> 0x11 0x99430130
->> >> 0x12 0x4037c540
->> >> 0x14 0x01014010
->> >> 0x15 0x01011012
->> >> 0x16 0x01016011
->> >> 0x17 0x411111f0
->> >> 0x18 0x01a19050
->> >> 0x19 0x02a19060
->> >> 0x1a 0x01014413
->> >> 0x1b 0x02214020
->> >> 0x1c 0x411111f0
->> >> 0x1d 0x4045e601
->> >> 0x1e 0x01452140
->> >> 0x1f 0x411111f0
->> >> 1
->> >>
->> >
->> > you need root privilege for hdajackretask to write the firmware file to
->> > /lib/firmware and modify /etc/modprobe.d/alsa-lbase.conf to use the
->> > firmware
->> > file
->> >
->> > can you try the patch which add "channel mode" control which allow you
->> > to
->> > switch from 6ch to 8ch
->>
->> I have tested the patch. In 8ch mode, it works without any overrides
->> in the sense that the side channels go to the blue jack if I choose
->> 8ch mode. In the 6ch mode, the line input also works (tested by using
->> headphones as a very bad microphone-like source).
->>
->> Here is alsa-info in the 6ch mode:
->>
->> http://www.alsa-project.org/db/?f=d152698d4b2d9589d4c5f14e0c8e6d4978c8fbd0
->>
->> And in 8ch mode:
->>
->> http://www.alsa-project.org/db/?f=4d5d14fbb559819fd82e7731e656be7efcfab439
->>
->> Pulseaudio is not smart enough to decide by itself that it can toggle
->> the control and add 7.1 profiles. If I toggle the control manually and
->> restart pulseaudio, they appear.
->>
->> If the role of the "Line jack" control is still unclear, just say so
->> and tell me what to do to figure it out.
->>
 
-I will test everything later today, when I return home. However, I
-have questions about the tests.
+> There is still bug in the patch
+>
+> should check (cfg->line_out + spec->multi_ios) >= 3 instead of
+> spec->multi_ios > 0 so that the channel mode is not added for notebook with
+> line out and mic jack
 
-> In 8ch mode, do the "Line jack" return true when you plugged "Side Speaker"
-> ?
-
-Do I understand correctly that I need to look at "amixer -c1 contents" output?
-
-> Should changes in "channel mode" , "Headphone Mic jack mode" or "Mic Jack
-> Mode" trigger an event so that pulseaudio server probe the sound card again
-> ?
-
-How can I verify this? Is it enough to look at pulseaudio -vvv output?
+I assume you are talking about the part that applies to
+create_multi_out_ctls(). In that case, NAK - the change leads to
+non-creation of the 6ch / 8ch "channel mode" control on my board.
 
 -- 
 Alexander E. Patrakov
