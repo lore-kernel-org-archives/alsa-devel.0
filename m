@@ -1,67 +1,41 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: What-did-you-plugin-dialog
-Date: Sun, 1 Dec 2013 16:36:59 +0600
-Message-ID: <CAN_LGv3MwSUGHvE5=6U=huAdkzD=mGP89ta7d_ofJ54Y56mRAg@mail.gmail.com>
-References: <52947A6E.6010302@canonical.com>
-	<1385470453.2226.26.camel@tkkaskin-mobl2.ger.corp.intel.com>
-	<52949CCA.2060601@canonical.com>
-	<1385473638.2226.48.camel@tkkaskin-mobl2.ger.corp.intel.com>
-	<52951347.9000200@canonical.com> <5295A121.2010202@gmail.com>
-	<5295A7C2.2090100@canonical.com>
-	<CAN_LGv1F4cTB2cK+rL30N3nbbwyxi23cLYHR6emMC5CbNLP4jQ@mail.gmail.com>
-	<CAN_LGv0y2WcYMn8M5rjT1d-2jahh_u-W2D_LnRkMsXXD=ENzdA@mail.gmail.com>
-	<CAN8cciZ-y397dLGV_xC3xibo3PY9aE-RYQEB4_dkwRtzN+JnqQ@mail.gmail.com>
-	<CAN_LGv02cPydDkvP-AZ+EzkF9TVvm1ij0-6vjzp0YWbieg7_fQ@mail.gmail.com>
-	<CAN8cciYnQZQzyRmz_=gLLF6w7p3CZbZPKwYZtJpTHEaN3UOt_Q@mail.gmail.com>
-	<CAN_LGv0F6g6L41Se72zdaq4u0DAPJzRc4ZwCMqPPJ06TCFS=qA@mail.gmail.com>
-	<CAN8ccibLpVXqcHHdJwfv=_FF8z2hE6frsY8Gg6NRNQibsu2Okw@mail.gmail.com>
-Reply-To: General PulseAudio Discussion
-	<pulseaudio-discuss@lists.freedesktop.org>
+From: maruthi srinivas <maruthi.srinivas.b@gmail.com>
+Subject: compressed audio support
+Date: Sun, 1 Dec 2013 23:23:06 +0530
+Message-ID: <CANv6ZMbWdO9F0DPeTwWHwo9mn5Xp1zuewS7U6tK9JCsMhVX9rw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <CAN8ccibLpVXqcHHdJwfv=_FF8z2hE6frsY8Gg6NRNQibsu2Okw@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Sender: pulseaudio-discuss-bounces@lists.freedesktop.org
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pb0-f53.google.com (mail-pb0-f53.google.com
+ [209.85.160.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBDE02608E8
+ for <alsa-devel@alsa-project.org>; Sun,  1 Dec 2013 18:53:07 +0100 (CET)
+Received: by mail-pb0-f53.google.com with SMTP id ma3so17403150pbc.12
+ for <alsa-devel@alsa-project.org>; Sun, 01 Dec 2013 09:53:06 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2013/12/1 Raymond Yau <superquad.vortex2@gmail.com>:
+Hi,
 
-All tests below were done with the original patch, as the suggested
-modification breaks 8ch mode here.
+I saw that compressed audio framework being used with Asoc (alsa soc).
+Can the framework be used with other than Asoc ? I mean with ALSA pci based
+cards.
 
-> In 8ch mode, do the "Line jack" return true when you plugged "Side Speaker"
-> ?
+I see the implementation in the following files. which one is to be used ?
+Does tinycompress in userspace can be used with either approaches ?
 
-Yes, the state reflects whether something is plugged into the blue jack.
+http://lxr.free-electrons.com/source/sound/core/compress_offload.c
+http://lxr.free-electrons.com/source/sound/soc/soc-compress.c
 
-> pactl list
->
-> should "line in" list as not available when channel mode changed to "8 ch" ?
 
-Unfortunately, it is "available" if there is something plugged in and
-"mot available" if there is nothing plugged in.
-
-> Should changes in "channel mode" , "Headphone Mic jack mode" or "Mic Jack
-> Mode" trigger an event so that pulseaudio server probe the sound card again
-> ?
-
-Changes in "channel mode" do not trigger anything that pulseaudio -vvv
-considers loggable. Changes from 8ch to 6ch do not cause the 7.1
-profiles to disappear.
-
-The device has no controls that contain "mic jack mode" as a substring
-and are controllable via alsamixer.
-
--- 
-Alexander E. Patrakov
+Regards,
+Maruthi
