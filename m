@@ -1,17 +1,24 @@
-From: maruthi srinivas <maruthi.srinivas.b@gmail.com>
-Subject: compressed audio support
-Date: Sun, 1 Dec 2013 23:23:06 +0530
-Message-ID: <CANv6ZMbWdO9F0DPeTwWHwo9mn5Xp1zuewS7U6tK9JCsMhVX9rw@mail.gmail.com>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: Why does `aplay -L' not show PCM's defined in
+	~/.asoundrc ?
+Date: Sun, 01 Dec 2013 11:45:10 -0800
+Message-ID: <529B91C6.8070302@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f53.google.com (mail-pb0-f53.google.com
- [209.85.160.53])
- by alsa0.perex.cz (Postfix) with ESMTP id EBDE02608E8
- for <alsa-devel@alsa-project.org>; Sun,  1 Dec 2013 18:53:07 +0100 (CET)
-Received: by mail-pb0-f53.google.com with SMTP id ma3so17403150pbc.12
- for <alsa-devel@alsa-project.org>; Sun, 01 Dec 2013 09:53:06 -0800 (PST)
+Received: from mail-pb0-f47.google.com (mail-pb0-f47.google.com
+ [209.85.160.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB3BF2608EA
+ for <alsa-devel@alsa-project.org>; Sun,  1 Dec 2013 20:45:19 +0100 (CET)
+Received: by mail-pb0-f47.google.com with SMTP id um1so17355570pbc.20
+ for <alsa-devel@alsa-project.org>; Sun, 01 Dec 2013 11:45:18 -0800 (PST)
+Received: from localhost.localdomain (c-24-6-80-191.hsd1.ca.comcast.net.
+ [24.6.80.191])
+ by mx.google.com with ESMTPSA id og5sm75537257pbb.10.2013.12.01.11.45.17
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Sun, 01 Dec 2013 11:45:17 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,21 +28,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I saw that compressed audio framework being used with Asoc (alsa soc).
-Can the framework be used with other than Asoc ? I mean with ALSA pci based
-cards.
+Hi guys,
 
-I see the implementation in the following files. which one is to be used ?
-Does tinycompress in userspace can be used with either approaches ?
+Why does `aplay -L' not list PCM's that are defined in ~/.asoundrc (i.e. 
+PCM's implemented by plugins)?
 
-http://lxr.free-electrons.com/source/sound/core/compress_offload.c
-http://lxr.free-electrons.com/source/sound/soc/soc-compress.c
+How do you get a listing that includes these?
 
+I was helping a user today who needed to set up a device using the 
+`multi' plugin -- and the fact that the new virtual pcm device didn't 
+show up in any standard listing made things very confusing.
 
-Regards,
-Maruthi
+-gabriel
