@@ -1,7 +1,7 @@
 From: "Alexander E. Patrakov" <patrakov@gmail.com>
 Subject: Re: What-did-you-plugin-dialog
-Date: Sun, 1 Dec 2013 16:11:26 +0600
-Message-ID: <CAN_LGv19AYX211k5kT+O3d_sW=zZcrPoXrcYGM1EAJ=S-EtULQ@mail.gmail.com>
+Date: Sun, 1 Dec 2013 16:36:59 +0600
+Message-ID: <CAN_LGv3MwSUGHvE5=6U=huAdkzD=mGP89ta7d_ofJ54Y56mRAg@mail.gmail.com>
 References: <52947A6E.6010302@canonical.com>
 	<1385470453.2226.26.camel@tkkaskin-mobl2.ger.corp.intel.com>
 	<52949CCA.2060601@canonical.com>
@@ -37,15 +37,31 @@ List-Id: alsa-devel@alsa-project.org
 
 2013/12/1 Raymond Yau <superquad.vortex2@gmail.com>:
 
-> There is still bug in the patch
->
-> should check (cfg->line_out + spec->multi_ios) >= 3 instead of
-> spec->multi_ios > 0 so that the channel mode is not added for notebook with
-> line out and mic jack
+All tests below were done with the original patch, as the suggested
+modification breaks 8ch mode here.
 
-I assume you are talking about the part that applies to
-create_multi_out_ctls(). In that case, NAK - the change leads to
-non-creation of the 6ch / 8ch "channel mode" control on my board.
+> In 8ch mode, do the "Line jack" return true when you plugged "Side Speaker"
+> ?
+
+Yes, the state reflects whether something is plugged into the blue jack.
+
+> pactl list
+>
+> should "line in" list as not available when channel mode changed to "8 ch" ?
+
+Unfortunately, it is "available" if there is something plugged in and
+"mot available" if there is nothing plugged in.
+
+> Should changes in "channel mode" , "Headphone Mic jack mode" or "Mic Jack
+> Mode" trigger an event so that pulseaudio server probe the sound card again
+> ?
+
+Changes in "channel mode" do not trigger anything that pulseaudio -vvv
+considers loggable. Changes from 8ch to 6ch do not cause the 7.1
+profiles to disappear.
+
+The device has no controls that contain "mic jack mode" as a substring
+and are controllable via alsamixer.
 
 -- 
 Alexander E. Patrakov
