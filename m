@@ -1,17 +1,18 @@
-From: Adam Williamson <awilliam@redhat.com>
-Subject: Re: Unsupported Valley View 'LPE' adapter?
-Date: Sat, 30 Nov 2013 18:38:37 -0800
-Message-ID: <1385865517.2566.36.camel@adam.happyassassin.net>
-References: <1385840039.2566.12.camel@adam.happyassassin.net>
- <529A5C6A.70604@ladisch.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [RFC][PATCH 00/13] bebob: a new driver for
+ BridgeCo BeBoB based device
+Date: Sun, 01 Dec 2013 13:42:55 +0900
+Message-ID: <529ABE4F.6070406@sakamocchi.jp>
+References: <1385186965-8303-1-git-send-email-o-takashi@sakamocchi.jp>
+ <529A2691.4000401@monom.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 79463261A01
- for <alsa-devel@alsa-project.org>; Sun,  1 Dec 2013 03:38:43 +0100 (CET)
-In-Reply-To: <529A5C6A.70604@ladisch.de>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 755072608ED
+ for <alsa-devel@alsa-project.org>; Sun,  1 Dec 2013 05:43:11 +0100 (CET)
+In-Reply-To: <529A2691.4000401@monom.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,29 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Harsha Priya <priya.harsha@intel.com>
+To: Daniel Wagner <wagi@monom.org>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCAyMDEzLTExLTMwIGF0IDIyOjQ1ICswMTAwLCBDbGVtZW5zIExhZGlzY2ggd3JvdGU6
-Cj4gQWRhbSBXaWxsaWFtc29uIHdyb3RlOgo+ID4gSW4gV2luZG93cycgRGV2aWNlIE1hbmFnZXIg
-SSBzZWUgYW4gJ0ludGVsIFNTVCBBdWRpbyBEZXZpY2UnIHdpdGggUENJIElECj4gPiAweDg2OjBm
-MjguIEluZGVlZCwgdGhlIFBDSSBJRCBkYXRhYmFzZSBoYXMgdGhpcyBsaXN0ZWQgYXMgIlZhbGxl
-eVZpZXcKPiA+IExQRSBBdWRpbyBDb250cm9sbGVyIiAtIGh0dHA6Ly9wY2ktaWRzLnVjdy5jei9y
-ZWFkL1BDLzgwODYvMGYyOCAuIEJ1dAo+ID4gaGRhLWludGVsIGRvZXMgbm90IGhhdmUgMGYyOCBh
-cyBhIHN1cHBvcnRlZCBkZXZpY2UuCj4gPgo+ID4gU28uLi53aGF0IGlzIHRoaXMgMGYyOD8KPiAK
-PiBJdCBpcyBub3QgYW4gSERBIGNvbnRyb2xsZXIuICBUaGUgU1NUIHRoaW5neSB1c2VzIEnCslMg
-Y29kZWNzLgo+IAo+ID4gSXMgc3VwcG9ydCBmb3IgaXQgZ29pbmcgdG8gYmUgYWRkZWQ/Cj4gCj4g
-VGhlcmUgaXMgc29tZXRoaW5nIGluIHNvdW5kL3NvYy9taWQteDg2LywgYnV0IHRoYXQgaXMgb25s
-eSBmb3IgdGhlCj4gTWVkZmllbGQgcGxhdGZvcm0uICBUaGUgUENJIFNTVCBkcml2ZXIgdGhhdCB3
-YXMgbm90IG1lcmdlZCBmb3VyIHllYXJzCj4gYWdvIHVzZWQgdGhlIElEIDA4MGEuCj4gCj4gT25s
-eSBJbnRlbCBrbm93cy4KCkFoISBJIGRpZCBzZWUgdGhhdCBzdHVmZiwgYnV0IGl0IHNlZW1lZCBz
-byBvbGQgaXQgY291bGRuJ3QgYmUKcmVsZXZhbnQuLi4KCj4gPiBJcyB0aGVyZSBhbnkgaW5mbyBJ
-IGNhbiBwcm92aWRlIHRvIGhlbHA/Cj4gCj4gImxzcGNpIC12diAtZCA4MDg2OjBmMjgiPwoKT0ss
-IHdpbGwgZ2V0IHRoYXQgZm9yIHlvdSBzaG9ydGx5LiBUaGFua3MgZm9yIHRoZSBpbmZvLgotLSAK
-QWRhbSBXaWxsaWFtc29uCkZlZG9yYSBRQSBDb21tdW5pdHkgTW9ua2V5CklSQzogYWRhbXcgfCBU
-d2l0dGVyOiBBZGFtV19GZWRvcmEgfCBYTVBQOiBhZGFtdyBBVCBoYXBweWFzc2Fzc2luIC4gbmV0
-Cmh0dHA6Ly93d3cuaGFwcHlhc3Nhc3Npbi5uZXQKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi Daniel,
+
+Thanks for your testing.
+
+At first, I describe our system to test. I use Ubuntu 13.10. You use 
+Fedora 19.
+
+(Dec 01 2013 02:55), Daniel Wagner wrote:
+> I have tried this series (incl. the bug fix you recommend) on a FA-66.
+> While I see some output in alsa-info, pulseaudio didn't pick it up. I
+> also noted that some logs in the dmesg. I am not sure what is supposed
+> to work already or not.
+>
+> Here are my logs
+>
+> http://www.monom.org/misc/alsa-firewire/2013-11-30
+
+1.pulseaudio
+PulseAudio can automatically load 'module-alsa-card' with 
+'module-udev-detect' (utilizing sysfs/dbus). But for snd-bebob, this 
+mecanism doesn't work because PulseAudio cannot decide profiles for the 
+card even if success to detect.
+
+For this problem, I have a need to commit some codes for PulseAudio but 
+this may be my future work.
+
+Well, when I test with PulseAudio, I always directly load 
+'module-alsa-sink' or 'module-alsa-source' by these lines:
+$ pactl load-module module-alsa-sink device=hw:X,X
+$ pactl load-module module-alsa-source device=hw:X,X
+
+See in detail:
+http://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/Modules/#index4h3
+
+2.dmesg
+Hm. I want to know which asynchronous transaction is failed.
+[  446.796563] snd-bebob fw1.0: transaction failed: no ack
+[  446.838567] snd-bebob fw1.0: transaction failed: no ack
+
+Would you investigate which transactions cannot get 'no ack'?
+
+
+Thank you
+
+Takashi Sakamoto
