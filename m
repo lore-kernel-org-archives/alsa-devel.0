@@ -1,71 +1,54 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: ux500_pcm: Stop pretending that
- we support varying address widths
-Date: Mon, 02 Dec 2013 19:34:29 +0100
-Message-ID: <529CD2B5.9060905@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: ux500_pcm: Stop pretending that we support
+ varying address widths
+Date: Mon, 2 Dec 2013 19:09:13 +0000
+Message-ID: <20131202190913.GQ27568@sirena.org.uk>
 References: <1386007222-10081-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="EVx8OOgYiG4KXJJB"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
 In-Reply-To: <1386007222-10081-1-git-send-email-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Lee Jones <lee.jones@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/02/2013 07:00 PM, Lee Jones wrote:
+
+--EVx8OOgYiG4KXJJB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Dec 02, 2013 at 06:00:20PM +0000, Lee Jones wrote:
 > The Slave Config's addr_width attribute is populated by data_width of
 > dma_cfg, which in turn is derived from dma_params' data_size attribute
 > and that comes from the slot_width which is always 16 bits (2 Bytes).
 > We're cutting out the middle man here and just setting the DMA Slave
 > Config directly.
-> 
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Patch looks good. But as a follow up patch I think you can now switch to the
-generic snd_dmaengine_pcm_prepare_slave_config.
+Applied, thanks.
 
-> ---
->  sound/soc/ux500/ux500_pcm.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
-> index 6162f70..2f1bdb7 100644
-> --- a/sound/soc/ux500/ux500_pcm.c
-> +++ b/sound/soc/ux500/ux500_pcm.c
-> @@ -104,26 +104,25 @@ static int ux500_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
->  		struct dma_slave_config *slave_config)
->  {
->  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> -	struct ux500_msp_dma_params *dma_params;
-> -	struct stedma40_chan_cfg *dma_cfg;
-> +	struct snd_dmaengine_dai_dma_data *dma_params;
->  	int ret;
->  
->  	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-> -	dma_cfg = dma_params->dma_cfg;
->  
->  	ret = snd_hwparams_to_dma_slave_config(substream, params, slave_config);
->  	if (ret)
->  		return ret;
->  
->  	slave_config->dst_maxburst = 4;
-> -	slave_config->dst_addr_width = dma_cfg->dst_info.data_width;
->  	slave_config->src_maxburst = 4;
-> -	slave_config->src_addr_width = dma_cfg->src_info.data_width;
-> +
-> +	slave_config->src_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-> +	slave_config->dst_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
->  
->  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> -		slave_config->dst_addr = dma_params->tx_rx_addr;
-> +		slave_config->dst_addr = dma_params->addr;
->  	else
-> -		slave_config->src_addr = dma_params->tx_rx_addr;
-> +		slave_config->src_addr = dma_params->addr;
->  
->  	return 0;
->  }
-> 
+--EVx8OOgYiG4KXJJB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSnNrWAAoJELSic+t+oim97PcP/0undSbMLAciSYvyApxYDOlJ
+IZI4GunVbKWjWLW1zI86N1KhPmdXk7ncaRlocolD4DWq7unP4BsLL/G4C0dtDYNm
+brPDrs4gP70nvmEPrRbfMb3rjJA2Ia/InVbomCNJKGXcIFhYhEQeijUrcnumAjJX
+v84S+nKrlQxSnwMEC7IhS2eqjDW2oomHer7ZHAHPKX3mY5AnfEU0HlfpPdOQuPf3
+wHIN5ke2pLbWDkGWCBVPooymqwdLU2yPrdZ5PRlACJ0Z5xqgUY2cRzfMs3PJm+uO
+XW/o+0LUeI8et+K7AlPUyeas4MUTiueDBokUJakngVR4JypIHXFE7n07g2f2dsuE
+kTNqZzlF9skf8uWJQdfsfKxWLCtNQR1rf7CMnCecXODkQ5rMU8Yuj/bWJ18xBIFK
+i6/Hds8bi7rO4nYlWOKIdztOEc0J84H7Zl5rdgpMBug47PKkvQZGxCenwfSAMVlK
+6WJjK4rk1smJ2jSo9iiGgwyEMfabPHe+y6k0OT+g34636LZhHl0bV2wedECnwJH3
+pQVJhAcsO+NtiJ+6vnpbXct7V8czF3I0mo9VEpEgpXkFRxvbbfVR9yPeK4O4iJj+
+mVq3nXRvSDNT3YJPhqeB+/gMOjKlNm7i9wwrz3Dplytw5Mw/URtj8581dWH/fENz
+GNKLYa+uuctDIXd9n85q
+=loza
+-----END PGP SIGNATURE-----
+
+--EVx8OOgYiG4KXJJB--
