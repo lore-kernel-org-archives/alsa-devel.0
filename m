@@ -1,62 +1,118 @@
 From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: Use valid condition for
- snd_soc_dai_digital_mute() in hw_free()
-Date: Mon, 2 Dec 2013 23:25:18 +0800
-Message-ID: <20131202152517.GC8609@MrMyself>
-References: <1385976874-30755-1-git-send-email-b42378@freescale.com>
- <s5hli038t5g.wl%tiwai@suse.de>
- <20131202121916.GX27568@sirena.org.uk>
+Subject: [PATCH v3] ASoC: fsl_ssi: Add monaural audio support for non-ac97
+ interface
+Date: Mon, 2 Dec 2013 23:29:03 +0800
+Message-ID: <1385998143-20196-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe002.messaging.microsoft.com [207.46.163.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 187EF261AA5
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 16:28:38 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20131202121916.GX27568@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: broonie@kernel.org, timur@tabi.org
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 02, 2013 at 12:19:16PM +0000, Mark Brown wrote:
-> On Mon, Dec 02, 2013 at 11:05:31AM +0100, Takashi Iwai wrote:
-> > Nicolin Chen wrote:
-> 
-> > > The snd_soc_dai_digital_mute() here will be never executed because we only
-> > > decrease codec->active in snd_soc_close(). Thus correct it.
-> 
-> > A couple of minor problems by this approach:
-> 
-> > - snd_soc_dai_digital_mute() will be called twice in the normal PCM
-> >   close path.
-> 
-> Right, it's called in close() so it's redundant to call it here most of
-> the time.  On the other hand it will at least get called slightly sooner
-> which is good and in the case of reconfiguration we'll mute while doing
-> that - doing the mute earlier is better.
-> 
-> > - In full duplex mode where both playback/capture streams share the
-> >   same codec, one of the directions won't be handled correctly because
-> >   codec->active is incremented/decremented twice (once for each
-> >   direction).
-> 
-> Indeed, the check needs to be on playback_active or capture_active
-> rather than on the overall DAI.
+The normal mode of SSI allows it to send/receive data to/from the first
+slot of each period. So we can use this normal mode to trick I2S signal
+by puting/getting data to/from the first slot only (the left channel)
+so as to support monaural audio playback and recording.
 
-Sir, thank you for the hint. I will reconsider about the modification.
+Signed-off-by: Nicolin Chen <b42378@freescale.com>
+---
+Changelog
+v3:
+ * Fixed conflict for git apply.
+v2:
+ * Moved i2s_mode to ssi_private so that we can save and retore it as needed
+ * And dropped the horrible static thing.
 
-And also thank Iwai-san for pointing out the flaws in my patch.
 
-Best regards,
-Nicolin Chen
+ sound/soc/fsl/fsl_ssi.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index fb8f52a..83e4ed8 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -143,6 +143,7 @@ struct fsl_ssi_private {
+ 	bool ssi_on_imx;
+ 	bool imx_ac97;
+ 	bool use_dma;
++	u8 i2s_mode;
+ 	struct clk *clk;
+ 	struct snd_dmaengine_dai_dma_data dma_params_tx;
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+@@ -354,14 +355,13 @@ static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
+ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
+ {
+ 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+-	u8 i2s_mode;
+ 	u8 wm;
+ 	int synchronous = ssi_private->cpu_dai_drv.symmetric_rates;
+ 
+ 	if (ssi_private->imx_ac97)
+-		i2s_mode = CCSR_SSI_SCR_I2S_MODE_NORMAL | CCSR_SSI_SCR_NET;
++		ssi_private->i2s_mode = CCSR_SSI_SCR_I2S_MODE_NORMAL | CCSR_SSI_SCR_NET;
+ 	else
+-		i2s_mode = CCSR_SSI_SCR_I2S_MODE_SLAVE;
++		ssi_private->i2s_mode = CCSR_SSI_SCR_I2S_MODE_SLAVE;
+ 
+ 	/*
+ 	 * Section 16.5 of the MPC8610 reference manual says that the SSI needs
+@@ -378,7 +378,7 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
+ 	write_ssi_mask(&ssi->scr,
+ 		CCSR_SSI_SCR_I2S_MODE_MASK | CCSR_SSI_SCR_SYN,
+ 		CCSR_SSI_SCR_TFR_CLK_DIS |
+-		i2s_mode |
++		ssi_private->i2s_mode |
+ 		(synchronous ? CCSR_SSI_SCR_SYN : 0));
+ 
+ 	write_ssi(CCSR_SSI_STCR_TXBIT0 | CCSR_SSI_STCR_TFEN0 |
+@@ -508,6 +508,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
++	unsigned int channels = params_channels(hw_params);
+ 	unsigned int sample_size =
+ 		snd_pcm_format_width(params_format(hw_params));
+ 	u32 wl = CCSR_SSI_SxCCR_WL(sample_size);
+@@ -537,6 +538,11 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 	else
+ 		write_ssi_mask(&ssi->srccr, CCSR_SSI_SxCCR_WL_MASK, wl);
+ 
++	if (!ssi_private->imx_ac97)
++		write_ssi_mask(&ssi->scr,
++				CCSR_SSI_SCR_NET | CCSR_SSI_SCR_I2S_MODE_MASK,
++				channels == 1 ? 0 : ssi_private->i2s_mode);
++
+ 	return 0;
+ }
+ 
+@@ -649,14 +655,13 @@ static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
+ static struct snd_soc_dai_driver fsl_ssi_dai_template = {
+ 	.probe = fsl_ssi_dai_probe,
+ 	.playback = {
+-		/* The SSI does not support monaural audio. */
+-		.channels_min = 2,
++		.channels_min = 1,
+ 		.channels_max = 2,
+ 		.rates = FSLSSI_I2S_RATES,
+ 		.formats = FSLSSI_I2S_FORMATS,
+ 	},
+ 	.capture = {
+-		.channels_min = 2,
++		.channels_min = 1,
+ 		.channels_max = 2,
+ 		.rates = FSLSSI_I2S_RATES,
+ 		.formats = FSLSSI_I2S_FORMATS,
+-- 
+1.8.4
