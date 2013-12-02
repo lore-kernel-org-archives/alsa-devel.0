@@ -1,24 +1,16 @@
-From: VS <vasan.vs@gmail.com>
-Subject: MAXIM 98089 codec support in Linux
-Date: Mon, 2 Dec 2013 10:46:36 +0000 (UTC)
-Message-ID: <loom.20131202T114044-425@post.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: imx-spdif: Remove error message upon
+ devm_kzalloc() failure
+Date: Mon, 2 Dec 2013 11:12:52 +0000
+Message-ID: <20131202111252.GJ27568@sirena.org.uk>
+References: <1385952084-20149-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6862999530372339328=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id CF30226260F
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 11:50:11 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1VnR4n-00067q-0S
- for alsa-devel@alsa-project.org; Mon, 02 Dec 2013 11:50:09 +0100
-Received: from 202.141.25.2 ([202.141.25.2])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Mon, 02 Dec 2013 11:50:05 +0100
-Received: from vasan.vs by 202.141.25.2 with local (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Mon, 02 Dec 2013 11:50:05 +0100
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3BB2A2610CB
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 12:12:55 +0100 (CET)
+In-Reply-To: <1385952084-20149-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,63 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-We are trying to integrate MAXIM 98089 (Audio codec) into our Linux product
-build. This has 2 DAI's available with it - DAI1 with both Playback and
-Capture facility and DAI2 with Playback capability alone.
+--===============6862999530372339328==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="GD0jJf8rm+K0B4Sk"
+Content-Disposition: inline
 
-When we use this codec in our build, we find that the dai1_hw_params and
-dai1_set_fmt functions never gets called but it is always dai2_hw_params and
-dai2_set_fmt function that gets called because of which apparently, we are
-able to hear the voice that is incoming but not able to capture the voice
-and send it out externally.
 
-Here are our definitions:
+--GD0jJf8rm+K0B4Sk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-static struct snd_soc_dai_driver max98089_dai[] = {
-{
-        .name = "max98089.0",
-                .playback = {
-                .stream_name = "Playback",
-                .channels_min = 1,
-                .channels_max = 2,
-                .rates = MAX98089_RATES,
-                .formats = MAX98089_FORMATS,
-                },
-        .capture = {
-                .stream_name = "Capture",
-                .channels_min = 1,
-                .channels_max = 2,
-                .rates = MAX98089_RATES,
-                .formats = MAX98089_FORMATS,
-        },
-         .ops = &max98089_dai1_ops,
-},
-{
-        .name = "max98089.1",
-        .playback = {
-                .stream_name = "Aux Playback",
-                .channels_min = 1,
-                .channels_max = 2,
-                .rates = MAX98089_RATES,
-                .formats = MAX98089_FORMATS,
-        },
-        .ops = &max98089_dai2_ops,
-        .symmetric_rates = 1,
-}
-};
+On Mon, Dec 02, 2013 at 12:41:24AM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> No need to have a specific OOM message, since there is generic MM out of =
+memory
+> message in place.
 
-The codec specific registers only when we put in dai2_ops functions, we are
-able to see the effects but there is no effect if we put it in dai1_ops
-functions.
+Applied, thanks.
 
-Is there any specific way of referring to DAI when we have multiple DAI
-support in the codec that we are using?
+--GD0jJf8rm+K0B4Sk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Thanks in advance for your inputs
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-VS
+iQIcBAEBAgAGBQJSnGsxAAoJELSic+t+oim9kh0P/1RxEuTIlhuohDb5u05Qbii3
+H49QDVgp6ZXLZRqCzGgTnEaRzIG62kHFjB87saVZQ/E17iDe6bJHHy5W7nEQ1wbg
++1+lDDNR76xj1rxUn4CtvcawPTORmTKGA+JezrU49BoP2D6V/v+aXU+6QETQpcQ2
+TRkD9F6AKyONvHmsr0d8pIvATl5pdDsRc9GcM0dAu2q33qWw3RwCXZAqNZEHDW95
+d7Kghi+ZGa9IgRWvUhqVSfHxNHughPzFgUX2q2uemmfq+oj/NHInKiRltF9xBJmt
+FoTB7B+bmc4ajAghT2TNXDHH144l1Em06z7FPPfPfIoGneZ+7lKzh+nRJ0eEvQdB
+JtiDXhORLh2SLInAT0sG0Q+A08oUk8whM1/g2Z9hwUr5am0plS2rZfXPp8xtj8wM
+dUXDFuufzRatFc9HaEP8ict2qlWiWuWu9eNzq5ZIYLSPO/8PRttSCBrdwcHDaZ3B
+j6fugYOTAF2jCc/EOFhpf5hqN5ZacqilOlntr9nTvaXdI6vwjhZ/PrqZp3p2Varf
+C0Q1qbLlcEcJBO+xf3AeMUgkF53YaBy8c7cOk5S/aDgREodk9RWwxt8vbOgu/HD8
+nQM310n+jHkR4wRlSurDlFINxVE3Dhr5cO2yr1i+vWcN+euKAPyheDwZoFl139C8
+rT79vQaU3xXYAmolEwcN
+=9pYF
+-----END PGP SIGNATURE-----
+
+--GD0jJf8rm+K0B4Sk--
+
+--===============6862999530372339328==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6862999530372339328==--
