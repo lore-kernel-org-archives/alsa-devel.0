@@ -1,18 +1,20 @@
-From: Angus McInnes <angus@amcinnes.info>
-Subject: Bug: plugging in a new sound card causes mixer state
- of other sound cards to be changed
-Date: Mon, 2 Dec 2013 22:57:25 +0200
-Message-ID: <CACdZ0c-M4UuOJ+R+aaZ0XGq8Xhdxp7myx4W7S+7mzWqR=gvKWg@mail.gmail.com>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: Re: caiaq driver: audio 4 dj and jackd
+Date: Mon, 02 Dec 2013 13:22:42 -0800
+Message-ID: <529CFA22.1050705@gmail.com>
+References: <529BF843.6000608@gmail.com> <529CAE8D.6020003@zonque.org>
+ <529CB1F6.7070607@gmail.com> <201312021948.58167.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f170.google.com (mail-pd0-f170.google.com
- [209.85.192.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 55ED8264F2C
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 21:57:27 +0100 (CET)
-Received: by mail-pd0-f170.google.com with SMTP id g10so19068300pdj.1
- for <alsa-devel@alsa-project.org>; Mon, 02 Dec 2013 12:57:26 -0800 (PST)
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+ [209.85.160.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 173EE264F2C
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 22:22:45 +0100 (CET)
+Received: by mail-pb0-f51.google.com with SMTP id up15so19761901pbc.24
+ for <alsa-devel@alsa-project.org>; Mon, 02 Dec 2013 13:22:44 -0800 (PST)
+In-Reply-To: <201312021948.58167.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,28 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>, alsa-devel@alsa-project.org
+Cc: Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 12/02/2013 11:48 AM, Alan Horstmann wrote:
+>> But solving this required editing asoundrc files (ugh) and casting
+>> several magic spells.  Would be nice if it "just works."
+>
+> The same problem occurs with Portaudio on this device (or similar) - it would
+> be great to just be able to open one device with 4 channels, or 2 stereo
+> pairs.
+>
+> I had wondered whether it could be done by some card-specific definitions in
+> eg /usr/share/alsa/cards as is done particularly with PCI cards??  Anybody
+> any ideas?
 
-When I plug in my USB sound card, the mixer settings of the internal
-sound card are changed. I don't want this to happen.
+Good idea.
 
-I believe the problem is with this commit:
+>
+> Gabriel, could you post the multi pcm you worked out for this, as it may help
+> others?
 
-http://git.alsa-project.org/?p=alsa-utils.git;a=blobdiff;f=alsactl/90-alsa-restore.rules.in;h=3ce9a6540d551cdfe1d10a43e7f767c27c551fe7;hp=fe0e1ed0ae248d810f433a2af5c72e86e17dfaf0;hb=8b34bf25c02693899b03768b0eef628eb1d7bb6e;hpb=611249ae26f435429dbe1894e210704a723ee277
+I can't take credit for figuring it out.  Got it from here:
 
-The card number $attr{number} comes from the card* device. Since
-KERNELS=="card*" was changed to KERNELS!="card*", alsactl restore is
-run with no card number attribute, so it restores the state of all
-cards.
+http://ywwg.com/wordpress/?p=772
 
-If I change the != back to ==, alsactl restore is run with a card
-number and the problem seems to be resolved.
-
-(By the way, your bug tracker at
-https://bugtrack.alsa-project.org/alsa-bug seems to be down.)
-
-Regards,
-Angus McInnes
+-gabe
