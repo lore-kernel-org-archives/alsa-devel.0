@@ -1,54 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: fsl_ssi: Add monaural audio support for
- non-ac97 interface
-Date: Mon, 2 Dec 2013 11:56:17 +0000
-Message-ID: <20131202115617.GV27568@sirena.org.uk>
-References: <1384532729-6588-1-git-send-email-b42378@freescale.com>
+Subject: Re: [PATCHv2] ASoC: fsl: imx-ssi: omit ssi counter to
+ avoid harm in unbalanced situation
+Date: Mon, 2 Dec 2013 11:57:16 +0000
+Message-ID: <20131202115716.GW27568@sirena.org.uk>
+References: <1384533863-14288-1-git-send-email-oskar@scara.com>
+ <1384588345-22276-1-git-send-email-oskar@scara.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YDTWxoC2E3hrC6hC"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1384532729-6588-1-git-send-email-b42378@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: timur@tabi.org, linux@arm.linux.org.uk, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Content-Type: multipart/mixed; boundary="===============4606337239621501942=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id F120A2619E6
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 12:57:27 +0100 (CET)
+In-Reply-To: <1384588345-22276-1-git-send-email-oskar@scara.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oskar Schirmer <oskar@scara.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---YDTWxoC2E3hrC6hC
+--===============4606337239621501942==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="V1B6tgkYnQOXc079"
+Content-Disposition: inline
+
+
+--V1B6tgkYnQOXc079
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Nov 16, 2013 at 12:25:29AM +0800, Nicolin Chen wrote:
-> The normal mode of SSI allows it to send/receive data to/from the first
-> slot of each period. So we can use this normal mode to trick I2S signal
-> by puting/getting data to/from the first slot only (the left channel)
-> so as to support monaural audio playback and recording.
+On Sat, Nov 16, 2013 at 07:52:25AM +0000, Oskar Schirmer wrote:
+> Unbalanced calls to imx_ssi_trigger() may result in endless
+> SSI activity and thus provoke eternal sound. While on the first glance,
+> the switch statement looks pretty symmetric, the SUSPEND/RESUME
+> pair is not: the suspend case comes along snd_pcm_suspend_all(),
 
-This looks OK but doesn't apply against current code, can you please
-check and resend?
+Applied, thanks.
 
---YDTWxoC2E3hrC6hC
+--V1B6tgkYnQOXc079
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSnHVeAAoJELSic+t+oim9gXYP/iyCgeTlIkEq2tvHUKNxZoCT
-tHOlo3ymeCohXd6nMUQ2bBO0NrpnLphny24jBHuLPFVps1enGqoNRU6TT8d3Pjfm
-VTpi+9eTxgwF0wRsN5Lf0deKo/7iLsTtwffNw8K7ll8QNUl0YRIMwvqXIgpxr93Z
-NqOYieIZsJSII5Aulw8cMu1fXeJVo66H0V6c4YUHrNKRqb+XZbIEZZJuWBzIaLXC
-yqJKIEC7a5fu+hPicxTsf9LdMp/Z3fL6g7rIZq2bmiadcDAAtm97tAR8oYKDb1yt
-dShn0dgTnexuamhCCfVI4iExnY70rBvOiz+Zxk3vM4Ub3YCJ5Pkr+DTQngk2Ynhw
-RYX6jHjLBTDE3gBW/XTnzEQTMS4Q+1hQdy7sEsJFT6tTUOTWSRZc5A2O6WUtKUtz
-j5Rpbc8yb5qCGExqFmTNUL1VlltOXzgPqGNaZljxcWJl5JwJUzxAisNXGT6rc3kM
-xdUM/RtDu1nCNjaYebFBn7bpgvqT6+9BO8cCNoPCdGOIhUJRQURKasMWfyUHiQFQ
-eQNAwZdYqjK1yfOQrYd9aEa8czH7BwgiYPGhsnT/GhMZloNi7ot7uPvf4XIf7a4x
-LdonCKGVjt2yCrbYQ2ceZHyexBLW3R8HwxNWUHcI/hIQuAfaCpFwVQk+ton91Adw
-MiDOSDbYsip7Y/0kQss7
-=+D7z
+iQIcBAEBAgAGBQJSnHWZAAoJELSic+t+oim9sxQP/3qfyjkpRK8alRyZQfRCyCYe
+5NWAdlgLhWGv3XjC1pDbyDJ6+AIz/foYP95HEZUXBRuEQmiizWZYwSu0PVEhIlNS
+c1EftcWqRdHIixo+iBJrQFWgDBwjHghDOP4DCXPNhoCw69HVgwG6hHcEDGqW3UgA
+w57x5Y7N+CWEGQPYptJVdAYzgGVYDyuzGIlscMXHyJMv467fYnOLfpQapBar2SID
+xsqfCO/J+4d+Ve18IaOBvmXEVOlYIxK1DKS1WkEsqJwsBbKz3BaLBrVWUjIa6ypt
+jROBeJTo459d6txySqmFbeIuf7fV6IDDJc2kvoj6cjldxI7jt4W1aXZDba0Wny7V
+vZwS0ltGQLs9VYpkc1c0kGxtX+OibRlNc2vuRq7kR7ndibMbIaLasmiM/SxdvH3U
+W+1McshTW8xGpeup7f6JfYI6hnGJNxk6AmDXbOANezrHZm9r46A3jlakKkc/f9rx
+k3eGN1bid+j5TjUbYhuUbNKnK1hN1z2sKLHBro39MX8Y3XnY1pMDkx/xzA3reE/w
+u3LH+ggpIWw+IyCNjRL45rY8JcV7W7f7CrS3yrI48llstcdHRb1GyQlIkqF5CPjb
+/zQ5Ulb22XnqBt09cIvTdTCsr6dU9nC19iEIfOJoUir6Us1NPrBLvtPuF1WaEAHu
+zB100pNIJrCP00alME/W
+=w35d
 -----END PGP SIGNATURE-----
 
---YDTWxoC2E3hrC6hC--
+--V1B6tgkYnQOXc079--
+
+--===============4606337239621501942==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4606337239621501942==--
