@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: fsl_ssi: Add monaural audio
- support for non-ac97 interface
-Date: Mon, 2 Dec 2013 17:37:21 +0000
-Message-ID: <20131202173721.GM27568@sirena.org.uk>
-References: <1385998143-20196-1-git-send-email-b42378@freescale.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 1/3] ASoC: ux500_pcm: Stop pretending that we
+	support varying address widths
+Date: Mon,  2 Dec 2013 18:00:20 +0000
+Message-ID: <1386007222-10081-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0453707669560733033=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B5A1264F13
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 18:37:27 +0100 (CET)
-In-Reply-To: <1385998143-20196-1-git-send-email-b42378@freescale.com>
+Received: from mail-ie0-f170.google.com (mail-ie0-f170.google.com
+ [209.85.223.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 40F1D264F2C
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 19:00:30 +0100 (CET)
+Received: by mail-ie0-f170.google.com with SMTP id qd12so22068495ieb.29
+ for <alsa-devel@alsa-project.org>; Mon, 02 Dec 2013 10:00:29 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, timur@tabi.org
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linus.walleij@linaro.org, broonie@kernel.org, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The Slave Config's addr_width attribute is populated by data_width of
+dma_cfg, which in turn is derived from dma_params' data_size attribute
+and that comes from the slot_width which is always 16 bits (2 Bytes).
+We're cutting out the middle man here and just setting the DMA Slave
+Config directly.
 
---===============0453707669560733033==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="elWSKwo949DbmCL3"
-Content-Disposition: inline
+Cc: alsa-devel@alsa-project.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ sound/soc/ux500/ux500_pcm.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-
---elWSKwo949DbmCL3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Dec 02, 2013 at 11:29:03PM +0800, Nicolin Chen wrote:
-> The normal mode of SSI allows it to send/receive data to/from the first
-> slot of each period. So we can use this normal mode to trick I2S signal
-> by puting/getting data to/from the first slot only (the left channel)
-> so as to support monaural audio playback and recording.
-
-Applied, thanks.
-
---elWSKwo949DbmCL3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSnMVOAAoJELSic+t+oim9cIYP+wcwWzHsCXV+yHVkVWmWN+SU
-eyFiNv5jtKCUl2w6+rOm0hnewTj9L1EA5RkTzjy7zZZMZa5nqXXyvKCKp/ZezMDn
-dIYyL9aRFHd+HDL7NLUnfQZf70nA20/OeNGjd4K9OUgMbrjoI1HVRHWDUn/6wFYx
-oIrYwGfAC2clzs8nonGSrcqfGqvi7dvKwRpuYtL62avroDnt1qcJk5olLauI1esk
-rN/poGG+h5fpoJ8IdUp/kVPUHzPzQiw4YF85ibXB/47NrYHx2MLUfd2yXJ7UBtar
-DauBkrvoLvewUbeli/SHpHuCEp9zz1Q2CFIOm/gj8TZ89YAbWwdhka9danaHFYqh
-VxZhC5AakFlf7EjFnbGz4+0L+P3QKFUUgF5nQE8E2FkrhvghiKJ3rgNZAtZEKMwP
-5te2VTeIQnkdKpzZ5sI3D7xdZv+bRdKu5xVJsHh3KvTaDWstd4aS1Yeb8xMWPc/4
-WxSSwvvH6kmFes1VNQhSdf6YeQsWFkh0n3yNrezh0xqMULJ1HCuI+dsOVBoUZQmj
-9vj3xEdcZp7/NgwL/BQhzFT0RjozjMxB4goTaqWmX1POwswJuoNYz2jmGVS+lFKF
-DFBBtGv318bD/WCbp7UCpSCTMUUjfwGzCAyFO56PCDDOFA181OZhD7WdUW2iCFFn
-IFlNFVZyoZQ0XjSZP1ZQ
-=3yo9
------END PGP SIGNATURE-----
-
---elWSKwo949DbmCL3--
-
---===============0453707669560733033==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0453707669560733033==--
+diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
+index 6162f70..2f1bdb7 100644
+--- a/sound/soc/ux500/ux500_pcm.c
++++ b/sound/soc/ux500/ux500_pcm.c
+@@ -104,26 +104,25 @@ static int ux500_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
+ 		struct dma_slave_config *slave_config)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct ux500_msp_dma_params *dma_params;
+-	struct stedma40_chan_cfg *dma_cfg;
++	struct snd_dmaengine_dai_dma_data *dma_params;
+ 	int ret;
+ 
+ 	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+-	dma_cfg = dma_params->dma_cfg;
+ 
+ 	ret = snd_hwparams_to_dma_slave_config(substream, params, slave_config);
+ 	if (ret)
+ 		return ret;
+ 
+ 	slave_config->dst_maxburst = 4;
+-	slave_config->dst_addr_width = dma_cfg->dst_info.data_width;
+ 	slave_config->src_maxburst = 4;
+-	slave_config->src_addr_width = dma_cfg->src_info.data_width;
++
++	slave_config->src_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++	slave_config->dst_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		slave_config->dst_addr = dma_params->tx_rx_addr;
++		slave_config->dst_addr = dma_params->addr;
+ 	else
+-		slave_config->src_addr = dma_params->tx_rx_addr;
++		slave_config->src_addr = dma_params->addr;
+ 
+ 	return 0;
+ }
+-- 
+1.8.3.2
