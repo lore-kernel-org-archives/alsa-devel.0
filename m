@@ -1,118 +1,73 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH v3] ASoC: fsl_ssi: Add monaural audio support for non-ac97
- interface
-Date: Mon, 2 Dec 2013 23:29:03 +0800
-Message-ID: <1385998143-20196-1-git-send-email-b42378@freescale.com>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: caiaq driver: audio 4 dj and jackd
+Date: Mon, 02 Dec 2013 17:00:13 +0100
+Message-ID: <529CAE8D.6020003@zonque.org>
+References: <529BF843.6000608@gmail.com>
+ <20131202095948.GA2886@tamtam.fritz.box> <529CA3FC.1040301@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: broonie@kernel.org, timur@tabi.org
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2955A261AB2
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 17:00:16 +0100 (CET)
+In-Reply-To: <529CA3FC.1040301@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Antonio Ospite <ao2@amarulasolutions.com>
 List-Id: alsa-devel@alsa-project.org
 
-The normal mode of SSI allows it to send/receive data to/from the first
-slot of each period. So we can use this normal mode to trick I2S signal
-by puting/getting data to/from the first slot only (the left channel)
-so as to support monaural audio playback and recording.
+On 12/02/2013 04:15 PM, Gabriel M. Beddingfield wrote:
+> On 12/02/2013 01:59 AM, Daniel Mack wrote:
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
-Changelog
-v3:
- * Fixed conflict for git apply.
-v2:
- * Moved i2s_mode to ssi_private so that we can save and retore it as needed
- * And dropped the horrible static thing.
+> Jack has always opened only one PCM device... which is the Right Thing 
+> for most recording sound cards (e.g. ice1712, hammerfall, etc.). This is 
+> the first "pro-sumer" device I've ever seen with multiple substream devices.
+
+I was also uncertain when I wrote the driver which way is better. But
+given that there are ways in ALSA to synchronously start separate
+streams, I eventually went the stereo pairs way.
+
+>> After all, the streams are guaranteed
+>> to be synchronous, as they share the same clock in hardware.
+> 
+> TBH, the whole substream concept is lost on me.  Where does this 
+> guarantee come from?  From the substream concept or from intimate 
+> knowledge of this device? 
+
+Both :)
+
+> (I.e. how would JACK know about the clock 
+> guarantee?)
+
+snd_pcm_info_get_sync() should return the same clock id for both
+interfaces in that case. But I must admit I haven't tried this in awhile.
+
+>> Technically yes, but changing that would mean breakage for all other
+>> users, and making it configurable would result in yet another moving
+>> part which makes things even more complex.
+> 
+> How would this cause breakage?  Users that use 2 stereo substreams could 
+> still work normally.
+
+Yes, unless you opened the first subdevice with more than 2 channels.
+Then an existing user for the second stream breaks. IOW: the possible
+configuration and usage for subdevice 1 changes depending on that of
+subdevice 0.
+
+> But, FULL ACK on the moving parts.  That would indeed make the driver a 
+> little gross on the inside.
+
+What are your results with the multi plugin? Is that something you can
+live with?
 
 
- sound/soc/fsl/fsl_ssi.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index fb8f52a..83e4ed8 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -143,6 +143,7 @@ struct fsl_ssi_private {
- 	bool ssi_on_imx;
- 	bool imx_ac97;
- 	bool use_dma;
-+	u8 i2s_mode;
- 	struct clk *clk;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
-@@ -354,14 +355,13 @@ static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
- static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
- {
- 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
--	u8 i2s_mode;
- 	u8 wm;
- 	int synchronous = ssi_private->cpu_dai_drv.symmetric_rates;
- 
- 	if (ssi_private->imx_ac97)
--		i2s_mode = CCSR_SSI_SCR_I2S_MODE_NORMAL | CCSR_SSI_SCR_NET;
-+		ssi_private->i2s_mode = CCSR_SSI_SCR_I2S_MODE_NORMAL | CCSR_SSI_SCR_NET;
- 	else
--		i2s_mode = CCSR_SSI_SCR_I2S_MODE_SLAVE;
-+		ssi_private->i2s_mode = CCSR_SSI_SCR_I2S_MODE_SLAVE;
- 
- 	/*
- 	 * Section 16.5 of the MPC8610 reference manual says that the SSI needs
-@@ -378,7 +378,7 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
- 	write_ssi_mask(&ssi->scr,
- 		CCSR_SSI_SCR_I2S_MODE_MASK | CCSR_SSI_SCR_SYN,
- 		CCSR_SSI_SCR_TFR_CLK_DIS |
--		i2s_mode |
-+		ssi_private->i2s_mode |
- 		(synchronous ? CCSR_SSI_SCR_SYN : 0));
- 
- 	write_ssi(CCSR_SSI_STCR_TXBIT0 | CCSR_SSI_STCR_TFEN0 |
-@@ -508,6 +508,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
-+	unsigned int channels = params_channels(hw_params);
- 	unsigned int sample_size =
- 		snd_pcm_format_width(params_format(hw_params));
- 	u32 wl = CCSR_SSI_SxCCR_WL(sample_size);
-@@ -537,6 +538,11 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 	else
- 		write_ssi_mask(&ssi->srccr, CCSR_SSI_SxCCR_WL_MASK, wl);
- 
-+	if (!ssi_private->imx_ac97)
-+		write_ssi_mask(&ssi->scr,
-+				CCSR_SSI_SCR_NET | CCSR_SSI_SCR_I2S_MODE_MASK,
-+				channels == 1 ? 0 : ssi_private->i2s_mode);
-+
- 	return 0;
- }
- 
-@@ -649,14 +655,13 @@ static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
- static struct snd_soc_dai_driver fsl_ssi_dai_template = {
- 	.probe = fsl_ssi_dai_probe,
- 	.playback = {
--		/* The SSI does not support monaural audio. */
--		.channels_min = 2,
-+		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = FSLSSI_I2S_RATES,
- 		.formats = FSLSSI_I2S_FORMATS,
- 	},
- 	.capture = {
--		.channels_min = 2,
-+		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = FSLSSI_I2S_RATES,
- 		.formats = FSLSSI_I2S_FORMATS,
--- 
-1.8.4
+Daniel
