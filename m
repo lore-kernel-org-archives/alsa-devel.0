@@ -1,79 +1,42 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: ux500_pcm: Differentiate between
- pdata and DT initialisation
-Date: Mon, 02 Dec 2013 19:13:03 +0100
-Message-ID: <529CCDAF.7050205@metafoo.de>
-References: <1386007222-10081-1-git-send-email-lee.jones@linaro.org> <1386007222-10081-2-git-send-email-lee.jones@linaro.org>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH] ASoC: omap: n810: Convert to
+	clk_prepare_enable/clk_disable_unprepare
+Date: Mon, 02 Dec 2013 20:12:49 +0000
+Message-ID: <529CE9C1.4080907@bitmer.com>
+References: <1385827528-32149-1-git-send-email-jarkko.nikula@bitmer.com>
+ <20131202111615.GL27568@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1386007222-10081-2-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, broonie@kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A49E265068
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 19:12:50 +0100 (CET)
+In-Reply-To: <20131202111615.GL27568@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/02/2013 07:00 PM, Lee Jones wrote:
-> If booting with full DT support (i.e. DMA too, the last piece of the
-> puzzle), then we don't need to use the compatible request channel call
-> back. We also require slightly different flags to inform the core that
-> we are booting with DT.
+On 12/02/2013 11:16 AM, Mark Brown wrote:
+>> I'm not queueing this to linux-stable since OMAP2 common clock framework
+>> conversion in commit ed1ebc4948fd ("ARM: OMAP2: clock: Convert to common clk")
+>> happened before N810 was really usable in mainline and user base for N810 is
+>> anyway small. Potential linux-stable candidates are only those after
+>> commit 3d3a6d18abc6 ("watchdog: introduce retu_wdt driver").
+> 
+> That looks like it still means v3.10 and up could use the fix?
+> 
+Well I kind of fear linux-stable user base for N810 is next to zero. I'd
+even insist this forward if just one shows up :-)
 
-I don't think you need differentiate between DT and non-DT here.
-If the SND_DMAENGINE_PCM_FLAG_COMPAT is set and the
-SND_DMAENGINE_PCM_FLAG_NO_DT is not set it will first try to request the
-channels from the DT if that fails it will fallback to the compat path. So
-all this patch needs to do is remove the SND_DMAENGINE_PCM_FLAG_NO_DT, that
-should be it.
-
-> 
-> Cc: alsa-devel@alsa-project.org
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  sound/soc/ux500/ux500_pcm.c | 26 +++++++++++++++++++++-----
->  1 file changed, 21 insertions(+), 5 deletions(-)
-> 
-> diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
-> index 2f1bdb7..00cdd7b 100644
-> --- a/sound/soc/ux500/ux500_pcm.c
-> +++ b/sound/soc/ux500/ux500_pcm.c
-> @@ -134,15 +134,31 @@ static const struct snd_dmaengine_pcm_config ux500_dmaengine_pcm_config = {
->  	.prepare_slave_config = ux500_pcm_prepare_slave_config,
->  };
->  
-> +static const struct snd_dmaengine_pcm_config ux500_dmaengine_of_pcm_config = {
-> +	.prepare_slave_config = ux500_pcm_prepare_slave_config,
-> +};
-> +
->  int ux500_pcm_register_platform(struct platform_device *pdev)
->  {
-> +	const struct snd_dmaengine_pcm_config *pcm_config;
-> +	struct device_node *np = pdev->dev.of_node;
-> +	unsigned int pcm_flags;
->  	int ret;
->  
-> -	ret = snd_dmaengine_pcm_register(&pdev->dev,
-> -			&ux500_dmaengine_pcm_config,
-> -			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
-> -			SND_DMAENGINE_PCM_FLAG_COMPAT |
-> -			SND_DMAENGINE_PCM_FLAG_NO_DT);
-> +	if (np) {
-> +		pcm_config = &ux500_dmaengine_of_pcm_config;
-> +
-> +		pcm_flags = SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
-> +			SND_DMAENGINE_PCM_FLAG_COMPAT;
-> +	} else {
-> +		pcm_config = &ux500_dmaengine_pcm_config;
-> +
-> +		pcm_flags = SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
-> +			SND_DMAENGINE_PCM_FLAG_NO_DT |
-> +			SND_DMAENGINE_PCM_FLAG_COMPAT;
-> +	}
-> +
-> +	ret = snd_dmaengine_pcm_register(&pdev->dev, pcm_config, pcm_flags);
->  	if (ret < 0) {
->  		dev_err(&pdev->dev,
->  			"%s: ERROR: Failed to register platform '%s' (%d)!\n",
-> 
+-- 
+Jarkko
