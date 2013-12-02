@@ -1,15 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: ssm2602: Use core for applying symmetry
-	constraints
-Date: Mon,  2 Dec 2013 21:26:22 +0100
-Message-ID: <1386015982-11346-1-git-send-email-lars@metafoo.de>
+From: Angus McInnes <angus@amcinnes.info>
+Subject: Bug: plugging in a new sound card causes mixer state
+ of other sound cards to be changed
+Date: Mon, 2 Dec 2013 22:57:25 +0200
+Message-ID: <CACdZ0c-M4UuOJ+R+aaZ0XGq8Xhdxp7myx4W7S+7mzWqR=gvKWg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-110.synserver.de (smtp-out-003.synserver.de
- [212.40.185.3]) by alsa0.perex.cz (Postfix) with ESMTP id 0AF0F264F2C
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 21:25:47 +0100 (CET)
+Received: from mail-pd0-f170.google.com (mail-pd0-f170.google.com
+ [209.85.192.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55ED8264F2C
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 21:57:27 +0100 (CET)
+Received: by mail-pd0-f170.google.com with SMTP id g10so19068300pdj.1
+ for <alsa-devel@alsa-project.org>; Mon, 02 Dec 2013 12:57:26 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,113 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Let the core take care of applying sample rate and sample bits constraints
-instead of open-coding this in the driver.
+Hi,
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/ssm2602.c | 50 ++--------------------------------------------
- 1 file changed, 2 insertions(+), 48 deletions(-)
+When I plug in my USB sound card, the mixer settings of the internal
+sound card are changed. I don't want this to happen.
 
-diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index 480074d..c6dd485 100644
---- a/sound/soc/codecs/ssm2602.c
-+++ b/sound/soc/codecs/ssm2602.c
-@@ -53,8 +53,6 @@ enum ssm2602_type {
- struct ssm2602_priv {
- 	unsigned int sysclk;
- 	struct snd_pcm_hw_constraint_list *sysclk_constraints;
--	struct snd_pcm_substream *master_substream;
--	struct snd_pcm_substream *slave_substream;
- 
- 	struct regmap *regmap;
- 
-@@ -277,11 +275,6 @@ static int ssm2602_hw_params(struct snd_pcm_substream *substream,
- 	int srate = ssm2602_get_coeff(ssm2602->sysclk, params_rate(params));
- 	unsigned int iface;
- 
--	if (substream == ssm2602->slave_substream) {
--		dev_dbg(codec->dev, "Ignoring hw_params for slave substream\n");
--		return 0;
--	}
--
- 	if (srate < 0)
- 		return srate;
- 
-@@ -314,33 +307,6 @@ static int ssm2602_startup(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct ssm2602_priv *ssm2602 = snd_soc_codec_get_drvdata(codec);
--	struct snd_pcm_runtime *master_runtime;
--
--	/* The DAI has shared clocks so if we already have a playback or
--	 * capture going then constrain this substream to match it.
--	 * TODO: the ssm2602 allows pairs of non-matching PB/REC rates
--	 */
--	if (ssm2602->master_substream) {
--		master_runtime = ssm2602->master_substream->runtime;
--		dev_dbg(codec->dev, "Constraining to %d bits at %dHz\n",
--			master_runtime->sample_bits,
--			master_runtime->rate);
--
--		if (master_runtime->rate != 0)
--			snd_pcm_hw_constraint_minmax(substream->runtime,
--						     SNDRV_PCM_HW_PARAM_RATE,
--						     master_runtime->rate,
--						     master_runtime->rate);
--
--		if (master_runtime->sample_bits != 0)
--			snd_pcm_hw_constraint_minmax(substream->runtime,
--						     SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
--						     master_runtime->sample_bits,
--						     master_runtime->sample_bits);
--
--		ssm2602->slave_substream = substream;
--	} else
--		ssm2602->master_substream = substream;
- 
- 	if (ssm2602->sysclk_constraints) {
- 		snd_pcm_hw_constraint_list(substream->runtime, 0,
-@@ -351,19 +317,6 @@ static int ssm2602_startup(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static void ssm2602_shutdown(struct snd_pcm_substream *substream,
--			     struct snd_soc_dai *dai)
--{
--	struct snd_soc_codec *codec = dai->codec;
--	struct ssm2602_priv *ssm2602 = snd_soc_codec_get_drvdata(codec);
--
--	if (ssm2602->master_substream == substream)
--		ssm2602->master_substream = ssm2602->slave_substream;
--
--	ssm2602->slave_substream = NULL;
--}
--
--
- static int ssm2602_mute(struct snd_soc_dai *dai, int mute)
- {
- 	struct ssm2602_priv *ssm2602 = snd_soc_codec_get_drvdata(dai->codec);
-@@ -530,7 +483,6 @@ static int ssm2602_set_bias_level(struct snd_soc_codec *codec,
- static const struct snd_soc_dai_ops ssm2602_dai_ops = {
- 	.startup	= ssm2602_startup,
- 	.hw_params	= ssm2602_hw_params,
--	.shutdown	= ssm2602_shutdown,
- 	.digital_mute	= ssm2602_mute,
- 	.set_sysclk	= ssm2602_set_dai_sysclk,
- 	.set_fmt	= ssm2602_set_dai_fmt,
-@@ -551,6 +503,8 @@ static struct snd_soc_dai_driver ssm2602_dai = {
- 		.rates = SSM2602_RATES,
- 		.formats = SSM2602_FORMATS,},
- 	.ops = &ssm2602_dai_ops,
-+	.symmetric_rates = 1,
-+	.symmetric_samplebits = 1,
- };
- 
- static int ssm2602_suspend(struct snd_soc_codec *codec)
--- 
-1.8.0
+I believe the problem is with this commit:
+
+http://git.alsa-project.org/?p=alsa-utils.git;a=blobdiff;f=alsactl/90-alsa-restore.rules.in;h=3ce9a6540d551cdfe1d10a43e7f767c27c551fe7;hp=fe0e1ed0ae248d810f433a2af5c72e86e17dfaf0;hb=8b34bf25c02693899b03768b0eef628eb1d7bb6e;hpb=611249ae26f435429dbe1894e210704a723ee277
+
+The card number $attr{number} comes from the card* device. Since
+KERNELS=="card*" was changed to KERNELS!="card*", alsactl restore is
+run with no card number attribute, so it restores the state of all
+cards.
+
+If I change the != back to ==, alsactl restore is run with a card
+number and the problem seems to be resolved.
+
+(By the way, your bug tracker at
+https://bugtrack.alsa-project.org/alsa-bug seems to be down.)
+
+Regards,
+Angus McInnes
