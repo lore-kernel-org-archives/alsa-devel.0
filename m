@@ -1,28 +1,16 @@
-From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v4] ASoC: simple-card: add Device Tree
- support
-Date: Mon, 2 Dec 2013 16:24:38 +0000
-Message-ID: <20131202162438.GN12952@e106331-lin.cambridge.arm.com>
-References: <20131003104248.GI27287@sirena.org.uk>
- <87fvsh2966.wl%kuninori.morimoto.gx@renesas.com>
- <20131024171758.GA2461@kartoffel>
- <87iowm9jwv.wl%kuninori.morimoto.gx@renesas.com>
- <20131115155028.GE24831@e106331-lin.cambridge.arm.com>
- <87li0m7d7c.wl%kuninori.morimoto.gx@renesas.com>
- <20131118113617.GC30853@e106331-lin.cambridge.arm.com>
- <87mwl1du71.wl%kuninori.morimoto.gx@renesas.com>
- <20131120162403.GA22479@e106331-lin.cambridge.arm.com>
- <8738mqzk8z.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: fsl_ssi: Add monaural audio
+ support for non-ac97 interface
+Date: Mon, 2 Dec 2013 17:37:21 +0000
+Message-ID: <20131202173721.GM27568@sirena.org.uk>
+References: <1385998143-20196-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0453707669560733033=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
- [217.140.96.50])
- by alsa0.perex.cz (Postfix) with ESMTP id EEC55261AB2
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 17:24:40 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <8738mqzk8z.wl%kuninori.morimoto.gx@renesas.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B5A1264F13
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 18:37:27 +0100 (CET)
+In-Reply-To: <1385998143-20196-1-git-send-email-b42378@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,45 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Pawel Moll <Pawel.Moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
+To: Nicolin Chen <b42378@freescale.com>
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 21, 2013 at 12:12:13AM +0000, Kuninori Morimoto wrote:
-> 
-> Hi Mark Rutland
-> 
-> > > --------------------
-> > > So, ideally.  However we have to consider the fact that the clock API
-> > > isn't reliably available makes this harder than it should be.  Even
-> > > among the DT using platforms at least PowerPC still uses a custom clock
-> > > API.  We could just use this as a carrot to push people to convert
-> > > though.
-> > > ---------------------
-> > 
-> > I would be happier if we could unify the common clock infrastructure, it
-> > would make this kind of thing a lot lessy messy. However, I'm not
-> > against the system-clock-frequency property for now.
-> 
-> Thank you
-> 
-> > > OK, sorry for my English
-> > 
-> > Sorry for the confusion, I'll try to be less ambiguous in future :)
-> > 
-> > What I was trying to get at here is that if there is neither a clock or
-> > a system-clock-frequency property in the device tree, dai->sysclk will
-> > not have been initialised in this path. Is this a valid case, and will
-> > dai->sysclk have a well-defined, sane value?
-> 
-> My understanding, this "dai" itself is created by devm_kzalloc()
-> So, default dai->sysclk is 0.
-> And, if there is no clocks, no system-clock-frequency property,
-> it try of_property_read_u32() side. but it will do nothing to dai->sysclk
-> in such case. so dai->sysclk is still 0, and it is very sane on this driver.
-> Is this good answer ?
 
-That sounds fine to me. Just wanted to make sure. :)
+--===============0453707669560733033==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="elWSKwo949DbmCL3"
+Content-Disposition: inline
 
-Thanks,
-Mark.
+
+--elWSKwo949DbmCL3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Dec 02, 2013 at 11:29:03PM +0800, Nicolin Chen wrote:
+> The normal mode of SSI allows it to send/receive data to/from the first
+> slot of each period. So we can use this normal mode to trick I2S signal
+> by puting/getting data to/from the first slot only (the left channel)
+> so as to support monaural audio playback and recording.
+
+Applied, thanks.
+
+--elWSKwo949DbmCL3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSnMVOAAoJELSic+t+oim9cIYP+wcwWzHsCXV+yHVkVWmWN+SU
+eyFiNv5jtKCUl2w6+rOm0hnewTj9L1EA5RkTzjy7zZZMZa5nqXXyvKCKp/ZezMDn
+dIYyL9aRFHd+HDL7NLUnfQZf70nA20/OeNGjd4K9OUgMbrjoI1HVRHWDUn/6wFYx
+oIrYwGfAC2clzs8nonGSrcqfGqvi7dvKwRpuYtL62avroDnt1qcJk5olLauI1esk
+rN/poGG+h5fpoJ8IdUp/kVPUHzPzQiw4YF85ibXB/47NrYHx2MLUfd2yXJ7UBtar
+DauBkrvoLvewUbeli/SHpHuCEp9zz1Q2CFIOm/gj8TZ89YAbWwdhka9danaHFYqh
+VxZhC5AakFlf7EjFnbGz4+0L+P3QKFUUgF5nQE8E2FkrhvghiKJ3rgNZAtZEKMwP
+5te2VTeIQnkdKpzZ5sI3D7xdZv+bRdKu5xVJsHh3KvTaDWstd4aS1Yeb8xMWPc/4
+WxSSwvvH6kmFes1VNQhSdf6YeQsWFkh0n3yNrezh0xqMULJ1HCuI+dsOVBoUZQmj
+9vj3xEdcZp7/NgwL/BQhzFT0RjozjMxB4goTaqWmX1POwswJuoNYz2jmGVS+lFKF
+DFBBtGv318bD/WCbp7UCpSCTMUUjfwGzCAyFO56PCDDOFA181OZhD7WdUW2iCFFn
+IFlNFVZyoZQ0XjSZP1ZQ
+=3yo9
+-----END PGP SIGNATURE-----
+
+--elWSKwo949DbmCL3--
+
+--===============0453707669560733033==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0453707669560733033==--
