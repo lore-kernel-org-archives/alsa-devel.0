@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/6] ASoC: fsl: Use
+Subject: Re: [PATCH 6/6] ASoC: mxs: Use
 	devm_snd_dmaengine_pcm_register()
-Date: Mon, 2 Dec 2013 11:49:10 +0000
-Message-ID: <20131202114910.GS27568@sirena.org.uk>
+Date: Mon, 2 Dec 2013 11:49:49 +0000
+Message-ID: <20131202114949.GT27568@sirena.org.uk>
 References: <1385625037-24973-1-git-send-email-lars@metafoo.de>
- <1385625037-24973-4-git-send-email-lars@metafoo.de>
+ <1385625037-24973-6-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3764577545595539798=="
+Content-Type: multipart/mixed; boundary="===============3952155481705763422=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A58C2261A10
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 12:49:35 +0100 (CET)
-In-Reply-To: <1385625037-24973-4-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A9C92615EC
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 12:50:00 +0100 (CET)
+In-Reply-To: <1385625037-24973-6-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,50 +26,50 @@ Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Ra
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3764577545595539798==
+--===============3952155481705763422==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2NSZC26AJDpFITwK"
+	protocol="application/pgp-signature"; boundary="/j2O6PQ6715aG3up"
 Content-Disposition: inline
 
 
---2NSZC26AJDpFITwK
+--/j2O6PQ6715aG3up
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 28, 2013 at 08:50:35AM +0100, Lars-Peter Clausen wrote:
+On Thu, Nov 28, 2013 at 08:50:37AM +0100, Lars-Peter Clausen wrote:
 > Makes the code shorter.
 
 Applied, thanks.
 
---2NSZC26AJDpFITwK
+--/j2O6PQ6715aG3up
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSnHOzAAoJELSic+t+oim9IjgP/3v0ZjjFQauaI38lRcpXZ5mg
-2lE/MEomZPRyiOKkh8FjQstniP4O/9vB2UNImJj4xSvQU8i8h3ZHXg1INH/bsO6F
-JEZsC+NNIBMpSJIne3GItcIA6x1dpLBncLYE2K9mF8PFLoIxbz0fmMUg0RuM2kbK
-+rMj4TYzDdQWGvknJjA7qLp7tBFbABmwArC8sMxC/GoVN8FQDSn6fv3oVeAKbqSE
-lBeZ/oM4HMxdAnygTSUe67g90VBacBdthbXWuviKY4g9x5qXiT4az6lOfZO3qFeX
-qjdJWrfAXEQKRff6wWDWleL3M3fb98/Jzj9jSRbgz3ihDKKiZLpYm/Qw34EImthg
-P41oqsaj390fKyhezXiYehbp8MZA7xmAkp/0ZXCCiOb1+3OcxWABHI9E0WoBW0wd
-GkosmTe1L2ZfmogMFjeIylAcSfMfdXgwrRScQdtyA6cW8vL4InGwcaXnHGgh9BHt
-BdMRq1nBvP2i+22pnsh82iUzFYVSqbi7LtoTJMjx9H7ExoNfaiBU+WIgiBOc8aWM
-0wofHHjHd1wF55ZILyJ9JBCtNGPX49Vik7e3/XDhJ2eyaHPffxGyamEqkQiUjbbi
-FDMEn5EukNyFA0uS94TRaVjZlKwT1+CgnR5lUJEqCdVQbusoJhiQ4lt0BmB8LWmY
-cWRIo4BA5lMqijh4Q8YQ
-=hUbu
+iQIcBAEBAgAGBQJSnHPaAAoJELSic+t+oim9cQcP/RzX8WcV5LrO4S+CcVJtwL3L
+7SYQF4t5wQjUDadhCT1GKgFaXEIY0MTV0iAaf/SLjdm3rhfHRzYXR78SrzaFAFCA
+SvCrh0c1fgseWlHmIHFvCs4bTp9im0V9iFnNI2m8pSU5j5HK8VGpyKDMsSraHJMI
+GIYSm3dHuYtTJdDcvf2dX+T3D5WgpeJkZ01A+OlbJASGU/XtD4ahjQe4R/jwzfQ2
+hGrykLnsmwqBJU0WchJfCcIr6eUtkmSeAE2fr9qPrbwdIZiW6T+d/jpa+uus3oA9
+oLalevCsR/bL/BbnZg90YCIP6B6rMNd3CkTYNh2QbEkbsZf8jMK2rEl8Fd8SnW7K
+APO/b/THA34o9b3HlN1vzPYrWxKbCqUmSmuCX1zoNlPsm++UCr1p9tYg+2jDhPZY
+80oA6FFwtcMGDE+SQmLy/vvmcbHa1B1lY7rptpdUqX3WnqHCm3K9pN937C6npyP6
+yehRluqxaI/dg2hLJx93gausZwpfA63MpCaxtBRVI0l39Ir5iBZFexVXjBJwkgM2
+C0hJUk1SSXIauxF+2ih3OhxAnCzs8PR7WlLgs3W1WoHurHSP7ctnfVZrPdaC5xPu
+U+Vem8HaxX1JRWKcLuVF+uqG3xHqwphArzFFjRUS/Mz9p7zvUR5BJM2/ErIxzO1C
+0AjSGqtWuBV0acnFvivl
+=bRES
 -----END PGP SIGNATURE-----
 
---2NSZC26AJDpFITwK--
+--/j2O6PQ6715aG3up--
 
---===============3764577545595539798==
+--===============3952155481705763422==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3764577545595539798==--
+--===============3952155481705763422==--
