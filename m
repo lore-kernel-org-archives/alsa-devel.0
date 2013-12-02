@@ -1,22 +1,19 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: HD-Audio: How to reduce driver initializaton time
- if multiple codecs present on the bus?
-Date: Mon, 2 Dec 2013 07:23:11 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801421CD5@SHSMSX101.ccr.corp.intel.com>
-References: <F46914AEC2663F4A9BB62374E5EEF8F80141EEE6@SHSMSX101.ccr.corp.intel.com>
- <52983498.606@canonical.com>	<s5hmwkng17c.wl%tiwai@suse.de>
- <529842EF.8070800@canonical.com>	<s5h8uw7fxzv.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F80141FC29@SHSMSX101.ccr.corp.intel.com>
- <s5h61rbfx5s.wl%tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: Unsupported Valley View 'LPE' adapter?
+Date: Mon, 2 Dec 2013 12:02:16 +0530
+Message-ID: <20131202063216.GJ8834@intel.com>
+References: <1385840039.2566.12.camel@adam.happyassassin.net>
+ <529A5C6A.70604@ladisch.de>
+ <1385865517.2566.36.camel@adam.happyassassin.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 4799E2616EF
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 08:23:22 +0100 (CET)
-In-Reply-To: <s5h61rbfx5s.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA0F02616EF
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 08:29:59 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1385865517.2566.36.camel@adam.happyassassin.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,95 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Adam Williamson <awilliam@redhat.com>, lgirdwood@gmail.com, Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Friday, November 29, 2013 4:08 PM
-> To: Lin, Mengdong
-> Cc: David Henningsson; alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] HD-Audio: How to reduce driver initializaton time
-> if multiple codecs present on the bus?
-> 
-> At Fri, 29 Nov 2013 08:05:35 +0000,
-> Lin, Mengdong wrote:
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Friday, November 29, 2013 3:50 PM
-> > > To: David Henningsson
-> > > Cc: Lin, Mengdong; alsa-devel@alsa-project.org
-> > > Subject: Re: [alsa-devel] HD-Audio: How to reduce driver
-> > > initializaton time if multiple codecs present on the bus?
+On Sat, Nov 30, 2013 at 06:38:37PM -0800, Adam Williamson wrote:
+> On Sat, 2013-11-30 at 22:45 +0100, Clemens Ladisch wrote:
+> > Adam Williamson wrote:
+> > > In Windows' Device Manager I see an 'Intel SST Audio Device' with PCI=
+ ID
+> > > 0x86:0f28. Indeed, the PCI ID database has this listed as "ValleyView
+> > > LPE Audio Controller" - http://pci-ids.ucw.cz/read/PC/8086/0f28 . But
+> > > hda-intel does not have 0f28 as a supported device.
 > > >
-> > > At Fri, 29 Nov 2013 15:31:59 +0800,
-> > > David Henningsson wrote:
-> > > >
-> > > > 2013-11-29 14:40, Takashi Iwai skrev:
-> > > > > At Fri, 29 Nov 2013 14:30:48 +0800, David Henningsson wrote:
-> > > > >> 2013-11-28 22:57, Lin, Mengdong skrev:
-> > > > >>> Hi Takashi,
-> > > > >>>
-> > > > >>> We're trying to reduce the HD-A driver initialization time
-> > > > >>> when more
-> > > than one codecs are connected to the bus, but are blocked.
-> > > > >>> Would you please share some advices on this?
-> > > > >>>
-> > > > >>> Usually, there is one HD-A controller connecting to two
-> > > > >>> codecs: one
-> > > on-board codec and one integrated display codec.
-> > > > >>> During initialization, the codecs are created and configured
-> > > > >>> in a
-> > > serial way.
-> > > > >>>
-> > > > >>> Creating a codec may cost 6~20ms, and then building controls
-> > > > >>> make
-> > > cost about 15~30ms.
-> > > > >> Sorry for interrupting, but I just wonder - I assume you have a
-> > > > >> maximum of 4 CPUs. Can't the other 3 CPUs be used to load other
-> > > > >> non-audio hardware in parallel instead? It sounds you're going
-> > > > >> to run into lock contention instead if you try to modify the
-> > > > >> same card from two threads simultaneously.
-> > > > > IIRC, PCI device probes are done sequentially because
-> > > > > asynchronous probe caused too many troubles.  And if it's a
-> > > > > module, it's anyway more strictly serialized.
-> > > >
-> > > > Okay. It just seems to me that from a bird's eye view that
-> > > > parallelizing module loading and pci probing would give us much
-> > > > bigger benefits than trying to parallellize internally in the
-> snd-hda-intel driver.
-> > >
-> > > Yeah, for a long run, this would be far benefit.  But be warned,
-> > > several attempts in the past failed due to weird hardwares :)
-> > >
-> > > > Btw, using a deferred azx_probe_continue (like we do if there's a
-> > > > firmware file), would one get more parallelization with other drivers?
-> > > > If so we could consider making that the default.
-> > >
-> > > This sounds like a good idea as we have already that code.  The
-> > > patch would be just a few-liners.
-> >
-> > If azx_probe_continue() is delayed, could user space get incomplete
-> audio information after boot?
-> > I mean is it possible that azx_probe_continue() does not complete
-> before user space check ALSA info?
-> 
-> Not impossible.  But then user-space should be triggered in event driven
-> way by udev or such.
+> > > So...what is this 0f28?
+> > =
 
-Hi Takashi/David,
+> > It is not an HDA controller.  The SST thingy uses I=B2S codecs.
+yes it doesnt look like HDA, but the SoC might have one which can be enabled
+in BIOS...
+> > =
 
-So is it okay to defer azx_probe_continue() by default?
+> > > Is support for it going to be added?
+> > =
 
-If yes, is it also necessary to defer snd_card_create() at the end of azx_probe_continue()? 
-So user space can only see the sound card when azx_probe_continue() completes.
+> > There is something in sound/soc/mid-x86/, but that is only for the
+> > Medfield platform.  The PCI SST driver that was not merged four years
+> > ago used the ID 080a.
+> > =
 
-We've checked the driver initialization time, the bottleneck is the bus. In three major three time-consuming functions,
-snd_hda_codec_new,  azx_codec_configure, and snd_hda_codec_build_controls, almost all the time is spent in codec_exec_verb().
+> > Only Intel knows.
+I think Liam or Jarkko might have something for you...
 
-So deferring azx_probe_continue() will be more helpful to reduce the initialization time and get more parallelization with other drivers.
+--
+~Vinod
+> =
 
-Thanks
-Mengdong
+> Ah! I did see that stuff, but it seemed so old it couldn't be
+> relevant...
+> =
+
+> > > Is there any info I can provide to help?
+> > =
+
+> > "lspci -vv -d 8086:0f28"?
+> =
+
+> OK, will get that for you shortly. Thanks for the info.
+> -- =
+
+> Adam Williamson
+> Fedora QA Community Monkey
+> IRC: adamw | Twitter: AdamW_Fedora | XMPP: adamw AT happyassassin . net
+> http://www.happyassassin.net
+> =
+
+
+-- =
