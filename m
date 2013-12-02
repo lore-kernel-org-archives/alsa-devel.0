@@ -1,77 +1,69 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: core: fix devres parameter in
- devm_snd_soc_register_card()
-Date: Mon, 2 Dec 2013 11:51:07 +0000
-Message-ID: <20131202115107.GU27568@sirena.org.uk>
-References: <20131129140153.GA10843@S2101-09.ap.freescale.net>
- <1385962010-8951-1-git-send-email-shawn.guo@linaro.org>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/1] ASoC: soc_compress: Add set_metadata
+Date: Mon, 2 Dec 2013 11:55:07 +0000
+Message-ID: <20131202115507.GA10409@opensource.wolfsonmicro.com>
+References: <20131125101648.GA1818@opensource.wolfsonmicro.com> <20131128061943.GS8834@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6280306684914245537=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E606261ABE
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 12:51:10 +0100 (CET)
-In-Reply-To: <1385962010-8951-1-git-send-email-shawn.guo@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20131128061943.GS8834@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Nov 28, 2013 at 11:49:43AM +0530, Vinod Koul wrote:
+> On Mon, Nov 25, 2013 at 10:16:48AM +0000, Richard Fitzgerald wrote:
+> > 
+> > Pass the set_metadata() calls through to the codec driver.
+> > 
+> > Signed-off-by: Zhao Weijia <weijia.zhao@capelabs.com>
+> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> > ---
+> >  sound/soc/soc-compress.c |   18 +++++++++++++++++-
+> >  1 files changed, 17 insertions(+), 1 deletions(-)
+> > 
+> > diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+> > index 53c9ecd..186802b 100644
+> > --- a/sound/soc/soc-compress.c
+> > +++ b/sound/soc/soc-compress.c
+> > @@ -318,6 +318,21 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+> >  	mutex_unlock(&rtd->pcm_mutex);
+> >  	return 0;
+> >  }
+> > +static int soc_compr_set_metadata(struct snd_compr_stream *cstream,
+> > +			struct snd_compr_metadata *metadata)
+> > +{
+> > +	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+> > +	struct snd_soc_platform *platform = rtd->platform;
+> > +
+> > +	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> > +
+> > +	if (platform->driver->compr_ops && platform->driver->compr_ops->set_metadata)
+> > +		 platform->driver->compr_ops->set_metadata(cstream, metadata);
+> > +
+> > +	mutex_unlock(&rtd->pcm_mutex);
+> > +	return 0;
+> > +}
+> > +
+> >  
+> >  static int soc_compr_copy(struct snd_compr_stream *cstream,
+> >  			  char __user *buf, size_t count)
+> > @@ -372,7 +387,8 @@ static struct snd_compr_ops soc_compr_ops = {
+> >  	.pointer	= soc_compr_pointer,
+> >  	.ack		= soc_compr_ack,
+> >  	.get_caps	= soc_compr_get_caps,
+> > -	.get_codec_caps = soc_compr_get_codec_caps
+> > +	.get_codec_caps = soc_compr_get_codec_caps,
+> > +	.set_metadata = soc_compr_set_metadata,
+> Sorry am confused by this and the patch description? The set_metadata call
+> exists so how is this propogating to codec? Also which tree has this been
+> generated against?
+> 
+> --
+> ~Vinod
+> -- 
 
---===============6280306684914245537==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JeoFlc3Bdq4ZaQzA"
-Content-Disposition: inline
-
-
---JeoFlc3Bdq4ZaQzA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Dec 02, 2013 at 01:26:50PM +0800, Shawn Guo wrote:
-> Since devm_card_release() expects parameter 'res' to be a pointer to
-> struct snd_soc_card, devm_snd_soc_register_card() should really pass
-> such a pointer rather than the one to struct device.
-
-Applied, thanks.
-
---JeoFlc3Bdq4ZaQzA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSnHQoAAoJELSic+t+oim9RSoP/2e1+naLcfvLsESrWd8FiICX
-smHhKkvAB36lhPPtFWSXyukiyhFJdENvv2gha0KPJoFq/ekHJmPfnGsCVU3e6GMV
-aUUpvXnp+usf1pyjp/jni3sT8QESTvVDOrBMlxfDFDSLs7qGM8km5NkI/KM/I0ng
-DgIOPjfwsHWZLssdlADZvt4Eq/6JxkMpdXNPZcVpTUE9JF+mztKopotF0BbM/AkA
-eMk2LMHYlDAlsHdeEgVGMg4/Qd1mah4OEKbiuBGIORVmNMQc+gz9m56rkCKfgmxX
-xvu+ZJmp35YvJKNKCBAiqoL3Pl+62IOMhOx5w/Ud0jiO5DZVoCFGPcrEYeVmVz85
-OVeP1W9No2f75w2M8l790iFMsrcKz5b6m7d2BHcizwIE9BS1GphT9iLbFYOXM0GA
-AKldWXuB6kgmVy3D1ujB5Rj3Hq6ihy86tni0t8Fq4jyQNKfvlvl3+L3/94RzbXo5
-isyslaa4oorAfxIdyg/quIZRdvYeSyk880H/ukHM3N5liToSTCAVEJlJkF2siT3u
-th56Cto1EZvadAxU7GypZAc+mHCvnppzjQT+PdthRz2WgAQR6z5LKkyw6TqK+k2Z
-N6Ol1G0k1y3ZQV6VBD/t/rqYnSKraohV4VRAPC8Cr7+YCSAgL0Hb1TbeV/hgxW7o
-zgiacs4uTEV+vCZVumwR
-=/JG/
------END PGP SIGNATURE-----
-
---JeoFlc3Bdq4ZaQzA--
-
---===============6280306684914245537==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6280306684914245537==--
+My fault. I was sure I checked against broonie's for-next and these function were missing, but I must have checked 
+against something old. Patch abandoned!
