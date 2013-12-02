@@ -1,20 +1,24 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: Use valid condition for
- snd_soc_dai_digital_mute() in hw_free()
-Date: Mon, 2 Dec 2013 18:39:48 +0800
-Message-ID: <20131202103948.GA8609@MrMyself>
-References: <1385976874-30755-1-git-send-email-b42378@freescale.com>
- <s5hli038t5g.wl%tiwai@suse.de>
+From: VS <vasan.vs@gmail.com>
+Subject: MAXIM 98089 codec support in Linux
+Date: Mon, 2 Dec 2013 10:46:36 +0000 (UTC)
+Message-ID: <loom.20131202T114044-425@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 8EB9826260F
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 11:46:53 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hli038t5g.wl%tiwai@suse.de>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF30226260F
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 11:50:11 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1VnR4n-00067q-0S
+ for alsa-devel@alsa-project.org; Mon, 02 Dec 2013 11:50:09 +0100
+Received: from 202.141.25.2 ([202.141.25.2])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 02 Dec 2013 11:50:05 +0100
+Received: from vasan.vs by 202.141.25.2 with local (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 02 Dec 2013 11:50:05 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,58 +28,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 02, 2013 at 11:05:31AM +0100, Takashi Iwai wrote:
-> At Mon, 2 Dec 2013 17:34:34 +0800,
-> Nicolin Chen wrote:
-> > 
-> > The snd_soc_dai_digital_mute() here will be never executed because we only
-> > decrease codec->active in snd_soc_close(). Thus correct it.
-> 
-> A couple of minor problems by this approach:
-> 
-> - snd_soc_dai_digital_mute() will be called twice in the normal PCM
->   close path.
-> 
-> - In full duplex mode where both playback/capture streams share the
->   same codec, one of the directions won't be handled correctly because
->   codec->active is incremented/decremented twice (once for each
->   direction).
-> 
+Hi,
 
-Thank you for the comments. I didn't look at the whole board.
-Please Drop this patch.
+We are trying to integrate MAXIM 98089 (Audio codec) into our Linux product
+build. This has 2 DAI's available with it - DAI1 with both Playback and
+Capture facility and DAI2 with Playback capability alone.
 
-Thank you.
-Nicolin Chen
+When we use this codec in our build, we find that the dai1_hw_params and
+dai1_set_fmt functions never gets called but it is always dai2_hw_params and
+dai2_set_fmt function that gets called because of which apparently, we are
+able to hear the voice that is incoming but not able to capture the voice
+and send it out externally.
 
-> 
-> Takashi
-> 
-> > 
-> > Signed-off-by: Nicolin Chen <b42378@freescale.com>
-> > ---
-> >  sound/soc/soc-pcm.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> > index 22af038..7d19117 100644
-> > --- a/sound/soc/soc-pcm.c
-> > +++ b/sound/soc/soc-pcm.c
-> > @@ -689,7 +689,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
-> >  	}
-> >  
-> >  	/* apply codec digital mute */
-> > -	if (!codec->active)
-> > +	if (codec->active == 1)
-> >  		snd_soc_dai_digital_mute(codec_dai, 1, substream->stream);
-> >  
-> >  	/* free any machine hw params */
-> > -- 
-> > 1.8.4
-> > 
-> > 
-> 
+Here are our definitions:
+
+static struct snd_soc_dai_driver max98089_dai[] = {
+{
+        .name = "max98089.0",
+                .playback = {
+                .stream_name = "Playback",
+                .channels_min = 1,
+                .channels_max = 2,
+                .rates = MAX98089_RATES,
+                .formats = MAX98089_FORMATS,
+                },
+        .capture = {
+                .stream_name = "Capture",
+                .channels_min = 1,
+                .channels_max = 2,
+                .rates = MAX98089_RATES,
+                .formats = MAX98089_FORMATS,
+        },
+         .ops = &max98089_dai1_ops,
+},
+{
+        .name = "max98089.1",
+        .playback = {
+                .stream_name = "Aux Playback",
+                .channels_min = 1,
+                .channels_max = 2,
+                .rates = MAX98089_RATES,
+                .formats = MAX98089_FORMATS,
+        },
+        .ops = &max98089_dai2_ops,
+        .symmetric_rates = 1,
+}
+};
+
+The codec specific registers only when we put in dai2_ops functions, we are
+able to see the effects but there is no effect if we put it in dai1_ops
+functions.
+
+Is there any specific way of referring to DAI when we have multiple DAI
+support in the codec that we are using?
+
+Thanks in advance for your inputs
+
+VS
