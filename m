@@ -1,20 +1,17 @@
-From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Subject: Re: caiaq driver: audio 4 dj and jackd
-Date: Mon, 02 Dec 2013 13:22:42 -0800
-Message-ID: <529CFA22.1050705@gmail.com>
-References: <529BF843.6000608@gmail.com> <529CAE8D.6020003@zonque.org>
- <529CB1F6.7070607@gmail.com> <201312021948.58167.gineera@aspect135.co.uk>
+From: anish singh <anish198519851985@gmail.com>
+Subject: Re: compressed audio support (maruthi srinivas)
+Date: Mon, 2 Dec 2013 15:24:51 -0800
+Message-ID: <CAK7N6vrkSZALp2z5wpve1Cw6GWzWX=u060yEq8iukK1Oeqe1-g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
- [209.85.160.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 173EE264F2C
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 22:22:45 +0100 (CET)
-Received: by mail-pb0-f51.google.com with SMTP id up15so19761901pbc.24
- for <alsa-devel@alsa-project.org>; Mon, 02 Dec 2013 13:22:44 -0800 (PST)
-In-Reply-To: <201312021948.58167.gineera@aspect135.co.uk>
+Received: from mail-we0-f180.google.com (mail-we0-f180.google.com
+ [74.125.82.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FA3A265074
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 00:24:52 +0100 (CET)
+Received: by mail-we0-f180.google.com with SMTP id t61so7009188wes.39
+ for <alsa-devel@alsa-project.org>; Mon, 02 Dec 2013 15:24:51 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>, alsa-devel@alsa-project.org
-Cc: Daniel Mack <zonque@gmail.com>
+To: maruthi.srinivas.b@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/02/2013 11:48 AM, Alan Horstmann wrote:
->> But solving this required editing asoundrc files (ugh) and casting
->> several magic spells.  Would be nice if it "just works."
+> Hi,
 >
-> The same problem occurs with Portaudio on this device (or similar) - it would
-> be great to just be able to open one device with 4 channels, or 2 stereo
-> pairs.
+> I saw that compressed audio framework being used
+> with Asoc (alsa soc).
+> Can the framework be used with other than Asoc ?
+> I mean with ALSA pci based cards.
+
+Never worked on this so don't know.
+> I see the implementation in the following files. which one
+> is to be used ?
+> Does tinycompress in userspace can be used with either
+> approaches ?
+This will not be relevant after you see below answer.
 >
-> I had wondered whether it could be done by some card-specific definitions in
-> eg /usr/share/alsa/cards as is done particularly with PCI cards??  Anybody
-> any ideas?
+>http://lxr.free-electrons.com/source/sound/core/compress_offload.c
+>http://lxr.free-electrons.com/source/sound/soc/soc-compress.c
 
-Good idea.
+Both are compress framework driver files.
+compress_offload.c file is the one which interacts with userspace
+by using ioctl's, registers the compressed device with alsa
+framework(/dev/compress* gets created because of that),  calls
+the corresponding functions such as trigger, pointer update, copy
+and others when userspace pauses, plays and stops the playback
+or recording.
 
->
-> Gabriel, could you post the multi pcm you worked out for this, as it may help
-> others?
+soc_compress.c file is the file which interacts with compress_offload.c
+file to create a 'dev' node for compress driver.Basically when you
+register your compress driver with compress framework,alsa core
+will come to know that your dai support compress operations and
+it will create the dev node by using soc_compress.c file.The functions
+in this file gets called by compress_offload.c functions and who
+inturn gets called by the userspace.
 
-I can't take credit for figuring it out.  Got it from here:
-
-http://ywwg.com/wordpress/?p=772
-
--gabe
+userspace->compress_offload.c->soc_compress.c->your_compress_driver.
