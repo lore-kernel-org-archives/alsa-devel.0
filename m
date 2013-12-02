@@ -1,57 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 07/10] ASoC: ux500: Store DMA data in the
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 07/10] ASoC: ux500: Store DMA data in the
  DAI differently in the pdata and DT case
-Date: Mon, 2 Dec 2013 13:54:52 +0000
-Message-ID: <20131202135452.GI27568@sirena.org.uk>
+Date: Mon, 2 Dec 2013 14:03:24 +0000
+Message-ID: <20131202140324.GH31626@lee--X1>
 References: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
  <1384859269-19801-8-git-send-email-lee.jones@linaro.org>
  <CAOesGMiu16f_L=cMWFCNZMjNB9tBK-2LXn02k-R7FhkkgR5-+g@mail.gmail.com>
  <20131202101256.GA29373@lee--X1>
+ <20131202135452.GI27568@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tdQcld/J3/3kIpyY"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ie0-f174.google.com (mail-ie0-f174.google.com
+ [209.85.223.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1FAC264F2C
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 15:03:34 +0100 (CET)
+Received: by mail-ie0-f174.google.com with SMTP id at1so20752692iec.33
+ for <alsa-devel@alsa-project.org>; Mon, 02 Dec 2013 06:03:33 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <20131202101256.GA29373@lee--X1>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Olof Johansson <olof@lixom.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, LinusW <linus.walleij@linaro.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+In-Reply-To: <20131202135452.GI27568@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Olof Johansson <olof@lixom.net>, LinusW <linus.walleij@linaro.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---tdQcld/J3/3kIpyY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Dec 02, 2013 at 10:12:56AM +0000, Lee Jones wrote:
-
-> It's actually my fault. I had two patches round the wrong way in the
-> series. The imediately subsequent patch in the set fixes this issue:
-
-OK, so what do we do about this?  Is there going to be a revision of
-that patch adding the note about not using the autoconfiguration stuff
-and what (if any) are the dependencies on the arch/arm changes?
-
---tdQcld/J3/3kIpyY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSnJEpAAoJELSic+t+oim9NkkP/i+Rc1fQnypUrmi35VrerqMb
-VV394BOw8NQA+eqqJFkXNMZUdzZzhvSFeUNZtvLwy5CEb0nGbiqoxIglQGfk/wNp
-fnAO5LGNcH3wn0bZaFKbU9SIqgFzZMVRB830QLgQeKpu8jfNHbmZQ65H2U8l0+n/
-j8cxRABz/byEWJbsxe7Dvd78p/r4XmoP4e5MBydrgEKJrt4hEG1V1GuQ4yLxJSvT
-EeOmIpZD6MTSdYn1oERFJzPg21lkrD9PXFO6edE6Yl4sRDvyMV4ZXn/Xobq+h9Ig
-vDZICkT5pwCfR0q9SVhkp14L3pz+TfbGmw5SDK5lzz96Z3FUKbdGRfvz0VcLoH44
-0lFWGHSy5lLp7/uofnDE5gx8LVv/cD+LP+phnXzRk8+0/kJlyqx3unExgLOJ8uxM
-pH/T6K6B8aRXAv76lY/QFrsa1QY7Q5C/V6Rxr19J6JXVY3XNzMJLQ4AgkkGS4uEx
-0glr4jFsgZ3r8fNw8gV3bJwpYejLD2LrJ4fZWmMHnMMCkYmYS/j6vbKpWOSgXgKS
-Ta6lamnMa7jVPLMGUQkIf6fY0cdmM1GuMx/XQ0lt1z8W1rUjiF4fu2glK1JjfaVq
-kOhtfHqiE2O2xcBuh4MGaajCg8md/NDzIHLpqhfLQWhkc9PYO4tYVjryOwuktCqJ
-xG2wOgP7NfXN5mzxs+AZ
-=NWay
------END PGP SIGNATURE-----
-
---tdQcld/J3/3kIpyY--
+T24gTW9uLCAwMiBEZWMgMjAxMywgTWFyayBCcm93biB3cm90ZToKCj4gT24gTW9uLCBEZWMgMDIs
+IDIwMTMgYXQgMTA6MTI6NTZBTSArMDAwMCwgTGVlIEpvbmVzIHdyb3RlOgo+IAo+ID4gSXQncyBh
+Y3R1YWxseSBteSBmYXVsdC4gSSBoYWQgdHdvIHBhdGNoZXMgcm91bmQgdGhlIHdyb25nIHdheSBp
+biB0aGUKPiA+IHNlcmllcy4gVGhlIGltZWRpYXRlbHkgc3Vic2VxdWVudCBwYXRjaCBpbiB0aGUg
+c2V0IGZpeGVzIHRoaXMgaXNzdWU6Cj4gCj4gT0ssIHNvIHdoYXQgZG8gd2UgZG8gYWJvdXQgdGhp
+cz8gIElzIHRoZXJlIGdvaW5nIHRvIGJlIGEgcmV2aXNpb24gb2YKPiB0aGF0IHBhdGNoIGFkZGlu
+ZyB0aGUgbm90ZSBhYm91dCBub3QgdXNpbmcgdGhlIGF1dG9jb25maWd1cmF0aW9uIHN0dWZmCj4g
+YW5kIHdoYXQgKGlmIGFueSkgYXJlIHRoZSBkZXBlbmRlbmNpZXMgb24gdGhlIGFyY2gvYXJtIGNo
+YW5nZXM/CgpJIGNhbiBzaG9vdCBvdXQgYSByZXZpc2lvbiBubyBwcm9ibGVtLgoKSSdtIG5vdCBh
+d2FyZSBvZiBhbnkgZGVwZW5kZW5jaWVzIG9uIHRoZSBBUk0gY2hhbmdlcy4gSSBoYXZlbid0IHRl
+c3RlZAp0aGUgYXJjaC9hcm0gYW5kIHNvdW5kL3NvYyBhZGFwdGlvbnMgb3J0aG9nb25hbGx5LCBi
+dXQgSSBfdGhpbmtfIHRoZQpyaWdodCBkZWNpc2lvbnMgc2hvdWxkIGJlIG1hZGUgZGVwZW5kaW5n
+IG9uIHRoZSBpbmZvcm1hdGlvbiBwYXNzZWQKZnJvbSBwbGF0Zm9ybS9kdCBjb2RlLgoKLS0gCkxl
+ZSBKb25lcwpMaW5hcm8gU1RNaWNyb2VsZWN0cm9uaWNzIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFy
+by5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJv
+OiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
