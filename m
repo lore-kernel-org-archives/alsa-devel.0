@@ -1,18 +1,24 @@
-From: Dolevo Jay <cmst@live.com>
-Subject: Re: Intermittent cut out on the video
-Date: Mon, 2 Dec 2013 09:47:16 +0000
-Message-ID: <DUB122-W150AA077A26EF2F1581D57AAEA0@phx.gbl>
-References: <DUB122-W30D40465C0A432A2147375AAEC0@phx.gbl>,
- <DUB122-W83C8D065397526DB034BAAAEE0@phx.gbl>, <5296FEF9.2020604@ladisch.de>,
- <DUB122-W22A2B2F1172BAEC057087BAAEA0@phx.gbl>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: HD-Audio: How to reduce driver initializaton time
+ if multiple codecs present on the bus?
+Date: Mon, 2 Dec 2013 09:48:24 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801421ED7@SHSMSX101.ccr.corp.intel.com>
+References: <F46914AEC2663F4A9BB62374E5EEF8F80141EEE6@SHSMSX101.ccr.corp.intel.com>
+ <52983498.606@canonical.com>	<s5hmwkng17c.wl%tiwai@suse.de>
+ <529842EF.8070800@canonical.com>	<s5h8uw7fxzv.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F80141FC29@SHSMSX101.ccr.corp.intel.com>
+ <s5h61rbfx5s.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F801421CD5@SHSMSX101.ccr.corp.intel.com>
+ <s5hfvqbek4e.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dub0-omc3-s35.dub0.hotmail.com (dub0-omc3-s35.dub0.hotmail.com
- [157.55.2.44]) by alsa0.perex.cz (Postfix) with ESMTP id 5BAEA2619F9
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 10:47:17 +0100 (CET)
-In-Reply-To: <DUB122-W22A2B2F1172BAEC057087BAAEA0@phx.gbl>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 169652619F9
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2013 10:48:29 +0100 (CET)
+In-Reply-To: <s5hfvqbek4e.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +28,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-From: cmst@live.com
-To: clemens@ladisch.de
-Subject: RE: [alsa-devel] Intermittent cut out on the video
-Date: Mon, 2 Dec 2013 09:44:16 +0000
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, December 02, 2013 4:24 PM
 
 
-
-
-
-
-> Date: Thu, 28 Nov 2013 09:29:45 +0100
-> From: clemens@ladisch.de
-> To: cmst@live.com; alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] Intermittent cut out on the video
-> 
-> Dolevo Jay wrote:
-> > I have two sound cards on my system and I use the [multi plugin] to
-> > have audio from two jacks simultaneously.
+> > > > > > Btw, using a deferred azx_probe_continue (like we do if
+> > > > > > there's a firmware file), would one get more parallelization with
+> other drivers?
+> > > > > > If so we could consider making that the default.
+> > > > >
+> > > > > This sounds like a good idea as we have already that code.  The
+> > > > > patch would be just a few-liners.
+> > > >
+> > > > If azx_probe_continue() is delayed, could user space get
+> > > > incomplete
+> > > audio information after boot?
+> > > > I mean is it possible that azx_probe_continue() does not complete
+> > > before user space check ALSA info?
+> > >
+> > > Not impossible.  But then user-space should be triggered in event
+> > > driven way by udev or such.
 > >
-> > The audio coming from the jack on the pc is cutting out intermittently.
-> > It just cuts out for a fraction of a second and continues as normal
-> > and after some time it happens again.
+> > Hi Takashi/David,
+> >
+> > So is it okay to defer azx_probe_continue() by default?
 > 
-> The two cards use different sample clocks, so it is not possible to feed
-> them reliably from the same stream.
+> Yes.
 > 
-> You would need software that measures that actual sample rate of both
-> devices and resamples its output appropriately.  Try using PulseAudio.
+> > If yes, is it also necessary to defer snd_card_create() at the end of
+> azx_probe_continue()?
 > 
+> No, that's a significant difference.  The snd_card_create() invocation isn't
+> related with the hardware access itself, thus it's no point to delay.  If you
+> delay the card instance creation, this may result in races between the card
+> order, which we'd like to avoid.
 > 
-> Regards,
-> Clemens
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > So user space can only see the sound card when azx_probe_continue()
+> completes.
+> 
+> The completion of the card creation is notified only after
+> snd_card_register(), so it doesn't matter when to call snd_card_create().
+> 
+> The below is an untested patch.  I should have added in the previous
+> reply...
 
-Hi,
+Hi Takashi,
 
-I have tried to apply 
-pulseaudio but couldn't really manage it. Could you please tell me if I can 
-fix it in the configuration file? I mean, for example, would it be solved if I resample the
- audio for the appropriate sound card in the asound.conf? What other 
-option do I have other than pulseaudio?
+Many thanks for the patch and information!
 
-Thanks a lot.
+Is my understanding below is right?
+snd_card_register() will create the device files under /sys/devices/pci0000:00/0000:00:1b.0/sound/cardx 
+(or /sys/devices/pci0000:00/0000:00:03.0/sound/cardx for Haswell display audio), and trigger uevent to notify user space that an audio device is ready.
 
- 		 	   		   		 	   		  
+And for the patch, 
+
+>  #ifdef CONFIG_SND_HDA_PATCH_LOADER
+>  	if (patch[dev] && *patch[dev]) {
+> @@ -3855,25 +3855,17 @@ static int azx_probe(struct pci_dev *pci,
+>  					      azx_firmware_cb);
+>  		if (err < 0)
+>  			goto out_free;
+> -		probe_now = false; /* continued in azx_firmware_cb() */
+> +		schedule_probe = false; /* continued in azx_firmware_cb() */
+>  	}
+
+Should it be 'schedule_probe = true'?
+I guess the driver intends to defer firmware loading.
+
+Thanks
+Mengdong
