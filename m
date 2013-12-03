@@ -1,19 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Intermittent cut out on the video
-Date: Tue, 03 Dec 2013 14:13:56 +0100
-Message-ID: <529DD914.7060205@ladisch.de>
-References: <DUB122-W30D40465C0A432A2147375AAEC0@phx.gbl>,
- <DUB122-W83C8D065397526DB034BAAAEE0@phx.gbl>, <5296FEF9.2020604@ladisch.de>,
- <DUB122-W22A2B2F1172BAEC057087BAAEA0@phx.gbl>
- <DUB122-W150AA077A26EF2F1581D57AAEA0@phx.gbl>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Implement
+ symmetric_channels and symmetric_samplebits
+Date: Tue, 3 Dec 2013 14:58:33 +0000
+Message-ID: <20131203145833.GV27568@sirena.org.uk>
+References: <1386067087-12243-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4242285351045859128=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 9475E2651F2
- for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 14:13:59 +0100 (CET)
-In-Reply-To: <DUB122-W150AA077A26EF2F1581D57AAEA0@phx.gbl>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A083265211
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 15:58:41 +0100 (CET)
+In-Reply-To: <1386067087-12243-1-git-send-email-b42378@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,17 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dolevo Jay <cmst@live.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Nicolin Chen <b42378@freescale.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, timur@tabi.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Dolevo Jay wrote:
->> You would need software that measures that actual sample rate of both
->> devices and resamples its output appropriately.  Try using PulseAudio.
->
-> I have tried to apply pulseaudio but couldn't really manage it.
 
-http://www.freedesktop.org/wiki/Software/PulseAudio/FAQ/#index31h3
+--===============4242285351045859128==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="bVsR27XclOPPgt1U"
+Content-Disposition: inline
 
 
-Regards,
-Clemens
+--bVsR27XclOPPgt1U
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Dec 03, 2013 at 06:38:07PM +0800, Nicolin Chen wrote:
+> Since we introduced symmetric_channels and symmetric_samplebits, we implement
+> these two features to fsl_ssi so as to drop some no-more-needed code and make
+> the driver neat and clean.
+
+Applied, thanks.
+
+--bVsR27XclOPPgt1U
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSnfGVAAoJELSic+t+oim9D/kP+gK6ydmP765EsSJAvSrl+oFr
+qDaUtCcDzJJ+f/8DtyUp2ZIUE6f4PdafqMZW4R8cLx3t7dkDQtty84ObwvlAqdcN
+WHNbhglXvm8OmcNwo7iCu7Sf7WpKMHA3adDnPCXdMuzcfpkRh06V8idNJO5s1xtn
+yykJDnOtZ9GstKN6ytChh8re4jLyPHTQn59G/vkuOFTc2rx1VtrEmz9Hito8VLew
+PGFj9H8VjKEyx5amPmIdG4PvEVn+I8dGQt2G2Ye6jxyzgMzXB5XxfCLvhRnfuGOy
+qeA/+aozKUQLbP7ZYcdQOS0WsDVD9bibZzKgCq2qhS/l4kpJig5FRifYaA/44uQg
+dAM7eDokNOpLYsFWg+t9yXEW6C5F+svLuTrfaWBc3Bwc9c2gUWNT+S3TuN0pdtgC
+D2LhIKJgCOAP6BHGLIJ0sMErhsozEn+yXV0ylv91J90L5YHgvsofBEpuV6pWmfBb
+qhyGOi9lWQ72+aeIWJSYOJd4KgTisUuMzjKKtmwaB924KOa0YDlDXFM72NJiWMKD
+Q9GSNa3xRcBFMWilspZHS22If2LchLfHg8N2X7tNgdVJiLY+3/yq1caEW+n5kljZ
+tEpAmxPkyEp1jilc3PG+8kc9nOqDitQ1iI3wLZ/8bKOGnCSdcudNb+klDtebGkiR
+phISjL2pMu/zSMFgIq0b
+=ig8r
+-----END PGP SIGNATURE-----
+
+--bVsR27XclOPPgt1U--
+
+--===============4242285351045859128==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4242285351045859128==--
