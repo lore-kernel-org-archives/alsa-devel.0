@@ -1,18 +1,18 @@
-From: Marius Graefe <alsa@mgraefe.de>
-Subject: Re: [PATCH - oxygen 1/1] Patch for the Xonar DG Patch
- by Roman Volkov
-Date: Tue, 03 Dec 2013 18:27:57 +0100
-Message-ID: <529E149D.7000907@mgraefe.de>
-References: <1386085561-20131-1-git-send-email-alsa@mgraefe.de>
- <529E0157.4050807@ladisch.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 2/2] ASoC: jz4740: Use the generic dmaengine
+	PCM driver
+Date: Tue,  3 Dec 2013 18:53:03 +0100
+Message-ID: <1386093183-14625-2-git-send-email-lars@metafoo.de>
+References: <1386093183-14625-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.mgraefe.de (mail.mgraefe.de [212.224.84.249])
- by alsa0.perex.cz (Postfix) with ESMTP id 7034326524C
- for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 18:27:58 +0100 (CET)
-In-Reply-To: <529E0157.4050807@ladisch.de>
+Received: from smtp-out-110.synserver.de (smtp-out-012.synserver.de
+ [212.40.185.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 68867265200
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 18:52:03 +0100 (CET)
+In-Reply-To: <1386093183-14625-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,90 +22,570 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, v1ron@mail.ru
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Marius Graefe wrote:
->> 2) I had to assign a .shortname in xonar_dg_model, otherwise my kernel
->> (unmodified ubuntu 3.2.0-56-generic-pae) throws an oops, the backtrace
->> led me to the missing string.
-> What code tries to access the shortname?  What is the backtrace?
->
->
-> Regards,
-> Clemens
-I think it is oxygen_pci_probe in oxygen_lib.c. Line 667 of that file says:
-strcpy(card->shortname, chip->model.shortname);
+Now that there is a dmaengine driver for the jz4740 DMA core we can use the
+generic dmaengine PCM driver. This allows us to remove the custom jz4740-pcm
+code completely.
 
-This was the kernels output before my fix:
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/jz4740/Kconfig      |    1 +
+ sound/soc/jz4740/jz4740-i2s.c |   54 +++----
+ sound/soc/jz4740/jz4740-pcm.c |  358 -----------------------------------------
+ sound/soc/jz4740/jz4740-pcm.h |   20 ---
+ sound/soc/jz4740/qi_lb60.c    |    2 +-
+ 5 files changed, 24 insertions(+), 411 deletions(-)
+ delete mode 100644 sound/soc/jz4740/jz4740-pcm.c
+ delete mode 100644 sound/soc/jz4740/jz4740-pcm.h
 
-
-[   13.712048] BUG: unable to handle kernel NULL pointer dereference 
-at   (null)
-[   13.712050] IP: [<c12b9bf7>] strcpy+0x17/0x30
-[   13.712054] *pdpt = 000000002b069001 *pde = 0000000000000000
-[   13.712056] Oops: 0000 [#1] SMP
-[   13.712058] Modules linked in: bnep snd_hda_codec_hdmi(O) 
-snd_hda_intel(O) snd_oxygen(O+) rfcomm bluetooth snd_oxygen_lib(O) 
-snd_hda_codec(O) snd_mpu401_uart(O) ir_lirc_codec lirc_dev snd_hwdep(O) 
-ir_mce_kbd_decoder parport_pc ir_sony_decoder ppdev snd_seq_dummy(O) 
-ir_jvc_decoder snd_seq_oss(O) snd_seq_midi(O) ir_rc6_decoder 
-snd_rawmidi(O) snd_seq_midi_event(O) ir_rc5_decoder ir_nec_decoder 
-snd_seq(O) rc_core videobuf_dma_sg altera_stapl snd_pcm_oss(O) 
-snd_mixer_oss(O) snd_pcm(O) snd_seq_device(O) fglrx(P) lp snd_timer(O) 
-cx2341x videobuf_dvb videobuf_core v4l2_common videodev altera_ci 
-dvb_core eeepc_wmi asus_wmi btcx_risc mei(C) tveeprom snd(O) joydev 
-psmouse serio_raw mac_hid snd_page_alloc(O) sparse_keymap parport 
-soundcore binfmt_misc vesafb usbhid hid wmi r8169
-[   13.712081]
-[   13.712083] Pid: 862, comm: modprobe Tainted: P         C O 
-3.2.0-56-generic-pae #86-Ubuntu System manufacturer System Product 
-Name/P8P67 REV 3.1
-[   13.712085] EIP: 0060:[<c12b9bf7>] EFLAGS: 00010292 CPU: 0
-[   13.712087] EIP is at strcpy+0x17/0x30
-[   13.712088] EAX: eebdd024 EBX: eebdd210 ECX: eebdd024 EDX: 00000000
-[   13.712089] ESI: 00000000 EDI: eebdd024 EBP: f5cedde4 ESP: f5cedddc
-[   13.712090]  DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
-[   13.712091] Process modprobe (pid: 862, ti=f5cec000 task=ee777230 
-task.ti=f5cec000)
-[   13.712092] Stack:
-[   13.712092]  f7684000 f7684800 f5cede20 f8d10604 00000080 f8d14cbd 
-eebdd210 f5cede00
-[   13.712096]  c1036a88 f5cede14 f7684860 00000000 eebdd000 f76848ba 
-f7684800 f5cede58
-[   13.712099]  f7684860 f5cede34 f8ccec75 f8cd0140 f8ccf900 f8cce96c 
-f5cede4c c12d3b07
-[   13.712102] Call Trace:
-[   13.712105]  [<f8d10604>] oxygen_pci_probe+0x824/0xd00 [snd_oxygen_lib]
-[   13.712108]  [<c1036a88>] ? default_spin_lock_flags+0x8/0x10
-[   13.712111]  [<f8ccec75>] generic_oxygen_probe+0x52/0x66 [snd_oxygen]
-[   13.712113]  [<f8cce96c>] ? xonar_dg_pga_volume_put+0xbc/0xbc 
-[snd_oxygen]
-[   13.712115]  [<c12d3b07>] local_pci_probe+0x47/0xb0
-[   13.712117]  [<c12d5008>] pci_device_probe+0x68/0x90
-[   13.712119]  [<c11a9e77>] ? sysfs_create_link+0x17/0x20
-[   13.712122]  [<c1387d6d>] really_probe+0x4d/0x150
-[   13.712124]  [<c13913f9>] ? pm_runtime_barrier+0x49/0xb0
-[   13.712125]  [<c1387faa>] driver_probe_device+0x3a/0x60
-[   13.712127]  [<c1388061>] __driver_attach+0x91/0xa0
-[   13.712128]  [<c1387fd0>] ? driver_probe_device+0x60/0x60
-[   13.712130]  [<c13870e1>] bus_for_each_dev+0x51/0x80
-[   13.712131]  [<c1387ba1>] driver_attach+0x21/0x30
-[   13.712132]  [<c1387fd0>] ? driver_probe_device+0x60/0x60
-[   13.712134]  [<c138787f>] bus_add_driver+0x17f/0x260
-[   13.712135]  [<c12d5030>] ? pci_device_probe+0x90/0x90
-[   13.712137]  [<c1388536>] driver_register+0x66/0x110
-[   13.712138]  [<c12d4db2>] __pci_register_driver+0x42/0xc0
-[   13.712140]  [<f8cd3017>] alsa_card_oxygen_init+0x17/0x1000 [snd_oxygen]
-[   13.712142]  [<c1003035>] do_one_initcall+0x35/0x170
-[   13.712145]  [<f8cd3000>] ? 0xf8cd2fff
-[   13.712147]  [<c10968ec>] sys_init_module+0xac/0x210
-[   13.712149]  [<c15b295f>] sysenter_do_call+0x12/0x28
-[   13.712150] Code: ff ff 59 c3 51 52 e8 39 a9 ff ff 5a 59 c3 90 90 90 
-90 90 90 55 89 e5 83 ec 08 89 75 f8 89 7d fc 66 66 66 66 90 89 c1 89 d6 
-89 c7 <ac> aa 84 c0 75 fa 8b 75 f8 89 c8 8b 7d fc 89 ec 5d c3 8d b4 26
-[   13.712168] EIP: [<c12b9bf7>] strcpy+0x17/0x30 SS:ESP 0068:f5cedddc
-[   13.712170] CR2: 0000000000000000
-[   13.712172] ---[ end trace 54937d844202c50f ]---
+diff --git a/sound/soc/jz4740/Kconfig b/sound/soc/jz4740/Kconfig
+index 94406de..74b2f2b 100644
+--- a/sound/soc/jz4740/Kconfig
++++ b/sound/soc/jz4740/Kconfig
+@@ -1,6 +1,7 @@
+ config SND_JZ4740_SOC
+ 	tristate "SoC Audio for Ingenic JZ4740 SoC"
+ 	depends on MACH_JZ4740 && SND_SOC
++	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the JZ4740 I2S interface. You will also need to select the audio
+diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
+index a0b6a85..8f22000 100644
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -29,9 +29,11 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/initval.h>
++#include <sound/dmaengine_pcm.h>
++
++#include <asm/mach-jz4740/dma.h>
+ 
+ #include "jz4740-i2s.h"
+-#include "jz4740-pcm.h"
+ 
+ #define JZ_REG_AIC_CONF		0x00
+ #define JZ_REG_AIC_CTRL		0x04
+@@ -89,8 +91,8 @@ struct jz4740_i2s {
+ 	struct clk *clk_aic;
+ 	struct clk *clk_i2s;
+ 
+-	struct jz4740_pcm_config pcm_config_playback;
+-	struct jz4740_pcm_config pcm_config_capture;
++	struct snd_dmaengine_dai_dma_data playback_dma_data;
++	struct snd_dmaengine_dai_dma_data capture_dma_data;
+ };
+ 
+ static inline uint32_t jz4740_i2s_read(const struct jz4740_i2s *i2s,
+@@ -233,8 +235,6 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+ 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+-	enum jz4740_dma_width dma_width;
+-	struct jz4740_pcm_config *pcm_config;
+ 	unsigned int sample_size;
+ 	uint32_t ctrl;
+ 
+@@ -243,11 +243,9 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S8:
+ 		sample_size = 0;
+-		dma_width = JZ4740_DMA_WIDTH_8BIT;
+ 		break;
+ 	case SNDRV_PCM_FORMAT_S16:
+ 		sample_size = 1;
+-		dma_width = JZ4740_DMA_WIDTH_16BIT;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -260,22 +258,13 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			ctrl |= JZ_AIC_CTRL_MONO_TO_STEREO;
+ 		else
+ 			ctrl &= ~JZ_AIC_CTRL_MONO_TO_STEREO;
+-
+-		pcm_config = &i2s->pcm_config_playback;
+-		pcm_config->dma_config.dst_width = dma_width;
+-
+ 	} else {
+ 		ctrl &= ~JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_MASK;
+ 		ctrl |= sample_size << JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_OFFSET;
+-
+-		pcm_config = &i2s->pcm_config_capture;
+-		pcm_config->dma_config.src_width = dma_width;
+ 	}
+ 
+ 	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
+ 
+-	snd_soc_dai_set_dma_data(dai, substream, pcm_config);
+-
+ 	return 0;
+ }
+ 
+@@ -342,25 +331,19 @@ static int jz4740_i2s_resume(struct snd_soc_dai *dai)
+ 
+ static void jz4740_i2c_init_pcm_config(struct jz4740_i2s *i2s)
+ {
+-	struct jz4740_dma_config *dma_config;
++	struct snd_dmaengine_dai_dma_data *dma_data;
+ 
+ 	/* Playback */
+-	dma_config = &i2s->pcm_config_playback.dma_config;
+-	dma_config->src_width = JZ4740_DMA_WIDTH_32BIT;
+-	dma_config->transfer_size = JZ4740_DMA_TRANSFER_SIZE_16BYTE;
+-	dma_config->request_type = JZ4740_DMA_TYPE_AIC_TRANSMIT;
+-	dma_config->flags = JZ4740_DMA_SRC_AUTOINC;
+-	dma_config->mode = JZ4740_DMA_MODE_SINGLE;
+-	i2s->pcm_config_playback.fifo_addr = i2s->phys_base + JZ_REG_AIC_FIFO;
++	dma_data = &i2s->playback_dma_data;
++	dma_data->maxburst = 16;
++	dma_data->slave_id = JZ4740_DMA_TYPE_AIC_TRANSMIT;
++	dma_data->addr = i2s->phys_base + JZ_REG_AIC_FIFO;
+ 
+ 	/* Capture */
+-	dma_config = &i2s->pcm_config_capture.dma_config;
+-	dma_config->dst_width = JZ4740_DMA_WIDTH_32BIT;
+-	dma_config->transfer_size = JZ4740_DMA_TRANSFER_SIZE_16BYTE;
+-	dma_config->request_type = JZ4740_DMA_TYPE_AIC_RECEIVE;
+-	dma_config->flags = JZ4740_DMA_DST_AUTOINC;
+-	dma_config->mode = JZ4740_DMA_MODE_SINGLE;
+-	i2s->pcm_config_capture.fifo_addr = i2s->phys_base + JZ_REG_AIC_FIFO;
++	dma_data = &i2s->capture_dma_data;
++	dma_data->maxburst = 16;
++	dma_data->slave_id = JZ4740_DMA_TYPE_AIC_RECEIVE;
++	dma_data->addr = i2s->phys_base + JZ_REG_AIC_FIFO;
+ }
+ 
+ static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
+@@ -371,6 +354,8 @@ static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
+ 	clk_prepare_enable(i2s->clk_aic);
+ 
+ 	jz4740_i2c_init_pcm_config(i2s);
++	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data,
++		&i2s->capture_dma_data);
+ 
+ 	conf = (7 << JZ_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET) |
+ 		(8 << JZ_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET) |
+@@ -456,8 +441,13 @@ static int jz4740_i2s_dev_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, i2s);
+ 
+-	return devm_snd_soc_register_component(&pdev->dev,
++	ret = devm_snd_soc_register_component(&pdev->dev,
+ 		&jz4740_i2s_component, &jz4740_i2s_dai, 1);
++	if (ret)
++		return ret;
++
++	return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL,
++		SND_DMAENGINE_PCM_FLAG_COMPAT);
+ }
+ 
+ static struct platform_driver jz4740_i2s_driver = {
+diff --git a/sound/soc/jz4740/jz4740-pcm.c b/sound/soc/jz4740/jz4740-pcm.c
+deleted file mode 100644
+index 1d7ef28..0000000
+--- a/sound/soc/jz4740/jz4740-pcm.c
++++ /dev/null
+@@ -1,358 +0,0 @@
+-/*
+- *  Copyright (C) 2010, Lars-Peter Clausen <lars@metafoo.de>
+- *
+- *  This program is free software; you can redistribute	 it and/or modify it
+- *  under  the terms of	 the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the	License, or (at your
+- *  option) any later version.
+- *
+- *  You should have received a copy of the  GNU General Public License along
+- *  with this program; if not, write  to the Free Software Foundation, Inc.,
+- *  675 Mass Ave, Cambridge, MA 02139, USA.
+- *
+- */
+-
+-#include <linux/init.h>
+-#include <linux/interrupt.h>
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/platform_device.h>
+-#include <linux/slab.h>
+-
+-#include <linux/dma-mapping.h>
+-
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/soc.h>
+-
+-#include <asm/mach-jz4740/dma.h>
+-#include "jz4740-pcm.h"
+-
+-struct jz4740_runtime_data {
+-	unsigned long dma_period;
+-	dma_addr_t dma_start;
+-	dma_addr_t dma_pos;
+-	dma_addr_t dma_end;
+-
+-	struct jz4740_dma_chan *dma;
+-
+-	dma_addr_t fifo_addr;
+-};
+-
+-/* identify hardware playback capabilities */
+-static const struct snd_pcm_hardware jz4740_pcm_hardware = {
+-	.info = SNDRV_PCM_INFO_MMAP |
+-		SNDRV_PCM_INFO_MMAP_VALID |
+-		SNDRV_PCM_INFO_INTERLEAVED |
+-		SNDRV_PCM_INFO_BLOCK_TRANSFER,
+-	.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S8,
+-
+-	.rates			= SNDRV_PCM_RATE_8000_48000,
+-	.channels_min		= 1,
+-	.channels_max		= 2,
+-	.period_bytes_min	= 16,
+-	.period_bytes_max	= 2 * PAGE_SIZE,
+-	.periods_min		= 2,
+-	.periods_max		= 128,
+-	.buffer_bytes_max	= 128 * 2 * PAGE_SIZE,
+-	.fifo_size		= 32,
+-};
+-
+-static void jz4740_pcm_start_transfer(struct jz4740_runtime_data *prtd,
+-	struct snd_pcm_substream *substream)
+-{
+-	unsigned long count;
+-
+-	if (prtd->dma_pos == prtd->dma_end)
+-		prtd->dma_pos = prtd->dma_start;
+-
+-	if (prtd->dma_pos + prtd->dma_period > prtd->dma_end)
+-		count = prtd->dma_end - prtd->dma_pos;
+-	else
+-		count = prtd->dma_period;
+-
+-	jz4740_dma_disable(prtd->dma);
+-
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		jz4740_dma_set_src_addr(prtd->dma, prtd->dma_pos);
+-		jz4740_dma_set_dst_addr(prtd->dma, prtd->fifo_addr);
+-	} else {
+-		jz4740_dma_set_src_addr(prtd->dma, prtd->fifo_addr);
+-		jz4740_dma_set_dst_addr(prtd->dma, prtd->dma_pos);
+-	}
+-
+-	jz4740_dma_set_transfer_count(prtd->dma, count);
+-
+-	prtd->dma_pos += count;
+-
+-	jz4740_dma_enable(prtd->dma);
+-}
+-
+-static void jz4740_pcm_dma_transfer_done(struct jz4740_dma_chan *dma, int err,
+-	void *dev_id)
+-{
+-	struct snd_pcm_substream *substream = dev_id;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct jz4740_runtime_data *prtd = runtime->private_data;
+-
+-	snd_pcm_period_elapsed(substream);
+-
+-	jz4740_pcm_start_transfer(prtd, substream);
+-}
+-
+-static int jz4740_pcm_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct jz4740_runtime_data *prtd = runtime->private_data;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct jz4740_pcm_config *config;
+-
+-	config = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+-
+-	if (!config)
+-		return 0;
+-
+-	if (!prtd->dma) {
+-		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+-			prtd->dma = jz4740_dma_request(substream, "PCM Capture");
+-		else
+-			prtd->dma = jz4740_dma_request(substream, "PCM Playback");
+-	}
+-
+-	if (!prtd->dma)
+-		return -EBUSY;
+-
+-	jz4740_dma_configure(prtd->dma, &config->dma_config);
+-	prtd->fifo_addr = config->fifo_addr;
+-
+-	jz4740_dma_set_complete_cb(prtd->dma, jz4740_pcm_dma_transfer_done);
+-
+-	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+-	runtime->dma_bytes = params_buffer_bytes(params);
+-
+-	prtd->dma_period = params_period_bytes(params);
+-	prtd->dma_start = runtime->dma_addr;
+-	prtd->dma_pos = prtd->dma_start;
+-	prtd->dma_end = prtd->dma_start + runtime->dma_bytes;
+-
+-	return 0;
+-}
+-
+-static int jz4740_pcm_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct jz4740_runtime_data *prtd = substream->runtime->private_data;
+-
+-	snd_pcm_set_runtime_buffer(substream, NULL);
+-	if (prtd->dma) {
+-		jz4740_dma_free(prtd->dma);
+-		prtd->dma = NULL;
+-	}
+-
+-	return 0;
+-}
+-
+-static int jz4740_pcm_prepare(struct snd_pcm_substream *substream)
+-{
+-	struct jz4740_runtime_data *prtd = substream->runtime->private_data;
+-
+-	if (!prtd->dma)
+-		return -EBUSY;
+-
+-	prtd->dma_pos = prtd->dma_start;
+-
+-	return 0;
+-}
+-
+-static int jz4740_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct jz4740_runtime_data *prtd = runtime->private_data;
+-
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-	case SNDRV_PCM_TRIGGER_RESUME:
+-	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		jz4740_pcm_start_transfer(prtd, substream);
+-		break;
+-	case SNDRV_PCM_TRIGGER_STOP:
+-	case SNDRV_PCM_TRIGGER_SUSPEND:
+-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		jz4740_dma_disable(prtd->dma);
+-		break;
+-	default:
+-		break;
+-	}
+-
+-	return 0;
+-}
+-
+-static snd_pcm_uframes_t jz4740_pcm_pointer(struct snd_pcm_substream *substream)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct jz4740_runtime_data *prtd = runtime->private_data;
+-	unsigned long byte_offset;
+-	snd_pcm_uframes_t offset;
+-	struct jz4740_dma_chan *dma = prtd->dma;
+-
+-	/* prtd->dma_pos points to the end of the current transfer. So by
+-	 * subtracting prdt->dma_start we get the offset to the end of the
+-	 * current period in bytes. By subtracting the residue of the transfer
+-	 * we get the current offset in bytes. */
+-	byte_offset = prtd->dma_pos - prtd->dma_start;
+-	byte_offset -= jz4740_dma_get_residue(dma);
+-
+-	offset = bytes_to_frames(runtime, byte_offset);
+-	if (offset >= runtime->buffer_size)
+-		offset = 0;
+-
+-	return offset;
+-}
+-
+-static int jz4740_pcm_open(struct snd_pcm_substream *substream)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct jz4740_runtime_data *prtd;
+-
+-	prtd = kzalloc(sizeof(*prtd), GFP_KERNEL);
+-	if (prtd == NULL)
+-		return -ENOMEM;
+-
+-	snd_soc_set_runtime_hwparams(substream, &jz4740_pcm_hardware);
+-
+-	runtime->private_data = prtd;
+-
+-	return 0;
+-}
+-
+-static int jz4740_pcm_close(struct snd_pcm_substream *substream)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct jz4740_runtime_data *prtd = runtime->private_data;
+-
+-	kfree(prtd);
+-
+-	return 0;
+-}
+-
+-static int jz4740_pcm_mmap(struct snd_pcm_substream *substream,
+-	struct vm_area_struct *vma)
+-{
+-	return remap_pfn_range(vma, vma->vm_start,
+-			substream->dma_buffer.addr >> PAGE_SHIFT,
+-			vma->vm_end - vma->vm_start, vma->vm_page_prot);
+-}
+-
+-static struct snd_pcm_ops jz4740_pcm_ops = {
+-	.open		= jz4740_pcm_open,
+-	.close		= jz4740_pcm_close,
+-	.ioctl		= snd_pcm_lib_ioctl,
+-	.hw_params	= jz4740_pcm_hw_params,
+-	.hw_free	= jz4740_pcm_hw_free,
+-	.prepare	= jz4740_pcm_prepare,
+-	.trigger	= jz4740_pcm_trigger,
+-	.pointer	= jz4740_pcm_pointer,
+-	.mmap		= jz4740_pcm_mmap,
+-};
+-
+-static int jz4740_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
+-{
+-	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
+-	struct snd_dma_buffer *buf = &substream->dma_buffer;
+-	size_t size = jz4740_pcm_hardware.buffer_bytes_max;
+-
+-	buf->dev.type = SNDRV_DMA_TYPE_DEV;
+-	buf->dev.dev = pcm->card->dev;
+-	buf->private_data = NULL;
+-
+-	buf->area = dma_alloc_noncoherent(pcm->card->dev, size,
+-					  &buf->addr, GFP_KERNEL);
+-	if (!buf->area)
+-		return -ENOMEM;
+-
+-	buf->bytes = size;
+-
+-	return 0;
+-}
+-
+-static void jz4740_pcm_free(struct snd_pcm *pcm)
+-{
+-	struct snd_pcm_substream *substream;
+-	struct snd_dma_buffer *buf;
+-	int stream;
+-
+-	for (stream = 0; stream < SNDRV_PCM_STREAM_LAST; ++stream) {
+-		substream = pcm->streams[stream].substream;
+-		if (!substream)
+-			continue;
+-
+-		buf = &substream->dma_buffer;
+-		if (!buf->area)
+-			continue;
+-
+-		dma_free_noncoherent(pcm->card->dev, buf->bytes, buf->area,
+-				buf->addr);
+-		buf->area = NULL;
+-	}
+-}
+-
+-static int jz4740_pcm_new(struct snd_soc_pcm_runtime *rtd)
+-{
+-	struct snd_card *card = rtd->card->snd_card;
+-	struct snd_pcm *pcm = rtd->pcm;
+-	int ret;
+-
+-	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+-	if (ret)
+-		return ret;
+-
+-	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+-		ret = jz4740_pcm_preallocate_dma_buffer(pcm,
+-			SNDRV_PCM_STREAM_PLAYBACK);
+-		if (ret)
+-			goto err;
+-	}
+-
+-	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+-		ret = jz4740_pcm_preallocate_dma_buffer(pcm,
+-			SNDRV_PCM_STREAM_CAPTURE);
+-		if (ret)
+-			goto err;
+-	}
+-
+-err:
+-	return ret;
+-}
+-
+-static struct snd_soc_platform_driver jz4740_soc_platform = {
+-		.ops		= &jz4740_pcm_ops,
+-		.pcm_new	= jz4740_pcm_new,
+-		.pcm_free	= jz4740_pcm_free,
+-};
+-
+-static int jz4740_pcm_probe(struct platform_device *pdev)
+-{
+-	return snd_soc_register_platform(&pdev->dev, &jz4740_soc_platform);
+-}
+-
+-static int jz4740_pcm_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_platform(&pdev->dev);
+-	return 0;
+-}
+-
+-static struct platform_driver jz4740_pcm_driver = {
+-	.probe = jz4740_pcm_probe,
+-	.remove = jz4740_pcm_remove,
+-	.driver = {
+-		.name = "jz4740-pcm-audio",
+-		.owner = THIS_MODULE,
+-	},
+-};
+-
+-module_platform_driver(jz4740_pcm_driver);
+-
+-MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
+-MODULE_DESCRIPTION("Ingenic SoC JZ4740 PCM driver");
+-MODULE_LICENSE("GPL");
+diff --git a/sound/soc/jz4740/jz4740-pcm.h b/sound/soc/jz4740/jz4740-pcm.h
+deleted file mode 100644
+index 1220cbb..0000000
+--- a/sound/soc/jz4740/jz4740-pcm.h
++++ /dev/null
+@@ -1,20 +0,0 @@
+-/*
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
+-
+-#ifndef _JZ4740_PCM_H
+-#define _JZ4740_PCM_H
+-
+-#include <linux/dma-mapping.h>
+-#include <asm/mach-jz4740/dma.h>
+-
+-
+-struct jz4740_pcm_config {
+-	struct jz4740_dma_config dma_config;
+-	phys_addr_t fifo_addr;
+-};
+-
+-#endif
+diff --git a/sound/soc/jz4740/qi_lb60.c b/sound/soc/jz4740/qi_lb60.c
+index 55fd6b5..82b5f37 100644
+--- a/sound/soc/jz4740/qi_lb60.c
++++ b/sound/soc/jz4740/qi_lb60.c
+@@ -73,7 +73,7 @@ static struct snd_soc_dai_link qi_lb60_dai = {
+ 	.name = "jz4740",
+ 	.stream_name = "jz4740",
+ 	.cpu_dai_name = "jz4740-i2s",
+-	.platform_name = "jz4740-pcm-audio",
++	.platform_name = "jz4740-i2s",
+ 	.codec_dai_name = "jz4740-hifi",
+ 	.codec_name = "jz4740-codec",
+ 	.init = qi_lb60_codec_init,
+-- 
+1.7.10.4
