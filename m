@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2 v2] crec: Add primitive exception
- handling
-Date: Tue, 3 Dec 2013 20:18:28 +0000
-Message-ID: <20131203201828.GC29268@sirena.org.uk>
-References: <1386088075-21011-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1386088075-21011-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20131203182256.GL27568@sirena.org.uk>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: [PATCH V2 1/3] ASoC: restructure
+	dmaengine_pcm_request_chan_of()
+Date: Tue,  3 Dec 2013 14:26:32 -0700
+Message-ID: <1386105994-16373-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5146515366578972262=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DF322652D3
- for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 21:18:32 +0100 (CET)
-In-Reply-To: <20131203182256.GL27568@sirena.org.uk>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 61FDF2652CA
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 22:26:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +19,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: vinod.koul@linux.intel.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Stephen Warren <swarren@nvidia.com>
 
---===============5146515366578972262==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xo44VMWPx7vlQ2+2"
-Content-Disposition: inline
+Restructure the internals of dmaengine_pcm_request_chan_of() as a loop
+over all channels to be allocated. This makes it easier to add logic
+that applies to all allocated channels, without having to duplicate that
+logic in each of the half-duplex/full-duplex paths.
 
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+---
+v2 (new as a separate patch):
+* Re-ordered patches, so that patch 3/3 in this series could be available
+  in the ASoC tree without having to wait for the patches to the DMA tree
+  the implement deferred probe during channel allocation.
 
---xo44VMWPx7vlQ2+2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This whole series is a dependency for some patches that will go through
+the Tegra tree. If it could be applied to a topic branch in the ASoC tree
+that would be great. the overall dependency structure will be:
 
-On Tue, Dec 03, 2013 at 06:22:56PM +0000, Mark Brown wrote:
+a) This series.
+   Can be applied on top of e.g. v3.13-rc1.
+b) Patches to the DMA tree, which implement deferred probe.
+   Can be applied on top of e.g. v3.13-rc1.
+c) ASoC modifications to support deferred probe during DMA ch allocation
+   This will depend on both (a) and (b).
+d) Tegra modifications that depend on (c).
+---
+ sound/soc/soc-generic-dmaengine-pcm.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-> You can't safely do most of this such as calling fclose() from within a
-> signal handler, the set of functions that are guaranteed safe is quite
-> limited - see signal(7).
-
-I should also have mentioned that it looks like you're probably looking
-for setvbuf() with _IONBF.
-
---xo44VMWPx7vlQ2+2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSnjyRAAoJELSic+t+oim9q9MP/RS7+aEuqCyi7iQE/uPb/HJQ
-FDRTPLgy+Hz1e4qvLI1slFUstEM7fHahkmm9PmkfNUK5POrDn5ezzNf88gPFZY/j
-xhFhEDReNDsAp0ZwY3kLmvRzDUNV7n+nfDnnDfTB8MTiq3Sfa+B1CpZB8dnA1GID
-ritqx49trumVj2W3efVr3CDBwN+aJtZXgMYu5923OBLXwDzC8aSjXuZ9P8mo44Si
-E53gEDECm8beHqfOp8I2o8RlF0A6iM2qkeCfiT17xVRH/mdY17SYVnpzUa9mdk9k
-2ujEZ7dAsY3dF31gahfI4wMQ0lFgX/HRDPnkJgekJvBdvVpNhXhky1ZstTl/eaht
-EqAuDt/OTeeQhpLmMY+zooclThhX+NLJ8zuXgGrEVey0hoTGaE+81Y92HaNlzKDd
-WYueZ3XhhP9JT0DF8lT+aaoq9Z23DV41M8+dg/QPEWd8Vr9uK0XvJYIlTIMaOgoC
-zSxG3DjHT3TAkG1tDOVDdpp8jFT86JTNIvX7vwvpUAiHRYGow6lF3L2daUJDiV4C
-yUCk0tBzKgDm490trgVLugQMTT92PJywueVhBZCoxKnaCUXrfbQkJKCkfG9phPtj
-jSYhnEJBnHoLa4c12v6SbIXV7Kws1mbV871OuIUWERKN4eckQqVoEAvNY646sDDO
-WwR9wmz2LSZ34Ta9ZS2j
-=HpSl
------END PGP SIGNATURE-----
-
---xo44VMWPx7vlQ2+2--
-
---===============5146515366578972262==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5146515366578972262==--
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index cbc9c96ce1f4..88b011b80058 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -288,21 +288,26 @@ static void dmaengine_pcm_request_chan_of(struct dmaengine_pcm *pcm,
+ 	struct device *dev)
+ {
+ 	unsigned int i;
++	const char *name;
+ 
+ 	if ((pcm->flags & (SND_DMAENGINE_PCM_FLAG_NO_DT |
+ 			   SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME)) ||
+ 	    !dev->of_node)
+ 		return;
+ 
+-	if (pcm->flags & SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX) {
+-		pcm->chan[0] = dma_request_slave_channel(dev, "rx-tx");
+-		pcm->chan[1] = pcm->chan[0];
+-	} else {
+-		for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_CAPTURE; i++) {
+-			pcm->chan[i] = dma_request_slave_channel(dev,
+-					dmaengine_pcm_dma_channel_names[i]);
+-		}
++	for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_CAPTURE;
++	     i++) {
++		if (pcm->flags & SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX)
++			name = "rx-tx";
++		else
++			name = dmaengine_pcm_dma_channel_names[i];
++		pcm->chan[i] = dma_request_slave_channel(dev, name);
++		if (pcm->flags & SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX)
++			break;
+ 	}
++
++	if (pcm->flags & SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX)
++		pcm->chan[1] = pcm->chan[0];
+ }
+ 
+ /**
+-- 
+1.8.1.5
