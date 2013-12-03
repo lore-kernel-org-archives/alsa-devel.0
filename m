@@ -1,95 +1,58 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 3/3] ASoC: ux500: Dynamically fill DAI
- driver data on probe
-Date: Tue, 03 Dec 2013 09:57:56 +0100
-Message-ID: <529D9D14.9040109@metafoo.de>
-References: <1386007222-10081-1-git-send-email-lee.jones@linaro.org>
- <1386007222-10081-3-git-send-email-lee.jones@linaro.org>
- <529CCD2F.3060206@metafoo.de> <20131203084026.GC11828@lee--X1>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-devel] [PATCH] alsa: Disable
+ timer-scheduling for PCMs with the BATCH flag
+Date: Tue, 03 Dec 2013 10:02:44 +0100
+Message-ID: <529D9E34.9050803@ladisch.de>
+References: <1385831244-30750-1-git-send-email-lars@metafoo.de>
+	<CAN8cciYz=ZFJNW_FNqKTceCV4S=pz3CwkbwKcTeZb4AM=7bWzw@mail.gmail.com>
+	<529C5980.60408@metafoo.de>
+	<CAN8ccib1Z-uA3vH0EDf_gtVm8kKaCkjhnZq1Kr=MitnRYpS1PA@mail.gmail.com>
+	<s5h8uw25olr.wl%tiwai@suse.de>
+Reply-To: General PulseAudio Discussion
+	<pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F9F326512A
- for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 09:56:49 +0100 (CET)
-In-Reply-To: <20131203084026.GC11828@lee--X1>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: alsa-devel@alsa-project.org, linus.walleij@linaro.org, broonie@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <s5h8uw25olr.wl%tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@lists.freedesktop.org
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+To: Takashi Iwai <tiwai@suse.de>, Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/03/2013 09:40 AM, Lee Jones wrote:
-> On Mon, 02 Dec 2013, Lars-Peter Clausen wrote:
->
->> On 12/02/2013 07:00 PM, Lee Jones wrote:
->> [...]
->>> +void ux500_msp_populate_dai_drv(struct snd_soc_dai_driver *ux500_msp_dai_drv)
->>> +{
->>> +	ux500_msp_dai_drv->probe                 = ux500_msp_dai_probe;
->>> +	ux500_msp_dai_drv->suspend               = NULL;
->>> +	ux500_msp_dai_drv->resume                = NULL;
->>> +	ux500_msp_dai_drv->playback.channels_min = UX500_MSP_MIN_CHANNELS;
->>> +	ux500_msp_dai_drv->playback.channels_max = UX500_MSP_MAX_CHANNELS;
->>> +	ux500_msp_dai_drv->playback.rates        = UX500_I2S_RATES;
->>> +	ux500_msp_dai_drv->playback.formats      = UX500_I2S_FORMATS;
->>> +	ux500_msp_dai_drv->capture.channels_min  = UX500_MSP_MIN_CHANNELS;
->>> +	ux500_msp_dai_drv->capture.channels_max  = UX500_MSP_MAX_CHANNELS;
->>> +	ux500_msp_dai_drv->capture.rates         = UX500_I2S_RATES;
->>> +	ux500_msp_dai_drv->capture.formats       = UX500_I2S_FORMATS;
->>> +	ux500_msp_dai_drv->ops                   = ux500_msp_dai_ops;
->>>   };
->>
->> You can just use the same static driver for all devices. No need to
->> dynamically allocate it.
->
-> How do you mean? Just create a 'static struct' instead?
+Takashi Iwai wrote:
+> Raymond Yau wrote:
+>> usb-audio seem update when each URB send/receive (in 1ms intervals)
 
-Yes.
+The default is to use larger intervals.
 
-static struct snd_soc_dai_driver ux500_msp_dai_driver = {
-	...
-};
+> The usb-audio driver behaved in a BATCH way in the very early version,
+> but it was improved.
 
->
->>>   static const struct snd_soc_component_driver ux500_msp_component = {
->>> @@ -809,6 +742,7 @@ static const struct snd_soc_component_driver ux500_msp_component = {
->>>   static int ux500_msp_drv_probe(struct platform_device *pdev)
->>>   {
->>>   	struct ux500_msp_i2s_drvdata *drvdata;
->>> +	struct snd_soc_dai_driver *ux500_msp_dai_drv;
->>>   	int ret = 0;
->>>
->>>   	dev_dbg(&pdev->dev, "%s: Enter (pdev->name = %s).\n", __func__,
->>> @@ -863,8 +797,18 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
->>>   	}
->>>   	dev_set_drvdata(&pdev->dev, drvdata);
->>>
->>> +	ux500_msp_dai_drv = devm_kzalloc(&pdev->dev,
->>> +					 sizeof(*ux500_msp_dai_drv),
->>> +					 GFP_KERNEL);
->>> +	if (!ux500_msp_dai_drv) {
->>> +		ret = -ENOMEM;
->>> +		goto err_init_msp;
->>> +	}
->>> +
->>> +	ux500_msp_populate_dai_drv(ux500_msp_dai_drv);
->>> +
->>>   	ret = snd_soc_register_component(&pdev->dev, &ux500_msp_component,
->>> -					 &ux500_msp_dai_drv[drvdata->msp->id], 1);
->>> +					 ux500_msp_dai_drv, 1);
->>>   	if (ret < 0) {
->>>   		dev_err(&pdev->dev, "Error: %s: Failed to register MSP%d!\n",
->>>   			__func__, drvdata->msp->id);
->>>
->>
->
+The delay reporting is more precise, but the DMA position still jumps
+for each URB.
+
+> So we can get rid of the flag from this driver now.
+
+How well does timer-scheduling work with large URBs?
+
+>> ymfpci driver also update hwptr in 5ms interval but no SNDRV_PCM_INFO_PATCH
+>> and no constraint in period time must be interval of 5 ms
+
+The period length (in frames) is not constant for most sample rates.
+
+However, if the noresample flag is set (which should be the case with
+PA), the period length should be constant, and such a period constraint
+might make sense.  I'll have to test it ...
+
+
+Regards,
+Clemens
