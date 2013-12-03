@@ -1,14 +1,15 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH] ASoC: wm8731: fix dsp mode configuration
-Date: Tue,  3 Dec 2013 18:04:54 +0800
-Message-ID: <1386065094-26018-1-git-send-email-voice.shen@atmel.com>
+From: mengdong.lin@intel.com
+Subject: [PATCH] ALSA: hda - fixup ALC262 to skip depop delay
+	before D3 on Intel BayleyBay
+Date: Mon,  2 Dec 2013 22:26:03 -0500
+Message-ID: <b68db73f280c79fe67eb102a4b9fb0b145c3c149.1386040680.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 37CC726514A
- for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 11:07:23 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id D8E62265151
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 11:22:20 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,35 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Bo Shen <voice.shen@atmel.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-According to WM8731 "PD, Rev 4.9 October 2012" datasheet, when it
-works in DSP mode A, LRP = 1, while works in DSP mode B, LRP = 0.
-So, fix LRP for DSP mode as the datesheet specification.
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
----
- sound/soc/codecs/wm8731.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This patch sets a 0ms depop delay in fixup funtion 'alc_fixup_no_depop_delay'.
+And Realteck ALC262 applies this on Intel Baytrail BayleyBay platform to reduce
+codec suspend time.
 
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 456bb8c..bc7472c 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -447,10 +447,10 @@ static int wm8731_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		iface |= 0x0001;
- 		break;
- 	case SND_SOC_DAIFMT_DSP_A:
--		iface |= 0x0003;
-+		iface |= 0x0013;
- 		break;
- 	case SND_SOC_DAIFMT_DSP_B:
--		iface |= 0x0013;
-+		iface |= 0x0003;
- 		break;
- 	default:
- 		return -EINVAL;
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+Reviewed-by: Kailang Yang <kailang@realtek.com>
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 21dcb7b..69f11e2 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -374,8 +374,10 @@ static void alc_fixup_no_depop_delay(struct hda_codec *codec,
+ {
+ 	struct alc_spec *spec = codec->spec;
+ 
+-	if (action == HDA_FIXUP_ACT_PROBE)
++	if (action == HDA_FIXUP_ACT_PROBE) {
+ 		spec->no_depop_delay = 1;
++		codec->depop_delay = 0;
++	}
+ }
+ 
+ static int alc_auto_parse_customize_define(struct hda_codec *codec)
 -- 
-1.7.9.5
+1.8.1.2
