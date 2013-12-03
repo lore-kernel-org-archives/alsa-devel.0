@@ -1,49 +1,53 @@
-From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Subject: Re: [PATCHv8] dmaengine: Add support for BCM2835
-Date: Tue, 3 Dec 2013 12:12:22 +0000
-Message-ID: <20131203121222.GS16735@n2100.arm.linux.org.uk>
-References: <529CDBA8.6070107@koalo.de> <1386072258.1871.44.camel@smile>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/2] ASoC: ux500_pcm: Differentiate between
+ pdata and DT initialisation
+Date: Tue, 03 Dec 2013 13:15:50 +0100
+Message-ID: <529DCB76.4070705@metafoo.de>
+References: <1386066427-6862-1-git-send-email-lee.jones@linaro.org>
+ <529DC6BE.3080607@metafoo.de> <20131203120420.GC12031@lee--X1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1386072258.1871.44.camel@smile>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Andy Shevchenko <andriy.shevchenko-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Cc: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-110.synserver.de (smtp-out-012.synserver.de
+ [212.40.185.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 51094265151
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 13:15:09 +0100 (CET)
+In-Reply-To: <20131203120420.GC12031@lee--X1>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 03, 2013 at 02:04:18PM +0200, Andy Shevchenko wrote:
-> On Mon, 2013-12-02 at 20:12 +0100, Florian Meier wrote:
-> > +static void bcm2835_dma_free(struct bcm2835_dmadev *od)
-> > +{
-> > +	while (!list_empty(&od->ddev.channels)) {
-> > +		struct bcm2835_chan *c = list_first_entry(&od->ddev.channels,
-> > +			struct bcm2835_chan, vc.chan.device_node);
-> > +
+On 12/03/2013 01:04 PM, Lee Jones wrote:
+> On Tue, 03 Dec 2013, Lars-Peter Clausen wrote:
 > 
-> list_for_each_entry_safe() suits well here.
+>> On 12/03/2013 11:27 AM, Lee Jones wrote:
+>>> If booting with full DT support (i.e. DMA too, the last piece of the
+>>> puzzle), then we don't need to use the compatible_request_channel call
+>>> back or require some of the historical bumph which probably isn't
+>>> required by a platform data start-up now either. This will also be
+>>> ripped out in upcoming commits.
+>>>
+>>> Cc: alsa-devel@alsa-project.org
+>>> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>>
+>> Strictly speaking you do not need the second config, but well considering
+>> that this will all hopefully be removed soon anyway it should be fine.
 > 
-> > +		list_del(&c->vc.chan.device_node);
-> > +		tasklet_kill(&c->vc.task);
-> > +	}
+> That's true it will, but why don't we need the second config? I won't
+> want the compat function to be called in the DT case.
 
-For such a loop, where we're deleting all entries in a list,
-list_for_each_entry_safe() is a little heavier than necessary.  This
-is how the code would look:
+It will only be called if it was not possible to request the DMA channel
+from the DT.
 
-static void bcm2835_dma_free(struct bcm2835_dmadev *od)
-{
-	struct bcm2835_chan *c, *next;
-
-	list_for_each_entry_safe(c, next, &od->ddev.channels,
-				 vc.chan.device_node) {
-		list_del(&c->vc.chan.device_node);
-		tasklet_kill(&c->vc.task);
-	}
-
-I see very little gain in this approach.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+- Lars
