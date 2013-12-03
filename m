@@ -1,17 +1,17 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: ux500_pcm: Differentiate between
- pdata and DT initialisation
-Date: Tue, 3 Dec 2013 08:36:00 +0000
-Message-ID: <20131203083600.GB11828@lee--X1>
+Subject: Re: [alsa-devel] [PATCH 3/3] ASoC: ux500: Dynamically fill DAI
+ driver data on probe
+Date: Tue, 3 Dec 2013 08:40:26 +0000
+Message-ID: <20131203084026.GC11828@lee--X1>
 References: <1386007222-10081-1-git-send-email-lee.jones@linaro.org>
- <1386007222-10081-2-git-send-email-lee.jones@linaro.org>
- <529CCDAF.7050205@metafoo.de>
+ <1386007222-10081-3-git-send-email-lee.jones@linaro.org>
+ <529CCD2F.3060206@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <529CCDAF.7050205@metafoo.de>
+In-Reply-To: <529CCD2F.3060206@metafoo.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, broonie@kernel.org, alsa-devel@alsa-project.org
@@ -20,91 +20,66 @@ List-Id: alsa-devel@alsa-project.org
 On Mon, 02 Dec 2013, Lars-Peter Clausen wrote:
 
 > On 12/02/2013 07:00 PM, Lee Jones wrote:
-> > If booting with full DT support (i.e. DMA too, the last piece of th=
-e
-> > puzzle), then we don't need to use the compatible request channel c=
-all
-> > back. We also require slightly different flags to inform the core t=
-hat
-> > we are booting with DT.
->=20
-> I don't think you need differentiate between DT and non-DT here.
-> If the SND_DMAENGINE_PCM_FLAG_COMPAT is set and the
-> SND_DMAENGINE_PCM_FLAG_NO_DT is not set it will first try to request =
-the
-> channels from the DT if that fails it will fallback to the compat pat=
-h. So
-> all this patch needs to do is remove the SND_DMAENGINE_PCM_FLAG_NO_DT=
-, that
-> should be it.
-
-I have no way of testing that, as we are currently 80% through
-shutting down platform data altogether. In fact, I think there is only
-ASoC to be converted. Most of this stuff is going to be ripped out
-within the next couple of weeks in any case. It will happen as soon as
-I can find an hour or two to work on it.
-
-=46or that reason I didn't want to disturb the current semantics. I've
-already found that a bunch of he generic (oh, you can just use the
-central) functions (for that) don't actually work for us for one
-reason or another.
-
-I plan to a) convert everything over to DT only and b) try to make the
-generic functions work for us, so we can eliminate yet more code in
-the very near future.
-
-> > Cc: alsa-devel@alsa-project.org
-> > Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  sound/soc/ux500/ux500_pcm.c | 26 +++++++++++++++++++++-----
-> >  1 file changed, 21 insertions(+), 5 deletions(-)
-> >=20
-> > diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pc=
-m.c
-> > index 2f1bdb7..00cdd7b 100644
-> > --- a/sound/soc/ux500/ux500_pcm.c
-> > +++ b/sound/soc/ux500/ux500_pcm.c
-> > @@ -134,15 +134,31 @@ static const struct snd_dmaengine_pcm_config =
-ux500_dmaengine_pcm_config =3D {
-> >  	.prepare_slave_config =3D ux500_pcm_prepare_slave_config,
+> [...]
+> > +void ux500_msp_populate_dai_drv(struct snd_soc_dai_driver *ux500_m=
+sp_dai_drv)
+> > +{
+> > +	ux500_msp_dai_drv->probe                 =3D ux500_msp_dai_probe;
+> > +	ux500_msp_dai_drv->suspend               =3D NULL;
+> > +	ux500_msp_dai_drv->resume                =3D NULL;
+> > +	ux500_msp_dai_drv->playback.channels_min =3D UX500_MSP_MIN_CHANNE=
+LS;
+> > +	ux500_msp_dai_drv->playback.channels_max =3D UX500_MSP_MAX_CHANNE=
+LS;
+> > +	ux500_msp_dai_drv->playback.rates        =3D UX500_I2S_RATES;
+> > +	ux500_msp_dai_drv->playback.formats      =3D UX500_I2S_FORMATS;
+> > +	ux500_msp_dai_drv->capture.channels_min  =3D UX500_MSP_MIN_CHANNE=
+LS;
+> > +	ux500_msp_dai_drv->capture.channels_max  =3D UX500_MSP_MAX_CHANNE=
+LS;
+> > +	ux500_msp_dai_drv->capture.rates         =3D UX500_I2S_RATES;
+> > +	ux500_msp_dai_drv->capture.formats       =3D UX500_I2S_FORMATS;
+> > +	ux500_msp_dai_drv->ops                   =3D ux500_msp_dai_ops;
 > >  };
-> > =20
-> > +static const struct snd_dmaengine_pcm_config ux500_dmaengine_of_pc=
-m_config =3D {
-> > +	.prepare_slave_config =3D ux500_pcm_prepare_slave_config,
-> > +};
-> > +
-> >  int ux500_pcm_register_platform(struct platform_device *pdev)
+>=20
+> You can just use the same static driver for all devices. No need to
+> dynamically allocate it.
+
+How do you mean? Just create a 'static struct' instead?
+
+> >  static const struct snd_soc_component_driver ux500_msp_component =3D=
+ {
+> > @@ -809,6 +742,7 @@ static const struct snd_soc_component_driver ux=
+500_msp_component =3D {
+> >  static int ux500_msp_drv_probe(struct platform_device *pdev)
 > >  {
-> > +	const struct snd_dmaengine_pcm_config *pcm_config;
-> > +	struct device_node *np =3D pdev->dev.of_node;
-> > +	unsigned int pcm_flags;
-> >  	int ret;
+> >  	struct ux500_msp_i2s_drvdata *drvdata;
+> > +	struct snd_soc_dai_driver *ux500_msp_dai_drv;
+> >  	int ret =3D 0;
 > > =20
-> > -	ret =3D snd_dmaengine_pcm_register(&pdev->dev,
-> > -			&ux500_dmaengine_pcm_config,
-> > -			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
-> > -			SND_DMAENGINE_PCM_FLAG_COMPAT |
-> > -			SND_DMAENGINE_PCM_FLAG_NO_DT);
-> > +	if (np) {
-> > +		pcm_config =3D &ux500_dmaengine_of_pcm_config;
-> > +
-> > +		pcm_flags =3D SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
-> > +			SND_DMAENGINE_PCM_FLAG_COMPAT;
-> > +	} else {
-> > +		pcm_config =3D &ux500_dmaengine_pcm_config;
-> > +
-> > +		pcm_flags =3D SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
-> > +			SND_DMAENGINE_PCM_FLAG_NO_DT |
-> > +			SND_DMAENGINE_PCM_FLAG_COMPAT;
+> >  	dev_dbg(&pdev->dev, "%s: Enter (pdev->name =3D %s).\n", __func__,
+> > @@ -863,8 +797,18 @@ static int ux500_msp_drv_probe(struct platform=
+_device *pdev)
+> >  	}
+> >  	dev_set_drvdata(&pdev->dev, drvdata);
+> > =20
+> > +	ux500_msp_dai_drv =3D devm_kzalloc(&pdev->dev,
+> > +					 sizeof(*ux500_msp_dai_drv),
+> > +					 GFP_KERNEL);
+> > +	if (!ux500_msp_dai_drv) {
+> > +		ret =3D -ENOMEM;
+> > +		goto err_init_msp;
 > > +	}
 > > +
-> > +	ret =3D snd_dmaengine_pcm_register(&pdev->dev, pcm_config, pcm_fl=
-ags);
+> > +	ux500_msp_populate_dai_drv(ux500_msp_dai_drv);
+> > +
+> >  	ret =3D snd_soc_register_component(&pdev->dev, &ux500_msp_compone=
+nt,
+> > -					 &ux500_msp_dai_drv[drvdata->msp->id], 1);
+> > +					 ux500_msp_dai_drv, 1);
 > >  	if (ret < 0) {
-> >  		dev_err(&pdev->dev,
-> >  			"%s: ERROR: Failed to register platform '%s' (%d)!\n",
+> >  		dev_err(&pdev->dev, "Error: %s: Failed to register MSP%d!\n",
+> >  			__func__, drvdata->msp->id);
 > >=20
 >=20
 
