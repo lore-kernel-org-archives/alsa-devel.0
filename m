@@ -1,52 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8731: fix dsp mode configuration
-Date: Tue, 3 Dec 2013 15:05:29 +0000
-Message-ID: <20131203150529.GX27568@sirena.org.uk>
-References: <1386065094-26018-1-git-send-email-voice.shen@atmel.com>
+Subject: Re: [PATCH] ASoC: ssm2602: Use core for applying
+	symmetry constraints
+Date: Tue, 3 Dec 2013 15:06:33 +0000
+Message-ID: <20131203150633.GY27568@sirena.org.uk>
+References: <1386015982-11346-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8QEjIIRQMK54tiVT"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1386065094-26018-1-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============1326742963394121894=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2AFF6265200
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 16:06:39 +0100 (CET)
+In-Reply-To: <1386015982-11346-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---8QEjIIRQMK54tiVT
+--===============1326742963394121894==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tupxyn/Ev+fVxhuX"
+Content-Disposition: inline
+
+
+--tupxyn/Ev+fVxhuX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Dec 03, 2013 at 06:04:54PM +0800, Bo Shen wrote:
-> According to WM8731 "PD, Rev 4.9 October 2012" datasheet, when it
-> works in DSP mode A, LRP = 1, while works in DSP mode B, LRP = 0.
-> So, fix LRP for DSP mode as the datesheet specification.
+On Mon, Dec 02, 2013 at 09:26:22PM +0100, Lars-Peter Clausen wrote:
+> Let the core take care of applying sample rate and sample bits constraints
+> instead of open-coding this in the driver.
 
-Applied, thanks.  Please do remember to CC maintainers on things, you've
-missed the Wolfson guys.
+Applied, thanks.
 
---8QEjIIRQMK54tiVT
+--tupxyn/Ev+fVxhuX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSnfM2AAoJELSic+t+oim9js0P/2B0ZIf9M0GLr8hVpa8Y/gg0
-9iqGP1elYLifsKAYhUr0YWMseCcs12+voLiSMLxiiadbEtPLN4kaZcuC5hFGBuC4
-ujW1NsL9FMij/2DR4JEtcI1FcHKTY8GLv5phd/qSiJwbfoZK+RlS+IHjWfjjAW+X
-ADN3GQ9udnisnnX2Zc4V/Q2oYF/utkbnTzjE6LrSfmQmEyJF/0CEXJJ8bE6G8SHP
-MXAn0iDZfr2Zf9Ivj14pDYnOTfAyF6Wl0av4bhSvTR+OuEJZgWMpOThD3u31xgQ+
-Q09XHxwLHq7/UQ/SnlMbpmdPCuulvQvdqMix68yvkqJnstKmljzCLqYNeUH/PqEd
-gogWKTMH1Nv0wAdUXZZu2VB/Qx6ciq8/u2ZgxDviUaspgZwOWoFEimq0RaFISwpp
-/B5Pa0EJvzzK+QyIwWiYCLELbESVu9PeVcxqkbvsRDKxJniXl6RHriUpyzsD0NB6
-6NIDtrxDutDqURa3hYxC8VhEzpb9BTBCVnvh2P4ybabL58vRTXaHtRM4J+BLjpe1
-xyNSkkaUVencO7oM6ps86LxnxlrpgSTPP6g7WFvbOy25aDn0b7rvoY9muCTaUIdG
-RWUBb1XNVAhUX+X0z/aAAv0lxkt1Xu1amdJSBvv9MApcak4CAvPUwkyP/TDGW9uv
-cP9yhuSgFHgAL0fXGzqr
-=DToB
+iQIcBAEBAgAGBQJSnfN2AAoJELSic+t+oim9x+4QAJe+XHuhtpMsZ4PcZz8owFIC
+G8+nN/vg0eQrP4+MExu4BRBJIIFTz0BBrYJ8f76UnUyj+x5sLRXj7UTzHkKs6VO+
+UlhwTVOdrlBOaE3M3sxZ/wwTKhW4cY/hVC6zELMPKkeUVgbhb9f+xTfVje+wU4Ft
+G3WFtVtKUihajVIiygxLo6AdSpLH5ULnO2ozC+G3CgkceaFnRq4+Efm8gWGyWbj3
+EO5CDU1tRlmZ5s3MhfwORwBQZcTh0M5b6W/2Wgm8b4XDFB+sICTlWAcc1uT5WjC/
+kXUMFI8Hg+/BZoCSJZpX1TRsnO4J/EmLwz7T+OSgrm3crIG3doaXtGQ/TMEWjfMU
+AKCjSqly62z6B2z4k6EpGx6emMwLZ2UYVCYS/PVkAFt3RNcOroILKRnus+5Y/NFw
+eQqZ/fTQa8XZxLxCowRIhKPkRL+KFxLqaGLvtbOPBpf530km0BhNEyv2cYe4SsJa
+lciUDznOE7KoGikejruZaKZgtTsxfQ5LaI/z1xUW3wmmZu3jJg+o3gN8EVIGxQjl
+/ToBDUx/TeXVR3UjGAB4lrYhEgu9AAB7kFkG47E/b8AhexC7F7e3Z17mUzsDTS2Z
+uSNs//HVkOfQctIy7LqxXjAgZVcyuyzaruXJUCIPHzPDPMvsS6eB72nZqrDuCm3a
+HiGTaV4Q7Vr9kQi/B70T
+=0qst
 -----END PGP SIGNATURE-----
 
---8QEjIIRQMK54tiVT--
+--tupxyn/Ev+fVxhuX--
+
+--===============1326742963394121894==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1326742963394121894==--
