@@ -1,52 +1,59 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH] ALSA: hda - fixup ALC262 to skip depop delay
-	before D3 on Intel BayleyBay
-Date: Mon,  2 Dec 2013 22:26:03 -0500
-Message-ID: <b68db73f280c79fe67eb102a4b9fb0b145c3c149.1386040680.git.mengdong.lin@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id D8E62265151
- for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 11:22:20 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 1/2] ASoC: ux500_pcm: Differentiate between pdata and DT initialisation
+Date: Tue,  3 Dec 2013 10:27:06 +0000
+Message-ID: <1386066427-6862-1-git-send-email-lee.jones@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, broonie@kernel.org
+Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+If booting with full DT support (i.e. DMA too, the last piece of the
+puzzle), then we don't need to use the compatible_request_channel call
+back or require some of the historical bumph which probably isn't
+required by a platform data start-up now either. This will also be
+ripped out in upcoming commits.
 
-This patch sets a 0ms depop delay in fixup funtion 'alc_fixup_no_depop_delay'.
-And Realteck ALC262 applies this on Intel Baytrail BayleyBay platform to reduce
-codec suspend time.
+Cc: alsa-devel@alsa-project.org
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ sound/soc/ux500/ux500_pcm.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-Reviewed-by: Kailang Yang <kailang@realtek.com>
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 21dcb7b..69f11e2 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -374,8 +374,10 @@ static void alc_fixup_no_depop_delay(struct hda_codec *codec,
+diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
+index 2f1bdb7..ad0d420 100644
+--- a/sound/soc/ux500/ux500_pcm.c
++++ b/sound/soc/ux500/ux500_pcm.c
+@@ -134,15 +134,24 @@ static const struct snd_dmaengine_pcm_config ux500_dmaengine_pcm_config = {
+ 	.prepare_slave_config = ux500_pcm_prepare_slave_config,
+ };
+ 
++static const struct snd_dmaengine_pcm_config ux500_dmaengine_of_pcm_config = {
++	.prepare_slave_config = ux500_pcm_prepare_slave_config,
++};
++
+ int ux500_pcm_register_platform(struct platform_device *pdev)
  {
- 	struct alc_spec *spec = codec->spec;
++	const struct snd_dmaengine_pcm_config *pcm_config;
++	struct device_node *np = pdev->dev.of_node;
+ 	int ret;
  
--	if (action == HDA_FIXUP_ACT_PROBE)
-+	if (action == HDA_FIXUP_ACT_PROBE) {
- 		spec->no_depop_delay = 1;
-+		codec->depop_delay = 0;
-+	}
- }
- 
- static int alc_auto_parse_customize_define(struct hda_codec *codec)
+-	ret = snd_dmaengine_pcm_register(&pdev->dev,
+-			&ux500_dmaengine_pcm_config,
+-			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+-			SND_DMAENGINE_PCM_FLAG_COMPAT |
+-			SND_DMAENGINE_PCM_FLAG_NO_DT);
++	if (np)
++		pcm_config = &ux500_dmaengine_of_pcm_config;
++	else
++		pcm_config = &ux500_dmaengine_pcm_config;
++
++	ret = snd_dmaengine_pcm_register(&pdev->dev, pcm_config,
++					 SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
++					 SND_DMAENGINE_PCM_FLAG_COMPAT);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev,
+ 			"%s: ERROR: Failed to register platform '%s' (%d)!\n",
 -- 
-1.8.1.2
+1.8.3.2
