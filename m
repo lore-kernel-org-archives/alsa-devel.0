@@ -1,75 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ssm2602: Use core for applying
-	symmetry constraints
-Date: Tue, 3 Dec 2013 15:06:33 +0000
-Message-ID: <20131203150633.GY27568@sirena.org.uk>
-References: <1386015982-11346-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 1/2] ASoC: ux500_pcm: Differentiate between pdata and DT
+ initialisation
+Date: Tue, 3 Dec 2013 15:07:55 +0000
+Message-ID: <20131203150755.GZ27568@sirena.org.uk>
+References: <1386066427-6862-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1326742963394121894=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AFF6265200
- for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 16:06:39 +0100 (CET)
-In-Reply-To: <1386015982-11346-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/mixed; boundary="===============8664782279494483997=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1386066427-6862-1-git-send-email-lee.jones@linaro.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: linus.walleij@linaro.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1326742963394121894==
+--===============8664782279494483997==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tupxyn/Ev+fVxhuX"
+	protocol="application/pgp-signature"; boundary="IchZQccUbQrk8obU"
 Content-Disposition: inline
 
 
---tupxyn/Ev+fVxhuX
+--IchZQccUbQrk8obU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 02, 2013 at 09:26:22PM +0100, Lars-Peter Clausen wrote:
-> Let the core take care of applying sample rate and sample bits constraints
-> instead of open-coding this in the driver.
+On Tue, Dec 03, 2013 at 10:27:06AM +0000, Lee Jones wrote:
+> If booting with full DT support (i.e. DMA too, the last piece of the
+> puzzle), then we don't need to use the compatible_request_channel call
+> back or require some of the historical bumph which probably isn't
+> required by a platform data start-up now either. This will also be
+> ripped out in upcoming commits.
 
-Applied, thanks.
+Applied both, thanks.
 
---tupxyn/Ev+fVxhuX
+--IchZQccUbQrk8obU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSnfN2AAoJELSic+t+oim9x+4QAJe+XHuhtpMsZ4PcZz8owFIC
-G8+nN/vg0eQrP4+MExu4BRBJIIFTz0BBrYJ8f76UnUyj+x5sLRXj7UTzHkKs6VO+
-UlhwTVOdrlBOaE3M3sxZ/wwTKhW4cY/hVC6zELMPKkeUVgbhb9f+xTfVje+wU4Ft
-G3WFtVtKUihajVIiygxLo6AdSpLH5ULnO2ozC+G3CgkceaFnRq4+Efm8gWGyWbj3
-EO5CDU1tRlmZ5s3MhfwORwBQZcTh0M5b6W/2Wgm8b4XDFB+sICTlWAcc1uT5WjC/
-kXUMFI8Hg+/BZoCSJZpX1TRsnO4J/EmLwz7T+OSgrm3crIG3doaXtGQ/TMEWjfMU
-AKCjSqly62z6B2z4k6EpGx6emMwLZ2UYVCYS/PVkAFt3RNcOroILKRnus+5Y/NFw
-eQqZ/fTQa8XZxLxCowRIhKPkRL+KFxLqaGLvtbOPBpf530km0BhNEyv2cYe4SsJa
-lciUDznOE7KoGikejruZaKZgtTsxfQ5LaI/z1xUW3wmmZu3jJg+o3gN8EVIGxQjl
-/ToBDUx/TeXVR3UjGAB4lrYhEgu9AAB7kFkG47E/b8AhexC7F7e3Z17mUzsDTS2Z
-uSNs//HVkOfQctIy7LqxXjAgZVcyuyzaruXJUCIPHzPDPMvsS6eB72nZqrDuCm3a
-HiGTaV4Q7Vr9kQi/B70T
-=0qst
+iQIcBAEBAgAGBQJSnfPIAAoJELSic+t+oim9LnAP/108kwuVEJ/gly3Yzp0R4R9m
+8d6dKjeJLSRoD7Z86cHDpu9z+0REWDLN9rivdOFaFWdckBokLKz0mS+a5kWGTswr
+oJqMtpeBTUtTMRdGGGKnFFK2FG9ygg8OgR9gbkytY0LdpLoGUSX3H97Z6UPZuN/O
+DZppzk/9k6p6DKjz9gIxXOpxyRPXDMSeGK7a7YD571B4HwxNKNkNUTf4yK/uOmNE
+zHLsVXvhAaYsihYy20n+3YbncTceNl0UmYOihu8WCivkjA7Gx/iSF8fJ84cShJwC
+5JuAFDAi4ovgdLQukLUzqLdun7KenJDJ5rxjnUL29hTCEYnMHnIgOa5nQwBGWVqT
+pO0cxYoPOxB5NRTEQN6+dODVDWsHu7uPQSROlgdyEpy4d2SjvlrNoclnoH7NQNEK
+nKVPONovUCOXx8Hj+IrmW/W2kpSQkXOgJMauUfvwq18GxqGHJHaqo9JcrFDkFpwC
++OFKXLSvyDOvYp7KFzMjrEdpqKjgXeCG/XitjQyQZz/Cziiz9merk14IXVhKZy+L
+NjrR+fQvykMCQGO+f5gGD6O1YA23svpoW4gLdUfZEDk5pVPwTm+ZXNITid8Nd20a
+Qrojf85b1aEY4NNMNozjxxyamKbxHSnKi0a5WSVV2IRSrLlr9fo1bNlFTKNT3Z8u
+GNPkfHh7cMFA5JPu+52c
+=UArl
 -----END PGP SIGNATURE-----
 
---tupxyn/Ev+fVxhuX--
+--IchZQccUbQrk8obU--
 
---===============1326742963394121894==
+
+--===============8664782279494483997==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============1326742963394121894==--
+--===============8664782279494483997==--
