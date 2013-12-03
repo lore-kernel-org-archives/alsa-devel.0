@@ -1,65 +1,38 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-devel] [PATCH] alsa: Disable
- timer-scheduling for PCMs with the BATCH flag
-Date: Tue, 03 Dec 2013 13:42:04 +0100
-Message-ID: <529DD19C.8080501@ladisch.de>
-References: <1385831244-30750-1-git-send-email-lars@metafoo.de>
-	<CAN8cciYz=ZFJNW_FNqKTceCV4S=pz3CwkbwKcTeZb4AM=7bWzw@mail.gmail.com>
-	<529C5980.60408@metafoo.de>
-	<CAN8ccib1Z-uA3vH0EDf_gtVm8kKaCkjhnZq1Kr=MitnRYpS1PA@mail.gmail.com>
-	<s5h8uw25olr.wl%tiwai@suse.de> <529D9E34.9050803@ladisch.de>
-	<s5hwqjm46iv.wl%tiwai@suse.de>
-Reply-To: General PulseAudio Discussion
-	<pulseaudio-discuss@lists.freedesktop.org>
+Subject: Re: Intermittent cut out on the video
+Date: Tue, 03 Dec 2013 14:13:56 +0100
+Message-ID: <529DD914.7060205@ladisch.de>
+References: <DUB122-W30D40465C0A432A2147375AAEC0@phx.gbl>,
+ <DUB122-W83C8D065397526DB034BAAAEE0@phx.gbl>, <5296FEF9.2020604@ladisch.de>,
+ <DUB122-W22A2B2F1172BAEC057087BAAEA0@phx.gbl>
+ <DUB122-W150AA077A26EF2F1581D57AAEA0@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hwqjm46iv.wl%tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Sender: pulseaudio-discuss-bounces@lists.freedesktop.org
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 9475E2651F2
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 14:13:59 +0100 (CET)
+In-Reply-To: <DUB122-W150AA077A26EF2F1581D57AAEA0@phx.gbl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dolevo Jay <cmst@live.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Clemens Ladisch wrote:
->> Takashi Iwai wrote:
->>> Raymond Yau wrote:
->>>> usb-audio seem update when each URB send/receive (in 1ms intervals)
->>
->> The default is to use larger intervals.
->>
->>> The usb-audio driver behaved in a BATCH way in the very early version,
->>> but it was improved.
->>
->> The delay reporting is more precise, but the DMA position still jumps
->> for each URB.
->>
->>> So we can get rid of the flag from this driver now.
->>
->> How well does timer-scheduling work with large URBs?
+Dolevo Jay wrote:
+>> You would need software that measures that actual sample rate of both
+>> devices and resamples its output appropriately.  Try using PulseAudio.
 >
-> I thought PCM runtime delay should give the accurate sample position,
-> irrespective to URB size?
+> I have tried to apply pulseaudio but couldn't really manage it.
 
-The position of the sample that is currently being played is accurate
-(rounded to a USB frame).  The DMA position, however, changes only in
-URB-sized increments.  (And that is accurate too, because it describes
-exactly how the data is copied out of the buffer.)
-
-> It should suffice for PA to control via timer scheduling.
-
-Large jumps in the DMA position mean that there is a large part of the
-buffer which cannot be safely changed by PA.  If this is why PA wants to
-disable tsched, then the BATCH flag should stay.
+http://www.freedesktop.org/wiki/Software/PulseAudio/FAQ/#index31h3
 
 
 Regards,
