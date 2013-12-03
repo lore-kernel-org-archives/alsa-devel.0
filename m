@@ -1,76 +1,86 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: ux500_pcm: Differentiate between
- pdata and DT initialisation
-Date: Tue, 3 Dec 2013 12:29:17 +0000
-Message-ID: <20131203122917.GD12031@lee--X1>
-References: <1386066427-6862-1-git-send-email-lee.jones@linaro.org>
- <529DC6BE.3080607@metafoo.de>
- <20131203120420.GC12031@lee--X1>
- <529DCB76.4070705@metafoo.de>
- <529DCD8A.30600@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: SGTL5000: Fix kernel failed while
+ trying to get optional VDDD supply.
+Date: Tue, 3 Dec 2013 12:34:59 +0000
+Message-ID: <20131203123459.GS27568@sirena.org.uk>
+References: <1385621219-20652-1-git-send-email-Li.Xiubo@freescale.com>
+ <20131129183855.GI27568@sirena.org.uk>
+ <1DD289F6464F0949A2FCA5AA6DC23F828E3D21@039-SN2MPN1-011.039d.mgd.msft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <529DCD8A.30600@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0693756277534882788=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B8652651F1
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 13:35:10 +0100 (CET)
+In-Reply-To: <1DD289F6464F0949A2FCA5AA6DC23F828E3D21@039-SN2MPN1-011.039d.mgd.msft.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Li Xiubo <Li.Xiubo@freescale.com>
+Cc: Fabio Estevam <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "oskar@scara.com" <oskar@scara.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 03 Dec 2013, Lars-Peter Clausen wrote:
 
-> On 12/03/2013 01:15 PM, Lars-Peter Clausen wrote:
-> > On 12/03/2013 01:04 PM, Lee Jones wrote:
-> >> On Tue, 03 Dec 2013, Lars-Peter Clausen wrote:
-> >>
-> >>> On 12/03/2013 11:27 AM, Lee Jones wrote:
-> >>>> If booting with full DT support (i.e. DMA too, the last piece of=
- the
-> >>>> puzzle), then we don't need to use the compatible_request_channe=
-l call
-> >>>> back or require some of the historical bumph which probably isn'=
-t
-> >>>> required by a platform data start-up now either. This will also =
-be
-> >>>> ripped out in upcoming commits.
-> >>>>
-> >>>> Cc: alsa-devel@alsa-project.org
-> >>>> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> >>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> >>>
-> >>> Strictly speaking you do not need the second config, but well con=
-sidering
-> >>> that this will all hopefully be removed soon anyway it should be =
-fine.
-> >>
-> >> That's true it will, but why don't we need the second config? I wo=
-n't
-> >> want the compat function to be called in the DT case.
-> >=20
-> > It will only be called if it was not possible to request the DMA ch=
-annel
-> > from the DT.
->=20
-> The logic used to request the channel is basically this (in pseudo co=
-de).
->=20
-> chan =3D NULL.
->=20
-> if (of_node && !(flags & NO_DT))
-> 	chan =3D dma_request_slave_channel(...)
->=20
-> if (!chan && (flags & COMPAT))
-> 	chan =3D dma_request_channel(compat_filter_fn, compat_filter_data);
+--===============0693756277534882788==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="s2BgGqEnop8iZnuR"
+Content-Disposition: inline
 
-Okay, fair enough.
 
-But as you say, this should be fine for now. I'll tend to the
-left-over cruft when I convert the driver to DT only.
+--s2BgGqEnop8iZnuR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+On Tue, Dec 03, 2013 at 09:49:47AM +0000, Li Xiubo wrote:
+
+> 2, If the regulator dt node is exist but the optional VDDD is absent (i.e.
+> The external VDDD is not used), a -EPROBE_DEFER will be returned, if just
+> return the -EPROBE_DEFER to the probe(and then the probe deferral
+> mechanism will do the probe again later, is that right ?), and then the
+> regulator_get_optional() will be called later again, and the -EPROBE_DEFER
+> will be returned again too, and now how should I handle -EPROBE_DEFER error
+> twice ? Or should there be a counter about this ? That to say when the
+> -EPROBE_DEFER error is the second time returned from regulator_get_optional()
+> can we ensure that the optional VDDD is really not in use.
+
+The driver should just defer when it's told to defer, I don't understand
+why it would want to count anything?
+
+--s2BgGqEnop8iZnuR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSnc/wAAoJELSic+t+oim96FsP/3OVW9cWGacoOZg++GTnt4oY
++XsSLti7BjdMkbFAYutczbktHhVvWCGFd0HdlAF/X4YhLdr8DZ5Clx9G/aY34WWz
+65LOwPYnvbxWqgSUf7hE44959Vsi6cufS0pEM1JmWnjtUJIkphfeIjEwFGfy42m4
+RyyJ1ozHimuCXeFfv9LtgYjo1lzW0gwiz+g0tup9tgrBAYQD8gBK5515Hotyibs4
+AvnzFEKMyfEDhJlSzoF54PeuO9I0/VAufCyZBWysuQPspll7dtVMTjGkN5IzySkt
+X6s6Pdh1axtrGEN30RdKKqkTQ1beZj0V9LyyBRzrfj64Wzlz0VNJZLYt2XVEsfpj
+JjPDVJlH8xWh4SZrOxm9anDJq255XpjUQmC+RzfLFEJtfdou7u6MmCPONaJ1pyHl
+gLAh23G2v1HnOlwQZmmvvQK4CaC3TFSR+TAANtis9gOx2Z1vok87brPRh5WAh4O8
+TagD6ajHkPOEtFYSzHPwdfQ5GbQ/XUAn36yRjUi3xs6iLNtbQjraLAjyLfb/Je6c
+goDPmYptTYoibd6kxvqhVcAQJ+t5N/sDb5fHVGNX7FDXUpoS56S5rA8/eDXHdCpn
+zyUNpWXXMgclpBLKscvQ07B16WSQnkuK0id+fhRXeVO4ljKene6XBEOkzQfMR6QX
+91NcVaatbcVu+inXLvRV
+=6hMD
+-----END PGP SIGNATURE-----
+
+--s2BgGqEnop8iZnuR--
+
+--===============0693756277534882788==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0693756277534882788==--
