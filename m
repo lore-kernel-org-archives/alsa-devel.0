@@ -1,90 +1,114 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [alsa-devel] [PATCH 3/3] ASoC: ux500: Dynamically fill DAI
- driver data on probe
-Date: Tue, 3 Dec 2013 08:40:26 +0000
-Message-ID: <20131203084026.GC11828@lee--X1>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/3] ASoC: ux500_pcm: Differentiate between
+ pdata and DT initialisation
+Date: Tue, 03 Dec 2013 09:56:49 +0100
+Message-ID: <529D9CD1.3020208@metafoo.de>
 References: <1386007222-10081-1-git-send-email-lee.jones@linaro.org>
- <1386007222-10081-3-git-send-email-lee.jones@linaro.org>
- <529CCD2F.3060206@metafoo.de>
+ <1386007222-10081-2-git-send-email-lee.jones@linaro.org>
+ <529CCDAF.7050205@metafoo.de> <20131203083600.GB11828@lee--X1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <529CCD2F.3060206@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, broonie@kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailhost.informatik.uni-hamburg.de
+ (mailhost.informatik.uni-hamburg.de [134.100.9.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 03639265144
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 09:55:44 +0100 (CET)
+In-Reply-To: <20131203083600.GB11828@lee--X1>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: alsa-devel@alsa-project.org, linus.walleij@linaro.org, broonie@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 02 Dec 2013, Lars-Peter Clausen wrote:
+On 12/03/2013 09:36 AM, Lee Jones wrote:
+> On Mon, 02 Dec 2013, Lars-Peter Clausen wrote:
+>
+>> On 12/02/2013 07:00 PM, Lee Jones wrote:
+>>> If booting with full DT support (i.e. DMA too, the last piece of the
+>>> puzzle), then we don't need to use the compatible request channel call
+>>> back. We also require slightly different flags to inform the core that
+>>> we are booting with DT.
+>>
+>> I don't think you need differentiate between DT and non-DT here.
+>> If the SND_DMAENGINE_PCM_FLAG_COMPAT is set and the
+>> SND_DMAENGINE_PCM_FLAG_NO_DT is not set it will first try to request the
+>> channels from the DT if that fails it will fallback to the compat path. So
+>> all this patch needs to do is remove the SND_DMAENGINE_PCM_FLAG_NO_DT, that
+>> should be it.
+>
+> I have no way of testing that, as we are currently 80% through
+> shutting down platform data altogether. In fact, I think there is only
+> ASoC to be converted. Most of this stuff is going to be ripped out
+> within the next couple of weeks in any case. It will happen as soon as
+> I can find an hour or two to work on it.
+>
+> For that reason I didn't want to disturb the current semantics. I've
+> already found that a bunch of he generic (oh, you can just use the
+> central) functions (for that) don't actually work for us for one
+> reason or another.
 
-> On 12/02/2013 07:00 PM, Lee Jones wrote:
-> [...]
-> > +void ux500_msp_populate_dai_drv(struct snd_soc_dai_driver *ux500_m=
-sp_dai_drv)
-> > +{
-> > +	ux500_msp_dai_drv->probe                 =3D ux500_msp_dai_probe;
-> > +	ux500_msp_dai_drv->suspend               =3D NULL;
-> > +	ux500_msp_dai_drv->resume                =3D NULL;
-> > +	ux500_msp_dai_drv->playback.channels_min =3D UX500_MSP_MIN_CHANNE=
-LS;
-> > +	ux500_msp_dai_drv->playback.channels_max =3D UX500_MSP_MAX_CHANNE=
-LS;
-> > +	ux500_msp_dai_drv->playback.rates        =3D UX500_I2S_RATES;
-> > +	ux500_msp_dai_drv->playback.formats      =3D UX500_I2S_FORMATS;
-> > +	ux500_msp_dai_drv->capture.channels_min  =3D UX500_MSP_MIN_CHANNE=
-LS;
-> > +	ux500_msp_dai_drv->capture.channels_max  =3D UX500_MSP_MAX_CHANNE=
-LS;
-> > +	ux500_msp_dai_drv->capture.rates         =3D UX500_I2S_RATES;
-> > +	ux500_msp_dai_drv->capture.formats       =3D UX500_I2S_FORMATS;
-> > +	ux500_msp_dai_drv->ops                   =3D ux500_msp_dai_ops;
-> >  };
->=20
-> You can just use the same static driver for all devices. No need to
-> dynamically allocate it.
+All SND_DMAENGINE_PCM_FLAG_NO_DT does is to skip trying to request the channel 
+from the dt. If of_node is NULL this step will be skipped anyway. So only 
+setting SND_DMAENGINE_PCM_FLAG_NO_DT if we already know that the node is NULL 
+is redundant.
 
-How do you mean? Just create a 'static struct' instead?
-
-> >  static const struct snd_soc_component_driver ux500_msp_component =3D=
- {
-> > @@ -809,6 +742,7 @@ static const struct snd_soc_component_driver ux=
-500_msp_component =3D {
-> >  static int ux500_msp_drv_probe(struct platform_device *pdev)
-> >  {
-> >  	struct ux500_msp_i2s_drvdata *drvdata;
-> > +	struct snd_soc_dai_driver *ux500_msp_dai_drv;
-> >  	int ret =3D 0;
-> > =20
-> >  	dev_dbg(&pdev->dev, "%s: Enter (pdev->name =3D %s).\n", __func__,
-> > @@ -863,8 +797,18 @@ static int ux500_msp_drv_probe(struct platform=
-_device *pdev)
-> >  	}
-> >  	dev_set_drvdata(&pdev->dev, drvdata);
-> > =20
-> > +	ux500_msp_dai_drv =3D devm_kzalloc(&pdev->dev,
-> > +					 sizeof(*ux500_msp_dai_drv),
-> > +					 GFP_KERNEL);
-> > +	if (!ux500_msp_dai_drv) {
-> > +		ret =3D -ENOMEM;
-> > +		goto err_init_msp;
-> > +	}
-> > +
-> > +	ux500_msp_populate_dai_drv(ux500_msp_dai_drv);
-> > +
-> >  	ret =3D snd_soc_register_component(&pdev->dev, &ux500_msp_compone=
-nt,
-> > -					 &ux500_msp_dai_drv[drvdata->msp->id], 1);
-> > +					 ux500_msp_dai_drv, 1);
-> >  	if (ret < 0) {
-> >  		dev_err(&pdev->dev, "Error: %s: Failed to register MSP%d!\n",
-> >  			__func__, drvdata->msp->id);
-> >=20
->=20
-
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+>
+>>> Cc: alsa-devel@alsa-project.org
+>>> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>>> ---
+>>>   sound/soc/ux500/ux500_pcm.c | 26 +++++++++++++++++++++-----
+>>>   1 file changed, 21 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
+>>> index 2f1bdb7..00cdd7b 100644
+>>> --- a/sound/soc/ux500/ux500_pcm.c
+>>> +++ b/sound/soc/ux500/ux500_pcm.c
+>>> @@ -134,15 +134,31 @@ static const struct snd_dmaengine_pcm_config ux500_dmaengine_pcm_config = {
+>>>   	.prepare_slave_config = ux500_pcm_prepare_slave_config,
+>>>   };
+>>>
+>>> +static const struct snd_dmaengine_pcm_config ux500_dmaengine_of_pcm_config = {
+>>> +	.prepare_slave_config = ux500_pcm_prepare_slave_config,
+>>> +};
+>>> +
+>>>   int ux500_pcm_register_platform(struct platform_device *pdev)
+>>>   {
+>>> +	const struct snd_dmaengine_pcm_config *pcm_config;
+>>> +	struct device_node *np = pdev->dev.of_node;
+>>> +	unsigned int pcm_flags;
+>>>   	int ret;
+>>>
+>>> -	ret = snd_dmaengine_pcm_register(&pdev->dev,
+>>> -			&ux500_dmaengine_pcm_config,
+>>> -			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+>>> -			SND_DMAENGINE_PCM_FLAG_COMPAT |
+>>> -			SND_DMAENGINE_PCM_FLAG_NO_DT);
+>>> +	if (np) {
+>>> +		pcm_config = &ux500_dmaengine_of_pcm_config;
+>>> +
+>>> +		pcm_flags = SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+>>> +			SND_DMAENGINE_PCM_FLAG_COMPAT;
+>>> +	} else {
+>>> +		pcm_config = &ux500_dmaengine_pcm_config;
+>>> +
+>>> +		pcm_flags = SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+>>> +			SND_DMAENGINE_PCM_FLAG_NO_DT |
+>>> +			SND_DMAENGINE_PCM_FLAG_COMPAT;
+>>> +	}
+>>> +
+>>> +	ret = snd_dmaengine_pcm_register(&pdev->dev, pcm_config, pcm_flags);
+>>>   	if (ret < 0) {
+>>>   		dev_err(&pdev->dev,
+>>>   			"%s: ERROR: Failed to register platform '%s' (%d)!\n",
+>>>
+>>
+>
