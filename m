@@ -1,15 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/2] ASoC: jz4740-i2s: Use managed resources
-Date: Tue,  3 Dec 2013 18:53:02 +0100
-Message-ID: <1386093183-14625-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: jz4740-i2s: Use managed resources
+Date: Tue, 3 Dec 2013 18:08:42 +0000
+Message-ID: <20131203180842.GJ27568@sirena.org.uk>
+References: <1386093183-14625-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5144408211098714596=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-110.synserver.de (smtp-out-012.synserver.de
- [212.40.185.12])
- by alsa0.perex.cz (Postfix) with ESMTP id D68E926524C
- for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 18:52:03 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 843B9265200
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2013 19:08:45 +0100 (CET)
+In-Reply-To: <1386093183-14625-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,127 +19,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Makes the code a bit shorter.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/jz4740/jz4740-i2s.c |   85 ++++++++---------------------------------
- 1 file changed, 15 insertions(+), 70 deletions(-)
+--===============5144408211098714596==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LpCYVpv5GxVeM8fP"
+Content-Disposition: inline
 
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index 4c849a4..a0b6a85 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -432,91 +432,36 @@ static const struct snd_soc_component_driver jz4740_i2s_component = {
- static int jz4740_i2s_dev_probe(struct platform_device *pdev)
- {
- 	struct jz4740_i2s *i2s;
-+	struct resource *mem;
- 	int ret;
- 
--	i2s = kzalloc(sizeof(*i2s), GFP_KERNEL);
--
-+	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
- 	if (!i2s)
- 		return -ENOMEM;
- 
--	i2s->mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!i2s->mem) {
--		ret = -ENOENT;
--		goto err_free;
--	}
--
--	i2s->mem = request_mem_region(i2s->mem->start, resource_size(i2s->mem),
--				pdev->name);
--	if (!i2s->mem) {
--		ret = -EBUSY;
--		goto err_free;
--	}
--
--	i2s->base = ioremap_nocache(i2s->mem->start, resource_size(i2s->mem));
--	if (!i2s->base) {
--		ret = -EBUSY;
--		goto err_release_mem_region;
--	}
-+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	i2s->base = devm_ioremap_resource(&pdev->dev, mem);
-+	if (IS_ERR(i2s->base))
-+		return PTR_ERR(i2s->base);
- 
--	i2s->phys_base = i2s->mem->start;
-+	i2s->phys_base = mem->start;
- 
--	i2s->clk_aic = clk_get(&pdev->dev, "aic");
--	if (IS_ERR(i2s->clk_aic)) {
--		ret = PTR_ERR(i2s->clk_aic);
--		goto err_iounmap;
--	}
-+	i2s->clk_aic = devm_clk_get(&pdev->dev, "aic");
-+	if (IS_ERR(i2s->clk_aic))
-+		return PTR_ERR(i2s->clk_aic);
- 
--	i2s->clk_i2s = clk_get(&pdev->dev, "i2s");
--	if (IS_ERR(i2s->clk_i2s)) {
--		ret = PTR_ERR(i2s->clk_i2s);
--		goto err_clk_put_aic;
--	}
-+	i2s->clk_i2s = devm_clk_get(&pdev->dev, "i2s");
-+	if (IS_ERR(i2s->clk_i2s))
-+		return PTR_ERR(i2s->clk_i2s);
- 
- 	platform_set_drvdata(pdev, i2s);
--	ret = snd_soc_register_component(&pdev->dev, &jz4740_i2s_component,
--					 &jz4740_i2s_dai, 1);
--
--	if (ret) {
--		dev_err(&pdev->dev, "Failed to register DAI\n");
--		goto err_clk_put_i2s;
--	}
--
--	return 0;
--
--err_clk_put_i2s:
--	clk_put(i2s->clk_i2s);
--err_clk_put_aic:
--	clk_put(i2s->clk_aic);
--err_iounmap:
--	iounmap(i2s->base);
--err_release_mem_region:
--	release_mem_region(i2s->mem->start, resource_size(i2s->mem));
--err_free:
--	kfree(i2s);
--
--	return ret;
--}
--
--static int jz4740_i2s_dev_remove(struct platform_device *pdev)
--{
--	struct jz4740_i2s *i2s = platform_get_drvdata(pdev);
--
--	snd_soc_unregister_component(&pdev->dev);
--
--	clk_put(i2s->clk_i2s);
--	clk_put(i2s->clk_aic);
- 
--	iounmap(i2s->base);
--	release_mem_region(i2s->mem->start, resource_size(i2s->mem));
--
--	kfree(i2s);
--
--	return 0;
-+	return devm_snd_soc_register_component(&pdev->dev,
-+		&jz4740_i2s_component, &jz4740_i2s_dai, 1);
- }
- 
- static struct platform_driver jz4740_i2s_driver = {
- 	.probe = jz4740_i2s_dev_probe,
--	.remove = jz4740_i2s_dev_remove,
- 	.driver = {
- 		.name = "jz4740-i2s",
- 		.owner = THIS_MODULE,
--- 
-1.7.10.4
+
+--LpCYVpv5GxVeM8fP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Dec 03, 2013 at 06:53:02PM +0100, Lars-Peter Clausen wrote:
+> Makes the code a bit shorter.
+
+Applied both, thanks.
+
+--LpCYVpv5GxVeM8fP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSnh4nAAoJELSic+t+oim9siEP/2ea2icpz/2AS0gMcxGnWtNS
+XzCpVNfwDo57IeOtGAR+ssuPDI7RrPf37UmXKRvDORsq3ttrivJbMa4SIst+rfzr
+smn6gf2zMSVDUhHiK3nq/U9iFh4H1t2Fl760Tx3jxCFee/E6nhJPlBwNnY4vMBnF
+8ZvD/zjXhy71pMwIwk9XbDcN7JzE2ZOA+P32p8wAigxJgup0TuVzIYTfSkLDvwbU
+DZZ4zfSiistqNmuN7KE1eFYSV2lkD0I9eGNY6glIzi4PmlFzqKYzmiCrVEtqBs6v
+/OZ7w1j3biBcfG0OY41mzjU/7QVt8bjgSnXdJ0iQ8wlXmlw+3CN5LdlRmVUw6k0y
+q8A2lQknLyyQiNEm15hRvseHbrgxmjsBAL6dX/h8Lq2mj+NkweBRd1djs1HYqvoT
+D1cuIjPZyqnqwJX8Uhfc8ui+39krIal/tj6hFKdbfpQ6kof1v1gpZMWI0DkyfrL1
+Yeob09aUsJwoQ8/Y+QTDomfVv/Bbw0jK/pB9pImwPWaCbbzvhCzbsBPCjw1KH46n
+xq4SLVYO/XUCj4LsZKpbnW9WYf3tIZjnsNn1aRCaPO0OsdIatjl+K7fkHnaO84lx
+MmLB67jlg14oL/yS6BF+IoUg7PMnw5b3bvC410kS26G6IFix7zW9nS8j+7tFN/xi
+m8ASxHTTjyWwXblZztdf
+=rxJe
+-----END PGP SIGNATURE-----
+
+--LpCYVpv5GxVeM8fP--
+
+--===============5144408211098714596==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5144408211098714596==--
