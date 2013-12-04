@@ -1,25 +1,47 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH 0/2] ASoC: sam9x5_wm8731: fix left right channel swap issue
-Date: Wed,  4 Dec 2013 10:37:02 +0800
-Message-ID: <1386124624-22414-1-git-send-email-voice.shen@atmel.com>
-Return-path: <linux-sound-owner@vger.kernel.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: nicolas.ferre@atmel.com, richard.genoud@gmail.com, zql@glomationinc.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Bo Shen <voice.shen@atmel.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH v2 0/2] Only do snd_soc_dai_digital_mute() in
+	hw_free()
+Date: Wed, 4 Dec 2013 11:18:35 +0800
+Message-ID: <cover.1386126119.git.b42378@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from db8outboundpool.messaging.microsoft.com
+ (mail-db8lp0186.outbound.messaging.microsoft.com [213.199.154.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id A39F7265307
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 04:18:16 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch series fix sam9x5 wm8731 playback left right channel swap issue
-However, sam9x5 and wm8731 only can work in DSP A mode while can not work
-in I2S mode.
+This series of patches mainly fixes an issue of snd_soc_dai_digital_mute()
+operation after playback/capture is done. The current system has two of
+them in a normal PCM instance while one of them has an invalid condition.
+Thus we first fix the condition and then drop the redundant one.
 
-Bo Shen (2):
-  ASoC: atmel_ssc_dai: add dai trigger ops
-  ASoC: sam9x5_wm8731: change to work in DSP A mode
+Changelog:
+v2:
+ * Bisected into two patches.
+ * Fixed indentation in PATCH-1.
 
- sound/soc/atmel/atmel_ssc_dai.c |   30 +++++++++++++++++++++++++++++-
- sound/soc/atmel/sam9x5_wm8731.c |    2 +-
- 2 files changed, 30 insertions(+), 2 deletions(-)
+Nicolin Chen (2):
+  ASoC: soc-pcm: Use valid condition for snd_soc_dai_digital_mute() in
+    hw_free()
+  ASoC: soc-pcm: Drop the redundant snd_soc_dai_digital_mute() in
+    soc_pcm_close()
+
+ sound/soc/soc-pcm.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
 -- 
-1.7.9.5
-
+1.8.4
