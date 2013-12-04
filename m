@@ -1,51 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: sam9x5_wm8731: change to work in DSP A mode
-Date: Wed, 4 Dec 2013 11:44:16 +0000
-Message-ID: <20131204114416.GH29268@sirena.org.uk>
-References: <1386124624-22414-1-git-send-email-voice.shen@atmel.com>
- <1386124624-22414-3-git-send-email-voice.shen@atmel.com>
+Subject: Re: [PATCH 1/2] ASoC: atmel_ssc_dai: add dai trigger
+	ops
+Date: Wed, 4 Dec 2013 11:43:57 +0000
+Message-ID: <20131204114357.GG29268@sirena.org.uk>
+References: <1386124624-22414-2-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="l06SQqiZYCi8rTKz"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1386124624-22414-3-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4130170834762844863=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id D76D9265366
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 12:44:10 +0100 (CET)
+In-Reply-To: <1386124624-22414-2-git-send-email-voice.shen@atmel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Bo Shen <voice.shen@atmel.com>
-Cc: nicolas.ferre@atmel.com, richard.genoud@gmail.com, zql@glomationinc.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Cc: zql@glomationinc.com, richard.genoud@gmail.com, nicolas.ferre@atmel.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---l06SQqiZYCi8rTKz
+--===============4130170834762844863==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="DWg365Y4B18r8evw"
+Content-Disposition: inline
+
+
+--DWg365Y4B18r8evw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Dec 04, 2013 at 10:37:04AM +0800, Bo Shen wrote:
-> Change sam9x5 with wm8731 work in DSP A mode, this will fix the
-> left/right channel swap issue.
+On Wed, Dec 04, 2013 at 10:37:03AM +0800, Bo Shen wrote:
+> According to the SSC specifiation, it should be enabled after DMA is
+> enabled. So, add trigger operation to make sure the right sequence.
 
 Applied, thanks.
 
---l06SQqiZYCi8rTKz
+--DWg365Y4B18r8evw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSnxWNAAoJELSic+t+oim9yhMP/R02gTgV8izfstydyk2MZkh5
-PjusT4HzkBeqV5HndPwznrvUGg1GtLjLD0wf31nI+y74t9Lq3emaPLbPOLDn4cpD
-hESZUD3rAuApve3UJHEHc0DjOicawDf0ixLIaWpJCOZYg6abRxT/6WzphzRcNVt9
-Brd/dm97EXBhgA3djViIND2E03RKayljrsvWUFTZ6ScCg+rJY8VbXJUVFHbxvESM
-ww8Pz8VcVHHW6JUYO8M8TG2HkLIodrjp2k0LoflF8ULfEnio28NLnHr3rUI36tUI
-6FAgKntZ/24H45c2C7jl7CqkcE0hLbqKoZGTRI2G5ySFOeb7lVt/BBBysql8+6pW
-NkMj7oxnyJuLEcr/Ix9ifndzgezszIECGSP5CooKUsSDQ8iT4AoHma25XO/gxmFB
-TSaG+aZ2ejpj1KoYKc83H3N6DsIZdKcDW518Wd9qDoEeB7As4F6alL5f33d5JSY9
-kpM/EcjN7bf9bQotnB0NfJs3zAchHX2Vd1npsE95eebb31jCVEQzQEu73OhhgGXA
-uqvIKiIBXXE5enZc86DIHn/IlYewa31r1kZMg6W7bA75Gh7u04fYYsEOPH7fMjNh
-OeXMdo+xjdSVUys4wBZBdnkyfEtgvSvcFSeO6RPhoRiYmkWOs+PLXOyAnmXmYd/L
-3Uy/5EI+uIKfahJ10ptH
-=06XL
+iQIcBAEBAgAGBQJSnxV6AAoJELSic+t+oim9zkIP+QFeLMaZ2u4H3C7Dt98U3ogl
+NDfHx3/gqoPR7ACed3m1kgZajqyn+TAxau6ECKpjkkeJOew+aMtcfUFrcmYq7jWS
++K5W7wiEv6oWtQmCCb7nVO8DKZPzb7PzLO/iTpdAB6RJ3AjeyZXLWhz8vJWKrdzM
+wuaHVYaTXiV6mA6SCw7WzviO8QmXVNg4ehDJynWJ7CDF0kK41LfS/WG7FYVk3yVQ
+GKy5xgTx6OYNELuvg/gar6dhQyB3n0521k2sUZbptAgYjZzU+bye007dBNM5FS2P
+yDUroeYzmOAFnoy4+MrILSIIVei94lio5JTrGH7JMj1Jw+Bis2RRdfsG8ikGXDPZ
+wq+aL5ltEoexeFLkmfu9GaMk8SX2f7QWE314XdXrDG5ip281JydgNN46vcxLm7Pp
+HKGk60wu/qAKlF4uAyX73iIx36vs1FCrnNceBik8NVkjqBQfLUucTJCGbTNLTr7f
+Pz3tLtLmo9gPKAuaXrEUGt+Yk+uJaGGVUq3LmTthFWpyzW84pQNtAOJKO1Su+7Za
+Ac8+ZvAEXR5iYVZEAlKOxtQKVv/0KPNq9UWTxzOqIGwVPfuo0hYJaALQc6NI4W3o
+GX7CB1TUGOH70JTwNfzSnitFoq7U8tqsUzqzGrFOCNtekpdplwmlU44VUxAj1CgC
+sxR5OdCD1Vq0ogamH/ki
+=SrSx
 -----END PGP SIGNATURE-----
 
---l06SQqiZYCi8rTKz--
+--DWg365Y4B18r8evw--
+
+--===============4130170834762844863==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4130170834762844863==--
