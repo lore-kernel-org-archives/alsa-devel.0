@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: 3.13 regression on panda board
-Date: Wed, 4 Dec 2013 18:46:05 +0000
-Message-ID: <20131204184605.GB29268@sirena.org.uk>
-References: <s5hfvq84qxd.wl%tiwai@suse.de>
- <20131204155531.GY29268@sirena.org.uk>
- <s5hzjog38k8.wl%tiwai@suse.de>
- <20131204162905.GZ29268@sirena.org.uk>
- <s5hsiu837d1.wl%tiwai@suse.de>
+Subject: Re: [PATCH] ASoC: fsl: imx-wm8962: Do FLL
+ configuration in hw_params() and hw_free()
+Date: Wed, 4 Dec 2013 19:02:11 +0000
+Message-ID: <20131204190211.GD29268@sirena.org.uk>
+References: <1386176048-6960-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3586524353210216784=="
+Content-Type: multipart/mixed; boundary="===============5766683535127141920=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C00D32619E5
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 19:46:10 +0100 (CET)
-In-Reply-To: <s5hsiu837d1.wl%tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id DE75C2619E5
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 20:02:14 +0100 (CET)
+In-Reply-To: <1386176048-6960-1-git-send-email-b42378@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +20,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Nicolin Chen <b42378@freescale.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3586524353210216784==
+--===============5766683535127141920==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Do9hQ/bfCb4zBpLo"
+	protocol="application/pgp-signature"; boundary="3WLtXmtPTeS+BWmV"
 Content-Disposition: inline
 
 
---Do9hQ/bfCb4zBpLo
+--3WLtXmtPTeS+BWmV
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 04, 2013 at 05:31:54PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
+On Thu, Dec 05, 2013 at 12:54:08AM +0800, Nicolin Chen wrote:
 
-> > Me either, I don't actually use bugzilla, but I guess if Andrew's using
-> > it then it ought to.
+> Previously, we couldn't use hw_params() and hw_free() to open and close F=
+LL
+> becuase there might be race between two simmultaneous substreams and cause
+> FLL configuration being changed and accordingly mulfunction. So we adopted
+> DAPM to control it since there won't be any race in DAPM. However, if we
+> want to playback a different sample rate file, we need to wait for DAPM to
+> change its bias_level to reconfigure FLL.
+>=20
+> But after we introduced full symmetry protection in the soc-pcm, we don't
+> need to worry about the race any more. And the instance by using hw_param=
+s()
+> and hw_free() to control FLL would allow us to support flexible use cases,
+> 'aplay -Dhw:0 44k16bit.wav 48k24bit.wav 32k32bit.wav' for example.
+>=20
+> Thus this patch mainly moves FLL configuration from set_bias_level() to
+> hw_params() and hw_free() so as to enchance the sound card's capability.
 
-> Yeah, he used it in the past, but I haven't seen it since kernel.org
-> restructuring.  Did you see his recent forward bugzilla post?
+That's not the only reason for using set_bias_level(), it's also used so
+that bypass paths from the CODEC inputs to outputs get the FLL started
+- all the outputs need the device to be clocked.
 
-I've seen them relatively recently I think, I don't pay a huge amount of
-attention though.
-
---Do9hQ/bfCb4zBpLo
+--3WLtXmtPTeS+BWmV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSn3hqAAoJELSic+t+oim9YmsP/1geoRcKjDLu9OPtWv/UcP8I
-72cYsMJ/wYxAxnfqTRR0LdK6mg50ACM6kRX3pLjCPzMy7AOs9B+6ooTB3sh1vXoc
-VbwL3fgnO46wiuov0qWHlKUm8nrUcTRhJBue8M364oCDbwcGX7nw5KUEJAKDDTPz
-slGXcEDKLHCp4ht2wmzTFpoO76YI/N63E/bMZXLJBrBCe74onJq4/TgKQYRaHIn8
-xxf8P94EnUxG3K0QMYgHRD2PYWvb3luhL2f1hWyacmilzPJdS8N0UobkNasRbP2F
-dqL0fkx3EqWy5reiEoQKEyYjpCYDX8p8MSfSwYZlKYZ2HPGA+uMYMF0seCcMdB6x
-5my6Ze5MaPGmJEk1jVq2iEA4ZNDodNaUWlWPS9OmOrZD/RxaBFz9CL8Yk+m5xWZ9
-BQo2J0UhmdL5YtpSYCWVgwM/rzcfKXDzdOPIUdQPsiwKbj+802+bCqeIN2Ymzfo6
-DccuJjKZexoa/ZxsJ9pcWuLiCEMIEZY0FLiRaaAPIxw1fYlJ/9HRoZ1VCZa8f6NI
-TzJswloxOvXqW4XQCZm8jOEaC9tNKUVdqYCDVb2eJOv8W9HmsdWxmIv6pZIVkmC7
-VnW3tIxBLB6+wiXJwcSx7A0IT86qELGC1/HhQm8BaTYWWmbo7xztPkEtiQTIy0Yu
-qIWCiR+RFrRooUqSPRe5
-=ac/O
+iQIcBAEBAgAGBQJSn3wwAAoJELSic+t+oim9FXIP/0qUabxMCw7y68H74olPys6T
+wZ5/f8ukaDJ7SMYqXATrPjiiI6ZZZl9IpLMZmS2JytFEkZoCudOXIXNqoU+22YWA
+vUqH9kv6L9+PvBlEF0gSCrehPnMZcs2PmGGJd6lQ0RtVAkmDkVai/5yJEXBRFQBi
+cTCAoq9UWq8hx7Jbklw5AVKEhgkpEJUTtj/Y8YzXlhlFl2+6iZv7bdlmHIVkHQYF
+ft0pEulgqESvU/Oi/LHPvtWei5e8G65vUCrUu+KrisGQH1ug3nSBcaFAsLnHyz0s
+D3aXbked4URSKJrMNU+k4/d6z7P7fddPY/+lxLh2iT+dtjmrbUFqE0oh17vVyVbL
+/2n00PtycSsz0Z10C8qD+BbpRMahgocY/GqLFdV8GiykBwls4qaFgqE7/5pE7lFh
++XAYwIHi427BAAILIrVWnREDl992AuukSrIOycywTdccA2TZip1F6uX1IQUxILFm
+yYCH57xwPbqugP736irCPlod5FRfvvLlSGI3E0cgUaMV4keDYshl2uiPbD0R/gAW
+b0jDqQ4QI8J1zW8kUBEqWPQO2rD/cqx9/Y3gr6yV8LxoG5omMPcuhYiJUKJvBq4k
+/ipYVJJwTZ4xnuTrxvFOwoJtq2k4/tDlM4/PVOPOXOLepVdEgjOrcY5KJPRlW4bR
+944lnwMxvRQFnn0CYNiK
+=sxIB
 -----END PGP SIGNATURE-----
 
---Do9hQ/bfCb4zBpLo--
+--3WLtXmtPTeS+BWmV--
 
---===============3586524353210216784==
+--===============5766683535127141920==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3586524353210216784==--
+--===============5766683535127141920==--
