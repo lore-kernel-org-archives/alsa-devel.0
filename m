@@ -1,59 +1,87 @@
-From: Richard Genoud <richard.genoud@gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: sam9x5_wm8731: change to work in DSP A mode
-Date: Wed, 4 Dec 2013 17:06:02 +0100
-Message-ID: <CACQ1gAjYuhOUsCoDKFvYQcpRF1pxFHFxN=AO4Uoh2hJmW=kOgQ@mail.gmail.com>
-References: <1386124624-22414-1-git-send-email-voice.shen@atmel.com>
- <1386124624-22414-3-git-send-email-voice.shen@atmel.com> <529F1424.7040501@gmail.com>
- <075e01cef109$136c56f0$3a4504d0$@com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: 3.13 regression on panda board
+Date: Wed, 4 Dec 2013 16:29:05 +0000
+Message-ID: <20131204162905.GZ29268@sirena.org.uk>
+References: <s5hfvq84qxd.wl%tiwai@suse.de>
+ <20131204155531.GY29268@sirena.org.uk>
+ <s5hzjog38k8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <075e01cef109$136c56f0$3a4504d0$@com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Zhong Li <zql@glomationinc.com>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/mixed; boundary="===============5445300476063039318=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4CF4B2619DE
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 17:29:10 +0100 (CET)
+In-Reply-To: <s5hzjog38k8.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-2013/12/4 Zhong Li <zql@glomationinc.com>:
-> Richard,
->
->> -----Original Message-----
->> From: linux-arm-kernel [mailto:linux-arm-kernel-
->> bounces@lists.infradead.org] On Behalf Of Richard Genoud
->> Sent: Wednesday, December 04, 2013 6:38 AM
->> To: Bo Shen
->> Cc: zql@glomationinc.com; nicolas.ferre@atmel.com; alsa-devel@alsa-
->> project.org; linux-sound@vger.kernel.org; broonie@kernel.org; linux-
->> arm-kernel@lists.infradead.org
->> Subject: Re: [PATCH 2/2] ASoC: sam9x5_wm8731: change to work in DSP A
->> mode
->>
->> On 04/12/2013 03:37, Bo Shen wrote:
->> > Change sam9x5 with wm8731 work in DSP A mode, this will fix the
->> > left/right channel swap issue.
->> >
->
->> >
->> Tested-by: Richard Genoud <richard.genoud@gmail.com> on at91sam9g35-ek
->> with 3.12-rc2 + "ASoC: wm8731: fix dsp mode configuration"
->>
->>
->> Thanks !
->>
->>
->
-> Where can I get a snap shot of your kernel source?  My test still have the
-> same issue after I applied the two patches.
 
-I don't have a public git, but I just applied the patches :
-"ASoC: wm8731: fix dsp mode configuration"
-"ASoC: sam9x5_wm8731: change to work in DSP A mode"
-"ASoC: atmel_ssc_dai: add dai trigger ops"
-on top of 3.12-rc2
-=> maybe you missed the third patch "ASoC: wm8731: fix dsp mode
-configuration" which was not part of the serie.
-(without it, you should have a left channel almost ok and a noisy right channel)
+--===============5445300476063039318==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="AXo2lOxbfudqq8ta"
+Content-Disposition: inline
 
-and if you want a git tree, you can still test with mark's :
-git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
-branch sound_asoc/for-next or tag asoc-v3.13-rc2
+
+--AXo2lOxbfudqq8ta
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Dec 04, 2013 at 05:05:59PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
+
+> > > could you update the bugzilla report below?
+> > >    https://bugzilla.kernel.org/show_bug.cgi?id=66451
+
+> > That's probably not even directly audio related but rather from core DMA
+> > changes (though perhaps the driver is buggy).  When akpm forwards stuff
+> > to the lists he tend to include the entire report and CC bugzilla -
+> > that's generally more helpful in getting responses since people don't
+> > need to click on a link or anything.
+
+> I'm not sure whether bugzilla mail interface works now...
+
+Me either, I don't actually use bugzilla, but I guess if Andrew's using
+it then it ought to.
+
+--AXo2lOxbfudqq8ta
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSn1hOAAoJELSic+t+oim9DccP+wbyignVEK6ZpAVJFTNnCZ0f
+bcsuV0cEUR7yQiZZxgFLfEAJLSukUGlBxo2ws/3ypjYXiFdbsJnlCP73EZMC6Nav
+/jHqhFt8Ve9/MQG1bC72J/Gul90NOI/QvWx6Lj1DPct7WRscCB98IsTc6HdEC/vM
+aDkB3ZeyZ386Pbut5Oy/NeAjmnTi4A0tyonCNo06AWb5MXJazo9T3xFR8m+FYv31
+esWTk8wVRcpJWmqLfgUW13gL2lxWLVXRI8W04D0lWxfso9wgaNsp8T6FHeSUgsDA
+uDsUrvocr/t5YjfEyPFUbdZW6lv4oQi/Zr5WdlnazpJWFbH2N8CCZ6UwpizXf0fY
+uQAwq7XCITtMy77hAEsZKRlz9DBU9/P/BOXqnsarpAD8pbrt/65I6N8XhL32h+Z3
+kaLRUloLoLpyhGzvFhacrSEEJet68usK/797MWVEd/BBj/bL9lgmj3vgD52pcCo5
+VS+HnVjG5xzALMpwrM2TGZli2otNRs8BpmpxIad0GDa0xkYpI0pUlsBeyPJ8//vS
+6uDsHVWjMiSIfh9WPPr3ipyel+8uyYvixhl3uauwD4K2xeX15jIsbaO4fLVjGEfT
+48jahvfkJj4kBCe9W3zEB+9mYutzwbmmSts+vL/LBwI+bPGoFIInGFwHh4D9ni88
+fjpOVF3X60UICu4C8EqO
+=mjbE
+-----END PGP SIGNATURE-----
+
+--AXo2lOxbfudqq8ta--
+
+--===============5445300476063039318==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5445300476063039318==--
