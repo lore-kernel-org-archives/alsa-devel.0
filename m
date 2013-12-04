@@ -1,71 +1,37 @@
-From: Oleksij Rempel <linux@rempel-privat.de>
-Subject: [PATCH] ALSA: hda - fix mic issues on Acer Aspire E-572
-Date: Wed,  4 Dec 2013 20:50:53 +0100
-Message-ID: <1386186653-11372-1-git-send-email-linux@rempel-privat.de>
+From: Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
+Subject: Re: [PATCH v2 0/8] ARM: s3c64xx: Let amba-pl08x driver handle DMA
+Date: Wed, 4 Dec 2013 13:39:33 -0800
+Message-ID: <CAOesGMhkEhr0XvTNoObWO4XckUzU1vRiC-ZX2ArcgvSa8-WoQA@mail.gmail.com>
+References: <1381950659-12703-1-git-send-email-tomasz.figa@gmail.com>
+	<20131017102201.GK2443@sirena.org.uk>
+	<52644563.1000203@samsung.com>
+	<20131120123152.GZ2674@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 60A572619F4
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 20:51:09 +0100 (CET)
-Received: from ultralex.lan ([93.218.116.213]) by mail.gmx.com (mrgmx002) with
- ESMTPSA (Nemesis) id 0MN0jA-1Vhitw3yDQ-006hjv for
- <alsa-devel@alsa-project.org>; Wed, 04 Dec 2013 20:51:09 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: Oleksij Rempel <linux@rempel-privat.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20131120123152.GZ2674-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Kukjin Kim <kgene.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mike Turquette <mturquette-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Padmavathi Venna <padma.v-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Sachin Kamat <sachin.kamat-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Sangbeom Kim <sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Ben Dooks <ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch add quirk for Acer Aspire E-572:
-- fix external mic
-- limit mic boost for internal mic with maximal noise level of -24dB
+On Wed, Nov 20, 2013 at 4:31 AM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+> On Mon, Oct 21, 2013 at 06:04:35AM +0900, Kukjin Kim wrote:
+>
+>> Applied this whole series.
+>
+> This didn't seem to make it into -next or your tree, it'd be really
+> helpful to be able to merge into both ASoC and SPI so they can be used
+> for some framework work (I already have some patches for ASoC).  Would
+> it be possible to get the changes published on a separate branch or
+> signed tag so I can pull it into those subsystems for the next merge
+> window?
 
-Signed-off-by: Oleksij Rempel <linux@rempel-privat.de>
----
- sound/pci/hda/patch_realtek.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Following up here too: I've merged this branch into arm-soc directly now.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 59c36de..f3041a0 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3902,6 +3902,7 @@ enum {
- 	ALC269_FIXUP_ASUS_X101,
- 	ALC271_FIXUP_AMIC_MIC2,
- 	ALC271_FIXUP_HP_GATE_MIC_JACK,
-+	ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572,
- 	ALC269_FIXUP_ACER_AC700,
- 	ALC269_FIXUP_LIMIT_INT_MIC_BOOST,
- 	ALC269VB_FIXUP_ASUS_ZENBOOK,
-@@ -4164,6 +4165,12 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC271_FIXUP_AMIC_MIC2,
- 	},
-+	[ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc269_fixup_limit_int_mic_boost,
-+		.chained = true,
-+		.chain_id = ALC271_FIXUP_HP_GATE_MIC_JACK,
-+	},
- 	[ALC269_FIXUP_ACER_AC700] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -4261,6 +4268,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x0740, "Acer AO725", ALC271_FIXUP_HP_GATE_MIC_JACK),
- 	SND_PCI_QUIRK(0x1025, 0x0742, "Acer AO756", ALC271_FIXUP_HP_GATE_MIC_JACK),
- 	SND_PCI_QUIRK_VENDOR(0x1025, "Acer Aspire", ALC271_FIXUP_DMIC),
-+	SND_PCI_QUIRK(0x1025, 0x0775, "Acer Aspire E1-572", ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572),
- 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
- 	SND_PCI_QUIRK(0x1028, 0x05bd, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05be, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
--- 
-1.8.3.2
+
+-Olof
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
