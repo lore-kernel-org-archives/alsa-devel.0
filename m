@@ -1,26 +1,15 @@
-From: "Zhong Li" <zql@glomationinc.com>
-Subject: Re: [PATCH 2/2] ASoC: sam9x5_wm8731: change to work in
-	DSP A mode
-Date: Wed, 4 Dec 2013 10:54:11 -0500
-Message-ID: <075e01cef109$136c56f0$3a4504d0$@com>
-References: <1386124624-22414-1-git-send-email-voice.shen@atmel.com>
- <1386124624-22414-3-git-send-email-voice.shen@atmel.com>
- <529F1424.7040501@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: 3.13 regression on panda board
+Date: Wed, 4 Dec 2013 15:55:31 +0000
+Message-ID: <20131204155531.GY29268@sirena.org.uk>
+References: <s5hfvq84qxd.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7769955829385953429=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gateway06.websitewelcome.com (gateway06.websitewelcome.com
- [64.5.52.9]) by alsa0.perex.cz (Postfix) with ESMTP id 7DB98261701
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 16:54:45 +0100 (CET)
-Received: from ham05.websitewelcome.com (unknown [184.173.222.181])
- by gateway06.websitewelcome.com (Postfix) with ESMTP id CEAF2108068A9
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 09:54:43 -0600 (CST)
-Received: from gator4086.hostgator.com (gator4086.hostgator.com [192.185.4.98])
- by ham05.websitewelcome.com (Postfix) with ESMTP id CFAE8DDDD0EAE
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 09:54:13 -0600 (CST)
-In-Reply-To: <529F1424.7040501@gmail.com>
-Content-Language: en-us
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6AEEF2617A5
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 16:55:36 +0100 (CET)
+In-Reply-To: <s5hfvq84qxd.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,41 +19,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: 'Richard Genoud' <richard.genoud@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Richard,
 
-> -----Original Message-----
-> From: linux-arm-kernel [mailto:linux-arm-kernel-
-> bounces@lists.infradead.org] On Behalf Of Richard Genoud
-> Sent: Wednesday, December 04, 2013 6:38 AM
-> To: Bo Shen
-> Cc: zql@glomationinc.com; nicolas.ferre@atmel.com; alsa-devel@alsa-
-> project.org; linux-sound@vger.kernel.org; broonie@kernel.org; linux-
-> arm-kernel@lists.infradead.org
-> Subject: Re: [PATCH 2/2] ASoC: sam9x5_wm8731: change to work in DSP A
-> mode
-> 
-> On 04/12/2013 03:37, Bo Shen wrote:
-> > Change sam9x5 with wm8731 work in DSP A mode, this will fix the
-> > left/right channel swap issue.
-> >
-
-> >
-> Tested-by: Richard Genoud <richard.genoud@gmail.com> on at91sam9g35-ek
-> with 3.12-rc2 + "ASoC: wm8731: fix dsp mode configuration"
-> 
-> 
-> Thanks !
-> 
-> 
-
-Where can I get a snap shot of your kernel source?  My test still have the
-same issue after I applied the two patches.
+--===============7769955829385953429==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0btr6/5+bhBdui6J"
+Content-Disposition: inline
 
 
-Thanks,
+--0btr6/5+bhBdui6J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Zhong
+On Wed, Dec 04, 2013 at 03:43:58PM +0100, Takashi Iwai wrote:
+> Hi Peter (or anyone who is responsible):
+
+> could you update the bugzilla report below?
+>    https://bugzilla.kernel.org/show_bug.cgi?id=66451
+
+That's probably not even directly audio related but rather from core DMA
+changes (though perhaps the driver is buggy).  When akpm forwards stuff
+to the lists he tend to include the entire report and CC bugzilla -
+that's generally more helpful in getting responses since people don't
+need to click on a link or anything.
+
+--0btr6/5+bhBdui6J
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSn1BwAAoJELSic+t+oim9aycP/2D+5TlmniGeqJxrIeMHH3mK
+9gdBEfAnDWzNQDsC8uZlmLvpNAF8NquJSeQPnmlM4qcvW4yURp/qQjEOGkmdebkn
+vO0vsdnzK2g19dZIolliHMMcnUxqhh2p1rduu8YcUtNJ1QojU3hB8+AseU+gd+WI
+hLnFm7md2SRP0fX5vFlqe5rv7/Td12GoXO0zCgJ709o+XlncknivqByMd0Ea6GBe
+X39+r9sAPv9GPCXkpJdxYfiBBSFr6SOjxhgd+bE0ZcanmapLzpG7FXjYAN/OrERQ
+yWahCwKZ2nkdWBrwKDw57uSECnUORQq/K9DvFZJ4pwvDRBw0J/cTTBL3Z2dy9Lzv
+uzKr6XhpMfZH4OL2HJ1zowmDKUAN3ysesbf/2s6RSUW4FEqHGv/q08fysfAuZ6Pi
+SsAAt1F71fZCZk0rTmY5ATB/TWhe7+lssfFdcaXgQi1Hrl/vk8UYCiqldrtnbeKW
+MgPPR+hunFYo3Q15kCeRVEp7LD6uDXGZ0EEGadHp9jOzXYHBQJyegmpczRcVC9Yd
+lC3iy7TssM6qxwPMui1aCL1HlVNfEcbShGkBdiQ22rP/TvXJ/jmfQwBweQqOx5D7
+TqrRalUlVyTh0XpGdG0a3zVtoB/cdLp2DwRlHPS7yj4kDEdfLCBnTMdcQT/fpJlQ
+indTHaL+bUrpSNg8AIqZ
+=wDt+
+-----END PGP SIGNATURE-----
+
+--0btr6/5+bhBdui6J--
+
+--===============7769955829385953429==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7769955829385953429==--
