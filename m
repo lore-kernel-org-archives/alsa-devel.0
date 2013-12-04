@@ -1,148 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: ASoC fixes for v3.13
-Date: Wed, 4 Dec 2013 11:40:00 +0000
-Message-ID: <20131204114000.GF29268@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: sam9x5_wm8731: change to work in DSP A mode
+Date: Wed, 4 Dec 2013 11:44:16 +0000
+Message-ID: <20131204114416.GH29268@sirena.org.uk>
+References: <1386124624-22414-1-git-send-email-voice.shen@atmel.com>
+ <1386124624-22414-3-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8044480287598918751=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B17C726547D
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 12:40:03 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="l06SQqiZYCi8rTKz"
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1386124624-22414-3-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: nicolas.ferre@atmel.com, richard.genoud@gmail.com, zql@glomationinc.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8044480287598918751==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="juZjCTNxrMaZdGZC"
-Content-Disposition: inline
-
-
---juZjCTNxrMaZdGZC
+--l06SQqiZYCi8rTKz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-The following changes since commit dc1ccc48159d63eca5089e507c82c7d22ef60839:
+On Wed, Dec 04, 2013 at 10:37:04AM +0800, Bo Shen wrote:
+> Change sam9x5 with wm8731 work in DSP A mode, this will fix the
+> left/right channel swap issue.
 
-  Linux 3.13-rc2 (2013-11-29 12:57:14 -0800)
+Applied, thanks.
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.13-rc2
-
-for you to fetch changes up to 29e248829dc7d44248c69bbd5d40eca152a50cab:
-
-  Merge remote-tracking branches 'asoc/fix/arizona', 'asoc/fix/atmel', 'asoc/fix/fsl', 'asoc/fix/kirkwood', 'asoc/fix/omap', 'asoc/fix/rcar', 'asoc/fix/wm8731' and 'asoc/fix/wm8990' into asoc-linus (2013-12-03 18:09:00 +0000)
-
-----------------------------------------------------------------
-
-ASoC: Fixes for v3.13
-
-A smattering of fixes here, some core ones for the rate combination
-issues for things other than simple bitmasks, for readback of byte
-controls and for updating the power of value muxes plus a bunch of
-driver fixes of varying severity.
-
-The warning fix in the i.MX FIQ driver is fixing a warning introduced
-by a previous fix.
-
-----------------------------------------------------------------
-Bo Shen (2):
-      ASoC: atmel: sam9x5_wm8731: fix oops when unload module
-      ASoC: wm8731: fix dsp mode configuration
-
-Charles Keepax (2):
-      ASoC: wm5110: Remove output OSR and PGA volume controls
-      ASoC: core: Use consistent byte ordering in snd_soc_bytes_get
-
-Fabio Estevam (1):
-      ASoC: fsl: imx-pcm-fiq: Remove unused 'runtime' variable
-
-Jarkko Nikula (1):
-      ASoC: omap: n810: Convert to clk_prepare_enable/clk_disable_unprepare
-
-Jean-Francois Moine (2):
-      ASoC: kirkwood: Fix invalid S/PDIF format
-      ASoC: kirkwood: Fix erroneous double output while playing
-
-Kuninori Morimoto (1):
-      ASoC: rcar: select REGMAP
-
-Lars-Peter Clausen (2):
-      ASoC: pcm: Fix rate_max calculation
-      ASoC: pcm: Always honor DAI min and max sample rate constraints
-
-Mark Brown (4):
-      ASoC: wm8990: Mark the register map as dirty when powering down
-      Merge remote-tracking branch 'asoc/fix/core' into asoc-linus
-      Merge remote-tracking branch 'asoc/fix/dapm' into asoc-linus
-      Merge remote-tracking branches 'asoc/fix/arizona', 'asoc/fix/atmel', 'asoc/fix/fsl', 'asoc/fix/kirkwood', 'asoc/fix/omap', 'asoc/fix/rcar', 'asoc/fix/wm8731' and 'asoc/fix/wm8990' into asoc-linus
-
-Oskar Schirmer (1):
-      ASoC: fsl: imx-pcm-fiq: remove bogus period delta calculation
-
-Shawn Guo (1):
-      ASoC: core: fix devres parameter in devm_snd_soc_register_card()
-
-Stephen Warren (1):
-      ASoC: dapm: Use SND_SOC_DAPM_INIT_REG_VAL in SND_SOC_DAPM_MUX
-
-Wei Yongjun (1):
-      ASoC: fsl: set correct platform drvdata in pcm030_fabric_probe()
-
- include/sound/soc-dapm.h            |  3 ++-
- sound/soc/atmel/sam9x5_wm8731.c     |  2 ++
- sound/soc/codecs/wm5110.c           | 25 -------------------------
- sound/soc/codecs/wm8731.c           |  4 ++--
- sound/soc/codecs/wm8990.c           |  2 ++
- sound/soc/fsl/pcm030-audio-fabric.c |  3 ++-
- sound/soc/kirkwood/kirkwood-i2s.c   | 22 +++++++++++++---------
- sound/soc/omap/n810.c               |  4 ++--
- sound/soc/sh/Kconfig                |  1 +
- sound/soc/soc-core.c                |  4 ++--
- sound/soc/soc-devres.c              |  4 ++--
- sound/soc/soc-pcm.c                 | 18 ++++++++++++------
- 12 files changed, 42 insertions(+), 50 deletions(-)
-
---juZjCTNxrMaZdGZC
+--l06SQqiZYCi8rTKz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSnxSNAAoJELSic+t+oim9+fMP/1bXm1Y03KfQdFtiwa+f7ag7
-VrUOkSQk6CThlfBgo6cl6LRgnEHIqSxEOMBNk2nyuX7IcCIr/VuGzPMt3ij9bsbg
-PgRyO+t+7va8z7AyT94UlVxm2L1iHFgLPuGVVHyXVp/A3Jc18jJDEbpXziSUznIh
-FTJ6jRZ8+7BPqOggFLM1hN9CfMEAjjXPXhULkFwtgMGNMbin9ANlNFWydMUZw7JK
-hhD8x5DwOZ747bGwVD+Kvg/dpBr6n9bBdaT7RIyLtHTlsW9wYjmuCVgHgsgEKHNJ
-4Y6ukplCDxt0ULerpMB6CGivIwmqfiSsTgrJyMgkPNsqWUvcpU8Qv02HvhMH2BIQ
-dOFaQqWF4t+ULlsvwIuGnCU+IaNvzQ3JyWWFmfAIt/57aqPnUtSexnC8y141mAFk
-XyMKggSllAhKM1CinBO/GCVIuNK7Ewz5CMtXkxJGnJHQveIrYJOUHielkK9he1o4
-St7PMb+dojZRjg3QXBhV7Dkqf+Ahd2aTIqzmNhuTvYyoDN96UIVjCjZMCz0yds3T
-GzZIeb2OBXBp21HUW0iYxwqKsHhpqfUYHOhT89qbnoxIgEefJTj9/3896wUoEYty
-SRySOach4W0sfR0rPg/enwp0Fz0QAC+F8zqn+SzseTMTCu+stgIKhUd3Z2ls0xvl
-0y4NLbMJt7W3ejGYdljy
-=5T9F
+iQIcBAEBAgAGBQJSnxWNAAoJELSic+t+oim9yhMP/R02gTgV8izfstydyk2MZkh5
+PjusT4HzkBeqV5HndPwznrvUGg1GtLjLD0wf31nI+y74t9Lq3emaPLbPOLDn4cpD
+hESZUD3rAuApve3UJHEHc0DjOicawDf0ixLIaWpJCOZYg6abRxT/6WzphzRcNVt9
+Brd/dm97EXBhgA3djViIND2E03RKayljrsvWUFTZ6ScCg+rJY8VbXJUVFHbxvESM
+ww8Pz8VcVHHW6JUYO8M8TG2HkLIodrjp2k0LoflF8ULfEnio28NLnHr3rUI36tUI
+6FAgKntZ/24H45c2C7jl7CqkcE0hLbqKoZGTRI2G5ySFOeb7lVt/BBBysql8+6pW
+NkMj7oxnyJuLEcr/Ix9ifndzgezszIECGSP5CooKUsSDQ8iT4AoHma25XO/gxmFB
+TSaG+aZ2ejpj1KoYKc83H3N6DsIZdKcDW518Wd9qDoEeB7As4F6alL5f33d5JSY9
+kpM/EcjN7bf9bQotnB0NfJs3zAchHX2Vd1npsE95eebb31jCVEQzQEu73OhhgGXA
+uqvIKiIBXXE5enZc86DIHn/IlYewa31r1kZMg6W7bA75Gh7u04fYYsEOPH7fMjNh
+OeXMdo+xjdSVUys4wBZBdnkyfEtgvSvcFSeO6RPhoRiYmkWOs+PLXOyAnmXmYd/L
+3Uy/5EI+uIKfahJ10ptH
+=06XL
 -----END PGP SIGNATURE-----
 
---juZjCTNxrMaZdGZC--
-
---===============8044480287598918751==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8044480287598918751==--
+--l06SQqiZYCi8rTKz--
