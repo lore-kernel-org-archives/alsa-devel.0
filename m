@@ -1,15 +1,16 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH] ASoC: dmaengine: remove
-	SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME
-Date: Tue,  3 Dec 2013 16:05:24 -0700
-Message-ID: <1386111924-28583-1-git-send-email-swarren@wwwdotorg.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Fix missing ELD info when using
+	jackpoll_ms parameter
+Date: Wed,  4 Dec 2013 10:19:41 +0800
+Message-ID: <1386123581-2698-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id AF7592652EB
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 00:05:37 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0263F2652FD
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 03:19:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,93 +20,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren@nvidia.com>
+In the case of using jackpoll_ms instead of unsol events, the jack
+was correctly detected, but ELD info was not refreshed on plug-in.
 
-struct snd_dmaengine_pcm_config's new chan_names field implements the
-same feature, and nothing uses SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME,
-so remove it.
+And without ELD info, no proper restriction of pcm, which can in turn
+break sound output on some devices.
 
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
-This follows on from the patch "ASoC: dmaengine: add custom DMA config
-to snd_dmaengine_pcm_config" which I posted earlier today.
+ sound/pci/hda/patch_hdmi.c |   27 +++++++++++++++------------
+ 1 file changed, 15 insertions(+), 12 deletions(-)
 
- include/sound/dmaengine_pcm.h         |  6 ------
- sound/soc/soc-generic-dmaengine-pcm.c | 13 +------------
- 2 files changed, 1 insertion(+), 18 deletions(-)
+@Takashi; feel free to add stable if you think it's worth it. (After all using
+the jackpoll_ms parameter is not something we usually do.) It's still a bug fix
+so sending to Linus tree should be okay, I believe.
 
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index 87e9d481d7b6..634b0fca3afa 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -61,7 +61,6 @@ struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream)
-  * @slave_id: Slave requester id for the DMA channel.
-  * @filter_data: Custom DMA channel filter data, this will usually be used when
-  * requesting the DMA channel.
-- * @chan_name: Custom channel name to use when requesting DMA channel.
-  * @fifo_size: FIFO size of the DAI controller in bytes
-  */
- struct snd_dmaengine_dai_dma_data {
-@@ -70,7 +69,6 @@ struct snd_dmaengine_dai_dma_data {
- 	u32 maxburst;
- 	unsigned int slave_id;
- 	void *filter_data;
--	const char *chan_name;
- 	unsigned int fifo_size;
- };
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 4098196..f0a8ea8 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1142,32 +1142,34 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
  
-@@ -100,10 +98,6 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
-  * playback.
-  */
- #define SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX BIT(3)
--/*
-- * The PCM streams have custom channel names specified.
-- */
--#define SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME BIT(4)
+ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll);
  
- /**
-  * struct snd_dmaengine_pcm_config - Configuration data for dmaengine based PCM
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index ac16259490ee..819d5997eece 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -188,8 +188,6 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
+-static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
++static void jack_callback(struct hda_codec *codec, struct hda_jack_tbl *jack)
  {
- 	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
- 	const struct snd_dmaengine_pcm_config *config = pcm->config;
--	struct device *dev = rtd->platform->dev;
--	struct snd_dmaengine_dai_dma_data *dma_data;
- 	struct snd_pcm_substream *substream;
- 	size_t prealloc_buffer_size;
- 	size_t max_buffer_size;
-@@ -210,13 +208,6 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 		if (!substream)
- 			continue;
+ 	struct hdmi_spec *spec = codec->spec;
++	int pin_idx = pin_nid_to_pin_index(spec, jack->nid);
++	if (pin_idx < 0)
++		return;
++
++	if (hdmi_present_sense(get_pin(spec, pin_idx), 1))
++		snd_hda_jack_report_sync(codec);
++}
++
++static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
++{
+ 	int tag = res >> AC_UNSOL_RES_TAG_SHIFT;
+-	int pin_nid;
+-	int pin_idx;
+ 	struct hda_jack_tbl *jack;
+ 	int dev_entry = (res & AC_UNSOL_RES_DE) >> AC_UNSOL_RES_DE_SHIFT;
  
--		dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
--
--		if (!pcm->chan[i] &&
--		    (pcm->flags & SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME))
--			pcm->chan[i] = dma_request_slave_channel(dev,
--				dma_data->chan_name);
--
- 		if (!pcm->chan[i] && (pcm->flags & SND_DMAENGINE_PCM_FLAG_COMPAT)) {
- 			pcm->chan[i] = dmaengine_pcm_compat_request_channel(rtd,
- 				substream);
-@@ -290,9 +281,7 @@ static void dmaengine_pcm_request_chan_of(struct dmaengine_pcm *pcm,
- 	unsigned int i;
- 	const char *name;
- 
--	if ((pcm->flags & (SND_DMAENGINE_PCM_FLAG_NO_DT |
--			   SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME)) ||
--	    !dev->of_node)
-+	if ((pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_DT) || !dev->of_node)
+ 	jack = snd_hda_jack_tbl_get_from_tag(codec, tag);
+ 	if (!jack)
  		return;
+-	pin_nid = jack->nid;
+ 	jack->jack_dirty = 1;
  
- 	if (config->dma_dev) {
+ 	_snd_printd(SND_PR_VERBOSE,
+ 		"HDMI hot plug event: Codec=%d Pin=%d Device=%d Inactive=%d Presence_Detect=%d ELD_Valid=%d\n",
+-		codec->addr, pin_nid, dev_entry, !!(res & AC_UNSOL_RES_IA),
++		codec->addr, jack->nid, dev_entry, !!(res & AC_UNSOL_RES_IA),
+ 		!!(res & AC_UNSOL_RES_PD), !!(res & AC_UNSOL_RES_ELDV));
+ 
+-	pin_idx = pin_nid_to_pin_index(spec, pin_nid);
+-	if (pin_idx < 0)
+-		return;
+-
+-	if (hdmi_present_sense(get_pin(spec, pin_idx), 1))
+-		snd_hda_jack_report_sync(codec);
++	jack_callback(codec, jack);
+ }
+ 
+ static void hdmi_non_intrinsic_event(struct hda_codec *codec, unsigned int res)
+@@ -2080,7 +2082,8 @@ static int generic_hdmi_init(struct hda_codec *codec)
+ 		hda_nid_t pin_nid = per_pin->pin_nid;
+ 
+ 		hdmi_init_pin(codec, pin_nid);
+-		snd_hda_jack_detect_enable(codec, pin_nid, pin_nid);
++		snd_hda_jack_detect_enable_callback(codec, pin_nid, pin_nid,
++			codec->jackpoll_interval > 0 ? jack_callback : NULL);
+ 	}
+ 	return 0;
+ }
 -- 
-1.8.1.5
+1.7.9.5
