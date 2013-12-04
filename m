@@ -1,25 +1,18 @@
-From: Geoffrey McRae <geoff@spacevs.com>
-Subject: ASUS Phoebus (CMI8888) HDA Support
-Date: Wed, 4 Dec 2013 21:36:13 +1100
-Message-ID: <20131204213613.31b9a9c9@sarah.home.spacevs.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Implement
+ symmetric_channels and symmetric_samplebits
+Date: Wed, 4 Dec 2013 10:42:30 +0000
+Message-ID: <20131204104230.GD29268@sirena.org.uk>
+References: <1386067087-12243-1-git-send-email-b42378@freescale.com>
+ <20131203145833.GV27568@sirena.org.uk>
+ <20131204072702.GE8609@MrMyself>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8249171659806284782=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.spacevs.com (mail1.spacevs.com [202.174.111.252])
- by alsa0.perex.cz (Postfix) with ESMTP id C9C24261A84
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 11:36:48 +0100 (CET)
-Received: from localhost (mail1.spacevs.com [127.0.0.1])
- by mail1.spacevs.com (Postfix) with ESMTP id AFA2B70233
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 21:36:45 +1100 (EST)
-Received: from mail1.spacevs.com ([127.0.0.1])
- by localhost (mail1.spacevs.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id oYg4uY7BDQxe for <alsa-devel@alsa-project.org>;
- Wed,  4 Dec 2013 21:36:45 +1100 (EST)
-Received: from sarah.home.spacevs.com (122-149-209-199.static.dsl.dodo.com.au
- [122.149.209.199])
- by mail1.spacevs.com (Postfix) with ESMTPSA id 0FA7970232
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 21:36:44 +1100 (EST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id A64AB2625D3
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 11:42:34 +0100 (CET)
+In-Reply-To: <20131204072702.GE8609@MrMyself>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,92 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, lgirdwood@gmail.com, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I have spent the better part of the last two days trying to add support
-to the hda-intel driver for this card and I have finally got it
-functional, not through any extra code though :(
+--===============8249171659806284782==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wLAMOaPNJ0fu1fTG"
+Content-Disposition: inline
 
-To get it going I added the extra device info into the device list and
-specified it as a generic device with no msi and LPIB position fix.
 
-Initially this did not work, probing for codec info failed, the
-interrupt was getting received, but the DMA address contained no data
-(all 0x0).
+--wLAMOaPNJ0fu1fTG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-After messing around a heap trying to find out why there was no DMA
-data, I discovered that if I forced the device into single_cmd mode it
-would operate, with very nasty scratchy audio, seems the IRQs were
-not getting through and the circular buffer was under running. If I
-made did something involving IRQs such as cat /proc/interrupts, it
-would briefly fix the problem... if I wrote a while loop to do just
-that, I would get mostly clean audio.
+On Wed, Dec 04, 2013 at 03:27:03PM +0800, Nicolin Chen wrote:
 
-There is another thread in this mailing list where someone else has
-tried all of this and ended up with the same output.
+> Sir, shall we also implement these two to other drivers like codecs?
+> I know this symmetry is a new feature and might be still immature.
+> By implementing it might bring some side effects. But meanwhile, it
+> would also allows us to engage more people to test it, although myself
+> have done a branch of tests with different user cases on my platform.
 
-I decided to try to identify why the device was not returning RIRB data
-in the DMA responses, and out of desperation setup a KVM with windows
-to try to perform mmio tracing to identify where the hda-intel driver
-was going wrong. This did not work, windows would not detect the codecs
-attached to the device, I think it is due to a lack of MSI support for
-passthrough devices. A positive thing did come out of this though, to
-do this I enabled MMIO in my BIOS, which instantly fixed the missing
-RIRB DMA data issue... I do not know enough about MMIO to understand
-why this fixed this.
+> Or we just wait for people engaging by themselves?
 
-The device now detects the codec without single_cmd mode, but alas,
-still no audio, but also no errors... further experimentation I found
-that if I started the device in single_cmd mode and then went back to
-normal, I would get perfect audio now.
+It makes sense to roll it out, since it's in the core if there is a
+problem we only need to fix it in one place to fix all the users which
+makes life easier.
 
-Since I did this, I get perfect audio even without entering single_cmd
-mode. I have dumped the registers under windows and can confirm that
-during its initialization of the HDA device it does indeed use
-single_cmd mode before switching over to IRQ/DMA mode, there might be
-some standard init the driver is missing here.
+--wLAMOaPNJ0fu1fTG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-So, to make this card work, very little extra code will be required,
-just need to understand why enabling MMIO fixed the DMA issue as this
-is not a viable fix for the problem, not everyone has MMIO.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-Here is playback of a stereo stream while the device is working:
+iQIcBAEBAgAGBQJSnwcTAAoJELSic+t+oim9Xy4QAIWP6FbvgVh8Utw+PUNowHOp
+NELcvB32ZsJfyos1dDs7IZfrnzvUW9lXcecTcx8PnPn0dryL08SkVV96ezalsPH5
+DbcV8aAPKdRc3vYSKZAXB7W8b6sRgvLkOVJPS8Kqi7B6d0WcvWPfoE0Pn/J1sbxs
+p9sIKE5Q6UwHcmxgKRo/PinZnTxot36bGSVFglxXpEcwIR4EBv/TxURMgDX0FV6P
+kvlZrcOJti29WYsaSw/V9JHvIeRKnmQIKnZY+xN8ucxSpb2dmm3oeHwof/ci8BUi
+iXPmMuhJnwcjH3OdiL19pwr1HHq311SHOFFsmmOTqGYX8BUTdjQSLgHVk/OdvV0w
+QnLDfuK4LXqrA0ki5vqzw0ME4JU7vxRl2y/lG+QpQqSzIOXuuwy65aJ+MfiyD76g
+HEZyvjcvacVhsuKOfnpe9MKU7CxxkkOIcb2IZI+S0K9jfBEjRA0brFX/hqMJLhke
+PRkk6Leee5KfV9PmGIR9k2sQlqfbqxaF42HGwREpha5UOQAg+fm9oWgXt6Brk99X
+LaVBIOX/cTZfhMqlfTWO5qwY58A72QzqNm8dJBqUKx05XtAEZJ2j0y12+N6Lu2vc
+SW3o6ORBCckXGA5A8KywEzoca7eC1rcMxK1j/3VpS0aR+fN336HZyyWWDup3cKqO
+XvZ9aGF4a1xNFpDmcpV0
+=ufv+
+-----END PGP SIGNATURE-----
 
-[   66.697114] hda_intel: Disabling MSI
-[   66.697116] ALSA hda_intel.c:2553 Using LPIB position fix
-[   66.697146] snd_hda_intel 0000:06:00.0: setting latency timer to 64
-[   66.697151] ALSA hda_intel.c:2796 chipset global capabilities =
-0x4300
-[   66.697159] ALSA hda_intel.c:1175 Clearing TCSEL
-[   66.724049] ALSA hda_intel.c:1031 codec_mask = 0x2
-[   66.724181] ALSA hda_intel.c:1484 codec #1 probed OK
-[   66.734419] ALSA hda_generic.c:586 AUD_IN = 8
-[   66.734422] ALSA hda_generic.c:239 UNMUTE IN: NID=0x8 IDX=0x0
-[   66.734879] ALSA hda_generic.c:239 UNMUTE IN: NID=0x12 IDX=0x0
-[   66.735565] ALSA hda_generic.c:619 [Capture Source] NID=0x8, #SRC=1
-[   66.735567] ALSA hda_generic.c:622   [Front Mic] IDX=0x0
-[   66.735568] ALSA hda_generic.c:291 AUD_OUT found 2
-[   66.735570] ALSA hda_generic.c:239 UNMUTE IN: NID=0xc IDX=0x0
-[   66.735903] ALSA hda_generic.c:224 UNMUTE OUT: NID=0xc
-[   66.736136] ALSA hda_generic.c:224 UNMUTE OUT: NID=0xc
-[   66.736139] ALSA hda_generic.c:291 AUD_OUT found 6
-[   66.736569] ALSA hda_generic.c:254 CONNECT: NID=0x8 IDX=0x0
-[   66.736572] ALSA hda_generic.c:699 [Capture Switch] NID=0x8, DIR=IN,
-IDX=0x0
-[   66.736575] ALSA hda_generic.c:725 [Capture Volume] NID=0x8, DIR=IN,
-IDX=0x0
-[   66.736578] ALSA hda_generic.c:710 [Master Playback Switch] NID=0x2,
-DIR=OUT
-[   66.736580] ALSA hda_generic.c:734 [Master Playback Volume] NID=0x2,
-DIR=OUT
-[   76.125606] ALSA hda_intel.c:1848 azx_pcm_prepare: bufsize=0x10000,
-format=0x31
-[   76.125615] ALSA hda_codec.c:1414 hda_codec_setup_stream: NID=0x2,
-stream=0x7, channel=0, format=0x31
-[   93.308666] ALSA hda_codec.c:1477 hda_codec_cleanup_stream: NID=0x2
+--wLAMOaPNJ0fu1fTG--
 
--
-Geoffrey McRae
+--===============8249171659806284782==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8249171659806284782==--
