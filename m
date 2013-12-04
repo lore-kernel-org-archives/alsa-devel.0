@@ -1,18 +1,20 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: imx-ssi: Check the return value from
-	clk_prepare_enable()
-Date: Wed,  4 Dec 2013 20:27:44 -0200
-Message-ID: <1386196064-6199-1-git-send-email-festevam@gmail.com>
+From: Geoffrey McRae <geoff@spacevs.com>
+Subject: Re: ASUS Phoebus (CMI8888) HDA Support
+Date: Thu, 5 Dec 2013 09:36:51 +1100
+Message-ID: <20131205093651.78e5144c@sarah.home.spacevs.com>
+References: <20131204213613.31b9a9c9@sarah.home.spacevs.com>
+ <529F098C.3020208@ladisch.de>
+ <20131204215711.68b52af6@sarah.home.spacevs.com>
+ <529F1890.6070003@ladisch.de>
+ <20131205092059.52bd39f7@sarah.home.spacevs.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f47.google.com (mail-yh0-f47.google.com
- [209.85.213.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 33828264FB0
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 23:27:56 +0100 (CET)
-Received: by mail-yh0-f47.google.com with SMTP id 29so12060539yhl.34
- for <alsa-devel@alsa-project.org>; Wed, 04 Dec 2013 14:27:55 -0800 (PST)
+Received: from mail1.spacevs.com (mail1.spacevs.com [202.174.111.252])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F16E261A98
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 23:36:54 +0100 (CET)
+In-Reply-To: <20131205092059.52bd39f7@sarah.home.spacevs.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +24,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: Geoffrey McRae <geoff@spacevs.com>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+On Thu, 5 Dec 2013 09:20:59 +1100
+Geoffrey McRae <geoff@spacevs.com> wrote:
 
-clk_prepare_enable() may fail, so let's check its return value and propagate it
-in the case of error.
+> But... it is not 128bit aligned as per the HD Audio Spec.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/fsl/imx-ssi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-index 6336757..df552fa 100644
---- a/sound/soc/fsl/imx-ssi.c
-+++ b/sound/soc/fsl/imx-ssi.c
-@@ -535,7 +535,9 @@ static int imx_ssi_probe(struct platform_device *pdev)
- 			ret);
- 		goto failed_clk;
- 	}
--	clk_prepare_enable(ssi->clk);
-+	ret = clk_prepare_enable(ssi->clk);
-+	if (ret)
-+		goto failed_clk;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	ssi->base = devm_ioremap_resource(&pdev->dev, res);
--- 
-1.8.1.2
+Ignore that, brain fart moment, it is aligned.
