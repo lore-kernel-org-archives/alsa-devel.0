@@ -1,17 +1,23 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: 3.13 regression on panda board
-Date: Wed, 4 Dec 2013 19:52:02 +0200
-Message-ID: <529F6BC2.60008@ti.com>
-References: <s5hfvq84qxd.wl%tiwai@suse.de>
- <20131204155531.GY29268@sirena.org.uk>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 07/10] ASoC: ux500: Store DMA data in the
+ DAI differently in the pdata and DT case
+Date: Wed, 4 Dec 2013 18:03:21 +0000
+Message-ID: <20131204180321.GE26581@lee--X1>
+References: <1384859269-19801-1-git-send-email-lee.jones@linaro.org>
+ <1384859269-19801-8-git-send-email-lee.jones@linaro.org>
+ <CAGa+x85c3y5+VXFjHAZYpUM0+2Tfnra6QKad7-aeUdwjSwo+Vg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 4655E2619E4
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 18:51:47 +0100 (CET)
-In-Reply-To: <20131204155531.GY29268@sirena.org.uk>
+Received: from mail-yh0-f52.google.com (mail-yh0-f52.google.com
+ [209.85.213.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CCF92619E4
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 19:03:27 +0100 (CET)
+Received: by mail-yh0-f52.google.com with SMTP id i72so11431298yha.25
+ for <alsa-devel@alsa-project.org>; Wed, 04 Dec 2013 10:03:26 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <CAGa+x85c3y5+VXFjHAZYpUM0+2Tfnra6QKad7-aeUdwjSwo+Vg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,31 +27,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Kevin Hilman <khilman@linaro.org>
+Cc: alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, LKML <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Olof Johansson <olof@lixom.net>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/04/2013 05:55 PM, Mark Brown wrote:
-> On Wed, Dec 04, 2013 at 03:43:58PM +0100, Takashi Iwai wrote:
->> Hi Peter (or anyone who is responsible):
-> =
-
->> could you update the bugzilla report below?
->>    https://bugzilla.kernel.org/show_bug.cgi?id=3D66451
-> =
-
-> That's probably not even directly audio related but rather from core DMA
-> changes (though perhaps the driver is buggy).  When akpm forwards stuff
-> to the lists he tend to include the entire report and CC bugzilla -
-> that's generally more helpful in getting responses since people don't
-> need to click on a link or anything.
-
-Interesting for sure. I'm running currently 3.13-rc1+ but not rc2 + my twl6=
-040
-reg_cache patches. I don't have issues with audio. I try mainline tomorrow =
-to
-see what happened.
-
--- =
-
-P=E9ter
+PiBUb2RheSdzIG5leHQgKG5leHQtMjAxMzEyMDQpIGhhcyBhIG5ldyBib290IGZhaWx1cmVbMV0g
+b24KPiB1eDUwMC9zbm93YmFsbCB3aGljaCBiaXNlY3RlZCBkb3duIHRvIHRoaXMgY29tbWl0LiAg
+RnVsbCBib290IGxvZwo+IGF0dGFjaGVkLgoKUmlnaHQuCgpBbnlvbmUgbm90IG9uIENDICh3aGlj
+aCBJIHRoaW5rIHlvdSBhcmUgS2V2aW4pIGNhbiBmb2xsb3cgdGhlIGZ1biBoZXJlOgogIGh0dHA6
+Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvYXJtLWtlcm5lbC9tc2cyOTEzNzQuaHRtbAoKPiBJdCBk
+b2Vzbid0IGZpbmQgdGhlIGFsc2EgZGV2aWNlIHdoaWNoIGluIHR1cm4gc2VlbXMgdG8gcHJldmVu
+dCB0aGUKPiBlbW1jIHJvb3RmcyBmcm9tIGJlaW5nIG1vdW50ZWQuICBJdCBib290cyBmaW5lIHRv
+IGFuIGluaXRyYW1mcy4KCjxzbmlwPgoKPiBvZl9kbWFfcmVxdWVzdF9zbGF2ZV9jaGFubmVsOiBk
+bWEtbmFtZXMgcHJvcGVydHkgb2Ygbm9kZSAnL3NvYy9tc3BAODAxMjQwMDAnIG1pc3Npbmcgb3Ig
+ZW1wdHkKPiBvZl9kbWFfcmVxdWVzdF9zbGF2ZV9jaGFubmVsOiBkbWEtbmFtZXMgcHJvcGVydHkg
+b2Ygbm9kZSAnL3NvYy9tc3BAODAxMjQwMDAnIG1pc3Npbmcgb3IgZW1wdHkKPiBvZl9kbWFfcmVx
+dWVzdF9zbGF2ZV9jaGFubmVsOiBkbWEtbmFtZXMgcHJvcGVydHkgb2Ygbm9kZSAnL3NvYy9tc3BA
+ODAxMjUwMDAnIG1pc3Npbmcgb3IgZW1wdHkKPiBtbWMxOiBuZXcgaGlnaCBzcGVlZCBNTUMgY2Fy
+ZCBhdCBhZGRyZXNzIDAwMDEKPiBvZl9kbWFfcmVxdWVzdF9zbGF2ZV9jaGFubmVsOiBkbWEtbmFt
+ZXMgcHJvcGVydHkgb2Ygbm9kZSAnL3NvYy9tc3BAODAxMjUwMDAnIG1pc3Npbmcgb3IgZW1wdHkK
+PiBtbWNibGswOiBtbWMxOjAwMDEgIDcuMjggR2lCIAo+IG1tY2JsazBib290MDogbW1jMTowMDAx
+ICBwYXJ0aXRpb24gMSAyLjAwIE1pQgo+IG1tY2JsazBib290MTogbW1jMTowMDAxICBwYXJ0aXRp
+b24gMiAyLjAwIE1pQgo+IG1tY2JsazBycG1iOiBtbWMxOjAwMDEgIHBhcnRpdGlvbiAzIDEyOCBL
+aUIKPiBkbWEgZG1hMGNoYW4yMjogW2Q0MF9jb25maWdfbWVtY3B5XSBObyBtZW1jcHkKPiBkbWEg
+ZG1hMGNoYW4yMjogW2Q0MF9hbGxvY19jaGFuX3Jlc291cmNlc10gRmFpbGVkIHRvIGNvbmZpZ3Vy
+ZSBtZW1jcHkgY2hhbm5lbAo+IHV4NTAwLW1zcC1pMnMgdXg1MDAtbXNwLWkycy4xOiBNaXNzaW5n
+IGRtYSBjaGFubmVsIGZvciBzdHJlYW06IDAKPiB1eDUwMC1tc3AtaTJzIHV4NTAwLW1zcC1pMnMu
+MTogQVNvQzogcGNtIGNvbnN0cnVjdG9yIGZhaWxlZDogLTIyCj4gc25kLXNvYy1tb3A1MDAgc25k
+LXNvYy1tb3A1MDAuMDogQVNvQzogY2FuJ3QgY3JlYXRlIHBjbSBhYjg1MDBfMCA6LTIyCj4gc25k
+LXNvYy1tb3A1MDAgc25kLXNvYy1tb3A1MDAuMDogQVNvQzogZmFpbGVkIHRvIGluc3RhbnRpYXRl
+IGNhcmQgLTIyCj4gc25kLXNvYy1tb3A1MDAgc25kLXNvYy1tb3A1MDAuMDogRXJyb3I6IHNuZF9z
+b2NfcmVnaXN0ZXJfY2FyZCBmYWlsZWQgKC0yMikhCj4gc25kLXNvYy1tb3A1MDA6IHByb2JlIG9m
+IHNuZC1zb2MtbW9wNTAwLjAgZmFpbGVkIHdpdGggZXJyb3IgLTIyCgo8c25pcD4KCj4gbW1jaS1w
+bDE4eCBzZGk0OiBlcnJvciBkdXJpbmcgRE1BIHRyYW5zZmVyIQo+IG1tY2JsazBycG1iOiBlcnJv
+ciAtMTEwIHRyYW5zZmVycmluZyBkYXRhLCBzZWN0b3IgMCwgbnIgOCwgY21kIHJlc3BvbnNlIDB4
+OTAwLCBjYXJkIHN0YXR1cyAweDAKPiBtbWNibGswcnBtYjogcmV0cnlpbmcgdXNpbmcgc2luZ2xl
+IGJsb2NrIHJlYWQKCkl0J3MgaW50ZXJlc3RpbmcgdGhhdCB0aGUgTVNQIGZhaWx1cmUgaGFzIG1h
+bmFnZWQgdG8gZnVkZ2UgdGhlIGVudGlyZQpETUEgQ29udHJvbGxlci4gSSBoYXZlIGFic29sdXRl
+bHkgbm8gaWRlYSBob3cgdGhhdCBjYW4gZXZlbiBoYXBwZW4/CgoKLS0gCkxlZSBKb25lcwpMaW5h
+cm8gU1RNaWNyb2VsZWN0cm9uaWNzIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9w
+ZW4gc291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8
+IFR3aXR0ZXIgfCBCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
