@@ -1,16 +1,21 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH] ASoC: wm8962: Enable SYSCLK provisonally
-	before fetching generated DSPCLK_DIV
-Date: Wed, 4 Dec 2013 17:22:16 +0800
-Message-ID: <1386148936-15899-1-git-send-email-b42378@freescale.com>
+From: Dolevo Jay <cmst@live.com>
+Subject: Re: Intermittent cut out on the video
+Date: Wed, 4 Dec 2013 10:08:15 +0000
+Message-ID: <DUB122-W77AAF5554A9452C7FA642AAD40@phx.gbl>
+References: <DUB122-W30D40465C0A432A2147375AAEC0@phx.gbl>,
+ , , <DUB122-W83C8D065397526DB034BAAAEE0@phx.gbl>, ,
+ <5296FEF9.2020604@ladisch.de>, ,
+ <DUB122-W22A2B2F1172BAEC057087BAAEA0@phx.gbl>, ,
+ <DUB122-W150AA077A26EF2F1581D57AAEA0@phx.gbl>,
+ <529DD914.7060205@ladisch.de>,<DUB122-W24AEFB005C0041C03515A7AAD50@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co1outboundpool.messaging.microsoft.com
- (co1ehsobe004.messaging.microsoft.com [216.32.180.187])
- by alsa0.perex.cz (Postfix) with ESMTP id C2F152615F7
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 10:22:21 +0100 (CET)
+Received: from dub0-omc3-s28.dub0.hotmail.com (dub0-omc3-s28.dub0.hotmail.com
+ [157.55.2.37]) by alsa0.perex.cz (Postfix) with ESMTP id 1ED1B260863
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 11:08:17 +0100 (CET)
+In-Reply-To: <DUB122-W24AEFB005C0041C03515A7AAD50@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,50 +25,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-DSPCLK_DIV can be only generated correctly after enabling SYSCLK. But if the
-current bias_level hasn't reached SND_SOC_BIAS_ON, DAPM won't enable SYSCLK,
-which would cause the calculation result from DSPCLK_DIV invalid since bit
-DSPCLK_DIV will be finally turned to its true value after DAPM enables SYSCLK
-while the driver won't calculate it again for the current instance. In this
-circumstance, a playback which needs non-zero DSPCLK_DIV would be distorted
-due to unexpected clock frequency resulted from an invalid DSPCLK_DIV value.
 
-So this patch provisionally enables the SYSCLK to get a valid DSPCLK_DIV for
-calculation and then disables it afterward.
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
- sound/soc/codecs/wm8962.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+> From: cmst@live.com
+> To: alsa-devel@alsa-project.org
+> Date: Tue, 3 Dec 2013 15:43:39 +0000
+> Subject: Re: [alsa-devel] Intermittent cut out on the video
+> 
+> 
+> 
+> > Date: Tue, 3 Dec 2013 14:13:56 +0100
+> > From: clemens@ladisch.de
+> > To: cmst@live.com; alsa-devel@alsa-project.org
+> > Subject: Re: [alsa-devel] Intermittent cut out on the video
+> > 
+> > Dolevo Jay wrote:
+> > >> You would need software that measures that actual sample rate of both
+> > >> devices and resamples its output appropriately.  Try using PulseAudio.
+> > >
+> > > I have tried to apply pulseaudio but couldn't really manage it.
+> > 
+> > http://www.freedesktop.org/wiki/Software/PulseAudio/FAQ/#index31h3
+> > 
+> > 
+> > Regards,
+> > Clemens
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+> I think this is not what I want. I don't want to combine the two sound cards. I want to route the audio being played on one sound card to the other sound card. I have found the following answer:
+> http://askubuntu.com/questions/168333/routing-sound-from-different-cards-to-a-single-output
+> 
+> So with the following line:
+> 
+> pactl load-module module-loopback source=<name_or_index> sink=<name_or_index>
+> 
+> I should be able to achieve what I want. However, I know no pulseaudio and I got some issues with it already. 
+> 
+> For example,
+> I start the pulseaudio with  
+> 
+> root@dolevo:~# start-pulseaudio-kde
+> W: [pulseaudio] main.c: This program is not intended to be run as root (unless --system is specified).
+> 
+> I guess it starts working properly after this call. However, I call
+> 
+> pactl list
+> 
+> to get the list of the devices but I get 
+> 
+> root@dolevo:~# pactl list
+> Connection failure: Connection refused
+> pa_context_connect() failed: Connection refused
+> 
+> So, what should I put as source and sink? I have already tried calling the following:
+> 
+> pactl load-module module-loopback source=hw:1,0 sink=0,3
+> 
+> However I again receive:
+> 
+> Connection failure: Connection refused
+> pa_context_connect() failed: Connection refused
+> 
+> I would appreciate if you could help.
+>  		 	   		  
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 07da601..97db3b4 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -2439,7 +2439,20 @@ static void wm8962_configure_bclk(struct snd_soc_codec *codec)
- 	snd_soc_update_bits(codec, WM8962_CLOCKING_4,
- 			    WM8962_SYSCLK_RATE_MASK, clocking4);
- 
-+	/* DSPCLK_DIV can be only generated correctly after enabling SYSCLK.
-+	 * So we here provisionally enable it and then disable it afterward
-+	 * if current bias_level hasn't reached SND_SOC_BIAS_ON.
-+	 */
-+	if (codec->dapm.bias_level != SND_SOC_BIAS_ON)
-+		snd_soc_update_bits(codec, WM8962_CLOCKING2,
-+				WM8962_SYSCLK_ENA_MASK, WM8962_SYSCLK_ENA);
-+
- 	dspclk = snd_soc_read(codec, WM8962_CLOCKING1);
-+
-+	if (codec->dapm.bias_level != SND_SOC_BIAS_ON)
-+		snd_soc_update_bits(codec, WM8962_CLOCKING2,
-+				WM8962_SYSCLK_ENA_MASK, 0);
-+
- 	if (dspclk < 0) {
- 		dev_err(codec->dev, "Failed to read DSPCLK: %d\n", dspclk);
- 		return;
--- 
-1.8.4
+
+Hi Clemens,
+
+Could you please tell me where I can get some help about pulseaudio? I tried pulseaudio-discuss but my question is not even posted there yet.
+
+Since my question is now related to the pulseaudio, I have asked my current question to: http://stackoverflow.com/questions/20370418/pulseaudio-connection-issue
+
+I'd appreciate your help.
+
+Regards,
+ 		 	   		  
