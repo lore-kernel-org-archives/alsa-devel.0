@@ -1,85 +1,148 @@
-From: Richard Genoud <richard.genoud@gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: atmel_ssc_dai: add dai trigger ops
-Date: Wed, 04 Dec 2013 12:38:57 +0100
-Message-ID: <529F1451.1060800@gmail.com>
-References: <1386124624-22414-1-git-send-email-voice.shen@atmel.com> <1386124624-22414-2-git-send-email-voice.shen@atmel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: ASoC fixes for v3.13
+Date: Wed, 4 Dec 2013 11:40:00 +0000
+Message-ID: <20131204114000.GF29268@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <1386124624-22414-2-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: broonie@kernel.org, nicolas.ferre@atmel.com, zql@glomationinc.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============8044480287598918751=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id B17C726547D
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 12:40:03 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/12/2013 03:37, Bo Shen wrote:
-> According to the SSC specifiation, it should be enabled after DMA is
-> enabled. So, add trigger operation to make sure the right sequence.
-> 
-> Signed-off-by: Bo Shen <voice.shen@atmel.com>
-> ---
->  sound/soc/atmel/atmel_ssc_dai.c |   30 +++++++++++++++++++++++++++++-
->  1 file changed, 29 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-> index 8697ced..1ead3c9 100644
-> --- a/sound/soc/atmel/atmel_ssc_dai.c
-> +++ b/sound/soc/atmel/atmel_ssc_dai.c
-> @@ -648,7 +648,7 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
->  
->  	dma_params = ssc_p->dma_params[dir];
->  
-> -	ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_enable);
-> +	ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_disable);
->  	ssc_writel(ssc_p->ssc->regs, IDR, dma_params->mask->ssc_error);
->  
->  	pr_debug("%s enabled SSC_SR=0x%08x\n",
-> @@ -657,6 +657,33 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
->  	return 0;
->  }
->  
-> +static int atmel_ssc_trigger(struct snd_pcm_substream *substream,
-> +			     int cmd, struct snd_soc_dai *dai)
-> +{
-> +	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
-> +	struct atmel_pcm_dma_params *dma_params;
-> +	int dir;
-> +
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +		dir = 0;
-> +	else
-> +		dir = 1;
-> +
-> +	dma_params = ssc_p->dma_params[dir];
-> +
-> +	switch (cmd) {
-> +	case SNDRV_PCM_TRIGGER_START:
-> +	case SNDRV_PCM_TRIGGER_RESUME:
-> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> +		ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_enable);
-> +		break;
-> +	default:
-> +		ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_disable);
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
->  
->  #ifdef CONFIG_PM
->  static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
-> @@ -731,6 +758,7 @@ static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
->  	.startup	= atmel_ssc_startup,
->  	.shutdown	= atmel_ssc_shutdown,
->  	.prepare	= atmel_ssc_prepare,
-> +	.trigger	= atmel_ssc_trigger,
->  	.hw_params	= atmel_ssc_hw_params,
->  	.set_fmt	= atmel_ssc_set_dai_fmt,
->  	.set_clkdiv	= atmel_ssc_set_dai_clkdiv,
-> 
 
-Tested-by: Richard Genoud <richard.genoud@gmail.com>
-on at91sam9g35-ek with 3.12-rc2 + "ASoC: wm8731: fix dsp mode configuration"
+--===============8044480287598918751==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="juZjCTNxrMaZdGZC"
+Content-Disposition: inline
 
 
+--juZjCTNxrMaZdGZC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit dc1ccc48159d63eca5089e507c82c7d22ef60839:
+
+  Linux 3.13-rc2 (2013-11-29 12:57:14 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.13-rc2
+
+for you to fetch changes up to 29e248829dc7d44248c69bbd5d40eca152a50cab:
+
+  Merge remote-tracking branches 'asoc/fix/arizona', 'asoc/fix/atmel', 'asoc/fix/fsl', 'asoc/fix/kirkwood', 'asoc/fix/omap', 'asoc/fix/rcar', 'asoc/fix/wm8731' and 'asoc/fix/wm8990' into asoc-linus (2013-12-03 18:09:00 +0000)
+
+----------------------------------------------------------------
+
+ASoC: Fixes for v3.13
+
+A smattering of fixes here, some core ones for the rate combination
+issues for things other than simple bitmasks, for readback of byte
+controls and for updating the power of value muxes plus a bunch of
+driver fixes of varying severity.
+
+The warning fix in the i.MX FIQ driver is fixing a warning introduced
+by a previous fix.
+
+----------------------------------------------------------------
+Bo Shen (2):
+      ASoC: atmel: sam9x5_wm8731: fix oops when unload module
+      ASoC: wm8731: fix dsp mode configuration
+
+Charles Keepax (2):
+      ASoC: wm5110: Remove output OSR and PGA volume controls
+      ASoC: core: Use consistent byte ordering in snd_soc_bytes_get
+
+Fabio Estevam (1):
+      ASoC: fsl: imx-pcm-fiq: Remove unused 'runtime' variable
+
+Jarkko Nikula (1):
+      ASoC: omap: n810: Convert to clk_prepare_enable/clk_disable_unprepare
+
+Jean-Francois Moine (2):
+      ASoC: kirkwood: Fix invalid S/PDIF format
+      ASoC: kirkwood: Fix erroneous double output while playing
+
+Kuninori Morimoto (1):
+      ASoC: rcar: select REGMAP
+
+Lars-Peter Clausen (2):
+      ASoC: pcm: Fix rate_max calculation
+      ASoC: pcm: Always honor DAI min and max sample rate constraints
+
+Mark Brown (4):
+      ASoC: wm8990: Mark the register map as dirty when powering down
+      Merge remote-tracking branch 'asoc/fix/core' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/dapm' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/arizona', 'asoc/fix/atmel', 'asoc/fix/fsl', 'asoc/fix/kirkwood', 'asoc/fix/omap', 'asoc/fix/rcar', 'asoc/fix/wm8731' and 'asoc/fix/wm8990' into asoc-linus
+
+Oskar Schirmer (1):
+      ASoC: fsl: imx-pcm-fiq: remove bogus period delta calculation
+
+Shawn Guo (1):
+      ASoC: core: fix devres parameter in devm_snd_soc_register_card()
+
+Stephen Warren (1):
+      ASoC: dapm: Use SND_SOC_DAPM_INIT_REG_VAL in SND_SOC_DAPM_MUX
+
+Wei Yongjun (1):
+      ASoC: fsl: set correct platform drvdata in pcm030_fabric_probe()
+
+ include/sound/soc-dapm.h            |  3 ++-
+ sound/soc/atmel/sam9x5_wm8731.c     |  2 ++
+ sound/soc/codecs/wm5110.c           | 25 -------------------------
+ sound/soc/codecs/wm8731.c           |  4 ++--
+ sound/soc/codecs/wm8990.c           |  2 ++
+ sound/soc/fsl/pcm030-audio-fabric.c |  3 ++-
+ sound/soc/kirkwood/kirkwood-i2s.c   | 22 +++++++++++++---------
+ sound/soc/omap/n810.c               |  4 ++--
+ sound/soc/sh/Kconfig                |  1 +
+ sound/soc/soc-core.c                |  4 ++--
+ sound/soc/soc-devres.c              |  4 ++--
+ sound/soc/soc-pcm.c                 | 18 ++++++++++++------
+ 12 files changed, 42 insertions(+), 50 deletions(-)
+
+--juZjCTNxrMaZdGZC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSnxSNAAoJELSic+t+oim9+fMP/1bXm1Y03KfQdFtiwa+f7ag7
+VrUOkSQk6CThlfBgo6cl6LRgnEHIqSxEOMBNk2nyuX7IcCIr/VuGzPMt3ij9bsbg
+PgRyO+t+7va8z7AyT94UlVxm2L1iHFgLPuGVVHyXVp/A3Jc18jJDEbpXziSUznIh
+FTJ6jRZ8+7BPqOggFLM1hN9CfMEAjjXPXhULkFwtgMGNMbin9ANlNFWydMUZw7JK
+hhD8x5DwOZ747bGwVD+Kvg/dpBr6n9bBdaT7RIyLtHTlsW9wYjmuCVgHgsgEKHNJ
+4Y6ukplCDxt0ULerpMB6CGivIwmqfiSsTgrJyMgkPNsqWUvcpU8Qv02HvhMH2BIQ
+dOFaQqWF4t+ULlsvwIuGnCU+IaNvzQ3JyWWFmfAIt/57aqPnUtSexnC8y141mAFk
+XyMKggSllAhKM1CinBO/GCVIuNK7Ewz5CMtXkxJGnJHQveIrYJOUHielkK9he1o4
+St7PMb+dojZRjg3QXBhV7Dkqf+Ahd2aTIqzmNhuTvYyoDN96UIVjCjZMCz0yds3T
+GzZIeb2OBXBp21HUW0iYxwqKsHhpqfUYHOhT89qbnoxIgEefJTj9/3896wUoEYty
+SRySOach4W0sfR0rPg/enwp0Fz0QAC+F8zqn+SzseTMTCu+stgIKhUd3Z2ls0xvl
+0y4NLbMJt7W3ejGYdljy
+=5T9F
+-----END PGP SIGNATURE-----
+
+--juZjCTNxrMaZdGZC--
+
+--===============8044480287598918751==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8044480287598918751==--
