@@ -1,16 +1,16 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Fix missing ELD info when using
-	jackpoll_ms parameter
-Date: Wed,  4 Dec 2013 10:19:41 +0800
-Message-ID: <1386123581-2698-1-git-send-email-david.henningsson@canonical.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [PATCH 1/2] ASoC: atmel_ssc_dai: add dai trigger ops
+Date: Wed,  4 Dec 2013 10:37:03 +0800
+Message-ID: <1386124624-22414-2-git-send-email-voice.shen@atmel.com>
+References: <1386124624-22414-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 0263F2652FD
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 03:19:48 +0100 (CET)
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78FB6265300
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2013 03:39:18 +0100 (CET)
+In-Reply-To: <1386124624-22414-1-git-send-email-voice.shen@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,84 +20,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: broonie@kernel.org
+Cc: zql@glomationinc.com, richard.genoud@gmail.com, nicolas.ferre@atmel.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-In the case of using jackpoll_ms instead of unsol events, the jack
-was correctly detected, but ELD info was not refreshed on plug-in.
+According to the SSC specifiation, it should be enabled after DMA is
+enabled. So, add trigger operation to make sure the right sequence.
 
-And without ELD info, no proper restriction of pcm, which can in turn
-break sound output on some devices.
-
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
 ---
- sound/pci/hda/patch_hdmi.c |   27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+ sound/soc/atmel/atmel_ssc_dai.c |   30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
 
-@Takashi; feel free to add stable if you think it's worth it. (After all using
-the jackpoll_ms parameter is not something we usually do.) It's still a bug fix
-so sending to Linus tree should be okay, I believe.
-
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 4098196..f0a8ea8 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1142,32 +1142,34 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 8697ced..1ead3c9 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -648,7 +648,7 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
  
- static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll);
+ 	dma_params = ssc_p->dma_params[dir];
  
--static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
-+static void jack_callback(struct hda_codec *codec, struct hda_jack_tbl *jack)
- {
- 	struct hdmi_spec *spec = codec->spec;
-+	int pin_idx = pin_nid_to_pin_index(spec, jack->nid);
-+	if (pin_idx < 0)
-+		return;
-+
-+	if (hdmi_present_sense(get_pin(spec, pin_idx), 1))
-+		snd_hda_jack_report_sync(codec);
-+}
-+
-+static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
-+{
- 	int tag = res >> AC_UNSOL_RES_TAG_SHIFT;
--	int pin_nid;
--	int pin_idx;
- 	struct hda_jack_tbl *jack;
- 	int dev_entry = (res & AC_UNSOL_RES_DE) >> AC_UNSOL_RES_DE_SHIFT;
+-	ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_enable);
++	ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_disable);
+ 	ssc_writel(ssc_p->ssc->regs, IDR, dma_params->mask->ssc_error);
  
- 	jack = snd_hda_jack_tbl_get_from_tag(codec, tag);
- 	if (!jack)
- 		return;
--	pin_nid = jack->nid;
- 	jack->jack_dirty = 1;
- 
- 	_snd_printd(SND_PR_VERBOSE,
- 		"HDMI hot plug event: Codec=%d Pin=%d Device=%d Inactive=%d Presence_Detect=%d ELD_Valid=%d\n",
--		codec->addr, pin_nid, dev_entry, !!(res & AC_UNSOL_RES_IA),
-+		codec->addr, jack->nid, dev_entry, !!(res & AC_UNSOL_RES_IA),
- 		!!(res & AC_UNSOL_RES_PD), !!(res & AC_UNSOL_RES_ELDV));
- 
--	pin_idx = pin_nid_to_pin_index(spec, pin_nid);
--	if (pin_idx < 0)
--		return;
--
--	if (hdmi_present_sense(get_pin(spec, pin_idx), 1))
--		snd_hda_jack_report_sync(codec);
-+	jack_callback(codec, jack);
- }
- 
- static void hdmi_non_intrinsic_event(struct hda_codec *codec, unsigned int res)
-@@ -2080,7 +2082,8 @@ static int generic_hdmi_init(struct hda_codec *codec)
- 		hda_nid_t pin_nid = per_pin->pin_nid;
- 
- 		hdmi_init_pin(codec, pin_nid);
--		snd_hda_jack_detect_enable(codec, pin_nid, pin_nid);
-+		snd_hda_jack_detect_enable_callback(codec, pin_nid, pin_nid,
-+			codec->jackpoll_interval > 0 ? jack_callback : NULL);
- 	}
+ 	pr_debug("%s enabled SSC_SR=0x%08x\n",
+@@ -657,6 +657,33 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
  	return 0;
  }
+ 
++static int atmel_ssc_trigger(struct snd_pcm_substream *substream,
++			     int cmd, struct snd_soc_dai *dai)
++{
++	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
++	struct atmel_pcm_dma_params *dma_params;
++	int dir;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		dir = 0;
++	else
++		dir = 1;
++
++	dma_params = ssc_p->dma_params[dir];
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_enable);
++		break;
++	default:
++		ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_disable);
++		break;
++	}
++
++	return 0;
++}
+ 
+ #ifdef CONFIG_PM
+ static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
+@@ -731,6 +758,7 @@ static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
+ 	.startup	= atmel_ssc_startup,
+ 	.shutdown	= atmel_ssc_shutdown,
+ 	.prepare	= atmel_ssc_prepare,
++	.trigger	= atmel_ssc_trigger,
+ 	.hw_params	= atmel_ssc_hw_params,
+ 	.set_fmt	= atmel_ssc_set_dai_fmt,
+ 	.set_clkdiv	= atmel_ssc_set_dai_clkdiv,
 -- 
 1.7.9.5
