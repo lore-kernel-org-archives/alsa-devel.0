@@ -1,105 +1,70 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: samsung: Use ASoC dmaengine code
- where possible
-Date: Thu, 5 Dec 2013 11:45:38 +0000
-Message-ID: <20131205114538.GO29268@sirena.org.uk>
-References: <1384264120-24750-2-git-send-email-broonie@kernel.org>
- <CAAgF-BcJZrwwHYtk6pKj_-+CzmbhhV4V_Z02kjHveObOR6oiFQ@mail.gmail.com>
- <20131126102311.GW14725@sirena.org.uk>
- <CAAgF-BdWLXeLyVZv-durSxxVEm4hHaC7sXQuz_pGLLY-x7XS+w@mail.gmail.com>
- <20131126122031.GA14725@sirena.org.uk>
- <CAAgF-Bc5mEmOBFZak2rSuCqs+xjcrNqnVNZc=zno8F3VOCuuwA@mail.gmail.com>
- <20131127150534.GW14725@sirena.org.uk>
- <CAAgF-BcoKDt=u51tqiWyxveb4iJSXKuV49X1VmOsWiRsSGKKpg@mail.gmail.com>
- <20131128115351.GC27568@sirena.org.uk>
- <CAAgF-Bc3fOdJ3C-Jrmw-7Vxt_9QSJHEX5kWvCEyu_WBrsMDdEA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: samsung: Initialize the dma_data for secondary dai
+Date: Thu, 5 Dec 2013 11:50:15 +0000
+Message-ID: <20131205115015.GP29268@sirena.org.uk>
+References: <1385632932-16579-1-git-send-email-padma.v@samsung.com>
+ <20131128113800.GB27568@sirena.org.uk>
+ <CAAgF-BdqRzB5MxTf_9nZkgSOY=F6dGAs0yhTkNHqrUQLonFAsw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2211098120683002428=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 084F8265366
- for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2013 12:45:41 +0100 (CET)
-In-Reply-To: <CAAgF-Bc3fOdJ3C-Jrmw-7Vxt_9QSJHEX5kWvCEyu_WBrsMDdEA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="aE2Tjr+Wh4rS13mJ"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAAgF-BdqRzB5MxTf_9nZkgSOY=F6dGAs0yhTkNHqrUQLonFAsw@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Padma Venkat <padma.kvr@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Padmavathi Venna <padma.v@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, linaro-kernel@lists.linaro.org
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2211098120683002428==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OE5XN2KVoD5QaTkR"
-Content-Disposition: inline
-
-
---OE5XN2KVoD5QaTkR
+--aE2Tjr+Wh4rS13mJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Dec 05, 2013 at 04:20:03PM +0530, Padma Venkat wrote:
-> On Thu, Nov 28, 2013 at 5:23 PM, Mark Brown <broonie@kernel.org> wrote:
+On Thu, Dec 05, 2013 at 04:33:19PM +0530, Padma Venkat wrote:
+> On Thu, Nov 28, 2013 at 5:08 PM, Mark Brown <broonie@kernel.org> wrote:
 
-> > OK, so we can probably just reinitialise the dmaengine data after we
-> > reset it?  Like below
+> > Why don't we need this fix for mainline?  The dmaengine change is just
+> > moving the initialisation through a layer of indirection but there was
+> > initialisation anyway.  I'm concerned that there's a bug that ought to
+> > be fixed for v3.13 as well here.
 
-> Yes. That works well.
+> Yes. We need this for mainline. Not dependent on your dmaengine changes.
 
-Great.
+Ah, just saw this one - I'll cook up a version of it, due to the
+refactoring the change doesn't apply directly to v3.13.
 
-> As I forgot to add SND_DMAENGINE_PCM_FLAG_NO_RESIDUE flag, I was
-> getting underrun error. After adding this flag audio playback is
-> working fine for smaller files on smdk5420 with pl330 dma driver.
+> >>       return snd_dmaengine_pcm_register(dev, &samsung_dmaengine_pcm_config,
+> >> -                                       SND_DMAENGINE_PCM_FLAG_COMPAT);
+> >> +                                       SND_DMAENGINE_PCM_FLAG_COMPAT |
+> >> +                             SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME);
 
-OK, there were some patches on the thread adding residue support to the
-PL330 driver yesterday - hopefully those can get merged at some point
+> > This is already done.
 
-> Except for the crash due to NULL pointer dereference in secondary
-> dai(I posted a patch for the same (ASoC: samsung: Initialize the
-> dma_data for secondary dai)) you can add my
+> Should I send another patch by removing this flag from this patch?
 
-> Tested By: Padmavathi Venna <padma.v@samsung.com>
+No need.
 
-Excellent, thanks - I'd squashed in your change already.  Like I say I'm
-still concerned that we might need a fix for v3.13 since I can't
-entirely see why the code works as-is.
-
---OE5XN2KVoD5QaTkR
+--aE2Tjr+Wh4rS13mJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSoGdfAAoJELSic+t+oim9s2sP/1eh9i/zxfU7ZQJVi48rv68M
-zBzteoDM21/Sb3SK45B4khMbe+APIu3AlIlTbMdUCJp90obtjDlKzYsrqkC6fLSM
-BVDOYNrjA5PedJMeahJTnNCAoDrn4CmfUCFJToAWDvSznfVBzJwQpX45sU8EFxai
-Q9tiOUhcnlBF+ykR1g+OgOsPkW2aMiKQednMJ3xtU+3Ei6S6gaYKx05zXFhNoIlt
-Ov2NhNGaz+CaMEJ7vBXq5l7sH0qfFhfzAGm75c3DXyg6vJcUds1u6wvvp9ZJU34v
-WsvZcgYss+cq9Iuq6CdzXXPt8IFCRB/Yz06NHqbEJiniK4HN1GfwS+WVcan7j9Ax
-LihvnW2lgXaSK9C0F0bFiBBa5RZTzAlOFva+NUB+ZvZUZ6XYpNaaPDlmwB2hLn+N
-HJBQkeyzOrrA5K84EQqxlUcWQZb74fTYwlge2hf6jV7Mi6OG6gv9MXxMjXSKwvlW
-NYcdkb9btr01czqzg/iUObuNM11z1RZ4eD4JlOvTj7ddaDCXZifyPf7SDanIWpTl
-Cv+M0Uu0264CTEtEi/Pc+q80y+OnHhGtUCnM7Haaa6NcK0Z0CO015xV7mNwDxn2q
-aCmnDjTyWBkRTJtNUvvd5PC8oWGA45U8y7txJvy2esPP6oR4a9x+E3onPYNHuYZA
-gR7vRvjI+/xTL0NE4U8E
-=5BF7
+iQIcBAEBAgAGBQJSoGh0AAoJELSic+t+oim9320P/ilvkvmQ0JLX5Avox9MURpU2
+ZZ4wc5E/6ubg7wK5mkoy3qSYJJD43CsV7XwvD4FOOOmUyANBTNZfhwtQaBr+nf8y
+wlviH4Gz/jD0JryRjgqmMm0MEUCBFVNzqYJi8FGAj0i6M6fy5l0YL9Emwzy6Xm5O
+6OSphNwSwDuHvJ5UQ1xU8+WiRSxLg/XTlGA/cNEUCq475L3MK+llcd4SQNtZRc8K
+gVfnIFFvNy2l0DktNQGJdGbdW1bjpDpgxV+LGFGb6Wzhf3kZYjZLWoal4YtEKz7w
++HJ673isdYWAcFw1KpXabzl1GPScpKwICuKRFFg49sr53UTU+Po6qMRwQc8RJtvM
+C+D3XNYqJItxJzpGRlpFtIb2m3rOcdfJrQGewpK1cks9l1VpQkmSp47b4VWWZzlc
+PECwFqsT/mKyW1QU7RI1RbQTlgAP6VAjztsJHyGV2dss6vHfxAMTNbYaCSRWUKqV
+KGpFBd5vwNoi1/pr5lxjqLUC9cof/WXN8p/1giZqrXKEtR/Ufe4pjszFAUNFSX9E
+w2s7NO5jAUU2RMc6RX4Wd8XQ3EGnxjcTUYFLL93zxY3zV3OBFaKfG7A6cPoKDSee
+ns3O2aTJaXQBjsUi2eaXPhgSX5r/FsqK9Wu182urrouXvuCwxw3+Y/W1qs6x8Xcv
+b+lliJ7kPBJcIRHGBucV
+=mqoX
 -----END PGP SIGNATURE-----
 
---OE5XN2KVoD5QaTkR--
-
---===============2211098120683002428==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2211098120683002428==--
+--aE2Tjr+Wh4rS13mJ--
