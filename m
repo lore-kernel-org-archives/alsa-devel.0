@@ -1,58 +1,53 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: samsung: Provide helper for DMA init
-Date: Fri, 6 Dec 2013 10:44:33 +0530
-Message-ID: <CAAgF-BdD_DONQYPOenMwBmc6N+EOJQ3TwJz1hpG2qZVfzhR63Q@mail.gmail.com>
-References: <1386253559-18262-1-git-send-email-broonie@kernel.org>
+From: mengdong.lin@intel.com
+Subject: [PATCH] ALSA: hda - skip depop delay before D3 for
+	Haswell and Valleyview2 display codec
+Date: Thu,  5 Dec 2013 18:35:48 -0500
+Message-ID: <8a2f108353c44aae236c0c273c2d63f101f17418.1386286480.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1386253559-18262-1-git-send-email-broonie@kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Padmavathi Venna <padma.v@samsung.com>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 907062608ED
+ for <alsa-devel@alsa-project.org>; Fri,  6 Dec 2013 07:31:58 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-On Thu, Dec 5, 2013 at 7:55 PM, Mark Brown <broonie@kernel.org> wrote:
-> From: Mark Brown <broonie@linaro.org>
->
-> In preparation for using the dmaengine helpers in ASoC rather than the
-> dmaengine wrappers for the Samsung API wrap the configuration of dma_data.
-> The dmaengine code expects different data to that used by the legacy API.
->
-> Signed-off-by: Mark Brown <broonie@linaro.org>
-> ---
->
-> This will need merging with the fix patch I sent earlier, I'l do that
-> assuming this is OK.
->
+This patch skips the default depop delay before D3 for Haswell (10 ms) and
+Valleyview2 (100 ms) display codec, to reduce codec suspend time.
 
-[snip]
+The analog part of display audio is implemented in the external display. Some
+displays have weak pop noise while others not when suspending, no matter there
+is the default delay or not.
 
-> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-> index a5cbdb4f1655..eab0050d4579 100644
-> --- a/sound/soc/samsung/i2s.c
-> +++ b/sound/soc/samsung/i2s.c
-> @@ -946,8 +946,11 @@ static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
->         struct i2s_dai *i2s = to_info(dai);
->         struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
->
-> -       if (other && other->clk) /* If this is probe on secondary */
-> +       if (other && other->clk) { /* If this is probe on secondary */
-> +               samsung_asoc_init_dma_data(dai, &other->sec_dai->dma_playback,
-> +                                          NULL);
->                 goto probe_exit;
-> +       }
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
-This is done in your earlier patch " ASoC: samsung: Ensure DMA data is
-initialised for secondary DAI ". Was it done on purpose or by mistake
-in this patch?
-
-I think you also told to include a patch for reinitialization of the
-dma_data in i2s_hw_params. If you are in the process of debugging some
-bug as you mentioned earlier you can ignore this comment. Otherwise it
-is just a reminder.
-
-Thanks
-Padma
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 2306645..e14359a 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2022,6 +2022,10 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 		intel_haswell_fixup_enable_dp12(codec);
+ 	}
+ 
++	if (is_haswell(codec) || is_valleyview(codec)) {
++		codec->depop_delay = 0;
++	}
++
+ 	if (hdmi_parse_codec(codec) < 0) {
+ 		codec->spec = NULL;
+ 		kfree(spec);
+-- 
+1.8.1.2
