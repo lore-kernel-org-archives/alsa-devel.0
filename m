@@ -1,20 +1,24 @@
 From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH] ASoC: wm8962: Enable SYSCLK provisonally
- before fetching generated DSPCLK_DIV
-Date: Thu, 5 Dec 2013 22:12:37 +0800
-Message-ID: <20131205141237.GB14744@MrMyself>
-References: <1386148936-15899-1-git-send-email-b42378@freescale.com>
- <20131205141421.GF23979@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: fsl: imx-wm8962: Do FLL
+ configuration in hw_params() and hw_kree()
+Date: Thu, 5 Dec 2013 22:17:42 +0800
+Message-ID: <20131205141741.GC14744@MrMyself>
+References: <1386176048-6960-1-git-send-email-b42378@freescale.com>
+ <20131204190211.GD29268@sirena.org.uk>
+ <20131205025630.GG8609@MrMyself>
+ <20131205111508.GM29268@sirena.org.uk>
+ <20131205110727.GA14744@MrMyself>
+ <20131205122113.GQ29268@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe005.messaging.microsoft.com [207.46.163.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E710265550
- for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2013 15:34:34 +0100 (CET)
+Received: from tx2outboundpool.messaging.microsoft.com
+ (tx2ehsobe004.messaging.microsoft.com [65.55.88.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D0A8261A7B
+ for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2013 15:40:19 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20131205141421.GF23979@opensource.wolfsonmicro.com>
+In-Reply-To: <20131205122113.GQ29268@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,37 +28,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 05, 2013 at 02:14:21PM +0000, Charles Keepax wrote:
-> On Wed, Dec 04, 2013 at 05:22:16PM +0800, Nicolin Chen wrote:
-> > DSPCLK_DIV can be only generated correctly after enabling SYSCLK. But if the
-> > current bias_level hasn't reached SND_SOC_BIAS_ON, DAPM won't enable SYSCLK,
-> > which would cause the calculation result from DSPCLK_DIV invalid since bit
-> > DSPCLK_DIV will be finally turned to its true value after DAPM enables SYSCLK
-> > while the driver won't calculate it again for the current instance. In this
-> > circumstance, a playback which needs non-zero DSPCLK_DIV would be distorted
-> > due to unexpected clock frequency resulted from an invalid DSPCLK_DIV value.
-> > 
-> > So this patch provisionally enables the SYSCLK to get a valid DSPCLK_DIV for
-> > calculation and then disables it afterward.
+On Thu, Dec 05, 2013 at 12:21:13PM +0000, Mark Brown wrote:
+> On Thu, Dec 05, 2013 at 07:07:28PM +0800, Nicolin Chen wrote:
 > 
-> Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> > Then I think it would be plausible if I could refine this patch to
+> > allow both set_bias_level() and hw_params/free() to control the FLL
+> > while making them not break each other but coexist, right?
 > 
-> It feels like there should be a neater way to handle this, but I
-> can't really see what that might be right now. So I think this
-> looks fine for now and hopefully I can find some time to look at
-> it in more detail soon.
+> Yes, that makes sense.  It might even be useful to have some support for
+> this along the style of the bias level support in the core since modern
+> CODECs all use things like charge pumps and class D amplifiers so this
+> is becoming a more and more common problem.
 
-Thanks Charles,
+That's a nice suggestion. But currently I don't think I have the proficiency
+to do this task to the core. So I'd like to start revising from this machine
+driver first to gain the knowledge :)
 
-And I was preparing a patch for SSI and met a similar problem, after a few
-reconsideration, I'm wondering if it's better to save the value of SYSCLK_ENA
-and apply it after getting DSPCLK_DIV.
-
-By doing this we can no more reply on bias_level, which looks more safer.
-
-Best regards,
+Thank you for your reply,
 Nicolin Chen
