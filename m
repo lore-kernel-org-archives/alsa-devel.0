@@ -1,53 +1,46 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] ASoC: add DT binding document for MAX98090 CODEC
-Date: Thu, 5 Dec 2013 13:33:03 +0000
-Message-ID: <20131205133303.GT29268@sirena.org.uk>
-References: <1386195567-24124-1-git-send-email-swarren@wwwdotorg.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kjwfQs4m3ZHLWJuw"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1386195567-24124-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: samsung: Ensure DMA data is initialised for secondary DAI
+Date: Thu,  5 Dec 2013 14:13:57 +0000
+Message-ID: <1386252837-17321-1-git-send-email-broonie@kernel.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Padmavathi Venna <padma.v@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Mark Brown <broonie@linaro.org>
 
---kjwfQs4m3ZHLWJuw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+While testing the upcoming dmaengine conversion for the driver Padma
+noticed that the DMA data for the secondard DAI is not being correctly
+initialised and provided a fix on top of the conversion.  Also do this
+fix for mainline.
 
-On Wed, Dec 04, 2013 at 03:19:26PM -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->=20
-> This binding mainly serves to document the list of input and output pins
-> that may be used in a sound card's audio routing table.
+Reported-by: Padmavathi Venna <padma.v@samsung.com>
+Signed-off-by: Mark Brown <broonie@linaro.org>
+Cc: stable@vger.kernel.org
+---
 
-Applied, thanks.
+Compile tested only, I don't have hardware to test.
 
---kjwfQs4m3ZHLWJuw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ sound/soc/samsung/i2s.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSoICLAAoJELSic+t+oim9oWMP/1U6TaFA80Sxq13HkdgjjW6l
-iEn4PBMxssefcdKpz2XIsC1UTn/1um0bStosLDETSllpLRIzWJgvl7nIntJqLWwp
-HPY0dlgNM61J2aHWmpbekx9j4fOOR56I7aog1cpccC9PwzjCNRUhVums9aETiJr/
-HQBlrVG5Uquj/j6sWIynLR+OI+OHHOrSPGYjAlXKfUfOcSkgUUe1zuiRtOugMRkR
-9YZAl3ZjLF0+WNXAQ97xOjsZmxbhJbAdAdDj3y99hyCKRYSUGIUJR96ix5T6rKdf
-tdkeLqcxRHJL+bJUGY2dez7SrgsMvSL9GJxva7NCYQhPOrn59P6PBx2jn3PUEqvV
-Gv3YrxpJlzSYBoOT2K0ynv2swj20WJJ/p9WEppsHhiTgZ3cHkNcoCTY2RzZ4rSku
-qjf12e9QRfGCy16OYnmeK3N9chwMDlkWjtoI+TZiy3CHXLaxJf9dv1Zm4j2JTk8n
-4s4zDIZhMT5TLF4ZIp/Ra7Lq/jphXA0b3cEC8sOhL+3B7H1wCPGt9YnKUAW8Ds6P
-yG02rUUZmT9UURI7gY9FL+Qje91T/pd3jE5I8FnsrBDNqt+qk4FAtzdvrZGCddVE
-rq6I66ViZEwj0NGFxSRgGISVjdwjAOztxOXfXvXOpyqnEHGiMjkpQTOmNHX78R7i
-MjmiQOwi7YgZo9l2val/
-=lElI
------END PGP SIGNATURE-----
-
---kjwfQs4m3ZHLWJuw--
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index a5cbdb4f1655..f9f2227421ea 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -946,8 +946,11 @@ static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
+ 	struct i2s_dai *i2s = to_info(dai);
+ 	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
+ 
+-	if (other && other->clk) /* If this is probe on secondary */
++	if (other && other->clk) { /* If this is probe on secondary */
++		snd_soc_dai_init_dma_data(dai, &other->sec_dai->dma_playback,
++					  NULL);
+ 		goto probe_exit;
++	}
+ 
+ 	i2s->addr = ioremap(i2s->base, 0x100);
+ 	if (i2s->addr == NULL) {
+-- 
+1.8.5.1
