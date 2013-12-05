@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8962: Enable SYSCLK provisonally
- before fetching generated DSPCLK_DIV
-Date: Thu, 5 Dec 2013 14:59:52 +0000
-Message-ID: <20131205145952.GV29268@sirena.org.uk>
-References: <1386148936-15899-1-git-send-email-b42378@freescale.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: omap-pcm: Lower the dma coherent
+	mask to 32bits
+Date: Thu, 5 Dec 2013 17:33:46 +0200
+Message-ID: <52A09CDA.6010700@ti.com>
+References: <1386230802-3660-1-git-send-email-peter.ujfalusi@ti.com>
+ <20131205095619.GC4360@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5432564367062998923=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B2178265550
- for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2013 15:59:54 +0100 (CET)
-In-Reply-To: <1386148936-15899-1-git-send-email-b42378@freescale.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id A01D0265553
+ for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2013 16:33:51 +0100 (CET)
+In-Reply-To: <20131205095619.GC4360@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +22,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 12/05/2013 11:56 AM, Russell King - ARM Linux wrote:
+> On Thu, Dec 05, 2013 at 10:06:42AM +0200, Peter Ujfalusi wrote:
+>> The underlying API dma_coerce_mask_and_coherent() checks the requested b=
+its
+>> mask against the size of dma_addr_t which is 32bits on OMAP.
+>> Because of the previously used 64bits mask audio was not probing after
+>> commit c9bd5e6 (and 4dcfa6007).
+>> 32bits for the DMA_BIT_MASK looks to be the correct one to use.
+>>
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>> ---
+>> Hi Mark,
+>>
+>> This is the fix for OMAP audio for 3.13-rc2+. The dma coherent changes w=
+ent in
+>> between -rc1 and -rc2 which broke things because omap-pcm was using 64bi=
+ts for
+>> dma coherent mask.
+> =
 
---===============5432564367062998923==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="30GLzS1nLAWfoGxm"
-Content-Disposition: inline
+> Can you please try to understand _why_ it broke and post an explanation.
+> This breakage wasn't expected and shouldn't have happened.
 
+I'm not that familiar with this part of the code (mm, dma-mapping) but so f=
+ar
+this is what I found:
 
---30GLzS1nLAWfoGxm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ret =3D dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(64));
+is successful, no failure to set the mask to 64.
 
-On Wed, Dec 04, 2013 at 05:22:16PM +0800, Nicolin Chen wrote:
-> DSPCLK_DIV can be only generated correctly after enabling SYSCLK. But if the
-> current bias_level hasn't reached SND_SOC_BIAS_ON, DAPM won't enable SYSCLK,
-> which would cause the calculation result from DSPCLK_DIV invalid since bit
-> DSPCLK_DIV will be finally turned to its true value after DAPM enables SYSCLK
-> while the driver won't calculate it again for the current instance. In this
-> circumstance, a playback which needs non-zero DSPCLK_DIV would be distorted
-> due to unexpected clock frequency resulted from an invalid DSPCLK_DIV value.
+later on when requesting the dma channel however:
+arm_dma_alloc() -> get_coherent_dma_mask()  fails.
 
-Applied, thanks.
+As far I can see we have different checks in case of
+dma_coerce_mask_and_coherent() and arm_dma_alloc():
 
---30GLzS1nLAWfoGxm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+[1] dma_coerce_mask_and_coherent() -> dma_supported()
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSoJTlAAoJELSic+t+oim9UZEP/2FcnXlhFvjncBUU9rMwUPxi
-RMRFzuZO0A1+LTxpBx6WiivJmCxVd4PKSPnMi77yfx4904Ht1LvvAihtZSFBODEH
-KT8FvCwFC+27eYPsjeMrOOUVEqh8GHVM+tRgnXeNr+MafGe9eDAEomgq/e7WI3+u
-JiJPPEEB6iyzPwGUZkR7ybvWcVKAfNIFiZF7TXJq5q5OD8nlYzsRf3ZC8wPUuOnU
-nTq13KHmHcRyHIBF1gO0u8DmlFEL6rqgIqQEAwz8D3Qs4bL3zOHi0RTRz8D6LRl0
-3VmT1FgNzjFoyDK9K+TjT4bGMqZAtM2K3W6pSdvJ1Ye4gMht2upoc2GBtNklFQw5
-m0dsPimYNJh0bZSzyBpXE+RALnNxBmsT6CzgBkKCgdl1g8X+K9IMFf9Plop50xS/
-cFZJTzAyKK9mBJdbbDj44OKS1kKYsm69TnYdH4sY5PmfbRuDZ4rBprEyZYmYaSw+
-Noc6tpKegLCnayDMuzIEk4PrYbG3pMM/fqdGSsjhy/LXAcd603bYUxLERVcbFvMO
-G+9sCmaetcogfHlH9+F7PhmL8BnNZnBxZpvkuOVEFZlo2hbsMeh8vmYNjfuWhAdg
-Ns39HqZ09SHqb5PmSN+4H+8GUL2KUF2ifVeI/2Qm2t9rt7TBCTz379kwxNy/HBN/
-v/ICpVf1d2oG7+1JaLuZ
-=rU0S
------END PGP SIGNATURE-----
-
---30GLzS1nLAWfoGxm--
-
---===============5432564367062998923==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+ 	if (sizeof(mask) !=3D sizeof(dma_addr_t) &&
+ 	    mask > (dma_addr_t)~0 &&
+ 	    dma_to_pfn(dev, ~0) > arm_dma_pfn_limit)  /* !!! */
+ 		return 0;
 
 
---===============5432564367062998923==--
+[2] arm_dma_alloc() -> get_coherent_dma_mask()
+
+ 	if (sizeof(mask) !=3D sizeof(dma_addr_t) &&
+ 	    mask > (dma_addr_t)~0 &&
+ 	    dma_to_pfn(dev, ~0) > min(max_pfn, arm_dma_pfn_limit)) /* !!! */
+ 		return 0;
+
+On omap4:
+max_pfn: 0xc0000, arm_dma_pfn_limit: 0xfffff
+
+Not sure which check is the correct one but I think in both cases we should
+have the same check in this way we can catch the issue at
+dma_coerce_mask_and_coherent() time and try to figure out what to do.
+In case of omap-pcm we request for 64 bit because of future SoCs, but I thi=
+nk
+it would be fine to try first 64 and in case it is not supported fall back =
+to 32.
+
+-- =
+
+P=E9ter
