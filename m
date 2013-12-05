@@ -1,70 +1,196 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung: Initialize the dma_data for secondary dai
-Date: Thu, 5 Dec 2013 11:50:15 +0000
-Message-ID: <20131205115015.GP29268@sirena.org.uk>
-References: <1385632932-16579-1-git-send-email-padma.v@samsung.com>
- <20131128113800.GB27568@sirena.org.uk>
- <CAAgF-BdqRzB5MxTf_9nZkgSOY=F6dGAs0yhTkNHqrUQLonFAsw@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Issue with multiple hdmi codecs in
+ radeonhd, hacked to work
+Date: Thu, 5 Dec 2013 20:20:13 +0800
+Message-ID: <CAN8cciYmd4tK4Ep9VQ-4u_kYCwpmBxhYBJ9JWK6D75wGtCW42w@mail.gmail.com>
+References: <CAJ3TwYRYGR5Z2m1XSQ9QOp3ffe9sb2C_znsVUeBpARySZ7KbMQ@mail.gmail.com>
+	<CAN8ccia9KA4fyU06LE3+DMPcj9w62Z8P-BvjR3-aA2Q9TWcC-A@mail.gmail.com>
+	<CAJ3TwYQOiV2DFbVHagJ+O+tSbcvmNUTrZng1C8Tgooz8SrdPgg@mail.gmail.com>
+	<CAJ3TwYQSYtv6qdCiTi9MHBoEnxqitXbSVgxq-8R+z7E0LQyhpg@mail.gmail.com>
+	<CAN8cciZ=UWO_RNwJqrBwbbbU1f_4Ydapk=2d67CtYhVRbO-c1w@mail.gmail.com>
+	<CAJ3TwYTeR4fZSRGaMpUudL2t_dR0dkYYV1tP_aEAGnjUqN3iDg@mail.gmail.com>
+	<CAN8cciZ8okPOUD1X3Vy3ofayQHfW6K3eojUwLkGc3o-xX0BFgg@mail.gmail.com>
+	<CAJ3TwYQr3u-04zRduACx9g283tpyj2bmjDvgA+ok=15OGg5g9w@mail.gmail.com>
+	<CAJ3TwYTyHKTNX0Db78pUG9Phkk8O6TH4wNRp-x5tLYR1SyErtw@mail.gmail.com>
+Reply-To: General PulseAudio Discussion
+	<pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="aE2Tjr+Wh4rS13mJ"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAAgF-BdqRzB5MxTf_9nZkgSOY=F6dGAs0yhTkNHqrUQLonFAsw@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padma Venkat <padma.kvr@gmail.com>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, lars@metafoo.de
+Content-Type: multipart/mixed; boundary="===============0235249876=="
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <CAJ3TwYTyHKTNX0Db78pUG9Phkk8O6TH4wNRp-x5tLYR1SyErtw@mail.gmail.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@lists.freedesktop.org
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+To: John Ettedgui <john.ettedgui@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
+--===============0235249876==
+Content-Type: multipart/alternative; boundary=089e0149bc243424e804ecc88d60
 
---aE2Tjr+Wh4rS13mJ
-Content-Type: text/plain; charset=us-ascii
+--089e0149bc243424e804ecc88d60
+Content-Type: text/plain; charset=UTF-8
+
+>
+>>>>>>>>> I just changed my RadeonHD 4670 for a 7870, and now when I type
+>>>>>>>>> "aplay -l"  I get many HDMI codecs instead of just one like for the
+>>>>>>>>> previous card.
+>>>>>>>>>
+>>>>>>>>
+>>>>> How many hdmi , dvi or display port connectors do your card have ?
+>>>>>
+>>>>> 1 hdmi, 1 vga, 2 tiny ports that I cannot name.
+>>>>
+>>>
+are these mini display port ?
+
+http://en.wikipedia.org/wiki/Mini_DisplayPort
+
+
+>
+>>>>> Specification seem support up to 6 displays
+>>>>>
+>>>> I believe these are virtual HDMI ouputs, not physical ones and total
+>>>> for 6 in aplay -l and for 4 in aplay -L.
+>>>>
+>>>
+>>> are you using latest alsa-lib ?
+>>>
+>>>
+>>> http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=383912ef83cb2d5835239a23f6afc6198697a587
+>>>
+>>> Good point, I'm on a 3.13-rc2 kernel but totally forgot about the lib
+>> part.
+>> I have the 1.0.27.2 lib, let me get the git version.
+>>
+>
+> Alright exactly the same behavior with -git.
+>
+
+--089e0149bc243424e804ecc88d60
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><div class=3D"gmail_extra"><div class=3D"gmail_quote">=
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div cla=
+ss=3D"gmail_extra">
+<div class=3D"gmail_quote"><div class=3D"im"><blockquote class=3D"gmail_quo=
+te" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204=
+);padding-left:1ex"><div dir=3D"ltr"><div class=3D"gmail_extra"><div class=
+=3D"gmail_quote">
+<div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bo=
+rder-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><di=
+v class=3D"gmail_extra"><div class=3D"gmail_quote"><div><blockquote class=
+=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rg=
+b(204,204,204);padding-left:1ex">
+<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><div=
+><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border=
+-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div cl=
+ass=3D"gmail_extra">
+<div class=3D"gmail_quote"><div><blockquote class=3D"gmail_quote" style=3D"=
+margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-lef=
+t:1ex"><div dir=3D"ltr"><div><div><div class=3D"gmail_extra"><div class=3D"=
+gmail_quote">
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div cla=
+ss=3D"gmail_extra"><div class=3D"gmail_quote"><div><blockquote class=3D"gma=
+il_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,2=
+04,204);padding-left:1ex">
+<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><div=
+><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border=
+-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><br><p =
+style=3D"font-family:sans-serif;border:0px none;margin:0px;padding:7px 0px;=
+color:rgb(51,51,51);font-size:13.1429px;line-height:19px;background-color:r=
+gb(252,253,254)">
+
+
+
+
+
+I just changed my RadeonHD 4670 for a 7870, and now when I type &quot;aplay=
+ -l&quot;=C2=A0 I get many HDMI codecs instead of just one like for the pre=
+vious card.</p></div></blockquote></div></div></div></div></blockquote></di=
+v>
+
+
+
+
+
+</div></div></div></blockquote></div></div></div></div></div></blockquote><=
+div><br></div></div><div>How many hdmi , dvi or display port connectors do =
+your card have ?<br></div><div><br></div></div></div></div></blockquote>
+
+
+
+
+</div><div>1 hdmi, 1 vga, 2 tiny ports that I cannot name.=C2=A0</div></div=
+></div></div></blockquote></div></div></div></div></blockquote></div></div>=
+</div></div></blockquote></div></div></div></div></blockquote><div><br></di=
+v>
+<div>are these mini display port ?<br></div><div><br><a href=3D"http://en.w=
+ikipedia.org/wiki/Mini_DisplayPort">http://en.wikipedia.org/wiki/Mini_Displ=
+ayPort</a><br>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin=
+:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"=
+>
+<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><div=
+ class=3D"im"><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px=
+ 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D=
+"ltr"><div class=3D"gmail_extra">
+<div class=3D"gmail_quote"><div><blockquote class=3D"gmail_quote" style=3D"=
+margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-lef=
+t:1ex"><div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quot=
+e"><div>
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div cla=
+ss=3D"gmail_extra"><div class=3D"gmail_quote"><div><blockquote class=3D"gma=
+il_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,2=
+04,204);padding-left:1ex">
+
+
+
+<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><div=
+>=C2=A0<br></div><div>Specification seem support up to 6 displays <br></div=
+></div></div></div></blockquote></div><div>I believe these are virtual HDMI=
+ ouputs, not physical ones and total for 6 in aplay -l and for 4 in aplay -=
+L.</div>
+
+
+
+</div></div></div></blockquote><div><br></div></div><div>are you using late=
+st alsa-lib ? <br><br><a href=3D"http://git.alsa-project.org/?p=3Dalsa-lib.=
+git;a=3Dcommit;h=3D383912ef83cb2d5835239a23f6afc6198697a587" target=3D"_bla=
+nk">http://git.alsa-project.org/?p=3Dalsa-lib.git;a=3Dcommit;h=3D383912ef83=
+cb2d5835239a23f6afc6198697a587</a><br>
+
+
+
+<br></div></div></div></div></blockquote></div><div>Good point, I&#39;m on =
+a 3.13-rc2 kernel but totally forgot about the lib part.</div><div>I have t=
+he 1.0.27.2 lib, let me get the git version.</div></div></div></div></block=
+quote>
+
+<div><br></div></div><div>Alright exactly the same behavior with -git.</div=
+></div></div></div>
+</blockquote></div><br></div></div>
+
+--089e0149bc243424e804ecc88d60--
+
+--===============0235249876==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-On Thu, Dec 05, 2013 at 04:33:19PM +0530, Padma Venkat wrote:
-> On Thu, Nov 28, 2013 at 5:08 PM, Mark Brown <broonie@kernel.org> wrote:
+_______________________________________________
+pulseaudio-discuss mailing list
+pulseaudio-discuss@lists.freedesktop.org
+http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss
 
-> > Why don't we need this fix for mainline?  The dmaengine change is just
-> > moving the initialisation through a layer of indirection but there was
-> > initialisation anyway.  I'm concerned that there's a bug that ought to
-> > be fixed for v3.13 as well here.
-
-> Yes. We need this for mainline. Not dependent on your dmaengine changes.
-
-Ah, just saw this one - I'll cook up a version of it, due to the
-refactoring the change doesn't apply directly to v3.13.
-
-> >>       return snd_dmaengine_pcm_register(dev, &samsung_dmaengine_pcm_config,
-> >> -                                       SND_DMAENGINE_PCM_FLAG_COMPAT);
-> >> +                                       SND_DMAENGINE_PCM_FLAG_COMPAT |
-> >> +                             SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME);
-
-> > This is already done.
-
-> Should I send another patch by removing this flag from this patch?
-
-No need.
-
---aE2Tjr+Wh4rS13mJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSoGh0AAoJELSic+t+oim9320P/ilvkvmQ0JLX5Avox9MURpU2
-ZZ4wc5E/6ubg7wK5mkoy3qSYJJD43CsV7XwvD4FOOOmUyANBTNZfhwtQaBr+nf8y
-wlviH4Gz/jD0JryRjgqmMm0MEUCBFVNzqYJi8FGAj0i6M6fy5l0YL9Emwzy6Xm5O
-6OSphNwSwDuHvJ5UQ1xU8+WiRSxLg/XTlGA/cNEUCq475L3MK+llcd4SQNtZRc8K
-gVfnIFFvNy2l0DktNQGJdGbdW1bjpDpgxV+LGFGb6Wzhf3kZYjZLWoal4YtEKz7w
-+HJ673isdYWAcFw1KpXabzl1GPScpKwICuKRFFg49sr53UTU+Po6qMRwQc8RJtvM
-C+D3XNYqJItxJzpGRlpFtIb2m3rOcdfJrQGewpK1cks9l1VpQkmSp47b4VWWZzlc
-PECwFqsT/mKyW1QU7RI1RbQTlgAP6VAjztsJHyGV2dss6vHfxAMTNbYaCSRWUKqV
-KGpFBd5vwNoi1/pr5lxjqLUC9cof/WXN8p/1giZqrXKEtR/Ufe4pjszFAUNFSX9E
-w2s7NO5jAUU2RMc6RX4Wd8XQ3EGnxjcTUYFLL93zxY3zV3OBFaKfG7A6cPoKDSee
-ns3O2aTJaXQBjsUi2eaXPhgSX5r/FsqK9Wu182urrouXvuCwxw3+Y/W1qs6x8Xcv
-b+lliJ7kPBJcIRHGBucV
-=mqoX
------END PGP SIGNATURE-----
-
---aE2Tjr+Wh4rS13mJ--
+--===============0235249876==--
