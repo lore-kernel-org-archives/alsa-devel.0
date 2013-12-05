@@ -1,84 +1,55 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl: imx-wm8962: Do FLL
- configuration in hw_params() and hw_kree()
-Date: Thu, 5 Dec 2013 12:21:13 +0000
-Message-ID: <20131205122113.GQ29268@sirena.org.uk>
-References: <1386176048-6960-1-git-send-email-b42378@freescale.com>
- <20131204190211.GD29268@sirena.org.uk>
- <20131205025630.GG8609@MrMyself>
- <20131205111508.GM29268@sirena.org.uk>
- <20131205110727.GA14744@MrMyself>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/2] ASoC: tegra: add tegra+MAX98090 machine driver
+Date: Thu, 5 Dec 2013 13:32:03 +0000
+Message-ID: <20131205133203.GS29268@sirena.org.uk>
+References: <1386195567-24124-1-git-send-email-swarren@wwwdotorg.org>
+ <1386195567-24124-2-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5368300905154984975=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A6CC265500
- for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2013 13:21:16 +0100 (CET)
-In-Reply-To: <20131205110727.GA14744@MrMyself>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0OOz7ZB592LYQf07"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1386195567-24124-2-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5368300905154984975==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lzM1j1Hh4qIUNijn"
-Content-Disposition: inline
-
-
---lzM1j1Hh4qIUNijn
+--0OOz7ZB592LYQf07
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 05, 2013 at 07:07:28PM +0800, Nicolin Chen wrote:
+On Wed, Dec 04, 2013 at 03:19:27PM -0700, Stephen Warren wrote:
+> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+>=20
+> Initially, this binding and driver only describe/support playback to
+> headphones and speakers, and capture from the external microphone, with
+> GPIO-based jack detection for the headphone jack only.
 
-> Then I think it would be plausible if I could refine this patch to
-> allow both set_bias_level() and hw_params/free() to control the FLL
-> while making them not break each other but coexist, right?
+Applied, thanks.
 
-Yes, that makes sense.  It might even be useful to have some support for
-this along the style of the bias level support in the core since modern
-CODECs all use things like charge pumps and class D amplifiers so this
-is becoming a more and more common problem.
-
---lzM1j1Hh4qIUNijn
+--0OOz7ZB592LYQf07
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSoG+2AAoJELSic+t+oim9VUYP/RUCLopjQwJoGrJAlfQ3wtyE
-7Z+Scz2i5AD2FIj47YlYmlQP0Y7GkSxmYkfcIrbFTh0Za+Y14qe8dxHKIkDHscal
-GfaSXz2uuFcTcxT3pmLBIjjZ2tHzD/X6gAXXYXr41k8/WnDucGOn+PFDRlW+pWHA
-FSdsKcY7p2KV002JKo/ZXrMPf3GZiDxdM+7LVc+8iTfwuw7o+bkWLRnCQlzDNYut
-S1OvhjbsCe5+NReC9hz3uIYXc8sfcN1XQjkyusy4G9S0/WfJeb7Wo/kN1WJN6QbI
-IWUva3FP8Fb32thN8+OZctU689/iHddSF+/6wItplKoNXdfHeNTIXEZaRk05JMaU
-KFoLa83zCYWH04t6c2W2bWQ15pFdk9OxuOHWLi7xwk5O08Oy4tnEb+gM6jODpGDO
-5RpyNt/uwU5UYFjTRROkp4JDm2ytpTzJlr3ypnUF4kKyOzfr4CWWVTdpt5plFLTK
-5oFzjp5rMJxVhm8yePrgtinzzUUBpAlbz++MbQT2Ef8iEbhHgCmTkfmSyA2pbTj2
-HHXK2eje+wm+gqsZZQVpMSPOAUmCoZeRCVs5L+GRGrnVIAZB0NvYUrxwxXC1+eRc
-CCdpgYsX4w4euYkiHtWK7xu3Pti29/dQTcIVLr7Tm/dJAHE8llb1qZKZ0Fvi4x+u
-Do4OIRhk3sWuOB6uzKKL
-=Ba77
+iQIcBAEBAgAGBQJSoIBQAAoJELSic+t+oim92SEP/ixMNLrxiko7t5Bk5utJBIQO
+K3UId5M9g87B46lpBEmlJ618Q6wpyhAB+r6Ksgv5dQNZV+iHIHeVSFm6boovC9nk
+4cISnf84rT3Aef68QaGYxi/WuPp2sHkzhCgAC+npksRl3rUHNWXvEXM86t9ZcgFL
+nmeyET/sjXJkxJTV5zt7S5Po7pJXBlNvz8An7tz/A9BESN5nMMlESiT6kGt7eO5G
+d3ZrhpiEvOqqz6sfaIwp/sglAbcTRnxJkvZfnhwLZoV6NaVCITUtitXiCpKKGeas
+q4csdug+D+DrT86Y5osBAXnFzyZQF8V5eq4IyIPp8H04gR6xoThxGHK3H8NHY8lG
+l1nVBSpd9634SJJT7+dVavFez+/IiRmi9eVXKxOzochn+5lAyAHb9wDFMVHmjzsg
+LTj8n8OIi7IjGhM/BqdEHky8fp1CCQpfuYVVLAKGmDACz8epLbNwJjZgqdkwWzmQ
+k64s2wTIw1K3LWjcsG2mXJ1grgxrRNeLS5onN2wnA6tbDL4joVsoUAMx2xxPluCa
+D0wucyIDCs4/RLUJYSEFLg+DanB4pRqXNjuHOSgGVovyMILrK/7vxTNfSPgXb540
+c2GBo0QlfR+zWZRfyS4U/SJIw9wkUICJZHOXExWdlluFQZJyAlzMLzg8h+Atvi/Y
+IWQnQ5iZ9Ci9DbFJOGoT
+=SAW0
 -----END PGP SIGNATURE-----
 
---lzM1j1Hh4qIUNijn--
-
---===============5368300905154984975==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5368300905154984975==--
+--0OOz7ZB592LYQf07--
