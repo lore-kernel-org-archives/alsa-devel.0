@@ -1,287 +1,84 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Issue with multiple hdmi codecs in
- radeonhd, hacked to work
-Date: Thu, 5 Dec 2013 20:20:04 +0800
-Message-ID: <CAN8cciYEikGtPaET-qZECcyGTAqRQab6jEsGP-Zt=4U2ngLqbA@mail.gmail.com>
-References: <CAJ3TwYRYGR5Z2m1XSQ9QOp3ffe9sb2C_znsVUeBpARySZ7KbMQ@mail.gmail.com>
-	<CAN8ccia9KA4fyU06LE3+DMPcj9w62Z8P-BvjR3-aA2Q9TWcC-A@mail.gmail.com>
-	<CAJ3TwYQOiV2DFbVHagJ+O+tSbcvmNUTrZng1C8Tgooz8SrdPgg@mail.gmail.com>
-	<CAJ3TwYQSYtv6qdCiTi9MHBoEnxqitXbSVgxq-8R+z7E0LQyhpg@mail.gmail.com>
-	<CAN8cciZ=UWO_RNwJqrBwbbbU1f_4Ydapk=2d67CtYhVRbO-c1w@mail.gmail.com>
-	<CAJ3TwYTeR4fZSRGaMpUudL2t_dR0dkYYV1tP_aEAGnjUqN3iDg@mail.gmail.com>
-	<CAN8cciZ8okPOUD1X3Vy3ofayQHfW6K3eojUwLkGc3o-xX0BFgg@mail.gmail.com>
-	<CAJ3TwYQr3u-04zRduACx9g283tpyj2bmjDvgA+ok=15OGg5g9w@mail.gmail.com>
-Reply-To: General PulseAudio Discussion
-	<pulseaudio-discuss@lists.freedesktop.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl: imx-wm8962: Do FLL
+ configuration in hw_params() and hw_kree()
+Date: Thu, 5 Dec 2013 12:21:13 +0000
+Message-ID: <20131205122113.GQ29268@sirena.org.uk>
+References: <1386176048-6960-1-git-send-email-b42378@freescale.com>
+ <20131204190211.GD29268@sirena.org.uk>
+ <20131205025630.GG8609@MrMyself>
+ <20131205111508.GM29268@sirena.org.uk>
+ <20131205110727.GA14744@MrMyself>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1208522776=="
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <CAJ3TwYQr3u-04zRduACx9g283tpyj2bmjDvgA+ok=15OGg5g9w@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Sender: pulseaudio-discuss-bounces@lists.freedesktop.org
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-To: John Ettedgui <john.ettedgui@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+Content-Type: multipart/mixed; boundary="===============5368300905154984975=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A6CC265500
+ for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2013 13:21:16 +0100 (CET)
+In-Reply-To: <20131205110727.GA14744@MrMyself>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
---===============1208522776==
-Content-Type: multipart/alternative; boundary=20cf303dd358b4247004ecc88cd7
 
---20cf303dd358b4247004ecc88cd7
-Content-Type: text/plain; charset=UTF-8
-
->
->
->>>>>>>> I just changed my RadeonHD 4670 for a 7870, and now when I type
->>>>>>>> "aplay -l"  I get many HDMI codecs instead of just one like for the
->>>>>>>> previous card.
->>>>>>>>
->>>>>>>
->>>> How many hdmi , dvi or display port connectors do your card have ?
->>>>
->>>> 1 hdmi, 1 vga, 2 tiny ports that I cannot name.
->>>
->>
-
-are these mini display port ?
-
-http://en.wikipedia.org/wiki/Mini_DisplayPort
-
-strange that only two ports are available
-
->
->> Active Profile: output:hdmi-surround-extra0
->>     Ports:
->>         hdmi-output-0: HDMI / DisplayPort (priority: 5900, latency
->> offset: 0 usec, available)
->>             Properties:
->>                 device.icon_name = "video-display"
->>             Part of profile(s): output:hdmi-surround-extra0
->>         hdmi-output-3: HDMI / DisplayPort 4 (priority: 5600, latency
->> offset: 0 usec, available)
->>             Properties:
->>                 device.icon_name = "video-display"
->>             Part of profile(s): output:hdmi-surround-extra3
->>
->>
->>
->>>  Do pulseaudio server select null sink or hdmi.monitor as the default
->>>> source ?
->>>>
->>> The way I read it in the log hdmi.monitor:
->>> " Description: Monitor of Cape Verde/Pitcairn HDMI Audio [Radeon HD
->>> 7700/7800 Series] Digital Surround 5.1 (HDMI 0)"
->>> "device.class = "monitor""
->>>
->>
->>
->> pactl stat
->>
->
+--===============5368300905154984975==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lzM1j1Hh4qIUNijn"
+Content-Disposition: inline
 
 
-is these emulated ELD since monitor name, manufacture id, product id are
-absent ?
+--lzM1j1Hh4qIUNijn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
->> No idea
->
->> did you find your hdmi monitor/TV 's EDID in graphic driver ?
->>
->> I found this:
-> [     7.987] (II) RADEON(0): EDID for output HDMI-0
-> [     7.987] (II) RADEON(0): Manufacturer: DON  Model: 26  Serial#:
-> 16843009
-> [     7.987] (II) RADEON(0): Year: 2011  Week: 0
-> [     7.987] (II) RADEON(0): EDID Version: 1.3
->
+On Thu, Dec 05, 2013 at 07:07:28PM +0800, Nicolin Chen wrote:
 
+> Then I think it would be plausible if I could refine this patch to
+> allow both set_bias_level() and hw_params/free() to control the FLL
+> while making them not break each other but coexist, right?
 
-you have to post  raw EDID of your HDMI monitor
+Yes, that makes sense.  It might even be useful to have some support for
+this along the style of the bias level support in the core since modern
+CODECs all use things like charge pumps and class D amplifiers so this
+is becoming a more and more common problem.
 
+--lzM1j1Hh4qIUNijn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-http://cgit.freedesktop.org/xorg/app/edid-decode/plain/edid-decode.c
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-are you using latest alsa-driver ?
+iQIcBAEBAgAGBQJSoG+2AAoJELSic+t+oim9VUYP/RUCLopjQwJoGrJAlfQ3wtyE
+7Z+Scz2i5AD2FIj47YlYmlQP0Y7GkSxmYkfcIrbFTh0Za+Y14qe8dxHKIkDHscal
+GfaSXz2uuFcTcxT3pmLBIjjZ2tHzD/X6gAXXYXr41k8/WnDucGOn+PFDRlW+pWHA
+FSdsKcY7p2KV002JKo/ZXrMPf3GZiDxdM+7LVc+8iTfwuw7o+bkWLRnCQlzDNYut
+S1OvhjbsCe5+NReC9hz3uIYXc8sfcN1XQjkyusy4G9S0/WfJeb7Wo/kN1WJN6QbI
+IWUva3FP8Fb32thN8+OZctU689/iHddSF+/6wItplKoNXdfHeNTIXEZaRk05JMaU
+KFoLa83zCYWH04t6c2W2bWQ15pFdk9OxuOHWLi7xwk5O08Oy4tnEb+gM6jODpGDO
+5RpyNt/uwU5UYFjTRROkp4JDm2ytpTzJlr3ypnUF4kKyOzfr4CWWVTdpt5plFLTK
+5oFzjp5rMJxVhm8yePrgtinzzUUBpAlbz++MbQT2Ef8iEbhHgCmTkfmSyA2pbTj2
+HHXK2eje+wm+gqsZZQVpMSPOAUmCoZeRCVs5L+GRGrnVIAZB0NvYUrxwxXC1+eRc
+CCdpgYsX4w4euYkiHtWK7xu3Pti29/dQTcIVLr7Tm/dJAHE8llb1qZKZ0Fvi4x+u
+Do4OIRhk3sWuOB6uzKKL
+=Ba77
+-----END PGP SIGNATURE-----
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/patch_hdmi.c?id=89250f84644676c1ed6a09acef1033e14596a402
+--lzM1j1Hh4qIUNijn--
 
-did you configure alsa-driver --with-debug=full ?
-
-post the output of six eld in /proc/asound/card0/
-
-are monitor_present =1 and eld_valid = 1 for all six eld ?
-
-monitor_present         1
-eld_valid               1
-
---20cf303dd358b4247004ecc88cd7
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><blo=
-ckquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left=
-:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=
-=3D"gmail_extra">
-<div class=3D"gmail_quote"><div class=3D"im"><blockquote class=3D"gmail_quo=
-te" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204=
-);padding-left:1ex"><div dir=3D"ltr"><div class=3D"gmail_extra"><div class=
-=3D"gmail_quote">
-<div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bo=
-rder-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><di=
-v class=3D"gmail_extra"><div class=3D"gmail_quote"><div><blockquote class=
-=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rg=
-b(204,204,204);padding-left:1ex">
-<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote">
-
-<div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bo=
-rder-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><di=
-v><div><div class=3D"gmail_extra">
-
-
-<div class=3D"gmail_quote"><blockquote class=3D"gmail_quote" style=3D"margi=
-n:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex=
-"><div dir=3D"ltr"><div class=3D"gmail_extra">
-
-<div class=3D"gmail_quote"><div><blockquote class=3D"gmail_quote" style=3D"=
-margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-lef=
-t:1ex">
-
-<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><div=
-><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border=
--left:1px solid rgb(204,204,204);padding-left:1ex">
-
-<div dir=3D"ltr"><br><p style=3D"font-family:sans-serif;border:0px none;mar=
-gin:0px;padding:7px 0px;color:rgb(51,51,51);font-size:13.1429px;line-height=
-:19px;background-color:rgb(252,253,254)">
-
-
-
-
-I just changed my RadeonHD 4670 for a 7870, and now when I type &quot;aplay=
- -l&quot;=C2=A0 I get many HDMI codecs instead of just one like for the pre=
-vious card.</p></div></blockquote></div></div></div></div></blockquote></di=
-v>
-
-
-
-
-</div></div></div></blockquote></div></div></div></div></div></blockquote><=
-div><br></div></div><div>How many hdmi , dvi or display port connectors do =
-your card have ?<br></div><div><br></div></div></div></div></blockquote>
-
-
-
-</div><div>1 hdmi, 1 vga, 2 tiny ports that I cannot name.=C2=A0</div></div=
-></div></div></blockquote></div></div></div></div></blockquote></div></div>=
-</div></div></blockquote><div><br><div><br></div><div>are these mini displa=
-y port ?<br>
-</div><div><br><a href=3D"http://en.wikipedia.org/wiki/Mini_DisplayPort">ht=
-tp://en.wikipedia.org/wiki/Mini_DisplayPort</a><br>=C2=A0</div></div>strang=
-e that only two ports are available <br><blockquote class=3D"gmail_quote" s=
-tyle=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);pad=
-ding-left:1ex">
-<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><div=
-><div class=3D"h5"><blockquote class=3D"gmail_quote" style=3D"margin:0px 0p=
-x 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div d=
-ir=3D"ltr">
-<div class=3D"gmail_extra"><div class=3D"gmail_quote"><div><br>Active Profi=
-le: output:hdmi-surround-extra0<br>=C2=A0=C2=A0=C2=A0 Ports:<br>=C2=A0=C2=
-=A0=C2=A0 =C2=A0=C2=A0=C2=A0 hdmi-output-0: HDMI / DisplayPort (priority: 5=
-900, latency offset: 0 usec, available)<br>
-
-=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 Properties:<br>=C2=
-=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 de=
-vice.icon_name =3D &quot;video-display&quot;<br>=C2=A0=C2=A0=C2=A0 =C2=A0=
-=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 Part of profile(s): output:hdmi-surround-ex=
-tra0<br>=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 hdmi-output-3: HDMI / Display=
-Port 4 (priority: 5600, latency offset: 0 usec, available)<br>
-
-
-=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 Properties:<br>=C2=
-=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 de=
-vice.icon_name =3D &quot;video-display&quot;<br>=C2=A0=C2=A0=C2=A0 =C2=A0=
-=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 Part of profile(s): output:hdmi-surround-ex=
-tra3<br><br>=C2=A0</div><div><blockquote class=3D"gmail_quote" style=3D"mar=
-gin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1=
-ex">
-
-
-<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><div=
-><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border=
--left:1px solid rgb(204,204,204);padding-left:1ex">
-
-<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><div=
-></div><div>Do pulseaudio server select null sink or hdmi.monitor as the de=
-fault source ?<br></div></div></div></div></blockquote></div><div>The way I=
- read it in the log hdmi.monitor:</div>
-
-
-
-<div>&quot; Description: Monitor of Cape Verde/Pitcairn HDMI Audio [Radeon =
-HD 7700/7800 Series] Digital Surround 5.1 (HDMI 0)&quot;</div><div>&quot;de=
-vice.class =3D &quot;monitor&quot;&quot;</div></div></div></div></blockquot=
-e>
-
-
-<div><br><br></div></div><div>pactl stat<br></div></div></div></div></block=
-quote></div></div></div></div></div></blockquote><div><br><br>=C2=A0</div>i=
-s these emulated ELD since monitor name, manufacture id, product id are abs=
-ent ?<br>
-<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div cla=
-ss=3D"gmail_extra"><div class=3D"gmail_quote"><div><div class=3D"h5"><block=
-quote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1=
-px solid rgb(204,204,204);padding-left:1ex">
-<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><div=
-><div><br></div></div></div></div></div></blockquote></div></div><div>No id=
-ea=C2=A0</div><div class=3D"im"><blockquote class=3D"gmail_quote" style=3D"=
-margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-lef=
-t:1ex">
-
-<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><div=
-><div>did you find your hdmi monitor/TV &#39;s EDID in graphic driver ? <br=
-></div><br></div></div></div></div></blockquote></div><div>I found this:</d=
-iv>
-<div>
-[ =C2=A0 =C2=A0 7.987] (II) RADEON(0): EDID for output HDMI-0</div><div>[ =
-=C2=A0 =C2=A0 7.987] (II) RADEON(0): Manufacturer: DON =C2=A0Model: 26 =C2=
-=A0Serial#: 16843009</div><div>[ =C2=A0 =C2=A0 7.987] (II) RADEON(0): Year:=
- 2011 =C2=A0Week: 0</div><div>[ =C2=A0 =C2=A0 7.987] (II) RADEON(0): EDID V=
-ersion: 1.3</div>
-</div></div></div></blockquote><div><br><br></div><div>you have to post=C2=
-=A0 raw EDID of your HDMI monitor <br><br><br><a href=3D"http://cgit.freede=
-sktop.org/xorg/app/edid-decode/plain/edid-decode.c">http://cgit.freedesktop=
-.org/xorg/app/edid-decode/plain/edid-decode.c</a><br>
-<br></div><div>are you using latest alsa-driver ?<br><br><a href=3D"https:/=
-/git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/=
-patch_hdmi.c?id=3D89250f84644676c1ed6a09acef1033e14596a402">https://git.ker=
-nel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/patch_hd=
-mi.c?id=3D89250f84644676c1ed6a09acef1033e14596a402</a><br>
-<br></div><div>did you configure alsa-driver --with-debug=3Dfull ?<br><br><=
-/div><div>post the output of six eld in /proc/asound/card0/<br></div></div>=
-<br>are monitor_present =3D1 and eld_valid =3D 1 for all six eld ?<br><br>m=
-onitor_present =C2=A0 =C2=A0 =C2=A0 =C2=A0 1<div>
-eld_valid =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 1</div><br></div=
-></div>
-
---20cf303dd358b4247004ecc88cd7--
-
---===============1208522776==
+--===============5368300905154984975==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-pulseaudio-discuss mailing list
-pulseaudio-discuss@lists.freedesktop.org
-http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss
 
---===============1208522776==--
+--===============5368300905154984975==--
