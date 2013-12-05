@@ -1,15 +1,15 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH] ALSA: hda - do delayed suspend for HD-audio
-	devices
-Date: Wed,  4 Dec 2013 20:04:25 -0500
-Message-ID: <0429fccd2fb62856113df616213bd7613e625ebc.1386205379.git.mengdong.lin@intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: omap-pcm: Lower the dma coherent mask to
+	32bits
+Date: Thu, 5 Dec 2013 10:06:42 +0200
+Message-ID: <1386230802-3660-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C638261673
- for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2013 09:00:50 +0100 (CET)
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B508261673
+ for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2013 09:06:49 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,153 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux@arm.linux.org.uk, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+The underlying API dma_coerce_mask_and_coherent() checks the requested bits
+mask against the size of dma_addr_t which is 32bits on OMAP.
+Because of the previously used 64bits mask audio was not probing after
+commit c9bd5e6 (and 4dcfa6007).
+32bits for the DMA_BIT_MASK looks to be the correct one to use.
 
-HD-Audio codecs tends to take a long time to supend and is time-consuming part
-in driver suspend. In this patch, codec suspending and the left operations are
-delayed to a worker thead, so that they can be done asynchronously in parallel
-with suspending of other devices. And azx_suspend_late() is defined as PM
-.suspend_late ops to wait for completion of the delayed suspending.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+Hi Mark,
 
-Credit goes to Liam Girdwood, who suggested this workaround.
+This is the fix for OMAP audio for 3.13-rc2+. The dma coherent changes went in
+between -rc1 and -rc2 which broke things because omap-pcm was using 64bits for
+dma coherent mask.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+Regards,
+Peter
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 80c5f14..aed4cdf 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -545,6 +545,11 @@ struct azx {
+ sound/soc/omap/omap-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index b8fa986..01d59d0 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -202,7 +202,7 @@ static int omap_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 	int ret;
  
- 	struct work_struct probe_work;
+-	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(64));
++	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+ 	if (ret)
+ 		return ret;
  
-+#ifdef CONFIG_PM
-+	struct workqueue_struct *pm_wq; /* workqueue to delay controller PM */
-+	struct work_struct suspend_work; /* task to delay controller suspend */
-+#endif
-+
- 	/* reboot notifier (for mysterious hangup problem at power-down) */
- 	struct notifier_block reboot_notifier;
- 
-@@ -2908,20 +2913,11 @@ static int param_set_xint(const char *val, const struct kernel_param *kp)
- /*
-  * power management
-  */
--static int azx_suspend(struct device *dev)
--{
--	struct pci_dev *pci = to_pci_dev(dev);
--	struct snd_card *card = dev_get_drvdata(dev);
--	struct azx *chip = card->private_data;
--	struct azx_pcm *p;
- 
--	if (chip->disabled)
--		return 0;
-+static int azx_suspend_continue(struct azx *chip)
-+{
-+	struct pci_dev *pci = chip->pci;
- 
--	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
--	azx_clear_irq_pending(chip);
--	list_for_each_entry(p, &chip->pcm_list, list)
--		snd_pcm_suspend_all(p->pcm);
- 	if (chip->initialized)
- 		snd_hda_suspend(chip->bus);
- 	azx_stop_chip(chip);
-@@ -2937,6 +2933,41 @@ static int azx_suspend(struct device *dev)
- 	pci_set_power_state(pci, PCI_D3hot);
- 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
- 		hda_display_power(false);
-+
-+	return 0;
-+}
-+
-+static void azx_suspend_work(struct work_struct *work)
-+{
-+	azx_suspend_continue(container_of(work, struct azx, suspend_work));
-+}
-+
-+
-+static int azx_suspend(struct device *dev)
-+{
-+	struct snd_card *card = dev_get_drvdata(dev);
-+	struct azx *chip = card->private_data;
-+	struct azx_pcm *p;
-+
-+	if (chip->disabled)
-+		return 0;
-+
-+	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
-+	azx_clear_irq_pending(chip);
-+	list_for_each_entry(p, &chip->pcm_list, list)
-+		snd_pcm_suspend_all(p->pcm);
-+
-+	queue_work(chip->pm_wq, &chip->suspend_work);
-+	return 0;
-+}
-+
-+static int azx_suspend_late(struct device *dev)
-+{
-+	struct snd_card *card = dev_get_drvdata(dev);
-+	struct azx *chip = card->private_data;
-+
-+	flush_workqueue(chip->pm_wq);
-+
- 	return 0;
- }
- 
-@@ -3057,6 +3088,7 @@ static int azx_runtime_idle(struct device *dev)
- #ifdef CONFIG_PM
- static const struct dev_pm_ops azx_pm = {
- 	SET_SYSTEM_SLEEP_PM_OPS(azx_suspend, azx_resume)
-+	.suspend_late = azx_suspend_late,
- 	SET_RUNTIME_PM_OPS(azx_runtime_suspend, azx_runtime_resume, azx_runtime_idle)
- };
- 
-@@ -3272,6 +3304,12 @@ static int azx_free(struct azx *chip)
- 		hda_display_power(false);
- 		hda_i915_exit();
- 	}
-+
-+#ifdef CONFIG_PM
-+	if (chip->pm_wq)
-+		destroy_workqueue(chip->pm_wq);
-+#endif
-+
- 	kfree(chip);
- 
- 	return 0;
-@@ -3515,6 +3553,9 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
- 	};
- 	struct azx *chip;
- 	int err;
-+#ifdef CONFIG_PM
-+	char wqname[24];
-+#endif
- 
- 	*rchip = NULL;
- 
-@@ -3581,6 +3622,18 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
- 	/* continue probing in work context as may trigger request module */
- 	INIT_WORK(&chip->probe_work, azx_probe_work);
- 
-+#ifdef CONFIG_PM
-+	sprintf(wqname, "hda-azx-pm-wq%d", card->number);
-+	chip->pm_wq = create_workqueue("wqname");
-+	if (!chip->pm_wq) {
-+		snd_printk(KERN_ERR "cannot create PM workqueue\n");
-+		azx_free(chip);
-+		return -ENOMEM;
-+	}
-+
-+	INIT_WORK(&chip->suspend_work, azx_suspend_work);
-+#endif
-+
- 	*rchip = chip;
- 
- 	return 0;
 -- 
-1.8.1.2
+1.8.4.5
