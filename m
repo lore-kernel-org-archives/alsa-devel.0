@@ -1,46 +1,49 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: samsung: Ensure DMA data is initialised for secondary DAI
-Date: Thu,  5 Dec 2013 14:13:57 +0000
-Message-ID: <1386252837-17321-1-git-send-email-broonie@kernel.org>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padmavathi Venna <padma.v@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>, stable@vger.kernel.org
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm8962: Enable SYSCLK provisonally
+	before	fetching generated DSPCLK_DIV
+Date: Thu, 5 Dec 2013 14:14:21 +0000
+Message-ID: <20131205141421.GF23979@opensource.wolfsonmicro.com>
+References: <1386148936-15899-1-git-send-email-b42378@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3352D261A78
+ for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2013 15:21:16 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1386148936-15899-1-git-send-email-b42378@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On Wed, Dec 04, 2013 at 05:22:16PM +0800, Nicolin Chen wrote:
+> DSPCLK_DIV can be only generated correctly after enabling SYSCLK. But if the
+> current bias_level hasn't reached SND_SOC_BIAS_ON, DAPM won't enable SYSCLK,
+> which would cause the calculation result from DSPCLK_DIV invalid since bit
+> DSPCLK_DIV will be finally turned to its true value after DAPM enables SYSCLK
+> while the driver won't calculate it again for the current instance. In this
+> circumstance, a playback which needs non-zero DSPCLK_DIV would be distorted
+> due to unexpected clock frequency resulted from an invalid DSPCLK_DIV value.
+> 
+> So this patch provisionally enables the SYSCLK to get a valid DSPCLK_DIV for
+> calculation and then disables it afterward.
 
-While testing the upcoming dmaengine conversion for the driver Padma
-noticed that the DMA data for the secondard DAI is not being correctly
-initialised and provided a fix on top of the conversion.  Also do this
-fix for mainline.
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-Reported-by: Padmavathi Venna <padma.v@samsung.com>
-Signed-off-by: Mark Brown <broonie@linaro.org>
-Cc: stable@vger.kernel.org
----
+It feels like there should be a neater way to handle this, but I
+can't really see what that might be right now. So I think this
+looks fine for now and hopefully I can find some time to look at
+it in more detail soon.
 
-Compile tested only, I don't have hardware to test.
-
- sound/soc/samsung/i2s.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index a5cbdb4f1655..f9f2227421ea 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -946,8 +946,11 @@ static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
- 	struct i2s_dai *i2s = to_info(dai);
- 	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
- 
--	if (other && other->clk) /* If this is probe on secondary */
-+	if (other && other->clk) { /* If this is probe on secondary */
-+		snd_soc_dai_init_dma_data(dai, &other->sec_dai->dma_playback,
-+					  NULL);
- 		goto probe_exit;
-+	}
- 
- 	i2s->addr = ioremap(i2s->base, 0x100);
- 	if (i2s->addr == NULL) {
--- 
-1.8.5.1
+Thanks,
+Charles
