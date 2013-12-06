@@ -1,19 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: omap-pcm: Lower the dma coherent
-	mask to 32bits
-Date: Fri, 6 Dec 2013 11:31:52 +0200
-Message-ID: <52A19988.9060806@ti.com>
-References: <1386230802-3660-1-git-send-email-peter.ujfalusi@ti.com>
- <20131205095619.GC4360@n2100.arm.linux.org.uk> <52A09CDA.6010700@ti.com>
- <20131205192853.GH4360@n2100.arm.linux.org.uk>
+From: =?utf-8?B?TGFtYnJlY2h0IErDvHJnZW4=?= <J.Lambrecht@TELEVIC.com>
+Subject: Re: [PATCH] ASoC mc13783 codec: correct names
+Date: Fri, 6 Dec 2013 10:37:28 +0100
+Message-ID: <52A19AD8.8070705@televic.com>
+References: <1385720887-1114-1-git-send-email-J.Lambrecht@televic.com>
+ <529C841C.7090403@epfl.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id B15B6261ADF
- for <alsa-devel@alsa-project.org>; Fri,  6 Dec 2013 10:31:57 +0100 (CET)
-In-Reply-To: <20131205192853.GH4360@n2100.arm.linux.org.uk>
+Received: from ip2.televic.com (ip2.televic.com [81.82.194.222])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89F23261B07
+ for <alsa-devel@alsa-project.org>; Fri,  6 Dec 2013 10:37:29 +0100 (CET)
+In-Reply-To: <529C841C.7090403@epfl.ch>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,32 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: =?utf-8?B?UGhpbGlwcGUgUsOpdG9ybmF6?= <philippe.retornaz@epfl.ch>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "kernel@pengutronix.de" <kernel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/05/2013 09:28 PM, Russell King - ARM Linux wrote:
-> gives us the very last PFN which the bus associated with dev is able to
-> address.  Hmm - so I got the test wrong on both twice - they should both
-> be:
-> =
-
->  	if (sizeof(mask) !=3D sizeof(dma_addr_t) &&
->  	    mask > (dma_addr_t)~0 &&
->  	    dma_to_pfn(dev, ~0) < min(max_pfn, arm_dma_pfn_limit))
-> 		return 0;
-> =
-
-> since we want to fail if we have _more_ memory than the bus will allow.
-> Can you try the above in both locations please?
-
-Thanks, works fine.
-I will be out for a long weekend so you can add my:
-
-Tested-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
-to the final patch.
-
--- =
-
-P=E9ter
+T24gMTIvMDIvMjAxMyAwMTo1OSBQTSwgUGhpbGlwcGUgUsOpdG9ybmF6IHdyb3RlOg0KPiBIZWxs
+bw0KPg0KPiBJIGhhdmUgdGVzdGVkIHRoZSAzIHBhdGNoZXMgb24gbXkgYm9hcmQ6IG5vIHJlZ3Jl
+c3Npb25zLCBzbyBnb29kIG5ld3MgIQ0KPiBCVFcsIHlvdXIgcGF0Y2hlcyBhcmUgd2hpdGVzcGFj
+ZSBkYW1hZ2VkIGFuZCBpbiBiYXNlNjQsIHRyeSB0byBnZXQgcmlkDQo+IG9mIHRoZSBFeGNoYW5n
+ZSBzZXJ2ZXIgd2hlbiB1c2luZyBnaXQtc2VuZC1lbWFpbC4NCj4NCj4gU28sIGlmIG5lZWRlZDoN
+Cj4NCj4gQWNrZWQtYnk6IFBoaWxpcHBlIFJldG9ybmF6IDxwaGlsaXBwZS5yZXRvcm5hekBlcGZs
+LmNoPg0KPg0KPiBUaGFua3MsDQo+DQo+IFBoaWxpcHBlDQp0aGFua3MgdG8gdGVzdCB0aGVtLg0K
+V2UgYXJlIHRlc3RpbmcgdGhvc2UgcGF0Y2hlcyBvbiBvdXIgSFcgKDIgZGlmZmVyZW50IGJvYXJk
+cywgdXNpbmcgYWxsIA0KcGF0aHMpLg0KU3RpbGwgc29tZSBrZXJuZWwgd2FybmluZ3MgSSBoYXZl
+IHRvIGxvb2sgYXQgKGUuZy4gIm5vIGRhcG0gbWF0Y2ggZm9yIA0KVm9pY2UgQ09ERUMgUEdBIC0t
+PiBDT0RFQyAtLT4gQXNwIFNvdXJjZSIpLg0KVGhlbiBJIHdpbGwgc2VuZCB0aGUgcGF0Y2hlcyBh
+Z2FpbiB2aWEgbXkgZ21haWwgaW5zdGVhZC4NCg0KS2luZCByZWdhcmRzLA0KSsO8cmdlbg0KDQot
+LSANCkrDvHJnZW4gTGFtYnJlY2h0DQpSJkQgQXNzb2NpYXRlDQpNb2JpbGU6ICszMiA0OTkgNjQ0
+IDUzMQ0KVGVsOiArMzIgKDApNTEgMzAzMDQ1ICAgIEZheDogKzMyICgwKTUxIDMxMDY3MA0KaHR0
+cDovL3d3dy50ZWxldmljLXJhaWwuY29tDQpUZWxldmljIFJhaWwgTlYgLSBMZW8gQmVrYWVydGxh
+YW4gMSAtIDg4NzAgSXplZ2VtIC0gQmVsZ2l1bQ0KQ29tcGFueSBudW1iZXIgMDgyNS41MzkuNTgx
+IC0gUlBSIEtvcnRyaWprDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
