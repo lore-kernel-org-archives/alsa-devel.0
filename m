@@ -1,18 +1,20 @@
-From: Daniel Wagner <wagi@monom.org>
-Subject: Re: [RFC][PATCH 00/13] bebob: a new driver for
- BridgeCo BeBoB based device
-Date: Thu, 05 Dec 2013 22:08:47 +0100
-Message-ID: <52A0EB5F.9090003@monom.org>
-References: <1385186965-8303-1-git-send-email-o-takashi@sakamocchi.jp>
- <529A2691.4000401@monom.org> <529ABE4F.6070406@sakamocchi.jp>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ALSA: hda - do delayed suspend for
+	HD-audio devices
+Date: Fri, 6 Dec 2013 03:28:57 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80142A10F@SHSMSX101.ccr.corp.intel.com>
+References: <0429fccd2fb62856113df616213bd7613e625ebc.1386205379.git.mengdong.lin@intel.com>
+ <s5htxenu2qr.wl%tiwai@suse.de>	<s5hlhzzzinn.wl%tiwai@suse.de>
+ <s5hd2lbzgs1.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hotel311.server4you.de (hotel311.server4you.de [85.25.146.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 46485261A9F
- for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2013 22:08:49 +0100 (CET)
-In-Reply-To: <529ABE4F.6070406@sakamocchi.jp>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FA23261A3D
+ for <alsa-devel@alsa-project.org>; Fri,  6 Dec 2013 04:29:06 +0100 (CET)
+In-Reply-To: <s5hd2lbzgs1.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,72 +24,271 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 Hi Takashi,
 
-On 12/01/2013 05:42 AM, Takashi Sakamoto wrote:
-> Hi Daniel,
->
-> Thanks for your testing.
+Sorry I've not realized PCI devices already support asynchronous suspend. So doing delayed suspend is unnecessary.
 
-No problem.
+And your patch using async domain works well on our platform. 
+We get same resume/suspend time as using the work queue. And the new code looks simpler and nicer.
 
-> At first, I describe our system to test. I use Ubuntu 13.10. You use
-> Fedora 19.
+Thanks
+Mengdong 
 
-Be aware I have a lot of own build libraries flying around (e.g.
-libiec61883, libraw1394, ...)
-
-> (Dec 01 2013 02:55), Daniel Wagner wrote:
->> I have tried this series (incl. the bug fix you recommend) on a FA-66.
->> While I see some output in alsa-info, pulseaudio didn't pick it up. I
->> also noted that some logs in the dmesg. I am not sure what is supposed
->> to work already or not.
->>
->> Here are my logs
->>
->> http://www.monom.org/misc/alsa-firewire/2013-11-30
->
-> 1.pulseaudio
-> PulseAudio can automatically load 'module-alsa-card' with
-> 'module-udev-detect' (utilizing sysfs/dbus). But for snd-bebob, this
-> mecanism doesn't work because PulseAudio cannot decide profiles for the
-> card even if success to detect.
->
-> For this problem, I have a need to commit some codes for PulseAudio but
-> this may be my future work.
->
-> Well, when I test with PulseAudio, I always directly load
-> 'module-alsa-sink' or 'module-alsa-source' by these lines:
-> $ pactl load-module module-alsa-sink device=hw:X,X
-> $ pactl load-module module-alsa-source device=hw:X,X
-
-I got the FA-66 now working (playback) with explicit loading of the
-modules.
-
-> 2.dmesg
-> Hm. I want to know which asynchronous transaction is failed.
-> [  446.796563] snd-bebob fw1.0: transaction failed: no ack
-> [  446.838567] snd-bebob fw1.0: transaction failed: no ack
-
-I was not able to reproduce this so far. Note that I a have crapy
-firewire card. So that might just be the main reason why we
-see these.
-
-> Would you investigate which transactions cannot get 'no ack'?
-
-I have uploaded some two logs. The first one is for the fa-66
-(fw-fa66.txt) and the second one is for the Audio5 (fw-a5.txt).
-
-There seems to be an issue with the Audio5, though I haven't
-looked into it yet (quite busy, sorry) For that device I
-even got a serial console to it) Maybe you see the problem
-already from the log.
-
-http://www.monom.org/misc/alsa-firewire/2013-12-05/
-
-cheers,
-daniel
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Thursday, December 05, 2013 7:20 PM
+> To: Lin, Mengdong
+> Cc: alsa-devel@alsa-project.org
+> Subject: Re: [PATCH] ALSA: hda - do delayed suspend for HD-audio devices
+> 
+> At Thu, 05 Dec 2013 11:39:08 +0100,
+> Takashi Iwai wrote:
+> >
+> > At Thu, 05 Dec 2013 09:21:48 +0100,
+> > Takashi Iwai wrote:
+> > >
+> > > At Wed,  4 Dec 2013 20:04:25 -0500,
+> > > mengdong.lin@intel.com wrote:
+> > > >
+> > > > From: Mengdong Lin <mengdong.lin@intel.com>
+> > > >
+> > > > HD-Audio codecs tends to take a long time to supend and is
+> > > > time-consuming part in driver suspend. In this patch, codec
+> > > > suspending and the left operations are delayed to a worker thead,
+> > > > so that they can be done asynchronously in parallel with
+> > > > suspending of other devices. And azx_suspend_late() is defined as
+> PM .suspend_late ops to wait for completion of the delayed suspending.
+> > > >
+> > > > Credit goes to Liam Girdwood, who suggested this workaround.
+> > > >
+> > > > Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+> > >
+> > > Did you try to set power.async_suspend flag?
+> > > The PM core has already async operation, so we don't have to
+> > > implement in the driver side.
+> >
+> > Actually the async_suspend is always set for PCI devices, thus the
+> > suspend and resume are executed asynchronously.
+> >
+> > It makes me wonder whether your patch gave any real measurable
+> > improvement...
+> 
+> BTW, while looking back at the recent code additions, I noticed that we
+> completely forgot about the standard async infrastructure.
+> 
+> The simplification patch is attached below.  This seems working on my
+> test machine, at least.  Give it a try.
+> 
+> 
+> Takashi
+> 
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: hda - Clean up async codec PM using standard
+> async  infrastructure
+> 
+> This simplifies lots of codes indeed.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/hda_codec.c | 64
+> ++++++++++++++---------------------------------
+>  sound/pci/hda/hda_codec.h |  6 -----
+>  2 files changed, 19 insertions(+), 51 deletions(-)
+> 
+> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+> index 5b7622034eee..2e090c8d7144 100644
+> --- a/sound/pci/hda/hda_codec.c
+> +++ b/sound/pci/hda/hda_codec.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/pci.h>
+>  #include <linux/mutex.h>
+>  #include <linux/module.h>
+> +#include <linux/async.h>
+>  #include <sound/core.h>
+>  #include "hda_codec.h"
+>  #include <sound/asoundef.h>
+> @@ -96,8 +97,6 @@
+> EXPORT_SYMBOL_HDA(snd_hda_delete_codec_preset);
+> 
+>  #ifdef CONFIG_PM
+>  #define codec_in_pm(codec)	((codec)->in_pm)
+> -static void hda_suspend_work(struct work_struct *work); -static void
+> hda_resume_work(struct work_struct *work);  static void
+> hda_power_work(struct work_struct *work);  static void
+> hda_keep_power_on(struct hda_codec *codec);
+>  #define hda_codec_is_power_on(codec)	((codec)->power_on)
+> @@ -842,11 +841,6 @@ static int snd_hda_bus_free(struct hda_bus *bus)
+>  	if (bus->workq)
+>  		destroy_workqueue(bus->workq);
+> 
+> -#ifdef CONFIG_PM
+> -	if (bus->pm_wq)
+> -		destroy_workqueue(bus->pm_wq);
+> -#endif
+> -
+>  	kfree(bus);
+>  	return 0;
+>  }
+> @@ -891,9 +885,6 @@ int snd_hda_bus_new(struct snd_card *card,
+>  		.dev_register = snd_hda_bus_dev_register,
+>  		.dev_free = snd_hda_bus_dev_free,
+>  	};
+> -#ifdef CONFIG_PM
+> -	char wqname[16];
+> -#endif
+> 
+>  	if (snd_BUG_ON(!temp))
+>  		return -EINVAL;
+> @@ -930,16 +921,6 @@ int snd_hda_bus_new(struct snd_card *card,
+>  		return -ENOMEM;
+>  	}
+> 
+> -#ifdef CONFIG_PM
+> -	sprintf(wqname, "hda-pm-wq-%d", card->number);
+> -	bus->pm_wq = create_workqueue(wqname);
+> -	if (!bus->pm_wq) {
+> -		snd_printk(KERN_ERR "cannot create PM workqueue\n");
+> -		snd_hda_bus_free(bus);
+> -		return -ENOMEM;
+> -	}
+> -#endif
+> -
+>  	err = snd_device_new(card, SNDRV_DEV_BUS, bus, &dev_ops);
+>  	if (err < 0) {
+>  		snd_hda_bus_free(bus);
+> @@ -1476,8 +1457,6 @@ int snd_hda_codec_new(struct hda_bus *bus,
+> #ifdef CONFIG_PM
+>  	spin_lock_init(&codec->power_lock);
+>  	INIT_DELAYED_WORK(&codec->power_work, hda_power_work);
+> -	INIT_WORK(&codec->suspend_work, hda_suspend_work);
+> -	INIT_WORK(&codec->resume_work, hda_resume_work);
+>  	/* snd_hda_codec_new() marks the codec as power-up, and leave it
+> as is.
+>  	 * the caller has to power down appropriatley after initialization
+>  	 * phase.
+> @@ -1495,9 +1474,6 @@ int snd_hda_codec_new(struct hda_bus *bus,
+> 
+>  	list_add_tail(&codec->list, &bus->codec_list);
+>  	bus->num_codecs++;
+> -#ifdef CONFIG_PM
+> -	workqueue_set_max_active(bus->pm_wq, bus->num_codecs);
+> -#endif
+> 
+>  	bus->caddr_tbl[codec_addr] = codec;
+> 
+> @@ -5120,22 +5096,6 @@ int snd_hda_check_amp_list_power(struct
+> hda_codec *codec,
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_HDA(snd_hda_check_amp_list_power);
+> -
+> -static void hda_suspend_work(struct work_struct *work) -{
+> -	struct hda_codec *codec =
+> -		container_of(work, struct hda_codec, suspend_work);
+> -
+> -	hda_call_codec_suspend(codec, false);
+> -}
+> -
+> -static void hda_resume_work(struct work_struct *work) -{
+> -	struct hda_codec *codec =
+> -		container_of(work, struct hda_codec, resume_work);
+> -
+> -	hda_call_codec_resume(codec);
+> -}
+>  #endif
+> 
+>  /*
+> @@ -5699,6 +5659,17 @@
+> EXPORT_SYMBOL_HDA(snd_hda_add_imux_item);
+>   * power management
+>   */
+> 
+> +
+> +static void hda_async_suspend(void *data, async_cookie_t cookie) {
+> +	hda_call_codec_suspend(data, false);
+> +}
+> +
+> +static void hda_async_resume(void *data, async_cookie_t cookie) {
+> +	hda_call_codec_resume(data);
+> +}
+> +
+>  /**
+>   * snd_hda_suspend - suspend the codecs
+>   * @bus: the HDA bus
+> @@ -5708,19 +5679,21 @@
+> EXPORT_SYMBOL_HDA(snd_hda_add_imux_item);
+>  int snd_hda_suspend(struct hda_bus *bus)  {
+>  	struct hda_codec *codec;
+> +	ASYNC_DOMAIN_EXCLUSIVE(domain);
+> 
+>  	list_for_each_entry(codec, &bus->codec_list, list) {
+>  		cancel_delayed_work_sync(&codec->jackpoll_work);
+>  		if (hda_codec_is_power_on(codec)) {
+>  			if (bus->num_codecs > 1)
+> -				queue_work(bus->pm_wq, &codec->suspend_work);
+> +				async_schedule_domain(hda_async_suspend, codec,
+> +						      &domain);
+>  			else
+>  				hda_call_codec_suspend(codec, false);
+>  		}
+>  	}
+> 
+>  	if (bus->num_codecs > 1)
+> -		flush_workqueue(bus->pm_wq);
+> +		async_synchronize_full_domain(&domain);
+> 
+>  	return 0;
+>  }
+> @@ -5735,16 +5708,17 @@ EXPORT_SYMBOL_HDA(snd_hda_suspend);
+>  int snd_hda_resume(struct hda_bus *bus)  {
+>  	struct hda_codec *codec;
+> +	ASYNC_DOMAIN_EXCLUSIVE(domain);
+> 
+>  	list_for_each_entry(codec, &bus->codec_list, list) {
+>  		if (bus->num_codecs > 1)
+> -			queue_work(bus->pm_wq, &codec->resume_work);
+> +			async_schedule_domain(hda_async_resume, codec,
+> &domain);
+>  		else
+>  			hda_call_codec_resume(codec);
+>  	}
+> 
+>  	if (bus->num_codecs > 1)
+> -		flush_workqueue(bus->pm_wq);
+> +		async_synchronize_full_domain(&domain);
+> 
+>  	return 0;
+>  }
+> diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+> index 3ab4834761a8..260b190adf74 100644
+> --- a/sound/pci/hda/hda_codec.h
+> +++ b/sound/pci/hda/hda_codec.h
+> @@ -684,9 +684,6 @@ struct hda_bus {
+>  	struct hda_bus_unsolicited *unsol;
+>  	char workq_name[16];
+>  	struct workqueue_struct *workq;	/* common workqueue for
+> codecs */
+> -#ifdef CONFIG_PM
+> -	struct workqueue_struct *pm_wq;	/* workqueue to parallel codec
+> PM */
+> -#endif
+> 
+>  	/* assigned PCMs */
+>  	DECLARE_BITMAP(pcm_dev_bits, SNDRV_PCM_DEVICES); @@ -921,9
+> +918,6 @@ struct hda_codec {
+>  	unsigned long power_off_acct;
+>  	unsigned long power_jiffies;
+>  	spinlock_t power_lock;
+> -	/* tasks to parallel multi-codec suspend/resume */
+> -	struct work_struct suspend_work;
+> -	struct work_struct resume_work;
+>  #endif
+> 
+>  	/* filter the requested power state per nid */
+> --
+> 1.8.5
