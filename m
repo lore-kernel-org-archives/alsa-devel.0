@@ -1,48 +1,60 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Remove quirk for Dell Vostro 131
-Date: Fri,  6 Dec 2013 11:54:57 +0800
-Message-ID: <1386302097-6478-1-git-send-email-david.henningsson@canonical.com>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: samsung: Use ASoC dmaengine code
+ where possible
+Date: Fri, 6 Dec 2013 10:44:19 +0530
+Message-ID: <CAAgF-Bfk8byZwVBd_5PopM3ji-wdTMR5i-J7w1W4zq4gFk4i+Q@mail.gmail.com>
+References: <1386253559-18262-1-git-send-email-broonie@kernel.org>
+	<1386253559-18262-2-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 1238C261A3D
- for <alsa-devel@alsa-project.org>; Fri,  6 Dec 2013 04:55:05 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1386253559-18262-2-git-send-email-broonie@kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Padmavathi Venna <padma.v@samsung.com>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-I've tested the old Dell Vostro 131 with the latest generic parser
-and it works just fine, and as a bonus we get better jack detection
-features in userspace. Therefore this quirk can be removed.
+Hi Mark,
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_conexant.c |    1 -
- 1 file changed, 1 deletion(-)
+On Thu, Dec 5, 2013 at 7:55 PM, Mark Brown <broonie@kernel.org> wrote:
+> From: Mark Brown <broonie@linaro.org>
+>
+> Since all Exynos platforms have been converted to dmaengine and many of
+> the older platforms are in the process of conversion they do not need to
+> use the legacy s3c-dma APIs for DMA but can instead use the standard ASoC
+> dmaengine helpers. This both allows them to benefit from improvements
+> implemented in the generic code and supports multiplatform.
+>
+> This patch includes some fixes from Padma for Exynos SoCs.
+>
+> Signed-off-by: Mark Brown <broonie@linaro.org>
+> Tested By: Padmavathi Venna <padma.v@samsung.com>
+> ---
+>
+> I think this should reflect all your testing but a recheck would be good.
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 1f2717f..3fbf288 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -2936,7 +2936,6 @@ static const struct snd_pci_quirk cxt5066_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0401, "Dell Vostro 1014", CXT5066_DELL_VOSTRO),
- 	SND_PCI_QUIRK(0x1028, 0x0408, "Dell Inspiron One 19T", CXT5066_IDEAPAD),
- 	SND_PCI_QUIRK(0x1028, 0x050f, "Dell Inspiron", CXT5066_IDEAPAD),
--	SND_PCI_QUIRK(0x1028, 0x0510, "Dell Vostro", CXT5066_IDEAPAD),
- 	SND_PCI_QUIRK(0x103c, 0x360b, "HP G60", CXT5066_HP_LAPTOP),
- 	SND_PCI_QUIRK(0x1043, 0x13f3, "Asus A52J", CXT5066_ASUS),
- 	SND_PCI_QUIRK(0x1043, 0x1643, "Asus K52JU", CXT5066_ASUS),
--- 
-1.7.9.5
+I couldn't test this patch set due to some crash in recent kernel in
+dmaengine_unmap_put. I think this unmap support is not yet implemented
+for pl330 driver. It is mentioned in the commit "dmaengine: prepare
+for generic 'unmap' data", [bzolnier: prepare pl330 driver for adding
+missing unmap while at it].
+
+
+[snip]
+
+> +
+> +int samsung_asoc_dma_platform_register(struct device *dev)
+> +{
+> +       return snd_dmaengine_pcm_register(dev, &samsung_dmaengine_pcm_config,
+> +                                         SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME |
+> +                                         SND_DMAENGINE_PCM_NO_RESIDUE |
+
+This flag should be SND_DMAENGINE_PCM_FLAG_NO_RESIDUE.
+
+> +                                         SND_DMAENGINE_PCM_FLAG_COMPAT);
+> +}
+> +EXPORT_SYMBOL_GPL(samsung_asoc_dma_platform_register);
+> +
+
+Thanks
+Padma
