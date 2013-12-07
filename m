@@ -1,68 +1,62 @@
-From: Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH] ASoC: tegra: fix uninitialized variables in set_fmt
-Date: Fri, 6 Dec 2013 22:07:11 +0100
-Message-ID: <20131206210710.GA1685@mithrandir>
-References: <1386362090-29250-1-git-send-email-swarren@wwwdotorg.org>
+From: "Patrick Shirkey" <pshirkey@boosthardware.com>
+Subject: issues with usb-audio and maudio quattro
+Date: Sun, 8 Dec 2013 01:47:19 +1100 (EST)
+Message-ID: <63609.101.0.71.24.1386427639.squirrel@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jI8keyz6grp/JLjh"
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1386362090-29250-1-git-send-email-swarren@wwwdotorg.org>
-Sender: stable-owner@vger.kernel.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, Stephen Warren <swarren@nvidia.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from boosthardware.localdomain (boosthardware.com [88.198.122.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id AFFB3261981
+ for <alsa-devel@alsa-project.org>; Sat,  7 Dec 2013 15:47:16 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---jI8keyz6grp/JLjh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It seems that some changes were made to the usb-audio driver over the
+years that have resulted in partially broken  behaviour with maudio
+quattro.
 
-On Fri, Dec 06, 2013 at 01:34:50PM -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
->=20
-> In tegra*_i2s_set_fmt(), in the (fmt =3D=3D SND_SOC_DAIFMT_CBM_CFM) case,
-> "val" is never assigned to, but left uninitialized. The other case does
-> initialized it. Fix this by initializing val at the start of the
-> function, and only ever ORing into it.
->=20
-> Update the handling of "mask" so it works the same way for consistency.
->=20
-> Update tegra20_spdif.c to use the same code-style for consistency, even
-> though it doesn't happen to suffer from the same problem at present.
->=20
-> Cc: <stable@vger.kernel.org>
-> Fixes: 0f163546a772 ("ASoC: tegra: use regmap more directly")
-> Signed-off-by: Stephen Warren <swarren@nvidia.com>
-> ---
->  sound/soc/tegra/tegra20_i2s.c   |  6 +++---
->  sound/soc/tegra/tegra20_spdif.c | 10 +++++-----
->  sound/soc/tegra/tegra30_i2s.c   |  6 +++---
->  3 files changed, 11 insertions(+), 11 deletions(-)
+We have run some tests on two different devices with different machines
+and found the following items:
 
-Reviewed-by: Thierry Reding <treding@nvidia.com>
+1: There are no longer three pcm devices - this breaks previously working
+asoundrc files
+2: pcm0 and pcm1 have different behaviours - this results in audio input
+working for pcm0 but white noise in pcm1 (probably due to endianess le vs
+be)
+3: We can record 4 tracks with arecord. Tracks 1/2 have audio and track
+3/4 have white noise
+4: We can no longer run 4 playback tracks in JACK2 as it complains about
+the ports not matching (this might be a seperate issue with JACK2 and
+route/plug configs for multichannel devices but that would probably affect
+the delta 10/10, RME Hammerfall or other multichannel devices too.)
 
---jI8keyz6grp/JLjh
-Content-Type: application/pgp-signature
+jackd: ../common/JackGraphManager.cpp:44: void
+Jack::JackGraphManager::AssertPort(jack_port_id_t): Assertion `port_index
+< fPortMax' failed.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSojx+AAoJEN0jrNd/PrOhALIQAIxBxfbhbD1baWhgKa+OoQZf
-xEeRKf2grsvbB7B3lWb9rEI70UwP8R6KWl0F03XOXGZGsBbTrmvOx9kshTvtdm0g
-PLzg9iLFS4WVarHqdtln0x1/cz4er97N4iwNjOqpJsmsC8hIAsR55SOKqoRmoqLB
-MFoG0B3McgZ0Q9xe8A60500+9gtFfnSgV62bEmqSSSEThV8TbPjB9hW9okdLNexL
-fVzScWFHIeGYzNOmBEw9LCdEVItebDpBP6p+PCgWQRDc6X78kpyQgoUZjMO4Ornq
-zb3UWhxATpXJt2XfykmCRGO0chsJEyZMU3IexNacULH/wxHwsRVkLuM2eqwK4Pm7
-hgQyIEDap3VvnYPfXPp/kXPr/OEQgKz/2OwhXyJmEwRppQRbNxAfDSycj+x//LDW
-4yVL1rvcZy2HhSrNwXO/VMAW2vCa659vYf+eOQN742LVun/BItflHr6b1pNQHs+z
-X5Fj7bosc5XMMUjwUydwAYmawrHz7vy9Vw6XTV692oW/6p5I3Mgf8FjeYBZL/GX+
-g6XZmXDFqtanLT6UZt37yIeLtu2bFHAaAQwHmxEu3zJ0yhEl1fanZ5i3a7XOqvzv
-vFvq0rWdH+MYoo3dajBBr9ov8isYuSFBQuYyNLgDjhoV9odsxmNMeP6C3gTEVi5B
-TENqyngtpk8dpE1g5Ml6
-=gNd2
------END PGP SIGNATURE-----
+So the main question is who made the decision to drop/consolidate the
+third pcm and break previously working asoundrc files?
 
---jI8keyz6grp/JLjh--
+There must be a good reason in which case maybe we can get things working
+again relatively easily?
+
+
+
+Cheers
+
+--
+Patrick Shirkey
+Boost Hardware Ltd
