@@ -1,14 +1,19 @@
-From: "Patrick Shirkey" <pshirkey@boosthardware.com>
-Subject: issues with usb-audio and maudio quattro
-Date: Sun, 8 Dec 2013 01:47:19 +1100 (EST)
-Message-ID: <63609.101.0.71.24.1386427639.squirrel@boosthardware.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [pulseaudio-discuss] Issue with multiple hdmi
+ codecs in radeonhd, hacked to work
+Date: Sun, 08 Dec 2013 02:59:01 +0200
+Message-ID: <52A3C455.5090207@iki.fi>
+References: <CAJ3TwYRYGR5Z2m1XSQ9QOp3ffe9sb2C_znsVUeBpARySZ7KbMQ@mail.gmail.com>	<CAN8ccia9KA4fyU06LE3+DMPcj9w62Z8P-BvjR3-aA2Q9TWcC-A@mail.gmail.com>	<CAJ3TwYQOiV2DFbVHagJ+O+tSbcvmNUTrZng1C8Tgooz8SrdPgg@mail.gmail.com>	<CAJ3TwYQSYtv6qdCiTi9MHBoEnxqitXbSVgxq-8R+z7E0LQyhpg@mail.gmail.com>	<CAN8cciZ=UWO_RNwJqrBwbbbU1f_4Ydapk=2d67CtYhVRbO-c1w@mail.gmail.com>	<CAJ3TwYTeR4fZSRGaMpUudL2t_dR0dkYYV1tP_aEAGnjUqN3iDg@mail.gmail.com>	<CAN8cciZ8okPOUD1X3Vy3ofayQHfW6K3eojUwLkGc3o-xX0BFgg@mail.gmail.com>	<CAJ3TwYQr3u-04zRduACx9g283tpyj2bmjDvgA+ok=15OGg5g9w@mail.gmail.com>	<CAN8cciYEikGtPaET-qZECcyGTAqRQab6jEsGP-Zt=4U2ngLqbA@mail.gmail.com>	<CAJ3TwYRheSya2Y7y-e82=-HPv5j26n7SR-L1GeC=CPfrOKHpbA@mail.gmail.com>
+ <CAN8ccibrFmQa4rPcP6gqt7h1MpMQ310b8y2zcbN-h_rtN_6vvw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from boosthardware.localdomain (boosthardware.com [88.198.122.139])
- by alsa0.perex.cz (Postfix) with ESMTP id AFFB3261981
- for <alsa-devel@alsa-project.org>; Sat,  7 Dec 2013 15:47:16 +0100 (CET)
+Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
+ [83.102.40.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97CE5261A82
+ for <alsa-devel@alsa-project.org>; Sun,  8 Dec 2013 01:59:08 +0100 (CET)
+In-Reply-To: <CAN8ccibrFmQa4rPcP6gqt7h1MpMQ310b8y2zcbN-h_rtN_6vvw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,45 +23,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>, John Ettedgui <john.ettedgui@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Alex Deucher <alexander.deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-It seems that some changes were made to the usb-audio driver over the
-years that have resulted in partially broken  behaviour with maudio
-quattro.
-
-We have run some tests on two different devices with different machines
-and found the following items:
-
-1: There are no longer three pcm devices - this breaks previously working
-asoundrc files
-2: pcm0 and pcm1 have different behaviours - this results in audio input
-working for pcm0 but white noise in pcm1 (probably due to endianess le vs
-be)
-3: We can record 4 tracks with arecord. Tracks 1/2 have audio and track
-3/4 have white noise
-4: We can no longer run 4 playback tracks in JACK2 as it complains about
-the ports not matching (this might be a seperate issue with JACK2 and
-route/plug configs for multichannel devices but that would probably affect
-the delta 10/10, RME Hammerfall or other multichannel devices too.)
-
-jackd: ../common/JackGraphManager.cpp:44: void
-Jack::JackGraphManager::AssertPort(jack_port_id_t): Assertion `port_index
-< fPortMax' failed.
-
-
-So the main question is who made the decision to drop/consolidate the
-third pcm and break previously working asoundrc files?
-
-There must be a good reason in which case maybe we can get things working
-again relatively easily?
-
-
-
-Cheers
-
---
-Patrick Shirkey
-Boost Hardware Ltd
+MDcuMTIuMjAxMyAwOToxOCwgUmF5bW9uZCBZYXUga2lyam9pdHRpOgo+ICAgICBJIGp1c3QgY2hh
+bmdlZCBteSBSYWRlb25IRCA0NjcwIGZvciBhIDc4NzAsIGFuZCBub3cgd2hlbiBJIHR5cGUKPiAg
+ICAgImFwbGF5IC1sIiAgSSBnZXQgbWFueSBIRE1JIGNvZGVjcyBpbnN0ZWFkIG9mIGp1c3Qgb25l
+IGxpa2UgZm9yIHRoZQo+ICAgICBwcmV2aW91cwo+IAo+IAo+IERvIHlvdXIgY2FyZCBzcGVjaWZp
+Y2F0aW9uIHN1cHBvcnQgRGlzY3JldGUgRGlnaXRhbCBNdWx0aS1Qb2ludCBBdWRpbwo+IChERE1B
+KSAvPy8KPiAKPiBERE1BIGVuYWJsZXMgUmFkZW9u4oSiSEQgNzcwMC03OTAwIFNlcmllcyBHUFVz
+IHdpdGggdGhlIGFiaWxpdHkgdG8gb3V0cHV0Cj4gbXVsdGlwbGUgYW5kIGluZGVwZW5kZW50IGF1
+ZGlvIHN0cmVhbXMgc2ltdWx0YW5lb3VzbHkgdGhyb3VnaCBkaWdpdGFsCj4gaW50ZXJmYWNlcyB0
+aGF0IHN1cHBvcnQgYXVkaW8sIHN1Y2ggYXMgRGlzcGxheVBvcnQgYW5kIEhETUnCri4gRWFjaCBh
+dWRpbwo+IHN0cmVhbSBjYW4gYmUgbXVsdGktY2hhbm5lbCAodXAgdG8gOCBjaGFubmVscykKCkFG
+QUlLIHllcywgdGhlIG11bHRpLWhkbWktZGV2aWNlIEFNRCBjYXJkcyBhcmUgIkRETUEiLgoKWy4u
+Ll0KPiBtb25pdG9yX3ByZXNlbnQgICAgICAgIDEKPiBlbGRfdmFsaWQgICAgICAgIDEKPiBtb25p
+dG9yX25hbWUgICAgICAgCj4gY29ubmVjdGlvbl90eXBlICAgICAgICBIRE1JCj4gZWxkX3ZlcnNp
+b24gICAgICAgIFsweDJdIENFQS04NjFEIG9yIGJlbG93Cj4gZWRpZF92ZXJzaW9uICAgICAgICBb
+MHgwXSBubyBDRUEgRURJRCBUaW1pbmcgRXh0ZW5zaW9uIGJsb2NrIHByZXNlbnQKPiBtYW51ZmFj
+dHVyZV9pZCAgICAgICAgMHgwCj4gcHJvZHVjdF9pZCAgICAgICAgMHgwCj4gcG9ydF9pZCAgICAg
+ICAgICAgIDB4MAo+IHN1cHBvcnRfaGRjcCAgICAgICAgMAo+IHN1cHBvcnRfYWkgICAgICAgIDAK
+PiBhdWRpb19zeW5jX2RlbGF5ICAgIDAKPiBzcGVha2VycyAgICAgICAgWzB4NWZdIEZML0ZSIExG
+RSBGQyBSTC9SUiBSQyBSTEMvUlJDCj4gc2FkX2NvdW50ICAgICAgICA2Cj4gc2FkMF9jb2Rpbmdf
+dHlwZSAgICBbMHgxXSBMUENNCj4gc2FkMF9jaGFubmVscyAgICAgICAgOAo+IHNhZDBfcmF0ZXMg
+ICAgICAgIFsweDFlZTBdIDMyMDAwIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3NjQwMCAxOTIw
+MDAKPiBzYWQwX2JpdHMgICAgICAgIFsweGUwMDAwXSAxNiAyMCAyNAo+IHNhZDFfY29kaW5nX3R5
+cGUgICAgWzB4Ml0gQUMtMwo+IHNhZDFfY2hhbm5lbHMgICAgICAgIDYKPiBzYWQxX3JhdGVzICAg
+ICAgICBbMHhlMF0gMzIwMDAgNDQxMDAgNDgwMDAKPiBzYWQxX21heF9iaXRyYXRlICAgIDY0MDAw
+MAo+IHNhZDJfY29kaW5nX3R5cGUgICAgWzB4N10gRFRTCj4gc2FkMl9jaGFubmVscyAgICAgICAg
+Ngo+IHNhZDJfcmF0ZXMgICAgICAgIFsweDZjMF0gNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAKPiBz
+YWQyX21heF9iaXRyYXRlICAgIDE1MzYwMDAKPiBzYWQzX2NvZGluZ190eXBlICAgIFsweGFdIEUt
+QUMtMy9ERCsgKERvbGJ5IERpZ2l0YWwgUGx1cykKPiBzYWQzX2NoYW5uZWxzICAgICAgICA4Cj4g
+c2FkM19yYXRlcyAgICAgICAgWzB4YzBdIDQ0MTAwIDQ4MDAwCj4gc2FkNF9jb2RpbmdfdHlwZSAg
+ICBbMHhiXSBEVFMtSEQKPiBzYWQ0X2NoYW5uZWxzICAgICAgICA4Cj4gc2FkNF9yYXRlcyAgICAg
+ICAgWzB4MWVjMF0gNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAgMTc2NDAwIDE5MjAwMAo+IHNhZDVf
+Y29kaW5nX3R5cGUgICAgWzB4Y10gTUxQIChEb2xieSBUcnVlSEQpCj4gc2FkNV9jaGFubmVscyAg
+ICAgICAgOAo+IHNhZDVfcmF0ZXMgICAgICAgIFsweDFlYzBdIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2
+MDAwIDE3NjQwMCAxOTIwMDAKPiBtb25pdG9yX3ByZXNlbnQgICAgICAgIDEKPiBlbGRfdmFsaWQg
+ICAgICAgIDAKPiBtb25pdG9yX3ByZXNlbnQgICAgICAgIDEKPiBlbGRfdmFsaWQgICAgICAgIDAK
+PiBtb25pdG9yX3ByZXNlbnQgICAgICAgIDEKPiBlbGRfdmFsaWQgICAgICAgIDAKPiBtb25pdG9y
+X3ByZXNlbnQgICAgICAgIDEKPiBlbGRfdmFsaWQgICAgICAgIDAKPiBtb25pdG9yX3ByZXNlbnQg
+ICAgICAgIDEKPiBlbGRfdmFsaWQgICAgICAgIDAKPiAKPiBlLmcuIEhETUkgc3RhdHVzIG1lc3Nh
+Z2UgaW4gZnVuY3Rpb24gaGRtaV9wcmVzZW50X3NlbnNlIGluIHBhdGNoX2hkbWkuYwo+IAo+IG5l
+ZWQgdG8gZmluZCBvdXQgd2h5IGVsZC0+bW9uaXRvcl9wcmVzZW50IHdhcyBzZXQgIGZvciBhbGwg
+c2l4IGNvbXBsZXhlcwo+IAo+IHRoZSB2YWx1ZSByZXR1cm4gYnkgZnVuY3Rpb24gYXRpaGRtaV9w
+aW5fZ2V0X2VsZCBzaW5jZSBpdCBjaGFuZ2UKPiBlbGQtPmVsZF92YWxpZCB0byBmYWxzZSB3aGVu
+IGl0IGlzIG5lZ2F0aXZlCgpXaGVuIENPTkZJR19TTkRfREVCVUdfVkVSQk9TRSBpcyBlbmFibGVk
+LCBoZG1pX3ByZXNlbnRfc2Vuc2UoKSBwcmludHMKdGhlIGFjdHVhbCBodyBQcmVzZW5jZV9EZXRl
+Y3QvRUxEX1ZhbGlkIGJlZm9yZSBlbGQtPmVsZF92YWxpZCBpcwpvdmVycmlkZGVuIHRvIDAgKGFu
+ZCBoZG1pX2ludHJpbnNpY19ldmVudCgpIHByaW50cyB0aGUgaG90IHBsdWcgZXZlbnQKdmFsdWVz
+KS4KCkFsZXgsIGRvIHlvdSBoYXZlIGluZm9ybWF0aW9uIHJlZ2FyZGluZyB3aHkgIlByZXNlbmNl
+IGRldGVjdCIgKGFrYQptb25pdG9yX3ByZXNlbnQgYWJvdmUpIHNlZW1zIHRvIGJlIHNldCBmb3Ig
+YWxsIEhETUkgcGlucyBpbiB0aGUgcmVzcG9uc2UKb2YgUGluIFNlbnNlIDB4RjA5IHZlcmIgKG9y
+IGlmIGl0IGlzIGV2ZW4gZXhwZWN0ZWQpLCBhbmQvb3IgaWYgd2Ugc2hvdWxkCnVzZSBhbHRlcm5h
+dGUgbWVhbnMgb2YgZ2V0dGluZyBqYWNrIHN0YXR1cz8KCkNPTkZJR19TTkRfREVCVUdfVkVSQk9T
+RSBsb2cgbWlnaHQgYWxzbyBiZSBpbnRlcmVzdGluZywgSSB3b25kZXIgaWYKZWxkX3ZhbGlkIGlz
+IGFsc28gMSBmb3IgZXZlcnkgcGluIG9yIG5vdCAoYmVmb3JlIEFMU0EgZm9yY2VzIDApLiBBbHNv
+LCBJCndvbmRlciBpZiBhbGwgbW9uaXRvcl9wcmVzZW50IGZpZWxkcyBhcmUgMSB3aXRoIGZnbHJ4
+IGRyaXZlciBhcyB3ZWxsLCBvcgp3aGVuIGFsbCBkaXNwbGF5cyBhcmUgdW5wbHVnZ2VkLi4uCgpb
+Li4uXQoKLS0gCkFuc3NpIEhhbm51bGEKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
