@@ -1,18 +1,20 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/3] ASoC: generic-dmaengine-pcm: Check DMA
-	residue granularity
-Date: Sun,  8 Dec 2013 17:18:09 +0100
-Message-ID: <1386519489-1935-4-git-send-email-lars@metafoo.de>
-References: <1386519489-1935-1-git-send-email-lars@metafoo.de>
+From: Sander Jansen <s.jansen@gmail.com>
+Subject: Re: Resend: Incorrect sbits for snd-usb-audio
+Date: Sun, 8 Dec 2013 12:27:39 -0600
+Message-ID: <CACj81kE86jmoqyMmYFJqx8NKL+R3WPonwrOoScfZJXLR72JuFA@mail.gmail.com>
+References: <CACj81kFSv1gUJMkvJ6BUHupTKuwYqrPNO0BbnVJU1QVK853GUQ@mail.gmail.com>
+ <s5hk3ffr952.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-151.synserver.de (smtp-out-205.synserver.de
- [212.40.185.205])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A494261B21
- for <alsa-devel@alsa-project.org>; Sun,  8 Dec 2013 17:17:29 +0100 (CET)
-In-Reply-To: <1386519489-1935-1-git-send-email-lars@metafoo.de>
+Received: from mail-ve0-f177.google.com (mail-ve0-f177.google.com
+ [209.85.128.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94E52261B1E
+ for <alsa-devel@alsa-project.org>; Sun,  8 Dec 2013 19:27:40 +0100 (CET)
+Received: by mail-ve0-f177.google.com with SMTP id db12so2823162veb.22
+ for <alsa-devel@alsa-project.org>; Sun, 08 Dec 2013 10:27:39 -0800 (PST)
+In-Reply-To: <s5hk3ffr952.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,86 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Dan Williams <dan.j.williams@intel.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Cc: dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The dmaengine framework now exposes the granularity with which it is able to
-report the transfer residue for a certain DMA channel. Check the granularity in
-the generic dmaengine PCM driver and
-	a) Set the SNDRV_PCM_INFO_BATCH if the granularity is per period or worse.
-	b) Fallback to the (race condition prone) period counting if the driver does
-	not support any residue reporting.
+On Sun, Dec 8, 2013 at 3:20 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-generic-dmaengine-pcm.c | 37 +++++++++++++++++++++++++++++++++--
- 1 file changed, 35 insertions(+), 2 deletions(-)
+> At Fri, 6 Dec 2013 14:57:46 -0600,
+> Sander Jansen wrote:
+> >
+> > Hi,
+> >
+> > I had send this out earlier back in September, but never got a response.
+> >
+> > I have a Focusrite Scarlett 2i4 USB Audio Interface. The audio format
+> > exposed by ALSA for  this device is S32_LE. From the hardware specs and
+> > lsusb. it supposed to only have a 24 bit resolution (with the LSB bits
+> set
+> > to 0):
+> >
+> > AudioStreaming Interface Descriptor:
+> >         bLength                 6
+> >         bDescriptorType        36
+> >         bDescriptorSubtype      2 (FORMAT_TYPE)
+> >         bFormatType             1 (FORMAT_TYPE_I)
+> >         bSubslotSize            4
+> >         bBitResolution         24
+> >
+> > When I query the sbits for this device, I expect it to return 24, but
+> > instead it returns 32. Looking through the usb audio driver code, it
+> > doesn't look like this information is actually exposed to userspace. The
+> > 'parse_audio_format_i_type'  in usb/format.c merely returns the supported
+> > formats, but doesn't include any msbits info. (and it doesn't look like
+> it
+> > can be easily changed to return the msbits info as well).
+> >
+> > Was this intentionally left out, or is this a missing feature in the
+> driver?
+>
+> It's just because of laziness because almost no applications check the
+> msbit but only the format type.  Feel free to send an enhancement
+> patch.
+>
+>
+>
+Thanks for the clarification. I may give that a shot.
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 87e8635..7bdee7b 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -144,6 +144,8 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
- 	if (ret == 0) {
- 		if (dma_caps.cmd_pause)
- 			hw.info |= SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME;
-+		if (dma_caps.residue_granularity <= DMA_RESIDUE_GRANULARITY_SEGMENT)
-+			hw.info |= SNDRV_PCM_INFO_BATCH;
- 	}
- 
- 	return snd_soc_set_runtime_hwparams(substream, &hw);
-@@ -282,6 +284,27 @@ static const struct snd_soc_platform_driver dmaengine_no_residue_pcm_platform =
- 	.probe_order	= SND_SOC_COMP_ORDER_LATE,
- };
- 
-+static bool dmaengine_pcm_can_report_residue(struct dmaengine_pcm *pcm)
-+{
-+	struct dma_slave_caps dma_caps;
-+	int ret;
-+	int i;
-+
-+	for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_CAPTURE; i++) {
-+		if (!pcm->chan[i])
-+			continue;
-+
-+		ret = dma_get_slave_caps(pcm->chan[i], &dma_caps);
-+		if (ret != 0)
-+			continue;
-+
-+		if (dma_caps.residue_granularity == DMA_RESIDUE_GRANULARITY_DESCRIPTOR)
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
- static const char * const dmaengine_pcm_dma_channel_names[] = {
- 	[SNDRV_PCM_STREAM_PLAYBACK] = "tx",
- 	[SNDRV_PCM_STREAM_CAPTURE] = "rx",
-@@ -323,11 +346,21 @@ int snd_dmaengine_pcm_register(struct device *dev,
- 	if (!pcm)
- 		return -ENOMEM;
- 
-+	dmaengine_pcm_request_chan_of(pcm, dev);
-+
-+	/*
-+	 * This will only return false if we know for sure that at least one
-+	 * channel does not support residue reporting. If the compat path is
-+	 * used for requesting the channels or the dma driver does not implement
-+	 * the slave_caps API we rely on the caller to set the NO_RESIDUE flag
-+	 * in case residue reporting is not supported.
-+	 */
-+	if (!dmaengine_pcm_can_report_residue(pcm))
-+		flags |= SND_DMAENGINE_PCM_FLAG_NO_RESIDUE;
-+
- 	pcm->config = config;
- 	pcm->flags = flags;
- 
--	dmaengine_pcm_request_chan_of(pcm, dev);
--
- 	if (flags & SND_DMAENGINE_PCM_FLAG_NO_RESIDUE)
- 		return snd_soc_add_platform(dev, &pcm->platform,
- 				&dmaengine_no_residue_pcm_platform);
--- 
-1.8.0
+Sander
