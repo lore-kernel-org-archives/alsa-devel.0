@@ -1,15 +1,15 @@
 From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH 2/5] ASoC: ep93xx: remove custom DMA alloc
-	compat function
-Date: Mon,  9 Dec 2013 13:24:13 -0700
-Message-ID: <1386620656-18391-3-git-send-email-swarren@wwwdotorg.org>
+Subject: [PATCH 1/5] ASoC: ep93xx: get rid of ep93xx-pcm-audio
+	struct device
+Date: Mon,  9 Dec 2013 13:24:12 -0700
+Message-ID: <1386620656-18391-2-git-send-email-swarren@wwwdotorg.org>
 References: <1386620656-18391-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id B7B7A2650C4
+ by alsa0.perex.cz (Postfix) with ESMTP id B84792650C6
  for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 21:24:35 +0100 (CET)
 In-Reply-To: <1386620656-18391-1-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,139 +27,217 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Stephen Warren <swarren@nvidia.com>
 
-ep93xx_compat_request_channel() is almost identical to
-dmaengine_pcm_compat_request_channel(), with the exception that the
-latter:
-
-a) Assumes that the DAI DMA data is a struct snd_dmaengine_dai_dma_data
-   pointer rather than some custom type.
-
-b) dma_data->filter_data rather than dma_data should be passed to
-   snd_dmaengine_pcm_request_channel() as the filter data.
-
-Make minor changes to the ep93xx DAI drivers so that those two conditions
-are met. This allows removal of the custom .compat_request_channel().
+Modify the ep93xx PCM driver so that it's a utility library that can be
+registered on each DAI, rather than a separate struct device. This is
+more in line with how many recent DT-converted platforms operate, and
+avoids the need for yet another struct device.
 
 Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
- sound/soc/cirrus/ep93xx-ac97.c | 16 ++++++++++++----
- sound/soc/cirrus/ep93xx-i2s.c  | 14 ++++++++++++--
- sound/soc/cirrus/ep93xx-pcm.c  | 13 -------------
- 3 files changed, 24 insertions(+), 19 deletions(-)
+ sound/soc/cirrus/edb93xx.c     |  2 +-
+ sound/soc/cirrus/ep93xx-ac97.c |  9 +++++++++
+ sound/soc/cirrus/ep93xx-i2s.c  |  9 +++++++++
+ sound/soc/cirrus/ep93xx-pcm.c  | 26 ++++++++------------------
+ sound/soc/cirrus/ep93xx-pcm.h  | 24 ++++++++++++++++++++++++
+ sound/soc/cirrus/simone.c      |  2 +-
+ sound/soc/cirrus/snappercl15.c |  2 +-
+ 7 files changed, 53 insertions(+), 21 deletions(-)
+ create mode 100644 sound/soc/cirrus/ep93xx-pcm.h
 
+diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
+index c43fb214558a..4f900efc437c 100644
+--- a/sound/soc/cirrus/edb93xx.c
++++ b/sound/soc/cirrus/edb93xx.c
+@@ -63,7 +63,7 @@ static struct snd_soc_ops edb93xx_ops = {
+ static struct snd_soc_dai_link edb93xx_dai = {
+ 	.name		= "CS4271",
+ 	.stream_name	= "CS4271 HiFi",
+-	.platform_name	= "ep93xx-pcm-audio",
++	.platform_name	= "ep93xx-i2s",
+ 	.cpu_dai_name	= "ep93xx-i2s",
+ 	.codec_name	= "spi0.0",
+ 	.codec_dai_name	= "cs4271-hifi",
 diff --git a/sound/soc/cirrus/ep93xx-ac97.c b/sound/soc/cirrus/ep93xx-ac97.c
-index e45f0fd2f6b8..f434b6ebb1d6 100644
+index efa75b5086a4..e45f0fd2f6b8 100644
 --- a/sound/soc/cirrus/ep93xx-ac97.c
 +++ b/sound/soc/cirrus/ep93xx-ac97.c
-@@ -19,6 +19,7 @@
- #include <linux/slab.h>
+@@ -24,6 +24,8 @@
  
- #include <sound/core.h>
-+#include <sound/dmaengine_pcm.h>
- #include <sound/ac97_codec.h>
- #include <sound/soc.h>
+ #include <linux/platform_data/dma-ep93xx.h>
  
-@@ -97,6 +98,8 @@ struct ep93xx_ac97_info {
- 	struct device		*dev;
- 	void __iomem		*regs;
- 	struct completion	done;
-+	struct snd_dmaengine_dai_dma_data dma_params_rx;
-+	struct snd_dmaengine_dai_dma_data dma_params_tx;
- };
- 
- /* currently ALSA only supports a single AC97 device */
-@@ -317,8 +320,13 @@ static int ep93xx_ac97_trigger(struct snd_pcm_substream *substream,
- 
- static int ep93xx_ac97_dai_probe(struct snd_soc_dai *dai)
- {
--	dai->playback_dma_data = &ep93xx_ac97_pcm_out;
--	dai->capture_dma_data = &ep93xx_ac97_pcm_in;
-+	struct ep93xx_ac97_info *info = snd_soc_dai_get_drvdata(dai);
++#include "ep93xx-pcm.h"
 +
-+	info->dma_params_tx.filter_data = &ep93xx_ac97_pcm_out;
-+	info->dma_params_rx.filter_data = &ep93xx_ac97_pcm_in;
-+
-+	dai->playback_dma_data = &info->dma_params_tx;
-+	dai->capture_dma_data = &info->dma_params_rx;
- 
- 	return 0;
- }
-@@ -396,8 +404,8 @@ static int ep93xx_ac97_probe(struct platform_device *pdev)
+ /*
+  * Per channel (1-4) registers.
+  */
+@@ -394,8 +396,14 @@ static int ep93xx_ac97_probe(struct platform_device *pdev)
  	if (ret)
  		goto fail;
  
--	err = ep93xx_pcm_platform_register(&pdev->dev);
--	if (err)
-+	ret = ep93xx_pcm_platform_register(&pdev->dev);
-+	if (ret)
- 		goto fail_unregister;
- 
++	err = ep93xx_pcm_platform_register(&pdev->dev);
++	if (err)
++		goto fail_unregister;
++
  	return 0;
+ 
++fail_unregister:
++	snd_soc_unregister_component(&pdev->dev);
+ fail:
+ 	ep93xx_ac97_info = NULL;
+ 	snd_soc_set_ac97_ops(NULL);
+@@ -406,6 +414,7 @@ static int ep93xx_ac97_remove(struct platform_device *pdev)
+ {
+ 	struct ep93xx_ac97_info	*info = platform_get_drvdata(pdev);
+ 
++	ep93xx_pcm_platform_unregister(&pdev->dev);
+ 	snd_soc_unregister_component(&pdev->dev);
+ 
+ 	/* disable the AC97 controller */
 diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
-index cc43ed2dbca5..d21a359f4011 100644
+index a57643d6402f..cc43ed2dbca5 100644
 --- a/sound/soc/cirrus/ep93xx-i2s.c
 +++ b/sound/soc/cirrus/ep93xx-i2s.c
-@@ -21,6 +21,7 @@
- #include <linux/io.h>
+@@ -30,6 +30,8 @@
+ #include <mach/ep93xx-regs.h>
+ #include <linux/platform_data/dma-ep93xx.h>
  
- #include <sound/core.h>
-+#include <sound/dmaengine_pcm.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/initval.h>
-@@ -63,6 +64,8 @@ struct ep93xx_i2s_info {
- 	struct clk			*sclk;
- 	struct clk			*lrclk;
- 	void __iomem			*regs;
-+	struct snd_dmaengine_dai_dma_data dma_params_rx;
-+	struct snd_dmaengine_dai_dma_data dma_params_tx;
- };
- 
- static struct ep93xx_dma_data ep93xx_i2s_dma_data[] = {
-@@ -142,8 +145,15 @@ static void ep93xx_i2s_disable(struct ep93xx_i2s_info *info, int stream)
- 
- static int ep93xx_i2s_dai_probe(struct snd_soc_dai *dai)
- {
--	dai->playback_dma_data = &ep93xx_i2s_dma_data[SNDRV_PCM_STREAM_PLAYBACK];
--	dai->capture_dma_data = &ep93xx_i2s_dma_data[SNDRV_PCM_STREAM_CAPTURE];
-+	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
++#include "ep93xx-pcm.h"
 +
-+	info->dma_params_tx.filter_data =
-+		&ep93xx_i2s_dma_data[SNDRV_PCM_STREAM_PLAYBACK];
-+	info->dma_params_rx.filter_data =
-+		&ep93xx_i2s_dma_data[SNDRV_PCM_STREAM_CAPTURE];
-+
-+	dai->playback_dma_data = &info->dma_params_tx;
-+	dai->capture_dma_data = &info->dma_params_rx;
+ #define EP93XX_I2S_TXCLKCFG		0x00
+ #define EP93XX_I2S_RXCLKCFG		0x04
+ #define EP93XX_I2S_GLCTRL		0x0C
+@@ -405,8 +407,14 @@ static int ep93xx_i2s_probe(struct platform_device *pdev)
+ 	if (err)
+ 		goto fail_put_lrclk;
  
++	err = ep93xx_pcm_platform_register(&pdev->dev);
++	if (err)
++		goto fail_unregister;
++
  	return 0;
- }
+ 
++fail_unregister:
++	snd_soc_unregister_component(&pdev->dev);
+ fail_put_lrclk:
+ 	clk_put(info->lrclk);
+ fail_put_sclk:
+@@ -421,6 +429,7 @@ static int ep93xx_i2s_remove(struct platform_device *pdev)
+ {
+ 	struct ep93xx_i2s_info *info = dev_get_drvdata(&pdev->dev);
+ 
++	ep93xx_pcm_platform_unregister(&pdev->dev);
+ 	snd_soc_unregister_component(&pdev->dev);
+ 	clk_put(info->lrclk);
+ 	clk_put(info->sclk);
 diff --git a/sound/soc/cirrus/ep93xx-pcm.c b/sound/soc/cirrus/ep93xx-pcm.c
-index 144278aa65f9..856862932fdf 100644
+index cfe517e68009..144278aa65f9 100644
 --- a/sound/soc/cirrus/ep93xx-pcm.c
 +++ b/sound/soc/cirrus/ep93xx-pcm.c
-@@ -59,22 +59,9 @@ static bool ep93xx_pcm_dma_filter(struct dma_chan *chan, void *filter_param)
- 	return false;
- }
+@@ -23,6 +23,8 @@
  
--static struct dma_chan *ep93xx_compat_request_channel(
--	struct snd_soc_pcm_runtime *rtd,
--	struct snd_pcm_substream *substream)
--{
--	struct snd_dmaengine_dai_dma_data *dma_data;
--
--	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
--
--	return snd_dmaengine_pcm_request_channel(ep93xx_pcm_dma_filter,
--						 dma_data);
--}
--
- static const struct snd_dmaengine_pcm_config ep93xx_dmaengine_pcm_config = {
- 	.pcm_hardware = &ep93xx_pcm_hardware,
- 	.compat_filter_fn = ep93xx_pcm_dma_filter,
--	.compat_request_channel = ep93xx_compat_request_channel,
+ #include <linux/platform_data/dma-ep93xx.h>
+ 
++#include "ep93xx-pcm.h"
++
+ static const struct snd_pcm_hardware ep93xx_pcm_hardware = {
+ 	.info			= (SNDRV_PCM_INFO_MMAP		|
+ 				   SNDRV_PCM_INFO_MMAP_VALID	|
+@@ -76,34 +78,22 @@ static const struct snd_dmaengine_pcm_config ep93xx_dmaengine_pcm_config = {
  	.prealloc_buffer_size = 131072,
  };
  
+-static int ep93xx_soc_platform_probe(struct platform_device *pdev)
++int ep93xx_pcm_platform_register(struct device *dev)
+ {
+-	return snd_dmaengine_pcm_register(&pdev->dev,
++	return snd_dmaengine_pcm_register(dev,
+ 		&ep93xx_dmaengine_pcm_config,
+ 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+ 		SND_DMAENGINE_PCM_FLAG_NO_DT |
+ 		SND_DMAENGINE_PCM_FLAG_COMPAT);
+ }
++EXPORT_SYMBOL_GPL(ep93xx_pcm_platform_register);
+ 
+-static int ep93xx_soc_platform_remove(struct platform_device *pdev)
++void ep93xx_pcm_platform_unregister(struct device *dev)
+ {
+-	snd_dmaengine_pcm_unregister(&pdev->dev);
+-	return 0;
++	snd_dmaengine_pcm_unregister(dev);
+ }
+-
+-static struct platform_driver ep93xx_pcm_driver = {
+-	.driver = {
+-			.name = "ep93xx-pcm-audio",
+-			.owner = THIS_MODULE,
+-	},
+-
+-	.probe = ep93xx_soc_platform_probe,
+-	.remove = ep93xx_soc_platform_remove,
+-};
+-
+-module_platform_driver(ep93xx_pcm_driver);
++EXPORT_SYMBOL_GPL(ep93xx_pcm_platform_unregister);
+ 
+ MODULE_AUTHOR("Ryan Mallon");
+ MODULE_DESCRIPTION("EP93xx ALSA PCM interface");
+ MODULE_LICENSE("GPL");
+-MODULE_ALIAS("platform:ep93xx-pcm-audio");
+diff --git a/sound/soc/cirrus/ep93xx-pcm.h b/sound/soc/cirrus/ep93xx-pcm.h
+new file mode 100644
+index 000000000000..5ee1afce931f
+--- /dev/null
++++ b/sound/soc/cirrus/ep93xx-pcm.h
+@@ -0,0 +1,24 @@
++/*
++ * Copyright (c) 2013, NVIDIA CORPORATION.  All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#ifndef __EP93XX_PCM_H__
++#define __EP93XX_PCM_H__
++
++int ep93xx_pcm_platform_register(struct device *dev);
++void ep93xx_pcm_platform_unregister(struct device *dev);
++
++#endif
++
+diff --git a/sound/soc/cirrus/simone.c b/sound/soc/cirrus/simone.c
+index 4d094d00c34a..822a19a89e74 100644
+--- a/sound/soc/cirrus/simone.c
++++ b/sound/soc/cirrus/simone.c
+@@ -27,7 +27,7 @@ static struct snd_soc_dai_link simone_dai = {
+ 	.cpu_dai_name	= "ep93xx-ac97",
+ 	.codec_dai_name	= "ac97-hifi",
+ 	.codec_name	= "ac97-codec",
+-	.platform_name	= "ep93xx-pcm-audio",
++	.platform_name	= "ep93xx-ac97",
+ };
+ 
+ static struct snd_soc_card snd_soc_simone = {
+diff --git a/sound/soc/cirrus/snappercl15.c b/sound/soc/cirrus/snappercl15.c
+index 69041074f2c1..29238a7476dd 100644
+--- a/sound/soc/cirrus/snappercl15.c
++++ b/sound/soc/cirrus/snappercl15.c
+@@ -83,7 +83,7 @@ static struct snd_soc_dai_link snappercl15_dai = {
+ 	.cpu_dai_name	= "ep93xx-i2s",
+ 	.codec_dai_name	= "tlv320aic23-hifi",
+ 	.codec_name	= "tlv320aic23-codec.0-001a",
+-	.platform_name	=  "ep93xx-pcm-audio",
++	.platform_name	= "ep93xx-i2s",
+ 	.init		= snappercl15_tlv320aic23_init,
+ 	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
+ 			  SND_SOC_DAIFMT_CBS_CFS,
 -- 
 1.8.1.5
