@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2 3/3] ASoC: dmaengine: add custom DMA
- config to snd_dmaengine_pcm_config
-Date: Mon, 9 Dec 2013 18:45:13 +0000
-Message-ID: <20131209184513.GV29268@sirena.org.uk>
-References: <1386105994-16373-1-git-send-email-swarren@wwwdotorg.org>
- <1386105994-16373-3-git-send-email-swarren@wwwdotorg.org>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: [PATCH 0/5] ASoC: remove dmaengine
+	compat_request_channel
+Date: Mon,  9 Dec 2013 13:24:11 -0700
+Message-ID: <1386620656-18391-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3533825415850306292=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 535E7261A1D
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 19:45:16 +0100 (CET)
-In-Reply-To: <1386105994-16373-3-git-send-email-swarren@wwwdotorg.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7CEE2650C5
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 21:24:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Stephen Warren <swarren@nvidia.com>
 
---===============3533825415850306292==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mKE4ioR2x99FlUnb"
-Content-Disposition: inline
+This series removes almost all users of the ASoC dmaengine
+compat_request_channel() function, and its implementation.
 
+The ux500 driver still uses compat_request_channel. I believe that
+Lars-Peter is working on removing its use from that driver. That patch
+or series would need to be inserted between 4/5 and 5/5 in this series.
 
---mKE4ioR2x99FlUnb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series is based on ASoC's topic/dma branch.
 
-On Tue, Dec 03, 2013 at 02:26:34PM -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
->=20
-> Add fields to struct snd_dmaengine_pcm_config to allow custom:
+I have only compile-tested these patches.
 
-Applied, thanks.
+Stephen Warren (5):
+  ASoC: ep93xx: get rid of ep93xx-pcm-audio struct device
+  ASoC: ep93xx: remove custom DMA alloc compat function
+  ASoC: SPEAr: get rid of spear-pcm-audio struct device
+  ASoC: SPEAr: remove custom DMA alloc compat function
+  ASoC: dmaengine: remove compat_request_channel
 
---mKE4ioR2x99FlUnb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ include/sound/dmaengine_pcm.h         |  3 ---
+ include/sound/spear_dma.h             |  1 -
+ sound/soc/cirrus/edb93xx.c            |  2 +-
+ sound/soc/cirrus/ep93xx-ac97.c        | 21 ++++++++++++++++--
+ sound/soc/cirrus/ep93xx-i2s.c         | 23 +++++++++++++++++--
+ sound/soc/cirrus/ep93xx-pcm.c         | 39 +++++++-------------------------
+ sound/soc/cirrus/ep93xx-pcm.h         | 24 ++++++++++++++++++++
+ sound/soc/cirrus/simone.c             |  2 +-
+ sound/soc/cirrus/snappercl15.c        |  2 +-
+ sound/soc/soc-generic-dmaengine-pcm.c |  3 ---
+ sound/soc/spear/spdif_in.c            | 25 +++++++++++++++++----
+ sound/soc/spear/spdif_out.c           | 26 ++++++++++++++++++----
+ sound/soc/spear/spear_pcm.c           | 42 ++++++++++-------------------------
+ sound/soc/spear/spear_pcm.h           | 26 ++++++++++++++++++++++
+ 14 files changed, 156 insertions(+), 83 deletions(-)
+ create mode 100644 sound/soc/cirrus/ep93xx-pcm.h
+ create mode 100644 sound/soc/spear/spear_pcm.h
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSpg+2AAoJELSic+t+oim9RGAP/RUaaaob7fd7SAI0Am5H7y9p
-ipQubBnGlnJ/shPZB+/by6qrT5aMUz8ERwZd6BeWyNaYF6QL6S/Vmp0wvWKAbjWc
-jXtN6Or6FbdEyBEablJnXr9SgGhqn2P3J5+f1TK0n44PxZEj2EwECIA/MLQhnvtQ
-1JvXNdPw9m6zttaC46WdIR8rkU248ewhM1YbAwZUpGSBeFHzsYK5lxb+xDNKr2m6
-1V6r2rX1fQj0b6E5fbVRrttrFr+mbt/g+1OoLWoZGd/VzIpRg8zDB5PvmQPrugkd
-7IxaTvlja00I0ciCwoUMn09mXDmhDXmjJ0cm1nio1PVsdoq63K33c0NHouhjt0KE
-OflFKQkWDgxFC43EK0hnXs9viuN2ltWEzVFZ9bLS80gtT/oXNevCEtNzj/MniiQS
-tdCm38wW3/BcbaXUDbyU4qYcszBdTs2Mrh40ZZY3kVaSxiW/G+e0IL8wzi7usPcv
-ufVtBk4Viyf8mXIwaohBcNPqhEheXDXMWtQpZyItCa/9aTDP5x/R0fUy0A5DiaeP
-q8HiDTZkcv7AL1NcI8muZ6CZNMV3tX0MZNtKlcMhXe3UMsH0WJzueb75kyejefV/
-/2JUWFa1qhZuQFhlqNzMG0+NWlsWHTEKNATFQ5iSOd0Bj9BTxG2DmYeaoT/LQgDS
-IkEMSPB09U0tzMbEcHPU
-=4MC1
------END PGP SIGNATURE-----
-
---mKE4ioR2x99FlUnb--
-
---===============3533825415850306292==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3533825415850306292==--
+-- 
+1.8.1.5
