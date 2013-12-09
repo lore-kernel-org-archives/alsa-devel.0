@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2 1/3] ASoC: restructure
-	dmaengine_pcm_request_chan_of()
-Date: Mon, 9 Dec 2013 18:43:31 +0000
-Message-ID: <20131209184331.GT29268@sirena.org.uk>
+Subject: Re: [PATCH V2 2/3] ASoC: don't leak on error in
+ snd_dmaengine_pcm_register
+Date: Mon, 9 Dec 2013 18:43:48 +0000
+Message-ID: <20131209184347.GU29268@sirena.org.uk>
 References: <1386105994-16373-1-git-send-email-swarren@wwwdotorg.org>
+ <1386105994-16373-2-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1230169311353304269=="
+Content-Type: multipart/mixed; boundary="===============1022589850173640213=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id F0D85261A3E
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 19:43:39 +0100 (CET)
-In-Reply-To: <1386105994-16373-1-git-send-email-swarren@wwwdotorg.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 688232650B8
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 19:43:50 +0100 (CET)
+In-Reply-To: <1386105994-16373-2-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,54 +26,55 @@ Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen W
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1230169311353304269==
+--===============1022589850173640213==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+i6GWCH4khrSQjQ2"
+	protocol="application/pgp-signature"; boundary="8gs9RsbElyYeG6Yn"
 Content-Disposition: inline
 
 
---+i6GWCH4khrSQjQ2
+--8gs9RsbElyYeG6Yn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 03, 2013 at 02:26:32PM -0700, Stephen Warren wrote:
+On Tue, Dec 03, 2013 at 02:26:33PM -0700, Stephen Warren wrote:
 > From: Stephen Warren <swarren@nvidia.com>
 >=20
-> Restructure the internals of dmaengine_pcm_request_chan_of() as a loop
-> over all channels to be allocated. This makes it easier to add logic
+> If snd_dmaengine_pcm_register()'s call to snd_soc_add_platform() fails,
+> all objects allocated during registration are leaked. Fix this by adding
+> error-handling code.
 
 Applied, thanks.
 
---+i6GWCH4khrSQjQ2
+--8gs9RsbElyYeG6Yn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSpg9QAAoJELSic+t+oim9m08P/2z62w8TQqexm8cSI3z/BvwO
-LLOTAhMtTby+rU0bvb5VskQFYOu60/l52bdD7COcXhR+2A+9osFV++tN235943qT
-wVklzsZbC1IM3ZInp6BXXK+P7jwmhtE2+4eKyRkCYc90Pu3iYPwFI9MYEEfaRgOB
-0FakXwGXfKr4uAxRNDmp4uTda95QB05sxrr+iEPrNVMhC8c9u1oCH0Np/Q28KO09
-Gul4HXC3oQTH0p+YfwrQ/IfNhH9dv2Brii68sma7jze9c0xoCRAvCvzWRKa1aWZz
-csiOtMgwCJpUVhp9q542DsOzC3fZ202UF5fbW6Y1tRqyvHQPuG2FvfGK1AeYJdeO
-HKx31cpp6AdB/WbseisOcORIrNoeHe6jEC1RyAyEkdM/4sTGT/gOjTLsGVF6y65g
-5IutO7tD4M9Iiy4wSNWNA+H32H1728NT4V2n0Sra9JjKPN8vdyw04qBCpao4o1zo
-XzhiUmpxAmtgvM+Zo3A/o8JwSKRDo4ZbS+15X1ntC2JWjRI/izkZdqyQ3L7osgv/
-m73dVOqK0bdZvJZ5TaI12Zyv8bbeiDixKoJUhcwbY63SDgYQfEupRvYQdkv19gLQ
-N+PEuzYP8/xdMtbEylhHFy+mUwYomAjrayvTktA1U/+/EJW1gpzteiV06MvfssJX
-m+fGqxy3374mHo/cqxst
-=byAM
+iQIcBAEBAgAGBQJSpg9gAAoJELSic+t+oim9J9gP/jag/O3jtRlgUyTXX57B9Cqa
+JQGwij6exLwr180PQsFn1mlZ6OCASsHi52Qz6rADAKrDYUDiNta7lOv+6SakAMsn
+T2DKcJ5F614n2ZrDFgSLYc19n0bZLGBBwd0cGoq8EASf6vKqgn3RPeYboF8WY4DD
+gjm7HE9+0CS2ZBzQy+MDz6qepU3NYa/04oRzKARL6ou+eFmngwVAbiBx2KVruybW
+GaDdoSDN1GKZLlNgbRsYRJDVT2uwQfd1XSrIyMcy2oHfQvnUBm5QJJrFq0dL4ivi
+TIShzThzzPJb8rqe79EU3KIPn/TC1Oh8wU7nkg58kTDmdZQaoeKPNYROJ+sGEGrQ
+2yhb8OkPCtMk9sr04nQnV2cvooHJs9C1ZNnhrFomEo6zSjRy0gHz14//GAZxXPL2
+rqYq/BR3kcYctfU2kpu9b0wh/dOlQNnWpczObgdW+GlzJxvWBq1Vbdj1axYGZp9U
+rrMOobww8IYhwKcdEFGufZDMp4vViARiJ9UZHypVo+BBWkxPYF9SSS7+gSysc9HO
+F5Y7SyU4v7RVvhHKpjTCxe80uV8HyYxFN8MEViPtqSJvP/cJbzSoLGwLG2Lwmowb
+tEXZ1y7+ZZXoVp1es0vWU4gi3AZAvarc1pVJZNjC1B7k8nFywcPARqgXZrpgLWAT
+F5NuEi+ystV8ydbM2mdI
+=DT+L
 -----END PGP SIGNATURE-----
 
---+i6GWCH4khrSQjQ2--
+--8gs9RsbElyYeG6Yn--
 
---===============1230169311353304269==
+--===============1022589850173640213==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1230169311353304269==--
+--===============1022589850173640213==--
