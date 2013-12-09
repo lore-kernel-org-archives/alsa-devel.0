@@ -1,21 +1,16 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH] ASoC: omap-pcm: Lower the dma coherent
-	mask to 32bits
-Date: Mon, 9 Dec 2013 17:03:00 +0000
-Message-ID: <20131209170300.GW4360@n2100.arm.linux.org.uk>
-References: <1386230802-3660-1-git-send-email-peter.ujfalusi@ti.com>
- <20131205095619.GC4360@n2100.arm.linux.org.uk> <52A09CDA.6010700@ti.com>
- <20131205192853.GH4360@n2100.arm.linux.org.uk> <s5h4n6nhxbt.wl%tiwai@suse.de>
- <20131205210707.GI4360@n2100.arm.linux.org.uk> <s5htxemgzyx.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/3] dma: Indicate residue granularity in
+	dma_slave_caps
+Date: Mon, 9 Dec 2013 17:13:15 +0000
+Message-ID: <20131209171315.GV29268@sirena.org.uk>
+References: <1386519489-1935-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2017369964686965432=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id DE78C26172C
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 18:03:38 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5htxemgzyx.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6299026172C
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 18:13:25 +0100 (CET)
+In-Reply-To: <1386519489-1935-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,158 +20,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 06, 2013 at 09:12:22AM +0100, Takashi Iwai wrote:
-> But, it's still unclear why only get_coherent_dma_mask() takes max_pfn
-> into account for the check of dma_to_pfn(dev, mask).
-> 
-> In dma_supported(), 
-> 
-> 	unsigned long limit;
-> 	limit = dma_to_pfn(dev, mask);
-> 	if (limit < arm_dma_pfn_limit)
-> 		return 0;
-> 
-> while in get_coherent_dma_mask(),
-> 
-> 	unsigned long max_dma_pfn;
-> 	max_dma_pfn = min(max_pfn, arm_dma_pfn_limit);
-> 	if (dma_to_pfn(dev, mask) < max_dma_pfn)
-> 		return 0;
-> 
-> So, the current code looks to me that the results from
-> dma_set_coherent_mask() and the actual allocation may conflict.
 
-Yes, that's also wrong.  Both should be the same, and both should take
-max_pfn into account.
+--===============2017369964686965432==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fbglzKaagM3twbm3"
+Content-Disposition: inline
 
-The reason why max_pfn needs to be taken into account is that is the top
-of memory - arm_dma_pfn_limit is hard-coded to 4GiB if there's no DMA
-zone.  With some buses (eg, ONAP) this results in a failure as
-dma_to_pfn(dev, 32-bit) is less than 4GiB.
 
-> If adding warnings is the purpose of the open code, we can create a
-> function like __dma_supported(struct device *dev, u64 mask, bool warning)
-> and call it from the both places.
+--fbglzKaagM3twbm3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yes, that's a good idea.  Revised version of the patch.  Peter, can you
-retest please, thanks.
+On Sun, Dec 08, 2013 at 05:18:06PM +0100, Lars-Peter Clausen wrote:
 
-diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
-index f6b6bfa88ecf..86c564e52ea7 100644
---- a/arch/arm/mm/dma-mapping.c
-+++ b/arch/arm/mm/dma-mapping.c
-@@ -158,6 +158,44 @@ struct dma_map_ops arm_coherent_dma_ops = {
- };
- EXPORT_SYMBOL(arm_coherent_dma_ops);
- 
-+static int __dma_supported(struct device *dev, u64 mask, bool warn)
-+{
-+	unsigned long max_dma_pfn;
-+
-+	/*
-+	 * If the mask allows for more memory than we can address,
-+	 * and we actually have that much memory, then we must
-+	 * indicate that DMA to this device is not supported.
-+	 */
-+	if (sizeof(mask) != sizeof(dma_addr_t) &&
-+	    mask > (dma_addr_t)~0 &&
-+	    dma_to_pfn(dev, ~0) < max_pfn) {
-+		if (warn) {
-+			dev_warn(dev, "Coherent DMA mask %#llx is larger than dma_addr_t allows\n",
-+				 mask);
-+			dev_warn(dev, "Driver did not use or check the return value from dma_set_coherent_mask()?\n");
-+		}
-+		return 0;
-+	}
-+
-+	max_dma_pfn = min(max_pfn, arm_dma_pfn_limit);
-+
-+	/*
-+	 * Translate the device's DMA mask to a PFN limit.  This
-+	 * PFN number includes the page which we can DMA to.
-+	 */
-+	if (dma_to_pfn(dev, mask) < max_dma_pfn) {
-+		if (warn)
-+			dev_warn(dev, "Coherent DMA mask %#llx (pfn %#lx-%#lx) covers a smaller range of system memory than the DMA zone pfn 0x0-%#lx\n",
-+				 mask,
-+				 dma_to_pfn(dev, 0), dma_to_pfn(dev, mask) + 1,
-+				 max_dma_pfn + 1);
-+		return 0;
-+	}
-+
-+	return 1;
-+}
-+
- static u64 get_coherent_dma_mask(struct device *dev)
- {
- 	u64 mask = (u64)DMA_BIT_MASK(32);
-@@ -176,34 +214,8 @@ static u64 get_coherent_dma_mask(struct device *dev)
- 			return 0;
- 		}
- 
--		max_dma_pfn = min(max_pfn, arm_dma_pfn_limit);
--
--		/*
--		 * If the mask allows for more memory than we can address,
--		 * and we actually have that much memory, then fail the
--		 * allocation.
--		 */
--		if (sizeof(mask) != sizeof(dma_addr_t) &&
--		    mask > (dma_addr_t)~0 &&
--		    dma_to_pfn(dev, ~0) > max_dma_pfn) {
--			dev_warn(dev, "Coherent DMA mask %#llx is larger than dma_addr_t allows\n",
--				 mask);
--			dev_warn(dev, "Driver did not use or check the return value from dma_set_coherent_mask()?\n");
--			return 0;
--		}
--
--		/*
--		 * Now check that the mask, when translated to a PFN,
--		 * fits within the allowable addresses which we can
--		 * allocate.
--		 */
--		if (dma_to_pfn(dev, mask) < max_dma_pfn) {
--			dev_warn(dev, "Coherent DMA mask %#llx (pfn %#lx-%#lx) covers a smaller range of system memory than the DMA zone pfn 0x0-%#lx\n",
--				 mask,
--				 dma_to_pfn(dev, 0), dma_to_pfn(dev, mask) + 1,
--				 arm_dma_pfn_limit + 1);
-+		if (!__dma_supported(dev, mask, true))
- 			return 0;
--		}
- 	}
- 
- 	return mask;
-@@ -1032,28 +1044,7 @@ void arm_dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
-  */
- int dma_supported(struct device *dev, u64 mask)
- {
--	unsigned long limit;
--
--	/*
--	 * If the mask allows for more memory than we can address,
--	 * and we actually have that much memory, then we must
--	 * indicate that DMA to this device is not supported.
--	 */
--	if (sizeof(mask) != sizeof(dma_addr_t) &&
--	    mask > (dma_addr_t)~0 &&
--	    dma_to_pfn(dev, ~0) > arm_dma_pfn_limit)
--		return 0;
--
--	/*
--	 * Translate the device's DMA mask to a PFN limit.  This
--	 * PFN number includes the page which we can DMA to.
--	 */
--	limit = dma_to_pfn(dev, mask);
--
--	if (limit < arm_dma_pfn_limit)
--		return 0;
--
--	return 1;
-+	return __dma_supported(dev, mask, false);
- }
- EXPORT_SYMBOL(dma_supported);
- 
+Please word wrap a bit earlier, you're right at 80 columns which causes
+issues when quoted.
+
+> ALSA period pointer depends on the granularity of the reported residue. E.g. if
+> residue is only updated once every period this means that the position in the
+> buffer from/to which the hardware is currently reading/writing could be
+> anywhere between the reported PCM pointer and the reported PCM pointer plus one
+
+Since there's quite a bit of development going on with the DMA stuff
+it'd be good if this could be merged via ASoC (either itself or as a
+shared branch) so we can get the ASoC changes in easily.
+
+> 	* BYTE: Same as BURST but with a byte level granularity.
+
+> I've only included the last one for completeness and I'm not sure if we really
+> need it. Even if the hardware is able to report the amount of transferred data
+> with a byte level granularity the lower bits will not carry too much
+> meaning. When using burst transfers the lower bits will remain the same for
+> longer periods and then rapidly increment during the burst transfer. The upper
+> bits though will increment with the actual frequency with which the data is
+> consumed. And that's what applications are typically interested in.
+
+I share your concerns about the usefulness here, and once you get to
+this point you're starting to worry about if it means bytes on the
+device side or the memory side which is really angels dancing on the
+head of a pin sort of thing.  That can apply to burst sizes as well
+where it gets a bit more relevant, we might want to say which we mean
+there (I'd assume right now it's just the same as our current burst
+configuration) if it even matters.
+
+--fbglzKaagM3twbm3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSpfooAAoJELSic+t+oim9czMP+wcMzA83BHewVhXBlbAaMz+B
+8LZhrAHQifwgoiwvp3+icm8KryGSRF2pyP3EEuIHRJK4j+PYLlDs5LsnjOpMr9s3
+Hm61O1/tfrG7OhPW5lj45udZ+Of/qQt5s30Wx/0Lf/51VnlFZHjnY8ddDJ2qX9cW
+wuXtgGzVFdgHuNkSnHJSh+m/qwrI6e0yu6CvMdzldjAHNYpNqCrrcWmx3FDXjVvr
+7KTPjfVdY7Jf8pTmJAOau94wS7gN6TvN7b0NrX/S5zpM6/Yzbj1vsaeE6/9lWwQu
+vLgQKV7ePlh9PKig0KhXinvGXCGG965cjMv5y+z65ZtLyLF/nLt0HoignZEMgJmk
+t1jzPvYvMirFepZH/VyBHTAxQ46XTP2L0CRE6JmgStIuQ0Wox1Ji1pZRMfbNPf3w
+Gb2TMjP05a1YWmQV/CqX52Rq8eknszKutx9AuT8EJuq8ROiUh7yBkO1UizcqonKW
++Iti3IolVddemvn8EUdNXuJ4X//OoaPLn2IOVjxP+/m7+C+kqzVsKufYLLNuZHVC
+dC3/nyy0Jvwq2eIehccmYsDelw7f4R6/2tVJB5mfZPUTxsK6uW5WtpsIDGREaURU
+AJJ1ClFXebLFjAlyTAphwIA+xtP3m6KC4yJxrTvr0vnG+eJZQA9cF2DkNRgAwDwk
+nP9YPUTO/Wwhccf40R1o
+=RmwX
+-----END PGP SIGNATURE-----
+
+--fbglzKaagM3twbm3--
+
+--===============2017369964686965432==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2017369964686965432==--
