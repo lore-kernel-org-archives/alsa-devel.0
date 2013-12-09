@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv8][ 1/5] ASoC: eukrea-tlv320: Add DT
-	support.
-Date: Mon, 9 Dec 2013 18:08:58 +0000
-Message-ID: <20131209180858.GR29268@sirena.org.uk>
-References: <1385567664-758-1-git-send-email-denis@eukrea.com>
+Subject: Re: [PATCH V2 1/3] ASoC: restructure
+	dmaengine_pcm_request_chan_of()
+Date: Mon, 9 Dec 2013 18:43:31 +0000
+Message-ID: <20131209184331.GT29268@sirena.org.uk>
+References: <1386105994-16373-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4924107867650101112=="
+Content-Type: multipart/mixed; boundary="===============1230169311353304269=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id CBB49261A1D
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 19:09:02 +0100 (CET)
-In-Reply-To: <1385567664-758-1-git-send-email-denis@eukrea.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F0D85261A3E
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 19:43:39 +0100 (CET)
+In-Reply-To: <1386105994-16373-1-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Denis Carikli <denis@eukrea.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Eric =?iso-8859-1?Q?B=E9nard?= <eric@eukrea.com>, Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Timur Tabi <timur@tabi.org>, Rob Herring <rob.herring@calxeda.com>, Liam Girdwood <lgirdwood@gmail.com>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4924107867650101112==
+--===============1230169311353304269==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Jy7fHMWyH2pKEqn7"
+	protocol="application/pgp-signature"; boundary="+i6GWCH4khrSQjQ2"
 Content-Disposition: inline
 
 
---Jy7fHMWyH2pKEqn7
+--+i6GWCH4khrSQjQ2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 27, 2013 at 04:54:20PM +0100, Denis Carikli wrote:
+On Tue, Dec 03, 2013 at 02:26:32PM -0700, Stephen Warren wrote:
+> From: Stephen Warren <swarren@nvidia.com>
+>=20
+> Restructure the internals of dmaengine_pcm_request_chan_of() as a loop
+> over all channels to be allocated. This makes it easier to add logic
 
-> Signed-off-by: Denis Carikli <denis@eukrea.com>
+Applied, thanks.
 
-Applied, thanks.  The way you split [PATCHv8][ 1/5] is a bit odd, as is
-the space there.
-
---Jy7fHMWyH2pKEqn7
+--+i6GWCH4khrSQjQ2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSpgc3AAoJELSic+t+oim96hgP/A1K+4l/LKX3RDGoOthH8IOD
-9fxxbE2Rj7npbKNgOflQtq1+6urulqyMYRPj5YcBEUZ+LkzVXoUxB3Mdw1n1qc65
-phKHwZCZSqDLPCNPQa4R2DDsVYJk9ginc+VryeaU9P4r6E5Oj7e2PReUlBb2kjgx
-YFFpMpO1OhKkLZVFTzMmS+nB4ibbZlvfN8acJ2ztK9CPuISe29pSP3qV2hKEyv+J
-RnHwBTCUbhhl1hQVAomTlD276M1Ti8pdH8idpSmzfyg07+/pR0Coq19+Xtp3/O0T
-yQsNyJ/fIvTE7EXGZpvlQdr4rKD+Tn32vk9WPhWKUWi8mhBCUTUNQ2+2HXD00UUU
-Z+7u+6ZLTJ9P34GCC92Q8aJTwqUx4WdbMCeZNmsUeFqOOt4iNEhg3Jtun/D0TckP
-ZV19ebByxbtDTok8XKw+kpXoEuHzcsbRyo7lVajq9SWTueRRviyf8NVoKSBvDniP
-1T3YPWH65ATrdxQsOo0jvVekdZUXQ2M1AzyQu5RMFwj/cXAk1S7oTy4rT8Wjw4u8
-TfH/rWAzr18MRTRvOH3QX3u7JEmibnsoldkCJm7eHFjpas6BZ4Zpb9mzuIMzzqjn
-0fHvF0BZM2/UmmIVL9EOJiuBpzY7TJ8cQddrktWKoX4VA3H6xV4c0GME816XIVG6
-10oWroVnSh+7xfU9ijcH
-=Lmgs
+iQIcBAEBAgAGBQJSpg9QAAoJELSic+t+oim9m08P/2z62w8TQqexm8cSI3z/BvwO
+LLOTAhMtTby+rU0bvb5VskQFYOu60/l52bdD7COcXhR+2A+9osFV++tN235943qT
+wVklzsZbC1IM3ZInp6BXXK+P7jwmhtE2+4eKyRkCYc90Pu3iYPwFI9MYEEfaRgOB
+0FakXwGXfKr4uAxRNDmp4uTda95QB05sxrr+iEPrNVMhC8c9u1oCH0Np/Q28KO09
+Gul4HXC3oQTH0p+YfwrQ/IfNhH9dv2Brii68sma7jze9c0xoCRAvCvzWRKa1aWZz
+csiOtMgwCJpUVhp9q542DsOzC3fZ202UF5fbW6Y1tRqyvHQPuG2FvfGK1AeYJdeO
+HKx31cpp6AdB/WbseisOcORIrNoeHe6jEC1RyAyEkdM/4sTGT/gOjTLsGVF6y65g
+5IutO7tD4M9Iiy4wSNWNA+H32H1728NT4V2n0Sra9JjKPN8vdyw04qBCpao4o1zo
+XzhiUmpxAmtgvM+Zo3A/o8JwSKRDo4ZbS+15X1ntC2JWjRI/izkZdqyQ3L7osgv/
+m73dVOqK0bdZvJZ5TaI12Zyv8bbeiDixKoJUhcwbY63SDgYQfEupRvYQdkv19gLQ
+N+PEuzYP8/xdMtbEylhHFy+mUwYomAjrayvTktA1U/+/EJW1gpzteiV06MvfssJX
+m+fGqxy3374mHo/cqxst
+=byAM
 -----END PGP SIGNATURE-----
 
---Jy7fHMWyH2pKEqn7--
+--+i6GWCH4khrSQjQ2--
 
---===============4924107867650101112==
+--===============1230169311353304269==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4924107867650101112==--
+--===============1230169311353304269==--
