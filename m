@@ -1,32 +1,29 @@
 From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
 Subject: Re: [pulseaudio-discuss] Issue with multiple hdmi
  codecs in radeonhd, hacked to work
-Date: Mon, 9 Dec 2013 15:12:18 +0000
-Message-ID: <A3397C8B8B789E45844E7EC5DEAD89D030A9D4B3@satlexdag05.amd.com>
+Date: Mon, 9 Dec 2013 15:24:50 +0000
+Message-ID: <A3397C8B8B789E45844E7EC5DEAD89D030A9D4CC@satlexdag05.amd.com>
 References: <CAJ3TwYRYGR5Z2m1XSQ9QOp3ffe9sb2C_znsVUeBpARySZ7KbMQ@mail.gmail.com>
+ <CAN8ccia9KA4fyU06LE3+DMPcj9w62Z8P-BvjR3-aA2Q9TWcC-A@mail.gmail.com>
+ <CAJ3TwYQOiV2DFbVHagJ+O+tSbcvmNUTrZng1C8Tgooz8SrdPgg@mail.gmail.com>
+ <CAJ3TwYQSYtv6qdCiTi9MHBoEnxqitXbSVgxq-8R+z7E0LQyhpg@mail.gmail.com>
  <CAN8cciZ=UWO_RNwJqrBwbbbU1f_4Ydapk=2d67CtYhVRbO-c1w@mail.gmail.com>
  <CAJ3TwYTeR4fZSRGaMpUudL2t_dR0dkYYV1tP_aEAGnjUqN3iDg@mail.gmail.com>
  <CAN8cciZ8okPOUD1X3Vy3ofayQHfW6K3eojUwLkGc3o-xX0BFgg@mail.gmail.com>
  <CAJ3TwYQr3u-04zRduACx9g283tpyj2bmjDvgA+ok=15OGg5g9w@mail.gmail.com>
  <CAN8cciYEikGtPaET-qZECcyGTAqRQab6jEsGP-Zt=4U2ngLqbA@mail.gmail.com>
  <CAJ3TwYRheSya2Y7y-e82=-HPv5j26n7SR-L1GeC=CPfrOKHpbA@mail.gmail.com>
- <CAN8ccibrFmQa4rPcP6gqt7h1MpMQ310b8y2zcbN-h_rtN_6vvw@mail.gmail.com>
- <CAJ3TwYQ_1BTmPafS-_BJWWNp1VSXA5K_e0vVHMipGrkdOjGuwA@mail.gmail.com>
- <CAN8cciaUWAxfPp0rNhBV=DCp2hSOJ-EPHeoQ-k25M91xYjmFiQ@mail.gmail.com>
- <CAJ3TwYTJnGb7C_TZrGOVTsPPb1kB6Kzqge4suh2B_QAdNUMWgw@mail.gmail.com>
- <CAN8cciZTuP8Y-nvv8ecJZBoJZBgsucb2p0sd-2dmyMWGxDgifQ@mail.gmail.com>
- <CAJ3TwYQukvyyXvuOtquv3UmnToK3CwM1zNxrq6kr4QE2Sshx2A@mail.gmail.com>
- <CAN8cciYeo9UrCPdjRfezFRyv6z_BXSwGvkRg6jKu2B9BMHJayA@mail.gmail.com>
- <52A55CAD.3080007@iki.fi> <s5h61qyl6jn.wl%tiwai@suse.de>
+ <CAN8ccibrFmQa4rPcP6gqt7h1MpMQ310b8y2zcbN-h_rtN_6vvw@mail.gmail
+ <52A3C455.5090207@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe004.messaging.microsoft.com [216.32.181.184])
- by alsa0.perex.cz (Postfix) with ESMTP id BA39F261AE7
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 16:12:24 +0100 (CET)
-In-Reply-To: <s5h61qyl6jn.wl%tiwai@suse.de>
+Received: from db9outboundpool.messaging.microsoft.com
+ (mail-db9lp0250.outbound.messaging.microsoft.com [213.199.154.250])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8CD8A261A1A
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 16:24:57 +0100 (CET)
+In-Reply-To: <52A3C455.5090207@iki.fi>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -37,109 +34,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, John Ettedgui <john.ettedgui@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "pulseaudio-discuss@lists.freedesktop.org" <pulseaudio-discuss@lists.freedesktop.org>, "erutrot@gmail.com" <erutrot@gmail.com>
+To: Anssi Hannula <anssi.hannula@iki.fi>, Raymond Yau <superquad.vortex2@gmail.com>, John Ettedgui <john.ettedgui@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, December 09, 2013 4:26 AM
-> To: Anssi Hannula
-> Cc: Raymond Yau; John Ettedgui; ALSA Development Mailing List;
-> erutrot@gmail.com; pulseaudio-discuss@lists.freedesktop.org; Deucher,
-> Alexander
-> Subject: Re: [pulseaudio-discuss] Issue with multiple hdmi codecs in
-> radeonhd, hacked to work
-> 
-> At Mon, 09 Dec 2013 08:01:17 +0200,
-> Anssi Hannula wrote:
-> >
-> > 09.12.2013 06:50, Raymond Yau kirjoitti:
-> > > 2013/12/9 John Ettedgui <john.ettedgui@gmail.com
-> > > <mailto:john.ettedgui@gmail.com>>
-> > >
-> > >
-> > >     I am using the gitcompile script to configure, compile...
-> > >     There is no configure by default, I was able to autogen it, but then
-> > >     I had issues while building so I reverted back to gitcompile
-> > >
-> > > [    4.841881] ALSA hda_intel.c:3170 0000:01:00.1: Handle VGA-switcheroo
-> > > audio client
-> > > [    4.841885] ALSA hda_intel.c:3364 0000:01:00.1: Using LPIB position fix
-> > > [    4.841886] ALSA hda_intel.c:3510 0000:01:00.1: Force to non-snoop
-> mode
-> > > [    4.841920] snd_hda_intel 0000:01:00.1: irq 47 for MSI/MSI-X
-> > > [    4.841940] ALSA hda_intel.c:3635 0000:01:00.1: chipset global
-> > > capabilities = 0x0
-> > >
-> > > seem the max number of playback streams is hardcoded in the driver
-> >
-> > Indeed it is hardcoded to 1 (previous ATI/AMD codecs had a single HDMI
-> > pin). This is almost certainly not true anymore.
-> >
-> > I wonder what the limit is now, maybe the amount of HDMI pins so that
-> > there can be 6 or 7 independent streams? Alex?
-> 
-> It's surprising that even the recent AMD chips don't set GCAPS
-> properly...
-> 
-> We can set it max 8 or 16 for AZX_DRIVER_ATIHDMI* cases.  You'd need a
-> bit more spaces for BDL and azx_dev structs, but it's small enough and
-> negligible.
-> 
-> An untested patch is attached below.
-> 
-
-I'll see if I can find out how it should work.
-
-Alex
-
-> 
-> thanks,
-> 
-> Takashi
-> 
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: hda - Increment default stream numbers for AMD
-> HDMI
->  controllers
-> 
-> It turned out that some AMD HDMI controllers still don't provide
-> proper values in GCAP register (all zero), and the driver assigns only
-> one stream in that case, although the connected codec chip supports
-> more than one stream.
-> 
-> In this patch, the default max number of streams for AMD HDMI
-> controllers is increased to 8, which should suffice for most use
-> cases.  This is a default value that takes effect only when no GCAP
-> register is given.  The overhead by this increase is only azx_dev
-> struct and BDL allocations, so it's negligible.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/pci/hda/hda_intel.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index af86c71f27bf..08d3a634bf42 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -297,9 +297,9 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2,
-> SDO3 };
->  #define ULI_NUM_CAPTURE		5
->  #define ULI_NUM_PLAYBACK	6
-> 
-> -/* ATI HDMI has 1 playback and 0 capture */
-> +/* ATI HDMI may have up to 8 playbacks and 0 capture */
->  #define ATIHDMI_NUM_CAPTURE	0
-> -#define ATIHDMI_NUM_PLAYBACK	1
-> +#define ATIHDMI_NUM_PLAYBACK	8
-> 
->  /* TERA has 4 playback and 3 capture */
->  #define TERA_NUM_CAPTURE	3
-> --
-> 1.8.5
-> 
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQW5zc2kgSGFubnVsYSBb
+bWFpbHRvOmFuc3NpLmhhbm51bGFAaWtpLmZpXQ0KPiBTZW50OiBTYXR1cmRheSwgRGVjZW1iZXIg
+MDcsIDIwMTMgNzo1OSBQTQ0KPiBUbzogUmF5bW9uZCBZYXU7IEpvaG4gRXR0ZWRndWk7IEFMU0Eg
+RGV2ZWxvcG1lbnQgTWFpbGluZyBMaXN0DQo+IENjOiBUYWthc2hpIEl3YWk7IERldWNoZXIsIEFs
+ZXhhbmRlcg0KPiBTdWJqZWN0OiBSZTogW3B1bHNlYXVkaW8tZGlzY3Vzc10gSXNzdWUgd2l0aCBt
+dWx0aXBsZSBoZG1pIGNvZGVjcyBpbg0KPiByYWRlb25oZCwgaGFja2VkIHRvIHdvcmsNCj4gDQo+
+IDA3LjEyLjIwMTMgMDk6MTgsIFJheW1vbmQgWWF1IGtpcmpvaXR0aToNCj4gPiAgICAgSSBqdXN0
+IGNoYW5nZWQgbXkgUmFkZW9uSEQgNDY3MCBmb3IgYSA3ODcwLCBhbmQgbm93IHdoZW4gSSB0eXBl
+DQo+ID4gICAgICJhcGxheSAtbCIgIEkgZ2V0IG1hbnkgSERNSSBjb2RlY3MgaW5zdGVhZCBvZiBq
+dXN0IG9uZSBsaWtlIGZvciB0aGUNCj4gPiAgICAgcHJldmlvdXMNCj4gPg0KPiA+DQo+ID4gRG8g
+eW91ciBjYXJkIHNwZWNpZmljYXRpb24gc3VwcG9ydCBEaXNjcmV0ZSBEaWdpdGFsIE11bHRpLVBv
+aW50IEF1ZGlvDQo+ID4gKERETUEpIC8/Lw0KPiA+DQo+ID4gRERNQSBlbmFibGVzIFJhZGVvbuKE
+okhEIDc3MDAtNzkwMCBTZXJpZXMgR1BVcyB3aXRoIHRoZSBhYmlsaXR5IHRvDQo+IG91dHB1dA0K
+PiA+IG11bHRpcGxlIGFuZCBpbmRlcGVuZGVudCBhdWRpbyBzdHJlYW1zIHNpbXVsdGFuZW91c2x5
+IHRocm91Z2ggZGlnaXRhbA0KPiA+IGludGVyZmFjZXMgdGhhdCBzdXBwb3J0IGF1ZGlvLCBzdWNo
+IGFzIERpc3BsYXlQb3J0IGFuZCBIRE1Jwq4uIEVhY2ggYXVkaW8NCj4gPiBzdHJlYW0gY2FuIGJl
+IG11bHRpLWNoYW5uZWwgKHVwIHRvIDggY2hhbm5lbHMpDQo+IA0KPiBBRkFJSyB5ZXMsIHRoZSBt
+dWx0aS1oZG1pLWRldmljZSBBTUQgY2FyZHMgYXJlICJERE1BIi4NCj4gDQo+IFsuLi5dDQo+ID4g
+bW9uaXRvcl9wcmVzZW50ICAgICAgICAxDQo+ID4gZWxkX3ZhbGlkICAgICAgICAxDQo+ID4gbW9u
+aXRvcl9uYW1lDQo+ID4gY29ubmVjdGlvbl90eXBlICAgICAgICBIRE1JDQo+ID4gZWxkX3ZlcnNp
+b24gICAgICAgIFsweDJdIENFQS04NjFEIG9yIGJlbG93DQo+ID4gZWRpZF92ZXJzaW9uICAgICAg
+ICBbMHgwXSBubyBDRUEgRURJRCBUaW1pbmcgRXh0ZW5zaW9uIGJsb2NrIHByZXNlbnQNCj4gPiBt
+YW51ZmFjdHVyZV9pZCAgICAgICAgMHgwDQo+ID4gcHJvZHVjdF9pZCAgICAgICAgMHgwDQo+ID4g
+cG9ydF9pZCAgICAgICAgICAgIDB4MA0KPiA+IHN1cHBvcnRfaGRjcCAgICAgICAgMA0KPiA+IHN1
+cHBvcnRfYWkgICAgICAgIDANCj4gPiBhdWRpb19zeW5jX2RlbGF5ICAgIDANCj4gPiBzcGVha2Vy
+cyAgICAgICAgWzB4NWZdIEZML0ZSIExGRSBGQyBSTC9SUiBSQyBSTEMvUlJDDQo+ID4gc2FkX2Nv
+dW50ICAgICAgICA2DQo+ID4gc2FkMF9jb2RpbmdfdHlwZSAgICBbMHgxXSBMUENNDQo+ID4gc2Fk
+MF9jaGFubmVscyAgICAgICAgOA0KPiA+IHNhZDBfcmF0ZXMgICAgICAgIFsweDFlZTBdIDMyMDAw
+IDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3NjQwMCAxOTIwMDANCj4gPiBzYWQwX2JpdHMgICAg
+ICAgIFsweGUwMDAwXSAxNiAyMCAyNA0KPiA+IHNhZDFfY29kaW5nX3R5cGUgICAgWzB4Ml0gQUMt
+Mw0KPiA+IHNhZDFfY2hhbm5lbHMgICAgICAgIDYNCj4gPiBzYWQxX3JhdGVzICAgICAgICBbMHhl
+MF0gMzIwMDAgNDQxMDAgNDgwMDANCj4gPiBzYWQxX21heF9iaXRyYXRlICAgIDY0MDAwMA0KPiA+
+IHNhZDJfY29kaW5nX3R5cGUgICAgWzB4N10gRFRTDQo+ID4gc2FkMl9jaGFubmVscyAgICAgICAg
+Ng0KPiA+IHNhZDJfcmF0ZXMgICAgICAgIFsweDZjMF0gNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAN
+Cj4gPiBzYWQyX21heF9iaXRyYXRlICAgIDE1MzYwMDANCj4gPiBzYWQzX2NvZGluZ190eXBlICAg
+IFsweGFdIEUtQUMtMy9ERCsgKERvbGJ5IERpZ2l0YWwgUGx1cykNCj4gPiBzYWQzX2NoYW5uZWxz
+ICAgICAgICA4DQo+ID4gc2FkM19yYXRlcyAgICAgICAgWzB4YzBdIDQ0MTAwIDQ4MDAwDQo+ID4g
+c2FkNF9jb2RpbmdfdHlwZSAgICBbMHhiXSBEVFMtSEQNCj4gPiBzYWQ0X2NoYW5uZWxzICAgICAg
+ICA4DQo+ID4gc2FkNF9yYXRlcyAgICAgICAgWzB4MWVjMF0gNDQxMDAgNDgwMDAgODgyMDAgOTYw
+MDAgMTc2NDAwIDE5MjAwMA0KPiA+IHNhZDVfY29kaW5nX3R5cGUgICAgWzB4Y10gTUxQIChEb2xi
+eSBUcnVlSEQpDQo+ID4gc2FkNV9jaGFubmVscyAgICAgICAgOA0KPiA+IHNhZDVfcmF0ZXMgICAg
+ICAgIFsweDFlYzBdIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3NjQwMCAxOTIwMDANCj4gPiBt
+b25pdG9yX3ByZXNlbnQgICAgICAgIDENCj4gPiBlbGRfdmFsaWQgICAgICAgIDANCj4gPiBtb25p
+dG9yX3ByZXNlbnQgICAgICAgIDENCj4gPiBlbGRfdmFsaWQgICAgICAgIDANCj4gPiBtb25pdG9y
+X3ByZXNlbnQgICAgICAgIDENCj4gPiBlbGRfdmFsaWQgICAgICAgIDANCj4gPiBtb25pdG9yX3By
+ZXNlbnQgICAgICAgIDENCj4gPiBlbGRfdmFsaWQgICAgICAgIDANCj4gPiBtb25pdG9yX3ByZXNl
+bnQgICAgICAgIDENCj4gPiBlbGRfdmFsaWQgICAgICAgIDANCj4gPg0KPiA+IGUuZy4gSERNSSBz
+dGF0dXMgbWVzc2FnZSBpbiBmdW5jdGlvbiBoZG1pX3ByZXNlbnRfc2Vuc2UgaW4NCj4gcGF0Y2hf
+aGRtaS5jDQo+ID4NCj4gPiBuZWVkIHRvIGZpbmQgb3V0IHdoeSBlbGQtPm1vbml0b3JfcHJlc2Vu
+dCB3YXMgc2V0ICBmb3IgYWxsIHNpeCBjb21wbGV4ZXMNCj4gPg0KPiA+IHRoZSB2YWx1ZSByZXR1
+cm4gYnkgZnVuY3Rpb24gYXRpaGRtaV9waW5fZ2V0X2VsZCBzaW5jZSBpdCBjaGFuZ2UNCj4gPiBl
+bGQtPmVsZF92YWxpZCB0byBmYWxzZSB3aGVuIGl0IGlzIG5lZ2F0aXZlDQo+IA0KPiBXaGVuIENP
+TkZJR19TTkRfREVCVUdfVkVSQk9TRSBpcyBlbmFibGVkLCBoZG1pX3ByZXNlbnRfc2Vuc2UoKQ0K
+PiBwcmludHMNCj4gdGhlIGFjdHVhbCBodyBQcmVzZW5jZV9EZXRlY3QvRUxEX1ZhbGlkIGJlZm9y
+ZSBlbGQtPmVsZF92YWxpZCBpcw0KPiBvdmVycmlkZGVuIHRvIDAgKGFuZCBoZG1pX2ludHJpbnNp
+Y19ldmVudCgpIHByaW50cyB0aGUgaG90IHBsdWcgZXZlbnQNCj4gdmFsdWVzKS4NCj4gDQo+IEFs
+ZXgsIGRvIHlvdSBoYXZlIGluZm9ybWF0aW9uIHJlZ2FyZGluZyB3aHkgIlByZXNlbmNlIGRldGVj
+dCIgKGFrYQ0KPiBtb25pdG9yX3ByZXNlbnQgYWJvdmUpIHNlZW1zIHRvIGJlIHNldCBmb3IgYWxs
+IEhETUkgcGlucyBpbiB0aGUgcmVzcG9uc2UNCj4gb2YgUGluIFNlbnNlIDB4RjA5IHZlcmIgKG9y
+IGlmIGl0IGlzIGV2ZW4gZXhwZWN0ZWQpLCBhbmQvb3IgaWYgd2Ugc2hvdWxkDQo+IHVzZSBhbHRl
+cm5hdGUgbWVhbnMgb2YgZ2V0dGluZyBqYWNrIHN0YXR1cz8NCg0KVGhlIEdQVSBkcml2ZXIgbmVl
+ZHMgdG8gc2V0IHRoZSBzdGF0dXMgcHJvcGVybHkgd2hlbiB0aGUgbW9uaXRvciBpcyBjb25uZWN0
+ZWQvZGlzY29ubmVjdGVkLiAgQXQgdGhlIG1vbWVudCB0aGUgR1BVIGRyaXZlciBjYWxscyB0aGUg
+YXVkaW9fZW5hYmxlKHRydWUpIG9uY2UgYXQgZHJpdmVyIGxvYWQgdGltZSwgYnV0IGl0IHNob3Vs
+ZCBjYWxsIGl0IGF0IHJ1bnRpbWUgd2hlbiBhIG1vbml0b3IgaXMgY29ubmVjdGVkICh0cnVlKSBv
+ciBkaXNjb25uZWN0ZWQgKGZhbHNlKS4gIElmIEkgaGF2ZSB0aW1lIHRoaXMgd2VlayBJJ2xsIHNl
+ZSBpZiBJIGNhbiB3aGlwIHVwIGEgcGF0Y2ggdG8gdGVzdC4NCg0KQWxleA0KDQo+IA0KPiBDT05G
+SUdfU05EX0RFQlVHX1ZFUkJPU0UgbG9nIG1pZ2h0IGFsc28gYmUgaW50ZXJlc3RpbmcsIEkgd29u
+ZGVyIGlmDQo+IGVsZF92YWxpZCBpcyBhbHNvIDEgZm9yIGV2ZXJ5IHBpbiBvciBub3QgKGJlZm9y
+ZSBBTFNBIGZvcmNlcyAwKS4gQWxzbywgSQ0KPiB3b25kZXIgaWYgYWxsIG1vbml0b3JfcHJlc2Vu
+dCBmaWVsZHMgYXJlIDEgd2l0aCBmZ2xyeCBkcml2ZXIgYXMgd2VsbCwgb3INCj4gd2hlbiBhbGwg
+ZGlzcGxheXMgYXJlIHVucGx1Z2dlZC4uLg0KPiANCj4gWy4uLl0NCj4gDQo+IC0tDQo+IEFuc3Np
+IEhhbm51bGENCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
