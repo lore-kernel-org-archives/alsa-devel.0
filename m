@@ -1,53 +1,56 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: fix uninitialized variables in set_fmt
-Date: Mon, 9 Dec 2013 17:15:02 +0000
-Message-ID: <20131209171502.GW29268@sirena.org.uk>
-References: <1386362090-29250-1-git-send-email-swarren@wwwdotorg.org>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: samsung: Provide helper for DMA init
+Date: Mon, 9 Dec 2013 22:45:15 +0530
+Message-ID: <CAAgF-BcXQbkChfjuxiQVY1Y0Tm0OXEHmKv6nnJRGkAPF1y0n6w@mail.gmail.com>
+References: <1386253559-18262-1-git-send-email-broonie@kernel.org>
+	<CAAgF-BdD_DONQYPOenMwBmc6N+EOJQ3TwJz1hpG2qZVfzhR63Q@mail.gmail.com>
+	<20131206112708.GD29268@sirena.org.uk>
+	<CAAgF-BcVqUt7wnYiDxWNsyo79JoZqiSCc=z7obRptXmdx2Ht_g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="skgCfLFhCSVZJUH9"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1386362090-29250-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, stable-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <CAAgF-BcVqUt7wnYiDxWNsyo79JoZqiSCc=z7obRptXmdx2Ht_g@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Padmavathi Venna <padma.v@samsung.com>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, linaro-kernel@lists.linaro.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---skgCfLFhCSVZJUH9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Dec 9, 2013 at 5:30 PM, Padma Venkat <padma.kvr@gmail.com> wrote:
+> Hi Mark,
+>
+> On Fri, Dec 6, 2013 at 4:57 PM, Mark Brown <broonie@kernel.org> wrote:
+>> On Fri, Dec 06, 2013 at 10:44:33AM +0530, Padma Venkat wrote:
+>>
+>>> This is done in your earlier patch " ASoC: samsung: Ensure DMA data is
+>>> initialised for secondary DAI ". Was it done on purpose or by mistake
+>>> in this patch?
+>>
+>> It's intentional - notice that the function has changed, this is why I
+>> kept asking you about mainline.  Mainline doesn't have the wrapper
+>> function that abstracts the difference between s3c-dma and dmaengine,
+>> this is why I'm saying these two will need to be rebased on top of the
+>> mainline fix.
+>
+> Ok. I didn't notice the function name. Then this commit is not
+> required in the mainline.
+> This is required only after your changes because in dmaengine we are
+> requesting the dma channel statically but in mainline(with samsung
+> proprietary ops) we are requesting the dma channel at run time during
+> playback or capture.
 
-On Fri, Dec 06, 2013 at 01:34:50PM -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->=20
-> In tegra*_i2s_set_fmt(), in the (fmt =3D=3D SND_SOC_DAIFMT_CBM_CFM) case,
-> "val" is never assigned to, but left uninitialized. The other case does
+sorry for the mix-up. I think we need to set the dma data for the
+secondary dai even in mainline.
 
-Applied, thanks.
-
---skgCfLFhCSVZJUH9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSpfqTAAoJELSic+t+oim9nHwQAJbTqqoHlRhcGVNYHTeCtfRl
-zapATH5SbZ3m2AGbFPO3Y23iFH9Zr+Rm59KArLKhG/pKaYNCGQvmhWizDvqRrrbc
-a2OWlReU9mHwShPQvLYjBKZbGphBUJPpAC68SLRk4NgjAfFdCe5SThnfrWPMCxzK
-7X2k6xftKbL9lU5ltLGvlzxn07v0GAHtkHDhjVgpiuYDqIrXYXp8lJ8eOSkYXrQA
-Id9ifWwwoDaFL69NXpIswblLRthW7ArS1+yGY0lxAIw9rTkgYnSi/j2Db5PFKUmr
-lklqDwj95cHGsZaa2nuH4BdYbBPJl9EZNCrFJKz+JmFHkUgmG7wGRmEmx2QKoN2Z
-wsRoXZzDiO2D2wORlzvc4t8qPzqV+YfHlS4hiASfoVo6ypTW2EoopZl7ibhvzP4E
-yXp22jXs7ZsxA6ikFsTTAJPWcCgeKMRboX513+48gMsPQU0+xOKFk51OcyN1BjTa
-G23yUs86NJdJ/zkQYvSoqykdF507H/0AAxpkpFkpSGjV/mC+hrD7xXNjqXDlZL2D
-7B7QTAsfflazPqJx2x9WuEl8NdRf5zH1HCpMzA2l/1GNPuxPawPwYY+5wmjPA45W
-H2//F+jcIEYVLJxS7OoB0q9uctCYdyyys6q5KIFhuCJpjHsxXuMJ7/fFRoh4MmP1
-Ih7TFlXHgDphyEZhyzK/
-=V5b8
------END PGP SIGNATURE-----
-
---skgCfLFhCSVZJUH9--
+>
+>>
+>>> I think you also told to include a patch for reinitialization of the
+>>> dma_data in i2s_hw_params. If you are in the process of debugging some
+>>> bug as you mentioned earlier you can ignore this comment. Otherwise it
+>>> is just a reminder.
+>>
+>> Hrm, forgot to commit that bit.
+>
+> Thanks
+> Padma
