@@ -1,71 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: fsl: imx-wm8962: Grant hw_params/free()
- permission to control FLL
-Date: Mon, 9 Dec 2013 17:56:40 +0000
-Message-ID: <20131209175640.GL29268@sirena.org.uk>
-References: <cover.1386344000.git.b42378@freescale.com>
- <105d07ac1a77bf99872d75608c97b3342079bfb7.1386344000.git.b42378@freescale.com>
+Subject: Re: [PATCH 2/2] ASoC: samsung: Use ASoC dmaengine code
+ where possible
+Date: Mon, 9 Dec 2013 17:59:03 +0000
+Message-ID: <20131209175903.GM29268@sirena.org.uk>
+References: <20131126102311.GW14725@sirena.org.uk>
+ <CAAgF-BdWLXeLyVZv-durSxxVEm4hHaC7sXQuz_pGLLY-x7XS+w@mail.gmail.com>
+ <20131126122031.GA14725@sirena.org.uk>
+ <CAAgF-Bc5mEmOBFZak2rSuCqs+xjcrNqnVNZc=zno8F3VOCuuwA@mail.gmail.com>
+ <20131127150534.GW14725@sirena.org.uk>
+ <CAAgF-BcoKDt=u51tqiWyxveb4iJSXKuV49X1VmOsWiRsSGKKpg@mail.gmail.com>
+ <20131128115351.GC27568@sirena.org.uk>
+ <CAAgF-Bc3fOdJ3C-Jrmw-7Vxt_9QSJHEX5kWvCEyu_WBrsMDdEA@mail.gmail.com>
+ <20131205114538.GO29268@sirena.org.uk>
+ <CAAgF-Bc5wpwsCtvg-i=nwoSgwDb137VkLC78R1tgsf7CqY-KQQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WK7GFmZHL0+Wby+V"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <105d07ac1a77bf99872d75608c97b3342079bfb7.1386344000.git.b42378@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.de, perex@perex.cz, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4483565007784772744=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72D3C26172C
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 18:59:06 +0100 (CET)
+In-Reply-To: <CAAgF-Bc5wpwsCtvg-i=nwoSgwDb137VkLC78R1tgsf7CqY-KQQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Padma Venkat <padma.kvr@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Padmavathi Venna <padma.v@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, linaro-kernel@lists.linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---WK7GFmZHL0+Wby+V
+--===============4483565007784772744==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="kW8VbOAxhix4S1vC"
+Content-Disposition: inline
+
+
+--kW8VbOAxhix4S1vC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Dec 06, 2013 at 11:38:29PM +0800, Nicolin Chen wrote:
+On Mon, Dec 09, 2013 at 11:22:39PM +0530, Padma Venkat wrote:
 
-> +static int imx_hifi_hw_free(struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> +
-> +	/* Don't diable FLL if still having multiple substreams running */
-> +	if (codec_dai->active != 1)
-> +		return 0;
-> +
-> +	return imx_wm8962_disable_fll(codec_dai);
+> I think this is what you are concern about why it is not working as-is.
 
-This will still disable the FLL if there's an analogue bypass path
-active.  I'd suggest changing enable() and disable() to reference count.
+OK, makes sense - thanks!
 
-> +		if (dapm->bias_level == SND_SOC_BIAS_STANDBY)
-> +			return imx_wm8962_enable_fll(codec_dai, 44100,
-> +						SNDRV_PCM_FORMAT_S16_LE);
-
-It might be slightly nicer to keep the static variable for the frequency
-- that way if we start up due to set_bias_level() we'll keep the last
-rate played which might be more likely to avoid locking playbacks out.
-Very minor thing though, I wouldn't worry about it.
-
---WK7GFmZHL0+Wby+V
+--kW8VbOAxhix4S1vC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSpgRUAAoJELSic+t+oim9ewAQAILMo5W/BBTQL3v3jecE/dAd
-1Efz3wXx7mybOui2V8vu1wbM61KBBruD0h/v8iddm/HIBAdV434NVNBqpub9rtGU
-15GjfCkxIFiAWqrn8+eXKhCMj0QuB9Fzne6uq81M7ueun5CC/uiXdS6dGT6hSaN0
-KkFnt8TbHSVs7DiQ+EDZsEGTj8VMOONfD5wpn85tsktFHxvcSsYNwwmpBGKOhwqO
-FI8wqKTKmm16PAFUFx5Kgq752ZUPdSzTilqTxVuShdLmWxbRGiPv5ha7cEn8rUOR
-UejZC3+nmInhBi+tNREUY9Gd8Q9LITIcxOk1FJYalDfw5YWIi4l6rgpcS/J790/q
-EzYKz1Dl37Tqm/rU5ipfl6o7fICKDLnOBAm/WxyOdgC5Ob4RYviWSiZfAIbmOMo8
-jB8/iIs65pEVcY22gxhkVIvw9gA8dvZYEEtenQ9fJf73I94dBPUMUm2jPyxBzv/n
-4sKFTxt/ep0hy4UQGfxW+a0HYRorBgk5tbb0dicVAbUqa/UeG8YToyVTaE/+CoO2
-64F8QsvWTQWHpIuWl5yjKaWTiBTYs/q0KorB76zYONt+/n+AdestZ61ZsiBvFO0B
-Xe1sa3LzeqeifEgF7EnVrGSRMNvwoxTRz9WttJpG9MusvQ28oBgJMPpE2fzWRHgg
-35qB+u5XcYP1CaYr6RbF
-=i13n
+iQIcBAEBAgAGBQJSpgTjAAoJELSic+t+oim9S3MQAJEqI/Ks2doilofA+Uu6ZlYf
+PiiX8zm4UVqsrbRBvGGrBZGxgBHm9EQafDB+wwVmqcnaHG4BCen2itWtD+fqXAWU
+F1Y3m6nU/aehWrxaV3xL8grF5zyZSbbNFaVpdxRcUodanW1fnC9yes23svthArOM
+2J6ZyL6lIpG7iEO4NLyjTLVAK748CUgI7VTH6ypkgXN1uR0nMiqP42izw9uTW/Vm
+d2jjcW8Wbob3ut5ucCS9EVQjhX+LuIgOzkEmJ2ORkTVQCf2c6SHxq9+pts6lNBhz
+9+UDcaCfzJTvvNnpqP17psiF6VShdrjm76zqmtRs3y72JkV/cKq5P3oEKqhP+TNW
+xlT96sxjD1g82/z8d86y7bRbvtwWvP7JVodY/6NXhrawzN2J6crkpqthHF7rX391
+Wqu5iHqSYleg5Fju5LU5T43L3Z7HSRT6sX6RZqPBzouBuEdPcuqclJPAlqEaaFpJ
+I4Nw2pky0kbVxoFCprkuuy3QwRMkDLqAZPN7vAvYhW5G65sdGETUV/7IEUoRgBaj
+CMKFuIwVRbNXIZR1bMtvZbpWc7RxgAw1jIG/qfYcVSvX32wHRO7upOc9Zbh8n5v8
+NUwWWy/wZeKgFRFHqTGpr2TsmuYNTPZdSldzSx1UJ6WOlaRSBarRBSVzBuQmwxjn
+BIAtvUAS4aQAoW+gUSRX
+=biLZ
 -----END PGP SIGNATURE-----
 
---WK7GFmZHL0+Wby+V--
+--kW8VbOAxhix4S1vC--
+
+--===============4483565007784772744==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4483565007784772744==--
