@@ -1,18 +1,33 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Enable stereo mix as default for
-	AD and VIA codecs
-Date: Mon,  9 Dec 2013 16:06:16 +0100
-Message-ID: <1386601576-15315-1-git-send-email-tiwai@suse.de>
+From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Subject: Re: [pulseaudio-discuss] Issue with multiple hdmi
+ codecs in radeonhd, hacked to work
+Date: Mon, 9 Dec 2013 15:12:18 +0000
+Message-ID: <A3397C8B8B789E45844E7EC5DEAD89D030A9D4B3@satlexdag05.amd.com>
+References: <CAJ3TwYRYGR5Z2m1XSQ9QOp3ffe9sb2C_znsVUeBpARySZ7KbMQ@mail.gmail.com>
+ <CAN8cciZ=UWO_RNwJqrBwbbbU1f_4Ydapk=2d67CtYhVRbO-c1w@mail.gmail.com>
+ <CAJ3TwYTeR4fZSRGaMpUudL2t_dR0dkYYV1tP_aEAGnjUqN3iDg@mail.gmail.com>
+ <CAN8cciZ8okPOUD1X3Vy3ofayQHfW6K3eojUwLkGc3o-xX0BFgg@mail.gmail.com>
+ <CAJ3TwYQr3u-04zRduACx9g283tpyj2bmjDvgA+ok=15OGg5g9w@mail.gmail.com>
+ <CAN8cciYEikGtPaET-qZECcyGTAqRQab6jEsGP-Zt=4U2ngLqbA@mail.gmail.com>
+ <CAJ3TwYRheSya2Y7y-e82=-HPv5j26n7SR-L1GeC=CPfrOKHpbA@mail.gmail.com>
+ <CAN8ccibrFmQa4rPcP6gqt7h1MpMQ310b8y2zcbN-h_rtN_6vvw@mail.gmail.com>
+ <CAJ3TwYQ_1BTmPafS-_BJWWNp1VSXA5K_e0vVHMipGrkdOjGuwA@mail.gmail.com>
+ <CAN8cciaUWAxfPp0rNhBV=DCp2hSOJ-EPHeoQ-k25M91xYjmFiQ@mail.gmail.com>
+ <CAJ3TwYTJnGb7C_TZrGOVTsPPb1kB6Kzqge4suh2B_QAdNUMWgw@mail.gmail.com>
+ <CAN8cciZTuP8Y-nvv8ecJZBoJZBgsucb2p0sd-2dmyMWGxDgifQ@mail.gmail.com>
+ <CAJ3TwYQukvyyXvuOtquv3UmnToK3CwM1zNxrq6kr4QE2Sshx2A@mail.gmail.com>
+ <CAN8cciYeo9UrCPdjRfezFRyv6z_BXSwGvkRg6jKu2B9BMHJayA@mail.gmail.com>
+ <52A55CAD.3080007@iki.fi> <s5h61qyl6jn.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id F3320261AE7
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 16:06:16 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C6678A7D86
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 16:06:16 +0100 (CET)
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe004.messaging.microsoft.com [216.32.181.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA39F261AE7
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 16:12:24 +0100 (CET)
+In-Reply-To: <s5h61qyl6jn.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,91 +37,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Anssi Hannula <anssi.hannula@iki.fi>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, John Ettedgui <john.ettedgui@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "pulseaudio-discuss@lists.freedesktop.org" <pulseaudio-discuss@lists.freedesktop.org>, "erutrot@gmail.com" <erutrot@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-AD and VIA codecs had stereo mixer input enabled as default before
-moving to the generic parser, and people think the lack of such a
-regression.  In this patch, the stereo mixer input is added back to
-the input selection if no auto-mic is available, and if it's not
-disabled explicitly via hint.  This should satisfy most of demands,
-i.e. stereo mix on desktop machines like what it worked before, and it
-still keeps the new auto-mic feature on laptops.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_generic.c  | 19 ++++++++++++++++++-
- sound/pci/hda/patch_analog.c |  1 +
- sound/pci/hda/patch_via.c    |  1 +
- 3 files changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 058318de1af4..44be167d1cad 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -3033,6 +3033,8 @@ static int parse_capture_source(struct hda_codec *codec, hda_nid_t pin,
- 			spec->imux_pins[imux->num_items] = pin;
- 			snd_hda_add_imux_item(imux, label, cfg_idx, NULL);
- 			imux_added = true;
-+			if (spec->dyn_adc_switch)
-+				spec->dyn_adc_idx[imux_idx] = c;
- 		}
- 	}
- 
-@@ -3130,7 +3132,9 @@ static int create_input_ctls(struct hda_codec *codec)
- 		}
- 	}
- 
--	if (mixer && spec->add_stereo_mix_input) {
-+	/* add stereo mix when explicitly enabled via hint */
-+	if (mixer && spec->add_stereo_mix_input &&
-+	    snd_hda_get_bool_hint(codec, "add_stereo_mix_input") > 0) {
- 		err = parse_capture_source(codec, mixer, CFG_IDX_MIX, num_adcs,
- 					   "Stereo Mix", 0);
- 		if (err < 0)
-@@ -4403,6 +4407,19 @@ int snd_hda_gen_parse_auto_config(struct hda_codec *codec,
- 	if (err < 0)
- 		return err;
- 
-+	/* add stereo mix if available and not enabled yet */
-+	if (!spec->auto_mic && spec->mixer_nid &&
-+	    spec->add_stereo_mix_input &&
-+	    spec->input_mux.num_items > 1 &&
-+	    snd_hda_get_bool_hint(codec, "add_stereo_mix_input") < 0) {
-+		err = parse_capture_source(codec, spec->mixer_nid,
-+					   CFG_IDX_MIX, spec->num_all_adcs,
-+					   "Stereo Mix", 0);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+
- 	err = create_capture_mixers(codec);
- 	if (err < 0)
- 		return err;
-diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
-index 34d86ec5d3dd..05280033c302 100644
---- a/sound/pci/hda/patch_analog.c
-+++ b/sound/pci/hda/patch_analog.c
-@@ -194,6 +194,7 @@ static int ad198x_parse_auto_config(struct hda_codec *codec)
- 	codec->no_sticky_stream = 1;
- 
- 	spec->gen.indep_hp = 1;
-+	spec->gen.add_stereo_mix_input = 1;
- 
- 	err = snd_hda_parse_pin_defcfg(codec, cfg, NULL, 0);
- 	if (err < 0)
-diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
-index 0bc20ef5687a..f84195f3ea31 100644
---- a/sound/pci/hda/patch_via.c
-+++ b/sound/pci/hda/patch_via.c
-@@ -138,6 +138,7 @@ static struct via_spec *via_new_spec(struct hda_codec *codec)
- 	spec->gen.indep_hp = 1;
- 	spec->gen.keep_eapd_on = 1;
- 	spec->gen.pcm_playback_hook = via_playback_pcm_hook;
-+	spec->gen.add_stereo_mix_input = 1;
- 	return spec;
- }
- 
--- 
-1.8.5
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, December 09, 2013 4:26 AM
+> To: Anssi Hannula
+> Cc: Raymond Yau; John Ettedgui; ALSA Development Mailing List;
+> erutrot@gmail.com; pulseaudio-discuss@lists.freedesktop.org; Deucher,
+> Alexander
+> Subject: Re: [pulseaudio-discuss] Issue with multiple hdmi codecs in
+> radeonhd, hacked to work
+> 
+> At Mon, 09 Dec 2013 08:01:17 +0200,
+> Anssi Hannula wrote:
+> >
+> > 09.12.2013 06:50, Raymond Yau kirjoitti:
+> > > 2013/12/9 John Ettedgui <john.ettedgui@gmail.com
+> > > <mailto:john.ettedgui@gmail.com>>
+> > >
+> > >
+> > >     I am using the gitcompile script to configure, compile...
+> > >     There is no configure by default, I was able to autogen it, but then
+> > >     I had issues while building so I reverted back to gitcompile
+> > >
+> > > [    4.841881] ALSA hda_intel.c:3170 0000:01:00.1: Handle VGA-switcheroo
+> > > audio client
+> > > [    4.841885] ALSA hda_intel.c:3364 0000:01:00.1: Using LPIB position fix
+> > > [    4.841886] ALSA hda_intel.c:3510 0000:01:00.1: Force to non-snoop
+> mode
+> > > [    4.841920] snd_hda_intel 0000:01:00.1: irq 47 for MSI/MSI-X
+> > > [    4.841940] ALSA hda_intel.c:3635 0000:01:00.1: chipset global
+> > > capabilities = 0x0
+> > >
+> > > seem the max number of playback streams is hardcoded in the driver
+> >
+> > Indeed it is hardcoded to 1 (previous ATI/AMD codecs had a single HDMI
+> > pin). This is almost certainly not true anymore.
+> >
+> > I wonder what the limit is now, maybe the amount of HDMI pins so that
+> > there can be 6 or 7 independent streams? Alex?
+> 
+> It's surprising that even the recent AMD chips don't set GCAPS
+> properly...
+> 
+> We can set it max 8 or 16 for AZX_DRIVER_ATIHDMI* cases.  You'd need a
+> bit more spaces for BDL and azx_dev structs, but it's small enough and
+> negligible.
+> 
+> An untested patch is attached below.
+> 
+
+I'll see if I can find out how it should work.
+
+Alex
+
+> 
+> thanks,
+> 
+> Takashi
+> 
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: hda - Increment default stream numbers for AMD
+> HDMI
+>  controllers
+> 
+> It turned out that some AMD HDMI controllers still don't provide
+> proper values in GCAP register (all zero), and the driver assigns only
+> one stream in that case, although the connected codec chip supports
+> more than one stream.
+> 
+> In this patch, the default max number of streams for AMD HDMI
+> controllers is increased to 8, which should suffice for most use
+> cases.  This is a default value that takes effect only when no GCAP
+> register is given.  The overhead by this increase is only azx_dev
+> struct and BDL allocations, so it's negligible.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/hda_intel.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index af86c71f27bf..08d3a634bf42 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -297,9 +297,9 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2,
+> SDO3 };
+>  #define ULI_NUM_CAPTURE		5
+>  #define ULI_NUM_PLAYBACK	6
+> 
+> -/* ATI HDMI has 1 playback and 0 capture */
+> +/* ATI HDMI may have up to 8 playbacks and 0 capture */
+>  #define ATIHDMI_NUM_CAPTURE	0
+> -#define ATIHDMI_NUM_PLAYBACK	1
+> +#define ATIHDMI_NUM_PLAYBACK	8
+> 
+>  /* TERA has 4 playback and 3 capture */
+>  #define TERA_NUM_CAPTURE	3
+> --
+> 1.8.5
+> 
