@@ -1,30 +1,18 @@
-From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Subject: Re: [pulseaudio-discuss] Issue with multiple hdmi
- codecs in radeonhd, hacked to work
-Date: Mon, 9 Dec 2013 15:24:50 +0000
-Message-ID: <A3397C8B8B789E45844E7EC5DEAD89D030A9D4CC@satlexdag05.amd.com>
-References: <CAJ3TwYRYGR5Z2m1XSQ9QOp3ffe9sb2C_znsVUeBpARySZ7KbMQ@mail.gmail.com>
- <CAN8ccia9KA4fyU06LE3+DMPcj9w62Z8P-BvjR3-aA2Q9TWcC-A@mail.gmail.com>
- <CAJ3TwYQOiV2DFbVHagJ+O+tSbcvmNUTrZng1C8Tgooz8SrdPgg@mail.gmail.com>
- <CAJ3TwYQSYtv6qdCiTi9MHBoEnxqitXbSVgxq-8R+z7E0LQyhpg@mail.gmail.com>
- <CAN8cciZ=UWO_RNwJqrBwbbbU1f_4Ydapk=2d67CtYhVRbO-c1w@mail.gmail.com>
- <CAJ3TwYTeR4fZSRGaMpUudL2t_dR0dkYYV1tP_aEAGnjUqN3iDg@mail.gmail.com>
- <CAN8cciZ8okPOUD1X3Vy3ofayQHfW6K3eojUwLkGc3o-xX0BFgg@mail.gmail.com>
- <CAJ3TwYQr3u-04zRduACx9g283tpyj2bmjDvgA+ok=15OGg5g9w@mail.gmail.com>
- <CAN8cciYEikGtPaET-qZECcyGTAqRQab6jEsGP-Zt=4U2ngLqbA@mail.gmail.com>
- <CAJ3TwYRheSya2Y7y-e82=-HPv5j26n7SR-L1GeC=CPfrOKHpbA@mail.gmail.com>
- <CAN8ccibrFmQa4rPcP6gqt7h1MpMQ310b8y2zcbN-h_rtN_6vvw@mail.gmail
- <52A3C455.5090207@iki.fi>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [Patch v2 2/2] ASoC: atmel: sam9x5_wm8731: remove
+ platform_set_drvdata
+Date: Mon, 9 Dec 2013 16:58:53 +0000
+Message-ID: <20131209165853.GS29268@sirena.org.uk>
+References: <1385546710-11308-1-git-send-email-voice.shen@atmel.com>
+ <1385546710-11308-2-git-send-email-voice.shen@atmel.com>
+ <52A59955.8000100@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5812308754915149881=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db9outboundpool.messaging.microsoft.com
- (mail-db9lp0250.outbound.messaging.microsoft.com [213.199.154.250])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CD8A261A1A
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 16:24:57 +0100 (CET)
-In-Reply-To: <52A3C455.5090207@iki.fi>
-Content-Language: en-US
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73A4526172C
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2013 17:58:58 +0100 (CET)
+In-Reply-To: <52A59955.8000100@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,83 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>, Raymond Yau <superquad.vortex2@gmail.com>, John Ettedgui <john.ettedgui@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: alsa-devel@alsa-project.org, richard.genoud@gmail.com, linux-sound@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQW5zc2kgSGFubnVsYSBb
-bWFpbHRvOmFuc3NpLmhhbm51bGFAaWtpLmZpXQ0KPiBTZW50OiBTYXR1cmRheSwgRGVjZW1iZXIg
-MDcsIDIwMTMgNzo1OSBQTQ0KPiBUbzogUmF5bW9uZCBZYXU7IEpvaG4gRXR0ZWRndWk7IEFMU0Eg
-RGV2ZWxvcG1lbnQgTWFpbGluZyBMaXN0DQo+IENjOiBUYWthc2hpIEl3YWk7IERldWNoZXIsIEFs
-ZXhhbmRlcg0KPiBTdWJqZWN0OiBSZTogW3B1bHNlYXVkaW8tZGlzY3Vzc10gSXNzdWUgd2l0aCBt
-dWx0aXBsZSBoZG1pIGNvZGVjcyBpbg0KPiByYWRlb25oZCwgaGFja2VkIHRvIHdvcmsNCj4gDQo+
-IDA3LjEyLjIwMTMgMDk6MTgsIFJheW1vbmQgWWF1IGtpcmpvaXR0aToNCj4gPiAgICAgSSBqdXN0
-IGNoYW5nZWQgbXkgUmFkZW9uSEQgNDY3MCBmb3IgYSA3ODcwLCBhbmQgbm93IHdoZW4gSSB0eXBl
-DQo+ID4gICAgICJhcGxheSAtbCIgIEkgZ2V0IG1hbnkgSERNSSBjb2RlY3MgaW5zdGVhZCBvZiBq
-dXN0IG9uZSBsaWtlIGZvciB0aGUNCj4gPiAgICAgcHJldmlvdXMNCj4gPg0KPiA+DQo+ID4gRG8g
-eW91ciBjYXJkIHNwZWNpZmljYXRpb24gc3VwcG9ydCBEaXNjcmV0ZSBEaWdpdGFsIE11bHRpLVBv
-aW50IEF1ZGlvDQo+ID4gKERETUEpIC8/Lw0KPiA+DQo+ID4gRERNQSBlbmFibGVzIFJhZGVvbuKE
-okhEIDc3MDAtNzkwMCBTZXJpZXMgR1BVcyB3aXRoIHRoZSBhYmlsaXR5IHRvDQo+IG91dHB1dA0K
-PiA+IG11bHRpcGxlIGFuZCBpbmRlcGVuZGVudCBhdWRpbyBzdHJlYW1zIHNpbXVsdGFuZW91c2x5
-IHRocm91Z2ggZGlnaXRhbA0KPiA+IGludGVyZmFjZXMgdGhhdCBzdXBwb3J0IGF1ZGlvLCBzdWNo
-IGFzIERpc3BsYXlQb3J0IGFuZCBIRE1Jwq4uIEVhY2ggYXVkaW8NCj4gPiBzdHJlYW0gY2FuIGJl
-IG11bHRpLWNoYW5uZWwgKHVwIHRvIDggY2hhbm5lbHMpDQo+IA0KPiBBRkFJSyB5ZXMsIHRoZSBt
-dWx0aS1oZG1pLWRldmljZSBBTUQgY2FyZHMgYXJlICJERE1BIi4NCj4gDQo+IFsuLi5dDQo+ID4g
-bW9uaXRvcl9wcmVzZW50ICAgICAgICAxDQo+ID4gZWxkX3ZhbGlkICAgICAgICAxDQo+ID4gbW9u
-aXRvcl9uYW1lDQo+ID4gY29ubmVjdGlvbl90eXBlICAgICAgICBIRE1JDQo+ID4gZWxkX3ZlcnNp
-b24gICAgICAgIFsweDJdIENFQS04NjFEIG9yIGJlbG93DQo+ID4gZWRpZF92ZXJzaW9uICAgICAg
-ICBbMHgwXSBubyBDRUEgRURJRCBUaW1pbmcgRXh0ZW5zaW9uIGJsb2NrIHByZXNlbnQNCj4gPiBt
-YW51ZmFjdHVyZV9pZCAgICAgICAgMHgwDQo+ID4gcHJvZHVjdF9pZCAgICAgICAgMHgwDQo+ID4g
-cG9ydF9pZCAgICAgICAgICAgIDB4MA0KPiA+IHN1cHBvcnRfaGRjcCAgICAgICAgMA0KPiA+IHN1
-cHBvcnRfYWkgICAgICAgIDANCj4gPiBhdWRpb19zeW5jX2RlbGF5ICAgIDANCj4gPiBzcGVha2Vy
-cyAgICAgICAgWzB4NWZdIEZML0ZSIExGRSBGQyBSTC9SUiBSQyBSTEMvUlJDDQo+ID4gc2FkX2Nv
-dW50ICAgICAgICA2DQo+ID4gc2FkMF9jb2RpbmdfdHlwZSAgICBbMHgxXSBMUENNDQo+ID4gc2Fk
-MF9jaGFubmVscyAgICAgICAgOA0KPiA+IHNhZDBfcmF0ZXMgICAgICAgIFsweDFlZTBdIDMyMDAw
-IDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3NjQwMCAxOTIwMDANCj4gPiBzYWQwX2JpdHMgICAg
-ICAgIFsweGUwMDAwXSAxNiAyMCAyNA0KPiA+IHNhZDFfY29kaW5nX3R5cGUgICAgWzB4Ml0gQUMt
-Mw0KPiA+IHNhZDFfY2hhbm5lbHMgICAgICAgIDYNCj4gPiBzYWQxX3JhdGVzICAgICAgICBbMHhl
-MF0gMzIwMDAgNDQxMDAgNDgwMDANCj4gPiBzYWQxX21heF9iaXRyYXRlICAgIDY0MDAwMA0KPiA+
-IHNhZDJfY29kaW5nX3R5cGUgICAgWzB4N10gRFRTDQo+ID4gc2FkMl9jaGFubmVscyAgICAgICAg
-Ng0KPiA+IHNhZDJfcmF0ZXMgICAgICAgIFsweDZjMF0gNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAN
-Cj4gPiBzYWQyX21heF9iaXRyYXRlICAgIDE1MzYwMDANCj4gPiBzYWQzX2NvZGluZ190eXBlICAg
-IFsweGFdIEUtQUMtMy9ERCsgKERvbGJ5IERpZ2l0YWwgUGx1cykNCj4gPiBzYWQzX2NoYW5uZWxz
-ICAgICAgICA4DQo+ID4gc2FkM19yYXRlcyAgICAgICAgWzB4YzBdIDQ0MTAwIDQ4MDAwDQo+ID4g
-c2FkNF9jb2RpbmdfdHlwZSAgICBbMHhiXSBEVFMtSEQNCj4gPiBzYWQ0X2NoYW5uZWxzICAgICAg
-ICA4DQo+ID4gc2FkNF9yYXRlcyAgICAgICAgWzB4MWVjMF0gNDQxMDAgNDgwMDAgODgyMDAgOTYw
-MDAgMTc2NDAwIDE5MjAwMA0KPiA+IHNhZDVfY29kaW5nX3R5cGUgICAgWzB4Y10gTUxQIChEb2xi
-eSBUcnVlSEQpDQo+ID4gc2FkNV9jaGFubmVscyAgICAgICAgOA0KPiA+IHNhZDVfcmF0ZXMgICAg
-ICAgIFsweDFlYzBdIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3NjQwMCAxOTIwMDANCj4gPiBt
-b25pdG9yX3ByZXNlbnQgICAgICAgIDENCj4gPiBlbGRfdmFsaWQgICAgICAgIDANCj4gPiBtb25p
-dG9yX3ByZXNlbnQgICAgICAgIDENCj4gPiBlbGRfdmFsaWQgICAgICAgIDANCj4gPiBtb25pdG9y
-X3ByZXNlbnQgICAgICAgIDENCj4gPiBlbGRfdmFsaWQgICAgICAgIDANCj4gPiBtb25pdG9yX3By
-ZXNlbnQgICAgICAgIDENCj4gPiBlbGRfdmFsaWQgICAgICAgIDANCj4gPiBtb25pdG9yX3ByZXNl
-bnQgICAgICAgIDENCj4gPiBlbGRfdmFsaWQgICAgICAgIDANCj4gPg0KPiA+IGUuZy4gSERNSSBz
-dGF0dXMgbWVzc2FnZSBpbiBmdW5jdGlvbiBoZG1pX3ByZXNlbnRfc2Vuc2UgaW4NCj4gcGF0Y2hf
-aGRtaS5jDQo+ID4NCj4gPiBuZWVkIHRvIGZpbmQgb3V0IHdoeSBlbGQtPm1vbml0b3JfcHJlc2Vu
-dCB3YXMgc2V0ICBmb3IgYWxsIHNpeCBjb21wbGV4ZXMNCj4gPg0KPiA+IHRoZSB2YWx1ZSByZXR1
-cm4gYnkgZnVuY3Rpb24gYXRpaGRtaV9waW5fZ2V0X2VsZCBzaW5jZSBpdCBjaGFuZ2UNCj4gPiBl
-bGQtPmVsZF92YWxpZCB0byBmYWxzZSB3aGVuIGl0IGlzIG5lZ2F0aXZlDQo+IA0KPiBXaGVuIENP
-TkZJR19TTkRfREVCVUdfVkVSQk9TRSBpcyBlbmFibGVkLCBoZG1pX3ByZXNlbnRfc2Vuc2UoKQ0K
-PiBwcmludHMNCj4gdGhlIGFjdHVhbCBodyBQcmVzZW5jZV9EZXRlY3QvRUxEX1ZhbGlkIGJlZm9y
-ZSBlbGQtPmVsZF92YWxpZCBpcw0KPiBvdmVycmlkZGVuIHRvIDAgKGFuZCBoZG1pX2ludHJpbnNp
-Y19ldmVudCgpIHByaW50cyB0aGUgaG90IHBsdWcgZXZlbnQNCj4gdmFsdWVzKS4NCj4gDQo+IEFs
-ZXgsIGRvIHlvdSBoYXZlIGluZm9ybWF0aW9uIHJlZ2FyZGluZyB3aHkgIlByZXNlbmNlIGRldGVj
-dCIgKGFrYQ0KPiBtb25pdG9yX3ByZXNlbnQgYWJvdmUpIHNlZW1zIHRvIGJlIHNldCBmb3IgYWxs
-IEhETUkgcGlucyBpbiB0aGUgcmVzcG9uc2UNCj4gb2YgUGluIFNlbnNlIDB4RjA5IHZlcmIgKG9y
-IGlmIGl0IGlzIGV2ZW4gZXhwZWN0ZWQpLCBhbmQvb3IgaWYgd2Ugc2hvdWxkDQo+IHVzZSBhbHRl
-cm5hdGUgbWVhbnMgb2YgZ2V0dGluZyBqYWNrIHN0YXR1cz8NCg0KVGhlIEdQVSBkcml2ZXIgbmVl
-ZHMgdG8gc2V0IHRoZSBzdGF0dXMgcHJvcGVybHkgd2hlbiB0aGUgbW9uaXRvciBpcyBjb25uZWN0
-ZWQvZGlzY29ubmVjdGVkLiAgQXQgdGhlIG1vbWVudCB0aGUgR1BVIGRyaXZlciBjYWxscyB0aGUg
-YXVkaW9fZW5hYmxlKHRydWUpIG9uY2UgYXQgZHJpdmVyIGxvYWQgdGltZSwgYnV0IGl0IHNob3Vs
-ZCBjYWxsIGl0IGF0IHJ1bnRpbWUgd2hlbiBhIG1vbml0b3IgaXMgY29ubmVjdGVkICh0cnVlKSBv
-ciBkaXNjb25uZWN0ZWQgKGZhbHNlKS4gIElmIEkgaGF2ZSB0aW1lIHRoaXMgd2VlayBJJ2xsIHNl
-ZSBpZiBJIGNhbiB3aGlwIHVwIGEgcGF0Y2ggdG8gdGVzdC4NCg0KQWxleA0KDQo+IA0KPiBDT05G
-SUdfU05EX0RFQlVHX1ZFUkJPU0UgbG9nIG1pZ2h0IGFsc28gYmUgaW50ZXJlc3RpbmcsIEkgd29u
-ZGVyIGlmDQo+IGVsZF92YWxpZCBpcyBhbHNvIDEgZm9yIGV2ZXJ5IHBpbiBvciBub3QgKGJlZm9y
-ZSBBTFNBIGZvcmNlcyAwKS4gQWxzbywgSQ0KPiB3b25kZXIgaWYgYWxsIG1vbml0b3JfcHJlc2Vu
-dCBmaWVsZHMgYXJlIDEgd2l0aCBmZ2xyeCBkcml2ZXIgYXMgd2VsbCwgb3INCj4gd2hlbiBhbGwg
-ZGlzcGxheXMgYXJlIHVucGx1Z2dlZC4uLg0KPiANCj4gWy4uLl0NCj4gDQo+IC0tDQo+IEFuc3Np
-IEhhbm51bGENCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+
+--===============5812308754915149881==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yrPCcEe+QcWQl/Hn"
+Content-Disposition: inline
+
+
+--yrPCcEe+QcWQl/Hn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Dec 09, 2013 at 11:20:05AM +0100, Nicolas Ferre wrote:
+
+> It seems that this patch has not been applied to your "next" branch
+> (aka ping)...
+
+If you think something has been forgotten please resend.  If it's
+genuinely been lost it's going to need resending and the mail just leads
+to more mails, a resend can be directly applied.  I had thought I'd
+replied to this at the time but it seems I didn't, or at least I can't
+see my reply on the list...  sorry about that.
+
+The question was if we should change this or if we should change the
+core to not overwrite something that probably ought to be the driver's
+domain?  Looking at the code I think we're probably doing the right
+thing but it'd be good to consider.
+
+--yrPCcEe+QcWQl/Hn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSpfbKAAoJELSic+t+oim9fysP/RcMEu29YxgmTY5nSFiDvDbP
+WN7iEKDsJL4evG7Z+/CwQCoNzY6Lx0decA3xGSUMWJsK/JGHJ62Ei4a7Umy1g+8x
+VTN2hkWrVEK9emldFTrf0hUmAZE7fJ4EUl6tf9RquQpfHBaWuH99TI5ZkQHe0g2k
+JpFVimVNuRVe4bx+5gKmI74LIGQRZP0KnyuCXiJt4CxWW3jkw+CnOfjEw9BNXh/N
+Vp+EYo8PPPqWxJ6+4l4zeuyppKzMdO4a+X8IIcKvNK/rpsOTJP1jrM0FCh+xemzG
+P2EIcNZeUAFwnD/QfCeMKHictEBmOcyQiNbGJReIcnRWf6uweWce960cm4JZ4LAc
+uE5gDd5XGE8EyMLUUeprkQYzhqV682E/PWM6eVKozrjXlUvDVou1Iurt6QYqRJns
+OLF/4PAoBODl98wa69EbXJUuZc+w68JfksJDCuv8PC3Cyd/5hfVuadcvVP4DKDi/
+aUb5p8DhSqLK/4+c0rXowvWQbQBcCDk7ul3lxiNrA+pE8sVxT4ecURiOOrHJAdOc
+erNUIhSeVKGi2bkDpgVcx+nbzesbk/bfEQ4iyjohrqo7yUzbGJXARiXE6FJzhCpH
+r5LgGJN8UAJv9Idk2Zq1Oo7I6m/C1HOwqKWTpFHK1o3g/eO6Gzwxjwx8Wcs+tcNs
++AMvGP3kjJ+7c8Yy7GvD
+=odN4
+-----END PGP SIGNATURE-----
+
+--yrPCcEe+QcWQl/Hn--
+
+--===============5812308754915149881==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5812308754915149881==--
