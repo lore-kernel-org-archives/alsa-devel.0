@@ -1,57 +1,61 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: samsung: Provide helper for DMA
- init
-Date: Mon, 9 Dec 2013 17:17:20 +0000
-Message-ID: <20131209171720.GX29268@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: samsung: Use ASoC dmaengine code
+ where possible
+Date: Mon, 9 Dec 2013 17:30:21 +0000
+Message-ID: <20131209173021.GC29268@sirena.org.uk>
 References: <1386253559-18262-1-git-send-email-broonie@kernel.org>
- <CAAgF-BdD_DONQYPOenMwBmc6N+EOJQ3TwJz1hpG2qZVfzhR63Q@mail.gmail.com>
- <20131206112708.GD29268@sirena.org.uk>
- <CAAgF-BcVqUt7wnYiDxWNsyo79JoZqiSCc=z7obRptXmdx2Ht_g@mail.gmail.com>
+ <1386253559-18262-2-git-send-email-broonie@kernel.org>
+ <CAAgF-Bfk8byZwVBd_5PopM3ji-wdTMR5i-J7w1W4zq4gFk4i+Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JrKXExVCTktVujz6"
+	protocol="application/pgp-signature"; boundary="hVUY+LYn0LT07sdA"
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAAgF-BcVqUt7wnYiDxWNsyo79JoZqiSCc=z7obRptXmdx2Ht_g@mail.gmail.com>
+In-Reply-To: <CAAgF-Bfk8byZwVBd_5PopM3ji-wdTMR5i-J7w1W4zq4gFk4i+Q@mail.gmail.com>
 Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Padma Venkat <padma.kvr@gmail.com>
 Cc: Padmavathi Venna <padma.v@samsung.com>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, linaro-kernel@lists.linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---JrKXExVCTktVujz6
+--hVUY+LYn0LT07sdA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 09, 2013 at 05:30:47PM +0530, Padma Venkat wrote:
+On Fri, Dec 06, 2013 at 10:44:19AM +0530, Padma Venkat wrote:
 
-> This is required only after your changes because in dmaengine we are
-> requesting the dma channel statically but in mainline(with samsung
-> proprietary ops) we are requesting the dma channel at run time during
-> playback or capture.
+> I couldn't test this patch set due to some crash in recent kernel in
+> dmaengine_unmap_put. I think this unmap support is not yet implemented
+> for pl330 driver. It is mentioned in the commit "dmaengine: prepare
+> for generic 'unmap' data", [bzolnier: prepare pl330 driver for adding
+> missing unmap while at it].
 
-OK, so it does get set somewhere but not here?
+This is unfortunate...  I'd suggest trying mainline but I see it's
+broken in Linus' tree too and no fixes in -next. :(
 
---JrKXExVCTktVujz6
+I'm tempted to push up with your Tested-by a note saying you did your
+testing on an earlier version but weren't able to test due to other bugs.
+
+--hVUY+LYn0LT07sdA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSpfsdAAoJELSic+t+oim9kP0P/22I8H03YHdY7qcWX1/PH9VL
-Y4+CFeMDXV1vZcjjo8EqGOjoV1Fq0qllwO0KVgppBozpqCRTYael9jnyaEo/XNxQ
-/jxP4XJF2wP/Wr9pmqWutwTDLyB2nH5cuX7vIvbI2AEz2ONEBoYbZdXb1Uwu3F+v
-fMMdT2u/kmN/RqcV/fCwtbfbBMvFu3JPSxFKCWImTJIhqAxydbxZjzwwGYOgL9Cw
-s7dKgCbE7tzkNwC5Ej+lEozzGuGByIMjHwohfWTCjjghEyDCi1oRvK+RbodL/ZWq
-oVu4re10Rmgz2aQeTQSa4LXpo3nDPeIP4vBHMa9BIvQEYzLQKVSZohrPJ7eSo6gq
-0cacqRCH7zvYKKeKaYX0epgr3r+f9jdcV4E/XeidwKDheqVg3GTE0A7BRf5yPHRk
-LGN4nOkpQbwXego/azqPPoUw6ZnUXK3qq4vbf7LdCcWNrAO7u0fP3uAOpC+eop64
-D2+OQX6fN8wwgh3d3PZv8WNRH+c3VMHfUdPWrVSrrkDRVU3n3fMjnhjhK2mDrq9G
-2vqhjFOq3itmWtK476c6/S8ZAOceRlmcR4w6ScBtwd2tHgpj8aJIejl31cDclHqR
-irDJ3zhfUgrdBKmBhO02BEad+r0P8u5T7oRo59llQofefOjQDdNQd9vULepJg/iw
-f98YlcxSK5n8tnXhM/Ws
-=84cO
+iQIcBAEBAgAGBQJSpf4pAAoJELSic+t+oim9EpUP/RaB5GEPsoHcNVVRwrpVPoZq
+K1JGaMQu8oCx8Rbz8JPR5vEda52dm2l/6XCcx8Utizyk9pRqF7uQSF0QXZz+yq6c
+xbTVxRc6tZU8XPUDZXFM/P773yIzaDe4kXa3XIVPRHDyCSUDK2C08ujEnFvNQ5qM
+cmcM0QjwTpyHfOJJclc2OLHEATM6ckUxb3HcL9J76Qo2rVzkFAvR8h7OzjxhOhVw
+CvpNdsjS/ZRNqu0f456UCcgysR6jbdkvFaRrA0KOH48RX310KGJ8tIfxi5VN960p
+q9W39yycIXL+c1XELpq6RK3S4oSl6K6t6XOrasMZq2UuctrsvZIMCVcDXqzYUsWa
+aDnJQoqYf4nLGUQp39qhFm7aphsvV26SM1Ug5Xd0e75lf09Y9IBYCKwg0CI3BPLP
+N9XSFiyxoLwOEM8Hn9gbNnBhTyHDFcv5cRo1ZVXRHvYad1KGitXRAJHeX6Vd7Iwb
+X1oa+roTtlNAAY7MjQoTbF760GQiPC9DKGqMIy6i4FdAEHWfQZUNHkKN42GwYQr4
+Mi0emSvIedDjTcWreY5TY+924v2mm9v8lCEgqxuT4pLJN/KQCH/1fHrTSWqdLDqT
+FUWYEmxT5GmwbQcfqjvibL2huPYbdjbwozIAUtcdBdnRxBD4tDkHpoujQu62MNF+
+NTD3obwuWvaINJ613oea
+=BVY8
 -----END PGP SIGNATURE-----
 
---JrKXExVCTktVujz6--
+--hVUY+LYn0LT07sdA--
