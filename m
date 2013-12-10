@@ -1,65 +1,86 @@
-From: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-Subject: Re: [PATCH] ALSA: atmel_abdac: clk_round_rate() can return a zero
- upon error
-Date: Tue, 10 Dec 2013 08:38:55 +0100
-Message-ID: <20131210073855.GC4196@samfundet.no>
-References: <alpine.DEB.2.02.1312091845340.4127@tamien>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 4/5] ASoC: SPEAr: remove custom DMA alloc
+ compat function
+Date: Tue, 10 Dec 2013 08:45:39 +0100
+Message-ID: <52A6C6A3.2070700@metafoo.de>
+References: <1386620656-18391-1-git-send-email-swarren@wwwdotorg.org>
+ <1386620656-18391-5-git-send-email-swarren@wwwdotorg.org>
+ <52A6336D.2040306@metafoo.de> <52A6B4FE.3020300@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.02.1312091845340.4127@tamien>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Walmsley <pwalmsley@nvidia.com>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailhost.informatik.uni-hamburg.de
+ (mailhost.informatik.uni-hamburg.de [134.100.9.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86FFD2608E8
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 08:44:30 +0100 (CET)
+In-Reply-To: <52A6B4FE.3020300@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
-Around Mon 09 Dec 2013 18:49:13 -0800 or thereabout, Paul Walmsley wrote:
-> 
-> Treat both negative and zero return values from clk_round_rate()
-> as errors.  This is needed since subsequent patches will convert
-> clk_round_rate()'s return value to be an unsigned type, rather
-> than a signed type, since some clock sources can generate rates higher
-> than (2^31)-1 Hz.
-> 
-> Eventually, when calling clk_round_rate(), only a return value of
-> zero will be considered a error; all other values will be
-> considered valid rates.  The comparison against values less than
-> 0 is kept to preserve the correct behavior in the meantime.
-> 
-> Signed-off-by: Paul Walmsley <pwalmsley@nvidia.com>
-> Cc: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-> Cc: Takashi Iwai <tiwai@suse.de>
-> Cc: Jaroslav Kysela <perex@perex.cz>
+On 12/10/2013 07:30 AM, Rajeev kumar wrote:
+> On 12/10/2013 2:47 AM, Lars-Peter Clausen wrote:
+>> On 12/09/2013 09:24 PM, Stephen Warren wrote:
+>>> From: Stephen Warren<swarren@nvidia.com>
+>>>
+>>> spear_pcm_request_chan() is almost identical to
+>>> dmaengine_pcm_compat_request_channel(), with the exception that the
+>>> latter:
+>>>
+>>> a) Assumes that the DAI DMA data is a struct snd_dmaengine_dai_dma_data
+>>>     pointer rather than some custom type.
+>>>
+>>> b) dma_data->filter_data rather than dma_data should be passed to
+>>>     snd_dmaengine_pcm_request_channel() as the filter data.
+>>>
+>>> Make minor changes to the SPEAr DAI drivers so that those two conditions
+>>> are met. This allows removal of the custom .compat_request_channel().
+>>>
+>>> Signed-off-by: Stephen Warren<swarren@nvidia.com>
+>>> ---
+>>>   include/sound/spear_dma.h   |  1 -
+>>>   sound/soc/spear/spdif_in.c  | 10 +++++++---
+>>>   sound/soc/spear/spdif_out.c | 10 +++++++---
+>>>   sound/soc/spear/spear_pcm.c | 21 +++++++--------------
+>>>   sound/soc/spear/spear_pcm.h |  4 +++-
+>>>   5 files changed, 24 insertions(+), 22 deletions(-)
+>>>
+>>> diff --git a/include/sound/spear_dma.h b/include/sound/spear_dma.h
+>>> index 1b365bfdfb37..65aca51fe255 100644
+>>> --- a/include/sound/spear_dma.h
+>>> +++ b/include/sound/spear_dma.h
+>>> @@ -29,7 +29,6 @@ struct spear_dma_data {
+>>>       dma_addr_t addr;
+>>>       u32 max_burst;
+>>>       enum dma_slave_buswidth addr_width;
+>>> -    bool (*filter)(struct dma_chan *chan, void *slave);
+>>>   };
+>>
+>> Hm, that spear_dma_data struct looks pretty much like
+>> snd_dmaengine_dai_dma_data. It's a bit hard to say how it is used exactly
+>> since the receiver of that struct doesn't seem to be upstream. Rajeev, how
+>> is this used? The data in spear_dma_data looks like it should be passed to
+>> the DMA driver via dmaengine_slave_config() rather than while requesting the
+>> channel.
+>>
+>> - Lars
+>> .
+>>
+>
+> The structure spear_dma_data is used to initialize dma parameters received from
+> platform data which is required for dma slave configuration.
 
-Thanks for fixing.
+Those parameters look like they should be configured using 
+dmaengine_slave_config(). And not by passing them to the filter function.
 
-Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-
-> ---
-> Applies on v3.13-rc3.  See also:
-> 
-> http://marc.info/?l=linux-arm-kernel&m=138542591313620&w=2
-> 
->  sound/atmel/abdac.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/atmel/abdac.c b/sound/atmel/abdac.c
-> index 721d8fd..3519518 100644
-> --- a/sound/atmel/abdac.c
-> +++ b/sound/atmel/abdac.c
-> @@ -354,7 +354,7 @@ static int set_sample_rates(struct atmel_abdac *dac)
->  	/* we start at 192 kHz and work our way down to 5112 Hz */
->  	while (new_rate >= RATE_MIN && index < (MAX_NUM_RATES + 1)) {
->  		new_rate = clk_round_rate(dac->sample_clk, 256 * new_rate);
-> -		if (new_rate < 0)
-> +		if (new_rate <= 0)
->  			break;
->  		/* make sure we are below the ABDAC clock */
->  		if (index < MAX_NUM_RATES &&
-> 
-
--- 
-mvh
-Hans-Christian Egtvedt
+- Lars
