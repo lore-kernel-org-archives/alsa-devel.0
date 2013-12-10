@@ -1,18 +1,25 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: ep93xx: get rid of
- ep93xx-pcm-audio struct device
-Date: Tue, 10 Dec 2013 11:57:16 +0000
-Message-ID: <20131210115716.GH29268@sirena.org.uk>
-References: <1386620656-18391-1-git-send-email-swarren@wwwdotorg.org>
- <1386620656-18391-2-git-send-email-swarren@wwwdotorg.org>
- <52A62BC3.1050807@metafoo.de> <52A6573E.1000504@wwwdotorg.org>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: HD-audio runtime PM
+Date: Tue, 10 Dec 2013 12:17:16 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801432212@SHSMSX101.ccr.corp.intel.com>
+References: <s5hli0gmyxt.wl%tiwai@suse.de>
+ <CA+v+29hKbtTBLh=qNRBVqd-NUfXRVBBokoypDh_0RMRQ_VjYvw@mail.gmail.com>
+ <s5hiovfy9ji.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F80141992D@SHSMSX101.ccr.corp.intel.com>
+ <s5ha9gry640.wl%tiwai@suse.de>	<s5hzjorwouu.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F80141CF98@SHSMSX101.ccr.corp.intel.com>
+ <s5heh626rnh.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F80141D1C7@SHSMSX101.ccr.corp.intel.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F80142FA38@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4067796839047185824=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 836FA2651CE
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 12:57:23 +0100 (CET)
-In-Reply-To: <52A6573E.1000504@wwwdotorg.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6222E2651C9
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 13:17:23 +0100 (CET)
+In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F80142FA38@SHSMSX101.ccr.corp.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,67 +29,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <wangxingchao2011@gmail.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi,
 
---===============4067796839047185824==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nzRyboNcQJj8oYvt"
-Content-Disposition: inline
+> -----Original Message-----
+> From: Lin, Mengdong
+> Sent: Monday, December 09, 2013 3:03 PM
 
+> > > > I've checked two Haswell-ULT platforms with sound git tree
+> > > > for-linus
+> > > branch, under Ubuntu:
+> > > > - ELD cannot refresh properly.
+> > > > - HDMI hot-plug cannot wake up the audio controller.
+> 
+> I've tested the latest 3.13-rc2 based sound git tree, master branch:
+> - ELD can refresh properly on hot-plug event.
+>  I need to bisect to see where the ELD regression happened and how it
+> was fixed.
 
---nzRyboNcQJj8oYvt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ELD info cannot refresh on hot-plug event after the controller enters D3 on Haswell.
+Sorry, I forgot to enable runtime PM yesterday when checking ELD refreshing.  
 
-On Mon, Dec 09, 2013 at 04:50:22PM -0700, Stephen Warren wrote:
-> On 12/09/2013 01:44 PM, Lars-Peter Clausen wrote:
+> - Headset insertion can wake up the legacy audio controller (PCI device
+> 00:1b)
+> 
+> - HDMI insertion still cannot wake up the display audio controller (PCI
+> device 00:03)  We'll double check with HW owner whether the display
+> audio controller really supports wake up on HDMI/DP insertion.
+>  I remember when Xingchao enabled runtime PM on Haswell display
+> audio controller for display power well release,  there was an issue that
+> this controller does not support "wake up", but we finally enable runtime
+> PM on it and remove the request for "wake up".
 
-> > This will have a conflict with the "ASoC: ep93xx: Use
-> > devm_snd_dmaengine_pcm_register()" patch from the topic/ep93xx branch.
+HW team clarified that HDMI/DP jack insertion cannot wake up the controller from D3. So this is a HW restriction for Haswell, not a driver regression.
 
-> That's true. The conflict isn't conceptually that hard to resolve, but
-> probably a lot more than you want to do in a merge. I guess the way to
-> resolve it is to merge topic/ep93xx and topic/spear into topic/dma, then
-> to apply these patches on top. If that sounds good, I can rebase them
-> and resend.
+Now the problem on Haswell/Broadwell is:
+After the controller enters D3, Gfx driver can still detect HDMI/DP hot plug event even if the display power well is disabled.
+Although Gfx driver set Presence Detect and ELD Valid , the audio controller does not wake up and so audio driver has no idea about the HDMI/DP hot-plug.
 
-Please always submit against -next or at least check that that's going
-to work and comment on the result, it makes life easier.  Remember that
-all the topic branches are constantly merged together, it's important
-that that works smoothly.
+Is it audio driver itself or the user space that need this ELD info?
+Maybe Gfx driver can directly report ELD info to user space.
 
---nzRyboNcQJj8oYvt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSpwGYAAoJELSic+t+oim9cZEP/RsEMg2Sx/riNeNEZakRmcm/
-PX1apuP4VbjELT5uXibe12hz9s5QcV6sDBDUJivKW1pcsyRgkKyF+NklCD4uLfik
-FGAH3+Hdrln31jR7dLFeeMe6mJ5TwUASo8h6qCbEkC4swBmcd+HN99BX+9lbr8GN
-Oo4UK8MvDFHVqqp7SS5DayNdE1U3WwK8/Z68lG3RMBH2NRuxcA8g6+bBqPNCUnWE
-BqokPKP/C0Q1YKNyIis7g6AZX7LOgvgz9FTjP/3fszaBDJr0pLu3Yrm3mJ8J7wSg
-iiZpnlMKAJsZkBPd0d5nxRBsBrHzGBRHj+b4LXatRZrIGxnDxFsfxW16gWhRkxb8
-padPWMIN2f5pjFuMgJk72Xbpch4z4zPsBWXQiA5ZMQrhM/EJmaufrRfh+XxZ1G/r
-k1Nj5HdJ5rgxta0r20wqzg7DNV+VnTi1Ox3V1TrvpNS+I9BSlnjAXXv4cmKsoEcB
-jPvNTjCJ6iD7ibZfIInxBNttOebISVqQ/703/mBkkSKjptPr+MySej3jE6d5IZwp
-qbnlZ2mUFVDvLsvIIGvqGAi1ryE6LIjWtD26T1pSxMwzhqOzeYNYBpqCi9qchSHY
-NY6nm4DdRlTPsfvO3Dwwl56R2wE4IAg1d8ClB/41OJN2Z7e2IytGtdJs2XZxlQY5
-/IovsbyrYMlGUjobcqIl
-=OXzT
------END PGP SIGNATURE-----
-
---nzRyboNcQJj8oYvt--
-
---===============4067796839047185824==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4067796839047185824==--
+Thanks
+Mengdong
