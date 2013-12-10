@@ -1,22 +1,18 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: [PATCH 4/5] ASoC: SPEAr: remove custom DMA alloc
- compat function
-Date: Tue, 10 Dec 2013 17:14:43 +0530
-Message-ID: <52A6FEAB.108@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/5] ASoC: ep93xx: get rid of
+ ep93xx-pcm-audio struct device
+Date: Tue, 10 Dec 2013 11:57:16 +0000
+Message-ID: <20131210115716.GH29268@sirena.org.uk>
 References: <1386620656-18391-1-git-send-email-swarren@wwwdotorg.org>
- <1386620656-18391-5-git-send-email-swarren@wwwdotorg.org>
- <52A6336D.2040306@metafoo.de> <52A6B4FE.3020300@st.com>
- <52A6C6A3.2070700@metafoo.de> <52A6D692.9050204@st.com>
- <52A6D81E.2090302@metafoo.de>
+ <1386620656-18391-2-git-send-email-swarren@wwwdotorg.org>
+ <52A62BC3.1050807@metafoo.de> <52A6573E.1000504@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4067796839047185824=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog116.obsmtp.com (eu1sys200aog116.obsmtp.com
- [207.126.144.141])
- by alsa0.perex.cz (Postfix) with ESMTP id EC7C22651CE
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 12:44:51 +0100 (CET)
-In-Reply-To: <52A6D81E.2090302@metafoo.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 836FA2651CE
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 12:57:23 +0100 (CET)
+In-Reply-To: <52A6573E.1000504@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,93 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/10/2013 2:30 PM, Lars-Peter Clausen wrote:
-> On 12/10/2013 09:53 AM, Rajeev kumar wrote:
->> On 12/10/2013 1:15 PM, Lars-Peter Clausen wrote:
->>> On 12/10/2013 07:30 AM, Rajeev kumar wrote:
->>>> On 12/10/2013 2:47 AM, Lars-Peter Clausen wrote:
->>>>> On 12/09/2013 09:24 PM, Stephen Warren wrote:
->>>>>> From: Stephen Warren<swarren@nvidia.com>
->>>>>>
->>>>>> spear_pcm_request_chan() is almost identical to
->>>>>> dmaengine_pcm_compat_request_channel(), with the exception that the
->>>>>> latter:
->>>>>>
->>>>>> a) Assumes that the DAI DMA data is a struct snd_dmaengine_dai_dma_data
->>>>>>       pointer rather than some custom type.
->>>>>>
->>>>>> b) dma_data->filter_data rather than dma_data should be passed to
->>>>>>       snd_dmaengine_pcm_request_channel() as the filter data.
->>>>>>
->>>>>> Make minor changes to the SPEAr DAI drivers so that those two conditions
->>>>>> are met. This allows removal of the custom .compat_request_channel().
->>>>>>
->>>>>> Signed-off-by: Stephen Warren<swarren@nvidia.com>
->>>>>> ---
->>>>>>     include/sound/spear_dma.h   |  1 -
->>>>>>     sound/soc/spear/spdif_in.c  | 10 +++++++---
->>>>>>     sound/soc/spear/spdif_out.c | 10 +++++++---
->>>>>>     sound/soc/spear/spear_pcm.c | 21 +++++++--------------
->>>>>>     sound/soc/spear/spear_pcm.h |  4 +++-
->>>>>>     5 files changed, 24 insertions(+), 22 deletions(-)
->>>>>>
->>>>>> diff --git a/include/sound/spear_dma.h b/include/sound/spear_dma.h
->>>>>> index 1b365bfdfb37..65aca51fe255 100644
->>>>>> --- a/include/sound/spear_dma.h
->>>>>> +++ b/include/sound/spear_dma.h
->>>>>> @@ -29,7 +29,6 @@ struct spear_dma_data {
->>>>>>         dma_addr_t addr;
->>>>>>         u32 max_burst;
->>>>>>         enum dma_slave_buswidth addr_width;
->>>>>> -    bool (*filter)(struct dma_chan *chan, void *slave);
->>>>>>     };
->>>>>
->>>>> Hm, that spear_dma_data struct looks pretty much like
->>>>> snd_dmaengine_dai_dma_data. It's a bit hard to say how it is used exactly
->>>>> since the receiver of that struct doesn't seem to be upstream. Rajeev, how
->>>>> is this used? The data in spear_dma_data looks like it should be passed to
->>>>> the DMA driver via dmaengine_slave_config() rather than while requesting
->>>>> the
->>>>> channel.
->>>>>
->>>>> - Lars
->>>>> .
->>>>>
->>>>
->>>> The structure spear_dma_data is used to initialize dma parameters
->>>> received from
->>>> platform data which is required for dma slave configuration.
->>>
->>> Those parameters look like they should be configured using
->>> dmaengine_slave_config(). And not by passing them to the filter function.
->>>
->>> - Lars
->>>
->>> .
->>>
->>
->> Yes these parameter will be configured through dmaengine_slave_config().
->
-> Ok, but this happens in the filter callback? Or is this piece just missing
-> from the upstream driver at the moment? Do you think the code can be
-> rewritten to use the generic snd_dmaengine_dai_dma_data struct?
->
 
-Passing complete spear_dma_data is wrong in the filter callback, This 
-needs to be modified. I will circulate a patch for this. The platform 
-code for this also needs to be upstreamed.
-
-Regards
-Rajeev
+--===============4067796839047185824==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="nzRyboNcQJj8oYvt"
+Content-Disposition: inline
 
 
+--nzRyboNcQJj8oYvt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Thanks,
-> - Lars
->
-> .
->
+On Mon, Dec 09, 2013 at 04:50:22PM -0700, Stephen Warren wrote:
+> On 12/09/2013 01:44 PM, Lars-Peter Clausen wrote:
+
+> > This will have a conflict with the "ASoC: ep93xx: Use
+> > devm_snd_dmaengine_pcm_register()" patch from the topic/ep93xx branch.
+
+> That's true. The conflict isn't conceptually that hard to resolve, but
+> probably a lot more than you want to do in a merge. I guess the way to
+> resolve it is to merge topic/ep93xx and topic/spear into topic/dma, then
+> to apply these patches on top. If that sounds good, I can rebase them
+> and resend.
+
+Please always submit against -next or at least check that that's going
+to work and comment on the result, it makes life easier.  Remember that
+all the topic branches are constantly merged together, it's important
+that that works smoothly.
+
+--nzRyboNcQJj8oYvt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSpwGYAAoJELSic+t+oim9cZEP/RsEMg2Sx/riNeNEZakRmcm/
+PX1apuP4VbjELT5uXibe12hz9s5QcV6sDBDUJivKW1pcsyRgkKyF+NklCD4uLfik
+FGAH3+Hdrln31jR7dLFeeMe6mJ5TwUASo8h6qCbEkC4swBmcd+HN99BX+9lbr8GN
+Oo4UK8MvDFHVqqp7SS5DayNdE1U3WwK8/Z68lG3RMBH2NRuxcA8g6+bBqPNCUnWE
+BqokPKP/C0Q1YKNyIis7g6AZX7LOgvgz9FTjP/3fszaBDJr0pLu3Yrm3mJ8J7wSg
+iiZpnlMKAJsZkBPd0d5nxRBsBrHzGBRHj+b4LXatRZrIGxnDxFsfxW16gWhRkxb8
+padPWMIN2f5pjFuMgJk72Xbpch4z4zPsBWXQiA5ZMQrhM/EJmaufrRfh+XxZ1G/r
+k1Nj5HdJ5rgxta0r20wqzg7DNV+VnTi1Ox3V1TrvpNS+I9BSlnjAXXv4cmKsoEcB
+jPvNTjCJ6iD7ibZfIInxBNttOebISVqQ/703/mBkkSKjptPr+MySej3jE6d5IZwp
+qbnlZ2mUFVDvLsvIIGvqGAi1ryE6LIjWtD26T1pSxMwzhqOzeYNYBpqCi9qchSHY
+NY6nm4DdRlTPsfvO3Dwwl56R2wE4IAg1d8ClB/41OJN2Z7e2IytGtdJs2XZxlQY5
+/IovsbyrYMlGUjobcqIl
+=OXzT
+-----END PGP SIGNATURE-----
+
+--nzRyboNcQJj8oYvt--
+
+--===============4067796839047185824==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4067796839047185824==--
