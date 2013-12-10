@@ -1,56 +1,35 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: [PATCH] ALSA: hda - hdmi: Fix IEC958 ctl indexes for some simple HDMI devices
-Date: Tue, 10 Dec 2013 22:46:34 +0200
-Message-ID: <1386708394-5795-1-git-send-email-anssi.hannula@iki.fi>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: fading in/out PCM audio
+Date: Tue, 10 Dec 2013 22:50:04 +0100
+Message-ID: <52A78C8C.8090907@ladisch.de>
+References: <trinity-a01c135b-092e-4212-b844-97d430afd586-1386705593791@3capp-gmx-bs23>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id C7481265336
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 22:51:05 +0100 (CET)
+In-Reply-To: <trinity-a01c135b-092e-4212-b844-97d430afd586-1386705593791@3capp-gmx-bs23>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mat Gros <pagr2010@gmx.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In case a single HDA card has both HDMI and S/PDIF outputs, the S/PDIF
-outputs will have their IEC958 controls created starting from index 16
-and the HDMI controls will be created starting from index 0.
+Mat Gros wrote:
+>  Is it possible to activate fading in/out ramps via the ALSA API?
 
-However, HDMI simple_playback_build_controls() as used by old VIA and
-NVIDIA codecs incorrectly requests the IEC958 controls to be created
-with an S/PDIF type instead of HDMI.
-In case the card has other codecs that have HDMI outputs, the controls
-will be created with wrong index=16, causing them to e.g. be unreachable
-by the ALSA "hdmi" alias.
+No.  Change the appropriate mixer control continuously, or modify
+the samples.
 
-Fix that by making simple_playback_build_controls() request controls
-with HDMI indexes.
 
-Not many cards have an affected configuration, but e.g. ASUS M3N78-VM
-contains an integrated NVIDIA HDA "card" with:
-- a VIA codec that has, among others, an S/PDIF pin incorrectly
-  labelled as an HDMI pin, and
-- an NVIDIA MCP7x HDMI codec.
-
-Reported-by: MysterX on #openelec
-Tested-by: MysterX on #openelec
-Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: <stable@vger.kernel.org> # 3.8+
----
- sound/pci/hda/patch_hdmi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 556d47231f11..f5060fc7c303 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2326,8 +2326,9 @@ static int simple_playback_build_controls(struct hda_codec *codec)
- 	int err;
- 
- 	per_cvt = get_cvt(spec, 0);
--	err = snd_hda_create_spdif_out_ctls(codec, per_cvt->cvt_nid,
--					    per_cvt->cvt_nid);
-+	err = snd_hda_create_dig_out_ctls(codec, per_cvt->cvt_nid,
-+					  per_cvt->cvt_nid,
-+					  HDA_PCM_TYPE_HDMI);
- 	if (err < 0)
- 		return err;
- 	return simple_hdmi_build_jack(codec, 0);
--- 
-1.8.1.5
+Regards,
+Clemens
