@@ -1,41 +1,41 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: samsung: Use ASoC dmaengine code
- where possible
-Date: Tue, 10 Dec 2013 22:09:05 +0530
-Message-ID: <CAAgF-BdWpQ2wn8GCpXLLWBZFxrrTYmX-e4bWRLYdwfpwhObnfg@mail.gmail.com>
-References: <1386253559-18262-1-git-send-email-broonie@kernel.org>
-	<1386253559-18262-2-git-send-email-broonie@kernel.org>
-	<CAAgF-Bfk8byZwVBd_5PopM3ji-wdTMR5i-J7w1W4zq4gFk4i+Q@mail.gmail.com>
-	<20131209173021.GC29268@sirena.org.uk>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH 1/5] ASoC: ep93xx: get rid of
+ ep93xx-pcm-audio struct device
+Date: Tue, 10 Dec 2013 09:56:39 -0700
+Message-ID: <52A747C7.9040706@wwwdotorg.org>
+References: <1386620656-18391-1-git-send-email-swarren@wwwdotorg.org>
+ <1386620656-18391-2-git-send-email-swarren@wwwdotorg.org>
+ <52A62BC3.1050807@metafoo.de> <52A6573E.1000504@wwwdotorg.org>
+ <52A6C702.4000607@metafoo.de> <20131210102334.GX29268@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20131209173021.GC29268@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Padmavathi Venna <padma.v@samsung.com>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, linaro-kernel@lists.linaro.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C8792652AC
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 17:56:45 +0100 (CET)
+In-Reply-To: <20131210102334.GX29268@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On 12/10/2013 03:23 AM, Mark Brown wrote:
+> On Tue, Dec 10, 2013 at 08:47:14AM +0100, Lars-Peter Clausen wrote:
+> 
+>> I'd assume that the first two patches from this series go into
+>> topic/ep93xx and the second two into topic/spear and the last one
+>> will have to wait for ux500 anyway.
+> 
+> Yes.
 
-On Mon, Dec 9, 2013 at 11:00 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Dec 06, 2013 at 10:44:19AM +0530, Padma Venkat wrote:
->
->> I couldn't test this patch set due to some crash in recent kernel in
->> dmaengine_unmap_put. I think this unmap support is not yet implemented
->> for pl330 driver. It is mentioned in the commit "dmaengine: prepare
->> for generic 'unmap' data", [bzolnier: prepare pl330 driver for adding
->> missing unmap while at it].
->
-> This is unfortunate...  I'd suggest trying mainline but I see it's
-> broken in Linus' tree too and no fixes in -next. :(
->
-> I'm tempted to push up with your Tested-by a note saying you did your
-> testing on an earlier version but weren't able to test due to other bugs.
-
-I managed to test your latest version of these patches(posted on
-Dec6th) on earlier version of linux-samsung tree. May be you can push
-up these patches with my Tested-by.
-
-Thanks
-Padma
+OK, so you plan on merging topic/dma into topic/ep93xx and topic/spear
+then? Since this series does depend on patches in topic/dma.
