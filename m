@@ -1,20 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: samsung: Use ASoC dmaengine code
- where possible
-Date: Tue, 10 Dec 2013 17:01:33 +0000
-Message-ID: <20131210170133.GB11468@sirena.org.uk>
-References: <1386253559-18262-1-git-send-email-broonie@kernel.org>
- <1386253559-18262-2-git-send-email-broonie@kernel.org>
- <CAAgF-Bfk8byZwVBd_5PopM3ji-wdTMR5i-J7w1W4zq4gFk4i+Q@mail.gmail.com>
- <20131209173021.GC29268@sirena.org.uk>
- <CAAgF-BdWpQ2wn8GCpXLLWBZFxrrTYmX-e4bWRLYdwfpwhObnfg@mail.gmail.com>
+Subject: Re: [PATCH 1/5] ASoC: ep93xx: get rid of
+ ep93xx-pcm-audio struct device
+Date: Tue, 10 Dec 2013 17:02:57 +0000
+Message-ID: <20131210170257.GC11468@sirena.org.uk>
+References: <1386620656-18391-1-git-send-email-swarren@wwwdotorg.org>
+ <1386620656-18391-2-git-send-email-swarren@wwwdotorg.org>
+ <52A62BC3.1050807@metafoo.de> <52A6573E.1000504@wwwdotorg.org>
+ <52A6C702.4000607@metafoo.de>
+ <20131210102334.GX29268@sirena.org.uk>
+ <52A747C7.9040706@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1733770349425640079=="
+Content-Type: multipart/mixed; boundary="===============0224335246519872922=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DFFA2652AC
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 18:01:39 +0100 (CET)
-In-Reply-To: <CAAgF-BdWpQ2wn8GCpXLLWBZFxrrTYmX-e4bWRLYdwfpwhObnfg@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C7012652AC
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 18:03:02 +0100 (CET)
+In-Reply-To: <52A747C7.9040706@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,68 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Padma Venkat <padma.kvr@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, linaro-kernel@lists.linaro.org, Padmavathi Venna <padma.v@samsung.com>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1733770349425640079==
+--===============0224335246519872922==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8P1HSweYDcXXzwPJ"
+	protocol="application/pgp-signature"; boundary="UPT3ojh+0CqEDtpF"
 Content-Disposition: inline
 
 
---8P1HSweYDcXXzwPJ
+--UPT3ojh+0CqEDtpF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Dec 10, 2013 at 10:09:05PM +0530, Padma Venkat wrote:
-> On Mon, Dec 9, 2013 at 11:00 PM, Mark Brown <broonie@kernel.org> wrote:
+On Tue, Dec 10, 2013 at 09:56:39AM -0700, Stephen Warren wrote:
+> On 12/10/2013 03:23 AM, Mark Brown wrote:
 
-> > This is unfortunate...  I'd suggest trying mainline but I see it's
-> > broken in Linus' tree too and no fixes in -next. :(
+> > Yes.
 
-> > I'm tempted to push up with your Tested-by a note saying you did your
-> > testing on an earlier version but weren't able to test due to other bugs.
+> OK, so you plan on merging topic/dma into topic/ep93xx and topic/spear
+> then? Since this series does depend on patches in topic/dma.
 
-> I managed to test your latest version of these patches(posted on
-> Dec6th) on earlier version of linux-samsung tree. May be you can push
-> up these patches with my Tested-by.
+Yes, that's how I normally handle these things - merge the core branch
+into the relevant driver branch.  The final removal is going to be stuck
+due to the ux500 anyway.
 
-Yeah, that was what I was planning - I was just going to add a note
-saying you'd not been able to test this version due to the other
-breakage so if it turns out to have problems people know it was
-something I introduced after your testing.
-
---8P1HSweYDcXXzwPJ
+--UPT3ojh+0CqEDtpF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSp0jqAAoJELSic+t+oim9vw8P/iWItuWCwqdI78T0MGIfkoqB
-k4H7tmlBcaGEcPuZOohdA8bn3Z0NfMQrI0thNzYsEwyfUXFRRBkF/P+P81FevB5c
-HrObSR4VM2FNq/5qE2HEDZkOlG8kxYY2u8dtlYW4lj3NTk4xNbQkZfMr2bvp1HKF
-TRTkMfmoiG5XzjKa9M7oS9kO19Mejl17ue2IsqYiN/ZxhrRw07OLyTYtP6c6UgIG
-FV60LlJo278qDBiJxjroqWz3pN/j60VVHd6bvWTiuGLsa4/CFZIz7awg9ErAIvsV
-R375+G/Xuh9l34SkxqqkA64zX7OjUMGQsVygyIOVqArfN7lrq4wY9iTUg5Ankx75
-7d3gZ2efcPvcYAxYeq/YhahHyUOHrjqcL4WaKq8LCwKBnCTjDytiw69SKb7HU7oP
-LSMaDFKCboq/col4fd6PNW0eABw6V+jLohrLhD1k19GtrV31eBz+loR5THcCpcLb
-wioy3CWNkO2qXww99DgwFAB8rB1QCgi//TFqgCdiHcR35Wu+HMKmzF2QS/vLzjrx
-pRJFUz2oRrV7qUVMa8AlRt3zWXhQ8ZmkJn5K+NefthtjxPQ3g8uUcCs+Xd2bH5vp
-M4P/Cc/l9935w4kD3kCUrzFWYkHd1+iN3tgvWTEyXUnQIAHqiFWAYWQIPsmSlf2P
-tCrMM/poUi1bmWBUArM9
-=1gIS
+iQIcBAEBAgAGBQJSp0k+AAoJELSic+t+oim9edkP/3Kl4QGnZ0HfI2/1LQOs8Lus
+yw8qoXq0AFHYOueCiHtL4GicZvP0V+UEe9x1hbRERux1ZAxJff1nwVbi2jpAkg79
+Je8DeAAK8aH6+I3nN9fp6iFHsBlzzou2/9ICV3V0MBI4YQro67KHmcrVDoLxMQdc
+iezvITpCa58hSFPI24pMhckUMGQm/ODFBpuEmQPyuqg573J50Ki9fv3G93EMs0L9
+XWcv2dbRu9zQ0PjR31IMuYyTfwaJDwEZB8sv1+JnLERErBpfMcqCJJEdu7ODH6cx
+cGIhGf/QjR3JgEQdZR/WNGxJ7Kp4zY77n06PyCIR+JTo7N0ydSr4JDvDGz7lk3qi
+JKzhWriwTbG3WZBNg07dxaN/LhKRGpIFa19BsJUzfzlZ7HH1Pf+/+SA7wLXfsw+4
+RfLSE1Gr6fmDjzyS7e4jr3QJ5TBQSD9qecDhB1eQi2TD9X8OJOnzTK56W4quToCy
+crzS4p2jOQcT4hdWFy5QAqGkyr70Gqjp8cKWv1OwfUk+k9EW5APRvueOPMOXXNcM
+UlCGzf5a9xauX6KnS0HLnDE3B/MvSHHE87ngq2ho8QeHawnzacEuXIgLDgmuPPVh
+fI3H5xEMKnvaWJZozHHto3aqp7gB0L5Plf4fefdTGhCT9pUFT9Pvk64sd0TJjHaC
+V/0Ibj/wOKd7XOvI2hLe
+=uOLo
 -----END PGP SIGNATURE-----
 
---8P1HSweYDcXXzwPJ--
+--UPT3ojh+0CqEDtpF--
 
---===============1733770349425640079==
+--===============0224335246519872922==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1733770349425640079==--
+--===============0224335246519872922==--
