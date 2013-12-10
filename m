@@ -1,54 +1,50 @@
-From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Subject: Re: caiaq driver: audio 4 dj and jackd
-Date: Mon, 09 Dec 2013 18:27:08 -0800
-Message-ID: <52A67BFC.6030707@gmail.com>
-References: <529BF843.6000608@gmail.com>
- <20131202095948.GA2886@tamtam.fritz.box> <529CA3FC.1040301@gmail.com>
- <529CAE8D.6020003@zonque.org> <529FFD07.5040408@gmail.com>
+From: Paul Walmsley <pwalmsley@nvidia.com>
+Subject: [PATCH] ALSA: at73c213: clk_round_rate() can return a zero upon
+ error
+Date: Mon, 9 Dec 2013 18:40:48 -0800
+Message-ID: <alpine.DEB.2.02.1312091837280.4127@tamien>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f181.google.com (mail-pd0-f181.google.com
- [209.85.192.181])
- by alsa0.perex.cz (Postfix) with ESMTP id DBBD6264F1A
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 03:27:19 +0100 (CET)
-Received: by mail-pd0-f181.google.com with SMTP id p10so6346629pdj.12
- for <alsa-devel@alsa-project.org>; Mon, 09 Dec 2013 18:27:18 -0800 (PST)
-In-Reply-To: <529FFD07.5040408@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Antonio Ospite <ao2@amarulasolutions.com>
+Content-Type: text/plain; format=flowed; charset="US-ASCII"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hans-Christian Egtvedt <egtvedt@samfundet.no>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
 
-On 12/04/2013 08:11 PM, Gabriel M. Beddingfield wrote:
-> On 12/02/2013 08:00 AM, Daniel Mack wrote:
-> Suppose a 2nd PCM device is added that would allow 1-4 channel
-> playback/capture (call it "Multichannel Audio" or something).  This pcm1
-> would be mutually exclusive with pcm0 (I.e. while one is open you can't
-> use the other).
->
-> Existing applications using hw:n,0,0 and hw:n,0,1 see the exact same
-> interface/behavior.  The only failure mode is if the multichannel PCM is
-> in use.
->
-> Applications using multichannel work-flows would use hw:n,1.
->
-> While it's not a "just works" solution -- directing users to hw:n,1 is a
-> whole lot better than teaching them how to set up a multi plugin.
+Treat both negative and zero return values from clk_round_rate()
+as errors.  This is needed since subsequent patches will convert
+clk_round_rate()'s return value to be an unsigned type, rather
+than a signed type, since some clock sources can generate rates higher 
+than (2^31)-1 Hz.
 
-I'm considering buying one of these Audio 4 DJ devices to make this 
-change.  Would you be willing to take a change like this?
+Eventually, when calling clk_round_rate(), only a return value of
+zero will be considered a error.  All other values will be
+considered valid rates.  The comparison against values less than
+0 is kept to preserve the correct behavior in the meantime.
 
-Thanks,
-Gabe
+Signed-off-by: Paul Walmsley <pwalmsley@nvidia.com>
+Cc: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+---
+Applies on v3.13-rc3.  See also:
+
+http://marc.info/?l=linux-arm-kernel&m=138542591313620&w=2
+
+  sound/spi/at73c213.c |    2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
+index 8e3d9a6c7a3b..25c38afaee49 100644
+--- a/sound/spi/at73c213.c
++++ b/sound/spi/at73c213.c
+@@ -174,7 +174,7 @@ static int snd_at73c213_set_bitrate(struct snd_at73c213 *chip)
+  		dac_rate_new = 8 * (ssc_rate / ssc_div);
+
+  		status = clk_round_rate(chip->board->dac_clk, dac_rate_new);
+-		if (status < 0)
++		if (status <= 0)
+  			return status;
+
+  		/* Ignore difference smaller than 256 Hz. */
