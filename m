@@ -1,106 +1,42 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: HD-audio runtime PM
-Date: Tue, 10 Dec 2013 12:34:51 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801432305@SHSMSX101.ccr.corp.intel.com>
-References: <s5hli0gmyxt.wl%tiwai@suse.de>
- <CA+v+29hKbtTBLh=qNRBVqd-NUfXRVBBokoypDh_0RMRQ_VjYvw@mail.gmail.com>
- <s5hiovfy9ji.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F80141992D@SHSMSX101.ccr.corp.intel.com>
- <s5ha9gry640.wl%tiwai@suse.de>	<s5hzjorwouu.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F80141CF98@SHSMSX101.ccr.corp.intel.com>
- <s5heh626rnh.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F80141D1C7@SHSMSX101.ccr.corp.intel.com>
- <F46914AEC2663F4A9BB62374E5EEF8F80142FA38@SHSMSX101.ccr.corp.intel.com>
- <F46914AEC2663F4A9BB62374E5EEF8F801432212@SHSMSX101.ccr.corp.intel.com>
- <s5hwqjchozq.wl%tiwai@suse.de>
+From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCHv8][ 2/5] ARM: dts: mbimxsd25: Add sound support.
+Date: Tue, 10 Dec 2013 20:49:22 +0800
+Message-ID: <20131210124920.GA26728@S2101-09.ap.freescale.net>
+References: <1385567664-758-1-git-send-email-denis@eukrea.com>
+ <1385567664-758-2-git-send-email-denis@eukrea.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id E0E462651CE
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 13:34:56 +0100 (CET)
-In-Reply-To: <s5hwqjchozq.wl%tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <wangxingchao2011@gmail.com>, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1385567664-758-2-git-send-email-denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
+Cc: Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Eric =?iso-8859-1?Q?B=E9nard?= <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, December 10, 2013 8:25 PM
-> To: Lin, Mengdong
-> Cc: Alsa-devel@alsa-project.org; Wang Xingchao; David Henningsson
-> Subject: Re: [alsa-devel] HD-audio runtime PM
-> 
-> At Tue, 10 Dec 2013 12:17:16 +0000,
-> Lin, Mengdong wrote:
-> >
-> > Hi Takashi,
-> >
-> > > -----Original Message-----
-> > > From: Lin, Mengdong
-> > > Sent: Monday, December 09, 2013 3:03 PM
-> >
-> > > > > > I've checked two Haswell-ULT platforms with sound git tree
-> > > > > > for-linus
-> > > > > branch, under Ubuntu:
-> > > > > > - ELD cannot refresh properly.
-> > > > > > - HDMI hot-plug cannot wake up the audio controller.
-> > >
-> > > I've tested the latest 3.13-rc2 based sound git tree, master branch:
-> > > - ELD can refresh properly on hot-plug event.
-> > >  I need to bisect to see where the ELD regression happened and how
-> > > it was fixed.
-> >
-> > ELD info cannot refresh on hot-plug event after the controller enters D3
-> on Haswell.
-> > Sorry, I forgot to enable runtime PM yesterday when checking ELD
-> refreshing.
-> >
-> > > - Headset insertion can wake up the legacy audio controller (PCI
-> > > device
-> > > 00:1b)
-> > >
-> > > - HDMI insertion still cannot wake up the display audio controller
-> > > (PCI device 00:03)  We'll double check with HW owner whether the
-> > > display audio controller really supports wake up on HDMI/DP
-> insertion.
-> > >  I remember when Xingchao enabled runtime PM on Haswell display
-> > > audio controller for display power well release,  there was an issue
-> > > that this controller does not support "wake up", but we finally
-> > > enable runtime PM on it and remove the request for "wake up".
-> >
-> > HW team clarified that HDMI/DP jack insertion cannot wake up the
-> controller from D3. So this is a HW restriction for Haswell, not a driver
-> regression.
-> >
-> > Now the problem on Haswell/Broadwell is:
-> > After the controller enters D3, Gfx driver can still detect HDMI/DP hot
-> plug event even if the display power well is disabled.
-> > Although Gfx driver set Presence Detect and ELD Valid , the audio
-> controller does not wake up and so audio driver has no idea about the
-> HDMI/DP hot-plug.
-> >
-> > Is it audio driver itself or the user space that need this ELD info?
-> > Maybe Gfx driver can directly report ELD info to user space.
-> 
-> If so, the graphics driver can wake up the audio driver as well -- this is yet
-> one more reason to create a direct communication channel between the
-> graphics and audio drivers :)
+On Wed, Nov 27, 2013 at 04:54:21PM +0100, Denis Carikli wrote:
+> Cc: Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>
+> Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
+> Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+> Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+> Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
+> Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+> Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+> Cc: Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+> Cc: Eric B=E9nard <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
+> Signed-off-by: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
 
-Need the audio driver provide an API for gfx driver?
-Maybe this API can call snd_hda_power_up(codec) and then snd_hda_power_down(codec),
-thus the controller and codec will wake up and audio driver can check ELD info.
+Applied this one and mbimxsd51 one, but not the other two, as I do not
+have imx35-eukrea-mbimxsd35-baseboard.dts and
+imx53-eukrea-mbimxsd53-baseboard.dts in my tree.
 
-Regards
-Mengdong
+Shawn
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
