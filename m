@@ -1,59 +1,118 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: update module reset list for Tegra124
-Date: Tue, 10 Dec 2013 11:19:15 +0000
-Message-ID: <20131210111915.GG29268@sirena.org.uk>
-References: <1386195913-24213-1-git-send-email-swarren@wwwdotorg.org>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: [PATCH 4/5] ASoC: SPEAr: remove custom DMA alloc
+ compat function
+Date: Tue, 10 Dec 2013 17:14:43 +0530
+Message-ID: <52A6FEAB.108@st.com>
+References: <1386620656-18391-1-git-send-email-swarren@wwwdotorg.org>
+ <1386620656-18391-5-git-send-email-swarren@wwwdotorg.org>
+ <52A6336D.2040306@metafoo.de> <52A6B4FE.3020300@st.com>
+ <52A6C6A3.2070700@metafoo.de> <52A6D692.9050204@st.com>
+ <52A6D81E.2090302@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7tGYYWp2rWczQsSS"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1386195913-24213-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from eu1sys200aog116.obsmtp.com (eu1sys200aog116.obsmtp.com
+ [207.126.144.141])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC7C22651CE
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 12:44:51 +0100 (CET)
+In-Reply-To: <52A6D81E.2090302@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 12/10/2013 2:30 PM, Lars-Peter Clausen wrote:
+> On 12/10/2013 09:53 AM, Rajeev kumar wrote:
+>> On 12/10/2013 1:15 PM, Lars-Peter Clausen wrote:
+>>> On 12/10/2013 07:30 AM, Rajeev kumar wrote:
+>>>> On 12/10/2013 2:47 AM, Lars-Peter Clausen wrote:
+>>>>> On 12/09/2013 09:24 PM, Stephen Warren wrote:
+>>>>>> From: Stephen Warren<swarren@nvidia.com>
+>>>>>>
+>>>>>> spear_pcm_request_chan() is almost identical to
+>>>>>> dmaengine_pcm_compat_request_channel(), with the exception that the
+>>>>>> latter:
+>>>>>>
+>>>>>> a) Assumes that the DAI DMA data is a struct snd_dmaengine_dai_dma_data
+>>>>>>       pointer rather than some custom type.
+>>>>>>
+>>>>>> b) dma_data->filter_data rather than dma_data should be passed to
+>>>>>>       snd_dmaengine_pcm_request_channel() as the filter data.
+>>>>>>
+>>>>>> Make minor changes to the SPEAr DAI drivers so that those two conditions
+>>>>>> are met. This allows removal of the custom .compat_request_channel().
+>>>>>>
+>>>>>> Signed-off-by: Stephen Warren<swarren@nvidia.com>
+>>>>>> ---
+>>>>>>     include/sound/spear_dma.h   |  1 -
+>>>>>>     sound/soc/spear/spdif_in.c  | 10 +++++++---
+>>>>>>     sound/soc/spear/spdif_out.c | 10 +++++++---
+>>>>>>     sound/soc/spear/spear_pcm.c | 21 +++++++--------------
+>>>>>>     sound/soc/spear/spear_pcm.h |  4 +++-
+>>>>>>     5 files changed, 24 insertions(+), 22 deletions(-)
+>>>>>>
+>>>>>> diff --git a/include/sound/spear_dma.h b/include/sound/spear_dma.h
+>>>>>> index 1b365bfdfb37..65aca51fe255 100644
+>>>>>> --- a/include/sound/spear_dma.h
+>>>>>> +++ b/include/sound/spear_dma.h
+>>>>>> @@ -29,7 +29,6 @@ struct spear_dma_data {
+>>>>>>         dma_addr_t addr;
+>>>>>>         u32 max_burst;
+>>>>>>         enum dma_slave_buswidth addr_width;
+>>>>>> -    bool (*filter)(struct dma_chan *chan, void *slave);
+>>>>>>     };
+>>>>>
+>>>>> Hm, that spear_dma_data struct looks pretty much like
+>>>>> snd_dmaengine_dai_dma_data. It's a bit hard to say how it is used exactly
+>>>>> since the receiver of that struct doesn't seem to be upstream. Rajeev, how
+>>>>> is this used? The data in spear_dma_data looks like it should be passed to
+>>>>> the DMA driver via dmaengine_slave_config() rather than while requesting
+>>>>> the
+>>>>> channel.
+>>>>>
+>>>>> - Lars
+>>>>> .
+>>>>>
+>>>>
+>>>> The structure spear_dma_data is used to initialize dma parameters
+>>>> received from
+>>>> platform data which is required for dma slave configuration.
+>>>
+>>> Those parameters look like they should be configured using
+>>> dmaengine_slave_config(). And not by passing them to the filter function.
+>>>
+>>> - Lars
+>>>
+>>> .
+>>>
+>>
+>> Yes these parameter will be configured through dmaengine_slave_config().
+>
+> Ok, but this happens in the filter callback? Or is this piece just missing
+> from the upstream driver at the moment? Do you think the code can be
+> rewritten to use the generic snd_dmaengine_dai_dma_data struct?
+>
 
---7tGYYWp2rWczQsSS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Passing complete spear_dma_data is wrong in the filter callback, This 
+needs to be modified. I will circulate a patch for this. The platform 
+code for this also needs to be upstreamed.
 
-On Wed, Dec 04, 2013 at 03:25:13PM -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->=20
-> Tegra124 adds a number of extra modules into the configlink bus, which
-> must be taken out of reset before the bus is used. Update the AHUB
-> driver to know about these extra modules (the AHUB HW module hosts the
-> configlink bus).
+Regards
+Rajeev
 
-Acked-by: Mark Brown <broonie-QSEj5FYQhm64UlQgPVntAg@public.gmane.org
 
---7tGYYWp2rWczQsSS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSpviwAAoJELSic+t+oim92xsP/04YlV5bIjUnaWjxrD6OqvLi
-RhRdCzUddgqzUFng7gRG+8oNLa+EH0+ANsSUB9FFYoyEKATxPmFLNP7PfhoxGBt1
-5ai2w5+l/wPm9ZxM/iF0L/taNzU4Mx+IbYyS8ZhXy8m6dx0ISJMKFfBhQUxB0pdw
-cCAMPXMEZJPbHK5d5ADLuW0YfcRKO9Nzi4hnTwlujrvImiXHwaysN3nSzbKdRilk
-18VTdvr2kE92XD4wu2b6iOU/a4y2Sbiq5onvRsD3fjRu2hSPrRfw3Hop1IqaYZ+J
-aQImilRNZSmDfQA8DEDV8k544s+Y7n4IgWHBJeHAsXkVzSz4o6ay399D07SDMjfZ
-LM5/+PpZI7LzoUZC70rfehv5NaFDbGq8WOfedNs0YzXfpJrnxzzJLQ305sqV7Lu0
-QRiC+2LximM7qL4So+0wi3X+moArsR1dvyrN43z7KjjlynBN3cfHa7B7JIubDs/d
-qUXfTnazp8hkpN+fr4vcc7uCIihesZ9828jpX9B6aXtUnEDH3zFyIZvSI32Uij6E
-zZHnUhOyma8IWZHwywDesi5Tpq5In7zrORE0rQLfYmxCIsPghbuUlDgIIxxEt4qR
-LrolcI6TzyTxudjYxCyA7iTilYJhB/hiv19L5NccgmtFGfuT6N6rGuCtzf7i0EAM
-Jb7rfgLLjOvKjn25PwCt
-=Tq5k
------END PGP SIGNATURE-----
-
---7tGYYWp2rWczQsSS--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Thanks,
+> - Lars
+>
+> .
+>
