@@ -1,21 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 4/5] ASoC: SPEAr: remove custom DMA alloc
- compat function
-Date: Tue, 10 Dec 2013 10:00:14 +0100
-Message-ID: <52A6D81E.2090302@metafoo.de>
-References: <1386620656-18391-1-git-send-email-swarren@wwwdotorg.org>
- <1386620656-18391-5-git-send-email-swarren@wwwdotorg.org>
- <52A6336D.2040306@metafoo.de> <52A6B4FE.3020300@st.com>
- <52A6C6A3.2070700@metafoo.de> <52A6D692.9050204@st.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: omap-pcm: Lower the dma coherent
+	mask to 32bits
+Date: Tue, 10 Dec 2013 11:37:09 +0200
+Message-ID: <52A6E0C5.1080103@ti.com>
+References: <1386230802-3660-1-git-send-email-peter.ujfalusi@ti.com>
+ <20131205095619.GC4360@n2100.arm.linux.org.uk> <52A09CDA.6010700@ti.com>
+ <20131205192853.GH4360@n2100.arm.linux.org.uk> <s5h4n6nhxbt.wl%tiwai@suse.de>
+ <20131205210707.GI4360@n2100.arm.linux.org.uk> <s5htxemgzyx.wl%tiwai@suse.de>
+ <20131209170300.GW4360@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-151.synserver.de (smtp-out-215.synserver.de
- [212.40.185.215])
- by alsa0.perex.cz (Postfix) with ESMTP id 903FF261673
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 09:59:34 +0100 (CET)
-In-Reply-To: <52A6D692.9050204@st.com>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 100C926165F
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 10:37:17 +0100 (CET)
+In-Reply-To: <20131209170300.GW4360@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,79 +25,152 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/10/2013 09:53 AM, Rajeev kumar wrote:
-> On 12/10/2013 1:15 PM, Lars-Peter Clausen wrote:
->> On 12/10/2013 07:30 AM, Rajeev kumar wrote:
->>> On 12/10/2013 2:47 AM, Lars-Peter Clausen wrote:
->>>> On 12/09/2013 09:24 PM, Stephen Warren wrote:
->>>>> From: Stephen Warren<swarren@nvidia.com>
->>>>>
->>>>> spear_pcm_request_chan() is almost identical to
->>>>> dmaengine_pcm_compat_request_channel(), with the exception that the
->>>>> latter:
->>>>>
->>>>> a) Assumes that the DAI DMA data is a struct snd_dmaengine_dai_dma_data
->>>>>      pointer rather than some custom type.
->>>>>
->>>>> b) dma_data->filter_data rather than dma_data should be passed to
->>>>>      snd_dmaengine_pcm_request_channel() as the filter data.
->>>>>
->>>>> Make minor changes to the SPEAr DAI drivers so that those two conditions
->>>>> are met. This allows removal of the custom .compat_request_channel().
->>>>>
->>>>> Signed-off-by: Stephen Warren<swarren@nvidia.com>
->>>>> ---
->>>>>    include/sound/spear_dma.h   |  1 -
->>>>>    sound/soc/spear/spdif_in.c  | 10 +++++++---
->>>>>    sound/soc/spear/spdif_out.c | 10 +++++++---
->>>>>    sound/soc/spear/spear_pcm.c | 21 +++++++--------------
->>>>>    sound/soc/spear/spear_pcm.h |  4 +++-
->>>>>    5 files changed, 24 insertions(+), 22 deletions(-)
->>>>>
->>>>> diff --git a/include/sound/spear_dma.h b/include/sound/spear_dma.h
->>>>> index 1b365bfdfb37..65aca51fe255 100644
->>>>> --- a/include/sound/spear_dma.h
->>>>> +++ b/include/sound/spear_dma.h
->>>>> @@ -29,7 +29,6 @@ struct spear_dma_data {
->>>>>        dma_addr_t addr;
->>>>>        u32 max_burst;
->>>>>        enum dma_slave_buswidth addr_width;
->>>>> -    bool (*filter)(struct dma_chan *chan, void *slave);
->>>>>    };
->>>>
->>>> Hm, that spear_dma_data struct looks pretty much like
->>>> snd_dmaengine_dai_dma_data. It's a bit hard to say how it is used exactly
->>>> since the receiver of that struct doesn't seem to be upstream. Rajeev, how
->>>> is this used? The data in spear_dma_data looks like it should be passed to
->>>> the DMA driver via dmaengine_slave_config() rather than while requesting
->>>> the
->>>> channel.
->>>>
->>>> - Lars
->>>> .
->>>>
->>>
->>> The structure spear_dma_data is used to initialize dma parameters
->>> received from
->>> platform data which is required for dma slave configuration.
->>
->> Those parameters look like they should be configured using
->> dmaengine_slave_config(). And not by passing them to the filter function.
->>
->> - Lars
->>
->> .
->>
-> 
-> Yes these parameter will be configured through dmaengine_slave_config().
+Hi Russell,
 
-Ok, but this happens in the filter callback? Or is this piece just missing
-from the upstream driver at the moment? Do you think the code can be
-rewritten to use the generic snd_dmaengine_dai_dma_data struct?
+On 12/09/2013 07:03 PM, Russell King - ARM Linux wrote:
+> Yes, that's a good idea.  Revised version of the patch.  Peter, can you
+> retest please, thanks.
 
-Thanks,
-- Lars
+With this patch PandaES and BeagleXM works fine on top of today's mainline.
+
+Thank you Russell and Takashi!
+
+Tested-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+> diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+> index f6b6bfa88ecf..86c564e52ea7 100644
+> --- a/arch/arm/mm/dma-mapping.c
+> +++ b/arch/arm/mm/dma-mapping.c
+> @@ -158,6 +158,44 @@ struct dma_map_ops arm_coherent_dma_ops =3D {
+>  };
+>  EXPORT_SYMBOL(arm_coherent_dma_ops);
+>  =
+
+> +static int __dma_supported(struct device *dev, u64 mask, bool warn)
+> +{
+> +	unsigned long max_dma_pfn;
+> +
+> +	/*
+> +	 * If the mask allows for more memory than we can address,
+> +	 * and we actually have that much memory, then we must
+> +	 * indicate that DMA to this device is not supported.
+> +	 */
+> +	if (sizeof(mask) !=3D sizeof(dma_addr_t) &&
+> +	    mask > (dma_addr_t)~0 &&
+> +	    dma_to_pfn(dev, ~0) < max_pfn) {
+> +		if (warn) {
+> +			dev_warn(dev, "Coherent DMA mask %#llx is larger than dma_addr_t allo=
+ws\n",
+> +				 mask);
+> +			dev_warn(dev, "Driver did not use or check the return value from dma_=
+set_coherent_mask()?\n");
+> +		}
+> +		return 0;
+> +	}
+> +
+> +	max_dma_pfn =3D min(max_pfn, arm_dma_pfn_limit);
+> +
+> +	/*
+> +	 * Translate the device's DMA mask to a PFN limit.  This
+> +	 * PFN number includes the page which we can DMA to.
+> +	 */
+> +	if (dma_to_pfn(dev, mask) < max_dma_pfn) {
+> +		if (warn)
+> +			dev_warn(dev, "Coherent DMA mask %#llx (pfn %#lx-%#lx) covers a small=
+er range of system memory than the DMA zone pfn 0x0-%#lx\n",
+> +				 mask,
+> +				 dma_to_pfn(dev, 0), dma_to_pfn(dev, mask) + 1,
+> +				 max_dma_pfn + 1);
+> +		return 0;
+> +	}
+> +
+> +	return 1;
+> +}
+> +
+>  static u64 get_coherent_dma_mask(struct device *dev)
+>  {
+>  	u64 mask =3D (u64)DMA_BIT_MASK(32);
+> @@ -176,34 +214,8 @@ static u64 get_coherent_dma_mask(struct device *dev)
+>  			return 0;
+>  		}
+>  =
+
+> -		max_dma_pfn =3D min(max_pfn, arm_dma_pfn_limit);
+> -
+> -		/*
+> -		 * If the mask allows for more memory than we can address,
+> -		 * and we actually have that much memory, then fail the
+> -		 * allocation.
+> -		 */
+> -		if (sizeof(mask) !=3D sizeof(dma_addr_t) &&
+> -		    mask > (dma_addr_t)~0 &&
+> -		    dma_to_pfn(dev, ~0) > max_dma_pfn) {
+> -			dev_warn(dev, "Coherent DMA mask %#llx is larger than dma_addr_t allo=
+ws\n",
+> -				 mask);
+> -			dev_warn(dev, "Driver did not use or check the return value from dma_=
+set_coherent_mask()?\n");
+> -			return 0;
+> -		}
+> -
+> -		/*
+> -		 * Now check that the mask, when translated to a PFN,
+> -		 * fits within the allowable addresses which we can
+> -		 * allocate.
+> -		 */
+> -		if (dma_to_pfn(dev, mask) < max_dma_pfn) {
+> -			dev_warn(dev, "Coherent DMA mask %#llx (pfn %#lx-%#lx) covers a small=
+er range of system memory than the DMA zone pfn 0x0-%#lx\n",
+> -				 mask,
+> -				 dma_to_pfn(dev, 0), dma_to_pfn(dev, mask) + 1,
+> -				 arm_dma_pfn_limit + 1);
+> +		if (!__dma_supported(dev, mask, true))
+>  			return 0;
+> -		}
+>  	}
+>  =
+
+>  	return mask;
+> @@ -1032,28 +1044,7 @@ void arm_dma_sync_sg_for_device(struct device *dev=
+, struct scatterlist *sg,
+>   */
+>  int dma_supported(struct device *dev, u64 mask)
+>  {
+> -	unsigned long limit;
+> -
+> -	/*
+> -	 * If the mask allows for more memory than we can address,
+> -	 * and we actually have that much memory, then we must
+> -	 * indicate that DMA to this device is not supported.
+> -	 */
+> -	if (sizeof(mask) !=3D sizeof(dma_addr_t) &&
+> -	    mask > (dma_addr_t)~0 &&
+> -	    dma_to_pfn(dev, ~0) > arm_dma_pfn_limit)
+> -		return 0;
+> -
+> -	/*
+> -	 * Translate the device's DMA mask to a PFN limit.  This
+> -	 * PFN number includes the page which we can DMA to.
+> -	 */
+> -	limit =3D dma_to_pfn(dev, mask);
+> -
+> -	if (limit < arm_dma_pfn_limit)
+> -		return 0;
+> -
+> -	return 1;
+> +	return __dma_supported(dev, mask, false);
+>  }
+>  EXPORT_SYMBOL(dma_supported);
+>  =
+
+> =
+
+
+
+-- =
+
+P=E9ter
