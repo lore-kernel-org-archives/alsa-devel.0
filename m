@@ -1,15 +1,17 @@
 From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH V2 1/2] ASoC: ep93xx: get rid of
-	ep93xx-pcm-audio struct device
-Date: Tue, 10 Dec 2013 12:34:45 -0700
-Message-ID: <1386704086-28624-1-git-send-email-swarren@wwwdotorg.org>
+Subject: [PATCH V2 2/2] ASoC: ep93xx: remove custom DMA alloc
+	compat function
+Date: Tue, 10 Dec 2013 12:34:46 -0700
+Message-ID: <1386704086-28624-2-git-send-email-swarren@wwwdotorg.org>
+References: <1386704086-28624-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 0326D2652EE
+ by alsa0.perex.cz (Postfix) with ESMTP id B2107265304
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 20:34:58 +0100 (CET)
+In-Reply-To: <1386704086-28624-1-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,10 +27,18 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Stephen Warren <swarren@nvidia.com>
 
-Modify the ep93xx PCM driver so that it's a utility library that can be
-registered on each DAI, rather than a separate struct device. This is
-more in line with how many recent DT-converted platforms operate, and
-avoids the need for yet another struct device.
+ep93xx_compat_request_channel() is almost identical to
+dmaengine_pcm_compat_request_channel(), with the exception that the
+latter:
+
+a) Assumes that the DAI DMA data is a struct snd_dmaengine_dai_dma_data
+   pointer rather than some custom type.
+
+b) dma_data->filter_data rather than dma_data should be passed to
+   snd_dmaengine_pcm_request_channel() as the filter data.
+
+Make minor changes to the ep93xx DAI drivers so that those two conditions
+are met. This allows removal of the custom .compat_request_channel().
 
 Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
 Cc: Ryan Mallon <rmallon@gmail.com>
@@ -36,182 +46,113 @@ Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
 v2: Rebased on a merge of topic/ep93xx and topic/dma
 ---
- sound/soc/cirrus/edb93xx.c     |  2 +-
- sound/soc/cirrus/ep93xx-ac97.c |  8 ++++++++
- sound/soc/cirrus/ep93xx-i2s.c  |  8 ++++++++
- sound/soc/cirrus/ep93xx-pcm.c  | 19 +++++--------------
- sound/soc/cirrus/ep93xx-pcm.h  | 22 ++++++++++++++++++++++
- sound/soc/cirrus/simone.c      |  2 +-
- sound/soc/cirrus/snappercl15.c |  2 +-
- 7 files changed, 46 insertions(+), 17 deletions(-)
- create mode 100644 sound/soc/cirrus/ep93xx-pcm.h
+ sound/soc/cirrus/ep93xx-ac97.c | 12 ++++++++++--
+ sound/soc/cirrus/ep93xx-i2s.c  | 14 ++++++++++++--
+ sound/soc/cirrus/ep93xx-pcm.c  | 13 -------------
+ 3 files changed, 22 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
-index c43fb214558a..4f900efc437c 100644
---- a/sound/soc/cirrus/edb93xx.c
-+++ b/sound/soc/cirrus/edb93xx.c
-@@ -63,7 +63,7 @@ static struct snd_soc_ops edb93xx_ops = {
- static struct snd_soc_dai_link edb93xx_dai = {
- 	.name		= "CS4271",
- 	.stream_name	= "CS4271 HiFi",
--	.platform_name	= "ep93xx-pcm-audio",
-+	.platform_name	= "ep93xx-i2s",
- 	.cpu_dai_name	= "ep93xx-i2s",
- 	.codec_name	= "spi0.0",
- 	.codec_dai_name	= "cs4271-hifi",
 diff --git a/sound/soc/cirrus/ep93xx-ac97.c b/sound/soc/cirrus/ep93xx-ac97.c
-index efa75b5086a4..cc5583da5380 100644
+index cc5583da5380..f30dadf85b99 100644
 --- a/sound/soc/cirrus/ep93xx-ac97.c
 +++ b/sound/soc/cirrus/ep93xx-ac97.c
-@@ -24,6 +24,8 @@
+@@ -19,6 +19,7 @@
+ #include <linux/slab.h>
  
- #include <linux/platform_data/dma-ep93xx.h>
+ #include <sound/core.h>
++#include <sound/dmaengine_pcm.h>
+ #include <sound/ac97_codec.h>
+ #include <sound/soc.h>
  
-+#include "ep93xx-pcm.h"
+@@ -97,6 +98,8 @@ struct ep93xx_ac97_info {
+ 	struct device		*dev;
+ 	void __iomem		*regs;
+ 	struct completion	done;
++	struct snd_dmaengine_dai_dma_data dma_params_rx;
++	struct snd_dmaengine_dai_dma_data dma_params_tx;
+ };
+ 
+ /* currently ALSA only supports a single AC97 device */
+@@ -317,8 +320,13 @@ static int ep93xx_ac97_trigger(struct snd_pcm_substream *substream,
+ 
+ static int ep93xx_ac97_dai_probe(struct snd_soc_dai *dai)
+ {
+-	dai->playback_dma_data = &ep93xx_ac97_pcm_out;
+-	dai->capture_dma_data = &ep93xx_ac97_pcm_in;
++	struct ep93xx_ac97_info *info = snd_soc_dai_get_drvdata(dai);
 +
- /*
-  * Per channel (1-4) registers.
-  */
-@@ -394,8 +396,14 @@ static int ep93xx_ac97_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto fail;
- 
-+	ret = devm_ep93xx_pcm_platform_register(&pdev->dev);
-+	if (ret)
-+		goto fail_unregister;
++	info->dma_params_tx.filter_data = &ep93xx_ac97_pcm_out;
++	info->dma_params_rx.filter_data = &ep93xx_ac97_pcm_in;
 +
++	dai->playback_dma_data = &info->dma_params_tx;
++	dai->capture_dma_data = &info->dma_params_rx;
+ 
  	return 0;
- 
-+fail_unregister:
-+	snd_soc_unregister_component(&pdev->dev);
- fail:
- 	ep93xx_ac97_info = NULL;
- 	snd_soc_set_ac97_ops(NULL);
+ }
 diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
-index a57643d6402f..167728a73da2 100644
+index 167728a73da2..943145f9d1b6 100644
 --- a/sound/soc/cirrus/ep93xx-i2s.c
 +++ b/sound/soc/cirrus/ep93xx-i2s.c
-@@ -30,6 +30,8 @@
- #include <mach/ep93xx-regs.h>
- #include <linux/platform_data/dma-ep93xx.h>
+@@ -21,6 +21,7 @@
+ #include <linux/io.h>
  
-+#include "ep93xx-pcm.h"
-+
- #define EP93XX_I2S_TXCLKCFG		0x00
- #define EP93XX_I2S_RXCLKCFG		0x04
- #define EP93XX_I2S_GLCTRL		0x0C
-@@ -405,8 +407,14 @@ static int ep93xx_i2s_probe(struct platform_device *pdev)
- 	if (err)
- 		goto fail_put_lrclk;
+ #include <sound/core.h>
++#include <sound/dmaengine_pcm.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/initval.h>
+@@ -63,6 +64,8 @@ struct ep93xx_i2s_info {
+ 	struct clk			*sclk;
+ 	struct clk			*lrclk;
+ 	void __iomem			*regs;
++	struct snd_dmaengine_dai_dma_data dma_params_rx;
++	struct snd_dmaengine_dai_dma_data dma_params_tx;
+ };
  
-+	err = devm_ep93xx_pcm_platform_register(&pdev->dev);
-+	if (err)
-+		goto fail_unregister;
+ static struct ep93xx_dma_data ep93xx_i2s_dma_data[] = {
+@@ -142,8 +145,15 @@ static void ep93xx_i2s_disable(struct ep93xx_i2s_info *info, int stream)
+ 
+ static int ep93xx_i2s_dai_probe(struct snd_soc_dai *dai)
+ {
+-	dai->playback_dma_data = &ep93xx_i2s_dma_data[SNDRV_PCM_STREAM_PLAYBACK];
+-	dai->capture_dma_data = &ep93xx_i2s_dma_data[SNDRV_PCM_STREAM_CAPTURE];
++	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
 +
++	info->dma_params_tx.filter_data =
++		&ep93xx_i2s_dma_data[SNDRV_PCM_STREAM_PLAYBACK];
++	info->dma_params_rx.filter_data =
++		&ep93xx_i2s_dma_data[SNDRV_PCM_STREAM_CAPTURE];
++
++	dai->playback_dma_data = &info->dma_params_tx;
++	dai->capture_dma_data = &info->dma_params_rx;
+ 
  	return 0;
- 
-+fail_unregister:
-+	snd_soc_unregister_component(&pdev->dev);
- fail_put_lrclk:
- 	clk_put(info->lrclk);
- fail_put_sclk:
+ }
 diff --git a/sound/soc/cirrus/ep93xx-pcm.c b/sound/soc/cirrus/ep93xx-pcm.c
-index fdb8b8feb4ed..198c5405f2ce 100644
+index 198c5405f2ce..ca6698d75736 100644
 --- a/sound/soc/cirrus/ep93xx-pcm.c
 +++ b/sound/soc/cirrus/ep93xx-pcm.c
-@@ -23,6 +23,8 @@
+@@ -59,22 +59,9 @@ static bool ep93xx_pcm_dma_filter(struct dma_chan *chan, void *filter_param)
+ 	return false;
+ }
  
- #include <linux/platform_data/dma-ep93xx.h>
- 
-+#include "ep93xx-pcm.h"
-+
- static const struct snd_pcm_hardware ep93xx_pcm_hardware = {
- 	.info			= (SNDRV_PCM_INFO_MMAP		|
- 				   SNDRV_PCM_INFO_MMAP_VALID	|
-@@ -76,27 +78,16 @@ static const struct snd_dmaengine_pcm_config ep93xx_dmaengine_pcm_config = {
+-static struct dma_chan *ep93xx_compat_request_channel(
+-	struct snd_soc_pcm_runtime *rtd,
+-	struct snd_pcm_substream *substream)
+-{
+-	struct snd_dmaengine_dai_dma_data *dma_data;
+-
+-	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+-
+-	return snd_dmaengine_pcm_request_channel(ep93xx_pcm_dma_filter,
+-						 dma_data);
+-}
+-
+ static const struct snd_dmaengine_pcm_config ep93xx_dmaengine_pcm_config = {
+ 	.pcm_hardware = &ep93xx_pcm_hardware,
+ 	.compat_filter_fn = ep93xx_pcm_dma_filter,
+-	.compat_request_channel = ep93xx_compat_request_channel,
  	.prealloc_buffer_size = 131072,
  };
  
--static int ep93xx_soc_platform_probe(struct platform_device *pdev)
-+int devm_ep93xx_pcm_platform_register(struct device *dev)
- {
--	return devm_snd_dmaengine_pcm_register(&pdev->dev,
-+	return devm_snd_dmaengine_pcm_register(dev,
- 		&ep93xx_dmaengine_pcm_config,
- 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
- 		SND_DMAENGINE_PCM_FLAG_NO_DT |
- 		SND_DMAENGINE_PCM_FLAG_COMPAT);
- }
--
--static struct platform_driver ep93xx_pcm_driver = {
--	.driver = {
--			.name = "ep93xx-pcm-audio",
--			.owner = THIS_MODULE,
--	},
--
--	.probe = ep93xx_soc_platform_probe,
--};
--
--module_platform_driver(ep93xx_pcm_driver);
-+EXPORT_SYMBOL_GPL(devm_ep93xx_pcm_platform_register);
- 
- MODULE_AUTHOR("Ryan Mallon");
- MODULE_DESCRIPTION("EP93xx ALSA PCM interface");
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:ep93xx-pcm-audio");
-diff --git a/sound/soc/cirrus/ep93xx-pcm.h b/sound/soc/cirrus/ep93xx-pcm.h
-new file mode 100644
-index 000000000000..b7a12a2fae9c
---- /dev/null
-+++ b/sound/soc/cirrus/ep93xx-pcm.h
-@@ -0,0 +1,22 @@
-+/*
-+ * Copyright (c) 2013, NVIDIA CORPORATION.  All rights reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms and conditions of the GNU General Public License,
-+ * version 2, as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#ifndef __EP93XX_PCM_H__
-+#define __EP93XX_PCM_H__
-+
-+int devm_ep93xx_pcm_platform_register(struct device *dev);
-+
-+#endif
-diff --git a/sound/soc/cirrus/simone.c b/sound/soc/cirrus/simone.c
-index 4d094d00c34a..822a19a89e74 100644
---- a/sound/soc/cirrus/simone.c
-+++ b/sound/soc/cirrus/simone.c
-@@ -27,7 +27,7 @@ static struct snd_soc_dai_link simone_dai = {
- 	.cpu_dai_name	= "ep93xx-ac97",
- 	.codec_dai_name	= "ac97-hifi",
- 	.codec_name	= "ac97-codec",
--	.platform_name	= "ep93xx-pcm-audio",
-+	.platform_name	= "ep93xx-ac97",
- };
- 
- static struct snd_soc_card snd_soc_simone = {
-diff --git a/sound/soc/cirrus/snappercl15.c b/sound/soc/cirrus/snappercl15.c
-index 69041074f2c1..29238a7476dd 100644
---- a/sound/soc/cirrus/snappercl15.c
-+++ b/sound/soc/cirrus/snappercl15.c
-@@ -83,7 +83,7 @@ static struct snd_soc_dai_link snappercl15_dai = {
- 	.cpu_dai_name	= "ep93xx-i2s",
- 	.codec_dai_name	= "tlv320aic23-hifi",
- 	.codec_name	= "tlv320aic23-codec.0-001a",
--	.platform_name	=  "ep93xx-pcm-audio",
-+	.platform_name	= "ep93xx-i2s",
- 	.init		= snappercl15_tlv320aic23_init,
- 	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
- 			  SND_SOC_DAIFMT_CBS_CFS,
 -- 
 1.8.1.5
