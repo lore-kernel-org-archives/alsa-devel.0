@@ -1,22 +1,21 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 0/5] ASoC: remove dmaengine
-	compat_request_channel
-Date: Tue, 10 Dec 2013 08:21:47 +0000
-Message-ID: <20131210082147.GM12675@lee--X1>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: [PATCH 4/5] ASoC: SPEAr: remove custom DMA alloc
+ compat function
+Date: Tue, 10 Dec 2013 14:23:38 +0530
+Message-ID: <52A6D692.9050204@st.com>
 References: <1386620656-18391-1-git-send-email-swarren@wwwdotorg.org>
- <52A62A61.304@metafoo.de>
+ <1386620656-18391-5-git-send-email-swarren@wwwdotorg.org>
+ <52A6336D.2040306@metafoo.de> <52A6B4FE.3020300@st.com>
+ <52A6C6A3.2070700@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f51.google.com (mail-yh0-f51.google.com
- [209.85.213.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E30C261701
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 09:21:54 +0100 (CET)
-Received: by mail-yh0-f51.google.com with SMTP id c41so3563464yho.24
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 00:21:52 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <52A62A61.304@metafoo.de>
+Received: from eu1sys200aog118.obsmtp.com (eu1sys200aog118.obsmtp.com
+ [207.126.144.145])
+ by alsa0.perex.cz (Postfix) with ESMTP id B967626165F
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 09:53:56 +0100 (CET)
+In-Reply-To: <52A6C6A3.2070700@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,50 +26,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAwOSBEZWMgMjAxMywgTGFycy1QZXRlciBDbGF1c2VuIHdyb3RlOgoKPiBPbiAxMi8w
-OS8yMDEzIDA5OjI0IFBNLCBTdGVwaGVuIFdhcnJlbiB3cm90ZToKPiA+IEZyb206IFN0ZXBoZW4g
-V2FycmVuIDxzd2FycmVuQG52aWRpYS5jb20+Cj4gPiAKPiA+IFRoaXMgc2VyaWVzIHJlbW92ZXMg
-YWxtb3N0IGFsbCB1c2VycyBvZiB0aGUgQVNvQyBkbWFlbmdpbmUKPiA+IGNvbXBhdF9yZXF1ZXN0
-X2NoYW5uZWwoKSBmdW5jdGlvbiwgYW5kIGl0cyBpbXBsZW1lbnRhdGlvbi4KPiA+IAo+ID4gVGhl
-IHV4NTAwIGRyaXZlciBzdGlsbCB1c2VzIGNvbXBhdF9yZXF1ZXN0X2NoYW5uZWwuIEkgYmVsaWV2
-ZSB0aGF0Cj4gPiBMYXJzLVBldGVyIGlzIHdvcmtpbmcgb24gcmVtb3ZpbmcgaXRzIHVzZSBmcm9t
-IHRoYXQgZHJpdmVyLiBUaGF0IHBhdGNoCj4gPiBvciBzZXJpZXMgd291bGQgbmVlZCB0byBiZSBp
-bnNlcnRlZCBiZXR3ZWVuIDQvNSBhbmQgNS81IGluIHRoaXMgc2VyaWVzLgo+IAo+IExlZSBpcyB3
-b3JraW5nIG9uIGl0LCBhZGRpbmcgaGltIHRvIENjLgoKWWVzLCBwbGVhc2UgY29udGludWUgdG8g
-bGVhdmUgdGhpcyB3aXRoIG1lLgoKVGhlcmUgaXMgbXVjaCB0byBkbyB3aXRoIHRoaXMgZHJpdmVy
-LiBJIGp1c3QgbmVlZCB0byBmaW5kIHNvbWUgdGltZS4KCj4gPiBUaGlzIHNlcmllcyBpcyBiYXNl
-ZCBvbiBBU29DJ3MgdG9waWMvZG1hIGJyYW5jaC4KPiA+IAo+ID4gSSBoYXZlIG9ubHkgY29tcGls
-ZS10ZXN0ZWQgdGhlc2UgcGF0Y2hlcy4KPiA+IAo+ID4gU3RlcGhlbiBXYXJyZW4gKDUpOgo+ID4g
-ICBBU29DOiBlcDkzeHg6IGdldCByaWQgb2YgZXA5M3h4LXBjbS1hdWRpbyBzdHJ1Y3QgZGV2aWNl
-Cj4gPiAgIEFTb0M6IGVwOTN4eDogcmVtb3ZlIGN1c3RvbSBETUEgYWxsb2MgY29tcGF0IGZ1bmN0
-aW9uCj4gPiAgIEFTb0M6IFNQRUFyOiBnZXQgcmlkIG9mIHNwZWFyLXBjbS1hdWRpbyBzdHJ1Y3Qg
-ZGV2aWNlCj4gPiAgIEFTb0M6IFNQRUFyOiByZW1vdmUgY3VzdG9tIERNQSBhbGxvYyBjb21wYXQg
-ZnVuY3Rpb24KPiA+ICAgQVNvQzogZG1hZW5naW5lOiByZW1vdmUgY29tcGF0X3JlcXVlc3RfY2hh
-bm5lbAo+ID4gCj4gPiAgaW5jbHVkZS9zb3VuZC9kbWFlbmdpbmVfcGNtLmggICAgICAgICB8ICAz
-IC0tLQo+ID4gIGluY2x1ZGUvc291bmQvc3BlYXJfZG1hLmggICAgICAgICAgICAgfCAgMSAtCj4g
-PiAgc291bmQvc29jL2NpcnJ1cy9lZGI5M3h4LmMgICAgICAgICAgICB8ICAyICstCj4gPiAgc291
-bmQvc29jL2NpcnJ1cy9lcDkzeHgtYWM5Ny5jICAgICAgICB8IDIxICsrKysrKysrKysrKysrKyst
-LQo+ID4gIHNvdW5kL3NvYy9jaXJydXMvZXA5M3h4LWkycy5jICAgICAgICAgfCAyMyArKysrKysr
-KysrKysrKysrKy0tCj4gPiAgc291bmQvc29jL2NpcnJ1cy9lcDkzeHgtcGNtLmMgICAgICAgICB8
-IDM5ICsrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gPiAgc291bmQvc29jL2NpcnJ1
-cy9lcDkzeHgtcGNtLmggICAgICAgICB8IDI0ICsrKysrKysrKysrKysrKysrKysrCj4gPiAgc291
-bmQvc29jL2NpcnJ1cy9zaW1vbmUuYyAgICAgICAgICAgICB8ICAyICstCj4gPiAgc291bmQvc29j
-L2NpcnJ1cy9zbmFwcGVyY2wxNS5jICAgICAgICB8ICAyICstCj4gPiAgc291bmQvc29jL3NvYy1n
-ZW5lcmljLWRtYWVuZ2luZS1wY20uYyB8ICAzIC0tLQo+ID4gIHNvdW5kL3NvYy9zcGVhci9zcGRp
-Zl9pbi5jICAgICAgICAgICAgfCAyNSArKysrKysrKysrKysrKysrKy0tLS0KPiA+ICBzb3VuZC9z
-b2Mvc3BlYXIvc3BkaWZfb3V0LmMgICAgICAgICAgIHwgMjYgKysrKysrKysrKysrKysrKysrLS0t
-LQo+ID4gIHNvdW5kL3NvYy9zcGVhci9zcGVhcl9wY20uYyAgICAgICAgICAgfCA0MiArKysrKysr
-KysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ID4gIHNvdW5kL3NvYy9zcGVhci9zcGVhcl9w
-Y20uaCAgICAgICAgICAgfCAyNiArKysrKysrKysrKysrKysrKysrKysrCj4gPiAgMTQgZmlsZXMg
-Y2hhbmdlZCwgMTU2IGluc2VydGlvbnMoKyksIDgzIGRlbGV0aW9ucygtKQo+ID4gIGNyZWF0ZSBt
-b2RlIDEwMDY0NCBzb3VuZC9zb2MvY2lycnVzL2VwOTN4eC1wY20uaAo+ID4gIGNyZWF0ZSBtb2Rl
-IDEwMDY0NCBzb3VuZC9zb2Mvc3BlYXIvc3BlYXJfcGNtLmgKPiA+IAo+IAoKLS0gCkxlZSBKb25l
-cwpMaW5hcm8gU1RNaWNyb2VsZWN0cm9uaWNzIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg
-4pSCIE9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNl
-Ym9vayB8IFR3aXR0ZXIgfCBCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+On 12/10/2013 1:15 PM, Lars-Peter Clausen wrote:
+> On 12/10/2013 07:30 AM, Rajeev kumar wrote:
+>> On 12/10/2013 2:47 AM, Lars-Peter Clausen wrote:
+>>> On 12/09/2013 09:24 PM, Stephen Warren wrote:
+>>>> From: Stephen Warren<swarren@nvidia.com>
+>>>>
+>>>> spear_pcm_request_chan() is almost identical to
+>>>> dmaengine_pcm_compat_request_channel(), with the exception that the
+>>>> latter:
+>>>>
+>>>> a) Assumes that the DAI DMA data is a struct snd_dmaengine_dai_dma_data
+>>>>      pointer rather than some custom type.
+>>>>
+>>>> b) dma_data->filter_data rather than dma_data should be passed to
+>>>>      snd_dmaengine_pcm_request_channel() as the filter data.
+>>>>
+>>>> Make minor changes to the SPEAr DAI drivers so that those two conditions
+>>>> are met. This allows removal of the custom .compat_request_channel().
+>>>>
+>>>> Signed-off-by: Stephen Warren<swarren@nvidia.com>
+>>>> ---
+>>>>    include/sound/spear_dma.h   |  1 -
+>>>>    sound/soc/spear/spdif_in.c  | 10 +++++++---
+>>>>    sound/soc/spear/spdif_out.c | 10 +++++++---
+>>>>    sound/soc/spear/spear_pcm.c | 21 +++++++--------------
+>>>>    sound/soc/spear/spear_pcm.h |  4 +++-
+>>>>    5 files changed, 24 insertions(+), 22 deletions(-)
+>>>>
+>>>> diff --git a/include/sound/spear_dma.h b/include/sound/spear_dma.h
+>>>> index 1b365bfdfb37..65aca51fe255 100644
+>>>> --- a/include/sound/spear_dma.h
+>>>> +++ b/include/sound/spear_dma.h
+>>>> @@ -29,7 +29,6 @@ struct spear_dma_data {
+>>>>        dma_addr_t addr;
+>>>>        u32 max_burst;
+>>>>        enum dma_slave_buswidth addr_width;
+>>>> -    bool (*filter)(struct dma_chan *chan, void *slave);
+>>>>    };
+>>>
+>>> Hm, that spear_dma_data struct looks pretty much like
+>>> snd_dmaengine_dai_dma_data. It's a bit hard to say how it is used exactly
+>>> since the receiver of that struct doesn't seem to be upstream. Rajeev, how
+>>> is this used? The data in spear_dma_data looks like it should be passed to
+>>> the DMA driver via dmaengine_slave_config() rather than while requesting the
+>>> channel.
+>>>
+>>> - Lars
+>>> .
+>>>
+>>
+>> The structure spear_dma_data is used to initialize dma parameters received from
+>> platform data which is required for dma slave configuration.
+>
+> Those parameters look like they should be configured using
+> dmaengine_slave_config(). And not by passing them to the filter function.
+>
+> - Lars
+>
+> .
+>
+
+Yes these parameter will be configured through dmaengine_slave_config().
+
+~Rajeev
