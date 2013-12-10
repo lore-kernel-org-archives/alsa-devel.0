@@ -1,15 +1,17 @@
 From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH V2 1/2] ASoC: SPEAr: get rid of spear-pcm-audio
-	struct device
-Date: Tue, 10 Dec 2013 12:35:24 -0700
-Message-ID: <1386704125-28698-1-git-send-email-swarren@wwwdotorg.org>
+Subject: [PATCH V2 2/2] ASoC: SPEAr: remove custom DMA alloc
+	compat function
+Date: Tue, 10 Dec 2013 12:35:25 -0700
+Message-ID: <1386704125-28698-2-git-send-email-swarren@wwwdotorg.org>
+References: <1386704125-28698-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id E68D9265368
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 20:35:33 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id CA64D265361
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2013 20:35:35 +0100 (CET)
+In-Reply-To: <1386704125-28698-1-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,157 +27,192 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Stephen Warren <swarren@nvidia.com>
 
-Modify the SPEAr PCM driver so that it's a utility library that can be
-registered on each DAI, rather than a separate struct device. This is
-more in line with how many recent DT-converted platforms operate, and
-avoids the need for yet another struct device.
+spear_pcm_request_chan() is almost identical to
+dmaengine_pcm_compat_request_channel(), with the exception that the
+latter:
 
-This is also required as a pre-cursor to removing
-spear_pcm_request_chan().
+a) Assumes that the DAI DMA data is a struct snd_dmaengine_dai_dma_data
+   pointer rather than some custom type.
+
+b) dma_data->filter_data rather than dma_data should be passed to
+   snd_dmaengine_pcm_request_channel() as the filter data.
+
+Make minor changes to the SPEAr DAI drivers so that those two conditions
+are met. This allows removal of the custom .compat_request_channel().
 
 Cc: Rajeev Kumar <rajeev-dlh.kumar@st.com>
 Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
 v2: Rebased on a merge of topic/spear and topic/dma
 ---
- sound/soc/spear/spdif_in.c  |  9 +++++++--
- sound/soc/spear/spdif_out.c | 10 ++++++++--
- sound/soc/spear/spear_pcm.c | 18 ++++--------------
- sound/soc/spear/spear_pcm.h | 22 ++++++++++++++++++++++
- 4 files changed, 41 insertions(+), 18 deletions(-)
- create mode 100644 sound/soc/spear/spear_pcm.h
+ include/sound/spear_dma.h   |  1 -
+ sound/soc/spear/spdif_in.c  | 10 +++++++---
+ sound/soc/spear/spdif_out.c | 10 +++++++---
+ sound/soc/spear/spear_pcm.c | 21 +++++++--------------
+ sound/soc/spear/spear_pcm.h |  4 +++-
+ 5 files changed, 24 insertions(+), 22 deletions(-)
 
+diff --git a/include/sound/spear_dma.h b/include/sound/spear_dma.h
+index 1b365bfdfb37..65aca51fe255 100644
+--- a/include/sound/spear_dma.h
++++ b/include/sound/spear_dma.h
+@@ -29,7 +29,6 @@ struct spear_dma_data {
+ 	dma_addr_t addr;
+ 	u32 max_burst;
+ 	enum dma_slave_buswidth addr_width;
+-	bool (*filter)(struct dma_chan *chan, void *slave);
+ };
+ 
+ #endif /* SPEAR_DMA_H */
 diff --git a/sound/soc/spear/spdif_in.c b/sound/soc/spear/spdif_in.c
-index 21a8c954af1c..4627110f3441 100644
+index 4627110f3441..4ab442a63d7e 100644
 --- a/sound/soc/spear/spdif_in.c
 +++ b/sound/soc/spear/spdif_in.c
-@@ -24,6 +24,7 @@
- #include <sound/spear_dma.h>
- #include <sound/spear_spdif.h>
- #include "spdif_in_regs.h"
-+#include "spear_pcm.h"
+@@ -18,6 +18,7 @@
+ #include <linux/ioport.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <sound/dmaengine_pcm.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -38,6 +39,8 @@ struct spdif_in_dev {
+ 	struct device *dev;
+ 	void (*reset_perip)(void);
+ 	int irq;
++	struct snd_dmaengine_dai_dma_data dma_params_rx;
++	struct snd_dmaengine_pcm_config config;
+ };
  
- struct spdif_in_params {
- 	u32 format;
-@@ -257,8 +258,12 @@ static int spdif_in_probe(struct platform_device *pdev)
+ static void spdif_in_configure(struct spdif_in_dev *host)
+@@ -54,7 +57,8 @@ static int spdif_in_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct spdif_in_dev *host = snd_soc_dai_get_drvdata(dai);
+ 
+-	dai->capture_dma_data = &host->dma_params;
++	host->dma_params_rx.filter_data = &host->dma_params;
++	dai->capture_dma_data = &host->dma_params_rx;
+ 
+ 	return 0;
+ }
+@@ -245,7 +249,6 @@ static int spdif_in_probe(struct platform_device *pdev)
+ 	host->dma_params.addr = res_fifo->start;
+ 	host->dma_params.max_burst = 16;
+ 	host->dma_params.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-	host->dma_params.filter = pdata->filter;
+ 	host->reset_perip = pdata->reset_perip;
+ 
+ 	host->dev = &pdev->dev;
+@@ -263,7 +266,8 @@ static int spdif_in_probe(struct platform_device *pdev)
+ 	if (ret)
  		return ret;
- 	}
  
--	return devm_snd_soc_register_component(&pdev->dev, &spdif_in_component,
--					       &spdif_in_dai, 1);
-+	ret = devm_snd_soc_register_component(&pdev->dev, &spdif_in_component,
-+					      &spdif_in_dai, 1);
-+	if (ret)
-+		return ret;
-+
-+	return devm_spear_pcm_platform_register(&pdev->dev);
+-	return devm_spear_pcm_platform_register(&pdev->dev);
++	return devm_spear_pcm_platform_register(&pdev->dev, &host->config,
++						pdata->filter);
  }
  
  static struct platform_driver spdif_in_driver = {
 diff --git a/sound/soc/spear/spdif_out.c b/sound/soc/spear/spdif_out.c
-index b6ef6f78dc78..731a1e0cfeaa 100644
+index 731a1e0cfeaa..fe99f461aff0 100644
 --- a/sound/soc/spear/spdif_out.c
 +++ b/sound/soc/spear/spdif_out.c
-@@ -22,6 +22,7 @@
+@@ -18,6 +18,7 @@
+ #include <linux/ioport.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <sound/dmaengine_pcm.h>
+ #include <sound/soc.h>
  #include <sound/spear_dma.h>
  #include <sound/spear_spdif.h>
- #include "spdif_out_regs.h"
-+#include "spear_pcm.h"
+@@ -36,6 +37,8 @@ struct spdif_out_dev {
+ 	struct spdif_out_params saved_params;
+ 	u32 running;
+ 	void __iomem *io_base;
++	struct snd_dmaengine_dai_dma_data dma_params_tx;
++	struct snd_dmaengine_pcm_config config;
+ };
  
- struct spdif_out_params {
- 	u32 rate;
-@@ -280,6 +281,7 @@ static int spdif_out_probe(struct platform_device *pdev)
- 	struct spdif_out_dev *host;
- 	struct spear_spdif_platform_data *pdata;
- 	struct resource *res;
-+	int ret;
+ static void spdif_out_configure(struct spdif_out_dev *host)
+@@ -245,7 +248,8 @@ static int spdif_soc_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct spdif_out_dev *host = snd_soc_dai_get_drvdata(dai);
  
- 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
- 	if (!host) {
-@@ -306,8 +308,12 @@ static int spdif_out_probe(struct platform_device *pdev)
+-	dai->playback_dma_data = &host->dma_params;
++	host->dma_params_tx.filter_data = &host->dma_params;
++	dai->playback_dma_data = &host->dma_params_tx;
+ 
+ 	return snd_soc_add_dai_controls(dai, spdif_out_controls,
+ 				ARRAY_SIZE(spdif_out_controls));
+@@ -304,7 +308,6 @@ static int spdif_out_probe(struct platform_device *pdev)
+ 	host->dma_params.addr = res->start + SPDIF_OUT_FIFO_DATA;
+ 	host->dma_params.max_burst = 16;
+ 	host->dma_params.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-	host->dma_params.filter = pdata->filter;
  
  	dev_set_drvdata(&pdev->dev, host);
  
--	return devm_snd_soc_register_component(&pdev->dev, &spdif_out_component,
--					       &spdif_out_dai, 1);
-+	ret = devm_snd_soc_register_component(&pdev->dev, &spdif_out_component,
-+					      &spdif_out_dai, 1);
-+	if (ret)
-+		return ret;
-+
-+	return devm_spear_pcm_platform_register(&pdev->dev);
+@@ -313,7 +316,8 @@ static int spdif_out_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	return devm_spear_pcm_platform_register(&pdev->dev);
++	return devm_spear_pcm_platform_register(&pdev->dev, &host->config,
++						pdata->filter);
  }
  
  #ifdef CONFIG_PM
 diff --git a/sound/soc/spear/spear_pcm.c b/sound/soc/spear/spear_pcm.c
-index 9a02141666ea..f288724961da 100644
+index f288724961da..0e5a8f35d0ad 100644
 --- a/sound/soc/spear/spear_pcm.c
 +++ b/sound/soc/spear/spear_pcm.c
-@@ -18,6 +18,7 @@
- #include <sound/pcm.h>
- #include <sound/soc.h>
- #include <sound/spear_dma.h>
-+#include "spear_pcm.h"
+@@ -32,26 +32,19 @@ static const struct snd_pcm_hardware spear_pcm_hardware = {
+ 	.fifo_size = 0, /* fifo size in bytes */
+ };
  
- static const struct snd_pcm_hardware spear_pcm_hardware = {
- 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
-@@ -47,26 +48,15 @@ static const struct snd_dmaengine_pcm_config spear_dmaengine_pcm_config = {
+-static struct dma_chan *spear_pcm_request_chan(struct snd_soc_pcm_runtime *rtd,
+-	struct snd_pcm_substream *substream)
+-{
+-	struct spear_dma_data *dma_data;
+-
+-	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+-
+-	return snd_dmaengine_pcm_request_channel(dma_data->filter, dma_data);
+-}
+-
+ static const struct snd_dmaengine_pcm_config spear_dmaengine_pcm_config = {
+ 	.pcm_hardware = &spear_pcm_hardware,
+-	.compat_request_channel = spear_pcm_request_chan,
  	.prealloc_buffer_size = 16 * 1024,
  };
  
--static int spear_soc_platform_probe(struct platform_device *pdev)
-+int devm_spear_pcm_platform_register(struct device *dev)
+-int devm_spear_pcm_platform_register(struct device *dev)
++int devm_spear_pcm_platform_register(struct device *dev,
++			struct snd_dmaengine_pcm_config *config,
++			bool (*filter)(struct dma_chan *chan, void *slave))
  {
--	return devm_snd_dmaengine_pcm_register(&pdev->dev,
-+	return devm_snd_dmaengine_pcm_register(dev,
- 		&spear_dmaengine_pcm_config,
+-	return devm_snd_dmaengine_pcm_register(dev,
+-		&spear_dmaengine_pcm_config,
++	*config = spear_dmaengine_pcm_config;
++	config->compat_filter_fn = filter;
++
++	return snd_dmaengine_pcm_register(dev, config,
  		SND_DMAENGINE_PCM_FLAG_NO_DT |
  		SND_DMAENGINE_PCM_FLAG_COMPAT);
  }
--
--static struct platform_driver spear_pcm_driver = {
--	.driver = {
--		.name = "spear-pcm-audio",
--		.owner = THIS_MODULE,
--	},
--
--	.probe = spear_soc_platform_probe,
--};
--
--module_platform_driver(spear_pcm_driver);
-+EXPORT_SYMBOL_GPL(devm_spear_pcm_platform_register);
- 
- MODULE_AUTHOR("Rajeev Kumar <rajeev-dlh.kumar@st.com>");
- MODULE_DESCRIPTION("SPEAr PCM DMA module");
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:spear-pcm-audio");
 diff --git a/sound/soc/spear/spear_pcm.h b/sound/soc/spear/spear_pcm.h
-new file mode 100644
-index 000000000000..631e2aa1fb33
---- /dev/null
+index 631e2aa1fb33..9b0ca62d6f02 100644
+--- a/sound/soc/spear/spear_pcm.h
 +++ b/sound/soc/spear/spear_pcm.h
-@@ -0,0 +1,22 @@
-+/*
-+ * Copyright (c) 2013, NVIDIA CORPORATION.  All rights reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms and conditions of the GNU General Public License,
-+ * version 2, as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#ifndef __SPEAR_PCM_H__
-+#define __SPEAR_PCM_H__
-+
-+int devm_spear_pcm_platform_register(struct device *dev);
-+
-+#endif
+@@ -17,6 +17,8 @@
+ #ifndef __SPEAR_PCM_H__
+ #define __SPEAR_PCM_H__
+ 
+-int devm_spear_pcm_platform_register(struct device *dev);
++int devm_spear_pcm_platform_register(struct device *dev,
++			struct snd_dmaengine_pcm_config *config,
++			bool (*filter)(struct dma_chan *chan, void *slave));
+ 
+ #endif
 -- 
 1.8.1.5
