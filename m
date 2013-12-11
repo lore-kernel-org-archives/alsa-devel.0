@@ -1,18 +1,19 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Add static DAC/pin mapping for
-	AD1986A codec
-Date: Wed, 11 Dec 2013 07:26:17 +0100
-Message-ID: <1386743177-14690-1-git-send-email-tiwai@suse.de>
+From: Olivier Langlois <olivier@trillion01.com>
+Subject: need help with loopback driver
+Date: Wed, 11 Dec 2013 01:33:11 -0500
+Message-ID: <1386743591.753.9.camel@Wailaba2>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 79C31261AE2
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2013 07:26:17 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 4E287A7D78
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2013 07:26:17 +0100 (CET)
+Received: from alt-proxy31.mail.unifiedlayer.com
+ (alt-proxy31.mail.unifiedlayer.com [74.220.221.129])
+ by alsa0.perex.cz (Postfix) with SMTP id B8CC4261AE2
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2013 07:33:15 +0100 (CET)
+Received: from [173.179.63.169] (port=35405 helo=[192.168.1.104])
+ by box610.bluehost.com with esmtpsa (TLSv1:RC4-SHA:128) (Exim 4.80)
+ (envelope-from <olivier@trillion01.com>) id 1VqdM9-0001KQ-7v
+ for alsa-devel@alsa-project.org; Tue, 10 Dec 2013 23:33:13 -0700
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,111 +26,151 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-AD1986A codec is a pretty old codec and has really many hidden
-restrictions.  One of such is that each DAC is dedicated to certain
-pin although there are possible connections.  Currently, the generic
-parser tries to assign individual DACs as much as possible, and this
-lead to two bad situations: connections where the sound actually
-doesn't work, and connections conflicting other channels.
+Hi,
 
-We may fix this by trying to find the best connections more harder,
-but as of now, it's easier to give some hints for paired DAC/pin
-connections and honor them if available, since such a hint is needed
-only for specific codecs (right now only AD1986A, and there will be
-unlikely any others in future).
+I am trying to split a pcm stream and send it to my sound card and send
+a downmixed/downsampled copy to the playback device of the loopback
+card.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=64971
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=66621
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_generic.c  | 23 ++++++++++++++++++++++-
- sound/pci/hda/hda_generic.h  |  3 +++
- sound/pci/hda/patch_analog.c | 10 ++++++++++
- 3 files changed, 35 insertions(+), 1 deletion(-)
+I am using speaker-test to test my config. the sound goes to the
+speakers and I am able to record the downmixed signal through the
+loopback capture device but I am seeing a bunch of error messages in the
+speaker-test output which makes me doubt that there is maybe something
+wrong in what I am doing.
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 249cd4615908..c7f6d1cab606 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -474,6 +474,20 @@ static void invalidate_nid_path(struct hda_codec *codec, int idx)
- 	memset(path, 0, sizeof(*path));
- }
- 
-+/* return a DAC if paired to the given pin by codec driver */
-+static hda_nid_t get_preferred_dac(struct hda_codec *codec, hda_nid_t pin)
-+{
-+	struct hda_gen_spec *spec = codec->spec;
-+	const hda_nid_t *list = spec->preferred_dacs;
-+
-+	if (!list)
-+		return 0;
-+	for (; *list; list += 2)
-+		if (*list == pin)
-+			return list[1];
-+	return 0;
-+}
-+
- /* look for an empty DAC slot */
- static hda_nid_t look_for_dac(struct hda_codec *codec, hda_nid_t pin,
- 			      bool is_digital)
-@@ -1192,7 +1206,14 @@ static int try_assign_dacs(struct hda_codec *codec, int num_outs,
- 			continue;
- 		}
- 
--		dacs[i] = look_for_dac(codec, pin, false);
-+		dacs[i] = get_preferred_dac(codec, pin);
-+		if (dacs[i]) {
-+			if (is_dac_already_used(codec, dacs[i]))
-+				badness += bad->shared_primary;
-+		}
-+
-+		if (!dacs[i])
-+			dacs[i] = look_for_dac(codec, pin, false);
- 		if (!dacs[i] && !i) {
- 			/* try to steal the DAC of surrounds for the front */
- 			for (j = 1; j < num_outs; j++) {
-diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 7e45cb44d151..0929a06df812 100644
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -249,6 +249,9 @@ struct hda_gen_spec {
- 	const struct badness_table *main_out_badness;
- 	const struct badness_table *extra_out_badness;
- 
-+	/* preferred pin/DAC pairs; an array of paired NIDs */
-+	const hda_nid_t *preferred_dacs;
-+
- 	/* loopback mixing mode */
- 	bool aamix_mode;
- 
-diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
-index cac015be3325..699262a3e07a 100644
---- a/sound/pci/hda/patch_analog.c
-+++ b/sound/pci/hda/patch_analog.c
-@@ -340,6 +340,14 @@ static int patch_ad1986a(struct hda_codec *codec)
- {
- 	int err;
- 	struct ad198x_spec *spec;
-+	static hda_nid_t preferred_pairs[] = {
-+		0x1a, 0x03,
-+		0x1b, 0x03,
-+		0x1c, 0x04,
-+		0x1d, 0x05,
-+		0x1e, 0x03,
-+		0
-+	};
- 
- 	err = alloc_ad_spec(codec);
- 	if (err < 0)
-@@ -360,6 +368,8 @@ static int patch_ad1986a(struct hda_codec *codec)
- 	 * So, let's disable the shared stream.
- 	 */
- 	spec->gen.multiout.no_share_stream = 1;
-+	/* give fixed DAC/pin pairs */
-+	spec->gen.preferred_dacs = preferred_pairs;
- 
- 	/* AD1986A can't manage the dynamic pin on/off smoothly */
- 	spec->gen.auto_mute_via_amp = 1;
--- 
-1.8.5
+So I am asking help from the experts:
+
+My conf:
+
+pcm.loop_44100_16 {
+    type plug
+    slave {
+       pcm "hw:1,0,0"
+       format S16_LE
+       rate 44100
+    }
+}
+
+pcm.loop_capture {
+    type hw
+    card 1
+    device 1
+    subdevice 0
+}
+
+pcm.split {
+    type plug
+    slave.pcm {
+        type multi
+        slaves {
+            a { channels 8 pcm "hdmi:0,0" } # hdmi output
+            b { channels 2 pcm "loop_44100_16" } # loopback record
+        }
+        bindings {
+          0 { slave a channel 0 } # Front Left
+          1 { slave a channel 1 } # Front Right
+          2 { slave a channel 2 } # Rear  Left
+          3 { slave a channel 3 } # Rear right
+          4 { slave a channel 4 } # center
+          5 { slave a channel 5 } # LFE
+          6 { slave a channel 6 } # Side Left
+          7 { slave a channel 7 } # Side right
+          8 { slave b channel 0 } # left
+          9 { slave b channel 1 } # right
+        }
+    }
+    ttable [
+[ 1 0 0 0 0 0 0 0 0.38 0    ] # Front left
+[ 0 1 0 0 0 0 0 0 0    0.38 ] # Front right
+[ 0 0 1 0 0 0 0 0 0.22 0    ] # Rear left
+[ 0 0 0 1 0 0 0 0 0    0.22 ] # Rear right
+[ 0 0 0 0 1 0 0 0 0.18 0.18 ] # center
+[ 0 0 0 0 0 1 0 0 0    0    ] # LFE
+[ 0 0 0 0 0 0 1 0 0.22 0    ] # Side left
+[ 0 0 0 0 0 0 0 1 0    0.22 ] # Side right
+]
+}
+
+
+$ speaker-test -Dsplit -c8 -r192000 -F S32_LE
+
+speaker-test 1.0.27.2
+
+Playback device is split
+Stream parameters are 192000Hz, S32_LE, 8 channels
+Using 16 octaves of pink noise
+Rate set to 192000Hz (requested 192000Hz)
+Buffer size range from 296 to 131072
+Period size range from 148 to 65536
+Using max buffer size 131072
+Periods = 4
+was set period_size = 65536
+was set buffer_size = 131072
+ 0 - Front Left
+Write error: -32,Broken pipe
+Can't recovery from underrun, prepare failed: Device or resource busy
+Write error: -32,Broken pipe
+Can't recovery from underrun, prepare failed: Device or resource busy
+ 4 - Center
+Write error: -32,Broken pipe
+Write error: -32,Broken pipe
+Can't recovery from underrun, prepare failed: Device or resource busy
+Write error: -32,Broken pipe
+Can't recovery from underrun, prepare failed: Device or resource busy
+Write error: -32,Broken pipe
+Can't recovery from underrun, prepare failed: Device or resource busy
+ 1 - Front Right
+Write error: -32,Broken pipe
+Write error: -32,Broken pipe
+Can't recovery from underrun, prepare failed: Device or resource busy
+Write error: -32,Broken pipe
+Can't recovery from underrun, prepare failed: Device or resource busy
+Write error: -32,Broken pipe
+Can't recovery from underrun, prepare failed: Device or resource busy
+ 7 - Side Right
+Write error: -32,Broken pipe
+Write error: -32,Broken pipe
+Can't recovery from underrun, prepare failed: Device or resource busy
+
+lano1106@whippet2 ~ $ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: HDMI [HDA ATI HDMI], device 3: HDMI 0 [HDMI 0]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: HDMI [HDA ATI HDMI], device 7: HDMI 1 [HDMI 1]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: HDMI [HDA ATI HDMI], device 8: HDMI 2 [HDMI 2]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: HDMI [HDA ATI HDMI], device 9: HDMI 3 [HDMI 3]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: HDMI [HDA ATI HDMI], device 10: HDMI 4 [HDMI 4]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: HDMI [HDA ATI HDMI], device 11: HDMI 5 [HDMI 5]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: Loopback [Loopback], device 0: Loopback PCM [Loopback PCM]
+  Subdevices: 8/8
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
+  Subdevice #3: subdevice #3
+  Subdevice #4: subdevice #4
+  Subdevice #5: subdevice #5
+  Subdevice #6: subdevice #6
+  Subdevice #7: subdevice #7
+card 1: Loopback [Loopback], device 1: Loopback PCM [Loopback PCM]
+  Subdevices: 8/8
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
+  Subdevice #3: subdevice #3
+  Subdevice #4: subdevice #4
+  Subdevice #5: subdevice #5
+  Subdevice #6: subdevice #6
+  Subdevice #7: subdevice #7
+
+Thank you,
