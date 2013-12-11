@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC: DMA deferred probe dependencies
-Date: Wed, 11 Dec 2013 11:13:15 +0000
-Message-ID: <20131211111315.GP11468@sirena.org.uk>
-References: <1386695920-1447-1-git-send-email-swarren@wwwdotorg.org>
+Subject: Re: [PATCH V3] ASoC: dmaengine: support deferred probe
+ for DMA channels
+Date: Wed, 11 Dec 2013 11:15:19 +0000
+Message-ID: <20131211111519.GR11468@sirena.org.uk>
+References: <1386699062-27933-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8219283625409755658=="
+Content-Type: multipart/mixed; boundary="===============4492508671561050587=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 74A2A261A06
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2013 12:13:26 +0100 (CET)
-In-Reply-To: <1386695920-1447-1-git-send-email-swarren@wwwdotorg.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id A796A261691
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2013 12:15:22 +0100 (CET)
+In-Reply-To: <1386699062-27933-1-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,62 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8219283625409755658==
+--===============4492508671561050587==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2uzDqHpccQJpqF2n"
+	protocol="application/pgp-signature"; boundary="QFliEIXSSz7hGqqc"
 Content-Disposition: inline
 
 
---2uzDqHpccQJpqF2n
+--QFliEIXSSz7hGqqc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 10, 2013 at 10:18:40AM -0700, Stephen Warren wrote:
-
-> are available in the git repository at:
-
->   git://git.infradead.org/users/vkoul/slave-dma.git topic/defer_probe
+On Tue, Dec 10, 2013 at 11:11:02AM -0700, Stephen Warren wrote:
+> From: Stephen Warren <swarren@nvidia.com>
 >=20
-> for you to fetch changes up to 0ad7c00057dc1640647c1dc81ccbd009de17a767:
->=20
->   dma: add channel request API that supports deferred probe
+> Enhance dmaengine_pcm_request_chan_of() to support deferred probe for
+> DMA channels, by using the new dma_request_slave_channel_or_err() API.
+> This prevents snd_dmaengine_pcm_register() from succeeding without
+> acquiring DMA channels due to the relevant DMA controller not yet being
+> registered.
 
-Pulled, thanks.
+Applied, thanks.
 
---2uzDqHpccQJpqF2n
+--QFliEIXSSz7hGqqc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSqEjIAAoJELSic+t+oim9LBoQAIKMyrUZDfAN5wf8bEHXe4ca
-rdYyxEI3NNx6PlTkndcXjyzSt99WP2bIHfumBghb3KDN3W1piQutTVVtPgRlCBGX
-1QqGj8xlPUeyGl19x8ThNbJWgl9BIk2VBsJIz/fp2s/VXbLSMtjgU+dyRW81UvuJ
-YdON09DA14GAr8lt2MGKDdkVWEmcCU21UuZiKLdfo/4bI3CoS8QcCe6otvriBqBB
-KxdRKE6xDkccY/GWy0clX5WmFzyPnRZM1bcz2CWzEwfX8Qr81giM0i+GWw27p7pp
-1AfBltyafPHyS1177daiPz9CjaJxSERCezqkQvBTDWOgoMeVG/FjlR7RVMihhrkZ
-jLNRSgzE2xRukAv7fifTqfZKTpx3L8KLV/NHUQNeWazovc6/UN9m1pjzTV1WAe8g
-4qgqSZUaNx9RyiYUQoRx8j4ycUZIxb8DCTDObj0BB9fGrkFb8SGVvEP3qfsPbPss
-wPE/36CdX7A3aXzRf6F7Ns5GFDusDkltFv7NKGGyHEjgWAtiJAbS70VvJ6KSHF0A
-H1pvO2M+Ty7ilMoazzunW8trTjWEd/HuVqX9WoPCUBrjYDZDm2ccNuXpCxBn46d5
-JOvOKh2+UAtLlGXddjsgHUysxI9NUsmaTo77vmbouNac0scR6w576hijUCJjaWK2
-6aNLfS+WN9ZnSsLREXke
-=/cq8
+iQIcBAEBAgAGBQJSqElDAAoJELSic+t+oim9eBkP/02HkmL2Vq2v28taQEv0j/cd
+4gs+8oAERh4qNhrPxzodMvtX2AqinrGVczp6/10/RMPH+bK1yT0ScUJ6SsrKIxkv
+CIzHEydP6p4eN/idxwNBi7VAmPefvZVknSA35e7TsBMHCxWbMxG/nWoWhrGoglVB
+1AtbnkMjAO7AwonQeJOwlaBlxG/0AzX8ljZMfSyZ970kIoT4hJ8W+wxMkdusZFdJ
+L3W+TyI7eiM5Jl8S0xGd6H4weEGGih9IyE6YLMcOKfBIu2JSlWRoQ27xjGRosBcI
+r8Gq0tVXMvqH2pqPVPvH5ZH0GfUgC7vEV222aw25ZBg6XqRuUu1s8E4Jd7b2K1JZ
+NTQmdxfacJmsK1elNr9KNLZvSKUVT3Q11Mq43H2b7k0KKe/y1SQBAUyk3fbQqUAd
+O48Jhz7497RU9moatJEoXI8wtak5UjQohGgiZDAs7ytWI1gtPtVbYEKIKcjy5SHf
+dyAUP9AKeMlltVOtqpPl1DtfffHXWaNxrapoVoDWB5C0anmaEHhHRQ2SQp9EgONe
+tQNm2vB4D4Zj07yPH/Va4tayabkZXCXomtZWca9rcGiw2SB2woszz0QP3Bw4XUJm
+tpNO129hIb0HDE8E7CULNXuccLDWsymIbaVjQggwEB1cGO0+HxVxqSqKAXreHoBA
+RgVyObmR214oBilb0rSx
+=62Os
 -----END PGP SIGNATURE-----
 
---2uzDqHpccQJpqF2n--
+--QFliEIXSSz7hGqqc--
 
---===============8219283625409755658==
+--===============4492508671561050587==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8219283625409755658==--
+--===============4492508671561050587==--
