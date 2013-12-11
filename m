@@ -1,29 +1,15 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: HD-audio runtime PM
-Date: Wed, 11 Dec 2013 05:37:44 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8014339B3@SHSMSX101.ccr.corp.intel.com>
-References: <s5hli0gmyxt.wl%tiwai@suse.de>
- <CA+v+29hKbtTBLh=qNRBVqd-NUfXRVBBokoypDh_0RMRQ_VjYvw@mail.gmail.com>
- <s5hiovfy9ji.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F80141992D@SHSMSX101.ccr.corp.intel.com>
- <s5ha9gry640.wl%tiwai@suse.de>	<s5hzjorwouu.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F80141CF98@SHSMSX101.ccr.corp.intel.com>
- <s5heh626rnh.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F80141D1C7@SHSMSX101.ccr.corp.intel.com>
- <F46914AEC2663F4A9BB62374E5EEF8F80142FA38@SHSMSX101.ccr.corp.intel.com>
- <F46914AEC2663F4A9BB62374E5EEF8F801432212@SHSMSX101.ccr.corp.intel.com>
- <s5hwqjchozq.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F801432305@SHSMSX101.ccr.corp.intel.com>
- <s5htxeghjf1.wl%tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 0/8][RFC] a driver for Fireworks based
+	devices
+Date: Wed, 11 Dec 2013 18:15:51 +0900
+Message-ID: <1386753359-12458-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 130F12615EE
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2013 09:08:10 +0100 (CET)
-In-Reply-To: <s5htxeghjf1.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 093F82615F3
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2013 10:16:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,52 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <wangxingchao2011@gmail.com>, David Henningsson <david.henningsson@canonical.com>
+To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, December 10, 2013 10:26 PM
+This series of patch is update of my previous one:
+ [PATCH 0/8] [RFC] new driver for Echo Audio's Fireworks based devices
+ http://mailman.alsa-project.org/pipermail/alsa-devel/2013-June/062614.html
 
-> > > > HW team clarified that HDMI/DP jack insertion cannot wake up the
-> > > controller from D3. So this is a HW restriction for Haswell, not a
-> > > driver regression.
-> > > >
-> > > > Now the problem on Haswell/Broadwell is:
-> > > > After the controller enters D3, Gfx driver can still detect
-> > > > HDMI/DP hot
-> > > plug event even if the display power well is disabled.
-> > > > Although Gfx driver set Presence Detect and ELD Valid , the audio
-> > > controller does not wake up and so audio driver has no idea about
-> > > the HDMI/DP hot-plug.
-> > > >
-> > > > Is it audio driver itself or the user space that need this ELD info?
-> > > > Maybe Gfx driver can directly report ELD info to user space.
-> > >
-> > > If so, the graphics driver can wake up the audio driver as well --
-> > > this is yet one more reason to create a direct communication channel
-> > > between the graphics and audio drivers :)
-> >
-> > Need the audio driver provide an API for gfx driver?
-> > Maybe this API can call snd_hda_power_up(codec) and then
-> > snd_hda_power_down(codec), thus the controller and codec will wake
-> up and audio driver can check ELD info.
-> 
-> Well, we can create a common object containing the ops registered by
-> both graphics and audio drivers, then communicate through it, something
-> like vga_switcheroo.
+This series of patch is based on this series:
+ [RFC][PATCH 00/17] Enhancement for firewire-lib
+ http://mailman.alsa-project.org/pipermail/alsa-devel/2013-November/069163.html
 
-Hi Takashi,
+I hope to get comments, especially for hwdep interface for Fireworks
+command/response which was discussed below:
+ include/uapi/firewire.h for other firewire drivers
+ http://mailman.alsa-project.org/pipermail/alsa-devel/2013-October/067743.html
 
-I'm sure how to use a common object like vga_switcheroo. Would you please share more info?
+Takashi Sakamoto (8):
+  fireworks: Add skelton for Fireworks based devices
+  fireworks: Add transaction and some commands
+  fireworks: Add connection and stream management
+  fireworks: Add proc interface for debugging purpose
+  fireworks: Add MIDI interface
+  fireworks: Add PCM interface
+  fireworks: Add hwdep interface
+  fireworks: Add command/response functionality into hwdep interface
 
-I feel a wake up process may be like this:
-- Gfx driver detects the hot-plug at first and notify audio driver by the communication channel.
-- In the notification callback, the audio driver wakes up the audio controller to D0, but codec can still stay in D3. 
- (Hope we can add a time out for controller here to avoid controller back to D3 at once and lose the capability to check unsol event)
-- Then when Gfx driver enables or disables audio, and the audio controller can receive the unsol event in D0.
-- Audio driver check ELD in unsol event handler, this will make codec resume to D0.
+ include/uapi/sound/asound.h                      |   3 +-
+ include/uapi/sound/firewire.h                    |  19 +
+ sound/firewire/Kconfig                           |  15 +
+ sound/firewire/Makefile                          |   1 +
+ sound/firewire/fireworks/Makefile                |   5 +
+ sound/firewire/fireworks/fireworks.c             | 344 +++++++++++++++++
+ sound/firewire/fireworks/fireworks.h             | 239 ++++++++++++
+ sound/firewire/fireworks/fireworks_command.c     | 401 ++++++++++++++++++++
+ sound/firewire/fireworks/fireworks_hwdep.c       | 310 +++++++++++++++
+ sound/firewire/fireworks/fireworks_midi.c        | 176 +++++++++
+ sound/firewire/fireworks/fireworks_pcm.c         | 459 +++++++++++++++++++++++
+ sound/firewire/fireworks/fireworks_proc.c        | 216 +++++++++++
+ sound/firewire/fireworks/fireworks_stream.c      | 364 ++++++++++++++++++
+ sound/firewire/fireworks/fireworks_transaction.c | 340 +++++++++++++++++
+ 14 files changed, 2891 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/fireworks/Makefile
+ create mode 100644 sound/firewire/fireworks/fireworks.c
+ create mode 100644 sound/firewire/fireworks/fireworks.h
+ create mode 100644 sound/firewire/fireworks/fireworks_command.c
+ create mode 100644 sound/firewire/fireworks/fireworks_hwdep.c
+ create mode 100644 sound/firewire/fireworks/fireworks_midi.c
+ create mode 100644 sound/firewire/fireworks/fireworks_pcm.c
+ create mode 100644 sound/firewire/fireworks/fireworks_proc.c
+ create mode 100644 sound/firewire/fireworks/fireworks_stream.c
+ create mode 100644 sound/firewire/fireworks/fireworks_transaction.c
 
-Regards
-Mengdong
+-- 
+1.8.3.2
