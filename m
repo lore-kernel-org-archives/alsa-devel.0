@@ -1,43 +1,272 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Add enable_msi=0 workaround for four HP machines
-Date: Thu, 12 Dec 2013 09:52:03 +0100
-Message-ID: <1386838323-3692-1-git-send-email-david.henningsson@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1260225@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>, stable@vger.kernel.org
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: [PATCH v3] ASoC: fsl: imx-wm8962: Grant
+	hw_params/free() permission to control FLL
+Date: Thu, 12 Dec 2013 17:59:28 +0800
+Message-ID: <1386842368-19951-1-git-send-email-Guangyu.Chen@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from db9outboundpool.messaging.microsoft.com
+ (mail-db9lp0251.outbound.messaging.microsoft.com [213.199.154.251])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05A9F260851
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 10:59:27 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-While enabling these machines, we found we would sometimes lose an
-interrupt if we change hardware volume during playback, and that
-disabling msi fixed this issue. (Losing the interrupt caused underruns
-and crackling audio, as the one second timeout is usually bigger than
-the period size.)
+From: Nicolin Chen <b42378@freescale.com>
 
-The machines were all machines from HP, running AMD Hudson controller,
-and Realtek ALC282 codec.
+Previously, we couldn't use hw_params() and hw_free() to open and close FLL
+becuase there might be a race between two simmultaneous substreams so the
+FLL configuration would be changed and accordingly mulfunction. Also it
+wouldn't make sense for bypass path feature of WM8962. So we adopted DAPM
+way to control it. However, if we want to playback a different sample rate
+file, we need to wait for DAPM to change its bias_level and reconfigure FLL.
 
-Cc: stable@vger.kernel.org
-BugLink: https://bugs.launchpad.net/bugs/1260225
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+But after we introduced full symmetry protection in the soc-pcm, we don't
+need to worry about the race any more. And the instance by using hw_params()
+and hw_free() to control FLL will allow us to support flexible use cases,
+'aplay -Dhw:0 44k16bit.wav 48k24bit.wav 32k16bit.wav' for example.
+
+Thus this patch mainly adds FLL configuration code to hw_params/hw_free()
+so as to enchance the sound card's capability. Meanwhile in order not to
+break the bypass path feature, we make both set_bias_level() and hw_xxx()
+ways coexist.
+
+Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
 ---
- sound/pci/hda/hda_intel.c |    4 ++++
- 1 file changed, 4 insertions(+)
+Changelog
+v3:
+ * Added analogue bypass path check in hw_free() to protect bypass route.
+ * Kept sample_rate and sample_format to global static.
+v2:
+ * Added spinlock potection for boolean fll_locked in PATCH-2
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index af86c71..440c355 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -3446,6 +3446,10 @@ static void check_probe_mask(struct azx *chip, int dev)
-  * white/black-list for enable_msi
-  */
- static struct snd_pci_quirk msi_black_list[] = {
-+	SND_PCI_QUIRK(0x103c, 0x2191, "HP", 0), /* AMD Hudson */
-+	SND_PCI_QUIRK(0x103c, 0x2192, "HP", 0), /* AMD Hudson */
-+	SND_PCI_QUIRK(0x103c, 0x21f7, "HP", 0), /* AMD Hudson */
-+	SND_PCI_QUIRK(0x103c, 0x21fa, "HP", 0), /* AMD Hudson */
- 	SND_PCI_QUIRK(0x1043, 0x81f2, "ASUS", 0), /* Athlon64 X2 + nvidia */
- 	SND_PCI_QUIRK(0x1043, 0x81f6, "ASUS", 0), /* nvidia */
- 	SND_PCI_QUIRK(0x1043, 0x822d, "ASUS", 0), /* Athlon64 X2 + nvidia MCP55 */
+ sound/soc/fsl/imx-wm8962.c | 154 +++++++++++++++++++++++++++++++--------------
+ 1 file changed, 108 insertions(+), 46 deletions(-)
+
+diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
+index 3fd76bc..d6aa854 100644
+--- a/sound/soc/fsl/imx-wm8962.c
++++ b/sound/soc/fsl/imx-wm8962.c
+@@ -17,6 +17,7 @@
+ #include <linux/of_platform.h>
+ #include <linux/i2c.h>
+ #include <linux/slab.h>
++#include <linux/spinlock.h>
+ #include <linux/clk.h>
+ #include <sound/soc.h>
+ #include <sound/pcm_params.h>
+@@ -35,6 +36,8 @@ struct imx_wm8962_data {
+ 	char platform_name[DAI_NAME_SIZE];
+ 	struct clk *codec_clk;
+ 	unsigned int clk_frequency;
++	spinlock_t fll_lock;
++	bool fll_locked;
+ };
+ 
+ struct imx_priv {
+@@ -51,18 +54,114 @@ static const struct snd_soc_dapm_widget imx_wm8962_dapm_widgets[] = {
+ 
+ static int sample_rate = 44100;
+ static snd_pcm_format_t sample_format = SNDRV_PCM_FORMAT_S16_LE;
++static int imx_wm8962_enable_fll(struct snd_soc_dai *codec_dai, u32 rate,
++				 snd_pcm_format_t format)
++{
++	struct imx_priv *priv = &card_priv;
++	struct device *dev = &priv->pdev->dev;
++	struct imx_wm8962_data *data = platform_get_drvdata(priv->pdev);
++	unsigned long flags;
++	u32 freq, ret;
++
++	spin_lock_irqsave(&data->fll_lock, flags);
++	if (data->fll_locked) {
++		spin_unlock_irqrestore(&data->fll_lock, flags);
++		return 0;
++	}
++
++	data->fll_locked = true;
++	spin_unlock_irqrestore(&data->fll_lock, flags);
++
++	if (format == SNDRV_PCM_FORMAT_S24_LE)
++		freq = rate * 384;
++	else
++		freq = rate * 256;
++
++	ret = snd_soc_dai_set_pll(codec_dai, WM8962_FLL, WM8962_FLL_MCLK,
++				  data->clk_frequency, freq);
++	if (ret) {
++		dev_err(dev, "failed to start FLL: %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8962_SYSCLK_FLL,
++				     freq, SND_SOC_CLOCK_IN);
++	if (ret)
++		dev_err(dev, "failed to set SYSCLK: %d\n", ret);
++
++	return ret;
++}
++
++static int imx_wm8962_disable_fll(struct snd_soc_dai *codec_dai)
++{
++	struct imx_priv *priv = &card_priv;
++	struct device *dev = &priv->pdev->dev;
++	struct imx_wm8962_data *data = platform_get_drvdata(priv->pdev);
++	unsigned long flags;
++	int ret;
++
++	spin_lock_irqsave(&data->fll_lock, flags);
++	if (!data->fll_locked) {
++		spin_unlock_irqrestore(&data->fll_lock, flags);
++		return 0;
++	}
++
++	data->fll_locked = false;
++	spin_unlock_irqrestore(&data->fll_lock, flags);
++
++	/* Switch to MCLK as sysclk once so as to disable FLL */
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8962_SYSCLK_MCLK,
++				     0, SND_SOC_CLOCK_IN);
++	if (ret) {
++		dev_err(dev, "failed to switch away from FLL: %d\n", ret);
++		return ret;
++	}
++
++	/* Disable FLL so that we can reset its output freq later */
++	ret = snd_soc_dai_set_pll(codec_dai, WM8962_FLL,
++				  WM8962_FLL_MCLK, 0, 0);
++	if (ret)
++		dev_err(dev, "failed to stop FLL: %d\n", ret);
++
++	return ret;
++}
+ 
+ static int imx_hifi_hw_params(struct snd_pcm_substream *substream,
+ 		struct snd_pcm_hw_params *params)
+ {
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++
+ 	sample_rate = params_rate(params);
+ 	sample_format = params_format(params);
+ 
+-	return 0;
++	return imx_wm8962_enable_fll(codec_dai, sample_rate, sample_format);
++}
++
++static int imx_hifi_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_codec *codec = rtd->codec;
++	u32 mask, bypass = 0;
++
++	mask = WM8962_MIXINL_TO_HPMIXL_MASK | WM8962_MIXINR_TO_HPMIXL_MASK |
++		WM8962_IN4L_TO_HPMIXL_MASK | WM8962_IN4R_TO_HPMIXL_MASK;
++	bypass |= snd_soc_read(codec, WM8962_HEADPHONE_MIXER_1) & mask;
++	bypass |= snd_soc_read(codec, WM8962_HEADPHONE_MIXER_2) & mask;
++	bypass |= snd_soc_read(codec, WM8962_SPEAKER_MIXER_1) & mask;
++	bypass |= snd_soc_read(codec, WM8962_SPEAKER_MIXER_2) & mask;
++
++	/* Don't diable FLL if running multi-substreams or analogue bypass */
++	if (codec_dai->active != 1 || bypass)
++		return 0;
++
++	return imx_wm8962_disable_fll(codec_dai);
+ }
+ 
+ static struct snd_soc_ops imx_hifi_ops = {
+ 	.hw_params = imx_hifi_hw_params,
++	.hw_free = imx_hifi_hw_free,
+ };
+ 
+ static int imx_wm8962_set_bias_level(struct snd_soc_card *card,
+@@ -70,60 +169,20 @@ static int imx_wm8962_set_bias_level(struct snd_soc_card *card,
+ 					enum snd_soc_bias_level level)
+ {
+ 	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
+-	struct imx_priv *priv = &card_priv;
+-	struct imx_wm8962_data *data = platform_get_drvdata(priv->pdev);
+-	struct device *dev = &priv->pdev->dev;
+-	unsigned int pll_out;
+-	int ret;
+ 
+ 	if (dapm->dev != codec_dai->dev)
+ 		return 0;
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_PREPARE:
+-		if (dapm->bias_level == SND_SOC_BIAS_STANDBY) {
+-			if (sample_format == SNDRV_PCM_FORMAT_S24_LE)
+-				pll_out = sample_rate * 384;
+-			else
+-				pll_out = sample_rate * 256;
+-
+-			ret = snd_soc_dai_set_pll(codec_dai, WM8962_FLL,
+-					WM8962_FLL_MCLK, data->clk_frequency,
+-					pll_out);
+-			if (ret < 0) {
+-				dev_err(dev, "failed to start FLL: %d\n", ret);
+-				return ret;
+-			}
+-
+-			ret = snd_soc_dai_set_sysclk(codec_dai,
+-					WM8962_SYSCLK_FLL, pll_out,
+-					SND_SOC_CLOCK_IN);
+-			if (ret < 0) {
+-				dev_err(dev, "failed to set SYSCLK: %d\n", ret);
+-				return ret;
+-			}
+-		}
++		if (dapm->bias_level == SND_SOC_BIAS_STANDBY)
++			return imx_wm8962_enable_fll(codec_dai, sample_rate,
++						     sample_format);
+ 		break;
+ 
+ 	case SND_SOC_BIAS_STANDBY:
+-		if (dapm->bias_level == SND_SOC_BIAS_PREPARE) {
+-			ret = snd_soc_dai_set_sysclk(codec_dai,
+-					WM8962_SYSCLK_MCLK, data->clk_frequency,
+-					SND_SOC_CLOCK_IN);
+-			if (ret < 0) {
+-				dev_err(dev,
+-					"failed to switch away from FLL: %d\n",
+-					ret);
+-				return ret;
+-			}
+-
+-			ret = snd_soc_dai_set_pll(codec_dai, WM8962_FLL,
+-					0, 0, 0);
+-			if (ret < 0) {
+-				dev_err(dev, "failed to stop FLL: %d\n", ret);
+-				return ret;
+-			}
+-		}
++		if (dapm->bias_level == SND_SOC_BIAS_PREPARE)
++			return imx_wm8962_disable_fll(codec_dai);
+ 		break;
+ 
+ 	default:
+@@ -225,6 +284,9 @@ static int imx_wm8962_probe(struct platform_device *pdev)
+ 		goto fail;
+ 	}
+ 
++	data->fll_locked = false;
++	spin_lock_init(&data->fll_lock);
++
+ 	data->codec_clk = devm_clk_get(&codec_dev->dev, NULL);
+ 	if (IS_ERR(data->codec_clk)) {
+ 		ret = PTR_ERR(data->codec_clk);
 -- 
-1.7.9.5
+1.8.4
