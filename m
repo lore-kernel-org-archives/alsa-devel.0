@@ -1,31 +1,20 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: HD-audio runtime PM
-Date: Thu, 12 Dec 2013 05:21:01 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801435577@SHSMSX101.ccr.corp.intel.com>
-References: <s5hli0gmyxt.wl%tiwai@suse.de>
- <CA+v+29hKbtTBLh=qNRBVqd-NUfXRVBBokoypDh_0RMRQ_VjYvw@mail.gmail.com>
- <s5hiovfy9ji.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F80141992D@SHSMSX101.ccr.corp.intel.com>
- <s5ha9gry640.wl%tiwai@suse.de>	<s5hzjorwouu.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F80141CF98@SHSMSX101.ccr.corp.intel.com>
- <s5heh626rnh.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F80141D1C7@SHSMSX101.ccr.corp.intel.com>
- <F46914AEC2663F4A9BB62374E5EEF8F80142FA38@SHSMSX101.ccr.corp.intel.com>
- <F46914AEC2663F4A9BB62374E5EEF8F801432212@SHSMSX101.ccr.corp.intel.com>
- <s5hwqjchozq.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F801432305@SHSMSX101.ccr.corp.intel.com>
- <s5htxeghjf1.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F8014339B3@SHSMSX101.ccr.corp.intel.com>
- <s5heh5jjyq9.wl%tiwai@suse.de>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH] ASoC: sgtl5000: drop
+ sgtl5000_set_bias_level() call from sgtl5000_remove()
+Date: Thu, 12 Dec 2013 22:17:58 +0800
+Message-ID: <20131212141755.GA20319@S2101-09.ap.freescale.net>
+References: <1386034012-18677-1-git-send-email-shawn.guo@linaro.org>
+ <20131203160354.GD27568@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 69046260859
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 12:28:48 +0100 (CET)
-In-Reply-To: <s5heh5jjyq9.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F26F260864
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 15:17:25 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20131203160354.GD27568@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,83 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <wangxingchao2011@gmail.com>, David Henningsson <david.henningsson@canonical.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Wednesday, December 11, 2013 9:37 PM
-> To: Lin, Mengdong
-> Cc: Alsa-devel@alsa-project.org; Wang Xingchao; David Henningsson
-> Subject: Re: [alsa-devel] HD-audio runtime PM
+On Tue, Dec 03, 2013 at 04:03:54PM +0000, Mark Brown wrote:
+> On Tue, Dec 03, 2013 at 09:26:51AM +0800, Shawn Guo wrote:
 > 
-> At Wed, 11 Dec 2013 05:37:44 +0000,
-> Lin, Mengdong wrote:
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Tuesday, December 10, 2013 10:26 PM
-> >
-> > > > > > HW team clarified that HDMI/DP jack insertion cannot wake up
-> > > > > > the
-> > > > > controller from D3. So this is a HW restriction for Haswell, not
-> > > > > a driver regression.
-> > > > > >
-> > > > > > Now the problem on Haswell/Broadwell is:
-> > > > > > After the controller enters D3, Gfx driver can still detect
-> > > > > > HDMI/DP hot
-> > > > > plug event even if the display power well is disabled.
-> > > > > > Although Gfx driver set Presence Detect and ELD Valid , the
-> > > > > > audio
-> > > > > controller does not wake up and so audio driver has no idea
-> > > > > about the HDMI/DP hot-plug.
-> > > > > >
-> > > > > > Is it audio driver itself or the user space that need this ELD info?
-> > > > > > Maybe Gfx driver can directly report ELD info to user space.
-> > > > >
-> > > > > If so, the graphics driver can wake up the audio driver as well
-> > > > > -- this is yet one more reason to create a direct communication
-> > > > > channel between the graphics and audio drivers :)
-> > > >
-> > > > Need the audio driver provide an API for gfx driver?
-> > > > Maybe this API can call snd_hda_power_up(codec) and then
-> > > > snd_hda_power_down(codec), thus the controller and codec will
-> wake
-> > > up and audio driver can check ELD info.
-> > >
-> > > Well, we can create a common object containing the ops registered by
-> > > both graphics and audio drivers, then communicate through it,
-> > > something like vga_switcheroo.
-> >
-> > Hi Takashi,
-> >
-> > I'm sure how to use a common object like vga_switcheroo. Would you
-> please share more info?
-> >
-> > I feel a wake up process may be like this:
-> > - Gfx driver detects the hot-plug at first and notify audio driver by the
-> communication channel.
-> > - In the notification callback, the audio driver wakes up the audio
-> controller to D0, but codec can still stay in D3.
-> >  (Hope we can add a time out for controller here to avoid controller
-> > back to D3 at once and lose the capability to check unsol event)
-> > - Then when Gfx driver enables or disables audio, and the audio
-> controller can receive the unsol event in D0.
-> > - Audio driver check ELD in unsol event handler, this will make codec
-> resume to D0.
+> > Looking at function sgtl5000_set_bias_level(), we can find it
+> > essentially does the following 3 things in case of SND_SOC_BIAS_OFF.
 > 
-> If we have a direct communication with the graphics driver, the audio
-> driver doesn't wait for the unsol event at all.  It can retrieve ELD and
-> even better port info more directly; i.e. we can skip even the wake up of
-> the HDMI controller and codec chips.  The notification and ELD updates
-> can be done without the audio hardware, after all (actual ELD updates will
-> be done at resume).
+> >  1. Set regmap into cache only mode with regcache_cache_only() call
+> >  2. Disable supplies by calling regulator_bulk_disable()
+> >  3. Set codec->dapm.bias_level as SND_SOC_BIAS_OFF
 > 
-Good idea. We can try this.
-The HDMI controller and codec can sleep until user space really wants to use HDMI audio.
+> > For 1, it's clearly incorrect and that's why we see the failure here.
+> > For 2, it's unnecessary since sgtl5000_remove() already calls
+> > regulator_bulk_disable() to disable supplies.  For 3, it does not make
+> > any sense either, since the bias level will be initialized to
+> > SND_SOC_BIAS_STANDBY in the next probe anyway.
+> > 
+> > Let's drop the sgtl5000_set_bias_level() call from sgtl5000_remove() to
+> > fix the kernel Oops below.
+> 
+> It's not clear to me that this is the best fix, all this code looks
+> confused.
 
-Regards
-Mengdong
+Yea, I'm working on a series to clean up and fix sgtl5000 driver, and
+this issue should be removed by the series along the way.  So please
+disregard this patch.
+
+Shawn
+
+> Given that (as is idiomatic) the regulators are being enabled
+> in set_bias_level() what's happening in _OFF makes sense, what I'd
+> expect to see happen is that the duplicate disables and frees are
+> deleted from the remove path and the probe remembers to remove the cache
+> only setting.  Alternatively all the regulator and cache handling could
+> be removed from set_bias_level().  The end result should be that either
+> set_bias_level() or the probe and remove are handling this but not both.
+> 
+> The regulator get and remove probably ought to move out to the I2C
+> level, as should much of what happens in the probe function.
