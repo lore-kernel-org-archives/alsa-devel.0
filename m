@@ -1,18 +1,16 @@
-From: Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@web.de>
-Subject: Volume issues: Logitech S-150 USB Digital Speaker /
- "usb_audio: Warning! Unlikely big volume range"
-Date: Thu, 12 Dec 2013 02:35:29 +0100
-Message-ID: <20131212013529.GE5606@Linus-Debian>
+From: Nenghua Cao <nhcao@marvell.com>
+Subject: [PATCH] ASOC:DAPM: extend dapm kcontrol to support
+	runtime route update
+Date: Thu, 12 Dec 2013 16:06:59 +0800
+Message-ID: <1386835619-18070-1-git-send-email-nhcao@marvell.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="b5gNqxB1S1yM7hjW"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 65E2F260376
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 02:35:33 +0100 (CET)
-Received: from localhost ([89.244.72.206]) by smtp.web.de (mrweb101) with
- ESMTPSA (Nemesis) id 0MLgZ5-1VrCAS1An5-000xIg for
- <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 02:35:33 +0100
-Content-Disposition: inline
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com
+ [67.231.156.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04C6926080B
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 09:02:18 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,232 +20,209 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Yacine Belkadi <yacine.belkadi.1@gmail.com>, alsa-devel@alsa-project.org
+Cc: Henry zhao <xzhao10@marvell.com>, nhcao <nhcao@marvell.com>, cxie4@marvell.com
 List-Id: alsa-devel@alsa-project.org
 
+From: nhcao <nhcao@marvell.com>
 
---b5gNqxB1S1yM7hjW
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+    DPCM can dynamically alter the FE to BE PCM links at runtime based
+on mixer setting updates. DAPM has provided common get/put function for
+mixer/mux. But these function doesn't call soc_dpcm_runtime_update()
+func to update pcm links. This patch defines a DPCM DPCM kcontrol. For
+this control, the common get/put function will update FE to BE links
+dynamically. This patch has no impact to the current code.
 
-Hi!
+Change-Id: I45e291f467e4fa17e21aa8923c2b712d52067aca
+Signed-off-by: nhcao <nhcao@marvell.com>
+---
+ include/sound/control.h  |    4 ++++
+ include/sound/soc-dapm.h |   32 ++++++++++++++++++++++++++++++++
+ sound/core/control.c     |    1 +
+ sound/soc/soc-dapm.c     |   28 ++++++++++++++++++++++++----
+ 4 files changed, 61 insertions(+), 4 deletions(-)
 
-I'm currently trying to use a Logitech S-150 USB Digital Speaker.
-Unfortunately, the volume range is way off, i.e. only 1% and 2%
-settings in the alsamixer are actually usable for general
-playback.
-
-dmesg:
------
-[ 9850.768093] usb 1-1: new full-speed USB device number 2 using uhci_hcd
-[ 9850.948103] usb 1-1: New USB device found, idVendor=1130, idProduct=1620
-[ 9850.948123] usb 1-1: New USB device strings: Mfr=0, Product=2, SerialNumber=0
-[ 9850.948138] usb 1-1: Product: USB  AUDIO
-[ 9852.353857] hidraw: raw HID events driver (C) Jiri Kosina
-[ 9852.397038] usb_audio: Warning! Unlikely big volume range (=17152), cval->res is probably wrong.
-[ 9852.397054] usb_audio: [2] FU [PCM Playback Volume] ch = 2, val = 0/17152/1<6>[ 9852.399123] usbcore: registered new interface driver snd-usb-audio
-[ 9852.412386] usbcore: registered new interface driver usbhid
-[ 9852.412400] usbhid: USB HID core driver
-[ 9852.562358] input: USB  AUDIO   as /devices/pci0000:00/0000:00:1d.0/usb1/1-1/1-1:1.2/input/input12
-[ 9852.563157] hid-generic 0003:1130:1620.0001: input,hidraw0: USB HID v1.10 Device [USB  AUDIO  ] on usb-0000:00:1d.0-1/input2
------
-
-lsusb -d 1130:1620 (for lsusb -vvv, see attachment)
------
-Bus 001 Device 002: ID 1130:1620 Tenx Technology, Inc.
------
-
-The detected vendor does not seem to match, so all in all
-looks like a kernel bug?
-
-If you need any additional information or someone testing a
-kernel patch, just let me know.
-
-Cheers, Linus
-
-
-PS: My current workaround is to use more fine grained settings via
-amixer.
-
---b5gNqxB1S1yM7hjW
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename=lsusb-vvv
-
-sudo lsusb -vvv -d 1130:1620
-
-Bus 001 Device 005: ID 1130:1620 Tenx Technology, Inc.
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.10
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0
-  bDeviceProtocol         0
-  bMaxPacketSize0         8
-  idVendor           0x1130 Tenx Technology, Inc.
-  idProduct          0x1620
-  bcdDevice            1.40
-  iManufacturer           0
-  iProduct                2 USB  AUDIO
-  iSerial                 0
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          135
-    bNumInterfaces          3
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0x80
-      (Bus Powered)
-    MaxPower              500mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           40
-        bInCollection           1
-        baInterfaceNr( 0)       1
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             1
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      6 (FEATURE_UNIT)
-        bUnitID                 2
-        bSourceID               1
-        bControlSize            1
-        bmaControls( 0)      0x01
-          Mute Control
-        bmaControls( 1)      0x02
-          Volume Control
-        bmaControls( 2)      0x02
-          Volume Control
-        iFeature                0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             3
-        wTerminalType      0x0301 Speaker
-        bAssocTerminal          0
-        bSourceID               2
-        iTerminal               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           1
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                11
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            1 Discrete
-        tSamFreq[ 0]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            9
-          Transfer Type            Isochronous
-          Synch Type               Adaptive
-          Usage Type               Data
-        wMaxPacketSize     0x00c0  1x 192 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x00
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         3 Human Interface Device
-      bInterfaceSubClass      0 No Subclass
-      bInterfaceProtocol      0 None
-      iInterface              0
-        HID Device Descriptor:
-          bLength                 9
-          bDescriptorType        33
-          bcdHID               1.10
-          bCountryCode            0 Not supported
-          bNumDescriptors         1
-          bDescriptorType        34 Report
-          wDescriptorLength      31
-         Report Descriptors:
-           ** UNAVAILABLE **
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0001  1x 1 bytes
-        bInterval              10
-Device Status:     0x0000
-  (Bus Powered)
---b5gNqxB1S1yM7hjW
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---b5gNqxB1S1yM7hjW--
+diff --git a/include/sound/control.h b/include/sound/control.h
+index 5358892..3788284 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -44,6 +44,8 @@ struct snd_kcontrol_new {
+ 	unsigned int index;		/* index of item */
+ 	unsigned int access;		/* access rights */
+ 	unsigned int count;		/* count of same elements */
++	/* this kcontrol impact fe<->be relationship at runtime */
++	unsigned char dpcm_checked;
+ 	snd_kcontrol_info_t *info;
+ 	snd_kcontrol_get_t *get;
+ 	snd_kcontrol_put_t *put;
+@@ -63,6 +65,8 @@ struct snd_kcontrol {
+ 	struct list_head list;		/* list of controls */
+ 	struct snd_ctl_elem_id id;
+ 	unsigned int count;		/* count of same elements */
++	/* this kcontrol impact fe<->be relationship at runtime */
++	unsigned char dpcm_checked;
+ 	snd_kcontrol_info_t *info;
+ 	snd_kcontrol_get_t *get;
+ 	snd_kcontrol_put_t *put;
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 56ebdfc..8962884 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -336,6 +336,38 @@ struct device;
+ 	.put = snd_soc_dapm_put_pin_switch, \
+ 	.private_value = (unsigned long)xname }
+ 
++/* dapm & dpcm kcontrol types */
++#define SOC_DAPM_DPCM_SINGLE(xname, reg, shift, max, invert) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.dpcm_checked = 1, .info = snd_soc_info_volsw, \
++	.get = snd_soc_dapm_get_volsw, .put = snd_soc_dapm_put_volsw, \
++	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert) }
++#define SOC_DAPM_DPCM_SINGLE_TLV(xname, reg, shift, max, invert, tlv_array) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.dpcm_checked = 1, .info = snd_soc_info_volsw, \
++	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | SNDRV_CTL_ELEM_ACCESS_READWRITE,\
++	.tlv.p = (tlv_array), \
++	.get = snd_soc_dapm_get_volsw, .put = snd_soc_dapm_put_volsw, \
++	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert) }
++#define SOC_DAPM_DPCM_ENUM(xname, xenum) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.dpcm_checked = 1, .info = snd_soc_info_enum_double, \
++	.get = snd_soc_dapm_get_enum_double, \
++	.put = snd_soc_dapm_put_enum_double, \
++	.private_value = (unsigned long)&xenum }
++#define SOC_DAPM_DPCM_ENUM_VIRT(xname, xenum)		    \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.dpcm_checked = 1, .info = snd_soc_info_enum_double, \
++	.get = snd_soc_dapm_get_enum_virt, \
++	.put = snd_soc_dapm_put_enum_virt, \
++	.private_value = (unsigned long)&xenum }
++#define SOC_DAPM_DPCM_VALUE_ENUM(xname, xenum) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.dpcm_checked = 1, .info = snd_soc_info_enum_double, \
++	.get = snd_soc_dapm_get_value_enum_double, \
++	.put = snd_soc_dapm_put_value_enum_double, \
++	.private_value = (unsigned long)&xenum }
++
+ /* dapm stream operations */
+ #define SND_SOC_DAPM_STREAM_NOP			0x0
+ #define SND_SOC_DAPM_STREAM_START		0x1
+diff --git a/sound/core/control.c b/sound/core/control.c
+index d8aa206..34df2c4 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -254,6 +254,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
+ 				      SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE|
+ 				      SNDRV_CTL_ELEM_ACCESS_TLV_COMMAND|
+ 				      SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK));
++	kctl.dpcm_checked = ncontrol->dpcm_checked;
+ 	kctl.info = ncontrol->info;
+ 	kctl.get = ncontrol->get;
+ 	kctl.put = ncontrol->put;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index dcade13..b568183 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2868,6 +2868,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+ 	unsigned int val;
+ 	int connect, change;
+ 	struct snd_soc_dapm_update update;
++	int ret = 0;
+ 
+ 	if (snd_soc_volsw_is_stereo(mc))
+ 		dev_warn(codec->dapm.dev,
+@@ -2901,12 +2902,16 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+ 			card->update = &update;
+ 		}
+ 
+-		soc_dapm_mixer_update_power(card, kcontrol, connect);
++		ret = soc_dapm_mixer_update_power(card, kcontrol, connect);
+ 
+ 		card->update = NULL;
+ 	}
+ 
+ 	mutex_unlock(&card->dapm_mutex);
++
++	if ((ret > 0) && (kcontrol->dpcm_checked == 1))
++		soc_dpcm_runtime_update(card);
++
+ 	return change;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_volsw);
+@@ -2955,6 +2960,7 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+ 	unsigned int val, mux, change;
+ 	unsigned int mask;
+ 	struct snd_soc_dapm_update update;
++	int ret = 0;
+ 
+ 	if (ucontrol->value.enumerated.item[0] > e->max - 1)
+ 		return -EINVAL;
+@@ -2978,12 +2984,16 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+ 		update.val = val;
+ 		card->update = &update;
+ 
+-		soc_dapm_mux_update_power(card, kcontrol, mux, e);
++		ret = soc_dapm_mux_update_power(card, kcontrol, mux, e);
+ 
+ 		card->update = NULL;
+ 	}
+ 
+ 	mutex_unlock(&card->dapm_mutex);
++
++	if ((ret > 0) && (kcontrol->dpcm_checked == 1))
++		soc_dpcm_runtime_update(card);
++
+ 	return change;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_double);
+@@ -3019,6 +3029,7 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
+ 	struct soc_enum *e =
+ 		(struct soc_enum *)kcontrol->private_value;
+ 	int change;
++	int ret = 0;
+ 
+ 	if (ucontrol->value.enumerated.item[0] >= e->max)
+ 		return -EINVAL;
+@@ -3028,9 +3039,13 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
+ 	value = ucontrol->value.enumerated.item[0];
+ 	change = dapm_kcontrol_set_value(kcontrol, value);
+ 	if (change)
+-		soc_dapm_mux_update_power(card, kcontrol, value, e);
++		ret = soc_dapm_mux_update_power(card, kcontrol, value, e);
+ 
+ 	mutex_unlock(&card->dapm_mutex);
++
++	if ((ret > 0) && (kcontrol->dpcm_checked == 1))
++		soc_dpcm_runtime_update(card);
++
+ 	return change;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_virt);
+@@ -3097,6 +3112,7 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
+ 	unsigned int val, mux, change;
+ 	unsigned int mask;
+ 	struct snd_soc_dapm_update update;
++	int ret = 0;
+ 
+ 	if (ucontrol->value.enumerated.item[0] > e->max - 1)
+ 		return -EINVAL;
+@@ -3120,12 +3136,16 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
+ 		update.val = val;
+ 		card->update = &update;
+ 
+-		soc_dapm_mux_update_power(card, kcontrol, mux, e);
++		ret = soc_dapm_mux_update_power(card, kcontrol, mux, e);
+ 
+ 		card->update = NULL;
+ 	}
+ 
+ 	mutex_unlock(&card->dapm_mutex);
++
++	if ((ret > 0) && (kcontrol->dpcm_checked == 1))
++		soc_dpcm_runtime_update(card);
++
+ 	return change;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_value_enum_double);
+-- 
+1.7.0.4
