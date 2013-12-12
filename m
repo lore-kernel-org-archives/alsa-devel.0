@@ -1,64 +1,46 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH 00/31] ARM: tegra: use common reset and DMA bindings
-Date: Wed, 11 Dec 2013 17:11:44 -0700
-Message-ID: <52A8FF40.6000809@wwwdotorg.org>
-References: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: Re: snd-usb driver
+Date: Wed, 11 Dec 2013 20:17:00 -0800
+Message-ID: <52A938BC.1050804@gmail.com>
+References: <CAJUVNopomSJU_+WE8U8kjOP5Bh_670H2w=DTRLBF37fDsQfg4g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-In-Reply-To: <1384548866-13141-1-git-send-email-swarren@wwwdotorg.org>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: driverdev-devel-bounces@linuxdriverproject.org
-To: swarren@wwwdotorg.org
-Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>, David Airlie <airlied@linux.ie>, linux-pci@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org, linux-i2c@vger.kernel.org, ac100@lists.launchpad.net, devel@driverdev.osuosl.org, Stephen Warren <swarren@nvidia.com>, Alan Stern <stern@rowland.harvard.edu>, linux-serial@vger.kernel.org, linux-input@vger.kernel.org, =?UTF-8?B?VGVyamUgQmVyZ3N0csO2bQ==?= <tbergstrom@nvidia.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Mike Turquette <mturquette@linaro.org>, Dan Williams <dan.j.williams@intel.com>, linux-arm-kernel@lists.infradead.org, treding@nvidia.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pb0-f45.google.com (mail-pb0-f45.google.com
+ [209.85.160.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78B5326072A
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 05:17:08 +0100 (CET)
+Received: by mail-pb0-f45.google.com with SMTP id rp16so11248959pbb.18
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2013 20:17:06 -0800 (PST)
+In-Reply-To: <CAJUVNopomSJU_+WE8U8kjOP5Bh_670H2w=DTRLBF37fDsQfg4g@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lucas Takejame <lucas@takejame.com.br>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/15/2013 01:53 PM, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
-> 
-> This series implements a common reset framework driver for Tegra, and
-> updates all relevant Tegra drivers to use it. It also removes the custom
-> DMA bindings and replaced them with the standard DMA DT bindings.
-> 
-> Historically, the Tegra clock driver has exported a custom API for module
-> reset. This series removes that API, and transitions DT and drivers to
-> the new reset framework.
-> 
-> The custom API used a "struct clk" to identify which module to reset, and
-> consequently some DT bindings and drivers required clocks to be provided
-> where they really needed just a reset identifier instead. Due to this
-> known deficiency, I have always considered most Tegra bindings to be
-> unstable. This series removes this excuse for instability, although I
-> still consider some Tegra bindings unstable due to the need to convert to
-> the common DMA bindings.
-> 
-> Historically, Tegra DMA channels have been represented in DT using a
-> custom nvidia,dma-request-selector property. Now that standard DMA DT
-> bindings exist, convert all Tegra bindings, DTs, and drivers to use the
-> standard instead.
-> 
-> This series makes a DT-ABI-incompatible change to:
-> - Require reset specifiers in DT where relevant.
-> - Require standard DMA specifiers.
-> - Remove clock specifiers from DT where they were only needed for reset.
-> - Remove legacy DMA specifier properties.
-> 
-> I anticipate merging this whole series into the Tegra and arm-soc trees
-> as its own branch, due to internal dependencies. This branch will be
-> stable and can then be merged into any other subsystem trees should any
-> conflicts arise.
-> 
-> This series depends on Peter's Tegra clock driver rework, available at
-> git://nv-tegra.nvidia.com/user/pdeschrijver/linux tegra-clk-tegra124-0
-> (or whatever version of that gets included in 3.14)
 
-I've applied this series (and pulled in the DMA/ASoC/clk dependencies
-required) to Tegra's for-3.14/dmas-resets-rework branch.
+Hi Lucas,
+
+I wonder if I've misunderstood what you're trying to accomplish...
+
+On 12/11/2013 08:59 AM, Lucas Takejame wrote:
+> snd-usb driver). I know the code is already optimized but I was hoping
+> that, since we only use one specific sound card and we won't need a generic
+> driver, I could change something in the code to optimize it latency wise. I
+
+Are you creating a product that *is* a USB sound card and you want to 
+write a driver for it?
+
+...or do you have some pre-existing USB sound card (and driver) that 
+this product is using and you're trying to set up a low-latency audio 
+workstation that uses it?
+
+-gabe
