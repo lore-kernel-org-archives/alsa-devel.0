@@ -1,16 +1,31 @@
-From: JongHo Kim <furmuwon@gmail.com>
-Subject: ALSA: SNDRV_PCM_STATE_PAUSED
-Date: Thu, 12 Dec 2013 15:08:11 +0900
-Message-ID: <CANXQt8YqzftRTAUB-ngidxg4PL8gb5JeSL-FGhoKKLvBCEHaVA@mail.gmail.com>
+From: Monty Montgomery <xiphmont@gmail.com>
+Subject: Re: emi62 (may be slightly off-topic)
+Date: Thu, 12 Dec 2013 02:32:13 -0500
+Message-ID: <CACrD=+-vF5Q+f0qfU5gdjbkXFOh4eD6Ug8VzeCdk75ihKqZAtA@mail.gmail.com>
+References: <AANLkTinUA1R-oGhQwykLiY0j7-MoB=4oJBMT=PQUTzY4@mail.gmail.com>
+ <4D821A18.30407@ladisch.de>
+ <AANLkTi=0SKc+2vUH=DV+c1Vm5NwoeAcHMac=tdyi4E8w@mail.gmail.com>
+ <4D894196.4040002@gmail.com>
+ <1360657074.2790.71.camel@chello084112006029.chello.at>
+ <s5hboblr611.wl%tiwai@suse.de>
+ <CACrD=+8-kHTX0AVW5KLHG73mDp4+eccz4LqanpOzNGeCRZ+hRA@mail.gmail.com>
+ <CACrD=+9P6Gj51HMRb-rdZeoQ7yjzpu2J=pkq9eNj-ZH8HGAe+A@mail.gmail.com>
+ <s5hmwv5imqy.wl%tiwai@suse.de>
+ <CACrD=+-aXYKoLdrMw+xOzqhyY9mdpDzLfMTB-06CHYiBqEQOxw@mail.gmail.com>
+ <s5hfw0xilwk.wl%tiwai@suse.de>
+ <CACrD=+9r4LAiYYsQUSRSm5K=gFpkTp5Z3agfa--msGpF9FKWOg@mail.gmail.com>
+ <s5hbo0njw1l.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f52.google.com (mail-wg0-f52.google.com [74.125.82.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 94448260786
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 07:08:11 +0100 (CET)
-Received: by mail-wg0-f52.google.com with SMTP id x13so7507910wgg.7
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2013 22:08:11 -0800 (PST)
+Received: from mail-vc0-f182.google.com (mail-vc0-f182.google.com
+ [209.85.220.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FDA426080B
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 08:32:14 +0100 (CET)
+Received: by mail-vc0-f182.google.com with SMTP id lc6so13822vcb.13
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2013 23:32:13 -0800 (PST)
+In-Reply-To: <s5hbo0njw1l.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +35,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de, perex@perex.cz, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Karl Grill <kgrill@chello.at>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-I develop ALSA SOC Part and use the tinyalsa library on application space.
-We recently used pause ioctl command(SNDRV_PCM_IOCTL_PAUSE)
-because the music application was needed to pause and resume feature.
-So the music application was achieved to want pause
-and resume feature using the SNDRV_PCM_IOCTL_PAUSE.
+> Monty, would you submit the emi driver patch to upstream?
 
-but I found some problem in alsa kernel framework
+It's been a few years since I've submitted a patch.  Last I tried,
+upstream seriously frowned on any sort of 'I wrote a whole new driver'
+type patches. But I'm happy to try if you think it would go through.
 
-The music application process on pause state wake up in 10 seconds
-because the wait time is set by 10 seconds in wait_for_avail function.
+>  We can keep
+> the old EMI26 and EMI62 at first but make them conflicting with EMI
+> driver via Kconfig.  The external firmware files are maintained in
+> linux-firmware tree nowadays.  Once all things get merged, the old
+> emi26/62 can be faded away.
 
-I realized that if the 'runtime->no_period_wakeup' parameter is true,
-the wait_time will be set by the MAX_SCHEDULE_TIMEOUT.
+Sure, that sounds perfectly sensible.
 
-I had searched other kernel source and library source.
-I added the SNDRV_PCM_INFO_NO_PERIOD_WAKEUP flag at my snd_pcm_hardware
-structure
-and added the SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP flag at music
-application(use tinyalsa library)
+> Looking through the tarball and codes, my only concern is the license
+> of the new firmware files...
 
-Result was good!
-The music application perfectly works the pause and resume feature.
+Yes, that's what has always been problematic in the past.  I see
+there's at least a patch now to restore it to the state it was in in
+early 2.6 when it worked but was just outdated.
 
-but I have some worries
-if DMA or I2S was stop on the running,
-I can't more see the 'write error (DMA or IRQ trouble?)' message
-and the music application process may be sleep eternally.
+That said, I don't want to go through this yet again where one problem
+gets fixed, everyone gets bogged down in arguing over the rest, and
+that's the state things stay in.  That's where eMagic support has been
+since roughly 2008.  If we're not going to fix it all, and fix it for
+real, I'd honestly rather not bother.  No more partial solutions when
+the complete solution is already right here.
 
-I cautiously recommend next code with a solution to the above worries.
--------------------------------------------------------------------------------------
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-old mode 100644
-new mode 100755
-index 41b3dfe..3284940
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1936,6 +1936,8 @@ static int wait_for_avail(struct snd_pcm_substream
-*substream,
-                case SNDRV_PCM_STATE_DISCONNECTED:
-                        err = -EBADFD;
-                        goto _endloop;
-+               case SNDRV_PCM_STATE_PAUSED:
-+                       continue;
-                }
-                if (!tout) {
-                        snd_printd("%s write error (DMA or IRQ trouble?)\n",
--------------------------------------------------------------------------------------
+So before submitting a patch, I'd like to secure agreement over the
+firmware update from whomever needs to commit.  Who would that be?  If
+we can agree on that, I'm in for the rest.
 
-I tested code. code works good!
-but I am concerned about the side effects
-please review my idea.
+I mean, it's not like we have explicit permission to distribute the
+firmware we're shipping now. :-P
+
+Cheers,
+Monty
