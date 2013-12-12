@@ -1,19 +1,16 @@
-From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Subject: Re: snd-usb driver
-Date: Wed, 11 Dec 2013 20:17:00 -0800
-Message-ID: <52A938BC.1050804@gmail.com>
-References: <CAJUVNopomSJU_+WE8U8kjOP5Bh_670H2w=DTRLBF37fDsQfg4g@mail.gmail.com>
+From: JongHo Kim <furmuwon@gmail.com>
+Subject: ALSA: SNDRV_PCM_STATE_PAUSED
+Date: Thu, 12 Dec 2013 15:08:11 +0900
+Message-ID: <CANXQt8YqzftRTAUB-ngidxg4PL8gb5JeSL-FGhoKKLvBCEHaVA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f45.google.com (mail-pb0-f45.google.com
- [209.85.160.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 78B5326072A
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 05:17:08 +0100 (CET)
-Received: by mail-pb0-f45.google.com with SMTP id rp16so11248959pbb.18
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2013 20:17:06 -0800 (PST)
-In-Reply-To: <CAJUVNopomSJU_+WE8U8kjOP5Bh_670H2w=DTRLBF37fDsQfg4g@mail.gmail.com>
+Received: from mail-wg0-f52.google.com (mail-wg0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94448260786
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 07:08:11 +0100 (CET)
+Received: by mail-wg0-f52.google.com with SMTP id x13so7507910wgg.7
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2013 22:08:11 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,24 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lucas Takejame <lucas@takejame.com.br>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de, perex@perex.cz, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi
+I develop ALSA SOC Part and use the tinyalsa library on application space.
+We recently used pause ioctl command(SNDRV_PCM_IOCTL_PAUSE)
+because the music application was needed to pause and resume feature.
+So the music application was achieved to want pause
+and resume feature using the SNDRV_PCM_IOCTL_PAUSE.
 
-Hi Lucas,
+but I found some problem in alsa kernel framework
 
-I wonder if I've misunderstood what you're trying to accomplish...
+The music application process on pause state wake up in 10 seconds
+because the wait time is set by 10 seconds in wait_for_avail function.
 
-On 12/11/2013 08:59 AM, Lucas Takejame wrote:
-> snd-usb driver). I know the code is already optimized but I was hoping
-> that, since we only use one specific sound card and we won't need a generic
-> driver, I could change something in the code to optimize it latency wise. I
+I realized that if the 'runtime->no_period_wakeup' parameter is true,
+the wait_time will be set by the MAX_SCHEDULE_TIMEOUT.
 
-Are you creating a product that *is* a USB sound card and you want to 
-write a driver for it?
+I had searched other kernel source and library source.
+I added the SNDRV_PCM_INFO_NO_PERIOD_WAKEUP flag at my snd_pcm_hardware
+structure
+and added the SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP flag at music
+application(use tinyalsa library)
 
-...or do you have some pre-existing USB sound card (and driver) that 
-this product is using and you're trying to set up a low-latency audio 
-workstation that uses it?
+Result was good!
+The music application perfectly works the pause and resume feature.
 
--gabe
+but I have some worries
+if DMA or I2S was stop on the running,
+I can't more see the 'write error (DMA or IRQ trouble?)' message
+and the music application process may be sleep eternally.
+
+I cautiously recommend next code with a solution to the above worries.
+-------------------------------------------------------------------------------------
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+old mode 100644
+new mode 100755
+index 41b3dfe..3284940
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1936,6 +1936,8 @@ static int wait_for_avail(struct snd_pcm_substream
+*substream,
+                case SNDRV_PCM_STATE_DISCONNECTED:
+                        err = -EBADFD;
+                        goto _endloop;
++               case SNDRV_PCM_STATE_PAUSED:
++                       continue;
+                }
+                if (!tout) {
+                        snd_printd("%s write error (DMA or IRQ trouble?)\n",
+-------------------------------------------------------------------------------------
+
+I tested code. code works good!
+but I am concerned about the side effects
+please review my idea.
