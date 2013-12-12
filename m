@@ -1,20 +1,20 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] ASoC: sgtl5000: drop
- sgtl5000_set_bias_level() call from sgtl5000_remove()
-Date: Thu, 12 Dec 2013 22:17:58 +0800
-Message-ID: <20131212141755.GA20319@S2101-09.ap.freescale.net>
-References: <1386034012-18677-1-git-send-email-shawn.guo@linaro.org>
- <20131203160354.GD27568@sirena.org.uk>
+From: Lucas Takejame <lucas@takejame.com.br>
+Subject: Re: snd-usb driver
+Date: Thu, 12 Dec 2013 14:24:45 -0200
+Message-ID: <CAJUVNoqL6BYESnvQqs_SGZB3EKzGQ1QNLWuK2oKebZfgGCcTvQ@mail.gmail.com>
+References: <CAJUVNopomSJU_+WE8U8kjOP5Bh_670H2w=DTRLBF37fDsQfg4g@mail.gmail.com>
+ <52A938BC.1050804@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F26F260864
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 15:17:25 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20131203160354.GD27568@sirena.org.uk>
+Received: from mail-wi0-f178.google.com (mail-wi0-f178.google.com
+ [209.85.212.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC84126087C
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 17:25:06 +0100 (CET)
+Received: by mail-wi0-f178.google.com with SMTP id bz8so2745844wib.11
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 08:25:06 -0800 (PST)
+In-Reply-To: <52A938BC.1050804@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,45 +24,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
+To: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 03, 2013 at 04:03:54PM +0000, Mark Brown wrote:
-> On Tue, Dec 03, 2013 at 09:26:51AM +0800, Shawn Guo wrote:
-> 
-> > Looking at function sgtl5000_set_bias_level(), we can find it
-> > essentially does the following 3 things in case of SND_SOC_BIAS_OFF.
-> 
-> >  1. Set regmap into cache only mode with regcache_cache_only() call
-> >  2. Disable supplies by calling regulator_bulk_disable()
-> >  3. Set codec->dapm.bias_level as SND_SOC_BIAS_OFF
-> 
-> > For 1, it's clearly incorrect and that's why we see the failure here.
-> > For 2, it's unnecessary since sgtl5000_remove() already calls
-> > regulator_bulk_disable() to disable supplies.  For 3, it does not make
-> > any sense either, since the bias level will be initialized to
-> > SND_SOC_BIAS_STANDBY in the next probe anyway.
-> > 
-> > Let's drop the sgtl5000_set_bias_level() call from sgtl5000_remove() to
-> > fix the kernel Oops below.
-> 
-> It's not clear to me that this is the best fix, all this code looks
-> confused.
+The product is the pedal board actually (which has the same hardware as a
+computer, but with the necessary changes to work out in a gig, like a
+hardcase and audio dedicated OS), we designed the sound card. I was only
+wondering if there was anything that I could change considering that we
+have a fixed mother board ( Intel DN2800MT ) and sound card ( works with a
+TUSB3200A and AK5386 ADC, AK4382A DAC, if that helps hehe), i don't know
+how much the driver being generic interfere in the performance, that is my
+doubt.
 
-Yea, I'm working on a series to clean up and fix sgtl5000 driver, and
-this issue should be removed by the series along the way.  So please
-disregard this patch.
+Thanks for the responses,
 
-Shawn
+Lucas
 
-> Given that (as is idiomatic) the regulators are being enabled
-> in set_bias_level() what's happening in _OFF makes sense, what I'd
-> expect to see happen is that the duplicate disables and frees are
-> deleted from the remove path and the probe remembers to remove the cache
-> only setting.  Alternatively all the regulator and cache handling could
-> be removed from set_bias_level().  The end result should be that either
-> set_bias_level() or the probe and remove are handling this but not both.
-> 
-> The regulator get and remove probably ought to move out to the I2C
-> level, as should much of what happens in the probe function.
+
+2013/12/12 Gabriel M. Beddingfield <gabrbedd@gmail.com>
+
+>
+> Hi Lucas,
+>
+> I wonder if I've misunderstood what you're trying to accomplish...
+>
+>
+> On 12/11/2013 08:59 AM, Lucas Takejame wrote:
+>
+>> snd-usb driver). I know the code is already optimized but I was hoping
+>> that, since we only use one specific sound card and we won't need a
+>> generic
+>> driver, I could change something in the code to optimize it latency wise.
+>> I
+>>
+>
+> Are you creating a product that *is* a USB sound card and you want to
+> write a driver for it?
+>
+> ...or do you have some pre-existing USB sound card (and driver) that this
+> product is using and you're trying to set up a low-latency audio
+> workstation that uses it?
+>
+> -gabe
+>
+>
+
+
+-- =
+
+Lucas Conejero Takejame
+Engenharia El=E9trica - =EAnfase em computa=E7=E3o
+Escola Polit=E9cnica - USP
