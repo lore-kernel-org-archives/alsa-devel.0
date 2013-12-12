@@ -1,14 +1,18 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH] ASoC: make snd_soc_dai_link more symmetrical
-Date: Thu, 12 Dec 2013 18:59:17 +0100
-Message-ID: <20131212185917.7ed6b21f@armhf>
+From: "Patrick Shirkey" <pshirkey@boosthardware.com>
+Subject: Re: snd-usb driver
+Date: Fri, 13 Dec 2013 06:28:32 +1100 (EST)
+Message-ID: <65532.86.105.95.182.1386876512.squirrel@boosthardware.com>
+References: <CAJUVNopomSJU_+WE8U8kjOP5Bh_670H2w=DTRLBF37fDsQfg4g@mail.gmail.com>
+ <52A938BC.1050804@gmail.com>
+ <CAJUVNoqL6BYESnvQqs_SGZB3EKzGQ1QNLWuK2oKebZfgGCcTvQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
- by alsa0.perex.cz (Postfix) with ESMTP id A078F2608D7
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 19:00:03 +0100 (CET)
+Received: from boosthardware.localdomain (boosthardware.com [88.198.122.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id F38022608ED
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2013 20:28:21 +0100 (CET)
+In-Reply-To: <CAJUVNoqL6BYESnvQqs_SGZB3EKzGQ1QNLWuK2oKebZfgGCcTvQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,85 +22,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCByZW5kZXJzIG9wdGlvbmFsIHRoZSBDT0RFQyBuYW1lIC8gT0Ygbm9kZSBvbiBz
-b3VuZCBjYXJkIHJlZ2lzdGVyLAphcyBpdCBpcyBkb25lIGZvciB0aGUgQ1BVIHNpZGUsIGluIHRo
-ZSBjYXNlIHRoZSBDT0RFQyBEQUkgbmFtZSBpcyB1bmlxdWUuCgpUaGlzIHNpbXBsaWZpZXMgdGhl
-IGRlZmluaXRpb24gb2YgQ09ERUNzIHdpdGggbXVsdGlwbGUgREFJcywgZXNwZWNpYWxseQppbiBE
-VHMsIHdoaWxlIGtlZXBpbmcgY29tcGF0aWJpbGl0eS4KClNpZ25lZC1vZmYtYnk6IEplYW4tRnJh
-bmNvaXMgTW9pbmUgPG1vaW5lamZAZnJlZS5mcj4KLS0tCiBpbmNsdWRlL3NvdW5kL3NvYy5oICB8
-ICA2ICsrKystLQogc291bmQvc29jL3NvYy1jb3JlLmMgfCA3MyArKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMiBmaWxlcyBjaGFu
-Z2VkLCA1MSBpbnNlcnRpb25zKCspLCAyOCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9pbmNs
-dWRlL3NvdW5kL3NvYy5oIGIvaW5jbHVkZS9zb3VuZC9zb2MuaAppbmRleCAxZjc0MWNiLi42N2Mz
-ODJlIDEwMDY0NAotLS0gYS9pbmNsdWRlL3NvdW5kL3NvYy5oCisrKyBiL2luY2x1ZGUvc291bmQv
-c29jLmgKQEAgLTg1Miw4ICs4NTIsMTAgQEAgc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgewogCSAq
-LwogCWNvbnN0IGNoYXIgKmNwdV9kYWlfbmFtZTsKIAkvKgotCSAqIFlvdSBNVVNUIHNwZWNpZnkg
-dGhlIGxpbmsncyBjb2RlYywgZWl0aGVyIGJ5IGRldmljZSBuYW1lLCBvciBieQotCSAqIERUL09G
-IG5vZGUsIGJ1dCBub3QgYm90aC4KKwkgKiBZb3UgTUFZIHNwZWNpZnkgdGhlIGxpbmsncyBjb2Rl
-YywgZWl0aGVyIGJ5IGRldmljZSBuYW1lLCBvciBieQorCSAqIERUL09GIG5vZGUsIGJ1dCBub3Qg
-Ym90aC4gSWYgdGhpcyBpbmZvcm1hdGlvbiBpcyBvbWl0dGVkLAorCSAqIHRoZSBDT0RFQyBEQUkg
-aXMgbWF0Y2hlZCB1c2luZyAuY29kZWNfZGFpX25hbWUgb25seSwgd2hpY2ggaGVuY2UKKwkgKiBt
-dXN0IGJlIGdsb2JhbGx5IHVuaXF1ZS4KIAkgKi8KIAljb25zdCBjaGFyICpjb2RlY19uYW1lOwog
-CWNvbnN0IHN0cnVjdCBkZXZpY2Vfbm9kZSAqY29kZWNfb2Zfbm9kZTsKZGlmZiAtLWdpdCBhL3Nv
-dW5kL3NvYy9zb2MtY29yZS5jIGIvc291bmQvc29jL3NvYy1jb3JlLmMKaW5kZXggNGU1M2Q4Ny4u
-MTFiNzI5YyAxMDA2NDQKLS0tIGEvc291bmQvc29jL3NvYy1jb3JlLmMKKysrIGIvc291bmQvc29j
-L3NvYy1jb3JlLmMKQEAgLTg4MywyOCArODgzLDU0IEBAIHN0YXRpYyBpbnQgc29jX2JpbmRfZGFp
-X2xpbmsoc3RydWN0IHNuZF9zb2NfY2FyZCAqY2FyZCwgaW50IG51bSkKIAkJcmV0dXJuIC1FUFJP
-QkVfREVGRVI7CiAJfQogCi0JLyogRmluZCBDT0RFQyBmcm9tIHJlZ2lzdGVyZWQgQ09ERUNzICov
-Ci0JbGlzdF9mb3JfZWFjaF9lbnRyeShjb2RlYywgJmNvZGVjX2xpc3QsIGxpc3QpIHsKLQkJaWYg
-KGRhaV9saW5rLT5jb2RlY19vZl9ub2RlKSB7Ci0JCQlpZiAoY29kZWMtPmRldi0+b2Zfbm9kZSAh
-PSBkYWlfbGluay0+Y29kZWNfb2Zfbm9kZSkKLQkJCQljb250aW51ZTsKLQkJfSBlbHNlIHsKLQkJ
-CWlmIChzdHJjbXAoY29kZWMtPm5hbWUsIGRhaV9saW5rLT5jb2RlY19uYW1lKSkKLQkJCQljb250
-aW51ZTsKKwlpZiAoZGFpX2xpbmstPmNvZGVjX29mX25vZGUgfHwgZGFpX2xpbmstPmNvZGVjX25h
-bWUpIHsKKworCQkvKiBGaW5kIENPREVDIGZyb20gcmVnaXN0ZXJlZCBDT0RFQ3MgKi8KKwkJbGlz
-dF9mb3JfZWFjaF9lbnRyeShjb2RlYywgJmNvZGVjX2xpc3QsIGxpc3QpIHsKKwkJCWlmIChkYWlf
-bGluay0+Y29kZWNfb2Zfbm9kZSkgeworCQkJCWlmIChjb2RlYy0+ZGV2LT5vZl9ub2RlICE9IGRh
-aV9saW5rLT5jb2RlY19vZl9ub2RlKQorCQkJCQljb250aW51ZTsKKwkJCX0gZWxzZSB7CisJCQkJ
-aWYgKHN0cmNtcChjb2RlYy0+bmFtZSwgZGFpX2xpbmstPmNvZGVjX25hbWUpKQorCQkJCQljb250
-aW51ZTsKKwkJCX0KKworCQkJcnRkLT5jb2RlYyA9IGNvZGVjOworCisJCQkvKgorCQkJICogQ09E
-RUMgZm91bmQsIHNvIGZpbmQgQ09ERUMgREFJIGZyb20gcmVnaXN0ZXJlZCBEQUlzIGZyb20KKwkJ
-CSAqIHRoaXMgQ09ERUMKKwkJCSAqLworCQkJbGlzdF9mb3JfZWFjaF9lbnRyeShjb2RlY19kYWks
-ICZkYWlfbGlzdCwgbGlzdCkgeworCQkJCWlmIChjb2RlYy0+ZGV2ID09IGNvZGVjX2RhaS0+ZGV2
-ICYmCisJCQkJCSFzdHJjbXAoY29kZWNfZGFpLT5uYW1lLAorCQkJCQkJZGFpX2xpbmstPmNvZGVj
-X2RhaV9uYW1lKSkgeworCisJCQkJCXJ0ZC0+Y29kZWNfZGFpID0gY29kZWNfZGFpOworCQkJCX0K
-KwkJCX0KKworCQkJaWYgKCFydGQtPmNvZGVjX2RhaSkgeworCQkJCWRldl9lcnIoY2FyZC0+ZGV2
-LCAiQVNvQzogQ09ERUMgREFJICVzIG5vdCByZWdpc3RlcmVkXG4iLAorCQkJCQlkYWlfbGluay0+
-Y29kZWNfZGFpX25hbWUpOworCQkJCXJldHVybiAtRVBST0JFX0RFRkVSOworCQkJfQogCQl9CiAK
-LQkJcnRkLT5jb2RlYyA9IGNvZGVjOworCQlpZiAoIXJ0ZC0+Y29kZWMpIHsKKwkJCWRldl9lcnIo
-Y2FyZC0+ZGV2LCAiQVNvQzogQ09ERUMgJXMgbm90IHJlZ2lzdGVyZWRcbiIsCisJCQkJZGFpX2xp
-bmstPmNvZGVjX25hbWUpOworCQkJcmV0dXJuIC1FUFJPQkVfREVGRVI7CisJCX0KKwl9IGVsc2Ug
-ewogCi0JCS8qCi0JCSAqIENPREVDIGZvdW5kLCBzbyBmaW5kIENPREVDIERBSSBmcm9tIHJlZ2lz
-dGVyZWQgREFJcyBmcm9tCi0JCSAqIHRoaXMgQ09ERUMKLQkJICovCisJCS8qIGZpbmQgQ09ERUMg
-REFJIGZyb20gcmVnaXN0ZXJlZCBEQUlzICovCiAJCWxpc3RfZm9yX2VhY2hfZW50cnkoY29kZWNf
-ZGFpLCAmZGFpX2xpc3QsIGxpc3QpIHsKLQkJCWlmIChjb2RlYy0+ZGV2ID09IGNvZGVjX2RhaS0+
-ZGV2ICYmCi0JCQkJIXN0cmNtcChjb2RlY19kYWktPm5hbWUsCisJCQlpZiAoIXN0cmNtcChjb2Rl
-Y19kYWktPm5hbWUsCiAJCQkJCWRhaV9saW5rLT5jb2RlY19kYWlfbmFtZSkpIHsKLQogCQkJCXJ0
-ZC0+Y29kZWNfZGFpID0gY29kZWNfZGFpOworCQkJCXJ0ZC0+Y29kZWMgPSBjb2RlY19kYWktPmNv
-ZGVjOworCQkJCWJyZWFrOwogCQkJfQogCQl9CiAKQEAgLTkxNSwxMiArOTQxLDYgQEAgc3RhdGlj
-IGludCBzb2NfYmluZF9kYWlfbGluayhzdHJ1Y3Qgc25kX3NvY19jYXJkICpjYXJkLCBpbnQgbnVt
-KQogCQl9CiAJfQogCi0JaWYgKCFydGQtPmNvZGVjKSB7Ci0JCWRldl9lcnIoY2FyZC0+ZGV2LCAi
-QVNvQzogQ09ERUMgJXMgbm90IHJlZ2lzdGVyZWRcbiIsCi0JCQlkYWlfbGluay0+Y29kZWNfbmFt
-ZSk7Ci0JCXJldHVybiAtRVBST0JFX0RFRkVSOwotCX0KLQogCS8qIGlmIHRoZXJlJ3Mgbm8gcGxh
-dGZvcm0gd2UgbWF0Y2ggb24gdGhlIGVtcHR5IHBsYXRmb3JtICovCiAJcGxhdGZvcm1fbmFtZSA9
-IGRhaV9saW5rLT5wbGF0Zm9ybV9uYW1lOwogCWlmICghcGxhdGZvcm1fbmFtZSAmJiAhZGFpX2xp
-bmstPnBsYXRmb3JtX29mX25vZGUpCkBAIC0zNzEwLDEyICszNzMwLDEzIEBAIGludCBzbmRfc29j
-X3JlZ2lzdGVyX2NhcmQoc3RydWN0IHNuZF9zb2NfY2FyZCAqY2FyZCkKIAkJc3RydWN0IHNuZF9z
-b2NfZGFpX2xpbmsgKmxpbmsgPSAmY2FyZC0+ZGFpX2xpbmtbaV07CiAKIAkJLyoKLQkJICogQ29k
-ZWMgbXVzdCBiZSBzcGVjaWZpZWQgYnkgMSBvZiBuYW1lIG9yIE9GIG5vZGUsCi0JCSAqIG5vdCBi
-b3RoIG9yIG5laXRoZXIuCisJCSAqIENvZGVjIG1heSBiZSBzcGVjaWZpZWQgYnkgZWl0aGVyIG5h
-bWUgb3IgT0Ygbm9kZSwKKwkJICogYnV0IGNhbiBiZSBsZWZ0IHVuc3BlY2lmaWVkCisJCSAqIGFu
-ZCB3aWxsIGJlIG1hdGNoZWQgYmFzZWQgb24gQ09ERUMgREFJIG5hbWUgYWxvbmUuCiAJCSAqLwot
-CQlpZiAoISFsaW5rLT5jb2RlY19uYW1lID09ICEhbGluay0+Y29kZWNfb2Zfbm9kZSkgeworCQlp
-ZiAobGluay0+Y29kZWNfbmFtZSAmJiBsaW5rLT5jb2RlY19vZl9ub2RlKSB7CiAJCQlkZXZfZXJy
-KGNhcmQtPmRldiwKLQkJCQkiQVNvQzogTmVpdGhlci9ib3RoIGNvZGVjIG5hbWUvb2Zfbm9kZSBh
-cmUgc2V0IGZvciAlc1xuIiwKKwkJCQkiQVNvQzogQm90aCBjb2RlYyBuYW1lL29mX25vZGUgYXJl
-IHNldCBmb3IgJXNcbiIsCiAJCQkJbGluay0+bmFtZSk7CiAJCQlyZXR1cm4gLUVJTlZBTDsKIAkJ
-fQoKCi0tIApLZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYh
-ICoqCkplZgkJfAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+On Fri, December 13, 2013 3:24 am, Lucas Takejame wrote:
+> The product is the pedal board actually (which has the same hardware as a
+> computer, but with the necessary changes to work out in a gig, like a
+> hardcase and audio dedicated OS), we designed the sound card. I was only
+> wondering if there was anything that I could change considering that we
+> have a fixed mother board ( Intel DN2800MT ) and sound card ( works with a
+> TUSB3200A and AK5386 ADC, AK4382A DAC, if that helps hehe), i don't know
+> how much the driver being generic interfere in the performance, that is my
+> doubt.
+>
+
+A well built standards compliant USB audio device will be able to handle
+64 frames/period with the generic driver.
+
+Have you run any benchmarks?
+
+What is the lowest period size you can use with jack without getting
+dropouts?
+
+There may be some additional steps to configure your system for low
+latency. In that case it is probably more appropriate to discuss on JACK
+mailing list or back on LAD :-)
+
+
+> Thanks for the responses,
+>
+> Lucas
+>
+>
+> 2013/12/12 Gabriel M. Beddingfield <gabrbedd@gmail.com>
+>
+>>
+>> Hi Lucas,
+>>
+>> I wonder if I've misunderstood what you're trying to accomplish...
+>>
+>>
+>> On 12/11/2013 08:59 AM, Lucas Takejame wrote:
+>>
+>>> snd-usb driver). I know the code is already optimized but I was hoping
+>>> that, since we only use one specific sound card and we won't need a
+>>> generic
+>>> driver, I could change something in the code to optimize it latency
+>>> wise.
+>>> I
+>>>
+>>
+>> Are you creating a product that *is* a USB sound card and you want to
+>> write a driver for it?
+>>
+>> ...or do you have some pre-existing USB sound card (and driver) that
+>> this
+>> product is using and you're trying to set up a low-latency audio
+>> workstation that uses it?
+>>
+>> -gabe
+>>
+>>
+>
+>
+> --
+> Lucas Conejero Takejame
+> Engenharia El=E9trica - =EAnfase em computa=E7=E3o
+> Escola Polit=E9cnica - USP
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+
+
+--
+Patrick Shirkey
+Boost Hardware Ltd
