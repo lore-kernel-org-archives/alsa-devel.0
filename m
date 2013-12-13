@@ -1,18 +1,16 @@
 From: Nenghua Cao <nhcao@marvell.com>
-Subject: [PATCH] ASOC:DAPM: update DPCM runtime when mixer/mux
-	changes
-Date: Fri, 13 Dec 2013 20:13:49 +0800
-Message-ID: <1386936829-9627-2-git-send-email-nhcao@marvell.com>
-References: <1386936829-9627-1-git-send-email-nhcao@marvell.com>
+Subject: [PATCH V2] ASOC:DAPM: update DPCM runtime when
+	mixer/mux changes
+Date: Fri, 13 Dec 2013 20:13:48 +0800
+Message-ID: <1386936829-9627-1-git-send-email-nhcao@marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com
  [67.231.156.173])
- by alsa0.perex.cz (Postfix) with ESMTP id BBFF7260376
- for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2013 13:08:13 +0100 (CET)
-In-Reply-To: <1386936829-9627-1-git-send-email-nhcao@marvell.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 24B33261589
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2013 13:08:14 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,119 +26,32 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Nenghua Cao <nhcao@marvell.com>
 
-    DPCM can dynamically alter the FE to BE PCM links at runtime based
-on mixer/mux setting updates. Add soc_dpcm_runtime_update() calling in
-get/put function for mixer/mux to support this feature.
+V2 -> V1:
 
-Signed-off-by: Nenghua Cao <nhcao@marvell.com>
----
+   Removes the flag and update DPCM always when mixer/mux changes, according
+to Takashi's and Mark's suggestion.
+
+>> Usually backward compatibility is concerned when something new breaks
+>> the existing ones.  In your case, always updating DPCM would work,
+>> too, even without an extra flag; it's just suboptimal.
+
+>Right, and if we have separate versions then at some point we'll end up
+>having to define DPCM versions of everything which is going to get
+>tedious and error prone.
+ 
+
+V1 -> V0:
+
+     refined patch, and add flag into soc_mixer_control and soc_enum 
+instead of the alsa core, according to Takashi's suggestion.
+
+> You don't need to extend the ALSA core API for such a purpose.  It's
+> ASoC-specific, so rather extend struct soc_mixer_control instead, if
+> such a new flag is really needed.
+
+
+Nenghua Cao (1):
+  ASOC:DAPM: update DPCM runtime when mixer/mux changes
+
  sound/soc/soc-dapm.c |   28 ++++++++++++++++++++++++----
  1 files changed, 24 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index dcade13..67e63ab 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2868,6 +2868,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
- 	unsigned int val;
- 	int connect, change;
- 	struct snd_soc_dapm_update update;
-+	int ret = 0;
- 
- 	if (snd_soc_volsw_is_stereo(mc))
- 		dev_warn(codec->dapm.dev,
-@@ -2901,12 +2902,16 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
- 			card->update = &update;
- 		}
- 
--		soc_dapm_mixer_update_power(card, kcontrol, connect);
-+		ret = soc_dapm_mixer_update_power(card, kcontrol, connect);
- 
- 		card->update = NULL;
- 	}
- 
- 	mutex_unlock(&card->dapm_mutex);
-+
-+	if (ret > 0)
-+		soc_dpcm_runtime_update(card);
-+
- 	return change;
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_put_volsw);
-@@ -2955,6 +2960,7 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
- 	unsigned int val, mux, change;
- 	unsigned int mask;
- 	struct snd_soc_dapm_update update;
-+	int ret = 0;
- 
- 	if (ucontrol->value.enumerated.item[0] > e->max - 1)
- 		return -EINVAL;
-@@ -2978,12 +2984,16 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
- 		update.val = val;
- 		card->update = &update;
- 
--		soc_dapm_mux_update_power(card, kcontrol, mux, e);
-+		ret = soc_dapm_mux_update_power(card, kcontrol, mux, e);
- 
- 		card->update = NULL;
- 	}
- 
- 	mutex_unlock(&card->dapm_mutex);
-+
-+	if (ret > 0)
-+		soc_dpcm_runtime_update(card);
-+
- 	return change;
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_double);
-@@ -3019,6 +3029,7 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
- 	struct soc_enum *e =
- 		(struct soc_enum *)kcontrol->private_value;
- 	int change;
-+	int ret = 0;
- 
- 	if (ucontrol->value.enumerated.item[0] >= e->max)
- 		return -EINVAL;
-@@ -3028,9 +3039,13 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
- 	value = ucontrol->value.enumerated.item[0];
- 	change = dapm_kcontrol_set_value(kcontrol, value);
- 	if (change)
--		soc_dapm_mux_update_power(card, kcontrol, value, e);
-+		ret = soc_dapm_mux_update_power(card, kcontrol, value, e);
- 
- 	mutex_unlock(&card->dapm_mutex);
-+
-+	if (ret > 0)
-+		soc_dpcm_runtime_update(card);
-+
- 	return change;
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_virt);
-@@ -3097,6 +3112,7 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
- 	unsigned int val, mux, change;
- 	unsigned int mask;
- 	struct snd_soc_dapm_update update;
-+	int ret = 0;
- 
- 	if (ucontrol->value.enumerated.item[0] > e->max - 1)
- 		return -EINVAL;
-@@ -3120,12 +3136,16 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
- 		update.val = val;
- 		card->update = &update;
- 
--		soc_dapm_mux_update_power(card, kcontrol, mux, e);
-+		ret = soc_dapm_mux_update_power(card, kcontrol, mux, e);
- 
- 		card->update = NULL;
- 	}
- 
- 	mutex_unlock(&card->dapm_mutex);
-+
-+	if (ret > 0)
-+		soc_dpcm_runtime_update(card);
-+
- 	return change;
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_put_value_enum_double);
--- 
-1.7.0.4
