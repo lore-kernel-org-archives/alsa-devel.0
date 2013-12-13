@@ -1,18 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: tlv320aic3x: Correct S24_3LE support
-Date: Fri, 13 Dec 2013 15:57:24 +0200
-Message-ID: <52AB1244.5010506@ti.com>
+Date: Fri, 13 Dec 2013 14:18:14 +0000
+Message-ID: <20131213141814.GG11044@sirena.org.uk>
 References: <1386939499-5163-1-git-send-email-peter.ujfalusi@ti.com>
  <20131213130443.GY11044@sirena.org.uk> <52AB0BBD.2020001@ti.com>
- <20131213133444.GZ11044@sirena.org.uk>
+ <20131213133444.GZ11044@sirena.org.uk> <52AB1244.5010506@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============3590311808350542488=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 70FF7260376
- for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2013 14:57:32 +0100 (CET)
-In-Reply-To: <20131213133444.GZ11044@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id A134A26163F
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2013 15:18:17 +0100 (CET)
+In-Reply-To: <52AB1244.5010506@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,42 +21,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/13/2013 03:34 PM, Mark Brown wrote:
-> On Fri, Dec 13, 2013 at 03:29:33PM +0200, Peter Ujfalusi wrote:
->> On 12/13/2013 03:04 PM, Mark Brown wrote:
-> =
 
->>> This should be adding the case for the new format rather than replacing
->>> the old one shouldn't it?  They ought to turn out the same on the AIF so
->>> the CODECs shouldn't care about the difference, ideally the core would
->>> hide the difference from them.
-> =
+--===============3590311808350542488==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Ut0KX4oafLh8aNyr"
+Content-Disposition: inline
 
->> Not really since the codec has only field to specify the data format. The
->> codec can not support S24_LE (S24_LE is basically S32_LE msbits=3D=3D24)=
- since we
->> can not say to the codec to ignore the 8bit over the 24 bits of real dat=
-a.
->> In case of S24_3LE the I2S bus will have 24 clocks/per channel which can=
- not
->> be used to stream S24_LE either.
-> =
 
-> No, I'd expect the wire behaviour to be identical for any 24 bit samples
-> (that's certainly what most drivers are written for).  The memory layout
-> differences shouldn't be visible to CODEC drivers.
+--Ut0KX4oafLh8aNyr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-We can not change the HW... for example:
-twl4030/twl5030: 32 clock cycle/channel and 24 bits used out of that.
-tlv320aic3106: 24 clock cycle/channel for 24 bit audio.
+On Fri, Dec 13, 2013 at 03:57:24PM +0200, Peter Ujfalusi wrote:
+> On 12/13/2013 03:34 PM, Mark Brown wrote:
 
-The wire behavior is different and this need to be known by the CPU side as=
- well.
+> > No, I'd expect the wire behaviour to be identical for any 24 bit samples
+> > (that's certainly what most drivers are written for).  The memory layout
+> > differences shouldn't be visible to CODEC drivers.
 
--- =
+> We can not change the HW... for example:
 
-P=E9ter
+This isn't a hardware issue, this is a software issue.
+
+> twl4030/twl5030: 32 clock cycle/channel and 24 bits used out of that.
+
+These shouldn't be advertising themselves as supporting 24 bit format
+for ASoC then since they need 32 bit samples on the bus - this is
+actually pretty standard for things that say they support 32 bits, they
+usually just discard some of the lower bits but can cope with 32 bit on
+the interface.
+
+The reason everything says 24_LE right now is that we're being dumb
+about how we do the constraints and CPUs do care about the memory
+layout, not because the CODECs require the blank cycles.  Of course this
+means that almost anything that does I2S should be able to advertise
+arbatrary sample size support which is one of the resons we ought to be
+doing stuff in the core to make this nicer.
+
+> tlv320aic3106: 24 clock cycle/channel for 24 bit audio.
+
+This is normal ASoC behaviour.
+
+> The wire behavior is different and this need to be known by the CPU side as well.
+
+This isn't the way to do it, though - if the TWL drivers were ever used
+with other CPUs (admittedly unlikely) they'd run into trouble.
+
+--Ut0KX4oafLh8aNyr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSqxciAAoJELSic+t+oim9TmgP/005ykE5TsxCNZ3MXGBaUnik
+BF5YRn9M5qzIiDPsrRU6G85rLJXVVvAfw/W5uRtWDebgtYXPqP/gfnyf+kyOtpwo
+FacxKssHMsm/JoyS5OjffEHR3cr88RpGr72y83eCl+p4IRASCicU+NFKURWPI8TJ
+jtV+aNmaguWZcmsXycIm1VSeBLBSLcxF+cGvMhs4/HvO+Nr/D9utpryTb+FHM8gA
+OtJeqTzK5caDBcBu5KQLHLfbFGgnTqkEliM9x6FtaP27W30VTNEwYW57aavLvqbR
+wwDBHFEWVgizOZFdRUzJRtjr8FybBQol6iBM9xIXXqtYqhdPjcnVXkaJD4vs3Jbl
+TEeO/cAc3qE5a1sd62weZqdPFucrJnoP8YhTXm2zf8SPmFlF5OK+9/BPcxNzweMy
+kHJpqqiSf5XKlyrq7yXENf4QzkuXHAuKrWSe85n+wxLAL0/PCQjR1MznUwuUc6MG
+3c5kPSl3DckWjomeSVuW4/eJMIIeKeN0y6yhLS1mC4EzZjivuwZYeLCqVM4l2aY3
+2cxnJB7iMFRjzrVOmlKhzi74K8Fj373mXlawCKlvqt0UxB0OKngomN/mDQuW05lj
+WM3UaLeyYT+6D3KXe1cy0rUw7D6Tb+FbpYts2sUOR4lf+qM85MEVHN5HPbCiVquc
+2p9N4cKtiQs8AgY/OW9v
+=90A3
+-----END PGP SIGNATURE-----
+
+--Ut0KX4oafLh8aNyr--
+
+--===============3590311808350542488==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3590311808350542488==--
