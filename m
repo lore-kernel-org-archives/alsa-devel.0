@@ -1,46 +1,70 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - Add Dell headset detection quirk for three laptop models
-Date: Fri, 13 Dec 2013 11:57:05 +0800
-Message-ID: <1386907025-5157-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
+From: Olivier Langlois <olivier@trillion01.com>
+Subject: [PATCH] alsa-lib: minor malloc changes
+Date: Thu, 12 Dec 2013 23:47:20 -0500
+Message-ID: <1386910040-14324-1-git-send-email-olivier@trillion01.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from oproxy9-pub.mail.unifiedlayer.com
+ (oproxy9-pub.mail.unifiedlayer.com [69.89.24.6])
+ by alsa0.perex.cz (Postfix) with SMTP id 5E2BE2610C7
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2013 05:48:36 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Olivier Langlois <olivier@trillion01.com>
 List-Id: alsa-devel@alsa-project.org
 
-On the Dell machines with codec whose Subsystem Id is 0x10280610,
-0x10280629 or 0x1028063e, no external microphone can be detected when
-plugging a 3-ring headset. If we add "model=dell-headset-multi" for
-the snd-hda-intel.ko, the problem will disappear.
+replace malloc + memset with calloc since calloc may skip the memset if
+returned memory comes directly from sbrk()
 
-The codecs on these machines belong to alc_269 family.
+use malloc instead of malloc if first thing done with allocated memory is
+to flip all bits to 1.
 
-BugLink: https://bugs.launchpad.net/bugs/1260303
-Cc: David Henningsson <david.henningsson@canonical.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Signed-off-by: Olivier Langlois <olivier@trillion01.com>
 ---
- sound/pci/hda/patch_realtek.c | 3 +++
- 1 file changed, 3 insertions(+)
+ src/alisp/alisp.c    | 3 +--
+ src/pcm/pcm_ladspa.c | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index c5f3e1b..3578f11 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4300,11 +4300,14 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0606, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0608, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0609, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x0610, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0613, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0614, "Dell Inspiron 3135", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0616, "Dell Vostro 5470", ALC290_FIXUP_MONO_SPEAKERS),
- 	SND_PCI_QUIRK(0x1028, 0x061f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x0629, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS),
-+	SND_PCI_QUIRK(0x1028, 0x063e, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x063f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x15cc, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x15cd, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+diff --git a/src/alisp/alisp.c b/src/alisp/alisp.c
+index 1796c33..3c61bb1 100644
+--- a/src/alisp/alisp.c
++++ b/src/alisp/alisp.c
+@@ -3202,12 +3202,11 @@ int alsa_lisp(struct alisp_cfg *cfg, struct alisp_instance **_instance)
+ 	struct alisp_object *p, *p1;
+ 	int i, j, retval = 0;
+ 	
+-	instance = (struct alisp_instance *)malloc(sizeof(struct alisp_instance));
++	instance = (struct alisp_instance *)calloc(1, sizeof(struct alisp_instance));
+ 	if (instance == NULL) {
+ 		nomem();
+ 		return -ENOMEM;
+ 	}
+-	memset(instance, 0, sizeof(struct alisp_instance));
+ 	instance->verbose = cfg->verbose && cfg->vout;
+ 	instance->warning = cfg->warning && cfg->wout;
+ 	instance->debug = cfg->debug && cfg->dout;
+diff --git a/src/pcm/pcm_ladspa.c b/src/pcm/pcm_ladspa.c
+index 0a9c52e..9ce5242 100644
+--- a/src/pcm/pcm_ladspa.c
++++ b/src/pcm/pcm_ladspa.c
+@@ -1326,7 +1326,7 @@ static int snd_pcm_ladspa_parse_bindings(snd_pcm_ladspa_plugin_t *lplug,
+ 			count = (unsigned int)(channel + 1);
+ 	}
+ 	if (count > 0) {
+-		array = (unsigned int *)calloc(count, sizeof(unsigned int));
++		array = (unsigned int *)malloc(count * sizeof(unsigned int));
+ 		if (! array)
+ 			return -ENOMEM;
+ 		memset(array, 0xff, count * sizeof(unsigned int));
 -- 
-1.8.1.2
+1.8.5.1
