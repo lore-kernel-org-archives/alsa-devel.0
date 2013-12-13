@@ -1,22 +1,18 @@
 From: Nenghua Cao <nhcao@marvell.com>
-Subject: Re: [PATCH] ASOC:DAPM: extend dapm kcontrol to support
- runtime route update
-Date: Fri, 13 Dec 2013 20:11:55 +0800
-Message-ID: <52AAF98B.2060108@marvell.com>
-References: <1386835619-18070-1-git-send-email-nhcao@marvell.com>
- <20131212104347.GH11044@sirena.org.uk>
- <F766E4F80769BD478052FB6533FA745D4E76B8FA79@SC-VEXCH4.marvell.com>
- <20131212110718.GI11044@sirena.org.uk> <52AAF09A.40302@marvell.com>
- <s5hy53phthr.wl%tiwai@suse.de> <20131213114215.GW11044@sirena.org.uk>
+Subject: [PATCH] ASOC:DAPM: update DPCM runtime when mixer/mux
+	changes
+Date: Fri, 13 Dec 2013 20:13:49 +0800
+Message-ID: <1386936829-9627-2-git-send-email-nhcao@marvell.com>
+References: <1386936829-9627-1-git-send-email-nhcao@marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
- [67.231.148.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 282682616C9
- for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2013 13:06:18 +0100 (CET)
-In-Reply-To: <20131213114215.GW11044@sirena.org.uk>
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com
+ [67.231.156.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBFF7260376
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2013 13:08:13 +0100 (CET)
+In-Reply-To: <1386936829-9627-1-git-send-email-nhcao@marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,23 +22,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Henry Zhao <xzhao10@marvell.com>, Yacine Belkadi <yacine.belkadi.1@gmail.com>, Chao Xie <cxie4@marvell.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Yacine Belkadi <yacine.belkadi.1@gmail.com>, alsa-devel@alsa-project.org
+Cc: Henry zhao <xzhao10@marvell.com>, Nenghua Cao <nhcao@marvell.com>, cxie4@marvell.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Takashi and Mark:
+From: Nenghua Cao <nhcao@marvell.com>
 
-On 12/13/2013 07:42 PM, Mark Brown wrote:
-> On Fri, Dec 13, 2013 at 12:37:20PM +0100, Takashi Iwai wrote:
-> 
->> > Usually backward compatibility is concerned when something new breaks
->> > the existing ones.  In your case, always updating DPCM would work,
->> > too, even without an extra flag; it's just suboptimal.
-> Right, and if we have separate versions then at some point we'll end up
-> having to define DPCM versions of everything which is going to get
-> tedious and error prone.
+    DPCM can dynamically alter the FE to BE PCM links at runtime based
+on mixer/mux setting updates. Add soc_dpcm_runtime_update() calling in
+get/put function for mixer/mux to support this feature.
 
-According to your suggestion, i removed the flag, and updated the patch.
-Please review it again.
+Signed-off-by: Nenghua Cao <nhcao@marvell.com>
+---
+ sound/soc/soc-dapm.c |   28 ++++++++++++++++++++++++----
+ 1 files changed, 24 insertions(+), 4 deletions(-)
 
-Thanks
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index dcade13..67e63ab 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2868,6 +2868,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+ 	unsigned int val;
+ 	int connect, change;
+ 	struct snd_soc_dapm_update update;
++	int ret = 0;
+ 
+ 	if (snd_soc_volsw_is_stereo(mc))
+ 		dev_warn(codec->dapm.dev,
+@@ -2901,12 +2902,16 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+ 			card->update = &update;
+ 		}
+ 
+-		soc_dapm_mixer_update_power(card, kcontrol, connect);
++		ret = soc_dapm_mixer_update_power(card, kcontrol, connect);
+ 
+ 		card->update = NULL;
+ 	}
+ 
+ 	mutex_unlock(&card->dapm_mutex);
++
++	if (ret > 0)
++		soc_dpcm_runtime_update(card);
++
+ 	return change;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_volsw);
+@@ -2955,6 +2960,7 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+ 	unsigned int val, mux, change;
+ 	unsigned int mask;
+ 	struct snd_soc_dapm_update update;
++	int ret = 0;
+ 
+ 	if (ucontrol->value.enumerated.item[0] > e->max - 1)
+ 		return -EINVAL;
+@@ -2978,12 +2984,16 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+ 		update.val = val;
+ 		card->update = &update;
+ 
+-		soc_dapm_mux_update_power(card, kcontrol, mux, e);
++		ret = soc_dapm_mux_update_power(card, kcontrol, mux, e);
+ 
+ 		card->update = NULL;
+ 	}
+ 
+ 	mutex_unlock(&card->dapm_mutex);
++
++	if (ret > 0)
++		soc_dpcm_runtime_update(card);
++
+ 	return change;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_double);
+@@ -3019,6 +3029,7 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
+ 	struct soc_enum *e =
+ 		(struct soc_enum *)kcontrol->private_value;
+ 	int change;
++	int ret = 0;
+ 
+ 	if (ucontrol->value.enumerated.item[0] >= e->max)
+ 		return -EINVAL;
+@@ -3028,9 +3039,13 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
+ 	value = ucontrol->value.enumerated.item[0];
+ 	change = dapm_kcontrol_set_value(kcontrol, value);
+ 	if (change)
+-		soc_dapm_mux_update_power(card, kcontrol, value, e);
++		ret = soc_dapm_mux_update_power(card, kcontrol, value, e);
+ 
+ 	mutex_unlock(&card->dapm_mutex);
++
++	if (ret > 0)
++		soc_dpcm_runtime_update(card);
++
+ 	return change;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_virt);
+@@ -3097,6 +3112,7 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
+ 	unsigned int val, mux, change;
+ 	unsigned int mask;
+ 	struct snd_soc_dapm_update update;
++	int ret = 0;
+ 
+ 	if (ucontrol->value.enumerated.item[0] > e->max - 1)
+ 		return -EINVAL;
+@@ -3120,12 +3136,16 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
+ 		update.val = val;
+ 		card->update = &update;
+ 
+-		soc_dapm_mux_update_power(card, kcontrol, mux, e);
++		ret = soc_dapm_mux_update_power(card, kcontrol, mux, e);
+ 
+ 		card->update = NULL;
+ 	}
+ 
+ 	mutex_unlock(&card->dapm_mutex);
++
++	if (ret > 0)
++		soc_dpcm_runtime_update(card);
++
+ 	return change;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_value_enum_double);
+-- 
+1.7.0.4
