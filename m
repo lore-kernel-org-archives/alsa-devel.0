@@ -1,54 +1,111 @@
-From: Wei Yongjun <weiyj.lk-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH -next] ASoC: tegra20-ac97: add missing clk_disable_unprepare()
- on error path
-Date: Sat, 14 Dec 2013 13:29:11 +0800
-Message-ID: <CAPgLHd8f20ryuiZwUqAHfWb4Uujp6=XyNosVWxjD5E9e7kBdow@mail.gmail.com>
+From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Subject: Re: [PATCH] alsa: Disable timer-scheduling for
+ PCMs with the BATCH flag
+Date: Sat, 14 Dec 2013 08:16:31 +0200
+Message-ID: <1387001791.2526.17.camel@tkkaskin-mobl2.ger.corp.intel.com>
+References: <1385831244-30750-1-git-send-email-lars@metafoo.de>
+	<1386327965.2937.0.camel@tkkaskin-mobl2.ger.corp.intel.com>
+	<CAN8cciadcWgXsDajhoyCmZUEmuA9No7OzqdVaanDmkV+j_U7oQ@mail.gmail.com>
+Reply-To: General PulseAudio Discussion
+	<pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: yongjun_wei-zrsr2BFq86L20UzCJQGyNP8+0UxHXcjY@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <CAN8cciadcWgXsDajhoyCmZUEmuA9No7OzqdVaanDmkV+j_U7oQ@mail.gmail.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@lists.freedesktop.org
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <yongjun_wei-zrsr2BFq86L20UzCJQGyNP8+0UxHXcjY@public.gmane.org>
+On Mon, 2013-12-09 at 13:23 +0800, Raymond Yau wrote:
+> 2013/12/6 Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+> 
+> > On Sat, 2013-11-30 at 18:07 +0100, Lars-Peter Clausen wrote:
+> > > PCM Devices which have the BATCH flag set update the PCM pointer only
+> > with
+> > > period size granularity. Using timer based scheduling does not have any
+> > > advantage in this mode. For one devices which have that flag set usually
+> > update
+> > > the position pointer in software after getting the period interrupt. So
+> > > disabling the period interrupt is not possible for this kind of devices.
+> > > Furthermore writing to or reading from the buffer slice for the current
+> > period
+> > > is not possible since the position inside the buffer is not known. On
+> > the other
+> > > hand the tsched algorithm seems to get easily confused for this kind of
+> > > hardware, which results in garbled audio output. This typically means
+> > that timer
+> > > based scheduling needs to be manually disabled on systems with such
+> > devices.
+> > > Auto disabling tsched in this case allows these systems to run with the
+> > default
+> > > configuration.
+> > >
+> > > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> > > ---
+> > >  src/modules/alsa/alsa-util.c | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > >
+> > > diff --git a/src/modules/alsa/alsa-util.c b/src/modules/alsa/alsa-util.c
+> > > index 75f5858..4b24e47 100644
+> > > --- a/src/modules/alsa/alsa-util.c
+> > > +++ b/src/modules/alsa/alsa-util.c
+> > > @@ -245,6 +245,10 @@ int pa_alsa_set_hw_params(
+> > >      if (!pa_alsa_pcm_is_hw(pcm_handle))
+> > >          _use_tsched = false;
+> > >
+> > > +    /* The PCM pointer is only updated with period granularity */
+> > > +    if (snd_pcm_hw_params_is_batch(hwparams))
+> > > +        _use_tsched = false;
+> > > +
+> > >  #if (SND_LIB_VERSION >= ((1<<16)|(0<<8)|24)) /* API additions in 1.0.24
+> > */
+> > >      if (_use_tsched) {
+> > >
+> >
+> > Thanks! I applied the patch.
+> >
+> > --
+> >
+> 
+> Are you patch sufficient ?
+> 
+> In alsa-lib , snd_pcm_sw_params_set_avail_min always return zero
+> 
+> int snd_pcm_sw_params_set_avail_min(snd_pcm_t *pcm, snd_pcm_sw_params_t
+> *params, snd_pcm_uframes_t val)
+> {
+>          assert(pcm && params);
+>          /* Fix avail_min if it's below period size.  The period_size
+>           * defines the minimal wake-up timing accuracy, so it doesn't
+>           * make sense to set below that.
+>           */
+>          if (val < pcm->period_size)
+>                  val = pcm->period_size;
+>          params->avail_min = val;
+>          return 0;
+> }
+> 
+> 
+> http://cgit.freedesktop.org/pulseaudio/pulseaudio/commit/src/modules/alsa/alsa-sink.c?id=26a270a934f0f174f7bd7eb89e85301963721deb
+> 
+> /* We need at last one frame in the used part of the buffer */
+> - avail_min = (snd_pcm_uframes_t) u->hwbuf_unused_frames + 1;
+> + avail_min = (snd_pcm_uframes_t) u->hwbuf_unused / u->frame_size + 1;
+> 
+> do pulseaudio need to keep at least one periods instead of more than 1
+> frames for those driver which update hwptr in periods ?
 
-Add the missing clk_disable_unprepare() before return from
-tegra20_ac97_platform_probe() in the error handling case.
+I don't know.
 
-Signed-off-by: Wei Yongjun <yongjun_wei-zrsr2BFq86L20UzCJQGyNP8+0UxHXcjY@public.gmane.org>
----
- sound/soc/tegra/tegra20_ac97.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
-index d8b98d7..cf5e1cf 100644
---- a/sound/soc/tegra/tegra20_ac97.c
-+++ b/sound/soc/tegra/tegra20_ac97.c
-@@ -393,7 +393,7 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
- 	ret = snd_soc_set_ac97_ops(&tegra20_ac97_ops);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to set AC'97 ops: %d\n", ret);
--		goto err_asoc_utils_fini;
-+		goto err_clk_disable_unprepare;
- 	}
- 
- 	ret = snd_soc_register_component(&pdev->dev, &tegra20_ac97_component,
-@@ -401,7 +401,7 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
- 		ret = -ENOMEM;
--		goto err_asoc_utils_fini;
-+		goto err_clk_disable_unprepare;
- 	}
- 
- 	ret = tegra_pcm_platform_register(&pdev->dev);
-@@ -417,6 +417,8 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
- 
- err_unregister_component:
- 	snd_soc_unregister_component(&pdev->dev);
-+err_clk_disable_unprepare:
-+	clk_disable_unprepare(ac97->clk_ac97);
- err_asoc_utils_fini:
- 	tegra_asoc_utils_fini(&ac97->util_data);
- err_clk_put:
+-- 
+Tanu
