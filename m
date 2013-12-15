@@ -1,111 +1,90 @@
-From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
-Subject: Re: [PATCH] alsa: Disable timer-scheduling for
- PCMs with the BATCH flag
-Date: Sat, 14 Dec 2013 08:16:31 +0200
-Message-ID: <1387001791.2526.17.camel@tkkaskin-mobl2.ger.corp.intel.com>
-References: <1385831244-30750-1-git-send-email-lars@metafoo.de>
-	<1386327965.2937.0.camel@tkkaskin-mobl2.ger.corp.intel.com>
-	<CAN8cciadcWgXsDajhoyCmZUEmuA9No7OzqdVaanDmkV+j_U7oQ@mail.gmail.com>
-Reply-To: General PulseAudio Discussion
-	<pulseaudio-discuss@lists.freedesktop.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASOC:DAPM: extend dapm kcontrol to support
+ runtime route update
+Date: Sun, 15 Dec 2013 19:21:16 +0530
+Message-ID: <20131215135116.GR29580@intel.com>
+References: <1386835619-18070-1-git-send-email-nhcao@marvell.com>
+ <20131212104347.GH11044@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <CAN8cciadcWgXsDajhoyCmZUEmuA9No7OzqdVaanDmkV+j_U7oQ@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Sender: pulseaudio-discuss-bounces@lists.freedesktop.org
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+Content-Type: multipart/mixed; boundary="===============3551985920273718310=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C1DE261AED
+ for <alsa-devel@alsa-project.org>; Sun, 15 Dec 2013 15:50:04 +0100 (CET)
+In-Reply-To: <20131212104347.GH11044@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Nenghua Cao <nhcao@marvell.com>, Henry zhao <xzhao10@marvell.com>, Yacine Belkadi <yacine.belkadi.1@gmail.com>, cxie4@marvell.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2013-12-09 at 13:23 +0800, Raymond Yau wrote:
-> 2013/12/6 Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
-> 
-> > On Sat, 2013-11-30 at 18:07 +0100, Lars-Peter Clausen wrote:
-> > > PCM Devices which have the BATCH flag set update the PCM pointer only
-> > with
-> > > period size granularity. Using timer based scheduling does not have any
-> > > advantage in this mode. For one devices which have that flag set usually
-> > update
-> > > the position pointer in software after getting the period interrupt. So
-> > > disabling the period interrupt is not possible for this kind of devices.
-> > > Furthermore writing to or reading from the buffer slice for the current
-> > period
-> > > is not possible since the position inside the buffer is not known. On
-> > the other
-> > > hand the tsched algorithm seems to get easily confused for this kind of
-> > > hardware, which results in garbled audio output. This typically means
-> > that timer
-> > > based scheduling needs to be manually disabled on systems with such
-> > devices.
-> > > Auto disabling tsched in this case allows these systems to run with the
-> > default
-> > > configuration.
-> > >
-> > > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> > > ---
-> > >  src/modules/alsa/alsa-util.c | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > >
-> > > diff --git a/src/modules/alsa/alsa-util.c b/src/modules/alsa/alsa-util.c
-> > > index 75f5858..4b24e47 100644
-> > > --- a/src/modules/alsa/alsa-util.c
-> > > +++ b/src/modules/alsa/alsa-util.c
-> > > @@ -245,6 +245,10 @@ int pa_alsa_set_hw_params(
-> > >      if (!pa_alsa_pcm_is_hw(pcm_handle))
-> > >          _use_tsched = false;
-> > >
-> > > +    /* The PCM pointer is only updated with period granularity */
-> > > +    if (snd_pcm_hw_params_is_batch(hwparams))
-> > > +        _use_tsched = false;
-> > > +
-> > >  #if (SND_LIB_VERSION >= ((1<<16)|(0<<8)|24)) /* API additions in 1.0.24
-> > */
-> > >      if (_use_tsched) {
-> > >
-> >
-> > Thanks! I applied the patch.
-> >
-> > --
-> >
-> 
-> Are you patch sufficient ?
-> 
-> In alsa-lib , snd_pcm_sw_params_set_avail_min always return zero
-> 
-> int snd_pcm_sw_params_set_avail_min(snd_pcm_t *pcm, snd_pcm_sw_params_t
-> *params, snd_pcm_uframes_t val)
-> {
->          assert(pcm && params);
->          /* Fix avail_min if it's below period size.  The period_size
->           * defines the minimal wake-up timing accuracy, so it doesn't
->           * make sense to set below that.
->           */
->          if (val < pcm->period_size)
->                  val = pcm->period_size;
->          params->avail_min = val;
->          return 0;
-> }
-> 
-> 
-> http://cgit.freedesktop.org/pulseaudio/pulseaudio/commit/src/modules/alsa/alsa-sink.c?id=26a270a934f0f174f7bd7eb89e85301963721deb
-> 
-> /* We need at last one frame in the used part of the buffer */
-> - avail_min = (snd_pcm_uframes_t) u->hwbuf_unused_frames + 1;
-> + avail_min = (snd_pcm_uframes_t) u->hwbuf_unused / u->frame_size + 1;
-> 
-> do pulseaudio need to keep at least one periods instead of more than 1
-> frames for those driver which update hwptr in periods ?
 
-I don't know.
+--===============3551985920273718310==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ALfTUftag+2gvp1h"
+Content-Disposition: inline
 
--- 
-Tanu
+
+--ALfTUftag+2gvp1h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Dec 12, 2013 at 10:43:47AM +0000, Mark Brown wrote:
+> On Thu, Dec 12, 2013 at 04:06:59PM +0800, Nenghua Cao wrote:
+> > From: nhcao <nhcao@marvell.com>
+> >=20
+> >     DPCM can dynamically alter the FE to BE PCM links at runtime based
+> > on mixer setting updates. DAPM has provided common get/put function for
+> > mixer/mux. But these function doesn't call soc_dpcm_runtime_update()
+> > func to update pcm links. This patch defines a DPCM DPCM kcontrol. For
+> > this control, the common get/put function will update FE to BE links
+> > dynamically. This patch has no impact to the current code.
+>=20
+> Why shouldn't we just add the DPCM update to the standard controls -
+> what's the benefit in defining a new set of controls?
+Precisely my thoughts too, I think that would be a better approach!
+
+--
+~Vinod
+
+--ALfTUftag+2gvp1h
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSrbPUAAoJEHwUBw8lI4NHwMsP/0GWTe+Wi/xeQjUqxljdCfSQ
+0fCt6dMhev2M6sVRV2lYqgvFNmQrOU/xUc5flYDpdV+LxqauVEDtjwkuR83ovv8m
+a8UxRfC7mlIHosqov2yZYoPBj4mNyvrPucusbhr+vm9QFIp1nasHO7LV7w1WvZ9N
+2fxs5yv9itpMtDZkm/LwRhW9MQ+53p2xi9eWMPfFFbcioXLH91LL9PIWpR5H9+0b
+R+MKFPpDakIW3cgTVDVDGf2m/S/I5nipqpJ4C/wG7lgtolLPESNpYv2kWay/s5Ss
+p9VGeM5/+kZcMOpOcgPBWVPGWPWgOspVF/e3TOnqLTJBhZSqJKD+qWHjTixIYrzn
+cLUmBHNbbIBq0kiKNzJdQBzJMAiXIwMgDpSGFfseFTKNp6+N9fJcsmnLtyHNgUlg
+zMsuDNksgWIf4DsFp2qvk2gg5zwvRC3DCl0B3v7CSgApveqQMLJQfHjgqZqytZaS
+cQjYuv+S2ScBeGeXMON/9lYq8vCluBDZPohFHlXApfcauey1f3D1rxOUHZSa2TpL
+K5uZdzPkcxhhh5V15DdaasAq8GZsQdI7l6U129e0jGU8sJjpdctOKlTE/TMUOcmQ
+6dIqSnfTRCMIqHV3hhZq6dWc9UUEDogdYwCUSbsNhTkKi9+Hj0ebUKNXQVqrvRWX
+Y4nSkQnDgteo5kC7izNq
+=kFkw
+-----END PGP SIGNATURE-----
+
+--ALfTUftag+2gvp1h--
+
+--===============3551985920273718310==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3551985920273718310==--
