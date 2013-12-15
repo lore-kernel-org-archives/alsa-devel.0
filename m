@@ -1,17 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASOC:DAPM: extend dapm kcontrol to support
- runtime route update
-Date: Sun, 15 Dec 2013 19:21:16 +0530
-Message-ID: <20131215135116.GR29580@intel.com>
-References: <1386835619-18070-1-git-send-email-nhcao@marvell.com>
- <20131212104347.GH11044@sirena.org.uk>
+Subject: Re: [PATCH] ASOC:DAPM: update DPCM runtime when
+ mixer/mux changes
+Date: Sun, 15 Dec 2013 19:26:31 +0530
+Message-ID: <20131215135630.GS29580@intel.com>
+References: <1386936829-9627-1-git-send-email-nhcao@marvell.com>
+ <1386936829-9627-2-git-send-email-nhcao@marvell.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3551985920273718310=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C1DE261AED
- for <alsa-devel@alsa-project.org>; Sun, 15 Dec 2013 15:50:04 +0100 (CET)
-In-Reply-To: <20131212104347.GH11044@sirena.org.uk>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id D19BA261AED
+ for <alsa-devel@alsa-project.org>; Sun, 15 Dec 2013 15:55:18 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1386936829-9627-2-git-send-email-nhcao@marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +23,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Nenghua Cao <nhcao@marvell.com>, Henry zhao <xzhao10@marvell.com>, Yacine Belkadi <yacine.belkadi.1@gmail.com>, cxie4@marvell.com
+To: Nenghua Cao <nhcao@marvell.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Henry zhao <xzhao10@marvell.com>, Mark Brown <broonie@kernel.org>, Yacine Belkadi <yacine.belkadi.1@gmail.com>, cxie4@marvell.com
 List-Id: alsa-devel@alsa-project.org
 
-
---===============3551985920273718310==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ALfTUftag+2gvp1h"
-Content-Disposition: inline
-
-
---ALfTUftag+2gvp1h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Dec 12, 2013 at 10:43:47AM +0000, Mark Brown wrote:
-> On Thu, Dec 12, 2013 at 04:06:59PM +0800, Nenghua Cao wrote:
-> > From: nhcao <nhcao@marvell.com>
-> >=20
-> >     DPCM can dynamically alter the FE to BE PCM links at runtime based
-> > on mixer setting updates. DAPM has provided common get/put function for
-> > mixer/mux. But these function doesn't call soc_dpcm_runtime_update()
-> > func to update pcm links. This patch defines a DPCM DPCM kcontrol. For
-> > this control, the common get/put function will update FE to BE links
-> > dynamically. This patch has no impact to the current code.
->=20
-> Why shouldn't we just add the DPCM update to the standard controls -
-> what's the benefit in defining a new set of controls?
-Precisely my thoughts too, I think that would be a better approach!
+On Fri, Dec 13, 2013 at 08:13:49PM +0800, Nenghua Cao wrote:
+> From: Nenghua Cao <nhcao@marvell.com>
+> 
+>     DPCM can dynamically alter the FE to BE PCM links at runtime based
+> on mixer/mux setting updates. Add soc_dpcm_runtime_update() calling in
+> get/put function for mixer/mux to support this feature.
+> 
+> Signed-off-by: Nenghua Cao <nhcao@marvell.com>
+> ---
+>  sound/soc/soc-dapm.c |   28 ++++++++++++++++++++++++----
+>  1 files changed, 24 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index dcade13..67e63ab 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -2868,6 +2868,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+>  	unsigned int val;
+>  	int connect, change;
+>  	struct snd_soc_dapm_update update;
+> +	int ret = 0;
+>  
+>  	if (snd_soc_volsw_is_stereo(mc))
+>  		dev_warn(codec->dapm.dev,
+> @@ -2901,12 +2902,16 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+>  			card->update = &update;
+>  		}
+>  
+> -		soc_dapm_mixer_update_power(card, kcontrol, connect);
+> +		ret = soc_dapm_mixer_update_power(card, kcontrol, connect);
+>  
+>  		card->update = NULL;
+>  	}
+>  
+>  	mutex_unlock(&card->dapm_mutex);
+> +
+> +	if (ret > 0)
+> +		soc_dpcm_runtime_update(card);
+This version looks much better! Btw would it make sense to have flag in card
+for dynmaic support and call soc_dpcm_runtime_update() for only these cards?
 
 --
 ~Vinod
+> +
+>  	return change;
+>  }
+>  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_volsw);
+> @@ -2955,6 +2960,7 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+>  	unsigned int val, mux, change;
+>  	unsigned int mask;
+>  	struct snd_soc_dapm_update update;
+> +	int ret = 0;
+>  
+>  	if (ucontrol->value.enumerated.item[0] > e->max - 1)
+>  		return -EINVAL;
+> @@ -2978,12 +2984,16 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+>  		update.val = val;
+>  		card->update = &update;
+>  
+> -		soc_dapm_mux_update_power(card, kcontrol, mux, e);
+> +		ret = soc_dapm_mux_update_power(card, kcontrol, mux, e);
+>  
+>  		card->update = NULL;
+>  	}
+>  
+>  	mutex_unlock(&card->dapm_mutex);
+> +
+> +	if (ret > 0)
+> +		soc_dpcm_runtime_update(card);
+> +
+>  	return change;
+>  }
+>  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_double);
+> @@ -3019,6 +3029,7 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
+>  	struct soc_enum *e =
+>  		(struct soc_enum *)kcontrol->private_value;
+>  	int change;
+> +	int ret = 0;
+>  
+>  	if (ucontrol->value.enumerated.item[0] >= e->max)
+>  		return -EINVAL;
+> @@ -3028,9 +3039,13 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
+>  	value = ucontrol->value.enumerated.item[0];
+>  	change = dapm_kcontrol_set_value(kcontrol, value);
+>  	if (change)
+> -		soc_dapm_mux_update_power(card, kcontrol, value, e);
+> +		ret = soc_dapm_mux_update_power(card, kcontrol, value, e);
+>  
+>  	mutex_unlock(&card->dapm_mutex);
+> +
+> +	if (ret > 0)
+> +		soc_dpcm_runtime_update(card);
+> +
+>  	return change;
+>  }
+>  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_virt);
+> @@ -3097,6 +3112,7 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
+>  	unsigned int val, mux, change;
+>  	unsigned int mask;
+>  	struct snd_soc_dapm_update update;
+> +	int ret = 0;
+>  
+>  	if (ucontrol->value.enumerated.item[0] > e->max - 1)
+>  		return -EINVAL;
+> @@ -3120,12 +3136,16 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
+>  		update.val = val;
+>  		card->update = &update;
+>  
+> -		soc_dapm_mux_update_power(card, kcontrol, mux, e);
+> +		ret = soc_dapm_mux_update_power(card, kcontrol, mux, e);
+>  
+>  		card->update = NULL;
+>  	}
+>  
+>  	mutex_unlock(&card->dapm_mutex);
+> +
+> +	if (ret > 0)
+> +		soc_dpcm_runtime_update(card);
+> +
+>  	return change;
+>  }
+>  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_value_enum_double);
+> -- 
+> 1.7.0.4
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---ALfTUftag+2gvp1h
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSrbPUAAoJEHwUBw8lI4NHwMsP/0GWTe+Wi/xeQjUqxljdCfSQ
-0fCt6dMhev2M6sVRV2lYqgvFNmQrOU/xUc5flYDpdV+LxqauVEDtjwkuR83ovv8m
-a8UxRfC7mlIHosqov2yZYoPBj4mNyvrPucusbhr+vm9QFIp1nasHO7LV7w1WvZ9N
-2fxs5yv9itpMtDZkm/LwRhW9MQ+53p2xi9eWMPfFFbcioXLH91LL9PIWpR5H9+0b
-R+MKFPpDakIW3cgTVDVDGf2m/S/I5nipqpJ4C/wG7lgtolLPESNpYv2kWay/s5Ss
-p9VGeM5/+kZcMOpOcgPBWVPGWPWgOspVF/e3TOnqLTJBhZSqJKD+qWHjTixIYrzn
-cLUmBHNbbIBq0kiKNzJdQBzJMAiXIwMgDpSGFfseFTKNp6+N9fJcsmnLtyHNgUlg
-zMsuDNksgWIf4DsFp2qvk2gg5zwvRC3DCl0B3v7CSgApveqQMLJQfHjgqZqytZaS
-cQjYuv+S2ScBeGeXMON/9lYq8vCluBDZPohFHlXApfcauey1f3D1rxOUHZSa2TpL
-K5uZdzPkcxhhh5V15DdaasAq8GZsQdI7l6U129e0jGU8sJjpdctOKlTE/TMUOcmQ
-6dIqSnfTRCMIqHV3hhZq6dWc9UUEDogdYwCUSbsNhTkKi9+Hj0ebUKNXQVqrvRWX
-Y4nSkQnDgteo5kC7izNq
-=kFkw
------END PGP SIGNATURE-----
-
---ALfTUftag+2gvp1h--
-
---===============3551985920273718310==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3551985920273718310==--
+-- 
