@@ -1,19 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASOC:DAPM: update DPCM runtime when
- mixer/mux changes
-Date: Sun, 15 Dec 2013 19:26:31 +0530
-Message-ID: <20131215135630.GS29580@intel.com>
-References: <1386936829-9627-1-git-send-email-nhcao@marvell.com>
- <1386936829-9627-2-git-send-email-nhcao@marvell.com>
+Subject: Re: [PATCH] ALSA: compress: Fix 64bit ABI
+ incompatibility
+Date: Sun, 15 Dec 2013 19:27:40 +0530
+Message-ID: <20131215135740.GT29580@intel.com>
+References: <1386685997-4838-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id D19BA261AED
- for <alsa-devel@alsa-project.org>; Sun, 15 Dec 2013 15:55:18 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37BAD261AED
+ for <alsa-devel@alsa-project.org>; Sun, 15 Dec 2013 15:56:25 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1386936829-9627-2-git-send-email-nhcao@marvell.com>
+In-Reply-To: <1386685997-4838-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,134 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nenghua Cao <nhcao@marvell.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Henry zhao <xzhao10@marvell.com>, Mark Brown <broonie@kernel.org>, Yacine Belkadi <yacine.belkadi.1@gmail.com>, cxie4@marvell.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 13, 2013 at 08:13:49PM +0800, Nenghua Cao wrote:
-> From: Nenghua Cao <nhcao@marvell.com>
+On Tue, Dec 10, 2013 at 03:33:17PM +0100, Takashi Iwai wrote:
+> snd_pcm_uframes_t is defined as unsigned long so it would take
+> different sizes depending on 32 or 64bit architectures.  As we don't
+> want this ABI incompatibility, and there is no real 64bit user yet,
+> let's make it the fixed size with __u32.
 > 
->     DPCM can dynamically alter the FE to BE PCM links at runtime based
-> on mixer/mux setting updates. Add soc_dpcm_runtime_update() calling in
-> get/put function for mixer/mux to support this feature.
-> 
-> Signed-off-by: Nenghua Cao <nhcao@marvell.com>
-> ---
->  sound/soc/soc-dapm.c |   28 ++++++++++++++++++++++++----
->  1 files changed, 24 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index dcade13..67e63ab 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -2868,6 +2868,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
->  	unsigned int val;
->  	int connect, change;
->  	struct snd_soc_dapm_update update;
-> +	int ret = 0;
->  
->  	if (snd_soc_volsw_is_stereo(mc))
->  		dev_warn(codec->dapm.dev,
-> @@ -2901,12 +2902,16 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
->  			card->update = &update;
->  		}
->  
-> -		soc_dapm_mixer_update_power(card, kcontrol, connect);
-> +		ret = soc_dapm_mixer_update_power(card, kcontrol, connect);
->  
->  		card->update = NULL;
->  	}
->  
->  	mutex_unlock(&card->dapm_mutex);
-> +
-> +	if (ret > 0)
-> +		soc_dpcm_runtime_update(card);
-This version looks much better! Btw would it make sense to have flag in card
-for dynmaic support and call soc_dpcm_runtime_update() for only these cards?
+> Also bump the protocol version number to 0.1.2.
 
---
-~Vinod
-> +
->  	return change;
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_volsw);
-> @@ -2955,6 +2960,7 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
->  	unsigned int val, mux, change;
->  	unsigned int mask;
->  	struct snd_soc_dapm_update update;
-> +	int ret = 0;
+Was this applied?
+
+> 
+> Acked-by: Vinod Koul <vinod.koul@intel.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  include/uapi/sound/compress_offload.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
+> index d630163b9a2e..5759810e1c1b 100644
+> --- a/include/uapi/sound/compress_offload.h
+> +++ b/include/uapi/sound/compress_offload.h
+> @@ -30,7 +30,7 @@
+>  #include <sound/compress_params.h>
 >  
->  	if (ucontrol->value.enumerated.item[0] > e->max - 1)
->  		return -EINVAL;
-> @@ -2978,12 +2984,16 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
->  		update.val = val;
->  		card->update = &update;
 >  
-> -		soc_dapm_mux_update_power(card, kcontrol, mux, e);
-> +		ret = soc_dapm_mux_update_power(card, kcontrol, mux, e);
+> -#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 1)
+> +#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 2)
+>  /**
+>   * struct snd_compressed_buffer: compressed buffer
+>   * @fragment_size: size of buffer fragment in bytes
+> @@ -67,8 +67,8 @@ struct snd_compr_params {
+>  struct snd_compr_tstamp {
+>  	__u32 byte_offset;
+>  	__u32 copied_total;
+> -	snd_pcm_uframes_t pcm_frames;
+> -	snd_pcm_uframes_t pcm_io_frames;
+> +	__u32 pcm_frames;
+> +	__u32 pcm_io_frames;
+>  	__u32 sampling_rate;
+>  };
 >  
->  		card->update = NULL;
->  	}
->  
->  	mutex_unlock(&card->dapm_mutex);
-> +
-> +	if (ret > 0)
-> +		soc_dpcm_runtime_update(card);
-> +
->  	return change;
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_double);
-> @@ -3019,6 +3029,7 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
->  	struct soc_enum *e =
->  		(struct soc_enum *)kcontrol->private_value;
->  	int change;
-> +	int ret = 0;
->  
->  	if (ucontrol->value.enumerated.item[0] >= e->max)
->  		return -EINVAL;
-> @@ -3028,9 +3039,13 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
->  	value = ucontrol->value.enumerated.item[0];
->  	change = dapm_kcontrol_set_value(kcontrol, value);
->  	if (change)
-> -		soc_dapm_mux_update_power(card, kcontrol, value, e);
-> +		ret = soc_dapm_mux_update_power(card, kcontrol, value, e);
->  
->  	mutex_unlock(&card->dapm_mutex);
-> +
-> +	if (ret > 0)
-> +		soc_dpcm_runtime_update(card);
-> +
->  	return change;
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_virt);
-> @@ -3097,6 +3112,7 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
->  	unsigned int val, mux, change;
->  	unsigned int mask;
->  	struct snd_soc_dapm_update update;
-> +	int ret = 0;
->  
->  	if (ucontrol->value.enumerated.item[0] > e->max - 1)
->  		return -EINVAL;
-> @@ -3120,12 +3136,16 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
->  		update.val = val;
->  		card->update = &update;
->  
-> -		soc_dapm_mux_update_power(card, kcontrol, mux, e);
-> +		ret = soc_dapm_mux_update_power(card, kcontrol, mux, e);
->  
->  		card->update = NULL;
->  	}
->  
->  	mutex_unlock(&card->dapm_mutex);
-> +
-> +	if (ret > 0)
-> +		soc_dpcm_runtime_update(card);
-> +
->  	return change;
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_value_enum_double);
 > -- 
-> 1.7.0.4
+> 1.8.5
 > 
 > _______________________________________________
 > Alsa-devel mailing list
