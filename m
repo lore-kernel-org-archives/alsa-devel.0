@@ -1,33 +1,17 @@
-From: ranjith vs <ranjithvs@iwavesystems.com>
-Subject: Noise is coming from speaker when I do aplay
-Date: Mon, 16 Dec 2013 14:24:48 +0530 (IST)
-Message-ID: <832916567.155727.1387184088233.JavaMail.zimbra@iwavesystems.com>
-References: <1750043993.107445.1385097675393.JavaMail.zimbra@iwavesystems.com>
+From: JongHo Kim <furmuwon@gmail.com>
+Subject: [PATCH] ALSA: Add SNDRV_PCM_STATE_PAUSED case in
+	wait_for_avail function
+Date: Mon, 16 Dec 2013 17:56:23 +0900
+Message-ID: <CANXQt8Z8z+kGmECL30FR+3ussXN7R_j2nWaaou8nFBSqK=AUuA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.iwavesystems.com (smtp.iwavesystems.com [124.124.219.236])
- by alsa0.perex.cz (Postfix) with ESMTP id D52642625FF
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 09:55:08 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by smtp.iwavesystems.com (Postfix) with ESMTP id 445C61E249D
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 14:24:49 +0530 (IST)
-Received: from smtp.iwavesystems.com ([127.0.0.1])
- by localhost (smtp.iwavesystems.com [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id IFu7dy_xJkfi for <alsa-devel@alsa-project.org>;
- Mon, 16 Dec 2013 14:24:48 +0530 (IST)
-Received: from localhost (localhost [127.0.0.1])
- by smtp.iwavesystems.com (Postfix) with ESMTP id 874591E275B
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 14:24:48 +0530 (IST)
-Received: from smtp.iwavesystems.com ([127.0.0.1])
- by localhost (smtp.iwavesystems.com [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id hozhe3aLDkMa for <alsa-devel@alsa-project.org>;
- Mon, 16 Dec 2013 14:24:48 +0530 (IST)
-Received: from smtp.iwavesystems.com (smtp.iwavesystems.com [124.124.219.236])
- by smtp.iwavesystems.com (Postfix) with ESMTP id 613D11E249D
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 14:24:48 +0530 (IST)
-In-Reply-To: <1750043993.107445.1385097675393.JavaMail.zimbra@iwavesystems.com>
+Received: from mail-wg0-f54.google.com (mail-wg0-f54.google.com [74.125.82.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DA0E262606
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 09:56:26 +0100 (CET)
+Received: by mail-wg0-f54.google.com with SMTP id n12so4347465wgh.9
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 00:56:24 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -37,14 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+When the process is sleeping at the SNDRV_PCM_STATE_PAUSED
+state from the wait_for_avail function,
+the sleep process will be woken by timeout(10 seconds).
+Even if the sleep process wake up by timeout, by this patch,
+the process will continue with sleep and wait for the other state.
 
-    While doing arecord and aplay I'm able to hear the sound. But some little bit noise is there. How can I reduce the noise. I'm using in i.mx6 board linux.
+Signed-off-by: JongHo Kim <furmuwon@gmail.com>
+---
+ sound/core/pcm_lib.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-
-Thanks & Regards,
-
-Ranjith
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 6e03b46..a210467 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1937,6 +1937,8 @@ static int wait_for_avail(struct snd_pcm_substream
+*substream,
+                case SNDRV_PCM_STATE_DISCONNECTED:
+                        err = -EBADFD;
+                        goto _endloop;
++               case SNDRV_PCM_STATE_PAUSED:
++                       continue;
+                }
+                if (!tout) {
+                        snd_printd("%s write error (DMA or IRQ trouble?)\n",
+-- 
+1.7.9.5
