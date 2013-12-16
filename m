@@ -1,21 +1,17 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: Re: [PATCH v2] ASoC: SGTL5000: Fix kernel failed while
- trying to get optional VDDD supply.
-Date: Mon, 16 Dec 2013 03:31:36 +0000
-Message-ID: <1e493d42f11648428d1ce95883313f2a@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1385621219-20652-1-git-send-email-Li.Xiubo@freescale.com>
- <20131129183855.GI27568@sirena.org.uk>
- <1DD289F6464F0949A2FCA5AA6DC23F828E3D21@039-SN2MPN1-011.039d.mgd.msft.net>
- <20131203123459.GS27568@sirena.org.uk>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: Where to find recent fix for HD-Audio runtime PM?
+Date: Mon, 16 Dec 2013 05:36:21 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80143ACBE@SHSMSX101.ccr.corp.intel.com>
+References: <F46914AEC2663F4A9BB62374E5EEF8F801437B35@SHSMSX101.ccr.corp.intel.com>
+ <s5hbo0kizv1.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1lp0154.outbound.protection.outlook.com [207.46.163.154])
- by alsa0.perex.cz (Postfix) with ESMTP id A9094261B2F
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 04:31:39 +0100 (CET)
-In-Reply-To: <20131203123459.GS27568@sirena.org.uk>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FEC6261B30
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 06:36:31 +0100 (CET)
+In-Reply-To: <s5hbo0kizv1.wl%tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,29 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Shawn Guo <shawn.guo@linaro.org>
-Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "oskar@scara.com" <oskar@scara.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Many thanks for your patches, Takashi!
+They fixed the PM bug on the kernel v3.9.
 
-> > 2, If the regulator dt node is exist but the optional VDDD is absent (i.e.
-> > The external VDDD is not used), a -EPROBE_DEFER will be returned, if
-> > just return the -EPROBE_DEFER to the probe(and then the probe deferral
-> > mechanism will do the probe again later, is that right ?), and then
-> > the
-> > regulator_get_optional() will be called later again, and the
-> > -EPROBE_DEFER will be returned again too, and now how should I handle
-> > -EPROBE_DEFER error twice ? Or should there be a counter about this ?
-> > That to say when the -EPROBE_DEFER error is the second time returned
-> > from regulator_get_optional() can we ensure that the optional VDDD is really
-> not in use.
+Regards
+Mengdong
+
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Friday, December 13, 2013 10:34 PM
+> To: Lin, Mengdong
+> Cc: alsa-devel@alsa-project.org
+> Subject: Re: Where to find recent fix for HD-Audio runtime PM?
 > 
-> The driver should just defer when it's told to defer, I don't understand why it
-> would want to count anything?
->
-
-It's just one idea for the special handling of regulator_get_optional() in this
-case.
-
---
-Xiubo
+> At Fri, 13 Dec 2013 14:30:04 +0000,
+> Lin, Mengdong wrote:
+> >
+> > Hi Takashi,
+> >
+> > If convenient, would you please point out your previous patches to
+> make HD-Audio runtime PM stable?
+> > I guess 'ALSA: hda - Refactor pm notification in hda_codec.c' is only one
+> of them.
+> >
+> > We observed audio failure (dead communication) after S3 if runtime PM
+> is enabled on Haswell with Kernel v3.9.
+> > We hope to back port your previous fix and further check this issue.
+> 
+> The S3 problem might be rather the runtime refcount unbalance.  There
+> are multiple fixes: e6bbe666673ab044a3d39ddb74e4d9a401cf1d6f and
+> commit 0fc28fc030a85aa3d6d14e9e9fca0c8237c9ffb5
+> 
+> 
+> Takashi
