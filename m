@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: imx-spdif: Use module_init() to
- handle platform_device_register()
-Date: Mon, 16 Dec 2013 19:47:17 +0000
-Message-ID: <20131216194717.GO3185@sirena.org.uk>
-References: <1387190169-7936-1-git-send-email-Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH V2] ASOC:DAPM: update DPCM runtime when
+	mixer/mux changes
+Date: Mon, 16 Dec 2013 20:13:03 +0000
+Message-ID: <20131216201303.GQ3185@sirena.org.uk>
+References: <1386936829-9627-1-git-send-email-nhcao@marvell.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0116758452714666470=="
+Content-Type: multipart/mixed; boundary="===============8974982972027971162=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 0850A261729
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 20:47:23 +0100 (CET)
-In-Reply-To: <1387190169-7936-1-git-send-email-Guangyu.Chen@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C96622617AD
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 21:13:08 +0100 (CET)
+In-Reply-To: <1386936829-9627-1-git-send-email-nhcao@marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,116 +20,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux@arm.linux.org.uk, lgirdwood@gmail.com
+To: Nenghua Cao <nhcao@marvell.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Henry zhao <xzhao10@marvell.com>, Yacine Belkadi <yacine.belkadi.1@gmail.com>, cxie4@marvell.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0116758452714666470==
+--===============8974982972027971162==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vEfizQhTV1P/vojJ"
+	protocol="application/pgp-signature"; boundary="JaBjgNvtdKe5H086"
 Content-Disposition: inline
 
 
---vEfizQhTV1P/vojJ
+--JaBjgNvtdKe5H086
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 16, 2013 at 06:36:09PM +0800, Nicolin Chen wrote:
+On Fri, Dec 13, 2013 at 08:13:48PM +0800, Nenghua Cao wrote:
+> From: Nenghua Cao <nhcao@marvell.com>
+>=20
+> V2 -> V1:
+>=20
+>    Removes the flag and update DPCM always when mixer/mux changes, accord=
+ing
+> to Takashi's and Mark's suggestion.
 
-> 1) When modprobing modules in order: snd-soc-fsl-spdif -> snd-soc-imx-spdif
-> -> snd-soc-spdif-tx/rx, we will fail to create imx-spdif card and dai link
-> unless we rmmod snd-soc-imx-spdif and modprobe it again due to inappropriate
-> condition of platform_driver_unregister() in probe().
+Don't send cover letters for single patches, if there's anything that
+needs to be said put it after the --- in the patch mail.
 
-The crucial bit of information here is what the "inappropriate
-condition" is - what is this trying to fix?  The code doesn't look
-obviously wrong though it does rely on the platform device registration
-taking effect immediately to actually probe which is a bit of an
-assumption and is probably the thing that messes up the first time
-around as the S/PDIF CODEC drivers probably aren't loaded when the card
-is trying to probe.  This probably causes us to hit a case where
-deferred probe stalls as it's not making any progress as one of the
-deferred devices essentially has a dependency on itself.
-
-What should work right now is for the module to ensure that the S/PDIF
-CODEC drivers are loaded before it is by linking to some symbol from
-there.  This is a total hack though.  Nicer would be for the machine
-driver to either directly register S/PDIF DAIs (rather than devices that
-then register the DAIs) or to create a card subdevice in parallel with
-the S/PDIF ones and hook the card registration off that.
-
-> 2) After "imx-spdif sound-spdif.17: dit-hifi <-> 2004000.spdif mapping ok",
-> doing rmmod the imx-spdif would cause kernel Oops:
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 1301 at /home/rmk/git/linux-rmk/fs/sysfs/dir.c:915 sysfs_hash_and_remove+0x84/0x90()
-
-Please don't paste entire backtraces into commit messages, they're hard
-to read and very long - this is over 100 lines long and doesn't have
-anything like that much information.  Either edit them to pull out the
-important details or (better yet) explain in words what's going wrong.
-
-I *suspect* this is triggered by removing the CODECs prior to removing
-the card which should work but doesn't entirely (we lock modules in to
-prevent it triggering normally unless you go and really try by using
-unregistration).  Reverting back to normal card registration and doing
-that prior to unregistering the CODEC devices ought to fix the unload
-case at least.
-
-> Ideally, we should bypass the device_unregister() if getting EPROBE_DEFER,
-
-This won't work, it'll cause the next probe to fail as the driver tries
-to reregister an already registered device.  I'm also not sure why you'd
-want to do that...
-
-> +static int __init imx_spdif_init(void)
-> +{
-> +	int ret;
-> +
-> +	txdev = platform_device_register_simple("spdif-dit", -1, NULL, 0);
-> +	if (IS_ERR(txdev))
-> +		return PTR_ERR(txdev);
-> +
-> +	rxdev = platform_device_register_simple("spdif-dir", -1, NULL, 0);
-> +	if (IS_ERR(rxdev)) {
-> +		ret = PTR_ERR(rxdev);
-> +		goto err;
-> +	}
-
-This is going to cause these devices to be loaded on unrelated systems
-if they have the module compiled in or it gets loaded for some other
-reason - we shouldn't do that, it'll cause errors in their registration
-paths which may stop them working at all.
-
---vEfizQhTV1P/vojJ
+--JaBjgNvtdKe5H086
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSr1jCAAoJELSic+t+oim9o78P/1lyEWdh6SGz9Agmxl0raLWn
-dwxzPBCWLQ7FgvAn08APdwOISh3bgHWs5ZFggX4Xh/g9iQJSplwGBWCzc7mW25+w
-ZUo0E74GOI1fGD3zt3IjR3qudk0fM6wwG+MrS6XO/CSPanxzhNCZniLU6EFCXm/U
-J2qMp+cFrus9PcXnVNdFP5AiOISa2FvzZHABB/amcdbzlu2gF+aaEzUWfKkvxsiw
-uZnSOKXUlmnJgii7BHkLPYuacFKjhuf4fAyLrUbEe9HEPVq+ZBGCA61JwGzzcFdS
-S/DiQ2YHFcxpzUYrHuKc+CARO0gP8eY8bNUHRuNDlLRIfFFy44KIGZbXOpWvm4Tq
-3hrsqxQw4BSQcsRq+upgpxQ3EJh4G/3fNhCH5xeWDkReuXxijN+MSDSEg8l0jogf
-qNLxiqJeb5Yzq3TbauiSZ3lvLJFXP9jJsYJtzcsauIAe073w1E9aAhSvPFkxBvd7
-grgvu+6Ks8E1b8G4xNHiF4jzXAg4PuQtX+9/07jx8R9QDYZne3g7aSmP1zw/16uU
-DWZOQXUnSImxTXR/liY5eO8hehcTl2qjnycJ81YJQb8WV7iTJmxHkxqvmqfzSqpf
-kWuW3b8kPON1EMdTcbE8AS4+5eXCO4DsH5HubHV+uAI0K0ujjHUwLYML2cP7cZbW
-NR5LbF0PF2vnJxWk9bhA
-=GhzF
+iQIcBAEBAgAGBQJSr17LAAoJELSic+t+oim9lzAP/iMzrAvXj2WDEbLjNSUEn2JQ
+lStMqgMytVUHtEWtt7hxCt5/0SveNXpBUWh29SqaMJ8fH4N1uHI/z+D3xoa1T6Yz
+MFIRlDDfjcKlwVyq+JCd1+3BgvgR7dFnO8tXVzw/NQp5J1MxyH0Pz9pbrBNLUZEC
+TUsoH/PkNGwOUdO+RU7g/dsDH/9vHPPiY51jJ9TWgYXs8w3BHJ4g2+X5+b8GF+Km
+MtKEf5liO9H5/43djB2yUgUpHvna6KCHi9TBnboIadEeeZYDBv7BSL04b76QGPTD
+DEfVKKnQJIThWLGXIJQXeT5S8sFKBUPqowwY6M/e4bn037PeEwpY6gckZYfP2MSs
+8vpCIlLt/qhwbRqwgF1XD+lmvH8kz3y2q9BqNOSS4Oog4E4EyqRqPKtEH5Z+Cajo
+TJZ5d3QWmrKJq7cO5/Wnhx3o1r0Ge+p8LR5i6ANd/E3Fr5G95/H+TfbNRx00t/cZ
+v+5sFtOdaB/L9tHsZCaapLoGTddrg7bzk+vCr7xmPH7s1967DKa6+JfYRzdjfJjN
+Lg6d/zr/hHY3JeFEu+5TiwlznFjSrd1SkWnS1Nm11wBCNez9sW0WoX7hDxTj4cuh
+aOUCEp+COb6RH957hbGXkQbpz+shlOvL6aCfevNvVKzDHxAbwr/dByux4VKpgJjY
+XfwB82j6N8xipX+kgy3H
+=GWAz
 -----END PGP SIGNATURE-----
 
---vEfizQhTV1P/vojJ--
+--JaBjgNvtdKe5H086--
 
---===============0116758452714666470==
+--===============8974982972027971162==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0116758452714666470==--
+--===============8974982972027971162==--
