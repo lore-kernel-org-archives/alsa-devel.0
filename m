@@ -1,15 +1,16 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] ALSA: compress: change the way sample rates
-	are sent to kernel
-Date: Mon, 16 Dec 2013 14:55:34 +0530
-Message-ID: <1387185934-3258-1-git-send-email-vinod.koul@intel.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: [PATCH] ASoC: imx-spdif: Use module_init() to handle
+	platform_device_register()
+Date: Mon, 16 Dec 2013 18:36:09 +0800
+Message-ID: <1387190169-7936-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id D4B4D261B0C
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 11:24:24 +0100 (CET)
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe004.messaging.microsoft.com [216.32.181.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48A89261B0C
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 11:36:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,31 +20,319 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>
+To: broonie@kernel.org, linux@arm.linux.org.uk
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The usage of SNDRV_RATES is not effective as we can have rates like 12000 or
-some other ones used by decoders. This change the usage of this to use the raw
-Hz values to be sent to kernel
+This is a quick fix for the below two issues when building spdif as modules.
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+1) When modprobing modules in order: snd-soc-fsl-spdif -> snd-soc-imx-spdif
+-> snd-soc-spdif-tx/rx, we will fail to create imx-spdif card and dai link
+unless we rmmod snd-soc-imx-spdif and modprobe it again due to inappropriate
+condition of platform_driver_unregister() in probe().
+
+2) After "imx-spdif sound-spdif.17: dit-hifi <-> 2004000.spdif mapping ok",
+doing rmmod the imx-spdif would cause kernel Oops:
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 1301 at /home/rmk/git/linux-rmk/fs/sysfs/dir.c:915 sysfs_hash_and_remove+0x84/0x90()
+sysfs: can not remove 'dapm_widget', no directory
+Modules linked in: snd_soc_imx_spdif(-) snd_soc_fsl_spdif imx_pcm_dma fuse bnep rfcomm bluetooth imx_sdma imx_thermal imx2_wdt snd_soc_spdif_tx hid_cypress [last unloaded: imx_pcm_dma]
+CPU: 0 PID: 1301 Comm: rmmod Not tainted 3.13.0-rc4+ #387
+Backtrace:
+[<c0012640>] (dump_backtrace) from [<c00127dc>] (show_stack+0x18/0x1c)
+ r6:00000393 r5:c016bfa4 r4:00000000 r3:00000000
+ [<c00127c4>] (show_stack) from [<c0683a18>] (dump_stack+0x70/0x90)
+[<c06839a8>] (dump_stack) from [<c00244e0>] (warn_slowpath_common+0x74/0x94)
+ r4:dab89d30 r3:00000000
+ [<c002446c>] (warn_slowpath_common) from [<c00245a4>] (warn_slowpath_fmt+0x38/0x40)
+ r8:c689ce00 r7:00000000 r6:00000000 r5:c077c04c r4:dba2a318
+ [<c0024570>] (warn_slowpath_fmt) from [<c016bfa4>] (sysfs_hash_and_remove+0x84/0x90)
+ r3:c077c04c r2:c06b3c38
+ [<c016bf20>] (sysfs_hash_and_remove) from [<c016a00c>] (sysfs_remove_file_ns+0x18/0x1c)
+ r7:da916900 r6:00000000 r5:db2c900c r4:dba2a318
+ [<c0169ff4>] (sysfs_remove_file_ns) from [<c03687d4>] (device_remove_file+0x20/0x24)
+[<c03687b4>] (device_remove_file) from [<c04f532c>] (snd_soc_dapm_free+0x1c/0x22c)
+[<c04f5310>] (snd_soc_dapm_free) from [<c04f0c98>] (soc_remove_codec+0x34/0x98)
+ r10:dabae59c r9:00000000 r8:c689ce00 r7:da916900 r6:00000000 r5:db2c900c
+  r4:dba2a200 r3:00000000
+  [<c04f0c64>] (soc_remove_codec) from [<c04f3188>] (soc_remove_dai_links.clone.28+0x3c0/0x3ec)
+ r4:00000000 r3:00000000
+ [<c04f2dc8>] (soc_remove_dai_links.clone.28) from [<c04f3248>] (snd_soc_unregister_card+0x94/0xc8)
+ r10:d8435000 r9:db924204 r8:d8435000 r7:d079d480 r6:00000001 r5:00000608
+  r4:dabae4b8
+  [<c04f31b4>] (snd_soc_unregister_card) from [<c04ffa70>] (devm_card_release+0x14/0x18)
+ r6:00000003 r5:db924010 r4:dab89e60 r3:c04ffa5c
+ [<c04ffa5c>] (devm_card_release) from [<c036ec74>] (release_nodes+0x190/0x1f8)
+[<c036eae4>] (release_nodes) from [<c036ed94>] (devres_release_all+0x38/0x54)
+ r10:00000000 r9:dab88000 r8:c000eb44 r7:bef87600 r6:db924044 r5:bf131014
+  r4:db924010
+  [<c036ed5c>] (devres_release_all) from [<c036b7a8>] (__device_release_driver+0x80/0xd4)
+ r4:db924010 r3:bf12f000
+ [<c036b728>] (__device_release_driver) from [<c036bf28>] (driver_detach+0xbc/0xc0)
+ r5:bf131014 r4:db924010
+ [<c036be6c>] (driver_detach) from [<c036b490>] (bus_remove_driver+0x54/0x98)
+ r6:dab89f3c r5:bf131058 r4:bf131014 r3:db0c8000
+ [<c036b43c>] (bus_remove_driver) from [<c036c588>] (driver_unregister+0x30/0x4c)
+ r4:bf131014 r3:c68a7a80
+ [<c036c558>] (driver_unregister) from [<c036d21c>] (platform_driver_unregister+0x14/0x18)
+ r4:00000000 r3:bf12f2d0
+ [<c036d208>] (platform_driver_unregister) from [<bf12f2e4>] (imx_spdif_driver_exit+0x14/0xd30 [snd_soc_imx_spdif])
+[<bf12f2d0>] (imx_spdif_driver_exit [snd_soc_imx_spdif]) from [<c008d764>] (SyS_delete_module+0x140/0x190)
+[<c008d624>] (SyS_delete_module) from [<c000e980>] (ret_fast_syscall+0x0/0x48)
+ r7:00000081 r6:000120a8 r5:bef87600 r4:00000880
+ ---[ end trace 09423e64ab60df46 ]---
+ Unable to handle kernel NULL pointer dereference at virtual address 00000008
+ pgd = dab9c000
+ [00000008] *pgd=2062f831, *pte=00000000, *ppte=00000000
+ Internal error: Oops: 17 [#1] SMP ARM
+ Modules linked in: snd_soc_imx_spdif(-) snd_soc_fsl_spdif imx_pcm_dma fuse bnep rfcomm bluetooth imx_sdma imx_thermal imx2_wdt snd_soc_spdif_tx hid_cypress [last unloaded: imx_pcm_dma]
+ CPU: 0 PID: 1301 Comm: rmmod Tainted: G        W    3.13.0-rc4+ #387
+ task: db0c8000 ti: dab88000 task.ti: dab88000
+ PC is at soc_remove_codec+0x78/0x98
+ LR is at trace_hardirqs_on+0x14/0x18
+ pc : [<c04f0cdc>]    lr : [<c0066514>]    psr: 600f0013
+ sp : dab89dc8  ip : 00000020  fp : dab89ddc
+ r10: dabae59c  r9 : 00000000  r8 : c689ce00
+ r7 : da916900  r6 : 00000000  r5 : db2c900c  r4 : dba2a200
+ r3 : 00000000  r2 : 00100100  r1 : dabac810  r0 : dabae5f8
+ Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+ Control: 10c53c7d  Table: 2ab9c059  DAC: 00000015
+ Process rmmod (pid: 1301, stack limit = 0xdab88240)
+Stack: (0xdab89dc8 to 0xdab8a000)
+9dc0:                   00000000 00000000 dab89e24 dab89de0 c04f3188 c04f0c70
+9de0: d84355bc dabae5a0 00200200 00100100 00200200 00100100 d079d480 dabae4b8
+9e00: 00000608 00000001 d079d480 d8435000 db924204 d8435000 dab89e44 dab89e28
+9e20: c04f3248 c04f2dd4 c04ffa5c dab89e60 db924010 00000003 dab89e54 dab89e48
+9e40: c04ffa70 c04f31c0 dab89e94 dab89e58 c036ec74 c04ffa68 dab89e94 a00f0013
+9e60: dabae400 d079d480 00000002 db924010 bf131014 db924044 bef87600 c000eb44
+9e80: dab88000 00000000 dab89eac dab89e98 c036ed94 c036eaf0 bf12f000 db924010
+9ea0: dab89ec4 dab89eb0 c036b7a8 c036ed68 db924010 bf131014 dab89ee4 dab89ec8
+9ec0: c036bf28 c036b734 db0c8000 bf131014 bf131058 dab89f3c dab89efc dab89ee8
+9ee0: c036b490 c036be78 c68a7a80 bf131014 dab89f14 dab89f00 c036c588 c036b448
+9f00: bf12f2d0 00000000 dab89f24 dab89f18 c036d21c c036c564 dab89f34 dab89f28
+9f20: bf12f2e4 c036d214 dab89fa4 dab89f38 c008d764 bf12f2dc 00000000 5f646e73
+9f40: 5f636f73 5f786d69 69647073 bef80066 dab89f74 dab89f60 c005f0d4 c0069020
+9f60: 0077a008 00000000 00000880 bef87600 000120a8 00000081 bf131058 00000880
+9f80: dab89f84 00000000 00000880 bef87600 000120a8 00000081 00000000 dab89fa8
+9fa0: c000e980 c008d630 00000880 bef87600 bef87600 00000880 00009778 bef875f4
+9fc0: 00000880 bef87600 000120a8 00000081 00000001 000120bc 00000001 00000000
+9fe0: b6f03840 bef875fc 00008f75 b6f0384c 800f0010 bef87600 00000000 00000000
+Backtrace:
+[<c04f0c64>] (soc_remove_codec) from [<c04f3188>] (soc_remove_dai_links.clone.28+0x3c0/0x3ec)
+ r4:00000000 r3:00000000
+ [<c04f2dc8>] (soc_remove_dai_links.clone.28) from [<c04f3248>] (snd_soc_unregister_card+0x94/0xc8)
+ r10:d8435000 r9:db924204 r8:d8435000 r7:d079d480 r6:00000001 r5:00000608
+  r4:dabae4b8
+  [<c04f31b4>] (snd_soc_unregister_card) from [<c04ffa70>] (devm_card_release+0x14/0x18)
+ r6:00000003 r5:db924010 r4:dab89e60 r3:c04ffa5c
+ [<c04ffa5c>] (devm_card_release) from [<c036ec74>] (release_nodes+0x190/0x1f8)
+[<c036eae4>] (release_nodes) from [<c036ed94>] (devres_release_all+0x38/0x54)
+ r10:00000000 r9:dab88000 r8:c000eb44 r7:bef87600 r6:db924044 r5:bf131014
+  r4:db924010
+  [<c036ed5c>] (devres_release_all) from [<c036b7a8>] (__device_release_driver+0x80/0xd4)
+ r4:db924010 r3:bf12f000
+ [<c036b728>] (__device_release_driver) from [<c036bf28>] (driver_detach+0xbc/0xc0)
+ r5:bf131014 r4:db924010
+ [<c036be6c>] (driver_detach) from [<c036b490>] (bus_remove_driver+0x54/0x98)
+ r6:dab89f3c r5:bf131058 r4:bf131014 r3:db0c8000
+ [<c036b43c>] (bus_remove_driver) from [<c036c588>] (driver_unregister+0x30/0x4c)
+ r4:bf131014 r3:c68a7a80
+ [<c036c558>] (driver_unregister) from [<c036d21c>] (platform_driver_unregister+0x14/0x18)
+ r4:00000000 r3:bf12f2d0
+ [<c036d208>] (platform_driver_unregister) from [<bf12f2e4>] (imx_spdif_driver_exit+0x14/0xd30 [snd_soc_imx_spdif])
+[<bf12f2d0>] (imx_spdif_driver_exit [snd_soc_imx_spdif]) from [<c008d764>] (SyS_delete_module+0x140/0x190)
+[<c008d624>] (SyS_delete_module) from [<c000e980>] (ret_fast_syscall+0x0/0x48)
+ r7:00000081 r6:000120a8 r5:bef87600 r4:00000880
+ Code: e594100c e5842068 e584306c e5913080 (e5930008)
+---[ end trace 09423e64ab60df47 ]---
+
+Ideally, we should bypass the device_unregister() if getting EPROBE_DEFER,
+and find the root cause of "can not remove 'dapm_widget', no directory".
+But the root cause seems to be beyond the imx-spdif driver level, which
+might be related to the disordered resource releasing of the whole link.
+
+Thus this patch can provide a quick fix, if acceptable, to these two bugs
+so that the driver can finely work when being built as modules. And it's
+also safe enough to avoid duplicate regisitering/unregistering since we
+don't handle them in the probe() and remove() any more. At the meantime,
+we can trace the root cause of the Oops without pressure.
+
+Test report:
+
+root@freescale ~$ modprobe snd-soc-spdif-rx
+imx-spdif sound-spdif.10: dir-hifi <-> 2004000.spdif mapping ok
+
+root@freescale ~$ rmmod snd-soc-imx-spdif
+root@freescale ~$ modprobe snd-soc-imx-spdif
+imx-spdif sound-spdif.10: dir-hifi <-> 2004000.spdif mapping ok
+
+root@freescale ~$ rmmod snd-soc-imx-spdif
+root@freescale ~$ rmmod snd-soc-fsl-spdif
+root@freescale ~$ modprobe snd-soc-imx-spdif
+imx-spdif sound-spdif.10: ASoC: CPU DAI (null) not registered
+imx-spdif sound-spdif.10: snd_soc_register_card failed: -517
+platform sound-spdif.10: Driver imx-spdif requests probe deferral
+root@freescale ~$ modprobe snd-soc-fsl-spdif
+imx-spdif sound-spdif.10: dir-hifi <-> 2004000.spdif mapping ok
+
+root@freescale ~$ rmmod snd-soc-imx-spdif
+root@freescale ~$ rmmod snd-soc-spdif-rx
+root@freescale ~$ modprobe snd-soc-imx-spdif
+imx-spdif sound-spdif.10: ASoC: CODEC spdif-dir not registered
+imx-spdif sound-spdif.10: snd_soc_register_card failed: -517
+platform sound-spdif.10: Driver imx-spdif requests probe deferral
+root@freescale ~$ modprobe snd-soc-spdif-rx
+imx-spdif sound-spdif.10: dir-hifi <-> 2004000.spdif mapping ok
+
+Reported-by: Russell King <linux@arm.linux.org.uk>
+Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
 ---
- include/uapi/sound/compress_params.h |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/fsl/imx-spdif.c | 84 ++++++++++++++++++++++++-----------------------
+ 1 file changed, 43 insertions(+), 41 deletions(-)
 
-diff --git a/include/uapi/sound/compress_params.h b/include/uapi/sound/compress_params.h
-index 602dc6c..1114e38 100644
---- a/include/uapi/sound/compress_params.h
-+++ b/include/uapi/sound/compress_params.h
-@@ -324,7 +324,7 @@ union snd_codec_options {
+diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
+index 980dd1f..c4b9894 100644
+--- a/sound/soc/fsl/imx-spdif.c
++++ b/sound/soc/fsl/imx-spdif.c
+@@ -16,8 +16,6 @@
+ struct imx_spdif_data {
+ 	struct snd_soc_dai_link dai[2];
+ 	struct snd_soc_card card;
+-	struct platform_device *txdev;
+-	struct platform_device *rxdev;
+ };
  
- /** struct snd_codec_desc - description of codec capabilities
-  * @max_ch: Maximum number of audio channels
-- * @sample_rates: Sampling rates in Hz, use SNDRV_PCM_RATE_xxx for this
-+ * @sample_rates: Sampling rates in Hz, use values like 48000 for this
-  * @bit_rate: Indexed array containing supported bit rates
-  * @num_bitrates: Number of valid values in bit_rate array
-  * @rate_control: value is specified by SND_RATECONTROLMODE defines.
+ static int imx_spdif_audio_probe(struct platform_device *pdev)
+@@ -47,13 +45,6 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
+ 		data->dai[num_links].cpu_of_node = spdif_np;
+ 		data->dai[num_links].platform_of_node = spdif_np;
+ 		num_links++;
+-
+-		data->txdev = platform_device_register_simple("spdif-dit", -1, NULL, 0);
+-		if (IS_ERR(data->txdev)) {
+-			ret = PTR_ERR(data->txdev);
+-			dev_err(&pdev->dev, "register dit failed: %d\n", ret);
+-			goto end;
+-		}
+ 	}
+ 
+ 	if (of_property_read_bool(np, "spdif-in")) {
+@@ -64,18 +55,11 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
+ 		data->dai[num_links].cpu_of_node = spdif_np;
+ 		data->dai[num_links].platform_of_node = spdif_np;
+ 		num_links++;
+-
+-		data->rxdev = platform_device_register_simple("spdif-dir", -1, NULL, 0);
+-		if (IS_ERR(data->rxdev)) {
+-			ret = PTR_ERR(data->rxdev);
+-			dev_err(&pdev->dev, "register dir failed: %d\n", ret);
+-			goto error_dit;
+-		}
+ 	}
+ 
+ 	if (!num_links) {
+ 		dev_err(&pdev->dev, "no enabled S/PDIF DAI link\n");
+-		goto error_dir;
++		goto end;
+ 	}
+ 
+ 	data->card.dev = &pdev->dev;
+@@ -84,24 +68,16 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
+ 
+ 	ret = snd_soc_of_parse_card_name(&data->card, "model");
+ 	if (ret)
+-		goto error_dir;
++		goto end;
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed: %d\n", ret);
+-		goto error_dir;
++		goto end;
+ 	}
+ 
+ 	platform_set_drvdata(pdev, data);
+ 
+-	goto end;
+-
+-error_dir:
+-	if (data->rxdev)
+-		platform_device_unregister(data->rxdev);
+-error_dit:
+-	if (data->txdev)
+-		platform_device_unregister(data->txdev);
+ end:
+ 	if (spdif_np)
+ 		of_node_put(spdif_np);
+@@ -109,18 +85,6 @@ end:
+ 	return ret;
+ }
+ 
+-static int imx_spdif_audio_remove(struct platform_device *pdev)
+-{
+-	struct imx_spdif_data *data = platform_get_drvdata(pdev);
+-
+-	if (data->rxdev)
+-		platform_device_unregister(data->rxdev);
+-	if (data->txdev)
+-		platform_device_unregister(data->txdev);
+-
+-	return 0;
+-}
+-
+ static const struct of_device_id imx_spdif_dt_ids[] = {
+ 	{ .compatible = "fsl,imx-audio-spdif", },
+ 	{ /* sentinel */ }
+@@ -134,10 +98,48 @@ static struct platform_driver imx_spdif_driver = {
+ 		.of_match_table = imx_spdif_dt_ids,
+ 	},
+ 	.probe = imx_spdif_audio_probe,
+-	.remove = imx_spdif_audio_remove,
+ };
+ 
+-module_platform_driver(imx_spdif_driver);
++static struct platform_device *txdev;
++static struct platform_device *rxdev;
++
++static int __init imx_spdif_init(void)
++{
++	int ret;
++
++	txdev = platform_device_register_simple("spdif-dit", -1, NULL, 0);
++	if (IS_ERR(txdev))
++		return PTR_ERR(txdev);
++
++	rxdev = platform_device_register_simple("spdif-dir", -1, NULL, 0);
++	if (IS_ERR(rxdev)) {
++		ret = PTR_ERR(rxdev);
++		goto err;
++	}
++
++	ret = platform_driver_register(&imx_spdif_driver);
++	if (ret)
++		goto err1;
++
++	return 0;
++
++err1:
++	platform_device_unregister(rxdev);
++err:
++	platform_device_unregister(txdev);
++
++	return ret;
++}
++module_init(imx_spdif_init);
++
++static void __exit imx_spdif_exit(void)
++{
++	platform_driver_unregister(&imx_spdif_driver);
++
++	platform_device_unregister(rxdev);
++	platform_device_unregister(txdev);
++}
++module_exit(imx_spdif_exit);
+ 
+ MODULE_AUTHOR("Freescale Semiconductor, Inc.");
+ MODULE_DESCRIPTION("Freescale i.MX S/PDIF machine driver");
 -- 
-1.7.0.4
+1.8.4
