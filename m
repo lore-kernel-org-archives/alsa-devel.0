@@ -1,17 +1,18 @@
-From: JongHo Kim <furmuwon@gmail.com>
-Subject: [PATCH] ALSA: Add SNDRV_PCM_STATE_PAUSED case in
-	wait_for_avail function
-Date: Mon, 16 Dec 2013 17:56:23 +0900
-Message-ID: <CANXQt8Z8z+kGmECL30FR+3ussXN7R_j2nWaaou8nFBSqK=AUuA@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH]ASOC:DAPM: update DPCM runtime when
+	mixer/mux changes
+Date: Mon, 16 Dec 2013 10:06:04 +0100
+Message-ID: <52AEC27C.6040105@metafoo.de>
+References: <CAK7N6vq5RQV8JwDz7SS1K_fpXOHSmM2qOWrk8oibJZVNHcNE_A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f54.google.com (mail-wg0-f54.google.com [74.125.82.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DA0E262606
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 09:56:26 +0100 (CET)
-Received: by mail-wg0-f54.google.com with SMTP id n12so4347465wgh.9
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 00:56:24 -0800 (PST)
+Received: from smtp-out-047.synserver.de (smtp-out-039.synserver.de
+ [212.40.185.39])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F6AA2625FF
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 10:05:13 +0100 (CET)
+In-Reply-To: <CAK7N6vq5RQV8JwDz7SS1K_fpXOHSmM2qOWrk8oibJZVNHcNE_A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,34 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: anish singh <anish198519851985@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, nhcao@marvell.com, broonie@kernel.org, gabrbedd@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-When the process is sleeping at the SNDRV_PCM_STATE_PAUSED
-state from the wait_for_avail function,
-the sleep process will be woken by timeout(10 seconds).
-Even if the sleep process wake up by timeout, by this patch,
-the process will continue with sleep and wait for the other state.
+On 12/16/2013 09:03 AM, anish singh wrote:
+> <This patch is dependent on the $subject
+> so i have used $subject instead of different
+> one>
+> I can see only one usage of:
+> snd_soc_dapm_mixer_update_power
+> and zero user of:
+> snd_soc_dapm_mux_update_power()
+> 
+> And after this $subject patch I think
+> both of these functions becomes redundant.
 
-Signed-off-by: JongHo Kim <furmuwon@gmail.com>
----
- sound/core/pcm_lib.c |    2 ++
- 1 file changed, 2 insertions(+)
+No, the patch doesn't change anything in regard to those two functions.
+Those two functions are used by drivers where the mixer or mux has a special
+register layout that is not covered by the core mixer and mux update
+functions and where does not make sense to add support for this to the core
+functions since the layout is special.
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 6e03b46..a210467 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1937,6 +1937,8 @@ static int wait_for_avail(struct snd_pcm_substream
-*substream,
-                case SNDRV_PCM_STATE_DISCONNECTED:
-                        err = -EBADFD;
-                        goto _endloop;
-+               case SNDRV_PCM_STATE_PAUSED:
-+                       continue;
-                }
-                if (!tout) {
-                        snd_printd("%s write error (DMA or IRQ trouble?)\n",
--- 
-1.7.9.5
+> 
+> It will help in reducing the code size if we
+> can get rid of this dead code.We can
+> also remove code from tlv320aic3x.c and
+> just let it use the core implementation.
+
+The tlv320aic3x driver has special requirements, hence it has its own
+function for updating the mux settings.
+
+- Lars
