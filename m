@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: sgtl5000: read chip revision for
-	once
-Date: Mon, 16 Dec 2013 20:15:00 +0000
-Message-ID: <20131216201500.GS3185@sirena.org.uk>
-References: <1386916983-27832-1-git-send-email-shawn.guo@linaro.org>
+Subject: Re: [PATCH 1/2] ASoC: ASoC: axi-spdif: Use
+ devm_ioremap_resource() instead of devm_request_and_ioremap()
+Date: Mon, 16 Dec 2013 20:46:40 +0000
+Message-ID: <20131216204640.GX3185@sirena.org.uk>
+References: <1387195644-28513-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0868527572640106548=="
+Content-Type: multipart/mixed; boundary="===============3904263153479509708=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 42C162617AD
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 21:15:03 +0100 (CET)
-In-Reply-To: <1386916983-27832-1-git-send-email-shawn.guo@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FA4F2619F7
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 21:46:46 +0100 (CET)
+In-Reply-To: <1387195644-28513-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, linux-arm-kernel@lists.infradead.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Fengguang Wu <fengguang.wu@intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0868527572640106548==
+--===============3904263153479509708==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Pa4xkLBhPDIhDLv1"
+	protocol="application/pgp-signature"; boundary="PjLo8P/CG6vpADRe"
 Content-Disposition: inline
 
 
---Pa4xkLBhPDIhDLv1
+--PjLo8P/CG6vpADRe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 13, 2013 at 02:43:02PM +0800, Shawn Guo wrote:
-> Store chip revision in struct sgtl5000_priv when sgtl5000_i2c_probe()
-> reads it out from register, so that we can use it in
-> sgtl5000_enable_regulators() with no need to read register again.
+On Mon, Dec 16, 2013 at 01:07:23PM +0100, Lars-Peter Clausen wrote:
+> From: Fengguang Wu <fengguang.wu@intel.com>
+>=20
+> devm_request_and_ioremap() has been deprecated in favour of
+> devm_ioremap_resource(). Fixes the following coccinelle warning:
 
-Applied, thanks.
+Applied both, thanks.
 
---Pa4xkLBhPDIhDLv1
+--PjLo8P/CG6vpADRe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSr19BAAoJELSic+t+oim9apkQAI9jJin+SmoZ17fdMlXVbbou
-GmZ+xxMNr+d5QxVJe0fRiJR+6G6yDKRzwSuQdY7fPiU2nVe7NIwq1DsuXHL2zTEI
-dJZCBfmjyTDCipbEGgQ1xVYC/hLBtVy6Qg+wd/46HBQ8nmSB9+p/cy7pWSIrmUqE
-pShFl65b00LJaWpTPxeytlmpN7QAKGc2Rm1dDMDEPXs9OQOX/+qbgFXrCTlHq1zA
-Un396IEqF+M69sbgyvkbU//t+OFvu+nACLv/Xfw1DSdi3S6WPZKd0TLnLdPmFeAe
-+jNtGGfOudNWc3HM4FgwdmHTtxrpiWGa348W0Vt4Qh3vwgaCFY0nHKCXugG5fubA
-Zd4N49ElDLQhsiyN8fjF3ot45sDD4Bw+3XFNC0xKbp3vwZ3Qp6adgNBp1ZsjLZzK
-ujOoCwOpNLiof+Qyc/2oJUWmXV3B43pLUtemvn7vv7Z7FZDeJcySV9IZ19CggPED
-RKi0Bmjr4eJ1P2uW2Cb/Dm2dCx8825ZDcGajCrDrXfqvxBaREYSrEkssOVikjQbp
-Os68C3TX+EqTiceG4VmGrXvMhOdBgMOJiFgqWR12m9MpkeYXDa+ZwQo9JcuBiEny
-Ozj99b6WxppdDoSCNNB8K79XugVbNVJpdDdv2hdC2DXcKZoNG/GJD5iFPumgn6bG
-u7IjDKOomfrfovOuV6Le
-=moRU
+iQIcBAEBAgAGBQJSr2atAAoJELSic+t+oim9/ioP/2pVInw8QLX4DQUM0s5bod1X
+pcO0g2jO4q3I5KIsH+nYb+GTNLkQbzzyQeXF7l/5iYOY2Oixld2swB+AtlAW1Rvo
+9JcP0KrCxcV59oTPiFjWezvDRsf8CTShp05/sntJGY0OQlIHL2Sexyo2Jw5m9Uvh
+7UEGKvsnmuiHT1Vve0+2FYw0pntoFJzdyzCbB6L+ODsJUT1CiSl3OgY8K27l8pQr
+MFez2I5qebb3X16PgvYr6DMAvOc/thTrMgTz9vqrr80qLO84TEA0tqBvRmfhEnWE
+dFfqAZvmSAhTGmr4HcKnX1Qa4gzmdYljepcgxB33+JDrnBE1gxACxJw7SoDUzAtS
+ORV8tGztC/HSbjY4rbwvSwRYvthpPIulsVwH3ycHLBE++eODPj03Aku695VJPByH
+GTUENszI8yPhqKIWAXw/dtBXcBf+n/ZY3ui7uz7oGQa6yLKhuJa7QDhZAKbSa4Xi
+XopcosuqEnomiSZd7dathQXguTbF84uFGGYJ3AAUHbNybWKnQify8TlEeqiREflY
+HjaNCI2nhrz+XBgA1do4NjBCPcQfPVFujkRDJgo1StRxl0OniK7f0TRfQIw+b86v
+FwywgBOmXMx35Xy7Ex3L2t7YaGT3nj3SK5uOIC/T3m4UrEBA+liIh/I7867c77NE
+Bq9A+74WWLgRPRWpTYVV
+=hZGg
 -----END PGP SIGNATURE-----
 
---Pa4xkLBhPDIhDLv1--
+--PjLo8P/CG6vpADRe--
 
---===============0868527572640106548==
+--===============3904263153479509708==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0868527572640106548==--
+--===============3904263153479509708==--
