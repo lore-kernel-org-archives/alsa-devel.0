@@ -1,20 +1,22 @@
-From: Nenghua Cao <nhcao@marvell.com>
-Subject: Re: [PATCH] ASOC:DAPM: update DPCM runtime when
- mixer/mux changes
-Date: Mon, 16 Dec 2013 10:43:05 +0800
-Message-ID: <52AE68B9.2060101@marvell.com>
-References: <1386936829-9627-1-git-send-email-nhcao@marvell.com>
- <1386936829-9627-2-git-send-email-nhcao@marvell.com>
- <20131215135630.GS29580@intel.com>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH 2/2] ASoC: sgtl5000: clean up
+ sgtl5000_enable_regulators()
+Date: Mon, 16 Dec 2013 03:31:29 +0000
+Message-ID: <892cbb07bd064f44b2af45f106aeb479@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1386916983-27832-1-git-send-email-shawn.guo@linaro.org>
+ <1386916983-27832-2-git-send-email-shawn.guo@linaro.org>
+ <00a7a941be434caf829f9fd246879c6d@BY2PR03MB505.namprd03.prod.outlook.com>
+ <20131213125129.GV18380@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com
- [67.231.156.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 57FEA261B2B
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 03:36:55 +0100 (CET)
-In-Reply-To: <20131215135630.GS29580@intel.com>
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0235.outbound.protection.outlook.com [207.46.163.235])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1096F261B2B
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 04:31:33 +0100 (CET)
+In-Reply-To: <20131213125129.GV18380@S2101-09.ap.freescale.net>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,143 +26,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Henry Zhao <xzhao10@marvell.com>, Mark Brown <broonie@kernel.org>, Yacine Belkadi <yacine.belkadi.1@gmail.com>, Chao Xie <cxie4@marvell.com>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/15/2013 09:56 PM, Vinod Koul wrote:
-> On Fri, Dec 13, 2013 at 08:13:49PM +0800, Nenghua Cao wrote:
->> > From: Nenghua Cao <nhcao@marvell.com>
->> > 
->> >     DPCM can dynamically alter the FE to BE PCM links at runtime based
->> > on mixer/mux setting updates. Add soc_dpcm_runtime_update() calling in
->> > get/put function for mixer/mux to support this feature.
->> > 
->> > Signed-off-by: Nenghua Cao <nhcao@marvell.com>
->> > ---
->> >  sound/soc/soc-dapm.c |   28 ++++++++++++++++++++++++----
->> >  1 files changed, 24 insertions(+), 4 deletions(-)
->> > 
->> > diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
->> > index dcade13..67e63ab 100644
->> > --- a/sound/soc/soc-dapm.c
->> > +++ b/sound/soc/soc-dapm.c
->> > @@ -2868,6 +2868,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
->> >  	unsigned int val;
->> >  	int connect, change;
->> >  	struct snd_soc_dapm_update update;
->> > +	int ret = 0;
->> >  
->> >  	if (snd_soc_volsw_is_stereo(mc))
->> >  		dev_warn(codec->dapm.dev,
->> > @@ -2901,12 +2902,16 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
->> >  			card->update = &update;
->> >  		}
->> >  
->> > -		soc_dapm_mixer_update_power(card, kcontrol, connect);
->> > +		ret = soc_dapm_mixer_update_power(card, kcontrol, connect);
->> >  
->> >  		card->update = NULL;
->> >  	}
->> >  
->> >  	mutex_unlock(&card->dapm_mutex);
->> > +
->> > +	if (ret > 0)
->> > +		soc_dpcm_runtime_update(card);
-> This version looks much better! Btw would it make sense to have flag in card
-> for dynmaic support and call soc_dpcm_runtime_update() for only these cards?
-> 
-Hi, Vinod
 
-    In soc_dpcm_runtime_update(), it traverses the FE dai_link's
-"dynamic" flag. If the asoc driver supports DPCM, it will do update
-work. Or it will do nothing. After discussing with Mark and Takashi, it
-seems no more meaning to add this flag.
-> --
-> ~Vinod
->> > +
->> >  	return change;
->> >  }
->> >  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_volsw);
->> > @@ -2955,6 +2960,7 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
->> >  	unsigned int val, mux, change;
->> >  	unsigned int mask;
->> >  	struct snd_soc_dapm_update update;
->> > +	int ret = 0;
->> >  
->> >  	if (ucontrol->value.enumerated.item[0] > e->max - 1)
->> >  		return -EINVAL;
->> > @@ -2978,12 +2984,16 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
->> >  		update.val = val;
->> >  		card->update = &update;
->> >  
->> > -		soc_dapm_mux_update_power(card, kcontrol, mux, e);
->> > +		ret = soc_dapm_mux_update_power(card, kcontrol, mux, e);
->> >  
->> >  		card->update = NULL;
->> >  	}
->> >  
->> >  	mutex_unlock(&card->dapm_mutex);
->> > +
->> > +	if (ret > 0)
->> > +		soc_dpcm_runtime_update(card);
->> > +
->> >  	return change;
->> >  }
->> >  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_double);
->> > @@ -3019,6 +3029,7 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
->> >  	struct soc_enum *e =
->> >  		(struct soc_enum *)kcontrol->private_value;
->> >  	int change;
->> > +	int ret = 0;
->> >  
->> >  	if (ucontrol->value.enumerated.item[0] >= e->max)
->> >  		return -EINVAL;
->> > @@ -3028,9 +3039,13 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
->> >  	value = ucontrol->value.enumerated.item[0];
->> >  	change = dapm_kcontrol_set_value(kcontrol, value);
->> >  	if (change)
->> > -		soc_dapm_mux_update_power(card, kcontrol, value, e);
->> > +		ret = soc_dapm_mux_update_power(card, kcontrol, value, e);
->> >  
->> >  	mutex_unlock(&card->dapm_mutex);
->> > +
->> > +	if (ret > 0)
->> > +		soc_dpcm_runtime_update(card);
->> > +
->> >  	return change;
->> >  }
->> >  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_virt);
->> > @@ -3097,6 +3112,7 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
->> >  	unsigned int val, mux, change;
->> >  	unsigned int mask;
->> >  	struct snd_soc_dapm_update update;
->> > +	int ret = 0;
->> >  
->> >  	if (ucontrol->value.enumerated.item[0] > e->max - 1)
->> >  		return -EINVAL;
->> > @@ -3120,12 +3136,16 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
->> >  		update.val = val;
->> >  		card->update = &update;
->> >  
->> > -		soc_dapm_mux_update_power(card, kcontrol, mux, e);
->> > +		ret = soc_dapm_mux_update_power(card, kcontrol, mux, e);
->> >  
->> >  		card->update = NULL;
->> >  	}
->> >  
->> >  	mutex_unlock(&card->dapm_mutex);
->> > +
->> > +	if (ret > 0)
->> > +		soc_dpcm_runtime_update(card);
->> > +
->> >  	return change;
->> >  }
->> >  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_value_enum_double);
->> > -- 
->> > 1.7.0.4
->> > 
->> > _______________________________________________
->> > Alsa-devel mailing list
->> > Alsa-devel@alsa-project.org
->> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > > -	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(sgtl5000->supplies),
+> > > -				sgtl5000->supplies);
+> > > -	if (!ret)
+> > > -		external_vddd = 1;
+> > > -	else {
+> > > +	/* External VDDD only works before revision 0x11 */
+> > > +	if (sgtl5000->revision < 0x11) {
+> > > +		vddd = regulator_get_optional(codec->dev, "VDDD");
+> > > +		if (IS_ERR(vddd)) {
+> > > +			/* See if it's just not registered yet */
+> > > +			if (PTR_ERR(vddd) == -EPROBE_DEFER)
+> > > +				return -EPROBE_DEFER;
+> > > +		} else {
+> > > +			external_vddd = 1;
+> > > +			regulator_put(vddd);
+> > > +		}
+> >
+> > Shouldn't we handle other errors ?
+> 
+> We do not really care other errors.  In case that an external VDDD is present
+> on hardware design but regulator_get_optional("VDDD") still fails for some
+> other reason, we should turn to use the internal LDO anyway rather than simply
+> failing out.
+> 
+> > We can see that from the regulator_get_optional()-->_regulator_get(),
+> > there are many other errors maybe returned. Not considering other
+> > error cases, If the dt is used here, only ERR_PTR(-ENODEV) will be
+> > returned if the external VDDD is absent, and only this case the
+> > ERR_PTR(_ENODEV) error will be returned, Or if dt is not used and
+> > there has no external VDDD was found, the
+> > ERR_PTR(-EPROBE_DEFER) will be returned.
+> >
+> > So, if the external VDDD is not used, only ERR_PTR(-ENODEV) and
+> > ERR_PTR(-EPROBE_DEFER) maybe returned ignoring other errors.
+> >
+> > How about the following ?
+> > -----------------
+> > +	if (IS_ERR(vddd)) {
+> > +		/* See if it's just not registered yet */
+> > +		if (PTR_ERR(vddd) != -ENODEV)
+> > +			return PTR_ERR(vddd);
+> 
+> Just for example, if PTR_ERR(vddd) is -EBUSY here, instead of failing out, why
+> do not we switch to internal LDO for continuing the probe?
+> 
+
+Yes, sounds perfect.
+
+Well, the regulator_get_optional() is still needed to improve.
+For instance, if dts is not used for one platform and the external VDDD supply is
+absent. The regulator_get_optional() will return -EPROBE_DEFER, so the SGTL5000's
+probe, and then the SGTL5000 will do the deferral probe, and this time the same
+-EPROBE_DEFER error will return again. 
+Where should this special handling be dealt with ? Is here or regulator_get_optional()
+will be better ?
+
+
+Thanks,
+
+--
+Xiubo
