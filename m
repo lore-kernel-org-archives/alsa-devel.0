@@ -1,25 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: sgtl5000: clean up
-	sgtl5000_enable_regulators()
-Date: Tue, 17 Dec 2013 12:46:57 +0000
-Message-ID: <20131217124657.GW3185@sirena.org.uk>
-References: <1386916983-27832-1-git-send-email-shawn.guo@linaro.org>
- <1386916983-27832-2-git-send-email-shawn.guo@linaro.org>
- <00a7a941be434caf829f9fd246879c6d@BY2PR03MB505.namprd03.prod.outlook.com>
- <20131213125129.GV18380@S2101-09.ap.freescale.net>
- <892cbb07bd064f44b2af45f106aeb479@BY2PR03MB505.namprd03.prod.outlook.com>
- <20131216112910.GB30671@S2101-09.ap.freescale.net>
- <20131217015939.GM3185@sirena.org.uk>
- <20131217021610.GA7172@S2101-09.ap.freescale.net>
- <20131217113705.GP3185@sirena.org.uk>
- <20131217123946.GN6691@S2101-09.ap.freescale.net>
+Subject: Re: [PATCH] ASoC: mmp-pcm: config pcm slave via
+	generic dmaengine
+Date: Tue, 17 Dec 2013 12:49:54 +0000
+Message-ID: <20131217124954.GY3185@sirena.org.uk>
+References: <1387268544-31222-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1684094695941018945=="
+Content-Type: multipart/mixed; boundary="===============7432616666892159364=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 637FF26109E
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 13:47:03 +0100 (CET)
-In-Reply-To: <20131217123946.GN6691@S2101-09.ap.freescale.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id C53FE261178
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 13:49:57 +0100 (CET)
+In-Reply-To: <1387268544-31222-1-git-send-email-zhouqiao@marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,63 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Qiao Zhou <zhouqiao@marvell.com>
+Cc: alsa-devel@alsa-project.org, zhangfei.gao@gmail.com, haojian.zhuang@gmail.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1684094695941018945==
+--===============7432616666892159364==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="90dcdHIige6KdqvY"
+	protocol="application/pgp-signature"; boundary="20Lf8O5TUnq2EaQf"
 Content-Disposition: inline
 
 
---90dcdHIige6KdqvY
+--20Lf8O5TUnq2EaQf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 17, 2013 at 08:39:48PM +0800, Shawn Guo wrote:
+On Tue, Dec 17, 2013 at 04:22:24PM +0800, Qiao Zhou wrote:
+> use snd_dmaengine_pcm_prepare_slave_config to set slave config,
+> and remove the max_burst_size =3D 4 hard code.
+>=20
+> select SND_SOC_GENERIC_DMAENGINE_PCM for mmp-pcm.
 
-> Hmm, I do not quite follow.  The regulator core needs to know whether a
-> regulator device is present or absent, before the regulator is
-> registered, so that regulator core can decide to return -EDEFER_PROBE
-> or -ENODEV when consumer calls regulator_get_optional() to get the
-> regulator.  Are you saying platform can call
-> regulator_has_full_constraints() to help regulator core to make this
-> decision?  I do not understand how it works.
+Applied, thanks.  Can you also convert to use snd_dmaengine_pcm_register()=
+=20
+and remove this file completely?
 
-It tells the core that it now knows about all regulator mappings so it
-knows if it's not got a mapping none will ever appear.
-
---90dcdHIige6KdqvY
+--20Lf8O5TUnq2EaQf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSsEe9AAoJELSic+t+oim9FuEP/iDAv2fp7bVn/6Yk+R+vAjWU
-dO+WIA3FDFbzWFQuU8Oy70/ErXzJekmO68z8c46RTAIVCz5FCpgxXYoPi7gNWXyi
-D4MFca3QDywh0RcRax4xzAEM72aGIEnRstD+agWZSRr2l6+QtK4Z/S2SRAjfTWFQ
-8xB1T2AyxMdKwTkOkM0zm5ent/1RxmybjQdJHoXEPs53l+YhZ50lYASRVGRtIbon
-0wqhXgej5O6/SLgr/KtMcqsNTtL171AK5rcBvaBzUzQBmTna+n7kKVpBockxm3V0
-VisL2IbqZtF5C8kzjGfF0V+u7WTaGDXF8kOCKY+Dzjjeu7I4uhtxU/LrglA/zBCz
-A1xsS1h4xNXGkVQ4c2cyeBnufqGmYg1oYcWLDAp141XDhg9QgpgeSzFf447mnHx1
-vnfcJ+4xSfaEmrAIhr6dL3Y6LfFjC7ogKBtH+54bkqCOIwm+nk1/WGolCOSCc4I2
-0pYpq5Fi8lxmU53FH3dgtjAdCqD6traNa/eBhU9CJGv4v+ay8kqOHHUOrKLUWOcY
-gQYML28db0VpiEEhI6NNzGhnuPEYhlEBw6vqtfGQSNS0I0jIE/iptwtdiZxDE1H8
-7ek8480gxIRxBD8/pfbzF8RV2YU6+PpbvLoMllTbefkZPs0wi0glUJ5Hw+prVBUN
-fs+W0Wil3k8h4lOTLLkK
-=xNXU
+iQIcBAEBAgAGBQJSsEhuAAoJELSic+t+oim90zIP/2BF0Pa8xafw1iInjxrrqoVe
+pQBiekxJyRDjx/jdQORcOuwa00yhRzScLkkOUGCOAm9kCl16hdqY+IgC+fKYARtd
+kjmy+DgMwkAO213DjT8NkPneHq0Z4rmcTSIz4Tun7t/+lqG8Yzh1C1X3EypvSTvD
+cjnc4989M3SnUYyEM7zAMupebWrsswBvU3B0ipOPjTzMqiDgT3nta7lUsGXYG2kH
+PfKqOyjnsoVPu6XBLa3z5z3+o8GGG7AlN/4On0OgpTWUI0Y0nBj6YouTgpTwNzxV
+6pxhwaDWv+tCKoDTRoo3o3ZFqEAR+zXW4fVmBwTiHmDTLj6BoDZ3G0Xqkkg2KDFs
+fC3elQFWD27jmLUGA0aI9qjM4e4wwjiK4M0XhSzK2YnUheo+kmknaiXUajLmXrOR
+Z7D9E6DUYD6ESwS7h0ik59w86PBNUMJPkseQ/1BI4/cQOUPSWxWPPnXCCcPE3iZx
+YXsnjhW5iFLbXmth2hj5/pCw2zAXp1m+XH6xixV+GDb/G06KqEwhTJ45e7+k3LsO
+/hCBeL9lPm+cBFtFzpKNaZXYUrHOyb7LPIznpWQlwJhcwh38Kc+GDk51vcwS/xa+
+hW8k5Ez3MTsjJoyRUen6c4pZEnhK5iLy0HQUOao6Xq4WNrnBRRRlCWb9dOJfATSR
+1a0XjWcBscqgsQ/p0/y7
+=K5YS
 -----END PGP SIGNATURE-----
 
---90dcdHIige6KdqvY--
+--20Lf8O5TUnq2EaQf--
 
---===============1684094695941018945==
+--===============7432616666892159364==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1684094695941018945==--
+--===============7432616666892159364==--
