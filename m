@@ -1,77 +1,43 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: kirkwood: Fix the CPU DAI rates
-Date: Tue, 17 Dec 2013 14:10:38 +0000
-Message-ID: <20131217141038.GJ3185@sirena.org.uk>
-References: <20131127211024.52e5ae1b@armhf>
+From: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Subject: Re: [PATCH v2 RESEND 2/2] ASOC: tegra: fix AC97 clock handling
+Date: Tue, 17 Dec 2013 15:49:53 +0100
+Message-ID: <1387291793.1783.3.camel@tellur>
+References: <1387277564-4774-1-git-send-email-dev@lynxeye.de>
+	 <1387277564-4774-2-git-send-email-dev@lynxeye.de>
+	 <20131217140017.GI3185@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5387814055887470292=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 69CBA26162E
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 15:10:43 +0100 (CET)
-In-Reply-To: <20131127211024.52e5ae1b@armhf>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20131217140017.GI3185-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Am Dienstag, den 17.12.2013, 14:00 +0000 schrieb Mark Brown:
+> On Tue, Dec 17, 2013 at 11:52:44AM +0100, Lucas Stach wrote:
+> > This corrects the Tegra AC97 clock handling to be in line with
+> > the devicetree. Audio PLL is controlled by the machine driver, only
+> > AC97 host controller clock remains to be independent.
+> 
+> I don't understand this commit message at all I'm afraid.  What does it
+> mean to "be in line with the devicetree" and what is the purpose of this
+> change?
+> 
+Clocks were added to the DT after the Tegra AC97 driver was initially
+pushed upstream and the layout changed a bit in the process. Stephen
+Warren convinced me that it's the right thing to let the Audio PLL be
+controlled by the ASoC machine driver, rather than the AC97 host
+controller driver.
 
---===============5387814055887470292==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="H97thLd5/wxpNVcA"
-Content-Disposition: inline
+So currently the host controller driver asks for clocks that aren't
+there in the DT. This change corrects the clock handling so that the
+host controller driver only ask for it's own clock, but the Audio PLL
+handling is pushed into the machine driver.
 
+Regards,
+Lucas
 
---H97thLd5/wxpNVcA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Nov 27, 2013 at 09:10:24PM +0100, Jean-Francois Moine wrote:
-> This patch fixes the rates declared in the CPU DAI parameters:
-> - SNDRV_PCM_RATE_KNOT and the discrete rates SNDRV_PCM_RATE_xxx should
->   not be used with SNDRV_PCM_RATE_CONTINUOUS,
-> - SNDRV_PCM_RATE_CONTINUOUS asks for rate_min and rate_max,
-> - the device may do streaming down to 5512Hz.
-
-Applied, thanks.
-
---H97thLd5/wxpNVcA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSsFtbAAoJELSic+t+oim9LjMP/j60MMc9JmSBfqOKjw6eo8ey
-nJvNakM8CtuzuI2LGmdvFByeE5zZBW433o1r0E/vjF2DSwxCMtet5J6vxFVo5GQT
-hQr0YAlMbxlA8RGkK+GemsvxCtW/0fzpMpM8yEMml40M2YpF5wAIXTPgKd8ukzW+
-QZlPGJIplMpbKW5zpTQmmTuEjS6/I5PW7ykFnI3PHIAw1wV+7gHRr/CZNIHBObaZ
-FwIzvc2KHj+2GDkngDzaXJRUA/HSlX9yLT0EwVlwCurqdiTdnuzbzuYlRN2qVteE
-Da9ND8uTkh6/QNqYWzFpebaSvebYY/pF73wSDSh1+1ZuZs9SUgFcMg5RFbNzAS/n
-cckV971f5HzRNYB5ILHJ90cwzjYvpIfDH9ZJJKRwOR2/FkNf6Eao20TkEgukZrX4
-DIAcPt4hbAH/KuxE200mYe0ji+ONZfXsaXHspf57vdxdBDWAUUcBhcVrujC0iaQk
-5siyhGrWXF6UtNpppboCBAvSRUci7mhZWDplKlBsHumeOljakVLwZt61Z4q/x1m8
-31e3+ZPAANswS53GNKc9It7SurVWJkvT4AIdWmuHY7d+B/l8PAXvlSwJZUfbdFzX
-2462aVM9+VYDqPx6jAgLGrqWo5OjYPv/m48OAXTGxJz/wixiinPFfuEdXzU+Tz3d
-GXSDZuuDKkIvN6oHw38Y
-=N3iE
------END PGP SIGNATURE-----
-
---H97thLd5/wxpNVcA--
-
---===============5387814055887470292==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5387814055887470292==--
+> I should also have mentioned on the previous patch: please use subject
+> lines matching the subsystem.  You've got "ASOC" not "ASoC".
