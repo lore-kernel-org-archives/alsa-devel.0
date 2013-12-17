@@ -1,23 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 RESEND 2/2] ASOC: tegra: fix AC97 clock
-	handling
-Date: Tue, 17 Dec 2013 22:39:57 +0000
-Message-ID: <20131217223957.GO28455@sirena.org.uk>
-References: <1387277564-4774-1-git-send-email-dev@lynxeye.de>
- <1387277564-4774-2-git-send-email-dev@lynxeye.de>
- <20131217140017.GI3185@sirena.org.uk>
- <1387291793.1783.3.camel@tellur>
- <20131217214352.GF28455@sirena.org.uk>
- <52B0CE33.7080605@wwwdotorg.org>
- <20131217222847.GK28455@sirena.org.uk>
- <52B0D152.2060504@wwwdotorg.org>
+Subject: Re: [PATCH v3] ASoC: fsl: imx-wm8962: Grant
+ hw_params/free() permission to control FLL
+Date: Tue, 17 Dec 2013 22:50:02 +0000
+Message-ID: <20131217225002.GR28455@sirena.org.uk>
+References: <1386842368-19951-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8123354323237342573=="
+Content-Type: multipart/mixed; boundary="===============1484228200864031323=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 691692610A7
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 23:40:00 +0100 (CET)
-In-Reply-To: <52B0D152.2060504@wwwdotorg.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id BFDE62610A7
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 23:50:06 +0100 (CET)
+In-Reply-To: <1386842368-19951-1-git-send-email-Guangyu.Chen@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,70 +20,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Lucas Stach <dev@lynxeye.de>
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: tiwai@suse.de, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8123354323237342573==
+--===============1484228200864031323==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="68uOmRXIw+u8y5pO"
+	protocol="application/pgp-signature"; boundary="y/XsGip80ttrIE8G"
 Content-Disposition: inline
 
 
---68uOmRXIw+u8y5pO
+--y/XsGip80ttrIE8G
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Dec 17, 2013 at 03:33:54PM -0700, Stephen Warren wrote:
-> On 12/17/2013 03:28 PM, Mark Brown wrote:
+On Thu, Dec 12, 2013 at 05:59:28PM +0800, Nicolin Chen wrote:
 
-> > How does doing this in the machine driver help here?  The machine driver
-> > isn't going to be any more coordinated with other machine drivers than
-> > the controller is.
+> +	mask = WM8962_MIXINL_TO_HPMIXL_MASK | WM8962_MIXINR_TO_HPMIXL_MASK |
+> +		WM8962_IN4L_TO_HPMIXL_MASK | WM8962_IN4R_TO_HPMIXL_MASK;
+> +	bypass |= snd_soc_read(codec, WM8962_HEADPHONE_MIXER_1) & mask;
+> +	bypass |= snd_soc_read(codec, WM8962_HEADPHONE_MIXER_2) & mask;
+> +	bypass |= snd_soc_read(codec, WM8962_SPEAKER_MIXER_1) & mask;
+> +	bypass |= snd_soc_read(codec, WM8962_SPEAKER_MIXER_2) & mask;
+> +
+> +	/* Don't diable FLL if running multi-substreams or analogue bypass */
+> +	if (codec_dai->active != 1 || bypass)
+> +		return 0;
 
-> There would only be one machine driver loaded at a time. It should
-> provide top-level control over all the audio paths in the Tegra audio
-> subsystem.
+I don't think this works with the power down delay we do on playback -
+the DAI will go inactive when closed but we'll still have the CODEC
+active and using its clocks until the power down time has elapsed if
+it's a playback DAI.  Trying to reclock the device while active is at
+best risky, even if it's muted.
 
-OK, so that's not how everyone else has done these isolated
-controllers...  to be honest I'm not convinced that this is something
-worth worrying about for AC'97 - the clocking is fixed in the spec
-unless you're being fancy and the chances of anyone being fancy are
-minimal these days.  It's probably more likely to make life miserable
-for people trying to get AC'97 working than anything else.
+I do think refcounting from both here and the bias level changes is
+going to be the most robust thing, that'd also avoid the need to peer
+into the CODEC register map.
 
-But like I say the big thing is a comprehensible changelog.
-
---68uOmRXIw+u8y5pO
+--y/XsGip80ttrIE8G
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSsNK6AAoJELSic+t+oim9+uMQAJ0lVMfoNniUiLQnz7zR2xgy
-pOfAjCCXums97KZwpPNEc4hrvijt0sJ7xK7ewjKcT+2TH8z1SDJXftlcjuplhh/F
-o/POUyQR03Ot7oi2PgEdULILl1zGYfeND7e9QLLY2B3weDo67+/1FUapDs29P9Iy
-274Ucc6RY8gUF7i9lFatQ/zvy+wUEz7TYB6flr6C1E0woxgHtqsZReowmge8Evud
-s/NqfN99cpZwkmbYdikOlBI327/8q+ryJxeIlZ1UII/UIbyMndpUKPztC4vvO7Dw
-pEQRqIgdrykuESmG7JtbiFAcsiclcrRmnxAKqtvI8r9fxVTq/T6x6TI898g6SXya
-l8Cy7fNQvi43v0vCfaDCyawzXfMiqDVAUYEwC6m9jQhYEx+XflocHAfb6W0DrFUY
-vxOtlf77qXO3nQ4z691kyev3md5r4B98zTxh5Vh1e0xAXHfCgTiLHvDXUjGkqLw5
-fY/bLK5UXBk6rsjF9Il+M2yJAu46nLqYGbh0KpHT5IWaDgILOFhD1NpGVWkmOFt4
-529Y7rYHlhpuz4WvkHGzMrh4m2pGPrbgv11q9YBzWi8BNOK0d5HOgsU7k4TEGhsi
-sMDewPTqEF+9AsIl58ZQy3Fb8PH9TU+KRCNgzjA4J7QLLXov8xModupqPNETCDb+
-UCemw4roguOPKCxyqK2F
-=02uB
+iQIcBAEBAgAGBQJSsNUXAAoJELSic+t+oim9V88P/3rwuQnBlOpXwwt7LcF/1C/l
+XKrfJCgaFntjyhyejM/J4WrWaZBIURiAFxDNN7SdOnyjMb9vE7j09YALASB364Af
+DgdLQ7baElnnX4MAXjR0R2fDsu1PfOPSSSaepMh73yS2NzrD66KMlPY4y2HVmM+Y
+XGzYXeyeytpBLr6QaaYYMTeX+b01EJ8VzmrN4JhE2Y7fHRlgZHrtusDj5catzSoz
+QsJaZgTj/e0TIV9oGeTOJGFcpwbAyiv1ZlNyIaOvmSjIsDfmWSmtsyfqgK66ZdV7
+cEDJi4/KGZwP7Hk3ZTOpbBmouFOzgW+WWf8oRCNUZbb8wcecd6u0Ix0QUCl3L4dr
+tcD7f+l2iiR4U0wji8jX9PdDOQpI8J01puPZlLYpVoUE1WGhWTQREh5LyqG+Zo2W
+s/OzdG2GAw3sEJ6FFtOr3/KgvnjYT7mT+l5ukBRKq20BI/JQ0SAAipnbbaS+lVGo
+rtJfd76xN+4f3IYohxs3RWGn9f/3SIb2Pf/6HrhwcdfbpbN41CITLV18WBjivI54
+IEQG+aVIvgYmNd5zz/Gz0y3TGNK7j5kPW13+z4qvrquFbXW+888PCiVfzJlF7Vf2
+LWFn6tm8CA0W5je3MZdvRsIGGai55pKRaHcgHW3JQev7GUJxRZdB7MCjScI0mJ+W
+KT7UcbYeU6jHSv3IclFJ
+=er9B
 -----END PGP SIGNATURE-----
 
---68uOmRXIw+u8y5pO--
+--y/XsGip80ttrIE8G--
 
---===============8123354323237342573==
+--===============1484228200864031323==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8123354323237342573==--
+--===============1484228200864031323==--
