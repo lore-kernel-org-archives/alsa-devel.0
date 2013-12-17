@@ -1,43 +1,45 @@
-From: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
-Subject: Re: [PATCH v2 RESEND 2/2] ASOC: tegra: fix AC97 clock handling
-Date: Tue, 17 Dec 2013 15:49:53 +0100
-Message-ID: <1387291793.1783.3.camel@tellur>
-References: <1387277564-4774-1-git-send-email-dev@lynxeye.de>
-	 <1387277564-4774-2-git-send-email-dev@lynxeye.de>
-	 <20131217140017.GI3185@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: mmp-pcm: config pcm slave via
+ generic dmaengine
+Date: Tue, 17 Dec 2013 15:42:52 +0100
+Message-ID: <52B062EC.2050605@metafoo.de>
+References: <1387268544-31222-1-git-send-email-zhouqiao@marvell.com>
+ <20131217124954.GY3185@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20131217140017.GI3185-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-044.synserver.de (smtp-out-201.synserver.de
+ [212.40.185.201])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AD85265114
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 16:41:54 +0100 (CET)
+In-Reply-To: <20131217124954.GY3185@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: haojian.zhuang@gmail.com, Qiao Zhou <zhouqiao@marvell.com>, alsa-devel@alsa-project.org, zhangfei.gao@gmail.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Am Dienstag, den 17.12.2013, 14:00 +0000 schrieb Mark Brown:
-> On Tue, Dec 17, 2013 at 11:52:44AM +0100, Lucas Stach wrote:
-> > This corrects the Tegra AC97 clock handling to be in line with
-> > the devicetree. Audio PLL is controlled by the machine driver, only
-> > AC97 host controller clock remains to be independent.
+On 12/17/2013 01:49 PM, Mark Brown wrote:
+> On Tue, Dec 17, 2013 at 04:22:24PM +0800, Qiao Zhou wrote:
+>> use snd_dmaengine_pcm_prepare_slave_config to set slave config,
+>> and remove the max_burst_size = 4 hard code.
+>>
+>> select SND_SOC_GENERIC_DMAENGINE_PCM for mmp-pcm.
 > 
-> I don't understand this commit message at all I'm afraid.  What does it
-> mean to "be in line with the devicetree" and what is the purpose of this
-> change?
+> Applied, thanks.  Can you also convert to use snd_dmaengine_pcm_register() 
+> and remove this file completely?
 > 
-Clocks were added to the DT after the Tegra AC97 driver was initially
-pushed upstream and the layout changed a bit in the process. Stephen
-Warren convinced me that it's the right thing to let the Audio PLL be
-controlled by the ASoC machine driver, rather than the AC97 host
-controller driver.
 
-So currently the host controller driver asks for clocks that aren't
-there in the DT. This change corrects the clock handling so that the
-host controller driver only ask for it's own clock, but the Audio PLL
-handling is pushed into the machine driver.
+The problem here is that the driver uses sram for its audio memory and the
+platform has a custom function for looking up the sram pool. What we really
+need is a generic version of that which we can use in memalloc.c in the core.
 
-Regards,
-Lucas
-
-> I should also have mentioned on the previous patch: please use subject
-> lines matching the subsystem.  You've got "ASOC" not "ASoC".
+- Lars
