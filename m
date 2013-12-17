@@ -1,46 +1,79 @@
-From: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: [PATCHv3 3/7] ARM: dts: Enable SAI ALSA SoC DAI device for Vybrid VF610 TOWER board.
-Date: Tue, 17 Dec 2013 11:24:40 +0800
-Message-ID: <1387250684-23406-4-git-send-email-Li.Xiubo@freescale.com>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCHv3 7/7] Documentation: Add device tree bindings for Freescale VF610 sound.
+Date: Tue, 17 Dec 2013 11:24:44 +0800
+Message-ID: <1387250684-23406-8-git-send-email-Li.Xiubo@freescale.com>
 References: <1387250684-23406-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1387250684-23406-1-git-send-email-Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org
-Cc: r64188-KZfg59tc24xl57MIdRCFDg@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, ian.campbell-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org, rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org, LW-bxm8fMRDkQLDiMYJYoSAnRvVK+yQ3ZXh@public.gmane.org, oskar-fYPSZ7JpQqsAvxtiuMwx3w@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org, b18965-KZfg59tc24xl57MIdRCFDg@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <1387250684-23406-1-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, timur@tabi.org, perex@perex.cz
+Cc: r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com, shawn.guo@linaro.org, b42378@freescale.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds and enables the SAI device.
+This adds the Document for Freescale VF610 sound driver under
+Documentation/devicetree/bindings/sound/.
 
-Signed-off-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- arch/arm/boot/dts/vf610-twr.dts | 6 ++++++
- 1 file changed, 6 insertions(+)
+ .../bindings/sound/vf610-audio-sgt15000.txt        | 46 ++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/vf610-audio-sgt15000.txt
 
-diff --git a/arch/arm/boot/dts/vf610-twr.dts b/arch/arm/boot/dts/vf610-twr.dts
-index c8047ca..e60c20c 100644
---- a/arch/arm/boot/dts/vf610-twr.dts
-+++ b/arch/arm/boot/dts/vf610-twr.dts
-@@ -74,6 +74,12 @@
- 	status = "okay";
- };
- 
-+&sai2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sai2_1>;
-+	status = "okay";
+diff --git a/Documentation/devicetree/bindings/sound/vf610-audio-sgt15000.txt b/Documentation/devicetree/bindings/sound/vf610-audio-sgt15000.txt
+new file mode 100644
+index 0000000..76ff838
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/vf610-audio-sgt15000.txt
+@@ -0,0 +1,46 @@
++Freescale VF610 audio complex with SGTL5000 codec
++
++Required properties:
++- compatible: "fsl,vf610-sgtl5000"
++- model: The user-visible name of this sound complex.
++- saif-controllers: The phandle list of the SAI controller.
++- audio-codec: The phandle of the SGTL5000 audio codec.
++- audio-routing : A list of the connections between audio components.
++  Each entry is a pair of strings, the first being the connection's sink,
++  the second being the connection's source. Valid names could be power
++  supplies, SGTL5000 pins, and the jacks on the board:
++
++  -- Power supplies:
++     * Mic Bias
++
++  -- Board connectors:
++     * Mic Jack
++     * Line In Jack
++     * Headphone Jack
++     * Line Out Jack
++     * Ext Spk
++
++Example:
++
++sound {
++	compatible = "fsl,vf610-sgtl5000";
++	model = "vf610-sgtl5000";
++	saif-controller = <&sai2>;
++	audio-codec = <&codec>;
++	audio-routing =
++		"MIC_IN", "Mic Jack",
++		"Mic Jack", "Mic Bias",
++		"LINE_IN", "Line In Jack",
++		"Headphone Jack", "HP_OUT",
++		"Ext Spk", "LINE_OUT";
 +};
 +
- &uart1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_uart1_1>;
++&i2c0 {
++	...
++
++	codec: sgtl5000@0a {
++	       compatible = "fsl,sgtl5000";
++	       reg = <0x0a>;
++	       clocks = <&clks VF610_CLK_SAI2>;
++       };
++};
 -- 
 1.8.4
 
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
