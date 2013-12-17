@@ -1,57 +1,53 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 RESEND 2/2] ASOC: tegra: fix AC97 clock handling
-Date: Tue, 17 Dec 2013 14:00:17 +0000
-Message-ID: <20131217140017.GI3185@sirena.org.uk>
-References: <1387277564-4774-1-git-send-email-dev@lynxeye.de>
- <1387277564-4774-2-git-send-email-dev@lynxeye.de>
+From: JongHo Kim <furmuwon@gmail.com>
+Subject: [PATCH][RESEND] ALSA: Add SNDRV_PCM_STATE_PAUSED case
+ in wait_for_avail function
+Date: Tue, 17 Dec 2013 23:02:24 +0900 (KST)
+Message-ID: <alpine.DEB.2.02.1312172257380.4466@homeuser>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Vbt/VEkUvOjXIgmy"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1387277564-4774-2-git-send-email-dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
-Cc: swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pb0-f53.google.com (mail-pb0-f53.google.com
+ [209.85.160.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4243F261178
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 15:02:33 +0100 (CET)
+Received: by mail-pb0-f53.google.com with SMTP id ma3so6978175pbc.40
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 06:02:32 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+When the process is sleeping at the SNDRV_PCM_STATE_PAUSED
+state from the wait_for_avail function, the sleep process will be woken by
+timeout(10 seconds). Even if the sleep process wake up by timeout, by this
+patch, the process will continue with sleep and wait for the other state.
 
---Vbt/VEkUvOjXIgmy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: JongHo Kim <furmuwon@gmail.com>
+---
+  sound/core/pcm_lib.c | 2 ++
+  1 file changed, 2 insertions(+)
 
-On Tue, Dec 17, 2013 at 11:52:44AM +0100, Lucas Stach wrote:
-> This corrects the Tegra AC97 clock handling to be in line with
-> the devicetree. Audio PLL is controlled by the machine driver, only
-> AC97 host controller clock remains to be independent.
-
-I don't understand this commit message at all I'm afraid.  What does it
-mean to "be in line with the devicetree" and what is the purpose of this
-change?
-
-I should also have mentioned on the previous patch: please use subject
-lines matching the subsystem.  You've got "ASOC" not "ASoC".
-
---Vbt/VEkUvOjXIgmy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSsFjuAAoJELSic+t+oim9UhYP/0Ar2c1GSRl4TwrjBz5QTLMC
-usIE2kFq1vhtkxZcp1BoTBzCQuEmHopcIEXMlBF2AXf6Xq2fPKskAalKLlrw8PdY
-pe7RI8uKTLFh9h0qM8afDC3gjNDyuaCl+m0ttTfrq0vLTWkGaZOGK/E0OpPRohHn
-2DX2IFlU5UMuu6MrL4EpPOQbb3imQ2+q+1twwYfTLFRMgTgy9b5vje0ExO2GPyDl
-PNJ+zGDizW1/kH/zzlkackj8mlM0LT0rQDHE41DqlaJZgMG69dMAg7TDIeXeh9N1
-/ArsmnGmCnBUiEzJJ37f7Xdv+0eREhhCqBFCuho132ormQ47tex57RCp+Oy2lf3Z
-oIH778C2cGTJjWLDdpCvslW/eYsbeu0kXpdJ1wvTzvz7ZORaupEzGbXMCCTxq9tw
-iwp8Jdf0XBtNKRdjHiEN0xzs6XUj2M+ZeWOk7r6TnK5oceWGFKWEUGaSmIbyWjLn
-SoMT9/CWBcMUwoOIgOcdd9ToZyQb+6C8hm2z2GHCTv0PmecNeBhmnaMJDdl12poM
-kWoLp+Lxpm2nPxmKGcxu3aEgC9Gbul4vC4JyO0bITcFSjdFeSgOyrZaXfHC+6t1L
-s4xztLRhHfU4Crtt8o+zdvOMOqLl2rqZ3c65jHAl8HxxLlbhUO95uVTtRRtVQSy1
-fTQs/atPgwqtcNFz6sHn
-=VoqT
------END PGP SIGNATURE-----
-
---Vbt/VEkUvOjXIgmy--
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 6e03b46..a210467 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1937,6 +1937,8 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
+  		case SNDRV_PCM_STATE_DISCONNECTED:
+  			err = -EBADFD;
+  			goto _endloop;
++		case SNDRV_PCM_STATE_PAUSED:
++			continue;
+  		}
+  		if (!tout) {
+  			snd_printd("%s write error (DMA or IRQ trouble?)\n",
+-- 
+1.8.1.2
