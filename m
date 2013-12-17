@@ -1,75 +1,46 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCHv3 6/7] ARM: dts: Enable SGTL5000 codec based audio driver node for VF610 TOWER.
-Date: Tue, 17 Dec 2013 11:24:43 +0800
-Message-ID: <1387250684-23406-7-git-send-email-Li.Xiubo@freescale.com>
+From: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Subject: [PATCHv3 3/7] ARM: dts: Enable SAI ALSA SoC DAI device for Vybrid VF610 TOWER board.
+Date: Tue, 17 Dec 2013 11:24:40 +0800
+Message-ID: <1387250684-23406-4-git-send-email-Li.Xiubo@freescale.com>
 References: <1387250684-23406-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1387250684-23406-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, timur@tabi.org, perex@perex.cz
-Cc: r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com, shawn.guo@linaro.org, b42378@freescale.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1387250684-23406-1-git-send-email-Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org
+Cc: r64188-KZfg59tc24xl57MIdRCFDg@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, ian.campbell-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org, rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org, LW-bxm8fMRDkQLDiMYJYoSAnRvVK+yQ3ZXh@public.gmane.org, oskar-fYPSZ7JpQqsAvxtiuMwx3w@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org, b18965-KZfg59tc24xl57MIdRCFDg@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds and enables SGTL5000 codec support, and also specified
-the corresponding SAI node.
+This patch adds and enables the SAI device.
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+Signed-off-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 ---
- arch/arm/boot/dts/vf610-twr.dts | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ arch/arm/boot/dts/vf610-twr.dts | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/arch/arm/boot/dts/vf610-twr.dts b/arch/arm/boot/dts/vf610-twr.dts
-index e60c20c..6a8ee0a 100644
+index c8047ca..e60c20c 100644
 --- a/arch/arm/boot/dts/vf610-twr.dts
 +++ b/arch/arm/boot/dts/vf610-twr.dts
-@@ -34,6 +34,31 @@
- 		};
- 	};
- 
-+	regulators {
-+		compatible = "simple-bus";
-+
-+		reg_3p3v: 3p3v {
-+			compatible = "regulator-fixed";
-+			regulator-name = "3P3V";
-+			regulator-min-microvolt = <3300000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-always-on;
-+		};
-+	};
-+
-+	sound {
-+		compatible = "fsl,vf610-sgtl5000";
-+		model = "vf610-sgtl5000";
-+		saif-controller = <&sai2>;
-+		audio-codec = <&codec>;
-+		audio-routing =
-+			"MIC_IN", "Mic Jack",
-+			"Mic Jack", "Mic Bias",
-+			"LINE_IN", "Line In Jack",
-+			"Headphone Jack", "HP_OUT",
-+			"Ext Spk", "LINE_OUT";
-+	};
-+
- };
- 
- &dspi0 {
-@@ -72,6 +97,14 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_i2c0_1>;
+@@ -74,6 +74,12 @@
  	status = "okay";
-+
-+	codec: sgtl5000@0a {
-+		compatible = "fsl,sgtl5000";
-+		reg = <0x0a>;
-+		VDDA-supply = <&reg_3p3v>;
-+		VDDIO-supply = <&reg_3p3v>;
-+		clocks = <&clks VF610_CLK_SAI2>;
-+	};
  };
  
- &sai2 {
++&sai2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_sai2_1>;
++	status = "okay";
++};
++
+ &uart1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_uart1_1>;
 -- 
 1.8.4
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
