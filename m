@@ -1,25 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: sgtl5000: clean up
-	sgtl5000_enable_regulators()
-Date: Tue, 17 Dec 2013 13:48:49 +0000
-Message-ID: <20131217134849.GD3185@sirena.org.uk>
-References: <00a7a941be434caf829f9fd246879c6d@BY2PR03MB505.namprd03.prod.outlook.com>
- <20131213125129.GV18380@S2101-09.ap.freescale.net>
- <892cbb07bd064f44b2af45f106aeb479@BY2PR03MB505.namprd03.prod.outlook.com>
- <20131216112910.GB30671@S2101-09.ap.freescale.net>
- <20131217015939.GM3185@sirena.org.uk>
- <20131217021610.GA7172@S2101-09.ap.freescale.net>
- <20131217113705.GP3185@sirena.org.uk>
- <20131217123946.GN6691@S2101-09.ap.freescale.net>
- <20131217124657.GW3185@sirena.org.uk>
- <20131217131612.GO6691@S2101-09.ap.freescale.net>
+Subject: Re: [PATCH] ASoC: wm5110: Correct HPOUT3 DAPM route
+	typo
+Date: Tue, 17 Dec 2013 13:51:29 +0000
+Message-ID: <20131217135129.GF3185@sirena.org.uk>
+References: <1387286176-9259-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7182656885206589392=="
+Content-Type: multipart/mixed; boundary="===============9208121666354401730=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B5F65261178
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 14:48:53 +0100 (CET)
-In-Reply-To: <20131217131612.GO6691@S2101-09.ap.freescale.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id AABA026162E
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 14:51:32 +0100 (CET)
+In-Reply-To: <1387286176-9259-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,66 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7182656885206589392==
+--===============9208121666354401730==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="M3+ROfcjp/6iDHff"
+	protocol="application/pgp-signature"; boundary="N28ahz49L+cYbykM"
 Content-Disposition: inline
 
 
---M3+ROfcjp/6iDHff
+--N28ahz49L+cYbykM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Dec 17, 2013 at 09:16:15PM +0800, Shawn Guo wrote:
-> On Tue, Dec 17, 2013 at 12:46:57PM +0000, Mark Brown wrote:
+On Tue, Dec 17, 2013 at 01:16:16PM +0000, Charles Keepax wrote:
+> Reported-by: Kyung-Kwee Ryu <kyung-kwee.ryu@wolfsonmicro.com>
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-> > It tells the core that it now knows about all regulator mappings so it
-> > knows if it's not got a mapping none will ever appear.
+Applied, thanks.
 
-> Okay, it sounds like what we need.  But I searched all the occurrences
-> of have_full_constraints() in core.c, and haven't found how it
-> influences the regulator_map_list searching.  I'm looking at function
-> regulator_dev_lookup().  Can you point me the correct place of the code?
-
-For platform data it can't influence the map searching since we rely on
-the driver registering outbound supplies, all it does is change if we
-defer or error.  Though the erroring code seems to have gone AWOL at
-some point and it'd never have been robust for modular drivers anyway.
-
---M3+ROfcjp/6iDHff
+--N28ahz49L+cYbykM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSsFY+AAoJELSic+t+oim9W1wQAJpJQrvp/UufaMjbEYs0LMBb
-RnXl4lU0I2i1uQCgif3BoohBYOtZ4+GDYskCHVWA/N+ToHuvTHwXI/JGWpYVLi35
-3v9OQ31EGNA4uszJJOkX5stlAIsrCc3w9udmOnjmN5VK4e9O09mVYix+dOofKI6k
-JdjYbV2OCqwvadUyKmQ94JNF/eQBcZM4ge3y9ugGpUfcbplITcVBKD4NFe2Dwxaf
-dJUn0PbnwDbELwYzdxL/V8QhCmeQe2YYmNMw8moZl2HkD/pL9Z8TFVuZ5bEyjxz1
-8Z6ccj0l2bIbqnMzKr/Q/p3FBvW/O67UTcnWJD3Avy9dMGk3fC2iP4S73bfOyOpx
-EsE7NWBsyMcDT5B69qmwOSQ0ruFnDRYtztkKKcEBCfjinxUZqELclfU1xVUla6Le
-1yB1SpHa6GX+c1zS6Z/AS+QA5Olh/okgFfEu1f/nICEaL0YRaFtJKTvfHVZ080ZX
-q9cOPspFlZomKHn0UL5w2rppJtoxIMRxnaQLobBwbsUhmVzZVpWJCkA4KYBOlrf1
-Fz0WdkoNSmyaaIbNUio6dptjiewNHnT3uzD9L3Kr/Fbmm2+ZxR/z/ChAl4s0TtGT
-lLDE1hvCnsIZ9MGd/r694fqmf8ETtrkZIqhi9apY5JgUT6coinL+Bej7JNCcJ3Li
-VT0Akh94KdVvUhAbDWW0
-=orpL
+iQIcBAEBAgAGBQJSsFbeAAoJELSic+t+oim9X08QAJSoM6ivQ2tKenMtk+u6Oesa
+Mx2e4G8BAkr2i0ZQ3KE9ya8UgmcNDrnAk+b6HcEV8l//2kEEdsS+LsQwEMiZsQK5
+Uf/cfCIL2U4lxoybNT0cChmLYC3tNNMV6ELU2iq+J7Fo8GdB8cst438G8VDE9qnd
+AVPFcNy2FHN5bJ9dMCmBcRemSexkmjeVFA37c5d7kzv9EvHmZvKfZ80/egUUdDKZ
+LRf4JiGbecCDrL3tVEOe1BdaxZoiPIgSYmjIsKNfGLFx1Ho40VdpiwT5RZ13g/rE
+FVakWUL4wUcspbV/OS/RIW6D+5WLkxVqiROAw6Ete6wEloLZtCqw/MVNOjyexOVd
+lVJNJGzqZB0zj3t7ahDOIdyQZyEZMxnr9jsCTgOZ+Og6nbkYxzyvx2hKA8B07+GN
+Q9f2P4BKBaL/JM/qQgxNcfDPmxkRoeBU3aWdHoj+9p9pfF48HL9zOFwMxjns6RBp
+DbgmmS+33AfTieZcn+c86uNKE9CGDF+TZkU02I69VCXHlmHwScD1zm0DlgaK1+oh
+Z9cFcDKgdZJPCvv5AOBI3wcwGyYtRFuWz0EfA2hlUixVFPEh2HDVooju2nre5i3H
+aMchauRNDhs/nsu6D99IdH/voQbkCRV5PxoM1Vwo0C3lduYyPKW5gpn47ZqO+QrS
+BrBiwXWSt5BZoQI6nIj4
+=/vFw
 -----END PGP SIGNATURE-----
 
---M3+ROfcjp/6iDHff--
+--N28ahz49L+cYbykM--
 
---===============7182656885206589392==
+--===============9208121666354401730==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7182656885206589392==--
+--===============9208121666354401730==--
