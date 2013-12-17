@@ -1,18 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: imx-spdif: Use module_init() to
- handle platform_device_register()
-Date: Mon, 16 Dec 2013 22:17:10 +0000
-Message-ID: <20131216221710.GH3185@sirena.org.uk>
-References: <1387190169-7936-1-git-send-email-Guangyu.Chen@freescale.com>
- <20131216194717.GO3185@sirena.org.uk>
- <20131216211958.GS4360@n2100.arm.linux.org.uk>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH 2/2] ASoC: sgtl5000: clean up
+ sgtl5000_enable_regulators()
+Date: Tue, 17 Dec 2013 01:52:05 +0000
+Message-ID: <5b801a9d62414d538c40b027121eb583@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1386916983-27832-1-git-send-email-shawn.guo@linaro.org>
+ <1386916983-27832-2-git-send-email-shawn.guo@linaro.org>
+ <00a7a941be434caf829f9fd246879c6d@BY2PR03MB505.namprd03.prod.outlook.com>
+ <20131213125129.GV18380@S2101-09.ap.freescale.net>
+ <892cbb07bd064f44b2af45f106aeb479@BY2PR03MB505.namprd03.prod.outlook.com>
+ <20131216112910.GB30671@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8253060840448824101=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 075482602AD
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2013 23:17:15 +0100 (CET)
-In-Reply-To: <20131216211958.GS4360@n2100.arm.linux.org.uk>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1blp0188.outbound.protection.outlook.com [207.46.163.188])
+ by alsa0.perex.cz (Postfix) with ESMTP id 77D4F260816
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 02:52:10 +0100 (CET)
+In-Reply-To: <20131216112910.GB30671@S2101-09.ap.freescale.net>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,92 +28,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Nicolin Chen <Guangyu.Chen@freescale.com>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8253060840448824101==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lf0NQ8GVTdtriwpn"
-Content-Disposition: inline
+> > Well, the regulator_get_optional() is still needed to improve.
+> > For instance, if dts is not used for one platform and the external
+> > VDDD supply is absent. The regulator_get_optional() will return
+> > -EPROBE_DEFER, so the SGTL5000's probe, and then the SGTL5000 will do
+> > the deferral probe, and this time the same -EPROBE_DEFER error will
+> return again.
+> 
+> Yea, it seems in non-DT that regulator core can not figure out the -ENODEV
+> case like it does in DT, so it simply returns -EPROBE_DEFER no matter
+> whether the regulator is absent or it's present but just not registered yet.
+> IOW, it can not distinguish between these two cases in non-DT case.
+> 
+> Neither am I aware of any non-DT SGTL5000 users in the tree, nor I care.
+> I'm not concerned by this issue.
+> 
+> > Where should this special handling be dealt with ? Is here or
+> > regulator_get_optional() will be better ?
+> 
+> Anyway, this is another issue which should be addressed in regulator core,
+> IMO.
+> 
 
-
---lf0NQ8GVTdtriwpn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Dec 16, 2013 at 09:19:58PM +0000, Russell King - ARM Linux wrote:
-> On Mon, Dec 16, 2013 at 07:47:17PM +0000, Mark Brown wrote:
-
-> > The crucial bit of information here is what the "inappropriate
-> > condition" is - what is this trying to fix?  The code doesn't look
-> > obviously wrong though it does rely on the platform device registration
-> > taking effect immediately to actually probe which is a bit of an
-
-> It's an exact copy-n-paste of the same problem which Kirkwood stuff had
-> when I first looked at spdif there (presumably because Kirkwood had copied
-> it from somewhere.)  The basic problem is this:
-
-Indeed - that was a comment on the qualty of the changelog as much as
-anything.
-
-> > What should work right now is for the module to ensure that the S/PDIF
-> > CODEC drivers are loaded before it is by linking to some symbol from
-> > there.  This is a total hack though.  Nicer would be for the machine
-> > driver to either directly register S/PDIF DAIs (rather than devices that
-> > then register the DAIs) or to create a card subdevice in parallel with
-> > the S/PDIF ones and hook the card registration off that.
-
-> That creates much more complexity though, and adds yet more possibility
-> for unreliability into this.  "Keep it simple" is well worth following.
-
-I don't see registering the DAIs directly as adding complexity here;
-it's essentially what the current code is trying to do and doesn't
-change the normal device registration flow at all.  I do agree that the
-card subdevice is more complex, I don't particularly like that idea
-myself.
-
-> The simple thing here is to declare the codec device in the module init,
-> before registering the card driver, and cleaning it up at the appropriate
-> moment.  That way, the card platform driver gets registered and it can
-
-It's certainly simple and it's definitely what I'd recommend for non-DT
-systems.  For DT systems it'll cause issues if two drivers both try to
-register the same device on module load and the second one to get loaded
-checks for errors.  Another way is just to do that in the core so we
-don't need to worry about individual drivers conflicting and convert all
-the drivers that do this to reference the core copies.
-
---lf0NQ8GVTdtriwpn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSr3vjAAoJELSic+t+oim9q2oQAJcz6LlKV6uRCFYutGY+aCUz
-BQWXljYBAMBb00s97j98shkttsEwV27j9VOFwMRpKcQhznPvEDL44M6xcnCq/pb8
-lzeahnVM9YIoSfF3br8PKatJ75gNGq2q2BISpcjsNyNZZguwsOL3F6b1tFeivTet
-Ku1OvZhMYUywSDar2EX0yRGJrV26PCjZAwO6vC0Ucs0JO72Rde0gv1Eor2GPge/j
-d8OS5h7mikJkCmwDO2HKhCtpBUdSl0MvWhwpLsWO82DgREayi1JneCm+mXr+J6VF
-ycCrstfPGj9SUtjImPYXt/zPo0piniYqJI+nkmqKm0cW4izCvDu2uAsy0hFU0Lrx
-MNbhntiOPvCkdBfIcQEbxk7WlthXMuT3aW+R8ci73GfI/vYsJT/qQlZKQCKAGc00
-gZZWthwsQ9OcTULfZ75iQhkpbBvD/x3FOgax+fo+VThasqgeWxFsLJdWCY/9/px3
-9xDZlPU6KblTT/PiROwgkkClJ9K16v4vsOqfg56rm3SlC5UZiMLEa2MwV78BZ0Cu
-iQxt3ZqV8vQ3TiWZ+mb/7xe78J5UslzRdKaS6CJ5nD6aQv46oV3U8fFHRBzCPuWy
-JS+Q5qPPW891FNkniGpXqTMZVTZ0u2pULJEE+B32yZpO9sgf8MH1Xh2JMGxsOtY2
-4xLRZnIqmTHsS9CjZK5T
-=VWez
------END PGP SIGNATURE-----
-
---lf0NQ8GVTdtriwpn--
-
---===============8253060840448824101==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8253060840448824101==--
+Yes, agree.
