@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: mmp-pcm: config pcm slave via
- generic dmaengine
-Date: Tue, 17 Dec 2013 21:38:13 +0000
-Message-ID: <20131217213813.GE28455@sirena.org.uk>
-References: <1387268544-31222-1-git-send-email-zhouqiao@marvell.com>
- <20131217124954.GY3185@sirena.org.uk> <52B062EC.2050605@metafoo.de>
+Subject: Re: [PATCH v2 RESEND 2/2] ASOC: tegra: fix AC97 clock
+	handling
+Date: Tue, 17 Dec 2013 21:43:52 +0000
+Message-ID: <20131217214352.GF28455@sirena.org.uk>
+References: <1387277564-4774-1-git-send-email-dev@lynxeye.de>
+ <1387277564-4774-2-git-send-email-dev@lynxeye.de>
+ <20131217140017.GI3185@sirena.org.uk>
+ <1387291793.1783.3.camel@tellur>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8331852461464976542=="
+Content-Type: multipart/mixed; boundary="===============2276202429522927503=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9733C2610A0
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 22:38:18 +0100 (CET)
-In-Reply-To: <52B062EC.2050605@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id AE1E42610A7
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 22:43:59 +0100 (CET)
+In-Reply-To: <1387291793.1783.3.camel@tellur>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,66 +23,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: haojian.zhuang@gmail.com, Qiao Zhou <zhouqiao@marvell.com>, alsa-devel@alsa-project.org, zhangfei.gao@gmail.com, lgirdwood@gmail.com
+To: Lucas Stach <dev@lynxeye.de>
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, swarren@wwwdotorg.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8331852461464976542==
+--===============2276202429522927503==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="EXKGNeO8l0xGFBjy"
+	protocol="application/pgp-signature"; boundary="oPmsXEqKQNHCSXW7"
 Content-Disposition: inline
 
 
---EXKGNeO8l0xGFBjy
+--oPmsXEqKQNHCSXW7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 17, 2013 at 03:42:52PM +0100, Lars-Peter Clausen wrote:
-> On 12/17/2013 01:49 PM, Mark Brown wrote:
+On Tue, Dec 17, 2013 at 03:49:53PM +0100, Lucas Stach wrote:
+> Am Dienstag, den 17.12.2013, 14:00 +0000 schrieb Mark Brown:
 
-> > Applied, thanks.  Can you also convert to use snd_dmaengine_pcm_registe=
-r()=20
-> > and remove this file completely?
+> > I don't understand this commit message at all I'm afraid.  What does it
+> > mean to "be in line with the devicetree" and what is the purpose of this
+> > change?
 
-> The problem here is that the driver uses sram for its audio memory and the
-> platform has a custom function for looking up the sram pool. What we real=
-ly
-> need is a generic version of that which we can use in memalloc.c in the c=
-ore.
+> Clocks were added to the DT after the Tegra AC97 driver was initially
+> pushed upstream and the layout changed a bit in the process. Stephen
+> Warren convinced me that it's the right thing to let the Audio PLL be
+> controlled by the ASoC machine driver, rather than the AC97 host
+> controller driver.
 
-Ah, yes - now I remember.
+> So currently the host controller driver asks for clocks that aren't
+> there in the DT. This change corrects the clock handling so that the
+> host controller driver only ask for it's own clock, but the Audio PLL
+> handling is pushed into the machine driver.
 
---EXKGNeO8l0xGFBjy
+Are we sure this is the best thing to do here?  There is standard
+clocking behaviour specified in AC'97 so if the machine driver clocking
+control includes that it's not clear that we want to vary it.  In any
+case a clearer changelog explaining that the driver never worked due to
+these clocking changes would be good.
+
+--oPmsXEqKQNHCSXW7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSsMRCAAoJELSic+t+oim9ST8P/AooxJSI59cvXb4/CQyDcT+T
-I7RqFmwkesRrTGxV2pFE9dEjsYQwz53MbgNGB/QoHzHZcDb+piOnkmzbnuJyW3KM
-RWaF4C5x0gSbSILkfDvOt2Qdp4ZWgW7TeMIdQKLhbNvfD2Ygb4kgZTx75Lnayc/N
-3Ow9FDs2uOtFL3AwDlf0wudDYWc6yqw74JDhiQgWUjU3CZgTeKzEIil734AB7eC8
-SxiP6JF7owTYmOyaR1rhL+9CR+afcouCPcSwHcwAYcXWMkKtNMHLgfAJe7CpfMlF
-z4QxY+wPCH+RauLo5HIJ+EIAjcbwl7OBvQpKjzcba3uHMoEDau6aTUQDoMN0BnN7
-Q6OdEbGEcaApX0rDcz9EgUQ4PtSBv7RFXWxUo0p8IH6j40X1m1MxzZ5gf432Dka+
-6ZxNbGKBmUyLXFRLeErFIrUwgGXQK8WnyUkfYg3wny2ngsyq/cltGfszT89QQTNa
-A7LzXTWtStmAE34SOisFqRncY/x/D/tUbR6WuJpCGu7FlM85C7HW5Fu6fS924Alh
-0O/OEo6CeWUQU3KO/LtVwoNkBhpy7mllAJyPACy6iIkiaFwhHNf0PPS2AyJi92Xe
-gRqmwY8tZk2RgB+QcfptmD1Pe6Y+wRww2ziE8oYOG1T4+cEWw68tdqG3FiT7QLsa
-pcoi55xPf6CONwDaE39I
-=Zdc5
+iQIcBAEBAgAGBQJSsMWVAAoJELSic+t+oim9o1oP/A4w3u5CUsRd5fZMpX+58MjL
+CtnbvLtlqQIJjpYRxIfkNGSuzrGsFgear31WVPLI/4NdBhSMCL+7ciTB0x78qieH
+Uzed0qfrNznabhWRo30HnIu1TP3e6vXKt/sMw0NNrIxGD6BVd1e3aEv/+GFYYc0m
+P2Xd9DpwC5nwnUVtuFxg6MgpbRphAVHFCHexoH5W6X5kGnAKJCE5+qwWYaYOPWlF
+41UpwNo9btuMl7C3KbRDjP1l6CONdnlbvMt1k0v/Gsl9YiBTi6bddFwy1qmGAPHw
+DDV5hErjFwDAxQOacf7Y8jLzDoJsFE+cY4eySvWXtNOPqql0L2H4kBCHvfzQjPiK
+Dy8KRPKKeNMGWtiSUTgbcJX9Hx4ysbggjXRTlBnAVIkOAFm+4FBpqrPPfkcNt96S
+P4p5vI8zSVU9SASg5HzRvjj8xCIzQOMT6yp0mKEJ7IZj4u1qNPfUUIF7ZES7G/K3
+lugnM+YNjfNvs+Qneknv6jTeNByODnAqRBK6nLkulkEpW8L514JOO0HLkATR+bBC
+YxsGJYPOLzFSN8Cdy9Ca7CnPKz3/JuUPGHEX/EeXkXv/Gsgs7QRHsduxNtKW8IRh
+fF4PV00yO3LxMl7bR8HE1j01lhTsDfKi2c/5TrwZJr8S8c86ywUiWrRsfX6xqA6F
+znPepFzIYH6SMelkkent
+=TF76
 -----END PGP SIGNATURE-----
 
---EXKGNeO8l0xGFBjy--
+--oPmsXEqKQNHCSXW7--
 
---===============8331852461464976542==
+--===============2276202429522927503==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8331852461464976542==--
+--===============2276202429522927503==--
