@@ -1,87 +1,43 @@
-From: Qiao Zhou <zhouqiao@marvell.com>
-Subject: [PATCH] ASoC: mmp-pcm: config pcm slave via generic
-	dmaengine
-Date: Tue, 17 Dec 2013 16:22:24 +0800
-Message-ID: <1387268544-31222-1-git-send-email-zhouqiao@marvell.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
- [67.231.148.174])
- by alsa0.perex.cz (Postfix) with ESMTP id ADFDC260850
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 09:22:28 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: haojian.zhuang@gmail.com, zhangfei.gao@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: Qiao Zhou <zhouqiao@marvell.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - Add Dell headset detection quirk for one more laptop model
+Date: Tue, 17 Dec 2013 17:39:43 +0800
+Message-ID: <1387273183-11118-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-use snd_dmaengine_pcm_prepare_slave_config to set slave config,
-and remove the max_burst_size = 4 hard code.
+On the Dell machines with codec whose Subsystem Id is 0x10280640,
+no external microphone can be detected when plugging a 3-ring headset.
+If we add "model=dell-headset-multi" for the snd-hda-intel.ko, the
+problem will disappear.
 
-select SND_SOC_GENERIC_DMAENGINE_PCM for mmp-pcm.
+The codec (Vendor ID: 0x10ec0255) on the machine belongs to alc_269
+family.
 
-Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
+BugLink: https://bugs.launchpad.net/bugs/1260303
+Cc: David Henningsson <david.henningsson@canonical.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/soc/pxa/Kconfig   |    2 +-
- sound/soc/pxa/mmp-pcm.c |   18 +++---------------
- 2 files changed, 4 insertions(+), 16 deletions(-)
+This patch was generated against the master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 4db74a0..6473052 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -11,7 +11,7 @@ config SND_PXA2XX_SOC
- config SND_MMP_SOC
- 	bool "Soc Audio for Marvell MMP chips"
- 	depends on ARCH_MMP
--	select SND_DMAENGINE_PCM
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	select SND_ARM
- 	help
- 	  Say Y if you want to add support for codecs attached to
-diff --git a/sound/soc/pxa/mmp-pcm.c b/sound/soc/pxa/mmp-pcm.c
-index 7929e19..682ee52 100644
---- a/sound/soc/pxa/mmp-pcm.c
-+++ b/sound/soc/pxa/mmp-pcm.c
-@@ -67,27 +67,15 @@ static int mmp_pcm_hw_params(struct snd_pcm_substream *substream,
- 			      struct snd_pcm_hw_params *params)
- {
- 	struct dma_chan *chan = snd_dmaengine_pcm_get_chan(substream);
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_dmaengine_dai_dma_data *dma_params;
- 	struct dma_slave_config slave_config;
- 	int ret;
- 
--	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
--	if (!dma_params)
--		return 0;
--
--	ret = snd_hwparams_to_dma_slave_config(substream, params, &slave_config);
-+	ret =
-+	    snd_dmaengine_pcm_prepare_slave_config(substream, params,
-+						   &slave_config);
- 	if (ret)
- 		return ret;
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		slave_config.dst_addr     = dma_params->addr;
--		slave_config.dst_maxburst = 4;
--	} else {
--		slave_config.src_addr	  = dma_params->addr;
--		slave_config.src_maxburst = 4;
--	}
--
- 	ret = dmaengine_slave_config(chan, &slave_config);
- 	if (ret)
- 		return ret;
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 3578f11..4d7c602 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4309,6 +4309,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS),
+ 	SND_PCI_QUIRK(0x1028, 0x063e, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x063f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x0640, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x15cc, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x15cd, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
 -- 
-1.7.0.4
+1.8.1.2
